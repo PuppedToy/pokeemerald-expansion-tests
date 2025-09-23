@@ -129,7 +129,7 @@ static const u16 sStarterExtraMon[STARTER_EXTRA_COUNT] =
     SPECIES_RALTS,
     SPECIES_ZIGZAGOON,
     SPECIES_NOIBAT,
-}
+};
 
 static const struct BgTemplate sBgTemplates[3] =
 {
