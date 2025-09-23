@@ -369,13 +369,16 @@ u16 GetStarterPokemon(u16 chosenStarterId)
     return sStarterMon[chosenStarterId];
 }
 
-void GetExtraPokemon()
+u16 GetExtraPokemonCount()
 {
-    for (int i = 0; i < STARTER_EXTRA_COUNT; i++)
-    {
-        u16 extraMon = sStarterExtraMon[i];
-        ScriptGiveMon(extraMon, 5, ITEM_NONE);
-    }
+    return STARTER_EXTRA_COUNT;
+}
+
+u16 GetExtraPokemon(u16 extraPokemonId)
+{
+    if (extraPokemonId > STARTER_EXTRA_COUNT)
+        extraPokemonId = 0;
+    return sStarterExtraMon[extraPokemonId];
 }
 
 static void VblankCB_StarterChoose(void)

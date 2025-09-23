@@ -8,7 +8,8 @@ extern const u32 gBirchBagGrass_Gfx[];
 extern const u32 gPokeballSelection_Gfx[];
 
 u16 GetStarterPokemon(u16 chosenStarterId);
-void GetExtraPokemon();
+u16 GetExtraPokemonCount();
+u16 GetExtraPokemon(u16 nextExtraPokemon);
 void CB2_ChooseStarter(void);
 
 #endif // GUARD_STARTER_CHOOSE_H
