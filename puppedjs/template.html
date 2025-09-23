@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PuppedJS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724; /* deep navy */
+      --card:#0b1220;
+      --muted:#98a0b3;
+      --accent:#ff7a59;
+      --glass: rgba(255,255,255,0.03);
+      --glass-2: rgba(255,255,255,0.02);
+      --radius:12px;
+      color-scheme: dark;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      background:linear-gradient(180deg,#071022 0%, #071a2b 100%);
+      color:#e6eef8;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      min-height:100vh;
+    }
+
+    /* Layout */
+    .app{
+      display:grid;
+      grid-template-columns:260px 1fr 320px;
+      gap:20px;
+      width:100%;
+      padding:24px;
+    }
+
+    /* Sidebar */
+    .sidebar{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius);
+      padding:18px;
+      min-height:80vh;
+      box-shadow:0 8px 30px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo .badge{
+      width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ffb07f);display:flex;align-items:center;justify-content:center;font-weight:800;color:#081017
+    }
+    h1{font-size:16px;margin:0}
+    .nav{margin-top:18px}
+    .nav a{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;color:var(--muted);text-decoration:none;margin-bottom:6px}
+    .nav a:hover{background:var(--glass);color:#fff}
+    .nav a.active{background:linear-gradient(90deg, rgba(255,122,89,0.12), rgba(255,122,89,0.06));color:#fff}
+
+    /* Header / Search */
+    header.top{
+      grid-column:2/3;
+      display:flex;justify-content:space-between;align-items:center;margin-bottom:10px
+    }
+    .search{display:flex;gap:8px;align-items:center}
+    .search input{background:var(--glass-2);border:1px solid rgba(255,255,255,0.03);padding:10px 12px;border-radius:10px;color:#e9f2ff;outline:none;min-width:360px}
+    .actions{display:flex;gap:10px;align-items:center}
+    .chip{background:var(--glass);padding:8px 10px;border-radius:999px;font-weight:600}
+
+    /* Main content */
+    .main{
+      background:transparent;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+      gap:16px;
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;padding:12px;border:1px solid rgba(255,255,255,0.03);
+      box-shadow:0 6px 20px rgba(2,6,23,0.5);
+      display:flex;flex-direction:column;gap:8px;min-height:140px
+    }
+    .thumb{height:200px;border-radius:10px;background:#09121b;display:block;overflow:hidden}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .meta{display:flex;justify-content:space-between;align-items:center}
+    .meta .title{font-weight:700; font-size: 26px; margin-bottom: 12px; text-align: center;}
+    .meta .sub{font-size:12px;color:var(--muted)}
+    .meta .type{display:inline-block;padding:4px 8px;border-radius:8px;font-size:12px;color:#081017;font-weight:600;margin-right:6px;margin-bottom:6px}
+    .tags{display:flex;gap:8px;flex-wrap:wrap}
+    .tag{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:8px;font-size:12px}
+
+    /* Right column */
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .panel h3{margin:0 0 10px 0}
+    .list-item{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px}
+    .small{font-size:13px;color:var(--muted)}
+
+    /* footer */
+    footer{grid-column:1/4;margin-top:18px;padding:12px;text-align:center;color:var(--muted)}
+
+    /* Responsive */
+    @media (max-width:1000px){
+      .app{grid-template-columns:1fr;}
+      .sidebar{order:2}
+      .app > .right{order:3}
+      header.top{grid-column:1/2;margin-top:0}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <img height="60" width="60" src="https://lh4.googleusercontent.com/proxy/1ZU_ZpT8noxzxfsKEqWSQWAbxk-3puSoLlV360G1sxdHpbjNSmmxxNSY_dHGm2vX7NwmmPhK4jvnrpc1_PjZGWtYeglgvc5GVgCXXQFvTxZ0Ba_Yxdo8oqURAqARybK07xKxvw">
+        <div>
+          <h1>PuppedJS</h1>
+          <div class="small">Your custom journey dex</div>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a class="active" href="#">Species</a>
+        <a href="#">Moves</a>
+        <a href="#">Locations</a>
+        <a href="#">Trainers</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="top">
+        <div class="search">
+          <input type="search" placeholder="Search a pokemon" />
+          <button class="chip">Search</button>
+        </div>
+        <div class="actions">
+          <div class="chip">Sort: Popular</div>
+          <div class="chip">Map</div>
+        </div>
+      </header>
+
+      <section>
+        <h2 style="margin:6px 0 16px 0">Pokemon</h2>
+        <div class="grid" id="cards">
+          <!-- Cards generated by JS -->
+        </div>
+      </section>
+
+      <footer>
+        Made with ❤️ — use this to aid your custom journey
+      </footer>
+    </main>
+
+    <aside class="right">
+      <div class="panel">
+        <h3>Filters</h3>
+        <div class="small">Diet</div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <span class="tag">Vegetarian</span>
+          <span class="tag">Gluten-free</span>
+          <span class="tag">Keto</span>
+        </div>
+
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0" />
+        <div class="small">Top chefs</div>
+        <div style="margin-top:8px">
+          <div class="list-item"><div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#ffd6a5,#ff7a59);display:flex;align-items:center;justify-content:center;font-weight:700;color:#081017">AL</div><div><div style="font-weight:700">A. Lopez</div><div class="small">Mexican fusion</div></div></div>
+          <div class="list-item"><div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#c7f9ff,#7af3ff);display:flex;align-items:center;justify-content:center;font-weight:700;color:#081017">MJ</div><div><div style="font-weight:700">M. Jones</div><div class="small">Plant-based</div></div></div>
+        </div>
+
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0" />
+        <div class="small">Nearby markets</div>
+        <div style="margin-top:8px">
+          <div class="small">Portside Market · 2.3 km</div>
+          <div class="small">Greenway Plaza · 3.1 km</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="pokes.js"></script>
+  <script>
+    const grid = document.getElementById('cards');
+    const typeColors = {
+        "NORMAL":   "#A8A77A",
+        "FIRE":     "#EE8130",
+        "WATER":    "#6390F0",
+        "ELECTRIC": "#F7D02C",
+        "GRASS":    "#7AC74C",
+        "ICE":      "#96D9D6",
+        "FIGHTING": "#C22E28",
+        "POISON":   "#A33EA1",
+        "GROUND":   "#E2BF65",
+        "FLYING":   "#A98FF3",
+        "PSYCHIC":  "#F95587",
+        "BUG":      "#A6B91A",
+        "ROCK":     "#B6A136",
+        "GHOST":    "#735797",
+        "DRAGON":   "#6F35FC",
+        "DARK":     "#705746",
+        "STEEL":    "#B7B7CE",
+        "FAIRY":    "#D685AD"
+    };
+    pokes.forEach(poke => {
+      const card = document.createElement('div');
+      const pokeImg = `https://forwardfeed.github.io/ER-nextdex/static/sprites/${poke.id.replace('SPECIES_', '')}.png`
+        .replace('ALOLA', 'ALOLAN')
+        .replace('GALAR', 'GALARIAN')
+        .replace('HISUI', 'HISUIAN')
+        .replace('PALDEA', 'PALDEAN')
+        .replace(/TAUROS_PALDEAN_(\w+)/, 'TAUROS_PALDEAN_$1_BREED')
+        .replace('DUDUNSPARCE_TWO_SEGMENT', 'DUDUNSPARCE_THREE_SEGMENT')
+        .replace('CASTFORM_NORMAL', 'CASTFORM')
+        .replace('_WEST', '')
+        .replace('_EAST', '_EAST_SEA')
+        .replace('GIRATINA_ALTERED', 'GIRATINA')
+        .replace('SHAYMIN_LAND', 'SHAYMIN')
+        .replace('_RED_STRIPED', '')
+        .replace('_WHITE_STRIPED', '_WHITESTRIPED')
+        .replace('BASCULEGION_M', 'BASCULEGION')
+        .replace('_STANDARD', '')
+        .replace('_ZEN', '_ZEN_MODE')
+        .replace('_GALARIAN_ZEN_MODE', '_ZEN_MODE_GALARIAN')
+        .replace('_SPRING', '')
+        .replace('_INCARNATE', '')
+        .replace('_ORDINARY', '')
+        .replace('_ARIA', '')
+        .replace('MEOWSTIC_M', 'MEOWSTIC')
+        .replace('MEOWSTIC_F', 'MEOWSTIC_FEMALE')
+        .replace('_SHIELD', '')
+        .replace('_AVERAGE', '')
+        .replace('_NEUTRAL', '')
+        .replace('/ZYGARDE_50.', '/ZYGARDE.')
+        .replace('_AURA_BREAK', '')
+        .replace('_CONFINED', '')
+        .replace('_BAILE', '')
+        .replace('_MIDDAY', '')
+        .replace('_SOLO', '')
+        .replace('_DISGUISED', '')
+        .replace('_ORIGINAL', '_ORIGINAL_COLOR')
+        .replace('_AMPED', '')
+        .replace('_PHONY', '')
+        .replace('EISCUE_ICE', 'EISCUE')
+        .replace('EISCUE_NOICE', 'EISCUE_NOICE_FACE')
+        .replace('INDEEDEE_M', 'INDEEDEE')
+        .replace('INDEEDEE_F', 'INDEEDEE_FEMALE')
+        .replace('_FULL_BELLY', '')
+        .replace('_HERO', '')
+        .replace('ZACIAN_CROWNED', 'ZACIAN_CROWNED_SWORD')
+        .replace('ZAMAZENTA_CROWNED', 'ZAMAZENTA_CROWNED_SHIELD')
+        .replace('_SINGLE_STRIKE', '')
+        .replace('_RAPID_STRIKE', '_RAPID_STRIKE_STYLE')
+        .replace('CALYREX_ICE', 'CALYREX_ICE_RIDER')
+        .replace('CALYREX_SHADOW', 'CALYREX_SHADOW_RIDER')
+        .replace('OINKOLOGNE_M', 'OINKOLOGNE')
+        .replace('OINKOLOGNE_F', 'OINKOLOGNE')
+        .replace('MAUSHOLD_THREE', 'MAUSHOLD_FOUR')
+        .replace(/(SQUAWKABILLY_\w+)/, '$1_PLUMAGE')
+        .replace('_ZERO', '')
+        .replace('GIMMIGHOUL_CHEST', 'GIMMIGHOUL')
+        .replace(/POLTCHAGEIST_\w+/, 'POLTCHAGEIST')
+        .replace(/SINISTCHA_\w+/, 'SINISTCHA')
+        .replace('TERAPAGOS_NORMAL', 'TERAPAGOS')
+        .replace('TERAPAGOS_TERASTAL', 'TERAPAGOS');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="meta">
+            <div>
+                <div class="title">${poke.name}</div>
+                <div class=thumb><img src="${pokeImg}" alt="${poke.name}" /></div>
+                <div style="margin-top: 10px; text-align: center; width: 100%;">${poke.parsedTypes.map(type => `<span class="type" style="background-color:${typeColors[type]}">${type}</span>`).join(' ')}</div>
+                <div>
+                    <div style="text-align: center; font-weight: 700; margin-top: 6px; color: #FFDDC9">BST: ${poke.baseBST}</div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, auto); gap: 6px; margin-top: 10px;">
+                        <div style="font-weight: 700; color: #BDF8FF">HP</div>
+                        <div style="font-weight: 700; color: #BDF8FF">ATK</div>
+                        <div style="font-weight: 700; color: #BDF8FF">DEF</div>
+                        <div>${poke.baseHP}</div>
+                        <div>${poke.baseAttack}</div>
+                        <div>${poke.baseDefense}</div>
+                        <div style="font-weight: 700; color: #BDF8FF">SPA</div>
+                        <div style="font-weight: 700; color: #BDF8FF">SPD</div>
+                        <div style="font-weight: 700; color: #BDF8FF">SPE</div>
+                        <div>${poke.baseSpAttack}</div>
+                        <div>${poke.baseSpDefense}</div>
+                        <div>${poke.baseSpeed}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>
