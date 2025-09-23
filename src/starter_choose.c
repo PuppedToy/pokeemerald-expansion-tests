@@ -25,6 +25,7 @@
 #include "constants/rgb.h"
 
 #define STARTER_MON_COUNT   3
+#define STARTER_EXTRA_COUNT 9
 
 // Position of the sprite of the selected starter Pokémon
 #define STARTER_PKMN_POS_X (DISPLAY_WIDTH / 2)
@@ -116,6 +117,19 @@ static const u16 sStarterMon[STARTER_MON_COUNT] =
     SPECIES_TORCHIC,
     SPECIES_MUDKIP,
 };
+
+static const u16 sStarterExtraMon[STARTER_EXTRA_COUNT] =
+{
+    SPECIES_BAGON,
+    SPECIES_KABUTO,
+    SPECIES_LARVITAR,
+    SPECIES_BELDUM,
+    SPECIES_WINGULL,
+    SPECIES_SHROOMISH,
+    SPECIES_RALTS,
+    SPECIES_ZIGZAGOON,
+    SPECIES_NOIBAT,
+}
 
 static const struct BgTemplate sBgTemplates[3] =
 {
@@ -353,6 +367,15 @@ u16 GetStarterPokemon(u16 chosenStarterId)
     if (chosenStarterId > STARTER_MON_COUNT)
         chosenStarterId = 0;
     return sStarterMon[chosenStarterId];
+}
+
+void GetExtraPokemon()
+{
+    for (int i = 0; i < STARTER_EXTRA_COUNT; i++)
+    {
+        u16 extraMon = sStarterExtraMon[i];
+        ScriptGiveMon(extraMon, 5, ITEM_NONE);
+    }
 }
 
 static void VblankCB_StarterChoose(void)
