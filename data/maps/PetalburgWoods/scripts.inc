@@ -109,6 +109,7 @@ PetalburgWoods_EventScript_DevonResearcherFinish::
 PetalburgWoods_EventScript_RemoveDevonResearcher::
 	removeobject LOCALID_PETALBURG_WOODS_DEVON_EMPLOYEE
 	setvar VAR_PETALBURG_WOODS_STATE, 1
+	setflag FLAG_DEFEATED_AQUA_WOODS
 	releaseall
 	end
 
