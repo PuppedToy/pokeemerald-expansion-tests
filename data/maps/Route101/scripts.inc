@@ -301,5 +301,5 @@ Route101_Text_RouteSign:
 
 Route101_EventScript_Calvin::
 	trainerbattle_single TRAINER_CALVIN_1, Route101_Text_CalvinIntro, Route101_Text_CalvinDefeated
-	msgbox Route101_Text_CalvinPostBattle, MSGBOX_DEFAULT
+	msgbox Route101_Text_CalvinPostBattle, MSGBOX_AUTOCLOSE
 	end
