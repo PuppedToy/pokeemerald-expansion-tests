@@ -299,3 +299,7 @@ Route101_Text_RouteSign:
 	.string "ROUTE 101\n"
 	.string "{UP_ARROW} OLDALE TOWN$"
 
+Route101_EventScript_Calvin::
+	trainerbattle_single TRAINER_CALVIN_1, Route101_Text_CalvinIntro, Route101_Text_CalvinDefeated
+	msgbox Route101_Text_CalvinPostBattle, MSGBOX_DEFAULT
+	end
