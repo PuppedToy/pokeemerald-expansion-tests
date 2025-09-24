@@ -140,6 +140,10 @@ Route103_EventScript_RivalEnd::
 	removeobject LOCALID_ROUTE103_RIVAL
 	setvar VAR_BIRCH_LAB_STATE, 5
 	setflag FLAG_ADVENTURE_STARTED
+	setflag FLAG_SYS_POKEDEX_GET
+	special SetUnlockedPokedexFlags
+	setflag FLAG_RECEIVED_POKEDEX_FROM_BIRCH
+	setvar VAR_CABLE_CLUB_TUTORIAL_STATE, 1
 	setflag FLAG_SYS_NATIONAL_DEX
 	special EnableNationalPokedex
 	setvar VAR_OLDALE_TOWN_STATE, 1
