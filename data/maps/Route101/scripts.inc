@@ -255,6 +255,19 @@ Route101_EventScript_HideBrendanInBedroom::
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_RIVAL_BEDROOM
 	return
 
+Route101_EventScript_Calvin::
+	trainerbattle_single TRAINER_CALVIN_1, Route101_Text_CalvinIntro, Route101_Text_CalvinDefeated
+	msgbox Route101_Text_CalvinPostBattle, MSGBOX_AUTOCLOSE
+	end
+
+Route101_EventScript_OranBerries::
+	giveitem ITEM_ORAN_BERRY, 99
+	giveitem ITEM_ORAN_BERRY, 99
+	giveitem ITEM_ORAN_BERRY, 99
+	clearflag FLAG_ITEM_ROUTE101_ORAN_BERRY
+	msgbox Route101_Text_OranBerries, MSGBOX_AUTOCLOSE
+	end
+
 Route101_Movement_BirchApproachPlayer:
 	walk_right
 	step_end
@@ -299,7 +312,5 @@ Route101_Text_RouteSign:
 	.string "ROUTE 101\n"
 	.string "{UP_ARROW} OLDALE TOWN$"
 
-Route101_EventScript_Calvin::
-	trainerbattle_single TRAINER_CALVIN_1, Route101_Text_CalvinIntro, Route101_Text_CalvinDefeated
-	msgbox Route101_Text_CalvinPostBattle, MSGBOX_AUTOCLOSE
-	end
+Route101_Text_OranBerries:
+	.string "You found lots of oran berries!$"

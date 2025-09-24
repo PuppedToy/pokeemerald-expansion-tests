@@ -876,7 +876,7 @@ static void CB2_GiveStarter(void)
     for (u16 i = 0; i < GetExtraPokemonCount(); i++)
     {
         u16 nextMon = GetExtraPokemon(i);
-        ScriptGiveMon(nextMon, 5, ITEM_NONE);
+        ScriptGiveMon(nextMon, 100, ITEM_NONE);
     }
     ResetTasks();
     PlayBattleBGM();
