@@ -1,4 +1,5 @@
 const speciesDir = `${__dirname}\\..\\src\\data\\pokemon\\species_info`;
+const levelUpLearnsetsDir = `${__dirname}\\..\\src\\data\\pokemon\\level_up_learnsets`;
 const TOTAL_GENS = 9;
 const SUPPORTED_PROPERTIES = [
     'baseHP',
@@ -55,6 +56,10 @@ const REMOVED_SPECIES = [
     'SPECIES_PIKACHU_STARTER',
     'SPECIES_EEVEE_STARTER',
     'SPECIES_CHERRIM_OVERCAST',
+];
+
+const REMOVED_MOVES = [
+    'MOVE_NONE',
 ];
 
 const fs = require('fs').promises;
@@ -120,6 +125,78 @@ function parseSpeciesFile(genSpeciesFileText, definitions) {
     return pokemonList;
 }
 
+function parseMovesFile(movesFileText) {
+    const lines = movesFileText.split('\n');
+    const moves = {};
+    let currentMove;
+
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith('    [')) {
+            currentMove = {
+                id: lines[i].split('[')[1].split(']')[0],
+            };
+            if (REMOVED_MOVES.includes(currentMove.id)) {
+                console.log(`Skipping move ${currentMove.id}`);
+                currentMove = null;
+            }
+            else {
+                moves[currentMove.id] = currentMove;
+            }
+            continue;
+        }
+        if (!currentMove) continue;
+        if (lines[i].startsWith('        .')) {
+            const currentProperty = lines[i].trim().split('.')[1].split(' ')[0];
+            const currentValue = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
+            currentMove[currentProperty] = currentValue;
+        }
+    }
+    return moves;
+}
+
+function parseLearnsetsFile(learnsetsFileText) {
+    const learnsets = {};
+    const lines = learnsetsFileText.split('\n');
+    let currentLearnset;
+
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith('static const struct LevelUpMove ')) {
+            currentLearnset = lines[i].replace(/.*?static const struct LevelUpMove (.+?)\[.*/, '$1');
+            learnsets[currentLearnset] = [];
+            continue;
+        }
+        if (lines[i].startsWith('    LEVEL_UP_MOVE(')) {
+            const currentMove = lines[i].replace(/.*?LEVEL_UP_MOVE\((.*)\).*/, '$1').trim();
+            const parts = currentMove.split(',').map(p => p.trim());
+            learnsets[currentLearnset].push({
+                level: parts[0],
+                move: parts[1],
+            });
+        }
+    }
+    return learnsets;
+}
+
+function parseTeachableFile(teachableFileText) {
+    const lines = teachableFileText.split('\n');
+    const teachables = {};
+    let currentTeachable;
+
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith('static const u16 ')) {
+            currentTeachable = lines[i].replace(/.*?static const u16 (.+?)\[.*/, '$1');
+            teachables[currentTeachable] = [];
+            continue;
+        }
+        if (lines[i].includes('    MOVE_') && !lines[i].includes('MOVE_UNAVAILABLE')) {
+            const currentMove = lines[i].trim().replace(/,$/, '').trim();
+            teachables[currentTeachable].push(currentMove);
+        }
+    }
+
+    return teachables;
+}
+
 function nameizyPokemonId(pokeId) {
     let result = pokeId
         .replace('SPECIES_', '')
@@ -153,6 +230,24 @@ function parseStat(stat, definitions) {
 }
 
 async function exe() {
+    const movesFilePath = `${__dirname}\\..\\src\\data\\moves_info.h`;
+    const movesFileText = await fs.readFile(movesFilePath, 'utf-8');
+    const moves = parseMovesFile(movesFileText);
+    await fs.writeFile(`${__dirname}\\moves.json`, JSON.stringify(moves, null, 2), 'utf-8');
+
+    const levelUpLearnsets = {};
+    for (let gen = 1; gen <= TOTAL_GENS; gen++) {
+        const learnsetsFilePath = `${levelUpLearnsetsDir}\\gen_${gen}.h`;
+        const learnsetsFileText = await fs.readFile(learnsetsFilePath, 'utf-8');
+        Object.assign(levelUpLearnsets, parseLearnsetsFile(learnsetsFileText));
+    }
+    await fs.writeFile(`${__dirname}\\level_up_learnsets.json`, JSON.stringify(levelUpLearnsets, null, 2), 'utf-8');
+
+    const teachablesFilePath = `${__dirname}\\..\\src\\data\\pokemon\\teachable_learnsets.h`;
+    const teachablesFileText = await fs.readFile(teachablesFilePath, 'utf-8');
+    const TMTeachables = parseTeachableFile(teachablesFileText);
+    await fs.writeFile(`${__dirname}\\teachable_learnsets.json`, JSON.stringify(TMTeachables, null, 2), 'utf-8');
+
     const genPokes = [];
     const allPokes = [];
     const definitions = {
@@ -169,6 +264,14 @@ async function exe() {
     genPokes.forEach((genPokeList, i) => {
         console.log(`Gen ${i + 1} has ${genPokeList.length} pokes`);
         genPokeList.forEach(poke => {
+            let learnset = [];
+            let teachables = [];
+            if (poke.levelUpLearnset && levelUpLearnsets[poke.levelUpLearnset]) {
+                learnset = levelUpLearnsets[poke.levelUpLearnset];
+            }
+            if (poke.teachableLearnset && TMTeachables[poke.teachableLearnset]) {
+                teachables = TMTeachables[poke.teachableLearnset];
+            }
             const baseHP = parseStat(poke.baseHP, definitions);
             const baseAttack = parseStat(poke.baseAttack, definitions);
             const baseDefense = parseStat(poke.baseDefense, definitions);
@@ -191,6 +294,8 @@ async function exe() {
                 baseSpDefense,
                 baseBST,
                 ...FIXED_PROPERTIES,
+                learnset,
+                teachables,
             });
         });
     });
