@@ -208,7 +208,7 @@ function nameizyPokemonId(pokeId) {
     return result;
 }
 
-function parseStat(stat, definitions) {
+function parseStat(stat, definitions = {}) {
     let trimmed = stat.trim();
     if (definitions[trimmed]) {
         trimmed = definitions[trimmed];
@@ -222,17 +222,114 @@ function parseStat(stat, definitions) {
         return parseStat(parts[0], definitions) - parseStat(parts[1], definitions);
     }
     trimmed = trimmed.replace('(', '').replace(')', '').trim();
-    if (trimmed.startsWith('P_UPDATED_STATS >= GEN_')) {
-        const m = trimmed.match(/P_UPDATED_STATS >= GEN_[^?]+\?\s*?(\d+).*/);
+    if (trimmed.startsWith('P_UPDATED_STATS >= GEN_') || trimmed.startsWith('B_UPDATED_MOVE_DATA >= GEN_')) {
+        const m = trimmed.match(/P_UPDATED_.+? >= GEN_[^?]+\?\s*?(\d+).*/);
         return m ? parseInt(m[1].trim(), 10) : '';
     }
     return parseInt(trimmed, 10);
+}
+
+const statusList = {
+    MOVE_SWORDS_DANCE: 8,
+    MOVE_DRAGON_DANCE: 8.5,
+    MOVE_QUIVER_DANCE: 9,
+    MOVE_VICTORY_DANCE: 9,
+    MOVE_SPORE: 10,
+    MOVE_BELLY_DRUM: 8,
+    MOVE_STEALTH_ROCK: 8,
+};
+
+function rateMove(move) {
+    const isStatus = move.category === 'DAMAGE_CATEGORY_STATUS';
+    if (isStatus) return statusList[move.id] || 5;
+    
+    const moveEffect = move.effect || '';
+    let power = move.power ? parseStat(move.power) : 50;
+    if (move.id === 'MOVE_ICICLE_SPEAR') {
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log(power);
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    }
+    const isMultihit = moveEffect.includes('EFFECT_MULTI_HIT');
+    if (isMultihit) {
+        power *= 4;
+    }
+    const isTripleKick = moveEffect.includes('EFFECT_TRIPLE_KICK');
+    if (isTripleKick) {
+        power *= 6.5;
+    }
+    else {
+        const strikeCount = parseInt(move.strikeCount, 10) || 1;
+        power *= strikeCount;
+        if (strikeCount > 1) {
+            power += power*0.5;
+        }
+    }
+    let rating = Math.min(10 * power / 140, 12);
+    const isOhko = moveEffect.includes('EFFECT_OHKO');
+    if (isOhko) rating = 12;
+    const pp = move.pp ? parseStat(move.pp) : 40;
+    rating += (pp-5)/20;
+    const priority = move.priority ? parseStat(move.priority) : 0;
+    rating += priority;
+    const isSuckerPunch = moveEffect.includes('EFFECT_SUCKER_PUNCH');
+    if (isSuckerPunch) rating -= 0.5;
+    const isFirstTurnOnly = moveEffect.includes('EFFECT_FIRST_TURN_ONLY');
+    if (isFirstTurnOnly) rating += 3; // Fake Out and First Impression are very good moves
+    const isTwoTurns = moveEffect.includes('EFFECT_TWO_TURNS_ATTACK');
+    if (isTwoTurns) {
+        rating *= 0.5;
+    }
+    const isFlyLike = moveEffect.includes('EFFECT_SEMI_INVULNERABLE');
+    if (isFlyLike) {
+        rating *= 0.7;
+    }
+    const isRecoil = moveEffect.includes('EFFECT_RECOIL');
+    if (isRecoil) {
+        rating *= 0.9;
+    }
+    let accuracy = move.accuracy ? parseStat(move.accuracy) : 110;
+    if (accuracy == 0) accuracy = 110;
+    rating -= (100 - accuracy) / 10;
+    const isRecoilIfMiss = moveEffect.includes('EFFECT_RECOIL_IF_MISS');
+    if (isRecoilIfMiss) {
+        rating *= (100 - accuracy)/100;
+    }
+    const isBasedOnHp = moveEffect.includes('EFFECT_POWER_BASED_ON_USER_HP');
+    if (isBasedOnHp) {
+        rating *= 0.9;
+    }
+    const isExplosion = moveEffect.includes('EFFECT_EXPLOSION');
+    if (isExplosion) {
+        rating *= 0.3;
+    }
+    const isMindBlownLike = moveEffect.includes('EFFECT_MAX_HP_50_RECOIL');
+    if (isMindBlownLike) {
+        rating *= 0.75;
+    }
+    const isHitEscape = moveEffect.includes('EFFECT_HIT_ESCAPE');
+    if (isHitEscape) {
+        rating *= 1.5;
+    }
+
+    return rating;
 }
 
 async function exe() {
     const movesFilePath = `${__dirname}\\..\\src\\data\\moves_info.h`;
     const movesFileText = await fs.readFile(movesFilePath, 'utf-8');
     const moves = parseMovesFile(movesFileText);
+
+    Object.keys(moves).forEach(moveId => {
+        moves[moveId].rating = rateMove(moves[moveId]);
+    });
+
     await fs.writeFile(`${__dirname}\\moves.json`, JSON.stringify(moves, null, 2), 'utf-8');
 
     const levelUpLearnsets = {};
