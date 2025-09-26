@@ -134,6 +134,7 @@ function parseMovesFile(movesFileText) {
         if (lines[i].startsWith('    [')) {
             currentMove = {
                 id: lines[i].split('[')[1].split(']')[0],
+                additionalEffects: [],
             };
             if (REMOVED_MOVES.includes(currentMove.id)) {
                 console.log(`Skipping move ${currentMove.id}`);
@@ -145,10 +146,14 @@ function parseMovesFile(movesFileText) {
             continue;
         }
         if (!currentMove) continue;
-        if (lines[i].startsWith('        .')) {
+        if (lines[i].startsWith('        .') && !lines[i].startsWith('        .additionalEffects =')) {
             const currentProperty = lines[i].trim().split('.')[1].split(' ')[0];
             const currentValue = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
             currentMove[currentProperty] = currentValue;
+        }
+        if (lines[i].startsWith('            .moveEffect = ')) {
+            const effect = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
+            currentMove.additionalEffects.push(effect);
         }
     }
     return moves;
@@ -197,6 +202,26 @@ function parseTeachableFile(teachableFileText) {
     return teachables;
 }
 
+function parseAbilitiesFileForAIRating(abilitiesFileText) {
+    const lines = abilitiesFileText.split('\n');
+    const abilities = {};
+    let currentAbility;
+
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith('    [')) {
+            currentAbility = lines[i].split('[')[1].split(']')[0];
+            abilities[currentAbility] = 0;
+            continue;
+        }
+        if (!currentAbility) continue;
+        if (lines[i].startsWith('        .aiRating = ')) {
+            const rating = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
+            abilities[currentAbility] = parseFloat(rating);
+        }
+    }
+    return abilities;
+}
+
 function nameizyPokemonId(pokeId) {
     let result = pokeId
         .replace('SPECIES_', '')
@@ -222,40 +247,74 @@ function parseStat(stat, definitions = {}) {
         return parseStat(parts[0], definitions) - parseStat(parts[1], definitions);
     }
     trimmed = trimmed.replace('(', '').replace(')', '').trim();
-    if (trimmed.startsWith('P_UPDATED_STATS >= GEN_') || trimmed.startsWith('B_UPDATED_MOVE_DATA >= GEN_')) {
-        const m = trimmed.match(/P_UPDATED_.+? >= GEN_[^?]+\?\s*?(\d+).*/);
+    if (trimmed.startsWith('P_UPDATED_STATS >= GEN_')) {
+        const m = trimmed.match(/P_UPDATED_STATS >= GEN_[^?]+\?\s*?(\d+).*/);
+        return m ? parseInt(m[1].trim(), 10) : '';
+    }
+    return parseInt(trimmed, 10);
+}
+
+function parseMoveStat(stat) {
+    if (!stat) return 0;
+    let trimmed = stat.trim();
+    trimmed = trimmed.replace('(', '').replace(')', '').trim();
+    if (trimmed.startsWith('B_UPDATED_MOVE_DATA >= GEN_')) {
+        const m = trimmed.match(/B_UPDATED_MOVE_DATA >= GEN_[^?]+\?\s*?(\d+).*/);
         return m ? parseInt(m[1].trim(), 10) : '';
     }
     return parseInt(trimmed, 10);
 }
 
 const statusList = {
+    MOVE_BULK_UP: 7,
+    MOVE_CALM_MIND: 7,
     MOVE_SWORDS_DANCE: 8,
+    MOVE_DEFEND_ORDER: 8,
+    MOVE_COSMIC_POWER: 8,
     MOVE_DRAGON_DANCE: 8.5,
     MOVE_QUIVER_DANCE: 9,
     MOVE_VICTORY_DANCE: 9,
+    MOVE_TAIL_GLOW: 9,
+    MOVE_SHELL_SMASH: 9.5,
     MOVE_SPORE: 10,
     MOVE_BELLY_DRUM: 8,
     MOVE_STEALTH_ROCK: 8,
+    MOVE_ACUPRESSURE: 7,
+    MOVE_SLEEP_POWDER: 8,
+    MOVE_TRICK_ROOM: 7,
+    MOVE_DEFOG: 7,
+    MOVE_AGILITY: 7,
+    MOVE_MILK_DRINK: 8.5,
+    MOVE_SOFT_BOILED: 8.5,
+    MOVE_SLACK_OFF: 8.5,
+    MOVE_HEAL_ORDER: 8.5,
+    MOVE_RECOVER: 8.5,
+    MOVE_SYNTHESIS: 8.5,
+    MOVE_MOONLIGHT: 8.5,
+    MOVE_ROOST: 8.5,
+    MOVE_HEAL_BELL: 7,
+    MOVE_AROMATHERAPY: 7,
+
+    // Other moves that are kinda special
+    MOVE_METAL_BURST: 8,
+    MOVE_LUSTER_PURGE: 8,
+    MOVE_MIST_BALL: 8,
+
+    // Others that might need specific handling
+    MOVE_GYRO_BALL: 6,
+    // Multi-hits for skill link
+    // Drops for contrary
 };
 
 function rateMove(move) {
     const isStatus = move.category === 'DAMAGE_CATEGORY_STATUS';
     if (isStatus) return statusList[move.id] || 5;
+    if (statusList[move.id]) {
+        return statusList[move.id];
+    }
     
     const moveEffect = move.effect || '';
-    let power = move.power ? parseStat(move.power) : 50;
-    if (move.id === 'MOVE_ICICLE_SPEAR') {
-        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-        console.log(power);
-        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    }
+    let power = move.power || 50;
     const isMultihit = moveEffect.includes('EFFECT_MULTI_HIT');
     if (isMultihit) {
         power *= 4;
@@ -271,12 +330,15 @@ function rateMove(move) {
             power += power*0.5;
         }
     }
+    if (move.additionalEffects.includes('MOVE_EFFECT_RECHARGE')) {
+        power *= 0.6;
+    }
     let rating = Math.min(10 * power / 140, 12);
     const isOhko = moveEffect.includes('EFFECT_OHKO');
     if (isOhko) rating = 12;
-    const pp = move.pp ? parseStat(move.pp) : 40;
+    const pp = move.pp || 40;
     rating += (pp-5)/20;
-    const priority = move.priority ? parseStat(move.priority) : 0;
+    const priority = move.priority || 0;
     rating += priority;
     const isSuckerPunch = moveEffect.includes('EFFECT_SUCKER_PUNCH');
     if (isSuckerPunch) rating -= 0.5;
@@ -294,7 +356,29 @@ function rateMove(move) {
     if (isRecoil) {
         rating *= 0.9;
     }
-    let accuracy = move.accuracy ? parseStat(move.accuracy) : 110;
+    const isFutureSight = moveEffect.includes('EFFECT_FUTURE_SIGHT');
+    if (isFutureSight) {
+        rating *= 0.8;
+    }
+    const isLastResort = moveEffect.includes('EFFECT_LAST_RESORT');
+    if (isLastResort) {
+        rating *= 0.6;
+    }
+    const isSolarBeam = moveEffect.includes('EFFECT_SOLAR_BEAM');
+    if (isSolarBeam) {
+        rating *= 0.8;
+    }
+    const hasDefSpefDrop = move.additionalEffects.includes('MOVE_EFFECT_DEF_SPDEF_DOWN');
+    const hasSpeDrop = move.additionalEffects.includes('MOVE_EFFECT_SPD_MINUS_1');
+    if (hasDefSpefDrop || hasSpeDrop) {
+        rating *= 0.95;
+    }
+    const hasAtkDefDrop = move.additionalEffects.includes('MOVE_EFFECT_ATK_DEF_DOWN');
+    const hasSpaDrop = move.additionalEffects.includes('MOVE_EFFECT_SP_ATK_MINUS_2');
+    if (hasAtkDefDrop || hasSpaDrop) {
+        rating *= 0.9;
+    }
+    let accuracy = move.accuracy || 110;
     if (accuracy == 0) accuracy = 110;
     rating -= (100 - accuracy) / 10;
     const isRecoilIfMiss = moveEffect.includes('EFFECT_RECOIL_IF_MISS');
@@ -317,16 +401,137 @@ function rateMove(move) {
     if (isHitEscape) {
         rating *= 1.5;
     }
+    const isKnockOff = moveEffect.includes('EFFECT_KNOCK_OFF');
+    if (isKnockOff) {
+        rating *= 1.3;
+    }
+    const isRollout = moveEffect.includes('EFFECT_ROLLOUT');
+    if (isRollout) {
+        rating *= 2.5;
+    }
+    const isFalseSwipe = moveEffect.includes('EFFECT_FALSE_SWIPE');
+    if (isFalseSwipe) {
+        rating *= 0.5;
+    }
 
     return rating;
 }
 
+function ratePokemon(poke, moves, abilitiesRatings) {
+    const BEST_RATING_FOR_MEGA_EVO = 780;
+    const BEST_RATING_FOR_FULLY_EVO = 720;
+    const BEST_RATING_FOR_NFE = 515;
+    const BEST_RATING_FOR_LC_3EVO = 400;
+
+    const WORST_RATING_FOR_MEGA_EVO = 480;
+    const WORST_RATING_FOR_FULLY_EVO = 250;
+    const WORST_RATING_FOR_NFE = 205;
+    const WORST_RATING_FOR_LC_3EVO = 180;
+
+    let bestAbilityRating = 0;
+    poke.parsedAbilities.forEach(abilityId => {
+        if (abilityId === 'NONE') return;
+        const abilityRating = abilitiesRatings[`ABILITY_${abilityId}`] || 0;
+        if (abilityRating > bestAbilityRating) {
+            bestAbilityRating = abilityRating;
+        }
+    });
+
+    let trueBST = poke.baseBST;
+    if (poke.abilities.includes('TRUANT')) {
+        trueBST *= 0.7;
+    }
+    if (poke.abilities.includes('HUGE_POWER') || poke.abilities.includes('PURE_POWER')) {
+        trueBST += poke.baseAttack;
+        bestAbilityRating = poke.baseAttack / 12;
+    }
+    // Wonder Guard?
+    // @TODO if any stat is a hard outlier, increase bst rating (deoxys, blissey)
+    // @TODO What happens to Zacian and Eternatus-Emax?
+
+    // 0-10 while 0 is WORST_RATING_FOR_LC_3EVO and 10 is BEST_RATING_FOR_MEGA_EVO
+    const absoluteBSTRating = Math.max(0, (trueBST - WORST_RATING_FOR_LC_3EVO) * 10 / (BEST_RATING_FOR_MEGA_EVO - WORST_RATING_FOR_LC_3EVO));
+    // For now we will just do absolute
+    // @TODO relative
+
+    const sortedMoves = [
+        ...poke.learnset.map(({ move }) => move),
+        ...poke.teachables,
+    ].sort((a, b) => {
+        return (moves[b].rating || 0) - (moves[a].rating || 0);
+    });
+
+    const best4Moves = sortedMoves.slice(0, 4);
+
+    let movesRating = 0;
+    best4Moves.forEach(moveId => {
+        if (moves[moveId] && moves[moveId].rating) {
+            movesRating += moves[moveId].rating;
+        }
+    });
+    movesRating *= 0.25;
+
+    const absoluteRating = (absoluteBSTRating * 0.8) + (movesRating * 0.1) + (bestAbilityRating * 0.1);
+
+    // These tiers are kinda working. I should add that OU is actually exclusive pokemon and UU-RU are the average fully evolved ones
+    // GOD should only be used by extremely hard bosses. Should not come up in the game in general. Esp. Eternatus Emax
+    let temporaryTier;
+    if (absoluteRating >= 9) {
+        temporaryTier = 'GOD';
+    }
+    else if (absoluteRating >= 8) {
+        temporaryTier = 'LEGEND';
+    }
+    else if (absoluteRating >= 7) {
+        temporaryTier = 'OU';
+    }
+    else if (absoluteRating >= 6) {
+        temporaryTier = 'UU';
+    }
+    else if (absoluteRating >= 5) {
+        temporaryTier = 'RU';
+    }
+    else if (absoluteRating >= 4) {
+        temporaryTier = 'NU';
+    }
+    else if (absoluteRating >= 3) {
+        temporaryTier = 'PU';
+    }
+    else if (absoluteRating >= 2) {
+        temporaryTier = 'LC';
+    }
+    else if (absoluteRating >= 1) {
+        temporaryTier = 'BAD';
+    }
+    else {
+        temporaryTier = 'OOPSIE';
+    }
+
+    return {
+        absoluteRating,
+        absoluteBSTRating,
+        best4Moves,
+        movesRating,
+        bestAbilityRating,
+        temporaryTier,
+    };
+}
+
 async function exe() {
+    const abilitiesFilePath = `${__dirname}\\..\\src\\data\\abilities.h`;
+    const abilitiesFileText = await fs.readFile(abilitiesFilePath, 'utf-8');
+    const abilitiesRatings = parseAbilitiesFileForAIRating(abilitiesFileText);
+    await fs.writeFile(`${__dirname}\\abilitiesRatings.json`, JSON.stringify(abilitiesRatings, null, 2), 'utf-8');
+
     const movesFilePath = `${__dirname}\\..\\src\\data\\moves_info.h`;
     const movesFileText = await fs.readFile(movesFilePath, 'utf-8');
     const moves = parseMovesFile(movesFileText);
 
     Object.keys(moves).forEach(moveId => {
+        moves[moveId].power = parseMoveStat(moves[moveId].power);
+        moves[moveId].accuracy = parseMoveStat(moves[moveId].accuracy);
+        moves[moveId].pp = parseMoveStat(moves[moveId].pp);
+        moves[moveId].priority = parseMoveStat(moves[moveId].priority);
         moves[moveId].rating = rateMove(moves[moveId]);
     });
 
@@ -376,7 +581,7 @@ async function exe() {
             const baseSpAttack = parseStat(poke.baseSpAttack, definitions);
             const baseSpDefense = parseStat(poke.baseSpDefense, definitions);
             const baseBST = baseHP + baseAttack + baseDefense + baseSpeed + baseSpAttack + baseSpDefense;
-            allPokes.push({
+            const fullPoke = {
                 name: nameizyPokemonId(poke.id),
                 // transform "MON_TYPES(TYPE_GRASS, TYPE_POISON)" to ["GRASS", "POISON"]
                 parsedTypes: poke.types.replace(/MON_TYPES\(/, '').replace(/\)/, '').split(', ').map(t => t.replace('TYPE_', '')),
@@ -393,9 +598,17 @@ async function exe() {
                 ...FIXED_PROPERTIES,
                 learnset,
                 teachables,
-            });
+            };
+            fullPoke.rating = ratePokemon(fullPoke, moves, abilitiesRatings);
+            allPokes.push(fullPoke);
         });
     });
+
+    // const sortedPokesByAbsoluteRating = allPokes.sort((a, b) => {
+    //     return b.rating.absoluteRating - a.rating.absoluteRating;
+    // });
+
+    // @TODO Algorithm to assing tiers based on rating distribution
 
     await fs.writeFile(`${__dirname}\\pokes.json`, JSON.stringify(allPokes, null, 2), 'utf-8');
 }

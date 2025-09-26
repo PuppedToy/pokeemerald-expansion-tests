@@ -202,6 +202,30 @@
         "STEEL":    "#B7B7CE",
         "FAIRY":    "#D685AD"
     };
+    const tierColorBgs = {
+        "GOD":   "#FF0000",
+        "LEGEND":     "#FF9000",
+        "OU":   "#FFD700",
+        "UU":      "#C0C0C0",
+        "RU":     "#CD7F32",
+        "NU":     "#00FF00",
+        "PU":     "#0000FF",
+        "LC":     "#800080",
+        "BAD":     "#808080",
+        "OOPSIE":     "#000000"
+    };
+    const tierColorFonts = {
+        "GOD":   "#FFFFFF",
+        "LEGEND":     "#000000",
+        "OU":   "#000000",
+        "UU":      "#000000",
+        "RU":     "#000000",
+        "NU":     "#000000",
+        "PU":     "#FFFFFF",
+        "LC":     "#FFFFFF",
+        "BAD":     "#FFFFFF",
+        "OOPSIE":     "#FFFFFF"
+    };
     pokes.forEach(poke => {
       const card = document.createElement('div');
       const pokeImg = `https://forwardfeed.github.io/ER-nextdex/static/sprites/${poke.id.replace('SPECIES_', '')}.png`
@@ -272,6 +296,7 @@
                 <div style="margin-top: 10px; text-align: center; width: 100%;">${poke.parsedTypes.map(type => `<span class="type" style="background-color:${typeColors[type]}">${type}</span>`).join(' ')}</div>
                 <div>
                     <div style="text-align: center; font-weight: 700; margin-top: 6px; color: #FFDDC9">BST: ${poke.baseBST}</div>
+                    <div style="text-align: center"><div style="text-align: center; font-weight: 700; margin-top: 6px; background-color: ${tierColorBgs[poke.rating.temporaryTier]}; color: ${tierColorFonts[poke.rating.temporaryTier]}; display: inline-block; padding: 4px 12px; border-radius: 999px;">${poke.rating.temporaryTier}</div></div>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, auto); gap: 6px; margin-top: 10px;">
                         <div style="font-weight: 700; color: #BDF8FF">HP</div>
                         <div style="font-weight: 700; color: #BDF8FF">ATK</div>
