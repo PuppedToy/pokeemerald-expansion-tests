@@ -872,11 +872,11 @@ static void CB2_GiveStarter(void)
 
     *GetVarPointer(VAR_STARTER_MON) = gSpecialVar_Result;
     starterMon = GetStarterPokemon(gSpecialVar_Result);
-    ScriptGiveMon(starterMon, 5, ITEM_NONE);
+    ScriptGiveMon(starterMon, 7, ITEM_NONE);
     for (u16 i = 0; i < GetExtraPokemonCount(); i++)
     {
         u16 nextMon = GetExtraPokemon(i);
-        ScriptGiveMon(nextMon, 15, ITEM_NONE);
+        ScriptGiveMon(nextMon, 7, ITEM_NONE);
     }
     ResetTasks();
     PlayBattleBGM();
