@@ -483,28 +483,19 @@ function ratePokemon(poke, moves, abilitiesRatings) {
         temporaryTier = 'LEGEND';
     }
     else if (absoluteRating >= 7) {
-        temporaryTier = 'OU';
+        temporaryTier = 'PREMIUM';
     }
     else if (absoluteRating >= 6) {
-        temporaryTier = 'UU';
+        temporaryTier = 'STRONG';
     }
     else if (absoluteRating >= 5) {
-        temporaryTier = 'RU';
+        temporaryTier = 'AVERAGE';
     }
     else if (absoluteRating >= 4) {
-        temporaryTier = 'NU';
-    }
-    else if (absoluteRating >= 3) {
-        temporaryTier = 'PU';
-    }
-    else if (absoluteRating >= 2) {
-        temporaryTier = 'LC';
-    }
-    else if (absoluteRating >= 1) {
-        temporaryTier = 'BAD';
+        temporaryTier = 'WEAK'
     }
     else {
-        temporaryTier = 'OOPSIE';
+        temporaryTier = 'BAD';
     }
 
     return {
