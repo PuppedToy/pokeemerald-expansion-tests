@@ -455,4 +455,4 @@ PetalburgWoods_Text_TrainerTipsPP:
 	.string "taken to a POKéMON CENTER.$"
 
 LevelCap11:
-	string "Your level cap raised to 11!$"
+	.string "Your level cap raised to 11!$"

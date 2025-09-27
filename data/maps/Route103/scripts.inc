@@ -369,4 +369,4 @@ Route103_Text_RouteSign:
 	.string "{DOWN_ARROW} OLDALE TOWN$"
 
 LevelCap9:
-	string "Your level cap raised to 9!$"
+	.string "Your level cap raised to 9!$"
