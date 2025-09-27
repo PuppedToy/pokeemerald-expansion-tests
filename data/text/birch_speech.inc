@@ -1,9 +1,9 @@
 gText_Birch_Welcome::
 	.string "Hi! Welcome to your journey!\n"
-	.string "We've already met in past games\p"
+	.string "We've already met in past games.\p"
 	.string "So I'll go straight to the point.\n"
 	.string "This game will skip most of the lore.\p"
-	.string "So in case of doubt just keep going!\p"
+	.string "In case of doubt just keep going!\p"
 	.string "$"
 
 gText_Birch_Pokemon::
@@ -12,8 +12,7 @@ gText_Birch_Pokemon::
 	.string "$"
 
 gText_Birch_MainSpeech::
-	.string "Whoops, I'm too used to it. Anyway,\n"
-	.string "in this journey there is level cap.\p"
+	.string "In this journey there is level cap.\p"
 	.string "Every non-boss trainer is optional,\n"
 	.string "But defeating them will reward\l"
 	.string "either good items or encounters.\p"
@@ -49,5 +48,5 @@ gText_Birch_YourePlayer::
 gText_Birch_AreYouReady::
 	.string "Enough chit-chat. Get out of the truck\n"
 	.string "and go directly to save me.\l"
-	.string "Let's go!!.\p"
+	.string "Let's go!\p"
 	.string "$"

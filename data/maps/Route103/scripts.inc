@@ -159,6 +159,9 @@ Route103_EventScript_RivalEnd::
 	setvar VAR_SCOTT_PETALBURG_ENCOUNTER, 1
 	savebgm MUS_DUMMY
 	fadedefaultbgm
+	message LevelCap9
+	waitmessage
+	waitfanfare
 	releaseall
 	end
 
@@ -365,3 +368,5 @@ Route103_Text_RouteSign:
 	.string "ROUTE 103\n"
 	.string "{DOWN_ARROW} OLDALE TOWN$"
 
+LevelCap9:
+	string "Your level cap raised to 9!$"
