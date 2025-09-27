@@ -15879,57 +15879,32 @@ Class: Rival
 Pic: Steven
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore / Full Restore
 Double Battle: No
 AI: Basic Trainer
 
 Skarmory
-Level: 77
+Level: 27
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
-- Toxic
-- Aerial Ace
-- Spikes
-- Steel Wing
 
-Claydol
-Level: 75
+Aerodactyl
+Level: 27
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
-- Reflect
-- Light Screen
-- Ancient Power
-- Earthquake
 
-Aggron
-Level: 76
+Lairon
+Level: 27
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
-- Thunder
-- Earthquake
-- Solar Beam
-- Dragon Claw
 
-Cradily
-Level: 76
+Lileep
+Level: 27
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
-- Giga Drain
-- Ancient Power
-- Ingrain
-- Confuse Ray
 
-Armaldo
-Level: 76
+Anorith
+Level: 27
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
-- Water Pulse
-- Ancient Power
-- Aerial Ace
-- Slash
 
-Metagross @ Sitrus Berry
-Level: 78
+Metang @ Sitrus Berry
+Level: 27
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
-- Earthquake
-- Psychic
-- Meteor Mash
-- Shadow Ball
 
 === TRAINER_ANABEL ===
 Name: ANABEL

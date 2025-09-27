@@ -5,6 +5,7 @@ GraniteCave_StevensRoom_EventScript_Steven::
 	lock
 	faceplayer
 	msgbox GraniteCave_StevensRoom_Text_ImStevenLetterForMe, MSGBOX_DEFAULT
+	trainerbattle_no_intro TRAINER_STEVEN, GraniteCave_StevenRoom_Text_Defeat
 	setvar VAR_0x8004, ITEM_LETTER
 	call Common_EventScript_PlayerHandedOverTheItem
 	setflag FLAG_DELIVERED_STEVEN_LETTER
@@ -28,6 +29,8 @@ GraniteCave_StevensRoom_EventScript_Steven::
 	call_if_eq VAR_FACING, DIR_EAST, GraniteCave_StevensRoom_EventScript_StevenExitWestEast
 	playse SE_EXIT
 	removeobject LOCALID_GRANITE_CAVE_STEVEN
+	setflag FLAG_DOCK_REJECTED_DEVON_GOODS
+	setflag FLAG_HIDE_SLATEPORT_CITY_TEAM_AQUA
 	release
 	end
 
@@ -81,10 +84,11 @@ GraniteCave_StevensRoom_Movement_StevenExitSouth:
 
 GraniteCave_StevensRoom_Text_ImStevenLetterForMe:
 	.string "My name is STEVEN.\p"
-	.string "I'm interested in rare stones,\n"
-	.string "so I travel here and there.\p"
-	.string "Oh?\n"
-	.string "A LETTER for me?$"
+	.string "I now you want to give me the letter\n"
+	.string "But first you must defeat me.$"
+
+GraniteCave_StevenRoom_Text_Defeat:
+	.string "Alright, give me that letter.$"
 
 GraniteCave_StevensRoom_Text_ThankYouTakeThis:
 	.string "STEVEN: Okay, thank you.\p"
