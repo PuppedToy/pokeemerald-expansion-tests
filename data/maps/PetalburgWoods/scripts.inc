@@ -81,6 +81,9 @@ PetalburgWoods_EventScript_DevonResearcherPostBattle::
 	applymovement LOCALID_PETALBURG_WOODS_GRUNT, PetalburgWoods_Movement_AquaRunAway
 	waitmovement 0
 	removeobject LOCALID_PETALBURG_WOODS_GRUNT
+	message LevelCap11
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
 	applymovement LOCALID_PLAYER, Common_Movement_WalkInPlaceFasterDown
 	waitmovement 0
 	msgbox PetalburgWoods_Text_ThatWasAwfullyClose, MSGBOX_DEFAULT
@@ -99,9 +102,6 @@ PetalburgWoods_EventScript_DevonResearcherFinish::
 	waitmovement 0
 	msgbox PetalburgWoods_Text_ICantBeWastingTime, MSGBOX_DEFAULT
 	closemessage
-	message LevelCap11
-	waitmessage
-	waitfanfare
 	return
 
 PetalburgWoods_EventScript_RemoveDevonResearcher::
@@ -337,13 +337,14 @@ PetalburgWoods_Text_NoOneCrossesTeamAqua:
 	.string "Alright. Come on and battle me!$"
 
 PetalburgWoods_Text_YoureKiddingMe:
-	.string "Well played. You're strong.\n"
-	.string "Our boss will like you.$"
+	.string "Well played. You're strong.$"
 
 PetalburgWoods_Text_YouveGotSomeNerve:
-	.string "Thank you. You saved my life.$"
+	.string "Our boss must know about this.\n"
+	.string "We're not done with you!$"
 
 PetalburgWoods_Text_ThatWasAwfullyClose:
+	.string "Thank you. You saved my life.\p"
 	.string "I think you'll need all the help you\n"
 	.string "can get against TEAM AQUA.\p"
 	.string "Here, have this to help you.$"

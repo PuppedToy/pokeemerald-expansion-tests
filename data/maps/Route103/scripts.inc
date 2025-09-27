@@ -138,6 +138,9 @@ Route103_EventScript_RivalExitFacingSouth::
 
 Route103_EventScript_RivalEnd::
 	removeobject LOCALID_ROUTE103_RIVAL
+	message LevelCap9
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
 	setvar VAR_BIRCH_LAB_STATE, 5
 	setflag FLAG_ADVENTURE_STARTED
 	setflag FLAG_SYS_POKEDEX_GET
@@ -159,9 +162,6 @@ Route103_EventScript_RivalEnd::
 	setvar VAR_SCOTT_PETALBURG_ENCOUNTER, 1
 	savebgm MUS_DUMMY
 	fadedefaultbgm
-	message LevelCap9
-	waitmessage
-	waitfanfare
 	releaseall
 	end
 
