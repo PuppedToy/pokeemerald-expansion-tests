@@ -27,9 +27,9 @@ u32 GetCurrentLevelCap(void)
         // <- I'm here with level cap progression
         {FLAG_DEFEATED_TABITHA_MT_CHIMNEY, 47},
         {FLAG_ROUTE119_RIVAL_DEFEATED, 49},
-        {FLAG_BADGE06_GET, 60},
-        {FLAG_BADGE07_GET, 70},
-        {FLAG_BADGE08_GET, 80},
+        {FLAG_BADGE06_GET, 51}, // Winona
+        {FLAG_BADGE07_GET, 70}, // Tate and Liza
+        {FLAG_BADGE08_GET, 80}, // Wallace
         {FLAG_IS_CHAMPION, 90},
     };
 
