@@ -25,10 +25,12 @@ u32 GetCurrentLevelCap(void)
         {FLAG_BADGE04_GET, 39}, // Flannery
         {FLAG_BADGE05_GET, 43}, // Norman
         // <- I'm here with level cap progression
-        {FLAG_BADGE06_GET, 47},
-        {FLAG_BADGE07_GET, 51},
-        {FLAG_BADGE08_GET, 55},
-        {FLAG_IS_CHAMPION, 59},
+        {FLAG_DEFEATED_TABITHA_MT_CHIMNEY, 47},
+        {FLAG_ROUTE119_RIVAL_DEFEATED, 49},
+        {FLAG_BADGE06_GET, 60},
+        {FLAG_BADGE07_GET, 70},
+        {FLAG_BADGE08_GET, 80},
+        {FLAG_IS_CHAMPION, 90},
     };
 
     u32 i;

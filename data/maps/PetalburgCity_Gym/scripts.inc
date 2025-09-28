@@ -389,6 +389,7 @@ PetalburgCity_Gym_EventScript_NormanBattle::
 	giveitem ITEM_HM_SURF
 	setflag FLAG_RECEIVED_HM_SURF
 	setvar VAR_PETALBURG_CITY_STATE, 5
+	setvar VAR_ROUTE118_STATE, 1
 	delay 30
 	msgbox PetalburgCity_Gym_Text_DadHappyAndSad, MSGBOX_DEFAULT
 	closemessage

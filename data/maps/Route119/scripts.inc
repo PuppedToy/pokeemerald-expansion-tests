@@ -134,29 +134,12 @@ Route119_EventScript_GiveFlyHM::
 
 Route119_EventScript_RivalExitScottArrive::
 	closemessage
-	call_if_eq VAR_TEMP_1, 1, Route119_EventScript_SetRivalPos1
-	call_if_eq VAR_TEMP_1, 2, Route119_EventScript_SetRivalPos2
-	removeobject LOCALID_ROUTE119_RIVAL
-	addobject LOCALID_ROUTE119_RIVAL_ON_BIKE
-	delay 30
-	call_if_eq VAR_TEMP_1, 1, Route119_EventScript_RivalExit1
-	call_if_eq VAR_TEMP_1, 2, Route119_EventScript_RivalExit2
-	removeobject LOCALID_ROUTE119_RIVAL_ON_BIKE
 	setvar VAR_ROUTE119_STATE, 1
-	savebgm MUS_DUMMY
-	fadedefaultbgm
-	delay 60
-	call_if_eq VAR_TEMP_1, 1, Route119_EventScript_SetScottPos1
-	call_if_eq VAR_TEMP_1, 2, Route119_EventScript_SetScottPos2
-	addobject LOCALID_ROUTE119_SCOTT
-	applymovement LOCALID_ROUTE119_SCOTT, Route119_Movement_ScottEnter
-	waitmovement 0
 	addvar VAR_SCOTT_STATE, 1
-	msgbox Route119_Text_ScottWayToGoBeSeeingYou, MSGBOX_DEFAULT
-	closemessage
-	call_if_eq VAR_TEMP_1, 1, Route119_EventScript_ScottExit1
-	call_if_eq VAR_TEMP_1, 2, Route119_EventScript_ScottExit2
-	removeobject LOCALID_ROUTE119_SCOTT
+	setflag FLAG_ROUTE119_RIVAL_DEFEATED
+	message LevelCap51
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
 	releaseall
 	end
 
@@ -608,3 +591,6 @@ Route119_Text_TrainerTipsDecoration:
 	.string "Pick your favorite items and create\n"
 	.string "your very own SECRET BASE exactly the\l"
 	.string "way you want.$"
+
+LevelCap51:
+	.string "Your level cap raised to 51!$"
