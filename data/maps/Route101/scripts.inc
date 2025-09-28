@@ -260,7 +260,7 @@ Route101_EventScript_BirchsBag::
 
 Route101_Text_LikeYouToHavePokemon:
 	.string "{PLAYER} received {STR_VAR_1} and\n"
-	.string "9 other Pokémon!"
+	.string "9 other Pokémon!$"
 
 Route101_EventScript_HideMayInBedroom::
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_BEDROOM
