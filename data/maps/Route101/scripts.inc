@@ -254,6 +254,7 @@ Route101_EventScript_BirchsBag::
 	clearflag FLAG_HIDE_ROUTE_101_BOY
 	setvar VAR_BIRCH_LAB_STATE, 3
 	applymovement LOCALID_ROUTE101_BIRCH, Route101_Movement_BirchLeaves
+	waitmovement 0
 	removeobject LOCALID_ROUTE101_BIRCH
 	release
 	end

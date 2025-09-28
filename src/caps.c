@@ -11,21 +11,24 @@ u32 GetCurrentLevelCap(void)
     {
         {FLAG_DEFEATED_RIVAL_ROUTE103, 7},
         {FLAG_DEFEATED_AQUA_WOODS, 9},
-        {FLAG_BADGE01_GET, 11},
-        {FLAG_RECOVERED_DEVON_GOODS, 17},
-        {FLAG_DEFEATED_RIVAL_RUSTBORO, 19},
-        {FLAG_BADGE02_GET, 21},
-        {FLAG_DELIVERED_STEVEN_LETTER, 27},
-        {FLAG_DELIVERED_DEVON_GOODS, 29},
-        {FLAG_ROUTE110_RIVAL_DEFEATED, 31},
-        {FLAG_DEFEATED_WALLY_MAUVILLE, 33},
-        {FLAG_BADGE03_GET, 35},
-        {FLAG_BADGE04_GET, 41},
-        {FLAG_BADGE05_GET, 60},
-        {FLAG_BADGE06_GET, 70},
-        {FLAG_BADGE07_GET, 80},
-        {FLAG_BADGE08_GET, 90},
-        {FLAG_IS_CHAMPION, 100},
+        {FLAG_BADGE01_GET, 11}, // Roxanne
+        {FLAG_RECOVERED_DEVON_GOODS, 15},
+        {FLAG_DEFEATED_RIVAL_RUSTBORO, 17},
+        {FLAG_BADGE02_GET, 19}, // Brawly
+        {FLAG_DELIVERED_STEVEN_LETTER, 23},
+        {FLAG_DELIVERED_DEVON_GOODS, 25},
+        {FLAG_ROUTE110_RIVAL_DEFEATED, 27},
+        {FLAG_DEFEATED_WALLY_MAUVILLE, 29},
+        {FLAG_BADGE03_GET, 31}, // Wattson
+        {FLAG_DEFEATED_TABITHA_MT_CHIMNEY, 35},
+        {FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, 37},
+        {FLAG_BADGE04_GET, 39}, // Flannery
+        {FLAG_BADGE05_GET, 43}, // Norman
+        // <- I'm here with level cap progression
+        {FLAG_BADGE06_GET, 47},
+        {FLAG_BADGE07_GET, 51},
+        {FLAG_BADGE08_GET, 55},
+        {FLAG_IS_CHAMPION, 59},
     };
 
     u32 i;

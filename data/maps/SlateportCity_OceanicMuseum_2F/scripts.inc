@@ -61,7 +61,7 @@ SlateportCity_OceanicMuseum_2F_EventScript_CaptStern::
 	removeobject LOCALID_OCEANIC_MUSEUM_2F_GRUNT_1
 	removeobject LOCALID_OCEANIC_MUSEUM_2F_GRUNT_2
 	fadescreen FADE_FROM_BLACK
-	message LevelCap31
+	message LevelCap27
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	delay 30
@@ -445,5 +445,5 @@ SlateportCity_OceanicMuseum_2F_Text_SSAnneReplica:
 	.string "“A replica of the luxury liner that\n"
 	.string "circles the globe.”$"
 
-LevelCap31:
-	.string "Your level cap raised to 31!$"
+LevelCap27:
+	.string "Your level cap raised to 27!$"

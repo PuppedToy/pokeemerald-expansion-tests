@@ -269,7 +269,7 @@ DewfordTown_Gym_Text_BrawlyDefeat:
 
 DewfordTown_Gym_Text_ReceivedKnuckleBadge:
 	.string "{PLAYER} received the KNUCKLE BADGE\n"
-	.string "and your level cap raised to 27!$"
+	.string "and your level cap raised to 23!$"
 
 DewfordTown_Gym_Text_ExplainBulkUp:
 	.string "That TM08 contains BULK UP.\p"

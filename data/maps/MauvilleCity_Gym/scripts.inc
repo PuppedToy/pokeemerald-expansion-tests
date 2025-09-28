@@ -93,6 +93,10 @@ MauvilleCity_Gym_EventScript_WattsonDefeated::
 	setflag FLAG_RECEIVED_HM_ROCK_SMASH
 	setflag FLAG_DEFEATED_MAUVILLE_GYM
 	setflag FLAG_BADGE03_GET
+	setflag FLAG_HIDE_ROUTE_112_TEAM_MAGMA
+	setflag FLAG_MET_ARCHIE_METEOR_FALLS
+	setflag FLAG_HIDE_FALLARBOR_TOWN_BATTLE_TENT_SCOTT
+	setvar VAR_METEOR_FALLS_STATE, 1
 	addvar VAR_PETALBURG_GYM_STATE, 1
 	call_if_eq VAR_PETALBURG_GYM_STATE, 6, Common_EventScript_ReadyPetalburgGymForBattle
 	setvar VAR_0x8008, 3
@@ -354,7 +358,7 @@ MauvilleCity_Gym_Text_WattsonDefeat:
 
 MauvilleCity_Gym_Text_ReceivedDynamoBadge:
 	.string "{PLAYER} received the DYNAMO BADGE\n"
-	.string "and your level cap raised to 41!$"
+	.string "and your level cap raised to 35!$"
 
 MauvilleCity_Gym_Text_ExplainDynamoBadgeTakeThis:
 	.string "With the DYNAMO BADGE, POKéMON can\n"

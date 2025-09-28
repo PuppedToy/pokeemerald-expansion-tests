@@ -34,7 +34,6 @@ MtChimney_EventScript_ArchieBusyFighting::
 MtChimney_EventScript_Maxie::
 	lockall
 	playbgm MUS_ENCOUNTER_MAGMA, FALSE
-	msgbox MtChimney_Text_MeteoriteWillActivateVolcano, MSGBOX_DEFAULT
 	applymovement LOCALID_MT_CHIMNEY_MAXIE, Common_Movement_FacePlayer
 	waitmovement 0
 	playse SE_PIN
@@ -44,6 +43,9 @@ MtChimney_EventScript_Maxie::
 	waitmovement 0
 	msgbox MtChimney_Text_MaxieIntro, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_MAXIE_MT_CHIMNEY, MtChimney_Text_MaxieDefeat
+	message LevelCap39
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
 	msgbox MtChimney_Text_MaxieYouHaventSeenLastOfMagma, MSGBOX_DEFAULT
 	closemessage
 	delay 30
@@ -407,6 +409,10 @@ MtChimney_EventScript_BusyAquaGrunt3::
 
 MtChimney_EventScript_Tabitha::
 	trainerbattle_single TRAINER_TABITHA_MT_CHIMNEY, MtChimney_Text_TabithaIntro, MtChimney_Text_TabithaDefeat
+	message LevelCap37
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
+	setflag FLAG_DEFEATED_TABITHA_MT_CHIMNEY
 	msgbox MtChimney_Text_TabithaPostBattle, MSGBOX_AUTOCLOSE
 	end
 
@@ -541,41 +547,8 @@ MtChimney_EventScript_SawyerRematch::
 	msgbox MtChimney_Text_SawyerPostRematch, MSGBOX_AUTOCLOSE
 	end
 
-MtChimney_Text_MeteoriteWillActivateVolcano:
-	.string "The power contained in the METEORITE…\p"
-	.string "By amplifying its power with this\n"
-	.string "machine, MT. CHIMNEY's volcanic\l"
-	.string "activity will instantly intensify…\p"
-	.string "Its energy will grow deep inside\n"
-	.string "the crater and…\l"
-	.string "Fufufu…$"
-
 MtChimney_Text_MaxieIntro:
-	.string "MAXIE: Hm?\n"
-	.string "Who are you?\p"
-	.string "… … … … … …\n"
-	.string "… … … … … …\p"
-	.string "I'd heard ARCHIE bemoaning a child\n"
-	.string "who's been meddling in TEAM AQUA's\l"
-	.string "affairs.\p"
-	.string "It must be you he meant.\p"
-	.string "Humph! So you're thinking of\n"
-	.string "interfering with us, TEAM MAGMA?\p"
-	.string "Now you listen.\n"
-	.string "Long ago, living things used the\l"
-	.string "land to live and grow.\p"
-	.string "That is why land is all important!\n"
-	.string "It is the cradle of all!\p"
-	.string "That is why TEAM MAGMA is dedicated\n"
-	.string "to the expansion of the land mass.\p"
-	.string "It is for further advancement of\n"
-	.string "humankind and POKéMON!\p"
-	.string "And for that, we need the power of\n"
-	.string "what sleeps within this mountain…\p"
-	.string "Oh! There was no need for you to\n"
-	.string "learn that much.\p"
-	.string "But, no matter!\n"
-	.string "I'll teach you the consequences of\l"
+	.string "I'll teach you the consequences of\n"
 	.string "meddling in our grand design!$"
 
 MtChimney_Text_MaxieDefeat:
@@ -583,13 +556,9 @@ MtChimney_Text_MaxieDefeat:
 	.string "I, MAXIE, was caught off guard?!$"
 
 MtChimney_Text_MaxieYouHaventSeenLastOfMagma:
-	.string "MAXIE: But, enough.\n"
 	.string "I will back off this time.\p"
 	.string "But don't think that this is the last\n"
-	.string "you've seen of TEAM MAGMA.\p"
-	.string "Fufufu…\p"
-	.string "Even without the METEORITE, if we\n"
-	.string "obtain that ORB… Fufufu…$"
+	.string "you've seen of TEAM MAGMA.$"
 
 MtChimney_Text_TabithaIntro:
 	.string "Hehehe!\p"
@@ -851,3 +820,9 @@ MtChimney_Text_SawyerRematchDefeat:
 MtChimney_Text_SawyerPostRematch:
 	.string "Actually, it really is hot here.\n"
 	.string "I'm overdressed for these parts.$"
+
+LevelCap37:
+	.string "Your level cap raised to 37!$"
+
+LevelCap39:
+	.string "Your level cap raised to 39!$"
