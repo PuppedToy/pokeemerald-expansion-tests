@@ -32,7 +32,7 @@ Route102_EventScript_Allen::
 	msgbox Route102_Text_AllenPostBattle, MSGBOX_AUTOCLOSE
 	end
 
-Route102_OldRodNewFisherman:
+Route102_OldRodNewFisherman::
 	lock
 	faceplayer
 	msgbox Route102_Text_GiveYouOneOfMyRods, MSGBOX_DEFAULT
