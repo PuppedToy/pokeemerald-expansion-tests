@@ -318,7 +318,7 @@ Route101_Text_ElijahIntro:
 	.string "You want some oran berries?\n"
 	.string "You may need them for the rival battle.$"
 
-Route101_Text_ElijahDefeated
+Route101_Text_ElijahDefeated:
 	.string "You can have oran berries!$"
 
 Route101_Text_OranBerries:
