@@ -446,11 +446,6 @@ Route109_EventScript_Gwen::
 	msgbox Route109_Text_GwenPostBattle, MSGBOX_AUTOCLOSE
 	end
 
-Route109_EventScript_Carter::
-	trainerbattle_single TRAINER_CARTER, Route109_Text_CarterIntro, Route109_Text_CarterDefeated
-	msgbox Route109_Text_CarterPostBattle, MSGBOX_AUTOCLOSE
-	end
-
 Route109_EventScript_Paul::
 	trainerbattle_double TRAINER_MEL_AND_PAUL, Route109_Text_PaulIntro, Route109_Text_PaulDefeated, Route109_Text_PaulNotEnoughPokemon
 	msgbox Route109_Text_PaulPostBattle, MSGBOX_AUTOCLOSE
@@ -469,11 +464,6 @@ Route109_EventScript_Chandler::
 Route109_EventScript_Hailey::
 	trainerbattle_single TRAINER_HAILEY, Route109_Text_HaileyIntro, Route109_Text_HaileyDefeated
 	msgbox Route109_Text_HaileyPostBattle, MSGBOX_AUTOCLOSE
-	end
-
-Route109_EventScript_Elijah::
-	trainerbattle_single TRAINER_ELIJAH, Route109_Text_ElijahIntro, Route109_Text_ElijahDefeated
-	msgbox Route109_Text_ElijahPostBattle, MSGBOX_AUTOCLOSE
 	end
 
 DewfordTown_Text_BrineyLandedInSlateportDeliverGoods:

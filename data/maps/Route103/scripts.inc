@@ -136,6 +136,10 @@ Route103_EventScript_RivalExitFacingSouth::
 	goto Route103_EventScript_RivalEnd
 	end
 
+Route103_EventScript_Carter::
+	trainerbattle_single TRAINER_CARTER, Route103_Text_CarterIntro, Route103_Text_CarterDefeated
+	end
+
 Route103_EventScript_RivalEnd::
 	removeobject LOCALID_ROUTE103_RIVAL
 	message LevelCap9
@@ -152,7 +156,7 @@ Route103_EventScript_RivalEnd::
 	setvar VAR_OLDALE_TOWN_STATE, 1
 	setvar VAR_LITTLEROOT_RIVAL_STATE, 4
 	setvar VAR_LITTLEROOT_TOWN_STATE, 4
-	clearflag FLAG_HIDE_LITTLEROOT_TOWN_BIRCHS_LAB_RIVAL
+	clearflag FLAG_HIDE_ROUTE103_FISHERMAN
 	setflag FLAG_DEFEATED_RIVAL_ROUTE103
 	setvar VAR_OLDALE_RIVAL_STATE, 1
 	setflag FLAG_HIDE_PETALBURG_CITY_WALLY
@@ -367,6 +371,12 @@ Route103_Text_ShortcutToOldale:
 Route103_Text_RouteSign:
 	.string "ROUTE 103\n"
 	.string "{DOWN_ARROW} OLDALE TOWN$"
+
+Route103_Text_CarterIntro:
+	.string "I am keeping this fishing spot.$"
+
+Route103_Text_CarterDefeated:
+	.string "I guess you can fish here too.$"
 
 LevelCap9:
 	.string "Your level cap raised to 9!$"

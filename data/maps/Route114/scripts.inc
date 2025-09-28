@@ -35,6 +35,16 @@ Route114_EventScript_Man::
 	release
 	end
 
+Route114_EventScript_GoodRodFisherman::
+	lock
+	faceplayer
+	msgbox Route114_Text_ReceiveGoodRod, MSGBOX_DEFAULT
+	giveitem ITEM_GOOD_ROD
+	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
+	setflag FLAG_RECEIVED_GOOD_ROD
+	release
+	end
+
 Route114_EventScript_ReceivedBerry::
 	msgbox Route114_Text_FunToThinkAboutBerries, MSGBOX_DEFAULT
 	release
@@ -200,3 +210,6 @@ Route114_Text_FossilManiacsHouseSign:
 Route114_Text_LanettesHouse:
 	.string "LANETTE'S HOUSE$"
 
+Route114_Text_ReceiveGoodRod:
+	.string "Use the good rod to find better\n"
+	.string "encounters at ponds and seas.$"

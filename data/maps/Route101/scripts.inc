@@ -16,10 +16,15 @@ Route101_EventScript_HideMapNamePopup::
 	setvar VAR_ROUTE101_STATE, 1
 	end
 
+Route101_EventScript_Elijah::
+	trainerbattle_single TRAINER_ELIJAH, Route101_Text_ElijahIntro, Route101_Text_ElijahDefeated
+	end
+
 Route101_EventScript_StartBirchRescue::
 	lockall
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_TRUCK
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_TRUCK
+	setflag FLAG_HIDE_ROUTE103_FISHERMAN
 	playbgm MUS_HELP, TRUE
 	msgbox Route101_Text_HelpMe, MSGBOX_DEFAULT
 	closemessage
@@ -257,7 +262,6 @@ Route101_EventScript_HideBrendanInBedroom::
 
 Route101_EventScript_Calvin::
 	trainerbattle_single TRAINER_CALVIN_1, Route101_Text_CalvinIntro, Route101_Text_CalvinDefeated
-	msgbox Route101_Text_CalvinPostBattle, MSGBOX_AUTOCLOSE
 	end
 
 Route101_EventScript_OranBerries::
@@ -297,10 +301,8 @@ Route101_Text_YouSavedMe:
 	.string "by my POKéMON LAB later, okay?$"
 
 Route101_Text_TakeTiredPokemonToPokeCenter:
-	.string "If POKéMON get tired, take them to\n"
-	.string "a POKéMON CENTER.\p"
-	.string "There's a POKéMON CENTER in OLDALE\n"
-	.string "TOWN right close by.$"
+	.string "Every resource in this game is guarded\n"
+	.string "by strong trainers.$"
 
 Route101_Text_WildPokemonInTallGrass:
 	.string "Wild POKéMON will jump out at you in\n"
@@ -311,6 +313,13 @@ Route101_Text_WildPokemonInTallGrass:
 Route101_Text_RouteSign:
 	.string "ROUTE 101\n"
 	.string "{UP_ARROW} OLDALE TOWN$"
+
+Route101_Text_ElijahIntro:
+	.string "You want some oran berries?\n"
+	.string "You may need them for the rival battle.$"
+
+Route101_Text_ElijahDefeated
+	.string "You can have oran berries!$"
 
 Route101_Text_OranBerries:
 	.string "You found lots of oran berries!$"

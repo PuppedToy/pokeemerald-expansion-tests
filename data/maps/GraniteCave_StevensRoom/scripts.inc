@@ -6,6 +6,9 @@ GraniteCave_StevensRoom_EventScript_Steven::
 	faceplayer
 	msgbox GraniteCave_StevensRoom_Text_ImStevenLetterForMe, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_STEVEN, GraniteCave_StevenRoom_Text_Defeat
+	message LevelCap29
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
 	setvar VAR_0x8004, ITEM_LETTER
 	call Common_EventScript_PlayerHandedOverTheItem
 	setflag FLAG_DELIVERED_STEVEN_LETTER
@@ -84,7 +87,7 @@ GraniteCave_StevensRoom_Movement_StevenExitSouth:
 
 GraniteCave_StevensRoom_Text_ImStevenLetterForMe:
 	.string "My name is STEVEN.\p"
-	.string "I now you want to give me the letter\n"
+	.string "I know you want to give me the letter\n"
 	.string "But first you must defeat me.$"
 
 GraniteCave_StevenRoom_Text_Defeat:
@@ -115,3 +118,5 @@ GraniteCave_StevensRoom_Text_OhBagIsFull:
 	.string "Oh, your BAG is full…\n"
 	.string "That's too bad, then.$"
 
+LevelCap29:
+	.string "Your level cap raised to 29!$"
