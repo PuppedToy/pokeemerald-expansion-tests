@@ -241,16 +241,26 @@ Route101_EventScript_BirchsBag::
 	setflag FLAG_HIDE_ROUTE_101_BIRCH_ZIGZAGOON_BATTLE
 	clearflag FLAG_HIDE_LITTLEROOT_TOWN_BIRCHS_LAB_BIRCH
 	setflag FLAG_HIDE_ROUTE_101_BIRCH_STARTERS_BAG
-	setvar VAR_BIRCH_LAB_STATE, 2
 	setvar VAR_ROUTE101_STATE, 3
 	clearflag FLAG_HIDE_MAP_NAME_POPUP
 	checkplayergender
 	call_if_eq VAR_RESULT, MALE, Route101_EventScript_HideMayInBedroom
 	call_if_eq VAR_RESULT, FEMALE, Route101_EventScript_HideBrendanInBedroom
-	warp MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB, 6, 5
-	waitstate
+	bufferleadmonspeciesname STR_VAR_1
+	message Route101_Text_LikeYouToHavePokemon
+	waitmessage
+	playfanfare MUS_OBTAIN_ITEM
+	waitfanfare
+	clearflag FLAG_HIDE_ROUTE_101_BOY
+	setvar VAR_BIRCH_LAB_STATE, 3
+	applymovement LOCALID_ROUTE101_BIRCH, Route101_Movement_BirchLeaves
+	removeobject LOCALID_ROUTE101_BIRCH
 	release
 	end
+
+Route101_Text_LikeYouToHavePokemon:
+	.string "{PLAYER} received {STR_VAR_1} and\n"
+	.string "9 other Pokémon!"
 
 Route101_EventScript_HideMayInBedroom::
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_BEDROOM
@@ -276,6 +286,18 @@ Route101_Movement_BirchApproachPlayer:
 	walk_right
 	step_end
 
+Route101_Movement_BirchLeaves:
+	walk_down
+	walk_down
+	walk_down
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_down
+	walk_down
+
 Route101_Text_HelpMe:
 	.string "H-help me!$"
 
@@ -290,15 +312,7 @@ Route101_Text_DontLeaveMe:
 	.string "Don't leave me like this!$"
 
 Route101_Text_YouSavedMe:
-	.string "PROF. BIRCH: Whew…\p"
-	.string "I was in the tall grass studying wild\n"
-	.string "POKéMON when I was jumped.\p"
-	.string "You saved me.\n"
-	.string "Thanks a lot!\p"
-	.string "Oh?\p"
-	.string "Hi, you're {PLAYER}{KUN}!\p"
-	.string "This is not the place to chat, so come\n"
-	.string "by my POKéMON LAB later, okay?$"
+	.string "PROF. BIRCH: Good job!$"
 
 Route101_Text_TakeTiredPokemonToPokeCenter:
 	.string "Every resource in this game is guarded\n"
