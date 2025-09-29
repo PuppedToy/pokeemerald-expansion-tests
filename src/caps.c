@@ -31,9 +31,11 @@ u32 GetCurrentLevelCap(void)
         {FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, 57},
         {FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, 59},
         // <- I'm here with level cap progression
-        {FLAG_BADGE07_GET, 63}, // Tate and Liza
+        {FLAG_BADGE07_GET, 61}, // Tate and Liza
+        {FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN, 65}, // Tate and Liza
         {FLAG_BADGE08_GET, 67}, // Wallace
-        {FLAG_IS_CHAMPION, 71},
+        {FLAG_DEFEATED_WALLY_VICTORY_ROAD, 71},
+        {FLAG_IS_CHAMPION, 73},
     };
 
     u32 i;

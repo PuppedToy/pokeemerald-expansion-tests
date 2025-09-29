@@ -58,7 +58,6 @@ MossdeepCity_Gym_EventScript_TateAndLiza::
 	specialvar VAR_RESULT, ShouldTryRematchBattle
 	goto_if_eq VAR_RESULT, TRUE, MossdeepCity_Gym_EventScript_TateAndLizaRematch
 	goto_if_unset FLAG_RECEIVED_TM_CALM_MIND, MossdeepCity_Gym_EventScript_GiveCalmMind2
-	msgbox MossdeepCity_Gym_Text_TateAndLizaPostBattle, MSGBOX_DEFAULT
 	release
 	end
 
@@ -66,7 +65,6 @@ MossdeepCity_Gym_EventScript_TateAndLizaDefeated::
 	message MossdeepCity_Gym_Text_ReceivedMindBadge
 	waitmessage
 	call Common_EventScript_PlayGymBadgeFanfare
-	msgbox MossdeepCity_Gym_Text_ExplainMindBadgeTakeThis, MSGBOX_DEFAULT
 	setflag FLAG_DEFEATED_MOSSDEEP_GYM
 	setflag FLAG_BADGE07_GET
 	setflag FLAG_HIDE_AQUA_HIDEOUT_GRUNTS
@@ -572,7 +570,7 @@ MossdeepCity_Gym_Text_TateAndLizaDefeat:
 
 MossdeepCity_Gym_Text_ReceivedMindBadge:
 	.string "{PLAYER} received the MIND BADGE\n"
-	.string "from TATE and LIZA.$"
+	.string "and your level cap raised to 65!$"
 
 MossdeepCity_Gym_Text_ExplainMindBadgeTakeThis:
 	.string "TATE: The MIND BADGE enhances the\n"
