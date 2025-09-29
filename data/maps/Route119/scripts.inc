@@ -134,6 +134,8 @@ Route119_EventScript_GiveFlyHM::
 
 Route119_EventScript_RivalExitScottArrive::
 	closemessage
+	giveitem ITEM_DEVON_SCOPE
+	setflag FLAG_RECEIVED_DEVON_SCOPE
 	setvar VAR_ROUTE119_STATE, 1
 	addvar VAR_SCOTT_STATE, 1
 	setflag FLAG_ROUTE119_RIVAL_DEFEATED

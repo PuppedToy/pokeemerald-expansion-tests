@@ -24,13 +24,16 @@ u32 GetCurrentLevelCap(void)
         {FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, 37},
         {FLAG_BADGE04_GET, 39}, // Flannery
         {FLAG_BADGE05_GET, 43}, // Norman
-        // <- I'm here with level cap progression
         {FLAG_DEFEATED_TABITHA_MT_CHIMNEY, 47},
         {FLAG_ROUTE119_RIVAL_DEFEATED, 49},
         {FLAG_BADGE06_GET, 51}, // Winona
-        {FLAG_BADGE07_GET, 70}, // Tate and Liza
-        {FLAG_BADGE08_GET, 80}, // Wallace
-        {FLAG_IS_CHAMPION, 90},
+        {FLAG_MET_RIVAL_LILYCOVE, 55},
+        {FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, 57},
+        {FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, 59},
+        // <- I'm here with level cap progression
+        {FLAG_BADGE07_GET, 63}, // Tate and Liza
+        {FLAG_BADGE08_GET, 67}, // Wallace
+        {FLAG_IS_CHAMPION, 71},
     };
 
     u32 i;

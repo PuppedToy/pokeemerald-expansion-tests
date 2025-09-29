@@ -46,6 +46,9 @@ AquaHideout_B2F_EventScript_SubmarineEscape::
 	applymovement VAR_0x8008, Common_Movement_FacePlayer
 	waitmovement 0
 	msgbox AquaHideout_B2F_Text_MattPostBattle, MSGBOX_DEFAULT
+	message LevelCap61
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE
 	setflag FLAG_HIDE_LILYCOVE_CITY_AQUA_GRUNTS
 	release
@@ -157,3 +160,6 @@ AquaHideout_B2F_Text_Grunt8Defeat:
 AquaHideout_B2F_Text_Grunt8PostBattle:
 	.string "I'll have to learn about how I can\n"
 	.string "battle more effectively…$"
+
+LevelCap61:
+	.string "Your level cap raised to 61!$"

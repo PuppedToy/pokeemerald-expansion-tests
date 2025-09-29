@@ -32,6 +32,7 @@ FortreeCity_Gym_EventScript_WinonaDefeated::
 	call Common_EventScript_PlayGymBadgeFanfare
 	setflag FLAG_DEFEATED_FORTREE_GYM
 	setflag FLAG_BADGE06_GET
+	setflag FLAG_HIDE_ROUTE_120_STEVEN
 	setvar VAR_0x8008, 6
 	call Common_EventScript_SetGymTrainers
 	call FortreeCity_Gym_EventScript_GiveAerialAce
@@ -45,6 +46,12 @@ FortreeCity_Gym_EventScript_WinonaDefeated::
 	setflag FLAG_ENABLE_WINONA_MATCH_CALL
 	setvar VAR_SCOTT_FORTREE_CALL_STEP_COUNTER, 0
 	setflag FLAG_SCOTT_CALL_FORTREE_GYM
+	giveitem ITEM_MAGMA_EMBLEM
+	setvar VAR_MT_PYRE_STATE, 3
+	setflag FLAG_HIDE_MT_PYRE_SUMMIT_ARCHIE
+	setflag FLAG_HIDE_MT_PYRE_SUMMIT_TEAM_AQUA
+	setflag FLAG_RECEIVED_RED_OR_BLUE_ORB
+	setflag FLAG_HIDE_JAGGED_PASS_MAGMA_GUARD
 	release
 	end
 
