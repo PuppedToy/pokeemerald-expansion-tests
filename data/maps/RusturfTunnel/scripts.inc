@@ -309,7 +309,7 @@ RusturfTunnel_EventScript_Grunt::
 	applymovement LOCALID_RUSTURF_TUNNEL_GRUNT, RusturfTunnel_Movement_GruntEscape
 	waitmovement 0
 	removeobject LOCALID_RUSTURF_TUNNEL_GRUNT
-	message LevelCap17
+	message RusturfTunnel_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	delay 50
@@ -530,5 +530,5 @@ RusturfTunnel_Text_MikePostBattle:
 	.string "protect POKéMON, right?\l"
 	.string "There's a feel-good story!$"
 
-LevelCap17:
-	.string "Your level cap raised to 17!$"
+RusturfTunnel_LevelCap:
+	.string "The level cap has been raised to 14!$"

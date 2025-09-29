@@ -142,7 +142,7 @@ Route103_EventScript_Carter::
 
 Route103_EventScript_RivalEnd::
 	removeobject LOCALID_ROUTE103_RIVAL
-	message LevelCap9
+	message Route103_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	setvar VAR_BIRCH_LAB_STATE, 5
@@ -378,5 +378,5 @@ Route103_Text_CarterIntro:
 Route103_Text_CarterDefeated:
 	.string "I guess you can fish here too.$"
 
-LevelCap9:
-	.string "Your level cap raised to 9!$"
+Route103_LevelCap:
+	.string "The level cap has been raised to 9!$"

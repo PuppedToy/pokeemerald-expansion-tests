@@ -863,7 +863,7 @@ RustboroCity_EventScript_BattleMay::
 	end
 
 RustboroCity_EventScript_MayBrineyHint::
-	message LevelCap19
+	message RustboroCity_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	msgbox RustboroCity_Text_MayMrBrineyHint, MSGBOX_DEFAULT
@@ -1290,5 +1290,5 @@ RustboroCity_Text_YouCanHave2On2Battle:
 	.string "Don't you think it'd be cool if you\n"
 	.string "could beat two TRAINERS by yourself?$"
 
-LevelCap19:
-	.string "Your level cap raised to 19!$"
+RustboroCity_LevelCap:
+	.string "Your level cap raised to 16!$"

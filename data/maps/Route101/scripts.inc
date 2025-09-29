@@ -236,6 +236,9 @@ Route101_EventScript_BirchsBag::
 	waitstate
 	applymovement LOCALID_ROUTE101_BIRCH, Route101_Movement_BirchApproachPlayer
 	waitmovement 0
+	message Route101_LevelCap
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
 	msgbox Route101_Text_YouSavedMe, MSGBOX_DEFAULT
 	special HealPlayerParty
 	setflag FLAG_HIDE_ROUTE_101_BIRCH_ZIGZAGOON_BATTLE
@@ -338,3 +341,6 @@ Route101_Text_ElijahDefeated:
 
 Route101_Text_OranBerries:
 	.string "You found lots of oran berries!$"
+
+Route101_LevelCap:
+	.string "The level cap has been raised to 7!$"

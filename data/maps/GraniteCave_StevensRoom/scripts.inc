@@ -6,7 +6,7 @@ GraniteCave_StevensRoom_EventScript_Steven::
 	faceplayer
 	msgbox GraniteCave_StevensRoom_Text_ImStevenLetterForMe, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_STEVEN, GraniteCave_StevenRoom_Text_Defeat
-	message LevelCap25
+	message GraniteCave_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	setvar VAR_0x8004, ITEM_LETTER
@@ -118,5 +118,5 @@ GraniteCave_StevensRoom_Text_OhBagIsFull:
 	.string "Oh, your BAG is full…\n"
 	.string "That's too bad, then.$"
 
-LevelCap25:
-	.string "Your level cap raised to 25!$"
+GraniteCave_LevelCap:
+	.string "The level cap has been raised to 21!$"

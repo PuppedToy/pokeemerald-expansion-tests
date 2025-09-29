@@ -53,10 +53,18 @@ EverGrandeCity_GlaciasRoom_EventScript_PostBattleSpeech::
 
 EverGrandeCity_GlaciasRoom_EventScript_Defeated::
 	setflag FLAG_DEFEATED_ELITE_4_GLACIA
+	call_if_unset FLAG_FIRST_DEFEATED_ELITE_4_GLACIA, EverGrandeCity_GlaciasRoom_Trigger_LevelCap
 	call PokemonLeague_EliteFour_SetAdvanceToNextRoomMetatiles
 	msgbox EverGrandeCity_GlaciasRoom_Text_PostBattleSpeech, MSGBOX_DEFAULT
 	release
 	end
+
+EverGrandeCity_GlaciasRoom_Trigger_LevelCap::
+	setflag FLAG_FIRST_DEFEATED_ELITE_4_GLACIA
+	message EverGrandeCity_GlaciasRoom_LevelCap
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
+	return
 
 EverGrandeCity_GlaciasRoom_Text_IntroSpeech:
 	.string "Welcome, my name is GLACIA\n"
@@ -81,3 +89,5 @@ EverGrandeCity_GlaciasRoom_Text_PostBattleSpeech:
 	.string "And there, confirm the truly fearsome\n"
 	.string "side of the POKéMON LEAGUE.$"
 
+EverGrandeCity_GlaciasRoom_LevelCap:
+	.string "The level cap has been raised to 70!$"

@@ -388,7 +388,7 @@ LilycoveCity_EventScript_RivalFlyAway::
 	waitfieldeffect FLDEFF_NPCFLY_OUT
 	savebgm MUS_DUMMY
 	fadedefaultbgm
-	message LevelCap57
+	message LilycoveCity_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_MET_RIVAL_LILYCOVE
@@ -759,5 +759,5 @@ LilycoveCity_Text_HoneymoonVowToSeeRarePokemon:
 	.string "POKéMON as soon as we arrived.\p"
 	.string "I mean, we are totally happy!$"
 
-LevelCap57:
-	.string "Your level cap raised to 57!$"
+LilycoveCity_LevelCap:
+	.string "The level cap has been raised to 47!$"

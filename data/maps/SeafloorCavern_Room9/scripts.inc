@@ -130,7 +130,7 @@ SeafloorCavern_Room9_EventScript_ArchieAwakenKyogre::
 	setflag FLAG_SYS_WEATHER_CTRL
 	setflag FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN
 	setflag FLAG_HIDE_MOSSDEEP_CITY_STEVENS_HOUSE_STEVEN
-	message LevelCap67
+	message SeafloorCavern_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	setvar VAR_STEVENS_HOUSE_STATE, 2
@@ -321,5 +321,5 @@ SeafloorCavern_Room9_Text_MaxieComeOnPlayer:
 	.string "MAXIE: {PLAYER}, come on, you have\n"
 	.string "to get out of here, too!$"
 
-LevelCap67:
-	.string "Your level cap raised to 67!$"
+SeafloorCavern_LevelCap:
+	.string "The level cap has been raised to 58!$"

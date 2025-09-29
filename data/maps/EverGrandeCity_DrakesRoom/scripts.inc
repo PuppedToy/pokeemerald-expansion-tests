@@ -56,10 +56,18 @@ EverGrandeCity_DrakesRoom_EventScript_Defeated::
 	setvar VAR_0x8004, FANCOUNTER_DEFEATED_DRAKE
 	special Script_TryGainNewFanFromCounter
 	setflag FLAG_DEFEATED_ELITE_4_DRAKE
+	call_if_unset FLAG_FIRST_DEFEATED_ELITE_4_DRAKE, EverGrandeCity_DrakesRoom_Trigger_LevelCap
 	call PokemonLeague_EliteFour_SetAdvanceToNextRoomMetatiles
 	msgbox EverGrandeCity_DrakesRoom_Text_PostBattleSpeech, MSGBOX_DEFAULT
 	release
 	end
+
+EverGrandeCity_DrakesRoom_Trigger_LevelCap::
+	setflag FLAG_FIRST_DEFEATED_ELITE_4_DRAKE
+	message EverGrandeCity_DrakesRoom_LevelCap
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
+	return
 
 EverGrandeCity_DrakesRoom_Text_IntroSpeech:
 	.string "I am the last of the POKéMON LEAGUE\n"
@@ -90,3 +98,5 @@ EverGrandeCity_DrakesRoom_Text_PostBattleSpeech:
 	.string "Go! Go onwards!\n"
 	.string "The CHAMPION is waiting!$"
 
+EverGrandeCity_DrakesRoom_LevelCap:
+	.string "The level cap has been raised to 75!$"

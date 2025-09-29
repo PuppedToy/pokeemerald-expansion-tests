@@ -59,10 +59,18 @@ EverGrandeCity_SidneysRoom_EventScript_PostBattleSpeech::
 
 EverGrandeCity_SidneysRoom_EventScript_Defeated::
 	setflag FLAG_DEFEATED_ELITE_4_SIDNEY
+	call_if_unset FLAG_FIRST_DEFEATED_ELITE_4_SIDNEY, EverGrandeCity_SidneysRoom_Trigger_LevelCap
 	call PokemonLeague_EliteFour_SetAdvanceToNextRoomMetatiles
 	msgbox EverGrandeCity_SidneysRoom_Text_PostBattleSpeech, MSGBOX_DEFAULT
 	release
 	end
+
+EverGrandeCity_SidneysRoom_Trigger_LevelCap::
+	setflag FLAG_FIRST_DEFEATED_ELITE_4_SIDNEY
+	message EverGrandeCity_SidneysRoom_LevelCap
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
+	return
 
 EverGrandeCity_SidneysRoom_Text_IntroSpeech:
 	.string "Welcome, challenger!\n"
@@ -85,3 +93,5 @@ EverGrandeCity_SidneysRoom_Text_PostBattleSpeech:
 	.string "Now, go on to the next room and enjoy\l"
 	.string "your next battle!$"
 
+EverGrandeCity_SidneysRoom_LevelCap:
+	.string "The level cap has been raised to 66!$"

@@ -190,7 +190,7 @@ MauvilleCity_EventScript_ScottExitEast::
 MauvilleCity_EventScript_BattleWally::
 	msgbox MauvilleCity_Text_WallyHereICome, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_WALLY_MAUVILLE, MauvilleCity_Text_WallyDefeat
-	message LevelCap31
+	message MauvilleCity_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	applymovement LOCALID_MAUVILLE_WALLY, Common_Movement_WalkInPlaceFasterRight
@@ -657,5 +657,5 @@ MauvilleCity_Text_ExplainTV:
 MauvilleCity_Text_BeenCheckingOutTV:
 	.string "Hi, have you been checking out TVs?$"
 
-LevelCap31:
-	.string "Your level cap raised to 31!$"
+MauvilleCity_LevelCap:
+	.string "The level cap has been raised to 26!$"

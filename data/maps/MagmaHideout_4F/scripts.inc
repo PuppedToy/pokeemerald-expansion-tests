@@ -62,7 +62,7 @@ MagmaHideout_4F_EventScript_Maxie::
 	setvar VAR_SLATEPORT_CITY_STATE, 1
 	setflag FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT
 	setvar VAR_SLATEPORT_HARBOR_STATE, 1
-	message LevelCap59
+	message MagmaHideout_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	fadescreen FADE_TO_BLACK
@@ -226,5 +226,5 @@ MagmaHideout_4F_Text_MaxieImGoingAfterGroudon:
 	.string "I am going after GROUDON, so this\n"
 	.string "is where we part!$"
 
-LevelCap59:
-	.string "Your level cap raised to 59!$"
+MagmaHideout_LevelCap:
+	.string "The level cap has been raised to 50!$"

@@ -479,7 +479,7 @@ Route110_EventScript_RivalExit::
 	setflag FLAG_ROUTE110_RIVAL_DEFEATED
 	savebgm MUS_DUMMY
 	fadedefaultbgm
-	message LevelCap29
+	message Route110_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	releaseall
@@ -991,5 +991,5 @@ Route110_Text_KeepAnEyeOutForRival:
 	.string "Well, I had better get going.\n"
 	.string "See you again, {PLAYER}{KUN}!$"
 
-LevelCap29:
-	.string "Your level cap raised to 29!$"
+Route110_LevelCap:
+	.string "The level cap has been raised to 25!$"

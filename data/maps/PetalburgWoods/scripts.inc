@@ -81,7 +81,7 @@ PetalburgWoods_EventScript_DevonResearcherPostBattle::
 	applymovement LOCALID_PETALBURG_WOODS_GRUNT, PetalburgWoods_Movement_AquaRunAway
 	waitmovement 0
 	removeobject LOCALID_PETALBURG_WOODS_GRUNT
-	message LevelCap11
+	message PetalburgWoods_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	applymovement LOCALID_PLAYER, Common_Movement_WalkInPlaceFasterDown
@@ -453,5 +453,5 @@ PetalburgWoods_Text_TrainerTipsPP:
 	.string "If a POKéMON runs out of PP, it must be\n"
 	.string "taken to a POKéMON CENTER.$"
 
-LevelCap11:
-	.string "Your level cap raised to 11!$"
+PetalburgWoods_LevelCap:
+	.string "The level cap has been raised to 10!$"

@@ -43,7 +43,7 @@ MtChimney_EventScript_Maxie::
 	waitmovement 0
 	msgbox MtChimney_Text_MaxieIntro, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_MAXIE_MT_CHIMNEY, MtChimney_Text_MaxieDefeat
-	message LevelCap39
+	message MtChimney_LevelCap_Major
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	msgbox MtChimney_Text_MaxieYouHaventSeenLastOfMagma, MSGBOX_DEFAULT
@@ -409,7 +409,7 @@ MtChimney_EventScript_BusyAquaGrunt3::
 
 MtChimney_EventScript_Tabitha::
 	trainerbattle_single TRAINER_TABITHA_MT_CHIMNEY, MtChimney_Text_TabithaIntro, MtChimney_Text_TabithaDefeat
-	message LevelCap37
+	message MtChimney_LevelCap_Minor
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_DEFEATED_TABITHA_MT_CHIMNEY
@@ -821,8 +821,8 @@ MtChimney_Text_SawyerPostRematch:
 	.string "Actually, it really is hot here.\n"
 	.string "I'm overdressed for these parts.$"
 
-LevelCap37:
-	.string "Your level cap raised to 37!$"
+MtChimney_LevelCap_Minor:
+	.string "The level cap has been raised to 30!$"
 
-LevelCap39:
-	.string "Your level cap raised to 39!$"
+MtChimney_LevelCap_Major:
+	.string "The level cap has been raised to 33!$"

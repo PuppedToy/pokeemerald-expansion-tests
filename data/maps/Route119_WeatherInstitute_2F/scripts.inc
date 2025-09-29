@@ -40,7 +40,8 @@ Route119_WeatherInstitute_2F_EventScript_Grunt3::
 
 Route119_WeatherInstitute_2F_EventScript_Shelly::
 	trainerbattle_single TRAINER_SHELLY_WEATHER_INSTITUTE, Route119_WeatherInstitute_2F_Text_ShellyIntro, Route119_WeatherInstitute_2F_Text_ShellyDefeat, Route119_WeatherInstitute_2F_EventScript_ShellyDefeated
-	message LevelCap49
+	message Route119_WeatherInstitute_LevelCap
+
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_DEFEATED_SHELLY_WEATHER_INST
@@ -328,5 +329,5 @@ Route119_WeatherInstitute_2F_Text_NoAbnormalWeather:
 	.string "The occasional rainfall is a blessing,\n"
 	.string "really.$"
 
-LevelCap49:
-	.string "Your level cap raised to 49!$"
+Route119_WeatherInstitute_LevelCap:
+	.string "The level cap has been raised to 40!$"

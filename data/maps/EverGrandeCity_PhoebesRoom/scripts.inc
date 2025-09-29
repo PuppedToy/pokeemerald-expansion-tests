@@ -53,10 +53,18 @@ EverGrandeCity_PhoebesRoom_EventScript_PostBattleSpeech::
 
 EverGrandeCity_PhoebesRoom_EventScript_Defeated::
 	setflag FLAG_DEFEATED_ELITE_4_PHOEBE
+	call_if_unset FLAG_FIRST_DEFEATED_ELITE_4_PHOEBE, EverGrandeCity_PhoebesRoom_Trigger_LevelCap
 	call PokemonLeague_EliteFour_SetAdvanceToNextRoomMetatiles
 	msgbox EverGrandeCity_PhoebesRoom_Text_PostBattleSpeech, MSGBOX_DEFAULT
 	release
 	end
+
+EverGrandeCity_PhoebesRoom_Trigger_LevelCap::
+	setflag FLAG_FIRST_DEFEATED_ELITE_4_PHOEBE
+	message EverGrandeCity_PhoebesRoom_LevelCap
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
+	return
 
 EverGrandeCity_PhoebesRoom_Text_IntroSpeech:
 	.string "Ahahaha!\p"
@@ -82,3 +90,5 @@ EverGrandeCity_PhoebesRoom_Text_PostBattleSpeech:
 	.string "will carry you.\p"
 	.string "Go ahead, move on to the next room.$"
 
+EverGrandeCity_PhoebesRoom_LevelCap:
+	.string "The level cap has been raised to 68!$"

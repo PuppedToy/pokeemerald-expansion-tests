@@ -139,7 +139,7 @@ Route119_EventScript_RivalExitScottArrive::
 	setvar VAR_ROUTE119_STATE, 1
 	addvar VAR_SCOTT_STATE, 1
 	setflag FLAG_ROUTE119_RIVAL_DEFEATED
-	message LevelCap51
+	message Route119_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	releaseall
@@ -594,5 +594,5 @@ Route119_Text_TrainerTipsDecoration:
 	.string "your very own SECRET BASE exactly the\l"
 	.string "way you want.$"
 
-LevelCap51:
-	.string "Your level cap raised to 51!$"
+Route119_LevelCap:
+	.string "The level cap has been raised to 42!$"

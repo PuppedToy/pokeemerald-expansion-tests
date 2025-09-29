@@ -9,33 +9,36 @@ u32 GetCurrentLevelCap(void)
 {
     static const u32 sLevelCapFlagMap[][2] =
     {
-        {FLAG_DEFEATED_RIVAL_ROUTE103, 7},
-        {FLAG_DEFEATED_AQUA_WOODS, 9},
-        {FLAG_BADGE01_GET, 11}, // Roxanne
-        {FLAG_RECOVERED_DEVON_GOODS, 15},
-        {FLAG_DEFEATED_RIVAL_RUSTBORO, 17},
-        {FLAG_BADGE02_GET, 19}, // Brawly
-        {FLAG_DELIVERED_STEVEN_LETTER, 23},
-        {FLAG_DELIVERED_DEVON_GOODS, 25},
-        {FLAG_ROUTE110_RIVAL_DEFEATED, 27},
-        {FLAG_DEFEATED_WALLY_MAUVILLE, 29},
-        {FLAG_BADGE03_GET, 31}, // Wattson
-        {FLAG_DEFEATED_TABITHA_MT_CHIMNEY, 35},
-        {FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, 37},
-        {FLAG_BADGE04_GET, 39}, // Flannery
-        {FLAG_BADGE05_GET, 43}, // Norman
-        {FLAG_DEFEATED_TABITHA_MT_CHIMNEY, 47},
-        {FLAG_ROUTE119_RIVAL_DEFEATED, 49},
-        {FLAG_BADGE06_GET, 51}, // Winona
-        {FLAG_MET_RIVAL_LILYCOVE, 55},
-        {FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, 57},
-        {FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, 59},
-        // <- I'm here with level cap progression
-        {FLAG_BADGE07_GET, 61}, // Tate and Liza
-        {FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN, 65}, // Tate and Liza
-        {FLAG_BADGE08_GET, 67}, // Wallace
-        {FLAG_DEFEATED_WALLY_VICTORY_ROAD, 71},
-        {FLAG_IS_CHAMPION, 73},
+        {FLAG_DEFEATED_RIVAL_ROUTE103, 7}, // Boss
+        {FLAG_DEFEATED_AQUA_WOODS, 9}, // Minor boss
+        {FLAG_BADGE01_GET, 10}, // Gym boss Roxanne
+        {FLAG_RECOVERED_DEVON_GOODS, 13}, // Minor boss
+        {FLAG_DEFEATED_RIVAL_RUSTBORO, 14}, // Boss
+        {FLAG_BADGE02_GET, 16}, // Gym boss Brawly
+        {FLAG_DELIVERED_STEVEN_LETTER, 19}, // Boss Steven
+        {FLAG_DELIVERED_DEVON_GOODS, 21}, // Boss gauntlet
+        {FLAG_ROUTE110_RIVAL_DEFEATED, 23}, // Boss
+        {FLAG_DEFEATED_WALLY_MAUVILLE, 25}, // Minor boss
+        {FLAG_BADGE03_GET, 26}, // Gym boss Wattson
+        {FLAG_DEFEATED_TABITHA_MT_CHIMNEY, 29}, // Minor boss
+        {FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, 30}, // Major boss
+        {FLAG_BADGE04_GET, 33}, // Gym boss Flannery
+        {FLAG_BADGE05_GET, 36}, // Gym boss Norman
+        {FLAG_DEFEATED_SHELLY_WEATHER_INST, 39}, // Minor boss
+        {FLAG_ROUTE119_RIVAL_DEFEATED, 40}, // Boss
+        {FLAG_BADGE06_GET, 42}, // Gym boss Winona
+        {FLAG_MET_RIVAL_LILYCOVE, 45}, // Boss
+        {FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, 47}, // Major boss
+        {FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, 50}, // Boss
+        {FLAG_BADGE07_GET, 52}, // Gym boss Tate and Liza
+        {FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN, 55}, // Major boss
+        {FLAG_BADGE08_GET, 58}, // Gym boss Juan
+        {FLAG_DEFEATED_WALLY_VICTORY_ROAD, 61}, // Major boss
+        {FLAG_FIRST_DEFEATED_ELITE_4_SIDNEY, 64}, // E4
+        {FLAG_FIRST_DEFEATED_ELITE_4_PHOEBE, 66}, // E4
+        {FLAG_FIRST_DEFEATED_ELITE_4_GLACIA, 68}, // E4
+        {FLAG_FIRST_DEFEATED_ELITE_4_DRAKE, 70}, // E4
+        {FLAG_IS_CHAMPION, 75}, // Champion
     };
 
     u32 i;
