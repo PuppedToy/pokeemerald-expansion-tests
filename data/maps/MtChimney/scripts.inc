@@ -69,6 +69,7 @@ MtChimney_EventScript_Maxie::
 	removeobject LOCALID_MT_CHIMNEY_ARCHIE
 	setflag FLAG_HIDE_MT_CHIMNEY_TEAM_AQUA
 	setflag FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY
+	setflag FLAG_DEFEATED_TABITHA_MT_CHIMNEY
 	clearflag FLAG_HIDE_FALLARBOR_HOUSE_PROF_COZMO
 	setflag FLAG_HIDE_METEOR_FALLS_1F_1R_COZMO
 	clearflag FLAG_HIDE_MT_CHIMNEY_LAVA_COOKIE_LADY
@@ -409,10 +410,10 @@ MtChimney_EventScript_BusyAquaGrunt3::
 
 MtChimney_EventScript_Tabitha::
 	trainerbattle_single TRAINER_TABITHA_MT_CHIMNEY, MtChimney_Text_TabithaIntro, MtChimney_Text_TabithaDefeat
+	setflag FLAG_DEFEATED_TABITHA_MT_CHIMNEY
 	message MtChimney_LevelCap_Minor
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
-	setflag FLAG_DEFEATED_TABITHA_MT_CHIMNEY
 	msgbox MtChimney_Text_TabithaPostBattle, MSGBOX_AUTOCLOSE
 	end
 
@@ -561,11 +562,8 @@ MtChimney_Text_MaxieYouHaventSeenLastOfMagma:
 	.string "you've seen of TEAM MAGMA.$"
 
 MtChimney_Text_TabithaIntro:
-	.string "Hehehe!\p"
 	.string "So you've come all the way here!\p"
-	.string "But you're too late!\n"
-	.string "I've already delivered the METEORITE\l"
-	.string "from METEOR FALLS to the BOSS!$"
+	.string "But you're too late!$"
 
 MtChimney_Text_TabithaDefeat:
 	.string "Hehehe…\p"

@@ -90,6 +90,7 @@ SkyPillar_Top_EventScript_AwakenRayquaza::
 	fadeoutbgm 1
 	applymovement LOCALID_PLAYER, Common_Movement_FaceUp
 	waitmovement 0
+	call SkyPillar_Top_EventScript_CustomLegendary
 	special SpawnCameraObject
 	applymovement LOCALID_CAMERA, SkyPillar_Top_Movement_CameraPanUp
 	waitmovement 0
@@ -129,6 +130,16 @@ SkyPillar_Top_EventScript_AwakenRayquaza::
 	setvar VAR_SKY_PILLAR_RAYQUAZA_CRY_DONE, 1
 	releaseall
 	end
+
+SkyPillar_Top_EventScript_CustomLegendary::
+	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	setwildbattle SPECIES_RAYQUAZA, 58
+	special BattleSetup_StartLegendaryBattle
+	waitstate
+	setflag FLAG_DEFEATED_RAYQUAZA
+	return
 
 @ Rayquaza has unusual movement frames
 @ See comments, or sAnimTable_Rayquaza

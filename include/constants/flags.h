@@ -1389,7 +1389,7 @@
 #define FLAG_NURSE_UNION_ROOM_REMINDER              (SYSTEM_FLAGS + 0x20)
 #define FLAG_DEFEATED_AQUA_WOODS                    (SYSTEM_FLAGS + 0x21)
 #define FLAG_ROUTE110_RIVAL_DEFEATED                (SYSTEM_FLAGS + 0x22)
-#define FLAG_DEFEATED_TABITHA_MT_CHIMNEY            (SYSTEM_FLAGS + 0x23)
+#define FLAG_UNUSED_0x23                            (SYSTEM_FLAGS + 0x23) // Unused Flag because it didn't seem to work
 #define FLAG_DEFEATED_SHELLY_WEATHER_INST           (SYSTEM_FLAGS + 0x24)
 #define FLAG_ROUTE119_RIVAL_DEFEATED                (SYSTEM_FLAGS + 0x25)
 
@@ -1508,7 +1508,7 @@
 
 #define FLAG_RECEIVED_POKEDEX_FROM_BIRCH            (SYSTEM_FLAGS + 0x84)
 
-#define FLAG_UNUSED_0x8E5                           (SYSTEM_FLAGS + 0x85) // Unused Flag
+#define FLAG_DEFEATED_TABITHA_MT_CHIMNEY            (SYSTEM_FLAGS + 0x85)
 #define FLAG_UNUSED_0x8E6                           (SYSTEM_FLAGS + 0x86) // Unused Flag
 #define FLAG_UNUSED_0x8E7                           (SYSTEM_FLAGS + 0x87) // Unused Flag
 #define FLAG_UNUSED_0x8E8                           (SYSTEM_FLAGS + 0x88) // Unused Flag

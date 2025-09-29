@@ -19,19 +19,20 @@ u32 GetCurrentLevelCap(void)
         {FLAG_DELIVERED_DEVON_GOODS, 21}, // Boss gauntlet
         {FLAG_ROUTE110_RIVAL_DEFEATED, 23}, // Boss
         {FLAG_DEFEATED_WALLY_MAUVILLE, 25}, // Minor boss
-        {FLAG_BADGE03_GET, 26}, // Gym boss Wattson
+        {FLAG_BADGE03_GET, 26}, // Gym boss Wattson - gives Megabracelet
         {FLAG_DEFEATED_TABITHA_MT_CHIMNEY, 29}, // Minor boss
         {FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, 30}, // Major boss
-        {FLAG_BADGE04_GET, 33}, // Gym boss Flannery
-        {FLAG_BADGE05_GET, 36}, // Gym boss Norman
+        {FLAG_BADGE04_GET, 33}, // Gym boss Flannery - gives Regirock
+        {FLAG_BADGE05_GET, 36}, // Gym boss Norman - gives Regice
         {FLAG_DEFEATED_SHELLY_WEATHER_INST, 39}, // Minor boss
         {FLAG_ROUTE119_RIVAL_DEFEATED, 40}, // Boss
-        {FLAG_BADGE06_GET, 42}, // Gym boss Winona
+        {FLAG_BADGE06_GET, 42}, // Gym boss Winona - gives Registeel
         {FLAG_MET_RIVAL_LILYCOVE, 45}, // Boss
         {FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, 47}, // Major boss
         {FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, 50}, // Boss
-        {FLAG_BADGE07_GET, 52}, // Gym boss Tate and Liza
-        {FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN, 55}, // Major boss
+        {FLAG_BADGE07_GET, 52}, // Gym boss Tate and Liza - should give a strong Mon
+        // Isn't it considered a boss the tag fight with steven??
+        {FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN, 55}, // Major boss - gives Rayquaza
         {FLAG_BADGE08_GET, 58}, // Gym boss Juan
         {FLAG_DEFEATED_WALLY_VICTORY_ROAD, 61}, // Major boss
         {FLAG_FIRST_DEFEATED_ELITE_4_SIDNEY, 64}, // E4

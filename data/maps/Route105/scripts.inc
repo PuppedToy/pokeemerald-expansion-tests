@@ -77,8 +77,8 @@ Route105_EventScript_AndresRematch::
 	end
 
 Route104_Text_DadPokenavCall:
-	.string "It sounds like you're doing fine,\n"
-	.string "so that's fine with me.\p"
+	.string "DAD: It sounds like you're doing\n"
+	.string "fine, so that's fine with me.\p"
 	.string "You take care now.\p"
 	.string "… … … … … …\n"
 	.string "… … … … … Click!$"
