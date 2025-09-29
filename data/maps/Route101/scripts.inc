@@ -259,6 +259,8 @@ Route101_EventScript_BirchsBag::
 	applymovement LOCALID_ROUTE101_BIRCH, Route101_Movement_BirchLeaves
 	waitmovement 0
 	removeobject LOCALID_ROUTE101_BIRCH
+	applymovement LOCALID_PLAYER, Route101_Movement_ExitScene
+	waitmovement 0
 	releaseall
 	end
 
@@ -301,6 +303,14 @@ Route101_Movement_BirchLeaves:
 	walk_right
 	walk_down
 	walk_down
+	step_end
+
+Route101_Movement_ExitScene:
+	walk_fast_down
+	walk_fast_down
+	walk_fast_down
+	walk_fast_down
+	step_end
 
 Route101_Text_HelpMe:
 	.string "H-help me!$"
