@@ -259,7 +259,7 @@ Route101_EventScript_BirchsBag::
 	applymovement LOCALID_ROUTE101_BIRCH, Route101_Movement_BirchLeaves
 	waitmovement 0
 	removeobject LOCALID_ROUTE101_BIRCH
-	release
+	releaseall
 	end
 
 Route101_Text_LikeYouToHavePokemon:
