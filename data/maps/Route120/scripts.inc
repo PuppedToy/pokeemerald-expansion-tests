@@ -220,6 +220,19 @@ Route120_Text_RouteSign121:
 	.string "{RIGHT_ARROW} ROUTE 121\n"
 	.string "{LEFT_ARROW} ROUTE 120$"
 
+Kecleon_Text_SomethingUnseeable:
+	.string "Something unseeable is in the way.$"
+
+Kecleon_Text_WantToUseDevonScope:
+	.string "Something unseeable is in the way.\p"
+	.string "Want to use the DEVON SCOPE?$"
+
+Kecleon_Text_UseDevonScopeMonAttacked:
+	.string "{PLAYER} used the DEVON SCOPE.\p"
+	.string "An invisible POKéMON became completely\n"
+	.string "visible!\p"
+	.string "The startled POKéMON attacked!$"
+
 Route120_Text_StevenGreeting:
 	.string "I removed Kecleon for you.\n"
 	.string "But you have to defeat Winona.$"
