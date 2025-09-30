@@ -1,10 +1,12 @@
 const fs = require('fs').promises;
+const path = require('path');
 
 const TIER_STRONG = 'STRONG';
 const TOO_STRONG_POKEMON_THRESHOLD = 7.5;
 const EVO_TYPE_LC_OF_3 = 'EVO_TYPE_LC_OF_3';
 
-const startersFile = `${__dirname}\\..\\src\\starter_choose.c`;
+const startersFile = path.resolve(__dirname, '..', 'src', 'starter_choose.c');
+
 const starterMonText = `static const u16 sStarterMon[STARTER_MON_COUNT] =
 {
     SPECIES_TREECKO,

@@ -1,8 +1,11 @@
 const fs = require('fs').promises;
+const path = require('path');
 const writer = require('./writer');
 
-const speciesDir = `${__dirname}\\..\\src\\data\\pokemon\\species_info`;
-const levelUpLearnsetsDir = `${__dirname}\\..\\src\\data\\pokemon\\level_up_learnsets`;
+const speciesDir = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'species_info');
+const levelUpLearnsetsDir = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'level_up_learnsets');
+const abilitiesFilePath = path.resolve(__dirname, '..', 'src', 'data', 'abilities.h');
+
 const TOTAL_GENS = 9;
 
 const EVO_TYPE_SOLO = 'EVO_TYPE_SOLO';
@@ -605,12 +608,11 @@ function ratePokemon(poke, moves, abilitiesRatings) {
 }
 
 async function exe() {
-    const abilitiesFilePath = `${__dirname}\\..\\src\\data\\abilities.h`;
     const abilitiesFileText = await fs.readFile(abilitiesFilePath, 'utf-8');
     const abilitiesRatings = parseAbilitiesFileForAIRating(abilitiesFileText);
-    await fs.writeFile(`${__dirname}\\abilitiesRatings.json`, JSON.stringify(abilitiesRatings, null, 2), 'utf-8');
+    await fs.writeFile(path.resolve(__dirname, 'abilitiesRatings.json'), JSON.stringify(abilitiesRatings, null, 2), 'utf-8');
 
-    const movesFilePath = `${__dirname}\\..\\src\\data\\moves_info.h`;
+    const movesFilePath = path.resolve(__dirname, '..', 'src', 'data', 'moves_info.h');
     const movesFileText = await fs.readFile(movesFilePath, 'utf-8');
     const moves = parseMovesFile(movesFileText);
 
@@ -622,20 +624,20 @@ async function exe() {
         moves[moveId].rating = rateMove(moves[moveId]);
     });
 
-    await fs.writeFile(`${__dirname}\\moves.json`, JSON.stringify(moves, null, 2), 'utf-8');
+    await fs.writeFile(path.resolve(__dirname, 'moves.json'), JSON.stringify(moves, null, 2), 'utf-8');
 
     const levelUpLearnsets = {};
     for (let gen = 1; gen <= TOTAL_GENS; gen++) {
-        const learnsetsFilePath = `${levelUpLearnsetsDir}\\gen_${gen}.h`;
+        const learnsetsFilePath = path.resolve(levelUpLearnsetsDir, `gen_${gen}.h`);
         const learnsetsFileText = await fs.readFile(learnsetsFilePath, 'utf-8');
         Object.assign(levelUpLearnsets, parseLearnsetsFile(learnsetsFileText));
     }
-    await fs.writeFile(`${__dirname}\\level_up_learnsets.json`, JSON.stringify(levelUpLearnsets, null, 2), 'utf-8');
+    await fs.writeFile(path.resolve(__dirname, 'level_up_learnsets.json'), JSON.stringify(levelUpLearnsets, null, 2), 'utf-8');
 
-    const teachablesFilePath = `${__dirname}\\..\\src\\data\\pokemon\\teachable_learnsets.h`;
+    const teachablesFilePath = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'teachable_learnsets.h');
     const teachablesFileText = await fs.readFile(teachablesFilePath, 'utf-8');
     const TMTeachables = parseTeachableFile(teachablesFileText);
-    await fs.writeFile(`${__dirname}\\teachable_learnsets.json`, JSON.stringify(TMTeachables, null, 2), 'utf-8');
+    await fs.writeFile(path.resolve(__dirname, 'teachable_learnsets.json'), JSON.stringify(TMTeachables, null, 2), 'utf-8');
 
     const genPokes = [];
     const allPokes = [];
@@ -645,7 +647,7 @@ async function exe() {
     };
     const evoTree = {};
     for (let gen = 1; gen <= TOTAL_GENS; gen++) {
-        const genSpeciesFilePath = `${speciesDir}\\gen_${gen}_families.h`;
+        const genSpeciesFilePath = path.resolve(speciesDir, `gen_${gen}_families.h`);
         const genSpeciesFileText = await fs.readFile(genSpeciesFilePath, 'utf-8');
         genPokes.push(parseSpeciesFile(genSpeciesFileText, definitions, evoTree));
     }
@@ -737,8 +739,8 @@ async function exe() {
 
     // @TODO Algorithm to assing tiers based on rating distribution
 
-    await fs.writeFile(`${__dirname}\\evoTree.json`, JSON.stringify(evoTree, null, 2), 'utf-8');
-    await fs.writeFile(`${__dirname}\\pokes.json`, JSON.stringify(allPokes, null, 2), 'utf-8');
+    await fs.writeFile(path.resolve(__dirname, 'evoTree.json'), JSON.stringify(evoTree, null, 2), 'utf-8');
+    await fs.writeFile(path.resolve(__dirname, 'pokes.json'), JSON.stringify(allPokes, null, 2), 'utf-8');
 
     await writer(allPokes, moves, abilitiesRatings);
 }
