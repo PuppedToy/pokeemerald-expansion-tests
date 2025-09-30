@@ -1,0 +1,2401 @@
+{
+  "P_FAMILY_BULBASAUR": [
+    "SPECIES_BULBASAUR",
+    [
+      "SPECIES_IVYSAUR"
+    ],
+    [
+      "SPECIES_VENUSAUR"
+    ]
+  ],
+  "P_FAMILY_CHARMANDER": [
+    "SPECIES_CHARMANDER",
+    [
+      "SPECIES_CHARMELEON"
+    ],
+    [
+      "SPECIES_CHARIZARD"
+    ]
+  ],
+  "P_FAMILY_SQUIRTLE": [
+    "SPECIES_SQUIRTLE",
+    [
+      "SPECIES_WARTORTLE"
+    ],
+    [
+      "SPECIES_BLASTOISE"
+    ]
+  ],
+  "P_FAMILY_CATERPIE": [
+    "SPECIES_CATERPIE",
+    [
+      "SPECIES_METAPOD"
+    ],
+    [
+      "SPECIES_BUTTERFREE"
+    ]
+  ],
+  "P_FAMILY_WEEDLE": [
+    "SPECIES_WEEDLE",
+    [
+      "SPECIES_KAKUNA"
+    ],
+    [
+      "SPECIES_BEEDRILL"
+    ]
+  ],
+  "P_FAMILY_PIDGEY": [
+    "SPECIES_PIDGEY",
+    [
+      "SPECIES_PIDGEOTTO"
+    ],
+    [
+      "SPECIES_PIDGEOT"
+    ]
+  ],
+  "P_FAMILY_RATTATA": [
+    "SPECIES_RATTATA",
+    [
+      "SPECIES_RATICATE"
+    ]
+  ],
+  "P_FAMILY_SPEAROW": [
+    "SPECIES_SPEAROW",
+    [
+      "SPECIES_FEAROW"
+    ]
+  ],
+  "P_FAMILY_EKANS": [
+    "SPECIES_EKANS",
+    [
+      "SPECIES_ARBOK"
+    ]
+  ],
+  "P_FAMILY_PIKACHU": [
+    "SPECIES_PICHU",
+    [
+      "SPECIES_PIKACHU, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+    ]
+  ],
+  "P_FAMILY_SANDSHREW": [
+    "SPECIES_SANDSHREW",
+    [
+      "SPECIES_SANDSLASH"
+    ]
+  ],
+  "P_FAMILY_NIDORAN": [
+    "SPECIES_NIDORAN_F",
+    [
+      "SPECIES_NIDORINA"
+    ],
+    [
+      "SPECIES_NIDOQUEEN"
+    ]
+  ],
+  "P_FAMILY_CLEFAIRY": [
+    "SPECIES_CLEFFA",
+    [
+      "SPECIES_CLEFAIRY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+    ]
+  ],
+  "P_FAMILY_VULPIX": [
+    "SPECIES_VULPIX",
+    [
+      "SPECIES_NINETALES"
+    ]
+  ],
+  "P_FAMILY_JIGGLYPUFF": [
+    "SPECIES_IGGLYBUFF",
+    [
+      "SPECIES_JIGGLYPUFF, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+    ]
+  ],
+  "P_FAMILY_ZUBAT": [
+    "SPECIES_ZUBAT",
+    [
+      "SPECIES_GOLBAT"
+    ],
+    [
+      "SPECIES_CROBAT, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+    ]
+  ],
+  "P_FAMILY_ODDISH": [
+    "SPECIES_ODDISH",
+    [
+      "SPECIES_GLOOM"
+    ],
+    [
+      "SPECIES_VILEPLUME",
+      "SPECIES_BELLOSSOM"
+    ]
+  ],
+  "P_FAMILY_PARAS": [
+    "SPECIES_PARAS",
+    [
+      "SPECIES_PARASECT"
+    ]
+  ],
+  "P_FAMILY_VENONAT": [
+    "SPECIES_VENONAT",
+    [
+      "SPECIES_VENOMOTH"
+    ]
+  ],
+  "P_FAMILY_DIGLETT": [
+    "SPECIES_DIGLETT",
+    [
+      "SPECIES_DUGTRIO"
+    ]
+  ],
+  "P_FAMILY_MEOWTH": [
+    "SPECIES_MEOWTH",
+    [
+      "SPECIES_PERSIAN"
+    ]
+  ],
+  "P_FAMILY_PSYDUCK": [
+    "SPECIES_PSYDUCK",
+    [
+      "SPECIES_GOLDUCK"
+    ]
+  ],
+  "P_FAMILY_MANKEY": [
+    "SPECIES_MANKEY",
+    [
+      "SPECIES_PRIMEAPE"
+    ],
+    [
+      "SPECIES_ANNIHILAPE, CONDITIONS({IF_USED_MOVE_X_TIMES, MOVE_RAGE_FIST, 20})"
+    ]
+  ],
+  "P_FAMILY_GROWLITHE": [
+    "SPECIES_GROWLITHE",
+    [
+      "SPECIES_ARCANINE"
+    ]
+  ],
+  "P_FAMILY_POLIWAG": [
+    "SPECIES_POLIWAG",
+    [
+      "SPECIES_POLIWHIRL"
+    ],
+    [
+      "SPECIES_POLIWRATH",
+      "SPECIES_POLITOED, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})",
+      "SPECIES_POLITOED"
+    ]
+  ],
+  "P_FAMILY_ABRA": [
+    "SPECIES_ABRA",
+    [
+      "SPECIES_KADABRA"
+    ],
+    [
+      "SPECIES_ALAKAZAM",
+      "SPECIES_ALAKAZAM"
+    ]
+  ],
+  "P_FAMILY_MACHOP": [
+    "SPECIES_MACHOP",
+    [
+      "SPECIES_MACHOKE"
+    ],
+    [
+      "SPECIES_MACHAMP",
+      "SPECIES_MACHAMP"
+    ]
+  ],
+  "P_FAMILY_BELLSPROUT": [
+    "SPECIES_BELLSPROUT",
+    [
+      "SPECIES_WEEPINBELL"
+    ],
+    [
+      "SPECIES_VICTREEBEL"
+    ]
+  ],
+  "P_FAMILY_TENTACOOL": [
+    "SPECIES_TENTACOOL",
+    [
+      "SPECIES_TENTACRUEL"
+    ]
+  ],
+  "P_FAMILY_GEODUDE": [
+    "SPECIES_GEODUDE",
+    [
+      "SPECIES_GRAVELER"
+    ],
+    [
+      "SPECIES_GOLEM",
+      "SPECIES_GOLEM"
+    ]
+  ],
+  "P_FAMILY_PONYTA": [
+    "SPECIES_PONYTA",
+    [
+      "SPECIES_RAPIDASH"
+    ]
+  ],
+  "P_FAMILY_SLOWPOKE": [
+    "SPECIES_SLOWPOKE",
+    [
+      "SPECIES_SLOWBRO",
+      "SPECIES_SLOWKING, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})",
+      "SPECIES_SLOWKING"
+    ]
+  ],
+  "P_FAMILY_MAGNEMITE": [
+    "SPECIES_MAGNEMITE",
+    [
+      "SPECIES_MAGNETON"
+    ],
+    [
+      "SPECIES_MAGNEZONE, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})",
+      "SPECIES_MAGNEZONE"
+    ]
+  ],
+  "P_FAMILY_FARFETCHD": [
+    "SPECIES_FARFETCHD_GALAR",
+    [
+      "SPECIES_SIRFETCHD, CONDITIONS({IF_CRITICAL_HITS_GE, 3})"
+    ]
+  ],
+  "P_FAMILY_DODUO": [
+    "SPECIES_DODUO",
+    [
+      "SPECIES_DODRIO"
+    ]
+  ],
+  "P_FAMILY_SEEL": [
+    "SPECIES_SEEL",
+    [
+      "SPECIES_DEWGONG"
+    ]
+  ],
+  "P_FAMILY_GRIMER": [
+    "SPECIES_GRIMER",
+    [
+      "SPECIES_MUK"
+    ]
+  ],
+  "P_FAMILY_SHELLDER": [
+    "SPECIES_SHELLDER",
+    [
+      "SPECIES_CLOYSTER"
+    ]
+  ],
+  "P_FAMILY_GASTLY": [
+    "SPECIES_GASTLY",
+    [
+      "SPECIES_HAUNTER"
+    ],
+    [
+      "SPECIES_GENGAR",
+      "SPECIES_GENGAR"
+    ]
+  ],
+  "P_FAMILY_ONIX": [
+    "SPECIES_ONIX",
+    [
+      "SPECIES_STEELIX, CONDITIONS({IF_HOLD_ITEM, ITEM_METAL_COAT})",
+      "SPECIES_STEELIX"
+    ]
+  ],
+  "P_FAMILY_DROWZEE": [
+    "SPECIES_DROWZEE",
+    [
+      "SPECIES_HYPNO"
+    ]
+  ],
+  "P_FAMILY_KRABBY": [
+    "SPECIES_KRABBY",
+    [
+      "SPECIES_KINGLER"
+    ]
+  ],
+  "P_FAMILY_VOLTORB": [
+    "SPECIES_VOLTORB",
+    [
+      "SPECIES_ELECTRODE"
+    ]
+  ],
+  "P_FAMILY_EXEGGCUTE": [
+    "SPECIES_EXEGGCUTE",
+    [
+      "SPECIES_EXEGGUTOR",
+      "SPECIES_EXEGGUTOR_ALOLA"
+    ]
+  ],
+  "P_FAMILY_CUBONE": [
+    "SPECIES_CUBONE",
+    [
+      "SPECIES_MAROWAK",
+      "SPECIES_MAROWAK_ALOLA",
+      "SPECIES_MAROWAK_ALOLA_TOTEM"
+    ]
+  ],
+  "P_FAMILY_HITMONS": [
+    "SPECIES_TYROGUE",
+    [
+      "SPECIES_HITMONCHAN, CONDITIONS({IF_ATK_LT_DEF})",
+      "SPECIES_HITMONLEE, CONDITIONS({IF_ATK_GT_DEF})",
+      "SPECIES_HITMONTOP, CONDITIONS({IF_ATK_EQ_DEF})"
+    ]
+  ],
+  "P_FAMILY_LICKITUNG": [
+    "SPECIES_LICKITUNG",
+    [
+      "SPECIES_LICKILICKY, CONDITIONS({IF_KNOWS_MOVE, MOVE_ROLLOUT})"
+    ]
+  ],
+  "P_FAMILY_KOFFING": [
+    "SPECIES_KOFFING",
+    [
+      "SPECIES_WEEZING",
+      "SPECIES_WEEZING_GALAR"
+    ]
+  ],
+  "P_FAMILY_RHYHORN": [
+    "SPECIES_RHYHORN",
+    [
+      "SPECIES_RHYDON"
+    ],
+    [
+      "SPECIES_RHYPERIOR, CONDITIONS({IF_HOLD_ITEM, ITEM_PROTECTOR})",
+      "SPECIES_RHYPERIOR"
+    ]
+  ],
+  "P_FAMILY_CHANSEY": [
+    "SPECIES_HAPPINY",
+    [
+      "SPECIES_CHANSEY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT},{IF_HOLD_ITEM, ITEM_OVAL_STONE})",
+      "SPECIES_CHANSEY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+    ]
+  ],
+  "P_FAMILY_TANGELA": [
+    "SPECIES_TANGELA",
+    [
+      "SPECIES_TANGROWTH, CONDITIONS({IF_KNOWS_MOVE, MOVE_ANCIENT_POWER})"
+    ]
+  ],
+  "P_FAMILY_HORSEA": [
+    "SPECIES_HORSEA",
+    [
+      "SPECIES_SEADRA"
+    ],
+    [
+      "SPECIES_KINGDRA, CONDITIONS({IF_HOLD_ITEM, ITEM_DRAGON_SCALE})",
+      "SPECIES_KINGDRA"
+    ]
+  ],
+  "P_FAMILY_GOLDEEN": [
+    "SPECIES_GOLDEEN",
+    [
+      "SPECIES_SEAKING"
+    ]
+  ],
+  "P_FAMILY_STARYU": [
+    "SPECIES_STARYU",
+    [
+      "SPECIES_STARMIE"
+    ]
+  ],
+  "P_FAMILY_MR_MIME": [
+    "SPECIES_MIME_JR",
+    [
+      "SPECIES_MR_MIME, CONDITIONS({IF_KNOWS_MOVE, MOVE_MIMIC})",
+      "SPECIES_MR_MIME_GALAR"
+    ],
+    [
+      "SPECIES_MR_RIME"
+    ]
+  ],
+  "P_FAMILY_SCYTHER": [
+    "SPECIES_SCYTHER",
+    [
+      "SPECIES_SCIZOR, CONDITIONS({IF_HOLD_ITEM, ITEM_METAL_COAT})",
+      "SPECIES_SCIZOR",
+      "SPECIES_KLEAVOR"
+    ]
+  ],
+  "P_FAMILY_JYNX": [
+    "SPECIES_SMOOCHUM",
+    [
+      "SPECIES_JYNX"
+    ]
+  ],
+  "P_FAMILY_ELECTABUZZ": [
+    "SPECIES_ELEKID",
+    [
+      "SPECIES_ELECTABUZZ"
+    ],
+    [
+      "SPECIES_ELECTIVIRE, CONDITIONS({IF_HOLD_ITEM, ITEM_ELECTIRIZER})",
+      "SPECIES_ELECTIVIRE"
+    ]
+  ],
+  "P_FAMILY_MAGMAR": [
+    "SPECIES_MAGBY",
+    [
+      "SPECIES_MAGMAR"
+    ],
+    [
+      "SPECIES_MAGMORTAR, CONDITIONS({IF_HOLD_ITEM, ITEM_MAGMARIZER})",
+      "SPECIES_MAGMORTAR"
+    ]
+  ],
+  "P_FAMILY_MAGIKARP": [
+    "SPECIES_MAGIKARP",
+    [
+      "SPECIES_GYARADOS"
+    ]
+  ],
+  "P_FAMILY_EEVEE": [
+    "SPECIES_EEVEE",
+    [
+      "SPECIES_JOLTEON",
+      "SPECIES_VAPOREON",
+      "SPECIES_FLAREON",
+      "SPECIES_SYLVEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_KNOWS_MOVE_TYPE, TYPE_FAIRY})",
+      "SPECIES_ESPEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_NOT_TIME, TIME_NIGHT})",
+      "SPECIES_UMBREON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_TIME, TIME_NIGHT})",
+      "SPECIES_LEAFEON, CONDITIONS({IF_IN_MAP, MAP_PETALBURG_WOODS})",
+      "SPECIES_LEAFEON",
+      "SPECIES_GLACEON, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})",
+      "SPECIES_GLACEON"
+    ]
+  ],
+  "P_FAMILY_PORYGON": [
+    "SPECIES_PORYGON",
+    [
+      "SPECIES_PORYGON2, CONDITIONS({IF_HOLD_ITEM, ITEM_UPGRADE})",
+      "SPECIES_PORYGON2"
+    ],
+    [
+      "SPECIES_PORYGON_Z, CONDITIONS({IF_HOLD_ITEM, ITEM_DUBIOUS_DISC})",
+      "SPECIES_PORYGON_Z"
+    ]
+  ],
+  "P_FAMILY_OMANYTE": [
+    "SPECIES_OMANYTE",
+    [
+      "SPECIES_OMASTAR"
+    ]
+  ],
+  "P_FAMILY_KABUTO": [
+    "SPECIES_KABUTO",
+    [
+      "SPECIES_KABUTOPS"
+    ]
+  ],
+  "P_FAMILY_SNORLAX": [
+    "SPECIES_MUNCHLAX",
+    [
+      "SPECIES_SNORLAX, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+    ]
+  ],
+  "P_FAMILY_DRATINI": [
+    "SPECIES_DRATINI",
+    [
+      "SPECIES_DRAGONAIR"
+    ],
+    [
+      "SPECIES_DRAGONITE"
+    ]
+  ],
+  "P_FAMILY_CHIKORITA": [
+    "SPECIES_CHIKORITA",
+    [
+      "SPECIES_BAYLEEF"
+    ],
+    [
+      "SPECIES_MEGANIUM"
+    ]
+  ],
+  "P_FAMILY_CYNDAQUIL": [
+    "SPECIES_CYNDAQUIL",
+    [
+      "SPECIES_QUILAVA"
+    ],
+    [
+      "SPECIES_TYPHLOSION",
+      "SPECIES_TYPHLOSION_HISUI"
+    ]
+  ],
+  "P_FAMILY_TOTODILE": [
+    "SPECIES_TOTODILE",
+    [
+      "SPECIES_CROCONAW"
+    ],
+    [
+      "SPECIES_FERALIGATR"
+    ]
+  ],
+  "P_FAMILY_SENTRET": [
+    "SPECIES_SENTRET",
+    [
+      "SPECIES_FURRET"
+    ]
+  ],
+  "P_FAMILY_HOOTHOOT": [
+    "SPECIES_HOOTHOOT",
+    [
+      "SPECIES_NOCTOWL"
+    ]
+  ],
+  "P_FAMILY_LEDYBA": [
+    "SPECIES_LEDYBA",
+    [
+      "SPECIES_LEDIAN"
+    ]
+  ],
+  "P_FAMILY_SPINARAK": [
+    "SPECIES_SPINARAK",
+    [
+      "SPECIES_ARIADOS"
+    ]
+  ],
+  "P_FAMILY_CHINCHOU": [
+    "SPECIES_CHINCHOU",
+    [
+      "SPECIES_LANTURN"
+    ]
+  ],
+  "P_FAMILY_TOGEPI": [
+    "SPECIES_TOGEPI",
+    [
+      "SPECIES_TOGETIC, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+    ]
+  ],
+  "P_FAMILY_NATU": [
+    "SPECIES_NATU",
+    [
+      "SPECIES_XATU"
+    ]
+  ],
+  "P_FAMILY_MAREEP": [
+    "SPECIES_MAREEP",
+    [
+      "SPECIES_FLAAFFY"
+    ],
+    [
+      "SPECIES_AMPHAROS"
+    ]
+  ],
+  "P_FAMILY_MARILL": [
+    "SPECIES_AZURILL",
+    [
+      "SPECIES_MARILL, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+    ]
+  ],
+  "P_FAMILY_SUDOWOODO": [
+    "SPECIES_BONSLY",
+    [
+      "SPECIES_SUDOWOODO, CONDITIONS({IF_KNOWS_MOVE, MOVE_MIMIC})"
+    ]
+  ],
+  "P_FAMILY_HOPPIP": [
+    "SPECIES_HOPPIP",
+    [
+      "SPECIES_SKIPLOOM"
+    ],
+    [
+      "SPECIES_JUMPLUFF"
+    ]
+  ],
+  "P_FAMILY_AIPOM": [
+    "SPECIES_AIPOM",
+    [
+      "SPECIES_AMBIPOM, CONDITIONS({IF_KNOWS_MOVE, MOVE_DOUBLE_HIT})"
+    ]
+  ],
+  "P_FAMILY_SUNKERN": [
+    "SPECIES_SUNKERN",
+    [
+      "SPECIES_SUNFLORA"
+    ]
+  ],
+  "P_FAMILY_YANMA": [
+    "SPECIES_YANMA",
+    [
+      "SPECIES_YANMEGA, CONDITIONS({IF_KNOWS_MOVE, MOVE_ANCIENT_POWER})"
+    ]
+  ],
+  "P_FAMILY_WOOPER": [
+    "SPECIES_WOOPER",
+    [
+      "SPECIES_QUAGSIRE"
+    ]
+  ],
+  "P_FAMILY_MURKROW": [
+    "SPECIES_MURKROW",
+    [
+      "SPECIES_HONCHKROW"
+    ]
+  ],
+  "P_FAMILY_MISDREAVUS": [
+    "SPECIES_MISDREAVUS",
+    [
+      "SPECIES_MISMAGIUS"
+    ]
+  ],
+  "P_FAMILY_WOBBUFFET": [
+    "SPECIES_WYNAUT",
+    [
+      "SPECIES_WOBBUFFET"
+    ]
+  ],
+  "P_FAMILY_GIRAFARIG": [
+    "SPECIES_GIRAFARIG",
+    [
+      "SPECIES_FARIGIRAF, CONDITIONS({IF_KNOWS_MOVE, MOVE_TWIN_BEAM})"
+    ]
+  ],
+  "P_FAMILY_PINECO": [
+    "SPECIES_PINECO",
+    [
+      "SPECIES_FORRETRESS"
+    ]
+  ],
+  "P_FAMILY_DUNSPARCE": [
+    "SPECIES_DUNSPARCE",
+    [
+      "SPECIES_DUDUNSPARCE_TWO_SEGMENT, CONDITIONS({IF_KNOWS_MOVE, MOVE_HYPER_DRILL}, {IF_PID_MODULO_100_GT, 0})",
+      "SPECIES_DUDUNSPARCE_THREE_SEGMENT, CONDITIONS({IF_KNOWS_MOVE, MOVE_HYPER_DRILL}, {IF_PID_MODULO_100_EQ, 0})"
+    ]
+  ],
+  "P_FAMILY_GLIGAR": [
+    "SPECIES_GLIGAR",
+    [
+      "SPECIES_GLISCOR, CONDITIONS({IF_TIME, TIME_NIGHT}, {IF_HOLD_ITEM, ITEM_RAZOR_FANG})",
+      "SPECIES_GLISCOR, CONDITIONS({IF_TIME, TIME_NIGHT})"
+    ]
+  ],
+  "P_FAMILY_SNUBBULL": [
+    "SPECIES_SNUBBULL",
+    [
+      "SPECIES_GRANBULL"
+    ]
+  ],
+  "P_FAMILY_QWILFISH": [
+    "SPECIES_QWILFISH_HISUI",
+    [
+      "SPECIES_OVERQWIL, CONDITIONS({IF_KNOWS_MOVE, MOVE_BARB_BARRAGE})"
+    ]
+  ],
+  "P_FAMILY_SNEASEL": [
+    "SPECIES_SNEASEL",
+    [
+      "SPECIES_WEAVILE, CONDITIONS({IF_TIME, TIME_NIGHT}, {IF_HOLD_ITEM, ITEM_RAZOR_CLAW})",
+      "SPECIES_WEAVILE, CONDITIONS({IF_TIME, TIME_NIGHT})"
+    ]
+  ],
+  "P_FAMILY_TEDDIURSA": [
+    "SPECIES_TEDDIURSA",
+    [
+      "SPECIES_URSARING"
+    ],
+    [
+      "SPECIES_URSALUNA, CONDITIONS({IF_TIME, TIME_NIGHT})",
+      "SPECIES_URSALUNA_BLOODMOON"
+    ]
+  ],
+  "P_FAMILY_SLUGMA": [
+    "SPECIES_SLUGMA",
+    [
+      "SPECIES_MAGCARGO"
+    ]
+  ],
+  "P_FAMILY_SWINUB": [
+    "SPECIES_SWINUB",
+    [
+      "SPECIES_PILOSWINE"
+    ],
+    [
+      "SPECIES_MAMOSWINE, CONDITIONS({IF_KNOWS_MOVE, MOVE_ANCIENT_POWER})"
+    ]
+  ],
+  "P_FAMILY_CORSOLA": [
+    "SPECIES_CORSOLA_GALAR",
+    [
+      "SPECIES_CURSOLA"
+    ]
+  ],
+  "P_FAMILY_REMORAID": [
+    "SPECIES_REMORAID",
+    [
+      "SPECIES_OCTILLERY"
+    ]
+  ],
+  "P_FAMILY_MANTINE": [
+    "SPECIES_MANTYKE",
+    [
+      "SPECIES_MANTINE, CONDITIONS({IF_SPECIES_IN_PARTY, SPECIES_REMORAID})"
+    ]
+  ],
+  "P_FAMILY_HOUNDOUR": [
+    "SPECIES_HOUNDOUR",
+    [
+      "SPECIES_HOUNDOOM"
+    ]
+  ],
+  "P_FAMILY_PHANPY": [
+    "SPECIES_PHANPY",
+    [
+      "SPECIES_DONPHAN"
+    ]
+  ],
+  "P_FAMILY_STANTLER": [
+    "SPECIES_STANTLER",
+    [
+      "SPECIES_WYRDEER, CONDITIONS({IF_USED_MOVE_X_TIMES, MOVE_PSYSHIELD_BASH, 20})"
+    ]
+  ],
+  "P_FAMILY_LARVITAR": [
+    "SPECIES_LARVITAR",
+    [
+      "SPECIES_PUPITAR"
+    ],
+    [
+      "SPECIES_TYRANITAR"
+    ]
+  ],
+  "P_FAMILY_TREECKO": [
+    "SPECIES_TREECKO",
+    [
+      "SPECIES_GROVYLE"
+    ],
+    [
+      "SPECIES_SCEPTILE"
+    ]
+  ],
+  "P_FAMILY_TORCHIC": [
+    "SPECIES_TORCHIC",
+    [
+      "SPECIES_COMBUSKEN"
+    ],
+    [
+      "SPECIES_BLAZIKEN"
+    ]
+  ],
+  "P_FAMILY_MUDKIP": [
+    "SPECIES_MUDKIP",
+    [
+      "SPECIES_MARSHTOMP"
+    ],
+    [
+      "SPECIES_SWAMPERT"
+    ]
+  ],
+  "P_FAMILY_POOCHYENA": [
+    "SPECIES_POOCHYENA",
+    [
+      "SPECIES_MIGHTYENA"
+    ]
+  ],
+  "P_FAMILY_ZIGZAGOON": [
+    "SPECIES_ZIGZAGOON",
+    [
+      "SPECIES_LINOONE"
+    ]
+  ],
+  "P_FAMILY_WURMPLE": [
+    "SPECIES_WURMPLE",
+    [
+      "SPECIES_SILCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_GT, 4})",
+      "SPECIES_CASCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_LT, 5})"
+    ]
+  ],
+  "P_FAMILY_LOTAD": [
+    "SPECIES_LOTAD",
+    [
+      "SPECIES_LOMBRE"
+    ],
+    [
+      "SPECIES_LUDICOLO"
+    ]
+  ],
+  "P_FAMILY_SEEDOT": [
+    "SPECIES_SEEDOT",
+    [
+      "SPECIES_NUZLEAF"
+    ],
+    [
+      "SPECIES_SHIFTRY"
+    ]
+  ],
+  "P_FAMILY_TAILLOW": [
+    "SPECIES_TAILLOW",
+    [
+      "SPECIES_SWELLOW"
+    ]
+  ],
+  "P_FAMILY_WINGULL": [
+    "SPECIES_WINGULL",
+    [
+      "SPECIES_PELIPPER"
+    ]
+  ],
+  "P_FAMILY_RALTS": [
+    "SPECIES_RALTS",
+    [
+      "SPECIES_KIRLIA"
+    ],
+    [
+      "SPECIES_GARDEVOIR",
+      "SPECIES_GALLADE, CONDITIONS({IF_GENDER, MON_MALE})"
+    ]
+  ],
+  "P_FAMILY_SURSKIT": [
+    "SPECIES_SURSKIT",
+    [
+      "SPECIES_MASQUERAIN"
+    ]
+  ],
+  "P_FAMILY_SHROOMISH": [
+    "SPECIES_SHROOMISH",
+    [
+      "SPECIES_BRELOOM"
+    ]
+  ],
+  "P_FAMILY_SLAKOTH": [
+    "SPECIES_SLAKOTH",
+    [
+      "SPECIES_VIGOROTH"
+    ],
+    [
+      "SPECIES_SLAKING"
+    ]
+  ],
+  "P_FAMILY_NINCADA": [
+    "SPECIES_NINCADA",
+    [
+      "SPECIES_NINJASK",
+      "SPECIES_SHEDINJA, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_POKE_BALL, 1})",
+      "SPECIES_SHEDINJA"
+    ]
+  ],
+  "P_FAMILY_WHISMUR": [
+    "SPECIES_WHISMUR",
+    [
+      "SPECIES_LOUDRED"
+    ],
+    [
+      "SPECIES_EXPLOUD"
+    ]
+  ],
+  "P_FAMILY_MAKUHITA": [
+    "SPECIES_MAKUHITA",
+    [
+      "SPECIES_HARIYAMA"
+    ]
+  ],
+  "P_FAMILY_NOSEPASS": [
+    "SPECIES_NOSEPASS",
+    [
+      "SPECIES_PROBOPASS, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})",
+      "SPECIES_PROBOPASS"
+    ]
+  ],
+  "P_FAMILY_SKITTY": [
+    "SPECIES_SKITTY",
+    [
+      "SPECIES_DELCATTY"
+    ]
+  ],
+  "P_FAMILY_ARON": [
+    "SPECIES_ARON",
+    [
+      "SPECIES_LAIRON"
+    ],
+    [
+      "SPECIES_AGGRON"
+    ]
+  ],
+  "P_FAMILY_MEDITITE": [
+    "SPECIES_MEDITITE",
+    [
+      "SPECIES_MEDICHAM"
+    ]
+  ],
+  "P_FAMILY_ELECTRIKE": [
+    "SPECIES_ELECTRIKE",
+    [
+      "SPECIES_MANECTRIC"
+    ]
+  ],
+  "P_FAMILY_ROSELIA": [
+    "SPECIES_BUDEW",
+    [
+      "SPECIES_ROSELIA, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_NOT_TIME, TIME_NIGHT})"
+    ]
+  ],
+  "P_FAMILY_GULPIN": [
+    "SPECIES_GULPIN",
+    [
+      "SPECIES_SWALOT"
+    ]
+  ],
+  "P_FAMILY_CARVANHA": [
+    "SPECIES_CARVANHA",
+    [
+      "SPECIES_SHARPEDO"
+    ]
+  ],
+  "P_FAMILY_WAILMER": [
+    "SPECIES_WAILMER",
+    [
+      "SPECIES_WAILORD"
+    ]
+  ],
+  "P_FAMILY_NUMEL": [
+    "SPECIES_NUMEL",
+    [
+      "SPECIES_CAMERUPT"
+    ]
+  ],
+  "P_FAMILY_SPOINK": [
+    "SPECIES_SPOINK",
+    [
+      "SPECIES_GRUMPIG"
+    ]
+  ],
+  "P_FAMILY_TRAPINCH": [
+    "SPECIES_TRAPINCH",
+    [
+      "SPECIES_VIBRAVA"
+    ],
+    [
+      "SPECIES_FLYGON"
+    ]
+  ],
+  "P_FAMILY_CACNEA": [
+    "SPECIES_CACNEA",
+    [
+      "SPECIES_CACTURNE"
+    ]
+  ],
+  "P_FAMILY_SWABLU": [
+    "SPECIES_SWABLU",
+    [
+      "SPECIES_ALTARIA"
+    ]
+  ],
+  "P_FAMILY_BARBOACH": [
+    "SPECIES_BARBOACH",
+    [
+      "SPECIES_WHISCASH"
+    ]
+  ],
+  "P_FAMILY_CORPHISH": [
+    "SPECIES_CORPHISH",
+    [
+      "SPECIES_CRAWDAUNT"
+    ]
+  ],
+  "P_FAMILY_BALTOY": [
+    "SPECIES_BALTOY",
+    [
+      "SPECIES_CLAYDOL"
+    ]
+  ],
+  "P_FAMILY_LILEEP": [
+    "SPECIES_LILEEP",
+    [
+      "SPECIES_CRADILY"
+    ]
+  ],
+  "P_FAMILY_ANORITH": [
+    "SPECIES_ANORITH",
+    [
+      "SPECIES_ARMALDO"
+    ]
+  ],
+  "P_FAMILY_FEEBAS": [
+    "SPECIES_FEEBAS",
+    [
+      "SPECIES_MILOTIC, CONDITIONS({IF_MIN_BEAUTY, 170})",
+      "SPECIES_MILOTIC, CONDITIONS({IF_HOLD_ITEM, ITEM_PRISM_SCALE})",
+      "SPECIES_MILOTIC"
+    ]
+  ],
+  "P_FAMILY_SHUPPET": [
+    "SPECIES_SHUPPET",
+    [
+      "SPECIES_BANETTE"
+    ]
+  ],
+  "P_FAMILY_DUSKULL": [
+    "SPECIES_DUSKULL",
+    [
+      "SPECIES_DUSCLOPS"
+    ],
+    [
+      "SPECIES_DUSKNOIR, CONDITIONS({IF_HOLD_ITEM, ITEM_REAPER_CLOTH})",
+      "SPECIES_DUSKNOIR"
+    ]
+  ],
+  "P_FAMILY_CHIMECHO": [
+    "SPECIES_CHINGLING",
+    [
+      "SPECIES_CHIMECHO, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_TIME, TIME_NIGHT})"
+    ]
+  ],
+  "P_FAMILY_SNORUNT": [
+    "SPECIES_SNORUNT",
+    [
+      "SPECIES_GLALIE",
+      "SPECIES_FROSLASS, CONDITIONS({IF_GENDER, MON_FEMALE})"
+    ]
+  ],
+  "P_FAMILY_SPHEAL": [
+    "SPECIES_SPHEAL",
+    [
+      "SPECIES_SEALEO"
+    ],
+    [
+      "SPECIES_WALREIN"
+    ]
+  ],
+  "P_FAMILY_CLAMPERL": [
+    "SPECIES_CLAMPERL",
+    [
+      "SPECIES_HUNTAIL, CONDITIONS({IF_HOLD_ITEM, ITEM_DEEP_SEA_TOOTH})",
+      "SPECIES_GOREBYSS, CONDITIONS({IF_HOLD_ITEM, ITEM_DEEP_SEA_SCALE})",
+      "SPECIES_HUNTAIL",
+      "SPECIES_GOREBYSS"
+    ]
+  ],
+  "P_FAMILY_BAGON": [
+    "SPECIES_BAGON",
+    [
+      "SPECIES_SHELGON"
+    ],
+    [
+      "SPECIES_SALAMENCE"
+    ]
+  ],
+  "P_FAMILY_BELDUM": [
+    "SPECIES_BELDUM",
+    [
+      "SPECIES_METANG"
+    ],
+    [
+      "SPECIES_METAGROSS"
+    ]
+  ],
+  "P_FAMILY_TURTWIG": [
+    "SPECIES_TURTWIG",
+    [
+      "SPECIES_GROTLE"
+    ],
+    [
+      "SPECIES_TORTERRA"
+    ]
+  ],
+  "P_FAMILY_CHIMCHAR": [
+    "SPECIES_CHIMCHAR",
+    [
+      "SPECIES_MONFERNO"
+    ],
+    [
+      "SPECIES_INFERNAPE"
+    ]
+  ],
+  "P_FAMILY_PIPLUP": [
+    "SPECIES_PIPLUP",
+    [
+      "SPECIES_PRINPLUP"
+    ],
+    [
+      "SPECIES_EMPOLEON"
+    ]
+  ],
+  "P_FAMILY_STARLY": [
+    "SPECIES_STARLY",
+    [
+      "SPECIES_STARAVIA"
+    ],
+    [
+      "SPECIES_STARAPTOR"
+    ]
+  ],
+  "P_FAMILY_BIDOOF": [
+    "SPECIES_BIDOOF",
+    [
+      "SPECIES_BIBAREL"
+    ]
+  ],
+  "P_FAMILY_KRICKETOT": [
+    "SPECIES_KRICKETOT",
+    [
+      "SPECIES_KRICKETUNE"
+    ]
+  ],
+  "P_FAMILY_SHINX": [
+    "SPECIES_SHINX",
+    [
+      "SPECIES_LUXIO"
+    ],
+    [
+      "SPECIES_LUXRAY"
+    ]
+  ],
+  "P_FAMILY_CRANIDOS": [
+    "SPECIES_CRANIDOS",
+    [
+      "SPECIES_RAMPARDOS"
+    ]
+  ],
+  "P_FAMILY_SHIELDON": [
+    "SPECIES_SHIELDON",
+    [
+      "SPECIES_BASTIODON"
+    ]
+  ],
+  "P_FAMILY_COMBEE": [
+    "SPECIES_COMBEE",
+    [
+      "SPECIES_VESPIQUEN, CONDITIONS({IF_GENDER, MON_FEMALE})"
+    ]
+  ],
+  "P_FAMILY_BUIZEL": [
+    "SPECIES_BUIZEL",
+    [
+      "SPECIES_FLOATZEL"
+    ]
+  ],
+  "P_FAMILY_CHERUBI": [
+    "SPECIES_CHERUBI",
+    [
+      "SPECIES_CHERRIM_OVERCAST"
+    ]
+  ],
+  "P_FAMILY_SHELLOS": [
+    "SPECIES_SHELLOS_WEST",
+    [
+      "SPECIES_GASTRODON_WEST"
+    ]
+  ],
+  "P_FAMILY_DRIFLOON": [
+    "SPECIES_DRIFLOON",
+    [
+      "SPECIES_DRIFBLIM"
+    ]
+  ],
+  "P_FAMILY_BUNEARY": [
+    "SPECIES_BUNEARY",
+    [
+      "SPECIES_LOPUNNY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+    ]
+  ],
+  "P_FAMILY_GLAMEOW": [
+    "SPECIES_GLAMEOW",
+    [
+      "SPECIES_PURUGLY"
+    ]
+  ],
+  "P_FAMILY_STUNKY": [
+    "SPECIES_STUNKY",
+    [
+      "SPECIES_SKUNTANK"
+    ]
+  ],
+  "P_FAMILY_BRONZOR": [
+    "SPECIES_BRONZOR",
+    [
+      "SPECIES_BRONZONG"
+    ]
+  ],
+  "P_FAMILY_GIBLE": [
+    "SPECIES_GIBLE",
+    [
+      "SPECIES_GABITE"
+    ],
+    [
+      "SPECIES_GARCHOMP"
+    ]
+  ],
+  "P_FAMILY_RIOLU": [
+    "SPECIES_RIOLU",
+    [
+      "SPECIES_LUCARIO, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_NOT_TIME, TIME_NIGHT})"
+    ]
+  ],
+  "P_FAMILY_HIPPOPOTAS": [
+    "SPECIES_HIPPOPOTAS",
+    [
+      "SPECIES_HIPPOWDON"
+    ]
+  ],
+  "P_FAMILY_SKORUPI": [
+    "SPECIES_SKORUPI",
+    [
+      "SPECIES_DRAPION"
+    ]
+  ],
+  "P_FAMILY_CROAGUNK": [
+    "SPECIES_CROAGUNK",
+    [
+      "SPECIES_TOXICROAK"
+    ]
+  ],
+  "P_FAMILY_FINNEON": [
+    "SPECIES_FINNEON",
+    [
+      "SPECIES_LUMINEON"
+    ]
+  ],
+  "P_FAMILY_SNOVER": [
+    "SPECIES_SNOVER",
+    [
+      "SPECIES_ABOMASNOW"
+    ]
+  ],
+  "P_FAMILY_SNIVY": [
+    "SPECIES_SNIVY",
+    [
+      "SPECIES_SERVINE"
+    ],
+    [
+      "SPECIES_SERPERIOR"
+    ]
+  ],
+  "P_FAMILY_TEPIG": [
+    "SPECIES_TEPIG",
+    [
+      "SPECIES_PIGNITE"
+    ],
+    [
+      "SPECIES_EMBOAR"
+    ]
+  ],
+  "P_FAMILY_OSHAWOTT": [
+    "SPECIES_OSHAWOTT",
+    [
+      "SPECIES_DEWOTT"
+    ],
+    [
+      "SPECIES_SAMUROTT",
+      "SPECIES_SAMUROTT_HISUI"
+    ]
+  ],
+  "P_FAMILY_PATRAT": [
+    "SPECIES_PATRAT",
+    [
+      "SPECIES_WATCHOG"
+    ]
+  ],
+  "P_FAMILY_LILLIPUP": [
+    "SPECIES_LILLIPUP",
+    [
+      "SPECIES_HERDIER"
+    ],
+    [
+      "SPECIES_STOUTLAND"
+    ]
+  ],
+  "P_FAMILY_PURRLOIN": [
+    "SPECIES_PURRLOIN",
+    [
+      "SPECIES_LIEPARD"
+    ]
+  ],
+  "P_FAMILY_PANSAGE": [
+    "SPECIES_PANSAGE",
+    [
+      "SPECIES_SIMISAGE"
+    ]
+  ],
+  "P_FAMILY_PANSEAR": [
+    "SPECIES_PANSEAR",
+    [
+      "SPECIES_SIMISEAR"
+    ]
+  ],
+  "P_FAMILY_PANPOUR": [
+    "SPECIES_PANPOUR",
+    [
+      "SPECIES_SIMIPOUR"
+    ]
+  ],
+  "P_FAMILY_MUNNA": [
+    "SPECIES_MUNNA",
+    [
+      "SPECIES_MUSHARNA"
+    ]
+  ],
+  "P_FAMILY_PIDOVE": [
+    "SPECIES_PIDOVE",
+    [
+      "SPECIES_TRANQUILL"
+    ],
+    [
+      "SPECIES_UNFEZANT"
+    ]
+  ],
+  "P_FAMILY_BLITZLE": [
+    "SPECIES_BLITZLE",
+    [
+      "SPECIES_ZEBSTRIKA"
+    ]
+  ],
+  "P_FAMILY_ROGGENROLA": [
+    "SPECIES_ROGGENROLA",
+    [
+      "SPECIES_BOLDORE"
+    ],
+    [
+      "SPECIES_GIGALITH",
+      "SPECIES_GIGALITH"
+    ]
+  ],
+  "P_FAMILY_WOOBAT": [
+    "SPECIES_WOOBAT",
+    [
+      "SPECIES_SWOOBAT, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+    ]
+  ],
+  "P_FAMILY_DRILBUR": [
+    "SPECIES_DRILBUR",
+    [
+      "SPECIES_EXCADRILL"
+    ]
+  ],
+  "P_FAMILY_TIMBURR": [
+    "SPECIES_TIMBURR",
+    [
+      "SPECIES_GURDURR"
+    ],
+    [
+      "SPECIES_CONKELDURR",
+      "SPECIES_CONKELDURR"
+    ]
+  ],
+  "P_FAMILY_TYMPOLE": [
+    "SPECIES_TYMPOLE",
+    [
+      "SPECIES_PALPITOAD"
+    ],
+    [
+      "SPECIES_SEISMITOAD"
+    ]
+  ],
+  "P_FAMILY_SEWADDLE": [
+    "SPECIES_SEWADDLE",
+    [
+      "SPECIES_SWADLOON"
+    ],
+    [
+      "SPECIES_LEAVANNY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+    ]
+  ],
+  "P_FAMILY_VENIPEDE": [
+    "SPECIES_VENIPEDE",
+    [
+      "SPECIES_WHIRLIPEDE"
+    ],
+    [
+      "SPECIES_SCOLIPEDE"
+    ]
+  ],
+  "P_FAMILY_COTTONEE": [
+    "SPECIES_COTTONEE",
+    [
+      "SPECIES_WHIMSICOTT"
+    ]
+  ],
+  "P_FAMILY_PETILIL": [
+    "SPECIES_PETILIL",
+    [
+      "SPECIES_LILLIGANT",
+      "SPECIES_LILLIGANT_HISUI"
+    ]
+  ],
+  "P_FAMILY_BASCULIN": [
+    "SPECIES_BASCULIN_WHITE_STRIPED",
+    [
+      "SPECIES_BASCULEGION_M, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_MALE})",
+      "SPECIES_BASCULEGION_F, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_FEMALE})"
+    ]
+  ],
+  "P_FAMILY_SANDILE": [
+    "SPECIES_SANDILE",
+    [
+      "SPECIES_KROKOROK"
+    ],
+    [
+      "SPECIES_KROOKODILE"
+    ]
+  ],
+  "P_FAMILY_DARUMAKA": [
+    "SPECIES_DARUMAKA",
+    [
+      "SPECIES_DARMANITAN_STANDARD"
+    ]
+  ],
+  "P_FAMILY_DWEBBLE": [
+    "SPECIES_DWEBBLE",
+    [
+      "SPECIES_CRUSTLE"
+    ]
+  ],
+  "P_FAMILY_SCRAGGY": [
+    "SPECIES_SCRAGGY",
+    [
+      "SPECIES_SCRAFTY"
+    ]
+  ],
+  "P_FAMILY_YAMASK": [
+    "SPECIES_YAMASK",
+    [
+      "SPECIES_COFAGRIGUS"
+    ]
+  ],
+  "P_FAMILY_TIRTOUGA": [
+    "SPECIES_TIRTOUGA",
+    [
+      "SPECIES_CARRACOSTA"
+    ]
+  ],
+  "P_FAMILY_ARCHEN": [
+    "SPECIES_ARCHEN",
+    [
+      "SPECIES_ARCHEOPS"
+    ]
+  ],
+  "P_FAMILY_TRUBBISH": [
+    "SPECIES_TRUBBISH",
+    [
+      "SPECIES_GARBODOR"
+    ]
+  ],
+  "P_FAMILY_ZORUA": [
+    "SPECIES_ZORUA",
+    [
+      "SPECIES_ZOROARK"
+    ]
+  ],
+  "P_FAMILY_MINCCINO": [
+    "SPECIES_MINCCINO",
+    [
+      "SPECIES_CINCCINO"
+    ]
+  ],
+  "P_FAMILY_GOTHITA": [
+    "SPECIES_GOTHITA",
+    [
+      "SPECIES_GOTHORITA"
+    ],
+    [
+      "SPECIES_GOTHITELLE"
+    ]
+  ],
+  "P_FAMILY_SOLOSIS": [
+    "SPECIES_SOLOSIS",
+    [
+      "SPECIES_DUOSION"
+    ],
+    [
+      "SPECIES_REUNICLUS"
+    ]
+  ],
+  "P_FAMILY_DUCKLETT": [
+    "SPECIES_DUCKLETT",
+    [
+      "SPECIES_SWANNA"
+    ]
+  ],
+  "P_FAMILY_VANILLITE": [
+    "SPECIES_VANILLITE",
+    [
+      "SPECIES_VANILLISH"
+    ],
+    [
+      "SPECIES_VANILLUXE"
+    ]
+  ],
+  "P_FAMILY_DEERLING": [
+    "SPECIES_DEERLING_SPRING",
+    [
+      "SPECIES_SAWSBUCK_SPRING"
+    ]
+  ],
+  "P_FAMILY_KARRABLAST": [
+    "SPECIES_KARRABLAST",
+    [
+      "SPECIES_ESCAVALIER, CONDITIONS({IF_TRADE_PARTNER_SPECIES, SPECIES_SHELMET})"
+    ]
+  ],
+  "P_FAMILY_FOONGUS": [
+    "SPECIES_FOONGUS",
+    [
+      "SPECIES_AMOONGUSS"
+    ]
+  ],
+  "P_FAMILY_FRILLISH": [
+    "SPECIES_FRILLISH",
+    [
+      "SPECIES_JELLICENT"
+    ]
+  ],
+  "P_FAMILY_JOLTIK": [
+    "SPECIES_JOLTIK",
+    [
+      "SPECIES_GALVANTULA"
+    ]
+  ],
+  "P_FAMILY_FERROSEED": [
+    "SPECIES_FERROSEED",
+    [
+      "SPECIES_FERROTHORN"
+    ]
+  ],
+  "P_FAMILY_KLINK": [
+    "SPECIES_KLINK",
+    [
+      "SPECIES_KLANG"
+    ],
+    [
+      "SPECIES_KLINKLANG"
+    ]
+  ],
+  "P_FAMILY_TYNAMO": [
+    "SPECIES_TYNAMO",
+    [
+      "SPECIES_EELEKTRIK"
+    ],
+    [
+      "SPECIES_EELEKTROSS"
+    ]
+  ],
+  "P_FAMILY_ELGYEM": [
+    "SPECIES_ELGYEM",
+    [
+      "SPECIES_BEHEEYEM"
+    ]
+  ],
+  "P_FAMILY_LITWICK": [
+    "SPECIES_LITWICK",
+    [
+      "SPECIES_LAMPENT"
+    ],
+    [
+      "SPECIES_CHANDELURE"
+    ]
+  ],
+  "P_FAMILY_AXEW": [
+    "SPECIES_AXEW",
+    [
+      "SPECIES_FRAXURE"
+    ],
+    [
+      "SPECIES_HAXORUS"
+    ]
+  ],
+  "P_FAMILY_CUBCHOO": [
+    "SPECIES_CUBCHOO",
+    [
+      "SPECIES_BEARTIC"
+    ]
+  ],
+  "P_FAMILY_SHELMET": [
+    "SPECIES_SHELMET",
+    [
+      "SPECIES_ACCELGOR, CONDITIONS({IF_TRADE_PARTNER_SPECIES, SPECIES_KARRABLAST})"
+    ]
+  ],
+  "P_FAMILY_MIENFOO": [
+    "SPECIES_MIENFOO",
+    [
+      "SPECIES_MIENSHAO"
+    ]
+  ],
+  "P_FAMILY_GOLETT": [
+    "SPECIES_GOLETT",
+    [
+      "SPECIES_GOLURK"
+    ]
+  ],
+  "P_FAMILY_PAWNIARD": [
+    "SPECIES_PAWNIARD",
+    [
+      "SPECIES_BISHARP"
+    ],
+    [
+      "SPECIES_KINGAMBIT, CONDITIONS({IF_DEFEAT_X_WITH_ITEMS, SPECIES_BISHARP, ITEM_LEADERS_CREST, 3})"
+    ]
+  ],
+  "P_FAMILY_RUFFLET": [
+    "SPECIES_RUFFLET",
+    [
+      "SPECIES_BRAVIARY",
+      "SPECIES_BRAVIARY_HISUI"
+    ]
+  ],
+  "P_FAMILY_VULLABY": [
+    "SPECIES_VULLABY",
+    [
+      "SPECIES_MANDIBUZZ"
+    ]
+  ],
+  "P_FAMILY_DEINO": [
+    "SPECIES_DEINO",
+    [
+      "SPECIES_ZWEILOUS"
+    ],
+    [
+      "SPECIES_HYDREIGON"
+    ]
+  ],
+  "P_FAMILY_LARVESTA": [
+    "SPECIES_LARVESTA",
+    [
+      "SPECIES_VOLCARONA"
+    ]
+  ],
+  "P_FAMILY_CHESPIN": [
+    "SPECIES_CHESPIN",
+    [
+      "SPECIES_QUILLADIN"
+    ],
+    [
+      "SPECIES_CHESNAUGHT"
+    ]
+  ],
+  "P_FAMILY_FENNEKIN": [
+    "SPECIES_FENNEKIN",
+    [
+      "SPECIES_BRAIXEN"
+    ],
+    [
+      "SPECIES_DELPHOX"
+    ]
+  ],
+  "P_FAMILY_FROAKIE": [
+    "SPECIES_FROAKIE",
+    [
+      "SPECIES_FROGADIER"
+    ],
+    [
+      "SPECIES_GRENINJA"
+    ]
+  ],
+  "P_FAMILY_BUNNELBY": [
+    "SPECIES_BUNNELBY",
+    [
+      "SPECIES_DIGGERSBY"
+    ]
+  ],
+  "P_FAMILY_FLETCHLING": [
+    "SPECIES_FLETCHLING",
+    [
+      "SPECIES_FLETCHINDER"
+    ],
+    [
+      "SPECIES_TALONFLAME"
+    ]
+  ],
+  "P_FAMILY_LITLEO": [
+    "SPECIES_LITLEO",
+    [
+      "SPECIES_PYROAR"
+    ]
+  ],
+  "P_FAMILY_SKIDDO": [
+    "SPECIES_SKIDDO",
+    [
+      "SPECIES_GOGOAT"
+    ]
+  ],
+  "P_FAMILY_PANCHAM": [
+    "SPECIES_PANCHAM",
+    [
+      "SPECIES_PANGORO, CONDITIONS({IF_TYPE_IN_PARTY, TYPE_DARK})"
+    ]
+  ],
+  "P_FAMILY_ESPURR": [
+    "SPECIES_ESPURR",
+    [
+      "SPECIES_MEOWSTIC_M, CONDITIONS({IF_GENDER, MON_MALE})",
+      "SPECIES_MEOWSTIC_F, CONDITIONS({IF_GENDER, MON_FEMALE})"
+    ]
+  ],
+  "P_FAMILY_HONEDGE": [
+    "SPECIES_HONEDGE",
+    [
+      "SPECIES_DOUBLADE"
+    ],
+    [
+      "SPECIES_AEGISLASH_SHIELD"
+    ]
+  ],
+  "P_FAMILY_SPRITZEE": [
+    "SPECIES_SPRITZEE",
+    [
+      "SPECIES_AROMATISSE, CONDITIONS({IF_HOLD_ITEM, ITEM_SACHET})",
+      "SPECIES_AROMATISSE"
+    ]
+  ],
+  "P_FAMILY_SWIRLIX": [
+    "SPECIES_SWIRLIX",
+    [
+      "SPECIES_SLURPUFF, CONDITIONS({IF_HOLD_ITEM, ITEM_WHIPPED_DREAM})",
+      "SPECIES_SLURPUFF"
+    ]
+  ],
+  "P_FAMILY_INKAY": [
+    "SPECIES_INKAY",
+    [
+      "SPECIES_MALAMAR"
+    ]
+  ],
+  "P_FAMILY_BINACLE": [
+    "SPECIES_BINACLE",
+    [
+      "SPECIES_BARBARACLE"
+    ]
+  ],
+  "P_FAMILY_SKRELP": [
+    "SPECIES_SKRELP",
+    [
+      "SPECIES_DRAGALGE"
+    ]
+  ],
+  "P_FAMILY_CLAUNCHER": [
+    "SPECIES_CLAUNCHER",
+    [
+      "SPECIES_CLAWITZER"
+    ]
+  ],
+  "P_FAMILY_HELIOPTILE": [
+    "SPECIES_HELIOPTILE",
+    [
+      "SPECIES_HELIOLISK"
+    ]
+  ],
+  "P_FAMILY_TYRUNT": [
+    "SPECIES_TYRUNT",
+    [
+      "SPECIES_TYRANTRUM, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+    ]
+  ],
+  "P_FAMILY_AMAURA": [
+    "SPECIES_AMAURA",
+    [
+      "SPECIES_AURORUS, CONDITIONS({IF_TIME, TIME_NIGHT})"
+    ]
+  ],
+  "P_FAMILY_GOOMY": [
+    "SPECIES_GOOMY",
+    [
+      "SPECIES_SLIGGOO",
+      "SPECIES_SLIGGOO_HISUI"
+    ],
+    [
+      "SPECIES_GOODRA, CONDITIONS({IF_WEATHER, WEATHER_RAIN})",
+      "SPECIES_GOODRA, CONDITIONS({IF_WEATHER, WEATHER_FOG})",
+      "SPECIES_GOODRA_HISUI, CONDITIONS({IF_WEATHER, WEATHER_RAIN})",
+      "SPECIES_GOODRA_HISUI, CONDITIONS({IF_WEATHER, WEATHER_FOG})"
+    ]
+  ],
+  "P_FAMILY_PHANTUMP": [
+    "SPECIES_PHANTUMP",
+    [
+      "SPECIES_TREVENANT",
+      "SPECIES_TREVENANT"
+    ]
+  ],
+  "P_FAMILY_PUMPKABOO": [
+    "SPECIES_PUMPKABOO_AVERAGE",
+    [
+      "SPECIES_GOURGEIST_AVERAGE",
+      "SPECIES_GOURGEIST_AVERAGE"
+    ]
+  ],
+  "P_FAMILY_BERGMITE": [
+    "SPECIES_BERGMITE",
+    [
+      "SPECIES_AVALUGG",
+      "SPECIES_AVALUGG_HISUI"
+    ]
+  ],
+  "P_FAMILY_NOIBAT": [
+    "SPECIES_NOIBAT",
+    [
+      "SPECIES_NOIVERN"
+    ]
+  ],
+  "P_FAMILY_ROWLET": [
+    "SPECIES_ROWLET",
+    [
+      "SPECIES_DARTRIX"
+    ],
+    [
+      "SPECIES_DECIDUEYE",
+      "SPECIES_DECIDUEYE_HISUI"
+    ]
+  ],
+  "P_FAMILY_LITTEN": [
+    "SPECIES_LITTEN",
+    [
+      "SPECIES_TORRACAT"
+    ],
+    [
+      "SPECIES_INCINEROAR"
+    ]
+  ],
+  "P_FAMILY_POPPLIO": [
+    "SPECIES_POPPLIO",
+    [
+      "SPECIES_BRIONNE"
+    ],
+    [
+      "SPECIES_PRIMARINA"
+    ]
+  ],
+  "P_FAMILY_PIKIPEK": [
+    "SPECIES_PIKIPEK",
+    [
+      "SPECIES_TRUMBEAK"
+    ],
+    [
+      "SPECIES_TOUCANNON"
+    ]
+  ],
+  "P_FAMILY_YUNGOOS": [
+    "SPECIES_YUNGOOS",
+    [
+      "SPECIES_GUMSHOOS, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+    ]
+  ],
+  "P_FAMILY_GRUBBIN": [
+    "SPECIES_GRUBBIN",
+    [
+      "SPECIES_CHARJABUG"
+    ],
+    [
+      "SPECIES_VIKAVOLT, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})",
+      "SPECIES_VIKAVOLT",
+      "SPECIES_VIKAVOLT_TOTEM"
+    ]
+  ],
+  "P_FAMILY_CRABRAWLER": [
+    "SPECIES_CRABRAWLER",
+    [
+      "SPECIES_CRABOMINABLE, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})",
+      "SPECIES_CRABOMINABLE"
+    ]
+  ],
+  "P_FAMILY_CUTIEFLY": [
+    "SPECIES_CUTIEFLY",
+    [
+      "SPECIES_RIBOMBEE",
+      "SPECIES_RIBOMBEE_TOTEM"
+    ]
+  ],
+  "P_FAMILY_ROCKRUFF": [
+    "SPECIES_ROCKRUFF",
+    [
+      "SPECIES_LYCANROC_MIDDAY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})",
+      "SPECIES_LYCANROC_MIDNIGHT, CONDITIONS({IF_TIME, TIME_NIGHT})"
+    ]
+  ],
+  "P_FAMILY_MAREANIE": [
+    "SPECIES_MAREANIE",
+    [
+      "SPECIES_TOXAPEX"
+    ]
+  ],
+  "P_FAMILY_MUDBRAY": [
+    "SPECIES_MUDBRAY",
+    [
+      "SPECIES_MUDSDALE"
+    ]
+  ],
+  "P_FAMILY_DEWPIDER": [
+    "SPECIES_DEWPIDER",
+    [
+      "SPECIES_ARAQUANID",
+      "SPECIES_ARAQUANID_TOTEM"
+    ]
+  ],
+  "P_FAMILY_FOMANTIS": [
+    "SPECIES_FOMANTIS",
+    [
+      "SPECIES_LURANTIS, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})",
+      "SPECIES_LURANTIS_TOTEM"
+    ]
+  ],
+  "P_FAMILY_MORELULL": [
+    "SPECIES_MORELULL",
+    [
+      "SPECIES_SHIINOTIC"
+    ]
+  ],
+  "P_FAMILY_SALANDIT": [
+    "SPECIES_SALANDIT",
+    [
+      "SPECIES_SALAZZLE, CONDITIONS({IF_GENDER, MON_FEMALE})",
+      "SPECIES_SALAZZLE_TOTEM"
+    ]
+  ],
+  "P_FAMILY_STUFFUL": [
+    "SPECIES_STUFFUL",
+    [
+      "SPECIES_BEWEAR"
+    ]
+  ],
+  "P_FAMILY_BOUNSWEET": [
+    "SPECIES_BOUNSWEET",
+    [
+      "SPECIES_STEENEE"
+    ],
+    [
+      "SPECIES_TSAREENA, CONDITIONS({IF_KNOWS_MOVE, MOVE_STOMP})"
+    ]
+  ],
+  "P_FAMILY_WIMPOD": [
+    "SPECIES_WIMPOD",
+    [
+      "SPECIES_GOLISOPOD"
+    ]
+  ],
+  "P_FAMILY_SANDYGAST": [
+    "SPECIES_SANDYGAST",
+    [
+      "SPECIES_PALOSSAND"
+    ]
+  ],
+  "P_FAMILY_JANGMO_O": [
+    "SPECIES_JANGMO_O",
+    [
+      "SPECIES_HAKAMO_O"
+    ],
+    [
+      "SPECIES_KOMMO_O",
+      "SPECIES_KOMMO_O_TOTEM"
+    ]
+  ],
+  "P_FAMILY_COSMOG": [
+    "SPECIES_COSMOG",
+    [
+      "SPECIES_COSMOEM"
+    ],
+    [
+      "SPECIES_SOLGALEO, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})",
+      "SPECIES_LUNALA, CONDITIONS({IF_TIME, TIME_NIGHT})"
+    ]
+  ],
+  "P_FAMILY_POIPOLE": [
+    "SPECIES_POIPOLE",
+    [
+      "SPECIES_NAGANADEL, CONDITIONS({IF_KNOWS_MOVE, MOVE_DRAGON_PULSE})"
+    ]
+  ],
+  "P_FAMILY_GROOKEY": [
+    "SPECIES_GROOKEY",
+    [
+      "SPECIES_THWACKEY"
+    ],
+    [
+      "SPECIES_RILLABOOM"
+    ]
+  ],
+  "P_FAMILY_SCORBUNNY": [
+    "SPECIES_SCORBUNNY",
+    [
+      "SPECIES_RABOOT"
+    ],
+    [
+      "SPECIES_CINDERACE"
+    ]
+  ],
+  "P_FAMILY_SOBBLE": [
+    "SPECIES_SOBBLE",
+    [
+      "SPECIES_DRIZZILE"
+    ],
+    [
+      "SPECIES_INTELEON"
+    ]
+  ],
+  "P_FAMILY_SKWOVET": [
+    "SPECIES_SKWOVET",
+    [
+      "SPECIES_GREEDENT"
+    ]
+  ],
+  "P_FAMILY_ROOKIDEE": [
+    "SPECIES_ROOKIDEE",
+    [
+      "SPECIES_CORVISQUIRE"
+    ],
+    [
+      "SPECIES_CORVIKNIGHT"
+    ]
+  ],
+  "P_FAMILY_BLIPBUG": [
+    "SPECIES_BLIPBUG",
+    [
+      "SPECIES_DOTTLER"
+    ],
+    [
+      "SPECIES_ORBEETLE"
+    ]
+  ],
+  "P_FAMILY_NICKIT": [
+    "SPECIES_NICKIT",
+    [
+      "SPECIES_THIEVUL"
+    ]
+  ],
+  "P_FAMILY_GOSSIFLEUR": [
+    "SPECIES_GOSSIFLEUR",
+    [
+      "SPECIES_ELDEGOSS"
+    ]
+  ],
+  "P_FAMILY_WOOLOO": [
+    "SPECIES_WOOLOO",
+    [
+      "SPECIES_DUBWOOL"
+    ]
+  ],
+  "P_FAMILY_CHEWTLE": [
+    "SPECIES_CHEWTLE",
+    [
+      "SPECIES_DREDNAW"
+    ]
+  ],
+  "P_FAMILY_YAMPER": [
+    "SPECIES_YAMPER",
+    [
+      "SPECIES_BOLTUND"
+    ]
+  ],
+  "P_FAMILY_ROLYCOLY": [
+    "SPECIES_ROLYCOLY",
+    [
+      "SPECIES_CARKOL"
+    ],
+    [
+      "SPECIES_COALOSSAL"
+    ]
+  ],
+  "P_FAMILY_APPLIN": [
+    "SPECIES_APPLIN",
+    [
+      "SPECIES_FLAPPLE",
+      "SPECIES_APPLETUN",
+      "SPECIES_DIPPLIN"
+    ],
+    [
+      "SPECIES_HYDRAPPLE, CONDITIONS({IF_KNOWS_MOVE, MOVE_DRAGON_CHEER})"
+    ]
+  ],
+  "P_FAMILY_SILICOBRA": [
+    "SPECIES_SILICOBRA",
+    [
+      "SPECIES_SANDACONDA"
+    ]
+  ],
+  "P_FAMILY_ARROKUDA": [
+    "SPECIES_ARROKUDA",
+    [
+      "SPECIES_BARRASKEWDA"
+    ]
+  ],
+  "P_FAMILY_TOXEL": [
+    "SPECIES_TOXEL",
+    [
+      "SPECIES_TOXTRICITY_AMPED, CONDITIONS({IF_AMPED_NATURE})",
+      "SPECIES_TOXTRICITY_LOW_KEY, CONDITIONS({IF_LOW_KEY_NATURE})"
+    ]
+  ],
+  "P_FAMILY_SIZZLIPEDE": [
+    "SPECIES_SIZZLIPEDE",
+    [
+      "SPECIES_CENTISKORCH"
+    ]
+  ],
+  "P_FAMILY_CLOBBOPUS": [
+    "SPECIES_CLOBBOPUS",
+    [
+      "SPECIES_GRAPPLOCT, CONDITIONS({IF_KNOWS_MOVE, MOVE_TAUNT})"
+    ]
+  ],
+  "P_FAMILY_SINISTEA": [
+    "SPECIES_SINISTEA_PHONY",
+    [
+      "SPECIES_POLTEAGEIST_PHONY"
+    ]
+  ],
+  "P_FAMILY_HATENNA": [
+    "SPECIES_HATENNA",
+    [
+      "SPECIES_HATTREM"
+    ],
+    [
+      "SPECIES_HATTERENE"
+    ]
+  ],
+  "P_FAMILY_IMPIDIMP": [
+    "SPECIES_IMPIDIMP",
+    [
+      "SPECIES_MORGREM"
+    ],
+    [
+      "SPECIES_GRIMMSNARL"
+    ]
+  ],
+  "P_FAMILY_SNOM": [
+    "SPECIES_SNOM",
+    [
+      "SPECIES_FROSMOTH, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_TIME, TIME_NIGHT})"
+    ]
+  ],
+  "P_FAMILY_CUFANT": [
+    "SPECIES_CUFANT",
+    [
+      "SPECIES_COPPERAJAH"
+    ]
+  ],
+  "P_FAMILY_DURALUDON": [
+    "SPECIES_DURALUDON",
+    [
+      "SPECIES_ARCHALUDON"
+    ]
+  ],
+  "P_FAMILY_DREEPY": [
+    "SPECIES_DREEPY",
+    [
+      "SPECIES_DRAKLOAK"
+    ],
+    [
+      "SPECIES_DRAGAPULT"
+    ]
+  ],
+  "P_FAMILY_KUBFU": [
+    "SPECIES_KUBFU",
+    [
+      "SPECIES_URSHIFU_SINGLE_STRIKE",
+      "SPECIES_URSHIFU_RAPID_STRIKE",
+      "SPECIES_URSHIFU_SINGLE_STRIKE",
+      "  SPECIES_URSHIFU_RAPID_STRIKE"
+    ]
+  ],
+  "P_FAMILY_SPRIGATITO": [
+    "SPECIES_SPRIGATITO",
+    [
+      "SPECIES_FLORAGATO"
+    ],
+    [
+      "SPECIES_MEOWSCARADA"
+    ]
+  ],
+  "P_FAMILY_FUECOCO": [
+    "SPECIES_FUECOCO",
+    [
+      "SPECIES_CROCALOR"
+    ],
+    [
+      "SPECIES_SKELEDIRGE"
+    ]
+  ],
+  "P_FAMILY_QUAXLY": [
+    "SPECIES_QUAXLY",
+    [
+      "SPECIES_QUAXWELL"
+    ],
+    [
+      "SPECIES_QUAQUAVAL"
+    ]
+  ],
+  "P_FAMILY_LECHONK": [
+    "SPECIES_LECHONK",
+    [
+      "SPECIES_OINKOLOGNE_M, CONDITIONS({IF_GENDER, MON_MALE})",
+      "SPECIES_OINKOLOGNE_F, CONDITIONS({IF_GENDER, MON_FEMALE})"
+    ]
+  ],
+  "P_FAMILY_TAROUNTULA": [
+    "SPECIES_TAROUNTULA",
+    [
+      "SPECIES_SPIDOPS"
+    ]
+  ],
+  "P_FAMILY_NYMBLE": [
+    "SPECIES_NYMBLE",
+    [
+      "SPECIES_LOKIX"
+    ]
+  ],
+  "P_FAMILY_PAWMI": [
+    "SPECIES_PAWMI",
+    [
+      "SPECIES_PAWMO"
+    ],
+    [
+      "SPECIES_PAWMOT, CONDITIONS({IF_MIN_OVERWORLD_STEPS, 1000})"
+    ]
+  ],
+  "P_FAMILY_TANDEMAUS": [
+    "SPECIES_TANDEMAUS",
+    [
+      "SPECIES_MAUSHOLD_FOUR, CONDITIONS({IF_PID_MODULO_100_GT, 0})",
+      "SPECIES_MAUSHOLD_THREE, CONDITIONS({IF_PID_MODULO_100_EQ, 0})"
+    ]
+  ],
+  "P_FAMILY_FIDOUGH": [
+    "SPECIES_FIDOUGH",
+    [
+      "SPECIES_DACHSBUN"
+    ]
+  ],
+  "P_FAMILY_SMOLIV": [
+    "SPECIES_SMOLIV",
+    [
+      "SPECIES_DOLLIV"
+    ],
+    [
+      "SPECIES_ARBOLIVA"
+    ]
+  ],
+  "P_FAMILY_NACLI": [
+    "SPECIES_NACLI",
+    [
+      "SPECIES_NACLSTACK"
+    ],
+    [
+      "SPECIES_GARGANACL"
+    ]
+  ],
+  "P_FAMILY_CHARCADET": [
+    "SPECIES_CHARCADET",
+    [
+      "SPECIES_ARMAROUGE",
+      "SPECIES_CERULEDGE"
+    ]
+  ],
+  "P_FAMILY_TADBULB": [
+    "SPECIES_TADBULB",
+    [
+      "SPECIES_BELLIBOLT"
+    ]
+  ],
+  "P_FAMILY_WATTREL": [
+    "SPECIES_WATTREL",
+    [
+      "SPECIES_KILOWATTREL"
+    ]
+  ],
+  "P_FAMILY_MASCHIFF": [
+    "SPECIES_MASCHIFF",
+    [
+      "SPECIES_MABOSSTIFF"
+    ]
+  ],
+  "P_FAMILY_SHROODLE": [
+    "SPECIES_SHROODLE",
+    [
+      "SPECIES_GRAFAIAI"
+    ]
+  ],
+  "P_FAMILY_BRAMBLIN": [
+    "SPECIES_BRAMBLIN",
+    [
+      "SPECIES_BRAMBLEGHAST, CONDITIONS({IF_MIN_OVERWORLD_STEPS, 1000})"
+    ]
+  ],
+  "P_FAMILY_TOEDSCOOL": [
+    "SPECIES_TOEDSCOOL",
+    [
+      "SPECIES_TOEDSCRUEL"
+    ]
+  ],
+  "P_FAMILY_CAPSAKID": [
+    "SPECIES_CAPSAKID",
+    [
+      "SPECIES_SCOVILLAIN"
+    ]
+  ],
+  "P_FAMILY_RELLOR": [
+    "SPECIES_RELLOR",
+    [
+      "SPECIES_RABSCA, CONDITIONS({IF_MIN_OVERWORLD_STEPS, 1000})"
+    ]
+  ],
+  "P_FAMILY_FLITTLE": [
+    "SPECIES_FLITTLE",
+    [
+      "SPECIES_ESPATHRA"
+    ]
+  ],
+  "P_FAMILY_TINKATINK": [
+    "SPECIES_TINKATINK",
+    [
+      "SPECIES_TINKATUFF"
+    ],
+    [
+      "SPECIES_TINKATON"
+    ]
+  ],
+  "P_FAMILY_WIGLETT": [
+    "SPECIES_WIGLETT",
+    [
+      "SPECIES_WUGTRIO"
+    ]
+  ],
+  "P_FAMILY_FINIZEN": [
+    "SPECIES_FINIZEN",
+    [
+      "SPECIES_PALAFIN_ZERO"
+    ]
+  ],
+  "P_FAMILY_VAROOM": [
+    "SPECIES_VAROOM",
+    [
+      "SPECIES_REVAVROOM"
+    ]
+  ],
+  "P_FAMILY_GLIMMET": [
+    "SPECIES_GLIMMET",
+    [
+      "SPECIES_GLIMMORA"
+    ]
+  ],
+  "P_FAMILY_GREAVARD": [
+    "SPECIES_GREAVARD",
+    [
+      "SPECIES_HOUNDSTONE, CONDITIONS({IF_TIME, TIME_NIGHT})"
+    ]
+  ],
+  "P_FAMILY_CETODDLE": [
+    "SPECIES_CETODDLE",
+    [
+      "SPECIES_CETITAN"
+    ]
+  ],
+  "P_FAMILY_FRIGIBAX": [
+    "SPECIES_FRIGIBAX",
+    [
+      "SPECIES_ARCTIBAX"
+    ],
+    [
+      "SPECIES_BAXCALIBUR"
+    ]
+  ],
+  "P_FAMILY_GIMMIGHOUL": [
+    "SPECIES_GIMMIGHOUL_CHEST",
+    [
+      "SPECIES_GHOLDENGO, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_GIMMIGHOUL_COIN, 999})"
+    ]
+  ],
+  "P_FAMILY_POLTCHAGEIST": [
+    "SPECIES_POLTCHAGEIST_COUNTERFEIT",
+    [
+      "SPECIES_SINISTCHA_UNREMARKABLE"
+    ]
+  ]
+}

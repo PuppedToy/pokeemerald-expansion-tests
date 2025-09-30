@@ -1,6 +1,22 @@
+const fs = require('fs').promises;
+const writer = require('./writer');
+
 const speciesDir = `${__dirname}\\..\\src\\data\\pokemon\\species_info`;
 const levelUpLearnsetsDir = `${__dirname}\\..\\src\\data\\pokemon\\level_up_learnsets`;
 const TOTAL_GENS = 9;
+
+const EVO_TYPE_SOLO = 'EVO_TYPE_SOLO';
+const EVO_TYPE_LC_OF_3 = 'EVO_TYPE_LC_OF_3';
+const EVO_TYPE_LC_OF_2 = 'EVO_TYPE_LC_OF_2';
+const EVO_TYPE_NFE_OF_3 = 'EVO_TYPE_NFE_OF_3';
+const EVO_TYPE_LAST_OF_3 = 'EVO_TYPE_LAST_OF_3';
+const EVO_TYPE_LAST_OF_2 = 'EVO_TYPE_LAST_OF_2';
+const EVO_TYPE_MEGA = 'EVO_TYPE_MEGA';
+
+const evoIsLC = (evolutionType) => evolutionType === EVO_TYPE_LC_OF_3 || evolutionType === EVO_TYPE_LC_OF_2;
+const evoIsNFE = (evolutionType) => evoIsLC(evolutionType) || evolutionType === EVO_TYPE_NFE_OF_3;
+const evoIsFinal = (evolutionType) => evolutionType === EVO_TYPE_SOLO || evolutionType === EVO_TYPE_LAST_OF_3 || evolutionType === EVO_TYPE_LAST_OF_2;
+
 const SUPPORTED_PROPERTIES = [
     'baseHP',
     'baseAttack',
@@ -62,8 +78,6 @@ const REMOVED_MOVES = [
     'MOVE_NONE',
 ];
 
-const fs = require('fs').promises;
-
 function processLineForDefinitions(line, definitions) {
     const regex = new RegExp(`^#define\\s+(.*?)\\s+(.*)$`);
     const match = line.match(regex);
@@ -73,11 +87,53 @@ function processLineForDefinitions(line, definitions) {
     }
 }
 
-function parseSpeciesFile(genSpeciesFileText, definitions) {
+const evoRegex = /{EVO_(.*?), (.*?), (.*)}/;
+function parseEvo(familyId, pokeId, line, evoTree) {
+    const match = line.match(evoRegex);
+    if (match) {
+        const [, method, param, pokemon] = match;
+        // Frist time, create the family
+        if (!evoTree[familyId]) {
+            evoTree[familyId] = [pokeId, [pokemon]];
+        }
+        else {
+            // If family already exists and I'm the base form, it's a branch evo
+            if (evoTree[familyId][0] === pokeId) {
+                evoTree[familyId][1].push(pokemon);
+            }
+            // If family already exists and I'm in the first evo stage, it's a 3-stage evo
+            else if (evoTree[familyId][1].includes(pokeId)) {
+                // If it's the first time we see a 3rd stage evo, create the array
+                if (evoTree[familyId].length == 2) {
+                    evoTree[familyId].push([pokemon]);
+                }
+                // Otherwise it's a branch for the 3rd stage evo
+                else {
+                    evoTree[familyId][2].push(pokemon);
+                }
+            }
+            // Family already exists and I'm not in the first stage, so I'm a 2-stage evo
+            // WTF does that mean?
+            else {
+                console.log(`Warning: Unexpected evo structure for family ${familyId} and poke ${pokeId}
+                > ${line}`);
+            }
+        }
+        return {
+            method: method.trim(),
+            param: param.trim(),
+            pokemon: pokemon.trim(),
+        };
+    }
+    return null;
+}
+
+function parseSpeciesFile(genSpeciesFileText, definitions, evoTree) {
     const lines = genSpeciesFileText.split('\n');
     const pokemonList = [];
     let currentPokemon;
     let currentFamily;
+    let currentEvos;
     for (let i = 0; i < lines.length; i++) {
         processLineForDefinitions(lines[i], definitions);
         if (lines[i].startsWith('#if P_FAMILY_')) {
@@ -85,10 +141,6 @@ function parseSpeciesFile(genSpeciesFileText, definitions) {
             if (REMOVED_FAMILIES.includes(currentFamily)) {
                 console.log(`Skipping family ${currentFamily}`);
                 currentFamily = null;
-            }
-            else
-            {
-                console.log(`New family: ${currentFamily}`);
             }
             continue;
         }
@@ -109,7 +161,17 @@ function parseSpeciesFile(genSpeciesFileText, definitions) {
             }
         }
         if (!currentPokemon) continue;
+        if (lines[i].includes('.evolutions = EVOLUTION(')) {
+            currentEvos = [
+                parseEvo(currentFamily, currentPokemon.id, lines[i], evoTree),
+            ];
+            continue;
+        }
         if (lines[i].startsWith('        .')) {
+            if (currentEvos) {
+                currentPokemon.evolutions = currentEvos.filter(e => e !== null);
+                currentEvos = null;
+            }
             const currentProperty = lines[i].trim().split('.')[1].split(' ')[0];
             const currentValue = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
             if (SUPPORTED_PROPERTIES.includes(currentProperty)) {
@@ -117,7 +179,18 @@ function parseSpeciesFile(genSpeciesFileText, definitions) {
             }
             continue;
         }
+        if (currentEvos) {
+            const parsedEvo = parseEvo(currentFamily, currentPokemon.id, lines[i], evoTree);
+            if (parsedEvo) {
+                currentEvos.push(parsedEvo);
+                continue;
+            }
+        }
         if (lines[i].startsWith('    },')) {
+            if (currentEvos) {
+                currentPokemon.evolutions = currentEvos.filter(e => e !== null);
+                currentEvos = null;
+            }
             pokemonList.push(currentPokemon);
             currentPokemon = null;
         }
@@ -417,6 +490,29 @@ function rateMove(move) {
     return rating;
 }
 
+function getEvolutionType(pokemon, evoTree) {
+    if (!pokemon || !evoTree[pokemon.family]) {
+        return EVO_TYPE_SOLO;
+    }
+    const familyData = evoTree[pokemon.family];
+    if (familyData.length === 2) {
+        if (familyData[0] === pokemon.id) {
+            return EVO_TYPE_LC_OF_2;
+        }
+        return EVO_TYPE_LAST_OF_2;
+    }
+    if (familyData.length === 3) {
+        if (familyData[0] === pokemon.id) {
+            return EVO_TYPE_LC_OF_3;
+        }
+        if (familyData[1].includes(pokemon.id)) {
+            return EVO_TYPE_NFE_OF_3;
+        }
+        return EVO_TYPE_LAST_OF_3;
+    }
+    return EVO_TYPE_SOLO;
+}
+
 function ratePokemon(poke, moves, abilitiesRatings) {
     const BEST_RATING_FOR_MEGA_EVO = 780;
     const BEST_RATING_FOR_FULLY_EVO = 720;
@@ -547,15 +643,14 @@ async function exe() {
         VICTREEBEL_SP_DEF: '70',
         EXEGGUTOR_SP_DEF: '75',
     };
+    const evoTree = {};
     for (let gen = 1; gen <= TOTAL_GENS; gen++) {
         const genSpeciesFilePath = `${speciesDir}\\gen_${gen}_families.h`;
         const genSpeciesFileText = await fs.readFile(genSpeciesFilePath, 'utf-8');
-        genPokes.push(parseSpeciesFile(genSpeciesFileText, definitions));
+        genPokes.push(parseSpeciesFile(genSpeciesFileText, definitions, evoTree));
     }
-    console.log(definitions);
 
     genPokes.forEach((genPokeList, i) => {
-        console.log(`Gen ${i + 1} has ${genPokeList.length} pokes`);
         genPokeList.forEach(poke => {
             let learnset = [];
             let teachables = [];
@@ -565,6 +660,10 @@ async function exe() {
             if (poke.teachableLearnset && TMTeachables[poke.teachableLearnset]) {
                 teachables = TMTeachables[poke.teachableLearnset];
             }
+            const evolutionType = getEvolutionType(poke, evoTree);
+            const isLC = evoIsLC(evolutionType);
+            const isNFE = evoIsNFE(evolutionType);
+            const isFinal = evoIsFinal(evolutionType);
             const baseHP = parseStat(poke.baseHP, definitions);
             const baseAttack = parseStat(poke.baseAttack, definitions);
             const baseDefense = parseStat(poke.baseDefense, definitions);
@@ -577,7 +676,8 @@ async function exe() {
                 // transform "MON_TYPES(TYPE_GRASS, TYPE_POISON)" to ["GRASS", "POISON"]
                 parsedTypes: poke.types.replace(/MON_TYPES\(/, '').replace(/\)/, '').split(', ').map(t => t.replace('TYPE_', '')),
                 // transform "{ ABILITY_OVERGROW, ABILITY_NONE, ABILITY_CHLOROPHYLL }" to ["OVERGROW", "NONE", "CHLOROPHYLL"]
-                parsedAbilities: poke.abilities.replace(/{ /, '').replace(/ }/, '').split(', ').map(a => a.replace('ABILITY_', '')),
+                parsedAbilities: poke.abilities
+                    .replace(/{ /, '').replace(/ }/, '').split(', ').map(a => a.replace('ABILITY_', '')),
                 ...poke,
                 baseHP,
                 baseAttack,
@@ -586,13 +686,49 @@ async function exe() {
                 baseSpAttack,
                 baseSpDefense,
                 baseBST,
+                evolutionData: {
+                    type: evolutionType,
+                    isLC,
+                    isNFE,
+                    isFinal,
+                },
                 ...FIXED_PROPERTIES,
                 learnset,
                 teachables,
+                evoTree: evoTree[poke.family],
             };
             fullPoke.rating = ratePokemon(fullPoke, moves, abilitiesRatings);
             allPokes.push(fullPoke);
         });
+    });
+
+    allPokes.forEach(poke => {
+        let bestEvo = poke.id;
+        let bestEvoRating = poke.rating.absoluteRating;
+        let bestEvoTier = poke.rating.temporaryTier;
+        (poke.evoTree || []).forEach(evoStage => {
+            if (Array.isArray(evoStage)) {
+                evoStage.forEach(evo => {
+                    const evoPoke = allPokes.find(p => p.id === evo);
+                    if (evoPoke && evoPoke.rating.absoluteRating > bestEvoRating) {
+                        bestEvo = evoPoke.id;
+                        bestEvoRating = evoPoke.rating.absoluteRating;
+                        bestEvoTier = evoPoke.rating.temporaryTier;
+                    }
+                });
+            }
+            else {
+                const evoPoke = allPokes.find(p => p.id === evoStage);
+                if (evoPoke && evoPoke.rating.absoluteRating > bestEvoRating) {
+                    bestEvo = evoPoke.id;
+                    bestEvoRating = evoPoke.rating.absoluteRating;
+                    bestEvoTier = evoPoke.rating.temporaryTier;
+                }
+            }
+        });
+        poke.rating.bestEvo = bestEvo;
+        poke.rating.bestEvoRating = bestEvoRating;
+        poke.rating.bestEvoTier = bestEvoTier;
     });
 
     // const sortedPokesByAbsoluteRating = allPokes.sort((a, b) => {
@@ -601,7 +737,10 @@ async function exe() {
 
     // @TODO Algorithm to assing tiers based on rating distribution
 
+    await fs.writeFile(`${__dirname}\\evoTree.json`, JSON.stringify(evoTree, null, 2), 'utf-8');
     await fs.writeFile(`${__dirname}\\pokes.json`, JSON.stringify(allPokes, null, 2), 'utf-8');
+
+    await writer(allPokes, moves, abilitiesRatings);
 }
 
 exe();
