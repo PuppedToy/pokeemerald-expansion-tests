@@ -212,8 +212,8 @@
     },
     {
       "type": "trigger",
-      "x": 33,
-      "y": 6,
+      "x": 29,
+      "y": 38,
       "elevation": 3,
       "var": "VAR_NEW_MAUVILLE_STATE",
       "var_value": "1",

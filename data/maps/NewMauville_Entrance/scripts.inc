@@ -42,6 +42,32 @@ NewMauville_Entrance_EventScript_Door::
 	releaseall
 	end
 
+NewMauville_Entrance_Pokemon::
+	lock
+	faceplayer
+	waitse
+	playmoncry SPECIES_MEW, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	setwildbattle SPECIES_MEW, 39
+	specialvar VAR_RESULT, GetBattleOutcome
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, NewMauville_Entrance_DefeatedPokemon
+	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, AncientTomb_EventScript_RanFromPokemon
+	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, AncientTomb_EventScript_RanFromPokemon
+	setflag FLAG_HIDE_NEW_MAUVILLE_ENTRANCE_POKEMON
+	release
+	end
+
+NewMauville_Entrance_DefeatedPokemon::
+	setflag FLAG_HIDE_NEW_MAUVILLE_ENTRANCE_POKEMON
+	goto Common_EventScript_RemoveStaticPokemon
+	end
+
+AncientTomb_EventScript_RanFromPokemon::
+	setvar VAR_0x8004, SPECIES_MEW
+	goto Common_EventScript_LegendaryFlewAway
+	end
+
 NewMauville_Entrance_EventScript_DontOpenDoor::
 	releaseall
 	end
