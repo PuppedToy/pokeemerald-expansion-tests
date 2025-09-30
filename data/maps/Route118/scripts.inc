@@ -32,107 +32,6 @@ Route118_EventScript_RouteSign119::
 	msgbox Route118_Text_RouteSign119, MSGBOX_SIGN
 	end
 
-Route118_EventScript_StevenTrigger0::
-	lockall
-	setvar VAR_0x8008, 0
-	applymovement LOCALID_PLAYER, Common_Movement_FaceUp
-	waitmovement 0
-	applymovement LOCALID_ROUTE118_STEVEN, Route118_Movement_StevenApproachLedge0
-	waitmovement 0
-	goto Route118_EventScript_StevenTrigger
-	end
-
-Route118_EventScript_StevenTrigger1::
-	lockall
-	setvar VAR_0x8008, 1
-	applymovement LOCALID_PLAYER, Common_Movement_FaceUp
-	waitmovement 0
-	goto Route118_EventScript_StevenTrigger
-	end
-
-Route118_EventScript_StevenTrigger2::
-	lockall
-	setvar VAR_0x8008, 2
-	applymovement LOCALID_PLAYER, Common_Movement_FaceUp
-	waitmovement 0
-	applymovement LOCALID_ROUTE118_STEVEN, Route118_Movement_StevenApproachLedge2
-	waitmovement 0
-	goto Route118_EventScript_StevenTrigger
-	end
-
-Route118_EventScript_StevenExit0::
-	applymovement LOCALID_PLAYER, Route118_Movement_PlayerWatchStevenExit
-	applymovement LOCALID_ROUTE118_STEVEN, Route118_Movement_StevenExit0
-	waitmovement 0
-	return
-
-Route118_EventScript_StevenExit1::
-	applymovement LOCALID_PLAYER, Route118_Movement_PlayerWatchStevenExit
-	applymovement LOCALID_ROUTE118_STEVEN, Route118_Movement_StevenExit1
-	waitmovement 0
-	return
-
-Route118_EventScript_StevenExit2::
-	applymovement LOCALID_PLAYER, Route118_Movement_PlayerWatchStevenExit
-	applymovement LOCALID_ROUTE118_STEVEN, Route118_Movement_StevenExit2
-	waitmovement 0
-	return
-
-Route118_Movement_PlayerWatchStevenExit:
-	delay_16
-	walk_in_place_faster_right
-	step_end
-
-Route118_Movement_StevenApproachLedge0:
-	walk_left
-	step_end
-
-Route118_Movement_StevenApproachLedge2:
-	walk_right
-	step_end
-
-Route118_Movement_StevenJumpLedge:
-	jump_2_down
-	delay_16
-	walk_down
-	step_end
-
-Route118_Movement_StevenExit0:
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	step_end
-
-Route118_Movement_StevenExit1:
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	step_end
-
-Route118_Movement_StevenExit2:
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	walk_right
-	step_end
-
 Route118_EventScript_Rose::
 	trainerbattle_single TRAINER_ROSE_1, Route118_Text_RoseIntro, Route118_Text_RoseDefeat, Route118_EventScript_RegisterRose
 	specialvar VAR_RESULT, ShouldTryRematchBattle
@@ -199,24 +98,6 @@ Route118_EventScript_Deandre::
 	trainerbattle_single TRAINER_DEANDRE, Route118_Text_DeandreIntro, Route118_Text_DeandreDefeat
 	msgbox Route118_Text_DeandrePostBattle, MSGBOX_AUTOCLOSE
 	end
-
-Route118_Text_StevenQuestions:
-	.string "STEVEN: Hi, {PLAYER}{KUN}!\p"
-	.string "It's me, STEVEN!\n"
-	.string "We met in the cave near DEWFORD.\p"
-	.string "Have you met many kinds of POKéMON\n"
-	.string "since I last saw you?\p"
-	.string "There are many, many kinds of POKéMON\n"
-	.string "in this wide world of ours.\p"
-	.string "If you wanted to raise only your\n"
-	.string "favorites, that's fine.\p"
-	.string "Perhaps you find it more fun to raise\n"
-	.string "all sorts of POKéMON.\p"
-	.string "As a TRAINER of POKéMON,\n"
-	.string "what do you think?\p"
-	.string "Of course, it's not any of my business.\p"
-	.string "It would be nice if we were to meet\n"
-	.string "again somewhere.$"
 
 Route118_Text_CanCrossRiversWithSurf:
 	.string "Even if there isn't a boat, you can\n"
