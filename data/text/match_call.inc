@@ -2669,14 +2669,12 @@ MatchCall_Text_Scott3::
 	.string "should climb to the top of once.$"
 
 MatchCall_Text_Scott4::
-	.string "SCOTT: Hi, {PLAYER}{KUN}!\p"
-	.string "I've been hearing about these odd\n"
-	.string "gangs being a nuisance.\p"
-	.string "TEAM MAGMA and TEAM AQUA,\n"
-	.string "I think they were.\p"
-	.string "I would think there'd be some\n"
-	.string "skilled TRAINERS among them.\p"
-	.string "…But if they're thugs…$"
+	.string "SCOTT: Hi, {PLAYER}{KUN}!\n"
+	.string "Quick call just to tell you that\l"
+	.string "I have handled MT. PYRE situation\n"
+	.string "so you don't have to. Also, there's\l"
+	.string "the Ancient Tomb in Route 120.\n"
+	.string "You should visit it.$"
 
 MatchCall_Text_Scott5::
 	.string "SCOTT: Oh, hi, {PLAYER}{KUN}.\p"

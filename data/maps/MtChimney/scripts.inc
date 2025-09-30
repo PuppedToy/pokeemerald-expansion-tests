@@ -409,12 +409,16 @@ MtChimney_EventScript_BusyAquaGrunt3::
 	end
 
 MtChimney_EventScript_Tabitha::
-	trainerbattle_single TRAINER_TABITHA_MT_CHIMNEY, MtChimney_Text_TabithaIntro, MtChimney_Text_TabithaDefeat
+	trainerbattle_single TRAINER_TABITHA_MT_CHIMNEY, MtChimney_Text_TabithaIntro, MtChimney_Text_TabithaDefeat, MtChimney_EventScript_Tabitha_Defeat
+	end
+
+MtChimney_EventScript_Tabitha_Defeat::
 	setflag FLAG_DEFEATED_TABITHA_MT_CHIMNEY
 	message MtChimney_LevelCap_Minor
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	msgbox MtChimney_Text_TabithaPostBattle, MSGBOX_AUTOCLOSE
+	release
 	end
 
 MtChimney_EventScript_Grunt2::

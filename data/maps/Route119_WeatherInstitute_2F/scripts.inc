@@ -40,34 +40,20 @@ Route119_WeatherInstitute_2F_EventScript_Grunt3::
 
 Route119_WeatherInstitute_2F_EventScript_Shelly::
 	trainerbattle_single TRAINER_SHELLY_WEATHER_INSTITUTE, Route119_WeatherInstitute_2F_Text_ShellyIntro, Route119_WeatherInstitute_2F_Text_ShellyDefeat, Route119_WeatherInstitute_2F_EventScript_ShellyDefeated
-	message Route119_WeatherInstitute_LevelCap
-
-	waitmessage
-	call Common_EventScript_PlayLevelCapFanfare
-	setflag FLAG_DEFEATED_SHELLY_WEATHER_INST
 	msgbox Route119_WeatherInstitute_2F_Text_ShellyPostBattle, MSGBOX_AUTOCLOSE
 	end
 
 Route119_WeatherInstitute_2F_EventScript_ShellyDefeated::
+	message Route119_WeatherInstitute_LevelCap
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
 	msgbox Route119_WeatherInstitute_2F_Text_ShellyPostBattle, MSGBOX_DEFAULT
 	closemessage
-	addobject LOCALID_WEATHER_INSTITUTE_2F_GRUNT_3
-	applymovement LOCALID_WEATHER_INSTITUTE_2F_GRUNT_3, Route119_WeatherInstitute_2F_Movement_GruntApproachShelly
-	applymovement LOCALID_PLAYER, Route119_WeatherInstitute_2F_Movement_ShovePlayerOutOfWay
-	waitmovement 0
-	msgbox Route119_WeatherInstitute_2F_Text_TeamMagmaJustPassedBy, MSGBOX_DEFAULT
-	closemessage
-	playse SE_PIN
-	applymovement LOCALID_WEATHER_INSTITUTE_2F_SHELLY, Common_Movement_ExclamationMark
-	waitmovement 0
-	applymovement LOCALID_WEATHER_INSTITUTE_2F_SHELLY, Common_Movement_Delay48
-	waitmovement 0
-	msgbox Route119_WeatherInstitute_2F_Text_WeHaveToHurryToMtPyre, MSGBOX_DEFAULT
-	closemessage
 	setvar VAR_WEATHER_INSTITUTE_STATE, 1
-	clearflag FLAG_HIDE_WEATHER_INSTITUTE_2F_WORKERS
 	fadedefaultbgm
 	fadescreen FADE_TO_BLACK
+	setflag FLAG_DEFEATED_SHELLY_WEATHER_INST
+	clearflag FLAG_HIDE_WEATHER_INSTITUTE_2F_WORKERS
 	setflag FLAG_HIDE_ROUTE_119_TEAM_AQUA
 	setflag FLAG_HIDE_WEATHER_INSTITUTE_2F_AQUA_GRUNT_M
 	removeobject LOCALID_WEATHER_INSTITUTE_2F_GRUNT_1
@@ -264,9 +250,7 @@ Route119_WeatherInstitute_2F_Text_ShellyDefeat:
 
 Route119_WeatherInstitute_2F_Text_ShellyPostBattle:
 	.string "It's bad enough to have TEAM MAGMA\n"
-	.string "blunder about, but now there's you!\p"
-	.string "What makes you want to sniff around\n"
-	.string "in our business, anyway?$"
+	.string "blunder about, but now there's you!$"
 
 Route119_WeatherInstitute_2F_Text_TeamMagmaJustPassedBy:
 	.string "We have a situation here!\p"

@@ -60,21 +60,6 @@ Route118_EventScript_StevenTrigger2::
 	goto Route118_EventScript_StevenTrigger
 	end
 
-Route118_EventScript_StevenTrigger::
-	playse SE_LEDGE
-	applymovement LOCALID_ROUTE118_STEVEN, Route118_Movement_StevenJumpLedge
-	waitmovement 0
-	delay 30
-	msgbox Route118_Text_StevenQuestions, MSGBOX_DEFAULT
-	closemessage
-	call_if_eq VAR_0x8008, 0, Route118_EventScript_StevenExit0
-	call_if_eq VAR_0x8008, 1, Route118_EventScript_StevenExit1
-	call_if_eq VAR_0x8008, 2, Route118_EventScript_StevenExit2
-	setvar VAR_ROUTE118_STATE, 1
-	removeobject LOCALID_ROUTE118_STEVEN
-	releaseall
-	end
-
 Route118_EventScript_StevenExit0::
 	applymovement LOCALID_PLAYER, Route118_Movement_PlayerWatchStevenExit
 	applymovement LOCALID_ROUTE118_STEVEN, Route118_Movement_StevenExit0
