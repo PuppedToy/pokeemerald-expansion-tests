@@ -534,19 +534,12 @@ Route119_Text_ScottWayToGoBeSeeingYou:
 
 
 Route119_Text_ScottYouWonAtFortreeGym:
-	.string "… … … … … …\n"
-	.string "… … … … … Beep!\p"
-	.string "SCOTT: Hiya, {PLAYER}{KUN}, it's me!\p"
-	.string "Just as I thought, you won at\n"
-	.string "the FORTREE GYM.\p"
-	.string "Your strength…\n"
-	.string "Perhaps you really are the TRAINER\l"
-	.string "that I've been searching for.\p"
-	.string "Remember, you have a fan in me.\n"
-	.string "I'll be cheering from the sidelines.\l"
-	.string "Keep up the great work!\p"
-	.string "… … … … … …\n"
-	.string "… … … … … Click!$"
+	.string "SCOTT: Hi, {PLAYER}{KUN}!\n"
+	.string "Quick call just to tell you that\l"
+	.string "I have handled MT. PYRE situation\n"
+	.string "so you don't have to. Also, there's\l"
+	.string "the Ancient Tomb in Route 120.\n"
+	.string "You should visit it.$"
 
 Route119_Text_StayAwayFromWeatherInstitute:
 	.string "We're standing lookout here.\p"

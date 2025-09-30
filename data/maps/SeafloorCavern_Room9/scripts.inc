@@ -116,7 +116,7 @@ SeafloorCavern_Room9_EventScript_ArchieAwakenKyogre::
 	waitmovement 0
 	msgbox SeafloorCavern_Room9_Text_MaxieComeOnPlayer, MSGBOX_DEFAULT
 	setvar VAR_ROUTE128_STATE, 1
-	setvar VAR_SOOTOPOLIS_CITY_STATE, 1
+	setvar VAR_SOOTOPOLIS_CITY_STATE, 3
 	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_STEVEN
 	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_ARCHIE
 	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_MAXIE
@@ -130,6 +130,7 @@ SeafloorCavern_Room9_EventScript_ArchieAwakenKyogre::
 	setflag FLAG_SYS_WEATHER_CTRL
 	setflag FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN
 	setflag FLAG_HIDE_MOSSDEEP_CITY_STEVENS_HOUSE_STEVEN
+	setflag FLAG_WALLACE_GOES_TO_SKY_PILLAR
 	message SeafloorCavern_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare

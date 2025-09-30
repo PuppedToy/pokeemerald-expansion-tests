@@ -287,6 +287,12 @@ MossdeepCity_SpaceCenter_2F_EventScript_DefeatedMaxieTabitha::
 	turnobject LOCALID_SPACE_CENTER_2F_RICH_BOY, DIR_NORTH
 	call MossdeepCity_SpaceCenter_2F_EventScript_StevenFacePlayer
 	fadescreen FADE_FROM_BLACK
+	giveitem ITEM_HM_DIVE
+	setflag FLAG_RECEIVED_HM_DIVE
+	setflag FLAG_OMIT_DIVE_FROM_STEVEN_LETTER
+	setflag FLAG_HIDE_MOSSDEEP_CITY_SCOTT
+	setflag FLAG_HIDE_SEAFLOOR_CAVERN_ENTRANCE_AQUA_GRUNT
+	setvar VAR_STEVENS_HOUSE_STATE, 2
 	msgbox MossdeepCity_SpaceCenter_2F_Text_StevenThankYouComeSeeMeAtHome, MSGBOX_DEFAULT
 	closemessage
 	fadescreen FADE_TO_BLACK
@@ -433,15 +439,8 @@ MossdeepCity_SpaceCenter_2F_Text_StevenWhyStealRocketFuel:
 	.string "fuel?$"
 
 MossdeepCity_SpaceCenter_2F_Text_MaxieUseFuelToEruptVolcano:
-	.string "MAXIE: Fufufu… Since you're so\n"
-	.string "curious, you deserve an explanation.\p"
-	.string "We're going to jettison the entire\n"
-	.string "load into MT. CHIMNEY!\p"
-	.string "With GROUDON gone, we have no need\n"
-	.string "for that slag heap of a mountain!\p"
-	.string "So we'll use the fuel's power to make\n"
-	.string "the volcano erupt!\p"
-	.string "It will be savage!$"
+	.string "MAXIE: We're going to jettison\n"
+	.string "the entire load into MT. CHIMNEY!$"
 
 MossdeepCity_SpaceCenter_2F_Text_StevenAreYouReadyToBattle:
 	.string "STEVEN: {PLAYER}{KUN}!\n"
@@ -461,19 +460,7 @@ MossdeepCity_SpaceCenter_Text_TabithaDefeat:
 	.string "I'm with our leader…$"
 
 MossdeepCity_SpaceCenter_2F_Text_MaxieWeFailedIsAquaAlsoMisguided:
-	.string "MAXIE: We failed to make the volcano\n"
-	.string "erupt…\p"
-	.string "We failed to control GROUDON after\n"
-	.string "we had awoken it…\p"
-	.string "Is our goal to expand the land\n"
-	.string "misguided?\p"
-	.string "… … … … … …\n"
-	.string "… … … … … …\p"
-	.string "If…\n"
-	.string "If we, TEAM MAGMA, are wrong…\l"
-	.string "… … … … … …\p"
-	.string "Then might TEAM AQUA's goal to expand\n"
-	.string "the sea also be equally misguided?$"
+	.string "MAXIE: We failed…$"
 
 MossdeepCity_SpaceCenter_2F_Text_MaxieWeWillGiveUp:
 	.string "MAXIE: All right…\n"
@@ -483,10 +470,4 @@ MossdeepCity_SpaceCenter_2F_Text_MaxieWeWillGiveUp:
 
 MossdeepCity_SpaceCenter_2F_Text_StevenThankYouComeSeeMeAtHome:
 	.string "STEVEN: Whew, that was too tense.\n"
-	.string "{PLAYER}{KUN}, thank you.\p"
-	.string "I have something to give you as\n"
-	.string "thanks for your support.\p"
-	.string "Please come see me at home\n"
-	.string "after this.\p"
-	.string "Oh, yes, I don't live in RUSTBORO CITY.\n"
-	.string "I live right here on this island.$"
+	.string "{PLAYER}{KUN}, thank you.$"

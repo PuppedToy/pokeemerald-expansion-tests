@@ -50,6 +50,10 @@ NewMauville_Entrance_Pokemon::
 	delay 40
 	waitmoncry
 	setwildbattle SPECIES_MEW, 39
+	setflag FLAG_SYS_CTRL_OBJ_DELETE
+	special BattleSetup_StartLegendaryBattle
+	waitstate
+	clearflag FLAG_SYS_CTRL_OBJ_DELETE
 	specialvar VAR_RESULT, GetBattleOutcome
 	goto_if_eq VAR_RESULT, B_OUTCOME_WON, NewMauville_Entrance_DefeatedPokemon
 	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, AncientTomb_EventScript_RanFromPokemon
