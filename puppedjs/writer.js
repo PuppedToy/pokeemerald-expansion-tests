@@ -61,6 +61,9 @@ const regiceReplacementText = 'SPECIES_REGICE';
 const registeelReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'AncientTomb', 'scripts.inc');
 const registeelReplacementText = 'SPECIES_REGISTEEL';
 
+const mewReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'NewMauville_Entrance', 'scripts.inc');
+const mewReplacementText = 'SPECIES_MEW';
+
 const latiosReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'MossdeepCity_Gym', 'scripts.inc');
 const latiosReplacementText = 'SPECIES_LATIOS';
 const latiosMSGBOXReplacementText = 'LATIOS!$';
@@ -268,23 +271,25 @@ async function writer(pokemonList, moves, abilitiesRatings) {
     const castformReplacement = sampleAndRemove(castformReplacementList);
     alreadyChosenSet.add(castformReplacement.id);
 
-    const regirockReplacementList = pokemonList.filter(poke =>
+    const regirockAndRegiceReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
         && poke.rating.bestEvoTier === TIER_STRONG
         && poke.rating.absoluteRating <= MID_TIER_STRONG_THRESHOLD
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
-    const regirockReplacement = sampleAndRemove(regirockReplacementList);
+    const regirockReplacement = sampleAndRemove(regirockAndRegiceReplacementList);
     alreadyChosenSet.add(regirockReplacement.id);
+    const regiceReplacement = sampleAndRemove(regirockAndRegiceReplacementList);
+    alreadyChosenSet.add(regiceReplacement.id);
 
-    const regirceReplacementList = pokemonList.filter(poke =>
+    const mewReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
         && poke.rating.bestEvoTier === TIER_STRONG
         && poke.rating.absoluteRating >= MID_TIER_STRONG_THRESHOLD
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
-    const regiceReplacement = sampleAndRemove(regirceReplacementList);
-    alreadyChosenSet.add(regiceReplacement.id);
+    const mewReplacement = sampleAndRemove(mewReplacementList);
+    alreadyChosenSet.add(mewReplacement.id);
 
     const registeelReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
@@ -341,6 +346,12 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         let regiceFileData = await fs.readFile(regiceReplacementFile, 'utf8');
         regiceFileData = regiceFileData.replace(new RegExp(regiceReplacementText, 'g'), regiceReplacement.id);
         await fs.writeFile(regiceReplacementFile, regiceFileData, 'utf8');
+    }
+
+    if (mewReplacement) {
+        let mewFileData = await fs.readFile(mewReplacementFile, 'utf8');
+        mewFileData = mewFileData.replace(new RegExp(mewReplacementText, 'g'), mewReplacement.id);
+        await fs.writeFile(mewReplacementFile, mewFileData, 'utf8');
     }
 
     if (registeelReplacement) {

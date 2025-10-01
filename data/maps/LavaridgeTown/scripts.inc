@@ -281,7 +281,7 @@ LavaridgeTown_Text_MayNiceBadgesTakeThis:
 LavaridgeTown_Text_MayExplainGoGogglesChallengeDad:
 	.string "MAY: With those GO-GOGGLES, you'll\n"
 	.string "have no trouble getting through the\l"
-	.string "desert near ROUTE 111. They say there's\n"
+	.string "desert near ROUTE 111. There's\n"
 	.string "a strong pokemon in the Desert Ruins.\p"
 	.string "{PLAYER}{KUN}, I think I should challenge\n"
 	.string "your dad in PETALBURG GYM. See you!$"
@@ -293,7 +293,7 @@ LavaridgeTown_Text_BrendanNiceBadgesTakeThis:
 LavaridgeTown_Text_BrendanExplainGoGogglesChallengeDad:
 	.string "BRENDAN: With those GO-GOGGLES, you'll\n"
 	.string "have no trouble getting through the\l"
-	.string "desert near ROUTE 111. They say there's\n"
+	.string "desert near ROUTE 111. There's\n"
 	.string "a strong pokemon in the Desert Ruins.\p"
 	.string "{PLAYER}{KUN}, I think I should challenge\n"
 	.string "your dad in PETALBURG GYM. See you!$"
