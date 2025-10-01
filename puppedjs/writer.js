@@ -379,7 +379,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
                     hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.type === EVO_TYPE_SOLO;
                 }
             });
-            return true;
+            return hasAnyTypeOfReplacement;
         });
     });
 
