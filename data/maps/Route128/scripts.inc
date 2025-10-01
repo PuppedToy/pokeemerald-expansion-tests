@@ -75,6 +75,9 @@ Route128_EventScript_KyogreAwakenedScene::
 	waitfieldeffect FLDEFF_NPCFLY_OUT
 	clearflag FLAG_HIDE_MAP_NAME_POPUP
 	setvar VAR_ROUTE128_STATE, 2
+	setflag FLAG_WALLACE_GOES_TO_SKY_PILLAR
+	setflag FLAG_STEVEN_GUIDES_TO_CAVE_OF_ORIGIN
+	setvar VAR_SOOTOPOLIS_CITY_STATE, 3
 	releaseall
 	end
 
@@ -267,10 +270,9 @@ Route128_Text_StevenWhatIsHappening:
 	.string "What is happening?$"
 
 Route128_Text_StevenWholeWorldWillDrown:
-	.string "There's no point arguing here…\n"
-	.string "SOOTOPOLIS might provide answers…$"
+	.string "There's no point arguing here…$"
 
 Route128_Text_StevenImGoingToSootopolis:
-	.string "{PLAYER}{KUN}…\n"
-	.string "I'm going to SOOTOPOLIS.$"
+	.string "{PLAYER}{KUN}, please.\n"
+	.string "Go directly to Sky Pillar.$"
 
