@@ -357,7 +357,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
 
     // Routes replacements
 
-    const fileContent = await fs.readFile((wild.file), 'utf8');
+    let wildEncountersFileContent = await fs.readFile((wild.file), 'utf8');
 
     const { replacementTypes: wildReplacementTypes } = wild;
     const replacementLists = {};
@@ -402,10 +402,10 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         alreadyChosenSet.add(replacement.id);
 
         const regex = new RegExp(speciesId, 'g');
-        fileContent = fileContent.replace(regex, replacement.id);
+        wildEncountersFileContent = wildEncountersFileContent.replace(regex, replacement.id);
     });
 
-    await fs.writeFile((wild.file), fileContent, 'utf8');
+    await fs.writeFile((wild.file), wildEncountersFileContent, 'utf8');
     console.log('Wild encounters updated successfully.');
 
 }
