@@ -66,7 +66,7 @@ const mewReplacementText = 'SPECIES_MEW';
 
 const latiosReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'MossdeepCity_Gym', 'scripts.inc');
 const latiosReplacementText = 'SPECIES_LATIOS';
-const latiosMSGBOXReplacementText = 'LATIOS!$';
+const latiosMSGBOXReplacementText = 'LATIOS\\!\\$';
 
 const rayquazaReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'SkyPillar_Top', 'scripts.inc');
 const rayquazaReplacementText = 'SPECIES_RAYQUAZA';
