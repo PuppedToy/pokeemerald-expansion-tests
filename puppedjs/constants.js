@@ -1,0 +1,13 @@
+module.exports = {
+    TIER_BAD: 'BAD',
+    TIER_WEAK: 'WEAK',
+    TIER_AVERAGE: 'AVERAGE',
+    TIER_STRONG: 'STRONG',
+    TIER_PREMIUM: 'PREMIUM',
+    TIER_LEGEND: 'LEGEND',
+    TIER_GOD: 'GOD',
+
+    POKE_TYPE_LC: 'LC',
+    POKE_TYPE_NFE: 'NFE',
+    POKE_TYPE_SOLO: 'SOLO',
+};

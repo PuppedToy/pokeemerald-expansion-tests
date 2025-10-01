@@ -6,8 +6,10 @@ const TIER_AVERAGE = 'AVERAGE';
 const TIER_STRONG = 'STRONG';
 const TIER_PREMIUM = 'PREMIUM';
 const TIER_LEGEND = 'LEGEND';
+const TIER_AVERAGE_THRESHOLD = 6;
 const MID_TIER_STRONG_THRESHOLD = 6.5;
 const MID_TIER_PREMIUM_POKEMON_THRESHOLD = 7.5;
+const TIER_LEGEND_THRESHOLD = 8;
 const EVO_TYPE_LC_OF_3 = 'EVO_TYPE_LC_OF_3';
 const MAX_MEGA_EVO_STONES = 3;
 
@@ -113,13 +115,13 @@ function sampleAndRemove(array) {
 
 async function writer(pokemonList, moves, abilitiesRatings) {
     const elegiblePokemonForStarters = [];
-    const notTooStrongPokemonLC = [];
+    const averagePokemonLC = [];
     pokemonList.forEach(poke => {
         if (
             poke.evolutionData.type === EVO_TYPE_LC_OF_3
             && poke.evolutionData.isLC
             && (poke.rating.bestEvoTier === TIER_STRONG || poke.rating.bestEvoTier === TIER_AVERAGE)
-            && (!poke.rating.megaEvoRating || poke.rating.megaEvoRating <= 8)
+            && (!poke.rating.megaEvoRating || poke.rating.megaEvoRating < TIER_LEGEND_THRESHOLD)
         ) {
             poke.parsedTypes.forEach(type => {
                 if (!TYPES[type]) {
@@ -129,8 +131,8 @@ async function writer(pokemonList, moves, abilitiesRatings) {
             });
         }
 
-        if (poke.evolutionData.isLC && poke.rating.bestEvoRating <= MID_TIER_PREMIUM_POKEMON_THRESHOLD) {
-            notTooStrongPokemonLC.push(poke.id);
+        if (poke.evolutionData.isLC && poke.rating.bestEvoRating <= TIER_AVERAGE_THRESHOLD) {
+            averagePokemonLC.push(poke.id);
         }
     });
 
@@ -170,7 +172,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
     // Pick 9 other unique pokemon from notTooStrongPokemonLC that are not in elegiblePokemonForStarters
     const alreadyChosenSet = new Set(starters);
     const chosenExtraPokemon = [];
-    const shuffledNotTooStrongPokemonLC = notTooStrongPokemonLC
+    const shuffledNotTooStrongPokemonLC = averagePokemonLC
         .filter(p => !alreadyChosenSet.has(p))
         .sort(() => 0.5 - Math.random());
     let nextIndex = 0;
@@ -334,6 +336,10 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         rayquazaFileData = rayquazaFileData.replace(new RegExp(rayquazaReplacementText, 'g'), rayquazaReplacement.id);
         await fs.writeFile(rayquazaReplacementFile, rayquazaFileData, 'utf8');
     }
+
+    // Routes replacements
+
+    // Route 101
 
 }
 
