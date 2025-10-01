@@ -2,20 +2,35 @@ const fs = require('fs').promises;
 const path = require('path');
 const writer = require('./writer');
 
+const {
+    EVO_TYPE_LC_OF_3,
+    EVO_TYPE_LC_OF_2,
+    EVO_TYPE_NFE_OF_3,
+    EVO_TYPE_LAST_OF_3,
+    EVO_TYPE_LAST_OF_2,
+    EVO_TYPE_SOLO,
+    EVO_TYPE_MEGA,
+    TIER_BAD,
+    TIER_WEAK,
+    TIER_AVERAGE,
+    TIER_STRONG,
+    TIER_PREMIUM,
+    TIER_LEGEND,
+    TIER_GOD,
+    TIER_GOD_THRESHOLD,
+    TIER_LEGEND_THRESHOLD,
+    TIER_PREMIUM_THRESHOLD,
+    TIER_STRONG_THRESHOLD,
+    TIER_AVERAGE_THRESHOLD,
+    TIER_WEAK_THRESHOLD,
+} = require('./constants.js');
+
 const speciesDir = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'species_info');
 const levelUpLearnsetsDir = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'level_up_learnsets');
 const abilitiesFilePath = path.resolve(__dirname, '..', 'src', 'data', 'abilities.h');
 const megaEvosPath = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'form_change_tables.h');
 
 const TOTAL_GENS = 9;
-
-const EVO_TYPE_SOLO = 'EVO_TYPE_SOLO';
-const EVO_TYPE_LC_OF_3 = 'EVO_TYPE_LC_OF_3';
-const EVO_TYPE_LC_OF_2 = 'EVO_TYPE_LC_OF_2';
-const EVO_TYPE_NFE_OF_3 = 'EVO_TYPE_NFE_OF_3';
-const EVO_TYPE_LAST_OF_3 = 'EVO_TYPE_LAST_OF_3';
-const EVO_TYPE_LAST_OF_2 = 'EVO_TYPE_LAST_OF_2';
-const EVO_TYPE_MEGA = 'EVO_TYPE_MEGA';
 
 const evoIsLC = (evolutionType) => evolutionType === EVO_TYPE_LC_OF_3 || evolutionType === EVO_TYPE_LC_OF_2;
 const evoIsNFE = (evolutionType) => evoIsLC(evolutionType) || evolutionType === EVO_TYPE_NFE_OF_3;
@@ -603,26 +618,26 @@ function ratePokemon(poke, moves, abilitiesRatings) {
     // These tiers are kinda working. I should add that OU is actually exclusive pokemon and UU-RU are the average fully evolved ones
     // GOD should only be used by extremely hard bosses. Should not come up in the game in general. Esp. Eternatus Emax
     let temporaryTier;
-    if (absoluteRating >= 9) {
-        temporaryTier = 'GOD';
+    if (absoluteRating >= TIER_GOD_THRESHOLD) {
+        temporaryTier = TIER_GOD;
     }
-    else if (absoluteRating >= 8) {
-        temporaryTier = 'LEGEND';
+    else if (absoluteRating >= TIER_LEGEND_THRESHOLD) {
+        temporaryTier = TIER_LEGEND;
     }
-    else if (absoluteRating >= 7) {
-        temporaryTier = 'PREMIUM';
+    else if (absoluteRating >= TIER_PREMIUM_THRESHOLD) {
+        temporaryTier = TIER_PREMIUM;
     }
-    else if (absoluteRating >= 6) {
-        temporaryTier = 'STRONG';
+    else if (absoluteRating >= TIER_STRONG_THRESHOLD) {
+        temporaryTier = TIER_STRONG;
     }
-    else if (absoluteRating >= 5) {
-        temporaryTier = 'AVERAGE';
+    else if (absoluteRating >= TIER_AVERAGE_THRESHOLD) {
+        temporaryTier = TIER_AVERAGE;
     }
-    else if (absoluteRating >= 4) {
-        temporaryTier = 'WEAK'
+    else if (absoluteRating >= TIER_WEAK_THRESHOLD) {
+        temporaryTier = TIER_WEAK;
     }
     else {
-        temporaryTier = 'BAD';
+        temporaryTier = TIER_BAD;
     }
 
     return {

@@ -6,9 +6,9 @@ const {
     TIER_AVERAGE,
     TIER_STRONG,
 
-    POKE_TYPE_LC,
-    POKE_TYPE_NFE,
-    POKE_TYPE_SOLO,
+    EVO_TYPE_LC,
+    EVO_TYPE_NFE,
+    EVO_TYPE_SOLO,
 } = require('./constants.js');
 
 // For fishing, each route will have 1 land and 1 old rod option
@@ -23,31 +23,31 @@ const wildData = {
     replacementTypes: {
         LC_BAD_WEAK: {
             replace: [TIER_WEAK, TIER_BAD],
-            type: [POKE_TYPE_LC],
+            type: [EVO_TYPE_LC],
         },
         LC_WEAK: {
             replace: [TIER_WEAK],
-            type: [POKE_TYPE_LC],
+            type: [EVO_TYPE_LC],
         },
         LC_OR_SOLO_WEAK: {
             replace: [TIER_WEAK],
-            type: [POKE_TYPE_LC, POKE_TYPE_SOLO],
+            type: [EVO_TYPE_LC, EVO_TYPE_SOLO],
         },
         LC_AVERAGE_OR_WEAK: {
             replace: [TIER_AVERAGE, TIER_WEAK],
-            type: [POKE_TYPE_LC],
+            type: [EVO_TYPE_LC],
         },
         NFE_OR_SOLO_AVERAGE_OR_WEAK: {
             replace: [TIER_AVERAGE, TIER_WEAK],
-            type: [POKE_TYPE_NFE, POKE_TYPE_SOLO],
+            type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
         NFE_OR_SOLO_AVERAGE: {
             replace: [TIER_AVERAGE],
-            type: [POKE_TYPE_NFE, POKE_TYPE_SOLO],
+            type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
         NFE_OR_SOLO_STRONG: {
             replace: [TIER_STRONG],
-            type: [POKE_TYPE_NFE, POKE_TYPE_SOLO],
+            type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
     },
     replacements: {

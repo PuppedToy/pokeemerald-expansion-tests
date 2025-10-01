@@ -2,17 +2,23 @@ const fs = require('fs').promises;
 const path = require('path');
 
 const wild = require('./wild.js');
+const {
+    EVO_TYPE_LC,
+    EVO_TYPE_NFE,
+    EVO_TYPE_SOLO,
+    EVO_TYPE_LC_OF_3,
 
-const EVO_TYPE_SOLO = 'EVO_TYPE_SOLO';
-const TIER_AVERAGE = 'AVERAGE';
-const TIER_STRONG = 'STRONG';
-const TIER_PREMIUM = 'PREMIUM';
-const TIER_LEGEND = 'LEGEND';
-const TIER_AVERAGE_THRESHOLD = 6;
-const MID_TIER_STRONG_THRESHOLD = 6.5;
-const MID_TIER_PREMIUM_POKEMON_THRESHOLD = 7.5;
-const TIER_LEGEND_THRESHOLD = 8;
-const EVO_TYPE_LC_OF_3 = 'EVO_TYPE_LC_OF_3';
+    TIER_AVERAGE,
+    TIER_STRONG,
+    TIER_PREMIUM,
+    TIER_LEGEND,
+
+    TIER_LEGEND_THRESHOLD,
+    TIER_STRONG_THRESHOLD,
+    MID_TIER_STRONG_THRESHOLD,
+    MID_TIER_PREMIUM_THRESHOLD,
+} = require('./constants');
+
 const MAX_MEGA_EVO_STONES = 3;
 
 const startersFile = path.resolve(__dirname, '..', 'src', 'starter_choose.c');
@@ -133,7 +139,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
             });
         }
 
-        if (poke.evolutionData.isLC && poke.rating.bestEvoRating <= TIER_AVERAGE_THRESHOLD) {
+        if (poke.evolutionData.isLC && poke.rating.bestEvoRating <= TIER_STRONG_THRESHOLD) {
             averagePokemonLC.push(poke.id);
         }
     });
@@ -276,7 +282,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
     const registeelReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
         && poke.rating.bestEvoTier === TIER_PREMIUM
-        && poke.rating.absoluteRating <= MID_TIER_PREMIUM_POKEMON_THRESHOLD
+        && poke.rating.absoluteRating <= MID_TIER_PREMIUM_THRESHOLD
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const registeelReplacement = sampleAndRemove(registeelReplacementList);
@@ -361,8 +367,18 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         replacementLists[key] = pokemonList.filter(poke => {
             if (alreadyChosenSet.has(poke.id)) return false;
             if (!tiers.includes(poke.rating.bestEvoTier)) return false;
-            if (!poke.evolutionData.isLC) return false;
-            if (!types.some(t => poke.parsedTypes.includes(t))) return false;
+            let hasAnyTypeOfReplacement = false;
+            types.forEach(replacementType => {
+                if (replacementType === EVO_TYPE_LC) {
+                    hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.isLC;
+                }
+                else if (replacementType === EVO_TYPE_NFE) {
+                    hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.isNFE;
+                }
+                else if (replacementType === POKE_TYPE_SOLO) {
+                    hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.type === POKE_TYPE_SOLO;
+                }
+            });
             return true;
         });
     });
