@@ -251,7 +251,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         poke.evolutionData.isLC
         && poke.evolutionData.megaEvos
         && poke.evolutionData.megaEvos.length > 0
-        && (poke.megaEvoTier.tier === TIER_PREMIUM || poke.megaEvoTier.tier === TIER_LEGEND)
+        && (poke.rating.megaEvoTier === TIER_PREMIUM || poke.rating.megaEvoTier === TIER_LEGEND)
     );
 
     const regirockAndRegiceReplacementList = pokemonList.filter(poke =>
