@@ -1,9 +1,13 @@
 const fs = require('fs').promises;
 const path = require('path');
 
-const TIER_STRONG = 'STRONG';
+const EVO_TYPE_SOLO = 'EVO_TYPE_SOLO';
 const TIER_AVERAGE = 'AVERAGE';
-const TOO_STRONG_POKEMON_THRESHOLD = 7.5;
+const TIER_STRONG = 'STRONG';
+const TIER_PREMIUM = 'PREMIUM';
+const TIER_LEGENDARY = 'LEGENDARY';
+const MID_TIER_STRONG_THRESHOLD = 6.5;
+const MID_TIER_PREMIUM_POKEMON_THRESHOLD = 7.5;
 const EVO_TYPE_LC_OF_3 = 'EVO_TYPE_LC_OF_3';
 const MAX_MEGA_EVO_STONES = 3;
 
@@ -30,6 +34,29 @@ const starterExtraMonText = `static const u16 sStarterExtraMon[STARTER_EXTRA_COU
 };`;
 
 const starterExtraCountText = '#define STARTER_EXTRA_COUNT 9';
+
+// Static replacements
+
+const castformReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'Route119_WeatherInstitute_2F', 'scripts.inc');
+const castformReplacementText = 'SPECIES_CASTFORM_NORMAL';
+const castformMSGBOXReplacementText = 'CASTFORM\\!\\$';
+const castformItemReplacementText = 'ITEM_MYSTIC_WATER';
+
+const regirockReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'DesertRuins', 'scripts.inc');
+const regirockReplacementText = 'SPECIES_REGIROCK';
+
+const regiceReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'IslandCave', 'scripts.inc');
+const regiceReplacementText = 'SPECIES_REGICE';
+
+const registeelReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'AncientTomb', 'scripts.inc');
+const registeelReplacementText = 'SPECIES_REGISTEEL';
+
+const latiosReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'MossdeepCity_Gym', 'scripts.inc');
+const latiosReplacementText = 'SPECIES_LATIOS';
+const latiosMSGBOXReplacementText = 'LATIOS!$';
+
+const rayquazaReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'SkyPillar_Top', 'scripts.inc');
+const rayquazaReplacementText = 'SPECIES_RAYQUAZA';
 
 const PERFECT_STARTER_TRIOS = [
     ['GRASS', 'FIRE', 'WATER'],
@@ -76,6 +103,14 @@ const TYPES = {
     DRAGON: [],
 };
 
+function sampleAndRemove(array) {
+    if (array.length === 0) return null;
+    const index = Math.floor(Math.random() * array.length);
+    const element = array[index];
+    array.splice(index, 1);
+    return element;
+}
+
 async function writer(pokemonList, moves, abilitiesRatings) {
     const elegiblePokemonForStarters = [];
     const notTooStrongPokemonLC = [];
@@ -94,7 +129,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
             });
         }
 
-        if (poke.evolutionData.isLC && poke.rating.bestEvoRating <= TOO_STRONG_POKEMON_THRESHOLD) {
+        if (poke.evolutionData.isLC && poke.rating.bestEvoRating <= MID_TIER_PREMIUM_POKEMON_THRESHOLD) {
             notTooStrongPokemonLC.push(poke.id);
         }
     });
@@ -211,6 +246,94 @@ async function writer(pokemonList, moves, abilitiesRatings) {
     await fs.writeFile(route111File, route111Data, 'utf8');
     console.log('Route 111 map updated with new starter mega stones.');
     // @TODO Replace mega stone trainers & rival
+
+    const castformReplacementList = pokemonList.filter(poke =>
+        poke.evolutionData.isLC
+        && (poke.rating.absoluteRating === TIER_PREMIUM || poke.rating.absoluteRating === TIER_LEGENDARY)
+        && poke.evolutionData.megaEvos
+        && poke.evolutionData.megaEvos.length > 0
+    );
+
+    const regirockAndRegiceReplacementList = pokemonList.filter(poke =>
+        poke.rating.bestEvoTier === TIER_STRONG
+        && poke.rating.absoluteRating >= MID_TIER_STRONG_THRESHOLD
+        && poke.evolutionData.type === EVO_TYPE_SOLO
+    );
+
+    const registeelReplacementList = pokemonList.filter(poke =>
+        poke.rating.bestEvoTier === TIER_PREMIUM
+        && poke.rating.absoluteRating <= MID_TIER_STRONG_THRESHOLD
+        && poke.evolutionData.type === EVO_TYPE_SOLO
+    );
+
+    const latiosReplacementList = pokemonList.filter(poke =>
+        poke.rating.bestEvoTier === TIER_PREMIUM
+        && poke.rating.absoluteRating >= MID_TIER_STRONG_THRESHOLD
+        && poke.evolutionData.type === EVO_TYPE_SOLO
+    );
+
+    const rayquazaReplacementList = pokemonList.filter(poke =>
+        poke.rating.bestEvoTier === TIER_LEGENDARY
+        && poke.evolutionData.type === EVO_TYPE_SOLO
+    );
+
+    const castformReplacement = sampleAndRemove(castformReplacementList);
+    const regirockReplacement = sampleAndRemove(regirockAndRegiceReplacementList);
+    const regiceReplacement = sampleAndRemove(regirockAndRegiceReplacementList);
+    const registeelReplacement = sampleAndRemove(registeelReplacementList);
+    const latiosReplacement = sampleAndRemove(latiosReplacementList);
+    const rayquazaReplacement = sampleAndRemove(rayquazaReplacementList);
+
+    if (castformReplacement) {
+        let castformFileData = await fs.readFile(castformReplacementFile, 'utf8');
+        // Replace all occurrences for each replacement
+        castformFileData = castformFileData.replace(new RegExp(castformReplacementText, 'g'), castformReplacement.id);
+        castformFileData = castformFileData.replace(new RegExp(castformMSGBOXReplacementText, 'g'), `${castformReplacement.name.toUpperCase()}!$`);
+        const megaEvoItems = castformReplacement.evolutionData.megaEvos.map(me => {
+            const megaPoke = pokemonList.find(p => p.id === me);
+            return megaPoke ? megaPoke.evolutionData.megaItem : null;
+        }).filter(item => item !== null);
+        if (megaEvoItems.length > 0) {
+            const chosenItem = megaEvoItems[Math.floor(Math.random() * megaEvoItems.length)];
+            castformFileData = castformFileData.replace(new RegExp(castformItemReplacementText, 'g'), chosenItem);
+        }
+        else {
+            console.log(`No mega evolution found for ${castformReplacement.id}, keeping original item.`);
+        }
+        await fs.writeFile(castformReplacementFile, castformFileData, 'utf8');
+    }
+
+    if (regirockReplacement) {
+        let regirockFileData = await fs.readFile(regirockReplacementFile, 'utf8');
+        regirockFileData = regirockFileData.replace(new RegExp(regirockReplacementText, 'g'), regirockReplacement.id);
+        await fs.writeFile(regirockReplacementFile, regirockFileData, 'utf8');
+    }
+
+    if (regiceReplacement) {
+        let regiceFileData = await fs.readFile(regiceReplacementFile, 'utf8');
+        regiceFileData = regiceFileData.replace(new RegExp(regiceReplacementText, 'g'), regiceReplacement.id);
+        await fs.writeFile(regiceReplacementFile, regiceFileData, 'utf8');
+    }
+
+    if (registeelReplacement) {
+        let registeelFileData = await fs.readFile(registeelReplacementFile, 'utf8');
+        registeelFileData = registeelFileData.replace(new RegExp(registeelReplacementText, 'g'), registeelReplacement.id);
+        await fs.writeFile(registeelReplacementFile, registeelFileData, 'utf8');
+    }
+
+    if (latiosReplacement) {
+        let latiosFileData = await fs.readFile(latiosReplacementFile, 'utf8');
+        latiosFileData = latiosFileData.replace(new RegExp(latiosReplacementText, 'g'), latiosReplacement.id);
+        latiosFileData = latiosFileData.replace(new RegExp(latiosMSGBOXReplacementText, 'g'), `${latiosReplacement.name.toUpperCase()}!$`);
+        await fs.writeFile(latiosReplacementFile, latiosFileData, 'utf8');
+    }
+
+    if (rayquazaReplacement) {
+        let rayquazaFileData = await fs.readFile(rayquazaReplacementFile, 'utf8');
+        rayquazaFileData = rayquazaFileData.replace(new RegExp(rayquazaReplacementText, 'g'), rayquazaReplacement.id);
+        await fs.writeFile(rayquazaReplacementFile, rayquazaFileData, 'utf8');
+    }
+
 }
 
 module.exports = writer;

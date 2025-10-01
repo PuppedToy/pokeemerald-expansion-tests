@@ -323,6 +323,7 @@ const items = {
         'ITEM_KEE_BERRY',
         'ITEM_MARANGA_BERRY',
         'ITEM_BOOSTER_ENERGY',
+        'ITEM_MASTER_BALL',
     ],
 
     midConsumables: [
