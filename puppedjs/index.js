@@ -5,6 +5,7 @@ const writer = require('./writer');
 const speciesDir = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'species_info');
 const levelUpLearnsetsDir = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'level_up_learnsets');
 const abilitiesFilePath = path.resolve(__dirname, '..', 'src', 'data', 'abilities.h');
+const megaEvosPath = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'form_change_tables.h');
 
 const TOTAL_GENS = 9;
 
@@ -18,7 +19,7 @@ const EVO_TYPE_MEGA = 'EVO_TYPE_MEGA';
 
 const evoIsLC = (evolutionType) => evolutionType === EVO_TYPE_LC_OF_3 || evolutionType === EVO_TYPE_LC_OF_2;
 const evoIsNFE = (evolutionType) => evoIsLC(evolutionType) || evolutionType === EVO_TYPE_NFE_OF_3;
-const evoIsFinal = (evolutionType) => evolutionType === EVO_TYPE_SOLO || evolutionType === EVO_TYPE_LAST_OF_3 || evolutionType === EVO_TYPE_LAST_OF_2;
+const evoIsFinal = (evolutionType) => evolutionType === EVO_TYPE_SOLO || evolutionType === EVO_TYPE_LAST_OF_3 || evolutionType === EVO_TYPE_LAST_OF_2 || evolutionType === EVO_TYPE_MEGA;
 
 const SUPPORTED_PROPERTIES = [
     'baseHP',
@@ -298,6 +299,27 @@ function parseAbilitiesFileForAIRating(abilitiesFileText) {
     return abilities;
 }
 
+function parseMegaEvoStonesFile(megaEvosFileText) {
+    const lines = megaEvosFileText.split('\n');
+    const megaEvoStones = {};
+
+    for (let i = 0; i < lines.length; i++) {
+        if (
+            lines[i].startsWith('    {FORM_CHANGE_BATTLE_MEGA_EVOLUTION_ITEM,    ')
+            || lines[i].startsWith('    {FORM_CHANGE_BATTLE_PRIMAL_REVERSION,   ')
+        ) {
+            const parts = lines[i]
+                .replace(/^\s*?\{FORM_CHANGE_BATTLE_.*?,\s*/, '')
+                .replace(/\s*?\},\s*$/, '')
+                .split(',')
+                .map(p => p.trim());
+            megaEvoStones[parts[0]] = parts[1];
+        }
+    }
+
+    return megaEvoStones;
+}
+
 function nameizyPokemonId(pokeId) {
     let result = pokeId
         .replace('SPECIES_', '')
@@ -494,7 +516,13 @@ function rateMove(move) {
 }
 
 function getEvolutionType(pokemon, evoTree) {
-    if (!pokemon || !evoTree[pokemon.family]) {
+    if (!pokemon) {
+        console.log('Warning: getEvolutionType called with null pokemon');
+    }
+    if (pokemon.id.match(/.*_(MEGA|PRIMAL|MEGA_X|MEGA_Y)$/)) {
+        return EVO_TYPE_MEGA;
+    }
+    if (!evoTree[pokemon.family]) {
         return EVO_TYPE_SOLO;
     }
     const familyData = evoTree[pokemon.family];
@@ -612,6 +640,9 @@ async function exe() {
     const abilitiesRatings = parseAbilitiesFileForAIRating(abilitiesFileText);
     await fs.writeFile(path.resolve(__dirname, 'abilitiesRatings.json'), JSON.stringify(abilitiesRatings, null, 2), 'utf-8');
 
+    const megaEvosFileText = await fs.readFile(megaEvosPath, 'utf-8');
+    const megaEvoStones = parseMegaEvoStonesFile(megaEvosFileText);
+
     const movesFilePath = path.resolve(__dirname, '..', 'src', 'data', 'moves_info.h');
     const movesFileText = await fs.readFile(movesFilePath, 'utf-8');
     const moves = parseMovesFile(movesFileText);
@@ -652,6 +683,7 @@ async function exe() {
         genPokes.push(parseSpeciesFile(genSpeciesFileText, definitions, evoTree));
     }
 
+    const megaEvoTree = {};
     genPokes.forEach((genPokeList, i) => {
         genPokeList.forEach(poke => {
             let learnset = [];
@@ -663,9 +695,20 @@ async function exe() {
                 teachables = TMTeachables[poke.teachableLearnset];
             }
             const evolutionType = getEvolutionType(poke, evoTree);
+            const isMega = evolutionType === EVO_TYPE_MEGA;
+            let megaBaseForm = undefined;
+            let megaItem = undefined;
             const isLC = evoIsLC(evolutionType);
             const isNFE = evoIsNFE(evolutionType);
             const isFinal = evoIsFinal(evolutionType);
+            if (isMega) {
+                if (!megaEvoTree[poke.family]) {
+                    megaEvoTree[poke.family] = [];
+                }
+                megaEvoTree[poke.family].push(poke.id);
+                megaBaseForm = poke.natDexNum.replace('NATIONAL_DEX_', 'SPECIES_');
+                megaItem = megaEvoStones[poke.id];
+            }
             const baseHP = parseStat(poke.baseHP, definitions);
             const baseAttack = parseStat(poke.baseAttack, definitions);
             const baseDefense = parseStat(poke.baseDefense, definitions);
@@ -690,6 +733,9 @@ async function exe() {
                 baseBST,
                 evolutionData: {
                     type: evolutionType,
+                    isMega,
+                    megaBaseForm,
+                    megaItem,
                     isLC,
                     isNFE,
                     isFinal,
@@ -731,6 +777,9 @@ async function exe() {
         poke.rating.bestEvo = bestEvo;
         poke.rating.bestEvoRating = bestEvoRating;
         poke.rating.bestEvoTier = bestEvoTier;
+        if (megaEvoTree[poke.family] && !poke.evolutionData.isMega) {
+            poke.evolutionData.megaEvos = megaEvoTree[poke.family];
+        }
     });
 
     // const sortedPokesByAbsoluteRating = allPokes.sort((a, b) => {
