@@ -149,8 +149,4 @@ const wildData = {
     ]
 };
 
-module.exports = {
-    wildEncounterTypes,
-    wildData,
-    superRodGroups,
-};
+module.exports = wildData;

@@ -1,6 +1,8 @@
 const fs = require('fs').promises;
 const path = require('path');
 
+const wild = require('./wild.js');
+
 const EVO_TYPE_SOLO = 'EVO_TYPE_SOLO';
 const TIER_AVERAGE = 'AVERAGE';
 const TIER_STRONG = 'STRONG';
@@ -170,7 +172,8 @@ async function writer(pokemonList, moves, abilitiesRatings) {
     ];
     
     // Pick 9 other unique pokemon from notTooStrongPokemonLC that are not in elegiblePokemonForStarters
-    const alreadyChosenSet = new Set(starters);
+    const alreadyChosenSet = new Set();
+    alreadyChosenSet.add([...starters]);
     const chosenExtraPokemon = [];
     const shuffledNotTooStrongPokemonLC = averagePokemonLC
         .filter(p => !alreadyChosenSet.has(p))
@@ -250,41 +253,51 @@ async function writer(pokemonList, moves, abilitiesRatings) {
     // @TODO Replace mega stone trainers & rival
 
     const castformReplacementList = pokemonList.filter(poke =>
-        poke.evolutionData.isLC
+        !alreadyChosenSet.has(poke.id)
+        && poke.evolutionData.isLC
         && poke.evolutionData.megaEvos
         && poke.evolutionData.megaEvos.length > 0
         && (poke.rating.megaEvoTier === TIER_PREMIUM || poke.rating.megaEvoTier === TIER_LEGEND)
     );
+    const castformReplacement = sampleAndRemove(castformReplacementList);
+    alreadyChosenSet.add(castformReplacement.id);
 
     const regirockAndRegiceReplacementList = pokemonList.filter(poke =>
-        poke.rating.bestEvoTier === TIER_STRONG
+        !alreadyChosenSet.has(poke.id)
+        && poke.rating.bestEvoTier === TIER_STRONG
         && poke.rating.absoluteRating >= MID_TIER_STRONG_THRESHOLD
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
+    const regirockReplacement = sampleAndRemove(regirockAndRegiceReplacementList);
+    alreadyChosenSet.add(regirockReplacement.id);
+    const regiceReplacement = sampleAndRemove(regirockAndRegiceReplacementList);
+    alreadyChosenSet.add(regiceReplacement.id);
 
     const registeelReplacementList = pokemonList.filter(poke =>
-        poke.rating.bestEvoTier === TIER_PREMIUM
+        !alreadyChosenSet.has(poke.id)
+        && poke.rating.bestEvoTier === TIER_PREMIUM
         && poke.rating.absoluteRating <= MID_TIER_STRONG_THRESHOLD
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
+    const registeelReplacement = sampleAndRemove(registeelReplacementList);
+    alreadyChosenSet.add(registeelReplacement.id);
 
     const latiosReplacementList = pokemonList.filter(poke =>
-        poke.rating.bestEvoTier === TIER_PREMIUM
+        !alreadyChosenSet.has(poke.id)
+        && poke.rating.bestEvoTier === TIER_PREMIUM
         && poke.rating.absoluteRating >= MID_TIER_STRONG_THRESHOLD
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
+    const latiosReplacement = sampleAndRemove(latiosReplacementList);
+    alreadyChosenSet.add(latiosReplacement.id);
 
     const rayquazaReplacementList = pokemonList.filter(poke =>
-        poke.rating.bestEvoTier === TIER_LEGEND
+        !alreadyChosenSet.has(poke.id)
+        && poke.rating.bestEvoTier === TIER_LEGEND
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
-
-    const castformReplacement = sampleAndRemove(castformReplacementList);
-    const regirockReplacement = sampleAndRemove(regirockAndRegiceReplacementList);
-    const regiceReplacement = sampleAndRemove(regirockAndRegiceReplacementList);
-    const registeelReplacement = sampleAndRemove(registeelReplacementList);
-    const latiosReplacement = sampleAndRemove(latiosReplacementList);
     const rayquazaReplacement = sampleAndRemove(rayquazaReplacementList);
+    alreadyChosenSet.add(rayquazaReplacement.id);
 
     if (castformReplacement) {
         let castformFileData = await fs.readFile(castformReplacementFile, 'utf8');
@@ -304,7 +317,6 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         }
         await fs.writeFile(castformReplacementFile, castformFileData, 'utf8');
     }
-    console.log('--');
 
     if (regirockReplacement) {
         let regirockFileData = await fs.readFile(regirockReplacementFile, 'utf8');
@@ -339,7 +351,40 @@ async function writer(pokemonList, moves, abilitiesRatings) {
 
     // Routes replacements
 
-    // Route 101
+    const fileContent = await fs.readFile((wild.file), 'utf8');
+
+    const { replacementTypes: wildReplacementTypes } = wild;
+    const replacementLists = {};
+
+    Object.entries(wildReplacementTypes).forEach(([key, value]) => {
+        const { replace: tiers, type: types } = value;
+        replacementLists[key] = pokemonList.filter(poke => {
+            if (alreadyChosenSet.has(poke.id)) return false;
+            if (!tiers.includes(poke.rating.bestEvoTier)) return false;
+            if (!poke.evolutionData.isLC) return false;
+            if (!types.some(t => poke.parsedTypes.includes(t))) return false;
+            return true;
+        });
+    });
+
+    Object.entries(fileContent.replacements).forEach(([speciesId, replacementTypeKey]) => {
+        const replacementType = wildReplacementTypes[replacementTypeKey];
+        if (!replacementType) {
+            console.log(`No replacement type found for key ${replacementTypeKey}, skipping replacement for ${speciesId}.`);
+            return;
+        }
+        const replacementList = replacementLists[replacementTypeKey];
+        if (!replacementList || replacementList.length === 0) {
+            console.log(`No replacement list found or empty for type ${replacementTypeKey}, skipping replacement for ${speciesId}.`);
+            return;
+        }
+        const replacement = sampleAndRemove(replacementList);
+        if (!replacement) {
+            console.log(`No replacement found for ${speciesId} of type ${replacementTypeKey}, skipping.`);
+            return;
+        }
+        alreadyChosenSet.add(replacement.id);
+    });
 
 }
 
