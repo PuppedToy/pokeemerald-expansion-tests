@@ -82,6 +82,9 @@ const wildData = {
         // PetalburgWoods
         SPECIES_PATRAT: 'LC_AVERAGE_OR_WEAK',
 
+        // Rustboro City
+        SPECIES_PORYGON: 'LC_AVERAGE_OR_WEAK',
+
         // Route115
         SPECIES_SANDSHREW: 'NFE_OR_SOLO_AVERAGE_OR_WEAK',
         SPECIES_DELIBIRD: 'LC_OR_SOLO_WEAK',
@@ -131,6 +134,10 @@ const wildData = {
         {
             id: 'MAP_PETALBURG_WOODS',
             land: 'SPECIES_PATRAT',
+        },
+        {
+            id: 'MAP_RUSTBORO_CITY',
+            land: 'SPECIES_PORYGON'
         },
         {
             id: 'MAP_ROUTE115',
