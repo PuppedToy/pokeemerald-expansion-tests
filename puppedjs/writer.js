@@ -2,8 +2,10 @@ const fs = require('fs').promises;
 const path = require('path');
 
 const TIER_STRONG = 'STRONG';
+const TIER_AVERAGE = 'AVERAGE';
 const TOO_STRONG_POKEMON_THRESHOLD = 7.5;
 const EVO_TYPE_LC_OF_3 = 'EVO_TYPE_LC_OF_3';
+const MAX_MEGA_EVO_STONES = 3;
 
 const startersFile = path.resolve(__dirname, '..', 'src', 'starter_choose.c');
 
@@ -29,10 +31,13 @@ const starterExtraMonText = `static const u16 sStarterExtraMon[STARTER_EXTRA_COU
 
 const starterExtraCountText = '#define STARTER_EXTRA_COUNT 9';
 
-const GOOD_STARTER_TRIOS = [
+const PERFECT_STARTER_TRIOS = [
     ['GRASS', 'FIRE', 'WATER'],
-    ['GRASS', 'ROCK', 'BUG'],
     ['FIGHTING', 'PSYCHIC', 'DARK'],
+];
+
+const GOOD_STARTER_TRIOS = [
+    ['GRASS', 'ROCK', 'BUG'],
     ['WATER', 'GROUND', 'ELECTRIC'],
     ['FIGHTING', 'FAIRY', 'STEEL'],
     ['FIGHTING', 'FLYING', 'ICE'],
@@ -78,10 +83,8 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         if (
             poke.evolutionData.type === EVO_TYPE_LC_OF_3
             && poke.evolutionData.isLC
-            && poke.evolutionData.megaEvos
-            && poke.evolutionData.megaEvos.length > 0
-            && poke.rating.bestEvoTier === TIER_STRONG
-            && poke.rating.megaEvoRating <= 8
+            && (poke.rating.bestEvoTier === TIER_STRONG || poke.rating.bestEvoTier === TIER_AVERAGE)
+            && (!poke.rating.megaEvoRating || poke.rating.megaEvoRating <= 8)
         ) {
             poke.parsedTypes.forEach(type => {
                 if (!TYPES[type]) {
@@ -96,25 +99,27 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         }
     });
 
-    // If there's any empty type, warn a log and remove every good trio that includes that type
+    // 50% of perfect forward and backwards type weakness in perfect trios
+    // The other 50% is for any type trio that only fulfills supereffective but not resistant backwards
+    const usedTrios = Math.random() < 0.5 ? PERFECT_STARTER_TRIOS : GOOD_STARTER_TRIOS;
+
     const emptyTypes = Object.entries(TYPES).filter(([type, pokes]) => pokes.length === 0).map(([type]) => type);
     if (emptyTypes.length > 0) {
-        console.log(`The following types have no eligible pokemon for starters: ${emptyTypes.join(', ')}`);
-        for (let i = GOOD_STARTER_TRIOS.length - 1; i >= 0; i--) {
-            const trio = GOOD_STARTER_TRIOS[i];
+        for (let i = usedTrios.length - 1; i >= 0; i--) {
+            const trio = usedTrios[i];
             if (trio.some(type => emptyTypes.includes(type))) {
-                GOOD_STARTER_TRIOS.splice(i, 1);
+                usedTrios.splice(i, 1);
             }
         }
     }
 
-    if (GOOD_STARTER_TRIOS.length === 0) {
+    if (usedTrios.length === 0) {
         console.log('No good starter trios available due to missing types.');
         return;
     }
 
     // Pick a random good trio
-    const randomTrio = GOOD_STARTER_TRIOS[Math.floor(Math.random() * GOOD_STARTER_TRIOS.length)];
+    const randomTrio = usedTrios[Math.floor(Math.random() * usedTrios.length)];
     randomTrio.forEach(type => {
         const pokesOfType = TYPES[type];
         const randomPoke = pokesOfType[Math.floor(Math.random() * pokesOfType.length)];
@@ -130,15 +135,26 @@ async function writer(pokemonList, moves, abilitiesRatings) {
     // Pick 9 other unique pokemon from notTooStrongPokemonLC that are not in elegiblePokemonForStarters
     const alreadyChosenSet = new Set(starters);
     const chosenExtraPokemon = [];
-    while (chosenExtraPokemon.length < 9 && notTooStrongPokemonLC.length > 0) {
-        const randomIndex = Math.floor(Math.random() * notTooStrongPokemonLC.length);
-        const randomPoke = notTooStrongPokemonLC[randomIndex];
+    const shuffledNotTooStrongPokemonLC = notTooStrongPokemonLC
+        .filter(p => !alreadyChosenSet.has(p))
+        .sort(() => 0.5 - Math.random());
+    let nextIndex = 0;
+    while (chosenExtraPokemon.length < 9 && shuffledNotTooStrongPokemonLC.length > 0) {
+        const randomPoke = shuffledNotTooStrongPokemonLC[nextIndex];
         if (!alreadyChosenSet.has(randomPoke)) {
+            if (chosenExtraPokemon.length === 8) {
+                // The last pokemon must have mega evolution
+                const hasMegaEvo = pokemonList.find(p => p.id === randomPoke && p.evolutionData.megaEvos && p.evolutionData.megaEvos.length > 0);
+                if (!hasMegaEvo) {
+                    nextIndex += 1;
+                    continue;
+                }
+            }
             chosenExtraPokemon.push(randomPoke);
             alreadyChosenSet.add(randomPoke);
         }
         // Remove the considered pokemon from the pool to avoid infinite loops
-        notTooStrongPokemonLC.splice(randomIndex, 1);
+        shuffledNotTooStrongPokemonLC.splice(nextIndex, 1);
     }
 
     let newStartersFile = await fs.readFile(startersFile, 'utf8');
@@ -172,24 +188,26 @@ async function writer(pokemonList, moves, abilitiesRatings) {
     await fs.writeFile(startersFile, newStartersFile, 'utf8');
     console.log('Starter pokemon updated successfully.');
 
-    
-    const poke1MegaEvos = pokemonList.find(p => p.id === starters[0]).evolutionData.megaEvos;
-    const poke2MegaEvos = pokemonList.find(p => p.id === starters[1]).evolutionData.megaEvos;
-    const poke3MegaEvos = pokemonList.find(p => p.id === starters[2]).evolutionData.megaEvos;
-
-    const chosenMegaEvo1 = poke1MegaEvos[Math.floor(Math.random() * poke1MegaEvos.length)];
-    const chosenMegaEvo2 = poke2MegaEvos[Math.floor(Math.random() * poke2MegaEvos.length)];
-    const chosenMegaEvo3 = poke3MegaEvos[Math.floor(Math.random() * poke3MegaEvos.length)];
-    
-    const megaItemEvo1 = pokemonList.find(p => p.id === chosenMegaEvo1).evolutionData.megaItem;
-    const megaItemEvo2 = pokemonList.find(p => p.id === chosenMegaEvo2).evolutionData.megaItem;
-    const megaItemEvo3 = pokemonList.find(p => p.id === chosenMegaEvo3).evolutionData.megaItem;
-    
     const route111File = path.resolve(__dirname, '..', 'data', 'maps', 'Route111', 'map.json');
     let route111Data = await fs.readFile(route111File, 'utf8');
-    route111Data = route111Data.replace('ITEM_SCEPTILITE', megaItemEvo1);
-    route111Data = route111Data.replace('ITEM_BLAZIKENITE', megaItemEvo2);
-    route111Data = route111Data.replace('ITEM_SWAMPERTITE', megaItemEvo3);
+
+    const chosenPokemonThatHaveMegaEvo = [...starters, ...chosenExtraPokemon].map((pokeId) =>
+        pokemonList.find(p => p.id === pokeId),
+    ).filter(p => p && p.evolutionData.megaEvos && p.evolutionData.megaEvos.length > 0);
+    const itemDataList = [
+        'ITEM_SCEPTILITE',
+        'ITEM_BLAZIKENITE',
+        'ITEM_SWAMPERTITE',
+    ];
+
+    for (let i = 0; i < Math.min(chosenPokemonThatHaveMegaEvo.length, MAX_MEGA_EVO_STONES); i++) {
+        const poke = chosenPokemonThatHaveMegaEvo[i];
+        const megaEvos = poke.evolutionData.megaEvos;
+        const chosenMegaEvo = megaEvos[Math.floor(Math.random() * megaEvos.length)];
+        const megaItem = pokemonList.find(p => p.id === chosenMegaEvo).evolutionData.megaItem;
+        route111Data = route111Data.replace(itemDataList[i], megaItem);
+    }
+
     await fs.writeFile(route111File, route111Data, 'utf8');
     console.log('Route 111 map updated with new starter mega stones.');
     // @TODO Replace mega stone trainers & rival
