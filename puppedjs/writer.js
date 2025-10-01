@@ -375,8 +375,8 @@ async function writer(pokemonList, moves, abilitiesRatings) {
                 else if (replacementType === EVO_TYPE_NFE) {
                     hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.isNFE;
                 }
-                else if (replacementType === POKE_TYPE_SOLO) {
-                    hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.type === POKE_TYPE_SOLO;
+                else if (replacementType === EVO_TYPE_SOLO) {
+                    hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.type === EVO_TYPE_SOLO;
                 }
             });
             return true;
