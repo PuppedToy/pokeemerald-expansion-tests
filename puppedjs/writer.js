@@ -367,7 +367,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         });
     });
 
-    Object.entries(fileContent.replacements).forEach(([speciesId, replacementTypeKey]) => {
+    Object.entries(wild.replacements).forEach(([speciesId, replacementTypeKey]) => {
         const replacementType = wildReplacementTypes[replacementTypeKey];
         if (!replacementType) {
             console.log(`No replacement type found for key ${replacementTypeKey}, skipping replacement for ${speciesId}.`);
@@ -384,7 +384,13 @@ async function writer(pokemonList, moves, abilitiesRatings) {
             return;
         }
         alreadyChosenSet.add(replacement.id);
+
+        const regex = new RegExp(speciesId, 'g');
+        fileContent = fileContent.replace(regex, replacement.id);
     });
+
+    await fs.writeFile((wild.file), fileContent, 'utf8');
+    console.log('Wild encounters updated successfully.');
 
 }
 
