@@ -276,7 +276,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
     const registeelReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
         && poke.rating.bestEvoTier === TIER_PREMIUM
-        && poke.rating.absoluteRating <= MID_TIER_STRONG_THRESHOLD
+        && poke.rating.absoluteRating <= MID_TIER_PREMIUM_POKEMON_THRESHOLD
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const registeelReplacement = sampleAndRemove(registeelReplacementList);
