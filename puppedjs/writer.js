@@ -5,7 +5,7 @@ const EVO_TYPE_SOLO = 'EVO_TYPE_SOLO';
 const TIER_AVERAGE = 'AVERAGE';
 const TIER_STRONG = 'STRONG';
 const TIER_PREMIUM = 'PREMIUM';
-const TIER_LEGENDARY = 'LEGENDARY';
+const TIER_LEGEND = 'LEGEND';
 const MID_TIER_STRONG_THRESHOLD = 6.5;
 const MID_TIER_PREMIUM_POKEMON_THRESHOLD = 7.5;
 const EVO_TYPE_LC_OF_3 = 'EVO_TYPE_LC_OF_3';
@@ -249,9 +249,9 @@ async function writer(pokemonList, moves, abilitiesRatings) {
 
     const castformReplacementList = pokemonList.filter(poke =>
         poke.evolutionData.isLC
-        && (poke.rating.absoluteRating === TIER_PREMIUM || poke.rating.absoluteRating === TIER_LEGENDARY)
         && poke.evolutionData.megaEvos
         && poke.evolutionData.megaEvos.length > 0
+        && (poke.megaEvoTier.tier === TIER_PREMIUM || poke.megaEvoTier.tier === TIER_LEGEND)
     );
 
     const regirockAndRegiceReplacementList = pokemonList.filter(poke =>
@@ -273,7 +273,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
     );
 
     const rayquazaReplacementList = pokemonList.filter(poke =>
-        poke.rating.bestEvoTier === TIER_LEGENDARY
+        poke.rating.bestEvoTier === TIER_LEGEND
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
 
@@ -302,6 +302,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         }
         await fs.writeFile(castformReplacementFile, castformFileData, 'utf8');
     }
+    console.log('--');
 
     if (regirockReplacement) {
         let regirockFileData = await fs.readFile(regirockReplacementFile, 'utf8');
