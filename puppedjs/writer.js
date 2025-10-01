@@ -268,15 +268,22 @@ async function writer(pokemonList, moves, abilitiesRatings) {
     const castformReplacement = sampleAndRemove(castformReplacementList);
     alreadyChosenSet.add(castformReplacement.id);
 
-    const regirockAndRegiceReplacementList = pokemonList.filter(poke =>
+    const regirockReplacementList = pokemonList.filter(poke =>
+        !alreadyChosenSet.has(poke.id)
+        && poke.rating.bestEvoTier === TIER_STRONG
+        && poke.rating.absoluteRating <= MID_TIER_STRONG_THRESHOLD
+        && poke.evolutionData.type === EVO_TYPE_SOLO
+    );
+    const regirockReplacement = sampleAndRemove(regirockReplacementList);
+    alreadyChosenSet.add(regirockReplacement.id);
+
+    const regirceReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
         && poke.rating.bestEvoTier === TIER_STRONG
         && poke.rating.absoluteRating >= MID_TIER_STRONG_THRESHOLD
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
-    const regirockReplacement = sampleAndRemove(regirockAndRegiceReplacementList);
-    alreadyChosenSet.add(regirockReplacement.id);
-    const regiceReplacement = sampleAndRemove(regirockAndRegiceReplacementList);
+    const regiceReplacement = sampleAndRemove(regirceReplacementList);
     alreadyChosenSet.add(regiceReplacement.id);
 
     const registeelReplacementList = pokemonList.filter(poke =>
@@ -291,7 +298,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
     const latiosReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
         && poke.rating.bestEvoTier === TIER_PREMIUM
-        && poke.rating.absoluteRating >= MID_TIER_STRONG_THRESHOLD
+        && poke.rating.absoluteRating >= MID_TIER_PREMIUM_THRESHOLD
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const latiosReplacement = sampleAndRemove(latiosReplacementList);
