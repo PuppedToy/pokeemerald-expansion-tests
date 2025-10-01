@@ -79,6 +79,8 @@ async function writer(pokemonList, moves, abilitiesRatings) {
             poke.evolutionData.type === EVO_TYPE_LC_OF_3
             && poke.evolutionData.isLC
             && poke.rating.bestEvoTier === TIER_STRONG
+            && poke.evolutionData.megaEvos
+            && poke.evolutionData.megaEvos.length > 0
         ) {
             poke.parsedTypes.forEach(type => {
                 if (!TYPES[type]) {
@@ -117,11 +119,16 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         const randomPoke = pokesOfType[Math.floor(Math.random() * pokesOfType.length)];
         elegiblePokemonForStarters.push(randomPoke);
     });
+
+    const starters = [
+        elegiblePokemonForStarters[0],
+        elegiblePokemonForStarters[1],
+        elegiblePokemonForStarters[2],
+    ];
     
     // Pick 9 other unique pokemon from notTooStrongPokemonLC that are not in elegiblePokemonForStarters
-    const alreadyChosenSet = new Set(elegiblePokemonForStarters);
+    const alreadyChosenSet = new Set(starters);
     const chosenExtraPokemon = [];
-    alreadyChosenSet.add(...elegiblePokemonForStarters);
     while (chosenExtraPokemon.length < 9 && notTooStrongPokemonLC.length > 0) {
         const randomIndex = Math.floor(Math.random() * notTooStrongPokemonLC.length);
         const randomPoke = notTooStrongPokemonLC[randomIndex];
@@ -140,9 +147,9 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         starterMonText,
         `static const u16 sStarterMon[STARTER_MON_COUNT] =
 {
-    ${elegiblePokemonForStarters[0]},
-    ${elegiblePokemonForStarters[1]},
-    ${elegiblePokemonForStarters[2]},
+    ${starters[0]},
+    ${starters[1]},
+    ${starters[2]},
 };`
     );
 
@@ -163,6 +170,28 @@ async function writer(pokemonList, moves, abilitiesRatings) {
 
     await fs.writeFile(startersFile, newStartersFile, 'utf8');
     console.log('Starter pokemon updated successfully.');
+
+    
+    const poke1MegaEvos = pokemonList.find(p => p.id === starters[0]).evolutionData.megaEvos;
+    const poke2MegaEvos = pokemonList.find(p => p.id === starters[1]).evolutionData.megaEvos;
+    const poke3MegaEvos = pokemonList.find(p => p.id === starters[2]).evolutionData.megaEvos;
+
+    const chosenMegaEvo1 = poke1MegaEvos[Math.floor(Math.random() * poke1MegaEvos.length)];
+    const chosenMegaEvo2 = poke2MegaEvos[Math.floor(Math.random() * poke2MegaEvos.length)];
+    const chosenMegaEvo3 = poke3MegaEvos[Math.floor(Math.random() * poke3MegaEvos.length)];
+    
+    const megaItemEvo1 = pokemonList.find(p => p.id === chosenMegaEvo1).evolutionData.megaItem;
+    const megaItemEvo2 = pokemonList.find(p => p.id === chosenMegaEvo2).evolutionData.megaItem;
+    const megaItemEvo3 = pokemonList.find(p => p.id === chosenMegaEvo3).evolutionData.megaItem;
+    
+    const route111File = path.resolve(__dirname, '..', 'data', 'maps', 'Route111', 'map.json');
+    let route111Data = await fs.readFile(route111File, 'utf8');
+    route111Data = route111Data.replace('ITEM_SCEPTILITE', megaItemEvo1);
+    route111Data = route111Data.replace('ITEM_BLAZIKENITE', megaItemEvo2);
+    route111Data = route111Data.replace('ITEM_SWAMPERTITE', megaItemEvo3);
+    await fs.writeFile(route111File, route111Data, 'utf8');
+    console.log('Route 111 map updated with new starter mega stones.');
+    // @TODO Replace mega stone trainers & rival
 }
 
 module.exports = writer;
