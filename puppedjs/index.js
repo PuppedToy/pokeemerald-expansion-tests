@@ -774,11 +774,34 @@ async function exe() {
                 }
             }
         });
+
         poke.rating.bestEvo = bestEvo;
         poke.rating.bestEvoRating = bestEvoRating;
         poke.rating.bestEvoTier = bestEvoTier;
         if (megaEvoTree[poke.family] && !poke.evolutionData.isMega) {
             poke.evolutionData.megaEvos = megaEvoTree[poke.family];
+        }
+
+        if (poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length) {
+            let bestMegaEvo = poke.evolutionData.megaEvos[0];
+            let bestMegaEvoRating = 0;
+            let bestMegaEvoTier = 'BAD';
+            poke.evolutionData.megaEvos.forEach(megaEvoId => {
+                const megaEvoPoke = allPokes.find(p => p.id === megaEvoId);
+                if (megaEvoPoke && megaEvoPoke.rating.absoluteRating > bestMegaEvoRating) {
+                    bestMegaEvo = megaEvoPoke.id;
+                    bestMegaEvoRating = megaEvoPoke.rating.absoluteRating;
+                    bestMegaEvoTier = megaEvoPoke.rating.temporaryTier;
+                }
+            });
+            if (bestMegaEvoRating > bestEvoRating) {
+                bestEvo = bestMegaEvo;
+                bestEvoRating = bestMegaEvoRating;
+                bestEvoTier = bestMegaEvoTier;
+            }
+            poke.rating.megaEvo = bestMegaEvo;
+            poke.rating.megaEvoRating = bestMegaEvoRating;
+            poke.rating.megaEvoTier = bestMegaEvoTier;
         }
     });
 

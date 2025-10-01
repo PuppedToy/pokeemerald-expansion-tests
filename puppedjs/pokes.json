@@ -159,7 +159,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_VENUSAUR",
       "bestEvoRating": 6.026428571428571,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_VENUSAUR_MEGA",
+      "megaEvoRating": 7.459761904761906,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -323,7 +326,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_VENUSAUR",
       "bestEvoRating": 6.026428571428571,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_VENUSAUR_MEGA",
+      "megaEvoRating": 7.459761904761906,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -490,7 +496,10 @@
       "temporaryTier": "STRONG",
       "bestEvo": "SPECIES_VENUSAUR",
       "bestEvoRating": 6.026428571428571,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_VENUSAUR_MEGA",
+      "megaEvoRating": 7.459761904761906,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -820,7 +829,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_CHARIZARD",
       "bestEvoRating": 6.039821428571429,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_CHARIZARD_MEGA_Y",
+      "megaEvoRating": 7.773154761904763,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -980,7 +992,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_CHARIZARD",
       "bestEvoRating": 6.039821428571429,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_CHARIZARD_MEGA_Y",
+      "megaEvoRating": 7.773154761904763,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -1156,7 +1171,10 @@
       "temporaryTier": "STRONG",
       "bestEvo": "SPECIES_CHARIZARD",
       "bestEvoRating": 6.039821428571429,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_CHARIZARD_MEGA_Y",
+      "megaEvoRating": 7.773154761904763,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -1673,7 +1691,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_BLASTOISE",
       "bestEvoRating": 6.0183630952380955,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_BLASTOISE_MEGA",
+      "megaEvoRating": 7.551696428571429,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -1842,7 +1863,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_BLASTOISE",
       "bestEvoRating": 6.0183630952380955,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_BLASTOISE_MEGA",
+      "megaEvoRating": 7.551696428571429,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -2011,7 +2035,10 @@
       "temporaryTier": "STRONG",
       "bestEvo": "SPECIES_BLASTOISE",
       "bestEvoRating": 6.0183630952380955,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_BLASTOISE_MEGA",
+      "megaEvoRating": 7.551696428571429,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -2592,7 +2619,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_BEEDRILL",
       "bestEvoRating": 4.13202380952381,
-      "bestEvoTier": "WEAK"
+      "bestEvoTier": "WEAK",
+      "megaEvo": "SPECIES_BEEDRILL_MEGA",
+      "megaEvoRating": 5.765357142857143,
+      "megaEvoTier": "AVERAGE"
     }
   },
   {
@@ -2672,7 +2702,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_BEEDRILL",
       "bestEvoRating": 4.13202380952381,
-      "bestEvoTier": "WEAK"
+      "bestEvoTier": "WEAK",
+      "megaEvo": "SPECIES_BEEDRILL_MEGA",
+      "megaEvoRating": 5.765357142857143,
+      "megaEvoTier": "AVERAGE"
     }
   },
   {
@@ -2838,7 +2871,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_BEEDRILL",
       "bestEvoRating": 4.13202380952381,
-      "bestEvoTier": "WEAK"
+      "bestEvoTier": "WEAK",
+      "megaEvo": "SPECIES_BEEDRILL_MEGA",
+      "megaEvoRating": 5.765357142857143,
+      "megaEvoTier": "AVERAGE"
     }
   },
   {
@@ -3154,7 +3190,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_PIDGEOT",
       "bestEvoRating": 4.829166666666667,
-      "bestEvoTier": "WEAK"
+      "bestEvoTier": "WEAK",
+      "megaEvo": "SPECIES_PIDGEOT_MEGA",
+      "megaEvoRating": 6.8625,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -3313,7 +3352,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_PIDGEOT",
       "bestEvoRating": 4.829166666666667,
-      "bestEvoTier": "WEAK"
+      "bestEvoTier": "WEAK",
+      "megaEvo": "SPECIES_PIDGEOT_MEGA",
+      "megaEvoRating": 6.8625,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -3474,7 +3516,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_PIDGEOT",
       "bestEvoRating": 4.829166666666667,
-      "bestEvoTier": "WEAK"
+      "bestEvoTier": "WEAK",
+      "megaEvo": "SPECIES_PIDGEOT_MEGA",
+      "megaEvoRating": 6.8625,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -14384,7 +14429,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_ALAKAZAM",
       "bestEvoRating": 6.519285714285715,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_ALAKAZAM_MEGA",
+      "megaEvoRating": 7.019285714285715,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -14567,7 +14615,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_ALAKAZAM",
       "bestEvoRating": 6.519285714285715,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_ALAKAZAM_MEGA",
+      "megaEvoRating": 7.019285714285715,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -14735,7 +14786,10 @@
       "temporaryTier": "STRONG",
       "bestEvo": "SPECIES_ALAKAZAM",
       "bestEvoRating": 6.519285714285715,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_ALAKAZAM_MEGA",
+      "megaEvoRating": 7.019285714285715,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -17933,7 +17987,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_SLOWBRO",
       "bestEvoRating": 5.752619047619048,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_SLOWBRO_MEGA",
+      "megaEvoRating": 6.485952380952381,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -18130,7 +18187,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_SLOWBRO",
       "bestEvoRating": 5.752619047619048,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_SLOWBRO_MEGA",
+      "megaEvoRating": 6.485952380952381,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -18338,7 +18398,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_SLOWKING",
       "bestEvoRating": 5.752619047619048,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_SLOWBRO_MEGA",
+      "megaEvoRating": 6.485952380952381,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -18712,7 +18775,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_SLOWBRO",
       "bestEvoRating": 5.752619047619048,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_SLOWBRO_MEGA",
+      "megaEvoRating": 6.485952380952381,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -18897,7 +18963,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_SLOWBRO",
       "bestEvoRating": 5.752619047619048,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_SLOWBRO_MEGA",
+      "megaEvoRating": 6.485952380952381,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -19104,7 +19173,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_SLOWBRO",
       "bestEvoRating": 5.752619047619048,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_SLOWBRO_MEGA",
+      "megaEvoRating": 6.485952380952381,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -21785,7 +21857,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_GENGAR",
       "bestEvoRating": 5.064523809523809,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_GENGAR_MEGA",
+      "megaEvoRating": 7.397857142857143,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -21957,7 +22032,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_GENGAR",
       "bestEvoRating": 5.064523809523809,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_GENGAR_MEGA",
+      "megaEvoRating": 7.397857142857143,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -22136,7 +22214,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_GENGAR",
       "bestEvoRating": 5.064523809523809,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_GENGAR_MEGA",
+      "megaEvoRating": 7.397857142857143,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -22495,7 +22576,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_STEELIX",
       "bestEvoRating": 5.993035714285715,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_STEELIX_MEGA",
+      "megaEvoRating": 6.926369047619049,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -22688,7 +22772,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_STEELIX",
       "bestEvoRating": 5.993035714285715,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_STEELIX_MEGA",
+      "megaEvoRating": 6.926369047619049,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -28192,7 +28279,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_KANGASKHAN",
       "bestEvoRating": 5.597261904761906,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_KANGASKHAN_MEGA",
+      "megaEvoRating": 7.330595238095238,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -30377,7 +30467,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_KLEAVOR",
       "bestEvoRating": 5.845773809523809,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_SCIZOR_MEGA",
+      "megaEvoRating": 7.179107142857143,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -30541,7 +30634,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_KLEAVOR",
       "bestEvoRating": 5.845773809523809,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_SCIZOR_MEGA",
+      "megaEvoRating": 7.179107142857143,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -30850,7 +30946,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_KLEAVOR",
       "bestEvoRating": 5.845773809523809,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_SCIZOR_MEGA",
+      "megaEvoRating": 7.179107142857143,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -32326,7 +32425,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_PINSIR",
       "bestEvoRating": 5.782380952380953,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_PINSIR_MEGA",
+      "megaEvoRating": 7.215714285714286,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -33095,7 +33197,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_GYARADOS",
       "bestEvoRating": 6.321964285714286,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_GYARADOS_MEGA",
+      "megaEvoRating": 7.655297619047619,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -33273,7 +33378,10 @@
       "temporaryTier": "STRONG",
       "bestEvo": "SPECIES_GYARADOS",
       "bestEvoRating": 6.321964285714286,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_GYARADOS_MEGA",
+      "megaEvoRating": 7.655297619047619,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -36716,7 +36824,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_AERODACTYL",
       "bestEvoRating": 5.703809523809524,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_AERODACTYL_MEGA",
+      "megaEvoRating": 7.237142857142858,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -38830,7 +38941,10 @@
       "temporaryTier": "PREMIUM",
       "bestEvo": "SPECIES_MEWTWO",
       "bestEvoRating": 7.985952380952382,
-      "bestEvoTier": "PREMIUM"
+      "bestEvoTier": "PREMIUM",
+      "megaEvo": "SPECIES_MEWTWO_MEGA_Y",
+      "megaEvoRating": 9.219285714285714,
+      "megaEvoTier": "GOD"
     }
   },
   {
@@ -43516,7 +43630,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_AMPHAROS",
       "bestEvoRating": 5.5532142857142865,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_AMPHAROS_MEGA",
+      "megaEvoRating": 7.18654761904762,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -43689,7 +43806,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_AMPHAROS",
       "bestEvoRating": 5.5532142857142865,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_AMPHAROS_MEGA",
+      "megaEvoRating": 7.18654761904762,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -43876,7 +43996,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_AMPHAROS",
       "bestEvoRating": 5.5532142857142865,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_AMPHAROS_MEGA",
+      "megaEvoRating": 7.18654761904762,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -50221,7 +50344,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_HERACROSS",
       "bestEvoRating": 5.812738095238095,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_HERACROSS_MEGA",
+      "megaEvoRating": 7.146071428571429,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -53981,7 +54107,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_HOUNDOOM",
       "bestEvoRating": 5.627916666666666,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_HOUNDOOM_MEGA",
+      "megaEvoRating": 6.66125,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -54147,7 +54276,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_HOUNDOOM",
       "bestEvoRating": 5.627916666666666,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_HOUNDOOM_MEGA",
+      "megaEvoRating": 6.66125,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -55817,7 +55949,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_TYRANITAR",
       "bestEvoRating": 7.32107142857143,
-      "bestEvoTier": "PREMIUM"
+      "bestEvoTier": "PREMIUM",
+      "megaEvo": "SPECIES_TYRANITAR_MEGA",
+      "megaEvoRating": 8.654404761904763,
+      "megaEvoTier": "LEGEND"
     }
   },
   {
@@ -55987,7 +56122,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_TYRANITAR",
       "bestEvoRating": 7.32107142857143,
-      "bestEvoTier": "PREMIUM"
+      "bestEvoTier": "PREMIUM",
+      "megaEvo": "SPECIES_TYRANITAR_MEGA",
+      "megaEvoRating": 8.654404761904763,
+      "megaEvoTier": "LEGEND"
     }
   },
   {
@@ -56195,7 +56333,10 @@
       "temporaryTier": "PREMIUM",
       "bestEvo": "SPECIES_TYRANITAR",
       "bestEvoRating": 7.32107142857143,
-      "bestEvoTier": "PREMIUM"
+      "bestEvoTier": "PREMIUM",
+      "megaEvo": "SPECIES_TYRANITAR_MEGA",
+      "megaEvoRating": 8.654404761904763,
+      "megaEvoTier": "LEGEND"
     }
   },
   {
@@ -57037,7 +57178,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_SCEPTILE",
       "bestEvoRating": 6.192202380952382,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_SCEPTILE_MEGA",
+      "megaEvoRating": 7.525535714285715,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -57226,7 +57370,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_SCEPTILE",
       "bestEvoRating": 6.192202380952382,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_SCEPTILE_MEGA",
+      "megaEvoRating": 7.525535714285715,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -57416,7 +57563,10 @@
       "temporaryTier": "STRONG",
       "bestEvo": "SPECIES_SCEPTILE",
       "bestEvoRating": 6.192202380952382,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_SCEPTILE_MEGA",
+      "megaEvoRating": 7.525535714285715,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -57770,7 +57920,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_BLAZIKEN",
       "bestEvoRating": 6.390595238095239,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_BLAZIKEN_MEGA",
+      "megaEvoRating": 7.723928571428572,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -57955,7 +58108,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_BLAZIKEN",
       "bestEvoRating": 6.390595238095239,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_BLAZIKEN_MEGA",
+      "megaEvoRating": 7.723928571428572,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -58145,7 +58301,10 @@
       "temporaryTier": "STRONG",
       "bestEvo": "SPECIES_BLAZIKEN",
       "bestEvoRating": 6.390595238095239,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_BLAZIKEN_MEGA",
+      "megaEvoRating": 7.723928571428572,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -58500,7 +58659,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_SWAMPERT",
       "bestEvoRating": 6.018690476190477,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_SWAMPERT_MEGA",
+      "megaEvoRating": 7.4520238095238085,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -58679,7 +58841,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_SWAMPERT",
       "bestEvoRating": 6.018690476190477,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_SWAMPERT_MEGA",
+      "megaEvoRating": 7.4520238095238085,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -58865,7 +59030,10 @@
       "temporaryTier": "STRONG",
       "bestEvo": "SPECIES_SWAMPERT",
       "bestEvoRating": 6.018690476190477,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_SWAMPERT_MEGA",
+      "megaEvoRating": 7.4520238095238085,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -62583,7 +62751,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_GARDEVOIR",
       "bestEvoRating": 5.875059523809524,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_GARDEVOIR_MEGA",
+      "megaEvoRating": 7.408392857142856,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -62768,7 +62939,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_GARDEVOIR",
       "bestEvoRating": 5.875059523809524,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_GARDEVOIR_MEGA",
+      "megaEvoRating": 7.408392857142856,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -62965,7 +63139,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_GARDEVOIR",
       "bestEvoRating": 5.875059523809524,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_GARDEVOIR_MEGA",
+      "megaEvoRating": 7.408392857142856,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -63415,7 +63592,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_GARDEVOIR",
       "bestEvoRating": 5.875059523809524,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_GARDEVOIR_MEGA",
+      "megaEvoRating": 7.408392857142856,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -66976,7 +67156,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_SABLEYE",
       "bestEvoRating": 4.301130952380952,
-      "bestEvoTier": "WEAK"
+      "bestEvoTier": "WEAK",
+      "megaEvo": "SPECIES_SABLEYE_MEGA",
+      "megaEvoRating": 5.734464285714286,
+      "megaEvoTier": "AVERAGE"
     }
   },
   {
@@ -67318,7 +67501,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_MAWILE",
       "bestEvoRating": 4.258809523809524,
-      "bestEvoTier": "WEAK"
+      "bestEvoTier": "WEAK",
+      "megaEvo": "SPECIES_MAWILE_MEGA",
+      "megaEvoRating": 7.067142857142858,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -67655,7 +67841,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_AGGRON",
       "bestEvoRating": 6.086488095238096,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_AGGRON_MEGA",
+      "megaEvoRating": 7.419821428571428,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -67829,7 +68018,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_AGGRON",
       "bestEvoRating": 6.086488095238096,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_AGGRON_MEGA",
+      "megaEvoRating": 7.419821428571428,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -68019,7 +68211,10 @@
       "temporaryTier": "STRONG",
       "bestEvo": "SPECIES_AGGRON",
       "bestEvoRating": 6.086488095238096,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_AGGRON_MEGA",
+      "megaEvoRating": 7.419821428571428,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -68387,7 +68582,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_MEDICHAM",
       "bestEvoRating": 5.185952380952381,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_MEDICHAM_MEGA",
+      "megaEvoRating": 7.385952380952382,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -68573,7 +68771,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_MEDICHAM",
       "bestEvoRating": 5.185952380952381,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_MEDICHAM_MEGA",
+      "megaEvoRating": 7.385952380952382,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -68907,7 +69108,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_MANECTRIC",
       "bestEvoRating": 5.36779761904762,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_MANECTRIC_MEGA",
+      "megaEvoRating": 6.701130952380953,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -69059,7 +69263,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_MANECTRIC",
       "bestEvoRating": 5.36779761904762,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_MANECTRIC_MEGA",
+      "megaEvoRating": 6.701130952380953,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -70774,7 +70981,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_SHARPEDO",
       "bestEvoRating": 5.370476190476191,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_SHARPEDO_MEGA",
+      "megaEvoRating": 6.4038095238095245,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -70935,7 +71145,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_SHARPEDO",
       "bestEvoRating": 5.370476190476191,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_SHARPEDO_MEGA",
+      "megaEvoRating": 6.4038095238095245,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -71573,7 +71786,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_CAMERUPT",
       "bestEvoRating": 4.948154761904763,
-      "bestEvoTier": "WEAK"
+      "bestEvoTier": "WEAK",
+      "megaEvo": "SPECIES_CAMERUPT_MEGA",
+      "megaEvoRating": 6.681488095238095,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -71733,7 +71949,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_CAMERUPT",
       "bestEvoRating": 4.948154761904763,
-      "bestEvoTier": "WEAK"
+      "bestEvoTier": "WEAK",
+      "megaEvo": "SPECIES_CAMERUPT_MEGA",
+      "megaEvoRating": 6.681488095238095,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -73539,7 +73758,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_ALTARIA",
       "bestEvoRating": 5.595476190476191,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_ALTARIA_MEGA",
+      "megaEvoRating": 7.028809523809524,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -73701,7 +73923,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_ALTARIA",
       "bestEvoRating": 5.595476190476191,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_ALTARIA_MEGA",
+      "megaEvoRating": 7.028809523809524,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -77295,7 +77520,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_BANETTE",
       "bestEvoRating": 4.837113095238095,
-      "bestEvoTier": "WEAK"
+      "bestEvoTier": "WEAK",
+      "megaEvo": "SPECIES_BANETTE_MEGA",
+      "megaEvoRating": 6.570446428571429,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -77445,7 +77673,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_BANETTE",
       "bestEvoRating": 4.837113095238095,
-      "bestEvoTier": "WEAK"
+      "bestEvoTier": "WEAK",
+      "megaEvo": "SPECIES_BANETTE_MEGA",
+      "megaEvoRating": 6.570446428571429,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -78719,7 +78950,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_ABSOL",
       "bestEvoRating": 5.095178571428572,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_ABSOL_MEGA",
+      "megaEvoRating": 6.828511904761905,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -79036,7 +79270,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_GLALIE",
       "bestEvoRating": 5.720178571428572,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_GLALIE_MEGA",
+      "megaEvoRating": 6.8535119047619055,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -79198,7 +79435,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_GLALIE",
       "bestEvoRating": 5.720178571428572,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_GLALIE_MEGA",
+      "megaEvoRating": 6.8535119047619055,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -79545,7 +79785,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_GLALIE",
       "bestEvoRating": 5.720178571428572,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_GLALIE_MEGA",
+      "megaEvoRating": 6.8535119047619055,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -80933,7 +81176,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_SALAMENCE",
       "bestEvoRating": 7.116250000000001,
-      "bestEvoTier": "PREMIUM"
+      "bestEvoTier": "PREMIUM",
+      "megaEvo": "SPECIES_SALAMENCE_MEGA",
+      "megaEvoRating": 8.549583333333334,
+      "megaEvoTier": "LEGEND"
     }
   },
   {
@@ -81092,7 +81338,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_SALAMENCE",
       "bestEvoRating": 7.116250000000001,
-      "bestEvoTier": "PREMIUM"
+      "bestEvoTier": "PREMIUM",
+      "megaEvo": "SPECIES_SALAMENCE_MEGA",
+      "megaEvoRating": 8.549583333333334,
+      "megaEvoTier": "LEGEND"
     }
   },
   {
@@ -81263,7 +81512,10 @@
       "temporaryTier": "PREMIUM",
       "bestEvo": "SPECIES_SALAMENCE",
       "bestEvoRating": 7.116250000000001,
-      "bestEvoTier": "PREMIUM"
+      "bestEvoTier": "PREMIUM",
+      "megaEvo": "SPECIES_SALAMENCE_MEGA",
+      "megaEvoRating": 8.549583333333334,
+      "megaEvoTier": "LEGEND"
     }
   },
   {
@@ -81508,7 +81760,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_METAGROSS",
       "bestEvoRating": 6.775535714285715,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_METAGROSS_MEGA",
+      "megaEvoRating": 8.408869047619048,
+      "megaEvoTier": "LEGEND"
     }
   },
   {
@@ -81684,7 +81939,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_METAGROSS",
       "bestEvoRating": 6.775535714285715,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_METAGROSS_MEGA",
+      "megaEvoRating": 8.408869047619048,
+      "megaEvoTier": "LEGEND"
     }
   },
   {
@@ -81861,7 +82119,10 @@
       "temporaryTier": "STRONG",
       "bestEvo": "SPECIES_METAGROSS",
       "bestEvoRating": 6.775535714285715,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_METAGROSS_MEGA",
+      "megaEvoRating": 8.408869047619048,
+      "megaEvoTier": "LEGEND"
     }
   },
   {
@@ -82680,7 +82941,10 @@
       "temporaryTier": "PREMIUM",
       "bestEvo": "SPECIES_LATIAS",
       "bestEvoRating": 7.107678571428572,
-      "bestEvoTier": "PREMIUM"
+      "bestEvoTier": "PREMIUM",
+      "megaEvo": "SPECIES_LATIAS_MEGA",
+      "megaEvoRating": 8.441011904761904,
+      "megaEvoTier": "LEGEND"
     }
   },
   {
@@ -83017,7 +83281,10 @@
       "temporaryTier": "PREMIUM",
       "bestEvo": "SPECIES_LATIOS",
       "bestEvoRating": 7.129107142857143,
-      "bestEvoTier": "PREMIUM"
+      "bestEvoTier": "PREMIUM",
+      "megaEvo": "SPECIES_LATIOS_MEGA",
+      "megaEvoRating": 8.462440476190476,
+      "megaEvoTier": "LEGEND"
     }
   },
   {
@@ -83337,7 +83604,10 @@
       "temporaryTier": "LEGEND",
       "bestEvo": "SPECIES_KYOGRE",
       "bestEvoRating": 8.267440476190476,
-      "bestEvoTier": "LEGEND"
+      "bestEvoTier": "LEGEND",
+      "megaEvo": "SPECIES_KYOGRE_PRIMAL",
+      "megaEvoRating": 9.70077380952381,
+      "megaEvoTier": "GOD"
     }
   },
   {
@@ -83652,7 +83922,10 @@
       "temporaryTier": "LEGEND",
       "bestEvo": "SPECIES_GROUDON",
       "bestEvoRating": 8.290119047619047,
-      "bestEvoTier": "LEGEND"
+      "bestEvoTier": "LEGEND",
+      "megaEvo": "SPECIES_GROUDON_PRIMAL",
+      "megaEvoRating": 9.72345238095238,
+      "megaEvoTier": "GOD"
     }
   },
   {
@@ -83982,7 +84255,10 @@
       "temporaryTier": "LEGEND",
       "bestEvo": "SPECIES_RAYQUAZA",
       "bestEvoRating": 8.007380952380954,
-      "bestEvoTier": "LEGEND"
+      "bestEvoTier": "LEGEND",
+      "megaEvo": "SPECIES_RAYQUAZA_MEGA",
+      "megaEvoRating": 9.840714285714286,
+      "megaEvoTier": "GOD"
     }
   },
   {
@@ -90457,7 +90733,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_BUNEARY",
       "bestEvoRating": 3.35077380952381,
-      "bestEvoTier": "BAD"
+      "bestEvoTier": "BAD",
+      "megaEvo": "SPECIES_LOPUNNY_MEGA",
+      "megaEvoRating": 6.717440476190477,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -90631,7 +90910,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_LOPUNNY",
       "bestEvoRating": 5.0841071428571425,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_LOPUNNY_MEGA",
+      "megaEvoRating": 6.717440476190477,
+      "megaEvoTier": "STRONG"
     }
   },
   {
@@ -92212,7 +92494,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_GARCHOMP",
       "bestEvoRating": 6.962142857142858,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_GARCHOMP_MEGA",
+      "megaEvoRating": 8.095476190476191,
+      "megaEvoTier": "LEGEND"
     }
   },
   {
@@ -92367,7 +92652,10 @@
       "temporaryTier": "WEAK",
       "bestEvo": "SPECIES_GARCHOMP",
       "bestEvoRating": 6.962142857142858,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_GARCHOMP_MEGA",
+      "megaEvoRating": 8.095476190476191,
+      "megaEvoTier": "LEGEND"
     }
   },
   {
@@ -92522,7 +92810,10 @@
       "temporaryTier": "STRONG",
       "bestEvo": "SPECIES_GARCHOMP",
       "bestEvoRating": 6.962142857142858,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_GARCHOMP_MEGA",
+      "megaEvoRating": 8.095476190476191,
+      "megaEvoTier": "LEGEND"
     }
   },
   {
@@ -92845,7 +93136,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_RIOLU",
       "bestEvoRating": 2.996428571428572,
-      "bestEvoTier": "BAD"
+      "bestEvoTier": "BAD",
+      "megaEvo": "SPECIES_LUCARIO_MEGA",
+      "megaEvoRating": 7.548511904761905,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -93055,7 +93349,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_LUCARIO",
       "bestEvoRating": 5.815178571428572,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_LUCARIO_MEGA",
+      "megaEvoRating": 7.548511904761905,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -94809,7 +95106,10 @@
       "temporaryTier": "BAD",
       "bestEvo": "SPECIES_ABOMASNOW",
       "bestEvoRating": 5.816309523809523,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_ABOMASNOW_MEGA",
+      "megaEvoRating": 7.149642857142857,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -94969,7 +95269,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_ABOMASNOW",
       "bestEvoRating": 5.816309523809523,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_ABOMASNOW_MEGA",
+      "megaEvoRating": 7.149642857142857,
+      "megaEvoTier": "PREMIUM"
     }
   },
   {
@@ -104336,7 +104639,10 @@
       "temporaryTier": "AVERAGE",
       "bestEvo": "SPECIES_AUDINO",
       "bestEvoRating": 5.14422619047619,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoTier": "AVERAGE",
+      "megaEvo": "SPECIES_AUDINO_MEGA",
+      "megaEvoRating": 5.677559523809524,
+      "megaEvoTier": "AVERAGE"
     }
   },
   {
@@ -139277,7 +139583,10 @@
       "temporaryTier": "STRONG",
       "bestEvo": "SPECIES_DIANCIE",
       "bestEvoRating": 6.724107142857144,
-      "bestEvoTier": "STRONG"
+      "bestEvoTier": "STRONG",
+      "megaEvo": "SPECIES_DIANCIE_MEGA",
+      "megaEvoRating": 8.557440476190477,
+      "megaEvoTier": "LEGEND"
     }
   },
   {

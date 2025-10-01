@@ -78,9 +78,10 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         if (
             poke.evolutionData.type === EVO_TYPE_LC_OF_3
             && poke.evolutionData.isLC
-            && poke.rating.bestEvoTier === TIER_STRONG
             && poke.evolutionData.megaEvos
             && poke.evolutionData.megaEvos.length > 0
+            && poke.rating.bestEvoTier === TIER_STRONG
+            && poke.rating.megaEvoRating <= 8
         ) {
             poke.parsedTypes.forEach(type => {
                 if (!TYPES[type]) {
