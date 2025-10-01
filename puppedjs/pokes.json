@@ -4034,7 +4034,7 @@
       {
         "method": "LEVEL",
         "param": "20",
-        "pokemon": "SPECIES_RATICATE_ALOLA, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_RATICATE_ALOLA"
       },
       {
         "method": "NONE",
@@ -4963,12 +4963,12 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_PIKACHU, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "pokemon": "SPECIES_PIKACHU"
       }
     ],
     "baseBST": 205,
     "evolutionData": {
-      "type": "EVO_TYPE_LC_OF_2",
+      "type": "EVO_TYPE_LC_OF_3",
       "isMega": false,
       "isLC": true,
       "isNFE": true,
@@ -5042,7 +5042,11 @@
     "evoTree": [
       "SPECIES_PICHU",
       [
-        "SPECIES_PIKACHU, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_PIKACHU"
+      ],
+      [
+        "SPECIES_RAICHU",
+        "SPECIES_RAICHU_ALOLA"
       ]
     ],
     "rating": {
@@ -5057,9 +5061,9 @@
       "movesRating": 7.148214285714285,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_PICHU",
-      "bestEvoRating": 1.748154761904762,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_RAICHU",
+      "bestEvoRating": 5.532380952380953,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -5100,11 +5104,11 @@
     ],
     "baseBST": 320,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_NFE_OF_3",
       "isMega": false,
       "isLC": false,
-      "isNFE": false,
-      "isFinal": true
+      "isNFE": true,
+      "isFinal": false
     },
     "catchRate": "255",
     "expYield": "0",
@@ -5234,7 +5238,11 @@
     "evoTree": [
       "SPECIES_PICHU",
       [
-        "SPECIES_PIKACHU, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_PIKACHU"
+      ],
+      [
+        "SPECIES_RAICHU",
+        "SPECIES_RAICHU_ALOLA"
       ]
     ],
     "rating": {
@@ -5249,9 +5257,9 @@
       "movesRating": 7.657142857142857,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_PIKACHU",
-      "bestEvoRating": 3.332380952380953,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_RAICHU",
+      "bestEvoRating": 5.532380952380953,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -5280,7 +5288,7 @@
     "teachableLearnset": "sRaichuTeachableLearnset",
     "baseBST": 485,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_LAST_OF_3",
       "isMega": false,
       "isLC": false,
       "isNFE": false,
@@ -5420,7 +5428,11 @@
     "evoTree": [
       "SPECIES_PICHU",
       [
-        "SPECIES_PIKACHU, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_PIKACHU"
+      ],
+      [
+        "SPECIES_RAICHU",
+        "SPECIES_RAICHU_ALOLA"
       ]
     ],
     "rating": {
@@ -5467,7 +5479,7 @@
     "teachableLearnset": "sRaichuAlolaTeachableLearnset",
     "baseBST": 485,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_LAST_OF_3",
       "isMega": false,
       "isLC": false,
       "isNFE": false,
@@ -5601,7 +5613,11 @@
     "evoTree": [
       "SPECIES_PICHU",
       [
-        "SPECIES_PIKACHU, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_PIKACHU"
+      ],
+      [
+        "SPECIES_RAICHU",
+        "SPECIES_RAICHU_ALOLA"
       ]
     ],
     "rating": {
@@ -5616,8 +5632,8 @@
       "movesRating": 7.3482142857142865,
       "bestAbilityRating": 4,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_RAICHU_ALOLA",
-      "bestEvoRating": 5.201488095238096,
+      "bestEvo": "SPECIES_RAICHU",
+      "bestEvoRating": 5.532380952380953,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -7326,12 +7342,12 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_CLEFAIRY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "pokemon": "SPECIES_CLEFAIRY"
       }
     ],
     "baseBST": 218,
     "evolutionData": {
-      "type": "EVO_TYPE_LC_OF_2",
+      "type": "EVO_TYPE_LC_OF_3",
       "isMega": false,
       "isLC": true,
       "isNFE": true,
@@ -7420,7 +7436,10 @@
     "evoTree": [
       "SPECIES_CLEFFA",
       [
-        "SPECIES_CLEFAIRY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_CLEFAIRY"
+      ],
+      [
+        "SPECIES_CLEFABLE"
       ]
     ],
     "rating": {
@@ -7435,9 +7454,9 @@
       "movesRating": 7.8410714285714285,
       "bestAbilityRating": 2,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_CLEFFA",
-      "bestEvoRating": 1.4907738095238094,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_CLEFABLE",
+      "bestEvoRating": 5.480714285714287,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -7473,11 +7492,11 @@
     ],
     "baseBST": 323,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_NFE_OF_3",
       "isMega": false,
       "isLC": false,
-      "isNFE": false,
-      "isFinal": true
+      "isNFE": true,
+      "isFinal": false
     },
     "catchRate": "255",
     "expYield": "0",
@@ -7629,7 +7648,10 @@
     "evoTree": [
       "SPECIES_CLEFFA",
       [
-        "SPECIES_CLEFAIRY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_CLEFAIRY"
+      ],
+      [
+        "SPECIES_CLEFABLE"
       ]
     ],
     "rating": {
@@ -7644,9 +7666,9 @@
       "movesRating": 8.407142857142858,
       "bestAbilityRating": 2,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_CLEFAIRY",
-      "bestEvoRating": 2.9473809523809527,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_CLEFABLE",
+      "bestEvoRating": 5.480714285714287,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -7675,7 +7697,7 @@
     "teachableLearnset": "sClefableTeachableLearnset",
     "baseBST": 483,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_LAST_OF_3",
       "isMega": false,
       "isLC": false,
       "isNFE": false,
@@ -7832,7 +7854,10 @@
     "evoTree": [
       "SPECIES_CLEFFA",
       [
-        "SPECIES_CLEFAIRY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_CLEFAIRY"
+      ],
+      [
+        "SPECIES_CLEFABLE"
       ]
     ],
     "rating": {
@@ -8494,12 +8519,12 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_JIGGLYPUFF, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "pokemon": "SPECIES_JIGGLYPUFF"
       }
     ],
     "baseBST": 210,
     "evolutionData": {
-      "type": "EVO_TYPE_LC_OF_2",
+      "type": "EVO_TYPE_LC_OF_3",
       "isMega": false,
       "isLC": true,
       "isNFE": true,
@@ -8584,7 +8609,10 @@
     "evoTree": [
       "SPECIES_IGGLYBUFF",
       [
-        "SPECIES_JIGGLYPUFF, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_JIGGLYPUFF"
+      ],
+      [
+        "SPECIES_WIGGLYTUFF"
       ]
     ],
     "rating": {
@@ -8599,9 +8627,9 @@
       "movesRating": 7.448214285714286,
       "bestAbilityRating": 2,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_IGGLYBUFF",
-      "bestEvoRating": 1.3448214285714286,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_WIGGLYTUFF",
+      "bestEvoRating": 4.0442261904761905,
+      "bestEvoTier": "WEAK"
     }
   },
   {
@@ -8637,11 +8665,11 @@
     ],
     "baseBST": 270,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_NFE_OF_3",
       "isMega": false,
       "isLC": false,
-      "isNFE": false,
-      "isFinal": true
+      "isNFE": true,
+      "isFinal": false
     },
     "catchRate": "255",
     "expYield": "0",
@@ -8788,7 +8816,10 @@
     "evoTree": [
       "SPECIES_IGGLYBUFF",
       [
-        "SPECIES_JIGGLYPUFF, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_JIGGLYPUFF"
+      ],
+      [
+        "SPECIES_WIGGLYTUFF"
       ]
     ],
     "rating": {
@@ -8803,9 +8834,9 @@
       "movesRating": 8.10892857142857,
       "bestAbilityRating": 2,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_JIGGLYPUFF",
-      "bestEvoRating": 2.2108928571428574,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_WIGGLYTUFF",
+      "bestEvoRating": 4.0442261904761905,
+      "bestEvoTier": "WEAK"
     }
   },
   {
@@ -8834,7 +8865,7 @@
     "teachableLearnset": "sWigglytuffTeachableLearnset",
     "baseBST": 400,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_LAST_OF_3",
       "isMega": false,
       "isLC": false,
       "isNFE": false,
@@ -8990,7 +9021,10 @@
     "evoTree": [
       "SPECIES_IGGLYBUFF",
       [
-        "SPECIES_JIGGLYPUFF, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_JIGGLYPUFF"
+      ],
+      [
+        "SPECIES_WIGGLYTUFF"
       ]
     ],
     "rating": {
@@ -9138,7 +9172,7 @@
         "SPECIES_GOLBAT"
       ],
       [
-        "SPECIES_CROBAT, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_CROBAT"
       ]
     ],
     "rating": {
@@ -9153,9 +9187,9 @@
       "movesRating": 6.773214285714285,
       "bestAbilityRating": 6,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_GOLBAT",
-      "bestEvoRating": 4.943988095238096,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_CROBAT",
+      "bestEvoRating": 6.010654761904762,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -9187,7 +9221,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_CROBAT, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "pokemon": "SPECIES_CROBAT"
       }
     ],
     "baseBST": 455,
@@ -9291,7 +9325,7 @@
         "SPECIES_GOLBAT"
       ],
       [
-        "SPECIES_CROBAT, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_CROBAT"
       ]
     ],
     "rating": {
@@ -9306,9 +9340,9 @@
       "movesRating": 6.773214285714285,
       "bestAbilityRating": 6,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_GOLBAT",
-      "bestEvoRating": 4.943988095238096,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_CROBAT",
+      "bestEvoRating": 6.010654761904762,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -9453,7 +9487,7 @@
         "SPECIES_GOLBAT"
       ],
       [
-        "SPECIES_CROBAT, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_CROBAT"
       ]
     ],
     "rating": {
@@ -11595,7 +11629,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_PERSIAN_ALOLA, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "pokemon": "SPECIES_PERSIAN_ALOLA"
       }
     ],
     "baseBST": 290,
@@ -12667,7 +12701,7 @@
         "SPECIES_PRIMEAPE"
       ],
       [
-        "SPECIES_ANNIHILAPE, CONDITIONS({IF_USED_MOVE_X_TIMES, MOVE_RAGE_FIST, 20})"
+        "SPECIES_ANNIHILAPE"
       ]
     ],
     "rating": {
@@ -12682,9 +12716,9 @@
       "movesRating": 8.567857142857143,
       "bestAbilityRating": 5,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_PRIMEAPE",
-      "bestEvoRating": 5.023452380952381,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_ANNIHILAPE",
+      "bestEvoRating": 6.090119047619048,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -12715,7 +12749,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_ANNIHILAPE, CONDITIONS({IF_USED_MOVE_X_TIMES, MOVE_RAGE_FIST, 20})"
+        "pokemon": "SPECIES_ANNIHILAPE"
       }
     ],
     "baseBST": 455,
@@ -12850,7 +12884,7 @@
         "SPECIES_PRIMEAPE"
       ],
       [
-        "SPECIES_ANNIHILAPE, CONDITIONS({IF_USED_MOVE_X_TIMES, MOVE_RAGE_FIST, 20})"
+        "SPECIES_ANNIHILAPE"
       ]
     ],
     "rating": {
@@ -12865,9 +12899,9 @@
       "movesRating": 8.567857142857143,
       "bestAbilityRating": 5,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_PRIMEAPE",
-      "bestEvoRating": 5.023452380952381,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_ANNIHILAPE",
+      "bestEvoRating": 6.090119047619048,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -13022,7 +13056,7 @@
         "SPECIES_PRIMEAPE"
       ],
       [
-        "SPECIES_ANNIHILAPE, CONDITIONS({IF_USED_MOVE_X_TIMES, MOVE_RAGE_FIST, 20})"
+        "SPECIES_ANNIHILAPE"
       ]
     ],
     "rating": {
@@ -13793,7 +13827,7 @@
       ],
       [
         "SPECIES_POLIWRATH",
-        "SPECIES_POLITOED, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})",
+        "SPECIES_POLITOED",
         "SPECIES_POLITOED"
       ]
     ],
@@ -13847,7 +13881,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_POLITOED, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})"
+        "pokemon": "SPECIES_POLITOED"
       },
       {
         "method": "ITEM",
@@ -13959,7 +13993,7 @@
       ],
       [
         "SPECIES_POLIWRATH",
-        "SPECIES_POLITOED, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})",
+        "SPECIES_POLITOED",
         "SPECIES_POLITOED"
       ]
     ],
@@ -14123,7 +14157,7 @@
       ],
       [
         "SPECIES_POLIWRATH",
-        "SPECIES_POLITOED, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})",
+        "SPECIES_POLITOED",
         "SPECIES_POLITOED"
       ]
     ],
@@ -14290,7 +14324,7 @@
       ],
       [
         "SPECIES_POLIWRATH",
-        "SPECIES_POLITOED, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})",
+        "SPECIES_POLITOED",
         "SPECIES_POLITOED"
       ]
     ],
@@ -17831,7 +17865,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_SLOWKING, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})"
+        "pokemon": "SPECIES_SLOWKING"
       },
       {
         "method": "ITEM",
@@ -17969,7 +18003,7 @@
       "SPECIES_SLOWPOKE",
       [
         "SPECIES_SLOWBRO",
-        "SPECIES_SLOWKING, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})",
+        "SPECIES_SLOWKING",
         "SPECIES_SLOWKING"
       ]
     ],
@@ -18169,7 +18203,7 @@
       "SPECIES_SLOWPOKE",
       [
         "SPECIES_SLOWBRO",
-        "SPECIES_SLOWKING, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})",
+        "SPECIES_SLOWKING",
         "SPECIES_SLOWKING"
       ]
     ],
@@ -18380,7 +18414,7 @@
       "SPECIES_SLOWPOKE",
       [
         "SPECIES_SLOWBRO",
-        "SPECIES_SLOWKING, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})",
+        "SPECIES_SLOWKING",
         "SPECIES_SLOWKING"
       ]
     ],
@@ -18579,7 +18613,7 @@
       "SPECIES_SLOWPOKE",
       [
         "SPECIES_SLOWBRO",
-        "SPECIES_SLOWKING, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})",
+        "SPECIES_SLOWKING",
         "SPECIES_SLOWKING"
       ]
     ],
@@ -18757,7 +18791,7 @@
       "SPECIES_SLOWPOKE",
       [
         "SPECIES_SLOWBRO",
-        "SPECIES_SLOWKING, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})",
+        "SPECIES_SLOWKING",
         "SPECIES_SLOWKING"
       ]
     ],
@@ -18945,7 +18979,7 @@
       "SPECIES_SLOWPOKE",
       [
         "SPECIES_SLOWBRO",
-        "SPECIES_SLOWKING, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})",
+        "SPECIES_SLOWKING",
         "SPECIES_SLOWKING"
       ]
     ],
@@ -19155,7 +19189,7 @@
       "SPECIES_SLOWPOKE",
       [
         "SPECIES_SLOWBRO",
-        "SPECIES_SLOWKING, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})",
+        "SPECIES_SLOWKING",
         "SPECIES_SLOWKING"
       ]
     ],
@@ -19315,7 +19349,7 @@
         "SPECIES_MAGNETON"
       ],
       [
-        "SPECIES_MAGNEZONE, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})",
+        "SPECIES_MAGNEZONE",
         "SPECIES_MAGNEZONE"
       ]
     ],
@@ -19365,7 +19399,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_MAGNEZONE, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})"
+        "pokemon": "SPECIES_MAGNEZONE"
       },
       {
         "method": "ITEM",
@@ -19486,7 +19520,7 @@
         "SPECIES_MAGNETON"
       ],
       [
-        "SPECIES_MAGNEZONE, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})",
+        "SPECIES_MAGNEZONE",
         "SPECIES_MAGNEZONE"
       ]
     ],
@@ -19654,7 +19688,7 @@
         "SPECIES_MAGNETON"
       ],
       [
-        "SPECIES_MAGNEZONE, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})",
+        "SPECIES_MAGNEZONE",
         "SPECIES_MAGNEZONE"
       ]
     ],
@@ -19802,7 +19836,7 @@
     "evoTree": [
       "SPECIES_FARFETCHD_GALAR",
       [
-        "SPECIES_SIRFETCHD, CONDITIONS({IF_CRITICAL_HITS_GE, 3})"
+        "SPECIES_SIRFETCHD"
       ]
     ],
     "rating": {
@@ -19817,9 +19851,9 @@
       "movesRating": 8.082142857142857,
       "bestAbilityRating": 5,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_FARFETCHD_GALAR",
-      "bestEvoRating": 4.034880952380952,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_SIRFETCHD",
+      "bestEvoRating": 5.8601785714285715,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -19850,7 +19884,7 @@
       {
         "method": "BATTLE_END",
         "param": "0",
-        "pokemon": "SPECIES_SIRFETCHD, CONDITIONS({IF_CRITICAL_HITS_GE, 3})"
+        "pokemon": "SPECIES_SIRFETCHD"
       }
     ],
     "baseBST": 377,
@@ -19946,7 +19980,7 @@
     "evoTree": [
       "SPECIES_FARFETCHD_GALAR",
       [
-        "SPECIES_SIRFETCHD, CONDITIONS({IF_CRITICAL_HITS_GE, 3})"
+        "SPECIES_SIRFETCHD"
       ]
     ],
     "rating": {
@@ -19961,9 +19995,9 @@
       "movesRating": 8.082142857142857,
       "bestAbilityRating": 6,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_FARFETCHD_GALAR",
-      "bestEvoRating": 4.034880952380952,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_SIRFETCHD",
+      "bestEvoRating": 5.8601785714285715,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -20099,7 +20133,7 @@
     "evoTree": [
       "SPECIES_FARFETCHD_GALAR",
       [
-        "SPECIES_SIRFETCHD, CONDITIONS({IF_CRITICAL_HITS_GE, 3})"
+        "SPECIES_SIRFETCHD"
       ]
     ],
     "rating": {
@@ -22429,7 +22463,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_STEELIX, CONDITIONS({IF_HOLD_ITEM, ITEM_METAL_COAT})"
+        "pokemon": "SPECIES_STEELIX"
       },
       {
         "method": "ITEM",
@@ -22558,7 +22592,7 @@
     "evoTree": [
       "SPECIES_ONIX",
       [
-        "SPECIES_STEELIX, CONDITIONS({IF_HOLD_ITEM, ITEM_METAL_COAT})",
+        "SPECIES_STEELIX",
         "SPECIES_STEELIX"
       ]
     ],
@@ -22754,7 +22788,7 @@
     "evoTree": [
       "SPECIES_ONIX",
       [
-        "SPECIES_STEELIX, CONDITIONS({IF_HOLD_ITEM, ITEM_METAL_COAT})",
+        "SPECIES_STEELIX",
         "SPECIES_STEELIX"
       ]
     ],
@@ -22949,7 +22983,7 @@
     "evoTree": [
       "SPECIES_ONIX",
       [
-        "SPECIES_STEELIX, CONDITIONS({IF_HOLD_ITEM, ITEM_METAL_COAT})",
+        "SPECIES_STEELIX",
         "SPECIES_STEELIX"
       ]
     ],
@@ -25287,17 +25321,17 @@
       {
         "method": "LEVEL",
         "param": "20",
-        "pokemon": "SPECIES_HITMONCHAN, CONDITIONS({IF_ATK_LT_DEF})"
+        "pokemon": "SPECIES_HITMONCHAN"
       },
       {
         "method": "LEVEL",
         "param": "20",
-        "pokemon": "SPECIES_HITMONLEE, CONDITIONS({IF_ATK_GT_DEF})"
+        "pokemon": "SPECIES_HITMONLEE"
       },
       {
         "method": "LEVEL",
         "param": "20",
-        "pokemon": "SPECIES_HITMONTOP, CONDITIONS({IF_ATK_EQ_DEF})"
+        "pokemon": "SPECIES_HITMONTOP"
       }
     ],
     "baseBST": 210,
@@ -25360,9 +25394,9 @@
     "evoTree": [
       "SPECIES_TYROGUE",
       [
-        "SPECIES_HITMONCHAN, CONDITIONS({IF_ATK_LT_DEF})",
-        "SPECIES_HITMONLEE, CONDITIONS({IF_ATK_GT_DEF})",
-        "SPECIES_HITMONTOP, CONDITIONS({IF_ATK_EQ_DEF})"
+        "SPECIES_HITMONCHAN",
+        "SPECIES_HITMONLEE",
+        "SPECIES_HITMONTOP"
       ]
     ],
     "rating": {
@@ -25377,9 +25411,9 @@
       "movesRating": 7.916071428571429,
       "bestAbilityRating": 6,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_TYROGUE",
-      "bestEvoRating": 1.791607142857143,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_HITMONLEE",
+      "bestEvoRating": 5.213630952380952,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -25528,9 +25562,9 @@
     "evoTree": [
       "SPECIES_TYROGUE",
       [
-        "SPECIES_HITMONCHAN, CONDITIONS({IF_ATK_LT_DEF})",
-        "SPECIES_HITMONLEE, CONDITIONS({IF_ATK_GT_DEF})",
-        "SPECIES_HITMONTOP, CONDITIONS({IF_ATK_EQ_DEF})"
+        "SPECIES_HITMONCHAN",
+        "SPECIES_HITMONLEE",
+        "SPECIES_HITMONTOP"
       ]
     ],
     "rating": {
@@ -25703,9 +25737,9 @@
     "evoTree": [
       "SPECIES_TYROGUE",
       [
-        "SPECIES_HITMONCHAN, CONDITIONS({IF_ATK_LT_DEF})",
-        "SPECIES_HITMONLEE, CONDITIONS({IF_ATK_GT_DEF})",
-        "SPECIES_HITMONTOP, CONDITIONS({IF_ATK_EQ_DEF})"
+        "SPECIES_HITMONCHAN",
+        "SPECIES_HITMONLEE",
+        "SPECIES_HITMONTOP"
       ]
     ],
     "rating": {
@@ -25720,9 +25754,9 @@
       "movesRating": 8.55,
       "bestAbilityRating": 2,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_HITMONCHAN",
-      "bestEvoRating": 4.721666666666667,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_HITMONLEE",
+      "bestEvoRating": 5.213630952380952,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -25869,9 +25903,9 @@
     "evoTree": [
       "SPECIES_TYROGUE",
       [
-        "SPECIES_HITMONCHAN, CONDITIONS({IF_ATK_LT_DEF})",
-        "SPECIES_HITMONLEE, CONDITIONS({IF_ATK_GT_DEF})",
-        "SPECIES_HITMONTOP, CONDITIONS({IF_ATK_EQ_DEF})"
+        "SPECIES_HITMONCHAN",
+        "SPECIES_HITMONLEE",
+        "SPECIES_HITMONTOP"
       ]
     ],
     "rating": {
@@ -25886,8 +25920,8 @@
       "movesRating": 8.201785714285714,
       "bestAbilityRating": 7,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_HITMONTOP",
-      "bestEvoRating": 5.186845238095239,
+      "bestEvo": "SPECIES_HITMONLEE",
+      "bestEvoRating": 5.213630952380952,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -25919,7 +25953,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_LICKILICKY, CONDITIONS({IF_KNOWS_MOVE, MOVE_ROLLOUT})"
+        "pokemon": "SPECIES_LICKILICKY"
       }
     ],
     "baseBST": 385,
@@ -26040,7 +26074,7 @@
     "evoTree": [
       "SPECIES_LICKITUNG",
       [
-        "SPECIES_LICKILICKY, CONDITIONS({IF_KNOWS_MOVE, MOVE_ROLLOUT})"
+        "SPECIES_LICKILICKY"
       ]
     ],
     "rating": {
@@ -26055,9 +26089,9 @@
       "movesRating": 8.157142857142857,
       "bestAbilityRating": 5,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_LICKITUNG",
-      "bestEvoRating": 4.049047619047619,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_LICKILICKY",
+      "bestEvoRating": 5.782380952380953,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -26200,7 +26234,7 @@
     "evoTree": [
       "SPECIES_LICKITUNG",
       [
-        "SPECIES_LICKILICKY, CONDITIONS({IF_KNOWS_MOVE, MOVE_ROLLOUT})"
+        "SPECIES_LICKILICKY"
       ]
     ],
     "rating": {
@@ -26855,7 +26889,7 @@
         "SPECIES_RHYDON"
       ],
       [
-        "SPECIES_RHYPERIOR, CONDITIONS({IF_HOLD_ITEM, ITEM_PROTECTOR})",
+        "SPECIES_RHYPERIOR",
         "SPECIES_RHYPERIOR"
       ]
     ],
@@ -26905,7 +26939,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_RHYPERIOR, CONDITIONS({IF_HOLD_ITEM, ITEM_PROTECTOR})"
+        "pokemon": "SPECIES_RHYPERIOR"
       },
       {
         "method": "ITEM",
@@ -27042,7 +27076,7 @@
         "SPECIES_RHYDON"
       ],
       [
-        "SPECIES_RHYPERIOR, CONDITIONS({IF_HOLD_ITEM, ITEM_PROTECTOR})",
+        "SPECIES_RHYPERIOR",
         "SPECIES_RHYPERIOR"
       ]
     ],
@@ -27219,7 +27253,7 @@
         "SPECIES_RHYDON"
       ],
       [
-        "SPECIES_RHYPERIOR, CONDITIONS({IF_HOLD_ITEM, ITEM_PROTECTOR})",
+        "SPECIES_RHYPERIOR",
         "SPECIES_RHYPERIOR"
       ]
     ],
@@ -27268,17 +27302,17 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_CHANSEY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT},{IF_HOLD_ITEM, ITEM_OVAL_STONE})"
+        "pokemon": "SPECIES_CHANSEY"
       },
       {
         "method": "ITEM",
         "param": "ITEM_OVAL_STONE",
-        "pokemon": "SPECIES_CHANSEY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_CHANSEY"
       }
     ],
     "baseBST": 220,
     "evolutionData": {
-      "type": "EVO_TYPE_LC_OF_2",
+      "type": "EVO_TYPE_LC_OF_3",
       "isMega": false,
       "isLC": true,
       "isNFE": true,
@@ -27357,8 +27391,11 @@
     "evoTree": [
       "SPECIES_HAPPINY",
       [
-        "SPECIES_CHANSEY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT},{IF_HOLD_ITEM, ITEM_OVAL_STONE})",
-        "SPECIES_CHANSEY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+        "SPECIES_CHANSEY",
+        "SPECIES_CHANSEY"
+      ],
+      [
+        "SPECIES_BLISSEY"
       ]
     ],
     "rating": {
@@ -27373,9 +27410,9 @@
       "movesRating": 7.8410714285714285,
       "bestAbilityRating": 8,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_HAPPINY",
-      "bestEvoRating": 2.1174404761904766,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_BLISSEY",
+      "bestEvoRating": 6.440714285714287,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -27406,16 +27443,16 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_BLISSEY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "pokemon": "SPECIES_BLISSEY"
       }
     ],
     "baseBST": 450,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_NFE_OF_3",
       "isMega": false,
       "isLC": false,
-      "isNFE": false,
-      "isFinal": true
+      "isNFE": true,
+      "isFinal": false
     },
     "catchRate": "255",
     "expYield": "0",
@@ -27568,8 +27605,11 @@
     "evoTree": [
       "SPECIES_HAPPINY",
       [
-        "SPECIES_CHANSEY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT},{IF_HOLD_ITEM, ITEM_OVAL_STONE})",
-        "SPECIES_CHANSEY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+        "SPECIES_CHANSEY",
+        "SPECIES_CHANSEY"
+      ],
+      [
+        "SPECIES_BLISSEY"
       ]
     ],
     "rating": {
@@ -27584,9 +27624,9 @@
       "movesRating": 8.407142857142858,
       "bestAbilityRating": 8,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_CHANSEY",
-      "bestEvoRating": 5.240714285714286,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_BLISSEY",
+      "bestEvoRating": 6.440714285714287,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -27615,7 +27655,7 @@
     "teachableLearnset": "sBlisseyTeachableLearnset",
     "baseBST": 540,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_LAST_OF_3",
       "isMega": false,
       "isLC": false,
       "isNFE": false,
@@ -27771,8 +27811,11 @@
     "evoTree": [
       "SPECIES_HAPPINY",
       [
-        "SPECIES_CHANSEY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT},{IF_HOLD_ITEM, ITEM_OVAL_STONE})",
-        "SPECIES_CHANSEY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+        "SPECIES_CHANSEY",
+        "SPECIES_CHANSEY"
+      ],
+      [
+        "SPECIES_BLISSEY"
       ]
     ],
     "rating": {
@@ -27820,7 +27863,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_TANGROWTH, CONDITIONS({IF_KNOWS_MOVE, MOVE_ANCIENT_POWER})"
+        "pokemon": "SPECIES_TANGROWTH"
       }
     ],
     "baseBST": 435,
@@ -27930,7 +27973,7 @@
     "evoTree": [
       "SPECIES_TANGELA",
       [
-        "SPECIES_TANGROWTH, CONDITIONS({IF_KNOWS_MOVE, MOVE_ANCIENT_POWER})"
+        "SPECIES_TANGROWTH"
       ]
     ],
     "rating": {
@@ -27945,9 +27988,9 @@
       "movesRating": 8.139285714285714,
       "bestAbilityRating": 8,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_TANGELA",
-      "bestEvoRating": 5.013928571428572,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_TANGROWTH",
+      "bestEvoRating": 6.32797619047619,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -28091,7 +28134,7 @@
     "evoTree": [
       "SPECIES_TANGELA",
       [
-        "SPECIES_TANGROWTH, CONDITIONS({IF_KNOWS_MOVE, MOVE_ANCIENT_POWER})"
+        "SPECIES_TANGROWTH"
       ]
     ],
     "rating": {
@@ -28579,7 +28622,7 @@
         "SPECIES_SEADRA"
       ],
       [
-        "SPECIES_KINGDRA, CONDITIONS({IF_HOLD_ITEM, ITEM_DRAGON_SCALE})",
+        "SPECIES_KINGDRA",
         "SPECIES_KINGDRA"
       ]
     ],
@@ -28628,7 +28671,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_KINGDRA, CONDITIONS({IF_HOLD_ITEM, ITEM_DRAGON_SCALE})"
+        "pokemon": "SPECIES_KINGDRA"
       },
       {
         "method": "ITEM",
@@ -28730,7 +28773,7 @@
         "SPECIES_SEADRA"
       ],
       [
-        "SPECIES_KINGDRA, CONDITIONS({IF_HOLD_ITEM, ITEM_DRAGON_SCALE})",
+        "SPECIES_KINGDRA",
         "SPECIES_KINGDRA"
       ]
     ],
@@ -28883,7 +28926,7 @@
         "SPECIES_SEADRA"
       ],
       [
-        "SPECIES_KINGDRA, CONDITIONS({IF_HOLD_ITEM, ITEM_DRAGON_SCALE})",
+        "SPECIES_KINGDRA",
         "SPECIES_KINGDRA"
       ]
     ],
@@ -29529,7 +29572,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_MR_MIME, CONDITIONS({IF_KNOWS_MOVE, MOVE_MIMIC})"
+        "pokemon": "SPECIES_MR_MIME"
       },
       {
         "method": "NONE",
@@ -29657,7 +29700,7 @@
     "evoTree": [
       "SPECIES_MIME_JR",
       [
-        "SPECIES_MR_MIME, CONDITIONS({IF_KNOWS_MOVE, MOVE_MIMIC})",
+        "SPECIES_MR_MIME",
         "SPECIES_MR_MIME_GALAR"
       ],
       [
@@ -29707,11 +29750,11 @@
     "teachableLearnset": "sMrMimeTeachableLearnset",
     "baseBST": 460,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_3",
+      "type": "EVO_TYPE_NFE_OF_3",
       "isMega": false,
       "isLC": false,
-      "isNFE": false,
-      "isFinal": true
+      "isNFE": true,
+      "isFinal": false
     },
     "catchRate": "255",
     "expYield": "0",
@@ -29854,7 +29897,7 @@
     "evoTree": [
       "SPECIES_MIME_JR",
       [
-        "SPECIES_MR_MIME, CONDITIONS({IF_KNOWS_MOVE, MOVE_MIMIC})",
+        "SPECIES_MR_MIME",
         "SPECIES_MR_MIME_GALAR"
       ],
       [
@@ -30064,7 +30107,7 @@
     "evoTree": [
       "SPECIES_MIME_JR",
       [
-        "SPECIES_MR_MIME, CONDITIONS({IF_KNOWS_MOVE, MOVE_MIMIC})",
+        "SPECIES_MR_MIME",
         "SPECIES_MR_MIME_GALAR"
       ],
       [
@@ -30283,7 +30326,7 @@
     "evoTree": [
       "SPECIES_MIME_JR",
       [
-        "SPECIES_MR_MIME, CONDITIONS({IF_KNOWS_MOVE, MOVE_MIMIC})",
+        "SPECIES_MR_MIME",
         "SPECIES_MR_MIME_GALAR"
       ],
       [
@@ -30336,7 +30379,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_SCIZOR, CONDITIONS({IF_HOLD_ITEM, ITEM_METAL_COAT})"
+        "pokemon": "SPECIES_SCIZOR"
       },
       {
         "method": "ITEM",
@@ -30448,7 +30491,7 @@
     "evoTree": [
       "SPECIES_SCYTHER",
       [
-        "SPECIES_SCIZOR, CONDITIONS({IF_HOLD_ITEM, ITEM_METAL_COAT})",
+        "SPECIES_SCIZOR",
         "SPECIES_SCIZOR",
         "SPECIES_KLEAVOR"
       ]
@@ -30615,7 +30658,7 @@
     "evoTree": [
       "SPECIES_SCYTHER",
       [
-        "SPECIES_SCIZOR, CONDITIONS({IF_HOLD_ITEM, ITEM_METAL_COAT})",
+        "SPECIES_SCIZOR",
         "SPECIES_SCIZOR",
         "SPECIES_KLEAVOR"
       ]
@@ -30781,7 +30824,7 @@
     "evoTree": [
       "SPECIES_SCYTHER",
       [
-        "SPECIES_SCIZOR, CONDITIONS({IF_HOLD_ITEM, ITEM_METAL_COAT})",
+        "SPECIES_SCIZOR",
         "SPECIES_SCIZOR",
         "SPECIES_KLEAVOR"
       ]
@@ -30927,7 +30970,7 @@
     "evoTree": [
       "SPECIES_SCYTHER",
       [
-        "SPECIES_SCIZOR, CONDITIONS({IF_HOLD_ITEM, ITEM_METAL_COAT})",
+        "SPECIES_SCIZOR",
         "SPECIES_SCIZOR",
         "SPECIES_KLEAVOR"
       ]
@@ -31418,7 +31461,7 @@
         "SPECIES_ELECTABUZZ"
       ],
       [
-        "SPECIES_ELECTIVIRE, CONDITIONS({IF_HOLD_ITEM, ITEM_ELECTIRIZER})",
+        "SPECIES_ELECTIVIRE",
         "SPECIES_ELECTIVIRE"
       ]
     ],
@@ -31467,7 +31510,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_ELECTIVIRE, CONDITIONS({IF_HOLD_ITEM, ITEM_ELECTIRIZER})"
+        "pokemon": "SPECIES_ELECTIVIRE"
       },
       {
         "method": "ITEM",
@@ -31596,7 +31639,7 @@
         "SPECIES_ELECTABUZZ"
       ],
       [
-        "SPECIES_ELECTIVIRE, CONDITIONS({IF_HOLD_ITEM, ITEM_ELECTIRIZER})",
+        "SPECIES_ELECTIVIRE",
         "SPECIES_ELECTIVIRE"
       ]
     ],
@@ -31766,7 +31809,7 @@
         "SPECIES_ELECTABUZZ"
       ],
       [
-        "SPECIES_ELECTIVIRE, CONDITIONS({IF_HOLD_ITEM, ITEM_ELECTIRIZER})",
+        "SPECIES_ELECTIVIRE",
         "SPECIES_ELECTIVIRE"
       ]
     ],
@@ -31924,7 +31967,7 @@
         "SPECIES_MAGMAR"
       ],
       [
-        "SPECIES_MAGMORTAR, CONDITIONS({IF_HOLD_ITEM, ITEM_MAGMARIZER})",
+        "SPECIES_MAGMORTAR",
         "SPECIES_MAGMORTAR"
       ]
     ],
@@ -31973,7 +32016,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_MAGMORTAR, CONDITIONS({IF_HOLD_ITEM, ITEM_MAGMARIZER})"
+        "pokemon": "SPECIES_MAGMORTAR"
       },
       {
         "method": "ITEM",
@@ -32096,7 +32139,7 @@
         "SPECIES_MAGMAR"
       ],
       [
-        "SPECIES_MAGMORTAR, CONDITIONS({IF_HOLD_ITEM, ITEM_MAGMARIZER})",
+        "SPECIES_MAGMORTAR",
         "SPECIES_MAGMORTAR"
       ]
     ],
@@ -32260,7 +32303,7 @@
         "SPECIES_MAGMAR"
       ],
       [
-        "SPECIES_MAGMORTAR, CONDITIONS({IF_HOLD_ITEM, ITEM_MAGMARIZER})",
+        "SPECIES_MAGMORTAR",
         "SPECIES_MAGMORTAR"
       ]
     ],
@@ -33810,22 +33853,22 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_SYLVEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_KNOWS_MOVE_TYPE, TYPE_FAIRY})"
+        "pokemon": "SPECIES_SYLVEON"
       },
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_ESPEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_NOT_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_ESPEON"
       },
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_UMBREON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_UMBREON"
       },
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_LEAFEON, CONDITIONS({IF_IN_MAP, MAP_PETALBURG_WOODS})"
+        "pokemon": "SPECIES_LEAFEON"
       },
       {
         "method": "ITEM",
@@ -33835,7 +33878,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_GLACEON, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})"
+        "pokemon": "SPECIES_GLACEON"
       },
       {
         "method": "ITEM",
@@ -33949,12 +33992,12 @@
         "SPECIES_JOLTEON",
         "SPECIES_VAPOREON",
         "SPECIES_FLAREON",
-        "SPECIES_SYLVEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_KNOWS_MOVE_TYPE, TYPE_FAIRY})",
-        "SPECIES_ESPEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_UMBREON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_TIME, TIME_NIGHT})",
-        "SPECIES_LEAFEON, CONDITIONS({IF_IN_MAP, MAP_PETALBURG_WOODS})",
+        "SPECIES_SYLVEON",
+        "SPECIES_ESPEON",
+        "SPECIES_UMBREON",
         "SPECIES_LEAFEON",
-        "SPECIES_GLACEON, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})",
+        "SPECIES_LEAFEON",
+        "SPECIES_GLACEON",
         "SPECIES_GLACEON"
       ]
     ],
@@ -33970,8 +34013,8 @@
       "movesRating": 7.475,
       "bestAbilityRating": 2,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_JOLTEON",
-      "bestEvoRating": 6.085000000000001,
+      "bestEvo": "SPECIES_ESPEON",
+      "bestEvoRating": 6.274285714285715,
       "bestEvoTier": "STRONG"
     }
   },
@@ -34148,12 +34191,12 @@
         "SPECIES_JOLTEON",
         "SPECIES_VAPOREON",
         "SPECIES_FLAREON",
-        "SPECIES_SYLVEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_KNOWS_MOVE_TYPE, TYPE_FAIRY})",
-        "SPECIES_ESPEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_UMBREON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_TIME, TIME_NIGHT})",
-        "SPECIES_LEAFEON, CONDITIONS({IF_IN_MAP, MAP_PETALBURG_WOODS})",
+        "SPECIES_SYLVEON",
+        "SPECIES_ESPEON",
+        "SPECIES_UMBREON",
         "SPECIES_LEAFEON",
-        "SPECIES_GLACEON, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})",
+        "SPECIES_LEAFEON",
+        "SPECIES_GLACEON",
         "SPECIES_GLACEON"
       ]
     ],
@@ -34169,8 +34212,8 @@
       "movesRating": 7.564285714285715,
       "bestAbilityRating": 7,
       "temporaryTier": "STRONG",
-      "bestEvo": "SPECIES_JOLTEON",
-      "bestEvoRating": 6.085000000000001,
+      "bestEvo": "SPECIES_ESPEON",
+      "bestEvoRating": 6.274285714285715,
       "bestEvoTier": "STRONG"
     }
   },
@@ -34345,12 +34388,12 @@
         "SPECIES_JOLTEON",
         "SPECIES_VAPOREON",
         "SPECIES_FLAREON",
-        "SPECIES_SYLVEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_KNOWS_MOVE_TYPE, TYPE_FAIRY})",
-        "SPECIES_ESPEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_UMBREON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_TIME, TIME_NIGHT})",
-        "SPECIES_LEAFEON, CONDITIONS({IF_IN_MAP, MAP_PETALBURG_WOODS})",
+        "SPECIES_SYLVEON",
+        "SPECIES_ESPEON",
+        "SPECIES_UMBREON",
         "SPECIES_LEAFEON",
-        "SPECIES_GLACEON, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})",
+        "SPECIES_LEAFEON",
+        "SPECIES_GLACEON",
         "SPECIES_GLACEON"
       ]
     ],
@@ -34366,8 +34409,8 @@
       "movesRating": 7.8500000000000005,
       "bestAbilityRating": 7,
       "temporaryTier": "STRONG",
-      "bestEvo": "SPECIES_JOLTEON",
-      "bestEvoRating": 6.085000000000001,
+      "bestEvo": "SPECIES_ESPEON",
+      "bestEvoRating": 6.274285714285715,
       "bestEvoTier": "STRONG"
     }
   },
@@ -34535,12 +34578,12 @@
         "SPECIES_JOLTEON",
         "SPECIES_VAPOREON",
         "SPECIES_FLAREON",
-        "SPECIES_SYLVEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_KNOWS_MOVE_TYPE, TYPE_FAIRY})",
-        "SPECIES_ESPEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_UMBREON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_TIME, TIME_NIGHT})",
-        "SPECIES_LEAFEON, CONDITIONS({IF_IN_MAP, MAP_PETALBURG_WOODS})",
+        "SPECIES_SYLVEON",
+        "SPECIES_ESPEON",
+        "SPECIES_UMBREON",
         "SPECIES_LEAFEON",
-        "SPECIES_GLACEON, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})",
+        "SPECIES_LEAFEON",
+        "SPECIES_GLACEON",
         "SPECIES_GLACEON"
       ]
     ],
@@ -34556,8 +34599,8 @@
       "movesRating": 7.9625,
       "bestAbilityRating": 6,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_JOLTEON",
-      "bestEvoRating": 6.085000000000001,
+      "bestEvo": "SPECIES_ESPEON",
+      "bestEvoRating": 6.274285714285715,
       "bestEvoTier": "STRONG"
     }
   },
@@ -34729,12 +34772,12 @@
         "SPECIES_JOLTEON",
         "SPECIES_VAPOREON",
         "SPECIES_FLAREON",
-        "SPECIES_SYLVEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_KNOWS_MOVE_TYPE, TYPE_FAIRY})",
-        "SPECIES_ESPEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_UMBREON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_TIME, TIME_NIGHT})",
-        "SPECIES_LEAFEON, CONDITIONS({IF_IN_MAP, MAP_PETALBURG_WOODS})",
+        "SPECIES_SYLVEON",
+        "SPECIES_ESPEON",
+        "SPECIES_UMBREON",
         "SPECIES_LEAFEON",
-        "SPECIES_GLACEON, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})",
+        "SPECIES_LEAFEON",
+        "SPECIES_GLACEON",
         "SPECIES_GLACEON"
       ]
     ],
@@ -34931,12 +34974,12 @@
         "SPECIES_JOLTEON",
         "SPECIES_VAPOREON",
         "SPECIES_FLAREON",
-        "SPECIES_SYLVEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_KNOWS_MOVE_TYPE, TYPE_FAIRY})",
-        "SPECIES_ESPEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_UMBREON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_TIME, TIME_NIGHT})",
-        "SPECIES_LEAFEON, CONDITIONS({IF_IN_MAP, MAP_PETALBURG_WOODS})",
+        "SPECIES_SYLVEON",
+        "SPECIES_ESPEON",
+        "SPECIES_UMBREON",
         "SPECIES_LEAFEON",
-        "SPECIES_GLACEON, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})",
+        "SPECIES_LEAFEON",
+        "SPECIES_GLACEON",
         "SPECIES_GLACEON"
       ]
     ],
@@ -34952,8 +34995,8 @@
       "movesRating": 8.117857142857144,
       "bestAbilityRating": 4,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_JOLTEON",
-      "bestEvoRating": 6.085000000000001,
+      "bestEvo": "SPECIES_ESPEON",
+      "bestEvoRating": 6.274285714285715,
       "bestEvoTier": "STRONG"
     }
   },
@@ -35128,12 +35171,12 @@
         "SPECIES_JOLTEON",
         "SPECIES_VAPOREON",
         "SPECIES_FLAREON",
-        "SPECIES_SYLVEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_KNOWS_MOVE_TYPE, TYPE_FAIRY})",
-        "SPECIES_ESPEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_UMBREON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_TIME, TIME_NIGHT})",
-        "SPECIES_LEAFEON, CONDITIONS({IF_IN_MAP, MAP_PETALBURG_WOODS})",
+        "SPECIES_SYLVEON",
+        "SPECIES_ESPEON",
+        "SPECIES_UMBREON",
         "SPECIES_LEAFEON",
-        "SPECIES_GLACEON, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})",
+        "SPECIES_LEAFEON",
+        "SPECIES_GLACEON",
         "SPECIES_GLACEON"
       ]
     ],
@@ -35149,8 +35192,8 @@
       "movesRating": 8.305357142857144,
       "bestAbilityRating": 6,
       "temporaryTier": "STRONG",
-      "bestEvo": "SPECIES_JOLTEON",
-      "bestEvoRating": 6.085000000000001,
+      "bestEvo": "SPECIES_ESPEON",
+      "bestEvoRating": 6.274285714285715,
       "bestEvoTier": "STRONG"
     }
   },
@@ -35319,12 +35362,12 @@
         "SPECIES_JOLTEON",
         "SPECIES_VAPOREON",
         "SPECIES_FLAREON",
-        "SPECIES_SYLVEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_KNOWS_MOVE_TYPE, TYPE_FAIRY})",
-        "SPECIES_ESPEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_UMBREON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_TIME, TIME_NIGHT})",
-        "SPECIES_LEAFEON, CONDITIONS({IF_IN_MAP, MAP_PETALBURG_WOODS})",
+        "SPECIES_SYLVEON",
+        "SPECIES_ESPEON",
+        "SPECIES_UMBREON",
         "SPECIES_LEAFEON",
-        "SPECIES_GLACEON, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})",
+        "SPECIES_LEAFEON",
+        "SPECIES_GLACEON",
         "SPECIES_GLACEON"
       ]
     ],
@@ -35340,8 +35383,8 @@
       "movesRating": 7.501785714285715,
       "bestAbilityRating": 3,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_JOLTEON",
-      "bestEvoRating": 6.085000000000001,
+      "bestEvo": "SPECIES_ESPEON",
+      "bestEvoRating": 6.274285714285715,
       "bestEvoTier": "STRONG"
     }
   },
@@ -35512,12 +35555,12 @@
         "SPECIES_JOLTEON",
         "SPECIES_VAPOREON",
         "SPECIES_FLAREON",
-        "SPECIES_SYLVEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_KNOWS_MOVE_TYPE, TYPE_FAIRY})",
-        "SPECIES_ESPEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_UMBREON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_TIME, TIME_NIGHT})",
-        "SPECIES_LEAFEON, CONDITIONS({IF_IN_MAP, MAP_PETALBURG_WOODS})",
+        "SPECIES_SYLVEON",
+        "SPECIES_ESPEON",
+        "SPECIES_UMBREON",
         "SPECIES_LEAFEON",
-        "SPECIES_GLACEON, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})",
+        "SPECIES_LEAFEON",
+        "SPECIES_GLACEON",
         "SPECIES_GLACEON"
       ]
     ],
@@ -35533,8 +35576,8 @@
       "movesRating": 7.6535714285714285,
       "bestAbilityRating": 8,
       "temporaryTier": "STRONG",
-      "bestEvo": "SPECIES_SYLVEON",
-      "bestEvoRating": 6.165357142857143,
+      "bestEvo": "SPECIES_ESPEON",
+      "bestEvoRating": 6.274285714285715,
       "bestEvoTier": "STRONG"
     }
   },
@@ -35566,7 +35609,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_PORYGON2, CONDITIONS({IF_HOLD_ITEM, ITEM_UPGRADE})"
+        "pokemon": "SPECIES_PORYGON2"
       },
       {
         "method": "ITEM",
@@ -35678,11 +35721,11 @@
     "evoTree": [
       "SPECIES_PORYGON",
       [
-        "SPECIES_PORYGON2, CONDITIONS({IF_HOLD_ITEM, ITEM_UPGRADE})",
+        "SPECIES_PORYGON2",
         "SPECIES_PORYGON2"
       ],
       [
-        "SPECIES_PORYGON_Z, CONDITIONS({IF_HOLD_ITEM, ITEM_DUBIOUS_DISC})",
+        "SPECIES_PORYGON_Z",
         "SPECIES_PORYGON_Z"
       ]
     ],
@@ -35731,7 +35774,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_PORYGON_Z, CONDITIONS({IF_HOLD_ITEM, ITEM_DUBIOUS_DISC})"
+        "pokemon": "SPECIES_PORYGON_Z"
       },
       {
         "method": "ITEM",
@@ -35847,11 +35890,11 @@
     "evoTree": [
       "SPECIES_PORYGON",
       [
-        "SPECIES_PORYGON2, CONDITIONS({IF_HOLD_ITEM, ITEM_UPGRADE})",
+        "SPECIES_PORYGON2",
         "SPECIES_PORYGON2"
       ],
       [
-        "SPECIES_PORYGON_Z, CONDITIONS({IF_HOLD_ITEM, ITEM_DUBIOUS_DISC})",
+        "SPECIES_PORYGON_Z",
         "SPECIES_PORYGON_Z"
       ]
     ],
@@ -36016,11 +36059,11 @@
     "evoTree": [
       "SPECIES_PORYGON",
       [
-        "SPECIES_PORYGON2, CONDITIONS({IF_HOLD_ITEM, ITEM_UPGRADE})",
+        "SPECIES_PORYGON2",
         "SPECIES_PORYGON2"
       ],
       [
-        "SPECIES_PORYGON_Z, CONDITIONS({IF_HOLD_ITEM, ITEM_DUBIOUS_DISC})",
+        "SPECIES_PORYGON_Z",
         "SPECIES_PORYGON_Z"
       ]
     ],
@@ -37005,7 +37048,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_SNORLAX, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "pokemon": "SPECIES_SNORLAX"
       }
     ],
     "baseBST": 390,
@@ -37136,7 +37179,7 @@
     "evoTree": [
       "SPECIES_MUNCHLAX",
       [
-        "SPECIES_SNORLAX, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_SNORLAX"
       ]
     ],
     "rating": {
@@ -37151,9 +37194,9 @@
       "movesRating": 8.005357142857143,
       "bestAbilityRating": 7,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_MUNCHLAX",
-      "bestEvoRating": 4.300535714285715,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_SNORLAX",
+      "bestEvoRating": 6.311250000000001,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -37357,7 +37400,7 @@
     "evoTree": [
       "SPECIES_MUNCHLAX",
       [
-        "SPECIES_SNORLAX, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_SNORLAX"
       ]
     ],
     "rating": {
@@ -42658,12 +42701,12 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_TOGETIC, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "pokemon": "SPECIES_TOGETIC"
       }
     ],
     "baseBST": 245,
     "evolutionData": {
-      "type": "EVO_TYPE_LC_OF_2",
+      "type": "EVO_TYPE_LC_OF_3",
       "isMega": false,
       "isLC": true,
       "isNFE": true,
@@ -42779,7 +42822,10 @@
     "evoTree": [
       "SPECIES_TOGEPI",
       [
-        "SPECIES_TOGETIC, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_TOGETIC"
+      ],
+      [
+        "SPECIES_TOGEKISS"
       ]
     ],
     "rating": {
@@ -42794,9 +42840,9 @@
       "movesRating": 8.117857142857144,
       "bestAbilityRating": 8,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_TOGEPI",
-      "bestEvoRating": 2.4784523809523815,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_TOGEKISS",
+      "bestEvoRating": 6.479345238095238,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -42833,11 +42879,11 @@
     ],
     "baseBST": 405,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_NFE_OF_3",
       "isMega": false,
       "isLC": false,
-      "isNFE": false,
-      "isFinal": true
+      "isNFE": true,
+      "isFinal": false
     },
     "catchRate": "255",
     "expYield": "0",
@@ -42962,7 +43008,10 @@
     "evoTree": [
       "SPECIES_TOGEPI",
       [
-        "SPECIES_TOGETIC, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_TOGETIC"
+      ],
+      [
+        "SPECIES_TOGEKISS"
       ]
     ],
     "rating": {
@@ -42977,9 +43026,9 @@
       "movesRating": 8.323214285714286,
       "bestAbilityRating": 8,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_TOGETIC",
-      "bestEvoRating": 4.632321428571428,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_TOGEKISS",
+      "bestEvoRating": 6.479345238095238,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -43009,7 +43058,7 @@
     "teachableLearnset": "sTogekissTeachableLearnset",
     "baseBST": 545,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_LAST_OF_3",
       "isMega": false,
       "isLC": false,
       "isNFE": false,
@@ -43154,7 +43203,10 @@
     "evoTree": [
       "SPECIES_TOGEPI",
       [
-        "SPECIES_TOGETIC, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_TOGETIC"
+      ],
+      [
+        "SPECIES_TOGEKISS"
       ]
     ],
     "rating": {
@@ -44217,12 +44269,12 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_MARILL, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "pokemon": "SPECIES_MARILL"
       }
     ],
     "baseBST": 190,
     "evolutionData": {
-      "type": "EVO_TYPE_LC_OF_2",
+      "type": "EVO_TYPE_LC_OF_3",
       "isMega": false,
       "isLC": true,
       "isNFE": true,
@@ -44295,7 +44347,10 @@
     "evoTree": [
       "SPECIES_AZURILL",
       [
-        "SPECIES_MARILL, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_MARILL"
+      ],
+      [
+        "SPECIES_AZUMARILL"
       ]
     ],
     "rating": {
@@ -44310,9 +44365,9 @@
       "movesRating": 7.085714285714285,
       "bestAbilityRating": 1.6666666666666667,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_AZURILL",
-      "bestEvoRating": 1.2752380952380953,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_AZUMARILL",
+      "bestEvoRating": 5.096011904761905,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -44348,11 +44403,11 @@
     ],
     "baseBST": 250,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_NFE_OF_3",
       "isMega": false,
       "isLC": false,
-      "isNFE": false,
-      "isFinal": true
+      "isNFE": true,
+      "isFinal": false
     },
     "catchRate": "255",
     "expYield": "0",
@@ -44469,7 +44524,10 @@
     "evoTree": [
       "SPECIES_AZURILL",
       [
-        "SPECIES_MARILL, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_MARILL"
+      ],
+      [
+        "SPECIES_AZUMARILL"
       ]
     ],
     "rating": {
@@ -44484,9 +44542,9 @@
       "movesRating": 8.126785714285713,
       "bestAbilityRating": 1.6666666666666667,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_MARILL",
-      "bestEvoRating": 2.179345238095238,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_AZUMARILL",
+      "bestEvoRating": 5.096011904761905,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -44515,7 +44573,7 @@
     "teachableLearnset": "sAzumarillTeachableLearnset",
     "baseBST": 420,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_LAST_OF_3",
       "isMega": false,
       "isLC": false,
       "isNFE": false,
@@ -44637,7 +44695,10 @@
     "evoTree": [
       "SPECIES_AZURILL",
       [
-        "SPECIES_MARILL, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_MARILL"
+      ],
+      [
+        "SPECIES_AZUMARILL"
       ]
     ],
     "rating": {
@@ -44685,7 +44746,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_SUDOWOODO, CONDITIONS({IF_KNOWS_MOVE, MOVE_MIMIC})"
+        "pokemon": "SPECIES_SUDOWOODO"
       }
     ],
     "baseBST": 290,
@@ -44784,7 +44845,7 @@
     "evoTree": [
       "SPECIES_BONSLY",
       [
-        "SPECIES_SUDOWOODO, CONDITIONS({IF_KNOWS_MOVE, MOVE_MIMIC})"
+        "SPECIES_SUDOWOODO"
       ]
     ],
     "rating": {
@@ -44799,9 +44860,9 @@
       "movesRating": 7.680357142857143,
       "bestAbilityRating": 6,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_BONSLY",
-      "bestEvoRating": 2.8347023809523813,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_SUDOWOODO",
+      "bestEvoRating": 4.4905952380952385,
+      "bestEvoTier": "WEAK"
     }
   },
   {
@@ -44957,7 +45018,7 @@
     "evoTree": [
       "SPECIES_BONSLY",
       [
-        "SPECIES_SUDOWOODO, CONDITIONS({IF_KNOWS_MOVE, MOVE_MIMIC})"
+        "SPECIES_SUDOWOODO"
       ]
     ],
     "rating": {
@@ -45503,7 +45564,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_AMBIPOM, CONDITIONS({IF_KNOWS_MOVE, MOVE_DOUBLE_HIT})"
+        "pokemon": "SPECIES_AMBIPOM"
       }
     ],
     "baseBST": 360,
@@ -45625,7 +45686,7 @@
     "evoTree": [
       "SPECIES_AIPOM",
       [
-        "SPECIES_AMBIPOM, CONDITIONS({IF_KNOWS_MOVE, MOVE_DOUBLE_HIT})"
+        "SPECIES_AMBIPOM"
       ]
     ],
     "rating": {
@@ -45640,9 +45701,9 @@
       "movesRating": 7.832142857142856,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_AIPOM",
-      "bestEvoRating": 3.883214285714286,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_AMBIPOM",
+      "bestEvoRating": 5.609880952380952,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -45783,7 +45844,7 @@
     "evoTree": [
       "SPECIES_AIPOM",
       [
-        "SPECIES_AMBIPOM, CONDITIONS({IF_KNOWS_MOVE, MOVE_DOUBLE_HIT})"
+        "SPECIES_AMBIPOM"
       ]
     ],
     "rating": {
@@ -46126,7 +46187,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_YANMEGA, CONDITIONS({IF_KNOWS_MOVE, MOVE_ANCIENT_POWER})"
+        "pokemon": "SPECIES_YANMEGA"
       }
     ],
     "baseBST": 390,
@@ -46230,7 +46291,7 @@
     "evoTree": [
       "SPECIES_YANMA",
       [
-        "SPECIES_YANMEGA, CONDITIONS({IF_KNOWS_MOVE, MOVE_ANCIENT_POWER})"
+        "SPECIES_YANMEGA"
       ]
     ],
     "rating": {
@@ -46245,9 +46306,9 @@
       "movesRating": 8.108035714285714,
       "bestAbilityRating": 9,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_YANMA",
-      "bestEvoRating": 4.510803571428572,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_YANMEGA",
+      "bestEvoRating": 6.177470238095239,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -46382,7 +46443,7 @@
     "evoTree": [
       "SPECIES_YANMA",
       [
-        "SPECIES_YANMEGA, CONDITIONS({IF_KNOWS_MOVE, MOVE_ANCIENT_POWER})"
+        "SPECIES_YANMEGA"
       ]
     ],
     "rating": {
@@ -47789,7 +47850,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_FARIGIRAF, CONDITIONS({IF_KNOWS_MOVE, MOVE_TWIN_BEAM})"
+        "pokemon": "SPECIES_FARIGIRAF"
       }
     ],
     "baseBST": 455,
@@ -47908,7 +47969,7 @@
     "evoTree": [
       "SPECIES_GIRAFARIG",
       [
-        "SPECIES_FARIGIRAF, CONDITIONS({IF_KNOWS_MOVE, MOVE_TWIN_BEAM})"
+        "SPECIES_FARIGIRAF"
       ]
     ],
     "rating": {
@@ -47923,9 +47984,9 @@
       "movesRating": 8.005357142857143,
       "bestAbilityRating": 7,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_GIRAFARIG",
-      "bestEvoRating": 5.167202380952381,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_FARIGIRAF",
+      "bestEvoRating": 6.01779761904762,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -48058,7 +48119,7 @@
     "evoTree": [
       "SPECIES_GIRAFARIG",
       [
-        "SPECIES_FARIGIRAF, CONDITIONS({IF_KNOWS_MOVE, MOVE_TWIN_BEAM})"
+        "SPECIES_FARIGIRAF"
       ]
     ],
     "rating": {
@@ -48426,12 +48487,12 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_DUDUNSPARCE_TWO_SEGMENT, CONDITIONS({IF_KNOWS_MOVE, MOVE_HYPER_DRILL}, {IF_PID_MODULO_100_GT, 0})"
+        "pokemon": "SPECIES_DUDUNSPARCE_TWO_SEGMENT"
       },
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_DUDUNSPARCE_THREE_SEGMENT, CONDITIONS({IF_KNOWS_MOVE, MOVE_HYPER_DRILL}, {IF_PID_MODULO_100_EQ, 0})"
+        "pokemon": "SPECIES_DUDUNSPARCE_THREE_SEGMENT"
       }
     ],
     "baseBST": 415,
@@ -48553,8 +48614,8 @@
     "evoTree": [
       "SPECIES_DUNSPARCE",
       [
-        "SPECIES_DUDUNSPARCE_TWO_SEGMENT, CONDITIONS({IF_KNOWS_MOVE, MOVE_HYPER_DRILL}, {IF_PID_MODULO_100_GT, 0})",
-        "SPECIES_DUDUNSPARCE_THREE_SEGMENT, CONDITIONS({IF_KNOWS_MOVE, MOVE_HYPER_DRILL}, {IF_PID_MODULO_100_EQ, 0})"
+        "SPECIES_DUDUNSPARCE_TWO_SEGMENT",
+        "SPECIES_DUDUNSPARCE_THREE_SEGMENT"
       ]
     ],
     "rating": {
@@ -48569,9 +48630,9 @@
       "movesRating": 8.117857142857144,
       "bestAbilityRating": 8,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_DUNSPARCE",
-      "bestEvoRating": 4.745119047619048,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_DUDUNSPARCE_TWO_SEGMENT",
+      "bestEvoRating": 6.21029761904762,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -48713,8 +48774,8 @@
     "evoTree": [
       "SPECIES_DUNSPARCE",
       [
-        "SPECIES_DUDUNSPARCE_TWO_SEGMENT, CONDITIONS({IF_KNOWS_MOVE, MOVE_HYPER_DRILL}, {IF_PID_MODULO_100_GT, 0})",
-        "SPECIES_DUDUNSPARCE_THREE_SEGMENT, CONDITIONS({IF_KNOWS_MOVE, MOVE_HYPER_DRILL}, {IF_PID_MODULO_100_EQ, 0})"
+        "SPECIES_DUDUNSPARCE_TWO_SEGMENT",
+        "SPECIES_DUDUNSPARCE_THREE_SEGMENT"
       ]
     ],
     "rating": {
@@ -48873,8 +48934,8 @@
     "evoTree": [
       "SPECIES_DUNSPARCE",
       [
-        "SPECIES_DUDUNSPARCE_TWO_SEGMENT, CONDITIONS({IF_KNOWS_MOVE, MOVE_HYPER_DRILL}, {IF_PID_MODULO_100_GT, 0})",
-        "SPECIES_DUDUNSPARCE_THREE_SEGMENT, CONDITIONS({IF_KNOWS_MOVE, MOVE_HYPER_DRILL}, {IF_PID_MODULO_100_EQ, 0})"
+        "SPECIES_DUDUNSPARCE_TWO_SEGMENT",
+        "SPECIES_DUDUNSPARCE_THREE_SEGMENT"
       ]
     ],
     "rating": {
@@ -48923,12 +48984,12 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_GLISCOR, CONDITIONS({IF_TIME, TIME_NIGHT}, {IF_HOLD_ITEM, ITEM_RAZOR_FANG})"
+        "pokemon": "SPECIES_GLISCOR"
       },
       {
         "method": "ITEM",
         "param": "ITEM_RAZOR_FANG",
-        "pokemon": "SPECIES_GLISCOR, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_GLISCOR"
       }
     ],
     "baseBST": 430,
@@ -49039,8 +49100,8 @@
     "evoTree": [
       "SPECIES_GLIGAR",
       [
-        "SPECIES_GLISCOR, CONDITIONS({IF_TIME, TIME_NIGHT}, {IF_HOLD_ITEM, ITEM_RAZOR_FANG})",
-        "SPECIES_GLISCOR, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_GLISCOR",
+        "SPECIES_GLISCOR"
       ]
     ],
     "rating": {
@@ -49055,9 +49116,9 @@
       "movesRating": 8.197321428571428,
       "bestAbilityRating": 4,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_GLIGAR",
-      "bestEvoRating": 4.553065476190477,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_GLISCOR",
+      "bestEvoRating": 6.019732142857143,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -49201,8 +49262,8 @@
     "evoTree": [
       "SPECIES_GLIGAR",
       [
-        "SPECIES_GLISCOR, CONDITIONS({IF_TIME, TIME_NIGHT}, {IF_HOLD_ITEM, ITEM_RAZOR_FANG})",
-        "SPECIES_GLISCOR, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_GLISCOR",
+        "SPECIES_GLISCOR"
       ]
     ],
     "rating": {
@@ -49723,7 +49784,7 @@
     "evoTree": [
       "SPECIES_QWILFISH_HISUI",
       [
-        "SPECIES_OVERQWIL, CONDITIONS({IF_KNOWS_MOVE, MOVE_BARB_BARRAGE})"
+        "SPECIES_OVERQWIL"
       ]
     ],
     "rating": {
@@ -49738,9 +49799,9 @@
       "movesRating": 7.639285714285714,
       "bestAbilityRating": 7,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_QWILFISH",
-      "bestEvoRating": 4.930595238095239,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_OVERQWIL",
+      "bestEvoRating": 5.8639285714285725,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -49772,7 +49833,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_OVERQWIL, CONDITIONS({IF_KNOWS_MOVE, MOVE_BARB_BARRAGE})"
+        "pokemon": "SPECIES_OVERQWIL"
       }
     ],
     "baseBST": 440,
@@ -49879,7 +49940,7 @@
     "evoTree": [
       "SPECIES_QWILFISH_HISUI",
       [
-        "SPECIES_OVERQWIL, CONDITIONS({IF_KNOWS_MOVE, MOVE_BARB_BARRAGE})"
+        "SPECIES_OVERQWIL"
       ]
     ],
     "rating": {
@@ -49894,9 +49955,9 @@
       "movesRating": 7.639285714285714,
       "bestAbilityRating": 7,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_QWILFISH_HISUI",
-      "bestEvoRating": 4.930595238095239,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_OVERQWIL",
+      "bestEvoRating": 5.8639285714285725,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -50029,7 +50090,7 @@
     "evoTree": [
       "SPECIES_QWILFISH_HISUI",
       [
-        "SPECIES_OVERQWIL, CONDITIONS({IF_KNOWS_MOVE, MOVE_BARB_BARRAGE})"
+        "SPECIES_OVERQWIL"
       ]
     ],
     "rating": {
@@ -50530,12 +50591,12 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_WEAVILE, CONDITIONS({IF_TIME, TIME_NIGHT}, {IF_HOLD_ITEM, ITEM_RAZOR_CLAW})"
+        "pokemon": "SPECIES_WEAVILE"
       },
       {
         "method": "ITEM",
         "param": "ITEM_RAZOR_CLAW",
-        "pokemon": "SPECIES_WEAVILE, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_WEAVILE"
       }
     ],
     "baseBST": 430,
@@ -50649,8 +50710,8 @@
     "evoTree": [
       "SPECIES_SNEASEL",
       [
-        "SPECIES_WEAVILE, CONDITIONS({IF_TIME, TIME_NIGHT}, {IF_HOLD_ITEM, ITEM_RAZOR_CLAW})",
-        "SPECIES_WEAVILE, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_WEAVILE",
+        "SPECIES_WEAVILE"
       ]
     ],
     "rating": {
@@ -50665,9 +50726,9 @@
       "movesRating": 8.067857142857143,
       "bestAbilityRating": 3,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_SNEASEL",
-      "bestEvoRating": 4.440119047619048,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_WEAVILE",
+      "bestEvoRating": 5.677678571428572,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -50829,8 +50890,8 @@
     "evoTree": [
       "SPECIES_SNEASEL",
       [
-        "SPECIES_WEAVILE, CONDITIONS({IF_TIME, TIME_NIGHT}, {IF_HOLD_ITEM, ITEM_RAZOR_CLAW})",
-        "SPECIES_WEAVILE, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_WEAVILE",
+        "SPECIES_WEAVILE"
       ]
     ],
     "rating": {
@@ -50879,12 +50940,12 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_SNEASLER, CONDITIONS({IF_NOT_TIME, TIME_NIGHT}, {IF_HOLD_ITEM, ITEM_RAZOR_CLAW})"
+        "pokemon": "SPECIES_SNEASLER"
       },
       {
         "method": "ITEM",
         "param": "ITEM_RAZOR_CLAW",
-        "pokemon": "SPECIES_SNEASLER, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_SNEASLER"
       }
     ],
     "baseBST": 430,
@@ -50979,8 +51040,8 @@
     "evoTree": [
       "SPECIES_SNEASEL",
       [
-        "SPECIES_WEAVILE, CONDITIONS({IF_TIME, TIME_NIGHT}, {IF_HOLD_ITEM, ITEM_RAZOR_CLAW})",
-        "SPECIES_WEAVILE, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_WEAVILE",
+        "SPECIES_WEAVILE"
       ]
     ],
     "rating": {
@@ -50995,9 +51056,9 @@
       "movesRating": 7.9017857142857135,
       "bestAbilityRating": 3,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_SNEASEL",
-      "bestEvoRating": 4.440119047619048,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_WEAVILE",
+      "bestEvoRating": 5.677678571428572,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -51129,8 +51190,8 @@
     "evoTree": [
       "SPECIES_SNEASEL",
       [
-        "SPECIES_WEAVILE, CONDITIONS({IF_TIME, TIME_NIGHT}, {IF_HOLD_ITEM, ITEM_RAZOR_CLAW})",
-        "SPECIES_WEAVILE, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_WEAVILE",
+        "SPECIES_WEAVILE"
       ]
     ],
     "rating": {
@@ -51305,7 +51366,7 @@
         "SPECIES_URSARING"
       ],
       [
-        "SPECIES_URSALUNA, CONDITIONS({IF_TIME, TIME_NIGHT})",
+        "SPECIES_URSALUNA",
         "SPECIES_URSALUNA_BLOODMOON"
       ]
     ],
@@ -51354,7 +51415,7 @@
       {
         "method": "ITEM",
         "param": "ITEM_PEAT_BLOCK",
-        "pokemon": "SPECIES_URSALUNA, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_URSALUNA"
       },
       {
         "method": "NONE",
@@ -51495,7 +51556,7 @@
         "SPECIES_URSARING"
       ],
       [
-        "SPECIES_URSALUNA, CONDITIONS({IF_TIME, TIME_NIGHT})",
+        "SPECIES_URSALUNA",
         "SPECIES_URSALUNA_BLOODMOON"
       ]
     ],
@@ -51665,7 +51726,7 @@
         "SPECIES_URSARING"
       ],
       [
-        "SPECIES_URSALUNA, CONDITIONS({IF_TIME, TIME_NIGHT})",
+        "SPECIES_URSALUNA",
         "SPECIES_URSALUNA_BLOODMOON"
       ]
     ],
@@ -51828,7 +51889,7 @@
         "SPECIES_URSARING"
       ],
       [
-        "SPECIES_URSALUNA, CONDITIONS({IF_TIME, TIME_NIGHT})",
+        "SPECIES_URSALUNA",
         "SPECIES_URSALUNA_BLOODMOON"
       ]
     ],
@@ -52288,7 +52349,7 @@
         "SPECIES_PILOSWINE"
       ],
       [
-        "SPECIES_MAMOSWINE, CONDITIONS({IF_KNOWS_MOVE, MOVE_ANCIENT_POWER})"
+        "SPECIES_MAMOSWINE"
       ]
     ],
     "rating": {
@@ -52303,9 +52364,9 @@
       "movesRating": 7.407142857142857,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_PILOSWINE",
-      "bestEvoRating": 5.094285714285714,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_MAMOSWINE",
+      "bestEvoRating": 6.160952380952382,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -52337,7 +52398,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_MAMOSWINE, CONDITIONS({IF_KNOWS_MOVE, MOVE_ANCIENT_POWER})"
+        "pokemon": "SPECIES_MAMOSWINE"
       }
     ],
     "baseBST": 450,
@@ -52450,7 +52511,7 @@
         "SPECIES_PILOSWINE"
       ],
       [
-        "SPECIES_MAMOSWINE, CONDITIONS({IF_KNOWS_MOVE, MOVE_ANCIENT_POWER})"
+        "SPECIES_MAMOSWINE"
       ]
     ],
     "rating": {
@@ -52465,9 +52526,9 @@
       "movesRating": 7.942857142857143,
       "bestAbilityRating": 7,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_PILOSWINE",
-      "bestEvoRating": 5.094285714285714,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_MAMOSWINE",
+      "bestEvoRating": 6.160952380952382,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -52609,7 +52670,7 @@
         "SPECIES_PILOSWINE"
       ],
       [
-        "SPECIES_MAMOSWINE, CONDITIONS({IF_KNOWS_MOVE, MOVE_ANCIENT_POWER})"
+        "SPECIES_MAMOSWINE"
       ]
     ],
     "rating": {
@@ -53515,7 +53576,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_MANTINE, CONDITIONS({IF_SPECIES_IN_PARTY, SPECIES_REMORAID})"
+        "pokemon": "SPECIES_MANTINE"
       }
     ],
     "baseBST": 345,
@@ -53616,7 +53677,7 @@
     "evoTree": [
       "SPECIES_MANTYKE",
       [
-        "SPECIES_MANTINE, CONDITIONS({IF_SPECIES_IN_PARTY, SPECIES_REMORAID})"
+        "SPECIES_MANTINE"
       ]
     ],
     "rating": {
@@ -53631,9 +53692,9 @@
       "movesRating": 7.371428571428572,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_MANTYKE",
-      "bestEvoRating": 3.6371428571428575,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_MANTINE",
+      "bestEvoRating": 5.602916666666666,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -53775,7 +53836,7 @@
     "evoTree": [
       "SPECIES_MANTYKE",
       [
-        "SPECIES_MANTINE, CONDITIONS({IF_SPECIES_IN_PARTY, SPECIES_REMORAID})"
+        "SPECIES_MANTINE"
       ]
     ],
     "rating": {
@@ -54773,7 +54834,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_WYRDEER, CONDITIONS({IF_USED_MOVE_X_TIMES, MOVE_PSYSHIELD_BASH, 20})"
+        "pokemon": "SPECIES_WYRDEER"
       }
     ],
     "baseBST": 465,
@@ -54881,7 +54942,7 @@
     "evoTree": [
       "SPECIES_STANTLER",
       [
-        "SPECIES_WYRDEER, CONDITIONS({IF_USED_MOVE_X_TIMES, MOVE_PSYSHIELD_BASH, 20})"
+        "SPECIES_WYRDEER"
       ]
     ],
     "rating": {
@@ -54896,9 +54957,9 @@
       "movesRating": 7.8410714285714285,
       "bestAbilityRating": 7,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_STANTLER",
-      "bestEvoRating": 5.284107142857144,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_WYRDEER",
+      "bestEvoRating": 6.07607142857143,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -55030,7 +55091,7 @@
     "evoTree": [
       "SPECIES_STANTLER",
       [
-        "SPECIES_WYRDEER, CONDITIONS({IF_USED_MOVE_X_TIMES, MOVE_PSYSHIELD_BASH, 20})"
+        "SPECIES_WYRDEER"
       ]
     ],
     "rating": {
@@ -60055,7 +60116,7 @@
       {
         "method": "LEVEL",
         "param": "35",
-        "pokemon": "SPECIES_OBSTAGOON, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_OBSTAGOON"
       }
     ],
     "baseBST": 420,
@@ -60408,17 +60469,17 @@
       {
         "method": "LEVEL",
         "param": "7",
-        "pokemon": "SPECIES_SILCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_GT, 4})"
+        "pokemon": "SPECIES_SILCOON"
       },
       {
         "method": "LEVEL",
         "param": "7",
-        "pokemon": "SPECIES_CASCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_LT, 5})"
+        "pokemon": "SPECIES_CASCOON"
       }
     ],
     "baseBST": 195,
     "evolutionData": {
-      "type": "EVO_TYPE_LC_OF_2",
+      "type": "EVO_TYPE_LC_OF_3",
       "isMega": false,
       "isLC": true,
       "isNFE": true,
@@ -60450,8 +60511,12 @@
     "evoTree": [
       "SPECIES_WURMPLE",
       [
-        "SPECIES_SILCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_GT, 4})",
-        "SPECIES_CASCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_LT, 5})"
+        "SPECIES_SILCOON",
+        "SPECIES_CASCOON"
+      ],
+      [
+        "SPECIES_BEAUTIFLY",
+        "SPECIES_DUSTOX"
       ]
     ],
     "rating": {
@@ -60466,9 +60531,9 @@
       "movesRating": 4.794642857142858,
       "bestAbilityRating": 5,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_WURMPLE",
-      "bestEvoRating": 1.1794642857142859,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_DUSTOX",
+      "bestEvoRating": 4.251369047619048,
+      "bestEvoTier": "WEAK"
     }
   },
   {
@@ -60504,11 +60569,11 @@
     ],
     "baseBST": 205,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_NFE_OF_3",
       "isMega": false,
       "isLC": false,
-      "isNFE": false,
-      "isFinal": true
+      "isNFE": true,
+      "isFinal": false
     },
     "catchRate": "255",
     "expYield": "0",
@@ -60526,8 +60591,12 @@
     "evoTree": [
       "SPECIES_WURMPLE",
       [
-        "SPECIES_SILCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_GT, 4})",
-        "SPECIES_CASCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_LT, 5})"
+        "SPECIES_SILCOON",
+        "SPECIES_CASCOON"
+      ],
+      [
+        "SPECIES_BEAUTIFLY",
+        "SPECIES_DUSTOX"
       ]
     ],
     "rating": {
@@ -60540,9 +60609,9 @@
       "movesRating": 2.5,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_SILCOON",
-      "bestEvoRating": 1.2833333333333334,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_DUSTOX",
+      "bestEvoRating": 4.251369047619048,
+      "bestEvoTier": "WEAK"
     }
   },
   {
@@ -60572,7 +60641,7 @@
     "teachableLearnset": "sBeautiflyTeachableLearnset",
     "baseBST": 395,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_LAST_OF_3",
       "isMega": false,
       "isLC": false,
       "isNFE": false,
@@ -60685,8 +60754,12 @@
     "evoTree": [
       "SPECIES_WURMPLE",
       [
-        "SPECIES_SILCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_GT, 4})",
-        "SPECIES_CASCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_LT, 5})"
+        "SPECIES_SILCOON",
+        "SPECIES_CASCOON"
+      ],
+      [
+        "SPECIES_BEAUTIFLY",
+        "SPECIES_DUSTOX"
       ]
     ],
     "rating": {
@@ -60701,8 +60774,8 @@
       "movesRating": 7.725,
       "bestAbilityRating": 5,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_BEAUTIFLY",
-      "bestEvoRating": 4.139166666666667,
+      "bestEvo": "SPECIES_DUSTOX",
+      "bestEvoRating": 4.251369047619048,
       "bestEvoTier": "WEAK"
     }
   },
@@ -60739,11 +60812,11 @@
     ],
     "baseBST": 205,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_NFE_OF_3",
       "isMega": false,
       "isLC": false,
-      "isNFE": false,
-      "isFinal": true
+      "isNFE": true,
+      "isFinal": false
     },
     "catchRate": "255",
     "expYield": "0",
@@ -60761,8 +60834,12 @@
     "evoTree": [
       "SPECIES_WURMPLE",
       [
-        "SPECIES_SILCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_GT, 4})",
-        "SPECIES_CASCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_LT, 5})"
+        "SPECIES_SILCOON",
+        "SPECIES_CASCOON"
+      ],
+      [
+        "SPECIES_BEAUTIFLY",
+        "SPECIES_DUSTOX"
       ]
     ],
     "rating": {
@@ -60775,9 +60852,9 @@
       "movesRating": 2.5,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_CASCOON",
-      "bestEvoRating": 1.2833333333333334,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_DUSTOX",
+      "bestEvoRating": 4.251369047619048,
+      "bestEvoTier": "WEAK"
     }
   },
   {
@@ -60807,7 +60884,7 @@
     "teachableLearnset": "sDustoxTeachableLearnset",
     "baseBST": 385,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_LAST_OF_3",
       "isMega": false,
       "isLC": false,
       "isNFE": false,
@@ -60921,8 +60998,12 @@
     "evoTree": [
       "SPECIES_WURMPLE",
       [
-        "SPECIES_SILCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_GT, 4})",
-        "SPECIES_CASCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_LT, 5})"
+        "SPECIES_SILCOON",
+        "SPECIES_CASCOON"
+      ],
+      [
+        "SPECIES_BEAUTIFLY",
+        "SPECIES_DUSTOX"
       ]
     ],
     "rating": {
@@ -62734,7 +62815,7 @@
       ],
       [
         "SPECIES_GARDEVOIR",
-        "SPECIES_GALLADE, CONDITIONS({IF_GENDER, MON_MALE})"
+        "SPECIES_GALLADE"
       ]
     ],
     "rating": {
@@ -62791,7 +62872,7 @@
       {
         "method": "ITEM",
         "param": "ITEM_DAWN_STONE",
-        "pokemon": "SPECIES_GALLADE, CONDITIONS({IF_GENDER, MON_MALE})"
+        "pokemon": "SPECIES_GALLADE"
       }
     ],
     "baseBST": 278,
@@ -62922,7 +63003,7 @@
       ],
       [
         "SPECIES_GARDEVOIR",
-        "SPECIES_GALLADE, CONDITIONS({IF_GENDER, MON_MALE})"
+        "SPECIES_GALLADE"
       ]
     ],
     "rating": {
@@ -63122,7 +63203,7 @@
       ],
       [
         "SPECIES_GARDEVOIR",
-        "SPECIES_GALLADE, CONDITIONS({IF_GENDER, MON_MALE})"
+        "SPECIES_GALLADE"
       ]
     ],
     "rating": {
@@ -63320,7 +63401,7 @@
       ],
       [
         "SPECIES_GARDEVOIR",
-        "SPECIES_GALLADE, CONDITIONS({IF_GENDER, MON_MALE})"
+        "SPECIES_GALLADE"
       ]
     ],
     "rating": {
@@ -63575,7 +63656,7 @@
       ],
       [
         "SPECIES_GARDEVOIR",
-        "SPECIES_GALLADE, CONDITIONS({IF_GENDER, MON_MALE})"
+        "SPECIES_GALLADE"
       ]
     ],
     "rating": {
@@ -63831,7 +63912,7 @@
       ],
       [
         "SPECIES_GARDEVOIR",
-        "SPECIES_GALLADE, CONDITIONS({IF_GENDER, MON_MALE})"
+        "SPECIES_GALLADE"
       ]
     ],
     "rating": {
@@ -64984,7 +65065,7 @@
       {
         "method": "SPLIT_FROM_EVO",
         "param": "SPECIES_NINJASK",
-        "pokemon": "SPECIES_SHEDINJA, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_POKE_BALL, 1})"
+        "pokemon": "SPECIES_SHEDINJA"
       },
       {
         "method": "SPLIT_FROM_EVO",
@@ -65071,7 +65152,7 @@
       "SPECIES_NINCADA",
       [
         "SPECIES_NINJASK",
-        "SPECIES_SHEDINJA, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_POKE_BALL, 1})",
+        "SPECIES_SHEDINJA",
         "SPECIES_SHEDINJA"
       ]
     ],
@@ -65253,7 +65334,7 @@
       "SPECIES_NINCADA",
       [
         "SPECIES_NINJASK",
-        "SPECIES_SHEDINJA, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_POKE_BALL, 1})",
+        "SPECIES_SHEDINJA",
         "SPECIES_SHEDINJA"
       ]
     ],
@@ -65409,7 +65490,7 @@
       "SPECIES_NINCADA",
       [
         "SPECIES_NINJASK",
-        "SPECIES_SHEDINJA, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_POKE_BALL, 1})",
+        "SPECIES_SHEDINJA",
         "SPECIES_SHEDINJA"
       ]
     ],
@@ -66324,7 +66405,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_PROBOPASS, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})"
+        "pokemon": "SPECIES_PROBOPASS"
       },
       {
         "method": "ITEM",
@@ -66446,7 +66527,7 @@
     "evoTree": [
       "SPECIES_NOSEPASS",
       [
-        "SPECIES_PROBOPASS, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})",
+        "SPECIES_PROBOPASS",
         "SPECIES_PROBOPASS"
       ]
     ],
@@ -66621,7 +66702,7 @@
     "evoTree": [
       "SPECIES_NOSEPASS",
       [
-        "SPECIES_PROBOPASS, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})",
+        "SPECIES_PROBOPASS",
         "SPECIES_PROBOPASS"
       ]
     ],
@@ -70087,12 +70168,12 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_ROSELIA, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_NOT_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_ROSELIA"
       }
     ],
     "baseBST": 280,
     "evolutionData": {
-      "type": "EVO_TYPE_LC_OF_2",
+      "type": "EVO_TYPE_LC_OF_3",
       "isMega": false,
       "isLC": true,
       "isNFE": true,
@@ -70146,7 +70227,10 @@
     "evoTree": [
       "SPECIES_BUDEW",
       [
-        "SPECIES_ROSELIA, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_NOT_TIME, TIME_NIGHT})"
+        "SPECIES_ROSELIA"
+      ],
+      [
+        "SPECIES_ROSERADE"
       ]
     ],
     "rating": {
@@ -70161,9 +70245,9 @@
       "movesRating": 7.532142857142857,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_BUDEW",
-      "bestEvoRating": 2.7865476190476195,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_ROSERADE",
+      "bestEvoRating": 6.065416666666667,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -70200,11 +70284,11 @@
     ],
     "baseBST": 400,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_NFE_OF_3",
       "isMega": false,
       "isLC": false,
-      "isNFE": false,
-      "isFinal": true
+      "isNFE": true,
+      "isFinal": false
     },
     "catchRate": "255",
     "expYield": "0",
@@ -70313,7 +70397,10 @@
     "evoTree": [
       "SPECIES_BUDEW",
       [
-        "SPECIES_ROSELIA, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_NOT_TIME, TIME_NIGHT})"
+        "SPECIES_ROSELIA"
+      ],
+      [
+        "SPECIES_ROSERADE"
       ]
     ],
     "rating": {
@@ -70328,9 +70415,9 @@
       "movesRating": 8.264285714285714,
       "bestAbilityRating": 7,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_ROSELIA",
-      "bestEvoRating": 4.459761904761905,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_ROSERADE",
+      "bestEvoRating": 6.065416666666667,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -70360,7 +70447,7 @@
     "teachableLearnset": "sRoseradeTeachableLearnset",
     "baseBST": 515,
     "evolutionData": {
-      "type": "EVO_TYPE_LAST_OF_2",
+      "type": "EVO_TYPE_LAST_OF_3",
       "isMega": false,
       "isLC": false,
       "isNFE": false,
@@ -70477,7 +70564,10 @@
     "evoTree": [
       "SPECIES_BUDEW",
       [
-        "SPECIES_ROSELIA, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_NOT_TIME, TIME_NIGHT})"
+        "SPECIES_ROSELIA"
+      ],
+      [
+        "SPECIES_ROSERADE"
       ]
     ],
     "rating": {
@@ -76369,12 +76459,12 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_MILOTIC, CONDITIONS({IF_MIN_BEAUTY, 170})"
+        "pokemon": "SPECIES_MILOTIC"
       },
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_MILOTIC, CONDITIONS({IF_HOLD_ITEM, ITEM_PRISM_SCALE})"
+        "pokemon": "SPECIES_MILOTIC"
       },
       {
         "method": "ITEM",
@@ -76434,8 +76524,8 @@
     "evoTree": [
       "SPECIES_FEEBAS",
       [
-        "SPECIES_MILOTIC, CONDITIONS({IF_MIN_BEAUTY, 170})",
-        "SPECIES_MILOTIC, CONDITIONS({IF_HOLD_ITEM, ITEM_PRISM_SCALE})",
+        "SPECIES_MILOTIC",
+        "SPECIES_MILOTIC",
         "SPECIES_MILOTIC"
       ]
     ],
@@ -76601,8 +76691,8 @@
     "evoTree": [
       "SPECIES_FEEBAS",
       [
-        "SPECIES_MILOTIC, CONDITIONS({IF_MIN_BEAUTY, 170})",
-        "SPECIES_MILOTIC, CONDITIONS({IF_HOLD_ITEM, ITEM_PRISM_SCALE})",
+        "SPECIES_MILOTIC",
+        "SPECIES_MILOTIC",
         "SPECIES_MILOTIC"
       ]
     ],
@@ -77959,7 +78049,7 @@
         "SPECIES_DUSCLOPS"
       ],
       [
-        "SPECIES_DUSKNOIR, CONDITIONS({IF_HOLD_ITEM, ITEM_REAPER_CLOTH})",
+        "SPECIES_DUSKNOIR",
         "SPECIES_DUSKNOIR"
       ]
     ],
@@ -78008,7 +78098,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_DUSKNOIR, CONDITIONS({IF_HOLD_ITEM, ITEM_REAPER_CLOTH})"
+        "pokemon": "SPECIES_DUSKNOIR"
       },
       {
         "method": "ITEM",
@@ -78158,7 +78248,7 @@
         "SPECIES_DUSCLOPS"
       ],
       [
-        "SPECIES_DUSKNOIR, CONDITIONS({IF_HOLD_ITEM, ITEM_REAPER_CLOTH})",
+        "SPECIES_DUSKNOIR",
         "SPECIES_DUSKNOIR"
       ]
     ],
@@ -78346,7 +78436,7 @@
         "SPECIES_DUSCLOPS"
       ],
       [
-        "SPECIES_DUSKNOIR, CONDITIONS({IF_HOLD_ITEM, ITEM_REAPER_CLOTH})",
+        "SPECIES_DUSKNOIR",
         "SPECIES_DUSKNOIR"
       ]
     ],
@@ -78543,7 +78633,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_CHIMECHO, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_CHIMECHO"
       }
     ],
     "baseBST": 285,
@@ -78626,7 +78716,7 @@
     "evoTree": [
       "SPECIES_CHINGLING",
       [
-        "SPECIES_CHIMECHO, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_TIME, TIME_NIGHT})"
+        "SPECIES_CHIMECHO"
       ]
     ],
     "rating": {
@@ -78641,9 +78731,9 @@
       "movesRating": 7.371428571428572,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_CHINGLING",
-      "bestEvoRating": 2.8371428571428576,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_CHIMECHO",
+      "bestEvoRating": 5.140952380952381,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -78775,7 +78865,7 @@
     "evoTree": [
       "SPECIES_CHINGLING",
       [
-        "SPECIES_CHIMECHO, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_TIME, TIME_NIGHT})"
+        "SPECIES_CHIMECHO"
       ]
     ],
     "rating": {
@@ -79146,7 +79236,7 @@
       {
         "method": "ITEM",
         "param": "ITEM_DAWN_STONE",
-        "pokemon": "SPECIES_FROSLASS, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "pokemon": "SPECIES_FROSLASS"
       }
     ],
     "baseBST": 300,
@@ -79253,7 +79343,7 @@
       "SPECIES_SNORUNT",
       [
         "SPECIES_GLALIE",
-        "SPECIES_FROSLASS, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "SPECIES_FROSLASS"
       ]
     ],
     "rating": {
@@ -79418,7 +79508,7 @@
       "SPECIES_SNORUNT",
       [
         "SPECIES_GLALIE",
-        "SPECIES_FROSLASS, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "SPECIES_FROSLASS"
       ]
     ],
     "rating": {
@@ -79582,7 +79672,7 @@
       "SPECIES_SNORUNT",
       [
         "SPECIES_GLALIE",
-        "SPECIES_FROSLASS, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "SPECIES_FROSLASS"
       ]
     ],
     "rating": {
@@ -79768,7 +79858,7 @@
       "SPECIES_SNORUNT",
       [
         "SPECIES_GLALIE",
-        "SPECIES_FROSLASS, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "SPECIES_FROSLASS"
       ]
     ],
     "rating": {
@@ -80323,12 +80413,12 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_HUNTAIL, CONDITIONS({IF_HOLD_ITEM, ITEM_DEEP_SEA_TOOTH})"
+        "pokemon": "SPECIES_HUNTAIL"
       },
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_GOREBYSS, CONDITIONS({IF_HOLD_ITEM, ITEM_DEEP_SEA_SCALE})"
+        "pokemon": "SPECIES_GOREBYSS"
       },
       {
         "method": "ITEM",
@@ -80395,8 +80485,8 @@
     "evoTree": [
       "SPECIES_CLAMPERL",
       [
-        "SPECIES_HUNTAIL, CONDITIONS({IF_HOLD_ITEM, ITEM_DEEP_SEA_TOOTH})",
-        "SPECIES_GOREBYSS, CONDITIONS({IF_HOLD_ITEM, ITEM_DEEP_SEA_SCALE})",
+        "SPECIES_HUNTAIL",
+        "SPECIES_GOREBYSS",
         "SPECIES_HUNTAIL",
         "SPECIES_GOREBYSS"
       ]
@@ -80557,8 +80647,8 @@
     "evoTree": [
       "SPECIES_CLAMPERL",
       [
-        "SPECIES_HUNTAIL, CONDITIONS({IF_HOLD_ITEM, ITEM_DEEP_SEA_TOOTH})",
-        "SPECIES_GOREBYSS, CONDITIONS({IF_HOLD_ITEM, ITEM_DEEP_SEA_SCALE})",
+        "SPECIES_HUNTAIL",
+        "SPECIES_GOREBYSS",
         "SPECIES_HUNTAIL",
         "SPECIES_GOREBYSS"
       ]
@@ -80721,8 +80811,8 @@
     "evoTree": [
       "SPECIES_CLAMPERL",
       [
-        "SPECIES_HUNTAIL, CONDITIONS({IF_HOLD_ITEM, ITEM_DEEP_SEA_TOOTH})",
-        "SPECIES_GOREBYSS, CONDITIONS({IF_HOLD_ITEM, ITEM_DEEP_SEA_SCALE})",
+        "SPECIES_HUNTAIL",
+        "SPECIES_GOREBYSS",
         "SPECIES_HUNTAIL",
         "SPECIES_GOREBYSS"
       ]
@@ -88732,7 +88822,7 @@
       {
         "method": "LEVEL",
         "param": "21",
-        "pokemon": "SPECIES_VESPIQUEN, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "pokemon": "SPECIES_VESPIQUEN"
       }
     ],
     "baseBST": 244,
@@ -88772,7 +88862,7 @@
     "evoTree": [
       "SPECIES_COMBEE",
       [
-        "SPECIES_VESPIQUEN, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "SPECIES_VESPIQUEN"
       ]
     ],
     "rating": {
@@ -88787,9 +88877,9 @@
       "movesRating": 5.267857142857142,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_COMBEE",
-      "bestEvoRating": 2.0801190476190476,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_VESPIQUEN",
+      "bestEvoRating": 5.1726785714285715,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -88932,7 +89022,7 @@
     "evoTree": [
       "SPECIES_COMBEE",
       [
-        "SPECIES_VESPIQUEN, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "SPECIES_VESPIQUEN"
       ]
     ],
     "rating": {
@@ -90600,7 +90690,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_LOPUNNY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "pokemon": "SPECIES_LOPUNNY"
       }
     ],
     "baseBST": 350,
@@ -90716,7 +90806,7 @@
     "evoTree": [
       "SPECIES_BUNEARY",
       [
-        "SPECIES_LOPUNNY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_LOPUNNY"
       ]
     ],
     "rating": {
@@ -90731,9 +90821,9 @@
       "movesRating": 7.8410714285714285,
       "bestAbilityRating": 3,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_BUNEARY",
-      "bestEvoRating": 3.35077380952381,
-      "bestEvoTier": "BAD",
+      "bestEvo": "SPECIES_LOPUNNY",
+      "bestEvoRating": 5.0841071428571425,
+      "bestEvoTier": "AVERAGE",
       "megaEvo": "SPECIES_LOPUNNY_MEGA",
       "megaEvoRating": 6.717440476190477,
       "megaEvoTier": "STRONG"
@@ -90893,7 +90983,7 @@
     "evoTree": [
       "SPECIES_BUNEARY",
       [
-        "SPECIES_LOPUNNY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_LOPUNNY"
       ]
     ],
     "rating": {
@@ -91070,7 +91160,7 @@
     "evoTree": [
       "SPECIES_BUNEARY",
       [
-        "SPECIES_LOPUNNY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_LOPUNNY"
       ]
     ],
     "rating": {
@@ -92998,7 +93088,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_LUCARIO, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_NOT_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_LUCARIO"
       }
     ],
     "baseBST": 285,
@@ -93119,7 +93209,7 @@
     "evoTree": [
       "SPECIES_RIOLU",
       [
-        "SPECIES_LUCARIO, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_NOT_TIME, TIME_NIGHT})"
+        "SPECIES_LUCARIO"
       ]
     ],
     "rating": {
@@ -93134,9 +93224,9 @@
       "movesRating": 7.964285714285714,
       "bestAbilityRating": 8,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_RIOLU",
-      "bestEvoRating": 2.996428571428572,
-      "bestEvoTier": "BAD",
+      "bestEvo": "SPECIES_LUCARIO",
+      "bestEvoRating": 5.815178571428572,
+      "bestEvoTier": "AVERAGE",
       "megaEvo": "SPECIES_LUCARIO_MEGA",
       "megaEvoRating": 7.548511904761905,
       "megaEvoTier": "PREMIUM"
@@ -93332,7 +93422,7 @@
     "evoTree": [
       "SPECIES_RIOLU",
       [
-        "SPECIES_LUCARIO, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_NOT_TIME, TIME_NIGHT})"
+        "SPECIES_LUCARIO"
       ]
     ],
     "rating": {
@@ -93544,7 +93634,7 @@
     "evoTree": [
       "SPECIES_RIOLU",
       [
-        "SPECIES_LUCARIO, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_NOT_TIME, TIME_NIGHT})"
+        "SPECIES_LUCARIO"
       ]
     ],
     "rating": {
@@ -103905,7 +103995,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_SWOOBAT, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "pokemon": "SPECIES_SWOOBAT"
       }
     ],
     "baseBST": 323,
@@ -104008,7 +104098,7 @@
     "evoTree": [
       "SPECIES_WOOBAT",
       [
-        "SPECIES_SWOOBAT, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_SWOOBAT"
       ]
     ],
     "rating": {
@@ -104023,9 +104113,9 @@
       "movesRating": 7.080357142857142,
       "bestAbilityRating": 8,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_WOOBAT",
-      "bestEvoRating": 3.414702380952381,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_SWOOBAT",
+      "bestEvoRating": 4.774702380952381,
+      "bestEvoTier": "WEAK"
     }
   },
   {
@@ -104154,7 +104244,7 @@
     "evoTree": [
       "SPECIES_WOOBAT",
       [
-        "SPECIES_SWOOBAT, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_SWOOBAT"
       ]
     ],
     "rating": {
@@ -106123,7 +106213,7 @@
         "SPECIES_SWADLOON"
       ],
       [
-        "SPECIES_LEAVANNY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_LEAVANNY"
       ]
     ],
     "rating": {
@@ -106138,9 +106228,9 @@
       "movesRating": 7.094642857142857,
       "bestAbilityRating": 6,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_SWADLOON",
-      "bestEvoRating": 3.9761309523809527,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_LEAVANNY",
+      "bestEvoRating": 5.667559523809524,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -106172,7 +106262,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_LEAVANNY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "pokemon": "SPECIES_LEAVANNY"
       }
     ],
     "baseBST": 380,
@@ -106255,7 +106345,7 @@
         "SPECIES_SWADLOON"
       ],
       [
-        "SPECIES_LEAVANNY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_LEAVANNY"
       ]
     ],
     "rating": {
@@ -106270,9 +106360,9 @@
       "movesRating": 7.094642857142857,
       "bestAbilityRating": 6,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_SWADLOON",
-      "bestEvoRating": 3.9761309523809527,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_LEAVANNY",
+      "bestEvoRating": 5.667559523809524,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -106402,7 +106492,7 @@
         "SPECIES_SWADLOON"
       ],
       [
-        "SPECIES_LEAVANNY, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD})"
+        "SPECIES_LEAVANNY"
       ]
     ],
     "rating": {
@@ -107819,8 +107909,8 @@
     "evoTree": [
       "SPECIES_BASCULIN_WHITE_STRIPED",
       [
-        "SPECIES_BASCULEGION_M, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_MALE})",
-        "SPECIES_BASCULEGION_F, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_FEMALE})"
+        "SPECIES_BASCULEGION_M",
+        "SPECIES_BASCULEGION_F"
       ]
     ],
     "rating": {
@@ -107835,9 +107925,9 @@
       "movesRating": 8.272321428571429,
       "bestAbilityRating": 8,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_BASCULIN_RED_STRIPED",
-      "bestEvoRating": 5.360565476190477,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_BASCULEGION_M",
+      "bestEvoRating": 6.293898809523809,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -107969,8 +108059,8 @@
     "evoTree": [
       "SPECIES_BASCULIN_WHITE_STRIPED",
       [
-        "SPECIES_BASCULEGION_M, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_MALE})",
-        "SPECIES_BASCULEGION_F, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_FEMALE})"
+        "SPECIES_BASCULEGION_M",
+        "SPECIES_BASCULEGION_F"
       ]
     ],
     "rating": {
@@ -107985,9 +108075,9 @@
       "movesRating": 8.272321428571429,
       "bestAbilityRating": 8,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_BASCULIN_BLUE_STRIPED",
-      "bestEvoRating": 5.360565476190477,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_BASCULEGION_M",
+      "bestEvoRating": 6.293898809523809,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -108018,12 +108108,12 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_BASCULEGION_M, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_MALE})"
+        "pokemon": "SPECIES_BASCULEGION_M"
       },
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_BASCULEGION_F, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_FEMALE})"
+        "pokemon": "SPECIES_BASCULEGION_F"
       }
     ],
     "baseBST": 460,
@@ -108121,8 +108211,8 @@
     "evoTree": [
       "SPECIES_BASCULIN_WHITE_STRIPED",
       [
-        "SPECIES_BASCULEGION_M, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_MALE})",
-        "SPECIES_BASCULEGION_F, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_FEMALE})"
+        "SPECIES_BASCULEGION_M",
+        "SPECIES_BASCULEGION_F"
       ]
     ],
     "rating": {
@@ -108137,9 +108227,9 @@
       "movesRating": 8.272321428571429,
       "bestAbilityRating": 8,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_BASCULIN_WHITE_STRIPED",
-      "bestEvoRating": 5.360565476190477,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_BASCULEGION_M",
+      "bestEvoRating": 6.293898809523809,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -108274,8 +108364,8 @@
     "evoTree": [
       "SPECIES_BASCULIN_WHITE_STRIPED",
       [
-        "SPECIES_BASCULEGION_M, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_MALE})",
-        "SPECIES_BASCULEGION_F, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_FEMALE})"
+        "SPECIES_BASCULEGION_M",
+        "SPECIES_BASCULEGION_F"
       ]
     ],
     "rating": {
@@ -108427,8 +108517,8 @@
     "evoTree": [
       "SPECIES_BASCULIN_WHITE_STRIPED",
       [
-        "SPECIES_BASCULEGION_M, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_MALE})",
-        "SPECIES_BASCULEGION_F, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_FEMALE})"
+        "SPECIES_BASCULEGION_M",
+        "SPECIES_BASCULEGION_F"
       ]
     ],
     "rating": {
@@ -111136,7 +111226,7 @@
       {
         "method": "SCRIPT_TRIGGER",
         "param": "0",
-        "pokemon": "SPECIES_RUNERIGUS, CONDITIONS({IF_CURRENT_DAMAGE_GE, 49})"
+        "pokemon": "SPECIES_RUNERIGUS"
       }
     ],
     "baseBST": 303,
@@ -116261,7 +116351,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_ESCAVALIER, CONDITIONS({IF_TRADE_PARTNER_SPECIES, SPECIES_SHELMET})"
+        "pokemon": "SPECIES_ESCAVALIER"
       }
     ],
     "baseBST": 315,
@@ -116355,7 +116445,7 @@
     "evoTree": [
       "SPECIES_KARRABLAST",
       [
-        "SPECIES_ESCAVALIER, CONDITIONS({IF_TRADE_PARTNER_SPECIES, SPECIES_SHELMET})"
+        "SPECIES_ESCAVALIER"
       ]
     ],
     "rating": {
@@ -116370,9 +116460,9 @@
       "movesRating": 8.082142857142857,
       "bestAbilityRating": 8,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_KARRABLAST",
-      "bestEvoRating": 3.408214285714286,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_ESCAVALIER",
+      "bestEvoRating": 5.508214285714286,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -116522,7 +116612,7 @@
     "evoTree": [
       "SPECIES_KARRABLAST",
       [
-        "SPECIES_ESCAVALIER, CONDITIONS({IF_TRADE_PARTNER_SPECIES, SPECIES_SHELMET})"
+        "SPECIES_ESCAVALIER"
       ]
     ],
     "rating": {
@@ -120472,7 +120562,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_ACCELGOR, CONDITIONS({IF_TRADE_PARTNER_SPECIES, SPECIES_KARRABLAST})"
+        "pokemon": "SPECIES_ACCELGOR"
       }
     ],
     "baseBST": 305,
@@ -120564,7 +120654,7 @@
     "evoTree": [
       "SPECIES_SHELMET",
       [
-        "SPECIES_ACCELGOR, CONDITIONS({IF_TRADE_PARTNER_SPECIES, SPECIES_KARRABLAST})"
+        "SPECIES_ACCELGOR"
       ]
     ],
     "rating": {
@@ -120579,9 +120669,9 @@
       "movesRating": 7.505357142857143,
       "bestAbilityRating": 5,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_SHELMET",
-      "bestEvoRating": 2.9172023809523813,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_ACCELGOR",
+      "bestEvoRating": 5.707232142857143,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -120732,7 +120822,7 @@
     "evoTree": [
       "SPECIES_SHELMET",
       [
-        "SPECIES_ACCELGOR, CONDITIONS({IF_TRADE_PARTNER_SPECIES, SPECIES_KARRABLAST})"
+        "SPECIES_ACCELGOR"
       ]
     ],
     "rating": {
@@ -121964,7 +122054,7 @@
         "SPECIES_BISHARP"
       ],
       [
-        "SPECIES_KINGAMBIT, CONDITIONS({IF_DEFEAT_X_WITH_ITEMS, SPECIES_BISHARP, ITEM_LEADERS_CREST, 3})"
+        "SPECIES_KINGAMBIT"
       ]
     ],
     "rating": {
@@ -121979,9 +122069,9 @@
       "movesRating": 7.0625,
       "bestAbilityRating": 5,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_BISHARP",
-      "bestEvoRating": 5.388690476190477,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_KINGAMBIT",
+      "bestEvoRating": 6.316369047619048,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -122013,7 +122103,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_KINGAMBIT, CONDITIONS({IF_DEFEAT_X_WITH_ITEMS, SPECIES_BISHARP, ITEM_LEADERS_CREST, 3})"
+        "pokemon": "SPECIES_KINGAMBIT"
       }
     ],
     "baseBST": 490,
@@ -122126,7 +122216,7 @@
         "SPECIES_BISHARP"
       ],
       [
-        "SPECIES_KINGAMBIT, CONDITIONS({IF_DEFEAT_X_WITH_ITEMS, SPECIES_BISHARP, ITEM_LEADERS_CREST, 3})"
+        "SPECIES_KINGAMBIT"
       ]
     ],
     "rating": {
@@ -122141,9 +122231,9 @@
       "movesRating": 7.553571428571429,
       "bestAbilityRating": 5,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_BISHARP",
-      "bestEvoRating": 5.388690476190477,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_KINGAMBIT",
+      "bestEvoRating": 6.316369047619048,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -122277,7 +122367,7 @@
         "SPECIES_BISHARP"
       ],
       [
-        "SPECIES_KINGAMBIT, CONDITIONS({IF_DEFEAT_X_WITH_ITEMS, SPECIES_BISHARP, ITEM_LEADERS_CREST, 3})"
+        "SPECIES_KINGAMBIT"
       ]
     ],
     "rating": {
@@ -130261,7 +130351,7 @@
       {
         "method": "LEVEL",
         "param": "32",
-        "pokemon": "SPECIES_PANGORO, CONDITIONS({IF_TYPE_IN_PARTY, TYPE_DARK})"
+        "pokemon": "SPECIES_PANGORO"
       }
     ],
     "baseBST": 348,
@@ -130369,7 +130459,7 @@
     "evoTree": [
       "SPECIES_PANCHAM",
       [
-        "SPECIES_PANGORO, CONDITIONS({IF_TYPE_IN_PARTY, TYPE_DARK})"
+        "SPECIES_PANGORO"
       ]
     ],
     "rating": {
@@ -130384,9 +130474,9 @@
       "movesRating": 7.5982142857142865,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_PANCHAM",
-      "bestEvoRating": 3.6998214285714286,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_PANGORO",
+      "bestEvoRating": 5.671428571428572,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -130539,7 +130629,7 @@
     "evoTree": [
       "SPECIES_PANCHAM",
       [
-        "SPECIES_PANGORO, CONDITIONS({IF_TYPE_IN_PARTY, TYPE_DARK})"
+        "SPECIES_PANGORO"
       ]
     ],
     "rating": {
@@ -130587,12 +130677,12 @@
       {
         "method": "LEVEL",
         "param": "25",
-        "pokemon": "SPECIES_MEOWSTIC_M, CONDITIONS({IF_GENDER, MON_MALE})"
+        "pokemon": "SPECIES_MEOWSTIC_M"
       },
       {
         "method": "LEVEL",
         "param": "25",
-        "pokemon": "SPECIES_MEOWSTIC_F, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "pokemon": "SPECIES_MEOWSTIC_F"
       }
     ],
     "baseBST": 355,
@@ -130682,8 +130772,8 @@
     "evoTree": [
       "SPECIES_ESPURR",
       [
-        "SPECIES_MEOWSTIC_M, CONDITIONS({IF_GENDER, MON_MALE})",
-        "SPECIES_MEOWSTIC_F, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "SPECIES_MEOWSTIC_M",
+        "SPECIES_MEOWSTIC_F"
       ]
     ],
     "rating": {
@@ -130698,9 +130788,9 @@
       "movesRating": 7.669642857142858,
       "bestAbilityRating": 6,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_ESPURR",
-      "bestEvoRating": 3.7002976190476193,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_MEOWSTIC_M",
+      "bestEvoRating": 5.380297619047619,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -130852,8 +130942,8 @@
     "evoTree": [
       "SPECIES_ESPURR",
       [
-        "SPECIES_MEOWSTIC_M, CONDITIONS({IF_GENDER, MON_MALE})",
-        "SPECIES_MEOWSTIC_F, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "SPECIES_MEOWSTIC_M",
+        "SPECIES_MEOWSTIC_F"
       ]
     ],
     "rating": {
@@ -131022,8 +131112,8 @@
     "evoTree": [
       "SPECIES_ESPURR",
       [
-        "SPECIES_MEOWSTIC_M, CONDITIONS({IF_GENDER, MON_MALE})",
-        "SPECIES_MEOWSTIC_F, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "SPECIES_MEOWSTIC_M",
+        "SPECIES_MEOWSTIC_F"
       ]
     ],
     "rating": {
@@ -131038,8 +131128,8 @@
       "movesRating": 7.669642857142858,
       "bestAbilityRating": 6,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_MEOWSTIC_F",
-      "bestEvoRating": 5.18029761904762,
+      "bestEvo": "SPECIES_MEOWSTIC_M",
+      "bestEvoRating": 5.380297619047619,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -131679,7 +131769,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_AROMATISSE, CONDITIONS({IF_HOLD_ITEM, ITEM_SACHET})"
+        "pokemon": "SPECIES_AROMATISSE"
       },
       {
         "method": "ITEM",
@@ -131782,7 +131872,7 @@
     "evoTree": [
       "SPECIES_SPRITZEE",
       [
-        "SPECIES_AROMATISSE, CONDITIONS({IF_HOLD_ITEM, ITEM_SACHET})",
+        "SPECIES_AROMATISSE",
         "SPECIES_AROMATISSE"
       ]
     ],
@@ -131941,7 +132031,7 @@
     "evoTree": [
       "SPECIES_SPRITZEE",
       [
-        "SPECIES_AROMATISSE, CONDITIONS({IF_HOLD_ITEM, ITEM_SACHET})",
+        "SPECIES_AROMATISSE",
         "SPECIES_AROMATISSE"
       ]
     ],
@@ -131990,7 +132080,7 @@
       {
         "method": "TRADE",
         "param": "0",
-        "pokemon": "SPECIES_SLURPUFF, CONDITIONS({IF_HOLD_ITEM, ITEM_WHIPPED_DREAM})"
+        "pokemon": "SPECIES_SLURPUFF"
       },
       {
         "method": "ITEM",
@@ -132098,7 +132188,7 @@
     "evoTree": [
       "SPECIES_SWIRLIX",
       [
-        "SPECIES_SLURPUFF, CONDITIONS({IF_HOLD_ITEM, ITEM_WHIPPED_DREAM})",
+        "SPECIES_SLURPUFF",
         "SPECIES_SLURPUFF"
       ]
     ],
@@ -132250,7 +132340,7 @@
     "evoTree": [
       "SPECIES_SWIRLIX",
       [
-        "SPECIES_SLURPUFF, CONDITIONS({IF_HOLD_ITEM, ITEM_WHIPPED_DREAM})",
+        "SPECIES_SLURPUFF",
         "SPECIES_SLURPUFF"
       ]
     ],
@@ -133820,7 +133910,7 @@
       {
         "method": "LEVEL",
         "param": "39",
-        "pokemon": "SPECIES_TYRANTRUM, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_TYRANTRUM"
       }
     ],
     "baseBST": 362,
@@ -133920,7 +134010,7 @@
     "evoTree": [
       "SPECIES_TYRUNT",
       [
-        "SPECIES_TYRANTRUM, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+        "SPECIES_TYRANTRUM"
       ]
     ],
     "rating": {
@@ -133935,9 +134025,9 @@
       "movesRating": 7.544642857142858,
       "bestAbilityRating": 6,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_TYRUNT",
-      "bestEvoRating": 3.7811309523809524,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_TYRANTRUM",
+      "bestEvoRating": 5.9279166666666665,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -134071,7 +134161,7 @@
     "evoTree": [
       "SPECIES_TYRUNT",
       [
-        "SPECIES_TYRANTRUM, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+        "SPECIES_TYRANTRUM"
       ]
     ],
     "rating": {
@@ -134120,7 +134210,7 @@
       {
         "method": "LEVEL",
         "param": "39",
-        "pokemon": "SPECIES_AURORUS, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_AURORUS"
       }
     ],
     "baseBST": 362,
@@ -134237,7 +134327,7 @@
     "evoTree": [
       "SPECIES_AMAURA",
       [
-        "SPECIES_AURORUS, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_AURORUS"
       ]
     ],
     "rating": {
@@ -134252,9 +134342,9 @@
       "movesRating": 7.0625,
       "bestAbilityRating": 8,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_AMAURA",
-      "bestEvoRating": 3.9329166666666664,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_AURORUS",
+      "bestEvoRating": 6.07077380952381,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -134399,7 +134489,7 @@
     "evoTree": [
       "SPECIES_AMAURA",
       [
-        "SPECIES_AURORUS, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_AURORUS"
       ]
     ],
     "rating": {
@@ -134980,10 +135070,10 @@
         "SPECIES_SLIGGOO_HISUI"
       ],
       [
-        "SPECIES_GOODRA, CONDITIONS({IF_WEATHER, WEATHER_RAIN})",
-        "SPECIES_GOODRA, CONDITIONS({IF_WEATHER, WEATHER_FOG})",
-        "SPECIES_GOODRA_HISUI, CONDITIONS({IF_WEATHER, WEATHER_RAIN})",
-        "SPECIES_GOODRA_HISUI, CONDITIONS({IF_WEATHER, WEATHER_FOG})"
+        "SPECIES_GOODRA",
+        "SPECIES_GOODRA",
+        "SPECIES_GOODRA_HISUI",
+        "SPECIES_GOODRA_HISUI"
       ]
     ],
     "rating": {
@@ -134998,9 +135088,9 @@
       "movesRating": 6.6875,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_SLIGGOO",
-      "bestEvoRating": 4.998095238095239,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_GOODRA",
+      "bestEvoRating": 7.052678571428572,
+      "bestEvoTier": "PREMIUM"
     }
   },
   {
@@ -135031,12 +135121,12 @@
       {
         "method": "LEVEL",
         "param": "50",
-        "pokemon": "SPECIES_GOODRA, CONDITIONS({IF_WEATHER, WEATHER_RAIN})"
+        "pokemon": "SPECIES_GOODRA"
       },
       {
         "method": "LEVEL",
         "param": "50",
-        "pokemon": "SPECIES_GOODRA, CONDITIONS({IF_WEATHER, WEATHER_FOG})"
+        "pokemon": "SPECIES_GOODRA"
       }
     ],
     "baseBST": 452,
@@ -135139,10 +135229,10 @@
         "SPECIES_SLIGGOO_HISUI"
       ],
       [
-        "SPECIES_GOODRA, CONDITIONS({IF_WEATHER, WEATHER_RAIN})",
-        "SPECIES_GOODRA, CONDITIONS({IF_WEATHER, WEATHER_FOG})",
-        "SPECIES_GOODRA_HISUI, CONDITIONS({IF_WEATHER, WEATHER_RAIN})",
-        "SPECIES_GOODRA_HISUI, CONDITIONS({IF_WEATHER, WEATHER_FOG})"
+        "SPECIES_GOODRA",
+        "SPECIES_GOODRA",
+        "SPECIES_GOODRA_HISUI",
+        "SPECIES_GOODRA_HISUI"
       ]
     ],
     "rating": {
@@ -135157,9 +135247,9 @@
       "movesRating": 6.7142857142857135,
       "bestAbilityRating": 7,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_SLIGGOO",
-      "bestEvoRating": 4.998095238095239,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_GOODRA",
+      "bestEvoRating": 7.052678571428572,
+      "bestEvoTier": "PREMIUM"
     }
   },
   {
@@ -135312,10 +135402,10 @@
         "SPECIES_SLIGGOO_HISUI"
       ],
       [
-        "SPECIES_GOODRA, CONDITIONS({IF_WEATHER, WEATHER_RAIN})",
-        "SPECIES_GOODRA, CONDITIONS({IF_WEATHER, WEATHER_FOG})",
-        "SPECIES_GOODRA_HISUI, CONDITIONS({IF_WEATHER, WEATHER_RAIN})",
-        "SPECIES_GOODRA_HISUI, CONDITIONS({IF_WEATHER, WEATHER_FOG})"
+        "SPECIES_GOODRA",
+        "SPECIES_GOODRA",
+        "SPECIES_GOODRA_HISUI",
+        "SPECIES_GOODRA_HISUI"
       ]
     ],
     "rating": {
@@ -135364,12 +135454,12 @@
       {
         "method": "LEVEL",
         "param": "50",
-        "pokemon": "SPECIES_GOODRA_HISUI, CONDITIONS({IF_WEATHER, WEATHER_RAIN})"
+        "pokemon": "SPECIES_GOODRA_HISUI"
       },
       {
         "method": "LEVEL",
         "param": "50",
-        "pokemon": "SPECIES_GOODRA_HISUI, CONDITIONS({IF_WEATHER, WEATHER_FOG})"
+        "pokemon": "SPECIES_GOODRA_HISUI"
       }
     ],
     "baseBST": 452,
@@ -135468,10 +135558,10 @@
         "SPECIES_SLIGGOO_HISUI"
       ],
       [
-        "SPECIES_GOODRA, CONDITIONS({IF_WEATHER, WEATHER_RAIN})",
-        "SPECIES_GOODRA, CONDITIONS({IF_WEATHER, WEATHER_FOG})",
-        "SPECIES_GOODRA_HISUI, CONDITIONS({IF_WEATHER, WEATHER_RAIN})",
-        "SPECIES_GOODRA_HISUI, CONDITIONS({IF_WEATHER, WEATHER_FOG})"
+        "SPECIES_GOODRA",
+        "SPECIES_GOODRA",
+        "SPECIES_GOODRA_HISUI",
+        "SPECIES_GOODRA_HISUI"
       ]
     ],
     "rating": {
@@ -135486,9 +135576,9 @@
       "movesRating": 6.7142857142857135,
       "bestAbilityRating": 7,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_SLIGGOO_HISUI",
-      "bestEvoRating": 4.998095238095239,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_GOODRA",
+      "bestEvoRating": 7.052678571428572,
+      "bestEvoTier": "PREMIUM"
     }
   },
   {
@@ -135641,10 +135731,10 @@
         "SPECIES_SLIGGOO_HISUI"
       ],
       [
-        "SPECIES_GOODRA, CONDITIONS({IF_WEATHER, WEATHER_RAIN})",
-        "SPECIES_GOODRA, CONDITIONS({IF_WEATHER, WEATHER_FOG})",
-        "SPECIES_GOODRA_HISUI, CONDITIONS({IF_WEATHER, WEATHER_RAIN})",
-        "SPECIES_GOODRA_HISUI, CONDITIONS({IF_WEATHER, WEATHER_FOG})"
+        "SPECIES_GOODRA",
+        "SPECIES_GOODRA",
+        "SPECIES_GOODRA_HISUI",
+        "SPECIES_GOODRA_HISUI"
       ]
     ],
     "rating": {
@@ -135659,8 +135749,8 @@
       "movesRating": 7.044642857142858,
       "bestAbilityRating": 7,
       "temporaryTier": "PREMIUM",
-      "bestEvo": "SPECIES_GOODRA_HISUI",
-      "bestEvoRating": 7.0044642857142865,
+      "bestEvo": "SPECIES_GOODRA",
+      "bestEvoRating": 7.052678571428572,
       "bestEvoTier": "PREMIUM"
     }
   },
@@ -142222,7 +142312,7 @@
       {
         "method": "LEVEL",
         "param": "20",
-        "pokemon": "SPECIES_GUMSHOOS, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_GUMSHOOS"
       }
     ],
     "baseBST": 253,
@@ -142321,7 +142411,7 @@
     "evoTree": [
       "SPECIES_YUNGOOS",
       [
-        "SPECIES_GUMSHOOS, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+        "SPECIES_GUMSHOOS"
       ]
     ],
     "rating": {
@@ -142336,9 +142426,9 @@
       "movesRating": 7.648214285714286,
       "bestAbilityRating": 8,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_YUNGOOS",
-      "bestEvoRating": 2.538154761904762,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_GUMSHOOS",
+      "bestEvoRating": 4.7944047619047625,
+      "bestEvoTier": "WEAK"
     }
   },
   {
@@ -142468,7 +142558,7 @@
     "evoTree": [
       "SPECIES_YUNGOOS",
       [
-        "SPECIES_GUMSHOOS, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+        "SPECIES_GUMSHOOS"
       ]
     ],
     "rating": {
@@ -142596,7 +142686,7 @@
         "SPECIES_CHARJABUG"
       ],
       [
-        "SPECIES_VIKAVOLT, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})",
+        "SPECIES_VIKAVOLT",
         "SPECIES_VIKAVOLT",
         "SPECIES_VIKAVOLT_TOTEM"
       ]
@@ -142647,7 +142737,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_VIKAVOLT, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})"
+        "pokemon": "SPECIES_VIKAVOLT"
       },
       {
         "method": "ITEM",
@@ -142750,7 +142840,7 @@
         "SPECIES_CHARJABUG"
       ],
       [
-        "SPECIES_VIKAVOLT, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})",
+        "SPECIES_VIKAVOLT",
         "SPECIES_VIKAVOLT",
         "SPECIES_VIKAVOLT_TOTEM"
       ]
@@ -142915,7 +143005,7 @@
         "SPECIES_CHARJABUG"
       ],
       [
-        "SPECIES_VIKAVOLT, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})",
+        "SPECIES_VIKAVOLT",
         "SPECIES_VIKAVOLT",
         "SPECIES_VIKAVOLT_TOTEM"
       ]
@@ -142965,7 +143055,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_CRABOMINABLE, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})"
+        "pokemon": "SPECIES_CRABOMINABLE"
       },
       {
         "method": "ITEM",
@@ -143069,7 +143159,7 @@
     "evoTree": [
       "SPECIES_CRABRAWLER",
       [
-        "SPECIES_CRABOMINABLE, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})",
+        "SPECIES_CRABOMINABLE",
         "SPECIES_CRABOMINABLE"
       ]
     ],
@@ -143216,7 +143306,7 @@
     "evoTree": [
       "SPECIES_CRABRAWLER",
       [
-        "SPECIES_CRABOMINABLE, CONDITIONS({IF_IN_MAP, MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM})",
+        "SPECIES_CRABOMINABLE",
         "SPECIES_CRABOMINABLE"
       ]
     ],
@@ -144097,12 +144187,12 @@
       {
         "method": "LEVEL",
         "param": "25",
-        "pokemon": "SPECIES_LYCANROC_MIDDAY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_LYCANROC_MIDDAY"
       },
       {
         "method": "LEVEL",
         "param": "25",
-        "pokemon": "SPECIES_LYCANROC_MIDNIGHT, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_LYCANROC_MIDNIGHT"
       }
     ],
     "baseBST": 280,
@@ -144199,8 +144289,8 @@
     "evoTree": [
       "SPECIES_ROCKRUFF",
       [
-        "SPECIES_LYCANROC_MIDDAY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_LYCANROC_MIDNIGHT, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_LYCANROC_MIDDAY",
+        "SPECIES_LYCANROC_MIDNIGHT"
       ]
     ],
     "rating": {
@@ -144215,9 +144305,9 @@
       "movesRating": 7.683928571428572,
       "bestAbilityRating": 4,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_ROCKRUFF",
-      "bestEvoRating": 2.5017261904761905,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_LYCANROC_MIDNIGHT",
+      "bestEvoRating": 5.7090476190476185,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -144248,7 +144338,7 @@
       {
         "method": "LEVEL",
         "param": "25",
-        "pokemon": "SPECIES_LYCANROC_DUSK, CONDITIONS({IF_TIME, TIME_EVENING})"
+        "pokemon": "SPECIES_LYCANROC_DUSK"
       }
     ],
     "baseBST": 280,
@@ -144345,8 +144435,8 @@
     "evoTree": [
       "SPECIES_ROCKRUFF",
       [
-        "SPECIES_LYCANROC_MIDDAY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_LYCANROC_MIDNIGHT, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_LYCANROC_MIDDAY",
+        "SPECIES_LYCANROC_MIDNIGHT"
       ]
     ],
     "rating": {
@@ -144361,9 +144451,9 @@
       "movesRating": 7.683928571428572,
       "bestAbilityRating": 3,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_ROCKRUFF",
-      "bestEvoRating": 2.5017261904761905,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_LYCANROC_MIDNIGHT",
+      "bestEvoRating": 5.7090476190476185,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -144504,8 +144594,8 @@
     "evoTree": [
       "SPECIES_ROCKRUFF",
       [
-        "SPECIES_LYCANROC_MIDDAY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_LYCANROC_MIDNIGHT, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_LYCANROC_MIDDAY",
+        "SPECIES_LYCANROC_MIDNIGHT"
       ]
     ],
     "rating": {
@@ -144520,8 +144610,8 @@
       "movesRating": 7.791071428571429,
       "bestAbilityRating": 6,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_LYCANROC_MIDDAY",
-      "bestEvoRating": 5.472440476190476,
+      "bestEvo": "SPECIES_LYCANROC_MIDNIGHT",
+      "bestEvoRating": 5.7090476190476185,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -144668,8 +144758,8 @@
     "evoTree": [
       "SPECIES_ROCKRUFF",
       [
-        "SPECIES_LYCANROC_MIDDAY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_LYCANROC_MIDNIGHT, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_LYCANROC_MIDDAY",
+        "SPECIES_LYCANROC_MIDNIGHT"
       ]
     ],
     "rating": {
@@ -144846,8 +144936,8 @@
     "evoTree": [
       "SPECIES_ROCKRUFF",
       [
-        "SPECIES_LYCANROC_MIDDAY, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_LYCANROC_MIDNIGHT, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_LYCANROC_MIDDAY",
+        "SPECIES_LYCANROC_MIDNIGHT"
       ]
     ],
     "rating": {
@@ -144862,8 +144952,8 @@
       "movesRating": 7.791071428571429,
       "bestAbilityRating": 7,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_LYCANROC_DUSK",
-      "bestEvoRating": 5.572440476190476,
+      "bestEvo": "SPECIES_LYCANROC_MIDNIGHT",
+      "bestEvoRating": 5.7090476190476185,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -146006,7 +146096,7 @@
       {
         "method": "LEVEL",
         "param": "34",
-        "pokemon": "SPECIES_LURANTIS, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_LURANTIS"
       },
       {
         "method": "NONE",
@@ -146096,7 +146186,7 @@
     "evoTree": [
       "SPECIES_FOMANTIS",
       [
-        "SPECIES_LURANTIS, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})",
+        "SPECIES_LURANTIS",
         "SPECIES_LURANTIS_TOTEM"
       ]
     ],
@@ -146112,9 +146202,9 @@
       "movesRating": 7.9875,
       "bestAbilityRating": 8,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_FOMANTIS",
-      "bestEvoRating": 2.5320833333333335,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_LURANTIS",
+      "bestEvoRating": 5.605892857142857,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -146239,7 +146329,7 @@
     "evoTree": [
       "SPECIES_FOMANTIS",
       [
-        "SPECIES_LURANTIS, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})",
+        "SPECIES_LURANTIS",
         "SPECIES_LURANTIS_TOTEM"
       ]
     ],
@@ -146564,7 +146654,7 @@
       {
         "method": "LEVEL",
         "param": "33",
-        "pokemon": "SPECIES_SALAZZLE, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "pokemon": "SPECIES_SALAZZLE"
       },
       {
         "method": "NONE",
@@ -146665,7 +146755,7 @@
     "evoTree": [
       "SPECIES_SALANDIT",
       [
-        "SPECIES_SALAZZLE, CONDITIONS({IF_GENDER, MON_FEMALE})",
+        "SPECIES_SALAZZLE",
         "SPECIES_SALAZZLE_TOTEM"
       ]
     ],
@@ -146681,9 +146771,9 @@
       "movesRating": 6.9732142857142865,
       "bestAbilityRating": 5,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_SALANDIT",
-      "bestEvoRating": 3.063988095238096,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_SALAZZLE",
+      "bestEvoRating": 5.205625,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -146834,7 +146924,7 @@
     "evoTree": [
       "SPECIES_SALANDIT",
       [
-        "SPECIES_SALAZZLE, CONDITIONS({IF_GENDER, MON_FEMALE})",
+        "SPECIES_SALAZZLE",
         "SPECIES_SALAZZLE_TOTEM"
       ]
     ],
@@ -147270,7 +147360,7 @@
         "SPECIES_STEENEE"
       ],
       [
-        "SPECIES_TSAREENA, CONDITIONS({IF_KNOWS_MOVE, MOVE_STOMP})"
+        "SPECIES_TSAREENA"
       ]
     ],
     "rating": {
@@ -147285,9 +147375,9 @@
       "movesRating": 6.880357142857142,
       "bestAbilityRating": 4,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_STEENEE",
-      "bestEvoRating": 2.587738095238095,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_TSAREENA",
+      "bestEvoRating": 5.753214285714286,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -147318,7 +147408,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_TSAREENA, CONDITIONS({IF_KNOWS_MOVE, MOVE_STOMP})"
+        "pokemon": "SPECIES_TSAREENA"
       }
     ],
     "baseBST": 290,
@@ -147403,7 +147493,7 @@
         "SPECIES_STEENEE"
       ],
       [
-        "SPECIES_TSAREENA, CONDITIONS({IF_KNOWS_MOVE, MOVE_STOMP})"
+        "SPECIES_TSAREENA"
       ]
     ],
     "rating": {
@@ -147418,9 +147508,9 @@
       "movesRating": 7.210714285714285,
       "bestAbilityRating": 4,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_STEENEE",
-      "bestEvoRating": 2.587738095238095,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_TSAREENA",
+      "bestEvoRating": 5.753214285714286,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -147548,7 +147638,7 @@
         "SPECIES_STEENEE"
       ],
       [
-        "SPECIES_TSAREENA, CONDITIONS({IF_KNOWS_MOVE, MOVE_STOMP})"
+        "SPECIES_TSAREENA"
       ]
     ],
     "rating": {
@@ -150969,8 +151059,8 @@
         "SPECIES_COSMOEM"
       ],
       [
-        "SPECIES_SOLGALEO, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_LUNALA, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_SOLGALEO",
+        "SPECIES_LUNALA"
       ]
     ],
     "rating": {
@@ -150983,9 +151073,9 @@
       "movesRating": 2.5,
       "bestAbilityRating": 6,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_COSMOEM",
-      "bestEvoRating": 3.858333333333334,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_LUNALA",
+      "bestEvoRating": 8.261309523809526,
+      "bestEvoTier": "LEGEND"
     }
   },
   {
@@ -151016,12 +151106,12 @@
       {
         "method": "LEVEL",
         "param": "53",
-        "pokemon": "SPECIES_SOLGALEO, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_SOLGALEO"
       },
       {
         "method": "LEVEL",
         "param": "53",
-        "pokemon": "SPECIES_LUNALA, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_LUNALA"
       }
     ],
     "baseBST": 400,
@@ -151051,8 +151141,8 @@
         "SPECIES_COSMOEM"
       ],
       [
-        "SPECIES_SOLGALEO, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_LUNALA, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_SOLGALEO",
+        "SPECIES_LUNALA"
       ]
     ],
     "rating": {
@@ -151065,9 +151155,9 @@
       "movesRating": 3.25,
       "bestAbilityRating": 6,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_COSMOEM",
-      "bestEvoRating": 3.858333333333334,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_LUNALA",
+      "bestEvoRating": 8.261309523809526,
+      "bestEvoTier": "LEGEND"
     }
   },
   {
@@ -151215,8 +151305,8 @@
         "SPECIES_COSMOEM"
       ],
       [
-        "SPECIES_SOLGALEO, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_LUNALA, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_SOLGALEO",
+        "SPECIES_LUNALA"
       ]
     ],
     "rating": {
@@ -151231,9 +151321,9 @@
       "movesRating": 8.082142857142857,
       "bestAbilityRating": 4,
       "temporaryTier": "PREMIUM",
-      "bestEvo": "SPECIES_SOLGALEO",
-      "bestEvoRating": 7.874880952380954,
-      "bestEvoTier": "PREMIUM"
+      "bestEvo": "SPECIES_LUNALA",
+      "bestEvoRating": 8.261309523809526,
+      "bestEvoTier": "LEGEND"
     }
   },
   {
@@ -151377,8 +151467,8 @@
         "SPECIES_COSMOEM"
       ],
       [
-        "SPECIES_SOLGALEO, CONDITIONS({IF_NOT_TIME, TIME_NIGHT})",
-        "SPECIES_LUNALA, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_SOLGALEO",
+        "SPECIES_LUNALA"
       ]
     ],
     "rating": {
@@ -153463,7 +153553,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_NAGANADEL, CONDITIONS({IF_KNOWS_MOVE, MOVE_DRAGON_PULSE})"
+        "pokemon": "SPECIES_NAGANADEL"
       }
     ],
     "baseBST": 420,
@@ -153549,7 +153639,7 @@
     "evoTree": [
       "SPECIES_POIPOLE",
       [
-        "SPECIES_NAGANADEL, CONDITIONS({IF_KNOWS_MOVE, MOVE_DRAGON_PULSE})"
+        "SPECIES_NAGANADEL"
       ]
     ],
     "rating": {
@@ -153564,9 +153654,9 @@
       "movesRating": 6.303571428571429,
       "bestAbilityRating": 7,
       "temporaryTier": "WEAK",
-      "bestEvo": "SPECIES_POIPOLE",
-      "bestEvoRating": 4.530357142857143,
-      "bestEvoTier": "WEAK"
+      "bestEvo": "SPECIES_NAGANADEL",
+      "bestEvoRating": 6.175000000000001,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -153704,7 +153794,7 @@
     "evoTree": [
       "SPECIES_POIPOLE",
       [
-        "SPECIES_NAGANADEL, CONDITIONS({IF_KNOWS_MOVE, MOVE_DRAGON_PULSE})"
+        "SPECIES_NAGANADEL"
       ]
     ],
     "rating": {
@@ -158415,7 +158505,7 @@
         "SPECIES_DIPPLIN"
       ],
       [
-        "SPECIES_HYDRAPPLE, CONDITIONS({IF_KNOWS_MOVE, MOVE_DRAGON_CHEER})"
+        "SPECIES_HYDRAPPLE"
       ]
     ],
     "rating": {
@@ -158430,9 +158520,9 @@
       "movesRating": 4.933035714285714,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_APPLETUN",
-      "bestEvoRating": 5.583630952380952,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_HYDRAPPLE",
+      "bestEvoRating": 6.43625,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -158566,7 +158656,7 @@
         "SPECIES_DIPPLIN"
       ],
       [
-        "SPECIES_HYDRAPPLE, CONDITIONS({IF_KNOWS_MOVE, MOVE_DRAGON_CHEER})"
+        "SPECIES_HYDRAPPLE"
       ]
     ],
     "rating": {
@@ -158581,9 +158671,9 @@
       "movesRating": 7.567857142857143,
       "bestAbilityRating": 7,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_APPLETUN",
-      "bestEvoRating": 5.583630952380952,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_HYDRAPPLE",
+      "bestEvoRating": 6.43625,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -158721,7 +158811,7 @@
         "SPECIES_DIPPLIN"
       ],
       [
-        "SPECIES_HYDRAPPLE, CONDITIONS({IF_KNOWS_MOVE, MOVE_DRAGON_CHEER})"
+        "SPECIES_HYDRAPPLE"
       ]
     ],
     "rating": {
@@ -158736,9 +158826,9 @@
       "movesRating": 8.169642857142858,
       "bestAbilityRating": 7,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_APPLETUN",
-      "bestEvoRating": 5.583630952380952,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_HYDRAPPLE",
+      "bestEvoRating": 6.43625,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -158770,7 +158860,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_HYDRAPPLE, CONDITIONS({IF_KNOWS_MOVE, MOVE_DRAGON_CHEER})"
+        "pokemon": "SPECIES_HYDRAPPLE"
       }
     ],
     "baseBST": 485,
@@ -158873,7 +158963,7 @@
         "SPECIES_DIPPLIN"
       ],
       [
-        "SPECIES_HYDRAPPLE, CONDITIONS({IF_KNOWS_MOVE, MOVE_DRAGON_CHEER})"
+        "SPECIES_HYDRAPPLE"
       ]
     ],
     "rating": {
@@ -158888,9 +158978,9 @@
       "movesRating": 8.085714285714285,
       "bestAbilityRating": 5,
       "temporaryTier": "AVERAGE",
-      "bestEvo": "SPECIES_APPLETUN",
-      "bestEvoRating": 5.583630952380952,
-      "bestEvoTier": "AVERAGE"
+      "bestEvo": "SPECIES_HYDRAPPLE",
+      "bestEvoRating": 6.43625,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -159033,7 +159123,7 @@
         "SPECIES_DIPPLIN"
       ],
       [
-        "SPECIES_HYDRAPPLE, CONDITIONS({IF_KNOWS_MOVE, MOVE_DRAGON_CHEER})"
+        "SPECIES_HYDRAPPLE"
       ]
     ],
     "rating": {
@@ -159963,12 +160053,12 @@
       {
         "method": "LEVEL",
         "param": "30",
-        "pokemon": "SPECIES_TOXTRICITY_AMPED, CONDITIONS({IF_AMPED_NATURE})"
+        "pokemon": "SPECIES_TOXTRICITY_AMPED"
       },
       {
         "method": "LEVEL",
         "param": "30",
-        "pokemon": "SPECIES_TOXTRICITY_LOW_KEY, CONDITIONS({IF_LOW_KEY_NATURE})"
+        "pokemon": "SPECIES_TOXTRICITY_LOW_KEY"
       }
     ],
     "baseBST": 242,
@@ -160019,8 +160109,8 @@
     "evoTree": [
       "SPECIES_TOXEL",
       [
-        "SPECIES_TOXTRICITY_AMPED, CONDITIONS({IF_AMPED_NATURE})",
-        "SPECIES_TOXTRICITY_LOW_KEY, CONDITIONS({IF_LOW_KEY_NATURE})"
+        "SPECIES_TOXTRICITY_AMPED",
+        "SPECIES_TOXTRICITY_LOW_KEY"
       ]
     ],
     "rating": {
@@ -160035,9 +160125,9 @@
       "movesRating": 5.892857142857142,
       "bestAbilityRating": 4,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_TOXEL",
-      "bestEvoRating": 1.815952380952381,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_TOXTRICITY_AMPED",
+      "bestEvoRating": 5.885297619047619,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -160200,8 +160290,8 @@
     "evoTree": [
       "SPECIES_TOXEL",
       [
-        "SPECIES_TOXTRICITY_AMPED, CONDITIONS({IF_AMPED_NATURE})",
-        "SPECIES_TOXTRICITY_LOW_KEY, CONDITIONS({IF_LOW_KEY_NATURE})"
+        "SPECIES_TOXTRICITY_AMPED",
+        "SPECIES_TOXTRICITY_LOW_KEY"
       ]
     ],
     "rating": {
@@ -160381,8 +160471,8 @@
     "evoTree": [
       "SPECIES_TOXEL",
       [
-        "SPECIES_TOXTRICITY_AMPED, CONDITIONS({IF_AMPED_NATURE})",
-        "SPECIES_TOXTRICITY_LOW_KEY, CONDITIONS({IF_LOW_KEY_NATURE})"
+        "SPECIES_TOXTRICITY_AMPED",
+        "SPECIES_TOXTRICITY_LOW_KEY"
       ]
     ],
     "rating": {
@@ -160694,7 +160784,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_GRAPPLOCT, CONDITIONS({IF_KNOWS_MOVE, MOVE_TAUNT})"
+        "pokemon": "SPECIES_GRAPPLOCT"
       }
     ],
     "baseBST": 310,
@@ -160775,7 +160865,7 @@
     "evoTree": [
       "SPECIES_CLOBBOPUS",
       [
-        "SPECIES_GRAPPLOCT, CONDITIONS({IF_KNOWS_MOVE, MOVE_TAUNT})"
+        "SPECIES_GRAPPLOCT"
       ]
     ],
     "rating": {
@@ -160790,9 +160880,9 @@
       "movesRating": 7.071428571428571,
       "bestAbilityRating": 8,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_CLOBBOPUS",
-      "bestEvoRating": 3.2404761904761905,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_GRAPPLOCT",
+      "bestEvoRating": 5.516071428571428,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -160916,7 +161006,7 @@
     "evoTree": [
       "SPECIES_CLOBBOPUS",
       [
-        "SPECIES_GRAPPLOCT, CONDITIONS({IF_KNOWS_MOVE, MOVE_TAUNT})"
+        "SPECIES_GRAPPLOCT"
       ]
     ],
     "rating": {
@@ -162596,7 +162686,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_FROSMOTH, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_FROSMOTH"
       }
     ],
     "baseBST": 185,
@@ -162632,7 +162722,7 @@
     "evoTree": [
       "SPECIES_SNOM",
       [
-        "SPECIES_FROSMOTH, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_TIME, TIME_NIGHT})"
+        "SPECIES_FROSMOTH"
       ]
     ],
     "rating": {
@@ -162647,9 +162737,9 @@
       "movesRating": 5.1875,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_SNOM",
-      "bestEvoRating": 1.2854166666666669,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_FROSMOTH",
+      "bestEvoRating": 5.375297619047619,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -162784,7 +162874,7 @@
     "evoTree": [
       "SPECIES_SNOM",
       [
-        "SPECIES_FROSMOTH, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD},{IF_TIME, TIME_NIGHT})"
+        "SPECIES_FROSMOTH"
       ]
     ],
     "rating": {
@@ -169444,12 +169534,12 @@
       {
         "method": "LEVEL",
         "param": "18",
-        "pokemon": "SPECIES_OINKOLOGNE_M, CONDITIONS({IF_GENDER, MON_MALE})"
+        "pokemon": "SPECIES_OINKOLOGNE_M"
       },
       {
         "method": "LEVEL",
         "param": "18",
-        "pokemon": "SPECIES_OINKOLOGNE_F, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "pokemon": "SPECIES_OINKOLOGNE_F"
       }
     ],
     "baseBST": 254,
@@ -169534,8 +169624,8 @@
     "evoTree": [
       "SPECIES_LECHONK",
       [
-        "SPECIES_OINKOLOGNE_M, CONDITIONS({IF_GENDER, MON_MALE})",
-        "SPECIES_OINKOLOGNE_F, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "SPECIES_OINKOLOGNE_M",
+        "SPECIES_OINKOLOGNE_F"
       ]
     ],
     "rating": {
@@ -169550,9 +169640,9 @@
       "movesRating": 7.85,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_LECHONK",
-      "bestEvoRating": 2.471666666666667,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_OINKOLOGNE_M",
+      "bestEvoRating": 5.633571428571429,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -169670,8 +169760,8 @@
     "evoTree": [
       "SPECIES_LECHONK",
       [
-        "SPECIES_OINKOLOGNE_M, CONDITIONS({IF_GENDER, MON_MALE})",
-        "SPECIES_OINKOLOGNE_F, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "SPECIES_OINKOLOGNE_M",
+        "SPECIES_OINKOLOGNE_F"
       ]
     ],
     "rating": {
@@ -169806,8 +169896,8 @@
     "evoTree": [
       "SPECIES_LECHONK",
       [
-        "SPECIES_OINKOLOGNE_M, CONDITIONS({IF_GENDER, MON_MALE})",
-        "SPECIES_OINKOLOGNE_F, CONDITIONS({IF_GENDER, MON_FEMALE})"
+        "SPECIES_OINKOLOGNE_M",
+        "SPECIES_OINKOLOGNE_F"
       ]
     ],
     "rating": {
@@ -170505,7 +170595,7 @@
         "SPECIES_PAWMO"
       ],
       [
-        "SPECIES_PAWMOT, CONDITIONS({IF_MIN_OVERWORLD_STEPS, 1000})"
+        "SPECIES_PAWMOT"
       ]
     ],
     "rating": {
@@ -170520,9 +170610,9 @@
       "movesRating": 6.5946428571428575,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_PAWMO",
-      "bestEvoRating": 3.682380952380953,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_PAWMOT",
+      "bestEvoRating": 5.666904761904763,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -170554,7 +170644,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_PAWMOT, CONDITIONS({IF_MIN_OVERWORLD_STEPS, 1000})"
+        "pokemon": "SPECIES_PAWMOT"
       }
     ],
     "baseBST": 350,
@@ -170656,7 +170746,7 @@
         "SPECIES_PAWMO"
       ],
       [
-        "SPECIES_PAWMOT, CONDITIONS({IF_MIN_OVERWORLD_STEPS, 1000})"
+        "SPECIES_PAWMOT"
       ]
     ],
     "rating": {
@@ -170671,9 +170761,9 @@
       "movesRating": 7.157142857142857,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_PAWMO",
-      "bestEvoRating": 3.682380952380953,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_PAWMOT",
+      "bestEvoRating": 5.666904761904763,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -170820,7 +170910,7 @@
         "SPECIES_PAWMO"
       ],
       [
-        "SPECIES_PAWMOT, CONDITIONS({IF_MIN_OVERWORLD_STEPS, 1000})"
+        "SPECIES_PAWMOT"
       ]
     ],
     "rating": {
@@ -170868,12 +170958,12 @@
       {
         "method": "LEVEL_BATTLE_ONLY",
         "param": "25",
-        "pokemon": "SPECIES_MAUSHOLD_FOUR, CONDITIONS({IF_PID_MODULO_100_GT, 0})"
+        "pokemon": "SPECIES_MAUSHOLD_FOUR"
       },
       {
         "method": "LEVEL_BATTLE_ONLY",
         "param": "25",
-        "pokemon": "SPECIES_MAUSHOLD_THREE, CONDITIONS({IF_PID_MODULO_100_EQ, 0})"
+        "pokemon": "SPECIES_MAUSHOLD_THREE"
       }
     ],
     "baseBST": 305,
@@ -170966,8 +171056,8 @@
     "evoTree": [
       "SPECIES_TANDEMAUS",
       [
-        "SPECIES_MAUSHOLD_FOUR, CONDITIONS({IF_PID_MODULO_100_GT, 0})",
-        "SPECIES_MAUSHOLD_THREE, CONDITIONS({IF_PID_MODULO_100_EQ, 0})"
+        "SPECIES_MAUSHOLD_FOUR",
+        "SPECIES_MAUSHOLD_THREE"
       ]
     ],
     "rating": {
@@ -170982,9 +171072,9 @@
       "movesRating": 9.05,
       "bestAbilityRating": 3,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_TANDEMAUS",
-      "bestEvoRating": 2.871666666666667,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_MAUSHOLD_FOUR",
+      "bestEvoRating": 5.571666666666666,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -171110,8 +171200,8 @@
     "evoTree": [
       "SPECIES_TANDEMAUS",
       [
-        "SPECIES_MAUSHOLD_FOUR, CONDITIONS({IF_PID_MODULO_100_GT, 0})",
-        "SPECIES_MAUSHOLD_THREE, CONDITIONS({IF_PID_MODULO_100_EQ, 0})"
+        "SPECIES_MAUSHOLD_FOUR",
+        "SPECIES_MAUSHOLD_THREE"
       ]
     ],
     "rating": {
@@ -171254,8 +171344,8 @@
     "evoTree": [
       "SPECIES_TANDEMAUS",
       [
-        "SPECIES_MAUSHOLD_FOUR, CONDITIONS({IF_PID_MODULO_100_GT, 0})",
-        "SPECIES_MAUSHOLD_THREE, CONDITIONS({IF_PID_MODULO_100_EQ, 0})"
+        "SPECIES_MAUSHOLD_FOUR",
+        "SPECIES_MAUSHOLD_THREE"
       ]
     ],
     "rating": {
@@ -174510,7 +174600,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_BRAMBLEGHAST, CONDITIONS({IF_MIN_OVERWORLD_STEPS, 1000})"
+        "pokemon": "SPECIES_BRAMBLEGHAST"
       }
     ],
     "baseBST": 275,
@@ -174602,7 +174692,7 @@
     "evoTree": [
       "SPECIES_BRAMBLIN",
       [
-        "SPECIES_BRAMBLEGHAST, CONDITIONS({IF_MIN_OVERWORLD_STEPS, 1000})"
+        "SPECIES_BRAMBLEGHAST"
       ]
     ],
     "rating": {
@@ -174617,9 +174707,9 @@
       "movesRating": 7.791071428571428,
       "bestAbilityRating": 6,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_BRAMBLIN",
-      "bestEvoRating": 2.6457738095238095,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_BRAMBLEGHAST",
+      "bestEvoRating": 5.379107142857142,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -174737,7 +174827,7 @@
     "evoTree": [
       "SPECIES_BRAMBLIN",
       [
-        "SPECIES_BRAMBLEGHAST, CONDITIONS({IF_MIN_OVERWORLD_STEPS, 1000})"
+        "SPECIES_BRAMBLEGHAST"
       ]
     ],
     "rating": {
@@ -175494,7 +175584,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_RABSCA, CONDITIONS({IF_MIN_OVERWORLD_STEPS, 1000})"
+        "pokemon": "SPECIES_RABSCA"
       }
     ],
     "baseBST": 270,
@@ -175566,7 +175656,7 @@
     "evoTree": [
       "SPECIES_RELLOR",
       [
-        "SPECIES_RABSCA, CONDITIONS({IF_MIN_OVERWORLD_STEPS, 1000})"
+        "SPECIES_RABSCA"
       ]
     ],
     "rating": {
@@ -175581,9 +175671,9 @@
       "movesRating": 5.982142857142857,
       "bestAbilityRating": 7,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_RELLOR",
-      "bestEvoRating": 2.498214285714286,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_RABSCA",
+      "bestEvoRating": 4.942559523809524,
+      "bestEvoTier": "WEAK"
     }
   },
   {
@@ -175728,7 +175818,7 @@
     "evoTree": [
       "SPECIES_RELLOR",
       [
-        "SPECIES_RABSCA, CONDITIONS({IF_MIN_OVERWORLD_STEPS, 1000})"
+        "SPECIES_RABSCA"
       ]
     ],
     "rating": {
@@ -178170,7 +178260,7 @@
       {
         "method": "LEVEL",
         "param": "30",
-        "pokemon": "SPECIES_HOUNDSTONE, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "pokemon": "SPECIES_HOUNDSTONE"
       }
     ],
     "baseBST": 290,
@@ -178264,7 +178354,7 @@
     "evoTree": [
       "SPECIES_GREAVARD",
       [
-        "SPECIES_HOUNDSTONE, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_HOUNDSTONE"
       ]
     ],
     "rating": {
@@ -178279,9 +178369,9 @@
       "movesRating": 7.189285714285715,
       "bestAbilityRating": 5,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_GREAVARD",
-      "bestEvoRating": 2.6855952380952384,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_HOUNDSTONE",
+      "bestEvoRating": 5.425595238095239,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -178404,7 +178494,7 @@
     "evoTree": [
       "SPECIES_GREAVARD",
       [
-        "SPECIES_HOUNDSTONE, CONDITIONS({IF_TIME, TIME_NIGHT})"
+        "SPECIES_HOUNDSTONE"
       ]
     ],
     "rating": {
@@ -181611,7 +181701,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_GHOLDENGO, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_GIMMIGHOUL_COIN, 999})"
+        "pokemon": "SPECIES_GHOLDENGO"
       }
     ],
     "baseBST": 300,
@@ -181647,7 +181737,7 @@
     "evoTree": [
       "SPECIES_GIMMIGHOUL_CHEST",
       [
-        "SPECIES_GHOLDENGO, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_GIMMIGHOUL_COIN, 999})"
+        "SPECIES_GHOLDENGO"
       ]
     ],
     "rating": {
@@ -181662,9 +181752,9 @@
       "movesRating": 5.392857142857142,
       "bestAbilityRating": 3,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_GIMMIGHOUL_CHEST",
-      "bestEvoRating": 2.439285714285714,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_GHOLDENGO",
+      "bestEvoRating": 6.544940476190477,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -181695,7 +181785,7 @@
       {
         "method": "LEVEL",
         "param": "0",
-        "pokemon": "SPECIES_GHOLDENGO, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_GIMMIGHOUL_COIN, 999})"
+        "pokemon": "SPECIES_GHOLDENGO"
       }
     ],
     "baseBST": 300,
@@ -181731,7 +181821,7 @@
     "evoTree": [
       "SPECIES_GIMMIGHOUL_CHEST",
       [
-        "SPECIES_GHOLDENGO, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_GIMMIGHOUL_COIN, 999})"
+        "SPECIES_GHOLDENGO"
       ]
     ],
     "rating": {
@@ -181746,9 +181836,9 @@
       "movesRating": 5.392857142857142,
       "bestAbilityRating": 0,
       "temporaryTier": "BAD",
-      "bestEvo": "SPECIES_GIMMIGHOUL_CHEST",
-      "bestEvoRating": 2.439285714285714,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_GHOLDENGO",
+      "bestEvoRating": 6.544940476190477,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -181857,7 +181947,7 @@
     "evoTree": [
       "SPECIES_GIMMIGHOUL_CHEST",
       [
-        "SPECIES_GHOLDENGO, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_GIMMIGHOUL_COIN, 999})"
+        "SPECIES_GHOLDENGO"
       ]
     ],
     "rating": {

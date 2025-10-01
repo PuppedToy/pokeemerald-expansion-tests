@@ -91,7 +91,7 @@ function processLineForDefinitions(line, definitions) {
     }
 }
 
-const evoRegex = /{EVO_(.*?), (.*?), (.*)}/;
+const evoRegex = /{EVO_(.*?), (.*?), (.*?)(?:}|,)/;
 function parseEvo(familyId, pokeId, line, evoTree) {
     const match = line.match(evoRegex);
     if (match) {
