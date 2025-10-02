@@ -57,11 +57,11 @@
       "y": 2,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
-      "movement_range_x": 200,
+      "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "ITEM_ORAN_BERRY",
-      "script": "Common_EventScript_FindItem",
+      "script": "Route101_EventScript_OranBerries",
       "flag": "FLAG_ITEM_ROUTE101_ORAN_BERRY"
     },
     {
