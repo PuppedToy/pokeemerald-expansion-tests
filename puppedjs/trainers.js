@@ -6,6 +6,10 @@ const {
     TRAINER_RESTRICTION_NO_REPEATED_TYPE,
     TRAINER_POKE_STARTER_TORCHIC,
     TRAINER_POKE_STARTER_MUDKIP,
+    TIER_BAD,
+    TIER_WEAK,
+    TIER_AVERAGE,
+    TIER_PREMIUM,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
@@ -48,7 +52,7 @@ const rival103Template = [
     },
     {
         id: 'RIVAL_AVERAGE_103_KEEP_ONCE',
-        absoluteTier: [TIER_AERAGE],
+        absoluteTier: [TIER_AVERAGE],
         evoType: [EVO_TYPE_LC],
         item: 'Oran Berry',
     },
