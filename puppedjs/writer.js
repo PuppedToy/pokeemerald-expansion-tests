@@ -597,7 +597,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         // Find the trainer name, keep all the content after it until the first pokemon, which will be always after blank line
         // Replace everything up to === OTHER TRAINER === or end of file with the generated team
 
-        const replaceRegex = new RegExp(`(=== ${trainerId} ===[\s\S\n\r]*?\n\n)([\s\S\n\r]*?)(===|$)`, 'g');
+        const replaceRegex = new RegExp(`(=== ${trainerId} ===[\\s\\S\\n\\r]*?[\\n\\r][\\n\\r])([\\s\\S\\n\\r]*?)(===|$)`, 'g');
         // Group 1 is the text to keep before the team
         // Group 2 is the text to replace (the team)
         // Group 3 is the === of the next trainer or end of file, to keep as is
