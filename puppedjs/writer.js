@@ -511,7 +511,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
                 );
                 
                 // Then apply other restrictions
-                trainer.restrictions.forEach(restriction => {
+                (trainer.restrictions || []).forEach(restriction => {
                     if (restriction === TRAINER_RESTRICTION_NO_REPEATED_TYPE) {
                         const selectedTypes = new Set(...team.map(pokemon => pokemon.parsedTypes).flat());
                         filteredLooseList = filteredLooseList.filter(p => !p.parsedTypes.some(t => selectedTypes.has(t)));
