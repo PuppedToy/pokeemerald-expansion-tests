@@ -463,7 +463,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
             let pokemonLooseList = [];
             let chosenTrainerMon;
             if (trainerMonDefinition.oneOf) {
-                pokemonLooseList = oneOf.map(p => pokemonList.find(pl => pl.id === p));
+                pokemonLooseList = trainerMonDefinition.oneOf.map(p => pokemonList.find(pl => pl.id === p));
             }
             else if (trainerMonDefinition.special === TRAINER_POKE_ENCOUNTER) {
                 pokemonLooseList = trainerMonDefinition.encounterIds.map((encounterId) => {
