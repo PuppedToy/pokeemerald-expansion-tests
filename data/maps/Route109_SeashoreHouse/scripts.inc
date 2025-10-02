@@ -24,7 +24,7 @@ Route109_SeashoreHouse_EventScript_AlreadyGaveIntroduction::
 
 Route109_SeashoreHouse_EventScript_DefeatedTrainers::
 	msgbox Route109_SeashoreHouse_Text_TakeTheseSodaPopBottles, MSGBOX_DEFAULT
-	giveitem ITEM_SODA_POP, 6
+	giveitem ITEM_POKE_BALL, 6
 	goto_if_eq VAR_RESULT, FALSE, Route109_SeashoreHouse_EventScript_BagFull
 	setflag FLAG_RECEIVED_6_SODA_POP
 	release
@@ -54,9 +54,9 @@ Route109_SeashoreHouse_EventScript_BuySodaPop::
 	updatemoneybox
 .if OW_SHOW_ITEM_DESCRIPTIONS != OW_ITEM_DESCRIPTIONS_OFF
 	hidemoneybox
-	giveitem ITEM_SODA_POP
+	giveitem ITEM_POKE_BALL
 .else
-	giveitem ITEM_SODA_POP
+	giveitem ITEM_POKE_BALL
 	hidemoneybox
 .endif
 	release

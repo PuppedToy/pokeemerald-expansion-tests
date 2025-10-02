@@ -733,14 +733,14 @@ SootopolisCity_EventScript_KiriGiveBerry::
 	end
 
 SootopolisCity_EventScript_GiveFigyBerry::
-	giveitem ITEM_FIGY_BERRY
+	giveitem ITEM_POKE_BALL
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	msgbox SootopolisCity_Text_WhatKindOfWishInYourName, MSGBOX_DEFAULT
 	release
 	end
 
 SootopolisCity_EventScript_GiveIapapaBerry::
-	giveitem ITEM_IAPAPA_BERRY
+	giveitem ITEM_POKE_BALL
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	msgbox SootopolisCity_Text_WhatKindOfWishInYourName, MSGBOX_DEFAULT
 	release
@@ -1297,7 +1297,7 @@ SootopolisCity_EventScript_Wallace::
 
 SootopolisCity_EventScript_GiveWaterfall::
 	msgbox SootopolisCity_Text_ThankYouForHelpAcceptThis, MSGBOX_DEFAULT
-	giveitem ITEM_HM_WATERFALL
+	giveitem ITEM_POKE_BALL
 	setflag FLAG_RECEIVED_HM_WATERFALL
 	msgbox SootopolisCity_Text_ExplainWaterfallGoToGym, MSGBOX_DEFAULT
 	closemessage

@@ -47,7 +47,7 @@ const items = {
         ITEM_FLAME_PLATE: 'FIRE',
         ITEM_SPLASH_PLATE: 'WATER',
         ITEM_ZAP_PLATE: 'ELECTRIC',
-        ITEM_MEADOW_PLATE: 'GRASS',
+        ITEM_MEADOW_PLATE: 'GRASS', // Petalburg Woods
         ITEM_ICICLE_PLATE: 'ICE',
         ITEM_FIST_PLATE: 'FIGHTING',
         ITEM_TOXIC_PLATE: 'POISON',
@@ -86,7 +86,7 @@ const items = {
     gems: [
         'ITEM_NORMAL_GEM',
         'ITEM_FIRE_GEM',
-        'ITEM_WATER_GEM',
+        'ITEM_WATER_GEM', // Route103
         'ITEM_ELECTRIC_GEM',
         'ITEM_GRASS_GEM',
         'ITEM_ICE_GEM',
@@ -266,7 +266,7 @@ const items = {
         'ITEM_CHOICE_SCARF',
         'ITEM_LEFTOVERS',
         'ITEM_LIFE_ORB',
-        'ITEM_EVIOLITE',
+        'ITEM_EVIOLITE', // Route103
         'ITEM_ASSAULT_VEST',
     ],
 
@@ -274,7 +274,7 @@ const items = {
         'ITEM_SHELL_BELL',
         'ITEM_ROCKY_HELMET',
         'ITEM_SAFETY_GOGGLES',
-        'ITEM_HEAVY_DUTY_BOOTS',
+        'ITEM_HEAVY_DUTY_BOOTS', // Route103
         'ITEM_BERSERK_GENE',
     ],
 
@@ -286,7 +286,7 @@ const items = {
         'ITEM_SMOOTH_ROCK',
         'ITEM_ICY_ROCK',
         'ITEM_WIDE_LENS',
-        'ITEM_EXPERT_BELT',
+        'ITEM_EXPERT_BELT', // Route102
         'ITEM_LIGHT_CLAY',
         'ITEM_ZOOM_LENS',
         'ITEM_BLACK_SLUDGE',

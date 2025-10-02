@@ -378,6 +378,7 @@ LilycoveCity_EventScript_BrendanBattleFrontier::
 
 LilycoveCity_EventScript_RivalFlyAway::
 	closemessage
+	giveitem ITEM_SUPER_ROD
 	applymovement VAR_LAST_TALKED, Common_Movement_WalkInPlaceFasterDown
 	waitmovement 0
 	delay 50
