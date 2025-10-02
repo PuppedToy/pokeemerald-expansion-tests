@@ -592,7 +592,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
                         }
                     });
                 }
-                if (newTeamMember.moves && newTeamMember.moves.length < 4) {
+                if (newTeamMember.moves && newTeamMember.moves.length > 0 && newTeamMember.moves.length < 4) {
                     // Try to fill with level up moves
                     // Filter by level
                     const validMoves = chosenTrainerMon.learnset.filter(({ level }) => 
