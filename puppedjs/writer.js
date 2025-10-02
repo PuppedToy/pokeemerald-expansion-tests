@@ -474,13 +474,16 @@ async function writer(pokemonList, moves, abilitiesRatings) {
                 });
             }
             else if (trainerMonDefinition.special === TRAINER_POKE_STARTER_TREECKO) {
-                pokemonStrictList = [starters[0]];
+                const starterPokemon = pokemonList.find(p => p.id === starters[0]);
+                pokemonStrictList = [starterPokemon];
             }
             else if (trainerMonDefinition.special === TRAINER_POKE_STARTER_TORCHIC) {
-                pokemonStrictList = [starters[1]];
+                const starterPokemon = pokemonList.find(p => p.id === starters[1]);
+                pokemonStrictList = [starterPokemon];
             }
             else if (trainerMonDefinition.special === TRAINER_POKE_STARTER_MUDKIP) {
-                pokemonStrictList = [starters[2]];
+                const starterPokemon = pokemonList.find(p => p.id === starters[2]);
+                pokemonStrictList = [starterPokemon];
             }
             else {
                 pokemonLooseList = [...pokemonList];
