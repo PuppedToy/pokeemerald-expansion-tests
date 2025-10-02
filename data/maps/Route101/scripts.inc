@@ -283,6 +283,7 @@ Route101_EventScript_Calvin::
 Route101_EventScript_OranBerries::
 	setflag FLAG_ITEM_ROUTE101_ORAN_BERRY
 	giveitem ITEM_ORAN_BERRY, 300
+	removeobject VAR_LAST_TALKED
 	release
 	end
 
