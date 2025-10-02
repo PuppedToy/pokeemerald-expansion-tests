@@ -47,7 +47,7 @@ const rival103Template = [
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
-        encounterTypes: ['SPECIES_SURSKIT'],
+        encounterIds: ['SPECIES_SURSKIT'],
         item: 'Oran Berry',
     },
     {
