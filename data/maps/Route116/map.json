@@ -62,7 +62,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route116_EventScript_Joey",
-      "flag": "0"
+      "flag": "FLAG_BADGE02_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
@@ -88,7 +88,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "3",
       "script": "Route116_EventScript_Jose",
-      "flag": "0"
+      "flag": "FLAG_BADGE02_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -167,7 +167,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route116_EventScript_Clark",
-      "flag": "0"
+      "flag": "FLAG_BADGE02_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -193,7 +193,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route116_EventScript_Janice",
-      "flag": "0"
+      "flag": "FLAG_BADGE03_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_GIRL_3",
@@ -206,7 +206,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route116_EventScript_Karen",
-      "flag": "0"
+      "flag": "FLAG_BADGE02_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_SCHOOL_KID_M",
@@ -219,7 +219,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route116_EventScript_Jerry",
-      "flag": "0"
+      "flag": "FLAG_BADGE03_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_2",
@@ -285,7 +285,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route116_EventScript_Sarah",
-      "flag": "0"
+      "flag": "FLAG_BADGE03_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_BOY_2",
@@ -298,7 +298,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route116_EventScript_Dawson",
-      "flag": "0"
+      "flag": "FLAG_BADGE06_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -324,7 +324,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route116_EventScript_Johnson",
-      "flag": "0"
+      "flag": "FLAG_BADGE02_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_HIKER",
@@ -337,7 +337,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route116_EventScript_Devan",
-      "flag": "0"
+      "flag": "FLAG_BADGE02_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",

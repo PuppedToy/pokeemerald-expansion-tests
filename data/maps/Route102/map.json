@@ -62,7 +62,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route102_EventScript_Rick",
-      "flag": "0"
+      "flag": "FLAG_BADGE02_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_LASS",
@@ -75,7 +75,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route102_EventScript_Tiana",
-      "flag": "0"
+      "flag": "FLAG_BADGE02_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_BOY_1",
@@ -140,7 +140,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route102_EventScript_Allen",
-      "flag": "0"
+      "flag": "FLAG_BADGE02_GET"
     }
   ],
   "warp_events": [],
