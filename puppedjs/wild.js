@@ -53,6 +53,7 @@ const wildData = {
     replacements: {
         // Shared
         SPECIES_SHELGON: 'NFE_OR_SOLO_STRONG',
+        SPECIES_PUPITAR: 'NFE_OR_SOLO_STRONG',
 
         // Route101
         SPECIES_ZIGZAGOON: 'LC_BAD_WEAK',
@@ -64,7 +65,6 @@ const wildData = {
         SPECIES_KIRLIA: 'NFE_OR_SOLO_AVERAGE',
 
         // Route103
-        SPECIES_POOCHYENA: 'LC_BAD_WEAK',
         SPECIES_SURSKIT: 'LC_WEAK',
         SPECIES_TENTACOOL: 'NFE_OR_SOLO_AVERAGE_OR_WEAK',
         SPECIES_PELIPPER: 'NFE_OR_SOLO_AVERAGE',
@@ -94,6 +94,10 @@ const wildData = {
         SPECIES_DITTO: 'LC_OR_SOLO_WEAK',
         SPECIES_SENTRET: 'LC_WEAK',
         SPECIES_HOOTHOOT: 'NFE_OR_SOLO_AVERAGE_OR_WEAK',
+
+        // Dewford
+        SPECIES_POOCHYENA: 'LC_WEAK',
+        SPECIES_MIGHTYENA: 'NFE_OR_SOLO_AVERAGE',
     },
     maps: [
         // Shelgon maps
@@ -111,7 +115,6 @@ const wildData = {
         },
         {
             id: 'MAP_ROUTE103',
-            land: 'SPECIES_POOCHYENA',
             old: 'SPECIES_SURSKIT',
             good: 'SPECIES_TENTACOOL',
             surf: 'SPECIES_PELIPPER',
@@ -152,6 +155,13 @@ const wildData = {
             old: 'SPECIES_SENTRET',
             good: 'SPECIES_HOOTHOOT',
             super: 'SPECIES_SHELGON',
+        },
+        // Pupitar maps
+        {
+            id: 'MAP_DEWFORD_TOWN',
+            old: 'SPECIES_POOCHYENA',
+            good: 'SPECIES_MIGHTYENA',
+            super: 'SPECIES_PUPITAR',
         },
     ]
 };

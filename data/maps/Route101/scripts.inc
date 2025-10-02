@@ -280,14 +280,6 @@ Route101_EventScript_Calvin::
 	trainerbattle_single TRAINER_CALVIN_1, Route101_Text_CalvinIntro, Route101_Text_CalvinDefeated
 	end
 
-Route101_EventScript_OranBerries::
-	giveitem ITEM_ORAN_BERRY, 99
-	giveitem ITEM_ORAN_BERRY, 99
-	giveitem ITEM_ORAN_BERRY, 99
-	clearflag FLAG_ITEM_ROUTE101_ORAN_BERRY
-	msgbox Route101_Text_OranBerries, MSGBOX_AUTOCLOSE
-	end
-
 Route101_Movement_BirchApproachPlayer:
 	walk_right
 	step_end

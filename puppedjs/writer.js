@@ -2,6 +2,7 @@ const fs = require('fs').promises;
 const path = require('path');
 
 const wild = require('./wild.js');
+const trainers = require('./trainers.js');
 const {
     EVO_TYPE_LC,
     EVO_TYPE_NFE,
@@ -17,6 +18,10 @@ const {
     TIER_STRONG_THRESHOLD,
     MID_TIER_STRONG_THRESHOLD,
     MID_TIER_PREMIUM_THRESHOLD,
+    ENCOUNTER_TYPE_SPECIAL,
+    TRAINER_POKE_ENCOUNTER,
+    TRAINER_POKE_STARTER_TREECKO,
+    TRAINER_RESTRICTION_NO_REPEATED_TYPE,
 } = require('./constants');
 
 const MAX_MEGA_EVO_STONES = 3;
@@ -122,6 +127,12 @@ function sampleAndRemove(array) {
     const element = array[index];
     array.splice(index, 1);
     return element;
+}
+
+function sample(array) {
+    if (array.length === 0) return null;
+    const index = Math.floor(Math.random() * array.length);
+    return array[index];
 }
 
 async function writer(pokemonList, moves, abilitiesRatings) {
@@ -379,6 +390,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
 
     const { replacementTypes: wildReplacementTypes } = wild;
     const replacementLists = {};
+    const replacementLog = {};
 
     Object.entries(wildReplacementTypes).forEach(([key, value]) => {
         const { replace: tiers, type: types } = value;
@@ -418,6 +430,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
             return;
         }
         alreadyChosenSet.add(replacement.id);
+        replacementLog[speciesId] = replacement.id;
 
         const regex = new RegExp(speciesId, 'g');
         wildEncountersFileContent = wildEncountersFileContent.replace(regex, replacement.id);
@@ -425,6 +438,134 @@ async function writer(pokemonList, moves, abilitiesRatings) {
 
     await fs.writeFile((wild.file), wildEncountersFileContent, 'utf8');
     console.log('Wild encounters updated successfully.');
+
+    // Trainers
+
+    let trainersFileContent = await fs.readFile(trainers.file, 'utf8');
+    const { trainersData } = trainers;
+    const trainersResults = {};
+
+    const storedIds = {};
+
+    trainersData.forEach(trainer => {
+        if (trainer.copy) {
+            const target = trainersResults[trainer.copy];
+            trainersResults[trainer.id] = {
+                level: target.level,
+                team: [...target.team],
+            };
+            return;
+        }
+
+        const team = [];
+        trainer.team.forEach(trainerMonDefinition => {
+            let pokemonStrictList = [];
+            let pokemonLooseList = [];
+            let chosenTrainerMon;
+            if (trainerMonDefinition.oneOf) {
+                pokemonLooseList = oneOf.map(p => pokemonList.find(pl => pl.id === p));
+            }
+            else if (trainerMonDefinition.special === TRAINER_POKE_ENCOUNTER) {
+                pokemonLooseList = trainerMonDefinition.encounterIds.map((encounterId) => {
+                    const replacedId = replacementLog[encounterId];
+                    const pokemon = pokemonList.find(p => p.id === (replacedId || encounterId));
+                    return pokemon;
+                });
+            }
+            else if (trainerMonDefinition.special === TRAINER_POKE_STARTER_TREECKO) {
+                pokemonStrictList = [starters[0]];
+            }
+            else if (trainerMonDefinition.special === TRAINER_POKE_STARTER_TORCHIC) {
+                pokemonStrictList = [starters[1]];
+            }
+            else if (trainerMonDefinition.special === TRAINER_POKE_STARTER_MUDKIP) {
+                pokemonStrictList = [starters[2]];
+            }
+            else {
+                pokemonLooseList = [...pokemonList];
+            }
+
+            // General filters for the loose list
+            if (trainerMonDefinition.absoluteTier) {
+                pokemonLooseList = pokemonLooseList.filter(
+                    loosePokemon => trainerMonDefinition.absoluteTier.includes(loosePokemon.rating.temporaryTier),
+                );
+            }
+            if (trainerMonDefinition.evoType.includes(EVO_TYPE_LC)) {
+                pokemonLooseList = pokemonLooseList.filter(
+                    loosePokemon => loosePokemon.evolutionData.isLC,
+                );
+            }
+            if (trainerMonDefinition.megaTier) {
+                pokemonLooseList = pokemonLooseList.filter(
+                    loosePokemon => loosePokemon.evolutionData.megaEvos
+                        && loosePokemon.evolutionData.megaEvos.length > 0
+                        && trainerMonDefinition.megaTier.includes(loosePokemon.rating.megaEvoTier),
+                );
+            }
+
+            // Always apply unique restriction
+            if (pokemonLooseList.length > 0) {
+                let filteredLooseList = pokemonLooseList.filter(
+                    loosePokemon => !team.find(teamPokemon => teamPokemon.pokemon.id === loosePokemon.id)
+                );
+                
+                // Then apply other restrictions
+                trainer.restrictions.forEach(restriction => {
+                    if (restriction === TRAINER_RESTRICTION_NO_REPEATED_TYPE) {
+                        const selectedTypes = new Set(...team.map(pokemon => pokemon.parsedTypes).flat());
+                        filteredLooseList = filteredLooseList.filter(p => !p.parsedTypes.some(t => selectedTypes.has(t)));
+                    }
+                    // Rest of restrictions can be added here
+                });
+                pokemonStrictList = [...pokemonStrictList, ...filteredLooseList];
+            }
+
+            // If any strict pokemon meet the restrictions, pick from them
+            if (pokemonStrictList.length > 0) {
+                chosenTrainerMon = sample(pokemonStrictList);
+            }
+            // Else pick from the loose list if any
+            else if (pokemonLooseList.length > 0) {
+                // First try to apply at least unique restriction
+                const filteredLooseList = pokemonLooseList.filter(
+                    loosePokemon => !team.find(teamPokemon => teamPokemon.pokemon.id === loosePokemon.id)
+                );
+                if (filteredLooseList.length > 0) {
+                    chosenTrainerMon = sample(filteredLooseList);
+                }
+                else {
+                    chosenTrainerMon = sample(pokemonLooseList);
+                }
+            }
+            else {
+                console.warn(`WARN: No pokemon available for trainer ${trainer.id} with definition ${JSON.stringify(trainerMonDefinition)}. Picking a random one.`);
+                // Pick a random pokemon
+                const randomPokemon = sample(pokemonList);
+                chosenTrainerMon = randomPokemon;
+            }
+
+            if (chosenTrainerMon) {
+                if (trainerMonDefinition.id) {
+                    storedIds[trainerMonDefinition.id] = chosenTrainerMon;
+                }
+                team.push({
+                    pokemon: chosenTrainerMon,
+                    item: trainerMonDefinition.item || null,
+                });
+            }
+            else {
+                console.warn(`No pokemon chosen for trainer ${trainer.id} with definition ${JSON.stringify(trainerMonDefinition)}`);
+            }
+        });
+
+        trainersResults[trainer.id] = {
+            level: trainer.level,
+            team,
+        };
+    });
+
+    await fs.writeFile((trainers.file), trainersFileContent, 'utf8');
 
 }
 
