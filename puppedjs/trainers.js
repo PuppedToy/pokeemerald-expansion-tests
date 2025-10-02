@@ -15,23 +15,23 @@ const {
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
 
 const lcDogs = [
-    'Growlithe',
-    'Growlithe-Hisui',
-    'Zigzagoon',
-    'Zigzagoon-Galar',
-    'Electrike',
-    'Houndour',
-    'Rockruff',
-    'Poochyena',
-    'Bidoof',
-    'Lillipup',
-    'Yamper',
-    'Fidough',
-    'Greavard',
-    'Maschiff',
-    'Eevee',
-    'Snubbull',
-    'Riolu'
+    'SPECIES_GROWLITHE',
+    'SPECIES_GROWLITHE_HISUI',
+    'SPECIES_ZIGZAGOON',
+    'SPECIES_ZIGZAGOON_GALAR',
+    'SPECIES_ELECTRIKE',
+    'SPECIES_HOUNDOUR',
+    'SPECIES_ROCKRUFF',
+    'SPECIES_POOCHYENA',
+    'SPECIES_BIDOOF',
+    'SPECIES_LILLIPUP',
+    'SPECIES_YAMPER',
+    'SPECIES_FIDOUGH',
+    'SPECIES_GREAVARD',
+    'SPECIES_MASCHIFF',
+    'SPECIES_EEVEE',
+    'SPECIES_SNUBBULL',
+    'SPECIES_RIOLU'
 ];
 
 const rival103Template = [
