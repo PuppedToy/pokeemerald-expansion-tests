@@ -10,13 +10,15 @@ const {
     TIER_WEAK,
     TIER_AVERAGE,
     TIER_PREMIUM,
-    EVO_TYPE_SOLO,
     POKEMON_TYPE_WATER,
     POKEMON_TYPE_ICE,
     POKEMON_TYPE_BUG,
+    POKEMON_TYPE_FAIRY,
+    POKEMON_TYPE_GRASS,
+    POKEMON_TYPE_FIGHTING,
+    POKEMON_TYPE_PSYCHIC,
     TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
     TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES,
-    TRAINER_RESTRICTION_MUST_LEARN_TM_MOVES,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
