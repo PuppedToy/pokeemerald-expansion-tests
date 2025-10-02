@@ -565,6 +565,49 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         };
     });
 
+    // First replace every entry of "AI: Check Bad Move" with "AI: Basic Trainer"
+    trainersFileContent = trainersFileContent.replace(/AI: Check Bad Move/g, 'AI: Basic Trainer');
+
+    Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
+        
+        const generatedTeamTextLines = trainerData.team.map(teamEntry => {
+            return [
+                teamEntry.item ? `${teamEntry.pokemon.name} @ ${teamEntry.item}` : teamEntry.pokemon.name,
+                `Level: ${trainerData.level}`,
+                'IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe',
+                '',
+            ]
+        }).flat().join('\n');
+        
+        /* Trainers will be like this
+        === TRAINER_ELIJAH ===
+        Name: ELIJAH
+        Class: Bird Keeper
+        Pic: Bird Keeper
+        Gender: Male
+        Music: Cool
+        Double Battle: No
+        AI: Check Bad Move
+
+        Zigzagoon
+        Level: 5
+        IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
+
+        === OTHER TRAINER ===
+        */
+
+        // Find the trainer name, keep all the content after it until the first pokemon, which will be always after blank line
+        // Replace everything up to === OTHER TRAINER === or end of file with the generated team
+
+        const replaceRegex = new RegExp(`(=== ${trainerId} ===[\s\S\n\r]*?\n\n)([\s\S\n\r]*?)(===|$)`, 'g');
+        // Group 1 is the text to keep before the team
+        // Group 2 is the text to replace (the team)
+        // Group 3 is the === of the next trainer or end of file, to keep as is
+        // Mind, Group 2 could appear multiple times in the file and I want to replace this specific trainer
+        const fullReplacementText = `$1${generatedTeamTextLines}\n$3`;
+        trainersFileContent = trainersFileContent.replace(replaceRegex, fullReplacementText);
+    });
+
     await fs.writeFile((trainers.file), trainersFileContent, 'utf8');
 
 }
