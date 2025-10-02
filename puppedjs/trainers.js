@@ -75,7 +75,7 @@ const rival103Template = [
 
 const allenCats = [
     'SPECIES_MEOWTH',
-    'SPECIES_MEOWTH_ALOLAN',
+    'SPECIES_MEOWTH_ALOLA',
     'SPECIES_MEOWTH_GALAR',
     'SPECIES_SKITTY',
     'SPECIES_GLAMEOW',
