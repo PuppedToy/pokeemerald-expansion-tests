@@ -582,7 +582,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
                     moves: [],
                 };
                 if (trainerMonDefinition.tmMovesIfCan) {
-                    trainerMonDefinition.forEach(tmMove => {
+                    trainerMonDefinition.tmMovesIfCan.forEach(tmMove => {
                         if (
                             chosenTrainerMon.teachables
                             && chosenTrainerMon.teachables.includes(tmMove)
