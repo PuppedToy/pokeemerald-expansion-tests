@@ -1,0 +1,1246 @@
+{
+  "ABILITY_NONE": {
+    "name": "-------",
+    "rating": 0
+  },
+  "ABILITY_STENCH": {
+    "name": "Stench",
+    "rating": 1
+  },
+  "ABILITY_DRIZZLE": {
+    "name": "Drizzle",
+    "rating": 9
+  },
+  "ABILITY_SPEED_BOOST": {
+    "name": "Speed Boost",
+    "rating": 9
+  },
+  "ABILITY_BATTLE_ARMOR": {
+    "name": "Battle Armor",
+    "rating": 2
+  },
+  "ABILITY_STURDY": {
+    "name": "Sturdy",
+    "rating": 6
+  },
+  "ABILITY_DAMP": {
+    "name": "Damp",
+    "rating": 2
+  },
+  "ABILITY_LIMBER": {
+    "name": "Limber",
+    "rating": 3
+  },
+  "ABILITY_SAND_VEIL": {
+    "name": "Sand Veil",
+    "rating": 3
+  },
+  "ABILITY_STATIC": {
+    "name": "Static",
+    "rating": 4
+  },
+  "ABILITY_VOLT_ABSORB": {
+    "name": "Volt Absorb",
+    "rating": 7
+  },
+  "ABILITY_WATER_ABSORB": {
+    "name": "Water Absorb",
+    "rating": 7
+  },
+  "ABILITY_OBLIVIOUS": {
+    "name": "Oblivious",
+    "rating": 2
+  },
+  "ABILITY_CLOUD_NINE": {
+    "name": "Cloud Nine",
+    "rating": 5
+  },
+  "ABILITY_COMPOUND_EYES": {
+    "name": "Compound Eyes",
+    "rating": 7
+  },
+  "ABILITY_INSOMNIA": {
+    "name": "Insomnia",
+    "rating": 4
+  },
+  "ABILITY_COLOR_CHANGE": {
+    "name": "Color Change",
+    "rating": 2
+  },
+  "ABILITY_IMMUNITY": {
+    "name": "Immunity",
+    "rating": 4
+  },
+  "ABILITY_FLASH_FIRE": {
+    "name": "Flash Fire",
+    "rating": 6
+  },
+  "ABILITY_SHIELD_DUST": {
+    "name": "Shield Dust",
+    "rating": 5
+  },
+  "ABILITY_OWN_TEMPO": {
+    "name": "Own Tempo",
+    "rating": 3
+  },
+  "ABILITY_SUCTION_CUPS": {
+    "name": "Suction Cups",
+    "rating": 2
+  },
+  "ABILITY_INTIMIDATE": {
+    "name": "Intimidate",
+    "rating": 7
+  },
+  "ABILITY_SHADOW_TAG": {
+    "name": "Shadow Tag",
+    "rating": 10
+  },
+  "ABILITY_ROUGH_SKIN": {
+    "name": "Rough Skin",
+    "rating": 6
+  },
+  "ABILITY_WONDER_GUARD": {
+    "name": "Wonder Guard",
+    "rating": 10
+  },
+  "ABILITY_LEVITATE": {
+    "name": "Levitate",
+    "rating": 7
+  },
+  "ABILITY_EFFECT_SPORE": {
+    "name": "Effect Spore",
+    "rating": 4
+  },
+  "ABILITY_SYNCHRONIZE": {
+    "name": "Synchronize",
+    "rating": 4
+  },
+  "ABILITY_CLEAR_BODY": {
+    "name": "Clear Body",
+    "rating": 4
+  },
+  "ABILITY_NATURAL_CURE": {
+    "name": "Natural Cure",
+    "rating": 7
+  },
+  "ABILITY_LIGHTNING_ROD": {
+    "name": "Lightning Rod",
+    "rating": 7
+  },
+  "ABILITY_SERENE_GRACE": {
+    "name": "Serene Grace",
+    "rating": 8
+  },
+  "ABILITY_SWIFT_SWIM": {
+    "name": "Swift Swim",
+    "rating": 6
+  },
+  "ABILITY_CHLOROPHYLL": {
+    "name": "Chlorophyll",
+    "rating": 6
+  },
+  "ABILITY_ILLUMINATE": {
+    "name": "Illuminate",
+    "rating": 0
+  },
+  "ABILITY_TRACE": {
+    "name": "Trace",
+    "rating": 6
+  },
+  "ABILITY_HUGE_POWER": {
+    "name": "Huge Power",
+    "rating": 10
+  },
+  "ABILITY_POISON_POINT": {
+    "name": "Poison Point",
+    "rating": 4
+  },
+  "ABILITY_INNER_FOCUS": {
+    "name": "Inner Focus",
+    "rating": 2
+  },
+  "ABILITY_MAGMA_ARMOR": {
+    "name": "Magma Armor",
+    "rating": 1
+  },
+  "ABILITY_WATER_VEIL": {
+    "name": "Water Veil",
+    "rating": 4
+  },
+  "ABILITY_MAGNET_PULL": {
+    "name": "Magnet Pull",
+    "rating": 9
+  },
+  "ABILITY_SOUNDPROOF": {
+    "name": "Soundproof",
+    "rating": 4
+  },
+  "ABILITY_RAIN_DISH": {
+    "name": "Rain Dish",
+    "rating": 3
+  },
+  "ABILITY_SAND_STREAM": {
+    "name": "Sand Stream",
+    "rating": 9
+  },
+  "ABILITY_PRESSURE": {
+    "name": "Pressure",
+    "rating": 5
+  },
+  "ABILITY_THICK_FAT": {
+    "name": "Thick Fat",
+    "rating": 7
+  },
+  "ABILITY_EARLY_BIRD": {
+    "name": "Early Bird",
+    "rating": 4
+  },
+  "ABILITY_FLAME_BODY": {
+    "name": "Flame Body",
+    "rating": 4
+  },
+  "ABILITY_RUN_AWAY": {
+    "name": "Run Away",
+    "rating": 0
+  },
+  "ABILITY_KEEN_EYE": {
+    "name": "Keen Eye",
+    "rating": 1
+  },
+  "ABILITY_HYPER_CUTTER": {
+    "name": "Hyper Cutter",
+    "rating": 3
+  },
+  "ABILITY_PICKUP": {
+    "name": "Pickup",
+    "rating": 1
+  },
+  "ABILITY_TRUANT": {
+    "name": "Truant",
+    "rating": -2
+  },
+  "ABILITY_HUSTLE": {
+    "name": "Hustle",
+    "rating": 7
+  },
+  "ABILITY_CUTE_CHARM": {
+    "name": "Cute Charm",
+    "rating": 2
+  },
+  "ABILITY_PLUS": {
+    "name": "Plus",
+    "rating": 0
+  },
+  "ABILITY_MINUS": {
+    "name": "Minus",
+    "rating": 0
+  },
+  "ABILITY_FORECAST": {
+    "name": "Forecast",
+    "rating": 6
+  },
+  "ABILITY_STICKY_HOLD": {
+    "name": "Sticky Hold",
+    "rating": 3
+  },
+  "ABILITY_SHED_SKIN": {
+    "name": "Shed Skin",
+    "rating": 7
+  },
+  "ABILITY_GUTS": {
+    "name": "Guts",
+    "rating": 6
+  },
+  "ABILITY_MARVEL_SCALE": {
+    "name": "Marvel Scale",
+    "rating": 5
+  },
+  "ABILITY_LIQUID_OOZE": {
+    "name": "Liquid Ooze",
+    "rating": 3
+  },
+  "ABILITY_OVERGROW": {
+    "name": "Overgrow",
+    "rating": 5
+  },
+  "ABILITY_BLAZE": {
+    "name": "Blaze",
+    "rating": 5
+  },
+  "ABILITY_TORRENT": {
+    "name": "Torrent",
+    "rating": 5
+  },
+  "ABILITY_SWARM": {
+    "name": "Swarm",
+    "rating": 5
+  },
+  "ABILITY_ROCK_HEAD": {
+    "name": "Rock Head",
+    "rating": 5
+  },
+  "ABILITY_DROUGHT": {
+    "name": "Drought",
+    "rating": 9
+  },
+  "ABILITY_ARENA_TRAP": {
+    "name": "Arena Trap",
+    "rating": 9
+  },
+  "ABILITY_VITAL_SPIRIT": {
+    "name": "Vital Spirit",
+    "rating": 4
+  },
+  "ABILITY_WHITE_SMOKE": {
+    "name": "White Smoke",
+    "rating": 4
+  },
+  "ABILITY_PURE_POWER": {
+    "name": "Pure Power",
+    "rating": 10
+  },
+  "ABILITY_SHELL_ARMOR": {
+    "name": "Shell Armor",
+    "rating": 2
+  },
+  "ABILITY_AIR_LOCK": {
+    "name": "Air Lock",
+    "rating": 5
+  },
+  "ABILITY_TANGLED_FEET": {
+    "name": "Tangled Feet",
+    "rating": 2
+  },
+  "ABILITY_MOTOR_DRIVE": {
+    "name": "Motor Drive",
+    "rating": 6
+  },
+  "ABILITY_RIVALRY": {
+    "name": "Rivalry",
+    "rating": 1
+  },
+  "ABILITY_STEADFAST": {
+    "name": "Steadfast",
+    "rating": 2
+  },
+  "ABILITY_SNOW_CLOAK": {
+    "name": "Snow Cloak",
+    "rating": 3
+  },
+  "ABILITY_GLUTTONY": {
+    "name": "Gluttony",
+    "rating": 3
+  },
+  "ABILITY_ANGER_POINT": {
+    "name": "Anger Point",
+    "rating": 4
+  },
+  "ABILITY_UNBURDEN": {
+    "name": "Unburden",
+    "rating": 7
+  },
+  "ABILITY_HEATPROOF": {
+    "name": "Heatproof",
+    "rating": 5
+  },
+  "ABILITY_SIMPLE": {
+    "name": "Simple",
+    "rating": 8
+  },
+  "ABILITY_DRY_SKIN": {
+    "name": "Dry Skin",
+    "rating": 6
+  },
+  "ABILITY_DOWNLOAD": {
+    "name": "Download",
+    "rating": 7
+  },
+  "ABILITY_IRON_FIST": {
+    "name": "Iron Fist",
+    "rating": 6
+  },
+  "ABILITY_POISON_HEAL": {
+    "name": "Poison Heal",
+    "rating": 8
+  },
+  "ABILITY_ADAPTABILITY": {
+    "name": "Adaptability",
+    "rating": 8
+  },
+  "ABILITY_SKILL_LINK": {
+    "name": "Skill Link",
+    "rating": 7
+  },
+  "ABILITY_HYDRATION": {
+    "name": "Hydration",
+    "rating": 4
+  },
+  "ABILITY_SOLAR_POWER": {
+    "name": "Solar Power",
+    "rating": 3
+  },
+  "ABILITY_QUICK_FEET": {
+    "name": "Quick Feet",
+    "rating": 5
+  },
+  "ABILITY_NORMALIZE": {
+    "name": "Normalize",
+    "rating": -1
+  },
+  "ABILITY_SNIPER": {
+    "name": "Sniper",
+    "rating": 3
+  },
+  "ABILITY_MAGIC_GUARD": {
+    "name": "Magic Guard",
+    "rating": 9
+  },
+  "ABILITY_NO_GUARD": {
+    "name": "No Guard",
+    "rating": 8
+  },
+  "ABILITY_STALL": {
+    "name": "Stall",
+    "rating": -1
+  },
+  "ABILITY_TECHNICIAN": {
+    "name": "Technician",
+    "rating": 8
+  },
+  "ABILITY_LEAF_GUARD": {
+    "name": "Leaf Guard",
+    "rating": 2
+  },
+  "ABILITY_KLUTZ": {
+    "name": "Klutz",
+    "rating": -1
+  },
+  "ABILITY_MOLD_BREAKER": {
+    "name": "Mold Breaker",
+    "rating": 7
+  },
+  "ABILITY_SUPER_LUCK": {
+    "name": "Super Luck",
+    "rating": 3
+  },
+  "ABILITY_AFTERMATH": {
+    "name": "Aftermath",
+    "rating": 5
+  },
+  "ABILITY_ANTICIPATION": {
+    "name": "Anticipation",
+    "rating": 2
+  },
+  "ABILITY_FOREWARN": {
+    "name": "Forewarn",
+    "rating": 2
+  },
+  "ABILITY_UNAWARE": {
+    "name": "Unaware",
+    "rating": 6
+  },
+  "ABILITY_TINTED_LENS": {
+    "name": "Tinted Lens",
+    "rating": 7
+  },
+  "ABILITY_FILTER": {
+    "name": "Filter",
+    "rating": 6
+  },
+  "ABILITY_SLOW_START": {
+    "name": "Slow Start",
+    "rating": -2
+  },
+  "ABILITY_SCRAPPY": {
+    "name": "Scrappy",
+    "rating": 6
+  },
+  "ABILITY_STORM_DRAIN": {
+    "name": "Storm Drain",
+    "rating": 7
+  },
+  "ABILITY_ICE_BODY": {
+    "name": "Ice Body",
+    "rating": 3
+  },
+  "ABILITY_SOLID_ROCK": {
+    "name": "Solid Rock",
+    "rating": 6
+  },
+  "ABILITY_SNOW_WARNING": {
+    "name": "Snow Warning",
+    "rating": 8
+  },
+  "ABILITY_HONEY_GATHER": {
+    "name": "Honey Gather",
+    "rating": 0
+  },
+  "ABILITY_FRISK": {
+    "name": "Frisk",
+    "rating": 3
+  },
+  "ABILITY_RECKLESS": {
+    "name": "Reckless",
+    "rating": 6
+  },
+  "ABILITY_MULTITYPE": {
+    "name": "Multitype",
+    "rating": 8
+  },
+  "ABILITY_FLOWER_GIFT": {
+    "name": "Flower Gift",
+    "rating": 4
+  },
+  "ABILITY_BAD_DREAMS": {
+    "name": "Bad Dreams",
+    "rating": 4
+  },
+  "ABILITY_PICKPOCKET": {
+    "name": "Pickpocket",
+    "rating": 3
+  },
+  "ABILITY_SHEER_FORCE": {
+    "name": "Sheer Force",
+    "rating": 8
+  },
+  "ABILITY_CONTRARY": {
+    "name": "Contrary",
+    "rating": 8
+  },
+  "ABILITY_UNNERVE": {
+    "name": "Unnerve",
+    "rating": 3
+  },
+  "ABILITY_DEFIANT": {
+    "name": "Defiant",
+    "rating": 5
+  },
+  "ABILITY_DEFEATIST": {
+    "name": "Defeatist",
+    "rating": -1
+  },
+  "ABILITY_CURSED_BODY": {
+    "name": "Cursed Body",
+    "rating": 4
+  },
+  "ABILITY_HEALER": {
+    "name": "Healer",
+    "rating": 0
+  },
+  "ABILITY_FRIEND_GUARD": {
+    "name": "Friend Guard",
+    "rating": 0
+  },
+  "ABILITY_WEAK_ARMOR": {
+    "name": "Weak Armor",
+    "rating": 2
+  },
+  "ABILITY_HEAVY_METAL": {
+    "name": "Heavy Metal",
+    "rating": -1
+  },
+  "ABILITY_LIGHT_METAL": {
+    "name": "Light Metal",
+    "rating": 2
+  },
+  "ABILITY_MULTISCALE": {
+    "name": "Multiscale",
+    "rating": 8
+  },
+  "ABILITY_TOXIC_BOOST": {
+    "name": "Toxic Boost",
+    "rating": 6
+  },
+  "ABILITY_FLARE_BOOST": {
+    "name": "Flare Boost",
+    "rating": 5
+  },
+  "ABILITY_HARVEST": {
+    "name": "Harvest",
+    "rating": 5
+  },
+  "ABILITY_TELEPATHY": {
+    "name": "Telepathy",
+    "rating": 0
+  },
+  "ABILITY_MOODY": {
+    "name": "Moody",
+    "rating": 10
+  },
+  "ABILITY_OVERCOAT": {
+    "name": "Overcoat",
+    "rating": 5
+  },
+  "ABILITY_POISON_TOUCH": {
+    "name": "Poison Touch",
+    "rating": 4
+  },
+  "ABILITY_REGENERATOR": {
+    "name": "Regenerator",
+    "rating": 8
+  },
+  "ABILITY_BIG_PECKS": {
+    "name": "Big Pecks",
+    "rating": 1
+  },
+  "ABILITY_SAND_RUSH": {
+    "name": "Sand Rush",
+    "rating": 6
+  },
+  "ABILITY_WONDER_SKIN": {
+    "name": "Wonder Skin",
+    "rating": 4
+  },
+  "ABILITY_ANALYTIC": {
+    "name": "Analytic",
+    "rating": 5
+  },
+  "ABILITY_ILLUSION": {
+    "name": "Illusion",
+    "rating": 8
+  },
+  "ABILITY_IMPOSTER": {
+    "name": "Imposter",
+    "rating": 9
+  },
+  "ABILITY_INFILTRATOR": {
+    "name": "Infiltrator",
+    "rating": 6
+  },
+  "ABILITY_MUMMY": {
+    "name": "Mummy",
+    "rating": 5
+  },
+  "ABILITY_MOXIE": {
+    "name": "Moxie",
+    "rating": 7
+  },
+  "ABILITY_JUSTIFIED": {
+    "name": "Justified",
+    "rating": 4
+  },
+  "ABILITY_RATTLED": {
+    "name": "Rattled",
+    "rating": 3
+  },
+  "ABILITY_MAGIC_BOUNCE": {
+    "name": "Magic Bounce",
+    "rating": 9
+  },
+  "ABILITY_SAP_SIPPER": {
+    "name": "Sap Sipper",
+    "rating": 7
+  },
+  "ABILITY_PRANKSTER": {
+    "name": "Prankster",
+    "rating": 8
+  },
+  "ABILITY_SAND_FORCE": {
+    "name": "Sand Force",
+    "rating": 4
+  },
+  "ABILITY_IRON_BARBS": {
+    "name": "Iron Barbs",
+    "rating": 6
+  },
+  "ABILITY_ZEN_MODE": {
+    "name": "Zen Mode",
+    "rating": -1
+  },
+  "ABILITY_VICTORY_STAR": {
+    "name": "Victory Star",
+    "rating": 6
+  },
+  "ABILITY_TURBOBLAZE": {
+    "name": "Turboblaze",
+    "rating": 7
+  },
+  "ABILITY_TERAVOLT": {
+    "name": "Teravolt",
+    "rating": 7
+  },
+  "ABILITY_AROMA_VEIL": {
+    "name": "Aroma Veil",
+    "rating": 3
+  },
+  "ABILITY_FLOWER_VEIL": {
+    "name": "Flower Veil",
+    "rating": 0
+  },
+  "ABILITY_CHEEK_POUCH": {
+    "name": "Cheek Pouch",
+    "rating": 4
+  },
+  "ABILITY_PROTEAN": {
+    "name": "Protean",
+    "rating": 8
+  },
+  "ABILITY_FUR_COAT": {
+    "name": "Fur Coat",
+    "rating": 7
+  },
+  "ABILITY_MAGICIAN": {
+    "name": "Magician",
+    "rating": 3
+  },
+  "ABILITY_BULLETPROOF": {
+    "name": "Bulletproof",
+    "rating": 7
+  },
+  "ABILITY_COMPETITIVE": {
+    "name": "Competitive",
+    "rating": 5
+  },
+  "ABILITY_STRONG_JAW": {
+    "name": "Strong Jaw",
+    "rating": 6
+  },
+  "ABILITY_REFRIGERATE": {
+    "name": "Refrigerate",
+    "rating": 8
+  },
+  "ABILITY_SWEET_VEIL": {
+    "name": "Sweet Veil",
+    "rating": 4
+  },
+  "ABILITY_STANCE_CHANGE": {
+    "name": "Stance Change",
+    "rating": 10
+  },
+  "ABILITY_GALE_WINGS": {
+    "name": "Gale Wings",
+    "rating": 6
+  },
+  "ABILITY_MEGA_LAUNCHER": {
+    "name": "Mega Launcher",
+    "rating": 7
+  },
+  "ABILITY_GRASS_PELT": {
+    "name": "Grass Pelt",
+    "rating": 2
+  },
+  "ABILITY_SYMBIOSIS": {
+    "name": "Symbiosis",
+    "rating": 0
+  },
+  "ABILITY_TOUGH_CLAWS": {
+    "name": "Tough Claws",
+    "rating": 7
+  },
+  "ABILITY_PIXILATE": {
+    "name": "Pixilate",
+    "rating": 8
+  },
+  "ABILITY_GOOEY": {
+    "name": "Gooey",
+    "rating": 5
+  },
+  "ABILITY_AERILATE": {
+    "name": "Aerilate",
+    "rating": 8
+  },
+  "ABILITY_PARENTAL_BOND": {
+    "name": "Parental Bond",
+    "rating": 10
+  },
+  "ABILITY_DARK_AURA": {
+    "name": "Dark Aura",
+    "rating": 6
+  },
+  "ABILITY_FAIRY_AURA": {
+    "name": "Fairy Aura",
+    "rating": 6
+  },
+  "ABILITY_AURA_BREAK": {
+    "name": "Aura Break",
+    "rating": 3
+  },
+  "ABILITY_PRIMORDIAL_SEA": {
+    "name": "Primordial Sea",
+    "rating": 10
+  },
+  "ABILITY_DESOLATE_LAND": {
+    "name": "Desolate Land",
+    "rating": 10
+  },
+  "ABILITY_DELTA_STREAM": {
+    "name": "Delta Stream",
+    "rating": 10
+  },
+  "ABILITY_STAMINA": {
+    "name": "Stamina",
+    "rating": 6
+  },
+  "ABILITY_WIMP_OUT": {
+    "name": "Wimp Out",
+    "rating": 3
+  },
+  "ABILITY_EMERGENCY_EXIT": {
+    "name": "Emergency Exit",
+    "rating": 3
+  },
+  "ABILITY_WATER_COMPACTION": {
+    "name": "Water Compaction",
+    "rating": 4
+  },
+  "ABILITY_MERCILESS": {
+    "name": "Merciless",
+    "rating": 4
+  },
+  "ABILITY_SHIELDS_DOWN": {
+    "name": "Shields Down",
+    "rating": 6
+  },
+  "ABILITY_STAKEOUT": {
+    "name": "Stakeout",
+    "rating": 6
+  },
+  "ABILITY_WATER_BUBBLE": {
+    "name": "Water Bubble",
+    "rating": 8
+  },
+  "ABILITY_STEELWORKER": {
+    "name": "Steelworker",
+    "rating": 6
+  },
+  "ABILITY_BERSERK": {
+    "name": "Berserk",
+    "rating": 5
+  },
+  "ABILITY_SLUSH_RUSH": {
+    "name": "Slush Rush",
+    "rating": 5
+  },
+  "ABILITY_LONG_REACH": {
+    "name": "Long Reach",
+    "rating": 3
+  },
+  "ABILITY_LIQUID_VOICE": {
+    "name": "Liquid Voice",
+    "rating": 5
+  },
+  "ABILITY_TRIAGE": {
+    "name": "Triage",
+    "rating": 7
+  },
+  "ABILITY_GALVANIZE": {
+    "name": "Galvanize",
+    "rating": 8
+  },
+  "ABILITY_SURGE_SURFER": {
+    "name": "Surge Surfer",
+    "rating": 4
+  },
+  "ABILITY_SCHOOLING": {
+    "name": "Schooling",
+    "rating": 6
+  },
+  "ABILITY_DISGUISE": {
+    "name": "Disguise",
+    "rating": 8
+  },
+  "ABILITY_BATTLE_BOND": {
+    "name": "Battle Bond",
+    "rating": 6
+  },
+  "ABILITY_POWER_CONSTRUCT": {
+    "name": "Power Construct",
+    "rating": 10
+  },
+  "ABILITY_CORROSION": {
+    "name": "Corrosion",
+    "rating": 5
+  },
+  "ABILITY_COMATOSE": {
+    "name": "Comatose",
+    "rating": 6
+  },
+  "ABILITY_QUEENLY_MAJESTY": {
+    "name": "Queenly Majesty",
+    "rating": 6
+  },
+  "ABILITY_INNARDS_OUT": {
+    "name": "Innards Out",
+    "rating": 5
+  },
+  "ABILITY_DANCER": {
+    "name": "Dancer",
+    "rating": 5
+  },
+  "ABILITY_BATTERY": {
+    "name": "Battery",
+    "rating": 0
+  },
+  "ABILITY_FLUFFY": {
+    "name": "Fluffy",
+    "rating": 5
+  },
+  "ABILITY_DAZZLING": {
+    "name": "Dazzling",
+    "rating": 5
+  },
+  "ABILITY_SOUL_HEART": {
+    "name": "Soul-Heart",
+    "rating": 7
+  },
+  "ABILITY_TANGLING_HAIR": {
+    "name": "Tangling Hair",
+    "rating": 5
+  },
+  "ABILITY_RECEIVER": {
+    "name": "Receiver",
+    "rating": 0
+  },
+  "ABILITY_POWER_OF_ALCHEMY": {
+    "name": "Power Of Alchemy",
+    "rating": 0
+  },
+  "ABILITY_BEAST_BOOST": {
+    "name": "Beast Boost",
+    "rating": 7
+  },
+  "ABILITY_RKS_SYSTEM": {
+    "name": "RKS System",
+    "rating": 8
+  },
+  "ABILITY_ELECTRIC_SURGE": {
+    "name": "Electric Surge",
+    "rating": 8
+  },
+  "ABILITY_PSYCHIC_SURGE": {
+    "name": "Psychic Surge",
+    "rating": 8
+  },
+  "ABILITY_MISTY_SURGE": {
+    "name": "Misty Surge",
+    "rating": 8
+  },
+  "ABILITY_GRASSY_SURGE": {
+    "name": "Grassy Surge",
+    "rating": 8
+  },
+  "ABILITY_FULL_METAL_BODY": {
+    "name": "Full Metal Body",
+    "rating": 4
+  },
+  "ABILITY_SHADOW_SHIELD": {
+    "name": "Shadow Shield",
+    "rating": 8
+  },
+  "ABILITY_PRISM_ARMOR": {
+    "name": "Prism Armor",
+    "rating": 6
+  },
+  "ABILITY_NEUROFORCE": {
+    "name": "Neuroforce",
+    "rating": 6
+  },
+  "ABILITY_INTREPID_SWORD": {
+    "name": "Intrepid Sword",
+    "rating": 3
+  },
+  "ABILITY_DAUNTLESS_SHIELD": {
+    "name": "Dauntless Shield",
+    "rating": 3
+  },
+  "ABILITY_LIBERO": {
+    "name": "Libero",
+    "rating": 0
+  },
+  "ABILITY_BALL_FETCH": {
+    "name": "Ball Fetch",
+    "rating": 0
+  },
+  "ABILITY_COTTON_DOWN": {
+    "name": "Cotton Down",
+    "rating": 3
+  },
+  "ABILITY_PROPELLER_TAIL": {
+    "name": "Propeller Tail",
+    "rating": 2
+  },
+  "ABILITY_MIRROR_ARMOR": {
+    "name": "Mirror Armor",
+    "rating": 6
+  },
+  "ABILITY_GULP_MISSILE": {
+    "name": "Gulp Missile",
+    "rating": 3
+  },
+  "ABILITY_STALWART": {
+    "name": "Stalwart",
+    "rating": 2
+  },
+  "ABILITY_STEAM_ENGINE": {
+    "name": "Steam Engine",
+    "rating": 3
+  },
+  "ABILITY_PUNK_ROCK": {
+    "name": "Punk Rock",
+    "rating": 2
+  },
+  "ABILITY_SAND_SPIT": {
+    "name": "Sand Spit",
+    "rating": 5
+  },
+  "ABILITY_ICE_SCALES": {
+    "name": "Ice Scales",
+    "rating": 7
+  },
+  "ABILITY_RIPEN": {
+    "name": "Ripen",
+    "rating": 4
+  },
+  "ABILITY_ICE_FACE": {
+    "name": "Ice Face",
+    "rating": 4
+  },
+  "ABILITY_POWER_SPOT": {
+    "name": "Power Spot",
+    "rating": 2
+  },
+  "ABILITY_MIMICRY": {
+    "name": "Mimicry",
+    "rating": 2
+  },
+  "ABILITY_SCREEN_CLEANER": {
+    "name": "Screen Cleaner",
+    "rating": 3
+  },
+  "ABILITY_STEELY_SPIRIT": {
+    "name": "Steely Spirit",
+    "rating": 2
+  },
+  "ABILITY_PERISH_BODY": {
+    "name": "Perish Body",
+    "rating": -1
+  },
+  "ABILITY_WANDERING_SPIRIT": {
+    "name": "Wandering Spirit",
+    "rating": 2
+  },
+  "ABILITY_GORILLA_TACTICS": {
+    "name": "Gorilla Tactics",
+    "rating": 4
+  },
+  "ABILITY_NEUTRALIZING_GAS": {
+    "name": "Neutralizing Gas",
+    "rating": 5
+  },
+  "ABILITY_PASTEL_VEIL": {
+    "name": "Pastel Veil",
+    "rating": 4
+  },
+  "ABILITY_HUNGER_SWITCH": {
+    "name": "Hunger Switch",
+    "rating": 2
+  },
+  "ABILITY_QUICK_DRAW": {
+    "name": "Quick Draw",
+    "rating": 4
+  },
+  "ABILITY_UNSEEN_FIST": {
+    "name": "Unseen Fist",
+    "rating": 6
+  },
+  "ABILITY_CURIOUS_MEDICINE": {
+    "name": "Curious Medicine",
+    "rating": 3
+  },
+  "ABILITY_TRANSISTOR": {
+    "name": "Transistor",
+    "rating": 6
+  },
+  "ABILITY_DRAGONS_MAW": {
+    "name": "Dragon's Maw",
+    "rating": 6
+  },
+  "ABILITY_CHILLING_NEIGH": {
+    "name": "Chilling Neigh",
+    "rating": 7
+  },
+  "ABILITY_GRIM_NEIGH": {
+    "name": "Grim Neigh",
+    "rating": 7
+  },
+  "ABILITY_AS_ONE_ICE_RIDER": {
+    "name": "As One",
+    "rating": 10
+  },
+  "ABILITY_AS_ONE_SHADOW_RIDER": {
+    "name": "As One",
+    "rating": 10
+  },
+  "ABILITY_LINGERING_AROMA": {
+    "name": "Lingering Aroma",
+    "rating": 5
+  },
+  "ABILITY_SEED_SOWER": {
+    "name": "Seed Sower",
+    "rating": 5
+  },
+  "ABILITY_THERMAL_EXCHANGE": {
+    "name": "Thermal Exchange",
+    "rating": 4
+  },
+  "ABILITY_ANGER_SHELL": {
+    "name": "Anger Shell",
+    "rating": 3
+  },
+  "ABILITY_PURIFYING_SALT": {
+    "name": "Purifying Salt",
+    "rating": 6
+  },
+  "ABILITY_WELL_BAKED_BODY": {
+    "name": "Well-Baked Body",
+    "rating": 5
+  },
+  "ABILITY_WIND_RIDER": {
+    "name": "Wind Rider",
+    "rating": 4
+  },
+  "ABILITY_GUARD_DOG": {
+    "name": "Guard Dog",
+    "rating": 5
+  },
+  "ABILITY_ROCKY_PAYLOAD": {
+    "name": "Rocky Payload",
+    "rating": 6
+  },
+  "ABILITY_WIND_POWER": {
+    "name": "Wind Power",
+    "rating": 4
+  },
+  "ABILITY_ZERO_TO_HERO": {
+    "name": "Zero to Hero",
+    "rating": 10
+  },
+  "ABILITY_COMMANDER": {
+    "name": "Commander",
+    "rating": 10
+  },
+  "ABILITY_ELECTROMORPHOSIS": {
+    "name": "Electromorphosis",
+    "rating": 5
+  },
+  "ABILITY_PROTOSYNTHESIS": {
+    "name": "Protosynthesis",
+    "rating": 7
+  },
+  "ABILITY_QUARK_DRIVE": {
+    "name": "Quark Drive",
+    "rating": 7
+  },
+  "ABILITY_GOOD_AS_GOLD": {
+    "name": "Good as Gold",
+    "rating": 8
+  },
+  "ABILITY_VESSEL_OF_RUIN": {
+    "name": "Vessel of Ruin",
+    "rating": 5
+  },
+  "ABILITY_SWORD_OF_RUIN": {
+    "name": "Sword of Ruin",
+    "rating": 5
+  },
+  "ABILITY_TABLETS_OF_RUIN": {
+    "name": "Tablets of Ruin",
+    "rating": 5
+  },
+  "ABILITY_BEADS_OF_RUIN": {
+    "name": "Beads of Ruin",
+    "rating": 5
+  },
+  "ABILITY_ORICHALCUM_PULSE": {
+    "name": "Orichalcum Pulse",
+    "rating": 8
+  },
+  "ABILITY_HADRON_ENGINE": {
+    "name": "Hadron Engine",
+    "rating": 8
+  },
+  "ABILITY_OPPORTUNIST": {
+    "name": "Opportunist",
+    "rating": 5
+  },
+  "ABILITY_CUD_CHEW": {
+    "name": "Cud Chew",
+    "rating": 4
+  },
+  "ABILITY_SHARPNESS": {
+    "name": "Sharpness",
+    "rating": 7
+  },
+  "ABILITY_SUPREME_OVERLORD": {
+    "name": "Supreme Overlord",
+    "rating": 6
+  },
+  "ABILITY_COSTAR": {
+    "name": "Costar",
+    "rating": 5
+  },
+  "ABILITY_TOXIC_DEBRIS": {
+    "name": "Toxic Debris",
+    "rating": 4
+  },
+  "ABILITY_ARMOR_TAIL": {
+    "name": "Armor Tail",
+    "rating": 5
+  },
+  "ABILITY_EARTH_EATER": {
+    "name": "Earth Eater",
+    "rating": 7
+  },
+  "ABILITY_MYCELIUM_MIGHT": {
+    "name": "Mycelium Might",
+    "rating": 2
+  },
+  "ABILITY_HOSPITALITY": {
+    "name": "Hospitality",
+    "rating": 5
+  },
+  "ABILITY_MINDS_EYE": {
+    "name": "Mind's Eye",
+    "rating": 8
+  },
+  "ABILITY_EMBODY_ASPECT_TEAL_MASK": {
+    "name": "Embody Aspect",
+    "rating": 6
+  },
+  "ABILITY_EMBODY_ASPECT_HEARTHFLAME_MASK": {
+    "name": "Embody Aspect",
+    "rating": 6
+  },
+  "ABILITY_EMBODY_ASPECT_WELLSPRING_MASK": {
+    "name": "Embody Aspect",
+    "rating": 6
+  },
+  "ABILITY_EMBODY_ASPECT_CORNERSTONE_MASK": {
+    "name": "Embody Aspect",
+    "rating": 6
+  },
+  "ABILITY_TOXIC_CHAIN": {
+    "name": "Toxic Chain",
+    "rating": 8
+  },
+  "ABILITY_SUPERSWEET_SYRUP": {
+    "name": "Supersweet Syrup",
+    "rating": 5
+  },
+  "ABILITY_TERA_SHIFT": {
+    "name": "Tera Shift",
+    "rating": 10
+  },
+  "ABILITY_TERA_SHELL": {
+    "name": "Tera Shell",
+    "rating": 10
+  },
+  "ABILITY_TERAFORM_ZERO": {
+    "name": "Teraform Zero",
+    "rating": 10
+  },
+  "ABILITY_POISON_PUPPETEER": {
+    "name": "Poison Puppeteer",
+    "rating": 8
+  }
+}

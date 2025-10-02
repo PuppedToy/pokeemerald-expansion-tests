@@ -298,7 +298,7 @@ function parseTeachableFile(teachableFileText) {
     return teachables;
 }
 
-function parseAbilitiesFileForAIRating(abilitiesFileText) {
+function parseAbilitiesFile(abilitiesFileText) {
     const lines = abilitiesFileText.split('\n');
     const abilities = {};
     let currentAbility;
@@ -589,7 +589,7 @@ function ratePokemon(poke, moves, abilities) {
     let bestAbilityRating = 0;
     poke.parsedAbilities.forEach(abilityId => {
         if (abilityId === 'NONE') return;
-        const abilityRating = abilities[`ABILITY_${abilityId}`].rating || 0;
+        const abilityRating = abilities[`ABILITY_${abilityId}`]?.rating || 0;
         if (abilityRating > bestAbilityRating) {
             bestAbilityRating = abilityRating;
         }
@@ -668,7 +668,7 @@ function ratePokemon(poke, moves, abilities) {
 
 async function exe() {
     const abilitiesFileText = await fs.readFile(abilitiesFilePath, 'utf-8');
-    const abilities = parseAbilitiesFileForAIRating(abilitiesFileText);
+    const abilities = parseAbilitiesFile(abilitiesFileText);
     await fs.writeFile(path.resolve(__dirname, 'abilities.json'), JSON.stringify(abilities, null, 2), 'utf-8');
 
     const megaEvosFileText = await fs.readFile(megaEvosPath, 'utf-8');
