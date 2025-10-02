@@ -491,7 +491,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
                     loosePokemon => trainerMonDefinition.absoluteTier.includes(loosePokemon.rating.temporaryTier),
                 );
             }
-            if (trainerMonDefinition.evoType.includes(EVO_TYPE_LC)) {
+            if (trainerMonDefinition.evoType && trainerMonDefinition.evoType.includes(EVO_TYPE_LC)) {
                 pokemonLooseList = pokemonLooseList.filter(
                     loosePokemon => loosePokemon.evolutionData.isLC,
                 );
