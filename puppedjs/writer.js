@@ -138,7 +138,7 @@ function sample(array) {
     return array[index];
 }
 
-async function writer(pokemonList, moves, abilitiesRatings) {
+async function writer(pokemonList, moves, abilities) {
     const elegiblePokemonForStarters = [];
     const averagePokemonLC = [];
     pokemonList.forEach(poke => {
@@ -607,6 +607,13 @@ async function writer(pokemonList, moves, abilitiesRatings) {
                         }
                     }
                 }
+                if (trainer.abilities && trainer.abilities.length > 0) {
+                    const validAbilities = chosenTrainerMon.parsedAbilities.filter(a => trainer.abilities.includes(a));
+                    if (validAbilities.length > 0) {
+                        const ability = sample(validAbilities);
+                        newTeamMember.ability = ability;
+                    }
+                }
                 team.push(newTeamMember);
             }
             else {
@@ -628,6 +635,9 @@ async function writer(pokemonList, moves, abilitiesRatings) {
                 `Level: ${trainerData.level}`,
                 'IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe',
             ];
+            if (teamEntry.ability) {
+                lines.push(`Ability: ${teamEntry.ability}`);
+            }
             if (teamEntry.moves && teamEntry.moves.length > 0) {
                 const moveNames = teamEntry.moves.slice(0, 4)
                     .map(m => moves[m] ? moves[m].name : m);

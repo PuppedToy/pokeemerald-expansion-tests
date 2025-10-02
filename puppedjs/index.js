@@ -306,13 +306,25 @@ function parseAbilitiesFileForAIRating(abilitiesFileText) {
     for (let i = 0; i < lines.length; i++) {
         if (lines[i].startsWith('    [')) {
             currentAbility = lines[i].split('[')[1].split(']')[0];
-            abilities[currentAbility] = 0;
+            abilities[currentAbility] = {
+                name: '',
+                rating: 0,
+            };
             continue;
         }
         if (!currentAbility) continue;
         if (lines[i].startsWith('        .aiRating = ')) {
             const rating = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
-            abilities[currentAbility] = parseFloat(rating);
+            abilities[currentAbility].rating = parseFloat(rating);
+        }
+        if (lines[i].startsWith('        .name = ')) {
+            const nameMatch = lines[i].trim().match(/\.name = \_\("(.*)"\),?/);
+            if (nameMatch) {
+                abilities[currentAbility].name = nameMatch[1];
+            }
+            else {
+                abilities[currentAbility].name = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
+            }
         }
     }
     return abilities;
@@ -563,7 +575,7 @@ function getEvolutionType(pokemon, evoTree) {
     return EVO_TYPE_SOLO;
 }
 
-function ratePokemon(poke, moves, abilitiesRatings) {
+function ratePokemon(poke, moves, abilities) {
     const BEST_RATING_FOR_MEGA_EVO = 780;
     const BEST_RATING_FOR_FULLY_EVO = 720;
     const BEST_RATING_FOR_NFE = 515;
@@ -577,7 +589,7 @@ function ratePokemon(poke, moves, abilitiesRatings) {
     let bestAbilityRating = 0;
     poke.parsedAbilities.forEach(abilityId => {
         if (abilityId === 'NONE') return;
-        const abilityRating = abilitiesRatings[`ABILITY_${abilityId}`] || 0;
+        const abilityRating = abilities[`ABILITY_${abilityId}`].rating || 0;
         if (abilityRating > bestAbilityRating) {
             bestAbilityRating = abilityRating;
         }
@@ -656,8 +668,8 @@ function ratePokemon(poke, moves, abilitiesRatings) {
 
 async function exe() {
     const abilitiesFileText = await fs.readFile(abilitiesFilePath, 'utf-8');
-    const abilitiesRatings = parseAbilitiesFileForAIRating(abilitiesFileText);
-    await fs.writeFile(path.resolve(__dirname, 'abilitiesRatings.json'), JSON.stringify(abilitiesRatings, null, 2), 'utf-8');
+    const abilities = parseAbilitiesFileForAIRating(abilitiesFileText);
+    await fs.writeFile(path.resolve(__dirname, 'abilities.json'), JSON.stringify(abilities, null, 2), 'utf-8');
 
     const megaEvosFileText = await fs.readFile(megaEvosPath, 'utf-8');
     const megaEvoStones = parseMegaEvoStonesFile(megaEvosFileText);
@@ -764,7 +776,7 @@ async function exe() {
                 teachables,
                 evoTree: evoTree[poke.family],
             };
-            fullPoke.rating = ratePokemon(fullPoke, moves, abilitiesRatings);
+            fullPoke.rating = ratePokemon(fullPoke, moves, abilities);
             allPokes.push(fullPoke);
         });
     });
@@ -833,7 +845,7 @@ async function exe() {
     await fs.writeFile(path.resolve(__dirname, 'evoTree.json'), JSON.stringify(evoTree, null, 2), 'utf-8');
     await fs.writeFile(path.resolve(__dirname, 'pokes.json'), JSON.stringify(allPokes, null, 2), 'utf-8');
 
-    await writer(allPokes, moves, abilitiesRatings);
+    await writer(allPokes, moves, abilities);
 }
 
 exe();
