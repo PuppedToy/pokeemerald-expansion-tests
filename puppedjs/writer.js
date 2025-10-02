@@ -566,9 +566,6 @@ async function writer(pokemonList, moves, abilitiesRatings) {
         };
     });
 
-    // First replace every entry of "AI: Check Bad Move" with "AI: Basic Trainer"
-    trainersFileContent = trainersFileContent.replace(/AI: Check Bad Move/g, 'AI: Basic Trainer');
-
     Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
         
         const generatedTeamTextLines = trainerData.team.map(teamEntry => {
