@@ -538,7 +538,7 @@ async function writer(pokemonList, moves, abilitiesRatings) {
                     }
                     else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES) {
                         if (trainer.abilities) {
-                            filteredLooseList = filteredLooseList.filter(p => p.abilities.some(a => trainer.abilities.includes(a)));
+                            filteredLooseList = filteredLooseList.filter(p => p.parsedAbilities.some(a => trainer.abilities.includes(a)));
                         }
                         else {
                             console.warn(`Trainer ${trainer.id} has restriction TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES but no abilities defined. Ignoring restriction.`);
