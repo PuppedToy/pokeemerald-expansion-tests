@@ -130,7 +130,7 @@ const trainersData = [
             ...rival103Template,
             {
                 id: 'RIVAL_STARTER_TREECKO',
-                special: TRAINER_POKE_STARTER_TREECKO,
+                special: TRAINER_POKE_STARTER_TORCHIC,
                 item: 'Oran Berry',
             }
         ]
@@ -143,7 +143,7 @@ const trainersData = [
             ...rival103Template,
             {
                 id: 'RIVAL_STARTER_TORCHIC',
-                special: TRAINER_POKE_STARTER_TORCHIC,
+                special: TRAINER_POKE_STARTER_MUDKIP,
                 item: 'Oran Berry',
             }
         ]
@@ -156,7 +156,7 @@ const trainersData = [
             ...rival103Template,
             {
                 id: 'RIVAL_STARTER_MUDKIP',
-                special: TRAINER_POKE_STARTER_MUDKIP,
+                special: TRAINER_POKE_STARTER_TREECKO,
                 item: 'Oran Berry',
             }
         ]

@@ -281,8 +281,9 @@ Route101_EventScript_Calvin::
 	end
 
 Route101_EventScript_OranBerries::
+	setflag FLAG_ITEM_ROUTE101_ORAN_BERRY
 	giveitem ITEM_ORAN_BERRY, 300
-	clearflag FLAG_ITEM_ROUTE101_ORAN_BERRY
+	release
 	end
 
 Route101_Movement_BirchApproachPlayer:
