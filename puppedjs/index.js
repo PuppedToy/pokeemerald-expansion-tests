@@ -240,7 +240,11 @@ function parseMovesFile(movesFileText) {
         if (!currentMove) continue;
         if (lines[i].startsWith('        .') && !lines[i].startsWith('        .additionalEffects =')) {
             const currentProperty = lines[i].trim().split('.')[1].split(' ')[0];
-            const currentValue = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
+            let currentValue = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
+            const compoundMatch = currentValue.match(/COMPOUND_STRING\("(.*)"\),?/);
+            if (compoundMatch) {
+                currentValue = compoundMatch[1];
+            }
             currentMove[currentProperty] = currentValue;
         }
         if (lines[i].startsWith('            .moveEffect = ')) {

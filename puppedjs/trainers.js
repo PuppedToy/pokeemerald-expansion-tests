@@ -10,11 +10,18 @@ const {
     TIER_WEAK,
     TIER_AVERAGE,
     TIER_PREMIUM,
+    EVO_TYPE_SOLO,
+    POKEMON_TYPE_WATER,
+    POKEMON_TYPE_ICE,
+    POKEMON_TYPE_BUG,
+    TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
+    TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES,
+    TRAINER_RESTRICTION_MUST_LEARN_TM_MOVES,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
 
-const lcDogs = [
+const calvinDogs = [
     'SPECIES_GROWLITHE',
     'SPECIES_GROWLITHE_HISUI',
     'SPECIES_ZIGZAGOON',
@@ -64,25 +71,40 @@ const rival103Template = [
     },
 ];
 
+const allenCats = [
+    'SPECIES_MEOWTH',
+    'SPECIES_MEOWTH_ALOLAN',
+    'SPECIES_MEOWTH_GALAR',
+    'SPECIES_SKITTY',
+    'SPECIES_GLAMEOW',
+    'SPECIES_PURRLOIN',
+    'SPECIES_SHINX',
+    'SPECIES_ESPURR',
+    'SPECIES_SPRIGATITO',
+    'SPECIES_LITTEN',
+    'SPECIES_LITLEO'
+];
+
 const trainersData = [
+    // Route 101
     {
         id: 'TRAINER_CALVIN_1',
         level: 7,
         team: [
             {
-                oneOf: lcDogs,
+                oneOf: calvinDogs,
             },
             {
-                oneOf: lcDogs,
+                oneOf: calvinDogs,
             },
             {
-                oneOf: lcDogs,
+                oneOf: calvinDogs,
             },
             {
-                oneOf: lcDogs,
+                oneOf: calvinDogs,
             },
             {
-                oneOf: lcDogs,
+                oneOf: calvinDogs,
             },
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -122,6 +144,123 @@ const trainersData = [
             },
         ],
     },
+    // Route 102
+    {
+        id: 'TRAINER_ALLEN',
+        level: 9,
+        team: [
+            {
+                oneOf: allenCats,
+                item: 'Oran Berry',
+            },
+            {
+                oneOf: allenCats,
+                item: 'Oran Berry',
+            },
+            {
+                oneOf: allenCats,
+                item: 'Oran Berry',
+            },
+            {
+                oneOf: allenCats,
+                item: 'Oran Berry',
+            },
+            {
+                oneOf: allenCats,
+                item: 'Oran Berry',
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_WURMPLE'],
+                item: 'Oran Berry',
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_RICK',
+        level: 9,
+        restrictions: [
+            TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
+        ],
+        types: [
+            POKEMON_TYPE_WATER,
+            POKEMON_TYPE_ICE,
+            POKEMON_TYPE_BUG,
+        ],
+        team: [
+            {
+                absoluteTier: [TIER_BAD],
+                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_WEAK],
+                evoType: [EVO_TYPE_LC],
+                item: 'Oran Berry',
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_WINGULL'],
+                item: 'Oran Berry',
+            },
+        ]
+    },
+    {
+        id: 'TRAINER_TIANA',
+        level: 9,
+        restrictions: [
+            TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
+        ],
+        types: [
+            POKEMON_TYPE_FAIRY,
+            POKEMON_TYPE_GRASS,
+            POKEMON_TYPE_FIGHTING,
+            POKEMON_TYPE_PSYCHIC,
+        ],
+        team: [
+            {
+                specific: 'SPECIES_SHROOMISH',
+                item: 'Expert Belt',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_WEAK],
+                evoType: [EVO_TYPE_LC],
+                item: 'Expert Belt',
+            },
+        ]
+    },
+    // Route 103
     {
         id: 'TRAINER_MAY_ROUTE_103_TREECKO',
         level: 7,
@@ -172,7 +311,46 @@ const trainersData = [
     {
         id: 'TRAINER_BRENDAN_ROUTE_103_MUDKIP',
         copy: 'TRAINER_MAY_ROUTE_103_MUDKIP',
-    }
+    },
+    {
+        id: 'TRAINER_CARTER',
+        level: 9,
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES],
+        abilities: ['DRIZZLE', 'SWIFT_SWIM', 'RAIN_DISH', 'DRY_SKIN', 'HYDRATION'],
+        team: [
+            {
+                absoluteTier: [TIER_BAD],
+                tmMovesIfCan: ['MOVE_RAIN_DANCE'],
+                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                tmMovesIfCan: ['MOVE_RAIN_DANCE'],
+                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                tmMovesIfCan: ['MOVE_RAIN_DANCE'],
+                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                tmMovesIfCan: ['MOVE_RAIN_DANCE'],
+                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                tmMovesIfCan: ['MOVE_RAIN_DANCE'],
+                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                tmMovesIfCan: ['MOVE_RAIN_DANCE'],
+                item: 'Oran Berry',
+            },
+        ]
+    },
+    // Route 104
 ]
 
 module.exports = {

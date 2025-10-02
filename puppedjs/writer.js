@@ -23,6 +23,8 @@ const {
     TRAINER_POKE_STARTER_TORCHIC,
     TRAINER_POKE_STARTER_MUDKIP,
     TRAINER_RESTRICTION_NO_REPEATED_TYPE,
+    TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
+    TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES,
 } = require('./constants');
 
 const MAX_MEGA_EVO_STONES = 3;
@@ -466,6 +468,12 @@ async function writer(pokemonList, moves, abilitiesRatings) {
             if (trainerMonDefinition.oneOf) {
                 pokemonLooseList = trainerMonDefinition.oneOf.map(p => pokemonList.find(pl => pl.id === p));
             }
+            else if (trainerMonDefinition.specific) {
+                const specificPokemon = pokemonList.find(p => p.id === trainerMonDefinition.specific);
+                if (specificPokemon) {
+                    pokemonStrictList = [specificPokemon];
+                }
+            }
             else if (trainerMonDefinition.special === TRAINER_POKE_ENCOUNTER) {
                 pokemonLooseList = trainerMonDefinition.encounterIds.map((encounterId) => {
                     const replacedId = replacementLog[encounterId];
@@ -520,7 +528,22 @@ async function writer(pokemonList, moves, abilitiesRatings) {
                         const selectedTypes = new Set(...team.map(pokemon => pokemon.parsedTypes).flat());
                         filteredLooseList = filteredLooseList.filter(p => !p.parsedTypes.some(t => selectedTypes.has(t)));
                     }
-                    // Rest of restrictions can be added here
+                    else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_TYPES) {
+                        if (trainer.types) {
+                            filteredLooseList = filteredLooseList.filter(p => p.parsedTypes.some(t => trainer.types.includes(t)));
+                        }
+                        else {
+                            console.warn(`Trainer ${trainer.id} has restriction TRAINER_RESTRICTION_ALLOW_ONLY_TYPES but no types defined. Ignoring restriction.`);
+                        }
+                    }
+                    else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES) {
+                        if (trainer.abilities) {
+                            filteredLooseList = filteredLooseList.filter(p => p.abilities.some(a => trainer.abilities.includes(a)));
+                        }
+                        else {
+                            console.warn(`Trainer ${trainer.id} has restriction TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES but no abilities defined. Ignoring restriction.`);
+                        }
+                    }
                 });
                 pokemonStrictList = [...pokemonStrictList, ...filteredLooseList];
             }
@@ -553,10 +576,38 @@ async function writer(pokemonList, moves, abilitiesRatings) {
                 if (trainerMonDefinition.id) {
                     storedIds[trainerMonDefinition.id] = chosenTrainerMon;
                 }
-                team.push({
+                const newTeamMember = {
                     pokemon: chosenTrainerMon,
                     item: trainerMonDefinition.item || null,
-                });
+                    moves: [],
+                };
+                if (trainerMonDefinition.tmMovesIfCan) {
+                    trainerMonDefinition.forEach(tmMove => {
+                        if (
+                            chosenTrainerMon.teachables
+                            && chosenTrainerMon.teachables.includes(tmMove)
+                            && !newTeamMember.moves[tmMove]
+                        ) {
+                            newTeamMember.moves.push(tmMove);
+                        }
+                    });
+                }
+                if (newTeamMember.moves && newTeamMember.moves.length < 4) {
+                    // Try to fill with level up moves
+                    // Filter by level
+                    const validMoves = chosenTrainerMon.learnset.filter(({ level }) => 
+                        level <= trainer.level && !newTeamMember.moves.includes(level.move)
+                    );
+                    // Sort by level descending
+                    validMoves.sort((a, b) => b.level - a.level);
+                    while (validMoves.length > 0 && newTeamMember.moves.length < 4) {
+                        const move = validMoves.shift().move;
+                        if (!newTeamMember.moves.includes(move)) {
+                            newTeamMember.moves.push(move);
+                        }
+                    }
+                }
+                team.push(newTeamMember);
             }
             else {
                 console.warn(`No pokemon chosen for trainer ${trainer.id} with definition ${JSON.stringify(trainerMonDefinition)}`);
@@ -572,12 +623,17 @@ async function writer(pokemonList, moves, abilitiesRatings) {
     Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
         
         const generatedTeamTextLines = trainerData.team.map(teamEntry => {
-            return [
+            const lines = [
                 teamEntry.item ? `${teamEntry.pokemon.name} @ ${teamEntry.item}` : teamEntry.pokemon.name,
                 `Level: ${trainerData.level}`,
                 'IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe',
-                '',
-            ]
+            ];
+            if (teamEntry.moves && teamEntry.moves.length > 0) {
+                const moveNames = teamEntry.moves.slice(0, 4)
+                    .map(m => moves[m] ? moves[m].name : m);
+                lines.push(`- ${moveNames.join('\n- ')}`);
+            }
+            return [...lines, ''];
         }).flat().join('\n');
         
         /* Trainers will be like this
