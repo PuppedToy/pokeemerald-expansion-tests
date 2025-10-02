@@ -1,11 +1,13 @@
 const items = {
     // Randomized items - mints
+    // ITEM_MECH_MAIL will be replaced by these
     strongAtkMints: [
         'ITEM_ADAMANT_MINT',
         'ITEM_JOLLY_MINT',
         'ITEM_MODEST_MINT',
         'ITEM_TIMID_MINT',
     ],
+    // ITEM_WAVE_MAIL will be replaced by these
     strongDefMints: [
         'ITEM_BOLD_MINT',
         'ITEM_IMPISH_MINT',
@@ -14,7 +16,8 @@ const items = {
         'ITEM_RELAXED_MINT',
         'ITEM_SASSY_MINT',
     ],
-    midMints: [
+    // ITEM_WOOD_MAIL will be replaced by these
+    midMints: [ // 1 at Rustboro
         'ITEM_LONELY_MINT',
         'ITEM_NAUGHTY_MINT',
         'ITEM_BRAVE_MINT',
@@ -51,9 +54,9 @@ const items = {
         ITEM_ICICLE_PLATE: 'ICE',
         ITEM_FIST_PLATE: 'FIGHTING',
         ITEM_TOXIC_PLATE: 'POISON',
-        ITEM_EARTH_PLATE: 'GROUND',
+        ITEM_EARTH_PLATE: 'GROUND', // Route 116
         ITEM_SKY_PLATE: 'FLYING',
-        ITEM_MIND_PLATE: 'PSYCHIC',
+        ITEM_MIND_PLATE: 'PSYCHIC', // Route 116
         ITEM_INSECT_PLATE: 'BUG',
         ITEM_STONE_PLATE: 'ROCK',
         ITEM_SPOOKY_PLATE: 'GHOST',
@@ -157,7 +160,7 @@ const items = {
         'ITEM_TM_DIG',
         'ITEM_TM_PSYCHIC',
         'ITEM_TM_SHADOW_BALL',
-        'ITEM_TM_BRICK_BREAK',
+        'ITEM_TM_BRICK_BREAK', // Route 116
         'ITEM_TM_DOUBLE_TEAM',
         'ITEM_TM_REFLECT',
         'ITEM_TM_SHOCK_WAVE',
@@ -244,11 +247,11 @@ const items = {
     // These are valuable consumables that will not be randomized
     consumables: {
         // Hidden ability
-        ITEM_ABILITY_PATCH: {
+        ITEM_ABILITY_PATCH: { // 1 at Route 116
             count: 3
         },
         // Normal ability
-        ITEM_ABILITY_CAPSULE: {
+        ITEM_ABILITY_CAPSULE: { // 1 at Route 104
             count: 6
         },
         ITEM_HEART_SCALE: {
@@ -279,6 +282,7 @@ const items = {
     ],
 
     goodSituationalItems: [
+        // These will be represented as ITEM_HARBOR_MAIL in the future and shuffled
         'ITEM_FLAME_ORB',
         'ITEM_TOXIC_ORB',
         'ITEM_DAMP_ROCK',
@@ -286,10 +290,10 @@ const items = {
         'ITEM_SMOOTH_ROCK',
         'ITEM_ICY_ROCK',
         'ITEM_WIDE_LENS',
-        'ITEM_EXPERT_BELT', // Route102
+        'ITEM_EXPERT_BELT', // Route 102
         'ITEM_LIGHT_CLAY',
         'ITEM_ZOOM_LENS',
-        'ITEM_BLACK_SLUDGE',
+        'ITEM_BLACK_SLUDGE', // Route 116
         'ITEM_SHED_SHELL',
         'ITEM_BIG_ROOT',
         'ITEM_TERRAIN_EXTENDER',
@@ -299,7 +303,7 @@ const items = {
 
     goodConsumables: [
         'ITEM_WHITE_HERB',
-        'ITEM_KINGS_ROCK',
+        'ITEM_KINGS_ROCK', // Route 116
         'ITEM_POWER_HERB',
         'ITEM_FOCUS_SASH',
         'ITEM_AIR_BALLOON',

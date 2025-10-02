@@ -1227,9 +1227,9 @@
 #define FLAG_ITEM_ROUTE101_ORAN_BERRY                               0x494
 #define FLAG_ITEM_ROUTE101_ULTRA_BALL                               0x495
 #define FLAG_ITEM_ROUTE_104_GEM                                     0x496
-#define FLAG_UNUSED_0x497                                           0x497 // Unused Flag
-#define FLAG_UNUSED_0x498                                           0x498 // Unused Flag
-#define FLAG_UNUSED_0x499                                           0x499 // Unused Flag
+#define FLAG_ITEM_ROUTE_TM_BRICK_BREAK                              0x497
+#define FLAG_ITEM_ROUTE_116_KINGS_ROCK                              0x498
+#define FLAG_ITEM_ROUTE_116_MIND_PLATE                              0x499
 #define FLAG_UNUSED_0x49A                                           0x49A // Unused Flag
 #define FLAG_UNUSED_0x49B                                           0x49B // Unused Flag
 #define FLAG_UNUSED_0x49C                                           0x49C // Unused Flag
