@@ -679,7 +679,7 @@ const trainersData = [
             },
             {
                 specific: 'SPECIES_NOSEPASS',
-                tryToHaveMove: ['MOVE_ROCK_TOMB'],
+                tryToHaveMove: ['MOVE_ROCK_TOMB', 'MOVE_ROCK_SMASH', 'MOVE_SHOCK_WAVE', 'MOVE_SANDSTORM'],
                 item: 'Eviolite',
             },
             {
