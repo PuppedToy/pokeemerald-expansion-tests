@@ -678,6 +678,11 @@ const trainersData = [
                 item: 'Smooth Rock',
             },
             {
+                specific: 'SPECIES_NOSEPASS',
+                tryToHaveMove: ['MOVE_ROCK_TOMB'],
+                item: 'Eviolite',
+            },
+            {
                 absoluteTier: [TIER_BAD],
                 type: [POKEMON_TYPE_ROCK],
                 tryToHaveMove: ['MOVE_ROCK_TOMB'],
@@ -702,11 +707,6 @@ const trainersData = [
                 type: [POKEMON_TYPE_ROCK],
                 tryToHaveMove: ['MOVE_ROCK_TOMB'],
                 item: 'Rock Gem',
-            },
-            {
-                specific: 'SPECIES_NOSEPASS',
-                tryToHaveMove: ['MOVE_ROCK_TOMB'],
-                item: 'Eviolite',
             },
         ],
     },
