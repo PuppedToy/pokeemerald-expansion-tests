@@ -672,9 +672,10 @@ const trainersData = [
         level: 10,
         team: [
             {
-                specific: 'SPECIES_HIPPOPOTAS',
-                tryToHaveMove: ['MOVE_ROCK_TOMB', 'MOVE_STEALTH_ROCK', 'MOVE_SANDSTORM', 'MOVE_BULLDOZE'],
-                item: 'Oran Berry',
+                absoluteTier: [TIER_BAD],
+                mustHaveOneOfMoves: ['MOVE_STEALTH_ROCK'],
+                tryToHaveMove: ['MOVE_ROCK_TOMB', 'MOVE_STEALTH_ROCK', 'MOVE_SANDSTORM'],
+                item: 'Smooth Rock',
             },
             {
                 absoluteTier: [TIER_BAD],
@@ -684,7 +685,7 @@ const trainersData = [
             },
             {
                 absoluteTier: [TIER_BAD],
-                type: [POKEMON_TYPE_ROCK],
+                type: [POKEMON_TYPE_GROUND],
                 tryToHaveMove: ['MOVE_ROCK_TOMB'],
                 item: 'Passho Berry',
             },
