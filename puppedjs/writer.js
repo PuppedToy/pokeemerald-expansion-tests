@@ -515,6 +515,33 @@ async function writer(pokemonList, moves, abilities) {
                         && trainerMonDefinition.megaTier.includes(loosePokemon.rating.megaEvoTier),
                 );
             }
+            if (trainerMonDefinition.type) {
+                pokemonLooseList = pokemonLooseList.filter(
+                    loosePokemon => loosePokemon.parsedTypes.some(t => trainerMonDefinition.type.includes(t)),
+                );
+            }
+
+            const canLearnMove = (moveToLearn) => 
+                (
+                    chosenTrainerMon.teachables
+                    && chosenTrainerMon.teachables.includes(moveToLearn)
+                )
+                ||
+                (
+                    chosenTrainerMon.learnset
+                    && chosenTrainerMon.learnset.some(lu => lu.move === moveToLearn && lu.level <= trainer.level)
+                );
+
+            if (trainerMonDefinition.mustHaveOneOfMoves) {
+                trainerMonDefinition.mustHaveOneOfMoves.forEach(moveToLearn => {
+                    pokemonLooseList = pokemonLooseList.filter(
+                        loosePokemon => {
+                            chosenTrainerMon = loosePokemon;
+                            return canLearnMove(moveToLearn);
+                        }
+                    );
+                });
+            }
 
             // Always apply unique restriction
             if (pokemonLooseList.length > 0) {
@@ -579,16 +606,16 @@ async function writer(pokemonList, moves, abilities) {
                 const newTeamMember = {
                     pokemon: chosenTrainerMon,
                     item: trainerMonDefinition.item || null,
+                    nature: trainerMonDefinition.nature || null,
                     moves: [],
                 };
-                if (trainerMonDefinition.tmMovesIfCan) {
-                    trainerMonDefinition.tmMovesIfCan.forEach(tmMove => {
+                if (trainerMonDefinition.tryToHaveMove) {
+                    trainerMonDefinition.tryToHaveMove.forEach(moveToLearn => {
                         if (
-                            chosenTrainerMon.teachables
-                            && chosenTrainerMon.teachables.includes(tmMove)
-                            && !newTeamMember.moves[tmMove]
+                            canLearnMove(moveToLearn)
+                            && !newTeamMember.moves[moveToLearn]
                         ) {
-                            newTeamMember.moves.push(tmMove);
+                            newTeamMember.moves.push(moveToLearn);
                         }
                     });
                 }
@@ -632,12 +659,15 @@ async function writer(pokemonList, moves, abilities) {
         const generatedTeamTextLines = trainerData.team.map(teamEntry => {
             const lines = [
                 teamEntry.item ? `${teamEntry.pokemon.name} @ ${teamEntry.item}` : teamEntry.pokemon.name,
-                `Level: ${trainerData.level}`,
-                'IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe',
             ];
             if (teamEntry.ability) {
                 lines.push(`Ability: ${teamEntry.ability}`);
             }
+            lines.push(`Level: ${trainerData.level}`);
+            if (teamEntry.nature) {
+                lines.push(`Nature: ${teamEntry.nature}`);
+            }
+            lines.push('IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe',);
             if (teamEntry.moves && teamEntry.moves.length > 0) {
                 const moveNames = teamEntry.moves.slice(0, 4)
                     .map(m => moves[m] ? moves[m].name : m);
