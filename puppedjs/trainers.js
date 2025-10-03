@@ -703,7 +703,7 @@ const trainersData = [
                 item: 'Rock Gem',
             },
             {
-                specific: 'SPECIES_NOSEPAS',
+                specific: 'SPECIES_NOSEPASS',
                 tryToHaveMove: ['MOVE_ROCK_TOMB'],
                 item: 'Eviolite',
             },
