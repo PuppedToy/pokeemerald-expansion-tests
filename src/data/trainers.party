@@ -241,7 +241,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -529,7 +528,6 @@ Class: Aqua Admin
 Pic: Aqua Admin M
 Gender: Male
 Music: Aqua
-Items: Super Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -594,7 +592,6 @@ Class: Aqua Leader
 Pic: Aqua Leader Archie
 Gender: Male
 Music: Aqua
-Items: Super Potion / Super Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -659,7 +656,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1256,7 +1252,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1273,7 +1268,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1290,7 +1284,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1307,7 +1300,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1323,7 +1315,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1373,7 +1364,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1395,7 +1385,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1413,7 +1402,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Super Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1435,7 +1423,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1453,7 +1440,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1471,7 +1457,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1493,7 +1478,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1519,7 +1503,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1541,7 +1524,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1563,7 +1545,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1585,7 +1566,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1607,7 +1587,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1629,7 +1608,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1647,7 +1625,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1663,7 +1640,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1680,7 +1656,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER / Try To Faint / Force Setup First Turn
 
@@ -1696,7 +1671,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER / Try To Faint / Force Setup First Turn
 
@@ -1730,7 +1704,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER / Try To Faint / Force Setup First Turn
 
@@ -1748,7 +1721,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Super Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1770,7 +1742,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1784,7 +1755,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1798,7 +1768,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1812,7 +1781,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1834,7 +1802,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1852,7 +1819,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1874,7 +1840,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1896,7 +1861,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1918,7 +1882,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -1940,7 +1903,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2111,7 +2073,6 @@ Class: Lady
 Pic: Lady
 Gender: Female
 Music: Female
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2125,7 +2086,6 @@ Class: Lady
 Pic: Lady
 Gender: Female
 Music: Female
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2172,7 +2132,6 @@ Class: Lady
 Pic: Lady
 Gender: Female
 Music: Female
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2188,7 +2147,6 @@ Class: Lady
 Pic: Lady
 Gender: Female
 Music: Female
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2202,7 +2160,6 @@ Class: Lady
 Pic: Lady
 Gender: Female
 Music: Female
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2216,7 +2173,6 @@ Class: Lady
 Pic: Lady
 Gender: Female
 Music: Female
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2230,7 +2186,6 @@ Class: Lady
 Pic: Lady
 Gender: Female
 Music: Female
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2244,7 +2199,6 @@ Class: Lady
 Pic: Lady
 Gender: Female
 Music: Female
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2258,7 +2212,6 @@ Class: Lady
 Pic: Lady
 Gender: Female
 Music: Female
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2515,7 +2468,6 @@ Class: Rich Boy
 Pic: Rich Boy
 Gender: Male
 Music: Rich
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2546,7 +2498,6 @@ Class: Rich Boy
 Pic: Rich Boy
 Gender: Male
 Music: Rich
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2560,7 +2511,6 @@ Class: Rich Boy
 Pic: Rich Boy
 Gender: Male
 Music: Rich
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2574,7 +2524,6 @@ Class: Rich Boy
 Pic: Rich Boy
 Gender: Male
 Music: Rich
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2588,7 +2537,6 @@ Class: Rich Boy
 Pic: Rich Boy
 Gender: Male
 Music: Rich
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -2602,7 +2550,6 @@ Class: Rich Boy
 Pic: Rich Boy
 Gender: Male
 Music: Rich
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -4582,7 +4529,6 @@ Class: Elite Four
 Pic: Elite Four Sidney
 Gender: Male
 Music: Elite Four
-Items: Full Restore / Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER / Force Setup First Turn
 Mugshot: Purple
@@ -4633,7 +4579,6 @@ Class: Elite Four
 Pic: Elite Four Phoebe
 Gender: Female
 Music: Elite Four
-Items: Full Restore / Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 Mugshot: Green
@@ -4684,7 +4629,6 @@ Class: Elite Four
 Pic: Elite Four Glacia
 Gender: Female
 Music: Elite Four
-Items: Full Restore / Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 Mugshot: Pink
@@ -4735,7 +4679,6 @@ Class: Elite Four
 Pic: Elite Four Drake
 Gender: Male
 Music: Elite Four
-Items: Full Restore / Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 Mugshot: Blue
@@ -4786,7 +4729,6 @@ Class: Leader
 Pic: Leader Roxanne
 Gender: Female
 Music: Female
-Items: Potion / Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -4804,7 +4746,6 @@ Class: Leader
 Pic: Leader Brawly
 Gender: Male
 Music: Male
-Items: Super Potion / Super Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -4822,7 +4763,6 @@ Class: Leader
 Pic: Leader Wattson
 Gender: Male
 Music: Male
-Items: Super Potion / Super Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -4840,7 +4780,6 @@ Class: Leader
 Pic: Leader Flannery
 Gender: Female
 Music: Female
-Items: Hyper Potion / Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -4858,7 +4797,6 @@ Class: Leader
 Pic: Leader Norman
 Gender: Male
 Music: Male
-Items: Hyper Potion / Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -4876,7 +4814,6 @@ Class: Leader
 Pic: Leader Winona
 Gender: Female
 Music: Female
-Items: Hyper Potion / Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER / Risky
 
@@ -4894,7 +4831,6 @@ Class: Leader
 Pic: Leader Tate And Liza
 Gender: Male
 Music: Female
-Items: Hyper Potion / Hyper Potion / Hyper Potion / Hyper Potion
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -4920,7 +4856,6 @@ Class: Leader
 Pic: Leader Juan
 Gender: Male
 Music: Male
-Items: Hyper Potion / Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -5852,7 +5787,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -5878,7 +5812,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -6053,7 +5986,6 @@ Class: Champion
 Pic: Champion Wallace
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore / Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 Mugshot: Yellow
@@ -7413,7 +7345,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 
 Claydol
@@ -8990,7 +8921,6 @@ Class: Cooltrainer 2
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -9072,7 +9002,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -9260,7 +9189,6 @@ Class: Rival
 Pic: Wally
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -9876,7 +9804,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -10039,7 +9966,6 @@ Class: Pkmn Ranger
 Pic: Pokemon Ranger M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -10053,7 +9979,6 @@ Class: Pkmn Ranger
 Pic: Pokemon Ranger M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -10075,7 +10000,6 @@ Class: Pkmn Ranger
 Pic: Pokemon Ranger M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -10089,7 +10013,6 @@ Class: Pkmn Ranger
 Pic: Pokemon Ranger M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER / Try To Faint / Force Setup First Turn
 
@@ -10103,7 +10026,6 @@ Class: Pkmn Ranger
 Pic: Pokemon Ranger M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -10117,7 +10039,6 @@ Class: Pkmn Ranger
 Pic: Pokemon Ranger M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER / Try To Faint / Force Setup First Turn
 
@@ -10131,7 +10052,6 @@ Class: Pkmn Ranger
 Pic: Pokemon Ranger M
 Gender: Male
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -10149,7 +10069,6 @@ Class: Pkmn Ranger
 Pic: Pokemon Ranger F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER / Try To Faint / Force Setup First Turn
 
@@ -10167,7 +10086,6 @@ Class: Pkmn Ranger
 Pic: Pokemon Ranger F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER / Try To Faint / Force Setup First Turn
 
@@ -10189,7 +10107,6 @@ Class: Pkmn Ranger
 Pic: Pokemon Ranger F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -10207,7 +10124,6 @@ Class: Pkmn Ranger
 Pic: Pokemon Ranger F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER / Try To Faint / Force Setup First Turn
 
@@ -10225,7 +10141,6 @@ Class: Pkmn Ranger
 Pic: Pokemon Ranger F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -10243,7 +10158,6 @@ Class: Pkmn Ranger
 Pic: Pokemon Ranger F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER / Try To Faint / Force Setup First Turn
 
@@ -10261,7 +10175,6 @@ Class: Pkmn Ranger
 Pic: Pokemon Ranger F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -10442,7 +10355,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -10745,7 +10657,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER / Try To Faint / Force Setup First Turn
 
@@ -10797,7 +10708,6 @@ Class: Magma Leader
 Pic: Magma Leader Maxie
 Gender: Male
 Music: Magma
-Items: Super Potion / Super Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -10811,7 +10721,6 @@ Class: Magma Leader
 Pic: Magma Leader Maxie
 Gender: Male
 Music: Magma
-Items: Super Potion / Super Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -11640,7 +11549,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -11826,7 +11734,6 @@ Class: Rival
 Pic: Wally
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -11876,7 +11783,6 @@ Class: Rival
 Pic: Wally
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -11926,7 +11832,6 @@ Class: Rival
 Pic: Wally
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -11976,7 +11881,6 @@ Class: Rival
 Pic: Wally
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -12235,7 +12139,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -12253,7 +12156,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -12730,7 +12632,6 @@ Class: Lady
 Pic: Lady
 Gender: Female
 Music: Female
-Items: Full Restore
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -13289,7 +13190,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -13422,7 +13322,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -13700,7 +13599,6 @@ Class: Expert
 Pic: Expert F
 Gender: Female
 Music: Intense
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -13761,7 +13659,6 @@ Class: Cooltrainer
 Pic: Cooltrainer M
 Gender: Male
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -13878,7 +13775,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -13930,7 +13826,6 @@ Class: Leader
 Pic: Leader Roxanne
 Gender: Female
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -13972,7 +13867,6 @@ Class: Leader
 Pic: Leader Roxanne
 Gender: Female
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14022,7 +13916,6 @@ Class: Leader
 Pic: Leader Roxanne
 Gender: Female
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14072,7 +13965,6 @@ Class: Leader
 Pic: Leader Roxanne
 Gender: Female
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14130,7 +14022,6 @@ Class: Leader
 Pic: Leader Brawly
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14172,7 +14063,6 @@ Class: Leader
 Pic: Leader Brawly
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14214,7 +14104,6 @@ Class: Leader
 Pic: Leader Brawly
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14264,7 +14153,6 @@ Class: Leader
 Pic: Leader Brawly
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14322,7 +14210,6 @@ Class: Leader
 Pic: Leader Wattson
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14364,7 +14251,6 @@ Class: Leader
 Pic: Leader Wattson
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14414,7 +14300,6 @@ Class: Leader
 Pic: Leader Wattson
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14464,7 +14349,6 @@ Class: Leader
 Pic: Leader Wattson
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14522,7 +14406,6 @@ Class: Leader
 Pic: Leader Flannery
 Gender: Female
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14564,7 +14447,6 @@ Class: Leader
 Pic: Leader Flannery
 Gender: Female
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14614,7 +14496,6 @@ Class: Leader
 Pic: Leader Flannery
 Gender: Female
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14672,7 +14553,6 @@ Class: Leader
 Pic: Leader Flannery
 Gender: Female
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14730,7 +14610,6 @@ Class: Leader
 Pic: Leader Norman
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14772,7 +14651,6 @@ Class: Leader
 Pic: Leader Norman
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14822,7 +14700,6 @@ Class: Leader
 Pic: Leader Norman
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14872,7 +14749,6 @@ Class: Leader
 Pic: Leader Norman
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -14930,7 +14806,6 @@ Class: Leader
 Pic: Leader Winona
 Gender: Female
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER / Risky
 
@@ -14980,7 +14855,6 @@ Class: Leader
 Pic: Leader Winona
 Gender: Female
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER / Risky
 
@@ -15038,7 +14912,6 @@ Class: Leader
 Pic: Leader Winona
 Gender: Female
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER / Risky
 
@@ -15096,7 +14969,6 @@ Class: Leader
 Pic: Leader Winona
 Gender: Female
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER / Risky
 
@@ -15154,7 +15026,6 @@ Class: Leader
 Pic: Leader Tate And Liza
 Gender: Male
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -15204,7 +15075,6 @@ Class: Leader
 Pic: Leader Tate And Liza
 Gender: Male
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -15262,7 +15132,6 @@ Class: Leader
 Pic: Leader Tate And Liza
 Gender: Male
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -15320,7 +15189,6 @@ Class: Leader
 Pic: Leader Tate And Liza
 Gender: Male
 Music: Female
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -15378,7 +15246,6 @@ Class: Leader
 Pic: Leader Juan
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -15428,7 +15295,6 @@ Class: Leader
 Pic: Leader Juan
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -15478,7 +15344,6 @@ Class: Leader
 Pic: Leader Juan
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -15536,7 +15401,6 @@ Class: Leader
 Pic: Leader Juan
 Gender: Male
 Music: Male
-Items: Full Restore / Full Restore / Full Restore
 Double Battle: Yes
 AI: AI_FLAG_SMART_TRAINER
 
@@ -16058,7 +15922,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -16076,7 +15939,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -16098,7 +15960,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -16120,7 +15981,6 @@ Class: Cooltrainer
 Pic: Cooltrainer F
 Gender: Female
 Music: Cool
-Items: Hyper Potion
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
