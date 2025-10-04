@@ -55,62 +55,52 @@ const rival103Template = [
     {
         special: TRAINER_POKE_ENCOUNTER,
         encounterIds: ['SPECIES_ZIGZAGOON'],
-        item: 'Oran Berry',
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
         encounterIds: ['SPECIES_WURMPLE', 'SPECIES_WINGULL'],
-        item: 'Oran Berry',
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
         encounterIds: ['SPECIES_SURSKIT'],
-        item: 'Oran Berry',
     },
     {
         id: 'RIVAL_WEAK_103_KEEP_ONCE',
         absoluteTier: [TIER_WEAK],
         evoType: [EVO_TYPE_LC],
-        item: 'Oran Berry',
     },
     {
         id: 'RIVAL_MEGA_103_KEEP',
         megaTier: [TIER_PREMIUM],
         evoType: [EVO_TYPE_LC],
-        item: 'Oran Berry',
     },
 ];
 
-const genericBadLCTeamTemplate = (item) => [
+const genericBadLCTeamTemplate = [
     {
         absoluteTier: [TIER_BAD],
         evoType: [EVO_TYPE_LC],
-        item,
     },
     {
         absoluteTier: [TIER_BAD],
         evoType: [EVO_TYPE_LC],
-        item,
     },
     {
         absoluteTier: [TIER_BAD],
         evoType: [EVO_TYPE_LC],
-        item,
     },
     {
         absoluteTier: [TIER_BAD],
         evoType: [EVO_TYPE_LC],
-        item,
     },
     {
         absoluteTier: [TIER_BAD],
         evoType: [EVO_TYPE_LC],
-        item,
     },
     {
         absoluteTier: [TIER_BAD],
         evoType: [EVO_TYPE_LC],
-        item,
+        item: 'Oran Berry',
     },
 ];
 
@@ -131,8 +121,8 @@ const allenCats = [
 const aquaTeamTypes = [
     POKEMON_TYPE_WATER,
     POKEMON_TYPE_DARK,
-    POKEMON_TYPE_ICE,
     POKEMON_TYPE_POISON,
+    POKEMON_TYPE_ICE,
     POKEMON_TYPE_FLYING,
 ];
 
@@ -210,28 +200,22 @@ const trainersData = [
         team: [
             {
                 oneOf: allenCats,
-                item: 'Oran Berry',
             },
             {
                 oneOf: allenCats,
-                item: 'Oran Berry',
             },
             {
                 oneOf: allenCats,
-                item: 'Oran Berry',
             },
             {
                 oneOf: allenCats,
-                item: 'Oran Berry',
             },
             {
                 oneOf: allenCats,
-                item: 'Oran Berry',
             },
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_WURMPLE'],
-                item: 'Oran Berry',
             },
         ],
     },
@@ -249,24 +233,23 @@ const trainersData = [
         team: [
             {
                 absoluteTier: [TIER_BAD],
-                item: 'Oran Berry',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                item: 'Oran Berry',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                item: 'Oran Berry',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                item: 'Oran Berry',
+                evoType: [EVO_TYPE_LC],
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
             },
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -295,27 +278,22 @@ const trainersData = [
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                item: 'Expert Belt',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                item: 'Expert Belt',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                item: 'Expert Belt',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                item: 'Expert Belt',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                item: 'Expert Belt',
             },
         ]
     },
@@ -381,37 +359,31 @@ const trainersData = [
                 absoluteTier: [TIER_BAD],
                 tryToHaveMove: ['MOVE_RAIN_DANCE'],
                 evoType: [EVO_TYPE_LC],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 tryToHaveMove: ['MOVE_RAIN_DANCE'],
                 evoType: [EVO_TYPE_LC],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 tryToHaveMove: ['MOVE_RAIN_DANCE'],
                 evoType: [EVO_TYPE_LC],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 tryToHaveMove: ['MOVE_RAIN_DANCE'],
                 evoType: [EVO_TYPE_LC],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 tryToHaveMove: ['MOVE_RAIN_DANCE'],
                 evoType: [EVO_TYPE_LC],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 tryToHaveMove: ['MOVE_RAIN_DANCE'],
                 evoType: [EVO_TYPE_LC],
-                item: 'Oran Berry',
             },
         ]
     },
@@ -420,13 +392,13 @@ const trainersData = [
         id: 'TRAINER_DARIAN',
         level: 9,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        team: genericBadLCTeamTemplate('Oran Berry'),
+        team: [...genericBadLCTeamTemplate],
     },
     {
         id: 'TRAINER_BILLY',
         level: 9,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        team: genericBadLCTeamTemplate('Oran Berry'),
+        team: [...genericBadLCTeamTemplate],
     },
     {
         id: 'TRAINER_CINDY_1',
@@ -436,27 +408,22 @@ const trainersData = [
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
@@ -471,48 +438,43 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
         // @TODO Maybe this should be explicitly weak to Rock
         types: [POKEMON_TYPE_FIRE, POKEMON_TYPE_BUG, POKEMON_TYPE_ICE, POKEMON_TYPE_FLYING],
-        team: genericBadLCTeamTemplate('Charti Berry'),
+        team: genericBadLCTeamTemplate.map(p => ({
+            ...p,
+            item: 'Charti Berry',
+        })),
     },
     {
         id: 'TRAINER_IVAN',
         level: 10,
-        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
-        types: [POKEMON_TYPE_WATER],
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_WATER_PULSE'],
-                item: 'Water Gem',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_WATER_PULSE'],
-                item: 'Water Gem',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_WATER_PULSE'],
-                item: 'Water Gem',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_WATER_PULSE'],
-                item: 'Water Gem',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_WATER_PULSE'],
-                item: 'Water Gem',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                item: 'Eviolite',
+                type: [POKEMON_TYPE_WATER],
+                mustHaveOneOfMoves: ['MOVE_WATER_PULSE'],
+                tryToHaveMove: ['MOVE_WATER_PULSE'],
+                item: 'Water Gem',
             },
         ],
     },
@@ -520,7 +482,10 @@ const trainersData = [
         id: 'TRAINER_HALEY_1',
         level: 10,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        team: genericBadLCTeamTemplate('Heavy-Duty Boots'),
+        team: genericBadLCTeamTemplate.map(p => ({
+            ...p,
+            item: 'Heavy-Duty Boots',
+        })),
     },
     {
         id: 'TRAINER_GINA_AND_MIA_1',
@@ -529,18 +494,7 @@ const trainersData = [
         team: [
             {
                 absoluteTier: [TIER_BAD],
-                item: 'Oran Berry',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                item: 'Oran Berry',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                item: 'Oran Berry',
-            },
-            {
-                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
                 item: 'Oran Berry',
             },
             {
@@ -549,9 +503,20 @@ const trainersData = [
                 item: 'Oran Berry',
             },
             {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+            },
+            {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_PORYGON'],
-                item: 'Eviolite',
             },
         ]
     },
@@ -566,7 +531,6 @@ const trainersData = [
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
                 type: [POKEMON_TYPE_BUG],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
@@ -578,7 +542,6 @@ const trainersData = [
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
                 type: [POKEMON_TYPE_BUG],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
@@ -590,7 +553,6 @@ const trainersData = [
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
                 type: [POKEMON_TYPE_BUG],
-                item: 'Oran Berry',
             },
             {
                 specific: 'SPECIES_PARAS',
@@ -613,25 +575,23 @@ const trainersData = [
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
                 type: [aquaTeamTypes[1]],
-                item: 'Oran Berry',
+                item: 'Expert Belt',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
                 type: [aquaTeamTypes[2]],
-                item: 'Oran Berry',
+                item: 'Toxic Plate',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
                 type: [aquaTeamTypes[3]],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
                 type: [aquaTeamTypes[4]],
-                item: 'Oran Berry',
             },
             {
                 specific: 'SPECIES_CARVANHA',
@@ -646,24 +606,19 @@ const trainersData = [
         team: [
             {
                 absoluteTier: [TIER_BAD],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
-                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                item: 'Oran Berry',
             },
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -692,7 +647,7 @@ const trainersData = [
                 absoluteTier: [TIER_BAD],
                 type: [POKEMON_TYPE_ROCK],
                 tryToHaveMove: ['MOVE_ROCK_TOMB'],
-                item: 'Rindo Berry',
+                item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
