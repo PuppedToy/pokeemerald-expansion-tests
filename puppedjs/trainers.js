@@ -104,7 +104,6 @@ const rivalRustboroTemplate = [
         item: 'Chesto Berry',
     },
     {
-        special: TRAINER_POKE_ENCOUNTER,
         id: 'RIVAL_STRONG_RUSTBORO_KEEP',
         evolutionTier: [TIER_STRONG],
         evoType: [EVO_TYPE_LC],
