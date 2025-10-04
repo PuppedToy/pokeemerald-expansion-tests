@@ -326,7 +326,7 @@ Route104_Text_PickItem1:
 Route104_Text_PickItem2:
 	.string "Bullet Seed$"
 
-Route104_Text_PickItem2:
+Route104_Text_PickItem3:
 	.string "Steel Wing$"
 
 Route104_EventScript_ReceivedWhiteHerb::
