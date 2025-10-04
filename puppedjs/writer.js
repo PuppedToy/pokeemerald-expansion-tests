@@ -618,19 +618,21 @@ async function writer(pokemonList, moves, abilities) {
             if (trainerMonDefinition.tryEvolve) {
                 if (chosenTrainerMon.evolutions && chosenTrainerMon.evolutions.length > 0) {
                     // Try to evolve to the first possible evolution
-                    const possibleEvolutions = chosenTrainerMon.evolutions.filter(({ param }) => 
-                        !isNaN(parseInt(param)) && parseInt(param) <= trainer.level && parseInt(param) > 4
-                    );
-                    if (possibleEvolutions.length > 0) {
-                        // sort by param
-                        possibleEvolutions.sort((a, b) => parseInt(b.param) - parseInt(a.param));
-                        const evolutionToApply = possibleEvolutions[0].pokemon;
-                        console.log(`Evolving ${chosenTrainerMon.id} to ${evolutionToApply} for trainer ${trainer.id}`);
-                        const evolvedForm = pokemonList.find(p => p.id === evolutionToApply);
-                        if (evolvedForm) {
-                            chosenTrainerMon = evolvedForm;
+                    do {
+                        const possibleEvolutions = chosenTrainerMon.evolutions.filter(({ param }) => 
+                            !isNaN(parseInt(param)) && parseInt(param) <= trainer.level && parseInt(param) > 4
+                        );
+                        if (possibleEvolutions.length > 0) {
+                            // sort by param
+                            possibleEvolutions.sort((a, b) => parseInt(b.param) - parseInt(a.param));
+                            const evolutionToApply = possibleEvolutions[0].pokemon;
+                            console.log(`Evolving ${chosenTrainerMon.id} to ${evolutionToApply} for trainer ${trainer.id}`);
+                            const evolvedForm = pokemonList.find(p => p.id === evolutionToApply);
+                            if (evolvedForm) {
+                                chosenTrainerMon = evolvedForm;
+                            }
                         }
-                    }
+                    } while (possibleEvolutions.length > 0);
                 }
             }
 
