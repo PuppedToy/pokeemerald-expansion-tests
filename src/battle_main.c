@@ -252,6 +252,8 @@ COMMON_DATA u8 gHealthboxSpriteIds[MAX_BATTLERS_COUNT] = {0};
 COMMON_DATA u8 gMultiUsePlayerCursor = 0;
 COMMON_DATA u8 gNumberOfMovesToChoose = 0;
 
+static u16 sBattleHeldItemsBackup[PARTY_SIZE]; 
+
 static const struct ScanlineEffectParams sIntroScanlineParams16Bit =
 {
     &REG_BG3HOFS, SCANLINE_EFFECT_DMACNT_16BIT, 1
@@ -3127,6 +3129,9 @@ static void BattleStartClearSetData(void)
         gBattleStruct->monCausingSleepClause[B_SIDE_PLAYER] = PARTY_SIZE;
         gBattleStruct->monCausingSleepClause[B_SIDE_OPPONENT] = PARTY_SIZE;
     }
+
+    for (i = 0; i < PARTY_SIZE; i++)
+        sBattleHeldItemsBackup[i] = GetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM);
 }
 
 #define UNPACK_VOLATILE_BATON_PASSABLES(_enum, _fieldName, _typeMaxValue, ...) __VA_OPT__(if ((FIRST(__VA_ARGS__)) & V_BATON_PASSABLE) gBattleMons[battler].volatiles._fieldName = volatilesCopy->_fieldName;)
@@ -5727,6 +5732,8 @@ static void WaitForEvoSceneToFinish(void)
 
 static void ReturnFromBattleToOverworld(void)
 {
+    s32 i;
+
     if (!(gBattleTypeFlags & BATTLE_TYPE_LINK))
     {
         RandomlyGivePartyPokerus(gPlayerParty);
@@ -5744,13 +5751,20 @@ static void ReturnFromBattleToOverworld(void)
     {
         UpdateRoamerHPStatus(&gEnemyParty[0]);
         ZeroEnemyPartyMons();
-
-#ifndef BUGFIX
+        #ifndef BUGFIX
         if ((gBattleOutcome & B_OUTCOME_WON) || gBattleOutcome == B_OUTCOME_CAUGHT)
-#else
-        if ((gBattleOutcome == B_OUTCOME_WON) || gBattleOutcome == B_OUTCOME_CAUGHT) // Bug: When Roar is used by roamer, gBattleOutcome is B_OUTCOME_PLAYER_TELEPORTED (5).
-#endif                                                                               // & with B_OUTCOME_WON (1) will return TRUE and deactivates the roamer.
+        #else
+        if ((gBattleOutcome == B_OUTCOME_WON) || gBattleOutcome == B_OUTCOME_CAUGHT)
+        #endif
             SetRoamerInactive(gEncounteredRoamerIndex);
+    }
+
+    // --- NEW CODE: Restore consumed held items for player party ---
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        u16 originalItem = sBattleHeldItemsBackup[i];
+        if (originalItem != ITEM_NONE)
+            SetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM, &originalItem);
     }
 
     m4aSongNumStop(SE_LOW_HEALTH);

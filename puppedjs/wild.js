@@ -21,17 +21,9 @@ const {
 const wildData = {
     file: path.resolve(__dirname, '..', 'src', 'data', 'wild_encounters.json'),
     replacementTypes: {
-        LC_BAD_WEAK: {
-            replace: [TIER_WEAK, TIER_BAD],
+        LC_BAD_WEAK_AVERAGE: {
+            replace: [TIER_AVERAGE, TIER_WEAK, TIER_BAD],
             type: [EVO_TYPE_LC],
-        },
-        LC_WEAK: {
-            replace: [TIER_WEAK],
-            type: [EVO_TYPE_LC],
-        },
-        LC_OR_SOLO_WEAK: {
-            replace: [TIER_WEAK],
-            type: [EVO_TYPE_LC, EVO_TYPE_SOLO],
         },
         LC_AVERAGE_OR_WEAK: {
             replace: [TIER_AVERAGE, TIER_WEAK],
@@ -56,27 +48,27 @@ const wildData = {
         SPECIES_PUPITAR: 'NFE_OR_SOLO_STRONG',
 
         // Route101
-        SPECIES_ZIGZAGOON: 'LC_BAD_WEAK',
+        SPECIES_ZIGZAGOON: 'LC_BAD_WEAK_AVERAGE',
 
         // Route102
-        SPECIES_WURMPLE: 'LC_BAD_WEAK',
-        SPECIES_WINGULL: 'LC_WEAK',
+        SPECIES_WURMPLE: 'LC_BAD_WEAK_AVERAGE',
+        SPECIES_WINGULL: 'LC_BAD_WEAK_AVERAGE',
         SPECIES_LOTAD: 'NFE_OR_SOLO_AVERAGE_OR_WEAK',
         SPECIES_KIRLIA: 'NFE_OR_SOLO_AVERAGE',
 
         // Route103
-        SPECIES_SURSKIT: 'LC_WEAK',
+        SPECIES_SURSKIT: 'LC_BAD_WEAK_AVERAGE',
         SPECIES_TENTACOOL: 'NFE_OR_SOLO_AVERAGE_OR_WEAK',
         SPECIES_PELIPPER: 'NFE_OR_SOLO_AVERAGE',
 
         // Petalburg
-        SPECIES_SMEARGLE: 'LC_WEAK',
+        SPECIES_SMEARGLE: 'LC_BAD_WEAK_AVERAGE',
         SPECIES_GOLDEEN: 'NFE_OR_SOLO_AVERAGE_OR_WEAK',
         SPECIES_MILTANK: 'NFE_OR_SOLO_AVERAGE',
 
         // Route104
         SPECIES_GEODUDE: 'LC_AVERAGE_OR_WEAK',
-        SPECIES_WEEDLE: 'LC_WEAK',
+        SPECIES_WEEDLE: 'LC_BAD_WEAK_AVERAGE',
         SPECIES_PONYTA: 'NFE_OR_SOLO_AVERAGE_OR_WEAK',
 
         // PetalburgWoods
@@ -87,16 +79,16 @@ const wildData = {
 
         // Route115
         SPECIES_SANDSHREW: 'NFE_OR_SOLO_AVERAGE_OR_WEAK',
-        SPECIES_DELIBIRD: 'LC_OR_SOLO_WEAK',
+        SPECIES_DELIBIRD: 'LC_AVERAGE_OR_WEAK',
         SPECIES_EKANS: 'NFE_OR_SOLO_AVERAGE_OR_WEAK',
 
         // Route116
-        SPECIES_DITTO: 'LC_OR_SOLO_WEAK',
-        SPECIES_SENTRET: 'LC_WEAK',
+        SPECIES_DITTO: 'LC_AVERAGE_OR_WEAK',
+        SPECIES_SENTRET: 'LC_AVERAGE_OR_WEAK',
         SPECIES_HOOTHOOT: 'NFE_OR_SOLO_AVERAGE_OR_WEAK',
 
         // Dewford
-        SPECIES_POOCHYENA: 'LC_WEAK',
+        SPECIES_POOCHYENA: 'LC_AVERAGE_OR_WEAK',
         SPECIES_MIGHTYENA: 'NFE_OR_SOLO_AVERAGE',
     },
     maps: [

@@ -380,31 +380,37 @@ const trainersData = [
             {
                 absoluteTier: [TIER_BAD],
                 tryToHaveMove: ['MOVE_RAIN_DANCE'],
+                evoType: [EVO_TYPE_LC],
                 item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 tryToHaveMove: ['MOVE_RAIN_DANCE'],
+                evoType: [EVO_TYPE_LC],
                 item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 tryToHaveMove: ['MOVE_RAIN_DANCE'],
+                evoType: [EVO_TYPE_LC],
                 item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 tryToHaveMove: ['MOVE_RAIN_DANCE'],
+                evoType: [EVO_TYPE_LC],
                 item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 tryToHaveMove: ['MOVE_RAIN_DANCE'],
+                evoType: [EVO_TYPE_LC],
                 item: 'Oran Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 tryToHaveMove: ['MOVE_RAIN_DANCE'],
+                evoType: [EVO_TYPE_LC],
                 item: 'Oran Berry',
             },
         ]
