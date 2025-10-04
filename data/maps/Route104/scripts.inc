@@ -281,6 +281,54 @@ Route104_EventScript_WhiteHerbFlorist::
 	release
 	end
 
+Route104_EventScript_PickItem1::
+	setflag FLAG_ITEM_ROUTE_104_POTION
+	giveitem ITEM_TM_WATER_PULSE
+	removeobject LOCALID_ROUTE104_I1
+	removeobject LOCALID_ROUTE104_I2
+	removeobject LOCALID_ROUTE104_I3
+	release
+	end
+
+Route104_EventScript_PickItem2::
+	setflag FLAG_ITEM_ROUTE_104_POTION
+	giveitem ITEM_TM_BULLET_SEED
+	removeobject LOCALID_ROUTE104_I1
+	removeobject LOCALID_ROUTE104_I2
+	removeobject LOCALID_ROUTE104_I3
+	release
+	end
+
+Route104_EventScript_PickItem3::
+	setflag FLAG_ITEM_ROUTE_104_POTION
+	giveitem ITEM_TM_STEEL_WING
+	removeobject LOCALID_ROUTE104_I1
+	removeobject LOCALID_ROUTE104_I2
+	removeobject LOCALID_ROUTE104_I3
+	release
+	end
+
+Route104_EventScript_PickItem1::
+	msgbox Route104_Text_PickItem1, MSGBOX_SIGN
+	end
+
+Route104_EventScript_PickItem2::
+	msgbox Route104_Text_PickItem2, MSGBOX_SIGN
+	end
+
+Route104_EventScript_PickItem3::
+	msgbox Route104_Text_PickItem3, MSGBOX_SIGN
+	end
+
+Route104_Text_PickItem1:
+	.string "Water Pulse$"
+
+Route104_Text_PickItem2:
+	.string "Bullet Seed$"
+
+Route104_Text_PickItem2:
+	.string "Steel Wing$"
+
 Route104_EventScript_ReceivedWhiteHerb::
 	msgbox Route104_Text_FlowerShopSellingSaplings, MSGBOX_DEFAULT
 	release

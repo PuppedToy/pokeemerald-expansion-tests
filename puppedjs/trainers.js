@@ -482,10 +482,38 @@ const trainersData = [
         id: 'TRAINER_HALEY_1',
         level: 10,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        team: genericBadLCTeamTemplate.map(p => ({
-            ...p,
-            item: 'Heavy-Duty Boots',
-        })),
+        team: [
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_WATER_PULSE'],
+                tryToHaveMove: ['MOVE_WATER_PULSE'],
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_BULLET_SEED'],
+                tryToHaveMove: ['MOVE_BULLET_SEED'],
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_STEEL_WING'],
+                tryToHaveMove: ['MOVE_STEEL_WING'],
+            },
+        ]
     },
     {
         id: 'TRAINER_GINA_AND_MIA_1',
@@ -659,7 +687,7 @@ const trainersData = [
                 absoluteTier: [TIER_BAD],
                 type: [POKEMON_TYPE_STEEL],
                 mustHaveOneOfMoves: ['MOVE_ROCK_TOMB'],
-                tryToHaveMove: ['MOVE_ROCK_TOMB'],
+                tryToHaveMove: ['MOVE_ROCK_TOMB', 'MOVE_STEEL_WING'],
                 item: 'Shuca Berry',
             },
             {

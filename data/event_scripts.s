@@ -912,6 +912,10 @@ gText_SelectWithoutRegisteredItem::
 	.string "An item in the BAG can be\n"
 	.string "registered to SELECT for easy use.$"
 
+gText_ChooseOneItem::
+	.string "Pick one of these 3 items.\n"
+	.string "The rest will be destroyed.$"
+
 gText_PokemonTrainerSchoolEmail::
 	.string "There's an e-mail from POKéMON TRAINER\n"
 	.string "SCHOOL.\p"
@@ -1099,6 +1103,10 @@ Common_EventScript_LegendaryFlewAway::
 	bufferspeciesname STR_VAR_1, VAR_0x8004
 	msgbox gText_LegendaryFlewAway, MSGBOX_DEFAULT
 	release
+	end
+
+Common_EventScript_ChooseOneItem::
+	msgbox gText_ChooseOneItem, MSGBOX_SIGN
 	end
 
 EventScript_VsSeekerChargingDone::
