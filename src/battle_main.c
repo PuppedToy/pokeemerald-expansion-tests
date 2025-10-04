@@ -5767,27 +5767,33 @@ static void ReturnFromBattleToOverworld(void)
             SetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM, &originalItem);
     }
 
-    // --- NEW CODE: Heal the player's party after battle ---
+    // --- NEW CODE: Heal the player's party after battle (skip fainted mons) ---
     for (i = 0; i < PARTY_SIZE; i++)
     {
         if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) != SPECIES_NONE)
         {
-            // Fully heal HP
-            u16 maxHP = GetMonData(&gPlayerParty[i], MON_DATA_MAX_HP);
-            SetMonData(&gPlayerParty[i], MON_DATA_HP, &maxHP);
+            u16 currentHP = GetMonData(&gPlayerParty[i], MON_DATA_HP);
 
-            // Clear status conditions
-            u32 status = STATUS1_NONE;
-            SetMonData(&gPlayerParty[i], MON_DATA_STATUS, &status);
-
-            // Restore PP for all 4 moves
-            for (int moveSlot = 0; moveSlot < MAX_MON_MOVES; moveSlot++)
+            // Only heal if the mon is not fainted
+            if (currentHP > 0)
             {
-                u16 move = GetMonData(&gPlayerParty[i], MON_DATA_MOVE1 + moveSlot);
-                if (move != MOVE_NONE)
+                // Fully heal HP
+                u16 maxHP = GetMonData(&gPlayerParty[i], MON_DATA_MAX_HP);
+                SetMonData(&gPlayerParty[i], MON_DATA_HP, &maxHP);
+
+                // Clear status conditions
+                u32 status = STATUS1_NONE;
+                SetMonData(&gPlayerParty[i], MON_DATA_STATUS, &status);
+
+                // Restore PP for all 4 moves
+                for (int moveSlot = 0; moveSlot < MAX_MON_MOVES; moveSlot++)
                 {
-                    u8 maxPP = CalculatePPWithBonus(move, gPlayerParty[i].ppBonuses, moveSlot);
-                    SetMonData(&gPlayerParty[i], MON_DATA_PP1 + moveSlot, &maxPP);
+                    u16 move = GetMonData(&gPlayerParty[i], MON_DATA_MOVE1 + moveSlot);
+                    if (move != MOVE_NONE)
+                    {
+                        u8 maxPP = CalculatePPWithBonus(move, gPlayerParty[i].ppBonuses, moveSlot);
+                        SetMonData(&gPlayerParty[i], MON_DATA_PP1 + moveSlot, &maxPP);
+                    }
                 }
             }
         }
