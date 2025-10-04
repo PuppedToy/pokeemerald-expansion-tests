@@ -629,7 +629,7 @@
       "y": 1,
       "elevation": 3,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "Route104_EventScript_PickItem1"
+      "script": "Route104_EventScript_PickItem1_Sign"
     },
     {
       "type": "sign",
@@ -637,7 +637,7 @@
       "y": 1,
       "elevation": 3,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "Route104_EventScript_PickItem2"
+      "script": "Route104_EventScript_PickItem2_Sign"
     },
     {
       "type": "sign",
@@ -645,7 +645,7 @@
       "y": 1,
       "elevation": 3,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "Route104_EventScript_PickItem3"
+      "script": "Route104_EventScript_PickItem3_Sign"
     }
   ]
 }

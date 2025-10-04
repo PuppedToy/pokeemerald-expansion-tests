@@ -308,15 +308,15 @@ Route104_EventScript_PickItem3::
 	release
 	end
 
-Route104_EventScript_PickItem1::
+Route104_EventScript_PickItem1_Sign::
 	msgbox Route104_Text_PickItem1, MSGBOX_SIGN
 	end
 
-Route104_EventScript_PickItem2::
+Route104_EventScript_PickItem2_Sign::
 	msgbox Route104_Text_PickItem2, MSGBOX_SIGN
 	end
 
-Route104_EventScript_PickItem3::
+Route104_EventScript_PickItem3_Sign::
 	msgbox Route104_Text_PickItem3, MSGBOX_SIGN
 	end
 
