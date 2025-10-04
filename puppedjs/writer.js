@@ -618,8 +618,9 @@ async function writer(pokemonList, moves, abilities) {
             if (trainerMonDefinition.tryEvolve) {
                 if (chosenTrainerMon.evolutions && chosenTrainerMon.evolutions.length > 0) {
                     // Try to evolve to the first possible evolution
+                    let possibleEvolutions;
                     do {
-                        const possibleEvolutions = chosenTrainerMon.evolutions.filter(({ param }) => 
+                        possibleEvolutions = chosenTrainerMon.evolutions.filter(({ param }) => 
                             !isNaN(parseInt(param)) && parseInt(param) <= trainer.level && parseInt(param) > 4
                         );
                         if (possibleEvolutions.length > 0) {
