@@ -5791,7 +5791,8 @@ static void ReturnFromBattleToOverworld(void)
                     u16 move = GetMonData(&gPlayerParty[i], MON_DATA_MOVE1 + moveSlot);
                     if (move != MOVE_NONE)
                     {
-                        u8 maxPP = CalculatePPWithBonus(move, gPlayerParty[i].ppBonuses, moveSlot);
+                        u8 ppBonuses = GetMonData(&gPlayerParty[i], MON_DATA_PP_BONUSES);
+                        u8 maxPP = CalculatePPWithBonus(move, ppBonuses, moveSlot);
                         SetMonData(&gPlayerParty[i], MON_DATA_PP1 + moveSlot, &maxPP);
                     }
                 }
