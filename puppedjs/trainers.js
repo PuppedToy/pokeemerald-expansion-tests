@@ -1150,7 +1150,7 @@ const trainersData = [
         team: [
             {
                 id: 'RIVAL_STARTER_TREECKO',
-                special: TRAINER_POKE_STARTER_TORCHIC,
+                special: TRAINER_REPEAT_ID,
                 item: 'Eviolite',
                 tryToHaveMove: ['MOVE_BULLET_SEED'],
                 tryEvolve: true,
@@ -1165,7 +1165,7 @@ const trainersData = [
         team: [
             {
                 id: 'RIVAL_STARTER_TORCHIC',
-                special: TRAINER_POKE_STARTER_MUDKIP,
+                special: TRAINER_REPEAT_ID,
                 item: 'Eviolite',
                 tryToHaveMove: ['MOVE_BULLET_SEED'],
                 tryEvolve: true,
@@ -1180,7 +1180,7 @@ const trainersData = [
         team: [
             {
                 id: 'RIVAL_STARTER_MUDKIP',
-                special: TRAINER_POKE_STARTER_TREECKO,
+                special: TRAINER_REPEAT_ID,
                 item: 'Eviolite',
                 tryToHaveMove: ['MOVE_BULLET_SEED'],
                 tryEvolve: true,
