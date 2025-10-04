@@ -495,7 +495,7 @@ async function writer(pokemonList, moves, abilities) {
                 pokemonStrictList = [starterPokemon];
             }
             else if (trainerMonDefinition.special === TRAINER_REPEAT_ID) {
-                const repeatedId = storedIds[trainerMonDefinition.idToRepeat];
+                const repeatedId = storedIds[trainerMonDefinition.id];
                 if (repeatedId) {
                     const repeatedPokemon = pokemonList.find(p => p.id === repeatedId);
                     if (repeatedPokemon) {
