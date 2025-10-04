@@ -25,6 +25,7 @@ const {
     TRAINER_RESTRICTION_NO_REPEATED_TYPE,
     TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
     TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES,
+    TRAINER_REPEAT_ID,
 } = require('./constants');
 
 const MAX_MEGA_EVO_STONES = 3;
@@ -493,6 +494,21 @@ async function writer(pokemonList, moves, abilities) {
                 const starterPokemon = pokemonList.find(p => p.id === starters[2]);
                 pokemonStrictList = [starterPokemon];
             }
+            else if (trainerMonDefinition.special === TRAINER_REPEAT_ID) {
+                const repeatedId = storedIds[trainerMonDefinition.idToRepeat];
+                if (repeatedId) {
+                    const repeatedPokemon = pokemonList.find(p => p.id === repeatedId);
+                    if (repeatedPokemon) {
+                        pokemonStrictList = [repeatedPokemon];
+                    }
+                    else {
+                        console.warn(`WARN: No pokemon found with id ${repeatedId} to repeat in trainer ${trainer.id}. The ID was stored but no matching pokemon found.`);
+                    }
+                }
+                else {
+                    console.warn(`WARN: No stored id found for ${trainerMonDefinition.idToRepeat} to repeat in trainer ${trainer.id}.`);
+                }
+            }
             else {
                 pokemonLooseList = [...pokemonList];
             }
@@ -599,9 +615,28 @@ async function writer(pokemonList, moves, abilities) {
                 chosenTrainerMon = randomPokemon;
             }
 
+            if (trainerMonDefinition.tryEvolve) {
+                if (chosenTrainerMon.evolutions && chosenTrainerMon.evolutions.length > 0) {
+                    // Try to evolve to the first possible evolution
+                    const possibleEvolutions = chosenTrainerMon.evolutions.filter(({ param }) => 
+                        !isNaN(parseInt(param)) && parseInt(param) <= trainer.level
+                    );
+                    if (possibleEvolutions.length > 0) {
+                        // sort by param
+                        possibleEvolutions.sort((a, b) => parseInt(b.param) - parseInt(a.param));
+                        const evolutionToApply = possibleEvolutions[0].pokemon;
+                        console.log(`Evolving ${chosenTrainerMon.id} to ${evolutionToApply} for trainer ${trainer.id}`);
+                        const evolvedForm = pokemonList.find(p => p.id === evolutionToApply);
+                        if (evolvedForm) {
+                            chosenTrainerMon = evolvedForm;
+                        }
+                    }
+                }
+            }
+
             if (chosenTrainerMon) {
                 if (trainerMonDefinition.id) {
-                    storedIds[trainerMonDefinition.id] = chosenTrainerMon;
+                    storedIds[trainerMonDefinition.id] = chosenTrainerMon.id;
                 }
                 const newTeamMember = {
                     pokemon: chosenTrainerMon,
