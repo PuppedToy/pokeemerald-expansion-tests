@@ -755,6 +755,16 @@ async function writer(pokemonList, moves, abilities) {
 
     const htmlOutputTemplate = await fs.readFile(path.resolve(__dirname, OUTPUT_DIR, TEMPLATE_FILE), 'utf8');
 
+    const trainersResultsSimplified = {};
+    Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
+        trainersResultsSimplified[trainerId] = {
+            ...trainerData,
+            team: trainerData.team.map(teamEntry => ({
+                pokemon: teamEntry.pokemon.id,
+                ...teamEntry,
+            })), 
+        };
+    });
     htmlOutputTemplate.replace(TEMPLATE_POKEMON_REPLACEMENT, `<script>const trainersData = ${JSON.stringify(trainersResults)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'trainers.js'), `const trainersData = ${JSON.stringify(trainersResults, null, 4)};`, 'utf8');
     htmlOutputTemplate.replace(TEMPLATE_TRAINERS_REPLACEMENT, `<script>const pokes = ${JSON.stringify(pokemonList)};</script>`);
