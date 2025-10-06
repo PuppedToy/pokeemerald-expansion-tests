@@ -760,8 +760,8 @@ async function writer(pokemonList, moves, abilities) {
         trainersResultsSimplified[trainerId] = {
             ...trainerData,
             team: trainerData.team.map(teamEntry => ({
-                pokemon: teamEntry.pokemon.id,
                 ...teamEntry,
+                pokemon: teamEntry.pokemon.id,
             })), 
         };
     });
