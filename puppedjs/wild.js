@@ -29,6 +29,10 @@ const wildData = {
             replace: [TIER_AVERAGE, TIER_WEAK],
             type: [EVO_TYPE_LC],
         },
+        LC_AVERAGE: {
+            replace: [TIER_AVERAGE],
+            type: [EVO_TYPE_LC],
+        },
         NFE_OR_SOLO_AVERAGE_OR_WEAK: {
             replace: [TIER_AVERAGE, TIER_WEAK],
             type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
