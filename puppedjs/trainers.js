@@ -30,6 +30,8 @@ const {
     NATURE_RELAXED,
     TRAINER_REPEAT_ID,
     TIER_STRONG,
+    TIER_AVERAGE,
+    EVO_TYPE_NFE,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
@@ -51,6 +53,22 @@ const calvinDogs = [
     'SPECIES_MASCHIFF',
     'SPECIES_EEVEE',
     'SPECIES_RIOLU'
+];
+
+const stevenPokemon = [
+    'SPECIES_BALTOY',
+    'SPECIES_ARON',
+    'SPECIES_BELDUM',
+    'SPECIES_KABUTO',
+    'SPECIES_OMANYTE',
+    'SPECIES_LILEEP',
+    'SPECIES_ANORITH',
+    'SPECIES_SHIELDON',
+    'SPECIES_CRANIDOS',
+    'SPECIES_TIRTOUGA',
+    'SPECIES_AMAURA',
+    'SPECIES_ARCHEN',
+    'SPECIES_TYRUNT',
 ];
 
 const rival103Template = (id) => [
@@ -887,29 +905,32 @@ const trainersData = [
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_FLING'],
-                tryToHaveMove: ['MOVE_FLING'],
-                item: 'King\'s Rock',
+                item: 'Heavy-Duty Boots',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
+                item: 'Heavy-Duty Boots',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
+                item: 'Heavy-Duty Boots',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
+                item: 'Heavy-Duty Boots',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
+                item: 'Heavy-Duty Boots',
             },
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
+                item: 'Heavy-Duty Boots',
             },
         ],
     },
@@ -1023,9 +1044,9 @@ const trainersData = [
         team: [
             {
                 absoluteTier: [TIER_BAD],
-                type: [POKEMON_TYPE_PSYCHIC],
                 evoType: [EVO_TYPE_LC],
-                item: 'Mind Plate',
+                ability: 'GUTS',
+                item: 'Flame Orb',
             },
             {
                 absoluteTier: [TIER_BAD],
@@ -1035,7 +1056,6 @@ const trainersData = [
                 absoluteTier: [TIER_BAD],
                 type: [POKEMON_TYPE_PSYCHIC],
                 evoType: [EVO_TYPE_LC],
-                item: 'Mind Plate',
             },
             {
                 absoluteTier: [TIER_BAD],
@@ -1049,7 +1069,6 @@ const trainersData = [
                 absoluteTier: [TIER_BAD],
                 type: [POKEMON_TYPE_PSYCHIC],
                 evoType: [EVO_TYPE_LC],
-                item: 'Mind Plate',
             },
         ],
     },
@@ -1199,6 +1218,179 @@ const trainersData = [
     {
         id: 'TRAINER_BRENDAN_RUSTBORO_MUDKIP',
         copy: 'TRAINER_MAY_RUSTBORO_MUDKIP',
+    },
+    // Route 106
+    {
+        id: 'TRAINER_NED',
+        level: 16,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        team: [
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                item: 'Life Orb',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                item: 'Life Orb',
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_ELLIOT_1',
+        level: 16,
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_CHARMANDER'],
+                item: 'Oran Berry',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+        ],
+    },
+    // Dewford Gym
+    {
+        id: 'TRAINER_BRAWLY_1',
+        level: 16,
+        team: [
+            {
+                specific: 'SPECIES_MAKUHITA',
+                tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP', 'MOVE_FAKE_OUT', 'MOVE_ROCK_TOMB'],
+                nature: NATURE_ADAMANT,
+                ability: 'GUTS',
+                item: 'Flame Orb',
+            },
+            {
+                type: [POKEMON_TYPE_FIGHTING],
+                evolutionTier: [TIER_AVERAGE],
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP'],
+                tryEvolve: true,
+                item: 'Life Orb',
+            },
+            {
+                type: [POKEMON_TYPE_DARK],
+                evolutionTier: [TIER_AVERAGE],
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP'],
+                tryEvolve: true,
+                item: 'Oran Berry',
+            },
+            {
+                type: [POKEMON_TYPE_FIGHTING],
+                evolutionTier: [TIER_AVERAGE],
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP'],
+                tryEvolve: true,
+                item: 'Fighting Gem',
+            },
+            {
+                type: [POKEMON_TYPE_ROCK],
+                evolutionTier: [TIER_AVERAGE],
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP', 'MOVE_ROCK_TOMB'],
+                tryEvolve: true,
+                item: 'Stone Plate',
+            },
+            {
+                type: [POKEMON_TYPE_FIGHTING],
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP'],
+                item: 'Eviolite',
+            },
+        ],
+    },
+    // Granite Cave
+    {
+        id: 'TRAINER_STEVEN',
+        level: 19,
+        team: [
+            {
+                oneOf: stevenPokemon,
+                tryToHaveMove: ['MOVE_STEEL_WING', 'MOVE_ROCK_TOMB'],
+                item: 'Eviolite',
+            },
+            {
+                specific: 'SPECIES_SKARMORY',
+                tryToHaveMove: ['MOVE_STEEL_WING', 'MOVE_AGILITY', 'MOVE_AERIAL_ACE', 'MOVE_ROCK_TOMB'],
+                nature: NATURE_ADAMANT,
+                item: 'Life Orb',
+            },
+            {
+                oneOf: stevenPokemon,
+                tryToHaveMove: ['MOVE_STEEL_WING', 'MOVE_ROCK_TOMB'],
+                item: 'Oran Berry',
+            },
+            {
+                type: [POKEMON_TYPE_STEEL],
+                evolutionTier: [TIER_PREMIUM, TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_STEEL_WING'],
+                tryEvolve: true,
+                item: 'Shuca Berry',
+            },
+            {
+                oneOf: stevenPokemon,
+                tryToHaveMove: ['MOVE_STEEL_WING', 'MOVE_ROCK_TOMB'],
+                item: 'Rock Gem',
+            },
+            {
+                type: [POKEMON_TYPE_STEEL],
+                evolutionTier: [TIER_PREMIUM, TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_STEEL_WING'],
+                tryEvolve: true,
+                item: 'Chople Berry',
+            },
+        ],
     },
 ]
 

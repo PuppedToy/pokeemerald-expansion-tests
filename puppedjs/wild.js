@@ -90,6 +90,13 @@ const wildData = {
         // Dewford
         SPECIES_POOCHYENA: 'LC_AVERAGE_OR_WEAK',
         SPECIES_MIGHTYENA: 'NFE_OR_SOLO_AVERAGE',
+
+        // Route106
+        SPECIES_CHARMANDER: 'LC_AVERAGE_OR_WEAK',
+        SPECIES_CHARMELEON: 'NFE_OR_SOLO_AVERAGE',
+
+        // Granite Cave
+        SPECIES_ARON: 'LC_AVERAGE',
     },
     maps: [
         // Shelgon maps
@@ -155,7 +162,16 @@ const wildData = {
             good: 'SPECIES_MIGHTYENA',
             super: 'SPECIES_PUPITAR',
         },
-
+        {
+            id: 'MAP_ROUTE106',
+            old: 'SPECIES_CHARMANDER',
+            good: 'SPECIES_CHARMELEON',
+            super: 'SPECIES_PUPITAR',
+        },
+        {
+            id: 'MAP_GRANITE_CAVE',
+            land: 'SPECIES_ARON',
+        },
         // Special
         {
             id: 'MAP_WEATHER_INSTITUTE',

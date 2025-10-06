@@ -361,7 +361,7 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_KINGS_ROCK",
+      "trainer_sight_or_berry_tree_id": "ITEM_HEAVY_DUTY_BOOTS",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_116_KINGS_ROCK"
     },
@@ -374,7 +374,7 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_MIND_PLATE",
+      "trainer_sight_or_berry_tree_id": "ITEM_FLAME_ORB",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_116_MIND_PLATE"
     }
@@ -495,14 +495,6 @@
       "y": 15,
       "elevation": 0,
       "secret_base_id": "SECRET_BASE_BLUE_CAVE4_2"
-    },
-    {
-      "type": "hidden_item",
-      "x": 22,
-      "y": 9,
-      "elevation": 3,
-      "item": "ITEM_SUPER_POTION",
-      "flag": "FLAG_HIDDEN_ITEM_ROUTE_116_SUPER_POTION"
     }
   ]
 }

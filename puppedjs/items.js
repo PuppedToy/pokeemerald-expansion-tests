@@ -277,7 +277,7 @@ const items = {
         'ITEM_SHELL_BELL',
         'ITEM_ROCKY_HELMET',
         'ITEM_SAFETY_GOGGLES',
-        'ITEM_HEAVY_DUTY_BOOTS', // Route103
+        'ITEM_HEAVY_DUTY_BOOTS', // Route 115
         'ITEM_BERSERK_GENE',
     ],
 
@@ -303,7 +303,7 @@ const items = {
 
     goodConsumables: [
         'ITEM_WHITE_HERB',
-        'ITEM_KINGS_ROCK', // Route 116
+        'ITEM_KINGS_ROCK',
         'ITEM_POWER_HERB',
         'ITEM_FOCUS_SASH',
         'ITEM_AIR_BALLOON',
