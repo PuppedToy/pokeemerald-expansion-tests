@@ -208,11 +208,8 @@
       });
     });
   </script>
-  <script src="pokes.js"></script>
-  <script src="trainers.js"></script>
-  <script src="wildpokes.js"></script>
+  <!-- common constants -->
   <script>
-    const grid = document.getElementById('pokemon-cards');
     const typeColors = {
         "NORMAL":   "#A8A77A",
         "FIRE":     "#EE8130",
@@ -251,9 +248,9 @@
         "WEAK":     "#000000",
         "BAD":     "#000000",
     };
-    pokes.forEach(poke => {
-      const card = document.createElement('div');
-      const pokeImg = `https://forwardfeed.github.io/ER-nextdex/static/sprites/${poke.id.replace('SPECIES_', '')}.png`
+
+    function getPokeImg(pokeId) {
+      return `https://forwardfeed.github.io/ER-nextdex/static/sprites/${pokeId.replace('SPECIES_', '')}.png`
         .replace('ALOLA', 'ALOLAN')
         .replace('GALAR', 'GALARIAN')
         .replace('HISUI', 'HISUIAN')
@@ -312,6 +309,17 @@
         .replace(/SINISTCHA_\w+/, 'SINISTCHA')
         .replace('TERAPAGOS_NORMAL', 'TERAPAGOS')
         .replace('TERAPAGOS_TERASTAL', 'TERAPAGOS');
+    }
+  </script>
+  <script src="pokes.js"></script>
+  <script src="trainers.js"></script>
+  <script src="wildpokes.js"></script>
+  <!-- script to handle pokedex -->
+  <script>
+    const pokemonGrid = document.getElementById('pokemon-cards');
+    pokes.forEach(poke => {
+      const card = document.createElement('div');
+      const pokeImg = getPokeImg(poke.id);
       card.className = 'card';
       card.innerHTML = `
         <div class="meta">
@@ -340,7 +348,61 @@
             </div>
         </div>
       `;
-      grid.appendChild(card);
+      pokemonGrid.appendChild(card);
+    });
+  </script>
+  <!-- script to handle trainers -->
+  <script>
+    const trainersGrid = document.getElementById('trainers-cards');
+
+    Object.entries(trainersData).forEach(([trainerId, trainer]) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const trainerName = trainerId
+        .replace('TRAINER_', '')
+        .replace(/_/g, ' ')
+        .toLowerCase()
+        .replace(/\b\w/g, c => c.toUpperCase()); // Proper casing
+
+      // Build each Pokémon slot
+      const teamHTML = trainer.team.map(member => {
+        const pokeId = member.pokemon || '';
+        const pokeName = pokeId.replace('SPECIES_', '').replace(/_/g, ' ');
+        const imgSrc = getPokeImg(pokeId);
+        const item = member.item ? `<div class="small" style="color:#FFD580">🎒 ${member.item}</div>` : '';
+        const moves =
+          member.moves && member.moves.length > 0
+            ? `<div style="font-size:12px;color:#aaa;margin-top:4px">
+                ${member.moves
+                  .map(m => m.replace('MOVE_', '').replace(/_/g, ' ').toLowerCase())
+                  .map(m => m.charAt(0).toUpperCase() + m.slice(1))
+                  .join(', ')}
+              </div>`
+            : '';
+
+        return `
+          <div style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
+            <img src="${imgSrc}" style="width:64px;height:64px;object-fit:contain" alt="${pokeName}">
+            <div style="font-weight:700;margin-top:4px">${pokeName}</div>
+            ${item}
+            ${moves}
+          </div>
+        `;
+      }).join('');
+
+      // Final card markup
+      card.innerHTML = `
+        <div class="meta">
+          <div class="title">${trainerName}</div>
+          <div class="small" style="text-align:center; color:#FFB28A;">Lv. ${trainer.level}</div>
+        </div>
+        <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:8px;">
+          ${teamHTML}
+        </div>
+      `;
+
+      trainersGrid.appendChild(card);
     });
   </script>
 </body>
