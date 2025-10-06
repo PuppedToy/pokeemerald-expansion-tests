@@ -257,7 +257,7 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
 function chooseMoveset(poke, moves, level, startingMoveset = [], ability = null, item = null, tmsInBag = null, deviation = 0) {
     const moveset = [...startingMoveset];
     const tmsUed = [];
-    const tms = tms && Array.isArray(tmsInBag) ? poke.teachables.filter(tm => tmsInBag.includes(tm)) : poke.teachables;
+    const tms = tmsInBag && Array.isArray(tmsInBag) ? poke.teachables.filter(tm => tmsInBag.includes(tm)) : poke.teachables;
     const allMoves = [
         ...poke.learnset.filter(ls => ls.level <= level).map(ls => ls.move),
         ...tms,
