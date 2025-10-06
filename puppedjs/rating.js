@@ -216,7 +216,7 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     }
 
     if (move.category !== 'DAMAGE_CATEGORY_STATUS') {
-        let stab = poke.parsedType.includes(move.type) ? 1.5 : 1.0;
+        let stab = poke.parsedTypes.includes(move.type) ? 1.5 : 1.0;
         if (hasAbility('ADAPTABILITY')) {
             stab = 2.0;
         }
@@ -242,20 +242,20 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
         }
 
         // If another damaging move of the same type exists, devalue this move
-        if (currentMoves.some(m => m.category !== 'DAMAGE_CATEGORY_STATUS' && poke.moves[m].type === move.type)) {
+        if (currentMoves.some(m => m.category !== 'DAMAGE_CATEGORY_STATUS' && m.type === move.type)) {
             rating *= 0.3;
         }
     }
 
     // @TODO move base rating + stab + ability synergy + other moves synergy, coverage
-    return move.rating;
+    return rating;
 }
 
 // deviation is a value from 0 to 1 indicating how much randomness to add to the rating, so a
 // trainer may have their own bias towards certain moves
 // Recommanded value: 0.1
-function chooseMoveset(poke, moves, level, startingMoveset = [], ability = null, item = null, tmsInBag = null, deviation = 0) {
-    const moveset = [...startingMoveset];
+function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability = null, item = null, tmsInBag = null, deviation = 0) {
+    const moveset = [...startingMoveset].map(move => moves[move] ? move : null).filter(m => m !== null);
     const tmsUed = [];
     const tms = tmsInBag && Array.isArray(tmsInBag) ? poke.teachables.filter(tm => tmsInBag.includes(tm)) : poke.teachables;
     const allMoves = [
@@ -278,26 +278,26 @@ function chooseMoveset(poke, moves, level, startingMoveset = [], ability = null,
         const ratedMoves = uniqueMoves.map(move => {
             const rating = rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset) * (1 + ((Math.random() ? 1 : -1) * Math.random() * deviation));
             return {
-                moveId,
+                ...move,
                 rating,
             };
         }).filter(m => m !== null);
 
         ratedMoves.sort((a, b) => b.rating - a.rating);
-        moveset.push(ratedMoves[0].moveId);
+        moveset.push(ratedMoves[0]);
         uniqueMoves = uniqueMoves.filter(m => m !== ratedMoves[0].moveId);
     }
 
-    moveset.forEach(moveId => {
-        if (!poke.learnset.some(ls => ls.move === moveId)
-            && tms.includes(moveId))
+    moveset.forEach(move => {
+        if (!poke.learnset.some(ls => ls.move === move.id)
+            && tms.includes(move.id))
         {
-            tmsUed.push(moveId);
+            tmsUed.push(move.id);
         }
     });
 
     return {
-        moveset,
+        moveset: moveset.map(m => m.id),
         tmsUed,
     };
 }
@@ -329,7 +329,7 @@ function ratePokemon(poke, moves, abilities) {
     // For now we will just do absolute
     // @TODO relative
 
-    const { moveset } = chooseMoveset(poke, moves, 100);
+    const { moveset } = chooseMoveset(poke, moves);
 
     let movesRating = 0;
     moveset.forEach(moveId => {
@@ -369,7 +369,7 @@ function ratePokemon(poke, moves, abilities) {
     return {
         absoluteRating,
         absoluteBSTRating,
-        best4Moves,
+        bestMoveset: moveset,
         movesRating,
         bestAbilityRating,
         tier,

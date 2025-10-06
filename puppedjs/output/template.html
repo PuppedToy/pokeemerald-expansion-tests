@@ -414,6 +414,11 @@
         case 'good': return 'Fishing (Good Rod)';
         case 'surf': return 'Surf';
         case 'super': return 'Fishing (Super Rod)';
+        case 'special':
+        case 'special1':
+        case 'special2':
+        case 'special3':
+          return 'Special';
         default: return type;
       }
     }
@@ -432,7 +437,7 @@
         .replace(/\b\w/g, c => c.toUpperCase());
 
       // Each encounter type (land, old, good, surf, super)
-      const encounterTypes = ['land', 'old', 'good', 'surf', 'super'];
+      const encounterTypes = ['land', 'old', 'good', 'surf', 'super', 'special', 'special1', 'special2', 'special3'];
 
       const encountersHTML = encounterTypes
         .filter(type => route[type])

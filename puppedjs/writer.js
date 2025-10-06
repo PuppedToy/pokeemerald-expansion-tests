@@ -292,32 +292,24 @@ async function writer(pokemonList, moves, abilities) {
     const castformReplacement = sampleAndRemove(castformReplacementList);
     alreadyChosenSet.add(castformReplacement.id);
 
-    const regirockAndRegiceReplacementList = pokemonList.filter(poke =>
+    const regisReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
         && poke.rating.bestEvoTier === TIER_STRONG
-        && poke.rating.absoluteRating <= MID_TIER_STRONG_THRESHOLD
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
-    const regirockReplacement = sampleAndRemove(regirockAndRegiceReplacementList);
+    const regirockReplacement = sampleAndRemove(regisReplacementList);
     alreadyChosenSet.add(regirockReplacement.id);
-    const regiceReplacement = sampleAndRemove(regirockAndRegiceReplacementList);
+    const regiceReplacement = sampleAndRemove(regisReplacementList);
     alreadyChosenSet.add(regiceReplacement.id);
-
-    const latiosAndRegisteelReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenSet.has(poke.id)
-        && poke.rating.bestEvoTier === TIER_STRONG
-        && poke.rating.absoluteRating >= MID_TIER_STRONG_THRESHOLD
-        && poke.evolutionData.type === EVO_TYPE_SOLO
-    );
-    const registeelReplacement = sampleAndRemove(latiosAndRegisteelReplacementList);
+    const registeelReplacement = sampleAndRemove(regisReplacementList);
     alreadyChosenSet.add(registeelReplacement.id);
-    const latiosReplacement = sampleAndRemove(latiosAndRegisteelReplacementList);
+    const latiosReplacement = sampleAndRemove(regisReplacementList);
     alreadyChosenSet.add(latiosReplacement.id);
 
     const mewReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
         && poke.rating.bestEvoTier === TIER_PREMIUM
-        && poke.rating.absoluteRating <= MID_TIER_STRONG_THRESHOLD
+        && poke.rating.absoluteRating <= MID_TIER_PREMIUM_THRESHOLD
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const mewReplacement = sampleAndRemove(mewReplacementList);
@@ -338,6 +330,8 @@ async function writer(pokemonList, moves, abilities) {
     alreadyChosenSet.add(groudonReplacement.id);
     const kyogreReplacement = sampleAndRemove(rayquazaReplacementList);
     alreadyChosenSet.add(kyogreReplacement.id);
+
+    const replacementLog = {};
 
     if (castformReplacement) {
         let castformFileData = await fs.readFile(castformReplacementFile, 'utf8');
@@ -418,7 +412,6 @@ async function writer(pokemonList, moves, abilities) {
 
     const { replacementTypes: wildReplacementTypes } = wild;
     const replacementLists = {};
-    const replacementLog = {};
 
     Object.entries(wildReplacementTypes).forEach(([key, value]) => {
         const { replace: tiers, type: types } = value;
