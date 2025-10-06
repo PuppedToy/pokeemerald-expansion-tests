@@ -405,5 +405,62 @@
       trainersGrid.appendChild(card);
     });
   </script>
+  <!-- script to handle routes -->
+  <script>
+    function getRouteTypeName(type) {
+      switch (type) {
+        case 'land': return 'Grass';
+        case 'old': return 'Fishing (Old Rod)';
+        case 'good': return 'Fishing (Good Rod)';
+        case 'surf': return 'Surf';
+        case 'super': return 'Fishing (Super Rod)';
+        default: return type;
+      }
+    }
+
+    const routesGrid = document.getElementById('wildpokes-cards');
+
+    wildPokes.forEach(route => {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      // Clean route name
+      const routeName = route.id
+        .replace('MAP_', '')
+        .replace(/_/g, ' ')
+        .toLowerCase()
+        .replace(/\b\w/g, c => c.toUpperCase());
+
+      // Each encounter type (land, old, good, surf, super)
+      const encounterTypes = ['land', 'old', 'good', 'surf', 'super'];
+
+      const encountersHTML = encounterTypes
+        .filter(type => route[type])
+        .map(type => {
+          const pokeId = route[type];
+          const pokeName = pokeId.replace('SPECIES_', '').replace(/_/g, ' ');
+          const img = getPokeImg(pokeId);
+          return `
+            <div style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
+              <div style="font-size:12px; color:#FFB28A; margin-bottom:4px;">${getRouteTypeName(type)}</div>
+              <img src="${img}" style="width:64px;height:64px;object-fit:contain" alt="${pokeName}">
+              <div style="font-weight:700;margin-top:4px">${pokeName}</div>
+            </div>
+          `;
+        })
+        .join('');
+
+      card.innerHTML = `
+        <div class="meta">
+          <div class="title">${routeName}</div>
+        </div>
+        <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:8px;">
+          ${encountersHTML}
+        </div>
+      `;
+
+      routesGrid.appendChild(card);
+    });
+  </script>
 </body>
 </html>

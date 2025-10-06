@@ -117,7 +117,7 @@ const wildData = {
             old: 'SPECIES_SMEARGLE',
             good: 'SPECIES_GOLDEEN',
             surf: 'SPECIES_MILTANK',
-            super: 'SPECIES_GOLDEEN',
+            super: 'SPECIES_SHELGON',
         },
         {
             id: 'MAP_ROUTE104',
