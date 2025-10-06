@@ -763,7 +763,7 @@ async function writer(pokemonList, moves, abilities) {
         };
         Object.entries(keys).forEach(([key, value]) => {
             if (value !== undefined) {
-                result[key] = replacementLog(value);
+                result[key] = replacementLog[value];
             }
         });
     });
