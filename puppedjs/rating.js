@@ -256,7 +256,7 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
 // Recommanded value: 0.1
 function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability = null, item = null, tmsInBag = null, deviation = 0) {
     const moveset = [...startingMoveset].map(move => moves[move] ? move : null).filter(m => m !== null);
-    const tmsUed = [];
+    const tmsUsed = [];
     const tms = tmsInBag && Array.isArray(tmsInBag) ? poke.teachables.filter(tm => tmsInBag.includes(tm)) : poke.teachables;
     const allMoves = [
         ...poke.learnset.filter(ls => ls.level <= level).map(ls => ls.move),
@@ -292,13 +292,13 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
         if (!poke.learnset.some(ls => ls.move === move.id)
             && tms.includes(move.id))
         {
-            tmsUed.push(move.id);
+            tmsUsed.push(move.id);
         }
     });
 
     return {
         moveset: moveset.map(m => m.id),
-        tmsUed,
+        tmsUsed,
     };
 }
 

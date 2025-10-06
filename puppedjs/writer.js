@@ -683,7 +683,7 @@ async function writer(pokemonList, moves, abilities) {
                         newTeamMember.ability = ability;
                     }
                 }
-                newTeamMember.moves = chooseMoveset(
+                const { moveset, tmsUsed } = chooseMoveset(
                     chosenTrainerMon,
                     moves,
                     trainer.level,
@@ -693,6 +693,7 @@ async function writer(pokemonList, moves, abilities) {
                     null, // @TODO tms in bag
                     0.1, // Deviation for trainer bias
                 );
+                newTeamMember.moves = moveset;
                 team.push(newTeamMember);
             }
             else {
