@@ -67,4 +67,11 @@ module.exports = {
 
     NATURE_ADAMANT: 'Adamant',
     NATURE_RELAXED: 'Relaxed',
+
+    OUTPUT_DIR: 'output',
+    TEMPLATE_FILE: 'template.html',
+
+    TEMPLATE_POKEMON_REPLACEMENT: '<script src="pokes.js"></script>',
+    TEMPLATE_TRAINERS_REPLACEMENT: '<script src="traners.js"></script>',
+    TEMPLATE_WILDPOKES_REPALCEMENT: '<script src="wildpokes.js"></script>',
 };

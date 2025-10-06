@@ -26,6 +26,11 @@ const {
     TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
     TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES,
     TRAINER_REPEAT_ID,
+    OUTPUT_DIR,
+    TEMPLATE_FILE,
+    TEMPLATE_TRAINERS_REPLACEMENT,
+    TEMPLATE_POKEMON_REPLACEMENT,
+    TEMPLATE_WILDPOKES_REPALCEMENT,
 } = require('./constants');
 
 const MAX_MEGA_EVO_STONES = 3;
@@ -744,7 +749,31 @@ async function writer(pokemonList, moves, abilities) {
     });
 
     await fs.writeFile((trainers.file), trainersFileContent, 'utf8');
+    console.log('Trainers updated successfully.');
 
+    const htmlOutputTemplate = await fs.readFile(path.resolve(__dirname, OUTPUT_DIR, TEMPLATE_FILE), 'utf8');
+
+    htmlOutputTemplate.replace(TEMPLATE_POKEMON_REPLACEMENT, `<script>const trainersData = ${JSON.stringify(trainersResults)};</script>`);
+    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'trainers.js'), `const trainersData = ${JSON.stringify(trainersResults, null, 4)};`, 'utf8');
+    htmlOutputTemplate.replace(TEMPLATE_TRAINERS_REPLACEMENT, `<script>const pokes = ${JSON.stringify(pokemonList)};</script>`);
+    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'pokes.js'), `const pokes = ${JSON.stringify(pokemonList, null, 4)};`, 'utf8');
+    const maps = wild.maps.map(({ id, ...keys }) => {
+        const result = {
+            id,
+        };
+        Object.entries(keys).forEach(([key, value]) => {
+            if (value !== undefined) {
+                result[key] = replacementLog(value);
+            }
+        });
+    });
+    htmlOutputTemplate.replace(TEMPLATE_WILDPOKES_REPALCEMENT, `<script>const wildPokes = ${JSON.stringify(maps)};</script>`);
+    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'wildpokes.js'), `const wildPokes = ${JSON.stringify(maps, null, 4)};`, 'utf8');
+
+    // @TODO Out name depends on a param
+    const outFile = path.resolve(__dirname, OUTPUT_DIR, 'out.html');
+    await fs.writeFile(outFile, htmlOutputTemplate, 'utf8');
+    console.log(`Output HTML file generated at ${outFile}`);
 }
 
 module.exports = writer;
