@@ -770,7 +770,6 @@ async function writer(pokemonList, moves, abilities) {
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_POKEMON_REPLACEMENT, `<script>const pokes = ${JSON.stringify(pokemonList)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'pokes.js'), `const pokes = ${JSON.stringify(pokemonList, null, 4)};`, 'utf8');
     const maps = wild.maps.map(({ id, ...keys }) => {
-        console.log(id, keys);
         const result = {
             id,
         };
@@ -779,6 +778,7 @@ async function writer(pokemonList, moves, abilities) {
                 result[key] = replacementLog[value];
             }
         });
+        return result;
     });
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_WILDPOKES_REPALCEMENT, `<script>const wildPokes = ${JSON.stringify(maps)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'wildpokes.js'), `const wildPokes = ${JSON.stringify(maps, null, 4)};`, 'utf8');
