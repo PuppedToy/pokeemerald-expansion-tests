@@ -765,8 +765,8 @@ async function writer(pokemonList, moves, abilities) {
             })), 
         };
     });
-    htmlOutputTemplate.replace(TEMPLATE_POKEMON_REPLACEMENT, `<script>const trainersData = ${JSON.stringify(trainersResults)};</script>`);
-    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'trainers.js'), `const trainersData = ${JSON.stringify(trainersResults, null, 4)};`, 'utf8');
+    htmlOutputTemplate.replace(TEMPLATE_POKEMON_REPLACEMENT, `<script>const trainersData = ${JSON.stringify(trainersResultsSimplified)};</script>`);
+    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'trainers.js'), `const trainersData = ${JSON.stringify(trainersResultsSimplified, null, 4)};`, 'utf8');
     htmlOutputTemplate.replace(TEMPLATE_TRAINERS_REPLACEMENT, `<script>const pokes = ${JSON.stringify(pokemonList)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'pokes.js'), `const pokes = ${JSON.stringify(pokemonList, null, 4)};`, 'utf8');
     const maps = wild.maps.map(({ id, ...keys }) => {
