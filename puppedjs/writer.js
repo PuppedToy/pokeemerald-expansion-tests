@@ -32,6 +32,7 @@ const {
     TEMPLATE_POKEMON_REPLACEMENT,
     TEMPLATE_WILDPOKES_REPALCEMENT,
 } = require('./constants');
+const { chooseMoveset } = require('./rating.js');
 
 const MAX_MEGA_EVO_STONES = 3;
 
@@ -302,40 +303,41 @@ async function writer(pokemonList, moves, abilities) {
     const regiceReplacement = sampleAndRemove(regirockAndRegiceReplacementList);
     alreadyChosenSet.add(regiceReplacement.id);
 
-    const mewReplacementList = pokemonList.filter(poke =>
+    const latiosAndRegisteelReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
         && poke.rating.bestEvoTier === TIER_STRONG
         && poke.rating.absoluteRating >= MID_TIER_STRONG_THRESHOLD
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
+    const registeelReplacement = sampleAndRemove(latiosAndRegisteelReplacementList);
+    alreadyChosenSet.add(registeelReplacement.id);
+    const latiosReplacement = sampleAndRemove(latiosAndRegisteelReplacementList);
+    alreadyChosenSet.add(latiosReplacement.id);
+
+    const mewReplacementList = pokemonList.filter(poke =>
+        !alreadyChosenSet.has(poke.id)
+        && poke.rating.bestEvoTier === TIER_PREMIUM
+        && poke.rating.absoluteRating <= MID_TIER_STRONG_THRESHOLD
+        && poke.evolutionData.type === EVO_TYPE_SOLO
+    );
     const mewReplacement = sampleAndRemove(mewReplacementList);
     alreadyChosenSet.add(mewReplacement.id);
 
-    const registeelReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenSet.has(poke.id)
-        && poke.rating.bestEvoTier === TIER_PREMIUM
-        && poke.rating.absoluteRating <= MID_TIER_PREMIUM_THRESHOLD
-        && poke.evolutionData.type === EVO_TYPE_SOLO
-    );
-    const registeelReplacement = sampleAndRemove(registeelReplacementList);
-    alreadyChosenSet.add(registeelReplacement.id);
-
-    const latiosReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenSet.has(poke.id)
-        && poke.rating.bestEvoTier === TIER_PREMIUM
-        && poke.rating.absoluteRating >= MID_TIER_PREMIUM_THRESHOLD
-        && poke.evolutionData.type === EVO_TYPE_SOLO
-    );
-    const latiosReplacement = sampleAndRemove(latiosReplacementList);
-    alreadyChosenSet.add(latiosReplacement.id);
-
+    // @TODO Choose between rayquaza, kyogre and groudon
     const rayquazaReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
-        && poke.rating.bestEvoTier === TIER_LEGEND
+        && (
+            poke.rating.bestEvoTier === TIER_LEGEND
+            || (poke.rating.bestEvoTier === TIER_PREMIUM && poke.rating.absoluteRating >= MID_TIER_PREMIUM_THRESHOLD)
+        )
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const rayquazaReplacement = sampleAndRemove(rayquazaReplacementList);
     alreadyChosenSet.add(rayquazaReplacement.id);
+    const groudonReplacement = sampleAndRemove(rayquazaReplacementList);
+    alreadyChosenSet.add(groudonReplacement.id);
+    const kyogreReplacement = sampleAndRemove(rayquazaReplacementList);
+    alreadyChosenSet.add(kyogreReplacement.id);
 
     if (castformReplacement) {
         let castformFileData = await fs.readFile(castformReplacementFile, 'utf8');
@@ -354,30 +356,35 @@ async function writer(pokemonList, moves, abilities) {
             console.log(`No mega evolution found for ${castformReplacement.id}, keeping original item.`);
         }
         await fs.writeFile(castformReplacementFile, castformFileData, 'utf8');
+        replacementLog['SPECIES_CASTFORM_NORMAL'] = castformReplacement.id;
     }
 
     if (regirockReplacement) {
         let regirockFileData = await fs.readFile(regirockReplacementFile, 'utf8');
         regirockFileData = regirockFileData.replace(new RegExp(regirockReplacementText, 'g'), regirockReplacement.id);
         await fs.writeFile(regirockReplacementFile, regirockFileData, 'utf8');
+        replacementLog['SPECIES_REGIROCK'] = regirockReplacement.id;
     }
 
     if (regiceReplacement) {
         let regiceFileData = await fs.readFile(regiceReplacementFile, 'utf8');
         regiceFileData = regiceFileData.replace(new RegExp(regiceReplacementText, 'g'), regiceReplacement.id);
         await fs.writeFile(regiceReplacementFile, regiceFileData, 'utf8');
+        replacementLog['SPECIES_REGICE'] = regiceReplacement.id;
     }
 
     if (mewReplacement) {
         let mewFileData = await fs.readFile(mewReplacementFile, 'utf8');
         mewFileData = mewFileData.replace(new RegExp(mewReplacementText, 'g'), mewReplacement.id);
         await fs.writeFile(mewReplacementFile, mewFileData, 'utf8');
+        replacementLog['SPECIES_MEW'] = mewReplacement.id;
     }
 
     if (registeelReplacement) {
         let registeelFileData = await fs.readFile(registeelReplacementFile, 'utf8');
         registeelFileData = registeelFileData.replace(new RegExp(registeelReplacementText, 'g'), registeelReplacement.id);
         await fs.writeFile(registeelReplacementFile, registeelFileData, 'utf8');
+        replacementLog['SPECIES_REGISTEEL'] = registeelReplacement.id;
     }
 
     if (latiosReplacement) {
@@ -385,12 +392,24 @@ async function writer(pokemonList, moves, abilities) {
         latiosFileData = latiosFileData.replace(new RegExp(latiosReplacementText, 'g'), latiosReplacement.id);
         latiosFileData = latiosFileData.replace(new RegExp(latiosMSGBOXReplacementText, 'g'), `${latiosReplacement.name.toUpperCase()}!$`);
         await fs.writeFile(latiosReplacementFile, latiosFileData, 'utf8');
+        replacementLog['SPECIES_LATIOS'] = latiosReplacement.id;
     }
 
     if (rayquazaReplacement) {
         let rayquazaFileData = await fs.readFile(rayquazaReplacementFile, 'utf8');
         rayquazaFileData = rayquazaFileData.replace(new RegExp(rayquazaReplacementText, 'g'), rayquazaReplacement.id);
         await fs.writeFile(rayquazaReplacementFile, rayquazaFileData, 'utf8');
+        replacementLog['SPECIES_RAYQUAZA'] = rayquazaReplacement.id;
+    }
+
+    if (groudonReplacement) {
+        // @TODO Implement groudon map replacement
+        replacementLog['SPECIES_GROUDON'] = groudonReplacement.id;
+    }
+
+    if (kyogreReplacement) {
+        // @TODO Implement kyogre map replacement
+        replacementLog['SPECIES_KYOGRE'] = kyogreReplacement.id;
     }
 
     // Routes replacements
@@ -521,7 +540,7 @@ async function writer(pokemonList, moves, abilities) {
             // General filters for the loose list
             if (trainerMonDefinition.absoluteTier) {
                 pokemonLooseList = pokemonLooseList.filter(
-                    loosePokemon => trainerMonDefinition.absoluteTier.includes(loosePokemon.rating.temporaryTier),
+                    loosePokemon => trainerMonDefinition.absoluteTier.includes(loosePokemon.rating.tier),
                 );
             }
             if (trainerMonDefinition.evoType && trainerMonDefinition.evoType.includes(EVO_TYPE_LC)) {
@@ -664,21 +683,6 @@ async function writer(pokemonList, moves, abilities) {
                         }
                     });
                 }
-                if (newTeamMember.moves && newTeamMember.moves.length > 0 && newTeamMember.moves.length < 4) {
-                    // Try to fill with level up moves
-                    // Filter by level
-                    const validMoves = chosenTrainerMon.learnset.filter(({ level }) => 
-                        level <= trainer.level && !newTeamMember.moves.includes(level.move)
-                    );
-                    // Sort by level descending
-                    validMoves.sort((a, b) => b.level - a.level);
-                    while (validMoves.length > 0 && newTeamMember.moves.length < 4) {
-                        const move = validMoves.shift().move;
-                        if (!newTeamMember.moves.includes(move)) {
-                            newTeamMember.moves.push(move);
-                        }
-                    }
-                }
                 if (trainer.abilities && trainer.abilities.length > 0) {
                     const validAbilities = chosenTrainerMon.parsedAbilities.filter(a => trainer.abilities.includes(a));
                     if (validAbilities.length > 0) {
@@ -686,6 +690,16 @@ async function writer(pokemonList, moves, abilities) {
                         newTeamMember.ability = ability;
                     }
                 }
+                newTeamMember.moves = chooseMoveset(
+                    chosenTrainerMon,
+                    moves,
+                    trainer.level,
+                    newTeamMember.moves,
+                    newTeamMember.ability,
+                    newTeamMember.item,
+                    null, // @TODO tms in bag
+                    0.1, // Deviation for trainer bias
+                );
                 team.push(newTeamMember);
             }
             else {

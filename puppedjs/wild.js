@@ -155,6 +155,38 @@ const wildData = {
             good: 'SPECIES_MIGHTYENA',
             super: 'SPECIES_PUPITAR',
         },
+
+        // Special
+        {
+            id: 'MAP_WEATHER_INSTITUTE',
+            special: 'SPECIES_CASTFORM_NORMAL',
+        },
+        {
+            id: 'MAP_DESERT_RUINS',
+            special: 'SPECIES_REGIROCK',
+        },
+        {
+            id: 'MAP_ISLAND_CAVE',
+            special: 'SPECIES_REGICE',
+        },
+        {
+            id: 'MAP_ANCIENT_TOMB',
+            special: 'SPECIES_REGISTEEL',
+        },
+        {
+            id: 'MAP_TATE_AND_LIZAS_GIFT',
+            special: 'SPECIES_LATIOS',
+        },
+        {
+            id: 'MAP_NEW_MAUVILLE',
+            special: 'SPECIES_MEW',
+        },
+        {
+            id: 'MAP_SKY_PILLAR_TOP',
+            special1: 'SPECIES_RAYQUAZA',
+            special2: 'SPECIES_GROUDON',
+            special3: 'SPECIES_KYOGRE',
+        }
     ]
 };
 

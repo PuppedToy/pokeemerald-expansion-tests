@@ -329,7 +329,7 @@
                 <div style="margin-top: 10px; text-align: center; width: 100%;">${poke.parsedTypes.map(type => `<span class="type" style="background-color:${typeColors[type]}">${type}</span>`).join(' ')}</div>
                 <div>
                     <div style="text-align: center; font-weight: 700; margin-top: 6px; color: #FFDDC9">BST: ${poke.baseBST}</div>
-                    <div style="text-align: center"><div style="text-align: center; font-weight: 700; margin-top: 6px; background-color: ${tierColorBgs[poke.rating.temporaryTier]}; color: ${tierColorFonts[poke.rating.temporaryTier]}; display: inline-block; padding: 4px 12px; border-radius: 999px;">${poke.rating.temporaryTier}</div></div>
+                    <div style="text-align: center"><div style="text-align: center; font-weight: 700; margin-top: 6px; background-color: ${tierColorBgs[poke.rating.tier]}; color: ${tierColorFonts[poke.rating.tier]}; display: inline-block; padding: 4px 12px; border-radius: 999px;">${poke.rating.tier}</div></div>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, auto); gap: 6px; margin-top: 10px;">
                         <div style="font-weight: 700; color: #BDF8FF">HP</div>
                         <div style="font-weight: 700; color: #BDF8FF">ATK</div>
