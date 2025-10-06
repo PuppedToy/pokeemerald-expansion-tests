@@ -690,7 +690,7 @@ async function writer(pokemonList, moves, abilities) {
                     newTeamMember.moves,
                     newTeamMember.ability,
                     newTeamMember.item,
-                    null, // @TODO tms in bag
+                    [], // @TODO tms in bag
                     0.1, // Deviation for trainer bias
                 );
                 newTeamMember.moves = moveset;

@@ -255,6 +255,7 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
 // trainer may have their own bias towards certain moves
 // Recommanded value: 0.1
 function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability = null, item = null, tmsInBag = null, deviation = 0) {
+    console.log(`Choosing moveset for ${poke.name} at level ${level}. startingMoveset: ${startingMoveset.join(', ')}, ability: ${ability}, item: ${item}, tmsInBag: ${tmsInBag ? tmsInBag.join(', ') : 'ALL'}`);
     const moveset = [...startingMoveset].map(move => moves[move] ? move : null).filter(m => m !== null);
     const tmsUsed = [];
     const tms = tmsInBag && Array.isArray(tmsInBag) ? poke.teachables.filter(tm => tmsInBag.includes(tm)) : poke.teachables;
@@ -274,7 +275,7 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
         };
     }).filter(m => m !== null);
 
-    while (allMoves.length > 0 && moveset.length < 4) {
+    while (uniqueMoves.length > 0 && moveset.length < 4) {
         const ratedMoves = uniqueMoves.map(move => {
             const rating = rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset) * (1 + ((Math.random() ? 1 : -1) * Math.random() * deviation));
             return {
