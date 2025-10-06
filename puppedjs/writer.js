@@ -621,13 +621,13 @@ async function writer(pokemonList, moves, abilities) {
             }
 
             if (trainerMonDefinition.tryEvolve) {
+                let possibleEvolutions;
                 do {
                     if (!chosenTrainerMon.evolutions || chosenTrainerMon.evolutions.length === 0) {
                         break;
                     }
 
                     // Try to evolve to the first possible evolution
-                    let possibleEvolutions;
                     possibleEvolutions = chosenTrainerMon.evolutions.filter(({ param }) => 
                         !isNaN(parseInt(param)) && parseInt(param) <= trainer.level && parseInt(param) > 4
                     );
