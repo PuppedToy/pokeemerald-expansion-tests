@@ -53,7 +53,7 @@ const calvinDogs = [
     'SPECIES_RIOLU'
 ];
 
-const rival103Template = [
+const rival103Template = (id) => [
     {
         special: TRAINER_POKE_ENCOUNTER,
         encounterIds: ['SPECIES_ZIGZAGOON'],
@@ -67,12 +67,12 @@ const rival103Template = [
         encounterIds: ['SPECIES_SURSKIT'],
     },
     {
-        id: 'RIVAL_WEAK_103_KEEP_ONCE',
+        id: 'RIVAL_WEAK_103_KEEP_ONCE_' + id,
         absoluteTier: [TIER_WEAK],
         evoType: [EVO_TYPE_LC],
     },
     {
-        id: 'RIVAL_MEGA_103_KEEP',
+        id: 'RIVAL_MEGA_103_KEEP_' + id,
         megaTier: [TIER_PREMIUM],
         evoType: [EVO_TYPE_LC],
     },
@@ -80,7 +80,7 @@ const rival103Template = [
 
 // @TODO Auto-pick best item from a selection of owned items
 // @TODO Auto-teach best TMs from a selection of owned TMs. Also autopick learnset.
-const rivalRustboroTemplate = [
+const rivalRustboroTemplate = (id) => [
     {
         special: TRAINER_POKE_ENCOUNTER,
         encounterIds: ['SPECIES_ZIGZAGOON', 'SPECIES_WURMPLE', 'SPECIES_WINGULL', 'SPECIES_SURSKIT', 'SPECIES_GEODUDE', 'SPECIES_WEEDLE', 'SPECIES_PATRAT', 'SPECIES_PORYGON', 'SPECIES_DELIBIRD', 'SPECIES_DITTO', 'SPECIES_SENTRET', 'SPECIES_POOCHYENA'],
@@ -98,13 +98,13 @@ const rivalRustboroTemplate = [
     },
     {
         special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_WEAK_103_KEEP_ONCE',
+        id: 'RIVAL_WEAK_103_KEEP_ONCE_' + id,
         tryEvolve: true,
         tryToHaveMove: ['MOVE_ROCK_TOMB'],
         item: 'Chesto Berry',
     },
     {
-        id: 'RIVAL_STRONG_RUSTBORO_KEEP',
+        id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
         evolutionTier: [TIER_STRONG],
         evoType: [EVO_TYPE_LC],
         tryEvolve: true,
@@ -113,7 +113,7 @@ const rivalRustboroTemplate = [
     },
     {
         special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_MEGA_103_KEEP',
+        id: 'RIVAL_MEGA_103_KEEP_' + id,
         tryEvolve: true,
         tryToHaveMove: ['MOVE_STEEL_WING'],
         item: 'Oran Berry',
@@ -352,7 +352,7 @@ const trainersData = [
                 special: TRAINER_POKE_STARTER_TORCHIC,
                 item: 'Oran Berry',
             },
-            ...rival103Template,
+            ...rival103Template('TREECKO'),
         ]
     },
     {
@@ -365,7 +365,7 @@ const trainersData = [
                 special: TRAINER_POKE_STARTER_MUDKIP,
                 item: 'Oran Berry',
             },
-            ...rival103Template,
+            ...rival103Template('TORCHIC'),
         ]
     },
     {
@@ -378,7 +378,7 @@ const trainersData = [
                 special: TRAINER_POKE_STARTER_TREECKO,
                 item: 'Oran Berry',
             },
-            ...rival103Template,
+            ...rival103Template('MUDKIP'),
         ]
     },
     {
@@ -1155,7 +1155,7 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_BULLET_SEED'],
                 tryEvolve: true,
             },
-            ...rivalRustboroTemplate,
+            ...rivalRustboroTemplate('TREECKO'),
         ]
     },
     {
@@ -1170,7 +1170,7 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_BULLET_SEED'],
                 tryEvolve: true,
             },
-            ...rivalRustboroTemplate,
+            ...rivalRustboroTemplate('TORCHIC'),
         ]
     },
     {
@@ -1185,7 +1185,7 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_BULLET_SEED'],
                 tryEvolve: true,
             },
-            ...rivalRustboroTemplate,
+            ...rivalRustboroTemplate('MUDKIP'),
         ]
     },
     {
