@@ -1799,10 +1799,9 @@ const trainersData = [
                 item: 'Eviolite',
             },
             {
-                absoluteTier: [TIER_BAD, TIER_WEAK],
-                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                specific: 'SPECIES_SNEASEL',
+                abilities: ['PICKPOCKET'],
                 item: 'Chople Berry',
-                tryEvolve: true,
             },
         ],
     },
