@@ -1505,7 +1505,7 @@ const trainersData = [
                 absoluteTier: [TIER_BAD, TIER_WEAK],
                 evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
                 item: 'Loaded Dice',
-                mustHaveOneOfMoves: multiHitMoves, // @TODO Doesn't work?
+                mustHaveOneOfMoves: goodMultiHitMoves, // @TODO Doesn't work?
                 tryToHaveMove: multiHitMoves,
                 tryEvolve: true,
             },
@@ -1536,8 +1536,8 @@ const trainersData = [
             {
                 absoluteTier: [TIER_BAD, TIER_WEAK],
                 evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                mustHaveOneOfMoves: goodMultiHitMoves,
                 item: 'Loaded Dice',
-                mustHaveOneOfMoves: multiHitMoves,
                 tryToHaveMove: multiHitMoves,
                 tryEvolve: true,
             },
