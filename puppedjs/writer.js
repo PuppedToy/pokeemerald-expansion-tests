@@ -553,6 +553,11 @@ async function writer(pokemonList, moves, abilities) {
                     loosePokemon => loosePokemon.parsedTypes.some(t => trainerMonDefinition.type.includes(t)),
                 );
             }
+            if (trainerMonDefinition.ability) {
+                pokemonLooseList = pokemonLooseList.filter(
+                    loosePokemon => loosePokemon.parsedAbilities.some(a => trainerMonDefinition.ability.includes(a)),
+                );
+            }
 
             const canLearnMove = (moveToLearn) => 
                 (
@@ -676,12 +681,16 @@ async function writer(pokemonList, moves, abilities) {
                         }
                     });
                 }
+                let validAbilities = [];
                 if (trainer.abilities && trainer.abilities.length > 0) {
-                    const validAbilities = chosenTrainerMon.parsedAbilities.filter(a => trainer.abilities.includes(a));
-                    if (validAbilities.length > 0) {
-                        const ability = sample(validAbilities);
-                        newTeamMember.ability = ability;
-                    }
+                    validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => trainer.abilities.includes(a))];
+                }
+                if (trainerMonDefinition.ability) {
+                    validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => trainerMonDefinition.ability.includes(a))];
+                }
+                if (validAbilities.length > 0) {
+                    const ability = sample(validAbilities);
+                    newTeamMember.ability = ability;
                 }
                 const { moveset, tmsUsed } = chooseMoveset(
                     chosenTrainerMon,

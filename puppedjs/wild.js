@@ -110,6 +110,9 @@ const wildData = {
         SPECIES_BULBASAUR: 'LC_AVERAGE_OR_STRONG',
         SPECIES_IVYSAUR: 'LC_AVERAGE_OR_WEAK',
         SPECIES_VENUSAUR: 'NFE_OR_SOLO_STRONG',
+
+        // Slateport City
+        SPECIES_ABSOL: 'LC_AVERAGE_OR_WEAK',
     },
     maps: [
         // Shelgon maps
@@ -191,6 +194,10 @@ const wildData = {
             old: 'SPECIES_IVYSAUR',
             good: 'SPECIES_VENUSAUR',
             super: 'SPECIES_PUPITAR',
+        },
+        {
+            id: 'SLATEPORT_CITY',
+            land: 'SPECIES_ABSOL',
         },
         // Special
         {

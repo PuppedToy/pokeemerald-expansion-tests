@@ -99,6 +99,11 @@ const multiHitMoves = [
     'MOVE_WATER_SHURIKEN',  
 ];
 
+const rainAbilities = ['SWIFT_SWIM', 'RAIN_DISH', 'DRY_SKIN', 'HYDRATION'];
+const sunAbilities = ['FLOWER_GIFT', 'CHLOROPHYLL', 'LEAF_GUARD', 'SOLAR_POWER'];
+const sandAbilities = ['SAND_FORCE', 'SAND_RUSH', 'SAND_VEIL', 'SAND_SPIT'];
+const snowAbilities = ['ICE_BODY', 'SNOW_CLOAK', 'SLUSH_RUSH'];
+
 const rival103Template = (id) => [
     {
         special: TRAINER_POKE_ENCOUNTER,
@@ -443,7 +448,7 @@ const trainersData = [
         id: 'TRAINER_CARTER',
         level: 9,
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES],
-        abilities: ['DRIZZLE', 'SWIFT_SWIM', 'RAIN_DISH', 'DRY_SKIN', 'HYDRATION'],
+        abilities: [...rainAbilities],
         team: [
             {
                 absoluteTier: [TIER_BAD],
@@ -1073,7 +1078,7 @@ const trainersData = [
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                ability: 'GUTS',
+                ability: ['GUTS'],
                 item: 'Flame Orb',
             },
             {
@@ -1332,7 +1337,7 @@ const trainersData = [
                 specific: 'SPECIES_MAKUHITA',
                 tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP', 'MOVE_FAKE_OUT', 'MOVE_ROCK_TOMB'],
                 nature: NATURE_ADAMANT,
-                ability: 'GUTS', // @TODO
+                ability: ['GUTS'],
                 item: 'Flame Orb',
             },
             {
@@ -1539,6 +1544,264 @@ const trainersData = [
                 mustHaveOneOfMoves: goodMultiHitMoves,
                 item: 'Loaded Dice',
                 tryToHaveMove: multiHitMoves,
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_CHANDLER',
+        level: 21,
+        team: [
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                abilities: [...sunAbilities],
+                mustHaveOneOfMoves: ['MOVE_SUNNY_DAY'],
+                tryToHaveMove: ['MOVE_SUNNY_DAY'],
+                item: 'Heat Rock',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                abilities: [...rainAbilities],
+                mustHaveOneOfMoves: ['MOVE_RAIN_DANCE'],
+                tryToHaveMove: ['MOVE_RAIN_DANCE'],
+                item: 'Damp Rock',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                abilities: [...sandAbilities],
+                mustHaveOneOfMoves: ['MOVE_SANDSTORM'],
+                tryToHaveMove: ['MOVE_SANDSTORM'],
+                item: 'Smooth Rock',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                abilities: [...snowAbilities],
+                mustHaveOneOfMoves: ['MOVE_HAIL'],
+                tryToHaveMove: ['MOVE_HAIL'],
+                item: 'Icy Rock',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC],
+                abilities: [...rainAbilities, ...sunAbilities, ...sandAbilities, ...snowAbilities],
+                item: 'Eviolite',
+            },
+            {
+                specific: 'SPECIES_CASTFORM_NORMAL',
+                item: 'Oran Berry',
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_RICKY_1',
+        level: 21,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        team: [
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                mustHaveOneOfMoves: ['MOVE_STEALTH_ROCK', 'MOVE_TOXIC_SPIKES', 'MOVE_SPIKES'],
+                tryToHaveMove: ['MOVE_STEALTH_ROCK', 'MOVE_TOXIC_SPIKES', 'MOVE_SPIKES', 'MOVE_ROAR', 'MOVE_WHIRLWIND', 'DRAGON_TAIL'],
+                item: 'Eviolite',
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                item: 'Red Card',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                item: 'Red Card',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                item: 'Red Card',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                item: 'Red Card',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                item: 'Red Card',
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_HUEY',
+        level: 21,
+        bag: ['Rocky Helmet', 'Eviolite', 'Oran Berry'],
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        team: [
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_ALYSSA',
+        level: 21,
+        bag: ['Rocky Helmet', 'Eviolite', 'Oran Berry'],
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        team: [
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_GRUNT_MUSEUM_1',
+        level: 21,
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES],
+        abilities: [...rainAbilities],
+        team: [
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                mustHaveOneOfMoves: ['MOVE_RAIN_DANCE'],
+                tryToHaveMove: ['MOVE_RAIN_DANCE'],
+                item: 'Damp Rock',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                item: 'Life Orb',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                item: 'Water Gem',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                mustHaveOneOfMoves: ['MOVE_RAIN_DANCE'],
+                tryToHaveMove: ['MOVE_RAIN_DANCE'],
+                item: 'Damp Rock',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC],
+                item: 'Eviolite',
+            },
+            {
+                specific: 'SPECIES_CARVANHA',
+                item: 'Rocky Helmet',
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_GRUNT_MUSEUM_2',
+        level: 21,
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES],
+        abilities: [...snowAbilities],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                ability: ['SNOW_WARNING'],
+                item: 'Icy Rock',
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                item: 'Life Orb',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                item: 'Ice Gem',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                ability: ['SNOW_WARNING'],
+                item: 'Icy Rock',
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC],
+                item: 'Eviolite',
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                item: 'Chople Berry',
                 tryEvolve: true,
             },
         ],

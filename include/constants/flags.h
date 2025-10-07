@@ -1231,9 +1231,9 @@
 #define FLAG_ITEM_ROUTE_116_KINGS_ROCK                              0x498
 #define FLAG_ITEM_ROUTE_116_MIND_PLATE                              0x499
 #define FLAG_ITEM_ROUTE_109_ROCKYHELMET                             0x49A
-#define FLAG_UNUSED_0x49B                                           0x49B // Unused Flag
-#define FLAG_UNUSED_0x49C                                           0x49C // Unused Flag
-#define FLAG_UNUSED_0x49D                                           0x49D // Unused Flag
+#define FLAG_ITEM_ROUTE_109_PICK                                    0x49B
+#define FLAG_ITEM_ROUTE_109_REDCARD                                 0x49C
+#define FLAG_ITEM_ROUTE_109_STRONGMINT                              0x49D
 #define FLAG_UNUSED_0x49E                                           0x49E // Unused Flag
 #define FLAG_UNUSED_0x49F                                           0x49F // Unused Flag
 #define FLAG_UNUSED_0x4A0                                           0x4A0 // Unused Flag

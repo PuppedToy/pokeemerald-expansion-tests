@@ -371,6 +371,7 @@
         const pokeName = pokeId.replace('SPECIES_', '').replace(/_/g, ' ');
         const imgSrc = getPokeImg(pokeId);
         const item = member.item ? `<div class="small" style="color:#FFD580">🎒 ${member.item}</div>` : '';
+        const ability = member.ability ? `<div class="small" style="color:#D1F2FF">✨ ${member.ability}</div>` : '';
         const moves =
           member.moves && member.moves.length > 0
             ? `<div style="font-size:12px;color:#aaa;margin-top:4px">

@@ -1,7 +1,7 @@
 const items = {
     // Randomized items - mints
     // ITEM_MECH_MAIL will be replaced by these
-    strongAtkMints: [
+    strongAtkMints: [ // 1 at Route 109
         'ITEM_ADAMANT_MINT',
         'ITEM_JOLLY_MINT',
         'ITEM_MODEST_MINT',
@@ -251,7 +251,7 @@ const items = {
             count: 3
         },
         // Normal ability
-        ITEM_ABILITY_CAPSULE: { // 1 at Route 104
+        ITEM_ABILITY_CAPSULE: { // 1 at Route 104, 1 at Route 110
             count: 6
         },
         ITEM_HEART_SCALE: {
@@ -285,10 +285,10 @@ const items = {
         // These will be represented as ITEM_HARBOR_MAIL in the future and shuffled
         'ITEM_FLAME_ORB', // Route 115
         'ITEM_TOXIC_ORB',
-        'ITEM_DAMP_ROCK',
-        'ITEM_HEAT_ROCK',
-        'ITEM_SMOOTH_ROCK',
-        'ITEM_ICY_ROCK',
+        'ITEM_DAMP_ROCK', // Route 109
+        'ITEM_HEAT_ROCK', // Route 109
+        'ITEM_SMOOTH_ROCK', // Route 109
+        'ITEM_ICY_ROCK', // Route 109
         'ITEM_WIDE_LENS',
         'ITEM_EXPERT_BELT', // Route 102
         'ITEM_LIGHT_CLAY',
@@ -307,7 +307,7 @@ const items = {
         'ITEM_POWER_HERB',
         'ITEM_FOCUS_SASH',
         'ITEM_AIR_BALLOON',
-        'ITEM_RED_CARD',
+        'ITEM_RED_CARD', // Route 109
         'ITEM_EJECT_BUTTON',
         'ITEM_WEAKNESS_POLICY',
         'ITEM_ADRENALINE_ORB',
