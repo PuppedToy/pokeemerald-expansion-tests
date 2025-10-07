@@ -1078,7 +1078,7 @@ const trainersData = [
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
-                ability: ['GUTS'],
+                abilities: ['GUTS'],
                 item: 'Flame Orb',
             },
             {
@@ -1337,7 +1337,7 @@ const trainersData = [
                 specific: 'SPECIES_MAKUHITA',
                 tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP', 'MOVE_FAKE_OUT', 'MOVE_ROCK_TOMB'],
                 nature: NATURE_ADAMANT,
-                ability: ['GUTS'],
+                abilities: ['GUTS'],
                 item: 'Flame Orb',
             },
             {
@@ -1773,7 +1773,7 @@ const trainersData = [
         team: [
             {
                 evoType: [EVO_TYPE_LC],
-                ability: ['SNOW_WARNING'],
+                abilities: ['SNOW_WARNING'],
                 item: 'Icy Rock',
             },
             {
@@ -1790,7 +1790,7 @@ const trainersData = [
             },
             {
                 evoType: [EVO_TYPE_LC],
-                ability: ['SNOW_WARNING'],
+                abilities: ['SNOW_WARNING'],
                 item: 'Icy Rock',
             },
             {

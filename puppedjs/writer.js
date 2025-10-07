@@ -553,9 +553,9 @@ async function writer(pokemonList, moves, abilities) {
                     loosePokemon => loosePokemon.parsedTypes.some(t => trainerMonDefinition.type.includes(t)),
                 );
             }
-            if (trainerMonDefinition.ability) {
+            if (trainerMonDefinition.abilities) {
                 pokemonLooseList = pokemonLooseList.filter(
-                    loosePokemon => loosePokemon.parsedAbilities.some(a => trainerMonDefinition.ability.includes(a)),
+                    loosePokemon => loosePokemon.parsedAbilities.some(a => trainerMonDefinition.abilities.includes(a)),
                 );
             }
 
@@ -685,8 +685,8 @@ async function writer(pokemonList, moves, abilities) {
                 if (trainer.abilities && trainer.abilities.length > 0) {
                     validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => trainer.abilities.includes(a))];
                 }
-                if (trainerMonDefinition.ability) {
-                    validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => trainerMonDefinition.ability.includes(a))];
+                if (trainerMonDefinition.abilities) {
+                    validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => trainerMonDefinition.abilities.includes(a))];
                 }
                 if (validAbilities.length > 0) {
                     const ability = sample(validAbilities);
