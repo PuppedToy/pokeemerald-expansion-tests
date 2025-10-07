@@ -301,7 +301,7 @@ Route104_EventScript_PickItem2::
 
 Route104_EventScript_PickItem3::
 	setflag FLAG_ITEM_ROUTE_104_POTION
-	giveitem ITEM_TM_STEEL_WING
+	giveitem ITEM_TM_DIG
 	removeobject LOCALID_ROUTE104_I1
 	removeobject LOCALID_ROUTE104_I2
 	removeobject LOCALID_ROUTE104_I3
@@ -327,7 +327,7 @@ Route104_Text_PickItem2:
 	.string "Bullet Seed$"
 
 Route104_Text_PickItem3:
-	.string "Steel Wing$"
+	.string "Dig$"
 
 Route104_EventScript_ReceivedWhiteHerb::
 	msgbox Route104_Text_FlowerShopSellingSaplings, MSGBOX_DEFAULT

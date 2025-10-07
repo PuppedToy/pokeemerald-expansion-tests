@@ -268,14 +268,14 @@ const items = {
         'ITEM_CHOICE_SPECS',
         'ITEM_CHOICE_SCARF',
         'ITEM_LEFTOVERS',
-        'ITEM_LIFE_ORB',
-        'ITEM_EVIOLITE', // Route103
+        'ITEM_LIFE_ORB', // Route 106
+        'ITEM_EVIOLITE', // Route 103
         'ITEM_ASSAULT_VEST',
     ],
 
     goodItems: [
         'ITEM_SHELL_BELL',
-        'ITEM_ROCKY_HELMET',
+        'ITEM_ROCKY_HELMET', // Route 109
         'ITEM_SAFETY_GOGGLES',
         'ITEM_HEAVY_DUTY_BOOTS', // Route 115
         'ITEM_BERSERK_GENE',
@@ -283,7 +283,7 @@ const items = {
 
     goodSituationalItems: [
         // These will be represented as ITEM_HARBOR_MAIL in the future and shuffled
-        'ITEM_FLAME_ORB',
+        'ITEM_FLAME_ORB', // Route 115
         'ITEM_TOXIC_ORB',
         'ITEM_DAMP_ROCK',
         'ITEM_HEAT_ROCK',
@@ -298,7 +298,7 @@ const items = {
         'ITEM_BIG_ROOT',
         'ITEM_TERRAIN_EXTENDER',
         'ITEM_PUNCHING_GLOVE',
-        'ITEM_LOADED_DICE',
+        'ITEM_LOADED_DICE', // Route 109
     ],
 
     goodConsumables: [

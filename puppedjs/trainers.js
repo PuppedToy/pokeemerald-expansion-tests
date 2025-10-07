@@ -71,6 +71,34 @@ const stevenPokemon = [
     'SPECIES_TYRUNT',
 ];
 
+const goodMultiHitMoves = [
+    'MOVE_BULLET_SEED',
+    'MOVE_ICICLE_SPEAR',
+    'MOVE_PIN_MISSILE',
+    'MOVE_ROCK_BLAST',
+    'MOVE_TAIL_SLAP',
+    'MOVE_BONE_RUSH',
+    'MOVE_SCALE_SHOT',
+];
+
+const multiHitMoves = [
+    'MOVE_BULLET_SEED',
+    'MOVE_ICICLE_SPEAR',
+    'MOVE_PIN_MISSILE',
+    'MOVE_ROCK_BLAST',
+    'MOVE_TAIL_SLAP',
+    'MOVE_BONE_RUSH',
+    'MOVE_SCALE_SHOT',
+    'MOVE_ARM_THRUST',
+    'MOVE_BARRAGE',
+    'MOVE_COMET_PUNCH',
+    'MOVE_DOUBLE_SLAP',
+    'MOVE_FURY_ATTACK',
+    'MOVE_FURY_SWIPES',
+    'MOVE_SPIKE_CANNON',
+    'MOVE_WATER_SHURIKEN',  
+];
+
 const rival103Template = (id) => [
     {
         special: TRAINER_POKE_ENCOUNTER,
@@ -746,14 +774,14 @@ const trainersData = [
             {
                 absoluteTier: [TIER_BAD],
                 type: [POKEMON_TYPE_GROUND],
-                tryToHaveMove: ['MOVE_ROCK_TOMB'],
+                tryToHaveMove: ['MOVE_ROCK_TOMB', 'MOVE_DIG'],
                 item: 'Passho Berry',
             },
             {
                 absoluteTier: [TIER_BAD],
                 type: [POKEMON_TYPE_STEEL],
                 mustHaveOneOfMoves: ['MOVE_ROCK_TOMB'],
-                tryToHaveMove: ['MOVE_ROCK_TOMB', 'MOVE_STEEL_WING'],
+                tryToHaveMove: ['MOVE_ROCK_TOMB'],
                 item: 'Shuca Berry',
             },
             {
@@ -1304,7 +1332,7 @@ const trainersData = [
                 specific: 'SPECIES_MAKUHITA',
                 tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP', 'MOVE_FAKE_OUT', 'MOVE_ROCK_TOMB'],
                 nature: NATURE_ADAMANT,
-                ability: 'GUTS',
+                ability: 'GUTS', // @TODO
                 item: 'Flame Orb',
             },
             {
@@ -1389,6 +1417,130 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_STEEL_WING'],
                 tryEvolve: true,
                 item: 'Chople Berry',
+            },
+        ],
+    },
+    // Route 106
+    {
+        id: 'TRAINER_LOLA_1',
+        level: 21,
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_BULBASAUR'],
+                item: 'Eviolite',
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_EDMOND',
+        level: 21,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        team: [
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                item: 'Rocky Helmet',
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                item: 'Rocky Helmet',
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_HAILEY',
+        level: 21,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        team: [
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                item: 'Loaded Dice',
+                mustHaveOneOfMoves: goodMultiHitMoves,
+                tryToHaveMove: multiHitMoves,
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryToHaveMove: multiHitMoves,
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryToHaveMove: multiHitMoves,
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryToHaveMove: multiHitMoves,
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                tryToHaveMove: multiHitMoves,
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_BAD, TIER_WEAK],
+                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                mustHaveOneOfMoves: goodMultiHitMoves,
+                item: 'Loaded Dice',
+                mustHaveOneOfMoves: goodMultiHitMoves,
+                tryToHaveMove: multiHitMoves,
+                tryEvolve: true,
             },
         ],
     },

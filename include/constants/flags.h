@@ -1230,7 +1230,7 @@
 #define FLAG_ITEM_ROUTE_TM_BRICK_BREAK                              0x497
 #define FLAG_ITEM_ROUTE_116_KINGS_ROCK                              0x498
 #define FLAG_ITEM_ROUTE_116_MIND_PLATE                              0x499
-#define FLAG_UNUSED_0x49A                                           0x49A // Unused Flag
+#define FLAG_ITEM_ROUTE_109_ROCKYHELMET                             0x49A
 #define FLAG_UNUSED_0x49B                                           0x49B // Unused Flag
 #define FLAG_UNUSED_0x49C                                           0x49C // Unused Flag
 #define FLAG_UNUSED_0x49D                                           0x49D // Unused Flag

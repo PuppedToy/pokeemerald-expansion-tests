@@ -33,6 +33,10 @@ const wildData = {
             replace: [TIER_AVERAGE],
             type: [EVO_TYPE_LC],
         },
+        LC_AVERAGE_OR_STRONG: {
+            replace: [TIER_AVERAGE, TIER_STRONG],
+            type: [EVO_TYPE_LC],
+        },
         NFE_OR_SOLO_AVERAGE_OR_WEAK: {
             replace: [TIER_AVERAGE, TIER_WEAK],
             type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
@@ -101,6 +105,11 @@ const wildData = {
 
         // Granite Cave
         SPECIES_ARON: 'LC_AVERAGE',
+
+        // Route109
+        SPECIES_BULBASAUR: 'LC_AVERAGE_OR_STRONG',
+        SPECIES_IVYSAUR: 'LC_AVERAGE_OR_WEAK',
+        SPECIES_VENUSAUR: 'NFE_OR_SOLO_STRONG',
     },
     maps: [
         // Shelgon maps
@@ -175,6 +184,13 @@ const wildData = {
         {
             id: 'MAP_GRANITE_CAVE',
             land: 'SPECIES_ARON',
+        },
+        {
+            id: 'MAP_ROUTE109',
+            land: 'SPECIES_BULBASAUR',
+            old: 'SPECIES_IVYSAUR',
+            good: 'SPECIES_VENUSAUR',
+            super: 'SPECIES_PUPITAR',
         },
         // Special
         {
