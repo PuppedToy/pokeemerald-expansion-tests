@@ -559,33 +559,28 @@ async function writer(pokemonList, moves, abilities) {
                 );
             }
 
-            const canLearnMove = (moveToLearn) => {
-                console.log(`Checking if ${chosenTrainerMon.id} @ ${trainer.level} can learn ${moveToLearn}`);
-                console.log(`Teachables: ${chosenTrainerMon.teachables}`);
-                console.log(`Learnset: ${chosenTrainerMon.learnset ? chosenTrainerMon.learnset.map(lu => `${lu.move} @ ${lu.level}`).join(', ') : 'N/A'}`);
+            const canLearnMove = (pokemon, moveToLearn) => {
                 const result = (
-                    chosenTrainerMon.teachables
-                    && chosenTrainerMon.teachables.includes(moveToLearn)
+                    pokemon.teachables
+                    && pokemon.teachables.includes(moveToLearn)
                 )
                 ||
                 (
-                    chosenTrainerMon.learnset
-                    && chosenTrainerMon.learnset.some(lu => lu.move === moveToLearn && lu.level <= trainer.level)
+                    pokemon.learnset
+                    && pokemon.learnset.some(lu => lu.move === moveToLearn && lu.level <= trainer.level)
                 );
-                console.log(`Result: ${result}`);
+                return result;
+            };
+
+            const canLearnAnyOfMoves = (pokemon, movesToLearn) => {
+                const result = movesToLearn.some(moveToLearn => canLearnMove(pokemon, moveToLearn));
                 return result;
             }
-                
 
             if (trainerMonDefinition.mustHaveOneOfMoves) {
-                trainerMonDefinition.mustHaveOneOfMoves.forEach(moveToLearn => {
-                    pokemonLooseList = pokemonLooseList.filter(
-                        loosePokemon => {
-                            chosenTrainerMon = loosePokemon;
-                            return canLearnMove(moveToLearn);
-                        }
-                    );
-                });
+                pokemonLooseList = pokemonLooseList.filter(
+                    loosePokemon => canLearnAnyOfMoves(loosePokemon, trainerMonDefinition.mustHaveOneOfMoves),
+                );
             }
 
             // Always apply unique restriction
@@ -681,7 +676,7 @@ async function writer(pokemonList, moves, abilities) {
                 if (trainerMonDefinition.tryToHaveMove) {
                     trainerMonDefinition.tryToHaveMove.forEach(moveToLearn => {
                         if (
-                            canLearnMove(moveToLearn)
+                            canLearnMove(chosenTrainerMon, moveToLearn)
                             && !newTeamMember.moves[moveToLearn]
                         ) {
                             newTeamMember.moves.push(moveToLearn);
