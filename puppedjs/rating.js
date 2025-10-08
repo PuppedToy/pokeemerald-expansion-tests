@@ -253,7 +253,7 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     }
     // Status moves value defenses (except setup, which need to be evaluated differently @TODO)
     else {
-        rating += (poke.baseHp + poke.baseDefense + poke.baseSpDefense) / 300;
+        rating += (poke.baseHP + poke.baseDefense + poke.baseSpDefense) / 300;
     }
 
     if (move.category !== 'DAMAGE_CATEGORY_STATUS') {
@@ -293,9 +293,8 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
 }
 
 function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 0) {
-    console.log(item, poke, ability, moveset);
     const offensePower = Math.max(poke.baseAttack, poke.baseSpAttack)/100;
-    const defensePower = (poke.baseDefense + poke.baseSpDefense + poke.baseHp)/300;
+    const defensePower = (poke.baseDefense + poke.baseSpDefense + poke.baseHP)/300;
     let coverageRating = 0;
     const checkedTypes = [];
     const calculatedDeviation = 1 + ((Math.random() ? 1 : -1) * Math.random() * deviation);
@@ -350,28 +349,33 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
         return 8.5 * offensePower / defensePower * calculatedDeviation;
     }
     if (item === 'Expert Belt') {
-        return 7.5 * offensePower / defensePower * coverageRating * calculatedDeviation;
+        return coverageRating * 0.75 * offensePower / defensePower * calculatedDeviation;
     }
     if (item === 'Heavy-Duty Boots') {
         const rockDamageMultiplier = damageMultiplier('ROCK', poke.parsedTypes);
         return 5 * calculatedDeviation + (1 - rockDamageMultiplier) * 2;
     }
     if (item === 'Oran Berry') {
-        const baseHpNear10Rating = Math.max(0, Math.min(10, 10 - ((poke.baseHp - 20) / 4)));
-        return baseHpNear10Rating * calculatedDeviation;
+        const minHPAtWhichRatingIsMax = 30;
+        const ratingDevaluation = 5; // For each X extra HP, rating devalues by 1 point
+        const baseHPNear10Rating = Math.max(0, Math.min(10, 10 - ((poke.baseHP - minHPAtWhichRatingIsMax) / ratingDevaluation)));
+        return baseHPNear10Rating * calculatedDeviation;
     }
     if (item === 'Chesto Berry') {
+        if (ability === 'INSOMNIA' || ability === 'EARLY_BIRD') {
+            return 0;
+        }
         const hasRest = moveset.some(m => m.id === 'MOVE_REST');
         if (hasRest) {
             return 9 * defensePower / offensePower * calculatedDeviation;
         }
-        return 5 * calculatedDeviation;
+        return 3 * calculatedDeviation;
     }
     if (item.includes(' Gem')) {
         const gemType = item.split(' Gem')[0].toUpperCase();
         const stabExtra = poke.parsedTypes.includes(gemType) ? 0.5 : 0;
-        moveset.forEach(move => {
-            if (move.type === gemType) {
+        for (const move of moveset) {
+            if (move.category !== 'DAMAGE_CATEGORY_STATUS' && move.type === gemType) {
                 if (move.id === 'MOVE_ACROBATICS' && gemType === 'FLYING') {
                     if (ability === 'UNBURDEN') {
                         return 9.1 * offensePower / defensePower * calculatedDeviation + stabExtra;
@@ -380,21 +384,23 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
                 }
                 return 7 * offensePower / defensePower * calculatedDeviation + stabExtra;
             }
-        });
+        }
         return 0;
     }
     const itemId = 'ITEM_' + item.replace(/ /, '_').toUpperCase();
     if (item.includes(' Plate')) {
         const plateType = plates[itemId];
         const stabExtra = poke.parsedTypes.includes(plateType) ? 0.5 : 0;
-        moveset.forEach(move => {
-            if (move.type === plateType) {
+        for (const move of moveset) {
+            if (move.category !== 'DAMAGE_CATEGORY_STATUS' && move.type === plateType) {
                 return 6.5 * offensePower / defensePower * calculatedDeviation + stabExtra;
             }
-        });
+        }
+        return 0;
     }
     if (item.includes(' Berry')) {
-        Object.entries(protectionBerries).forEach((berryType, berryId) => {
+        const protectionBerriesEntries = Object.entries(protectionBerries);
+        for (const [berryType, berryId] of protectionBerriesEntries) {
             if (berryId === itemId) {
                 const berryTypeDamageMultiplier = damageMultiplier(berryType, poke.parsedTypes);
                 if (berryTypeDamageMultiplier > 1) {
@@ -402,7 +408,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
                 }
                 return 0;
             }
-        });
+        }
     }
     return calculatedDeviation;
 }

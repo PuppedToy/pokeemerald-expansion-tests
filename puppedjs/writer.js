@@ -726,7 +726,7 @@ async function writer(pokemonList, moves, abilities) {
                     const sortedBagItems = trainer.bag
                         .map(bagItemId => {
                             const rating = rateItemForAPokemon(bagItemId, chosenTrainerMon, newTeamMember.ability, movesetObjects, trainer.bag.length, 0.1);
-                            console.log(`Rating item ${bagItemId} for pokemon ${chosenTrainerMon.id} resulted in rating ${rating}`);
+                            console.log(`Rating item ${bagItemId} for pokemon LV.${trainer.level} ${chosenTrainerMon.id} resulted in rating ${rating}`);
                             return {
                                 id: bagItemId,
                                 rating,
