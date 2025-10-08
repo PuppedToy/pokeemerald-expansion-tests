@@ -702,7 +702,7 @@ async function writer(pokemonList, moves, abilities) {
                     newTeamMember.moves,
                     newTeamMember.ability,
                     newTeamMember.item,
-                    trainer.tms,
+                    trainer.tms || [],
                     0.1, // Deviation for trainer bias
                 );
                 // Remove the first appereance of each used TM from trainer's inventory
