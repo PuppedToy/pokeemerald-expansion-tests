@@ -332,8 +332,11 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
         }
         return 8.5 * poke.baseDefense / offensePower * calculatedDeviation;
     }
-    if (item === 'Black Sludge' && poke.parsedTypes.includes(POKEMON_TYPE_POISON)) {
-        return 9.5 * defensePower / offensePower * calculatedDeviation;
+    if (item === 'Black Sludge') {
+        if (poke.parsedTypes.includes(POKEMON_TYPE_POISON)) {
+            return 9.5 * defensePower / offensePower * calculatedDeviation;
+        }
+        return 0;
     }
     if (item === 'Leftovers') {
         return 9.5 * defensePower / offensePower * calculatedDeviation;
