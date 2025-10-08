@@ -25,13 +25,11 @@ const {
     POKEMON_TYPE_GROUND,
     POKEMON_TYPE_FLYING,
     EVO_TYPE_SOLO,
-    NATURE_ADAMANT,
     POKEMON_TYPE_STEEL,
-    NATURE_RELAXED,
     TRAINER_REPEAT_ID,
     TIER_STRONG,
     TIER_AVERAGE,
-    EVO_TYPE_NFE,
+    NATURES,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
@@ -129,45 +127,55 @@ const rival103Template = (id) => [
     },
 ];
 
-// @TODO Auto-pick best item from a selection of owned items
-// @TODO Auto-teach best TMs from a selection of owned TMs. Also autopick learnset.
+const rivalRustboroBag = [
+    'Black Sludge',
+    'Expert Belt',
+    'Oran Berry',
+    'Charti Berry',
+    'Chesto Berry',
+    'Meadow Plate',
+    'Earth Plate',
+    'Flame Orb',
+    'Water Gem',
+    'Flying Gem',
+    'Heavy-Duty Boots',
+];
+
+const rivalRustboroTMs = [
+    'MOVE_WATER_PULSE',
+    'MOVE_ROCK_TOMB',
+    'MOVE_BRICK_BREAK',
+    'MOVE_BULLET_SEED',
+];
+
 const rivalRustboroTemplate = (id) => [
     {
         special: TRAINER_POKE_ENCOUNTER,
         encounterIds: ['SPECIES_ZIGZAGOON', 'SPECIES_WURMPLE', 'SPECIES_WINGULL', 'SPECIES_SURSKIT', 'SPECIES_GEODUDE', 'SPECIES_WEEDLE', 'SPECIES_PATRAT', 'SPECIES_PORYGON', 'SPECIES_DELIBIRD', 'SPECIES_DITTO', 'SPECIES_SENTRET', 'SPECIES_POOCHYENA'],
         type: [POKEMON_TYPE_POISON],
         tryEvolve: true,
-        item: 'Black Sludge',
-        tryToHaveMove: ['MOVE_WATER_PULSE'],
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
         type: [POKEMON_TYPE_FIRE, POKEMON_TYPE_FLYING, POKEMON_TYPE_ICE, POKEMON_TYPE_BUG],
         tryEvolve: true,
         encounterIds: ['SPECIES_ZIGZAGOON', 'SPECIES_WURMPLE', 'SPECIES_WINGULL', 'SPECIES_SURSKIT'],
-        item: 'Charti Berry',
     },
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_WEAK_103_KEEP_ONCE_' + id,
         tryEvolve: true,
-        tryToHaveMove: ['MOVE_ROCK_TOMB'],
-        item: 'Chesto Berry',
     },
     {
         id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
         evolutionTier: [TIER_STRONG],
         evoType: [EVO_TYPE_LC],
         tryEvolve: true,
-        tryToHaveMove: ['MOVE_BRICK_BREAK'],
-        item: 'Expert Belt',
     },
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_MEGA_103_KEEP_' + id,
         tryEvolve: true,
-        tryToHaveMove: ['MOVE_STEEL_WING'],
-        item: 'Oran Berry',
     },
 ];
 
@@ -691,7 +699,7 @@ const trainersData = [
             {
                 specific: 'SPECIES_CARVANHA',
                 item: 'Eviolite',
-                nature: NATURE_ADAMANT,
+                nature: NATURES.ADAMANT,
             },
             {
                 absoluteTier: [TIER_BAD],
@@ -1151,7 +1159,7 @@ const trainersData = [
             {
                 specific: 'SPECIES_CARVANHA',
                 item: 'Oran Berry',
-                nature: NATURE_RELAXED,
+                nature: NATURES.RELAXED,
                 tryToHaveMove: ['MOVE_AQUA_JET', 'MOVE_THIEF', 'MOVE_REST', 'MOVE_SLEEP_TALK'],
             },
             {
@@ -1199,12 +1207,13 @@ const trainersData = [
         id: 'TRAINER_MAY_RUSTBORO_TREECKO',
         level: 14,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...rivalRustboroBag],
+        tms: [...rivalRustboroTMs],
         team: [
             {
                 id: 'RIVAL_STARTER_TREECKO',
                 special: TRAINER_REPEAT_ID,
                 item: 'Eviolite',
-                tryToHaveMove: ['MOVE_BULLET_SEED'],
                 tryEvolve: true,
             },
             ...rivalRustboroTemplate('TREECKO'),
@@ -1214,6 +1223,8 @@ const trainersData = [
         id: 'TRAINER_MAY_RUSTBORO_TORCHIC',
         level: 14,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...rivalRustboroBag],
+        tms: [...rivalRustboroTMs],
         team: [
             {
                 id: 'RIVAL_STARTER_TORCHIC',
@@ -1229,6 +1240,8 @@ const trainersData = [
         id: 'TRAINER_MAY_RUSTBORO_MUDKIP',
         level: 14,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...rivalRustboroBag],
+        tms: [...rivalRustboroTMs],
         team: [
             {
                 id: 'RIVAL_STARTER_MUDKIP',
@@ -1332,11 +1345,26 @@ const trainersData = [
     {
         id: 'TRAINER_BRAWLY_1',
         level: 16,
+        bag: [
+            'Life Orb',
+            'Oran Berry',
+            'Black Sludge',
+            'Fighting Gem',
+            'Stone Plate',
+            'Eviolite',
+            'Papaya Berry',
+            'Chesto Berry',
+            'Expert Belt',
+        ],
+        tms: [
+            'MOVE_WATER_PULSE',
+            'MOVE_BULLET_SEED',
+        ],
         team: [
             {
                 specific: 'SPECIES_MAKUHITA',
                 tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP', 'MOVE_FAKE_OUT', 'MOVE_ROCK_TOMB'],
-                nature: NATURE_ADAMANT,
+                nature: NATURES.ADAMANT,
                 abilities: ['GUTS'],
                 item: 'Flame Orb',
             },
@@ -1346,7 +1374,6 @@ const trainersData = [
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP'],
                 tryEvolve: true,
-                item: 'Life Orb',
             },
             {
                 type: [POKEMON_TYPE_DARK],
@@ -1354,7 +1381,6 @@ const trainersData = [
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP'],
                 tryEvolve: true,
-                item: 'Oran Berry',
             },
             {
                 type: [POKEMON_TYPE_FIGHTING],
@@ -1362,22 +1388,19 @@ const trainersData = [
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP'],
                 tryEvolve: true,
-                item: 'Fighting Gem',
             },
             {
                 type: [POKEMON_TYPE_ROCK],
                 evolutionTier: [TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP', 'MOVE_ROCK_TOMB'],
+                tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP'],
                 tryEvolve: true,
-                item: 'Stone Plate',
             },
             {
                 type: [POKEMON_TYPE_FIGHTING],
                 absoluteTier: [TIER_BAD, TIER_WEAK],
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP'],
-                item: 'Eviolite',
             },
         ],
     },
@@ -1385,22 +1408,37 @@ const trainersData = [
     {
         id: 'TRAINER_STEVEN',
         level: 19,
+        bag: [
+            'Oran Berry',
+            'Black Sludge',
+            'Rock Gem',
+            'Earth Plate',
+            'Chople Berry',
+            'Eviolite',
+            'Shuca Berry',
+            'Chesto Berry',
+            'Expert Belt',
+        ],
+        tms: [
+            'MOVE_WATER_PULSE',
+            'MOVE_ROCK_TOMB',
+            'MOVE_BULLET_SEED',
+            'MOVE_BRICK_BREAK',
+        ],
         team: [
             {
                 oneOf: stevenPokemon,
-                tryToHaveMove: ['MOVE_STEEL_WING', 'MOVE_ROCK_TOMB'],
-                item: 'Eviolite',
+                tryToHaveMove: ['MOVE_STEEL_WING'],
             },
             {
                 specific: 'SPECIES_SKARMORY',
                 tryToHaveMove: ['MOVE_STEEL_WING', 'MOVE_AGILITY', 'MOVE_AERIAL_ACE', 'MOVE_ROCK_TOMB'],
-                nature: NATURE_ADAMANT,
+                nature: NATURES.ADAMANT,
                 item: 'Life Orb',
             },
             {
                 oneOf: stevenPokemon,
-                tryToHaveMove: ['MOVE_STEEL_WING', 'MOVE_ROCK_TOMB'],
-                item: 'Oran Berry',
+                tryToHaveMove: ['MOVE_STEEL_WING'],
             },
             {
                 type: [POKEMON_TYPE_STEEL],
@@ -1408,12 +1446,10 @@ const trainersData = [
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_STEEL_WING'],
                 tryEvolve: true,
-                item: 'Shuca Berry',
             },
             {
                 oneOf: stevenPokemon,
-                tryToHaveMove: ['MOVE_STEEL_WING', 'MOVE_ROCK_TOMB'],
-                item: 'Rock Gem',
+                tryToHaveMove: ['MOVE_STEEL_WING'],
             },
             {
                 type: [POKEMON_TYPE_STEEL],
@@ -1421,7 +1457,6 @@ const trainersData = [
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_STEEL_WING'],
                 tryEvolve: true,
-                item: 'Chople Berry',
             },
         ],
     },

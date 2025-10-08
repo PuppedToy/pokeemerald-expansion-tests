@@ -12,7 +12,9 @@ const {
     TIER_STRONG_THRESHOLD,
     TIER_AVERAGE_THRESHOLD,
     TIER_WEAK_THRESHOLD,
+    POKEMON_TYPE_POISON,
 } = require('./constants');
+const { plates, protectionBerries } = require('./items');
 
 const BEST_RATING_FOR_MEGA_EVO = 780;
 const BEST_RATING_FOR_FULLY_EVO = 720;
@@ -82,6 +84,42 @@ const statusList = {
     // Multi-hits for skill link
     // Drops for contrary
 };
+
+const typeChart = {
+  NORMAL:     { ROCK: 0.5, GHOST: 0, STEEL: 0.5 },
+  FIRE:       { FIRE: 0.5, WATER: 0.5, GRASS: 2, ICE: 2, BUG: 2, ROCK: 0.5, DRAGON: 0.5, STEEL: 2 },
+  WATER:      { FIRE: 2, WATER: 0.5, GRASS: 0.5, GROUND: 2, ROCK: 2, DRAGON: 0.5 },
+  ELECTRIC:   { WATER: 2, ELECTRIC: 0.5, GRASS: 0.5, GROUND: 0, FLYING: 2, DRAGON: 0.5 },
+  GRASS:      { FIRE: 0.5, WATER: 2, GRASS: 0.5, POISON: 0.5, GROUND: 2, FLYING: 0.5, BUG: 0.5, ROCK: 2, DRAGON: 0.5, STEEL: 0.5 },
+  ICE:        { FIRE: 0.5, WATER: 0.5, GRASS: 2, GROUND: 2, FLYING: 2, DRAGON: 2, STEEL: 0.5 },
+  FIGHTING:   { NORMAL: 2, ICE: 2, POISON: 0.5, FLYING: 0.5, PSYCHIC: 0.5, BUG: 0.5, ROCK: 2, GHOST: 0, DARK: 2, STEEL: 2, FAIRY: 0.5 },
+  POISON:     { GRASS: 2, POISON: 0.5, GROUND: 0.5, ROCK: 0.5, GHOST: 0.5, STEEL: 0, FAIRY: 2 },
+  GROUND:     { FIRE: 2, ELECTRIC: 2, GRASS: 0.5, POISON: 2, FLYING: 0, BUG: 0.5, ROCK: 2, STEEL: 2 },
+  FLYING:     { ELECTRIC: 0.5, GRASS: 2, FIGHTING: 2, BUG: 2, ROCK: 0.5, STEEL: 0.5 },
+  PSYCHIC:    { FIGHTING: 2, POISON: 2, PSYCHIC: 0.5, DARK: 0, STEEL: 0.5 },
+  BUG:        { FIRE: 0.5, GRASS: 2, FIGHTING: 0.5, POISON: 0.5, FLYING: 0.5, PSYCHIC: 2, GHOST: 0.5, DARK: 2, STEEL: 0.5, FAIRY: 0.5 },
+  ROCK:       { FIRE: 2, ICE: 2, FIGHTING: 0.5, GROUND: 0.5, FLYING: 2, BUG: 2, STEEL: 0.5 },
+  GHOST:      { NORMAL: 0, PSYCHIC: 2, GHOST: 2, DARK: 0.5 },
+  DRAGON:     { DRAGON: 2, STEEL: 0.5, FAIRY: 0 },
+  DARK:       { FIGHTING: 0.5, PSYCHIC: 2, GHOST: 2, DARK: 0.5, FAIRY: 0.5 },
+  STEEL:      { FIRE: 0.5, WATER: 0.5, ELECTRIC: 0.5, ICE: 2, ROCK: 2, FAIRY: 2, STEEL: 0.5 },
+  FAIRY:      { FIRE: 0.5, FIGHTING: 2, POISON: 0.5, DRAGON: 2, DARK: 2, STEEL: 0.5 },
+};
+
+function damageMultiplier(attackingType, defendingTypes) {
+    const chart = typeChart[attackingType.toUpperCase()];
+    let result = 1;
+    defendingTypes.forEach(defType => {
+        if (chart && chart[defType.toUpperCase()]) {
+            result *= chart[defType.toUpperCase()];
+        }
+    });
+    return result;
+}
+
+function isSuperEffective(attackingType, defendingTypes) {
+    return damageMultiplier(attackingType, defendingTypes) > 1;
+}
 
 function rateMove(move) {
     const isStatus = move.category === 'DAMAGE_CATEGORY_STATUS';
@@ -195,7 +233,10 @@ function rateMove(move) {
 }
 
 function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves) {
-    if (currentMoves.length < 2 && move.category === 'DAMAGE_CATEGORY_STATUS') {
+    if (
+        currentMoves.filter(m => m.category !== 'DAMAGE_CATEGORY_STATUS').length < 2
+        && move.category === 'DAMAGE_CATEGORY_STATUS'
+    ) {
         return 0;
     }
 
@@ -249,6 +290,117 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
 
     // @TODO move base rating + stab + ability synergy + other moves synergy, coverage
     return rating;
+}
+
+function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 0) {
+    const offensePower = Math.max(poke.baseAttack, poke.baseSpAttack)/100;
+    const defensePower = (poke.baseDefense + poke.baseSpDefense + poke.baseHp)/300;
+    const coverageRating = 0;
+    const checkedTypes = [];
+    const calculatedDeviation = 1 + ((Math.random() ? 1 : -1) * Math.random() * deviation);
+    moveset.forEach(move => {
+        if (move.category !== 'DAMAGE_CATEGORY_STATUS' && !checkedTypes.includes(move.type)) {
+            checkedTypes.push(move.type);
+            coverageRating += 2.5;
+        }
+    });
+
+    if (item === 'Flame Orb') {
+        const hasFacade = moveset.some(m => m.id === 'MOVE_FACADE');
+        const hasGuts = ability === 'GUTS';
+        const hasQuickFeet = ability === 'QUICK_FEET';
+        if (hasFacade && (hasGuts || hasQuickFeet)) {
+            return 10 * offensePower / defensePower * calculatedDeviation;
+        }
+        if (hasGuts || hasFacade) {
+            return 9 * offensePower / defensePower * calculatedDeviation;
+        }
+        if (hasQuickFeet) {
+            return 8 * offensePower / defensePower * calculatedDeviation;
+        }
+        return 0;
+    }
+    if (item === 'Eviolite') {
+        if (poke.evolutionData.isNFE) {
+            return 10 * defensePower / offensePower * calculatedDeviation;
+        }
+        return 0;
+    }
+    if (item === 'Rocky Helmet') {
+        if (ability === 'ROUGH_SKIN' || ability === 'IRON_BARBS') {
+            return 9.5 * defensePower / offensePower * calculatedDeviation;
+        }
+        return 8.5 * poke.baseDefense / offensePower * calculatedDeviation;
+    }
+    if (item === 'Black Sludge' && poke.parsedTypes.includes(POKEMON_TYPE_POISON)) {
+        return 9.5 * defensePower / offensePower * calculatedDeviation;
+    }
+    if (item === 'Leftovers') {
+        return 9.5 * defensePower / offensePower * calculatedDeviation;
+    }
+    if (item === 'Life Orb') {
+        const hasMagicGuard = ability === 'MAGIC_GUARD';
+        if (hasMagicGuard) {
+            return 9.5 * offensePower / defensePower * calculatedDeviation;
+        }
+        return 8.5 * offensePower / defensePower * calculatedDeviation;
+    }
+    if (item === 'Expert Belt') {
+        return 7.5 * offensePower / defensePower * coverageRating * calculatedDeviation;
+    }
+    if (item === 'Heavy-Duty Boots') {
+        const rockDamageMultiplier = damageMultiplier('ROCK', poke.parsedTypes);
+        return 5 * calculatedDeviation + (1 - rockDamageMultiplier) * 2;
+    }
+    if (item === 'Oran Berry') {
+        const baseHpNear10Rating = Math.max(0, Math.min(10, 10 - ((poke.baseHp - 20) / 4)));
+        return baseHpNear10Rating * calculatedDeviation;
+    }
+    if (item === 'Chesto Berry') {
+        const hasRest = moveset.some(m => m.id === 'MOVE_REST');
+        if (hasRest) {
+            return 9 * defensePower / offensePower * calculatedDeviation;
+        }
+        return 5 * calculatedDeviation;
+    }
+    if (item.includes(' Gem')) {
+        const gemType = item.split(' Gem')[0].toUpperCase();
+        const stabExtra = poke.parsedTypes.includes(gemType) ? 0.5 : 0;
+        moveset.forEach(move => {
+            if (move.type === gemType) {
+                if (move.id === 'MOVE_ACROBATICS' && gemType === 'FLYING') {
+                    if (ability === 'UNBURDEN') {
+                        return 9.1 * offensePower / defensePower * calculatedDeviation + stabExtra;
+                    }
+                    return 8 * offensePower / defensePower * calculatedDeviation + stabExtra;
+                }
+                return 7 * offensePower / defensePower * calculatedDeviation + stabExtra;
+            }
+        });
+        return 0;
+    }
+    const itemId = 'ITEM_' + item.replace(/ /, '_').toUpperCase();
+    if (item.includes(' Plate')) {
+        const plateType = plates[itemId];
+        const stabExtra = poke.parsedTypes.includes(gemType) ? 0.5 : 0;
+        moveset.forEach(move => {
+            if (move.type === plateType) {
+                return 6.5 * offensePower / defensePower * calculatedDeviation + stabExtra;
+            }
+        });
+    }
+    if (item.includes(' Berry')) {
+        Object.entries(protectionBerries).forEach((berryType, berryId) => {
+            if (berryId === itemId) {
+                const berryTypeDamageMultiplier = damageMultiplier(berryType, poke.parsedTypes);
+                if (berryTypeDamageMultiplier > 1) {
+                    return (5 + berryTypeDamageMultiplier) * defensePower / offensePower * calculatedDeviation;
+                }
+                return 0;
+            }
+        });
+    }
+    return calculatedDeviation;
 }
 
 // deviation is a value from 0 to 1 indicating how much randomness to add to the rating, so a
@@ -380,4 +532,5 @@ module.exports = {
     ratePokemon,
     chooseMoveset,
     rateMove,
+    rateItemForAPokemon,
 }

@@ -31,8 +31,9 @@ const {
     TEMPLATE_TRAINERS_REPLACEMENT,
     TEMPLATE_POKEMON_REPLACEMENT,
     TEMPLATE_WILDPOKES_REPALCEMENT,
+    NATURES,
 } = require('./constants');
-const { chooseMoveset } = require('./rating.js');
+const { chooseMoveset, rateItemForAPokemon } = require('./rating.js');
 
 const MAX_MEGA_EVO_STONES = 3;
 
@@ -701,10 +702,44 @@ async function writer(pokemonList, moves, abilities) {
                     newTeamMember.moves,
                     newTeamMember.ability,
                     newTeamMember.item,
-                    [], // @TODO tms in bag
+                    trainer.tms,
                     0.1, // Deviation for trainer bias
                 );
+                // Remove the first appereance of each used TM from trainer's inventory
+                tmsUsed.forEach(tmUsed => {
+                    if (trainer.tms && trainer.tms.includes(tmUsed)) {
+                        trainer.tms.splice(trainer.tms.indexOf(tmUsed), 1);
+                    }
+                });
                 newTeamMember.moves = moveset;
+                if (!newTeamMember.nature) {
+                    newTeamMember.nature = sample(Object.values(NATURES));
+                }
+                if (!newTeamMember.ability && chosenTrainerMon.parsedAbilities.length > 0) {
+                    const nonHiddenAbilities = chosenExtraPokemon.parsedAbilities
+                        .slice(0, 2)
+                        .filter(ability => Boolean(ability) && ability !== 'NONE');
+                    newTeamMember.ability = sample(nonHiddenAbilities);
+                }
+                if (!newTeamMember.item && trainer.bag && trainer.bag.length > 0) {
+                    const movesetObjects = newTeamMember.moves.map(m => moves[m]);
+                    const sortedBagItems = [...trainer.bag]
+                        .map(bagItemId => {
+                            const rating = rateItemForAPokemon(bagItem, chosenTrainerMon, ability, movesetObjects, trainer.bag.length, 0.1);
+                            return {
+                                id: bagItemId,
+                                rating,
+                            };
+                        })
+                        .filter(bi => bi.rating > 0)
+                        .sort((a, b) => b.rating - a.rating)
+                        .map(bi => bi.id);
+
+                    if (sortedBagItems.length > 0) {
+                        newTeamMember.item = sortedBagItems[0];
+                    }
+                    trainer.bag.splice(trainer.bag.indexOf(newTeamMember.item), 1);
+                }
                 team.push(newTeamMember);
             }
             else {
