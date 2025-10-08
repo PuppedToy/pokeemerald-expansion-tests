@@ -560,10 +560,10 @@ async function writer(pokemonList, moves, abilities) {
             }
 
             const canLearnMove = (moveToLearn) => {
-                console.log(`Checking if ${chosenTrainerMon.id} can learn ${moveToLearn}`);
+                console.log(`Checking if ${chosenTrainerMon.id} @ ${trainer.level} can learn ${moveToLearn}`);
                 console.log(`Teachables: ${chosenTrainerMon.teachables}`);
                 console.log(`Learnset: ${chosenTrainerMon.learnset ? chosenTrainerMon.learnset.map(lu => `${lu.move} @ ${lu.level}`).join(', ') : 'N/A'}`);
-                return (
+                const result = (
                     chosenTrainerMon.teachables
                     && chosenTrainerMon.teachables.includes(moveToLearn)
                 )
@@ -572,6 +572,8 @@ async function writer(pokemonList, moves, abilities) {
                     chosenTrainerMon.learnset
                     && chosenTrainerMon.learnset.some(lu => lu.move === moveToLearn && lu.level <= trainer.level)
                 );
+                console.log(`Result: ${result}`);
+                return result;
             }
                 
 
