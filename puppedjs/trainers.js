@@ -1882,7 +1882,7 @@ const trainersData = [
         team: [
             {
                 evoType: [EVO_TYPE_LC],
-                ability: 'GRASSY_SURGE',
+                abilities: ['GRASSY_SURGE'],
                 item: 'Terrain Extender',
                 tryEvolve: true,
             },
