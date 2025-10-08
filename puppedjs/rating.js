@@ -293,6 +293,7 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
 }
 
 function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 0) {
+    console.log(item, poke, ability, moveset);
     const offensePower = Math.max(poke.baseAttack, poke.baseSpAttack)/100;
     const defensePower = (poke.baseDefense + poke.baseSpDefense + poke.baseHp)/300;
     let coverageRating = 0;
