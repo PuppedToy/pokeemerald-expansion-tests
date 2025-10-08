@@ -47692,19 +47692,19 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.107738095238095,
+      "absoluteRating": 2.5666666666666664,
       "absoluteBSTRating": 1.3333333333333333,
       "bestMoveset": [
         "MOVE_SAFEGUARD",
         "MOVE_DESTINY_BOND",
-        "MOVE_COUNTER",
-        "MOVE_MIRROR_COAT"
+        "MOVE_SPLASH",
+        "MOVE_CHARM"
       ],
-      "movesRating": 0.4107142857142856,
+      "movesRating": 5,
       "bestAbilityRating": 10,
       "tier": "BAD",
       "bestEvo": "SPECIES_WOBBUFFET",
-      "bestEvoRating": 4.041071428571429,
+      "bestEvoRating": 4.5,
       "bestEvoTier": "WEAK"
     }
   },
@@ -47803,19 +47803,19 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 4.041071428571429,
+      "absoluteRating": 4.5,
       "absoluteBSTRating": 3.75,
       "bestMoveset": [
         "MOVE_SAFEGUARD",
         "MOVE_DESTINY_BOND",
-        "MOVE_COUNTER",
-        "MOVE_MIRROR_COAT"
+        "MOVE_SPLASH",
+        "MOVE_CHARM"
       ],
-      "movesRating": 0.4107142857142856,
+      "movesRating": 5,
       "bestAbilityRating": 10,
       "tier": "WEAK",
       "bestEvo": "SPECIES_WOBBUFFET",
-      "bestEvoRating": 4.041071428571429,
+      "bestEvoRating": 4.5,
       "bestEvoTier": "WEAK"
     }
   },
