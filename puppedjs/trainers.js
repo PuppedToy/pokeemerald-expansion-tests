@@ -1954,7 +1954,8 @@ const trainersData = [
         bag: ['Eviolite', 'Oran Berry'],
         team: [
             {
-                specific: 'SPECIES_ELECTRIKE',
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_ELECTRIKE'],
                 tryEvolve: true,
             },
             {
