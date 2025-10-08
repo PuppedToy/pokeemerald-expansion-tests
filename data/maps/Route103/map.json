@@ -204,9 +204,9 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_GUARD_SPEC",
+      "trainer_sight_or_berry_tree_id": "ITEM_WAVE_MAIL",
       "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_103_GUARD_SPEC"
+      "flag": "FLAG_ITEM_ROUTE_103_DEFMINT"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
@@ -269,7 +269,7 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_PP_UP",
+      "trainer_sight_or_berry_tree_id": "ITEM_ASSAULT_VEST",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_103_PP_UP"
     },
@@ -282,9 +282,9 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_GUARD_SPEC",
+      "trainer_sight_or_berry_tree_id": "ITEM_JABOCA_BERRY",
       "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_103_GUARD_SPEC"
+      "flag": "FLAG_ITEM_ROUTE_103_JABOCA"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -295,9 +295,9 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_GUARD_SPEC",
+      "trainer_sight_or_berry_tree_id": "ITEM_TM_TAUNT",
       "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_103_GUARD_SPEC"
+      "flag": "FLAG_ITEM_ROUTE_103_TAUNT"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -321,7 +321,7 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_GUARD_SPEC",
+      "trainer_sight_or_berry_tree_id": "ITEM_THROAT_SPRAY",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_103_GUARD_SPEC"
     }

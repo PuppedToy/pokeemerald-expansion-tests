@@ -8,7 +8,7 @@ const items = {
         'ITEM_TIMID_MINT',
     ],
     // ITEM_WAVE_MAIL will be replaced by these
-    strongDefMints: [
+    strongDefMints: [ // 1 at Route 103
         'ITEM_BOLD_MINT',
         'ITEM_IMPISH_MINT',
         'ITEM_CALM_MINT',
@@ -141,7 +141,7 @@ const items = {
         'ITEM_TM_BULLET_SEED', // Route 104
         'ITEM_TM_HIDDEN_POWER',
         'ITEM_TM_SUNNY_DAY', // Route 109
-        'ITEM_TM_TAUNT',
+        'ITEM_TM_TAUNT', // Route 103
         'ITEM_TM_ICE_BEAM',
         'ITEM_TM_BLIZZARD',
         'ITEM_TM_HYPER_BEAM',
@@ -270,7 +270,7 @@ const items = {
         'ITEM_LEFTOVERS',
         'ITEM_LIFE_ORB', // Route 106
         'ITEM_EVIOLITE', // Route 103
-        'ITEM_ASSAULT_VEST',
+        'ITEM_ASSAULT_VEST', // Route 103
     ],
 
     goodItems: [
@@ -294,7 +294,7 @@ const items = {
         'ITEM_LIGHT_CLAY',
         'ITEM_ZOOM_LENS',
         'ITEM_BLACK_SLUDGE', // Route 116
-        'ITEM_SHED_SHELL',
+        'ITEM_SHED_SHELL', // Route 110
         'ITEM_BIG_ROOT',
         'ITEM_TERRAIN_EXTENDER', // Route 110
         'ITEM_PUNCHING_GLOVE',
@@ -315,14 +315,14 @@ const items = {
         'ITEM_PSYCHIC_SEED',
         'ITEM_MISTY_SEED',
         'ITEM_GRASSY_SEED',
-        'ITEM_THROAT_SPRAY',
+        'ITEM_THROAT_SPRAY', // Route 103
         'ITEM_EJECT_PACK',
         'ITEM_ROOM_SERVICE',
         'ITEM_LEPPA_BERRY',
         'ITEM_LUM_BERRY',
         'ITEM_SITRUS_BERRY',
         'ITEM_CUSTAP_BERRY',
-        'ITEM_JABOCA_BERRY',
+        'ITEM_JABOCA_BERRY', // Route 103
         'ITEM_ROWAP_BERRY',
         'ITEM_KEE_BERRY',
         'ITEM_MARANGA_BERRY',

@@ -98,6 +98,25 @@ const multiHitMoves = [
     'MOVE_WATER_SHURIKEN',  
 ];
 
+const soundBasedOffensiveMoves = [
+    'MOVE_UPROAR',
+    'MOVE_HYPER_VOICE',
+    'MOVE_BUG_BUZZ',
+    'MOVE_CHATTER',
+    'MOVE_ROUND',
+    'MOVE_ECHOED_VOICE',
+    'MOVE_SNARL',
+    'MOVE_DISARMING_VOICE',
+    'MOVE_BOOMBURST',
+    'MOVE_SPARKING_ARIA',
+    'MOVE_CLANGING_SCALES',
+    'MOVE_OVERDRIVE',
+    'MOVE_TORCH_SONG',
+    'MOVE_ALLURING_VOICE',
+    'MOVE_PSYCHIC_NOISE',
+    'MOVE_RELIC_SONG',
+];
+
 const rainAbilities = ['SWIFT_SWIM', 'RAIN_DISH', 'DRY_SKIN', 'HYDRATION'];
 const sunAbilities = ['FLOWER_GIFT', 'CHLOROPHYLL', 'LEAF_GUARD', 'SOLAR_POWER'];
 const sandAbilities = ['SAND_FORCE', 'SAND_RUSH', 'SAND_VEIL', 'SAND_SPIT'];
@@ -142,11 +161,27 @@ const rivalRustboroBag = [
     'Heavy-Duty Boots',
 ];
 
+const rivalRoute110Bag = [
+    ...rivalRustboroBag,
+    'Assault Vest',
+    'Throat Spray',
+    'Jaboca Berry',
+    'Red Card',
+    'Rocky Helmet',
+    'Loaded Dice',
+];
+
 const rivalRustboroTMs = [
     'MOVE_WATER_PULSE',
     'MOVE_ROCK_TOMB',
     'MOVE_BRICK_BREAK',
     'MOVE_BULLET_SEED',
+];
+
+const rivalRoute110TMs = [
+    ...rivalRustboroTMs,
+    'MOVE_DRAGON_CLAW',
+    'MOVE_TAUNT',
 ];
 
 const rivalRustboroTemplate = (id) => [
@@ -174,6 +209,35 @@ const rivalRustboroTemplate = (id) => [
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_MEGA_103_KEEP_' + id,
+        tryEvolve: true,
+    },
+];
+
+const rivalRoute110Template = (id) => [
+    {
+        evoType: [EVO_TYPE_SOLO],
+        absoluteTier: [TIER_AVERAGE],
+        id: 'RIVAL_AVERAGE_110_KEEP_ONCE_' + id,
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_MEGA_103_KEEP_' + id,
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: ['SPECIES_GEODUDE', 'SPECIES_WEEDLE', 'SPECIES_PATRAT', 'SPECIES_PORYGON', 'SPECIES_DELIBIRD', 'SPECIES_DITTO', 'SPECIES_SENTRET', 'SPECIES_POOCHYENA', 'SPECIES_CHARMANDER', 'SPECIES_ARON', 'SPECIES_BULBASAUR', 'SPECIES_IVYSAUR', 'SPECIES_ABSOL', 'SPECIES_ELECTRIKE', 'SPECIES_MANECTRIC'],
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: ['SPECIES_GEODUDE', 'SPECIES_WEEDLE', 'SPECIES_PATRAT', 'SPECIES_PORYGON', 'SPECIES_DELIBIRD', 'SPECIES_DITTO', 'SPECIES_SENTRET', 'SPECIES_POOCHYENA', 'SPECIES_CHARMANDER', 'SPECIES_ARON', 'SPECIES_BULBASAUR', 'SPECIES_IVYSAUR', 'SPECIES_ABSOL', 'SPECIES_ELECTRIKE', 'SPECIES_MANECTRIC'],
         tryEvolve: true,
     },
 ];
@@ -1981,7 +2045,246 @@ const trainersData = [
         ],
     },
     // Route 103 (later)
-    // @TODO
+    {
+        id: 'TRAINER_DAISY',
+        level: 23,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Throat Spray',
+                mustHaveOneOfMoves: [...soundBasedOffensiveMoves],
+                tryToHaveMove: [...soundBasedOffensiveMoves],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Throat Spray',
+                mustHaveOneOfMoves: [...soundBasedOffensiveMoves],
+                tryToHaveMove: [...soundBasedOffensiveMoves],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Throat Spray',
+                mustHaveOneOfMoves: ['MOVE_SNORE'],
+                tryToHaveMove: ['MOVE_REST', 'MOVE_SNORE'],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_MARCOS',
+        level: 23,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: ['Eviolite', 'Rocky Helmet', 'Oran Berry'],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_RHETT',
+        level: 23,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: ['Eviolite', 'Rocky Helmet', 'Oran Berry', 'Assault Vest', 'Black Sludge', 'Red Card'],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_MIGUEL_1',
+        level: 23,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: ['Eviolite', 'Oran Berry'],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_TAUNT'],
+                tryToHaveMove: ['MOVE_TAUNT'],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_TAUNT'],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_TAUNT'],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_TAUNT'],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_TAUNT'],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_TAUNT'],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_ANDREW',
+        level: 23,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Jaboca Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Jaboca Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Jaboca Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Jaboca Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Jaboca Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Jaboca Berry',
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_MAY_ROUTE_110_TREECKO',
+        level: 23,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...rivalRoute110Bag],
+        tms: [...rivalRoute110TMs],
+        team: [
+            {
+                id: 'RIVAL_STARTER_TREECKO',
+                special: TRAINER_REPEAT_ID,
+                item: 'Eviolite',
+                tryEvolve: true,
+            },
+            ...rivalRoute110Template('TREECKO'),
+        ]
+    },
+    {
+        id: 'TRAINER_MAY_ROUTE_110_TORCHIC',
+        level: 23,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...rivalRoute110Bag],
+        tms: [...rivalRoute110TMs],
+        team: [
+            {
+                id: 'RIVAL_STARTER_TORCHIC',
+                special: TRAINER_REPEAT_ID,
+                item: 'Eviolite',
+                tryEvolve: true,
+            },
+            ...rivalRoute110Template('TORCHIC'),
+        ]
+    },
+    {
+        id: 'TRAINER_MAY_ROUTE_110_MUDKIP',
+        level: 23,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...rivalRoute110Bag],
+        tms: [...rivalRoute110TMs],
+        team: [
+            {
+                id: 'RIVAL_STARTER_MUDKIP',
+                special: TRAINER_REPEAT_ID,
+                item: 'Eviolite',
+                tryEvolve: true,
+            },
+            ...rivalRoute110Template('MUDKIP'),
+        ]
+    },
+    {
+        id: 'TRAINER_BRENDAN_ROUTE_110_TREECKO',
+        copy: 'TRAINER_MAY_ROUTE_110_TREECKO',
+    },
+    {
+        id: 'TRAINER_BRENDAN_ROUTE_110_TORCHIC',
+        copy: 'TRAINER_MAY_ROUTE_110_TORCHIC',
+    },
+    {
+        id: 'TRAINER_BRENDAN_ROUTE_110_MUDKIP',
+        copy: 'TRAINER_MAY_ROUTE_110_MUDKIP',
+    },
 ]
 
 module.exports = {
