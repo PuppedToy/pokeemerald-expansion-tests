@@ -382,7 +382,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
     const itemId = 'ITEM_' + item.replace(/ /, '_').toUpperCase();
     if (item.includes(' Plate')) {
         const plateType = plates[itemId];
-        const stabExtra = poke.parsedTypes.includes(gemType) ? 0.5 : 0;
+        const stabExtra = poke.parsedTypes.includes(plateType) ? 0.5 : 0;
         moveset.forEach(move => {
             if (move.type === plateType) {
                 return 6.5 * offensePower / defensePower * calculatedDeviation + stabExtra;
