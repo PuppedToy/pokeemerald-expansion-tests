@@ -716,7 +716,7 @@ async function writer(pokemonList, moves, abilities) {
                     newTeamMember.nature = sample(Object.values(NATURES));
                 }
                 if (!newTeamMember.ability && chosenTrainerMon.parsedAbilities.length > 0) {
-                    const nonHiddenAbilities = chosenExtraPokemon.parsedAbilities
+                    const nonHiddenAbilities = newTeamMember.parsedAbilities
                         .slice(0, 2)
                         .filter(ability => Boolean(ability) && ability !== 'NONE');
                     newTeamMember.ability = sample(nonHiddenAbilities);
