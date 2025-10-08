@@ -131,23 +131,23 @@ const items = {
 
     tms: [
         'ITEM_TM_FOCUS_PUNCH',
-        'ITEM_TM_DRAGON_CLAW',
-        'ITEM_TM_WATER_PULSE',
+        'ITEM_TM_DRAGON_CLAW', // Route 110
+        'ITEM_TM_WATER_PULSE', // Route 104
         'ITEM_TM_CALM_MIND',
         'ITEM_TM_ROAR',
         'ITEM_TM_TOXIC',
-        'ITEM_TM_HAIL',
-        'ITEM_TM_BULK_UP',
-        'ITEM_TM_BULLET_SEED',
+        'ITEM_TM_HAIL', // Route 109
+        'ITEM_TM_BULK_UP', // Brawly
+        'ITEM_TM_BULLET_SEED', // Route 104
         'ITEM_TM_HIDDEN_POWER',
-        'ITEM_TM_SUNNY_DAY',
+        'ITEM_TM_SUNNY_DAY', // Route 109
         'ITEM_TM_TAUNT',
         'ITEM_TM_ICE_BEAM',
         'ITEM_TM_BLIZZARD',
         'ITEM_TM_HYPER_BEAM',
         'ITEM_TM_LIGHT_SCREEN',
         'ITEM_TM_PROTECT',
-        'ITEM_TM_RAIN_DANCE',
+        'ITEM_TM_RAIN_DANCE', // Route 109
         'ITEM_TM_GIGA_DRAIN',
         'ITEM_TM_SAFEGUARD',
         'ITEM_TM_FRUSTRATION',
@@ -157,7 +157,7 @@ const items = {
         'ITEM_TM_THUNDER',
         'ITEM_TM_EARTHQUAKE',
         'ITEM_TM_RETURN',
-        'ITEM_TM_DIG',
+        'ITEM_TM_DIG', // Route 104
         'ITEM_TM_PSYCHIC',
         'ITEM_TM_SHADOW_BALL',
         'ITEM_TM_BRICK_BREAK', // Route 116
@@ -166,9 +166,9 @@ const items = {
         'ITEM_TM_SHOCK_WAVE',
         'ITEM_TM_FLAMETHROWER',
         'ITEM_TM_SLUDGE_BOMB',
-        'ITEM_TM_SANDSTORM',
+        'ITEM_TM_SANDSTORM', // Route 109
         'ITEM_TM_FIRE_BLAST',
-        'ITEM_TM_ROCK_TOMB',
+        'ITEM_TM_ROCK_TOMB', // Roxanne
         'ITEM_TM_AERIAL_ACE',
         'ITEM_TM_TORMENT',
         'ITEM_TM_FACADE',
@@ -176,7 +176,7 @@ const items = {
         'ITEM_TM_REST',
         'ITEM_TM_ATTRACT',
         'ITEM_TM_THIEF',
-        'ITEM_TM_STEEL_WING',
+        'ITEM_TM_STEEL_WING', // Steven
         'ITEM_TM_SKILL_SWAP',
         'ITEM_TM_SNATCH',
         'ITEM_TM_OVERHEAT',
@@ -296,7 +296,7 @@ const items = {
         'ITEM_BLACK_SLUDGE', // Route 116
         'ITEM_SHED_SHELL',
         'ITEM_BIG_ROOT',
-        'ITEM_TERRAIN_EXTENDER',
+        'ITEM_TERRAIN_EXTENDER', // Route 110
         'ITEM_PUNCHING_GLOVE',
         'ITEM_LOADED_DICE', // Route 109
     ],

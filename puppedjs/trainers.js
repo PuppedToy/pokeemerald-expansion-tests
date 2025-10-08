@@ -30,6 +30,7 @@ const {
     TIER_STRONG,
     TIER_AVERAGE,
     NATURES,
+    POKEMON_TYPE_DRAGON,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
@@ -1718,7 +1719,7 @@ const trainersData = [
     {
         id: 'TRAINER_ALYSSA',
         level: 21,
-        bag: ['Rocky Helmet', 'Eviolite', 'Oran Berry'],
+        bag: ['Eviolite', 'Oran Berry'],
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
@@ -1838,6 +1839,148 @@ const trainersData = [
             },
         ],
     },
+    // Route 110
+    {
+        id: 'TRAINER_ISABEL_1',
+        level: 23,
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [POKEMON_TYPE_DRAGON],
+        bag: ['Eviolite', 'Dragon Gem', 'Draco Plate', 'Yache Berry'],
+        tms: ['MOVE_DRAGON_CLAW', 'MOVE_DRAGON_CLAW'],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_KALEB',
+        level: 23,
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [POKEMON_TYPE_GRASS],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                ability: 'GRASSY_SURGE',
+                item: 'Terrain Extender',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+                item: 'Grassy Seed',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+                item: 'Grassy Seed',
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_TIMMY',
+        level: 23,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Shed Shell',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Shed Shell',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Shed Shell',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Shed Shell',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Shed Shell',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Shed Shell',
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_EDWARD',
+        level: 23,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: ['Eviolite', 'Oran Berry'],
+        team: [
+            {
+                specific: 'SPECIES_ELECTRIKE',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+        ],
+    },
+    // Route 103 (later)
+    // @TODO
 ]
 
 module.exports = {
