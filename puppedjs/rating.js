@@ -292,6 +292,43 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     return rating;
 }
 
+const soundBasedOffensiveMoves = [
+    'MOVE_UPROAR',
+    'MOVE_HYPER_VOICE',
+    'MOVE_BUG_BUZZ',
+    'MOVE_CHATTER',
+    'MOVE_ROUND',
+    'MOVE_ECHOED_VOICE',
+    'MOVE_SNARL',
+    'MOVE_DISARMING_VOICE',
+    'MOVE_BOOMBURST',
+    'MOVE_SPARKING_ARIA',
+    'MOVE_CLANGING_SCALES',
+    'MOVE_OVERDRIVE',
+    'MOVE_TORCH_SONG',
+    'MOVE_ALLURING_VOICE',
+    'MOVE_PSYCHIC_NOISE',
+    'MOVE_RELIC_SONG',
+];
+
+const multiHitMoves = [
+    'MOVE_BULLET_SEED',
+    'MOVE_ICICLE_SPEAR',
+    'MOVE_PIN_MISSILE',
+    'MOVE_ROCK_BLAST',
+    'MOVE_TAIL_SLAP',
+    'MOVE_BONE_RUSH',
+    'MOVE_SCALE_SHOT',
+    'MOVE_ARM_THRUST',
+    'MOVE_BARRAGE',
+    'MOVE_COMET_PUNCH',
+    'MOVE_DOUBLE_SLAP',
+    'MOVE_FURY_ATTACK',
+    'MOVE_FURY_SWIPES',
+    'MOVE_SPIKE_CANNON',
+    'MOVE_WATER_SHURIKEN',  
+];
+
 function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 0) {
     const offensePower = Math.max(poke.baseAttack, poke.baseSpAttack)/100;
     const defensePower = (poke.baseDefense + poke.baseSpDefense + poke.baseHP)/300;
@@ -338,6 +375,14 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
         }
         return 0;
     }
+    if (item === 'Assault Vest') {
+        for (const move of moveset) {
+            if (move.category === 'DAMAGE_CATEGORY_STATUS') {
+                return 0;
+            }
+        }
+        return 9 * defensePower / offensePower * calculatedDeviation;
+    }
     if (item === 'Leftovers') {
         return 9.5 * defensePower / offensePower * calculatedDeviation;
     }
@@ -355,6 +400,22 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
         const rockDamageMultiplier = damageMultiplier('ROCK', poke.parsedTypes);
         return 5 * calculatedDeviation + (1 - rockDamageMultiplier) * 2;
     }
+    if (item === 'Throat Spray') {
+        const soundMoves = moveset.filter(m => soundBasedOffensiveMoves.includes(m.id));
+        if (soundMoves.length === 0) {
+            return 0;
+        }
+        const bestSoundMoveRating = Math.max(...soundMoves.map(m => m.rating));
+        return (8 + bestSoundMoveRating)/2 * poke.baseSpAttack / defensePower * calculatedDeviation;
+    }
+    if (item === 'Loaded Dice') {
+        const multiHit = moveset.filter(m => multiHitMoves.includes(m.id));
+        if (multiHit.length === 0 || ability === 'SKILL_LINK') {
+            return 0;
+        }
+        const bestMultiHitMoveRating = Math.max(...multiHit.map(m => m.rating));
+        return (8 + bestMultiHitMoveRating)/2 * offensePower / defensePower * calculatedDeviation;
+    }
     if (item === 'Oran Berry') {
         const minHPAtWhichRatingIsMax = 30;
         const ratingDevaluation = 5; // For each X extra HP, rating devalues by 1 point
@@ -369,7 +430,10 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
         if (hasRest) {
             return 9 * defensePower / offensePower * calculatedDeviation;
         }
-        return 3 * calculatedDeviation;
+        return 2.5 * calculatedDeviation;
+    }
+    if (item === 'Jaboca Berry' || item === 'Red Card') {
+        return 2.5 * calculatedDeviation;
     }
     if (item.includes(' Gem')) {
         const gemType = item.split(' Gem')[0].toUpperCase();
@@ -410,6 +474,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
             }
         }
     }
+    console.log(`Warning: Item ${item} not rated for ${poke.name}`);
     return calculatedDeviation;
 }
 
