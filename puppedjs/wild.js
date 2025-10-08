@@ -113,6 +113,11 @@ const wildData = {
 
         // Slateport City
         SPECIES_ABSOL: 'LC_AVERAGE_OR_WEAK',
+
+        // Route110
+        SPECIES_ELECTRIKE: 'LC_AVERAGE_OR_WEAK',
+        SPECIES_MANECTRIC: 'LC_AVERAGE_OR_WEAK',
+        SPECIES_MAREEP: 'NFE_OR_SOLO_AVERAGE',
     },
     maps: [
         // Shelgon maps
@@ -198,6 +203,13 @@ const wildData = {
         {
             id: 'SLATEPORT_CITY',
             land: 'SPECIES_ABSOL',
+        },
+        {
+            id: 'MAP_ROUTE110',
+            land: 'SPECIES_ELECTRIKE',
+            old: 'SPECIES_MANECTRIC',
+            good: 'SPECIES_MAREEP',
+            super: 'SPECIES_PUPITAR',
         },
         // Special
         {
