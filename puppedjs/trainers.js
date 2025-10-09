@@ -2719,7 +2719,7 @@ const trainersData = [
         ],
     },
     {
-        id: 'TRAINER_MARIA_1',
+        id: 'TRAINER_LYDIA_1',
         level: 26,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: ['Eviolite', 'Assault Vest', 'Lum Berry'],
