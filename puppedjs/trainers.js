@@ -2395,7 +2395,7 @@ const trainersData = [
             {
                 specific: 'SPECIES_MAGNETON',
                 tryToHaveMove: ['MOVE_ELECTRIC_TERRAIN'],
-                items: 'Terrain Extender',
+                item: 'Terrain Extender',
                 abilities: ['STURDY'],
                 tryEvolve: true,
             },
