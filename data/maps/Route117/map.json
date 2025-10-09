@@ -197,14 +197,14 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 16,
-      "y": 18,
+      "x": 9,
+      "y": 17,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_GREAT_BALL",
+      "trainer_sight_or_berry_tree_id": "ITEM_ABILITY_PATCH",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_117_GREAT_BALL"
     },
@@ -217,7 +217,7 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_REVIVE",
+      "trainer_sight_or_berry_tree_id": "ITEM_BOOSTER_ENERGY",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_117_REVIVE"
     },
@@ -360,9 +360,9 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_REVIVE",
+      "trainer_sight_or_berry_tree_id": "ITEM_TM_EARTHQUAKE",
       "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_117_REVIVE"
+      "flag": "FLAG_ITEM_ROUTE_117_EARTHQUAKE"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -373,9 +373,9 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_REVIVE",
+      "trainer_sight_or_berry_tree_id": "ITEM_GROUND_GEM",
       "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_117_REVIVE"
+      "flag": "FLAG_ITEM_ROUTE_117_GROUNDGEM"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -386,9 +386,9 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_REVIVE",
+      "trainer_sight_or_berry_tree_id": "ITEM_WACAN_BERRY",
       "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_117_REVIVE"
+      "flag": "FLAG_ITEM_ROUTE_117_WACAN"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -399,9 +399,22 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_REVIVE",
+      "trainer_sight_or_berry_tree_id": "ITEM_LIGHT_CLAY",
       "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_117_REVIVE"
+      "flag": "FLAG_ITEM_ROUTE_117_CLAY"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 40,
+      "y": 16,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "ITEM_WOOD_MAIL",
+      "script": "Common_EventScript_FindItem",
+      "flag": "FLAG_ITEM_ROUTE_117_MIDMINT"
     }
   ],
   "warp_events": [

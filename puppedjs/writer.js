@@ -33,7 +33,7 @@ const {
     TEMPLATE_WILDPOKES_REPALCEMENT,
     NATURES,
 } = require('./constants');
-const { chooseMoveset, rateItemForAPokemon } = require('./rating.js');
+const { chooseMoveset, rateItemForAPokemon, isSuperEffective } = require('./rating.js');
 
 const MAX_MEGA_EVO_STONES = 3;
 
@@ -557,6 +557,13 @@ async function writer(pokemonList, moves, abilities) {
             if (trainerMonDefinition.type) {
                 pokemonLooseList = pokemonLooseList.filter(
                     loosePokemon => loosePokemon.parsedTypes.some(t => trainerMonDefinition.type.includes(t)),
+                );
+            }
+            else if (trainerMonDefinition.weakToTypes) {
+                pokemonLooseList = pokemonLooseList.filter(
+                    loosePokemon => trainerMonDefinition.weakToTypes.some(
+                        t => isSuperEffective(t, loosePokemon.parsedTypes),
+                    ),
                 );
             }
             if (trainerMonDefinition.abilities) {

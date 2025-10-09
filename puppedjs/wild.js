@@ -118,6 +118,11 @@ const wildData = {
         SPECIES_ELECTRIKE: 'LC_AVERAGE_OR_WEAK',
         SPECIES_MANECTRIC: 'LC_AVERAGE_OR_WEAK',
         SPECIES_MAREEP: 'NFE_OR_SOLO_AVERAGE',
+
+        // Route117
+        SPECIES_ODDISH: 'LC_AVERAGE',
+        SPECIES_GLOOM: 'LC_AVERAGE',
+        SPECIES_VILEPLUME: 'NFE_OR_SOLO_STRONG',
     },
     maps: [
         // Shelgon maps
@@ -209,6 +214,13 @@ const wildData = {
             land: 'SPECIES_ELECTRIKE',
             old: 'SPECIES_MANECTRIC',
             good: 'SPECIES_MAREEP',
+            super: 'SPECIES_PUPITAR',
+        },
+        {
+            id: 'MAP_ROUTE117',
+            land: 'SPECIES_ODDISH',
+            old: 'SPECIES_GLOOM',
+            good: 'SPECIES_VILEPLUME',
             super: 'SPECIES_PUPITAR',
         },
         // Special

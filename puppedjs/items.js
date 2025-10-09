@@ -17,7 +17,7 @@ const items = {
         'ITEM_SASSY_MINT',
     ],
     // ITEM_WOOD_MAIL will be replaced by these
-    midMints: [ // 1 at Rustboro
+    midMints: [ // 1 at Rustboro, 1 at Route 117
         'ITEM_LONELY_MINT',
         'ITEM_NAUGHTY_MINT',
         'ITEM_BRAVE_MINT',
@@ -89,13 +89,13 @@ const items = {
     gems: [
         'ITEM_NORMAL_GEM',
         'ITEM_FIRE_GEM',
-        'ITEM_WATER_GEM', // Route103
+        'ITEM_WATER_GEM', // Route 103
         'ITEM_ELECTRIC_GEM',
         'ITEM_GRASS_GEM',
         'ITEM_ICE_GEM',
         'ITEM_FIGHTING_GEM',
         'ITEM_POISON_GEM',
-        'ITEM_GROUND_GEM',
+        'ITEM_GROUND_GEM', // Route 117
         'ITEM_FLYING_GEM',
         'ITEM_PSYCHIC_GEM',
         'ITEM_BUG_GEM',
@@ -155,7 +155,7 @@ const items = {
         'ITEM_TM_IRON_TAIL',
         'ITEM_TM_THUNDERBOLT',
         'ITEM_TM_THUNDER',
-        'ITEM_TM_EARTHQUAKE',
+        'ITEM_TM_EARTHQUAKE', // Route 117
         'ITEM_TM_RETURN',
         'ITEM_TM_DIG', // Route 104
         'ITEM_TM_PSYCHIC',
@@ -326,7 +326,7 @@ const items = {
         'ITEM_ROWAP_BERRY',
         'ITEM_KEE_BERRY',
         'ITEM_MARANGA_BERRY',
-        'ITEM_BOOSTER_ENERGY',
+        'ITEM_BOOSTER_ENERGY', // Route 117
         'ITEM_MASTER_BALL',
     ],
 
@@ -347,7 +347,7 @@ const items = {
         NORMAL: 'ITEM_CHILAN_BERRY',
         FIRE: 'ITEM_OCCA_BERRY',
         WATER: 'ITEM_PASSHO_BERRY',
-        ELECTRIC: 'ITEM_WACAN_BERRY',
+        ELECTRIC: 'ITEM_WACAN_BERRY', // Route 117
         GRASS: 'ITEM_RINDO_BERRY',
         ICE: 'ITEM_YACHE_BERRY',
         FIGHTING: 'ITEM_CHOPLE_BERRY',
@@ -356,7 +356,7 @@ const items = {
         FLYING: 'ITEM_COBA_BERRY',
         PSYCHIC: 'ITEM_PAYAPA_BERRY',
         BUG: 'ITEM_TANGA_BERRY',
-        ROCK: 'ITEM_CHARTI_BERRY',
+        ROCK: 'ITEM_CHARTI_BERRY', // Route 104
         GHOST: 'ITEM_KASIB_BERRY',
         DRAGON: 'ITEM_HABAN_BERRY',
         DARK: 'ITEM_COLBUR_BERRY',

@@ -609,10 +609,9 @@ const trainersData = [
         id: 'TRAINER_WINSTON_1',
         level: 10,
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
-        // @TODO Maybe this should be explicitly weak to Rock
-        types: [POKEMON_TYPE_FIRE, POKEMON_TYPE_BUG, POKEMON_TYPE_ICE, POKEMON_TYPE_FLYING],
         team: genericBadLCTeamTemplate.map(p => ({
             ...p,
+            weakToTypes: [POKEMON_TYPE_ROCK],
             item: 'Charti Berry',
         })),
     },
@@ -2435,6 +2434,348 @@ const trainersData = [
             },
             {
                 evolutionTier: [TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_BRANDI',
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        level: 26,
+        bag: ['Eviolite', 'Assault Vest', 'Lum Berry', 'Oran Berry'],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_ODDISH'],
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_ISAAC_1',
+        level: 26,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: ['Eviolite', 'Assault Vest', 'Lum Berry', 'Oran Berry'],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_GLOOM'],
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_DEREK',
+        level: 26,
+        abilities: [...sunAbilities],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_SUNNY_DAY'],
+                tryToHaveMove: ['MOVE_SUNNY_DAY'],
+                item: 'Heat Rock',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Booster Energy',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Booster Energy',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_SUNNY_DAY'],
+                tryToHaveMove: ['MOVE_SUNNY_DAY'],
+                item: 'Heat Rock',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Booster Energy',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Booster Energy',
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_ANNA_AND_MEG_1',
+        level: 26,
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_REFLECT'],
+                tryToHaveMove: ['MOVE_REFLECT'],
+                item: 'Light Clay',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_LIGHT_SCREEN'],
+                tryToHaveMove: ['MOVE_LIGHT_SCREEN'],
+                item: 'Light Clay',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_REFLECT'],
+                tryToHaveMove: ['MOVE_REFLECT'],
+                item: 'Light Clay',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_LIGHT_SCREEN'],
+                tryToHaveMove: ['MOVE_LIGHT_SCREEN'],
+                item: 'Light Clay',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_REFLECT'],
+                tryToHaveMove: ['MOVE_REFLECT'],
+                item: 'Light Clay',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_LIGHT_SCREEN'],
+                tryToHaveMove: ['MOVE_LIGHT_SCREEN'],
+                item: 'Light Clay',
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_MELINA',
+        level: 26,
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                weakToTypes: [POKEMON_TYPE_ELECTRIC],
+                item: 'Wacan Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                weakToTypes: [POKEMON_TYPE_ELECTRIC],
+                item: 'Wacan Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                weakToTypes: [POKEMON_TYPE_ELECTRIC],
+                item: 'Wacan Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                weakToTypes: [POKEMON_TYPE_ELECTRIC],
+                item: 'Wacan Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                weakToTypes: [POKEMON_TYPE_ELECTRIC],
+                item: 'Wacan Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                weakToTypes: [POKEMON_TYPE_ELECTRIC],
+                item: 'Wacan Berry',
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_AISHA',
+        level: 26,
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                type: [POKEMON_TYPE_GROUND],
+                item: 'Ground Gem',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                type: [POKEMON_TYPE_ROCK],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                type: [POKEMON_TYPE_GROUND],
+                item: 'Ground Gem',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                type: [POKEMON_TYPE_ELECTRIC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                type: [POKEMON_TYPE_GROUND],
+                item: 'Ground Gem',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                type: [POKEMON_TYPE_ICE],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_MARIA_1',
+        level: 26,
+        bag: ['Eviolite', 'Assault Vest', 'Lum Berry', 'Ground Gem'],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                type: [POKEMON_TYPE_GROUND],
+                mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
+                tryToHaveMove: ['MOVE_EARTHQUAKE'],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
+                tryToHaveMove: ['MOVE_EARTHQUAKE'],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
+                tryToHaveMove: ['MOVE_EARTHQUAKE'],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
+                tryToHaveMove: ['MOVE_EARTHQUAKE'],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
+                tryToHaveMove: ['MOVE_EARTHQUAKE'],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
+                tryToHaveMove: ['MOVE_EARTHQUAKE'],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_MARIA_1',
+        level: 26,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: ['Eviolite', 'Assault Vest', 'Lum Berry'],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_DYLAN_1',
+        level: 26,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: ['Oran Berry', 'Lum Berry', 'Jaboca Berry'],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },

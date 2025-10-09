@@ -608,4 +608,6 @@ module.exports = {
     chooseMoveset,
     rateMove,
     rateItemForAPokemon,
+    damageMultiplier,
+    isSuperEffective,
 }
