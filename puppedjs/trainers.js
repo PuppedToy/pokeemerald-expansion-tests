@@ -31,6 +31,7 @@ const {
     TIER_AVERAGE,
     NATURES,
     POKEMON_TYPE_DRAGON,
+    POKEMON_TYPE_ELECTRIC,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
@@ -169,6 +170,11 @@ const rivalRoute110Bag = [
     'Red Card',
     'Rocky Helmet',
     'Loaded Dice',
+];
+
+const wallyBag = [
+    ...rivalRustboroBag,
+    'Lum Berry',
 ];
 
 const rivalRustboroTMs = [
@@ -2284,6 +2290,154 @@ const trainersData = [
     {
         id: 'TRAINER_BRENDAN_ROUTE_110_MUDKIP',
         copy: 'TRAINER_MAY_ROUTE_110_MUDKIP',
+    },
+    {
+        id: 'TRAINER_EDWIN_1',
+        level: 25,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Lum Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Lum Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Lum Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Lum Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Lum Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Lum Berry',
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_JOSEPH',
+        level: 25,
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [POKEMON_TYPE_ELECTRIC],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_ELECTRIC_TERRAIN'],
+                tryToHaveMove: ['MOVE_ELECTRIC_TERRAIN'],
+                items: 'Terrain Extender',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Electric Seed',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Electric Seed',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                mustHaveOneOfMoves: ['MOVE_ELECTRIC_TERRAIN'],
+                tryToHaveMove: ['MOVE_ELECTRIC_TERRAIN'],
+                items: 'Terrain Extender',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Electric Seed',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                item: 'Electric Seed',
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_DALE',
+        level: 25,
+        bag: ['Eviolite', 'Assault Vest', 'Lum Berry', 'Oran Berry'],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_MANECTRIC'],
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_WALLY_MAUVILLE',
+        level: 25,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...wallyBag],
+        team: [
+            {
+                evolutionTier: [TIER_PREMIUM],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evolutionTier: [TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evolutionTier: [TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evolutionTier: [TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evolutionTier: [TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                evolutionTier: [TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+        ],
     },
 ]
 

@@ -1239,7 +1239,7 @@
 #define FLAG_ITEM_ROUTE_103_DEFMINT                                 0x4A0
 #define FLAG_ITEM_ROUTE_103_TAUNT                                   0x4A1
 #define FLAG_ITEM_ROUTE_103_JABOCA                                  0x4A2
-#define FLAG_UNUSED_0x4A3                                           0x4A3 // Unused Flag
+#define FLAG_ITEM_ROUTE_110_LUM_BERRY                               0x4A3
 #define FLAG_UNUSED_0x4A4                                           0x4A4 // Unused Flag
 #define FLAG_UNUSED_0x4A5                                           0x4A5 // Unused Flag
 #define FLAG_UNUSED_0x4A6                                           0x4A6 // Unused Flag

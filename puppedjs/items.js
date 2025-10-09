@@ -269,7 +269,7 @@ const items = {
         'ITEM_CHOICE_SCARF',
         'ITEM_LEFTOVERS',
         'ITEM_LIFE_ORB', // Route 106
-        'ITEM_EVIOLITE', // Route 103
+        'ITEM_EVIOLITE', // Route 104
         'ITEM_ASSAULT_VEST', // Route 103
     ],
 
@@ -311,7 +311,7 @@ const items = {
         'ITEM_EJECT_BUTTON',
         'ITEM_WEAKNESS_POLICY',
         'ITEM_ADRENALINE_ORB',
-        'ITEM_ELECTRIC_SEED',
+        'ITEM_ELECTRIC_SEED', // Route 110
         'ITEM_PSYCHIC_SEED',
         'ITEM_MISTY_SEED',
         'ITEM_GRASSY_SEED',
@@ -319,7 +319,7 @@ const items = {
         'ITEM_EJECT_PACK',
         'ITEM_ROOM_SERVICE',
         'ITEM_LEPPA_BERRY',
-        'ITEM_LUM_BERRY',
+        'ITEM_LUM_BERRY', // Route 110
         'ITEM_SITRUS_BERRY',
         'ITEM_CUSTAP_BERRY',
         'ITEM_JABOCA_BERRY', // Route 103
