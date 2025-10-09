@@ -2985,6 +2985,75 @@ const trainersData = [
             },
         ],
     },
+    // Mauville Gym
+    {
+        id: 'TRAINER_WATTSON_1',
+        level: 26,
+        bag: [
+            'Life Orb',
+            'Flame Orb',
+            'Black Sludge',
+            'Electric Gem',
+            'Eviolite',
+            'Air Balloon',
+            'Shuca Berry',
+            'Expert Belt',
+            'Assault Vest',
+            'Rocky Helmet',
+            'Loaded Dice',
+        ],
+        tms: [
+            'MOVE_WATER_PULSE',
+            'MOVE_BULLET_SEED',
+            'MOVE_BRICK_BREAK',
+            'MOVE_DRAGON_CLAW',
+            'MOVE_TAUNT',
+        ],
+        team: [
+            {
+                specific: 'SPECIES_PINCURCHIN',
+                item: 'Terrain Extender',
+                tryToHaveMove: ['MOVE_SPIKES', 'MOVE_SHOCK_WAVE', 'MOVE_BUBBLE_BEAM', 'MOVE_THUNDER_WAVE'],
+                nature: NATURES.BOLD,
+                abilities: ['ELECTRIC_SURGE'],
+            },
+            {
+                specific: 'SPECIES_MANECTRIC',
+                abilities: ['STATIC'],
+                tryToHaveMove: ['MOVE_SHOCK_WAVE', 'MOVE_THUNDER_WAVE', 'MOVE_FIRE_FANG', 'MOVE_BITE'],
+                item: 'Manectite',
+            },
+            {
+                type: [POKEMON_TYPE_FLYING],
+                evolutionTier: [TIER_AVERAGE, TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_SHOCK_WAVE'],
+                tryEvolve: true,
+            },
+            {
+                type: [POKEMON_TYPE_ELECTRIC],
+                evolutionTier: [TIER_AVERAGE, TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_SHOCK_WAVE'],
+                item: 'Booster Energy',
+                tryEvolve: true,
+            },
+            {
+                type: [POKEMON_TYPE_GRASS],
+                evolutionTier: [TIER_AVERAGE, TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_NATURE_POWER'],
+                item: 'Electric Seed',
+                tryEvolve: true,
+            },
+            {
+                type: [POKEMON_TYPE_ELECTRIC],
+                evolutionTier: [TIER_AVERAGE, TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
+                tryToHaveMove: ['MOVE_SHOCK_WAVE'],
+            },
+        ],
+    },
 ]
 
 module.exports = {
