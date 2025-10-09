@@ -1919,26 +1919,32 @@ const trainersData = [
         tms: ['MOVE_DRAGON_CLAW', 'MOVE_DRAGON_CLAW'],
         team: [
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
@@ -1957,23 +1963,28 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
                 item: 'Grassy Seed',
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
                 item: 'Grassy Seed',
@@ -1986,31 +1997,37 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Shed Shell',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Shed Shell',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Shed Shell',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Shed Shell',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Shed Shell',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Shed Shell',
                 tryEvolve: true,
@@ -2029,22 +2046,27 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
@@ -2057,6 +2079,7 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Throat Spray',
                 mustHaveOneOfMoves: [...soundBasedOffensiveMoves],
@@ -2064,10 +2087,12 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Throat Spray',
                 mustHaveOneOfMoves: [...soundBasedOffensiveMoves],
@@ -2075,10 +2100,12 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Throat Spray',
                 mustHaveOneOfMoves: ['MOVE_SNORE'],
@@ -2086,6 +2113,7 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
@@ -2098,26 +2126,32 @@ const trainersData = [
         bag: ['Eviolite', 'Rocky Helmet', 'Oran Berry'],
         team: [
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
@@ -2130,26 +2164,32 @@ const trainersData = [
         bag: ['Eviolite', 'Rocky Helmet', 'Oran Berry', 'Assault Vest', 'Black Sludge', 'Red Card'],
         team: [
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
@@ -2162,32 +2202,38 @@ const trainersData = [
         bag: ['Eviolite', 'Oran Berry'],
         team: [
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 mustHaveOneOfMoves: ['MOVE_TAUNT'],
                 tryToHaveMove: ['MOVE_TAUNT'],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_TAUNT'],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_TAUNT'],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_TAUNT'],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_TAUNT'],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_TAUNT'],
                 tryEvolve: true,
@@ -2200,31 +2246,37 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Jaboca Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Jaboca Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Jaboca Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Jaboca Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Jaboca Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Jaboca Berry',
                 tryEvolve: true,
@@ -2297,31 +2349,37 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Lum Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Lum Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Lum Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Lum Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Lum Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Lum Berry',
                 tryEvolve: true,
@@ -2335,35 +2393,38 @@ const trainersData = [
         types: [POKEMON_TYPE_ELECTRIC],
         team: [
             {
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_ELECTRIC_TERRAIN'],
+                specific: 'SPECIES_MAGNETON',
                 tryToHaveMove: ['MOVE_ELECTRIC_TERRAIN'],
                 items: 'Terrain Extender',
+                abilities: ['STURDY'],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Electric Seed',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Electric Seed',
                 tryEvolve: true,
             },
             {
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_ELECTRIC_TERRAIN'],
-                tryToHaveMove: ['MOVE_ELECTRIC_TERRAIN'],
-                items: 'Terrain Extender',
-                tryEvolve: true,
-            },
-            {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Electric Seed',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                evoType: [EVO_TYPE_LC],
+                item: 'Electric Seed',
+                tryEvolve: true,
+            },
+            {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 item: 'Electric Seed',
                 tryEvolve: true,
@@ -2378,24 +2439,30 @@ const trainersData = [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_MANECTRIC'],
+                tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
@@ -2408,31 +2475,37 @@ const trainersData = [
         bag: [...wallyBag],
         team: [
             {
+                id: 'WALLY_1',
                 megaTier: [TIER_PREMIUM, TIER_LEGEND],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                id: 'WALLY_2',
                 evolutionTier: [TIER_PREMIUM],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                id: 'WALLY_3',
+                evolutionTier: [TIER_PREMIUM],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            },
+            {
+                id: 'WALLY_4',
                 evolutionTier: [TIER_STRONG],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                id: 'WALLY_5',
                 evolutionTier: [TIER_STRONG],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
-                evolutionTier: [TIER_STRONG],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
+                id: 'WALLY_6',
                 evolutionTier: [TIER_STRONG],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
@@ -2448,24 +2521,30 @@ const trainersData = [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_ODDISH'],
+                tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
@@ -2480,24 +2559,30 @@ const trainersData = [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_GLOOM'],
+                tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
@@ -2510,6 +2595,7 @@ const trainersData = [
         abilities: [...sunAbilities],
         team: [
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
                 evoType: [EVO_TYPE_LC],
                 mustHaveOneOfMoves: ['MOVE_SUNNY_DAY'],
                 tryToHaveMove: ['MOVE_SUNNY_DAY'],
@@ -2517,16 +2603,19 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
                 evoType: [EVO_TYPE_LC],
                 item: 'Booster Energy',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
                 evoType: [EVO_TYPE_LC],
                 item: 'Booster Energy',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
                 evoType: [EVO_TYPE_LC],
                 mustHaveOneOfMoves: ['MOVE_SUNNY_DAY'],
                 tryToHaveMove: ['MOVE_SUNNY_DAY'],
@@ -2534,11 +2623,13 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
                 evoType: [EVO_TYPE_LC],
                 item: 'Booster Energy',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
                 evoType: [EVO_TYPE_LC],
                 item: 'Booster Energy',
                 tryEvolve: true,
@@ -2550,6 +2641,7 @@ const trainersData = [
         level: 26,
         team: [
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 mustHaveOneOfMoves: ['MOVE_REFLECT'],
                 tryToHaveMove: ['MOVE_REFLECT'],
@@ -2557,6 +2649,7 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 mustHaveOneOfMoves: ['MOVE_LIGHT_SCREEN'],
                 tryToHaveMove: ['MOVE_LIGHT_SCREEN'],
@@ -2564,6 +2657,7 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 mustHaveOneOfMoves: ['MOVE_REFLECT'],
                 tryToHaveMove: ['MOVE_REFLECT'],
@@ -2571,6 +2665,7 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 mustHaveOneOfMoves: ['MOVE_LIGHT_SCREEN'],
                 tryToHaveMove: ['MOVE_LIGHT_SCREEN'],
@@ -2578,6 +2673,7 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 mustHaveOneOfMoves: ['MOVE_REFLECT'],
                 tryToHaveMove: ['MOVE_REFLECT'],
@@ -2585,6 +2681,7 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 mustHaveOneOfMoves: ['MOVE_LIGHT_SCREEN'],
                 tryToHaveMove: ['MOVE_LIGHT_SCREEN'],
@@ -2598,36 +2695,42 @@ const trainersData = [
         level: 26,
         team: [
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 weakToTypes: [POKEMON_TYPE_ELECTRIC],
                 item: 'Wacan Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 weakToTypes: [POKEMON_TYPE_ELECTRIC],
                 item: 'Wacan Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 weakToTypes: [POKEMON_TYPE_ELECTRIC],
                 item: 'Wacan Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 weakToTypes: [POKEMON_TYPE_ELECTRIC],
                 item: 'Wacan Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 weakToTypes: [POKEMON_TYPE_ELECTRIC],
                 item: 'Wacan Berry',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 weakToTypes: [POKEMON_TYPE_ELECTRIC],
                 item: 'Wacan Berry',
@@ -2640,34 +2743,40 @@ const trainersData = [
         level: 26,
         team: [
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 type: [POKEMON_TYPE_GROUND],
                 item: 'Ground Gem',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 type: [POKEMON_TYPE_ROCK],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 type: [POKEMON_TYPE_GROUND],
                 item: 'Ground Gem',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 type: [POKEMON_TYPE_ELECTRIC],
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 type: [POKEMON_TYPE_GROUND],
                 item: 'Ground Gem',
                 tryEvolve: true,
             },
             {
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 evoType: [EVO_TYPE_LC],
                 type: [POKEMON_TYPE_ICE],
                 tryEvolve: true,
@@ -2682,36 +2791,42 @@ const trainersData = [
             {
                 evoType: [EVO_TYPE_LC],
                 type: [POKEMON_TYPE_GROUND],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
                 tryToHaveMove: ['MOVE_EARTHQUAKE'],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
                 tryToHaveMove: ['MOVE_EARTHQUAKE'],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
                 tryToHaveMove: ['MOVE_EARTHQUAKE'],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
                 tryToHaveMove: ['MOVE_EARTHQUAKE'],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
                 tryToHaveMove: ['MOVE_EARTHQUAKE'],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
                 tryToHaveMove: ['MOVE_EARTHQUAKE'],
                 tryEvolve: true,
@@ -2726,26 +2841,32 @@ const trainersData = [
         team: [
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 tryEvolve: true,
             },
         ],
@@ -2758,26 +2879,32 @@ const trainersData = [
         team: [
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 tryEvolve: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 tryEvolve: true,
             },
         ],
