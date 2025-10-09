@@ -3027,14 +3027,12 @@ const trainersData = [
             },
             {
                 type: [POKEMON_TYPE_FLYING],
-                evolutionTier: [TIER_AVERAGE, TIER_STRONG],
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_SHOCK_WAVE'],
                 tryEvolve: true,
             },
             {
                 type: [POKEMON_TYPE_ELECTRIC],
-                evolutionTier: [TIER_AVERAGE, TIER_STRONG],
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_SHOCK_WAVE'],
                 item: 'Booster Energy',
@@ -3042,7 +3040,6 @@ const trainersData = [
             },
             {
                 type: [POKEMON_TYPE_GRASS],
-                evolutionTier: [TIER_AVERAGE, TIER_STRONG],
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_NATURE_POWER'],
                 item: 'Electric Seed',
@@ -3050,7 +3047,6 @@ const trainersData = [
             },
             {
                 type: [POKEMON_TYPE_ELECTRIC],
-                evolutionTier: [TIER_AVERAGE, TIER_STRONG],
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_SHOCK_WAVE'],
             },
