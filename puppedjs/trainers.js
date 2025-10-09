@@ -32,6 +32,7 @@ const {
     NATURES,
     POKEMON_TYPE_DRAGON,
     POKEMON_TYPE_ELECTRIC,
+    TIER_LEGEND,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
@@ -2408,12 +2409,12 @@ const trainersData = [
         bag: [...wallyBag],
         team: [
             {
-                evolutionTier: [TIER_PREMIUM],
+                megaTier: [TIER_PREMIUM, TIER_LEGEND],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
-                evolutionTier: [TIER_STRONG],
+                evolutionTier: [TIER_PREMIUM],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },

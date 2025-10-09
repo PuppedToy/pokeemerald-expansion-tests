@@ -549,6 +549,11 @@ async function writer(pokemonList, moves, abilities) {
                         && trainerMonDefinition.megaTier.includes(loosePokemon.rating.megaEvoTier),
                 );
             }
+            if (trainerMonDefinition.evolutionTier) {
+                pokemonLooseList = pokemonLooseList.filter(
+                    loosePokemon => trainerMonDefinition.evolutionTier.includes(loosePokemon.rating.bestEvoTier),
+                );
+            }
             if (trainerMonDefinition.type) {
                 pokemonLooseList = pokemonLooseList.filter(
                     loosePokemon => loosePokemon.parsedTypes.some(t => trainerMonDefinition.type.includes(t)),
