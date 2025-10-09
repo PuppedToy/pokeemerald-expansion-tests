@@ -2994,6 +2994,7 @@ const trainersData = [
             'Flame Orb',
             'Black Sludge',
             'Electric Gem',
+            'Flying Gem',
             'Eviolite',
             'Air Balloon',
             'Shuca Berry',
@@ -3007,13 +3008,14 @@ const trainersData = [
             'MOVE_BULLET_SEED',
             'MOVE_BRICK_BREAK',
             'MOVE_DRAGON_CLAW',
+            'MOVE_EARTHQUAKE',
             'MOVE_TAUNT',
         ],
         team: [
             {
                 specific: 'SPECIES_PINCURCHIN',
                 item: 'Terrain Extender',
-                tryToHaveMove: ['MOVE_SPIKES', 'MOVE_SHOCK_WAVE', 'MOVE_BUBBLE_BEAM', 'MOVE_THUNDER_WAVE'],
+                tryToHaveMove: ['MOVE_TAUNT', 'MOVE_SHOCK_WAVE', 'MOVE_BUBBLE_BEAM', 'MOVE_THUNDER_WAVE'],
                 nature: NATURES.BOLD,
                 abilities: ['ELECTRIC_SURGE'],
             },
