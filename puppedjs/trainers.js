@@ -1919,32 +1919,32 @@ const trainersData = [
         tms: ['MOVE_DRAGON_CLAW', 'MOVE_DRAGON_CLAW'],
         team: [
             {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                absoluteTier: [TIER_BAD, TIER_WEAK],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                absoluteTier: [TIER_BAD, TIER_WEAK],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                absoluteTier: [TIER_BAD, TIER_WEAK],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                absoluteTier: [TIER_BAD, TIER_WEAK],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                absoluteTier: [TIER_BAD, TIER_WEAK],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
             {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                absoluteTier: [TIER_BAD, TIER_WEAK],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
             },
