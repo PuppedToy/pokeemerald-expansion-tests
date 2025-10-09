@@ -2506,6 +2506,7 @@ const trainersData = [
     {
         id: 'TRAINER_DEREK',
         level: 26,
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES],
         abilities: [...sunAbilities],
         team: [
             {
