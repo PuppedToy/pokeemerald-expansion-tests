@@ -2909,6 +2909,82 @@ const trainersData = [
             },
         ],
     },
+    {
+        id: 'TRAINER_DEANDRE',
+        level: 26,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: ['Oran Berry', 'Lum Berry', 'Jaboca Berry'],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_CARVANHA'],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_DALTON_1',
+        level: 26,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: ['Eviolite', 'Lum Berry', 'Life Orb', 'Expert Belt'],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+        ],
+    },
 ]
 
 module.exports = {

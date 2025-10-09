@@ -1245,7 +1245,7 @@
 #define FLAG_ITEM_ROUTE_117_GROUNDGEM                               0x4A6
 #define FLAG_ITEM_ROUTE_117_EARTHQUAKE                              0x4A7
 #define FLAG_ITEM_ROUTE_117_MIDMINT                                 0x4A8
-#define FLAG_UNUSED_0x4A9                                           0x4A9 // Unused Flag
+#define FLAG_ITEM_ROUTE_118_STRMINT                                 0x4A9
 #define FLAG_UNUSED_0x4AA                                           0x4AA // Unused Flag
 #define FLAG_UNUSED_0x4AB                                           0x4AB // Unused Flag
 #define FLAG_UNUSED_0x4AC                                           0x4AC // Unused Flag

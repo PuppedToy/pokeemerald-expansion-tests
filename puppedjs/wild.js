@@ -49,6 +49,10 @@ const wildData = {
             replace: [TIER_STRONG],
             type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
+        NFE_OR_SOLO_AVERAGE_STRONG: {
+            replace: [TIER_AVERAGE, TIER_STRONG],
+            type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
+        },
     },
     replacements: {
         // Shared
@@ -107,9 +111,9 @@ const wildData = {
         SPECIES_ARON: 'LC_AVERAGE',
 
         // Route109
-        SPECIES_BULBASAUR: 'LC_AVERAGE_OR_STRONG',
+        SPECIES_BULBASAUR: 'LC_AVERAGE',
         SPECIES_IVYSAUR: 'LC_AVERAGE_OR_WEAK',
-        SPECIES_VENUSAUR: 'NFE_OR_SOLO_STRONG',
+        SPECIES_VENUSAUR: 'NFE_OR_SOLO_AVERAGE',
 
         // Slateport City
         SPECIES_ABSOL: 'LC_AVERAGE_OR_WEAK',
@@ -122,7 +126,12 @@ const wildData = {
         // Route117
         SPECIES_ODDISH: 'LC_AVERAGE',
         SPECIES_GLOOM: 'LC_AVERAGE',
-        SPECIES_VILEPLUME: 'NFE_OR_SOLO_STRONG',
+        SPECIES_VILEPLUME: 'NFE_OR_SOLO_AVERAGE',
+
+        // Route118
+        SPECIES_DEDENNE: 'NFE_OR_SOLO_AVERAGE_STRONG',
+        SPECIES_CARVANHA: 'LC_AVERAGE',
+        SPECIES_SHARPEDO: 'NFE_OR_SOLO_AVERAGE',
     },
     maps: [
         // Shelgon maps
@@ -221,6 +230,13 @@ const wildData = {
             land: 'SPECIES_ODDISH',
             old: 'SPECIES_GLOOM',
             good: 'SPECIES_VILEPLUME',
+            super: 'SPECIES_PUPITAR',
+        },
+        {
+            id: 'MAP_ROUTE118',
+            land: 'SPECIES_DEDENNE',
+            old: 'SPECIES_CARVANHA',
+            good: 'SPECIES_SHARPEDO',
             super: 'SPECIES_PUPITAR',
         },
         // Special

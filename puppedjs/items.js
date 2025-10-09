@@ -8,7 +8,7 @@ const items = {
         'ITEM_TIMID_MINT',
     ],
     // ITEM_WAVE_MAIL will be replaced by these
-    strongDefMints: [ // 1 at Route 103
+    strongDefMints: [ // 1 at Route 103, 1 at route 118
         'ITEM_BOLD_MINT',
         'ITEM_IMPISH_MINT',
         'ITEM_CALM_MINT',
