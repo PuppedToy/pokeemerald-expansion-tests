@@ -89632,9 +89632,151 @@
       "movesRating": 8.139285714285714,
       "bestAbilityRating": 6,
       "tier": "BAD",
-      "bestEvo": "SPECIES_CHERUBI",
-      "bestEvoRating": 2.680595238095238,
-      "bestEvoTier": "BAD"
+      "bestEvo": "SPECIES_CHERRIM_OVERCAST",
+      "bestEvoRating": 4.813928571428572,
+      "bestEvoTier": "WEAK"
+    }
+  },
+  {
+    "name": "Cherrim  Overcast",
+    "parsedTypes": [
+      "GRASS"
+    ],
+    "parsedAbilities": [
+      "FLOWER_GIFT",
+      "NONE",
+      "NONE"
+    ],
+    "id": "SPECIES_CHERRIM_OVERCAST",
+    "family": "P_FAMILY_CHERUBI",
+    "baseHP": 70,
+    "baseAttack": 60,
+    "baseDefense": 70,
+    "baseSpeed": 85,
+    "baseSpAttack": 87,
+    "baseSpDefense": 78,
+    "types": "MON_TYPES(TYPE_GRASS)",
+    "abilities": "{ ABILITY_FLOWER_GIFT, ABILITY_NONE, ABILITY_NONE }",
+    "speciesName": "_(\"Cherrim\")",
+    "natDexNum": "NATIONAL_DEX_CHERRIM",
+    "levelUpLearnset": "sCherrimLevelUpLearnset",
+    "teachableLearnset": "sCherrimTeachableLearnset",
+    "baseBST": 450,
+    "evolutionData": {
+      "type": "EVO_TYPE_LAST_OF_2",
+      "isMega": false,
+      "isLC": false,
+      "isNFE": false,
+      "isFinal": true
+    },
+    "catchRate": "255",
+    "expYield": "0",
+    "learnset": [
+      {
+        "level": "0",
+        "move": "MOVE_SUNNY_DAY"
+      },
+      {
+        "level": "1",
+        "move": "MOVE_SUNNY_DAY"
+      },
+      {
+        "level": "1",
+        "move": "MOVE_FLOWER_SHIELD"
+      },
+      {
+        "level": "1",
+        "move": "MOVE_MORNING_SUN"
+      },
+      {
+        "level": "1",
+        "move": "MOVE_TACKLE"
+      },
+      {
+        "level": "1",
+        "move": "MOVE_LEAFAGE"
+      },
+      {
+        "level": "1",
+        "move": "MOVE_GROWTH"
+      },
+      {
+        "level": "15",
+        "move": "MOVE_HELPING_HAND"
+      },
+      {
+        "level": "20",
+        "move": "MOVE_MAGICAL_LEAF"
+      },
+      {
+        "level": "28",
+        "move": "MOVE_LEECH_SEED"
+      },
+      {
+        "level": "34",
+        "move": "MOVE_TAKE_DOWN"
+      },
+      {
+        "level": "41",
+        "move": "MOVE_PETAL_BLIZZARD"
+      },
+      {
+        "level": "48",
+        "move": "MOVE_WORRY_SEED"
+      },
+      {
+        "level": "55",
+        "move": "MOVE_SOLAR_BEAM"
+      },
+      {
+        "level": "62",
+        "move": "MOVE_PETAL_DANCE"
+      }
+    ],
+    "teachables": [
+      "MOVE_ATTRACT",
+      "MOVE_BULLET_SEED",
+      "MOVE_DEFENSE_CURL",
+      "MOVE_DOUBLE_EDGE",
+      "MOVE_DOUBLE_TEAM",
+      "MOVE_ENDURE",
+      "MOVE_FACADE",
+      "MOVE_FLASH",
+      "MOVE_GIGA_DRAIN",
+      "MOVE_HYPER_BEAM",
+      "MOVE_PROTECT",
+      "MOVE_REST",
+      "MOVE_ROLLOUT",
+      "MOVE_SAFEGUARD",
+      "MOVE_SLEEP_TALK",
+      "MOVE_SNORE",
+      "MOVE_SOLAR_BEAM",
+      "MOVE_SUNNY_DAY",
+      "MOVE_SWAGGER",
+      "MOVE_SWORDS_DANCE",
+      "MOVE_TOXIC"
+    ],
+    "evoTree": [
+      "SPECIES_CHERUBI",
+      [
+        "SPECIES_CHERRIM_OVERCAST"
+      ]
+    ],
+    "rating": {
+      "absoluteRating": 4.813928571428572,
+      "absoluteBSTRating": 4.5,
+      "bestMoveset": [
+        "MOVE_BULLET_SEED",
+        "MOVE_DOUBLE_EDGE",
+        "MOVE_LEECH_SEED",
+        "MOVE_SWORDS_DANCE"
+      ],
+      "movesRating": 8.139285714285714,
+      "bestAbilityRating": 4,
+      "tier": "WEAK",
+      "bestEvo": "SPECIES_CHERRIM_OVERCAST",
+      "bestEvoRating": 4.813928571428572,
+      "bestEvoTier": "WEAK"
     }
   },
   {
