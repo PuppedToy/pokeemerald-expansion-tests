@@ -532,7 +532,7 @@ async function writer(pokemonList, moves, abilities) {
                 }
             }
             else if (trainerMonDefinition.special === TRAINER_POKE_MEGA_FROM_STONE) {
-                const megaStone = megaReplacements[trainerMonDefinition.megaStone];
+                const megaStone = megaReplacements[trainerMonDefinition.megaStone] || trainerMonDefinition.megaStone;
                 let mega = pokemonList.filter(p => p.evolutionData.megaItem === megaStone);
                 if (mega.length === 1) {
                     mega = mega[0];
@@ -550,7 +550,7 @@ async function writer(pokemonList, moves, abilities) {
                     }
                 }
                 else {
-                    console.warn(`WARN: No unique mega evolution found for stone ${trainerMonDefinition.megaStone} in trainer ${trainer.id}.`);
+                    console.warn(`WARN: No unique mega evolution found for stone ${megaStone} in trainer ${trainer.id}.`);
                 }
             }
             else {
