@@ -58,6 +58,7 @@ const wildData = {
         // Shared
         SPECIES_SHELGON: 'NFE_OR_SOLO_STRONG',
         SPECIES_PUPITAR: 'NFE_OR_SOLO_STRONG',
+        SPECIES_GABITE: 'NFE_OR_SOLO_STRONG',
 
         // Route101
         SPECIES_ZIGZAGOON: 'LC_BAD_WEAK_AVERAGE',
@@ -132,6 +133,16 @@ const wildData = {
         SPECIES_DEDENNE: 'NFE_OR_SOLO_AVERAGE_STRONG',
         SPECIES_CARVANHA: 'LC_AVERAGE',
         SPECIES_SHARPEDO: 'NFE_OR_SOLO_AVERAGE',
+
+        // Route111
+        SPECIES_TRAPINCH: 'LC_AVERAGE',
+        SPECIES_DROWZEE: 'LC_AVERAGE_OR_WEAK',
+        SPECIES_HYPNO: 'NFE_OR_SOLO_AVERAGE',
+
+        // Route112
+        SPECIES_NUMEL: 'LC_AVERAGE',
+        SPECIES_TAILLOW: 'LC_AVERAGE',
+        SPECIES_SWELLOW: 'NFE_OR_SOLO_AVERAGE',
     },
     maps: [
         // Shelgon maps
@@ -239,6 +250,21 @@ const wildData = {
             good: 'SPECIES_SHARPEDO',
             super: 'SPECIES_PUPITAR',
         },
+        // Gabite maps
+        {
+            id: 'MAP_ROUTE111',
+            land: 'SPECIES_TRAPINCH',
+            old: 'SPECIES_DROWZEE',
+            good: 'SPECIES_HYPNO',
+            super: 'SPECIES_GABITE',
+        },
+        {
+            id: 'MAP_ROUTE112',
+            land: 'SPECIES_NUMEL',
+            old: 'SPECIES_TAILLOW',
+            good: 'SPECIES_SWELLOW',
+            super: 'SPECIES_GABITE',
+        },
         // Special
         {
             id: 'MAP_WEATHER_INSTITUTE',
@@ -269,7 +295,7 @@ const wildData = {
             special1: 'SPECIES_RAYQUAZA',
             special2: 'SPECIES_GROUDON',
             special3: 'SPECIES_KYOGRE',
-        }
+        },
     ]
 };
 

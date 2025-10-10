@@ -34,6 +34,7 @@ const {
     POKEMON_TYPE_ELECTRIC,
     TIER_LEGEND,
     TRAINER_POKE_MEGA_FROM_STONE,
+    EVO_TYPE_FINAL,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
@@ -3056,6 +3057,44 @@ const trainersData = [
     },
     // Route 111
     {
+        id: 'TRAINER_HAYDEN',
+        level: 29,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: ['Sitrus Berry', 'Lum Berry', 'Eviolite', 'Expert Belt', 'Shell Bell', 'Assault Vest'],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_DROWZEE'],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
         id: 'TRAINER_TYRON',
         level: 29,
         team: [
@@ -3156,6 +3195,263 @@ const trainersData = [
             {
                 evoType: [EVO_TYPE_LC],
                 evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_IRENE',
+        level: 29,
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+                weakToTypes: [POKEMON_TYPE_GROUND],
+                item: 'Air Balloon',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+                weakToTypes: [POKEMON_TYPE_GROUND],
+                item: 'Air Balloon',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+                weakToTypes: [POKEMON_TYPE_GROUND],
+                item: 'Air Balloon',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+                weakToTypes: [POKEMON_TYPE_GROUND],
+                item: 'Air Balloon',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+                weakToTypes: [POKEMON_TYPE_GROUND],
+                item: 'Air Balloon',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+                weakToTypes: [POKEMON_TYPE_GROUND],
+                item: 'Air Balloon',
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_TRAVIS',
+        level: 29,
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+                weakToTypes: [POKEMON_TYPE_GROUND],
+                item: 'Sitrus Berry',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+                weakToTypes: [POKEMON_TYPE_GROUND],
+                item: 'Sitrus Berry',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+                weakToTypes: [POKEMON_TYPE_GROUND],
+                item: 'Sitrus Berry',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+                weakToTypes: [POKEMON_TYPE_GROUND],
+                item: 'Sitrus Berry',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+                weakToTypes: [POKEMON_TYPE_GROUND],
+                item: 'Sitrus Berry',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+                weakToTypes: [POKEMON_TYPE_GROUND],
+                item: 'Sitrus Berry',
+            },
+        ],
+    },
+    // Route 112
+    {
+        id: 'TRAINER_LARRY',
+        level: 29,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: ['Sitrus Berry', 'Lum Berry', 'Eviolite', 'Expert Belt', 'Shell Bell', 'Assault Vest'],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_TAILLOW'],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_TRENT_1',
+        level: 29,
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                weakToTypes: [POKEMON_TYPE_FIRE],
+                item: 'Occa Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                weakToTypes: [POKEMON_TYPE_FIRE],
+                item: 'Occa Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                weakToTypes: [POKEMON_TYPE_FIRE],
+                item: 'Occa Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                weakToTypes: [POKEMON_TYPE_FIRE],
+                item: 'Occa Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                weakToTypes: [POKEMON_TYPE_FIRE],
+                item: 'Occa Berry',
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                weakToTypes: [POKEMON_TYPE_FIRE],
+                item: 'Occa Berry',
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_BRICE',
+        level: 29,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: ['Sitrus Berry', 'Lum Berry', 'Eviolite', 'Expert Belt', 'Shell Bell', 'Assault Vest', 'Black Sludge', 'Air Balloon'],
+        team: [
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_CAROL',
+        level: 29,
+        team: [
+            {
+                evoType: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
+                ability: 'POISON_HEAL',
+                item: 'Toxic Orb',
+            },
+            {
+                evoType: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
+                ability: 'POISON_HEAL',
+                item: 'Toxic Orb',
+            },
+            {
+                evoType: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
+                ability: 'TOXIC_BOOST',
+                item: 'Toxic Orb',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_AVERAGE],
                 tryEvolve: true,
             },
         ],

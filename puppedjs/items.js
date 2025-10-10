@@ -169,9 +169,9 @@ const items = {
         'ITEM_TM_SANDSTORM', // Route 109
         'ITEM_TM_FIRE_BLAST',
         'ITEM_TM_ROCK_TOMB', // Roxanne
-        'ITEM_TM_AERIAL_ACE',
+        'ITEM_TM_AERIAL_ACE', // Winona
         'ITEM_TM_TORMENT',
-        'ITEM_TM_FACADE',
+        'ITEM_TM_FACADE', // Norman
         'ITEM_TM_SECRET_POWER',
         'ITEM_TM_REST',
         'ITEM_TM_ATTRACT',
@@ -179,7 +179,7 @@ const items = {
         'ITEM_TM_STEEL_WING', // Steven
         'ITEM_TM_SKILL_SWAP',
         'ITEM_TM_SNATCH',
-        'ITEM_TM_OVERHEAT',
+        'ITEM_TM_OVERHEAT', // Flannery
     ],
     
     // Can I use these?
@@ -248,11 +248,11 @@ const items = {
     consumables: {
         // Hidden ability
         ITEM_ABILITY_PATCH: { // 1 at Route 116
-            count: 3
+            count: 4
         },
         // Normal ability
-        ITEM_ABILITY_CAPSULE: { // 1 at Route 104, 1 at Route 110
-            count: 6
+        ITEM_ABILITY_CAPSULE: { // 1 at Route 104, 1 at Route 110, 1 at Route 112
+            count: 8
         },
         ITEM_HEART_SCALE: {
             count: 10
@@ -284,14 +284,14 @@ const items = {
     goodSituationalItems: [
         // These will be represented as ITEM_HARBOR_MAIL in the future and shuffled
         'ITEM_FLAME_ORB', // Route 115
-        'ITEM_TOXIC_ORB',
+        'ITEM_TOXIC_ORB', // Route 112
         'ITEM_DAMP_ROCK', // Route 109
         'ITEM_HEAT_ROCK', // Route 109
         'ITEM_SMOOTH_ROCK', // Route 109
         'ITEM_ICY_ROCK', // Route 109
         'ITEM_WIDE_LENS',
         'ITEM_EXPERT_BELT', // Route 102
-        'ITEM_LIGHT_CLAY',
+        'ITEM_LIGHT_CLAY', // Route 117
         'ITEM_ZOOM_LENS',
         'ITEM_BLACK_SLUDGE', // Route 116
         'ITEM_SHED_SHELL', // Route 110
@@ -306,7 +306,7 @@ const items = {
         'ITEM_KINGS_ROCK',
         'ITEM_POWER_HERB',
         'ITEM_FOCUS_SASH',
-        'ITEM_AIR_BALLOON',
+        'ITEM_AIR_BALLOON', // Route 111
         'ITEM_RED_CARD', // Route 109
         'ITEM_EJECT_BUTTON',
         'ITEM_WEAKNESS_POLICY',
@@ -320,7 +320,7 @@ const items = {
         'ITEM_ROOM_SERVICE',
         'ITEM_LEPPA_BERRY',
         'ITEM_LUM_BERRY', // Route 110
-        'ITEM_SITRUS_BERRY',
+        'ITEM_SITRUS_BERRY', // Route 111
         'ITEM_CUSTAP_BERRY',
         'ITEM_JABOCA_BERRY', // Route 103
         'ITEM_ROWAP_BERRY',
