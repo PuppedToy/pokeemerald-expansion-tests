@@ -147,6 +147,16 @@ function sample(array) {
     return array[index];
 }
 
+function itemIdToName(itemId) {
+    // remove "ITEM_" prefix, Swap _ for ' ' and capitalize the first letter of each word
+    return itemId
+        .replace('ITEM_', '')
+        .toLowerCase()
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
 async function writer(pokemonList, moves, abilities) {
     const elegiblePokemonForStarters = [];
     const averagePokemonLC = [];
@@ -543,7 +553,7 @@ async function writer(pokemonList, moves, abilities) {
                     );
                     if (pokemonThatEvolvesToMega) {
                         pokemonStrictList = [pokemonThatEvolvesToMega];
-                        trainerMonDefinition.item = mega.evolutionData.megaItem;
+                        trainerMonDefinition.item = itemIdToName(mega.evolutionData.megaItem);
                     }
                     else {
                         console.warn(`WARN: No pokemon found that evolves to mega ${mega.id} for trainer ${trainer.id}.`);
