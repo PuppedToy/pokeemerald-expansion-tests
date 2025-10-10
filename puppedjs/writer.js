@@ -272,12 +272,15 @@ async function writer(pokemonList, moves, abilities) {
         'ITEM_SWAMPERTITE',
     ];
 
+    const megaReplacements = {};
+
     for (let i = 0; i < Math.min(chosenPokemonThatHaveMegaEvo.length, MAX_MEGA_EVO_STONES); i++) {
         const poke = chosenPokemonThatHaveMegaEvo[i];
         const megaEvos = poke.evolutionData.megaEvos;
         const chosenMegaEvo = megaEvos[Math.floor(Math.random() * megaEvos.length)];
         const megaItem = pokemonList.find(p => p.id === chosenMegaEvo).evolutionData.megaItem;
         route111Data = route111Data.replace(itemDataList[i], megaItem);
+        megaReplacements[itemDataList[i]] = megaItem;
     }
 
     await fs.writeFile(route111File, route111Data, 'utf8');
@@ -529,7 +532,8 @@ async function writer(pokemonList, moves, abilities) {
                 }
             }
             else if (trainerMonDefinition.special === TRAINER_POKE_MEGA_FROM_STONE) {
-                let mega = pokemonList.filter(p => p.evolutionData.megaItem === trainerMonDefinition.megaStone);
+                const megaStone = megaReplacements[trainerMonDefinition.megaStone];
+                let mega = pokemonList.filter(p => p.evolutionData.megaItem === megaStone);
                 if (mega.length === 1) {
                     mega = mega[0];
                     const pokemonThatEvolvesToMega = pokemonList.find(p => 
