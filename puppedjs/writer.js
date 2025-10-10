@@ -529,7 +529,7 @@ async function writer(pokemonList, moves, abilities) {
                 }
             }
             else if (trainerMonDefinition.special === TRAINER_POKE_MEGA_FROM_STONE) {
-                let mega = allPokemonList.filter(p => p.evolutionData.megaItem === trainerMonDefinition.megaStone);
+                let mega = pokemonList.filter(p => p.evolutionData.megaItem === trainerMonDefinition.megaStone);
                 if (mega.length === 1) {
                     mega = mega[0];
                     const pokemonThatEvolvesToMega = pokemonList.find(p => 
