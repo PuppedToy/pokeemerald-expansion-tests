@@ -32,6 +32,7 @@ const {
     TEMPLATE_POKEMON_REPLACEMENT,
     TEMPLATE_WILDPOKES_REPALCEMENT,
     NATURES,
+    TRAINER_POKE_MEGA_FROM_STONE,
 } = require('./constants');
 const { chooseMoveset, rateItemForAPokemon, isSuperEffective } = require('./rating.js');
 
@@ -525,6 +526,27 @@ async function writer(pokemonList, moves, abilities) {
                 }
                 else {
                     console.warn(`WARN: No stored id found for ${trainerMonDefinition.idToRepeat} to repeat in trainer ${trainer.id}.`);
+                }
+            }
+            else if (trainerMonDefinition.special === TRAINER_POKE_MEGA_FROM_STONE) {
+                let mega = allPokemonList.filter(p => p.evolutionData.megaItem === trainerMonDefinition.megaStone);
+                if (mega.length === 1) {
+                    mega = mega[0];
+                    const pokemonThatEvolvesToMega = pokemonList.find(p => 
+                        p.evolutionData.isFinal
+                        && p.evolutionData.megaEvos
+                        && p.evolutionData.megaEvos.includes(mega.id)
+                    );
+                    if (pokemonThatEvolvesToMega) {
+                        pokemonStrictList = [pokemonThatEvolvesToMega];
+                        trainerMonDefinition.item = mega.evolutionData.megaItem;
+                    }
+                    else {
+                        console.warn(`WARN: No pokemon found that evolves to mega ${mega.id} for trainer ${trainer.id}.`);
+                    }
+                }
+                else {
+                    console.warn(`WARN: No unique mega evolution found for stone ${trainerMonDefinition.megaStone} in trainer ${trainer.id}.`);
                 }
             }
             else {

@@ -33,6 +33,7 @@ const {
     POKEMON_TYPE_DRAGON,
     POKEMON_TYPE_ELECTRIC,
     TIER_LEGEND,
+    TRAINER_POKE_MEGA_FROM_STONE,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
@@ -366,6 +367,58 @@ const trainersData = [
             },
         ],
     },
+    // Route 103
+    {
+        id: 'TRAINER_MAY_ROUTE_103_TREECKO',
+        level: 7,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        team: [
+            {
+                id: 'RIVAL_STARTER_TREECKO',
+                special: TRAINER_POKE_STARTER_TORCHIC,
+                item: 'Oran Berry',
+            },
+            ...rival103Template('TREECKO'),
+        ]
+    },
+    {
+        id: 'TRAINER_MAY_ROUTE_103_TORCHIC',
+        level: 7,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        team: [
+            {
+                id: 'RIVAL_STARTER_TORCHIC',
+                special: TRAINER_POKE_STARTER_MUDKIP,
+                item: 'Oran Berry',
+            },
+            ...rival103Template('TORCHIC'),
+        ]
+    },
+    {
+        id: 'TRAINER_MAY_ROUTE_103_MUDKIP',
+        level: 7,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        team: [
+            {
+                id: 'RIVAL_STARTER_MUDKIP',
+                special: TRAINER_POKE_STARTER_TREECKO,
+                item: 'Oran Berry',
+            },
+            ...rival103Template('MUDKIP'),
+        ]
+    },
+    {
+        id: 'TRAINER_BRENDAN_ROUTE_103_TREECKO',
+        copy: 'TRAINER_MAY_ROUTE_103_TREECKO',
+    },
+    {
+        id: 'TRAINER_BRENDAN_ROUTE_103_TORCHIC',
+        copy: 'TRAINER_MAY_ROUTE_103_TORCHIC',
+    },
+    {
+        id: 'TRAINER_BRENDAN_ROUTE_103_MUDKIP',
+        copy: 'TRAINER_MAY_ROUTE_103_MUDKIP',
+    },
     // Route 102
     {
         id: 'TRAINER_ALLEN',
@@ -471,57 +524,6 @@ const trainersData = [
         ]
     },
     // Route 103
-    {
-        id: 'TRAINER_MAY_ROUTE_103_TREECKO',
-        level: 7,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        team: [
-            {
-                id: 'RIVAL_STARTER_TREECKO',
-                special: TRAINER_POKE_STARTER_TORCHIC,
-                item: 'Oran Berry',
-            },
-            ...rival103Template('TREECKO'),
-        ]
-    },
-    {
-        id: 'TRAINER_MAY_ROUTE_103_TORCHIC',
-        level: 7,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        team: [
-            {
-                id: 'RIVAL_STARTER_TORCHIC',
-                special: TRAINER_POKE_STARTER_MUDKIP,
-                item: 'Oran Berry',
-            },
-            ...rival103Template('TORCHIC'),
-        ]
-    },
-    {
-        id: 'TRAINER_MAY_ROUTE_103_MUDKIP',
-        level: 7,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        team: [
-            {
-                id: 'RIVAL_STARTER_MUDKIP',
-                special: TRAINER_POKE_STARTER_TREECKO,
-                item: 'Oran Berry',
-            },
-            ...rival103Template('MUDKIP'),
-        ]
-    },
-    {
-        id: 'TRAINER_BRENDAN_ROUTE_103_TREECKO',
-        copy: 'TRAINER_MAY_ROUTE_103_TREECKO',
-    },
-    {
-        id: 'TRAINER_BRENDAN_ROUTE_103_TORCHIC',
-        copy: 'TRAINER_MAY_ROUTE_103_TORCHIC',
-    },
-    {
-        id: 'TRAINER_BRENDAN_ROUTE_103_MUDKIP',
-        copy: 'TRAINER_MAY_ROUTE_103_MUDKIP',
-    },
     {
         id: 'TRAINER_CARTER',
         level: 9,
@@ -3049,6 +3051,112 @@ const trainersData = [
                 type: [POKEMON_TYPE_ELECTRIC],
                 evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_SHOCK_WAVE'],
+            },
+        ],
+    },
+    // Route 111
+    {
+        id: 'TRAINER_TYRON',
+        level: 29,
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_SCEPTILITE',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_BIANCA',
+        level: 29,
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_BLAZIKENITE',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_CELINA',
+        level: 29,
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_SWAMPERTITE',
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
+            },
+            {
+                evoType: [EVO_TYPE_LC],
+                evolutionTier: [TIER_WEAK, TIER_AVERAGE],
+                tryEvolve: true,
             },
         ],
     },
