@@ -3481,7 +3481,7 @@ const trainersData = [
         id: 'TRAINER_TABITHA_MT_CHIMNEY',
         level: 29,
         bag: [...magmaChimneyBag],
-        tms: [...magmaChimneyTms],
+        tms: [...magmaChimneyTMs],
         team: [
             {
                 abilities: ['SAND_STREAM'], // @TODO doesnt find gigalith
@@ -3528,7 +3528,7 @@ const trainersData = [
         id: 'TRAINER_MAXIE_MT_CHIMNEY',
         level: 30,
         bag: [...magmaChimneyBag],
-        tms: [...magmaChimneyTms],
+        tms: [...magmaChimneyTMs],
         team: [
             {
                 absoluteTier: [TIER_STRONG],
