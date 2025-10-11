@@ -176,7 +176,7 @@ const rivalRoute110Bag = [
 ];
 
 const wallyBag = [
-    ...rivalRustboroBag,
+    ...rivalRoute110Bag,
     'Lum Berry',
 ];
 
@@ -191,6 +191,27 @@ const rivalRoute110TMs = [
     ...rivalRustboroTMs,
     'MOVE_DRAGON_CLAW',
     'MOVE_TAUNT',
+];
+
+const magmaChimneyBag = [
+    ...wallyBag,
+    'Air Balloon',
+    'Toxic Orb',
+    'Sitrus Berry',
+    'Light Clay',
+    'Ground Gem',
+    'Fire Gem',
+    'Psychic Gem',
+    'Fighting Gem',
+    'Shuca Berry',
+    'Passho Berry',
+    'Yache Berry',
+    'Colbur Berry',
+];
+
+const magmaChimneyTMs = [
+    ...rivalRoute110TMs,
+    'MOVE_EARTHQUAKE',
 ];
 
 const rivalRustboroTemplate = (id) => [
@@ -3456,6 +3477,90 @@ const trainersData = [
             },
         ],
     },
+    {
+        id: 'TRAINER_TABITHA_MT_CHIMNEY',
+        level: 29,
+        team: [
+            {
+                ability: 'SAND_STREAM',
+                checkValidEvo: true,
+                item: 'Smooth Rock',
+                type: [...magmaTeamTypes],
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+                ability: [...sandAbilities],
+                type: [...magmaTeamTypes],
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+                ability: [...sandAbilities],
+                type: [...magmaTeamTypes],
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+                ability: [...sandAbilities],
+                mustHaveOneOfMoves: ['MOVE_SANDSTORM'],
+                tryToHaveMove: ['MOVE_SANDSTORM'],
+                type: [...magmaTeamTypes],
+                item: 'Smooth Rock',
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+                ability: [...sandAbilities],
+                type: [...magmaTeamTypes],
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+                ability: [...sandAbilities],
+                type: [...magmaTeamTypes],
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_MAXIE_MT_CHIMNEY',
+        level: 30,
+        team: [
+            {
+                evolutionTier: [TIER_PREMIUM],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+                type: [magmaTeamTypes[0]],
+            },
+            {
+                specific: 'SPECIES_CAMERUPT',
+                item: 'Cameruptite',
+                ability: 'SOLID_ROCK',
+                tryToHaveMove: ['MOVE_EARTHQUAKE', 'MOVE_LAVA_PLUME', 'MOVE_ROCK_SLIDE', 'MOVE_EARTH_POWER'],
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                type: [magmaTeamTypes[1]],
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                type: [magmaTeamTypes[2]],
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                type: [magmaTeamTypes[3]],
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                type: [magmaTeamTypes[4]],
+            },
+        ],
+    },
+    // @TODO Check items rating for the new ones
 ]
 
 module.exports = {

@@ -8,6 +8,7 @@ const {
     EVO_TYPE_NFE,
     EVO_TYPE_SOLO,
     EVO_TYPE_LC_OF_3,
+    EVO_TYPE_FINAL,
 
     TIER_AVERAGE,
     TIER_STRONG,
@@ -155,6 +156,11 @@ function itemIdToName(itemId) {
         .split('_')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
+}
+
+function isValidEvolution(level, { param, method }) {
+    return (!isNaN(parseInt(param)) && parseInt(param) <= level && parseInt(param) > 4)
+        || method === 'ITEM' && level >= 25;
 }
 
 async function writer(pokemonList, moves, abilities) {
@@ -444,6 +450,9 @@ async function writer(pokemonList, moves, abilities) {
                 else if (replacementType === EVO_TYPE_SOLO) {
                     hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.type === EVO_TYPE_SOLO;
                 }
+                else if (replacementType === EVO_TYPE_FINAL) {
+                    hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.isFinal;
+                }
             });
             return hasAnyTypeOfReplacement;
         });
@@ -607,6 +616,19 @@ async function writer(pokemonList, moves, abilities) {
                     loosePokemon => loosePokemon.parsedAbilities.some(a => trainerMonDefinition.abilities.includes(a)),
                 );
             }
+            if (trainerMonDefinition.checkValidEvo) {
+                pokemonLooseList = pokemonLooseList.filter(
+                    loosePokemon => {
+                        const pokemonThatEvolveToThis = pokemonList.filter(p => {
+                            const evolutions = (p.evolutions || [])
+                                .filter(e => e.pokemon === loosePokemon.id);
+                            if (!evolutions.length) return false;
+                            return evolutions.some(evo => isValidEvolution(trainer.level, evo));
+                        });
+                        return pokemonThatEvolveToThis.length > 0;
+                    }
+                );
+            }
 
             const canLearnMove = (pokemon, moveToLearn) => {
                 const result = (
@@ -696,8 +718,8 @@ async function writer(pokemonList, moves, abilities) {
                     }
 
                     // Try to evolve to the first possible evolution
-                    possibleEvolutions = chosenTrainerMon.evolutions.filter(({ param }) => 
-                        !isNaN(parseInt(param)) && parseInt(param) <= trainer.level && parseInt(param) > 4
+                    possibleEvolutions = chosenTrainerMon.evolutions.filter((evo) => 
+                        isValidEvolution(trainer.level, evo)
                     );
                     if (possibleEvolutions.length > 0) {
                         // sort by param
