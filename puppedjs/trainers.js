@@ -3480,6 +3480,8 @@ const trainersData = [
     {
         id: 'TRAINER_TABITHA_MT_CHIMNEY',
         level: 29,
+        bag: [...magmaChimneyBag],
+        tms: [...magmaChimneyTms],
         team: [
             {
                 abilities: ['SAND_STREAM'], // @TODO doesnt find gigalith
@@ -3490,19 +3492,19 @@ const trainersData = [
             {
                 absoluteTier: [TIER_AVERAGE],
                 checkValidEvo: true,
-                ability: [...sandAbilities],
+                abilities: [...sandAbilities],
                 type: [...magmaTeamTypes],
             },
             {
                 absoluteTier: [TIER_AVERAGE],
                 checkValidEvo: true,
-                ability: [...sandAbilities],
+                abilities: [...sandAbilities],
                 type: [...magmaTeamTypes],
             },
             {
                 absoluteTier: [TIER_AVERAGE],
                 checkValidEvo: true,
-                ability: [...sandAbilities],
+                abilities: [...sandAbilities],
                 mustHaveOneOfMoves: ['MOVE_SANDSTORM'],
                 tryToHaveMove: ['MOVE_SANDSTORM'],
                 type: [...magmaTeamTypes],
@@ -3511,13 +3513,13 @@ const trainersData = [
             {
                 absoluteTier: [TIER_AVERAGE],
                 checkValidEvo: true,
-                ability: [...sandAbilities],
+                abilities: [...sandAbilities],
                 type: [...magmaTeamTypes],
             },
             {
                 absoluteTier: [TIER_AVERAGE],
                 checkValidEvo: true,
-                ability: [...sandAbilities],
+                abilities: [...sandAbilities],
                 type: [...magmaTeamTypes],
             },
         ],
@@ -3525,6 +3527,8 @@ const trainersData = [
     {
         id: 'TRAINER_MAXIE_MT_CHIMNEY',
         level: 30,
+        bag: [...magmaChimneyBag],
+        tms: [...magmaChimneyTms],
         team: [
             {
                 absoluteTier: [TIER_STRONG],
