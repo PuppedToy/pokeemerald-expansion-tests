@@ -3530,7 +3530,7 @@ const trainersData = [
                 evolutionTier: [TIER_PREMIUM],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
-                type: [magmaTeamTypes[0]],
+                type: [magmaTeamTypes],
             },
             {
                 specific: 'SPECIES_CAMERUPT',
