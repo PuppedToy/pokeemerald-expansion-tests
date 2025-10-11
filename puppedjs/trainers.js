@@ -3482,7 +3482,7 @@ const trainersData = [
         level: 29,
         team: [
             {
-                ability: 'SAND_STREAM',
+                abilities: ['SAND_STREAM'],
                 checkValidEvo: true,
                 item: 'Smooth Rock',
                 type: [...magmaTeamTypes],
@@ -3527,10 +3527,9 @@ const trainersData = [
         level: 30,
         team: [
             {
-                evolutionTier: [TIER_PREMIUM],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                type: [magmaTeamTypes],
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                type: [magmaTeamTypes[0]],
             },
             {
                 specific: 'SPECIES_CAMERUPT',
