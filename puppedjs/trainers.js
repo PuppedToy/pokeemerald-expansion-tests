@@ -3447,17 +3447,17 @@ const trainersData = [
         team: [
             {
                 evoType: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
-                ability: 'POISON_HEAL',
+                abilities: ['POISON_HEAL'],
                 item: 'Toxic Orb',
             },
             {
                 evoType: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
-                ability: 'POISON_HEAL',
+                abilities: ['POISON_HEAL'],
                 item: 'Toxic Orb',
             },
             {
                 evoType: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
-                ability: 'TOXIC_BOOST',
+                abilities: ['TOXIC_BOOST'],
                 item: 'Toxic Orb',
             },
             {
@@ -3482,7 +3482,7 @@ const trainersData = [
         level: 29,
         team: [
             {
-                abilities: ['SAND_STREAM'],
+                abilities: ['SAND_STREAM'], // @TODO doesnt find gigalith
                 checkValidEvo: true,
                 item: 'Smooth Rock',
                 type: [...magmaTeamTypes],
