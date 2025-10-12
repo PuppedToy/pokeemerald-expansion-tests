@@ -248,6 +248,33 @@
         "WEAK":     "#000000",
         "BAD":     "#000000",
     };
+    const natures = {
+      "Hardy": "(-) Hardy",
+      "Lonely": "(+ATK, -DEF) Lonely",
+      "Brave": "(+ATK, -SPE) Brave",
+      "Adamant": "(+ATK, -SPA) Adamant",
+      "Naughty": "(+ATK, -SPD) Naughty",
+      "Bold": "(+DEF, -ATK) Bold",
+      "Docile": "(-) Docile",
+      "Relaxed": "(+DEF, -SPE) Relaxed",
+      "Impish": "(+DEF, -SPA) Impish",
+      "Lax": "(+DEF, -SPD) Lax",
+      "Timid": "(+SPE, -ATK) Timid",
+      "Hasty": "(+SPE, -DEF) Hasty",
+      "Serious": "(-) Serious",
+      "Jolly": "(+SPE, -SPA) Jolly",
+      "Naive": "(+SPE, -SPD) Naive",
+      "Modest": "(+SPA, -ATK) Modest",
+      "Mild": "(+SPA, -DEF) Mild",
+      "Quiet": "(+SPA, -SPE) Quiet",
+      "Bashful": "(-) Bashful",
+      "Rash": "(+SPA, -SPD) Rash",
+      "Calm": "(+SPD, -ATK) Calm",
+      "Gentle": "(+SPD, -DEF) Gentle",
+      "Sassy": "(+SPD, -SPE) Sassy",
+      "Careful": "(+SPD, -SPA) Careful",
+      "Quirky": "(-) Quirky"
+    };
 
     function getPokeImg(pokeId) {
       return `https://forwardfeed.github.io/ER-nextdex/static/sprites/${pokeId.replace('SPECIES_', '')}.png`
@@ -374,6 +401,7 @@
         const imgSrc = getPokeImg(pokeId);
         const item = member.item ? `<div class="small" style="color:#FFD580">🎒 ${member.item}</div>` : '';
         const ability = member.ability ? `<div class="small" style="color:#D1F2FF">✨ ${member.ability}</div>` : '';
+        const nature = member.nature ? `<div class="small" style="color:#FFB28A">🌳 ${natures[member.nature]} Nature</div>` : '';
         const moves =
           member.moves && member.moves.length > 0
             ? `<div style="font-size:12px;color:#aaa;margin-top:4px">
@@ -390,6 +418,7 @@
             <div style="font-weight:700;margin-top:4px">${pokeName}</div>
             ${item}
             ${ability}
+            ${nature}
             ${moves}
           </div>
         `;

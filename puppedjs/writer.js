@@ -816,13 +816,26 @@ async function writer(pokemonList, moves, abilities) {
                 });
                 newTeamMember.moves = moveset;
                 if (!newTeamMember.nature) {
-                    newTeamMember.nature = sample(Object.values(NATURES));
+                    if (trainer.level < 25) {
+                        newTeamMember.nature = sample(Object.values(NATURES));
+                    }
+                    else {
+                        // @TODO Rate natures
+                        newTeamMember.nature = sample(Object.values(NATURES));
+                    }
                 }
                 if (!newTeamMember.ability && chosenTrainerMon.parsedAbilities.length > 0) {
-                    const nonHiddenAbilities = chosenTrainerMon.parsedAbilities
-                        .slice(0, 2)
-                        .filter(ability => Boolean(ability) && ability !== 'NONE');
-                    newTeamMember.ability = sample(nonHiddenAbilities);
+                    let abilities;
+                    if (trainer.level < 25) {
+                        abilities = chosenTrainerMon.parsedAbilities
+                            .slice(0, 2)
+                            .filter(ability => Boolean(ability) && ability !== 'NONE');
+                    }
+                    else {
+                        abilities = chosenTrainerMon.parsedAbilities
+                            .filter(ability => Boolean(ability) && ability !== 'NONE');
+                    }
+                    newTeamMember.ability = sample(abilities);
                 }
                 if (!newTeamMember.item && trainer.bag && trainer.bag.length > 0) {
                     const movesetObjects = newTeamMember.moves.map(m => moves[m]);
