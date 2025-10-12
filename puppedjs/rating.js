@@ -460,6 +460,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         if (hasWhiteHerbMove) {
             return 8 * bestOffensePowerWithSpeed * calculatedDeviation;
         }
+        return 0;
     }
     if (item === 'Power Herb') {
         const hasGeomancy = moveset.some(m => m.id === 'MOVE_GEOMANCY');
@@ -470,6 +471,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         if (hasPowerHerbMove) {
             return 8 * bestOffensePowerWithSpeed * calculatedDeviation;
         }
+        return 0;
     }
     if (item === 'Rocky Helmet') {
         if (ability === 'ROUGH_SKIN' || ability === 'IRON_BARBS') {

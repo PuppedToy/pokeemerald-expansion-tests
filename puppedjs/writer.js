@@ -905,6 +905,7 @@ async function writer(pokemonList, moves, abilities) {
 
         trainersResults[trainer.id] = {
             level: trainer.level,
+            isBoss: trainer.isBoss || false,
             team,
         };
     });
