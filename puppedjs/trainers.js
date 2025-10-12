@@ -173,6 +173,7 @@ const rivalRoute110Bag = [
     'Red Card',
     'Rocky Helmet',
     'Loaded Dice',
+    'Life Orb',
 ];
 
 const wallyBag = [
