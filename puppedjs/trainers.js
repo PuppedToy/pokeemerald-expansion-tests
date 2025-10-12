@@ -135,6 +135,29 @@ const whiteHerbMoves = [
     'MOVE_SHELL_SMASH',
 ];
 
+const majorPowerHerbMoves = [
+    'MOVE_SKY_ATTACK',
+    'MOVE_METEOR_BEAM',
+    'MOVE_GEOMANCY',
+    'MOVE_SOLAR_BEAM',
+    'MOVE_SOLAR_BLADE',
+    'MOVE_SKULL_BASH',
+    'MOVE_RAZOR_WIND',
+    'MOVE_ELECTRO_SHOT',
+    'MOVE_FREEZE_SHOCK',
+    'MOVE_ICE_BURN',
+];
+
+const minorPowerHerbMoves = [
+    'MOVE_DIG',
+    'MOVE_DIVE',
+    'MOVE_FLY',
+    'MOVE_BOUNCE',
+    'MOVE_SHADOW_FORCE',
+    'MOVE_PHANTOM_FORCE',
+    'MOVE_SKY_DROP',
+];
+
 const rainAbilities = ['SWIFT_SWIM', 'RAIN_DISH', 'DRY_SKIN', 'HYDRATION'];
 const sunAbilities = ['FLOWER_GIFT', 'CHLOROPHYLL', 'LEAF_GUARD', 'SOLAR_POWER'];
 const sandAbilities = ['SAND_FORCE', 'SAND_RUSH', 'SAND_VEIL', 'SAND_SPIT'];
@@ -227,6 +250,15 @@ const magmaChimneyBag = [
 const magmaChimneyTMs = [
     ...rivalRoute110TMs,
     'MOVE_EARTHQUAKE',
+];
+
+const flanneryBag = [
+    ...magmaChimneyBag,
+    'White Herb',
+    'Power Herb',
+    'Shell Bell',
+    'Focus Sash',
+    'Razor Claw',
 ];
 
 const rivalRustboroTemplate = (id) => [
@@ -345,6 +377,33 @@ const magmaTeamTypes = [
     POKEMON_TYPE_FIGHTING,
 ];
 
+const genericAverageTeamTemplate = () => [
+    {
+        absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+];
+
 const trainersData = [
     // Route 101
     {
@@ -408,6 +467,7 @@ const trainersData = [
     {
         id: 'TRAINER_MAY_ROUTE_103_TREECKO',
         level: 7,
+        isBoss: true,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
@@ -421,6 +481,7 @@ const trainersData = [
     {
         id: 'TRAINER_MAY_ROUTE_103_TORCHIC',
         level: 7,
+        isBoss: true,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
@@ -434,6 +495,7 @@ const trainersData = [
     {
         id: 'TRAINER_MAY_ROUTE_103_MUDKIP',
         level: 7,
+        isBoss: true,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
@@ -802,6 +864,7 @@ const trainersData = [
     {
         id: 'TRAINER_GRUNT_PETALBURG_WOODS',
         level: 9,
+        isBoss: true,
         team: [
             {
                 specific: 'SPECIES_CARVANHA',
@@ -873,6 +936,7 @@ const trainersData = [
     {
         id: 'TRAINER_ROXANNE_1',
         level: 10,
+        isBoss: true,
         team: [
             {
                 absoluteTier: [TIER_BAD],
@@ -1262,6 +1326,7 @@ const trainersData = [
     {
         id: 'TRAINER_GRUNT_RUSTURF_TUNNEL',
         level: 13,
+        isBoss: true,
         team: [
             {
                 specific: 'SPECIES_CARVANHA',
@@ -1312,6 +1377,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_RUSTBORO_TREECKO',
+        isBoss: true,
         level: 14,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag],
@@ -1328,6 +1394,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_RUSTBORO_TORCHIC',
+        isBoss: true,
         level: 14,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag],
@@ -1345,6 +1412,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_RUSTBORO_MUDKIP',
+        isBoss: true,
         level: 14,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag],
@@ -1452,6 +1520,7 @@ const trainersData = [
     {
         id: 'TRAINER_BRAWLY_1',
         level: 16,
+        isBoss: true,
         bag: [
             'Life Orb',
             'Oran Berry',
@@ -1515,6 +1584,7 @@ const trainersData = [
     {
         id: 'TRAINER_STEVEN',
         level: 19,
+        isBoss: true,
         bag: [
             'Oran Berry',
             'Black Sludge',
@@ -1864,6 +1934,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_GRUNT_MUSEUM_1',
+        isBoss: true,
         level: 21,
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES],
         abilities: [...rainAbilities],
@@ -1909,6 +1980,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_GRUNT_MUSEUM_2',
+        isBoss: true,
         level: 21,
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES],
         abilities: [...snowAbilities],
@@ -2323,6 +2395,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_ROUTE_110_TREECKO',
+        isBoss: true,
         level: 23,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag],
@@ -2339,6 +2412,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_ROUTE_110_TORCHIC',
+        isBoss: true,
         level: 23,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag],
@@ -2355,6 +2429,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_ROUTE_110_MUDKIP',
+        isBoss: true,
         level: 23,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag],
@@ -2508,6 +2583,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_WALLY_MAUVILLE',
+        isBoss: true,
         level: 25,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...wallyBag],
@@ -3026,6 +3102,7 @@ const trainersData = [
     // Mauville Gym
     {
         id: 'TRAINER_WATTSON_1',
+        isBoss: true,
         level: 26,
         bag: [
             'Life Orb',
@@ -3497,6 +3574,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TABITHA_MT_CHIMNEY',
+        isBoss: true,
         level: 29,
         bag: [...magmaChimneyBag],
         tms: [...magmaChimneyTMs],
@@ -3561,6 +3639,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAXIE_MT_CHIMNEY',
+        isBoss: true,
         level: 30,
         bag: [...magmaChimneyBag],
         tms: [...magmaChimneyTMs],
@@ -3598,6 +3677,7 @@ const trainersData = [
             },
         ],
     },
+    // Route 112
     {
         id: 'TRAINER_SHAYLA',
         level: 33,
@@ -3642,7 +3722,7 @@ const trainersData = [
     {
         id: 'TRAINER_BRYANT',
         level: 33,
-        bag: [...magmaChimneyBag, 'White Herb'],
+        bag: [...magmaChimneyBag],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -3670,6 +3750,177 @@ const trainersData = [
                 checkValidEvo: true,
             },
         ],
+    },
+    // Route 111
+    {
+        id: 'TRAINER_WILTON_1',
+        level: 33,
+        team: [
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: [...majorPowerHerbMoves],
+                tryToHaveMove: [...majorPowerHerbMoves],
+                checkValidEvo: true,
+                item: 'Power Herb',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: [...minorPowerHerbMoves],
+                tryToHaveMove: [...minorPowerHerbMoves],
+                checkValidEvo: true,
+                item: 'Power Herb',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: [...majorPowerHerbMoves],
+                tryToHaveMove: [...majorPowerHerbMoves],
+                checkValidEvo: true,
+                item: 'Power Herb',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: [...minorPowerHerbMoves],
+                tryToHaveMove: [...minorPowerHerbMoves],
+                checkValidEvo: true,
+                item: 'Power Herb',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: [...majorPowerHerbMoves],
+                tryToHaveMove: [...majorPowerHerbMoves],
+                checkValidEvo: true,
+                item: 'Power Herb',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: [...minorPowerHerbMoves],
+                tryToHaveMove: [...minorPowerHerbMoves],
+                checkValidEvo: true,
+                item: 'Power Herb',
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_DAISUKE',
+        level: 33,
+        team: [
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                item: 'Shell Bell',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                item: 'Shell Bell',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                item: 'Shell Bell',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                item: 'Shell Bell',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                item: 'Shell Bell',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                item: 'Shell Bell',
+            },
+        ],
+    },
+    // Route 113
+    {
+        id: 'TRAINER_JAYLEN',
+        level: 33,
+        bag: [...flanneryBag],
+        team: genericAverageTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_LUNG',
+        level: 33,
+        bag: [...flanneryBag],
+        team: genericAverageTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_WYATT',
+        level: 33,
+        bag: [...flanneryBag],
+        team: genericAverageTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_LAWRENCE',
+        level: 33,
+        bag: [...flanneryBag],
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_HARBOR_MAIL',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_MADELINE_1',
+        level: 33,
+        bag: [...flanneryBag],
+        team: genericAverageTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_TORI_AND_TIA',
+        level: 33,
+        bag: [...flanneryBag],
+        team: genericAverageTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_SOPHIE',
+        level: 33,
+        bag: [...flanneryBag],
+        team: genericAverageTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_LAO_1',
+        level: 33,
+        bag: [...flanneryBag],
+        team: genericAverageTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_DILLON',
+        level: 33,
+        bag: [...flanneryBag],
+        team: genericAverageTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_COBY',
+        level: 33,
+        bag: [...flanneryBag],
+        team: genericAverageTeamTemplate(),
     },
 ]
 

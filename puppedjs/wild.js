@@ -9,6 +9,7 @@ const {
     EVO_TYPE_LC,
     EVO_TYPE_NFE,
     EVO_TYPE_SOLO,
+    EVO_TYPE_MEGA,
 } = require('./constants.js');
 
 // For fishing, each route will have 1 land and 1 old rod option
@@ -52,6 +53,14 @@ const wildData = {
         NFE_OR_SOLO_AVERAGE_STRONG: {
             replace: [TIER_AVERAGE, TIER_STRONG],
             type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
+        },
+        NFE_STRONG: {
+            replace: [TIER_STRONG],
+            type: [EVO_TYPE_NFE],
+        },
+        MEGA: {
+            replace: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
+            type: [EVO_TYPE_MEGA],
         },
     },
     replacements: {
@@ -143,6 +152,9 @@ const wildData = {
         SPECIES_NUMEL: 'LC_AVERAGE',
         SPECIES_TAILLOW: 'LC_AVERAGE',
         SPECIES_SWELLOW: 'NFE_OR_SOLO_AVERAGE',
+
+        // Route113
+        SPECIES_SPINDA: 'MEGA',
     },
     maps: [
         // Shelgon maps
@@ -264,6 +276,10 @@ const wildData = {
             old: 'SPECIES_TAILLOW',
             good: 'SPECIES_SWELLOW',
             super: 'SPECIES_GABITE',
+        },
+        {
+            id: 'MAP_ROUTE113',
+            land: 'SPECIES_SPINDA',
         },
         // Special
         {

@@ -100,6 +100,7 @@
     .meta .title{font-weight:700; font-size: 26px; margin-bottom: 12px; text-align: center;}
     .meta .sub{font-size:12px;color:var(--muted)}
     .meta .type{display:inline-block;padding:4px 8px;border-radius:8px;font-size:12px;color:#081017;font-weight:600;margin-right:6px;margin-bottom:6px}
+    .specialCard{background-color: #450B00;}
     .tags{display:flex;gap:8px;flex-wrap:wrap}
     .tag{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:8px;font-size:12px}
 
@@ -387,6 +388,9 @@
     Object.entries(trainersData).forEach(([trainerId, trainer]) => {
       const card = document.createElement('div');
       card.className = 'card';
+      if (trainer.isBoss) {
+        card.classList.add('specialCard');
+      }
 
       const trainerName = trainerId
         .replace('TRAINER_', '')

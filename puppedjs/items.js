@@ -1,14 +1,18 @@
 const items = {
+    megaStones: {
+        HARBOR_MAIL: 'SPECIES_SPINDA', // Route 113
+    },
+
     // Randomized items - mints
     // ITEM_MECH_MAIL will be replaced by these
-    strongAtkMints: [ // 1 at Route 109
+    strongAtkMints: [ // 1 at Route 109, 1 at Route 113
         'ITEM_ADAMANT_MINT',
         'ITEM_JOLLY_MINT',
         'ITEM_MODEST_MINT',
         'ITEM_TIMID_MINT',
     ],
     // ITEM_WAVE_MAIL will be replaced by these
-    strongDefMints: [ // 1 at Route 103, 1 at route 118
+    strongDefMints: [ // 1 at Route 103, 1 at route 118, 1 at Route 113
         'ITEM_BOLD_MINT',
         'ITEM_IMPISH_MINT',
         'ITEM_CALM_MINT',
@@ -17,7 +21,7 @@ const items = {
         'ITEM_SASSY_MINT',
     ],
     // ITEM_WOOD_MAIL will be replaced by these
-    midMints: [ // 1 at Rustboro, 1 at Route 117
+    midMints: [ // 1 at Rustboro, 1 at Route 117, 1 at Route 113
         'ITEM_LONELY_MINT',
         'ITEM_NAUGHTY_MINT',
         'ITEM_BRAVE_MINT',
@@ -274,15 +278,13 @@ const items = {
     ],
 
     goodItems: [
-        'ITEM_SHELL_BELL',
+        'ITEM_SHELL_BELL', // Route 111
         'ITEM_ROCKY_HELMET', // Route 109
         'ITEM_SAFETY_GOGGLES',
         'ITEM_HEAVY_DUTY_BOOTS', // Route 115
-        'ITEM_BERSERK_GENE',
     ],
 
     goodSituationalItems: [
-        // These will be represented as ITEM_HARBOR_MAIL in the future and shuffled
         'ITEM_FLAME_ORB', // Route 115
         'ITEM_TOXIC_ORB', // Route 112
         'ITEM_DAMP_ROCK', // Route 109
@@ -295,7 +297,7 @@ const items = {
         'ITEM_ZOOM_LENS',
         'ITEM_BLACK_SLUDGE', // Route 116
         'ITEM_SHED_SHELL', // Route 110
-        'ITEM_BIG_ROOT',
+        'ITEM_BIG_ROOT', // Route 111
         'ITEM_TERRAIN_EXTENDER', // Route 110
         'ITEM_PUNCHING_GLOVE',
         'ITEM_LOADED_DICE', // Route 109
@@ -303,9 +305,8 @@ const items = {
 
     goodConsumables: [
         'ITEM_WHITE_HERB', // Route 112
-        'ITEM_KINGS_ROCK',
-        'ITEM_POWER_HERB',
-        'ITEM_FOCUS_SASH',
+        'ITEM_POWER_HERB', // Route 111
+        'ITEM_FOCUS_SASH', // Route 113
         'ITEM_AIR_BALLOON', // Route 111
         'ITEM_RED_CARD', // Route 109
         'ITEM_EJECT_BUTTON',
@@ -371,7 +372,6 @@ const items = {
         'ITEM_SNOWBALL',
         'ITEM_BRIGHT_POWDER',
         'ITEM_QUICK_CLAW',
-        'ITEM_SCOPE_LENS',
         'ITEM_MUSCLE_BAND',
         'ITEM_WISE_GLASSES',
         'ITEM_METRONOME',

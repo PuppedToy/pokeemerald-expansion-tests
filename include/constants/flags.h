@@ -1249,18 +1249,18 @@
 #define FLAG_ITEM_ROUTE_112_CAPSULE                                 0x4AA
 #define FLAG_ITEM_ROUTE_112_TOXIC                                   0x4AB
 #define FLAG_ITEM_ROUTE_112_WHITE                                   0x4AC
-#define FLAG_UNUSED_0x4AD                                           0x4AD // Unused Flag
-#define FLAG_UNUSED_0x4AE                                           0x4AE // Unused Flag
-#define FLAG_UNUSED_0x4AF                                           0x4AF // Unused Flag
-#define FLAG_UNUSED_0x4B0                                           0x4B0 // Unused Flag
-#define FLAG_UNUSED_0x4B1                                           0x4B1 // Unused Flag
-#define FLAG_UNUSED_0x4B2                                           0x4B2 // Unused Flag
-#define FLAG_UNUSED_0x4B3                                           0x4B3 // Unused Flag
-#define FLAG_UNUSED_0x4B4                                           0x4B4 // Unused Flag
-#define FLAG_UNUSED_0x4B5                                           0x4B5 // Unused Flag
-#define FLAG_UNUSED_0x4B6                                           0x4B6 // Unused Flag
-#define FLAG_UNUSED_0x4B7                                           0x4B7 // Unused Flag
-#define FLAG_UNUSED_0x4B8                                           0x4B8 // Unused Flag
+#define FLAG_ITEM_ROUTE_111_SCOPE                                   0x4AD
+#define FLAG_ITEM_ROUTE_111_POWERHERB                               0x4AE
+#define FLAG_ITEM_ROUTE_111_BIGROOT                                 0x4AF
+#define FLAG_ITEM_ROUTE_113_MINT1                                   0x4B0
+#define FLAG_ITEM_ROUTE_113_MINT2                                   0x4B1
+#define FLAG_ITEM_ROUTE_113_MINT3                                   0x4B2
+#define FLAG_ITEM_ROUTE_113_MINT4                                   0x4B3
+#define FLAG_ITEM_ROUTE_113_MINT5                                   0x4B4
+#define FLAG_ITEM_ROUTE_113_MINT6                                   0x4B5
+#define FLAG_ITEM_ROUTE_113_MEGA                                    0x4B6
+#define FLAG_ITEM_ROUTE_113_SASH                                    0x4B7
+#define FLAG_ITEM_ROUTE_113_PATCH                                   0x4B8
 #define FLAG_UNUSED_0x4B9                                           0x4B9 // Unused Flag
 #define FLAG_UNUSED_0x4BA                                           0x4BA // Unused Flag
 #define FLAG_UNUSED_0x4BB                                           0x4BB // Unused Flag

@@ -33,8 +33,10 @@ const {
     TEMPLATE_WILDPOKES_REPALCEMENT,
     NATURES,
     TRAINER_POKE_MEGA_FROM_STONE,
+    EVO_TYPE_MEGA,
 } = require('./constants');
 const { chooseMoveset, rateItemForAPokemon, isSuperEffective } = require('./rating.js');
+const items = require('./items.js');
 
 const MAX_MEGA_EVO_STONES = 3;
 
@@ -132,6 +134,15 @@ const TYPES = {
     GHOST: [],
     DRAGON: [],
 };
+
+const mapsBase = path.resolve(__dirname, '..', 'data', 'maps');
+const routeFiles = [
+    path.resolve(mapsBase, 'Route103', 'map.json'),
+    path.resolve(mapsBase, 'Route113', 'map.json'),
+    path.resolve(mapsBase, 'Route117', 'map.json'),
+    path.resolve(mapsBase, 'Route118', 'map.json'),
+    path.resolve(mapsBase, 'RustboroCity', 'map.json'),
+];
 
 function sampleAndRemove(array) {
     if (array.length === 0) return null;
@@ -452,6 +463,9 @@ async function writer(pokemonList, moves, abilities) {
                 else if (replacementType === EVO_TYPE_FINAL) {
                     hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.isFinal;
                 }
+                else if (replacementType === EVO_TYPE_MEGA) {
+                    hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.megaEvos;
+                }
             });
             return hasAnyTypeOfReplacement;
         });
@@ -482,6 +496,32 @@ async function writer(pokemonList, moves, abilities) {
 
     await fs.writeFile((wild.file), wildEncountersFileContent, 'utf8');
     console.log('Wild encounters updated successfully.');
+
+    // Items
+
+    routeFiles.forEach(async (routeFile) => {
+        let routeFileContent = await fs.readFile(routeFile, 'utf8');
+        
+        routeFileContent = routeFileContent.replace(/ITEM_WOOD_MAIL/g, () => sample(items.midMints));
+        routeFileContent = routeFileContent.replace(/ITEM_WAVE_MAIL/g, () => sample(items.strongDefMints));
+        routeFileContent = routeFileContent.replace(/ITEM_MECH_MAIL/g, () => sample(items.strongAtkMints));
+
+        items.megaStones.forEach((itemIdToReplace) => {
+            const speciesId = items.megaStones[itemIdToReplace];
+            const poke = pokemonList.find(p => p.id === speciesId);
+            if (poke && poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length > 0) {
+                const megaId = sample(poke.evolutionData.megaEvos);
+                const megaItem = pokemonList.find(p => p.id === megaId).evolutionData.megaItem;
+                megaReplacements[itemIdToReplace] = megaItem;
+                routeFileContent = routeFileContent.replace(itemIdToReplace, megaItem);
+            }
+            else {
+                console.warn(`WARN: No mega evolution found for ${speciesId} to replace ${itemIdToReplace} in ${routeFile}.`);
+            }
+        });
+
+        await fs.writeFile(routeFile, routeFileContent, 'utf8');
+    });
 
     // Trainers
 
