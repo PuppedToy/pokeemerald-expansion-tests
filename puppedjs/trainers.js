@@ -632,7 +632,6 @@ const trainersData = [
     {
         id: 'TRAINER_WINSTON_1',
         level: 10,
-        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
         team: genericBadLCTeamTemplate.map(p => ({
             ...p,
             weakToTypes: [POKEMON_TYPE_ROCK],
@@ -1445,7 +1444,7 @@ const trainersData = [
             'Fighting Gem',
             'Stone Plate',
             'Eviolite',
-            'Papaya Berry',
+            'Payapa Berry',
             'Chesto Berry',
             'Expert Belt',
         ],
