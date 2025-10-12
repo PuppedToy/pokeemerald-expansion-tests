@@ -539,6 +539,7 @@ async function writer(pokemonList, moves, abilities) {
             const target = trainersResults[trainer.copy];
             trainersResults[trainer.id] = {
                 level: target.level,
+                isBoss: target.isBoss,
                 team: [...target.team],
             };
             return;
