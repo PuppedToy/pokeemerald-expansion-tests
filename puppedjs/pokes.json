@@ -3048,7 +3048,7 @@
     ],
     "parsedAbilities": [
       "KEEN_EYE",
-      "NONE",
+      "TANGLED_FEET",
       "BIG_PECKS"
     ],
     "id": "SPECIES_PIDGEY",
@@ -3060,7 +3060,7 @@
     "baseSpAttack": 35,
     "baseSpDefense": 35,
     "types": "MON_TYPES(TYPE_NORMAL, TYPE_FLYING)",
-    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_NONE, ABILITY_BIG_PECKS }",
+    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_TANGLED_FEET, ABILITY_BIG_PECKS }",
     "speciesName": "_(\"Pidgey\")",
     "natDexNum": "NATIONAL_DEX_PIDGEY",
     "levelUpLearnset": "sPidgeyLevelUpLearnset",
@@ -3175,7 +3175,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 1.814166666666667,
+      "absoluteRating": 1.9141666666666668,
       "absoluteBSTRating": 1.1833333333333333,
       "bestMoveset": [
         "MOVE_DOUBLE_EDGE",
@@ -3184,10 +3184,10 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 7.675,
-      "bestAbilityRating": 1,
+      "bestAbilityRating": 2,
       "tier": "BAD",
       "bestEvo": "SPECIES_PIDGEOT",
-      "bestEvoRating": 4.854166666666666,
+      "bestEvoRating": 4.954166666666667,
       "bestEvoTier": "WEAK",
       "megaEvo": "SPECIES_PIDGEOT_MEGA",
       "megaEvoRating": 6.8875,
@@ -3202,7 +3202,7 @@
     ],
     "parsedAbilities": [
       "KEEN_EYE",
-      "NONE",
+      "TANGLED_FEET",
       "BIG_PECKS"
     ],
     "id": "SPECIES_PIDGEOTTO",
@@ -3214,7 +3214,7 @@
     "baseSpAttack": 50,
     "baseSpDefense": 50,
     "types": "MON_TYPES(TYPE_NORMAL, TYPE_FLYING)",
-    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_NONE, ABILITY_BIG_PECKS }",
+    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_TANGLED_FEET, ABILITY_BIG_PECKS }",
     "speciesName": "_(\"Pidgeotto\")",
     "natDexNum": "NATIONAL_DEX_PIDGEOTTO",
     "levelUpLearnset": "sPidgeottoLevelUpLearnset",
@@ -3337,7 +3337,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 3.1208333333333336,
+      "absoluteRating": 3.2208333333333337,
       "absoluteBSTRating": 2.816666666666667,
       "bestMoveset": [
         "MOVE_DOUBLE_EDGE",
@@ -3346,10 +3346,10 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 7.675,
-      "bestAbilityRating": 1,
+      "bestAbilityRating": 2,
       "tier": "BAD",
       "bestEvo": "SPECIES_PIDGEOT",
-      "bestEvoRating": 4.854166666666666,
+      "bestEvoRating": 4.954166666666667,
       "bestEvoTier": "WEAK",
       "megaEvo": "SPECIES_PIDGEOT_MEGA",
       "megaEvoRating": 6.8875,
@@ -3364,7 +3364,7 @@
     ],
     "parsedAbilities": [
       "KEEN_EYE",
-      "NONE",
+      "TANGLED_FEET",
       "BIG_PECKS"
     ],
     "id": "SPECIES_PIDGEOT",
@@ -3376,7 +3376,7 @@
     "baseSpAttack": 70,
     "baseSpDefense": 70,
     "types": "MON_TYPES(TYPE_NORMAL, TYPE_FLYING)",
-    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_NONE, ABILITY_BIG_PECKS }",
+    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_TANGLED_FEET, ABILITY_BIG_PECKS }",
     "speciesName": "_(\"Pidgeot\")",
     "natDexNum": "NATIONAL_DEX_PIDGEOT",
     "levelUpLearnset": "sPidgeotLevelUpLearnset",
@@ -3501,7 +3501,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 4.854166666666666,
+      "absoluteRating": 4.954166666666667,
       "absoluteBSTRating": 4.983333333333333,
       "bestMoveset": [
         "MOVE_DOUBLE_EDGE",
@@ -3510,10 +3510,10 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 7.675,
-      "bestAbilityRating": 1,
+      "bestAbilityRating": 2,
       "tier": "WEAK",
       "bestEvo": "SPECIES_PIDGEOT",
-      "bestEvoRating": 4.854166666666666,
+      "bestEvoRating": 4.954166666666667,
       "bestEvoTier": "WEAK",
       "megaEvo": "SPECIES_PIDGEOT_MEGA",
       "megaEvoRating": 6.8875,
@@ -6334,7 +6334,7 @@
     ],
     "parsedAbilities": [
       "POISON_POINT",
-      "NONE",
+      "RIVALRY",
       "HUSTLE"
     ],
     "id": "SPECIES_NIDORAN_F",
@@ -6346,7 +6346,7 @@
     "baseSpAttack": 40,
     "baseSpDefense": 40,
     "types": "MON_TYPES(TYPE_POISON)",
-    "abilities": "{ ABILITY_POISON_POINT, ABILITY_NONE, ABILITY_HUSTLE }",
+    "abilities": "{ ABILITY_POISON_POINT, ABILITY_RIVALRY, ABILITY_HUSTLE }",
     "speciesName": "_(\"Nidoran♀\")",
     "natDexNum": "NATIONAL_DEX_NIDORAN_F",
     "levelUpLearnset": "sNidoranFLevelUpLearnset",
@@ -6489,7 +6489,7 @@
     ],
     "parsedAbilities": [
       "POISON_POINT",
-      "NONE",
+      "RIVALRY",
       "HUSTLE"
     ],
     "id": "SPECIES_NIDORINA",
@@ -6501,7 +6501,7 @@
     "baseSpAttack": 55,
     "baseSpDefense": 55,
     "types": "MON_TYPES(TYPE_POISON)",
-    "abilities": "{ ABILITY_POISON_POINT, ABILITY_NONE, ABILITY_HUSTLE }",
+    "abilities": "{ ABILITY_POISON_POINT, ABILITY_RIVALRY, ABILITY_HUSTLE }",
     "speciesName": "_(\"Nidorina\")",
     "natDexNum": "NATIONAL_DEX_NIDORINA",
     "levelUpLearnset": "sNidorinaLevelUpLearnset",
@@ -6645,7 +6645,7 @@
     ],
     "parsedAbilities": [
       "POISON_POINT",
-      "NONE",
+      "RIVALRY",
       "SHEER_FORCE"
     ],
     "id": "SPECIES_NIDOQUEEN",
@@ -6657,7 +6657,7 @@
     "baseSpAttack": 75,
     "baseSpDefense": 85,
     "types": "MON_TYPES(TYPE_POISON, TYPE_GROUND)",
-    "abilities": "{ ABILITY_POISON_POINT, ABILITY_NONE, ABILITY_SHEER_FORCE }",
+    "abilities": "{ ABILITY_POISON_POINT, ABILITY_RIVALRY, ABILITY_SHEER_FORCE }",
     "speciesName": "_(\"Nidoqueen\")",
     "natDexNum": "NATIONAL_DEX_NIDOQUEEN",
     "levelUpLearnset": "sNidoqueenLevelUpLearnset",
@@ -6828,7 +6828,7 @@
     ],
     "parsedAbilities": [
       "POISON_POINT",
-      "NONE",
+      "RIVALRY",
       "HUSTLE"
     ],
     "id": "SPECIES_NIDORAN_M",
@@ -6840,7 +6840,7 @@
     "baseSpAttack": 40,
     "baseSpDefense": 40,
     "types": "MON_TYPES(TYPE_POISON)",
-    "abilities": "{ ABILITY_POISON_POINT, ABILITY_NONE, ABILITY_HUSTLE }",
+    "abilities": "{ ABILITY_POISON_POINT, ABILITY_RIVALRY, ABILITY_HUSTLE }",
     "speciesName": "_(\"Nidoran♂\")",
     "natDexNum": "NATIONAL_DEX_NIDORAN_M",
     "levelUpLearnset": "sNidoranMLevelUpLearnset",
@@ -6982,7 +6982,7 @@
     ],
     "parsedAbilities": [
       "POISON_POINT",
-      "NONE",
+      "RIVALRY",
       "HUSTLE"
     ],
     "id": "SPECIES_NIDORINO",
@@ -6994,7 +6994,7 @@
     "baseSpAttack": 55,
     "baseSpDefense": 55,
     "types": "MON_TYPES(TYPE_POISON)",
-    "abilities": "{ ABILITY_POISON_POINT, ABILITY_NONE, ABILITY_HUSTLE }",
+    "abilities": "{ ABILITY_POISON_POINT, ABILITY_RIVALRY, ABILITY_HUSTLE }",
     "speciesName": "_(\"Nidorino\")",
     "natDexNum": "NATIONAL_DEX_NIDORINO",
     "levelUpLearnset": "sNidorinoLevelUpLearnset",
@@ -7137,7 +7137,7 @@
     ],
     "parsedAbilities": [
       "POISON_POINT",
-      "NONE",
+      "RIVALRY",
       "SHEER_FORCE"
     ],
     "id": "SPECIES_NIDOKING",
@@ -7149,7 +7149,7 @@
     "baseSpAttack": 85,
     "baseSpDefense": 75,
     "types": "MON_TYPES(TYPE_POISON, TYPE_GROUND)",
-    "abilities": "{ ABILITY_POISON_POINT, ABILITY_NONE, ABILITY_SHEER_FORCE }",
+    "abilities": "{ ABILITY_POISON_POINT, ABILITY_RIVALRY, ABILITY_SHEER_FORCE }",
     "speciesName": "_(\"Nidoking\")",
     "natDexNum": "NATIONAL_DEX_NIDOKING",
     "levelUpLearnset": "sNidokingLevelUpLearnset",
@@ -7319,7 +7319,7 @@
     ],
     "parsedAbilities": [
       "CUTE_CHARM",
-      "NONE",
+      "MAGIC_GUARD",
       "FRIEND_GUARD"
     ],
     "id": "SPECIES_CLEFFA",
@@ -7331,7 +7331,7 @@
     "baseSpAttack": 45,
     "baseSpDefense": 55,
     "types": "CLEFAIRY_FAMILY_TYPES",
-    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_NONE, ABILITY_FRIEND_GUARD }",
+    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_MAGIC_GUARD, ABILITY_FRIEND_GUARD }",
     "speciesName": "_(\"Cleffa\")",
     "natDexNum": "NATIONAL_DEX_CLEFFA",
     "levelUpLearnset": "sCleffaLevelUpLearnset",
@@ -7441,7 +7441,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 1.514345238095238,
+      "absoluteRating": 2.214345238095238,
       "absoluteBSTRating": 0.6333333333333333,
       "bestMoveset": [
         "MOVE_DOUBLE_EDGE",
@@ -7450,10 +7450,10 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 8.076785714285714,
-      "bestAbilityRating": 2,
+      "bestAbilityRating": 9,
       "tier": "BAD",
       "bestEvo": "SPECIES_CLEFABLE",
-      "bestEvoRating": 5.480714285714285,
+      "bestEvoRating": 5.780714285714286,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -7464,7 +7464,7 @@
     ],
     "parsedAbilities": [
       "CUTE_CHARM",
-      "NONE",
+      "MAGIC_GUARD",
       "FRIEND_GUARD"
     ],
     "id": "SPECIES_CLEFAIRY",
@@ -7476,7 +7476,7 @@
     "baseSpAttack": 60,
     "baseSpDefense": 65,
     "types": "CLEFAIRY_FAMILY_TYPES",
-    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_NONE, ABILITY_FRIEND_GUARD }",
+    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_MAGIC_GUARD, ABILITY_FRIEND_GUARD }",
     "speciesName": "_(\"Clefairy\")",
     "natDexNum": "NATIONAL_DEX_CLEFAIRY",
     "levelUpLearnset": "sClefairyLevelUpLearnset",
@@ -7653,7 +7653,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.9473809523809527,
+      "absoluteRating": 3.6473809523809524,
       "absoluteBSTRating": 2.3833333333333333,
       "bestMoveset": [
         "MOVE_FOCUS_PUNCH",
@@ -7662,10 +7662,10 @@
         "MOVE_SOFT_BOILED"
       ],
       "movesRating": 8.407142857142857,
-      "bestAbilityRating": 2,
+      "bestAbilityRating": 9,
       "tier": "BAD",
       "bestEvo": "SPECIES_CLEFABLE",
-      "bestEvoRating": 5.480714285714285,
+      "bestEvoRating": 5.780714285714286,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -7676,7 +7676,7 @@
     ],
     "parsedAbilities": [
       "CUTE_CHARM",
-      "NONE",
+      "MAGIC_GUARD",
       "UNAWARE"
     ],
     "id": "SPECIES_CLEFABLE",
@@ -7688,7 +7688,7 @@
     "baseSpAttack": 95,
     "baseSpDefense": 90,
     "types": "CLEFAIRY_FAMILY_TYPES",
-    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_NONE, ABILITY_UNAWARE }",
+    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_MAGIC_GUARD, ABILITY_UNAWARE }",
     "speciesName": "_(\"Clefable\")",
     "natDexNum": "NATIONAL_DEX_CLEFABLE",
     "levelUpLearnset": "sClefableLevelUpLearnset",
@@ -7859,7 +7859,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 5.480714285714285,
+      "absoluteRating": 5.780714285714286,
       "absoluteBSTRating": 5.05,
       "bestMoveset": [
         "MOVE_FOCUS_PUNCH",
@@ -7868,10 +7868,10 @@
         "MOVE_SOFT_BOILED"
       ],
       "movesRating": 8.407142857142857,
-      "bestAbilityRating": 6,
+      "bestAbilityRating": 9,
       "tier": "AVERAGE",
       "bestEvo": "SPECIES_CLEFABLE",
-      "bestEvoRating": 5.480714285714285,
+      "bestEvoRating": 5.780714285714286,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -8496,7 +8496,7 @@
     ],
     "parsedAbilities": [
       "CUTE_CHARM",
-      "NONE",
+      "COMPETITIVE",
       "FRIEND_GUARD"
     ],
     "id": "SPECIES_IGGLYBUFF",
@@ -8508,7 +8508,7 @@
     "baseSpAttack": 40,
     "baseSpDefense": 20,
     "types": "JIGGLYPUFF_FAMILY_TYPES",
-    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_NONE, ABILITY_FRIEND_GUARD }",
+    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_COMPETITIVE, ABILITY_FRIEND_GUARD }",
     "speciesName": "_(\"Igglybuff\")",
     "natDexNum": "NATIONAL_DEX_IGGLYBUFF",
     "levelUpLearnset": "sIgglybuffLevelUpLearnset",
@@ -8614,7 +8614,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 1.3716071428571428,
+      "absoluteRating": 1.6716071428571428,
       "absoluteBSTRating": 0.5,
       "bestMoveset": [
         "MOVE_DOUBLE_EDGE",
@@ -8623,10 +8623,10 @@
         "MOVE_SOLAR_BEAM"
       ],
       "movesRating": 7.7160714285714285,
-      "bestAbilityRating": 2,
+      "bestAbilityRating": 5,
       "tier": "BAD",
       "bestEvo": "SPECIES_WIGGLYTUFF",
-      "bestEvoRating": 4.040119047619048,
+      "bestEvoRating": 4.240119047619048,
       "bestEvoTier": "WEAK"
     }
   },
@@ -8637,7 +8637,7 @@
     ],
     "parsedAbilities": [
       "CUTE_CHARM",
-      "NONE",
+      "COMPETITIVE",
       "FRIEND_GUARD"
     ],
     "id": "SPECIES_JIGGLYPUFF",
@@ -8649,7 +8649,7 @@
     "baseSpAttack": 45,
     "baseSpDefense": 25,
     "types": "JIGGLYPUFF_FAMILY_TYPES",
-    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_NONE, ABILITY_FRIEND_GUARD }",
+    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_COMPETITIVE, ABILITY_FRIEND_GUARD }",
     "speciesName": "_(\"Jigglypuff\")",
     "natDexNum": "NATIONAL_DEX_JIGGLYPUFF",
     "levelUpLearnset": "sJigglypuffLevelUpLearnset",
@@ -8821,7 +8821,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.2067857142857146,
+      "absoluteRating": 2.5067857142857144,
       "absoluteBSTRating": 1.5,
       "bestMoveset": [
         "MOVE_FOCUS_PUNCH",
@@ -8830,10 +8830,10 @@
         "MOVE_DREAM_EATER"
       ],
       "movesRating": 8.067857142857143,
-      "bestAbilityRating": 2,
+      "bestAbilityRating": 5,
       "tier": "BAD",
       "bestEvo": "SPECIES_WIGGLYTUFF",
-      "bestEvoRating": 4.040119047619048,
+      "bestEvoRating": 4.240119047619048,
       "bestEvoTier": "WEAK"
     }
   },
@@ -8844,7 +8844,7 @@
     ],
     "parsedAbilities": [
       "CUTE_CHARM",
-      "NONE",
+      "COMPETITIVE",
       "FRISK"
     ],
     "id": "SPECIES_WIGGLYTUFF",
@@ -8856,7 +8856,7 @@
     "baseSpAttack": 50,
     "baseSpDefense": 50,
     "types": "JIGGLYPUFF_FAMILY_TYPES",
-    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_NONE, ABILITY_FRISK }",
+    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_COMPETITIVE, ABILITY_FRISK }",
     "speciesName": "_(\"Wigglytuff\")",
     "natDexNum": "NATIONAL_DEX_WIGGLYTUFF",
     "levelUpLearnset": "sWigglytuffLevelUpLearnset",
@@ -9026,7 +9026,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 4.040119047619048,
+      "absoluteRating": 4.240119047619048,
       "absoluteBSTRating": 3.6666666666666665,
       "bestMoveset": [
         "MOVE_FOCUS_PUNCH",
@@ -9035,10 +9035,10 @@
         "MOVE_DREAM_EATER"
       ],
       "movesRating": 8.067857142857143,
-      "bestAbilityRating": 3,
+      "bestAbilityRating": 5,
       "tier": "WEAK",
       "bestEvo": "SPECIES_WIGGLYTUFF",
-      "bestEvoRating": 4.040119047619048,
+      "bestEvoRating": 4.240119047619048,
       "bestEvoTier": "WEAK"
     }
   },
@@ -10115,7 +10115,7 @@
     ],
     "parsedAbilities": [
       "EFFECT_SPORE",
-      "NONE",
+      "DRY_SKIN",
       "DAMP"
     ],
     "id": "SPECIES_PARAS",
@@ -10127,7 +10127,7 @@
     "baseSpAttack": 45,
     "baseSpDefense": 55,
     "types": "MON_TYPES(TYPE_BUG, TYPE_GRASS)",
-    "abilities": "{ ABILITY_EFFECT_SPORE, ABILITY_NONE, ABILITY_DAMP }",
+    "abilities": "{ ABILITY_EFFECT_SPORE, ABILITY_DRY_SKIN, ABILITY_DAMP }",
     "speciesName": "_(\"Paras\")",
     "natDexNum": "NATIONAL_DEX_PARAS",
     "levelUpLearnset": "sParasLevelUpLearnset",
@@ -10237,7 +10237,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.619285714285714,
+      "absoluteRating": 2.8192857142857144,
       "absoluteBSTRating": 1.75,
       "bestMoveset": [
         "MOVE_BULLET_SEED",
@@ -10246,10 +10246,10 @@
         "MOVE_DOUBLE_EDGE"
       ],
       "movesRating": 8.192857142857143,
-      "bestAbilityRating": 4,
+      "bestAbilityRating": 6,
       "tier": "BAD",
       "bestEvo": "SPECIES_PARASECT",
-      "bestEvoRating": 4.219285714285714,
+      "bestEvoRating": 4.4192857142857145,
       "bestEvoTier": "WEAK"
     }
   },
@@ -10261,7 +10261,7 @@
     ],
     "parsedAbilities": [
       "EFFECT_SPORE",
-      "NONE",
+      "DRY_SKIN",
       "DAMP"
     ],
     "id": "SPECIES_PARASECT",
@@ -10273,7 +10273,7 @@
     "baseSpAttack": 60,
     "baseSpDefense": 80,
     "types": "MON_TYPES(TYPE_BUG, TYPE_GRASS)",
-    "abilities": "{ ABILITY_EFFECT_SPORE, ABILITY_NONE, ABILITY_DAMP }",
+    "abilities": "{ ABILITY_EFFECT_SPORE, ABILITY_DRY_SKIN, ABILITY_DAMP }",
     "speciesName": "_(\"Parasect\")",
     "natDexNum": "NATIONAL_DEX_PARASECT",
     "levelUpLearnset": "sParasectLevelUpLearnset",
@@ -10393,7 +10393,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 4.219285714285714,
+      "absoluteRating": 4.4192857142857145,
       "absoluteBSTRating": 3.75,
       "bestMoveset": [
         "MOVE_BULLET_SEED",
@@ -10402,10 +10402,10 @@
         "MOVE_DOUBLE_EDGE"
       ],
       "movesRating": 8.192857142857143,
-      "bestAbilityRating": 4,
+      "bestAbilityRating": 6,
       "tier": "WEAK",
       "bestEvo": "SPECIES_PARASECT",
-      "bestEvoRating": 4.219285714285714,
+      "bestEvoRating": 4.4192857142857145,
       "bestEvoTier": "WEAK"
     }
   },
@@ -10417,7 +10417,7 @@
     ],
     "parsedAbilities": [
       "COMPOUND_EYES",
-      "NONE",
+      "TINTED_LENS",
       "RUN_AWAY"
     ],
     "id": "SPECIES_VENONAT",
@@ -10429,7 +10429,7 @@
     "baseSpAttack": 40,
     "baseSpDefense": 55,
     "types": "MON_TYPES(TYPE_BUG, TYPE_POISON)",
-    "abilities": "{ ABILITY_COMPOUND_EYES, ABILITY_NONE, ABILITY_RUN_AWAY }",
+    "abilities": "{ ABILITY_COMPOUND_EYES, ABILITY_TINTED_LENS, ABILITY_RUN_AWAY }",
     "speciesName": "_(\"Venonat\")",
     "natDexNum": "NATIONAL_DEX_VENONAT",
     "levelUpLearnset": "sVenonatLevelUpLearnset",
@@ -10547,8 +10547,8 @@
       "bestAbilityRating": 7,
       "tier": "BAD",
       "bestEvo": "SPECIES_VENOMOTH",
-      "bestEvoRating": 4.863035714285714,
-      "bestEvoTier": "WEAK"
+      "bestEvoRating": 5.063035714285714,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -10559,7 +10559,7 @@
     ],
     "parsedAbilities": [
       "SHIELD_DUST",
-      "NONE",
+      "TINTED_LENS",
       "WONDER_SKIN"
     ],
     "id": "SPECIES_VENOMOTH",
@@ -10571,7 +10571,7 @@
     "baseSpAttack": 90,
     "baseSpDefense": 75,
     "types": "MON_TYPES(TYPE_BUG, TYPE_POISON)",
-    "abilities": "{ ABILITY_SHIELD_DUST, ABILITY_NONE, ABILITY_WONDER_SKIN }",
+    "abilities": "{ ABILITY_SHIELD_DUST, ABILITY_TINTED_LENS, ABILITY_WONDER_SKIN }",
     "speciesName": "_(\"Venomoth\")",
     "natDexNum": "NATIONAL_DEX_VENOMOTH",
     "levelUpLearnset": "sVenomothLevelUpLearnset",
@@ -10681,7 +10681,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 4.863035714285714,
+      "absoluteRating": 5.063035714285714,
       "absoluteBSTRating": 4.5,
       "bestMoveset": [
         "MOVE_BUG_BUZZ",
@@ -10690,11 +10690,11 @@
         "MOVE_DOUBLE_EDGE"
       ],
       "movesRating": 7.630357142857143,
-      "bestAbilityRating": 5,
-      "tier": "WEAK",
+      "bestAbilityRating": 7,
+      "tier": "AVERAGE",
       "bestEvo": "SPECIES_VENOMOTH",
-      "bestEvoRating": 4.863035714285714,
-      "bestEvoTier": "WEAK"
+      "bestEvoRating": 5.063035714285714,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -11293,7 +11293,7 @@
     ],
     "parsedAbilities": [
       "PICKUP",
-      "NONE",
+      "TECHNICIAN",
       "UNNERVE"
     ],
     "id": "SPECIES_MEOWTH",
@@ -11305,7 +11305,7 @@
     "baseSpAttack": 40,
     "baseSpDefense": 40,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_PICKUP, ABILITY_NONE, ABILITY_UNNERVE }",
+    "abilities": "{ ABILITY_PICKUP, ABILITY_TECHNICIAN, ABILITY_UNNERVE }",
     "speciesName": "_(\"Meowth\")",
     "natDexNum": "NATIONAL_DEX_MEOWTH",
     "levelUpLearnset": "sMeowthLevelUpLearnset",
@@ -11425,19 +11425,19 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.560416666666667,
+      "absoluteRating": 2.9282738095238097,
       "absoluteBSTRating": 1.8333333333333333,
       "bestMoveset": [
         "MOVE_FAKE_OUT",
-        "MOVE_DREAM_EATER",
-        "MOVE_TOXIC",
-        "MOVE_THUNDER_WAVE"
+        "MOVE_AERIAL_ACE",
+        "MOVE_SHOCK_WAVE",
+        "MOVE_BITE"
       ],
-      "movesRating": 7.9375,
-      "bestAbilityRating": 3,
+      "movesRating": 6.616071428571428,
+      "bestAbilityRating": 8,
       "tier": "BAD",
       "bestEvo": "SPECIES_PERSIAN",
-      "bestEvoRating": 4.560416666666667,
+      "bestEvoRating": 4.92827380952381,
       "bestEvoTier": "WEAK"
     }
   },
@@ -11448,7 +11448,7 @@
     ],
     "parsedAbilities": [
       "LIMBER",
-      "NONE",
+      "TECHNICIAN",
       "UNNERVE"
     ],
     "id": "SPECIES_PERSIAN",
@@ -11460,7 +11460,7 @@
     "baseSpAttack": 65,
     "baseSpDefense": 65,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_LIMBER, ABILITY_NONE, ABILITY_UNNERVE }",
+    "abilities": "{ ABILITY_LIMBER, ABILITY_TECHNICIAN, ABILITY_UNNERVE }",
     "speciesName": "_(\"Persian\")",
     "natDexNum": "NATIONAL_DEX_PERSIAN",
     "levelUpLearnset": "sPersianLevelUpLearnset",
@@ -11583,19 +11583,19 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 4.560416666666667,
+      "absoluteRating": 4.92827380952381,
       "absoluteBSTRating": 4.333333333333333,
       "bestMoveset": [
         "MOVE_FAKE_OUT",
-        "MOVE_DREAM_EATER",
-        "MOVE_TOXIC",
-        "MOVE_THUNDER_WAVE"
+        "MOVE_AERIAL_ACE",
+        "MOVE_SHOCK_WAVE",
+        "MOVE_BITE"
       ],
-      "movesRating": 7.9375,
-      "bestAbilityRating": 3,
+      "movesRating": 6.616071428571428,
+      "bestAbilityRating": 8,
       "tier": "WEAK",
       "bestEvo": "SPECIES_PERSIAN",
-      "bestEvoRating": 4.560416666666667,
+      "bestEvoRating": 4.92827380952381,
       "bestEvoTier": "WEAK"
     }
   },
@@ -11746,7 +11746,7 @@
       "bestAbilityRating": 8,
       "tier": "BAD",
       "bestEvo": "SPECIES_PERSIAN",
-      "bestEvoRating": 4.560416666666667,
+      "bestEvoRating": 4.92827380952381,
       "bestEvoTier": "WEAK"
     }
   },
@@ -12047,7 +12047,7 @@
       "bestAbilityRating": 7,
       "tier": "BAD",
       "bestEvo": "SPECIES_PERSIAN",
-      "bestEvoRating": 4.560416666666667,
+      "bestEvoRating": 4.92827380952381,
       "bestEvoTier": "WEAK"
     }
   },
@@ -12548,7 +12548,7 @@
     ],
     "parsedAbilities": [
       "VITAL_SPIRIT",
-      "NONE",
+      "ANGER_POINT",
       "DEFIANT"
     ],
     "id": "SPECIES_MANKEY",
@@ -12560,7 +12560,7 @@
     "baseSpAttack": 35,
     "baseSpDefense": 45,
     "types": "MON_TYPES(TYPE_FIGHTING)",
-    "abilities": "{ ABILITY_VITAL_SPIRIT, ABILITY_NONE, ABILITY_DEFIANT }",
+    "abilities": "{ ABILITY_VITAL_SPIRIT, ABILITY_ANGER_POINT, ABILITY_DEFIANT }",
     "speciesName": "_(\"Mankey\")",
     "natDexNum": "NATIONAL_DEX_MANKEY",
     "levelUpLearnset": "sMankeyLevelUpLearnset",
@@ -12726,7 +12726,7 @@
     ],
     "parsedAbilities": [
       "VITAL_SPIRIT",
-      "NONE",
+      "ANGER_POINT",
       "DEFIANT"
     ],
     "id": "SPECIES_PRIMEAPE",
@@ -12738,7 +12738,7 @@
     "baseSpAttack": 60,
     "baseSpDefense": 70,
     "types": "MON_TYPES(TYPE_FIGHTING)",
-    "abilities": "{ ABILITY_VITAL_SPIRIT, ABILITY_NONE, ABILITY_DEFIANT }",
+    "abilities": "{ ABILITY_VITAL_SPIRIT, ABILITY_ANGER_POINT, ABILITY_DEFIANT }",
     "speciesName": "_(\"Primeape\")",
     "natDexNum": "NATIONAL_DEX_PRIMEAPE",
     "levelUpLearnset": "sPrimeapeLevelUpLearnset",
@@ -14998,7 +14998,7 @@
     ],
     "parsedAbilities": [
       "GUTS",
-      "NONE",
+      "NO_GUARD",
       "STEADFAST"
     ],
     "id": "SPECIES_MACHOP",
@@ -15010,7 +15010,7 @@
     "baseSpAttack": 35,
     "baseSpDefense": 35,
     "types": "MON_TYPES(TYPE_FIGHTING)",
-    "abilities": "{ ABILITY_GUTS, ABILITY_NONE, ABILITY_STEADFAST }",
+    "abilities": "{ ABILITY_GUTS, ABILITY_NO_GUARD, ABILITY_STEADFAST }",
     "speciesName": "_(\"Machop\")",
     "natDexNum": "NATIONAL_DEX_MACHOP",
     "levelUpLearnset": "sMachopLevelUpLearnset",
@@ -15144,7 +15144,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 3.084166666666667,
+      "absoluteRating": 3.2841666666666667,
       "absoluteBSTRating": 2.0833333333333335,
       "bestMoveset": [
         "MOVE_FOCUS_PUNCH",
@@ -15153,10 +15153,10 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 8.174999999999999,
-      "bestAbilityRating": 6,
+      "bestAbilityRating": 8,
       "tier": "BAD",
       "bestEvo": "SPECIES_MACHAMP",
-      "bestEvoRating": 5.750833333333334,
+      "bestEvoRating": 5.950833333333334,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -15167,7 +15167,7 @@
     ],
     "parsedAbilities": [
       "GUTS",
-      "NONE",
+      "NO_GUARD",
       "STEADFAST"
     ],
     "id": "SPECIES_MACHOKE",
@@ -15179,7 +15179,7 @@
     "baseSpAttack": 50,
     "baseSpDefense": 60,
     "types": "MON_TYPES(TYPE_FIGHTING)",
-    "abilities": "{ ABILITY_GUTS, ABILITY_NONE, ABILITY_STEADFAST }",
+    "abilities": "{ ABILITY_GUTS, ABILITY_NO_GUARD, ABILITY_STEADFAST }",
     "speciesName": "_(\"Machoke\")",
     "natDexNum": "NATIONAL_DEX_MACHOKE",
     "levelUpLearnset": "sMachokeLevelUpLearnset",
@@ -15318,7 +15318,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 4.4175,
+      "absoluteRating": 4.6175,
       "absoluteBSTRating": 3.75,
       "bestMoveset": [
         "MOVE_FOCUS_PUNCH",
@@ -15327,10 +15327,10 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 8.174999999999999,
-      "bestAbilityRating": 6,
+      "bestAbilityRating": 8,
       "tier": "WEAK",
       "bestEvo": "SPECIES_MACHAMP",
-      "bestEvoRating": 5.750833333333334,
+      "bestEvoRating": 5.950833333333334,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -15341,7 +15341,7 @@
     ],
     "parsedAbilities": [
       "GUTS",
-      "NONE",
+      "NO_GUARD",
       "STEADFAST"
     ],
     "id": "SPECIES_MACHAMP",
@@ -15353,7 +15353,7 @@
     "baseSpAttack": 65,
     "baseSpDefense": 85,
     "types": "MON_TYPES(TYPE_FIGHTING)",
-    "abilities": "{ ABILITY_GUTS, ABILITY_NONE, ABILITY_STEADFAST }",
+    "abilities": "{ ABILITY_GUTS, ABILITY_NO_GUARD, ABILITY_STEADFAST }",
     "speciesName": "_(\"Machamp\")",
     "natDexNum": "NATIONAL_DEX_MACHAMP",
     "levelUpLearnset": "sMachampLevelUpLearnset",
@@ -15485,7 +15485,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 5.750833333333334,
+      "absoluteRating": 5.950833333333334,
       "absoluteBSTRating": 5.416666666666667,
       "bestMoveset": [
         "MOVE_FOCUS_PUNCH",
@@ -15494,10 +15494,10 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 8.174999999999999,
-      "bestAbilityRating": 6,
+      "bestAbilityRating": 8,
       "tier": "AVERAGE",
       "bestEvo": "SPECIES_MACHAMP",
-      "bestEvoRating": 5.750833333333334,
+      "bestEvoRating": 5.950833333333334,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -20444,7 +20444,7 @@
     ],
     "parsedAbilities": [
       "THICK_FAT",
-      "NONE",
+      "HYDRATION",
       "ICE_BODY"
     ],
     "id": "SPECIES_SEEL",
@@ -20456,7 +20456,7 @@
     "baseSpAttack": 45,
     "baseSpDefense": 70,
     "types": "MON_TYPES(TYPE_WATER)",
-    "abilities": "{ ABILITY_THICK_FAT, ABILITY_NONE, ABILITY_ICE_BODY }",
+    "abilities": "{ ABILITY_THICK_FAT, ABILITY_HYDRATION, ABILITY_ICE_BODY }",
     "speciesName": "_(\"Seel\")",
     "natDexNum": "NATIONAL_DEX_SEEL",
     "levelUpLearnset": "sSeelLevelUpLearnset",
@@ -20606,7 +20606,7 @@
     ],
     "parsedAbilities": [
       "THICK_FAT",
-      "NONE",
+      "HYDRATION",
       "ICE_BODY"
     ],
     "id": "SPECIES_DEWGONG",
@@ -20618,7 +20618,7 @@
     "baseSpAttack": 70,
     "baseSpDefense": 95,
     "types": "MON_TYPES(TYPE_WATER, TYPE_ICE)",
-    "abilities": "{ ABILITY_THICK_FAT, ABILITY_NONE, ABILITY_ICE_BODY }",
+    "abilities": "{ ABILITY_THICK_FAT, ABILITY_HYDRATION, ABILITY_ICE_BODY }",
     "speciesName": "_(\"Dewgong\")",
     "natDexNum": "NATIONAL_DEX_DEWGONG",
     "levelUpLearnset": "sDewgongLevelUpLearnset",
@@ -21429,7 +21429,7 @@
     ],
     "parsedAbilities": [
       "SHELL_ARMOR",
-      "NONE",
+      "SKILL_LINK",
       "OVERCOAT"
     ],
     "id": "SPECIES_SHELLDER",
@@ -21441,7 +21441,7 @@
     "baseSpAttack": 45,
     "baseSpDefense": 25,
     "types": "MON_TYPES(TYPE_WATER)",
-    "abilities": "{ ABILITY_SHELL_ARMOR, ABILITY_NONE, ABILITY_OVERCOAT }",
+    "abilities": "{ ABILITY_SHELL_ARMOR, ABILITY_SKILL_LINK, ABILITY_OVERCOAT }",
     "speciesName": "_(\"Shellder\")",
     "natDexNum": "NATIONAL_DEX_SHELLDER",
     "levelUpLearnset": "sShellderLevelUpLearnset",
@@ -21553,7 +21553,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.9814880952380953,
+      "absoluteRating": 3.1814880952380955,
       "absoluteBSTRating": 2.0833333333333335,
       "bestMoveset": [
         "MOVE_SURF",
@@ -21562,11 +21562,11 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 8.148214285714285,
-      "bestAbilityRating": 5,
+      "bestAbilityRating": 7,
       "tier": "BAD",
       "bestEvo": "SPECIES_CLOYSTER",
-      "bestEvoRating": 5.9246428571428575,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoRating": 6.124642857142858,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -21577,7 +21577,7 @@
     ],
     "parsedAbilities": [
       "SHELL_ARMOR",
-      "NONE",
+      "SKILL_LINK",
       "OVERCOAT"
     ],
     "id": "SPECIES_CLOYSTER",
@@ -21589,7 +21589,7 @@
     "baseSpAttack": 85,
     "baseSpDefense": 45,
     "types": "MON_TYPES(TYPE_WATER, TYPE_ICE)",
-    "abilities": "{ ABILITY_SHELL_ARMOR, ABILITY_NONE, ABILITY_OVERCOAT }",
+    "abilities": "{ ABILITY_SHELL_ARMOR, ABILITY_SKILL_LINK, ABILITY_OVERCOAT }",
     "speciesName": "_(\"Cloyster\")",
     "natDexNum": "NATIONAL_DEX_CLOYSTER",
     "levelUpLearnset": "sCloysterLevelUpLearnset",
@@ -21714,7 +21714,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 5.9246428571428575,
+      "absoluteRating": 6.124642857142858,
       "absoluteBSTRating": 5.75,
       "bestMoveset": [
         "MOVE_ICICLE_SPEAR",
@@ -21723,11 +21723,11 @@
         "MOVE_DOUBLE_EDGE"
       ],
       "movesRating": 8.24642857142857,
-      "bestAbilityRating": 5,
-      "tier": "AVERAGE",
+      "bestAbilityRating": 7,
+      "tier": "STRONG",
       "bestEvo": "SPECIES_CLOYSTER",
-      "bestEvoRating": 5.9246428571428575,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoRating": 6.124642857142858,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -23009,7 +23009,7 @@
     ],
     "parsedAbilities": [
       "INSOMNIA",
-      "NONE",
+      "FOREWARN",
       "INNER_FOCUS"
     ],
     "id": "SPECIES_DROWZEE",
@@ -23021,7 +23021,7 @@
     "baseSpAttack": 43,
     "baseSpDefense": 90,
     "types": "MON_TYPES(TYPE_PSYCHIC)",
-    "abilities": "{ ABILITY_INSOMNIA, ABILITY_NONE, ABILITY_INNER_FOCUS }",
+    "abilities": "{ ABILITY_INSOMNIA, ABILITY_FOREWARN, ABILITY_INNER_FOCUS }",
     "speciesName": "_(\"Drowzee\")",
     "natDexNum": "NATIONAL_DEX_DROWZEE",
     "levelUpLearnset": "sDrowzeeLevelUpLearnset",
@@ -23174,7 +23174,7 @@
     ],
     "parsedAbilities": [
       "INSOMNIA",
-      "NONE",
+      "FOREWARN",
       "INNER_FOCUS"
     ],
     "id": "SPECIES_HYPNO",
@@ -23186,7 +23186,7 @@
     "baseSpAttack": 73,
     "baseSpDefense": 115,
     "types": "MON_TYPES(TYPE_PSYCHIC)",
-    "abilities": "{ ABILITY_INSOMNIA, ABILITY_NONE, ABILITY_INNER_FOCUS }",
+    "abilities": "{ ABILITY_INSOMNIA, ABILITY_FOREWARN, ABILITY_INNER_FOCUS }",
     "speciesName": "_(\"Hypno\")",
     "natDexNum": "NATIONAL_DEX_HYPNO",
     "levelUpLearnset": "sHypnoLevelUpLearnset",
@@ -25298,7 +25298,7 @@
     ],
     "parsedAbilities": [
       "GUTS",
-      "NONE",
+      "STEADFAST",
       "VITAL_SPIRIT"
     ],
     "id": "SPECIES_TYROGUE",
@@ -25310,7 +25310,7 @@
     "baseSpAttack": 35,
     "baseSpDefense": 35,
     "types": "MON_TYPES(TYPE_FIGHTING)",
-    "abilities": "{ ABILITY_GUTS, ABILITY_NONE, ABILITY_VITAL_SPIRIT }",
+    "abilities": "{ ABILITY_GUTS, ABILITY_STEADFAST, ABILITY_VITAL_SPIRIT }",
     "speciesName": "_(\"Tyrogue\")",
     "natDexNum": "NATIONAL_DEX_TYROGUE",
     "levelUpLearnset": "sTyrogueLevelUpLearnset",
@@ -25421,7 +25421,7 @@
     ],
     "parsedAbilities": [
       "LIMBER",
-      "NONE",
+      "RECKLESS",
       "UNBURDEN"
     ],
     "id": "SPECIES_HITMONLEE",
@@ -25433,7 +25433,7 @@
     "baseSpAttack": 35,
     "baseSpDefense": 110,
     "types": "MON_TYPES(TYPE_FIGHTING)",
-    "abilities": "{ ABILITY_LIMBER, ABILITY_NONE, ABILITY_UNBURDEN }",
+    "abilities": "{ ABILITY_LIMBER, ABILITY_RECKLESS, ABILITY_UNBURDEN }",
     "speciesName": "_(\"Hitmonlee\")",
     "natDexNum": "NATIONAL_DEX_HITMONLEE",
     "levelUpLearnset": "sHitmonleeLevelUpLearnset",
@@ -25589,7 +25589,7 @@
     ],
     "parsedAbilities": [
       "KEEN_EYE",
-      "NONE",
+      "IRON_FIST",
       "INNER_FOCUS"
     ],
     "id": "SPECIES_HITMONCHAN",
@@ -25601,7 +25601,7 @@
     "baseSpAttack": 35,
     "baseSpDefense": 110,
     "types": "MON_TYPES(TYPE_FIGHTING)",
-    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_NONE, ABILITY_INNER_FOCUS }",
+    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_IRON_FIST, ABILITY_INNER_FOCUS }",
     "speciesName": "_(\"Hitmonchan\")",
     "natDexNum": "NATIONAL_DEX_HITMONCHAN",
     "levelUpLearnset": "sHitmonchanLevelUpLearnset",
@@ -25741,7 +25741,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 4.705952380952381,
+      "absoluteRating": 5.105952380952381,
       "absoluteBSTRating": 4.583333333333333,
       "bestMoveset": [
         "MOVE_FOCUS_PUNCH",
@@ -25750,8 +25750,8 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 8.392857142857142,
-      "bestAbilityRating": 2,
-      "tier": "WEAK",
+      "bestAbilityRating": 6,
+      "tier": "AVERAGE",
       "bestEvo": "SPECIES_HITMONLEE",
       "bestEvoRating": 5.205952380952381,
       "bestEvoTier": "AVERAGE"
@@ -25764,7 +25764,7 @@
     ],
     "parsedAbilities": [
       "INTIMIDATE",
-      "NONE",
+      "TECHNICIAN",
       "STEADFAST"
     ],
     "id": "SPECIES_HITMONTOP",
@@ -25776,7 +25776,7 @@
     "baseSpAttack": 35,
     "baseSpDefense": 110,
     "types": "MON_TYPES(TYPE_FIGHTING)",
-    "abilities": "{ ABILITY_INTIMIDATE, ABILITY_NONE, ABILITY_STEADFAST }",
+    "abilities": "{ ABILITY_INTIMIDATE, ABILITY_TECHNICIAN, ABILITY_STEADFAST }",
     "speciesName": "_(\"Hitmontop\")",
     "natDexNum": "NATIONAL_DEX_HITMONTOP",
     "levelUpLearnset": "sHitmontopLevelUpLearnset",
@@ -25907,16 +25907,16 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 5.182738095238095,
+      "absoluteRating": 5.1988095238095235,
       "absoluteBSTRating": 4.583333333333333,
       "bestMoveset": [
-        "MOVE_CLOSE_COMBAT",
         "MOVE_FAKE_OUT",
-        "MOVE_TOXIC",
-        "MOVE_EARTHQUAKE"
+        "MOVE_CLOSE_COMBAT",
+        "MOVE_AERIAL_ACE",
+        "MOVE_GYRO_BALL"
       ],
-      "movesRating": 8.160714285714286,
-      "bestAbilityRating": 7,
+      "movesRating": 7.321428571428571,
+      "bestAbilityRating": 8,
       "tier": "AVERAGE",
       "bestEvo": "SPECIES_HITMONLEE",
       "bestEvoRating": 5.205952380952381,
@@ -26259,8 +26259,8 @@
     ],
     "parsedAbilities": [
       "LEVITATE",
-      "NONE",
-      "NONE"
+      "NEUTRALIZING_GAS",
+      "STENCH"
     ],
     "id": "SPECIES_KOFFING",
     "family": "P_FAMILY_KOFFING",
@@ -26271,7 +26271,7 @@
     "baseSpAttack": 60,
     "baseSpDefense": 45,
     "types": "MON_TYPES(TYPE_POISON)",
-    "abilities": "{ ABILITY_LEVITATE, ABILITY_NONE, ABILITY_NONE }",
+    "abilities": "{ ABILITY_LEVITATE, ABILITY_NEUTRALIZING_GAS, ABILITY_STENCH }",
     "speciesName": "_(\"Koffing\")",
     "natDexNum": "NATIONAL_DEX_KOFFING",
     "levelUpLearnset": "sKoffingLevelUpLearnset",
@@ -26419,8 +26419,8 @@
     ],
     "parsedAbilities": [
       "LEVITATE",
-      "NONE",
-      "NONE"
+      "NEUTRALIZING_GAS",
+      "STENCH"
     ],
     "id": "SPECIES_WEEZING",
     "family": "P_FAMILY_KOFFING",
@@ -26431,7 +26431,7 @@
     "baseSpAttack": 85,
     "baseSpDefense": 70,
     "types": "MON_TYPES(TYPE_POISON)",
-    "abilities": "{ ABILITY_LEVITATE, ABILITY_NONE, ABILITY_NONE }",
+    "abilities": "{ ABILITY_LEVITATE, ABILITY_NEUTRALIZING_GAS, ABILITY_STENCH }",
     "speciesName": "_(\"Weezing\")",
     "natDexNum": "NATIONAL_DEX_WEEZING",
     "levelUpLearnset": "sWeezingLevelUpLearnset",
@@ -27840,7 +27840,7 @@
     ],
     "parsedAbilities": [
       "CHLOROPHYLL",
-      "NONE",
+      "LEAF_GUARD",
       "REGENERATOR"
     ],
     "id": "SPECIES_TANGELA",
@@ -27852,7 +27852,7 @@
     "baseSpAttack": 100,
     "baseSpDefense": 40,
     "types": "MON_TYPES(TYPE_GRASS)",
-    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_NONE, ABILITY_REGENERATOR }",
+    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_LEAF_GUARD, ABILITY_REGENERATOR }",
     "speciesName": "_(\"Tangela\")",
     "natDexNum": "NATIONAL_DEX_TANGELA",
     "levelUpLearnset": "sTangelaLevelUpLearnset",
@@ -28503,7 +28503,7 @@
     ],
     "parsedAbilities": [
       "SWIFT_SWIM",
-      "NONE",
+      "SNIPER",
       "DAMP"
     ],
     "id": "SPECIES_HORSEA",
@@ -28515,7 +28515,7 @@
     "baseSpAttack": 70,
     "baseSpDefense": 25,
     "types": "MON_TYPES(TYPE_WATER)",
-    "abilities": "{ ABILITY_SWIFT_SWIM, ABILITY_NONE, ABILITY_DAMP }",
+    "abilities": "{ ABILITY_SWIFT_SWIM, ABILITY_SNIPER, ABILITY_DAMP }",
     "speciesName": "_(\"Horsea\")",
     "natDexNum": "NATIONAL_DEX_HORSEA",
     "levelUpLearnset": "sHorseaLevelUpLearnset",
@@ -28648,7 +28648,7 @@
     ],
     "parsedAbilities": [
       "POISON_POINT",
-      "NONE",
+      "SNIPER",
       "DAMP"
     ],
     "id": "SPECIES_SEADRA",
@@ -28660,7 +28660,7 @@
     "baseSpAttack": 95,
     "baseSpDefense": 45,
     "types": "MON_TYPES(TYPE_WATER)",
-    "abilities": "{ ABILITY_POISON_POINT, ABILITY_NONE, ABILITY_DAMP }",
+    "abilities": "{ ABILITY_POISON_POINT, ABILITY_SNIPER, ABILITY_DAMP }",
     "speciesName": "_(\"Seadra\")",
     "natDexNum": "NATIONAL_DEX_SEADRA",
     "levelUpLearnset": "sSeadraLevelUpLearnset",
@@ -28800,7 +28800,7 @@
     ],
     "parsedAbilities": [
       "SWIFT_SWIM",
-      "NONE",
+      "SNIPER",
       "DAMP"
     ],
     "id": "SPECIES_KINGDRA",
@@ -28812,7 +28812,7 @@
     "baseSpAttack": 95,
     "baseSpDefense": 95,
     "types": "MON_TYPES(TYPE_WATER, TYPE_DRAGON)",
-    "abilities": "{ ABILITY_SWIFT_SWIM, ABILITY_NONE, ABILITY_DAMP }",
+    "abilities": "{ ABILITY_SWIFT_SWIM, ABILITY_SNIPER, ABILITY_DAMP }",
     "speciesName": "_(\"Kingdra\")",
     "natDexNum": "NATIONAL_DEX_KINGDRA",
     "levelUpLearnset": "sKingdraLevelUpLearnset",
@@ -29545,11 +29545,12 @@
   {
     "name": "Mime  Jr",
     "parsedTypes": [
-      "PSYCHIC"
+      "PSYCHIC",
+      "FAIRY"
     ],
     "parsedAbilities": [
       "SOUNDPROOF",
-      "NONE",
+      "FILTER",
       "TECHNICIAN"
     ],
     "id": "SPECIES_MIME_JR",
@@ -29560,8 +29561,8 @@
     "baseSpeed": 60,
     "baseSpAttack": 70,
     "baseSpDefense": 90,
-    "types": "MON_TYPES(TYPE_PSYCHIC)",
-    "abilities": "{ ABILITY_SOUNDPROOF, ABILITY_NONE, ABILITY_TECHNICIAN }",
+    "types": "MON_TYPES(TYPE_PSYCHIC, TYPE_FAIRY)",
+    "abilities": "{ ABILITY_SOUNDPROOF, ABILITY_FILTER, ABILITY_TECHNICIAN }",
     "speciesName": "_(\"Mime Jr.\")",
     "natDexNum": "NATIONAL_DEX_MIME_JR",
     "levelUpLearnset": "sMimeJrLevelUpLearnset",
@@ -29706,15 +29707,15 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 3.286904761904762,
+      "absoluteRating": 3.236011904761905,
       "absoluteBSTRating": 2.1666666666666665,
       "bestMoveset": [
         "MOVE_DREAM_EATER",
         "MOVE_SHOCK_WAVE",
-        "MOVE_FOCUS_PUNCH",
-        "MOVE_TOXIC"
+        "MOVE_DAZZLING_GLEAM",
+        "MOVE_FOCUS_PUNCH"
       ],
-      "movesRating": 7.535714285714286,
+      "movesRating": 7.0267857142857135,
       "bestAbilityRating": 8,
       "tier": "BAD",
       "bestEvo": "SPECIES_MR_RIME",
@@ -29725,7 +29726,8 @@
   {
     "name": "Mr  Mime",
     "parsedTypes": [
-      "PSYCHIC"
+      "PSYCHIC",
+      "FAIRY"
     ],
     "parsedAbilities": [
       "SOUNDPROOF",
@@ -29740,7 +29742,7 @@
     "baseSpeed": 90,
     "baseSpAttack": 100,
     "baseSpDefense": 120,
-    "types": "MON_TYPES(TYPE_PSYCHIC)",
+    "types": "MON_TYPES(TYPE_PSYCHIC, TYPE_FAIRY)",
     "abilities": "{ ABILITY_SOUNDPROOF, ABILITY_FILTER, ABILITY_TECHNICIAN }",
     "speciesName": "_(\"Mr. Mime\")",
     "natDexNum": "NATIONAL_DEX_MR_MIME",
@@ -29903,15 +29905,15 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 5.23779761904762,
+      "absoluteRating": 5.17529761904762,
       "absoluteBSTRating": 4.666666666666667,
       "bestMoveset": [
         "MOVE_DREAM_EATER",
         "MOVE_SHOCK_WAVE",
-        "MOVE_AERIAL_ACE",
-        "MOVE_FOCUS_PUNCH"
+        "MOVE_DAZZLING_GLEAM",
+        "MOVE_AERIAL_ACE"
       ],
-      "movesRating": 7.044642857142858,
+      "movesRating": 6.419642857142857,
       "bestAbilityRating": 8,
       "tier": "AVERAGE",
       "bestEvo": "SPECIES_MR_RIME",
@@ -30356,7 +30358,7 @@
     ],
     "parsedAbilities": [
       "SWARM",
-      "NONE",
+      "TECHNICIAN",
       "STEADFAST"
     ],
     "id": "SPECIES_SCYTHER",
@@ -30368,7 +30370,7 @@
     "baseSpAttack": 55,
     "baseSpDefense": 80,
     "types": "MON_TYPES(TYPE_BUG, TYPE_FLYING)",
-    "abilities": "{ ABILITY_SWARM, ABILITY_NONE, ABILITY_STEADFAST }",
+    "abilities": "{ ABILITY_SWARM, ABILITY_TECHNICIAN, ABILITY_STEADFAST }",
     "speciesName": "_(\"Scyther\")",
     "natDexNum": "NATIONAL_DEX_SCYTHER",
     "levelUpLearnset": "sScytherLevelUpLearnset",
@@ -30495,16 +30497,16 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 5.47702380952381,
+      "absoluteRating": 5.613988095238095,
       "absoluteBSTRating": 5.333333333333333,
       "bestMoveset": [
-        "MOVE_X_SCISSOR",
         "MOVE_AERIAL_ACE",
-        "MOVE_DOUBLE_EDGE",
-        "MOVE_SWORDS_DANCE"
+        "MOVE_DOUBLE_HIT",
+        "MOVE_FURY_CUTTER",
+        "MOVE_THIEF"
       ],
-      "movesRating": 7.103571428571429,
-      "bestAbilityRating": 5,
+      "movesRating": 5.473214285714285,
+      "bestAbilityRating": 8,
       "tier": "AVERAGE",
       "bestEvo": "SPECIES_KLEAVOR",
       "bestEvoRating": 5.741309523809524,
@@ -30522,7 +30524,7 @@
     ],
     "parsedAbilities": [
       "SWARM",
-      "NONE",
+      "TECHNICIAN",
       "LIGHT_METAL"
     ],
     "id": "SPECIES_SCIZOR",
@@ -30534,7 +30536,7 @@
     "baseSpAttack": 55,
     "baseSpDefense": 80,
     "types": "MON_TYPES(TYPE_BUG, TYPE_STEEL)",
-    "abilities": "{ ABILITY_SWARM, ABILITY_NONE, ABILITY_LIGHT_METAL }",
+    "abilities": "{ ABILITY_SWARM, ABILITY_TECHNICIAN, ABILITY_LIGHT_METAL }",
     "speciesName": "_(\"Scizor\")",
     "natDexNum": "NATIONAL_DEX_SCIZOR",
     "levelUpLearnset": "sScizorLevelUpLearnset",
@@ -30662,16 +30664,16 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 5.481488095238095,
+      "absoluteRating": 5.609523809523809,
       "absoluteBSTRating": 5.333333333333333,
       "bestMoveset": [
-        "MOVE_IRON_HEAD",
-        "MOVE_X_SCISSOR",
-        "MOVE_DOUBLE_EDGE",
-        "MOVE_SWORDS_DANCE"
+        "MOVE_BULLET_PUNCH",
+        "MOVE_DOUBLE_HIT",
+        "MOVE_FURY_CUTTER",
+        "MOVE_AERIAL_ACE"
       ],
-      "movesRating": 7.148214285714285,
-      "bestAbilityRating": 5,
+      "movesRating": 5.428571428571429,
+      "bestAbilityRating": 8,
       "tier": "AVERAGE",
       "bestEvo": "SPECIES_KLEAVOR",
       "bestEvoRating": 5.741309523809524,
@@ -31001,7 +31003,7 @@
     ],
     "parsedAbilities": [
       "OBLIVIOUS",
-      "NONE",
+      "FOREWARN",
       "HYDRATION"
     ],
     "id": "SPECIES_SMOOCHUM",
@@ -31013,7 +31015,7 @@
     "baseSpAttack": 85,
     "baseSpDefense": 65,
     "types": "MON_TYPES(TYPE_ICE, TYPE_PSYCHIC)",
-    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_NONE, ABILITY_HYDRATION }",
+    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_FOREWARN, ABILITY_HYDRATION }",
     "speciesName": "_(\"Smoochum\")",
     "natDexNum": "NATIONAL_DEX_SMOOCHUM",
     "levelUpLearnset": "sSmoochumLevelUpLearnset",
@@ -31162,7 +31164,7 @@
     ],
     "parsedAbilities": [
       "OBLIVIOUS",
-      "NONE",
+      "FOREWARN",
       "DRY_SKIN"
     ],
     "id": "SPECIES_JYNX",
@@ -31174,7 +31176,7 @@
     "baseSpAttack": 115,
     "baseSpDefense": 95,
     "types": "MON_TYPES(TYPE_ICE, TYPE_PSYCHIC)",
-    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_NONE, ABILITY_DRY_SKIN }",
+    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_FOREWARN, ABILITY_DRY_SKIN }",
     "speciesName": "_(\"Jynx\")",
     "natDexNum": "NATIONAL_DEX_JYNX",
     "levelUpLearnset": "sJynxLevelUpLearnset",
@@ -32329,7 +32331,7 @@
     ],
     "parsedAbilities": [
       "HYPER_CUTTER",
-      "NONE",
+      "MOLD_BREAKER",
       "MOXIE"
     ],
     "id": "SPECIES_PINSIR",
@@ -32341,7 +32343,7 @@
     "baseSpAttack": 55,
     "baseSpDefense": 70,
     "types": "MON_TYPES(TYPE_BUG)",
-    "abilities": "{ ABILITY_HYPER_CUTTER, ABILITY_NONE, ABILITY_MOXIE }",
+    "abilities": "{ ABILITY_HYPER_CUTTER, ABILITY_MOLD_BREAKER, ABILITY_MOXIE }",
     "speciesName": "_(\"Pinsir\")",
     "natDexNum": "NATIONAL_DEX_PINSIR",
     "levelUpLearnset": "sPinsirLevelUpLearnset",
@@ -32626,7 +32628,7 @@
     ],
     "parsedAbilities": [
       "INTIMIDATE",
-      "NONE",
+      "ANGER_POINT",
       "SHEER_FORCE"
     ],
     "id": "SPECIES_TAUROS",
@@ -32638,7 +32640,7 @@
     "baseSpAttack": 40,
     "baseSpDefense": 70,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_INTIMIDATE, ABILITY_NONE, ABILITY_SHEER_FORCE }",
+    "abilities": "{ ABILITY_INTIMIDATE, ABILITY_ANGER_POINT, ABILITY_SHEER_FORCE }",
     "speciesName": "_(\"Tauros\")",
     "natDexNum": "NATIONAL_DEX_TAUROS",
     "levelUpLearnset": "sTaurosLevelUpLearnset",
@@ -33815,7 +33817,7 @@
     ],
     "parsedAbilities": [
       "RUN_AWAY",
-      "NONE",
+      "ADAPTABILITY",
       "ANTICIPATION"
     ],
     "id": "SPECIES_EEVEE",
@@ -33827,7 +33829,7 @@
     "baseSpAttack": 45,
     "baseSpDefense": 65,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_RUN_AWAY, ABILITY_NONE, ABILITY_ANTICIPATION }",
+    "abilities": "{ ABILITY_RUN_AWAY, ABILITY_ADAPTABILITY, ABILITY_ANTICIPATION }",
     "speciesName": "_(\"Eevee\")",
     "natDexNum": "NATIONAL_DEX_EEVEE",
     "levelUpLearnset": "sEeveeLevelUpLearnset",
@@ -34000,16 +34002,16 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.8677976190476193,
+      "absoluteRating": 3.3535119047619046,
       "absoluteBSTRating": 2.4166666666666665,
       "bestMoveset": [
         "MOVE_DOUBLE_EDGE",
         "MOVE_SHADOW_BALL",
-        "MOVE_TOXIC",
-        "MOVE_CALM_MIND"
+        "MOVE_BITE",
+        "MOVE_IRON_TAIL"
       ],
-      "movesRating": 7.3446428571428575,
-      "bestAbilityRating": 2,
+      "movesRating": 6.201785714285714,
+      "bestAbilityRating": 8,
       "tier": "BAD",
       "bestEvo": "SPECIES_ESPEON",
       "bestEvoRating": 6.2701785714285725,
@@ -35586,7 +35588,7 @@
     ],
     "parsedAbilities": [
       "TRACE",
-      "NONE",
+      "DOWNLOAD",
       "ANALYTIC"
     ],
     "id": "SPECIES_PORYGON",
@@ -35598,7 +35600,7 @@
     "baseSpAttack": 85,
     "baseSpDefense": 75,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_TRACE, ABILITY_NONE, ABILITY_ANALYTIC }",
+    "abilities": "{ ABILITY_TRACE, ABILITY_DOWNLOAD, ABILITY_ANALYTIC }",
     "speciesName": "_(\"Porygon\")",
     "natDexNum": "NATIONAL_DEX_PORYGON",
     "levelUpLearnset": "sPorygonLevelUpLearnset",
@@ -35728,7 +35730,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 4.274345238095238,
+      "absoluteRating": 4.374345238095239,
       "absoluteBSTRating": 3.5833333333333335,
       "bestMoveset": [
         "MOVE_DOUBLE_EDGE",
@@ -35737,7 +35739,7 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 8.076785714285714,
-      "bestAbilityRating": 6,
+      "bestAbilityRating": 7,
       "tier": "WEAK",
       "bestEvo": "SPECIES_PORYGON_Z",
       "bestEvoRating": 6.278154761904762,
@@ -35751,7 +35753,7 @@
     ],
     "parsedAbilities": [
       "TRACE",
-      "NONE",
+      "DOWNLOAD",
       "ANALYTIC"
     ],
     "id": "SPECIES_PORYGON2",
@@ -35763,7 +35765,7 @@
     "baseSpAttack": 105,
     "baseSpDefense": 95,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_TRACE, ABILITY_NONE, ABILITY_ANALYTIC }",
+    "abilities": "{ ABILITY_TRACE, ABILITY_DOWNLOAD, ABILITY_ANALYTIC }",
     "speciesName": "_(\"Porygon2\")",
     "natDexNum": "NATIONAL_DEX_PORYGON2",
     "levelUpLearnset": "sPorygon2LevelUpLearnset",
@@ -35897,7 +35899,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 5.874345238095238,
+      "absoluteRating": 5.974345238095238,
       "absoluteBSTRating": 5.583333333333333,
       "bestMoveset": [
         "MOVE_DOUBLE_EDGE",
@@ -35906,7 +35908,7 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 8.076785714285714,
-      "bestAbilityRating": 6,
+      "bestAbilityRating": 7,
       "tier": "AVERAGE",
       "bestEvo": "SPECIES_PORYGON_Z",
       "bestEvoRating": 6.278154761904762,
@@ -37711,7 +37713,7 @@
     "parsedAbilities": [
       "PRESSURE",
       "NONE",
-      "LIGHTNING_ROD"
+      "STATIC"
     ],
     "id": "SPECIES_ZAPDOS",
     "family": "P_FAMILY_ZAPDOS",
@@ -37722,7 +37724,7 @@
     "baseSpAttack": 125,
     "baseSpDefense": 90,
     "types": "MON_TYPES(TYPE_ELECTRIC, TYPE_FLYING)",
-    "abilities": "{ ABILITY_PRESSURE, ABILITY_NONE, ABILITY_LIGHTNING_ROD }",
+    "abilities": "{ ABILITY_PRESSURE, ABILITY_NONE, ABILITY_STATIC }",
     "speciesName": "_(\"Zapdos\")",
     "natDexNum": "NATIONAL_DEX_ZAPDOS",
     "levelUpLearnset": "sZapdosLevelUpLearnset",
@@ -37835,7 +37837,7 @@
       "MOVE_TOXIC"
     ],
     "rating": {
-      "absoluteRating": 6.784761904761906,
+      "absoluteRating": 6.584761904761906,
       "absoluteBSTRating": 6.666666666666667,
       "bestMoveset": [
         "MOVE_THUNDERBOLT",
@@ -37844,10 +37846,10 @@
         "MOVE_DOUBLE_EDGE"
       ],
       "movesRating": 7.514285714285714,
-      "bestAbilityRating": 7,
+      "bestAbilityRating": 5,
       "tier": "STRONG",
       "bestEvo": "SPECIES_ZAPDOS",
-      "bestEvoRating": 6.784761904761906,
+      "bestEvoRating": 6.584761904761906,
       "bestEvoTier": "STRONG"
     }
   },
@@ -44242,7 +44244,8 @@
   {
     "name": "Azurill",
     "parsedTypes": [
-      "NORMAL"
+      "NORMAL",
+      "FAIRY"
     ],
     "parsedAbilities": [
       "THICK_FAT",
@@ -44257,7 +44260,7 @@
     "baseSpeed": 20,
     "baseSpAttack": 20,
     "baseSpDefense": 40,
-    "types": "MON_TYPES(TYPE_NORMAL)",
+    "types": "MON_TYPES(TYPE_NORMAL, TYPE_FAIRY)",
     "abilities": "{ ABILITY_THICK_FAT, ABILITY_HUGE_POWER, ABILITY_SAP_SIPPER }",
     "speciesName": "_(\"Azurill\")",
     "natDexNum": "NATIONAL_DEX_AZURILL",
@@ -44364,14 +44367,15 @@
       "bestAbilityRating": 1.6666666666666667,
       "tier": "BAD",
       "bestEvo": "SPECIES_AZUMARILL",
-      "bestEvoRating": 5.072261904761905,
+      "bestEvoRating": 5.010119047619048,
       "bestEvoTier": "AVERAGE"
     }
   },
   {
     "name": "Marill",
     "parsedTypes": [
-      "WATER"
+      "WATER",
+      "FAIRY"
     ],
     "parsedAbilities": [
       "THICK_FAT",
@@ -44386,7 +44390,7 @@
     "baseSpeed": 40,
     "baseSpAttack": 20,
     "baseSpDefense": 50,
-    "types": "MON_TYPES(TYPE_WATER)",
+    "types": "MON_TYPES(TYPE_WATER, TYPE_FAIRY)",
     "abilities": "{ ABILITY_THICK_FAT, ABILITY_HUGE_POWER, ABILITY_SAP_SIPPER }",
     "speciesName": "_(\"Marill\")",
     "natDexNum": "NATIONAL_DEX_MARILL",
@@ -44529,26 +44533,27 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.155595238095238,
+      "absoluteRating": 2.093452380952381,
       "absoluteBSTRating": 1.5,
       "bestMoveset": [
         "MOVE_SURF",
+        "MOVE_PLAY_ROUGH",
         "MOVE_FOCUS_PUNCH",
-        "MOVE_TOXIC",
-        "MOVE_DOUBLE_EDGE"
+        "MOVE_TOXIC"
       ],
-      "movesRating": 7.889285714285714,
+      "movesRating": 7.267857142857142,
       "bestAbilityRating": 1.6666666666666667,
       "tier": "BAD",
       "bestEvo": "SPECIES_AZUMARILL",
-      "bestEvoRating": 5.072261904761905,
+      "bestEvoRating": 5.010119047619048,
       "bestEvoTier": "AVERAGE"
     }
   },
   {
     "name": "Azumarill",
     "parsedTypes": [
-      "WATER"
+      "WATER",
+      "FAIRY"
     ],
     "parsedAbilities": [
       "THICK_FAT",
@@ -44563,7 +44568,7 @@
     "baseSpeed": 50,
     "baseSpAttack": 60,
     "baseSpDefense": 80,
-    "types": "MON_TYPES(TYPE_WATER)",
+    "types": "MON_TYPES(TYPE_WATER, TYPE_FAIRY)",
     "abilities": "{ ABILITY_THICK_FAT, ABILITY_HUGE_POWER, ABILITY_SAP_SIPPER }",
     "speciesName": "_(\"Azumarill\")",
     "natDexNum": "NATIONAL_DEX_AZUMARILL",
@@ -44700,19 +44705,19 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 5.072261904761905,
+      "absoluteRating": 5.010119047619048,
       "absoluteBSTRating": 4.833333333333333,
       "bestMoveset": [
         "MOVE_SURF",
+        "MOVE_PLAY_ROUGH",
         "MOVE_FOCUS_PUNCH",
-        "MOVE_TOXIC",
-        "MOVE_DOUBLE_EDGE"
+        "MOVE_TOXIC"
       ],
-      "movesRating": 7.889285714285714,
+      "movesRating": 7.267857142857142,
       "bestAbilityRating": 4.166666666666667,
       "tier": "AVERAGE",
       "bestEvo": "SPECIES_AZUMARILL",
-      "bestEvoRating": 5.072261904761905,
+      "bestEvoRating": 5.010119047619048,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -45044,7 +45049,7 @@
     ],
     "parsedAbilities": [
       "CHLOROPHYLL",
-      "NONE",
+      "LEAF_GUARD",
       "INFILTRATOR"
     ],
     "id": "SPECIES_HOPPIP",
@@ -45056,7 +45061,7 @@
     "baseSpAttack": 35,
     "baseSpDefense": 55,
     "types": "MON_TYPES(TYPE_GRASS, TYPE_FLYING)",
-    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_NONE, ABILITY_INFILTRATOR }",
+    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_LEAF_GUARD, ABILITY_INFILTRATOR }",
     "speciesName": "_(\"Hoppip\")",
     "natDexNum": "NATIONAL_DEX_HOPPIP",
     "levelUpLearnset": "sHoppipLevelUpLearnset",
@@ -45212,7 +45217,7 @@
     ],
     "parsedAbilities": [
       "CHLOROPHYLL",
-      "NONE",
+      "LEAF_GUARD",
       "INFILTRATOR"
     ],
     "id": "SPECIES_SKIPLOOM",
@@ -45224,7 +45229,7 @@
     "baseSpAttack": 45,
     "baseSpDefense": 65,
     "types": "MON_TYPES(TYPE_GRASS, TYPE_FLYING)",
-    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_NONE, ABILITY_INFILTRATOR }",
+    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_LEAF_GUARD, ABILITY_INFILTRATOR }",
     "speciesName": "_(\"Skiploom\")",
     "natDexNum": "NATIONAL_DEX_SKIPLOOM",
     "levelUpLearnset": "sSkiploomLevelUpLearnset",
@@ -45380,7 +45385,7 @@
     ],
     "parsedAbilities": [
       "CHLOROPHYLL",
-      "NONE",
+      "LEAF_GUARD",
       "INFILTRATOR"
     ],
     "id": "SPECIES_JUMPLUFF",
@@ -45392,7 +45397,7 @@
     "baseSpAttack": 55,
     "baseSpDefense": 95,
     "types": "MON_TYPES(TYPE_GRASS, TYPE_FLYING)",
-    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_NONE, ABILITY_INFILTRATOR }",
+    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_LEAF_GUARD, ABILITY_INFILTRATOR }",
     "speciesName": "_(\"Jumpluff\")",
     "natDexNum": "NATIONAL_DEX_JUMPLUFF",
     "levelUpLearnset": "sJumpluffLevelUpLearnset",
@@ -45869,7 +45874,7 @@
     ],
     "parsedAbilities": [
       "CHLOROPHYLL",
-      "NONE",
+      "SOLAR_POWER",
       "EARLY_BIRD"
     ],
     "id": "SPECIES_SUNKERN",
@@ -45881,7 +45886,7 @@
     "baseSpAttack": 30,
     "baseSpDefense": 30,
     "types": "MON_TYPES(TYPE_GRASS)",
-    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_NONE, ABILITY_EARLY_BIRD }",
+    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_SOLAR_POWER, ABILITY_EARLY_BIRD }",
     "speciesName": "_(\"Sunkern\")",
     "natDexNum": "NATIONAL_DEX_SUNKERN",
     "levelUpLearnset": "sSunkernLevelUpLearnset",
@@ -46011,7 +46016,7 @@
     ],
     "parsedAbilities": [
       "CHLOROPHYLL",
-      "NONE",
+      "SOLAR_POWER",
       "EARLY_BIRD"
     ],
     "id": "SPECIES_SUNFLORA",
@@ -46023,7 +46028,7 @@
     "baseSpAttack": 105,
     "baseSpDefense": 85,
     "types": "MON_TYPES(TYPE_GRASS)",
-    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_NONE, ABILITY_EARLY_BIRD }",
+    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_SOLAR_POWER, ABILITY_EARLY_BIRD }",
     "speciesName": "_(\"Sunflora\")",
     "natDexNum": "NATIONAL_DEX_SUNFLORA",
     "levelUpLearnset": "sSunfloraLevelUpLearnset",
@@ -47058,7 +47063,7 @@
     ],
     "parsedAbilities": [
       "INSOMNIA",
-      "NONE",
+      "SUPER_LUCK",
       "PRANKSTER"
     ],
     "id": "SPECIES_MURKROW",
@@ -47070,7 +47075,7 @@
     "baseSpAttack": 85,
     "baseSpDefense": 42,
     "types": "MON_TYPES(TYPE_DARK, TYPE_FLYING)",
-    "abilities": "{ ABILITY_INSOMNIA, ABILITY_NONE, ABILITY_PRANKSTER }",
+    "abilities": "{ ABILITY_INSOMNIA, ABILITY_SUPER_LUCK, ABILITY_PRANKSTER }",
     "speciesName": "_(\"Murkrow\")",
     "natDexNum": "NATIONAL_DEX_MURKROW",
     "levelUpLearnset": "sMurkrowLevelUpLearnset",
@@ -49284,7 +49289,7 @@
   {
     "name": "Snubbull",
     "parsedTypes": [
-      "NORMAL"
+      "FAIRY"
     ],
     "parsedAbilities": [
       "INTIMIDATE",
@@ -49299,7 +49304,7 @@
     "baseSpeed": 30,
     "baseSpAttack": 40,
     "baseSpDefense": 40,
-    "types": "MON_TYPES(TYPE_NORMAL)",
+    "types": "MON_TYPES(TYPE_FAIRY)",
     "abilities": "{ ABILITY_INTIMIDATE, ABILITY_RUN_AWAY, ABILITY_RATTLED }",
     "speciesName": "_(\"Snubbull\")",
     "natDexNum": "NATIONAL_DEX_SNUBBULL",
@@ -49445,30 +49450,30 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 3.100535714285715,
+      "absoluteRating": 3.0576785714285717,
       "absoluteBSTRating": 2,
       "bestMoveset": [
-        "MOVE_DOUBLE_EDGE",
+        "MOVE_PLAY_ROUGH",
         "MOVE_FOCUS_PUNCH",
-        "MOVE_TOXIC",
-        "MOVE_EARTHQUAKE"
+        "MOVE_DOUBLE_EDGE",
+        "MOVE_TOXIC"
       ],
-      "movesRating": 8.005357142857143,
+      "movesRating": 7.576785714285714,
       "bestAbilityRating": 7,
       "tier": "BAD",
       "bestEvo": "SPECIES_GRANBULL",
-      "bestEvoRating": 5.13625,
+      "bestEvoRating": 5.078214285714286,
       "bestEvoTier": "AVERAGE"
     }
   },
   {
     "name": "Granbull",
     "parsedTypes": [
-      "NORMAL"
+      "FAIRY"
     ],
     "parsedAbilities": [
       "INTIMIDATE",
-      "NONE",
+      "QUICK_FEET",
       "RATTLED"
     ],
     "id": "SPECIES_GRANBULL",
@@ -49479,8 +49484,8 @@
     "baseSpeed": 45,
     "baseSpAttack": 60,
     "baseSpDefense": 60,
-    "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_INTIMIDATE, ABILITY_NONE, ABILITY_RATTLED }",
+    "types": "MON_TYPES(TYPE_FAIRY)",
+    "abilities": "{ ABILITY_INTIMIDATE, ABILITY_QUICK_FEET, ABILITY_RATTLED }",
     "speciesName": "_(\"Granbull\")",
     "natDexNum": "NATIONAL_DEX_GRANBULL",
     "levelUpLearnset": "sGranbullLevelUpLearnset",
@@ -49626,19 +49631,19 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 5.13625,
+      "absoluteRating": 5.078214285714286,
       "absoluteBSTRating": 4.5,
       "bestMoveset": [
-        "MOVE_DOUBLE_EDGE",
+        "MOVE_PLAY_ROUGH",
         "MOVE_OUTRAGE",
         "MOVE_FOCUS_PUNCH",
-        "MOVE_TOXIC"
+        "MOVE_DOUBLE_EDGE"
       ],
-      "movesRating": 8.3625,
+      "movesRating": 7.7821428571428575,
       "bestAbilityRating": 7,
       "tier": "AVERAGE",
       "bestEvo": "SPECIES_GRANBULL",
-      "bestEvoRating": 5.13625,
+      "bestEvoRating": 5.078214285714286,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -50116,7 +50121,7 @@
     ],
     "parsedAbilities": [
       "STURDY",
-      "NONE",
+      "GLUTTONY",
       "CONTRARY"
     ],
     "id": "SPECIES_SHUCKLE",
@@ -50128,7 +50133,7 @@
     "baseSpAttack": 10,
     "baseSpDefense": 230,
     "types": "MON_TYPES(TYPE_BUG, TYPE_ROCK)",
-    "abilities": "{ ABILITY_STURDY, ABILITY_NONE, ABILITY_CONTRARY }",
+    "abilities": "{ ABILITY_STURDY, ABILITY_GLUTTONY, ABILITY_CONTRARY }",
     "speciesName": "_(\"Shuckle\")",
     "natDexNum": "NATIONAL_DEX_SHUCKLE",
     "levelUpLearnset": "sShuckleLevelUpLearnset",
@@ -51216,7 +51221,7 @@
     ],
     "parsedAbilities": [
       "PICKUP",
-      "NONE",
+      "QUICK_FEET",
       "HONEY_GATHER"
     ],
     "id": "SPECIES_TEDDIURSA",
@@ -51228,7 +51233,7 @@
     "baseSpAttack": 50,
     "baseSpDefense": 50,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_PICKUP, ABILITY_NONE, ABILITY_HONEY_GATHER }",
+    "abilities": "{ ABILITY_PICKUP, ABILITY_QUICK_FEET, ABILITY_HONEY_GATHER }",
     "speciesName": "_(\"Teddiursa\")",
     "natDexNum": "NATIONAL_DEX_TEDDIURSA",
     "levelUpLearnset": "sTeddiursaLevelUpLearnset",
@@ -51369,7 +51374,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.9321428571428574,
+      "absoluteRating": 3.3321428571428573,
       "absoluteBSTRating": 2.5,
       "bestMoveset": [
         "MOVE_THRASH",
@@ -51378,7 +51383,7 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 8.321428571428571,
-      "bestAbilityRating": 1,
+      "bestAbilityRating": 5,
       "tier": "BAD",
       "bestEvo": "SPECIES_URSALUNA_BLOODMOON",
       "bestEvoRating": 6.677678571428571,
@@ -51392,7 +51397,7 @@
     ],
     "parsedAbilities": [
       "GUTS",
-      "NONE",
+      "QUICK_FEET",
       "UNNERVE"
     ],
     "id": "SPECIES_URSARING",
@@ -51404,7 +51409,7 @@
     "baseSpAttack": 75,
     "baseSpDefense": 75,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_GUTS, ABILITY_NONE, ABILITY_UNNERVE }",
+    "abilities": "{ ABILITY_GUTS, ABILITY_QUICK_FEET, ABILITY_UNNERVE }",
     "speciesName": "_(\"Ursaring\")",
     "natDexNum": "NATIONAL_DEX_URSARING",
     "levelUpLearnset": "sUrsaringLevelUpLearnset",
@@ -52226,7 +52231,7 @@
     ],
     "parsedAbilities": [
       "OBLIVIOUS",
-      "NONE",
+      "SNOW_CLOAK",
       "THICK_FAT"
     ],
     "id": "SPECIES_SWINUB",
@@ -52238,7 +52243,7 @@
     "baseSpAttack": 30,
     "baseSpDefense": 30,
     "types": "MON_TYPES(TYPE_ICE, TYPE_GROUND)",
-    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_NONE, ABILITY_THICK_FAT }",
+    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_SNOW_CLOAK, ABILITY_THICK_FAT }",
     "speciesName": "_(\"Swinub\")",
     "natDexNum": "NATIONAL_DEX_SWINUB",
     "levelUpLearnset": "sSwinubLevelUpLearnset",
@@ -52375,7 +52380,7 @@
     ],
     "parsedAbilities": [
       "OBLIVIOUS",
-      "NONE",
+      "SNOW_CLOAK",
       "THICK_FAT"
     ],
     "id": "SPECIES_PILOSWINE",
@@ -52387,7 +52392,7 @@
     "baseSpAttack": 60,
     "baseSpDefense": 60,
     "types": "MON_TYPES(TYPE_ICE, TYPE_GROUND)",
-    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_NONE, ABILITY_THICK_FAT }",
+    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_SNOW_CLOAK, ABILITY_THICK_FAT }",
     "speciesName": "_(\"Piloswine\")",
     "natDexNum": "NATIONAL_DEX_PILOSWINE",
     "levelUpLearnset": "sPiloswineLevelUpLearnset",
@@ -53140,7 +53145,7 @@
     ],
     "parsedAbilities": [
       "HUSTLE",
-      "NONE",
+      "SNIPER",
       "MOODY"
     ],
     "id": "SPECIES_REMORAID",
@@ -53152,7 +53157,7 @@
     "baseSpAttack": 65,
     "baseSpDefense": 35,
     "types": "MON_TYPES(TYPE_WATER)",
-    "abilities": "{ ABILITY_HUSTLE, ABILITY_NONE, ABILITY_MOODY }",
+    "abilities": "{ ABILITY_HUSTLE, ABILITY_SNIPER, ABILITY_MOODY }",
     "speciesName": "_(\"Remoraid\")",
     "natDexNum": "NATIONAL_DEX_REMORAID",
     "levelUpLearnset": "sRemoraidLevelUpLearnset",
@@ -53290,7 +53295,7 @@
     ],
     "parsedAbilities": [
       "SUCTION_CUPS",
-      "NONE",
+      "SNIPER",
       "MOODY"
     ],
     "id": "SPECIES_OCTILLERY",
@@ -53302,7 +53307,7 @@
     "baseSpAttack": 105,
     "baseSpDefense": 75,
     "types": "MON_TYPES(TYPE_WATER)",
-    "abilities": "{ ABILITY_SUCTION_CUPS, ABILITY_NONE, ABILITY_MOODY }",
+    "abilities": "{ ABILITY_SUCTION_CUPS, ABILITY_SNIPER, ABILITY_MOODY }",
     "speciesName": "_(\"Octillery\")",
     "natDexNum": "NATIONAL_DEX_OCTILLERY",
     "levelUpLearnset": "sOctilleryLevelUpLearnset",
@@ -54811,7 +54816,7 @@
     ],
     "parsedAbilities": [
       "INTIMIDATE",
-      "NONE",
+      "FRISK",
       "SAP_SIPPER"
     ],
     "id": "SPECIES_STANTLER",
@@ -54823,7 +54828,7 @@
     "baseSpAttack": 85,
     "baseSpDefense": 65,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_INTIMIDATE, ABILITY_NONE, ABILITY_SAP_SIPPER }",
+    "abilities": "{ ABILITY_INTIMIDATE, ABILITY_FRISK, ABILITY_SAP_SIPPER }",
     "speciesName": "_(\"Stantler\")",
     "natDexNum": "NATIONAL_DEX_STANTLER",
     "levelUpLearnset": "sStantlerLevelUpLearnset",
@@ -55116,7 +55121,7 @@
     ],
     "parsedAbilities": [
       "OWN_TEMPO",
-      "NONE",
+      "TECHNICIAN",
       "MOODY"
     ],
     "id": "SPECIES_SMEARGLE",
@@ -55128,7 +55133,7 @@
     "baseSpAttack": 20,
     "baseSpDefense": 45,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_OWN_TEMPO, ABILITY_NONE, ABILITY_MOODY }",
+    "abilities": "{ ABILITY_OWN_TEMPO, ABILITY_TECHNICIAN, ABILITY_MOODY }",
     "speciesName": "_(\"Smeargle\")",
     "natDexNum": "NATIONAL_DEX_SMEARGLE",
     "levelUpLearnset": "sSmeargleLevelUpLearnset",
@@ -55207,7 +55212,7 @@
     ],
     "parsedAbilities": [
       "THICK_FAT",
-      "NONE",
+      "SCRAPPY",
       "SAP_SIPPER"
     ],
     "id": "SPECIES_MILTANK",
@@ -55219,7 +55224,7 @@
     "baseSpAttack": 40,
     "baseSpDefense": 70,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_THICK_FAT, ABILITY_NONE, ABILITY_SAP_SIPPER }",
+    "abilities": "{ ABILITY_THICK_FAT, ABILITY_SCRAPPY, ABILITY_SAP_SIPPER }",
     "speciesName": "_(\"Miltank\")",
     "natDexNum": "NATIONAL_DEX_MILTANK",
     "levelUpLearnset": "sMiltankLevelUpLearnset",
@@ -55363,7 +55368,7 @@
     "parsedAbilities": [
       "PRESSURE",
       "NONE",
-      "VOLT_ABSORB"
+      "INNER_FOCUS"
     ],
     "id": "SPECIES_RAIKOU",
     "family": "P_FAMILY_RAIKOU",
@@ -55374,7 +55379,7 @@
     "baseSpAttack": 115,
     "baseSpDefense": 100,
     "types": "MON_TYPES(TYPE_ELECTRIC)",
-    "abilities": "{ ABILITY_PRESSURE, ABILITY_NONE, ABILITY_VOLT_ABSORB }",
+    "abilities": "{ ABILITY_PRESSURE, ABILITY_NONE, ABILITY_INNER_FOCUS }",
     "speciesName": "_(\"Raikou\")",
     "natDexNum": "NATIONAL_DEX_RAIKOU",
     "levelUpLearnset": "sRaikouLevelUpLearnset",
@@ -55499,7 +55504,7 @@
       "MOVE_TOXIC"
     ],
     "rating": {
-      "absoluteRating": 6.7856547619047625,
+      "absoluteRating": 6.585654761904762,
       "absoluteBSTRating": 6.666666666666667,
       "bestMoveset": [
         "MOVE_THUNDERBOLT",
@@ -55508,10 +55513,10 @@
         "MOVE_CALM_MIND"
       ],
       "movesRating": 7.523214285714285,
-      "bestAbilityRating": 7,
+      "bestAbilityRating": 5,
       "tier": "STRONG",
       "bestEvo": "SPECIES_RAIKOU",
-      "bestEvoRating": 6.7856547619047625,
+      "bestEvoRating": 6.585654761904762,
       "bestEvoTier": "STRONG"
     }
   },
@@ -55523,7 +55528,7 @@
     "parsedAbilities": [
       "PRESSURE",
       "NONE",
-      "FLASH_FIRE"
+      "INNER_FOCUS"
     ],
     "id": "SPECIES_ENTEI",
     "family": "P_FAMILY_ENTEI",
@@ -55534,7 +55539,7 @@
     "baseSpAttack": 90,
     "baseSpDefense": 75,
     "types": "MON_TYPES(TYPE_FIRE)",
-    "abilities": "{ ABILITY_PRESSURE, ABILITY_NONE, ABILITY_FLASH_FIRE }",
+    "abilities": "{ ABILITY_PRESSURE, ABILITY_NONE, ABILITY_INNER_FOCUS }",
     "speciesName": "_(\"Entei\")",
     "natDexNum": "NATIONAL_DEX_ENTEI",
     "levelUpLearnset": "sEnteiLevelUpLearnset",
@@ -55662,7 +55667,7 @@
       "MOVE_TOXIC"
     ],
     "rating": {
-      "absoluteRating": 6.754940476190477,
+      "absoluteRating": 6.654940476190477,
       "absoluteBSTRating": 6.666666666666667,
       "bestMoveset": [
         "MOVE_ERUPTION",
@@ -55671,10 +55676,10 @@
         "MOVE_SOLAR_BEAM"
       ],
       "movesRating": 8.216071428571428,
-      "bestAbilityRating": 6,
+      "bestAbilityRating": 5,
       "tier": "STRONG",
       "bestEvo": "SPECIES_ENTEI",
-      "bestEvoRating": 6.754940476190477,
+      "bestEvoRating": 6.654940476190477,
       "bestEvoTier": "STRONG"
     }
   },
@@ -55686,7 +55691,7 @@
     "parsedAbilities": [
       "PRESSURE",
       "NONE",
-      "WATER_ABSORB"
+      "INNER_FOCUS"
     ],
     "id": "SPECIES_SUICUNE",
     "family": "P_FAMILY_SUICUNE",
@@ -55697,7 +55702,7 @@
     "baseSpAttack": 90,
     "baseSpDefense": 115,
     "types": "MON_TYPES(TYPE_WATER)",
-    "abilities": "{ ABILITY_PRESSURE, ABILITY_NONE, ABILITY_WATER_ABSORB }",
+    "abilities": "{ ABILITY_PRESSURE, ABILITY_NONE, ABILITY_INNER_FOCUS }",
     "speciesName": "_(\"Suicune\")",
     "natDexNum": "NATIONAL_DEX_SUICUNE",
     "levelUpLearnset": "sSuicuneLevelUpLearnset",
@@ -55827,7 +55832,7 @@
       "MOVE_WATER_PULSE"
     ],
     "rating": {
-      "absoluteRating": 6.7856547619047625,
+      "absoluteRating": 6.585654761904762,
       "absoluteBSTRating": 6.666666666666667,
       "bestMoveset": [
         "MOVE_SURF",
@@ -55836,10 +55841,10 @@
         "MOVE_CALM_MIND"
       ],
       "movesRating": 7.523214285714285,
-      "bestAbilityRating": 7,
+      "bestAbilityRating": 5,
       "tier": "STRONG",
       "bestEvo": "SPECIES_SUICUNE",
-      "bestEvoRating": 6.7856547619047625,
+      "bestEvoRating": 6.585654761904762,
       "bestEvoTier": "STRONG"
     }
   },
@@ -59284,7 +59289,7 @@
     ],
     "parsedAbilities": [
       "RUN_AWAY",
-      "NONE",
+      "QUICK_FEET",
       "RATTLED"
     ],
     "id": "SPECIES_POOCHYENA",
@@ -59296,7 +59301,7 @@
     "baseSpAttack": 30,
     "baseSpDefense": 30,
     "types": "MON_TYPES(TYPE_DARK)",
-    "abilities": "{ ABILITY_RUN_AWAY, ABILITY_NONE, ABILITY_RATTLED }",
+    "abilities": "{ ABILITY_RUN_AWAY, ABILITY_QUICK_FEET, ABILITY_RATTLED }",
     "speciesName": "_(\"Poochyena\")",
     "natDexNum": "NATIONAL_DEX_POOCHYENA",
     "levelUpLearnset": "sPoochyenaLevelUpLearnset",
@@ -59415,7 +59420,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 1.555297619047619,
+      "absoluteRating": 1.755297619047619,
       "absoluteBSTRating": 0.6666666666666666,
       "bestMoveset": [
         "MOVE_CRUNCH",
@@ -59424,7 +59429,7 @@
         "MOVE_HOWL"
       ],
       "movesRating": 7.2196428571428575,
-      "bestAbilityRating": 3,
+      "bestAbilityRating": 5,
       "tier": "BAD",
       "bestEvo": "SPECIES_MIGHTYENA",
       "bestEvoRating": 4.621964285714286,
@@ -59438,7 +59443,7 @@
     ],
     "parsedAbilities": [
       "INTIMIDATE",
-      "NONE",
+      "QUICK_FEET",
       "MOXIE"
     ],
     "id": "SPECIES_MIGHTYENA",
@@ -59450,7 +59455,7 @@
     "baseSpAttack": 60,
     "baseSpDefense": 60,
     "types": "MON_TYPES(TYPE_DARK)",
-    "abilities": "{ ABILITY_INTIMIDATE, ABILITY_NONE, ABILITY_MOXIE }",
+    "abilities": "{ ABILITY_INTIMIDATE, ABILITY_QUICK_FEET, ABILITY_MOXIE }",
     "speciesName": "_(\"Mightyena\")",
     "natDexNum": "NATIONAL_DEX_MIGHTYENA",
     "levelUpLearnset": "sMightyenaLevelUpLearnset",
@@ -59607,7 +59612,7 @@
     ],
     "parsedAbilities": [
       "PICKUP",
-      "NONE",
+      "GLUTTONY",
       "QUICK_FEET"
     ],
     "id": "SPECIES_ZIGZAGOON",
@@ -59619,7 +59624,7 @@
     "baseSpAttack": 30,
     "baseSpDefense": 41,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_PICKUP, ABILITY_NONE, ABILITY_QUICK_FEET }",
+    "abilities": "{ ABILITY_PICKUP, ABILITY_GLUTTONY, ABILITY_QUICK_FEET }",
     "speciesName": "_(\"Zigzagoon\")",
     "natDexNum": "NATIONAL_DEX_ZIGZAGOON",
     "levelUpLearnset": "sZigzagoonLevelUpLearnset",
@@ -59765,7 +59770,7 @@
     ],
     "parsedAbilities": [
       "PICKUP",
-      "NONE",
+      "GLUTTONY",
       "QUICK_FEET"
     ],
     "id": "SPECIES_LINOONE",
@@ -59777,7 +59782,7 @@
     "baseSpAttack": 50,
     "baseSpDefense": 61,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_PICKUP, ABILITY_NONE, ABILITY_QUICK_FEET }",
+    "abilities": "{ ABILITY_PICKUP, ABILITY_GLUTTONY, ABILITY_QUICK_FEET }",
     "speciesName": "_(\"Linoone\")",
     "natDexNum": "NATIONAL_DEX_LINOONE",
     "levelUpLearnset": "sLinooneLevelUpLearnset",
@@ -61862,7 +61867,7 @@
     ],
     "parsedAbilities": [
       "CHLOROPHYLL",
-      "EARLY_BIRD",
+      "WIND_RIDER",
       "PICKPOCKET"
     ],
     "id": "SPECIES_SHIFTRY",
@@ -61874,7 +61879,7 @@
     "baseSpAttack": 90,
     "baseSpDefense": 60,
     "types": "MON_TYPES(TYPE_GRASS, TYPE_DARK)",
-    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_EARLY_BIRD, ABILITY_PICKPOCKET }",
+    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_WIND_RIDER, ABILITY_PICKPOCKET }",
     "speciesName": "_(\"Shiftry\")",
     "natDexNum": "NATIONAL_DEX_SHIFTRY",
     "levelUpLearnset": "sShiftryLevelUpLearnset",
@@ -62352,7 +62357,7 @@
     ],
     "parsedAbilities": [
       "KEEN_EYE",
-      "NONE",
+      "HYDRATION",
       "RAIN_DISH"
     ],
     "id": "SPECIES_WINGULL",
@@ -62364,7 +62369,7 @@
     "baseSpAttack": 55,
     "baseSpDefense": 30,
     "types": "MON_TYPES(TYPE_WATER, TYPE_FLYING)",
-    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_NONE, ABILITY_RAIN_DISH }",
+    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_HYDRATION, ABILITY_RAIN_DISH }",
     "speciesName": "_(\"Wingull\")",
     "natDexNum": "NATIONAL_DEX_WINGULL",
     "levelUpLearnset": "sWingullLevelUpLearnset",
@@ -62467,7 +62472,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.2407142857142857,
+      "absoluteRating": 2.3407142857142857,
       "absoluteBSTRating": 1.5,
       "bestMoveset": [
         "MOVE_SURF",
@@ -62476,11 +62481,11 @@
         "MOVE_DOUBLE_EDGE"
       ],
       "movesRating": 7.4071428571428575,
-      "bestAbilityRating": 3,
+      "bestAbilityRating": 4,
       "tier": "BAD",
       "bestEvo": "SPECIES_PELIPPER",
-      "bestEvoRating": 4.50327380952381,
-      "bestEvoTier": "WEAK"
+      "bestEvoRating": 5.10327380952381,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -62491,7 +62496,7 @@
     ],
     "parsedAbilities": [
       "KEEN_EYE",
-      "NONE",
+      "DRIZZLE",
       "RAIN_DISH"
     ],
     "id": "SPECIES_PELIPPER",
@@ -62503,7 +62508,7 @@
     "baseSpAttack": 95,
     "baseSpDefense": 70,
     "types": "MON_TYPES(TYPE_WATER, TYPE_FLYING)",
-    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_NONE, ABILITY_RAIN_DISH }",
+    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_DRIZZLE, ABILITY_RAIN_DISH }",
     "speciesName": "_(\"Pelipper\")",
     "natDexNum": "NATIONAL_DEX_PELIPPER",
     "levelUpLearnset": "sPelipperLevelUpLearnset",
@@ -62633,7 +62638,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 4.50327380952381,
+      "absoluteRating": 5.10327380952381,
       "absoluteBSTRating": 4.333333333333333,
       "bestMoveset": [
         "MOVE_SURF",
@@ -62642,11 +62647,11 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 7.366071428571429,
-      "bestAbilityRating": 3,
-      "tier": "WEAK",
+      "bestAbilityRating": 9,
+      "tier": "AVERAGE",
       "bestEvo": "SPECIES_PELIPPER",
-      "bestEvoRating": 4.50327380952381,
-      "bestEvoTier": "WEAK"
+      "bestEvoRating": 5.10327380952381,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -62823,9 +62828,9 @@
       "movesRating": 7.683928571428572,
       "bestAbilityRating": 6,
       "tier": "BAD",
-      "bestEvo": "SPECIES_GARDEVOIR",
-      "bestEvoRating": 5.883988095238095,
-      "bestEvoTier": "AVERAGE",
+      "bestEvo": "SPECIES_GALLADE",
+      "bestEvoRating": 6.009345238095238,
+      "bestEvoTier": "STRONG",
       "megaEvo": "SPECIES_GARDEVOIR_MEGA",
       "megaEvoRating": 7.417321428571428,
       "megaEvoTier": "PREMIUM"
@@ -63011,9 +63016,9 @@
       "movesRating": 7.683928571428572,
       "bestAbilityRating": 6,
       "tier": "BAD",
-      "bestEvo": "SPECIES_GARDEVOIR",
-      "bestEvoRating": 5.883988095238095,
-      "bestEvoTier": "AVERAGE",
+      "bestEvo": "SPECIES_GALLADE",
+      "bestEvoRating": 6.009345238095238,
+      "bestEvoTier": "STRONG",
       "megaEvo": "SPECIES_GARDEVOIR_MEGA",
       "megaEvoRating": 7.417321428571428,
       "megaEvoTier": "PREMIUM"
@@ -63211,9 +63216,9 @@
       "movesRating": 7.773214285714285,
       "bestAbilityRating": 6,
       "tier": "AVERAGE",
-      "bestEvo": "SPECIES_GARDEVOIR",
-      "bestEvoRating": 5.883988095238095,
-      "bestEvoTier": "AVERAGE",
+      "bestEvo": "SPECIES_GALLADE",
+      "bestEvoRating": 6.009345238095238,
+      "bestEvoTier": "STRONG",
       "megaEvo": "SPECIES_GARDEVOIR_MEGA",
       "megaEvoRating": 7.417321428571428,
       "megaEvoTier": "PREMIUM"
@@ -63422,7 +63427,7 @@
     ],
     "parsedAbilities": [
       "STEADFAST",
-      "NONE",
+      "SHARPNESS",
       "JUSTIFIED"
     ],
     "id": "SPECIES_GALLADE",
@@ -63434,7 +63439,7 @@
     "baseSpAttack": 65,
     "baseSpDefense": 115,
     "types": "MON_TYPES(TYPE_PSYCHIC, TYPE_FIGHTING)",
-    "abilities": "{ ABILITY_STEADFAST, ABILITY_NONE, ABILITY_JUSTIFIED }",
+    "abilities": "{ ABILITY_STEADFAST, ABILITY_SHARPNESS, ABILITY_JUSTIFIED }",
     "speciesName": "_(\"Gallade\")",
     "natDexNum": "NATIONAL_DEX_GALLADE",
     "levelUpLearnset": "sGalladeLevelUpLearnset",
@@ -63653,7 +63658,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 5.7093452380952385,
+      "absoluteRating": 6.009345238095238,
       "absoluteBSTRating": 5.633333333333334,
       "bestMoveset": [
         "MOVE_FOCUS_PUNCH",
@@ -63662,11 +63667,11 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 8.026785714285715,
-      "bestAbilityRating": 4,
-      "tier": "AVERAGE",
-      "bestEvo": "SPECIES_GARDEVOIR",
-      "bestEvoRating": 5.883988095238095,
-      "bestEvoTier": "AVERAGE",
+      "bestAbilityRating": 7,
+      "tier": "STRONG",
+      "bestEvo": "SPECIES_GALLADE",
+      "bestEvoRating": 6.009345238095238,
+      "bestEvoTier": "STRONG",
       "megaEvo": "SPECIES_GARDEVOIR_MEGA",
       "megaEvoRating": 7.417321428571428,
       "megaEvoTier": "PREMIUM"
@@ -64211,7 +64216,7 @@
     ],
     "parsedAbilities": [
       "EFFECT_SPORE",
-      "NONE",
+      "POISON_HEAL",
       "QUICK_FEET"
     ],
     "id": "SPECIES_SHROOMISH",
@@ -64223,7 +64228,7 @@
     "baseSpAttack": 40,
     "baseSpDefense": 60,
     "types": "MON_TYPES(TYPE_GRASS)",
-    "abilities": "{ ABILITY_EFFECT_SPORE, ABILITY_NONE, ABILITY_QUICK_FEET }",
+    "abilities": "{ ABILITY_EFFECT_SPORE, ABILITY_POISON_HEAL, ABILITY_QUICK_FEET }",
     "speciesName": "_(\"Shroomish\")",
     "natDexNum": "NATIONAL_DEX_SHROOMISH",
     "levelUpLearnset": "sShroomishLevelUpLearnset",
@@ -64328,7 +64333,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.904761904761905,
+      "absoluteRating": 3.204761904761905,
       "absoluteBSTRating": 1.9166666666666667,
       "bestMoveset": [
         "MOVE_BULLET_SEED",
@@ -64337,7 +64342,7 @@
         "MOVE_LEECH_SEED"
       ],
       "movesRating": 8.714285714285714,
-      "bestAbilityRating": 5,
+      "bestAbilityRating": 8,
       "tier": "BAD",
       "bestEvo": "SPECIES_BRELOOM",
       "bestEvoRating": 5.355654761904762,
@@ -64352,7 +64357,7 @@
     ],
     "parsedAbilities": [
       "EFFECT_SPORE",
-      "NONE",
+      "POISON_HEAL",
       "TECHNICIAN"
     ],
     "id": "SPECIES_BRELOOM",
@@ -64364,7 +64369,7 @@
     "baseSpAttack": 60,
     "baseSpDefense": 60,
     "types": "MON_TYPES(TYPE_GRASS, TYPE_FIGHTING)",
-    "abilities": "{ ABILITY_EFFECT_SPORE, ABILITY_NONE, ABILITY_TECHNICIAN }",
+    "abilities": "{ ABILITY_EFFECT_SPORE, ABILITY_POISON_HEAL, ABILITY_TECHNICIAN }",
     "speciesName": "_(\"Breloom\")",
     "natDexNum": "NATIONAL_DEX_BRELOOM",
     "levelUpLearnset": "sBreloomLevelUpLearnset",
@@ -66723,7 +66728,7 @@
     ],
     "parsedAbilities": [
       "CUTE_CHARM",
-      "NONE",
+      "NORMALIZE",
       "WONDER_SKIN"
     ],
     "id": "SPECIES_SKITTY",
@@ -66735,7 +66740,7 @@
     "baseSpAttack": 35,
     "baseSpDefense": 35,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_NONE, ABILITY_WONDER_SKIN }",
+    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_NORMALIZE, ABILITY_WONDER_SKIN }",
     "speciesName": "_(\"Skitty\")",
     "natDexNum": "NATIONAL_DEX_SKITTY",
     "levelUpLearnset": "sSkittyLevelUpLearnset",
@@ -66894,7 +66899,7 @@
     ],
     "parsedAbilities": [
       "CUTE_CHARM",
-      "NONE",
+      "NORMALIZE",
       "WONDER_SKIN"
     ],
     "id": "SPECIES_DELCATTY",
@@ -66906,7 +66911,7 @@
     "baseSpAttack": 55,
     "baseSpDefense": 55,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_NONE, ABILITY_WONDER_SKIN }",
+    "abilities": "{ ABILITY_CUTE_CHARM, ABILITY_NORMALIZE, ABILITY_WONDER_SKIN }",
     "speciesName": "_(\"Delcatty\")",
     "natDexNum": "NATIONAL_DEX_DELCATTY",
     "levelUpLearnset": "sDelcattyLevelUpLearnset",
@@ -67062,7 +67067,7 @@
     ],
     "parsedAbilities": [
       "KEEN_EYE",
-      "NONE",
+      "STALL",
       "PRANKSTER"
     ],
     "id": "SPECIES_SABLEYE",
@@ -67074,7 +67079,7 @@
     "baseSpAttack": 65,
     "baseSpDefense": 65,
     "types": "MON_TYPES(TYPE_DARK, TYPE_GHOST)",
-    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_NONE, ABILITY_PRANKSTER }",
+    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_STALL, ABILITY_PRANKSTER }",
     "speciesName": "_(\"Sableye\")",
     "natDexNum": "NATIONAL_DEX_SABLEYE",
     "levelUpLearnset": "sSableyeLevelUpLearnset",
@@ -69502,7 +69507,7 @@
     "parsedAbilities": [
       "PLUS",
       "NONE",
-      "NONE"
+      "LIGHTNING_ROD"
     ],
     "id": "SPECIES_PLUSLE",
     "family": "P_FAMILY_PLUSLE",
@@ -69513,7 +69518,7 @@
     "baseSpAttack": 85,
     "baseSpDefense": 75,
     "types": "MON_TYPES(TYPE_ELECTRIC)",
-    "abilities": "{ ABILITY_PLUS, ABILITY_NONE, ABILITY_NONE }",
+    "abilities": "{ ABILITY_PLUS, ABILITY_NONE, ABILITY_LIGHTNING_ROD }",
     "speciesName": "_(\"Plusle\")",
     "natDexNum": "NATIONAL_DEX_PLUSLE",
     "levelUpLearnset": "sPlusleLevelUpLearnset",
@@ -69645,7 +69650,7 @@
       "MOVE_TOXIC"
     ],
     "rating": {
-      "absoluteRating": 3.7523214285714284,
+      "absoluteRating": 4.4523214285714285,
       "absoluteBSTRating": 3.75,
       "bestMoveset": [
         "MOVE_THUNDERBOLT",
@@ -69654,11 +69659,11 @@
         "MOVE_THUNDER_WAVE"
       ],
       "movesRating": 7.523214285714285,
-      "bestAbilityRating": 0,
-      "tier": "BAD",
+      "bestAbilityRating": 7,
+      "tier": "WEAK",
       "bestEvo": "SPECIES_PLUSLE",
-      "bestEvoRating": 3.7523214285714284,
-      "bestEvoTier": "BAD"
+      "bestEvoRating": 4.4523214285714285,
+      "bestEvoTier": "WEAK"
     }
   },
   {
@@ -69669,7 +69674,7 @@
     "parsedAbilities": [
       "MINUS",
       "NONE",
-      "NONE"
+      "VOLT_ABSORB"
     ],
     "id": "SPECIES_MINUN",
     "family": "P_FAMILY_MINUN",
@@ -69680,7 +69685,7 @@
     "baseSpAttack": 75,
     "baseSpDefense": 85,
     "types": "MON_TYPES(TYPE_ELECTRIC)",
-    "abilities": "{ ABILITY_MINUS, ABILITY_NONE, ABILITY_NONE }",
+    "abilities": "{ ABILITY_MINUS, ABILITY_NONE, ABILITY_VOLT_ABSORB }",
     "speciesName": "_(\"Minun\")",
     "natDexNum": "NATIONAL_DEX_MINUN",
     "levelUpLearnset": "sMinunLevelUpLearnset",
@@ -69811,7 +69816,7 @@
       "MOVE_TOXIC"
     ],
     "rating": {
-      "absoluteRating": 3.7523214285714284,
+      "absoluteRating": 4.4523214285714285,
       "absoluteBSTRating": 3.75,
       "bestMoveset": [
         "MOVE_THUNDERBOLT",
@@ -69820,11 +69825,11 @@
         "MOVE_THUNDER_WAVE"
       ],
       "movesRating": 7.523214285714285,
-      "bestAbilityRating": 0,
-      "tier": "BAD",
+      "bestAbilityRating": 7,
+      "tier": "WEAK",
       "bestEvo": "SPECIES_MINUN",
-      "bestEvoRating": 3.7523214285714284,
-      "bestEvoTier": "BAD"
+      "bestEvoRating": 4.4523214285714285,
+      "bestEvoTier": "WEAK"
     }
   },
   {
@@ -69985,7 +69990,7 @@
     ],
     "parsedAbilities": [
       "OBLIVIOUS",
-      "NONE",
+      "TINTED_LENS",
       "PRANKSTER"
     ],
     "id": "SPECIES_ILLUMISE",
@@ -69997,7 +70002,7 @@
     "baseSpAttack": 73,
     "baseSpDefense": 85,
     "types": "MON_TYPES(TYPE_BUG)",
-    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_NONE, ABILITY_PRANKSTER }",
+    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_TINTED_LENS, ABILITY_PRANKSTER }",
     "speciesName": "_(\"Illumise\")",
     "natDexNum": "NATIONAL_DEX_ILLUMISE",
     "levelUpLearnset": "sIllumiseLevelUpLearnset",
@@ -71724,7 +71729,7 @@
     ],
     "parsedAbilities": [
       "OBLIVIOUS",
-      "NONE",
+      "SIMPLE",
       "OWN_TEMPO"
     ],
     "id": "SPECIES_NUMEL",
@@ -71736,7 +71741,7 @@
     "baseSpAttack": 65,
     "baseSpDefense": 45,
     "types": "MON_TYPES(TYPE_FIRE, TYPE_GROUND)",
-    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_NONE, ABILITY_OWN_TEMPO }",
+    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_SIMPLE, ABILITY_OWN_TEMPO }",
     "speciesName": "_(\"Numel\")",
     "natDexNum": "NATIONAL_DEX_NUMEL",
     "levelUpLearnset": "sNumelLevelUpLearnset",
@@ -71856,7 +71861,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.73952380952381,
+      "absoluteRating": 3.23952380952381,
       "absoluteBSTRating": 2.0833333333333335,
       "bestMoveset": [
         "MOVE_OVERHEAT",
@@ -71865,11 +71870,11 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 7.728571428571429,
-      "bestAbilityRating": 3,
+      "bestAbilityRating": 8,
       "tier": "BAD",
       "bestEvo": "SPECIES_CAMERUPT",
-      "bestEvoRating": 4.963333333333335,
-      "bestEvoTier": "WEAK",
+      "bestEvoRating": 5.163333333333334,
+      "bestEvoTier": "AVERAGE",
       "megaEvo": "SPECIES_CAMERUPT_MEGA",
       "megaEvoRating": 6.696666666666666,
       "megaEvoTier": "STRONG"
@@ -71883,7 +71888,7 @@
     ],
     "parsedAbilities": [
       "MAGMA_ARMOR",
-      "NONE",
+      "SOLID_ROCK",
       "ANGER_POINT"
     ],
     "id": "SPECIES_CAMERUPT",
@@ -71895,7 +71900,7 @@
     "baseSpAttack": 105,
     "baseSpDefense": 75,
     "types": "MON_TYPES(TYPE_FIRE, TYPE_GROUND)",
-    "abilities": "{ ABILITY_MAGMA_ARMOR, ABILITY_NONE, ABILITY_ANGER_POINT }",
+    "abilities": "{ ABILITY_MAGMA_ARMOR, ABILITY_SOLID_ROCK, ABILITY_ANGER_POINT }",
     "speciesName": "_(\"Camerupt\")",
     "natDexNum": "NATIONAL_DEX_CAMERUPT",
     "levelUpLearnset": "sCameruptLevelUpLearnset",
@@ -72019,7 +72024,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 4.963333333333335,
+      "absoluteRating": 5.163333333333334,
       "absoluteBSTRating": 4.666666666666667,
       "bestMoveset": [
         "MOVE_ERUPTION",
@@ -72028,11 +72033,11 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 8.3,
-      "bestAbilityRating": 4,
-      "tier": "WEAK",
+      "bestAbilityRating": 6,
+      "tier": "AVERAGE",
       "bestEvo": "SPECIES_CAMERUPT",
-      "bestEvoRating": 4.963333333333335,
-      "bestEvoTier": "WEAK",
+      "bestEvoRating": 5.163333333333334,
+      "bestEvoTier": "AVERAGE",
       "megaEvo": "SPECIES_CAMERUPT_MEGA",
       "megaEvoRating": 6.696666666666666,
       "megaEvoTier": "STRONG"
@@ -72204,7 +72209,7 @@
     ],
     "parsedAbilities": [
       "WHITE_SMOKE",
-      "NONE",
+      "DROUGHT",
       "SHELL_ARMOR"
     ],
     "id": "SPECIES_TORKOAL",
@@ -72216,7 +72221,7 @@
     "baseSpAttack": 85,
     "baseSpDefense": 70,
     "types": "MON_TYPES(TYPE_FIRE)",
-    "abilities": "{ ABILITY_WHITE_SMOKE, ABILITY_NONE, ABILITY_SHELL_ARMOR }",
+    "abilities": "{ ABILITY_WHITE_SMOKE, ABILITY_DROUGHT, ABILITY_SHELL_ARMOR }",
     "speciesName": "_(\"Torkoal\")",
     "natDexNum": "NATIONAL_DEX_TORKOAL",
     "levelUpLearnset": "sTorkoalLevelUpLearnset",
@@ -72337,7 +72342,7 @@
       "MOVE_TOXIC"
     ],
     "rating": {
-      "absoluteRating": 5.149345238095238,
+      "absoluteRating": 5.649345238095238,
       "absoluteBSTRating": 4.833333333333333,
       "bestMoveset": [
         "MOVE_ERUPTION",
@@ -72346,10 +72351,10 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 8.826785714285714,
-      "bestAbilityRating": 4,
+      "bestAbilityRating": 9,
       "tier": "AVERAGE",
       "bestEvo": "SPECIES_TORKOAL",
-      "bestEvoRating": 5.149345238095238,
+      "bestEvoRating": 5.649345238095238,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -72679,7 +72684,7 @@
     ],
     "parsedAbilities": [
       "OWN_TEMPO",
-      "NONE",
+      "TANGLED_FEET",
       "CONTRARY"
     ],
     "id": "SPECIES_SPINDA",
@@ -72691,7 +72696,7 @@
     "baseSpAttack": 60,
     "baseSpDefense": 60,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_OWN_TEMPO, ABILITY_NONE, ABILITY_CONTRARY }",
+    "abilities": "{ ABILITY_OWN_TEMPO, ABILITY_TANGLED_FEET, ABILITY_CONTRARY }",
     "speciesName": "_(\"Spinda\")",
     "natDexNum": "NATIONAL_DEX_SPINDA",
     "levelUpLearnset": "sSpindaLevelUpLearnset",
@@ -74869,7 +74874,7 @@
     ],
     "parsedAbilities": [
       "OBLIVIOUS",
-      "NONE",
+      "ANTICIPATION",
       "HYDRATION"
     ],
     "id": "SPECIES_BARBOACH",
@@ -74881,7 +74886,7 @@
     "baseSpAttack": 46,
     "baseSpDefense": 41,
     "types": "MON_TYPES(TYPE_WATER, TYPE_GROUND)",
-    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_NONE, ABILITY_HYDRATION }",
+    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_ANTICIPATION, ABILITY_HYDRATION }",
     "speciesName": "_(\"Barboach\")",
     "natDexNum": "NATIONAL_DEX_BARBOACH",
     "levelUpLearnset": "sBarboachLevelUpLearnset",
@@ -75009,7 +75014,7 @@
     ],
     "parsedAbilities": [
       "OBLIVIOUS",
-      "NONE",
+      "ANTICIPATION",
       "HYDRATION"
     ],
     "id": "SPECIES_WHISCASH",
@@ -75021,7 +75026,7 @@
     "baseSpAttack": 76,
     "baseSpDefense": 71,
     "types": "MON_TYPES(TYPE_WATER, TYPE_GROUND)",
-    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_NONE, ABILITY_HYDRATION }",
+    "abilities": "{ ABILITY_OBLIVIOUS, ABILITY_ANTICIPATION, ABILITY_HYDRATION }",
     "speciesName": "_(\"Whiscash\")",
     "natDexNum": "NATIONAL_DEX_WHISCASH",
     "levelUpLearnset": "sWhiscashLevelUpLearnset",
@@ -76431,7 +76436,7 @@
     ],
     "parsedAbilities": [
       "SWIFT_SWIM",
-      "NONE",
+      "OBLIVIOUS",
       "ADAPTABILITY"
     ],
     "id": "SPECIES_FEEBAS",
@@ -76443,7 +76448,7 @@
     "baseSpAttack": 10,
     "baseSpDefense": 55,
     "types": "MON_TYPES(TYPE_WATER)",
-    "abilities": "{ ABILITY_SWIFT_SWIM, ABILITY_NONE, ABILITY_ADAPTABILITY }",
+    "abilities": "{ ABILITY_SWIFT_SWIM, ABILITY_OBLIVIOUS, ABILITY_ADAPTABILITY }",
     "speciesName": "_(\"Feebas\")",
     "natDexNum": "NATIONAL_DEX_FEEBAS",
     "levelUpLearnset": "sFeebasLevelUpLearnset",
@@ -76546,7 +76551,7 @@
     ],
     "parsedAbilities": [
       "MARVEL_SCALE",
-      "NONE",
+      "COMPETITIVE",
       "CUTE_CHARM"
     ],
     "id": "SPECIES_MILOTIC",
@@ -76558,7 +76563,7 @@
     "baseSpAttack": 100,
     "baseSpDefense": 125,
     "types": "MON_TYPES(TYPE_WATER)",
-    "abilities": "{ ABILITY_MARVEL_SCALE, ABILITY_NONE, ABILITY_CUTE_CHARM }",
+    "abilities": "{ ABILITY_MARVEL_SCALE, ABILITY_COMPETITIVE, ABILITY_CUTE_CHARM }",
     "speciesName": "_(\"Milotic\")",
     "natDexNum": "NATIONAL_DEX_MILOTIC",
     "levelUpLearnset": "sMiloticLevelUpLearnset",
@@ -77274,7 +77279,7 @@
     "parsedAbilities": [
       "COLOR_CHANGE",
       "NONE",
-      "NONE"
+      "PROTEAN"
     ],
     "id": "SPECIES_KECLEON",
     "family": "P_FAMILY_KECLEON",
@@ -77285,7 +77290,7 @@
     "baseSpAttack": 60,
     "baseSpDefense": 120,
     "types": "MON_TYPES(TYPE_NORMAL)",
-    "abilities": "{ ABILITY_COLOR_CHANGE, ABILITY_NONE, ABILITY_NONE }",
+    "abilities": "{ ABILITY_COLOR_CHANGE, ABILITY_NONE, ABILITY_PROTEAN }",
     "speciesName": "_(\"Kecleon\")",
     "natDexNum": "NATIONAL_DEX_KECLEON",
     "levelUpLearnset": "sKecleonLevelUpLearnset",
@@ -77436,7 +77441,7 @@
       "MOVE_WATER_PULSE"
     ],
     "rating": {
-      "absoluteRating": 4.46452380952381,
+      "absoluteRating": 5.064523809523809,
       "absoluteBSTRating": 4.333333333333333,
       "bestMoveset": [
         "MOVE_DOUBLE_EDGE",
@@ -77445,11 +77450,11 @@
         "MOVE_FOUL_PLAY"
       ],
       "movesRating": 7.978571428571428,
-      "bestAbilityRating": 2,
-      "tier": "WEAK",
+      "bestAbilityRating": 8,
+      "tier": "AVERAGE",
       "bestEvo": "SPECIES_KECLEON",
-      "bestEvoRating": 4.46452380952381,
-      "bestEvoTier": "WEAK"
+      "bestEvoRating": 5.064523809523809,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -77459,7 +77464,7 @@
     ],
     "parsedAbilities": [
       "INSOMNIA",
-      "NONE",
+      "FRISK",
       "CURSED_BODY"
     ],
     "id": "SPECIES_SHUPPET",
@@ -77471,7 +77476,7 @@
     "baseSpAttack": 63,
     "baseSpDefense": 33,
     "types": "MON_TYPES(TYPE_GHOST)",
-    "abilities": "{ ABILITY_INSOMNIA, ABILITY_NONE, ABILITY_CURSED_BODY }",
+    "abilities": "{ ABILITY_INSOMNIA, ABILITY_FRISK, ABILITY_CURSED_BODY }",
     "speciesName": "_(\"Shuppet\")",
     "natDexNum": "NATIONAL_DEX_SHUPPET",
     "levelUpLearnset": "sShuppetLevelUpLearnset",
@@ -77616,7 +77621,7 @@
     ],
     "parsedAbilities": [
       "INSOMNIA",
-      "NONE",
+      "FRISK",
       "CURSED_BODY"
     ],
     "id": "SPECIES_BANETTE",
@@ -77628,7 +77633,7 @@
     "baseSpAttack": 83,
     "baseSpDefense": 63,
     "types": "MON_TYPES(TYPE_GHOST)",
-    "abilities": "{ ABILITY_INSOMNIA, ABILITY_NONE, ABILITY_CURSED_BODY }",
+    "abilities": "{ ABILITY_INSOMNIA, ABILITY_FRISK, ABILITY_CURSED_BODY }",
     "speciesName": "_(\"Banette\")",
     "natDexNum": "NATIONAL_DEX_BANETTE",
     "levelUpLearnset": "sBanetteLevelUpLearnset",
@@ -77919,7 +77924,7 @@
     "parsedAbilities": [
       "LEVITATE",
       "NONE",
-      "NONE"
+      "FRISK"
     ],
     "id": "SPECIES_DUSKULL",
     "family": "P_FAMILY_DUSKULL",
@@ -77930,7 +77935,7 @@
     "baseSpAttack": 30,
     "baseSpDefense": 90,
     "types": "MON_TYPES(TYPE_GHOST)",
-    "abilities": "{ ABILITY_LEVITATE, ABILITY_NONE, ABILITY_NONE }",
+    "abilities": "{ ABILITY_LEVITATE, ABILITY_NONE, ABILITY_FRISK }",
     "speciesName": "_(\"Duskull\")",
     "natDexNum": "NATIONAL_DEX_DUSKULL",
     "levelUpLearnset": "sDuskullLevelUpLearnset",
@@ -78071,7 +78076,7 @@
     "parsedAbilities": [
       "PRESSURE",
       "NONE",
-      "NONE"
+      "FRISK"
     ],
     "id": "SPECIES_DUSCLOPS",
     "family": "P_FAMILY_DUSKULL",
@@ -78082,7 +78087,7 @@
     "baseSpAttack": 60,
     "baseSpDefense": 130,
     "types": "MON_TYPES(TYPE_GHOST)",
-    "abilities": "{ ABILITY_PRESSURE, ABILITY_NONE, ABILITY_NONE }",
+    "abilities": "{ ABILITY_PRESSURE, ABILITY_NONE, ABILITY_FRISK }",
     "speciesName": "_(\"Dusclops\")",
     "natDexNum": "NATIONAL_DEX_DUSCLOPS",
     "levelUpLearnset": "sDusclopsLevelUpLearnset",
@@ -78270,7 +78275,7 @@
     "parsedAbilities": [
       "PRESSURE",
       "NONE",
-      "NONE"
+      "FRISK"
     ],
     "id": "SPECIES_DUSKNOIR",
     "family": "P_FAMILY_DUSKULL",
@@ -78281,7 +78286,7 @@
     "baseSpAttack": 65,
     "baseSpDefense": 135,
     "types": "MON_TYPES(TYPE_GHOST)",
-    "abilities": "{ ABILITY_PRESSURE, ABILITY_NONE, ABILITY_NONE }",
+    "abilities": "{ ABILITY_PRESSURE, ABILITY_NONE, ABILITY_FRISK }",
     "speciesName": "_(\"Dusknoir\")",
     "natDexNum": "NATIONAL_DEX_DUSKNOIR",
     "levelUpLearnset": "sDusknoirLevelUpLearnset",
@@ -78458,7 +78463,7 @@
     ],
     "parsedAbilities": [
       "CHLOROPHYLL",
-      "NONE",
+      "SOLAR_POWER",
       "HARVEST"
     ],
     "id": "SPECIES_TROPIUS",
@@ -78470,7 +78475,7 @@
     "baseSpAttack": 72,
     "baseSpDefense": 87,
     "types": "MON_TYPES(TYPE_GRASS, TYPE_FLYING)",
-    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_NONE, ABILITY_HARVEST }",
+    "abilities": "{ ABILITY_CHLOROPHYLL, ABILITY_SOLAR_POWER, ABILITY_HARVEST }",
     "speciesName": "_(\"Tropius\")",
     "natDexNum": "NATIONAL_DEX_TROPIUS",
     "levelUpLearnset": "sTropiusLevelUpLearnset",
@@ -78885,7 +78890,7 @@
     ],
     "parsedAbilities": [
       "PRESSURE",
-      "NONE",
+      "SUPER_LUCK",
       "JUSTIFIED"
     ],
     "id": "SPECIES_ABSOL",
@@ -78897,7 +78902,7 @@
     "baseSpAttack": 75,
     "baseSpDefense": 60,
     "types": "MON_TYPES(TYPE_DARK)",
-    "abilities": "{ ABILITY_PRESSURE, ABILITY_NONE, ABILITY_JUSTIFIED }",
+    "abilities": "{ ABILITY_PRESSURE, ABILITY_SUPER_LUCK, ABILITY_JUSTIFIED }",
     "speciesName": "_(\"Absol\")",
     "natDexNum": "NATIONAL_DEX_ABSOL",
     "levelUpLearnset": "sAbsolLevelUpLearnset",
@@ -79203,7 +79208,7 @@
     ],
     "parsedAbilities": [
       "INNER_FOCUS",
-      "NONE",
+      "ICE_BODY",
       "MOODY"
     ],
     "id": "SPECIES_SNORUNT",
@@ -79215,7 +79220,7 @@
     "baseSpAttack": 50,
     "baseSpDefense": 50,
     "types": "MON_TYPES(TYPE_ICE)",
-    "abilities": "{ ABILITY_INNER_FOCUS, ABILITY_NONE, ABILITY_MOODY }",
+    "abilities": "{ ABILITY_INNER_FOCUS, ABILITY_ICE_BODY, ABILITY_MOODY }",
     "speciesName": "_(\"Snorunt\")",
     "natDexNum": "NATIONAL_DEX_SNORUNT",
     "levelUpLearnset": "sSnoruntLevelUpLearnset",
@@ -79366,7 +79371,7 @@
     ],
     "parsedAbilities": [
       "INNER_FOCUS",
-      "NONE",
+      "ICE_BODY",
       "MOODY"
     ],
     "id": "SPECIES_GLALIE",
@@ -79378,7 +79383,7 @@
     "baseSpAttack": 80,
     "baseSpDefense": 80,
     "types": "MON_TYPES(TYPE_ICE)",
-    "abilities": "{ ABILITY_INNER_FOCUS, ABILITY_NONE, ABILITY_MOODY }",
+    "abilities": "{ ABILITY_INNER_FOCUS, ABILITY_ICE_BODY, ABILITY_MOODY }",
     "speciesName": "_(\"Glalie\")",
     "natDexNum": "NATIONAL_DEX_GLALIE",
     "levelUpLearnset": "sGlalieLevelUpLearnset",
@@ -79882,7 +79887,7 @@
     ],
     "parsedAbilities": [
       "THICK_FAT",
-      "NONE",
+      "ICE_BODY",
       "OBLIVIOUS"
     ],
     "id": "SPECIES_SPHEAL",
@@ -79894,7 +79899,7 @@
     "baseSpAttack": 55,
     "baseSpDefense": 50,
     "types": "MON_TYPES(TYPE_ICE, TYPE_WATER)",
-    "abilities": "{ ABILITY_THICK_FAT, ABILITY_NONE, ABILITY_OBLIVIOUS }",
+    "abilities": "{ ABILITY_THICK_FAT, ABILITY_ICE_BODY, ABILITY_OBLIVIOUS }",
     "speciesName": "_(\"Spheal\")",
     "natDexNum": "NATIONAL_DEX_SPHEAL",
     "levelUpLearnset": "sSphealLevelUpLearnset",
@@ -80044,7 +80049,7 @@
     ],
     "parsedAbilities": [
       "THICK_FAT",
-      "NONE",
+      "ICE_BODY",
       "OBLIVIOUS"
     ],
     "id": "SPECIES_SEALEO",
@@ -80056,7 +80061,7 @@
     "baseSpAttack": 75,
     "baseSpDefense": 70,
     "types": "MON_TYPES(TYPE_ICE, TYPE_WATER)",
-    "abilities": "{ ABILITY_THICK_FAT, ABILITY_NONE, ABILITY_OBLIVIOUS }",
+    "abilities": "{ ABILITY_THICK_FAT, ABILITY_ICE_BODY, ABILITY_OBLIVIOUS }",
     "speciesName": "_(\"Sealeo\")",
     "natDexNum": "NATIONAL_DEX_SEALEO",
     "levelUpLearnset": "sSealeoLevelUpLearnset",
@@ -80215,7 +80220,7 @@
     ],
     "parsedAbilities": [
       "THICK_FAT",
-      "NONE",
+      "ICE_BODY",
       "OBLIVIOUS"
     ],
     "id": "SPECIES_WALREIN",
@@ -80227,7 +80232,7 @@
     "baseSpAttack": 95,
     "baseSpDefense": 90,
     "types": "MON_TYPES(TYPE_ICE, TYPE_WATER)",
-    "abilities": "{ ABILITY_THICK_FAT, ABILITY_NONE, ABILITY_OBLIVIOUS }",
+    "abilities": "{ ABILITY_THICK_FAT, ABILITY_ICE_BODY, ABILITY_OBLIVIOUS }",
     "speciesName": "_(\"Walrein\")",
     "natDexNum": "NATIONAL_DEX_WALREIN",
     "levelUpLearnset": "sWalreinLevelUpLearnset",
@@ -86281,7 +86286,7 @@
     "parsedAbilities": [
       "TORRENT",
       "NONE",
-      "DEFIANT"
+      "COMPETITIVE"
     ],
     "id": "SPECIES_PIPLUP",
     "family": "P_FAMILY_PIPLUP",
@@ -86292,7 +86297,7 @@
     "baseSpAttack": 61,
     "baseSpDefense": 56,
     "types": "MON_TYPES(TYPE_WATER)",
-    "abilities": "{ ABILITY_TORRENT, ABILITY_NONE, ABILITY_DEFIANT }",
+    "abilities": "{ ABILITY_TORRENT, ABILITY_NONE, ABILITY_COMPETITIVE }",
     "speciesName": "_(\"Piplup\")",
     "natDexNum": "NATIONAL_DEX_PIPLUP",
     "levelUpLearnset": "sPiplupLevelUpLearnset",
@@ -86433,7 +86438,7 @@
     "parsedAbilities": [
       "TORRENT",
       "NONE",
-      "DEFIANT"
+      "COMPETITIVE"
     ],
     "id": "SPECIES_PRINPLUP",
     "family": "P_FAMILY_PIPLUP",
@@ -86444,7 +86449,7 @@
     "baseSpAttack": 81,
     "baseSpDefense": 76,
     "types": "MON_TYPES(TYPE_WATER)",
-    "abilities": "{ ABILITY_TORRENT, ABILITY_NONE, ABILITY_DEFIANT }",
+    "abilities": "{ ABILITY_TORRENT, ABILITY_NONE, ABILITY_COMPETITIVE }",
     "speciesName": "_(\"Prinplup\")",
     "natDexNum": "NATIONAL_DEX_PRINPLUP",
     "levelUpLearnset": "sPrinplupLevelUpLearnset",
@@ -86587,7 +86592,7 @@
     "parsedAbilities": [
       "TORRENT",
       "NONE",
-      "DEFIANT"
+      "COMPETITIVE"
     ],
     "id": "SPECIES_EMPOLEON",
     "family": "P_FAMILY_PIPLUP",
@@ -86598,7 +86603,7 @@
     "baseSpAttack": 111,
     "baseSpDefense": 101,
     "types": "MON_TYPES(TYPE_WATER, TYPE_STEEL)",
-    "abilities": "{ ABILITY_TORRENT, ABILITY_NONE, ABILITY_DEFIANT }",
+    "abilities": "{ ABILITY_TORRENT, ABILITY_NONE, ABILITY_COMPETITIVE }",
     "speciesName": "_(\"Empoleon\")",
     "natDexNum": "NATIONAL_DEX_EMPOLEON",
     "levelUpLearnset": "sEmpoleonLevelUpLearnset",
@@ -86754,7 +86759,7 @@
     "parsedAbilities": [
       "KEEN_EYE",
       "NONE",
-      "NONE"
+      "RECKLESS"
     ],
     "id": "SPECIES_STARLY",
     "family": "P_FAMILY_STARLY",
@@ -86765,7 +86770,7 @@
     "baseSpAttack": 30,
     "baseSpDefense": 30,
     "types": "MON_TYPES(TYPE_NORMAL, TYPE_FLYING)",
-    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_NONE, ABILITY_NONE }",
+    "abilities": "{ ABILITY_KEEN_EYE, ABILITY_NONE, ABILITY_RECKLESS }",
     "speciesName": "_(\"Starly\")",
     "natDexNum": "NATIONAL_DEX_STARLY",
     "levelUpLearnset": "sStarlyLevelUpLearnset",
@@ -86868,7 +86873,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 1.7498809523809524,
+      "absoluteRating": 2.2498809523809524,
       "absoluteBSTRating": 1.0833333333333333,
       "bestMoveset": [
         "MOVE_BRAVE_BIRD",
@@ -86877,7 +86882,7 @@
         "MOVE_AGILITY"
       ],
       "movesRating": 7.832142857142857,
-      "bestAbilityRating": 1,
+      "bestAbilityRating": 6,
       "tier": "BAD",
       "bestEvo": "SPECIES_STARAPTOR",
       "bestEvoRating": 5.578452380952381,
@@ -103670,7 +103675,7 @@
     ],
     "parsedAbilities": [
       "STURDY",
-      "NONE",
+      "WEAK_ARMOR",
       "SAND_FORCE"
     ],
     "id": "SPECIES_ROGGENROLA",
@@ -103682,7 +103687,7 @@
     "baseSpAttack": 25,
     "baseSpDefense": 25,
     "types": "MON_TYPES(TYPE_ROCK)",
-    "abilities": "{ ABILITY_STURDY, ABILITY_NONE, ABILITY_SAND_FORCE }",
+    "abilities": "{ ABILITY_STURDY, ABILITY_WEAK_ARMOR, ABILITY_SAND_FORCE }",
     "speciesName": "_(\"Roggenrola\")",
     "natDexNum": "NATIONAL_DEX_ROGGENROLA",
     "levelUpLearnset": "sRoggenrolaLevelUpLearnset",
@@ -103801,8 +103806,8 @@
       "bestAbilityRating": 6,
       "tier": "BAD",
       "bestEvo": "SPECIES_GIGALITH",
-      "bestEvoRating": 5.811309523809523,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoRating": 6.111309523809524,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -103812,7 +103817,7 @@
     ],
     "parsedAbilities": [
       "STURDY",
-      "NONE",
+      "WEAK_ARMOR",
       "SAND_FORCE"
     ],
     "id": "SPECIES_BOLDORE",
@@ -103824,7 +103829,7 @@
     "baseSpAttack": 50,
     "baseSpDefense": 40,
     "types": "MON_TYPES(TYPE_ROCK)",
-    "abilities": "{ ABILITY_STURDY, ABILITY_NONE, ABILITY_SAND_FORCE }",
+    "abilities": "{ ABILITY_STURDY, ABILITY_WEAK_ARMOR, ABILITY_SAND_FORCE }",
     "speciesName": "_(\"Boldore\")",
     "natDexNum": "NATIONAL_DEX_BOLDORE",
     "levelUpLearnset": "sBoldoreLevelUpLearnset",
@@ -103956,8 +103961,8 @@
       "bestAbilityRating": 6,
       "tier": "WEAK",
       "bestEvo": "SPECIES_GIGALITH",
-      "bestEvoRating": 5.811309523809523,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoRating": 6.111309523809524,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -103967,7 +103972,7 @@
     ],
     "parsedAbilities": [
       "STURDY",
-      "NONE",
+      "SAND_STREAM",
       "SAND_FORCE"
     ],
     "id": "SPECIES_GIGALITH",
@@ -103979,7 +103984,7 @@
     "baseSpAttack": 60,
     "baseSpDefense": 80,
     "types": "MON_TYPES(TYPE_ROCK)",
-    "abilities": "{ ABILITY_STURDY, ABILITY_NONE, ABILITY_SAND_FORCE }",
+    "abilities": "{ ABILITY_STURDY, ABILITY_SAND_STREAM, ABILITY_SAND_FORCE }",
     "speciesName": "_(\"Gigalith\")",
     "natDexNum": "NATIONAL_DEX_GIGALITH",
     "levelUpLearnset": "sGigalithLevelUpLearnset",
@@ -104085,7 +104090,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 5.811309523809523,
+      "absoluteRating": 6.111309523809524,
       "absoluteBSTRating": 5.583333333333333,
       "bestMoveset": [
         "MOVE_ROCK_BLAST",
@@ -104094,11 +104099,11 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 7.446428571428571,
-      "bestAbilityRating": 6,
-      "tier": "AVERAGE",
+      "bestAbilityRating": 9,
+      "tier": "STRONG",
       "bestEvo": "SPECIES_GIGALITH",
-      "bestEvoRating": 5.811309523809523,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoRating": 6.111309523809524,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -106656,7 +106661,7 @@
     "parsedAbilities": [
       "POISON_POINT",
       "SWARM",
-      "QUICK_FEET"
+      "SPEED_BOOST"
     ],
     "id": "SPECIES_VENIPEDE",
     "family": "P_FAMILY_VENIPEDE",
@@ -106667,7 +106672,7 @@
     "baseSpAttack": 30,
     "baseSpDefense": 39,
     "types": "MON_TYPES(TYPE_BUG, TYPE_POISON)",
-    "abilities": "{ ABILITY_POISON_POINT, ABILITY_SWARM, ABILITY_QUICK_FEET }",
+    "abilities": "{ ABILITY_POISON_POINT, ABILITY_SWARM, ABILITY_SPEED_BOOST }",
     "speciesName": "_(\"Venipede\")",
     "natDexNum": "NATIONAL_DEX_VENIPEDE",
     "levelUpLearnset": "sVenipedeLevelUpLearnset",
@@ -106773,7 +106778,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.2636309523809524,
+      "absoluteRating": 2.6636309523809523,
       "absoluteBSTRating": 1.3333333333333333,
       "bestMoveset": [
         "MOVE_SLUDGE_BOMB",
@@ -106782,10 +106787,10 @@
         "MOVE_BUG_BITE"
       ],
       "movesRating": 6.969642857142857,
-      "bestAbilityRating": 5,
+      "bestAbilityRating": 9,
       "tier": "BAD",
       "bestEvo": "SPECIES_SCOLIPEDE",
-      "bestEvoRating": 5.320773809523809,
+      "bestEvoRating": 5.720773809523809,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -106798,7 +106803,7 @@
     "parsedAbilities": [
       "POISON_POINT",
       "SWARM",
-      "QUICK_FEET"
+      "SPEED_BOOST"
     ],
     "id": "SPECIES_WHIRLIPEDE",
     "family": "P_FAMILY_VENIPEDE",
@@ -106809,7 +106814,7 @@
     "baseSpAttack": 40,
     "baseSpDefense": 79,
     "types": "MON_TYPES(TYPE_BUG, TYPE_POISON)",
-    "abilities": "{ ABILITY_POISON_POINT, ABILITY_SWARM, ABILITY_QUICK_FEET }",
+    "abilities": "{ ABILITY_POISON_POINT, ABILITY_SWARM, ABILITY_SPEED_BOOST }",
     "speciesName": "_(\"Whirlipede\")",
     "natDexNum": "NATIONAL_DEX_WHIRLIPEDE",
     "levelUpLearnset": "sWhirlipedeLevelUpLearnset",
@@ -106923,7 +106928,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 3.596964285714286,
+      "absoluteRating": 3.9969642857142857,
       "absoluteBSTRating": 3,
       "bestMoveset": [
         "MOVE_SLUDGE_BOMB",
@@ -106932,10 +106937,10 @@
         "MOVE_BUG_BITE"
       ],
       "movesRating": 6.969642857142857,
-      "bestAbilityRating": 5,
+      "bestAbilityRating": 9,
       "tier": "BAD",
       "bestEvo": "SPECIES_SCOLIPEDE",
-      "bestEvoRating": 5.320773809523809,
+      "bestEvoRating": 5.720773809523809,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -106948,7 +106953,7 @@
     "parsedAbilities": [
       "POISON_POINT",
       "SWARM",
-      "QUICK_FEET"
+      "SPEED_BOOST"
     ],
     "id": "SPECIES_SCOLIPEDE",
     "family": "P_FAMILY_VENIPEDE",
@@ -106959,7 +106964,7 @@
     "baseSpAttack": 55,
     "baseSpDefense": 69,
     "types": "MON_TYPES(TYPE_BUG, TYPE_POISON)",
-    "abilities": "{ ABILITY_POISON_POINT, ABILITY_SWARM, ABILITY_QUICK_FEET }",
+    "abilities": "{ ABILITY_POISON_POINT, ABILITY_SWARM, ABILITY_SPEED_BOOST }",
     "speciesName": "_(\"Scolipede\")",
     "natDexNum": "NATIONAL_DEX_SCOLIPEDE",
     "levelUpLearnset": "sScolipedeLevelUpLearnset",
@@ -107080,7 +107085,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 5.320773809523809,
+      "absoluteRating": 5.720773809523809,
       "absoluteBSTRating": 5.083333333333333,
       "bestMoveset": [
         "MOVE_MEGAHORN",
@@ -107089,10 +107094,10 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 7.541071428571429,
-      "bestAbilityRating": 5,
+      "bestAbilityRating": 9,
       "tier": "AVERAGE",
       "bestEvo": "SPECIES_SCOLIPEDE",
-      "bestEvoRating": 5.320773809523809,
+      "bestEvoRating": 5.720773809523809,
       "bestEvoTier": "AVERAGE"
     }
   },
@@ -113502,7 +113507,7 @@
     ],
     "parsedAbilities": [
       "FRISK",
-      "NONE",
+      "COMPETITIVE",
       "SHADOW_TAG"
     ],
     "id": "SPECIES_GOTHITA",
@@ -113514,7 +113519,7 @@
     "baseSpAttack": 55,
     "baseSpDefense": 65,
     "types": "MON_TYPES(TYPE_PSYCHIC)",
-    "abilities": "{ ABILITY_FRISK, ABILITY_NONE, ABILITY_SHADOW_TAG }",
+    "abilities": "{ ABILITY_FRISK, ABILITY_COMPETITIVE, ABILITY_SHADOW_TAG }",
     "speciesName": "_(\"Gothita\")",
     "natDexNum": "NATIONAL_DEX_GOTHITA",
     "levelUpLearnset": "sGothitaLevelUpLearnset",
@@ -113660,7 +113665,7 @@
     ],
     "parsedAbilities": [
       "FRISK",
-      "NONE",
+      "COMPETITIVE",
       "SHADOW_TAG"
     ],
     "id": "SPECIES_GOTHORITA",
@@ -113672,7 +113677,7 @@
     "baseSpAttack": 75,
     "baseSpDefense": 85,
     "types": "MON_TYPES(TYPE_PSYCHIC)",
-    "abilities": "{ ABILITY_FRISK, ABILITY_NONE, ABILITY_SHADOW_TAG }",
+    "abilities": "{ ABILITY_FRISK, ABILITY_COMPETITIVE, ABILITY_SHADOW_TAG }",
     "speciesName": "_(\"Gothorita\")",
     "natDexNum": "NATIONAL_DEX_GOTHORITA",
     "levelUpLearnset": "sGothoritaLevelUpLearnset",
@@ -113815,7 +113820,7 @@
     ],
     "parsedAbilities": [
       "FRISK",
-      "NONE",
+      "COMPETITIVE",
       "SHADOW_TAG"
     ],
     "id": "SPECIES_GOTHITELLE",
@@ -113827,7 +113832,7 @@
     "baseSpAttack": 95,
     "baseSpDefense": 110,
     "types": "MON_TYPES(TYPE_PSYCHIC)",
-    "abilities": "{ ABILITY_FRISK, ABILITY_NONE, ABILITY_SHADOW_TAG }",
+    "abilities": "{ ABILITY_FRISK, ABILITY_COMPETITIVE, ABILITY_SHADOW_TAG }",
     "speciesName": "_(\"Gothitelle\")",
     "natDexNum": "NATIONAL_DEX_GOTHITELLE",
     "levelUpLearnset": "sGothitelleLevelUpLearnset",
@@ -114750,7 +114755,7 @@
     ],
     "parsedAbilities": [
       "ICE_BODY",
-      "NONE",
+      "SNOW_CLOAK",
       "WEAK_ARMOR"
     ],
     "id": "SPECIES_VANILLITE",
@@ -114762,7 +114767,7 @@
     "baseSpAttack": 65,
     "baseSpDefense": 60,
     "types": "MON_TYPES(TYPE_ICE)",
-    "abilities": "{ ABILITY_ICE_BODY, ABILITY_NONE, ABILITY_WEAK_ARMOR }",
+    "abilities": "{ ABILITY_ICE_BODY, ABILITY_SNOW_CLOAK, ABILITY_WEAK_ARMOR }",
     "speciesName": "_(\"Vanillite\")",
     "natDexNum": "NATIONAL_DEX_VANILLITE",
     "levelUpLearnset": "sVanilliteLevelUpLearnset",
@@ -114885,8 +114890,8 @@
       "bestAbilityRating": 3,
       "tier": "BAD",
       "bestEvo": "SPECIES_VANILLUXE",
-      "bestEvoRating": 5.736011904761905,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoRating": 6.236011904761905,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -114896,7 +114901,7 @@
     ],
     "parsedAbilities": [
       "ICE_BODY",
-      "NONE",
+      "SNOW_CLOAK",
       "WEAK_ARMOR"
     ],
     "id": "SPECIES_VANILLISH",
@@ -114908,7 +114913,7 @@
     "baseSpAttack": 80,
     "baseSpDefense": 75,
     "types": "MON_TYPES(TYPE_ICE)",
-    "abilities": "{ ABILITY_ICE_BODY, ABILITY_NONE, ABILITY_WEAK_ARMOR }",
+    "abilities": "{ ABILITY_ICE_BODY, ABILITY_SNOW_CLOAK, ABILITY_WEAK_ARMOR }",
     "speciesName": "_(\"Vanillish\")",
     "natDexNum": "NATIONAL_DEX_VANILLISH",
     "levelUpLearnset": "sVanillishLevelUpLearnset",
@@ -115031,8 +115036,8 @@
       "bestAbilityRating": 3,
       "tier": "BAD",
       "bestEvo": "SPECIES_VANILLUXE",
-      "bestEvoRating": 5.736011904761905,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoRating": 6.236011904761905,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -115042,7 +115047,7 @@
     ],
     "parsedAbilities": [
       "ICE_BODY",
-      "NONE",
+      "SNOW_WARNING",
       "WEAK_ARMOR"
     ],
     "id": "SPECIES_VANILLUXE",
@@ -115054,7 +115059,7 @@
     "baseSpAttack": 110,
     "baseSpDefense": 95,
     "types": "MON_TYPES(TYPE_ICE)",
-    "abilities": "{ ABILITY_ICE_BODY, ABILITY_NONE, ABILITY_WEAK_ARMOR }",
+    "abilities": "{ ABILITY_ICE_BODY, ABILITY_SNOW_WARNING, ABILITY_WEAK_ARMOR }",
     "speciesName": "_(\"Vanilluxe\")",
     "natDexNum": "NATIONAL_DEX_VANILLUXE",
     "levelUpLearnset": "sVanilluxeLevelUpLearnset",
@@ -115171,7 +115176,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 5.736011904761905,
+      "absoluteRating": 6.236011904761905,
       "absoluteBSTRating": 5.916666666666667,
       "bestMoveset": [
         "MOVE_ICICLE_SPEAR",
@@ -115180,11 +115185,11 @@
         "MOVE_WATER_PULSE"
       ],
       "movesRating": 7.0267857142857135,
-      "bestAbilityRating": 3,
-      "tier": "AVERAGE",
+      "bestAbilityRating": 8,
+      "tier": "STRONG",
       "bestEvo": "SPECIES_VANILLUXE",
-      "bestEvoRating": 5.736011904761905,
-      "bestEvoTier": "AVERAGE"
+      "bestEvoRating": 6.236011904761905,
+      "bestEvoTier": "STRONG"
     }
   },
   {
@@ -117938,7 +117943,7 @@
     "parsedAbilities": [
       "IRON_BARBS",
       "NONE",
-      "NONE"
+      "ANTICIPATION"
     ],
     "id": "SPECIES_FERROTHORN",
     "family": "P_FAMILY_FERROSEED",
@@ -117949,7 +117954,7 @@
     "baseSpAttack": 54,
     "baseSpDefense": 116,
     "types": "MON_TYPES(TYPE_GRASS, TYPE_STEEL)",
-    "abilities": "{ ABILITY_IRON_BARBS, ABILITY_NONE, ABILITY_NONE }",
+    "abilities": "{ ABILITY_IRON_BARBS, ABILITY_NONE, ABILITY_ANTICIPATION }",
     "speciesName": "_(\"Ferrothorn\")",
     "natDexNum": "NATIONAL_DEX_FERROTHORN",
     "levelUpLearnset": "sFerrothornLevelUpLearnset",
@@ -119190,7 +119195,7 @@
     "parsedAbilities": [
       "FLASH_FIRE",
       "FLAME_BODY",
-      "SHADOW_TAG"
+      "INFILTRATOR"
     ],
     "id": "SPECIES_LITWICK",
     "family": "P_FAMILY_LITWICK",
@@ -119201,7 +119206,7 @@
     "baseSpAttack": 65,
     "baseSpDefense": 55,
     "types": "MON_TYPES(TYPE_GHOST, TYPE_FIRE)",
-    "abilities": "{ ABILITY_FLASH_FIRE, ABILITY_FLAME_BODY, ABILITY_SHADOW_TAG }",
+    "abilities": "{ ABILITY_FLASH_FIRE, ABILITY_FLAME_BODY, ABILITY_INFILTRATOR }",
     "speciesName": "_(\"Litwick\")",
     "natDexNum": "NATIONAL_DEX_LITWICK",
     "levelUpLearnset": "sLitwickLevelUpLearnset",
@@ -119326,7 +119331,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.9970238095238093,
+      "absoluteRating": 2.59702380952381,
       "absoluteBSTRating": 1.5833333333333333,
       "bestMoveset": [
         "MOVE_OVERHEAT",
@@ -119335,11 +119340,11 @@
         "MOVE_DREAM_EATER"
       ],
       "movesRating": 7.303571428571429,
-      "bestAbilityRating": 10,
+      "bestAbilityRating": 6,
       "tier": "BAD",
       "bestEvo": "SPECIES_CHANDELURE",
-      "bestEvoRating": 6.263690476190477,
-      "bestEvoTier": "STRONG"
+      "bestEvoRating": 5.863690476190477,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -119351,7 +119356,7 @@
     "parsedAbilities": [
       "FLASH_FIRE",
       "FLAME_BODY",
-      "SHADOW_TAG"
+      "INFILTRATOR"
     ],
     "id": "SPECIES_LAMPENT",
     "family": "P_FAMILY_LITWICK",
@@ -119362,7 +119367,7 @@
     "baseSpAttack": 95,
     "baseSpDefense": 60,
     "types": "MON_TYPES(TYPE_GHOST, TYPE_FIRE)",
-    "abilities": "{ ABILITY_FLASH_FIRE, ABILITY_FLAME_BODY, ABILITY_SHADOW_TAG }",
+    "abilities": "{ ABILITY_FLASH_FIRE, ABILITY_FLAME_BODY, ABILITY_INFILTRATOR }",
     "speciesName": "_(\"Lampent\")",
     "natDexNum": "NATIONAL_DEX_LAMPENT",
     "levelUpLearnset": "sLampentLevelUpLearnset",
@@ -119487,7 +119492,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 4.263690476190476,
+      "absoluteRating": 3.863690476190476,
       "absoluteBSTRating": 3.1666666666666665,
       "bestMoveset": [
         "MOVE_OVERHEAT",
@@ -119496,11 +119501,11 @@
         "MOVE_DREAM_EATER"
       ],
       "movesRating": 7.303571428571429,
-      "bestAbilityRating": 10,
-      "tier": "WEAK",
+      "bestAbilityRating": 6,
+      "tier": "BAD",
       "bestEvo": "SPECIES_CHANDELURE",
-      "bestEvoRating": 6.263690476190477,
-      "bestEvoTier": "STRONG"
+      "bestEvoRating": 5.863690476190477,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -119512,7 +119517,7 @@
     "parsedAbilities": [
       "FLASH_FIRE",
       "FLAME_BODY",
-      "SHADOW_TAG"
+      "INFILTRATOR"
     ],
     "id": "SPECIES_CHANDELURE",
     "family": "P_FAMILY_LITWICK",
@@ -119523,7 +119528,7 @@
     "baseSpAttack": 145,
     "baseSpDefense": 90,
     "types": "MON_TYPES(TYPE_GHOST, TYPE_FIRE)",
-    "abilities": "{ ABILITY_FLASH_FIRE, ABILITY_FLAME_BODY, ABILITY_SHADOW_TAG }",
+    "abilities": "{ ABILITY_FLASH_FIRE, ABILITY_FLAME_BODY, ABILITY_INFILTRATOR }",
     "speciesName": "_(\"Chandelure\")",
     "natDexNum": "NATIONAL_DEX_CHANDELURE",
     "levelUpLearnset": "sChandelureLevelUpLearnset",
@@ -119642,7 +119647,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 6.263690476190477,
+      "absoluteRating": 5.863690476190477,
       "absoluteBSTRating": 5.666666666666667,
       "bestMoveset": [
         "MOVE_OVERHEAT",
@@ -119651,11 +119656,11 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 7.303571428571429,
-      "bestAbilityRating": 10,
-      "tier": "STRONG",
+      "bestAbilityRating": 6,
+      "tier": "AVERAGE",
       "bestEvo": "SPECIES_CHANDELURE",
-      "bestEvoRating": 6.263690476190477,
-      "bestEvoTier": "STRONG"
+      "bestEvoRating": 5.863690476190477,
+      "bestEvoTier": "AVERAGE"
     }
   },
   {
@@ -120178,7 +120183,7 @@
     ],
     "parsedAbilities": [
       "SNOW_CLOAK",
-      "NONE",
+      "SLUSH_RUSH",
       "RATTLED"
     ],
     "id": "SPECIES_CUBCHOO",
@@ -120190,7 +120195,7 @@
     "baseSpAttack": 60,
     "baseSpDefense": 40,
     "types": "MON_TYPES(TYPE_ICE)",
-    "abilities": "{ ABILITY_SNOW_CLOAK, ABILITY_NONE, ABILITY_RATTLED }",
+    "abilities": "{ ABILITY_SNOW_CLOAK, ABILITY_SLUSH_RUSH, ABILITY_RATTLED }",
     "speciesName": "_(\"Cubchoo\")",
     "natDexNum": "NATIONAL_DEX_CUBCHOO",
     "levelUpLearnset": "sCubchooLevelUpLearnset",
@@ -120319,7 +120324,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 2.76577380952381,
+      "absoluteRating": 2.9657738095238098,
       "absoluteBSTRating": 2.0833333333333335,
       "bestMoveset": [
         "MOVE_ICE_BEAM",
@@ -120328,7 +120333,7 @@
         "MOVE_TOXIC"
       ],
       "movesRating": 7.991071428571429,
-      "bestAbilityRating": 3,
+      "bestAbilityRating": 5,
       "tier": "BAD",
       "bestEvo": "SPECIES_BEARTIC",
       "bestEvoRating": 5.732440476190478,
@@ -120342,7 +120347,7 @@
     ],
     "parsedAbilities": [
       "SNOW_CLOAK",
-      "NONE",
+      "SLUSH_RUSH",
       "SWIFT_SWIM"
     ],
     "id": "SPECIES_BEARTIC",
@@ -120354,7 +120359,7 @@
     "baseSpAttack": 70,
     "baseSpDefense": 80,
     "types": "MON_TYPES(TYPE_ICE)",
-    "abilities": "{ ABILITY_SNOW_CLOAK, ABILITY_NONE, ABILITY_SWIFT_SWIM }",
+    "abilities": "{ ABILITY_SNOW_CLOAK, ABILITY_SLUSH_RUSH, ABILITY_SWIFT_SWIM }",
     "speciesName": "_(\"Beartic\")",
     "natDexNum": "NATIONAL_DEX_BEARTIC",
     "levelUpLearnset": "sBearticLevelUpLearnset",

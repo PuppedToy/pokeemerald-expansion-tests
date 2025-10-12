@@ -181,7 +181,7 @@ function parseSpeciesFile(genSpeciesFileText, definitions, evoTree) {
             }
             const currentProperty = lines[i].trim().split('.')[1].split(' ')[0];
             const currentValue = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
-            if (SUPPORTED_PROPERTIES.includes(currentProperty)) {
+            if (SUPPORTED_PROPERTIES.includes(currentProperty) && !currentPokemon[currentProperty]) {
                 currentPokemon[currentProperty] = currentValue;
             }
             continue;

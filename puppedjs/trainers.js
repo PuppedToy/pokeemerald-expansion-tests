@@ -3484,7 +3484,7 @@ const trainersData = [
         tms: [...magmaChimneyTMs],
         team: [
             {
-                abilities: ['SAND_STREAM'], // @TODO doesnt find gigalith
+                abilities: ['SAND_STREAM'],
                 checkValidEvo: true,
                 item: 'Smooth Rock',
                 type: [...magmaTeamTypes],
