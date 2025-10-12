@@ -3050,7 +3050,7 @@ const trainersData = [
             },
             {
                 type: [POKEMON_TYPE_FLYING],
-                absoluteTier: [TIER_AVERAGE],
+                absoluteTier: [TIER_WEAK],
                 tryToHaveMove: ['MOVE_SHOCK_WAVE'],
                 checkValidEvo: true,
             },
@@ -3070,7 +3070,7 @@ const trainersData = [
             },
             {
                 type: [POKEMON_TYPE_ELECTRIC],
-                absoluteTier: [TIER_AVERAGE],
+                absoluteTier: [TIER_WEAK],
                 tryToHaveMove: ['MOVE_SHOCK_WAVE'],
                 checkValidEvo: true,
             },
