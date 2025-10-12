@@ -186,6 +186,84 @@ Route114_EventScript_Kai::
 	msgbox Route114_Text_KaiPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Common_EventScript_PickA1::
+	setflag FLAG_ITEM_ROUTE_114_PICK_A
+	giveitem ITEM_TM_SHADOW_BALL
+	removeobject LOCALID_ROUTE104_A1
+	removeobject LOCALID_ROUTE104_A2
+	removeobject LOCALID_ROUTE104_A3
+	release
+	end
+
+Common_EventScript_PickA2::
+	setflag FLAG_ITEM_ROUTE_114_PICK_A
+	giveitem ITEM_TM_PSYCHIC
+	removeobject LOCALID_ROUTE104_A1
+	removeobject LOCALID_ROUTE104_A2
+	removeobject LOCALID_ROUTE104_A3
+	release
+	end
+
+Common_EventScript_PickA3::
+	setflag FLAG_ITEM_ROUTE_114_PICK_A
+	giveitem ITEM_TM_SLUDGE_BOMB
+	removeobject LOCALID_ROUTE104_A1
+	removeobject LOCALID_ROUTE104_A2
+	removeobject LOCALID_ROUTE104_A3
+	release
+	end
+
+Common_EventScript_PickB1::
+	setflag FLAG_ITEM_ROUTE_114_PICK_B
+	giveitem ITEM_TM_REFLECT
+	removeobject LOCALID_ROUTE104_B1
+	removeobject LOCALID_ROUTE104_B2
+	release
+	end
+
+Common_EventScript_PickB2::
+	setflag FLAG_ITEM_ROUTE_114_PICK_B
+	giveitem ITEM_TM_LIGHT_SCREEN
+	removeobject LOCALID_ROUTE104_B1
+	removeobject LOCALID_ROUTE104_B2
+	release
+	end
+
+Route104_EventScript_PickItemA1_Sign::
+	msgbox Route104_Text_PickItemA1, MSGBOX_SIGN
+	end
+
+Route104_EventScript_PickItemA2_Sign::
+	msgbox Route104_Text_PickItemA2, MSGBOX_SIGN
+	end
+
+Route104_EventScript_PickItemA3_Sign::
+	msgbox Route104_Text_PickItemA3, MSGBOX_SIGN
+	end
+
+Route104_EventScript_PickItemB1_Sign::
+	msgbox Route104_Text_PickItemB1, MSGBOX_SIGN
+	end
+
+Route104_EventScript_PickItemB2_Sign::
+	msgbox Route104_Text_PickItemB2, MSGBOX_SIGN
+	end
+
+Route104_Text_PickItemA1:
+	.string "Shadow Ball$"
+
+Route104_Text_PickItemA2:
+	.string "Psychic$"
+
+Route104_Text_PickItemA3:
+	.string "Sludge Bomb$"
+
+Route104_Text_PickItemB1:
+	.string "Reflect$"
+
+Route104_Text_PickItemB2:
+	.string "Light Screen$"
+
 Route114_Text_AllMyMonDoesIsRoarTakeThis:
 	.string "All my POKéMON does is ROAR…\n"
 	.string "No one dares to come near me…\p"

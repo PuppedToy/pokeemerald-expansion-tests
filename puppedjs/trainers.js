@@ -35,6 +35,7 @@ const {
     TIER_LEGEND,
     TRAINER_POKE_MEGA_FROM_STONE,
     EVO_TYPE_FINAL,
+    POKEMON_TYPE_NORMAL,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
@@ -402,6 +403,33 @@ const genericAverageTeamTemplate = () => [
         absoluteTier: [TIER_WEAK, TIER_AVERAGE],
         checkValidEvo: true,
     },
+];
+
+const punchingMoves = [
+    'MOVE_BULLET_PUNCH',
+    'MOVE_COMET_PUNCH',
+    'MOVE_DIZZY_PUNCH',
+    'MOVE_DOUBLE_IRON_BASH',
+    'MOVE_DRAIN_PUNCH',
+    'MOVE_DYNAMIC_PUNCH',
+    'MOVE_FIRE_PUNCH',
+    'MOVE_FOCUS_PUNCH',
+    'MOVE_HAMMER_ARM',
+    'MOVE_HEADLONG_RUSH',
+    'MOVE_ICE_HAMMER',
+    'MOVE_ICE_PUNCH',
+    'MOVE_JET_PUNCH',
+    'MOVE_MACH_PUNCH',
+    'MOVE_MEGA_PUNCH',
+    'MOVE_METEOR_MASH',
+    'MOVE_PLASMA_FISTS',
+    'MOVE_POWER_UP_PUNCH',
+    'MOVE_RAGE_FIST',
+    'MOVE_SHADOW_PUNCH',
+    'MOVE_SKY_UPPERCUT',
+    'MOVE_SURGING_STRIKES',
+    'MOVE_THUNDER_PUNCH',
+    'MOVE_WICKED_BLOW',
 ];
 
 const trainersData = [
@@ -3921,6 +3949,495 @@ const trainersData = [
         level: 33,
         bag: [...flanneryBag],
         team: genericAverageTeamTemplate(),
+    },
+    // Route 114
+    {
+        id: 'TRAINER_CHARLOTTE',
+        level: 33,
+        bag: [...flanneryBag],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SWABLU'],
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_STEVE_1',
+        level: 33,
+        bag: [...flanneryBag],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SPOINK'],
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_KAI',
+        level: 33,
+        bag: [...flanneryBag],
+        team: [
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_SNATCH'],
+                tryToHaveMove: ['MOVE_SNATCH'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                tryToHaveMove: ['MOVE_SNATCH'],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_CLAUDE',
+        level: 33,
+        bag: [...flanneryBag],
+        team: [
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_TORMENT'],
+                tryToHaveMove: ['MOVE_TORMENT'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                tryToHaveMove: ['MOVE_TORMENT'],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_NANCY',
+        level: 33,
+        team: [
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_REST'],
+                tryToHaveMove: ['MOVE_REST', 'MOVE_SLEEP_TALK'],
+                checkValidEvo: true,
+                item: 'Chesto Berry',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_REST'],
+                tryToHaveMove: ['MOVE_REST', 'MOVE_SLEEP_TALK'],
+                checkValidEvo: true,
+                item: 'Chesto Berry',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_REST'],
+                tryToHaveMove: ['MOVE_REST', 'MOVE_SLEEP_TALK'],
+                checkValidEvo: true,
+                item: 'Chesto Berry',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_REST'],
+                tryToHaveMove: ['MOVE_REST', 'MOVE_SLEEP_TALK'],
+                checkValidEvo: true,
+                item: 'Chesto Berry',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_REST'],
+                tryToHaveMove: ['MOVE_REST', 'MOVE_SLEEP_TALK'],
+                checkValidEvo: true,
+                item: 'Chesto Berry',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_REST'],
+                tryToHaveMove: ['MOVE_REST', 'MOVE_SLEEP_TALK'],
+                checkValidEvo: true,
+                item: 'Chesto Berry',
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_NOLAN',
+        level: 33,
+        bag: [...flanneryBag],
+        tms: [
+            'MOVE_SHADOW_BALL',
+            'MOVE_SHADOW_BALL',
+            'MOVE_SHADOW_BALL',
+            'MOVE_PSYCHIC',
+            'MOVE_PSYCHIC',
+            'MOVE_PSYCHIC',
+            'MOVE_SLUDGE_BOMB',
+            'MOVE_SLUDGE_BOMB',
+            'MOVE_SLUDGE_BOMB',
+        ],
+        team: [
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_SHANE',
+        level: 33,
+        bag: [...flanneryBag],
+        team: [
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_REFLECT', 'MOVE_LIGHT_SCREEN'],
+                tryToHaveMove: ['MOVE_REFLECT', 'MOVE_LIGHT_SCREEN'],
+                item: 'Light Clay',
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_REFLECT', 'MOVE_LIGHT_SCREEN'],
+                tryToHaveMove: ['MOVE_REFLECT', 'MOVE_LIGHT_SCREEN'],
+                item: 'Light Clay',
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_TYRA_AND_IVY',
+        level: 33,
+        bag: [...flanneryBag],
+        team: [
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                abilities: ['TRUANT'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_SKILL_SWAP'],
+                tryToHaveMove: ['MOVE_SKILL_SWAP'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_LUCAS_1',
+        level: 33,
+        bag: [...flanneryBag],
+        team: [
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_TOXIC'],
+                tryToHaveMove: ['MOVE_TOXIC'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_TOXIC'],
+                tryToHaveMove: ['MOVE_TOXIC'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_TOXIC'],
+                tryToHaveMove: ['MOVE_TOXIC'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_BERNIE_1',
+        level: 33,
+        bag: [...flanneryBag],
+        team: [
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                type: [POKEMON_TYPE_NORMAL],
+                mustHaveOneOfMoves: ['MOVE_HYPER_BEAM'],
+                tryToHaveMove: ['MOVE_HYPER_BEAM'],
+                abilities: ['ADAPTABILITY'],
+                item: 'Normal Gem',
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                tryToHaveMove: ['MOVE_HYPER_BEAM'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                tryToHaveMove: ['MOVE_HYPER_BEAM'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_ANGELINA',
+        level: 33,
+        bag: [...flanneryBag],
+        team: [
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                item: 'Wide Lens',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                item: 'Zoom Lens',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                item: 'Wide Lens',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                item: 'Zoom Lens',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                item: 'Wide Lens',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                item: 'Zoom Lens',
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_LENNY',
+        level: 33,
+        bag: [...flanneryBag],
+        team: [
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_LEECH_SEED'],
+                truyToHaveMove: ['MOVE_LEECH_SEED', 'MOVE_TOXIC', 'MOVE_PROTECT'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: ['MOVE_LEECH_SEED'],
+                truyToHaveMove: ['MOVE_LEECH_SEED', 'MOVE_TOXIC', 'MOVE_PROTECT'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_NOB_1',
+        level: 33,
+        team: [
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: [...punchingMoves],
+                truyToHaveMove: [...punchingMoves],
+                item: 'Punching Glove',
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: [...punchingMoves],
+                truyToHaveMove: [...punchingMoves],
+                item: 'Punching Glove',
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: [...punchingMoves],
+                truyToHaveMove: [...punchingMoves],
+                item: 'Punching Glove',
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: [...punchingMoves],
+                truyToHaveMove: [...punchingMoves],
+                item: 'Punching Glove',
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: [...punchingMoves],
+                truyToHaveMove: [...punchingMoves],
+                item: 'Punching Glove',
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                mustHaveOneOfMoves: [...punchingMoves],
+                truyToHaveMove: [...punchingMoves],
+                item: 'Punching Glove',
+                checkValidEvo: true,
+            },
+        ],
     },
 ]
 

@@ -138,51 +138,51 @@ const items = {
         'ITEM_TM_DRAGON_CLAW', // Route 110
         'ITEM_TM_WATER_PULSE', // Route 104
         'ITEM_TM_CALM_MIND',
-        'ITEM_TM_ROAR',
-        'ITEM_TM_TOXIC',
+        'ITEM_TM_ROAR', // @TODO Change TM
+        'ITEM_TM_TOXIC', // Route 114
         'ITEM_TM_HAIL', // Route 109
         'ITEM_TM_BULK_UP', // Brawly
         'ITEM_TM_BULLET_SEED', // Route 104
-        'ITEM_TM_HIDDEN_POWER',
+        'ITEM_TM_HIDDEN_POWER', // @TODO Change TM
         'ITEM_TM_SUNNY_DAY', // Route 109
         'ITEM_TM_TAUNT', // Route 103
         'ITEM_TM_ICE_BEAM',
         'ITEM_TM_BLIZZARD',
-        'ITEM_TM_HYPER_BEAM',
-        'ITEM_TM_LIGHT_SCREEN',
-        'ITEM_TM_PROTECT',
+        'ITEM_TM_HYPER_BEAM', // Route 114
+        'ITEM_TM_LIGHT_SCREEN', // Route 114
+        'ITEM_TM_PROTECT', // Route 114
         'ITEM_TM_RAIN_DANCE', // Route 109
         'ITEM_TM_GIGA_DRAIN',
-        'ITEM_TM_SAFEGUARD',
+        'ITEM_TM_SAFEGUARD', // @TODO Change TM
         'ITEM_TM_FRUSTRATION',
         'ITEM_TM_SOLAR_BEAM',
         'ITEM_TM_IRON_TAIL',
         'ITEM_TM_THUNDERBOLT',
         'ITEM_TM_THUNDER',
         'ITEM_TM_EARTHQUAKE', // Route 117
-        'ITEM_TM_RETURN',
+        'ITEM_TM_RETURN', // @TODO Change TM
         'ITEM_TM_DIG', // Route 104
-        'ITEM_TM_PSYCHIC',
-        'ITEM_TM_SHADOW_BALL',
+        'ITEM_TM_PSYCHIC', // Route 114
+        'ITEM_TM_SHADOW_BALL', // Route 114
         'ITEM_TM_BRICK_BREAK', // Route 116
-        'ITEM_TM_DOUBLE_TEAM',
-        'ITEM_TM_REFLECT',
-        'ITEM_TM_SHOCK_WAVE',
+        'ITEM_TM_DOUBLE_TEAM', // @TODO Change TM
+        'ITEM_TM_REFLECT', // Route 114
+        'ITEM_TM_SHOCK_WAVE', // Wattson
         'ITEM_TM_FLAMETHROWER',
-        'ITEM_TM_SLUDGE_BOMB',
+        'ITEM_TM_SLUDGE_BOMB', // Route 114
         'ITEM_TM_SANDSTORM', // Route 109
         'ITEM_TM_FIRE_BLAST',
         'ITEM_TM_ROCK_TOMB', // Roxanne
         'ITEM_TM_AERIAL_ACE', // Winona
-        'ITEM_TM_TORMENT',
+        'ITEM_TM_TORMENT', // Route 114
         'ITEM_TM_FACADE', // Norman
-        'ITEM_TM_SECRET_POWER',
-        'ITEM_TM_REST',
-        'ITEM_TM_ATTRACT',
-        'ITEM_TM_THIEF',
+        'ITEM_TM_SECRET_POWER', // @TODO Change TM
+        'ITEM_TM_REST', // Route 114
+        'ITEM_TM_ATTRACT', // @TODO Change TM
+        'ITEM_TM_THIEF', // @TODO Change TM
         'ITEM_TM_STEEL_WING', // Steven
-        'ITEM_TM_SKILL_SWAP',
-        'ITEM_TM_SNATCH',
+        'ITEM_TM_SKILL_SWAP', // Route 114
+        'ITEM_TM_SNATCH', // Route 114
         'ITEM_TM_OVERHEAT', // Flannery
     ],
     
@@ -251,15 +251,15 @@ const items = {
     // These are valuable consumables that will not be randomized
     consumables: {
         // Hidden ability
-        ITEM_ABILITY_PATCH: { // 1 at Route 116
+        ITEM_ABILITY_PATCH: { // 1 at Route 116, 1 at Route 113
             count: 4
         },
         // Normal ability
-        ITEM_ABILITY_CAPSULE: { // 1 at Route 104, 1 at Route 110, 1 at Route 112
+        ITEM_ABILITY_CAPSULE: { // 1 at Route 104, 1 at Route 110, 1 at Route 112, 1 at Route 113
             count: 8
         },
-        ITEM_HEART_SCALE: {
-            count: 10
+        ITEM_HEART_SCALE: { // From the start of the game I guess?
+            count: 15
         },
     },
 
@@ -291,15 +291,15 @@ const items = {
         'ITEM_HEAT_ROCK', // Route 109
         'ITEM_SMOOTH_ROCK', // Route 109
         'ITEM_ICY_ROCK', // Route 109
-        'ITEM_WIDE_LENS',
+        'ITEM_WIDE_LENS', // Route 114
         'ITEM_EXPERT_BELT', // Route 102
         'ITEM_LIGHT_CLAY', // Route 117
-        'ITEM_ZOOM_LENS',
+        'ITEM_ZOOM_LENS', // Route 114
         'ITEM_BLACK_SLUDGE', // Route 116
         'ITEM_SHED_SHELL', // Route 110
         'ITEM_BIG_ROOT', // Route 111
         'ITEM_TERRAIN_EXTENDER', // Route 110
-        'ITEM_PUNCHING_GLOVE',
+        'ITEM_PUNCHING_GLOVE', // Route 115
         'ITEM_LOADED_DICE', // Route 109
     ],
 
@@ -346,7 +346,7 @@ const items = {
 
     protectionBerries: {
         NORMAL: 'ITEM_CHILAN_BERRY',
-        FIRE: 'ITEM_OCCA_BERRY',
+        FIRE: 'ITEM_OCCA_BERRY', // Route 112
         WATER: 'ITEM_PASSHO_BERRY',
         ELECTRIC: 'ITEM_WACAN_BERRY', // Route 117
         GRASS: 'ITEM_RINDO_BERRY',

@@ -22,6 +22,10 @@ const {
 const wildData = {
     file: path.resolve(__dirname, '..', 'src', 'data', 'wild_encounters.json'),
     replacementTypes: {
+        LC_WEAK: {
+            replace: [TIER_WEAK],
+            type: [EVO_TYPE_LC],
+        },
         LC_BAD_WEAK_AVERAGE: {
             replace: [TIER_AVERAGE, TIER_WEAK, TIER_BAD],
             type: [EVO_TYPE_LC],
@@ -62,6 +66,10 @@ const wildData = {
             replace: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
             hasMega: true,
             type: [EVO_TYPE_LC, EVO_TYPE_NFE],
+        },
+        LC_NFE_OR_SOLO_AVERAGE: {
+            replace: [TIER_AVERAGE],
+            type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
     },
     replacements: {
@@ -156,6 +164,11 @@ const wildData = {
 
         // Route113
         SPECIES_SPINDA: 'NFE_MEGA',
+
+        // Route114
+        SPECIES_SWABLU: 'LC_NFE_OR_SOLO_AVERAGE',
+        SPECIES_ALTARIA: 'LC_WEAK',
+        SPECIES_SPOINK: 'LC_NFE_OR_SOLO_AVERAGE',
     },
     maps: [
         // Shelgon maps
@@ -281,6 +294,12 @@ const wildData = {
         {
             id: 'MAP_ROUTE113',
             land: 'SPECIES_SPINDA',
+        },
+        {
+            id: 'MAP_ROUTE114',
+            land: 'SPECIES_SWABLU',
+            old: 'SPECIES_ALTARIA',
+            super: 'SPECIES_SPOINK',
         },
         // Special
         {
