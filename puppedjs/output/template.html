@@ -249,31 +249,31 @@
         "BAD":     "#000000",
     };
     const natures = {
-      "Hardy": "(-) Hardy",
-      "Lonely": "(+ATK, -DEF) Lonely",
-      "Brave": "(+ATK, -SPE) Brave",
-      "Adamant": "(+ATK, -SPA) Adamant",
-      "Naughty": "(+ATK, -SPD) Naughty",
-      "Bold": "(+DEF, -ATK) Bold",
-      "Docile": "(-) Docile",
-      "Relaxed": "(+DEF, -SPE) Relaxed",
-      "Impish": "(+DEF, -SPA) Impish",
-      "Lax": "(+DEF, -SPD) Lax",
-      "Timid": "(+SPE, -ATK) Timid",
-      "Hasty": "(+SPE, -DEF) Hasty",
-      "Serious": "(-) Serious",
-      "Jolly": "(+SPE, -SPA) Jolly",
-      "Naive": "(+SPE, -SPD) Naive",
-      "Modest": "(+SPA, -ATK) Modest",
-      "Mild": "(+SPA, -DEF) Mild",
-      "Quiet": "(+SPA, -SPE) Quiet",
-      "Bashful": "(-) Bashful",
-      "Rash": "(+SPA, -SPD) Rash",
-      "Calm": "(+SPD, -ATK) Calm",
-      "Gentle": "(+SPD, -DEF) Gentle",
-      "Sassy": "(+SPD, -SPE) Sassy",
-      "Careful": "(+SPD, -SPA) Careful",
-      "Quirky": "(-) Quirky"
+      "Hardy": "Hardy (-)",
+      "Lonely": "Lonely (+Atk / -Def)",
+      "Brave": "Brave (+Atk / -Spe)",
+      "Adamant": "Adamant (+Atk / -Spa)",
+      "Naughty": "Naughty (+Atk / -Spd)",
+      "Bold": "Bold (+Def / -Atk)",
+      "Docile": "Docile (-)",
+      "Relaxed": "Relaxed (+Def / -Spe)",
+      "Impish": "Impish (+Def / -Spa)",
+      "Lax": "Lax (+Def / -Spd)",
+      "Timid": "Timid (+Spe / -Atk)",
+      "Hasty": "Hasty (+Spe / -Def)",
+      "Serious": "Serious (-)",
+      "Jolly": "Jolly (+Spe / -Spa)",
+      "Naive": "Naive (+Spe / -Spd)",
+      "Modest": "Modest (+Spa / -Atk)",
+      "Mild": "Mild (+Spa / -Def)",
+      "Quiet": "Quiet (+Spa / -Spe)",
+      "Bashful": "Bashful (-)",
+      "Rash": "Rash (+Spa / -Spd)",
+      "Calm": "Calm (+Spd / -Atk)",
+      "Gentle": "Gentle (+Spd / -Def)",
+      "Sassy": "Sassy (+Spd / -Spe)",
+      "Careful": "Careful (+Spd / -Spa)",
+      "Quirky": "Quirky (-)"
     };
 
     function getPokeImg(pokeId) {
@@ -401,7 +401,7 @@
         const imgSrc = getPokeImg(pokeId);
         const item = member.item ? `<div class="small" style="color:#FFD580">🎒 ${member.item}</div>` : '';
         const ability = member.ability ? `<div class="small" style="color:#D1F2FF">✨ ${member.ability}</div>` : '';
-        const nature = member.nature ? `<div class="small" style="color:#A6FFE3">🌳 ${natures[member.nature]}</div>` : '';
+        const nature = member.nature ? `<div class="small" style="color:#A5D9B8">🌳 ${natures[member.nature]}</div>` : '';
         const moves =
           member.moves && member.moves.length > 0
             ? `<div style="font-size:12px;color:#aaa;margin-top:4px">
