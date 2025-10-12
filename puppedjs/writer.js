@@ -582,10 +582,25 @@ async function writer(pokemonList, moves, abilities) {
                     loosePokemon => trainerMonDefinition.absoluteTier.includes(loosePokemon.rating.tier),
                 );
             }
-            if (trainerMonDefinition.evoType && trainerMonDefinition.evoType.includes(EVO_TYPE_LC)) {
-                pokemonLooseList = pokemonLooseList.filter(
-                    loosePokemon => loosePokemon.evolutionData.isLC,
-                );
+            if (trainerMonDefinition.evoType) {
+                pokemonLooseList = pokemonLooseList.filter(loosePokemon => {
+                    let result = false;
+                    trainerMonDefinition.evoType.forEach(evoType => {
+                        if (evoType === EVO_TYPE_LC) {
+                            result = result || loosePokemon.evolutionData.isLC;
+                        }
+                        else if (evoType === EVO_TYPE_NFE) {
+                            result = result || loosePokemon.evolutionData.isNFE;
+                        }
+                        else if (evoType === EVO_TYPE_SOLO) {
+                            result = result || loosePokemon.evolutionData.type === EVO_TYPE_SOLO;
+                        }
+                        else if (evoType === EVO_TYPE_FINAL) {
+                            result = result || loosePokemon.evolutionData.isFinal;
+                        }
+                    });
+                    return result;
+                });
             }
             if (trainerMonDefinition.megaTier) {
                 pokemonLooseList = pokemonLooseList.filter(

@@ -3448,16 +3448,19 @@ const trainersData = [
                 evoType: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
                 abilities: ['POISON_HEAL'],
                 item: 'Toxic Orb',
+                checkValidEvo: true,
             },
             {
                 evoType: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
                 abilities: ['POISON_HEAL'],
                 item: 'Toxic Orb',
+                checkValidEvo: true,
             },
             {
                 evoType: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
                 abilities: ['TOXIC_BOOST'],
                 item: 'Toxic Orb',
+                checkValidEvo: true,
             },
             {
                 evoType: [EVO_TYPE_LC],
