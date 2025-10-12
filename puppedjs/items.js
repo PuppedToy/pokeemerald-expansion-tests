@@ -302,7 +302,7 @@ const items = {
     ],
 
     goodConsumables: [
-        'ITEM_WHITE_HERB',
+        'ITEM_WHITE_HERB', // Route 112
         'ITEM_KINGS_ROCK',
         'ITEM_POWER_HERB',
         'ITEM_FOCUS_SASH',

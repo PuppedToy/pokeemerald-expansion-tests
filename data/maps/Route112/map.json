@@ -249,9 +249,9 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_NUGGET",
+      "trainer_sight_or_berry_tree_id": "ITEM_WHITE_HERB",
       "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_112_NUGGET"
+      "flag": "FLAG_ITEM_ROUTE_112_WHITE"
     }
   ],
   "warp_events": [
@@ -287,15 +287,15 @@
       "x": 11,
       "y": 36,
       "elevation": 0,
-      "dest_map": "MAP_FIERY_PATH",
-      "dest_warp_id": "0"
+      "dest_map": "MAP_ROUTE112",
+      "dest_warp_id": "5"
     },
     {
       "x": 22,
       "y": 10,
       "elevation": 0,
-      "dest_map": "MAP_FIERY_PATH",
-      "dest_warp_id": "1"
+      "dest_map": "MAP_ROUTE112",
+      "dest_warp_id": "4"
     }
   ],
   "coord_events": [],

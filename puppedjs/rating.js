@@ -329,6 +329,20 @@ const multiHitMoves = [
     'MOVE_WATER_SHURIKEN',  
 ];
 
+const whiteHerbMoves = [
+    'MOVE_OVERHEAT',
+    'MOVE_LEAF_STORM',
+    'MOVE_DRACO_METEOR',
+    'MOVE_FLEUR_CANNON',
+    'MOVE_SUPERPOWER',
+    'MOVE_CLOSE_COMBAT',
+    'MOVE_HAMMER_ARM',
+    'MOVE_V_CREATE',
+    'MOVE_CLANGING_SCALES',
+    'MOVE_PSYCHO_BOOST',
+    'MOVE_SHELL_SMASH',
+];
+
 function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, deviation = 0) {
     const itemId = 'ITEM_' + item.replace(/ /, '_').toUpperCase();
     const bestOffensePower = (Math.max(poke.baseAttack, poke.baseSpAttack) + poke.baseSpeed)/200;
@@ -399,6 +413,16 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
             return 9.5 * genericDefensePower / bestOffensePower * calculatedDeviation;
         }
         return 0;
+    }
+    if (item === 'White Herb') {
+        const hasShellSmash = moveset.some(m => m.id === 'MOVE_SHELL_SMASH');
+        if (hasShellSmash) {
+            return 10 * bestOffensePower / genericDefensePower * calculatedDeviation;
+        }
+        const hasWhiteHerbMove = moveset.some(m => whiteHerbMoves.includes(m.id));
+        if (hasWhiteHerbMove) {
+            return 8 * calculatedDeviation;
+        }
     }
     if (item === 'Rocky Helmet') {
         if (ability === 'ROUGH_SKIN' || ability === 'IRON_BARBS') {

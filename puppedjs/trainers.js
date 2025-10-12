@@ -121,6 +121,20 @@ const soundBasedOffensiveMoves = [
     'MOVE_RELIC_SONG',
 ];
 
+const whiteHerbMoves = [
+    'MOVE_OVERHEAT',
+    'MOVE_LEAF_STORM',
+    'MOVE_DRACO_METEOR',
+    'MOVE_FLEUR_CANNON',
+    'MOVE_SUPERPOWER',
+    'MOVE_CLOSE_COMBAT',
+    'MOVE_HAMMER_ARM',
+    'MOVE_V_CREATE',
+    'MOVE_CLANGING_SCALES',
+    'MOVE_PSYCHO_BOOST',
+    'MOVE_SHELL_SMASH',
+];
+
 const rainAbilities = ['SWIFT_SWIM', 'RAIN_DISH', 'DRY_SKIN', 'HYDRATION'];
 const sunAbilities = ['FLOWER_GIFT', 'CHLOROPHYLL', 'LEAF_GUARD', 'SOLAR_POWER'];
 const sandAbilities = ['SAND_FORCE', 'SAND_RUSH', 'SAND_VEIL', 'SAND_SPIT'];
@@ -3568,19 +3582,92 @@ const trainersData = [
                 type: [magmaTeamTypes[1]],
             },
             {
-                absoluteTier: [TIER_STRONG],
+                absoluteTier: [TIER_AVERAGE],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[2]],
             },
             {
-                absoluteTier: [TIER_STRONG],
+                absoluteTier: [TIER_AVERAGE],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[3]],
             },
             {
-                absoluteTier: [TIER_STRONG],
+                absoluteTier: [TIER_AVERAGE],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[4]],
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_SHAYLA',
+        level: 33,
+        bag: [...magmaChimneyBag, 'White Herb'],
+        team: [
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                mustHaveOneOfMoves: [...whiteHerbMoves],
+                tryToHaveMove: [...whiteHerbMoves],
+                item: 'White Herb',
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                tryToHaveMove: [...whiteHerbMoves],
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                tryToHaveMove: [...whiteHerbMoves],
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                tryToHaveMove: [...whiteHerbMoves],
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                tryToHaveMove: [...whiteHerbMoves],
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                mustHaveOneOfMoves: [...whiteHerbMoves],
+                tryToHaveMove: [...whiteHerbMoves],
+                item: 'White Herb',
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_BRYANT',
+        level: 33,
+        bag: [...magmaChimneyBag, 'White Herb'],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_NUMEL'],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
             },
         ],
     },
