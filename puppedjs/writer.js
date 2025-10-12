@@ -501,6 +501,24 @@ async function writer(pokemonList, moves, abilities) {
             return;
         }
 
+        const canLearnMove = (pokemon, moveToLearn) => {
+            const result = (
+                pokemon.teachables
+                && pokemon.teachables.includes(moveToLearn)
+            )
+            ||
+            (
+                pokemon.learnset
+                && pokemon.learnset.some(lu => lu.move === moveToLearn && lu.level <= trainer.level)
+            );
+            return result;
+        };
+
+        const canLearnAnyOfMoves = (pokemon, movesToLearn) => {
+            const result = movesToLearn.some(moveToLearn => canLearnMove(pokemon, moveToLearn));
+            return result;
+        }
+
         const choosePokemonFromDefinition = (trainerMonDefinition) => {
             let pokemonStrictList = [];
             let pokemonLooseList = [];
@@ -644,24 +662,6 @@ async function writer(pokemonList, moves, abilities) {
                         return pokemonThatEvolveToThis.length > 0;
                     }
                 );
-            }
-
-            const canLearnMove = (pokemon, moveToLearn) => {
-                const result = (
-                    pokemon.teachables
-                    && pokemon.teachables.includes(moveToLearn)
-                )
-                ||
-                (
-                    pokemon.learnset
-                    && pokemon.learnset.some(lu => lu.move === moveToLearn && lu.level <= trainer.level)
-                );
-                return result;
-            };
-
-            const canLearnAnyOfMoves = (pokemon, movesToLearn) => {
-                const result = movesToLearn.some(moveToLearn => canLearnMove(pokemon, moveToLearn));
-                return result;
             }
 
             if (trainerMonDefinition.mustHaveOneOfMoves) {
