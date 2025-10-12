@@ -506,8 +506,7 @@ async function writer(pokemonList, moves, abilities) {
         routeFileContent = routeFileContent.replace(/ITEM_WAVE_MAIL/g, () => sample(items.strongDefMints));
         routeFileContent = routeFileContent.replace(/ITEM_MECH_MAIL/g, () => sample(items.strongAtkMints));
 
-        items.megaStones.forEach((itemIdToReplace) => {
-            const speciesId = items.megaStones[itemIdToReplace];
+        Object.entries(items.megaStones).forEach(([itemIdToReplace, speciesId]) => {
             const poke = pokemonList.find(p => p.id === speciesId);
             if (poke && poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length > 0) {
                 const megaId = sample(poke.evolutionData.megaEvos);
