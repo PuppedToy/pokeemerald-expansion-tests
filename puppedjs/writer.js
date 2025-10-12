@@ -34,6 +34,7 @@ const {
     NATURES,
     TRAINER_POKE_MEGA_FROM_STONE,
     EVO_TYPE_MEGA,
+    TRAINER_POKE_MEGA_WITH_STONE,
 } = require('./constants');
 const { chooseMoveset, rateItemForAPokemon, isSuperEffective } = require('./rating.js');
 const items = require('./items.js');
@@ -637,6 +638,14 @@ async function writer(pokemonList, moves, abilities) {
             }
 
             // General filters for the loose list
+            if (trainerMonDefinition.special === TRAINER_POKE_MEGA_WITH_STONE) {
+                pokemonLooseList = pokemonLooseList.filter(
+                    loosePokemon => loosePokemon.evolutionData.isFinal
+                        && !loosePokemon.evolutionData.isMega
+                        && loosePokemon.evolutionData.megaEvos
+                        && loosePokemon.evolutionData.megaEvos.length > 0
+                );
+            }
             if (trainerMonDefinition.absoluteTier) {
                 pokemonLooseList = pokemonLooseList.filter(
                     loosePokemon => trainerMonDefinition.absoluteTier.includes(loosePokemon.rating.tier),
@@ -821,6 +830,22 @@ async function writer(pokemonList, moves, abilities) {
                     nature: trainerMonDefinition.nature || null,
                     moves: [],
                 };
+                if (trainerMonDefinition.special === TRAINER_POKE_MEGA_WITH_STONE) {
+                    const megaEvos = chosenTrainerMon.evolutionData.megaEvos;
+                    if (megaEvos && megaEvos.length > 0) {
+                        const megaId = sample(megaEvos);
+                        const megaPoke = pokemonList.find(p => p.id === megaId);
+                        if (megaPoke) {
+                            newTeamMember.item = itemIdToName(megaPoke.evolutionData.megaItem);
+                        }
+                        else {
+                            console.warn(`WARN: Chosen pokemon ${chosenTrainerMon.id} for mega with stone in trainer ${trainer.id} has no mega evolution data.`);
+                        }
+                    }
+                    else {
+                        console.warn(`WARN: Chosen pokemon ${chosenTrainerMon.id} for mega with stone in trainer ${trainer.id} has no mega evolutions.`);
+                    }
+                }
                 if (trainerMonDefinition.tryToHaveMove) {
                     trainerMonDefinition.tryToHaveMove.forEach(moveToLearn => {
                         if (

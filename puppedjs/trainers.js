@@ -36,6 +36,7 @@ const {
     TRAINER_POKE_MEGA_FROM_STONE,
     EVO_TYPE_FINAL,
     POKEMON_TYPE_NORMAL,
+    TRAINER_POKE_MEGA_WITH_STONE,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
@@ -260,6 +261,19 @@ const flanneryBag = [
     'Shell Bell',
     'Focus Sash',
     'Razor Claw',
+    'Punching Glove',
+    'Big Root',
+];
+
+const flanneryTMs = [
+    ...magmaChimneyTMs,
+    'MOVE_SHADOW_BALL',
+    'MOVE_PSYCHIC',
+    'MOVE_SOLAR_BEAM',
+    'MOVE_SLUDGE_BOMB',
+    'MOVE_REST',
+    'MOVE_REFLECT',
+    'MOVE_LIGHT_SCREEN',
 ];
 
 const rivalRustboroTemplate = (id) => [
@@ -4436,6 +4450,57 @@ const trainersData = [
                 truyToHaveMove: [...punchingMoves],
                 item: 'Punching Glove',
                 checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_FLANNERY_1',
+        level: 33,
+        isBoss: true,
+        bag: [...flanneryBag],
+        tms: [...flanneryTMs],
+        team: [
+            {
+                specific: 'SPECIES_TORKOAL',
+                abilities: ['DROUGHT'],
+                item: 'Heat Rock',
+                tryToHaveMove: ['MOVE_OVERHEAT', 'MOVE_RAPID_SPIN', 'MOVE_CLEAR_SMOG', 'MOVE_SOLAR_BEAM', 'MOVE_BODY_SLAM'],
+                checkValidEvo: true,
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                abilities: ['PROTOSYNTHESIS'],
+                tryToHaveMove: ['MOVE_OVERHEAT'],
+                checkValidEvo: true,
+            },
+            {
+                evolutionTier: [TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
+                type: [POKEMON_TYPE_FIRE],
+                tryToHaveMove: ['MOVE_OVERHEAT'],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE, TIER_STRONG],
+                abilities: ['DROUGHT'],
+                item: 'Heat Rock',
+                tryToHaveMove: ['MOVE_OVERHEAT'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                tryToHaveMove: ['MOVE_OVERHEAT'],
+                abilities: ['CLOROPHYLL', 'HARVEST'],
+                checkValidEvo: true,
+            },
+            {
+                special: TRAINER_POKE_MEGA_WITH_STONE,
+                megaTier: [TIER_PREMIUM, TIER_LEGEND],
+                type: [POKEMON_TYPE_FIRE],
+                tryToHaveMove: ['MOVE_OVERHEAT'],
+                checkValidEvo: true,
+                tryEvolve: true,
             },
         ],
     },
