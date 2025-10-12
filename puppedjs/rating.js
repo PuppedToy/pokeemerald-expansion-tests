@@ -329,7 +329,7 @@ const multiHitMoves = [
     'MOVE_WATER_SHURIKEN',  
 ];
 
-function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 0) {
+function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, deviation = 0) {
     const offensePower = Math.max(poke.baseAttack, poke.baseSpAttack)/100;
     const defensePower = (poke.baseDefense + poke.baseSpDefense + poke.baseHP)/300;
     let coverageRating = 0;
@@ -342,10 +342,14 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
         }
     });
 
+    const hasGuts = ability === 'GUTS';
+    const hasFacade = moveset.some(m => m.id === 'MOVE_FACADE');
+    const hasQuickFeet = ability === 'QUICK_FEET';
+    const hasToxicBoost = ability === 'TOXIC_BOOST';
+    const hasPoisonHeal = ability === 'POISON_HEAL';
+    const hasComatose = ability === 'COMATOSE';
+    const hasInsomniaAndSuch = ability === 'INSOMNIA' || ability === 'VITAL_SPIRIT' || ability === 'SLEEPYTIME' || ability === 'EARLY_BIRD';
     if (item === 'Flame Orb') {
-        const hasFacade = moveset.some(m => m.id === 'MOVE_FACADE');
-        const hasGuts = ability === 'GUTS';
-        const hasQuickFeet = ability === 'QUICK_FEET';
         if (hasFacade && (hasGuts || hasQuickFeet)) {
             return 10 * offensePower / defensePower * calculatedDeviation;
         }
@@ -357,9 +361,38 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
         }
         return 0;
     }
+    if (item === 'Toxic Orb') {
+        if (hasPoisonHeal) {
+            return 10 * defensePower / offensePower * calculatedDeviation;
+        }
+        if (hasFacade && hasToxicBoost) {
+            return 10 * offensePower / defensePower * calculatedDeviation;
+        }
+        if (hasToxicBoost || (hasFacade && (hasGuts || hasQuickFeet))) {
+            return 9 * offensePower / defensePower * calculatedDeviation;
+        }
+        if (hasGuts || hasFacade) {
+            return 8 * offensePower / defensePower * calculatedDeviation;
+        }
+        if (hasQuickFeet) {
+            return 7 * offensePower / defensePower * calculatedDeviation;
+        }
+    }
     if (item === 'Eviolite') {
         if (poke.evolutionData.isNFE) {
             return 10 * defensePower / offensePower * calculatedDeviation;
+        }
+        return 0;
+    }
+    const hasReflect = moveset.some(m => m.id === 'MOVE_REFLECT');
+    const hasLightScreen = moveset.some(m => m.id === 'MOVE_LIGHT_SCREEN');
+    const hasAuroraVeil = moveset.some(m => m.id === 'MOVE_AURORA_VEIL');
+    if (item === 'Light Clay') {
+        if ((hasReflect && hasLightScreen) || hasAuroraVeil) {
+            return 10 * defensePower / offensePower * calculatedDeviation;
+        }
+        if (hasReflect || hasLightScreen) {
+            return 9.5 * defensePower / offensePower * calculatedDeviation;
         }
         return 0;
     }
@@ -416,14 +449,58 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
         const bestMultiHitMoveRating = Math.max(...multiHit.map(m => m.rating));
         return (8 + bestMultiHitMoveRating)/2 * offensePower / defensePower * calculatedDeviation;
     }
+    if (item === 'Air Balloon') {
+        if (ability === 'LEVITATE' || ability === 'EARTH_EATER') {
+            return 0;
+        }
+        if (damageMultiplier('GROUND', poke.parsedTypes) > 1) {
+            return 8 * offensePower / defensePower * calculatedDeviation;
+        }
+    }
+    const hasHarvest = ability === 'HARVEST';
+    const hasBelch = moveset.some(m => m.id === 'MOVE_BELCH');
+    const hasCheekPouch = ability === 'CHEEK_POUCH';
+    const hasCudChew = ability === 'CUD_CHEW';
+    const hasRipen = ability === 'RIPEN';
+    const hasNaturalGift = moveset.some(m => m.id === 'MOVE_NATURAL_GIFT');
+    if (item === 'Sitrus Berry') {
+        if (hasHarvest || hasBelch) {
+            return 9.5 * defensePower / offensePower * calculatedDeviation;
+        }
+        if (hasCheekPouch || hasRipen || hasNaturalGift || hasCudChew) {
+            return 8.5 * defensePower / offensePower * calculatedDeviation;
+        }
+        return 7.5 * defensePower / offensePower * calculatedDeviation;
+    }
     if (item === 'Oran Berry') {
+        let modifier = 0;
+        if (hasHarvest || hasCudChew || hasRipen || hasNaturalGift)
+        {
+            modifier += 1;
+        }
+        if (hasCheekPouch) {
+            modifier += 5;
+        }
+        if (hasBelch) {
+            modifier += 2;
+        }
+        const trueHp = Math.floor((poke.baseHP * 2 * level) / 100) + level + 10;
         const minHPAtWhichRatingIsMax = 30;
         const ratingDevaluation = 5; // For each X extra HP, rating devalues by 1 point
-        const baseHPNear10Rating = Math.max(0, Math.min(10, 10 - ((poke.baseHP - minHPAtWhichRatingIsMax) / ratingDevaluation)));
-        return baseHPNear10Rating * calculatedDeviation;
+        const baseHPNear10Rating = Math.max(0, Math.min(10, 10 - ((trueHp - minHPAtWhichRatingIsMax) / ratingDevaluation)));
+        return baseHPNear10Rating * calculatedDeviation + modifier;
+    }
+    if (item === 'Lum Berry') {
+        if (hasGuts || hasQuickFeet || hasFacade || hasToxicBoost || hasPoisonHeal || hasComatose || hasInsomniaAndSuch) {
+            return 0;
+        }
+        if (hasCheekPouch || hasBelch || hasNaturalGift) {
+            return 8 * calculatedDeviation;
+        }
+        return 7 * calculatedDeviation;
     }
     if (item === 'Chesto Berry') {
-        if (ability === 'INSOMNIA' || ability === 'EARLY_BIRD') {
+        if (hasComatose || hasInsomniaAndSuch) {
             return 0;
         }
         const hasRest = moveset.some(m => m.id === 'MOVE_REST');
@@ -433,7 +510,28 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
         return 2.5 * calculatedDeviation;
     }
     if (item === 'Jaboca Berry' || item === 'Red Card') {
+        if (hasHarvest || hasCudChew || hasRipen || hasCheekPouch)
+        {
+            return 5 * calculatedDeviation;
+        }
+        if (hasBelch || hasNaturalGift) {
+            return 7.5 * calculatedDeviation;
+        }
         return 2.5 * calculatedDeviation;
+    }
+    if (item.includes(' Berry')) {
+        const protectionBerriesEntries = Object.entries(protectionBerries);
+        for (const [berryType, berryId] of protectionBerriesEntries) {
+            if (berryId === itemId) {
+                let berryTypeDamageMultiplier = damageMultiplier(berryType, poke.parsedTypes);
+                if (berryTypeDamageMultiplier > 1) {
+                    if (hasCheekPouch || hasHarvest) berryTypeDamageMultiplier += 1;
+                    if (hasRipen) berryTypeDamageMultiplier *= 1.5;
+                    return (5 + berryTypeDamageMultiplier) * defensePower / offensePower * calculatedDeviation;
+                }
+                return 0;
+            }
+        }
     }
     if (item.includes(' Gem')) {
         const gemType = item.split(' Gem')[0].toUpperCase();
@@ -446,7 +544,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
                     }
                     return 8 * offensePower / defensePower * calculatedDeviation + stabExtra;
                 }
-                return 7 * offensePower / defensePower * calculatedDeviation + stabExtra;
+                return 6 * offensePower / defensePower * calculatedDeviation + stabExtra;
             }
         }
         return 0;
@@ -457,22 +555,10 @@ function rateItemForAPokemon(item, poke, ability, moveset, bagSize, deviation = 
         const stabExtra = poke.parsedTypes.includes(plateType) ? 0.5 : 0;
         for (const move of moveset) {
             if (move.category !== 'DAMAGE_CATEGORY_STATUS' && move.type === plateType) {
-                return 6.5 * offensePower / defensePower * calculatedDeviation + stabExtra;
+                return 5 * offensePower / defensePower * calculatedDeviation + stabExtra;
             }
         }
         return 0;
-    }
-    if (item.includes(' Berry')) {
-        const protectionBerriesEntries = Object.entries(protectionBerries);
-        for (const [berryType, berryId] of protectionBerriesEntries) {
-            if (berryId === itemId) {
-                const berryTypeDamageMultiplier = damageMultiplier(berryType, poke.parsedTypes);
-                if (berryTypeDamageMultiplier > 1) {
-                    return (5 + berryTypeDamageMultiplier) * defensePower / offensePower * calculatedDeviation;
-                }
-                return 0;
-            }
-        }
     }
     console.log(`Warning: Item ${item} not rated for ${poke.name}`);
     return calculatedDeviation;

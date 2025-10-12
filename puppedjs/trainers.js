@@ -3563,7 +3563,6 @@ const trainersData = [
             },
         ],
     },
-    // @TODO Check items rating for the new ones
 ]
 
 module.exports = {
