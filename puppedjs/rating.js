@@ -330,6 +330,7 @@ const multiHitMoves = [
 ];
 
 function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, deviation = 0) {
+    const itemId = 'ITEM_' + item.replace(/ /, '_').toUpperCase();
     const offensePower = Math.max(poke.baseAttack, poke.baseSpAttack)/100;
     const defensePower = (poke.baseDefense + poke.baseSpDefense + poke.baseHP)/300;
     let coverageRating = 0;
@@ -549,7 +550,6 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         }
         return 0;
     }
-    const itemId = 'ITEM_' + item.replace(/ /, '_').toUpperCase();
     if (item.includes(' Plate')) {
         const plateType = plates[itemId];
         const stabExtra = poke.parsedTypes.includes(plateType) ? 0.5 : 0;
