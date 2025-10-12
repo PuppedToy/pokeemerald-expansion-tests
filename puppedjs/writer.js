@@ -445,10 +445,11 @@ async function writer(pokemonList, moves, abilities) {
     const replacementLists = {};
 
     Object.entries(wildReplacementTypes).forEach(([key, value]) => {
-        const { replace: tiers, type: types } = value;
+        const { replace: tiers, type: types, hasMega } = value;
         replacementLists[key] = pokemonList.filter(poke => {
             if (alreadyChosenSet.has(poke.id)) return false;
             if (!tiers.includes(poke.rating.bestEvoTier)) return false;
+            if (hasMega && !poke.evolutionData.megaEvos) return false;
             let hasAnyTypeOfReplacement = false;
             types.forEach(replacementType => {
                 if (replacementType === EVO_TYPE_LC) {
@@ -462,9 +463,6 @@ async function writer(pokemonList, moves, abilities) {
                 }
                 else if (replacementType === EVO_TYPE_FINAL) {
                     hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.isFinal;
-                }
-                else if (replacementType === EVO_TYPE_MEGA) {
-                    hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.megaEvos;
                 }
             });
             return hasAnyTypeOfReplacement;
@@ -507,15 +505,21 @@ async function writer(pokemonList, moves, abilities) {
         routeFileContent = routeFileContent.replace(/ITEM_MECH_MAIL/g, () => sample(items.strongAtkMints));
 
         Object.entries(items.megaStones).forEach(([itemIdToReplace, speciesId]) => {
-            const poke = pokemonList.find(p => p.id === speciesId);
+            if (routeFileContent.includes(itemIdToReplace) === false) {
+                return;
+            }
+            const replacementPoke = replacementLog[speciesId] || speciesId;
+            const poke = pokemonList.find(p => p.id === replacementPoke);
+            console.log(`Replacing ${itemIdToReplace} with a mega stone for ${replacementPoke} (${speciesId}) in ${routeFile}.`);
             if (poke && poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length > 0) {
                 const megaId = sample(poke.evolutionData.megaEvos);
                 const megaItem = pokemonList.find(p => p.id === megaId).evolutionData.megaItem;
+                console.log(` - Chose mega evolution ${megaId} with item ${megaItem}.`);
                 megaReplacements[itemIdToReplace] = megaItem;
                 routeFileContent = routeFileContent.replace(itemIdToReplace, megaItem);
             }
             else {
-                console.warn(`WARN: No mega evolution found for ${speciesId} to replace ${itemIdToReplace} in ${routeFile}.`);
+                console.warn(`WARN: No mega evolution found for ${replacementPoke} (${speciesId}) to replace ${itemIdToReplace} in ${routeFile}.`);
             }
         });
 
@@ -881,7 +885,7 @@ async function writer(pokemonList, moves, abilities) {
                     const sortedBagItems = trainer.bag
                         .map(bagItemId => {
                             const rating = rateItemForAPokemon(bagItemId, chosenTrainerMon, newTeamMember.ability, movesetObjects, trainer.level, trainer.bag.length, 0.1);
-                            console.log(`Rating item ${bagItemId} for pokemon LV.${trainer.level} ${chosenTrainerMon.id} resulted in rating ${rating}`);
+                            // console.log(`Rating item ${bagItemId} for pokemon LV.${trainer.level} ${chosenTrainerMon.id} resulted in rating ${rating}`);
                             return {
                                 id: bagItemId,
                                 rating,

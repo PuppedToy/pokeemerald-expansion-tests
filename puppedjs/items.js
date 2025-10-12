@@ -1,6 +1,6 @@
 const items = {
     megaStones: {
-        HARBOR_MAIL: 'SPECIES_SPINDA', // Route 113
+        ITEM_HARBOR_MAIL: 'SPECIES_SPINDA', // Route 113
     },
 
     // Randomized items - mints

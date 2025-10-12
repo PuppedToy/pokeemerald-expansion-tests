@@ -58,9 +58,10 @@ const wildData = {
             replace: [TIER_STRONG],
             type: [EVO_TYPE_NFE],
         },
-        MEGA: {
+        NFE_MEGA: {
             replace: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
-            type: [EVO_TYPE_MEGA],
+            hasMega: true,
+            type: [EVO_TYPE_LC, EVO_TYPE_NFE],
         },
     },
     replacements: {
@@ -154,7 +155,7 @@ const wildData = {
         SPECIES_SWELLOW: 'NFE_OR_SOLO_AVERAGE',
 
         // Route113
-        SPECIES_SPINDA: 'MEGA',
+        SPECIES_SPINDA: 'NFE_MEGA',
     },
     maps: [
         // Shelgon maps
