@@ -17,7 +17,6 @@ const {
 
     TIER_LEGEND_THRESHOLD,
     TIER_STRONG_THRESHOLD,
-    MID_TIER_STRONG_THRESHOLD,
     MID_TIER_PREMIUM_THRESHOLD,
     TRAINER_POKE_ENCOUNTER,
     TRAINER_POKE_STARTER_TREECKO,
@@ -634,6 +633,9 @@ async function writer(pokemonList, moves, abilities) {
             if (trainerMonDefinition.checkValidEvo) {
                 pokemonLooseList = pokemonLooseList.filter(
                     loosePokemon => {
+                        if (loosePokemon.evolutionData.type === EVO_TYPE_SOLO || loosePokemon.evolutionData.isLC) {
+                            return true;
+                        }
                         const pokemonThatEvolveToThis = pokemonList.filter(p => {
                             const evolutions = (p.evolutions || [])
                                 .filter(e => e.pokemon === loosePokemon.id);
