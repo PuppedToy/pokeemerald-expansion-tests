@@ -501,7 +501,7 @@ async function writer(pokemonList, moves, abilities) {
             return;
         }
 
-        const choosePokemonFromDefinition (trainerMonDefinition) {
+        const choosePokemonFromDefinition = (trainerMonDefinition) => {
             let pokemonStrictList = [];
             let pokemonLooseList = [];
             let chosenTrainerMon;
