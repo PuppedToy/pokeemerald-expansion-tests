@@ -378,6 +378,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         if (hasQuickFeet) {
             return 7 * offensePower / defensePower * calculatedDeviation;
         }
+        return 0;
     }
     if (item === 'Eviolite') {
         if (poke.evolutionData.isNFE) {
@@ -455,8 +456,9 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
             return 0;
         }
         if (damageMultiplier('GROUND', poke.parsedTypes) > 1) {
-            return 8 * offensePower / defensePower * calculatedDeviation;
+            return 7.5 * offensePower / defensePower * calculatedDeviation;
         }
+        return 0;
     }
     const hasHarvest = ability === 'HARVEST';
     const hasBelch = moveset.some(m => m.id === 'MOVE_BELCH');
