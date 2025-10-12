@@ -3487,9 +3487,26 @@ const trainersData = [
         team: [
             {
                 abilities: ['SAND_STREAM'],
+                evoType: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
                 checkValidEvo: true,
                 item: 'Smooth Rock',
                 type: [...magmaTeamTypes],
+                fallback: [
+                    {
+                        abilities: ['SAND_STREAM'],
+                        checkValidEvo: true,
+                        item: 'Smooth Rock',
+                        type: [...magmaTeamTypes],
+                    },
+                    {
+                        absoluteTier: [TIER_AVERAGE, TIER_STRONG],
+                        mustHaveOneOfMoves: ['MOVE_SANDSTORM'],
+                        tryToHaveMove: ['MOVE_SANDSTORM'],
+                        checkValidEvo: true,
+                        item: 'Smooth Rock',
+                        type: [...magmaTeamTypes],
+                    },
+                ],
             },
             {
                 absoluteTier: [TIER_AVERAGE],

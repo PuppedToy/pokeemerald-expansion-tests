@@ -501,8 +501,7 @@ async function writer(pokemonList, moves, abilities) {
             return;
         }
 
-        const team = [];
-        trainer.team.forEach(trainerMonDefinition => {
+        const choosePokemonFromDefinition (trainerMonDefinition) {
             let pokemonStrictList = [];
             let pokemonLooseList = [];
             let chosenTrainerMon;
@@ -720,7 +719,24 @@ async function writer(pokemonList, moves, abilities) {
                     chosenTrainerMon = sample(pokemonLooseList);
                 }
             }
-            else {
+
+            return chosenTrainerMon;
+        }
+
+        const team = [];
+        trainer.team.forEach(trainerMonDefinition => {
+            let chosenTrainerMon = choosePokemonFromDefinition(trainerMonDefinition);
+
+            if (!chosenTrainerMon && trainerMonDefinition.fallback && trainerMonDefinition.fallback.length) {
+                console.log(`No pokemon meet the restrictions for trainer ${trainer.id} with definition ${JSON.stringify(trainerMonDefinition)}. Trying fallback definitions.`);
+                let fallbackCount = 1;
+                do {
+                    console.log(`Trying fallback definition #${fallbackCount++} for trainer ${trainer.id}`);
+                    const fallbackDefinition = trainerMonDefinition.fallback.shift();
+                    chosenTrainerMon = choosePokemonFromDefinition(fallbackDefinition);
+                } while (!chosenTrainerMon && trainerMonDefinition.fallback && trainerMonDefinition.fallback.length);
+            }
+            if (!chosenTrainerMon) {
                 console.warn(`WARN: No pokemon available for trainer ${trainer.id} with definition ${JSON.stringify(trainerMonDefinition)}. Picking a random one.`);
                 // Pick a random pokemon
                 const randomPokemon = sample(pokemonList);
