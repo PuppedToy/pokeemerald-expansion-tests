@@ -4489,9 +4489,9 @@ const trainersData = [
                 checkValidEvo: true,
             },
             {
-                absoluteTier: [TIER_AVERAGE],
+                absoluteTier: [TIER_AVERAGE, TIER_STRONG],
                 tryToHaveMove: ['MOVE_OVERHEAT'],
-                abilities: ['CLOROPHYLL', 'HARVEST'],
+                abilities: ['CHLOROPHYLL', 'HARVEST'],
                 checkValidEvo: true,
             },
             {

@@ -380,10 +380,57 @@ const superCritMoves = [
     'MOVE_WICKED_BLOW',
 ];
 
+const punchingMoves = [
+    'MOVE_BULLET_PUNCH',
+    'MOVE_COMET_PUNCH',
+    'MOVE_DIZZY_PUNCH',
+    'MOVE_DOUBLE_IRON_BASH',
+    'MOVE_DRAIN_PUNCH',
+    'MOVE_DYNAMIC_PUNCH',
+    'MOVE_FIRE_PUNCH',
+    'MOVE_FOCUS_PUNCH',
+    'MOVE_HAMMER_ARM',
+    'MOVE_HEADLONG_RUSH',
+    'MOVE_ICE_HAMMER',
+    'MOVE_ICE_PUNCH',
+    'MOVE_JET_PUNCH',
+    'MOVE_MACH_PUNCH',
+    'MOVE_MEGA_PUNCH',
+    'MOVE_METEOR_MASH',
+    'MOVE_PLASMA_FISTS',
+    'MOVE_POWER_UP_PUNCH',
+    'MOVE_RAGE_FIST',
+    'MOVE_SHADOW_PUNCH',
+    'MOVE_SKY_UPPERCUT',
+    'MOVE_SURGING_STRIKES',
+    'MOVE_THUNDER_PUNCH',
+    'MOVE_WICKED_BLOW',
+];
+
+const healingMoves = [
+    'MOVE_ABSORB',
+    'AQUA_RING',
+    'MOVE_BITTER_BLADE',
+    'MOVE_DRAIN_PUNCH',
+    'MOVE_DRAINING_KISS',
+    'MOVE_GIGA_DRAIN',
+    'MOVE_HORN_LEECH',
+    'MOVE_INGRAIN',
+    'MOVE_LEECH_LIFE',
+    'MOVE_LEECH_SEED',
+    'MOVE_MATCHA_GOTCHA',
+    'MOVE_MEGA_DRAIN',
+    'MOVE_OBLIVION_WING',
+    'MOVE_PARABOLIC_CHARGE',
+    'MOVE_STRENGTH_SAP',
+];
+
 function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, deviation = 0) {
     const itemId = 'ITEM_' + item.replace(/ /, '_').toUpperCase();
     const bestOffensePowerWithSpeed = (Math.max(poke.baseAttack, poke.baseSpAttack) + poke.baseSpeed)/200;
-    const specialOffensePowerWithSpeed = (poke.baseSpAttack + poke.baseSpeed)/200;
+    const bestOffensePower = Math.max(poke.baseAttack, poke.baseSpAttack)/100;
+    const specialOffensePower = poke.baseSpAttack/100;
+    const physicalOffensePower = poke.baseAttack/100;
     const genericDefensePower = (poke.baseDefense + poke.baseSpDefense + poke.baseHP)/300;
     const physicalDefensePower = Math.max(poke.baseDefense + poke.baseHP)/200;
     let coverageRating = 0;
@@ -405,13 +452,13 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
     const hasInsomniaAndSuch = ability === 'INSOMNIA' || ability === 'VITAL_SPIRIT' || ability === 'SLEEPYTIME' || ability === 'EARLY_BIRD';
     if (item === 'Flame Orb') {
         if (hasFacade && (hasGuts || hasQuickFeet)) {
-            return 10 * bestOffensePowerWithSpeed * calculatedDeviation;
+            return 10 * physicalOffensePower * calculatedDeviation;
         }
         if (hasGuts || hasFacade) {
-            return 9 * bestOffensePowerWithSpeed * calculatedDeviation;
+            return 9 * physicalOffensePower * calculatedDeviation;
         }
         if (hasQuickFeet) {
-            return 8 * bestOffensePowerWithSpeed / genericDefensePower * calculatedDeviation;
+            return 8 * bestOffensePowerWithSpeed * calculatedDeviation;
         }
         return 0;
     }
@@ -420,16 +467,16 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
             return 10 * genericDefensePower * calculatedDeviation;
         }
         if (hasFacade && hasToxicBoost) {
-            return 10 * bestOffensePowerWithSpeed * calculatedDeviation;
+            return 10 * physicalOffensePower * calculatedDeviation;
         }
         if (hasToxicBoost || (hasFacade && (hasGuts || hasQuickFeet))) {
-            return 9 * bestOffensePowerWithSpeed * calculatedDeviation;
+            return 9 * physicalOffensePower * calculatedDeviation;
         }
         if (hasGuts || hasFacade) {
-            return 8 * bestOffensePowerWithSpeed * calculatedDeviation;
+            return 8 * physicalOffensePower * calculatedDeviation;
         }
         if (hasQuickFeet) {
-            return 7 * bestOffensePowerWithSpeed / genericDefensePower * calculatedDeviation;
+            return 7 * bestOffensePowerWithSpeed * calculatedDeviation;
         }
         return 0;
     }
@@ -465,25 +512,43 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
     if (item === 'Power Herb') {
         const hasGeomancy = moveset.some(m => m.id === 'MOVE_GEOMANCY');
         if (hasGeomancy) {
-            return 10 * specialOffensePowerWithSpeed * calculatedDeviation;
+            return 10 * specialOffensePower * calculatedDeviation;
         }
         const hasPowerHerbMove = moveset.some(m => powerHerbMoves.includes(m.id));
         if (hasPowerHerbMove) {
-            return 8 * bestOffensePowerWithSpeed * calculatedDeviation;
+            return 8 * specialOffensePower * calculatedDeviation;
         }
         return 0;
     }
     if (item === 'Rocky Helmet') {
         if (ability === 'ROUGH_SKIN' || ability === 'IRON_BARBS') {
-            return 9.5 * genericDefensePower / bestOffensePowerWithSpeed * calculatedDeviation;
+            return 9.5 * genericDefensePower * calculatedDeviation;
         }
-        return 8.5 * physicalDefensePower / bestOffensePowerWithSpeed * calculatedDeviation;
+        return 8 * physicalDefensePower * calculatedDeviation;
     }
     if (item === 'Black Sludge') {
         if (poke.parsedTypes.includes(POKEMON_TYPE_POISON)) {
-            return 9.5 * genericDefensePower / bestOffensePowerWithSpeed * calculatedDeviation;
+            return 9.5 * genericDefensePower * calculatedDeviation;
         }
         return 0;
+    }
+    if (item === 'Punching Glove') {
+        const hasPunchingMove = moveset.some(m => punchingMoves.includes(m.id));
+        if (hasPunchingMove) {
+            return 7 * physicalOffensePower * calculatedDeviation;
+        }
+        return 0;
+    }
+    if (item === 'Big Root') {
+        const pokeHealingMoves = moveset.filter(m => healingMoves.includes(m.id));
+        if (pokeHealingMoves.length === 0) {
+            return 0;
+        }
+        let bestHealingMove = 0;
+        pokeHealingMoves.forEach(m => {
+            bestHealingMove = Math.max(bestHealingMove, m.rating);
+        });
+        return (5 + bestHealingMove*0.2) * genericDefensePower * calculatedDeviation;
     }
     if (item === 'Assault Vest') {
         for (const move of moveset) {
@@ -494,7 +559,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         return 9 * genericDefensePower * calculatedDeviation;
     }
     if (item === 'Leftovers') {
-        return 9.5 * genericDefensePower / bestOffensePowerWithSpeed * calculatedDeviation;
+        return 9.5 * genericDefensePower * calculatedDeviation;
     }
     if (item === 'Life Orb') {
         const hasMagicGuard = ability === 'MAGIC_GUARD';
@@ -510,10 +575,10 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         return 8.5 * bestOffensePowerWithSpeed / genericDefensePower * calculatedDeviation;
     }
     if (item === 'Shell Bell') {
-        return 7 * bestOffensePowerWithSpeed * calculatedDeviation;
+        return 7 * bestOffensePower * calculatedDeviation;
     }
     if (item === 'Expert Belt') {
-        return coverageRating * 0.75 * bestOffensePowerWithSpeed * calculatedDeviation;
+        return coverageRating * 0.75 * bestOffensePower * calculatedDeviation;
     }
     if (item === 'Heavy-Duty Boots') {
         const rockDamageMultiplier = damageMultiplier('ROCK', poke.parsedTypes);
@@ -525,7 +590,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
             return 0;
         }
         const bestSoundMoveRating = Math.max(...soundMoves.map(m => m.rating));
-        return (8 + bestSoundMoveRating)/2 * specialOffensePowerWithSpeed / genericDefensePower * calculatedDeviation;
+        return (8 + bestSoundMoveRating)/2 * specialOffensePower * calculatedDeviation;
     }
     if (item === 'Loaded Dice') {
         const multiHit = moveset.filter(m => multiHitMoves.includes(m.id));
@@ -533,7 +598,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
             return 0;
         }
         const bestMultiHitMoveRating = Math.max(...multiHit.map(m => m.rating));
-        return (8 + bestMultiHitMoveRating)/2 * bestOffensePowerWithSpeed / genericDefensePower * calculatedDeviation;
+        return (8 + bestMultiHitMoveRating)/2 * bestOffensePower * calculatedDeviation;
     }
     if (item === 'Air Balloon') {
         if (ability === 'LEVITATE' || ability === 'EARTH_EATER') {
@@ -566,12 +631,12 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
     const hasNaturalGift = moveset.some(m => m.id === 'MOVE_NATURAL_GIFT');
     if (item === 'Sitrus Berry') {
         if (hasHarvest || hasBelch) {
-            return 9.5 * genericDefensePower / bestOffensePowerWithSpeed * calculatedDeviation;
+            return 9.5 * genericDefensePower * calculatedDeviation;
         }
         if (hasCheekPouch || hasRipen || hasNaturalGift || hasCudChew) {
-            return 8.5 * genericDefensePower / bestOffensePowerWithSpeed * calculatedDeviation;
+            return 8.5 * genericDefensePower * calculatedDeviation;
         }
-        return 7.5 * genericDefensePower / bestOffensePowerWithSpeed * calculatedDeviation;
+        return 7.5 * genericDefensePower * calculatedDeviation;
     }
     if (item === 'Oran Berry') {
         let modifier = 0;
@@ -606,7 +671,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         }
         const hasRest = moveset.some(m => m.id === 'MOVE_REST');
         if (hasRest) {
-            return 9 * genericDefensePower / bestOffensePowerWithSpeed * calculatedDeviation;
+            return 9 * genericDefensePower * calculatedDeviation;
         }
         return 2.5 * calculatedDeviation;
     }
@@ -626,7 +691,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
             if (berryId === itemId) {
                 let berryTypeDamageMultiplier = damageMultiplier(berryType, poke.parsedTypes);
                 if (berryTypeDamageMultiplier > 1) {
-                    if (hasCheekPouch || hasHarvest) berryTypeDamageMultiplier += 1;
+                    if (hasCheekPouch) berryTypeDamageMultiplier += 1;
                     if (hasRipen) berryTypeDamageMultiplier *= 1.5;
                     return (5 + berryTypeDamageMultiplier) * genericDefensePower * calculatedDeviation;
                 }
@@ -641,11 +706,11 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
             if (move.category !== 'DAMAGE_CATEGORY_STATUS' && move.type === gemType) {
                 if (move.id === 'MOVE_ACROBATICS' && gemType === 'FLYING') {
                     if (ability === 'UNBURDEN') {
-                        return 9.1 * bestOffensePowerWithSpeed / genericDefensePower * calculatedDeviation + stabExtra;
+                        return 9.1 * bestOffensePower * calculatedDeviation + stabExtra;
                     }
-                    return 8 * bestOffensePowerWithSpeed / genericDefensePower * calculatedDeviation + stabExtra;
+                    return 8 * bestOffensePower * calculatedDeviation + stabExtra;
                 }
-                return 6 * bestOffensePowerWithSpeed / genericDefensePower * calculatedDeviation + stabExtra;
+                return 6 * bestOffensePower * calculatedDeviation + stabExtra;
             }
         }
         return 0;
@@ -655,7 +720,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         const stabExtra = poke.parsedTypes.includes(plateType) ? 0.5 : 0;
         for (const move of moveset) {
             if (move.category !== 'DAMAGE_CATEGORY_STATUS' && move.type === plateType) {
-                return 5 * bestOffensePowerWithSpeed / genericDefensePower * calculatedDeviation + stabExtra;
+                return 5 * bestOffensePower * calculatedDeviation + stabExtra;
             }
         }
         return 0;
