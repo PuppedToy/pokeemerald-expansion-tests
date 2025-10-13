@@ -392,7 +392,7 @@ const magmaTeamTypes = [
     POKEMON_TYPE_FIGHTING,
 ];
 
-const genericAverageTeamTemplate = () => [
+const genericWeakAverageTeamTemplate = () => [
     {
         absoluteTier: [TIER_WEAK, TIER_AVERAGE],
         checkValidEvo: true,
@@ -415,6 +415,60 @@ const genericAverageTeamTemplate = () => [
     },
     {
         absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+];
+
+const genericWeakAverageStrongTeamTemplate = () => [
+    {
+        absoluteTier: [TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
+        checkValidEvo: true,
+    },
+];
+
+const genericAverageWith1StrongTeamTemplate = () => [
+    {
+        absoluteTier: [TIER_STRONG],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_AVERAGE],
         checkValidEvo: true,
     },
 ];
@@ -3883,19 +3937,19 @@ const trainersData = [
         id: 'TRAINER_JAYLEN',
         level: 33,
         bag: [...flanneryBag],
-        team: genericAverageTeamTemplate(),
+        team: genericWeakAverageTeamTemplate(),
     },
     {
         id: 'TRAINER_LUNG',
         level: 33,
         bag: [...flanneryBag],
-        team: genericAverageTeamTemplate(),
+        team: genericWeakAverageTeamTemplate(),
     },
     {
         id: 'TRAINER_WYATT',
         level: 33,
         bag: [...flanneryBag],
-        team: genericAverageTeamTemplate(),
+        team: genericWeakAverageTeamTemplate(),
     },
     {
         id: 'TRAINER_LAWRENCE',
@@ -3932,37 +3986,37 @@ const trainersData = [
         id: 'TRAINER_MADELINE_1',
         level: 33,
         bag: [...flanneryBag],
-        team: genericAverageTeamTemplate(),
+        team: genericWeakAverageTeamTemplate(),
     },
     {
         id: 'TRAINER_TORI_AND_TIA',
         level: 33,
         bag: [...flanneryBag],
-        team: genericAverageTeamTemplate(),
+        team: genericWeakAverageTeamTemplate(),
     },
     {
         id: 'TRAINER_SOPHIE',
         level: 33,
         bag: [...flanneryBag],
-        team: genericAverageTeamTemplate(),
+        team: genericWeakAverageTeamTemplate(),
     },
     {
         id: 'TRAINER_LAO_1',
         level: 33,
         bag: [...flanneryBag],
-        team: genericAverageTeamTemplate(),
+        team: genericWeakAverageTeamTemplate(),
     },
     {
         id: 'TRAINER_DILLON',
         level: 33,
         bag: [...flanneryBag],
-        team: genericAverageTeamTemplate(),
+        team: genericWeakAverageTeamTemplate(),
     },
     {
         id: 'TRAINER_COBY',
         level: 33,
         bag: [...flanneryBag],
-        team: genericAverageTeamTemplate(),
+        team: genericWeakAverageTeamTemplate(),
     },
     // Route 114
     {
@@ -4505,25 +4559,25 @@ const trainersData = [
         id: 'TRAINER_MARLENE',
         level: 33,
         bag: [...flanneryBag],
-        team: genericAverageTeamTemplate(),
+        team: genericWeakAverageTeamTemplate(),
     },
     {
         id: 'TRAINER_CYNDY_1',
         level: 33,
         bag: [...flanneryBag],
-        team: genericAverageTeamTemplate(),
+        team: genericWeakAverageTeamTemplate(),
     },
     {
         id: 'TRAINER_KOICHI',
         level: 33,
         bag: [...flanneryBag],
-        team: genericAverageTeamTemplate(),
+        team: genericWeakAverageTeamTemplate(),
     },
     {
         id: 'TRAINER_HELENE',
         level: 33,
         bag: [...flanneryBag],
-        team: genericAverageTeamTemplate(),
+        team: genericWeakAverageTeamTemplate(),
     },
     {
         id: 'TRAINER_ALIX',
@@ -4706,6 +4760,96 @@ const trainersData = [
                 tryEvolve: true,
             },
         ],
+    },
+    // Route 111
+    {
+        id: 'TRAINER_CELIA',
+        level: 36,
+        bag: [...flanneryBag],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_TRAPINCH'],
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_BEAU',
+        level: 36,
+        bag: [...flanneryBag],
+        team: genericAverageWith1StrongTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_BRANDEN',
+        level: 36,
+        bag: [...flanneryBag],
+        team: genericAverageWith1StrongTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_DREW',
+        level: 36,
+        bag: [...flanneryBag],
+        team: genericWeakAverageStrongTeamTemplate()
+            .map((p) => ({ ...p, item: 'Chilan Berry', })),
+    },
+    {
+        id: 'TRAINER_BECKY',
+        level: 36,
+        bag: [...flanneryBag],
+        team: genericWeakAverageStrongTeamTemplate()
+            .map((p) => ({ ...p, type: [POKEMON_TYPE_FIGHTING], item: 'Fighting Gem', })),
+    },
+    {
+        id: 'TRAINER_BRYAN',
+        level: 36,
+        bag: [...flanneryBag],
+        team: genericWeakAverageStrongTeamTemplate()
+            .map((p) => ({
+                ...p,
+                mustHaveOneOfMoves: ['MOVE_FOCUS_PUNCH'],
+                tryToHaveMove: ['MOVE_FOCUS_PUNCH', 'MOVE_SUBSTITUTE', 'MOVE_THUNDER_WAVE', 'MOVE_CONFUSE_RAY'],
+            })),
+    },
+    {
+        id: 'TRAINER_HEIDI',
+        level: 36,
+        bag: [...flanneryBag],
+        team: genericWeakAverageStrongTeamTemplate()
+            .map((p) => ({
+                ...p,
+                mustHaveOneOfMoves: ['MOVE_SPORE', 'MOVE_SLEEP_POWDER'],
+            })),
+    },
+    {
+        id: 'TRAINER_DUSTY_1',
+        level: 36,
+        bag: [...flanneryBag],
+        team: genericWeakAverageStrongTeamTemplate()
+            .map((p) => ({
+                ...p,
+                abilities: ['INTIMIDATE'],
+                item: 'Adrenaline Orb',
+            })),
     },
 ]
 

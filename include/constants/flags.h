@@ -1272,10 +1272,10 @@
 #define FLAG_ITEM_ROUTE_115_MECH                                    0x4C1
 #define FLAG_ITEM_ROUTE_115_RINDO                                   0x4C2
 #define FLAG_ITEM_ROUTE_115_CUSTAP                                  0x4C3
-#define FLAG_UNUSED_0x4C4                                           0x4C4 // Unused Flag
-#define FLAG_UNUSED_0x4C5                                           0x4C5 // Unused Flag
-#define FLAG_UNUSED_0x4C6                                           0x4C6 // Unused Flag
-#define FLAG_UNUSED_0x4C7                                           0x4C7 // Unused Flag
+#define FLAG_ITEM_ROUTE_111_CHILAN                                  0x4C4
+#define FLAG_ITEM_ROUTE_111_GEM                                     0x4C5
+#define FLAG_ITEM_ROUTE_111_FOCUS                                   0x4C6
+#define FLAG_ITEM_ROUTE_111_ADRENALINE                              0x4C7
 #define FLAG_UNUSED_0x4C8                                           0x4C8 // Unused Flag
 #define FLAG_UNUSED_0x4C9                                           0x4C9 // Unused Flag
 #define FLAG_UNUSED_0x4CA                                           0x4CA // Unused Flag

@@ -97,7 +97,7 @@ const items = {
         'ITEM_ELECTRIC_GEM',
         'ITEM_GRASS_GEM',
         'ITEM_ICE_GEM',
-        'ITEM_FIGHTING_GEM',
+        'ITEM_FIGHTING_GEM', // Route 111
         'ITEM_POISON_GEM',
         'ITEM_GROUND_GEM', // Route 117
         'ITEM_FLYING_GEM',
@@ -134,7 +134,7 @@ const items = {
     },
 
     tms: [
-        'ITEM_TM_FOCUS_PUNCH',
+        'ITEM_TM_FOCUS_PUNCH', // Route 111
         'ITEM_TM_DRAGON_CLAW', // Route 110
         'ITEM_TM_WATER_PULSE', // Route 104
         'ITEM_TM_CALM_MIND',
@@ -280,7 +280,7 @@ const items = {
     goodItems: [
         'ITEM_SHELL_BELL', // Route 111
         'ITEM_ROCKY_HELMET', // Route 109
-        'ITEM_SAFETY_GOGGLES',
+        'ITEM_SAFETY_GOGGLES', // Route 111
         'ITEM_HEAVY_DUTY_BOOTS', // Route 115
     ],
 
@@ -345,7 +345,7 @@ const items = {
     ],
 
     protectionBerries: {
-        NORMAL: 'ITEM_CHILAN_BERRY',
+        NORMAL: 'ITEM_CHILAN_BERRY', // Route 111
         FIRE: 'ITEM_OCCA_BERRY', // Route 112
         WATER: 'ITEM_PASSHO_BERRY',
         ELECTRIC: 'ITEM_WACAN_BERRY', // Route 117
