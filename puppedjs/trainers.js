@@ -5160,6 +5160,7 @@ const trainersData = [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_DEDENNE'],
+                tryEvolve: true,
             },
             {
                 absoluteTier: [TIER_STRONG],
@@ -5207,10 +5208,10 @@ const trainersData = [
                 item: 'Misty Seed',
             },
             {
-                abilities: ['MISTY_SURGE'],
+                absoluteTier: [TIER_AVERAGE],
+                type: [POKEMON_TYPE_FAIRY],
                 checkValidEvo: true,
-                item: 'Terrain Extender',
-                evoType: [EVO_TYPE_SOLO, EVO_TYPE_FINAL],
+                item: 'Misty Seed',
             },
             {
                 absoluteTier: [TIER_AVERAGE],
@@ -5220,7 +5221,7 @@ const trainersData = [
             },
             {
                 special: TRAINER_POKE_MEGA_WITH_STONE,
-                absoluteTier: [TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM, TIER_LEGEND],
+                absoluteTier: [TIER_AVERAGE, TIER_STRONG],
                 type: [POKEMON_TYPE_FAIRY],
                 checkValidEvo: true,
                 tryEvolve: true,
