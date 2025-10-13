@@ -4464,7 +4464,7 @@ const trainersData = [
                 specific: 'SPECIES_TORKOAL',
                 abilities: ['DROUGHT'],
                 item: 'Heat Rock',
-                tryToHaveMove: ['MOVE_OVERHEAT', 'MOVE_RAPID_SPIN', 'MOVE_CLEAR_SMOG', 'MOVE_SOLAR_BEAM', 'MOVE_BODY_SLAM'],
+                tryToHaveMove: ['MOVE_OVERHEAT', 'MOVE_RAPID_SPIN', 'MOVE_CLEAR_SMOG', 'MOVE_SOLAR_BEAM'],
                 checkValidEvo: true,
                 tryEvolve: true,
             },
@@ -4476,10 +4476,10 @@ const trainersData = [
             },
             {
                 evolutionTier: [TIER_STRONG],
-                evoType: [EVO_TYPE_LC],
+                evoType: [EVO_TYPE_FINAL],
                 type: [POKEMON_TYPE_FIRE],
                 tryToHaveMove: ['MOVE_OVERHEAT'],
-                tryEvolve: true,
+                checkValidEvo: true,
             },
             {
                 absoluteTier: [TIER_AVERAGE, TIER_STRONG],
@@ -4496,7 +4496,8 @@ const trainersData = [
             },
             {
                 special: TRAINER_POKE_MEGA_WITH_STONE,
-                megaTier: [TIER_PREMIUM, TIER_LEGEND],
+                megaTier: [TIER_STRONG, TIER_PREMIUM, TIER_LEGEND],
+                megaAbilities: ['SOLAR_POWER'],
                 type: [POKEMON_TYPE_FIRE],
                 tryToHaveMove: ['MOVE_OVERHEAT'],
                 checkValidEvo: true,

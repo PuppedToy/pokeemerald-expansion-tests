@@ -645,6 +645,15 @@ async function writer(pokemonList, moves, abilities) {
                         && loosePokemon.evolutionData.megaEvos
                         && loosePokemon.evolutionData.megaEvos.length > 0
                 );
+                if (trainerMonDefinition.megaAbilities) {
+                    pokemonLooseList = pokemonLooseList.filter(
+                        loosePokemon => {
+                            const megaId = loosePokemon.evolutionData.megaEvos[0];
+                            const megaPoke = pokemonList.find(p => p.id === megaId);
+                            return megaPoke && megaPoke.parsedAbilities.some(a => trainerMonDefinition.megaAbilities.includes(a));
+                        }
+                    );
+                }
             }
             if (trainerMonDefinition.absoluteTier) {
                 pokemonLooseList = pokemonLooseList.filter(
@@ -811,7 +820,6 @@ async function writer(pokemonList, moves, abilities) {
                         // sort by param
                         possibleEvolutions.sort((a, b) => parseInt(b.param) - parseInt(a.param));
                         const evolutionToApply = possibleEvolutions[0].pokemon;
-                        console.log(`Evolving ${chosenTrainerMon.id} to ${evolutionToApply} for trainer ${trainer.id}`);
                         const evolvedForm = pokemonList.find(p => p.id === evolutionToApply);
                         if (evolvedForm) {
                             chosenTrainerMon = evolvedForm;
