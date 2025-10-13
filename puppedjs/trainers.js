@@ -285,6 +285,18 @@ const normanTMs = [
     'MOVE_FOCUS_PUNCH',
 ];
 
+const winonaBag = [
+    ...flanneryBag,
+    'Leftovers',
+];
+
+const winonaTMs = [
+    ...normanTMs,
+    'MOVE_THUNDERBOLT',
+    'MOVE_ICE_BEAM',
+    'MOVE_FLAMETHROWER',
+];
+
 const rivalRustboroTemplate = (id) => [
     {
         special: TRAINER_POKE_ENCOUNTER,
@@ -479,6 +491,62 @@ const genericAverageWith1StrongTeamTemplate = () => [
     {
         absoluteTier: [TIER_AVERAGE],
         checkValidEvo: true,
+    },
+];
+
+const generic3Average3StrongTeamTemplate = () => [
+    {
+        absoluteTier: [TIER_STRONG],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_STRONG],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_STRONG],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+];
+
+const generic3Average3StrongTeamTemplateWithMega = () => [
+    {
+        absoluteTier: [TIER_STRONG],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_STRONG],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        special: TRAINER_POKE_MEGA_WITH_STONE,
+        megaTier: [TIER_STRONG],
+        checkValidEvo: true,
+        tryEvolve: true,
     },
 ];
 
@@ -5048,6 +5116,152 @@ const trainersData = [
                 tryEvolve: true,
             },
         ],
+    },
+    {
+        id: 'TRAINER_ABIGAIL_1',
+        level: 39,
+        bag: [...flanneryBag],
+        tms: [...normanTMs],
+        team: [
+            {
+                absoluteTier: [TIER_STRONG],
+                evoType: [EVO_TYPE_SOLO],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                special: TRAINER_POKE_MEGA_WITH_STONE,
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_PERRY',
+        level: 39,
+        bag: [...winonaBag],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_DEDENNE'],
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_WADE',
+        level: 39,
+        bag: [...winonaBag],
+        team: [
+            {
+                abilities: ['MISTY_SURGE'],
+                checkValidEvo: true,
+                item: 'Terrain Extender',
+                evoType: [EVO_TYPE_SOLO, EVO_TYPE_FINAL],
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                type: [POKEMON_TYPE_FAIRY],
+                checkValidEvo: true,
+                item: 'Misty Seed',
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                type: [POKEMON_TYPE_FAIRY],
+                checkValidEvo: true,
+                item: 'Misty Seed',
+            },
+            {
+                abilities: ['MISTY_SURGE'],
+                checkValidEvo: true,
+                item: 'Terrain Extender',
+                evoType: [EVO_TYPE_SOLO, EVO_TYPE_FINAL],
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                type: [POKEMON_TYPE_FAIRY],
+                checkValidEvo: true,
+                item: 'Misty Seed',
+            },
+            {
+                special: TRAINER_POKE_MEGA_WITH_STONE,
+                absoluteTier: [TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM, TIER_LEGEND],
+                type: [POKEMON_TYPE_FAIRY],
+                checkValidEvo: true,
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_BARNY',
+        level: 39,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate().map((p) => ({
+            ...p,
+            weakToTypes: [POKEMON_TYPE_FLYING],
+            item: 'Coba Berry',
+        })),
+    },
+    {
+        id: 'TRAINER_ROSE_1',
+        level: 39,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate().map((p) => ({
+            ...p,
+            item: 'Kee Berry',
+        })),
+    },
+    {
+        id: 'TRAINER_CHESTER',
+        level: 39,
+        bag: [...winonaBag],
+        tms: [
+            'MOVE_THUNDERBOLT',
+            'MOVE_THUNDERBOLT',
+            'MOVE_THUNDERBOLT',
+            'MOVE_ICE_BEAM',
+            'MOVE_ICE_BEAM',
+            'MOVE_ICE_BEAM',
+            'MOVE_FLAMETHROWER',
+            'MOVE_FLAMETHROWER',
+            'MOVE_FLAMETHROWER',
+        ],
+        team: generic3Average3StrongTeamTemplateWithMega(),
     },
 ]
 

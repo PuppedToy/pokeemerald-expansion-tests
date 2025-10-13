@@ -99,6 +99,54 @@ Route118_EventScript_Deandre::
 	msgbox Route118_Text_DeandrePostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route118_EventScript_PickItem1::
+	setflag FLAG_ITEM_ROUTE_118_PICK
+	giveitem ITEM_TM_THUNDERBOLT
+	removeobject LOCALID_ROUTE118_I1
+	removeobject LOCALID_ROUTE118_I2
+	removeobject LOCALID_ROUTE118_I3
+	release
+	end
+
+Route118_EventScript_PickItem2::
+	setflag FLAG_ITEM_ROUTE_118_PICK
+	giveitem ITEM_TM_ICE_BEAM
+	removeobject LOCALID_ROUTE118_I1
+	removeobject LOCALID_ROUTE118_I2
+	removeobject LOCALID_ROUTE118_I3
+	release
+	end
+
+Route118_EventScript_PickItem3::
+	setflag FLAG_ITEM_ROUTE_118_PICK
+	giveitem ITEM_TM_FLAMETHROWER
+	removeobject LOCALID_ROUTE118_I1
+	removeobject LOCALID_ROUTE118_I2
+	removeobject LOCALID_ROUTE118_I3
+	release
+	end
+
+Route118_EventScript_PickText1::
+	msgbox Route118_Text_PickItem1, MSGBOX_SIGN
+	end
+
+Route118_EventScript_PickText2::
+	msgbox Route118_Text_PickItem2, MSGBOX_SIGN
+	end
+
+Route118_EventScript_PickText3::
+	msgbox Route118_Text_PickItem3, MSGBOX_SIGN
+	end
+
+Route118_Text_PickItem1:
+	.string "Thunderbolt$"
+
+Route118_Text_PickItem2:
+	.string "Ice Beam$"
+
+Route118_Text_PickItem3:
+	.string "Flamethrower$"
+
 Route118_Text_CanCrossRiversWithSurf:
 	.string "Even if there isn't a boat, you can\n"
 	.string "cross rivers and the sea if you have\l"

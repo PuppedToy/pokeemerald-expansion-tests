@@ -271,7 +271,7 @@ const items = {
         'ITEM_CHOICE_BAND',
         'ITEM_CHOICE_SPECS',
         'ITEM_CHOICE_SCARF',
-        'ITEM_LEFTOVERS',
+        'ITEM_LEFTOVERS', // New Mauville
         'ITEM_LIFE_ORB', // Route 106
         'ITEM_EVIOLITE', // Route 104
         'ITEM_ASSAULT_VEST', // Route 103
@@ -311,13 +311,13 @@ const items = {
         'ITEM_RED_CARD', // Route 109
         'ITEM_EJECT_BUTTON',
         'ITEM_WEAKNESS_POLICY',
-        'ITEM_ADRENALINE_ORB',
+        'ITEM_ADRENALINE_ORB', // Desert
         'ITEM_ELECTRIC_SEED', // Route 110
         'ITEM_PSYCHIC_SEED',
-        'ITEM_MISTY_SEED',
+        'ITEM_MISTY_SEED', // Route 118
         'ITEM_GRASSY_SEED',
         'ITEM_THROAT_SPRAY', // Route 103
-        'ITEM_EJECT_PACK',
+        'ITEM_EJECT_PACK', // Route 103
         'ITEM_ROOM_SERVICE',
         'ITEM_LEPPA_BERRY',
         'ITEM_LUM_BERRY', // Route 110

@@ -1277,9 +1277,9 @@
 #define FLAG_ITEM_ROUTE_111_FOCUS                                   0x4C6
 #define FLAG_ITEM_ROUTE_111_ADRENALINE                              0x4C7
 #define FLAG_ITEM_ROUTE_103_EJECT                                   0x4C8
-#define FLAG_UNUSED_0x4C9                                           0x4C9 // Unused Flag
-#define FLAG_UNUSED_0x4CA                                           0x4CA // Unused Flag
-#define FLAG_UNUSED_0x4CB                                           0x4CB // Unused Flag
+#define FLAG_ITEM_ROUTE_118_KEEBERRY                                0x4C9
+#define FLAG_ITEM_ROUTE_118_COBA                                    0x4CA
+#define FLAG_ITEM_ROUTE_118_PICK                                    0x4CB
 #define FLAG_UNUSED_0x4CC                                           0x4CC // Unused Flag
 #define FLAG_UNUSED_0x4CD                                           0x4CD // Unused Flag
 #define FLAG_UNUSED_0x4CE                                           0x4CE // Unused Flag
