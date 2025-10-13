@@ -253,7 +253,9 @@ const wildData = {
         },
         {
             id: 'SLATEPORT_CITY',
-            land: 'SPECIES_ABSOL',
+            old: 'SPECIES_ABSOL',
+            good: 'SPECIES_ABSOL',
+            super: 'SPECIES_ABSOL',
         },
         {
             id: 'MAP_ROUTE110',
