@@ -5,14 +5,14 @@ const items = {
 
     // Randomized items - mints
     // ITEM_MECH_MAIL will be replaced by these
-    strongAtkMints: [ // 1 at Route 109, 1 at Route 113
+    strongAtkMints: [ // 1 at Route 109, 1 at Route 113, 1 at Route 115
         'ITEM_ADAMANT_MINT',
         'ITEM_JOLLY_MINT',
         'ITEM_MODEST_MINT',
         'ITEM_TIMID_MINT',
     ],
     // ITEM_WAVE_MAIL will be replaced by these
-    strongDefMints: [ // 1 at Route 103, 1 at route 118, 1 at Route 113
+    strongDefMints: [ // 1 at Route 103, 1 at route 118, 1 at Route 113, 1 at Route 115
         'ITEM_BOLD_MINT',
         'ITEM_IMPISH_MINT',
         'ITEM_CALM_MINT',
@@ -155,8 +155,8 @@ const items = {
         'ITEM_TM_GIGA_DRAIN',
         'ITEM_TM_SAFEGUARD', // @TODO Change TM
         'ITEM_TM_FRUSTRATION',
-        'ITEM_TM_SOLAR_BEAM',
-        'ITEM_TM_IRON_TAIL',
+        'ITEM_TM_SOLAR_BEAM', // Route 115
+        'ITEM_TM_IRON_TAIL', // @TODO Change TM
         'ITEM_TM_THUNDERBOLT',
         'ITEM_TM_THUNDER',
         'ITEM_TM_EARTHQUAKE', // Route 117
@@ -255,7 +255,7 @@ const items = {
             count: 4
         },
         // Normal ability
-        ITEM_ABILITY_CAPSULE: { // 1 at Route 104, 1 at Route 110, 1 at Route 112, 1 at Route 113
+        ITEM_ABILITY_CAPSULE: { // 1 at Route 104, 1 at Route 110, 1 at Route 112, 1 at Route 113, 1 at Route 115
             count: 8
         },
         ITEM_HEART_SCALE: { // From the start of the game I guess?

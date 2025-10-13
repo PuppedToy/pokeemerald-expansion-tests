@@ -1269,9 +1269,9 @@
 #define FLAG_ITEM_ROUTE_114_PROTECT                                 0x4BE
 #define FLAG_ITEM_ROUTE_114_PICK_A                                  0x4BF
 #define FLAG_ITEM_ROUTE_114_PICK_B                                  0x4C0
-#define FLAG_UNUSED_0x4C1                                           0x4C1 // Unused Flag
-#define FLAG_UNUSED_0x4C2                                           0x4C2 // Unused Flag
-#define FLAG_UNUSED_0x4C3                                           0x4C3 // Unused Flag
+#define FLAG_ITEM_ROUTE_115_MECH                                    0x4C1
+#define FLAG_ITEM_ROUTE_115_RINDO                                   0x4C2
+#define FLAG_ITEM_ROUTE_115_CUSTAP                                  0x4C3
 #define FLAG_UNUSED_0x4C4                                           0x4C4 // Unused Flag
 #define FLAG_UNUSED_0x4C5                                           0x4C5 // Unused Flag
 #define FLAG_UNUSED_0x4C6                                           0x4C6 // Unused Flag

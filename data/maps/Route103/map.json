@@ -76,7 +76,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route103_EventScript_Daisy",
-      "flag": "FLAG_BADGE05_GET"
+      "flag": "FLAG_BADGE04_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_TWIN",
@@ -115,7 +115,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route103_EventScript_Andrew",
-      "flag": "FLAG_BADGE05_GET"
+      "flag": "FLAG_BADGE04_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
@@ -193,7 +193,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route103_EventScript_Miguel",
-      "flag": "FLAG_BADGE05_GET"
+      "flag": "FLAG_BADGE04_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -219,7 +219,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route103_EventScript_Rhett",
-      "flag": "FLAG_BADGE05_GET"
+      "flag": "FLAG_BADGE04_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_5",
@@ -232,7 +232,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route103_EventScript_Marcos",
-      "flag": "FLAG_BADGE05_GET"
+      "flag": "FLAG_BADGE04_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F",
