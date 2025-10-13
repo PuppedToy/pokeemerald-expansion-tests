@@ -4880,19 +4880,19 @@ const trainersData = [
                 checkValidEvo: true,
             },
             {
-                evolutionTier: [TIER_STRONG],
+                absoluteTier: [TIER_STRONG],
                 type: [POKEMON_TYPE_NORMAL],
                 tryToHaveMove: ['MOVE_FACADE'],
                 checkValidEvo: true,
             },
             {
-                evolutionTier: [TIER_AVERAGE],
+                absoluteTier: [TIER_AVERAGE],
                 type: [POKEMON_TYPE_GHOST],
                 tryToHaveMove: ['MOVE_FACADE'],
                 checkValidEvo: true,
             },
             {
-                evolutionTier: [TIER_STRONG],
+                absoluteTier: [TIER_STRONG],
                 type: [POKEMON_TYPE_NORMAL],
                 tryToHaveMove: ['MOVE_FACADE'],
                 checkValidEvo: true,
