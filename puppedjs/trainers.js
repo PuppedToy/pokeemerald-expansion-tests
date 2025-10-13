@@ -4907,6 +4907,148 @@ const trainersData = [
             },
         ],
     },
+    {
+        id: 'TRAINER_AMY_AND_LIV_1',
+        level: 39,
+        bag: [...flanneryBag],
+        team: [
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+                mustHaveOneOfMoves: ['MOVE_HELPING_HAND'],
+                tryToHaveMove: ['MOVE_HELPING_HAND'],
+                item: 'Eject Pack',
+            },
+            {
+                special: TRAINER_POKE_MEGA_WITH_STONE,
+                megaTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+                item: 'Eject Pack',
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                item: 'Eject Pack',
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+                item: 'Eject Pack',
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                item: 'Eject Pack',
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_BEVERLY',
+        level: 39,
+        bag: [...flanneryBag],
+        team: [
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                special: TRAINER_POKE_MEGA_WITH_STONE,
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_IMANI',
+        level: 39,
+        bag: [...flanneryBag],
+        team: [
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                special: TRAINER_POKE_MEGA_WITH_STONE,
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_FOSTER',
+        level: 39,
+        bag: [...flanneryBag],
+        tms: [...normanTMs],
+        team: [
+            {
+                absoluteTier: [TIER_STRONG],
+                evoType: [EVO_TYPE_SOLO],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                evoType: [EVO_TYPE_SOLO],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                special: TRAINER_POKE_MEGA_WITH_STONE,
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                tryEvolve: true,
+            },
+        ],
+    },
 ]
 
 module.exports = {

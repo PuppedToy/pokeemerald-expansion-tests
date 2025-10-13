@@ -1276,7 +1276,7 @@
 #define FLAG_ITEM_ROUTE_111_GEM                                     0x4C5
 #define FLAG_ITEM_ROUTE_111_FOCUS                                   0x4C6
 #define FLAG_ITEM_ROUTE_111_ADRENALINE                              0x4C7
-#define FLAG_UNUSED_0x4C8                                           0x4C8 // Unused Flag
+#define FLAG_ITEM_ROUTE_103_EJECT                                   0x4C8
 #define FLAG_UNUSED_0x4C9                                           0x4C9 // Unused Flag
 #define FLAG_UNUSED_0x4CA                                           0x4CA // Unused Flag
 #define FLAG_UNUSED_0x4CB                                           0x4CB // Unused Flag
