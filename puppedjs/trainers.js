@@ -37,6 +37,7 @@ const {
     EVO_TYPE_FINAL,
     POKEMON_TYPE_NORMAL,
     TRAINER_POKE_MEGA_WITH_STONE,
+    POKEMON_TYPE_GHOST,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
@@ -263,6 +264,9 @@ const flanneryBag = [
     'Razor Claw',
     'Punching Glove',
     'Big Root',
+    'Chople Berry',
+    'Normal Gem',
+    'Safety Goggles',
 ];
 
 const flanneryTMs = [
@@ -274,6 +278,11 @@ const flanneryTMs = [
     'MOVE_REST',
     'MOVE_REFLECT',
     'MOVE_LIGHT_SCREEN',
+];
+
+const normanTMs = [
+    ...flanneryTMs,
+    'MOVE_FOCUS_PUNCH',
 ];
 
 const rivalRustboroTemplate = (id) => [
@@ -4850,6 +4859,53 @@ const trainersData = [
                 abilities: ['INTIMIDATE'],
                 item: 'Adrenaline Orb',
             })),
+    },
+    {
+        id: 'TRAINER_NORMAN_1',
+        level: 36,
+        isBoss: true,
+        bag: [...flanneryBag],
+        tms: [...normanTMs],
+        team: [
+            {
+                specific: 'SPECIES_SLAKING',
+                item: 'Assault Vest',
+                tryToHaveMove: ['MOVE_FIRE_BLAST', 'MOVE_EARTHQUAKE', 'MOVE_FACADE', 'MOVE_SUCKER_PUNCH'],
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                abilities: ['GUTS'],
+                mustHaveOneOfMoves: ['MOVE_FACADE'],
+                tryToHaveMove: ['MOVE_FACADE', 'MOVE_PROTECT'],
+                checkValidEvo: true,
+            },
+            {
+                evolutionTier: [TIER_STRONG],
+                type: [POKEMON_TYPE_NORMAL],
+                tryToHaveMove: ['MOVE_FACADE'],
+                checkValidEvo: true,
+            },
+            {
+                evolutionTier: [TIER_AVERAGE],
+                type: [POKEMON_TYPE_GHOST],
+                tryToHaveMove: ['MOVE_FACADE'],
+                checkValidEvo: true,
+            },
+            {
+                evolutionTier: [TIER_STRONG],
+                type: [POKEMON_TYPE_NORMAL],
+                tryToHaveMove: ['MOVE_FACADE'],
+                checkValidEvo: true,
+            },
+            {
+                special: TRAINER_POKE_MEGA_WITH_STONE,
+                megaTier: [TIER_PREMIUM, TIER_LEGEND],
+                type: [POKEMON_TYPE_NORMAL],
+                tryToHaveMove: ['MOVE_FACADE'],
+                checkValidEvo: true,
+                tryEvolve: true,
+            },
+        ],
     },
 ]
 
