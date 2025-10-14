@@ -53,7 +53,7 @@ const items = {
     plates: {
         ITEM_FLAME_PLATE: 'FIRE',
         ITEM_SPLASH_PLATE: 'WATER',
-        ITEM_ZAP_PLATE: 'ELECTRIC',
+        ITEM_ZAP_PLATE: 'ELECTRIC', // Route 119
         ITEM_MEADOW_PLATE: 'GRASS', // Petalburg Woods
         ITEM_ICICLE_PLATE: 'ICE',
         ITEM_FIST_PLATE: 'FIGHTING',
@@ -94,8 +94,8 @@ const items = {
         'ITEM_NORMAL_GEM',
         'ITEM_FIRE_GEM',
         'ITEM_WATER_GEM', // Route 103
-        'ITEM_ELECTRIC_GEM',
-        'ITEM_GRASS_GEM',
+        'ITEM_ELECTRIC_GEM', // Route 119
+        'ITEM_GRASS_GEM', // Route 119
         'ITEM_ICE_GEM',
         'ITEM_FIGHTING_GEM', // Route 111
         'ITEM_POISON_GEM',
@@ -255,7 +255,7 @@ const items = {
             count: 4
         },
         // Normal ability
-        ITEM_ABILITY_CAPSULE: { // 1 at Route 104, 1 at Route 110, 1 at Route 112, 1 at Route 113, 1 at Route 115
+        ITEM_ABILITY_CAPSULE: { // 1 at Route 104, 1 at Route 110, 1 at Route 112, 1 at Route 113, 1 at Route 115, 1 at Route 117
             count: 8
         },
         ITEM_HEART_SCALE: { // From the start of the game I guess?
@@ -310,7 +310,7 @@ const items = {
         'ITEM_AIR_BALLOON', // Route 111
         'ITEM_RED_CARD', // Route 109
         'ITEM_EJECT_BUTTON',
-        'ITEM_WEAKNESS_POLICY',
+        'ITEM_WEAKNESS_POLICY', // Route 119
         'ITEM_ADRENALINE_ORB', // Desert
         'ITEM_ELECTRIC_SEED', // Route 110
         'ITEM_PSYCHIC_SEED',
@@ -319,14 +319,14 @@ const items = {
         'ITEM_THROAT_SPRAY', // Route 103
         'ITEM_EJECT_PACK', // Route 103
         'ITEM_ROOM_SERVICE',
-        'ITEM_LEPPA_BERRY',
+        'ITEM_LEPPA_BERRY', // Route 119
         'ITEM_LUM_BERRY', // Route 110
         'ITEM_SITRUS_BERRY', // Route 111
         'ITEM_CUSTAP_BERRY',
         'ITEM_JABOCA_BERRY', // Route 103
-        'ITEM_ROWAP_BERRY',
-        'ITEM_KEE_BERRY',
-        'ITEM_MARANGA_BERRY',
+        'ITEM_ROWAP_BERRY', // Route 119
+        'ITEM_KEE_BERRY', // Route 118
+        'ITEM_MARANGA_BERRY', // Route 119
         'ITEM_BOOSTER_ENERGY', // Route 117
         'ITEM_MASTER_BALL',
     ],
@@ -352,15 +352,15 @@ const items = {
         GRASS: 'ITEM_RINDO_BERRY',
         ICE: 'ITEM_YACHE_BERRY',
         FIGHTING: 'ITEM_CHOPLE_BERRY',
-        POISON: 'ITEM_KEBIA_BERRY',
+        POISON: 'ITEM_KEBIA_BERRY', // Route 119
         GROUND: 'ITEM_SHUCA_BERRY',
-        FLYING: 'ITEM_COBA_BERRY',
+        FLYING: 'ITEM_COBA_BERRY', // Route 119
         PSYCHIC: 'ITEM_PAYAPA_BERRY',
         BUG: 'ITEM_TANGA_BERRY',
         ROCK: 'ITEM_CHARTI_BERRY', // Route 104
         GHOST: 'ITEM_KASIB_BERRY',
         DRAGON: 'ITEM_HABAN_BERRY',
-        DARK: 'ITEM_COLBUR_BERRY',
+        DARK: 'ITEM_COLBUR_BERRY', // Route 119
         STEEL: 'ITEM_BABIRI_BERRY',
         FAIRY: 'ITEM_ROSELI_BERRY',
     },

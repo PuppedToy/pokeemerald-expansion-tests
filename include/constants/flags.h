@@ -1280,12 +1280,12 @@
 #define FLAG_ITEM_ROUTE_118_KEEBERRY                                0x4C9
 #define FLAG_ITEM_ROUTE_118_COBA                                    0x4CA
 #define FLAG_ITEM_ROUTE_118_PICK                                    0x4CB
-#define FLAG_UNUSED_0x4CC                                           0x4CC // Unused Flag
-#define FLAG_UNUSED_0x4CD                                           0x4CD // Unused Flag
-#define FLAG_UNUSED_0x4CE                                           0x4CE // Unused Flag
-#define FLAG_UNUSED_0x4CF                                           0x4CF // Unused Flag
-#define FLAG_UNUSED_0x4D0                                           0x4D0 // Unused Flag
-#define FLAG_UNUSED_0x4D1                                           0x4D1 // Unused Flag
+#define FLAG_ITEM_ROUTE_119_LEPPA                                   0x4CC
+#define FLAG_ITEM_ROUTE_119_ROWAP                                   0x4CD
+#define FLAG_ITEM_ROUTE_119_KEBIA                                   0x4CE
+#define FLAG_ITEM_ROUTE_119_COBA                                    0x4CF
+#define FLAG_ITEM_ROUTE_119_GRASSGEM                                0x4D0
+#define FLAG_ITEM_ROUTE_119_ZAP                                     0x4D1
 #define FLAG_UNUSED_0x4D2                                           0x4D2 // Unused Flag
 #define FLAG_UNUSED_0x4D3                                           0x4D3 // Unused Flag
 #define FLAG_UNUSED_0x4D4                                           0x4D4 // Unused Flag

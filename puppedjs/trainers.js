@@ -5264,6 +5264,161 @@ const trainersData = [
         ],
         team: generic3Average3StrongTeamTemplateWithMega(),
     },
+    // Route 119
+    {
+        id: 'TRAINER_KENT',
+        level: 39,
+        bag: [...winonaBag],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_LINOONE'],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_BRENT',
+        level: 39,
+        bag: [...winonaBag],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SNIVY'],
+                tryEvolve: true,
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SERVINE'],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_DONALD',
+        level: 39,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_GREG',
+        level: 39,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_DOUG',
+        level: 39,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate().map((p) => ({
+            ...p,
+            item: 'Weakness Policy',
+        })),
+    },
+    {
+        id: 'TRAINER_TAYLOR',
+        level: 39,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate().map((p) => ({
+            ...p,
+            item: 'Rowap Berry',
+        })),
+    },
+    {
+        id: 'TRAINER_CATHERINE_1',
+        level: 39,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate().map((p) => ({
+            ...p,
+            item: 'Maranga Berry',
+        })),
+    },
+    {
+        id: 'TRAINER_RACHEL',
+        level: 39,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate().map((p) => ({
+            ...p,
+            weakToTypes: [POKEMON_TYPE_DARK],
+            item: 'Colbur Berry',
+        })),
+    },
+    {
+        id: 'TRAINER_JACKSON_1',
+        level: 39,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate().map((p) => ({
+            ...p,
+            weakToTypes: [POKEMON_TYPE_POISON],
+            item: 'Kebia Berry',
+        })),
+    },
+    {
+        id: 'TRAINER_PHIL',
+        level: 39,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate().map((p) => ({
+            ...p,
+            weakToTypes: [POKEMON_TYPE_FLYING],
+            item: 'Coba Berry',
+        })),
+    },
+    {
+        id: 'TRAINER_DAYTON',
+        level: 39,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate().map((p) => ({
+            ...p,
+            type: [POKEMON_TYPE_ELECTRIC],
+            item: 'Electric Gem',
+        })),
+    },
+    {
+        id: 'TRAINER_HUGH',
+        level: 39,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate().map((p) => ({
+            ...p,
+            type: [POKEMON_TYPE_ELECTRIC],
+            item: 'Zap Plate',
+        })),
+    },
 ]
 
 module.exports = {

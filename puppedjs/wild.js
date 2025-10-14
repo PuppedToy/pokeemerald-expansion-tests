@@ -169,6 +169,11 @@ const wildData = {
         SPECIES_SWABLU: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_ALTARIA: 'LC_WEAK',
         SPECIES_SPOINK: 'LC_NFE_OR_SOLO_AVERAGE',
+
+        // Route119
+        SPECIES_LINOONE: 'LC_NFE_OR_SOLO_AVERAGE',
+        SPECIES_SNIVY: 'LC_NFE_OR_SOLO_AVERAGE',
+        SPECIES_SERVINE: 'NFE_OR_SOLO_AVERAGE',
     },
     maps: [
         // Shelgon maps
@@ -301,7 +306,15 @@ const wildData = {
             id: 'MAP_ROUTE114',
             land: 'SPECIES_SWABLU',
             old: 'SPECIES_ALTARIA',
-            super: 'SPECIES_SPOINK',
+            good: 'SPECIES_SPOINK',
+            super: 'SPECIES_GABITE',
+        },
+        {
+            id: 'MAP_ROUTE119',
+            land: 'SPECIES_LINOONE',
+            old: 'SPECIES_SNIVY',
+            good: 'SPECIES_SERVINE',
+            super: 'SPECIES_GABITE',
         },
         // Special
         {
