@@ -547,6 +547,8 @@ async function writer(pokemonList, moves, abilities) {
             return;
         }
 
+        let foundMega = false;
+
         const canLearnMove = (pokemon, moveToLearn) => {
             const result = (
                 pokemon.teachables
@@ -569,6 +571,7 @@ async function writer(pokemonList, moves, abilities) {
             let pokemonStrictList = [];
             let pokemonLooseList = [];
             let chosenTrainerMon;
+            let foundMega;
             if (trainerMonDefinition.oneOf) {
                 pokemonLooseList = trainerMonDefinition.oneOf.map(p => pokemonList.find(pl => pl.id === p));
             }
@@ -625,6 +628,7 @@ async function writer(pokemonList, moves, abilities) {
                     if (pokemonThatEvolvesToMega) {
                         pokemonStrictList = [pokemonThatEvolvesToMega];
                         trainerMonDefinition.item = itemIdToName(mega.evolutionData.megaItem);
+                        foundMega = true;
                     }
                     else {
                         console.warn(`WARN: No pokemon found that evolves to mega ${mega.id} for trainer ${trainer.id}.`);
@@ -829,6 +833,30 @@ async function writer(pokemonList, moves, abilities) {
                 } while (possibleEvolutions.length > 0);
             }
 
+            if (trainerMonDefinition.tryMega) {
+                if (
+                    (chosenTrainerMon.evolutionData.isFinal || chosenTrainerMon.evolutionData.type === EVO_TYPE_SOLO)
+                    && chosenTrainerMon.evolutionData.megaEvos
+                    && chosenTrainerMon.evolutionData.megaEvos.length > 0
+                    && !foundMega
+                ) {
+                    const megaId = sample(chosenTrainerMon.evolutionData.megaEvos);
+                    const megaPoke = pokemonList.find(p => p.id === megaId);
+                    if (megaPoke) {
+                        trainerMonDefinition.item = itemIdToName(megaPoke.evolutionData.megaItem);
+                        console.log(`Trainer ${trainer.id} mega evolving ${chosenTrainerMon.id} into ${megaId} with item ${trainerMonDefinition.item}`);
+                        chosenTrainerMon = megaPoke;
+                        foundMega = true;
+                    }
+                    else {
+                        console.warn(`WARN: Chosen pokemon ${chosenTrainerMon.id} for mega in trainer ${trainer.id} has no mega evolution data.`);
+                    }
+                }
+                else {
+                    console.warn(`WARN: Chosen pokemon ${chosenTrainerMon.id} for mega in trainer ${trainer.id} has no mega evolutions.`);
+                }
+            }
+
             if (chosenTrainerMon) {
                 if (trainerMonDefinition.id) {
                     storedIds[trainerMonDefinition.id] = chosenTrainerMon.id;
@@ -846,6 +874,7 @@ async function writer(pokemonList, moves, abilities) {
                         const megaPoke = pokemonList.find(p => p.id === megaId);
                         if (megaPoke) {
                             newTeamMember.item = itemIdToName(megaPoke.evolutionData.megaItem);
+                            foundMega = true;
                         }
                         else {
                             console.warn(`WARN: Chosen pokemon ${chosenTrainerMon.id} for mega with stone in trainer ${trainer.id} has no mega evolution data.`);

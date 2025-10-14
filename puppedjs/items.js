@@ -138,7 +138,7 @@ const items = {
         'ITEM_TM_DRAGON_CLAW', // Route 110
         'ITEM_TM_WATER_PULSE', // Route 104
         'ITEM_TM_CALM_MIND',
-        'ITEM_TM_ROAR', // @TODO Change TM
+        'ITEM_TM_METEOR_BEAM', // Changed TM from ROAR. Route 119 @TODO Check how can I run make_learnsets.py
         'ITEM_TM_TOXIC', // Route 114
         'ITEM_TM_HAIL', // Route 109
         'ITEM_TM_BULK_UP', // Brawly
@@ -322,7 +322,7 @@ const items = {
         'ITEM_LEPPA_BERRY', // Route 119
         'ITEM_LUM_BERRY', // Route 110
         'ITEM_SITRUS_BERRY', // Route 111
-        'ITEM_CUSTAP_BERRY',
+        'ITEM_CUSTAP_BERRY', // Route 115
         'ITEM_JABOCA_BERRY', // Route 103
         'ITEM_ROWAP_BERRY', // Route 119
         'ITEM_KEE_BERRY', // Route 118

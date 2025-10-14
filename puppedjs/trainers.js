@@ -191,6 +191,115 @@ const rival103Template = (id) => [
     },
 ];
 
+const rivalRustboroTemplate = (id) => [
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_STARTER_' + id,
+        item: 'Eviolite',
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: ['SPECIES_ZIGZAGOON', 'SPECIES_WURMPLE', 'SPECIES_WINGULL', 'SPECIES_SURSKIT', 'SPECIES_GEODUDE', 'SPECIES_WEEDLE', 'SPECIES_PATRAT', 'SPECIES_PORYGON', 'SPECIES_DELIBIRD', 'SPECIES_DITTO', 'SPECIES_SENTRET', 'SPECIES_POOCHYENA'],
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: ['SPECIES_ZIGZAGOON', 'SPECIES_WURMPLE', 'SPECIES_WINGULL', 'SPECIES_SURSKIT', 'SPECIES_GEODUDE', 'SPECIES_WEEDLE', 'SPECIES_PATRAT', 'SPECIES_PORYGON', 'SPECIES_DELIBIRD', 'SPECIES_DITTO', 'SPECIES_SENTRET', 'SPECIES_POOCHYENA'],
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_WEAK_103_KEEP_ONCE_' + id,
+        tryEvolve: true,
+    },
+    {
+        id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
+        evolutionTier: [TIER_STRONG],
+        evoType: [EVO_TYPE_LC],
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_MEGA_103_KEEP_' + id,
+        tryEvolve: true,
+    },
+];
+
+const rivalRoute110Template = (id) => [
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_STARTER_' + id,
+        item: 'Eviolite',
+        tryEvolve: true,
+    },
+    {
+        evoType: [EVO_TYPE_SOLO],
+        absoluteTier: [TIER_AVERAGE],
+        id: 'RIVAL_AVERAGE_110_KEEP_ONCE_' + id,
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_MEGA_103_KEEP_' + id,
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: ['SPECIES_GEODUDE', 'SPECIES_WEEDLE', 'SPECIES_PATRAT', 'SPECIES_PORYGON', 'SPECIES_DELIBIRD', 'SPECIES_DITTO', 'SPECIES_SENTRET', 'SPECIES_POOCHYENA', 'SPECIES_CHARMANDER', 'SPECIES_ARON', 'SPECIES_BULBASAUR', 'SPECIES_IVYSAUR', 'SPECIES_ABSOL', 'SPECIES_ELECTRIKE', 'SPECIES_MANECTRIC'],
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: ['SPECIES_GEODUDE', 'SPECIES_WEEDLE', 'SPECIES_PATRAT', 'SPECIES_PORYGON', 'SPECIES_DELIBIRD', 'SPECIES_DITTO', 'SPECIES_SENTRET', 'SPECIES_POOCHYENA', 'SPECIES_CHARMANDER', 'SPECIES_ARON', 'SPECIES_BULBASAUR', 'SPECIES_IVYSAUR', 'SPECIES_ABSOL', 'SPECIES_ELECTRIKE', 'SPECIES_MANECTRIC'],
+        tryEvolve: true,
+    },
+];
+
+const rivalRoute119Template = (id) => [
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_AVERAGE_110_KEEP_ONCE_' + id,
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_MEGA_103_KEEP_' + id,
+        tryEvolve: true,
+        tryMega: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_STARTER_' + id,
+        tryEvolve: true,
+        tryMega: true,
+    },
+    {
+        id: 'RIVAL_119_SUPERROD_KEEP_' + id,
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: ['SPECIES_SHELGON', 'SPECIES_PUPITAR', 'SPECIES_GABITE'],
+        tryEvolve: true,
+        tryMega: true,
+    },
+    {
+        id: 'RIVAL_119_PREMIUM_KEEP_' + id,
+        absoluteTier: [TIER_PREMIUM],
+        evoType: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
+        tryEvolve: true,
+        checkValidEvo: true,
+    },
+];
+
 const rivalRustboroBag = [
     'Black Sludge',
     'Expert Belt',
@@ -295,64 +404,6 @@ const winonaTMs = [
     'MOVE_THUNDERBOLT',
     'MOVE_ICE_BEAM',
     'MOVE_FLAMETHROWER',
-];
-
-const rivalRustboroTemplate = (id) => [
-    {
-        special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_ZIGZAGOON', 'SPECIES_WURMPLE', 'SPECIES_WINGULL', 'SPECIES_SURSKIT', 'SPECIES_GEODUDE', 'SPECIES_WEEDLE', 'SPECIES_PATRAT', 'SPECIES_PORYGON', 'SPECIES_DELIBIRD', 'SPECIES_DITTO', 'SPECIES_SENTRET', 'SPECIES_POOCHYENA'],
-        tryEvolve: true,
-    },
-    {
-        special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_ZIGZAGOON', 'SPECIES_WURMPLE', 'SPECIES_WINGULL', 'SPECIES_SURSKIT', 'SPECIES_GEODUDE', 'SPECIES_WEEDLE', 'SPECIES_PATRAT', 'SPECIES_PORYGON', 'SPECIES_DELIBIRD', 'SPECIES_DITTO', 'SPECIES_SENTRET', 'SPECIES_POOCHYENA'],
-        tryEvolve: true,
-    },
-    {
-        special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_WEAK_103_KEEP_ONCE_' + id,
-        tryEvolve: true,
-    },
-    {
-        id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
-        evolutionTier: [TIER_STRONG],
-        evoType: [EVO_TYPE_LC],
-        tryEvolve: true,
-    },
-    {
-        special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_MEGA_103_KEEP_' + id,
-        tryEvolve: true,
-    },
-];
-
-const rivalRoute110Template = (id) => [
-    {
-        evoType: [EVO_TYPE_SOLO],
-        absoluteTier: [TIER_AVERAGE],
-        id: 'RIVAL_AVERAGE_110_KEEP_ONCE_' + id,
-        tryEvolve: true,
-    },
-    {
-        special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
-        tryEvolve: true,
-    },
-    {
-        special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_MEGA_103_KEEP_' + id,
-        tryEvolve: true,
-    },
-    {
-        special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_GEODUDE', 'SPECIES_WEEDLE', 'SPECIES_PATRAT', 'SPECIES_PORYGON', 'SPECIES_DELIBIRD', 'SPECIES_DITTO', 'SPECIES_SENTRET', 'SPECIES_POOCHYENA', 'SPECIES_CHARMANDER', 'SPECIES_ARON', 'SPECIES_BULBASAUR', 'SPECIES_IVYSAUR', 'SPECIES_ABSOL', 'SPECIES_ELECTRIKE', 'SPECIES_MANECTRIC'],
-        tryEvolve: true,
-    },
-    {
-        special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_GEODUDE', 'SPECIES_WEEDLE', 'SPECIES_PATRAT', 'SPECIES_PORYGON', 'SPECIES_DELIBIRD', 'SPECIES_DITTO', 'SPECIES_SENTRET', 'SPECIES_POOCHYENA', 'SPECIES_CHARMANDER', 'SPECIES_ARON', 'SPECIES_BULBASAUR', 'SPECIES_IVYSAUR', 'SPECIES_ABSOL', 'SPECIES_ELECTRIKE', 'SPECIES_MANECTRIC'],
-        tryEvolve: true,
-    },
 ];
 
 const genericBadLCTeamTemplate = [
@@ -1555,15 +1606,7 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag],
         tms: [...rivalRustboroTMs],
-        team: [
-            {
-                id: 'RIVAL_STARTER_TREECKO',
-                special: TRAINER_REPEAT_ID,
-                item: 'Eviolite',
-                tryEvolve: true,
-            },
-            ...rivalRustboroTemplate('TREECKO'),
-        ]
+        team: [...rivalRustboroTemplate('TREECKO')],
     },
     {
         id: 'TRAINER_MAY_RUSTBORO_TORCHIC',
@@ -1572,16 +1615,7 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag],
         tms: [...rivalRustboroTMs],
-        team: [
-            {
-                id: 'RIVAL_STARTER_TORCHIC',
-                special: TRAINER_REPEAT_ID,
-                item: 'Eviolite',
-                tryToHaveMove: ['MOVE_BULLET_SEED'],
-                tryEvolve: true,
-            },
-            ...rivalRustboroTemplate('TORCHIC'),
-        ]
+        team: [...rivalRustboroTemplate('TORCHIC')],
     },
     {
         id: 'TRAINER_MAY_RUSTBORO_MUDKIP',
@@ -1590,16 +1624,7 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag],
         tms: [...rivalRustboroTMs],
-        team: [
-            {
-                id: 'RIVAL_STARTER_MUDKIP',
-                special: TRAINER_REPEAT_ID,
-                item: 'Eviolite',
-                tryToHaveMove: ['MOVE_BULLET_SEED'],
-                tryEvolve: true,
-            },
-            ...rivalRustboroTemplate('MUDKIP'),
-        ]
+        team: [...rivalRustboroTemplate('MUDKIP')],
     },
     {
         id: 'TRAINER_BRENDAN_RUSTBORO_TREECKO',
@@ -2573,15 +2598,7 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag],
         tms: [...rivalRoute110TMs],
-        team: [
-            {
-                id: 'RIVAL_STARTER_TREECKO',
-                special: TRAINER_REPEAT_ID,
-                item: 'Eviolite',
-                tryEvolve: true,
-            },
-            ...rivalRoute110Template('TREECKO'),
-        ]
+        team: [...rivalRoute110Template('TREECKO')],
     },
     {
         id: 'TRAINER_MAY_ROUTE_110_TORCHIC',
@@ -2590,15 +2607,7 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag],
         tms: [...rivalRoute110TMs],
-        team: [
-            {
-                id: 'RIVAL_STARTER_TORCHIC',
-                special: TRAINER_REPEAT_ID,
-                item: 'Eviolite',
-                tryEvolve: true,
-            },
-            ...rivalRoute110Template('TORCHIC'),
-        ]
+        team: [...rivalRoute110Template('TORCHIC')],
     },
     {
         id: 'TRAINER_MAY_ROUTE_110_MUDKIP',
@@ -2607,15 +2616,7 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag],
         tms: [...rivalRoute110TMs],
-        team: [
-            {
-                id: 'RIVAL_STARTER_MUDKIP',
-                special: TRAINER_REPEAT_ID,
-                item: 'Eviolite',
-                tryEvolve: true,
-            },
-            ...rivalRoute110Template('MUDKIP'),
-        ]
+        team: [...rivalRoute110Template('MUDKIP')],
     },
     {
         id: 'TRAINER_BRENDAN_ROUTE_110_TREECKO',
@@ -5418,6 +5419,92 @@ const trainersData = [
             type: [POKEMON_TYPE_ELECTRIC],
             item: 'Zap Plate',
         })),
+    },
+    {
+        id: 'TRAINER_SHELLY_WEATHER_INSTITUTE',
+        level: 39,
+        isBoss: true,
+        bag: [...winonaBag],
+        tms: [...winonaTMs],
+        team: [
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                type: [magmaTeamTypes[0]],
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                type: [magmaTeamTypes[1]],
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                type: [magmaTeamTypes[2]],
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                type: [magmaTeamTypes[3]],
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                type: [magmaTeamTypes[4]],
+            },
+            {
+                special: TRAINER_POKE_MEGA_WITH_STONE,
+                megaTier: [TIER_STRONG, TIER_PREMIUM],
+                checkValidEvo: true,
+                tryEvolve: true,
+                type: [magmaTeamTypes[0]],
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_FABIAN',
+        level: 40,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate(), // @TODO Teach meteor beam. Can't do that right now because I don't know how to python the tool
+    },
+    {
+        id: 'TRAINER_MAY_ROUTE_119_TREECKO',
+        isBoss: true,
+        level: 40,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...winonaBag],
+        tms: [...winonaTMs],
+        team: [...rivalRoute119Template('TREECKO')],
+    },
+    {
+        id: 'TRAINER_MAY_ROUTE_119_TORCHIC',
+        isBoss: true,
+        level: 40,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...winonaBag],
+        tms: [...winonaTMs],
+        team: [...rivalRoute119Template('TORCHIC')],
+    },
+    {
+        id: 'TRAINER_MAY_ROUTE_119_MUDKIP',
+        isBoss: true,
+        level: 40,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...winonaBag],
+        tms: [...winonaTMs],
+        team: [...rivalRoute119Template('MUDKIP')],
+    },
+    {
+        id: 'TRAINER_BRENDAN_ROUTE_119_TREECKO',
+        copy: 'TRAINER_MAY_ROUTE_119_TREECKO',
+    },
+    {
+        id: 'TRAINER_BRENDAN_ROUTE_119_TORCHIC',
+        copy: 'TRAINER_MAY_ROUTE_119_TORCHIC',
+    },
+    {
+        id: 'TRAINER_BRENDAN_ROUTE_119_MUDKIP',
+        copy: 'TRAINER_MAY_ROUTE_119_MUDKIP',
     },
 ]
 

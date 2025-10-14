@@ -10990,14 +10990,11 @@ const struct Item gItemsInfo[] =
         .fieldUseFunc = ItemUseOutOfBattle_TMHM,
     },
 
-    [ITEM_TM_ROAR] =
+    [ITEM_TM_METEOR_BEAM] =
     {
         .name = ITEM_NAME("TM05"),
         .price = 1000,
-        .description = COMPOUND_STRING(
-            "A savage roar that\n"
-            "makes the foe flee \n"
-            "to end the battle."),
+        .description = COMPOUND_STRING("Meteor Beam"),
         .importance = I_REUSABLE_TMS,
         .pocket = POCKET_TM_HM,
         .type = ITEM_USE_PARTY_MENU,

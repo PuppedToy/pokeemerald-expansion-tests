@@ -6,7 +6,7 @@
     F(DRAGON_CLAW) \
     F(WATER_PULSE) \
     F(CALM_MIND) \
-    F(ROAR) \
+    F(METEOR_BEAM) \
     F(TOXIC) \
     F(HAIL) \
     F(BULK_UP) \
