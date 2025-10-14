@@ -21888,8 +21888,8 @@
       "bestAbilityRating": 7,
       "tier": "BAD",
       "bestEvo": "SPECIES_GENGAR",
-      "bestEvoRating": 4.991666666666666,
-      "bestEvoTier": "WEAK",
+      "bestEvoRating": 5.391666666666667,
+      "bestEvoTier": "AVERAGE",
       "megaEvo": "SPECIES_GENGAR_MEGA",
       "megaEvoRating": 7.325000000000001,
       "megaEvoTier": "PREMIUM"
@@ -22063,8 +22063,8 @@
       "bestAbilityRating": 7,
       "tier": "WEAK",
       "bestEvo": "SPECIES_GENGAR",
-      "bestEvoRating": 4.991666666666666,
-      "bestEvoTier": "WEAK",
+      "bestEvoRating": 5.391666666666667,
+      "bestEvoTier": "AVERAGE",
       "megaEvo": "SPECIES_GENGAR_MEGA",
       "megaEvoRating": 7.325000000000001,
       "megaEvoTier": "PREMIUM"
@@ -22077,7 +22077,9 @@
       "POISON"
     ],
     "parsedAbilities": [
-      "GENGAR_ABILITIES"
+      "CURSED_BODY",
+      "NONE",
+      "NONE"
     ],
     "id": "SPECIES_GENGAR",
     "family": "P_FAMILY_GASTLY",
@@ -22088,7 +22090,7 @@
     "baseSpAttack": 130,
     "baseSpDefense": 75,
     "types": "MON_TYPES(TYPE_GHOST, TYPE_POISON)",
-    "abilities": "GENGAR_ABILITIES",
+    "abilities": "{ ABILITY_CURSED_BODY, ABILITY_NONE, ABILITY_NONE }",
     "speciesName": "_(\"Gengar\")",
     "natDexNum": "NATIONAL_DEX_GENGAR",
     "levelUpLearnset": "sGengarLevelUpLearnset",
@@ -22233,7 +22235,7 @@
       ]
     ],
     "rating": {
-      "absoluteRating": 4.991666666666666,
+      "absoluteRating": 5.391666666666667,
       "absoluteBSTRating": 5.333333333333333,
       "bestMoveset": [
         "MOVE_SLUDGE_BOMB",
@@ -22242,11 +22244,11 @@
         "MOVE_DREAM_EATER"
       ],
       "movesRating": 7.249999999999999,
-      "bestAbilityRating": 0,
-      "tier": "WEAK",
+      "bestAbilityRating": 4,
+      "tier": "AVERAGE",
       "bestEvo": "SPECIES_GENGAR",
-      "bestEvoRating": 4.991666666666666,
-      "bestEvoTier": "WEAK",
+      "bestEvoRating": 5.391666666666667,
+      "bestEvoTier": "AVERAGE",
       "megaEvo": "SPECIES_GENGAR_MEGA",
       "megaEvoRating": 7.325000000000001,
       "megaEvoTier": "PREMIUM"
