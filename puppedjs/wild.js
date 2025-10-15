@@ -179,6 +179,9 @@ const wildData = {
         SPECIES_SANDILE: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_KROKOROK: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_KROOKODILE: 'NFE_OR_SOLO_AVERAGE',
+
+        // Scorched Slab
+        SPECIES_RIBOMBEE: 'NFE_MEGA',
     },
     maps: [
         // Shelgon maps
@@ -327,6 +330,10 @@ const wildData = {
             old: 'SPECIES_KROKOROK',
             good: 'SPECIES_KROOKODILE',
             super: 'SPECIES_GABITE',
+        },
+        {
+            id: 'MAP_SCORCHED_SLAB',
+            land: 'SPECIES_RIBOMBEE',
         },
         // Special
         {

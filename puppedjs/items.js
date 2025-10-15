@@ -1,6 +1,7 @@
 const items = {
     megaStones: {
         ITEM_HARBOR_MAIL: 'SPECIES_SPINDA', // Route 113
+        ITEM_ORANGE_MAIL: 'SPECIES_RIBOMBEE', // Scorched Slab
     },
 
     // Randomized items - mints
@@ -251,7 +252,7 @@ const items = {
     // These are valuable consumables that will not be randomized
     consumables: {
         // Hidden ability
-        ITEM_ABILITY_PATCH: { // 1 at Route 116, 1 at Route 113
+        ITEM_ABILITY_PATCH: { // 1 at Route 116, 1 at Route 113, 1 at route 120
             count: 4
         },
         // Normal ability

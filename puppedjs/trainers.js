@@ -162,7 +162,7 @@ const minorPowerHerbMoves = [
 ];
 
 const rainAbilities = ['SWIFT_SWIM', 'RAIN_DISH', 'DRY_SKIN', 'HYDRATION'];
-const sunAbilities = ['FLOWER_GIFT', 'CHLOROPHYLL', 'LEAF_GUARD', 'SOLAR_POWER'];
+const sunAbilities = ['FLOWER_GIFT', 'CHLOROPHYLL', 'LEAF_GUARD', 'SOLAR_POWER', 'PROTOSYNTHESIS'];
 const sandAbilities = ['SAND_FORCE', 'SAND_RUSH', 'SAND_VEIL', 'SAND_SPIT'];
 const snowAbilities = ['ICE_BODY', 'SNOW_CLOAK', 'SLUSH_RUSH'];
 
@@ -293,6 +293,45 @@ const rivalRoute119Template = (id) => [
     },
     {
         id: 'RIVAL_119_PREMIUM_KEEP_' + id,
+        absoluteTier: [TIER_PREMIUM],
+        evoType: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
+        tryEvolve: true,
+        checkValidEvo: true,
+    },
+];
+
+const rivalLillycoveTemplate = (id) => [
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_MEGA_103_KEEP_' + id,
+        tryEvolve: true,
+        tryMega: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_STARTER_' + id,
+        tryEvolve: true,
+        tryMega: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_119_SUPERROD_KEEP_' + id,
+        tryEvolve: true,
+        tryMega: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_119_PREMIUM_KEEP_' + id,
+        tryEvolve: true,
+        checkValidEvo: true,
+    },
+    {
+        id: 'RIVAL_LILLYCOVE_PREMIUM_KEEP_' + id,
         absoluteTier: [TIER_PREMIUM],
         evoType: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
         tryEvolve: true,
@@ -5616,6 +5655,140 @@ const trainersData = [
         team: generic3Average3StrongTeamTemplate()
             .map((p) => ({ ...p, type: POKEMON_TYPE_ROCK, item: 'Rock Gem', })),
     },
+    {
+        id: 'TRAINER_ANGELICA',
+        level: 42,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_WINONA_1',
+        level: 42,
+        isBoss: true,
+        bag: [...winonaBag],
+        tms: [...winonaTMs, 'MOVE_AERIAL_ACE'],
+        team: [
+            {
+                specific: 'SPECIES_ALTARIA',
+                item: 'Altarianite',
+                nature: 'Adamant',
+                tryToHaveMove: ['MOVE_DRAGON_DANCE', 'MOVE_FACADE', 'MOVE_EARTHQUAKE', 'MOVE_AERIAL_ACE'],
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                type: [POKEMON_TYPE_FLYING],
+                tryToHaveMove: ['MOVE_AERIAL_ACE'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                type: [POKEMON_TYPE_STEEL],
+                tryToHaveMove: ['MOVE_FACADE'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                type: [POKEMON_TYPE_GROUND],
+                tryToHaveMove: ['MOVE_FACADE'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                type: [POKEMON_TYPE_FLYING],
+                tryToHaveMove: ['MOVE_AERIAL_ACE'],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_PREMIUM],
+                type: [POKEMON_TYPE_FLYING],
+                tryToHaveMove: ['MOVE_AERIAL_ACE'],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_MAY_LILLYCOVE_TREECKO',
+        isBoss: true,
+        level: 45,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...winonaBag],
+        tms: [...winonaTMs],
+        team: [...rivalLillycoveTemplate('TREECKO')],
+    },
+    {
+        id: 'TRAINER_MAY_LILLYCOVE_TORCHIC',
+        isBoss: true,
+        level: 45,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...winonaBag],
+        tms: [...winonaTMs],
+        team: [...rivalLillycoveTemplate('TORCHIC')],
+    },
+    {
+        id: 'TRAINER_MAY_LILLYCOVE_MUDKIP',
+        isBoss: true,
+        level: 45,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...winonaBag],
+        tms: [...winonaTMs],
+        team: [...rivalLillycoveTemplate('MUDKIP')],
+    },
+    {
+        id: 'TRAINER_BRENDAN_LILLYCOVE_TREECKO',
+        copy: 'TRAINER_MAY_LILLYCOVE_TREECKO',
+    },
+    {
+        id: 'TRAINER_BRENDAN_LILLYCOVE_TORCHIC',
+        copy: 'TRAINER_MAY_LILLYCOVE_TORCHIC',
+    },
+    {
+        id: 'TRAINER_BRENDAN_LILLYCOVE_MUDKIP',
+        copy: 'TRAINER_MAY_LILLYCOVE_MUDKIP',
+    },
+    {
+        id: 'TRAINER_MAXIE_MAGMA_HIDEOUT',
+        isBoss: true,
+        level: 47,
+        bag: [...winonaBag],
+        tms: [...winonaTMs],
+        team: [
+            {
+                specific: 'SPECIES_GROUDON',
+                item: 'Heat Rock',
+            },
+            {
+                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
+                abilities: [...sunAbilities],
+                checkValidEvo: true,
+                type: [magmaTeamTypes[0]],
+            },
+            {
+                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
+                abilities: [...sunAbilities],
+                checkValidEvo: true,
+                type: [magmaTeamTypes[2]],
+            },
+            {
+                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
+                abilities: [...sunAbilities],
+                checkValidEvo: true,
+                type: [magmaTeamTypes[3]],
+            },
+            {
+                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
+                abilities: [...sunAbilities],
+                checkValidEvo: true,
+                type: [magmaTeamTypes[4]],
+            },
+            {
+                specific: 'SPECIES_CAMERUPT',
+                item: 'Cameruptite',
+                ability: 'SOLID_ROCK',
+                tryToHaveMove: ['MOVE_EARTHQUAKE', 'MOVE_LAVA_PLUME', 'MOVE_ROCK_SLIDE', 'MOVE_EARTH_POWER'],
+            },
+        ],
+    },
+    // @TODO TRAINER_MATT
 ]
 
 module.exports = {
