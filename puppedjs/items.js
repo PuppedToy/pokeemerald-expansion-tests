@@ -55,7 +55,7 @@ const items = {
         ITEM_SPLASH_PLATE: 'WATER',
         ITEM_ZAP_PLATE: 'ELECTRIC', // Route 119
         ITEM_MEADOW_PLATE: 'GRASS', // Petalburg Woods
-        ITEM_ICICLE_PLATE: 'ICE',
+        ITEM_ICICLE_PLATE: 'ICE', // Route 119
         ITEM_FIST_PLATE: 'FIGHTING',
         ITEM_TOXIC_PLATE: 'POISON',
         ITEM_EARTH_PLATE: 'GROUND', // Route 116
@@ -103,7 +103,7 @@ const items = {
         'ITEM_FLYING_GEM',
         'ITEM_PSYCHIC_GEM',
         'ITEM_BUG_GEM',
-        'ITEM_ROCK_GEM',
+        'ITEM_ROCK_GEM', // Route 120
         'ITEM_GHOST_GEM',
         'ITEM_DRAGON_GEM',
         'ITEM_DARK_GEM',

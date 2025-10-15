@@ -5506,6 +5506,116 @@ const trainersData = [
         id: 'TRAINER_BRENDAN_ROUTE_119_MUDKIP',
         copy: 'TRAINER_MAY_ROUTE_119_MUDKIP',
     },
+    {
+        id: 'TRAINER_LEONEL',
+        level: 42,
+        bag: [...winonaBag],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SANDILE'],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_ROBERT_1',
+        level: 42,
+        bag: [...winonaBag],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_KROKOROK'],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_COLIN',
+        level: 42,
+        bag: [...winonaBag],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_KROKODILE'],
+                tryEvolve: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_AVERAGE],
+                checkValidEvo: true,
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_HIDEO',
+        level: 42,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate()
+            .map((p) => ({ ...p, type: POKEMON_TYPE_ICE, item: 'Icicle Plate', })),
+    },
+    {
+        id: 'TRAINER_CLARISSA',
+        level: 42,
+        bag: [...winonaBag],
+        team: generic3Average3StrongTeamTemplate()
+            .map((p) => ({ ...p, type: POKEMON_TYPE_ROCK, item: 'Rock Gem', })),
+    },
 ]
 
 module.exports = {
