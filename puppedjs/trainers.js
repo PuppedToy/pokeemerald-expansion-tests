@@ -5761,24 +5761,44 @@ const trainersData = [
                 abilities: [...sunAbilities],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[0]],
+                fallback: {
+                    absoluteTier: [TIER_PREMIUM],
+                    checkValidEvo: true,
+                    type: [magmaTeamTypes[0]],   
+                }
             },
             {
                 absoluteTier: [TIER_STRONG, TIER_PREMIUM],
                 abilities: [...sunAbilities],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[2]],
+                fallback: {
+                    absoluteTier: [TIER_PREMIUM],
+                    checkValidEvo: true,
+                    type: [magmaTeamTypes[2]],
+                }
             },
             {
                 absoluteTier: [TIER_STRONG, TIER_PREMIUM],
                 abilities: [...sunAbilities],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[3]],
+                fallback: {
+                    absoluteTier: [TIER_PREMIUM],
+                    checkValidEvo: true,
+                    type: [magmaTeamTypes[3]],
+                }
             },
             {
                 absoluteTier: [TIER_STRONG, TIER_PREMIUM],
                 abilities: [...sunAbilities],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[4]],
+                fallback: {
+                    absoluteTier: [TIER_PREMIUM],
+                    checkValidEvo: true,
+                    type: [magmaTeamTypes[4]],
+                }
             },
             {
                 specific: 'SPECIES_CAMERUPT',
