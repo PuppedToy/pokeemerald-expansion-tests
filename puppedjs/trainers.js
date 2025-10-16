@@ -4780,13 +4780,13 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_ENDURE'],
                 abilities: ['HARVEST'],
                 item: 'Custap Berry',
-                fallback: {
+                fallback: [{
                     absoluteTier: [TIER_WEAK, TIER_AVERAGE],
                     checkValidEvo: true,
                     mustHaveOneOfMoves: ['MOVE_ENDURE'],
                     tryToHaveMove: ['MOVE_ENDURE'],
                     item: 'Custap Berry',
-                },
+                }],
             },
             {
                 absoluteTier: [TIER_WEAK, TIER_AVERAGE],
@@ -5761,44 +5761,72 @@ const trainersData = [
                 abilities: [...sunAbilities],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[0]],
-                fallback: {
-                    absoluteTier: [TIER_STRONG, TIER_PREMIUM],
-                    checkValidEvo: true,
-                    type: [magmaTeamTypes[0]],   
-                }
+                fallback: [
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        checkValidEvo: true,
+                        type: [magmaTeamTypes[0]],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        checkValidEvo: true,
+                        type: [magmaTeamTypes[0]],
+                    },
+                ]
             },
             {
                 absoluteTier: [TIER_STRONG, TIER_PREMIUM],
                 abilities: [...sunAbilities],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[2]],
-                fallback: {
-                    absoluteTier: [TIER_STRONG, TIER_PREMIUM],
-                    checkValidEvo: true,
-                    type: [magmaTeamTypes[2]],
-                }
+                fallback: [
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        checkValidEvo: true,
+                        type: [magmaTeamTypes[2]],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        checkValidEvo: true,
+                        type: [magmaTeamTypes[2]],
+                    },
+                ]
             },
             {
                 absoluteTier: [TIER_STRONG, TIER_PREMIUM],
                 abilities: [...sunAbilities],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[3]],
-                fallback: {
-                    absoluteTier: [TIER_STRONG, TIER_PREMIUM],
-                    checkValidEvo: true,
-                    type: [magmaTeamTypes[3]],
-                }
+                fallback: [
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        checkValidEvo: true,
+                        type: [magmaTeamTypes[3]],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        checkValidEvo: true,
+                        type: [magmaTeamTypes[3]],
+                    },
+                ]
             },
             {
                 absoluteTier: [TIER_STRONG, TIER_PREMIUM],
                 abilities: [...sunAbilities],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[4]],
-                fallback: {
-                    absoluteTier: [TIER_STRONG, TIER_PREMIUM],
-                    checkValidEvo: true,
-                    type: [magmaTeamTypes[4]],
-                }
+                fallback: [
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        checkValidEvo: true,
+                        type: [magmaTeamTypes[4]],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        checkValidEvo: true,
+                        type: [magmaTeamTypes[4]],
+                    },
+                ]
             },
             {
                 specific: 'SPECIES_CAMERUPT',
