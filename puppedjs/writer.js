@@ -851,7 +851,6 @@ async function writer(pokemonList, moves, abilities) {
                     if (megaPoke) {
                         trainerMonDefinition.item = itemIdToName(megaPoke.evolutionData.megaItem);
                         console.log(`Trainer ${trainer.id} mega evolving ${chosenTrainerMon.id} into ${megaId} with item ${trainerMonDefinition.item}`);
-                        chosenTrainerMon = megaPoke;
                         foundMega = true;
                     }
                     else {
