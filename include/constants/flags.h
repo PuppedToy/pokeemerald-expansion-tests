@@ -1277,7 +1277,7 @@
 #define FLAG_ITEM_ROUTE_111_FOCUS                                   0x4C6
 #define FLAG_ITEM_ROUTE_111_ADRENALINE                              0x4C7
 #define FLAG_ITEM_ROUTE_103_EJECT                                   0x4C8
-#define FLAG_ITEM_ROUTE_118_KEEBERRY                                0x4C9
+#define FLAG_ITEM_ROUTE_118_KEE                                     0x4C9
 #define FLAG_ITEM_ROUTE_118_COBA                                    0x4CA
 #define FLAG_ITEM_ROUTE_118_PICK                                    0x4CB
 #define FLAG_ITEM_ROUTE_119_LEPPA                                   0x4CC

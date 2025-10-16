@@ -99,7 +99,7 @@ Route118_EventScript_Deandre::
 	msgbox Route118_Text_DeandrePostBattle, MSGBOX_AUTOCLOSE
 	end
 
-Route118_EventScript_PickItem1::
+Route118_EventScript_Pick1::
 	setflag FLAG_ITEM_ROUTE_118_PICK
 	giveitem ITEM_TM_THUNDERBOLT
 	removeobject LOCALID_ROUTE118_I1
@@ -108,7 +108,7 @@ Route118_EventScript_PickItem1::
 	release
 	end
 
-Route118_EventScript_PickItem2::
+Route118_EventScript_Pick2::
 	setflag FLAG_ITEM_ROUTE_118_PICK
 	giveitem ITEM_TM_ICE_BEAM
 	removeobject LOCALID_ROUTE118_I1
@@ -117,7 +117,7 @@ Route118_EventScript_PickItem2::
 	release
 	end
 
-Route118_EventScript_PickItem3::
+Route118_EventScript_Pick3::
 	setflag FLAG_ITEM_ROUTE_118_PICK
 	giveitem ITEM_TM_FLAMETHROWER
 	removeobject LOCALID_ROUTE118_I1
