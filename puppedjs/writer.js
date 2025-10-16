@@ -144,6 +144,7 @@ const routeFiles = [
     path.resolve(mapsBase, 'Route117', 'map.json'),
     path.resolve(mapsBase, 'Route118', 'map.json'),
     path.resolve(mapsBase, 'RustboroCity', 'map.json'),
+    path.resolve(mapsBase, 'ScorchedSlab', 'map.json'),
 ];
 
 function sampleAndRemove(array) {
@@ -571,7 +572,6 @@ async function writer(pokemonList, moves, abilities) {
             let pokemonStrictList = [];
             let pokemonLooseList = [];
             let chosenTrainerMon;
-            let foundMega;
             if (trainerMonDefinition.oneOf) {
                 pokemonLooseList = trainerMonDefinition.oneOf.map(p => pokemonList.find(pl => pl.id === p));
             }
@@ -959,6 +959,7 @@ async function writer(pokemonList, moves, abilities) {
                         .sort((a, b) => b.rating - a.rating)
                         .map(bi => bi.id);
 
+                    console.log(`Sorted bag items for LV.${trainer.level} ${chosenTrainerMon.id}: ${JSON.stringify(sortedBagItems)}`);
                     if (sortedBagItems.length > 0) {
                         newTeamMember.item = sortedBagItems[0];
                     }
