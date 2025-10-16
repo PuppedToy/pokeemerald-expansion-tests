@@ -967,7 +967,6 @@ async function writer(pokemonList, moves, abilities) {
                         .sort((a, b) => b.rating - a.rating)
                         .map(bi => bi.id);
 
-                    console.log(`Sorted bag items for LV.${trainer.level} ${chosenTrainerMon.id}: ${JSON.stringify(sortedBagItems)}`);
                     if (sortedBagItems.length > 0) {
                         newTeamMember.item = sortedBagItems[0];
                     }
