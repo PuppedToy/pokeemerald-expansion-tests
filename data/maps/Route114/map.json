@@ -334,7 +334,7 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_TM_REFLECT",
+      "trainer_sight_or_berry_tree_id": "0",
       "script": "Common_EventScript_PickB1",
       "flag": "FLAG_ITEM_ROUTE_114_PICK_B"
     },
@@ -428,7 +428,7 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "Common_EventScript_PickB1",
+      "script": "Common_EventScript_PickA2",
       "flag": "FLAG_ITEM_ROUTE_114_PICK_A"
     },
     {
@@ -442,7 +442,7 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "Common_EventScript_PickC1",
+      "script": "Common_EventScript_PickA3",
       "flag": "FLAG_ITEM_ROUTE_114_PICK_A"
     },
     {
@@ -455,7 +455,7 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_TM_LIGHT_SCREEN",
+      "trainer_sight_or_berry_tree_id": "0",
       "script": "Common_EventScript_PickB2",
       "flag": "FLAG_ITEM_ROUTE_114_PICK_B"
     },

@@ -1239,7 +1239,7 @@
 #define FLAG_ITEM_ROUTE_103_DEFMINT                                 0x4A0
 #define FLAG_ITEM_ROUTE_103_TAUNT                                   0x4A1
 #define FLAG_ITEM_ROUTE_103_JABOCA                                  0x4A2
-#define FLAG_ITEM_ROUTE_110_LUM_BERRY                               0x4A3
+#define FLAG_ITEM_ROUTE_110_LUM                                     0x4A3
 #define FLAG_ITEM_ROUTE_117_CLAY                                    0x4A4
 #define FLAG_ITEM_ROUTE_117_WACAN                                   0x4A5
 #define FLAG_ITEM_ROUTE_117_GROUNDGEM                               0x4A6
