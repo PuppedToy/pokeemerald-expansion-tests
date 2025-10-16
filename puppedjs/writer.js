@@ -720,6 +720,9 @@ async function writer(pokemonList, moves, abilities) {
                         if (loosePokemon.evolutionData.type === EVO_TYPE_SOLO || loosePokemon.evolutionData.isLC) {
                             return true;
                         }
+                        if (loosePokemon.evolutionData.isMega) {
+                            return false;
+                        }
                         const pokemonThatEvolveToThis = pokemonList.filter(p => {
                             const evolutions = (p.evolutions || [])
                                 .filter(e => e.pokemon === loosePokemon.id);
