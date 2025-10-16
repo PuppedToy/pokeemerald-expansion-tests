@@ -824,10 +824,16 @@ async function writer(pokemonList, moves, abilities) {
                     if (possibleEvolutions.length > 0) {
                         // sort by param
                         possibleEvolutions.sort((a, b) => parseInt(b.param) - parseInt(a.param));
-                        const evolutionToApply = possibleEvolutions[0].pokemon;
-                        const evolvedForm = pokemonList.find(p => p.id === evolutionToApply);
-                        if (evolvedForm) {
-                            chosenTrainerMon = evolvedForm;
+                        let evolvedForm;
+                        for (let i = 0; i < possibleEvolutions.length && !evolvedForm; i++) {
+                            const evolutionToApply = possibleEvolutions[i].pokemon;
+                            evolvedForm = pokemonList.find(p => p.id === evolutionToApply);
+                            if (evolvedForm) {
+                                chosenTrainerMon = evolvedForm;
+                            }
+                        }
+                        if (!evolvedForm) {
+                            break;
                         }
                     }
                 } while (possibleEvolutions.length > 0);
