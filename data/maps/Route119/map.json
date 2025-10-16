@@ -75,7 +75,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route119_EventScript_Greg",
-      "flag": "0"
+      "flag": "FLAG_BADGE07_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MANIAC",
@@ -88,7 +88,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route119_EventScript_Taylor",
-      "flag": "0"
+      "flag": "FLAG_BADGE07_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MANIAC",
@@ -101,7 +101,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route119_EventScript_Donald",
-      "flag": "0"
+      "flag": "FLAG_BADGE07_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_CAMPER",
@@ -114,7 +114,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route119_EventScript_Jackson",
-      "flag": "0"
+      "flag": "FLAG_BADGE07_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MANIAC",
@@ -127,7 +127,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route119_EventScript_Brent",
-      "flag": "0"
+      "flag": "FLAG_BADGE07_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
@@ -140,7 +140,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route119_EventScript_Catherine",
-      "flag": "0"
+      "flag": "FLAG_BADGE07_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
@@ -153,7 +153,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route119_EventScript_Doug",
-      "flag": "0"
+      "flag": "FLAG_BADGE07_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
@@ -166,7 +166,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "3",
       "script": "Route119_EventScript_Kent",
-      "flag": "0"
+      "flag": "FLAG_BADGE07_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
@@ -192,7 +192,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route119_EventScript_Takashi",
-      "flag": "0"
+      "flag": "FLAG_BADGE07_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_5",
@@ -205,7 +205,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "3",
       "script": "Route119_EventScript_Hugh",
-      "flag": "0"
+      "flag": "FLAG_BADGE07_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_5",
@@ -218,7 +218,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route119_EventScript_Phil",
-      "flag": "0"
+      "flag": "FLAG_BADGE07_GET"
     },
     {
       "local_id": "LOCALID_ROUTE119_RIVAL",
@@ -519,7 +519,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route119_EventScript_Rachel",
-      "flag": "0"
+      "flag": "FLAG_BADGE07_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_5",
@@ -532,7 +532,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route119_EventScript_Dayton",
-      "flag": "0"
+      "flag": "FLAG_BADGE07_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_5",
@@ -545,7 +545,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route119_EventScript_Fabian",
-      "flag": "0"
+      "flag": "FLAG_BADGE07_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
