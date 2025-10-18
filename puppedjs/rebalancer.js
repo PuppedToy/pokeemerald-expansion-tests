@@ -60,7 +60,7 @@ function balancePokemon(pokemon, abilityNames) {
                 newPokemon.parsedTypes = newPokemon.parsedTypes.map(t => t === entry.oldValue ? entry.value : t);
             }
             else if (entry.target === 'ability') {
-                newPokemon.abilities = newPokemon.abilities.map(a => a === entry.oldValue ? entry.value : a);
+                newPokemon.parsedAbilities = newPokemon.parsedAbilities.map(a => a === entry.oldValue ? entry.value : a);
             }
         });
     }
@@ -111,13 +111,13 @@ function balancePokemon(pokemon, abilityNames) {
 
     if (Math.random() < ABILITY_BALANCE_CHANCE) {
         const abilities = shuffleArray(
-            [...pokemon.abilities].filter(a => !BANNED_ABILITIES.includes(a))
+            [...pokemon.parsedAbilities].filter(a => !BANNED_ABILITIES.includes(a))
         );
         const [oldAbility] = abilities;
         const allAbilities = abilityNames
-            .filter(a => !pokemon.abilities.includes(a.name) && !BANNED_ABILITIES.includes(a.name));
+            .filter(a => !pokemon.parsedAbilities.includes(a.name) && !BANNED_ABILITIES.includes(a.name));
         const newAbility = allAbilities[Math.floor(Math.random() * allAbilities.length)];
-        newPokemon.abilities = newPokemon.abilities.map(a => a === oldAbility ? newAbility : a);
+        newPokemon.parsedAbilities = newPokemon.parsedAbilities.map(a => a === oldAbility ? newAbility : a);
         log.push({
             type: LOG_TYPE_ADJUSTMENT,
             target: 'ability',
