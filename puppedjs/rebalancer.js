@@ -62,6 +62,7 @@ function balancePokemon(pokemon, abilityNames) {
             else if (entry.target === 'ability') {
                 newPokemon.parsedAbilities = newPokemon.parsedAbilities.map(a => a === entry.oldValue ? entry.value : a);
             }
+            log.push(entry);
         });
     }
 
