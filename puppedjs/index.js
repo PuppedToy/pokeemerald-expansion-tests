@@ -13,6 +13,7 @@ const {
     EVO_TYPE_SOLO,
     EVO_TYPE_MEGA,
 } = require('./constants.js');
+const { balancePokemon } = require('./rebalancer.js');
 
 const speciesDir = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'species_info');
 const levelUpLearnsetsDir = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'level_up_learnsets');
@@ -526,6 +527,10 @@ async function exe() {
             allPokes.push(fullPoke);
         });
     });
+
+    for (let i = 0; i < allPokes.length; i++) {
+        allPokes[i] = balancePokemon(allPokes[i], abilities);
+    }
 
     allPokes.forEach(poke => {
         let bestEvo = poke.id;

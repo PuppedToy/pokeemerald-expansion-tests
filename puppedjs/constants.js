@@ -1,4 +1,4 @@
-module.exports = {
+const constants = {
     TIER_BAD: 'BAD',
     TIER_WEAK: 'WEAK',
     TIER_AVERAGE: 'AVERAGE',
@@ -97,4 +97,31 @@ module.exports = {
     TEMPLATE_POKEMON_REPLACEMENT: '<script src="pokes.js"></script>',
     TEMPLATE_TRAINERS_REPLACEMENT: '<script src="trainers.js"></script>',
     TEMPLATE_WILDPOKES_REPALCEMENT: '<script src="wildpokes.js"></script>',
+
+    LOG_TYPE_BUFF: 'BUFF',
+    LOG_TYPE_NERF: 'NERF',
+    LOG_TYPE_ADJUSTMENT: 'ADJUSTMENT',
 };
+
+constants.POKEMON_TYPES = [
+    constants.POKEMON_TYPE_WATER,
+    constants.POKEMON_TYPE_ICE,
+    constants.POKEMON_TYPE_BUG,
+    constants.POKEMON_TYPE_FAIRY,
+    constants.POKEMON_TYPE_GRASS,
+    constants.POKEMON_TYPE_FIGHTING,
+    constants.POKEMON_TYPE_PSYCHIC,
+    constants.POKEMON_TYPE_DARK,
+    constants.POKEMON_TYPE_FIRE,
+    constants.POKEMON_TYPE_GROUND,
+    constants.POKEMON_TYPE_ROCK,
+    constants.POKEMON_TYPE_FLYING,
+    constants.POKEMON_TYPE_NORMAL,
+    constants.POKEMON_TYPE_GHOST,
+    constants.POKEMON_TYPE_POISON,
+    constants.POKEMON_TYPE_STEEL,
+    constants.POKEMON_TYPE_DRAGON,
+    constants.POKEMON_TYPE_ELECTRIC,
+];
+
+module.exports = constants;
