@@ -529,7 +529,7 @@ async function exe() {
     });
 
     for (let i = 0; i < allPokes.length; i++) {
-        allPokes[i] = balancePokemon(allPokes[i], abilities.map(a => a.name));
+        allPokes[i] = balancePokemon(allPokes[i], Object.keys(abilities));
     }
 
     allPokes.forEach(poke => {
