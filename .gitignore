@@ -57,3 +57,4 @@ tools/compresSmol/compresSmolTilemap
 __pycache__
 !puppedjs/*
 puppedjs/node_modules/
+*/.DS_Store
