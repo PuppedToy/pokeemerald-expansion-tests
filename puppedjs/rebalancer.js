@@ -33,6 +33,12 @@ const BANNED_ABILITIES = [
     'DEFEATIST',
 ];
 
+// @TODO Thoughts after testing it:
+// 1. Mons with 1 type could (and should) add a 2nd type instead of replacing their only type
+// 2. ABILITY_ -> Remove preffix
+// 3. Stat changes stack too much and when they stack they don't replace the previous log entry
+// 4. Stat changes carry over forms besides from family. E.g. Meowth +20 def should not carry alolan and galar meowth.
+
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -47,32 +53,44 @@ const familyTracking = {};
 
 function balancePokemon(pokemon, abilityNames) {
 
-    const log = [];
+    const inheritedLog = [];
     const newPokemon = { ...pokemon };
 
-    if (familyTracking[pokemon.familyId]) {
-        const familyLog = familyTracking[pokemon.familyId];
+    if (familyTracking[pokemon.family]) {
+        const familyLog = familyTracking[pokemon.family] || [];
         familyLog.forEach(entry => {
+            let changed = false;
             if (['baseHP', 'baseAttack', 'baseDefense', 'baseSpAttack', 'baseSpDefense', 'baseSpeed'].includes(entry.target)) {
                 newPokemon[entry.target] = Math.max(1, newPokemon[entry.target] + entry.value);
+                changed = true;
             }
-            else if (entry.target === 'type') {
+            else if (entry.target === 'type' && pokemon.parsedTypes.includes(entry.oldValue)) {
                 newPokemon.parsedTypes = newPokemon.parsedTypes.map(t => t === entry.oldValue ? entry.value : t);
+                changed = true;
             }
             else if (entry.target === 'ability') {
-                newPokemon.parsedAbilities = newPokemon.parsedAbilities.map(a => a === entry.oldValue ? entry.value : a);
+                const oldAbilityIndex = newPokemon.parsedAbilities.indexOf(entry.oldValue);
+                if (oldAbilityIndex !== -1) {
+                    const newParsedAbilities = [...newPokemon.parsedAbilities];
+                    newParsedAbilities[oldAbilityIndex] = entry.value;
+                    newPokemon.parsedAbilities = newParsedAbilities;
+                    changed = true;
+                }
             }
-            log.push(entry);
+            if (changed) {
+                inheritedLog.push(entry);
+            }
         });
     }
 
     if (Math.random() > BALANCE_CHANCE) {
         return {
             ...newPokemon,
-            log,
+            log: inheritedLog,
         };
     }
 
+    const log = [];
 
     const stats = shuffleArray(['baseHP', 'baseAttack', 'baseDefense', 'baseSpAttack', 'baseSpDefense', 'baseSpeed']);
     let chance = STAT_BALANCE_CHANCE;
@@ -111,37 +129,52 @@ function balancePokemon(pokemon, abilityNames) {
     }
 
     if (Math.random() < ABILITY_BALANCE_CHANCE) {
-        const abilities = shuffleArray(
-            [...pokemon.parsedAbilities].filter(a => !BANNED_ABILITIES.includes(a))
-        );
-        const [oldAbility] = abilities;
-        const allAbilities = abilityNames
-            .filter(a => !pokemon.parsedAbilities.includes(a.name) && !BANNED_ABILITIES.includes(a.name));
-        const newAbility = allAbilities[Math.floor(Math.random() * allAbilities.length)];
-        newPokemon.parsedAbilities = newPokemon.parsedAbilities.map(a => a === oldAbility ? newAbility : a);
-        log.push({
-            type: LOG_TYPE_ADJUSTMENT,
-            target: 'ability',
-            oldValue: oldAbility,
-            value: newAbility.name,
-        });
+        let oldAbility = null;
+        if (pokemon.parsedAbilities.includes('NONE')) {
+            oldAbility = 'NONE';
+        } else {
+            const abilities = shuffleArray(
+                [...pokemon.parsedAbilities].filter(a => !BANNED_ABILITIES.includes(a))
+            );
+            if (abilities.length > 0) {
+                [oldAbility] = abilities;
+            }
+        }
+        if (oldAbility) {
+            const allAbilities = abilityNames
+                .filter(a => !pokemon.parsedAbilities.includes(a) && !BANNED_ABILITIES.includes(a));
+            const newAbility = allAbilities[Math.floor(Math.random() * allAbilities.length)];
+            const oldAbilityIndex = newPokemon.parsedAbilities.indexOf(oldAbility);
+            const newParsedAbilities = [...newPokemon.parsedAbilities];
+            newParsedAbilities[oldAbilityIndex] = newAbility;
+            newPokemon.parsedAbilities = newParsedAbilities;
+            log.push({
+                type: LOG_TYPE_ADJUSTMENT,
+                target: 'ability',
+                oldValue: oldAbility,
+                value: newAbility,
+            });
+        }
     }
 
     // @TODO Learnset
 
-    if (!familyTracking[newPokemon.familyId]) {
-        familyTracking[newPokemon.familyId] = [...log];
+    if (!familyTracking[newPokemon.family]) {
+        familyTracking[newPokemon.family] = [...log];
     }
     else {
-        familyTracking[newPokemon.familyId] = [
-            ...familyTracking[newPokemon.familyId],
+        familyTracking[newPokemon.family] = [
+            ...familyTracking[newPokemon.family],
             ...log,
         ];
     }
 
     return {
         ...newPokemon,
-        log,
+        log: [
+            ...inheritedLog,
+            ...log,
+        ],
     };
 
 }

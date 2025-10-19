@@ -530,6 +530,14 @@ async function exe() {
 
     for (let i = 0; i < allPokes.length; i++) {
         allPokes[i] = balancePokemon(allPokes[i], Object.keys(abilities));
+        if (allPokes[i].log && allPokes[i].log.length) {
+            allPokes[i].baseBST = allPokes[i].baseHP
+                + allPokes[i].baseAttack
+                + allPokes[i].baseDefense
+                + allPokes[i].baseSpAttack
+                + allPokes[i].baseSpDefense
+                + allPokes[i].baseSpeed;
+        }
     }
 
     allPokes.forEach(poke => {
