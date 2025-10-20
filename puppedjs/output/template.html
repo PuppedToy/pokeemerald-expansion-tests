@@ -383,17 +383,39 @@
       const spaIcon = getLogIcon(spaLogEntry);
       const spdIcon = getLogIcon(spdLogEntry);
       const speIcon = getLogIcon(speLogEntry);
+      const BSTChangeValue = hpLogEntry?.value || 0
+        + atkLogEntry?.value || 0
+        + defLogEntry?.value || 0
+        + spaLogEntry?.value || 0
+        + spdLogEntry?.value || 0
+        + speLogEntry?.value || 0;
+      const bstIcon = BSTChangeValue > 0 ? ' ⭐️' : BSTChangeValue < 0 ? ' 🔻' : '';
       const typeEntry = (poke.log || []).find(entry => entry.target === 'type');
       const typeIcon = getLogIcon(typeEntry);
+      const abilityEntry = (poke.log || []).find(entry => entry.target === 'ability');
+      const abilityIcon = getLogIcon(abilityEntry);
+      let fullLogIcon = '';
+      const allLogIsBuffs = (poke.log || []).every(entry => entry.type === 'BUFF');
+      const allLogIsNerfs = (poke.log || []).every(entry => entry.type === 'NERF');
+      if (poke.log && poke.log.length > 0) {
+        if (allLogIsBuffs) {
+          fullLogIcon = ' ⭐️';
+        } else if (allLogIsNerfs) {
+          fullLogIcon = ' 🔻';
+        } else {
+          fullLogIcon = ' 🔧';
+        }
+      }
       card.className = 'card';
       card.innerHTML = `
         <div class="meta">
             <div>
-                <div class="title">${poke.name}</div>
+                <div class="title">${poke.name}${fullLogIcon}</div>
                 <div class=thumb><img src="${pokeImg}" alt="${poke.name}" /></div>
                 <div style="margin-top: 10px; text-align: center; width: 100%;">${poke.parsedTypes.map(type => `<span class="type" style="background-color:${typeColors[type]}">${type}</span>`).join(' ')}${typeIcon}</div>
+                <div style="margin-top: 10px; text-align: center; width: 100%;">${poke.parsedAbilities.map(ability => `<span class="tag">${ability}</span>`).join(' ')}${abilityIcon}</div>
                 <div>
-                    <div style="text-align: center; font-weight: 700; margin-top: 6px; color: #FFDDC9">BST: ${poke.baseBST}</div>
+                    <div style="text-align: center; font-weight: 700; margin-top: 6px; color: #FFDDC9">BST: ${poke.baseBST}${bstIcon}</div>
                     <div style="text-align: center"><div style="text-align: center; font-weight: 700; margin-top: 6px; background-color: ${tierColorBgs[poke.rating.tier]}; color: ${tierColorFonts[poke.rating.tier]}; display: inline-block; padding: 4px 12px; border-radius: 999px;">${poke.rating.tier}</div></div>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, auto); gap: 6px; margin-top: 10px;">
                         <div style="font-weight: 700; color: #BDF8FF">HP</div>

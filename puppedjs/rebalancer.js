@@ -59,7 +59,7 @@ function balancePokemon(pokemon, abilityNames) {
         familyLog.forEach(entry => {
             let changed = false;
             if (['baseHP', 'baseAttack', 'baseDefense', 'baseSpAttack', 'baseSpDefense', 'baseSpeed'].includes(entry.target)) {
-                newPokemon[entry.target] = Math.max(1, newPokemon[entry.target] + entry.value);
+                newPokemon[entry.target] = Math.min(255, Math.max(1, newPokemon[entry.target] + entry.value));
                 changed = true;
             }
             else if (entry.target === 'type') {
@@ -116,7 +116,7 @@ function balancePokemon(pokemon, abilityNames) {
             while (Math.random() < REPEAT_STAT_CHANCE) {
                 change += changeDiff;
             }
-            newPokemon[stat] = Math.max(1, newPokemon[stat] + change);
+            newPokemon[stat] = Math.min(255, Math.max(1, newPokemon[stat] + change));
             chance *= 0.5;
             log.push({
                 type: changeDiff > 0 ? LOG_TYPE_BUFF : LOG_TYPE_NERF,
