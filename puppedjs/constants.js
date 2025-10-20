@@ -106,6 +106,7 @@ const constants = {
     POKE_FORM_GALAR: 'GALAR',
     POKE_FORM_HISUI: 'HISUI',
     POKE_FORM_PALDEA: 'PALDEA',
+    POKE_FORM_M: 'M',
     POKE_FORM_F: 'F',
     POKE_FORM_EAST: 'EAST',
     POKE_FORM_SUMMER: 'SUMMER',

@@ -59,6 +59,13 @@
       "SPECIES_RATICATE"
     ]
   ],
+  "P_FAMILY_RATTATA_ALOLA": [
+    "SPECIES_RATTATA_ALOLA",
+    [
+      "SPECIES_RATICATE_ALOLA",
+      "SPECIES_RATICATE_ALOLA_TOTEM"
+    ]
+  ],
   "P_FAMILY_SPEAROW": [
     "SPECIES_SPEAROW",
     [
@@ -87,11 +94,20 @@
       "SPECIES_SANDSLASH"
     ]
   ],
-  "P_FAMILY_NIDORAN": [
+  "P_FAMILY_SANDSHREW_ALOLA": [
+    "SPECIES_SANDSHREW_ALOLA",
+    [
+      "SPECIES_SANDSLASH_ALOLA"
+    ]
+  ],
+  "P_FAMILY_NIDORAN_F": [
     "SPECIES_NIDORAN_F",
     [
       "SPECIES_NIDORINA"
-    ],
+    ]
+  ],
+  "P_FAMILY_NIDORAN": [
+    "SPECIES_NIDORINA",
     [
       "SPECIES_NIDOQUEEN"
     ]
@@ -109,6 +125,12 @@
     "SPECIES_VULPIX",
     [
       "SPECIES_NINETALES"
+    ]
+  ],
+  "P_FAMILY_VULPIX_ALOLA": [
+    "SPECIES_VULPIX_ALOLA",
+    [
+      "SPECIES_NINETALES_ALOLA"
     ]
   ],
   "P_FAMILY_JIGGLYPUFF": [
@@ -157,10 +179,28 @@
       "SPECIES_DUGTRIO"
     ]
   ],
+  "P_FAMILY_DIGLETT_ALOLA": [
+    "SPECIES_DIGLETT_ALOLA",
+    [
+      "SPECIES_DUGTRIO_ALOLA"
+    ]
+  ],
   "P_FAMILY_MEOWTH": [
     "SPECIES_MEOWTH",
     [
       "SPECIES_PERSIAN"
+    ]
+  ],
+  "P_FAMILY_MEOWTH_ALOLA": [
+    "SPECIES_MEOWTH_ALOLA",
+    [
+      "SPECIES_PERSIAN_ALOLA"
+    ]
+  ],
+  "P_FAMILY_MEOWTH_GALAR": [
+    "SPECIES_MEOWTH_GALAR",
+    [
+      "SPECIES_PERRSERKER"
     ]
   ],
   "P_FAMILY_PSYDUCK": [
@@ -182,6 +222,12 @@
     "SPECIES_GROWLITHE",
     [
       "SPECIES_ARCANINE"
+    ]
+  ],
+  "P_FAMILY_GROWLITHE_HISUI": [
+    "SPECIES_GROWLITHE_HISUI",
+    [
+      "SPECIES_ARCANINE_HISUI"
     ]
   ],
   "P_FAMILY_POLIWAG": [
@@ -240,10 +286,26 @@
       "SPECIES_GOLEM"
     ]
   ],
+  "P_FAMILY_GEODUDE_ALOLA": [
+    "SPECIES_GEODUDE_ALOLA",
+    [
+      "SPECIES_GRAVELER_ALOLA"
+    ],
+    [
+      "SPECIES_GOLEM_ALOLA",
+      "SPECIES_GOLEM_ALOLA"
+    ]
+  ],
   "P_FAMILY_PONYTA": [
     "SPECIES_PONYTA",
     [
       "SPECIES_RAPIDASH"
+    ]
+  ],
+  "P_FAMILY_PONYTA_GALAR": [
+    "SPECIES_PONYTA_GALAR",
+    [
+      "SPECIES_RAPIDASH_GALAR"
     ]
   ],
   "P_FAMILY_SLOWPOKE": [
@@ -252,6 +314,13 @@
       "SPECIES_SLOWBRO",
       "SPECIES_SLOWKING",
       "SPECIES_SLOWKING"
+    ]
+  ],
+  "P_FAMILY_SLOWPOKE_GALAR": [
+    "SPECIES_SLOWPOKE_GALAR",
+    [
+      "SPECIES_SLOWBRO_GALAR",
+      "SPECIES_SLOWKING_GALAR"
     ]
   ],
   "P_FAMILY_MAGNEMITE": [
@@ -264,7 +333,7 @@
       "SPECIES_MAGNEZONE"
     ]
   ],
-  "P_FAMILY_FARFETCHD": [
+  "P_FAMILY_FARFETCHD_GALAR": [
     "SPECIES_FARFETCHD_GALAR",
     [
       "SPECIES_SIRFETCHD"
@@ -286,6 +355,12 @@
     "SPECIES_GRIMER",
     [
       "SPECIES_MUK"
+    ]
+  ],
+  "P_FAMILY_GRIMER_ALOLA": [
+    "SPECIES_GRIMER_ALOLA",
+    [
+      "SPECIES_MUK_ALOLA"
     ]
   ],
   "P_FAMILY_SHELLDER": [
@@ -327,6 +402,12 @@
     "SPECIES_VOLTORB",
     [
       "SPECIES_ELECTRODE"
+    ]
+  ],
+  "P_FAMILY_VOLTORB_HISUI": [
+    "SPECIES_VOLTORB_HISUI",
+    [
+      "SPECIES_ELECTRODE_HISUI"
     ]
   ],
   "P_FAMILY_EXEGGCUTE": [
@@ -418,7 +499,10 @@
     [
       "SPECIES_MR_MIME",
       "SPECIES_MR_MIME_GALAR"
-    ],
+    ]
+  ],
+  "P_FAMILY_MR_MIME_GALAR": [
+    "SPECIES_MR_MIME_GALAR",
     [
       "SPECIES_MR_RIME"
     ]
@@ -646,6 +730,12 @@
       "SPECIES_QUAGSIRE"
     ]
   ],
+  "P_FAMILY_WOOPER_PALDEA": [
+    "SPECIES_WOOPER_PALDEA",
+    [
+      "SPECIES_CLODSIRE"
+    ]
+  ],
   "P_FAMILY_MURKROW": [
     "SPECIES_MURKROW",
     [
@@ -696,7 +786,7 @@
       "SPECIES_GRANBULL"
     ]
   ],
-  "P_FAMILY_QWILFISH": [
+  "P_FAMILY_QWILFISH_HISUI": [
     "SPECIES_QWILFISH_HISUI",
     [
       "SPECIES_OVERQWIL"
@@ -707,6 +797,13 @@
     [
       "SPECIES_WEAVILE",
       "SPECIES_WEAVILE"
+    ]
+  ],
+  "P_FAMILY_SNEASEL_HISUI": [
+    "SPECIES_SNEASEL_HISUI",
+    [
+      "SPECIES_SNEASLER",
+      "SPECIES_SNEASLER"
     ]
   ],
   "P_FAMILY_TEDDIURSA": [
@@ -734,7 +831,7 @@
       "SPECIES_MAMOSWINE"
     ]
   ],
-  "P_FAMILY_CORSOLA": [
+  "P_FAMILY_CORSOLA_GALAR": [
     "SPECIES_CORSOLA_GALAR",
     [
       "SPECIES_CURSOLA"
@@ -816,6 +913,15 @@
     "SPECIES_ZIGZAGOON",
     [
       "SPECIES_LINOONE"
+    ]
+  ],
+  "P_FAMILY_ZIGZAGOON_GALAR": [
+    "SPECIES_ZIGZAGOON_GALAR",
+    [
+      "SPECIES_LINOONE_GALAR"
+    ],
+    [
+      "SPECIES_OBSTAGOON"
     ]
   ],
   "P_FAMILY_WURMPLE": [
@@ -1203,6 +1309,12 @@
       "SPECIES_GASTRODON_WEST"
     ]
   ],
+  "P_FAMILY_SHELLOS_EAST": [
+    "SPECIES_SHELLOS_EAST",
+    [
+      "SPECIES_GASTRODON_EAST"
+    ]
+  ],
   "P_FAMILY_DRIFLOON": [
     "SPECIES_DRIFLOON",
     [
@@ -1460,6 +1572,12 @@
       "SPECIES_DARMANITAN_STANDARD"
     ]
   ],
+  "P_FAMILY_DARUMAKA_GALAR": [
+    "SPECIES_DARUMAKA_GALAR",
+    [
+      "SPECIES_DARMANITAN_GALAR_STANDARD"
+    ]
+  ],
   "P_FAMILY_DWEBBLE": [
     "SPECIES_DWEBBLE",
     [
@@ -1476,6 +1594,12 @@
     "SPECIES_YAMASK",
     [
       "SPECIES_COFAGRIGUS"
+    ]
+  ],
+  "P_FAMILY_YAMASK_GALAR": [
+    "SPECIES_YAMASK_GALAR",
+    [
+      "SPECIES_RUNERIGUS"
     ]
   ],
   "P_FAMILY_TIRTOUGA": [
@@ -1500,6 +1624,12 @@
     "SPECIES_ZORUA",
     [
       "SPECIES_ZOROARK"
+    ]
+  ],
+  "P_FAMILY_ZORUA_HISUI": [
+    "SPECIES_ZORUA_HISUI",
+    [
+      "SPECIES_ZOROARK_HISUI"
     ]
   ],
   "P_FAMILY_MINCCINO": [
@@ -1545,6 +1675,24 @@
     "SPECIES_DEERLING_SPRING",
     [
       "SPECIES_SAWSBUCK_SPRING"
+    ]
+  ],
+  "P_FAMILY_DEERLING_SUMMER": [
+    "SPECIES_DEERLING_SUMMER",
+    [
+      "SPECIES_SAWSBUCK_SUMMER"
+    ]
+  ],
+  "P_FAMILY_DEERLING_AUTUMN": [
+    "SPECIES_DEERLING_AUTUMN",
+    [
+      "SPECIES_SAWSBUCK_AUTUMN"
+    ]
+  ],
+  "P_FAMILY_DEERLING_WINTER": [
+    "SPECIES_DEERLING_WINTER",
+    [
+      "SPECIES_SAWSBUCK_WINTER"
     ]
   ],
   "P_FAMILY_KARRABLAST": [
@@ -1820,7 +1968,12 @@
     ],
     [
       "SPECIES_GOODRA",
-      "SPECIES_GOODRA",
+      "SPECIES_GOODRA"
+    ]
+  ],
+  "P_FAMILY_GOOMY_HISUI": [
+    "SPECIES_SLIGGOO_HISUI",
+    [
       "SPECIES_GOODRA_HISUI",
       "SPECIES_GOODRA_HISUI"
     ]
@@ -1837,6 +1990,27 @@
     [
       "SPECIES_GOURGEIST_AVERAGE",
       "SPECIES_GOURGEIST_AVERAGE"
+    ]
+  ],
+  "P_FAMILY_PUMPKABOO_SMALL": [
+    "SPECIES_PUMPKABOO_SMALL",
+    [
+      "SPECIES_GOURGEIST_SMALL",
+      "SPECIES_GOURGEIST_SMALL"
+    ]
+  ],
+  "P_FAMILY_PUMPKABOO_LARGE": [
+    "SPECIES_PUMPKABOO_LARGE",
+    [
+      "SPECIES_GOURGEIST_LARGE",
+      "SPECIES_GOURGEIST_LARGE"
+    ]
+  ],
+  "P_FAMILY_PUMPKABOO_SUPER": [
+    "SPECIES_PUMPKABOO_SUPER",
+    [
+      "SPECIES_GOURGEIST_SUPER",
+      "SPECIES_GOURGEIST_SUPER"
     ]
   ],
   "P_FAMILY_BERGMITE": [
@@ -1925,6 +2099,12 @@
     [
       "SPECIES_LYCANROC_MIDDAY",
       "SPECIES_LYCANROC_MIDNIGHT"
+    ]
+  ],
+  "P_FAMILY_ROCKRUFF_OWN_TEMPO": [
+    "SPECIES_ROCKRUFF_OWN_TEMPO",
+    [
+      "SPECIES_LYCANROC_DUSK"
     ]
   ],
   "P_FAMILY_MAREANIE": [
@@ -2155,6 +2335,12 @@
     "SPECIES_SINISTEA_PHONY",
     [
       "SPECIES_POLTEAGEIST_PHONY"
+    ]
+  ],
+  "P_FAMILY_SINISTEA_ANTIQUE": [
+    "SPECIES_SINISTEA_ANTIQUE",
+    [
+      "SPECIES_POLTEAGEIST_ANTIQUE"
     ]
   ],
   "P_FAMILY_HATENNA": [
@@ -2418,10 +2604,22 @@
       "SPECIES_GHOLDENGO"
     ]
   ],
+  "P_FAMILY_GIMMIGHOUL_ROAMING": [
+    "SPECIES_GIMMIGHOUL_ROAMING",
+    [
+      "SPECIES_GHOLDENGO"
+    ]
+  ],
   "P_FAMILY_POLTCHAGEIST": [
     "SPECIES_POLTCHAGEIST_COUNTERFEIT",
     [
       "SPECIES_SINISTCHA_UNREMARKABLE"
+    ]
+  ],
+  "P_FAMILY_POLTCHAGEIST_ARTISAN": [
+    "SPECIES_POLTCHAGEIST_ARTISAN",
+    [
+      "SPECIES_SINISTCHA_MASTERPIECE"
     ]
   ]
 }
