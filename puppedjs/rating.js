@@ -788,6 +788,16 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
     };
 }
 
+const FLEXIBILITY_THRESHOLD = 20;
+const OFFENSE_FLEXIBILITY_RATING_BONUS = 0.2;
+const DEFENSE_FLEXIBILITY_RATING_BONUS = 0.5;
+const MAX_STAT_VALUE = 255;
+const COMPETIITVE_STAT_THRESHOLD = 4.7;
+const HIGH_STAT_THRESHOLD = 5.4;
+const OUTLIER_STAT_THRESHOLD = 6.2;
+const HIGH_STAT_BONUS = 0.2;
+const OUTLIER_BONUS = 0.4;
+
 function ratePokemon(poke, moves, abilities) {
     let bestAbilityRating = 0;
     poke.parsedAbilities.forEach(abilityId => {
@@ -798,20 +808,73 @@ function ratePokemon(poke, moves, abilities) {
         }
     });
 
-    let trueBST = poke.baseBST;
-    if (poke.abilities.includes('TRUANT')) {
-        trueBST -= poke.baseAttack * 0.5 + poke.baseSpAttack * 0.5;
-    }
+    // To properly analyze a pokemon, we must understand its role
+
+    let bstRating;
+    let abilitiesAttackPowerMultiplier = 1;
+    let abilitiesSpaPowerMultiplier = 1;
     if (poke.abilities.includes('HUGE_POWER') || poke.abilities.includes('PURE_POWER')) {
-        trueBST += poke.baseAttack;
+        abilitiesAttackPowerMultiplier = 2;
         bestAbilityRating = poke.baseAttack / 12;
     }
+    if (poke.abilities.every(abilityId => abilityId === 'TRUANT')) {
+        abilitiesAttackPowerMultiplier = 0.5;
+        abilitiesSpaPowerMultiplier = 0.5;
+    }
+    let offensePower = Math.max(poke.baseAttack * abilitiesAttackPowerMultiplier, poke.baseSpAttack * abilitiesSpaPowerMultiplier) / MAX_STAT_VALUE * 10;
+    if (Math.abs(poke.baseAttack - poke.baseSpAttack) < FLEXIBILITY_THRESHOLD) {
+        offensePower += OFFENSE_FLEXIBILITY_RATING_BONUS;
+    }
+    let speedPower = poke.baseSpeed / MAX_STAT_VALUE * 10;
+    let defensePower = (poke.baseHP + Math.max(poke.baseDefense, poke.baseSpDefense)) / (MAX_STAT_VALUE * 2) * 10;
+    if (Math.abs(poke.baseDefense - poke.baseSpDefense) < FLEXIBILITY_THRESHOLD) {
+        defensePower += DEFENSE_FLEXIBILITY_RATING_BONUS;
+    }
+
+    let role;
+    if (Math.abs(offensePower - defensePower) < 1.0) {
+        if (Math.abs(offensePower - speedPower) < 1.0) {
+            role = 'BALANCED';
+        }
+        else {
+            role = 'BULKY';
+        }
+    }
+    else if (offensePower > defensePower) {
+        if (speedPower > offensePower || Math.abs(offensePower - speedPower) < 1.0) {
+            role = 'OFFENSIVE';
+        }
+        else {
+            role = 'BALANCED';
+        }
+    }
+    else {
+        // defensePower > offensePower
+        role = 'TANK';
+    }
+
+    switch (role) {
+        case 'BALANCED':
+            bstRating = (offensePower + defensePower + speedPower) / 3;
+            break;
+        case 'OFFENSIVE':
+            bstRating = offensePower * 0.45 + speedPower * 0.4 + defensePower * 0.15;
+            break;
+        case 'BULKY':
+            bstRating = offensePower * 0.5 + defensePower * 0.4 + speedPower * 0.1;
+            break;
+        case 'TANK':
+            bstRating = defensePower * 0.8 + offensePower * 0.15 + speedPower * 0.05;
+            break;
+        default:
+            console.warn(`Warning: Unknown role ${role} for ${poke.name}. Assigning balanced rating.`);
+            bstRating = (offensePower + defensePower + speedPower) / 3;
+    }
+
     // Wonder Guard?
     // @TODO if any stat is a hard outlier, increase bst rating (deoxys, blissey)
     // @TODO What happens to Zacian and Eternatus-Emax?
 
-    // 0-10 while 0 is WORST_RATING_FOR_LC_3EVO and 10 is BEST_RATING_FOR_MEGA_EVO
-    const absoluteBSTRating = Math.max(0, (trueBST - WORST_RATING_FOR_LC_3EVO) * 10 / (BEST_RATING_FOR_MEGA_EVO - WORST_RATING_FOR_LC_3EVO));
     // For now we will just do absolute
     // @TODO relative
 
@@ -825,7 +888,7 @@ function ratePokemon(poke, moves, abilities) {
     });
     movesRating *= 0.25;
 
-    const absoluteRating = (absoluteBSTRating * 0.8) + (movesRating * 0.1) + (bestAbilityRating * 0.1);
+    const absoluteRating = (bstRating * 0.8) + (movesRating * 0.1) + (bestAbilityRating * 0.1);
 
     // These tiers are kinda working. I should add that OU is actually exclusive pokemon and UU-RU are the average fully evolved ones
     // GOD should only be used by extremely hard bosses. Should not come up in the game in general. Esp. Eternatus Emax
@@ -859,6 +922,7 @@ function ratePokemon(poke, moves, abilities) {
         movesRating,
         bestAbilityRating,
         tier,
+        role,
     };
 }
 

@@ -42,6 +42,8 @@ const {
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
 
+// @TODO Fix booster energy
+
 const calvinDogs = [
     'SPECIES_GROWLITHE',
     'SPECIES_GROWLITHE_HISUI',
