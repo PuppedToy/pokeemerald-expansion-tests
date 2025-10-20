@@ -675,6 +675,13 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         }
         return 2.5 * calculatedDeviation;
     }
+    const isGrassType = poke.parsedTypes.includes(POKEMON_TYPE_GRASS);
+    if (item === 'Safety Goggles') {
+        if (hasInsomniaAndSuch || isGrassType) {
+            return 0;
+        }
+        return 5 * calculatedDeviation;
+    }
     if (item === 'Jaboca Berry' || item === 'Red Card') {
         if (hasHarvest || hasCudChew || hasRipen || hasCheekPouch)
         {
