@@ -7,6 +7,7 @@ const BUFF_STAT_CHANCE = 0.6;
 const REPEAT_STAT_CHANCE = 0.5;
 
 const TYPE_BALANCE_CHANCE = 0.1;
+const MONOTYPE_BALANCE_CHANCE = 0.1;
 const ABILITY_BALANCE_CHANCE = 0.1;
 
 const BANNED_ABILITIES = [
@@ -34,10 +35,7 @@ const BANNED_ABILITIES = [
 ];
 
 // @TODO Thoughts after testing it:
-// 1. Mons with 1 type could (and should) add a 2nd type instead of replacing their only type
-// 2. ABILITY_ -> Remove preffix
-// 3. Stat changes stack too much and when they stack they don't replace the previous log entry
-// 4. Stat changes carry over forms besides from family. E.g. Meowth +20 def should not carry alolan and galar meowth.
+// 1. Stat changes carry over forms besides from family. E.g. Meowth +20 def should not carry alolan and galar meowth.
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -64,9 +62,20 @@ function balancePokemon(pokemon, abilityNames) {
                 newPokemon[entry.target] = Math.max(1, newPokemon[entry.target] + entry.value);
                 changed = true;
             }
-            else if (entry.target === 'type' && pokemon.parsedTypes.includes(entry.oldValue)) {
-                newPokemon.parsedTypes = newPokemon.parsedTypes.map(t => t === entry.oldValue ? entry.value : t);
-                changed = true;
+            else if (entry.target === 'type') {
+                if (entry.oldValue) {
+                    const oldTypeIndex = newPokemon.parsedTypes.indexOf(entry.oldValue);
+                    if (oldTypeIndex !== -1) {
+                        const newParsedTypes = [...newPokemon.parsedTypes];
+                        newParsedTypes[oldTypeIndex] = entry.value;
+                        newPokemon.parsedTypes = newParsedTypes;
+                        changed = true;
+                    }
+                }
+                else if (newPokemon.parsedTypes.length === 1) {
+                    newPokemon.parsedTypes.push(entry.value);
+                    changed = true;
+                }
             }
             else if (entry.target === 'ability') {
                 const oldAbilityIndex = newPokemon.parsedAbilities.indexOf(entry.oldValue);
@@ -94,6 +103,12 @@ function balancePokemon(pokemon, abilityNames) {
 
     const stats = shuffleArray(['baseHP', 'baseAttack', 'baseDefense', 'baseSpAttack', 'baseSpDefense', 'baseSpeed']);
     let chance = STAT_BALANCE_CHANCE;
+    inheritedLog.forEach(entry => {
+        if (stats.includes(entry.target)) {
+            chance *= 0.5;
+            stats.splice(stats.indexOf(entry.target), 1);
+        }
+    });
     stats.forEach(stat => {
         if (Math.random() < chance) {
             const changeDiff = Math.random() < BUFF_STAT_CHANCE ? 10 : -10;
@@ -113,13 +128,27 @@ function balancePokemon(pokemon, abilityNames) {
     });
 
     if (Math.random() < TYPE_BALANCE_CHANCE) {
-        const types = shuffleArray([...pokemon.parsedTypes]);
-        const [oldType] = types;
+        let oldType = null;
+        if (pokemon.parsedTypes.length === 1 && Math.random() < MONOTYPE_BALANCE_CHANCE) {
+            oldType = pokemon.parsedTypes[0];
+        }
+        else if (pokemon.parsedTypes.length === 2) {
+            const types = shuffleArray([...pokemon.parsedTypes]);
+            [oldType] = types;
+        }
         const allTypes = shuffleArray(
             [...POKEMON_TYPES].filter(t => !pokemon.parsedTypes.includes(t))
         );
         const [newType] = allTypes;
-        newPokemon.parsedTypes = newPokemon.parsedTypes.map(t => t === oldType ? newType : t);
+        if (oldType) {
+            newPokemon.parsedTypes = newPokemon.parsedTypes.map(t => t === oldType ? newType : t);
+        }
+        else if (newPokemon.parsedTypes.length === 1) {
+            newPokemon.parsedTypes.push(newType);
+        }
+        else {
+            console.warn(`Unexpected type adjustment for ${pokemon.name}`);
+        }
         log.push({
             type: LOG_TYPE_ADJUSTMENT,
             target: 'type',
@@ -148,8 +177,15 @@ function balancePokemon(pokemon, abilityNames) {
             const newParsedAbilities = [...newPokemon.parsedAbilities];
             newParsedAbilities[oldAbilityIndex] = newAbility;
             newPokemon.parsedAbilities = newParsedAbilities;
+            let logType = LOG_TYPE_ADJUSTMENT;
+            if (oldAbility === 'NONE') {
+                logType = LOG_TYPE_BUFF;
+            }
+            if (newAbility === 'NONE') {
+                logType = LOG_TYPE_NERF;
+            }
             log.push({
-                type: LOG_TYPE_ADJUSTMENT,
+                type: logType,
                 target: 'ability',
                 oldValue: oldAbility,
                 value: newAbility,
