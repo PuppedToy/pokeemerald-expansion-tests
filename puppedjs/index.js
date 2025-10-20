@@ -12,6 +12,8 @@ const {
     EVO_TYPE_LAST_OF_2,
     EVO_TYPE_SOLO,
     EVO_TYPE_MEGA,
+    POKE_FORM_ALOLAN,
+    POKE_FORMS,
 } = require('./constants.js');
 const { balancePokemon } = require('./rebalancer.js');
 
@@ -40,6 +42,10 @@ const SUPPORTED_PROPERTIES = [
     'teachableLearnset',
     'evolutions',
     'natDexNum',
+    'isAlolanForm',
+    'isGalarianForm',
+    'isHisuianForm',
+    'isPaldeanForm',
 ];
 const FIXED_PROPERTIES = {
     catchRate: '255',
@@ -158,6 +164,14 @@ function parseSpeciesFile(genSpeciesFileText, definitions, evoTree) {
                 id: lines[i].split('[')[1].split(']')[0],
                 family: currentFamily,
             }
+            let form = null;
+            POKE_FORMS.forEach(pokeForm => {
+                if (currentPokemon.id.endsWith(`_${pokeForm}`)) {
+                    form = pokeForm;
+                    currentPokemon.family = `${currentFamily}_${pokeForm}`;
+                }
+            });
+            currentPokemon.form = form;
             if (
                 REMOVED_SPECIES.includes(currentPokemon.id)
                 || currentPokemon.id.includes('_GMAX')
@@ -171,7 +185,7 @@ function parseSpeciesFile(genSpeciesFileText, definitions, evoTree) {
         if (!currentPokemon) continue;
         if (lines[i].includes('.evolutions = EVOLUTION(')) {
             currentEvos = [
-                parseEvo(currentFamily, currentPokemon.id, lines[i], evoTree),
+                parseEvo(currentPokemon.family, currentPokemon.id, lines[i], evoTree),
             ];
             continue;
         }
@@ -188,7 +202,7 @@ function parseSpeciesFile(genSpeciesFileText, definitions, evoTree) {
             continue;
         }
         if (currentEvos) {
-            const parsedEvo = parseEvo(currentFamily, currentPokemon.id, lines[i], evoTree);
+            const parsedEvo = parseEvo(currentPokemon.family, currentPokemon.id, lines[i], evoTree);
             if (parsedEvo) {
                 currentEvos.push(parsedEvo);
                 continue;
@@ -458,7 +472,8 @@ async function exe() {
     for (let gen = 1; gen <= TOTAL_GENS; gen++) {
         const genSpeciesFilePath = path.resolve(speciesDir, `gen_${gen}_families.h`);
         const genSpeciesFileText = await fs.readFile(genSpeciesFilePath, 'utf-8');
-        genPokes.push(parseSpeciesFile(genSpeciesFileText, definitions, evoTree));
+        const parsedPokes = parseSpeciesFile(genSpeciesFileText, definitions, evoTree);
+        genPokes.push(parsedPokes);
     }
 
     const megaEvoTree = {};

@@ -101,6 +101,23 @@ const constants = {
     LOG_TYPE_BUFF: 'BUFF',
     LOG_TYPE_NERF: 'NERF',
     LOG_TYPE_ADJUSTMENT: 'ADJUSTMENT',
+
+    POKE_FORM_ALOLA: 'ALOLA',
+    POKE_FORM_GALAR: 'GALAR',
+    POKE_FORM_HISUI: 'HISUI',
+    POKE_FORM_PALDEA: 'PALDEA',
+    POKE_FORM_F: 'F',
+    POKE_FORM_EAST: 'EAST',
+    POKE_FORM_SUMMER: 'SUMMER',
+    POKE_FORM_AUTUMN: 'AUTUMN',
+    POKE_FORM_WINTER: 'WINTER',
+    POKE_FORM_SMALL: 'SMALL',
+    POKE_FORM_LARGE: 'LARGE',
+    POKE_FORM_SUPER: 'SUPER',
+    POKE_FORM_OWN_TEMPO: 'OWN_TEMPO',
+    POKE_FORM_ANTIQUE: 'ANTIQUE',
+    POKE_FORM_ROAMING: 'ROAMING',
+    POKE_FORM_ARTISAN: 'ARTISAN',
 };
 
 constants.POKEMON_TYPES = [
@@ -122,6 +139,25 @@ constants.POKEMON_TYPES = [
     constants.POKEMON_TYPE_STEEL,
     constants.POKEMON_TYPE_DRAGON,
     constants.POKEMON_TYPE_ELECTRIC,
+];
+
+constants.POKE_FORMS = [
+    constants.POKE_FORM_ALOLA,
+    constants.POKE_FORM_GALAR,
+    constants.POKE_FORM_HISUI,
+    constants.POKE_FORM_PALDEA,
+    constants.POKE_FORM_F,
+    constants.POKE_FORM_EAST,
+    constants.POKE_FORM_SUMMER,
+    constants.POKE_FORM_AUTUMN,
+    constants.POKE_FORM_WINTER,
+    constants.POKE_FORM_SMALL,
+    constants.POKE_FORM_LARGE,
+    constants.POKE_FORM_SUPER,
+    constants.POKE_FORM_OWN_TEMPO,
+    constants.POKE_FORM_ANTIQUE,
+    constants.POKE_FORM_ROAMING,
+    constants.POKE_FORM_ARTISAN,
 ];
 
 module.exports = constants;

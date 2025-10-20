@@ -13,6 +13,7 @@ const {
     TIER_AVERAGE_THRESHOLD,
     TIER_WEAK_THRESHOLD,
     POKEMON_TYPE_POISON,
+    POKEMON_TYPE_GRASS,
 } = require('./constants');
 const { plates, protectionBerries } = require('./items');
 
