@@ -791,7 +791,7 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
 const FLEXIBILITY_THRESHOLD = 20;
 const OFFENSE_FLEXIBILITY_RATING_BONUS = 0.2;
 const DEFENSE_FLEXIBILITY_RATING_BONUS = 0.5;
-const MAX_STAT_VALUE = 255;
+const GOOD_STAT_VALUE = 160;
 const COMPETIITVE_STAT_THRESHOLD = 4.7;
 const HIGH_STAT_THRESHOLD = 5.4;
 const OUTLIER_STAT_THRESHOLD = 6.2;
@@ -813,39 +813,42 @@ function ratePokemon(poke, moves, abilities) {
     let bstRating;
     let abilitiesAttackPowerMultiplier = 1;
     let abilitiesSpaPowerMultiplier = 1;
-    if (poke.abilities.includes('HUGE_POWER') || poke.abilities.includes('PURE_POWER')) {
+    if (poke.parsedAbilities.includes('HUGE_POWER') || poke.parsedAbilities.includes('PURE_POWER')) {
         abilitiesAttackPowerMultiplier = 2;
         bestAbilityRating = poke.baseAttack / 12;
     }
-    if (poke.abilities.every(abilityId => abilityId === 'TRUANT')) {
+    if (poke.parsedAbilities.every(abilityId => abilityId === 'TRUANT')) {
         abilitiesAttackPowerMultiplier = 0.5;
         abilitiesSpaPowerMultiplier = 0.5;
     }
-    let offensePower = Math.max(poke.baseAttack * abilitiesAttackPowerMultiplier, poke.baseSpAttack * abilitiesSpaPowerMultiplier) / MAX_STAT_VALUE * 10;
+    let offensePower = Math.max(poke.baseAttack * abilitiesAttackPowerMultiplier, poke.baseSpAttack * abilitiesSpaPowerMultiplier) / GOOD_STAT_VALUE * 10;
     if (Math.abs(poke.baseAttack - poke.baseSpAttack) < FLEXIBILITY_THRESHOLD) {
         offensePower += OFFENSE_FLEXIBILITY_RATING_BONUS;
     }
-    let speedPower = poke.baseSpeed / MAX_STAT_VALUE * 10;
-    let defensePower = (poke.baseHP + Math.max(poke.baseDefense, poke.baseSpDefense)) / (MAX_STAT_VALUE * 2) * 10;
+    let speedPower = poke.baseSpeed / GOOD_STAT_VALUE * 10;
+    let defensePower = (poke.baseHP + Math.max(poke.baseDefense, poke.baseSpDefense)) / (GOOD_STAT_VALUE * 2) * 10;
     if (Math.abs(poke.baseDefense - poke.baseSpDefense) < FLEXIBILITY_THRESHOLD) {
         defensePower += DEFENSE_FLEXIBILITY_RATING_BONUS;
     }
 
     let role;
     if (Math.abs(offensePower - defensePower) < 1.0) {
-        if (Math.abs(offensePower - speedPower) < 1.0) {
+        if (Math.abs(offensePower - speedPower) < 1.0 && Math.abs(defensePower - speedPower) < 1.0) {
             role = 'BALANCED';
         }
-        else {
+        else if (speedPower < offensePower && speedPower < defensePower) {
             role = 'BULKY';
+        }
+        else {
+            role = 'OFFENSIVE';
         }
     }
     else if (offensePower > defensePower) {
-        if (speedPower > offensePower || Math.abs(offensePower - speedPower) < 1.0) {
+        if (speedPower > offensePower || Math.abs(offensePower - speedPower) < 1.0 || speedPower > (defensePower - 1)) {
             role = 'OFFENSIVE';
         }
         else {
-            role = 'BALANCED';
+            role = 'BULKY';
         }
     }
     else {
@@ -917,7 +920,7 @@ function ratePokemon(poke, moves, abilities) {
 
     return {
         absoluteRating,
-        absoluteBSTRating,
+        absoluteBSTRating: bstRating,
         bestMoveset: moveset,
         movesRating,
         bestAbilityRating,
