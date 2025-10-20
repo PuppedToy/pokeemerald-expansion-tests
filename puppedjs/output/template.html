@@ -287,6 +287,17 @@
       "Quirky": "Quirky (-)"
     };
 
+    function getLogIcon(logEntry) {
+      if (!logEntry) return '';
+      if (logEntry.type === 'BUFF') {
+        return ' ⭐️';
+      } else if (logEntry.type === 'NERF') {
+        return ' 🔻';
+      } else {
+        return ' 🔧';
+      }
+    }
+
     function getPokeImg(pokeId) {
       return `https://forwardfeed.github.io/ER-nextdex/static/sprites/${pokeId.replace('SPECIES_', '')}.png`
         .replace('ALOLA', 'ALOLAN')
@@ -360,13 +371,27 @@
     pokes.forEach(poke => {
       const card = document.createElement('div');
       const pokeImg = getPokeImg(poke.id);
+      const hpLogEntry = (poke.log || []).find(entry => entry.target === 'baseHP');
+      const atkLogEntry = (poke.log || []).find(entry => entry.target === 'baseAttack');
+      const defLogEntry = (poke.log || []).find(entry => entry.target === 'baseDefense');
+      const spaLogEntry = (poke.log || []).find(entry => entry.target === 'baseSpAttack');
+      const spdLogEntry = (poke.log || []).find(entry => entry.target === 'baseSpDefense');
+      const speLogEntry = (poke.log || []).find(entry => entry.target === 'baseSpeed');
+      const hpIcon = getLogIcon(hpLogEntry);
+      const atkIcon = getLogIcon(atkLogEntry);
+      const defIcon = getLogIcon(defLogEntry);
+      const spaIcon = getLogIcon(spaLogEntry);
+      const spdIcon = getLogIcon(spdLogEntry);
+      const speIcon = getLogIcon(speLogEntry);
+      const typeEntry = (poke.log || []).find(entry => entry.target === 'type');
+      const typeIcon = getLogIcon(typeEntry);
       card.className = 'card';
       card.innerHTML = `
         <div class="meta">
             <div>
                 <div class="title">${poke.name}</div>
                 <div class=thumb><img src="${pokeImg}" alt="${poke.name}" /></div>
-                <div style="margin-top: 10px; text-align: center; width: 100%;">${poke.parsedTypes.map(type => `<span class="type" style="background-color:${typeColors[type]}">${type}</span>`).join(' ')}</div>
+                <div style="margin-top: 10px; text-align: center; width: 100%;">${poke.parsedTypes.map(type => `<span class="type" style="background-color:${typeColors[type]}">${type}</span>`).join(' ')}${typeIcon}</div>
                 <div>
                     <div style="text-align: center; font-weight: 700; margin-top: 6px; color: #FFDDC9">BST: ${poke.baseBST}</div>
                     <div style="text-align: center"><div style="text-align: center; font-weight: 700; margin-top: 6px; background-color: ${tierColorBgs[poke.rating.tier]}; color: ${tierColorFonts[poke.rating.tier]}; display: inline-block; padding: 4px 12px; border-radius: 999px;">${poke.rating.tier}</div></div>
@@ -374,15 +399,15 @@
                         <div style="font-weight: 700; color: #BDF8FF">HP</div>
                         <div style="font-weight: 700; color: #BDF8FF">ATK</div>
                         <div style="font-weight: 700; color: #BDF8FF">DEF</div>
-                        <div>${poke.baseHP}</div>
-                        <div>${poke.baseAttack}</div>
-                        <div>${poke.baseDefense}</div>
+                        <div>${poke.baseHP}${hpIcon}</div>
+                        <div>${poke.baseAttack}${atkIcon}</div>
+                        <div>${poke.baseDefense}${defIcon}</div>
                         <div style="font-weight: 700; color: #BDF8FF">SPA</div>
                         <div style="font-weight: 700; color: #BDF8FF">SPD</div>
                         <div style="font-weight: 700; color: #BDF8FF">SPE</div>
-                        <div>${poke.baseSpAttack}</div>
-                        <div>${poke.baseSpDefense}</div>
-                        <div>${poke.baseSpeed}</div>
+                        <div>${poke.baseSpAttack}${spaIcon}</div>
+                        <div>${poke.baseSpDefense}${spdIcon}</div>
+                        <div>${poke.baseSpeed}${speIcon}</div>
                     </div>
                 </div>
             </div>

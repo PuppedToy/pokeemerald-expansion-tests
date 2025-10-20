@@ -537,6 +537,7 @@ async function exe() {
                 + allPokes[i].baseSpAttack
                 + allPokes[i].baseSpDefense
                 + allPokes[i].baseSpeed;
+            allPokes[i].rating = ratePokemon(allPokes[i], moves, abilities);
         }
     }
 
