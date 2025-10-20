@@ -88,6 +88,15 @@ const REMOVED_SPECIES = [
     'SPECIES_EEVEE_STARTER',
 ];
 
+const CUSTOM_FAMILIES = {
+    SPECIES_NIDORAN_M: 'P_FAMILY_NIDORAN_M',
+    SPECIES_NIDORINO: 'P_FAMILY_NIDORAN_M',
+    SPECIES_NIDOKING: 'P_FAMILY_NIDORAN_M',
+    SPECIES_NIDORAN_F: 'P_FAMILY_NIDORAN_F',
+    SPECIES_NIDORINA: 'P_FAMILY_NIDORAN_F',
+    SPECIES_NIDOQUEEN: 'P_FAMILY_NIDORAN_F',
+};
+
 const REMOVED_MOVES = [
     'MOVE_NONE',
 ];
@@ -164,14 +173,19 @@ function parseSpeciesFile(genSpeciesFileText, definitions, evoTree) {
                 id: lines[i].split('[')[1].split(']')[0],
                 family: currentFamily,
             }
-            let form = null;
-            POKE_FORMS.forEach(pokeForm => {
-                if (currentPokemon.id.endsWith(`_${pokeForm}`)) {
-                    form = pokeForm;
-                    currentPokemon.family = `${currentFamily}_${pokeForm}`;
-                }
-            });
-            currentPokemon.form = form;
+            if (CUSTOM_FAMILIES[currentPokemon.id]) {
+                currentPokemon.family = CUSTOM_FAMILIES[currentPokemon.id];
+            }
+            else {
+                let form = null;
+                POKE_FORMS.forEach(pokeForm => {
+                    if (currentPokemon.id.endsWith(`_${pokeForm}`)) {
+                        form = pokeForm;
+                        currentPokemon.family = `${currentFamily}_${pokeForm}`;
+                    }
+                });
+                currentPokemon.form = form;
+            }
             if (
                 REMOVED_SPECIES.includes(currentPokemon.id)
                 || currentPokemon.id.includes('_GMAX')
