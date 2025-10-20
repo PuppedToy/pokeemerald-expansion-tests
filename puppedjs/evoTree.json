@@ -104,12 +104,18 @@
     "SPECIES_NIDORAN_F",
     [
       "SPECIES_NIDORINA"
-    ]
-  ],
-  "P_FAMILY_NIDORAN": [
-    "SPECIES_NIDORINA",
+    ],
     [
       "SPECIES_NIDOQUEEN"
+    ]
+  ],
+  "P_FAMILY_NIDORAN_M": [
+    "SPECIES_NIDORAN_M",
+    [
+      "SPECIES_NIDORINO"
+    ],
+    [
+      "SPECIES_NIDOKING"
     ]
   ],
   "P_FAMILY_CLEFAIRY": [
