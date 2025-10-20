@@ -2096,8 +2096,8 @@ u32 IncreaseStatDownScore(u32 battlerAtk, u32 battlerDef, u32 stat)
 {
     u32 tempScore = NO_INCREASE;
 
-    // Don't increase score if target is already -3 stat stage
-    if (stat != STAT_SPEED && gBattleMons[battlerDef].statStages[stat] <= DEFAULT_STAT_STAGE - 3)
+    // Don't increase score if target is already -1 stat stage
+    if (stat != STAT_SPEED && gBattleMons[battlerDef].statStages[stat] <= DEFAULT_STAT_STAGE - 1)
         return NO_INCREASE;
 
     // Don't decrease stat if target will die to residual damage
@@ -2119,7 +2119,7 @@ u32 IncreaseStatDownScore(u32 battlerAtk, u32 battlerDef, u32 stat)
     {
     case STAT_ATK:
         if (HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_PHYSICAL))
-            tempScore += DECENT_EFFECT;
+            tempScore += WEAK_EFFECT;
         break;
     case STAT_DEF:
         if (HasMoveWithCategory(battlerAtk, DAMAGE_CATEGORY_PHYSICAL))
@@ -2134,7 +2134,7 @@ u32 IncreaseStatDownScore(u32 battlerAtk, u32 battlerDef, u32 stat)
     }
     case STAT_SPATK:
         if (HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_SPECIAL))
-            tempScore += DECENT_EFFECT;
+            tempScore += WEAK_EFFECT;
         break;
     case STAT_SPDEF:
         if (HasMoveWithCategory(battlerAtk, DAMAGE_CATEGORY_SPECIAL))
