@@ -38,6 +38,7 @@ const {
 } = require('./constants');
 const { chooseMoveset, rateItemForAPokemon, isSuperEffective } = require('./rating.js');
 const items = require('./items.js');
+const { savePokemonData } = require('./pokemonWriter.js');
 
 const MAX_MEGA_EVO_STONES = 3;
 
@@ -177,6 +178,13 @@ function isValidEvolution(level, { param, method }) {
 }
 
 async function writer(pokemonList, moves, abilities) {
+
+    console.log('Writing pokemon buff / nerfs to files...');
+    // Save pokemon buffed / nerfed versions
+    await savePokemonData(pokemonList);
+
+    console.log('Updating starter pokemon...');
+
     const elegiblePokemonForStarters = [];
     const averagePokemonLC = [];
     pokemonList.forEach(poke => {

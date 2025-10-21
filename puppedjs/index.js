@@ -12,17 +12,14 @@ const {
     EVO_TYPE_LAST_OF_2,
     EVO_TYPE_SOLO,
     EVO_TYPE_MEGA,
-    POKE_FORM_ALOLAN,
     POKE_FORMS,
+    TOTAL_GENS,
+    SPECIES_DIR,
+    LEVEL_UP_LEARNSETS_DIR,
+    ABILITIES_FILE_PATH,
+    MEGA_EVOS_PATH,
 } = require('./constants.js');
 const { balancePokemon } = require('./rebalancer.js');
-
-const speciesDir = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'species_info');
-const levelUpLearnsetsDir = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'level_up_learnsets');
-const abilitiesFilePath = path.resolve(__dirname, '..', 'src', 'data', 'abilities.h');
-const megaEvosPath = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'form_change_tables.h');
-
-const TOTAL_GENS = 9;
 
 const evoIsLC = (evolutionType) => evolutionType === EVO_TYPE_LC_OF_3 || evolutionType === EVO_TYPE_LC_OF_2;
 const evoIsNFE = (evolutionType) => evoIsLC(evolutionType) || evolutionType === EVO_TYPE_NFE_OF_3;
@@ -441,11 +438,11 @@ function getEvolutionType(pokemon, evoTree) {
 }
 
 async function exe() {
-    const abilitiesFileText = await fs.readFile(abilitiesFilePath, 'utf-8');
+    const abilitiesFileText = await fs.readFile(ABILITIES_FILE_PATH, 'utf-8');
     const abilities = parseAbilitiesFile(abilitiesFileText);
     await fs.writeFile(path.resolve(__dirname, 'abilities.json'), JSON.stringify(abilities, null, 2), 'utf-8');
 
-    const megaEvosFileText = await fs.readFile(megaEvosPath, 'utf-8');
+    const megaEvosFileText = await fs.readFile(MEGA_EVOS_PATH, 'utf-8');
     const megaEvoStones = parseMegaEvoStonesFile(megaEvosFileText);
 
     const movesFilePath = path.resolve(__dirname, '..', 'src', 'data', 'moves_info.h');
@@ -465,7 +462,7 @@ async function exe() {
 
     const levelUpLearnsets = {};
     for (let gen = 1; gen <= TOTAL_GENS; gen++) {
-        const learnsetsFilePath = path.resolve(levelUpLearnsetsDir, `gen_${gen}.h`);
+        const learnsetsFilePath = path.resolve(LEVEL_UP_LEARNSETS_DIR, `gen_${gen}.h`);
         const learnsetsFileText = await fs.readFile(learnsetsFilePath, 'utf-8');
         Object.assign(levelUpLearnsets, parseLearnsetsFile(learnsetsFileText));
     }
@@ -484,7 +481,7 @@ async function exe() {
     };
     const evoTree = {};
     for (let gen = 1; gen <= TOTAL_GENS; gen++) {
-        const genSpeciesFilePath = path.resolve(speciesDir, `gen_${gen}_families.h`);
+        const genSpeciesFilePath = path.resolve(SPECIES_DIR, `gen_${gen}_families.h`);
         const genSpeciesFileText = await fs.readFile(genSpeciesFilePath, 'utf-8');
         const parsedPokes = parseSpeciesFile(genSpeciesFileText, definitions, evoTree);
         genPokes.push(parsedPokes);

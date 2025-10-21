@@ -1,4 +1,13 @@
+const path = require("path");
+
 const constants = {
+    TOTAL_GENS: 9,
+
+    SPECIES_DIR: path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'species_info'),
+    LEVEL_UP_LEARNSETS_DIR: path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'level_up_learnsets'),
+    ABILITIES_FILE_PATH: path.resolve(__dirname, '..', 'src', 'data', 'abilities.h'),
+    MEGA_EVOS_PATH: path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'form_change_tables.h'),
+
     TIER_BAD: 'BAD',
     TIER_WEAK: 'WEAK',
     TIER_AVERAGE: 'AVERAGE',
