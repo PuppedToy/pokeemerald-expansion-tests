@@ -739,7 +739,7 @@ static const struct MenuAction MultichoiceList_PetalburgWoodsPick[] =
     {COMPOUND_STRING("Meadow Plate")},
     {COMPOUND_STRING("Splash Plate")},
     {COMPOUND_STRING("Earth Plate")},
-}
+};
 
 static const struct MenuAction MultichoiceList_WheresRayquaza[] =
 {
