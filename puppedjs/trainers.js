@@ -4404,6 +4404,16 @@ const trainersData = [
                 absoluteTier: [TIER_WEAK, TIER_AVERAGE],
                 abilities: ['TRUANT'],
                 checkValidEvo: true,
+                fallback: [
+                    {
+                        abilities: ['TRUANT'],
+                        checkValidEvo: true,
+                    },
+                    {
+                        abilities: ['SLOW_START'],
+                        checkValidEvo: true,
+                    }
+                ]
             },
             {
                 absoluteTier: [TIER_WEAK, TIER_AVERAGE],
@@ -5618,7 +5628,7 @@ const trainersData = [
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_KROKODILE'],
+                encounterIds: ['SPECIES_KROOKODILE'],
                 tryEvolve: true,
             },
             {

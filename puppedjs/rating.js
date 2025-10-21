@@ -789,14 +789,10 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
 }
 
 const FLEXIBILITY_THRESHOLD = 20;
-const OFFENSE_FLEXIBILITY_RATING_BONUS = 0.2;
-const DEFENSE_FLEXIBILITY_RATING_BONUS = 0.5;
 const GOOD_STAT_VALUE = 160;
-const COMPETIITVE_STAT_THRESHOLD = 4.7;
-const HIGH_STAT_THRESHOLD = 5.4;
-const OUTLIER_STAT_THRESHOLD = 6.2;
-const HIGH_STAT_BONUS = 0.2;
-const OUTLIER_BONUS = 0.4;
+const EXCELLENT_STAT_VALUE = 160;
+const LEGEND_BST_THRESHOLD = 650;
+const GOD_BST_THRESHOLD = 710;
 
 function ratePokemon(poke, moves, abilities) {
     let bestAbilityRating = 0;
@@ -813,6 +809,7 @@ function ratePokemon(poke, moves, abilities) {
     let bstRating;
     let abilitiesAttackPowerMultiplier = 1;
     let abilitiesSpaPowerMultiplier = 1;
+    let abilitiesSpeedPowerMultiplier = 1;
     if (poke.parsedAbilities.includes('HUGE_POWER') || poke.parsedAbilities.includes('PURE_POWER')) {
         abilitiesAttackPowerMultiplier = 2;
         bestAbilityRating = poke.baseAttack / 12;
@@ -821,15 +818,13 @@ function ratePokemon(poke, moves, abilities) {
         abilitiesAttackPowerMultiplier = 0.5;
         abilitiesSpaPowerMultiplier = 0.5;
     }
-    let offensePower = Math.max(poke.baseAttack * abilitiesAttackPowerMultiplier, poke.baseSpAttack * abilitiesSpaPowerMultiplier) / GOOD_STAT_VALUE * 10;
-    if (Math.abs(poke.baseAttack - poke.baseSpAttack) < FLEXIBILITY_THRESHOLD) {
-        offensePower += OFFENSE_FLEXIBILITY_RATING_BONUS;
+    if (poke.parsedAbilities.every(abilityId => abilityId === 'SLOW_START' || abilityId === 'NONE')) {
+        abilitiesAttackPowerMultiplier = 0.5;
+        abilitiesSpeedPowerMultiplier = 0.5;
     }
-    let speedPower = poke.baseSpeed / GOOD_STAT_VALUE * 10;
-    let defensePower = (poke.baseHP + Math.max(poke.baseDefense, poke.baseSpDefense)) / (GOOD_STAT_VALUE * 2) * 10;
-    if (Math.abs(poke.baseDefense - poke.baseSpDefense) < FLEXIBILITY_THRESHOLD) {
-        defensePower += DEFENSE_FLEXIBILITY_RATING_BONUS;
-    }
+    let offensePower = Math.max(poke.baseAttack * abilitiesAttackPowerMultiplier, poke.baseSpAttack * abilitiesSpaPowerMultiplier) / EXCELLENT_STAT_VALUE * 10;
+    let speedPower = poke.baseSpeed * abilitiesSpeedPowerMultiplier / EXCELLENT_STAT_VALUE * 10;
+    let defensePower = (poke.baseHP + Math.max(poke.baseDefense, poke.baseSpDefense)* 0.6 + Math.min(poke.baseDefense, poke.baseSpDefense) * 0.4) / (EXCELLENT_STAT_VALUE * 2) * 10;
 
     let role;
     if (Math.abs(offensePower - defensePower) < 1.0) {
@@ -844,7 +839,7 @@ function ratePokemon(poke, moves, abilities) {
         }
     }
     else if (offensePower > defensePower) {
-        if (speedPower > offensePower || Math.abs(offensePower - speedPower) < 1.0 || speedPower > (defensePower - 1)) {
+        if (speedPower > offensePower || Math.abs(offensePower - speedPower) < 1.0 || speedPower > (defensePower + 1)) {
             role = 'OFFENSIVE';
         }
         else {
@@ -856,15 +851,30 @@ function ratePokemon(poke, moves, abilities) {
         role = 'TANK';
     }
 
+    // Add flexibility bonuses here
+    if (Math.abs(poke.baseAttack - poke.baseSpAttack) < FLEXIBILITY_THRESHOLD) {
+        offensePower += 0.1 * (Math.min(poke.baseAttack, poke.baseSpAttack) / EXCELLENT_STAT_VALUE * 10);
+    }
+    if (Math.abs(poke.baseDefense - poke.baseSpDefense) < FLEXIBILITY_THRESHOLD) {
+        defensePower += 0.1 * (Math.min(poke.baseDefense, poke.baseSpDefense) / EXCELLENT_STAT_VALUE * 10);
+    }
+
+    // Add outlier bonuses here - for now only offense and speed have such bonuses
+    if (Math.max(poke.baseAttack, poke.baseSpAttack) >= GOOD_STAT_VALUE) {
+        offensePower *= 1.1;
+    }
+    if (poke.baseSpeed >= GOOD_STAT_VALUE) {
+        speedPower *= 1.1;
+    }
     switch (role) {
         case 'BALANCED':
-            bstRating = (offensePower + defensePower + speedPower) / 3;
+            bstRating = (offensePower + defensePower + speedPower) / 2.9;
             break;
         case 'OFFENSIVE':
-            bstRating = offensePower * 0.45 + speedPower * 0.4 + defensePower * 0.15;
+            bstRating = offensePower * 0.55 + speedPower * 0.4 + defensePower * 0.05;
             break;
         case 'BULKY':
-            bstRating = offensePower * 0.5 + defensePower * 0.4 + speedPower * 0.1;
+            bstRating = offensePower * 0.475 + defensePower * 0.475 + speedPower * 0.05;
             break;
         case 'TANK':
             bstRating = defensePower * 0.8 + offensePower * 0.15 + speedPower * 0.05;
@@ -891,7 +901,23 @@ function ratePokemon(poke, moves, abilities) {
     });
     movesRating *= 0.25;
 
-    const absoluteRating = (bstRating * 0.8) + (movesRating * 0.1) + (bestAbilityRating * 0.1);
+    let absoluteRating = (bstRating * 0.8) + (movesRating * 0.1) + (bestAbilityRating * 0.1);
+
+    let rawBST =
+        poke.baseHP
+        + poke.baseAttack * abilitiesAttackPowerMultiplier
+        + poke.baseDefense
+        + poke.baseSpAttack * abilitiesSpaPowerMultiplier
+        + poke.baseSpDefense
+        + poke.baseSpeed * abilitiesSpeedPowerMultiplier;
+    
+    if (rawBST >= LEGEND_BST_THRESHOLD) {
+        absoluteRating = 9;
+    }
+
+    if (rawBST >= GOD_BST_THRESHOLD) {
+        absoluteRating = 10;
+    }
 
     // These tiers are kinda working. I should add that OU is actually exclusive pokemon and UU-RU are the average fully evolved ones
     // GOD should only be used by extremely hard bosses. Should not come up in the game in general. Esp. Eternatus Emax
