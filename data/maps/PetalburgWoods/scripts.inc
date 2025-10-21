@@ -285,7 +285,7 @@ PetalburgWoods_EventScript_James::
 	end
 
 PetalburgWoods_EventScript_PickPlate::
-	multichoice 0, 0, MULTI_PETALBURG_WOODS_PICK, TRUE
+	multichoice 0, 0, MULTI_PETALBURG_WOODS_PICK, FALSE
 	switch VAR_RESULT
 	case 0, PetalburgWoods_EventScript_PickMeadow
 	case 1, PetalburgWoods_EventScript_PickSplash
