@@ -9,7 +9,6 @@ function editSpeciesFile(genSpeciesFileText, pokemonList) {
     let currentPokemon;
     let currentLog;
     for (let i = 0; i < lines.length; i++) {
-        if (!currentFamily) continue;
         if (lines[i].startsWith('    [')) {
             currentPokemonId = lines[i].split('[')[1].split(']')[0];
             currentPokemon = pokemonList.find(p => p.id === currentPokemonId);
