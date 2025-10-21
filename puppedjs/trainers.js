@@ -431,6 +431,14 @@ const genericBadLCTeamTemplate = [
     },
 ];
 
+const aquaTeamTypes = [
+    POKEMON_TYPE_WATER,
+    POKEMON_TYPE_DARK,
+    POKEMON_TYPE_POISON,
+    POKEMON_TYPE_ICE,
+    POKEMON_TYPE_FLYING,
+];
+
 const magmaTeamTypes = [
     POKEMON_TYPE_FIRE,
     POKEMON_TYPE_GROUND,
