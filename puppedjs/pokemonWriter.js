@@ -7,7 +7,7 @@ function editSpeciesFile(genSpeciesFileText, pokemonList) {
     const lines = genSpeciesFileText.split('\n');
     let currentPokemonId;
     let currentPokemon;
-    let currentLog;
+    let currentLog = [];
     for (let i = 0; i < lines.length; i++) {
         if (lines[i].startsWith('    [')) {
             currentPokemonId = lines[i].split('[')[1].split(']')[0];
