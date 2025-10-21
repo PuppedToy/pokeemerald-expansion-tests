@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs").promises;
 
 const { TOTAL_GENS, SPECIES_DIR } = require("./constants");
 
