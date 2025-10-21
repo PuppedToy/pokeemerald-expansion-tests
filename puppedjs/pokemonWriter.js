@@ -2,7 +2,6 @@ const { TOTAL_GENS, SPECIES_DIR } = require("./constants");
 
 function editSpeciesFile(genSpeciesFileText, pokemonList) {
     const lines = genSpeciesFileText.split('\n');
-    const pokemonList = [];
     let currentPokemonId;
     let currentPokemon;
     let currentLog;
