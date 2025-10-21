@@ -734,6 +734,13 @@ static const struct MenuAction MultichoiceList_BattleTowerFeelings[] =
     {COMPOUND_STRING("I won't tell.")},
 };
 
+static const struct MenuAction MultichoiceList_PetalburgWoodsPick[] =
+{
+    {COMPOUND_STRING("Meadow Plate")},
+    {COMPOUND_STRING("Splash Plate")},
+    {COMPOUND_STRING("Earth Plate")},
+}
+
 static const struct MenuAction MultichoiceList_WheresRayquaza[] =
 {
     {COMPOUND_STRING("CAVE OF ORIGIN")},
@@ -906,6 +913,7 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_FALLARBOR_TENT_RULES]       = MULTICHOICE(MultichoiceList_FallarborTentRules),
     [MULTI_TAG_MATCH_TYPE]             = MULTICHOICE(MultichoiceList_TagMatchType),
     [MULTI_BERRY_PLOT]                 = MULTICHOICE(MultichoiceList_BerryPlot),
+    [MULTI_PETALBURG_WOODS_PICK]       = MULTICHOICE(MultichoiceList_PetalburgWoodsPick),
 };
 
 const u8 *const gStdStrings[] =

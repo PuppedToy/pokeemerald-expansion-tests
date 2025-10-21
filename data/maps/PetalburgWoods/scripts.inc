@@ -284,6 +284,29 @@ PetalburgWoods_EventScript_James::
 	release
 	end
 
+PetalburgWoods_EventScript_PickPlate::
+	multichoice 0, 0, MULTI_PETALBURG_WOODS_PICK, TRUE
+	switch VAR_RESULT
+	case 0, PetalburgWoods_EventScript_PickMeadow
+	case 1, PetalburgWoods_EventScript_PickSplash
+	case 2, PetalburgWoods_EventScript_PickEarth
+	end
+
+PetalburgWoods_EventScript_PickMeadow::
+	finditem ITEM_MEADOW_PLATE
+	setflag FLAG_ITEM_PETALBURG_WOODS_PARALYZE_HEAL
+	end
+
+PetalburgWoods_EventScript_PickSplash::
+	finditem ITEM_SPLASH_PLATE
+	setflag FLAG_ITEM_PETALBURG_WOODS_PARALYZE_HEAL
+	end
+
+PetalburgWoods_EventScript_PickEarth::
+	finditem ITEM_EARTH_PLATE
+	setflag FLAG_ITEM_PETALBURG_WOODS_PARALYZE_HEAL
+	end
+
 PetalburgWoods_EventScript_TryRegisterJames::
 	special PlayerFaceTrainerAfterBattle
 	waitmovement 0

@@ -62,7 +62,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route102_EventScript_Rick",
-      "flag": "FLAG_BADGE02_GET"
+      "flag": "FLAG_BADGE01_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_LASS",
@@ -75,7 +75,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route102_EventScript_Tiana",
-      "flag": "FLAG_BADGE02_GET"
+      "flag": "FLAG_BADGE01_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_BOY_1",
@@ -114,7 +114,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route102_EventScript_Allen",
-      "flag": "FLAG_BADGE02_GET"
+      "flag": "FLAG_BADGE01_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",

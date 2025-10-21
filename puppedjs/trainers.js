@@ -38,31 +38,12 @@ const {
     POKEMON_TYPE_NORMAL,
     TRAINER_POKE_MEGA_WITH_STONE,
     POKEMON_TYPE_GHOST,
+    TIER_GOD,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
 
 // @TODO Fix booster energy
-
-const calvinDogs = [
-    'SPECIES_GROWLITHE',
-    'SPECIES_GROWLITHE_HISUI',
-    'SPECIES_ZIGZAGOON',
-    'SPECIES_ZIGZAGOON_GALAR',
-    'SPECIES_ELECTRIKE',
-    'SPECIES_HOUNDOUR',
-    'SPECIES_ROCKRUFF',
-    'SPECIES_POOCHYENA',
-    'SPECIES_BIDOOF',
-    'SPECIES_LILLIPUP',
-    'SPECIES_YAMPER',
-    'SPECIES_FIDOUGH',
-    'SPECIES_GREAVARD',
-    'SPECIES_MASCHIFF',
-    'SPECIES_EEVEE',
-    'SPECIES_RIOLU'
-];
-
 const stevenPokemon = [
     'SPECIES_BALTOY',
     'SPECIES_ARON',
@@ -167,31 +148,6 @@ const rainAbilities = ['SWIFT_SWIM', 'RAIN_DISH', 'DRY_SKIN', 'HYDRATION'];
 const sunAbilities = ['FLOWER_GIFT', 'CHLOROPHYLL', 'LEAF_GUARD', 'SOLAR_POWER', 'PROTOSYNTHESIS'];
 const sandAbilities = ['SAND_FORCE', 'SAND_RUSH', 'SAND_VEIL', 'SAND_SPIT'];
 const snowAbilities = ['ICE_BODY', 'SNOW_CLOAK', 'SLUSH_RUSH'];
-
-const rival103Template = (id) => [
-    {
-        special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_ZIGZAGOON'],
-    },
-    {
-        special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_WURMPLE', 'SPECIES_WINGULL'],
-    },
-    {
-        special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_SURSKIT'],
-    },
-    {
-        id: 'RIVAL_WEAK_103_KEEP_ONCE_' + id,
-        absoluteTier: [TIER_WEAK],
-        evoType: [EVO_TYPE_LC],
-    },
-    {
-        id: 'RIVAL_MEGA_103_KEEP_' + id,
-        megaTier: [TIER_PREMIUM],
-        evoType: [EVO_TYPE_LC],
-    },
-];
 
 const rivalRustboroTemplate = (id) => [
     {
@@ -475,28 +431,6 @@ const genericBadLCTeamTemplate = [
     },
 ];
 
-const allenCats = [
-    'SPECIES_MEOWTH',
-    'SPECIES_MEOWTH_ALOLA',
-    'SPECIES_MEOWTH_GALAR',
-    'SPECIES_SKITTY',
-    'SPECIES_GLAMEOW',
-    'SPECIES_PURRLOIN',
-    'SPECIES_SHINX',
-    'SPECIES_ESPURR',
-    'SPECIES_SPRIGATITO',
-    'SPECIES_LITTEN',
-    'SPECIES_LITLEO'
-];
-
-const aquaTeamTypes = [
-    POKEMON_TYPE_WATER,
-    POKEMON_TYPE_DARK,
-    POKEMON_TYPE_POISON,
-    POKEMON_TYPE_ICE,
-    POKEMON_TYPE_FLYING,
-];
-
 const magmaTeamTypes = [
     POKEMON_TYPE_FIRE,
     POKEMON_TYPE_GROUND,
@@ -669,31 +603,99 @@ const punchingMoves = [
     'MOVE_WICKED_BLOW',
 ];
 
+// New defs
+
+const POKEDEF_BAD_LC = {
+    absoluteTier: [TIER_BAD],
+    evoType: [EVO_TYPE_LC],
+    tryEvolve: true,
+};
+
+const POKEDEF_WEAK_LC = {
+    absoluteTier: [TIER_WEAK],
+    evoType: [EVO_TYPE_LC],
+    tryEvolve: true,
+};
+
+const POKEDEF_BAD_LC_OR_SOLO = {
+    absoluteTier: [TIER_BAD],
+    evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+    tryEvolve: true,
+};
+
+const PROMISING_PREMIUM_LEGEND_GOD_MEGA_LC = {
+    megaTier: [TIER_PREMIUM, TIER_LEGEND, TIER_GOD],
+    absoluteTier: [TIER_BAD],
+    evoType: [EVO_TYPE_LC],
+};
+
+const generatePokemonsWithDefinition = (def, amount) => {
+    return new Array(amount).fill(null).map(() => ({ ...def }));
+}
+
+const rival103Template = (id) => [
+    {
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: ['SPECIES_ZIGZAGOON'],
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: ['SPECIES_WURMPLE', 'SPECIES_WINGULL'],
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: ['SPECIES_SURSKIT', 'SPECIES_SMEARGLE'],
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: ['SPECIES_WEEDLE', 'SPECIES_PATRAT'],
+        tryEvolve: true,
+    },
+    {
+        id: 'RIVAL_MEGA_103_KEEP_' + id,
+        ...PROMISING_PREMIUM_LEGEND_GOD_MEGA_LC,
+    },
+];
+
+const rival103Bag = [
+    'Oran Berry',
+];
+
+const petalwoodGruntBag = [
+    ...rival103Bag,
+    'Expert Belt',
+    'Eviolite',
+    'Splash Plate',
+];
+
+const roxanneTMs = [
+    'MOVE_WATER_PULSE',
+    'MOVE_DIG',
+    'MOVE_BULLET_SEED',
+];
+
+const roxanneBag = [
+    ...petalwoodGruntBag,
+    'Meadow Plate',
+    'Earth Plate',
+    'Rock Gem',
+];
+
 const trainersData = [
     // Route 101
     {
         id: 'TRAINER_CALVIN_1',
         level: 7,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_ZIGZAGOON'],
             },
-            {
-                oneOf: calvinDogs,
-            },
-            {
-                oneOf: calvinDogs,
-            },
-            {
-                oneOf: calvinDogs,
-            },
-            {
-                oneOf: calvinDogs,
-            },
-            {
-                oneOf: calvinDogs,
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
         ]
     },
     {
@@ -702,30 +704,10 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
+                ...POKEDEF_BAD_LC,
                 item: 'Oran Berry',
             },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
         ],
     },
     // Route 103
@@ -787,143 +769,54 @@ const trainersData = [
     {
         id: 'TRAINER_ALLEN',
         level: 9,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_WURMPLE'],
+                item: 'Oran Berry',
             },
-            {
-                oneOf: allenCats,
-            },
-            {
-                oneOf: allenCats,
-            },
-            {
-                oneOf: allenCats,
-            },
-            {
-                oneOf: allenCats,
-            },
-            {
-                oneOf: allenCats,
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
         ],
     },
     {
         id: 'TRAINER_RICK',
         level: 9,
-        restrictions: [
-            TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
-        ],
-        types: [
-            POKEMON_TYPE_WATER,
-            POKEMON_TYPE_ICE,
-            POKEMON_TYPE_BUG,
-        ],
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_WINGULL'],
                 item: 'Oran Berry',
             },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
         ]
     },
     {
         id: 'TRAINER_TIANA',
         level: 9,
-        restrictions: [
-            TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
-        ],
-        types: [
-            POKEMON_TYPE_FAIRY,
-            POKEMON_TYPE_GRASS,
-            POKEMON_TYPE_FIGHTING,
-            POKEMON_TYPE_PSYCHIC,
-        ],
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...rival103Bag],
         team: [
             {
-                specific: 'SPECIES_SHROOMISH',
+                ...POKEDEF_BAD_LC,
                 item: 'Expert Belt',
             },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
         ]
     },
     // Route 103
     {
         id: 'TRAINER_CARTER',
         level: 9,
-        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES],
-        abilities: [...rainAbilities],
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
-                absoluteTier: [TIER_BAD],
-                tryToHaveMove: ['MOVE_RAIN_DANCE'],
-                evoType: [EVO_TYPE_LC],
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SURSKIT'],
+                item: 'Oran Berry',
             },
-            {
-                absoluteTier: [TIER_BAD],
-                tryToHaveMove: ['MOVE_RAIN_DANCE'],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                tryToHaveMove: ['MOVE_RAIN_DANCE'],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                tryToHaveMove: ['MOVE_RAIN_DANCE'],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                tryToHaveMove: ['MOVE_RAIN_DANCE'],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                tryToHaveMove: ['MOVE_RAIN_DANCE'],
-                evoType: [EVO_TYPE_LC],
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
         ]
     },
     // Route 104
@@ -931,46 +824,97 @@ const trainersData = [
         id: 'TRAINER_DARIAN',
         level: 9,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        team: [...genericBadLCTeamTemplate],
-    },
-    {
-        id: 'TRAINER_BILLY',
-        level: 9,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        team: [...genericBadLCTeamTemplate],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_WEEDLE'],
+                item: 'Oran Berry',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+        ]
     },
     {
         id: 'TRAINER_CINDY_1',
         level: 9,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...rival103Bag],
         team: [
             {
                 absoluteTier: [TIER_BAD],
                 evoType: [EVO_TYPE_LC],
                 item: 'Eviolite',
             },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
         ]
     },
+    // Petalburg Woods
+    {
+        id: 'TRAINER_LYLE',
+        level: 9,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: ['Meadow Plate', 'Splash Plate', 'Earth Plate'],
+        team: [
+            {
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_GRASS],
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_WATER],
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_GROUND],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 3),
+        ],
+    },
+    {
+        id: 'TRAINER_GRUNT_PETALBURG_WOODS',
+        level: 9,
+        isBoss: true,
+        bag: [...petalwoodGruntBag],
+        team: [
+            {
+                specific: 'SPECIES_CARVANHA',
+                nature: NATURES.ADAMANT,
+                abilities: ['SPEED_BOOST'],
+            },
+            {
+                ...POKEDEF_BAD_LC_OR_SOLO,
+                type: [aquaTeamTypes[0]],
+            },
+            {
+                ...POKEDEF_BAD_LC_OR_SOLO,
+                type: [aquaTeamTypes[1]],
+            },
+            {
+                ...POKEDEF_BAD_LC_OR_SOLO,
+                type: [aquaTeamTypes[2]],
+            },
+            {
+                ...POKEDEF_BAD_LC_OR_SOLO,
+                type: [aquaTeamTypes[3]],
+            },
+            {
+                ...POKEDEF_BAD_LC_OR_SOLO,
+                type: [aquaTeamTypes[4]],
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_JAMES_1',
+        level: 10,
+        bag: [...rival103Bag],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_PATRAT'],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+        ],
+    },
+    // Route 104 again
     {
         id: 'TRAINER_WINSTON_1',
         level: 10,
@@ -983,74 +927,21 @@ const trainersData = [
     {
         id: 'TRAINER_IVAN',
         level: 10,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...rival103Bag, 'Water Gem', 'Water Gem'],
         team: [
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
+            ...generatePokemonsWithDefinition({
+                ...POKEDEF_BAD_LC,
                 type: [POKEMON_TYPE_WATER],
-                mustHaveOneOfMoves: ['MOVE_WATER_PULSE'],
-                tryToHaveMove: ['MOVE_WATER_PULSE'],
-                item: 'Water Gem',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
+            }, 6),
         ],
     },
     {
         id: 'TRAINER_HALEY_1',
         level: 10,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        team: [
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_WATER_PULSE'],
-                tryToHaveMove: ['MOVE_WATER_PULSE'],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_BULLET_SEED'],
-                tryToHaveMove: ['MOVE_BULLET_SEED'],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_STEEL_WING'],
-                tryToHaveMove: ['MOVE_STEEL_WING'],
-            },
-        ]
+        bag: [...rival103Bag],
+        tms: [...roxanneTMs],
+        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
     },
     {
         id: 'TRAINER_GINA_AND_MIA_1',
@@ -1065,182 +956,10 @@ const trainersData = [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_PORYGON'],
-                item: 'Expert Belt',
+                item: 'Oran Berry',
             },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 4),
         ]
-    },
-    // Petalburg Woods
-    {
-        id: 'TRAINER_LYLE',
-        level: 9,
-        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
-        types: [POKEMON_TYPE_GRASS, POKEMON_TYPE_BUG],
-        team: [
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_BUG],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_GRASS],
-                item: 'Meadow Plate',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_BUG],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_GRASS],
-                item: 'Meadow Plate',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_BUG],
-            },
-            {
-                specific: 'SPECIES_PARAS',
-                tryToHaveMove: ['MOVE_BULLET_SEED'],
-                item: 'Meadow Plate',
-            },
-        ]
-    },
-    {
-        id: 'TRAINER_GRUNT_PETALBURG_WOODS',
-        level: 9,
-        isBoss: true,
-        team: [
-            {
-                specific: 'SPECIES_CARVANHA',
-                item: 'Eviolite',
-                nature: NATURES.ADAMANT,
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
-                type: [aquaTeamTypes[0]],
-                item: 'Oran Berry',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
-                type: [aquaTeamTypes[1]],
-                item: 'Expert Belt',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
-                type: [aquaTeamTypes[2]],
-                item: 'Toxic Plate',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
-                type: [aquaTeamTypes[3]],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
-                type: [aquaTeamTypes[4]],
-            },
-        ],
-    },
-    {
-        id: 'TRAINER_JAMES_1',
-        level: 10,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_PATRAT'],
-                item: 'Oran Berry',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-        ],
-    },
-    // Rustboro City
-    {
-        id: 'TRAINER_ROXANNE_1',
-        level: 10,
-        isBoss: true,
-        team: [
-            {
-                absoluteTier: [TIER_BAD],
-                mustHaveOneOfMoves: ['MOVE_STEALTH_ROCK'],
-                tryToHaveMove: ['MOVE_ROCK_TOMB', 'MOVE_STEALTH_ROCK', 'MOVE_SANDSTORM'],
-                item: 'Smooth Rock',
-            },
-            {
-                specific: 'SPECIES_NOSEPASS',
-                tryToHaveMove: ['MOVE_ROCK_TOMB', 'MOVE_ROCK_SMASH', 'MOVE_SHOCK_WAVE', 'MOVE_SANDSTORM'],
-                item: 'Eviolite',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                type: [POKEMON_TYPE_ROCK],
-                tryToHaveMove: ['MOVE_ROCK_TOMB'],
-                item: 'Oran Berry',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                type: [POKEMON_TYPE_GROUND],
-                tryToHaveMove: ['MOVE_ROCK_TOMB', 'MOVE_DIG'],
-                item: 'Passho Berry',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                type: [POKEMON_TYPE_STEEL],
-                mustHaveOneOfMoves: ['MOVE_ROCK_TOMB'],
-                tryToHaveMove: ['MOVE_ROCK_TOMB'],
-                item: 'Shuca Berry',
-            },
-            {
-                absoluteTier: [TIER_WEAK],
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_ROCK],
-                tryToHaveMove: ['MOVE_ROCK_TOMB'],
-                item: 'Rock Gem',
-            },
-        ],
     },
     // Route 115
     {
@@ -1253,27 +972,75 @@ const trainersData = [
                 encounterIds: ['SPECIES_DELIBIRD'],
                 item: 'Oran Berry',
             },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+        ],
+    },
+    {
+        id: 'TRAINER_MARLENE',
+        level: 10,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...rival103Bag],
+        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+    },
+    // Rustboro City
+    {
+        id: 'TRAINER_ROXANNE_1',
+        level: 10,
+        isBoss: true,
+        bag: [...roxanneBag, 'Passho Berry'],
+        tms: [...roxanneTMs],
+        team: [
             {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
+                ...POKEDEF_BAD_LC,
+                mustHaveOneOfMoves: ['MOVE_STEALTH_ROCK'],
+                tryToHaveMove: ['MOVE_ROCK_TOMB', 'MOVE_STEALTH_ROCK', 'MOVE_SANDSTORM'],
+                fallback: [
+                    {
+                        ...POKEDEF_BAD_LC,
+                        type: [POKEMON_TYPE_ROCK],
+                        tryToHaveMove: ['MOVE_ROCK_TOMB'],
+                    },
+                ],
             },
             {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
+                specific: 'SPECIES_NOSEPASS',
+                tryToHaveMove: ['MOVE_ROCK_TOMB', 'MOVE_ROCK_SMASH', 'MOVE_SHOCK_WAVE', 'MOVE_SANDSTORM'],
             },
             {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_ROCK],
+                tryToHaveMove: ['MOVE_ROCK_TOMB'],
             },
             {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_GRASS],
+                tryToHaveMove: ['MOVE_ROCK_TOMB'],
             },
             {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_STEEL],
+                tryToHaveMove: ['MOVE_ROCK_TOMB'],
+            },
+            {
+                ...POKEDEF_WEAK_LC,
+                type: [POKEMON_TYPE_ROCK],
+                tryToHaveMove: ['MOVE_ROCK_TOMB'],
             },
         ],
+    },
+    // Route 104
+    {
+        id: 'TRAINER_BILLY',
+        level: 13,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...roxanneBag],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_GEODUDE'],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+        ]
     },
     // Route 116
     {
@@ -4683,12 +4450,6 @@ const trainersData = [
                 checkValidEvo: true,
             },
         ],
-    },
-    {
-        id: 'TRAINER_MARLENE',
-        level: 33,
-        bag: [...flanneryBag],
-        team: genericWeakAverageTeamTemplate(),
     },
     {
         id: 'TRAINER_CYNDY_1',

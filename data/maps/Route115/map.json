@@ -40,14 +40,14 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
-      "x": 22,
-      "y": 71,
+      "x": 11,
+      "y": 69,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "2",
+      "trainer_sight_or_berry_tree_id": "1",
       "script": "Route115_EventScript_Timothy",
       "flag": "FLAG_BADGE02_GET"
     },
@@ -144,7 +144,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 21,
+      "x": 26,
       "y": 70,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
@@ -274,16 +274,16 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_LASS",
-      "x": 30,
-      "y": 46,
+      "x": 25,
+      "y": 71,
       "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route115_EventScript_Marlene",
-      "flag": "FLAG_BADGE06_GET"
+      "flag": "FLAG_BADGE02_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -339,7 +339,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 17,
+      "x": 16,
       "y": 44,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
