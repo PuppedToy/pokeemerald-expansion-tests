@@ -817,7 +817,7 @@ function ratePokemon(poke, moves, abilities) {
         abilitiesAttackPowerMultiplier = 2;
         bestAbilityRating = poke.baseAttack / 12;
     }
-    if (poke.parsedAbilities.every(abilityId => abilityId === 'TRUANT')) {
+    if (poke.parsedAbilities.every(abilityId => abilityId === 'TRUANT' || abilityId === 'NONE')) {
         abilitiesAttackPowerMultiplier = 0.5;
         abilitiesSpaPowerMultiplier = 0.5;
     }
