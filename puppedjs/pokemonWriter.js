@@ -85,8 +85,8 @@ async function savePokemonData(pokemonList) {
     for (let gen = 1; gen <= TOTAL_GENS; gen++) {
         const genSpeciesFilePath = path.resolve(SPECIES_DIR, `gen_${gen}_families.h`);
         const genSpeciesFileText = await fs.readFile(genSpeciesFilePath, 'utf-8');
-        editSpeciesFile(genSpeciesFileText, pokemonList);
-        await fs.writeFile(genSpeciesFilePath, genSpeciesFileText, 'utf-8');
+        const result = editSpeciesFile(genSpeciesFileText, pokemonList);
+        await fs.writeFile(genSpeciesFilePath, result, 'utf-8');
     }
 }
 
