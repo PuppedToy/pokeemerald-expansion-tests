@@ -1,3 +1,5 @@
+const path = require("path");
+
 const { TOTAL_GENS, SPECIES_DIR } = require("./constants");
 
 function editSpeciesFile(genSpeciesFileText, pokemonList) {
