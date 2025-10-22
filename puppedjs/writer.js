@@ -580,7 +580,7 @@ async function writer(pokemonList, moves, abilities) {
         }
 
         const tryEvolve = (pokemon) => {
-            const chosenTrainerMon = { ...pokemon };
+            let chosenTrainerMon = { ...pokemon };
             let possibleEvolutions;
 
             do {
