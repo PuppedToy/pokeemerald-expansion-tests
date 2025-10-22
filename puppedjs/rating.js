@@ -483,7 +483,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
     }
     if (item === 'Eviolite') {
         if (poke.evolutionData.isNFE) {
-            return 15 * calculatedDeviation;
+            return 12 * calculatedDeviation;
         }
         return 0;
     }
@@ -691,7 +691,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         if (hasBelch || hasNaturalGift) {
             return 7.5 * calculatedDeviation;
         }
-        return 2.5 * calculatedDeviation;
+        return 5 * calculatedDeviation;
     }
     if (item.includes(' Berry')) {
         const protectionBerriesEntries = Object.entries(protectionBerries);
@@ -718,7 +718,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
                     }
                     return 8 * bestOffensePower * calculatedDeviation + stabExtra;
                 }
-                return 6 * bestOffensePower * calculatedDeviation + stabExtra;
+                return 5.5 * bestOffensePower * calculatedDeviation + stabExtra;
             }
         }
         return 0;
@@ -728,7 +728,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         const stabExtra = poke.parsedTypes.includes(plateType) ? 0.5 : 0;
         for (const move of moveset) {
             if (move.category !== 'DAMAGE_CATEGORY_STATUS' && move.type === plateType) {
-                return 5 * bestOffensePower * calculatedDeviation + stabExtra;
+                return 5.5 * bestOffensePower * calculatedDeviation + stabExtra;
             }
         }
         return 0;

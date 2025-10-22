@@ -124,6 +124,10 @@
 #define MULTI_TAG_MATCH_TYPE               113
 #define MULTI_BERRY_PLOT                   114
 #define MULTI_PETALBURG_WOODS_PICK         115
+#define MULTI_ROUTE104_PICK_GEM            116
+#define MULTI_ROUTE104_PICK_BERRY          117
+#define MULTI_ROUTE104_PICK_TM             118
+#define MULTI_ROUTE106_PICK                119
 
 // Lilycove SS Tidal Multichoice Selections
 #define SSTIDAL_SELECTION_SLATEPORT        0

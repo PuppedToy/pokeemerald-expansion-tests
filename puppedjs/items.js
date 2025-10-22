@@ -163,9 +163,9 @@ const items = {
         'ITEM_TM_EARTHQUAKE', // Route 117
         'ITEM_TM_RETURN', // @TODO Change TM
         'ITEM_TM_DIG', // Route 104
-        'ITEM_TM_PSYCHIC', // Route 114
-        'ITEM_TM_SHADOW_BALL', // Route 114
-        'ITEM_TM_BRICK_BREAK', // Route 116
+        'ITEM_TM_PSYCHIC', // Route 106
+        'ITEM_TM_SHADOW_BALL', // Route 106
+        'ITEM_TM_BRICK_BREAK', // Route 106
         'ITEM_TM_DOUBLE_TEAM', // @TODO Change TM
         'ITEM_TM_REFLECT', // Route 114
         'ITEM_TM_SHOCK_WAVE', // Wattson

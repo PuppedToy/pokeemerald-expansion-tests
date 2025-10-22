@@ -948,21 +948,52 @@ const trainersData = [
     {
         id: 'TRAINER_WINSTON_1',
         level: 10,
-        team: genericBadLCTeamTemplate.map(p => ({
-            ...p,
-            weakToTypes: [POKEMON_TYPE_ROCK],
-            item: 'Charti Berry',
-        })),
+        bag: [...rival103Bag],
+        team: [
+            {
+                ...POKEDEF_BAD_LC,
+                weakToTypes: [POKEMON_TYPE_WATER],
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                weakToTypes: [POKEMON_TYPE_ROCK],
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                weakToTypes: [POKEMON_TYPE_FIGHTING],
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                weakToTypes: [POKEMON_TYPE_WATER],
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                weakToTypes: [POKEMON_TYPE_ROCK],
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                weakToTypes: [POKEMON_TYPE_FIGHTING],
+            },
+        ]
     },
     {
         id: 'TRAINER_IVAN',
         level: 10,
-        bag: [...rival103Bag, 'Water Gem', 'Water Gem'],
+        bag: [...rival103Bag, 'Water Gem', 'Flying Gem', 'Dark Gem'],
         team: [
-            ...generatePokemonsWithDefinition({
+            {
                 ...POKEDEF_BAD_LC,
                 type: [POKEMON_TYPE_WATER],
-            }, 6),
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_FLYING],
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_DARK],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 3),
         ],
     },
     {
@@ -1267,8 +1298,22 @@ const trainersData = [
         id: 'TRAINER_JOSUE',
         level: 16,
         bag: [...roxanneBag],
-        tms: [...roxanneTMs, 'MOVE_BRICK_BREAK'],
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        tms: [...roxanneTMs, 'MOVE_BRICK_BREAK', 'MOVE_SHADOW_BALL', 'MOVE_PSYCHIC'],
+        team: [
+            {
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_FIGHTING],
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_GHOST],
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_PSYCHIC],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 3),
+        ],
     },
     // Dewford Gym
     {
@@ -1322,7 +1367,7 @@ const trainersData = [
         team: [
             {
                 specific: 'SPECIES_SKARMORY',
-                tryToHaveMove: ['MOVE_STEEL_WING', 'MOVE_AGILITY'],
+                tryToHaveMove: ['MOVE_STEEL_WING'],
                 nature: NATURES.ADAMANT,
             },
             {

@@ -118,6 +118,75 @@ Route104_EventScript_MayEncounter::
 	releaseall
 	end
 
+Route104_EventScript_PickGem::
+	multichoice 0, 0, MULTI_ROUTE104_PICK_GEM, FALSE
+	switch VAR_RESULT
+	case 0, Route104_EventScript_PickWaterGem
+	case 1, Route104_EventScript_PickFlyingGem
+	case 2, Route104_EventScript_PickDarkGem
+	end
+
+Route104_EventScript_PickWaterGem::
+	finditem ITEM_WATER_GEM
+	setflag FLAG_ITEM_ROUTE_104_GEM
+	end
+
+Route104_EventScript_PickFlyingGem::
+	finditem ITEM_FLYING_GEM
+	setflag FLAG_ITEM_ROUTE_104_GEM
+	end
+
+Route104_EventScript_PickDarkGem::
+	finditem ITEM_DARK_GEM
+	setflag FLAG_ITEM_ROUTE_104_GEM
+	end
+
+Route104_EventScript_PickBerry::
+	multichoice 0, 0, MULTI_ROUTE104_PICK_BERRY, FALSE
+	switch VAR_RESULT
+	case 0, Route104_EventScript_PickPasshoBerry
+	case 1, Route104_EventScript_PickChartiBerry
+	case 2, Route104_EventScript_PickChopleBerry
+	end
+
+Route104_EventScript_PickPasshoBerry::
+	finditem ITEM_PASSHO_BERRY
+	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
+	end
+
+Route104_EventScript_PickChartiBerry::
+	finditem ITEM_CHARTI_BERRY
+	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
+	end
+
+Route104_EventScript_PickChopleBerry::
+	finditem ITEM_CHOPLE_BERRY
+	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
+	end
+
+Route104_EventScript_PickTM::
+	multichoice 0, 0, MULTI_ROUTE104_PICK_TM, FALSE
+	switch VAR_RESULT
+	case 0, Route104_EventScript_PickWaterPulseTM
+	case 1, Route104_EventScript_PickBulletSeedTM
+	case 2, Route104_EventScript_PickDigTM
+	end
+
+Route104_EventScript_PickWaterPulseTM::
+	finditem ITEM_TM_WATER_PULSE
+	setflag FLAG_ITEM_ROUTE_104_POTION
+	end
+
+Route104_EventScript_PickBulletSeedTM::
+	finditem ITEM_TM_BULLET_SEED
+	setflag FLAG_ITEM_ROUTE_104_POTION
+	end
+
+Route104_EventScript_PickDigTM::
+	finditem ITEM_TM_DIG
+	setflag FLAG_ITEM_ROUTE_104_POTION
+	end
+
 Route104_Movement_RivalWalkSlowLeft:
 	walk_slow_left
 	step_end
@@ -280,54 +349,6 @@ Route104_EventScript_WhiteHerbFlorist::
 	setflag FLAG_RECEIVED_WHITE_HERB
 	release
 	end
-
-Route104_EventScript_PickItem1::
-	setflag FLAG_ITEM_ROUTE_104_POTION
-	giveitem ITEM_TM_WATER_PULSE
-	removeobject LOCALID_ROUTE104_I1
-	removeobject LOCALID_ROUTE104_I2
-	removeobject LOCALID_ROUTE104_I3
-	release
-	end
-
-Route104_EventScript_PickItem2::
-	setflag FLAG_ITEM_ROUTE_104_POTION
-	giveitem ITEM_TM_BULLET_SEED
-	removeobject LOCALID_ROUTE104_I1
-	removeobject LOCALID_ROUTE104_I2
-	removeobject LOCALID_ROUTE104_I3
-	release
-	end
-
-Route104_EventScript_PickItem3::
-	setflag FLAG_ITEM_ROUTE_104_POTION
-	giveitem ITEM_TM_DIG
-	removeobject LOCALID_ROUTE104_I1
-	removeobject LOCALID_ROUTE104_I2
-	removeobject LOCALID_ROUTE104_I3
-	release
-	end
-
-Route104_EventScript_PickItem1_Sign::
-	msgbox Route104_Text_PickItem1, MSGBOX_SIGN
-	end
-
-Route104_EventScript_PickItem2_Sign::
-	msgbox Route104_Text_PickItem2, MSGBOX_SIGN
-	end
-
-Route104_EventScript_PickItem3_Sign::
-	msgbox Route104_Text_PickItem3, MSGBOX_SIGN
-	end
-
-Route104_Text_PickItem1:
-	.string "Water Pulse$"
-
-Route104_Text_PickItem2:
-	.string "Bullet Seed$"
-
-Route104_Text_PickItem3:
-	.string "Dig$"
 
 Route104_EventScript_ReceivedWhiteHerb::
 	msgbox Route104_Text_FlowerShopSellingSaplings, MSGBOX_DEFAULT

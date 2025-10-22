@@ -741,6 +741,34 @@ static const struct MenuAction MultichoiceList_PetalburgWoodsPick[] =
     {COMPOUND_STRING("Earth Plate")},
 };
 
+static const struct MenuAction MultichoiceList_Route104PickGem[] =
+{
+    {COMPOUND_STRING("Water Gem")},
+    {COMPOUND_STRING("Flying Gem")},
+    {COMPOUND_STRING("Dark Gem")},
+};
+
+static const struct MenuAction MultichoiceList_Route104PickBerry[] =
+{
+    {COMPOUND_STRING("Passho Berry")},
+    {COMPOUND_STRING("Charti Berry")},
+    {COMPOUND_STRING("Chople Berry")},
+};
+
+static const struct MenuAction MultichoiceList_Route104PickTM[] =
+{
+    {COMPOUND_STRING("TM Water Pulse")},
+    {COMPOUND_STRING("TM Bullet Seed")},
+    {COMPOUND_STRING("TM Dig")},
+};
+
+static const struct MenuAction MultichoiceList_Route106Pick[] =
+{
+    {COMPOUND_STRING("TM Brick Break")},
+    {COMPOUND_STRING("TM Shadow Ball")},
+    {COMPOUND_STRING("TM Psychic")},
+};
+
 static const struct MenuAction MultichoiceList_WheresRayquaza[] =
 {
     {COMPOUND_STRING("CAVE OF ORIGIN")},
@@ -914,6 +942,10 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_TAG_MATCH_TYPE]             = MULTICHOICE(MultichoiceList_TagMatchType),
     [MULTI_BERRY_PLOT]                 = MULTICHOICE(MultichoiceList_BerryPlot),
     [MULTI_PETALBURG_WOODS_PICK]       = MULTICHOICE(MultichoiceList_PetalburgWoodsPick),
+    [MULTI_ROUTE104_PICK_GEM]          = MULTICHOICE(MultichoiceList_Route104PickGem),
+    [MULTI_ROUTE104_PICK_BERRY]        = MULTICHOICE(MultichoiceList_Route104PickBerry),
+    [MULTI_ROUTE104_PICK_TM]           = MULTICHOICE(MultichoiceList_Route104PickTM),
+    [MULTI_ROUTE106_PICK]              = MULTICHOICE(MultichoiceList_Route106Pick),
 };
 
 const u8 *const gStdStrings[] =

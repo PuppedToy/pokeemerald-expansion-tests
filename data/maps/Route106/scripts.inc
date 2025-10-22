@@ -31,6 +31,29 @@ Route105_EventScript_Andres::
 	release
 	end
 
+Route106_EventScript_PickTM::
+	multichoice 0, 0, MULTI_ROUTE106_PICK, FALSE
+	switch VAR_RESULT
+	case 0, Route106_EventScript_PickBrickBreak
+	case 1, Route106_EventScript_PickShadowBall
+	case 2, Route106_EventScript_PickPsychic
+	end
+
+Route106_EventScript_PickBrickBreak::
+	finditem ITEM_TM_BRICK_BREAK
+	setflag FLAG_ITEM_ROUTE_106_TM
+	end
+
+Route106_EventScript_PickShadowBall::
+	finditem ITEM_TM_SHADOW_BALL
+	setflag FLAG_ITEM_ROUTE_106_TM
+	end
+
+Route106_EventScript_PickPsychic::
+	finditem ITEM_TM_PSYCHIC
+	setflag FLAG_ITEM_ROUTE_106_TM
+	end
+
 Route105_EventScript_Josue::
 	trainerbattle_single TRAINER_JOSUE, Route105_Text_JosueIntro, Route105_Text_JosueDefeated
 	msgbox Route105_Text_JosuePostBattle, MSGBOX_AUTOCLOSE
