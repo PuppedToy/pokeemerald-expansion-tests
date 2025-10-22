@@ -263,13 +263,6 @@ const rivalLillycoveTemplate = (id) => [
 ];
 
 const rivalRoute110Bag = [
-    ...rivalRustboroBag,
-    'Assault Vest',
-    'Throat Spray',
-    'Jaboca Berry',
-    'Red Card',
-    'Rocky Helmet',
-    'Loaded Dice',
     'Life Orb',
 ];
 
