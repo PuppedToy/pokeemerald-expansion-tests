@@ -272,7 +272,6 @@ const wallyBag = [
 ];
 
 const rivalRoute110TMs = [
-    ...rivalRustboroTMs,
     'MOVE_DRAGON_CLAW',
     'MOVE_TAUNT',
 ];
