@@ -142,10 +142,12 @@ const routeFiles = [
     path.resolve(mapsBase, 'Route103', 'map.json'),
     path.resolve(mapsBase, 'Route113', 'map.json'),
     path.resolve(mapsBase, 'Route115', 'map.json'),
+    path.resolve(mapsBase, 'Route116', 'map.json'),
     path.resolve(mapsBase, 'Route117', 'map.json'),
     path.resolve(mapsBase, 'Route118', 'map.json'),
     path.resolve(mapsBase, 'PetalburgCity', 'map.json'),
     path.resolve(mapsBase, 'RustboroCity', 'map.json'),
+    path.resolve(mapsBase, 'DewfordTown', 'map.json'),
     path.resolve(mapsBase, 'ScorchedSlab', 'map.json'),
 ];
 
@@ -176,6 +178,39 @@ function itemIdToName(itemId) {
 function isValidEvolution(level, { param, method }) {
     return (!isNaN(parseInt(param)) && parseInt(param) <= level && parseInt(param) > 4)
         || ((method === 'ITEM' || param === '0') && level >= 25);
+}
+
+function tryEvolve(level, pokemon) {
+    const chosenTrainerMon = { ...pokemon };
+    let possibleEvolutions;
+
+    do {
+        if (!chosenTrainerMon.evolutions || chosenTrainerMon.evolutions.length === 0) {
+            break;
+        }
+
+        // Try to evolve to the first possible evolution
+        possibleEvolutions = chosenTrainerMon.evolutions.filter((evo) => 
+            isValidEvolution(level, evo)
+        );
+        if (possibleEvolutions.length > 0) {
+            // sort by param
+            possibleEvolutions.sort((a, b) => parseInt(b.param) - parseInt(a.param));
+            let evolvedForm;
+            for (let i = 0; i < possibleEvolutions.length && !evolvedForm; i++) {
+                const evolutionToApply = possibleEvolutions[i].pokemon;
+                evolvedForm = pokemonList.find(p => p.id === evolutionToApply);
+                if (evolvedForm) {
+                    chosenTrainerMon = evolvedForm;
+                }
+            }
+            if (!evolvedForm) {
+                break;
+            }
+        }
+    } while (possibleEvolutions.length > 0);
+
+    return chosenTrainerMon;
 }
 
 async function writer(pokemonList, moves, abilities) {
@@ -749,6 +784,12 @@ async function writer(pokemonList, moves, abilities) {
                 );
             }
 
+            // Try evolve all of them
+            if (trainerMonDefinition.tryEvolve) {
+                pokemonLooseList = pokemonLooseList.map(loosePokemon => tryEvolve(trainer.level, loosePokemon));
+                pokemonStrictList = pokemonStrictList.map(strictPokemon => tryEvolve(trainer.level, strictPokemon));
+            }
+
             // Always apply unique restriction
             if (pokemonLooseList.length > 0) {
                 let filteredLooseList = pokemonLooseList.filter(
@@ -783,16 +824,19 @@ async function writer(pokemonList, moves, abilities) {
 
             // If any strict pokemon meet the restrictions, pick from them
             if (pokemonStrictList.length > 0) {
-                chosenTrainerMon = sample(pokemonStrictList);
+                if (trainerMonDefinition.pickBest) {
+                    const sortedStrictList = pokemonStrictList.sort((a, b) => a.rating.absoluteRating - b.rating.absoluteRating);
+                    chosenTrainerMon = sortedStrictList[0];
+                }
+                else {
+                    chosenTrainerMon = sample(pokemonStrictList);
+                }
             }
-            // Else pick from the loose list if any
+            // Else forget about unique restriction
             else if (pokemonLooseList.length > 0) {
-                // First try to apply at least unique restriction
-                const filteredLooseList = pokemonLooseList.filter(
-                    loosePokemon => !team.find(teamPokemon => teamPokemon.pokemon.id === loosePokemon.id)
-                );
-                if (filteredLooseList.length > 0) {
-                    chosenTrainerMon = sample(filteredLooseList);
+                if (trainerMonDefinition.pickBest) {
+                    const sortedLooseList = pokemonLooseList.sort((a, b) => a.rating.absoluteRating - b.rating.absoluteRating);
+                    chosenTrainerMon = sortedLooseList[0];
                 }
                 else {
                     chosenTrainerMon = sample(pokemonLooseList);
@@ -820,35 +864,6 @@ async function writer(pokemonList, moves, abilities) {
                 // Pick a random pokemon
                 const randomPokemon = sample(pokemonList);
                 chosenTrainerMon = randomPokemon;
-            }
-
-            if (trainerMonDefinition.tryEvolve) {
-                let possibleEvolutions;
-                do {
-                    if (!chosenTrainerMon.evolutions || chosenTrainerMon.evolutions.length === 0) {
-                        break;
-                    }
-
-                    // Try to evolve to the first possible evolution
-                    possibleEvolutions = chosenTrainerMon.evolutions.filter((evo) => 
-                        isValidEvolution(trainer.level, evo)
-                    );
-                    if (possibleEvolutions.length > 0) {
-                        // sort by param
-                        possibleEvolutions.sort((a, b) => parseInt(b.param) - parseInt(a.param));
-                        let evolvedForm;
-                        for (let i = 0; i < possibleEvolutions.length && !evolvedForm; i++) {
-                            const evolutionToApply = possibleEvolutions[i].pokemon;
-                            evolvedForm = pokemonList.find(p => p.id === evolutionToApply);
-                            if (evolvedForm) {
-                                chosenTrainerMon = evolvedForm;
-                            }
-                        }
-                        if (!evolvedForm) {
-                            break;
-                        }
-                    }
-                } while (possibleEvolutions.length > 0);
             }
 
             if (trainerMonDefinition.tryMega) {

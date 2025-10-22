@@ -1287,9 +1287,9 @@
 #define FLAG_ITEM_ROUTE_119_GRASSGEM                                0x4D0
 #define FLAG_ITEM_ROUTE_119_ZAP                                     0x4D1
 #define FLAG_ITEM_ROUTE_119_ICICLE                                  0x4D2
-#define FLAG_UNUSED_0x4D3                                           0x4D3 // Unused Flag
-#define FLAG_UNUSED_0x4D4                                           0x4D4 // Unused Flag
-#define FLAG_UNUSED_0x4D5                                           0x4D5 // Unused Flag
+#define FLAG_ITEM_DEWFORD_MINT                                      0x4D3
+#define FLAG_ITEM_ROUTE_106_CAPSULE                                 0x4D4
+#define FLAG_ITEM_ROUTE_106_TM                                      0x4D5
 #define FLAG_UNUSED_0x4D6                                           0x4D6 // Unused Flag
 #define FLAG_UNUSED_0x4D7                                           0x4D7 // Unused Flag
 #define FLAG_UNUSED_0x4D8                                           0x4D8 // Unused Flag

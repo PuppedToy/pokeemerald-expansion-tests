@@ -50,19 +50,6 @@ Route105_EventScript_Imani::
 	msgbox Route105_Text_ImaniPostBattle, MSGBOX_AUTOCLOSE
 	end
 
-Route105_EventScript_Josue::
-	trainerbattle_single TRAINER_JOSUE, Route105_Text_JosueIntro, Route105_Text_JosueDefeated
-	msgbox Route105_Text_JosuePostBattle, MSGBOX_AUTOCLOSE
-	end
-
-Route105_EventScript_Andres::
-	trainerbattle_single TRAINER_ANDRES_1, Route105_Text_AndresIntro, Route105_Text_AndresDefeated, Route105_EventScript_AndresRegisterMatchCallAfterBattle
-	specialvar VAR_RESULT, ShouldTryRematchBattle
-	goto_if_eq VAR_RESULT, TRUE, Route105_EventScript_AndresRematch
-	msgbox Route105_Text_AndresPostBattle, MSGBOX_DEFAULT
-	release
-	end
-
 Route105_EventScript_AndresRegisterMatchCallAfterBattle::
 	special PlayerFaceTrainerAfterBattle
 	waitmovement 0

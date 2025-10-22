@@ -149,41 +149,6 @@ const sunAbilities = ['FLOWER_GIFT', 'CHLOROPHYLL', 'LEAF_GUARD', 'SOLAR_POWER',
 const sandAbilities = ['SAND_FORCE', 'SAND_RUSH', 'SAND_VEIL', 'SAND_SPIT'];
 const snowAbilities = ['ICE_BODY', 'SNOW_CLOAK', 'SLUSH_RUSH'];
 
-const rivalRustboroTemplate = (id) => [
-    {
-        special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_STARTER_' + id,
-        item: 'Eviolite',
-        tryEvolve: true,
-    },
-    {
-        special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_ZIGZAGOON', 'SPECIES_WURMPLE', 'SPECIES_WINGULL', 'SPECIES_SURSKIT', 'SPECIES_GEODUDE', 'SPECIES_WEEDLE', 'SPECIES_PATRAT', 'SPECIES_PORYGON', 'SPECIES_DELIBIRD', 'SPECIES_DITTO', 'SPECIES_SENTRET', 'SPECIES_POOCHYENA'],
-        tryEvolve: true,
-    },
-    {
-        special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_ZIGZAGOON', 'SPECIES_WURMPLE', 'SPECIES_WINGULL', 'SPECIES_SURSKIT', 'SPECIES_GEODUDE', 'SPECIES_WEEDLE', 'SPECIES_PATRAT', 'SPECIES_PORYGON', 'SPECIES_DELIBIRD', 'SPECIES_DITTO', 'SPECIES_SENTRET', 'SPECIES_POOCHYENA'],
-        tryEvolve: true,
-    },
-    {
-        special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_WEAK_103_KEEP_ONCE_' + id,
-        tryEvolve: true,
-    },
-    {
-        id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
-        evolutionTier: [TIER_STRONG],
-        evoType: [EVO_TYPE_LC],
-        tryEvolve: true,
-    },
-    {
-        special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_MEGA_103_KEEP_' + id,
-        tryEvolve: true,
-    },
-];
-
 const rivalRoute110Template = (id) => [
     {
         special: TRAINER_REPEAT_ID,
@@ -297,20 +262,6 @@ const rivalLillycoveTemplate = (id) => [
     },
 ];
 
-const rivalRustboroBag = [
-    'Black Sludge',
-    'Expert Belt',
-    'Oran Berry',
-    'Charti Berry',
-    'Chesto Berry',
-    'Meadow Plate',
-    'Earth Plate',
-    'Flame Orb',
-    'Water Gem',
-    'Flying Gem',
-    'Heavy-Duty Boots',
-];
-
 const rivalRoute110Bag = [
     ...rivalRustboroBag,
     'Assault Vest',
@@ -325,13 +276,6 @@ const rivalRoute110Bag = [
 const wallyBag = [
     ...rivalRoute110Bag,
     'Lum Berry',
-];
-
-const rivalRustboroTMs = [
-    'MOVE_WATER_PULSE',
-    'MOVE_ROCK_TOMB',
-    'MOVE_BRICK_BREAK',
-    'MOVE_BULLET_SEED',
 ];
 
 const rivalRoute110TMs = [
@@ -631,6 +575,11 @@ const POKEDEF_BAD_LC_OR_SOLO = {
     tryEvolve: true,
 };
 
+const POKEDEF_WEAK_POKE = {
+    absoluteTier: [TIER_WEAK],
+    checkValidEvo: true,
+};
+
 const PROMISING_PREMIUM_LEGEND_GOD_MEGA_LC = {
     megaTier: [TIER_PREMIUM, TIER_LEGEND, TIER_GOD],
     absoluteTier: [TIER_BAD],
@@ -668,6 +617,66 @@ const rival103Template = (id) => [
     },
 ];
 
+const rivalRustboroEncounters = [
+    'SPECIES_ZIGZAGOON',
+    'SPECIES_WURMPLE',
+    'SPECIES_WINGULL',
+    'SPECIES_SURSKIT',
+    'SPECIES_SMEARGLE',
+    'SPECIES_WEEDLE',
+    'SPECIES_PATRAT',
+    'SPECIES_PORYGON',
+    'SPECIES_GEODUDE',
+    'SPECIES_DELIBIRD',
+    'SPECIES_DITTO',
+    'SPECIES_SENTRET',
+    'SPECIES_POOCHYENA'
+];
+
+const rivalRustboroTemplate = (id) => [
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_STARTER_' + id,
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: [...rivalRustboroEncounters],
+        pickBest: true,
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: [...rivalRustboroEncounters],
+        pickBest: true,
+        tryEvolve: true,
+    },
+    {
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: [...rivalRustboroEncounters],
+        tryEvolve: true,
+    },
+    {
+        id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
+        evolutionTier: [TIER_PREMIUM],
+        evoType: [EVO_TYPE_LC],
+        tryEvolve: true,
+        fallback: [
+            {
+                id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
+                evolutionTier: [TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+            }
+        ],
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_MEGA_103_KEEP_' + id,
+        tryEvolve: true,
+    },
+];
+
 const rival103Bag = [
     'Oran Berry',
 ];
@@ -681,7 +690,6 @@ const petalwoodGruntBag = [
 
 const roxanneTMs = [
     'MOVE_WATER_PULSE',
-    'MOVE_DIG',
     'MOVE_BULLET_SEED',
 ];
 
@@ -689,7 +697,38 @@ const roxanneBag = [
     ...petalwoodGruntBag,
     'Meadow Plate',
     'Earth Plate',
-    'Rock Gem',
+    'Water Gem',
+    'Flying Gem',
+    'Dark Gem',
+    'Passho Berry',
+    'Charti Berry',
+    'Chople Berry',
+];
+
+const rusturfGruntBag = [
+    ...roxanneBag,
+    'Rocky Helmet',
+    'Black Sludge',
+];
+
+const rusturfGruntTMs = [
+    ...roxanneTMs,
+    'MOVE_ROCK_TOMB',
+];
+
+const rivalRustboroBag = [
+    ...rusturfGruntBag,
+    'Flame Orb',
+];
+
+const brawylyBag = [
+    ...rivalRustboroBag,
+    'Life Orb',
+];
+
+const brawlyTMs = [
+    ...rusturfGruntTMs,
+    'MOVE_BRICK_BREAK',
 ];
 
 const trainersData = [
@@ -697,7 +736,6 @@ const trainersData = [
     {
         id: 'TRAINER_CALVIN_1',
         level: 7,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -709,7 +747,6 @@ const trainersData = [
     {
         id: 'TRAINER_ELIJAH',
         level: 7,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
                 ...POKEDEF_BAD_LC,
@@ -777,7 +814,6 @@ const trainersData = [
     {
         id: 'TRAINER_ALLEN',
         level: 9,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -790,7 +826,6 @@ const trainersData = [
     {
         id: 'TRAINER_RICK',
         level: 9,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -803,7 +838,6 @@ const trainersData = [
     {
         id: 'TRAINER_TIANA',
         level: 9,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rival103Bag],
         team: [
             {
@@ -817,7 +851,6 @@ const trainersData = [
     {
         id: 'TRAINER_CARTER',
         level: 9,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -831,7 +864,6 @@ const trainersData = [
     {
         id: 'TRAINER_DARIAN',
         level: 9,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -844,7 +876,6 @@ const trainersData = [
     {
         id: 'TRAINER_CINDY_1',
         level: 9,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rival103Bag],
         team: [
             {
@@ -859,7 +890,6 @@ const trainersData = [
     {
         id: 'TRAINER_LYLE',
         level: 9,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: ['Meadow Plate', 'Splash Plate', 'Earth Plate'],
         team: [
             {
@@ -946,15 +976,13 @@ const trainersData = [
     {
         id: 'TRAINER_HALEY_1',
         level: 10,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rival103Bag],
-        tms: [...roxanneTMs],
+        tms: [...roxanneTMs, 'MOVE_DIG'],
         team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
     },
     {
         id: 'TRAINER_GINA_AND_MIA_1',
         level: 10,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -973,7 +1001,6 @@ const trainersData = [
     {
         id: 'TRAINER_TIMOTHY_1',
         level: 10,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -986,7 +1013,6 @@ const trainersData = [
     {
         id: 'TRAINER_MARLENE',
         level: 10,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rival103Bag],
         team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
     },
@@ -995,7 +1021,7 @@ const trainersData = [
         id: 'TRAINER_ROXANNE_1',
         level: 10,
         isBoss: true,
-        bag: [...roxanneBag, 'Passho Berry'],
+        bag: [...roxanneBag, 'Rock Gem'],
         tms: [...roxanneTMs],
         team: [
             {
@@ -1040,8 +1066,8 @@ const trainersData = [
     {
         id: 'TRAINER_BILLY',
         level: 13,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...roxanneBag],
+        tms: [...roxanneTMs],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -1053,181 +1079,36 @@ const trainersData = [
     // Route 116
     {
         id: 'TRAINER_JOSE',
-        level: 10,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        level: 13,
+        bag: [...roxanneBag],
+        tms: [...roxanneTMs],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_DITTO'],
-                item: 'Oran Berry',
             },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
         ],
     },
     {
         id: 'TRAINER_JOEY',
-        level: 10,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        team: [
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-        ],
-    },
-    {
-        id: 'TRAINER_KAREN_1',
-        level: 10,
-        team: [
-            {
-                absoluteTier: [TIER_BAD],
-                type: [POKEMON_TYPE_GROUND],
-                evoType: [EVO_TYPE_LC],
-                item: 'Earth Plate',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                type: [POKEMON_TYPE_GROUND],
-                evoType: [EVO_TYPE_LC],
-                item: 'Earth Plate',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                type: [POKEMON_TYPE_GROUND],
-                evoType: [EVO_TYPE_LC],
-                item: 'Earth Plate',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-        ],
-    },
-    {
-        id: 'TRAINER_CLARK',
-        level: 10,
-        team: [
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                item: 'Heavy-Duty Boots',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                item: 'Heavy-Duty Boots',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                item: 'Heavy-Duty Boots',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                item: 'Heavy-Duty Boots',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                item: 'Heavy-Duty Boots',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                item: 'Heavy-Duty Boots',
-            },
-        ],
+        level: 13,
+        bag: [...roxanneBag],
+        tms: [...roxanneTMs],
+        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
     },
     {
         id: 'TRAINER_JOHNSON',
-        level: 10,
-        team: [
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_FIGHTING],
-                mustHaveOneOfMoves: ['MOVE_BRICK_BREAK'],
-                tryToHaveMove: ['MOVE_BRICK_BREAK'],
-                item: 'Oran Berry',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_BRICK_BREAK'],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_BRICK_BREAK'],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_BRICK_BREAK'],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_BRICK_BREAK'],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_BRICK_BREAK'],
-            },
-        ],
+        level: 13,
+        bag: [...roxanneBag, 'Rocky Helmet'],
+        tms: [...roxanneTMs],
+        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
     },
     {
         id: 'TRAINER_DEVAN',
-        level: 10,
+        level: 13,
+        bag: [...roxanneBag],
+        tms: [...roxanneTMs],
         team: [
             {
                 absoluteTier: [TIER_BAD],
@@ -1235,131 +1116,7 @@ const trainersData = [
                 type: [POKEMON_TYPE_POISON],
                 item: 'Black Sludge',
             },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_POISON],
-                item: 'Black Sludge',
-            },
-        ],
-    },
-    {
-        id: 'TRAINER_JANICE',
-        level: 13,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SENTRET'],
-                item: 'Oran Berry',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-        ],
-    },
-    {
-        id: 'TRAINER_JERRY_1',
-        level: 13,
-        team: [
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                abilities: ['GUTS'],
-                item: 'Flame Orb',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                type: [POKEMON_TYPE_PSYCHIC],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                type: [POKEMON_TYPE_PSYCHIC],
-                evoType: [EVO_TYPE_LC],
-            },
-        ],
-    },
-    {
-        id: 'TRAINER_SARAH',
-        level: 13,
-        team: [
-            {
-                absoluteTier: [TIER_BAD],
-                type: [POKEMON_TYPE_FLYING],
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_AERIAL_ACE'],
-                tryToHaveMove: ['MOVE_AERIAL_ACE'],
-                item: 'Flying Gem',
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                type: [POKEMON_TYPE_FLYING],
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_AERIAL_ACE'],
-                tryToHaveMove: ['MOVE_AERIAL_ACE'],
-                item: 'Flying Gem',
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
         ],
     },
     // Rusturf Tunnel
@@ -1367,61 +1124,93 @@ const trainersData = [
         id: 'TRAINER_GRUNT_RUSTURF_TUNNEL',
         level: 13,
         isBoss: true,
+        bag: [...rusturfGruntBag],
+        tms: [...rusturfGruntTMs],
         team: [
             {
                 specific: 'SPECIES_CARVANHA',
-                item: 'Oran Berry',
                 nature: NATURES.RELAXED,
-                tryToHaveMove: ['MOVE_AQUA_JET', 'MOVE_THIEF', 'MOVE_REST', 'MOVE_SLEEP_TALK'],
+                abilities: ['ROUGH_SKIN'],
             },
             {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                ...POKEDEF_BAD_LC_OR_SOLO,
                 type: [aquaTeamTypes[0]],
-                mustHaveOneOfMoves: ['MOVE_WATER_PULSE'],
-                tryToHaveMove: ['MOVE_WATER_PULSE'],
-                item: 'Water Gem',
                 tryEvolve: true,
             },
             {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                ...POKEDEF_BAD_LC_OR_SOLO,
                 type: [aquaTeamTypes[1]],
-                item: 'Eviolite',
                 tryEvolve: true,
             },
             {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                ...POKEDEF_BAD_LC_OR_SOLO,
                 type: [aquaTeamTypes[2]],
-                item: 'Black Sludge',
                 tryEvolve: true,
             },
             {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                ...POKEDEF_BAD_LC_OR_SOLO,
                 type: [aquaTeamTypes[3]],
-                item: 'Expert Belt',
                 tryEvolve: true,
             },
             {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+                ...POKEDEF_BAD_LC_OR_SOLO,
                 type: [aquaTeamTypes[4]],
-                mustHaveOneOfMoves: ['MOVE_AERIAL_ACE'],
-                tryToHaveMove: ['MOVE_AERIAL_ACE'],
-                item: 'Flying Gem',
                 tryEvolve: true,
             },
         ],
     },
+    // Route 116 again
+    {
+        id: 'TRAINER_JANICE',
+        level: 14,
+        bag: [...roxanneBag],
+        tms: [...roxanneTMs],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SENTRET'],
+                item: 'Oran Berry',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+        ],
+    },
+    {
+        id: 'TRAINER_JERRY_1',
+        level: 14,
+        bag: [...roxanneBag],
+        tms: [...roxanneTMs],
+        team: [
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                abilities: ['GUTS'],
+                item: 'Flame Orb',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+        ],
+    },
+    {
+        id: 'TRAINER_SARAH',
+        level: 14,
+        bag: [...roxanneBag],
+        tms: [...roxanneTMs],
+        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+    },
+    {
+        id: 'TRAINER_KAREN_1',
+        level: 14,
+        bag: [...roxanneBag],
+        tms: [...roxanneTMs],
+        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+    },
+    // Rustboro Rival
     {
         id: 'TRAINER_MAY_RUSTBORO_TREECKO',
         isBoss: true,
         level: 14,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag],
-        tms: [...rivalRustboroTMs],
+        tms: [...rusturfGruntTMs],
         team: [...rivalRustboroTemplate('TREECKO')],
     },
     {
@@ -1430,7 +1219,7 @@ const trainersData = [
         level: 14,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag],
-        tms: [...rivalRustboroTMs],
+        tms: [...rusturfGruntTMs],
         team: [...rivalRustboroTemplate('TORCHIC')],
     },
     {
@@ -1439,7 +1228,7 @@ const trainersData = [
         level: 14,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag],
-        tms: [...rivalRustboroTMs],
+        tms: [...rusturfGruntTMs],
         team: [...rivalRustboroTemplate('MUDKIP')],
     },
     {
@@ -1458,139 +1247,76 @@ const trainersData = [
     {
         id: 'TRAINER_NED',
         level: 16,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        team: [
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                item: 'Life Orb',
-                tryEvolve: true,
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                item: 'Life Orb',
-                tryEvolve: true,
-            },
-        ],
+        bag: [...roxanneBag],
+        tms: [...roxanneTMs],
+        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
     },
     {
         id: 'TRAINER_ELLIOT_1',
         level: 16,
+        bag: [...roxanneBag],
+        tms: [...roxanneTMs],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_CHARMANDER'],
-                item: 'Oran Berry',
             },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                absoluteTier: [TIER_BAD],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
         ],
+    },
+    {
+        id: 'TRAINER_ANDRES_1',
+        level: 16,
+        bag: [...roxanneBag],
+        tms: [...roxanneTMs],
+        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+    },
+    {
+        id: 'TRAINER_JOSUE',
+        level: 16,
+        bag: [...roxanneBag],
+        tms: [...roxanneTMs, 'MOVE_BRICK_BREAK'],
+        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
     },
     // Dewford Gym
     {
         id: 'TRAINER_BRAWLY_1',
         level: 16,
         isBoss: true,
-        bag: [
-            'Life Orb',
-            'Oran Berry',
-            'Black Sludge',
-            'Fighting Gem',
-            'Stone Plate',
-            'Eviolite',
-            'Payapa Berry',
-            'Chesto Berry',
-            'Expert Belt',
-        ],
-        tms: [
-            'MOVE_WATER_PULSE',
-            'MOVE_BULLET_SEED',
-        ],
+        bag: [...brawylyBag],
+        tms: [...brawlyTMs],
         team: [
             {
                 specific: 'SPECIES_MAKUHITA',
-                tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP', 'MOVE_FAKE_OUT', 'MOVE_ROCK_TOMB'],
+                tryToHaveMove: ['MOVE_BULK_UP', 'MOVE_FAKE_OUT', 'MOVE_ROCK_TOMB'],
                 nature: NATURES.ADAMANT,
                 abilities: ['GUTS'],
                 item: 'Flame Orb',
             },
             {
+                ...POKEDEF_WEAK_POKE,
                 type: [POKEMON_TYPE_FIGHTING],
-                evolutionTier: [TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP'],
-                tryEvolve: true,
+                tryToHaveMove: ['MOVE_BULK_UP'],
             },
             {
+                ...POKEDEF_BAD_LC,
                 type: [POKEMON_TYPE_DARK],
-                evolutionTier: [TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP'],
-                tryEvolve: true,
+                tryToHaveMove: ['MOVE_BULK_UP'],
             },
             {
+                ...POKEDEF_BAD_LC,
                 type: [POKEMON_TYPE_FIGHTING],
-                evolutionTier: [TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP'],
-                tryEvolve: true,
+                tryToHaveMove: ['MOVE_BULK_UP'],
             },
             {
+                ...POKEDEF_BAD_LC,
                 type: [POKEMON_TYPE_ROCK],
-                evolutionTier: [TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP'],
-                tryEvolve: true,
+                tryToHaveMove: ['MOVE_BULK_UP'],
             },
             {
+                ...POKEDEF_WEAK_POKE,
                 type: [POKEMON_TYPE_FIGHTING],
-                absoluteTier: [TIER_BAD, TIER_WEAK],
-                evoType: [EVO_TYPE_LC],
-                tryToHaveMove: ['MOVE_BRICK_BREAK', 'MOVE_BULK_UP'],
+                tryToHaveMove: ['MOVE_BULK_UP'],
             },
         ],
     },
@@ -1599,37 +1325,23 @@ const trainersData = [
         id: 'TRAINER_STEVEN',
         level: 19,
         isBoss: true,
-        bag: [
-            'Oran Berry',
-            'Black Sludge',
-            'Rock Gem',
-            'Earth Plate',
-            'Chople Berry',
-            'Eviolite',
-            'Shuca Berry',
-            'Chesto Berry',
-            'Expert Belt',
-        ],
-        tms: [
-            'MOVE_WATER_PULSE',
-            'MOVE_ROCK_TOMB',
-            'MOVE_BULLET_SEED',
-            'MOVE_BRICK_BREAK',
-        ],
+        bag: [...brawylyBag, 'Steel Gem', 'Rock Gem'],
+        tms: [...brawlyTMs],
         team: [
             {
-                oneOf: stevenPokemon,
-                tryToHaveMove: ['MOVE_STEEL_WING'],
-            },
-            {
                 specific: 'SPECIES_SKARMORY',
-                tryToHaveMove: ['MOVE_STEEL_WING', 'MOVE_AGILITY', 'MOVE_AERIAL_ACE', 'MOVE_ROCK_TOMB'],
+                tryToHaveMove: ['MOVE_STEEL_WING', 'MOVE_AGILITY'],
                 nature: NATURES.ADAMANT,
-                item: 'Life Orb',
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_STEEL],
+                tryToHaveMove: ['MOVE_STEEL_WING'],
             },
             {
                 oneOf: stevenPokemon,
                 tryToHaveMove: ['MOVE_STEEL_WING'],
+                tryEvolve: true,
             },
             {
                 type: [POKEMON_TYPE_STEEL],
@@ -1641,13 +1353,12 @@ const trainersData = [
             {
                 oneOf: stevenPokemon,
                 tryToHaveMove: ['MOVE_STEEL_WING'],
+                tryEvolve: true,
             },
             {
+                ...POKEDEF_WEAK_POKE,
                 type: [POKEMON_TYPE_STEEL],
-                evolutionTier: [TIER_PREMIUM, TIER_STRONG],
-                evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_STEEL_WING'],
-                tryEvolve: true,
             },
         ],
     },
