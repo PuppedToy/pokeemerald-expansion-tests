@@ -180,39 +180,6 @@ function isValidEvolution(level, { param, method }) {
         || ((method === 'ITEM' || param === '0') && level >= 25);
 }
 
-function tryEvolve(level, pokemon) {
-    const chosenTrainerMon = { ...pokemon };
-    let possibleEvolutions;
-
-    do {
-        if (!chosenTrainerMon.evolutions || chosenTrainerMon.evolutions.length === 0) {
-            break;
-        }
-
-        // Try to evolve to the first possible evolution
-        possibleEvolutions = chosenTrainerMon.evolutions.filter((evo) => 
-            isValidEvolution(level, evo)
-        );
-        if (possibleEvolutions.length > 0) {
-            // sort by param
-            possibleEvolutions.sort((a, b) => parseInt(b.param) - parseInt(a.param));
-            let evolvedForm;
-            for (let i = 0; i < possibleEvolutions.length && !evolvedForm; i++) {
-                const evolutionToApply = possibleEvolutions[i].pokemon;
-                evolvedForm = pokemonList.find(p => p.id === evolutionToApply);
-                if (evolvedForm) {
-                    chosenTrainerMon = evolvedForm;
-                }
-            }
-            if (!evolvedForm) {
-                break;
-            }
-        }
-    } while (possibleEvolutions.length > 0);
-
-    return chosenTrainerMon;
-}
-
 async function writer(pokemonList, moves, abilities) {
 
     console.log('Writing pokemon buff / nerfs to files...');
@@ -612,6 +579,39 @@ async function writer(pokemonList, moves, abilities) {
             return result;
         }
 
+        const tryEvolve = (pokemon) => {
+            const chosenTrainerMon = { ...pokemon };
+            let possibleEvolutions;
+
+            do {
+                if (!chosenTrainerMon.evolutions || chosenTrainerMon.evolutions.length === 0) {
+                    break;
+                }
+
+                // Try to evolve to the first possible evolution
+                possibleEvolutions = chosenTrainerMon.evolutions.filter((evo) => 
+                    isValidEvolution(trainer.level, evo)
+                );
+                if (possibleEvolutions.length > 0) {
+                    // sort by param
+                    possibleEvolutions.sort((a, b) => parseInt(b.param) - parseInt(a.param));
+                    let evolvedForm;
+                    for (let i = 0; i < possibleEvolutions.length && !evolvedForm; i++) {
+                        const evolutionToApply = possibleEvolutions[i].pokemon;
+                        evolvedForm = pokemonList.find(p => p.id === evolutionToApply);
+                        if (evolvedForm) {
+                            chosenTrainerMon = evolvedForm;
+                        }
+                    }
+                    if (!evolvedForm) {
+                        break;
+                    }
+                }
+            } while (possibleEvolutions.length > 0);
+
+            return chosenTrainerMon;
+        }
+
         const choosePokemonFromDefinition = (trainerMonDefinition) => {
             let pokemonStrictList = [];
             let pokemonLooseList = [];
@@ -786,8 +786,8 @@ async function writer(pokemonList, moves, abilities) {
 
             // Try evolve all of them
             if (trainerMonDefinition.tryEvolve) {
-                pokemonLooseList = pokemonLooseList.map(loosePokemon => tryEvolve(trainer.level, loosePokemon));
-                pokemonStrictList = pokemonStrictList.map(strictPokemon => tryEvolve(trainer.level, strictPokemon));
+                pokemonLooseList = pokemonLooseList.map(loosePokemon => tryEvolve(loosePokemon));
+                pokemonStrictList = pokemonStrictList.map(strictPokemon => tryEvolve(strictPokemon));
             }
 
             // Always apply unique restriction
