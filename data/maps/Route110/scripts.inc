@@ -158,6 +158,35 @@ Route110_EventScript_PickFocusPunch::
 	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
 	end
 
+PetalburgWoods_EventScript_PickSeed::
+	multichoice 0, 0, MULTI_ROUTE110_PICK_SEED, FALSE
+	switch VAR_RESULT
+	case 1, PetalburgWoods_EventScript_PickElectric
+	case 0, PetalburgWoods_EventScript_PickGrassy
+	case 2, PetalburgWoods_EventScript_PickMisty
+	case 3, PetalburgWoods_EventScript_PickPsychic
+	end
+
+PetalburgWoods_EventScript_PickElectric::
+	finditem ITEM_ELECTRIC_SEED
+	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
+	end
+
+PetalburgWoods_EventScript_PickGrassy::
+	finditem ITEM_GRASSY_SEED
+	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
+	end
+
+PetalburgWoods_EventScript_PickMisty::
+	finditem ITEM_MISTY_SEED
+	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
+	end
+
+PetalburgWoods_EventScript_PickPsychic::
+	finditem ITEM_PSYCHIC_SEED
+	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
+	end
+
 Route110_EventScript_NoRecordSet::
 	msgbox Route110_Text_ThereIsNoRecord, MSGBOX_DEFAULT
 	releaseall

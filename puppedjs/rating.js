@@ -487,9 +487,45 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         }
         return 0;
     }
-    if (item === 'Damp Rock' || item === 'Heat Rock' || item === 'Icy Rock' || item === 'Smooth Rock') {
+    if (item === 'Damp Rock' || item === 'Heat Rock' || item === 'Icy Rock' || item === 'Smooth Rock' || item === 'Terrain Extender') {
         // @TODO For now these won't be used
         return 0;
+    }
+    const isElectricSurge = ability === 'ELECTRIC_SURGE';
+    const isGrassySurge = ability === 'GRASSY_SURGE';
+    const isMistySurge = ability === 'MISTY_SURGE';
+    const isPsychicSurge = ability === 'PSYCHIC_SURGE';
+    if (item === 'Electric Seed') {
+        if (isElectricSurge) {
+            return 10 * physicalDefensePower * calculatedDeviation;
+        }
+        else {
+            return 0;
+        }
+    }
+    if (item === 'Grassy Seed') {
+        if (isGrassySurge) {
+            return 10 * physicalDefensePower * calculatedDeviation;
+        }
+        else {
+            return 0;
+        }
+    }
+    if (item === 'Misty Seed') {
+        if (isMistySurge) {
+            return 10 * specialOffensePower * calculatedDeviation;
+        }
+        else {
+            return 0;
+        }
+    }
+    if (item === 'Psychic Seed') {
+        if (isPsychicSurge) {
+            return 10 * specialOffensePower * calculatedDeviation;
+        }
+        else {
+            return 0;
+        }
     }
     const hasReflect = moveset.some(m => m.id === 'MOVE_REFLECT');
     const hasLightScreen = moveset.some(m => m.id === 'MOVE_LIGHT_SCREEN');

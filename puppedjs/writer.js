@@ -179,7 +179,7 @@ function itemIdToName(itemId) {
 
 function isValidEvolution(level, { param, method }) {
     return (!isNaN(parseInt(param)) && parseInt(param) <= level && parseInt(param) > 4)
-        || ((method === 'ITEM' || param === '0') && level >= 25);
+        || ((method === 'ITEM' || param === '0') && level > 25);
 }
 
 async function writer(pokemonList, moves, abilities) {

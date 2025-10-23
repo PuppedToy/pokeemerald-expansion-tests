@@ -227,13 +227,7 @@ const rivalLillycoveTemplate = (id) => [
     },
 ];
 
-const wallyBag = [
-    ...rivalRoute110Bag,
-    'Lum Berry',
-];
-
 const magmaChimneyBag = [
-    ...wallyBag,
     'Air Balloon',
     'Toxic Orb',
     'Sitrus Berry',
@@ -516,6 +510,166 @@ const POKEDEF_WEAK_LC = {
     tryEvolve: true,
 };
 
+const pokeDefDrizzleMon = (BASE_POKE_DEF) => {
+    return {
+        ...BASE_POKE_DEF,
+        abilities: ['DRIZZLE'],
+        item: 'Damp Rock',
+        fallback: [
+            {
+                ...BASE_POKE_DEF,
+                mustHaveOneOfMoves: ['MOVE_RAIN_DANCE'],
+                tryToHaveMove: ['MOVE_RAIN_DANCE'],
+                item: 'Damp Rock',
+                abilities: [...rainAbilities],
+            },
+            {
+                ...BASE_POKE_DEF,
+            },
+        ],
+    };
+};
+
+const pokeDefSnowWarningMon = (BASE_POKE_DEF) => {
+    return {
+        ...BASE_POKE_DEF,
+        abilities: ['SNOW_WARNING'],
+        item: 'Icy Rock',
+        fallback: [
+            {
+                ...BASE_POKE_DEF,
+                mustHaveOneOfMoves: ['MOVE_HAIL'],
+                tryToHaveMove: ['MOVE_HAIL'],
+                item: 'Icy Rock',
+                abilities: [...snowAbilities],
+            },
+            {
+                ...BASE_POKE_DEF,
+            },
+        ],
+    };
+};
+
+const pokeDefDroughtMon = (BASE_POKE_DEF) => {
+    return {
+        ...BASE_POKE_DEF,
+        abilities: ['DROUGHT'],
+        item: 'Heat Rock',
+        fallback: [
+            {
+                ...BASE_POKE_DEF,
+                mustHaveOneOfMoves: ['MOVE_SUNNY_DAY'],
+                tryToHaveMove: ['MOVE_SUNNY_DAY'],
+                item: 'Heat Rock',
+                abilities: [...sunAbilities],
+            },
+            {
+                ...BASE_POKE_DEF,
+            },
+        ],
+    };
+};
+
+const pokeDefSandStreamMon = (BASE_POKE_DEF) => {
+    return {
+        ...BASE_POKE_DEF,
+        abilities: ['SAND_STREAM'],
+        item: 'Smooth Rock',
+        fallback: [
+            {
+                ...BASE_POKE_DEF,
+                mustHaveOneOfMoves: ['MOVE_SANDSTORM'],
+                tryToHaveMove: ['MOVE_SANDSTORM'],
+                item: 'Smooth Rock',
+                abilities: [...sandAbilities],
+            },
+            {
+                ...BASE_POKE_DEF,
+            },
+        ],
+    };
+};
+
+const psychicSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
+    return {
+        ...BASE_POKE_DEF,
+        abilities: ['PSYCHIC_SURGE'],
+        item,
+        fallback: [
+            {
+                ...BASE_POKE_DEF,
+                mustHaveOneOfMoves: ['MOVE_PSYCHIC_TERRAIN'],
+                tryToHaveMove: ['MOVE_PSYCHIC_TERRAIN'],
+                item,
+                abilities: ['PSYCHIC_SURGE'],
+            },
+            {
+                ...BASE_POKE_DEF,
+            },
+        ],
+    };
+};
+
+const mistySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
+    return {
+        ...BASE_POKE_DEF,
+        abilities: ['MISTY_SURGE'],
+        item,
+        fallback: [
+            {
+                ...BASE_POKE_DEF,
+                mustHaveOneOfMoves: ['MOVE_MISTY_TERRAIN'],
+                tryToHaveMove: ['MOVE_MISTY_TERRAIN'],
+                item,
+                abilities: ['MISTY_SURGE'],
+            },
+            {
+                ...BASE_POKE_DEF,
+            },
+        ],
+    };
+};
+
+const electricSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
+    return {
+        ...BASE_POKE_DEF,
+        abilities: ['ELECTRIC_SURGE'],
+        item,
+        fallback: [
+            {
+                ...BASE_POKE_DEF,
+                mustHaveOneOfMoves: ['MOVE_ELECTRIC_TERRAIN'],
+                tryToHaveMove: ['MOVE_ELECTRIC_TERRAIN'],
+                item,
+                abilities: ['ELECTRIC_SURGE'],
+            },
+            {
+                ...BASE_POKE_DEF,
+            },
+        ],
+    };
+};
+
+const grassySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
+    return {
+        ...BASE_POKE_DEF,
+        abilities: ['GRASSY_SURGE'],
+        item,
+        fallback: [
+            {
+                ...BASE_POKE_DEF,
+                mustHaveOneOfMoves: ['MOVE_GRASSY_TERRAIN'],
+                tryToHaveMove: ['MOVE_GRASSY_TERRAIN'],
+                item,
+                abilities: ['GRASSY_SURGE'],
+            },
+            {
+                ...BASE_POKE_DEF,
+            },
+        ],
+    };
+};
+
 const POKEDEF_BAD_LC_OR_SOLO = {
     absoluteTier: [TIER_BAD],
     evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
@@ -776,6 +930,15 @@ const rivalRoute110TMs = [
     'MOVE_DRAGON_CLAW',
     'MOVE_EARTHQUAKE',
     // 'MOVE_FOCUS_PUNCH',
+];
+
+const wallyBag = [
+    ...rivalRoute110Bag,
+    'Lum Berry',
+    'Electric Seed',
+    'Grassy Seed',
+    'Psychic Seed',
+    'Misty Seed',
 ];
 
 const trainersData = [
@@ -1494,34 +1657,10 @@ const trainersData = [
         level: 21,
         bag: getSampleItemsFromArray(brawylyBag, 2),
         team: [
-            {
-                ...POKEDEF_BAD_LC,
-                abilities: [...sunAbilities],
-                mustHaveOneOfMoves: ['MOVE_SUNNY_DAY'],
-                tryToHaveMove: ['MOVE_SUNNY_DAY'],
-                item: 'Heat Rock',
-            },
-            {
-                ...POKEDEF_BAD_LC,
-                abilities: [...rainAbilities],
-                mustHaveOneOfMoves: ['MOVE_RAIN_DANCE'],
-                tryToHaveMove: ['MOVE_RAIN_DANCE'],
-                item: 'Damp Rock',
-            },
-            {
-                ...POKEDEF_BAD_LC,
-                abilities: [...sandAbilities],
-                mustHaveOneOfMoves: ['MOVE_SANDSTORM'],
-                tryToHaveMove: ['MOVE_SANDSTORM'],
-                item: 'Smooth Rock',
-            },
-            {
-                ...POKEDEF_BAD_LC,
-                abilities: [...snowAbilities],
-                mustHaveOneOfMoves: ['MOVE_HAIL'],
-                tryToHaveMove: ['MOVE_HAIL'],
-                item: 'Icy Rock',
-            },
+            pokeDefDrizzleMon(POKEDEF_BAD_LC),
+            pokeDefDroughtMon(POKEDEF_BAD_LC),
+            pokeDefSandStreamMon(POKEDEF_BAD_LC),
+            pokeDefSnowWarningMon(POKEDEF_BAD_LC),
             {
                 ...POKEDEF_BAD_LC,
                 abilities: [...rainAbilities, ...sunAbilities, ...sandAbilities, ...snowAbilities],
@@ -1553,20 +1692,7 @@ const trainersData = [
         bag: [...slateportGruntsBag],
         tms: [...slateportGruntsTMs],
         team: [
-            {
-                ...POKEDEF_BAD_LC_OR_SOLO,
-                abilities: ['DRIZZLE'],
-                item: 'Damp Rock',
-                fallback: [
-                    {
-                        ...POKEDEF_BAD_LC_OR_SOLO,
-                        mustHaveOneOfMoves: ['MOVE_RAIN_DANCE'],
-                        tryToHaveMove: ['MOVE_RAIN_DANCE'],
-                        item: 'Damp Rock',
-                        abilities: [...rainAbilities],
-                    }
-                ],
-            },
+            pokeDefDrizzleMon(POKEDEF_BAD_LC_OR_SOLO),
             {
                 ...POKEDEF_BAD_LC_OR_SOLO,
                 abilities: [...rainAbilities],
@@ -1575,20 +1701,7 @@ const trainersData = [
                 ...POKEDEF_BAD_LC_OR_SOLO,
                 abilities: [...rainAbilities],
             },
-            {
-                ...POKEDEF_BAD_LC_OR_SOLO,
-                abilities: ['DRIZZLE'],
-                item: 'Damp Rock',
-                fallback: [
-                    {
-                        ...POKEDEF_BAD_LC_OR_SOLO,
-                        mustHaveOneOfMoves: ['MOVE_RAIN_DANCE'],
-                        tryToHaveMove: ['MOVE_RAIN_DANCE'],
-                        item: 'Damp Rock',
-                        abilities: [...rainAbilities],
-                    }
-                ],
-            },
+            pokeDefDrizzleMon(POKEDEF_BAD_LC_OR_SOLO),
             {
                 ...POKEDEF_BAD_LC_OR_SOLO,
                 abilities: [...rainAbilities],
@@ -1606,20 +1719,7 @@ const trainersData = [
         bag: [...slateportGruntsBag],
         tms: [...slateportGruntsTMs],
         team: [
-            {
-                ...POKEDEF_BAD_LC_OR_SOLO,
-                abilities: ['SNOW_WARNING'],
-                item: 'Icy Rock',
-                fallback: [
-                    {
-                        ...POKEDEF_BAD_LC_OR_SOLO,
-                        abilities: [...snowAbilities],
-                        mustHaveOneOfMoves: ['MOVE_HAIL'],
-                        tryToHaveMove: ['MOVE_HAIL'],
-                        item: 'Icy Rock',
-                    }
-                ]
-            },
+            pokeDefSnowWarningMon(POKEDEF_BAD_LC_OR_SOLO),
             {
                 ...POKEDEF_BAD_LC_OR_SOLO,
                 abilities: [...snowAbilities],
@@ -1628,20 +1728,7 @@ const trainersData = [
                 ...POKEDEF_BAD_LC_OR_SOLO,
                 abilities: [...snowAbilities],
             },
-            {
-                ...POKEDEF_BAD_LC_OR_SOLO,
-                abilities: ['SNOW_WARNING'],
-                item: 'Icy Rock',
-                fallback: [
-                    {
-                        ...POKEDEF_BAD_LC_OR_SOLO,
-                        abilities: [...snowAbilities],
-                        mustHaveOneOfMoves: ['MOVE_HAIL'],
-                        tryToHaveMove: ['MOVE_HAIL'],
-                        item: 'Icy Rock',
-                    }
-                ]
-            },
+            pokeDefSnowWarningMon(POKEDEF_BAD_LC_OR_SOLO),
             {
                 ...POKEDEF_BAD_LC_OR_SOLO,
                 abilities: [...snowAbilities],
@@ -1681,26 +1768,7 @@ const trainersData = [
         bag: getSampleItemsFromArray(brawylyBag, 2),
         tms: getSampleItemsFromArray(brawlyTMs, 2),
         team: [
-            {
-                ...POKEDEF_BAD_LC,
-                abilities: ['GRASSY_SURGE'],
-                item: 'Terrain Extender',
-                tryEvolve: true,
-                fallback: [
-                    {
-                        ...POKEDEF_BAD_LC,
-                        mustHaveOneOfMoves: ['MOVE_GRASSY_TERRAIN'],
-                        tryToHaveMove: ['MOVE_GRASSY_TERRAIN'],
-                        item: 'Terrain Extender',
-                        tryEvolve: true,
-                    },
-                    {
-                        ...POKEDEF_BAD_LC,
-                        type: [POKEMON_TYPE_GRASS],
-                        item: 'Meadow Plate',
-                    }
-                ],
-            },
+            grassySurgeMon(POKEDEF_BAD_LC),
             {
                 ...POKEDEF_BAD_LC,
                 tryEvolve: true,
@@ -1809,128 +1877,44 @@ const trainersData = [
         id: 'TRAINER_BRENDAN_ROUTE_110_MUDKIP',
         copy: 'TRAINER_MAY_ROUTE_110_MUDKIP',
     },
-    {
-        id: 'TRAINER_EDWIN_1',
-        level: 25,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        team: [
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                item: 'Lum Berry',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                item: 'Lum Berry',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                item: 'Lum Berry',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                item: 'Lum Berry',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                item: 'Lum Berry',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                item: 'Lum Berry',
-                tryEvolve: true,
-            },
-        ],
-    },
-    {
-        id: 'TRAINER_JOSEPH',
-        level: 25,
-        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
-        types: [POKEMON_TYPE_ELECTRIC],
-        team: [
-            {
-                specific: 'SPECIES_MAGNETON',
-                tryToHaveMove: ['MOVE_ELECTRIC_TERRAIN'],
-                item: 'Terrain Extender',
-                abilities: ['STURDY'],
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                item: 'Electric Seed',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                item: 'Electric Seed',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                item: 'Electric Seed',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                item: 'Electric Seed',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                item: 'Electric Seed',
-                tryEvolve: true,
-            },
-        ],
-    },
-    {
+    // Route 110 after rival
+        {
         id: 'TRAINER_DALE',
         level: 25,
-        bag: ['Eviolite', 'Assault Vest', 'Lum Berry', 'Oran Berry'],
+        bag: getSampleItemsFromArray(brawylyBag, 4),
+        tms: getSampleItemsFromArray(brawlyTMs, 2),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_MANECTRIC'],
                 tryEvolve: true,
             },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5)
+        ],
+    },
+    {
+        id: 'TRAINER_EDWIN_1',
+        level: 25,
+        bag: ['Lum Berry', ...getSampleItemsFromArray(brawylyBag, 3)],
+        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+    },
+    {
+        id: 'TRAINER_JOSEPH',
+        level: 25,
+        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        team: [
+            psychicSurgeMon(POKEDEF_BAD_LC, 'Psychic Seed'),
+            mistySurgeMon(POKEDEF_BAD_LC, 'Misty Seed'),
+            electricSurgeMon(POKEDEF_BAD_LC, 'Electric Seed'),
+            grassySurgeMon(POKEDEF_BAD_LC, 'Grassy Seed'),
             {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_PSYCHIC, POKEMON_TYPE_FAIRY, POKEMON_TYPE_ELECTRIC, POKEMON_TYPE_GRASS],
             },
             {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_PSYCHIC, POKEMON_TYPE_FAIRY, POKEMON_TYPE_ELECTRIC, POKEMON_TYPE_GRASS],
             },
         ],
     },
@@ -1940,6 +1924,7 @@ const trainersData = [
         level: 25,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...wallyBag],
+        tms: [...rivalRoute110TMs],
         team: [
             {
                 id: 'WALLY_1',

@@ -784,6 +784,14 @@ static const struct MenuAction MultichoiceList_Route110Pick[] =
     {COMPOUND_STRING("TM Focus Punch")},
 };
 
+static const struct MenuAction MultichoiceList_Route110PickSeed[] =
+{
+    {COMPOUND_STRING("Electric Seed")},
+    {COMPOUND_STRING("Grassy Seed")},
+    {COMPOUND_STRING("Misty Seed")},
+    {COMPOUND_STRING("Psychic Seed")},
+};
+
 static const struct MenuAction MultichoiceList_WheresRayquaza[] =
 {
     {COMPOUND_STRING("CAVE OF ORIGIN")},
@@ -963,6 +971,7 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_ROUTE106_PICK]              = MULTICHOICE(MultichoiceList_Route106Pick),
     [MULTI_ROUTE109_PICK]              = MULTICHOICE(MultichoiceList_Route109Pick),
     [MULTI_ROUTE110_PICK]              = MULTICHOICE(MultichoiceList_Route110Pick),
+    [MULTI_ROUTE110_PICK_SEED]         = MULTICHOICE(MultichoiceList_Route110PickSeed),
 };
 
 const u8 *const gStdStrings[] =
