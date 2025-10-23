@@ -1152,10 +1152,6 @@ const trainersData = [
             },
             {
                 ...POKEDEF_BAD_LC_OR_SOLO,
-                type: [aquaTeamTypes[0]],
-            },
-            {
-                ...POKEDEF_BAD_LC_OR_SOLO,
                 type: [aquaTeamTypes[1]],
             },
             {
@@ -1169,6 +1165,10 @@ const trainersData = [
             {
                 ...POKEDEF_BAD_LC_OR_SOLO,
                 type: [aquaTeamTypes[4]],
+            },
+            {
+                ...POKEDEF_BAD_LC_OR_SOLO,
+                type: [aquaTeamTypes[0]],
             },
         ],
     },
@@ -1431,7 +1431,6 @@ const trainersData = [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_SENTRET'],
-                item: 'Oran Berry',
             },
             ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
         ],
