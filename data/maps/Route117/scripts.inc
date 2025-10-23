@@ -215,6 +215,71 @@ Route117_EventScript_Aisha::
 	msgbox Route117_Text_AishaPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route117_EventScript_PickScreen::
+	multichoice 0, 0, MULTI_ROUTE117_PICK_SCREEN, FALSE
+	switch VAR_RESULT
+	case 0, Route117_EventScript_PickReflect
+	case 1, Route117_EventScript_PickLightScreen
+	end
+
+Route117_EventScript_PickReflect::
+	finditem ITEM_TM_REFLECT
+	finditem ITEM_LIGHT_CLAY
+	setflag FLAG_ITEM_ROUTE_117_CLAY
+	end
+
+Route117_EventScript_PickLightScreen::
+	finditem ITEM_TM_LIGHT_SCREEN
+	finditem ITEM_LIGHT_CLAY
+	setflag FLAG_ITEM_ROUTE_117_CLAY
+	end
+
+Route117_EventScript_PickBerry::
+	multichoice 0, 0, MULTI_ROUTE117_PICK_BERRY, FALSE
+	switch VAR_RESULT
+	case 0, Route117_EventScript_PickWacan
+	case 1, Route117_EventScript_PickOcca
+	case 2, Route117_EventScript_PickShuca
+	end
+
+Route117_EventScript_PickWacan::
+	finditem ITEM_WACAN_BERRY
+	setflag FLAG_ITEM_ROUTE_117_WACAN
+	end
+
+Route117_EventScript_PickOcca::
+	finditem ITEM_OCCA_BERRY
+	setflag FLAG_ITEM_ROUTE_117_WACAN
+	end
+
+Route117_EventScript_PickShuca::
+	finditem ITEM_SHUCA_BERRY
+	setflag FLAG_ITEM_ROUTE_117_WACAN
+	end
+
+Route117_EventScript_PickGem::
+	multichoice 0, 0, MULTI_ROUTE117_PICK_GEM, FALSE
+	switch VAR_RESULT
+	case 0, Route117_EventScript_PickFire
+	case 1, Route117_EventScript_PickGround
+	case 2, Route117_EventScript_PickFighting
+	end
+
+Route117_EventScript_PickFire::
+	finditem ITEM_FIRE_GEM
+	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
+	end
+
+Route117_EventScript_PickGround::
+	finditem ITEM_GROUND_GEM
+	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
+	end
+
+Route117_EventScript_PickFighting::
+	finditem ITEM_FIGHTING_GEM
+	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
+	end
+
 Route117_Text_DayCarePokemonHadNewMove:
 	.string "I left my POKéMON at the DAY CARE.\p"
 	.string "When I got it back, it had a new move\n"

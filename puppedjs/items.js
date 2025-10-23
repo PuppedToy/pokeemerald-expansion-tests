@@ -93,21 +93,21 @@ const items = {
 
     gems: [
         'ITEM_NORMAL_GEM',
-        'ITEM_FIRE_GEM',
-        'ITEM_WATER_GEM', // Route 103
-        'ITEM_ELECTRIC_GEM', // Route 119
-        'ITEM_GRASS_GEM', // Route 119
+        'ITEM_FIRE_GEM', // Route 117
+        'ITEM_WATER_GEM', // Route 104
+        'ITEM_ELECTRIC_GEM',
+        'ITEM_GRASS_GEM',
         'ITEM_ICE_GEM',
-        'ITEM_FIGHTING_GEM', // Route 111
+        'ITEM_FIGHTING_GEM', // Route 117
         'ITEM_POISON_GEM',
         'ITEM_GROUND_GEM', // Route 117
-        'ITEM_FLYING_GEM',
+        'ITEM_FLYING_GEM', // Route 104
         'ITEM_PSYCHIC_GEM',
         'ITEM_BUG_GEM',
-        'ITEM_ROCK_GEM', // Route 120
+        'ITEM_ROCK_GEM',
         'ITEM_GHOST_GEM',
         'ITEM_DRAGON_GEM',
-        'ITEM_DARK_GEM',
+        'ITEM_DARK_GEM', // Route 104
         'ITEM_STEEL_GEM',
         'ITEM_FAIRY_GEM',
     ],
@@ -346,22 +346,22 @@ const items = {
     ],
 
     protectionBerries: {
-        NORMAL: 'ITEM_CHILAN_BERRY', // Route 111
-        FIRE: 'ITEM_OCCA_BERRY', // Route 112
-        WATER: 'ITEM_PASSHO_BERRY',
+        NORMAL: 'ITEM_CHILAN_BERRY',
+        FIRE: 'ITEM_OCCA_BERRY', // Route 117
+        WATER: 'ITEM_PASSHO_BERRY', // Route 104
         ELECTRIC: 'ITEM_WACAN_BERRY', // Route 117
         GRASS: 'ITEM_RINDO_BERRY',
         ICE: 'ITEM_YACHE_BERRY',
-        FIGHTING: 'ITEM_CHOPLE_BERRY',
-        POISON: 'ITEM_KEBIA_BERRY', // Route 119
-        GROUND: 'ITEM_SHUCA_BERRY',
-        FLYING: 'ITEM_COBA_BERRY', // Route 119
+        FIGHTING: 'ITEM_CHOPLE_BERRY', // Route 104
+        POISON: 'ITEM_KEBIA_BERRY',
+        GROUND: 'ITEM_SHUCA_BERRY', // Route 117
+        FLYING: 'ITEM_COBA_BERRY',
         PSYCHIC: 'ITEM_PAYAPA_BERRY',
         BUG: 'ITEM_TANGA_BERRY',
         ROCK: 'ITEM_CHARTI_BERRY', // Route 104
         GHOST: 'ITEM_KASIB_BERRY',
         DRAGON: 'ITEM_HABAN_BERRY',
-        DARK: 'ITEM_COLBUR_BERRY', // Route 119
+        DARK: 'ITEM_COLBUR_BERRY',
         STEEL: 'ITEM_BABIRI_BERRY',
         FAIRY: 'ITEM_ROSELI_BERRY',
     },

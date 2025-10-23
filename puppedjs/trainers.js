@@ -504,10 +504,26 @@ const POKEDEF_BAD_LC = {
     tryEvolve: true,
 };
 
+const POKEDEF_BAD_LC_OR_SOLO = {
+    absoluteTier: [TIER_BAD],
+    evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
+    tryEvolve: true,
+};
+
 const POKEDEF_WEAK_LC = {
     absoluteTier: [TIER_WEAK],
     evoType: [EVO_TYPE_LC],
     tryEvolve: true,
+};
+
+const POKEDEF_WEAK = {
+    absoluteTier: [TIER_WEAK],
+    checkValidEvo: true,
+};
+
+const POKEDEF_AVERAGE = {
+    absoluteTier: [TIER_AVERAGE],
+    checkValidEvo: true,
 };
 
 const pokeDefDrizzleMon = (BASE_POKE_DEF) => {
@@ -590,7 +606,7 @@ const pokeDefSandStreamMon = (BASE_POKE_DEF) => {
     };
 };
 
-const psychicSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
+const pokeDefPsychicSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
     return {
         ...BASE_POKE_DEF,
         abilities: ['PSYCHIC_SURGE'],
@@ -610,7 +626,7 @@ const psychicSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
     };
 };
 
-const mistySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
+const pokeDefMistySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
     return {
         ...BASE_POKE_DEF,
         abilities: ['MISTY_SURGE'],
@@ -630,7 +646,7 @@ const mistySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
     };
 };
 
-const electricSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
+const pokeDefElectricSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
     return {
         ...BASE_POKE_DEF,
         abilities: ['ELECTRIC_SURGE'],
@@ -650,7 +666,7 @@ const electricSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
     };
 };
 
-const grassySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
+const pokeDefGrassySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
     return {
         ...BASE_POKE_DEF,
         abilities: ['GRASSY_SURGE'],
@@ -668,17 +684,6 @@ const grassySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
             },
         ],
     };
-};
-
-const POKEDEF_BAD_LC_OR_SOLO = {
-    absoluteTier: [TIER_BAD],
-    evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
-    tryEvolve: true,
-};
-
-const POKEDEF_WEAK_POKE = {
-    absoluteTier: [TIER_WEAK],
-    checkValidEvo: true,
 };
 
 const PROMISING_PREMIUM_LEGEND_GOD_MEGA_LC = {
@@ -929,7 +934,7 @@ const rivalRoute110TMs = [
     ...slateportGruntsTMs,
     'MOVE_DRAGON_CLAW',
     'MOVE_EARTHQUAKE',
-    // 'MOVE_FOCUS_PUNCH',
+    'MOVE_FOCUS_PUNCH',
 ];
 
 const wallyBag = [
@@ -939,6 +944,23 @@ const wallyBag = [
     'Grassy Seed',
     'Psychic Seed',
     'Misty Seed',
+];
+
+const wattsonBag = [
+    'Light Clay',
+    'Assault Vest',
+    'Wacan Berry',
+    'Occa Berry',
+    'Shuca Berry',
+    'Fire Gem',
+    'Ground Gem',
+    'Fighting Gem',
+];
+
+const wattsonTMs = [
+    ...rivalRoute110TMs,
+    'TM_REFLECT',
+    'TM_LIGHT_SCREEN',
 ];
 
 const trainersData = [
@@ -1548,7 +1570,7 @@ const trainersData = [
                 item: 'Flame Orb',
             },
             {
-                ...POKEDEF_WEAK_POKE,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_FIGHTING],
                 tryToHaveMove: ['MOVE_BULK_UP'],
             },
@@ -1568,7 +1590,7 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_BULK_UP'],
             },
             {
-                ...POKEDEF_WEAK_POKE,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_FIGHTING],
                 tryToHaveMove: ['MOVE_BULK_UP'],
             },
@@ -1610,7 +1632,7 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
-                ...POKEDEF_WEAK_POKE,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_STEEL],
                 tryToHaveMove: ['MOVE_STEEL_WING'],
             },
@@ -1768,7 +1790,7 @@ const trainersData = [
         bag: getSampleItemsFromArray(brawylyBag, 2),
         tms: getSampleItemsFromArray(brawlyTMs, 2),
         team: [
-            grassySurgeMon(POKEDEF_BAD_LC),
+            pokeDefGrassySurgeMon(POKEDEF_BAD_LC),
             {
                 ...POKEDEF_BAD_LC,
                 tryEvolve: true,
@@ -1904,10 +1926,10 @@ const trainersData = [
         level: 25,
         tms: getSampleItemsFromArray(brawlyTMs, 2),
         team: [
-            psychicSurgeMon(POKEDEF_BAD_LC, 'Psychic Seed'),
-            mistySurgeMon(POKEDEF_BAD_LC, 'Misty Seed'),
-            electricSurgeMon(POKEDEF_BAD_LC, 'Electric Seed'),
-            grassySurgeMon(POKEDEF_BAD_LC, 'Grassy Seed'),
+            pokeDefPsychicSurgeMon(POKEDEF_BAD_LC, 'Psychic Seed'),
+            pokeDefMistySurgeMon(POKEDEF_BAD_LC, 'Misty Seed'),
+            pokeDefElectricSurgeMon(POKEDEF_BAD_LC, 'Electric Seed'),
+            pokeDefGrassySurgeMon(POKEDEF_BAD_LC, 'Grassy Seed'),
             {
                 ...POKEDEF_BAD_LC,
                 type: [POKEMON_TYPE_PSYCHIC, POKEMON_TYPE_FAIRY, POKEMON_TYPE_ELECTRIC, POKEMON_TYPE_GRASS],
@@ -1918,6 +1940,29 @@ const trainersData = [
             },
         ],
     },
+    // Route 118
+    {
+        id: 'TRAINER_DEANDRE',
+        level: 25,
+        bag: getSampleItemsFromArray(brawylyBag, 4),
+        tms: getSampleItemsFromArray(brawlyTMs, 2),        
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_CARVANHA'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+        ],
+    },
+    {
+        id: 'TRAINER_DALTON_1',
+        level: 25,
+        bag: getSampleItemsFromArray(brawylyBag, 4),
+        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+    },
+    // Wally
     {
         id: 'TRAINER_WALLY_MAUVILLE',
         isBoss: true,
@@ -1964,514 +2009,147 @@ const trainersData = [
             },
         ],
     },
+    // Route 117
     {
         id: 'TRAINER_BRANDI',
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         level: 26,
-        bag: ['Eviolite', 'Assault Vest', 'Lum Berry', 'Oran Berry'],
+        bag: getSampleItemsFromArray(brawylyBag, 4),
+        tms: getSampleItemsFromArray(brawlyTMs, 2),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_ODDISH'],
                 tryEvolve: true,
             },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 5),
         ],
     },
     {
         id: 'TRAINER_ISAAC_1',
         level: 26,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: ['Eviolite', 'Assault Vest', 'Lum Berry', 'Oran Berry'],
+        bag: getSampleItemsFromArray(brawylyBag, 4),
+        tms: getSampleItemsFromArray(brawlyTMs, 2),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_GLOOM'],
                 tryEvolve: true,
             },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            },
-        ],
-    },
-    {
-        id: 'TRAINER_DEREK',
-        level: 26,
-        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES],
-        abilities: [...sunAbilities],
-        team: [
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_SUNNY_DAY'],
-                tryToHaveMove: ['MOVE_SUNNY_DAY'],
-                item: 'Heat Rock',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
-                evoType: [EVO_TYPE_LC],
-                item: 'Booster Energy',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
-                evoType: [EVO_TYPE_LC],
-                item: 'Booster Energy',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_SUNNY_DAY'],
-                tryToHaveMove: ['MOVE_SUNNY_DAY'],
-                item: 'Heat Rock',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
-                evoType: [EVO_TYPE_LC],
-                item: 'Booster Energy',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
-                evoType: [EVO_TYPE_LC],
-                item: 'Booster Energy',
-                tryEvolve: true,
-            },
-        ],
-    },
-    {
-        id: 'TRAINER_ANNA_AND_MEG_1',
-        level: 26,
-        team: [
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_REFLECT'],
-                tryToHaveMove: ['MOVE_REFLECT'],
-                item: 'Light Clay',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_LIGHT_SCREEN'],
-                tryToHaveMove: ['MOVE_LIGHT_SCREEN'],
-                item: 'Light Clay',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_REFLECT'],
-                tryToHaveMove: ['MOVE_REFLECT'],
-                item: 'Light Clay',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_LIGHT_SCREEN'],
-                tryToHaveMove: ['MOVE_LIGHT_SCREEN'],
-                item: 'Light Clay',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_REFLECT'],
-                tryToHaveMove: ['MOVE_REFLECT'],
-                item: 'Light Clay',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                mustHaveOneOfMoves: ['MOVE_LIGHT_SCREEN'],
-                tryToHaveMove: ['MOVE_LIGHT_SCREEN'],
-                item: 'Light Clay',
-                tryEvolve: true,
-            },
-        ],
-    },
-    {
-        id: 'TRAINER_MELINA',
-        level: 26,
-        team: [
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                weakToTypes: [POKEMON_TYPE_ELECTRIC],
-                item: 'Wacan Berry',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                weakToTypes: [POKEMON_TYPE_ELECTRIC],
-                item: 'Wacan Berry',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                weakToTypes: [POKEMON_TYPE_ELECTRIC],
-                item: 'Wacan Berry',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                weakToTypes: [POKEMON_TYPE_ELECTRIC],
-                item: 'Wacan Berry',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                weakToTypes: [POKEMON_TYPE_ELECTRIC],
-                item: 'Wacan Berry',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                weakToTypes: [POKEMON_TYPE_ELECTRIC],
-                item: 'Wacan Berry',
-                tryEvolve: true,
-            },
-        ],
-    },
-    {
-        id: 'TRAINER_AISHA',
-        level: 26,
-        team: [
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_GROUND],
-                item: 'Ground Gem',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_ROCK],
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_GROUND],
-                item: 'Ground Gem',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_ELECTRIC],
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_GROUND],
-                item: 'Ground Gem',
-                tryEvolve: true,
-            },
-            {
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_ICE],
-                tryEvolve: true,
-            },
-        ],
-    },
-    {
-        id: 'TRAINER_MARIA_1',
-        level: 26,
-        bag: ['Eviolite', 'Assault Vest', 'Lum Berry', 'Ground Gem'],
-        team: [
-            {
-                evoType: [EVO_TYPE_LC],
-                type: [POKEMON_TYPE_GROUND],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
-                tryToHaveMove: ['MOVE_EARTHQUAKE'],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
-                tryToHaveMove: ['MOVE_EARTHQUAKE'],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
-                tryToHaveMove: ['MOVE_EARTHQUAKE'],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
-                tryToHaveMove: ['MOVE_EARTHQUAKE'],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
-                tryToHaveMove: ['MOVE_EARTHQUAKE'],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                mustHaveOneOfMoves: ['MOVE_EARTHQUAKE'],
-                tryToHaveMove: ['MOVE_EARTHQUAKE'],
-                tryEvolve: true,
-            },
-        ],
-    },
-    {
-        id: 'TRAINER_LYDIA_1',
-        level: 26,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: ['Eviolite', 'Assault Vest', 'Lum Berry'],
-        team: [
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 5),
         ],
     },
     {
         id: 'TRAINER_DYLAN_1',
         level: 26,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: ['Oran Berry', 'Lum Berry', 'Jaboca Berry'],
+        bag: getSampleItemsFromArray(brawylyBag, 4),
+        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 6),
+        ]
+    },
+    {
+        id: 'TRAINER_LYDIA_1',
+        level: 26,
+        bag: getSampleItemsFromArray(brawylyBag, 4),
+        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 6),
+        ]
+    },
+    {
+        id: 'TRAINER_DEREK',
+        level: 26,
+        bag: getSampleItemsFromArray(brawylyBag, 5),
+        tms: getSampleItemsFromArray(brawlyTMs, 3),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 6),
+        ]
+    },
+    {
+        id: 'TRAINER_ANNA_AND_MEG_1',
+        level: 26,
+        bag: getSampleItemsFromArray(brawylyBag, 2),
+        tms: getSampleItemsFromArray(brawlyTMs, 2),
         team: [
             {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
+                ...POKEDEF_WEAK,
+                mustHaveOneOfMoves: ['MOVE_REFLECT'],
+                tryToHaveMove: ['MOVE_REFLECT'],
+                item: 'Light Clay',
             },
             {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
+                ...POKEDEF_WEAK,
+                mustHaveOneOfMoves: ['MOVE_LIGHT_SCREEN'],
+                tryToHaveMove: ['MOVE_LIGHT_SCREEN'],
+                item: 'Light Clay',
             },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 4),
         ],
     },
     {
-        id: 'TRAINER_DEANDRE',
+        id: 'TRAINER_MELINA',
         level: 26,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: ['Oran Berry', 'Lum Berry', 'Jaboca Berry'],
+        bag: [sample(brawylyBag)],
+        tms: getSampleItemsFromArray(brawlyTMs, 2),
         team: [
             {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_CARVANHA'],
-                tryEvolve: true,
+                ...POKEDEF_WEAK,
+                weakToTypes: [POKEMON_TYPE_ELECTRIC],
+                item: 'Wacan Berry',
             },
             {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
+                ...POKEDEF_WEAK,
+                weakToTypes: [POKEMON_TYPE_FIRE],
+                item: 'Occa Berry',
             },
             {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
+                ...POKEDEF_WEAK,
+                weakToTypes: [POKEMON_TYPE_GROUND],
+                item: 'Shuca Berry',
             },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
         ],
     },
     {
-        id: 'TRAINER_DALTON_1',
+        id: 'TRAINER_AISHA',
         level: 26,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: ['Eviolite', 'Lum Berry', 'Life Orb', 'Expert Belt'],
+        bag: ['Fire Gem', 'Ground Gem', 'Fighting Gem', sample(brawylyBag)],
         team: [
             {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
+                ...POKEDEF_WEAK,
+                type: [POKEMON_TYPE_FIRE],
             },
             {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
+                ...POKEDEF_WEAK,
+                type: [POKEMON_TYPE_GROUND],
             },
             {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
+                ...POKEDEF_WEAK,
+                type: [POKEMON_TYPE_FIGHTING],
             },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
-            {
-                evoType: [EVO_TYPE_LC],
-                evolutionTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
-                tryEvolve: true,
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
         ],
+    },
+    {
+        id: 'TRAINER_MARIA_1',
+        level: 26,
+        bag: ['Assault Vest', ...getSampleItemsFromArray(brawylyBag, 3)],
+        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        team: generatePokemonsWithDefinition(POKEDEF_WEAK, 6),
     },
     // Mauville Gym
     {
         id: 'TRAINER_WATTSON_1',
         isBoss: true,
         level: 26,
-        bag: [
-            'Life Orb',
-            'Flame Orb',
-            'Black Sludge',
-            'Electric Gem',
-            'Flying Gem',
-            'Eviolite',
-            'Air Balloon',
-            'Shuca Berry',
-            'Expert Belt',
-            'Assault Vest',
-            'Rocky Helmet',
-            'Loaded Dice',
-        ],
-        tms: [
-            'MOVE_WATER_PULSE',
-            'MOVE_BULLET_SEED',
-            'MOVE_BRICK_BREAK',
-            'MOVE_DRAGON_CLAW',
-            'MOVE_EARTHQUAKE',
-            'MOVE_TAUNT',
-        ],
+        bag: [...wattsonBag, 'Electric Gem', 'Zap Plate'],
+        tms: [...wattsonTMs],
         team: [
-            {
-                specific: 'SPECIES_PINCURCHIN',
-                item: 'Terrain Extender',
-                tryToHaveMove: ['MOVE_TAUNT', 'MOVE_SHOCK_WAVE', 'MOVE_BUBBLE_BEAM', 'MOVE_THUNDER_WAVE'],
-                nature: NATURES.BOLD,
-                abilities: ['ELECTRIC_SURGE'],
-            },
+            ...pokeDefElectricSurgeMon({
+                absoluteTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                tryToHaveMove: ['MOVE_SHOCK_WAVE'],
+            }),
             {
                 specific: 'SPECIES_MANECTRIC',
                 abilities: ['STATIC'],
@@ -2479,30 +2157,25 @@ const trainersData = [
                 item: 'Manectite',
             },
             {
-                type: [POKEMON_TYPE_FLYING],
-                absoluteTier: [TIER_WEAK],
-                tryToHaveMove: ['MOVE_SHOCK_WAVE'],
-                checkValidEvo: true,
-            },
-            {
+                ...POKEDEF_AVERAGE,
                 type: [POKEMON_TYPE_ELECTRIC],
-                absoluteTier: [TIER_AVERAGE],
-                tryToHaveMove: ['MOVE_SHOCK_WAVE'],
-                item: 'Booster Energy',
-                checkValidEvo: true,
-            },
-            {
-                type: [POKEMON_TYPE_GRASS],
-                absoluteTier: [TIER_AVERAGE],
-                tryToHaveMove: ['MOVE_NATURE_POWER'],
                 item: 'Electric Seed',
-                checkValidEvo: true,
+                tryToHaveMove: ['MOVE_SHOCK_WAVE'],
             },
             {
-                type: [POKEMON_TYPE_ELECTRIC],
-                absoluteTier: [TIER_WEAK],
+                ...POKEDEF_AVERAGE,
+                type: [POKEMON_TYPE_GRASS],
                 tryToHaveMove: ['MOVE_SHOCK_WAVE'],
-                checkValidEvo: true,
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [POKEMON_TYPE_ELECTRIC],
+                tryToHaveMove: ['MOVE_SHOCK_WAVE'],
+            },
+            {
+                ...POKEDEF_WEAK,
+                type: [POKEMON_TYPE_FLYING],
+                tryToHaveMove: ['MOVE_SHOCK_WAVE'],
             },
         ],
     },
