@@ -135,6 +135,29 @@ Route110_EventScript_CyclingRoadResultsSign::
 	releaseall
 	end
 
+Route110_EventScript_PickTM::
+	multichoice 0, 0, MULTI_ROUTE110_PICK, FALSE
+	switch VAR_RESULT
+	case 0, Route110_EventScript_PickDragonClaw
+	case 1, Route110_EventScript_PickEarthquake
+	case 2, Route110_EventScript_PickFocusPunch
+	end
+
+Route110_EventScript_PickDragonClaw::
+	finditem ITEM_TM_DRAGON_CLAW
+	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
+	end
+
+Route110_EventScript_PickEarthquake::
+	finditem ITEM_TM_EARTHQUAKE
+	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
+	end
+
+Route110_EventScript_PickFocusPunch::
+	finditem ITEM_TM_FOCUS_PUNCH
+	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
+	end
+
 Route110_EventScript_NoRecordSet::
 	msgbox Route110_Text_ThereIsNoRecord, MSGBOX_DEFAULT
 	releaseall

@@ -38,6 +38,10 @@ const wildData = {
             replace: [TIER_AVERAGE],
             type: [EVO_TYPE_LC],
         },
+        LC_STRONG: {
+            replace: [TIER_STRONG],
+            type: [EVO_TYPE_LC],
+        },
         LC_AVERAGE_OR_STRONG: {
             replace: [TIER_AVERAGE, TIER_STRONG],
             type: [EVO_TYPE_LC],
@@ -127,7 +131,7 @@ const wildData = {
         SPECIES_CHARMELEON: 'NFE_OR_SOLO_AVERAGE',
 
         // Granite Cave
-        SPECIES_ARON: 'LC_AVERAGE',
+        SPECIES_ARON: 'LC_STRONG',
 
         // Route109
         SPECIES_BULBASAUR: 'LC_AVERAGE',

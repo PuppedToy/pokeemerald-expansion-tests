@@ -431,81 +431,34 @@ Route109_EventScript_LolaRegisterMatchCallAfterBattle::
 	release
 	end
 
-Route109_EventScript_PickItem1::
+Route109_EventScript_PickRock::
+	multichoice 0, 0, MULTI_ROUTE109_PICK, FALSE
+	switch VAR_RESULT
+	case 0, Route109_EventScript_PickDampRock
+	case 1, Route109_EventScript_PickHeatRock
+	case 2, Route109_EventScript_PickSmoothRock
+	case 3, Route109_EventScript_PickIcyRock
+	end
+
+Route109_EventScript_PickDampRock::
+	finditem ITEM_DAMP_ROCK
 	setflag FLAG_ITEM_ROUTE_109_PICK
-	giveitem ITEM_DAMP_ROCK
-	giveitem ITEM_TM_RAIN_DANCE
-	removeobject LOCALID_ROUTE109_I1
-	removeobject LOCALID_ROUTE109_I2
-	removeobject LOCALID_ROUTE109_I3
-	removeobject LOCALID_ROUTE109_I4
-	release
 	end
 
-Route109_EventScript_PickItem2::
+Route109_EventScript_PickHeatRock::
+	finditem ITEM_HEAT_ROCK
 	setflag FLAG_ITEM_ROUTE_109_PICK
-	giveitem ITEM_HEAT_ROCK
-	giveitem ITEM_TM_SUNNY_DAY
-	removeobject LOCALID_ROUTE109_I1
-	removeobject LOCALID_ROUTE109_I2
-	removeobject LOCALID_ROUTE109_I3
-	removeobject LOCALID_ROUTE109_I4
-	release
 	end
 
-Route109_EventScript_PickItem3::
+Route109_EventScript_PickSmoothRock::
+	finditem ITEM_SMOOTH_ROCK
 	setflag FLAG_ITEM_ROUTE_109_PICK
-	giveitem ITEM_SMOOTH_ROCK
-	giveitem ITEM_TM_SANDSTORM
-	removeobject LOCALID_ROUTE109_I1
-	removeobject LOCALID_ROUTE109_I2
-	removeobject LOCALID_ROUTE109_I3
-	removeobject LOCALID_ROUTE109_I4
-	release
 	end
 
-Route109_EventScript_PickItem4::
+Route109_EventScript_PickIcyRock::
+	finditem ITEM_ICY_ROCK
 	setflag FLAG_ITEM_ROUTE_109_PICK
-	giveitem ITEM_ICY_ROCK
-	giveitem ITEM_TM_HAIL
-	removeobject LOCALID_ROUTE109_I1
-	removeobject LOCALID_ROUTE109_I2
-	removeobject LOCALID_ROUTE109_I3
-	removeobject LOCALID_ROUTE109_I4
-	release
 	end
-
-Route109_EventScript_PickItem1_Sign::
-	msgbox Route109_Text_PickItem1, MSGBOX_SIGN
-	end
-
-Route109_EventScript_PickItem2_Sign::
-	msgbox Route109_Text_PickItem2, MSGBOX_SIGN
-	end
-
-Route109_EventScript_PickItem3_Sign::
-	msgbox Route109_Text_PickItem3, MSGBOX_SIGN
-	end
-
-Route109_EventScript_PickItem4_Sign::
-	msgbox Route109_Text_PickItem4, MSGBOX_SIGN
-	end
-
-Route109_Text_PickItem1:
-	.string "Damp Rock and\n"
-	.string "Rain Dance$"
-
-Route109_Text_PickItem2:
-	.string "Heat Rock and\n"
-	.string "Sunny Day$"
-
-Route109_Text_PickItem3:
-	.string "Smooth Rock and\n"
-	.string "Sandstorm$"
-
-Route109_Text_PickItem4:
-	.string "Icy Rock and\n"
-	.string "Hail$"
 
 Route109_EventScript_LolaRematch::
 	trainerbattle_rematch TRAINER_LOLA_1, Route109_Text_LolaRematchIntro, Route109_Text_LolaRematchDefeated

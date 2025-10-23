@@ -487,6 +487,10 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         }
         return 0;
     }
+    if (item === 'Damp Rock' || item === 'Heat Rock' || item === 'Icy Rock' || item === 'Smooth Rock') {
+        // @TODO For now these won't be used
+        return 0;
+    }
     const hasReflect = moveset.some(m => m.id === 'MOVE_REFLECT');
     const hasLightScreen = moveset.some(m => m.id === 'MOVE_LIGHT_SCREEN');
     const hasAuroraVeil = moveset.some(m => m.id === 'MOVE_AURORA_VEIL');

@@ -140,6 +140,7 @@ const TYPES = {
 const mapsBase = path.resolve(__dirname, '..', 'data', 'maps');
 const routeFiles = [
     path.resolve(mapsBase, 'Route103', 'map.json'),
+    path.resolve(mapsBase, 'Route109', 'map.json'),
     path.resolve(mapsBase, 'Route113', 'map.json'),
     path.resolve(mapsBase, 'Route115', 'map.json'),
     path.resolve(mapsBase, 'Route116', 'map.json'),
@@ -148,6 +149,7 @@ const routeFiles = [
     path.resolve(mapsBase, 'PetalburgCity', 'map.json'),
     path.resolve(mapsBase, 'RustboroCity', 'map.json'),
     path.resolve(mapsBase, 'DewfordTown', 'map.json'),
+    path.resolve(mapsBase, 'SlateportCity', 'map.json'),
     path.resolve(mapsBase, 'ScorchedSlab', 'map.json'),
 ];
 
