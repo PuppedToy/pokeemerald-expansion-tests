@@ -2145,7 +2145,7 @@ const trainersData = [
         bag: [...wattsonBag, 'Electric Gem', 'Zap Plate'],
         tms: [...wattsonTMs],
         team: [
-            ...pokeDefElectricSurgeMon({
+            pokeDefElectricSurgeMon({
                 absoluteTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 checkValidEvo: true,
                 tryToHaveMove: ['MOVE_SHOCK_WAVE'],
