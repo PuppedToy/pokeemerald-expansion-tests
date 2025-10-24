@@ -141,7 +141,11 @@ const mapsBase = path.resolve(__dirname, '..', 'data', 'maps');
 const routeFiles = [
     path.resolve(mapsBase, 'Route103', 'map.json'),
     path.resolve(mapsBase, 'Route109', 'map.json'),
+    path.resolve(mapsBase, 'Route110', 'map.json'),
+    path.resolve(mapsBase, 'Route111', 'map.json'),
+    path.resolve(mapsBase, 'Route112', 'map.json'),
     path.resolve(mapsBase, 'Route113', 'map.json'),
+    path.resolve(mapsBase, 'Route114', 'map.json'),
     path.resolve(mapsBase, 'Route115', 'map.json'),
     path.resolve(mapsBase, 'Route116', 'map.json'),
     path.resolve(mapsBase, 'Route117', 'map.json'),

@@ -240,8 +240,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_SAFETY_GOGGLES",
-      "script": "Common_EventScript_FindItem",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route111_EventScript_PickItem",
       "flag": "FLAG_ITEM_ROUTE_111_TM_SANDSTORM"
     },
     {
@@ -636,8 +636,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_CHILAN_BERRY",
-      "script": "Common_EventScript_FindItem",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route111_EventScript_PickBerry",
       "flag": "FLAG_ITEM_ROUTE_111_CHILAN"
     },
     {
@@ -649,7 +649,7 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_FIGHTING_GEM",
+      "trainer_sight_or_berry_tree_id": "ITEM_WAVE_MAIL",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_111_GEM"
     },
@@ -662,7 +662,7 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_TM_FOCUS_PUNCH",
+      "trainer_sight_or_berry_tree_id": "ITEM_ABILITY_PATCH",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_111_FOCUS"
     },
@@ -675,7 +675,7 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_ADRENALINE_ORB",
+      "trainer_sight_or_berry_tree_id": "ITEM_SAFETY_GOGGLES",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_111_ADRENALINE"
     }

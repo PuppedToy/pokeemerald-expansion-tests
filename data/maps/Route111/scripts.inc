@@ -521,6 +521,52 @@ Route111_EventScript_RegisterBrooke::
 	release
 	end
 
+Route111_EventScript_PickBerry::
+	multichoice 0, 0, MULTI_ROUTE111_PICK_BERRY, FALSE
+	switch VAR_RESULT
+	case 0, Route111_EventScript_PickChilan
+	case 1, Route111_EventScript_PickYache
+	case 2, Route111_EventScript_PickCoba
+	end
+
+Route111_EventScript_PickChilan::
+	finditem ITEM_CHILAN_BERRY
+	setflag FLAG_ITEM_ROUTE_111_CHILAN
+	end
+
+Route111_EventScript_PickYache::
+	finditem ITEM_YACHE_BERRY
+	setflag FLAG_ITEM_ROUTE_111_CHILAN
+	end
+
+Route111_EventScript_PickCoba::
+	finditem ITEM_COBA_BERRY
+	setflag FLAG_ITEM_ROUTE_111_CHILAN
+	end
+
+Route111_EventScript_PickItem::
+	multichoice 0, 0, MULTI_ROUTE111_PICK_ITEM, FALSE
+	switch VAR_RESULT
+	case 0, Route111_EventScript_PickThroatSpray
+	case 1, Route111_EventScript_EjectPack
+	case 2, Route111_EventScript_CustapBerry
+	end
+
+Route111_EventScript_PickThroatSpray::
+	finditem ITEM_THROAT_SPRAY
+	setflag FLAG_ITEM_ROUTE_111_TM_SANDSTORM
+	end
+
+Route111_EventScript_EjectPack::
+	finditem ITEM_EJECT_PACK
+	setflag FLAG_ITEM_ROUTE_111_TM_SANDSTORM
+	end
+
+Route111_EventScript_CustapBerry::
+	finditem ITEM_CUSTAP_BERRY
+	setflag FLAG_ITEM_ROUTE_111_TM_SANDSTORM
+	end
+
 Route111_EventScript_RematchBrooke::
 	trainerbattle_rematch TRAINER_BROOKE_1, Route111_Text_BrookeRematchIntro, Route111_Text_BrookeRematchDefeat
 	msgbox Route111_Text_BrookePostRematch, MSGBOX_AUTOCLOSE

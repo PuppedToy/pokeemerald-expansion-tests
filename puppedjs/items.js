@@ -302,10 +302,12 @@ const items = {
         'ITEM_LOADED_DICE', // Route 109
         'ITEM_BIG_ROOT',
         'ITEM_PUNCHING_GLOVE',
-        'ITEM_THROAT_SPRAY',
     ],
-
+    
     goodConsumables: [
+        'ITEM_THROAT_SPRAY', // Route 111
+        'ITEM_CUSTAP_BERRY', // Route 111
+        'ITEM_EJECT_PACK', // Route 111
         'ITEM_WHITE_HERB', // Route 112
         'ITEM_POWER_HERB', // Route 111
         'ITEM_FOCUS_SASH', // Route 113
@@ -318,12 +320,10 @@ const items = {
         'ITEM_PSYCHIC_SEED', // Route 110
         'ITEM_MISTY_SEED', // Route 110
         'ITEM_GRASSY_SEED', // Route 110
-        'ITEM_EJECT_PACK', // Route 103
         'ITEM_ROOM_SERVICE',
         'ITEM_LEPPA_BERRY',
         'ITEM_LUM_BERRY', // Route 110
         'ITEM_SITRUS_BERRY', // Route 111
-        'ITEM_CUSTAP_BERRY',
         'ITEM_JABOCA_BERRY',
         'ITEM_ROWAP_BERRY',
         'ITEM_KEE_BERRY',

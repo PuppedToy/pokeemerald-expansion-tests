@@ -286,33 +286,6 @@ const magmaTeamTypes = [
     POKEMON_TYPE_FIGHTING,
 ];
 
-const genericWeakAverageTeamTemplate = () => [
-    {
-        absoluteTier: [TIER_WEAK, TIER_AVERAGE],
-        checkValidEvo: true,
-    },
-    {
-        absoluteTier: [TIER_WEAK, TIER_AVERAGE],
-        checkValidEvo: true,
-    },
-    {
-        absoluteTier: [TIER_WEAK, TIER_AVERAGE],
-        checkValidEvo: true,
-    },
-    {
-        absoluteTier: [TIER_WEAK, TIER_AVERAGE],
-        checkValidEvo: true,
-    },
-    {
-        absoluteTier: [TIER_WEAK, TIER_AVERAGE],
-        checkValidEvo: true,
-    },
-    {
-        absoluteTier: [TIER_WEAK, TIER_AVERAGE],
-        checkValidEvo: true,
-    },
-];
-
 const genericWeakAverageStrongTeamTemplate = () => [
     {
         absoluteTier: [TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
@@ -336,33 +309,6 @@ const genericWeakAverageStrongTeamTemplate = () => [
     },
     {
         absoluteTier: [TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
-        checkValidEvo: true,
-    },
-];
-
-const genericAverageWith1StrongTeamTemplate = () => [
-    {
-        absoluteTier: [TIER_STRONG],
-        checkValidEvo: true,
-    },
-    {
-        absoluteTier: [TIER_AVERAGE],
-        checkValidEvo: true,
-    },
-    {
-        absoluteTier: [TIER_AVERAGE],
-        checkValidEvo: true,
-    },
-    {
-        absoluteTier: [TIER_AVERAGE],
-        checkValidEvo: true,
-    },
-    {
-        absoluteTier: [TIER_AVERAGE],
-        checkValidEvo: true,
-    },
-    {
-        absoluteTier: [TIER_AVERAGE],
         checkValidEvo: true,
     },
 ];
@@ -730,6 +676,11 @@ const generatePokemonsWithDefinition = (def, amount) => {
     return new Array(amount).fill(null).map(() => ({ ...def }));
 }
 
+const genericAverageWith1StrongTeamTemplate = () => [
+    ...POKEDEF_STRONG,
+    ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 5),
+];
+
 const sample = (array) => {
     return array[Math.floor(Math.random() * array.length)];
 }
@@ -1021,6 +972,13 @@ const flanneryTMs = [
     'MOVE_SOLAR_BEAM',
     'MOVE_HYPER_BEAM',
     'MOVE_SLUDGE_BOMB',
+];
+
+const normanBag = [
+    ...flanneryBag,
+    'Eject Pack',
+    'Throat Spray',
+    'Custap Berry'
 ];
 
 const trainersData = [
@@ -2709,98 +2667,87 @@ const trainersData = [
     {
         id: 'TRAINER_CELIA',
         level: 36,
-        bag: [...flanneryBag],
+        bag: getSampleItemsFromArray(flanneryBag, 10),
+        tms: getSampleItemsFromArray(flanneryTMs, 6),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_TRAPINCH'],
+                tryEvolve: true,
             },
-            {
-                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
-                checkValidEvo: true,
-            },
-            {
-                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
-                checkValidEvo: true,
-            },
-            {
-                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
-                checkValidEvo: true,
-            },
-            {
-                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
-                checkValidEvo: true,
-            },
-            {
-                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
-                checkValidEvo: true,
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 5),
         ],
     },
     {
         id: 'TRAINER_BEAU',
         level: 36,
-        bag: [...flanneryBag],
-        team: genericAverageWith1StrongTeamTemplate(),
+        level: 36,
+        bag: getSampleItemsFromArray(flanneryBag, 10),
+        tms: getSampleItemsFromArray(flanneryTMs, 6),
+        team: generatePokemonsWithDefinition(POKEDEF_AVERAGE, 6),
     },
     {
         id: 'TRAINER_BRANDEN',
         level: 36,
-        bag: [...flanneryBag],
+        bag: getSampleItemsFromArray(flanneryBag, 10),
+        tms: getSampleItemsFromArray(flanneryTMs, 6),
         team: genericAverageWith1StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_DREW',
         level: 36,
-        bag: [...flanneryBag],
-        team: genericWeakAverageStrongTeamTemplate()
-            .map((p) => ({ ...p, item: 'Chilan Berry', })),
+        bag: ['Yache Berry', 'Coba Berry', getSampleItemsFromArray(flanneryBag, 7)],
+        tms: getSampleItemsFromArray(flanneryTMs, 6),
+        team: [
+            {
+                ...POKEDEF_AVERAGE,
+                item: 'Chilan Berry',
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                weakToTypes: [POKEMON_TYPE_ICE],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                weakToTypes: [POKEMON_TYPE_FLYING],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
+        ]
     },
     {
         id: 'TRAINER_BECKY',
         level: 36,
-        bag: [...flanneryBag],
-        team: genericWeakAverageStrongTeamTemplate()
-            .map((p) => ({ ...p, type: [POKEMON_TYPE_FIGHTING], item: 'Fighting Gem', })),
+        bag: getSampleItemsFromArray(flanneryBag, 10),
+        tms: getSampleItemsFromArray(flanneryTMs, 6),
+        team: generatePokemonsWithDefinition(POKEDEF_AVERAGE, 6),
     },
     {
         id: 'TRAINER_BRYAN',
         level: 36,
-        bag: [...flanneryBag],
-        team: genericWeakAverageStrongTeamTemplate()
-            .map((p) => ({
-                ...p,
-                mustHaveOneOfMoves: ['MOVE_FOCUS_PUNCH'],
-                tryToHaveMove: ['MOVE_FOCUS_PUNCH', 'MOVE_SUBSTITUTE', 'MOVE_THUNDER_WAVE', 'MOVE_CONFUSE_RAY'],
-            })),
+        bag: getSampleItemsFromArray(flanneryBag, 10),
+        tms: getSampleItemsFromArray(flanneryTMs, 6),
+        team: generatePokemonsWithDefinition(POKEDEF_AVERAGE, 6),
     },
     {
         id: 'TRAINER_HEIDI',
         level: 36,
-        bag: [...flanneryBag],
-        team: genericWeakAverageStrongTeamTemplate()
-            .map((p) => ({
-                ...p,
-                mustHaveOneOfMoves: ['MOVE_SPORE', 'MOVE_SLEEP_POWDER'],
-            })),
+        bag: getSampleItemsFromArray(flanneryBag, 10),
+        tms: getSampleItemsFromArray(flanneryTMs, 6),
+        team: generatePokemonsWithDefinition(POKEDEF_AVERAGE, 6),
     },
     {
         id: 'TRAINER_DUSTY_1',
         level: 36,
-        bag: [...flanneryBag],
-        team: genericWeakAverageStrongTeamTemplate()
-            .map((p) => ({
-                ...p,
-                abilities: ['INTIMIDATE'],
-                item: 'Adrenaline Orb',
-            })),
+        bag: getSampleItemsFromArray(flanneryBag, 10),
+        tms: getSampleItemsFromArray(flanneryTMs, 6),
+        team: generatePokemonsWithDefinition(POKEDEF_AVERAGE, 6),
     },
     {
         id: 'TRAINER_NORMAN_1',
         level: 36,
         isBoss: true,
-        bag: [...flanneryBag],
-        tms: [...normanTMs],
+        bag: [...normanBag],
+        tms: [...flanneryTMs],
         team: [
             {
                 specific: 'SPECIES_SLAKING',
@@ -2808,29 +2755,33 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_FIRE_BLAST', 'MOVE_EARTHQUAKE', 'MOVE_FACADE', 'MOVE_SUCKER_PUNCH'],
             },
             {
-                absoluteTier: [TIER_STRONG],
+                ...POKEDEF_STRONG,
                 abilities: ['GUTS'],
                 mustHaveOneOfMoves: ['MOVE_FACADE'],
                 tryToHaveMove: ['MOVE_FACADE', 'MOVE_PROTECT'],
-                checkValidEvo: true,
+                fallback: [
+                    {
+                        ...POKEDEF_WEAK_OR_AVERAGE,
+                        abilities: ['GUTS'],
+                        mustHaveOneOfMoves: ['MOVE_FACADE'],
+                        pickBest: true,
+                    },
+                ]
             },
             {
-                absoluteTier: [TIER_STRONG],
+                ...POKEDEF_STRONG,
                 type: [POKEMON_TYPE_NORMAL],
                 tryToHaveMove: ['MOVE_FACADE'],
-                checkValidEvo: true,
             },
             {
-                absoluteTier: [TIER_AVERAGE],
+                ...POKEDEF_AVERAGE,
                 type: [POKEMON_TYPE_GHOST],
                 tryToHaveMove: ['MOVE_FACADE'],
-                checkValidEvo: true,
             },
             {
-                absoluteTier: [TIER_STRONG],
+                ...POKEDEF_STRONG,
                 type: [POKEMON_TYPE_NORMAL],
                 tryToHaveMove: ['MOVE_FACADE'],
-                checkValidEvo: true,
             },
             {
                 special: TRAINER_POKE_MEGA_WITH_STONE,
