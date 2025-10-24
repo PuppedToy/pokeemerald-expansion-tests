@@ -228,7 +228,6 @@ const rivalLillycoveTemplate = (id) => [
 ];
 
 const normanTMs = [
-    ...flanneryTMs,
     'MOVE_FOCUS_PUNCH',
 ];
 
@@ -497,6 +496,19 @@ const POKEDEF_UP_TO_STRONG = {
     absoluteTier: [TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
     checkValidEvo: true,
     tryEvolve: true,
+};
+
+const POKEDEF_AVERAGE = {
+    absoluteTier: [TIER_AVERAGE],
+    checkValidEvo: true,
+    tryEvolve: true,
+    fallback: [
+        {
+            absoluteTier: [TIER_WEAK],
+            checkValidEvo: true,
+            tryEvolve: true,
+        }
+    ],
 };
 
 const POKEDEF_STRONG = {
@@ -2666,7 +2678,7 @@ const trainersData = [
                 type: [POKEMON_TYPE_FIRE],
                 tryToHaveMove: ['MOVE_OVERHEAT'],
             },
-            ...pokeDefDroughtMon(POKEDEF_AVERAGE),
+            pokeDefDroughtMon(POKEDEF_AVERAGE),
             {
                 ...POKEDEF_AVERAGE,
                 tryToHaveMove: ['MOVE_OVERHEAT'],
