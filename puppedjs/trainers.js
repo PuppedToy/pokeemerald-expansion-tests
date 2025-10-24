@@ -677,7 +677,7 @@ const generatePokemonsWithDefinition = (def, amount) => {
 }
 
 const genericAverageWith1StrongTeamTemplate = () => [
-    ...POKEDEF_STRONG,
+    POKEDEF_STRONG,
     ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 5),
 ];
 
