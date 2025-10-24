@@ -186,6 +186,35 @@ Route114_EventScript_Kai::
 	msgbox Route114_Text_KaiPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route114_EventScript_PickTM::
+	multichoice 0, 0, MULTI_ROUTE114_PICK_TM, FALSE
+	switch VAR_RESULT
+	case 0, Route114_EventScript_PickTaunt
+	case 1, Route114_EventScript_PickTorment
+	case 2, Route114_EventScript_PickSnatch
+	case 3, Route114_EventScript_PickSkillSwap
+	end
+
+Route114_EventScript_PickTaunt::
+	finditem ITEM_TM_TAUNT
+	setflag FLAG_ITEM_ROUTE_114_PROTEIN
+	end
+
+Route114_EventScript_PickTorment::
+	finditem ITEM_TM_TORMENT
+	setflag FLAG_ITEM_ROUTE_114_PROTEIN
+	end
+
+Route114_EventScript_PickSnatch::
+	finditem ITEM_TM_SNATCH
+	setflag FLAG_ITEM_ROUTE_114_PROTEIN
+	end
+
+Route114_EventScript_PickSkillSwap::
+	finditem ITEM_TM_SKILL_SWAP
+	setflag FLAG_ITEM_ROUTE_114_PROTEIN
+	end
+
 Common_EventScript_PickA1::
 	setflag FLAG_ITEM_ROUTE_114_PICK_A
 	giveitem ITEM_TM_SHADOW_BALL

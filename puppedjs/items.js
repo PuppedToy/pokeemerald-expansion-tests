@@ -140,18 +140,18 @@ const items = {
         'ITEM_TM_WATER_PULSE', // Route 104
         'ITEM_TM_CALM_MIND',
         'ITEM_TM_METEOR_BEAM', // Changed TM from ROAR. Route 119 @TODO Check how can I run make_learnsets.py
-        'ITEM_TM_TOXIC', // Route 114
+        'ITEM_TM_TOXIC', // Toxic, Protect, Rest
         'ITEM_TM_HAIL', // Route 109
         'ITEM_TM_BULK_UP', // Brawly
         'ITEM_TM_BULLET_SEED', // Route 104
         'ITEM_TM_HIDDEN_POWER', // @TODO Change TM
         'ITEM_TM_SUNNY_DAY', // Route 109
-        'ITEM_TM_TAUNT', // Route 103
+        'ITEM_TM_TAUNT', // Taunt, Snatch, Skill Swap, Torment
         'ITEM_TM_ICE_BEAM',
         'ITEM_TM_BLIZZARD',
-        'ITEM_TM_HYPER_BEAM', // Route 114
-        'ITEM_TM_LIGHT_SCREEN', // Route 114
-        'ITEM_TM_PROTECT', // Route 114
+        'ITEM_TM_HYPER_BEAM', // Route 115
+        'ITEM_TM_LIGHT_SCREEN', // Mauville
+        'ITEM_TM_PROTECT', // Toxic, Protect, Rest
         'ITEM_TM_RAIN_DANCE', // Route 109
         'ITEM_TM_GIGA_DRAIN',
         'ITEM_TM_SAFEGUARD', // @TODO Change TM
@@ -167,23 +167,23 @@ const items = {
         'ITEM_TM_SHADOW_BALL', // Route 106
         'ITEM_TM_BRICK_BREAK', // Route 106
         'ITEM_TM_DOUBLE_TEAM', // @TODO Change TM
-        'ITEM_TM_REFLECT', // Route 114
+        'ITEM_TM_REFLECT', // Mauville
         'ITEM_TM_SHOCK_WAVE', // Wattson
         'ITEM_TM_FLAMETHROWER',
-        'ITEM_TM_SLUDGE_BOMB', // Route 114
+        'ITEM_TM_SLUDGE_BOMB', // Route 115
         'ITEM_TM_SANDSTORM', // Route 109
         'ITEM_TM_FIRE_BLAST',
         'ITEM_TM_ROCK_TOMB', // Roxanne
         'ITEM_TM_AERIAL_ACE', // Winona
-        'ITEM_TM_TORMENT', // Route 114
+        'ITEM_TM_TORMENT', // Taunt, Snatch, Skill Swap, Torment
         'ITEM_TM_FACADE', // Norman
         'ITEM_TM_SECRET_POWER', // @TODO Change TM
-        'ITEM_TM_REST', // Route 114
+        'ITEM_TM_REST', // Toxic, Protect, Rest
         'ITEM_TM_ATTRACT', // @TODO Change TM
         'ITEM_TM_THIEF', // @TODO Change TM
         'ITEM_TM_STEEL_WING', // Steven
-        'ITEM_TM_SKILL_SWAP', // Route 114
-        'ITEM_TM_SNATCH', // Route 114
+        'ITEM_TM_SKILL_SWAP', // Taunt, Snatch, Skill Swap, Torment
+        'ITEM_TM_SNATCH', // Taunt, Snatch, Skill Swap, Torment
         'ITEM_TM_OVERHEAT', // Flannery
     ],
     
@@ -279,10 +279,10 @@ const items = {
     ],
 
     goodItems: [
-        'ITEM_SHELL_BELL', // Route 111
+        'ITEM_SHELL_BELL', // Route 114
         'ITEM_ROCKY_HELMET', // Route 109
-        'ITEM_SAFETY_GOGGLES', // Route 111
-        'ITEM_HEAVY_DUTY_BOOTS', // Route 115
+        'ITEM_SAFETY_GOGGLES',
+        'ITEM_HEAVY_DUTY_BOOTS',
     ],
 
     goodSituationalItems: [
@@ -293,15 +293,16 @@ const items = {
         'ITEM_SMOOTH_ROCK', // Route 109
         'ITEM_ICY_ROCK', // Route 109
         'ITEM_WIDE_LENS', // Route 114
+        'ITEM_ZOOM_LENS', // Route 114
         'ITEM_EXPERT_BELT', // Route 102
         'ITEM_LIGHT_CLAY', // Route 117
-        'ITEM_ZOOM_LENS', // Route 114
         'ITEM_BLACK_SLUDGE', // Route 116
         'ITEM_SHED_SHELL', // Route 110
-        'ITEM_BIG_ROOT', // Route 111
         'ITEM_TERRAIN_EXTENDER', // Route 110
-        'ITEM_PUNCHING_GLOVE', // Route 115
         'ITEM_LOADED_DICE', // Route 109
+        'ITEM_BIG_ROOT',
+        'ITEM_PUNCHING_GLOVE',
+        'ITEM_THROAT_SPRAY',
     ],
 
     goodConsumables: [
@@ -309,26 +310,25 @@ const items = {
         'ITEM_POWER_HERB', // Route 111
         'ITEM_FOCUS_SASH', // Route 113
         'ITEM_AIR_BALLOON', // Route 111
-        'ITEM_RED_CARD', // Route 109
+        'ITEM_RED_CARD',
         'ITEM_EJECT_BUTTON',
-        'ITEM_WEAKNESS_POLICY', // Route 119
-        'ITEM_ADRENALINE_ORB', // Desert
+        'ITEM_WEAKNESS_POLICY',
+        'ITEM_ADRENALINE_ORB',
         'ITEM_ELECTRIC_SEED', // Route 110
-        'ITEM_PSYCHIC_SEED',
-        'ITEM_MISTY_SEED', // Route 118
-        'ITEM_GRASSY_SEED',
-        'ITEM_THROAT_SPRAY', // Route 103
+        'ITEM_PSYCHIC_SEED', // Route 110
+        'ITEM_MISTY_SEED', // Route 110
+        'ITEM_GRASSY_SEED', // Route 110
         'ITEM_EJECT_PACK', // Route 103
         'ITEM_ROOM_SERVICE',
-        'ITEM_LEPPA_BERRY', // Route 119
+        'ITEM_LEPPA_BERRY',
         'ITEM_LUM_BERRY', // Route 110
         'ITEM_SITRUS_BERRY', // Route 111
-        'ITEM_CUSTAP_BERRY', // Route 115
-        'ITEM_JABOCA_BERRY', // Route 103
-        'ITEM_ROWAP_BERRY', // Route 119
-        'ITEM_KEE_BERRY', // Route 118
-        'ITEM_MARANGA_BERRY', // Route 119
-        'ITEM_BOOSTER_ENERGY', // Route 117
+        'ITEM_CUSTAP_BERRY',
+        'ITEM_JABOCA_BERRY',
+        'ITEM_ROWAP_BERRY',
+        'ITEM_KEE_BERRY',
+        'ITEM_MARANGA_BERRY',
+        'ITEM_BOOSTER_ENERGY',
         'ITEM_MASTER_BALL',
     ],
 

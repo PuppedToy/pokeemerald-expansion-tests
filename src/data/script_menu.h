@@ -812,6 +812,21 @@ static const struct MenuAction MultichoiceList_Route117PickGem[] =
     {COMPOUND_STRING("Fighting Gem")},
 };
 
+static const struct MenuAction MultichoiceList_Route114PickTM[] =
+{
+    {COMPOUND_STRING("TM Taunt")},
+    {COMPOUND_STRING("TM Torment")},
+    {COMPOUND_STRING("TM Snatch")},
+    {COMPOUND_STRING("TM Skill Swap")},
+};
+
+static const struct MenuAction MultichoiceList_Route115PickTM[] =
+{
+    {COMPOUND_STRING("TM Solar Beam")},
+    {COMPOUND_STRING("TM Hyper Beam")},
+    {COMPOUND_STRING("TM Sludge Bomb")},
+};
+
 static const struct MenuAction MultichoiceList_WheresRayquaza[] =
 {
     {COMPOUND_STRING("CAVE OF ORIGIN")},
@@ -995,6 +1010,8 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_ROUTE117_PICK_SCREEN]       = MULTICHOICE(MultichoiceList_Route117PickScreen),
     [MULTI_ROUTE117_PICK_BERRY]        = MULTICHOICE(MultichoiceList_Route117PickBerry),
     [MULTI_ROUTE117_PICK_GEM]          = MULTICHOICE(MultichoiceList_Route117PickGem),
+    [MULTI_ROUTE114_PICK_TM]           = MULTICHOICE(MultichoiceList_Route114PickTM),
+    [MULTI_ROUTE115_PICK_TM]           = MULTICHOICE(MultichoiceList_Route115PickTM),
 };
 
 const u8 *const gStdStrings[] =

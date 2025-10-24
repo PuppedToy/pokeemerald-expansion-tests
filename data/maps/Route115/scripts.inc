@@ -129,6 +129,29 @@ Route115_EventScript_Marlene::
 	msgbox Route115_Text_MarlenePostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route115_EventScript_PickTM::
+	multichoice 0, 0, MULTI_ROUTE115_PICK_TM, FALSE
+	switch VAR_RESULT
+	case 0, Route115_EventScript_PickSolarBeam
+	case 1, Route115_EventScript_PickHyperBeam
+	case 2, Route115_EventScript_PickSludgeBomb
+	end
+
+Route115_EventScript_PickSolarBeam::
+	finditem ITEM_TM_SOLAR_BEAM
+	setflag FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH
+	end
+
+Route115_EventScript_PickHyperBeam::
+	finditem ITEM_HYPER_BEAM
+	setflag FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH
+	end
+
+Route115_EventScript_PickSludgeBomb::
+	finditem ITEM_SLUDGE_BOMB
+	setflag FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH
+	end
+
 Route115_Text_NeverKnowWhenCavePokemonWillAppear:
 	.string "Exploring a cave isn't like walking\n"
 	.string "on a road.\p"
