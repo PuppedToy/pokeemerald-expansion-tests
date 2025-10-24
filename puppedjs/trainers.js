@@ -2580,7 +2580,7 @@ const trainersData = [
     {
         id: 'TRAINER_NOB_1',
         level: 33,
-        bag: ['Power Herb', getSampleItemsFromArray(magmaChimneyBag, 6)],
+        bag: ['Power Herb', ...getSampleItemsFromArray(magmaChimneyBag, 6)],
         tms: ['MOVE_SOLAR_BEAM', 'MOVE_HYPER_BEAM', 'MOVE_SLUDGE_BOMB', sample(wattsonTMs)],
         team: [
             {
