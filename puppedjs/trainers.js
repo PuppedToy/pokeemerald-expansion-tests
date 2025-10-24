@@ -2696,7 +2696,7 @@ const trainersData = [
     {
         id: 'TRAINER_DREW',
         level: 36,
-        bag: ['Yache Berry', 'Coba Berry', getSampleItemsFromArray(flanneryBag, 7)],
+        bag: ['Yache Berry', 'Coba Berry', ...getSampleItemsFromArray(flanneryBag, 7)],
         tms: getSampleItemsFromArray(flanneryTMs, 6),
         team: [
             {
