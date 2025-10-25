@@ -642,7 +642,11 @@ async function writer(pokemonList, moves, abilities) {
                 // Try to evolve to the first possible evolution
                 possibleEvolutions = chosenTrainerMon.evolutions.filter((evo) => 
                     isValidEvolution(trainer.level, evo)
-                    && (!tryMega || pokemonList.some(p => p.evolutionData.megaBaseForm && p.evolutionData.megaBaseForm === evo.pokemon))
+                    && (
+                        !tryMega
+                        || !chosenTrainerMon.evolutionData.isFinal
+                        || pokemonList.some(p => p.evolutionData.megaBaseForm && p.evolutionData.megaBaseForm === evo.pokemon)
+                    )
                 );
                 if (possibleEvolutions.length > 0) {
                     // sort by param
