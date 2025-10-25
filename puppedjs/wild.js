@@ -204,6 +204,14 @@ const wildData = {
 
         // Lilycove City
         SPECIES_WAILMER: 'LC_NFE_OR_SOLO_AVERAGE',
+
+        // Route 122
+        SPECIES_WAILORD: 'LC_NFE_OR_SOLO_AVERAGE',
+
+        // Mt. Pyre
+        SPECIES_SPINARAK: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
+        SPECIES_ARIADOS: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
+        SPECIES_SPIDOPS: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
     },
     maps: [
         // Shelgon maps
@@ -370,6 +378,19 @@ const wildData = {
             old: 'SPECIES_WAILMER',
             good: 'SPECIES_WAILMER',
             super: 'SPECIES_WAILMER',
+        },
+        {
+            id: 'MAP_ROUTE122',
+            old: 'SPECIES_WAILORD',
+            good: 'SPECIES_WAILORD',
+            super: 'SPECIES_WAILORD',
+        },
+        {
+            id: 'MAP_MT_PYRE_EXTERIOR',
+            land: 'SPECIES_SPINARAK',
+            old: 'SPECIES_ARIADOS',
+            good: 'SPECIES_SPIDOPS',
+            super: 'SPECIES_DOUBLADE',
         },
         // Special
         {

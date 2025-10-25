@@ -3457,6 +3457,31 @@ const trainersData = [
             },
         ],
     },
+    // Mt. Pyre
+    {
+        id: 'TRAINER_MARK',
+        level: 50,
+        bag: getSampleItemsFromArray(winonaBag, 20),
+        tms: getSampleItemsFromArray(shellyTMs, 10),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SPINARAK'],
+                tryEvolve: true,
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_ARIADOS'],
+                tryEvolve: true,
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SPIDOPS'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
+        ],
+    },
 ]
 
 module.exports = {
