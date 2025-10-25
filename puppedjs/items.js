@@ -53,15 +53,15 @@ const items = {
 
     plates: {
         ITEM_FLAME_PLATE: 'FIRE',
-        ITEM_SPLASH_PLATE: 'WATER',
-        ITEM_ZAP_PLATE: 'ELECTRIC', // Route 119
+        ITEM_SPLASH_PLATE: 'WATER', // Petalburg Woods
+        ITEM_ZAP_PLATE: 'ELECTRIC',
         ITEM_MEADOW_PLATE: 'GRASS', // Petalburg Woods
-        ITEM_ICICLE_PLATE: 'ICE', // Route 119
+        ITEM_ICICLE_PLATE: 'ICE',
         ITEM_FIST_PLATE: 'FIGHTING',
         ITEM_TOXIC_PLATE: 'POISON',
-        ITEM_EARTH_PLATE: 'GROUND', // Route 116
+        ITEM_EARTH_PLATE: 'GROUND', // Petalburg Woods
         ITEM_SKY_PLATE: 'FLYING',
-        ITEM_MIND_PLATE: 'PSYCHIC', // Route 116
+        ITEM_MIND_PLATE: 'PSYCHIC',
         ITEM_INSECT_PLATE: 'BUG',
         ITEM_STONE_PLATE: 'ROCK',
         ITEM_SPOOKY_PLATE: 'GHOST',
@@ -272,7 +272,7 @@ const items = {
         'ITEM_CHOICE_BAND',
         'ITEM_CHOICE_SPECS',
         'ITEM_CHOICE_SCARF',
-        'ITEM_LEFTOVERS', // New Mauville
+        'ITEM_LEFTOVERS',
         'ITEM_LIFE_ORB', // Route 106
         'ITEM_EVIOLITE', // Route 104
         'ITEM_ASSAULT_VEST', // Route 103
@@ -281,7 +281,7 @@ const items = {
     goodItems: [
         'ITEM_SHELL_BELL', // Route 114
         'ITEM_ROCKY_HELMET', // Route 109
-        'ITEM_SAFETY_GOGGLES',
+        'ITEM_SAFETY_GOGGLES', // Desert
         'ITEM_HEAVY_DUTY_BOOTS',
     ],
 
@@ -312,23 +312,24 @@ const items = {
         'ITEM_POWER_HERB', // Route 111
         'ITEM_FOCUS_SASH', // Route 113
         'ITEM_AIR_BALLOON', // Route 111
-        'ITEM_RED_CARD',
-        'ITEM_EJECT_BUTTON',
+        'ITEM_MIRROR_HERB', // Route 120
+        'ITEM_ADRENALINE_ORB', // Route 120
+        'ITEM_RED_CARD', // Route 120
+        'ITEM_KEE_BERRY', // Route 118
+        'ITEM_MARANGA_BERRY', // Route 118
+        'ITEM_JABOCA_BERRY', // Route 118
+        'ITEM_ROWAP_BERRY', // Route 118
         'ITEM_WEAKNESS_POLICY',
-        'ITEM_ADRENALINE_ORB',
+        'ITEM_EJECT_BUTTON',
+        'ITEM_LEPPA_BERRY',
         'ITEM_ELECTRIC_SEED', // Route 110
         'ITEM_PSYCHIC_SEED', // Route 110
         'ITEM_MISTY_SEED', // Route 110
         'ITEM_GRASSY_SEED', // Route 110
         'ITEM_ROOM_SERVICE',
-        'ITEM_LEPPA_BERRY',
         'ITEM_LUM_BERRY', // Route 110
         'ITEM_SITRUS_BERRY', // Route 111
-        'ITEM_JABOCA_BERRY',
-        'ITEM_ROWAP_BERRY',
-        'ITEM_KEE_BERRY',
-        'ITEM_MARANGA_BERRY',
-        'ITEM_BOOSTER_ENERGY',
+        'ITEM_BOOSTER_ENERGY', // New Mauville
         'ITEM_MASTER_BALL',
     ],
 
@@ -342,7 +343,6 @@ const items = {
         'ITEM_STARF_BERRY',
         'ITEM_ENIGMA_BERRY',
         'ITEM_MICLE_BERRY',
-        'ITEM_MIRROR_HERB',
     ],
 
     protectionBerries: {

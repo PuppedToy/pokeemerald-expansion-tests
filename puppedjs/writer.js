@@ -150,6 +150,8 @@ const routeFiles = [
     path.resolve(mapsBase, 'Route116', 'map.json'),
     path.resolve(mapsBase, 'Route117', 'map.json'),
     path.resolve(mapsBase, 'Route118', 'map.json'),
+    path.resolve(mapsBase, 'Route119', 'map.json'),
+    path.resolve(mapsBase, 'Route120', 'map.json'),
     path.resolve(mapsBase, 'PetalburgCity', 'map.json'),
     path.resolve(mapsBase, 'RustboroCity', 'map.json'),
     path.resolve(mapsBase, 'DewfordTown', 'map.json'),
@@ -194,85 +196,125 @@ async function writer(pokemonList, moves, abilities) {
 
     console.log('Updating starter pokemon...');
 
-    const elegiblePokemonForStarters = [];
-    const averagePokemonLC = [];
-    pokemonList.forEach(poke => {
-        if (
-            poke.evolutionData.type === EVO_TYPE_LC_OF_3
+    let elegiblePokemonForStarters = pokemonList.filter(poke => {
+        return poke.evolutionData.type === EVO_TYPE_LC_OF_3
             && poke.evolutionData.isLC
-            && (poke.rating.bestEvoTier === TIER_STRONG || poke.rating.bestEvoTier === TIER_AVERAGE)
-            && (!poke.rating.megaEvoRating || poke.rating.megaEvoRating < TIER_LEGEND_THRESHOLD)
-        ) {
-            poke.parsedTypes.forEach(type => {
-                if (!TYPES[type]) {
-                    TYPES[type] = [];
-                }
-                TYPES[type].push(poke.id);
-            });
-        }
-
-        if (poke.evolutionData.isLC && poke.rating.bestEvoRating <= TIER_STRONG_THRESHOLD) {
-            averagePokemonLC.push(poke.id);
-        }
+            && poke.rating.bestEvoTier === TIER_STRONG
     });
 
-    // 50% of perfect forward and backwards type weakness in perfect trios
-    // The other 50% is for any type trio that only fulfills supereffective but not resistant backwards
-    const usedTrios = Math.random() < 0.5 ? PERFECT_STARTER_TRIOS : GOOD_STARTER_TRIOS;
+    const starters = [null, null, null];
 
-    const emptyTypes = Object.entries(TYPES).filter(([type, pokes]) => pokes.length === 0).map(([type]) => type);
-    if (emptyTypes.length > 0) {
-        for (let i = usedTrios.length - 1; i >= 0; i--) {
-            const trio = usedTrios[i];
-            if (trio.some(type => emptyTypes.includes(type))) {
-                usedTrios.splice(i, 1);
-            }
+    while (eligiblePokemonForStarters.length > 0 && (starters[0] === null || starters[1] === null || starters[2] === null)) {
+        // First pick the first pokemon randomly
+        starters[0] = sampleAndRemove(elegiblePokemonForStarters);
+
+        // Try to find a pokemon weak to any of starters[0]'s types
+        const starters0Types = starters[0].types;
+        const weakToStarters0Types = elegiblePokemonForStarters.filter(poke => {
+            if (poke.id === starters[0].id) return false;
+            return starters0Types.some(type => isSuperEffective(type, poke.types));
+        });
+        // If none found, restart
+        if (weakToStarters0Types.length === 0) {
+            starters[0] = null;
+            continue;
         }
+        starters[1] = sample(weakToStarters0Types);
+
+        // Try to find a pokemon weak to starters1's types and that also fulfills that starters0 is weak to its types
+        const starters1Types = starters[1].types;
+        const weakToStarters1TypesAndStrongToStarters0 = elegiblePokemonForStarters.filter(poke => {
+            if (poke.id === starters[1].id) return false;
+            return starters1Types.some(type => isSuperEffective(type, poke.types))
+                && poke.types.some(type => isSuperEffective(type, starters[0].types))
+                && poke.id !== starters[0].id
+                && poke.id !== starters[1].id;
+        });
+
+        if (weakToStarters1TypesAndStrongToStarters0.length === 0) {
+            starters[0] = null;
+            starters[1] = null;
+            continue;
+        }
+        starters[2] = sample(weakToStarters1TypesAndStrongToStarters0);
     }
 
-    if (usedTrios.length === 0) {
-        console.warn('No good starter trios available due to missing types.');
+    if (starters[0] === null || starters[1] === null || starters[2] === null) {
+        console.error('Failed to find valid starter Pokemon. Going through fallback method.');
+        eligiblePokemonForStarters = pokemonList.filter(poke => {
+            return poke.evolutionData.type === EVO_TYPE_LC_OF_3
+                && poke.evolutionData.isLC
+                && poke.rating.bestEvoTier === TIER_STRONG
+            });
+        starters[0] = sampleAndRemove(eligiblePokemonForStarters);
+        starters[1] = sampleAndRemove(eligiblePokemonForStarters);
+        starters[2] = sampleAndRemove(eligiblePokemonForStarters);
         return;
     }
 
-    // Pick a random good trio
-    const randomTrio = usedTrios[Math.floor(Math.random() * usedTrios.length)];
-    randomTrio.forEach(type => {
-        const pokesOfType = TYPES[type];
-        const randomPoke = pokesOfType[Math.floor(Math.random() * pokesOfType.length)];
-        elegiblePokemonForStarters.push(randomPoke);
+    const alreadyChosenSet = new Set();
+
+    starters.forEach((starter, index) => {
+        starters[index] = starter.id;
+        alreadyChosenSet.add(starter.id);
     });
 
-    const starters = [
-        elegiblePokemonForStarters[0],
-        elegiblePokemonForStarters[1],
-        elegiblePokemonForStarters[2],
-    ];
-    
-    // Pick 9 other unique pokemon from notTooStrongPokemonLC that are not in elegiblePokemonForStarters
-    const alreadyChosenSet = new Set();
-    alreadyChosenSet.add([...starters]);
-    const chosenExtraPokemon = [];
-    const shuffledNotTooStrongPokemonLC = averagePokemonLC
-        .filter(p => !alreadyChosenSet.has(p))
-        .sort(() => 0.5 - Math.random());
-    let nextIndex = 0;
-    while (chosenExtraPokemon.length < 9 && shuffledNotTooStrongPokemonLC.length > 0) {
-        const randomPoke = shuffledNotTooStrongPokemonLC[nextIndex];
-        if (!alreadyChosenSet.has(randomPoke)) {
-            if (chosenExtraPokemon.length === 8) {
-                // The last pokemon must have mega evolution
-                const hasMegaEvo = pokemonList.find(p => p.id === randomPoke && p.evolutionData.megaEvos && p.evolutionData.megaEvos.length > 0);
-                if (!hasMegaEvo) {
-                    nextIndex += 1;
-                    continue;
-                }
-            }
-            chosenExtraPokemon.push(randomPoke);
-            alreadyChosenSet.add(randomPoke);
+    let premiumLCPokes = pokemonList.filter(poke => {
+        return poke.evolutionData.type === EVO_TYPE_LC_OF_3
+            && poke.evolutionData.isLC
+            && poke.rating.bestEvoTier === TIER_PREMIUM
+            && !alreadyChosenSet.has(poke.id);
+    });
+    if (premiumLCPokes.length <= 0) {
+        console.warn('No premium 3-evo-LC pokemon found for extra starters, using premium LC instead.');
+        premiumLCPokes = pokemonList.filter(poke => {
+            return poke.evolutionData.isLC
+                && (poke.rating.bestEvoTier === TIER_PREMIUM)
+                && !alreadyChosenSet.has(poke.id);
+        });
+        if (premiumLCPokes.length <= 0) {
+            console.error('No premium LC pokemon found for extra starters, using strong LC instead.');
+            premiumLCPokes = pokemonList.filter(poke => {
+                return poke.evolutionData.type === EVO_TYPE_LC_OF_3
+                    && poke.evolutionData.isLC
+                    && (poke.rating.bestEvoTier === TIER_STRONG)
+                    && !alreadyChosenSet.has(poke.id);
+            });
         }
-        // Remove the considered pokemon from the pool to avoid infinite loops
-        shuffledNotTooStrongPokemonLC.splice(nextIndex, 1);
+        if (premiumLCPokes.length <= 0) {
+            throw new Error('No strong 3-evo-LC pokemon found for extra starters, using strong LC instead.');
+        }
+    }
+
+    const chosenExtraPokemon = [
+        sample(premiumLCPokes).id,
+    ];
+    alreadyChosenSet.add(chosenExtraPokemon[0]);
+
+    const lcPokesWithMegaEvo = pokemonList.filter(poke => {
+        return poke.evolutionData.isLC
+            && poke.evolutionData.megaEvos
+            && poke.evolutionData.megaEvos.length > 0
+            && !alreadyChosenSet.has(poke.id)
+            && poke.rating.bestEvoRating <= TIER_STRONG;
+    });
+
+    while (chosenExtraPokemon.length < 3 && lcPokesWithMegaEvo.length > 0) {
+        const chosenPoke = sampleAndRemove(lcPokesWithMegaEvo);
+        chosenExtraPokemon.push(chosenPoke.id);
+        alreadyChosenSet.add(chosenPoke.id);
+    }
+    
+    // Pick 6 other unique pokemon from notTooStrongPokemonLC that are not in elegiblePokemonForStarters
+    const averagePokemonLC = pokemonList.filter(poke => {
+        return poke.evolutionData.isLC
+            && poke.rating.bestEvoTier === TIER_AVERAGE
+            && !alreadyChosenSet.has(poke.id);
+    });
+    while (chosenExtraPokemon.length < 9 && averagePokemonLC.length > 0) {
+        const randomPoke = sampleAndRemove(averagePokemonLC);
+        chosenExtraPokemon.push(randomPoke.id);
+        alreadyChosenSet.add(randomPoke.id);
     }
 
     let newStartersFile = await fs.readFile(startersFile, 'utf8');
@@ -343,28 +385,27 @@ async function writer(pokemonList, moves, abilities) {
     const castformReplacement = sampleAndRemove(castformReplacementList);
     alreadyChosenSet.add(castformReplacement.id);
 
-    const regisReplacementList = pokemonList.filter(poke =>
+    const strongSoloReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
         && poke.rating.bestEvoTier === TIER_STRONG
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
-    const regirockReplacement = sampleAndRemove(regisReplacementList);
+    const regirockReplacement = sampleAndRemove(strongSoloReplacementList);
     alreadyChosenSet.add(regirockReplacement.id);
-    const regiceReplacement = sampleAndRemove(regisReplacementList);
+    const regiceReplacement = sampleAndRemove(strongSoloReplacementList);
     alreadyChosenSet.add(regiceReplacement.id);
-    const registeelReplacement = sampleAndRemove(regisReplacementList);
-    alreadyChosenSet.add(registeelReplacement.id);
-    const latiosReplacement = sampleAndRemove(regisReplacementList);
+    const mewReplacement = sampleAndRemove(strongSoloReplacementList);
+    alreadyChosenSet.add(mewReplacement.id);
+    const latiosReplacement = sampleAndRemove(strongSoloReplacementList);
     alreadyChosenSet.add(latiosReplacement.id);
 
-    const mewReplacementList = pokemonList.filter(poke =>
+    const premiumSoloReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
         && poke.rating.bestEvoTier === TIER_PREMIUM
-        && poke.rating.absoluteRating <= MID_TIER_PREMIUM_THRESHOLD
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
-    const mewReplacement = sampleAndRemove(mewReplacementList);
-    alreadyChosenSet.add(mewReplacement.id);
+    const registeelReplacement = sampleAndRemove(premiumSoloReplacementList);
+    alreadyChosenSet.add(registeelReplacement.id);
 
     // @TODO Choose between rayquaza, kyogre and groudon
     const rayquazaReplacementList = pokemonList.filter(poke =>

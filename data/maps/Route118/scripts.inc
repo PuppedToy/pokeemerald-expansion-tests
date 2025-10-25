@@ -99,43 +99,57 @@ Route118_EventScript_Deandre::
 	msgbox Route118_Text_DeandrePostBattle, MSGBOX_AUTOCLOSE
 	end
 
-Route118_EventScript_Pick1::
+Route118_EventScript_PickBerry::
+	multichoice 0, 0, MULTI_ROUTE118_PICK_BERRY, FALSE
+	switch VAR_RESULT
+	case 0, Route118_EventScript_PickKee
+	case 1, Route118_EventScript_PickMaranga
+	case 2, Route118_EventScript_PickJaboca
+	case 3, Route118_EventScript_PickRowap
+	end
+
+Route118_EventScript_PickKee::
+	finditem ITEM_KEE_BERRY
+	setflag FLAG_ITEM_ROUTE_118_HYPER_POTION
+	end
+
+Route118_EventScript_PickMaranga::
+	finditem ITEM_MARANGA_BERRY
+	setflag FLAG_ITEM_ROUTE_118_HYPER_POTION
+	end
+
+Route118_EventScript_PickJaboca::
+	finditem ITEM_JABOCA_BERRY
+	setflag FLAG_ITEM_ROUTE_118_HYPER_POTION
+	end
+
+Route118_EventScript_PickRowap::
+	finditem ITEM_JABOCA_ROWAP
+	setflag FLAG_ITEM_ROUTE_118_HYPER_POTION
+	end
+
+
+Route118_EventScript_PickTM::
+	multichoice 0, 0, MULTI_ROUTE118_PICK_TM, FALSE
+	switch VAR_RESULT
+	case 0, Route118_EventScript_PickThunderbolt
+	case 1, Route118_EventScript_PickIceBeam
+	case 2, Route118_EventScript_PickFlamethrower
+	end
+
+Route118_EventScript_PickThunderbolt::
+	finditem ITEM_TM_THUNDERBOLT
 	setflag FLAG_ITEM_ROUTE_118_PICK
-	giveitem ITEM_TM_THUNDERBOLT
-	removeobject LOCALID_ROUTE118_I1
-	removeobject LOCALID_ROUTE118_I2
-	removeobject LOCALID_ROUTE118_I3
-	release
 	end
 
-Route118_EventScript_Pick2::
+Route118_EventScript_PickIceBeam::
+	finditem ITEM_TM_ICE_BEAM
 	setflag FLAG_ITEM_ROUTE_118_PICK
-	giveitem ITEM_TM_ICE_BEAM
-	removeobject LOCALID_ROUTE118_I1
-	removeobject LOCALID_ROUTE118_I2
-	removeobject LOCALID_ROUTE118_I3
-	release
 	end
 
-Route118_EventScript_Pick3::
+Route118_EventScript_PickFlamethrower::
+	finditem ITEM_TM_FLAMETHROWER
 	setflag FLAG_ITEM_ROUTE_118_PICK
-	giveitem ITEM_TM_FLAMETHROWER
-	removeobject LOCALID_ROUTE118_I1
-	removeobject LOCALID_ROUTE118_I2
-	removeobject LOCALID_ROUTE118_I3
-	release
-	end
-
-Route118_EventScript_PickText1::
-	msgbox Route118_Text_PickItem1, MSGBOX_SIGN
-	end
-
-Route118_EventScript_PickText2::
-	msgbox Route118_Text_PickItem2, MSGBOX_SIGN
-	end
-
-Route118_EventScript_PickText3::
-	msgbox Route118_Text_PickItem3, MSGBOX_SIGN
 	end
 
 Route118_Text_PickItem1:

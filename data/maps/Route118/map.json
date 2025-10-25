@@ -207,14 +207,14 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_5",
-      "x": 60,
-      "y": 5,
+      "x": 65,
+      "y": 6,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "3",
+      "trainer_sight_or_berry_tree_id": "1",
       "script": "Route118_EventScript_Chester",
       "flag": "FLAG_BADGE07_GET"
     },
@@ -245,17 +245,16 @@
       "flag": "FLAG_BADGE03_GET"
     },
     {
-      "local_id": "LOCALID_ROUTE118_I1",
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 61,
-      "y": 5,
+      "x": 66,
+      "y": 7,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "Route118_EventScript_Pick1",
+      "script": "Route118_EventScript_PickTM",
       "flag": "FLAG_ITEM_ROUTE_118_PICK"
     },
     {
@@ -280,7 +279,7 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_COBA_BERRY",
+      "trainer_sight_or_berry_tree_id": "ITEM_ABILITY_CAPSULE",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_118_COBA"
     },
@@ -293,7 +292,7 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_KEE_BERRY",
+      "trainer_sight_or_berry_tree_id": "ITEM_MECH_MAIL",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_118_KEE"
     },
@@ -306,22 +305,9 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_MISTY_SEED",
-      "script": "Common_EventScript_FindItem",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route118_EventScript_PickBerry",
       "flag": "FLAG_ITEM_ROUTE_118_HYPER_POTION"
-    },
-    {
-      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 30,
-      "y": 6,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_MECH_MAIL",
-      "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_118_STRMINT"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -335,34 +321,6 @@
       "trainer_sight_or_berry_tree_id": "ITEM_WAVE_MAIL",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_118_HYPER_POTION"
-    },
-    {
-      "local_id": "LOCALID_ROUTE118_I2",
-      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 63,
-      "y": 5,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Route118_EventScript_Pick2",
-      "flag": "FLAG_ITEM_ROUTE_118_PICK"
-    },
-    {
-      "local_id": "LOCALID_ROUTE118_I3",
-      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 65,
-      "y": 5,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Route118_EventScript_Pick3",
-      "flag": "FLAG_ITEM_ROUTE_118_PICK"
     }
   ],
   "warp_events": [
@@ -433,30 +391,6 @@
       "y": 5,
       "elevation": 0,
       "secret_base_id": "SECRET_BASE_TREE2_1"
-    },
-    {
-      "type": "sign",
-      "x": 61,
-      "y": 6,
-      "elevation": 3,
-      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "Route118_EventScript_PickText1"
-    },
-    {
-      "type": "sign",
-      "x": 63,
-      "y": 6,
-      "elevation": 3,
-      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "Route118_EventScript_PickText2"
-    },
-    {
-      "type": "sign",
-      "x": 65,
-      "y": 6,
-      "elevation": 3,
-      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
-      "script": "Route118_EventScript_PickText3"
     }
   ]
 }

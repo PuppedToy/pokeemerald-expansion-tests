@@ -426,7 +426,10 @@ const healingMoves = [
     'MOVE_STRENGTH_SAP',
 ];
 
-function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, deviation = 0) {
+function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, bannedItems = [], deviation = 0) {
+    if (bannedItems.includes(item)) {
+        return 0;
+    }
     const itemId = 'ITEM_' + item.replace(/ /, '_').toUpperCase();
     const bestOffensePowerWithSpeed = (Math.max(poke.baseAttack, poke.baseSpAttack) + poke.baseSpeed)/200;
     const bestOffensePower = Math.max(poke.baseAttack, poke.baseSpAttack)/100;
@@ -484,6 +487,14 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
     if (item === 'Eviolite') {
         if (poke.evolutionData.isNFE) {
             return 12 * calculatedDeviation;
+        }
+        return 0;
+    }
+    const hasProtosynthesis = ability === 'PROTOSYNTHESIS';
+    const hasQuarkDrive = ability === 'QUARK_DRIVE';
+    if (item === 'Booster Energy') {
+        if (hasProtosynthesis || hasQuarkDrive) {
+            return 10 * bestOffensePowerWithSpeed * calculatedDeviation;
         }
         return 0;
     }

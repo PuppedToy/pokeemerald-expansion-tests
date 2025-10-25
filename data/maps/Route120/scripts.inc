@@ -212,6 +212,29 @@ Route120_EventScript_Callie::
 	msgbox Route120_Text_CalliePostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route120_EventScript_PickItem::
+	multichoice 0, 0, MULTI_ROUTE120_PICK_ITEM, FALSE
+	switch VAR_RESULT
+	case 0, Route120_EventScript_PickMirrorHerb
+	case 1, Route120_EventScript_PickAdrenalineOrb
+	case 2, Route120_EventScript_PickRedCard
+	end
+
+Route120_EventScript_PickMirrorHerb::
+	finditem ITEM_MIRROR_HERB
+	setflag FLAG_ITEM_ROUTE_120_NEST_BALL
+	end
+
+Route120_EventScript_PickAdrenalineOrb::
+	finditem ITEM_ADRENALINE_ORB
+	setflag FLAG_ITEM_ROUTE_120_NEST_BALL
+	end
+
+Route120_EventScript_PickRedCard::
+	finditem ITEM_RED_CARD
+	setflag FLAG_ITEM_ROUTE_120_NEST_BALL
+	end
+
 Route120_Text_RouteSignFortree:
 	.string "ROUTE 120\n"
 	.string "{LEFT_ARROW} FORTREE CITY$"

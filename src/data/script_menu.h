@@ -841,6 +841,28 @@ static const struct MenuAction MultichoiceList_Route111PickItem[] =
     {COMPOUND_STRING("Custap Berry")},
 };
 
+static const struct MenuAction MultichoiceList_Route118PickBerry[] =
+{
+    {COMPOUND_STRING("Kee Berry")},
+    {COMPOUND_STRING("Maranga Berry")},
+    {COMPOUND_STRING("Jaboca Berry")},
+    {COMPOUND_STRING("Rowap Berry")},
+};
+
+static const struct MenuAction MultichoiceList_Route118PickTM[] =
+{
+    {COMPOUND_STRING("TM Thunderbolt")},
+    {COMPOUND_STRING("TM Ice Beam")},
+    {COMPOUND_STRING("TM Flamethrower")},
+};
+
+static const struct MenuAction MultichoiceList_Route120PickItem[] =
+{
+    {COMPOUND_STRING("Mirror Herb")},
+    {COMPOUND_STRING("Adrenaline Orb")},
+    {COMPOUND_STRING("Red Card")},
+};
+
 static const struct MenuAction MultichoiceList_WheresRayquaza[] =
 {
     {COMPOUND_STRING("CAVE OF ORIGIN")},
@@ -1028,6 +1050,9 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_ROUTE115_PICK_TM]           = MULTICHOICE(MultichoiceList_Route115PickTM),
     [MULTI_ROUTE111_PICK_BERRY]        = MULTICHOICE(MultichoiceList_Route111PickBerry),
     [MULTI_ROUTE111_PICK_ITEM]         = MULTICHOICE(MultichoiceList_Route111PickItem),
+    [MULTI_ROUTE118_PICK_BERRY]        = MULTICHOICE(MultichoiceList_Route118PickBerry),
+    [MULTI_ROUTE118_PICK_TM]           = MULTICHOICE(MultichoiceList_Route118PickTM),
+    [MULTI_ROUTE120_PICK_ITEM]         = MULTICHOICE(MultichoiceList_Route120PickItem),
 };
 
 const u8 *const gStdStrings[] =
