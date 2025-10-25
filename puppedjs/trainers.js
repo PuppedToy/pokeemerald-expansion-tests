@@ -2956,23 +2956,23 @@ const trainersData = [
         tms: [...shellyTMs],
         team: [
             {
-                ...TIER_STRONG,
+                ...POKEDEF_STRONG,
                 type: [aquaTeamTypes[0]],
             },
             {
-                ...TIER_STRONG,
+                ...POKEDEF_STRONG,
                 type: [aquaTeamTypes[1]],
             },
             {
-                ...TIER_STRONG,
+                ...POKEDEF_STRONG,
                 type: [aquaTeamTypes[2]],
             },
             {
-                ...TIER_STRONG,
+                ...POKEDEF_STRONG,
                 type: [aquaTeamTypes[3]],
             },
             {
-                ...TIER_STRONG,
+                ...POKEDEF_STRONG,
                 type: [aquaTeamTypes[4]],
             },
             {
