@@ -325,6 +325,12 @@ const POKEDEF_UP_TO_STRONG = {
     tryEvolve: true,
 };
 
+const POKEDEF_UP_TO_PREMIUM = {
+    absoluteTier: [TIER_WEAK, TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM],
+    checkValidEvo: true,
+    tryEvolve: true,
+};
+
 const POKEDEF_AVERAGE = {
     absoluteTier: [TIER_AVERAGE],
     checkValidEvo: true,
