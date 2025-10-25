@@ -3423,7 +3423,7 @@ const trainersData = [
                 ]
             },
             pokeDefDroughtMon({
-                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
+                absoluteTier: [TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM],
                 checkValidEvo: true,
             }),
             {
@@ -3490,27 +3490,28 @@ const trainersData = [
         bag: [...wallyBag2],
         tms: [...wallyTMs2],
         team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_ABOMASITE',
-            },
-            {
-                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
-                checkValidEvo: true,
-                tryEvolve: true,
-                abilities: [...snowAbilities],
-            },
-            {
-                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
-                checkValidEvo: true,
-                tryEvolve: true,
-                abilities: [...snowAbilities],
-            },
             pokeDefSnowWarningMon({
                 absoluteTier: [TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM],
                 checkValidEvo: true,
                 tryEvolve: true,
             }),
+            {
+                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
+                checkValidEvo: true,
+                tryEvolve: true,
+                abilities: [...snowAbilities],
+            },
+            {
+                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
+                checkValidEvo: true,
+                tryEvolve: true,
+                abilities: [...snowAbilities],
+            },
+            {
+                specific: 'SPECIES_ABOMASNOW',
+                item: 'Abomasite',
+                abilities: ['SNOW_WARNING'],
+            },
             {
                 absoluteTier: [TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM],
                 checkValidEvo: true,
