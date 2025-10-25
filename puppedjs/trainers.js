@@ -3633,16 +3633,53 @@ const trainersData = [
         team: [
             {
                 specific: 'SPECIES_SOLROCK',
-                tryToHaveMove: ['MOVE_TRICK_ROOM'],
-                item: 'Focus Sash',
+                tryToHaveMove: ['MOVE_EXPLOSION'],
             },
             {
-                ...POKEDEF_STRONG_PREMIUM_MEGA,
+                ...POKEDEF_STRONG,
+                mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
+                tryToHaveMove: ['MOVE_TRICK_ROOM'],
                 type: [POKEMON_TYPE_PSYCHIC],
+                item: 'Focus Sash',
+                fallback: [
+                    {
+                        ...POKEDEF_STRONG,
+                        mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
+                        tryToHaveMove: ['MOVE_TRICK_ROOM'],
+                        item: 'Focus Sash',
+                    },
+                    {
+                        ...POKEDEF_UP_TO_PREMIUM,
+                        mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
+                        tryToHaveMove: ['MOVE_TRICK_ROOM'],
+                        item: 'Focus Sash',
+                    },
+                    {
+                        ...POKEDEF_STRONG,
+                        type: [POKEMON_TYPE_PSYCHIC],
+                        item: 'Focus Sash',
+                    }
+                ]
             },
             {
                 oneOf: ['SPECIES_LUNALA', 'SPECIES_SOLGALEO'],
                 item: 'Room Service',
+            },
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+                hasStat: ['baseSpeed', '<', '50'],
+                type: [POKEMON_TYPE_PSYCHIC],
+                fallback: [
+                    {
+                        ...POKEDEF_STRONG_PREMIUM_MEGA,
+                        hasStat: ['baseSpeed', '<', '70'],
+                        type: [POKEMON_TYPE_PSYCHIC],
+                    },
+                    {
+                        ...POKEDEF_STRONG_PREMIUM_MEGA,
+                        type: [POKEMON_TYPE_PSYCHIC],
+                    },
+                ]
             },
             {
                 ...POKEDEF_STRONG,
@@ -3667,11 +3704,7 @@ const trainersData = [
             },
             {
                 specific: 'SPECIES_LUNATONE',
-                tryToHaveMove: ['MOVE_TRICK_ROOM', 'CALM_MIND'],
-            },
-            {
-                ...POKEDEF_STRONG,
-                type: [POKEMON_TYPE_FAIRY],
+                tryToHaveMove: ['MOVE_EXPLOSION'],
             },
         ],
     },
