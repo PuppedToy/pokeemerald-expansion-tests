@@ -196,7 +196,7 @@ async function writer(pokemonList, moves, abilities) {
 
     console.log('Updating starter pokemon...');
 
-    let elegiblePokemonForStarters = pokemonList.filter(poke => {
+    let eligiblePokemonForStarters = pokemonList.filter(poke => {
         return poke.evolutionData.type === EVO_TYPE_LC_OF_3
             && poke.evolutionData.isLC
             && poke.rating.bestEvoTier === TIER_STRONG
@@ -206,11 +206,11 @@ async function writer(pokemonList, moves, abilities) {
 
     while (eligiblePokemonForStarters.length > 0 && (starters[0] === null || starters[1] === null || starters[2] === null)) {
         // First pick the first pokemon randomly
-        starters[0] = sampleAndRemove(elegiblePokemonForStarters);
+        starters[0] = sampleAndRemove(eligiblePokemonForStarters);
 
         // Try to find a pokemon weak to any of starters[0]'s types
         const starters0Types = starters[0].types;
-        const weakToStarters0Types = elegiblePokemonForStarters.filter(poke => {
+        const weakToStarters0Types = eligiblePokemonForStarters.filter(poke => {
             if (poke.id === starters[0].id) return false;
             return starters0Types.some(type => isSuperEffective(type, poke.types));
         });
@@ -223,7 +223,7 @@ async function writer(pokemonList, moves, abilities) {
 
         // Try to find a pokemon weak to starters1's types and that also fulfills that starters0 is weak to its types
         const starters1Types = starters[1].types;
-        const weakToStarters1TypesAndStrongToStarters0 = elegiblePokemonForStarters.filter(poke => {
+        const weakToStarters1TypesAndStrongToStarters0 = eligiblePokemonForStarters.filter(poke => {
             if (poke.id === starters[1].id) return false;
             return starters1Types.some(type => isSuperEffective(type, poke.types))
                 && poke.types.some(type => isSuperEffective(type, starters[0].types))
@@ -305,7 +305,7 @@ async function writer(pokemonList, moves, abilities) {
         alreadyChosenSet.add(chosenPoke.id);
     }
     
-    // Pick 6 other unique pokemon from notTooStrongPokemonLC that are not in elegiblePokemonForStarters
+    // Pick 6 other unique pokemon from notTooStrongPokemonLC that are not in eligiblePokemonForStarters
     const averagePokemonLC = pokemonList.filter(poke => {
         return poke.evolutionData.isLC
             && poke.rating.bestEvoTier === TIER_AVERAGE
