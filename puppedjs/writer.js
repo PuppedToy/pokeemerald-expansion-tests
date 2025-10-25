@@ -626,7 +626,7 @@ async function writer(pokemonList, moves, abilities) {
             return result;
         }
 
-        const tryEvolve = (pokemon) => {
+        const tryEvolve = (pokemon, tryMega) => {
             let chosenTrainerMon = { ...pokemon };
             let possibleEvolutions;
 
@@ -638,6 +638,7 @@ async function writer(pokemonList, moves, abilities) {
                 // Try to evolve to the first possible evolution
                 possibleEvolutions = chosenTrainerMon.evolutions.filter((evo) => 
                     isValidEvolution(trainer.level, evo)
+                    && (!tryMega || pokemonList.some(p => p.evolutionData.megaBaseForm && p.evolutionData.megaBaseForm === evo.pokemon))
                 );
                 if (possibleEvolutions.length > 0) {
                     // sort by param
@@ -833,8 +834,8 @@ async function writer(pokemonList, moves, abilities) {
 
             // Try evolve all of them
             if (trainerMonDefinition.tryEvolve) {
-                pokemonLooseList = pokemonLooseList.map(loosePokemon => tryEvolve(loosePokemon));
-                pokemonStrictList = pokemonStrictList.map(strictPokemon => tryEvolve(strictPokemon));
+                pokemonLooseList = pokemonLooseList.map(loosePokemon => tryEvolve(loosePokemon, trainerMonDefinition.tryMega && !foundMega));
+                pokemonStrictList = pokemonStrictList.map(strictPokemon => tryEvolve(strictPokemon, trainerMonDefinition.tryMega && !foundMega));
             }
 
             // Always apply unique restriction

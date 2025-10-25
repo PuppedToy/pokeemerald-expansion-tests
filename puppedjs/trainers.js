@@ -780,34 +780,39 @@ const rivalRoute110Template = (id) => [
 const rivalRoute119Template = (id) => [
     {
         special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_MEGA_103_KEEP_' + id,
+        tryEvolve: true,
+        tryMega: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
         id: 'RIVAL_STARTER_' + id,
         tryEvolve: true,
+        tryMega: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
         encounterIds: [...rival119Encounters],
         pickBest: true,
         tryEvolve: true,
+        tryMega: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
         encounterIds: [...rival119Encounters],
         pickBest: true,
         tryEvolve: true,
+        tryMega: true,
     },
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
         tryEvolve: true,
+        tryMega: true,
     },
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_PREMIUM_110_KEEP_' + id,
-        tryEvolve: true,
-    },
-    {
-        special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_MEGA_103_KEEP_' + id,
         tryEvolve: true,
         tryMega: true,
     },
