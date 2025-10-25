@@ -3178,7 +3178,7 @@ const trainersData = [
         level: 45,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...winonaBag],
-        tms: [...winonaTMs],
+        tms: [...shellyTMs],
         team: [...rivalLillycoveTemplate('TREECKO')],
     },
     {
@@ -3187,7 +3187,7 @@ const trainersData = [
         level: 45,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...winonaBag],
-        tms: [...winonaTMs],
+        tms: [...shellyTMs],
         team: [...rivalLillycoveTemplate('TORCHIC')],
     },
     {
@@ -3196,7 +3196,7 @@ const trainersData = [
         level: 45,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...winonaBag],
-        tms: [...winonaTMs],
+        tms: [...shellyTMs],
         team: [...rivalLillycoveTemplate('MUDKIP')],
     },
     {
@@ -3216,7 +3216,7 @@ const trainersData = [
         isBoss: true,
         level: 47,
         bag: [...winonaBag],
-        tms: [...winonaTMs],
+        tms: [...shellyTMs],
         team: [
             {
                 specific: 'SPECIES_GROUDON',
