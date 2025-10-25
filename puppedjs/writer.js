@@ -872,7 +872,7 @@ async function writer(pokemonList, moves, abilities) {
             // If any strict pokemon meet the restrictions, pick from them
             if (pokemonStrictList.length > 0) {
                 if (trainerMonDefinition.pickBest) {
-                    const sortedStrictList = pokemonStrictList.sort((a, b) => a.rating.absoluteRating - b.rating.absoluteRating);
+                    const sortedStrictList = pokemonStrictList.sort((a, b) => b.rating.absoluteRating - a.rating.absoluteRating);
                     chosenTrainerMon = sortedStrictList[0];
                 }
                 else {
@@ -882,7 +882,7 @@ async function writer(pokemonList, moves, abilities) {
             // Else forget about unique restriction
             else if (pokemonLooseList.length > 0) {
                 if (trainerMonDefinition.pickBest) {
-                    const sortedLooseList = pokemonLooseList.sort((a, b) => a.rating.absoluteRating - b.rating.absoluteRating);
+                    const sortedLooseList = pokemonLooseList.sort((a, b) => b.rating.absoluteRating - a.rating.absoluteRating);
                     chosenTrainerMon = sortedLooseList[0];
                 }
                 else {
