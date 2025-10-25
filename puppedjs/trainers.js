@@ -2325,12 +2325,12 @@ const trainersData = [
             },
             pokeDefSandStreamMon(POKEDEF_UP_TO_STRONG),
             {
-                ...POKEDEF_AVERAGE,
+                ...POKEDEF_UP_TO_STRONG,
                 abilities: [...sandAbilities],
                 type: [...magmaTeamTypes],
             },
             {
-                ...POKEDEF_AVERAGE,
+                ...POKEDEF_UP_TO_STRONG,
                 abilities: [...sandAbilities],
                 type: [...magmaTeamTypes],
             },
