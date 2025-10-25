@@ -221,7 +221,7 @@ const generic2Average3Strong1MegaTeamTemplate = () => [
     },
 ];
 
-const generic2Average2Strong1Premium1MegaTeamTemplate = [
+const generic2Average2Strong1Premium1MegaTeamTemplate = () => [
     {
         absoluteTier: [TIER_PREMIUM],
         checkValidEvo: true,
