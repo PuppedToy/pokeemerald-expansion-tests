@@ -3688,6 +3688,10 @@ const trainersData = [
                 ]
             },
             {
+                specific: 'SPECIES_LUNATONE',
+                tryToHaveMove: ['MOVE_EXPLOSION'],
+            },
+            {
                 ...POKEDEF_STRONG,
                 type: [POKEMON_TYPE_PSYCHIC],
                 hasStat: ['baseSpeed', '<', '50'],
@@ -3707,10 +3711,6 @@ const trainersData = [
                         type: [POKEMON_TYPE_PSYCHIC],
                     },
                 ],
-            },
-            {
-                specific: 'SPECIES_LUNATONE',
-                tryToHaveMove: ['MOVE_EXPLOSION'],
             },
         ],
     },
