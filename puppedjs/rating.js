@@ -869,6 +869,10 @@ function ratePokemon(poke, moves, abilities) {
         abilitiesAttackPowerMultiplier = 0.5;
         abilitiesSpaPowerMultiplier = 0.5;
     }
+    if (poke.parsedAbilities.every(abilityId => abilityId === 'DEFEATIST' || abilityId === 'NONE')) {
+        abilitiesAttackPowerMultiplier = 0.75;
+        abilitiesSpaPowerMultiplier = 0.75;
+    }
     if (poke.parsedAbilities.every(abilityId => abilityId === 'SLOW_START' || abilityId === 'NONE')) {
         abilitiesAttackPowerMultiplier = 0.5;
         abilitiesSpeedPowerMultiplier = 0.5;
