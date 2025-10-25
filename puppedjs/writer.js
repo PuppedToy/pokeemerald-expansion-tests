@@ -209,10 +209,10 @@ async function writer(pokemonList, moves, abilities) {
         starters[0] = sampleAndRemove(eligiblePokemonForStarters);
 
         // Try to find a pokemon weak to any of starters[0]'s types
-        const starters0Types = starters[0].types;
+        const starters0Types = starters[0].parsedTypes;
         const weakToStarters0Types = eligiblePokemonForStarters.filter(poke => {
             if (poke.id === starters[0].id) return false;
-            return starters0Types.some(type => isSuperEffective(type, poke.types));
+            return starters0Types.some(type => isSuperEffective(type, poke.parsedTypes));
         });
         // If none found, restart
         if (weakToStarters0Types.length === 0) {
@@ -222,11 +222,11 @@ async function writer(pokemonList, moves, abilities) {
         starters[1] = sample(weakToStarters0Types);
 
         // Try to find a pokemon weak to starters1's types and that also fulfills that starters0 is weak to its types
-        const starters1Types = starters[1].types;
+        const starters1Types = starters[1].parsedTypes;
         const weakToStarters1TypesAndStrongToStarters0 = eligiblePokemonForStarters.filter(poke => {
             if (poke.id === starters[1].id) return false;
-            return starters1Types.some(type => isSuperEffective(type, poke.types))
-                && poke.types.some(type => isSuperEffective(type, starters[0].types))
+            return starters1Types.some(type => isSuperEffective(type, poke.parsedTypes))
+                && poke.parsedTypes.some(type => isSuperEffective(type, starters[0].parsedTypes))
                 && poke.id !== starters[0].id
                 && poke.id !== starters[1].id;
         });
