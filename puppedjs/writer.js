@@ -296,8 +296,12 @@ async function writer(pokemonList, moves, abilities) {
             && poke.evolutionData.megaEvos
             && poke.evolutionData.megaEvos.length > 0
             && !alreadyChosenSet.has(poke.id)
-            && poke.rating.bestEvoRating <= TIER_STRONG;
+            && poke.rating.bestEvoRating <= TIER_STRONG_THRESHOLD;
     });
+
+    if (lcPokesWithMegaEvo.length <= 0) {
+        console.warn('No LC pokemon with mega evolutions found for extra starters.');
+    }
 
     while (chosenExtraPokemon.length < 3 && lcPokesWithMegaEvo.length > 0) {
         const chosenPoke = sampleAndRemove(lcPokesWithMegaEvo);
