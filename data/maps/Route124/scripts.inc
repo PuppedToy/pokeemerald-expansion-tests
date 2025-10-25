@@ -99,6 +99,51 @@ Route124_EventScript_Isabella::
 	msgbox Route124_Text_IsabellaPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route124_EventScript_PickChoice::
+	multichoice 0, 0, MULTI_ROUTE124_PICK_CHOICE, FALSE
+	switch VAR_RESULT
+	case 0, Route124_EventScript_PickScarf
+	case 1, Route124_EventScript_PickBand
+	case 2, Route124_EventScript_PickSpecs
+	end
+
+Route124_EventScript_PickScarf::
+	finditem ITEM_CHOICE_SCARF
+	setflag FLAG_ITEM_ROUTE_124_RED_SHARD
+	end
+
+Route124_EventScript_PickBand::
+	finditem ITEM_CHOICE_BAND
+	setflag FLAG_ITEM_ROUTE_124_RED_SHARD
+	end
+
+Route124_EventScript_PickSpecs::
+	finditem ITEM_CHOICE_SPECS
+	setflag FLAG_ITEM_ROUTE_124_RED_SHARD
+	end
+
+Route124_EventScript_PickTM::
+	multichoice 0, 0, MULTI_ROUTE124_PICK_TM, FALSE
+	switch VAR_RESULT
+	case 0, Route124_EventScript_PickBlizzard
+	case 1, Route124_EventScript_PickThunder
+	case 2, Route124_EventScript_PickFireBlast
+	end
+
+Route124_EventScript_PickBlizzard::
+	finditem ITEM_TM_BLIZZARD
+	setflag FLAG_ITEM_ROUTE_124_BLUE_SHARD
+	end
+
+Route124_EventScript_PickThunder::
+	finditem ITEM_TM_THUNDER
+	setflag FLAG_ITEM_ROUTE_124_BLUE_SHARD
+	end
+
+Route124_EventScript_PickFireBlast::
+	finditem ITEM_TM_FIRE_BLAST
+	setflag FLAG_ITEM_ROUTE_124_BLUE_SHARD
+	end
+
 Route124_Text_HuntersHouse:
 	.string "HUNTER'S HOUSE$"
-

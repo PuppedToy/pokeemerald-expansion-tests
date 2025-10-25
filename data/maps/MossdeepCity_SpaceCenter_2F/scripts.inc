@@ -287,6 +287,9 @@ MossdeepCity_SpaceCenter_2F_EventScript_DefeatedMaxieTabitha::
 	turnobject LOCALID_SPACE_CENTER_2F_RICH_BOY, DIR_NORTH
 	call MossdeepCity_SpaceCenter_2F_EventScript_StevenFacePlayer
 	fadescreen FADE_FROM_BLACK
+	message MossdeepCity_SpaceCenter_2F_LevelCap
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
 	giveitem ITEM_HM_DIVE
 	setflag FLAG_RECEIVED_HM_DIVE
 	setflag FLAG_OMIT_DIVE_FROM_STEVEN_LETTER
@@ -471,3 +474,6 @@ MossdeepCity_SpaceCenter_2F_Text_MaxieWeWillGiveUp:
 MossdeepCity_SpaceCenter_2F_Text_StevenThankYouComeSeeMeAtHome:
 	.string "STEVEN: Whew, that was too tense.\n"
 	.string "{PLAYER}{KUN}, thank you.$"
+
+MossdeepCity_SpaceCenter_2F_LevelCap:
+	.string "The level cap has been raised to 58!$"

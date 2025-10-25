@@ -816,6 +816,22 @@ async function writer(pokemonList, moves, abilities) {
                     loosePokemon => loosePokemon.parsedAbilities.some(a => trainerMonDefinition.abilities.includes(a)),
                 );
             }
+            if (trainerMonDefinition.hasStat) {
+                const [statName, comparator, value] = trainerMonDefinition.hasStat;
+                let checkIfMonFulfillsCondition = () => true;
+                if (comparator === '<') {
+                    checkIfMonFulfillsCondition = (loosePokemon) => loosePokemon[statName] < value;
+                }
+                else if (comparator === '>') {
+                    checkIfMonFulfillsCondition = (loosePokemon) => loosePokemon[statName] > value;
+                }
+                else {
+                    console.warn(`WARN: Unknown comparator "${comparator}" in hasStat for trainer ${trainer.id}.`);
+                }
+                pokemonLooseList = pokemonLooseList.filter(
+                    loosePokemon => checkIfMonFulfillsCondition(loosePokemon),
+                );
+            }
             if (trainerMonDefinition.checkValidEvo) {
                 pokemonLooseList = pokemonLooseList.filter(
                     loosePokemon => {

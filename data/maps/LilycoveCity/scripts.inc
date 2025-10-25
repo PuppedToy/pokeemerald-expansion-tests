@@ -778,7 +778,7 @@ LilycoveCity_Text_HoneymoonVowToSeeRarePokemon:
 	.string "I mean, we are totally happy!$"
 
 LilycoveCity_LevelCap:
-	.string "The level cap has been raised to 47!$"
+	.string "The level cap has been raised to 48!$"
 
 LilycoveCity_Text_WallyHereICome:
 	.string "WALLY: {PLAYER}, I've grown\n"

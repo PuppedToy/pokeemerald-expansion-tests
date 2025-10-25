@@ -27,21 +27,22 @@ u32 GetCurrentLevelCap(void)
         {FLAG_BADGE05_GET, 36}, // Gym boss Norman - gives Regice
         // Get surf here
         {FLAG_DEFEATED_SHELLY_WEATHER_INST, 39}, // Minor boss
-        {FLAG_ROUTE119_RIVAL_DEFEATED, 40}, // Boss
-        {FLAG_BADGE06_GET, 42}, // Gym boss Winona - gives Registeel
-        {FLAG_MET_RIVAL_LILYCOVE, 45}, // Boss
-        // Get super rod here?
-        {FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, 47}, // Major boss
-        {FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, 50}, // Boss
-        {FLAG_BADGE07_GET, 52}, // Gym boss Tate and Liza - should give a strong Mon
-        // Isn't it considered a boss the tag fight with steven??
-        {FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN, 55}, // Major boss - gives Rayquaza
-        {FLAG_BADGE08_GET, 58}, // Gym boss Juan
-        {FLAG_DEFEATED_WALLY_VICTORY_ROAD, 61}, // Major boss
-        {FLAG_FIRST_DEFEATED_ELITE_4_SIDNEY, 64}, // E4
-        {FLAG_FIRST_DEFEATED_ELITE_4_PHOEBE, 66}, // E4
-        {FLAG_FIRST_DEFEATED_ELITE_4_GLACIA, 68}, // E4
-        {FLAG_FIRST_DEFEATED_ELITE_4_DRAKE, 70}, // E4
+        {FLAG_ROUTE119_RIVAL_DEFEATED, 41}, // Boss
+        {FLAG_BADGE06_GET, 43}, // Gym boss Winona - gives Registeel
+        {FLAG_MET_RIVAL_LILYCOVE, 46}, // Boss (Wally)
+        // Get super rod here
+        {FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, 48}, // Major boss
+        {FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, 51}, // Boss
+        {FLAG_BADGE07_GET, 53}, // Gym boss Tate and Liza - should give a strong Mon
+        {FLAG_DEFEATED_MAGMA_SPACE_CENTER, 56}, // Boss
+        {FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN, 58}, // Major boss - gives Rayquaza
+        {FLAG_BADGE08_GET, 61}, // Gym boss Juan
+        {FLAG_DEFEATED_WALLY_VICTORY_ROAD, 64}, // Major Boss
+        /* Create here last Rival battle at 67 */
+        {FLAG_FIRST_DEFEATED_ELITE_4_SIDNEY, 70}, // E4
+        {FLAG_FIRST_DEFEATED_ELITE_4_PHOEBE, 71}, // E4
+        {FLAG_FIRST_DEFEATED_ELITE_4_GLACIA, 72}, // E4
+        {FLAG_FIRST_DEFEATED_ELITE_4_DRAKE, 73}, // E4
         {FLAG_IS_CHAMPION, 75}, // Champion
     };
 

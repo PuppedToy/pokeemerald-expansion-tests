@@ -251,7 +251,7 @@ FortreeCity_Gym_Text_WinonaDefeat:
 
 FortreeCity_Gym_Text_ReceivedFeatherBadge:
 	.string "{PLAYER} received the FEATHER BADGE\n"
-	.string "and the level cap has been raised to 45!$"
+	.string "and the level cap has been raised to 46!$"
 
 FortreeCity_Gym_Text_ExplainFeatherBadgeTakeThis:
 	.string "With the FEATHER BADGE, all POKéMON up\n"

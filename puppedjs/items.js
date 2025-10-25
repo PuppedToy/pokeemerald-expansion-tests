@@ -147,8 +147,8 @@ const items = {
         'ITEM_TM_HIDDEN_POWER', // @TODO Change TM
         'ITEM_TM_SUNNY_DAY', // Route 109
         'ITEM_TM_TAUNT', // Taunt, Snatch, Skill Swap, Torment
-        'ITEM_TM_ICE_BEAM',
-        'ITEM_TM_BLIZZARD',
+        'ITEM_TM_ICE_BEAM', // Route 118
+        'ITEM_TM_BLIZZARD', // Route 124
         'ITEM_TM_HYPER_BEAM', // Route 115
         'ITEM_TM_LIGHT_SCREEN', // Mauville
         'ITEM_TM_PROTECT', // Toxic, Protect, Rest
@@ -158,8 +158,8 @@ const items = {
         'ITEM_TM_FRUSTRATION',
         'ITEM_TM_SOLAR_BEAM', // Route 115
         'ITEM_TM_IRON_TAIL', // @TODO Change TM
-        'ITEM_TM_THUNDERBOLT',
-        'ITEM_TM_THUNDER',
+        'ITEM_TM_THUNDERBOLT', // Route 118
+        'ITEM_TM_THUNDER', // Route 124
         'ITEM_TM_EARTHQUAKE', // Route 117
         'ITEM_TM_RETURN', // @TODO Change TM
         'ITEM_TM_DIG', // Route 104
@@ -169,10 +169,10 @@ const items = {
         'ITEM_TM_DOUBLE_TEAM', // @TODO Change TM
         'ITEM_TM_REFLECT', // Mauville
         'ITEM_TM_SHOCK_WAVE', // Wattson
-        'ITEM_TM_FLAMETHROWER',
+        'ITEM_TM_FLAMETHROWER', // Route 118
         'ITEM_TM_SLUDGE_BOMB', // Route 115
         'ITEM_TM_SANDSTORM', // Route 109
-        'ITEM_TM_FIRE_BLAST',
+        'ITEM_TM_FIRE_BLAST', // Route 124
         'ITEM_TM_ROCK_TOMB', // Roxanne
         'ITEM_TM_AERIAL_ACE', // Winona
         'ITEM_TM_TORMENT', // Taunt, Snatch, Skill Swap, Torment
@@ -269,13 +269,14 @@ const items = {
 
     // Probably not randomized
     premiumItems: [
-        'ITEM_CHOICE_BAND',
-        'ITEM_CHOICE_SPECS',
-        'ITEM_CHOICE_SCARF',
-        'ITEM_LEFTOVERS',
+        'ITEM_CHOICE_BAND', // Route 124
+        'ITEM_CHOICE_SPECS', // Route 124
+        'ITEM_CHOICE_SCARF', // Route 124
+        'ITEM_LEFTOVERS', // Route 119
         'ITEM_LIFE_ORB', // Route 106
         'ITEM_EVIOLITE', // Route 104
         'ITEM_ASSAULT_VEST', // Route 103
+        'ITEM_FOCUS_SASH', // Route 121
     ],
 
     goodItems: [
@@ -310,7 +311,6 @@ const items = {
         'ITEM_EJECT_PACK', // Route 111
         'ITEM_WHITE_HERB', // Route 112
         'ITEM_POWER_HERB', // Route 111
-        'ITEM_FOCUS_SASH', // Route 113
         'ITEM_AIR_BALLOON', // Route 111
         'ITEM_MIRROR_HERB', // Route 120
         'ITEM_ADRENALINE_ORB', // Route 120
@@ -326,7 +326,7 @@ const items = {
         'ITEM_PSYCHIC_SEED', // Route 110
         'ITEM_MISTY_SEED', // Route 110
         'ITEM_GRASSY_SEED', // Route 110
-        'ITEM_ROOM_SERVICE',
+        'ITEM_ROOM_SERVICE', // Route 124
         'ITEM_LUM_BERRY', // Route 110
         'ITEM_SITRUS_BERRY', // Route 111
         'ITEM_BOOSTER_ENERGY', // New Mauville
@@ -376,7 +376,7 @@ const items = {
         'ITEM_MUSCLE_BAND',
         'ITEM_WISE_GLASSES',
         'ITEM_METRONOME',
-        'ITEM_IRON_BALL',
+        'ITEM_IRON_BALL', // Route 124
         'ITEM_GRIP_CLAW',
         'ITEM_STICKY_BARB',
         'ITEM_FLOAT_STONE',

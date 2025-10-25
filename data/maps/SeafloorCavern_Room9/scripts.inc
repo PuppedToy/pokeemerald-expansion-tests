@@ -323,4 +323,4 @@ SeafloorCavern_Room9_Text_MaxieComeOnPlayer:
 	.string "to get out of here, too!$"
 
 SeafloorCavern_LevelCap:
-	.string "The level cap has been raised to 58!$"
+	.string "The level cap has been raised to 61!$"

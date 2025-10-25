@@ -580,7 +580,7 @@ MossdeepCity_Gym_Text_TateAndLizaDefeat:
 
 MossdeepCity_Gym_Text_ReceivedMindBadge:
 	.string "{PLAYER} received the MIND BADGE\n"
-	.string "and the level cap has been raised to 55!$"
+	.string "and the level cap has been raised to 56!$"
 
 MossdeepCity_Gym_Text_ExplainMindBadgeTakeThis:
 	.string "TATE: The MIND BADGE enhances the\n"

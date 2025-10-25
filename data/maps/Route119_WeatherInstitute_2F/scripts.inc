@@ -314,4 +314,4 @@ Route119_WeatherInstitute_2F_Text_NoAbnormalWeather:
 	.string "really.$"
 
 Route119_WeatherInstitute_LevelCap:
-	.string "The level cap has been raised to 40!$"
+	.string "The level cap has been raised to 41!$"

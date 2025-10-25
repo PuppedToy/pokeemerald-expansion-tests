@@ -212,6 +212,11 @@ const wildData = {
         SPECIES_SPINARAK: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
         SPECIES_ARIADOS: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
         SPECIES_SPIDOPS: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
+
+        // Route 124
+        SPECIES_WO_CHIEN: 'NFE_OR_SOLO_STRONG',
+        SPECIES_GUZZLORD: 'LC_NFE_OR_SOLO_AVERAGE',
+        SPECIES_KARTANA: 'LC_NFE_OR_SOLO_AVERAGE',
     },
     maps: [
         // Shelgon maps
@@ -390,6 +395,13 @@ const wildData = {
             land: 'SPECIES_SPINARAK',
             old: 'SPECIES_ARIADOS',
             good: 'SPECIES_SPIDOPS',
+            super: 'SPECIES_DOUBLADE',
+        },
+        {
+            id: 'MAP_ROUTE124',
+            land: 'SPECIES_WO_CHIEN',
+            old: 'SPECIES_GUZZLORD',
+            good: 'SPECIES_KARTANA',
             super: 'SPECIES_DOUBLADE',
         },
         // Special

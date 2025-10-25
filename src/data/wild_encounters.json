@@ -1460,54 +1460,119 @@
             "encounter_rate": 30,
             "mons": [
               {
-                "min_level": 5,
-                "max_level": 10,
-                "species": "SPECIES_MAGIKARP"
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_GUZZLORD"
               },
               {
-                "min_level": 5,
-                "max_level": 10,
-                "species": "SPECIES_TENTACOOL"
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_GUZZLORD"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_MAGIKARP"
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_KARTANA"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_TENTACOOL"
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_KARTANA"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_WAILMER"
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_KARTANA"
               },
               {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_SHARPEDO"
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_DOUBLADE"
               },
               {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_WAILMER"
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_DOUBLADE"
               },
               {
-                "min_level": 25,
-                "max_level": 30,
-                "species": "SPECIES_WAILMER"
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_DOUBLADE"
               },
               {
-                "min_level": 35,
-                "max_level": 40,
-                "species": "SPECIES_WAILMER"
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_DOUBLADE"
               },
               {
-                "min_level": 40,
-                "max_level": 45,
-                "species": "SPECIES_WAILMER"
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_DOUBLADE"
+              }
+            ]
+          },
+          "land_mons": {
+            "encounter_rate": 20,
+            "mons": [
+              {
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_WO_CHIEN"
+              },
+              {
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_WO_CHIEN"
+              },
+              {
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_WO_CHIEN"
+              },
+              {
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_WO_CHIEN"
+              },
+              {
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_WO_CHIEN"
+              },
+              {
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_WO_CHIEN"
+              },
+              {
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_WO_CHIEN"
+              },
+              {
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_WO_CHIEN"
+              },
+              {
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_WO_CHIEN"
+              },
+              {
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_WO_CHIEN"
+              },
+              {
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_WO_CHIEN"
+              },
+              {
+                "min_level": 53,
+                "max_level": 53,
+                "species": "SPECIES_WO_CHIEN"
               }
             ]
           }

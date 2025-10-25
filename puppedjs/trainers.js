@@ -1003,6 +1003,22 @@ const wallyTMs2 = [
     'MOVE_REST',
 ];
 
+const tateAndLizaBag = [
+    ...wallyBag2,
+    'Choice Scarf',
+    'Choice Specs',
+    'Choice Band',
+    // 'Room Service',
+    // 'Iron Ball',
+];
+
+const tateAndLizaTMs = [
+    ...wallyTMs2,
+    'MOVE_BLIZZARD',
+    'MOVE_THUNDER',
+    'MOVE_FIRE_BLAST',
+];
+
 const trainersData = [
     // Route 101
     {
@@ -3000,7 +3016,7 @@ const trainersData = [
     // Route 119 continued
     {
         id: 'TRAINER_FABIAN',
-        level: 40,
+        level: 41,
         bag: ['Leftovers', ...getSampleItemsFromArray(normanBag, 13)],
         tms: getSampleItemsFromArray(flanneryTMs, 7),
         team: generic2Average3Strong1MegaTeamTemplate(),
@@ -3009,7 +3025,7 @@ const trainersData = [
     {
         id: 'TRAINER_MAY_ROUTE_119_TREECKO',
         isBoss: true,
-        level: 40,
+        level: 41,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rival119Bag],
         tms: [...shellyTMs],
@@ -3018,7 +3034,7 @@ const trainersData = [
     {
         id: 'TRAINER_MAY_ROUTE_119_TORCHIC',
         isBoss: true,
-        level: 40,
+        level: 41,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rival119Bag],
         tms: [...shellyTMs],
@@ -3027,7 +3043,7 @@ const trainersData = [
     {
         id: 'TRAINER_MAY_ROUTE_119_MUDKIP',
         isBoss: true,
-        level: 40,
+        level: 41,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rival119Bag],
         tms: [...shellyTMs],
@@ -3048,7 +3064,7 @@ const trainersData = [
     // Route 119 continued
     {
         id: 'TRAINER_LEONEL',
-        level: 42,
+        level: 43,
         bag: getSampleItemsFromArray(normanBag, 16),
         tms: getSampleItemsFromArray(flanneryTMs, 8),
         team: [
@@ -3063,7 +3079,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ROBERT_1',
-        level: 42,
+        level: 43,
         bag: getSampleItemsFromArray(normanBag, 16),
         tms: getSampleItemsFromArray(flanneryTMs, 8),
         team: [
@@ -3083,7 +3099,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_COLIN',
-        level: 42,
+        level: 43,
         bag: getSampleItemsFromArray(normanBag, 16),
         tms: getSampleItemsFromArray(flanneryTMs, 8),
         team: [
@@ -3097,7 +3113,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CLARISSA',
-        level: 42,
+        level: 43,
         bag: getSampleItemsFromArray(normanBag, 13),
         tms: getSampleItemsFromArray(flanneryTMs, 8),
         team: [
@@ -3118,7 +3134,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ANGELICA',
-        level: 42,
+        level: 43,
         bag: getSampleItemsFromArray(normanBag, 16),
         tms: getSampleItemsFromArray(flanneryTMs, 8),
         team: generic3Average3StrongTeamTemplate(),
@@ -3126,7 +3142,7 @@ const trainersData = [
     // Fortree City Gym
     {
         id: 'TRAINER_WINONA_1',
-        level: 42,
+        level: 43,
         isBoss: true,
         bag: [...winonaBag],
         tms: [...shellyTMs],
@@ -3190,14 +3206,14 @@ const trainersData = [
     // Route 120 After Gym
     {
         id: 'TRAINER_JEFFREY_1',
-        level: 45,
+        level: 46,
         bag: getSampleItemsFromArray(winonaBag, 20),
         tms: getSampleItemsFromArray(shellyTMs, 10),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_CHIP',
-        level: 45,
+        level: 46,
         bag: getSampleItemsFromArray(winonaBag, 20),
         tms: getSampleItemsFromArray(shellyTMs, 10),
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
@@ -3205,7 +3221,7 @@ const trainersData = [
     // Route 121
     {
         id: 'TRAINER_MARCEL',
-        level: 45,
+        level: 46,
         bag: getSampleItemsFromArray(winonaBag, 20),
         tms: getSampleItemsFromArray(shellyTMs, 10),
         team: [
@@ -3229,7 +3245,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CALE',
-        level: 45,
+        level: 46,
         bag: getSampleItemsFromArray(winonaBag, 20),
         tms: getSampleItemsFromArray(shellyTMs, 10),
         team: [
@@ -3244,7 +3260,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TAMMY',
-        level: 45,
+        level: 46,
         bag: getSampleItemsFromArray(winonaBag, 20),
         tms: getSampleItemsFromArray(shellyTMs, 7),
         team: [
@@ -3265,35 +3281,35 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JESSICA_1',
-        level: 45,
+        level: 46,
         bag: getSampleItemsFromArray(winonaBag, 20),
         tms: getSampleItemsFromArray(shellyTMs, 10),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_MYLES',
-        level: 45,
+        level: 46,
         bag: getSampleItemsFromArray(winonaBag, 20),
         tms: getSampleItemsFromArray(shellyTMs, 10),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_WALTER_1',
-        level: 45,
+        level: 46,
         bag: getSampleItemsFromArray(winonaBag, 20),
         tms: getSampleItemsFromArray(shellyTMs, 10),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_PAT',
-        level: 45,
+        level: 46,
         bag: getSampleItemsFromArray(winonaBag, 20),
         tms: getSampleItemsFromArray(shellyTMs, 10),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_CRISTIN_1',
-        level: 45,
+        level: 46,
         bag: getSampleItemsFromArray(winonaBag, 17),
         tms: getSampleItemsFromArray(shellyTMs, 10),
         team: [
@@ -3320,7 +3336,7 @@ const trainersData = [
     {
         id: 'TRAINER_WALLY_LILYCOVE',
         isBoss: true,
-        level: 45,
+        level: 46,
         bag: [...wallyBag2],
         tms: [...wallyTMs2],
         team: [
@@ -3366,7 +3382,7 @@ const trainersData = [
     {
         id: 'TRAINER_MAXIE_MAGMA_HIDEOUT',
         isBoss: true,
-        level: 47,
+        level: 48,
         bag: [...wallyBag2],
         tms: [...wallyTMs2],
         team: [
@@ -3460,7 +3476,7 @@ const trainersData = [
     // Mt. Pyre
     {
         id: 'TRAINER_MARK',
-        level: 50,
+        level: 51,
         bag: getSampleItemsFromArray(winonaBag, 20),
         tms: getSampleItemsFromArray(shellyTMs, 10),
         team: [
@@ -3486,7 +3502,7 @@ const trainersData = [
     {
         id: 'TRAINER_MATT',
         isBoss: true,
-        level: 50,
+        level: 51,
         bag: [...wallyBag2],
         tms: [...wallyTMs2],
         team: [
@@ -3525,7 +3541,140 @@ const trainersData = [
                 abilities: [...snowAbilities],
             },
         ],
-    }
+    },
+    // Route 124
+    {
+        id: 'TRAINER_CHAD',
+        level: 53,
+        bag: getSampleItemsFromArray(winonaBag, 20),
+        tms: getSampleItemsFromArray(shellyTMs, 10),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SPINARAK'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+        ],
+    },
+    {
+        id: 'TRAINER_ISABELLA',
+        level: 53,
+        bag: ['Choice Band', 'Choice Scarf', 'Choice Specs', ...getSampleItemsFromArray(winonaBag, 17)],
+        tms: getSampleItemsFromArray(shellyTMs, 10),
+        team: generic2Average3Strong1MegaTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_SPENCER',
+        level: 53,
+        bag: getSampleItemsFromArray(winonaBag, 17),
+        tms: getSampleItemsFromArray(shellyTMs, 10),
+        team: [
+            {
+                ...POKEDEF_STRONG,
+                mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
+                tryToHaveMove: ['MOVE_TRICK_ROOM'],
+                item: 'Focus Sash',
+            },
+            {
+                ...POKEDEF_STRONG,
+                item: 'Room Service',
+            },
+            {
+                ...POKEDEF_STRONG,
+                item: 'Iron Ball',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            { ...POKEDEF_STRONG_PREMIUM_MEGA },
+        ],
+    },
+    {
+        id: 'TRAINER_GRACE',
+        level: 53,
+        bag: getSampleItemsFromArray(winonaBag, 20),
+        tms: ['MOVE_BLIZZARD', 'MOVE_THUNDER', 'MOVE_FIRE_BLAST', ...getSampleItemsFromArray(shellyTMs, 7)],
+        team: [
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+                type: [POKEMON_TYPE_ELECTRIC],
+                fallback: [
+                    {
+                        ...POKEDEF_STRONG,
+                        type: [POKEMON_TYPE_ELECTRIC],
+                    },
+                ]
+            },
+            {
+                ...POKEDEF_STRONG,
+                type: [POKEMON_TYPE_ICE],
+                tryMega: true,
+            },
+            {
+                ...POKEDEF_STRONG,
+                type: [POKEMON_TYPE_FIRE],
+                tryMega: true,
+            },
+            {
+                ...POKEDEF_STRONG,
+                tryMega: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+        ],
+    },
+    // Gym Leader - Tate & Liza
+    {
+        id: 'TRAINER_TATE_AND_LIZA_1',
+        level: 53,
+        isBoss: true,
+        bag: [...tateAndLizaBag],
+        tms: [...tateAndLizaTMs, 'MOVE_CALM_MIND', 'MOVE_CALM_MIND', 'MOVE_CALM_MIND'],
+        bannedItems: ['Focus Sash', 'Room Service'],
+        team: [
+            {
+                specific: 'SPECIES_SOLROCK',
+                tryToHaveMove: ['MOVE_TRICK_ROOM'],
+                item: 'Focus Sash',
+            },
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+                type: [POKEMON_TYPE_PSYCHIC],
+            },
+            {
+                oneOf: ['SPECIES_LUNALA', 'SPECIES_SOLGALEO'],
+                item: 'Room Service',
+            },
+            {
+                ...POKEDEF_STRONG,
+                type: [POKEMON_TYPE_PSYCHIC],
+                hasStat: ['baseSpeed', '<', '50'],
+                fallback: [
+                    {
+                        ...POKEDEF_STRONG,
+                        type: [POKEMON_TYPE_PSYCHIC],
+                        hasStat: ['baseSpeed', '<', '70'],
+                    },
+                    {
+                        ...POKEDEF_AVERAGE,
+                        type: [POKEMON_TYPE_PSYCHIC],
+                        hasStat: ['baseSpeed', '<', '50'],
+                    },
+                    {
+                        ...POKEDEF_STRONG,
+                        type: [POKEMON_TYPE_PSYCHIC],
+                    },
+                ],
+            },
+            {
+                specific: 'SPECIES_LUNATONE',
+                tryToHaveMove: ['MOVE_TRICK_ROOM', 'CALM_MIND'],
+            },
+            {
+                ...POKEDEF_STRONG,
+                type: [POKEMON_TYPE_FAIRY],
+            },
+        ],
+    },
 ]
 
 module.exports = {
