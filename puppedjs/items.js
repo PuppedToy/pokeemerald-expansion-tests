@@ -346,22 +346,22 @@ const items = {
     ],
 
     protectionBerries: {
-        NORMAL: 'ITEM_CHILAN_BERRY',
+        NORMAL: 'ITEM_CHILAN_BERRY', // Route 111
         FIRE: 'ITEM_OCCA_BERRY', // Route 117
         WATER: 'ITEM_PASSHO_BERRY', // Route 104
         ELECTRIC: 'ITEM_WACAN_BERRY', // Route 117
         GRASS: 'ITEM_RINDO_BERRY',
-        ICE: 'ITEM_YACHE_BERRY',
+        ICE: 'ITEM_YACHE_BERRY', // Route 111
         FIGHTING: 'ITEM_CHOPLE_BERRY', // Route 104
         POISON: 'ITEM_KEBIA_BERRY',
         GROUND: 'ITEM_SHUCA_BERRY', // Route 117
-        FLYING: 'ITEM_COBA_BERRY',
-        PSYCHIC: 'ITEM_PAYAPA_BERRY',
-        BUG: 'ITEM_TANGA_BERRY',
+        FLYING: 'ITEM_COBA_BERRY', // Route 111
+        PSYCHIC: 'ITEM_PAYAPA_BERRY', // Route 121
+        BUG: 'ITEM_TANGA_BERRY', // Route 121
         ROCK: 'ITEM_CHARTI_BERRY', // Route 104
         GHOST: 'ITEM_KASIB_BERRY',
         DRAGON: 'ITEM_HABAN_BERRY',
-        DARK: 'ITEM_COLBUR_BERRY',
+        DARK: 'ITEM_COLBUR_BERRY', // Route 121
         STEEL: 'ITEM_BABIRI_BERRY',
         FAIRY: 'ITEM_ROSELI_BERRY',
     },

@@ -229,9 +229,26 @@ LilycoveCity_EventScript_AquaGrunt4::
 LilycoveCity_EventScript_Rival::
 	lock
 	faceplayer
-	checkplayergender
-	goto_if_eq VAR_RESULT, MALE, LilycoveCity_EventScript_May
-	goto_if_eq VAR_RESULT, FEMALE, LilycoveCity_EventScript_Brendan
+	msgbox LilycoveCity_Text_WallyHereICome, MSGBOX_DEFAULT
+	trainerbattle_no_intro TRAINER_WALLY_LILYCOVE, LilycoveCity_Text_WallyDefeat
+	call Common_EventScript_PlayLevelCapFanfare
+	msgbox LilycoveCity_Text_WallyHaveSuperRod, MSGBOX_DEFAULT
+	giveitem ITEM_SUPER_ROD
+	applymovement VAR_LAST_TALKED, Common_Movement_WalkInPlaceFasterDown
+	waitmovement 0
+	delay 50
+	setfieldeffectargument 0, 1
+	dofieldeffect FLDEFF_NPCFLY_OUT
+	delay 15
+	removeobject VAR_LAST_TALKED
+	waitfieldeffect FLDEFF_NPCFLY_OUT
+	savebgm MUS_DUMMY
+	fadedefaultbgm
+	message LilycoveCity_LevelCap
+	waitmessage
+	call Common_EventScript_PlayLevelCapFanfare
+	setflag FLAG_MET_RIVAL_LILYCOVE
+	release
 	end
 
 LilycoveCity_EventScript_May::
@@ -762,3 +779,19 @@ LilycoveCity_Text_HoneymoonVowToSeeRarePokemon:
 
 LilycoveCity_LevelCap:
 	.string "The level cap has been raised to 47!$"
+
+LilycoveCity_Text_WallyHereICome:
+	.string "WALLY: {PLAYER}, I've grown\n"
+	.string "stronger. Let me show you!$"
+
+LilycoveCity_Text_WallyDefeat:
+	.string "WALLY: … … … … … … …\p"
+	.string "… … … … … … … …\p"
+	.string "I lost again…$"
+
+LilycoveCity_Text_WallyHaveSuperRod:
+	.string "WALLY: I will train until\n"
+	.string "I can defeat you.\p"
+	.string "In the mean time, have this\n"
+	.string "SUPER ROD I no longer need.$"
+

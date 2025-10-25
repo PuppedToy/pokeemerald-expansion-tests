@@ -152,10 +152,12 @@ const routeFiles = [
     path.resolve(mapsBase, 'Route118', 'map.json'),
     path.resolve(mapsBase, 'Route119', 'map.json'),
     path.resolve(mapsBase, 'Route120', 'map.json'),
+    path.resolve(mapsBase, 'Route121', 'map.json'),
     path.resolve(mapsBase, 'PetalburgCity', 'map.json'),
     path.resolve(mapsBase, 'RustboroCity', 'map.json'),
     path.resolve(mapsBase, 'DewfordTown', 'map.json'),
     path.resolve(mapsBase, 'SlateportCity', 'map.json'),
+    path.resolve(mapsBase, 'LilycoveCity', 'map.json'),
     path.resolve(mapsBase, 'ScorchedSlab', 'map.json'),
 ];
 

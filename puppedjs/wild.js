@@ -10,6 +10,7 @@ const {
     EVO_TYPE_NFE,
     EVO_TYPE_SOLO,
     EVO_TYPE_MEGA,
+    TIER_PREMIUM,
 } = require('./constants.js');
 
 // For fishing, each route will have 1 land and 1 old rod option
@@ -46,6 +47,10 @@ const wildData = {
             replace: [TIER_AVERAGE, TIER_STRONG],
             type: [EVO_TYPE_LC],
         },
+        LC_NFE_OR_SOLO_AVERAGE_OR_STRONG: {
+            replace: [TIER_AVERAGE, TIER_STRONG],
+            type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
+        },
         NFE_OR_SOLO_AVERAGE_OR_WEAK: {
             replace: [TIER_AVERAGE, TIER_WEAK],
             type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
@@ -56,6 +61,10 @@ const wildData = {
         },
         NFE_OR_SOLO_STRONG: {
             replace: [TIER_STRONG],
+            type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
+        },
+        NFE_OR_SOLO_PREMIUM: {
+            replace: [TIER_PREMIUM],
             type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
         NFE_OR_SOLO_AVERAGE_STRONG: {
@@ -81,6 +90,7 @@ const wildData = {
         SPECIES_SHELGON: 'NFE_OR_SOLO_STRONG',
         SPECIES_PUPITAR: 'NFE_OR_SOLO_STRONG',
         SPECIES_GABITE: 'NFE_OR_SOLO_STRONG',
+        SPECIES_DOUBLADE: 'NFE_OR_SOLO_PREMIUM',
 
         // Route101
         SPECIES_ZIGZAGOON: 'LC_BAD_WEAK_AVERAGE',
@@ -186,6 +196,14 @@ const wildData = {
 
         // Scorched Slab
         SPECIES_RIBOMBEE: 'NFE_MEGA',
+
+        // Route121
+        SPECIES_SHUPPET: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
+        SPECIES_METAPOD: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
+        SPECIES_HONEDGE: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
+
+        // Lilycove City
+        SPECIES_WAILMER: 'LC_NFE_OR_SOLO_AVERAGE',
     },
     maps: [
         // Shelgon maps
@@ -338,6 +356,20 @@ const wildData = {
         {
             id: 'MAP_SCORCHED_SLAB',
             land: 'SPECIES_RIBOMBEE',
+        },
+        // Doublade maps
+        {
+            id: 'MAP_ROUTE121',
+            land: 'SPECIES_SHUPPET',
+            old: 'SPECIES_METAPOD',
+            good: 'SPECIES_HONEDGE',
+            super: 'SPECIES_DOUBLADE',
+        },
+        {
+            id: 'MAP_LILYCOVE_CITY',
+            old: 'SPECIES_WAILMER',
+            good: 'SPECIES_WAILMER',
+            super: 'SPECIES_WAILMER',
         },
         // Special
         {

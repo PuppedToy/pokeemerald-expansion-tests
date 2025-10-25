@@ -149,45 +149,6 @@ const sunAbilities = ['FLOWER_GIFT', 'CHLOROPHYLL', 'LEAF_GUARD', 'SOLAR_POWER',
 const sandAbilities = ['SAND_FORCE', 'SAND_RUSH', 'SAND_VEIL', 'SAND_SPIT'];
 const snowAbilities = ['ICE_BODY', 'SNOW_CLOAK', 'SLUSH_RUSH'];
 
-const rivalLillycoveTemplate = (id) => [
-    {
-        special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
-        tryEvolve: true,
-    },
-    {
-        special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_MEGA_103_KEEP_' + id,
-        tryEvolve: true,
-        tryMega: true,
-    },
-    {
-        special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_STARTER_' + id,
-        tryEvolve: true,
-        tryMega: true,
-    },
-    {
-        special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_119_SUPERROD_KEEP_' + id,
-        tryEvolve: true,
-        tryMega: true,
-    },
-    {
-        special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_119_PREMIUM_KEEP_' + id,
-        tryEvolve: true,
-        checkValidEvo: true,
-    },
-    {
-        id: 'RIVAL_LILLYCOVE_PREMIUM_KEEP_' + id,
-        absoluteTier: [TIER_PREMIUM],
-        evoType: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
-        tryEvolve: true,
-        checkValidEvo: true,
-    },
-];
-
 const aquaTeamTypes = [
     POKEMON_TYPE_WATER,
     POKEMON_TYPE_DARK,
@@ -231,7 +192,7 @@ const generic3Average3StrongTeamTemplate = () => [
     },
 ];
 
-const generic3Average3StrongTeamTemplateWithMega = () => [
+const generic2Average3Strong1MegaTeamTemplate = () => [
     {
         absoluteTier: [TIER_STRONG],
         checkValidEvo: true,
@@ -259,6 +220,35 @@ const generic3Average3StrongTeamTemplateWithMega = () => [
         tryEvolve: true,
     },
 ];
+
+const generic2Average2Strong1Premium1MegaTeamTemplate = [
+    {
+        absoluteTier: [TIER_PREMIUM],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_STRONG],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_STRONG],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        absoluteTier: [TIER_AVERAGE],
+        checkValidEvo: true,
+    },
+    {
+        special: TRAINER_POKE_MEGA_WITH_STONE,
+        megaTier: [TIER_STRONG, TIER_PREMIUM],
+        checkValidEvo: true,
+        tryEvolve: true,
+    },
+]
 
 const punchingMoves = [
     'MOVE_BULLET_PUNCH',
@@ -377,6 +367,13 @@ const POKEDEF_PREMIUM = {
             tryEvolve: true,
         },
     ],
+};
+
+const POKEDEF_STRONG_PREMIUM_MEGA = {
+    special: TRAINER_POKE_MEGA_WITH_STONE,
+    megaTier: [TIER_STRONG, TIER_PREMIUM],
+    checkValidEvo: true,
+    tryEvolve: true,
 };
 
 const pokeDefDrizzleMon = (BASE_POKE_DEF) => {
@@ -988,6 +985,22 @@ const winonaBag = [
     'Mirror Herb',
     'Adrenaline Orb',
     'Red Card',
+];
+
+const wallyBag2 = [
+    ...winonaBag,
+    'Focus Sash',
+    'Papaya Berry',
+    'Colbur Berry',
+    'Tanga Berry',
+];
+
+const wallyTMs2 = [
+    ...shellyTMs,
+    'MOVE_AERIAL_ACE',
+    'MOVE_TOXIC',
+    'MOVE_PROTECT',
+    'MOVE_REST',
 ];
 
 const trainersData = [
@@ -2990,7 +3003,7 @@ const trainersData = [
         level: 40,
         bag: ['Leftovers', ...getSampleItemsFromArray(normanBag, 13)],
         tms: getSampleItemsFromArray(flanneryTMs, 7),
-        team: generic3Average3StrongTeamTemplateWithMega(),
+        team: generic2Average3Strong1MegaTeamTemplate(),
     },
     // Route 119 Rival Battles
     {
@@ -3175,83 +3188,205 @@ const trainersData = [
         ],
     },
     // Route 120 After Gym
-    // @TODO
-    // Lillycove Rival
     {
-        id: 'TRAINER_MAY_LILLYCOVE_TREECKO',
+        id: 'TRAINER_JEFFREY_1',
+        level: 45,
+        bag: getSampleItemsFromArray(winonaBag, 20),
+        tms: getSampleItemsFromArray(shellyTMs, 10),
+        team: generic2Average3Strong1MegaTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_CHIP',
+        level: 45,
+        bag: getSampleItemsFromArray(winonaBag, 20),
+        tms: getSampleItemsFromArray(shellyTMs, 10),
+        team: generic2Average2Strong1Premium1MegaTeamTemplate(),
+    },
+    // Route 121
+    {
+        id: 'TRAINER_MARCEL',
+        level: 45,
+        bag: getSampleItemsFromArray(winonaBag, 20),
+        tms: getSampleItemsFromArray(shellyTMs, 10),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SHUPPET'],
+                tryEvolve: true,
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_METAPOD'],
+                tryEvolve: true,
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_HONEDGE'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
+        ],
+    },
+    {
+        id: 'TRAINER_CALE',
+        level: 45,
+        bag: getSampleItemsFromArray(winonaBag, 20),
+        tms: getSampleItemsFromArray(shellyTMs, 10),
+        team: [
+            {
+                ...POKEDEF_AVERAGE,
+                item: 'Focus Sash',
+            },
+            { ...POKEDEF_STRONG_PREMIUM_MEGA },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 1),
+        ],
+    },
+    {
+        id: 'TRAINER_TAMMY',
+        level: 45,
+        bag: getSampleItemsFromArray(winonaBag, 20),
+        tms: getSampleItemsFromArray(shellyTMs, 7),
+        team: [
+            {
+                ...POKEDEF_STRONG,
+                mustHaveOneOfMoves: ['MOVE_SLEEP_TALK'],
+                tryToHaveMove: ['MOVE_REST', 'MOVE_SLEEP_TALK'],
+            },
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+                type: [POKEMON_TYPE_POISON],
+                mustHaveOneOfMoves: ['MOVE_TOXIC'],
+                tryToHaveMove: ['MOVE_TOXIC', 'MOVE_PROTECT'],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+        ],
+    },
+    {
+        id: 'TRAINER_JESSICA_1',
+        level: 45,
+        bag: getSampleItemsFromArray(winonaBag, 20),
+        tms: getSampleItemsFromArray(shellyTMs, 10),
+        team: generic2Average3Strong1MegaTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_MYLES',
+        level: 45,
+        bag: getSampleItemsFromArray(winonaBag, 20),
+        tms: getSampleItemsFromArray(shellyTMs, 10),
+        team: generic2Average3Strong1MegaTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_WALTER_1',
+        level: 45,
+        bag: getSampleItemsFromArray(winonaBag, 20),
+        tms: getSampleItemsFromArray(shellyTMs, 10),
+        team: generic2Average3Strong1MegaTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_PAT',
+        level: 45,
+        bag: getSampleItemsFromArray(winonaBag, 20),
+        tms: getSampleItemsFromArray(shellyTMs, 10),
+        team: generic2Average3Strong1MegaTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_CRISTIN_1',
+        level: 45,
+        bag: getSampleItemsFromArray(winonaBag, 17),
+        tms: getSampleItemsFromArray(shellyTMs, 10),
+        team: [
+            {
+                ...POKEDEF_STRONG,
+                weakToTypes: [POKEMON_TYPE_PSYCHIC],
+                item: 'Papaya Berry',
+            },
+            {
+                ...POKEDEF_STRONG,
+                weakToTypes: [POKEMON_TYPE_DARK],
+                item: 'Colbur Berry',
+            },
+            {
+                ...POKEDEF_STRONG,
+                weakToTypes: [POKEMON_TYPE_BUG],
+                item: 'Tanga Berry',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            { ...POKEDEF_STRONG_PREMIUM_MEGA },
+        ],
+    },
+    // Lillycove Wally Rival
+    {
+        id: 'TRAINER_WALLY_LILYCOVE',
         isBoss: true,
         level: 45,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...winonaBag],
-        tms: [...shellyTMs],
-        team: [...rivalLillycoveTemplate('TREECKO')],
+        bag: [...wallyBag2],
+        tms: [...wallyTMs2],
+        team: [
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'WALLY_1',
+                tryEvolve: true,
+                tryMega: true,
+            },
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'WALLY_2',
+                tryEvolve: true,
+                tryMega: true,
+            },
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'WALLY_3',
+                tryEvolve: true,
+                tryMega: true,
+            },
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'WALLY_4',
+                tryEvolve: true,
+                tryMega: true,
+            },
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'WALLY_5',
+                tryEvolve: true,
+                tryMega: true,
+            },
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'WALLY_6',
+                tryEvolve: true,
+                tryMega: true,
+            },
+        ],
     },
-    {
-        id: 'TRAINER_MAY_LILLYCOVE_TORCHIC',
-        isBoss: true,
-        level: 45,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...winonaBag],
-        tms: [...shellyTMs],
-        team: [...rivalLillycoveTemplate('TORCHIC')],
-    },
-    {
-        id: 'TRAINER_MAY_LILLYCOVE_MUDKIP',
-        isBoss: true,
-        level: 45,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...winonaBag],
-        tms: [...shellyTMs],
-        team: [...rivalLillycoveTemplate('MUDKIP')],
-    },
-    {
-        id: 'TRAINER_BRENDAN_LILLYCOVE_TREECKO',
-        copy: 'TRAINER_MAY_LILLYCOVE_TREECKO',
-    },
-    {
-        id: 'TRAINER_BRENDAN_LILLYCOVE_TORCHIC',
-        copy: 'TRAINER_MAY_LILLYCOVE_TORCHIC',
-    },
-    {
-        id: 'TRAINER_BRENDAN_LILLYCOVE_MUDKIP',
-        copy: 'TRAINER_MAY_LILLYCOVE_MUDKIP',
-    },
+    // Magma Hideout
     {
         id: 'TRAINER_MAXIE_MAGMA_HIDEOUT',
         isBoss: true,
         level: 47,
-        bag: [...winonaBag],
-        tms: [...shellyTMs],
+        bag: [...wallyBag2],
+        tms: [...wallyTMs2],
         team: [
             {
                 specific: 'SPECIES_GROUDON',
                 item: 'Heat Rock',
             },
             {
-                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
-                abilities: [...sunAbilities],
-                checkValidEvo: true,
-                type: [magmaTeamTypes[0]],
-                fallback: [
-                    {
-                        absoluteTier: [TIER_PREMIUM],
-                        checkValidEvo: true,
-                        type: [magmaTeamTypes[0]],
-                    },
-                    {
-                        absoluteTier: [TIER_STRONG],
-                        checkValidEvo: true,
-                        type: [magmaTeamTypes[0]],
-                    },
-                ]
-            },
-            {
-                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
+                absoluteTier: [TIER_PREMIUM],
                 abilities: [...sunAbilities],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[2]],
                 fallback: [
                     {
+                        absoluteTier: [TIER_STRONG],
+                        abilities: [...sunAbilities],
+                        checkValidEvo: true,
+                        type: [magmaTeamTypes[2]],
+                    },
+                    {
                         absoluteTier: [TIER_PREMIUM],
                         checkValidEvo: true,
                         type: [magmaTeamTypes[2]],
@@ -3264,13 +3399,19 @@ const trainersData = [
                 ]
             },
             {
-                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
+                absoluteTier: [TIER_STRONG],
                 abilities: [...sunAbilities],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[3]],
                 fallback: [
                     {
                         absoluteTier: [TIER_PREMIUM],
+                        abilities: [...sunAbilities],
+                        checkValidEvo: true,
+                        type: [magmaTeamTypes[3]],
+                    },
+                    {
+                        absoluteTier: [TIER_PREMIUM],
                         checkValidEvo: true,
                         type: [magmaTeamTypes[3]],
                     },
@@ -3281,12 +3422,22 @@ const trainersData = [
                     },
                 ]
             },
-            {
+            pokeDefDroughtMon({
                 absoluteTier: [TIER_STRONG, TIER_PREMIUM],
+                checkValidEvo: true,
+            }),
+            {
+                absoluteTier: [TIER_STRONG],
                 abilities: [...sunAbilities],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[4]],
                 fallback: [
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        abilities: [...sunAbilities],
+                        checkValidEvo: true,
+                        type: [magmaTeamTypes[4]],
+                    },
                     {
                         absoluteTier: [TIER_PREMIUM],
                         checkValidEvo: true,
@@ -3303,11 +3454,9 @@ const trainersData = [
                 specific: 'SPECIES_CAMERUPT',
                 item: 'Cameruptite',
                 ability: 'SOLID_ROCK',
-                tryToHaveMove: ['MOVE_EARTHQUAKE', 'MOVE_LAVA_PLUME', 'MOVE_ROCK_SLIDE', 'MOVE_EARTH_POWER'],
             },
         ],
     },
-    // @TODO TRAINER_MATT
 ]
 
 module.exports = {

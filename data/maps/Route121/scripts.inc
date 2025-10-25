@@ -168,6 +168,52 @@ Route121_EventScript_RematchCristin::
 	msgbox Route121_Text_CristinPostRematch, MSGBOX_AUTOCLOSE
 	end
 
+Route121_EventScript_PickTM::
+	multichoice 0, 0, MULTI_ROUTE121_PICK_TM, FALSE
+	switch VAR_RESULT
+	case 0, Route121_EventScript_PickToxic
+	case 1, Route121_EventScript_PickProtect
+	case 2, Route121_EventScript_PickRest
+	end
+
+Route121_EventScript_PickToxic::
+	finditem ITEM_TM_TOXIC
+	setflag FLAG_ITEM_ROUTE_121_PICK_TM
+	end
+
+Route121_EventScript_PickProtect::
+	finditem ITEM_TM_PROTECT
+	setflag FLAG_ITEM_ROUTE_121_PICK_TM
+	end
+
+Route121_EventScript_PickRest::
+	finditem ITEM_TM_REST
+	setflag FLAG_ITEM_ROUTE_121_PICK_TM
+	end
+
+Route121_EventScript_PickBerry::
+	multichoice 0, 0, MULTI_ROUTE121_PICK_BERRY, FALSE
+	switch VAR_RESULT
+	case 0, Route121_EventScript_PickPapaya
+	case 1, Route121_EventScript_PickColbur
+	case 2, Route121_EventScript_PickTanga
+	end
+
+Route121_EventScript_PickPapaya::
+	finditem ITEM_PAPAYA_BERRY
+	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
+	end
+
+Route121_EventScript_PickColbur::
+	finditem ITEM_COLBUR_BERRY
+	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
+	end
+
+Route121_EventScript_PickTanga::
+	finditem ITEM_TANGA_BERRY
+	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
+	end
+
 Route121_Text_OkayMoveOutToMtPyre:
 	.string "Okay!\n"
 	.string "We're to move out to MT. PYRE!$"

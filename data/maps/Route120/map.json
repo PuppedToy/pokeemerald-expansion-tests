@@ -182,54 +182,28 @@
       "flag": "FLAG_BADGE07_GET"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
-      "x": 19,
-      "y": 43,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
-      "movement_range_x": 0,
-      "movement_range_y": 0,
-      "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "1",
-      "script": "Route120_EventScript_Lorenzo",
-      "flag": "0"
-    },
-    {
-      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
-      "x": 33,
-      "y": 39,
-      "elevation": 3,
+      "graphics_id": "OBJ_EVENT_GFX_MANIAC",
+      "x": 8,
+      "y": 76,
+      "elevation": 5,
       "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
-      "script": "Route120_EventScript_Jenna",
-      "flag": "0"
-    },
-    {
-      "graphics_id": "OBJ_EVENT_GFX_MANIAC",
-      "x": 13,
-      "y": 88,
-      "elevation": 5,
-      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
-      "movement_range_x": 0,
-      "movement_range_y": 0,
-      "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "1",
       "script": "Route120_EventScript_Jeffrey",
-      "flag": "0"
+      "flag": "FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 18,
-      "y": 42,
+      "x": 3,
+      "y": 14,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_NUGGET",
+      "trainer_sight_or_berry_tree_id": "WOOD_MAIL",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_120_NUGGET"
     },
@@ -303,19 +277,6 @@
       "flag": "0"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_WOMAN_5",
-      "x": 19,
-      "y": 29,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
-      "movement_range_x": 0,
-      "movement_range_y": 0,
-      "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "4",
-      "script": "Route120_EventScript_Jennifer",
-      "flag": "0"
-    },
-    {
       "graphics_id": "OBJ_EVENT_GFX_HIKER",
       "x": 6,
       "y": 56,
@@ -326,7 +287,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route120_EventScript_Chip",
-      "flag": "0"
+      "flag": "FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_WOMAN_5",
@@ -382,45 +343,6 @@
       "flag": "FLAG_HIDE_ROUTE_120_STEVEN"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
-      "x": 13,
-      "y": 67,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
-      "movement_range_x": 0,
-      "movement_range_y": 0,
-      "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "1",
-      "script": "Route120_EventScript_Keigo",
-      "flag": "0"
-    },
-    {
-      "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
-      "x": 34,
-      "y": 33,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_TREE_DISGUISE",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "3",
-      "script": "Route120_EventScript_Riley",
-      "flag": "0"
-    },
-    {
-      "graphics_id": "OBJ_EVENT_GFX_GIRL_3",
-      "x": 1,
-      "y": 25,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
-      "movement_range_x": 0,
-      "movement_range_y": 0,
-      "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "3",
-      "script": "Route120_EventScript_Callie",
-      "flag": "0"
-    },
-    {
       "graphics_id": "OBJ_EVENT_GFX_MAN_3",
       "x": 29,
       "y": 8,
@@ -461,42 +383,16 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 35,
-      "y": 32,
+      "x": 7,
+      "y": 77,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_REVIVE",
+      "trainer_sight_or_berry_tree_id": "ITEM_MASTER_BALL",
       "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_120_REVIVE"
-    },
-    {
-      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 20,
-      "y": 28,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_REVIVE",
-      "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_120_REVIVE"
-    },
-    {
-      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 34,
-      "y": 40,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_REVIVE",
-      "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_120_REVIVE"
+      "flag": "FLAG_ITEM_ROUTE_120_MASTER"
     }
   ],
   "warp_events": [
@@ -513,6 +409,20 @@
       "elevation": 1,
       "dest_map": "MAP_SCORCHED_SLAB",
       "dest_warp_id": "0"
+    },
+    {
+      "x": 2,
+      "y": 13,
+      "elevation": 0,
+      "dest_map": "MAP_ROUTE120",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 35,
+      "y": 81,
+      "elevation": 0,
+      "dest_map": "MAP_ROUTE120",
+      "dest_warp_id": "2"
     }
   ],
   "coord_events": [
@@ -567,13 +477,6 @@
     },
     {
       "type": "weather",
-      "x": 32,
-      "y": 88,
-      "elevation": 5,
-      "weather": "COORD_EVENT_WEATHER_SUNNY_CLOUDS"
-    },
-    {
-      "type": "weather",
       "x": 28,
       "y": 15,
       "elevation": 0,
@@ -595,22 +498,22 @@
     },
     {
       "type": "weather",
-      "x": 32,
-      "y": 89,
-      "elevation": 5,
-      "weather": "COORD_EVENT_WEATHER_SUNNY_CLOUDS"
-    },
-    {
-      "type": "weather",
-      "x": 32,
+      "x": 36,
       "y": 90,
       "elevation": 5,
       "weather": "COORD_EVENT_WEATHER_SUNNY_CLOUDS"
     },
     {
       "type": "weather",
-      "x": 32,
+      "x": 36,
       "y": 91,
+      "elevation": 5,
+      "weather": "COORD_EVENT_WEATHER_SUNNY_CLOUDS"
+    },
+    {
+      "type": "weather",
+      "x": 36,
+      "y": 92,
       "elevation": 5,
       "weather": "COORD_EVENT_WEATHER_SUNNY_CLOUDS"
     },

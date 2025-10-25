@@ -11694,28 +11694,20 @@ Xatu
 Level: 29
 IVs: 18 HP / 18 Atk / 18 Def / 18 SpA / 18 SpD / 18 Spe
 
-=== TRAINER_ASHLEY ===
-Name: ASHLEY
-Class: Picnicker
-Pic: Picnicker
-Gender: Female
-Music: Girl
+=== TRAINER_WALLY_MAUVILLE ===
+Name: WALLY
+Class: Rival
+Pic: Wally
+Gender: Male
+Music: Male
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
-Swablu
-Level: 27
-IVs: 12 HP / 12 Atk / 12 Def / 12 SpA / 12 SpD / 12 Spe
+Ralts
+Level: 16
+IVs: 3 HP / 3 Atk / 3 Def / 3 SpA / 3 SpD / 3 Spe
 
-Swablu
-Level: 27
-IVs: 12 HP / 12 Atk / 12 Def / 12 SpA / 12 SpD / 12 Spe
-
-Swablu
-Level: 27
-IVs: 12 HP / 12 Atk / 12 Def / 12 SpA / 12 SpD / 12 Spe
-
-=== TRAINER_WALLY_MAUVILLE ===
+=== TRAINER_WALLY_LILYCOVE ===
 Name: WALLY
 Class: Rival
 Pic: Wally

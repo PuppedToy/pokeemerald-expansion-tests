@@ -1290,11 +1290,11 @@
 #define FLAG_ITEM_DEWFORD_MINT                                      0x4D3
 #define FLAG_ITEM_ROUTE_106_CAPSULE                                 0x4D4
 #define FLAG_ITEM_ROUTE_106_TM                                      0x4D5
-#define FLAG_UNUSED_0x4D6                                           0x4D6 // Unused Flag
-#define FLAG_UNUSED_0x4D7                                           0x4D7 // Unused Flag
-#define FLAG_UNUSED_0x4D8                                           0x4D8 // Unused Flag
-#define FLAG_UNUSED_0x4D9                                           0x4D9 // Unused Flag
-#define FLAG_UNUSED_0x4DA                                           0x4DA // Unused Flag
+#define FLAG_ITEM_ROUTE_120_MASTER                                  0x4D6
+#define FLAG_ITEM_ROUTE_121_PICK_TM                                 0x4D7
+#define FLAG_ITEM_ROUTE_121_PATCH                                   0x4D8
+#define FLAG_ITEM_ROUTE_121_CAPSULE                                 0x4D9
+#define FLAG_ITEM_ROUTE_121_PICK_BERRY                              0x4DA
 #define FLAG_UNUSED_0x4DB                                           0x4DB // Unused Flag
 #define FLAG_UNUSED_0x4DC                                           0x4DC // Unused Flag
 #define FLAG_UNUSED_0x4DD                                           0x4DD // Unused Flag
