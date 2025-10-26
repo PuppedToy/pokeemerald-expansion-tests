@@ -3919,14 +3919,14 @@ const trainersData = [
         bag: [...spaceCenterBag],
         tms: [...spaceCenterTMs],
         team: [
-            pokeDefOnlyLegend({
-                type: [...magmaTeamTypes],
-            }),
             {
                 ...POKEDEF_UP_TO_PREMIUM_NOEVO,
                 abilities: [...sandAbilities],
                 pickBest: true,
             },
+            pokeDefOnlyLegend({
+                type: [...magmaTeamTypes],
+            }),
             {
                 specific: 'SPECIES_CAMERUPT',
                 item: 'Cameruptite',
