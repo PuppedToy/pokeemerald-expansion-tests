@@ -282,6 +282,11 @@ const wildData = {
         // Route 132
         SPECIES_IRON_THORNS: 'FINAL_OR_SOLO_STRONG',
         SPECIES_IRON_TREADS: 'FINAL_OR_SOLO_STRONG',
+
+        // Ever Grande
+        SPECIES_RAIKOU: 'FINAL_OR_SOLO_PREMIUM',
+        SPECIES_ENTEI: 'FINAL_OR_SOLO_PREMIUM',
+        SPECIES_SUICUNE: 'FINAL_OR_SOLO_PREMIUM',
     },
     maps: [
         // Shelgon maps
@@ -547,6 +552,12 @@ const wildData = {
             old: 'SPECIES_IRON_THORNS',
             good: 'SPECIES_IRON_TREADS',
             super: 'SPECIES_JIRACHI',
+        },
+        {
+            id: 'EVER_GRANDE_CITY',
+            old: 'SPECIES_RAIKOU',
+            good: 'SPECIES_ENTEI',
+            super: 'SPECIES_SUICUNE',
         },
         // Special
         {
