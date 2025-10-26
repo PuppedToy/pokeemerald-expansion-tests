@@ -1031,6 +1031,19 @@ const tateAndLizaTMs = [
     'MOVE_FIRE_BLAST',
 ];
 
+const spaceCenterBag = [
+    ...tateAndLizaBag,
+    'Heavy-Duty Boots',
+    'Weakness Policy',
+    'Eject Button',
+    'Leppa Berry',
+];
+
+const spaceCenterTMs = [
+    ...tateAndLizaTMs,
+    'MOVE_CALM_MIND',
+];
+
 const trainersData = [
     // Route 101
     {
@@ -3659,11 +3672,12 @@ const trainersData = [
         isBoss: true,
         bag: [...tateAndLizaBag],
         tms: [...tateAndLizaTMs, 'MOVE_CALM_MIND', 'MOVE_CALM_MIND', 'MOVE_CALM_MIND'],
-        bannedItems: ['Focus Sash', 'Room Service'],
+        bannedItems: ['Focus Sash', 'Room Service', 'Light Clay'],
         team: [
             {
                 specific: 'SPECIES_SOLROCK',
-                tryToHaveMove: ['MOVE_EXPLOSION'],
+                tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
+                item: 'Light Clay',
             },
             {
                 ...POKEDEF_STRONG,
