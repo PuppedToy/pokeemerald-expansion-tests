@@ -410,8 +410,6 @@ async function writer(pokemonList, moves, abilities) {
     alreadyChosenSet.add(regiceReplacement.id);
     const mewReplacement = sampleAndRemove(strongSoloReplacementList);
     alreadyChosenSet.add(mewReplacement.id);
-    const latiosReplacement = sampleAndRemove(strongSoloReplacementList);
-    alreadyChosenSet.add(latiosReplacement.id);
 
     const premiumSoloReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
@@ -420,6 +418,8 @@ async function writer(pokemonList, moves, abilities) {
     );
     const registeelReplacement = sampleAndRemove(premiumSoloReplacementList);
     alreadyChosenSet.add(registeelReplacement.id);
+    const latiosReplacement = sampleAndRemove(premiumSoloReplacementList);
+    alreadyChosenSet.add(latiosReplacement.id);
 
     // @TODO Choose between rayquaza, kyogre and groudon
     const legendReplacementList = pokemonList.filter(poke =>
