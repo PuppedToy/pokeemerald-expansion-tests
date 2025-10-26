@@ -332,6 +332,11 @@ const POKEDEF_UP_TO_PREMIUM = {
     tryEvolve: true,
 };
 
+const POKEDEF_UP_TO_PREMIUM_NOEVO = {
+    absoluteTier: [TIER_WEAK, TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM],
+    checkValidEvo: true,
+};
+
 const POKEDEF_AVERAGE = {
     absoluteTier: [TIER_AVERAGE],
     checkValidEvo: true,
@@ -3852,7 +3857,7 @@ const trainersData = [
                 specific: 'SPECIES_GROUDON',
             },
             {
-                ...POKEDEF_UP_TO_PREMIUM,
+                ...POKEDEF_UP_TO_PREMIUM_NOEVO,
                 abilities: [...sandAbilities],
                 pickBest: true,
             },
