@@ -283,7 +283,7 @@ const items = {
         'ITEM_SHELL_BELL', // Route 114
         'ITEM_ROCKY_HELMET', // Route 109
         'ITEM_SAFETY_GOGGLES', // Desert
-        'ITEM_HEAVY_DUTY_BOOTS',
+        'ITEM_HEAVY_DUTY_BOOTS', // Route 125
     ],
 
     goodSituationalItems: [
@@ -301,8 +301,8 @@ const items = {
         'ITEM_SHED_SHELL', // Route 110
         'ITEM_TERRAIN_EXTENDER', // Route 110
         'ITEM_LOADED_DICE', // Route 109
-        'ITEM_BIG_ROOT',
-        'ITEM_PUNCHING_GLOVE',
+        'ITEM_BIG_ROOT', // Route 116
+        'ITEM_PUNCHING_GLOVE', // Route 116
     ],
     
     goodConsumables: [
@@ -319,9 +319,9 @@ const items = {
         'ITEM_MARANGA_BERRY', // Route 118
         'ITEM_JABOCA_BERRY', // Route 118
         'ITEM_ROWAP_BERRY', // Route 118
-        'ITEM_WEAKNESS_POLICY',
-        'ITEM_EJECT_BUTTON',
-        'ITEM_LEPPA_BERRY',
+        'ITEM_WEAKNESS_POLICY', // Route 125
+        'ITEM_EJECT_BUTTON', // Route 125
+        'ITEM_LEPPA_BERRY', // Route 125
         'ITEM_ELECTRIC_SEED', // Route 110
         'ITEM_PSYCHIC_SEED', // Route 110
         'ITEM_MISTY_SEED', // Route 110
@@ -378,7 +378,7 @@ const items = {
         'ITEM_METRONOME',
         'ITEM_IRON_BALL', // Route 124
         'ITEM_GRIP_CLAW',
-        'ITEM_STICKY_BARB',
+        'ITEM_STICKY_BARB', // Route 116
         'ITEM_FLOAT_STONE',
         'ITEM_BINDING_BAND',
         'ITEM_PROTECTIVE_PADS',

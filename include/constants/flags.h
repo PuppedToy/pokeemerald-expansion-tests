@@ -1296,7 +1296,7 @@
 #define FLAG_ITEM_ROUTE_121_CAPSULE                                 0x4D9
 #define FLAG_ITEM_ROUTE_121_PICK_BERRY                              0x4DA
 #define FLAG_ITEM_ROUTE_124_IRON_BALL                               0x4DB
-#define FLAG_UNUSED_0x4DC                                           0x4DC // Unused Flag
+#define FLAG_ITEM_ROUTE_116_PICK_ITEM                               0x4DC
 #define FLAG_UNUSED_0x4DD                                           0x4DD // Unused Flag
 #define FLAG_UNUSED_0x4DE                                           0x4DE // Unused Flag
 #define FLAG_UNUSED_0x4DF                                           0x4DF // Unused Flag

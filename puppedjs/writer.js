@@ -155,6 +155,8 @@ const routeFiles = [
     path.resolve(mapsBase, 'Route121', 'map.json'),
     path.resolve(mapsBase, 'PetalburgCity', 'map.json'),
     path.resolve(mapsBase, 'RustboroCity', 'map.json'),
+    path.resolve(mapsBase, 'VerdanturfTown', 'map.json'),
+    path.resolve(mapsBase, 'MauvilleCity', 'map.json'),
     path.resolve(mapsBase, 'DewfordTown', 'map.json'),
     path.resolve(mapsBase, 'SlateportCity', 'map.json'),
     path.resolve(mapsBase, 'LilycoveCity', 'map.json'),
@@ -596,6 +598,7 @@ async function writer(pokemonList, moves, abilities) {
     // Trainers
 
     let trainersFileContent = await fs.readFile(trainers.file, 'utf8');
+    let partnersFileContent = await fs.readFile(trainers.partnersFile, 'utf8');
     const { trainersData } = trainers;
     const trainersResults = {};
 
@@ -1088,12 +1091,12 @@ async function writer(pokemonList, moves, abilities) {
         trainersResults[trainer.id] = {
             level: trainer.level,
             isBoss: trainer.isBoss || false,
+            isPartner: trainer.isPartner || false,
             team,
         };
     });
 
     Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
-        
         const generatedTeamTextLines = trainerData.team.map(teamEntry => {
             const lines = [
                 teamEntry.item ? `${teamEntry.pokemon.name} @ ${teamEntry.item}` : teamEntry.pokemon.name,
@@ -1140,10 +1143,16 @@ async function writer(pokemonList, moves, abilities) {
         // Group 3 is the === of the next trainer or end of file, to keep as is
         // Mind, Group 2 could appear multiple times in the file and I want to replace this specific trainer
         const fullReplacementText = `$1${generatedTeamTextLines}\n$3`;
-        trainersFileContent = trainersFileContent.replace(replaceRegex, fullReplacementText);
+        if (trainerData.isPartner) {
+            partnersFileContent = partnersFileContent.replace(replaceRegex, fullReplacementText);
+        }
+        else {
+            trainersFileContent = trainersFileContent.replace(replaceRegex, fullReplacementText);
+        }
     });
 
     await fs.writeFile((trainers.file), trainersFileContent, 'utf8');
+    await fs.writeFile((trainers.partnersFile), partnersFileContent, 'utf8');
     console.log('Trainers updated successfully.');
 
     let htmlOutputTemplate = await fs.readFile(path.resolve(__dirname, OUTPUT_DIR, TEMPLATE_FILE), 'utf8');

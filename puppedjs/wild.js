@@ -11,6 +11,7 @@ const {
     EVO_TYPE_SOLO,
     EVO_TYPE_MEGA,
     TIER_PREMIUM,
+    EVO_TYPE_FINAL,
 } = require('./constants.js');
 
 // For fishing, each route will have 1 land and 1 old rod option
@@ -79,6 +80,14 @@ const wildData = {
             replace: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
             hasMega: true,
             type: [EVO_TYPE_LC, EVO_TYPE_NFE],
+        },
+        FINAL_OR_SOLO_AVERAGE: {
+            replace: [TIER_AVERAGE],
+            type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
+        },
+        FINAL_OR_SOLO_STRONG: {
+            replace: [TIER_STRONG],
+            type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
         },
         LC_NFE_OR_SOLO_AVERAGE: {
             replace: [TIER_AVERAGE],
@@ -217,6 +226,17 @@ const wildData = {
         SPECIES_WO_CHIEN: 'NFE_OR_SOLO_STRONG',
         SPECIES_GUZZLORD: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_KARTANA: 'LC_NFE_OR_SOLO_AVERAGE',
+
+        // Mossdeep
+        SPECIES_GOLETT: 'LC_NFE_OR_SOLO_AVERAGE',
+
+        // Route 125
+        SPECIES_SCORBUNNY: 'FINAL_OR_SOLO_AVERAGE',
+        SPECIES_RABOOT: 'FINAL_OR_SOLO_AVERAGE',
+
+        // Shoal Cave
+        SPECIES_FROAKIE: 'FINAL_OR_SOLO_STRONG',
+        SPECIES_FROGADIER: 'FINAL_OR_SOLO_STRONG',
     },
     maps: [
         // Shelgon maps
@@ -403,6 +423,26 @@ const wildData = {
             old: 'SPECIES_GUZZLORD',
             good: 'SPECIES_KARTANA',
             super: 'SPECIES_DOUBLADE',
+        },
+        {
+            id: 'MAP_MOSSDEEP_CITY',
+            old: 'SPECIES_GOLETT',
+            good: 'SPECIES_GOLETT',
+            super: 'SPECIES_GOLETT',
+        },
+        {
+            id: 'MAP_ROUTE125',
+            old: 'SPECIES_RABOOT',
+            good: 'SPECIES_SCORBUNNY',
+            super: 'SPECIES_DOUBLADE',
+        },
+        {
+            id: 'MAP_SHOAL_CAVE_LOW_TIDE_ENTRANCE_ROOM',
+            land: 'SPECIES_FROAKIE',
+        },
+        {
+            id: 'MAP_SHOAL_CAVE_HIGH_TIDE_ENTRANCE_ROOM',
+            surf: 'SPECIES_FROGADIER',
         },
         // Special
         {

@@ -42,6 +42,7 @@ const {
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
+const partnersFile = path.resolve(__dirname, '..', 'src', 'data', 'battle_partners.party');
 
 // @TODO Fix booster energy
 const stevenPokemon = [
@@ -142,6 +143,33 @@ const minorPowerHerbMoves = [
     'MOVE_SHADOW_FORCE',
     'MOVE_PHANTOM_FORCE',
     'MOVE_SKY_DROP',
+];
+
+const punchingMoves = [
+    'MOVE_BULLET_PUNCH',
+    'MOVE_COMET_PUNCH',
+    'MOVE_DIZZY_PUNCH',
+    'MOVE_DOUBLE_IRON_BASH',
+    'MOVE_DRAIN_PUNCH',
+    'MOVE_DYNAMIC_PUNCH',
+    'MOVE_FIRE_PUNCH',
+    'MOVE_FOCUS_PUNCH',
+    'MOVE_HAMMER_ARM',
+    'MOVE_HEADLONG_RUSH',
+    'MOVE_ICE_HAMMER',
+    'MOVE_ICE_PUNCH',
+    'MOVE_JET_PUNCH',
+    'MOVE_MACH_PUNCH',
+    'MOVE_MEGA_PUNCH',
+    'MOVE_METEOR_MASH',
+    'MOVE_PLASMA_FISTS',
+    'MOVE_POWER_UP_PUNCH',
+    'MOVE_RAGE_FIST',
+    'MOVE_SHADOW_PUNCH',
+    'MOVE_SKY_UPPERCUT',
+    'MOVE_SURGING_STRIKES',
+    'MOVE_THUNDER_PUNCH',
+    'MOVE_WICKED_BLOW',
 ];
 
 const rainAbilities = ['SWIFT_SWIM', 'RAIN_DISH', 'DRY_SKIN', 'HYDRATION'];
@@ -250,33 +278,6 @@ const generic2Average2Strong1Premium1MegaTeamTemplate = () => [
     },
 ]
 
-const punchingMoves = [
-    'MOVE_BULLET_PUNCH',
-    'MOVE_COMET_PUNCH',
-    'MOVE_DIZZY_PUNCH',
-    'MOVE_DOUBLE_IRON_BASH',
-    'MOVE_DRAIN_PUNCH',
-    'MOVE_DYNAMIC_PUNCH',
-    'MOVE_FIRE_PUNCH',
-    'MOVE_FOCUS_PUNCH',
-    'MOVE_HAMMER_ARM',
-    'MOVE_HEADLONG_RUSH',
-    'MOVE_ICE_HAMMER',
-    'MOVE_ICE_PUNCH',
-    'MOVE_JET_PUNCH',
-    'MOVE_MACH_PUNCH',
-    'MOVE_MEGA_PUNCH',
-    'MOVE_METEOR_MASH',
-    'MOVE_PLASMA_FISTS',
-    'MOVE_POWER_UP_PUNCH',
-    'MOVE_RAGE_FIST',
-    'MOVE_SHADOW_PUNCH',
-    'MOVE_SKY_UPPERCUT',
-    'MOVE_SURGING_STRIKES',
-    'MOVE_THUNDER_PUNCH',
-    'MOVE_WICKED_BLOW',
-];
-
 // New defs
 
 const POKEDEF_BAD_LC = {
@@ -373,6 +374,11 @@ const POKEDEF_PREMIUM = {
             tryEvolve: true,
         },
     ],
+};
+
+const POKEDEF_LEGEND = {
+    absoluteTier: [TIER_LEGEND],
+    checkValidEvo: true,
 };
 
 const POKEDEF_STRONG_PREMIUM_MEGA = {
@@ -1441,6 +1447,24 @@ const trainersData = [
                 item: 'Black Sludge',
             },
             ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+        ],
+    },
+    {
+        id: 'TRAINER_CLARK',
+        level: 13,
+        team: [
+            {
+                ...POKEDEF_BAD_LC,
+                mustHaveOneOfMoves: [...punchingMoves],
+                item: 'Punching Glove',
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                mustHaveOneOfMoves: ['MOVE_GIGA_DRAIN'],
+                tryToHaveMove: ['MOVE_GIGA_DRAIN'],
+                item: 'Big Root',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 4),
         ],
     },
     // Rusturf Tunnel
@@ -3714,9 +3738,120 @@ const trainersData = [
             },
         ],
     },
+    // Route 125
+    {
+        id: 'TRAINER_ERNEST_1',
+        level: 56,
+        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SPINARAK'],
+                tryEvolve: true,
+                tryMega: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_AURON',
+        level: 56,
+        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
+        team: generic2Average2Strong1Premium1MegaTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_PRESLEY',
+        level: 56,
+        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
+        team: generic2Average2Strong1Premium1MegaTeamTemplate(),
+    },
+    // Mossdeep 2 vs 2
+    {
+        id: 'PARTNER_STEVEN',
+        isPartner: true,
+        level: 56,
+        bag: [...spaceCenterBag],
+        tms: [...spaceCenterTMs],
+        team: [
+            {
+                id: 'STEVEN_LEGEND',
+                ...POKEDEF_LEGEND,
+                type: [POKEMON_TYPE_STEEL],
+                fallback: [
+                    {
+                        id: 'STEVEN_LEGEND',
+                        ...POKEDEF_LEGEND,
+                    },
+                ],
+            },
+            {
+                specific: 'SPECIES_METAGROSS',
+                item: 'Metagrossite',
+            },
+            {
+                id: 'BEST_STEVEN_POKE',
+                oneOf: [...stevenPokemon],
+                pickBest: true,
+                tryEvolve: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_TABITHA_MOSSDEEP',
+        isBoss: true,
+        level: 56,
+        bag: [...spaceCenterBag],
+        tms: [...spaceCenterTMs],
+        team: [
+            pokeDefSandStreamMon(POKEDEF_UP_TO_PREMIUM),
+            {
+                ...POKEDEF_STRONG,
+                abilities: [...sandAbilities],
+                fallback: [
+                    {
+                        ...POKEDEF_UP_TO_STRONG,
+                        abilities: [...sandAbilities],
+                    },
+                ],
+            },
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+                type: [POKEMON_TYPE_GROUND, POKEMON_TYPE_ROCK],
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_MAXIE_MOSSDEEP',
+        isBoss: true,
+        level: 56,
+        bag: [...spaceCenterBag],
+        tms: [...spaceCenterTMs],
+        team: [
+            {
+                specific: 'SPECIES_GROUDON',
+            },
+            {
+                ...POKEDEF_UP_TO_PREMIUM,
+                abilities: [...sandAbilities],
+                pickBest: true,
+            },
+            {
+                specific: 'SPECIES_CAMERUPT',
+                item: 'Cameruptite',
+            },
+        ],
+    },
 ]
 
 module.exports = {
     file: trainersFile,
+    partnersFile,
     trainersData,
 };

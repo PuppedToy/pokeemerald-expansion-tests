@@ -348,6 +348,52 @@ Route116_EventScript_Johnson::
 	msgbox Route116_Text_JohnsonPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route116_EventScript_PickOrb::
+	multichoice 0, 0, MULTI_ROUTE116_PICK_ORB, FALSE
+	switch VAR_RESULT
+	case 0, Route116_EventScript_PickFlame
+	case 1, Route116_EventScript_PickToxic
+	case 2, Route116_EventScript_PickSticky
+	end
+
+Route116_EventScript_PickFlame::
+	finditem ITEM_FLAME_ORB
+	setflag FLAG_ITEM_ROUTE_116_MIND_PLATE
+	end
+
+Route116_EventScript_PickToxic::
+	finditem ITEM_TOXIC_ORB
+	setflag FLAG_ITEM_ROUTE_116_MIND_PLATE
+	end
+
+Route116_EventScript_PickSticky::
+	finditem ITEM_STICKY_BARB
+	setflag FLAG_ITEM_ROUTE_116_MIND_PLATE
+	end
+
+Route116_EventScript_PickItem::
+	multichoice 0, 0, MULTI_ROUTE116_PICK_ITEM, FALSE
+	switch VAR_RESULT
+	case 0, Route116_EventScript_PickPunchingGlove
+	case 1, Route116_EventScript_PickBigRoot
+	case 2, Route116_EventScript_PickGigaDrain
+	end
+
+Route116_EventScript_PickPunchingGlove::
+	finditem ITEM_PUNCHING_GLOVE
+	setflag FLAG_ITEM_ROUTE_116_PICK_ITEM
+	end
+
+Route116_EventScript_PickBigRoot::
+	finditem ITEM_BIG_ROOT
+	setflag FLAG_ITEM_ROUTE_116_PICK_ITEM
+	end
+
+Route116_EventScript_PickGigaDrain::
+	finditem ITEM_TM_GIGA_DRAIN
+	setflag FLAG_ITEM_ROUTE_116_PICK_ITEM
+	end
+
 Route116_Text_ScoundrelMadeOffWithPeeko:
 	.string "Ohhh, what am I to do?\p"
 	.string "We were on our walk, PEEKO and I, when\n"

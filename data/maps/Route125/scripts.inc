@@ -81,3 +81,25 @@ Route125_EventScript_Auron::
 	msgbox Route125_Text_AuronPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route125_EventScript_PickItem::
+	multichoice 0, 0, MULTI_ROUTE125_PICK_ITEM, FALSE
+	switch VAR_RESULT
+	case 0, Route125_EventScript_PickWeaknessPolicy
+	case 1, Route125_EventScript_PickEjectButton
+	case 2, Route125_EventScript_PickLeppaBerry
+	end
+
+Route125_EventScript_PickWeaknessPolicy::
+	finditem ITEM_WEAKNESS_POLICY
+	setflag FLAG_ITEM_ROUTE_125_BIG_PEARL
+	end
+
+Route125_EventScript_PickEjectButton::
+	finditem ITEM_EJECT_BUTTON
+	setflag FLAG_ITEM_ROUTE_125_BIG_PEARL
+	end
+
+Route125_EventScript_PickLeppaBerry::
+	finditem ITEM_LEPPA_BERRY
+	setflag FLAG_ITEM_ROUTE_125_BIG_PEARL
+	end
