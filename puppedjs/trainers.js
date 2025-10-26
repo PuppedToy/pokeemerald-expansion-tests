@@ -3919,7 +3919,7 @@ const trainersData = [
         bag: [...spaceCenterBag],
         tms: [...spaceCenterTMs],
         team: [
-            pokeDefOnlyLegends({
+            pokeDefOnlyLegend({
                 type: [...magmaTeamTypes],
             }),
             {
