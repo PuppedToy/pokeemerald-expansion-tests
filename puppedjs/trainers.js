@@ -393,6 +393,55 @@ const POKEDEF_STRONG_PREMIUM_MEGA = {
     tryEvolve: true,
 };
 
+const pokeDefLegendMega = (BASE_POKE_DEF) => ({
+    special: TRAINER_POKE_MEGA_WITH_STONE,
+    megaTier: [TIER_LEGEND],
+    checkValidEvo: true,
+    ...BASE_POKE_DEF,
+    fallback: [
+        {
+            special: TRAINER_POKE_MEGA_WITH_STONE,
+            megaTier: [TIER_PREMIUM],
+            checkValidEvo: true,
+            ...BASE_POKE_DEF,
+        },
+        {
+            special: TRAINER_POKE_MEGA_WITH_STONE,
+            megaTier: [TIER_LEGEND],
+            checkValidEvo: true,
+        },
+        {
+            special: TRAINER_POKE_MEGA_WITH_STONE,
+            megaTier: [TIER_PREMIUM],
+            checkValidEvo: true,
+        },
+    ]
+});
+
+const pokeDefOnlyLegend = (BASE_POKE_DEF) => ({
+    absoluteTier: [TIER_LEGEND],
+    checkValidEvo: true,
+    ...BASE_POKE_DEF,
+    fallback: [
+        {
+            absoluteTier: [TIER_LEGEND],
+            checkValidEvo: true,
+        },
+    ],
+});
+
+const pokeDefOnlyPremium = (BASE_POKE_DEF) => ({
+    absoluteTier: [TIER_PREMIUM],
+    checkValidEvo: true,
+    ...BASE_POKE_DEF,
+    fallback: [
+        {
+            absoluteTier: [TIER_PREMIUM],
+            checkValidEvo: true,
+        },
+    ],
+});
+
 const pokeDefDrizzleMon = (BASE_POKE_DEF) => {
     return {
         ...BASE_POKE_DEF,
@@ -4069,6 +4118,38 @@ const trainersData = [
                 ability: 'SPEED_BOOST',
                 nature: 'Adamant',
             },
+        ],
+    },
+    // Sootopolis Gym
+    {
+        id: 'TRAINER_JUAN_1',
+        level: 61,
+        isBoss: true,
+        bag: [...spaceCenterBag],
+        tms: [...spaceCenterTMs],
+        team: [
+            pokeDefLegendMega({
+                type: [POKEMON_TYPE_WATER, POKEMON_TYPE_DRAGON],
+            }),
+            {
+                specific: 'SPECIES_KINGDRA',
+                item: 'Chesto Berry',
+                abilities: ['SNIPER'],
+                nature: 'Jolly',
+                tryToHaveMove: ['MOVE_DRAGON_DANCE', 'MOVE_WATERFALL', 'MOVE_BLIZZARD', 'MOVE_REST'],
+            },
+            pokeDefOnlyLegend({
+                type: [POKEMON_TYPE_WATER, POKEMON_TYPE_DRAGON],
+            }),
+            pokeDefOnlyPremium({
+                type: [POKEMON_TYPE_WATER, POKEMON_TYPE_DRAGON],
+            }),
+            pokeDefOnlyPremium({
+                type: [POKEMON_TYPE_WATER, POKEMON_TYPE_DRAGON],
+            }),
+            pokeDefOnlyPremium({
+                type: [POKEMON_TYPE_WATER, POKEMON_TYPE_DRAGON],
+            }),
         ],
     },
 ]
