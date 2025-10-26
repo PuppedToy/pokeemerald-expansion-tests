@@ -478,6 +478,18 @@ const pokeDefPremiumMega = (BASE_POKE_DEF) => ({
     ]
 });
 
+const pokeDefOnlyGod = (BASE_POKE_DEF = {}) => ({
+    absoluteTier: [TIER_GOD],
+    checkValidEvo: true,
+    ...BASE_POKE_DEF,
+    fallback: [
+        {
+            absoluteTier: [TIER_GOD],
+            checkValidEvo: true,
+        },
+    ],
+});
+
 const pokeDefOnlyLegend = (BASE_POKE_DEF = {}) => ({
     absoluteTier: [TIER_LEGEND],
     checkValidEvo: true,
