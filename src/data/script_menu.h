@@ -912,6 +912,13 @@ static const struct MenuAction MultichoiceList_Route125PickItem[] =
     {COMPOUND_STRING("Leppa Berry")},
 };
 
+static const struct MenuAction MultichoiceList_SkypillarTopLegend[] =
+{
+    {COMPOUND_STRING("SPECIES_LEGEND1")},
+    {COMPOUND_STRING("SPECIES_LEGEND2")},
+    {COMPOUND_STRING("SPECIES_LEGEND3")},
+};
+
 static const struct MenuAction MultichoiceList_WheresRayquaza[] =
 {
     {COMPOUND_STRING("CAVE OF ORIGIN")},
@@ -1109,6 +1116,7 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_ROUTE116_PICK_ORB]          = MULTICHOICE(MultichoiceList_Route116PickOrb),
     [MULTI_ROUTE116_PICK_ITEM]         = MULTICHOICE(MultichoiceList_Route116PickItem),
     [MULTI_ROUTE125_PICK_ITEM]         = MULTICHOICE(MultichoiceList_Route125PickItem),
+    [MULTI_SKYPILLAR_TOP_LEGEND]       = MULTICHOICE(MultichoiceList_SkypillarTopLegend),
 };
 
 const u8 *const gStdStrings[] =

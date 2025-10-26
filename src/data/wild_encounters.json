@@ -3709,54 +3709,54 @@
             "encounter_rate": 30,
             "mons": [
               {
-                "min_level": 5,
-                "max_level": 10,
-                "species": "SPECIES_MAGIKARP"
+                "min_level": 58,
+                "max_level": 58,
+                "species": "SPECIES_ROSELIA"
               },
               {
-                "min_level": 5,
-                "max_level": 10,
-                "species": "SPECIES_TENTACOOL"
+                "min_level": 58,
+                "max_level": 58,
+                "species": "SPECIES_ROSELIA"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_MAGIKARP"
+                "min_level": 58,
+                "max_level": 58,
+                "species": "SPECIES_ROSERADE"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_LUVDISC"
+                "min_level": 58,
+                "max_level": 58,
+                "species": "SPECIES_ROSERADE"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_WAILMER"
+                "min_level": 58,
+                "max_level": 58,
+                "species": "SPECIES_ROSERADE"
               },
               {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_LUVDISC"
+                "min_level": 58,
+                "max_level": 58,
+                "species": "SPECIES_STARMIE"
               },
               {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_WAILMER"
+                "min_level": 58,
+                "max_level": 58,
+                "species": "SPECIES_STARMIE"
               },
               {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_CORSOLA"
+                "min_level": 58,
+                "max_level": 58,
+                "species": "SPECIES_STARMIE"
               },
               {
-                "min_level": 35,
-                "max_level": 40,
-                "species": "SPECIES_WAILMER"
+                "min_level": 58,
+                "max_level": 58,
+                "species": "SPECIES_STARMIE"
               },
               {
-                "min_level": 40,
-                "max_level": 45,
-                "species": "SPECIES_WAILMER"
+                "min_level": 58,
+                "max_level": 58,
+                "species": "SPECIES_STARMIE"
               }
             ]
           }
@@ -3768,54 +3768,54 @@
             "encounter_rate": 30,
             "mons": [
               {
-                "min_level": 5,
-                "max_level": 10,
-                "species": "SPECIES_MAGIKARP"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_HANDS"
               },
               {
-                "min_level": 5,
-                "max_level": 10,
-                "species": "SPECIES_TENTACOOL"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_HANDS"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_MAGIKARP"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_CROWN"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_TENTACOOL"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_CROWN"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_CROWN"
               },
               {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_SHARPEDO"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 25,
-                "max_level": 30,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 35,
-                "max_level": 40,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 40,
-                "max_level": 45,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               }
             ]
           }
@@ -3886,54 +3886,54 @@
             "encounter_rate": 30,
             "mons": [
               {
-                "min_level": 5,
-                "max_level": 10,
-                "species": "SPECIES_MAGIKARP"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_JUGULIS"
               },
               {
-                "min_level": 5,
-                "max_level": 10,
-                "species": "SPECIES_TENTACOOL"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_JUGULIS"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_MAGIKARP"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_BOULDER"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_TENTACOOL"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_BOULDER"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_BOULDER"
               },
               {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_SHARPEDO"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 25,
-                "max_level": 30,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 35,
-                "max_level": 40,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 40,
-                "max_level": 45,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               }
             ]
           }
@@ -3945,54 +3945,54 @@
             "encounter_rate": 30,
             "mons": [
               {
-                "min_level": 5,
-                "max_level": 10,
-                "species": "SPECIES_MAGIKARP"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_THORNS"
               },
               {
-                "min_level": 5,
-                "max_level": 10,
-                "species": "SPECIES_TENTACOOL"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_THORNS"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_MAGIKARP"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_TREADS"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_TENTACOOL"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_TREADS"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_TREADS"
               },
               {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_SHARPEDO"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 25,
-                "max_level": 30,
-                "species": "SPECIES_HORSEA"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 35,
-                "max_level": 40,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 40,
-                "max_level": 45,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               }
             ]
           }
@@ -6345,54 +6345,54 @@
             "encounter_rate": 10,
             "mons": [
               {
-                "min_level": 5,
-                "max_level": 10,
-                "species": "SPECIES_MAGIKARP"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_LEAVES"
               },
               {
-                "min_level": 5,
-                "max_level": 10,
-                "species": "SPECIES_TENTACOOL"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_LEAVES"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_MAGIKARP"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_MOTH"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_TENTACOOL"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_MOTH"
               },
               {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_MOTH"
               },
               {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_SHARPEDO"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 25,
-                "max_level": 30,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 35,
-                "max_level": 40,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               },
               {
-                "min_level": 40,
-                "max_level": 45,
-                "species": "SPECIES_WAILMER"
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               }
             ]
           }

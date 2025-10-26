@@ -132,10 +132,42 @@ SkyPillar_Top_EventScript_AwakenRayquaza::
 	end
 
 SkyPillar_Top_EventScript_CustomLegendary::
-	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
+	msgbox SkyPillat_Top_Text_WhatDoYouSee, MSGBOX_DEFAULT
+	multichoice 0, 0, MULTI_SKYPILLAR_TOP_LEGEND, TRUE
+	switch VAR_RESULT
+	case 0, SkyPillar_Top_EventScript_PickLegendary1
+	case 1, SkyPillar_Top_EventScript_PickLegendary2
+	case 2, SkyPillar_Top_EventScript_PickLegendary3
+	end
+
+SkyPillar_Top_EventScript_PickLegendary1::
+	closemessage
+	playmoncry SPECIES_LEGEND1, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-	setwildbattle SPECIES_RAYQUAZA, 58
+	setwildbattle SPECIES_LEGEND1, 61
+	special BattleSetup_StartLegendaryBattle
+	waitstate
+	setflag FLAG_DEFEATED_RAYQUAZA
+	return
+
+SkyPillar_Top_EventScript_PickLegendary2::
+	closemessage
+	playmoncry SPECIES_LEGEND2, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	setwildbattle SPECIES_LEGEND2, 61
+	special BattleSetup_StartLegendaryBattle
+	waitstate
+	setflag FLAG_DEFEATED_RAYQUAZA
+	return
+
+SkyPillar_Top_EventScript_PickLegendary3::
+	closemessage
+	playmoncry SPECIES_LEGEND3, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	setwildbattle SPECIES_LEGEND3, 61
 	special BattleSetup_StartLegendaryBattle
 	waitstate
 	setflag FLAG_DEFEATED_RAYQUAZA
@@ -191,4 +223,9 @@ SkyPillar_Top_Movement_CameraPanDown:
 
 SkyPillar_Top_Text_RayquazaFlewOff:
 	.string "The awakened RAYQUAZA flew off…$"
+
+SkyPillat_Top_Text_WhatDoYouSee:
+	.string "You find a legendary Pokémon\n"
+	.string "in front of you.\p"
+	.string "Which one is it?$"
 

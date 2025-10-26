@@ -89,6 +89,14 @@ const wildData = {
             replace: [TIER_STRONG],
             type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
         },
+        FINAL_OR_SOLO_AVERAGE_OR_STRONG: {
+            replace: [TIER_AVERAGE, TIER_STRONG],
+            type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
+        },
+        FINAL_OR_SOLO_PREMIUM: {
+            replace: [TIER_PREMIUM],
+            type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
+        },
         LC_NFE_OR_SOLO_AVERAGE: {
             replace: [TIER_AVERAGE],
             type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
@@ -100,6 +108,7 @@ const wildData = {
         SPECIES_PUPITAR: 'NFE_OR_SOLO_STRONG',
         SPECIES_GABITE: 'NFE_OR_SOLO_STRONG',
         SPECIES_DOUBLADE: 'NFE_OR_SOLO_PREMIUM',
+        SPECIES_JIRACHI: 'FINAL_OR_SOLO_PREMIUM',
 
         // Route101
         SPECIES_ZIGZAGOON: 'LC_BAD_WEAK_AVERAGE',
@@ -251,7 +260,28 @@ const wildData = {
         SPECIES_HUNTAIL: 'FINAL_OR_SOLO_STRONG',
 
         // Sootopolis
-        SPECIES_HAWLUCHA: 'FINAL_OR_SOLO_AVERAGE',
+        SPECIES_HAWLUCHA: 'FINAL_OR_SOLO_STRONG',
+
+        // Route 128
+        SPECIES_ROSELIA: 'FINAL_OR_SOLO_AVERAGE_OR_STRONG',
+        SPECIES_ROSERADE: 'FINAL_OR_SOLO_AVERAGE_OR_STRONG',
+        SPECIES_STARMIE: 'FINAL_OR_SOLO_AVERAGE_OR_STRONG',
+
+        // Route 129
+        SPECIES_IRON_HANDS: 'FINAL_OR_SOLO_STRONG',
+        SPECIES_IRON_CROWN: 'FINAL_OR_SOLO_STRONG',
+
+        // Route 131
+        SPECIES_IRON_JUGULIS: 'FINAL_OR_SOLO_STRONG',
+        SPECIES_IRON_BOULDER: 'FINAL_OR_SOLO_STRONG',
+
+        // Pacifidlog Town
+        SPECIES_IRON_LEAVES: 'FINAL_OR_SOLO_STRONG',
+        SPECIES_IRON_MOTH: 'FINAL_OR_SOLO_STRONG',
+
+        // Route 132
+        SPECIES_IRON_THORNS: 'FINAL_OR_SOLO_STRONG',
+        SPECIES_IRON_TREADS: 'FINAL_OR_SOLO_STRONG',
     },
     maps: [
         // Shelgon maps
@@ -487,6 +517,37 @@ const wildData = {
             good: 'SPECIES_HAWLUCHA',
             super: 'SPECIES_HAWLUCHA',
         },
+        {
+            id: 'MAP_ROUTE128',
+            old: 'SPECIES_ROSELIA',
+            good: 'SPECIES_ROSERADE',
+            super: 'SPECIES_STARMIE',
+        },
+        // Jirachi map
+        {
+            id: 'MAP_ROUTE129',
+            old: 'SPECIES_IRON_HANDS',
+            good: 'SPECIES_IRON_CROWN',
+            super: 'SPECIES_JIRACHI',
+        },
+        {
+            id: 'MAP_ROUTE131',
+            old: 'SPECIES_IRON_JUGULIS',
+            good: 'SPECIES_IRON_BOULDER',
+            super: 'SPECIES_JIRACHI',
+        },
+        {
+            id: 'MAP_PACIFIDLOG_TOWN',
+            old: 'SPECIES_IRON_LEAVES',
+            good: 'SPECIES_IRON_MOTH',
+            super: 'SPECIES_JIRACHI',
+        },
+        {
+            id: 'MAP_ROUTE132',
+            old: 'SPECIES_IRON_THORNS',
+            good: 'SPECIES_IRON_TREADS',
+            super: 'SPECIES_JIRACHI',
+        },
         // Special
         {
             id: 'MAP_WEATHER_INSTITUTE',
@@ -514,9 +575,9 @@ const wildData = {
         },
         {
             id: 'MAP_SKY_PILLAR_TOP',
-            special1: 'SPECIES_RAYQUAZA',
-            special2: 'SPECIES_GROUDON',
-            special3: 'SPECIES_KYOGRE',
+            special1: 'SPECIES_LEGEND1',
+            special2: 'SPECIES_LEGEND2',
+            special3: 'SPECIES_LEGEND3',
         },
     ]
 };

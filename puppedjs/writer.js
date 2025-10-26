@@ -89,8 +89,11 @@ const latiosReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'Mos
 const latiosReplacementText = 'SPECIES_LATIOS';
 const latiosMSGBOXReplacementText = 'LATIOS\\!\\$';
 
-const rayquazaReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'SkyPillar_Top', 'scripts.inc');
-const rayquazaReplacementText = 'SPECIES_RAYQUAZA';
+const skyPillarTopReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'SkyPillar_Top', 'scripts.inc');
+const scriptMenuReplacementFile = path.resolve(__dirname, '..', 'src', 'data', 'script_menu.h');
+const legend1ReplacementText = 'SPECIES_LEGEND1';
+const legend2ReplacementText = 'SPECIES_LEGEND2';
+const legend3ReplacementText = 'SPECIES_LEGEND3';
 
 const PERFECT_STARTER_TRIOS = [
     ['GRASS', 'FIRE', 'WATER'],
@@ -419,7 +422,7 @@ async function writer(pokemonList, moves, abilities) {
     alreadyChosenSet.add(registeelReplacement.id);
 
     // @TODO Choose between rayquaza, kyogre and groudon
-    const rayquazaReplacementList = pokemonList.filter(poke =>
+    const legendReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
         && (
             poke.rating.bestEvoTier === TIER_LEGEND
@@ -427,12 +430,12 @@ async function writer(pokemonList, moves, abilities) {
         )
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
-    const rayquazaReplacement = sampleAndRemove(rayquazaReplacementList);
-    alreadyChosenSet.add(rayquazaReplacement.id);
-    const groudonReplacement = sampleAndRemove(rayquazaReplacementList);
-    alreadyChosenSet.add(groudonReplacement.id);
-    const kyogreReplacement = sampleAndRemove(rayquazaReplacementList);
-    alreadyChosenSet.add(kyogreReplacement.id);
+    const legend1Replacement = sampleAndRemove(legendReplacementList);
+    alreadyChosenSet.add(legend1Replacement.id);
+    const legend2Replacement = sampleAndRemove(legendReplacementList);
+    alreadyChosenSet.add(legend2Replacement.id);
+    const legend3Replacement = sampleAndRemove(legendReplacementList);
+    alreadyChosenSet.add(legend3Replacement.id);
 
     const replacementLog = {};
 
@@ -492,22 +495,29 @@ async function writer(pokemonList, moves, abilities) {
         replacementLog['SPECIES_LATIOS'] = latiosReplacement.id;
     }
 
-    if (rayquazaReplacement) {
-        let rayquazaFileData = await fs.readFile(rayquazaReplacementFile, 'utf8');
-        rayquazaFileData = rayquazaFileData.replace(new RegExp(rayquazaReplacementText, 'g'), rayquazaReplacement.id);
-        await fs.writeFile(rayquazaReplacementFile, rayquazaFileData, 'utf8');
-        replacementLog['SPECIES_RAYQUAZA'] = rayquazaReplacement.id;
+    let skyPillarTopFileData = await fs.readFile(skyPillarTopReplacementFile, 'utf8');
+    let scriptMenuFileData = await fs.readFile(scriptMenuReplacementFile, 'utf8');
+
+    if (legend1Replacement) {
+        skyPillarTopFileData = skyPillarTopFileData.replace(new RegExp(legend1ReplacementText, 'g'), legend1Replacement.id);
+        scriptMenuFileData = scriptMenuFileData.replace(new RegExp(legend1ReplacementText, 'g'), legend1Replacement.name);
+        replacementLog['SPECIES_LEGEND1'] = legend1Replacement.id;
     }
 
-    if (groudonReplacement) {
-        // @TODO Implement groudon map replacement
-        replacementLog['SPECIES_GROUDON'] = groudonReplacement.id;
+    if (legend2Replacement) {
+        skyPillarTopFileData = skyPillarTopFileData.replace(new RegExp(legend2ReplacementText, 'g'), legend2Replacement.id);
+        scriptMenuFileData = scriptMenuFileData.replace(new RegExp(legend2ReplacementText, 'g'), legend2Replacement.name);        
+        replacementLog['SPECIES_LEGEND2'] = legend2Replacement.id;
     }
 
-    if (kyogreReplacement) {
-        // @TODO Implement kyogre map replacement
-        replacementLog['SPECIES_KYOGRE'] = kyogreReplacement.id;
+    if (legend3Replacement) {
+        skyPillarTopFileData = skyPillarTopFileData.replace(new RegExp(legend3ReplacementText, 'g'), legend3Replacement.id);
+        scriptMenuFileData = scriptMenuFileData.replace(new RegExp(legend3ReplacementText, 'g'), legend3Replacement.name);
+        replacementLog['SPECIES_LEGEND3'] = legend3Replacement.id;
     }
+
+    await fs.writeFile(skyPillarTopReplacementFile, skyPillarTopFileData, 'utf8');
+    await fs.writeFile(scriptMenuReplacementFile, scriptMenuFileData, 'utf8');
 
     // Routes replacements
 
