@@ -1713,9 +1713,19 @@ const trainersData = [
                 nature: NATURES.ADAMANT,
             },
             {
-                ...POKEDEF_BAD_LC,
                 type: [POKEMON_TYPE_STEEL],
+                absoluteTier: [TIER_BAD],
+                evolutionTier: [TIER_PREMIUM, TIER_STRONG],
+                evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_STEEL_WING'],
+                tryEvolve: true,
+                fallback: [
+                    {
+                        ...POKEDEF_BAD_LC,
+                        type: [POKEMON_TYPE_STEEL],
+                        tryToHaveMove: ['MOVE_STEEL_WING'],
+                    }
+                ],
             },
             {
                 oneOf: stevenPokemon,
@@ -1723,11 +1733,9 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
+                ...POKEDEF_BAD_LC,
                 type: [POKEMON_TYPE_STEEL],
-                evolutionTier: [TIER_PREMIUM, TIER_STRONG],
-                evoType: [EVO_TYPE_LC],
                 tryToHaveMove: ['MOVE_STEEL_WING'],
-                tryEvolve: true,
             },
             {
                 oneOf: stevenPokemon,
