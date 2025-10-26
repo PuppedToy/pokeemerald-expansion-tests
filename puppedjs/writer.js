@@ -424,10 +424,7 @@ async function writer(pokemonList, moves, abilities) {
     // @TODO Choose between rayquaza, kyogre and groudon
     const legendReplacementList = pokemonList.filter(poke =>
         !alreadyChosenSet.has(poke.id)
-        && (
-            poke.rating.bestEvoTier === TIER_LEGEND
-            || (poke.rating.bestEvoTier === TIER_PREMIUM && poke.rating.absoluteRating >= MID_TIER_PREMIUM_THRESHOLD)
-        )
+        && poke.rating.bestEvoTier === TIER_LEGEND
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const legend1Replacement = sampleAndRemove(legendReplacementList);
