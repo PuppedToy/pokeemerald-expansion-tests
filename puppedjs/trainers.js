@@ -3868,6 +3868,11 @@ const trainersData = [
                     {
                         id: 'STEVEN_LEGEND',
                         ...POKEDEF_LEGEND,
+                        type: [POKEMON_TYPE_ROCK],
+                    },
+                    {
+                        id: 'STEVEN_LEGEND',
+                        ...POKEDEF_LEGEND,
                     },
                 ],
             },
@@ -3914,9 +3919,9 @@ const trainersData = [
         bag: [...spaceCenterBag],
         tms: [...spaceCenterTMs],
         team: [
-            {
-                specific: 'SPECIES_GROUDON',
-            },
+            pokeDefOnlyLegends({
+                type: [...magmaTeamTypes],
+            }),
             {
                 ...POKEDEF_UP_TO_PREMIUM_NOEVO,
                 abilities: [...sandAbilities],
@@ -4030,6 +4035,7 @@ const trainersData = [
         level: 58,
         bag: [...spaceCenterBag],
         tms: [...spaceCenterTMs],
+        shuffleTeam: false,
         team: [
             {
                 specific: 'SPECIES_KYOGRE',
@@ -4063,25 +4069,14 @@ const trainersData = [
                 absoluteTier: [TIER_PREMIUM],
                 abilities: [...rainAbilities],
                 checkValidEvo: true,
-                type: [...aquaTeamTypes],
+                type: [aquaTeamTypes[1], aquaTeamTypes[2], aquaTeamTypes[3], aquaTeamTypes[4]],
                 fallback: [
                     {
                         absoluteTier: [TIER_PREMIUM],
-                        abilities: [...rainAbilities],
                         checkValidEvo: true,
-                    },
-                    {
-                        absoluteTier: [TIER_STRONG],
-                        abilities: [...rainAbilities],
-                        checkValidEvo: true,
-                        type: [...aquaTeamTypes],
-                    },
-                    {
-                        absoluteTier: [TIER_STRONG],
-                        abilities: [...rainAbilities],
-                        checkValidEvo: true,
-                    },
-                ]
+                        type: [aquaTeamTypes[1], aquaTeamTypes[2], aquaTeamTypes[3], aquaTeamTypes[4]],
+                    }
+                ],
             },
             pokeDefDrizzleMon({
                 absoluteTier: [TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM],
@@ -4089,22 +4084,11 @@ const trainersData = [
                 pickBest: true,
             }),
             {
-                absoluteTier: [TIER_PREMIUM],
+                absoluteTier: [TIER_STRONG],
                 abilities: [...rainAbilities],
                 checkValidEvo: true,
                 type: [...aquaTeamTypes],
                 fallback: [
-                    {
-                        absoluteTier: [TIER_PREMIUM],
-                        abilities: [...rainAbilities],
-                        checkValidEvo: true,
-                    },
-                    {
-                        absoluteTier: [TIER_STRONG],
-                        abilities: [...rainAbilities],
-                        checkValidEvo: true,
-                        type: [...aquaTeamTypes],
-                    },
                     {
                         absoluteTier: [TIER_STRONG],
                         abilities: [...rainAbilities],
