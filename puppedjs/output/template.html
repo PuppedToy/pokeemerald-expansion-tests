@@ -299,6 +299,22 @@
       }
     }
 
+    function getFullPokeLogIcon(poke) {
+      let fullLogIcon = '';
+      const allLogIsBuffs = (poke.log || []).every(entry => entry.type === 'BUFF');
+      const allLogIsNerfs = (poke.log || []).every(entry => entry.type === 'NERF');
+      if (poke.log && poke.log.length > 0) {
+        if (allLogIsBuffs) {
+          fullLogIcon = ' ⭐️';
+        } else if (allLogIsNerfs) {
+          fullLogIcon = ' 🔻';
+        } else {
+          fullLogIcon = ' 🔧';
+        }
+      }
+      return fullLogIcon;
+    }
+
     function getPokeImg(pokeId) {
       return `https://forwardfeed.github.io/ER-nextdex/static/sprites/${pokeId.replace('SPECIES_', '')}.png`
         .replace('ALOLA', 'ALOLAN')
@@ -395,18 +411,7 @@
       const typeIcon = getLogIcon(typeEntry);
       const abilityEntry = (poke.log || []).find(entry => entry.target === 'ability');
       const abilityIcon = getLogIcon(abilityEntry);
-      let fullLogIcon = '';
-      const allLogIsBuffs = (poke.log || []).every(entry => entry.type === 'BUFF');
-      const allLogIsNerfs = (poke.log || []).every(entry => entry.type === 'NERF');
-      if (poke.log && poke.log.length > 0) {
-        if (allLogIsBuffs) {
-          fullLogIcon = ' ⭐️';
-        } else if (allLogIsNerfs) {
-          fullLogIcon = ' 🔻';
-        } else {
-          fullLogIcon = ' 🔧';
-        }
-      }
+      let fullLogIcon = getFullPokeLogIcon(poke);
       card.className = 'card';
       card.innerHTML = `
         <div class="meta">
@@ -441,6 +446,10 @@
   </script>
   <!-- script to handle trainers -->
   <script>
+    function findPoke(pokeId) {
+      return pokes.find(p => p.id === pokeId);
+    }
+
     const trainersGrid = document.getElementById('trainers-cards');
 
     Object.entries(trainersData).forEach(([trainerId, trainer]) => {
@@ -462,7 +471,7 @@
       // Build each Pokémon slot
       const teamHTML = trainer.team.map(member => {
         const pokeId = member.pokemon || '';
-        const pokeName = pokeId.replace('SPECIES_', '').replace(/_/g, ' ');
+        const pokeName = pokeId.replace('SPECIES_', '').replace(/_/g, ' ') + getFullPokeLogIcon(findPoke(pokeId));
         const imgSrc = getPokeImg(pokeId);
         const item = member.item ? `<div class="small" style="color:#FFD580">🎒 ${member.item}</div>` : '';
         const ability = member.ability ? `<div class="small" style="color:#D1F2FF">✨ ${member.ability}</div>` : '';

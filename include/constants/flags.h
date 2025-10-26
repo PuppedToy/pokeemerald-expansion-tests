@@ -45,7 +45,7 @@
 
 #define FLAG_HIDE_ROUTE103_FISHERMAN    0x20
 
-#define FLAG_UNUSED_0x021    0x21 // Unused Flag
+#define FLAG_DEFEATED_EVERGRANDE_RIVAL  0x21
 #define FLAG_UNUSED_0x022    0x22 // Unused Flag
 #define FLAG_UNUSED_0x023    0x23 // Unused Flag
 #define FLAG_UNUSED_0x024    0x24 // Unused Flag

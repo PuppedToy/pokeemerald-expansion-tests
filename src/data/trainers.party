@@ -2891,90 +2891,82 @@ Carvanha
 Level: 31
 IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
-=== TRAINER_RODNEY ===
-Name: RODNEY
-Class: Swimmer M
-Pic: Swimmer M
-Gender: Male
-Music: Swimmer
+=== TRAINER_MAY_EVERGRANDE_CITY_TREECKO ===
+Name: MAY
+Class: Rival
+Pic: May
+Gender: Female
+Music: Female
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
-Gyarados
-Level: 34
+Treecko
+Level: 5
 IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
-=== TRAINER_RICHARD ===
-Name: RICHARD
-Class: Swimmer M
-Pic: Swimmer M
-Gender: Male
-Music: Swimmer
+=== TRAINER_MAY_EVERGRANDE_CITY_TORCHIC ===
+Name: MAY
+Class: Rival
+Pic: May
+Gender: Female
+Music: Female
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
-Pelipper
-Level: 34
+Torchic
+Level: 5
 IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
-=== TRAINER_HERMAN ===
-Name: HERMAN
-Class: Swimmer M
-Pic: Swimmer M
-Gender: Male
-Music: Swimmer
+=== TRAINER_MAY_EVERGRANDE_CITY_MUDKIP ===
+Name: MAY
+Class: Rival
+Pic: May
+Gender: Female
+Music: Female
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
-Wingull
-Level: 33
+Mudkip
+Level: 5
 IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
-Tentacruel
-Level: 33
-IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
-
-=== TRAINER_SANTIAGO ===
-Name: SANTIAGO
-Class: Swimmer M
-Pic: Swimmer M
+=== TRAINER_BRENDAN_EVERGRANDE_CITY_TREECKO ===
+Name: BRENDAN
+Class: Rival
+Pic: Brendan
 Gender: Male
-Music: Swimmer
+Music: Male
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
-Tentacruel
-Level: 33
+Treecko
+Level: 5
 IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
-Wailmer
-Level: 33
-IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
-
-=== TRAINER_GILBERT ===
-Name: GILBERT
-Class: Swimmer M
-Pic: Swimmer M
+=== TRAINER_BRENDAN_EVERGRANDE_CITY_TORCHIC ===
+Name: BRENDAN
+Class: Rival
+Pic: Brendan
 Gender: Male
-Music: Swimmer
+Music: Male
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
-Sharpedo
-Level: 34
+Torchic
+Level: 5
 IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
-=== TRAINER_FRANKLIN ===
-Name: FRANKLIN
-Class: Swimmer M
-Pic: Swimmer M
+=== TRAINER_BRENDAN_EVERGRANDE_CITY_MUDKIP ===
+Name: BRENDAN
+Class: Rival
+Pic: Brendan
 Gender: Male
-Music: Swimmer
+Music: Male
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
-Sealeo
-Level: 34
+Mudkip
+Level: 5
 IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_KEVIN ===
@@ -5980,10 +5972,10 @@ Electrike
 Level: 13
 IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
-=== TRAINER_WALLACE ===
-Name: WALLACE
+=== TRAINER_CHAMPION_STEVEN ===
+Name: STEVEN
 Class: Champion
-Pic: Champion Wallace
+Pic: Steven
 Gender: Male
 Music: Male
 Double Battle: No

@@ -168,12 +168,12 @@
 #define TRAINER_STAN                        162
 #define TRAINER_BARRY                       163
 #define TRAINER_DEAN                        164
-#define TRAINER_RODNEY                      165
-#define TRAINER_RICHARD                     166
-#define TRAINER_HERMAN                      167
-#define TRAINER_SANTIAGO                    168
-#define TRAINER_GILBERT                     169
-#define TRAINER_FRANKLIN                    170
+#define TRAINER_MAY_EVERGRANDE_CITY_TREECKO         165
+#define TRAINER_MAY_EVERGRANDE_CITY_TORCHIC         166
+#define TRAINER_MAY_EVERGRANDE_CITY_MUDKIP          167
+#define TRAINER_BRENDAN_EVERGRANDE_CITY_TREECKO     168
+#define TRAINER_BRENDAN_EVERGRANDE_CITY_TORCHIC     169
+#define TRAINER_BRENDAN_EVERGRANDE_CITY_MUDKIP      170
 #define TRAINER_KEVIN                       171
 #define TRAINER_JACK                        172
 #define TRAINER_DUDLEY                      173
@@ -338,7 +338,7 @@
 #define TRAINER_EDDIE                       332
 #define TRAINER_ALLEN                       333
 #define TRAINER_TIMMY                       334
-#define TRAINER_WALLACE                     335
+#define TRAINER_CHAMPION_STEVEN             335
 #define TRAINER_ANDREW                      336
 #define TRAINER_IVAN                        337
 #define TRAINER_CLAUDE                      338

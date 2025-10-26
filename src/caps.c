@@ -38,7 +38,7 @@ u32 GetCurrentLevelCap(void)
         {FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN, 58}, // Major boss - gives Rayquaza
         {FLAG_BADGE08_GET, 61}, // Gym boss Juan
         {FLAG_DEFEATED_WALLY_VICTORY_ROAD, 64}, // Major Boss
-        /* Create here last Rival battle at 67 */
+        {FLAG_DEFEATED_EVERGRANDE_RIVAL, 67}, // Major Boss
         {FLAG_FIRST_DEFEATED_ELITE_4_SIDNEY, 70}, // E4
         {FLAG_FIRST_DEFEATED_ELITE_4_PHOEBE, 71}, // E4
         {FLAG_FIRST_DEFEATED_ELITE_4_GLACIA, 72}, // E4

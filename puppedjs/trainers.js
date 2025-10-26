@@ -16,8 +16,6 @@ const {
     POKEMON_TYPE_GRASS,
     POKEMON_TYPE_FIGHTING,
     POKEMON_TYPE_PSYCHIC,
-    TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
-    TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES,
     POKEMON_TYPE_DARK,
     POKEMON_TYPE_POISON,
     POKEMON_TYPE_FIRE,
@@ -34,11 +32,11 @@ const {
     POKEMON_TYPE_ELECTRIC,
     TIER_LEGEND,
     TRAINER_POKE_MEGA_FROM_STONE,
-    EVO_TYPE_FINAL,
     POKEMON_TYPE_NORMAL,
     TRAINER_POKE_MEGA_WITH_STONE,
     POKEMON_TYPE_GHOST,
     TIER_GOD,
+    POKEMON_TYPES,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
@@ -87,25 +85,6 @@ const multiHitMoves = [
     'MOVE_FURY_SWIPES',
     'MOVE_SPIKE_CANNON',
     'MOVE_WATER_SHURIKEN',  
-];
-
-const soundBasedOffensiveMoves = [
-    'MOVE_UPROAR',
-    'MOVE_HYPER_VOICE',
-    'MOVE_BUG_BUZZ',
-    'MOVE_CHATTER',
-    'MOVE_ROUND',
-    'MOVE_ECHOED_VOICE',
-    'MOVE_SNARL',
-    'MOVE_DISARMING_VOICE',
-    'MOVE_BOOMBURST',
-    'MOVE_SPARKING_ARIA',
-    'MOVE_CLANGING_SCALES',
-    'MOVE_OVERDRIVE',
-    'MOVE_TORCH_SONG',
-    'MOVE_ALLURING_VOICE',
-    'MOVE_PSYCHIC_NOISE',
-    'MOVE_RELIC_SONG',
 ];
 
 const whiteHerbMoves = [
@@ -192,6 +171,62 @@ const magmaTeamTypes = [
     POKEMON_TYPE_PSYCHIC,
     POKEMON_TYPE_FIGHTING,
 ];
+
+function sampleAndRemove(array) {
+    const index = Math.floor(Math.random() * array.length);
+    const item = array[index];
+    array.splice(index, 1);
+    return item;
+}
+
+const originalE4Types = [POKEMON_TYPE_DARK, POKEMON_TYPE_GHOST, POKEMON_TYPE_ICE, POKEMON_TYPE_DRAGON];
+const coinsForE4Types = [0, 1, 2, 3];
+const whoKeepsE4Type = [];
+whoKeepsE4Type.push(sampleAndRemove(coinsForE4Types));
+whoKeepsE4Type.push(sampleAndRemove(coinsForE4Types));
+const types = [...POKEMON_TYPES];
+
+let e41MainType;
+let e42MainType;
+let e43MainType;
+let e44MainType;
+
+if (whoKeepsE4Type.includes(0)) {
+    e41MainType = originalE4Types[0];
+    types.splice(types.indexOf(e41MainType), 1);
+}
+if (whoKeepsE4Type.includes(1)) {
+    e42MainType = originalE4Types[1];
+    types.splice(types.indexOf(e42MainType), 1);
+}
+if (whoKeepsE4Type.includes(2)) {
+    e43MainType = originalE4Types[2];
+    types.splice(types.indexOf(e43MainType), 1);
+}
+if (whoKeepsE4Type.includes(3)) {
+    e44MainType = originalE4Types[3];
+    types.splice(types.indexOf(e44MainType), 1);
+}
+
+if (!e41MainType) {
+    e41MainType = sampleAndRemove(types);
+}
+const e41SecondType = sampleAndRemove(types);
+
+if (!e42MainType) {
+    e42MainType = sampleAndRemove(types);
+}
+const e42SecondType = sampleAndRemove(types);
+
+if (!e43MainType) {
+    e43MainType = sampleAndRemove(types);
+}
+const e43SecondType = sampleAndRemove(types);
+
+if (!e44MainType) {
+    e44MainType = sampleAndRemove(types);
+}
+const e44SecondType = sampleAndRemove(types);
 
 const generic3Average3StrongTeamTemplate = () => [
     {
@@ -418,7 +453,32 @@ const pokeDefLegendMega = (BASE_POKE_DEF) => ({
     ]
 });
 
-const pokeDefOnlyLegend = (BASE_POKE_DEF) => ({
+const pokeDefPremiumMega = (BASE_POKE_DEF) => ({
+    special: TRAINER_POKE_MEGA_WITH_STONE,
+    megaTier: [TIER_PREMIUM],
+    checkValidEvo: true,
+    ...BASE_POKE_DEF,
+    fallback: [
+        {
+            special: TRAINER_POKE_MEGA_WITH_STONE,
+            megaTier: [TIER_STRONG],
+            checkValidEvo: true,
+            ...BASE_POKE_DEF,
+        },
+        {
+            special: TRAINER_POKE_MEGA_WITH_STONE,
+            megaTier: [TIER_PREMIUM],
+            checkValidEvo: true,
+        },
+        {
+            special: TRAINER_POKE_MEGA_WITH_STONE,
+            megaTier: [TIER_STRONG],
+            checkValidEvo: true,
+        },
+    ]
+});
+
+const pokeDefOnlyLegend = (BASE_POKE_DEF = {}) => ({
     absoluteTier: [TIER_LEGEND],
     checkValidEvo: true,
     ...BASE_POKE_DEF,
@@ -430,13 +490,25 @@ const pokeDefOnlyLegend = (BASE_POKE_DEF) => ({
     ],
 });
 
-const pokeDefOnlyPremium = (BASE_POKE_DEF) => ({
+const pokeDefOnlyPremium = (BASE_POKE_DEF = {}) => ({
     absoluteTier: [TIER_PREMIUM],
     checkValidEvo: true,
     ...BASE_POKE_DEF,
     fallback: [
         {
             absoluteTier: [TIER_PREMIUM],
+            checkValidEvo: true,
+        },
+    ],
+});
+
+const pokeDefOnlyStrong = (BASE_POKE_DEF = {}) => ({
+    absoluteTier: [TIER_STRONG],
+    checkValidEvo: true,
+    ...BASE_POKE_DEF,
+    fallback: [
+        {
+            absoluteTier: [TIER_STRONG],
             checkValidEvo: true,
         },
     ],
@@ -724,13 +796,13 @@ const rivalRustboroTemplate = (id) => [
         tryEvolve: true,
     },
     {
-        id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
+        id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
         evolutionTier: [TIER_PREMIUM],
         evoType: [EVO_TYPE_LC],
         tryEvolve: true,
         fallback: [
             {
-                id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
+                id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
                 evolutionTier: [TIER_STRONG],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
@@ -795,6 +867,55 @@ const rival119Encounters = [
     'SPECIES_SERVINE',
 ];
 
+const rivalEvergrandeCityEncounters = [
+    ...rival119Encounters,
+    'SPECIES_SANDILE',
+    'SPECIES_KROKOROK',
+    'SPECIES_KROOKODILE',
+    'SPECIES_RIBOMBEE',
+    'SPECIES_SHUPPET',
+    'SPECIES_METAPOD',
+    'SPECIES_HONEDGE',
+    'SPECIES_DOUBLADE',
+    'SPECIES_WAILMER',
+    'SPECIES_WAILORD',
+    'SPECIES_SPINARAK',
+    'SPECIES_ARIADOS',
+    'SPECIES_SPIDOPS',
+    'SPECIES_WO_CHIEN',
+    'SPECIES_GUZZLORD',
+    'SPECIES_KARTANA',
+    'SPECIES_GOLETT',
+    'SPECIES_RABOOT',
+    'SPECIES_SCORBUNNY',
+    'SPECIES_FROAKIE',
+    'SPECIES_FROGADIER',
+    'SPECIES_SCREAM_TAIL',
+    'SPECIES_OMANYTE',
+    'SPECIES_OMASTAR',
+    'SPECIES_RELICANTH',
+    'SPECIES_FLUTTER_MANE',
+    'SPECIES_FINNEON',
+    'SPECIES_LUMINEON',
+    'SPECIES_HUNTAIL',
+    'SPECIES_HAWLUCHA',
+    'SPECIES_ROSELIA',
+    'SPECIES_ROSERADE',
+    'SPECIES_STARMIE',
+    'SPECIES_IRON_HANDS',
+    'SPECIES_IRON_CROWN',
+    'SPECIES_JIRACHI',
+    'SPECIES_IRON_JUGULIS',
+    'SPECIES_IRON_BOULDER',
+    'SPECIES_IRON_LEAVES',
+    'SPECIES_IRON_MOTH',
+    'SPECIES_IRON_THORNS',
+    'SPECIES_IRON_TREADS',
+    'SPECIES_RAIKOU',
+    'SPECIES_ENTEI',
+    'SPECIES_SUICUNE',
+]
+
 const rivalRoute110Template = (id) => [
     {
         special: TRAINER_REPEAT_ID,
@@ -815,7 +936,7 @@ const rivalRoute110Template = (id) => [
     },
     {
         special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
+        id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
         tryEvolve: true,
     },
     {
@@ -869,7 +990,42 @@ const rivalRoute119Template = (id) => [
     },
     {
         special: TRAINER_REPEAT_ID,
-        id: 'RIVAL_STRONG_RUSTBORO_KEEP_' + id,
+        id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
+        tryEvolve: true,
+        tryMega: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_PREMIUM_110_KEEP_' + id,
+        tryEvolve: true,
+        tryMega: true,
+    },
+];
+
+const rivalEvergrandeCityTemplate = (id) => [
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_MEGA_103_KEEP_' + id,
+        tryEvolve: true,
+        tryMega: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_STARTER_' + id,
+        tryEvolve: true,
+        tryMega: true,
+    },
+    pokeDefOnlyLegend(),
+    {
+        special: TRAINER_POKE_ENCOUNTER,
+        encounterIds: [...rivalEvergrandeCityEncounters],
+        pickBest: true,
+        tryEvolve: true,
+        tryMega: true,
+    },
+    {
+        special: TRAINER_REPEAT_ID,
+        id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
         tryEvolve: true,
         tryMega: true,
     },
@@ -1871,6 +2027,7 @@ const trainersData = [
         id: 'TRAINER_GRUNT_MUSEUM_1',
         isBoss: true,
         level: 21,
+        shuffleTeam: false,
         bag: [...slateportGruntsBag],
         tms: [...slateportGruntsTMs],
         team: [
@@ -1898,6 +2055,7 @@ const trainersData = [
         id: 'TRAINER_GRUNT_MUSEUM_2',
         isBoss: true,
         level: 21,
+        shuffleTeam: false,
         bag: [...slateportGruntsBag],
         tms: [...slateportGruntsTMs],
         team: [
@@ -2443,6 +2601,7 @@ const trainersData = [
         id: 'TRAINER_TABITHA_MT_CHIMNEY',
         isBoss: true,
         level: 29,
+        shuffleTeam: false,
         bag: [...magmaChimneyBag],
         tms: [...wattsonTMs],
         team: [
@@ -3488,6 +3647,7 @@ const trainersData = [
         id: 'TRAINER_MAXIE_MAGMA_HIDEOUT',
         isBoss: true,
         level: 48,
+        shuffleTeam: false,
         bag: [...wallyBag2],
         tms: [...wallyTMs2],
         team: [
@@ -3608,6 +3768,7 @@ const trainersData = [
         id: 'TRAINER_MATT',
         isBoss: true,
         level: 51,
+        shuffleTeam: false,
         bag: [...wallyBag2],
         tms: [...wallyTMs2],
         team: [
@@ -3732,6 +3893,7 @@ const trainersData = [
         id: 'TRAINER_TATE_AND_LIZA_1',
         level: 53,
         isBoss: true,
+        shuffleTeam: false,
         bag: [...tateAndLizaBag],
         tms: [...tateAndLizaTMs, 'MOVE_CALM_MIND', 'MOVE_CALM_MIND', 'MOVE_CALM_MIND'],
         bannedItems: ['Focus Sash', 'Room Service', 'Light Clay'],
@@ -3892,6 +4054,7 @@ const trainersData = [
         id: 'TRAINER_TABITHA_MOSSDEEP',
         isBoss: true,
         level: 56,
+        shuffleTeam: false,
         bag: [...spaceCenterBag],
         tms: [...spaceCenterTMs],
         team: [
@@ -3916,6 +4079,7 @@ const trainersData = [
         id: 'TRAINER_MAXIE_MOSSDEEP',
         isBoss: true,
         level: 56,
+        shuffleTeam: false,
         bag: [...spaceCenterBag],
         tms: [...spaceCenterTMs],
         team: [
@@ -4133,6 +4297,209 @@ const trainersData = [
             }),
             pokeDefOnlyPremium({
                 type: [POKEMON_TYPE_WATER, POKEMON_TYPE_DRAGON],
+            }),
+        ],
+    },
+    // Victory Road
+    {
+        id: 'TRAINER_WALLY_VR_1',
+        isBoss: true,
+        level: 64,
+        bag: [...spaceCenterBag],
+        tms: [...spaceCenterTMs],
+        team: [
+            pokeDefOnlyLegend(),
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'WALLY_1',
+                tryEvolve: true,
+                tryMega: true,
+            },
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'WALLY_2',
+                tryEvolve: true,
+                tryMega: true,
+            },
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'WALLY_3',
+                tryEvolve: true,
+                tryMega: true,
+            },
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'WALLY_4',
+                tryEvolve: true,
+                tryMega: true,
+            },
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'WALLY_5',
+                tryEvolve: true,
+                tryMega: true,
+            },
+        ],
+    },
+    // Ever Grande Rival
+    {
+        id: 'TRAINER_MAY_EVERGRANDE_CITY_TREECKO',
+        isBoss: true,
+        level: 67,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...spaceCenterBag],
+        tms: [...spaceCenterTMs],
+        team: [...rivalEvergrandeCityTemplate('TREECKO')],
+    },
+    {
+        id: 'TRAINER_MAY_EVERGRANDE_CITY_TORCHIC',
+        isBoss: true,
+        level: 67,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...spaceCenterBag],
+        tms: [...spaceCenterTMs],
+        team: [...rivalEvergrandeCityTemplate('TORCHIC')],
+    },
+    {
+        id: 'TRAINER_MAY_EVERGRANDE_CITY_MUDKIP',
+        isBoss: true,
+        level: 67,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
+        bag: [...spaceCenterBag],
+        tms: [...spaceCenterTMs],
+        team: [...rivalEvergrandeCityTemplate('MUDKIP')],
+    },
+    {
+        id: 'TRAINER_BRENDAN_EVERGRANDE_TREECKO',
+        copy: 'TRAINER_MAY_EVERGRANDE_CITY_TREECKO',
+    },
+    {
+        id: 'TRAINER_BRENDAN_EVERGRANDE_TORCHIC',
+        copy: 'TRAINER_MAY_EVERGRANDE_CITY_TORCHIC',
+    },
+    {
+        id: 'TRAINER_BRENDAN_EVERGRANDE_MUDKIP',
+        copy: 'TRAINER_MAY_EVERGRANDE_CITY_MUDKIP',
+    },
+    // E4 & Champion
+    {
+        id: 'TRAINER_SIDNEY',
+        isBoss: true,
+        level: 70,
+        bag: [...spaceCenterBag],
+        tms: [...spaceCenterTMs],
+        team: [
+            pokeDefOnlyLegend({
+                type: [e41MainType],
+            }),
+            pokeDefOnlyPremium({
+                type: [e41SecondType],
+            }),
+            pokeDefOnlyPremium({
+                type: [e41MainType],
+            }),
+            pokeDefOnlyStrong({
+                type: [e41SecondType],
+            }),
+            pokeDefOnlyStrong(),
+            pokeDefPremiumMega({
+                type: [e41MainType],
+            }),
+        ],
+    },
+    {
+        id: 'TRAINER_PHOEBE',
+        isBoss: true,
+        level: 71,
+        bag: [...spaceCenterBag],
+        tms: [...spaceCenterTMs],
+        team: [
+            pokeDefOnlyLegend({
+                type: [e42MainType],
+            }),
+            pokeDefOnlyPremium({
+                type: [e42SecondType],
+            }),
+            pokeDefOnlyPremium({
+                type: [e42MainType],
+            }),
+            pokeDefOnlyStrong({
+                type: [e42SecondType],
+            }),
+            pokeDefOnlyStrong(),
+            pokeDefPremiumMega({
+                type: [e42MainType],
+            }),
+        ],
+    },
+    {
+        id: 'TRAINER_GLACIA',
+        isBoss: true,
+        level: 72,
+        bag: [...spaceCenterBag],
+        tms: [...spaceCenterTMs],
+        team: [
+            pokeDefOnlyLegend({
+                type: [e43MainType],
+            }),
+            pokeDefOnlyPremium({
+                type: [e43SecondType],
+            }),
+            pokeDefOnlyPremium({
+                type: [e43MainType],
+            }),
+            pokeDefOnlyStrong({
+                type: [e43SecondType],
+            }),
+            pokeDefOnlyStrong(),
+            pokeDefPremiumMega({
+                type: [e43MainType],
+            }),
+        ],
+    },
+    {
+        id: 'TRAINER_DRAKE',
+        isBoss: true,
+        level: 73,
+        bag: [...spaceCenterBag],
+        tms: [...spaceCenterTMs],
+        team: [
+            pokeDefOnlyLegend({
+                type: [e44MainType],
+            }),
+            pokeDefOnlyPremium({
+                type: [e44SecondType],
+            }),
+            pokeDefOnlyPremium({
+                type: [e44MainType],
+            }),
+            pokeDefOnlyStrong({
+                type: [e44SecondType],
+            }),
+            pokeDefOnlyStrong(),
+            pokeDefPremiumMega({
+                type: [e44MainType],
+            }),
+        ],
+    },
+    {
+        id: 'TRAINER_CHAMPION_STEVEN',
+        isBoss: true,
+        level: 75,
+        bag: [...spaceCenterBag],
+        tms: [...spaceCenterTMs],
+        team: [
+            pokeDefOnlyGod({
+                hasStat: ['baseBST', '<', '851'],
+            }),
+            pokeDefOnlyPremium(),
+            pokeDefLegendMega({
+                type: [POKEMON_TYPE_STEEL],
+            }),
+            pokeDefOnlyPremium(),
+            pokeDefOnlyPremium(),
+            pokeDefOnlyPremium({
+                type: [POKEMON_TYPE_STEEL],
             }),
         ],
     },
