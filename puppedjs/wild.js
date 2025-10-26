@@ -237,6 +237,21 @@ const wildData = {
         // Shoal Cave
         SPECIES_FROAKIE: 'FINAL_OR_SOLO_STRONG',
         SPECIES_FROGADIER: 'FINAL_OR_SOLO_STRONG',
+
+        // Route 127
+        SPECIES_SCREAM_TAIL: 'FINAL_OR_SOLO_STRONG',
+        SPECIES_OMANYTE: 'FINAL_OR_SOLO_AVERAGE',
+        SPECIES_OMASTAR: 'FINAL_OR_SOLO_AVERAGE',
+        SPECIES_RELICANTH: 'FINAL_OR_SOLO_STRONG',
+
+        // Route 126
+        SPECIES_FLUTTER_MANE: 'FINAL_OR_SOLO_STRONG',
+        SPECIES_FINNEON: 'FINAL_OR_SOLO_AVERAGE',
+        SPECIES_LUMINEON: 'FINAL_OR_SOLO_AVERAGE',
+        SPECIES_HUNTAIL: 'FINAL_OR_SOLO_STRONG',
+
+        // Sootopolis
+        SPECIES_HAWLUCHA: 'FINAL_OR_SOLO_AVERAGE',
     },
     maps: [
         // Shelgon maps
@@ -443,6 +458,34 @@ const wildData = {
         {
             id: 'MAP_SHOAL_CAVE_HIGH_TIDE_ENTRANCE_ROOM',
             surf: 'SPECIES_FROGADIER',
+        },
+        {
+            id: 'MAP_ROUTE127',
+            land: 'SPECIES_SCREAM_TAIL',
+            old: 'SPECIES_OMANYTE',
+            good: 'SPECIES_OMASTAR',
+            super: 'SPECIES_DOUBLADE',
+        },
+        {
+            id: 'MAP_UNDERWATER_ROUTE127',
+            land: 'SPECIES_RELICANTH',
+        },
+        {
+            id: 'MAP_ROUTE126',
+            land: 'SPECIES_FLUTTER_MANE',
+            old: 'SPECIES_FINNEON',
+            good: 'SPECIES_LUMINEON',
+            super: 'SPECIES_DOUBLADE',
+        },
+        {
+            id: 'MAP_UNDERWATER_ROUTE126',
+            land: 'SPECIES_HUNTAIL',
+        },
+        {
+            id: 'SOOTOPOLIS_CITY',
+            old: 'SPECIES_HAWLUCHA',
+            good: 'SPECIES_HAWLUCHA',
+            super: 'SPECIES_HAWLUCHA',
         },
         // Special
         {

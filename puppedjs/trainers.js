@@ -3774,11 +3774,15 @@ const trainersData = [
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SPINARAK'],
-                tryEvolve: true,
+                encounterIds: ['SPECIES_FROAKIE'],
                 tryMega: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_FROGADIER'],
+                tryMega: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 1),
             ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
             {
                 ...POKEDEF_STRONG_PREMIUM_MEGA,
@@ -3872,6 +3876,198 @@ const trainersData = [
             {
                 specific: 'SPECIES_CAMERUPT',
                 item: 'Cameruptite',
+            },
+        ],
+    },
+    // Route 127
+    {
+        id: 'TRAINER_DONNY',
+        level: 58,
+        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SCREAM_TAIL'],
+                tryMega: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_CAMDEN',
+        level: 58,
+        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_RELICANTH'],
+                tryMega: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_AIDAN',
+        level: 58,
+        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
+        team: generic2Average2Strong1Premium1MegaTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_ATHENA',
+        level: 58,
+        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
+        team: generic2Average2Strong1Premium1MegaTeamTemplate(),
+    },
+    {
+        id: 'TRAINER_HENRY',
+        level: 58,
+        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
+        team: generic2Average2Strong1Premium1MegaTeamTemplate(),
+    },
+    // Route 126
+    {
+        id: 'TRAINER_BRENDA',
+        level: 58,
+        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_FLUTTER_MANE'],
+                tryMega: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_LEONARDO',
+        level: 58,
+        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_HUNTAIL'],
+                tryMega: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+            },
+        ],
+    },
+    // Seafloor Cavern
+    {
+        id: 'TRAINER_ARCHIE',
+        isBoss: true,
+        level: 58,
+        bag: [...spaceCenterBag],
+        tms: [...spaceCenterTMs],
+        team: [
+            {
+                specific: 'SPECIES_KYOGRE',
+                item: 'Damp Rock',
+            },
+            {
+                absoluteTier: [TIER_PREMIUM],
+                abilities: [...rainAbilities],
+                checkValidEvo: true,
+                type: [...aquaTeamTypes],
+                fallback: [
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        abilities: [...rainAbilities],
+                        checkValidEvo: true,
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        abilities: [...rainAbilities],
+                        checkValidEvo: true,
+                        type: [...aquaTeamTypes],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        abilities: [...rainAbilities],
+                        checkValidEvo: true,
+                    },
+                ]
+            },
+            {
+                absoluteTier: [TIER_PREMIUM],
+                abilities: [...rainAbilities],
+                checkValidEvo: true,
+                type: [...aquaTeamTypes],
+                fallback: [
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        abilities: [...rainAbilities],
+                        checkValidEvo: true,
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        abilities: [...rainAbilities],
+                        checkValidEvo: true,
+                        type: [...aquaTeamTypes],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        abilities: [...rainAbilities],
+                        checkValidEvo: true,
+                    },
+                ]
+            },
+            pokeDefDrizzleMon({
+                absoluteTier: [TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM],
+                checkValidEvo: true,
+                pickBest: true,
+            }),
+            {
+                absoluteTier: [TIER_PREMIUM],
+                abilities: [...rainAbilities],
+                checkValidEvo: true,
+                type: [...aquaTeamTypes],
+                fallback: [
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        abilities: [...rainAbilities],
+                        checkValidEvo: true,
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        abilities: [...rainAbilities],
+                        checkValidEvo: true,
+                        type: [...aquaTeamTypes],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        abilities: [...rainAbilities],
+                        checkValidEvo: true,
+                    },
+                ]
+            },
+            {
+                specific: 'SPECIES_SHARPEDO',
+                item: 'Sharpedonite',
+                ability: 'SPEED_BOOST',
+                nature: 'Adamant',
             },
         ],
     },
