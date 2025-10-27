@@ -435,6 +435,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, banne
     const bestOffensePower = Math.max(poke.baseAttack, poke.baseSpAttack)/100;
     const specialOffensePower = poke.baseSpAttack/100;
     const physicalOffensePower = poke.baseAttack/100;
+    const speedPower = poke.baseSpeed/100;
     const genericDefensePower = (poke.baseDefense + poke.baseSpDefense + poke.baseHP)/300;
     const physicalDefensePower = Math.max(poke.baseDefense + poke.baseHP)/200;
     const specialDefensePower = Math.max(poke.baseSpDefense + poke.baseHP)/200;
@@ -448,6 +449,15 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, banne
         }
     });
 
+    if (item === 'Choice Band') {
+        return 9 * Math.max(1, physicalOffensePower) * speedPower / specialOffensePower * calculatedDeviation;
+    }
+    if (item === 'Choice Specs') {
+        return 9 * Math.max(1, specialOffensePower) * speedPower / physicalOffensePower * calculatedDeviation;
+    }
+    if (item === 'Choice Scarf') {
+        return 10 * bestOffensePower * Math.max(1, speedPower) * calculatedDeviation;
+    }
     const hasGuts = ability === 'GUTS';
     const hasFacade = moveset.some(m => m.id === 'MOVE_FACADE');
     const hasQuickFeet = ability === 'QUICK_FEET';
@@ -735,7 +745,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, banne
         }
         return 5 * calculatedDeviation;
     }
-    if (item === 'Jaboca Berry' || item === 'Red Card') {
+    if (item === 'Jaboca Berry') {
         if (hasHarvest || hasCudChew || hasRipen || hasCheekPouch)
         {
             return 5 * calculatedDeviation;
@@ -745,11 +755,23 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, banne
         }
         return 5 * calculatedDeviation;
     }
-    if (item === 'Shed Shell') {
-        return 1 * calculatedDeviation;
+    if (item === 'Weakness Policy') {
+        return 10 * genericDefensePower * Math.random() * calculatedDeviation;
+    }
+    if (item === 'Eject Button') {
+        return 10 * Math.random() * calculatedDeviation;
+    }
+    if (item === 'Red Card') {
+        return 7 * Math.random() * calculatedDeviation;
     }
     if (item === 'Eject Pack') {
         return 2.5 * calculatedDeviation;
+    }
+    if (item === 'Shed Shell') {
+        return 1 * calculatedDeviation;
+    }
+    if (item === 'Leppa Berry') {
+        return 1 * calculatedDeviation;
     }
     const isSturdy = ability === 'STURDY';
     const hasEndure = moveset.some(m => m.id === 'MOVE_ENDURE');
