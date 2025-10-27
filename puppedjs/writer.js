@@ -1108,7 +1108,7 @@ async function writer(pokemonList, moves, abilities) {
 
     Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
         let shuffledTeam = [...trainerData.team];
-        if (trainerData.shuffleTeam !== false) {
+        if (!trainerData.preventShuffle) {
             shuffledTeam = shuffledTeam.sort(() => Math.random() - 0.5);
         }
 

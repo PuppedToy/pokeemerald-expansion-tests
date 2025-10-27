@@ -2039,7 +2039,7 @@ const trainersData = [
         id: 'TRAINER_GRUNT_MUSEUM_1',
         isBoss: true,
         level: 21,
-        shuffleTeam: false,
+        preventShuffle: true,
         bag: [...slateportGruntsBag],
         tms: [...slateportGruntsTMs],
         team: [
@@ -2067,7 +2067,7 @@ const trainersData = [
         id: 'TRAINER_GRUNT_MUSEUM_2',
         isBoss: true,
         level: 21,
-        shuffleTeam: false,
+        preventShuffle: true,
         bag: [...slateportGruntsBag],
         tms: [...slateportGruntsTMs],
         team: [
@@ -2613,7 +2613,7 @@ const trainersData = [
         id: 'TRAINER_TABITHA_MT_CHIMNEY',
         isBoss: true,
         level: 29,
-        shuffleTeam: false,
+        preventShuffle: true,
         bag: [...magmaChimneyBag],
         tms: [...wattsonTMs],
         team: [
@@ -3659,7 +3659,7 @@ const trainersData = [
         id: 'TRAINER_MAXIE_MAGMA_HIDEOUT',
         isBoss: true,
         level: 48,
-        shuffleTeam: false,
+        preventShuffle: true,
         bag: [...wallyBag2],
         tms: [...wallyTMs2],
         team: [
@@ -3780,7 +3780,7 @@ const trainersData = [
         id: 'TRAINER_MATT',
         isBoss: true,
         level: 51,
-        shuffleTeam: false,
+        preventShuffle: true,
         bag: [...wallyBag2],
         tms: [...wallyTMs2],
         team: [
@@ -3905,7 +3905,7 @@ const trainersData = [
         id: 'TRAINER_TATE_AND_LIZA_1',
         level: 53,
         isBoss: true,
-        shuffleTeam: false,
+        preventShuffle: true,
         bag: [...tateAndLizaBag],
         tms: [...tateAndLizaTMs, 'MOVE_CALM_MIND', 'MOVE_CALM_MIND', 'MOVE_CALM_MIND'],
         bannedItems: ['Focus Sash', 'Room Service', 'Light Clay'],
@@ -4030,7 +4030,7 @@ const trainersData = [
     {
         id: 'PARTNER_STEVEN',
         isPartner: true,
-        shuffleTeam: false,
+        preventShuffle: true,
         level: 56,
         bag: [...spaceCenterBag],
         tms: [...spaceCenterTMs],
@@ -4067,7 +4067,7 @@ const trainersData = [
         id: 'TRAINER_TABITHA_MOSSDEEP',
         isBoss: true,
         level: 56,
-        shuffleTeam: false,
+        preventShuffle: true,
         bag: [...spaceCenterBag],
         tms: [...spaceCenterTMs],
         team: [
@@ -4092,7 +4092,7 @@ const trainersData = [
         id: 'TRAINER_MAXIE_MOSSDEEP',
         isBoss: true,
         level: 56,
-        shuffleTeam: false,
+        preventShuffle: true,
         bag: [...spaceCenterBag],
         tms: [...spaceCenterTMs],
         team: [
@@ -4212,7 +4212,7 @@ const trainersData = [
         level: 58,
         bag: [...spaceCenterBag],
         tms: [...spaceCenterTMs],
-        shuffleTeam: false,
+        preventShuffle: true,
         team: [
             {
                 specific: 'SPECIES_KYOGRE',
