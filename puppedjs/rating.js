@@ -14,6 +14,12 @@ const {
     TIER_WEAK_THRESHOLD,
     POKEMON_TYPE_POISON,
     POKEMON_TYPE_GRASS,
+    GOD_BST_THRESHOLD,
+    LEGEND_BST_THRESHOLD,
+    PREMIUM_BST_THRESHOLD,
+    STRONG_BST_THRESHOLD,
+    AVERAGE_BST_THRESHOLD,
+    WEAK_BST_THRESHOLD,
 } = require('./constants');
 const { plates, protectionBerries } = require('./items');
 
@@ -897,8 +903,6 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
 const FLEXIBILITY_THRESHOLD = 20;
 const GOOD_STAT_VALUE = 160;
 const EXCELLENT_STAT_VALUE = 160;
-const LEGEND_BST_THRESHOLD = 650;
-const GOD_BST_THRESHOLD = 710;
 
 function ratePokemon(poke, moves, abilities) {
     let bestAbilityRating = 0;
@@ -1021,12 +1025,28 @@ function ratePokemon(poke, moves, abilities) {
         + poke.baseSpDefense
         + poke.baseSpeed * abilitiesSpeedPowerMultiplier;
     
-    if (rawBST >= LEGEND_BST_THRESHOLD) {
-        absoluteRating = 9;
+    if (rawBST >= WEAK_BST_THRESHOLD && absoluteRating < TIER_WEAK_THRESHOLD) {
+        absoluteRating = TIER_WEAK_THRESHOLD + absoluteRating / 100;
     }
 
-    if (rawBST >= GOD_BST_THRESHOLD) {
-        absoluteRating = 10;
+    if (rawBST >= AVERAGE_BST_THRESHOLD && absoluteRating < TIER_AVERAGE_THRESHOLD) {
+        absoluteRating = TIER_AVERAGE_THRESHOLD + absoluteRating / 100;
+    }
+
+    if (rawBST >= STRONG_BST_THRESHOLD && absoluteRating < TIER_STRONG_THRESHOLD) {
+        absoluteRating = TIER_STRONG_THRESHOLD + absoluteRating / 100;
+    }
+
+    if (rawBST >= PREMIUM_BST_THRESHOLD && absoluteRating < TIER_PREMIUM_THRESHOLD) {
+        absoluteRating = TIER_PREMIUM_THRESHOLD + absoluteRating / 100;
+    }
+
+    if (rawBST >= LEGEND_BST_THRESHOLD && absoluteRating < TIER_LEGEND_THRESHOLD) {
+        absoluteRating = TIER_LEGEND_THRESHOLD + absoluteRating / 100;
+    }
+
+    if (rawBST >= GOD_BST_THRESHOLD && absoluteRating < TIER_GOD_THRESHOLD) {
+        absoluteRating = TIER_GOD_THRESHOLD + absoluteRating / 100;
     }
 
     // These tiers are kinda working. I should add that OU is actually exclusive pokemon and UU-RU are the average fully evolved ones
