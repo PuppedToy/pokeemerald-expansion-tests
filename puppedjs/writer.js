@@ -1107,7 +1107,12 @@ async function writer(pokemonList, moves, abilities) {
     });
 
     Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
-        const generatedTeamTextLines = trainerData.team.map(teamEntry => {
+        let shuffledTeam = [...trainerData.team];
+        if (trainerData.shuffleTeam !== false) {
+            shuffledTeam = shuffledTeam.sort(() => Math.random() - 0.5);
+        }
+
+        const generatedTeamTextLines = shuffledTeam.map(teamEntry => {
             const lines = [
                 teamEntry.item ? `${teamEntry.pokemon.name} @ ${teamEntry.item}` : teamEntry.pokemon.name,
             ];

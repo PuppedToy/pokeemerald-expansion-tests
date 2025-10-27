@@ -4030,6 +4030,7 @@ const trainersData = [
     {
         id: 'PARTNER_STEVEN',
         isPartner: true,
+        shuffleTeam: false,
         level: 56,
         bag: [...spaceCenterBag],
         tms: [...spaceCenterTMs],
