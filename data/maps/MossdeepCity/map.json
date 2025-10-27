@@ -294,7 +294,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "3",
       "script": "0x0",
-      "flag": "FLAG_BADGE07_GET"
+      "flag": "FLAG_DEFEATED_MAGMA_SPACE_CENTER"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_TUBER_M_SWIMMING",
@@ -307,7 +307,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "0x0",
-      "flag": "FLAG_BADGE07_GET"
+      "flag": "FLAG_DEFEATED_MAGMA_SPACE_CENTER"
     }
   ],
   "warp_events": [

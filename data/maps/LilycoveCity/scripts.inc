@@ -233,6 +233,7 @@ LilycoveCity_EventScript_Rival::
 	trainerbattle_no_intro TRAINER_WALLY_LILYCOVE, LilycoveCity_Text_WallyDefeat
 	call Common_EventScript_PlayLevelCapFanfare
 	msgbox LilycoveCity_Text_WallyHaveSuperRod, MSGBOX_DEFAULT
+	closemessage
 	giveitem ITEM_SUPER_ROD
 	applymovement VAR_LAST_TALKED, Common_Movement_WalkInPlaceFasterDown
 	waitmovement 0
