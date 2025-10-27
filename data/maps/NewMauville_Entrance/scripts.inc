@@ -56,8 +56,8 @@ NewMauville_Entrance_Pokemon::
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE
 	specialvar VAR_RESULT, GetBattleOutcome
 	goto_if_eq VAR_RESULT, B_OUTCOME_WON, NewMauville_Entrance_DefeatedPokemon
-	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, AncientTomb_EventScript_RanFromPokemon
-	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, AncientTomb_EventScript_RanFromPokemon
+	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, NewMauville_EventScript_RanFromPokemon
+	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, NewMauville_EventScript_RanFromPokemon
 	setflag FLAG_HIDE_NEW_MAUVILLE_ENTRANCE_POKEMON
 	release
 	end
@@ -67,8 +67,7 @@ NewMauville_Entrance_DefeatedPokemon::
 	goto Common_EventScript_RemoveStaticPokemon
 	end
 
-AncientTomb_EventScript_RanFromPokemon::
-	setflag FLAG_HIDE_NEW_MAUVILLE_ENTRANCE_POKEMON
+NewMauville_EventScript_RanFromPokemon::
 	setvar VAR_0x8004, SPECIES_MEW
 	goto Common_EventScript_LegendaryFlewAway
 	end
