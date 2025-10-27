@@ -482,8 +482,8 @@ const wildData = {
         },
         {
             id: 'MAP_ROUTE125',
-            old: 'SPECIES_RABOOT',
-            good: 'SPECIES_SCORBUNNY',
+            old: 'SPECIES_SCORBUNNY',
+            good: 'SPECIES_RABOOT',
             super: 'SPECIES_DOUBLADE',
         },
         {
