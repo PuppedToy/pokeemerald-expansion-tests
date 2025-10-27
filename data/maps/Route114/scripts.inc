@@ -215,49 +215,6 @@ Route114_EventScript_PickSkillSwap::
 	setflag FLAG_ITEM_ROUTE_114_PROTEIN
 	end
 
-Common_EventScript_PickA1::
-	setflag FLAG_ITEM_ROUTE_114_PICK_A
-	giveitem ITEM_TM_SHADOW_BALL
-	removeobject LOCALID_ROUTE104_A1
-	removeobject LOCALID_ROUTE104_A2
-	removeobject LOCALID_ROUTE104_A3
-	release
-	end
-
-Common_EventScript_PickA2::
-	setflag FLAG_ITEM_ROUTE_114_PICK_A
-	giveitem ITEM_TM_PSYCHIC
-	removeobject LOCALID_ROUTE104_A1
-	removeobject LOCALID_ROUTE104_A2
-	removeobject LOCALID_ROUTE104_A3
-	release
-	end
-
-Common_EventScript_PickA3::
-	setflag FLAG_ITEM_ROUTE_114_PICK_A
-	giveitem ITEM_TM_SLUDGE_BOMB
-	removeobject LOCALID_ROUTE104_A1
-	removeobject LOCALID_ROUTE104_A2
-	removeobject LOCALID_ROUTE104_A3
-	release
-	end
-
-Common_EventScript_PickB1::
-	setflag FLAG_ITEM_ROUTE_114_PICK_B
-	giveitem ITEM_TM_REFLECT
-	removeobject LOCALID_ROUTE104_B1
-	removeobject LOCALID_ROUTE104_B2
-	release
-	end
-
-Common_EventScript_PickB2::
-	setflag FLAG_ITEM_ROUTE_114_PICK_B
-	giveitem ITEM_TM_LIGHT_SCREEN
-	removeobject LOCALID_ROUTE104_B1
-	removeobject LOCALID_ROUTE104_B2
-	release
-	end
-
 Route104_EventScript_PickItemA1_Sign::
 	msgbox Route104_Text_PickItemA1, MSGBOX_SIGN
 	end

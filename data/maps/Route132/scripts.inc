@@ -1,11 +1,6 @@
 Route132_MapScripts::
 	.byte 0
 
-Route132_EventScript_Gilbert::
-	trainerbattle_single TRAINER_GILBERT, Route132_Text_GilbertIntro, Route132_Text_GilbertDefeat
-	msgbox Route132_Text_GilbertPostBattle, MSGBOX_AUTOCLOSE
-	end
-
 Route132_EventScript_Dana::
 	trainerbattle_single TRAINER_DANA, Route132_Text_DanaIntro, Route132_Text_DanaDefeat
 	msgbox Route132_Text_DanaPostBattle, MSGBOX_AUTOCLOSE

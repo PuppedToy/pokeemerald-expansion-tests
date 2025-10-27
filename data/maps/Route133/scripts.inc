@@ -1,11 +1,6 @@
 Route133_MapScripts::
 	.byte 0
 
-Route133_EventScript_Franklin::
-	trainerbattle_single TRAINER_FRANKLIN, Route133_Text_FranklinIntro, Route133_Text_FranklinDefeat
-	msgbox Route133_Text_FranklinPostBattle, MSGBOX_AUTOCLOSE
-	end
-
 Route133_EventScript_Debra::
 	trainerbattle_single TRAINER_DEBRA, Route133_Text_DebraIntro, Route133_Text_DebraDefeat
 	msgbox Route133_Text_DebraPostBattle, MSGBOX_AUTOCLOSE

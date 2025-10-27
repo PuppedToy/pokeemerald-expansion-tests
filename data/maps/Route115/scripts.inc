@@ -143,12 +143,12 @@ Route115_EventScript_PickSolarBeam::
 	end
 
 Route115_EventScript_PickHyperBeam::
-	finditem ITEM_HYPER_BEAM
+	finditem ITEM_TM_HYPER_BEAM
 	setflag FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH
 	end
 
 Route115_EventScript_PickSludgeBomb::
-	finditem ITEM_SLUDGE_BOMB
+	finditem ITEM_TM_SLUDGE_BOMB
 	setflag FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH
 	end
 

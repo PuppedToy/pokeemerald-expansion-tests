@@ -194,13 +194,13 @@ Route121_EventScript_PickRest::
 Route121_EventScript_PickBerry::
 	multichoice 0, 0, MULTI_ROUTE121_PICK_BERRY, FALSE
 	switch VAR_RESULT
-	case 0, Route121_EventScript_PickPapaya
+	case 0, Route121_EventScript_PickPayapa
 	case 1, Route121_EventScript_PickColbur
 	case 2, Route121_EventScript_PickTanga
 	end
 
-Route121_EventScript_PickPapaya::
-	finditem ITEM_PAPAYA_BERRY
+Route121_EventScript_PickPayapa::
+	finditem ITEM_PAYAPA_BERRY
 	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
 	end
 

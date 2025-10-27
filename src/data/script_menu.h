@@ -872,7 +872,7 @@ static const struct MenuAction MultichoiceList_Route121PickTM[] =
 
 static const struct MenuAction MultichoiceList_Route121PickBerry[] =
 {
-    {COMPOUND_STRING("Papaya Berry")},
+    {COMPOUND_STRING("Payapa Berry")},
     {COMPOUND_STRING("Colbur Berry")},
     {COMPOUND_STRING("Tanga Berry")},
 };

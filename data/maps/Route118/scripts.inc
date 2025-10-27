@@ -124,7 +124,7 @@ Route118_EventScript_PickJaboca::
 	end
 
 Route118_EventScript_PickRowap::
-	finditem ITEM_JABOCA_ROWAP
+	finditem ITEM_ROWAP_BERRY
 	setflag FLAG_ITEM_ROUTE_118_HYPER_POTION
 	end
 
