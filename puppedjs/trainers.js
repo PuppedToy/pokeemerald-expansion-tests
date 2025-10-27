@@ -3996,43 +3996,7 @@ const trainersData = [
         tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
     },
-    // Mossdeep 2 vs 2
-    {
-        id: 'PARTNER_STEVEN',
-        isPartner: true,
-        preventShuffle: true,
-        level: 56,
-        bag: [...generateSpaceCenterBag()],
-        tms: [...spaceCenterTMs],
-        team: [
-            {
-                id: 'STEVEN_LEGEND',
-                ...POKEDEF_LEGEND,
-                type: [POKEMON_TYPE_STEEL],
-                fallback: [
-                    {
-                        id: 'STEVEN_LEGEND',
-                        ...POKEDEF_LEGEND,
-                        type: [POKEMON_TYPE_ROCK],
-                    },
-                    {
-                        id: 'STEVEN_LEGEND',
-                        ...POKEDEF_LEGEND,
-                    },
-                ],
-            },
-            pokeDefLegendMega({
-                id: 'STEVEN_MEGA',
-                type: [POKEMON_TYPE_STEEL],
-            }),
-            {
-                id: 'BEST_STEVEN_POKE',
-                oneOf: [...stevenPokemon],
-                pickBest: true,
-                tryEvolve: true,
-            },
-        ],
-    },
+    // Mossdeep Space Center
     {
         id: 'TRAINER_GRUNT_SPACE_CENTER_5',
         isBoss: true,
@@ -4129,6 +4093,42 @@ const trainersData = [
             {
                 ...POKEDEF_STRONG_PREMIUM_MEGA,
                 type: [magmaTeamTypes[4]],
+            },
+        ],
+    },
+    {
+        id: 'PARTNER_STEVEN',
+        isPartner: true,
+        preventShuffle: true,
+        level: 56,
+        bag: [...generateSpaceCenterBag()],
+        tms: [...spaceCenterTMs],
+        team: [
+            {
+                id: 'STEVEN_LEGEND',
+                ...POKEDEF_LEGEND,
+                type: [POKEMON_TYPE_STEEL],
+                fallback: [
+                    {
+                        id: 'STEVEN_LEGEND',
+                        ...POKEDEF_LEGEND,
+                        type: [POKEMON_TYPE_ROCK],
+                    },
+                    {
+                        id: 'STEVEN_LEGEND',
+                        ...POKEDEF_LEGEND,
+                    },
+                ],
+            },
+            pokeDefLegendMega({
+                id: 'STEVEN_MEGA',
+                type: [POKEMON_TYPE_STEEL],
+            }),
+            {
+                id: 'BEST_STEVEN_POKE',
+                oneOf: [...stevenPokemon],
+                pickBest: true,
+                tryEvolve: true,
             },
         ],
     },
