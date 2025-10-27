@@ -1237,14 +1237,12 @@ const wallyTMs2 = [
     'MOVE_REST',
 ];
 
-const tateAndLizaBag = [
-    ...wallyBag2,
-    'Choice Scarf',
-    'Choice Specs',
-    'Choice Band',
-    // 'Room Service',
-    // 'Iron Ball',
-];
+const generateTateAndLizaBag = () => {
+    return [
+        ...wallyBag2,
+        sample(['Choice Scarf', 'Choice Specs', 'Choice Band']),
+    ];
+}
 
 const tateAndLizaTMs = [
     ...wallyTMs2,
@@ -1253,13 +1251,15 @@ const tateAndLizaTMs = [
     'MOVE_FIRE_BLAST',
 ];
 
-const spaceCenterBag = [
-    ...tateAndLizaBag,
-    'Heavy-Duty Boots',
-    'Weakness Policy',
-    'Eject Button',
-    'Leppa Berry',
-];
+const generateSpaceCenterBag = () => {
+    return [
+        ...generateTateAndLizaBag(),
+        'Heavy-Duty Boots',
+        'Weakness Policy',
+        'Eject Button',
+        'Leppa Berry',
+    ];
+}
 
 const spaceCenterTMs = [
     ...tateAndLizaTMs,
@@ -3906,7 +3906,7 @@ const trainersData = [
         level: 53,
         isBoss: true,
         preventShuffle: true,
-        bag: [...tateAndLizaBag],
+        bag: [...generateTateAndLizaBag()],
         tms: [...tateAndLizaTMs, 'MOVE_CALM_MIND', 'MOVE_CALM_MIND', 'MOVE_CALM_MIND'],
         bannedItems: ['Focus Sash', 'Room Service', 'Light Clay'],
         team: [
@@ -3992,7 +3992,7 @@ const trainersData = [
     {
         id: 'TRAINER_ERNEST_1',
         level: 56,
-        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        bag: getSampleItemsFromArray(generateTateAndLizaBag(), 28),
         tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
         team: [
             {
@@ -4015,14 +4015,14 @@ const trainersData = [
     {
         id: 'TRAINER_AURON',
         level: 56,
-        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        bag: getSampleItemsFromArray(generateTateAndLizaBag(), 28),
         tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_PRESLEY',
         level: 56,
-        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        bag: getSampleItemsFromArray(generateTateAndLizaBag(), 28),
         tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
     },
@@ -4032,7 +4032,7 @@ const trainersData = [
         isPartner: true,
         preventShuffle: true,
         level: 56,
-        bag: [...spaceCenterBag],
+        bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [
             {
@@ -4068,7 +4068,7 @@ const trainersData = [
         isBoss: true,
         level: 56,
         preventShuffle: true,
-        bag: [...spaceCenterBag],
+        bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [
             pokeDefSandStreamMon(POKEDEF_UP_TO_PREMIUM),
@@ -4093,7 +4093,7 @@ const trainersData = [
         isBoss: true,
         level: 56,
         preventShuffle: true,
-        bag: [...spaceCenterBag],
+        bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [
             {
@@ -4114,7 +4114,7 @@ const trainersData = [
     {
         id: 'TRAINER_DONNY',
         level: 58,
-        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        bag: getSampleItemsFromArray(generateTateAndLizaBag(), 28),
         tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
         team: [
             {
@@ -4132,7 +4132,7 @@ const trainersData = [
     {
         id: 'TRAINER_CAMDEN',
         level: 58,
-        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        bag: getSampleItemsFromArray(generateTateAndLizaBag(), 28),
         tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
         team: [
             {
@@ -4150,21 +4150,21 @@ const trainersData = [
     {
         id: 'TRAINER_AIDAN',
         level: 58,
-        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        bag: getSampleItemsFromArray(generateTateAndLizaBag(), 28),
         tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_ATHENA',
         level: 58,
-        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        bag: getSampleItemsFromArray(generateTateAndLizaBag(), 28),
         tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_HENRY',
         level: 58,
-        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        bag: getSampleItemsFromArray(generateTateAndLizaBag(), 28),
         tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
     },
@@ -4172,7 +4172,7 @@ const trainersData = [
     {
         id: 'TRAINER_BRENDA',
         level: 58,
-        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        bag: getSampleItemsFromArray(generateTateAndLizaBag(), 28),
         tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
         team: [
             {
@@ -4190,7 +4190,7 @@ const trainersData = [
     {
         id: 'TRAINER_LEONARDO',
         level: 58,
-        bag: getSampleItemsFromArray(tateAndLizaBag, 28),
+        bag: getSampleItemsFromArray(generateTateAndLizaBag(), 28),
         tms: getSampleItemsFromArray(tateAndLizaTMs, 14),
         team: [
             {
@@ -4210,7 +4210,7 @@ const trainersData = [
         id: 'TRAINER_ARCHIE',
         isBoss: true,
         level: 58,
-        bag: [...spaceCenterBag],
+        bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         preventShuffle: true,
         team: [
@@ -4286,7 +4286,7 @@ const trainersData = [
         id: 'TRAINER_JUAN_1',
         level: 61,
         isBoss: true,
-        bag: [...spaceCenterBag],
+        bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [
             pokeDefLegendMega({
@@ -4318,7 +4318,7 @@ const trainersData = [
         id: 'TRAINER_WALLY_VR_1',
         isBoss: true,
         level: 64,
-        bag: [...spaceCenterBag],
+        bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [
             pokeDefOnlyLegend(),
@@ -4360,7 +4360,7 @@ const trainersData = [
         isBoss: true,
         level: 67,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...spaceCenterBag],
+        bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [...rivalEvergrandeCityTemplate('TREECKO')],
     },
@@ -4369,7 +4369,7 @@ const trainersData = [
         isBoss: true,
         level: 67,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...spaceCenterBag],
+        bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [...rivalEvergrandeCityTemplate('TORCHIC')],
     },
@@ -4378,7 +4378,7 @@ const trainersData = [
         isBoss: true,
         level: 67,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...spaceCenterBag],
+        bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [...rivalEvergrandeCityTemplate('MUDKIP')],
     },
@@ -4399,7 +4399,7 @@ const trainersData = [
         id: 'TRAINER_SIDNEY',
         isBoss: true,
         level: 70,
-        bag: [...spaceCenterBag],
+        bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [
             pokeDefOnlyLegend({
@@ -4424,7 +4424,7 @@ const trainersData = [
         id: 'TRAINER_PHOEBE',
         isBoss: true,
         level: 71,
-        bag: [...spaceCenterBag],
+        bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [
             pokeDefOnlyLegend({
@@ -4449,7 +4449,7 @@ const trainersData = [
         id: 'TRAINER_GLACIA',
         isBoss: true,
         level: 72,
-        bag: [...spaceCenterBag],
+        bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [
             pokeDefOnlyLegend({
@@ -4474,7 +4474,7 @@ const trainersData = [
         id: 'TRAINER_DRAKE',
         isBoss: true,
         level: 73,
-        bag: [...spaceCenterBag],
+        bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [
             pokeDefOnlyLegend({
@@ -4499,7 +4499,7 @@ const trainersData = [
         id: 'TRAINER_CHAMPION_STEVEN',
         isBoss: true,
         level: 75,
-        bag: [...spaceCenterBag],
+        bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [
             pokeDefOnlyGod({
