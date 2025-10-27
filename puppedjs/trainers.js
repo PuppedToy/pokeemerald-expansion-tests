@@ -3665,10 +3665,11 @@ const trainersData = [
         bag: [...wallyBag2],
         tms: [...wallyTMs2],
         team: [
-            {
-                specific: 'SPECIES_GROUDON',
-                item: 'Heat Rock',
-            },
+            pokeDefDroughtMon({
+                absoluteTier: [TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM],
+                checkValidEvo: true,
+                pickBest: true,
+            }),
             {
                 absoluteTier: [TIER_PREMIUM],
                 abilities: [...sunAbilities],
@@ -4073,21 +4074,31 @@ const trainersData = [
         bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [
-            pokeDefSandStreamMon(POKEDEF_UP_TO_PREMIUM),
             {
                 ...POKEDEF_STRONG,
-                abilities: [...sandAbilities],
+                abilities: [...sunAbilities],
                 fallback: [
                     {
                         ...POKEDEF_UP_TO_STRONG,
-                        abilities: [...sandAbilities],
+                        abilities: [...sunAbilities],
                     },
                 ],
             },
             {
                 ...POKEDEF_STRONG_PREMIUM_MEGA,
-                type: [POKEMON_TYPE_GROUND, POKEMON_TYPE_ROCK],
+                abilities: [...sunAbilities],
+                fallback: [
+                    {
+                        ...POKEDEF_STRONG_PREMIUM_MEGA,
+                        type: [POKEMON_TYPE_FIRE],
+                    },
+                    {
+                        ...POKEDEF_STRONG_PREMIUM_MEGA,
+                        type: [...magmaTeamTypes],
+                    },
+                ]
             },
+            pokeDefDroughtMon(POKEDEF_UP_TO_PREMIUM),
         ],
     },
     {
@@ -4099,17 +4110,18 @@ const trainersData = [
         tms: [...spaceCenterTMs],
         team: [
             {
+                specific: 'SPECIES_GROUDON',
+                item: 'Heat Rock',
+            },
+            {
                 ...POKEDEF_UP_TO_PREMIUM_NOEVO,
-                abilities: [...sandAbilities],
+                abilities: [...sunAbilities],
                 pickBest: true,
             },
-            pokeDefOnlyLegend({
-                type: [...magmaTeamTypes],
+            pokeDefLegendMega({
+                abilities: [...sunAbilities],
+                pickBest: true,
             }),
-            {
-                specific: 'SPECIES_CAMERUPT',
-                item: 'Cameruptite',
-            },
         ],
     },
     // Route 127
