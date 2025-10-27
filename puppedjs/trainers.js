@@ -4053,11 +4053,11 @@ const trainersData = [
             },
             {
                 ...POKEDEF_STRONG_PREMIUM_MEGA,
-                abilities: [...sunAbilities],
+                type: [magmaTeamTypes[0]],
                 fallback: [
                     {
                         ...POKEDEF_STRONG_PREMIUM_MEGA,
-                        type: [POKEMON_TYPE_FIRE],
+                        type: [magmaTeamTypes[0]],
                     },
                     {
                         ...POKEDEF_STRONG_PREMIUM_MEGA,
