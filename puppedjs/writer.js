@@ -715,6 +715,15 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 const starterPokemon = pokemonList.find(p => p.id === starters[2]);
                 pokemonStrictList = [starterPokemon];
             }
+            else if (trainerMonDefinition.special === 'PLAYER_LEGEND_TREECKO') {
+                pokemonStrictList = [legend1Replacement];
+            }
+            else if (trainerMonDefinition.special === 'PLAYER_LEGEND_TORCHIC') {
+                pokemonStrictList = [legend2Replacement];
+            }
+            else if (trainerMonDefinition.special === 'PLAYER_LEGEND_MUDKIP') {
+                pokemonStrictList = [legend3Replacement];
+            }
             else if (trainerMonDefinition.special === TRAINER_REPEAT_ID) {
                 const repeatedId = storedIds[trainerMonDefinition.id];
                 if (repeatedId) {

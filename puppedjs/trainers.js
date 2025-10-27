@@ -1022,12 +1022,14 @@ const rivalEvergrandeCityTemplate = (id) => [
         tryMega: true,
     },
     {
+        special: 'PLAYER_LEGEND_' + id,
+    },
+    {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_STARTER_' + id,
         tryEvolve: true,
         tryMega: true,
     },
-    pokeDefOnlyLegend(),
     {
         special: TRAINER_POKE_ENCOUNTER,
         encounterIds: [...rivalEvergrandeCityEncounters],
