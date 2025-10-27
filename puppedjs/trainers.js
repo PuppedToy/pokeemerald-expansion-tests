@@ -4508,6 +4508,7 @@ const trainersData = [
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_MEGA',
+                tryMega: true,
                 fallback: [
                     pokeDefLegendMega(),
                 ],
