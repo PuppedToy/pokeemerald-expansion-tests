@@ -4,6 +4,8 @@ const path = require('path');
 const { ratePokemon, rateMove } = require('./rating');
 const writer = require('./writer');
 
+const isDebug = process.argv.includes('--debug');
+
 const {
     EVO_TYPE_LC_OF_3,
     EVO_TYPE_LC_OF_2,
@@ -631,7 +633,7 @@ async function exe() {
     await fs.writeFile(path.resolve(__dirname, 'evoTree.json'), JSON.stringify(evoTree, null, 2), 'utf-8');
     await fs.writeFile(path.resolve(__dirname, 'pokes.json'), JSON.stringify(allPokes, null, 2), 'utf-8');
 
-    await writer(allPokes, moves, abilities);
+    await writer(allPokes, moves, abilities, isDebug);
 }
 
 exe();

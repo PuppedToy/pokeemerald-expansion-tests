@@ -198,7 +198,7 @@ function isValidEvolution(level, { param, method }) {
         || ((method === 'ITEM' || param === '0') && level > 25);
 }
 
-async function writer(pokemonList, moves, abilities) {
+async function writer(pokemonList, moves, abilities, isDebug) {
 
     console.log('Writing pokemon buff / nerfs to files...');
     // Save pokemon buffed / nerfed versions
@@ -1108,7 +1108,10 @@ async function writer(pokemonList, moves, abilities) {
 
     Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
         let shuffledTeam = [...trainerData.team];
-        if (!trainerData.preventShuffle) {
+        if (isDebug) {
+            trainerData.level = 5;
+        }
+        else if (!trainerData.preventShuffle) {
             shuffledTeam = shuffledTeam.sort(() => Math.random() - 0.5);
         }
 
