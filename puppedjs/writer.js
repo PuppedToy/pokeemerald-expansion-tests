@@ -1119,6 +1119,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         let shuffledTeam = [...trainerData.team];
         if (isDebug) {
             trainerData.level = 5;
+            shuffledTeam = [shuffledTeam[0]];
         }
         else if (!trainerData.preventShuffle) {
             shuffledTeam = shuffledTeam.sort(() => Math.random() - 0.5);

@@ -161,8 +161,8 @@ Route110_EventScript_PickFocusPunch::
 PetalburgWoods_EventScript_PickSeed::
 	multichoice 0, 0, MULTI_ROUTE110_PICK_SEED, FALSE
 	switch VAR_RESULT
-	case 1, PetalburgWoods_EventScript_PickElectric
-	case 0, PetalburgWoods_EventScript_PickGrassy
+	case 0, PetalburgWoods_EventScript_PickElectric
+	case 1, PetalburgWoods_EventScript_PickGrassy
 	case 2, PetalburgWoods_EventScript_PickMisty
 	case 3, PetalburgWoods_EventScript_PickPsychic
 	end

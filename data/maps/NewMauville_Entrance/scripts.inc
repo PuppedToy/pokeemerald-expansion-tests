@@ -68,6 +68,7 @@ NewMauville_Entrance_DefeatedPokemon::
 	end
 
 AncientTomb_EventScript_RanFromPokemon::
+	setflag FLAG_HIDE_NEW_MAUVILLE_ENTRANCE_POKEMON
 	setvar VAR_0x8004, SPECIES_MEW
 	goto Common_EventScript_LegendaryFlewAway
 	end
