@@ -4050,10 +4050,10 @@ const trainersData = [
                     },
                 ],
             },
-            {
-                specific: 'SPECIES_METAGROSS',
-                item: 'Metagrossite',
-            },
+            pokeDefLegendMega({
+                id: 'STEVEN_MEGA',
+                type: [POKEMON_TYPE_STEEL],
+            }),
             {
                 id: 'BEST_STEVEN_POKE',
                 oneOf: [...stevenPokemon],
@@ -4413,10 +4413,10 @@ const trainersData = [
             pokeDefOnlyStrong({
                 type: [e41SecondType],
             }),
-            pokeDefOnlyStrong(),
             pokeDefPremiumMega({
                 type: [e41MainType],
             }),
+            pokeDefOnlyStrong(),
         ],
     },
     {
@@ -4438,10 +4438,10 @@ const trainersData = [
             pokeDefOnlyStrong({
                 type: [e42SecondType],
             }),
-            pokeDefOnlyStrong(),
             pokeDefPremiumMega({
                 type: [e42MainType],
             }),
+            pokeDefOnlyStrong(),
         ],
     },
     {
@@ -4463,10 +4463,10 @@ const trainersData = [
             pokeDefOnlyStrong({
                 type: [e43SecondType],
             }),
-            pokeDefOnlyStrong(),
             pokeDefPremiumMega({
                 type: [e43MainType],
             }),
+            pokeDefOnlyStrong(),
         ],
     },
     {
@@ -4488,10 +4488,10 @@ const trainersData = [
             pokeDefOnlyStrong({
                 type: [e44SecondType],
             }),
-            pokeDefOnlyStrong(),
             pokeDefPremiumMega({
                 type: [e44MainType],
             }),
+            pokeDefOnlyStrong(),
         ],
     },
     {
@@ -4505,14 +4505,19 @@ const trainersData = [
                 hasStat: ['baseBST', '<', '851'],
             }),
             pokeDefOnlyPremium(),
-            pokeDefLegendMega({
-                type: [POKEMON_TYPE_STEEL],
-            }),
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'STEVEN_MEGA',
+                fallback: [
+                    pokeDefLegendMega(),
+                ],
+            },
             pokeDefOnlyPremium(),
             pokeDefOnlyPremium(),
-            pokeDefOnlyPremium({
-                type: [POKEMON_TYPE_STEEL],
-            }),
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'STEVEN_LEGEND',
+            },
         ],
     },
 ]
