@@ -497,7 +497,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, banne
     }
     if (item === 'Eviolite') {
         if (poke.evolutionData.isNFE) {
-            return 12 * calculatedDeviation;
+            return 15 * calculatedDeviation;
         }
         return 0;
     }
