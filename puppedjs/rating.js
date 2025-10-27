@@ -437,6 +437,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, banne
     const physicalOffensePower = poke.baseAttack/100;
     const genericDefensePower = (poke.baseDefense + poke.baseSpDefense + poke.baseHP)/300;
     const physicalDefensePower = Math.max(poke.baseDefense + poke.baseHP)/200;
+    const specialDefensePower = Math.max(poke.baseSpDefense + poke.baseHP)/200;
     let coverageRating = 0;
     const checkedTypes = [];
     const calculatedDeviation = 1 + ((Math.random() ? 1 : -1) * Math.random() * deviation);
@@ -743,6 +744,38 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, banne
             return 7.5 * calculatedDeviation;
         }
         return 5 * calculatedDeviation;
+    }
+    if (item === 'Shed Shell') {
+        return 1 * calculatedDeviation;
+    }
+    if (item === 'Eject Pack') {
+        return 2.5 * calculatedDeviation;
+    }
+    const isSturdy = ability === 'STURDY';
+    const hasEndure = moveset.some(m => m.id === 'MOVE_ENDURE');
+    if (item === 'Custap Berry') {
+        if (isSturdy || hasEndure) {
+            return 7.5 * bestOffensePowerWithSpeed * calculatedDeviation;
+        }
+        return 4 * bestOffensePowerWithSpeed * calculatedDeviation;
+    }
+    if (item === 'Kee Berry') {
+        return 6 * physicalDefensePower * calculatedDeviation;
+    }
+    if (item === 'Maranga Berry') {
+        return 6 * specialDefensePower * calculatedDeviation;
+    }
+    if (item === 'Jaboca Berry') {
+        return 6 * Math.random() * calculatedDeviation;
+    }
+    if (item === 'Rowap Berry') {
+        return 6 * Math.random() * calculatedDeviation;
+    }
+    if (item === 'Mirror Herb') {
+        return 7 * Math.random() * calculatedDeviation;
+    }
+    if (item === 'Adrenaline Orb') {
+        return 5 * Math.random() * calculatedDeviation;
     }
     if (item.includes(' Berry')) {
         const protectionBerriesEntries = Object.entries(protectionBerries);

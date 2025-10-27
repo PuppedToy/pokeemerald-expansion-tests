@@ -1224,7 +1224,7 @@ const winonaBag = [
 const wallyBag2 = [
     ...winonaBag,
     'Focus Sash',
-    'Papaya Berry',
+    'Payapa Berry',
     'Colbur Berry',
     'Tanga Berry',
 ];
@@ -3592,7 +3592,7 @@ const trainersData = [
             {
                 ...POKEDEF_STRONG,
                 weakToTypes: [POKEMON_TYPE_PSYCHIC],
-                item: 'Papaya Berry',
+                item: 'Payapa Berry',
             },
             {
                 ...POKEDEF_STRONG,
