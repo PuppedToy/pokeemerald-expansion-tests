@@ -26,7 +26,6 @@
   ],
   "object_events": [
     {
-      "local_id": "LOCALID_ROUTE121_GRUNT_1",
       "graphics_id": "OBJ_EVENT_GFX_AQUA_MEMBER_M",
       "x": 19,
       "y": 40,
@@ -40,7 +39,6 @@
       "flag": "FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN"
     },
     {
-      "local_id": "LOCALID_ROUTE121_GRUNT_1",
       "graphics_id": "OBJ_EVENT_GFX_AQUA_MEMBER_M",
       "x": 20,
       "y": 40,
