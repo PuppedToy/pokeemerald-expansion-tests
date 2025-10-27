@@ -4034,6 +4034,105 @@ const trainersData = [
         ],
     },
     {
+        id: 'TRAINER_GRUNT_SPACE_CENTER_5',
+        isBoss: true,
+        level: 56,
+        bag: [...generateSpaceCenterBag()],
+        tms: [...spaceCenterTMs],
+        team: [
+            {
+                ...POKEDEF_STRONG,
+                type: [magmaTeamTypes[2]],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [magmaTeamTypes[2]],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [magmaTeamTypes[2]],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [magmaTeamTypes[2]],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [magmaTeamTypes[2]],
+            },
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+                type: [magmaTeamTypes[2]],
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_GRUNT_SPACE_CENTER_6',
+        isBoss: true,
+        level: 56,
+        bag: [...generateSpaceCenterBag()],
+        tms: [...spaceCenterTMs],
+        team: [
+            {
+                ...POKEDEF_STRONG,
+                type: [magmaTeamTypes[3]],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [magmaTeamTypes[3]],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [magmaTeamTypes[3]],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [magmaTeamTypes[3]],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [magmaTeamTypes[3]],
+            },
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+                type: [magmaTeamTypes[3]],
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_GRUNT_SPACE_CENTER_7',
+        isBoss: true,
+        level: 56,
+        bag: [...generateSpaceCenterBag()],
+        tms: [...spaceCenterTMs],
+        team: [
+            {
+                ...POKEDEF_STRONG,
+                type: [magmaTeamTypes[4]],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [magmaTeamTypes[4]],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [magmaTeamTypes[4]],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [magmaTeamTypes[4]],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [magmaTeamTypes[4]],
+            },
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+                type: [magmaTeamTypes[4]],
+            },
+        ],
+    },
+    {
         id: 'TRAINER_TABITHA_MOSSDEEP',
         isBoss: true,
         level: 56,
