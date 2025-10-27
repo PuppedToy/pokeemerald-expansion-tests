@@ -839,12 +839,12 @@ const rival110Encounters = [
     'SPECIES_MANECTRIC',
     'SPECIES_ODDISH',
     'SPECIES_GLOOM',
-    'SPECIES_DEDENNE',
     'SPECIES_CARVANHA',
 ];
 
 const rival119Encounters = [
     ...rival110Encounters,
+    'SPECIES_DEDENNE',
     'SPECIES_SHELGON',
     'SPECIES_PUPITAR',
     'SPECIES_GABITE',
