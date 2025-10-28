@@ -1615,6 +1615,7 @@ const trainersData = [
         id: 'TRAINER_ROXANNE_1',
         level: 10,
         isBoss: true,
+        preventShuffle: true,
         bag: [...roxanneBag, 'Rock Gem'],
         tms: [...roxanneTMs],
         team: [
@@ -2500,6 +2501,7 @@ const trainersData = [
         id: 'TRAINER_WATTSON_1',
         isBoss: true,
         level: 26,
+        preventShuffle: true,
         bag: [...wattsonBag, 'Electric Gem', 'Zap Plate'],
         tms: [...wattsonTMs],
         team: [
@@ -2947,6 +2949,7 @@ const trainersData = [
         id: 'TRAINER_FLANNERY_1',
         level: 33,
         isBoss: true,
+        preventShuffle: true,
         bag: [...flanneryBag],
         tms: [...flanneryTMs],
         team: [
@@ -3450,6 +3453,7 @@ const trainersData = [
         id: 'TRAINER_WINONA_1',
         level: 43,
         isBoss: true,
+        preventShuffle: true,
         bag: [...winonaBag],
         tms: [...shellyTMs],
         team: [
