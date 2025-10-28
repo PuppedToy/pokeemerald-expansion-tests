@@ -306,7 +306,7 @@ const generic2Average2Strong1Premium1MegaTeamTemplate = () => [
     },
     {
         isMega: true,
-        absoluteTierTier: [TIER_STRONG, TIER_PREMIUM],
+        absoluteTier: [TIER_STRONG, TIER_PREMIUM],
         checkValidEvo: true,
         tryEvolve: true,
     },
