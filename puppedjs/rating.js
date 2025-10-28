@@ -1259,7 +1259,7 @@ function ratePokemon(poke, moves, abilities) {
         absoluteRating = TIER_LEGEND_THRESHOLD + absoluteRating / 100;
     }
 
-    if (rawBST >= GOD_BST_THRESHOLD && absoluteRating < TIER_GOD_THRESHOLD) {
+    if ((rawBST >= GOD_BST_THRESHOLD || poke.parsedAbilities.includes('POWER_CONSTRUCT')) && absoluteRating < TIER_GOD_THRESHOLD) {
         absoluteRating = TIER_GOD_THRESHOLD + absoluteRating / 100;
     }
 

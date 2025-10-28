@@ -199,7 +199,29 @@ function isValidEvolution(level, { param, method }) {
         || ((method === 'ITEM' || param === '0') && level > 25);
 }
 
+const bannedSpeciesForPicking = [
+    'SPECIES_WISHIWASHI_SCHOOL',
+    'SPECIES_AEGISLASH_BLADE',
+    'SPECIES_CHERRIM_SUNSHINE',
+    'SPECIES_GRENINJA_ASH',
+    'SPECIES_CASTFORM_SUNNY',
+    'SPECIES_CASTFORM_RAINY',
+    'SPECIES_CASTFORM_SNOWY',
+    'SPECIES_MORPEKO_HANGRY',
+    'SPECIES_ZYGARDE_COMPLETE',
+    'SPECIES_TERAPAGOS_NORMAL',
+    'SPECIES_TERAPAGOS_STELLAR',
+    'SPECIES_DARMANITAN_ZEN',
+    'SPECIES_DARMANITAN_GALAR_ZEN',
+    // @TODO For now I can't handle palafin without very specific logic
+    'SPECIES_FINIZEN',
+    'SPECIES_PALAFIN_ZERO',
+    'SPECIES_PALAFIN_HERO',
+];
+
 async function writer(pokemonList, moves, abilities, isDebug) {
+
+    pokemonList = pokemonList.filter(poke => !bannedSpeciesForPicking.includes(poke.id));
 
     console.log('Writing pokemon buff / nerfs to files...');
     // Save pokemon buffed / nerfed versions
