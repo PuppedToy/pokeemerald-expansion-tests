@@ -4153,18 +4153,18 @@ const trainersData = [
                 id: 'STEVEN_LEGEND',
                 ...POKEDEF_LEGEND,
                 type: [POKEMON_TYPE_STEEL],
-                pickBest: true,
+                hasStat: ['baseBST', '>=', '660'],
                 fallback: [
                     {
                         id: 'STEVEN_LEGEND',
                         ...POKEDEF_LEGEND,
                         type: [POKEMON_TYPE_ROCK],
-                        pickBest: true,
+                        hasStat: ['baseBST', '>=', '660'],
                     },
                     {
                         id: 'STEVEN_LEGEND',
                         ...POKEDEF_LEGEND,
-                        pickBest: true,
+                        hasStat: ['baseBST', '>=', '660'],
                     },
                 ],
             },
