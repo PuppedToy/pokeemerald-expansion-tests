@@ -671,6 +671,10 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                         console.log('Trying to find which evolutions lead to mega...');
                         for (let i = 0; i < chosenTrainerMon.evolutions.length; i++) {
                             const evolvedForm = pokemonList.find(p => p.id === chosenTrainerMon.evolutions[i].pokemon);
+                            if (!evolvedForm) {
+                                console.warn(` - Could not find evolved form ${chosenTrainerMon.evolutions[i].pokemon}, skipping...`);
+                                continue;
+                            }
                             const evolvedFormMegaForms = pokemonList.filter(p => p.evolutionData.megaBaseForm && p.evolutionData.megaBaseForm === evolvedForm.id);
                             if (evolvedFormMegaForms.length > 0) {
                                 console.log(` - Found that evolution ${evolvedForm.id} leads to mega forms: ${evolvedFormMegaForms.map(m => m.id).join(', ')}`);
