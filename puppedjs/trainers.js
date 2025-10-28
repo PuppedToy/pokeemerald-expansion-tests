@@ -3685,7 +3685,7 @@ const trainersData = [
             {
                 absoluteTier: [TIER_PREMIUM],
                 checkValidEvo: true,
-                type: [...magmaTeamTypes[0]],
+                type: [magmaTeamTypes[0]],
                 fallback: [
                     {
                         absoluteTier: [TIER_PREMIUM],
@@ -3697,7 +3697,7 @@ const trainersData = [
             {
                 absoluteTier: [TIER_PREMIUM],
                 checkValidEvo: true,
-                type: [...magmaTeamTypes[1]],
+                type: [magmaTeamTypes[1]],
                 fallback: [
                     {
                         absoluteTier: [TIER_PREMIUM],
@@ -3709,7 +3709,7 @@ const trainersData = [
             {
                 absoluteTier: [TIER_PREMIUM],
                 checkValidEvo: true,
-                type: [...magmaTeamTypes[2], magmaTeamTypes[3], magmaTeamTypes[4]],
+                type: [magmaTeamTypes[2], magmaTeamTypes[3], magmaTeamTypes[4]],
                 fallback: [
                     {
                         absoluteTier: [TIER_PREMIUM],
