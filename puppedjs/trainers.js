@@ -210,22 +210,18 @@ if (whoKeepsE4Type.includes(3)) {
 if (!e41MainType) {
     e41MainType = sampleAndRemove(types);
 }
-const e41SecondType = sampleAndRemove(types);
 
 if (!e42MainType) {
     e42MainType = sampleAndRemove(types);
 }
-const e42SecondType = sampleAndRemove(types);
 
 if (!e43MainType) {
     e43MainType = sampleAndRemove(types);
 }
-const e43SecondType = sampleAndRemove(types);
 
 if (!e44MainType) {
     e44MainType = sampleAndRemove(types);
 }
-const e44SecondType = sampleAndRemove(types);
 
 const generic3Average3StrongTeamTemplate = () => [
     {
@@ -4534,13 +4530,13 @@ const trainersData = [
                 type: [e41MainType],
             }),
             pokeDefOnlyPremium({
-                type: [e41SecondType],
+                type: [e41MainType],
             }),
             pokeDefOnlyPremium({
                 type: [e41MainType],
             }),
             pokeDefOnlyStrong({
-                type: [e41SecondType],
+                type: [e41MainType],
             }),
             pokeDefPremiumMega({
                 type: [e41MainType],
@@ -4561,13 +4557,13 @@ const trainersData = [
                 type: [e42MainType],
             }),
             pokeDefOnlyPremium({
-                type: [e42SecondType],
+                type: [e42MainType],
             }),
             pokeDefOnlyPremium({
                 type: [e42MainType],
             }),
             pokeDefOnlyStrong({
-                type: [e42SecondType],
+                type: [e42MainType],
             }),
             pokeDefPremiumMega({
                 type: [e42MainType],
@@ -4588,13 +4584,13 @@ const trainersData = [
                 type: [e43MainType],
             }),
             pokeDefOnlyPremium({
-                type: [e43SecondType],
+                type: [e43MainType],
             }),
             pokeDefOnlyPremium({
                 type: [e43MainType],
             }),
             pokeDefOnlyStrong({
-                type: [e43SecondType],
+                type: [e43MainType],
             }),
             pokeDefPremiumMega({
                 type: [e43MainType],
@@ -4615,13 +4611,13 @@ const trainersData = [
                 type: [e44MainType],
             }),
             pokeDefOnlyPremium({
-                type: [e44SecondType],
+                type: [e44MainType],
             }),
             pokeDefOnlyPremium({
                 type: [e44MainType],
             }),
             pokeDefOnlyStrong({
-                type: [e44SecondType],
+                type: [e44MainType],
             }),
             pokeDefLegendMega({
                 type: [e44MainType],
