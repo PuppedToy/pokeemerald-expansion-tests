@@ -988,7 +988,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             }
 
             if (chosenTrainerMon) {
-                const baseFormMon = chosenTrainerMon;
+                let baseFormMon = chosenTrainerMon;
                 let megaItem;
                 if (chosenTrainerMon.evolutionData.megaBaseForm) {
                     megaItem = chosenTrainerMon.evolutionData.megaItem;
