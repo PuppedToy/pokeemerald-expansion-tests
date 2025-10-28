@@ -1035,7 +1035,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             if (chosenTrainerMon) {
                 let baseFormMon = chosenTrainerMon;
                 let megaItem;
-                const moves = [];
+                const megaMoves = [];
                 if (chosenTrainerMon.evolutionData.megaBaseForm) {
                     baseFormMon = pokemonList.find(p => p.id === chosenTrainerMon.evolutionData.megaBaseForm) || chosenTrainerMon;
                     if (foundMega) {
@@ -1044,7 +1044,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                         if (chosenTrainerMon.id === 'SPECIES_RAYQUAZA_MEGA') {
                             // Rayquaza mega doesn't need an item
                             megaItem = null;
-                            moves.push('MOVE_DRAGON_ASCENT');
+                            megaMoves.push('MOVE_DRAGON_ASCENT');
                         }
                         megaItem = itemIdToName(chosenTrainerMon.evolutionData.megaItem);
                         foundMega = true;
@@ -1060,7 +1060,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                     pokemon: baseFormMon,
                     item: megaItem || trainerMonDefinition.item || null,
                     nature: trainerMonDefinition.nature || null,
-                    moves,
+                    moves: megaMoves,
                 };
                 if (trainerMonDefinition.tryToHaveMove) {
                     trainerMonDefinition.tryToHaveMove.forEach(moveToLearn => {
