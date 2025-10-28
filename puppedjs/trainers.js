@@ -431,6 +431,31 @@ const POKEDEF_MEGA = {
 
 const pokeDefLegendMega = (BASE_POKE_DEF) => ({
     isMega: true,
+    absoluteTier: [TIER_LEGEND],
+    checkValidEvo: true,
+    ...BASE_POKE_DEF,
+    fallback: [
+        {
+            isMega: true,
+            absoluteTier: [TIER_PREMIUM],
+            checkValidEvo: true,
+            ...BASE_POKE_DEF,
+        },
+        {
+            isMega: true,
+            absoluteTier: [TIER_LEGEND],
+            checkValidEvo: true,
+        },
+        {
+            isMega: true,
+            absoluteTier: [TIER_PREMIUM],
+            checkValidEvo: true,
+        },
+    ]
+});
+
+const pokeDefLegendOrGodMega = (BASE_POKE_DEF) => ({
+    isMega: true,
     absoluteTier: [TIER_LEGEND, TIER_GOD],
     checkValidEvo: true,
     ...BASE_POKE_DEF,
@@ -706,7 +731,7 @@ const pokeDefToxicOrbMon = (BASE_POKE_DEF) => {
 };
 
 const PROMISING_PREMIUM_LEGEND_GOD_MEGA_LC = {
-    megaTier: [TIER_PREMIUM, TIER_LEGEND, TIER_GOD],
+    megaTier: [TIER_PREMIUM, TIER_LEGEND],
     absoluteTier: [TIER_BAD],
     evoType: [EVO_TYPE_LC],
 };
@@ -4164,7 +4189,7 @@ const trainersData = [
                     },
                 ],
             },
-            pokeDefLegendMega({
+            pokeDefLegendOrGodMega({
                 id: 'STEVEN_MEGA',
                 type: [POKEMON_TYPE_STEEL],
                 pickBest: true,
@@ -4592,8 +4617,8 @@ const trainersData = [
             pokeDefOnlyStrong({
                 type: [e43MainType],
             }),
-            pokeDefPremiumMega({
-                type: [e43MainType],
+            pokeDefLegendMega({
+                type: [e44MainType],
             }),
             pokeDefOnlyStrong({
                 type: [e43MainType],
