@@ -3822,62 +3822,7 @@
         },
         {
           "map": "MAP_ROUTE130",
-          "base_label": "gRoute130",
-          "fishing_mons": {
-            "encounter_rate": 30,
-            "mons": [
-              {
-                "min_level": 5,
-                "max_level": 10,
-                "species": "SPECIES_MAGIKARP"
-              },
-              {
-                "min_level": 5,
-                "max_level": 10,
-                "species": "SPECIES_TENTACOOL"
-              },
-              {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_MAGIKARP"
-              },
-              {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_TENTACOOL"
-              },
-              {
-                "min_level": 10,
-                "max_level": 30,
-                "species": "SPECIES_WAILMER"
-              },
-              {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_SHARPEDO"
-              },
-              {
-                "min_level": 30,
-                "max_level": 35,
-                "species": "SPECIES_WAILMER"
-              },
-              {
-                "min_level": 25,
-                "max_level": 30,
-                "species": "SPECIES_WAILMER"
-              },
-              {
-                "min_level": 35,
-                "max_level": 40,
-                "species": "SPECIES_WAILMER"
-              },
-              {
-                "min_level": 40,
-                "max_level": 45,
-                "species": "SPECIES_WAILMER"
-              }
-            ]
-          }
+          "base_label": "gRoute130"
         },
         {
           "map": "MAP_ROUTE131",
@@ -5324,33 +5269,68 @@
         {
           "map": "MAP_VICTORY_ROAD_B1F",
           "base_label": "gVictoryRoad_B1F",
-          "rock_smash_mons": {
+          "land_mons": {
             "encounter_rate": 20,
             "mons": [
               {
-                "min_level": 30,
-                "max_level": 40,
-                "species": "SPECIES_GRAVELER"
+                "min_level": 67,
+                "max_level": 67,
+                "species": "SPECIES_SHEDINJA"
               },
               {
-                "min_level": 30,
-                "max_level": 40,
-                "species": "SPECIES_GEODUDE"
+                "min_level": 67,
+                "max_level": 67,
+                "species": "SPECIES_SHEDINJA"
               },
               {
-                "min_level": 35,
-                "max_level": 40,
-                "species": "SPECIES_GRAVELER"
+                "min_level": 67,
+                "max_level": 67,
+                "species": "SPECIES_SHEDINJA"
               },
               {
-                "min_level": 35,
-                "max_level": 40,
-                "species": "SPECIES_GRAVELER"
+                "min_level": 67,
+                "max_level": 67,
+                "species": "SPECIES_SHEDINJA"
               },
               {
-                "min_level": 35,
-                "max_level": 40,
-                "species": "SPECIES_GRAVELER"
+                "min_level": 67,
+                "max_level": 67,
+                "species": "SPECIES_SHEDINJA"
+              },
+              {
+                "min_level": 67,
+                "max_level": 67,
+                "species": "SPECIES_SHEDINJA"
+              },
+              {
+                "min_level": 67,
+                "max_level": 67,
+                "species": "SPECIES_SHEDINJA"
+              },
+              {
+                "min_level": 67,
+                "max_level": 67,
+                "species": "SPECIES_SHEDINJA"
+              },
+              {
+                "min_level": 67,
+                "max_level": 67,
+                "species": "SPECIES_SHEDINJA"
+              },
+              {
+                "min_level": 67,
+                "max_level": 67,
+                "species": "SPECIES_SHEDINJA"
+              },
+              {
+                "min_level": 67,
+                "max_level": 67,
+                "species": "SPECIES_SHEDINJA"
+              },
+              {
+                "min_level": 67,
+                "max_level": 67,
+                "species": "SPECIES_SHEDINJA"
               }
             ]
           }

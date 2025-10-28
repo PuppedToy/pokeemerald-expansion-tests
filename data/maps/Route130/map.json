@@ -52,7 +52,15 @@
       "flag": "FLAG_TEMP_HIDE_MIRAGE_ISLAND_BERRY_TREE"
     }
   ],
-  "warp_events": [],
+  "warp_events": [
+    {
+      "x": 2,
+      "y": 21,
+      "elevation": 0,
+      "dest_map": "MAP_ROUTE129",
+      "dest_warp_id": "0"
+    }
+  ],
   "coord_events": [],
   "bg_events": []
 }

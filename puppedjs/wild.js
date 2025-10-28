@@ -9,9 +9,9 @@ const {
     EVO_TYPE_LC,
     EVO_TYPE_NFE,
     EVO_TYPE_SOLO,
-    EVO_TYPE_MEGA,
     TIER_PREMIUM,
     EVO_TYPE_FINAL,
+    TIER_LEGEND,
 } = require('./constants.js');
 
 // For fishing, each route will have 1 land and 1 old rod option
@@ -96,6 +96,11 @@ const wildData = {
         FINAL_OR_SOLO_PREMIUM: {
             replace: [TIER_PREMIUM],
             type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
+        },
+        FINAL_OR_SOLO_MEGA_LEGENDARY: {
+            type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
+            hasMega: true,
+            megaTiers: [TIER_LEGEND],
         },
         LC_NFE_OR_SOLO_AVERAGE: {
             replace: [TIER_AVERAGE],
@@ -287,6 +292,9 @@ const wildData = {
         SPECIES_RAIKOU: 'FINAL_OR_SOLO_PREMIUM',
         SPECIES_ENTEI: 'FINAL_OR_SOLO_PREMIUM',
         SPECIES_SUICUNE: 'FINAL_OR_SOLO_PREMIUM',
+
+        // Victory Road
+        SPECIES_SHEDINJA: 'FINAL_OR_SOLO_MEGA_LEGENDARY',
     },
     maps: [
         // Shelgon maps
@@ -558,6 +566,10 @@ const wildData = {
             old: 'SPECIES_RAIKOU',
             good: 'SPECIES_ENTEI',
             super: 'SPECIES_SUICUNE',
+        },
+        {
+            id: 'MAP_VICTORY_ROAD_B1F',
+            land: 'SPECIES_SHEDINJA',
         },
         // Special
         {

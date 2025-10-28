@@ -62,7 +62,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route116_EventScript_Joey",
-      "flag": "FLAG_BADGE02_GET"
+      "flag": "FLAG_DELIVERED_STEVEN_LETTER"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
@@ -75,7 +75,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route116_EventScript_Jose",
-      "flag": "FLAG_BADGE02_GET"
+      "flag": "FLAG_DELIVERED_STEVEN_LETTER"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -154,7 +154,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route116_EventScript_Clark",
-      "flag": "FLAG_BADGE02_GET"
+      "flag": "FLAG_DELIVERED_STEVEN_LETTER"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_LASS",
@@ -167,7 +167,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route116_EventScript_Janice",
-      "flag": "FLAG_BADGE02_GET"
+      "flag": "FLAG_DELIVERED_STEVEN_LETTER"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_GIRL_3",
@@ -180,7 +180,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "4",
       "script": "Route116_EventScript_Karen",
-      "flag": "FLAG_BADGE02_GET"
+      "flag": "FLAG_DELIVERED_STEVEN_LETTER"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_SCHOOL_KID_M",
@@ -193,7 +193,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route116_EventScript_Jerry",
-      "flag": "FLAG_BADGE02_GET"
+      "flag": "FLAG_DELIVERED_STEVEN_LETTER"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_2",
@@ -259,7 +259,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route116_EventScript_Sarah",
-      "flag": "FLAG_BADGE02_GET"
+      "flag": "FLAG_DELIVERED_STEVEN_LETTER"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -285,7 +285,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route116_EventScript_Johnson",
-      "flag": "FLAG_BADGE02_GET"
+      "flag": "FLAG_DELIVERED_STEVEN_LETTER"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_HIKER",
@@ -298,7 +298,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route116_EventScript_Devan",
-      "flag": "FLAG_BADGE02_GET"
+      "flag": "FLAG_DELIVERED_STEVEN_LETTER"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",

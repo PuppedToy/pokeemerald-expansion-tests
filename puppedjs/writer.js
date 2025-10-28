@@ -160,6 +160,7 @@ const routeFiles = [
     path.resolve(mapsBase, 'Route125', 'map.json'),
     path.resolve(mapsBase, 'Route126', 'map.json'),
     path.resolve(mapsBase, 'Route127', 'map.json'),
+    path.resolve(mapsBase, 'VictoryRoad_B1F', 'map.json'),
     path.resolve(mapsBase, 'PetalburgCity', 'map.json'),
     path.resolve(mapsBase, 'RustboroCity', 'map.json'),
     path.resolve(mapsBase, 'VerdanturfTown', 'map.json'),
@@ -547,11 +548,12 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const replacementLists = {};
 
     Object.entries(wildReplacementTypes).forEach(([key, value]) => {
-        const { replace: tiers, type: types, hasMega } = value;
+        const { replace: tiers, type: types, hasMega, megaTiers } = value;
         replacementLists[key] = pokemonList.filter(poke => {
             if (poke.evolutionData.isMega) return false;
             if (alreadyChosenSet.has(poke.id)) return false;
             if (!tiers.includes(poke.rating.bestEvoTier)) return false;
+            if (!megaTiers.includes(poke.rating.megaEvoTier)) return false;
             if (hasMega && !poke.evolutionData.megaEvos) return false;
             let hasAnyTypeOfReplacement = false;
             types.forEach(replacementType => {

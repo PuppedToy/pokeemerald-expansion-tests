@@ -80,7 +80,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route126_EventScript_Brenda",
-      "flag": "0"
+      "flag": "FLAG_DEFEATED_WALLY_VICTORY_ROAD"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -145,7 +145,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route126_EventScript_Leonardo",
-      "flag": "0"
+      "flag": "FLAG_DEFEATED_WALLY_VICTORY_ROAD"
     }
   ],
   "warp_events": [],

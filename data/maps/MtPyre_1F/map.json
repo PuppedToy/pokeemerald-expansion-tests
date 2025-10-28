@@ -64,7 +64,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "MtPyre_2F_EventScript_Mark",
-      "flag": "0"
+      "flag": "FLAG_DEFEATED_MAGMA_SPACE_CENTER"
     }
   ],
   "warp_events": [

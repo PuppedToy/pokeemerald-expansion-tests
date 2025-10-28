@@ -51,7 +51,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route124_EventScript_Spencer",
-      "flag": "FLAG_DEFEATED_MAGMA_SPACE_CENTER"
+      "flag": "FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M",
@@ -77,7 +77,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route124_EventScript_Grace",
-      "flag": "FLAG_DEFEATED_MAGMA_SPACE_CENTER"
+      "flag": "FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M",
@@ -90,7 +90,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route124_EventScript_Chad",
-      "flag": "FLAG_DEFEATED_MAGMA_SPACE_CENTER"
+      "flag": "FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -168,7 +168,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route124_EventScript_Isabella",
-      "flag": "FLAG_DEFEATED_MAGMA_SPACE_CENTER"
+      "flag": "FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",

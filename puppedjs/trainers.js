@@ -4503,6 +4503,20 @@ const trainersData = [
             },
         ],
     },
+    {
+        id: 'TRAINER_HOPE',
+        level: 67,
+        bag: [...generateSpaceCenterBag()],
+        tms: [...spaceCenterTMs],
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_GLITTER_MAIL',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_PREMIUM, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
+        ],
+    },
     // Ever Grande Rival
     {
         id: 'TRAINER_MAY_EVERGRANDE_CITY_TREECKO',

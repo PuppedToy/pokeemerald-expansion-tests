@@ -80,7 +80,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "3",
       "script": "Route118_EventScript_Perry",
-      "flag": "FLAG_BADGE07_GET"
+      "flag": "FLAG_MET_RIVAL_LILYCOVE"
     },
     {
       "local_id": "LOCALID_ROUTE118_GABBY_1",
@@ -190,7 +190,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route118_EventScript_Rose",
-      "flag": "FLAG_BADGE07_GET"
+      "flag": "FLAG_MET_RIVAL_LILYCOVE"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
@@ -203,7 +203,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route118_EventScript_Wade",
-      "flag": "FLAG_BADGE07_GET"
+      "flag": "FLAG_MET_RIVAL_LILYCOVE"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_5",
@@ -216,7 +216,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route118_EventScript_Chester",
-      "flag": "FLAG_BADGE07_GET"
+      "flag": "FLAG_MET_RIVAL_LILYCOVE"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
@@ -229,7 +229,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route118_EventScript_Barny",
-      "flag": "FLAG_BADGE07_GET"
+      "flag": "FLAG_MET_RIVAL_LILYCOVE"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_5",
@@ -242,7 +242,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "3",
       "script": "Route118_EventScript_Dalton",
-      "flag": "FLAG_BADGE03_GET"
+      "flag": "FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -268,7 +268,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route118_EventScript_Deandre",
-      "flag": "FLAG_BADGE03_GET"
+      "flag": "FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",

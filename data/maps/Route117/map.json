@@ -128,7 +128,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route117_EventScript_Dylan",
-      "flag": "FLAG_BADGE04_GET"
+      "flag": "FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
@@ -141,7 +141,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route117_EventScript_Lydia",
-      "flag": "FLAG_BADGE04_GET"
+      "flag": "FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_4",
@@ -154,7 +154,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route117_EventScript_Isaac",
-      "flag": "FLAG_BADGE04_GET"
+      "flag": "FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
@@ -232,7 +232,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route117_EventScript_Maria",
-      "flag": "FLAG_BADGE04_GET"
+      "flag": "FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MANIAC",
@@ -245,7 +245,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route117_EventScript_Derek",
-      "flag": "FLAG_BADGE04_GET"
+      "flag": "FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_LASS",
@@ -258,7 +258,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route117_EventScript_Meg",
-      "flag": "FLAG_BADGE04_GET"
+      "flag": "FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_LASS",
@@ -271,7 +271,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route117_EventScript_Anna",
-      "flag": "FLAG_BADGE04_GET"
+      "flag": "FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_GIRL_2",
@@ -297,7 +297,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route117_EventScript_Brandi",
-      "flag": "FLAG_BADGE04_GET"
+      "flag": "FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_GIRL_3",
@@ -310,7 +310,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route117_EventScript_Aisha",
-      "flag": "FLAG_BADGE04_GET"
+      "flag": "FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RUNNING_TRIATHLETE_F",
@@ -323,7 +323,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "2",
       "script": "Route117_EventScript_Melina",
-      "flag": "FLAG_BADGE04_GET"
+      "flag": "FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_VAR_0",

@@ -67,7 +67,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "3",
       "script": "Route113_EventScript_Jaylen",
-      "flag": "FLAG_BADGE06_GET"
+      "flag": "FLAG_DEFEATED_SHELLY_WEATHER_INST"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_WOMAN_5",
@@ -80,7 +80,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route113_EventScript_Madeline",
-      "flag": "FLAG_BADGE06_GET"
+      "flag": "FLAG_DEFEATED_SHELLY_WEATHER_INST"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -106,7 +106,7 @@
       "trainer_type": "TRAINER_TYPE_BURIED",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route113_EventScript_Lung",
-      "flag": "FLAG_BADGE06_GET"
+      "flag": "FLAG_DEFEATED_SHELLY_WEATHER_INST"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MANIAC",
@@ -119,7 +119,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route113_EventScript_Wyatt",
-      "flag": "FLAG_BADGE06_GET"
+      "flag": "FLAG_DEFEATED_SHELLY_WEATHER_INST"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_CAMPER",
@@ -132,7 +132,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route113_EventScript_Lawrence",
-      "flag": "FLAG_BADGE06_GET"
+      "flag": "FLAG_DEFEATED_SHELLY_WEATHER_INST"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
