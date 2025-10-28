@@ -435,7 +435,7 @@ const POKEDEF_MEGA = {
 
 const pokeDefLegendMega = (BASE_POKE_DEF) => ({
     isMega: true,
-    absoluteTier: [TIER_LEGEND],
+    absoluteTier: [TIER_LEGEND, TIER_GOD],
     checkValidEvo: true,
     ...BASE_POKE_DEF,
     fallback: [
@@ -4153,21 +4153,25 @@ const trainersData = [
                 id: 'STEVEN_LEGEND',
                 ...POKEDEF_LEGEND,
                 type: [POKEMON_TYPE_STEEL],
+                pickBest: true,
                 fallback: [
                     {
                         id: 'STEVEN_LEGEND',
                         ...POKEDEF_LEGEND,
                         type: [POKEMON_TYPE_ROCK],
+                        pickBest: true,
                     },
                     {
                         id: 'STEVEN_LEGEND',
                         ...POKEDEF_LEGEND,
+                        pickBest: true,
                     },
                 ],
             },
             pokeDefLegendMega({
                 id: 'STEVEN_MEGA',
                 type: [POKEMON_TYPE_STEEL],
+                pickBest: true,
             }),
             {
                 id: 'BEST_STEVEN_POKE',
@@ -4541,7 +4545,9 @@ const trainersData = [
             pokeDefPremiumMega({
                 type: [e41MainType],
             }),
-            pokeDefOnlyStrong(),
+            pokeDefOnlyStrong({
+                type: [e41MainType],
+            }),
         ],
     },
     {
@@ -4566,7 +4572,9 @@ const trainersData = [
             pokeDefPremiumMega({
                 type: [e42MainType],
             }),
-            pokeDefOnlyStrong(),
+            pokeDefOnlyStrong({
+                type: [e42MainType],
+            }),
         ],
     },
     {
@@ -4591,7 +4599,9 @@ const trainersData = [
             pokeDefPremiumMega({
                 type: [e43MainType],
             }),
-            pokeDefOnlyStrong(),
+            pokeDefOnlyStrong({
+                type: [e43MainType],
+            }),
         ],
     },
     {
@@ -4613,10 +4623,12 @@ const trainersData = [
             pokeDefOnlyStrong({
                 type: [e44SecondType],
             }),
-            pokeDefPremiumMega({
+            pokeDefLegendMega({
                 type: [e44MainType],
             }),
-            pokeDefOnlyStrong(),
+            pokeDefOnlyStrong({
+                type: [e44MainType],
+            }),
         ],
     },
     {
