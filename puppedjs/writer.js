@@ -1038,7 +1038,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 let baseFormMon = chosenTrainerMon;
                 let megaItem;
                 if (chosenTrainerMon.evolutionData.megaBaseForm) {
-                    megaItem = chosenTrainerMon.evolutionData.megaItem;
+                    megaItem = itemIdToName(chosenTrainerMon.evolutionData.megaItem);
                     baseFormMon = pokemonList.find(p => p.id === chosenTrainerMon.evolutionData.megaBaseForm) || chosenTrainerMon;
                 }
                 if (trainerMonDefinition.id) {
