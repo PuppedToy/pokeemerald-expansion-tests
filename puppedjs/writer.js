@@ -994,15 +994,19 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         const team = [];
         trainer.team.forEach(trainerMonDefinition => {
             let chosenTrainerMon = choosePokemonFromDefinition(trainerMonDefinition);
-
+            
             if (!chosenTrainerMon && trainerMonDefinition.fallback && trainerMonDefinition.fallback.length) {
                 console.log(`No pokemon meet the restrictions for trainer ${trainer.id} with definition ${JSON.stringify(trainerMonDefinition)}. Trying fallback definitions.`);
                 let fallbackCount = 1;
+                let fallbackDefinition;
                 do {
                     console.log(`Trying fallback definition #${fallbackCount++} for trainer ${trainer.id}`);
-                    const fallbackDefinition = trainerMonDefinition.fallback.shift();
+                    fallbackDefinition = trainerMonDefinition.fallback.shift();
                     chosenTrainerMon = choosePokemonFromDefinition(fallbackDefinition);
                 } while (!chosenTrainerMon && trainerMonDefinition.fallback && trainerMonDefinition.fallback.length);
+                if (fallbackDefinition) {
+                    trainerMonDefinition = fallbackDefinition;
+                }
             }
             if (!chosenTrainerMon) {
                 console.warn(`WARN: No pokemon available for trainer ${trainer.id} with definition ${JSON.stringify(trainerMonDefinition)}. Picking a random one.`);
