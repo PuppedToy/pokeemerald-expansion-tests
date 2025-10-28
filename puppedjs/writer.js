@@ -1047,7 +1047,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                     const megaPoke = pokemonList.filter(p => p.evolutionData.megaBaseForm === chosenTrainerMon.id);
                     if (megaPoke.length) {
                         chosenTrainerMon = sample(megaPoke);
-                        foundMega = true;
                     }
                     else {
                         console.warn(`WARN: Chosen pokemon ${chosenTrainerMon.id} for mega in trainer ${trainer.id} has no mega evolution data.`);
