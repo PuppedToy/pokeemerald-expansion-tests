@@ -672,6 +672,11 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                         let i = 1;
                         do {
                             console.log(`Try #${i++}`);
+                            if (!chosenTrainerMon.evolutions || chosenTrainerMon.evolutions.length === 0) {
+                                console.log(' - No more evolutions to check, returning false for mega evolution possibility.');
+                                return false;
+                            }
+
                             for (let i = 0; i < chosenTrainerMon.evolutions.length; i++) {
                                 const evolvedForm = pokemonList.find(p => p.id === chosenTrainerMon.evolutions[i].pokemon);
                                 if (!evolvedForm) {
