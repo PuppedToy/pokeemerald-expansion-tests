@@ -945,7 +945,7 @@ function chooseNature(poke, moveset, moves, ability, item, deviation = 0) {
         attackStat *= 1.5;
     }
 
-    const natures = [...NATURES].map(nature => {
+    const natures = Object.values(NATURES).map(nature => {
         let rating = 0;
         
         if (poke.rating.role === 'OFFENSIVE' || (poke.rating.role === 'BALANCED' && amountOfStatusMoves <= 1)) {
