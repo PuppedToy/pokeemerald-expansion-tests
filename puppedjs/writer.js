@@ -880,18 +880,36 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             if (trainerMonDefinition.checkValidEvo) {
                 pokemonLooseList = pokemonLooseList.filter(
                     loosePokemon => {
-                        if (loosePokemon.evolutionData.type === EVO_TYPE_SOLO || loosePokemon.evolutionData.isLC) {
+                        let devolvedForm = loosePokemon;
+                        if (devolvedForm.evolutionData.type === EVO_TYPE_SOLO || devolvedForm.evolutionData.isLC) {
                             return true;
                         }
-                        if (loosePokemon.evolutionData.isMega) {
+                        if (devolvedForm.evolutionData.megaBaseForm) {
+                            devolvedForm = pokemonList.find(p => p.id === devolvedForm.evolutionData.megaBaseForm);
+                        }
+                        if (!devolvedForm) {
+                            console.warn(`WARN: Could not find base form for mega pokemon ${loosePokemon.id} when checking valid evolutions for trainer ${trainer.id}.`);
                             return false;
                         }
-                        const pokemonThatEvolveToThis = pokemonList.filter(p => {
+                        const filterMethod = p => {
                             const evolutions = (p.evolutions || [])
-                                .filter(e => e.pokemon === loosePokemon.id);
+                                .filter(e => e.pokemon === devolvedForm.id);
                             if (!evolutions.length) return false;
                             return evolutions.some(evo => isValidEvolution(trainer.level, evo));
-                        });
+                        };
+                        let pokemonThatEvolveToThis = pokemonList.filter(filterMethod);
+                        if (pokemonThatEvolveToThis.length > 1) {
+                            console.warn(`WARN: Multiple pre-evolutions found for ${devolvedForm.id} in trainer ${trainer.id} when checking valid evolutions: ${pokemonThatEvolveToThis.map(p => p.id).join(', ')}.`);
+                        }
+                        if (pokemonThatEvolveToThis.length === 0) {
+                            return false;
+                        }
+                        if (pokemonThatEvolveToThis[0].evolutionData.isLC) {
+                            return true;
+                        }
+                        // If it's not LC, we keep devolving once more
+                        devolvedForm = pokemonThatEvolveToThis[0];
+                        pokemonThatEvolveToThis = pokemonList.filter(filterMethod);
                         return pokemonThatEvolveToThis.length > 0;
                     }
                 );
