@@ -807,6 +807,11 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                     loosePokemon => loosePokemon.evolutionData.isMega,
                 );
             }
+            else {
+                pokemonLooseList = pokemonLooseList.filter(
+                    loosePokemon => !loosePokemon.evolutionData.isMega,
+                );
+            }
             if (trainerMonDefinition.absoluteTier) {
                 pokemonLooseList = pokemonLooseList.filter(
                     loosePokemon => trainerMonDefinition.absoluteTier.includes(loosePokemon.rating.tier),
