@@ -184,6 +184,10 @@ const whoKeepsE4Type = [];
 whoKeepsE4Type.push(sampleAndRemove(coinsForE4Types));
 whoKeepsE4Type.push(sampleAndRemove(coinsForE4Types));
 const types = [...POKEMON_TYPES];
+types.splice(types.indexOf(POKEMON_TYPE_DARK), 1);
+types.splice(types.indexOf(POKEMON_TYPE_GHOST), 1);
+types.splice(types.indexOf(POKEMON_TYPE_ICE), 1);
+types.splice(types.indexOf(POKEMON_TYPE_DRAGON), 1);
 
 let e41MainType;
 let e42MainType;
@@ -192,33 +196,25 @@ let e44MainType;
 
 if (whoKeepsE4Type.includes(0)) {
     e41MainType = originalE4Types[0];
-    types.splice(types.indexOf(e41MainType), 1);
 }
 if (whoKeepsE4Type.includes(1)) {
     e42MainType = originalE4Types[1];
-    types.splice(types.indexOf(e42MainType), 1);
 }
 if (whoKeepsE4Type.includes(2)) {
     e43MainType = originalE4Types[2];
-    types.splice(types.indexOf(e43MainType), 1);
 }
 if (whoKeepsE4Type.includes(3)) {
     e44MainType = originalE4Types[3];
-    types.splice(types.indexOf(e44MainType), 1);
 }
-
 if (!e41MainType) {
     e41MainType = sampleAndRemove(types);
 }
-
 if (!e42MainType) {
     e42MainType = sampleAndRemove(types);
 }
-
 if (!e43MainType) {
     e43MainType = sampleAndRemove(types);
 }
-
 if (!e44MainType) {
     e44MainType = sampleAndRemove(types);
 }
