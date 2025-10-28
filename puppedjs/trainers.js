@@ -427,6 +427,12 @@ const POKEDEF_STRONG_PREMIUM_MEGA = {
     tryEvolve: true,
 };
 
+const POKEDEF_MEGA = {
+    isMega: true,
+    checkValidEvo: true,
+    tryEvolve: true,
+};
+
 const pokeDefLegendMega = (BASE_POKE_DEF) => ({
     isMega: true,
     absoluteTier: [TIER_LEGEND],
@@ -3553,6 +3559,16 @@ const trainersData = [
                 type: [POKEMON_TYPE_POISON],
                 mustHaveOneOfMoves: ['MOVE_TOXIC'],
                 tryToHaveMove: ['MOVE_TOXIC', 'MOVE_PROTECT'],
+                fallback: [
+                    {
+                        isMega: true,
+                        mustHaveOneOfMoves: ['MOVE_TOXIC'],
+                        tryToHaveMove: ['MOVE_TOXIC', 'MOVE_PROTECT'],
+                    },
+                    {
+                        isMega: true,
+                    },
+                ],
             },
             ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
             ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
@@ -3915,18 +3931,21 @@ const trainersData = [
                 item: 'Room Service',
             },
             {
-                ...POKEDEF_STRONG_PREMIUM_MEGA,
+                ...POKEDEF_MEGA,
                 hasStat: ['baseSpeed', '<', '50'],
                 type: [POKEMON_TYPE_PSYCHIC],
                 fallback: [
                     {
-                        ...POKEDEF_STRONG_PREMIUM_MEGA,
+                        ...POKEDEF_MEGA,
                         hasStat: ['baseSpeed', '<', '70'],
                         type: [POKEMON_TYPE_PSYCHIC],
                     },
                     {
-                        ...POKEDEF_STRONG_PREMIUM_MEGA,
+                        ...POKEDEF_MEGA,
                         type: [POKEMON_TYPE_PSYCHIC],
+                    },
+                    {
+                        ...POKEDEF_MEGA,
                     },
                 ]
             },
@@ -4026,6 +4045,15 @@ const trainersData = [
             {
                 ...POKEDEF_STRONG_PREMIUM_MEGA,
                 type: [magmaTeamTypes[2]],
+                fallback: [
+                    {
+                        ...POKEDEF_STRONG_PREMIUM_MEGA,
+                        type: [...magmaTeamTypes],
+                    },
+                    {
+                        ...POKEDEF_STRONG_PREMIUM_MEGA,
+                    }
+                ]
             },
         ],
     },
@@ -4059,6 +4087,15 @@ const trainersData = [
             {
                 ...POKEDEF_STRONG_PREMIUM_MEGA,
                 type: [magmaTeamTypes[3]],
+                fallback: [
+                    {
+                        ...POKEDEF_STRONG_PREMIUM_MEGA,
+                        type: [...magmaTeamTypes],
+                    },
+                    {
+                        ...POKEDEF_STRONG_PREMIUM_MEGA,
+                    }
+                ]
             },
         ],
     },
@@ -4092,6 +4129,15 @@ const trainersData = [
             {
                 ...POKEDEF_STRONG_PREMIUM_MEGA,
                 type: [magmaTeamTypes[4]],
+                fallback: [
+                    {
+                        ...POKEDEF_STRONG_PREMIUM_MEGA,
+                        type: [...magmaTeamTypes],
+                    },
+                    {
+                        ...POKEDEF_STRONG_PREMIUM_MEGA,
+                    }
+                ]
             },
         ],
     },
