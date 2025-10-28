@@ -660,20 +660,15 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 possibleEvolutions = chosenTrainerMon.evolutions.filter((evo) => {
                     if (chosenTrainerMon.isFinal) return false;
                     if (tryMega) {
-                        console.log(`Trying to check evolutions with tryMega for ${chosenTrainerMon.id} - trainer ${trainer.id}...`);
                         // If the evo is NOT a evolution line that ends up in a mega, we don't allow it
                         const megaForms = pokemonList.filter(p => p.evolutionData.megaBaseForm && p.evolutionData.megaBaseForm === evo.pokemon);
-                        console.log(` - Found mega forms for evolution ${evo.pokemon}: ${megaForms.map(m => m.id).join(', ')}`);
                         if (megaForms.length) {
                             console.log('Returning true for mega evolution possibility.');
                             return true;
                         }
-                        console.log('Trying to find which evolutions lead to mega...');
                         let i = 1;
                         do {
-                            console.log(`Try #${i++}`);
                             if (!chosenTrainerMon.evolutions || chosenTrainerMon.evolutions.length === 0) {
-                                console.log(' - No more evolutions to check, returning false for mega evolution possibility.');
                                 return false;
                             }
 
@@ -685,7 +680,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                                 }
                                 const evolvedFormMegaForms = pokemonList.filter(p => p.evolutionData.megaBaseForm && p.evolutionData.megaBaseForm === evolvedForm.id);
                                 if (evolvedFormMegaForms.length > 0) {
-                                    console.log(` - Found that evolution ${evolvedForm.id} leads to mega forms: ${evolvedFormMegaForms.map(m => m.id).join(', ')}`);
                                     return true;
                                 }
                             }
@@ -696,7 +690,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                                 const randomEvo = sample(chosenTrainerMon.evolutions);
                                 const randomEvolvedForm = pokemonList.find(p => p.id === randomEvo.pokemon);
                                 if (randomEvolvedForm) {
-                                    console.log(` - Selected evolution ${randomEvolvedForm.id} to continue searching for mega evolution path.`);
                                     chosenTrainerMon = randomEvolvedForm;
                                     continue;
                                 }
@@ -1025,9 +1018,9 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                     && chosenTrainerMon.evolutionData.megaEvos.length > 0
                     && !foundMega
                 ) {
-                    const megaPoke = pokemonList.find(p => p.evolutionData.megaBaseForm === chosenTrainerMon.id);
-                    if (megaPoke) {
-                        chosenTrainerMon = megaPoke;
+                    const megaPoke = pokemonList.filter(p => p.evolutionData.megaBaseForm === chosenTrainerMon.id);
+                    if (megaPoke.length) {
+                        chosenTrainerMon = sample(megaPoke);
                         foundMega = true;
                     }
                     else {
@@ -1043,8 +1036,12 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 let baseFormMon = chosenTrainerMon;
                 let megaItem;
                 if (chosenTrainerMon.evolutionData.megaBaseForm) {
-                    megaItem = itemIdToName(chosenTrainerMon.evolutionData.megaItem);
                     baseFormMon = pokemonList.find(p => p.id === chosenTrainerMon.evolutionData.megaBaseForm) || chosenTrainerMon;
+                    if (foundMega) {
+                        chosenTrainerMon = baseFormMon;
+                    } else {
+                        megaItem = itemIdToName(chosenTrainerMon.evolutionData.megaItem);
+                    }
                 }
                 if (trainerMonDefinition.id) {
                     storedIds[trainerMonDefinition.id] = chosenTrainerMon.id;
