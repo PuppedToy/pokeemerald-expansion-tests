@@ -4618,7 +4618,7 @@ const trainersData = [
                 type: [e43MainType],
             }),
             pokeDefLegendMega({
-                type: [e44MainType],
+                type: [e43MainType],
             }),
             pokeDefOnlyStrong({
                 type: [e43MainType],
