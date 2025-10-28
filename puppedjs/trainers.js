@@ -33,7 +33,6 @@ const {
     TIER_LEGEND,
     TRAINER_POKE_MEGA_FROM_STONE,
     POKEMON_TYPE_NORMAL,
-    TRAINER_POKE_MEGA_WITH_STONE,
     POKEMON_TYPE_GHOST,
     TIER_GOD,
     POKEMON_TYPES,
@@ -277,8 +276,8 @@ const generic2Average3Strong1MegaTeamTemplate = () => [
         checkValidEvo: true,
     },
     {
-        special: TRAINER_POKE_MEGA_WITH_STONE,
-        megaTier: [TIER_STRONG, TIER_PREMIUM],
+        isMega: true,
+        absoluteTier: [TIER_STRONG, TIER_PREMIUM],
         checkValidEvo: true,
         tryEvolve: true,
     },
@@ -306,8 +305,8 @@ const generic2Average2Strong1Premium1MegaTeamTemplate = () => [
         checkValidEvo: true,
     },
     {
-        special: TRAINER_POKE_MEGA_WITH_STONE,
-        megaTier: [TIER_STRONG, TIER_PREMIUM],
+        isMega: true,
+        absoluteTierTier: [TIER_STRONG, TIER_PREMIUM],
         checkValidEvo: true,
         tryEvolve: true,
     },
@@ -422,57 +421,57 @@ const POKEDEF_LEGEND = {
 };
 
 const POKEDEF_STRONG_PREMIUM_MEGA = {
-    special: TRAINER_POKE_MEGA_WITH_STONE,
-    megaTier: [TIER_STRONG, TIER_PREMIUM],
+    isMega: true,
+    absoluteTier: [TIER_STRONG, TIER_PREMIUM],
     checkValidEvo: true,
     tryEvolve: true,
 };
 
 const pokeDefLegendMega = (BASE_POKE_DEF) => ({
-    special: TRAINER_POKE_MEGA_WITH_STONE,
-    megaTier: [TIER_LEGEND],
+    isMega: true,
+    absoluteTier: [TIER_LEGEND],
     checkValidEvo: true,
     ...BASE_POKE_DEF,
     fallback: [
         {
-            special: TRAINER_POKE_MEGA_WITH_STONE,
-            megaTier: [TIER_PREMIUM],
+            isMega: true,
+            absoluteTier: [TIER_PREMIUM],
             checkValidEvo: true,
             ...BASE_POKE_DEF,
         },
         {
-            special: TRAINER_POKE_MEGA_WITH_STONE,
-            megaTier: [TIER_LEGEND],
+            isMega: true,
+            absoluteTier: [TIER_LEGEND],
             checkValidEvo: true,
         },
         {
-            special: TRAINER_POKE_MEGA_WITH_STONE,
-            megaTier: [TIER_PREMIUM],
+            isMega: true,
+            absoluteTier: [TIER_PREMIUM],
             checkValidEvo: true,
         },
     ]
 });
 
 const pokeDefPremiumMega = (BASE_POKE_DEF) => ({
-    special: TRAINER_POKE_MEGA_WITH_STONE,
-    megaTier: [TIER_PREMIUM],
+    isMega: true,
+    absoluteTier: [TIER_PREMIUM],
     checkValidEvo: true,
     ...BASE_POKE_DEF,
     fallback: [
         {
-            special: TRAINER_POKE_MEGA_WITH_STONE,
-            megaTier: [TIER_STRONG],
+            isMega: true,
+            absoluteTier: [TIER_STRONG],
             checkValidEvo: true,
             ...BASE_POKE_DEF,
         },
         {
-            special: TRAINER_POKE_MEGA_WITH_STONE,
-            megaTier: [TIER_PREMIUM],
+            isMega: true,
+            absoluteTier: [TIER_PREMIUM],
             checkValidEvo: true,
         },
         {
-            special: TRAINER_POKE_MEGA_WITH_STONE,
-            megaTier: [TIER_STRONG],
+            isMega: true,
+            absoluteTier: [TIER_STRONG],
             checkValidEvo: true,
         },
     ]
@@ -1452,7 +1451,7 @@ const trainersData = [
         team: [
             {
                 specific: 'SPECIES_CARVANHA',
-                nature: NATURES.ADAMANT,
+                nature: NATURES.ADAMANT.name,
                 abilities: ['SPEED_BOOST'],
             },
             {
@@ -1714,7 +1713,7 @@ const trainersData = [
         team: [
             {
                 specific: 'SPECIES_CARVANHA',
-                nature: NATURES.RELAXED,
+                nature: NATURES.RELAXED.name,
                 abilities: ['ROUGH_SKIN'],
             },
             {
@@ -1887,7 +1886,7 @@ const trainersData = [
             {
                 specific: 'SPECIES_MAKUHITA',
                 tryToHaveMove: ['MOVE_BULK_UP', 'MOVE_FAKE_OUT', 'MOVE_ROCK_TOMB'],
-                nature: NATURES.ADAMANT,
+                nature: NATURES.ADAMANT.name,
                 abilities: ['GUTS'],
                 item: 'Flame Orb',
             },
@@ -1929,7 +1928,7 @@ const trainersData = [
             {
                 specific: 'SPECIES_SKARMORY',
                 tryToHaveMove: ['MOVE_STEEL_WING'],
-                nature: NATURES.ADAMANT,
+                nature: NATURES.ADAMANT.name,
             },
             {
                 type: [POKEMON_TYPE_STEEL],
@@ -2961,17 +2960,17 @@ const trainersData = [
                 abilities: ['CHLOROPHYLL', 'HARVEST'],
             },
             {
-                special: TRAINER_POKE_MEGA_WITH_STONE,
-                megaTier: [TIER_STRONG, TIER_PREMIUM, TIER_LEGEND],
-                megaAbilities: ['SOLAR_POWER'],
+                isMega: true,
+                absoluteTier: [TIER_STRONG, TIER_PREMIUM, TIER_LEGEND],
+                abilities: ['SOLAR_POWER'],
                 type: [POKEMON_TYPE_FIRE],
                 tryToHaveMove: ['MOVE_OVERHEAT'],
                 checkValidEvo: true,
                 tryEvolve: true,
                 fallback: [
                     {
-                        special: TRAINER_POKE_MEGA_WITH_STONE,
-                        megaTier: [TIER_STRONG, TIER_PREMIUM, TIER_LEGEND],
+                        isMega: true,
+                        absoluteTier: [TIER_STRONG, TIER_PREMIUM, TIER_LEGEND],
                         type: [POKEMON_TYPE_FIRE],
                         tryToHaveMove: ['MOVE_OVERHEAT'],
                         checkValidEvo: true,
@@ -3102,8 +3101,8 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_FACADE'],
             },
             {
-                special: TRAINER_POKE_MEGA_WITH_STONE,
-                megaTier: [TIER_PREMIUM, TIER_LEGEND],
+                isMega: true,
+                absoluteTier: [TIER_PREMIUM, TIER_LEGEND],
                 type: [POKEMON_TYPE_NORMAL],
                 tryToHaveMove: ['MOVE_FACADE'],
                 checkValidEvo: true,
@@ -3285,8 +3284,8 @@ const trainersData = [
                 type: [aquaTeamTypes[4]],
             },
             {
-                special: TRAINER_POKE_MEGA_WITH_STONE,
-                megaTier: [TIER_STRONG, TIER_PREMIUM],
+                isMega: true,
+                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
                 checkValidEvo: true,
                 tryEvolve: true,
                 type: [...aquaTeamTypes],

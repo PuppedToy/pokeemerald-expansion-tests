@@ -20,6 +20,7 @@ const {
     STRONG_BST_THRESHOLD,
     AVERAGE_BST_THRESHOLD,
     WEAK_BST_THRESHOLD,
+    NATURES,
 } = require('./constants');
 const { plates, protectionBerries } = require('./items');
 
@@ -91,6 +92,140 @@ const statusList = {
     // Multi-hits for skill link
     // Drops for contrary
 };
+
+
+const soundBasedOffensiveMoves = [
+    'MOVE_UPROAR',
+    'MOVE_HYPER_VOICE',
+    'MOVE_BUG_BUZZ',
+    'MOVE_CHATTER',
+    'MOVE_ROUND',
+    'MOVE_ECHOED_VOICE',
+    'MOVE_SNARL',
+    'MOVE_DISARMING_VOICE',
+    'MOVE_BOOMBURST',
+    'MOVE_SPARKING_ARIA',
+    'MOVE_CLANGING_SCALES',
+    'MOVE_OVERDRIVE',
+    'MOVE_TORCH_SONG',
+    'MOVE_ALLURING_VOICE',
+    'MOVE_PSYCHIC_NOISE',
+    'MOVE_RELIC_SONG',
+];
+
+const multiHitMoves = [
+    'MOVE_BULLET_SEED',
+    'MOVE_ICICLE_SPEAR',
+    'MOVE_PIN_MISSILE',
+    'MOVE_ROCK_BLAST',
+    'MOVE_TAIL_SLAP',
+    'MOVE_BONE_RUSH',
+    'MOVE_SCALE_SHOT',
+    'MOVE_ARM_THRUST',
+    'MOVE_BARRAGE',
+    'MOVE_COMET_PUNCH',
+    'MOVE_DOUBLE_SLAP',
+    'MOVE_FURY_ATTACK',
+    'MOVE_FURY_SWIPES',
+    'MOVE_SPIKE_CANNON',
+    'MOVE_WATER_SHURIKEN',  
+];
+
+const whiteHerbMoves = [
+    'MOVE_OVERHEAT',
+    'MOVE_LEAF_STORM',
+    'MOVE_DRACO_METEOR',
+    'MOVE_FLEUR_CANNON',
+    'MOVE_SUPERPOWER',
+    'MOVE_CLOSE_COMBAT',
+    'MOVE_HAMMER_ARM',
+    'MOVE_V_CREATE',
+    'MOVE_CLANGING_SCALES',
+    'MOVE_PSYCHO_BOOST',
+    'MOVE_SHELL_SMASH',
+];
+
+const powerHerbMoves = [
+    'MOVE_SKY_ATTACK',
+    'MOVE_METEOR_BEAM',
+    'MOVE_GEOMANCY',
+    'MOVE_SKULL_BASH',
+    'MOVE_RAZOR_WIND',
+    'MOVE_ELECTRO_SHOT',
+    'MOVE_FREEZE_SHOCK',
+    'MOVE_ICE_BURN',
+];
+
+const highCritMoves = [
+    'MOVE_X_SCISSOR',
+    'MOVE_NIGHT_SLASH',
+    'MOVE_SPACIAL_REND',
+    'MOVE_CROSS_CHOP',
+    'MOVE_BLAZE_KICK',
+    'MOVE_AIR_CUTTER',
+    'MOVE_LEAF_BLADE',
+    'MOVE_DRILL_RUN',
+    'MOVE_SLASH',
+    'MOVE_CRABHAMMER',
+    'MOVE_POISON_TAIL',
+    'MOVE_CROSS_POISON',
+    'MOVE_PSYCHO_CUT',
+    'MOVE_STONE_EDGE',
+    'MOVE_AEROBLAST',
+    'MOVE_RAZOR_SHELL',
+];
+
+const superCritMoves = [
+    'MOVE_STORM_THROW',
+    'MOVE_FROST_BREATH',
+    'MOVE_SURGING_STRIKES',
+    'MOVE_WICKED_BLOW',
+];
+
+const punchingMoves = [
+    'MOVE_BULLET_PUNCH',
+    'MOVE_COMET_PUNCH',
+    'MOVE_DIZZY_PUNCH',
+    'MOVE_DOUBLE_IRON_BASH',
+    'MOVE_DRAIN_PUNCH',
+    'MOVE_DYNAMIC_PUNCH',
+    'MOVE_FIRE_PUNCH',
+    'MOVE_FOCUS_PUNCH',
+    'MOVE_HAMMER_ARM',
+    'MOVE_HEADLONG_RUSH',
+    'MOVE_ICE_HAMMER',
+    'MOVE_ICE_PUNCH',
+    'MOVE_JET_PUNCH',
+    'MOVE_MACH_PUNCH',
+    'MOVE_MEGA_PUNCH',
+    'MOVE_METEOR_MASH',
+    'MOVE_PLASMA_FISTS',
+    'MOVE_POWER_UP_PUNCH',
+    'MOVE_RAGE_FIST',
+    'MOVE_SHADOW_PUNCH',
+    'MOVE_SKY_UPPERCUT',
+    'MOVE_SURGING_STRIKES',
+    'MOVE_THUNDER_PUNCH',
+    'MOVE_WICKED_BLOW',
+];
+
+const healingMoves = [
+    'MOVE_ABSORB',
+    'AQUA_RING',
+    'MOVE_BITTER_BLADE',
+    'MOVE_DRAIN_PUNCH',
+    'MOVE_DRAINING_KISS',
+    'MOVE_GIGA_DRAIN',
+    'MOVE_HORN_LEECH',
+    'MOVE_INGRAIN',
+    'MOVE_LEECH_LIFE',
+    'MOVE_LEECH_SEED',
+    'MOVE_MATCHA_GOTCHA',
+    'MOVE_MEGA_DRAIN',
+    'MOVE_OBLIVION_WING',
+    'MOVE_PARABOLIC_CHARGE',
+    'MOVE_STRENGTH_SAP',
+];
 
 const typeChart = {
   NORMAL:     { ROCK: 0.5, GHOST: 0, STEEL: 0.5 },
@@ -298,139 +433,6 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     // @TODO move base rating + stab + ability synergy + other moves synergy, coverage
     return rating;
 }
-
-const soundBasedOffensiveMoves = [
-    'MOVE_UPROAR',
-    'MOVE_HYPER_VOICE',
-    'MOVE_BUG_BUZZ',
-    'MOVE_CHATTER',
-    'MOVE_ROUND',
-    'MOVE_ECHOED_VOICE',
-    'MOVE_SNARL',
-    'MOVE_DISARMING_VOICE',
-    'MOVE_BOOMBURST',
-    'MOVE_SPARKING_ARIA',
-    'MOVE_CLANGING_SCALES',
-    'MOVE_OVERDRIVE',
-    'MOVE_TORCH_SONG',
-    'MOVE_ALLURING_VOICE',
-    'MOVE_PSYCHIC_NOISE',
-    'MOVE_RELIC_SONG',
-];
-
-const multiHitMoves = [
-    'MOVE_BULLET_SEED',
-    'MOVE_ICICLE_SPEAR',
-    'MOVE_PIN_MISSILE',
-    'MOVE_ROCK_BLAST',
-    'MOVE_TAIL_SLAP',
-    'MOVE_BONE_RUSH',
-    'MOVE_SCALE_SHOT',
-    'MOVE_ARM_THRUST',
-    'MOVE_BARRAGE',
-    'MOVE_COMET_PUNCH',
-    'MOVE_DOUBLE_SLAP',
-    'MOVE_FURY_ATTACK',
-    'MOVE_FURY_SWIPES',
-    'MOVE_SPIKE_CANNON',
-    'MOVE_WATER_SHURIKEN',  
-];
-
-const whiteHerbMoves = [
-    'MOVE_OVERHEAT',
-    'MOVE_LEAF_STORM',
-    'MOVE_DRACO_METEOR',
-    'MOVE_FLEUR_CANNON',
-    'MOVE_SUPERPOWER',
-    'MOVE_CLOSE_COMBAT',
-    'MOVE_HAMMER_ARM',
-    'MOVE_V_CREATE',
-    'MOVE_CLANGING_SCALES',
-    'MOVE_PSYCHO_BOOST',
-    'MOVE_SHELL_SMASH',
-];
-
-const powerHerbMoves = [
-    'MOVE_SKY_ATTACK',
-    'MOVE_METEOR_BEAM',
-    'MOVE_GEOMANCY',
-    'MOVE_SKULL_BASH',
-    'MOVE_RAZOR_WIND',
-    'MOVE_ELECTRO_SHOT',
-    'MOVE_FREEZE_SHOCK',
-    'MOVE_ICE_BURN',
-];
-
-const highCritMoves = [
-    'MOVE_X_SCISSOR',
-    'MOVE_NIGHT_SLASH',
-    'MOVE_SPACIAL_REND',
-    'MOVE_CROSS_CHOP',
-    'MOVE_BLAZE_KICK',
-    'MOVE_AIR_CUTTER',
-    'MOVE_LEAF_BLADE',
-    'MOVE_DRILL_RUN',
-    'MOVE_SLASH',
-    'MOVE_CRABHAMMER',
-    'MOVE_POISON_TAIL',
-    'MOVE_CROSS_POISON',
-    'MOVE_PSYCHO_CUT',
-    'MOVE_STONE_EDGE',
-    'MOVE_AEROBLAST',
-    'MOVE_RAZOR_SHELL',
-];
-
-const superCritMoves = [
-    'MOVE_STORM_THROW',
-    'MOVE_FROST_BREATH',
-    'MOVE_SURGING_STRIKES',
-    'MOVE_WICKED_BLOW',
-];
-
-const punchingMoves = [
-    'MOVE_BULLET_PUNCH',
-    'MOVE_COMET_PUNCH',
-    'MOVE_DIZZY_PUNCH',
-    'MOVE_DOUBLE_IRON_BASH',
-    'MOVE_DRAIN_PUNCH',
-    'MOVE_DYNAMIC_PUNCH',
-    'MOVE_FIRE_PUNCH',
-    'MOVE_FOCUS_PUNCH',
-    'MOVE_HAMMER_ARM',
-    'MOVE_HEADLONG_RUSH',
-    'MOVE_ICE_HAMMER',
-    'MOVE_ICE_PUNCH',
-    'MOVE_JET_PUNCH',
-    'MOVE_MACH_PUNCH',
-    'MOVE_MEGA_PUNCH',
-    'MOVE_METEOR_MASH',
-    'MOVE_PLASMA_FISTS',
-    'MOVE_POWER_UP_PUNCH',
-    'MOVE_RAGE_FIST',
-    'MOVE_SHADOW_PUNCH',
-    'MOVE_SKY_UPPERCUT',
-    'MOVE_SURGING_STRIKES',
-    'MOVE_THUNDER_PUNCH',
-    'MOVE_WICKED_BLOW',
-];
-
-const healingMoves = [
-    'MOVE_ABSORB',
-    'AQUA_RING',
-    'MOVE_BITTER_BLADE',
-    'MOVE_DRAIN_PUNCH',
-    'MOVE_DRAINING_KISS',
-    'MOVE_GIGA_DRAIN',
-    'MOVE_HORN_LEECH',
-    'MOVE_INGRAIN',
-    'MOVE_LEECH_LIFE',
-    'MOVE_LEECH_SEED',
-    'MOVE_MATCHA_GOTCHA',
-    'MOVE_MEGA_DRAIN',
-    'MOVE_OBLIVION_WING',
-    'MOVE_PARABOLIC_CHARGE',
-    'MOVE_STRENGTH_SAP',
-];
 
 function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, bannedItems = [], deviation = 0) {
     if (bannedItems.includes(item)) {
@@ -900,6 +902,214 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
     };
 }
 
+function chooseNature(poke, moveset, moves, ability, item, deviation = 0) {
+    const hasPhysicalMove = moveset.some(moveId => {
+        const move = moves[moveId];
+        return move && move.category === 'DAMAGE_CATEGORY_PHYSICAL';
+    });
+    const hasSpecialMove = moveset.some(moveId => {
+        const move = moves[moveId];
+        return move && move.category === 'DAMAGE_CATEGORY_SPECIAL';
+    });
+    const hasPriorityMove = moveset.some(moveId => {
+        const move = moves[moveId];
+        return move && move.priority > 0;
+    });
+    const amountOfStatusMoves = moveset.filter(moveId => {
+        const move = moves[moveId];
+        return move && move.category === 'DAMAGE_CATEGORY_STATUS';
+    }).length;
+
+    let attackStat = ability === 'HUGE_POWER' || ability === 'PURE_POWER' ? poke.baseAttack * 2 : poke.baseAttack;
+    let specialAttackStat = poke.baseSpAttack;
+
+    if (ability === 'PARENTAL_BOND') {
+        attackStat *= 1.25;
+        specialAttackStat *= 1.25;
+    }
+    if (ability === 'TRUANT') {
+        attackStat *= 0.5;
+        specialAttackStat *= 0.5;
+    }
+    if (ability === 'DEFEATIST') {
+        attackStat *= 0.75;
+        specialAttackStat *= 0.75;
+    }
+    if (ability === 'SLOW_START') {
+        attackStat *= 0.5;
+    }
+    if (ability === 'GUTS' && item === 'Flame Orb') {
+        attackStat *= 1.5;
+    }
+    if (ability === 'TOXIC_BOOST' && item === 'Toxic Orb') {
+        attackStat *= 1.5;
+    }
+
+    const natures = [...NATURES].map(nature => {
+        let rating = 0;
+        
+        if (poke.rating.role === 'OFFENSIVE' || (poke.rating.role === 'BALANCED' && amountOfStatusMoves <= 1)) {
+            if (hasPhysicalMove && nature.up === 'baseAttack') {
+                rating += 8 * attackStat / 100;
+            }
+            if (hasSpecialMove && nature.up === 'baseSpAttack') {
+                rating += 8 * specialAttackStat / 100;
+            }
+            if (!hasPhysicalMove && nature.down === 'baseAttack') {
+                rating += 2;
+            }
+            if (!hasSpecialMove && nature.down === 'baseSpAttack') {
+                rating += 2;
+            }
+            if (hasPhysicalMove && nature.down === 'baseAttack') {
+                rating -= 4 * attackStat / 100;
+            }
+            if (hasSpecialMove && nature.down === 'baseSpAttack') {
+                rating -= 4 * specialAttackStat / 100;
+            }
+            if (nature.up === 'baseSpeed') {
+                rating += 8.05 * Math.max(attackStat, specialAttackStat) / 100;
+                if (hasPriorityMove || item === 'Choice Scarf') {
+                    rating -= 1;
+                }
+                if (item === 'Choice Band' || item === 'Choice Specs' || item === 'Life Orb') {
+                    rating += 1;
+                }
+            }
+            if (nature.down === 'baseSpeed') {
+                rating = 0;
+            }
+            if (nature.up === 'baseDefense') {
+                rating += 1 * poke.baseDefense / 100;
+            }
+            if (nature.up === 'baseSpDefense') {
+                rating += 1 * poke.baseSpDefense / 100;
+            }
+            if (nature.down === 'baseDefense') {
+                if (hasPhysicalMove && hasSpecialMove) {
+                    rating += 2 - 0.5 * poke.baseDefense / 100;
+                }
+                else {
+                    rating -= 2;
+                }
+            }
+            if (nature.down === 'baseSpDefense') {
+                if (hasPhysicalMove && hasSpecialMove) {
+                    rating += 2 - 0.5 * poke.baseSpDefense / 100;
+                }
+                else {
+                    rating -= 2;
+                }
+            }
+        }
+        else if (poke.rating.role === 'TANK' || amountOfStatusMoves >= 4) {
+            if (nature.up === 'baseDefense') {
+                rating += 8 * poke.baseDefense / 100;
+            }
+            if (nature.down === 'baseDefense') {
+                rating = 0;
+            }
+            if (nature.up === 'baseSpDefense') {
+                rating += 8 * poke.baseSpDefense / 100;
+            }
+            if (nature.down === 'baseSpDefense') {
+                rating = 0;
+            }
+            if (nature.up === 'baseSpeed') {
+                rating = 0;
+            }
+            if (nature.down === 'baseSpeed') {
+                if (hasPhysicalMove && hasSpecialMove) {
+                    rating += 2;
+                }
+            }
+            if (nature.up === 'baseAttack') {
+                rating += 1 * attackStat / 100;
+            }
+            if (nature.up === 'baseSpAttack') {
+                rating += 1 * specialAttackStat / 100;
+            }
+            if (nature.down === 'baseAttack') {
+                if (hasPhysicalMove) {
+                    rating -= 1;
+                }
+                else {
+                    rating += 2;
+                }
+            }
+            if (nature.down === 'baseSpAttack') {
+                if (hasSpecialMove) {
+                    rating -= 1;
+                }
+                else {
+                    rating += 2;
+                }
+            }
+        }
+        else if (poke.rating.role === 'BULKY' || (poke.rating.role === 'BALANCED' && amountOfStatusMoves >=2)) {
+            // We try to maximize the best stat, we try to minimize the worst stat
+            if (nature.up === 'baseDefense') {
+                rating += 5 * poke.baseDefense / 100;
+            }
+            if (nature.up === 'baseSpDefense') {
+                rating += 5 * poke.baseSpDefense / 100;
+            }
+            if (nature.down === 'baseDefense') {
+                rating -= 2 * poke.baseDefense / 100;
+            }
+            if (nature.down === 'baseSpDefense') {
+                rating -= 2 * poke.baseSpDefense / 100;
+            }
+            if (nature.up === 'baseSpeed') {
+                rating += 4 * poke.baseSpeed / 100;
+            }
+            if (nature.down === 'baseSpeed') {
+                rating -= 1.5 * poke.baseSpeed / 100;
+            }
+            if (nature.up === 'baseAttack') {
+                if (hasPhysicalMove) {
+                    rating += 5 * attackStat / 100;
+                }
+                else {
+                    rating -= 2;
+                }
+            }
+            if (nature.up === 'baseSpAttack') {
+                if (hasSpecialMove) {
+                    rating += 5 * specialAttackStat / 100;
+                }
+                else {
+                    rating -= 2;
+                }
+            }
+            if (nature.down === 'baseAttack') {
+                if (hasPhysicalMove) {
+                    rating -= 2 * attackStat / 100;
+                }
+                else {
+                    rating += 2;
+                }
+            }
+            if (nature.down === 'baseSpAttack') {
+                if (hasSpecialMove) {
+                    rating -= 2 * specialAttackStat / 100;
+                }
+                else {
+                    rating += 2;
+                }
+            }
+        }
+
+        return {
+            ...nature,
+            rating: rating + ((Math.random() ? 1 : -1) * Math.random() * deviation * 5),
+        }
+    });
+
+    natures.sort((a, b) => b.rating - a.rating);
+    return natures[0].name;
+}
+
 const FLEXIBILITY_THRESHOLD = 20;
 const GOOD_STAT_VALUE = 160;
 const EXCELLENT_STAT_VALUE = 160;
@@ -1092,6 +1302,7 @@ function ratePokemon(poke, moves, abilities) {
 module.exports = {
     ratePokemon,
     chooseMoveset,
+    chooseNature,
     rateMove,
     rateItemForAPokemon,
     damageMultiplier,

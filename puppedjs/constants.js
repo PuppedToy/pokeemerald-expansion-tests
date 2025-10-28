@@ -2,6 +2,7 @@ const path = require("path");
 
 const constants = {
     TOTAL_GENS: 9,
+    GENERIC_DEVIATION: 0.1,
 
     SPECIES_DIR: path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'species_info'),
     LEVEL_UP_LEARNSETS_DIR: path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'level_up_learnsets'),
@@ -58,7 +59,6 @@ const constants = {
     TRAINER_POKE_ENCOUNTER: 'TRAINER_POKE_ENCOUNTER',
     TRAINER_REPEAT_ID: 'TRAINER_REPEAT_ID',
     TRAINER_POKE_MEGA_FROM_STONE: 'TRAINER_POKE_MEGA_FROM_STONE',
-    TRAINER_POKE_MEGA_WITH_STONE: 'TRAINER_POKE_MEGA_WITH_STONE',
 
     TRAINER_RESTRICTION_NO_REPEATED_TYPE: 'TRAINER_RESTRICTION_NO_REPEATED_TYPE',
     TRAINER_RESTRICTION_ALLOW_ONLY_TYPES: 'TRAINER_RESTRICTION_ALLOW_ONLY_TYPES',
@@ -85,26 +85,111 @@ const constants = {
     POKEMON_TYPE_ELECTRIC: 'ELECTRIC',
 
     NATURES: {
-        ADAMANT: 'Adamant',
-        JOLLY: 'Jolly',
-        MODEST: 'Modest',
-        TIMID: 'Timid',
-        BOLD: 'Bold',
-        IMPISH: 'Impish',
-        CALM: 'Calm',
-        CAREFUL: 'Careful',
-        RELAXED: 'Relaxed',
-        SASSY: 'Sassy',
-        LONELY: 'Lonely',
-        NAUGHTY: 'Naughty',
-        BRAVE: 'Brave',
-        LAX: 'Lax',
-        MILD: 'Mild',
-        RASH: 'Rash',
-        QUIET: 'Quiet',
-        GENTLE: 'Gentle',
-        HASTY: 'Hasty',
-        NAIVE: 'Naive',
+        ADAMANT: {
+            name: 'Adamant',
+            up: 'baseAttack',
+            down: 'baseSpecialAttack',
+        },
+        JOLLY: {
+            name: 'Jolly',
+            up: 'baseSpeed',
+            down: 'baseSpecialAttack',
+        },
+        MODEST: {
+            name: 'Modest',
+            up: 'baseSpecialAttack',
+            down: 'baseAttack',
+        },
+        TIMID: {
+            name: 'Timid',
+            up: 'baseSpeed',
+            down: 'baseAttack',
+        },
+        BOLD: {
+            name: 'Bold',
+            up: 'baseDefense',
+            down: 'baseAttack',
+        },
+        IMPISH: {
+            name: 'Impish',
+            up: 'baseDefense',
+            down: 'baseSpecialAttack',
+        },
+        CALM: {
+            name: 'Calm',
+            up: 'baseSpecialDefense',
+            down: 'baseAttack',
+        },
+        CAREFUL: {
+            name: 'Careful',
+            up: 'baseSpecialDefense',
+            down: 'baseSpecialAttack',
+        },
+        RELAXED: {
+            name: 'Relaxed',
+            up: 'baseDefense',
+            down: 'baseSpeed',
+        },
+        SASSY: {
+            name: 'Sassy',
+            up: 'baseSpecialDefense',
+            down: 'baseSpeed',
+        },
+        LONELY: {
+            name: 'Lonely',
+            up: 'baseAttack',
+            down: 'baseDefense',
+        },
+        NAUGHTY: {
+            name: 'Naughty',
+            up: 'baseAttack',
+            down: 'baseSpecialDefense',
+        },
+        BRAVE: {
+            name: 'Brave',
+            up: 'baseAttack',
+            down: 'baseSpeed',
+        },
+        LAX: {
+            name: 'Lax',
+            up: 'baseDefense',
+            down: 'baseSpecialDefense',
+        },
+        MILD: {
+            name: 'Mild',
+            up: 'baseSpecialAttack',
+            down: 'baseDefense',
+        },
+        RASH: {
+            name: 'Rash',
+            up: 'baseSpecialAttack',
+            down: 'baseSpecialDefense',
+        },
+        QUIET: {
+            name: 'Quiet',
+            up: 'baseSpecialAttack',
+            down: 'baseSpeed',
+        },
+        GENTLE: {
+            name: 'Gentle',
+            up: 'baseSpecialDefense',
+            down: 'baseDefense',
+        },
+        HASTY: {
+            name: 'Hasty',
+            up: 'baseSpeed',
+            down: 'baseDefense',
+        },
+        NAIVE: {
+            name: 'Naive',
+            up: 'baseSpeed',
+            down: 'baseSpecialDefense',
+        },
+        QUIRKY: {
+            name: 'Quirky',
+            up: null,
+            down: null,
+        },
     },
 
     OUTPUT_DIR: 'output',

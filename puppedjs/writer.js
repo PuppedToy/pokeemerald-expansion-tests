@@ -35,8 +35,9 @@ const {
     TRAINER_POKE_MEGA_FROM_STONE,
     EVO_TYPE_MEGA,
     TRAINER_POKE_MEGA_WITH_STONE,
+    GENERIC_DEVIATION,
 } = require('./constants');
-const { chooseMoveset, rateItemForAPokemon, isSuperEffective } = require('./rating.js');
+const { chooseMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const items = require('./items.js');
 const { savePokemonData } = require('./pokemonWriter.js');
 
@@ -526,6 +527,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     Object.entries(wildReplacementTypes).forEach(([key, value]) => {
         const { replace: tiers, type: types, hasMega } = value;
         replacementLists[key] = pokemonList.filter(poke => {
+            if (poke.evolutionData.isMega) return false;
             if (alreadyChosenSet.has(poke.id)) return false;
             if (!tiers.includes(poke.rating.bestEvoTier)) return false;
             if (hasMega && !poke.evolutionData.megaEvos) return false;
@@ -655,14 +657,31 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 }
 
                 // Try to evolve to the first possible evolution
-                possibleEvolutions = chosenTrainerMon.evolutions.filter((evo) => 
-                    isValidEvolution(trainer.level, evo)
-                    && (
-                        !tryMega
-                        || !chosenTrainerMon.evolutionData.isFinal
-                        || pokemonList.some(p => p.evolutionData.megaBaseForm && p.evolutionData.megaBaseForm === evo.pokemon)
-                    )
-                );
+                possibleEvolutions = chosenTrainerMon.evolutions.filter((evo) => {
+                    if (chosenTrainerMon.isFinal) return false;
+                    if (tryMega) {
+                        console.log(`Trying to check evolutions with tryMega for ${chosenTrainerMon.id} - trainer ${trainer.id}...`);
+                        // If the evo is NOT a evolution line that ends up in a mega, we don't allow it
+                        const megaForms = pokemonList.filter(p => p.evolutionData.megaBaseForm && p.evolutionData.megaBaseForm === evo.pokemon);
+                        console.log(` - Found mega forms for evolution ${evo.pokemon}: ${megaForms.map(m => m.id).join(', ')}`);
+                        if (megaForms.length) {
+                            console.log('Returning true for mega evolution possibility.');
+                            return true;
+                        }
+                        console.log('Trying to find which evolutions lead to mega...');
+                        for (let i = 0; i < chosenTrainerMon.evolutions.length; i++) {
+                            const evolvedForm = pokemonList.find(p => p.id === chosenTrainerMon.evolutions[i].pokemon);
+                            const evolvedFormMegaForms = pokemonList.filter(p => p.evolutionData.megaBaseForm && p.evolutionData.megaBaseForm === evolvedForm.id);
+                            if (evolvedFormMegaForms.length > 0) {
+                                console.log(` - Found that evolution ${evolvedForm.id} leads to mega forms: ${evolvedFormMegaForms.map(m => m.id).join(', ')}`);
+                                return true;
+                            }
+                        }
+                        console.log('Returning false for mega evolution possibility.');
+                        return false;
+                    }
+                    return isValidEvolution(trainer.level, evo);
+                });
                 if (possibleEvolutions.length > 0) {
                     // sort by param
                     possibleEvolutions.sort((a, b) => parseInt(b.param) - parseInt(a.param));
@@ -743,20 +762,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 const megaStone = megaReplacements[trainerMonDefinition.megaStone] || trainerMonDefinition.megaStone;
                 let mega = pokemonList.filter(p => p.evolutionData.megaItem === megaStone);
                 if (mega.length === 1) {
-                    mega = mega[0];
-                    const pokemonThatEvolvesToMega = pokemonList.find(p => 
-                        p.evolutionData.isFinal
-                        && p.evolutionData.megaEvos
-                        && p.evolutionData.megaEvos.includes(mega.id)
-                    );
-                    if (pokemonThatEvolvesToMega) {
-                        pokemonStrictList = [pokemonThatEvolvesToMega];
-                        trainerMonDefinition.item = itemIdToName(mega.evolutionData.megaItem);
-                        foundMega = true;
-                    }
-                    else {
-                        console.warn(`WARN: No pokemon found that evolves to mega ${mega.id} for trainer ${trainer.id}.`);
-                    }
+                    pokemonStrictList = mega;
                 }
                 else {
                     console.warn(`WARN: No unique mega evolution found for stone ${megaStone} in trainer ${trainer.id}.`);
@@ -767,22 +773,10 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             }
 
             // General filters for the loose list
-            if (trainerMonDefinition.special === TRAINER_POKE_MEGA_WITH_STONE) {
+            if (trainerMonDefinition.isMega) {
                 pokemonLooseList = pokemonLooseList.filter(
-                    loosePokemon => loosePokemon.evolutionData.isFinal
-                        && !loosePokemon.evolutionData.isMega
-                        && loosePokemon.evolutionData.megaEvos
-                        && loosePokemon.evolutionData.megaEvos.length > 0
+                    loosePokemon => loosePokemon.evolutionData.isMega,
                 );
-                if (trainerMonDefinition.megaAbilities) {
-                    pokemonLooseList = pokemonLooseList.filter(
-                        loosePokemon => {
-                            const megaId = loosePokemon.evolutionData.megaEvos[0];
-                            const megaPoke = pokemonList.find(p => p.id === megaId);
-                            return megaPoke && megaPoke.parsedAbilities.some(a => trainerMonDefinition.megaAbilities.includes(a));
-                        }
-                    );
-                }
             }
             if (trainerMonDefinition.absoluteTier) {
                 pokemonLooseList = pokemonLooseList.filter(
@@ -882,8 +876,18 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
             // Try evolve all of them
             if (trainerMonDefinition.tryEvolve) {
-                pokemonLooseList = pokemonLooseList.map(loosePokemon => tryEvolve(loosePokemon, trainerMonDefinition.tryMega && !foundMega));
-                pokemonStrictList = pokemonStrictList.map(strictPokemon => tryEvolve(strictPokemon, trainerMonDefinition.tryMega && !foundMega));
+                pokemonLooseList = pokemonLooseList.map(
+                    loosePokemon => tryEvolve(
+                        loosePokemon,
+                        (trainerMonDefinition.tryMega || trainerMonDefinition.megaTier) && !foundMega
+                    )
+                );
+                pokemonStrictList = pokemonStrictList.map(
+                    strictPokemon => tryEvolve(
+                        strictPokemon,
+                        (trainerMonDefinition.tryMega || trainerMonDefinition.megaTier) && !foundMega
+                    )
+                );
             }
 
             // Always apply unique restriction
@@ -969,10 +973,9 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                     && chosenTrainerMon.evolutionData.megaEvos.length > 0
                     && !foundMega
                 ) {
-                    const megaId = sample(chosenTrainerMon.evolutionData.megaEvos);
-                    const megaPoke = pokemonList.find(p => p.id === megaId);
+                    const megaPoke = pokemonList.find(p => p.evolutionData.megaBaseForm === chosenTrainerMon.id);
                     if (megaPoke) {
-                        trainerMonDefinition.item = itemIdToName(megaPoke.evolutionData.megaItem);
+                        chosenTrainerMon = megaPoke;
                         foundMega = true;
                     }
                     else {
@@ -985,32 +988,24 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             }
 
             if (chosenTrainerMon) {
+                const baseFormMon = chosenTrainerMon;
+                let megaItem;
+                if (chosenTrainerMon.evolutionData.megaBaseForm) {
+                    megaItem = chosenTrainerMon.evolutionData.megaItem;
+                    baseFormMon = pokemonList.find(p => p.id === chosenTrainerMon.evolutionData.megaBaseForm) || chosenTrainerMon;
+                }
                 if (trainerMonDefinition.id) {
                     storedIds[trainerMonDefinition.id] = chosenTrainerMon.id;
                 }
+                if (baseFormMon.id) {
+                    storedIds[baseFormMon.id] = chosenTrainerMon.id;
+                }
                 const newTeamMember = {
-                    pokemon: chosenTrainerMon,
-                    item: trainerMonDefinition.item || null,
+                    pokemon: baseFormMon,
+                    item: megaItem || trainerMonDefinition.item || null,
                     nature: trainerMonDefinition.nature || null,
                     moves: [],
                 };
-                if (trainerMonDefinition.special === TRAINER_POKE_MEGA_WITH_STONE) {
-                    const megaEvos = chosenTrainerMon.evolutionData.megaEvos;
-                    if (megaEvos && megaEvos.length > 0) {
-                        const megaId = sample(megaEvos);
-                        const megaPoke = pokemonList.find(p => p.id === megaId);
-                        if (megaPoke) {
-                            newTeamMember.item = itemIdToName(megaPoke.evolutionData.megaItem);
-                            foundMega = true;
-                        }
-                        else {
-                            console.warn(`WARN: Chosen pokemon ${chosenTrainerMon.id} for mega with stone in trainer ${trainer.id} has no mega evolution data.`);
-                        }
-                    }
-                    else {
-                        console.warn(`WARN: Chosen pokemon ${chosenTrainerMon.id} for mega with stone in trainer ${trainer.id} has no mega evolutions.`);
-                    }
-                }
                 if (trainerMonDefinition.tryToHaveMove) {
                     trainerMonDefinition.tryToHaveMove.forEach(moveToLearn => {
                         if (
@@ -1028,17 +1023,60 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 if (trainerMonDefinition.abilities) {
                     validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => trainerMonDefinition.abilities.includes(a))];
                 }
+                let ability = null;
                 if (validAbilities.length > 0) {
-                    const ability = sample(validAbilities);
-                    newTeamMember.ability = ability;
+                    ability = sample(validAbilities);
+                    let abilityIndex = chosenTrainerMon.parsedAbilities.indexOf(ability);
+                    let originalAbility = baseFormMon.parsedAbilities[abilityIndex];
+                    if (originalAbility === 'NONE') {
+                        abilityIndex = 0;
+                        originalAbility = baseFormMon.parsedAbilities[0];
+                    }
+                    newTeamMember.ability = originalAbility;
+                }
+                /* Otherwise choose the best ability */
+                else {
+                    validAbilities = [...chosenTrainerMon.parsedAbilities];
+                    if (trainer.level < 25) {
+                        // Take just the 2 first, we don't use hidden
+                        validAbilities = validAbilities.slice(0, 2);
+                    }
+                    validAbilities = validAbilities.filter(a => Boolean(a) && a !== 'NONE')
+                        .sort(
+                            (a, b) => {
+                                if (trainer.level < 25) {
+                                    // We just sort randomly
+                                    return Math.random() - 0.5;
+                                }
+
+                                // @TODO Method rateAbilityForAPokemon
+                                const abilityA = abilities[`ABILITY_${a}`];
+                                const abilityB = abilities[`ABILITY_${b}`];
+                                const ratingA = abilityA?.rating * (1 + (Math.random() * GENERIC_DEVIATION * 2 - GENERIC_DEVIATION));
+                                const ratingB = abilityB?.rating * (1 + (Math.random() * GENERIC_DEVIATION * 2 - GENERIC_DEVIATION));
+                                return ratingB - ratingA;
+                            }
+                        );
+                    
+                    if (!validAbilities) {
+                        throw new Error(`WARN: No valid abilities found for pokemon ${chosenTrainerMon.id} in trainer ${trainer.id} while picking the best one.`);
+                    }
+                    ability = validAbilities[0];
+                    let abilityIndex = chosenTrainerMon.parsedAbilities.indexOf(ability);
+                    let originalAbility = baseFormMon.parsedAbilities[abilityIndex];
+                    if (originalAbility === 'NONE') {
+                        abilityIndex = 0;
+                        originalAbility = baseFormMon.parsedAbilities[0];
+                    }
+                    newTeamMember.ability = originalAbility;
                 }
                 const { moveset, tmsUsed } = chooseMoveset(
                     chosenTrainerMon,
                     moves,
                     trainer.level,
-                    newTeamMember.moves,
-                    newTeamMember.ability,
-                    newTeamMember.item,
+                    newTeamMember.moves, // We use the already chosen moves (tryToHaveMove)
+                    ability, // We use the real ability for megas
+                    newTeamMember.item, // If we have a pre-selected item, use it
                     trainer.tms || [],
                     0.1, // Deviation for trainer bias
                 );
@@ -1049,28 +1087,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                     }
                 });
                 newTeamMember.moves = moveset;
-                if (!newTeamMember.nature) {
-                    if (trainer.level < 25) {
-                        newTeamMember.nature = sample(Object.values(NATURES));
-                    }
-                    else {
-                        // @TODO Rate natures
-                        newTeamMember.nature = sample(Object.values(NATURES));
-                    }
-                }
-                if (!newTeamMember.ability && chosenTrainerMon.parsedAbilities.length > 0) {
-                    let abilities;
-                    if (trainer.level < 25) {
-                        abilities = chosenTrainerMon.parsedAbilities
-                            .slice(0, 2)
-                            .filter(ability => Boolean(ability) && ability !== 'NONE');
-                    }
-                    else {
-                        abilities = chosenTrainerMon.parsedAbilities
-                            .filter(ability => Boolean(ability) && ability !== 'NONE');
-                    }
-                    newTeamMember.ability = sample(abilities);
-                }
                 if (!newTeamMember.item && trainer.bag && trainer.bag.length > 0) {
                     const movesetObjects = newTeamMember.moves.map(m => moves[m]);
                     const sortedBagItems = trainer.bag
@@ -1078,12 +1094,12 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                             const rating = rateItemForAPokemon(
                                 bagItemId,
                                 chosenTrainerMon,
-                                newTeamMember.ability,
+                                ability,
                                 movesetObjects,
                                 trainer.level,
                                 trainer.bag.length,
                                 trainer.bannedItems || [],
-                                0.1
+                                GENERIC_DEVIATION,
                             );
                             // console.log(`Rating item ${bagItemId} for pokemon LV.${trainer.level} ${chosenTrainerMon.id} resulted in rating ${rating}`);
                             return {
@@ -1099,6 +1115,21 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                         newTeamMember.item = sortedBagItems[0];
                     }
                     trainer.bag.splice(trainer.bag.indexOf(newTeamMember.item), 1);
+                }
+                if (!newTeamMember.nature) {
+                    if (trainer.level < 25) {
+                        newTeamMember.nature = sample(Object.values(NATURES)).name;
+                    }
+                    else {
+                        newTeamMember.nature = chooseNature(
+                            chosenTrainerMon,
+                            moveset,
+                            moves,
+                            ability,
+                            newTeamMember.item,
+                            GENERIC_DEVIATION,
+                        );
+                    }
                 }
                 team.push(newTeamMember);
             }
