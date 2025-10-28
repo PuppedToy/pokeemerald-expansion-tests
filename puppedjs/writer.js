@@ -669,20 +669,40 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                             return true;
                         }
                         console.log('Trying to find which evolutions lead to mega...');
-                        for (let i = 0; i < chosenTrainerMon.evolutions.length; i++) {
-                            const evolvedForm = pokemonList.find(p => p.id === chosenTrainerMon.evolutions[i].pokemon);
-                            if (!evolvedForm) {
-                                console.warn(` - Could not find evolved form ${chosenTrainerMon.evolutions[i].pokemon}, skipping...`);
-                                continue;
+                        let i = 1;
+                        do {
+                            console.log(`Try #${i++}`);
+                            for (let i = 0; i < chosenTrainerMon.evolutions.length; i++) {
+                                const evolvedForm = pokemonList.find(p => p.id === chosenTrainerMon.evolutions[i].pokemon);
+                                if (!evolvedForm) {
+                                    console.warn(` - Could not find evolved form ${chosenTrainerMon.evolutions[i].pokemon}, skipping...`);
+                                    continue;
+                                }
+                                const evolvedFormMegaForms = pokemonList.filter(p => p.evolutionData.megaBaseForm && p.evolutionData.megaBaseForm === evolvedForm.id);
+                                if (evolvedFormMegaForms.length > 0) {
+                                    console.log(` - Found that evolution ${evolvedForm.id} leads to mega forms: ${evolvedFormMegaForms.map(m => m.id).join(', ')}`);
+                                    return true;
+                                }
                             }
-                            const evolvedFormMegaForms = pokemonList.filter(p => p.evolutionData.megaBaseForm && p.evolutionData.megaBaseForm === evolvedForm.id);
-                            if (evolvedFormMegaForms.length > 0) {
-                                console.log(` - Found that evolution ${evolvedForm.id} leads to mega forms: ${evolvedFormMegaForms.map(m => m.id).join(', ')}`);
-                                return true;
+                            if (chosenTrainerMon.evolutions.length > 1) {
+                                console.warn(' - Multiple evolutions found, cannot determine mega evolution path uniquely. Will try randomly.');
                             }
-                        }
-                        console.log('Returning false for mega evolution possibility.');
-                        return false;
+                            if (chosenTrainerMon.evolutions.length > 0) {
+                                const randomEvo = sample(chosenTrainerMon.evolutions);
+                                const randomEvolvedForm = pokemonList.find(p => p.id === randomEvo.pokemon);
+                                if (randomEvolvedForm) {
+                                    console.log(` - Selected evolution ${randomEvolvedForm.id} to continue searching for mega evolution path.`);
+                                    chosenTrainerMon = randomEvolvedForm;
+                                    continue;
+                                }
+                                else {
+                                    console.warn(` - Could not find selected evolved form ${randomEvo.pokemon}, skipping...`);
+                                }
+                            }
+                            console.log('Returning false for mega evolution possibility.');
+                            return false;
+                        } while (i < 100);
+                        console.warn(' - Reached max tries for mega evolution search, returning false.');
                     }
                     return isValidEvolution(trainer.level, evo);
                 });
