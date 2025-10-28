@@ -548,12 +548,12 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const replacementLists = {};
 
     Object.entries(wildReplacementTypes).forEach(([key, value]) => {
-        const { replace: tiers, type: types, hasMega, megaTiers } = value;
+        const { replace: tiers = [], type: types, hasMega, megaTiers = [] } = value;
         replacementLists[key] = pokemonList.filter(poke => {
             if (poke.evolutionData.isMega) return false;
             if (alreadyChosenSet.has(poke.id)) return false;
-            if (!((tiers || []).includes(poke.rating.bestEvoTier))) return false;
-            if (!((megaTiers || []).includes(poke.rating.megaEvoTier))) return false;
+            if (!tiers.includes(poke.rating.bestEvoTier)) return false;
+            if (!megaTiers.includes(poke.rating.megaEvoTier)) return false;
             if (hasMega && !poke.evolutionData.megaEvos) return false;
             let hasAnyTypeOfReplacement = false;
             types.forEach(replacementType => {
