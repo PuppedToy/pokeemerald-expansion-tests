@@ -886,11 +886,11 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 pokemonLooseList = pokemonLooseList.filter(
                     loosePokemon => {
                         let devolvedForm = loosePokemon;
-                        if (devolvedForm.evolutionData.type === EVO_TYPE_SOLO || devolvedForm.evolutionData.isLC) {
-                            return true;
-                        }
                         if (devolvedForm.evolutionData.megaBaseForm) {
                             devolvedForm = pokemonList.find(p => p.id === devolvedForm.evolutionData.megaBaseForm);
+                        }
+                        if (devolvedForm.evolutionData.type === EVO_TYPE_SOLO || devolvedForm.evolutionData.isLC) {
+                            return true;
                         }
                         if (!devolvedForm) {
                             console.warn(`WARN: Could not find base form for mega pokemon ${loosePokemon.id} when checking valid evolutions for trainer ${trainer.id}.`);
