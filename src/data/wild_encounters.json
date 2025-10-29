@@ -6474,12 +6474,12 @@
             "mons": [
               {
                 "min_level": 9,
-                "max_level": 10,
+                "max_level": 9,
                 "species": "SPECIES_SMEARGLE"
               },
               {
                 "min_level": 9,
-                "max_level": 10,
+                "max_level": 9,
                 "species": "SPECIES_SMEARGLE"
               },
               {
@@ -6500,27 +6500,27 @@
               {
                 "min_level": 47,
                 "max_level": 47,
-                "species": "SPECIES_GOLDEEN"
+                "species": "SPECIES_SHELGON"
               },
               {
                 "min_level": 47,
                 "max_level": 47,
-                "species": "SPECIES_GOLDEEN"
+                "species": "SPECIES_SHELGON"
               },
               {
                 "min_level": 47,
                 "max_level": 47,
-                "species": "SPECIES_GOLDEEN"
+                "species": "SPECIES_SHELGON"
               },
               {
                 "min_level": 47,
                 "max_level": 47,
-                "species": "SPECIES_GOLDEEN"
+                "species": "SPECIES_SHELGON"
               },
               {
                 "min_level": 47,
                 "max_level": 47,
-                "species": "SPECIES_GOLDEEN"
+                "species": "SPECIES_SHELGON"
               }
             ]
           }
