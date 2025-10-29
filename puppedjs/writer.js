@@ -15,9 +15,7 @@ const {
     TIER_PREMIUM,
     TIER_LEGEND,
 
-    TIER_LEGEND_THRESHOLD,
     TIER_STRONG_THRESHOLD,
-    MID_TIER_PREMIUM_THRESHOLD,
     TRAINER_POKE_ENCOUNTER,
     TRAINER_POKE_STARTER_TREECKO,
     TRAINER_POKE_STARTER_TORCHIC,
@@ -33,9 +31,8 @@ const {
     TEMPLATE_WILDPOKES_REPALCEMENT,
     NATURES,
     TRAINER_POKE_MEGA_FROM_STONE,
-    EVO_TYPE_MEGA,
-    TRAINER_POKE_MEGA_WITH_STONE,
     GENERIC_DEVIATION,
+    TIER_BAD,
 } = require('./constants');
 const { chooseMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const items = require('./items.js');
@@ -95,51 +92,6 @@ const scriptMenuReplacementFile = path.resolve(__dirname, '..', 'src', 'data', '
 const legend1ReplacementText = 'SPECIES_LEGEND1';
 const legend2ReplacementText = 'SPECIES_LEGEND2';
 const legend3ReplacementText = 'SPECIES_LEGEND3';
-
-const PERFECT_STARTER_TRIOS = [
-    ['GRASS', 'FIRE', 'WATER'],
-    ['FIGHTING', 'PSYCHIC', 'DARK'],
-];
-
-const GOOD_STARTER_TRIOS = [
-    ['GRASS', 'ROCK', 'BUG'],
-    ['WATER', 'GROUND', 'ELECTRIC'],
-    ['FIGHTING', 'FAIRY', 'STEEL'],
-    ['FIGHTING', 'FLYING', 'ICE'],
-    ['FIGHTING', 'ROCK', 'FLYING'],
-    ['FIRE', 'GROUND', 'GRASS'],
-    ['FIRE', 'ROCK', 'GRASS'],
-    ['FIRE', 'WATER', 'GRASS'],
-    ['FIRE', 'GROUND', 'ICE'],
-    ['FIRE', 'ROCK', 'STEEL'],
-    ['GRASS', 'FLYING', 'ROCK'],
-    ['GRASS', 'POISON', 'GROUND'],
-    ['GRASS', 'ICE', 'ROCK'],
-    ['ICE', 'GROUND', 'ROCK'],
-    ['ICE', 'STEEL', 'GROUND'],
-];
-
-const TYPES = {
-    FIRE: [],
-    WATER: [],
-    GRASS: [],
-    ELECTRIC: [],
-    ICE: [],
-    FIGHTING: [],
-    POISON: [],
-    GROUND: [],
-    FLYING: [],
-    PSYCHIC: [],
-    BUG: [],
-    ROCK: [],
-    DARK: [],
-    STEEL: [],
-    FAIRY: [],
-    // Non useful types
-    NORMAL: [],
-    GHOST: [],
-    DRAGON: [],
-};
 
 const mapsBase = path.resolve(__dirname, '..', 'data', 'maps');
 const routeFiles = [
@@ -234,6 +186,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         return poke.evolutionData.type === EVO_TYPE_LC_OF_3
             && poke.evolutionData.isLC
             && poke.rating.bestEvoTier === TIER_STRONG
+            && poke.rating.tier === TIER_BAD
     });
 
     const starters = [null, null, null];
@@ -279,6 +232,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             return poke.evolutionData.type === EVO_TYPE_LC_OF_3
                 && poke.evolutionData.isLC
                 && poke.rating.bestEvoTier === TIER_STRONG
+                && poke.rating.tier === TIER_BAD
             });
         starters[0] = sampleAndRemove(eligiblePokemonForStarters);
         starters[1] = sampleAndRemove(eligiblePokemonForStarters);
@@ -297,6 +251,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         return poke.evolutionData.type === EVO_TYPE_LC_OF_3
             && poke.evolutionData.isLC
             && poke.rating.bestEvoTier === TIER_PREMIUM
+            && poke.rating.tier === TIER_BAD
             && !alreadyChosenFamilySet.has(poke.family);
     });
     if (premiumLCPokes.length <= 0) {
@@ -304,6 +259,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         premiumLCPokes = pokemonList.filter(poke => {
             return poke.evolutionData.isLC
                 && (poke.rating.bestEvoTier === TIER_PREMIUM)
+                && poke.rating.tier === TIER_BAD
                 && !alreadyChosenFamilySet.has(poke.family);
         });
         if (premiumLCPokes.length <= 0) {
@@ -311,7 +267,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             premiumLCPokes = pokemonList.filter(poke => {
                 return poke.evolutionData.type === EVO_TYPE_LC_OF_3
                     && poke.evolutionData.isLC
-                    && (poke.rating.bestEvoTier === TIER_STRONG)
+                    && poke.rating.bestEvoTier === TIER_STRONG
+                    && poke.rating.tier === TIER_BAD
                     && !alreadyChosenFamilySet.has(poke.family);
             });
         }
@@ -333,6 +290,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             && poke.evolutionData.megaEvos.length > 0
             && !alreadyChosenFamilySet.has(poke.family)
             && poke.rating.bestEvoRating <= TIER_STRONG_THRESHOLD
+            && poke.rating.megaEvoRating <= TIER_STRONG_THRESHOLD
+            && poke.rating.tier === TIER_BAD
             && ![...alreadyChosenTypes].some(type => poke.parsedTypes.includes(type));
     });
 
@@ -359,6 +318,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const averagePokemonLC = pokemonList.filter(poke => {
         return poke.evolutionData.isLC
             && poke.rating.bestEvoTier === TIER_AVERAGE
+            && poke.rating.tier === TIER_BAD
             && !alreadyChosenFamilySet.has(poke.family);
     });
     const averagePokemonLCWithFilteredTypes = averagePokemonLC.filter(poke => {
@@ -747,7 +707,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                         // If the evo is NOT a evolution line that ends up in a mega, we don't allow it
                         const megaForms = pokemonList.filter(p => p.evolutionData.megaBaseForm && p.evolutionData.megaBaseForm === evo.pokemon);
                         if (megaForms.length) {
-                            console.log('Returning true for mega evolution possibility.');
                             return true;
                         }
                         let i = 1;
