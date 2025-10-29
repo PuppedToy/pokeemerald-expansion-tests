@@ -611,7 +611,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const auxWildReplacementsFrom = {};
 
     const newlyAddedFamilies = new Set();
-    Object.entries(wild.replacements).forEach(([speciesId, replacementTypeKey], entryId) => {
+    Object.entries(wild.replacements).forEach(([speciesId, replacementTypeKey]) => {
         const replacementType = wildReplacementTypes[replacementTypeKey];
         if (!replacementType) {
             console.log(`No replacement type found for key ${replacementTypeKey}, skipping replacement for ${speciesId}.`);
@@ -641,6 +641,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         alreadyChosenFamilySet.add(replacement.family);
         newlyAddedFamilies.add(replacement.family);
         replacementLog[speciesId] = replacement.id;
+        // entryId must be a unique string that won't reappear in the file
+        const entryId = Math.random().toString(36).substring(2, 15);
         auxWildReplacementsFrom[speciesId] = `WILDPOKE_${entryId}`;
 
         const regex = new RegExp(speciesId, 'g');
