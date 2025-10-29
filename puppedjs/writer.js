@@ -172,6 +172,16 @@ const bannedSpeciesForPicking = [
     'SPECIES_PALAFIN_HERO',
 ];
 
+const groupedFamilies = {
+    'P_FAMILY_DEERLING_SUMMER': 'P_FAMILY_DEERLING',
+    'P_FAMILY_DEERLING_AUTUMN': 'P_FAMILY_DEERLING',
+    'P_FAMILY_DEERLING_WINTER': 'P_FAMILY_DEERLING',
+};
+
+function getFamilyGroup(familyId) {
+    return groupedFamilies[familyId] || familyId;
+}
+
 async function writer(pokemonList, moves, abilities, isDebug) {
 
     pokemonList = pokemonList.filter(poke => !bannedSpeciesForPicking.includes(poke.id));
@@ -244,7 +254,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
     starters.forEach((starter, index) => {
         starters[index] = starter.id;
-        alreadyChosenFamilySet.add(starter.family);
+        alreadyChosenFamilySet.add(getFamilyGroup(starter.family));
     });
 
     let premiumLCPokes = pokemonList.filter(poke => {
@@ -252,7 +262,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             && poke.evolutionData.isLC
             && poke.rating.bestEvoTier === TIER_PREMIUM
             && poke.rating.tier === TIER_BAD
-            && !alreadyChosenFamilySet.has(poke.family);
+            && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
     });
     if (premiumLCPokes.length <= 0) {
         console.warn('No premium 3-evo-LC pokemon found for extra starters, using premium LC instead.');
@@ -260,7 +270,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             return poke.evolutionData.isLC
                 && (poke.rating.bestEvoTier === TIER_PREMIUM)
                 && poke.rating.tier === TIER_BAD
-                && !alreadyChosenFamilySet.has(poke.family);
+                && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
         });
         if (premiumLCPokes.length <= 0) {
             console.error('No premium LC pokemon found for extra starters, using strong LC instead.');
@@ -269,7 +279,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                     && poke.evolutionData.isLC
                     && poke.rating.bestEvoTier === TIER_STRONG
                     && poke.rating.tier === TIER_BAD
-                    && !alreadyChosenFamilySet.has(poke.family);
+                    && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
             });
         }
         if (premiumLCPokes.length <= 0) {
@@ -281,14 +291,14 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const chosenExtraPokemon = [
         sample(premiumLCPokes),
     ];
-    alreadyChosenFamilySet.add(chosenExtraPokemon[0].family);
+    alreadyChosenFamilySet.add(getFamilyGroup(chosenExtraPokemon[0].family));
     chosenExtraPokemon[0].parsedTypes.forEach(type => alreadyChosenTypes.add(type));
 
     const lcPokesWithMegaEvo = pokemonList.filter(poke => {
         return poke.evolutionData.isLC
             && poke.evolutionData.megaEvos
             && poke.evolutionData.megaEvos.length > 0
-            && !alreadyChosenFamilySet.has(poke.family)
+            && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
             && poke.rating.bestEvoRating <= TIER_STRONG_THRESHOLD
             && poke.rating.megaEvoRating <= TIER_STRONG_THRESHOLD
             && poke.rating.tier === TIER_BAD
@@ -302,7 +312,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     while (chosenExtraPokemon.length < 3 && lcPokesWithMegaEvo.length > 0) {
         const chosenPoke = sampleAndRemove(lcPokesWithMegaEvo);
         chosenExtraPokemon.push(chosenPoke);
-        alreadyChosenFamilySet.add(chosenPoke.family);
+        alreadyChosenFamilySet.add(getFamilyGroup(chosenPoke.family));
         chosenPoke.parsedTypes.forEach(type => alreadyChosenTypes.add(type));
 
         // Remove all pokes with at least one of the chosen types
@@ -319,7 +329,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         return poke.evolutionData.isLC
             && poke.rating.bestEvoTier === TIER_AVERAGE
             && poke.rating.tier === TIER_BAD
-            && !alreadyChosenFamilySet.has(poke.family);
+            && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
     });
     const averagePokemonLCWithFilteredTypes = averagePokemonLC.filter(poke => {
         return ![...alreadyChosenTypes].some(type => poke.parsedTypes.includes(type));
@@ -332,7 +342,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             averagePokemonLC.splice(indexInAverage, 1);
         }
         chosenExtraPokemon.push(randomPoke);
-        alreadyChosenFamilySet.add(randomPoke.family);
+        alreadyChosenFamilySet.add(getFamilyGroup(randomPoke.family));
         randomPoke.parsedTypes.forEach(type => alreadyChosenTypes.add(type));
         // Remove all pokes with at least one of the chosen types
         for (let i = averagePokemonLCWithFilteredTypes.length - 1; i >= 0; i--) {
@@ -346,7 +356,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     while (chosenExtraPokemon.length < 9 && averagePokemonLC.length > 0) {
         const randomPoke = sampleAndRemove(averagePokemonLC);
         chosenExtraPokemon.push(randomPoke);
-        alreadyChosenFamilySet.add(randomPoke.family);
+        alreadyChosenFamilySet.add(getFamilyGroup(randomPoke.family));
     }
 
     let newStartersFile = await fs.readFile(startersFile, 'utf8');
@@ -408,49 +418,49 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     // @TODO Replace mega stone trainers & rival
 
     const castformReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(poke.family)
+        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && poke.evolutionData.isLC
         && poke.evolutionData.megaEvos
         && poke.evolutionData.megaEvos.length > 0
         && (poke.rating.megaEvoTier === TIER_PREMIUM || poke.rating.megaEvoTier === TIER_LEGEND)
     );
     const castformReplacement = sampleAndRemove(castformReplacementList);
-    alreadyChosenFamilySet.add(castformReplacement.family);
+    alreadyChosenFamilySet.add(getFamilyGroup(castformReplacement.family));
 
     const strongSoloReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(poke.family)
+        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && poke.rating.bestEvoTier === TIER_STRONG
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const regirockReplacement = sampleAndRemove(strongSoloReplacementList);
-    alreadyChosenFamilySet.add(regirockReplacement.family);
+    alreadyChosenFamilySet.add(getFamilyGroup(regirockReplacement.family));
     const regiceReplacement = sampleAndRemove(strongSoloReplacementList);
-    alreadyChosenFamilySet.add(regiceReplacement.family);
+    alreadyChosenFamilySet.add(getFamilyGroup(regiceReplacement.family));
     const mewReplacement = sampleAndRemove(strongSoloReplacementList);
-    alreadyChosenFamilySet.add(mewReplacement.family);
+    alreadyChosenFamilySet.add(getFamilyGroup(mewReplacement.family));
 
     const premiumSoloReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(poke.family)
+        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && poke.rating.bestEvoTier === TIER_PREMIUM
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const registeelReplacement = sampleAndRemove(premiumSoloReplacementList);
-    alreadyChosenFamilySet.add(registeelReplacement.family);
+    alreadyChosenFamilySet.add(getFamilyGroup(registeelReplacement.family));
     const latiosReplacement = sampleAndRemove(premiumSoloReplacementList);
-    alreadyChosenFamilySet.add(latiosReplacement.family);
+    alreadyChosenFamilySet.add(getFamilyGroup(latiosReplacement.family));
 
     // @TODO Choose between rayquaza, kyogre and groudon
     const legendReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(poke.family)
+        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && poke.rating.bestEvoTier === TIER_LEGEND
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const legend1Replacement = sampleAndRemove(legendReplacementList);
-    alreadyChosenFamilySet.add(legend1Replacement.family);
+    alreadyChosenFamilySet.add(getFamilyGroup(legend1Replacement.family));
     const legend2Replacement = sampleAndRemove(legendReplacementList);
-    alreadyChosenFamilySet.add(legend2Replacement.family);
+    alreadyChosenFamilySet.add(getFamilyGroup(legend2Replacement.family));
     const legend3Replacement = sampleAndRemove(legendReplacementList);
-    alreadyChosenFamilySet.add(legend3Replacement.family);
+    alreadyChosenFamilySet.add(getFamilyGroup(legend3Replacement.family));
 
     const replacementLog = {};
 
@@ -545,7 +555,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         const { replace: tiers, type: types, hasMega, megaTiers } = value;
         replacementLists[key] = pokemonList.filter(poke => {
             if (poke.evolutionData.isMega) return false;
-            if (alreadyChosenFamilySet.has(poke.family)) return false;
+            if (alreadyChosenFamilySet.has(getFamilyGroup(poke.family))) return false;
             if (tiers && !tiers.includes(poke.rating.bestEvoTier)) return false;
             if (megaTiers && !megaTiers.includes(poke.rating.megaEvoTier)) return false;
             if (hasMega && !poke.evolutionData.megaEvos) return false;
@@ -598,7 +608,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             console.log(`No replacement found for ${speciesId} of type ${replacementTypeKey}, skipping.`);
             return;
         }
-        alreadyChosenFamilySet.add(replacement.family);
+        alreadyChosenFamilySet.add(getFamilyGroup(replacement.family));
         newlyAddedFamilies.add(replacement.family);
         replacementLog[speciesId] = replacement.id;
         // entryId must be a unique string that won't reappear in the file
