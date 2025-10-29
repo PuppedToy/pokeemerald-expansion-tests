@@ -581,18 +581,9 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const { replacementTypes: wildReplacementTypes } = wild;
     const replacementLists = {};
 
-    const wildReplacementEntries = Object.entries(wild.replacements);
-    const auxWildReplacementsFrom = {};
-
-    wildReplacementEntries.forEach(([key, value], entryId) => {
-        auxWildReplacementsFrom[key] = `WILDPOKE_${entryId}`;
-        wildEncountersFileContent.replace(new RegExp(value, 'g'), auxWildReplacementsFrom[key]);
-    });
-
-    wildReplacementEntries.forEach(([key, value]) => {
+    Object.entries(wildReplacementTypes).forEach(([key, value]) => {
         const { replace: tiers, type: types, hasMega, megaTiers } = value;
         replacementLists[key] = pokemonList.filter(poke => {
-            // If poke family is in the replacementList or the alreadyChosenPokes, return falsse
             if (poke.evolutionData.isMega) return false;
             if (alreadyChosenFamilySet.has(poke.family)) return false;
             if (tiers && !tiers.includes(poke.rating.bestEvoTier)) return false;
@@ -617,8 +608,10 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         });
     });
 
+    const auxWildReplacementsFrom = {};
+
     const newlyAddedFamilies = new Set();
-    Object.entries(wild.replacements).forEach(([speciesId, replacementTypeKey]) => {
+    Object.entries(wild.replacements).forEach(([speciesId, replacementTypeKey], entryId) => {
         const replacementType = wildReplacementTypes[replacementTypeKey];
         if (!replacementType) {
             console.log(`No replacement type found for key ${replacementTypeKey}, skipping replacement for ${speciesId}.`);
@@ -648,9 +641,18 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         alreadyChosenFamilySet.add(replacement.family);
         newlyAddedFamilies.add(replacement.family);
         replacementLog[speciesId] = replacement.id;
+        auxWildReplacementsFrom[speciesId] = `WILDPOKE_${entryId}`;
 
+        const regex = new RegExp(speciesId, 'g');
+        // First we need to use unique IDs so one replacment doesn't affect the other
+        wildEncountersFileContent = wildEncountersFileContent.replace(regex, auxWildReplacementsFrom[speciesId]);
+    });
+    
+    // Now we replace the unique IDs with the actual replacements
+    Object.keys(wild.replacements).forEach((speciesId) => {
         const regex = new RegExp(auxWildReplacementsFrom[speciesId], 'g');
-        wildEncountersFileContent = wildEncountersFileContent.replace(regex, replacement.id);
+        const replacement = replacementLog[speciesId];
+        wildEncountersFileContent = wildEncountersFileContent.replace(regex, replacement);
     });
 
     await fs.writeFile((wild.file), wildEncountersFileContent, 'utf8');
