@@ -593,7 +593,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         const { replace: tiers, type: types, hasMega, megaTiers } = value;
         replacementLists[key] = pokemonList.filter(poke => {
             // If poke family is in the replacementList or the alreadyChosenPokes, return falsse
-            if (replacementLists[key].some(replacement => replacement.family === poke.family)) return false;
             if (poke.evolutionData.isMega) return false;
             if (alreadyChosenFamilySet.has(poke.family)) return false;
             if (tiers && !tiers.includes(poke.rating.bestEvoTier)) return false;
@@ -618,6 +617,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         });
     });
 
+    const newlyAddedFamilies = new Set();
     Object.entries(wild.replacements).forEach(([speciesId, replacementTypeKey]) => {
         const replacementType = wildReplacementTypes[replacementTypeKey];
         if (!replacementType) {
@@ -629,12 +629,24 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             console.log(`No replacement list found or empty for type ${replacementTypeKey}, skipping replacement for ${speciesId}.`);
             return;
         }
+        // Remove newly added families from the replacement list
+        for (let i = replacementList.length - 1; i >= 0; i--) {
+            const poke = replacementList[i];
+            if (newlyAddedFamilies.has(poke.family)) {
+                replacementList.splice(i, 1);
+            }
+        }
+        if (!replacementList || replacementList.length === 0) {
+            console.log(`No replacement available after filtering for newly added families for type ${replacementTypeKey}, skipping replacement for ${speciesId}.`);
+            return;
+        }
         const replacement = sampleAndRemove(replacementList);
         if (!replacement) {
             console.log(`No replacement found for ${speciesId} of type ${replacementTypeKey}, skipping.`);
             return;
         }
         alreadyChosenFamilySet.add(replacement.family);
+        newlyAddedFamilies.add(replacement.family);
         replacementLog[speciesId] = replacement.id;
 
         const regex = new RegExp(auxWildReplacementsFrom[speciesId], 'g');
