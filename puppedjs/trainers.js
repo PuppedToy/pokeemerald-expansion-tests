@@ -1611,25 +1611,17 @@ const trainersData = [
         id: 'TRAINER_ROXANNE_1',
         level: 10,
         isBoss: true,
-        preventShuffle: true,
         bag: [...roxanneBag, 'Rock Gem'],
         tms: [...roxanneTMs],
         team: [
             {
-                ...POKEDEF_BAD_LC,
-                mustHaveOneOfMoves: ['MOVE_STEALTH_ROCK'],
-                tryToHaveMove: ['MOVE_ROCK_TOMB', 'MOVE_STEALTH_ROCK', 'MOVE_SANDSTORM'],
-                fallback: [
-                    {
-                        ...POKEDEF_BAD_LC,
-                        type: [POKEMON_TYPE_ROCK],
-                        tryToHaveMove: ['MOVE_ROCK_TOMB'],
-                    },
-                ],
+                specific: 'SPECIES_NOSEPASS',
+                tryToHaveMove: ['MOVE_ROCK_TOMB'],
             },
             {
-                specific: 'SPECIES_NOSEPASS',
-                tryToHaveMove: ['MOVE_ROCK_TOMB', 'MOVE_ROCK_SMASH', 'MOVE_SHOCK_WAVE', 'MOVE_SANDSTORM'],
+                ...POKEDEF_WEAK_LC,
+                type: [POKEMON_TYPE_ROCK],
+                tryToHaveMove: ['MOVE_ROCK_TOMB'],
             },
             {
                 ...POKEDEF_BAD_LC,
@@ -1638,16 +1630,16 @@ const trainersData = [
             },
             {
                 ...POKEDEF_BAD_LC,
-                type: [POKEMON_TYPE_GRASS],
+                type: [POKEMON_TYPE_ROCK],
                 tryToHaveMove: ['MOVE_ROCK_TOMB'],
             },
             {
                 ...POKEDEF_BAD_LC,
-                type: [POKEMON_TYPE_STEEL],
+                type: [POKEMON_TYPE_ROCK],
                 tryToHaveMove: ['MOVE_ROCK_TOMB'],
             },
             {
-                ...POKEDEF_WEAK_LC,
+                ...POKEDEF_BAD_LC,
                 type: [POKEMON_TYPE_ROCK],
                 tryToHaveMove: ['MOVE_ROCK_TOMB'],
             },
@@ -1920,8 +1912,8 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_BULK_UP'],
             },
             {
-                ...POKEDEF_BAD_LC,
-                type: [POKEMON_TYPE_DARK],
+                ...POKEDEF_WEAK_NOEVO,
+                type: [POKEMON_TYPE_FIGHTING],
                 tryToHaveMove: ['MOVE_BULK_UP'],
             },
             {
@@ -1931,11 +1923,11 @@ const trainersData = [
             },
             {
                 ...POKEDEF_BAD_LC,
-                type: [POKEMON_TYPE_ROCK],
+                type: [POKEMON_TYPE_FIGHTING],
                 tryToHaveMove: ['MOVE_BULK_UP'],
             },
             {
-                ...POKEDEF_WEAK_NOEVO,
+                ...POKEDEF_BAD_LC,
                 type: [POKEMON_TYPE_FIGHTING],
                 tryToHaveMove: ['MOVE_BULK_UP'],
             },
@@ -1955,19 +1947,14 @@ const trainersData = [
                 nature: NATURES.ADAMANT.name,
             },
             {
-                type: [POKEMON_TYPE_STEEL],
-                absoluteTier: [TIER_BAD],
-                evolutionTier: [TIER_PREMIUM, TIER_STRONG],
-                evoType: [EVO_TYPE_LC],
+                oneOf: stevenPokemon,
                 tryToHaveMove: ['MOVE_STEEL_WING'],
                 tryEvolve: true,
-                fallback: [
-                    {
-                        ...POKEDEF_BAD_LC,
-                        type: [POKEMON_TYPE_STEEL],
-                        tryToHaveMove: ['MOVE_STEEL_WING'],
-                    }
-                ],
+            },
+            {
+                oneOf: stevenPokemon,
+                tryToHaveMove: ['MOVE_STEEL_WING'],
+                tryEvolve: true,
             },
             {
                 oneOf: stevenPokemon,
@@ -1978,11 +1965,6 @@ const trainersData = [
                 ...POKEDEF_BAD_LC,
                 type: [POKEMON_TYPE_STEEL],
                 tryToHaveMove: ['MOVE_STEEL_WING'],
-            },
-            {
-                oneOf: stevenPokemon,
-                tryToHaveMove: ['MOVE_STEEL_WING'],
-                tryEvolve: true,
             },
             {
                 ...POKEDEF_WEAK_NOEVO,
@@ -2520,7 +2502,7 @@ const trainersData = [
             },
             {
                 ...POKEDEF_AVERAGE_NOEVO,
-                type: [POKEMON_TYPE_GRASS],
+                type: [POKEMON_TYPE_ELECTRIC],
                 tryToHaveMove: ['MOVE_SHOCK_WAVE'],
             },
             {
@@ -2529,8 +2511,8 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_SHOCK_WAVE'],
             },
             {
-                ...POKEDEF_WEAK_NOEVO,
-                type: [POKEMON_TYPE_FLYING],
+                ...POKEDEF_AVERAGE_NOEVO,
+                type: [POKEMON_TYPE_ELECTRIC],
                 tryToHaveMove: ['MOVE_SHOCK_WAVE'],
             },
         ],
@@ -2959,15 +2941,15 @@ const trainersData = [
             },
             {
                 ...POKEDEF_STRONG,
-                abilities: ['PROTOSYNTHESIS'],
+                abilities: [...sunAbilities],
                 tryToHaveMove: ['MOVE_OVERHEAT'],
                 fallback: [
                     {
                         absoluteTier: [TIER_AVERAGE, TIER_STRONG],
-                        abilities: ['PROTOSYNTHESIS'],
+                        abilities: [...sunAbilities],
                         tryToHaveMove: ['MOVE_OVERHEAT'],
                         checkValidEvo: true,
-                        tryEvolve: true,  
+                        tryEvolve: true,
                     },
                     {
                         ...POKEDEF_STRONG,
@@ -2983,7 +2965,7 @@ const trainersData = [
             {
                 ...POKEDEF_AVERAGE,
                 tryToHaveMove: ['MOVE_OVERHEAT'],
-                abilities: ['CHLOROPHYLL', 'HARVEST'],
+                abilities: [...sunAbilities],
             },
             {
                 isMega: true,
@@ -3106,7 +3088,7 @@ const trainersData = [
                     {
                         ...POKEDEF_WEAK_OR_AVERAGE,
                         abilities: ['GUTS'],
-                        mustHaveOneOfMoves: ['MOVE_FACADE'],
+                        mustHaveOneOfMoves: ['MOVE_FACADE', 'MOVE_PROTECT'],
                         pickBest: true,
                     },
                 ]
@@ -3117,8 +3099,8 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_FACADE'],
             },
             {
-                ...POKEDEF_AVERAGE,
-                type: [POKEMON_TYPE_GHOST],
+                ...POKEDEF_STRONG,
+                type: [POKEMON_TYPE_NORMAL],
                 tryToHaveMove: ['MOVE_FACADE'],
             },
             {
@@ -3488,13 +3470,8 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_AERIAL_ACE'],
             },
             {
-                ...POKEDEF_STRONG,
-                type: [POKEMON_TYPE_STEEL],
-                tryToHaveMove: ['MOVE_AERIAL_ACE'],
-            },
-            {
-                ...POKEDEF_STRONG,
-                type: [POKEMON_TYPE_GROUND],
+                ...POKEDEF_PREMIUM,
+                type: [POKEMON_TYPE_FLYING],
                 tryToHaveMove: ['MOVE_AERIAL_ACE'],
             },
             {
@@ -3503,7 +3480,12 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_AERIAL_ACE'],
             },
             {
-                ...POKEDEF_PREMIUM,
+                ...POKEDEF_STRONG,
+                type: [POKEMON_TYPE_FLYING],
+                tryToHaveMove: ['MOVE_AERIAL_ACE'],
+            },
+            {
+                ...POKEDEF_STRONG,
                 type: [POKEMON_TYPE_FLYING],
                 tryToHaveMove: ['MOVE_AERIAL_ACE'],
             },
@@ -4438,9 +4420,6 @@ const trainersData = [
         bag: [...generateSpaceCenterBag()],
         tms: [...spaceCenterTMs],
         team: [
-            pokeDefLegendMega({
-                type: [POKEMON_TYPE_WATER, POKEMON_TYPE_DRAGON],
-            }),
             {
                 specific: 'SPECIES_KINGDRA',
                 item: 'Chesto Berry',
@@ -4448,6 +4427,9 @@ const trainersData = [
                 nature: 'Jolly',
                 tryToHaveMove: ['MOVE_DRAGON_DANCE', 'MOVE_WATERFALL', 'MOVE_BLIZZARD', 'MOVE_REST'],
             },
+            pokeDefLegendMega({
+                type: [POKEMON_TYPE_WATER, POKEMON_TYPE_DRAGON],
+            }),
             pokeDefOnlyLegend({
                 type: [POKEMON_TYPE_WATER, POKEMON_TYPE_DRAGON],
             }),
