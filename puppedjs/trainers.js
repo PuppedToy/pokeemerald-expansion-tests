@@ -2724,17 +2724,6 @@ const trainersData = [
                     }
                 ],
             },
-            {
-                ...POKEDEF_AVERAGE,
-                abilities: [...sunAbilities],
-                type: [...magmaTeamTypes],
-                fallback: [
-                    {
-                        ...POKEDEF_AVERAGE,
-                        type: [...magmaTeamTypes],
-                    }
-                ],
-            },
         ],
     },
     // Route 112
