@@ -3733,18 +3733,7 @@ const trainersData = [
         bag: [...wallyBag2],
         tms: [...wallyTMs2],
         team: [
-            {
-                absoluteTier: [TIER_PREMIUM],
-                checkValidEvo: true,
-                type: [magmaTeamTypes[0]],
-                fallback: [
-                    {
-                        absoluteTier: [TIER_PREMIUM],
-                        checkValidEvo: true,
-                        type: [...magmaTeamTypes],
-                    },
-                ]
-            },
+            pokeDefDroughtMon(TIER_PREMIUM),
             {
                 absoluteTier: [TIER_PREMIUM],
                 checkValidEvo: true,
