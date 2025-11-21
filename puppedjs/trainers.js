@@ -1592,12 +1592,7 @@ const trainersData = [
                 encounterIds: ['SPECIES_PORYGON'],
                 item: 'Oran Berry',
             },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_PORYGON'],
-                item: 'Oran Berry',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
         ]
     },
     // Route 115
