@@ -4006,6 +4006,27 @@ const trainersData = [
                     },
                 ],
             },
+            {
+                ...POKEDEF_STRONG,
+                type: [POKEMON_TYPE_PSYCHIC],
+                hasStat: ['baseSpeed', '<', '50'],
+                fallback: [
+                    {
+                        ...POKEDEF_STRONG,
+                        type: [POKEMON_TYPE_PSYCHIC],
+                        hasStat: ['baseSpeed', '<', '70'],
+                    },
+                    {
+                        ...POKEDEF_AVERAGE,
+                        type: [POKEMON_TYPE_PSYCHIC],
+                        hasStat: ['baseSpeed', '<', '50'],
+                    },
+                    {
+                        ...POKEDEF_STRONG,
+                        type: [POKEMON_TYPE_PSYCHIC],
+                    },
+                ],
+            },
         ],
     },
     // Route 125
