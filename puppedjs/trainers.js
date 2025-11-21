@@ -2654,7 +2654,7 @@ const trainersData = [
         bag: [...magmaChimneyBag],
         tms: [...wattsonTMs],
         team: [
-            pokeDefDroughtMon(POKEDEF_STRONG),
+            pokeDefDroughtMon(POKEDEF_AVERAGE),
             {
                 specific: 'SPECIES_CAMERUPT',
                 item: 'Cameruptite',
