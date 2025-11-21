@@ -1251,19 +1251,19 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         });
 
         let ivs = 6;
-        if (isBoss) {
+        if (trainer.isBoss) {
             ivs = 31;
         }
-        else if (level >= 40) {
+        else if (trainer.level >= 40) {
             ivs = 26;
         }
-        else if (level >= 30) {
+        else if (trainer.level >= 30) {
             ivs = 21;
         }
-        else if (level >= 20) {
+        else if (trainer.level >= 20) {
             ivs = 16;
         }
-        else if (level >= 10) {
+        else if (trainer.level >= 10) {
             ivs = 11;
         }
         trainersResults[trainer.id] = {
