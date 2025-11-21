@@ -1250,10 +1250,27 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             }
         });
 
+        let ivs = 6;
+        if (isBoss) {
+            ivs = 31;
+        }
+        else if (level >= 40) {
+            ivs = 26;
+        }
+        else if (level >= 30) {
+            ivs = 21;
+        }
+        else if (level >= 20) {
+            ivs = 16;
+        }
+        else if (level >= 10) {
+            ivs = 11;
+        }
         trainersResults[trainer.id] = {
             level: trainer.level,
             isBoss: trainer.isBoss || false,
             isPartner: trainer.isPartner || false,
+            ivs,
             team,
         };
     });
@@ -1279,7 +1296,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             if (teamEntry.nature) {
                 lines.push(`Nature: ${teamEntry.nature}`);
             }
-            lines.push('IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe',);
+            const ivs = trainerData.ivs || 31;
+            lines.push(`IVs: ${ivs} HP / ${ivs} Atk / ${ivs} Def / ${ivs} SpA / ${ivs} SpD / ${ivs} Spe`,);
             if (teamEntry.moves && teamEntry.moves.length > 0) {
                 const moveNames = teamEntry.moves.slice(0, 4)
                     .map(m => moves[m] ? moves[m].name : m);

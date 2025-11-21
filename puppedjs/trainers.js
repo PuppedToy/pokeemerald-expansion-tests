@@ -219,6 +219,8 @@ if (!e44MainType) {
     e44MainType = sampleAndRemove(types);
 }
 
+const tateAndLizaUseSolrock = Math.random() < 0.5;
+
 const generic3Average3StrongTeamTemplate = () => [
     {
         absoluteTier: [TIER_STRONG],
@@ -1300,7 +1302,7 @@ const trainersData = [
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_ZIGZAGOON'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 4),
         ]
     },
     {
@@ -1311,7 +1313,7 @@ const trainersData = [
                 ...POKEDEF_BAD_LC,
                 item: 'Oran Berry',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 4),
         ],
     },
     // Route 103
@@ -1379,7 +1381,7 @@ const trainersData = [
                 encounterIds: ['SPECIES_WURMPLE'],
                 item: 'Oran Berry',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 4),
         ],
     },
     {
@@ -1391,7 +1393,7 @@ const trainersData = [
                 encounterIds: ['SPECIES_WINGULL'],
                 item: 'Oran Berry',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 4),
         ]
     },
     {
@@ -1403,7 +1405,7 @@ const trainersData = [
                 ...POKEDEF_BAD_LC,
                 item: 'Expert Belt',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 4),
         ]
     },
     // Route 103
@@ -1416,7 +1418,7 @@ const trainersData = [
                 encounterIds: ['SPECIES_SURSKIT'],
                 item: 'Oran Berry',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 4),
         ]
     },
     // Route 104
@@ -1429,7 +1431,7 @@ const trainersData = [
                 encounterIds: ['SPECIES_WEEDLE'],
                 item: 'Oran Berry',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 4),
         ]
     },
     {
@@ -1442,7 +1444,7 @@ const trainersData = [
                 evoType: [EVO_TYPE_LC],
                 item: 'Eviolite',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 4),
         ]
     },
     // Petalburg Woods
@@ -1463,7 +1465,7 @@ const trainersData = [
                 ...POKEDEF_BAD_LC,
                 type: [POKEMON_TYPE_GROUND],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 2),
         ],
     },
     {
@@ -1515,7 +1517,7 @@ const trainersData = [
     {
         id: 'TRAINER_WINSTON_1',
         level: 10,
-        bag: [...rival103Bag],
+        bag: ['Charti Berry', 'Chople Berry', 'Passho Berry'],
         team: [
             {
                 ...POKEDEF_BAD_LC,
@@ -1546,7 +1548,7 @@ const trainersData = [
     {
         id: 'TRAINER_IVAN',
         level: 10,
-        bag: [...rival103Bag, 'Water Gem', 'Flying Gem', 'Dark Gem'],
+        bag: getSampleItemsFromArray(['Water Gem', 'Flying Gem', 'Dark Gem'], 2),
         team: [
             {
                 ...POKEDEF_BAD_LC,
@@ -1560,7 +1562,18 @@ const trainersData = [
                 ...POKEDEF_BAD_LC,
                 type: [POKEMON_TYPE_DARK],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 3),
+            {
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_WATER],
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_FLYING],
+            },
+            {
+                ...POKEDEF_BAD_LC,
+                type: [POKEMON_TYPE_DARK],
+            },
         ],
     },
     {
@@ -1939,37 +1952,31 @@ const trainersData = [
         level: 19,
         isBoss: true,
         bag: [...brawylyBag, 'Steel Gem', 'Rock Gem'],
-        tms: [...brawlyTMs],
+        tms: [...brawlyTMs, 'MOVE_STEEL_WING', 'MOVE_STEEL_WING', 'MOVE_STEEL_WING'],
         team: [
             {
-                specific: 'SPECIES_SKARMORY',
-                tryToHaveMove: ['MOVE_STEEL_WING'],
-                nature: NATURES.ADAMANT.name,
+                ...POKEDEF_WEAK_NOEVO,
+                type: [POKEMON_TYPE_STEEL],
+            },
+            {
+                ...POKEDEF_WEAK_NOEVO,
+                type: [POKEMON_TYPE_STEEL],
             },
             {
                 oneOf: stevenPokemon,
-                tryToHaveMove: ['MOVE_STEEL_WING'],
                 tryEvolve: true,
             },
             {
                 oneOf: stevenPokemon,
-                tryToHaveMove: ['MOVE_STEEL_WING'],
                 tryEvolve: true,
             },
             {
                 oneOf: stevenPokemon,
-                tryToHaveMove: ['MOVE_STEEL_WING'],
                 tryEvolve: true,
             },
             {
                 ...POKEDEF_BAD_LC,
                 type: [POKEMON_TYPE_STEEL],
-                tryToHaveMove: ['MOVE_STEEL_WING'],
-            },
-            {
-                ...POKEDEF_WEAK_NOEVO,
-                type: [POKEMON_TYPE_STEEL],
-                tryToHaveMove: ['MOVE_STEEL_WING'],
             },
         ],
     },
@@ -2629,23 +2636,19 @@ const trainersData = [
             {
                 ...POKEDEF_AVERAGE,
                 abilities: [...sandAbilities],
-                type: [...magmaTeamTypes],
             },
             {
                 ...POKEDEF_AVERAGE,
                 abilities: [...sandAbilities],
-                type: [...magmaTeamTypes],
             },
             pokeDefSandStreamMon(POKEDEF_UP_TO_STRONG),
             {
-                ...POKEDEF_UP_TO_STRONG,
+                ...POKEDEF_AVERAGE,
                 abilities: [...sandAbilities],
-                type: [...magmaTeamTypes],
             },
             {
                 ...POKEDEF_UP_TO_STRONG,
                 abilities: [...sandAbilities],
-                type: [...magmaTeamTypes],
             },
         ],
     },
@@ -2656,33 +2659,86 @@ const trainersData = [
         bag: [...magmaChimneyBag],
         tms: [...wattsonTMs],
         team: [
-            {
-                id: 'MAXIE_STRONG_1',
-                ...POKEDEF_STRONG,
-                type: [magmaTeamTypes[0]],
-            },
+            pokeDefDroughtMon(POKEDEF_STRONG),
             {
                 specific: 'SPECIES_CAMERUPT',
                 item: 'Cameruptite',
-                ability: 'SOLID_ROCK',
+                abilities: ['SOLID_ROCK'],
                 tryToHaveMove: ['MOVE_EARTHQUAKE', 'MOVE_LAVA_PLUME', 'MOVE_ROCK_SLIDE', 'MOVE_EARTH_POWER'],
+            },
+            {
+                id: 'MAXIE_STRONG_1',
+                ...POKEDEF_STRONG,
+                abilities: [...sunAbilities],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
+                fallback: [
+                    {
+                        id: 'MAXIE_STRONG_1',
+                        ...POKEDEF_STRONG,
+                        type: [...magmaTeamTypes],
+                        abilities: [...sunAbilities],
+                    },
+                    {
+                        id: 'MAXIE_STRONG_1',
+                        ...POKEDEF_STRONG,
+                        type: [magmaTeamTypes[0], magmaTeamTypes[1]],
+                    },
+                    {
+                        id: 'MAXIE_STRONG_1',
+                        ...POKEDEF_STRONG,
+                        type: [...magmaTeamTypes],
+                    }
+                ],
             },
             {
                 id: 'MAXIE_STRONG_2',
                 ...POKEDEF_STRONG,
-                type: [magmaTeamTypes[1]],
+                abilities: [...sunAbilities],
+                type: [...magmaTeamTypes],
+                fallback: [
+                    {
+                        id: 'MAXIE_STRONG_2',
+                        ...POKEDEF_STRONG,
+                        type: [...magmaTeamTypes],
+                    }
+                ],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [magmaTeamTypes[2]],
+                abilities: [...sunAbilities],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
+                fallback: [
+                    {
+                        ...POKEDEF_AVERAGE,
+                        type: [magmaTeamTypes[0], magmaTeamTypes[1]],
+                    },
+                    {
+                        ...POKEDEF_AVERAGE,
+                        type: [...magmaTeamTypes],
+                    }
+                ],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [magmaTeamTypes[3]],
+                abilities: [...sunAbilities],
+                type: [...magmaTeamTypes],
+                fallback: [
+                    {
+                        ...POKEDEF_AVERAGE,
+                        type: [...magmaTeamTypes],
+                    }
+                ],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [magmaTeamTypes[4]],
+                abilities: [...sunAbilities],
+                type: [...magmaTeamTypes],
+                fallback: [
+                    {
+                        ...POKEDEF_AVERAGE,
+                        type: [...magmaTeamTypes],
+                    }
+                ],
             },
         ],
     },
@@ -2927,7 +2983,6 @@ const trainersData = [
         id: 'TRAINER_FLANNERY_1',
         level: 33,
         isBoss: true,
-        preventShuffle: true,
         bag: [...flanneryBag],
         tms: [...flanneryTMs],
         team: [
@@ -2941,27 +2996,19 @@ const trainersData = [
             },
             {
                 ...POKEDEF_STRONG,
-                abilities: [...sunAbilities],
+                type: [POKEMON_TYPE_FIRE],
                 tryToHaveMove: ['MOVE_OVERHEAT'],
-                fallback: [
-                    {
-                        absoluteTier: [TIER_AVERAGE, TIER_STRONG],
-                        abilities: [...sunAbilities],
-                        tryToHaveMove: ['MOVE_OVERHEAT'],
-                        checkValidEvo: true,
-                        tryEvolve: true,
-                    },
-                    {
-                        ...POKEDEF_STRONG,
-                    }
-                ]
             },
             {
                 ...POKEDEF_STRONG,
                 type: [POKEMON_TYPE_FIRE],
                 tryToHaveMove: ['MOVE_OVERHEAT'],
             },
-            pokeDefDroughtMon(POKEDEF_AVERAGE),
+            {
+                ...POKEDEF_STRONG,
+                type: [POKEMON_TYPE_FIRE],
+                tryToHaveMove: ['MOVE_OVERHEAT'],
+            },
             {
                 ...POKEDEF_AVERAGE,
                 tryToHaveMove: ['MOVE_OVERHEAT'],
@@ -2969,8 +3016,7 @@ const trainersData = [
             },
             {
                 isMega: true,
-                absoluteTier: [TIER_STRONG, TIER_PREMIUM, TIER_LEGEND],
-                abilities: ['SOLAR_POWER'],
+                absoluteTier: [TIER_PREMIUM, TIER_LEGEND],
                 type: [POKEMON_TYPE_FIRE],
                 tryToHaveMove: ['MOVE_OVERHEAT'],
                 checkValidEvo: true,
@@ -3084,12 +3130,20 @@ const trainersData = [
                 abilities: ['GUTS'],
                 mustHaveOneOfMoves: ['MOVE_FACADE'],
                 tryToHaveMove: ['MOVE_FACADE', 'MOVE_PROTECT'],
+                type: [POKEMON_TYPE_NORMAL],
+                item: 'Flame Orb',
                 fallback: [
                     {
                         ...POKEDEF_WEAK_OR_AVERAGE,
                         abilities: ['GUTS'],
                         mustHaveOneOfMoves: ['MOVE_FACADE', 'MOVE_PROTECT'],
+                        type: [POKEMON_TYPE_NORMAL],
+                        item: 'Flame Orb',
                         pickBest: true,
+                    },
+                    {
+                        ...POKEDEF_STRONG,
+                        mustHaveOneOfMoves: ['MOVE_FACADE'],
                     },
                 ]
             },
@@ -3115,6 +3169,16 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_FACADE'],
                 checkValidEvo: true,
                 tryEvolve: true,
+                fallback: [
+                   {
+                        isMega: true,
+                        absoluteTier: [TIER_STRONG, TIER_PREMIUM, TIER_LEGEND],
+                        type: [POKEMON_TYPE_NORMAL],
+                        tryToHaveMove: ['MOVE_FACADE'],
+                        checkValidEvo: true,
+                        tryEvolve: true,
+                   } 
+                ]
             },
         ],
     },
@@ -3431,7 +3495,6 @@ const trainersData = [
         id: 'TRAINER_WINONA_1',
         level: 43,
         isBoss: true,
-        preventShuffle: true,
         bag: [...winonaBag],
         tms: [...shellyTMs],
         team: [
@@ -3442,13 +3505,14 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_TAILWIND', 'MOVE_AERIAL_ACE'],
                 fallback: [
                     {
-                        ...POKEDEF_STRONG,
-                        mustHaveOneOfMoves: ['MOVE_TAILWIND'],
-                        tryToHaveMove: ['MOVE_TAILWIND', 'MOVE_AERIAL_ACE'],
-                    },
-                    {
                         ...POKEDEF_AVERAGE,
                         type: [POKEMON_TYPE_FLYING],
+                        mustHaveOneOfMoves: ['MOVE_TAILWIND'],
+                        tryToHaveMove: ['MOVE_TAILWIND', 'MOVE_AERIAL_ACE'],
+                        pickBest: true,
+                    },
+                    {
+                        ...POKEDEF_STRONG,
                         mustHaveOneOfMoves: ['MOVE_TAILWIND'],
                         tryToHaveMove: ['MOVE_TAILWIND', 'MOVE_AERIAL_ACE'],
                     },
@@ -3467,7 +3531,7 @@ const trainersData = [
             {
                 specific: 'SPECIES_ALTARIA',
                 item: 'Altarianite',
-                tryToHaveMove: ['MOVE_AERIAL_ACE'],
+                tryToHaveMove: ['MOVE_AERIAL_ACE', 'MOVE_FACADE', 'MOVE_DRAGON_PULSE', 'MOVE_HYPER_BEAM'],
             },
             {
                 ...POKEDEF_PREMIUM,
@@ -3734,7 +3798,7 @@ const trainersData = [
             {
                 specific: 'SPECIES_CAMERUPT',
                 item: 'Cameruptite',
-                ability: 'SOLID_ROCK',
+                abilities: ['SOLID_ROCK'],
             },
         ],
     },
@@ -3899,40 +3963,36 @@ const trainersData = [
         bannedItems: ['Focus Sash', 'Room Service', 'Light Clay'],
         team: [
             {
-                specific: 'SPECIES_SOLROCK',
-                tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
-                item: 'Light Clay',
-            },
-            {
-                ...POKEDEF_STRONG,
+                ...POKEDEF_UP_TO_PREMIUM,
                 mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
                 tryToHaveMove: ['MOVE_TRICK_ROOM'],
                 type: [POKEMON_TYPE_PSYCHIC],
                 item: 'Focus Sash',
-                fallback: [
-                    {
-                        ...POKEDEF_STRONG,
-                        mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
-                        tryToHaveMove: ['MOVE_TRICK_ROOM'],
-                        item: 'Focus Sash',
-                    },
-                    {
-                        ...POKEDEF_UP_TO_PREMIUM,
-                        mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
-                        tryToHaveMove: ['MOVE_TRICK_ROOM'],
-                        item: 'Focus Sash',
-                    },
-                    {
-                        ...POKEDEF_STRONG,
-                        type: [POKEMON_TYPE_PSYCHIC],
-                        item: 'Focus Sash',
-                    }
-                ]
+                pickBest: true,
             },
+            (tateAndLizaUseSolrock ?
             {
-                oneOf: ['SPECIES_LUNALA', 'SPECIES_SOLGALEO'],
+                specific: 'SPECIES_SOLROCK',
+                tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
+                item: 'Light Clay',
+                nature: 'Relaxed',
+            }
+            : {
+                specific: 'SPECIES_LUNATONE',
+                tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
+                item: 'Light Clay',
+                nature: 'Sassy',
+            }),
+            (tateAndLizaUseSolrock ?
+            {
+                specific: 'SPECIES_LUNALA',
                 item: 'Room Service',
-            },
+                nature: 'Quiet',
+            } : {
+                specific: 'SPECIES_SOLGALEO',
+                item: 'Room Service',
+                nature: 'Brave',
+            }),
             {
                 ...POKEDEF_MEGA,
                 hasStat: ['baseSpeed', '<', '50'],
@@ -3951,10 +4011,6 @@ const trainersData = [
                         ...POKEDEF_MEGA,
                     },
                 ]
-            },
-            {
-                specific: 'SPECIES_LUNATONE',
-                tryToHaveMove: ['MOVE_EXPLOSION'],
             },
             {
                 ...POKEDEF_STRONG,
@@ -4407,7 +4463,7 @@ const trainersData = [
             {
                 specific: 'SPECIES_SHARPEDO',
                 item: 'Sharpedonite',
-                ability: 'SPEED_BOOST',
+                abilities: ['SPEED_BOOST'],
                 nature: 'Adamant',
             },
         ],
