@@ -380,6 +380,7 @@
     }
   </script>
   <script src="pokes.js"></script>
+  <script src="moves.js"></script>
   <script src="trainers.js"></script>
   <script src="wildpokes.js"></script>
   <!-- script to handle pokedex -->
@@ -442,6 +443,75 @@
         </div>
       `;
       pokemonGrid.appendChild(card);
+    });
+  </script>
+  <!-- script to handle moves -->
+  <script>
+    const movesGrid = document.getElementById('moves-cards');
+
+    // Transform movesData → array sorted alphabetically
+    const sortedMoves = Object.values(movesData).sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+
+    function formatCategory(cat) {
+      switch (cat) {
+        case 'DAMAGE_CATEGORY_PHYSICAL': return 'Physical';
+        case 'DAMAGE_CATEGORY_SPECIAL':  return 'Special';
+        case 'DAMAGE_CATEGORY_STATUS':   return 'Status';
+        default: return cat;
+      }
+    }
+
+    function categoryColor(cat) {
+      switch (cat) {
+        case 'DAMAGE_CATEGORY_PHYSICAL': return '#d65f5f'; // red-ish
+        case 'DAMAGE_CATEGORY_SPECIAL':  return '#5fa0ff'; // blue-ish
+        case 'DAMAGE_CATEGORY_STATUS':   return '#b37cff'; // purple-ish
+        default: return '#888';
+      }
+    }
+
+    function cleanTarget(str) {
+      return str
+        .replace('MOVE_TARGET_', '')
+        .replace(/_/g, ' ')
+        .toLowerCase()
+        .replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    sortedMoves.forEach(move => {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const catName = formatCategory(move.category);
+      const catColor = categoryColor(move.category);
+
+      card.innerHTML = `<div class="meta">
+        <div>
+          <div class="title">${move.name}</div>
+
+          <div style="text-align:center; margin-bottom:10px;">
+            <span class="type" style="background-color:${typeColors[move.type]};">${move.type}</span>
+            <span class="type" style="background-color:${catColor};">${catName}</span>
+          </div>
+
+          <div class="small" style="text-align:center; margin-bottom:6px;">
+            Power: <b>${move.power ?? '-'}</b> &nbsp;•&nbsp;
+            Accuracy: <b>${move.accuracy ?? '-'}</b>% &nbsp;•&nbsp;
+            PP: <b>${move.pp}</b>
+          </div>
+
+          <div class="small" style="text-align:center; margin-bottom:6px;">
+            Priority: <b>${move.priority}</b>
+          </div>
+
+          <div class="small" style="text-align:center;">
+            Target: ${cleanTarget(move.target)}
+          </div>
+        </div></div>`;
+
+      movesGrid.appendChild(card);
     });
   </script>
   <!-- script to handle trainers -->
