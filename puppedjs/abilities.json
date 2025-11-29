@@ -1,1246 +1,1868 @@
 {
   "ABILITY_NONE": {
     "name": "-------",
-    "rating": 0
+    "description": "No special ability.",
+    "rating": 0,
+    "breakable": false
   },
   "ABILITY_STENCH": {
     "name": "Stench",
-    "rating": 1
+    "description": "May cause a foe to flinch.",
+    "rating": 1,
+    "breakable": false
   },
   "ABILITY_DRIZZLE": {
     "name": "Drizzle",
-    "rating": 9
+    "description": "Summons rain in battle.",
+    "rating": 9,
+    "breakable": false
   },
   "ABILITY_SPEED_BOOST": {
     "name": "Speed Boost",
-    "rating": 9
+    "description": "Gradually boosts Speed.",
+    "rating": 9,
+    "breakable": false
   },
   "ABILITY_BATTLE_ARMOR": {
     "name": "Battle Armor",
-    "rating": 2
+    "description": "Blocks critical hits.",
+    "rating": 2,
+    "breakable": true
   },
   "ABILITY_STURDY": {
     "name": "Sturdy",
-    "rating": 6
+    "description": "Negates 1-hit KO attacks.",
+    "rating": 6,
+    "breakable": true
   },
   "ABILITY_DAMP": {
     "name": "Damp",
-    "rating": 2
+    "description": "Prevents self-destruction.",
+    "rating": 2,
+    "breakable": true
   },
   "ABILITY_LIMBER": {
     "name": "Limber",
-    "rating": 3
+    "description": "Prevents paralysis.",
+    "rating": 3,
+    "breakable": true
   },
   "ABILITY_SAND_VEIL": {
     "name": "Sand Veil",
-    "rating": 3
+    "description": "Ups evasion in a sandstorm.",
+    "rating": 3,
+    "breakable": true
   },
   "ABILITY_STATIC": {
     "name": "Static",
-    "rating": 4
+    "description": "Paralyzes on contact.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_VOLT_ABSORB": {
     "name": "Volt Absorb",
-    "rating": 7
+    "description": "Turns electricity into HP.",
+    "rating": 7,
+    "breakable": true
   },
   "ABILITY_WATER_ABSORB": {
     "name": "Water Absorb",
-    "rating": 7
+    "description": "Changes water into HP.",
+    "rating": 7,
+    "breakable": true
   },
   "ABILITY_OBLIVIOUS": {
     "name": "Oblivious",
-    "rating": 2
+    "description": "Prevents attraction.",
+    "rating": 2,
+    "breakable": true
   },
   "ABILITY_CLOUD_NINE": {
     "name": "Cloud Nine",
-    "rating": 5
+    "description": "Negates weather effects.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_COMPOUND_EYES": {
     "name": "Compound Eyes",
-    "rating": 7
+    "description": "Raises accuracy.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_INSOMNIA": {
     "name": "Insomnia",
-    "rating": 4
+    "description": "Prevents sleep.",
+    "rating": 4,
+    "breakable": true
   },
   "ABILITY_COLOR_CHANGE": {
     "name": "Color Change",
-    "rating": 2
+    "description": "Changes type to foe's move.",
+    "rating": 2,
+    "breakable": false
   },
   "ABILITY_IMMUNITY": {
     "name": "Immunity",
-    "rating": 4
+    "description": "Prevents poisoning.",
+    "rating": 4,
+    "breakable": true
   },
   "ABILITY_FLASH_FIRE": {
     "name": "Flash Fire",
-    "rating": 6
+    "description": "Powers up if hit by fire.",
+    "rating": 6,
+    "breakable": true
   },
   "ABILITY_SHIELD_DUST": {
     "name": "Shield Dust",
-    "rating": 5
+    "description": "Prevents added effects.",
+    "rating": 5,
+    "breakable": true
   },
   "ABILITY_OWN_TEMPO": {
     "name": "Own Tempo",
-    "rating": 3
+    "description": "Prevents confusion.",
+    "rating": 3,
+    "breakable": true
   },
   "ABILITY_SUCTION_CUPS": {
     "name": "Suction Cups",
-    "rating": 2
+    "description": "Firmly anchors the body.",
+    "rating": 2,
+    "breakable": true
   },
   "ABILITY_INTIMIDATE": {
     "name": "Intimidate",
-    "rating": 7
+    "description": "Lowers the foe's Attack.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_SHADOW_TAG": {
     "name": "Shadow Tag",
-    "rating": 10
+    "description": "Prevents the foe's escape.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_ROUGH_SKIN": {
     "name": "Rough Skin",
-    "rating": 6
+    "description": "Hurts to touch.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_WONDER_GUARD": {
     "name": "Wonder Guard",
-    "rating": 10
+    "description": "Only “Supereffective” hits.",
+    "rating": 10,
+    "breakable": true
   },
   "ABILITY_LEVITATE": {
     "name": "Levitate",
-    "rating": 7
+    "description": "Not hit by Ground attacks.",
+    "rating": 7,
+    "breakable": true
   },
   "ABILITY_EFFECT_SPORE": {
     "name": "Effect Spore",
-    "rating": 4
+    "description": "Leaves spores on contact.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_SYNCHRONIZE": {
     "name": "Synchronize",
-    "rating": 4
+    "description": "Passes on status problems.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_CLEAR_BODY": {
     "name": "Clear Body",
-    "rating": 4
+    "description": "Prevents ability reduction.",
+    "rating": 4,
+    "breakable": true
   },
   "ABILITY_NATURAL_CURE": {
     "name": "Natural Cure",
-    "rating": 7
+    "description": "Heals upon switching out.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_LIGHTNING_ROD": {
     "name": "Lightning Rod",
-    "rating": 7
+    "description": "Draws electrical moves.",
+    "rating": 7,
+    "breakable": true
   },
   "ABILITY_SERENE_GRACE": {
     "name": "Serene Grace",
-    "rating": 8
+    "description": "Promotes added effects.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_SWIFT_SWIM": {
     "name": "Swift Swim",
-    "rating": 6
+    "description": "Raises Speed in rain.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_CHLOROPHYLL": {
     "name": "Chlorophyll",
-    "rating": 6
+    "description": "Raises Speed in sunshine.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_ILLUMINATE": {
     "name": "Illuminate",
-    "rating": 0
+    "description": "Encounter rate increases.",
+    "rating": 0,
+    "breakable": true
   },
   "ABILITY_TRACE": {
     "name": "Trace",
-    "rating": 6
+    "description": "Copies special ability.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_HUGE_POWER": {
     "name": "Huge Power",
-    "rating": 10
+    "description": "Raises Attack.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_POISON_POINT": {
     "name": "Poison Point",
-    "rating": 4
+    "description": "Poisons foe on contact.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_INNER_FOCUS": {
     "name": "Inner Focus",
-    "rating": 2
+    "description": "Prevents flinching.",
+    "rating": 2,
+    "breakable": true
   },
   "ABILITY_MAGMA_ARMOR": {
     "name": "Magma Armor",
-    "rating": 1
+    "description": "Prevents freezing.",
+    "rating": 1,
+    "breakable": true
   },
   "ABILITY_WATER_VEIL": {
     "name": "Water Veil",
-    "rating": 4
+    "description": "Prevents burns.",
+    "rating": 4,
+    "breakable": true
   },
   "ABILITY_MAGNET_PULL": {
     "name": "Magnet Pull",
-    "rating": 9
+    "description": "Traps Steel-type Pokémon.",
+    "rating": 9,
+    "breakable": false
   },
   "ABILITY_SOUNDPROOF": {
     "name": "Soundproof",
-    "rating": 4
+    "description": "Avoids sound-based moves.",
+    "rating": 4,
+    "breakable": true
   },
   "ABILITY_RAIN_DISH": {
     "name": "Rain Dish",
-    "rating": 3
+    "description": "Slight HP recovery in rain.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_SAND_STREAM": {
     "name": "Sand Stream",
-    "rating": 9
+    "description": "Summons a sandstorm.",
+    "rating": 9,
+    "breakable": false
   },
   "ABILITY_PRESSURE": {
     "name": "Pressure",
-    "rating": 5
+    "description": "Raises foe's PP usage.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_THICK_FAT": {
     "name": "Thick Fat",
-    "rating": 7
+    "description": "Heat-and-cold protection.",
+    "rating": 7,
+    "breakable": true
   },
   "ABILITY_EARLY_BIRD": {
     "name": "Early Bird",
-    "rating": 4
+    "description": "Awakens quickly from sleep.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_FLAME_BODY": {
     "name": "Flame Body",
-    "rating": 4
+    "description": "Burns the foe on contact.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_RUN_AWAY": {
     "name": "Run Away",
-    "rating": 0
+    "description": "Makes escaping easier.",
+    "rating": 0,
+    "breakable": false
   },
   "ABILITY_KEEN_EYE": {
     "name": "Keen Eye",
-    "rating": 1
+    "description": "Prevents loss of accuracy.",
+    "rating": 1,
+    "breakable": true
   },
   "ABILITY_HYPER_CUTTER": {
     "name": "Hyper Cutter",
-    "rating": 3
+    "description": "Prevents Attack reduction.",
+    "rating": 3,
+    "breakable": true
   },
   "ABILITY_PICKUP": {
     "name": "Pickup",
-    "rating": 1
+    "description": "May pick up items.",
+    "rating": 1,
+    "breakable": false
   },
   "ABILITY_TRUANT": {
     "name": "Truant",
-    "rating": -2
+    "description": "Moves only every two turns.",
+    "rating": -2,
+    "breakable": false
   },
   "ABILITY_HUSTLE": {
     "name": "Hustle",
-    "rating": 7
+    "description": "Trades accuracy for power.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_CUTE_CHARM": {
     "name": "Cute Charm",
-    "rating": 2
+    "description": "Infatuates on contact.",
+    "rating": 2,
+    "breakable": false
   },
   "ABILITY_PLUS": {
     "name": "Plus",
-    "rating": 0
+    "description": "Powers up with Minus.",
+    "rating": 0,
+    "breakable": false
   },
   "ABILITY_MINUS": {
     "name": "Minus",
-    "rating": 0
+    "description": "Powers up with Plus.",
+    "rating": 0,
+    "breakable": false
   },
   "ABILITY_FORECAST": {
     "name": "Forecast",
-    "rating": 6
+    "description": "Changes with the weather.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_STICKY_HOLD": {
     "name": "Sticky Hold",
-    "rating": 3
+    "description": "Prevents item theft.",
+    "rating": 3,
+    "breakable": true
   },
   "ABILITY_SHED_SKIN": {
     "name": "Shed Skin",
-    "rating": 7
+    "description": "Heals the body by shedding.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_GUTS": {
     "name": "Guts",
-    "rating": 6
+    "description": "Ups Attack if suffering.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_MARVEL_SCALE": {
     "name": "Marvel Scale",
-    "rating": 5
+    "description": "Ups Defense if suffering.",
+    "rating": 5,
+    "breakable": true
   },
   "ABILITY_LIQUID_OOZE": {
     "name": "Liquid Ooze",
-    "rating": 3
+    "description": "Draining causes injury.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_OVERGROW": {
     "name": "Overgrow",
-    "rating": 5
+    "description": "Ups Grass moves in a pinch.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_BLAZE": {
     "name": "Blaze",
-    "rating": 5
+    "description": "Ups Fire moves in a pinch.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_TORRENT": {
     "name": "Torrent",
-    "rating": 5
+    "description": "Ups Water moves in a pinch.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_SWARM": {
     "name": "Swarm",
-    "rating": 5
+    "description": "Ups Bug moves in a pinch.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_ROCK_HEAD": {
     "name": "Rock Head",
-    "rating": 5
+    "description": "Prevents recoil damage.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_DROUGHT": {
     "name": "Drought",
-    "rating": 9
+    "description": "Summons sunlight in battle.",
+    "rating": 9,
+    "breakable": false
   },
   "ABILITY_ARENA_TRAP": {
     "name": "Arena Trap",
-    "rating": 9
+    "description": "Prevents fleeing.",
+    "rating": 9,
+    "breakable": false
   },
   "ABILITY_VITAL_SPIRIT": {
     "name": "Vital Spirit",
-    "rating": 4
+    "description": "Prevents sleep.",
+    "rating": 4,
+    "breakable": true
   },
   "ABILITY_WHITE_SMOKE": {
     "name": "White Smoke",
-    "rating": 4
+    "description": "Prevents ability reduction.",
+    "rating": 4,
+    "breakable": true
   },
   "ABILITY_PURE_POWER": {
     "name": "Pure Power",
-    "rating": 10
+    "description": "Raises Attack.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_SHELL_ARMOR": {
     "name": "Shell Armor",
-    "rating": 2
+    "description": "Blocks critical hits.",
+    "rating": 2,
+    "breakable": true
   },
   "ABILITY_AIR_LOCK": {
     "name": "Air Lock",
-    "rating": 5
+    "description": "Negates weather effects.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_TANGLED_FEET": {
     "name": "Tangled Feet",
-    "rating": 2
+    "description": "Ups evasion if confused.",
+    "rating": 2,
+    "breakable": true
   },
   "ABILITY_MOTOR_DRIVE": {
     "name": "Motor Drive",
-    "rating": 6
+    "description": "Electricity raises Speed.",
+    "rating": 6,
+    "breakable": true
   },
   "ABILITY_RIVALRY": {
     "name": "Rivalry",
-    "rating": 1
+    "description": "Powers up against rivals.",
+    "rating": 1,
+    "breakable": false
   },
   "ABILITY_STEADFAST": {
     "name": "Steadfast",
-    "rating": 2
+    "description": "Flinching raises Speed.",
+    "rating": 2,
+    "breakable": false
   },
   "ABILITY_SNOW_CLOAK": {
     "name": "Snow Cloak",
-    "rating": 3
+    "description": "Ups evasion in Hail or Snow.",
+    "rating": 3,
+    "breakable": true
   },
   "ABILITY_GLUTTONY": {
     "name": "Gluttony",
-    "rating": 3
+    "description": "Eats Berries early.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_ANGER_POINT": {
     "name": "Anger Point",
-    "rating": 4
+    "description": "Critical hits raise Attack.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_UNBURDEN": {
     "name": "Unburden",
-    "rating": 7
+    "description": "Using a hold item ups Speed.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_HEATPROOF": {
     "name": "Heatproof",
-    "rating": 5
+    "description": "Heat and burn protection.",
+    "rating": 5,
+    "breakable": true
   },
   "ABILITY_SIMPLE": {
     "name": "Simple",
-    "rating": 8
+    "description": "Prone to wild stat changes.",
+    "rating": 8,
+    "breakable": true
   },
   "ABILITY_DRY_SKIN": {
     "name": "Dry Skin",
-    "rating": 6
+    "description": "Prefers moisture to heat.",
+    "rating": 6,
+    "breakable": true
   },
   "ABILITY_DOWNLOAD": {
     "name": "Download",
-    "rating": 7
+    "description": "Adjusts power favorably.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_IRON_FIST": {
     "name": "Iron Fist",
-    "rating": 6
+    "description": "Boosts punching moves.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_POISON_HEAL": {
     "name": "Poison Heal",
-    "rating": 8
+    "description": "Restores HP if poisoned.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_ADAPTABILITY": {
     "name": "Adaptability",
-    "rating": 8
+    "description": "Boosts same type attacks.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_SKILL_LINK": {
     "name": "Skill Link",
-    "rating": 7
+    "description": "Multi-hit moves hit 5 times.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_HYDRATION": {
     "name": "Hydration",
-    "rating": 4
+    "description": "Cures status in rain.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_SOLAR_POWER": {
     "name": "Solar Power",
-    "rating": 3
+    "description": "Powers up in sunshine.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_QUICK_FEET": {
     "name": "Quick Feet",
-    "rating": 5
+    "description": "Ups Speed if suffering.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_NORMALIZE": {
     "name": "Normalize",
-    "rating": -1
+    "description": "Moves become Normal-type.",
+    "rating": -1,
+    "breakable": false
   },
   "ABILITY_SNIPER": {
     "name": "Sniper",
-    "rating": 3
+    "description": "Boosts critical hits.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_MAGIC_GUARD": {
     "name": "Magic Guard",
-    "rating": 9
+    "description": "Only damaged by attacks.",
+    "rating": 9,
+    "breakable": false
   },
   "ABILITY_NO_GUARD": {
     "name": "No Guard",
-    "rating": 8
+    "description": "Ensures that all moves hit.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_STALL": {
     "name": "Stall",
-    "rating": -1
+    "description": "Always moves last.",
+    "rating": -1,
+    "breakable": false
   },
   "ABILITY_TECHNICIAN": {
     "name": "Technician",
-    "rating": 8
+    "description": "Boosts weaker moves.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_LEAF_GUARD": {
     "name": "Leaf Guard",
-    "rating": 2
+    "description": "Blocks status in sunshine.",
+    "rating": 2,
+    "breakable": true
   },
   "ABILITY_KLUTZ": {
     "name": "Klutz",
-    "rating": -1
+    "description": "Can't use hold items.",
+    "rating": -1,
+    "breakable": false
   },
   "ABILITY_MOLD_BREAKER": {
     "name": "Mold Breaker",
-    "rating": 7
+    "description": "Moves hit through abilities.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_SUPER_LUCK": {
     "name": "Super Luck",
-    "rating": 3
+    "description": "Critical hits land often.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_AFTERMATH": {
     "name": "Aftermath",
-    "rating": 5
+    "description": "Fainting damages the foe.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_ANTICIPATION": {
     "name": "Anticipation",
-    "rating": 2
+    "description": "Senses dangerous moves.",
+    "rating": 2,
+    "breakable": false
   },
   "ABILITY_FOREWARN": {
     "name": "Forewarn",
-    "rating": 2
+    "description": "Determines a foe's move.",
+    "rating": 2,
+    "breakable": false
   },
   "ABILITY_UNAWARE": {
     "name": "Unaware",
-    "rating": 6
+    "description": "Ignores stat changes.",
+    "rating": 6,
+    "breakable": true
   },
   "ABILITY_TINTED_LENS": {
     "name": "Tinted Lens",
-    "rating": 7
+    "description": "Ups “not very effective”.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_FILTER": {
     "name": "Filter",
-    "rating": 6
+    "description": "Weakens “supereffective”.",
+    "rating": 6,
+    "breakable": true
   },
   "ABILITY_SLOW_START": {
     "name": "Slow Start",
-    "rating": -2
+    "description": "Takes a while to get going.",
+    "rating": -2,
+    "breakable": false
   },
   "ABILITY_SCRAPPY": {
     "name": "Scrappy",
-    "rating": 6
+    "description": "Hits Ghost-type Pokémon.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_STORM_DRAIN": {
     "name": "Storm Drain",
-    "rating": 7
+    "description": "Draws in Water moves.",
+    "rating": 7,
+    "breakable": true
   },
   "ABILITY_ICE_BODY": {
     "name": "Ice Body",
-    "rating": 3
+    "description": "HP recovery in Hail or Snow.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_SOLID_ROCK": {
     "name": "Solid Rock",
-    "rating": 6
+    "description": "Weakens “supereffective”.",
+    "rating": 6,
+    "breakable": true
   },
   "ABILITY_SNOW_WARNING": {
     "name": "Snow Warning",
-    "rating": 8
+    "description": "Summons snow in battle.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_HONEY_GATHER": {
     "name": "Honey Gather",
-    "rating": 0
+    "description": "May gather Honey.",
+    "rating": 0,
+    "breakable": false
   },
   "ABILITY_FRISK": {
     "name": "Frisk",
-    "rating": 3
+    "description": "Checks a foe's item.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_RECKLESS": {
     "name": "Reckless",
-    "rating": 6
+    "description": "Boosts moves with recoil.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_MULTITYPE": {
     "name": "Multitype",
-    "rating": 8
+    "description": "Changes type to its Plate.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_FLOWER_GIFT": {
     "name": "Flower Gift",
-    "rating": 4
+    "description": "Allies power up in sunshine.",
+    "rating": 4,
+    "breakable": true
   },
   "ABILITY_BAD_DREAMS": {
     "name": "Bad Dreams",
-    "rating": 4
+    "description": "Damages sleeping Pokémon.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_PICKPOCKET": {
     "name": "Pickpocket",
-    "rating": 3
+    "description": "Steals the foe's held item.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_SHEER_FORCE": {
     "name": "Sheer Force",
-    "rating": 8
+    "description": "Trades effects for power.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_CONTRARY": {
     "name": "Contrary",
-    "rating": 8
+    "description": "Inverts stat changes.",
+    "rating": 8,
+    "breakable": true
   },
   "ABILITY_UNNERVE": {
     "name": "Unnerve",
-    "rating": 3
+    "description": "Foes can't eat Berries.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_DEFIANT": {
     "name": "Defiant",
-    "rating": 5
+    "description": "Lowered stats up Attack.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_DEFEATIST": {
     "name": "Defeatist",
-    "rating": -1
+    "description": "Gives up at half HP.",
+    "rating": -1,
+    "breakable": false
   },
   "ABILITY_CURSED_BODY": {
     "name": "Cursed Body",
-    "rating": 4
+    "description": "Disables moves on contact.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_HEALER": {
     "name": "Healer",
-    "rating": 0
+    "description": "Heals partner Pokémon.",
+    "rating": 0,
+    "breakable": false
   },
   "ABILITY_FRIEND_GUARD": {
     "name": "Friend Guard",
-    "rating": 0
+    "description": "Lowers damage to partner.",
+    "rating": 0,
+    "breakable": true
   },
   "ABILITY_WEAK_ARMOR": {
     "name": "Weak Armor",
-    "rating": 2
+    "description": "Its stats change when hit.",
+    "rating": 2,
+    "breakable": false
   },
   "ABILITY_HEAVY_METAL": {
     "name": "Heavy Metal",
-    "rating": -1
+    "description": "Doubles weight.",
+    "rating": -1,
+    "breakable": true
   },
   "ABILITY_LIGHT_METAL": {
     "name": "Light Metal",
-    "rating": 2
+    "description": "Halves weight.",
+    "rating": 2,
+    "breakable": true
   },
   "ABILITY_MULTISCALE": {
     "name": "Multiscale",
-    "rating": 8
+    "description": "Halves damage at full HP.",
+    "rating": 8,
+    "breakable": true
   },
   "ABILITY_TOXIC_BOOST": {
     "name": "Toxic Boost",
-    "rating": 6
+    "description": "Ups Attack if poisoned.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_FLARE_BOOST": {
     "name": "Flare Boost",
-    "rating": 5
+    "description": "Ups Sp. Atk if burned.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_HARVEST": {
     "name": "Harvest",
-    "rating": 5
+    "description": "May recycle a used Berry.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_TELEPATHY": {
     "name": "Telepathy",
-    "rating": 0
+    "description": "Can't be damaged by an ally.",
+    "rating": 0,
+    "breakable": true
   },
   "ABILITY_MOODY": {
     "name": "Moody",
-    "rating": 10
+    "description": "Stats change gradually.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_OVERCOAT": {
     "name": "Overcoat",
-    "rating": 5
+    "description": "Blocks weather and powder.",
+    "rating": 5,
+    "breakable": true
   },
   "ABILITY_POISON_TOUCH": {
     "name": "Poison Touch",
-    "rating": 4
+    "description": "Poisons foe on contact.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_REGENERATOR": {
     "name": "Regenerator",
-    "rating": 8
+    "description": "Heals upon switching out.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_BIG_PECKS": {
     "name": "Big Pecks",
-    "rating": 1
+    "description": "Prevents Defense loss.",
+    "rating": 1,
+    "breakable": true
   },
   "ABILITY_SAND_RUSH": {
     "name": "Sand Rush",
-    "rating": 6
+    "description": "Ups Speed in a sandstorm.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_WONDER_SKIN": {
     "name": "Wonder Skin",
-    "rating": 4
+    "description": "May avoid status problems.",
+    "rating": 4,
+    "breakable": true
   },
   "ABILITY_ANALYTIC": {
     "name": "Analytic",
-    "rating": 5
+    "description": "Moving last boosts power.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_ILLUSION": {
     "name": "Illusion",
-    "rating": 8
+    "description": "Appears as a partner.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_IMPOSTER": {
     "name": "Imposter",
-    "rating": 9
+    "description": "Transforms into the foe.",
+    "rating": 9,
+    "breakable": false
   },
   "ABILITY_INFILTRATOR": {
     "name": "Infiltrator",
-    "rating": 6
+    "description": "Passes through barriers.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_MUMMY": {
     "name": "Mummy",
-    "rating": 5
+    "description": "Spreads with contact.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_MOXIE": {
     "name": "Moxie",
-    "rating": 7
+    "description": "KOs raise Attack.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_JUSTIFIED": {
     "name": "Justified",
-    "rating": 4
+    "description": "Dark hits raise Attack.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_RATTLED": {
     "name": "Rattled",
-    "rating": 3
+    "description": "Raises Speed when scared.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_MAGIC_BOUNCE": {
     "name": "Magic Bounce",
-    "rating": 9
+    "description": "Reflects status moves.",
+    "rating": 9,
+    "breakable": true
   },
   "ABILITY_SAP_SIPPER": {
     "name": "Sap Sipper",
-    "rating": 7
+    "description": "Grass increases Attack.",
+    "rating": 7,
+    "breakable": true
   },
   "ABILITY_PRANKSTER": {
     "name": "Prankster",
-    "rating": 8
+    "description": "Status moves go first.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_SAND_FORCE": {
     "name": "Sand Force",
-    "rating": 4
+    "description": "Powers up in a sandstorm.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_IRON_BARBS": {
     "name": "Iron Barbs",
-    "rating": 6
+    "description": "Hurts to touch.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_ZEN_MODE": {
     "name": "Zen Mode",
-    "rating": -1
+    "description": "Transforms at half HP.",
+    "rating": -1,
+    "breakable": false
   },
   "ABILITY_VICTORY_STAR": {
     "name": "Victory Star",
-    "rating": 6
+    "description": "Raises party accuracy.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_TURBOBLAZE": {
     "name": "Turboblaze",
-    "rating": 7
+    "description": "Moves hit through abilities.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_TERAVOLT": {
     "name": "Teravolt",
-    "rating": 7
+    "description": "Moves hit through abilities.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_AROMA_VEIL": {
     "name": "Aroma Veil",
-    "rating": 3
+    "description": "Prevents limiting of moves.",
+    "rating": 3,
+    "breakable": true
   },
   "ABILITY_FLOWER_VEIL": {
     "name": "Flower Veil",
-    "rating": 0
+    "description": "Protects Grass-types.",
+    "rating": 0,
+    "breakable": false
   },
   "ABILITY_CHEEK_POUCH": {
     "name": "Cheek Pouch",
-    "rating": 4
+    "description": "Eating Berries restores HP.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_PROTEAN": {
     "name": "Protean",
-    "rating": 8
+    "description": "Changes type to used move.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_FUR_COAT": {
     "name": "Fur Coat",
-    "rating": 7
+    "description": "Raises Defense.",
+    "rating": 7,
+    "breakable": true
   },
   "ABILITY_MAGICIAN": {
     "name": "Magician",
-    "rating": 3
+    "description": "Steals the foe's held item.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_BULLETPROOF": {
     "name": "Bulletproof",
-    "rating": 7
+    "description": "Avoids some projectiles.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_COMPETITIVE": {
     "name": "Competitive",
-    "rating": 5
+    "description": "Lowered stats up Sp. Atk.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_STRONG_JAW": {
     "name": "Strong Jaw",
-    "rating": 6
+    "description": "Boosts biting moves.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_REFRIGERATE": {
     "name": "Refrigerate",
-    "rating": 8
+    "description": "Normal moves become Ice.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_SWEET_VEIL": {
     "name": "Sweet Veil",
-    "rating": 4
+    "description": "Prevents party from sleep.",
+    "rating": 4,
+    "breakable": true
   },
   "ABILITY_STANCE_CHANGE": {
     "name": "Stance Change",
-    "rating": 10
+    "description": "Transforms as it battles.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_GALE_WINGS": {
     "name": "Gale Wings",
-    "rating": 6
+    "description": "Flying moves go first.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_MEGA_LAUNCHER": {
     "name": "Mega Launcher",
-    "rating": 7
+    "description": "Boosts pulse moves.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_GRASS_PELT": {
     "name": "Grass Pelt",
-    "rating": 2
+    "description": "Ups Defense in grass.",
+    "rating": 2,
+    "breakable": true
   },
   "ABILITY_SYMBIOSIS": {
     "name": "Symbiosis",
-    "rating": 0
+    "description": "Passes its item to an ally.",
+    "rating": 0,
+    "breakable": false
   },
   "ABILITY_TOUGH_CLAWS": {
     "name": "Tough Claws",
-    "rating": 7
+    "description": "Boosts contact moves.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_PIXILATE": {
     "name": "Pixilate",
-    "rating": 8
+    "description": "Normal moves become Fairy.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_GOOEY": {
     "name": "Gooey",
-    "rating": 5
+    "description": "Lowers Speed on contact.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_AERILATE": {
     "name": "Aerilate",
-    "rating": 8
+    "description": "Normal moves become Flying.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_PARENTAL_BOND": {
     "name": "Parental Bond",
-    "rating": 10
+    "description": "Moves hit twice.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_DARK_AURA": {
     "name": "Dark Aura",
-    "rating": 6
+    "description": "Boosts Dark moves.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_FAIRY_AURA": {
     "name": "Fairy Aura",
-    "rating": 6
+    "description": "Boosts Fairy moves.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_AURA_BREAK": {
     "name": "Aura Break",
-    "rating": 3
+    "description": "Reverse aura abilities.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_PRIMORDIAL_SEA": {
     "name": "Primordial Sea",
-    "rating": 10
+    "description": "Summons heavy rain.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_DESOLATE_LAND": {
     "name": "Desolate Land",
-    "rating": 10
+    "description": "Summons intense sunlight.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_DELTA_STREAM": {
     "name": "Delta Stream",
-    "rating": 10
+    "description": "Summons strong winds.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_STAMINA": {
     "name": "Stamina",
-    "rating": 6
+    "description": "Boosts Defense when hit.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_WIMP_OUT": {
     "name": "Wimp Out",
-    "rating": 3
+    "description": "Flees at half HP.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_EMERGENCY_EXIT": {
     "name": "Emergency Exit",
-    "rating": 3
+    "description": "Flees at half HP.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_WATER_COMPACTION": {
     "name": "Water Compaction",
-    "rating": 4
+    "description": "Water boosts Defense.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_MERCILESS": {
     "name": "Merciless",
-    "rating": 4
+    "description": "Criticals poisoned foes.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_SHIELDS_DOWN": {
     "name": "Shields Down",
-    "rating": 6
+    "description": "Shell breaks at half HP.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_STAKEOUT": {
     "name": "Stakeout",
-    "rating": 6
+    "description": "Stronger as foes switch in.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_WATER_BUBBLE": {
     "name": "Water Bubble",
-    "rating": 8
+    "description": "Guards from fire and burns.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_STEELWORKER": {
     "name": "Steelworker",
-    "rating": 6
+    "description": "Powers up Steel moves.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_BERSERK": {
     "name": "Berserk",
-    "rating": 5
+    "description": "Boosts Sp. Atk at low HP.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_SLUSH_RUSH": {
     "name": "Slush Rush",
-    "rating": 5
+    "description": "Raises Speed in Hail/Snow.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_LONG_REACH": {
     "name": "Long Reach",
-    "rating": 3
+    "description": "Never makes contact.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_LIQUID_VOICE": {
     "name": "Liquid Voice",
-    "rating": 5
+    "description": "Makes sound moves Water.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_TRIAGE": {
     "name": "Triage",
-    "rating": 7
+    "description": "Healing moves go first.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_GALVANIZE": {
     "name": "Galvanize",
-    "rating": 8
+    "description": "Normal moves turn Electric.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_SURGE_SURFER": {
     "name": "Surge Surfer",
-    "rating": 4
+    "description": "Faster on electricity.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_SCHOOLING": {
     "name": "Schooling",
-    "rating": 6
+    "description": "Forms a school when strong.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_DISGUISE": {
     "name": "Disguise",
-    "rating": 8
+    "description": "Decoy protects it once.",
+    "rating": 8,
+    "breakable": true
   },
   "ABILITY_BATTLE_BOND": {
     "name": "Battle Bond",
-    "rating": 6
+    "description": "Changes form after a KO.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_POWER_CONSTRUCT": {
     "name": "Power Construct",
-    "rating": 10
+    "description": "Cells aid it when weakened.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_CORROSION": {
     "name": "Corrosion",
-    "rating": 5
+    "description": "Poisons any type.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_COMATOSE": {
     "name": "Comatose",
-    "rating": 6
+    "description": "Always drowsing.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_QUEENLY_MAJESTY": {
     "name": "Queenly Majesty",
-    "rating": 6
+    "description": "Protects from priority.",
+    "rating": 6,
+    "breakable": true
   },
   "ABILITY_INNARDS_OUT": {
     "name": "Innards Out",
-    "rating": 5
+    "description": "Hurts foe when defeated.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_DANCER": {
     "name": "Dancer",
-    "rating": 5
+    "description": "Dances along with others.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_BATTERY": {
     "name": "Battery",
-    "rating": 0
+    "description": "Boosts ally's Sp. Atk.",
+    "rating": 0,
+    "breakable": false
   },
   "ABILITY_FLUFFY": {
     "name": "Fluffy",
-    "rating": 5
+    "description": "Tougher but flammable.",
+    "rating": 5,
+    "breakable": true
   },
   "ABILITY_DAZZLING": {
     "name": "Dazzling",
-    "rating": 5
+    "description": "Protects from priority.",
+    "rating": 5,
+    "breakable": true
   },
   "ABILITY_SOUL_HEART": {
     "name": "Soul-Heart",
-    "rating": 7
+    "description": "KOs raise Sp. Atk.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_TANGLING_HAIR": {
     "name": "Tangling Hair",
-    "rating": 5
+    "description": "Lowers Speed on contact.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_RECEIVER": {
     "name": "Receiver",
-    "rating": 0
+    "description": "Copies ally's ability.",
+    "rating": 0,
+    "breakable": false
   },
   "ABILITY_POWER_OF_ALCHEMY": {
     "name": "Power Of Alchemy",
-    "rating": 0
+    "description": "Copies ally's ability.",
+    "rating": 0,
+    "breakable": false
   },
   "ABILITY_BEAST_BOOST": {
     "name": "Beast Boost",
-    "rating": 7
+    "description": "KOs boost best stat.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_RKS_SYSTEM": {
     "name": "RKS System",
-    "rating": 8
+    "description": "Memories change its type.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_ELECTRIC_SURGE": {
     "name": "Electric Surge",
-    "rating": 8
+    "description": "Field becomes Electric.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_PSYCHIC_SURGE": {
     "name": "Psychic Surge",
-    "rating": 8
+    "description": "Field becomes weird.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_MISTY_SURGE": {
     "name": "Misty Surge",
-    "rating": 8
+    "description": "Field becomes misty.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_GRASSY_SURGE": {
     "name": "Grassy Surge",
-    "rating": 8
+    "description": "Field becomes grassy.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_FULL_METAL_BODY": {
     "name": "Full Metal Body",
-    "rating": 4
+    "description": "Prevents stat reduction.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_SHADOW_SHIELD": {
     "name": "Shadow Shield",
-    "rating": 8
+    "description": "Halves damage at full HP.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_PRISM_ARMOR": {
     "name": "Prism Armor",
-    "rating": 6
+    "description": "Weakens “supereffective”.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_NEUROFORCE": {
     "name": "Neuroforce",
-    "rating": 6
+    "description": "Ups “supereffective”.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_INTREPID_SWORD": {
     "name": "Intrepid Sword",
-    "rating": 3
+    "description": "Ups Attack on entry.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_DAUNTLESS_SHIELD": {
     "name": "Dauntless Shield",
-    "rating": 3
+    "description": "Ups Defense on entry.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_LIBERO": {
     "name": "Libero",
-    "rating": 0
+    "description": "Changes type to move's.",
+    "rating": 0,
+    "breakable": false
   },
   "ABILITY_BALL_FETCH": {
     "name": "Ball Fetch",
-    "rating": 0
+    "description": "Fetches failed Poké Ball.",
+    "rating": 0,
+    "breakable": false
   },
   "ABILITY_COTTON_DOWN": {
     "name": "Cotton Down",
-    "rating": 3
+    "description": "Lower Speed of all when hit.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_PROPELLER_TAIL": {
     "name": "Propeller Tail",
-    "rating": 2
+    "description": "Ignores foe's redirection.",
+    "rating": 2,
+    "breakable": false
   },
   "ABILITY_MIRROR_ARMOR": {
     "name": "Mirror Armor",
-    "rating": 6
+    "description": "Reflect stat decreases.",
+    "rating": 6,
+    "breakable": true
   },
   "ABILITY_GULP_MISSILE": {
     "name": "Gulp Missile",
-    "rating": 3
+    "description": "If hit, spits prey from sea.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_STALWART": {
     "name": "Stalwart",
-    "rating": 2
+    "description": "Ignores foe's redirection.",
+    "rating": 2,
+    "breakable": false
   },
   "ABILITY_STEAM_ENGINE": {
     "name": "Steam Engine",
-    "rating": 3
+    "description": "Fire or Water hits up Speed.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_PUNK_ROCK": {
     "name": "Punk Rock",
-    "rating": 2
+    "description": "Ups and resists sound.",
+    "rating": 2,
+    "breakable": true
   },
   "ABILITY_SAND_SPIT": {
     "name": "Sand Spit",
-    "rating": 5
+    "description": "Creates a sandstorm if hit.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_ICE_SCALES": {
     "name": "Ice Scales",
-    "rating": 7
+    "description": "Halves special damage.",
+    "rating": 7,
+    "breakable": true
   },
   "ABILITY_RIPEN": {
     "name": "Ripen",
-    "rating": 4
+    "description": "Doubles effect of Berries.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_ICE_FACE": {
     "name": "Ice Face",
-    "rating": 4
+    "description": "Hail or Snow renew free hit.",
+    "rating": 4,
+    "breakable": true
   },
   "ABILITY_POWER_SPOT": {
     "name": "Power Spot",
-    "rating": 2
+    "description": "Powers up ally moves.",
+    "rating": 2,
+    "breakable": false
   },
   "ABILITY_MIMICRY": {
     "name": "Mimicry",
-    "rating": 2
+    "description": "Changes type on terrain.",
+    "rating": 2,
+    "breakable": false
   },
   "ABILITY_SCREEN_CLEANER": {
     "name": "Screen Cleaner",
-    "rating": 3
+    "description": "Removes walls of light.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_STEELY_SPIRIT": {
     "name": "Steely Spirit",
-    "rating": 2
+    "description": "Boosts ally's Steel moves.",
+    "rating": 2,
+    "breakable": false
   },
   "ABILITY_PERISH_BODY": {
     "name": "Perish Body",
-    "rating": -1
+    "description": "Foe faints in 3 turns if hit.",
+    "rating": -1,
+    "breakable": false
   },
   "ABILITY_WANDERING_SPIRIT": {
     "name": "Wandering Spirit",
-    "rating": 2
+    "description": "Trade abilities on contact.",
+    "rating": 2,
+    "breakable": false
   },
   "ABILITY_GORILLA_TACTICS": {
     "name": "Gorilla Tactics",
-    "rating": 4
+    "description": "Ups Attack and locks move.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_NEUTRALIZING_GAS": {
     "name": "Neutralizing Gas",
-    "rating": 5
+    "description": "All Abilities are nullified.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_PASTEL_VEIL": {
     "name": "Pastel Veil",
-    "rating": 4
+    "description": "Protects team from poison.",
+    "rating": 4,
+    "breakable": true
   },
   "ABILITY_HUNGER_SWITCH": {
     "name": "Hunger Switch",
-    "rating": 2
+    "description": "Changes form each turn.",
+    "rating": 2,
+    "breakable": false
   },
   "ABILITY_QUICK_DRAW": {
     "name": "Quick Draw",
-    "rating": 4
+    "description": "Moves first occasionally.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_UNSEEN_FIST": {
     "name": "Unseen Fist",
-    "rating": 6
+    "description": "Contact evades protection.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_CURIOUS_MEDICINE": {
     "name": "Curious Medicine",
-    "rating": 3
+    "description": "Remove ally's stat changes.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_TRANSISTOR": {
     "name": "Transistor",
-    "rating": 6
+    "description": "Ups Electric-type moves.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_DRAGONS_MAW": {
     "name": "Dragon's Maw",
-    "rating": 6
+    "description": "Ups Dragon-type moves.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_CHILLING_NEIGH": {
     "name": "Chilling Neigh",
-    "rating": 7
+    "description": "KOs boost Attack stat.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_GRIM_NEIGH": {
     "name": "Grim Neigh",
-    "rating": 7
+    "description": "KOs boost Sp. Atk stat.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_AS_ONE_ICE_RIDER": {
     "name": "As One",
-    "rating": 10
+    "description": "Unnerve and Chilling Neigh.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_AS_ONE_SHADOW_RIDER": {
     "name": "As One",
-    "rating": 10
+    "description": "Unnerve and Grim Neigh.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_LINGERING_AROMA": {
     "name": "Lingering Aroma",
-    "rating": 5
+    "description": "Spreads with contact.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_SEED_SOWER": {
     "name": "Seed Sower",
-    "rating": 5
+    "description": "Affects terrain when hit.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_THERMAL_EXCHANGE": {
     "name": "Thermal Exchange",
-    "rating": 4
+    "description": "Fire hits up Attack.",
+    "rating": 4,
+    "breakable": true
   },
   "ABILITY_ANGER_SHELL": {
     "name": "Anger Shell",
-    "rating": 3
+    "description": "Gets angry at half HP.",
+    "rating": 3,
+    "breakable": false
   },
   "ABILITY_PURIFYING_SALT": {
     "name": "Purifying Salt",
-    "rating": 6
+    "description": "Protected by pure salts.",
+    "rating": 6,
+    "breakable": true
   },
   "ABILITY_WELL_BAKED_BODY": {
     "name": "Well-Baked Body",
-    "rating": 5
+    "description": "Strengthened by Fire.",
+    "rating": 5,
+    "breakable": true
   },
   "ABILITY_WIND_RIDER": {
     "name": "Wind Rider",
-    "rating": 4
+    "description": "Ups Attack if hit by wind.",
+    "rating": 4,
+    "breakable": true
   },
   "ABILITY_GUARD_DOG": {
     "name": "Guard Dog",
-    "rating": 5
+    "description": "Cannot be intimidated.",
+    "rating": 5,
+    "breakable": true
   },
   "ABILITY_ROCKY_PAYLOAD": {
     "name": "Rocky Payload",
-    "rating": 6
+    "description": "Powers up Rock moves.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_WIND_POWER": {
     "name": "Wind Power",
-    "rating": 4
+    "description": "Gets charged by wind.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_ZERO_TO_HERO": {
     "name": "Zero to Hero",
-    "rating": 10
+    "description": "Changes form on switch out.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_COMMANDER": {
     "name": "Commander",
-    "rating": 10
+    "description": "Commands from Dondozo.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_ELECTROMORPHOSIS": {
     "name": "Electromorphosis",
-    "rating": 5
+    "description": "Gets Charged when hit.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_PROTOSYNTHESIS": {
     "name": "Protosynthesis",
-    "rating": 7
+    "description": "Sun boosts best stat.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_QUARK_DRIVE": {
     "name": "Quark Drive",
-    "rating": 7
+    "description": "Elec. field ups best stat.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_GOOD_AS_GOLD": {
     "name": "Good as Gold",
-    "rating": 8
+    "description": "Avoids status moves.",
+    "rating": 8,
+    "breakable": true
   },
   "ABILITY_VESSEL_OF_RUIN": {
     "name": "Vessel of Ruin",
-    "rating": 5
+    "description": "Lowers foes' sp. damage.",
+    "rating": 5,
+    "breakable": true
   },
   "ABILITY_SWORD_OF_RUIN": {
     "name": "Sword of Ruin",
-    "rating": 5
+    "description": "Lowers foes' Defense.",
+    "rating": 5,
+    "breakable": true
   },
   "ABILITY_TABLETS_OF_RUIN": {
     "name": "Tablets of Ruin",
-    "rating": 5
+    "description": "Lowers foes' damage.",
+    "rating": 5,
+    "breakable": true
   },
   "ABILITY_BEADS_OF_RUIN": {
     "name": "Beads of Ruin",
-    "rating": 5
+    "description": "Lowers foes' Sp. Defense.",
+    "rating": 5,
+    "breakable": true
   },
   "ABILITY_ORICHALCUM_PULSE": {
     "name": "Orichalcum Pulse",
-    "rating": 8
+    "description": "Summons sunlight in battle.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_HADRON_ENGINE": {
     "name": "Hadron Engine",
-    "rating": 8
+    "description": "Field becomes Electric.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_OPPORTUNIST": {
     "name": "Opportunist",
-    "rating": 5
+    "description": "Copies foe's stat change.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_CUD_CHEW": {
     "name": "Cud Chew",
-    "rating": 4
+    "description": "Eats a used berry again.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_SHARPNESS": {
     "name": "Sharpness",
-    "rating": 7
+    "description": "Strengthens slicing moves.",
+    "rating": 7,
+    "breakable": false
   },
   "ABILITY_SUPREME_OVERLORD": {
     "name": "Supreme Overlord",
-    "rating": 6
+    "description": "Inherits fallen's strength.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_COSTAR": {
     "name": "Costar",
-    "rating": 5
+    "description": "Copies ally's stat changes.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_TOXIC_DEBRIS": {
     "name": "Toxic Debris",
-    "rating": 4
+    "description": "Throws poison spikes if hit.",
+    "rating": 4,
+    "breakable": false
   },
   "ABILITY_ARMOR_TAIL": {
     "name": "Armor Tail",
-    "rating": 5
+    "description": "Protects from priority.",
+    "rating": 5,
+    "breakable": true
   },
   "ABILITY_EARTH_EATER": {
     "name": "Earth Eater",
-    "rating": 7
+    "description": "Eats ground to heal HP.",
+    "rating": 7,
+    "breakable": true
   },
   "ABILITY_MYCELIUM_MIGHT": {
     "name": "Mycelium Might",
-    "rating": 2
+    "description": "Status moves never fail.",
+    "rating": 2,
+    "breakable": false
   },
   "ABILITY_HOSPITALITY": {
     "name": "Hospitality",
-    "rating": 5
+    "description": "Restores ally's HP.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_MINDS_EYE": {
     "name": "Mind's Eye",
-    "rating": 8
+    "description": "Keen Eye and Scrappy.",
+    "rating": 8,
+    "breakable": true
   },
   "ABILITY_EMBODY_ASPECT_TEAL_MASK": {
     "name": "Embody Aspect",
-    "rating": 6
+    "description": "Raises Speed.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_EMBODY_ASPECT_HEARTHFLAME_MASK": {
     "name": "Embody Aspect",
-    "rating": 6
+    "description": "Raises Attack.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_EMBODY_ASPECT_WELLSPRING_MASK": {
     "name": "Embody Aspect",
-    "rating": 6
+    "description": "Raises Sp. Def.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_EMBODY_ASPECT_CORNERSTONE_MASK": {
     "name": "Embody Aspect",
-    "rating": 6
+    "description": "Raises Defense.",
+    "rating": 6,
+    "breakable": false
   },
   "ABILITY_TOXIC_CHAIN": {
     "name": "Toxic Chain",
-    "rating": 8
+    "description": "Moves can poison.",
+    "rating": 8,
+    "breakable": false
   },
   "ABILITY_SUPERSWEET_SYRUP": {
     "name": "Supersweet Syrup",
-    "rating": 5
+    "description": "Lowers the foe's Evasion.",
+    "rating": 5,
+    "breakable": false
   },
   "ABILITY_TERA_SHIFT": {
     "name": "Tera Shift",
-    "rating": 10
+    "description": "Terastallizes upon entry.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_TERA_SHELL": {
     "name": "Tera Shell",
-    "rating": 10
+    "description": "Resists all at full HP.",
+    "rating": 10,
+    "breakable": true
   },
   "ABILITY_TERAFORM_ZERO": {
     "name": "Teraform Zero",
-    "rating": 10
+    "description": "Zeroes weather and terrain.",
+    "rating": 10,
+    "breakable": false
   },
   "ABILITY_POISON_PUPPETEER": {
     "name": "Poison Puppeteer",
-    "rating": 8
+    "description": "Confuses poisoned foes.",
+    "rating": 8,
+    "breakable": false
   }
 }
