@@ -29,6 +29,47 @@
       min-height:100vh;
     }
 
+    /* Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 5000;
+    }
+
+    .modal.hidden {
+      display: none;
+    }
+
+    .modal-content {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      padding: 24px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 900px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid rgba(255,255,255,0.05);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: var(--glass);
+      border: none;
+      font-size: 18px;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
     /* Sidebar */
     .sidebar{
       background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
@@ -155,7 +196,7 @@
     <main class="main">
 
       <div class="content">
-        <section id="pokemon" class="active">
+        <section id="pokemon">
           <h2>Pokemon</h2>
           <div class="grid" id="pokemon-cards"></div>
         </section>
@@ -183,7 +224,7 @@
 
       <aside class="right">
         <nav class="nav" id="nav">
-          <a data-target="pokemon" class="active">Pokedex</a>
+          <a data-target="pokemon">Pokedex</a>
           <a data-target="moves">Moves</a>
           <a data-target="wildpokes">Locations</a>
           <a data-target="trainers">Trainers</a>
@@ -198,6 +239,12 @@
     </footer>
   </div>
 
+  <div id="pokemon-modal" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close">✖</button>
+      <div id="pokemon-modal-body"></div>
+    </div>
+  </div>
   
   <script>
     // --- Tab-style navigation ---
@@ -442,6 +489,7 @@
             </div>
         </div>
       `;
+      card.addEventListener('click', () => showPokemonModal(poke));
       pokemonGrid.appendChild(card);
     });
   </script>
@@ -642,6 +690,123 @@
       `;
 
       routesGrid.appendChild(card);
+    });
+  </script>
+  <!-- script to handle modal -->
+  <script>
+    const modal = document.getElementById('pokemon-modal');
+    const modalBody = document.getElementById('pokemon-modal-body');
+    const modalClose = document.querySelector('.modal-close');
+    modalClose.addEventListener('click', () => modal.classList.add('hidden'));
+
+    function showPokemonModal(poke) {
+      modal.classList.remove('hidden');
+      modalBody.innerHTML = buildPokemonDetailHTML(poke);
+    }
+
+    function moveName(moveId) {
+      return moveId.replace('MOVE_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    function buildLearnsetList(poke) {
+      return poke.learnset.map(l => {
+        const m = movesData[l.move];
+        return `
+          <div class="list-item">
+            <span style="min-width:60px;color:#8cf;">Lv ${l.level}</span>
+            <b>${moveName(l.move)}</b>
+            <span class="type" style="background:${typeColors[m.type]};">${m.type}</span>
+            <span class="small">Pwr: ${m.power ?? '-'}</span>
+            <span class="small">Acc: ${m.accuracy ?? '-'}</span>
+            <span class="small">PP: ${m.pp}</span>
+          </div>`;
+      }).join('');
+    }
+
+    function buildTeachablesList(poke) {
+      return poke.teachables.map(moveId => {
+        const m = movesData[moveId];
+        return `
+          <div class="list-item">
+            <b>${moveName(moveId)}</b>
+            <span class="type" style="background:${typeColors[m.type]};">${m.type}</span>
+            <span class="small">Pwr: ${m.power ?? '-'}</span>
+            <span class="small">Acc: ${m.accuracy ?? '-'}</span>
+            <span class="small">PP: ${m.pp}</span>
+          </div>`;
+      }).join('');
+    }
+
+    function buildEvoChain(poke) {
+      if (!poke.evoTree) return '';
+      function format(id) {
+        return id.replace('SPECIES_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+      }
+      function buildItem(item) {
+        if (Array.isArray(item))
+          return item.map(i => `<div class="tag evo-link" data-id="${i}">${format(i)}</div>`).join('');
+        return `<div class="tag evo-link" data-id="${item}">${format(item)}</div>`;
+      }
+      const html = poke.evoTree.map(e => buildItem(e)).join(' → ');
+      return html;
+    }
+
+    function buildLog(poke) {
+      if (!poke.log || poke.log.length === 0) return `<div class="small">No changes</div>`;
+      return poke.log.map(l =>
+        `<div class="small">
+          <b>${l.type}</b> • ${l.target} : ${l.oldValue} → ${l.oldValue + l.value}
+        </div>`
+      ).join('');
+    }
+
+    function buildPokemonDetailHTML(poke) {
+      const img = getPokeImg(poke.id);
+
+      return `
+        <h2 style="text-align:center;">${poke.name}</h2>
+
+        <div style="text-align:center;">
+          <img src="${img}" style="width:180px;height:180px;">
+        </div>
+
+        <div style="text-align:center;margin:10px 0;">
+          ${poke.parsedTypes.map(t => `<span class="type" style="background:${typeColors[t]};">${t}</span>`).join('')}
+        </div>
+
+        <h3>Evolution</h3>
+        <div>${buildEvoChain(poke)}</div>
+
+        <h3>Best Evolution</h3>
+        <div class="small">Best Evo Tier: <b>${poke.rating.bestEvoTier}</b></div>
+        <div class="small">Mega Evo Tier: <b>${poke.rating.megaEvoTier}</b></div>
+
+        <h3>Learnset</h3>
+        <div>${buildLearnsetList(poke)}</div>
+
+        <h3>Teachables</h3>
+        <div>${buildTeachablesList(poke)}</div>
+
+        <h3>Change Log</h3>
+        <div>${buildLog(poke)}</div>
+      `;
+    }
+
+    // Click links in evo chain
+    document.addEventListener('click', e => {
+      if (e.target.classList.contains('evo-link')) {
+        const id = e.target.dataset.id;
+        const p = pokes.find(x => x.id === id);
+        if (p) showPokemonModal(p);
+      }
+    });
+  </script>
+  <!-- loader -->
+  <script>
+    window.addEventListener('load', () => {
+      // Activate first tab
+      const firstNavLink = document.querySelector('.nav a');
+      if (firstNavLink) firstNavLink.click();
     });
   </script>
 </body>
