@@ -450,6 +450,7 @@
   <script src="moves.js"></script>
   <script src="trainers.js"></script>
   <script src="wildpokes.js"></script>
+  <script src="abilities.js"></script>
   <!-- script to handle pokedex -->
   <script>
     const pokemonGrid = document.getElementById('pokemon-cards');
@@ -710,6 +711,66 @@
       `;
 
       routesGrid.appendChild(card);
+    });
+  </script>
+  <!-- script to handle abilities -->
+  <script>
+    const abilitiesGrid = document.getElementById('abilities-cards');
+
+    // Convert object → array and sort alphabetically
+    const sortedAbilities = Object.entries(abilitiesData)
+      .map(([id, ability]) => ({ id, ...ability }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    sortedAbilities.forEach(ability => {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      // rating color based on 0–10
+      const ratingColor = ability.rating >= 8 ? '#ff4444' :
+                          ability.rating >= 6 ? '#ffaa33' :
+                          ability.rating >= 4 ? '#ffee55' :
+                          ability.rating >= 2 ? '#88ff88' :
+                          '#cccccc';
+
+      const breakableText = ability.breakable
+        ? `<div class="small" style="color:#ff7979;">Breakable</div>`
+        : `<div class="small" style="color:#8cffd4;">Unbreakable</div>`;
+
+      card.innerHTML = `
+        <div class="meta">
+          <div>
+            <div class="title">${ability.name}</div>
+
+            <div class="small" style="margin-bottom:10px; color:#FFD19A;">
+              Ability ID: <span style="opacity:0.7">${ability.id}</span>
+            </div>
+
+            <div class="small" style="margin-bottom:12px;">
+              ${ability.description}
+            </div>
+
+            <div class="small" style="margin-bottom:6px;">
+              ${breakableText}
+            </div>
+
+            <div style="text-align:center; margin-top:10px;">
+              <div style="
+                display:inline-block;
+                padding:4px 12px;
+                border-radius:999px;
+                font-weight:700;
+                background:${ratingColor};
+                color:#000;
+              ">
+                Rating: ${ability.rating}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      abilitiesGrid.appendChild(card);
     });
   </script>
   <!-- script to handle modal -->
