@@ -329,7 +329,9 @@ function parseAbilitiesFile(abilitiesFileText) {
             currentAbility = lines[i].split('[')[1].split(']')[0];
             abilities[currentAbility] = {
                 name: '',
+                description: '',
                 rating: 0,
+                breakable: false,
             };
             continue;
         }
@@ -346,6 +348,19 @@ function parseAbilitiesFile(abilitiesFileText) {
             else {
                 abilities[currentAbility].name = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
             }
+        }
+        if (lines[i].startsWith('        .description = ')) {
+            const descMatch = lines[i].trim().match(/\.description = COMPOUND_STRING\("(.*)"\),?/);
+            if (descMatch) {
+                abilities[currentAbility].description = descMatch[1];
+            }
+            else {
+                abilities[currentAbility].description = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
+            }
+        }
+        if (lines[i].startsWith('        .breakable = ')) {
+            const breakable = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
+            abilities[currentAbility].breakable = breakable === 'TRUE';
         }
     }
     return abilities;
