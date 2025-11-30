@@ -9,6 +9,11 @@ const REPEAT_STAT_CHANCE = 0.5;
 const TYPE_BALANCE_CHANCE = 0.1;
 const MONOTYPE_BALANCE_CHANCE = 0.1;
 const ABILITY_BALANCE_CHANCE = 0.1;
+const LEARNSET_BALANCE_CHANCE = 0.2;
+const CHANGE_TYPE_MOVE_CHANCE_FROM_OLD_TYPE_CHANCE = 0.9;
+const CHANGE_TYPE_MOVE_CHANCE_FROM_OTHER_TYPE_CHANCE = 0.1;
+const CHANGE_MOVE_INSERT_CHANCE = 0.3;
+const MOVE_RATING_DEVIATION = 0.2;
 
 const BANNED_ABILITIES = [
     // These abilities are not rebalancable
@@ -47,9 +52,28 @@ function shuffleArray(array) {
     return array;
 }
 
+function getLearnLevelBasedOnRating(move) {
+    const rating = (move.rating || 5) * Math.random() * (1 + MOVE_RATING_DEVIATION);
+    let level = Math.floor(rating * 5);
+    if (level < 1) level = 1;
+    if (level > 100) level = 100;
+    return level;
+}
+
+function insertMoveIntoLearnset(learnset, move) {
+    const learnsetCopy = [...learnset];
+    const level = getLearnLevelBasedOnRating(move);
+    learnsetCopy.push({ move: move.name, level: String(level) });
+    learnsetCopy.sort((a, b) => Number(a.level) - Number(b.level));
+    return {
+        learnset: learnsetCopy,
+        level,
+    };
+}
+
 const familyTracking = {};
 
-function balancePokemon(pokemon, abilityNames) {
+function balancePokemon(pokemon, abilityNames, moves) {
 
     const inheritedLog = [];
     const newPokemon = { ...pokemon };
@@ -193,7 +217,76 @@ function balancePokemon(pokemon, abilityNames) {
         }
     }
 
-    // @TODO Learnset
+    const typeChangeLogs = log.filter(entry => entry.target === 'type');
+
+    // Learnset step 1 - if a type changed, the pokemon needs to at least learn one move of the new type
+    for (let i = 0; i < typeChangeLogs.length; i++) {
+        const currentTypeChange = typeChangeLogs[i];
+        const oldType = currentTypeChange.oldValue;
+        const newType = currentTypeChange.value;
+
+        const movesFromTheNewType = Object.entries(moves).filter(m => m.type === newType);
+
+        // 2 paths - if there's an old type, we change moves from that type
+        // otherwise we teach new moves of the new type
+        let amountChanged = 0;
+        for (let j = 0; j < newPokemon.learnset.length; j++) {
+            const currentMove = moves[newPokemon.learnset[j].move];
+            if (!currentMove) {
+                console.warn(`[WARN] Move ${newPokemon.learnset[j].move} not found in moves database from ${newPokemon.name}'s learnset.`);
+                continue;
+            }
+            if (
+                (currentMove.type === oldType && Math.random() < CHANGE_TYPE_MOVE_CHANCE_FROM_OLD_TYPE_CHANCE)
+                || (currentMove.type !== oldType && Math.random() < CHANGE_TYPE_MOVE_CHANCE_FROM_OTHER_TYPE_CHANCE)
+            ) {
+                // Sort moves for similar rating and pick the first
+                const similarMoves = movesFromTheNewType.sort(
+                    (a, b) => Math.abs(a.rating - currentMove.rating) - Math.abs(b.rating - currentMove.rating)
+                );
+                if (similarMoves.length > 0) {
+                    const chosenMove = similarMoves[0];
+                    // Remove it from the pool of moves
+                    movesFromTheNewType.splice(movesFromTheNewType.indexOf(chosenMove), 1);
+                    const oldMoveName = newPokemon.learnset[j].move;
+                    newPokemon.learnset[j].move = chosenMove[0];
+                    log.push({
+                        type: LOG_TYPE_ADJUSTMENT,
+                        target: 'learnsetMove',
+                        oldValue: oldMoveName,
+                        value: chosenMove[0],
+                    });
+                    amountChanged++;
+                }
+                else {
+                    console.warn(`[WARN] No similar move found to replace ${currentMove.name} in ${newPokemon.name}'s learnset.`);
+                }
+            }
+        }
+
+        // If we couldn't change any move, we need to insert one. Otherwise just random
+        const chanceToInsertExtra = 1 - (amountChanged * CHANGE_MOVE_INSERT_CHANCE);
+        if (Math.random() < chanceToInsertExtra) {
+            const newMove = movesFromTheNewType[Math.floor(Math.random() * movesFromTheNewType.length)];
+            if (newMove) {
+                const { learnset: newLearnset, level } = insertMoveIntoLearnset(newPokemon.learnset, newMove[1]);
+                newPokemon.learnset = newLearnset;
+                log.push({
+                    type: LOG_TYPE_ADJUSTMENT,
+                    target: 'learnsetMove',
+                    oldValue: null,
+                    value: newMove[0],
+                    level,
+                });
+            }
+        }
+    }
+
+    // Learnset step 2 - random changes
+    // @TODO
+
+    if (Math.random() < LEARNSET_BALANCE_CHANCE) {
+    }
 
     if (!familyTracking[newPokemon.family]) {
         familyTracking[newPokemon.family] = [...log];
