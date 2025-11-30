@@ -11,8 +11,8 @@ const MONOTYPE_BALANCE_CHANCE = 0.1;
 const ABILITY_BALANCE_CHANCE = 0.1;
 const LEARNSET_BALANCE_CHANCE = 0.2;
 const CHANGE_TYPE_MOVE_CHANCE_FROM_OLD_TYPE_CHANCE = 0.9;
-const CHANGE_TYPE_MOVE_CHANCE_FROM_OTHER_TYPE_CHANCE = 0.1;
-const CHANGE_MOVE_INSERT_CHANCE = 0.3;
+const CHANGE_TYPE_MOVE_CHANCE_FROM_OTHER_TYPE_CHANCE = 0.05;
+const CHANGE_MOVE_INSERT_CHANCE = 0.5;
 const MOVE_RATING_DEVIATION = 0.2;
 
 const BANNED_ABILITIES = [
@@ -108,6 +108,29 @@ function balancePokemon(pokemon, abilityNames, moves) {
                     newParsedAbilities[oldAbilityIndex] = entry.value;
                     newPokemon.parsedAbilities = newParsedAbilities;
                     changed = true;
+                }
+            }
+            else if (entry.target === 'learnsetMove') {
+                if (entry.oldValue) {
+                    // Replacement case
+                    const index = newPokemon.learnset.findIndex(l => l.move === entry.oldValue);
+                    if (index !== -1) {
+                        newPokemon.learnset[index] = {
+                            ...newPokemon.learnset[index],
+                            move: entry.value
+                        };
+                        changed = true;
+                    }
+                } else {
+                    // Insertion case
+                    const exists = newPokemon.learnset.some(l => l.move === entry.value);
+                    if (!exists) {
+                        const learnsetCopy = [...newPokemon.learnset];
+                        learnsetCopy.push({ move: entry.value, level: String(entry.level) });
+                        learnsetCopy.sort((a, b) => Number(a.level) - Number(b.level));
+                        newPokemon.learnset = learnsetCopy;
+                        changed = true;
+                    }
                 }
             }
             if (changed) {
@@ -225,7 +248,7 @@ function balancePokemon(pokemon, abilityNames, moves) {
         const oldType = currentTypeChange.oldValue;
         const newType = currentTypeChange.value;
 
-        const movesFromTheNewType = Object.entries(moves).filter(m => m.type === newType);
+        const movesFromTheNewType = Object.values(moves).filter(m => m.type === newType);
 
         // 2 paths - if there's an old type, we change moves from that type
         // otherwise we teach new moves of the new type
@@ -283,9 +306,56 @@ function balancePokemon(pokemon, abilityNames, moves) {
     }
 
     // Learnset step 2 - random changes
-    // @TODO
-
     if (Math.random() < LEARNSET_BALANCE_CHANCE) {
+        let amountChanged = 0;
+        for (let i = 0; i < newPokemon.learnset.length; i++) {
+            const currentMove = moves[newPokemon.learnset[i].move];
+            if (!currentMove) {
+                console.warn(`[WARN] Move ${newPokemon.learnset[i].move} not found in moves database from ${newPokemon.name}'s learnset.`);
+                continue;
+            }
+            if (Math.random() < CHANGE_TYPE_MOVE_CHANCE_FROM_OTHER_TYPE_CHANCE) {
+                // Sort moves for similar rating and pick the first
+                const allMoves = Object.values(moves);
+                const similarMoves = allMoves.sort(
+                    (a, b) => Math.abs(a[1].rating - currentMove.rating) - Math.abs(b[1].rating - currentMove.rating)
+                );
+                if (similarMoves.length > 0) {
+                    const chosenMove = similarMoves[0];
+                    const oldMoveName = newPokemon.learnset[i].move;
+                    newPokemon.learnset[i].move = chosenMove[0];
+                    log.push({
+                        type: LOG_TYPE_ADJUSTMENT,
+                        target: 'learnsetMove',
+                        oldValue: oldMoveName,
+                        value: chosenMove[0],
+                    });
+                    amountChanged++;
+                }
+                else {
+                    console.warn(`[WARN] No similar move found to replace ${currentMove.name} in ${newPokemon.name}'s learnset.`);
+                }
+            }
+        }
+
+        let chanceToInsertExtra = 1 - (amountChanged * CHANGE_MOVE_INSERT_CHANCE);
+        while (Math.random() < chanceToInsertExtra) {
+            const allMoves = Object.values(moves);
+            const newMove = allMoves[Math.floor(Math.random() * allMoves.length)];
+            if (newMove) {
+                const { learnset: newLearnset, level } = insertMoveIntoLearnset(newPokemon.learnset, newMove[1]);
+                newPokemon.learnset = newLearnset;
+                log.push({
+                    type: LOG_TYPE_ADJUSTMENT,
+                    target: 'learnsetMove',
+                    oldValue: null,
+                    value: newMove[0],
+                    level,
+                });
+            }
+            amountChanged++;
+            chanceToInsertExtra = 1 - (amountChanged * CHANGE_MOVE_INSERT_CHANCE);
+        }
     }
 
     if (!familyTracking[newPokemon.family]) {
