@@ -671,6 +671,22 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const storedIds = {};
 
     trainersData.forEach(trainer => {
+        for(let i = 0; i < trainer.bag; i++) {
+            const item = trainer.bag[i];
+            // If item starts with TM_, replace it with MOVE_ and put it in tms
+            if (item.startsWith('TM_')) {
+                const moveId = item.replace('TM_', 'MOVE_');
+                // Remove item from bag
+                trainer.bag.splice(i, 1);
+                i--;
+                // Add move to tms
+                if (!trainer.tms) {
+                    trainer.tms = [];
+                }
+                trainer.tms.push(moveId);
+            }
+        }
+
         if (trainer.copy) {
             const target = trainersResults[trainer.copy];
             trainersResults[trainer.id] = {

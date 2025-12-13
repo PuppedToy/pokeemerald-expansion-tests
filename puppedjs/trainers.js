@@ -311,35 +311,29 @@ const generic2Average2Strong1Premium1MegaTeamTemplate = () => [
 const POKEDEF_BAD_LC = {
     absoluteTier: [TIER_BAD],
     evoType: [EVO_TYPE_LC],
-    tryEvolve: true,
-};
-
-const POKEDEF_BAD_LC_OR_SOLO = {
-    absoluteTier: [TIER_BAD],
-    evoType: [EVO_TYPE_LC, EVO_TYPE_SOLO],
-    tryEvolve: true,
-};
-
-const POKEDEF_WEAK_LC = {
-    absoluteTier: [TIER_WEAK],
-    evoType: [EVO_TYPE_LC],
-    tryEvolve: true,
-};
-
-const POKEDEF_WEAK_NOEVO = {
-    absoluteTier: [TIER_WEAK],
     checkValidEvo: true,
 };
 
-const POKEDEF_AVERAGE_NOEVO = {
-    absoluteTier: [TIER_AVERAGE],
+const POKEDEF_BAD = {
+    absoluteTier: [TIER_BAD],
     checkValidEvo: true,
 };
 
 const POKEDEF_WEAK = {
     absoluteTier: [TIER_WEAK],
     checkValidEvo: true,
-    tryEvolve: true,
+};
+
+const POKEDEF_AVERAGE = {
+    absoluteTier: [TIER_AVERAGE],
+    checkValidEvo: true,
+    fallback: [
+        {
+            absoluteTier: [TIER_WEAK],
+            checkValidEvo: true,
+            tryEvolve: true,
+        }
+    ],
 };
 
 const POKEDEF_WEAK_OR_AVERAGE = {
@@ -363,19 +357,6 @@ const POKEDEF_UP_TO_PREMIUM = {
 const POKEDEF_UP_TO_PREMIUM_NOEVO = {
     absoluteTier: [TIER_WEAK, TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM],
     checkValidEvo: true,
-};
-
-const POKEDEF_AVERAGE = {
-    absoluteTier: [TIER_AVERAGE],
-    checkValidEvo: true,
-    tryEvolve: true,
-    fallback: [
-        {
-            absoluteTier: [TIER_WEAK],
-            checkValidEvo: true,
-            tryEvolve: true,
-        }
-    ],
 };
 
 const POKEDEF_STRONG = {
@@ -1086,52 +1067,66 @@ const petalwoodGruntBag = [
     'Splash Plate',
 ];
 
-const roxanneTMs = [
-    'MOVE_WATER_PULSE',
-    'MOVE_BULLET_SEED',
-];
-
-const roxanneBag = [
-    ...petalwoodGruntBag,
+const woodsPlatesChoice = [
     'Meadow Plate',
-    'Earth Plate',
-    'Water Gem',
-    'Flying Gem',
-    'Dark Gem',
-    'Passho Berry',
-    'Charti Berry',
-    'Chople Berry',
+    'Splash Plate',
+    'Earth Plate'
 ];
 
-const rusturfGruntBag = [
-    ...roxanneBag,
+const choice104Berry = ['Charti Berry', 'Chople Berry', 'Passho Berry'];
+const choice104Gem = ['Water Gem', 'Flying Gem', 'Dark Gem'];
+const choice104TMs = [
+    'TM_WATER_PULSE',
+    'TM_BULLET_SEED',
+    'TM_DIG',
+];
+
+const bagAfterWoodGrunt = () => [
+    'Oran Berry',
+    'Expert Belt',
+    'Eviolite',
+    sample([...woodsPlatesChoice]),    
+];
+
+const roxanneBag = () => [
+    ...bagAfterWoodGrunt(),
+    sample([...choice104Gem]),
+    sample([...choice104Berry]),
+    sample([...choice104TMs]),
+];
+
+const rusturfGruntBag = () => [
+    ...roxanneBag(),
     'Rocky Helmet',
     'Black Sludge',
+    'TM_ROCK_TOMB',
 ];
 
-const rusturfGruntTMs = [
-    ...roxanneTMs,
-    'MOVE_ROCK_TOMB',
+const rivalRustboroBag = () => [
+    ...rusturfGruntBag(),
+    sample('Toxic Orb', 'Flame Orb'),
+    sample('Big Root', 'Punching Glove', 'TM_GIGA_DRAIN'),
 ];
 
-const rivalRustboroBag = [
-    ...rusturfGruntBag,
-    'Flame Orb',
+const choicesDewfordTMs = [
+    'TM_BRICK_BREAK',
+    'TM_SHADOW_BALL',
+    'TM_PSYCHIC',
 ];
 
-const brawylyBag = [
-    ...rivalRustboroBag,
+const brawylyBag = () => [
+    ...rivalRustboroBag(),
+    sample([...choicesDewfordTMs]),
     'Life Orb',
 ];
 
-const brawlyTMs = [
-    ...rusturfGruntTMs,
-    'MOVE_BRICK_BREAK',
-    'MOVE_SHADOW_BALL',
-    'MOVE_PSYCHIC',
+const stevenBag = () => [
+    ...brawylyBag(),
+    'TM_BULK_UP',
+    'TM_STEEL_WING',
 ];
 
-const slateportGruntsBag = [
+const slateportGruntsBag = () => [
     ...brawylyBag,
     'Loaded Dice',
     // 'Damp Rock',
@@ -1140,88 +1135,89 @@ const slateportGruntsBag = [
     // 'Icy Rock',
 ];
 
-const slateportGruntsTMs = [
-    ...brawlyTMs,
-    'MOVE_STEEL_WING',
+const choice110TMs = [
+    'TM_DRAGON_CLAW',
+    'TM_EARTHQUAKE',
+    'TM_FOCUS_PUNCH',
 ];
 
-const rivalRoute110Bag = [
-    ...slateportGruntsBag,
-    // 'Terrain Extender',
+const rivalRoute110Bag = () => [
+    ...slateportGruntsBag(),
+    sample(choice110TMs),
     'Shed Shell',
+    // 'Terrain Extender',
 ];
 
-const rivalRoute110TMs = [
-    ...slateportGruntsTMs,
-    'MOVE_DRAGON_CLAW',
-    'MOVE_EARTHQUAKE',
-    'MOVE_FOCUS_PUNCH',
-    'MOVE_BULK_UP',
-];
-
-const wallyBag = [
-    ...rivalRoute110Bag,
+const wallyBag = () => [
+    ...rivalRoute110Bag(),
+    sample(['Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed']),
     'Lum Berry',
-    'Electric Seed',
-    'Grassy Seed',
-    'Psychic Seed',
-    'Misty Seed',
 ];
 
-const wattsonBag = [
-    'Light Clay',
-    'Assault Vest',
+const choiceMelinaBerries = [
     'Wacan Berry',
     'Occa Berry',
     'Shuca Berry',
-    'Fire Gem',
-    'Ground Gem',
-    'Fighting Gem',
+];
+const choiceAishaGems = ['Fire Gem', 'Ground Gem', 'Fighting Gem'];
+
+const wattsonBag = () => [
+    ...wallyBag(),
+    sample('TM_REFLECT', 'TM_LIGHT_SCREEN'),
+    sample(choiceMelinaBerries),
+    sample(choiceAishaGems),
+    'Light Clay',
+    'Assault Vest',
+    'TM_SHOCK_WAVE',
+    'TM_ROCK_SMASH',
 ];
 
-const wattsonTMs = [
-    ...rivalRoute110TMs,
-    'TM_REFLECT',
-    'TM_LIGHT_SCREEN',
-];
-
-
-const magmaChimneyBag = [
-    ...wattsonBag,
+const magmaChimneyBag = () => [
+    ...wattsonBag(),
     'Air Balloon',
-    'Toxic Orb',
     'Sitrus Berry',
 ];
 
-const flanneryBag = [
-    ...magmaChimneyBag,
+const choiceNobTMs = ['TM_SOLAR_BEAM', 'TM_HYPER_BEAM', 'TM_SLUDGE_BOMB'];
+
+const flanneryBag = () => [
+    ...magmaChimneyBag(),
+    sample(choiceNobTMs),
+    sample(['TM_TAUNT', 'TM_TORMENT', 'TM_SKILL_SWAP', 'TM_SNATCH']),
+    'TM_OVERHEAT',
+    'TM_STRENGTH',
     'White Herb',
     'Power Herb',
     'Shell Bell',
 ];
 
-const flanneryTMs = [
-    ...wattsonTMs,
-    'MOVE_TAUNT',
-    'MOVE_TORMENT',
-    'MOVE_SKILL_SWAP',
-    'MOVE_SNATCH',
-    'MOVE_SOLAR_BEAM',
-    'MOVE_HYPER_BEAM',
-    'MOVE_SLUDGE_BOMB',
-    'MOVE_STRENGTH',
-    'MOVE_SHOCK_WAVE'
-];
-
-const normanBag = [
-    ...flanneryBag,
+const normanBag = () => [
+    ...flanneryBag(),
+    sample(['Yache Berry', 'Chilan Berry', 'Coba Berry']),
+    'TM_FACADE',
+    'TM_SURF',
     'Eject Pack',
     'Throat Spray',
     'Custap Berry'
 ];
 
-const shellyBag = [
-    ...normanBag,
+const choiceWadeBerries = [
+    'Kee Berry',
+    'Maranga Berry',
+    'Rowap Berry',
+    'Jaboca Berry',
+];
+
+const choiceChesterTMs = [
+    'TM_THUNDERBOLT',
+    'TM_ICE_BEAM',
+    'TM_FLAMETHROWER',
+];
+
+const shellyBag = () => [
+    ...normanBag(),
+    sample(choiceWadeBerries),
+    sample(choiceChesterTMs),
     'Booster Energy',
 ];
 
@@ -1235,33 +1231,31 @@ const shellyTMs = [
     'MOVE_OVERHEAT',
 ];
 
-const rival119Bag = [
-    ...shellyBag,
+const rival119Bag = () => [
+    ...shellyBag(),
     'Leftovers',
 ];
 
-const winonaBag = [
-    ...rival119Bag,
+const choiceClarissaItems = [
     'Mirror Herb',
     'Adrenaline Orb',
     'Red Card',
 ];
 
-const wallyBag2 = [
-    ...winonaBag,
-    'Focus Sash',
-    'Payapa Berry',
-    'Colbur Berry',
-    'Tanga Berry',
+const winonaBag = () => [
+    ...rival119Bag(),
+    sample([...choiceClarissaItems]),
+    'TM_AERIAL_ACE',
 ];
 
-const wallyTMs2 = [
-    ...shellyTMs,
-    'MOVE_AERIAL_ACE',
-    'MOVE_TOXIC',
-    'MOVE_PROTECT',
-    'MOVE_REST',
+const wallyBag2 = () => [
+    ...winonaBag,
+    'Focus Sash',
+    sample(['TM_PROTECT', 'TM_TOXIC', 'TM_REST']),
+    sample(['Payapa Berry', 'Colbur Berry', 'Tanga Berry']),
 ];
+
+const choiceIsabellaItem = ['Choice Band', 'Choice Scarf', 'Choice Specs'];
 
 const generateTateAndLizaBag = () => {
     return [
@@ -1451,7 +1445,7 @@ const trainersData = [
     {
         id: 'TRAINER_LYLE',
         level: 9,
-        bag: ['Meadow Plate', 'Splash Plate', 'Earth Plate'],
+        bag: [...woodsPlatesChoice],
         team: [
             {
                 ...POKEDEF_BAD_LC,
@@ -1480,23 +1474,23 @@ const trainersData = [
                 abilities: ['SPEED_BOOST'],
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 type: [aquaTeamTypes[1]],
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 type: [aquaTeamTypes[2]],
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 type: [aquaTeamTypes[3]],
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 type: [aquaTeamTypes[4]],
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 type: [aquaTeamTypes[0]],
             },
         ],
@@ -1517,7 +1511,7 @@ const trainersData = [
     {
         id: 'TRAINER_WINSTON_1',
         level: 10,
-        bag: ['Charti Berry', 'Chople Berry', 'Passho Berry'],
+        bag: [...choice104Berry],
         team: [
             {
                 ...POKEDEF_BAD_LC,
@@ -1548,7 +1542,7 @@ const trainersData = [
     {
         id: 'TRAINER_IVAN',
         level: 10,
-        bag: getSampleItemsFromArray(['Water Gem', 'Flying Gem', 'Dark Gem'], 2),
+        bag: getSampleItemsFromArray([...choice104Gem], 2),
         team: [
             {
                 ...POKEDEF_BAD_LC,
@@ -1580,7 +1574,7 @@ const trainersData = [
         id: 'TRAINER_HALEY_1',
         level: 10,
         bag: [...rival103Bag],
-        tms: [...roxanneTMs, 'MOVE_DIG'],
+        tms: [...choice104TMs],
         team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
     },
     {
@@ -1619,37 +1613,31 @@ const trainersData = [
         id: 'TRAINER_ROXANNE_1',
         level: 10,
         isBoss: true,
-        bag: [...roxanneBag, 'Rock Gem'],
-        tms: [...roxanneTMs],
+        bag: roxanneBag(),
+        tms: ['MOVE_ROCK_TOMB', 'MOVE_ROCK_TOMB', 'MOVE_ROCK_TOMB'],
         team: [
             {
                 specific: 'SPECIES_NOSEPASS',
-                tryToHaveMove: ['MOVE_ROCK_TOMB'],
             },
             {
-                ...POKEDEF_WEAK_LC,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_ROCK],
-                tryToHaveMove: ['MOVE_ROCK_TOMB'],
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_ROCK],
-                tryToHaveMove: ['MOVE_ROCK_TOMB'],
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_ROCK],
-                tryToHaveMove: ['MOVE_ROCK_TOMB'],
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_ROCK],
-                tryToHaveMove: ['MOVE_ROCK_TOMB'],
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_ROCK],
-                tryToHaveMove: ['MOVE_ROCK_TOMB'],
             },
         ],
     },
@@ -1657,56 +1645,56 @@ const trainersData = [
     {
         id: 'TRAINER_BILLY',
         level: 13,
-        bag: getSampleItemsFromArray(roxanneBag, 3),
-        tms: getSampleItemsFromArray(roxanneTMs, 1),
+        bag: getSampleItemsFromArray(roxanneBag(), 3),
+        tms: getSampleItemsFromArray(choice104TMs, 1),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_GEODUDE'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 5),
         ]
     },
     // Route 116
     {
         id: 'TRAINER_JOSE',
         level: 13,
-        bag: getSampleItemsFromArray(roxanneBag, 3),
-        tms: getSampleItemsFromArray(roxanneTMs, 1),
+        bag: getSampleItemsFromArray(roxanneBag(), 3),
+        tms: getSampleItemsFromArray(choice104TMs, 1),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_DITTO'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 5),
         ],
     },
     {
         id: 'TRAINER_JOEY',
         level: 13,
-        bag: getSampleItemsFromArray(roxanneBag, 3),
-        tms: getSampleItemsFromArray(roxanneTMs, 1),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: getSampleItemsFromArray(roxanneBag(), 3),
+        tms: getSampleItemsFromArray(choice104TMs, 1),
+        team: generatePokemonsWithDefinition(POKEDEF_BAD, 6),
     },
     {
         id: 'TRAINER_JOHNSON',
         level: 13,
-        bag: [...getSampleItemsFromArray(roxanneBag, 2), 'Rocky Helmet'],
-        tms: getSampleItemsFromArray(roxanneTMs, 1),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: [...getSampleItemsFromArray(roxanneBag(), 2), 'Rocky Helmet'],
+        tms: getSampleItemsFromArray(choice104TMs, 1),
+        team: generatePokemonsWithDefinition(POKEDEF_BAD, 6),
     },
     {
         id: 'TRAINER_DEVAN',
         level: 13,
-        bag: getSampleItemsFromArray(roxanneBag, 2),
-        tms: getSampleItemsFromArray(roxanneTMs, 1),
+        bag: getSampleItemsFromArray(roxanneBag(), 2),
+        tms: getSampleItemsFromArray(choice104TMs, 1),
         team: [
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_POISON],
                 item: 'Black Sludge',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 5),
         ],
     },
     {
@@ -1714,17 +1702,17 @@ const trainersData = [
         level: 13,
         team: [
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 mustHaveOneOfMoves: [...punchingMoves],
                 item: 'Punching Glove',
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 mustHaveOneOfMoves: ['MOVE_GIGA_DRAIN'],
                 tryToHaveMove: ['MOVE_GIGA_DRAIN'],
                 item: 'Big Root',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 4),
         ],
     },
     // Rusturf Tunnel
@@ -1732,8 +1720,7 @@ const trainersData = [
         id: 'TRAINER_GRUNT_RUSTURF_TUNNEL',
         level: 13,
         isBoss: true,
-        bag: [...rusturfGruntBag],
-        tms: [...rusturfGruntTMs],
+        bag: [...rusturfGruntBag()],
         team: [
             {
                 specific: 'SPECIES_CARVANHA',
@@ -1741,27 +1728,27 @@ const trainersData = [
                 abilities: ['ROUGH_SKIN'],
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 type: [aquaTeamTypes[0]],
                 tryEvolve: true,
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 type: [aquaTeamTypes[1]],
                 tryEvolve: true,
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 type: [aquaTeamTypes[2]],
                 tryEvolve: true,
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 type: [aquaTeamTypes[3]],
                 tryEvolve: true,
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 type: [aquaTeamTypes[4]],
                 tryEvolve: true,
             },
@@ -1771,21 +1758,19 @@ const trainersData = [
     {
         id: 'TRAINER_JANICE',
         level: 14,
-        bag: getSampleItemsFromArray(rusturfGruntBag, 3),
-        tms: getSampleItemsFromArray(rusturfGruntTMs, 1),
+        bag: getSampleItemsFromArray(rusturfGruntBag(), 3),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_SENTRET'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 5),
         ],
     },
     {
         id: 'TRAINER_JERRY_1',
         level: 14,
-        bag: getSampleItemsFromArray(rusturfGruntBag, 2),
-        tms: getSampleItemsFromArray(rusturfGruntTMs, 1),
+        bag: getSampleItemsFromArray(rusturfGruntBag(), 1),
         team: [
             {
                 absoluteTier: [TIER_BAD],
@@ -1793,22 +1778,26 @@ const trainersData = [
                 abilities: ['GUTS'],
                 item: 'Flame Orb',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            {
+                absoluteTier: [TIER_BAD],
+                evoType: [EVO_TYPE_LC],
+                abilities: ['POISON_HEAL'],
+                item: 'Toxic Orb',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 4),
         ],
     },
     {
         id: 'TRAINER_SARAH',
         level: 14,
-        bag: getSampleItemsFromArray(rusturfGruntBag, 3),
-        tms: getSampleItemsFromArray(rusturfGruntTMs, 1),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: getSampleItemsFromArray(rusturfGruntBag(), 3),
+        team: generatePokemonsWithDefinition(POKEDEF_BAD, 6),
     },
     {
         id: 'TRAINER_KAREN_1',
         level: 14,
-        bag: getSampleItemsFromArray(rusturfGruntBag, 3),
-        tms: getSampleItemsFromArray(rusturfGruntTMs, 1),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: getSampleItemsFromArray(rusturfGruntBag(), 3),
+        team: generatePokemonsWithDefinition(POKEDEF_BAD, 6),
     },
     // Rustboro Rival
     {
@@ -1816,8 +1805,7 @@ const trainersData = [
         isBoss: true,
         level: 14,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...rivalRustboroBag],
-        tms: [...rusturfGruntTMs],
+        bag: [...rivalRustboroBag()],
         team: [...rivalRustboroTemplate('TREECKO')],
     },
     {
@@ -1825,8 +1813,7 @@ const trainersData = [
         isBoss: true,
         level: 14,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...rivalRustboroBag],
-        tms: [...rusturfGruntTMs],
+        bag: [...rivalRustboroBag()],
         team: [...rivalRustboroTemplate('TORCHIC')],
     },
     {
@@ -1834,8 +1821,7 @@ const trainersData = [
         isBoss: true,
         level: 14,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...rivalRustboroBag],
-        tms: [...rusturfGruntTMs],
+        bag: [...rivalRustboroBag()],
         team: [...rivalRustboroTemplate('MUDKIP')],
     },
     {
@@ -1854,49 +1840,46 @@ const trainersData = [
     {
         id: 'TRAINER_NED',
         level: 16,
-        bag: getSampleItemsFromArray(rivalRustboroBag, 3),
-        tms: getSampleItemsFromArray(rusturfGruntTMs, 1),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: getSampleItemsFromArray(rivalRustboroBag(), 4),
+        team: generatePokemonsWithDefinition(POKEDEF_BAD, 6),
     },
     {
         id: 'TRAINER_ELLIOT_1',
         level: 16,
-        bag: getSampleItemsFromArray(rivalRustboroBag, 3),
-        tms: getSampleItemsFromArray(rusturfGruntTMs, 1),
+        bag: getSampleItemsFromArray(rivalRustboroBag(), 4),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_CHARMANDER'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 5),
         ],
     },
     {
         id: 'TRAINER_ANDRES_1',
         level: 16,
-        bag: getSampleItemsFromArray(rivalRustboroBag, 3),
-        tms: getSampleItemsFromArray(rusturfGruntTMs, 1),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: getSampleItemsFromArray(rivalRustboroBag(), 4),
+        team: generatePokemonsWithDefinition(POKEDEF_BAD, 6),
     },
     {
         id: 'TRAINER_JOSUE',
         level: 16,
-        bag: getSampleItemsFromArray(rivalRustboroBag, 2),
+        bag: getSampleItemsFromArray(rivalRustboroBag(), 1),
         tms: ['MOVE_BRICK_BREAK', 'MOVE_SHADOW_BALL', 'MOVE_PSYCHIC'],
         team: [
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_FIGHTING],
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_GHOST],
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_PSYCHIC],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 3),
         ],
     },
     // Dewford Gym
@@ -1904,8 +1887,8 @@ const trainersData = [
         id: 'TRAINER_BRAWLY_1',
         level: 16,
         isBoss: true,
-        bag: [...brawylyBag],
-        tms: [...brawlyTMs],
+        bag: [...brawylyBag(), 'Fighting Gem'],
+        tms: ['MOVE_BULK_UP', 'MOVE_BULK_UP'],
         team: [
             {
                 specific: 'SPECIES_MAKUHITA',
@@ -1915,29 +1898,24 @@ const trainersData = [
                 item: 'Flame Orb',
             },
             {
-                ...POKEDEF_WEAK_NOEVO,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_FIGHTING],
-                tryToHaveMove: ['MOVE_BULK_UP'],
             },
             {
-                ...POKEDEF_WEAK_NOEVO,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_FIGHTING],
-                tryToHaveMove: ['MOVE_BULK_UP'],
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_FIGHTING],
-                tryToHaveMove: ['MOVE_BULK_UP'],
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_FIGHTING],
-                tryToHaveMove: ['MOVE_BULK_UP'],
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_FIGHTING],
-                tryToHaveMove: ['MOVE_BULK_UP'],
             },
         ],
     },
@@ -1946,15 +1924,15 @@ const trainersData = [
         id: 'TRAINER_STEVEN',
         level: 19,
         isBoss: true,
-        bag: [...brawylyBag, 'Steel Gem', 'Rock Gem'],
-        tms: [...brawlyTMs, 'MOVE_STEEL_WING', 'MOVE_STEEL_WING', 'MOVE_STEEL_WING'],
+        bag: [...stevenBag(), 'Steel Gem'],
+        tms: ['MOVE_STEEL_WING', 'MOVE_STEEL_WING'],
         team: [
             {
-                ...POKEDEF_WEAK_NOEVO,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_STEEL],
             },
             {
-                ...POKEDEF_WEAK_NOEVO,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_STEEL],
             },
             {
@@ -1970,7 +1948,7 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_STEEL],
             },
         ],
@@ -1979,49 +1957,51 @@ const trainersData = [
     {
         id: 'TRAINER_LOLA_1',
         level: 21,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        bag: getSampleItemsFromArray(stevenBag(), 5),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_BULBASAUR'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5)
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 4),
         ],
     },
     {
         id: 'TRAINER_EDMOND',
         level: 21,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: getSampleItemsFromArray(stevenBag(), 5),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 5),
+        ]
     },
     {
         id: 'TRAINER_HAILEY',
         level: 21,
-        bag: getSampleItemsFromArray(brawylyBag, 3),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        bag: getSampleItemsFromArray(stevenBag(), 4),
         team: [
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 item: 'Loaded Dice',
                 mustHaveOneOfMoves: goodMultiHitMoves,
                 tryToHaveMove: multiHitMoves,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 4),
         ],
     },
     {
         id: 'TRAINER_CHANDLER',
         level: 21,
-        bag: getSampleItemsFromArray(brawylyBag, 2),
+        bag: getSampleItemsFromArray(stevenBag(), 3),
         team: [
-            pokeDefDrizzleMon(POKEDEF_BAD_LC),
-            pokeDefDroughtMon(POKEDEF_BAD_LC),
-            pokeDefSandStreamMon(POKEDEF_BAD_LC),
-            pokeDefSnowWarningMon(POKEDEF_BAD_LC),
+            pokeDefDrizzleMon(POKEDEF_BAD),
+            pokeDefDroughtMon(POKEDEF_BAD),
+            pokeDefSandStreamMon(POKEDEF_BAD),
+            pokeDefSnowWarningMon(POKEDEF_BAD),
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_WEAK,
                 abilities: [...rainAbilities, ...sunAbilities, ...sandAbilities, ...snowAbilities],
             },
             {
@@ -2033,41 +2013,44 @@ const trainersData = [
     {
         id: 'TRAINER_RICKY_1',
         level: 21,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: getSampleItemsFromArray(stevenBag(), 5),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 5),
+        ]
     },
     {
         id: 'TRAINER_HUEY',
         level: 21,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: getSampleItemsFromArray(stevenBag(), 5),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 5),
+        ]
     },
     {
         id: 'TRAINER_GRUNT_MUSEUM_1',
         isBoss: true,
         level: 21,
         preventShuffle: true,
-        bag: [...slateportGruntsBag],
-        tms: [...slateportGruntsTMs],
+        bag: [...slateportGruntsBag()],
         team: [
-            pokeDefDrizzleMon(POKEDEF_BAD_LC_OR_SOLO),
+            pokeDefDrizzleMon(POKEDEF_BAD),
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 abilities: [...rainAbilities],
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 abilities: [...rainAbilities],
             },
-            pokeDefDrizzleMon(POKEDEF_BAD_LC_OR_SOLO),
+            pokeDefDrizzleMon(POKEDEF_BAD),
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 abilities: [...rainAbilities],
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 abilities: [...rainAbilities],
             },
         ],
@@ -2077,25 +2060,24 @@ const trainersData = [
         isBoss: true,
         level: 21,
         preventShuffle: true,
-        bag: [...slateportGruntsBag],
-        tms: [...slateportGruntsTMs],
+        bag: [...slateportGruntsBag()],
         team: [
-            pokeDefSnowWarningMon(POKEDEF_BAD_LC_OR_SOLO),
+            pokeDefSnowWarningMon(POKEDEF_BAD),
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 abilities: [...snowAbilities],
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 abilities: [...snowAbilities],
             },
-            pokeDefSnowWarningMon(POKEDEF_BAD_LC_OR_SOLO),
+            pokeDefSnowWarningMon(POKEDEF_BAD),
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 abilities: [...snowAbilities],
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 abilities: [...snowAbilities],
             },
         ],
@@ -2104,52 +2086,51 @@ const trainersData = [
     {
         id: 'TRAINER_ISABEL_1',
         level: 23,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
+        bag: getSampleItemsFromArray(slateportGruntsBag(), 3),
         tms: ['MOVE_DRAGON_CLAW', 'ITEM_TM_EARTHQUAKE', 'ITEM_TM_FOCUS_PUNCH'],
         team: [
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_DRAGON],
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_GROUND],
             },
             {
-                ...POKEDEF_BAD_LC_OR_SOLO,
+                ...POKEDEF_WEAK,
                 mustHaveOneOfMoves: ['MOVE_THUNDER_WAVE', 'MOVE_SUPERSONIC', 'MOVE_CONFUSE_RAY', 'MOVE_ATTRACT'],
                 type: [POKEMON_TYPE_FIGHTING],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 3),
         ],
     },
     {
         id: 'TRAINER_KALEB',
         level: 23,
-        bag: getSampleItemsFromArray(brawylyBag, 2),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        bag: getSampleItemsFromArray(slateportGruntsBag(), 3),
         team: [
-            pokeDefGrassySurgeMon(POKEDEF_BAD_LC),
+            pokeDefGrassySurgeMon(POKEDEF_BAD),
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_WEAK,
                 tryEvolve: true,
                 item: 'Grassy Seed',
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_WEAK,
                 tryEvolve: true,
                 item: 'Grassy Seed',
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_GRASS],
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_GRASS],
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_BAD,
                 type: [POKEMON_TYPE_GRASS],
             },
         ],
@@ -2157,46 +2138,53 @@ const trainersData = [
     {
         id: 'TRAINER_TIMMY',
         level: 23,
-        bag: ['Shed Shell', ...getSampleItemsFromArray(brawylyBag, 3)],
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: ['Shed Shell', ...getSampleItemsFromArray(slateportGruntsBag(), 5)],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 4),
+        ]
     },
     {
         id: 'TRAINER_EDWARD',
         level: 23,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_ELECTRIKE'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 4),
         ],
     },
     // Route 103 (later)
     {
         id: 'TRAINER_DAISY',
         level: 23,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 4),
+        ]
     },
     {
         id: 'TRAINER_MARCOS',
         level: 23,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 4),
+        ]
     },
     {
         id: 'TRAINER_ANDREW',
         level: 23,
-                level: 23,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 4),
+        ]
     },
     // Route 110 Again
     {
@@ -2204,8 +2192,7 @@ const trainersData = [
         isBoss: true,
         level: 23,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...rivalRoute110Bag],
-        tms: [...rivalRoute110TMs],
+        bag: [...rivalRoute110Bag()],
         team: [...rivalRoute110Template('TREECKO')],
     },
     {
@@ -2213,8 +2200,7 @@ const trainersData = [
         isBoss: true,
         level: 23,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...rivalRoute110Bag],
-        tms: [...rivalRoute110TMs],
+        bag: [...rivalRoute110Bag()],
         team: [...rivalRoute110Template('TORCHIC')],
     },
     {
@@ -2222,8 +2208,7 @@ const trainersData = [
         isBoss: true,
         level: 23,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...rivalRoute110Bag],
-        tms: [...rivalRoute110TMs],
+        bag: [...rivalRoute110Bag()],
         team: [...rivalRoute110Template('MUDKIP')],
     },
     {
@@ -2242,39 +2227,40 @@ const trainersData = [
         {
         id: 'TRAINER_DALE',
         level: 25,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        bag: getSampleItemsFromArray(rivalRoute110Bag(), 7),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_MANECTRIC'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5)
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 3)
         ],
     },
     {
         id: 'TRAINER_EDWIN_1',
         level: 25,
-        bag: ['Lum Berry', ...getSampleItemsFromArray(brawylyBag, 3)],
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: ['Lum Berry', ...getSampleItemsFromArray(rivalRoute110Bag(), 6)],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 3),
+        ],
     },
     {
         id: 'TRAINER_JOSEPH',
         level: 25,
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
         team: [
-            pokeDefPsychicSurgeMon(POKEDEF_BAD_LC, 'Psychic Seed'),
-            pokeDefMistySurgeMon(POKEDEF_BAD_LC, 'Misty Seed'),
-            pokeDefElectricSurgeMon(POKEDEF_BAD_LC, 'Electric Seed'),
-            pokeDefGrassySurgeMon(POKEDEF_BAD_LC, 'Grassy Seed'),
+            pokeDefPsychicSurgeMon(POKEDEF_BAD, 'Psychic Seed'),
+            pokeDefMistySurgeMon(POKEDEF_BAD, 'Misty Seed'),
+            pokeDefElectricSurgeMon(POKEDEF_BAD, 'Electric Seed'),
+            pokeDefGrassySurgeMon(POKEDEF_BAD, 'Grassy Seed'),
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_PSYCHIC, POKEMON_TYPE_FAIRY, POKEMON_TYPE_ELECTRIC, POKEMON_TYPE_GRASS],
             },
             {
-                ...POKEDEF_BAD_LC,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_PSYCHIC, POKEMON_TYPE_FAIRY, POKEMON_TYPE_ELECTRIC, POKEMON_TYPE_GRASS],
             },
         ],
@@ -2283,23 +2269,25 @@ const trainersData = [
     {
         id: 'TRAINER_DEANDRE',
         level: 25,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),        
+        bag: getSampleItemsFromArray(rivalRoute110Bag(), 7),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_CARVANHA'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 3),
         ],
     },
     {
         id: 'TRAINER_DALTON_1',
         level: 25,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
-        team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
+        bag: getSampleItemsFromArray(rivalRoute110Bag(), 7),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 3),
+        ],
     },
     // Wally
     {
@@ -2307,8 +2295,7 @@ const trainersData = [
         isBoss: true,
         level: 25,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...wallyBag],
-        tms: [...rivalRoute110TMs],
+        bag: [...wallyBag()],
         team: [
             {
                 id: 'WALLY_1',
@@ -2352,129 +2339,121 @@ const trainersData = [
     {
         id: 'TRAINER_BRANDI',
         level: 26,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_ODDISH'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_NOEVO, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 5),
         ],
     },
     {
         id: 'TRAINER_ISAAC_1',
         level: 26,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_GLOOM'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_NOEVO, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 5),
         ],
     },
     {
         id: 'TRAINER_DYLAN_1',
         level: 26,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_NOEVO, 6),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 6),
         ]
     },
     {
         id: 'TRAINER_LYDIA_1',
         level: 26,
-        bag: getSampleItemsFromArray(brawylyBag, 4),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_NOEVO, 6),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 6),
         ]
     },
     {
         id: 'TRAINER_DEREK',
         level: 26,
-        bag: getSampleItemsFromArray(brawylyBag, 5),
-        tms: getSampleItemsFromArray(brawlyTMs, 3),
+        bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_NOEVO, 6),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 6),
         ]
     },
     {
         id: 'TRAINER_ANNA_AND_MEG_1',
         level: 26,
-        bag: getSampleItemsFromArray(brawylyBag, 2),
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        bag: getSampleItemsFromArray(wallyBag(), 5),
         team: [
             {
-                ...POKEDEF_WEAK_NOEVO,
+                ...POKEDEF_WEAK,
                 mustHaveOneOfMoves: ['MOVE_REFLECT'],
                 tryToHaveMove: ['MOVE_REFLECT'],
                 item: 'Light Clay',
             },
             {
-                ...POKEDEF_WEAK_NOEVO,
+                ...POKEDEF_WEAK,
                 mustHaveOneOfMoves: ['MOVE_LIGHT_SCREEN'],
                 tryToHaveMove: ['MOVE_LIGHT_SCREEN'],
                 item: 'Light Clay',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_NOEVO, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 4),
         ],
     },
     {
         id: 'TRAINER_MELINA',
         level: 26,
-        bag: [sample(brawylyBag)],
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
+        bag: getSampleItemsFromArray(wallyBag(), 5),
         team: [
             {
-                ...POKEDEF_WEAK_NOEVO,
+                ...POKEDEF_WEAK,
                 weakToTypes: [POKEMON_TYPE_ELECTRIC],
                 item: 'Wacan Berry',
             },
             {
-                ...POKEDEF_WEAK_NOEVO,
+                ...POKEDEF_WEAK,
                 weakToTypes: [POKEMON_TYPE_FIRE],
                 item: 'Occa Berry',
             },
             {
-                ...POKEDEF_WEAK_NOEVO,
+                ...POKEDEF_WEAK,
                 weakToTypes: [POKEMON_TYPE_GROUND],
                 item: 'Shuca Berry',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_NOEVO, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
         ],
     },
     {
         id: 'TRAINER_AISHA',
         level: 26,
-        bag: ['Fire Gem', 'Ground Gem', 'Fighting Gem', sample(brawylyBag)],
+        bag: [...choiceAishaGems, ...getSampleItemsFromArray(wallyBag(), 5)],
         team: [
             {
-                ...POKEDEF_WEAK_NOEVO,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_FIRE],
             },
             {
-                ...POKEDEF_WEAK_NOEVO,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_GROUND],
             },
             {
-                ...POKEDEF_WEAK_NOEVO,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_FIGHTING],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_NOEVO, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
         ],
     },
     {
         id: 'TRAINER_MARIA_1',
         level: 26,
-        bag: ['Assault Vest', ...getSampleItemsFromArray(brawylyBag, 3)],
-        tms: getSampleItemsFromArray(brawlyTMs, 2),
-        team: generatePokemonsWithDefinition(POKEDEF_WEAK_NOEVO, 6),
+        bag: ['Assault Vest', ...getSampleItemsFromArray(wallyBag(), 7)],
+        team: generatePokemonsWithDefinition(POKEDEF_WEAK, 6),
     },
     // Mauville Gym
     {
@@ -2482,13 +2461,12 @@ const trainersData = [
         isBoss: true,
         level: 26,
         preventShuffle: true,
-        bag: [...wattsonBag, 'Electric Gem', 'Zap Plate'],
-        tms: [...wattsonTMs],
+        bag: [...wattsonBag(), 'Electric Gem'],
+        tms: ['TM_SHOCK_WAVE'],
         team: [
             pokeDefElectricSurgeMon({
                 absoluteTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 checkValidEvo: true,
-                tryToHaveMove: ['MOVE_SHOCK_WAVE'],
             }),
             {
                 specific: 'SPECIES_MANECTRIC',
@@ -2497,48 +2475,44 @@ const trainersData = [
                 item: 'Manectite',
             },
             {
-                ...POKEDEF_AVERAGE_NOEVO,
+                ...POKEDEF_AVERAGE,
                 type: [POKEMON_TYPE_ELECTRIC],
                 item: 'Electric Seed',
-                tryToHaveMove: ['MOVE_SHOCK_WAVE'],
             },
             {
-                ...POKEDEF_AVERAGE_NOEVO,
+                ...POKEDEF_AVERAGE,
                 type: [POKEMON_TYPE_ELECTRIC],
-                tryToHaveMove: ['MOVE_SHOCK_WAVE'],
             },
             {
-                ...POKEDEF_AVERAGE_NOEVO,
+                ...POKEDEF_AVERAGE,
                 type: [POKEMON_TYPE_ELECTRIC],
-                tryToHaveMove: ['MOVE_SHOCK_WAVE'],
             },
             {
-                ...POKEDEF_AVERAGE_NOEVO,
+                ...POKEDEF_WEAK,
                 type: [POKEMON_TYPE_ELECTRIC],
-                tryToHaveMove: ['MOVE_SHOCK_WAVE'],
+                tryEvolve: true,
             },
         ],
     },
-    // Route 111
+    // Route 111 @TODO Continue here
     {
         id: 'TRAINER_HAYDEN',
         level: 29,
-        bag: getSampleItemsFromArray(wattsonBag, 7),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
+        bag: getSampleItemsFromArray(wattsonBag(), 10),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_DROWZEE'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 5)
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 4),
         ],
     },
     {
         id: 'TRAINER_TYRON',
         level: 29,
-        bag: getSampleItemsFromArray(wattsonBag, 5),
-        tms: getSampleItemsFromArray(wattsonTMs, 2),
+        bag: getSampleItemsFromArray(wattsonBag(), 9),
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
@@ -2550,8 +2524,7 @@ const trainersData = [
     {
         id: 'TRAINER_BIANCA',
         level: 29,
-        bag: getSampleItemsFromArray(wattsonBag, 5),
-        tms: getSampleItemsFromArray(wattsonTMs, 2),
+        bag: getSampleItemsFromArray(wattsonBag(), 9),
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
@@ -2563,8 +2536,7 @@ const trainersData = [
     {
         id: 'TRAINER_CELINA',
         level: 29,
-        bag: getSampleItemsFromArray(wattsonBag, 5),
-        tms: getSampleItemsFromArray(wattsonTMs, 2),
+        bag: getSampleItemsFromArray(wattsonBag(), 9),
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
@@ -2576,47 +2548,52 @@ const trainersData = [
     {
         id: 'TRAINER_IRENE',
         level: 29,
-        bag: [...getSampleItemsFromArray(wattsonBag, 6), 'Air Balloon'],
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
-        team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
+        bag: [...getSampleItemsFromArray(wattsonBag(), 9), 'Air Balloon'],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 4),
+        ]
     },
     {
         id: 'TRAINER_TRAVIS',
         level: 29,
-        bag: [...getSampleItemsFromArray(wattsonBag, 6), 'Sitrus Berry'],
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
-        team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
+        bag: [...getSampleItemsFromArray(wattsonBag(), 9), 'Sitrus Berry'],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 4),
+        ]
     },
     // Route 112
     {
         id: 'TRAINER_LARRY',
         level: 29,
-        bag: getSampleItemsFromArray(wattsonBag, 7),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
+        bag: getSampleItemsFromArray(wattsonBag(), 10),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_TAILLOW'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 4),
         ],
     },
     {
         id: 'TRAINER_BRICE',
         level: 29,
-        bag: getSampleItemsFromArray(wattsonBag, 7),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
-        team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
+        bag: getSampleItemsFromArray(wattsonBag(), 10),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 4),
+        ]
     },
     {
         id: 'TRAINER_CAROL',
         level: 29,
-        bag: getSampleItemsFromArray(wattsonBag, 6),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
+        bag: getSampleItemsFromArray(wattsonBag(), 10),
         team: [
-            pokeDefToxicOrbMon(POKEDEF_WEAK_OR_AVERAGE),
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 4),
         ],
     },
     {
@@ -2624,8 +2601,7 @@ const trainersData = [
         isBoss: true,
         level: 29,
         preventShuffle: true,
-        bag: [...magmaChimneyBag],
-        tms: [...wattsonTMs],
+        bag: [...magmaChimneyBag()],
         team: [
             pokeDefSandStreamMon(POKEDEF_UP_TO_STRONG),
             {
@@ -2636,13 +2612,13 @@ const trainersData = [
                 ...POKEDEF_AVERAGE,
                 abilities: [...sandAbilities],
             },
-            pokeDefSandStreamMon(POKEDEF_UP_TO_STRONG),
+            pokeDefSandStreamMon(POKEDEF_AVERAGE),
             {
                 ...POKEDEF_AVERAGE,
                 abilities: [...sandAbilities],
             },
             {
-                ...POKEDEF_UP_TO_STRONG,
+                ...POKEDEF_AVERAGE,
                 abilities: [...sandAbilities],
             },
         ],
@@ -2651,8 +2627,7 @@ const trainersData = [
         id: 'TRAINER_MAXIE_MT_CHIMNEY',
         isBoss: true,
         level: 30,
-        bag: [...magmaChimneyBag],
-        tms: [...wattsonTMs],
+        bag: [...magmaChimneyBag()],
         team: [
             pokeDefDroughtMon(POKEDEF_AVERAGE),
             {
@@ -2686,14 +2661,14 @@ const trainersData = [
                 ],
             },
             {
-                id: 'MAXIE_STRONG_2',
-                ...POKEDEF_STRONG,
+                id: 'MAXIE_AVERAGE_1',
+                ...POKEDEF_AVERAGE,
                 abilities: [...sunAbilities],
                 type: [...magmaTeamTypes],
                 fallback: [
                     {
-                        id: 'MAXIE_STRONG_2',
-                        ...POKEDEF_STRONG,
+                        id: 'MAXIE_AVERAGE_1',
+                        ...POKEDEF_AVERAGE,
                         type: [...magmaTeamTypes],
                     }
                 ],
@@ -2730,22 +2705,21 @@ const trainersData = [
     {
         id: 'TRAINER_BRYANT',
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_NUMEL'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
         ],
     },
     {
         id: 'TRAINER_SHAYLA',
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag, 6),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
         team: [
             {
                 ...POKEDEF_AVERAGE,
@@ -2764,15 +2738,15 @@ const trainersData = [
                     }
                 ]
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
         ],
     },
     // Route 111
     {
         id: 'TRAINER_WILTON_1',
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag, 6),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
         team: [
             {
                 ...POKEDEF_WEAK_OR_AVERAGE,
@@ -2791,119 +2765,133 @@ const trainersData = [
                     }
                 ]
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
         ],
     },
     // Route 113
     {
         id: 'TRAINER_JAYLEN',
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
-        team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
+        ]
     },
     {
         id: 'TRAINER_LUNG',
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
-        team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
+        ]
     },
     {
         id: 'TRAINER_WYATT',
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
-        team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
+        ]
     },
     {
         id: 'TRAINER_LAWRENCE',
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag, 6),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
                 megaStone: 'ITEM_HARBOR_MAIL',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
         ],
     },
     {
         id: 'TRAINER_MADELINE_1',
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag, 6),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
-        team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
+        ]
     },
     // Route 114
     {
         id: 'TRAINER_CHARLOTTE',
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_SWABLU'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
         ],
     },
     {
         id: 'TRAINER_STEVE_1',
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_SPOINK'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
         ],
     },
     {
         id: 'TRAINER_CLAUDE',
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
-        team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
+        ]
     },
     {
         id: 'TRAINER_NOLAN',
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
-        team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
+        ]
     },
     {
         id: 'TRAINER_ANGELINA',
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
-        team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
+        ]
     },
     // Route 115
     {
         id: 'TRAINER_ALIX',
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-        tms: getSampleItemsFromArray(wattsonTMs, 4),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_SANDSHREW'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
         ],
     },
     {
         id: 'TRAINER_NOB_1',
         level: 33,
-        bag: ['Power Herb', ...getSampleItemsFromArray(magmaChimneyBag, 6)],
-        tms: ['MOVE_SOLAR_BEAM', 'MOVE_HYPER_BEAM', 'MOVE_SLUDGE_BOMB', sample(wattsonTMs)],
+        bag: [...getSampleItemsFromArray(magmaChimneyBag(), 8), ...choiceNobTMs],
         team: [
             {
                 ...POKEDEF_AVERAGE,
@@ -2917,58 +2905,15 @@ const trainersData = [
                 ...POKEDEF_AVERAGE,
                 type: [POKEMON_TYPE_NORMAL],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
         ],
     },
-    // {
-    //     id: 'TRAINER_HECTOR',
-    //     level: 33,
-    //     bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-    //     tms: getSampleItemsFromArray(wattsonTMs, 4),
-    //     team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
-    // },
-    // {
-    //     id: 'TRAINER_CYNDY_1',
-    //     level: 33,
-    //     bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-    //     tms: getSampleItemsFromArray(wattsonTMs, 4),
-    //     team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
-    // },
-    // {
-    //     id: 'TRAINER_KOICHI',
-    //     level: 33,
-    //     bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-    //     tms: getSampleItemsFromArray(wattsonTMs, 4),
-    //     team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
-    // },
-    // {
-    //     id: 'TRAINER_HELENE',
-    //     level: 33,
-    //     bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-    //     tms: getSampleItemsFromArray(wattsonTMs, 4),
-    //     team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
-    // },
-    // {
-    //     id: 'TRAINER_KYRA',
-    //     level: 33,
-    //     bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-    //     tms: getSampleItemsFromArray(wattsonTMs, 4),
-    //     team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
-    // },
-    // {
-    //     id: 'TRAINER_JAIDEN',
-    //     level: 33,
-    //     bag: getSampleItemsFromArray(magmaChimneyBag, 7),
-    //     tms: getSampleItemsFromArray(wattsonTMs, 4),
-    //     team: generatePokemonsWithDefinition(POKEDEF_WEAK_OR_AVERAGE, 6),
-    // },
     // Flannery Gym
     {
         id: 'TRAINER_FLANNERY_1',
         level: 33,
         isBoss: true,
-        bag: [...flanneryBag],
-        tms: [...flanneryTMs],
+        bag: [...flanneryBag()],
         team: [
             {
                 specific: 'SPECIES_TORKOAL',
@@ -2981,21 +2926,17 @@ const trainersData = [
             {
                 ...POKEDEF_STRONG,
                 type: [POKEMON_TYPE_FIRE],
-                tryToHaveMove: ['MOVE_OVERHEAT'],
             },
             {
                 ...POKEDEF_STRONG,
                 type: [POKEMON_TYPE_FIRE],
-                tryToHaveMove: ['MOVE_OVERHEAT'],
-            },
-            {
-                ...POKEDEF_STRONG,
-                type: [POKEMON_TYPE_FIRE],
-                tryToHaveMove: ['MOVE_OVERHEAT'],
             },
             {
                 ...POKEDEF_AVERAGE,
-                tryToHaveMove: ['MOVE_OVERHEAT'],
+                type: [POKEMON_TYPE_FIRE],
+            },
+            {
+                ...POKEDEF_AVERAGE,
                 abilities: [...sunAbilities],
             },
             {
@@ -3022,8 +2963,7 @@ const trainersData = [
     {
         id: 'TRAINER_CELIA',
         level: 36,
-        bag: getSampleItemsFromArray(flanneryBag, 10),
-        tms: getSampleItemsFromArray(flanneryTMs, 6),
+        bag: getSampleItemsFromArray(flanneryBag(), 13),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -3037,22 +2977,19 @@ const trainersData = [
         id: 'TRAINER_BEAU',
         level: 36,
         level: 36,
-        bag: getSampleItemsFromArray(flanneryBag, 10),
-        tms: getSampleItemsFromArray(flanneryTMs, 6),
+        bag: getSampleItemsFromArray(flanneryBag(), 13),
         team: generatePokemonsWithDefinition(POKEDEF_AVERAGE, 6),
     },
     {
         id: 'TRAINER_BRANDEN',
         level: 36,
-        bag: getSampleItemsFromArray(flanneryBag, 10),
-        tms: getSampleItemsFromArray(flanneryTMs, 6),
+        bag: getSampleItemsFromArray(flanneryBag(), 13),
         team: genericAverageWith1StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_DREW',
         level: 36,
-        bag: ['Yache Berry', 'Coba Berry', ...getSampleItemsFromArray(flanneryBag, 7)],
-        tms: getSampleItemsFromArray(flanneryTMs, 6),
+        bag: ['Yache Berry', 'Coba Berry', ...getSampleItemsFromArray(flanneryBag(), 10)],
         team: [
             {
                 ...POKEDEF_AVERAGE,
@@ -3072,37 +3009,32 @@ const trainersData = [
     {
         id: 'TRAINER_BECKY',
         level: 36,
-        bag: getSampleItemsFromArray(flanneryBag, 10),
-        tms: getSampleItemsFromArray(flanneryTMs, 6),
+        bag: getSampleItemsFromArray(flanneryBag(), 13),
         team: generatePokemonsWithDefinition(POKEDEF_AVERAGE, 6),
     },
     {
         id: 'TRAINER_BRYAN',
         level: 36,
-        bag: getSampleItemsFromArray(flanneryBag, 10),
-        tms: getSampleItemsFromArray(flanneryTMs, 6),
+        bag: getSampleItemsFromArray(flanneryBag(), 13),
         team: generatePokemonsWithDefinition(POKEDEF_AVERAGE, 6),
     },
     {
         id: 'TRAINER_HEIDI',
         level: 36,
-        bag: getSampleItemsFromArray(flanneryBag, 10),
-        tms: getSampleItemsFromArray(flanneryTMs, 6),
+        bag: getSampleItemsFromArray(flanneryBag(), 13),
         team: generatePokemonsWithDefinition(POKEDEF_AVERAGE, 6),
     },
     {
         id: 'TRAINER_DUSTY_1',
         level: 36,
-        bag: getSampleItemsFromArray(flanneryBag, 10),
-        tms: getSampleItemsFromArray(flanneryTMs, 6),
+        bag: getSampleItemsFromArray(flanneryBag(), 13),
         team: generatePokemonsWithDefinition(POKEDEF_AVERAGE, 6),
     },
     {
         id: 'TRAINER_NORMAN_1',
         level: 36,
         isBoss: true,
-        bag: [...normanBag],
-        tms: [...flanneryTMs],
+        bag: [...normanBag()],
         team: [
             {
                 specific: 'SPECIES_SLAKING',
@@ -3134,23 +3066,19 @@ const trainersData = [
             {
                 ...POKEDEF_STRONG,
                 type: [POKEMON_TYPE_NORMAL],
-                tryToHaveMove: ['MOVE_FACADE'],
             },
             {
                 ...POKEDEF_STRONG,
                 type: [POKEMON_TYPE_NORMAL],
-                tryToHaveMove: ['MOVE_FACADE'],
             },
             {
-                ...POKEDEF_STRONG,
+                ...POKEDEF_AVERAGE,
                 type: [POKEMON_TYPE_NORMAL],
-                tryToHaveMove: ['MOVE_FACADE'],
             },
             {
                 isMega: true,
                 absoluteTier: [TIER_PREMIUM, TIER_LEGEND],
                 type: [POKEMON_TYPE_NORMAL],
-                tryToHaveMove: ['MOVE_FACADE'],
                 checkValidEvo: true,
                 tryEvolve: true,
                 fallback: [
@@ -3158,7 +3086,6 @@ const trainersData = [
                         isMega: true,
                         absoluteTier: [TIER_STRONG, TIER_PREMIUM, TIER_LEGEND],
                         type: [POKEMON_TYPE_NORMAL],
-                        tryToHaveMove: ['MOVE_FACADE'],
                         checkValidEvo: true,
                         tryEvolve: true,
                    } 
@@ -3170,119 +3097,107 @@ const trainersData = [
     {
         id: 'TRAINER_BEVERLY',
         level: 39,
-        bag: getSampleItemsFromArray(normanBag, 14),
-        tms: getSampleItemsFromArray(flanneryTMs, 7),
+        bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith1StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_IMANI',
         level: 39,
-        bag: getSampleItemsFromArray(normanBag, 14),
-        tms: getSampleItemsFromArray(flanneryTMs, 7),
+        bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith1StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_FOSTER',
         level: 39,
-        bag: getSampleItemsFromArray(normanBag, 14),
-        tms: getSampleItemsFromArray(flanneryTMs, 7),
+        bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith2StrongTeamTemplate(),
     },
     // Route 110 (New Mauville)
     {
         id: 'TRAINER_JACLYN',
         level: 39,
-        bag: getSampleItemsFromArray(normanBag, 14),
-        tms: getSampleItemsFromArray(flanneryTMs, 7),
+        bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith2StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_ABIGAIL_1',
         level: 39,
-        bag: getSampleItemsFromArray(normanBag, 14),
-        tms: getSampleItemsFromArray(flanneryTMs, 7),
+        bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith3StrongTeamTemplate(),
     },
     // Route 118
     {
         id: 'TRAINER_PERRY',
         level: 39,
-        bag: getSampleItemsFromArray(normanBag, 14),
-        tms: getSampleItemsFromArray(flanneryTMs, 7),
+        bag: getSampleItemsFromArray(normanBag(), 15),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_DEDENNE'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 4),
         ],
     },
     {
         id: 'TRAINER_WADE',
         level: 39,
-        bag: ['Kee Berry', 'Maranga Berry', 'Rowap Berry', 'Jaboca Berry'],
-        tms: getSampleItemsFromArray(flanneryTMs, 7),
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
-        ],
+        bag: [...choiceWadeBerries, ...getSampleItemsFromArray(normanBag(), 11)],
+        team: genericAverageWith2StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_BARNY',
         level: 39,
-        bag: getSampleItemsFromArray(normanBag, 14),
-        tms: getSampleItemsFromArray(flanneryTMs, 7),
+        bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith2StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_ROSE_1',
         level: 39,
-        bag: getSampleItemsFromArray(normanBag, 14),
-        tms: getSampleItemsFromArray(flanneryTMs, 7),
+        bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith2StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_CHESTER',
         level: 39,
-        bag: getSampleItemsFromArray(normanBag, 14),
-        tms: ['MOVE_THUNDERBOLT', 'MOVE_ICE_BEAM', 'MOVE_FLAMETHROWER', ...getSampleItemsFromArray(flanneryTMs, 4)],
+        bag: [...choiceChesterTMs, ...getSampleItemsFromArray(normanBag(), 12)],
         team: [
             {
-                ...POKEDEF_STRONG,
+                ...POKEDEF_AVERAGE,
                 type: [POKEMON_TYPE_ELECTRIC],
             },
             {
-                ...POKEDEF_STRONG,
+                ...POKEDEF_AVERAGE,
                 type: [POKEMON_TYPE_ICE],
             },
             {
-                ...POKEDEF_STRONG,
+                ...POKEDEF_AVERAGE,
                 type: [POKEMON_TYPE_ELECTRIC],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 1),
         ],
     },
     // Route 119
     {
         id: 'TRAINER_KENT',
         level: 39,
-        bag: getSampleItemsFromArray(normanBag, 14),
-        tms: getSampleItemsFromArray(flanneryTMs, 7),
+        bag: getSampleItemsFromArray(normanBag(), 15),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_LINOONE'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 4),
         ],
     },
     {
         id: 'TRAINER_BRENT',
         level: 39,
-        bag: getSampleItemsFromArray(normanBag, 14),
-        tms: getSampleItemsFromArray(flanneryTMs, 7),
+        bag: getSampleItemsFromArray(normanBag(), 15),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -3300,15 +3215,13 @@ const trainersData = [
     {
         id: 'TRAINER_DOUG',
         level: 39,
-        bag: getSampleItemsFromArray(normanBag, 14),
-        tms: getSampleItemsFromArray(flanneryTMs, 7),
+        bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith2StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_TAYLOR',
         level: 39,
-        bag: getSampleItemsFromArray(normanBag, 14),
-        tms: getSampleItemsFromArray(flanneryTMs, 7),
+        bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith2StrongTeamTemplate(),
     },
     // Weather Institute
@@ -3316,8 +3229,7 @@ const trainersData = [
         id: 'TRAINER_SHELLY_WEATHER_INSTITUTE',
         level: 39,
         isBoss: true,
-        bag: [...shellyBag],
-        tms: [...shellyTMs],
+        bag: [...shellyBag()],
         team: [
             {
                 ...POKEDEF_STRONG,
@@ -3352,8 +3264,7 @@ const trainersData = [
     {
         id: 'TRAINER_FABIAN',
         level: 41,
-        bag: ['Leftovers', ...getSampleItemsFromArray(normanBag, 13)],
-        tms: getSampleItemsFromArray(flanneryTMs, 7),
+        bag: ['Leftovers', ...getSampleItemsFromArray(shellyBag(), 15)],
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     // Route 119 Rival Battles
@@ -3362,8 +3273,7 @@ const trainersData = [
         isBoss: true,
         level: 41,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...rival119Bag],
-        tms: [...shellyTMs],
+        bag: [...rival119Bag()],
         team: [...rivalRoute119Template('TREECKO')],
     },
     {
@@ -3371,8 +3281,7 @@ const trainersData = [
         isBoss: true,
         level: 41,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...rival119Bag],
-        tms: [...shellyTMs],
+        bag: [...rival119Bag()],
         team: [...rivalRoute119Template('TORCHIC')],
     },
     {
@@ -3380,8 +3289,7 @@ const trainersData = [
         isBoss: true,
         level: 41,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...rival119Bag],
-        tms: [...shellyTMs],
+        bag: [...rival119Bag()],
         team: [...rivalRoute119Template('MUDKIP')],
     },
     {
@@ -3400,8 +3308,7 @@ const trainersData = [
     {
         id: 'TRAINER_LEONEL',
         level: 43,
-        bag: getSampleItemsFromArray(normanBag, 16),
-        tms: getSampleItemsFromArray(flanneryTMs, 8),
+        bag: getSampleItemsFromArray(rival119Bag(), 17),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -3415,8 +3322,7 @@ const trainersData = [
     {
         id: 'TRAINER_ROBERT_1',
         level: 43,
-        bag: getSampleItemsFromArray(normanBag, 16),
-        tms: getSampleItemsFromArray(flanneryTMs, 8),
+        bag: getSampleItemsFromArray(rival119Bag(), 17),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -3428,29 +3334,27 @@ const trainersData = [
                 encounterIds: ['SPECIES_KROKOROK'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
         ],
     },
     {
         id: 'TRAINER_COLIN',
         level: 43,
-        bag: getSampleItemsFromArray(normanBag, 16),
-        tms: getSampleItemsFromArray(flanneryTMs, 8),
+        bag: getSampleItemsFromArray(rival119Bag(), 17),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
                 megaStone: 'ITEM_ORANGE_MAIL',
             },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
         ],
     },
     {
         id: 'TRAINER_CLARISSA',
         level: 43,
-        bag: getSampleItemsFromArray(normanBag, 13),
-        tms: getSampleItemsFromArray(flanneryTMs, 8),
+        bag: getSampleItemsFromArray(rival119Bag(), 14),
         team: [
             {
                 ...POKEDEF_STRONG,
@@ -3470,8 +3374,7 @@ const trainersData = [
     {
         id: 'TRAINER_ANGELICA',
         level: 43,
-        bag: getSampleItemsFromArray(normanBag, 16),
-        tms: getSampleItemsFromArray(flanneryTMs, 8),
+        bag: getSampleItemsFromArray(rival119Bag(), 17),
         team: generic3Average3StrongTeamTemplate(),
     },
     // Fortree City Gym
@@ -3479,8 +3382,7 @@ const trainersData = [
         id: 'TRAINER_WINONA_1',
         level: 43,
         isBoss: true,
-        bag: [...winonaBag],
-        tms: [...shellyTMs],
+        bag: [...winonaBag()],
         team: [
             {
                 ...POKEDEF_STRONG,
@@ -3520,22 +3422,18 @@ const trainersData = [
             {
                 ...POKEDEF_PREMIUM,
                 type: [POKEMON_TYPE_FLYING],
-                tryToHaveMove: ['MOVE_AERIAL_ACE'],
             },
             {
                 ...POKEDEF_STRONG,
                 type: [POKEMON_TYPE_FLYING],
-                tryToHaveMove: ['MOVE_AERIAL_ACE'],
             },
             {
                 ...POKEDEF_STRONG,
                 type: [POKEMON_TYPE_FLYING],
-                tryToHaveMove: ['MOVE_AERIAL_ACE'],
             },
             {
                 ...POKEDEF_STRONG,
                 type: [POKEMON_TYPE_FLYING],
-                tryToHaveMove: ['MOVE_AERIAL_ACE'],
             },
         ],
     },
@@ -3543,23 +3441,20 @@ const trainersData = [
     {
         id: 'TRAINER_JEFFREY_1',
         level: 46,
-        bag: getSampleItemsFromArray(winonaBag, 20),
-        tms: getSampleItemsFromArray(shellyTMs, 10),
+        bag: getSampleItemsFromArray(winonaBag(), 18),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_CHIP',
         level: 46,
-        bag: getSampleItemsFromArray(winonaBag, 20),
-        tms: getSampleItemsFromArray(shellyTMs, 10),
+        bag: getSampleItemsFromArray(winonaBag(), 18),
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
     },
     // Route 121
     {
         id: 'TRAINER_MARCEL',
         level: 46,
-        bag: getSampleItemsFromArray(winonaBag, 20),
-        tms: getSampleItemsFromArray(shellyTMs, 10),
+        bag: getSampleItemsFromArray(winonaBag(), 18),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -3582,8 +3477,7 @@ const trainersData = [
     {
         id: 'TRAINER_CALE',
         level: 46,
-        bag: getSampleItemsFromArray(winonaBag, 20),
-        tms: getSampleItemsFromArray(shellyTMs, 10),
+        bag: getSampleItemsFromArray(winonaBag(), 17),
         team: [
             {
                 ...POKEDEF_AVERAGE,
@@ -3597,8 +3491,7 @@ const trainersData = [
     {
         id: 'TRAINER_TAMMY',
         level: 46,
-        bag: getSampleItemsFromArray(winonaBag, 20),
-        tms: getSampleItemsFromArray(shellyTMs, 7),
+        bag: getSampleItemsFromArray(winonaBag(), 15),
         team: [
             {
                 ...POKEDEF_STRONG,
@@ -3628,36 +3521,31 @@ const trainersData = [
     {
         id: 'TRAINER_JESSICA_1',
         level: 46,
-        bag: getSampleItemsFromArray(winonaBag, 20),
-        tms: getSampleItemsFromArray(shellyTMs, 10),
+        bag: getSampleItemsFromArray(winonaBag(), 18),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_MYLES',
         level: 46,
-        bag: getSampleItemsFromArray(winonaBag, 20),
-        tms: getSampleItemsFromArray(shellyTMs, 10),
+        bag: getSampleItemsFromArray(winonaBag(), 18),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_WALTER_1',
         level: 46,
-        bag: getSampleItemsFromArray(winonaBag, 20),
-        tms: getSampleItemsFromArray(shellyTMs, 10),
+        bag: getSampleItemsFromArray(winonaBag(), 18),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_PAT',
         level: 46,
-        bag: getSampleItemsFromArray(winonaBag, 20),
-        tms: getSampleItemsFromArray(shellyTMs, 10),
+        bag: getSampleItemsFromArray(winonaBag(), 18),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_CRISTIN_1',
         level: 46,
-        bag: getSampleItemsFromArray(winonaBag, 17),
-        tms: getSampleItemsFromArray(shellyTMs, 10),
+        bag: getSampleItemsFromArray(winonaBag(), 15),
         team: [
             {
                 ...POKEDEF_STRONG,
@@ -3683,8 +3571,7 @@ const trainersData = [
         id: 'TRAINER_WALLY_LILYCOVE',
         isBoss: true,
         level: 46,
-        bag: [...wallyBag2],
-        tms: [...wallyTMs2],
+        bag: [...wallyBag2()],
         team: [
             {
                 special: TRAINER_REPEAT_ID,
@@ -3730,8 +3617,7 @@ const trainersData = [
         isBoss: true,
         level: 48,
         preventShuffle: true,
-        bag: [...wallyBag2],
-        tms: [...wallyTMs2],
+        bag: [...wallyBag2()],
         team: [
             pokeDefDroughtMon(TIER_PREMIUM),
             {
@@ -3747,12 +3633,12 @@ const trainersData = [
                 ]
             },
             {
-                absoluteTier: [TIER_PREMIUM],
+                absoluteTier: [TIER_STRONG],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[2], magmaTeamTypes[3], magmaTeamTypes[4]],
                 fallback: [
                     {
-                        absoluteTier: [TIER_PREMIUM],
+                        absoluteTier: [TIER_STRONG],
                         checkValidEvo: true,
                         type: [...magmaTeamTypes],
                     },
@@ -3765,7 +3651,7 @@ const trainersData = [
             },
             {
                 special: TRAINER_REPEAT_ID,
-                id: 'MAXIE_STRONG_2',
+                id: 'MAXIE_AVERAGE_1',
                 tryEvolve: true,
             },
             {
@@ -3779,8 +3665,7 @@ const trainersData = [
     {
         id: 'TRAINER_MARK',
         level: 51,
-        bag: getSampleItemsFromArray(winonaBag, 20),
-        tms: getSampleItemsFromArray(shellyTMs, 10),
+        bag: getSampleItemsFromArray(wallyBag2(), 20),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -3806,42 +3691,111 @@ const trainersData = [
         isBoss: true,
         level: 51,
         preventShuffle: true,
-        bag: [...wallyBag2],
-        tms: [...wallyTMs2],
+        bag: [...wallyBag2()],
         team: [
-            pokeDefSnowWarningMon({
-                absoluteTier: [TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM],
+            {
+                isMega: true,
                 checkValidEvo: true,
-                tryEvolve: true,
+                pickBest: true,
+                abilities: ['SNOW_WARNING'],
+                fallback: [
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        isMega: true,
+                        type: [POKEMON_TYPE_ICE],
+                        pickBest: true,
+                        checkValidEvo: true,
+                        mustHaveOneOfMoves: ['MOVE_HAIL'],
+                        tryToHaveMove: ['MOVE_HAIL'],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        isMega: true,
+                        type: [POKEMON_TYPE_ICE],
+                        pickBest: true,
+                        checkValidEvo: true,
+                        mustHaveOneOfMoves: ['MOVE_HAIL'],
+                        tryToHaveMove: ['MOVE_HAIL'],
+                    },
+                ],
+            },
+            {
+                absoluteTier: [TIER_PREMIUM],
+                checkValidEvo: true,
+                abilities: [...snowAbilities],
+                fallback: [
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        checkValidEvo: true,
+                        type: [POKEMON_TYPE_ICE],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        checkValidEvo: true,
+                        abilities: [...snowAbilities],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        checkValidEvo: true,
+                        type: [POKEMON_TYPE_ICE],
+                    },
+                ]
+            },
+            pokeDefSnowWarningMon({
+                absoluteTier: [TIER_AVERAGE, TIER_STRONG],
+                checkValidEvo: true,
+                pickBest: true,
             }),
             {
-                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
+                absoluteTier: [TIER_STRONG],
                 checkValidEvo: true,
-                tryEvolve: true,
                 abilities: [...snowAbilities],
+                fallback: [
+                    {
+                        absoluteTier: [TIER_AVERAGE],
+                        checkValidEvo: true,
+                        abilities: [...snowAbilities],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        checkValidEvo: true,
+                        type: [POKEMON_TYPE_ICE],
+                    },
+                ]
             },
             {
-                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
+                absoluteTier: [TIER_STRONG],
                 checkValidEvo: true,
-                tryEvolve: true,
                 abilities: [...snowAbilities],
+                fallback: [
+                    {
+                        absoluteTier: [TIER_AVERAGE],
+                        checkValidEvo: true,
+                        abilities: [...snowAbilities],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        checkValidEvo: true,
+                        type: [POKEMON_TYPE_ICE],
+                    },
+                ]
             },
             {
-                specific: 'SPECIES_ABOMASNOW',
-                item: 'Abomasite',
-                abilities: ['SNOW_WARNING'],
-            },
-            {
-                absoluteTier: [TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM],
+                absoluteTier: [TIER_STRONG],
                 checkValidEvo: true,
-                tryEvolve: true,
                 abilities: [...snowAbilities],
-            },
-            {
-                absoluteTier: [TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM],
-                checkValidEvo: true,
-                tryEvolve: true,
-                abilities: [...snowAbilities],
+                fallback: [
+                    {
+                        absoluteTier: [TIER_AVERAGE],
+                        checkValidEvo: true,
+                        abilities: [...snowAbilities],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        checkValidEvo: true,
+                        type: [POKEMON_TYPE_ICE],
+                    },
+                ]
             },
         ],
     },
@@ -3849,30 +3803,29 @@ const trainersData = [
     {
         id: 'TRAINER_CHAD',
         level: 53,
-        bag: getSampleItemsFromArray(winonaBag, 20),
-        tms: getSampleItemsFromArray(shellyTMs, 10),
+        bag: getSampleItemsFromArray(wallyBag2(), 20),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_SPINARAK'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
             ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG_PREMIUM_MEGA, 1),
         ],
     },
     {
         id: 'TRAINER_ISABELLA',
         level: 53,
-        bag: ['Choice Band', 'Choice Scarf', 'Choice Specs', ...getSampleItemsFromArray(winonaBag, 17)],
-        tms: getSampleItemsFromArray(shellyTMs, 10),
+        bag: [...choiceIsabellaItem, ...getSampleItemsFromArray(wallyBag2(), 17)],
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
+    // @TODO here
     {
         id: 'TRAINER_SPENCER',
         level: 53,
-        bag: getSampleItemsFromArray(winonaBag, 17),
-        tms: getSampleItemsFromArray(shellyTMs, 10),
+        bag: getSampleItemsFromArray(winonaBag(), 17),
         team: [
             {
                 ...POKEDEF_STRONG,
@@ -3895,7 +3848,7 @@ const trainersData = [
     {
         id: 'TRAINER_GRACE',
         level: 53,
-        bag: getSampleItemsFromArray(winonaBag, 20),
+        bag: getSampleItemsFromArray(winonaBag(), 18),
         tms: ['MOVE_BLIZZARD', 'MOVE_THUNDER', 'MOVE_FIRE_BLAST', ...getSampleItemsFromArray(shellyTMs, 7)],
         team: [
             {
