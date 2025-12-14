@@ -1249,7 +1249,7 @@ const choiceIsabellaItem = ['Choice Band', 'Choice Scarf', 'Choice Specs'];
 const choiceGraceTMs = ['TM_BLIZZARD', 'TM_THUNDER', 'TM_FIRE_BLAST'];
 
 const tateAndLizaBag = () => [
-    ...wallyBag2,
+    ...wallyBag2(),
     sample([...choiceIsabellaItem]),
     sample([...choiceGraceTMs]),
     'TM_CALM_MIND',
