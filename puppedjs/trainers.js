@@ -1239,7 +1239,7 @@ const winonaBag = () => [
 ];
 
 const wallyBag2 = () => [
-    ...winonaBag,
+    ...winonaBag(),
     'Focus Sash',
     sample(['TM_PROTECT', 'TM_TOXIC', 'TM_REST']),
     sample(['Payapa Berry', 'Colbur Berry', 'Tanga Berry']),
