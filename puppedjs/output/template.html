@@ -843,7 +843,7 @@
           return item.map(i => `<div class="tag evo-link" data-id="${i}">${format(i)}</div>`).join('');
         return `<div class="tag evo-link" data-id="${item}">${format(item)}</div>`;
       }
-      const evoHTML = poke.evolutions.map(e => buildEvoItem(e)).join(' | ');
+      const evoHTML = (poke.evolutions || []).map(e => buildEvoItem(e)).join(' | ');
       const evoTreeHTML = poke.evoTree.map(e => buildTreeItem(e)).join(' → ');
       return `${evoHTML}
       ${evoTreeHTML}`;
