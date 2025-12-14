@@ -1163,7 +1163,7 @@ const choiceAishaGems = ['Fire Gem', 'Ground Gem', 'Fighting Gem'];
 
 const wattsonBag = () => [
     ...wallyBag(),
-    sample('TM_REFLECT', 'TM_LIGHT_SCREEN'),
+    sample(['TM_REFLECT', 'TM_LIGHT_SCREEN']),
     sample(choiceMelinaBerries),
     sample(choiceAishaGems),
     'Light Clay',
