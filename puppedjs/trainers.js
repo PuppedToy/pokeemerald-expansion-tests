@@ -1268,32 +1268,6 @@ const juanBag = () => [
     'TM_WATERFALL'
 ];
 
-console.log('Bags:', {
-    rival103Bag,
-    petalwoodGruntBag,
-    woodsPlatesChoice,
-    bagAfterWoodGrunt: bagAfterWoodGrunt(),
-    roxanneBag: roxanneBag(),
-    rusturfGruntBag: rusturfGruntBag(),
-    rivalRustboroBag: rivalRustboroBag(),
-    brawlyBag: brawlyBag(),
-    stevenBag: stevenBag(),
-    slateportGruntsBag: slateportGruntsBag(),
-    rivalRoute110Bag: rivalRoute110Bag(),
-    wallyBag: wallyBag(),
-    wattsonBag: wattsonBag(),
-    magmaChimneyBag: magmaChimneyBag(),
-    flanneryBag: flanneryBag(),
-    normanBag: normanBag(),
-    shellyBag: shellyBag(),
-    rival119Bag: rival119Bag(),
-    winonaBag: winonaBag(),
-    wallyBag2: wallyBag2(),
-    tateAndLizaBag: tateAndLizaBag(),
-    spaceCenterBag: spaceCenterBag(),
-    juanBag: juanBag(),
-});
-
 const trainersData = [
     // Route 101
     {
