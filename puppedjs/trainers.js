@@ -1221,16 +1221,6 @@ const shellyBag = () => [
     'Booster Energy',
 ];
 
-const shellyTMs = [
-    ...flanneryTMs,
-    'MOVE_THUNDERBOLT',
-    'MOVE_ICE_BEAM',
-    'MOVE_FLAMETHROWER',
-    'MOVE_SURF',
-    'MOVE_FACADE',
-    'MOVE_OVERHEAT',
-];
-
 const rival119Bag = () => [
     ...shellyBag(),
     'Leftovers',
