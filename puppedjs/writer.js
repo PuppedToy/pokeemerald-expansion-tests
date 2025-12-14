@@ -671,7 +671,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const storedIds = {};
 
     trainersData.forEach(trainer => {
-        for(let i = 0; i < trainer.bag; i++) {
+        for(let i = 0; i < trainer.bag.length; i++) {
             const item = trainer.bag[i];
             // If item starts with TM_, replace it with MOVE_ and put it in tms
             if (item.startsWith('TM_')) {
