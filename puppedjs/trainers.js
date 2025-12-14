@@ -3604,29 +3604,48 @@ const trainersData = [
         preventShuffle: true,
         bag: [...wallyBag2()],
         team: [
-            pokeDefDroughtMon(TIER_PREMIUM),
+            pokeDefDroughtMon(POKEDEF_STRONG),
+            {
+                specific: 'SPECIES_CAMERUPT',
+                item: 'Cameruptite',
+                abilities: ['SOLID_ROCK'],
+            },
             {
                 absoluteTier: [TIER_PREMIUM],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[1]],
+                abilities: [...sunAbilities],
                 fallback: [
                     {
                         absoluteTier: [TIER_PREMIUM],
                         checkValidEvo: true,
+                        abilities: [...sunAbilities],
                         type: [...magmaTeamTypes],
+                    },
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        checkValidEvo: true,
+                        type: [magmaTeamTypes[1]],
                     },
                 ]
             },
             {
-                absoluteTier: [TIER_STRONG],
+                absoluteTier: [TIER_PREMIUM],
                 checkValidEvo: true,
                 type: [magmaTeamTypes[2], magmaTeamTypes[3], magmaTeamTypes[4]],
+                abilities: [...sunAbilities],
                 fallback: [
                     {
                         absoluteTier: [TIER_STRONG],
                         checkValidEvo: true,
                         type: [...magmaTeamTypes],
+                        abilities: [...sunAbilities],
                     },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        checkValidEvo: true,
+                        type: [magmaTeamTypes[2], magmaTeamTypes[3], magmaTeamTypes[4]],
+                    }
                 ]
             },
             {
@@ -3638,11 +3657,6 @@ const trainersData = [
                 special: TRAINER_REPEAT_ID,
                 id: 'MAXIE_AVERAGE_1',
                 tryEvolve: true,
-            },
-            {
-                specific: 'SPECIES_CAMERUPT',
-                item: 'Cameruptite',
-                abilities: ['SOLID_ROCK'],
             },
         ],
     },
