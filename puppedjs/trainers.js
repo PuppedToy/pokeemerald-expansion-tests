@@ -1114,20 +1114,20 @@ const choicesDewfordTMs = [
     'TM_PSYCHIC',
 ];
 
-const brawylyBag = () => [
+const brawlyBag = () => [
     ...rivalRustboroBag(),
     sample([...choicesDewfordTMs]),
     'Life Orb',
 ];
 
 const stevenBag = () => [
-    ...brawylyBag(),
+    ...brawlyBag(),
     'TM_BULK_UP',
     'TM_STEEL_WING',
 ];
 
 const slateportGruntsBag = () => [
-    ...brawylyBag,
+    ...brawlyBag(),
     'Loaded Dice',
     // 'Damp Rock',
     // 'Heat Rock',
@@ -1869,7 +1869,7 @@ const trainersData = [
         id: 'TRAINER_BRAWLY_1',
         level: 16,
         isBoss: true,
-        bag: [...brawylyBag(), 'Fighting Gem'],
+        bag: [...brawlyBag(), 'Fighting Gem'],
         tms: ['MOVE_BULK_UP', 'MOVE_BULK_UP'],
         team: [
             {
