@@ -1596,7 +1596,7 @@ const trainersData = [
         level: 10,
         isBoss: true,
         bag: roxanneBag(),
-        tms: ['MOVE_ROCK_TOMB', 'MOVE_ROCK_TOMB', 'MOVE_ROCK_TOMB'],
+        tms: ['MOVE_ROCK_TOMB', 'MOVE_ROCK_TOMB'],
         team: [
             {
                 specific: 'SPECIES_NOSEPASS',
