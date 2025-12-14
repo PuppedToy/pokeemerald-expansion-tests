@@ -173,13 +173,21 @@
     .specialCard{background-color: #450B00;}
     .partnerCard{background-color: #004d00;}
     .tags{display:flex;gap:8px;flex-wrap:wrap}
-    .tag{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:8px;font-size:12px}
+    .tag{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:8px;font-size:12px;}
 
     /* Right column */
     .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
     .panel h3{margin:0 0 10px 0}
     .list-item{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px}
     .small{font-size:13px;color:var(--muted)}
+
+    .poke-miniature {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 16px;
+      font-weight: bold;
+    }
 
     /* footer */
     footer{grid-column:1/4;margin-top:18px;padding:12px;text-align:center;color:var(--muted)}
@@ -821,32 +829,33 @@
     function buildEvoChain(poke) {
       if (!poke.evoTree) return '';
       function format(id) {
-        return id.replace('SPECIES_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+        const pokeImg = getPokeImg(id);
+        return `<span class="poke-miniature"><img src="${pokeImg}" height="32" width="32" alt="${poke.name}" />${id.replace('SPECIES_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}</span>`;
       }
       function buildEvoItem(evo) {
         const methodMap = {
           'LEVEL': `Level ${evo.param}`,
-          'USE_ITEM': `Use ${evo.param.replace('ITEM_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}`,
+          'ITEM': `${evo.param.replace('ITEM_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}`,
           'TRADE': 'Trade',
           'FRIENDSHIP': 'High Friendship',
           'HOLD_ITEM': `Hold ${evo.param.replace('ITEM_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}`,
           // Add more methods as needed
         };
-        const methodText = methodMap[evo.method] || evo.method;
-        return `<div>
-          <div class="tag evo-link" data-id="${evo.pokemon}">${format(evo.pokemon)}</div>
-          <div class="small" style="margin-top:4px;">(${methodText})</div>
+        let methodText = methodMap[evo.method] || evo.method;
+        if (methodText === 'Level 0') methodText = 'Special Evolution';
+        return `<div style="margin-bottom: 20px;">
+          <div class="tag evo-link" data-id="${evo.pokemon}">${format(evo.pokemon)} ${methodText}</div>
         </div>`;
       }
       function buildTreeItem(item) {
         if (Array.isArray(item))
-          return item.map(i => `<div class="tag evo-link" data-id="${i}">${format(i)}</div>`).join('');
-        return `<div class="tag evo-link" data-id="${item}">${format(item)}</div>`;
+          return item.map(i => format(i)).join('');
+        return format(item);
       }
-      const evoHTML = (poke.evolutions || []).map(e => buildEvoItem(e)).join(' | ');
+      const evoHTML = (poke.evolutions || []).map(e => buildEvoItem(e)).join('');
       const evoTreeHTML = poke.evoTree.map(e => buildTreeItem(e)).join(' → ');
       return `${evoHTML}
-      ${evoTreeHTML}`;
+      <div style="display: flex; align-items: center; gap: 6px;">${evoTreeHTML}</div>`;
     }
 
     function buildLog(poke) {
