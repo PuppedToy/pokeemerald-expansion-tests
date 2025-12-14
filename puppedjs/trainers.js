@@ -1871,6 +1871,7 @@ const trainersData = [
         isBoss: true,
         bag: [...brawlyBag(), 'Fighting Gem'],
         tms: ['MOVE_BULK_UP', 'MOVE_BULK_UP'],
+        bannedItems: ['Flame Orb', 'Toxic Orb'],
         team: [
             {
                 specific: 'SPECIES_MAKUHITA',
@@ -2445,6 +2446,7 @@ const trainersData = [
         preventShuffle: true,
         bag: [...wattsonBag(), 'Electric Gem'],
         tms: ['TM_SHOCK_WAVE'],
+        bannedItems: ['Electric Seed', 'Psychic Seed', 'Misty Seed', 'Grassy Seed'],
         team: [
             pokeDefElectricSurgeMon({
                 absoluteTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
@@ -3017,6 +3019,7 @@ const trainersData = [
         level: 36,
         isBoss: true,
         bag: [...normanBag()],
+        bannedItems: ['Assault Vest', 'Flame Orb', 'Toxic Orb'],
         team: [
             {
                 specific: 'SPECIES_SLAKING',
