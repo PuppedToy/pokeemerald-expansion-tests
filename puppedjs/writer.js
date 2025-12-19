@@ -1376,6 +1376,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'trainers.js'), `const trainersData = ${JSON.stringify(trainersResultsSimplified, null, 4)};`, 'utf8');
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_POKEMON_REPLACEMENT, `<script>const pokes = ${JSON.stringify(pokemonList)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'pokes.js'), `const pokes = ${JSON.stringify(pokemonList, null, 4)};`, 'utf8');
+    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'moves.js'), `const movesData = ${JSON.stringify(moves, null, 4)};`, 'utf8');
+    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'abilities.js'), `const abilitiesData = ${JSON.stringify(abilities, null, 4)};`, 'utf8');
     const maps = wild.maps.map(({ id, ...keys }) => {
         const result = {
             id,
