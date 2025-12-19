@@ -2063,19 +2063,11 @@ static bool32 Fishing_WaitBeforeDots(struct Task *task)
 
 static bool32 Fishing_InitDots(struct Task *task)
 {
-    u32 randVal;
-
     LoadMessageBoxAndFrameGfx(0, TRUE);
     task->tStep = FISHING_SHOW_DOTS;
     task->tFrameCounter = 0;
     task->tNumDots = 0;
-    randVal = Random();
-    randVal %= 10;
-    task->tDotsRequired = randVal + 1;
-    if (task->tRoundsPlayed == 0)
-        task->tDotsRequired = randVal + 4;
-    if (task->tDotsRequired >= 10)
-        task->tDotsRequired = 10;
+    task->tDotsRequired = 3;
     return TRUE;
 }
 
@@ -2119,32 +2111,9 @@ static bool32 Fishing_ShowDots(struct Task *task)
 
 static bool32 Fishing_CheckForBite(struct Task *task)
 {
-    bool32 bite, firstMonHasSuctionOrSticky;
-
     AlignFishingAnimationFrames();
-    task->tStep = FISHING_GOT_BITE;
-    bite = FALSE;
-
-    if (!DoesCurrentMapHaveFishingMons())
-    {
-        task->tStep = FISHING_NOT_EVEN_NIBBLE;
-        return TRUE;
-    }
-
-    firstMonHasSuctionOrSticky = Fishing_DoesFirstMonInPartyHaveSuctionCupsOrStickyHold();
-
-    if(firstMonHasSuctionOrSticky)
-        bite = Fishing_RollForBite(task->tFishingRod, firstMonHasSuctionOrSticky);
-
-    if (!bite)
-        bite = Fishing_RollForBite(task->tFishingRod, FALSE);
-
-    if (!bite)
-        task->tStep = FISHING_NOT_EVEN_NIBBLE;
-
-    if (bite)
-        StartSpriteAnim(&gSprites[gPlayerAvatar.spriteId], GetFishingBiteDirectionAnimNum(GetPlayerFacingDirection()));
-
+    task->tStep = FISHING_GOT_BITE; // Force a bite
+    StartSpriteAnim(&gSprites[gPlayerAvatar.spriteId], GetFishingBiteDirectionAnimNum(GetPlayerFacingDirection()));
     return TRUE;
 }
 
@@ -2177,9 +2146,9 @@ static bool32 Fishing_ChangeMinigame(struct Task *task)
 static bool32 Fishing_WaitForA(struct Task *task)
 {
     const s16 reelTimeouts[3] = {
-        [OLD_ROD]   = 36,
-        [GOOD_ROD]  = 33,
-        [SUPER_ROD] = 30
+        [OLD_ROD]   = 60*120,   // 120 seconds
+        [GOOD_ROD]  = 60*120,
+        [SUPER_ROD] = 60*120
     };
 
     AlignFishingAnimationFrames();
