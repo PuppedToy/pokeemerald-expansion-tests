@@ -169,22 +169,22 @@ PetalburgWoods_EventScript_PickSeed::
 
 PetalburgWoods_EventScript_PickElectric::
 	finditem ITEM_ELECTRIC_SEED
-	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
+	setflag FLAG_ITEM_ROUTE_110_SEED
 	end
 
 PetalburgWoods_EventScript_PickGrassy::
 	finditem ITEM_GRASSY_SEED
-	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
+	setflag FLAG_ITEM_ROUTE_110_SEED
 	end
 
 PetalburgWoods_EventScript_PickMisty::
 	finditem ITEM_MISTY_SEED
-	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
+	setflag FLAG_ITEM_ROUTE_110_SEED
 	end
 
 PetalburgWoods_EventScript_PickPsychic::
 	finditem ITEM_PSYCHIC_SEED
-	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
+	setflag FLAG_ITEM_ROUTE_110_SEED
 	end
 
 Route110_EventScript_NoRecordSet::

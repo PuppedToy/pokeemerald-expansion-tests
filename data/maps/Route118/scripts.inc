@@ -110,22 +110,22 @@ Route118_EventScript_PickBerry::
 
 Route118_EventScript_PickKee::
 	finditem ITEM_KEE_BERRY
-	setflag FLAG_ITEM_ROUTE_118_HYPER_POTION
+	setflag FLAG_ITEM_ROUTE_118_BERRY
 	end
 
 Route118_EventScript_PickMaranga::
 	finditem ITEM_MARANGA_BERRY
-	setflag FLAG_ITEM_ROUTE_118_HYPER_POTION
+	setflag FLAG_ITEM_ROUTE_118_BERRY
 	end
 
 Route118_EventScript_PickJaboca::
 	finditem ITEM_JABOCA_BERRY
-	setflag FLAG_ITEM_ROUTE_118_HYPER_POTION
+	setflag FLAG_ITEM_ROUTE_118_BERRY
 	end
 
 Route118_EventScript_PickRowap::
 	finditem ITEM_ROWAP_BERRY
-	setflag FLAG_ITEM_ROUTE_118_HYPER_POTION
+	setflag FLAG_ITEM_ROUTE_118_BERRY
 	end
 
 

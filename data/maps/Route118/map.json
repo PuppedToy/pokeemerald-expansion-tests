@@ -307,7 +307,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "Route118_EventScript_PickBerry",
-      "flag": "FLAG_ITEM_ROUTE_118_HYPER_POTION"
+      "flag": "FLAG_ITEM_ROUTE_118_BERRY"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",

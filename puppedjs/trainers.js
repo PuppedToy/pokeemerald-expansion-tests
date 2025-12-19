@@ -2250,7 +2250,7 @@ const trainersData = [
     },
     // Route 118
     {
-        id: 'TRAINER_DEANDRE',
+        id: 'TRAINER_DALTON_1',
         level: 25,
         bag: getSampleItemsFromArray(rivalRoute110Bag(), 7),
         team: [
@@ -2264,7 +2264,7 @@ const trainersData = [
         ],
     },
     {
-        id: 'TRAINER_DALTON_1',
+        id: 'TRAINER_DEANDRE',
         level: 25,
         bag: getSampleItemsFromArray(rivalRoute110Bag(), 7),
         team: [
