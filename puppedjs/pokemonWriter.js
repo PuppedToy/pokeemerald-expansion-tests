@@ -92,9 +92,12 @@ async function editLearnsetsFile(learnsetsFileText, pokemonList) {
             currentPokemon = pokemonList.find(p => p.levelUpLearnset === currentLearnsetId);
             if (!currentPokemon) {
                 currentPokemon = null;
-                continue;
             }
-            fullReplacement = learnsetLines[i];
+            else
+            {
+                fullReplacement = learnsetLines[i];
+            }
+            continue;
         }
         if (!currentPokemon) continue;
         fullReplacement += `\n${learnsetLines[i]}`;
