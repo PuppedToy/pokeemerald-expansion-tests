@@ -91,7 +91,10 @@ function editFiles(genSpeciesFileText, genLearnsetFileText, pokemonList) {
     for (let i = 0; i < learnsetLines.length; i++) {
         if (learnsetLines[i].startsWith('static const struct LevelUpMove ')) {
             currentLearnsetId = learnsetLines[i].split('LevelUpMove ')[1].split('[]')[0];
-            if (!learnsets[currentLearnsetId]) continue;
+            if (!learnsets[currentLearnsetId]) {
+                currentLearnsetId = null;
+                continue;
+            }
             fullReplacement = learnsetLines[i];
         }
         if (!currentLearnsetId) continue;
