@@ -33,6 +33,8 @@ const {
     TRAINER_POKE_MEGA_FROM_STONE,
     GENERIC_DEVIATION,
     TIER_BAD,
+    TEMPLATE_MOVES_REPLACEMENT,
+    TEMPLATE_ABILITIES_REPLACEMENT,
 } = require('./constants');
 const { chooseMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const items = require('./items.js');
