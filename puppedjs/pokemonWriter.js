@@ -99,7 +99,8 @@ async function editLearnsetsFile(learnsetsFileText, pokemonList) {
         if (!currentPokemon) continue;
         fullReplacement += `\n${learnsetLines[i]}`;
         if (learnsetLines[i].startsWith('};')) {
-            result = result.replace(fullReplacement, `static const struct LevelUpMove [] = {\n${learnsets[currentLearnsetId]}\n};`);
+            result = result.replace(fullReplacement, `static const struct LevelUpMove ${currentPokemon.levelUpLearnset}[] = {\n${currentPokemon.learnset
+                .map(({ level, move }) => `    LEVEL_UP_MOVE( ${level}, ${move}),`).join('\n')}\n};`);
             currentPokemon = null;
             fullReplacement = null;
         }
