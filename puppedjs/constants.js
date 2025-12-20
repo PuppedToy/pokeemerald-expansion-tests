@@ -196,6 +196,8 @@ const constants = {
     TEMPLATE_FILE: 'template.html',
 
     TEMPLATE_POKEMON_REPLACEMENT: '<script src="pokes.js"></script>',
+    TEMPLATE_MOVES_REPLACEMENT: '<script src="moves.js"></script>',
+    TEMPLATE_ABILITIES_REPLACEMENT: '<script src="abilities.js"></script>',
     TEMPLATE_TRAINERS_REPLACEMENT: '<script src="trainers.js"></script>',
     TEMPLATE_WILDPOKES_REPALCEMENT: '<script src="wildpokes.js"></script>',
 
