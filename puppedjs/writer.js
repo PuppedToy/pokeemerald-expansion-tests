@@ -35,6 +35,7 @@ const {
     TIER_BAD,
     TEMPLATE_MOVES_REPLACEMENT,
     TEMPLATE_ABILITIES_REPLACEMENT,
+    TIER_PREMIUM_THRESHOLD,
 } = require('./constants');
 const { chooseMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const items = require('./items.js');
@@ -302,7 +303,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             && poke.evolutionData.megaEvos.length > 0
             && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
             && poke.rating.bestEvoRating <= TIER_STRONG_THRESHOLD
-            && poke.rating.megaEvoRating <= TIER_STRONG_THRESHOLD
+            && poke.rating.megaEvoRating <= TIER_PREMIUM_THRESHOLD
             && poke.rating.tier === TIER_BAD
             && ![...alreadyChosenTypes].some(type => poke.parsedTypes.includes(type));
     });
