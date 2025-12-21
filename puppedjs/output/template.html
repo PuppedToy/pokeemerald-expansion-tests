@@ -479,17 +479,8 @@
         .replace('DEOXYS_NORMAL', 'DEOXYS')
         .replace('CHERRIM_OVERCAST', 'CHERRIM');
     }
-  </script>
-  <script src="pokes.js"></script>
-  <script src="moves.js"></script>
-  <script src="trainers.js"></script>
-  <script src="wildpokes.js"></script>
-  <script src="abilities.js"></script>
-  <!-- script to handle pokedex -->
-  <script>
-    const pokemonGrid = document.getElementById('pokemon-cards');
-    pokes.forEach(poke => {
-      const card = document.createElement('div');
+
+    function generatePokeCardContent(poke) {
       const pokeImg = getPokeImg(poke.id);
       const hpLogEntry = (poke.log || []).find(entry => entry.target === 'baseHP');
       const atkLogEntry = (poke.log || []).find(entry => entry.target === 'baseAttack');
@@ -516,10 +507,9 @@
       const adjustedSpd = spdLogEntry ? `<span style="color:${getLogColor(spdLogEntry)}"><span class="dashed">${spdLogEntry.oldValue}</span> <strong>${poke.baseSpDefense}</strong></span>` : `${poke.baseSpDefense}`;
       const adjustedSpe = speLogEntry ? `<span style="color:${getLogColor(speLogEntry)}"><span class="dashed">${speLogEntry.oldValue}</span> <strong>${poke.baseSpeed}</strong></span>` : `${poke.baseSpeed}`;
       const adjustedBST = BSTChangeValue !== 0 ? `<span style="color:${BSTChangeValue > 0 ? '#CFFFD3' : '#D49494'}"><span class="dashed">${poke.baseBST - BSTChangeValue}</span> <strong>${poke.baseBST}</strong></span>` : `${poke.baseBST}`;
-      card.className = 'card';
-      card.innerHTML = `
+      return `
         <div class="meta">
-            <div class="clicker">
+            <div>
                 <div class="title">${poke.name}${fullLogIcon}</div>
                 <div class=thumb><img src="${pokeImg}" alt="${poke.name}" /></div>
                 <div style="margin-top: 10px; text-align: center; width: 100%;">${poke.parsedTypes.map(type => `<span class="type" style="background-color:${typeColors[type]}">${type}</span>`).join(' ')}${typeIcon}</div>
@@ -545,6 +535,22 @@
             </div>
         </div>
       `;
+      return card;
+    }
+  </script>
+  <script src="pokes.js"></script>
+  <script src="moves.js"></script>
+  <script src="trainers.js"></script>
+  <script src="wildpokes.js"></script>
+  <script src="abilities.js"></script>
+  <!-- script to handle pokedex -->
+  <script>
+    const pokemonGrid = document.getElementById('pokemon-cards');
+    pokes.forEach(poke => {
+      const card = document.createElement('div');
+      const cardContent = generatePokeCardContent(poke);
+      card.className = 'card clicker';
+      card.innerHTML = cardContent;
       card.addEventListener('click', () => showPokemonModal(poke));
       pokemonGrid.appendChild(card);
     });
@@ -904,17 +910,13 @@
     }
 
     function buildPokemonDetailHTML(poke) {
-      const img = getPokeImg(poke.id);
+      const card = generatePokeCardContent(poke);
 
       return `
-        <h2 style="text-align:center;">${poke.name}</h2>
-
-        <div style="text-align:center;">
-          <img src="${img}" style="width:180px;height:180px;">
-        </div>
-
-        <div style="text-align:center;margin:10px 0;">
-          ${poke.parsedTypes.map(t => `<span class="type" style="background:${typeColors[t]};">${t}</span>`).join('')}
+        <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+          <div class="card">
+            ${card}
+          </div>
         </div>
 
         <h3>Evolution</h3>
