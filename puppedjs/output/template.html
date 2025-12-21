@@ -172,6 +172,7 @@
       box-shadow:0 6px 20px rgba(2,6,23,0.5);
       display:flex;flex-direction:column;gap:8px;min-height:140px
     }
+    .card-log-item{font-size:12px;padding:6px;border-radius:8px;margin-bottom:6px;display:block}
     .dashed{
       text-decoration:line-through;
       color:var(--muted);
@@ -188,6 +189,7 @@
     .partnerCard{background-color: #004d00;}
     .tags{display:flex;gap:8px;flex-wrap:wrap}
     .tag{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:8px;font-size:12px;}
+    .ability-tag{display: block; width: 100%; margin: 10px 0;}
 
     /* Right column */
     .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
@@ -416,6 +418,14 @@
       return fullLogIcon;
     }
 
+    function nameify(name) {
+      return name.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    function moveName(moveId) {
+      return nameify(moveId.replace('MOVE_', ''));
+    }
+
     function getPokeImg(pokeId) {
       return `https://forwardfeed.github.io/ER-nextdex/static/sprites/${pokeId.replace('SPECIES_', '')}.png`
         .replace('ALOLA', 'ALOLAN')
@@ -480,6 +490,10 @@
         .replace('CHERRIM_OVERCAST', 'CHERRIM');
     }
 
+    function getFormattedPokeTypes(types) {
+      return types.map(type => `<span class="type" style="background-color:${typeColors[type]}">${type}</span>`).join(' ');
+    }
+
     function generatePokeCardContent(poke) {
       const pokeImg = getPokeImg(poke.id);
       const hpLogEntry = (poke.log || []).find(entry => entry.target === 'baseHP');
@@ -507,13 +521,25 @@
       const adjustedSpd = spdLogEntry ? `<span style="color:${getLogColor(spdLogEntry)}"><span class="dashed">${spdLogEntry.oldValue}</span> <strong>${poke.baseSpDefense}</strong></span>` : `${poke.baseSpDefense}`;
       const adjustedSpe = speLogEntry ? `<span style="color:${getLogColor(speLogEntry)}"><span class="dashed">${speLogEntry.oldValue}</span> <strong>${poke.baseSpeed}</strong></span>` : `${poke.baseSpeed}`;
       const adjustedBST = BSTChangeValue !== 0 ? `<span style="color:${BSTChangeValue > 0 ? '#CFFFD3' : '#D49494'}"><span class="dashed">${poke.baseBST - BSTChangeValue}</span> <strong>${poke.baseBST}</strong></span>` : `${poke.baseBST}`;
+      const abilitiesLogEntries = (poke.log || []).filter(entry => entry.target === 'ability');
+      let abilities = poke.parsedAbilities.map(ability => {
+        const abilityLogEntry = abilitiesLogEntries.find(entry => entry.value === ability);
+        let abilityContent = nameify(ability);
+        if (abilityLogEntry && abilityLogEntry.type === 'ADJUSTMENT') {
+          abilityContent = `🔧 <span class="dashed">${nameify(abilityLogEntry.oldValue)}</span> <strong>${abilityContent}</strong>`;
+        }
+        else if (abilityLogEntry) {
+          abilityContent = `⭐️ ${abilityContent}`;
+        }
+        return `<span class="tag ability-tag">${abilityContent}</span>`;
+      }).join(' ');
       return `
         <div class="meta">
             <div>
                 <div class="title">${poke.name}${fullLogIcon}</div>
                 <div class=thumb><img src="${pokeImg}" alt="${poke.name}" /></div>
-                <div style="margin-top: 10px; text-align: center; width: 100%;">${poke.parsedTypes.map(type => `<span class="type" style="background-color:${typeColors[type]}">${type}</span>`).join(' ')}${typeIcon}</div>
-                <div style="margin-top: 10px; text-align: center; width: 100%;">${poke.parsedAbilities.map(ability => `<span class="tag">${ability}</span>`).join(' ')}${abilityIcon}</div>
+                <div style="margin-top: 10px; text-align: center; width: 100%;">${getFormattedPokeTypes(poke.parsedTypes)}${typeIcon}</div>
+                <div style="margin-top: 10px; text-align: center; width: 100%;">${abilities}</div>
                 <div>
                     <div style="text-align: center; font-weight: 700; margin-top: 6px; color: #FFDDC9">BST: ${adjustedBST}${bstIcon}</div>
                     <div style="text-align: center"><div style="text-align: center; font-weight: 700; margin-top: 6px; background-color: ${tierColorBgs[poke.rating.tier]}; color: ${tierColorFonts[poke.rating.tier]}; display: inline-block; padding: 4px 12px; border-radius: 999px;">${poke.rating.tier} (${poke.rating.role})</div></div>
@@ -828,10 +854,6 @@
       modalBody.innerHTML = buildPokemonDetailHTML(poke);
     }
 
-    function moveName(moveId) {
-      return moveId.replace('MOVE_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-    }
-
     function buildLearnsetList(poke) {
       return poke.learnset.map(l => {
         const m = movesData[l.move];
@@ -842,11 +864,15 @@
         } else if (logEntry && logEntry.oldValue !== null) {
           balanceIcon = '🔧 ';
         }
+        let move = moveName(l.move);
+        if (logEntry && logEntry.oldValue) {
+          move = `<span style="color:${getLogColor(logEntry)}"><span class="dashed">${moveName(logEntry.oldValue)}</span> <strong>${move}</strong></span>`;
+        }
         return `
           <div class="list-item">
             ${balanceIcon}<span style="min-width:60px;color:#8cf;">Lv ${l.level}</span>
             <span class="type" style="background:${typeColors[m.type]};">${m.type}</span>
-            <b>${moveName(l.move)}</b>
+            <b>${move}</b>
             <span class="small">Pwr: ${m.power ?? '-'}</span>
             <span class="small">Acc: ${m.accuracy ?? '-'}</span>
             <span class="small">PP: ${m.pp}</span>
@@ -902,10 +928,37 @@
 
     function buildLog(poke) {
       if (!poke.log || poke.log.length === 0) return `<div class="small">No changes</div>`;
-      return poke.log.map(l =>
-        `<div class="small">
-          <b>${l.type}</b> • ${l.target} : ${l.oldValue} → ${l.oldValue + l.value}
-        </div>`
+      return poke.log.map(l => {
+        const icon = getLogIcon(l);
+        const targetDictionary = {
+          baseAttack: 'Attack',
+          baseDefense: 'Defense',
+          baseSpAttack: 'Special Attack',
+          baseSpDefense: 'Special Defense',
+          baseSpeed: 'Speed',
+          baseHP: 'HP',
+          type: 'Type',
+          ability: 'Ability',
+          learnsetMove: 'Learnset Move',
+        }
+        const formatValue = (value) => {
+          if (l.target === 'type' && value) {
+            return `&nbsp;${getFormattedPokeTypes([value])}`;
+          }
+          else if (l.target === 'learnsetMove' && value) {
+            return moveName(value);
+          }
+        }
+        let newValue = formatValue(l.value) || l.value;
+        let logContent = `➕ ${newValue}`;
+        if (l.oldValue) {
+          let oldValue = formatValue(l.oldValue) || l.oldValue;
+          logContent = `${oldValue} → ${newValue}`;
+        }
+        return `<div class="small card-log-item">
+          ${icon} <strong>${targetDictionary[l.target] || l.target}</strong> — ${logContent}
+        </div>`;
+      }
       ).join('');
     }
 
