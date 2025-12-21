@@ -419,7 +419,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     }
 
     await fs.writeFile(route111File, route111Data, 'utf8');
-    console.log('Route 111 map updated with new starter mega stones.');
+    console.log('Route 111 map updated with new starter mega stones: ', megaReplacements);
     // @TODO Replace mega stone trainers & rival
 
     const castformReplacementList = pokemonList.filter(poke =>
