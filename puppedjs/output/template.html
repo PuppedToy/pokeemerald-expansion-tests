@@ -811,9 +811,16 @@
     function buildLearnsetList(poke) {
       return poke.learnset.map(l => {
         const m = movesData[l.move];
+        let balanceIcon = '';
+        const logEntry = (poke.log || []).find(entry => entry.target === 'learnsetMove' && entry.value === l.move);
+        if (logEntry && logEntry.oldValue === null) {
+          balanceIcon = '⭐️ '; // Added move
+        } else if (logEntry && logEntry.oldValue !== null) {
+          balanceIcon = '🔧 ';
+        }
         return `
           <div class="list-item">
-            <span style="min-width:60px;color:#8cf;">Lv ${l.level}</span>
+            ${balanceIcon}<span style="min-width:60px;color:#8cf;">Lv ${l.level}</span>
             <span class="type" style="background:${typeColors[m.type]};">${m.type}</span>
             <b>${moveName(l.move)}</b>
             <span class="small">Pwr: ${m.power ?? '-'}</span>
