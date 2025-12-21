@@ -398,10 +398,12 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const route111File = path.resolve(__dirname, '..', 'data', 'maps', 'Route111', 'map.json');
     let route111Data = await fs.readFile(route111File, 'utf8');
 
+    console.log(starters);
+    console.log(chosenExtraPokemon);
     console.log(`Updating Route 111 map with new starter mega stones: ${[...starters, ...chosenExtraPokemon].map(p => p.id).join(', ')}}`);
-    const chosenPokemonThatHaveMegaEvo = [...starters, ...chosenExtraPokemon].map((pokeId) =>
+    const chosenPokemonThatHaveMegaEvo = [...starters.map((pokeId) =>
         pokemonList.find(p => p.id === pokeId),
-    ).filter(p => p && p.evolutionData.megaEvos && p.evolutionData.megaEvos.length > 0);
+    ), ...chosenExtraPokemon].filter(p => p && p.evolutionData.megaEvos && p.evolutionData.megaEvos.length > 0);
     console.log(`Found ${chosenPokemonThatHaveMegaEvo.length} starter Pokemon with mega evolutions.`);
     const itemDataList = [
         'ITEM_SCEPTILITE',
