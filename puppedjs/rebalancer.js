@@ -87,7 +87,9 @@ function balancePokemon(pokemon, abilityNames, moves) {
         const familyLog = familyTracking[pokemon.family] || [];
         familyLog.forEach(entry => {
             let changed = false;
+            const nextEntry = {...entry}
             if (['baseHP', 'baseAttack', 'baseDefense', 'baseSpAttack', 'baseSpDefense', 'baseSpeed'].includes(entry.target)) {
+                nextEntry.oldValue = newPokemon[entry.target];
                 newPokemon[entry.target] = Math.min(255, Math.max(1, newPokemon[entry.target] + entry.value));
                 changed = true;
             }
@@ -139,7 +141,7 @@ function balancePokemon(pokemon, abilityNames, moves) {
                 }
             }
             if (changed) {
-                inheritedLog.push(entry);
+                inheritedLog.push(nextEntry);
             }
         });
     }
@@ -310,7 +312,7 @@ function balancePokemon(pokemon, abilityNames, moves) {
                 };
 
                 log.push({
-                    type: LOG_TYPE_ADJUSTMENT,
+                    type: oldMoveName === null ? LOG_TYPE_BUFF : LOG_TYPE_ADJUSTMENT,
                     target: 'learnsetMove',
                     oldValue: oldMoveName,
                     value: newMoveId,
@@ -335,7 +337,7 @@ function balancePokemon(pokemon, abilityNames, moves) {
                 newPokemon.learnset = newLearnset;
 
                 log.push({
-                    type: LOG_TYPE_ADJUSTMENT,
+                    type: LOG_TYPE_BUFF,
                     target: 'learnsetMove',
                     oldValue: null,
                     value: newMoveId,
