@@ -307,6 +307,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             && ![...alreadyChosenTypes].some(type => poke.parsedTypes.includes(type));
     });
 
+    console.log(`Found ${lcPokesWithMegaEvo.length} eligible LC pokes with mega evolutions for extra starters.`);
+
     if (lcPokesWithMegaEvo.length <= 0) {
         console.warn('No LC pokemon with mega evolutions found for extra starters.');
     }
