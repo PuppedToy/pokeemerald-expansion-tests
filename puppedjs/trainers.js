@@ -1127,13 +1127,17 @@ const choice110TMs = [
 const rivalRoute110Bag = () => [
     ...slateportGruntsBag(),
     sample(choice110TMs),
-    'Shed Shell',
+    'Air Balloon',
     // 'Terrain Extender',
+];
+
+const choiceJosephSeeds = [
+    'Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed'
 ];
 
 const wallyBag = () => [
     ...rivalRoute110Bag(),
-    sample(['Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed']),
+    sample([...choiceJosephSeeds]),
     'Lum Berry',
 ];
 
@@ -1157,7 +1161,7 @@ const wattsonBag = () => [
 
 const magmaChimneyBag = () => [
     ...wattsonBag(),
-    'Air Balloon',
+    'Shed Shell',
     'Sitrus Berry',
 ];
 
@@ -1227,11 +1231,19 @@ const winonaBag = () => [
     'TM_AERIAL_ACE',
 ];
 
+const choiceTammyTMs = [
+    'TM_TOXIC',
+    'TM_PROTECT',
+    'TM_REST',
+];
+
+const choiceCristinBerries = ['Payapa Berry', 'Colbur Berry', 'Tanga Berry'];
+
 const wallyBag2 = () => [
     ...winonaBag(),
     'Focus Sash',
-    sample(['TM_PROTECT', 'TM_TOXIC', 'TM_REST']),
-    sample(['Payapa Berry', 'Colbur Berry', 'Tanga Berry']),
+    sample([...choiceTammyTMs]),
+    sample([...choiceCristinBerries]),
 ];
 
 const choiceIsabellaItem = ['Choice Band', 'Choice Scarf', 'Choice Specs'];
@@ -1687,7 +1699,7 @@ const trainersData = [
     {
         id: 'TRAINER_JOEY',
         class: 'Youngster',
-        reward: 'Ability Patch',
+        reward: ['Ability Patch'],
         level: 13,
         bag: getSampleItemsFromArray(roxanneBag(), 3),
         tms: getSampleItemsFromArray(choice104TMs, 1),
@@ -2145,12 +2157,13 @@ const trainersData = [
             },
         ],
     },
-    // Route 110 @TODO Keep going from here
+    // Route 110
     {
         id: 'TRAINER_ISABEL_1',
+        class: 'Pokefan F',
+        reward: [...choice110TMs],
         level: 23,
-        bag: getSampleItemsFromArray(slateportGruntsBag(), 3),
-        tms: ['MOVE_DRAGON_CLAW', 'ITEM_TM_EARTHQUAKE', 'ITEM_TM_FOCUS_PUNCH'],
+        bag: [...choice110TMs, ...getSampleItemsFromArray(slateportGruntsBag(), 3)],
         team: [
             {
                 ...POKEDEF_BAD,
@@ -2162,7 +2175,6 @@ const trainersData = [
             },
             {
                 ...POKEDEF_WEAK,
-                mustHaveOneOfMoves: ['MOVE_THUNDER_WAVE', 'MOVE_SUPERSONIC', 'MOVE_CONFUSE_RAY', 'MOVE_ATTRACT'],
                 type: [POKEMON_TYPE_FIGHTING],
             },
             ...generatePokemonsWithDefinition(POKEDEF_BAD, 3),
@@ -2170,6 +2182,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_KALEB',
+        class: 'Pokefan M',
+        reward: ['Terrain Extender'],
         level: 23,
         bag: getSampleItemsFromArray(slateportGruntsBag(), 3),
         team: [
@@ -2200,8 +2214,10 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TIMMY',
+        class: 'Youngster',
+        reward: ['Air Balloon'],
         level: 23,
-        bag: ['Shed Shell', ...getSampleItemsFromArray(slateportGruntsBag(), 5)],
+        bag: ['Air Balloon', ...getSampleItemsFromArray(slateportGruntsBag(), 5)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_WEAK, 2),
             ...generatePokemonsWithDefinition(POKEDEF_BAD, 4),
@@ -2209,6 +2225,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_EDWARD',
+        class: 'Psychic M',
+        reward: ['SPECIES_ELECTRIKE'],
         level: 23,
         bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
         team: [
@@ -2224,6 +2242,8 @@ const trainersData = [
     // Route 103 (later)
     {
         id: 'TRAINER_DAISY',
+        class: 'Aroma Lady',
+        reward: ['Random Offensive Mint'],
         level: 23,
         bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
         team: [
@@ -2233,6 +2253,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MARCOS',
+        class: 'Guitarist',
+        reward: ['Random Defensive Mint'],
         level: 23,
         bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
         team: [
@@ -2242,6 +2264,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ANDREW',
+        class: 'Fisherman',
+        reward: ['Ability Capsule'],
         level: 23,
         bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
         team: [
@@ -2252,6 +2276,7 @@ const trainersData = [
     // Route 110 Again
     {
         id: 'TRAINER_MAY_ROUTE_110_TREECKO',
+        class: 'May',
         isBoss: true,
         level: 23,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -2260,6 +2285,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_ROUTE_110_TORCHIC',
+        class: 'May',
         isBoss: true,
         level: 23,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -2268,6 +2294,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_ROUTE_110_MUDKIP',
+        class: 'May',
         isBoss: true,
         level: 23,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -2277,18 +2304,23 @@ const trainersData = [
     {
         id: 'TRAINER_BRENDAN_ROUTE_110_TREECKO',
         copy: 'TRAINER_MAY_ROUTE_110_TREECKO',
+        class: 'Brendan',
     },
     {
         id: 'TRAINER_BRENDAN_ROUTE_110_TORCHIC',
         copy: 'TRAINER_MAY_ROUTE_110_TORCHIC',
+        class: 'Brendan',
     },
     {
         id: 'TRAINER_BRENDAN_ROUTE_110_MUDKIP',
         copy: 'TRAINER_MAY_ROUTE_110_MUDKIP',
+        class: 'Brendan',
     },
     // Route 110 after rival
         {
         id: 'TRAINER_DALE',
+        class: 'Fisherman',
+        reward: ['SPECIES_MANECTRIC'],
         level: 25,
         bag: getSampleItemsFromArray(rivalRoute110Bag(), 7),
         team: [
@@ -2303,6 +2335,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_EDWIN_1',
+        class: 'Collector',
+        reward: ['Lum Berry'],
         level: 25,
         bag: ['Lum Berry', ...getSampleItemsFromArray(rivalRoute110Bag(), 6)],
         team: [
@@ -2312,6 +2346,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JOSEPH',
+        class: 'Guitarist',
+        reward: [...choiceJosephSeeds],
         level: 25,
         team: [
             pokeDefPsychicSurgeMon(POKEDEF_BAD, 'Psychic Seed'),
@@ -2331,6 +2367,8 @@ const trainersData = [
     // Route 118
     {
         id: 'TRAINER_DALTON_1',
+        class: 'Guitarist',
+        reward: ['SPECIES_CARVANHA'],
         level: 25,
         bag: getSampleItemsFromArray(rivalRoute110Bag(), 7),
         team: [
@@ -2345,6 +2383,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DEANDRE',
+        class: 'Youngster',
+        reward: ['Random Defensive Mint'],
         level: 25,
         bag: getSampleItemsFromArray(rivalRoute110Bag(), 7),
         team: [
@@ -2355,6 +2395,7 @@ const trainersData = [
     // Wally
     {
         id: 'TRAINER_WALLY_MAUVILLE',
+        class: 'Wally',
         isBoss: true,
         level: 25,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -2401,6 +2442,8 @@ const trainersData = [
     // Route 117
     {
         id: 'TRAINER_BRANDI',
+        class: 'Psychic F',
+        reward: ['SPECIES_ODDISH'],
         level: 26,
         bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
@@ -2414,6 +2457,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ISAAC_1',
+        class: 'Pokemon Breeder M',
+        reward: ['SPECIES_GLOOM'],
         level: 26,
         bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
@@ -2427,6 +2472,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DYLAN_1',
+        class: 'Running Triathlete M',
+        reward: ['Random Defensive Mint'],
         level: 26,
         bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
@@ -2435,6 +2482,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_LYDIA_1',
+        class: 'Pokemon Breeder F',
+        reward: ['Ability Capsule'],
         level: 26,
         bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
@@ -2443,6 +2492,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DEREK',
+        class: 'Bug Maniac',
+        reward: ['Ability Patch'],
         level: 26,
         bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
@@ -2451,6 +2502,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ANNA_AND_MEG_1',
+        class: 'Sr And Jr',
+        reward: ['MOVE_REFLECT', 'MOVE_LIGHT_SCREEN', 'Light Clay'],
         level: 26,
         bag: getSampleItemsFromArray(wallyBag(), 5),
         team: [
@@ -2471,6 +2524,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MELINA',
+        class: 'Running Triathlete F',
+        reward: [...choiceMelinaBerries],
         level: 26,
         bag: getSampleItemsFromArray(wallyBag(), 5),
         team: [
@@ -2494,6 +2549,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_AISHA',
+        class: 'Battle Girl',
+        reward: [...choiceAishaGems],
         level: 26,
         bag: [...choiceAishaGems, ...getSampleItemsFromArray(wallyBag(), 5)],
         team: [
@@ -2514,6 +2571,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MARIA_1',
+        class: 'Running Triathlete F',
+        reward: ['Assault Vest'],
         level: 26,
         bag: ['Assault Vest', ...getSampleItemsFromArray(wallyBag(), 7)],
         team: generatePokemonsWithDefinition(POKEDEF_WEAK, 6),
@@ -2521,6 +2580,7 @@ const trainersData = [
     // Mauville Gym
     {
         id: 'TRAINER_WATTSON_1',
+        class: 'Leader Wattson',
         isBoss: true,
         level: 26,
         preventShuffle: true,
@@ -2620,9 +2680,9 @@ const trainersData = [
     {
         id: 'TRAINER_IRENE',
         class: 'Picnicker',
-        reward: ['Air Balloon'],
+        reward: ['Shed Shell'],
         level: 29,
-        bag: [...getSampleItemsFromArray(wattsonBag(), 9), 'Air Balloon'],
+        bag: [...getSampleItemsFromArray(wattsonBag(), 9), 'Shed Shell'],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
             ...generatePokemonsWithDefinition(POKEDEF_WEAK, 4),
@@ -3225,21 +3285,27 @@ const trainersData = [
             },
         ],
     },
-    // Route 105 (Island Cave) @TODO Continue
+    // Route 105 (Island Cave)
     {
         id: 'TRAINER_BEVERLY',
+        class: 'Swimmer F',
+        reward: ['Access to Island Cave'],
         level: 39,
         bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith1StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_IMANI',
+        class: 'Swimmer F',
+        reward: ['Master Ball'],
         level: 39,
         bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith1StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_FOSTER',
+        class: 'Ruin Maniac',
+        reward: ['Strong Pokemon'],
         level: 39,
         bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith2StrongTeamTemplate(),
@@ -3247,12 +3313,16 @@ const trainersData = [
     // Route 110 (New Mauville)
     {
         id: 'TRAINER_JACLYN',
+        class: 'Psychic F',
+        reward: ['Master Ball'],
         level: 39,
         bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith2StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_ABIGAIL_1',
+        class: 'Cycling Triathlete F',
+        reward: ['Strong Pokemon'],
         level: 39,
         bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith3StrongTeamTemplate(),
@@ -3260,6 +3330,8 @@ const trainersData = [
     // Route 118
     {
         id: 'TRAINER_PERRY',
+        class: 'Bird Keeper',
+        reward: ['SPECIES_DEDENNE'],
         level: 39,
         bag: getSampleItemsFromArray(normanBag(), 15),
         team: [
@@ -3274,24 +3346,32 @@ const trainersData = [
     },
     {
         id: 'TRAINER_WADE',
+        class: 'Fisherman',
+        reward: [...choiceWadeBerries],
         level: 39,
         bag: [...choiceWadeBerries, ...getSampleItemsFromArray(normanBag(), 11)],
         team: genericAverageWith2StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_BARNY',
+        class: 'Fisherman',
+        reward: ['Ability Capsule'],
         level: 39,
         bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith2StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_ROSE_1',
+        class: 'Aroma Lady',
+        reward: ['Random Offensive Mint'],
         level: 39,
         bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith2StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_CHESTER',
+        class: 'Bird Keeper',
+        reward: [...choiceChesterTMs],
         level: 39,
         bag: [...choiceChesterTMs, ...getSampleItemsFromArray(normanBag(), 12)],
         team: [
@@ -3314,6 +3394,8 @@ const trainersData = [
     // Route 119
     {
         id: 'TRAINER_KENT',
+        class: 'Bug Catcher',
+        reward: ['SPECIES_LINOONE'],
         level: 39,
         bag: getSampleItemsFromArray(normanBag(), 15),
         team: [
@@ -3328,6 +3410,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BRENT',
+        class: 'Bug Maniac',
+        reward: ['SPECIES_SERVINE', 'SPECIES_SNIVY'],
         level: 39,
         bag: getSampleItemsFromArray(normanBag(), 15),
         team: [
@@ -3346,12 +3430,16 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DOUG',
+        class: 'Bug Catcher',
+        reward: ['Random Defensive Mint'],
         level: 39,
         bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith2StrongTeamTemplate(),
     },
     {
         id: 'TRAINER_TAYLOR',
+        class: 'Bug Maniac',
+        reward: ['Random Offensive Mint'],
         level: 39,
         bag: getSampleItemsFromArray(normanBag(), 15),
         team: genericAverageWith2StrongTeamTemplate(),
@@ -3359,6 +3447,7 @@ const trainersData = [
     // Weather Institute
     {
         id: 'TRAINER_SHELLY_WEATHER_INSTITUTE',
+        class: 'Aqua Admin F',
         level: 39,
         isBoss: true,
         bag: [...shellyBag()],
@@ -3395,6 +3484,8 @@ const trainersData = [
     // Route 119 continued
     {
         id: 'TRAINER_FABIAN',
+        class: 'Guitarist',
+        reward: ['Leftovers'],
         level: 41,
         bag: ['Leftovers', ...getSampleItemsFromArray(shellyBag(), 15)],
         team: generic2Average3Strong1MegaTeamTemplate(),
@@ -3402,6 +3493,7 @@ const trainersData = [
     // Route 119 Rival Battles
     {
         id: 'TRAINER_MAY_ROUTE_119_TREECKO',
+        class: 'May',
         isBoss: true,
         level: 41,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -3410,6 +3502,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_ROUTE_119_TORCHIC',
+        class: 'May',
         isBoss: true,
         level: 41,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -3418,6 +3511,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_ROUTE_119_MUDKIP',
+        class: 'May',
         isBoss: true,
         level: 41,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -3427,18 +3521,23 @@ const trainersData = [
     {
         id: 'TRAINER_BRENDAN_ROUTE_119_TREECKO',
         copy: 'TRAINER_MAY_ROUTE_119_TREECKO',
+        class: 'May',
     },
     {
         id: 'TRAINER_BRENDAN_ROUTE_119_TORCHIC',
         copy: 'TRAINER_MAY_ROUTE_119_TORCHIC',
+        class: 'May',
     },
     {
         id: 'TRAINER_BRENDAN_ROUTE_119_MUDKIP',
         copy: 'TRAINER_MAY_ROUTE_119_MUDKIP',
+        class: 'May',
     },
     // Route 119 continued
     {
         id: 'TRAINER_LEONEL',
+        class: 'Cooltrainer M',
+        reward: ['SPECIES_SANDILE'],
         level: 43,
         bag: getSampleItemsFromArray(rival119Bag(), 17),
         team: [
@@ -3453,6 +3552,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ROBERT_1',
+        class: 'Bird Keeper',
+        reward: ['Access to Scorched Slab'],
         level: 43,
         bag: getSampleItemsFromArray(rival119Bag(), 17),
         team: [
@@ -3472,6 +3573,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_COLIN',
+        class: 'Bird Keeper',
+        reward: ['SPECIES_KROOKODILE', 'SPECIES_KROKOROK', 'SPECIES_RIBOMBEE', 'ITEM_ORANGE_MAIL'],
         level: 43,
         bag: getSampleItemsFromArray(rival119Bag(), 17),
         team: [
@@ -3485,6 +3588,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CLARISSA',
+        class: 'Parasol Lady',
+        reward: [...choiceClarissaItems],
         level: 43,
         bag: getSampleItemsFromArray(rival119Bag(), 14),
         team: [
@@ -3505,6 +3610,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ANGELICA',
+        class: 'Parasol Lady',
+        reward: ['Random Offensive Mint'],
         level: 43,
         bag: getSampleItemsFromArray(rival119Bag(), 17),
         team: generic3Average3StrongTeamTemplate(),
@@ -3512,6 +3619,7 @@ const trainersData = [
     // Fortree City Gym
     {
         id: 'TRAINER_WINONA_1',
+        class: 'Leader Winona',
         level: 43,
         isBoss: true,
         bag: [...winonaBag()],
@@ -3572,12 +3680,16 @@ const trainersData = [
     // Route 120 After Gym
     {
         id: 'TRAINER_JEFFREY_1',
+        class: 'Bug Maniac',
+        reward: ['Master Ball'],
         level: 46,
         bag: getSampleItemsFromArray(winonaBag(), 18),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_CHIP',
+        class: 'Ruin Maniac',
+        reward: ['Access to Premium Pokemon'],
         level: 46,
         bag: getSampleItemsFromArray(winonaBag(), 18),
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
@@ -3585,6 +3697,8 @@ const trainersData = [
     // Route 121
     {
         id: 'TRAINER_MARCEL',
+        class: 'Cooltrainer M',
+        reward: ['SPECIES_SHUPPET', 'SPECIES_METAPOD', 'SPECIES_HONEDGE'],
         level: 46,
         bag: getSampleItemsFromArray(winonaBag(), 18),
         team: [
@@ -3608,6 +3722,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CALE',
+        class: 'Bug Maniac',
+        reward: ['Focus Sash'],
         level: 46,
         bag: getSampleItemsFromArray(winonaBag(), 17),
         team: [
@@ -3622,6 +3738,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TAMMY',
+        class: 'Hex Maniac',
+        reward: [...choiceTammyTMs],
         level: 46,
         bag: getSampleItemsFromArray(winonaBag(), 15),
         team: [
@@ -3652,30 +3770,40 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JESSICA_1',
+        class: 'Beauty',
+        reward: ['Ability Capsule'],
         level: 46,
         bag: getSampleItemsFromArray(winonaBag(), 18),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_MYLES',
+        class: 'Pokemon Breeder M',
+        reward: ['Ability Patch'],
         level: 46,
         bag: getSampleItemsFromArray(winonaBag(), 18),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_WALTER_1',
+        class: 'Gentleman',
+        reward: ['Random Defensive Mint'],
         level: 46,
         bag: getSampleItemsFromArray(winonaBag(), 18),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_PAT',
+        class: 'Pokemon Breeder F',
+        reward: ['Random Offensive Mint'],
         level: 46,
         bag: getSampleItemsFromArray(winonaBag(), 18),
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_CRISTIN_1',
+        class: 'Cooltrainer F',
+        reward: [...choiceCristinBerries],
         level: 46,
         bag: getSampleItemsFromArray(winonaBag(), 15),
         team: [
@@ -3701,6 +3829,7 @@ const trainersData = [
     // Lillycove Wally Rival
     {
         id: 'TRAINER_WALLY_LILYCOVE',
+        class: 'Wally',
         isBoss: true,
         level: 46,
         bag: [...wallyBag2()],
@@ -3746,6 +3875,7 @@ const trainersData = [
     // Magma Hideout
     {
         id: 'TRAINER_MAXIE_MAGMA_HIDEOUT',
+        class: 'Magma Leader Maxie',
         isBoss: true,
         level: 48,
         preventShuffle: true,
@@ -3808,6 +3938,7 @@ const trainersData = [
         ],
     },
     // Mt. Pyre
+    // @TODO
     {
         id: 'TRAINER_MARK',
         level: 51,
