@@ -63,6 +63,14 @@
       backdrop-filter: none;
     }
 
+    .modal-bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0); /* solid background for readability */
+      z-index: -1;
+    }
+
     /* Improves readability of headings inside modal */
     .modal-content h2,
     .modal-content h3 {
@@ -269,6 +277,7 @@
 
   <div id="pokemon-modal" class="modal hidden">
     <div class="modal-content">
+      <div class="modal-bg"></div>
       <button class="modal-close">✖</button>
       <div id="pokemon-modal-body"></div>
     </div>
@@ -492,7 +501,7 @@
       card.className = 'card';
       card.innerHTML = `
         <div class="meta">
-            <div>
+            <div style="cursor: pointer;">
                 <div class="title">${poke.name}${fullLogIcon}</div>
                 <div class=thumb><img src="${pokeImg}" alt="${poke.name}" /></div>
                 <div style="margin-top: 10px; text-align: center; width: 100%;">${poke.parsedTypes.map(type => `<span class="type" style="background-color:${typeColors[type]}">${type}</span>`).join(' ')}${typeIcon}</div>
@@ -786,7 +795,9 @@
     const modal = document.getElementById('pokemon-modal');
     const modalBody = document.getElementById('pokemon-modal-body');
     const modalClose = document.querySelector('.modal-close');
+    const modalBg = document.querySelector('.modal-bg');
     modalClose.addEventListener('click', () => modal.classList.add('hidden'));
+    modalBg.addEventListener('click', () => modal.classList.add('hidden'));
 
     function showPokemonModal(poke) {
       modal.classList.remove('hidden');
