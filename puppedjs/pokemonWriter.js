@@ -102,7 +102,6 @@ async function editLearnsetsFile(learnsetsFileText, pokemonList) {
         if (!currentPokemon) continue;
         fullReplacement += `\n${learnsetLines[i]}`;
         if (learnsetLines[i].startsWith('};')) {
-            console.log(`Replacing ${fullReplacement} with new learnset for ${currentPokemon.id}`);
             result = result.replace(fullReplacement, `static const struct LevelUpMove ${currentPokemon.levelUpLearnset}[] = {\n${currentPokemon.learnset
                 .map(({ level, move }) => `    LEVEL_UP_MOVE(${level}, ${move}),`).join('\n')}\n    LEVEL_UP_END\n};`);
             currentPokemon = null;
