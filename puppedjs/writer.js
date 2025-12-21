@@ -695,6 +695,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 level: target.level,
                 isBoss: target.isBoss,
                 team: [...target.team],
+                class: target.class,
             };
             return;
         }
