@@ -172,6 +172,12 @@
       box-shadow:0 6px 20px rgba(2,6,23,0.5);
       display:flex;flex-direction:column;gap:8px;min-height:140px
     }
+    .dashed{
+      text-decoration:line-through;
+      color:var(--muted);
+      margin-right:4px;
+    }
+    .clicker{cursor:pointer}
     .thumb{height:200px;border-radius:10px;background:#09121b;display:block;overflow:hidden}
     .thumb img{width:100%;height:100%;object-fit:cover;display:block}
     .meta{display:flex;justify-content:space-between;align-items:center}
@@ -260,11 +266,11 @@
 
       <aside class="right">
         <nav class="nav" id="nav">
-          <a data-target="pokemon">Pokedex</a>
-          <a data-target="moves">Moves</a>
-          <a data-target="wildpokes">Locations</a>
-          <a data-target="trainers">Trainers</a>
-          <a data-target="abilities">Abilities</a>
+          <a class="clicker" data-target="pokemon">Pokedex</a>
+          <a class="clicker" data-target="moves">Moves</a>
+          <a class="clicker" data-target="wildpokes">Locations</a>
+          <a class="clicker" data-target="trainers">Trainers</a>
+          <a class="clicker" data-target="abilities">Abilities</a>
         </nav>
       </aside>
 
@@ -383,6 +389,17 @@
       }
     }
 
+    function getLogColor(logEntry) {
+      if (!logEntry) return null;
+      if (logEntry.type === 'BUFF') {
+        return '#CFFFD3';
+      } else if (logEntry.type === 'NERF') {
+        return '#D49494';
+      } else {
+        return null;
+      }
+    }
+
     function getFullPokeLogIcon(poke) {
       let fullLogIcon = '';
       const allLogIsBuffs = (poke.log || []).every(entry => entry.type === 'BUFF');
@@ -480,12 +497,6 @@
       const spaLogEntry = (poke.log || []).find(entry => entry.target === 'baseSpAttack');
       const spdLogEntry = (poke.log || []).find(entry => entry.target === 'baseSpDefense');
       const speLogEntry = (poke.log || []).find(entry => entry.target === 'baseSpeed');
-      const hpIcon = getLogIcon(hpLogEntry);
-      const atkIcon = getLogIcon(atkLogEntry);
-      const defIcon = getLogIcon(defLogEntry);
-      const spaIcon = getLogIcon(spaLogEntry);
-      const spdIcon = getLogIcon(spdLogEntry);
-      const speIcon = getLogIcon(speLogEntry);
       const BSTChangeValue = hpLogEntry?.value || 0
         + atkLogEntry?.value || 0
         + defLogEntry?.value || 0
@@ -498,30 +509,37 @@
       const abilityEntry = (poke.log || []).find(entry => entry.target === 'ability');
       const abilityIcon = getLogIcon(abilityEntry);
       let fullLogIcon = getFullPokeLogIcon(poke);
+      const adjustedHP = hpLogEntry ? `<span style="color:${getLogColor(hpLogEntry)}"><span class="dashed">${hpLogEntry.oldValue}</span> <strong>${poke.baseHP}</strong></span>` : `${poke.baseHP}`;
+      const adjustedAtk = atkLogEntry ? `<span style="color:${getLogColor(atkLogEntry)}"><span class="dashed">${atkLogEntry.oldValue}</span> <strong>${poke.baseAttack}</strong></span>` : `${poke.baseAttack}`;
+      const adjustedDef = defLogEntry ? `<span style="color:${getLogColor(defLogEntry)}"><span class="dashed">${defLogEntry.oldValue}</span> <strong>${poke.baseDefense}</strong></span>` : `${poke.baseDefense}`;
+      const adjustedSpa = spaLogEntry ? `<span style="color:${getLogColor(spaLogEntry)}"><span class="dashed">${spaLogEntry.oldValue}</span> <strong>${poke.baseSpAttack}</strong></span>` : `${poke.baseSpAttack}`;
+      const adjustedSpd = spdLogEntry ? `<span style="color:${getLogColor(spdLogEntry)}"><span class="dashed">${spdLogEntry.oldValue}</span> <strong>${poke.baseSpDefense}</strong></span>` : `${poke.baseSpDefense}`;
+      const adjustedSpe = speLogEntry ? `<span style="color:${getLogColor(speLogEntry)}"><span class="dashed">${speLogEntry.oldValue}</span> <strong>${poke.baseSpeed}</strong></span>` : `${poke.baseSpeed}`;
+      const adjustedBST = BSTChangeValue !== 0 ? `<span style="color:${BSTChangeValue > 0 ? '#CFFFD3' : '#D49494'}"><span class="dashed">${poke.baseBST - BSTChangeValue}</span> <strong>${poke.baseBST}</strong></span>` : `${poke.baseBST}`;
       card.className = 'card';
       card.innerHTML = `
         <div class="meta">
-            <div style="cursor: pointer;">
+            <div class="clicker">
                 <div class="title">${poke.name}${fullLogIcon}</div>
                 <div class=thumb><img src="${pokeImg}" alt="${poke.name}" /></div>
                 <div style="margin-top: 10px; text-align: center; width: 100%;">${poke.parsedTypes.map(type => `<span class="type" style="background-color:${typeColors[type]}">${type}</span>`).join(' ')}${typeIcon}</div>
                 <div style="margin-top: 10px; text-align: center; width: 100%;">${poke.parsedAbilities.map(ability => `<span class="tag">${ability}</span>`).join(' ')}${abilityIcon}</div>
                 <div>
-                    <div style="text-align: center; font-weight: 700; margin-top: 6px; color: #FFDDC9">BST: ${poke.baseBST}${bstIcon}</div>
+                    <div style="text-align: center; font-weight: 700; margin-top: 6px; color: #FFDDC9">BST: ${adjustedBST}${bstIcon}</div>
                     <div style="text-align: center"><div style="text-align: center; font-weight: 700; margin-top: 6px; background-color: ${tierColorBgs[poke.rating.tier]}; color: ${tierColorFonts[poke.rating.tier]}; display: inline-block; padding: 4px 12px; border-radius: 999px;">${poke.rating.tier} (${poke.rating.role})</div></div>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, auto); gap: 6px; margin-top: 10px;">
                         <div style="font-weight: 700; color: #BDF8FF">HP</div>
                         <div style="font-weight: 700; color: #BDF8FF">ATK</div>
                         <div style="font-weight: 700; color: #BDF8FF">DEF</div>
-                        <div>${poke.baseHP}${hpIcon}</div>
-                        <div>${poke.baseAttack}${atkIcon}</div>
-                        <div>${poke.baseDefense}${defIcon}</div>
+                        <div>${adjustedHP}</div>
+                        <div>${adjustedAtk}</div>
+                        <div>${adjustedDef}</div>
                         <div style="font-weight: 700; color: #BDF8FF">SPA</div>
                         <div style="font-weight: 700; color: #BDF8FF">SPD</div>
                         <div style="font-weight: 700; color: #BDF8FF">SPE</div>
-                        <div>${poke.baseSpAttack}${spaIcon}</div>
-                        <div>${poke.baseSpDefense}${spdIcon}</div>
-                        <div>${poke.baseSpeed}${speIcon}</div>
+                        <div>${adjustedSpa}</div>
+                        <div>${adjustedSpd}</div>
+                        <div>${adjustedSpe}</div>
                     </div>
                 </div>
             </div>
