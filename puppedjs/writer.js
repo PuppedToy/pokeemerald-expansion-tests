@@ -1287,6 +1287,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         }
         trainersResults[trainer.id] = {
             level: trainer.level,
+            class: trainer.class || 'Red Back',
+            reward: trainer.reward || [],
             isBoss: trainer.isBoss || false,
             isPartner: trainer.isPartner || false,
             ivs,

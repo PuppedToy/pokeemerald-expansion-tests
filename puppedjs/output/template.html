@@ -652,6 +652,14 @@
   </script>
   <!-- script to handle trainers -->
   <script>
+    const specialTrainerImages = {
+      // @TODO
+    };
+
+    function getTrainerImg(trainerClass) {
+      return 'https://archives.bulbagarden.net/media/upload/c/c5/Spr_RS_Youngster.png';
+    }
+
     function findPoke(pokeId) {
       return pokes.find(p => p.id === pokeId);
     }
@@ -707,8 +715,8 @@
       // Final card markup
       card.innerHTML = `
         <div class="meta">
-          <div class="title">${trainerName}</div>
-          <div class="small" style="text-align:center; color:#FFB28A;">Lv. ${trainer.level}</div>
+          <div class="title"><img width="60" height="60" src="${getTrainerImg(trainer.class || 'Red Back')}">${trainerName}</div>
+          <div class="small" style="text-align:center; color:#FFB28A;">Lv. ${trainer.level} - Rewards: ${(trainer.reward || []).join(', ') || 'Unknown'}</div>
         </div>
         <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:8px;">
           ${teamHTML}
