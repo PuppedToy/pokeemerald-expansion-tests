@@ -702,7 +702,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 level: target.level,
                 isBoss: target.isBoss,
                 team: [...target.team],
-                class: target.class,
+                class: trainer.class,
             };
             return;
         }
@@ -1295,7 +1295,15 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         trainersResults[trainer.id] = {
             level: trainer.level,
             class: trainer.class || 'Red Back',
-            reward: trainer.reward || [],
+            reward: trainer.reward.map(r => {
+                if (r.startsWith('SPECIES_')) {
+                    return replacementLog[r].replace('SPECIES_', '');
+                }
+                if (r.startsWith('ITEM_')) {
+                    const megaStone = megaReplacements[r] || r;
+                    return itemIdToName(megaStone);
+                }
+            }) || [],
             isBoss: trainer.isBoss || false,
             isPartner: trainer.isPartner || false,
             ivs,

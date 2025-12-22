@@ -40,8 +40,6 @@ const {
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
 const partnersFile = path.resolve(__dirname, '..', 'src', 'data', 'battle_partners.party');
 
-// For reference - https://archives.bulbagarden.net/wiki/Category:Generation_III_Trainer_sprites
-
 // @TODO Fix booster energy
 const stevenPokemon = [
     'SPECIES_BALTOY',
