@@ -1306,6 +1306,9 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                     const megaStone = megaReplacements[r] || r;
                     return itemIdToName(megaStone);
                 }
+                if (r.startsWith('TM_')) {
+                    return 'TM ' + nameify(r.replace('TM_', ''));
+                }
                 return r;
             }) || [],
             isBoss: trainer.isBoss || false,
