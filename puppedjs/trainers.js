@@ -1256,12 +1256,12 @@ const tateAndLizaBag = () => [
     'TM_CALM_MIND',
 ];
 
+const choicePresleyItems = ['Weakness Policy', 'Eject Button', 'Leppa Berry'];
+
 const spaceCenterBag = () => [
     ...tateAndLizaBag(),
+    sample([...choicePresleyItems]),
     'Heavy-Duty Boots',
-    'Weakness Policy',
-    'Eject Button',
-    'Leppa Berry',
 ];
 
 const juanBag = () => [
@@ -3938,9 +3938,10 @@ const trainersData = [
         ],
     },
     // Mt. Pyre
-    // @TODO
     {
         id: 'TRAINER_MARK',
+        class: 'Pokemaniac',
+        reward: ['SPECIES_SPINARAK', 'SPECIES_ARIADOS', 'SPECIES_SPIDOPS'],
         level: 51,
         bag: getSampleItemsFromArray(wallyBag2(), 20),
         team: [
@@ -3965,6 +3966,7 @@ const trainersData = [
     // Aqua Hideout
     {
         id: 'TRAINER_MATT',
+        class: 'Aqua Admin M',
         isBoss: true,
         level: 51,
         preventShuffle: true,
@@ -4079,12 +4081,14 @@ const trainersData = [
     // Route 124
     {
         id: 'TRAINER_CHAD',
+        class: 'Swimmer M',
+        reward: ['SPECIES_WO_CHIEN'],
         level: 53,
         bag: getSampleItemsFromArray(wallyBag2(), 20),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SPINARAK'],
+                encounterIds: ['SPECIES_WO_CHIEN'],
                 tryEvolve: true,
             },
             ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
@@ -4094,12 +4098,16 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ISABELLA',
+        class: 'Swimming Triathlete F',
+        reward: [...choiceIsabellaItem],
         level: 53,
         bag: [...choiceIsabellaItem, ...getSampleItemsFromArray(wallyBag2(), 17)],
         team: generic2Average3Strong1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_SPENCER',
+        class: 'Swimmer M',
+        reward: ['Room Service', 'Iron Ball'],
         level: 53,
         bag: getSampleItemsFromArray(wallyBag2(), 18),
         team: [
@@ -4123,6 +4131,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_GRACE',
+        class: 'Swimmer F',
+        reward: [...choiceGraceTMs],
         level: 53,
         bag: [...choiceGraceTMs, ...getSampleItemsFromArray(wallyBag2(), 17)],
         team: [
@@ -4156,6 +4166,7 @@ const trainersData = [
     // Gym Leader - Tate & Liza
     {
         id: 'TRAINER_TATE_AND_LIZA_1',
+        class: 'Leader Tate And Liza',
         level: 53,
         isBoss: true,
         preventShuffle: true,
@@ -4260,6 +4271,8 @@ const trainersData = [
     // Route 125
     {
         id: 'TRAINER_ERNEST_1',
+        class: 'Sailor',
+        reward: ['SPECIES_FROAKIE', 'SPECIES_FROGADIER'],
         level: 56,
         bag: getSampleItemsFromArray(tateAndLizaBag(), 25),
         team: [
@@ -4282,19 +4295,24 @@ const trainersData = [
     },
     {
         id: 'TRAINER_AURON',
+        class: 'Expert M',
+        reward: ['Heavy-Duty Boots'],
         level: 56,
-        bag: getSampleItemsFromArray(tateAndLizaBag(), 25),
+        bag: ['Heavy-Duty Boots', getSampleItemsFromArray(tateAndLizaBag(), 24)],
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_PRESLEY',
+        class: 'Bird Keeper',
+        reward: [...choicePresleyItems],
         level: 56,
-        bag: getSampleItemsFromArray(tateAndLizaBag(), 25),
+        bag: [...choicePresleyItems, ...getSampleItemsFromArray(tateAndLizaBag(), 22)],
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
     },
     // Mossdeep Space Center
     {
         id: 'TRAINER_GRUNT_SPACE_CENTER_5',
+        class: 'Magma Grunt M',
         isBoss: true,
         level: 56,
         bag: [...spaceCenterBag()],
@@ -4327,6 +4345,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_GRUNT_SPACE_CENTER_6',
+        class: 'Magma Grunt M',
         isBoss: true,
         level: 56,
         bag: [...spaceCenterBag()],
@@ -4359,6 +4378,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_GRUNT_SPACE_CENTER_7',
+        class: 'Magma Grunt M',
         isBoss: true,
         level: 56,
         bag: [...spaceCenterBag()],
@@ -4391,6 +4411,7 @@ const trainersData = [
     },
     {
         id: 'PARTNER_STEVEN',
+        class: 'Steven',
         isPartner: true,
         preventShuffle: true,
         level: 56,
@@ -4430,6 +4451,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TABITHA_MOSSDEEP',
+        class: 'Magma Admin',
         isBoss: true,
         level: 56,
         preventShuffle: true,
@@ -4464,6 +4486,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAXIE_MOSSDEEP',
+        class: 'Magma Leader Maxie',
         isBoss: true,
         level: 56,
         preventShuffle: true,
@@ -4486,6 +4509,8 @@ const trainersData = [
     // Route 127
     {
         id: 'TRAINER_DONNY',
+        class: 'Swimming Triathlete F',
+        reward: ['SPECIES_SCREAM_TAIL'],
         level: 58,
         bag: getSampleItemsFromArray(spaceCenterBag(), 25),
         team: [
@@ -4503,6 +4528,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CAMDEN',
+        class: 'Swimming Triathlete M',
+        reward: ['SPECIES_RELICANTH'],
         level: 58,
         bag: getSampleItemsFromArray(spaceCenterBag(), 25),
         team: [
@@ -4520,18 +4547,24 @@ const trainersData = [
     },
     {
         id: 'TRAINER_AIDAN',
+        class: 'Bird Keeper',
+        reward: ['Ability Patch'],
         level: 58,
         bag: getSampleItemsFromArray(spaceCenterBag(), 25),
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_ATHENA',
+        class: 'Cooltrainer F',
+        reward: ['Ability Capsule'],
         level: 58,
         bag: getSampleItemsFromArray(spaceCenterBag(), 25),
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
     },
     {
         id: 'TRAINER_HENRY',
+        class: 'Fisherman',
+        reward: ['Random Offensive Mint'],
         level: 58,
         bag: getSampleItemsFromArray(spaceCenterBag(), 25),
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
@@ -4539,6 +4572,8 @@ const trainersData = [
     // Route 126
     {
         id: 'TRAINER_BRENDA',
+        class: 'Swimmer F',
+        reward: ['Random Defensive Mint', 'SPECIES_FLUTTER_MANE'],
         level: 58,
         bag: getSampleItemsFromArray(spaceCenterBag(), 25),
         team: [
@@ -4556,6 +4591,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_LEONARDO',
+        class: 'Swimmer M',
+        reward: ['SPECIES_HUNTAIL'],
         level: 58,
         bag: getSampleItemsFromArray(spaceCenterBag(), 25),
         team: [
@@ -4574,6 +4611,8 @@ const trainersData = [
     // Seafloor Cavern
     {
         id: 'TRAINER_ARCHIE',
+        class: 'Aqua Leader Archie',
+        reward: ['Access to Sky Pillar'],
         isBoss: true,
         level: 58,
         bag: [...spaceCenterBag()],
@@ -4649,6 +4688,7 @@ const trainersData = [
     // Sootopolis Gym
     {
         id: 'TRAINER_JUAN_1',
+        class: 'Leader Juan',
         level: 61,
         isBoss: true,
         bag: [...juanBag()],
@@ -4681,6 +4721,7 @@ const trainersData = [
     // Victory Road
     {
         id: 'TRAINER_WALLY_VR_1',
+        class: 'Wally',
         isBoss: true,
         level: 64,
         bag: [...spaceCenterBag()],
@@ -4720,6 +4761,8 @@ const trainersData = [
     },
     {
         id: 'TRAINER_HOPE',
+        class: 'Cooltrainer F',
+        reward: ['SPECIES_SHEDINJA', 'ITEM_GLITTER_MAIL'],
         level: 67,
         bag: [...spaceCenterBag()],
         team: [
@@ -4734,6 +4777,7 @@ const trainersData = [
     // Ever Grande Rival
     {
         id: 'TRAINER_MAY_EVERGRANDE_CITY_TREECKO',
+        class: 'May',
         isBoss: true,
         level: 67,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -4742,6 +4786,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_EVERGRANDE_CITY_TORCHIC',
+        class: 'May',
         isBoss: true,
         level: 67,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -4750,6 +4795,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_EVERGRANDE_CITY_MUDKIP',
+        class: 'May',
         isBoss: true,
         level: 67,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -4759,18 +4805,22 @@ const trainersData = [
     {
         id: 'TRAINER_BRENDAN_EVERGRANDE_TREECKO',
         copy: 'TRAINER_MAY_EVERGRANDE_CITY_TREECKO',
+        class: 'Brendan',
     },
     {
         id: 'TRAINER_BRENDAN_EVERGRANDE_TORCHIC',
         copy: 'TRAINER_MAY_EVERGRANDE_CITY_TORCHIC',
+        class: 'Brendan',
     },
     {
         id: 'TRAINER_BRENDAN_EVERGRANDE_MUDKIP',
         copy: 'TRAINER_MAY_EVERGRANDE_CITY_MUDKIP',
+        class: 'Brendan',
     },
     // E4 & Champion
     {
         id: 'TRAINER_SIDNEY',
+        class: 'Elite Four Sidney',
         isBoss: true,
         level: 70,
         bag: [...spaceCenterBag()],
@@ -4797,6 +4847,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_PHOEBE',
+        class: 'Elite Four Phoebe',
         isBoss: true,
         level: 71,
         bag: [...spaceCenterBag()],
@@ -4823,6 +4874,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_GLACIA',
+        class: 'Elite Four Glacia',
         isBoss: true,
         level: 72,
         bag: [...spaceCenterBag()],
@@ -4849,6 +4901,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DRAKE',
+        class: 'Elite Four Drake',
         isBoss: true,
         level: 73,
         bag: [...spaceCenterBag()],
@@ -4875,6 +4928,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CHAMPION_STEVEN',
+        class: 'Steven',
         isBoss: true,
         level: 75,
         bag: [...spaceCenterBag()],
