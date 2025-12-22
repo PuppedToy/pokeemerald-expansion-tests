@@ -167,7 +167,6 @@ static bool32 Fishing_PutRodAway(struct Task *);
 static bool32 Fishing_EndNoMon(struct Task *);
 static void AlignFishingAnimationFrames(void);
 static bool32 DoesFishingMinigameAllowCancel(void);
-static bool32 CheckTileQualification(s16 tile[], s16 player[], u32 facingDirection, struct ObjectEvent* objectEvent, bool32 isTileLand[], u32 direction);
 static bool32 IsPlayerHere(s16, s16, s16, s16);
 static bool32 IsMetatileBlocking(s16, s16, u32);
 static bool32 IsMetatileLand(s16, s16, u32);
@@ -2306,22 +2305,6 @@ static bool32 DoesFishingMinigameAllowCancel(void)
         default:
             return TRUE;
     }
-}
-
-static bool32 CheckTileQualification(s16 tile[], s16 player[], u32 facingDirection, struct ObjectEvent* objectEvent, bool32 isTileLand[], u32 direction)
-{
-    u32 collison = GetCollisionAtCoords(objectEvent, tile[AXIS_X], tile[AXIS_Y], facingDirection);
-
-    if (IsPlayerHere(tile[AXIS_X], tile[AXIS_Y], player[AXIS_X], player[AXIS_Y]))
-        return FALSE;
-    else if (IsMetatileBlocking(tile[AXIS_X], tile[AXIS_Y], collison))
-        return TRUE;
-    else if (MetatileBehavior_IsSurfableFishableWater(MapGridGetMetatileBehaviorAt(tile[AXIS_X], tile[AXIS_Y])))
-        return FALSE;
-    else if (IsMetatileLand(tile[AXIS_X], tile[AXIS_Y], collison))
-        isTileLand[direction] = TRUE;
-
-    return FALSE;
 }
 
 static bool32 IsPlayerHere(s16 x, s16 y, s16 playerX, s16 playerY)
