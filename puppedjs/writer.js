@@ -140,14 +140,17 @@ function sample(array) {
     return array[index];
 }
 
-function itemIdToName(itemId) {
-    // remove "ITEM_" prefix, Swap _ for ' ' and capitalize the first letter of each word
-    return itemId
-        .replace('ITEM_', '')
+function nameify(text) {
+    return text
         .toLowerCase()
         .split('_')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
+}
+
+function itemIdToName(itemId) {
+    // remove "ITEM_" prefix, Swap _ for ' ' and capitalize the first letter of each word
+    return nameify(itemId.replace('ITEM_', ''));
 }
 
 function isValidEvolution(level, { param, method }) {
@@ -1297,12 +1300,13 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             class: trainer.class || 'Red Back',
             reward: (trainer.reward || []).map(r => {
                 if (r.startsWith('SPECIES_')) {
-                    return replacementLog[r].replace('SPECIES_', '');
+                    return nameify(replacementLog[r].replace('SPECIES_', ''));
                 }
                 if (r.startsWith('ITEM_')) {
                     const megaStone = megaReplacements[r] || r;
                     return itemIdToName(megaStone);
                 }
+                return r;
             }) || [],
             isBoss: trainer.isBoss || false,
             isPartner: trainer.isPartner || false,
