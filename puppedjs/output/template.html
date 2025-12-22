@@ -13,6 +13,7 @@
       --accent:#ff7a59;
       --glass: rgba(255,255,255,0.03);
       --glass-2: rgba(255,255,255,0.02);
+      --glass-3: rgba(255,255,255,0.1);
       --radius:12px;
       color-scheme: dark;
     }
@@ -128,6 +129,29 @@
     .search input{background:var(--glass-2);border:1px solid rgba(255,255,255,0.03);padding:10px 12px;border-radius:10px;color:#e9f2ff;outline:none;min-width:360px}
     .actions{display:flex;gap:10px;align-items:center}
     .chip{background:var(--glass);padding:8px 10px;border-radius:999px;font-weight:600}
+    .rewards {
+      margin: 10px 0;
+    }
+    .reward-item {
+      color: #F5BA6C;
+    }
+    .move-list {
+      margin: 4px 0;
+      padding: 6px;
+    }
+    .move-item {
+      font-size: 10px;
+      border-radius: 8px;
+      border-color: black;
+      color: #071022;
+      margin: 4px 0;
+      padding: 4px;
+      border: 1px solid;
+      font-weight: bold;
+    }
+    .trainer-poke:hover {
+      background: var(--glass-3) !important;
+    }
 
     /* Main content */
     .app{
@@ -746,11 +770,7 @@
         card.classList.add('partnerCard');
       }
 
-      const trainerName = trainerId
-        .replace('TRAINER_', '')
-        .replace(/_/g, ' ')
-        .toLowerCase()
-        .replace(/\b\w/g, c => c.toUpperCase()); // Proper casing
+      const trainerName = nameify(trainerId.replace('TRAINER_', '').replace(/_\d/g, ''));
 
       // Build each Pokémon slot
       const teamHTML = trainer.team.map(member => {
@@ -758,20 +778,21 @@
         const pokeName = pokeId.replace('SPECIES_', '').replace(/_/g, ' ') + getFullPokeLogIcon(findPoke(pokeId));
         const imgSrc = getPokeImg(pokeId);
         const item = member.item ? `<div class="small" style="color:#FFD580">🎒 ${member.item}</div>` : '';
-        const ability = member.ability ? `<div class="small" style="color:#D1F2FF">✨ ${member.ability}</div>` : '';
-        const nature = member.nature ? `<div class="small" style="color:#A5D9B8">🌳 ${natures[member.nature]}</div>` : '';
+        const ability = member.ability ? `<div class="small" style="color:#D1F2FF; margin-top: 4px">${nameify(member.ability)}</div>` : '';
+        const nature = member.nature ? `<div class="small" style="color:#A5D9B8; margin-top: 4px">${natures[member.nature]}</div>` : '';
         const moves =
           member.moves && member.moves.length > 0
-            ? `<div style="font-size:12px;color:#aaa;margin-top:4px">
-                ${member.moves
-                  .map(m => m.replace('MOVE_', '').replace(/_/g, ' ').toLowerCase())
-                  .map(m => m.charAt(0).toUpperCase() + m.slice(1))
-                  .join(', ')}
+            ? `<div class="move-list">
+                ${member.moves.map(m => {
+                  const move = movesData[m];
+                  const typeColor = move ? typeColors[move.type] : '#888';
+                  return `<div class="move-item" style="background-color:${typeColor}">${nameify(m.replace('MOVE_', ''))}</div>`;
+                }).join('')}
               </div>`
             : '';
 
         return `
-          <div style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
+          <div class="clicker trainer-poke poke-${pokeId}" style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
             <img src="${imgSrc}" style="width:64px;height:64px;object-fit:contain" alt="${pokeName}">
             <div style="font-weight:700;margin-top:4px">${pokeName}</div>
             ${item}
@@ -782,18 +803,37 @@
         `;
       }).join('');
 
+      let rewards = '';
+      if (trainer.reward && trainer.reward.length > 0) {
+        rewards = `<div class="rewards">
+          ${trainer.reward.map(r => '<div class="reward-item">🎁 ' + r + '</div>').join('')}
+        </div>
+        `;
+      }
+
       // Final card markup
       card.innerHTML = `
-        <div class="meta">
-          <div class="title"><img width="60" height="60" src="${getTrainerImg(trainer.class || 'Red Back')}">${trainerName}</div>
-          <div class="small" style="text-align:center; color:#FFB28A;">Lv. ${trainer.level} - Rewards: ${(trainer.reward || []).join(', ') || 'Unknown'}</div>
-        </div>
-        <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:8px;">
-          ${teamHTML}
+        <div style="text-align:center;">
+          <div class="title">${trainerName}</div>
+          <img width="60" height="60" src="${getTrainerImg(trainer.class)}">
+          <div class="small" style="text-align:center; color:#FFB28A;">Lv. ${trainer.level}</div>
+          ${rewards}
+          <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:8px;">
+            ${teamHTML}
+          </div>
         </div>
       `;
 
       trainersGrid.appendChild(card);
+      // Find every trainer-poke card to add click event
+      const trainerPokeCards = card.querySelectorAll('.trainer-poke');
+      trainerPokeCards.forEach(tpCard => {
+        const pokeId = tpCard.className.match(/poke-(SPECIES_[A-Z0-9_]+)/)[1];
+        const poke = findPoke(pokeId);
+        if (poke) {
+          tpCard.addEventListener('click', () => showPokemonModal(poke));
+        }
+      });
     });
   </script>
   <!-- script to handle routes -->
