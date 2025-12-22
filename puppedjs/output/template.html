@@ -526,12 +526,12 @@
       const spaLogEntry = (poke.log || []).find(entry => entry.target === 'baseSpAttack');
       const spdLogEntry = (poke.log || []).find(entry => entry.target === 'baseSpDefense');
       const speLogEntry = (poke.log || []).find(entry => entry.target === 'baseSpeed');
-      const BSTChangeValue = hpLogEntry?.value || 0
-        + atkLogEntry?.value || 0
-        + defLogEntry?.value || 0
-        + spaLogEntry?.value || 0
-        + spdLogEntry?.value || 0
-        + speLogEntry?.value || 0;
+      const BSTChangeValue = (hpLogEntry?.value || 0)
+        + (atkLogEntry?.value || 0)
+        + (defLogEntry?.value || 0)
+        + (spaLogEntry?.value || 0)
+        + (spdLogEntry?.value || 0)
+        + (speLogEntry?.value || 0);
       const bstIcon = BSTChangeValue > 0 ? ' ⭐️' : BSTChangeValue < 0 ? ' 🔻' : '';
       const typeEntry = (poke.log || []).find(entry => entry.target === 'type');
       const typeIcon = getLogIcon(typeEntry);
