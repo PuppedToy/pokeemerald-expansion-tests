@@ -1295,7 +1295,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         trainersResults[trainer.id] = {
             level: trainer.level,
             class: trainer.class || 'Red Back',
-            reward: trainer.reward.map(r => {
+            reward: (trainer.reward || []).map(r => {
                 if (r.startsWith('SPECIES_')) {
                     return replacementLog[r].replace('SPECIES_', '');
                 }
