@@ -162,6 +162,16 @@
       grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
       gap:16px;
     }
+    .poke-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+      gap:16px;
+    }
+    .trainer-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(400px,1fr));
+      gap:16px;
+    }
     .right {
       min-width: 240px;
     }
@@ -195,6 +205,9 @@
       border-radius:14px;padding:12px;border:1px solid rgba(255,255,255,0.03);
       box-shadow:0 6px 20px rgba(2,6,23,0.5);
       display:flex;flex-direction:column;gap:8px;min-height:140px
+    }
+    .trainer-card {
+      /* width: 400px; */
     }
     .card-log-item{font-size:12px;padding:6px;border-radius:8px;margin-bottom:6px;display:block}
     .dashed{
@@ -276,7 +289,7 @@
   
         <section id="trainers">
           <h2>Trainers</h2>
-          <div class="grid" id="trainers-cards"></div>
+          <div class="trainer-grid" id="trainers-cards"></div>
         </section>
   
         <section id="wildpokes">
@@ -762,7 +775,7 @@
 
     Object.entries(trainersData).forEach(([trainerId, trainer]) => {
       const card = document.createElement('div');
-      card.className = 'card';
+      card.className = 'card trainer-card';
       if (trainer.isBoss) {
         card.classList.add('specialCard');
       }
@@ -818,7 +831,7 @@
           <img width="60" height="60" src="${getTrainerImg(trainer.class)}">
           <div class="small" style="text-align:center; color:#FFB28A;">Lv. ${trainer.level}</div>
           ${rewards}
-          <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:8px;">
+          <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:8px;">
             ${teamHTML}
           </div>
         </div>
@@ -1088,6 +1101,9 @@
         let logContent = `➕ ${newValue}`;
         if (l.oldValue) {
           let oldValue = formatValue(l.oldValue) || l.oldValue;
+          if (typeof newValue === 'number') {
+            newValue += oldValue;
+          }
           logContent = `${oldValue} → ${newValue}`;
         }
         return `<div class="small card-log-item">
