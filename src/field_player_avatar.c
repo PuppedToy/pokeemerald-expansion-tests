@@ -167,10 +167,7 @@ static bool32 Fishing_PutRodAway(struct Task *);
 static bool32 Fishing_EndNoMon(struct Task *);
 static void AlignFishingAnimationFrames(void);
 static bool32 DoesFishingMinigameAllowCancel(void);
-static void GetCoordinatesAroundBobber(s16[], s16[][AXIS_COUNT], u32);
-static u32 CountQualifyingTiles(s16[][AXIS_COUNT], s16 player[], u8 facingDirection, struct ObjectEvent *objectEvent, bool32 isTileLand[]);
 static bool32 CheckTileQualification(s16 tile[], s16 player[], u32 facingDirection, struct ObjectEvent* objectEvent, bool32 isTileLand[], u32 direction);
-static u32 CountLandTiles(bool32 isTileLand[]);
 static bool32 IsPlayerHere(s16, s16, s16, s16);
 static bool32 IsMetatileBlocking(s16, s16, u32);
 static bool32 IsMetatileLand(s16, s16, u32);
@@ -2311,37 +2308,6 @@ static bool32 DoesFishingMinigameAllowCancel(void)
     }
 }
 
-static void GetCoordinatesAroundBobber(s16 bobber[], s16 surroundingTile[][AXIS_COUNT], u32 facingDirection)
-{
-    u32 direction;
-
-    for (direction = DIR_SOUTH; direction < CARDINAL_DIRECTION_COUNT; direction++)
-    {
-        surroundingTile[direction][AXIS_X] = bobber[AXIS_X];
-        surroundingTile[direction][AXIS_Y] = bobber[AXIS_Y];
-        MoveCoords(direction, &surroundingTile[direction][AXIS_X], &surroundingTile[direction][AXIS_Y]);
-    }
-}
-
-static u32 CountQualifyingTiles(s16 surroundingTile[][AXIS_COUNT], s16 player[], u8 facingDirection, struct ObjectEvent *objectEvent, bool32 isTileLand[])
-{
-    u32 numQualifyingTile = 0;
-    s16 tile[AXIS_COUNT];
-    u8 direction = DIR_SOUTH;
-
-    for (direction = DIR_SOUTH; direction < CARDINAL_DIRECTION_COUNT; direction++)
-    {
-        tile[AXIS_X] = surroundingTile[direction][AXIS_X];
-        tile[AXIS_Y] = surroundingTile[direction][AXIS_Y];
-
-        if (!CheckTileQualification(tile, player, facingDirection, objectEvent, isTileLand, direction))
-            continue;
-
-        numQualifyingTile++;
-    }
-    return numQualifyingTile;
-}
-
 static bool32 CheckTileQualification(s16 tile[], s16 player[], u32 facingDirection, struct ObjectEvent* objectEvent, bool32 isTileLand[], u32 direction)
 {
     u32 collison = GetCollisionAtCoords(objectEvent, tile[AXIS_X], tile[AXIS_Y], facingDirection);
@@ -2356,17 +2322,6 @@ static bool32 CheckTileQualification(s16 tile[], s16 player[], u32 facingDirecti
         isTileLand[direction] = TRUE;
 
     return FALSE;
-}
-
-static u32 CountLandTiles(bool32 isTileLand[])
-{
-    u32 direction, numQualifyingTile = 0;
-
-    for (direction = DIR_SOUTH; direction < CARDINAL_DIRECTION_COUNT; direction++)
-        if (isTileLand[direction])
-            numQualifyingTile++;
-
-    return (numQualifyingTile < 2) ? 0 : numQualifyingTile;
 }
 
 static bool32 IsPlayerHere(s16 x, s16 y, s16 playerX, s16 playerY)
