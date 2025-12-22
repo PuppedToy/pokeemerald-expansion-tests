@@ -677,16 +677,16 @@
       'Tuber F': '/d/d9/Spr_RS_Tuber_F.png',
       'Sailor': '/f/f1/Spr_RS_Sailor.png',
       'Tuber M': '/e/ed/Spr_RS_Tuber_M.png',
-      'Pokefan F': '/6/63/Spr_RS_Pok%C3%',
-      'Pokefan M': '/a/a3/Spr_RS_Pok%C3%',
+      'Pokefan F': '/6/63/Spr_RS_Pokéfan_F.png',
+      'Pokefan M': '/a/a3/Spr_RS_Pokéfan_M.png',
       'Psychic M': '/b/b7/Spr_RS_Psychic_M.png',
       'Aroma Lady': '/2/22/Spr_RS_Aroma_Lady.png',
       'Guitarist': '/1/14/Spr_RS_Guitarist.png',
       'Collector': '/2/28/Spr_RS_Collector.png',
       'Wally': '/8/87/Spr_RS_Wally.png',
-      'Pokemon Breeder M': '/a/a8/Spr_RS_Pok%C3%',
+      'Pokemon Breeder M': '/5/55/Spr_RS_Pokémon_Breeder_M.png',
       'Running Triathlete M': '/8/8d/Spr_RS_Triathlete_Runner_M.png',
-      'Pokemon Breeder F': '/6/61/Spr_RS_Pok%C3%',
+      'Pokemon Breeder F': '/a/a8/Spr_RS_Pokémon_Breeder_F.png',
       'Bug Maniac': '/4/4f/Spr_RS_Bug_Maniac.png',
       'Sr And Jr': '/7/70/Spr_RS_Sr_and_Jr.png',
       'Running Triathlete F': '/2/21/Spr_RS_Triathlete_Runner_F.png',
@@ -700,7 +700,7 @@
       'Magma Leader Maxie': '/e/e3/Spr_RS_Maxie.png',
       'Cooltrainer M': '/f/f8/Spr_RS_Cooltrainer_M.png',
       'Ninja Boy': '/b/bc/Spr_RS_Ninja_Boy.png',
-      'Pokemaniac': '/5/55/Spr_RS_Pok%C3%',
+      'Pokemaniac': '/6/61/Spr_RS_PokéManiac.png',
       'Parasol Lady': '/e/ea/Spr_RS_Parasol_Lady.png',
       'Black Belt': '/f/f8/Spr_RS_Black_Belt.png',
       'Leader Flannery': '/b/be/Spr_RS_Flannery.png',
@@ -727,7 +727,7 @@
     };
 
     function getTrainerImg(trainerClass) {
-      return `https://archives.bulbagarden.net/media/upload/${trainerSprites[trainerClass] || trainerSprites.Unknown}`;
+      return `https://archives.bulbagarden.net/media/upload${trainerSprites[trainerClass] || trainerSprites.Unknown}`;
     }
 
     function findPoke(pokeId) {
