@@ -167,8 +167,6 @@ static bool32 Fishing_PutRodAway(struct Task *);
 static bool32 Fishing_EndNoMon(struct Task *);
 static void AlignFishingAnimationFrames(void);
 static bool32 DoesFishingMinigameAllowCancel(void);
-static bool32 Fishing_DoesFirstMonInPartyHaveSuctionCupsOrStickyHold(void);
-static bool32 Fishing_RollForBite(u32, bool32);
 static u32 CalculateFishingBiteOdds(u32, bool32);
 static u32 CalculateFishingFollowerBoost(void);
 static u32 CalculateFishingProximityBoost(u32 odds);
@@ -2314,23 +2312,6 @@ static bool32 DoesFishingMinigameAllowCancel(void)
         default:
             return TRUE;
     }
-}
-
-static bool32 Fishing_DoesFirstMonInPartyHaveSuctionCupsOrStickyHold(void)
-{
-    u32 ability;
-
-    if (GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG))
-        return FALSE;
-
-    ability = GetMonAbility(&gPlayerParty[0]);
-
-    return (ability == ABILITY_SUCTION_CUPS || ability == ABILITY_STICKY_HOLD);
-}
-
-static bool32 Fishing_RollForBite(u32 rod, bool32 isStickyHold)
-{
-    return ((Random() % 100) > CalculateFishingBiteOdds(rod, isStickyHold));
 }
 
 static u32 CalculateFishingBiteOdds(u32 rod, bool32 isStickyHold)
