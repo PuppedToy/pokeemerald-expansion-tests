@@ -167,7 +167,6 @@ static bool32 Fishing_PutRodAway(struct Task *);
 static bool32 Fishing_EndNoMon(struct Task *);
 static void AlignFishingAnimationFrames(void);
 static bool32 DoesFishingMinigameAllowCancel(void);
-static u32 CalculateFishingBiteOdds(u32, bool32);
 static u32 CalculateFishingFollowerBoost(void);
 static u32 CalculateFishingProximityBoost(u32 odds);
 static void GetCoordinatesAroundBobber(s16[], s16[][AXIS_COUNT], u32);
@@ -2312,32 +2311,6 @@ static bool32 DoesFishingMinigameAllowCancel(void)
         default:
             return TRUE;
     }
-}
-
-static u32 CalculateFishingBiteOdds(u32 rod, bool32 isStickyHold)
-{
-    u32 odds;
-
-    if (rod == OLD_ROD)
-        odds = FISHING_OLD_ROD_ODDS;
-    if (rod == GOOD_ROD)
-        odds = FISHING_GOOD_ROD_ODDS;
-    if (rod == SUPER_ROD)
-        odds = FISHING_SUPER_ROD_ODDS;
-
-    odds -= CalculateFishingFollowerBoost();
-
-    if (isStickyHold)
-    {
-        if (I_FISHING_STICKY_BOOST >= GEN_4)
-            odds -= (100 - odds);
-        else
-            odds -= FISHING_STICKY_BOOST;
-    }
-
-    odds -= CalculateFishingProximityBoost(odds);
-
-    return odds;
 }
 
 static u32 CalculateFishingFollowerBoost()
