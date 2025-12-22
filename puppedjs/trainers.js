@@ -4298,7 +4298,7 @@ const trainersData = [
         class: 'Expert M',
         reward: ['Heavy-Duty Boots'],
         level: 56,
-        bag: ['Heavy-Duty Boots', getSampleItemsFromArray(tateAndLizaBag(), 24)],
+        bag: ['Heavy-Duty Boots', ...getSampleItemsFromArray(tateAndLizaBag(), 24)],
         team: generic2Average2Strong1Premium1MegaTeamTemplate(),
     },
     {
