@@ -167,8 +167,6 @@ static bool32 Fishing_PutRodAway(struct Task *);
 static bool32 Fishing_EndNoMon(struct Task *);
 static void AlignFishingAnimationFrames(void);
 static bool32 DoesFishingMinigameAllowCancel(void);
-static u32 CalculateFishingFollowerBoost(void);
-static u32 CalculateFishingProximityBoost(u32 odds);
 static void GetCoordinatesAroundBobber(s16[], s16[][AXIS_COUNT], u32);
 static u32 CountQualifyingTiles(s16[][AXIS_COUNT], s16 player[], u8 facingDirection, struct ObjectEvent *objectEvent, bool32 isTileLand[]);
 static bool32 CheckTileQualification(s16 tile[], s16 player[], u32 facingDirection, struct ObjectEvent* objectEvent, bool32 isTileLand[], u32 direction);
@@ -2311,56 +2309,6 @@ static bool32 DoesFishingMinigameAllowCancel(void)
         default:
             return TRUE;
     }
-}
-
-static u32 CalculateFishingFollowerBoost()
-{
-    u32 friendship;
-    struct Pokemon *mon = GetFirstLiveMon();
-
-    if (!I_FISHING_FOLLOWER_BOOST || !mon)
-        return 0;
-
-    friendship = GetMonData(mon, MON_DATA_FRIENDSHIP);
-    if (friendship >= 250)
-        return 50;
-    else if (friendship >= 200)
-        return 40;
-    else if (friendship >= 150)
-        return 30;
-    else if (friendship >= 100)
-        return 20;
-    else
-        return 0;
-}
-
-static u32 CalculateFishingProximityBoost(u32 odds)
-{
-    s16 player[AXIS_COUNT], bobber[AXIS_COUNT];
-    s16 surroundingTile[CARDINAL_DIRECTION_COUNT][AXIS_COUNT] = {{0, 0}};
-    bool32 isTileLand[CARDINAL_DIRECTION_COUNT] = {FALSE};
-    u32 facingDirection, numQualifyingTile = 0;
-    struct ObjectEvent *objectEvent;
-
-    if (!I_FISHING_PROXIMITY)
-        return 0;
-
-    objectEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
-
-    player[AXIS_X] = objectEvent->currentCoords.x;
-    player[AXIS_Y] = objectEvent->currentCoords.y;
-    bobber[AXIS_X] = objectEvent->currentCoords.x;
-    bobber[AXIS_Y] = objectEvent->currentCoords.y;
-
-    facingDirection = GetPlayerFacingDirection();
-    MoveCoords(facingDirection, &bobber[AXIS_X], &bobber[AXIS_Y]);
-
-    GetCoordinatesAroundBobber(bobber, surroundingTile, facingDirection);
-    numQualifyingTile = CountQualifyingTiles(surroundingTile, player, facingDirection, objectEvent, isTileLand);
-
-    numQualifyingTile += CountLandTiles(isTileLand);
-
-    return (numQualifyingTile == 3) ? odds : (numQualifyingTile * FISHING_PROXIMITY_BOOST);
 }
 
 static void GetCoordinatesAroundBobber(s16 bobber[], s16 surroundingTile[][AXIS_COUNT], u32 facingDirection)
