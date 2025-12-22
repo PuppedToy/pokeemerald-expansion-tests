@@ -149,7 +149,7 @@
       border: 1px solid;
       font-weight: bold;
     }
-    .trainer-poke:hover {
+    .trainer-poke:hover, .wild-poke:hover {
       background: var(--glass-3) !important;
     }
 
@@ -861,11 +861,7 @@
       card.className = 'card';
 
       // Clean route name
-      const routeName = route.id
-        .replace('MAP_', '')
-        .replace(/_/g, ' ')
-        .toLowerCase()
-        .replace(/\b\w/g, c => c.toUpperCase());
+      const routeName = nameify(route.id.replace('MAP_', ''));
 
       // Each encounter type (land, old, good, surf, super)
       const encounterTypes = ['land', 'old', 'good', 'surf', 'super', 'special', 'special1', 'special2', 'special3'];
@@ -874,13 +870,25 @@
         .filter(type => route[type])
         .map(type => {
           const pokeId = route[type];
-          const pokeName = pokeId.replace('SPECIES_', '').replace(/_/g, ' ');
+          const pokeName = nameify(pokeId.replace('SPECIES_', ''));
           const img = getPokeImg(pokeId);
+          let adjustmentIcon = '';
+          const poke = findPoke(pokeId);
+          if (poke && poke.log && poke.log.length > 0) {
+            (poke.log || []).forEach(entry => {
+              if (adjustmentIcon === '' && (entry.type === 'BUFF' || entry.type === 'NERF')) {
+                adjustmentIcon = getLogIcon(entry);
+              }
+              else if ((adjustmentIcon === ' ⭐️' && entry.type !== 'BUFF') || (adjustmentIcon === ' 🔻' && entry.type !== 'NERF')) {
+                adjustmentIcon = ' 🔧';
+              }
+            });
+          }
           return `
-            <div style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
+            <div class="clicker wild-poke poke-${pokeId}" style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
               <div style="font-size:12px; color:#FFB28A; margin-bottom:4px;">${getRouteTypeName(type)}</div>
               <img src="${img}" style="width:64px;height:64px;object-fit:contain" alt="${pokeName}">
-              <div style="font-weight:700;margin-top:4px">${pokeName}</div>
+              <div style="font-weight:700;margin-top:4px">${pokeName}${adjustmentIcon}</div>
             </div>
           `;
         })
@@ -896,6 +904,15 @@
       `;
 
       routesGrid.appendChild(card);
+      // Find every wild-poke card to add click event
+      const wildPokeCards = card.querySelectorAll('.wild-poke');
+      wildPokeCards.forEach(wpCard => {
+        const pokeId = wpCard.className.match(/poke-(SPECIES_[A-Z0-9_]+)/)[1];
+        const poke = findPoke(pokeId);
+        if (poke) {
+          wpCard.addEventListener('click', () => showPokemonModal(poke));
+        }
+      });
     });
   </script>
   <!-- script to handle abilities -->
