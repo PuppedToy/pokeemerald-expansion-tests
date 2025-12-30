@@ -1315,6 +1315,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             isPartner: trainer.isPartner || false,
             ivs,
             team,
+            preventShuffle: trainer.preventShuffle || false,
         };
     });
 
