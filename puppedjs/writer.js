@@ -1006,13 +1006,16 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 pokemonLooseList = pokemonLooseList.map(
                     loosePokemon => tryEvolve(
                         loosePokemon,
-                        (trainerMonDefinition.tryMega || trainerMonDefinition.megaTier) && !foundMega
+                        // @TODO Fix wally problem. It should allow the megatier as an option
+                        // (trainerMonDefinition.tryMega || trainerMonDefinition.megaTier) && !foundMega
+                        trainerMonDefinition.tryMega && !foundMega
                     )
                 );
                 pokemonStrictList = pokemonStrictList.map(
                     strictPokemon => tryEvolve(
                         strictPokemon,
-                        (trainerMonDefinition.tryMega || trainerMonDefinition.megaTier) && !foundMega
+                        // (trainerMonDefinition.tryMega || trainerMonDefinition.megaTier) && !foundMega
+                        trainerMonDefinition.tryMega && !foundMega
                     )
                 );
             }
