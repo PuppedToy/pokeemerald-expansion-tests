@@ -35,6 +35,8 @@ const {
     POKEMON_TYPE_GHOST,
     TIER_GOD,
     POKEMON_TYPES,
+    TRAINER_GYM_LEADERS_KEEP_TYPE_AMOUNT,
+    TRAINER_E4_KEEP_TYPE_AMOUNT,
 } = require("./constants");
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
@@ -178,15 +180,37 @@ function sampleAndRemove(array) {
 }
 
 const originalE4Types = [POKEMON_TYPE_DARK, POKEMON_TYPE_GHOST, POKEMON_TYPE_ICE, POKEMON_TYPE_DRAGON];
+const originalGymTypes = [
+    POKEMON_TYPE_ROCK,
+    POKEMON_TYPE_FIGHTING,
+    POKEMON_TYPE_ELECTRIC,
+    POKEMON_TYPE_FIRE,
+    POKEMON_TYPE_NORMAL,
+    POKEMON_TYPE_FLYING,
+    POKEMON_TYPE_PSYCHIC,
+    POKEMON_TYPE_WATER,
+];
 const coinsForE4Types = [0, 1, 2, 3];
+const coinsForGymTypes = [0, 1, 2, 3, 4, 5, 6, 7];
 const whoKeepsE4Type = [];
-whoKeepsE4Type.push(sampleAndRemove(coinsForE4Types));
-whoKeepsE4Type.push(sampleAndRemove(coinsForE4Types));
-const types = [...POKEMON_TYPES];
-types.splice(types.indexOf(POKEMON_TYPE_DARK), 1);
-types.splice(types.indexOf(POKEMON_TYPE_GHOST), 1);
-types.splice(types.indexOf(POKEMON_TYPE_ICE), 1);
-types.splice(types.indexOf(POKEMON_TYPE_DRAGON), 1);
+const whoKeepsGymType = [];
+for (let i = 0; i < TRAINER_E4_KEEP_TYPE_AMOUNT; i++) {
+    whoKeepsE4Type.push(sampleAndRemove(coinsForE4Types));
+}
+for (let i = 0; i < TRAINER_GYM_LEADERS_KEEP_TYPE_AMOUNT; i++) {
+    const chosenType = sampleAndRemove(coinsForGymTypes);
+    whoKeepsGymType.push(chosenType);
+}
+const e4AllowedTypes = [...POKEMON_TYPES];
+for (let i = 0; i < originalE4Types.length; i++) {
+    e4AllowedTypes.splice(e4AllowedTypes.indexOf(originalE4Types[i]), 1);
+}
+e4AllowedTypes.splice(e4AllowedTypes.indexOf(POKEMON_TYPE_STEEL), 1);
+const gymAllowedTypes = [...POKEMON_TYPES];
+for (let i = 0; i < originalGymTypes.length; i++) {
+    gymAllowedTypes.splice(gymAllowedTypes.indexOf(originalGymTypes[i]), 1);
+}
+gymAllowedTypes.splice(gymAllowedTypes.indexOf(POKEMON_TYPE_STEEL), 1);
 
 let e41MainType;
 let e42MainType;
@@ -206,16 +230,28 @@ if (whoKeepsE4Type.includes(3)) {
     e44MainType = originalE4Types[3];
 }
 if (!e41MainType) {
-    e41MainType = sampleAndRemove(types);
+    e41MainType = sampleAndRemove(e4AllowedTypes);
 }
 if (!e42MainType) {
-    e42MainType = sampleAndRemove(types);
+    e42MainType = sampleAndRemove(e4AllowedTypes);
 }
 if (!e43MainType) {
-    e43MainType = sampleAndRemove(types);
+    e43MainType = sampleAndRemove(e4AllowedTypes);
 }
 if (!e44MainType) {
-    e44MainType = sampleAndRemove(types);
+    e44MainType = sampleAndRemove(e4AllowedTypes);
+}
+
+const gymIsChangedType = [];
+const gymMainTypes = [];
+for (let i = 0; i < originalGymTypes.length; i++) {
+    if (whoKeepsGymType.includes(i)) {
+        gymMainTypes.push(originalGymTypes[i]);
+        gymIsChangedType.push(false);
+    } else {
+        gymMainTypes.push(sampleAndRemove(gymAllowedTypes));
+        gymIsChangedType.push(true);
+    }
 }
 
 const tateAndLizaUseSolrock = Math.random() < 0.5;
@@ -1637,28 +1673,31 @@ const trainersData = [
         bag: roxanneBag(),
         tms: ['MOVE_ROCK_TOMB', 'MOVE_ROCK_TOMB'],
         team: [
-            {
+            gymIsChangedType[0] ? {
+                ...POKEDEF_WEAK,
+                type: [gymMainTypes[0]],
+            } : {
                 specific: 'SPECIES_NOSEPASS',
             },
             {
                 ...POKEDEF_WEAK,
-                type: [POKEMON_TYPE_ROCK],
+                type: [gymMainTypes[0]],
             },
             {
                 ...POKEDEF_BAD,
-                type: [POKEMON_TYPE_ROCK],
+                type: [gymMainTypes[0]],
             },
             {
                 ...POKEDEF_BAD,
-                type: [POKEMON_TYPE_ROCK],
+                type: [gymMainTypes[0]],
             },
             {
                 ...POKEDEF_BAD,
-                type: [POKEMON_TYPE_ROCK],
+                type: [gymMainTypes[0]],
             },
             {
                 ...POKEDEF_BAD,
-                type: [POKEMON_TYPE_ROCK],
+                type: [gymMainTypes[0]],
             },
         ],
     },
@@ -1948,7 +1987,24 @@ const trainersData = [
         tms: ['MOVE_BULK_UP', 'MOVE_BULK_UP'],
         bannedItems: ['Flame Orb', 'Toxic Orb'],
         team: [
-            {
+            gymIsChangedType[1] ? {
+                ...POKEDEF_BAD,
+                type: [gymMainTypes[1]],
+                abilities: ['GUTS'],
+                item: 'Flame Orb',
+                fallback: [
+                    {
+                        ...POKEDEF_BAD,
+                        type: [gymMainTypes[1]],
+                        abilities: ['POISON_HEAL'],
+                        item: 'Toxic Orb',
+                    },
+                    {
+                        ...POKEDEF_WEAK,
+                        type: [gymMainTypes[1]],
+                    },
+                ],
+            } : {
                 specific: 'SPECIES_MAKUHITA',
                 tryToHaveMove: ['MOVE_BULK_UP', 'MOVE_FAKE_OUT', 'MOVE_ROCK_TOMB'],
                 nature: NATURES.ADAMANT.name,
@@ -1957,23 +2013,23 @@ const trainersData = [
             },
             {
                 ...POKEDEF_WEAK,
-                type: [POKEMON_TYPE_FIGHTING],
+                type: [gymMainTypes[1]],
             },
             {
                 ...POKEDEF_WEAK,
-                type: [POKEMON_TYPE_FIGHTING],
+                type: [gymMainTypes[1]],
             },
             {
                 ...POKEDEF_BAD,
-                type: [POKEMON_TYPE_FIGHTING],
+                type: [gymMainTypes[1]],
             },
             {
                 ...POKEDEF_BAD,
-                type: [POKEMON_TYPE_FIGHTING],
+                type: [gymMainTypes[1]],
             },
             {
                 ...POKEDEF_BAD,
-                type: [POKEMON_TYPE_FIGHTING],
+                type: [gymMainTypes[1]],
             },
         ],
     },
@@ -2581,37 +2637,54 @@ const trainersData = [
         class: 'Leader Wattson',
         isBoss: true,
         level: 26,
-        preventShuffle: true,
+        preventShuffle: gymIsChangedType[2],
         bag: [...wattsonBag(), 'Electric Gem'],
-        tms: ['TM_SHOCK_WAVE'],
+        tms: ['MOVE_SHOCK_WAVE', 'MOVE_SHOCK_WAVE'],
         bannedItems: ['Electric Seed', 'Psychic Seed', 'Misty Seed', 'Grassy Seed'],
         team: [
-            pokeDefElectricSurgeMon({
+            gymIsChangedType[2] ? {
+                ...POKEDEF_AVERAGE,
+                type: [gymMainTypes[2]],
+            } : pokeDefElectricSurgeMon({
                 absoluteTier: [TIER_BAD, TIER_WEAK, TIER_AVERAGE],
                 checkValidEvo: true,
             }),
-            {
+            gymIsChangedType[2] ? {
+                ...POKEDEF_MEGA,
+                type: [gymMainTypes[2]],
+                fallback: [
+                    {
+                        specific: 'SPECIES_MANECTRIC',
+                        abilities: ['STATIC'],
+                        tryToHaveMove: ['MOVE_THUNDER_WAVE', 'MOVE_FIRE_FANG', 'MOVE_BITE'],
+                        item: 'Manectite',
+                    }
+                ]
+            } : {
                 specific: 'SPECIES_MANECTRIC',
                 abilities: ['STATIC'],
-                tryToHaveMove: ['MOVE_SHOCK_WAVE', 'MOVE_THUNDER_WAVE', 'MOVE_FIRE_FANG', 'MOVE_BITE'],
+                tryToHaveMove: ['MOVE_THUNDER_WAVE', 'MOVE_FIRE_FANG', 'MOVE_BITE'],
                 item: 'Manectite',
             },
-            {
+            gymIsChangedType[2] ? {
                 ...POKEDEF_AVERAGE,
-                type: [POKEMON_TYPE_ELECTRIC],
+                type: [gymMainTypes[2]],
+            } : {
+                ...POKEDEF_AVERAGE,
+                type: [gymMainTypes[2]],
                 item: 'Electric Seed',
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [POKEMON_TYPE_ELECTRIC],
+                type: [gymMainTypes[2]],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [POKEMON_TYPE_ELECTRIC],
+                type: [gymMainTypes[2]],
             },
             {
                 ...POKEDEF_WEAK,
-                type: [POKEMON_TYPE_ELECTRIC],
+                type: [gymMainTypes[2]],
                 tryEvolve: true,
             },
         ],
@@ -3086,49 +3159,73 @@ const trainersData = [
         class: 'Leader Flannery',
         level: 33,
         isBoss: true,
-        bag: [...flanneryBag()],
+        bag: [...flanneryBag(), 'Fire Gem'],
+        tms: ['MOVE_OVERHEAT', 'MOVE_OVERHEAT'],
         team: [
-            {
+            gymIsChangedType[3] ? {
+                ...POKEDEF_AVERAGE,
+                type: [gymMainTypes[3]],
+            } : {
                 specific: 'SPECIES_TORKOAL',
                 abilities: ['DROUGHT'],
                 item: 'Heat Rock',
-                tryToHaveMove: ['MOVE_OVERHEAT', 'MOVE_RAPID_SPIN', 'MOVE_CLEAR_SMOG', 'MOVE_SOLAR_BEAM'],
+                tryToHaveMove: ['MOVE_RAPID_SPIN', 'MOVE_CLEAR_SMOG', 'MOVE_SOLAR_BEAM'],
                 checkValidEvo: true,
                 tryEvolve: true,
             },
             {
-                ...POKEDEF_STRONG,
-                type: [POKEMON_TYPE_FIRE],
-            },
-            {
-                ...POKEDEF_STRONG,
-                type: [POKEMON_TYPE_FIRE],
-            },
-            {
-                ...POKEDEF_AVERAGE,
-                type: [POKEMON_TYPE_FIRE],
-            },
-            {
-                ...POKEDEF_AVERAGE,
-                abilities: [...sunAbilities],
-            },
-            {
                 isMega: true,
                 absoluteTier: [TIER_PREMIUM, TIER_LEGEND],
-                type: [POKEMON_TYPE_FIRE],
-                tryToHaveMove: ['MOVE_OVERHEAT'],
+                type: [gymMainTypes[3]],
                 checkValidEvo: true,
                 tryEvolve: true,
                 fallback: [
                     {
                         isMega: true,
-                        absoluteTier: [TIER_STRONG, TIER_PREMIUM, TIER_LEGEND],
-                        type: [POKEMON_TYPE_FIRE],
-                        tryToHaveMove: ['MOVE_OVERHEAT'],
+                        absoluteTier: [TIER_AVERAGE, TIER_STRONG, TIER_PREMIUM, TIER_LEGEND],
+                        type: [gymMainTypes[3]],
                         checkValidEvo: true,
                         tryEvolve: true,
                     },
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        checkValidEvo: true,
+                        type: [gymMainTypes[3]],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        checkValidEvo: true,
+                        type: [gymMainTypes[3]],
+                    }
                 ],
+            },
+            {
+                ...POKEDEF_STRONG,
+                type: [gymMainTypes[3]],
+            },
+            {
+                ...POKEDEF_STRONG,
+                type: [gymMainTypes[3]],
+            },
+            gymIsChangedType[3] ? {
+                ...POKEDEF_AVERAGE,
+                type: [gymMainTypes[3]],
+            } : {
+                absoluteTier: [TIER_WEAK, TIER_AVERAGE],
+                checkValidEvo: true,
+                type: [gymMainTypes[3]],
+                abilities: [...sunAbilities],
+                pickBest: true,
+                fallback: [
+                    {
+                        ...POKEDEF_AVERAGE,
+                        type: [gymMainTypes[3]],
+                    },
+                ]
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [gymMainTypes[3]],
             },
         ],
     },
@@ -3223,27 +3320,34 @@ const trainersData = [
         class: 'Leader Norman',
         level: 36,
         isBoss: true,
-        bag: [...normanBag()],
-        bannedItems: ['Assault Vest', 'Flame Orb', 'Toxic Orb'],
+        bag: [...normanBag(), 'Normal Gem'],
+        tms: ['MOVE_FACADE', 'MOVE_FACADE'],
+        bannedItems: gymIsChangedType[4] ? [] : ['Assault Vest', 'Flame Orb', 'Toxic Orb'],
         team: [
-            {
+            gymIsChangedType[4] ? {
+                ...POKEDEF_STRONG,
+                type: [gymMainTypes[4]],
+            } : {
                 specific: 'SPECIES_SLAKING',
                 item: 'Assault Vest',
                 tryToHaveMove: ['MOVE_FIRE_BLAST', 'MOVE_EARTHQUAKE', 'MOVE_FACADE', 'MOVE_SUCKER_PUNCH'],
             },
-            {
+            gymIsChangedType[4] ? {
+                ...POKEDEF_STRONG,
+                type: [gymMainTypes[4]],
+            } : {
                 ...POKEDEF_STRONG,
                 abilities: ['GUTS'],
                 mustHaveOneOfMoves: ['MOVE_FACADE'],
                 tryToHaveMove: ['MOVE_FACADE', 'MOVE_PROTECT'],
-                type: [POKEMON_TYPE_NORMAL],
+                type: [gymMainTypes[4]],
                 item: 'Flame Orb',
                 fallback: [
                     {
                         ...POKEDEF_WEAK_OR_AVERAGE,
                         abilities: ['GUTS'],
                         mustHaveOneOfMoves: ['MOVE_FACADE', 'MOVE_PROTECT'],
-                        type: [POKEMON_TYPE_NORMAL],
+                        type: [gymMainTypes[4]],
                         item: 'Flame Orb',
                         pickBest: true,
                     },
@@ -3255,30 +3359,40 @@ const trainersData = [
             },
             {
                 ...POKEDEF_STRONG,
-                type: [POKEMON_TYPE_NORMAL],
+                type: [gymMainTypes[4]],
             },
             {
                 ...POKEDEF_STRONG,
-                type: [POKEMON_TYPE_NORMAL],
+                type: [gymMainTypes[4]],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [POKEMON_TYPE_NORMAL],
+                type: [gymMainTypes[4]],
             },
             {
                 isMega: true,
                 absoluteTier: [TIER_PREMIUM, TIER_LEGEND],
-                type: [POKEMON_TYPE_NORMAL],
+                type: [gymMainTypes[4]],
                 checkValidEvo: true,
                 tryEvolve: true,
                 fallback: [
                    {
                         isMega: true,
                         absoluteTier: [TIER_STRONG, TIER_PREMIUM, TIER_LEGEND],
-                        type: [POKEMON_TYPE_NORMAL],
+                        type: [gymMainTypes[4]],
                         checkValidEvo: true,
                         tryEvolve: true,
-                   } 
+                   },
+                   {
+                        absoluteTier: [TIER_PREMIUM],
+                        type: [gymMainTypes[4]],
+                        checkValidEvo: true,
+                   },
+                   {
+                        absoluteTier: [TIER_STRONG],
+                        type: [gymMainTypes[4]],
+                        checkValidEvo: true,
+                   }
                 ]
             },
         ],
@@ -3620,58 +3734,73 @@ const trainersData = [
         class: 'Leader Winona',
         level: 43,
         isBoss: true,
-        bag: [...winonaBag()],
+        bag: [...winonaBag(), 'Flying Gem'],
+        tms: ['MOVE_AERIAL_ACE', 'MOVE_AERIAL_ACE'],
         team: [
             {
                 ...POKEDEF_STRONG,
-                type: [POKEMON_TYPE_FLYING],
+                type: [gymMainTypes[5]],
                 mustHaveOneOfMoves: ['MOVE_TAILWIND'],
-                tryToHaveMove: ['MOVE_TAILWIND', 'MOVE_AERIAL_ACE'],
+                tryToHaveMove: ['MOVE_TAILWIND'],
                 fallback: [
                     {
                         ...POKEDEF_AVERAGE,
-                        type: [POKEMON_TYPE_FLYING],
+                        type: [gymMainTypes[5]],
                         mustHaveOneOfMoves: ['MOVE_TAILWIND'],
-                        tryToHaveMove: ['MOVE_TAILWIND', 'MOVE_AERIAL_ACE'],
+                        tryToHaveMove: ['MOVE_TAILWIND'],
                         pickBest: true,
                     },
                     {
                         ...POKEDEF_STRONG,
-                        mustHaveOneOfMoves: ['MOVE_TAILWIND'],
-                        tryToHaveMove: ['MOVE_TAILWIND', 'MOVE_AERIAL_ACE'],
-                    },
-                    {
-                        ...POKEDEF_AVERAGE,
-                        mustHaveOneOfMoves: ['MOVE_TAILWIND'],
-                        tryToHaveMove: ['MOVE_TAILWIND', 'MOVE_AERIAL_ACE'],
-                    },
-                    {
-                        ...POKEDEF_STRONG,
-                        type: [POKEMON_TYPE_FLYING],
-                        tryToHaveMove: ['MOVE_AERIAL_ACE'],
+                        type: [gymMainTypes[5]],
                     }
                 ]
             },
-            {
+            gymIsChangedType[5] ? {
+                isMega: true,
+                absoluteTier: [TIER_PREMIUM, TIER_LEGEND],
+                type: [gymMainTypes[5]],
+                checkValidEvo: true,
+                tryEvolve: true,
+                fallback: [
+                   {
+                        isMega: true,
+                        absoluteTier: [TIER_STRONG, TIER_PREMIUM, TIER_LEGEND],
+                        type: [gymMainTypes[5]],
+                        checkValidEvo: true,
+                        tryEvolve: true,
+                   },
+                   {
+                        absoluteTier: [TIER_PREMIUM],
+                        type: [gymMainTypes[5]],
+                        checkValidEvo: true,
+                   },
+                   {
+                        absoluteTier: [TIER_STRONG],
+                        type: [gymMainTypes[5]],
+                        checkValidEvo: true,
+                   }
+                ]
+            } : {
                 specific: 'SPECIES_ALTARIA',
                 item: 'Altarianite',
-                tryToHaveMove: ['MOVE_AERIAL_ACE', 'MOVE_FACADE', 'MOVE_DRAGON_PULSE', 'MOVE_HYPER_BEAM'],
+                tryToHaveMove: ['MOVE_FACADE', 'MOVE_DRAGON_PULSE', 'MOVE_HYPER_BEAM'],
             },
             {
                 ...POKEDEF_PREMIUM,
-                type: [POKEMON_TYPE_FLYING],
+                type: [gymMainTypes[5]],
             },
             {
                 ...POKEDEF_STRONG,
-                type: [POKEMON_TYPE_FLYING],
+                type: [gymMainTypes[5]],
             },
             {
                 ...POKEDEF_STRONG,
-                type: [POKEMON_TYPE_FLYING],
+                type: [gymMainTypes[5]],
             },
             {
                 ...POKEDEF_STRONG,
-                type: [POKEMON_TYPE_FLYING],
+                type: [gymMainTypes[5]],
             },
         ],
     },
@@ -4168,19 +4297,28 @@ const trainersData = [
         level: 53,
         isBoss: true,
         preventShuffle: true,
-        bag: [...tateAndLizaBag()],
+        bag: [...tateAndLizaBag(), 'Psychic Gem'],
         tms: ['MOVE_CALM_MIND', 'MOVE_CALM_MIND'],
-        bannedItems: ['Focus Sash', 'Room Service', 'Light Clay'],
+        bannedItems: gymIsChangedType[6] ? ['Focus Sash', 'Room Service'] : ['Focus Sash', 'Room Service', 'Light Clay'],
         team: [
             {
                 ...POKEDEF_UP_TO_PREMIUM,
                 mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
                 tryToHaveMove: ['MOVE_TRICK_ROOM'],
-                type: [POKEMON_TYPE_PSYCHIC],
+                type: [gymMainTypes[6]],
                 item: 'Focus Sash',
                 pickBest: true,
+                fallback: [
+                    {
+                        ...POKEDEF_PREMIUM,
+                        type: [gymMainTypes[6]],
+                    },
+                ]
             },
-            (tateAndLizaUseSolrock ?
+            gymIsChangedType[6] ? {
+                ...POKEDEF_WEAK,
+                type: [gymMainTypes[6]],
+            } : (tateAndLizaUseSolrock ?
             {
                 specific: 'SPECIES_SOLROCK',
                 tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
@@ -4193,7 +4331,11 @@ const trainersData = [
                 item: 'Light Clay',
                 nature: 'Sassy',
             }),
-            (tateAndLizaUseSolrock ?
+            gymIsChangedType[6] ? {
+                ...POKEDEF_LEGEND,
+                item: 'Room Service',
+                type: [gymMainTypes[6]],
+            } : (tateAndLizaUseSolrock ?
             {
                 specific: 'SPECIES_LUNALA',
                 item: 'Room Service',
@@ -4206,61 +4348,64 @@ const trainersData = [
             {
                 ...POKEDEF_MEGA,
                 hasStat: ['baseSpeed', '<', '50'],
-                type: [POKEMON_TYPE_PSYCHIC],
+                type: [gymMainTypes[6]],
                 fallback: [
                     {
                         ...POKEDEF_MEGA,
                         hasStat: ['baseSpeed', '<', '70'],
-                        type: [POKEMON_TYPE_PSYCHIC],
+                        type: [gymMainTypes[6]],
                     },
                     {
                         ...POKEDEF_MEGA,
-                        type: [POKEMON_TYPE_PSYCHIC],
+                        type: [gymMainTypes[6]],
                     },
                     {
-                        ...POKEDEF_MEGA,
+                        ...POKEDEF_PREMIUM,
+                        type: [gymMainTypes[6]],
                     },
                 ]
             },
             {
                 ...POKEDEF_STRONG,
-                type: [POKEMON_TYPE_PSYCHIC],
+                type: [gymMainTypes[6]],
                 hasStat: ['baseSpeed', '<', '50'],
                 fallback: [
                     {
                         ...POKEDEF_STRONG,
-                        type: [POKEMON_TYPE_PSYCHIC],
+                        type: [gymMainTypes[6]],
                         hasStat: ['baseSpeed', '<', '70'],
                     },
                     {
                         ...POKEDEF_AVERAGE,
-                        type: [POKEMON_TYPE_PSYCHIC],
+                        type: [gymMainTypes[6]],
                         hasStat: ['baseSpeed', '<', '50'],
+                        pickBest: true,
                     },
                     {
                         ...POKEDEF_STRONG,
-                        type: [POKEMON_TYPE_PSYCHIC],
+                        type: [gymMainTypes[6]],
                     },
                 ],
             },
             {
                 ...POKEDEF_STRONG,
-                type: [POKEMON_TYPE_PSYCHIC],
+                type: [gymMainTypes[6]],
                 hasStat: ['baseSpeed', '<', '50'],
                 fallback: [
                     {
                         ...POKEDEF_STRONG,
-                        type: [POKEMON_TYPE_PSYCHIC],
+                        type: [gymMainTypes[6]],
                         hasStat: ['baseSpeed', '<', '70'],
                     },
                     {
                         ...POKEDEF_AVERAGE,
-                        type: [POKEMON_TYPE_PSYCHIC],
+                        type: [gymMainTypes[6]],
                         hasStat: ['baseSpeed', '<', '50'],
+                        pickBest: true,
                     },
                     {
                         ...POKEDEF_STRONG,
-                        type: [POKEMON_TYPE_PSYCHIC],
+                        type: [gymMainTypes[6]],
                     },
                 ],
             },
@@ -4689,10 +4834,14 @@ const trainersData = [
         class: 'Leader Juan',
         level: 61,
         isBoss: true,
-        bag: [...juanBag()],
+        bag: [...juanBag(), 'Water Gem'],
         tms: ['MOVE_WATERFALL', 'MOVE_WATER_PULSE'],
         team: [
-            {
+            gymIsChangedType[7] ? {
+                ...POKEDEF_STRONG,
+                type: [gymMainTypes[7]],
+                pickBest: true,
+            } : {
                 specific: 'SPECIES_KINGDRA',
                 item: 'Chesto Berry',
                 abilities: ['SNIPER'],
@@ -4700,19 +4849,19 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_DRAGON_DANCE', 'MOVE_WATERFALL', 'MOVE_BLIZZARD', 'MOVE_REST'],
             },
             pokeDefLegendMega({
-                type: [POKEMON_TYPE_WATER, POKEMON_TYPE_DRAGON],
+                type: [gymMainTypes[7]],
             }),
             pokeDefOnlyLegend({
-                type: [POKEMON_TYPE_WATER, POKEMON_TYPE_DRAGON],
+                type: [gymMainTypes[7]],
             }),
             pokeDefOnlyPremium({
-                type: [POKEMON_TYPE_WATER, POKEMON_TYPE_DRAGON],
+                type: [gymMainTypes[7]],
             }),
             pokeDefOnlyPremium({
-                type: [POKEMON_TYPE_WATER, POKEMON_TYPE_DRAGON],
+                type: [gymMainTypes[7]],
             }),
             pokeDefOnlyPremium({
-                type: [POKEMON_TYPE_WATER, POKEMON_TYPE_DRAGON],
+                type: [gymMainTypes[7]],
             }),
         ],
     },
