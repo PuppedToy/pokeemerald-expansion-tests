@@ -34,66 +34,6 @@ const WORST_RATING_FOR_FULLY_EVO = 250;
 const WORST_RATING_FOR_NFE = 205;
 const WORST_RATING_FOR_LC_3EVO = 180;
 
-
-const statusList = {
-    MOVE_GROWL: 3,
-    MOVE_TAIL_WHIP: 3,
-    MOVE_LEER: 3,
-    MOVE_SAND_ATTACK: 4,
-    MOVE_STRING_SHOT: 2,
-    MOVE_HARDEN: 4,
-    MOVE_DEFENSE_CURL: 4,
-
-    MOVE_HONE_CLAWS: 6.5,
-    MOVE_HOWL: 6.5,
-    MOVE_WORK_UP: 6.5,
-    
-    MOVE_THUNDER_WAVE: 7,
-    MOVE_BULK_UP: 7,
-    MOVE_CALM_MIND: 7,
-    MOVE_SWORDS_DANCE: 8,
-    MOVE_DEFEND_ORDER: 8,
-    MOVE_COSMIC_POWER: 8,
-    MOVE_DRAGON_DANCE: 8.5,
-    MOVE_QUIVER_DANCE: 9,
-    MOVE_VICTORY_DANCE: 9,
-    MOVE_TAIL_GLOW: 9,
-    MOVE_SHELL_SMASH: 9.5,
-    MOVE_SPORE: 10,
-    MOVE_BELLY_DRUM: 8,
-    MOVE_STEALTH_ROCK: 8,
-    MOVE_ACUPRESSURE: 7,
-    MOVE_SLEEP_POWDER: 8,
-    MOVE_DEFOG: 7,
-    MOVE_AGILITY: 7,
-    MOVE_MILK_DRINK: 8.5,
-    MOVE_SOFT_BOILED: 8.5,
-    MOVE_SLACK_OFF: 8.5,
-    MOVE_HEAL_ORDER: 8.5,
-    MOVE_RECOVER: 8.5,
-    MOVE_SYNTHESIS: 8.5,
-    MOVE_MOONLIGHT: 8.5,
-    MOVE_ROOST: 8.5,
-    MOVE_HEAL_BELL: 7,
-    MOVE_AROMATHERAPY: 7,
-    MOVE_LEECH_SEED: 8,
-    MOVE_TOXIC: 8,
-
-    // Special moves like this are discouraged unless gimmick team
-    MOVE_TRICK_ROOM: 3,
-
-    // Other moves that are kinda special
-    MOVE_METAL_BURST: 8,
-    MOVE_LUSTER_PURGE: 8,
-    MOVE_MIST_BALL: 8,
-
-    // Others that might need specific handling
-    MOVE_GYRO_BALL: 6,
-    // Multi-hits for skill link
-    // Drops for contrary
-};
-
-
 const soundBasedOffensiveMoves = [
     'MOVE_UPROAR',
     'MOVE_HYPER_VOICE',
@@ -263,11 +203,168 @@ function isSuperEffective(attackingType, defendingTypes) {
     return damageMultiplier(attackingType, defendingTypes) > 1;
 }
 
+// @TODO Use it later for movesets
+const comboList = [
+    {
+        effects: ['EFFECT_ENDURE', 'EFFECT_FLAIL'],
+        rating: 8,
+    },
+    {
+        effects: ['EFFECT_REST', 'EFFECT_SLEEP_TALK'],
+        rating: 7,
+    }
+]
+
+const statusList = {
+    MOVE_SPLASH: 0,
+    MOVE_CELEBRATE: 0,
+    MOVE_HOLD_HANDS: 0,
+    MOVE_STRUGGLE: 0,
+
+    MOVE_NIGHTMARE: 1,
+    MOVE_SLEEP_TALK: 1,
+    
+    MOVE_SWEET_KISS: 1,
+    MOVE_SUPERSONIC: 1,
+    MOVE_BIDE: 2,
+    MOVE_SPITE: 2,
+    MOVE_PERISH_SONG: 2,
+    MOVE_SANDSTORM: 2,
+    
+    MOVE_SCREECH: 4,
+    MOVE_CONFUSE_RAY: 2,
+    MOVE_TEETER_DANCE: 2,
+    
+    MOVE_SAFEGUARD: 3,
+    MOVE_HAZE: 4,
+    
+    MOVE_SKETCH: 1,
+    MOVE_CONVERSION: 2,
+    MOVE_CONVERSION_2: 4,
+    MOVE_TRANSFORM: 3,
+    MOVE_MIRROR_MOVE: 3,
+    MOVE_METRONOME: 5,
+    MOVE_DESTINY_BOND: 6,
+
+    MOVE_DOUBLE_TEAM: 5,
+    MOVE_FOCUS_ENERGY: 5,
+    MOVE_MINIMIZE: 6,
+    
+    MOVE_HOWL: 6,
+    MOVE_HONE_CLAWS: 6.5,
+    MOVE_WORK_UP: 6.5,
+    MOVE_GROWTH: 6.5,
+    MOVE_CURSE: 6.5,
+    MOVE_ACUPRESSURE: 6.5,
+    MOVE_AGILITY: 7,
+    MOVE_BULK_UP: 7,
+    MOVE_CALM_MIND: 7,
+    MOVE_SWORDS_DANCE: 8,
+    MOVE_BELLY_DRUM: 8,
+    MOVE_DRAGON_DANCE: 8.5,
+    MOVE_TAIL_GLOW: 9,
+    MOVE_QUIVER_DANCE: 9.5,
+    MOVE_VICTORY_DANCE: 9.5,
+    MOVE_SHELL_SMASH: 9.5,
+    
+    MOVE_DEFEND_ORDER: 8,
+    MOVE_COSMIC_POWER: 8,
+
+    MOVE_POISON_GAS: 4,
+    MOVE_TOXIC: 8,
+    MOVE_LOVELY_KISS: 6.5,
+    MOVE_SPORE: 10,
+    MOVE_SLEEP_POWDER: 7,
+    MOVE_THUNDER_WAVE: 7,
+    MOVE_GLARE: 7.5,
+
+    MOVE_SPIKES: 6,
+    MOVE_STEALTH_ROCK: 8,
+
+    MOVE_LIGHT_SCREEN: 7.5,
+    MOVE_REFLECT: 7.5,
+    MOVE_SUBSTITUTE: 8,
+    MOVE_DEFOG: 7,
+    MOVE_REST: 6,
+    MOVE_MILK_DRINK: 8.5,
+    MOVE_SOFT_BOILED: 8.5,
+    MOVE_SLACK_OFF: 8.5,
+    MOVE_HEAL_ORDER: 8.5,
+    MOVE_RECOVER: 8.5,
+    MOVE_SYNTHESIS: 8.5,
+    MOVE_MOONLIGHT: 8.5,
+    MOVE_ROOST: 8.5,
+    MOVE_HEAL_BELL: 7,
+    MOVE_AROMATHERAPY: 7,
+    MOVE_LEECH_SEED: 8,
+
+    // Special moves like this are discouraged unless gimmick team
+    MOVE_TRICK_ROOM: 3,
+
+    // Other moves that are kinda special
+    MOVE_METAL_BURST: 8,
+    MOVE_LUSTER_PURGE: 8,
+    MOVE_MIST_BALL: 8,
+
+    // Others that might need specific handling
+    MOVE_GYRO_BALL: 6,
+    // Multi-hits for skill link
+    // Drops for contrary
+};
+
 function rateMove(move) {
-    const isStatus = move.category === 'DAMAGE_CATEGORY_STATUS';
-    if (isStatus) return statusList[move.id] || 5;
     if (statusList[move.id]) {
         return statusList[move.id];
+    }
+
+    const isStatus = move.category === 'DAMAGE_CATEGORY_STATUS';
+    if (isStatus) {
+        if (
+            move.effect === 'EFFECT_LOCK_ON'
+            || move.effect === 'EFFECT_FORESIGHT'
+        ) {
+            return 2;
+        }
+
+        if (
+            move.effect === 'EFFECT_DEFENSE_DOWN'
+            || move.effect === 'EFFECT_ATTACK_DOWN'
+            || move.effect === 'EFFECT_ROAR'
+        ) {
+            return 3;
+        }
+
+        if (
+            move.effect === 'EFFECT_ACCURACY_DOWN'
+            || move.effect === 'EFFECT_DEFENSE_CURL'
+            || move.effect === 'EFFECT_DEFENSE_UP'
+            || move.effect === 'EFFECT_ENDURE'
+        ) {
+            return 3.5;
+        }
+
+        if (
+            move.effect === 'EFFECT_MEAN_LOOK'
+            || move.effect === 'EFFECT_SPEED_DOWN_2'
+            || move.effect === 'EFFECT_PROTECT'
+        ) {
+            return 4.5;
+        }
+
+        if (
+            move.effect === 'EFFECT_DEFENSE_UP_2'
+            || move.effect === 'EFFECT_SPECIAL_DEFENSE_UP_2'
+        ) {
+            return 5;
+        }
+
+        if (
+            move.effect === 'EFFECT_ATTACK_UP'
+        ) {
+            return 6;
+        }
+
+        return 1;
     }
     
     const moveEffect = move.effect || '';
