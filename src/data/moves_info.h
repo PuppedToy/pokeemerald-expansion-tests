@@ -2011,7 +2011,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
             "Forces the body to grow\n"
             "and heightens Sp. Atk."),
         #endif
-        .effect = B_GROWTH_STAT_RAISE >= GEN_5 ? EFFECT_GROWTH : EFFECT_SPECIAL_ATTACK_UP,
+        .effect = EFFECT_GROWTH,
         .power = 0,
         .type = TYPE_NORMAL,
         .accuracy = 0,
@@ -6097,7 +6097,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
             "Allures the foes to reduce\n"
             "evasiveness."),
         #endif
-        .effect = B_UPDATED_MOVE_DATA >= GEN_6 ? EFFECT_EVASION_DOWN_2 : EFFECT_EVASION_DOWN,
+        .effect = EFFECT_EVASION_DOWN_2,
         .power = 0,
         .type = TYPE_NORMAL,
         .accuracy = 100,
@@ -7782,7 +7782,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
             "Flashes a light that sharply\n"
         #endif
             "raises Sp. Atk."),
-        .effect = B_UPDATED_MOVE_DATA >= GEN_5 ? EFFECT_SPECIAL_ATTACK_UP_3 : EFFECT_SPECIAL_ATTACK_UP_2,
+        .effect = EFFECT_SPECIAL_ATTACK_UP_3,
         .power = 0,
         .type = TYPE_BUG,
         .accuracy = 0,
@@ -8859,7 +8859,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
             "Howls to raise the spirit\n"
             "and boosts Attack."),
         .power = 0,
-        .effect = B_UPDATED_MOVE_DATA >= GEN_8 ? EFFECT_ATTACK_UP_USER_ALLY : EFFECT_ATTACK_UP,
+        .effect = EFFECT_ATTACK_UP_USER_ALLY,
         .type = TYPE_NORMAL,
         .accuracy = 0,
         .pp = 40,

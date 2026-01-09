@@ -212,7 +212,131 @@ const comboList = [
     {
         effects: ['EFFECT_REST', 'EFFECT_SLEEP_TALK'],
         rating: 7,
-    }
+    },
+    {
+        effects: ['EFFECT_WISH', 'EFFECT_PROTECT'],
+        rating: 7,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_ATTACK_UP_1'],
+        rating: 6,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_SPECIAL_ATTACK_UP_1'],
+        rating: 6,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_DEFENSE_UP_2'],
+        rating: 6,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_SPECIAL_DEFENSE_UP_2'],
+        rating: 6,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_ATTACK_SPATK_UP'],
+        rating: 7,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_GROWTH'],
+        rating: 7,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'MOVE_STOCKPILE'],
+        rating: 8.5,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_COSMIC_POWER'],
+        rating: 9,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_ACUPRESSURE'],
+        rating: 9,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_ATTACK_UP_2'],
+        rating: 9.5,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_SPECIAL_ATTACK_UP_2'],
+        rating: 9.5,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_DRAGON_DANCE'],
+        rating: 9.5,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_SHIFT_GEAR'],
+        rating: 9.5,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_BELLY_DRUM'],
+        rating: 10,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_VICTORY_DANCE'],
+        rating: 10,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_QUIVER_DANCE'],
+        rating: 10,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_SPECIAL_ATTACK_UP_3'],
+        rating: 10,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_SHELL_SMASH'],
+        rating: 10,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_GEOMANCY'],
+        rating: 10,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_CLANGOROUS_SOUL'],
+        rating: 10,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_NO_RETREAT'],
+        rating: 10,
+    },
+]
+
+// @TODO Moves that shouldn't go together
+const antiComboList = [
+    [
+        'MOVE_REST',
+        'MOVE_MILK_DRINK',
+        'MOVE_SOFT_BOILED',
+        'MOVE_SLACK_OFF',
+        'MOVE_HEAL_ORDER',
+        'MOVE_RECOVER',
+        'MOVE_SYNTHESIS',
+        'MOVE_MORNING_SUN',
+        'MOVE_MOONLIGHT',
+        'MOVE_ROOST',
+    ],
+    [
+        'MOVE_STOCKPILE',
+        'MOVE_COSMIC_POWER',
+        'MOVE_DEFEND_ORDER',
+    ],
+];
+
+const onePerTeamMoves = ['MOVE_HEAL_BELL', 'MOVE_AROMATHERAPY'];
+
+// @TODO These should have their own treatment
+const weatherMoves = [
+    'MOVE_RAIN_DANCE',
+    'MOVE_SUNNY_DAY',
+    'MOVE_HAIL',
+    'MOVE_SANDSTORM',
+];
+
+const specialStrategiesMoves = [
+    'MOVE_TRICK',
+    'MOVE_RECYCLE',
 ]
 
 const statusList = {
@@ -223,33 +347,111 @@ const statusList = {
 
     MOVE_NIGHTMARE: 1,
     MOVE_SLEEP_TALK: 1,
+    MOVE_SPIT_UP: 1,
+    MOVE_SWALLOW: 1,
+    MOVE_MEMENTO: 1,
+    MOVE_FOLLOW_ME: 1,
+    MOVE_RAGE_POWDER: 1,
+    MOVE_TELEKINESIS: 1,
+    MOVE_MAGIC_ROOM: 1,
+    MOVE_HELPING_HAND: 1,
+    MOVE_TRICK: 1,
+    MOVE_SWITCHEROO: 1,
+    MOVE_ROLE_PLAY: 1,
+    MOVE_RECYCLE: 1,
+    MOVE_SKILL_SWAP: 1,
+    MOVE_IMPRISON: 1,
+    MOVE_GRUDGE: 1,
+    MOVE_GRAVITY: 1,
+    MOVE_MIRACLE_EYE: 1,
+    MOVE_REFRESH: 2,
+    MOVE_SNATCH: 2,
+    MOVE_HEALING_WISH: 3,
+    MOVE_LUNAR_DANCE: 3,
+    MOVE_SOAK: 3,
+    MOVE_QUASH: 4,
+
+    MOVE_RAIN_DANCE: 1,
+    MOVE_SUNNY_DAY: 1,
+    MOVE_HAIL: 1,
+    MOVE_SANDSTORM: 1,
     
+    MOVE_SWEET_SCENT: 1,
     MOVE_SWEET_KISS: 1,
     MOVE_SUPERSONIC: 1,
     MOVE_BIDE: 2,
     MOVE_SPITE: 2,
+    MOVE_PSYCH_UP: 2,
+    MOVE_BATON_PASS: 2,
     MOVE_PERISH_SONG: 2,
-    MOVE_SANDSTORM: 2,
+    MOVE_MUD_SPORT: 2,
+    MOVE_WATER_SPORT: 2,
+    MOVE_EMBARGO: 2,
+    MOVE_CAPTIVATE: 2,
     
+    MOVE_WIDE_GUARD: 1,
+    MOVE_QUICK_GUARD: 1,
+    MOVE_ALLY_SWITCH: 1,
+    MOVE_HEAL_PULSE: 1,
+    MOVE_GUARD_SPLIT: 1,
+    MOVE_POWER_SPLIT: 1,
+    MOVE_ENTRAINMENT: 1,
+    MOVE_BESTOW: 1,
+    MOVE_WONDER_ROOM: 2,
+    MOVE_POWER_TRICK: 2,
+    MOVE_POWER_SWAP: 2,
+    MOVE_GUARD_SWAP: 2,
+    MOVE_HEART_SWAP: 3,
+    MOVE_WORRY_SEED: 2,
+    MOVE_GASTRO_ACID: 2,
+    MOVE_SIMPLE_BEAM: 2,
+    MOVE_LUCKY_CHANT: 2,
+    MOVE_ODOR_SLEUTH: 2,
+    MOVE_MAT_BLOCK: 2,
+    MOVE_INGRAIN: 2,
+    MOVE_AQUA_RING: 3,
+    MOVE_MAGNET_RISE: 2,
     MOVE_SCREECH: 4,
     MOVE_CONFUSE_RAY: 2,
     MOVE_TEETER_DANCE: 2,
+    MOVE_FLATTER: 2,
+    MOVE_HEAL_BLOCK: 3,
+    MOVE_SWAGGER: 4,
+    MOVE_ATTRACT: 4,
+    MOVE_ME_FIRST: 4,
+    MOVE_AFTER_YOU: 4,
+    MOVE_PSYCHO_SHIFT: 4,
+    MOVE_ENCORE: 6,
+    MOVE_COPYCAT: 6,
     
     MOVE_SAFEGUARD: 3,
     MOVE_HAZE: 4,
+
+    MOVE_MAGIC_COAT: 7,
+    MOVE_COUNTER: 7,
+    MOVE_METAL_BURST: 7.5,
     
     MOVE_SKETCH: 1,
+    MOVE_CAMOUFLAGE: 2,
     MOVE_CONVERSION: 2,
+    MOVE_REFLECT_TYPE: 2,
+    MOVE_PRESENT: 2,
     MOVE_CONVERSION_2: 4,
+    MOVE_TORMENT: 3,
     MOVE_TRANSFORM: 3,
     MOVE_MIRROR_MOVE: 3,
+    MOVE_TAUNT: 5,
     MOVE_METRONOME: 5,
+    MOVE_ASSIST: 5,
+    MOVE_NATURE_POWER: 6,
     MOVE_DESTINY_BOND: 6,
 
     MOVE_DOUBLE_TEAM: 5,
     MOVE_FOCUS_ENERGY: 5,
     MOVE_MINIMIZE: 6,
     
+    MOVE_BELCH: 6,
+
     MOVE_HOWL: 6,
     MOVE_HONE_CLAWS: 6.5,
     MOVE_WORK_UP: 6.5,
@@ -257,52 +459,67 @@ const statusList = {
     MOVE_CURSE: 6.5,
     MOVE_ACUPRESSURE: 6.5,
     MOVE_AGILITY: 7,
+    MOVE_AUTOTOMIZE: 7,
     MOVE_BULK_UP: 7,
     MOVE_CALM_MIND: 7,
+    MOVE_TAILWIND: 7.5,
     MOVE_SWORDS_DANCE: 8,
     MOVE_BELLY_DRUM: 8,
     MOVE_DRAGON_DANCE: 8.5,
+    MOVE_SHIFT_GEAR: 8.5,
     MOVE_TAIL_GLOW: 9,
     MOVE_QUIVER_DANCE: 9.5,
     MOVE_VICTORY_DANCE: 9.5,
     MOVE_SHELL_SMASH: 9.5,
+    MOVE_GEOMANCY: 9.5,
+    MOVE_NO_RETREAT: 10,
+    MOVE_CLANGOROUS_SOUL: 10,
     
+    MOVE_STOCKPILE: 8,
     MOVE_DEFEND_ORDER: 8,
     MOVE_COSMIC_POWER: 8,
 
     MOVE_POISON_GAS: 4,
     MOVE_TOXIC: 8,
+    MOVE_WILL_O_WISP: 8,
+    MOVE_GRASS_WHISTLE: 4.5,
+    MOVE_YAWN: 5,
     MOVE_LOVELY_KISS: 6.5,
-    MOVE_SPORE: 10,
     MOVE_SLEEP_POWDER: 7,
+    EFFECT_DARK_VOID: 7,
+    MOVE_SPORE: 10,
     MOVE_THUNDER_WAVE: 7,
     MOVE_GLARE: 7.5,
 
+    MOVE_HEAL_BELL: 6,
+    MOVE_AROMATHERAPY: 6,
+
     MOVE_SPIKES: 6,
+    MOVE_TOXIC_SPIKES: 6.5,
     MOVE_STEALTH_ROCK: 8,
 
+    MOVE_PAIN_SPLIT: 5,
     MOVE_LIGHT_SCREEN: 7.5,
     MOVE_REFLECT: 7.5,
     MOVE_SUBSTITUTE: 8,
     MOVE_DEFOG: 7,
     MOVE_REST: 6,
+    MOVE_WISH: 7,
     MOVE_MILK_DRINK: 8.5,
     MOVE_SOFT_BOILED: 8.5,
     MOVE_SLACK_OFF: 8.5,
     MOVE_HEAL_ORDER: 8.5,
     MOVE_RECOVER: 8.5,
     MOVE_SYNTHESIS: 8.5,
+    MOVE_MORNING_SUN: 8.5,
     MOVE_MOONLIGHT: 8.5,
     MOVE_ROOST: 8.5,
-    MOVE_HEAL_BELL: 7,
-    MOVE_AROMATHERAPY: 7,
     MOVE_LEECH_SEED: 8,
 
     // Special moves like this are discouraged unless gimmick team
     MOVE_TRICK_ROOM: 3,
 
     // Other moves that are kinda special
-    MOVE_METAL_BURST: 8,
     MOVE_LUSTER_PURGE: 8,
     MOVE_MIST_BALL: 8,
 
@@ -339,6 +556,7 @@ function rateMove(move) {
             || move.effect === 'EFFECT_DEFENSE_CURL'
             || move.effect === 'EFFECT_DEFENSE_UP'
             || move.effect === 'EFFECT_ENDURE'
+            || move.effect === 'EFFECT_CHARGE'
         ) {
             return 3.5;
         }
@@ -347,6 +565,10 @@ function rateMove(move) {
             move.effect === 'EFFECT_MEAN_LOOK'
             || move.effect === 'EFFECT_SPEED_DOWN_2'
             || move.effect === 'EFFECT_PROTECT'
+            || move.effect === 'EFFECT_ATTACK_DOWN_2'
+            || move.effect === 'EFFECT_DEFENSE_DOWN_2'
+            || move.effect === 'EFFECT_SPECIAL_DEFENSE_DOWN_2'
+            || move.effect === 'EFFECT_TICKLE'
         ) {
             return 4.5;
         }
@@ -354,14 +576,27 @@ function rateMove(move) {
         if (
             move.effect === 'EFFECT_DEFENSE_UP_2'
             || move.effect === 'EFFECT_SPECIAL_DEFENSE_UP_2'
+            || move.effect === 'EFFECT_DEFENSE_UP_3'
         ) {
             return 5;
         }
 
         if (
             move.effect === 'EFFECT_ATTACK_UP'
+            || move.effect === 'EFFECT_SPECIAL_ATTACK_UP'
+            || move.effect === 'EFFECT_ATTACK_UP_USER_ALLY'
         ) {
             return 6;
+        }
+
+        if (
+            move.effect === 'EFFECT_BULK_UP'
+            || move.effect === 'EFFECT_ATTACK_SPATK_UP'
+            || move.effect === 'EFFECT_CALM_MIND'
+            || move.effect === 'EFFECT_ATTACK_ACCURACY_UP'
+            || move.effect === 'EFFECT_COIL'
+        ) {
+            return 6.5;
         }
 
         return 1;
