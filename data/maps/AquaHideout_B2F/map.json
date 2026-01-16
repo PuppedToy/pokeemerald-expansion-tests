@@ -106,6 +106,19 @@
       "trainer_sight_or_berry_tree_id": "ITEM_NEST_BALL",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_AQUA_HIDEOUT_B2F_NEST_BALL"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 29,
+      "y": 17,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "movement_range_x": 15,
+      "movement_range_y": 15,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "ITEM_MASTER_BALL",
+      "script": "Common_EventScript_FindItem",
+      "flag": "FLAG_ITEM_AQUA_HIDEOUT_B1F_MASTER_BALL"
     }
   ],
   "warp_events": [
@@ -169,7 +182,7 @@
       "x": 31,
       "y": 17,
       "elevation": 3,
-      "dest_map": "MAP_AQUA_HIDEOUT_B2F",
+      "dest_map": "MAP_AQUA_HIDEOUT_B1F",
       "dest_warp_id": "4"
     },
     {
