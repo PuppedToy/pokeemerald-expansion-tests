@@ -789,6 +789,9 @@ function rateMove(move) {
     return rating;
 }
 
+// @TODO I need to rate move twice. First ~generic context-less rating.
+// Then, I need to give the context of: item, ability and team. So special cases can be handled there.
+// This rateMove is supposed to be the first generic rating.
 function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves) {
     if (
         currentMoves.filter(m => m.category !== 'DAMAGE_CATEGORY_STATUS').length < 2
@@ -1529,6 +1532,7 @@ const FLEXIBILITY_THRESHOLD = 20;
 const GOOD_STAT_VALUE = 160;
 const EXCELLENT_STAT_VALUE = 160;
 
+// @TODO Maybe add a level-based rating too for the right context
 function ratePokemon(poke, moves, abilities) {
     let bestAbilityRating = 0;
     poke.parsedAbilities.forEach(abilityId => {
