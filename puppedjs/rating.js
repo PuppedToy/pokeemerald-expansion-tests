@@ -266,7 +266,15 @@ const comboList = [
         rating: 9.5,
     },
     {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_TIDY_UP'],
+        rating: 9.5,
+    },
+    {
         effects: ['EFFECT_BATON_PASS', 'EFFECT_SHIFT_GEAR'],
+        rating: 9.5,
+    },
+    {
+        effects: ['EFFECT_BATON_PASS', 'EFFECT_FILLET_AWAY'],
         rating: 9.5,
     },
     {
@@ -316,6 +324,9 @@ const antiComboList = [
         'MOVE_MORNING_SUN',
         'MOVE_MOONLIGHT',
         'MOVE_ROOST',
+        'MOVE_SHORE_UP',
+        'MOVE_STRENGTH_SAP',
+        'MOVE_LIFE_DEW',
     ],
     [
         'MOVE_STOCKPILE',
@@ -332,11 +343,19 @@ const weatherMoves = [
     'MOVE_SUNNY_DAY',
     'MOVE_HAIL',
     'MOVE_SANDSTORM',
+    'MOVE_SNOWSCAPE',
+    'MOVE_CHILLY_RECEPTION',
 ];
 
 const specialStrategiesMoves = [
     'MOVE_TRICK',
     'MOVE_RECYCLE',
+    'MOVE_SPEED_SWAP',
+    'MOVE_GEAR_UP',
+    'MOVE_MAGNETIC_FLUX',
+    'MOVE_AURORA_VEIL',
+    'MOVE_STUFF_CHEEKS',
+    'MOVE_TEATIME',
 ]
 
 const statusList = {
@@ -344,6 +363,16 @@ const statusList = {
     MOVE_CELEBRATE: 0,
     MOVE_HOLD_HANDS: 0,
     MOVE_STRUGGLE: 0,
+    MOVE_ROTOTILLER: 0,
+    MOVE_AROMATIC_MIST: 0,
+    MOVE_MAGNETIC_FLUX: 0,
+    MOVE_HAPPY_HOUR: 0,
+    MOVE_FLORAL_HEALING: 0,
+    MOVE_SPOTLIGHT: 0,
+    MOVE_GEAR_UP: 0,
+    MOVE_AURORA_VEIL: 0,
+    MOVE_DECORATE: 0,
+    MOVE_COACHING: 0,
 
     MOVE_NIGHTMARE: 1,
     MOVE_SLEEP_TALK: 1,
@@ -368,6 +397,8 @@ const statusList = {
     MOVE_SNATCH: 2,
     MOVE_HEALING_WISH: 3,
     MOVE_LUNAR_DANCE: 3,
+    MOVE_STUFF_CHEEKS: 3,
+    MOVE_TEATIME: 3,
     MOVE_SOAK: 3,
     MOVE_QUASH: 4,
 
@@ -375,6 +406,8 @@ const statusList = {
     MOVE_SUNNY_DAY: 1,
     MOVE_HAIL: 1,
     MOVE_SANDSTORM: 1,
+    MOVE_SNOWSCAPE: 1,
+    MOVE_CHILLY_RECEPTION: 3,
     
     MOVE_SWEET_SCENT: 1,
     MOVE_SWEET_KISS: 1,
@@ -388,6 +421,11 @@ const statusList = {
     MOVE_WATER_SPORT: 2,
     MOVE_EMBARGO: 2,
     MOVE_CAPTIVATE: 2,
+
+    MOVE_GRASSY_TERRAIN: 2,
+    MOVE_MISTY_TERRAIN: 2,
+    MOVE_ELECTRIC_TERRAIN: 2,
+    MOVE_PSYCHIC_TERRAIN: 2,
     
     MOVE_WIDE_GUARD: 1,
     MOVE_QUICK_GUARD: 1,
@@ -397,12 +435,16 @@ const statusList = {
     MOVE_POWER_SPLIT: 1,
     MOVE_ENTRAINMENT: 1,
     MOVE_BESTOW: 1,
+    MOVE_FAIRY_LOCK: 1,
+    MOVE_ION_DELUGE: 1,
     MOVE_WONDER_ROOM: 2,
     MOVE_POWER_TRICK: 2,
     MOVE_POWER_SWAP: 2,
     MOVE_GUARD_SWAP: 2,
+    MOVE_SPEED_SWAP: 2,
     MOVE_HEART_SWAP: 3,
     MOVE_WORRY_SEED: 2,
+    MOVE_POWER_SHIFT: 2,
     MOVE_GASTRO_ACID: 2,
     MOVE_SIMPLE_BEAM: 2,
     MOVE_LUCKY_CHANT: 2,
@@ -410,10 +452,13 @@ const statusList = {
     MOVE_MAT_BLOCK: 2,
     MOVE_INGRAIN: 2,
     MOVE_AQUA_RING: 3,
+    MOVE_ELECTRIFY: 3,
     MOVE_MAGNET_RISE: 2,
     MOVE_SCREECH: 4,
     MOVE_CONFUSE_RAY: 2,
     MOVE_TEETER_DANCE: 2,
+    MOVE_VENOM_DRENCH: 2,
+    MOVE_POWDER: 2,
     MOVE_FLATTER: 2,
     MOVE_HEAL_BLOCK: 3,
     MOVE_SWAGGER: 4,
@@ -432,26 +477,40 @@ const statusList = {
     MOVE_METAL_BURST: 7.5,
     
     MOVE_SKETCH: 1,
+    MOVE_DOODLE: 1,
+    MOVE_INSTRUCT: 1,
     MOVE_CAMOUFLAGE: 2,
     MOVE_CONVERSION: 2,
     MOVE_REFLECT_TYPE: 2,
     MOVE_PRESENT: 2,
+    MOVE_SPICY_EXTRACT: 2,
+    MOVE_TRICK_OR_TREAT: 2,
+    MOVE_CRAFTY_SHIELD: 2,
+    MOVE_MAGIC_POWDER: 2,
+    EFFECT_FLOWER_SHIELD: 2,
+    MOVE_FORESTS_CURSE: 2,
     MOVE_CONVERSION_2: 4,
     MOVE_TORMENT: 3,
     MOVE_TRANSFORM: 3,
     MOVE_MIRROR_MOVE: 3,
+    MOVE_PURIFY: 5,
     MOVE_TAUNT: 5,
     MOVE_METRONOME: 5,
     MOVE_ASSIST: 5,
     MOVE_NATURE_POWER: 6,
     MOVE_DESTINY_BOND: 6,
+    MOVE_CORROSIVE_GAS: 5,
 
     MOVE_DOUBLE_TEAM: 5,
     MOVE_FOCUS_ENERGY: 5,
+    MOVE_DRAGON_CHEER: 6,
+    MOVE_LASER_FOCUS: 6,
     MOVE_MINIMIZE: 6,
     
     MOVE_BELCH: 6,
+    MOVE_COURT_CHANGE: 6,
 
+    MOVE_TOPSY_TURVY: 6,
     MOVE_HOWL: 6,
     MOVE_HONE_CLAWS: 6.5,
     MOVE_WORK_UP: 6.5,
@@ -463,15 +522,18 @@ const statusList = {
     MOVE_BULK_UP: 7,
     MOVE_CALM_MIND: 7,
     MOVE_TAILWIND: 7.5,
+    MOVE_TAKE_HEART: 8,
     MOVE_SWORDS_DANCE: 8,
     MOVE_BELLY_DRUM: 8,
     MOVE_DRAGON_DANCE: 8.5,
+    MOVE_TIDY_UP: 8.5,
     MOVE_SHIFT_GEAR: 8.5,
     MOVE_TAIL_GLOW: 9,
     MOVE_QUIVER_DANCE: 9.5,
     MOVE_VICTORY_DANCE: 9.5,
     MOVE_SHELL_SMASH: 9.5,
     MOVE_GEOMANCY: 9.5,
+    MOVE_FILLET_AWAY: 9.5,
     MOVE_NO_RETREAT: 10,
     MOVE_CLANGOROUS_SOUL: 10,
     
@@ -480,6 +542,7 @@ const statusList = {
     MOVE_COSMIC_POWER: 8,
 
     MOVE_POISON_GAS: 4,
+    MOVE_TOXIC_THREAD: 7,
     MOVE_TOXIC: 8,
     MOVE_WILL_O_WISP: 8,
     MOVE_GRASS_WHISTLE: 4.5,
@@ -497,24 +560,39 @@ const statusList = {
     MOVE_SPIKES: 6,
     MOVE_TOXIC_SPIKES: 6.5,
     MOVE_STEALTH_ROCK: 8,
+    MOVE_STICKY_WEB: 8,
+
+    MOVE_PARTING_SHOT: 8,
+    MOVE_KINGS_SHIELD: 8,
+    MOVE_SPIKY_SHIELD: 8,
+    MOVE_BANEFUL_BUNKER: 8,
+    MOVE_OBSTRUCT: 8,
+    MOVE_SILK_TRAP: 8,
+    MOVE_BURNING_BULWARK: 8,
 
     MOVE_PAIN_SPLIT: 5,
     MOVE_LIGHT_SCREEN: 7.5,
     MOVE_REFLECT: 7.5,
     MOVE_SUBSTITUTE: 8,
+    MOVE_SHED_TAIL: 8,
     MOVE_DEFOG: 7,
+    MOVE_LIFE_DEW: 5,
     MOVE_REST: 6,
     MOVE_WISH: 7,
     MOVE_MILK_DRINK: 8.5,
     MOVE_SOFT_BOILED: 8.5,
     MOVE_SLACK_OFF: 8.5,
+    MOVE_SHORE_UP: 8.5,
     MOVE_HEAL_ORDER: 8.5,
     MOVE_RECOVER: 8.5,
     MOVE_SYNTHESIS: 8.5,
     MOVE_MORNING_SUN: 8.5,
     MOVE_MOONLIGHT: 8.5,
     MOVE_ROOST: 8.5,
+    MOVE_STRENGTH_SAP: 10,
     MOVE_LEECH_SEED: 8,
+    MOVE_OCTOLOCK: 8,
+    MOVE_REVIVAL_BLESSING: 10,
 
     // Special moves like this are discouraged unless gimmick team
     MOVE_TRICK_ROOM: 3,
@@ -546,7 +624,9 @@ function rateMove(move) {
         if (
             move.effect === 'EFFECT_DEFENSE_DOWN'
             || move.effect === 'EFFECT_ATTACK_DOWN'
+            || move.effect === 'EFFECT_SPECIAL_ATTACK_DOWN'
             || move.effect === 'EFFECT_ROAR'
+            || move.effect === 'EFFECT_JUNGLE_HEALING'
         ) {
             return 3;
         }
@@ -564,11 +644,14 @@ function rateMove(move) {
         if (
             move.effect === 'EFFECT_MEAN_LOOK'
             || move.effect === 'EFFECT_SPEED_DOWN_2'
+            || move.effect === 'EFFECT_TAR_SHOT'
             || move.effect === 'EFFECT_PROTECT'
             || move.effect === 'EFFECT_ATTACK_DOWN_2'
+            || move.effect === 'EFFECT_SPECIAL_ATTACK_DOWN_2'
             || move.effect === 'EFFECT_DEFENSE_DOWN_2'
             || move.effect === 'EFFECT_SPECIAL_DEFENSE_DOWN_2'
             || move.effect === 'EFFECT_TICKLE'
+            || move.effect === 'EFFECT_NOBLE_ROAR'
         ) {
             return 4.5;
         }
