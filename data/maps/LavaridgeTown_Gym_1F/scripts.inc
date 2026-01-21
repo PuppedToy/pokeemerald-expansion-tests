@@ -43,6 +43,9 @@ LavaridgeTown_Gym_1F_EventScript_FlanneryDefeated::
 	setflag FLAG_WHITEOUT_TO_LAVARIDGE
 	setflag FLAG_DEFEATED_LAVARIDGE_GYM
 	setflag FLAG_BADGE04_GET
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
+	givemon GYM_REWARD_MON, 36
+	call LavaridgeTown_Gym_1F_EventScript_ReceivedRewardPokeFanfare
 	addvar VAR_PETALBURG_GYM_STATE, 1
 	giveitem ITEM_HM_STRENGTH
 	setflag FLAG_RECEIVED_HM_STRENGTH
@@ -63,6 +66,16 @@ LavaridgeTown_Gym_1F_EventScript_FlanneryDefeated::
 	setflag FLAG_ENABLE_FLANNERY_MATCH_CALL
 	release
 	end
+
+LavaridgeTown_Gym_1F_EventScript_ReceivedRewardPokeFanfare::
+	playfanfare MUS_OBTAIN_ITEM
+	message LavaridgeTown_Gym_1F_Text_PlayerReceivedRewardPoke
+	waitmessage
+	waitfanfare
+	return
+
+LavaridgeTown_Gym_1F_Text_PlayerReceivedRewardPoke:
+	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 LavaridgeTown_Gym_1F_EventScript_GiveOverheat2::
 	giveitem ITEM_TM_OVERHEAT

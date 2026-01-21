@@ -68,8 +68,8 @@ MossdeepCity_Gym_EventScript_TateAndLizaDefeated::
 	setflag FLAG_DEFEATED_MOSSDEEP_GYM
 	setflag FLAG_BADGE07_GET
 	setflag FLAG_HIDE_AQUA_HIDEOUT_GRUNTS
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, SPECIES_LATIOS
-	givemon SPECIES_LATIOS, 55
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
+	givemon GYM_REWARD_MON, 56
 	call MossdeepCity_Gym_EventScript_ReceivedRewardPokeFanfare
 	clearflag FLAG_HIDE_SLATEPORT_CITY_STERNS_SHIPYARD_MR_BRINEY
 	clearflag FLAG_UNKNOWN_0x393
@@ -661,4 +661,4 @@ MossdeepCity_Gym_Text_TateAndLizaRematchNeedTwoMons:
 	.string "LIZA: Two POKéMON when you come back.$"
 
 MossdeepCity_Gym_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received LATIOS!$"
+	.string "{PLAYER} received GYM_REWARD_NAME!$"

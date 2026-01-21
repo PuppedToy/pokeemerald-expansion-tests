@@ -26,6 +26,9 @@ DewfordTown_Gym_EventScript_BrawlyDefeated::
 	setflag FLAG_DEFEATED_DEWFORD_GYM
 	setflag FLAG_BADGE02_GET
 	setflag FLAG_HIDE_ROUTE103_FISHERMAN
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
+	givemon GYM_REWARD_MON, 19
+	call DewfordTown_Gym_EventScript_ReceivedRewardPokeFanfare
 	addvar VAR_PETALBURG_GYM_STATE, 1
 	call_if_eq VAR_PETALBURG_GYM_STATE, 6, Common_EventScript_ReadyPetalburgGymForBattle
 	setvar VAR_0x8008, 2
@@ -45,6 +48,16 @@ DewfordTown_Gym_EventScript_BrawlyDefeated::
 	setflag FLAG_ENABLE_ROXANNE_FIRST_CALL
 	release
 	end
+
+DewfordTown_Gym_EventScript_ReceivedRewardPokeFanfare::
+	playfanfare MUS_OBTAIN_ITEM
+	message DewfordTown_Gym_Text_PlayerReceivedRewardPoke
+	waitmessage
+	waitfanfare
+	return
+
+DewfordTown_Gym_Text_PlayerReceivedRewardPoke:
+	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 DewfordTown_Gym_EventScript_GiveBulkUp::
 	giveitem ITEM_TM_BULK_UP
