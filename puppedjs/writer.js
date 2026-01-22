@@ -512,7 +512,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         && poke.evolutionData.isFinal
         && poke.evolutionData.megaEvos
         && poke.evolutionData.megaEvos.length > 0
-        && poke.bestEvoRating < TIER_LEGEND_THRESHOLD
+        && poke.rating.bestEvoRating < TIER_LEGEND_THRESHOLD
         && checkValidEvo(poke, 29)
     );
     const gym3Replacement = sampleAndRemove(gym3ReplacementList);
