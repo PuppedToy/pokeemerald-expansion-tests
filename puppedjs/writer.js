@@ -452,7 +452,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     // console.log('Route 111 map updated with new starter mega stones: ', megaReplacements);
     // @TODO Replace mega stone trainers & rival
     
-    const checkValidEvo = (evaluatedPokemon, level) => {
+    const checkValidEvo = (evaluatedPokemon, level, trainer) => {
         let devolvedForm = evaluatedPokemon;
         if (devolvedForm.evolutionData.megaBaseForm) {
             devolvedForm = pokemonList.find(p => p.id === devolvedForm.evolutionData.megaBaseForm);
@@ -472,7 +472,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         };
         let pokemonThatEvolveToThis = pokemonList.filter(filterMethod);
         if (pokemonThatEvolveToThis.length > 1) {
-            console.warn(`WARN: Multiple pre-evolutions found for ${devolvedForm.id} in trainer ${trainer.id} when checking valid evolutions: ${pokemonThatEvolveToThis.map(p => p.id).join(', ')}.`);
+            console.warn(`WARN: Multiple pre-evolutions found for ${devolvedForm.id} in trainer ${trainer?.id} when checking valid evolutions: ${pokemonThatEvolveToThis.map(p => p.id).join(', ')}.`);
         }
         if (pokemonThatEvolveToThis.length === 0) {
             return false;
@@ -1105,7 +1105,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             }
             if (trainerMonDefinition.checkValidEvo) {
                 pokemonLooseList = pokemonLooseList.filter(
-                    loosePokemon => checkValidEvo(loosePokemon, trainer.level)
+                    loosePokemon => checkValidEvo(loosePokemon, trainer.level, trainer)
                 );
             }
 
