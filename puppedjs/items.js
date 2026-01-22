@@ -2,7 +2,6 @@ const items = {
     megaStones: {
         ITEM_HARBOR_MAIL: 'SPECIES_SPINDA', // Route 113
         ITEM_ORANGE_MAIL: 'SPECIES_RIBOMBEE', // Scorched Slab
-        ITEM_GLITTER_MAIL: 'SPECIES_SHEDINJA', // Victory Road
     },
 
     // Randomized items - mints

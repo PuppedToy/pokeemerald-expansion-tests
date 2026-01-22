@@ -4932,15 +4932,16 @@ const trainersData = [
     {
         id: 'TRAINER_HOPE',
         class: 'Cooltrainer F',
-        reward: ['SPECIES_SHEDINJA', 'ITEM_GLITTER_MAIL'],
+        reward: ['SPECIES_SHEDINJA'],
         level: 67,
         bag: [...spaceCenterBag()],
         team: [
             {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_GLITTER_MAIL',
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SHEDINJA'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_PREMIUM, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_PREMIUM_MEGA, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_PREMIUM, 2),
             ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
         ],
     },

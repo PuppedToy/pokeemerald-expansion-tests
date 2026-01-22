@@ -89,6 +89,10 @@ const wildData = {
             replace: [TIER_AVERAGE],
             type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
         },
+        FINAL_STRONG: {
+            replace: [TIER_STRONG],
+            type: [EVO_TYPE_FINAL],
+        },
         FINAL_OR_SOLO_STRONG: {
             replace: [TIER_STRONG],
             type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
@@ -145,7 +149,7 @@ const wildData = {
         // @TODO Surf and land pass
 
         // PetalburgWoods
-        SPECIES_PATRAT: 'LC_AVERAGE_OR_WEAK',
+        SPECIES_PATRAT: 'LC_AVERAGE',
 
         // Route115
         SPECIES_SANDSHREW: 'LC_AVERAGE_OR_WEAK',
@@ -255,66 +259,63 @@ const wildData = {
 
         // @TODO Add 123 (mega stones?)
 
-        // @TODO Keep working from here and start removing strong solos / premium
         // Route 124
-        SPECIES_WO_CHIEN: 'NFE_OR_SOLO_STRONG',
+        SPECIES_WO_CHIEN: 'NFE_OR_LC_STRONG',
         SPECIES_GUZZLORD: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_KARTANA: 'LC_NFE_OR_SOLO_AVERAGE',
-
-        // Mossdeep
-        SPECIES_GOLETT: 'LC_NFE_OR_SOLO_AVERAGE',
 
         // Route 125
         SPECIES_SCORBUNNY: 'FINAL_OR_SOLO_AVERAGE',
         SPECIES_RABOOT: 'FINAL_OR_SOLO_AVERAGE',
 
         // Shoal Cave
-        SPECIES_FROAKIE: 'FINAL_OR_SOLO_STRONG',
-        SPECIES_FROGADIER: 'FINAL_OR_SOLO_STRONG',
+        SPECIES_FROAKIE: 'FINAL_PREMIUM',
+        SPECIES_FROGADIER: 'FINAL_PREMIUM',
 
         // Route 127
-        SPECIES_SCREAM_TAIL: 'FINAL_OR_SOLO_STRONG',
+        SPECIES_SCREAM_TAIL: 'FINAL_STRONG',
         SPECIES_OMANYTE: 'FINAL_OR_SOLO_AVERAGE',
         SPECIES_OMASTAR: 'FINAL_OR_SOLO_AVERAGE',
-        SPECIES_RELICANTH: 'FINAL_OR_SOLO_STRONG',
+        SPECIES_RELICANTH: 'FINAL_STRONG',
 
         // Route 126
-        SPECIES_FLUTTER_MANE: 'FINAL_OR_SOLO_STRONG',
+        SPECIES_FLUTTER_MANE: 'FINAL_STRONG',
         SPECIES_FINNEON: 'FINAL_OR_SOLO_AVERAGE',
         SPECIES_LUMINEON: 'FINAL_OR_SOLO_AVERAGE',
-        SPECIES_HUNTAIL: 'FINAL_OR_SOLO_STRONG',
-
-        // Sootopolis
-        SPECIES_HAWLUCHA: 'FINAL_OR_SOLO_STRONG',
+        SPECIES_HUNTAIL: 'FINAL_STRONG',
 
         // Route 128
-        SPECIES_ROSELIA: 'FINAL_OR_SOLO_AVERAGE_OR_STRONG',
-        SPECIES_ROSERADE: 'FINAL_OR_SOLO_AVERAGE_OR_STRONG',
-        SPECIES_STARMIE: 'FINAL_OR_SOLO_AVERAGE_OR_STRONG',
+        SPECIES_ROSELIA: 'FINAL_OR_SOLO_AVERAGE',
+        SPECIES_ROSERADE: 'FINAL_OR_SOLO_AVERAGE',
+        SPECIES_STARMIE: 'FINAL_OR_SOLO_AVERAGE',
 
         // Route 129
-        SPECIES_IRON_HANDS: 'FINAL_OR_SOLO_STRONG',
-        SPECIES_IRON_CROWN: 'FINAL_OR_SOLO_STRONG',
+        // @TODO Add grass
+        SPECIES_IRON_HANDS: 'FINAL_OR_SOLO_AVERAGE',
+        SPECIES_IRON_CROWN: 'FINAL_OR_SOLO_AVERAGE',
 
         // Route 131
-        SPECIES_IRON_JUGULIS: 'FINAL_OR_SOLO_STRONG',
-        SPECIES_IRON_BOULDER: 'FINAL_OR_SOLO_STRONG',
+        // @TODO Add grass
+        SPECIES_IRON_JUGULIS: 'FINAL_OR_SOLO_AVERAGE',
+        SPECIES_IRON_BOULDER: 'FINAL_OR_SOLO_AVERAGE',
 
         // Pacifidlog Town
-        SPECIES_IRON_LEAVES: 'FINAL_OR_SOLO_STRONG',
-        SPECIES_IRON_MOTH: 'FINAL_OR_SOLO_STRONG',
+        SPECIES_IRON_LEAVES: 'FINAL_OR_SOLO_AVERAGE',
+        SPECIES_IRON_MOTH: 'FINAL_OR_SOLO_AVERAGE',
 
         // Route 132
-        SPECIES_IRON_THORNS: 'FINAL_OR_SOLO_STRONG',
-        SPECIES_IRON_TREADS: 'FINAL_OR_SOLO_STRONG',
+        SPECIES_IRON_THORNS: 'FINAL_OR_SOLO_AVERAGE',
+        SPECIES_IRON_TREADS: 'FINAL_OR_SOLO_AVERAGE',
 
         // Ever Grande
-        SPECIES_RAIKOU: 'FINAL_OR_SOLO_PREMIUM',
-        SPECIES_ENTEI: 'FINAL_OR_SOLO_PREMIUM',
-        SPECIES_SUICUNE: 'FINAL_OR_SOLO_PREMIUM',
+        // @TODO Add grass
+        SPECIES_RAIKOU: 'FINAL_STRONG',
+        SPECIES_ENTEI: 'FINAL_STRONG',
+        SPECIES_SUICUNE: 'FINAL_STRONG',
 
         // Victory Road
-        SPECIES_SHEDINJA: 'FINAL_OR_SOLO_MEGA_LEGENDARY',
+        // @TODO Remove mega stone and add 4 other options
+        SPECIES_SHEDINJA: 'FINAL_OR_SOLO_PREMIUM',
     },
     maps: [
         // Shelgon maps
@@ -486,12 +487,6 @@ const wildData = {
             super: 'SPECIES_DOUBLADE',
         },
         {
-            id: 'MAP_MOSSDEEP_CITY',
-            old: 'SPECIES_GOLETT',
-            good: 'SPECIES_GOLETT',
-            super: 'SPECIES_GOLETT',
-        },
-        {
             id: 'MAP_ROUTE125',
             old: 'SPECIES_SCORBUNNY',
             good: 'SPECIES_RABOOT',
@@ -526,12 +521,6 @@ const wildData = {
         {
             id: 'MAP_UNDERWATER_ROUTE126',
             land: 'SPECIES_HUNTAIL',
-        },
-        {
-            id: 'SOOTOPOLIS_CITY',
-            old: 'SPECIES_HAWLUCHA',
-            good: 'SPECIES_HAWLUCHA',
-            super: 'SPECIES_HAWLUCHA',
         },
         {
             id: 'MAP_ROUTE128',
