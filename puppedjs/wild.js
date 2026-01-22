@@ -585,16 +585,12 @@ const wildData = {
             special: 'SPECIES_REGICE',
         },
         {
-            id: 'MAP_ANCIENT_TOMB',
-            special: 'SPECIES_REGISTEEL',
-        },
-        {
-            id: 'MAP_TATE_AND_LIZAS_GIFT',
-            special: 'SPECIES_LATIOS',
-        },
-        {
             id: 'MAP_NEW_MAUVILLE',
             special: 'SPECIES_MEW',
+        },
+        {
+            id: 'MAP_ANCIENT_TOMB',
+            special: 'SPECIES_REGISTEEL',
         },
         {
             id: 'MAP_SKY_PILLAR_TOP',
