@@ -4940,7 +4940,9 @@ const trainersData = [
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_SHEDINJA'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_PREMIUM_MEGA, 1),
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+            },
             ...generatePokemonsWithDefinition(POKEDEF_PREMIUM, 2),
             ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
         ],
