@@ -2861,7 +2861,6 @@ const trainersData = [
                 specific: 'SPECIES_CAMERUPT',
                 item: 'Cameruptite',
                 abilities: ['SOLID_ROCK'],
-                tryToHaveMove: ['MOVE_EARTHQUAKE', 'MOVE_LAVA_PLUME', 'MOVE_ROCK_SLIDE', 'MOVE_EARTH_POWER'],
             },
             {
                 id: 'MAXIE_STRONG_1',
