@@ -150,6 +150,7 @@ const wildData = {
 
         // PetalburgWoods
         SPECIES_PATRAT: 'LC_AVERAGE',
+        // @TODO Add fishing & surf
 
         // Route115
         SPECIES_SANDSHREW: 'LC_AVERAGE_OR_WEAK',
