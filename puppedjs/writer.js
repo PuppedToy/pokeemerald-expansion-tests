@@ -610,8 +610,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
     const premiumSoloReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.evolutionData.isLC
         && poke.rating.bestEvoTier === TIER_PREMIUM
+        && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const registeelReplacement = sampleAndRemove(premiumSoloReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(registeelReplacement.family));
