@@ -564,6 +564,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const gym7n8ReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && !poke.evolutionData.isMega
+        && poke.evolutionData.isFinal
         && poke.rating.bestEvoTier === TIER_PREMIUM
     );
     const gym7Replacement = sampleAndRemove(gym7n8ReplacementList);
