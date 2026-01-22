@@ -3203,7 +3203,7 @@ const trainersData = [
                 type: [gymMainTypes[3]],
             },
             {
-                ...POKEDEF_STRONG,
+                ...POKEDEF_AVERAGE,
                 type: [gymMainTypes[3]],
             },
             gymIsChangedType[3] ? {
@@ -3362,7 +3362,7 @@ const trainersData = [
                 type: [gymMainTypes[4]],
             },
             {
-                ...POKEDEF_STRONG,
+                ...POKEDEF_AVERAGE,
                 type: [gymMainTypes[4]],
             },
             {
@@ -4009,7 +4009,13 @@ const trainersData = [
         preventShuffle: true,
         bag: [...wallyBag2()],
         team: [
-            pokeDefDroughtMon(POKEDEF_STRONG),
+            {
+                abilities: ['DROUGHT'],
+                item: 'Heat Rock',
+                absoluteTier: [TIER_STRONG, TIER_AVERAGE],
+                checkValidEvo: true,
+                pickBest: true,
+            },
             {
                 specific: 'SPECIES_CAMERUPT',
                 item: 'Cameruptite',
