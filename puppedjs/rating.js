@@ -192,7 +192,7 @@ function damageMultiplier(attackingType, defendingTypes) {
     const chart = typeChart[attackingType.toUpperCase()];
     let result = 1;
     defendingTypes.forEach(defType => {
-        if (chart && chart[defType.toUpperCase()]) {
+        if (chart && chart[defType.toUpperCase()] !== undefined) {
             result *= chart[defType.toUpperCase()];
         }
     });
