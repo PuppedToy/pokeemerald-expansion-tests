@@ -776,7 +776,7 @@ const rival103Template = (id) => [
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_SURSKIT', 'SPECIES_SMEARGLE'],
+        encounterIds: ['SPECIES_SURSKIT'],
         tryEvolve: true,
     },
     {
@@ -795,15 +795,15 @@ const rivalRustboroEncounters = [
     'SPECIES_WURMPLE',
     'SPECIES_WINGULL',
     'SPECIES_SURSKIT',
-    'SPECIES_SMEARGLE',
+    // 'SPECIES_SMEARGLE',
     'SPECIES_WEEDLE',
     'SPECIES_PATRAT',
-    'SPECIES_PORYGON',
+    // 'SPECIES_PORYGON',
     'SPECIES_GEODUDE',
     'SPECIES_DELIBIRD',
     'SPECIES_DITTO',
     'SPECIES_SENTRET',
-    'SPECIES_POOCHYENA'
+    // 'SPECIES_POOCHYENA'
 ];
 
 const rivalRustboroTemplate = (id) => [
@@ -872,13 +872,13 @@ const rival119Encounters = [
     'SPECIES_GABITE',
     'SPECIES_VENUSAUR',
     'SPECIES_CHARMELEON',
-    'SPECIES_MIGHTYENA',
+    // 'SPECIES_MIGHTYENA',
     'SPECIES_HOOTHOOT',
     'SPECIES_EKANS',
     'SPECIES_SANDSHREW',
     'SPECIES_PONYTA',
     'SPECIES_MILTANK',
-    'SPECIES_GOLDEEN',
+    // 'SPECIES_GOLDEEN',
     'SPECIES_PELIPPER',
     'SPECIES_TENTACOOL',
     'SPECIES_LOTAD',
@@ -919,7 +919,7 @@ const rivalEvergrandeCityEncounters = [
     'SPECIES_WO_CHIEN',
     'SPECIES_GUZZLORD',
     'SPECIES_KARTANA',
-    'SPECIES_GOLETT',
+    // 'SPECIES_GOLETT',
     'SPECIES_RABOOT',
     'SPECIES_SCORBUNNY',
     'SPECIES_FROAKIE',
@@ -1627,20 +1627,20 @@ const trainersData = [
         tms: [...choice104TMs],
         team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
     },
-    {
-        id: 'TRAINER_GINA_AND_MIA_1',
-        class: 'Twins',
-        reward: ['SPECIES_PORYGON'],
-        level: 10,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_PORYGON'],
-                item: 'Oran Berry',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
-        ]
-    },
+    // {
+    //     id: 'TRAINER_GINA_AND_MIA_1',
+    //     class: 'Twins',
+    //     reward: ['SPECIES_PORYGON'],
+    //     level: 10,
+    //     team: [
+    //         {
+    //             special: TRAINER_POKE_ENCOUNTER,
+    //             encounterIds: ['SPECIES_PORYGON'],
+    //             item: 'Oran Berry',
+    //         },
+    //         ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+    //     ]
+    // },
     // Route 115
     {
         id: 'TRAINER_TIMOTHY_1',
