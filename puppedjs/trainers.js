@@ -2835,7 +2835,10 @@ const trainersData = [
                 ...POKEDEF_AVERAGE,
                 abilities: [...sandAbilities],
             },
-            pokeDefSandStreamMon(POKEDEF_AVERAGE),
+            {
+                ...POKEDEF_AVERAGE,
+                abilities: [...sandAbilities],
+            },
             {
                 ...POKEDEF_AVERAGE,
                 abilities: [...sandAbilities],
