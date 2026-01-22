@@ -4484,15 +4484,15 @@ const trainersData = [
         team: [
             {
                 ...POKEDEF_STRONG,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
@@ -4517,15 +4517,15 @@ const trainersData = [
         team: [
             {
                 ...POKEDEF_STRONG,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
@@ -4550,15 +4550,15 @@ const trainersData = [
         team: [
             {
                 ...POKEDEF_STRONG,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
