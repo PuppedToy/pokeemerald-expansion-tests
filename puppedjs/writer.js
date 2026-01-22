@@ -1578,6 +1578,11 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         console.log(`Mega Stone Replacement: ${megaId} -> ${megaReplacements[megaId]}`);
     }
 
+    // Print all megas found in foundMegaEvos set
+    for (const megaEvoId of foundMegaEvos) {
+        console.log(`Found Mega Evolution used in trainers: ${megaEvoId}`);
+    }
+
     console.log(`Output HTML file generated at ${outFile}`);
 }
 
