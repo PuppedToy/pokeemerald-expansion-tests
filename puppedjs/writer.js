@@ -1572,6 +1572,12 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     // @TODO Out name depends on a param
     const outFile = path.resolve(__dirname, OUTPUT_DIR, 'out.html');
     await fs.writeFile(outFile, htmlOutputTemplate, 'utf8');
+
+    // Print all megas found
+    for (const megaId of Object.keys(megaReplacements)) {
+        console.log(`Mega Stone Replacement: ${megaId} -> ${megaReplacements[megaId]}`);
+    }
+
     console.log(`Output HTML file generated at ${outFile}`);
 }
 
