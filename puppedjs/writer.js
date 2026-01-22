@@ -451,6 +451,21 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     // await fs.writeFile(route111File, route111Data, 'utf8');
     // console.log('Route 111 map updated with new starter mega stones: ', megaReplacements);
     // @TODO Replace mega stone trainers & rival
+
+    const devolveToBase = (pokemon) => {
+        if (
+            pokemon.evolutionData.type === EVO_TYPE_SOLO
+            || pokemon.evolutionData.isLC
+            || !pokemon.evoTree?.length
+        ) {
+            return pokemon;
+        }
+        if (pokemon.evolutionData.megaBaseForm) {
+            return devolveToBase(pokemonList.find(p => p.id === pokemon.evolutionData.megaBaseForm));
+        }
+        const baseForm = pokemon.evoTree[0];
+        return pokemonList.find(p => p.id === baseForm);
+    }
     
     const checkValidEvo = (evaluatedPokemon, level, trainer) => {
         let devolvedForm = evaluatedPokemon;
@@ -515,7 +530,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         && poke.rating.bestEvoRating < TIER_LEGEND_THRESHOLD
         && checkValidEvo(poke, 29)
     );
-    const gym3Replacement = sampleAndRemove(gym3ReplacementList);
+    const gym3Replacement = devolveToBase(sampleAndRemove(gym3ReplacementList));
     alreadyChosenFamilySet.add(getFamilyGroup(gym3Replacement.family));
     const gym4n5ReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
