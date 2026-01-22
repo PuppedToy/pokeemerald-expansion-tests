@@ -2826,7 +2826,7 @@ const trainersData = [
         preventShuffle: true,
         bag: [...magmaChimneyBag()],
         team: [
-            pokeDefSandStreamMon(POKEDEF_UP_TO_STRONG),
+            pokeDefSandStreamMon(POKEDEF_AVERAGE),
             {
                 ...POKEDEF_AVERAGE,
                 abilities: [...sandAbilities],
