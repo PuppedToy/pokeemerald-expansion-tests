@@ -466,6 +466,16 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         const baseForm = pokemon.evoTree[0];
         return pokemonList.find(p => p.id === baseForm);
     }
+
+    const invalidMegas = [
+        'SPECIES_FROSLASS',
+        'SPECIES_KLEAVOR',
+    ];
+    const hasValidMega = (poke) => {
+        return poke.evolutionData.megaEvos
+            && poke.evolutionData.megaEvos.length > 0
+            && !invalidMegas.includes(poke.id);
+    }
     
     const checkValidEvo = (evaluatedPokemon, level, trainer) => {
         let devolvedForm = evaluatedPokemon;
@@ -503,6 +513,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
     const gym1ReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
+        && !poke.evolutionData.isMega
         && poke.rating.tier === TIER_WEAK
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
@@ -525,8 +536,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && !poke.evolutionData.isMega
         && poke.evolutionData.isFinal
-        && poke.evolutionData.megaEvos
-        && poke.evolutionData.megaEvos.length > 0
+        && hasValidMega(poke)
         && poke.rating.bestEvoRating < TIER_LEGEND_THRESHOLD
         && checkValidEvo(poke, 29)
     );
@@ -553,6 +563,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     addToFoundMegaEvosIfHasMegaEvo(gym6Replacement);
     const gym7n8ReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
+        && !poke.evolutionData.isMega
         && poke.rating.bestEvoTier === TIER_PREMIUM
     );
     const gym7Replacement = sampleAndRemove(gym7n8ReplacementList);
