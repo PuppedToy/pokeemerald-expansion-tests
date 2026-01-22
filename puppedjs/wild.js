@@ -52,29 +52,33 @@ const wildData = {
             replace: [TIER_AVERAGE, TIER_STRONG],
             type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
-        NFE_OR_SOLO_AVERAGE_OR_WEAK: {
+        LC_NFE_OR_SOLO_AVERAGE_OR_WEAK: {
             replace: [TIER_AVERAGE, TIER_WEAK],
-            type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
+            type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
-        NFE_OR_SOLO_AVERAGE: {
+        LC_NFE_OR_SOLO_AVERAGE: {
             replace: [TIER_AVERAGE],
-            type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
+            type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
         NFE_OR_SOLO_STRONG: {
             replace: [TIER_STRONG],
             type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
+        NFE_OR_LC_PREMIUM: {
+            replace: [TIER_PREMIUM],
+            type: [EVO_TYPE_NFE, EVO_TYPE_LC],
+        },
         NFE_OR_SOLO_PREMIUM: {
             replace: [TIER_PREMIUM],
             type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
-        NFE_OR_SOLO_AVERAGE_STRONG: {
+        LC_NFE_OR_SOLO_AVERAGE_STRONG: {
             replace: [TIER_AVERAGE, TIER_STRONG],
-            type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
+            type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
-        NFE_STRONG: {
+        NFE_OR_LC_STRONG: {
             replace: [TIER_STRONG],
-            type: [EVO_TYPE_NFE],
+            type: [EVO_TYPE_LC, EVO_TYPE_NFE],
         },
         NFE_MEGA: {
             replace: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
@@ -93,6 +97,10 @@ const wildData = {
             replace: [TIER_AVERAGE, TIER_STRONG],
             type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
         },
+        FINAL_PREMIUM: {
+            replace: [TIER_PREMIUM],
+            type: [EVO_TYPE_FINAL],
+        },
         FINAL_OR_SOLO_PREMIUM: {
             replace: [TIER_PREMIUM],
             type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
@@ -109,11 +117,11 @@ const wildData = {
     },
     replacements: {
         // Shared
-        SPECIES_SHELGON: 'NFE_OR_SOLO_STRONG',
-        SPECIES_PUPITAR: 'NFE_OR_SOLO_STRONG',
-        SPECIES_GABITE: 'NFE_OR_SOLO_STRONG',
-        SPECIES_DOUBLADE: 'NFE_OR_SOLO_PREMIUM',
-        SPECIES_JIRACHI: 'FINAL_OR_SOLO_PREMIUM',
+        SPECIES_SHELGON: 'NFE_OR_LC_STRONG',
+        SPECIES_PUPITAR: 'NFE_OR_LC_STRONG',
+        SPECIES_GABITE: 'NFE_OR_LC_STRONG',
+        SPECIES_DOUBLADE: 'NFE_OR_LC_PREMIUM',
+        SPECIES_JIRACHI: 'FINAL_PREMIUM',
 
         // Route101
         SPECIES_ZIGZAGOON: 'LC_BAD_WEAK_AVERAGE',
@@ -121,47 +129,40 @@ const wildData = {
         // Route102
         SPECIES_WURMPLE: 'LC_BAD_WEAK_AVERAGE',
         SPECIES_WINGULL: 'LC_BAD_WEAK_AVERAGE',
-        SPECIES_LOTAD: 'NFE_OR_SOLO_AVERAGE',
-        SPECIES_KIRLIA: 'NFE_OR_SOLO_AVERAGE',
+        SPECIES_LOTAD: 'LC_NFE_OR_SOLO_AVERAGE',
+        SPECIES_KIRLIA: 'LC_NFE_OR_SOLO_AVERAGE',
 
         // Route103
         SPECIES_SURSKIT: 'LC_BAD_WEAK_AVERAGE',
-        SPECIES_TENTACOOL: 'NFE_OR_SOLO_AVERAGE',
-        SPECIES_PELIPPER: 'NFE_OR_SOLO_AVERAGE',
-
-        // Petalburg
-        SPECIES_SMEARGLE: 'LC_BAD_WEAK_AVERAGE',
-        SPECIES_GOLDEEN: 'NFE_OR_SOLO_AVERAGE_OR_WEAK',
-        SPECIES_MILTANK: 'NFE_OR_SOLO_AVERAGE',
+        SPECIES_TENTACOOL: 'LC_NFE_OR_SOLO_AVERAGE',
+        SPECIES_PELIPPER: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Surf and land pass
 
         // Route104
-        SPECIES_GEODUDE: 'LC_AVERAGE_OR_WEAK',
+        SPECIES_GEODUDE: 'LC_BAD_WEAK_AVERAGE',
         SPECIES_WEEDLE: 'LC_BAD_WEAK_AVERAGE',
-        SPECIES_PONYTA: 'NFE_OR_SOLO_AVERAGE_OR_WEAK',
+        SPECIES_PONYTA: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Surf and land pass
 
         // PetalburgWoods
         SPECIES_PATRAT: 'LC_AVERAGE_OR_WEAK',
 
-        // Rustboro City
-        SPECIES_PORYGON: 'LC_AVERAGE_OR_WEAK',
-
         // Route115
-        SPECIES_SANDSHREW: 'NFE_OR_SOLO_AVERAGE',
+        SPECIES_SANDSHREW: 'LC_AVERAGE_OR_WEAK',
         SPECIES_DELIBIRD: 'LC_AVERAGE_OR_WEAK',
-        SPECIES_EKANS: 'NFE_OR_SOLO_AVERAGE',
+        SPECIES_EKANS: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Surf
 
         // Route116
         SPECIES_DITTO: 'LC_AVERAGE_OR_WEAK',
         SPECIES_SENTRET: 'LC_AVERAGE',
-        SPECIES_HOOTHOOT: 'NFE_OR_SOLO_AVERAGE',
-
-        // Dewford
-        SPECIES_POOCHYENA: 'LC_WEAK',
-        SPECIES_MIGHTYENA: 'NFE_OR_SOLO_AVERAGE',
+        SPECIES_HOOTHOOT: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Surf
 
         // Route106
         SPECIES_CHARMANDER: 'LC_AVERAGE',
-        SPECIES_CHARMELEON: 'NFE_OR_SOLO_AVERAGE',
+        SPECIES_CHARMELEON: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Grass
 
         // Granite Cave
         SPECIES_ARON: 'LC_STRONG',
@@ -169,73 +170,92 @@ const wildData = {
         // Route109
         SPECIES_BULBASAUR: 'LC_AVERAGE',
         SPECIES_IVYSAUR: 'LC_WEAK',
-        SPECIES_VENUSAUR: 'NFE_OR_SOLO_AVERAGE',
+        SPECIES_VENUSAUR: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Surf
 
         // Slateport City
+        // @TODO Remove and add grunts reward
         SPECIES_ABSOL: 'LC_WEAK',
 
         // Route110
         SPECIES_ELECTRIKE: 'LC_AVERAGE',
         SPECIES_MANECTRIC: 'LC_AVERAGE',
-        SPECIES_MAREEP: 'NFE_OR_SOLO_AVERAGE',
+        SPECIES_MAREEP: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Surf and land pass
 
         // Route117
         SPECIES_ODDISH: 'LC_AVERAGE',
         SPECIES_GLOOM: 'LC_AVERAGE',
-        SPECIES_VILEPLUME: 'NFE_OR_SOLO_AVERAGE',
+        SPECIES_VILEPLUME: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Surf
 
         // Route118
-        SPECIES_DEDENNE: 'NFE_OR_SOLO_AVERAGE_STRONG',
+        SPECIES_DEDENNE: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_CARVANHA: 'LC_AVERAGE',
-        SPECIES_SHARPEDO: 'NFE_OR_SOLO_AVERAGE',
+        SPECIES_SHARPEDO: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Surf + add land pass
 
         // Route111
-        SPECIES_TRAPINCH: 'LC_AVERAGE_OR_STRONG',
+        SPECIES_TRAPINCH: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_DROWZEE: 'LC_AVERAGE',
-        SPECIES_HYPNO: 'NFE_OR_SOLO_AVERAGE',
+        SPECIES_HYPNO: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Surf
 
         // Route112
         SPECIES_NUMEL: 'LC_AVERAGE',
         SPECIES_TAILLOW: 'LC_AVERAGE',
-        SPECIES_SWELLOW: 'NFE_OR_SOLO_AVERAGE',
+        SPECIES_SWELLOW: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Surf
 
         // Route113
+        // @TODO Remove mega and add standard pokes
         SPECIES_SPINDA: 'NFE_MEGA',
 
         // Route114
         SPECIES_SWABLU: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_ALTARIA: 'LC_WEAK',
         SPECIES_SPOINK: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Surf
 
         // Route119
         SPECIES_LINOONE: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_SNIVY: 'LC_NFE_OR_SOLO_AVERAGE',
-        SPECIES_SERVINE: 'NFE_OR_SOLO_AVERAGE',
+        SPECIES_SERVINE: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Surf and cleanup trainers
 
         // Route120
         SPECIES_SANDILE: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_KROKOROK: 'LC_NFE_OR_SOLO_AVERAGE',
-        SPECIES_KROOKODILE: 'NFE_OR_SOLO_AVERAGE',
+        SPECIES_KROOKODILE: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Surf and cleanup trainers
 
         // Scorched Slab
+        // @TODO Make entrance easier and remove stone from here
         SPECIES_RIBOMBEE: 'NFE_MEGA',
 
         // Route121
         SPECIES_SHUPPET: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
         SPECIES_METAPOD: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
         SPECIES_HONEDGE: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
+        // @TODO Surf
 
         // Lilycove City
+        // @TODO Remove and add wally reward
         SPECIES_WAILMER: 'LC_NFE_OR_SOLO_AVERAGE',
 
         // Route 122
+        // @TODO Add 3 different mons for each rod
         SPECIES_WAILORD: 'LC_NFE_OR_SOLO_AVERAGE',
 
         // Mt. Pyre
-        SPECIES_SPINARAK: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
-        SPECIES_ARIADOS: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
-        SPECIES_SPIDOPS: 'LC_NFE_OR_SOLO_AVERAGE_OR_STRONG',
+        SPECIES_SPINARAK: 'LC_NFE_OR_SOLO_AVERAGE',
+        SPECIES_ARIADOS: 'LC_NFE_OR_SOLO_AVERAGE',
+        SPECIES_SPIDOPS: 'LC_NFE_OR_SOLO_AVERAGE',
+        // @TODO Surf
 
+        // @TODO Add 123 (mega stones?)
+
+        // @TODO Keep working from here and start removing strong solos / premium
         // Route 124
         SPECIES_WO_CHIEN: 'NFE_OR_SOLO_STRONG',
         SPECIES_GUZZLORD: 'LC_NFE_OR_SOLO_AVERAGE',
@@ -318,13 +338,6 @@ const wildData = {
             super: 'SPECIES_SHELGON',
         },
         {
-            id: 'MAP_PETALBURG_CITY',
-            old: 'SPECIES_SMEARGLE',
-            good: 'SPECIES_GOLDEEN',
-            surf: 'SPECIES_MILTANK',
-            super: 'SPECIES_SHELGON',
-        },
-        {
             id: 'MAP_ROUTE104',
             land: 'SPECIES_GEODUDE',
             old: 'SPECIES_WEEDLE',
@@ -334,10 +347,6 @@ const wildData = {
         {
             id: 'MAP_PETALBURG_WOODS',
             land: 'SPECIES_PATRAT',
-        },
-        {
-            id: 'MAP_RUSTBORO_CITY',
-            land: 'SPECIES_PORYGON'
         },
         {
             id: 'MAP_ROUTE115',
@@ -354,12 +363,6 @@ const wildData = {
             super: 'SPECIES_SHELGON',
         },
         // Pupitar maps
-        {
-            id: 'MAP_DEWFORD_TOWN',
-            old: 'SPECIES_POOCHYENA',
-            good: 'SPECIES_MIGHTYENA',
-            super: 'SPECIES_PUPITAR',
-        },
         {
             id: 'MAP_ROUTE106',
             old: 'SPECIES_CHARMANDER',
