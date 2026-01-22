@@ -2840,11 +2840,11 @@ const trainersData = [
                 abilities: [...sandAbilities],
             },
             {
-                ...POKEDEF_AVERAGE,
+                ...POKEDEF_WEAK,
                 abilities: [...sandAbilities],
             },
             {
-                ...POKEDEF_AVERAGE,
+                ...POKEDEF_WEAK,
                 abilities: [...sandAbilities],
             },
         ],
@@ -2863,37 +2863,30 @@ const trainersData = [
                 abilities: ['SOLID_ROCK'],
             },
             {
-                id: 'MAXIE_STRONG_1',
-                ...POKEDEF_STRONG,
+                ...POKEDEF_AVERAGE,
                 abilities: [...sunAbilities],
                 type: [magmaTeamTypes[0], magmaTeamTypes[1]],
                 fallback: [
                     {
-                        id: 'MAXIE_STRONG_1',
-                        ...POKEDEF_STRONG,
+                        ...POKEDEF_AVERAGE,
                         type: [...magmaTeamTypes],
                         abilities: [...sunAbilities],
                     },
                     {
-                        id: 'MAXIE_STRONG_1',
-                        ...POKEDEF_STRONG,
+                        ...POKEDEF_AVERAGE,
                         type: [magmaTeamTypes[0], magmaTeamTypes[1]],
                     },
                     {
-                        id: 'MAXIE_STRONG_1',
-                        ...POKEDEF_STRONG,
+                        ...POKEDEF_AVERAGE,
                         type: [...magmaTeamTypes],
                     }
                 ],
             },
             {
-                id: 'MAXIE_AVERAGE_1',
                 ...POKEDEF_AVERAGE,
                 abilities: [...sunAbilities],
-                type: [...magmaTeamTypes],
                 fallback: [
                     {
-                        id: 'MAXIE_AVERAGE_1',
                         ...POKEDEF_AVERAGE,
                         type: [...magmaTeamTypes],
                     }
@@ -4031,44 +4024,58 @@ const trainersData = [
                     {
                         absoluteTier: [TIER_PREMIUM],
                         checkValidEvo: true,
-                        abilities: [...sunAbilities],
-                        type: [...magmaTeamTypes],
-                    },
-                    {
-                        absoluteTier: [TIER_PREMIUM],
-                        checkValidEvo: true,
                         type: [magmaTeamTypes[1]],
                     },
                 ]
             },
+            pokeDefDroughtMon(POKEDEF_STRONG),
             {
                 absoluteTier: [TIER_PREMIUM],
                 checkValidEvo: true,
-                type: [magmaTeamTypes[2], magmaTeamTypes[3], magmaTeamTypes[4]],
+                type: [...magmaTeamTypes],
+                abilities: [...sunAbilities],
+                fallback: [
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        checkValidEvo: true,
+                        abilities: [...sunAbilities],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        checkValidEvo: true,
+                        type: [...magmaTeamTypes],
+                        abilities: [...sunAbilities],
+                    },
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        checkValidEvo: true,
+                        type: [...magmaTeamTypes],
+                    }
+                ]
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                type: [...magmaTeamTypes],
                 abilities: [...sunAbilities],
                 fallback: [
                     {
                         absoluteTier: [TIER_STRONG],
                         checkValidEvo: true,
+                        abilities: [...sunAbilities],
+                    },
+                    {
+                        absoluteTier: [TIER_AVERAGE],
+                        checkValidEvo: true,
                         type: [...magmaTeamTypes],
                         abilities: [...sunAbilities],
                     },
                     {
                         absoluteTier: [TIER_STRONG],
                         checkValidEvo: true,
-                        type: [magmaTeamTypes[2], magmaTeamTypes[3], magmaTeamTypes[4]],
+                        type: [...magmaTeamTypes],
                     }
                 ]
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'MAXIE_STRONG_1',
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'MAXIE_AVERAGE_1',
-                tryEvolve: true,
             },
         ],
     },
