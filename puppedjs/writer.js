@@ -425,7 +425,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     // let route111Data = await fs.readFile(route111File, 'utf8');
 
     console.log(starters);
-    console.log(chosenExtraPokemon);
+    console.log(chosenExtraPokemon.map(p => p.id));
     // console.log(`Updating Route 111 map with new starter mega stones: ${[...starters, ...chosenExtraPokemon].map(p => p.id).join(', ')}}`);
     // const chosenPokemonThatHaveMegaEvo = [...starters.map((pokeId) =>
     //     pokemonList.find(p => p.id === pokeId),
