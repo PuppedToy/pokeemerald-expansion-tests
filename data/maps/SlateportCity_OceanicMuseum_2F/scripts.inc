@@ -73,6 +73,9 @@ SlateportCity_OceanicMuseum_2F_EventScript_CaptStern::
 	call Common_EventScript_PlayerHandedOverTheItem
 	msgbox SlateportCity_OceanicMuseum_2F_Text_SternIveGotToGo, MSGBOX_DEFAULT
 	closemessage
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
+	givemon GYM_REWARD_MON, 23, GYM_REWARD_ITEM
+	call SlateportCity_OceanicMuseum_2F_EventScript_ReceivedRewardPokeFanfare
 	fadescreen FADE_TO_BLACK
 	playfanfare MUS_HEAL
 	waitfanfare
@@ -96,6 +99,16 @@ SlateportCity_OceanicMuseum_2F_EventScript_CaptStern::
 	fadescreen FADE_FROM_BLACK
 	release
 	end
+
+SlateportCity_OceanicMuseum_2F_EventScript_ReceivedRewardPokeFanfare::
+	playfanfare MUS_OBTAIN_ITEM
+	message SlateportCity_OceanicMuseum_2F_Text_PlayerReceivedRewardPoke
+	waitmessage
+	waitfanfare
+	return
+
+SlateportCity_OceanicMuseum_2F_Text_PlayerReceivedRewardPoke:
+	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 SlateportCity_OceanicMuseum_2F_EventScript_ReadyRegisterBirch::
 	setvar VAR_REGISTER_BIRCH_STATE, 1
@@ -342,14 +355,8 @@ SlateportCity_OceanicMuseum_2F_Text_SternThankYouForSavingUs:
 	.string "even brought the parts from DEVON!$"
 
 SlateportCity_OceanicMuseum_2F_Text_SternIveGotToGo:
-	.string "CAPT. STERN: Whoops!\n"
-	.string "There's no time to lose!\p"
-	.string "We have to set out on our ocean-floor\n"
-	.string "expedition really soon.\p"
-	.string "Thanks again, but now I've got\n"
-	.string "to go!\p"
-	.string "Feel free to wander around and check\n"
-	.string "out our facilities, though.$"
+	.string "CAPT. STERN: Thank you!\n"
+	.string "Here, have this reward.$"
 
 SlateportCity_OceanicMuseum_2F_Text_RemindsMeOfAbandonedShip:
 	.string "I saw a model of a ship here.\p"

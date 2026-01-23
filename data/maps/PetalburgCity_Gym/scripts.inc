@@ -376,6 +376,9 @@ PetalburgCity_Gym_EventScript_NormanBattle::
 	setflag FLAG_DEFEATED_PETALBURG_GYM
 	setvar VAR_PETALBURG_GYM_STATE, 7
 	setflag FLAG_BADGE05_GET
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
+	givemon GYM_REWARD_MON, 39
+	call PetalburgCity_Gym_EventScript_ReceivedRewardPokeFanfare
 	special ResetHealLocationFromDewford
 	call EventScript_HideMrBriney
 	setflag FLAG_HIDE_MAUVILLE_GYM_WATTSON
@@ -395,6 +398,16 @@ PetalburgCity_Gym_EventScript_NormanBattle::
 	closemessage
 	release
 	end
+
+PetalburgCity_Gym_EventScript_ReceivedRewardPokeFanfare::
+	playfanfare MUS_OBTAIN_ITEM
+	message PetalburgCity_Gym_Text_PlayerReceivedRewardPoke
+	waitmessage
+	waitfanfare
+	return
+
+PetalburgCity_Gym_Text_PlayerReceivedRewardPoke:
+	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 PetalburgCity_Gym_EventScript_GiveFacade::
 	giveitem ITEM_TM_FACADE

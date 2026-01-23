@@ -235,6 +235,9 @@ LilycoveCity_EventScript_Rival::
 	msgbox LilycoveCity_Text_WallyHaveSuperRod, MSGBOX_DEFAULT
 	closemessage
 	giveitem ITEM_SUPER_ROD
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
+	givemon GYM_REWARD_MON, 48
+	call LilycoveCity_EventScript_ReceivedRewardPokeFanfare
 	applymovement VAR_LAST_TALKED, Common_Movement_WalkInPlaceFasterDown
 	waitmovement 0
 	delay 50
@@ -251,6 +254,16 @@ LilycoveCity_EventScript_Rival::
 	setflag FLAG_MET_RIVAL_LILYCOVE
 	release
 	end
+
+LilycoveCity_EventScript_ReceivedRewardPokeFanfare::
+	playfanfare MUS_OBTAIN_ITEM
+	message LilycoveCity_Text_PlayerReceivedRewardPoke
+	waitmessage
+	waitfanfare
+	return
+
+LilycoveCity_Text_PlayerReceivedRewardPoke:
+	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 LilycoveCity_EventScript_May::
 	playbgm MUS_ENCOUNTER_MAY, TRUE

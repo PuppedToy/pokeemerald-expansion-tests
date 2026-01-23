@@ -38,6 +38,7 @@ const {
     TRAINER_GYM_LEADERS_KEEP_TYPE_AMOUNT,
     TRAINER_E4_KEEP_TYPE_AMOUNT,
 } = require("./constants");
+const { maps: wildMaps } = require('./wild');
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
 const partnersFile = path.resolve(__dirname, '..', 'src', 'data', 'battle_partners.party');
@@ -726,7 +727,7 @@ const pokeDefGrassySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
     };
 };
 
-const PROMISING_PREMIUM_LEGEND_GOD_MEGA_LC = {
+const PROMISING_PREMIUM_LEGEND_MEGA_LC = {
     megaTier: [TIER_PREMIUM, TIER_LEGEND],
     absoluteTier: [TIER_BAD],
     evoType: [EVO_TYPE_LC],
@@ -763,47 +764,145 @@ const getSampleItemsFromArray = (array, amount) => {
     return Array.from(result);
 };
 
+function getWildEncountersFromMap(mapId, encounterTypes) {
+    const map = wildMaps.find(m => m.id === mapId);
+    if (!map) {
+        throw new Error('Map not found: ' + mapId);
+    }
+
+    const result = [];
+    Object.entries(map).forEach(([encounterType, encounter]) => {
+        if (encounterTypes.includes(encounterType)) {
+            result.push(encounter);
+        }
+    });
+
+    return result;
+}
+
+const rival101Encounters = getWildEncountersFromMap('MAP_ROUTE101', ['land', 'old']);
+const rival102Encounters = getWildEncountersFromMap('MAP_ROUTE102', ['land', 'old']);
+const rival103Encounters = getWildEncountersFromMap('MAP_ROUTE103', ['land', 'old']);
+const rival104Encounters = getWildEncountersFromMap('MAP_ROUTE104', ['land', 'old']);
+
+const rivalRustboroEncounters = [
+    ...rival101Encounters,
+    ...rival102Encounters,
+    ...rival103Encounters,
+    ...rival104Encounters,
+    ...getWildEncountersFromMap('MAP_PETALBURG_WOODS', ['land', 'old']),
+    ...getWildEncountersFromMap('MAP_ROUTE115', ['land', 'old']),
+    ...getWildEncountersFromMap('MAP_ROUTE116', ['land', 'old']),
+];
+
+const rival110Encounters = [
+    ...rivalRustboroEncounters,
+    ...getWildEncountersFromMap('MAP_ROUTE106', ['land', 'old']),
+    ...getWildEncountersFromMap('MAP_GRANITE_CAVE', ['land', 'old']),
+    ...getWildEncountersFromMap('MAP_ROUTE109', ['land', 'old']),
+    ...getWildEncountersFromMap('MAP_ROUTE110', ['land']),
+];
+
+const rivalGoodRodEncounters = [
+    ...getWildEncountersFromMap('MAP_ROUTE101', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE102', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE103', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE104', ['good']),
+    ...getWildEncountersFromMap('MAP_PETALBURG_WOODS', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE115', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE116', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE106', ['good']),
+    ...getWildEncountersFromMap('MAP_GRANITE_CAVE', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE109', ['good']),
+];
+
+const rival119Encounters = [
+    ...rival110Encounters,
+    ...rivalGoodRodEncounters,
+    ...getWildEncountersFromMap('MAP_ROUTE110', ['old', 'good']),
+    ...getWildEncountersFromMap('MAP_ROUTE117', ['land', 'old', 'good']),
+    ...getWildEncountersFromMap('MAP_ROUTE118', ['land', 'old', 'good']),
+    ...getWildEncountersFromMap('MAP_ROUTE111', ['land', 'old', 'good']),
+    ...getWildEncountersFromMap('MAP_ROUTE112', ['land', 'old', 'good']),
+    ...getWildEncountersFromMap('MAP_ROUTE113', ['land', 'old', 'good']),
+    ...getWildEncountersFromMap('MAP_ROUTE114', ['land', 'old', 'good']),
+    ...getWildEncountersFromMap('MAP_ROUTE119', ['land', 'old', 'good']),
+];
+
+const rivalSuperRodEncounters = [
+    ...getWildEncountersFromMap('MAP_ROUTE101', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE102', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE103', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE104', ['super']),
+    ...getWildEncountersFromMap('MAP_PETALBURG_WOODS', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE115', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE116', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE106', ['super']),
+    ...getWildEncountersFromMap('MAP_GRANITE_CAVE', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE109', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE110', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE117', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE118', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE111', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE112', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE113', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE114', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE119', ['super']),
+];
+
+const rivalEvergrandeCityEncounters = [
+    ...rival119Encounters,
+    ...rivalSuperRodEncounters,
+    ...getWildEncountersFromMap('MAP_ROUTE120', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_SCORCHED_SLAB', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE121', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE122', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_MT_PYRE_EXTERIOR', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE123', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE124', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE125', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_SHOAL_CAVE_LOW_TIDE_ENTRANCE_ROOM', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_SHOAL_CAVE_HIGH_TIDE_ENTRANCE_ROOM', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE127', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE126', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE128', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE129', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE131', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_PACIFIDLOG_TOWN', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE132', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('EVER_GRANDE_CITY', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_VICTORY_ROAD_B1F', ['land', 'old', 'good', 'super', 'underwater']),
+];
+
 const rival103Template = (id) => [
     {
         special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_ZIGZAGOON'],
+        encounterIds: [...rival101Encounters],
         tryEvolve: true,
+        pickBest: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_WURMPLE', 'SPECIES_WINGULL'],
+        encounterIds: [...rival102Encounters],
         tryEvolve: true,
+        pickBest: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_SURSKIT', 'SPECIES_SMEARGLE'],
+        encounterIds: [...rival103Encounters],
         tryEvolve: true,
+        pickBest: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_WEEDLE', 'SPECIES_PATRAT'],
+        encounterIds: [...rival104Encounters],
         tryEvolve: true,
+        pickBest: true,
     },
     {
         id: 'RIVAL_MEGA_103_KEEP_' + id,
-        ...PROMISING_PREMIUM_LEGEND_GOD_MEGA_LC,
+        ...PROMISING_PREMIUM_LEGEND_MEGA_LC,
     },
-];
-
-const rivalRustboroEncounters = [
-    'SPECIES_ZIGZAGOON',
-    'SPECIES_WURMPLE',
-    'SPECIES_WINGULL',
-    'SPECIES_SURSKIT',
-    'SPECIES_SMEARGLE',
-    'SPECIES_WEEDLE',
-    'SPECIES_PATRAT',
-    'SPECIES_PORYGON',
-    'SPECIES_GEODUDE',
-    'SPECIES_DELIBIRD',
-    'SPECIES_DITTO',
-    'SPECIES_SENTRET',
-    'SPECIES_POOCHYENA'
 ];
 
 const rivalRustboroTemplate = (id) => [
@@ -849,106 +948,6 @@ const rivalRustboroTemplate = (id) => [
         tryEvolve: true,
     },
 ];
-
-const rival110Encounters = [
-    ...rivalRustboroEncounters,
-    'SPECIES_CHARMANDER',
-    'SPECIES_ARON',
-    'SPECIES_BULBASAUR',
-    'SPECIES_IVYSAUR',
-    'SPECIES_ABSOL',
-    'SPECIES_ELECTRIKE',
-    'SPECIES_MANECTRIC',
-    'SPECIES_ODDISH',
-    'SPECIES_GLOOM',
-    'SPECIES_CARVANHA',
-];
-
-const rival119Encounters = [
-    ...rival110Encounters,
-    'SPECIES_DEDENNE',
-    'SPECIES_SHELGON',
-    'SPECIES_PUPITAR',
-    'SPECIES_GABITE',
-    'SPECIES_VENUSAUR',
-    'SPECIES_CHARMELEON',
-    'SPECIES_MIGHTYENA',
-    'SPECIES_HOOTHOOT',
-    'SPECIES_EKANS',
-    'SPECIES_SANDSHREW',
-    'SPECIES_PONYTA',
-    'SPECIES_MILTANK',
-    'SPECIES_GOLDEEN',
-    'SPECIES_PELIPPER',
-    'SPECIES_TENTACOOL',
-    'SPECIES_LOTAD',
-    'SPECIES_KIRLIA',
-    'SPECIES_MAREEP',
-    'SPECIES_VILEPLUME',
-    'SPECIES_SHARPEDO',
-    'SPECIES_TRAPINCH',
-    'SPECIES_DROWZEE',
-    'SPECIES_HYPNO',
-    'SPECIES_NUMEL',
-    'SPECIES_TAILLOW',
-    'SPECIES_SWELLOW',
-    'SPECIES_SPINDA',
-    'SPECIES_SWABLU',
-    'SPECIES_ALTARIA',
-    'SPECIES_SPOINK',
-    'SPECIES_LINOONE',
-    'SPECIES_SNIVY',
-    'SPECIES_SERVINE',
-];
-
-const rivalEvergrandeCityEncounters = [
-    ...rival119Encounters,
-    'SPECIES_SANDILE',
-    'SPECIES_KROKOROK',
-    'SPECIES_KROOKODILE',
-    'SPECIES_RIBOMBEE',
-    'SPECIES_SHUPPET',
-    'SPECIES_METAPOD',
-    'SPECIES_HONEDGE',
-    'SPECIES_DOUBLADE',
-    'SPECIES_WAILMER',
-    'SPECIES_WAILORD',
-    'SPECIES_SPINARAK',
-    'SPECIES_ARIADOS',
-    'SPECIES_SPIDOPS',
-    'SPECIES_WO_CHIEN',
-    'SPECIES_GUZZLORD',
-    'SPECIES_KARTANA',
-    'SPECIES_GOLETT',
-    'SPECIES_RABOOT',
-    'SPECIES_SCORBUNNY',
-    'SPECIES_FROAKIE',
-    'SPECIES_FROGADIER',
-    'SPECIES_SCREAM_TAIL',
-    'SPECIES_OMANYTE',
-    'SPECIES_OMASTAR',
-    'SPECIES_RELICANTH',
-    'SPECIES_FLUTTER_MANE',
-    'SPECIES_FINNEON',
-    'SPECIES_LUMINEON',
-    'SPECIES_HUNTAIL',
-    'SPECIES_HAWLUCHA',
-    'SPECIES_ROSELIA',
-    'SPECIES_ROSERADE',
-    'SPECIES_STARMIE',
-    'SPECIES_IRON_HANDS',
-    'SPECIES_IRON_CROWN',
-    'SPECIES_JIRACHI',
-    'SPECIES_IRON_JUGULIS',
-    'SPECIES_IRON_BOULDER',
-    'SPECIES_IRON_LEAVES',
-    'SPECIES_IRON_MOTH',
-    'SPECIES_IRON_THORNS',
-    'SPECIES_IRON_TREADS',
-    'SPECIES_RAIKOU',
-    'SPECIES_ENTEI',
-    'SPECIES_SUICUNE',
-]
 
 const rivalRoute110Template = (id) => [
     {
@@ -1627,20 +1626,20 @@ const trainersData = [
         tms: [...choice104TMs],
         team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
     },
-    {
-        id: 'TRAINER_GINA_AND_MIA_1',
-        class: 'Twins',
-        reward: ['SPECIES_PORYGON'],
-        level: 10,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_PORYGON'],
-                item: 'Oran Berry',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
-        ]
-    },
+    // {
+    //     id: 'TRAINER_GINA_AND_MIA_1',
+    //     class: 'Twins',
+    //     reward: ['SPECIES_PORYGON'],
+    //     level: 10,
+    //     team: [
+    //         {
+    //             special: TRAINER_POKE_ENCOUNTER,
+    //             encounterIds: ['SPECIES_PORYGON'],
+    //             item: 'Oran Berry',
+    //         },
+    //         ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+    //     ]
+    // },
     // Route 115
     {
         id: 'TRAINER_TIMOTHY_1',
@@ -1669,6 +1668,7 @@ const trainersData = [
         id: 'TRAINER_ROXANNE_1',
         level: 10,
         class: 'Leader Roxanne',
+        reward: ['GYM_REWARD_1'],
         isBoss: true,
         bag: roxanneBag(),
         tms: ['MOVE_ROCK_TOMB', 'MOVE_ROCK_TOMB'],
@@ -1982,6 +1982,7 @@ const trainersData = [
         id: 'TRAINER_BRAWLY_1',
         class: 'Leader Brawly',
         level: 16,
+        reward: ['GYM_REWARD_2'],
         isBoss: true,
         bag: [...brawlyBag(), 'Fighting Gem'],
         tms: ['MOVE_BULK_UP', 'MOVE_BULK_UP'],
@@ -2159,6 +2160,7 @@ const trainersData = [
         id: 'TRAINER_GRUNT_MUSEUM_1',
         class: 'Aqua Grunt M',
         isBoss: true,
+        reward: ['GYM_REWARD_9'],
         level: 21,
         preventShuffle: true,
         bag: [...slateportGruntsBag()],
@@ -2187,6 +2189,7 @@ const trainersData = [
         id: 'TRAINER_GRUNT_MUSEUM_2',
         class: 'Aqua Grunt M',
         isBoss: true,
+        reward: ['GYM_REWARD_9'],
         level: 21,
         preventShuffle: true,
         bag: [...slateportGruntsBag()],
@@ -2642,6 +2645,7 @@ const trainersData = [
         id: 'TRAINER_WATTSON_1',
         class: 'Leader Wattson',
         isBoss: true,
+        reward: ['GYM_REWARD_3'],
         level: 26,
         preventShuffle: gymIsChangedType[2],
         bag: [...wattsonBag(), 'Electric Gem'],
@@ -2823,15 +2827,6 @@ const trainersData = [
         preventShuffle: true,
         bag: [...magmaChimneyBag()],
         team: [
-            pokeDefSandStreamMon(POKEDEF_UP_TO_STRONG),
-            {
-                ...POKEDEF_AVERAGE,
-                abilities: [...sandAbilities],
-            },
-            {
-                ...POKEDEF_AVERAGE,
-                abilities: [...sandAbilities],
-            },
             pokeDefSandStreamMon(POKEDEF_AVERAGE),
             {
                 ...POKEDEF_AVERAGE,
@@ -2839,6 +2834,18 @@ const trainersData = [
             },
             {
                 ...POKEDEF_AVERAGE,
+                abilities: [...sandAbilities],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                abilities: [...sandAbilities],
+            },
+            {
+                ...POKEDEF_WEAK,
+                abilities: [...sandAbilities],
+            },
+            {
+                ...POKEDEF_WEAK,
                 abilities: [...sandAbilities],
             },
         ],
@@ -2855,40 +2862,22 @@ const trainersData = [
                 specific: 'SPECIES_CAMERUPT',
                 item: 'Cameruptite',
                 abilities: ['SOLID_ROCK'],
-                tryToHaveMove: ['MOVE_EARTHQUAKE', 'MOVE_LAVA_PLUME', 'MOVE_ROCK_SLIDE', 'MOVE_EARTH_POWER'],
             },
             {
-                id: 'MAXIE_STRONG_1',
-                ...POKEDEF_STRONG,
+                ...POKEDEF_AVERAGE,
                 abilities: [...sunAbilities],
                 type: [magmaTeamTypes[0], magmaTeamTypes[1]],
                 fallback: [
                     {
-                        id: 'MAXIE_STRONG_1',
-                        ...POKEDEF_STRONG,
+                        ...POKEDEF_AVERAGE,
+                        type: [magmaTeamTypes[0], magmaTeamTypes[1]],
+                    },
+                    {
+                        ...POKEDEF_AVERAGE,
                         type: [...magmaTeamTypes],
                         abilities: [...sunAbilities],
                     },
                     {
-                        id: 'MAXIE_STRONG_1',
-                        ...POKEDEF_STRONG,
-                        type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-                    },
-                    {
-                        id: 'MAXIE_STRONG_1',
-                        ...POKEDEF_STRONG,
-                        type: [...magmaTeamTypes],
-                    }
-                ],
-            },
-            {
-                id: 'MAXIE_AVERAGE_1',
-                ...POKEDEF_AVERAGE,
-                abilities: [...sunAbilities],
-                type: [...magmaTeamTypes],
-                fallback: [
-                    {
-                        id: 'MAXIE_AVERAGE_1',
                         ...POKEDEF_AVERAGE,
                         type: [...magmaTeamTypes],
                     }
@@ -2897,28 +2886,26 @@ const trainersData = [
             {
                 ...POKEDEF_AVERAGE,
                 abilities: [...sunAbilities],
+                fallback: [
+                    {
+                        ...POKEDEF_AVERAGE,
+                        type: [...magmaTeamTypes],
+                    }
+                ],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                abilities: [...sunAbilities],
+                fallback: [
+                    {
+                        ...POKEDEF_AVERAGE,
+                        type: [...magmaTeamTypes],
+                    }
+                ],
+            },
+            {
+                ...POKEDEF_AVERAGE,
                 type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-                fallback: [
-                    {
-                        ...POKEDEF_AVERAGE,
-                        type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-                    },
-                    {
-                        ...POKEDEF_AVERAGE,
-                        type: [...magmaTeamTypes],
-                    }
-                ],
-            },
-            {
-                ...POKEDEF_AVERAGE,
-                abilities: [...sunAbilities],
-                type: [...magmaTeamTypes],
-                fallback: [
-                    {
-                        ...POKEDEF_AVERAGE,
-                        type: [...magmaTeamTypes],
-                    }
-                ],
             },
         ],
     },
@@ -3033,13 +3020,14 @@ const trainersData = [
     {
         id: 'TRAINER_LAWRENCE',
         class: 'Camper',
-        reward: ['SPECIES_SPINDA', 'ITEM_HARBOR_MAIL'],
+        reward: ['SPECIES_SPINDA'],
         level: 33,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
         team: [
             {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_HARBOR_MAIL',
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SPINDA'],
+                tryEvolve: true,
             },
             ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
             ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
@@ -3164,6 +3152,7 @@ const trainersData = [
         id: 'TRAINER_FLANNERY_1',
         class: 'Leader Flannery',
         level: 33,
+        reward: ['GYM_REWARD_4', 'Access to Desert Ruins'],
         isBoss: true,
         bag: [...flanneryBag(), 'Fire Gem'],
         tms: ['MOVE_OVERHEAT', 'MOVE_OVERHEAT'],
@@ -3210,7 +3199,7 @@ const trainersData = [
                 type: [gymMainTypes[3]],
             },
             {
-                ...POKEDEF_STRONG,
+                ...POKEDEF_AVERAGE,
                 type: [gymMainTypes[3]],
             },
             gymIsChangedType[3] ? {
@@ -3326,6 +3315,7 @@ const trainersData = [
         class: 'Leader Norman',
         level: 36,
         isBoss: true,
+        reward: ['GYM_REWARD_5', 'Access to Island Cave', 'Access to New Mauville'],
         bag: [...normanBag(), 'Normal Gem'],
         tms: ['MOVE_FACADE', 'MOVE_FACADE'],
         bannedItems: gymIsChangedType[4] ? [] : ['Assault Vest', 'Flame Orb', 'Toxic Orb'],
@@ -3368,7 +3358,7 @@ const trainersData = [
                 type: [gymMainTypes[4]],
             },
             {
-                ...POKEDEF_STRONG,
+                ...POKEDEF_AVERAGE,
                 type: [gymMainTypes[4]],
             },
             {
@@ -3567,6 +3557,7 @@ const trainersData = [
         id: 'TRAINER_SHELLY_WEATHER_INSTITUTE',
         class: 'Aqua Admin F',
         level: 39,
+        reward: ['GYM_REWARD_10'],
         isBoss: true,
         bag: [...shellyBag()],
         team: [
@@ -3671,7 +3662,7 @@ const trainersData = [
     {
         id: 'TRAINER_ROBERT_1',
         class: 'Bird Keeper',
-        reward: ['Access to Scorched Slab'],
+        reward: ['SPECIES_KROOKODILE', 'SPECIES_KROKOROK'],
         level: 43,
         bag: getSampleItemsFromArray(rival119Bag(), 17),
         team: [
@@ -3689,19 +3680,35 @@ const trainersData = [
             ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
         ],
     },
+    // @TODO Put colin in the slab
     {
         id: 'TRAINER_COLIN',
         class: 'Bird Keeper',
-        reward: ['SPECIES_KROOKODILE', 'SPECIES_KROKOROK', 'SPECIES_RIBOMBEE', 'ITEM_ORANGE_MAIL'],
+        reward: ['SPECIES_RIBOMBEE'],
         level: 43,
         bag: getSampleItemsFromArray(rival119Bag(), 17),
         team: [
             {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_ORANGE_MAIL',
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_RIBOMBEE'],
+                tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_DUSKULL'],
+                tryEvolve: true,
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_DUSCLOPS'],
+                tryEvolve: true,
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_DUSKNOIR'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
         ],
     },
     {
@@ -3740,6 +3747,7 @@ const trainersData = [
         class: 'Leader Winona',
         level: 43,
         isBoss: true,
+        reward: ['GYM_REWARD_6', 'Access to Ancient Tomb'],
         bag: [...winonaBag(), 'Flying Gem'],
         tms: ['MOVE_AERIAL_ACE', 'MOVE_AERIAL_ACE'],
         team: [
@@ -3964,6 +3972,7 @@ const trainersData = [
         id: 'TRAINER_WALLY_LILYCOVE',
         class: 'Wally',
         isBoss: true,
+        reward: ['GYM_REWARD_11'],
         level: 46,
         bag: [...wallyBag2()],
         team: [
@@ -4014,7 +4023,13 @@ const trainersData = [
         preventShuffle: true,
         bag: [...wallyBag2()],
         team: [
-            pokeDefDroughtMon(POKEDEF_STRONG),
+            {
+                abilities: ['DROUGHT'],
+                item: 'Heat Rock',
+                absoluteTier: [TIER_STRONG, TIER_AVERAGE],
+                checkValidEvo: true,
+                pickBest: true,
+            },
             {
                 specific: 'SPECIES_CAMERUPT',
                 item: 'Cameruptite',
@@ -4029,44 +4044,58 @@ const trainersData = [
                     {
                         absoluteTier: [TIER_PREMIUM],
                         checkValidEvo: true,
-                        abilities: [...sunAbilities],
-                        type: [...magmaTeamTypes],
-                    },
-                    {
-                        absoluteTier: [TIER_PREMIUM],
-                        checkValidEvo: true,
                         type: [magmaTeamTypes[1]],
                     },
                 ]
             },
+            pokeDefDroughtMon(POKEDEF_STRONG),
             {
                 absoluteTier: [TIER_PREMIUM],
                 checkValidEvo: true,
-                type: [magmaTeamTypes[2], magmaTeamTypes[3], magmaTeamTypes[4]],
+                type: [...magmaTeamTypes],
+                abilities: [...sunAbilities],
+                fallback: [
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        checkValidEvo: true,
+                        abilities: [...sunAbilities],
+                    },
+                    {
+                        absoluteTier: [TIER_STRONG],
+                        checkValidEvo: true,
+                        type: [...magmaTeamTypes],
+                        abilities: [...sunAbilities],
+                    },
+                    {
+                        absoluteTier: [TIER_PREMIUM],
+                        checkValidEvo: true,
+                        type: [...magmaTeamTypes],
+                    }
+                ]
+            },
+            {
+                absoluteTier: [TIER_STRONG],
+                checkValidEvo: true,
+                type: [...magmaTeamTypes],
                 abilities: [...sunAbilities],
                 fallback: [
                     {
                         absoluteTier: [TIER_STRONG],
                         checkValidEvo: true,
+                        abilities: [...sunAbilities],
+                    },
+                    {
+                        absoluteTier: [TIER_AVERAGE],
+                        checkValidEvo: true,
                         type: [...magmaTeamTypes],
                         abilities: [...sunAbilities],
                     },
                     {
                         absoluteTier: [TIER_STRONG],
                         checkValidEvo: true,
-                        type: [magmaTeamTypes[2], magmaTeamTypes[3], magmaTeamTypes[4]],
+                        type: [...magmaTeamTypes],
                     }
                 ]
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'MAXIE_STRONG_1',
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'MAXIE_AVERAGE_1',
-                tryEvolve: true,
             },
         ],
     },
@@ -4302,6 +4331,7 @@ const trainersData = [
         class: 'Leader Tate And Liza',
         level: 53,
         isBoss: true,
+        reward: ['GYM_REWARD_7', 'Access to Shoal Cave'],
         preventShuffle: true,
         bag: [...tateAndLizaBag(), 'Psychic Gem'],
         tms: ['MOVE_CALM_MIND', 'MOVE_CALM_MIND'],
@@ -4468,15 +4498,15 @@ const trainersData = [
         team: [
             {
                 ...POKEDEF_STRONG,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
@@ -4501,15 +4531,15 @@ const trainersData = [
         team: [
             {
                 ...POKEDEF_STRONG,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
@@ -4534,15 +4564,15 @@ const trainersData = [
         team: [
             {
                 ...POKEDEF_STRONG,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
-                type: [...magmaTeamTypes],
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...POKEDEF_AVERAGE,
@@ -4840,6 +4870,7 @@ const trainersData = [
         class: 'Leader Juan',
         level: 61,
         isBoss: true,
+        reward: ['GYM_REWARD_8'],
         bag: [...juanBag(), 'Water Gem'],
         tms: ['MOVE_WATERFALL', 'MOVE_WATER_PULSE'],
         team: [
@@ -4915,16 +4946,33 @@ const trainersData = [
     {
         id: 'TRAINER_HOPE',
         class: 'Cooltrainer F',
-        reward: ['SPECIES_SHEDINJA', 'ITEM_GLITTER_MAIL'],
+        reward: ['SPECIES_SHEDINJA', 'SPECIES_MOLTRES', 'SPECIES_ARTICUNO', 'SPECIES_ZAPDOS', 'SPECIES_LUGIA'],
         level: 67,
         bag: [...spaceCenterBag()],
         team: [
             {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_GLITTER_MAIL',
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SHEDINJA'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_PREMIUM, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_MOLTRES'],
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_ARTICUNO'],
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_ZAPDOS'],
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_LUGIA'],
+            },
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+            },
         ],
     },
     // Ever Grande Rival

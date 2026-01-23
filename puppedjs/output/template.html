@@ -371,6 +371,15 @@
         "STEEL":    "#B7B7CE",
         "FAIRY":    "#D685AD"
     };
+    const tierNames = {
+      "GOD": "AG",
+      "LEGEND": "Uber",
+      "PREMIUM": "OU",
+      "STRONG": "UU",
+      "AVERAGE": "RU",
+      "WEAK": "NU",
+      "BAD": "PU",
+    };
     const tierColorBgs = {
         "GOD":   "#000000",
         "LEGEND":     "#8F0000",
@@ -579,7 +588,7 @@
                 <div style="margin-top: 10px; text-align: center; width: 100%;">${abilities}</div>
                 <div>
                     <div style="text-align: center; font-weight: 700; margin-top: 6px; color: #FFDDC9">BST: ${adjustedBST}${bstIcon}</div>
-                    <div style="text-align: center"><div style="text-align: center; font-weight: 700; margin-top: 6px; background-color: ${tierColorBgs[poke.rating.tier]}; color: ${tierColorFonts[poke.rating.tier]}; display: inline-block; padding: 4px 12px; border-radius: 999px;">${poke.rating.tier} (${poke.rating.role})</div></div>
+                    <div style="text-align: center"><div style="text-align: center; font-weight: 700; margin-top: 6px; background-color: ${tierColorBgs[poke.rating.tier]}; color: ${tierColorFonts[poke.rating.tier]}; display: inline-block; padding: 4px 12px; border-radius: 999px;">${tierNames[poke.rating.tier]} (${poke.rating.role})</div></div>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, auto); gap: 6px; margin-top: 10px;">
                         <div style="font-weight: 700; color: #BDF8FF">HP</div>
                         <div style="font-weight: 700; color: #BDF8FF">ATK</div>
@@ -857,6 +866,7 @@
         case 'old': return 'Fishing (Old Rod)';
         case 'good': return 'Fishing (Good Rod)';
         case 'surf': return 'Surf';
+        case 'underwater': return 'Underwater';
         case 'super': return 'Fishing (Super Rod)';
         case 'special':
         case 'special1':
@@ -876,8 +886,8 @@
       // Clean route name
       const routeName = nameify(route.id.replace('MAP_', ''));
 
-      // Each encounter type (land, old, good, surf, super)
-      const encounterTypes = ['land', 'old', 'good', 'surf', 'super', 'special', 'special1', 'special2', 'special3'];
+      // Each encounter type (land, old, good, surf, underwater, super)
+      const encounterTypes = ['land', 'old', 'good', 'surf', 'underwater', 'super', 'special', 'special1', 'special2', 'special3'];
 
       const encountersHTML = encounterTypes
         .filter(type => route[type])

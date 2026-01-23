@@ -15,7 +15,6 @@ const {
     TIER_PREMIUM,
     TIER_LEGEND,
 
-    TIER_STRONG_THRESHOLD,
     TRAINER_POKE_ENCOUNTER,
     TRAINER_POKE_STARTER_TREECKO,
     TRAINER_POKE_STARTER_TORCHIC,
@@ -35,13 +34,13 @@ const {
     TIER_BAD,
     TEMPLATE_MOVES_REPLACEMENT,
     TEMPLATE_ABILITIES_REPLACEMENT,
-    TIER_PREMIUM_THRESHOLD,
+    TIER_WEAK,
+    TIER_LEGEND_THRESHOLD,
+    TIER_GOD,
 } = require('./constants');
 const { chooseMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const items = require('./items.js');
 const { savePokemonData } = require('./pokemonWriter.js');
-
-const MAX_MEGA_EVO_STONES = 3;
 
 const startersFile = path.resolve(__dirname, '..', 'src', 'starter_choose.c');
 
@@ -69,11 +68,6 @@ const starterExtraCountText = '#define STARTER_EXTRA_COUNT 9';
 
 // Static replacements
 
-const castformReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'Route119_WeatherInstitute_2F', 'scripts.inc');
-const castformReplacementText = 'SPECIES_CASTFORM_NORMAL';
-const castformMSGBOXReplacementText = 'CASTFORM\\!\\$';
-const castformItemReplacementText = 'ITEM_MYSTIC_WATER';
-
 const regirockReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'DesertRuins', 'scripts.inc');
 const regirockReplacementText = 'SPECIES_REGIROCK';
 
@@ -86,9 +80,22 @@ const registeelReplacementText = 'SPECIES_REGISTEEL';
 const mewReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'NewMauville_Entrance', 'scripts.inc');
 const mewReplacementText = 'SPECIES_MEW';
 
-const latiosReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'MossdeepCity_Gym', 'scripts.inc');
-const latiosReplacementText = 'SPECIES_LATIOS';
-const latiosMSGBOXReplacementText = 'LATIOS\\!\\$';
+const gymMonReplacement = 'GYM_REWARD_MON';
+const gymNameReplacement = 'GYM_REWARD_NAME';
+const gymItemReplacement = 'GYM_REWARD_ITEM';
+const pokemonRewardFiles = [
+    path.resolve(__dirname, '..', 'data', 'maps', 'RustboroCity_Gym', 'scripts.inc'),
+    path.resolve(__dirname, '..', 'data', 'maps', 'DewfordTown_Gym', 'scripts.inc'),
+    path.resolve(__dirname, '..', 'data', 'maps', 'MauvilleCity_Gym', 'scripts.inc'),
+    path.resolve(__dirname, '..', 'data', 'maps', 'LavaridgeTown_Gym_1F', 'scripts.inc'),
+    path.resolve(__dirname, '..', 'data', 'maps', 'PetalburgCity_Gym', 'scripts.inc'),
+    path.resolve(__dirname, '..', 'data', 'maps', 'FortreeCity_Gym', 'scripts.inc'),
+    path.resolve(__dirname, '..', 'data', 'maps', 'MossdeepCity_Gym', 'scripts.inc'),
+    path.resolve(__dirname, '..', 'data', 'maps', 'SootopolisCity_Gym_1F', 'scripts.inc'),
+    path.resolve(__dirname, '..', 'data', 'maps', 'SlateportCity_OceanicMuseum_2F', 'scripts.inc'),
+    path.resolve(__dirname, '..', 'data', 'maps', 'Route119_WeatherInstitute_2F', 'scripts.inc'),
+    path.resolve(__dirname, '..', 'data', 'maps', 'LilycoveCity', 'scripts.inc'),
+];
 
 const skyPillarTopReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'SkyPillar_Top', 'scripts.inc');
 const scriptMenuReplacementFile = path.resolve(__dirname, '..', 'src', 'data', 'script_menu.h');
@@ -156,6 +163,17 @@ function itemIdToName(itemId) {
 function isValidEvolution(level, { param, method }) {
     return (!isNaN(parseInt(param)) && parseInt(param) <= level && parseInt(param) > 4)
         || ((method === 'ITEM' || param === '0') && level > 25);
+}
+
+const invalidMegas = [
+    'SPECIES_FROSLASS',
+    'SPECIES_KLEAVOR',
+];
+
+function hasValidMega (poke) {
+    return poke.evolutionData.megaEvos
+        && poke.evolutionData.megaEvos.length > 0
+        && !invalidMegas.includes(poke.id);
 }
 
 const bannedSpeciesForPicking = [
@@ -257,10 +275,21 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     }
 
     const alreadyChosenFamilySet = new Set();
+    const foundMegaEvos = new Set();
+
+    const addToFoundMegaEvosIfHasMegaEvo = (poke) => {
+        if (
+            hasValidMega(poke)
+            && poke.rating.megaEvoTier !== TIER_GOD
+        ) {
+            foundMegaEvos.add(poke.id);
+        }
+    };
 
     starters.forEach((starter, index) => {
         starters[index] = starter.id;
         alreadyChosenFamilySet.add(getFamilyGroup(starter.family));
+        addToFoundMegaEvosIfHasMegaEvo(starter);
     });
 
     let premiumLCPokes = pokemonList.filter(poke => {
@@ -300,34 +329,31 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     alreadyChosenFamilySet.add(getFamilyGroup(chosenExtraPokemon[0].family));
     chosenExtraPokemon[0].parsedTypes.forEach(type => alreadyChosenTypes.add(type));
 
-    const lcPokesWithMegaEvo = pokemonList.filter(poke => {
+    const strongPokemonLC = pokemonList.filter(poke => {
         return poke.evolutionData.isLC
-            && poke.evolutionData.megaEvos
-            && poke.evolutionData.megaEvos.length > 0
-            && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-            && poke.rating.bestEvoRating <= TIER_STRONG_THRESHOLD
-            && poke.rating.megaEvoRating <= TIER_PREMIUM_THRESHOLD
+            && poke.rating.bestEvoTier === TIER_STRONG
             && poke.rating.tier === TIER_BAD
-            && ![...alreadyChosenTypes].some(type => poke.parsedTypes.includes(type));
+            && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
     });
-
-    console.log(`Found ${lcPokesWithMegaEvo.length} eligible LC pokes with mega evolutions for extra starters.`);
-
-    if (lcPokesWithMegaEvo.length <= 0) {
-        console.warn('No LC pokemon with mega evolutions found for extra starters.');
-    }
-
-    while (chosenExtraPokemon.length < 3 && lcPokesWithMegaEvo.length > 0) {
-        const chosenPoke = sampleAndRemove(lcPokesWithMegaEvo);
-        chosenExtraPokemon.push(chosenPoke);
-        alreadyChosenFamilySet.add(getFamilyGroup(chosenPoke.family));
-        chosenPoke.parsedTypes.forEach(type => alreadyChosenTypes.add(type));
-
+    const strongPokemonLCWithFilteredTypes = strongPokemonLC.filter(poke => {
+        return ![...alreadyChosenTypes].some(type => poke.parsedTypes.includes(type));
+    });
+    // Pick 2 strong LC pokemon that don't share types with already chosen ones
+    while (chosenExtraPokemon.length < 3 && strongPokemonLCWithFilteredTypes.length > 0) {
+        const randomPoke = sampleAndRemove(strongPokemonLCWithFilteredTypes);
+        // Remove it also from strongPokemonLC
+        const indexInStrong = strongPokemonLC.findIndex(p => p.id === randomPoke.id);
+        if (indexInStrong >= 0) {
+            strongPokemonLC.splice(indexInStrong, 1);
+        }
+        chosenExtraPokemon.push(randomPoke);
+        alreadyChosenFamilySet.add(getFamilyGroup(randomPoke.family));
+        randomPoke.parsedTypes.forEach(type => alreadyChosenTypes.add(type));
         // Remove all pokes with at least one of the chosen types
-        for (let i = lcPokesWithMegaEvo.length - 1; i >= 0; i--) {
-            const poke = lcPokesWithMegaEvo[i];
+        for (let i = strongPokemonLCWithFilteredTypes.length - 1; i >= 0; i--) {
+            const poke = strongPokemonLCWithFilteredTypes[i];
             if ([...alreadyChosenTypes].some(type => poke.parsedTypes.includes(type))) {
-                lcPokesWithMegaEvo.splice(i, 1);
+                strongPokemonLCWithFilteredTypes.splice(i, 1);
             }
         }
     }
@@ -367,6 +393,11 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         alreadyChosenFamilySet.add(getFamilyGroup(randomPoke.family));
     }
 
+    // Try to find mega evos from the chosen extra pokemon
+    chosenExtraPokemon.forEach(poke => {
+        addToFoundMegaEvosIfHasMegaEvo(poke);
+    });
+
     let newStartersFile = await fs.readFile(startersFile, 'utf8');
 
     // Edit starterMonText with starters
@@ -395,49 +426,166 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         `#define STARTER_EXTRA_COUNT ${chosenExtraPokemon.length}`
     );
 
-    await fs.writeFile(startersFile, newStartersFile, 'utf8');
+    // await fs.writeFile(startersFile, newStartersFile, 'utf8');
     console.log('Starter pokemon updated successfully.');
 
-    const route111File = path.resolve(__dirname, '..', 'data', 'maps', 'Route111', 'map.json');
-    let route111Data = await fs.readFile(route111File, 'utf8');
+    // const route111File = path.resolve(__dirname, '..', 'data', 'maps', 'Route111', 'map.json');
+    // let route111Data = await fs.readFile(route111File, 'utf8');
 
     console.log(starters);
-    console.log(chosenExtraPokemon);
-    console.log(`Updating Route 111 map with new starter mega stones: ${[...starters, ...chosenExtraPokemon].map(p => p.id).join(', ')}}`);
-    const chosenPokemonThatHaveMegaEvo = [...starters.map((pokeId) =>
-        pokemonList.find(p => p.id === pokeId),
-    ), ...chosenExtraPokemon].filter(p => p && p.evolutionData.megaEvos && p.evolutionData.megaEvos.length > 0);
-    console.log(`Found ${chosenPokemonThatHaveMegaEvo.length} starter Pokemon with mega evolutions.`);
-    const itemDataList = [
-        'ITEM_SCEPTILITE',
-        'ITEM_BLAZIKENITE',
-        'ITEM_SWAMPERTITE',
-    ];
-
+    console.log(chosenExtraPokemon.map(p => p.id));
+    // console.log(`Updating Route 111 map with new starter mega stones: ${[...starters, ...chosenExtraPokemon].map(p => p.id).join(', ')}}`);
+    // const chosenPokemonThatHaveMegaEvo = [...starters.map((pokeId) =>
+    //     pokemonList.find(p => p.id === pokeId),
+    // ), ...chosenExtraPokemon].filter(p => p && p.evolutionData.megaEvos && p.evolutionData.megaEvos.length > 0);
+    // console.log(`Found ${chosenPokemonThatHaveMegaEvo.length} starter Pokemon with mega evolutions.`);
+    // const itemDataList = [
+    //     'ITEM_SCEPTILITE',
+    //     'ITEM_BLAZIKENITE',
+    //     'ITEM_SWAMPERTITE',
+    // ];
+    const itemDataList = [];
     const megaReplacements = {};
 
-    for (let i = 0; i < Math.min(chosenPokemonThatHaveMegaEvo.length, MAX_MEGA_EVO_STONES); i++) {
-        const poke = chosenPokemonThatHaveMegaEvo[i];
-        const megaEvos = poke.evolutionData.megaEvos;
-        const chosenMegaEvo = megaEvos[Math.floor(Math.random() * megaEvos.length)];
-        const megaItem = pokemonList.find(p => p.id === chosenMegaEvo).evolutionData.megaItem;
-        route111Data = route111Data.replace(itemDataList[i], megaItem);
-        megaReplacements[itemDataList[i]] = megaItem;
-    }
+    // for (let i = 0; i < Math.min(chosenPokemonThatHaveMegaEvo.length, MAX_MEGA_EVO_STONES); i++) {
+    //     const poke = chosenPokemonThatHaveMegaEvo[i];
+    //     const megaEvos = poke.evolutionData.megaEvos;
+    //     const chosenMegaEvo = megaEvos[Math.floor(Math.random() * megaEvos.length)];
+    //     const megaItem = pokemonList.find(p => p.id === chosenMegaEvo).evolutionData.megaItem;
+    //     route111Data = route111Data.replace(itemDataList[i], megaItem);
+    //     megaReplacements[itemDataList[i]] = megaItem;
+    // }
 
-    await fs.writeFile(route111File, route111Data, 'utf8');
-    console.log('Route 111 map updated with new starter mega stones: ', megaReplacements);
+    // await fs.writeFile(route111File, route111Data, 'utf8');
+    // console.log('Route 111 map updated with new starter mega stones: ', megaReplacements);
     // @TODO Replace mega stone trainers & rival
 
-    const castformReplacementList = pokemonList.filter(poke =>
+    const devolveToBase = (pokemon) => {
+        if (
+            pokemon.evolutionData.type === EVO_TYPE_SOLO
+            || pokemon.evolutionData.isLC
+            || !pokemon.evoTree?.length
+        ) {
+            return pokemon;
+        }
+        if (pokemon.evolutionData.megaBaseForm) {
+            return devolveToBase(pokemonList.find(p => p.id === pokemon.evolutionData.megaBaseForm));
+        }
+        const baseForm = pokemon.evoTree[0];
+        return pokemonList.find(p => p.id === baseForm);
+    }
+    
+    const checkValidEvo = (evaluatedPokemon, level, trainer) => {
+        let devolvedForm = evaluatedPokemon;
+        if (devolvedForm.evolutionData.megaBaseForm) {
+            devolvedForm = pokemonList.find(p => p.id === devolvedForm.evolutionData.megaBaseForm);
+        }
+        if (devolvedForm.evolutionData.type === EVO_TYPE_SOLO || devolvedForm.evolutionData.isLC) {
+            return true;
+        }
+        if (!devolvedForm) {
+            console.warn(`WARN: Could not find base form for mega pokemon ${evaluatedPokemon.id} when checking valid evolutions for trainer ${trainer.id}.`);
+            return false;
+        }
+        const filterMethod = p => {
+            const evolutions = (p.evolutions || [])
+                .filter(e => e.pokemon === devolvedForm.id);
+            if (!evolutions.length) return false;
+            return evolutions.some(evo => isValidEvolution(level, evo));
+        };
+        let pokemonThatEvolveToThis = pokemonList.filter(filterMethod);
+        if (pokemonThatEvolveToThis.length > 1 && devolvedForm.id !== 'SPECIES_GHOLDENGO') {
+            console.warn(`WARN: Multiple pre-evolutions found for ${devolvedForm.id} in trainer ${trainer?.id} when checking valid evolutions: ${pokemonThatEvolveToThis.map(p => p.id).join(', ')}.`);
+        }
+        if (pokemonThatEvolveToThis.length === 0) {
+            return false;
+        }
+        if (pokemonThatEvolveToThis[0].evolutionData.isLC) {
+            return true;
+        }
+        // If it's not LC, we keep devolving once more
+        devolvedForm = pokemonThatEvolveToThis[0];
+        pokemonThatEvolveToThis = pokemonList.filter(filterMethod);
+        return pokemonThatEvolveToThis.length > 0;
+    }
+
+    const gym1ReplacementList = pokemonList.filter(poke =>
+        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
+        && !poke.evolutionData.isMega
+        && poke.rating.tier === TIER_WEAK
+        && poke.evolutionData.type === EVO_TYPE_SOLO
+    );
+    const gym1Replacement = sampleAndRemove(gym1ReplacementList);
+    alreadyChosenFamilySet.add(getFamilyGroup(gym1Replacement.family));
+    addToFoundMegaEvosIfHasMegaEvo(gym1Replacement);
+    const gym2ReplacementList = pokemonList.filter(poke =>
+        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
+        && poke.rating.tier === TIER_WEAK
+        && poke.evolutionData.type === 'EVO_TYPE_LC_OF_2'
+        && poke.rating.bestEvoTier === TIER_AVERAGE
+        && (poke.evolutions || []).some(
+            evo => evo.method === 'ITEM' || (evo.method === 'LEVEL' && parseInt(evo.param) <= 25)
+        )
+    );
+    const gym2Replacement = sampleAndRemove(gym2ReplacementList);
+    alreadyChosenFamilySet.add(getFamilyGroup(gym2Replacement.family));
+    addToFoundMegaEvosIfHasMegaEvo(gym2Replacement);
+    const gym3ReplacementList = pokemonList.filter(poke =>
+        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
+        && !poke.evolutionData.isMega
+        && poke.evolutionData.isFinal
+        && hasValidMega(poke)
+        && poke.rating.bestEvoRating < TIER_LEGEND_THRESHOLD
+        && checkValidEvo(poke, 29)
+    );
+    const gym3Replacement = devolveToBase(sampleAndRemove(gym3ReplacementList));
+    alreadyChosenFamilySet.add(getFamilyGroup(gym3Replacement.family));
+    const slateportGruntsReward = devolveToBase(sampleAndRemove(gym3ReplacementList));
+    alreadyChosenFamilySet.add(getFamilyGroup(slateportGruntsReward.family));
+    const gym4n5ReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && poke.evolutionData.isLC
-        && poke.evolutionData.megaEvos
-        && poke.evolutionData.megaEvos.length > 0
-        && (poke.rating.megaEvoTier === TIER_PREMIUM || poke.rating.megaEvoTier === TIER_LEGEND)
+        && poke.rating.bestEvoTier === TIER_STRONG
     );
-    const castformReplacement = sampleAndRemove(castformReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(castformReplacement.family));
+    const gym4Replacement = sampleAndRemove(gym4n5ReplacementList);
+    alreadyChosenFamilySet.add(getFamilyGroup(gym4Replacement.family));
+    addToFoundMegaEvosIfHasMegaEvo(gym4Replacement);
+    const gym5Replacement = sampleAndRemove(gym4n5ReplacementList);
+    alreadyChosenFamilySet.add(getFamilyGroup(gym5Replacement.family));
+    addToFoundMegaEvosIfHasMegaEvo(gym5Replacement);
+
+    const shellyRewardReplacementList = pokemonList.filter(poke =>
+        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
+        && !poke.evolutionData.isMega
+        && poke.evolutionData.isFinal
+        && hasValidMega(poke)
+        && poke.rating.bestEvoRating < TIER_LEGEND_THRESHOLD
+        && checkValidEvo(poke, 41)
+    );
+
+    const shellyRewardReplacement = sampleAndRemove(shellyRewardReplacementList);
+    alreadyChosenFamilySet.add(getFamilyGroup(shellyRewardReplacement.family));
+
+    const gym6ReplacementList = pokemonList.filter(poke =>
+        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
+        && poke.evolutionData.isLC
+        && poke.rating.bestEvoTier === TIER_PREMIUM
+    );
+    const gym6Replacement = sampleAndRemove(gym6ReplacementList);
+    alreadyChosenFamilySet.add(getFamilyGroup(gym6Replacement.family));
+    addToFoundMegaEvosIfHasMegaEvo(gym6Replacement);
+    const gym7n8ReplacementList = pokemonList.filter(poke =>
+        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
+        && !poke.evolutionData.isMega
+        && poke.evolutionData.isFinal
+        && poke.rating.bestEvoTier === TIER_PREMIUM
+    );
+    const gym7Replacement = sampleAndRemove(gym7n8ReplacementList);
+    alreadyChosenFamilySet.add(getFamilyGroup(gym7Replacement.family));
+    addToFoundMegaEvosIfHasMegaEvo(gym7Replacement);
+    const gym8Replacement = sampleAndRemove(gym7n8ReplacementList);
+    alreadyChosenFamilySet.add(getFamilyGroup(gym8Replacement.family));
+    addToFoundMegaEvosIfHasMegaEvo(gym8Replacement);
 
     const strongSoloReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
@@ -446,10 +594,16 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     );
     const regirockReplacement = sampleAndRemove(strongSoloReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(regirockReplacement.family));
+    addToFoundMegaEvosIfHasMegaEvo(regirockReplacement);
     const regiceReplacement = sampleAndRemove(strongSoloReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(regiceReplacement.family));
+    addToFoundMegaEvosIfHasMegaEvo(regiceReplacement);
     const mewReplacement = sampleAndRemove(strongSoloReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(mewReplacement.family));
+    addToFoundMegaEvosIfHasMegaEvo(mewReplacement);
+    const wallyLilycoveReward = sampleAndRemove(strongSoloReplacementList);
+    alreadyChosenFamilySet.add(getFamilyGroup(wallyLilycoveReward.family));
+    addToFoundMegaEvosIfHasMegaEvo(wallyLilycoveReward);
 
     const premiumSoloReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
@@ -458,10 +612,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     );
     const registeelReplacement = sampleAndRemove(premiumSoloReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(registeelReplacement.family));
-    const latiosReplacement = sampleAndRemove(premiumSoloReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(latiosReplacement.family));
+    addToFoundMegaEvosIfHasMegaEvo(registeelReplacement);
 
-    // @TODO Choose between rayquaza, kyogre and groudon
     const legendReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && poke.rating.bestEvoTier === TIER_LEGEND
@@ -473,27 +625,45 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     alreadyChosenFamilySet.add(getFamilyGroup(legend2Replacement.family));
     const legend3Replacement = sampleAndRemove(legendReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(legend3Replacement.family));
+    addToFoundMegaEvosIfHasMegaEvo(legend1Replacement);
+    addToFoundMegaEvosIfHasMegaEvo(legend2Replacement);
+    addToFoundMegaEvosIfHasMegaEvo(legend3Replacement);
+
+    const pokeRewardReplacements = [
+        gym1Replacement,
+        gym2Replacement,
+        gym3Replacement, // 2 <- mega stone
+        gym4Replacement,
+        gym5Replacement,
+        gym6Replacement,
+        gym7Replacement,
+        gym8Replacement,
+        slateportGruntsReward, // 8 <- mega stone
+        shellyRewardReplacement, // 9 <- mega stone
+        wallyLilycoveReward,
+    ];
 
     const replacementLog = {};
-
-    if (castformReplacement) {
-        let castformFileData = await fs.readFile(castformReplacementFile, 'utf8');
-        // Replace all occurrences for each replacement
-        castformFileData = castformFileData.replace(new RegExp(castformReplacementText, 'g'), castformReplacement.id);
-        castformFileData = castformFileData.replace(new RegExp(castformMSGBOXReplacementText, 'g'), `${castformReplacement.name.toUpperCase()}!$`);
-        const megaEvoItems = castformReplacement.evolutionData.megaEvos.map(me => {
-            const megaPoke = pokemonList.find(p => p.id === me);
-            return megaPoke ? megaPoke.evolutionData.megaItem : null;
-        }).filter(item => item !== null);
-        if (megaEvoItems.length > 0) {
-            const chosenItem = megaEvoItems[Math.floor(Math.random() * megaEvoItems.length)];
-            castformFileData = castformFileData.replace(new RegExp(castformItemReplacementText, 'g'), chosenItem);
+    for (let i = 0; i < pokemonRewardFiles.length; i++) {
+        const gymFile = pokemonRewardFiles[i];
+        let gymFileData = await fs.readFile(gymFile, 'utf8');
+        gymFileData = gymFileData.replace(new RegExp(gymMonReplacement, 'g'), pokeRewardReplacements[i].id);
+        gymFileData = gymFileData.replace(new RegExp(gymNameReplacement, 'g'), pokeRewardReplacements[i].name);
+        if (i === 2 || i === 8 || i === 9) { // Mauville City Gym, Slateport Grunts, and Shelly give a mega stone
+            const megaEvoItems = pokeRewardReplacements[i].evolutionData.megaEvos.map(me => {
+                const megaPoke = pokemonList.find(p => p.id === me);
+                return megaPoke ? megaPoke.evolutionData.megaItem : null;
+            }).filter(item => item !== null);
+            if (megaEvoItems.length > 0) {
+                const chosenItem = megaEvoItems[Math.floor(Math.random() * megaEvoItems.length)];
+                gymFileData = gymFileData.replace(new RegExp(gymItemReplacement, 'g'), chosenItem);
+            }
+            else {
+                console.log(`No mega evolution found for ${pokeRewardReplacements[i].id}, keeping original item.`);
+            }
         }
-        else {
-            console.log(`No mega evolution found for ${castformReplacement.id}, keeping original item.`);
-        }
-        await fs.writeFile(castformReplacementFile, castformFileData, 'utf8');
-        replacementLog['SPECIES_CASTFORM_NORMAL'] = castformReplacement.id;
+        await fs.writeFile(gymFile, gymFileData, 'utf8');
+        replacementLog[`SPECIES_GYM${i + 1}_REWARD`] = pokeRewardReplacements[i].id;
     }
 
     if (regirockReplacement) {
@@ -522,14 +692,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         registeelFileData = registeelFileData.replace(new RegExp(registeelReplacementText, 'g'), registeelReplacement.id);
         await fs.writeFile(registeelReplacementFile, registeelFileData, 'utf8');
         replacementLog['SPECIES_REGISTEEL'] = registeelReplacement.id;
-    }
-
-    if (latiosReplacement) {
-        let latiosFileData = await fs.readFile(latiosReplacementFile, 'utf8');
-        latiosFileData = latiosFileData.replace(new RegExp(latiosReplacementText, 'g'), latiosReplacement.id);
-        latiosFileData = latiosFileData.replace(new RegExp(latiosMSGBOXReplacementText, 'g'), `${latiosReplacement.name.toUpperCase()}!$`);
-        await fs.writeFile(latiosReplacementFile, latiosFileData, 'utf8');
-        replacementLog['SPECIES_LATIOS'] = latiosReplacement.id;
     }
 
     let skyPillarTopFileData = await fs.readFile(skyPillarTopReplacementFile, 'utf8');
@@ -622,6 +784,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         }
         alreadyChosenFamilySet.add(getFamilyGroup(replacement.family));
         newlyAddedFamilies.add(replacement.family);
+        addToFoundMegaEvosIfHasMegaEvo(replacement);
         replacementLog[speciesId] = replacement.id;
         // entryId must be a unique string that won't reappear in the file
         const entryId = Math.random().toString(36).substring(2, 15);
@@ -651,24 +814,24 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         routeFileContent = routeFileContent.replace(/ITEM_WAVE_MAIL/g, () => sample(items.strongDefMints));
         routeFileContent = routeFileContent.replace(/ITEM_MECH_MAIL/g, () => sample(items.strongAtkMints));
 
-        Object.entries(items.megaStones).forEach(([itemIdToReplace, speciesId]) => {
-            if (routeFileContent.includes(itemIdToReplace) === false) {
-                return;
-            }
-            const replacementPoke = replacementLog[speciesId] || speciesId;
-            const poke = pokemonList.find(p => p.id === replacementPoke);
-            console.log(`Replacing ${itemIdToReplace} with a mega stone for ${replacementPoke} (${speciesId}) in ${routeFile}.`);
-            if (poke && poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length > 0) {
-                const megaId = sample(poke.evolutionData.megaEvos);
-                const megaItem = pokemonList.find(p => p.id === megaId).evolutionData.megaItem;
-                console.log(` - Chose mega evolution ${megaId} with item ${megaItem}.`);
-                megaReplacements[itemIdToReplace] = megaItem;
-                routeFileContent = routeFileContent.replace(itemIdToReplace, megaItem);
-            }
-            else {
-                console.warn(`WARN: No mega evolution found for ${replacementPoke} (${speciesId}) to replace ${itemIdToReplace} in ${routeFile}.`);
-            }
-        });
+        // Object.entries(items.megaStones).forEach(([itemIdToReplace, speciesId]) => {
+        //     if (routeFileContent.includes(itemIdToReplace) === false) {
+        //         return;
+        //     }
+        //     const replacementPoke = replacementLog[speciesId] || speciesId;
+        //     const poke = pokemonList.find(p => p.id === replacementPoke);
+        //     console.log(`Replacing ${itemIdToReplace} with a mega stone for ${replacementPoke} (${speciesId}) in ${routeFile}.`);
+        //     if (poke && poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length > 0) {
+        //         const megaId = sample(poke.evolutionData.megaEvos);
+        //         const megaItem = pokemonList.find(p => p.id === megaId).evolutionData.megaItem;
+        //         console.log(` - Chose mega evolution ${megaId} with item ${megaItem}.`);
+        //         megaReplacements[itemIdToReplace] = megaItem;
+        //         routeFileContent = routeFileContent.replace(itemIdToReplace, megaItem);
+        //     }
+        //     else {
+        //         console.warn(`WARN: No mega evolution found for ${replacementPoke} (${speciesId}) to replace ${itemIdToReplace} in ${routeFile}.`);
+        //     }
+        // });
 
         await fs.writeFile(routeFile, routeFileContent, 'utf8');
     });
@@ -959,39 +1122,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             }
             if (trainerMonDefinition.checkValidEvo) {
                 pokemonLooseList = pokemonLooseList.filter(
-                    loosePokemon => {
-                        let devolvedForm = loosePokemon;
-                        if (devolvedForm.evolutionData.megaBaseForm) {
-                            devolvedForm = pokemonList.find(p => p.id === devolvedForm.evolutionData.megaBaseForm);
-                        }
-                        if (devolvedForm.evolutionData.type === EVO_TYPE_SOLO || devolvedForm.evolutionData.isLC) {
-                            return true;
-                        }
-                        if (!devolvedForm) {
-                            console.warn(`WARN: Could not find base form for mega pokemon ${loosePokemon.id} when checking valid evolutions for trainer ${trainer.id}.`);
-                            return false;
-                        }
-                        const filterMethod = p => {
-                            const evolutions = (p.evolutions || [])
-                                .filter(e => e.pokemon === devolvedForm.id);
-                            if (!evolutions.length) return false;
-                            return evolutions.some(evo => isValidEvolution(trainer.level, evo));
-                        };
-                        let pokemonThatEvolveToThis = pokemonList.filter(filterMethod);
-                        if (pokemonThatEvolveToThis.length > 1) {
-                            console.warn(`WARN: Multiple pre-evolutions found for ${devolvedForm.id} in trainer ${trainer.id} when checking valid evolutions: ${pokemonThatEvolveToThis.map(p => p.id).join(', ')}.`);
-                        }
-                        if (pokemonThatEvolveToThis.length === 0) {
-                            return false;
-                        }
-                        if (pokemonThatEvolveToThis[0].evolutionData.isLC) {
-                            return true;
-                        }
-                        // If it's not LC, we keep devolving once more
-                        devolvedForm = pokemonThatEvolveToThis[0];
-                        pokemonThatEvolveToThis = pokemonList.filter(filterMethod);
-                        return pokemonThatEvolveToThis.length > 0;
-                    }
+                    loosePokemon => checkValidEvo(loosePokemon, trainer.level, trainer)
                 );
             }
 
@@ -1312,6 +1443,10 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 if (r.startsWith('TM_')) {
                     return 'TM ' + nameify(r.replace('TM_', ''));
                 }
+                if (r.startsWith('GYM_REWARD_')) {
+                    const gymIndex = parseInt(r.replace('GYM_REWARD_', '')) - 1;
+                    return pokeRewardReplacements[gymIndex].name;
+                }
                 return r;
             }) || [],
             isBoss: trainer.isBoss || false,
@@ -1428,6 +1563,17 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     // @TODO Out name depends on a param
     const outFile = path.resolve(__dirname, OUTPUT_DIR, 'out.html');
     await fs.writeFile(outFile, htmlOutputTemplate, 'utf8');
+
+    // Print all megas found
+    for (const megaId of Object.keys(megaReplacements)) {
+        console.log(`Mega Stone Replacement: ${megaId} -> ${megaReplacements[megaId]}`);
+    }
+
+    // Print all megas found in foundMegaEvos set
+    for (const megaEvoId of foundMegaEvos) {
+        console.log(`Found Mega Evolution used in trainers: ${megaEvoId}`);
+    }
+
     console.log(`Output HTML file generated at ${outFile}`);
 }
 

@@ -98,6 +98,9 @@ SootopolisCity_Gym_1F_EventScript_JuanDefeated::
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_RESIDENTS
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_STEVEN
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_WALLACE
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
+	givemon GYM_REWARD_MON, 64
+	call SootopolisCity_Gym_1F_EventScript_ReceivedRewardPokeFanfare
 	setvar VAR_SOOTOPOLIS_CITY_STATE, 6
 	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_MAN_1
 	setvar VAR_0x8008, 8
@@ -113,6 +116,16 @@ SootopolisCity_Gym_1F_EventScript_JuanDefeated::
 	setflag FLAG_ENABLE_JUAN_MATCH_CALL
 	release
 	end
+
+SootopolisCity_Gym_1F_EventScript_ReceivedRewardPokeFanfare::
+	playfanfare MUS_OBTAIN_ITEM
+	message SootopolisCity_Gym_1F_Text_PlayerReceivedRewardPoke
+	waitmessage
+	waitfanfare
+	return
+
+SootopolisCity_Gym_1F_Text_PlayerReceivedRewardPoke:
+	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 SootopolisCity_Gym_1F_EventScript_GiveWaterPulse::
 	giveitem ITEM_POKE_BALL

@@ -33,6 +33,9 @@ FortreeCity_Gym_EventScript_WinonaDefeated::
 	setflag FLAG_DEFEATED_FORTREE_GYM
 	setflag FLAG_BADGE06_GET
 	setflag FLAG_HIDE_ROUTE_120_STEVEN
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
+	givemon GYM_REWARD_MON, 46
+	call FortreeCity_Gym_EventScript_ReceivedRewardPokeFanfare
 	setvar VAR_0x8008, 6
 	call Common_EventScript_SetGymTrainers
 	call FortreeCity_Gym_EventScript_GiveAerialAce
@@ -54,6 +57,16 @@ FortreeCity_Gym_EventScript_WinonaDefeated::
 	setflag FLAG_HIDE_JAGGED_PASS_MAGMA_GUARD
 	release
 	end
+
+FortreeCity_Gym_EventScript_ReceivedRewardPokeFanfare::
+	playfanfare MUS_OBTAIN_ITEM
+	message FortreeCity_Gym_Text_PlayerReceivedRewardPoke
+	waitmessage
+	waitfanfare
+	return
+
+FortreeCity_Gym_Text_PlayerReceivedRewardPoke:
+	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 FortreeCity_Gym_EventScript_GiveAerialAce2::
 	giveitem ITEM_TM_AERIAL_ACE
