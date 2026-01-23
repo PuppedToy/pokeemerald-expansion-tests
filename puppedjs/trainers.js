@@ -2871,23 +2871,13 @@ const trainersData = [
                 fallback: [
                     {
                         ...POKEDEF_AVERAGE,
-                        type: [...magmaTeamTypes],
-                        abilities: [...sunAbilities],
-                    },
-                    {
-                        ...POKEDEF_AVERAGE,
                         type: [magmaTeamTypes[0], magmaTeamTypes[1]],
                     },
                     {
                         ...POKEDEF_AVERAGE,
                         type: [...magmaTeamTypes],
-                    }
-                ],
-            },
-            {
-                ...POKEDEF_AVERAGE,
-                abilities: [...sunAbilities],
-                fallback: [
+                        abilities: [...sunAbilities],
+                    },
                     {
                         ...POKEDEF_AVERAGE,
                         type: [...magmaTeamTypes],
@@ -2913,6 +2903,10 @@ const trainersData = [
                         type: [...magmaTeamTypes],
                     }
                 ],
+            },
+            {
+                ...POKEDEF_AVERAGE,
+                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
         ],
     },
