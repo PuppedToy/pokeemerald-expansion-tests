@@ -765,6 +765,7 @@ const getSampleItemsFromArray = (array, amount) => {
 };
 
 function getWildEncountersFromMap(mapId, encounterTypes) {
+    console.log(wildMaps);
     const map = wildMaps.find(m => m.id === mapId);
     if (!map) {
         throw new Error('Map not found: ' + mapId);
@@ -780,10 +781,10 @@ function getWildEncountersFromMap(mapId, encounterTypes) {
     return result;
 }
 
-const rival101Encounters = getWildEncountersFromMap('MAP_ROUTE_101', ['land', 'old']);
-const rival102Encounters = getWildEncountersFromMap('MAP_ROUTE_102', ['land', 'old']);
-const rival103Encounters = getWildEncountersFromMap('MAP_ROUTE_103', ['land', 'old']);
-const rival104Encounters = getWildEncountersFromMap('MAP_ROUTE_104', ['land', 'old']);
+const rival101Encounters = getWildEncountersFromMap('MAP_ROUTE101', ['land', 'old']);
+const rival102Encounters = getWildEncountersFromMap('MAP_ROUTE102', ['land', 'old']);
+const rival103Encounters = getWildEncountersFromMap('MAP_ROUTE103', ['land', 'old']);
+const rival104Encounters = getWildEncountersFromMap('MAP_ROUTE104', ['land', 'old']);
 
 const rivalRustboroEncounters = [
     ...rival101Encounters,
@@ -791,8 +792,8 @@ const rivalRustboroEncounters = [
     ...rival103Encounters,
     ...rival104Encounters,
     ...getWildEncountersFromMap('MAP_PETALBURG_WOODS', ['land', 'old']),
-    ...getWildEncountersFromMap('MAP_ROUTE_115', ['land', 'old']),
-    ...getWildEncountersFromMap('MAP_ROUTE_116', ['land', 'old']),
+    ...getWildEncountersFromMap('MAP_ROUTE115', ['land', 'old']),
+    ...getWildEncountersFromMap('MAP_ROUTE116', ['land', 'old']),
 ];
 
 const rival110Encounters = [
@@ -804,13 +805,13 @@ const rival110Encounters = [
 ];
 
 const rivalGoodRodEncounters = [
-    ...getWildEncountersFromMap('MAP_ROUTE_101', ['good']),
-    ...getWildEncountersFromMap('MAP_ROUTE_102', ['good']),
-    ...getWildEncountersFromMap('MAP_ROUTE_103', ['good']),
-    ...getWildEncountersFromMap('MAP_ROUTE_104', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE101', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE102', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE103', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE104', ['good']),
     ...getWildEncountersFromMap('MAP_PETALBURG_WOODS', ['good']),
-    ...getWildEncountersFromMap('MAP_ROUTE_115', ['good']),
-    ...getWildEncountersFromMap('MAP_ROUTE_116', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE115', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE116', ['good']),
     ...getWildEncountersFromMap('MAP_ROUTE106', ['good']),
     ...getWildEncountersFromMap('MAP_GRANITE_CAVE', ['good']),
     ...getWildEncountersFromMap('MAP_ROUTE109', ['good']),
@@ -830,13 +831,13 @@ const rival119Encounters = [
 ];
 
 const rivalSuperRodEncounters = [
-    ...getWildEncountersFromMap('MAP_ROUTE_101', ['super']),
-    ...getWildEncountersFromMap('MAP_ROUTE_102', ['super']),
-    ...getWildEncountersFromMap('MAP_ROUTE_103', ['super']),
-    ...getWildEncountersFromMap('MAP_ROUTE_104', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE101', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE102', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE103', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE104', ['super']),
     ...getWildEncountersFromMap('MAP_PETALBURG_WOODS', ['super']),
-    ...getWildEncountersFromMap('MAP_ROUTE_115', ['super']),
-    ...getWildEncountersFromMap('MAP_ROUTE_116', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE115', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE116', ['super']),
     ...getWildEncountersFromMap('MAP_ROUTE106', ['super']),
     ...getWildEncountersFromMap('MAP_GRANITE_CAVE', ['super']),
     ...getWildEncountersFromMap('MAP_ROUTE109', ['super']),
