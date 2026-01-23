@@ -771,7 +771,7 @@ function getWildEncountersFromMap(mapId, encounterTypes) {
     }
 
     const result = [];
-    Object.entries(mapId).forEach(([encounterType, encounter]) => {
+    Object.entries(map).forEach(([encounterType, encounter]) => {
         if (encounterTypes.includes(encounterType)) {
             result.push(encounter);
         }
