@@ -1,9 +1,4 @@
 const items = {
-    megaStones: {
-        ITEM_HARBOR_MAIL: 'SPECIES_SPINDA', // Route 113
-        ITEM_ORANGE_MAIL: 'SPECIES_RIBOMBEE', // Scorched Slab
-    },
-
     // Randomized items - mints
     // ITEM_MECH_MAIL will be replaced by these
     strongAtkMints: [ // 1 at Route 109, 1 at Route 113, 1 at Route 115

@@ -2161,6 +2161,7 @@ const trainersData = [
         id: 'TRAINER_GRUNT_MUSEUM_1',
         class: 'Aqua Grunt M',
         isBoss: true,
+        reward: ['GYM_REWARD_9'],
         level: 21,
         preventShuffle: true,
         bag: [...slateportGruntsBag()],
@@ -2189,6 +2190,7 @@ const trainersData = [
         id: 'TRAINER_GRUNT_MUSEUM_2',
         class: 'Aqua Grunt M',
         isBoss: true,
+        reward: ['GYM_REWARD_9'],
         level: 21,
         preventShuffle: true,
         bag: [...slateportGruntsBag()],
@@ -3025,13 +3027,14 @@ const trainersData = [
     {
         id: 'TRAINER_LAWRENCE',
         class: 'Camper',
-        reward: ['SPECIES_SPINDA', 'ITEM_HARBOR_MAIL'],
+        reward: ['SPECIES_SPINDA'],
         level: 33,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
         team: [
             {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_HARBOR_MAIL',
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SPINDA'],
+                tryEvolve: true,
             },
             ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
             ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
@@ -3561,6 +3564,7 @@ const trainersData = [
         id: 'TRAINER_SHELLY_WEATHER_INSTITUTE',
         class: 'Aqua Admin F',
         level: 39,
+        reward: ['GYM_REWARD_10'],
         isBoss: true,
         bag: [...shellyBag()],
         team: [
@@ -3665,7 +3669,7 @@ const trainersData = [
     {
         id: 'TRAINER_ROBERT_1',
         class: 'Bird Keeper',
-        reward: ['Access to Scorched Slab'],
+        reward: ['SPECIES_KROOKODILE', 'SPECIES_KROKOROK'],
         level: 43,
         bag: getSampleItemsFromArray(rival119Bag(), 17),
         team: [
@@ -3683,19 +3687,35 @@ const trainersData = [
             ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
         ],
     },
+    // @TODO Put colin in the slab
     {
         id: 'TRAINER_COLIN',
         class: 'Bird Keeper',
-        reward: ['SPECIES_KROOKODILE', 'SPECIES_KROKOROK', 'SPECIES_RIBOMBEE', 'ITEM_ORANGE_MAIL'],
+        reward: ['SPECIES_RIBOMBEE'],
         level: 43,
         bag: getSampleItemsFromArray(rival119Bag(), 17),
         team: [
             {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_ORANGE_MAIL',
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_RIBOMBEE'],
+                tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_DUSKULL'],
+                tryEvolve: true,
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_DUSCLOPS'],
+                tryEvolve: true,
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_DUSKNOIR'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
         ],
     },
     {
@@ -3959,6 +3979,7 @@ const trainersData = [
         id: 'TRAINER_WALLY_LILYCOVE',
         class: 'Wally',
         isBoss: true,
+        reward: ['GYM_REWARD_11'],
         level: 46,
         bag: [...wallyBag2()],
         team: [
@@ -4932,7 +4953,7 @@ const trainersData = [
     {
         id: 'TRAINER_HOPE',
         class: 'Cooltrainer F',
-        reward: ['SPECIES_SHEDINJA'],
+        reward: ['SPECIES_SHEDINJA', 'SPECIES_MOLTRES', 'SPECIES_ARTICUNO', 'SPECIES_ZAPDOS', 'SPECIES_LUGIA'],
         level: 67,
         bag: [...spaceCenterBag()],
         team: [
@@ -4941,10 +4962,24 @@ const trainersData = [
                 encounterIds: ['SPECIES_SHEDINJA'],
             },
             {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_MOLTRES'],
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_ARTICUNO'],
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_ZAPDOS'],
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_LUGIA'],
+            },
+            {
                 ...POKEDEF_STRONG_PREMIUM_MEGA,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_PREMIUM, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
         ],
     },
     // Ever Grande Rival

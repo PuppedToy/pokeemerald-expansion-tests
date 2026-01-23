@@ -68,11 +68,6 @@ const starterExtraCountText = '#define STARTER_EXTRA_COUNT 9';
 
 // Static replacements
 
-const castformReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'Route119_WeatherInstitute_2F', 'scripts.inc');
-const castformReplacementText = 'SPECIES_CASTFORM_NORMAL';
-const castformMSGBOXReplacementText = 'CASTFORM\\!\\$';
-const castformItemReplacementText = 'ITEM_MYSTIC_WATER';
-
 const regirockReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'DesertRuins', 'scripts.inc');
 const regirockReplacementText = 'SPECIES_REGIROCK';
 
@@ -88,7 +83,7 @@ const mewReplacementText = 'SPECIES_MEW';
 const gymMonReplacement = 'GYM_REWARD_MON';
 const gymNameReplacement = 'GYM_REWARD_NAME';
 const gymItemReplacement = 'GYM_REWARD_ITEM';
-const gymFiles = [
+const pokemonRewardFiles = [
     path.resolve(__dirname, '..', 'data', 'maps', 'RustboroCity_Gym', 'scripts.inc'),
     path.resolve(__dirname, '..', 'data', 'maps', 'DewfordTown_Gym', 'scripts.inc'),
     path.resolve(__dirname, '..', 'data', 'maps', 'MauvilleCity_Gym', 'scripts.inc'),
@@ -97,6 +92,9 @@ const gymFiles = [
     path.resolve(__dirname, '..', 'data', 'maps', 'FortreeCity_Gym', 'scripts.inc'),
     path.resolve(__dirname, '..', 'data', 'maps', 'MossdeepCity_Gym', 'scripts.inc'),
     path.resolve(__dirname, '..', 'data', 'maps', 'SootopolisCity_Gym_1F', 'scripts.inc'),
+    path.resolve(__dirname, '..', 'data', 'maps', 'SlateportCity_OceanicMuseum_2F', 'scripts.inc'),
+    path.resolve(__dirname, '..', 'data', 'maps', 'Route119_WeatherInstitute_2F', 'scripts.inc'),
+    path.resolve(__dirname, '..', 'data', 'maps', 'LilycoveCity', 'scripts.inc'),
 ];
 
 const skyPillarTopReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'SkyPillar_Top', 'scripts.inc');
@@ -542,6 +540,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     );
     const gym3Replacement = devolveToBase(sampleAndRemove(gym3ReplacementList));
     alreadyChosenFamilySet.add(getFamilyGroup(gym3Replacement.family));
+    const slateportGruntsReward = devolveToBase(sampleAndRemove(gym3ReplacementList));
+    alreadyChosenFamilySet.add(getFamilyGroup(slateportGruntsReward.family));
     const gym4n5ReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && poke.evolutionData.isLC
@@ -553,6 +553,19 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const gym5Replacement = sampleAndRemove(gym4n5ReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(gym5Replacement.family));
     addToFoundMegaEvosIfHasMegaEvo(gym5Replacement);
+
+    const shellyRewardReplacementList = pokemonList.filter(poke =>
+        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
+        && !poke.evolutionData.isMega
+        && poke.evolutionData.isFinal
+        && hasValidMega(poke)
+        && poke.rating.bestEvoRating < TIER_LEGEND_THRESHOLD
+        && checkValidEvo(poke, 41)
+    );
+
+    const shellyRewardReplacement = sampleAndRemove(shellyRewardReplacementList);
+    alreadyChosenFamilySet.add(getFamilyGroup(shellyRewardReplacement.family));
+
     const gym6ReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && poke.evolutionData.isLC
@@ -573,26 +586,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const gym8Replacement = sampleAndRemove(gym7n8ReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(gym8Replacement.family));
     addToFoundMegaEvosIfHasMegaEvo(gym8Replacement);
-    const gymReplacements = [
-        gym1Replacement,
-        gym2Replacement,
-        gym3Replacement,
-        gym4Replacement,
-        gym5Replacement,
-        gym6Replacement,
-        gym7Replacement,
-        gym8Replacement,
-    ];
-
-    const castformReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.evolutionData.isLC
-        && poke.evolutionData.megaEvos
-        && poke.evolutionData.megaEvos.length > 0
-        && (poke.rating.megaEvoTier === TIER_PREMIUM || poke.rating.megaEvoTier === TIER_LEGEND)
-    );
-    const castformReplacement = sampleAndRemove(castformReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(castformReplacement.family));
 
     const strongSoloReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
@@ -608,6 +601,9 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const mewReplacement = sampleAndRemove(strongSoloReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(mewReplacement.family));
     addToFoundMegaEvosIfHasMegaEvo(mewReplacement);
+    const wallyLilycoveReward = sampleAndRemove(strongSoloReplacementList);
+    alreadyChosenFamilySet.add(getFamilyGroup(wallyLilycoveReward.family));
+    addToFoundMegaEvosIfHasMegaEvo(wallyLilycoveReward);
 
     const premiumSoloReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
@@ -633,14 +629,28 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     addToFoundMegaEvosIfHasMegaEvo(legend2Replacement);
     addToFoundMegaEvosIfHasMegaEvo(legend3Replacement);
 
+    const pokeRewardReplacements = [
+        gym1Replacement,
+        gym2Replacement,
+        gym3Replacement, // 2 <- mega stone
+        gym4Replacement,
+        gym5Replacement,
+        gym6Replacement,
+        gym7Replacement,
+        gym8Replacement,
+        slateportGruntsReward, // 8 <- mega stone
+        shellyRewardReplacement, // 9 <- mega stone
+        wallyLilycoveReward,
+    ];
+
     const replacementLog = {};
-    for (let i = 0; i < gymFiles.length; i++) {
-        const gymFile = gymFiles[i];
+    for (let i = 0; i < pokemonRewardFiles.length; i++) {
+        const gymFile = pokemonRewardFiles[i];
         let gymFileData = await fs.readFile(gymFile, 'utf8');
-        gymFileData = gymFileData.replace(new RegExp(gymMonReplacement, 'g'), gymReplacements[i].id);
-        gymFileData = gymFileData.replace(new RegExp(gymNameReplacement, 'g'), gymReplacements[i].name);
-        if (i === 2) { // Mauville City Gym gives a mega stone
-            const megaEvoItems = gymReplacements[i].evolutionData.megaEvos.map(me => {
+        gymFileData = gymFileData.replace(new RegExp(gymMonReplacement, 'g'), pokeRewardReplacements[i].id);
+        gymFileData = gymFileData.replace(new RegExp(gymNameReplacement, 'g'), pokeRewardReplacements[i].name);
+        if (i === 2 || i === 8 || i === 9) { // Mauville City Gym, Slateport Grunts, and Shelly give a mega stone
+            const megaEvoItems = pokeRewardReplacements[i].evolutionData.megaEvos.map(me => {
                 const megaPoke = pokemonList.find(p => p.id === me);
                 return megaPoke ? megaPoke.evolutionData.megaItem : null;
             }).filter(item => item !== null);
@@ -649,31 +659,11 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 gymFileData = gymFileData.replace(new RegExp(gymItemReplacement, 'g'), chosenItem);
             }
             else {
-                console.log(`No mega evolution found for ${gymReplacements[i].id}, keeping original item.`);
+                console.log(`No mega evolution found for ${pokeRewardReplacements[i].id}, keeping original item.`);
             }
         }
         await fs.writeFile(gymFile, gymFileData, 'utf8');
-        replacementLog[`SPECIES_GYM${i + 1}_REWARD`] = gymReplacements[i].id;
-    }
-
-    if (castformReplacement) {
-        let castformFileData = await fs.readFile(castformReplacementFile, 'utf8');
-        // Replace all occurrences for each replacement
-        castformFileData = castformFileData.replace(new RegExp(castformReplacementText, 'g'), castformReplacement.id);
-        castformFileData = castformFileData.replace(new RegExp(castformMSGBOXReplacementText, 'g'), `${castformReplacement.name.toUpperCase()}!$`);
-        const megaEvoItems = castformReplacement.evolutionData.megaEvos.map(me => {
-            const megaPoke = pokemonList.find(p => p.id === me);
-            return megaPoke ? megaPoke.evolutionData.megaItem : null;
-        }).filter(item => item !== null);
-        if (megaEvoItems.length > 0) {
-            const chosenItem = megaEvoItems[Math.floor(Math.random() * megaEvoItems.length)];
-            castformFileData = castformFileData.replace(new RegExp(castformItemReplacementText, 'g'), chosenItem);
-        }
-        else {
-            console.log(`No mega evolution found for ${castformReplacement.id}, keeping original item.`);
-        }
-        await fs.writeFile(castformReplacementFile, castformFileData, 'utf8');
-        replacementLog['SPECIES_CASTFORM_NORMAL'] = castformReplacement.id;
+        replacementLog[`SPECIES_GYM${i + 1}_REWARD`] = pokeRewardReplacements[i].id;
     }
 
     if (regirockReplacement) {
@@ -1455,7 +1445,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 }
                 if (r.startsWith('GYM_REWARD_')) {
                     const gymIndex = parseInt(r.replace('GYM_REWARD_', '')) - 1;
-                    return gymReplacements[gymIndex].name;
+                    return pokeRewardReplacements[gymIndex].name;
                 }
                 return r;
             }) || [],

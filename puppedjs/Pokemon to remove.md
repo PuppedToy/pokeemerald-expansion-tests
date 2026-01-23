@@ -1,0 +1,124 @@
+Pokemon to remove
+
+# Petalburg
+- Smeargle
+- Goldeen
+- Miltank
+
+# Rustboro
+- Porygon
+
+# Dewford
+- Pochyena
+- Mightyena
+
+# Slateport
+- Absol
+
+Pokemon to add
+
+# Route 103
+- A land passage
+- Smeargle as an early grass
+
+# Route 104
+- A land passage
+- Move Geodude to earlier
+- Pochyena as surf
+
+# Petalburg Woods
+- Caterpie as old rod
+- Kakuna as good rod
+- Butterfree as surf
+
+# Route 115
+- Move sandshrew to earlier
+- Goldeen as surf
+
+# Route 116
+- Move seaking as surf
+
+# Rotue 106
+- Machop as grass
+- Machoke as surf
+- Add land connection to top
+
+# Route 109
+- Makuhita as surf
+
+# Route 110
+- Land pass to new mauville
+- Flaafy as surf
+
+# Route 117
+- Absol as surf
+
+# Route 118
+- Land pass to the other side
+- Miltank as surf
+
+# Route 111
+- Vibrava as surf
+
+# Route 112
+- Camerupt as surf
+
+# Route 113
+- Add pond
+- Remove gauntlet and stone
+- Add mega battles instead
+- Bidoof as old
+- Bibarel as good
+- Lickitung as surf
+
+# Route 114
+- Grumpig as surf
+
+# Route 119
+- Cleanup random people
+- Serperior as surf
+
+# Route 120
+- Stunfisk as surf
+
+# Scorched Slab
+- Duskull as old
+- Dusclops as good
+- Dusknoir as surf
+- Gabite as super
+
+# Route 121
+- Banette as surf
+
+# Route 122
+- Add land
+- Porygon as land
+- Wailmer as old
+
+# Mt. Pyre
+- Spiritomb as surf
+
+# Route 123
+- Design the full route
+- Mega stone placements?
+- Aerodactyl as land
+- Kabutops as old
+- Kadabra as good
+- Alakazam as surf
+
+# Route 125
+- Grass
+- Cinderace as land encounter with trainer
+
+# Route 129
+- Grass
+- Darkrai as land encounter with trainer
+
+# Route 131
+- Grass
+- Infernape as land encounter with trainer
+
+# Ever Grande
+- Grass
+- Torterra as land
+
