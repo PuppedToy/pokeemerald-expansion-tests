@@ -38,6 +38,7 @@ const {
     TRAINER_GYM_LEADERS_KEEP_TYPE_AMOUNT,
     TRAINER_E4_KEEP_TYPE_AMOUNT,
 } = require("./constants");
+const { maps: wildMaps } = require('./wild');
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
 const partnersFile = path.resolve(__dirname, '..', 'src', 'data', 'battle_partners.party');
@@ -726,7 +727,7 @@ const pokeDefGrassySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
     };
 };
 
-const PROMISING_PREMIUM_LEGEND_GOD_MEGA_LC = {
+const PROMISING_PREMIUM_LEGEND_MEGA_LC = {
     megaTier: [TIER_PREMIUM, TIER_LEGEND],
     absoluteTier: [TIER_BAD],
     evoType: [EVO_TYPE_LC],
@@ -763,47 +764,145 @@ const getSampleItemsFromArray = (array, amount) => {
     return Array.from(result);
 };
 
+function getWildEncountersFromMap(mapId, encounterTypes) {
+    const map = wildMaps.find(m => m.id === mapId);
+    if (!mapId) {
+        throw new Error('Map not found: ' + mapId);
+    }
+
+    const result = [];
+    Object.entries(mapId).forEach(([encounterType, encounter]) => {
+        if (encounterTypes.includes(encounterType)) {
+            result.push(encounter);
+        }
+    });
+
+    return result;
+}
+
+const rival101Encounters = getWildEncountersFromMap('MAP_ROUTE_101', ['land', 'old']);
+const rival102Encounters = getWildEncountersFromMap('MAP_ROUTE_102', ['land', 'old']);
+const rival103Encounters = getWildEncountersFromMap('MAP_ROUTE_103', ['land', 'old']);
+const rival104Encounters = getWildEncountersFromMap('MAP_ROUTE_104', ['land', 'old']);
+
+const rivalRustboroEncounters = [
+    ...rival101Encounters,
+    ...rival102Encounters,
+    ...rival103Encounters,
+    ...rival104Encounters,
+    ...getWildEncountersFromMap('MAP_PETALBURG_WOODS', ['land', 'old']),
+    ...getWildEncountersFromMap('MAP_ROUTE_115', ['land', 'old']),
+    ...getWildEncountersFromMap('MAP_ROUTE_116', ['land', 'old']),
+];
+
+const rival110Encounters = [
+    ...rivalRustboroEncounters,
+    ...getWildEncountersFromMap('MAP_ROUTE106', ['land', 'old']),
+    ...getWildEncountersFromMap('MAP_GRANITE_CAVE', ['land', 'old']),
+    ...getWildEncountersFromMap('MAP_ROUTE109', ['land', 'old']),
+    ...getWildEncountersFromMap('MAP_ROUTE110', ['land']),
+];
+
+const rivalGoodRodEncounters = [
+    ...getWildEncountersFromMap('MAP_ROUTE_101', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE_102', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE_103', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE_104', ['good']),
+    ...getWildEncountersFromMap('MAP_PETALBURG_WOODS', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE_115', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE_116', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE106', ['good']),
+    ...getWildEncountersFromMap('MAP_GRANITE_CAVE', ['good']),
+    ...getWildEncountersFromMap('MAP_ROUTE109', ['good']),
+];
+
+const rival119Encounters = [
+    ...rival110Encounters,
+    ...rivalGoodRodEncounters,
+    ...getWildEncountersFromMap('MAP_ROUTE110', ['old', 'good']),
+    ...getWildEncountersFromMap('MAP_ROUTE117', ['land', 'old', 'good']),
+    ...getWildEncountersFromMap('MAP_ROUTE118', ['land', 'old', 'good']),
+    ...getWildEncountersFromMap('MAP_ROUTE111', ['land', 'old', 'good']),
+    ...getWildEncountersFromMap('MAP_ROUTE112', ['land', 'old', 'good']),
+    ...getWildEncountersFromMap('MAP_ROUTE113', ['land', 'old', 'good']),
+    ...getWildEncountersFromMap('MAP_ROUTE114', ['land', 'old', 'good']),
+    ...getWildEncountersFromMap('MAP_ROUTE119', ['land', 'old', 'good']),
+];
+
+const rivalSuperRodEncounters = [
+    ...getWildEncountersFromMap('MAP_ROUTE_101', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE_102', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE_103', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE_104', ['super']),
+    ...getWildEncountersFromMap('MAP_PETALBURG_WOODS', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE_115', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE_116', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE106', ['super']),
+    ...getWildEncountersFromMap('MAP_GRANITE_CAVE', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE109', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE110', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE117', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE118', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE111', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE112', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE113', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE114', ['super']),
+    ...getWildEncountersFromMap('MAP_ROUTE119', ['super']),
+];
+
+const rivalEvergrandeCityEncounters = [
+    ...rival119Encounters,
+    ...rivalSuperRodEncounters,
+    ...getWildEncountersFromMap('MAP_ROUTE120', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_SCORCHED_SLAB', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE121', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE122', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_MT_PYRE_EXTERIOR', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE123', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE124', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE125', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_SHOAL_CAVE_LOW_TIDE_ENTRANCE_ROOM', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_SHOAL_CAVE_HIGH_TIDE_ENTRANCE_ROOM', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE127', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE126', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE128', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE129', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE131', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_PACIFIDLOG_TOWN', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_ROUTE132', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('EVER_GRANDE_CITY', ['land', 'old', 'good', 'super', 'underwater']),
+    ...getWildEncountersFromMap('MAP_VICTORY_ROAD_B1F', ['land', 'old', 'good', 'super', 'underwater']),
+];
+
 const rival103Template = (id) => [
     {
         special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_ZIGZAGOON'],
+        encounterIds: [...rival101Encounters],
         tryEvolve: true,
+        pickBest: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_WURMPLE', 'SPECIES_WINGULL'],
+        encounterIds: [...rival102Encounters],
         tryEvolve: true,
+        pickBest: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_SURSKIT'],
+        encounterIds: [...rival103Encounters],
         tryEvolve: true,
+        pickBest: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: ['SPECIES_WEEDLE', 'SPECIES_PATRAT'],
+        encounterIds: [...rival104Encounters],
         tryEvolve: true,
+        pickBest: true,
     },
     {
         id: 'RIVAL_MEGA_103_KEEP_' + id,
-        ...PROMISING_PREMIUM_LEGEND_GOD_MEGA_LC,
+        ...PROMISING_PREMIUM_LEGEND_MEGA_LC,
     },
-];
-
-const rivalRustboroEncounters = [
-    'SPECIES_ZIGZAGOON',
-    'SPECIES_WURMPLE',
-    'SPECIES_WINGULL',
-    'SPECIES_SURSKIT',
-    // 'SPECIES_SMEARGLE',
-    'SPECIES_WEEDLE',
-    'SPECIES_PATRAT',
-    // 'SPECIES_PORYGON',
-    'SPECIES_GEODUDE',
-    'SPECIES_DELIBIRD',
-    'SPECIES_DITTO',
-    'SPECIES_SENTRET',
-    // 'SPECIES_POOCHYENA'
 ];
 
 const rivalRustboroTemplate = (id) => [
@@ -849,106 +948,6 @@ const rivalRustboroTemplate = (id) => [
         tryEvolve: true,
     },
 ];
-
-const rival110Encounters = [
-    ...rivalRustboroEncounters,
-    'SPECIES_CHARMANDER',
-    'SPECIES_ARON',
-    'SPECIES_BULBASAUR',
-    'SPECIES_IVYSAUR',
-    'SPECIES_ABSOL',
-    'SPECIES_ELECTRIKE',
-    'SPECIES_MANECTRIC',
-    'SPECIES_ODDISH',
-    'SPECIES_GLOOM',
-    'SPECIES_CARVANHA',
-];
-
-const rival119Encounters = [
-    ...rival110Encounters,
-    'SPECIES_DEDENNE',
-    'SPECIES_SHELGON',
-    'SPECIES_PUPITAR',
-    'SPECIES_GABITE',
-    'SPECIES_VENUSAUR',
-    'SPECIES_CHARMELEON',
-    // 'SPECIES_MIGHTYENA',
-    'SPECIES_HOOTHOOT',
-    'SPECIES_EKANS',
-    'SPECIES_SANDSHREW',
-    'SPECIES_PONYTA',
-    'SPECIES_MILTANK',
-    // 'SPECIES_GOLDEEN',
-    'SPECIES_PELIPPER',
-    'SPECIES_TENTACOOL',
-    'SPECIES_LOTAD',
-    'SPECIES_KIRLIA',
-    'SPECIES_MAREEP',
-    'SPECIES_VILEPLUME',
-    'SPECIES_SHARPEDO',
-    'SPECIES_TRAPINCH',
-    'SPECIES_DROWZEE',
-    'SPECIES_HYPNO',
-    'SPECIES_NUMEL',
-    'SPECIES_TAILLOW',
-    'SPECIES_SWELLOW',
-    'SPECIES_SPINDA',
-    'SPECIES_SWABLU',
-    'SPECIES_ALTARIA',
-    'SPECIES_SPOINK',
-    'SPECIES_LINOONE',
-    'SPECIES_SNIVY',
-    'SPECIES_SERVINE',
-];
-
-const rivalEvergrandeCityEncounters = [
-    ...rival119Encounters,
-    'SPECIES_SANDILE',
-    'SPECIES_KROKOROK',
-    'SPECIES_KROOKODILE',
-    'SPECIES_RIBOMBEE',
-    'SPECIES_SHUPPET',
-    'SPECIES_METAPOD',
-    'SPECIES_HONEDGE',
-    'SPECIES_DOUBLADE',
-    'SPECIES_WAILMER',
-    'SPECIES_WAILORD',
-    'SPECIES_SPINARAK',
-    'SPECIES_ARIADOS',
-    'SPECIES_SPIDOPS',
-    'SPECIES_WO_CHIEN',
-    'SPECIES_GUZZLORD',
-    'SPECIES_KARTANA',
-    // 'SPECIES_GOLETT',
-    'SPECIES_RABOOT',
-    'SPECIES_SCORBUNNY',
-    'SPECIES_FROAKIE',
-    'SPECIES_FROGADIER',
-    'SPECIES_SCREAM_TAIL',
-    'SPECIES_OMANYTE',
-    'SPECIES_OMASTAR',
-    'SPECIES_RELICANTH',
-    'SPECIES_FLUTTER_MANE',
-    'SPECIES_FINNEON',
-    'SPECIES_LUMINEON',
-    'SPECIES_HUNTAIL',
-    'SPECIES_HAWLUCHA',
-    'SPECIES_ROSELIA',
-    'SPECIES_ROSERADE',
-    'SPECIES_STARMIE',
-    'SPECIES_IRON_HANDS',
-    'SPECIES_IRON_CROWN',
-    'SPECIES_JIRACHI',
-    'SPECIES_IRON_JUGULIS',
-    'SPECIES_IRON_BOULDER',
-    'SPECIES_IRON_LEAVES',
-    'SPECIES_IRON_MOTH',
-    'SPECIES_IRON_THORNS',
-    'SPECIES_IRON_TREADS',
-    'SPECIES_RAIKOU',
-    'SPECIES_ENTEI',
-    'SPECIES_SUICUNE',
-]
 
 const rivalRoute110Template = (id) => [
     {
