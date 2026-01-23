@@ -766,7 +766,7 @@ const getSampleItemsFromArray = (array, amount) => {
 
 function getWildEncountersFromMap(mapId, encounterTypes) {
     const map = wildMaps.find(m => m.id === mapId);
-    if (!mapId) {
+    if (!map) {
         throw new Error('Map not found: ' + mapId);
     }
 
