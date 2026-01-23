@@ -165,6 +165,17 @@ function isValidEvolution(level, { param, method }) {
         || ((method === 'ITEM' || param === '0') && level > 25);
 }
 
+const invalidMegas = [
+    'SPECIES_FROSLASS',
+    'SPECIES_KLEAVOR',
+];
+
+function hasValidMega (poke) {
+    return poke.evolutionData.megaEvos
+        && poke.evolutionData.megaEvos.length > 0
+        && !invalidMegas.includes(poke.id);
+}
+
 const bannedSpeciesForPicking = [
     'SPECIES_WISHIWASHI_SCHOOL',
     'SPECIES_AEGISLASH_BLADE',
@@ -268,8 +279,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
     const addToFoundMegaEvosIfHasMegaEvo = (poke) => {
         if (
-            poke.evolutionData.megaEvos
-            && poke.evolutionData.megaEvos.length > 0
+            hasValidMega(poke)
             && poke.rating.megaEvoTier !== TIER_GOD
         ) {
             foundMegaEvos.add(poke.id);
@@ -463,16 +473,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         }
         const baseForm = pokemon.evoTree[0];
         return pokemonList.find(p => p.id === baseForm);
-    }
-
-    const invalidMegas = [
-        'SPECIES_FROSLASS',
-        'SPECIES_KLEAVOR',
-    ];
-    const hasValidMega = (poke) => {
-        return poke.evolutionData.megaEvos
-            && poke.evolutionData.megaEvos.length > 0
-            && !invalidMegas.includes(poke.id);
     }
     
     const checkValidEvo = (evaluatedPokemon, level, trainer) => {
