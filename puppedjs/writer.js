@@ -814,24 +814,24 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         routeFileContent = routeFileContent.replace(/ITEM_WAVE_MAIL/g, () => sample(items.strongDefMints));
         routeFileContent = routeFileContent.replace(/ITEM_MECH_MAIL/g, () => sample(items.strongAtkMints));
 
-        Object.entries(items.megaStones).forEach(([itemIdToReplace, speciesId]) => {
-            if (routeFileContent.includes(itemIdToReplace) === false) {
-                return;
-            }
-            const replacementPoke = replacementLog[speciesId] || speciesId;
-            const poke = pokemonList.find(p => p.id === replacementPoke);
-            console.log(`Replacing ${itemIdToReplace} with a mega stone for ${replacementPoke} (${speciesId}) in ${routeFile}.`);
-            if (poke && poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length > 0) {
-                const megaId = sample(poke.evolutionData.megaEvos);
-                const megaItem = pokemonList.find(p => p.id === megaId).evolutionData.megaItem;
-                console.log(` - Chose mega evolution ${megaId} with item ${megaItem}.`);
-                megaReplacements[itemIdToReplace] = megaItem;
-                routeFileContent = routeFileContent.replace(itemIdToReplace, megaItem);
-            }
-            else {
-                console.warn(`WARN: No mega evolution found for ${replacementPoke} (${speciesId}) to replace ${itemIdToReplace} in ${routeFile}.`);
-            }
-        });
+        // Object.entries(items.megaStones).forEach(([itemIdToReplace, speciesId]) => {
+        //     if (routeFileContent.includes(itemIdToReplace) === false) {
+        //         return;
+        //     }
+        //     const replacementPoke = replacementLog[speciesId] || speciesId;
+        //     const poke = pokemonList.find(p => p.id === replacementPoke);
+        //     console.log(`Replacing ${itemIdToReplace} with a mega stone for ${replacementPoke} (${speciesId}) in ${routeFile}.`);
+        //     if (poke && poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length > 0) {
+        //         const megaId = sample(poke.evolutionData.megaEvos);
+        //         const megaItem = pokemonList.find(p => p.id === megaId).evolutionData.megaItem;
+        //         console.log(` - Chose mega evolution ${megaId} with item ${megaItem}.`);
+        //         megaReplacements[itemIdToReplace] = megaItem;
+        //         routeFileContent = routeFileContent.replace(itemIdToReplace, megaItem);
+        //     }
+        //     else {
+        //         console.warn(`WARN: No mega evolution found for ${replacementPoke} (${speciesId}) to replace ${itemIdToReplace} in ${routeFile}.`);
+        //     }
+        // });
 
         await fs.writeFile(routeFile, routeFileContent, 'utf8');
     });
