@@ -448,7 +448,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         `#define STARTER_EXTRA_COUNT ${chosenExtraPokemon.length}`
     );
 
-    // await fs.writeFile(startersFile, newStartersFile, 'utf8');
+    await fs.writeFile(startersFile, newStartersFile, 'utf8');
     console.log('Starter pokemon updated successfully.');
 
     // const route111File = path.resolve(__dirname, '..', 'data', 'maps', 'Route111', 'map.json');
