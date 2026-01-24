@@ -1973,6 +1973,20 @@ const trainersData = [
         ],
     },
     {
+        id: 'TRAINER_KYLA',
+        class: 'Tuber F',
+        reward: ['SPECIES_MACHOP'],
+        level: 16,
+        bag: getSampleItemsFromArray(rivalRustboroBag(), 4),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_MACHOP'],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 5),
+        ],
+    },
+    {
         id: 'TRAINER_ANDRES_1',
         class: 'Ruin Maniac',
         reward: ['Ability Capsule'],

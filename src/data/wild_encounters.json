@@ -2431,29 +2431,124 @@
                 "species": "SPECIES_CHARMELEON"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
+              }
+            ]
+          },
+          "land_mons": {
+            "encounter_rate": 20,
+            "mons": [
+              {
+                "min_level": 16,
+                "max_level": 16,
+                "species": "SPECIES_MACHOP"
+              },
+              {
+                "min_level": 16,
+                "max_level": 16,
+                "species": "SPECIES_MACHOP"
+              },
+              {
+                "min_level": 16,
+                "max_level": 16,
+                "species": "SPECIES_MACHOP"
+              },
+              {
+                "min_level": 16,
+                "max_level": 16,
+                "species": "SPECIES_MACHOP"
+              },
+              {
+                "min_level": 16,
+                "max_level": 16,
+                "species": "SPECIES_MACHOP"
+              },
+              {
+                "min_level": 16,
+                "max_level": 16,
+                "species": "SPECIES_MACHOP"
+              },
+              {
+                "min_level": 16,
+                "max_level": 16,
+                "species": "SPECIES_MACHOP"
+              },
+              {
+                "min_level": 16,
+                "max_level": 16,
+                "species": "SPECIES_MACHOP"
+              },
+              {
+                "min_level": 16,
+                "max_level": 16,
+                "species": "SPECIES_MACHOP"
+              },
+              {
+                "min_level": 16,
+                "max_level": 16,
+                "species": "SPECIES_MACHOP"
+              },
+              {
+                "min_level": 16,
+                "max_level": 16,
+                "species": "SPECIES_MACHOP"
+              },
+              {
+                "min_level": 16,
+                "max_level": 16,
+                "species": "SPECIES_MACHOP"
+              }
+            ]
+          },
+          "water_mons": {
+            "encounter_rate": 4,
+            "mons": [
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_MACHOKE"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_MACHOKE"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_MACHOKE"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_MACHOKE"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_MACHOKE"
               }
             ]
           }

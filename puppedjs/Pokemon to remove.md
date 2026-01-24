@@ -1,10 +1,5 @@
 Pokemon to add
 
-# Rotue 106
-- Machop as grass
-- Machoke as surf
-- Add land connection to top
-
 # Route 109
 - Makuhita as surf
 
