@@ -295,7 +295,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 console.log('baseForm', baseForm);
                 console.log('pokemonThatEvolveToBaseForm', pokemonThatEvolveToBaseForm);
                 const evolveLevel = (pokemonThatEvolveToBaseForm && pokemonThatEvolveToBaseForm.evolutions)
-                    ? pokemonThatEvolveToBaseForm.evolutions.find(evo => evo.pokemon === baseForm.id)
+                    ? (pokemonThatEvolveToBaseForm.evolutions.find(evo => evo.pokemon === baseForm.id).param || 25)
                     : 0;
                 foundMegaEvos.push({
                     family: poke.family,
