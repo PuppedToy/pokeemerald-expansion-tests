@@ -1,12 +1,5 @@
 Pokemon to add
 
-# Route 115
-- Move sandshrew to earlier
-- Goldeen as surf
-
-# Route 116
-- Move seaking as surf
-
 # Rotue 106
 - Machop as grass
 - Machoke as surf

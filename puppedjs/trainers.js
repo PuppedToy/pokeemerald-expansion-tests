@@ -1667,21 +1667,6 @@ const trainersData = [
         tms: [...choice104TMs],
         team: generatePokemonsWithDefinition(POKEDEF_BAD_LC, 6),
     },
-    // {
-    //     id: 'TRAINER_GINA_AND_MIA_1',
-    //     class: 'Twins',
-    //     reward: ['SPECIES_PORYGON'],
-    //     level: 10,
-    //     team: [
-    //         {
-    //             special: TRAINER_POKE_ENCOUNTER,
-    //             encounterIds: ['SPECIES_PORYGON'],
-    //             item: 'Oran Berry',
-    //         },
-    //         ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
-    //     ]
-    // },
-    // Route 115
     {
         id: 'TRAINER_TIMOTHY_1',
         class: 'Expert M',
@@ -1694,6 +1679,22 @@ const trainersData = [
                 item: 'Oran Berry',
             },
             ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+        ],
+    },
+    {
+        id: 'TRAINER_ALIX',
+        class: 'Battle Girl',
+        reward: ['SPECIES_SANDSHREW'],
+        level: 10,
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SANDSHREW'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
         ],
     },
     {
@@ -3134,22 +3135,6 @@ const trainersData = [
         ]
     },
     // Route 115
-    {
-        id: 'TRAINER_ALIX',
-        class: 'Psychic F',
-        reward: ['SPECIES_SANDSHREW'],
-        level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SANDSHREW'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
-        ],
-    },
     {
         id: 'TRAINER_NOB_1',
         class: 'Black Belt',
