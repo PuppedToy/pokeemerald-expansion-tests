@@ -849,6 +849,10 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             JSON.stringify(mapJson, null, 2),
             'utf8'
         );
+        const trainerIndex = trainersData.findIndex(trainer => trainer.id === megaTrainer.trainer);
+        if (trainerIndex >= 0) {
+            trainersData.splice(trainerIndex, 1);
+        }
         console.log(`Removed mega trainer ${megaTrainer.id} from map ${megaTrainer.map}.`);
         megaRemoveLog.push(megaTrainer.id);
     }
