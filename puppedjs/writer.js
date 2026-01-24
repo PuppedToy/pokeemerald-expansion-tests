@@ -846,7 +846,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         );
         await fs.writeFile(
             mapJsonPath,
-            JSON.stringify(mapJson, null, 4),
+            JSON.stringify(mapJson, null, 2),
             'utf8'
         );
         console.log(`Removed mega trainer ${megaTrainer.id} from map ${megaTrainer.map}.`);
@@ -873,7 +873,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         });
         await fs.writeFile(
             mapJsonPath,
-            JSON.stringify(mapJson, null, 4),
+            JSON.stringify(mapJson, null, 2),
             'utf8'
         );
         megaReplacementLog[`ITEM_MEGA_${megaTrainer.id}`] = megaEvo.item;
@@ -1502,7 +1502,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                     return nameify(replacementLog[r].replace('SPECIES_', ''));
                 }
                 if (r.startsWith('ITEM_')) {
-                    const megaStone = megaReplacementLog[r].item;
+                    const megaStone = megaReplacementLog[r];
                     return itemIdToName(megaStone);
                 }
                 if (r.startsWith('TM_')) {
