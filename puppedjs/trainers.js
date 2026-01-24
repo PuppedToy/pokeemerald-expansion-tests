@@ -2759,13 +2759,13 @@ const trainersData = [
     {
         id: 'TRAINER_TYRON',
         class: 'Camper',
-        reward: ['ITEM_SCEPTILITE'],
+        reward: ['ITEM_MEGA_01'],
         level: 29,
         bag: getSampleItemsFromArray(wattsonBag(), 9),
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_SCEPTILITE',
+                megaStone: 'ITEM_MEGA_01',
             },
             ...generatePokemonsWithDefinition(POKEDEF_WEAK, 5)
         ],

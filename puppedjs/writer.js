@@ -37,6 +37,7 @@ const {
     TIER_WEAK,
     TIER_LEGEND_THRESHOLD,
     TIER_GOD,
+    MEGA_TRAINERS,
 } = require('./constants');
 const { chooseMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const items = require('./items.js');
@@ -822,31 +823,83 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         routeFileContent = routeFileContent.replace(/ITEM_WAVE_MAIL/g, () => sample(items.strongDefMints));
         routeFileContent = routeFileContent.replace(/ITEM_MECH_MAIL/g, () => sample(items.strongAtkMints));
 
-        // Object.entries(items.megaStones).forEach(([itemIdToReplace, speciesId]) => {
-        //     if (routeFileContent.includes(itemIdToReplace) === false) {
-        //         return;
-        //     }
-        //     const replacementPoke = replacementLog[speciesId] || speciesId;
-        //     const poke = pokemonList.find(p => p.id === replacementPoke);
-        //     console.log(`Replacing ${itemIdToReplace} with a mega stone for ${replacementPoke} (${speciesId}) in ${routeFile}.`);
-        //     if (poke && poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length > 0) {
-        //         const megaId = sample(poke.evolutionData.megaEvos);
-        //         const megaItem = pokemonList.find(p => p.id === megaId).evolutionData.megaItem;
-        //         console.log(` - Chose mega evolution ${megaId} with item ${megaItem}.`);
-        //         megaReplacements[itemIdToReplace] = megaItem;
-        //         routeFileContent = routeFileContent.replace(itemIdToReplace, megaItem);
-        //     }
-        //     else {
-        //         console.warn(`WARN: No mega evolution found for ${replacementPoke} (${speciesId}) to replace ${itemIdToReplace} in ${routeFile}.`);
-        //     }
-        // });
-
         await fs.writeFile(routeFile, routeFileContent, 'utf8');
     });
 
     // Sort mega evos
     foundMegaEvos.sort((a, b) => a.level - b.level);
-    console.log(foundMegaEvos);
+    
+    // Assign mega evos to trainers
+    const megaTrainers = MEGA_TRAINERS;
+    const megaReplacementLog = {};
+    const megaRemoveLog = [];
+    
+    function removeMegaTrainer(megaTrainer) {
+        // data/maps/_map_/map.json
+        const mapJsonPath = path.resolve(__dirname, '..', '..', 'src', 'data', 'maps', megaTrainer.map, 'map.json');
+        const mapJsonContent = fs.readFileSync(mapJsonPath, 'utf8');
+        const mapJson = JSON.parse(mapJsonContent);
+        mapJson.object_events = mapJson.object_events.filter(
+            event => event.script !== megaTrainer.script
+            && event.trainer_sight_or_berry_tree_id !== `ITEM_MEGA_${megaTrainer.id}`
+        );
+        fs.writeFileSync(
+            mapJsonPath,
+            JSON.stringify(mapJson, null, 4),
+            'utf8'
+        );
+        console.log(`Removed mega trainer ${megaTrainer.id} from map ${megaTrainer.map}.`);
+        megaRemoveLog.push(megaTrainer.id);
+    }
+
+    /* megaEvo structure:
+        {
+            family: poke.family,
+            megaFormId: megaForm.id,
+            baseFormId: baseForm.id,
+            item: megaForm.evolutionData.megaItem,
+            level: Math.max(levelFound, evolveLevel),
+        }
+    */
+    function updateMegaTrainer(megaTrainer, megaEvo) {
+        const mapJsonPath = path.resolve(__dirname, '..', '..', 'src', 'data', 'maps', megaTrainer.map, 'map.json');
+        const mapJsonContent = fs.readFileSync(mapJsonPath, 'utf8');
+        const mapJson = JSON.parse(mapJsonContent);
+        mapJson.object_events.forEach(event => {
+            if (event.trainer_sight_or_berry_tree_id === `ITEM_MEGA_${megaTrainer.id}`) {
+                event.trainer_sight_or_berry_tree_id = megaEvo.item;
+            }
+        });
+        fs.writeFileSync(
+            mapJsonPath,
+            JSON.stringify(mapJson, null, 4),
+            'utf8'
+        );
+        megaReplacementLog[`ITEM_MEGA_${megaTrainer.id}`] = megaEvo.item;
+        console.log(`Assigned mega evolution ${megaEvo.megaFormId} to mega trainer ${megaTrainer.id} on map ${megaTrainer.map}.`);
+    }
+
+    let nextMegaEvo = foundMegaEvos.shift();
+    for (let i = 0; i < megaTrainers.length; i++) {
+        const foundTrainer = trainersData.find(trainer => trainer.id === megaTrainers[i].trainer);
+        if (!foundTrainer) {
+            throw new Error(`Could not find trainer with id ${megaTrainers[i].trainer} to assign mega evolution.`);
+        }
+        const level = foundTrainer.level;
+
+        if (nextMegaEvo.level > level) {
+            removeMegaTrainer(megaTrainers[i]);
+            continue;
+        }
+
+        updateMegaTrainer(megaTrainers[i], nextMegaEvo);
+        
+        // End condition
+        if (!foundMegaEvos.length) {
+            break;
+        }
+        nextMegaEvo = foundMegaEvos.shift();
+    }
 
     // Trainers
 
@@ -1038,7 +1091,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 }
             }
             else if (trainerMonDefinition.special === TRAINER_POKE_MEGA_FROM_STONE) {
-                const megaStone = megaReplacements[trainerMonDefinition.megaStone] || trainerMonDefinition.megaStone;
+                const megaStone = megaReplacementLog[trainerMonDefinition.megaStone];
                 let mega = pokemonList.filter(p => p.evolutionData.megaItem === megaStone);
                 if (mega.length === 1) {
                     pokemonStrictList = mega;
@@ -1449,7 +1502,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                     return nameify(replacementLog[r].replace('SPECIES_', ''));
                 }
                 if (r.startsWith('ITEM_')) {
-                    const megaStone = megaReplacements[r] || r;
+                    const megaStone = megaReplacementLog[r].item;
                     return itemIdToName(megaStone);
                 }
                 if (r.startsWith('TM_')) {
@@ -1575,11 +1628,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     // @TODO Out name depends on a param
     const outFile = path.resolve(__dirname, OUTPUT_DIR, 'out.html');
     await fs.writeFile(outFile, htmlOutputTemplate, 'utf8');
-
-    // Print all megas found
-    for (const megaId of Object.keys(megaReplacements)) {
-        console.log(`Mega Stone Replacement: ${megaId} -> ${megaReplacements[megaId]}`);
-    }
 
     // Print all megas found in foundMegaEvos set
     for (const megaEvoId of foundMegaEvos) {

@@ -1,7 +1,7 @@
 Pokemon to add
 
 # Route 111
-- Vibrava as surf
+- Mega stone 1
 
 # Route 112
 - Camerupt as surf

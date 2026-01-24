@@ -222,6 +222,15 @@ const constants = {
     POKE_FORM_ANTIQUE: 'ANTIQUE',
     POKE_FORM_ROAMING: 'ROAMING',
     POKE_FORM_ARTISAN: 'ARTISAN',
+
+    MEGA_TRAINERS: [
+        {
+            id: '01',
+            map: 'Route111',
+            trainer: 'TRAINER_TYRON',
+            script: 'Route111_EventScript_Tyron',
+        },
+    ],
 };
 
 constants.POKEMON_TYPES = [
