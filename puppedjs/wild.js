@@ -434,6 +434,7 @@ const wildData = {
             good: 'SPECIES_HYPNO',
             surf: 'SPECIES_VIBRAVA',
             super: 'SPECIES_GABITE',
+            level: 36,
         },
         {
             id: 'MAP_ROUTE112',
@@ -450,6 +451,7 @@ const wildData = {
             good: 'SPECIES_BIBAREL',
             surf: 'SPECIES_LICKITUNG',
             super: 'SPECIES_GABITE',
+            level: 33,
         },
         {
             id: 'MAP_ROUTE114',
@@ -458,6 +460,7 @@ const wildData = {
             good: 'SPECIES_SPOINK',
             surf: 'SPECIES_GRUMPIG',
             super: 'SPECIES_GABITE',
+            level: 33,
         },
         {
             id: 'MAP_ROUTE119',
@@ -466,6 +469,7 @@ const wildData = {
             good: 'SPECIES_SERVINE',
             surf: 'SPECIES_SERPERIOR',
             super: 'SPECIES_GABITE',
+            level: 39,
         },
         {
             id: 'MAP_ROUTE120',
@@ -474,6 +478,7 @@ const wildData = {
             good: 'SPECIES_KROOKODILE',
             surf: 'SPECIES_STUNFISK',
             super: 'SPECIES_GABITE',
+            level: 43,
         },
         {
             id: 'MAP_SCORCHED_SLAB',
@@ -482,6 +487,7 @@ const wildData = {
             good: 'SPECIES_DUSCLOPS',
             surf: 'SPECIES_DUSKNOIR',
             super: 'SPECIES_GABITE',
+            level: 43,
         },
         // Doublade maps
         {
@@ -491,6 +497,7 @@ const wildData = {
             good: 'SPECIES_HONEDGE',
             surf: 'SPECIES_BANETTE',
             super: 'SPECIES_DOUBLADE',
+            level: 46,
         },
         {
             id: 'MAP_ROUTE122',
@@ -498,6 +505,7 @@ const wildData = {
             old: 'SPECIES_WAILMER',
             good: 'SPECIES_WAILORD',
             super: 'SPECIES_DOUBLADE',
+            level: 46,
         },
         {
             id: 'MAP_MT_PYRE_EXTERIOR',
@@ -506,6 +514,7 @@ const wildData = {
             good: 'SPECIES_SPIDOPS',
             surf: 'SPECIES_SPIRITOMB',
             super: 'SPECIES_DOUBLADE',
+            level: 46,
         },
         {
             id: 'MAP_ROUTE123',
@@ -514,6 +523,7 @@ const wildData = {
             good: 'SPECIES_KADABRA',
             surf: 'SPECIES_ALAKAZAM',
             super: 'SPECIES_DOUBLADE',
+            level: 61,
         },
         {
             id: 'MAP_ROUTE124',
@@ -521,6 +531,7 @@ const wildData = {
             old: 'SPECIES_GUZZLORD',
             good: 'SPECIES_KARTANA',
             super: 'SPECIES_DOUBLADE',
+            level: 53,
         },
         {
             id: 'MAP_ROUTE125',
@@ -528,14 +539,17 @@ const wildData = {
             old: 'SPECIES_SCORBUNNY',
             good: 'SPECIES_RABOOT',
             super: 'SPECIES_DOUBLADE',
+            level: 56,
         },
         {
             id: 'MAP_SHOAL_CAVE_LOW_TIDE_ENTRANCE_ROOM',
             land: 'SPECIES_FROAKIE',
+            level: 56,
         },
         {
             id: 'MAP_SHOAL_CAVE_HIGH_TIDE_ENTRANCE_ROOM',
             surf: 'SPECIES_FROGADIER',
+            level: 56,
         },
         {
             id: 'MAP_ROUTE127',
@@ -544,6 +558,7 @@ const wildData = {
             good: 'SPECIES_OMASTAR',
             underwater: 'SPECIES_RELICANTH',
             super: 'SPECIES_DOUBLADE',
+            level: 58,
         },
         {
             id: 'MAP_ROUTE126',
@@ -552,12 +567,14 @@ const wildData = {
             good: 'SPECIES_LUMINEON',
             underwater: 'SPECIES_HUNTAIL',
             super: 'SPECIES_DOUBLADE',
+            level: 58,
         },
         {
             id: 'MAP_ROUTE128',
             old: 'SPECIES_ROSELIA',
             good: 'SPECIES_ROSERADE',
             super: 'SPECIES_STARMIE',
+            level: 58,
         },
         // Jirachi map
         {
@@ -566,6 +583,7 @@ const wildData = {
             old: 'SPECIES_IRON_HANDS',
             good: 'SPECIES_IRON_CROWN',
             super: 'SPECIES_JIRACHI',
+            level: 61,
         },
         {
             id: 'MAP_ROUTE131',
@@ -573,18 +591,21 @@ const wildData = {
             old: 'SPECIES_IRON_JUGULIS',
             good: 'SPECIES_IRON_BOULDER',
             super: 'SPECIES_JIRACHI',
+            level: 61,
         },
         {
             id: 'MAP_PACIFIDLOG_TOWN',
             old: 'SPECIES_IRON_LEAVES',
             good: 'SPECIES_IRON_MOTH',
             super: 'SPECIES_JIRACHI',
+            level: 61,
         },
         {
             id: 'MAP_ROUTE132',
             old: 'SPECIES_IRON_THORNS',
             good: 'SPECIES_IRON_TREADS',
             super: 'SPECIES_JIRACHI',
+            level: 61,
         },
         {
             id: 'EVER_GRANDE_CITY',
@@ -592,6 +613,7 @@ const wildData = {
             old: 'SPECIES_RAIKOU',
             good: 'SPECIES_ENTEI',
             super: 'SPECIES_SUICUNE',
+            level: 64,
         },
         {
             id: 'MAP_VICTORY_ROAD_B1F',
@@ -600,6 +622,7 @@ const wildData = {
             good: 'SPECIES_ZAPDOS',
             surf: 'SPECIES_ARTICUNO',
             super: 'SPECIES_LUGIA',
+            level: 67,
         },
         // Special
         {

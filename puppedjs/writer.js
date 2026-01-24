@@ -275,14 +275,33 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     }
 
     const alreadyChosenFamilySet = new Set();
-    const foundMegaEvos = new Set();
+    const foundMegaEvos = [];
 
-    const addToFoundMegaEvosIfHasMegaEvo = (poke) => {
+    const addToFoundMegaEvosIfHasMegaEvo = (poke, levelFound = 0) => {
         if (
             hasValidMega(poke)
             && poke.rating.megaEvoTier !== TIER_GOD
+            && foundMegaEvos.every((megaEvoData) => megaEvoData.family !== poke.family)
         ) {
-            foundMegaEvos.add(poke.id);
+            poke.evolutionData.megaEvos.forEach(megaEvoId => {
+                const megaForm = pokemonList.find(p => p.id === megaEvoId);
+                const baseForm = pokemonList.find(p => p.id === poke.evolutionData.megaBaseForm);
+                const pokemonThatEvolveToBaseForm = pokemonList.filter(p => {
+                    const evolutions = (p.evolutions || [])
+                        .filter(e => e.pokemon === baseForm.id);
+                    return evolutions.length > 0;
+                })[0];
+                const evolveLevel = (pokemonThatEvolveToBaseForm && pokemonThatEvolveToBaseForm.evolutions)
+                    ? pokemonThatEvolveToBaseForm.evolutions.find(evo => evo.pokemon === baseForm.id)
+                    : 0;
+                foundMegaEvos.add({
+                    family: poke.family,
+                    megaFormId: megaForm.id,
+                    baseFormId: baseForm.id,
+                    item: megaForm.evolutionData.megaItem,
+                    level: Math.max(levelFound, evolveLevel),
+                });
+            });
         }
     };
 
@@ -517,7 +536,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     );
     const gym1Replacement = sampleAndRemove(gym1ReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(gym1Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym1Replacement);
+    addToFoundMegaEvosIfHasMegaEvo(gym1Replacement, 13);
     const gym2ReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && poke.rating.tier === TIER_WEAK
@@ -529,7 +548,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     );
     const gym2Replacement = sampleAndRemove(gym2ReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(gym2Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym2Replacement);
+    addToFoundMegaEvosIfHasMegaEvo(gym2Replacement, 19);
     const gym3ReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && !poke.evolutionData.isMega
@@ -549,10 +568,10 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     );
     const gym4Replacement = sampleAndRemove(gym4n5ReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(gym4Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym4Replacement);
+    addToFoundMegaEvosIfHasMegaEvo(gym4Replacement, 36);
     const gym5Replacement = sampleAndRemove(gym4n5ReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(gym5Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym5Replacement);
+    addToFoundMegaEvosIfHasMegaEvo(gym5Replacement, 39);
 
     const shellyRewardReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
@@ -573,7 +592,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     );
     const gym6Replacement = sampleAndRemove(gym6ReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(gym6Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym6Replacement);
+    addToFoundMegaEvosIfHasMegaEvo(gym6Replacement, 46);
     const gym7n8ReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && !poke.evolutionData.isMega
@@ -582,10 +601,10 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     );
     const gym7Replacement = sampleAndRemove(gym7n8ReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(gym7Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym7Replacement);
+    addToFoundMegaEvosIfHasMegaEvo(gym7Replacement, 56);
     const gym8Replacement = sampleAndRemove(gym7n8ReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(gym8Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym8Replacement);
+    addToFoundMegaEvosIfHasMegaEvo(gym8Replacement, 64);
 
     const strongSoloReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
@@ -594,16 +613,16 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     );
     const regirockReplacement = sampleAndRemove(strongSoloReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(regirockReplacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(regirockReplacement);
+    addToFoundMegaEvosIfHasMegaEvo(regirockReplacement, 36);
     const regiceReplacement = sampleAndRemove(strongSoloReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(regiceReplacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(regiceReplacement);
+    addToFoundMegaEvosIfHasMegaEvo(regiceReplacement, 39);
     const mewReplacement = sampleAndRemove(strongSoloReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(mewReplacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(mewReplacement);
+    addToFoundMegaEvosIfHasMegaEvo(mewReplacement, 39);
     const wallyLilycoveReward = sampleAndRemove(strongSoloReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(wallyLilycoveReward.family));
-    addToFoundMegaEvosIfHasMegaEvo(wallyLilycoveReward);
+    addToFoundMegaEvosIfHasMegaEvo(wallyLilycoveReward, 48);
 
     const premiumSoloReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
@@ -612,7 +631,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     );
     const registeelReplacement = sampleAndRemove(premiumSoloReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(registeelReplacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(registeelReplacement);
+    addToFoundMegaEvosIfHasMegaEvo(registeelReplacement, 46);
 
     const legendReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
@@ -625,9 +644,9 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     alreadyChosenFamilySet.add(getFamilyGroup(legend2Replacement.family));
     const legend3Replacement = sampleAndRemove(legendReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(legend3Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(legend1Replacement);
-    addToFoundMegaEvosIfHasMegaEvo(legend2Replacement);
-    addToFoundMegaEvosIfHasMegaEvo(legend3Replacement);
+    addToFoundMegaEvosIfHasMegaEvo(legend1Replacement, 61);
+    addToFoundMegaEvosIfHasMegaEvo(legend2Replacement, 61);
+    addToFoundMegaEvosIfHasMegaEvo(legend3Replacement, 61);
 
     const pokeRewardReplacements = [
         gym1Replacement,
@@ -755,6 +774,22 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const auxWildReplacementsFrom = {};
 
     const newlyAddedFamilies = new Set();
+
+    const findReplacementLevel = (replacementId) => {
+        let foundMap = wild.maps.find(wildMap =>
+            wildMap.land === replacementId
+            || wildMap.old === replacementId
+            || wildMap.surf === replacementId
+            || wildMap.underwater === replacementId
+        );
+        if (foundMap) return foundMap.level || 29;
+        foundMap = wild.maps.find(wildMap =>
+            wildMap.good === replacementId
+        );
+        if (foundMap) return foundMap.level || 33;
+        return 48;
+    }
+
     Object.entries(wild.replacements).forEach(([speciesId, replacementTypeKey]) => {
         const replacementType = wildReplacementTypes[replacementTypeKey];
         if (!replacementType) {
@@ -784,7 +819,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         }
         alreadyChosenFamilySet.add(getFamilyGroup(replacement.family));
         newlyAddedFamilies.add(replacement.family);
-        addToFoundMegaEvosIfHasMegaEvo(replacement);
+        addToFoundMegaEvosIfHasMegaEvo(replacement, findReplacementLevel(speciesId));
         replacementLog[speciesId] = replacement.id;
         // entryId must be a unique string that won't reappear in the file
         const entryId = Math.random().toString(36).substring(2, 15);
@@ -835,6 +870,10 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
         await fs.writeFile(routeFile, routeFileContent, 'utf8');
     });
+
+    // Sort mega evos
+    foundMegaEvos.sort((a, b) => b.level - a.level);
+    console.log(foundMegaEvos);
 
     // Trainers
 
