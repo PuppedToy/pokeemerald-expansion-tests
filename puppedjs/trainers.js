@@ -2771,34 +2771,6 @@ const trainersData = [
         ],
     },
     {
-        id: 'TRAINER_BIANCA',
-        class: 'Picnicker',
-        reward: ['ITEM_BLAZIKENITE'],
-        level: 29,
-        bag: getSampleItemsFromArray(wattsonBag(), 9),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_BLAZIKENITE',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 5),
-        ],
-    },
-    {
-        id: 'TRAINER_CELINA',
-        class: 'Aroma Lady',
-        reward: ['ITEM_SWAMPERTITE'],
-        level: 29,
-        bag: getSampleItemsFromArray(wattsonBag(), 9),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_SWAMPERTITE',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 5),
-        ],
-    },
-    {
         id: 'TRAINER_IRENE',
         class: 'Picnicker',
         reward: ['Shed Shell'],
