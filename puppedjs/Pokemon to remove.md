@@ -1,8 +1,5 @@
 Pokemon to add
 
-# Route 109
-- Makuhita as surf
-
 # Route 110
 - Land pass to new mauville
 - Flaafy as surf
