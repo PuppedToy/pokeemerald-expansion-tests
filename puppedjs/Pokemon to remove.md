@@ -1,9 +1,5 @@
 Pokemon to add
 
-# Route 110
-- Land pass to new mauville
-- Flaafy as surf
-
 # Route 117
 - Absol as surf
 

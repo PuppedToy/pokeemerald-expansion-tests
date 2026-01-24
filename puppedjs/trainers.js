@@ -2336,6 +2336,22 @@ const trainersData = [
             ...generatePokemonsWithDefinition(POKEDEF_BAD, 4),
         ],
     },
+    {
+        id: 'TRAINER_DALE',
+        class: 'Fisherman',
+        reward: ['SPECIES_MANECTRIC'],
+        level: 23,
+        bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_MANECTRIC'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 3)
+        ],
+    },
     // Route 103 (later)
     {
         id: 'TRAINER_DAISY',
@@ -2414,22 +2430,6 @@ const trainersData = [
         class: 'Brendan',
     },
     // Route 110 after rival
-        {
-        id: 'TRAINER_DALE',
-        class: 'Fisherman',
-        reward: ['SPECIES_MANECTRIC'],
-        level: 25,
-        bag: getSampleItemsFromArray(rivalRoute110Bag(), 7),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_MANECTRIC'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_BAD, 3)
-        ],
-    },
     {
         id: 'TRAINER_EDWIN_1',
         class: 'Collector',
