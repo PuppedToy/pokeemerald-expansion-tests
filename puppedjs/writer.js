@@ -291,6 +291,9 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                         .filter(e => e.pokemon === baseForm.id);
                     return evolutions.length > 0;
                 })[0];
+                console.log('megaForm', megaForm);
+                console.log('baseForm', baseForm);
+                console.log('pokemonThatEvolveToBaseForm', pokemonThatEvolveToBaseForm);
                 const evolveLevel = (pokemonThatEvolveToBaseForm && pokemonThatEvolveToBaseForm.evolutions)
                     ? pokemonThatEvolveToBaseForm.evolutions.find(evo => evo.pokemon === baseForm.id)
                     : 0;
@@ -782,6 +785,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             || wildMap.surf === replacementId
             || wildMap.underwater === replacementId
         );
+        console.log('foundMap for ' + replacementId + ': ' + foundMap);
         if (foundMap) return foundMap.level || 29;
         foundMap = wild.maps.find(wildMap =>
             wildMap.good === replacementId
