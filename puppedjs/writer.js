@@ -835,16 +835,16 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const megaReplacementLog = {};
     const megaRemoveLog = [];
     
-    function removeMegaTrainer(megaTrainer) {
+    async function removeMegaTrainer(megaTrainer) {
         // data/maps/_map_/map.json
         const mapJsonPath = path.resolve(__dirname, '..', '..', 'src', 'data', 'maps', megaTrainer.map, 'map.json');
-        const mapJsonContent = fs.readFileSync(mapJsonPath, 'utf8');
+        const mapJsonContent = await fs.readFile(mapJsonPath, 'utf8');
         const mapJson = JSON.parse(mapJsonContent);
         mapJson.object_events = mapJson.object_events.filter(
             event => event.script !== megaTrainer.script
             && event.trainer_sight_or_berry_tree_id !== `ITEM_MEGA_${megaTrainer.id}`
         );
-        fs.writeFileSync(
+        await fs.writeFile(
             mapJsonPath,
             JSON.stringify(mapJson, null, 4),
             'utf8'
@@ -862,16 +862,16 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             level: Math.max(levelFound, evolveLevel),
         }
     */
-    function updateMegaTrainer(megaTrainer, megaEvo) {
+    async function updateMegaTrainer(megaTrainer, megaEvo) {
         const mapJsonPath = path.resolve(__dirname, '..', '..', 'src', 'data', 'maps', megaTrainer.map, 'map.json');
-        const mapJsonContent = fs.readFileSync(mapJsonPath, 'utf8');
+        const mapJsonContent = await fs.readFile(mapJsonPath, 'utf8');
         const mapJson = JSON.parse(mapJsonContent);
         mapJson.object_events.forEach(event => {
             if (event.trainer_sight_or_berry_tree_id === `ITEM_MEGA_${megaTrainer.id}`) {
                 event.trainer_sight_or_berry_tree_id = megaEvo.item;
             }
         });
-        fs.writeFileSync(
+        await fs.writeFile(
             mapJsonPath,
             JSON.stringify(mapJson, null, 4),
             'utf8'
@@ -889,11 +889,11 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         const level = foundTrainer.level;
 
         if (nextMegaEvo.level > level) {
-            removeMegaTrainer(megaTrainers[i]);
+            await removeMegaTrainer(megaTrainers[i]);
             continue;
         }
 
-        updateMegaTrainer(megaTrainers[i], nextMegaEvo);
+        await updateMegaTrainer(megaTrainers[i], nextMegaEvo);
         
         // End condition
         if (!foundMegaEvos.length) {
