@@ -32,8 +32,8 @@
   "object_events": [
     {
       "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
-      "x": 15,
-      "y": 60,
+      "x": 21,
+      "y": 74,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
       "movement_range_x": 0,
@@ -41,7 +41,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "Route104_EventScript_BugCatcher",
-      "flag": "0"
+      "flag": "FLAG_BADGE05_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_GIRL_2",
@@ -84,8 +84,8 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
-      "x": 30,
-      "y": 50,
+      "x": 23,
+      "y": 45,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "movement_range_x": 1,
@@ -97,16 +97,16 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_GIRL_3",
-      "x": 15,
-      "y": 59,
+      "x": 20,
+      "y": 74,
       "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "Route104_EventScript_Girl2",
-      "flag": "0"
+      "flag": "FLAG_BADGE05_GET"
     },
     {
       "local_id": "LOCALID_ROUTE104_BOAT",
@@ -359,10 +359,10 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
-      "x": 21,
-      "y": 65,
+      "x": 23,
+      "y": 59,
       "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NORMAL",
@@ -373,7 +373,7 @@
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
       "x": 22,
-      "y": 64,
+      "y": 60,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "movement_range_x": 1,
@@ -385,8 +385,8 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
-      "x": 31,
-      "y": 47,
+      "x": 29,
+      "y": 56,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
       "movement_range_x": 0,
@@ -437,14 +437,14 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
-      "x": 30,
+      "x": 29,
       "y": 69,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "2",
+      "trainer_sight_or_berry_tree_id": "1",
       "script": "Route104_EventScript_Darian",
       "flag": "FLAG_DEFEATED_RIVAL_RUSTBORO"
     },
@@ -518,20 +518,6 @@
       "elevation": 3,
       "dest_map": "MAP_PETALBURG_WOODS",
       "dest_warp_id": "3"
-    },
-    {
-      "x": 32,
-      "y": 42,
-      "elevation": 3,
-      "dest_map": "MAP_PETALBURG_WOODS",
-      "dest_warp_id": "4"
-    },
-    {
-      "x": 33,
-      "y": 42,
-      "elevation": 3,
-      "dest_map": "MAP_PETALBURG_WOODS",
-      "dest_warp_id": "5"
     }
   ],
   "coord_events": [

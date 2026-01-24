@@ -1,35 +1,4 @@
-Pokemon to remove
-
-# Petalburg
-- Smeargle
-- Goldeen
-- Miltank
-
-# Rustboro
-- Porygon
-
-# Dewford
-- Pochyena
-- Mightyena
-
-# Slateport
-- Absol
-
 Pokemon to add
-
-# Route 103
-- A land passage
-- Smeargle as an early grass
-
-# Route 104
-- A land passage
-- Move Geodude to earlier
-- Pochyena as surf
-
-# Petalburg Woods
-- Caterpie as old rod
-- Kakuna as good rod
-- Butterfree as surf
 
 # Route 115
 - Move sandshrew to earlier

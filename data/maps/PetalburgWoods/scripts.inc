@@ -273,6 +273,17 @@ PetalburgWoods_EventScript_Lyle::
 	msgbox PetalburgWoods_Text_ImOutOfPokeBalls, MSGBOX_AUTOCLOSE
 	end
 
+PetalburgWoods_EventScript_Darejan::
+	trainerbattle_single TRAINER_DAREJAN, PetalburgWoods_Text_DarejanIntro, PetalburgWoods_Text_DarejanDefeat
+	end
+
+PetalburgWoods_Text_DarejanIntro:
+	.string "I'm doing my job.$"
+
+PetalburgWoods_Text_DarejanDefeat:
+	.string "Grrrrr…\n"
+	.string "I lost it!$"
+
 PetalburgWoods_EventScript_James::
 	trainerbattle_single TRAINER_JAMES_1, PetalburgWoods_Text_InstantlyPopularWithBugPokemon, PetalburgWoods_Text_CantBePopularIfILose, PetalburgWoods_EventScript_TryRegisterJames
 	specialvar VAR_RESULT, ShouldTryRematchBattle

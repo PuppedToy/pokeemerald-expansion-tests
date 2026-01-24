@@ -94,12 +94,12 @@ Geodude
 Level: 21
 IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
-=== TRAINER_GRUNT_AQUA_HIDEOUT_1 ===
-Name: GRUNT
-Class: Team Aqua
-Pic: Aqua Grunt M
+=== TRAINER_DAREJAN ===
+Name: DAREJAN
+Class: Fisherman
+Pic: Fisherman
 Gender: Male
-Music: Aqua
+Music: Hiker
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 

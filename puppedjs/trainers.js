@@ -1330,6 +1330,19 @@ const trainersData = [
             ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 4),
         ],
     },
+    {
+        id: 'TRAINER_SAWYER_1',
+        class: 'Hiker',
+        reward: ['SPECIES_SMEARGLE'],
+        level: 7,
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SMEARGLE'],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 4),
+        ]
+    },
     // Route 103
     {
         id: 'TRAINER_MAY_ROUTE_103_TREECKO',
@@ -1465,6 +1478,20 @@ const trainersData = [
         ]
     },
     {
+        id: 'TRAINER_BILLY',
+        class: 'Youngster',
+        reward: ['SPECIES_GEODUDE'],
+        level: 9,
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_GEODUDE'],
+                item: 'Oran Berry',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD, 5),
+        ]
+    },
+    {
         id: 'TRAINER_CINDY_1',
         class: 'Lady',
         reward: ['Eviolite'],
@@ -1546,6 +1573,20 @@ const trainersData = [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_PATRAT'],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
+        ],
+    },
+    {
+        id: 'TRAINER_DAREJAN',
+        class: 'Fisherman',
+        reward: ['SPECIES_CATERPIE'],
+        level: 10,
+        bag: [...rival103Bag],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_CATERPIE'],
             },
             ...generatePokemonsWithDefinition(POKEDEF_BAD_LC, 5),
         ],
@@ -1700,22 +1741,6 @@ const trainersData = [
                 type: [gymMainTypes[0]],
             },
         ],
-    },
-    // Route 104
-    {
-        id: 'TRAINER_BILLY',
-        class: 'Youngster',
-        reward: ['SPECIES_GEODUDE'],
-        level: 13,
-        bag: getSampleItemsFromArray(roxanneBag(), 3),
-        tms: getSampleItemsFromArray(choice104TMs, 1),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_GEODUDE'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_BAD, 5),
-        ]
     },
     // Route 116
     {
@@ -3394,14 +3419,6 @@ const trainersData = [
         ],
     },
     // Route 105 (Island Cave)
-    {
-        id: 'TRAINER_BEVERLY',
-        class: 'Swimmer F',
-        reward: ['Access to Island Cave'],
-        level: 39,
-        bag: getSampleItemsFromArray(normanBag(), 15),
-        team: genericAverageWith1StrongTeamTemplate(),
-    },
     {
         id: 'TRAINER_IMANI',
         class: 'Swimmer F',

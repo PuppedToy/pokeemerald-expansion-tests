@@ -140,6 +140,9 @@ Route103_EventScript_Carter::
 	trainerbattle_single TRAINER_CARTER, Route103_Text_CarterIntro, Route103_Text_CarterDefeated
 	end
 
+Route103_EventScript_Sawyer::
+	trainerbattle_single TRAINER_SAWYER_1, Route103_Text_SawyerIntro, Route103_Text_SawyerDefeated
+
 Route103_EventScript_RivalEnd::
 	removeobject LOCALID_ROUTE103_RIVAL
 	message Route103_LevelCap
@@ -377,6 +380,12 @@ Route103_Text_CarterIntro:
 
 Route103_Text_CarterDefeated:
 	.string "I guess you can fish here too.$"
+
+Route103_Text_SawyerIntro:
+	.string "Hi!$"
+
+Route103_Text_SawyerDefeated:
+	.string "Bye!$"
 
 Route103_LevelCap:
 	.string "The level cap has been raised to 9!$"
