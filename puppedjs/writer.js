@@ -3,6 +3,7 @@ const path = require('path');
 
 const wild = require('./wild.js');
 const trainers = require('./trainers.js');
+const { trainersData } = trainers;
 const {
     EVO_TYPE_LC,
     EVO_TYPE_NFE,
@@ -905,7 +906,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
     let trainersFileContent = await fs.readFile(trainers.file, 'utf8');
     let partnersFileContent = await fs.readFile(trainers.partnersFile, 'utf8');
-    const { trainersData } = trainers;
     const trainersResults = {};
 
     const storedIds = {};
