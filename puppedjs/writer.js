@@ -285,7 +285,9 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         ) {
             poke.evolutionData.megaEvos.forEach(megaEvoId => {
                 const megaForm = pokemonList.find(p => p.id === megaEvoId);
+                console.log('megaForm', megaForm);
                 const baseForm = pokemonList.find(p => p.id === poke.evolutionData.megaBaseForm);
+                console.log('baseForm', baseForm);
                 const pokemonThatEvolveToBaseForm = pokemonList.filter(p => {
                     const evolutions = (p.evolutions || [])
                         .filter(e => e.pokemon === baseForm.id);
