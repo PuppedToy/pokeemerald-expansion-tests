@@ -876,7 +876,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     });
 
     // Sort mega evos
-    foundMegaEvos.sort((a, b) => b.level - a.level);
+    foundMegaEvos.sort((a, b) => a.level - b.level);
     console.log(foundMegaEvos);
 
     // Trainers
