@@ -448,36 +448,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     await fs.writeFile(startersFile, newStartersFile, 'utf8');
     console.log('Starter pokemon updated successfully.');
 
-    // const route111File = path.resolve(__dirname, '..', 'data', 'maps', 'Route111', 'map.json');
-    // let route111Data = await fs.readFile(route111File, 'utf8');
-
     console.log(starters);
     console.log(chosenExtraPokemon.map(p => p.id));
-    // console.log(`Updating Route 111 map with new starter mega stones: ${[...starters, ...chosenExtraPokemon].map(p => p.id).join(', ')}}`);
-    // const chosenPokemonThatHaveMegaEvo = [...starters.map((pokeId) =>
-    //     pokemonList.find(p => p.id === pokeId),
-    // ), ...chosenExtraPokemon].filter(p => p && p.evolutionData.megaEvos && p.evolutionData.megaEvos.length > 0);
-    // console.log(`Found ${chosenPokemonThatHaveMegaEvo.length} starter Pokemon with mega evolutions.`);
-    // const itemDataList = [
-    //     'ITEM_SCEPTILITE',
-    //     'ITEM_BLAZIKENITE',
-    //     'ITEM_SWAMPERTITE',
-    // ];
-    const itemDataList = [];
-    const megaReplacements = {};
-
-    // for (let i = 0; i < Math.min(chosenPokemonThatHaveMegaEvo.length, MAX_MEGA_EVO_STONES); i++) {
-    //     const poke = chosenPokemonThatHaveMegaEvo[i];
-    //     const megaEvos = poke.evolutionData.megaEvos;
-    //     const chosenMegaEvo = megaEvos[Math.floor(Math.random() * megaEvos.length)];
-    //     const megaItem = pokemonList.find(p => p.id === chosenMegaEvo).evolutionData.megaItem;
-    //     route111Data = route111Data.replace(itemDataList[i], megaItem);
-    //     megaReplacements[itemDataList[i]] = megaItem;
-    // }
-
-    // await fs.writeFile(route111File, route111Data, 'utf8');
-    // console.log('Route 111 map updated with new starter mega stones: ', megaReplacements);
-    // @TODO Replace mega stone trainers & rival
 
     const devolveToBase = (pokemon) => {
         if (
