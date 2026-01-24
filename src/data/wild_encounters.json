@@ -1427,29 +1427,59 @@
                 "species": "SPECIES_VILEPLUME"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
+              }
+            ]
+          },
+          "water_mons": {
+            "encounter_rate": 4,
+            "mons": [
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_ABSOL"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_ABSOL"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_ABSOL"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_ABSOL"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_ABSOL"
               }
             ]
           }
@@ -1551,29 +1581,59 @@
                 "species": "SPECIES_SHARPEDO"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
               },
               {
-                "min_level": 47,
-                "max_level": 47,
+                "min_level": 48,
+                "max_level": 48,
                 "species": "SPECIES_PUPITAR"
+              }
+            ]
+          },
+          "water_mons": {
+            "encounter_rate": 4,
+            "mons": [
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_MILTANK"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_MILTANK"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_MILTANK"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_MILTANK"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_MILTANK"
               }
             ]
           }

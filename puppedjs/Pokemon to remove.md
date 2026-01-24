@@ -1,12 +1,5 @@
 Pokemon to add
 
-# Route 117
-- Absol as surf
-
-# Route 118
-- Land pass to the other side
-- Miltank as surf
-
 # Route 111
 - Vibrava as surf
 
