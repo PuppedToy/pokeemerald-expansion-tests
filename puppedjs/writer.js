@@ -837,7 +837,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     
     async function removeMegaTrainer(megaTrainer) {
         // data/maps/_map_/map.json
-        const mapJsonPath = path.resolve(__dirname, '..', '..', 'src', 'data', 'maps', megaTrainer.map, 'map.json');
+        const mapJsonPath = path.resolve(__dirname, '..', 'src', 'data', 'maps', megaTrainer.map, 'map.json');
         const mapJsonContent = await fs.readFile(mapJsonPath, 'utf8');
         const mapJson = JSON.parse(mapJsonContent);
         mapJson.object_events = mapJson.object_events.filter(
@@ -863,7 +863,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         }
     */
     async function updateMegaTrainer(megaTrainer, megaEvo) {
-        const mapJsonPath = path.resolve(__dirname, '..', '..', 'src', 'data', 'maps', megaTrainer.map, 'map.json');
+        const mapJsonPath = path.resolve(__dirname, '..', 'src', 'data', 'maps', megaTrainer.map, 'map.json');
         const mapJsonContent = await fs.readFile(mapJsonPath, 'utf8');
         const mapJson = JSON.parse(mapJsonContent);
         mapJson.object_events.forEach(event => {
