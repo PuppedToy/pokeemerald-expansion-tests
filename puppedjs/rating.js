@@ -849,10 +849,10 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
         rating = 6.5;
     }
     if ((move.id === 'MOVE_STUFF_CHEEKS' || move.id === 'MOVE_TEATIME') && (hasAbility('GLUTTONY') || hasAbility('HARVEST'))) {
-        if (item.includes('Berry')) {
-            rating = 9;
-        } else if (!item) {
+        if (!item) {
             rating = 7;
+        } else if (item.includes('Berry')) {
+            rating = 9;
         } else {
             rating = 0;
         }
