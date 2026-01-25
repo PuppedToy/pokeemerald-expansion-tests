@@ -40,7 +40,7 @@ const {
     TIER_GOD,
     MEGA_TRAINERS,
 } = require('./constants');
-const { chooseMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
+const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const items = require('./items.js');
 const { savePokemonData } = require('./pokemonWriter.js');
 
@@ -1414,7 +1414,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                     }
                     newTeamMember.ability = originalAbility;
                 }
-                const { moveset, tmsUsed } = chooseMoveset(
+                let { moveset, tmsUsed } = chooseMoveset(
                     chosenTrainerMon,
                     moves,
                     trainer.level,
@@ -1430,9 +1430,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                         trainer.tms.splice(trainer.tms.indexOf(tmUsed), 1);
                     }
                 });
-                newTeamMember.moves = moveset;
                 if (!newTeamMember.item && trainer.bag && trainer.bag.length > 0) {
-                    const movesetObjects = newTeamMember.moves.map(m => moves[m]);
+                    const movesetObjects = moveset.map(m => moves[m]);
                     const sortedBagItems = trainer.bag
                         .map(bagItemId => {
                             const rating = rateItemForAPokemon(
@@ -1475,6 +1474,19 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                         );
                     }
                 }
+                if (newTeamMember.item) {
+                    moveset = adjustMoveset(
+                        chosenTrainerMon,
+                        trainer.level,
+                        moveset,
+                        newTeamMember.moves, // Fixed important moves
+                        moves,
+                        ability,
+                        newTeamMember.item,
+                        0.1,
+                    );
+                }
+                newTeamMember.moves = moveset;
                 team.push(newTeamMember);
             }
             else {

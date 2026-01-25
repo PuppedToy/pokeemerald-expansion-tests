@@ -332,6 +332,7 @@ const antiComboList = [
         'MOVE_STOCKPILE',
         'MOVE_COSMIC_POWER',
         'MOVE_DEFEND_ORDER',
+        'MOVE_MAGNETIC_FLUX',
     ],
 ];
 
@@ -347,15 +348,9 @@ const weatherMoves = [
     'MOVE_CHILLY_RECEPTION',
 ];
 
-const specialStrategiesMoves = [
-    'MOVE_TRICK',
+const unusedSpecialStrategiesMoves = [
     'MOVE_RECYCLE',
     'MOVE_SPEED_SWAP',
-    'MOVE_GEAR_UP',
-    'MOVE_MAGNETIC_FLUX',
-    'MOVE_AURORA_VEIL',
-    'MOVE_STUFF_CHEEKS',
-    'MOVE_TEATIME',
 ]
 
 const statusList = {
@@ -373,7 +368,9 @@ const statusList = {
     MOVE_AURORA_VEIL: 0,
     MOVE_DECORATE: 0,
     MOVE_COACHING: 0,
-
+    
+    MOVE_STUFF_CHEEKS: 1,
+    MOVE_TEATIME: 1,
     MOVE_NIGHTMARE: 1,
     MOVE_SLEEP_TALK: 1,
     MOVE_SPIT_UP: 1,
@@ -397,8 +394,6 @@ const statusList = {
     MOVE_SNATCH: 2,
     MOVE_HEALING_WISH: 3,
     MOVE_LUNAR_DANCE: 3,
-    MOVE_STUFF_CHEEKS: 3,
-    MOVE_TEATIME: 3,
     MOVE_SOAK: 3,
     MOVE_QUASH: 4,
 
@@ -689,7 +684,7 @@ function rateMove(move) {
     let power = move.power || 50;
     const isMultihit = moveEffect.includes('EFFECT_MULTI_HIT');
     if (isMultihit) {
-        power *= 4;
+        power *= 2.5;
     }
     const isTripleKick = moveEffect.includes('EFFECT_TRIPLE_KICK');
     if (isTripleKick) {
@@ -708,8 +703,9 @@ function rateMove(move) {
     let rating = Math.min(10 * power / 140, 12);
     const isOhko = moveEffect.includes('EFFECT_OHKO');
     if (isOhko) rating = 12;
-    const pp = move.pp || 40;
-    rating += (pp-5)/20;
+    let accuracy = move.accuracy || 110;
+    if (accuracy == 0) accuracy = 110;
+    rating -= (100 - accuracy) / 10;
     const priority = move.priority || 0;
     rating += priority;
     const isSuckerPunch = moveEffect.includes('EFFECT_SUCKER_PUNCH');
@@ -750,9 +746,6 @@ function rateMove(move) {
     if (hasAtkDefDrop || hasSpaDrop) {
         rating *= 0.9;
     }
-    let accuracy = move.accuracy || 110;
-    if (accuracy == 0) accuracy = 110;
-    rating -= (100 - accuracy) / 10;
     const isRecoilIfMiss = moveEffect.includes('EFFECT_RECOIL_IF_MISS');
     if (isRecoilIfMiss) {
         rating *= (100 - accuracy)/100;
@@ -763,7 +756,7 @@ function rateMove(move) {
     }
     const isExplosion = moveEffect.includes('EFFECT_EXPLOSION');
     if (isExplosion) {
-        rating *= 0.3;
+        rating *= 0.5;
     }
     const isMindBlownLike = moveEffect.includes('EFFECT_MAX_HP_50_RECOIL');
     if (isMindBlownLike) {
@@ -789,13 +782,43 @@ function rateMove(move) {
     return rating;
 }
 
+const specialScalingMoves = {
+    MOVE_COUNTER: 'hp',
+    MOVE_MIRROR_COAT: 'hp',
+    MOVE_COMEUPPANCE: 'hp',
+    MOVE_METAL_BURST: 'hp',
+    MOVE_GYRO_BALL: '-speed',
+    MOVE_ELECTRO_BALL: 'speed',
+    // MOVE_HEAT_CRASH: 'weight',
+    // MOVE_HEAVY_SLAM: 'weight',
+    MOVE_HEAT_CRASH: 'defvsatk', // Assume certain correlation with weight
+    MOVE_HEAVY_SLAM: 'defvsatk', // Assume certain correlation with weight
+    MOVE_BODY_PRESS: 'defense',
+    MOVE_FOUL_PLAY: 'defvsatk',
+    MOVE_LOW_KICK: 'none',
+    MOVE_GRASS_KNOT: 'none',
+};
+
 // @TODO I need to rate move twice. First ~generic context-less rating.
 // Then, I need to give the context of: item, ability and team. So special cases can be handled there.
 // This rateMove is supposed to be the first generic rating.
 function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves) {
     if (
-        currentMoves.filter(m => m.category !== 'DAMAGE_CATEGORY_STATUS').length < 2
+        (
+            currentMoves.filter(m => m.category !== 'DAMAGE_CATEGORY_STATUS').length < 2
+            || item === 'Choice Band'
+            || item === 'Choice Specs'
+            || item === 'Assault Vest'
+            || (item === 'Choice Scarf' && move.effect !== 'EFFECT_TRICK')
+        )
         && move.category === 'DAMAGE_CATEGORY_STATUS'
+    ) {
+        return 0;
+    }
+
+    const antiComboIndex = antiComboList.findIndex(antiCombo => antiCombo.includes(move.id));
+    if (antiComboIndex >= 0
+        && currentMoves.some(m => antiComboList[antiComboIndex].includes(m.id))
     ) {
         return 0;
     }
@@ -805,7 +828,58 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     }
 
     let rating = move.rating;
-    if (move.category === 'DAMAGE_CATEGORY_PHYSICAL') {
+
+    // Combos
+    const comboIndex = comboList.findIndex(combo => combo.effects.includes(move.effect));
+    if (comboIndex >= 0) {
+        const combo = comboList[comboIndex];
+        if (currentMoves.some(m => combo.effects.includes(m.effect) && m.id !== move.id)) {
+            rating = combo.rating;
+        }
+    }
+
+    // Special Ratings
+    if (move.id === 'MOVE_AURORA_VEIL' && hasAbility('SNOW_WARNING')) {
+        rating = 10;
+    }
+    if (move.id === 'MOVE_MAGNETIC_FLUX' && (hasAbility('PLUS') || hasAbility('MINUS'))) {
+        rating = 8;
+    }
+    if (move.id === 'MOVE_GEAR_UP' && (hasAbility('PLUS') || hasAbility('MINUS'))) {
+        rating = 6.5;
+    }
+    if ((move.id === 'MOVE_STUFF_CHEEKS' || move.id === 'MOVE_TEATIME') && (hasAbility('GLUTTONY') || hasAbility('HARVEST'))) {
+        if (item.includes('Berry')) {
+            rating = 9;
+        } else if (!item) {
+            rating = 7;
+        } else {
+            rating = 0;
+        }
+        if (move.id === 'MOVE_TEATIME') {
+            rating = Math.max(0, rating - 1);
+        }
+    }
+
+    if (Object.keys(specialScalingMoves).includes(move.id)) {
+        const scalingStat = specialScalingMoves[move.id];
+        if (scalingStat === 'hp') {
+            rating += poke.baseHP / 100;
+        } else if (scalingStat === '-speed') {
+            rating += (200 - poke.baseSpeed) / 100;
+        } else if (scalingStat === 'speed') {
+            rating += poke.baseSpeed / 100;
+        } else if (scalingStat === 'weight') {
+            rating += Math.min(poke.weight / 100, 2);
+        } else if (scalingStat === 'defense') {
+            rating += poke.baseDefense / 100;
+        } else if (scalingStat === 'defvsatk') {
+            const maxDefPlusHp = Math.max(poke.baseDefense + poke.baseHP, poke.baseSpDefense + poke.baseHP) / 2;
+            const maxAtk = Math.max(poke.baseAttack, poke.baseSpAttack);
+            rating += maxDefPlusHp / maxAtk;
+        }
+    }
+    else if (move.category === 'DAMAGE_CATEGORY_PHYSICAL') {
         rating += poke.baseAttack / 100;
     }
     else if (move.category === 'DAMAGE_CATEGORY_SPECIAL') {
@@ -829,6 +903,8 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
 
         if (hasAbility('SKILL_LINK') && move.effect && move.effect.includes('EFFECT_MULTI_HIT')) {
             rating *= 2.5;
+        } else if (move.effect && move.effect.includes('EFFECT_MULTI_HIT') && item === 'Loaded Dice') {
+            rating *= 2;
         }
 
         const gemRegex = /^ITEM_(\w+)_GEM$/;
@@ -840,6 +916,22 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
                     rating *= 1.3;
                 }
             }
+        }
+
+        if (item === 'Expert Belt') {
+            rating *= 1.15;
+        }
+
+        if (item === 'Life Orb') {
+            rating *= 1.3;
+        }
+
+        if (item === 'Choice Band' && move.category === 'DAMAGE_CATEGORY_PHYSICAL') {
+            rating *= 1.5;
+        }
+
+        if (item === 'Choice Specs' && move.category === 'DAMAGE_CATEGORY_SPECIAL') {
+            rating *= 1.5;
         }
 
         // If another damaging move of the same type exists, devalue this move
@@ -1318,6 +1410,68 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
         moveset: moveset.map(m => m.id),
         tmsUsed,
     };
+}
+
+/*
+moveset = adjustMoveset(
+    chosenTrainerMon,
+    trainer.level,
+    moveset,
+    newTeamMember.moves, // Fixed important moves
+    ability,
+    newTeamMember.item,
+    0.1,
+);
+*/
+function adjustMoveset(poke, level = 100, moveset, importantMoves, moves, ability = null, item = null, deviation = 0) {
+    if (!moveset || moveset.length !== 4) {
+        // We just can't replace non full sets
+        return moveset;
+    }
+
+    const ratings = [];
+    for (let i = 0; i < moveset.length; i++) {
+        ratings.push(rateMoveForAPokemon(
+            moves[moveset[i]],
+            poke,
+            ability,
+            item,
+            [],
+            moveset.map(m => moves[m]),
+        ));
+    }
+
+    const bestRating = Math.max(...ratings);
+
+    for (let i = 0; i < moveset.length; i++) {
+        // If the rating is < 1 or is < bestRating / 2, we reconsider it
+        if (!importantMoves.includes(moveset[i]) && (ratings[i] < 1 || ratings[i] < bestRating / 2)) {
+            const learnableMoves = [
+                ...poke.learnset.filter(ls => ls.level <= level).map(ls => ls.move),
+            ].map(moveId => moves[moveId]).filter(m => m !== undefined && !moveset.includes(m.id));
+            const movesWithoutThisMove = moveset.filter((m, index) => index !== i).map(m => moves[m]);
+            const ratedMoves = learnableMoves.map(move => {
+                const rating = rateMoveForAPokemon(move, poke, ability, item, learnableMoves, movesWithoutThisMove);
+                return {
+                    ...move,
+                    rating: rating * (1 + ((Math.random() ? 1 : -1) * Math.random() * deviation)),
+                };
+            });
+            if (ratedMoves.length === 0) {
+                continue;
+            }
+            const sortedMoves = ratedMoves.sort((a, b) => b.rating - a.rating);
+            const bestReplacement = sortedMoves[0];
+            if (bestReplacement.rating > ratings[i] + 1) {
+                const oldMoveset = [...moveset];
+                moveset[i] = bestReplacement.id;
+                console.log(`Adjusted moves from ${poke.id} @ ${item}: replaced old ${oldMoveset} -> ${moveset}.
+        - Old move had a rating of ${ratings[i].toFixed(2)}, new move ${bestReplacement.id} has a rating of ${bestReplacement.rating.toFixed(2)}`);
+            }
+        }
+    }
+
+    return moveset;
 }
 
 function chooseNature(poke, moveset, moves, ability, item, deviation = 0) {
