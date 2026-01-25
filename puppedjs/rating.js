@@ -210,6 +210,10 @@ const comboList = [
         rating: 8,
     },
     {
+        effects: ['EFFECT_PROTECT', 'EFFECT_LEECH_SEED'],
+        rating: 10,
+    },
+    {
         effects: ['EFFECT_REST', 'EFFECT_SLEEP_TALK'],
         rating: 7,
     },
@@ -333,6 +337,31 @@ const antiComboList = [
         'MOVE_COSMIC_POWER',
         'MOVE_DEFEND_ORDER',
         'MOVE_MAGNETIC_FLUX',
+    ],
+    [
+        'MOVE_TOPSY_TURVY',
+        'MOVE_HOWL',
+        'MOVE_HONE_CLAWS',
+        'MOVE_WORK_UP',
+        'MOVE_GROWTH',
+        'MOVE_CURSE',
+        'MOVE_ACUPRESSURE',
+        'MOVE_BULK_UP',
+        'MOVE_CALM_MIND',
+        'MOVE_TAKE_HEART',
+        'MOVE_SWORDS_DANCE',
+        'MOVE_BELLY_DRUM',
+        'MOVE_DRAGON_DANCE',
+        'MOVE_TIDY_UP',
+        'MOVE_SHIFT_GEAR',
+        'MOVE_TAIL_GLOW',
+        'MOVE_QUIVER_DANCE',
+        'MOVE_VICTORY_DANCE',
+        'MOVE_SHELL_SMASH',
+        'MOVE_GEOMANCY',
+        'MOVE_FILLET_AWAY',
+        'MOVE_NO_RETREAT',
+        'MOVE_CLANGOROUS_SOUL',
     ],
 ];
 
@@ -506,17 +535,17 @@ const statusList = {
     MOVE_COURT_CHANGE: 6,
 
     MOVE_TOPSY_TURVY: 6,
+    MOVE_AGILITY: 7,
+    MOVE_AUTOTOMIZE: 7,
+    MOVE_TAILWIND: 7.5,
     MOVE_HOWL: 6,
     MOVE_HONE_CLAWS: 6.5,
     MOVE_WORK_UP: 6.5,
     MOVE_GROWTH: 6.5,
     MOVE_CURSE: 6.5,
     MOVE_ACUPRESSURE: 6.5,
-    MOVE_AGILITY: 7,
-    MOVE_AUTOTOMIZE: 7,
     MOVE_BULK_UP: 7,
     MOVE_CALM_MIND: 7,
-    MOVE_TAILWIND: 7.5,
     MOVE_TAKE_HEART: 8,
     MOVE_SWORDS_DANCE: 8,
     MOVE_BELLY_DRUM: 8,
@@ -799,9 +828,7 @@ const specialScalingMoves = {
     MOVE_GRASS_KNOT: 'none',
 };
 
-// @TODO I need to rate move twice. First ~generic context-less rating.
-// Then, I need to give the context of: item, ability and team. So special cases can be handled there.
-// This rateMove is supposed to be the first generic rating.
+// @TODO I just need to give a bonus if current status move ups a move that scales well
 function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves) {
     if (
         (
@@ -1412,17 +1439,6 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
     };
 }
 
-/*
-moveset = adjustMoveset(
-    chosenTrainerMon,
-    trainer.level,
-    moveset,
-    newTeamMember.moves, // Fixed important moves
-    ability,
-    newTeamMember.item,
-    0.1,
-);
-*/
 function adjustMoveset(poke, level = 100, moveset, importantMoves, moves, ability = null, item = null, deviation = 0) {
     if (!moveset || moveset.length !== 4) {
         // We just can't replace non full sets
