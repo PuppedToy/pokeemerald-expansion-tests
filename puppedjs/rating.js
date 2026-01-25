@@ -1443,7 +1443,8 @@ function adjustMoveset(poke, level = 100, moveset, importantMoves, moves, abilit
 
     const bestRating = Math.max(...ratings);
 
-    for (let i = 0; i < moveset.length; i++) {
+    // Reverse loop so we try to replace the worst moves first
+    for (let i = moveset.length - 1; i >= 0; i--) {
         // If the rating is < 1 or is < bestRating / 2, we reconsider it
         if (!importantMoves.includes(moveset[i]) && (ratings[i] < 1 || ratings[i] < bestRating / 2)) {
             const learnableMoves = [
