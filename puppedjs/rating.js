@@ -490,14 +490,15 @@ const statusList = {
     MOVE_ME_FIRST: 4,
     MOVE_AFTER_YOU: 4,
     MOVE_PSYCHO_SHIFT: 4,
+    MOVE_MAGIC_COAT: 5,
     MOVE_ENCORE: 6,
     MOVE_COPYCAT: 6,
     
     MOVE_SAFEGUARD: 3,
     MOVE_HAZE: 4,
 
-    MOVE_MAGIC_COAT: 7,
     MOVE_COUNTER: 7,
+    MOVE_MIRROR_COAT: 7,
     MOVE_METAL_BURST: 7.5,
     
     MOVE_SKETCH: 1,
