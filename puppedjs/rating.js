@@ -859,6 +859,12 @@ const spaBoostinEffects = [
     'EFFECT_QUIVER_DANCE',
     'EFFECT_GEOMANCY',
 ];
+const selfDamagingEffects = [
+    'EFFECT_SUBSTITUTE',
+    'EFFECT_CLANGOROUS_SOUL',
+    'EFFECT_BELLY_DRUM',
+    'EFFECT_FILLET_AWAY',
+];
 function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves) {
     if (
         (
@@ -889,6 +895,13 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     const antiComboIndex = antiComboList.findIndex(antiCombo => antiCombo.includes(move.id));
     if (antiComboIndex >= 0
         && currentMoves.some(m => antiComboList[antiComboIndex].includes(m.id))
+    ) {
+        return 0;
+    }
+
+    if (
+        selfDamagingEffects.includes(move.effect)
+        && item === 'Focus Sash'
     ) {
         return 0;
     }
@@ -1234,6 +1247,10 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, banne
     if (item === 'Focus Sash') {
         if (hasShellSmash) {
             return 10 * bestOffensePowerWithSpeed / genericDefensePower * calculatedDeviation;
+        }
+        const hasSelfDamagingMove = moveset.some(m => selfDamagingEffects.includes(m.effect));
+        if (hasSelfDamagingMove) {
+            return 0;
         }
         return 8.5 * bestOffensePowerWithSpeed / genericDefensePower * calculatedDeviation;
     }
