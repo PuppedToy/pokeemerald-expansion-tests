@@ -864,6 +864,7 @@ const selfDamagingEffects = [
     'EFFECT_CLANGOROUS_SOUL',
     'EFFECT_BELLY_DRUM',
     'EFFECT_FILLET_AWAY',
+    'EFFECT_RECOIL',
 ];
 function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves) {
     if (
