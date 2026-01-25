@@ -732,6 +732,14 @@ async function exe() {
         }
     });
 
+    const rayquaza = allPokes.find(p => p.id === 'SPECIES_RAYQUAZA');
+    const rayquazaMega = allPokes.find(p => p.id === 'SPECIES_RAYQUAZA_MEGA');
+
+    // Rayquaza is a special case, it's always considered mega for rating
+    if (rayquaza && rayquazaMega) {
+        rayquaza.rating = {...rayquazaMega.rating};
+    }
+
     // const sortedPokesByAbsoluteRating = allPokes.sort((a, b) => {
     //     return b.rating.absoluteRating - a.rating.absoluteRating;
     // });
