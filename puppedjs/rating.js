@@ -1875,6 +1875,7 @@ function ratePokemon(poke, moves, abilities) {
 module.exports = {
     ratePokemon,
     chooseMoveset,
+    adjustMoveset,
     chooseNature,
     rateMove,
     rateItemForAPokemon,
