@@ -210,6 +210,10 @@ const comboList = [
         rating: 8,
     },
     {
+        effects: ['EFFECT_FOCUS_PUNCH', 'EFFECT_SUBSTITUTE'],
+        rating: 9,
+    },
+    {
         effects: ['EFFECT_PROTECT', 'EFFECT_LEECH_SEED'],
         rating: 10,
     },
@@ -745,6 +749,10 @@ function rateMove(move) {
     const isTwoTurns = moveEffect.includes('EFFECT_TWO_TURNS_ATTACK');
     if (isTwoTurns) {
         rating *= 0.5;
+    }
+    const isFocusPunch = moveEffect.includes('EFFECT_FOCUS_PUNCH');
+    if (isFocusPunch) {
+        rating *= 0.4;
     }
     const isFlyLike = moveEffect.includes('EFFECT_SEMI_INVULNERABLE');
     if (isFlyLike) {
