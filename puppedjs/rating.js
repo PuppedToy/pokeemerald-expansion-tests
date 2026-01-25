@@ -1429,6 +1429,10 @@ function adjustMoveset(poke, level = 100, moveset, importantMoves, moves, abilit
         return moveset;
     }
 
+    const learnableMoves = [
+        ...poke.learnset.filter(ls => ls.level <= level).map(ls => ls.move),
+    ].map(moveId => moves[moveId]).filter(m => m !== undefined && !moveset.includes(m.id));
+
     const ratings = [];
     for (let i = 0; i < moveset.length; i++) {
         ratings.push(rateMoveForAPokemon(
@@ -1436,7 +1440,7 @@ function adjustMoveset(poke, level = 100, moveset, importantMoves, moves, abilit
             poke,
             ability,
             item,
-            [],
+            learnableMoves,
             moveset.map(m => moves[m]),
         ));
     }
@@ -1447,9 +1451,6 @@ function adjustMoveset(poke, level = 100, moveset, importantMoves, moves, abilit
     for (let i = moveset.length - 1; i >= 0; i--) {
         // If the rating is < 1 or is < bestRating / 2, we reconsider it
         if (!importantMoves.includes(moveset[i]) && (ratings[i] < 1 || ratings[i] < bestRating / 2)) {
-            const learnableMoves = [
-                ...poke.learnset.filter(ls => ls.level <= level).map(ls => ls.move),
-            ].map(moveId => moves[moveId]).filter(m => m !== undefined && !moveset.includes(m.id));
             const movesWithoutThisMove = moveset.filter((m, index) => index !== i).map(m => moves[m]);
             const ratedMoves = learnableMoves.map(move => {
                 const rating = rateMoveForAPokemon(move, poke, ability, item, learnableMoves, movesWithoutThisMove);
