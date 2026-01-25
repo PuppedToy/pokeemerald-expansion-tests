@@ -829,7 +829,28 @@ const specialScalingMoves = {
     MOVE_GRASS_KNOT: 'none',
 };
 
-// @TODO I just need to give a bonus if current status move ups a move that scales well
+const atkBoostinEffects = [
+    'EFFECT_ATTACK_UP_1',
+    'EFFECT_ATTACK_UP_2',
+    'EFFECT_ATTACK_UP_3',
+    'EFFECT_ATTACK_ACCURACY_UP',
+    'EFFECT_SHIFT_GEAR',
+    'EFFECT_BULK_UP',
+    'EFFECT_CURSE',
+    'EFFECT_COIL',
+    'EFFECT_DRAGON_DANCE',
+    'EFFECT_VICTORY_DANCE',
+    'EFFECT_BELLY_DRUM',
+];
+const spaBoostinEffects = [
+    'EFFECT_SPECIAL_ATTACK_UP_1',
+    'EFFECT_SPECIAL_ATTACK_UP_2',
+    'EFFECT_SPECIAL_ATTACK_UP_3',
+    'EFFECT_CALM_MIND',
+    'EFFECT_TAKE_HEART',
+    'EFFECT_QUIVER_DANCE',
+    'EFFECT_GEOMANCY',
+];
 function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves) {
     if (
         (
@@ -840,6 +861,19 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
             || (item === 'Choice Scarf' && move.effect !== 'EFFECT_TRICK')
         )
         && move.category === 'DAMAGE_CATEGORY_STATUS'
+    ) {
+        return 0;
+    }
+
+    // Don't pick boosting moves of unused stats
+    if (
+        (
+            atkBoostinEffects.includes(move.effect)
+            && !currentMoves.some(m => m.category === 'DAMAGE_CATEGORY_PHYSICAL')
+        ) || (
+            spaBoostinEffects.includes(move.effect)
+            && !currentMoves.some(m => m.category === 'DAMAGE_CATEGORY_SPECIAL')
+        )
     ) {
         return 0;
     }
@@ -959,6 +993,18 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
         }
 
         if (item === 'Choice Specs' && move.category === 'DAMAGE_CATEGORY_SPECIAL') {
+            rating *= 1.5;
+        }
+
+        // If we have a boosting move, rate better same stat moves
+        const hasAtkBoostingMove = otherMoves.some(m => atkBoostinEffects.includes(m.effect));
+        const hasSpaBoostingMove = otherMoves.some(m => spaBoostinEffects.includes(m.effect));
+
+        if (hasAtkBoostingMove && move.category === 'DAMAGE_CATEGORY_PHYSICAL') {
+            rating *= 1.5;
+        }
+
+        if (hasSpaBoostingMove && move.category === 'DAMAGE_CATEGORY_SPECIAL') {
             rating *= 1.5;
         }
 
