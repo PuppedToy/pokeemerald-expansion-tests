@@ -891,7 +891,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         }
         const level = foundTrainer.level;
 
-        if (nextMegaEvo.level > level) {
+        if (!nextMegaEvo || nextMegaEvo.level > level) {
             await removeMegaTrainer(megaTrainers[i]);
             continue;
         }
@@ -900,7 +900,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         
         // End condition
         if (!foundMegaEvos.length) {
-            break;
+            continue;
         }
         nextMegaEvo = foundMegaEvos.shift();
     }
