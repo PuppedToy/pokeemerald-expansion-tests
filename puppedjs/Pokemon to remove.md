@@ -1,9 +1,5 @@
 Pokemon to add
 
-# Route 119
-- Cleanup random people
-- Serperior as surf
-
 # Route 120
 - Stunfisk as surf
 

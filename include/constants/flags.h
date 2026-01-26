@@ -1299,7 +1299,7 @@
 #define FLAG_ITEM_ROUTE_116_PICK_ITEM                               0x4DC
 #define FLAG_ITEM_ROUTE_110_SEED                                    0x4DD
 #define FLAG_ITEM_ROUTE_118_BERRY                                   0x4DE
-#define FLAG_UNUSED_0x4DF                                           0x4DF // Unused Flag
+#define FLAG_ITEM_ROUTE_119_MEGA                                    0x4DF
 #define FLAG_UNUSED_0x4E0                                           0x4E0 // Unused Flag
 #define FLAG_UNUSED_0x4E1                                           0x4E1 // Unused Flag
 #define FLAG_UNUSED_0x4E2                                           0x4E2 // Unused Flag

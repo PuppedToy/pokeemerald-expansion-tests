@@ -3609,7 +3609,27 @@ const trainersData = [
                 encounterIds: ['SPECIES_SNIVY'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 4),
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SERPERIOR'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
+        ],
+    },
+    {
+        id: 'TRAINER_CHRIS',
+        class: 'Fisherman',
+        reward: ['ITEM_MEGA_04'],
+        level: 39,
+        bag: getSampleItemsFromArray(normanBag(), 14),
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_04',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 4)
         ],
     },
     {
