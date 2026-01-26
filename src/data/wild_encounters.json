@@ -3593,63 +3593,63 @@
             "encounter_rate": 20,
             "mons": [
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_SHUPPET"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_SHUPPET"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_SHUPPET"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_SHUPPET"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_SHUPPET"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_SHUPPET"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_SHUPPET"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_SHUPPET"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_SHUPPET"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_SHUPPET"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_SHUPPET"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_SHUPPET"
               }
             ]
@@ -3658,28 +3658,28 @@
             "encounter_rate": 30,
             "mons": [
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_METAPOD"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_METAPOD"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_HONEDGE"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_HONEDGE"
               },
               {
-                "min_level": 45,
-                "max_level": 45,
+                "min_level": 46,
+                "max_level": 46,
                 "species": "SPECIES_HONEDGE"
               },
               {
@@ -3706,6 +3706,36 @@
                 "min_level": 48,
                 "max_level": 48,
                 "species": "SPECIES_DOUBLADE"
+              }
+            ]
+          },
+          "water_mons": {
+            "encounter_rate": 4,
+            "mons": [
+              {
+                "min_level": 46,
+                "max_level": 46,
+                "species": "SPECIES_BANETTE"
+              },
+              {
+                "min_level": 46,
+                "max_level": 46,
+                "species": "SPECIES_BANETTE"
+              },
+              {
+                "min_level": 46,
+                "max_level": 46,
+                "species": "SPECIES_BANETTE"
+              },
+              {
+                "min_level": 46,
+                "max_level": 46,
+                "species": "SPECIES_BANETTE"
+              },
+              {
+                "min_level": 46,
+                "max_level": 46,
+                "species": "SPECIES_BANETTE"
               }
             ]
           }

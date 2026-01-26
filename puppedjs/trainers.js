@@ -3938,7 +3938,7 @@ const trainersData = [
     {
         id: 'TRAINER_MARCEL',
         class: 'Cooltrainer M',
-        reward: ['SPECIES_SHUPPET', 'SPECIES_METAPOD', 'SPECIES_HONEDGE'],
+        reward: ['SPECIES_SHUPPET', 'SPECIES_METAPOD', 'SPECIES_HONEDGE', 'SPECIES_BANETTE'],
         level: 46,
         bag: getSampleItemsFromArray(winonaBag(), 18),
         team: [
@@ -3957,7 +3957,27 @@ const trainersData = [
                 encounterIds: ['SPECIES_HONEDGE'],
                 tryEvolve: true,
             },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_BANETTE'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
+        ],
+    },
+    {
+        id: 'TRAINER_BIANCA',
+        class: 'Camper',
+        reward: ['ITEM_MEGA_06'],
+        level: 46,
+        bag: getSampleItemsFromArray(winonaBag(), 17),
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_06',
+            },
             ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
         ],
     },
     {

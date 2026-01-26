@@ -444,19 +444,6 @@
       "flag": "FLAG_BADGE04_GET"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
-      "x": -2,
-      "y": 101,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_UP",
-      "movement_range_x": 0,
-      "movement_range_y": 0,
-      "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "1",
-      "script": "Route111_EventScript_Bianca",
-      "flag": "FLAG_BADGE04_GET"
-    },
-    {
       "graphics_id": "OBJ_EVENT_GFX_MAN_5",
       "x": 14,
       "y": 115,
@@ -587,19 +574,6 @@
       "trainer_sight_or_berry_tree_id": "ITEM_MEGA_03",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_111_STONE_2"
-    },
-    {
-      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": -1,
-      "y": 101,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_SWAMPERTITE",
-      "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_111_STONE_3"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",

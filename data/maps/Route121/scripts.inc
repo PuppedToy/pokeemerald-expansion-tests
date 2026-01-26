@@ -147,6 +147,11 @@ Route121_EventScript_Marcel::
 	msgbox Route121_Text_MarcelPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route121_EventScript_Bianca::
+	trainerbattle_single TRAINER_BIANCA, Route111_Text_BiancaIntro, Route111_Text_BiancaDefeat
+	msgbox Route111_Text_BiancaPostBattle, MSGBOX_AUTOCLOSE
+	end
+
 Route121_EventScript_Cristin::
 	trainerbattle_single TRAINER_CRISTIN_1, Route121_Text_CristinIntro, Route121_Text_CristinDefeat, Route121_EventScript_RegisterCristin
 	specialvar VAR_RESULT, ShouldTryRematchBattle

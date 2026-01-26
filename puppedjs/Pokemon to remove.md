@@ -1,11 +1,5 @@
 Pokemon to add
 
-# Scorched Slab
-- Duskull as old
-- Dusclops as good
-- Dusknoir as surf
-- Gabite as super
-
 # Route 121
 - Banette as surf
 
