@@ -5391,6 +5391,77 @@ const trainersData = [
         copy: 'TRAINER_MAY_EVERGRANDE_CITY_MUDKIP',
         class: 'Brendan',
     },
+    // Last 123 mega trainers
+    {
+        id: 'TRAINER_VIOLET',
+        class: 'Aroma Lady',
+        reward: ['ITEM_MEGA_17'],
+        level: 70,
+        bag: [...spaceCenterBag()],
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_17',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 5),
+        ],
+    },
+    {
+        id: 'TRAINER_JACKI_1',
+        class: 'Psychic F',
+        reward: ['ITEM_MEGA_18'],
+        level: 70,
+        bag: [...spaceCenterBag()],
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_18',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 5),
+        ],
+    },
+    {
+        id: 'TRAINER_FREDRICK',
+        class: 'Expert M',
+        reward: ['ITEM_MEGA_19'],
+        level: 70,
+        bag: [...spaceCenterBag()],
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_19',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 5),
+        ],
+    },
+    {
+        id: 'TRAINER_DAVIS',
+        class: 'Youngster',
+        reward: ['ITEM_MEGA_20'],
+        level: 70,
+        bag: [...spaceCenterBag()],
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_20',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 5),
+        ],
+    },
+    {
+        id: 'TRAINER_JONAS',
+        class: 'Ninja Boy',
+        reward: ['ITEM_MEGA_21'],
+        level: 70,
+        bag: [...spaceCenterBag()],
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_21',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 5),
+        ],
+    },
     // E4 & Champion
     {
         id: 'TRAINER_SIDNEY',

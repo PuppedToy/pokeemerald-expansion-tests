@@ -1300,11 +1300,11 @@
 #define FLAG_ITEM_ROUTE_110_SEED                                    0x4DD
 #define FLAG_ITEM_ROUTE_118_BERRY                                   0x4DE
 #define FLAG_ITEM_ROUTE_119_MEGA                                    0x4DF
-#define FLAG_UNUSED_0x4E0                                           0x4E0 // Unused Flag
-#define FLAG_UNUSED_0x4E1                                           0x4E1 // Unused Flag
-#define FLAG_UNUSED_0x4E2                                           0x4E2 // Unused Flag
-#define FLAG_UNUSED_0x4E3                                           0x4E3 // Unused Flag
-#define FLAG_UNUSED_0x4E4                                           0x4E4 // Unused Flag
+#define FLAG_ITEM_ROUTE_123_MEGA_17                                 0x4E0
+#define FLAG_ITEM_ROUTE_123_MEGA_18                                 0x4E1
+#define FLAG_ITEM_ROUTE_123_MEGA_19                                 0x4E2
+#define FLAG_ITEM_ROUTE_123_MEGA_20                                 0x4E3
+#define FLAG_ITEM_ROUTE_123_MEGA_21                                 0x4E4
 #define FLAG_UNUSED_0x4E5                                           0x4E5 // Unused Flag
 #define FLAG_UNUSED_0x4E6                                           0x4E6 // Unused Flag
 #define FLAG_UNUSED_0x4E7                                           0x4E7 // Unused Flag
