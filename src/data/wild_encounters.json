@@ -1110,6 +1110,91 @@
                 "species": "SPECIES_SPINDA"
               }
             ]
+          },
+          "fishing_mons": {
+            "encounter_rate": 30,
+            "mons": [
+              {
+                "min_level": 33,
+                "max_level": 33,
+                "species": "SPECIES_BIDOOF"
+              },
+              {
+                "min_level": 33,
+                "max_level": 33,
+                "species": "SPECIES_BIDOOF"
+              },
+              {
+                "min_level": 33,
+                "max_level": 33,
+                "species": "SPECIES_BIBAREL"
+              },
+              {
+                "min_level": 33,
+                "max_level": 33,
+                "species": "SPECIES_BIBAREL"
+              },
+              {
+                "min_level": 33,
+                "max_level": 33,
+                "species": "SPECIES_BIBAREL"
+              },
+              {
+                "min_level": 48,
+                "max_level": 48,
+                "species": "SPECIES_GABITE"
+              },
+              {
+                "min_level": 48,
+                "max_level": 48,
+                "species": "SPECIES_GABITE"
+              },
+              {
+                "min_level": 48,
+                "max_level": 48,
+                "species": "SPECIES_GABITE"
+              },
+              {
+                "min_level": 48,
+                "max_level": 48,
+                "species": "SPECIES_GABITE"
+              },
+              {
+                "min_level": 48,
+                "max_level": 48,
+                "species": "SPECIES_GABITE"
+              }
+            ]
+          },
+          "water_mons": {
+            "encounter_rate": 4,
+            "mons": [
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_LICKITUNG"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_LICKITUNG"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_LICKITUNG"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_LICKITUNG"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_LICKITUNG"
+              }
+            ]
           }
         },
         {

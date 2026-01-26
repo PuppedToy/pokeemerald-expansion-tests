@@ -1,13 +1,5 @@
 Pokemon to add
 
-# Route 113
-- Add pond
-- Remove gauntlet and stone
-- Add mega battles instead
-- Bidoof as old
-- Bibarel as good
-- Lickitung as surf
-
 # Route 114
 - Grumpig as surf
 

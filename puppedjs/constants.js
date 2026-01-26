@@ -236,6 +236,12 @@ const constants = {
             trainer: 'TRAINER_AUTUMN',
             script: 'JaggedPass_EventScript_Autumn',
         },
+        {
+            id: '03',
+            map: 'Route111',
+            trainer: 'TRAINER_CELINA',
+            script: 'Route111_EventScript_Celina',
+        },
     ],
 };
 

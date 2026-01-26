@@ -145,6 +145,8 @@ Route103_EventScript_Sawyer::
 
 Route103_EventScript_RivalEnd::
 	removeobject LOCALID_ROUTE103_RIVAL
+	giveitem ITEM_OLD_ROD
+	setflag FLAG_RECEIVED_OLD_ROD
 	message Route103_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare

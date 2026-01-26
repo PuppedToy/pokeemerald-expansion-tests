@@ -35,16 +35,6 @@ Route114_EventScript_Man::
 	release
 	end
 
-Route114_EventScript_GoodRodFisherman::
-	lock
-	faceplayer
-	msgbox Route114_Text_ReceiveGoodRod, MSGBOX_DEFAULT
-	giveitem ITEM_GOOD_ROD
-	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
-	setflag FLAG_RECEIVED_GOOD_ROD
-	release
-	end
-
 Route114_EventScript_ReceivedBerry::
 	msgbox Route114_Text_FunToThinkAboutBerries, MSGBOX_DEFAULT
 	release

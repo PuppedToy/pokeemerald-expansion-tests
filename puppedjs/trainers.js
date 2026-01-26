@@ -1347,6 +1347,7 @@ const trainersData = [
     {
         id: 'TRAINER_MAY_ROUTE_103_TREECKO',
         class: 'May',
+        reward: ['Old Rod'],
         level: 7,
         isBoss: true,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -1362,6 +1363,7 @@ const trainersData = [
     {
         id: 'TRAINER_MAY_ROUTE_103_TORCHIC',
         class: 'May',
+        reward: ['Old Rod'],
         level: 7,
         isBoss: true,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -1377,6 +1379,7 @@ const trainersData = [
     {
         id: 'TRAINER_MAY_ROUTE_103_MUDKIP',
         class: 'May',
+        reward: ['Old Rod'],
         level: 7,
         isBoss: true,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -1422,7 +1425,7 @@ const trainersData = [
     {
         id: 'TRAINER_RICK',
         class: 'Bug Catcher',
-        reward: ['Old Rod', 'SPECIES_WINGULL'],
+        reward: ['SPECIES_WINGULL'],
         level: 9,
         team: [
             {
@@ -2811,6 +2814,22 @@ const trainersData = [
         ],
     },
     {
+        id: 'TRAINER_BRYANT',
+        class: 'Kindler',
+        reward: ['SPECIES_NUMEL'],
+        level: 29,
+        bag: getSampleItemsFromArray(wattsonBag(), 10),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_NUMEL'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
+        ],
+    },
+    {
         id: 'TRAINER_BRICE',
         class: 'Hiker',
         reward: ['Ability Capsule'],
@@ -2867,6 +2886,7 @@ const trainersData = [
         id: 'TRAINER_MAXIE_MT_CHIMNEY',
         class: 'Magma Leader Maxie',
         isBoss: true,
+        reward: ['Good Rod'],
         level: 30,
         bag: [...magmaChimneyBag()],
         team: [
@@ -2923,22 +2943,6 @@ const trainersData = [
         ],
     },
     // Route 112
-    {
-        id: 'TRAINER_BRYANT',
-        class: 'Kindler',
-        reward: ['SPECIES_NUMEL'],
-        level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_NUMEL'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
-        ],
-    },
     {
         id: 'TRAINER_SHAYLA',
         class: 'Aroma Lady',
@@ -3051,15 +3055,41 @@ const trainersData = [
     },
     // Route 113
     {
+        id: 'TRAINER_LAWRENCE',
+        class: 'Camper',
+        reward: ['SPECIES_SPINDA'],
+        level: 33,
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SPINDA'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
+        ],
+    },
+    {
         id: 'TRAINER_JAYLEN',
         class: 'Youngster',
-        reward: ['Random Niche Mint'],
+        reward: ['SPECIES_BIDOOF', 'SPECIES_BIBAREL'],
         level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
-        ]
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_BIDOOF'],
+                tryEvolve: true,
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_BIBAREL'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 2),
+        ],
     },
     {
         id: 'TRAINER_LUNG',
@@ -3082,22 +3112,6 @@ const trainersData = [
             ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
             ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
         ]
-    },
-    {
-        id: 'TRAINER_LAWRENCE',
-        class: 'Camper',
-        reward: ['SPECIES_SPINDA'],
-        level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SPINDA'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
-        ],
     },
     {
         id: 'TRAINER_MADELINE_1',
@@ -3288,6 +3302,20 @@ const trainersData = [
                 tryEvolve: true,
             },
             ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 5),
+        ],
+    },
+    {
+        id: 'TRAINER_CELINA',
+        class: 'Aroma Lady',
+        reward: ['ITEM_MEGA_03'],
+        level: 36,
+        bag: getSampleItemsFromArray(flanneryBag(), 12),
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_03',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 5)
         ],
     },
     {
