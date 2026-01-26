@@ -900,6 +900,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         
         // End condition
         if (!foundMegaEvos.length) {
+            nextMegaEvo = null;
             continue;
         }
         nextMegaEvo = foundMegaEvos.shift();
