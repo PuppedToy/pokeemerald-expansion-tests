@@ -3128,28 +3128,34 @@ const trainersData = [
     {
         id: 'TRAINER_CHARLOTTE',
         class: 'Picnicker',
-        reward: ['Super Rod', 'SPECIES_SWABLU'],
+        reward: ['SPECIES_ALTARIA', 'SPECIES_SPOINK'],
+        level: 33,
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_ALTARIA'],
+                tryEvolve: true,
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SPOINK'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 2),
+        ],
+    },
+    {
+        id: 'TRAINER_STEVE_1',
+        class: 'Pokemaniac',
+        reward: ['SPECIES_SWABLU'],
         level: 33,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_SWABLU'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
-        ],
-    },
-    {
-        id: 'TRAINER_STEVE_1',
-        class: 'Pokemaniac',
-        reward: ['SPECIES_SPOINK'],
-        level: 33,
-        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SPOINK'],
             },
             ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
             ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),

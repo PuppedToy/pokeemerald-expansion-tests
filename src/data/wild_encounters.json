@@ -1319,6 +1319,36 @@
                 "species": "SPECIES_GABITE"
               }
             ]
+          },
+          "water_mons": {
+            "encounter_rate": 4,
+            "mons": [
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_GRUMPIG"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_GRUMPIG"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_GRUMPIG"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_GRUMPIG"
+              },
+              {
+                "min_level": 39,
+                "max_level": 39,
+                "species": "SPECIES_GRUMPIG"
+              }
+            ]
           }
         },
         {

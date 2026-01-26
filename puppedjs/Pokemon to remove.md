@@ -1,8 +1,5 @@
 Pokemon to add
 
-# Route 114
-- Grumpig as surf
-
 # Route 119
 - Cleanup random people
 - Serperior as surf
