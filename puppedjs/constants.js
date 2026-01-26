@@ -278,6 +278,18 @@ const constants = {
             trainer: 'TRAINER_TANYA',
             script: 'Route125_EventScript_Tanya',
         },
+        {
+            id: '10',
+            map: 'Route127',
+            trainer: 'TRAINER_KOJI_1',
+            script: 'Route127_EventScript_Koji',
+        },
+        {
+            id: '11',
+            map: 'Route129',
+            trainer: 'TRAINER_ALLISON',
+            script: 'Route129_EventScript_Allison',
+        },
     ],
 };
 

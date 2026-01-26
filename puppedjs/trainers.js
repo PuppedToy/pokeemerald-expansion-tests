@@ -4910,6 +4910,21 @@ const trainersData = [
         ],
     },
     {
+        id: 'TRAINER_KOJI_1',
+        class: 'Black Belt',
+        reward: ['ITEM_MEGA_10'],
+        level: 58,
+        bag: getSampleItemsFromArray(spaceCenterBag(), 25),
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_10',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+        ],
+    },
+    {
         id: 'TRAINER_CAMDEN',
         class: 'Swimming Triathlete M',
         reward: ['SPECIES_RELICANTH'],
@@ -5066,6 +5081,41 @@ const trainersData = [
                     },
                 ]
             },
+        ],
+    },
+    // Route 129
+    {
+        id: 'TRAINER_CLARENCE',
+        class: 'Sailor',
+        reward: ['SPECIES_DARKRAI'],
+        level: 61,
+        bag: getSampleItemsFromArray(spaceCenterBag(), 25),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_DARKRAI'],
+                tryMega: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 1),
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_ALLISON',
+        class: 'Tuber F',
+        reward: ['ITEM_MEGA_11'],
+        level: 61,
+        bag: getSampleItemsFromArray(spaceCenterBag(), 25),
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_11',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 1),
         ],
     },
     // Sootopolis Gym

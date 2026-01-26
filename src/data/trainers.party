@@ -6847,10 +6847,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_ALLISON ===
 Name: ALLISON
-Class: Triathlete
-Pic: Swimming Triathlete F
+Class: Tuber F
+Pic: Tuber F
 Gender: Female
-Music: Swimmer
+Music: Girl
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -10391,10 +10391,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_CLARENCE ===
 Name: CLARENCE
-Class: Swimmer M
-Pic: Swimmer M
+Class: Sailor
+Pic: Sailor
 Gender: Male
-Music: Swimmer
+Music: Male
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 

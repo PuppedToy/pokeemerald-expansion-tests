@@ -44,17 +44,17 @@
       "flag": "0"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F",
-      "x": 6,
-      "y": 11,
+      "graphics_id": "OBJ_EVENT_GFX_TUBER_F",
+      "x": 38,
+      "y": 10,
       "elevation": 1,
-      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_RIGHT_DOWN_LEFT_UP",
-      "movement_range_x": 5,
-      "movement_range_y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "2",
+      "trainer_sight_or_berry_tree_id": "1",
       "script": "Route129_EventScript_Allison",
-      "flag": "0"
+      "flag": "FLAG_IS_CHAMPION"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F",
@@ -83,17 +83,30 @@
       "flag": "0"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M",
-      "x": 6,
-      "y": 10,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 38,
+      "y": 8,
       "elevation": 1,
-      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_UP",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "5",
+      "trainer_sight_or_berry_tree_id": "1",
       "script": "Route129_EventScript_Clarence",
-      "flag": "0"
+      "flag": "FLAG_IS_CHAMPION"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 37,
+      "y": 11,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "ITEM_MEGA_11",
+      "script": "Common_EventScript_FindItem",
+      "flag": "FLAG_ITEM_ROUTE_119_GRASSGEM"
     }
   ],
   "warp_events": [

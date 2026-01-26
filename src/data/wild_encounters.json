@@ -4753,6 +4753,71 @@
                 "species": "SPECIES_JIRACHI"
               }
             ]
+          },
+          "land_mons": {
+            "encounter_rate": 20,
+            "mons": [
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_DARKRAI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_DARKRAI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_DARKRAI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_DARKRAI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_DARKRAI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_DARKRAI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_DARKRAI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_DARKRAI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_DARKRAI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_DARKRAI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_DARKRAI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_DARKRAI"
+              }
+            ]
           }
         },
         {
