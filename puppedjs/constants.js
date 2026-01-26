@@ -260,6 +260,12 @@ const constants = {
             trainer: 'TRAINER_BIANCA',
             script: 'Route121_EventScript_Bianca',
         },
+        {
+            id: '07',
+            map: 'MtPyre_1F',
+            trainer: 'TRAINER_LEAH',
+            script: 'MtPyre_2F_EventScript_Leah',
+        },
     ],
 };
 

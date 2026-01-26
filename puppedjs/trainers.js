@@ -4220,6 +4220,22 @@ const trainersData = [
     },
     // Mt. Pyre
     {
+        id: 'TRAINER_HECTOR',
+        class: 'Collector',
+        reward: ['SPECIES_PORYGON'],
+        level: 51,
+        bag: getSampleItemsFromArray(wallyBag2(), 20),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_PORYGON'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+        ],
+    },
+    {
         id: 'TRAINER_MARK',
         class: 'Pokemaniac',
         reward: ['SPECIES_SPINARAK', 'SPECIES_ARIADOS', 'SPECIES_SPIDOPS'],
@@ -4242,6 +4258,21 @@ const trainersData = [
                 tryEvolve: true,
             },
             ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
+        ],
+    },
+    {
+        id: 'TRAINER_LEAH',
+        class: 'Hex Maniac',
+        reward: ['ITEM_MEGA_07'],
+        level: 51,
+        bag: getSampleItemsFromArray(wallyBag2(), 19),
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_07',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
         ],
     },
     // Aqua Hideout

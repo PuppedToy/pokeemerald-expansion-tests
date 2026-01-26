@@ -50,6 +50,19 @@
       "trainer_sight_or_berry_tree_id": "0",
       "script": "0x0",
       "flag": "FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_MANIAC",
+      "x": 24,
+      "y": 30,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "trainer_sight_or_berry_tree_id": "1",
+      "script": "Route115_EventScript_Hector",
+      "flag": "FLAG_DEFEATED_MAGMA_SPACE_CENTER"
     }
   ],
   "warp_events": [

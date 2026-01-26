@@ -1,13 +1,5 @@
 Pokemon to add
 
-# Route 121
-- Banette as surf
-
-# Route 122
-- Add land
-- Porygon as land
-- Wailmer as old
-
 # Mt. Pyre
 - Spiritomb as surf
 

@@ -3747,54 +3747,119 @@
             "encounter_rate": 30,
             "mons": [
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_WAILMER"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_WAILMER"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_WAILORD"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_WAILORD"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_WAILORD"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
-                "species": "SPECIES_WAILORD"
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_DOUBLADE"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
-                "species": "SPECIES_WAILORD"
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_DOUBLADE"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
-                "species": "SPECIES_WAILORD"
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_DOUBLADE"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
-                "species": "SPECIES_WAILORD"
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_DOUBLADE"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
-                "species": "SPECIES_WAILORD"
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_DOUBLADE"
+              }
+            ]
+          },
+          "land_mons": {
+            "encounter_rate": 20,
+            "mons": [
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_PORYGON"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
-                "species": "SPECIES_WAILORD"
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_PORYGON"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
-                "species": "SPECIES_WAILORD"
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_PORYGON"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_PORYGON"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_PORYGON"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_PORYGON"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_PORYGON"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_PORYGON"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_PORYGON"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_PORYGON"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_PORYGON"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_PORYGON"
               }
             ]
           }
