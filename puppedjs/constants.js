@@ -266,6 +266,18 @@ const constants = {
             trainer: 'TRAINER_LEAH',
             script: 'MtPyre_2F_EventScript_Leah',
         },
+        {
+            id: '08',
+            map: 'Route124',
+            trainer: 'TRAINER_LILA_AND_ROY_1',
+            script: 'Route124_EventScript_Lila',
+        },
+        {
+            id: '09',
+            map: 'Route125',
+            trainer: 'TRAINER_TANYA',
+            script: 'Route125_EventScript_Tanya',
+        },
     ],
 };
 

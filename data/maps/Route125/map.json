@@ -44,30 +44,30 @@
       "flag": "0"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M",
-      "x": 65,
-      "y": 11,
+      "graphics_id": "OBJ_EVENT_GFX_RICH_BOY",
+      "x": 8,
+      "y": 29,
       "elevation": 1,
-      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
-      "movement_range_x": 2,
-      "movement_range_y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "2",
+      "trainer_sight_or_berry_tree_id": "1",
       "script": "Route125_EventScript_Stan",
-      "flag": "0"
+      "flag": "FLAG_BADGE08_GET"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F",
-      "x": 65,
-      "y": 8,
+      "graphics_id": "OBJ_EVENT_GFX_TUBER_F",
+      "x": 10,
+      "y": 22,
       "elevation": 1,
-      "movement_type": "MOVEMENT_TYPE_WALK_RIGHT_AND_LEFT",
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
       "movement_range_x": 6,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "3",
+      "trainer_sight_or_berry_tree_id": "1",
       "script": "Route125_EventScript_Tanya",
-      "flag": "0"
+      "flag": "FLAG_BADGE08_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F",
@@ -110,10 +110,10 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_LASS",
-      "x": 65,
-      "y": 13,
+      "x": 66,
+      "y": 12,
       "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NORMAL",
@@ -172,6 +172,19 @@
       "trainer_sight_or_berry_tree_id": "ITEM_HEAVY_DUTY_BOOTS",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_116_KINGS_ROCK"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 9,
+      "y": 21,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "movement_range_x": 1,
+      "movement_range_y": 1,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "ITEM_MEGA_09",
+      "script": "Common_EventScript_FindItem",
+      "flag": "FLAG_ITEM_ROUTE_119_ZAP"
     }
   ],
   "warp_events": [
@@ -198,13 +211,6 @@
       "y": 11,
       "elevation": 0,
       "secret_base_id": "SECRET_BASE_RED_CAVE4_2"
-    },
-    {
-      "type": "secret_base",
-      "x": 7,
-      "y": 25,
-      "elevation": 0,
-      "secret_base_id": "SECRET_BASE_YELLOW_CAVE2_2"
     },
     {
       "type": "secret_base",

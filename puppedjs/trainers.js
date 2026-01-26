@@ -4414,6 +4414,21 @@ const trainersData = [
         ],
     },
     {
+        id: 'TRAINER_LILA_AND_ROY_1',
+        class: 'Tuber F',
+        reward: ['ITEM_MEGA_08'],
+        level: 53,
+        bag: getSampleItemsFromArray(wallyBag2(), 19),
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_08',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2)
+        ],
+    },
+    {
         id: 'TRAINER_ISABELLA',
         class: 'Swimming Triathlete F',
         reward: [...choiceIsabellaItem],
@@ -4625,6 +4640,40 @@ const trainersData = [
             {
                 ...POKEDEF_STRONG_PREMIUM_MEGA,
             },
+        ],
+    },
+    {
+        id: 'TRAINER_STAN',
+        class: 'Rich Boy',
+        reward: ['SPECIES_CINDERACE'],
+        level: 56,
+        bag: getSampleItemsFromArray(tateAndLizaBag(), 25),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_CINDERACE'],
+                tryMega: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_TANYA',
+        class: 'Tuber F',
+        reward: ['ITEM_MEGA_09'],
+        level: 56,
+        bag: getSampleItemsFromArray(tateAndLizaBag(), 25),
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_09',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
         ],
     },
     {

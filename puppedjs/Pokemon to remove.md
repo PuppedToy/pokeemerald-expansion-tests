@@ -8,10 +8,6 @@ Pokemon to add
 - Kadabra as good
 - Alakazam as surf
 
-# Route 125
-- Grass
-- Cinderace as land encounter with trainer
-
 # Route 129
 - Grass
 - Darkrai as land encounter with trainer

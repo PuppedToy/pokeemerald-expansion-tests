@@ -2846,10 +2846,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_STAN ===
 Name: STAN
-Class: Swimmer M
-Pic: Swimmer M
+Class: Rich Boy
+Pic: Rich Boy
 Gender: Male
-Music: Swimmer
+Music: Rich
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -7981,8 +7981,8 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_TANYA ===
 Name: TANYA
-Class: Swimmer F
-Pic: Swimmer F
+Class: Tuber F
+Pic: Tuber F
 Gender: Female
 Music: Swimmer
 Double Battle: No
@@ -12467,10 +12467,10 @@ Level: 33
 IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_LILA_AND_ROY_1 ===
-Name: LILA & ROY
-Class: Sis And Bro
-Pic: Sis And Bro
-Gender: Male
+Name: LILA
+Class: Tuber F
+Pic: Tuber F
+Gender: Female
 Music: Swimmer
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER

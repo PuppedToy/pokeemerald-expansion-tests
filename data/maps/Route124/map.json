@@ -132,9 +132,9 @@
       "flag": "FLAG_ITEM_ROUTE_124_YELLOW_SHARD"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F",
+      "graphics_id": "OBJ_EVENT_GFX_TUBER_F",
       "x": 41,
-      "y": 10,
+      "y": 24,
       "elevation": 1,
       "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
       "movement_range_x": 0,
@@ -142,7 +142,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route124_EventScript_Lila",
-      "flag": "0"
+      "flag": "FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M",
@@ -182,6 +182,19 @@
       "trainer_sight_or_berry_tree_id": "ITEM_IRON_BALL",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_124_IRON_BALL"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 40,
+      "y": 23,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "movement_range_x": 1,
+      "movement_range_y": 1,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "ITEM_MEGA_08",
+      "script": "Common_EventScript_FindItem",
+      "flag": "FLAG_ITEM_ROUTE_119_COBA"
     }
   ],
   "warp_events": [
