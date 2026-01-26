@@ -4045,63 +4045,63 @@
             "encounter_rate": 10,
             "mons": [
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPINARAK"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPINARAK"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPINARAK"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPINARAK"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPINARAK"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPINARAK"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPINARAK"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPINARAK"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPINARAK"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPINARAK"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPINARAK"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPINARAK"
               }
             ]
@@ -4110,54 +4110,84 @@
             "encounter_rate": 30,
             "mons": [
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_ARIADOS"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_ARIADOS"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPIDOPS"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPIDOPS"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_SPIDOPS"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_DOUBLADE"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_DOUBLADE"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_DOUBLADE"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_DOUBLADE"
               },
               {
-                "min_level": 50,
-                "max_level": 50,
+                "min_level": 51,
+                "max_level": 51,
                 "species": "SPECIES_DOUBLADE"
+              }
+            ]
+          },
+          "water_mons": {
+            "encounter_rate": 4,
+            "mons": [
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_SPIRITOMB"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_SPIRITOMB"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_SPIRITOMB"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_SPIRITOMB"
+              },
+              {
+                "min_level": 51,
+                "max_level": 51,
+                "species": "SPECIES_SPIRITOMB"
               }
             ]
           }

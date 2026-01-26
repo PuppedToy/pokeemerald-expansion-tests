@@ -1,8 +1,5 @@
 Pokemon to add
 
-# Mt. Pyre
-- Spiritomb as surf
-
 # Route 123
 - Design the full route
 - Mega stone placements?

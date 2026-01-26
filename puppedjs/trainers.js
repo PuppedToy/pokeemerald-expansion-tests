@@ -4238,7 +4238,7 @@ const trainersData = [
     {
         id: 'TRAINER_MARK',
         class: 'Pokemaniac',
-        reward: ['SPECIES_SPINARAK', 'SPECIES_ARIADOS', 'SPECIES_SPIDOPS'],
+        reward: ['SPECIES_SPINARAK', 'SPECIES_ARIADOS', 'SPECIES_SPIDOPS', 'SPECIES_SPIRITOMB'],
         level: 51,
         bag: getSampleItemsFromArray(wallyBag2(), 20),
         team: [
@@ -4257,7 +4257,12 @@ const trainersData = [
                 encounterIds: ['SPECIES_SPIDOPS'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SPIRITOMB'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
         ],
     },
     {
