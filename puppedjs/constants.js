@@ -290,6 +290,36 @@ const constants = {
             trainer: 'TRAINER_ALLISON',
             script: 'Route129_EventScript_Allison',
         },
+        {
+            id: '12',
+            map: 'Route123',
+            trainer: 'TRAINER_WENDY',
+            script: 'Route123_EventScript_Wendy',
+        },
+        {
+            id: '13',
+            map: 'Route123',
+            trainer: 'TRAINER_ALBERTO',
+            script: 'Route123_EventScript_Alberto',
+        },
+        {
+            id: '14',
+            map: 'Route123',
+            trainer: 'TRAINER_CAMERON_1',
+            script: 'Route123_EventScript_Cameron',
+        },
+        {
+            id: '15',
+            map: 'Route123',
+            trainer: 'TRAINER_KAYLEY',
+            script: 'Route123_EventScript_Kayley',
+        },
+        {
+            id: '16',
+            map: 'Route123',
+            trainer: 'TRAINER_BRAXTON',
+            script: 'Route123_EventScript_Braxton',
+        },
     ],
 };
 

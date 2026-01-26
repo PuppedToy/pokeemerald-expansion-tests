@@ -265,7 +265,6 @@ const wildData = {
         SPECIES_SPIDOPS: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_SPIRITOMB: 'LC_NFE_OR_SOLO_AVERAGE',
 
-        // Route 123 @TODO Add mega stone trainers scattered
         SPECIES_AERODACTYL: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_KABUTOPS: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_KADABRA: 'LC_NFE_OR_SOLO_AVERAGE',
@@ -308,7 +307,6 @@ const wildData = {
         SPECIES_IRON_CROWN: 'FINAL_OR_SOLO_AVERAGE',
 
         // Route 131
-        SPECIES_INFERNAPE: 'FINAL_STRONG',
         SPECIES_IRON_JUGULIS: 'FINAL_OR_SOLO_AVERAGE',
         SPECIES_IRON_BOULDER: 'FINAL_OR_SOLO_AVERAGE',
 
@@ -601,7 +599,6 @@ const wildData = {
         },
         {
             id: 'MAP_ROUTE131',
-            land: 'SPECIES_INFERNAPE',
             old: 'SPECIES_IRON_JUGULIS',
             good: 'SPECIES_IRON_BOULDER',
             super: 'SPECIES_JIRACHI',

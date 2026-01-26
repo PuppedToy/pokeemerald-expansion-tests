@@ -5156,6 +5156,125 @@ const trainersData = [
             }),
         ],
     },
+    // Route 123
+    {
+        id: 'TRAINER_ED',
+        class: 'Collector',
+        reward: ['SPECIES_AERODACTYL'],
+        level: 64,
+        bag: [...spaceCenterBag()],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_AERODACTYL'],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 1),
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_KINDRA',
+        class: 'Hex Maniac',
+        reward: ['SPECIES_KABUTOPS', 'SPECIES_KADABRA', 'SPECIES_ALAKAZAM'],
+        level: 64,
+        bag: [...spaceCenterBag()],
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_KABUTOPS'],
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_KADABRA'],
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_ALAKAZAM'],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 2),
+            {
+                ...POKEDEF_STRONG_PREMIUM_MEGA,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_WENDY',
+        class: 'Cooltrainer F',
+        reward: ['ITEM_MEGA_12'],
+        level: 64,
+        bag: [...spaceCenterBag()],
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_12',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 1),
+        ],
+    },
+    {
+        id: 'TRAINER_ALBERTO',
+        class: 'Bird Keeper',
+        reward: ['ITEM_MEGA_13'],
+        level: 64,
+        bag: [...spaceCenterBag()],
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_13',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 1),
+        ],
+    },
+    {
+        id: 'TRAINER_CAMERON_1',
+        class: 'Psychic M',
+        reward: ['ITEM_MEGA_14'],
+        level: 64,
+        bag: [...spaceCenterBag()],
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_14',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 1),
+        ],
+    },
+    {
+        id: 'TRAINER_KAYLEY',
+        class: 'Parasol Lady',
+        reward: ['ITEM_MEGA_15'],
+        level: 64,
+        bag: [...spaceCenterBag()],
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_15',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 1),
+        ],
+    },
+    {
+        id: 'TRAINER_BRAXTON',
+        class: 'Cooltrainer M',
+        reward: ['ITEM_MEGA_16'],
+        level: 64,
+        bag: [...spaceCenterBag()],
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_16',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 1),
+        ],
+    },
     // Victory Road
     {
         id: 'TRAINER_WALLY_VR_1',
