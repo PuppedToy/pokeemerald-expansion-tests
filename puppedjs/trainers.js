@@ -1533,6 +1533,7 @@ const trainersData = [
         id: 'TRAINER_GRUNT_PETALBURG_WOODS',
         class: 'Aqua Grunt M',
         level: 9,
+        reward: ['Ability Capsule'],
         isBoss: true,
         bag: [...petalwoodGruntBag],
         team: [
@@ -2961,6 +2962,59 @@ const trainersData = [
                         ...POKEDEF_AVERAGE,
                     }
                 ]
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
+        ],
+    },
+    // Jagged Pass
+    {
+        id: 'TRAINER_ERIC',
+        class: 'Hiker',
+        reward: ['SPECIES_NOIBAT'],
+        level: 33,
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_NOIBAT'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
+        ],
+    },
+    {
+        id: 'TRAINER_JULIO',
+        class: 'Cycling Triathlete M',
+        reward: ['SPECIES_NOIVERN', 'SPECIES_WOOBAT'],
+        level: 33,
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_NOIVERN'],
+                tryEvolve: true,
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_WOOBAT'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),
+        ],
+    },
+    {
+        id: 'TRAINER_AUTUMN',
+        class: 'Picnicker',
+        reward: ['ITEM_MEGA_02'],
+        level: 33,
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_02',
             },
             ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
             ...generatePokemonsWithDefinition(POKEDEF_WEAK, 3),

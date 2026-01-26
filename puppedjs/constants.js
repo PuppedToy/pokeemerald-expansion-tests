@@ -230,6 +230,12 @@ const constants = {
             trainer: 'TRAINER_TYRON',
             script: 'Route111_EventScript_Tyron',
         },
+        {
+            id: '02',
+            map: 'JaggedPass',
+            trainer: 'TRAINER_AUTUMN',
+            script: 'JaggedPass_EventScript_Autumn',
+        },
     ],
 };
 

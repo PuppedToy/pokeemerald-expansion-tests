@@ -211,6 +211,12 @@ const wildData = {
         SPECIES_SWELLOW: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_CAMERUPT: 'LC_NFE_OR_SOLO_AVERAGE',
 
+        // Jagged Pass
+        SPECIES_NOIBAT: 'LC_NFE_OR_SOLO_AVERAGE',
+        SPECIES_NOIVERN: 'LC_NFE_OR_SOLO_AVERAGE',
+        SPECIES_WOOBAT: 'LC_NFE_OR_SOLO_AVERAGE',
+        SPECIES_SWOOBAT: 'LC_NFE_OR_SOLO_AVERAGE',
+
         // Route113
         SPECIES_SPINDA: 'LC_NFE_OR_SOLO_AVERAGE',
         SPECIES_BIDOOF: 'LC_NFE_OR_SOLO_AVERAGE',
@@ -442,6 +448,14 @@ const wildData = {
             old: 'SPECIES_TAILLOW',
             good: 'SPECIES_SWELLOW',
             surf: 'SPECIES_CAMERUPT',
+            super: 'SPECIES_GABITE',
+        },
+        {
+            id: 'MAP_JAGGED_PASS',
+            land: 'SPECIES_NOIBAT',
+            old: 'SPECIES_NOIVERN',
+            good: 'SPECIES_WOOBAT',
+            surf: 'SPECIES_SWOOBAT',
             super: 'SPECIES_GABITE',
         },
         {
