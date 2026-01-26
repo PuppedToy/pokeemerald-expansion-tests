@@ -835,20 +835,20 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const megaReplacementLog = {};
     const megaRemoveLog = [];
     
+    const megaTrainerFilesContent = {};
     async function removeMegaTrainer(megaTrainer) {
         // data/maps/_map_/map.json
-        const mapJsonPath = path.resolve(__dirname, '..', 'data', 'maps', megaTrainer.map, 'map.json');
-        const mapJsonContent = await fs.readFile(mapJsonPath, 'utf8');
-        const mapJson = JSON.parse(mapJsonContent);
+        let mapJson = megaTrainerFilesContent[megaTrainer.map];
+        if (!mapJson) {
+            const mapJsonPath = path.resolve(__dirname, '..', 'data', 'maps', megaTrainer.map, 'map.json');
+            const mapJsonContent = await fs.readFile(mapJsonPath, 'utf8');
+            mapJson = JSON.parse(mapJsonContent);
+        }
         mapJson.object_events = mapJson.object_events.filter(
             event => event.script !== megaTrainer.script
             && event.trainer_sight_or_berry_tree_id !== `ITEM_MEGA_${megaTrainer.id}`
         );
-        await fs.writeFile(
-            mapJsonPath,
-            JSON.stringify(mapJson, null, 2),
-            'utf8'
-        );
+        megaTrainerFilesContent[megaTrainer.map] = mapJson;
         const trainerIndex = trainersData.findIndex(trainer => trainer.id === megaTrainer.trainer);
         if (trainerIndex >= 0) {
             trainersData.splice(trainerIndex, 1);
@@ -867,19 +867,18 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         }
     */
     async function updateMegaTrainer(megaTrainer, megaEvo) {
-        const mapJsonPath = path.resolve(__dirname, '..', 'data', 'maps', megaTrainer.map, 'map.json');
-        const mapJsonContent = await fs.readFile(mapJsonPath, 'utf8');
-        const mapJson = JSON.parse(mapJsonContent);
+        let mapJson = megaTrainerFilesContent[megaTrainer.map];
+        if (!mapJson) {
+            const mapJsonPath = path.resolve(__dirname, '..', 'data', 'maps', megaTrainer.map, 'map.json');
+            const mapJsonContent = await fs.readFile(mapJsonPath, 'utf8');
+            mapJson = JSON.parse(mapJsonContent);
+        }
         mapJson.object_events.forEach(event => {
             if (event.trainer_sight_or_berry_tree_id === `ITEM_MEGA_${megaTrainer.id}`) {
                 event.trainer_sight_or_berry_tree_id = megaEvo.item;
             }
         });
-        await fs.writeFile(
-            mapJsonPath,
-            JSON.stringify(mapJson, null, 2),
-            'utf8'
-        );
+        megaTrainerFilesContent[megaTrainer.map] = mapJson;
         megaReplacementLog[`ITEM_MEGA_${megaTrainer.id}`] = megaEvo.item;
         console.log(`Assigned mega evolution ${megaEvo.megaFormId} to mega trainer ${megaTrainer.id} on map ${megaTrainer.map}.`);
     }
@@ -904,6 +903,17 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             break;
         }
         nextMegaEvo = foundMegaEvos.shift();
+    }
+
+    const contentEntries = Object.entries(megaTrainerFilesContent);
+    for (let i = 0; i < contentEntries.length; i++) {
+        const [map, mapJson] = contentEntries[i];
+        const mapJsonPath = path.resolve(__dirname, '..', 'data', 'maps', map, 'map.json');
+        await fs.writeFile(
+            mapJsonPath,
+            JSON.stringify(mapJson, null, 2),
+            'utf8'
+        );
     }
 
     // Trainers
