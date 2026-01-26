@@ -494,16 +494,16 @@ const wildData = {
             super: 'SPECIES_GABITE',
             level: 43,
         },
+        // Doublade maps
         {
             id: 'MAP_SCORCHED_SLAB',
             land: 'SPECIES_RIBOMBEE',
             old: 'SPECIES_DUSKULL',
             good: 'SPECIES_DUSCLOPS',
             surf: 'SPECIES_DUSKNOIR',
-            super: 'SPECIES_GABITE',
+            super: 'SPECIES_DOUBLADE',
             level: 43,
         },
-        // Doublade maps
         {
             id: 'MAP_ROUTE121',
             land: 'SPECIES_SHUPPET',

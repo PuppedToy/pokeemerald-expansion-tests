@@ -3439,63 +3439,63 @@
             "encounter_rate": 20,
             "mons": [
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_SANDILE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_SANDILE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_SANDILE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_SANDILE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_SANDILE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_SANDILE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_SANDILE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_SANDILE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_SANDILE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_SANDILE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_SANDILE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_SANDILE"
               }
             ]
@@ -3504,28 +3504,28 @@
             "encounter_rate": 30,
             "mons": [
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_KROKOROK"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_KROKOROK"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_KROOKODILE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_KROOKODILE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_KROOKODILE"
               },
               {
@@ -3559,28 +3559,28 @@
             "encounter_rate": 4,
             "mons": [
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_STUNFISK"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_STUNFISK"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_STUNFISK"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_STUNFISK"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_STUNFISK"
               }
             ]
@@ -8013,64 +8013,149 @@
             "encounter_rate": 20,
             "mons": [
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_RIBOMBEE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_RIBOMBEE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_RIBOMBEE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_RIBOMBEE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_RIBOMBEE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_RIBOMBEE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_RIBOMBEE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_RIBOMBEE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_RIBOMBEE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_RIBOMBEE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_RIBOMBEE"
               },
               {
-                "min_level": 42,
-                "max_level": 42,
+                "min_level": 43,
+                "max_level": 43,
                 "species": "SPECIES_RIBOMBEE"
+              }
+            ]
+          },
+          "fishing_mons": {
+            "encounter_rate": 30,
+            "mons": [
+              {
+                "min_level": 43,
+                "max_level": 43,
+                "species": "SPECIES_DUSKULL"
+              },
+              {
+                "min_level": 43,
+                "max_level": 43,
+                "species": "SPECIES_DUSKULL"
+              },
+              {
+                "min_level": 43,
+                "max_level": 43,
+                "species": "SPECIES_DUSCLOPS"
+              },
+              {
+                "min_level": 43,
+                "max_level": 43,
+                "species": "SPECIES_DUSCLOPS"
+              },
+              {
+                "min_level": 43,
+                "max_level": 43,
+                "species": "SPECIES_DUSCLOPS"
+              },
+              {
+                "min_level": 48,
+                "max_level": 48,
+                "species": "SPECIES_DOUBLADE"
+              },
+              {
+                "min_level": 48,
+                "max_level": 48,
+                "species": "SPECIES_DOUBLADE"
+              },
+              {
+                "min_level": 48,
+                "max_level": 48,
+                "species": "SPECIES_DOUBLADE"
+              },
+              {
+                "min_level": 48,
+                "max_level": 48,
+                "species": "SPECIES_DOUBLADE"
+              },
+              {
+                "min_level": 48,
+                "max_level": 48,
+                "species": "SPECIES_DOUBLADE"
+              }
+            ]
+          },
+          "water_mons": {
+            "encounter_rate": 4,
+            "mons": [
+              {
+                "min_level": 43,
+                "max_level": 43,
+                "species": "SPECIES_DUSKNOIR"
+              },
+              {
+                "min_level": 43,
+                "max_level": 43,
+                "species": "SPECIES_DUSKNOIR"
+              },
+              {
+                "min_level": 43,
+                "max_level": 43,
+                "species": "SPECIES_DUSKNOIR"
+              },
+              {
+                "min_level": 43,
+                "max_level": 43,
+                "species": "SPECIES_DUSKNOIR"
+              },
+              {
+                "min_level": 43,
+                "max_level": 43,
+                "species": "SPECIES_DUSKNOIR"
               }
             ]
           }
