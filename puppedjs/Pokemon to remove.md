@@ -1,8 +1,5 @@
 Pokemon to add
 
-# Route 120
-- Stunfisk as surf
-
 # Scorched Slab
 - Duskull as old
 - Dusclops as good

@@ -3756,31 +3756,9 @@ const trainersData = [
         ],
     },
     {
-        id: 'TRAINER_ROBERT_1',
-        class: 'Bird Keeper',
-        reward: ['SPECIES_KROOKODILE', 'SPECIES_KROKOROK'],
-        level: 43,
-        bag: getSampleItemsFromArray(rival119Bag(), 17),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_KROOKODILE'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_KROKOROK'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 3),
-        ],
-    },
-    // @TODO Put colin in the slab
-    {
         id: 'TRAINER_COLIN',
         class: 'Bird Keeper',
-        reward: ['SPECIES_RIBOMBEE'],
+        reward: ['SPECIES_KROKOROK', 'SPECIES_KROOKODILE', 'SPECIES_STUNFISK', 'SPECIES_RIBOMBEE', 'SPECIES_DUSKULL', 'SPECIES_DUSCLOPS', 'SPECIES_DUSKNOIR'],
         level: 43,
         bag: getSampleItemsFromArray(rival119Bag(), 17),
         team: [
@@ -3804,6 +3782,31 @@ const trainersData = [
                 encounterIds: ['SPECIES_DUSKNOIR'],
                 tryEvolve: true,
             },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_KROKOROK', 'SPECIES_KROOKODILE', 'SPECIES_STUNFISK'],
+                pickBest: true,
+                tryEvolve: true,
+            },
+            {
+                isMega: true,
+                absoluteTier: [TIER_STRONG, TIER_PREMIUM],
+                checkValidEvo: true,
+            },
+        ],
+    },
+    {
+        id: 'TRAINER_ROBERT_1',
+        class: 'Bird Keeper',
+        reward: ['ITEM_MEGA_05'],
+        level: 43,
+        bag: getSampleItemsFromArray(rival119Bag(), 16),
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_05',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_STRONG, 3),
             ...generatePokemonsWithDefinition(POKEDEF_AVERAGE, 2),
         ],
     },

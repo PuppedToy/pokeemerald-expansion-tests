@@ -3554,6 +3554,36 @@
                 "species": "SPECIES_GABITE"
               }
             ]
+          },
+          "water_mons": {
+            "encounter_rate": 4,
+            "mons": [
+              {
+                "min_level": 42,
+                "max_level": 42,
+                "species": "SPECIES_STUNFISK"
+              },
+              {
+                "min_level": 42,
+                "max_level": 42,
+                "species": "SPECIES_STUNFISK"
+              },
+              {
+                "min_level": 42,
+                "max_level": 42,
+                "species": "SPECIES_STUNFISK"
+              },
+              {
+                "min_level": 42,
+                "max_level": 42,
+                "species": "SPECIES_STUNFISK"
+              },
+              {
+                "min_level": 42,
+                "max_level": 42,
+                "species": "SPECIES_STUNFISK"
+              }
+            ]
           }
         },
         {

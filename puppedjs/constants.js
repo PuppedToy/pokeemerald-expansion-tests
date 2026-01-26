@@ -248,6 +248,12 @@ const constants = {
             trainer: 'TRAINER_CHRIS',
             script: 'Route119_EventScript_Chris',
         },
+        {
+            id: '05',
+            map: 'Route120',
+            trainer: 'TRAINER_ROBERT_1',
+            script: 'Route120_EventScript_Robert',
+        },
     ],
 };
 
