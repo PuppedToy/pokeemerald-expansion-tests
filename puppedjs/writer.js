@@ -487,7 +487,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             return evolutions.some(evo => isValidEvolution(level, evo));
         };
         let pokemonThatEvolveToThis = pokemonList.filter(filterMethod);
-        if (pokemonThatEvolveToThis.length > 1 && devolvedForm.id !== 'SPECIES_GHOLDENGO') {
+        if (pokemonThatEvolveToThis.length > 1 && devolvedForm.id !== 'SPECIES_GHOLDENGO' && !devolvedForm.id.includes('SPECIES_LYCANROC')) {
             console.warn(`WARN: Multiple pre-evolutions found for ${devolvedForm.id} in trainer ${trainer?.id} when checking valid evolutions: ${pokemonThatEvolveToThis.map(p => p.id).join(', ')}.`);
         }
         if (pokemonThatEvolveToThis.length === 0) {
