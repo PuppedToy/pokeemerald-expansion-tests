@@ -469,10 +469,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     }
     
     const checkValidEvo = (evaluatedPokemon, level, trainer) => {
-        if (trainer?.id === 'TRAINER_GRUNT_RUSTURF_TUNNEL') {
-            console.log(`Checking valid evo for ${evaluatedPokemon.id} at level ${level} for trainer ${trainer.id}`);
-            console.log(trainer.team);
-        }
         let devolvedForm = evaluatedPokemon;
         if (devolvedForm.evolutionData.megaBaseForm) {
             devolvedForm = pokemonList.find(p => p.id === devolvedForm.evolutionData.megaBaseForm);
@@ -491,13 +487,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             return evolutions.some(evo => isValidEvolution(level, evo));
         };
         let pokemonThatEvolveToThis = pokemonList.filter(filterMethod);
-        if (trainer?.id === 'TRAINER_GRUNT_RUSTURF_TUNNEL') {
-            console.log(evaluatedPokemon.id);
-            console.log(pokemonThatEvolveToThis.length);
-            if (pokemonThatEvolveToThis.length > 0) {
-                console.log(pokemonThatEvolveToThis[0]?.id);
-            }
-        }
         if (pokemonThatEvolveToThis.length > 1 && devolvedForm.id !== 'SPECIES_GHOLDENGO' && !devolvedForm.id.includes('SPECIES_LYCANROC')) {
             console.warn(`WARN: Multiple pre-evolutions found for ${devolvedForm.id} in trainer ${trainer?.id} when checking valid evolutions: ${pokemonThatEvolveToThis.map(p => p.id).join(', ')}.`);
         }
