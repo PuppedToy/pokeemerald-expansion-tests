@@ -1848,23 +1848,6 @@ const trainersData = [
         bag: [...rusturfGruntBag()],
         team: [
             {
-                ...POKEDEF_WEAK,
-                type: [magmaTeamTypes[0]],
-                fallback: [
-                    {
-                        ...POKEDEF_WEAK,
-                        type: [magmaTeamTypes[1]],
-                    },
-                    {
-                        ...POKEDEF_WEAK,
-                        type: [...magmaTeamTypes],
-                    },
-                    {
-                        ...POKEDEF_WEAK,
-                    },
-                ]
-            },
-            {
                 ...POKEDEF_BAD,
                 exactTypes: [magmaTeamTypes[0], magmaTeamTypes[1]],
                 fallback: [
@@ -1880,6 +1863,23 @@ const trainersData = [
                     {
                         ...POKEDEF_BAD,
                         type: [...magmaTeamTypes],
+                    },
+                ]
+            },
+            {
+                ...POKEDEF_WEAK,
+                type: [magmaTeamTypes[0]],
+                fallback: [
+                    {
+                        ...POKEDEF_WEAK,
+                        type: [magmaTeamTypes[1]],
+                    },
+                    {
+                        ...POKEDEF_WEAK,
+                        type: [...magmaTeamTypes],
+                    },
+                    {
+                        ...POKEDEF_WEAK,
                     },
                 ]
             },
