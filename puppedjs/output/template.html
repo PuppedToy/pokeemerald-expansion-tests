@@ -873,6 +873,12 @@
         case 'special1':
         case 'special2':
         case 'special3':
+        case 'special4':
+        case 'special5':
+        case 'special6':
+        case 'special7':
+        case 'special8':
+        case 'special9':
           return 'Special';
         default: return type;
       }
@@ -887,8 +893,7 @@
       // Clean route name
       const routeName = nameify(route.id.replace('MAP_', ''));
 
-      // Each encounter type (land, old, good, surf, underwater, super)
-      const encounterTypes = ['land', 'old', 'good', 'surf', 'underwater', 'super', 'special', 'special1', 'special2', 'special3'];
+      const encounterTypes = ['land', 'old', 'good', 'surf', 'underwater', 'super', 'special', 'special1', 'special2', 'special3', 'special4', 'special5', 'special6', 'special7', 'special8', 'special9'];
 
       const encountersHTML = encounterTypes
         .filter(type => route[type])
