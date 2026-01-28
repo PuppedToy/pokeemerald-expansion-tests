@@ -39,6 +39,7 @@ const {
     TIER_LEGEND_THRESHOLD,
     TIER_GOD,
     MEGA_TRAINERS,
+    TIER_AVERAGE_THRESHOLD,
 } = require('./constants');
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const items = require('./items.js');
@@ -377,6 +378,25 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 strongPokemonLCWithFilteredTypes.splice(i, 1);
             }
         }
+    }
+
+    const earlyGameStarter = pokemonList.filter(poke => {
+        return poke.evolutionData.type === EVO_TYPE_LC_OF_3
+            && (poke.evolutionData.isLC || poke.evolutionData.type === 'EVO_TYPE_SOLO')
+            && poke.rating.bestEvoRating <= TIER_AVERAGE_THRESHOLD
+            && poke.rating.tier === TIER_WEAK
+            && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
+    });
+    const earlyGameStarterWithFilteredTypes = earlyGameStarter.filter(poke => {
+        return ![...alreadyChosenTypes].some(type => poke.parsedTypes.includes(type));
+    });
+    
+    // Pick 1 early game starter that doesn't share types with already chosen ones
+    if (earlyGameStarterWithFilteredTypes.length > 0) {
+        const randomPoke = sampleAndRemove(earlyGameStarterWithFilteredTypes);
+        chosenExtraPokemon.push(randomPoke);
+        alreadyChosenFamilySet.add(getFamilyGroup(randomPoke.family));
+        randomPoke.parsedTypes.forEach(type => alreadyChosenTypes.add(type));
     }
     
     // Pick 6 other unique pokemon from notTooStrongPokemonLC that are not in eligiblePokemonForStarters
