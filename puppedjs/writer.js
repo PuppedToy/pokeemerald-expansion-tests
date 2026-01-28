@@ -1654,6 +1654,13 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         });
         return result;
     });
+    maps.unshift({
+        id: 'STARTER_EXTRA',
+        ...chosenExtraPokemon.reduce((acc, pokeId, index) => {
+            acc[`Extra ${index + 1}`] = pokeId;
+            return acc;
+        }, {}),
+    });
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_WILDPOKES_REPALCEMENT, `<script>const wildPokes = ${JSON.stringify(maps)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'wildpokes.js'), `const wildPokes = ${JSON.stringify(maps, null, 4)};`, 'utf8');
 
