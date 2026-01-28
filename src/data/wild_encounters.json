@@ -4268,61 +4268,6 @@
         {
           "map": "MAP_ROUTE125",
           "base_label": "gRoute125",
-          "fishing_mons": {
-            "encounter_rate": 30,
-            "mons": [
-              {
-                "min_level": 56,
-                "max_level": 56,
-                "species": "SPECIES_SCORBUNNY"
-              },
-              {
-                "min_level": 56,
-                "max_level": 56,
-                "species": "SPECIES_SCORBUNNY"
-              },
-              {
-                "min_level": 56,
-                "max_level": 56,
-                "species": "SPECIES_RABOOT"
-              },
-              {
-                "min_level": 56,
-                "max_level": 56,
-                "species": "SPECIES_RABOOT"
-              },
-              {
-                "min_level": 56,
-                "max_level": 56,
-                "species": "SPECIES_RABOOT"
-              },
-              {
-                "min_level": 56,
-                "max_level": 56,
-                "species": "SPECIES_DOUBLADE"
-              },
-              {
-                "min_level": 56,
-                "max_level": 56,
-                "species": "SPECIES_DOUBLADE"
-              },
-              {
-                "min_level": 56,
-                "max_level": 56,
-                "species": "SPECIES_DOUBLADE"
-              },
-              {
-                "min_level": 56,
-                "max_level": 56,
-                "species": "SPECIES_DOUBLADE"
-              },
-              {
-                "min_level": 56,
-                "max_level": 56,
-                "species": "SPECIES_DOUBLADE"
-              }
-            ]
-          },
           "land_mons": {
             "encounter_rate": 20,
             "mons": [
@@ -4385,6 +4330,61 @@
                 "min_level": 56,
                 "max_level": 56,
                 "species": "SPECIES_CINDERACE"
+              }
+            ]
+          },
+          "fishing_mons": {
+            "encounter_rate": 30,
+            "mons": [
+              {
+                "min_level": 56,
+                "max_level": 56,
+                "species": "SPECIES_SCORBUNNY"
+              },
+              {
+                "min_level": 56,
+                "max_level": 56,
+                "species": "SPECIES_SCORBUNNY"
+              },
+              {
+                "min_level": 56,
+                "max_level": 56,
+                "species": "SPECIES_RABOOT"
+              },
+              {
+                "min_level": 56,
+                "max_level": 56,
+                "species": "SPECIES_RABOOT"
+              },
+              {
+                "min_level": 56,
+                "max_level": 56,
+                "species": "SPECIES_RABOOT"
+              },
+              {
+                "min_level": 56,
+                "max_level": 56,
+                "species": "SPECIES_DOUBLADE"
+              },
+              {
+                "min_level": 56,
+                "max_level": 56,
+                "species": "SPECIES_DOUBLADE"
+              },
+              {
+                "min_level": 56,
+                "max_level": 56,
+                "species": "SPECIES_DOUBLADE"
+              },
+              {
+                "min_level": 56,
+                "max_level": 56,
+                "species": "SPECIES_DOUBLADE"
+              },
+              {
+                "min_level": 56,
+                "max_level": 56,
+                "species": "SPECIES_DOUBLADE"
               }
             ]
           }
@@ -4699,61 +4699,6 @@
         {
           "map": "MAP_ROUTE129",
           "base_label": "gRoute129",
-          "fishing_mons": {
-            "encounter_rate": 30,
-            "mons": [
-              {
-                "min_level": 61,
-                "max_level": 61,
-                "species": "SPECIES_IRON_HANDS"
-              },
-              {
-                "min_level": 61,
-                "max_level": 61,
-                "species": "SPECIES_IRON_HANDS"
-              },
-              {
-                "min_level": 61,
-                "max_level": 61,
-                "species": "SPECIES_IRON_CROWN"
-              },
-              {
-                "min_level": 61,
-                "max_level": 61,
-                "species": "SPECIES_IRON_CROWN"
-              },
-              {
-                "min_level": 61,
-                "max_level": 61,
-                "species": "SPECIES_IRON_CROWN"
-              },
-              {
-                "min_level": 61,
-                "max_level": 61,
-                "species": "SPECIES_JIRACHI"
-              },
-              {
-                "min_level": 61,
-                "max_level": 61,
-                "species": "SPECIES_JIRACHI"
-              },
-              {
-                "min_level": 61,
-                "max_level": 61,
-                "species": "SPECIES_JIRACHI"
-              },
-              {
-                "min_level": 61,
-                "max_level": 61,
-                "species": "SPECIES_JIRACHI"
-              },
-              {
-                "min_level": 61,
-                "max_level": 61,
-                "species": "SPECIES_JIRACHI"
-              }
-            ]
-          },
           "land_mons": {
             "encounter_rate": 20,
             "mons": [
@@ -4816,6 +4761,61 @@
                 "min_level": 61,
                 "max_level": 61,
                 "species": "SPECIES_DARKRAI"
+              }
+            ]
+          },
+          "fishing_mons": {
+            "encounter_rate": 30,
+            "mons": [
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_HANDS"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_HANDS"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_CROWN"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_CROWN"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_IRON_CROWN"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
+              },
+              {
+                "min_level": 61,
+                "max_level": 61,
+                "species": "SPECIES_JIRACHI"
               }
             ]
           }
@@ -7160,61 +7160,6 @@
         {
           "map": "MAP_EVER_GRANDE_CITY",
           "base_label": "gEverGrandeCity",
-          "fishing_mons": {
-            "encounter_rate": 10,
-            "mons": [
-              {
-                "min_level": 64,
-                "max_level": 64,
-                "species": "SPECIES_RAIKOU"
-              },
-              {
-                "min_level": 64,
-                "max_level": 64,
-                "species": "SPECIES_RAIKOU"
-              },
-              {
-                "min_level": 64,
-                "max_level": 64,
-                "species": "SPECIES_ENTEI"
-              },
-              {
-                "min_level": 64,
-                "max_level": 64,
-                "species": "SPECIES_ENTEI"
-              },
-              {
-                "min_level": 64,
-                "max_level": 64,
-                "species": "SPECIES_ENTEI"
-              },
-              {
-                "min_level": 64,
-                "max_level": 64,
-                "species": "SPECIES_SUICUNE"
-              },
-              {
-                "min_level": 64,
-                "max_level": 64,
-                "species": "SPECIES_SUICUNE"
-              },
-              {
-                "min_level": 64,
-                "max_level": 64,
-                "species": "SPECIES_SUICUNE"
-              },
-              {
-                "min_level": 64,
-                "max_level": 64,
-                "species": "SPECIES_SUICUNE"
-              },
-              {
-                "min_level": 64,
-                "max_level": 64,
-                "species": "SPECIES_SUICUNE"
-              }
-            ]
-          },
           "land_mons": {
             "encounter_rate": 20,
             "mons": [
@@ -7277,6 +7222,61 @@
                 "min_level": 64,
                 "max_level": 64,
                 "species": "SPECIES_TORTERRA"
+              }
+            ]
+          },
+          "fishing_mons": {
+            "encounter_rate": 10,
+            "mons": [
+              {
+                "min_level": 64,
+                "max_level": 64,
+                "species": "SPECIES_RAIKOU"
+              },
+              {
+                "min_level": 64,
+                "max_level": 64,
+                "species": "SPECIES_RAIKOU"
+              },
+              {
+                "min_level": 64,
+                "max_level": 64,
+                "species": "SPECIES_ENTEI"
+              },
+              {
+                "min_level": 64,
+                "max_level": 64,
+                "species": "SPECIES_ENTEI"
+              },
+              {
+                "min_level": 64,
+                "max_level": 64,
+                "species": "SPECIES_ENTEI"
+              },
+              {
+                "min_level": 64,
+                "max_level": 64,
+                "species": "SPECIES_SUICUNE"
+              },
+              {
+                "min_level": 64,
+                "max_level": 64,
+                "species": "SPECIES_SUICUNE"
+              },
+              {
+                "min_level": 64,
+                "max_level": 64,
+                "species": "SPECIES_SUICUNE"
+              },
+              {
+                "min_level": 64,
+                "max_level": 64,
+                "species": "SPECIES_SUICUNE"
+              },
+              {
+                "min_level": 64,
+                "max_level": 64,
+                "species": "SPECIES_SUICUNE"
               }
             ]
           }

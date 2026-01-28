@@ -1541,9 +1541,31 @@ const trainersData = [
         bag: [...petalwoodGruntBag],
         team: [
             {
-                specific: 'SPECIES_CARVANHA',
-                nature: NATURES.ADAMANT.name,
-                abilities: ['SPEED_BOOST'],
+                ...POKEDEF_WEAK,
+                exactTypes: [aquaTeamTypes[0], aquaTeamTypes[1]],
+                fallback: [
+                    {
+                        ...POKEDEF_WEAK,
+                        exactTypes: [aquaTeamTypes[0]],
+                        type: [...aquaTeamTypes],
+                    },
+                    {
+                        ...POKEDEF_WEAK,
+                        type: [aquaTeamTypes[0]],
+                    },
+                    {
+                        ...POKEDEF_WEAK,
+                        type: [...aquaTeamTypes],
+                    },
+                    {
+                        ...POKEDEF_BAD,
+                        exactTypes: [aquaTeamTypes[0]],
+                    },
+                    {
+                        ...POKEDEF_BAD,
+                        type: [aquaTeamTypes[0]],
+                    },
+                ]
             },
             {
                 ...POKEDEF_BAD,
@@ -1821,39 +1843,61 @@ const trainersData = [
     {
         id: 'TRAINER_GRUNT_RUSTURF_TUNNEL',
         level: 13,
-        class: 'Aqua Grunt M',
+        class: 'Magma Grunt F',
         isBoss: true,
         bag: [...rusturfGruntBag()],
         team: [
             {
-                specific: 'SPECIES_CARVANHA',
-                nature: NATURES.RELAXED.name,
-                abilities: ['ROUGH_SKIN'],
+                ...POKEDEF_WEAK,
+                type: [magmaTeamTypes[0]],
+                fallback: [
+                    {
+                        ...POKEDEF_WEAK,
+                        type: [magmaTeamTypes[1]],
+                    },
+                    {
+                        ...POKEDEF_WEAK,
+                        type: [...magmaTeamTypes],
+                    },
+                    {
+                        ...POKEDEF_WEAK,
+                    },
+                ]
             },
             {
                 ...POKEDEF_BAD,
-                type: [aquaTeamTypes[0]],
-                tryEvolve: true,
+                exactTypes: [magmaTeamTypes[0], magmaTeamTypes[1]],
+                fallback: [
+                    {
+                        ...POKEDEF_BAD,
+                        exactTypes: [magmaTeamTypes[1]],
+                        type: [...magmaTeamTypes],
+                    },
+                    {
+                        ...POKEDEF_BAD,
+                        type: [magmaTeamTypes[1]],
+                    },
+                    {
+                        ...POKEDEF_BAD,
+                        type: [...magmaTeamTypes],
+                    },
+                ]
             },
             {
                 ...POKEDEF_BAD,
-                type: [aquaTeamTypes[1]],
-                tryEvolve: true,
+                type: [magmaTeamTypes[2]],
             },
             {
                 ...POKEDEF_BAD,
-                type: [aquaTeamTypes[2]],
-                tryEvolve: true,
+                type: [magmaTeamTypes[3]],
             },
             {
                 ...POKEDEF_BAD,
-                type: [aquaTeamTypes[3]],
-                tryEvolve: true,
+                type: [magmaTeamTypes[4]],
             },
             {
                 ...POKEDEF_BAD,
-                type: [aquaTeamTypes[4]],
-                tryEvolve: true,
+                type: [magmaTeamTypes[0]],
             },
         ],
     },
