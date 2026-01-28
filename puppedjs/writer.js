@@ -381,8 +381,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     }
 
     const earlyGameStarter = pokemonList.filter(poke => {
-        return poke.evolutionData.type === EVO_TYPE_LC_OF_3
-            && (poke.evolutionData.isLC || poke.evolutionData.type === 'EVO_TYPE_SOLO')
+        return (poke.evolutionData.isLC || poke.evolutionData.type === 'EVO_TYPE_SOLO')
             && poke.rating.bestEvoRating <= TIER_AVERAGE_THRESHOLD
             && poke.rating.tier === TIER_WEAK
             && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
