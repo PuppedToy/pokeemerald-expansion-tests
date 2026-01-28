@@ -1656,8 +1656,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     });
     maps.unshift({
         id: 'STARTER_EXTRA',
-        ...chosenExtraPokemon.reduce((acc, pokeId, index) => {
-            acc[`special${index + 1}`] = pokeId;
+        ...chosenExtraPokemon.reduce((acc, poke, index) => {
+            acc[`special${index + 1}`] = poke.id;
             return acc;
         }, {}),
     });
