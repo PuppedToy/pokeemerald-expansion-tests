@@ -1,6 +1,7 @@
 #include "global.h"
 #include "pokemon.h"
 #include "egg_hatch.h"
+#include "caps.h"
 #include "pokedex.h"
 #include "constants/items.h"
 #include "script.h"
@@ -390,6 +391,24 @@ static void AddHatchedMonToParty(u8 id)
 
     MonRestorePP(mon);
     CalculateMonStats(mon);
+
+    // Level up to cap and fully heal on hatch
+    {
+        u32 cap = GetCurrentLevelCap();
+        u16 hatchSpecies = GetMonData(mon, MON_DATA_SPECIES);
+        if (GetMonData(mon, MON_DATA_LEVEL) < cap)
+        {
+            u32 level = cap;
+            u32 exp = gExperienceTables[gSpeciesInfo[hatchSpecies].growthRate][cap];
+            SetMonData(mon, MON_DATA_EXP, &exp);
+            SetMonData(mon, MON_DATA_LEVEL, &level);
+            CalculateMonStats(mon);
+        }
+        {
+            u32 maxHp = GetMonData(mon, MON_DATA_MAX_HP);
+            SetMonData(mon, MON_DATA_HP, &maxHp);
+        }
+    }
 }
 
 void ScriptHatchMon(void)

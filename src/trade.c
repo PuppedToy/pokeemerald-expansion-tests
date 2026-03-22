@@ -1,4 +1,5 @@
 #include "global.h"
+#include "caps.h"
 #include "malloc.h"
 #include "battle_anim.h"
 #include "battle_interface.h"
@@ -3100,6 +3101,25 @@ static void TradeMons(u8 playerPartyIdx, u8 partnerPartyIdx)
     UpdatePokedexForReceivedMon(playerPartyIdx);
     if (gReceivedRemoteLinkPlayers)
         TryEnableNationalDexFromLinkPartner();
+
+    // Level up to cap and fully heal the received mon
+    if (!GetMonData(playerMon, MON_DATA_IS_EGG))
+    {
+        u32 cap = GetCurrentLevelCap();
+        u16 tradeSpecies = GetMonData(playerMon, MON_DATA_SPECIES);
+        if (GetMonData(playerMon, MON_DATA_LEVEL) < cap)
+        {
+            u32 level = cap;
+            u32 exp = gExperienceTables[gSpeciesInfo[tradeSpecies].growthRate][cap];
+            SetMonData(playerMon, MON_DATA_EXP, &exp);
+            SetMonData(playerMon, MON_DATA_LEVEL, &level);
+        }
+        CalculateMonStats(playerMon);
+        {
+            u32 maxHp = GetMonData(playerMon, MON_DATA_MAX_HP);
+            SetMonData(playerMon, MON_DATA_HP, &maxHp);
+        }
+    }
 }
 
 static void HandleLinkDataSend(void)
