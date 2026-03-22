@@ -189,6 +189,7 @@ MauvilleCity_EventScript_ScottExitEast::
 MauvilleCity_EventScript_BattleWally::
 	msgbox MauvilleCity_Text_WallyHereICome, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_WALLY_MAUVILLE, MauvilleCity_Text_WallyDefeat
+	setflag FLAG_DEFEATED_WALLY_MAUVILLE
 	message MauvilleCity_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
