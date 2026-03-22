@@ -3253,6 +3253,24 @@ u8 GiveMonToPlayer(struct Pokemon *mon)
     SetMonData(mon, MON_DATA_OT_GENDER, &gSaveBlock2Ptr->playerGender);
     SetMonData(mon, MON_DATA_OT_ID, gSaveBlock2Ptr->playerTrainerId);
 
+    // Level up to cap and fully heal before adding to party/PC
+    {
+        u32 cap = GetCurrentLevelCap();
+        u16 species = GetMonData(mon, MON_DATA_SPECIES);
+        if (GetMonData(mon, MON_DATA_LEVEL) < cap)
+        {
+            u32 level = cap;
+            u32 exp = gExperienceTables[gSpeciesInfo[species].growthRate][cap];
+            SetMonData(mon, MON_DATA_EXP, &exp);
+            SetMonData(mon, MON_DATA_LEVEL, &level);
+        }
+        CalculateMonStats(mon);
+        {
+            u32 maxHp = GetMonData(mon, MON_DATA_MAX_HP);
+            SetMonData(mon, MON_DATA_HP, &maxHp);
+        }
+    }
+
     for (i = 0; i < PARTY_SIZE; i++)
     {
         if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL) == SPECIES_NONE)
