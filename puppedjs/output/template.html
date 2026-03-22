@@ -48,6 +48,7 @@
 
     /* The visible modal container */
     .modal-content {
+      position: relative;
       background: #0f1724; /* fully opaque, matches theme */
       border-radius: 16px;
       width: 92%;
@@ -473,7 +474,7 @@
     }
 
     function getPokeImg(pokeId) {
-      return `https://forwardfeed.github.io/ER-nextdex/static/sprites/${pokeId.replace('SPECIES_', '')}.png`
+      return `https://forwardfeed.github.io/ER-nextdex/sprites/${pokeId.replace('SPECIES_', '')}.png`
         .replace('ALOLA', 'ALOLAN')
         .replace('GALAR', 'GALARIAN')
         .replace('HISUI', 'HISUIAN')
@@ -1011,7 +1012,7 @@
     const modalClose = document.querySelector('.modal-close');
     const modalBg = document.querySelector('.modal-bg');
     modalClose.addEventListener('click', () => modal.classList.add('hidden'));
-    modalBg.addEventListener('click', () => modal.classList.add('hidden'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
 
     function showPokemonModal(poke) {
       modal.classList.remove('hidden');

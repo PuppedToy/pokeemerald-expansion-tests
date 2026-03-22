@@ -58,3 +58,4 @@ __pycache__
 !puppedjs/*
 puppedjs/node_modules/
 */.DS_Store
+.autobash
