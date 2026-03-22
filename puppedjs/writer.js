@@ -1680,6 +1680,12 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             return acc;
         }, {}),
     });
+    maps.unshift({
+        id: 'STARTERS',
+        special1: starters[0],
+        special2: starters[1],
+        special3: starters[2],
+    });
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_WILDPOKES_REPALCEMENT, `<script>const wildPokes = ${JSON.stringify(maps)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'wildpokes.js'), `const wildPokes = ${JSON.stringify(maps, null, 4)};`, 'utf8');
 
