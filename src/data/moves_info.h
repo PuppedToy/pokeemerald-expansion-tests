@@ -671,13 +671,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .description = COMPOUND_STRING(
             "Strikes the foe with\n"
             "slender, whiplike vines."),
-        #if B_UPDATED_MOVE_DATA >= GEN_6
-            .pp = 25,
-        #elif B_UPDATED_MOVE_DATA >= GEN_4
-            .pp = 15,
-        #else
-            .pp = 10,
-        #endif
+        .pp = 25,
         .effect = EFFECT_HIT,
         .power = B_UPDATED_MOVE_DATA >= GEN_6 ? 45 : 35,
         .type = TYPE_GRASS,
@@ -775,13 +769,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .description = COMPOUND_STRING(
             "A strong jumping kick. May\n"
             "miss and hurt the kicker."),
-        #if B_UPDATED_MOVE_DATA >= GEN_5
-            .power = 100,
-        #elif B_UPDATED_MOVE_DATA >= GEN_4
-            .power = 85,
-        #else
-            .power = 70,
-        #endif
+        .power = 100,
         .effect = EFFECT_RECOIL_IF_MISS,
         .type = TYPE_FIGHTING,
         .accuracy = 95,
@@ -951,13 +939,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .description = COMPOUND_STRING(
             "Charges the foe with a full-\n"
             "body tackle."),
-        #if B_UPDATED_MOVE_DATA >= GEN_7
-            .power = 40,
-        #elif B_UPDATED_MOVE_DATA >= GEN_5
-            .power = 50,
-        #else
-            .power = 35,
-        #endif
+        .power = 40,
         .effect = EFFECT_HIT,
         .type = TYPE_NORMAL,
         .accuracy = B_UPDATED_MOVE_DATA >= GEN_5 ? 100 : 95,
@@ -1395,13 +1377,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
             "For 2-5 turns, prevents foe\n"
         #endif
             "from using last used move."),
-        #if B_UPDATED_MOVE_DATA >= GEN_5
-            .accuracy = 100,
-        #elif B_UPDATED_MOVE_DATA == GEN_4
-            .accuracy = 80,
-        #else
-            .accuracy = 55,
-        #endif
+        .accuracy = 100,
         .effect = EFFECT_DISABLE,
         .power = 0,
         .type = TYPE_NORMAL,
@@ -2164,13 +2140,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .description = COMPOUND_STRING(
             "A rampage of 2 to 3 turns\n"
             "that confuses the user."),
-        #if B_UPDATED_MOVE_DATA >= GEN_5
-            .power = 120,
-        #elif B_UPDATED_MOVE_DATA == GEN_4
-            .power = 90,
-        #else
-            .power = 70,
-        #endif
+        .power = 120,
         .effect = EFFECT_HIT,
         .type = TYPE_GRASS,
         .accuracy = 100,
@@ -2809,13 +2779,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .description = COMPOUND_STRING(
             "Recovers up to half the\n"
             "user's maximum HP."),
-        #if B_UPDATED_MOVE_DATA >= GEN_9
-            .pp = 5,
-        #elif B_UPDATED_MOVE_DATA >= GEN_4
-            .pp = 10,
-        #else
-            .pp = 20,
-        #endif
+        .pp = 5,
         .effect = EFFECT_RESTORE_HP,
         .power = 0,
         .type = TYPE_NORMAL,
@@ -3624,13 +3588,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .description = COMPOUND_STRING(
             "A jumping knee kick. If it\n"
             "misses, the user is hurt."),
-        #if B_UPDATED_MOVE_DATA >= GEN_5
-            .power = 130,
-        #elif B_UPDATED_MOVE_DATA == GEN_4
-            .power = 100,
-        #else
-            .power = 85,
-        #endif
+        .power = 130,
         .effect = EFFECT_RECOIL_IF_MISS,
         .type = TYPE_FIGHTING,
         .accuracy = 90,
@@ -3654,13 +3612,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .description = COMPOUND_STRING(
             "Intimidates and frightens\n"
             "the foe into paralysis."),
-        #if B_UPDATED_MOVE_DATA >= GEN_6
-            .accuracy = 100,
-        #elif B_UPDATED_MOVE_DATA == GEN_5
-            .accuracy = 90,
-        #else
-            .accuracy = 75,
-        #endif
+        .accuracy = 100,
         .effect = EFFECT_NON_VOLATILE_STATUS,
         .power = 0,
         .type = TYPE_NORMAL,
@@ -3713,13 +3665,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
             "Envelops the foe in a toxic\n"
         #endif
             "gas that may poison."),
-        #if B_UPDATED_MOVE_DATA >= GEN_6
-            .accuracy = 90,
-        #elif B_UPDATED_MOVE_DATA >= GEN_5
-            .accuracy = 80,
-        #else
-            .accuracy = 55,
-        #endif
+        .accuracy = 90,
         .effect = EFFECT_NON_VOLATILE_STATUS,
         .power = 0,
         .type = TYPE_POISON,
@@ -5567,13 +5513,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .description = COMPOUND_STRING(
             "An attack that intensifies\n"
             "on each successive hit."),
-        #if B_UPDATED_MOVE_DATA >= GEN_6
-            .power = 40,
-        #elif B_UPDATED_MOVE_DATA >= GEN_5
-            .power = 20,
-        #else
-            .power = 10,
-        #endif
+        .power = 40,
         .effect = EFFECT_FURY_CUTTER,
         .type = TYPE_BUG,
         .accuracy = 95,
