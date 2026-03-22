@@ -81,6 +81,7 @@ PetalburgWoods_EventScript_DevonResearcherPostBattle::
 	applymovement LOCALID_PETALBURG_WOODS_GRUNT, PetalburgWoods_Movement_AquaRunAway
 	waitmovement 0
 	removeobject LOCALID_PETALBURG_WOODS_GRUNT
+	setflag FLAG_DEFEATED_AQUA_WOODS
 	message PetalburgWoods_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
