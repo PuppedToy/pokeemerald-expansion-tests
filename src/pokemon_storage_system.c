@@ -1533,6 +1533,7 @@ static void Task_PCMainMenu(u8 taskId)
         case MENU_B_PRESSED:
         case OPTION_EXIT:
             ClearStdWindowAndFrame(task->tWindowId, TRUE);
+            ClearDialogWindowAndFrame(0, TRUE);
             UnlockPlayerFieldControls();
             ScriptContext_Enable();
             RemoveWindow(task->tWindowId);
