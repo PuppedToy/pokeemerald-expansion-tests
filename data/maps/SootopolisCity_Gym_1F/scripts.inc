@@ -89,12 +89,12 @@ SootopolisCity_Gym_1F_EventScript_Juan::
 	end
 
 SootopolisCity_Gym_1F_EventScript_JuanDefeated::
+	setflag FLAG_BADGE08_GET
 	message SootopolisCity_Gym_1F_Text_ReceivedRainBadge
 	waitmessage
-	call Common_EventScript_PlayGymBadgeFanfare
+	call Common_EventScript_PlayLevelCapFanfare
 	giveitem ITEM_HM_WATERFALL
 	setflag FLAG_DEFEATED_SOOTOPOLIS_GYM
-	setflag FLAG_BADGE08_GET
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_RESIDENTS
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_STEVEN
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_WALLACE

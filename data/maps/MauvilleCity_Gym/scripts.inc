@@ -84,9 +84,10 @@ MauvilleCity_Gym_EventScript_Wattson::
 	end
 
 MauvilleCity_Gym_EventScript_WattsonDefeated::
+	setflag FLAG_BADGE03_GET
 	message MauvilleCity_Gym_Text_ReceivedDynamoBadge
 	waitmessage
-	call Common_EventScript_PlayGymBadgeFanfare
+	call Common_EventScript_PlayLevelCapFanfare
 	setvar VAR_SLATEPORT_OUTSIDE_MUSEUM_STATE, 3
 	clearflag FLAG_HIDE_VERDANTURF_TOWN_SCOTT
 	giveitem ITEM_MEGA_RING
@@ -97,7 +98,6 @@ MauvilleCity_Gym_EventScript_WattsonDefeated::
 	setflag FLAG_RECEIVED_HM_ROCK_SMASH
 	setflag FLAG_HIDE_ROUTE_111_ROCK_SMASH_TIP_GUY
 	setflag FLAG_DEFEATED_MAUVILLE_GYM
-	setflag FLAG_BADGE03_GET
 	setflag FLAG_MET_ARCHIE_METEOR_FALLS
 	setflag FLAG_HIDE_FALLARBOR_TOWN_BATTLE_TENT_SCOTT
 	setflag FLAG_HIDE_RUSTURF_TUNNEL_ROCK_1

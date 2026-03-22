@@ -20,11 +20,11 @@ DewfordTown_Gym_EventScript_Brawly::
 	end
 
 DewfordTown_Gym_EventScript_BrawlyDefeated::
+	setflag FLAG_BADGE02_GET
 	message DewfordTown_Gym_Text_ReceivedKnuckleBadge
 	waitmessage
-	call Common_EventScript_PlayGymBadgeFanfare
+	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_DEFEATED_DEWFORD_GYM
-	setflag FLAG_BADGE02_GET
 	setflag FLAG_HIDE_ROUTE103_FISHERMAN
 	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
 	givemon GYM_REWARD_MON, 19

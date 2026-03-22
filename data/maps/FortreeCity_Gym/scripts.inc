@@ -27,11 +27,11 @@ FortreeCity_Gym_EventScript_Winona::
 	end
 
 FortreeCity_Gym_EventScript_WinonaDefeated::
+	setflag FLAG_BADGE06_GET
 	message FortreeCity_Gym_Text_ReceivedFeatherBadge
 	waitmessage
-	call Common_EventScript_PlayGymBadgeFanfare
+	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_DEFEATED_FORTREE_GYM
-	setflag FLAG_BADGE06_GET
 	setflag FLAG_HIDE_ROUTE_120_STEVEN
 	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
 	givemon GYM_REWARD_MON, 46

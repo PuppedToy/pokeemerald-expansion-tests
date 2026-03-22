@@ -370,12 +370,12 @@ PetalburgCity_Gym_EventScript_GiveEnigmaBerry::
 PetalburgCity_Gym_EventScript_NormanBattle::
 	msgbox PetalburgCity_Gym_Text_NormanIntro, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_NORMAN_1, PetalburgCity_Gym_Text_NormanDefeat
+	setflag FLAG_BADGE05_GET
 	message PetalburgCity_Gym_Text_ReceivedBalanceBadge
 	waitmessage
-	call Common_EventScript_PlayGymBadgeFanfare
+	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_DEFEATED_PETALBURG_GYM
 	setvar VAR_PETALBURG_GYM_STATE, 7
-	setflag FLAG_BADGE05_GET
 	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
 	givemon GYM_REWARD_MON, 39
 	call PetalburgCity_Gym_EventScript_ReceivedRewardPokeFanfare

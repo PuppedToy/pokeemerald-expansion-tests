@@ -11,14 +11,14 @@ RustboroCity_Gym_EventScript_Roxanne::
 	end
 
 RustboroCity_Gym_EventScript_RoxanneDefeated::
+	setflag FLAG_BADGE01_GET
 	message RustboroCity_Gym_Text_ReceivedStoneBadge
 	waitmessage
-	call Common_EventScript_PlayGymBadgeFanfare
+	call Common_EventScript_PlayLevelCapFanfare
 	msgbox RustboroCity_Gym_Text_StoneBadgeInfoTakeThis, MSGBOX_DEFAULT
 	giveitem ITEM_HM_CUT
 	setflag FLAG_RECEIVED_HM_CUT
 	setflag FLAG_DEFEATED_RUSTBORO_GYM
-	setflag FLAG_BADGE01_GET
 	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
 	givemon GYM_REWARD_MON, 13
 	call RustboroCity_Gym_EventScript_ReceivedRewardPokeFanfare

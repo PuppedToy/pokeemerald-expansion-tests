@@ -62,11 +62,11 @@ MossdeepCity_Gym_EventScript_TateAndLiza::
 	end
 
 MossdeepCity_Gym_EventScript_TateAndLizaDefeated::
+	setflag FLAG_BADGE07_GET
 	message MossdeepCity_Gym_Text_ReceivedMindBadge
 	waitmessage
-	call Common_EventScript_PlayGymBadgeFanfare
+	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_DEFEATED_MOSSDEEP_GYM
-	setflag FLAG_BADGE07_GET
 	setflag FLAG_HIDE_AQUA_HIDEOUT_GRUNTS
 	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
 	givemon GYM_REWARD_MON, 56
