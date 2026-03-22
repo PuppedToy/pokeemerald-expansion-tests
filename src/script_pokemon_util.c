@@ -1,5 +1,6 @@
 #include "global.h"
 #include "battle.h"
+#include "caps.h"
 #include "battle_gfx_sfx_util.h"
 #include "berry.h"
 #include "data.h"
@@ -429,6 +430,25 @@ static u32 ScriptGiveMonParameterized(u8 side, u8 slot, u16 species, u8 level, u
     // assign OT name and gender
     SetMonData(&mon, MON_DATA_OT_NAME, gSaveBlock2Ptr->playerName);
     SetMonData(&mon, MON_DATA_OT_GENDER, &gSaveBlock2Ptr->playerGender);
+
+    // Level up to cap and fully heal before placing
+    if (side == 0)
+    {
+        u32 cap = GetCurrentLevelCap();
+        u16 resolvedSpecies = GetMonData(&mon, MON_DATA_SPECIES);
+        if (GetMonData(&mon, MON_DATA_LEVEL) < cap)
+        {
+            u32 newLevel = cap;
+            u32 exp = gExperienceTables[gSpeciesInfo[resolvedSpecies].growthRate][cap];
+            SetMonData(&mon, MON_DATA_EXP, &exp);
+            SetMonData(&mon, MON_DATA_LEVEL, &newLevel);
+        }
+        CalculateMonStats(&mon);
+        {
+            u32 maxHp = GetMonData(&mon, MON_DATA_MAX_HP);
+            SetMonData(&mon, MON_DATA_HP, &maxHp);
+        }
+    }
 
     if (slot < PARTY_SIZE)
     {
