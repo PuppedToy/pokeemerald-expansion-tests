@@ -44,6 +44,7 @@ Route119_WeatherInstitute_2F_EventScript_Shelly::
 	end
 
 Route119_WeatherInstitute_2F_EventScript_ShellyDefeated::
+	setflag FLAG_DEFEATED_SHELLY_WEATHER_INST
 	message Route119_WeatherInstitute_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -52,7 +53,6 @@ Route119_WeatherInstitute_2F_EventScript_ShellyDefeated::
 	setvar VAR_WEATHER_INSTITUTE_STATE, 1
 	fadedefaultbgm
 	fadescreen FADE_TO_BLACK
-	setflag FLAG_DEFEATED_SHELLY_WEATHER_INST
 	clearflag FLAG_HIDE_WEATHER_INSTITUTE_2F_WORKERS
 	setflag FLAG_HIDE_ROUTE_119_TEAM_AQUA
 	setflag FLAG_HIDE_WEATHER_INSTITUTE_2F_AQUA_GRUNT_M

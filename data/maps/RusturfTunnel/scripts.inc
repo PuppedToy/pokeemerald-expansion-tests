@@ -309,6 +309,7 @@ RusturfTunnel_EventScript_Grunt::
 	applymovement LOCALID_RUSTURF_TUNNEL_GRUNT, RusturfTunnel_Movement_GruntEscape
 	waitmovement 0
 	removeobject LOCALID_RUSTURF_TUNNEL_GRUNT
+	setflag FLAG_RECOVERED_DEVON_GOODS
 	message RusturfTunnel_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -336,7 +337,6 @@ RusturfTunnel_EventScript_Grunt::
 	removeobject LOCALID_RUSTURF_TUNNEL_BRINEY
 	removeobject LOCALID_RUSTURF_TUNNEL_PEEKO
 	clearflag FLAG_DEVON_GOODS_STOLEN
-	setflag FLAG_RECOVERED_DEVON_GOODS
 	setflag FLAG_HIDE_ROUTE_116_MR_BRINEY
 	setflag FLAG_RETURNED_DEVON_GOODS
 	setflag FLAG_HIDE_RUSTBORO_CITY_DEVON_EMPLOYEE_1

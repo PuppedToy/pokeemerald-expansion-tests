@@ -287,6 +287,7 @@ MossdeepCity_SpaceCenter_2F_EventScript_DefeatedMaxieTabitha::
 	turnobject LOCALID_SPACE_CENTER_2F_RICH_BOY, DIR_NORTH
 	call MossdeepCity_SpaceCenter_2F_EventScript_StevenFacePlayer
 	fadescreen FADE_FROM_BLACK
+	setflag FLAG_DEFEATED_MAGMA_SPACE_CENTER
 	message MossdeepCity_SpaceCenter_2F_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -299,7 +300,6 @@ MossdeepCity_SpaceCenter_2F_EventScript_DefeatedMaxieTabitha::
 	msgbox MossdeepCity_SpaceCenter_2F_Text_StevenThankYouComeSeeMeAtHome, MSGBOX_DEFAULT
 	closemessage
 	fadescreen FADE_TO_BLACK
-	setflag FLAG_DEFEATED_MAGMA_SPACE_CENTER
 	setflag FLAG_HIDE_MOSSDEEP_CITY_STEVENS_HOUSE_STEVEN
 	removeobject LOCALID_SPACE_CENTER_2F_STEVEN
 	setflag FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_MAGMA_NOTE

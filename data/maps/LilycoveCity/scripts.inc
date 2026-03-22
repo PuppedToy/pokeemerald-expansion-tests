@@ -248,10 +248,10 @@ LilycoveCity_EventScript_Rival::
 	waitfieldeffect FLDEFF_NPCFLY_OUT
 	savebgm MUS_DUMMY
 	fadedefaultbgm
+	setflag FLAG_MET_RIVAL_LILYCOVE
 	message LilycoveCity_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
-	setflag FLAG_MET_RIVAL_LILYCOVE
 	release
 	end
 
@@ -420,10 +420,10 @@ LilycoveCity_EventScript_RivalFlyAway::
 	waitfieldeffect FLDEFF_NPCFLY_OUT
 	savebgm MUS_DUMMY
 	fadedefaultbgm
+	setflag FLAG_MET_RIVAL_LILYCOVE
 	message LilycoveCity_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
-	setflag FLAG_MET_RIVAL_LILYCOVE
 	release
 	end
 

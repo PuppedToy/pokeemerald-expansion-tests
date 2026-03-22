@@ -6,12 +6,12 @@ GraniteCave_StevensRoom_EventScript_Steven::
 	faceplayer
 	msgbox GraniteCave_StevensRoom_Text_ImStevenLetterForMe, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_STEVEN, GraniteCave_StevenRoom_Text_Defeat
+	setflag FLAG_DELIVERED_STEVEN_LETTER
 	message GraniteCave_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	setvar VAR_0x8004, ITEM_LETTER
 	call Common_EventScript_PlayerHandedOverTheItem
-	setflag FLAG_DELIVERED_STEVEN_LETTER
 	msgbox GraniteCave_StevensRoom_Text_ThankYouTakeThis, MSGBOX_DEFAULT
 	giveitem ITEM_TM_STEEL_WING
 	call_if_eq VAR_RESULT, FALSE, GraniteCave_StevensRoom_EventScript_BagFull

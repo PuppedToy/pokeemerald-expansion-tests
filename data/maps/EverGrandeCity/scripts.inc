@@ -92,10 +92,10 @@ EverGrandeCity_EventScript_RivalExit::
 	waitmovement 0
 	playse SE_LEDGE
 	removeobject LOCALID_EVERGRANDE_CITY_RIVAL
+	setflag FLAG_DEFEATED_EVERGRANDE_RIVAL
 	message EverGrandeCity_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
-	setflag FLAG_DEFEATED_EVERGRANDE_RIVAL
 	applymovement LOCALID_PLAYER, EverGrandeCity_Movement_Return
 	waitmovement 0
 	releaseall

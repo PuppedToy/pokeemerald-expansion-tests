@@ -43,6 +43,7 @@ MtChimney_EventScript_Maxie::
 	waitmovement 0
 	msgbox MtChimney_Text_MaxieIntro, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_MAXIE_MT_CHIMNEY, MtChimney_Text_MaxieDefeat
+	setflag FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY
 	message MtChimney_LevelCap_Major
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -70,7 +71,6 @@ MtChimney_EventScript_Maxie::
 	call_if_eq VAR_FACING, DIR_NORTH, MtChimney_EventScript_ArchieExitNorth
 	removeobject LOCALID_MT_CHIMNEY_ARCHIE
 	setflag FLAG_HIDE_MT_CHIMNEY_TEAM_AQUA
-	setflag FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY
 	setflag FLAG_DEFEATED_TABITHA_MT_CHIMNEY
 	setflag FLAG_HIDE_ROUTE_112_TEAM_MAGMA
 	clearflag FLAG_HIDE_FALLARBOR_HOUSE_PROF_COZMO

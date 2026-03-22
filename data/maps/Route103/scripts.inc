@@ -147,6 +147,7 @@ Route103_EventScript_RivalEnd::
 	removeobject LOCALID_ROUTE103_RIVAL
 	giveitem ITEM_OLD_ROD
 	setflag FLAG_RECEIVED_OLD_ROD
+	setflag FLAG_DEFEATED_RIVAL_ROUTE103
 	message Route103_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -162,7 +163,6 @@ Route103_EventScript_RivalEnd::
 	setvar VAR_LITTLEROOT_RIVAL_STATE, 4
 	setvar VAR_LITTLEROOT_TOWN_STATE, 4
 	clearflag FLAG_HIDE_ROUTE103_FISHERMAN
-	setflag FLAG_DEFEATED_RIVAL_ROUTE103
 	setvar VAR_OLDALE_RIVAL_STATE, 1
 	setflag FLAG_HIDE_PETALBURG_CITY_WALLY
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_BIRCHS_LAB_RIVAL
