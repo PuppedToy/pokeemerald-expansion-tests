@@ -436,7 +436,7 @@ static u32 ScriptGiveMonParameterized(u8 side, u8 slot, u16 species, u8 level, u
     {
         u32 cap = GetCurrentLevelCap();
         u16 resolvedSpecies = GetMonData(&mon, MON_DATA_SPECIES);
-        if (GetMonData(&mon, MON_DATA_LEVEL) < cap)
+        if (!GetMonData(&mon, MON_DATA_IS_EGG) && GetMonData(&mon, MON_DATA_LEVEL) < cap)
         {
             u32 newLevel = cap;
             u32 exp = gExperienceTables[gSpeciesInfo[resolvedSpecies].growthRate][cap];

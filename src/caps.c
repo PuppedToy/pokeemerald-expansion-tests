@@ -158,7 +158,7 @@ void LevelUpAllPokemonToCap(void)
     {
         struct Pokemon *mon = &gPlayerParty[i];
         u16 species = GetMonData(mon, MON_DATA_SPECIES);
-        if (species == SPECIES_NONE)
+        if (species == SPECIES_NONE || GetMonData(mon, MON_DATA_IS_EGG))
             continue;
         if (GetMonData(mon, MON_DATA_LEVEL) < cap)
         {

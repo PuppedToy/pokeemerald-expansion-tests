@@ -3257,7 +3257,7 @@ u8 GiveMonToPlayer(struct Pokemon *mon)
     {
         u32 cap = GetCurrentLevelCap();
         u16 species = GetMonData(mon, MON_DATA_SPECIES);
-        if (GetMonData(mon, MON_DATA_LEVEL) < cap)
+        if (!GetMonData(mon, MON_DATA_IS_EGG) && GetMonData(mon, MON_DATA_LEVEL) < cap)
         {
             u32 level = cap;
             u32 exp = gExperienceTables[gSpeciesInfo[species].growthRate][cap];
