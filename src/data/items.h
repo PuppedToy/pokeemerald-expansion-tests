@@ -1994,13 +1994,13 @@ const struct Item gItemsInfo[] =
 
     [ITEM_RARE_CANDY] =
     {
-        .name = ITEM_NAME("Endless Candy"),
-        .pluralName = ITEM_PLURAL_NAME("Endless Candies"),
+        .name = ITEM_NAME("Evolve Candy"),
+        .pluralName = ITEM_PLURAL_NAME("Evolve Candies"),
         .price = (I_PRICE >= GEN_7) ? 10000 : 4800,
         .description = COMPOUND_STRING(
-            "Raises the level\n"
-            "of a Pokémon by\n"
-            "one."),
+            "Triggers the\n"
+            "evolution of a\n"
+            "Pokémon."),
         .pocket = POCKET_ITEMS,
         .sortType = ITEM_TYPE_LEVEL_UP_ITEM,
         .type = ITEM_USE_PARTY_MENU,

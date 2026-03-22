@@ -3,6 +3,7 @@
 #include "event_data.h"
 #include "caps.h"
 #include "pokemon.h"
+#include "pokemon_storage_system.h"
 
 
 u32 GetCurrentLevelCap(void)
@@ -75,6 +76,10 @@ u32 GetSoftLevelCapExpValue(u32 level, u32 expValue)
     if (B_EXP_CAP_TYPE == EXP_CAP_NONE)
         return expValue;
 
+    // Hard cap: no exp gained at any level — pokemon level up via LevelUpAllPokemonToCap
+    if (B_EXP_CAP_TYPE == EXP_CAP_HARD)
+        return 0;
+
     if (level < currentLevelCap)
     {
         if (B_LEVEL_CAP_EXP_UP)
@@ -141,4 +146,46 @@ u32 GetCurrentEVCap(void)
     }
 
     return MAX_TOTAL_EVS;
+}
+
+void LevelUpAllPokemonToCap(void)
+{
+    u32 cap = GetCurrentLevelCap();
+    u32 i, box, slot;
+
+    // Level up party pokemon
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        struct Pokemon *mon = &gPlayerParty[i];
+        u16 species = GetMonData(mon, MON_DATA_SPECIES);
+        if (species == SPECIES_NONE)
+            continue;
+        if (GetMonData(mon, MON_DATA_LEVEL) < cap)
+        {
+            u32 level = cap;
+            u32 exp = gExperienceTables[gSpeciesInfo[species].growthRate][cap];
+            SetMonData(mon, MON_DATA_EXP, &exp);
+            SetMonData(mon, MON_DATA_LEVEL, &level);
+            CalculateMonStats(mon);
+        }
+    }
+
+    // Level up boxed pokemon
+    for (box = 0; box < TOTAL_BOXES_COUNT; box++)
+    {
+        for (slot = 0; slot < IN_BOX_COUNT; slot++)
+        {
+            struct BoxPokemon *boxMon = &gPokemonStoragePtr->boxes[box][slot];
+            u16 species = GetBoxMonData(boxMon, MON_DATA_SPECIES);
+            if (species == SPECIES_NONE)
+                continue;
+            if (GetBoxMonData(boxMon, MON_DATA_LEVEL) < cap)
+            {
+                u32 level = cap;
+                u32 exp = gExperienceTables[gSpeciesInfo[species].growthRate][cap];
+                SetBoxMonData(boxMon, MON_DATA_EXP, &exp);
+                SetBoxMonData(boxMon, MON_DATA_LEVEL, &level);
+            }
+        }
+    }
 }

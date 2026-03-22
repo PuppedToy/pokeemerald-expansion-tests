@@ -764,6 +764,7 @@ Common_EventScript_PlayGymBadgeFanfare::
 	return
 
 Common_EventScript_PlayLevelCapFanfare::
+	special LevelUpAllPokemonToCap
 	playfanfare MUS_OBTAIN_BADGE
 	waitfanfare
 	return
