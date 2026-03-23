@@ -99,4 +99,4 @@ EverGrandeCity_DrakesRoom_Text_PostBattleSpeech:
 	.string "The CHAMPION is waiting!$"
 
 EverGrandeCity_DrakesRoom_LevelCap:
-	.string "The level cap has been raised to 75!$"
+	.string "Your Pokémon have leveled up to 75!$"

@@ -91,4 +91,4 @@ EverGrandeCity_PhoebesRoom_Text_PostBattleSpeech:
 	.string "Go ahead, move on to the next room.$"
 
 EverGrandeCity_PhoebesRoom_LevelCap:
-	.string "The level cap has been raised to 72!$"
+	.string "Your Pokémon have leveled up to 72!$"

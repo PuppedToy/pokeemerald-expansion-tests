@@ -338,4 +338,4 @@ Route101_Text_OranBerries:
 	.string "You found lots of oran berries!$"
 
 Route101_LevelCap:
-	.string "The level cap has been raised to 7!$"
+	.string "Your Pokémon have leveled up to 7!$"

@@ -119,4 +119,4 @@ GraniteCave_StevensRoom_Text_OhBagIsFull:
 	.string "That's too bad, then.$"
 
 GraniteCave_LevelCap:
-	.string "The level cap has been raised to 21!$"
+	.string "Your Pokémon have leveled up to 21!$"

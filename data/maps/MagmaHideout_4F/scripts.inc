@@ -230,4 +230,4 @@ MagmaHideout_4F_Text_MaxieImGoingAfterGroudon:
 	.string "is where we part!$"
 
 MagmaHideout_LevelCap:
-	.string "The level cap has been raised to 51!$"
+	.string "Your Pokémon have leveled up to 51!$"

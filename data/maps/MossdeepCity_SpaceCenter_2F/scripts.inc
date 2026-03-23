@@ -475,4 +475,4 @@ MossdeepCity_SpaceCenter_2F_Text_StevenThankYouComeSeeMeAtHome:
 	.string "{PLAYER}{KUN}, thank you.$"
 
 MossdeepCity_SpaceCenter_2F_LevelCap:
-	.string "The level cap has been raised to 58!$"
+	.string "Your Pokémon have leveled up to 58!$"

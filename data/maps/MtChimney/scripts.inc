@@ -775,7 +775,7 @@ MtChimney_Text_ShirleyPostBattle:
 	.string "Just joking!$"
 
 MtChimney_LevelCap_Minor:
-	.string "The level cap has been raised to 30!$"
+	.string "Your Pokémon have leveled up to 30!$"
 
 MtChimney_LevelCap_Major:
-	.string "The level cap has been raised to 33!$"
+	.string "Your Pokémon have leveled up to 33!$"

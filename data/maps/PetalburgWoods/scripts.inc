@@ -489,4 +489,4 @@ PetalburgWoods_Text_TrainerTipsPP:
 	.string "taken to a POKéMON CENTER.$"
 
 PetalburgWoods_LevelCap:
-	.string "The level cap has been raised to 10!$"
+	.string "Your Pokémon have leveled up to 10!$"

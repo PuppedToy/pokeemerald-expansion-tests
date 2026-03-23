@@ -162,4 +162,4 @@ AquaHideout_B2F_Text_Grunt8PostBattle:
 	.string "battle more effectively…$"
 
 AquaHideout_LevelCap:
-	.string "The level cap has been raised to 53!$"
+	.string "Your Pokémon have leveled up to 53!$"

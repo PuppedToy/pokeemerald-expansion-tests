@@ -1044,4 +1044,4 @@ Route110_Text_KeepAnEyeOutForRival:
 	.string "See you again, {PLAYER}{KUN}!$"
 
 Route110_LevelCap:
-	.string "The level cap has been raised to 25!$"
+	.string "Your Pokémon have leveled up to 25!$"

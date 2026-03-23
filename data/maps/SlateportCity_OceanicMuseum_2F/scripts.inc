@@ -432,4 +432,4 @@ SlateportCity_OceanicMuseum_2F_Text_SSAnneReplica:
 	.string "circles the globe.”$"
 
 SlateportCity_LevelCap:
-	.string "The level cap has been raised to 23!$"
+	.string "Your Pokémon have leveled up to 23!$"

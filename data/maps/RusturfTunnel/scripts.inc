@@ -531,4 +531,4 @@ RusturfTunnel_Text_MikePostBattle:
 	.string "There's a feel-good story!$"
 
 RusturfTunnel_LevelCap:
-	.string "The level cap has been raised to 14!$"
+	.string "Your Pokémon have leveled up to 14!$"

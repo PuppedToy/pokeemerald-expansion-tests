@@ -94,4 +94,4 @@ EverGrandeCity_SidneysRoom_Text_PostBattleSpeech:
 	.string "your next battle!$"
 
 EverGrandeCity_SidneysRoom_LevelCap:
-	.string "The level cap has been raised to 71!$"
+	.string "Your Pokémon have leveled up to 71!$"

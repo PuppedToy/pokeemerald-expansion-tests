@@ -1284,7 +1284,7 @@ PetalburgCity_Gym_Text_NormanDefeat:
 
 PetalburgCity_Gym_Text_ReceivedBalanceBadge:
 	.string "{PLAYER} received the BALANCE BADGE\n"
-	.string "and the level cap has been raised to 39!$"
+	.string "and your Pokémon have leveled up to 39!$"
 
 PetalburgCity_Gym_Text_ExplainBalanceBadgeTakeThis:
 	.string "DAD: With that BADGE, the DEFENSE\n"

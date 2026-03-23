@@ -588,4 +588,4 @@ Route119_Text_TrainerTipsDecoration:
 	.string "way you want.$"
 
 Route119_LevelCap:
-	.string "The level cap has been raised to 43!$"
+	.string "Your Pokémon have leveled up to 43!$"
