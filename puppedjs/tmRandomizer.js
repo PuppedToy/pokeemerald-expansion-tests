@@ -13,6 +13,12 @@ const {
     godlikeStatusMoves,
 } = require('./tms.js');
 
+// Moves that are HMs — must never appear in FOREACH_TM or the enum redeclares.
+const HM_MOVES = new Set([
+    'MOVE_CUT', 'MOVE_FLY', 'MOVE_SURF', 'MOVE_STRENGTH',
+    'MOVE_FLASH', 'MOVE_ROCK_SMASH', 'MOVE_WATERFALL', 'MOVE_DIVE',
+]);
+
 // TM number ranges and their source pools.
 // Ranges are inclusive. Pools with fewer moves than slots use all of them.
 const TM_RANGES = [
@@ -49,7 +55,7 @@ function buildForeachTM() {
 
     for (const { start, end, pool } of TM_RANGES) {
         const count = end - start + 1;
-        const picks = shuffle(pool).slice(0, count);
+        const picks = shuffle(pool.filter(m => !HM_MOVES.has(m))).slice(0, count);
         tmList.push(...picks.map(stripMovePrefix));
     }
 
