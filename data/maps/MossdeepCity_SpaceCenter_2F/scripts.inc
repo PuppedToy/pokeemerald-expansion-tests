@@ -291,7 +291,7 @@ MossdeepCity_SpaceCenter_2F_EventScript_DefeatedMaxieTabitha::
 	message MossdeepCity_SpaceCenter_2F_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
-	giveitem ITEM_HM_DIVE
+	giveitem ITEM_HM08
 	setflag FLAG_RECEIVED_HM_DIVE
 	setflag FLAG_OMIT_DIVE_FROM_STEVEN_LETTER
 	setflag FLAG_HIDE_MOSSDEEP_CITY_SCOTT

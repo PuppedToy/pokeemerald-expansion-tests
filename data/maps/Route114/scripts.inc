@@ -186,22 +186,22 @@ Route114_EventScript_PickTM::
 	end
 
 Route114_EventScript_PickTaunt::
-	finditem ITEM_TM_TAUNT
+	finditem ITEM_TM12
 	setflag FLAG_ITEM_ROUTE_114_PROTEIN
 	end
 
 Route114_EventScript_PickTorment::
-	finditem ITEM_TM_TORMENT
+	finditem ITEM_TM41
 	setflag FLAG_ITEM_ROUTE_114_PROTEIN
 	end
 
 Route114_EventScript_PickSnatch::
-	finditem ITEM_TM_SNATCH
+	finditem ITEM_TM49
 	setflag FLAG_ITEM_ROUTE_114_PROTEIN
 	end
 
 Route114_EventScript_PickSkillSwap::
-	finditem ITEM_TM_SKILL_SWAP
+	finditem ITEM_TM48
 	setflag FLAG_ITEM_ROUTE_114_PROTEIN
 	end
 

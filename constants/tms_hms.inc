@@ -5,10 +5,10 @@
 
 /* Expands to:
 * enum_start ITEM_TM01
-* enum ITEM_TM_FOCUS_PUNCH
+* enum ITEM_TM01
 * ...
 * enum_start ITEM_HM01
-* enum ITEM_HM_CUT
+* enum ITEM_HM01
 * ... */
 #define EQUIV_TM(id) enum ITEM_TM_ ## id;
 #define EQUIV_HM(id) enum ITEM_HM_ ## id;

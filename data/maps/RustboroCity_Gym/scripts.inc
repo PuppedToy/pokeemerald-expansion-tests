@@ -16,7 +16,7 @@ RustboroCity_Gym_EventScript_RoxanneDefeated::
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
 	msgbox RustboroCity_Gym_Text_StoneBadgeInfoTakeThis, MSGBOX_DEFAULT
-	giveitem ITEM_HM_CUT
+	giveitem ITEM_HM01
 	setflag FLAG_RECEIVED_HM_CUT
 	setflag FLAG_DEFEATED_RUSTBORO_GYM
 	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
@@ -41,7 +41,7 @@ RustboroCity_Gym_Text_PlayerReceivedRewardPoke:
 	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 RustboroCity_Gym_EventScript_GiveRockTomb::
-	giveitem ITEM_TM_ROCK_TOMB
+	giveitem ITEM_TM39
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	setflag FLAG_RECEIVED_TM_ROCK_TOMB
 	release

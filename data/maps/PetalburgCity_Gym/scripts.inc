@@ -389,7 +389,7 @@ PetalburgCity_Gym_EventScript_NormanBattle::
 	call PetalburgCity_Gym_EventScript_UnlockAllDoors
 	special DrawWholeMapView
 	call PetalburgCity_Gym_EventScript_GiveFacade
-	giveitem ITEM_HM_SURF
+	giveitem ITEM_HM03
 	setflag FLAG_RECEIVED_HM_SURF
 	setvar VAR_PETALBURG_CITY_STATE, 5
 	setvar VAR_ROUTE118_STATE, 1
@@ -410,7 +410,7 @@ PetalburgCity_Gym_Text_PlayerReceivedRewardPoke:
 	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 PetalburgCity_Gym_EventScript_GiveFacade::
-	giveitem ITEM_TM_FACADE
+	giveitem ITEM_TM42
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	setflag FLAG_RECEIVED_TM_FACADE
 	return

@@ -173,17 +173,17 @@ Route104_EventScript_PickTM::
 	end
 
 Route104_EventScript_PickWaterPulseTM::
-	finditem ITEM_TM_WATER_PULSE
+	finditem ITEM_TM03
 	setflag FLAG_ITEM_ROUTE_104_POTION
 	end
 
 Route104_EventScript_PickBulletSeedTM::
-	finditem ITEM_TM_BULLET_SEED
+	finditem ITEM_TM09
 	setflag FLAG_ITEM_ROUTE_104_POTION
 	end
 
 Route104_EventScript_PickDigTM::
-	finditem ITEM_TM_DIG
+	finditem ITEM_TM28
 	setflag FLAG_ITEM_ROUTE_104_POTION
 	end
 

@@ -138,17 +138,17 @@ Route118_EventScript_PickTM::
 	end
 
 Route118_EventScript_PickThunderbolt::
-	finditem ITEM_TM_THUNDERBOLT
+	finditem ITEM_TM24
 	setflag FLAG_ITEM_ROUTE_118_PICK
 	end
 
 Route118_EventScript_PickIceBeam::
-	finditem ITEM_TM_ICE_BEAM
+	finditem ITEM_TM13
 	setflag FLAG_ITEM_ROUTE_118_PICK
 	end
 
 Route118_EventScript_PickFlamethrower::
-	finditem ITEM_TM_FLAMETHROWER
+	finditem ITEM_TM35
 	setflag FLAG_ITEM_ROUTE_118_PICK
 	end
 

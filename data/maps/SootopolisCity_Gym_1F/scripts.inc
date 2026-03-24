@@ -93,7 +93,7 @@ SootopolisCity_Gym_1F_EventScript_JuanDefeated::
 	message SootopolisCity_Gym_1F_Text_ReceivedRainBadge
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
-	giveitem ITEM_HM_WATERFALL
+	giveitem ITEM_HM07
 	setflag FLAG_DEFEATED_SOOTOPOLIS_GYM
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_RESIDENTS
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_STEVEN

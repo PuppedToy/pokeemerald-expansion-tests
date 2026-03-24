@@ -130,56 +130,56 @@ const items = {
     },
 
     tms: [
-        'ITEM_TM_FOCUS_PUNCH', // Route 111
-        'ITEM_TM_DRAGON_CLAW', // Route 110
-        'ITEM_TM_WATER_PULSE', // Route 104
-        'ITEM_TM_CALM_MIND',
-        'ITEM_TM_METEOR_BEAM', // Changed TM from ROAR. Route 119 @TODO Check how can I run make_learnsets.py
-        'ITEM_TM_TOXIC', // Toxic, Protect, Rest
-        'ITEM_TM_HAIL', // Route 109
-        'ITEM_TM_BULK_UP', // Brawly
-        'ITEM_TM_BULLET_SEED', // Route 104
-        'ITEM_TM_HIDDEN_POWER', // @TODO Change TM
-        'ITEM_TM_SUNNY_DAY', // Route 109
-        'ITEM_TM_TAUNT', // Taunt, Snatch, Skill Swap, Torment
-        'ITEM_TM_ICE_BEAM', // Route 118
-        'ITEM_TM_BLIZZARD', // Route 124
-        'ITEM_TM_HYPER_BEAM', // Route 115
-        'ITEM_TM_LIGHT_SCREEN', // Mauville
-        'ITEM_TM_PROTECT', // Toxic, Protect, Rest
-        'ITEM_TM_RAIN_DANCE', // Route 109
-        'ITEM_TM_GIGA_DRAIN',
-        'ITEM_TM_SAFEGUARD', // @TODO Change TM
-        'ITEM_TM_FRUSTRATION',
-        'ITEM_TM_SOLAR_BEAM', // Route 115
-        'ITEM_TM_IRON_TAIL', // @TODO Change TM
-        'ITEM_TM_THUNDERBOLT', // Route 118
-        'ITEM_TM_THUNDER', // Route 124
-        'ITEM_TM_EARTHQUAKE', // Route 117
-        'ITEM_TM_RETURN', // @TODO Change TM
-        'ITEM_TM_DIG', // Route 104
-        'ITEM_TM_PSYCHIC', // Route 106
-        'ITEM_TM_SHADOW_BALL', // Route 106
-        'ITEM_TM_BRICK_BREAK', // Route 106
-        'ITEM_TM_DOUBLE_TEAM', // @TODO Change TM
-        'ITEM_TM_REFLECT', // Mauville
-        'ITEM_TM_SHOCK_WAVE', // Wattson
-        'ITEM_TM_FLAMETHROWER', // Route 118
-        'ITEM_TM_SLUDGE_BOMB', // Route 115
-        'ITEM_TM_SANDSTORM', // Route 109
-        'ITEM_TM_FIRE_BLAST', // Route 124
-        'ITEM_TM_ROCK_TOMB', // Roxanne
-        'ITEM_TM_AERIAL_ACE', // Winona
-        'ITEM_TM_TORMENT', // Taunt, Snatch, Skill Swap, Torment
-        'ITEM_TM_FACADE', // Norman
-        'ITEM_TM_SECRET_POWER', // @TODO Change TM
-        'ITEM_TM_REST', // Toxic, Protect, Rest
-        'ITEM_TM_ATTRACT', // @TODO Change TM
-        'ITEM_TM_THIEF', // @TODO Change TM
-        'ITEM_TM_STEEL_WING', // Steven
-        'ITEM_TM_SKILL_SWAP', // Taunt, Snatch, Skill Swap, Torment
-        'ITEM_TM_SNATCH', // Taunt, Snatch, Skill Swap, Torment
-        'ITEM_TM_OVERHEAT', // Flannery
+        'ITEM_TM01', // Route 111
+        'ITEM_TM02', // Route 110
+        'ITEM_TM03', // Route 104
+        'ITEM_TM04',
+        'ITEM_TM05', // Changed TM from ROAR. Route 119 @TODO Check how can I run make_learnsets.py
+        'ITEM_TM06', // Toxic, Protect, Rest
+        'ITEM_TM07', // Route 109
+        'ITEM_TM08', // Brawly
+        'ITEM_TM09', // Route 104
+        'ITEM_TM10', // @TODO Change TM
+        'ITEM_TM11', // Route 109
+        'ITEM_TM12', // Taunt, Snatch, Skill Swap, Torment
+        'ITEM_TM13', // Route 118
+        'ITEM_TM14', // Route 124
+        'ITEM_TM15', // Route 115
+        'ITEM_TM16', // Mauville
+        'ITEM_TM17', // Toxic, Protect, Rest
+        'ITEM_TM18', // Route 109
+        'ITEM_TM19',
+        'ITEM_TM20', // @TODO Change TM
+        'ITEM_TM21',
+        'ITEM_TM22', // Route 115
+        'ITEM_TM23', // @TODO Change TM
+        'ITEM_TM24', // Route 118
+        'ITEM_TM25', // Route 124
+        'ITEM_TM26', // Route 117
+        'ITEM_TM27', // @TODO Change TM
+        'ITEM_TM28', // Route 104
+        'ITEM_TM29', // Route 106
+        'ITEM_TM30', // Route 106
+        'ITEM_TM31', // Route 106
+        'ITEM_TM32', // @TODO Change TM
+        'ITEM_TM33', // Mauville
+        'ITEM_TM34', // Wattson
+        'ITEM_TM35', // Route 118
+        'ITEM_TM36', // Route 115
+        'ITEM_TM37', // Route 109
+        'ITEM_TM38', // Route 124
+        'ITEM_TM39', // Roxanne
+        'ITEM_TM40', // Winona
+        'ITEM_TM41', // Taunt, Snatch, Skill Swap, Torment
+        'ITEM_TM42', // Norman
+        'ITEM_TM43', // @TODO Change TM
+        'ITEM_TM44', // Toxic, Protect, Rest
+        'ITEM_TM45', // @TODO Change TM
+        'ITEM_TM46', // @TODO Change TM
+        'ITEM_TM47', // Steven
+        'ITEM_TM48', // Taunt, Snatch, Skill Swap, Torment
+        'ITEM_TM49', // Taunt, Snatch, Skill Swap, Torment
+        'ITEM_TM50', // Flannery
     ],
     
     // Can I use these?
@@ -272,6 +272,10 @@ const items = {
         'ITEM_EVIOLITE', // Route 104
         'ITEM_ASSAULT_VEST', // Route 103
         'ITEM_FOCUS_SASH', // Route 121
+    ],
+
+    itemPool: [
+        'ITEM_EXPERT_BELT',
     ],
 
     goodItems: [

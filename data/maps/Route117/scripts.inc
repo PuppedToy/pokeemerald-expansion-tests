@@ -223,13 +223,13 @@ Route117_EventScript_PickScreen::
 	end
 
 Route117_EventScript_PickReflect::
-	finditem ITEM_TM_REFLECT
+	finditem ITEM_TM33
 	finditem ITEM_LIGHT_CLAY
 	setflag FLAG_ITEM_ROUTE_117_CLAY
 	end
 
 Route117_EventScript_PickLightScreen::
-	finditem ITEM_TM_LIGHT_SCREEN
+	finditem ITEM_TM16
 	finditem ITEM_LIGHT_CLAY
 	setflag FLAG_ITEM_ROUTE_117_CLAY
 	end
