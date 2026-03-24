@@ -267,11 +267,11 @@ static const struct MenuAction MultichoiceList_GameCornerDolls[] =
 
 static const struct MenuAction MultichoiceList_GameCornerTMs[] =
 {
-    {COMPOUND_STRING("TM32{CLEAR_TO 0x48}1,500 COINS")},
-    {COMPOUND_STRING("TM29{CLEAR_TO 0x48}3,500 COINS")},
-    {COMPOUND_STRING("TM35{CLEAR_TO 0x48}4,000 COINS")},
-    {COMPOUND_STRING("TM24{CLEAR_TO 0x48}4,000 COINS")},
-    {COMPOUND_STRING("TM13{CLEAR_TO 0x48}4,000 COINS")},
+    {COMPOUND_STRING("TM Swagger{CLEAR_TO 0x48}1,500 COINS")},
+    {COMPOUND_STRING("TM Spite{CLEAR_TO 0x48}3,500 COINS")},
+    {COMPOUND_STRING("TM Skill Swap{CLEAR_TO 0x48}4,000 COINS")},
+    {COMPOUND_STRING("TM Pain Split{CLEAR_TO 0x48}4,000 COINS")},
+    {COMPOUND_STRING("TM Rock Polish{CLEAR_TO 0x48}4,000 COINS")},
     {gText_Exit},
 };
 
@@ -757,16 +757,16 @@ static const struct MenuAction MultichoiceList_Route104PickBerry[] =
 
 static const struct MenuAction MultichoiceList_Route104PickTM[] =
 {
-    {COMPOUND_STRING("TM Water Pulse")},
-    {COMPOUND_STRING("TM Bullet Seed")},
-    {COMPOUND_STRING("TM Dig")},
+    {COMPOUND_STRING("TM Acid Spray")},
+    {COMPOUND_STRING("TM Take Down")},
+    {COMPOUND_STRING("TM Magical Leaf")},
 };
 
 static const struct MenuAction MultichoiceList_Route106Pick[] =
 {
-    {COMPOUND_STRING("TM Brick Break")},
-    {COMPOUND_STRING("TM Shadow Ball")},
-    {COMPOUND_STRING("TM Psychic")},
+    {COMPOUND_STRING("TM Chilling Water")},
+    {COMPOUND_STRING("TM Metal Claw")},
+    {COMPOUND_STRING("TM Assurance")},
 };
 
 static const struct MenuAction MultichoiceList_Route109Pick[] =
@@ -814,17 +814,17 @@ static const struct MenuAction MultichoiceList_Route117PickGem[] =
 
 static const struct MenuAction MultichoiceList_Route114PickTM[] =
 {
-    {COMPOUND_STRING("TM Taunt")},
-    {COMPOUND_STRING("TM Torment")},
-    {COMPOUND_STRING("TM Snatch")},
-    {COMPOUND_STRING("TM Skill Swap")},
+    {COMPOUND_STRING("TM Zen Headbutt")},
+    {COMPOUND_STRING("TM Future Sight")},
+    {COMPOUND_STRING("TM Ice Spinner")},
+    {COMPOUND_STRING("TM Mystical Fire")},
 };
 
 static const struct MenuAction MultichoiceList_Route115PickTM[] =
 {
-    {COMPOUND_STRING("TM Solar Beam")},
-    {COMPOUND_STRING("TM Hyper Beam")},
-    {COMPOUND_STRING("TM Sludge Bomb")},
+    {COMPOUND_STRING("TM Curse")},
+    {COMPOUND_STRING("TM Spikes")},
+    {COMPOUND_STRING("TM Encore")},
 };
 
 static const struct MenuAction MultichoiceList_Route111PickBerry[] =
@@ -851,9 +851,9 @@ static const struct MenuAction MultichoiceList_Route118PickBerry[] =
 
 static const struct MenuAction MultichoiceList_Route118PickTM[] =
 {
-    {COMPOUND_STRING("TM Thunderbolt")},
+    {COMPOUND_STRING("TM Heat Wave")},
+    {COMPOUND_STRING("TM Aura Sphere")},
     {COMPOUND_STRING("TM Ice Beam")},
-    {COMPOUND_STRING("TM Flamethrower")},
 };
 
 static const struct MenuAction MultichoiceList_Route120PickItem[] =
@@ -865,9 +865,9 @@ static const struct MenuAction MultichoiceList_Route120PickItem[] =
 
 static const struct MenuAction MultichoiceList_Route121PickTM[] =
 {
-    {COMPOUND_STRING("TM Toxic")},
-    {COMPOUND_STRING("TM Protect")},
-    {COMPOUND_STRING("TM Rest")},
+    {COMPOUND_STRING("TM Trick Room")},
+    {COMPOUND_STRING("TM Thunder Wave")},
+    {COMPOUND_STRING("TM Electric Terrain")},
 };
 
 static const struct MenuAction MultichoiceList_Route121PickBerry[] =
@@ -886,9 +886,9 @@ static const struct MenuAction MultichoiceList_Route124PickChoice[] =
 
 static const struct MenuAction MultichoiceList_Route124PickTM[] =
 {
-    {COMPOUND_STRING("TM Blizzard")},
-    {COMPOUND_STRING("TM Thunder")},
-    {COMPOUND_STRING("TM Fire Blast")},
+    {COMPOUND_STRING("TM Pollen Puff")},
+    {COMPOUND_STRING("TM Phantom Force")},
+    {COMPOUND_STRING("TM Stone Edge")},
 };
 
 static const struct MenuAction MultichoiceList_Route116PickOrb[] =
@@ -902,7 +902,7 @@ static const struct MenuAction MultichoiceList_Route116PickItem[] =
 {
     {COMPOUND_STRING("Punching Glove")},
     {COMPOUND_STRING("Big Root")},
-    {COMPOUND_STRING("TM Giga Drain")},
+    {COMPOUND_STRING("TM Feather Dance")},
 };
 
 static const struct MenuAction MultichoiceList_Route125PickItem[] =
