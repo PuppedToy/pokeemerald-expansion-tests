@@ -182,17 +182,17 @@ Route121_EventScript_PickTM::
 	end
 
 Route121_EventScript_PickToxic::
-	finditem ITEM_TM06
+	finditem ITEM_TM82
 	setflag FLAG_ITEM_ROUTE_121_PICK_TM
 	end
 
 Route121_EventScript_PickProtect::
-	finditem ITEM_TM17
+	finditem ITEM_TM83
 	setflag FLAG_ITEM_ROUTE_121_PICK_TM
 	end
 
 Route121_EventScript_PickRest::
-	finditem ITEM_TM44
+	finditem ITEM_TM84
 	setflag FLAG_ITEM_ROUTE_121_PICK_TM
 	end
 

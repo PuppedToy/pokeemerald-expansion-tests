@@ -40,17 +40,17 @@ Route106_EventScript_PickTM::
 	end
 
 Route106_EventScript_PickBrickBreak::
-	finditem ITEM_TM31
+	finditem ITEM_TM04
 	setflag FLAG_ITEM_ROUTE_106_TM
 	end
 
 Route106_EventScript_PickShadowBall::
-	finditem ITEM_TM30
+	finditem ITEM_TM03
 	setflag FLAG_ITEM_ROUTE_106_TM
 	end
 
 Route106_EventScript_PickPsychic::
-	finditem ITEM_TM29
+	finditem ITEM_TM02
 	setflag FLAG_ITEM_ROUTE_106_TM
 	end
 

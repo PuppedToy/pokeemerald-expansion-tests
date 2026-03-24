@@ -390,7 +390,7 @@ Route116_EventScript_PickBigRoot::
 	end
 
 Route116_EventScript_PickGigaDrain::
-	finditem ITEM_TM19
+	finditem ITEM_TM65
 	setflag FLAG_ITEM_ROUTE_116_PICK_ITEM
 	end
 

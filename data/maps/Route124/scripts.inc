@@ -131,12 +131,12 @@ Route124_EventScript_PickTM::
 	end
 
 Route124_EventScript_PickBlizzard::
-	finditem ITEM_TM14
+	finditem ITEM_TM36
 	setflag FLAG_ITEM_ROUTE_124_BLUE_SHARD
 	end
 
 Route124_EventScript_PickThunder::
-	finditem ITEM_TM25
+	finditem ITEM_TM37
 	setflag FLAG_ITEM_ROUTE_124_BLUE_SHARD
 	end
 

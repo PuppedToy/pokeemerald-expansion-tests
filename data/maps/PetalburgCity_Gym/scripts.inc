@@ -410,7 +410,7 @@ PetalburgCity_Gym_Text_PlayerReceivedRewardPoke:
 	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 PetalburgCity_Gym_EventScript_GiveFacade::
-	giveitem ITEM_TM42
+	giveitem ITEM_TM31
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	setflag FLAG_RECEIVED_TM_FACADE
 	return

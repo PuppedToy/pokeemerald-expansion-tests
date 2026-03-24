@@ -144,17 +144,17 @@ Route110_EventScript_PickTM::
 	end
 
 Route110_EventScript_PickDragonClaw::
-	finditem ITEM_TM02
+	finditem ITEM_TM63
 	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
 	end
 
 Route110_EventScript_PickEarthquake::
-	finditem ITEM_TM26
+	finditem ITEM_TM64
 	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
 	end
 
 Route110_EventScript_PickFocusPunch::
-	finditem ITEM_TM01
+	finditem ITEM_TM62
 	setflag FLAG_ITEM_ROUTE_110_DIRE_HIT
 	end
 

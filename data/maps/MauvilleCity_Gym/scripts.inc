@@ -138,7 +138,7 @@ MauvilleCity_Gym_Text_PlayerReceivedRewardPoke:
 	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 MauvilleCity_Gym_EventScript_GiveShockWave2::
-	giveitem ITEM_TM34
+	giveitem ITEM_TM11
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	msgbox MauvilleCity_Gym_Text_ExplainShockWave, MSGBOX_DEFAULT
 	setflag FLAG_RECEIVED_TM_SHOCK_WAVE
@@ -146,7 +146,7 @@ MauvilleCity_Gym_EventScript_GiveShockWave2::
 	end
 
 MauvilleCity_Gym_EventScript_GiveShockWave::
-	giveitem ITEM_TM34
+	giveitem ITEM_TM11
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox MauvilleCity_Gym_Text_ExplainShockWave, MSGBOX_DEFAULT
 	setflag FLAG_RECEIVED_TM_SHOCK_WAVE
