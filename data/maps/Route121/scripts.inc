@@ -196,28 +196,36 @@ Route121_EventScript_PickRest::
 	setflag FLAG_ITEM_ROUTE_121_PICK_TM
 	end
 
+@ === RAND_ROUTE121_BERRIES_START ===
 Route121_EventScript_PickBerry::
 	multichoice 0, 0, MULTI_ROUTE121_PICK_BERRY, FALSE
 	switch VAR_RESULT
-	case 0, Route121_EventScript_PickPayapa
-	case 1, Route121_EventScript_PickColbur
-	case 2, Route121_EventScript_PickTanga
+	case 0, Route121_EventScript_PickBerry1
+	case 1, Route121_EventScript_PickBerry2
+	case 2, Route121_EventScript_PickBerry3
+	case 3, Route121_EventScript_PickBerry4
 	end
 
-Route121_EventScript_PickPayapa::
-	finditem ITEM_PAYAPA_BERRY
+Route121_EventScript_PickBerry1::
+	finditem ITEM_CHOPLE_BERRY
 	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
 	end
 
-Route121_EventScript_PickColbur::
-	finditem ITEM_COLBUR_BERRY
+Route121_EventScript_PickBerry2::
+	finditem ITEM_SHUCA_BERRY
 	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
 	end
 
-Route121_EventScript_PickTanga::
-	finditem ITEM_TANGA_BERRY
+Route121_EventScript_PickBerry3::
+	finditem ITEM_ROSELI_BERRY
 	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
 	end
+
+Route121_EventScript_PickBerry4::
+	finditem ITEM_BABIRI_BERRY
+	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
+	end
+@ === RAND_ROUTE121_BERRIES_END ===
 
 Route121_Text_OkayMoveOutToMtPyre:
 	.string "Okay!\n"

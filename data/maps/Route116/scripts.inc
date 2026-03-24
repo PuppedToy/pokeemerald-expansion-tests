@@ -348,51 +348,55 @@ Route116_EventScript_Johnson::
 	msgbox Route116_Text_JohnsonPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+@ === RAND_ROUTE116_ORB_START ===
 Route116_EventScript_PickOrb::
 	multichoice 0, 0, MULTI_ROUTE116_PICK_ORB, FALSE
 	switch VAR_RESULT
-	case 0, Route116_EventScript_PickFlame
-	case 1, Route116_EventScript_PickToxic
-	case 2, Route116_EventScript_PickSticky
+	case 0, Route116_EventScript_PickOrb1
+	case 1, Route116_EventScript_PickOrb2
+	case 2, Route116_EventScript_PickOrb3
 	end
 
-Route116_EventScript_PickFlame::
+Route116_EventScript_PickOrb1::
 	finditem ITEM_FLAME_ORB
 	setflag FLAG_ITEM_ROUTE_116_MIND_PLATE
 	end
 
-Route116_EventScript_PickToxic::
+Route116_EventScript_PickOrb2::
 	finditem ITEM_TOXIC_ORB
 	setflag FLAG_ITEM_ROUTE_116_MIND_PLATE
 	end
 
-Route116_EventScript_PickSticky::
-	finditem ITEM_STICKY_BARB
+Route116_EventScript_PickOrb3::
+	finditem ITEM_MUSCLE_BAND
 	setflag FLAG_ITEM_ROUTE_116_MIND_PLATE
 	end
+@ === RAND_ROUTE116_ORB_END ===
 
+@ === RAND_ROUTE116_ITEM_START ===
 Route116_EventScript_PickItem::
 	multichoice 0, 0, MULTI_ROUTE116_PICK_ITEM, FALSE
 	switch VAR_RESULT
-	case 0, Route116_EventScript_PickPunchingGlove
-	case 1, Route116_EventScript_PickBigRoot
-	case 2, Route116_EventScript_PickGigaDrain
+	case 0, Route116_EventScript_PickItem1
+	case 1, Route116_EventScript_PickItem2
+	case 2, Route116_EventScript_PickItem3
 	end
 
-Route116_EventScript_PickPunchingGlove::
-	finditem ITEM_PUNCHING_GLOVE
+Route116_EventScript_PickItem1::
+	finditem ITEM_LUMINOUS_MOSS
 	setflag FLAG_ITEM_ROUTE_116_PICK_ITEM
 	end
 
-Route116_EventScript_PickBigRoot::
-	finditem ITEM_BIG_ROOT
+Route116_EventScript_PickItem2::
+	finditem ITEM_ZOOM_LENS
 	setflag FLAG_ITEM_ROUTE_116_PICK_ITEM
 	end
 
-Route116_EventScript_PickGigaDrain::
+Route116_EventScript_PickItem3::
 	finditem ITEM_TM65
 	setflag FLAG_ITEM_ROUTE_116_PICK_ITEM
 	end
+@ === RAND_ROUTE116_ITEM_END ===
 
 Route116_Text_ScoundrelMadeOffWithPeeko:
 	.string "Ohhh, what am I to do?\p"
@@ -514,3 +518,28 @@ Route116_Text_TrainerTipsBagHasPockets:
 	.string "No TRAINER can afford to be without\n"
 	.string "a BAG of their own.$"
 
+
+@ === RAND_ROUTE116_BALL_START ===
+Route116_EventScript_PickBall::
+	multichoice 0, 0, MULTI_ROUTE116_PICK_BALL, FALSE
+	switch VAR_RESULT
+	case 0, Route116_EventScript_PickBall1
+	case 1, Route116_EventScript_PickBall2
+	case 2, Route116_EventScript_PickBall3
+	end
+
+Route116_EventScript_PickBall1::
+	finditem ITEM_WISE_GLASSES
+	setflag FLAG_ITEM_ROUTE_TM_BRICK_BREAK
+	end
+
+Route116_EventScript_PickBall2::
+	finditem ITEM_KEE_BERRY
+	setflag FLAG_ITEM_ROUTE_TM_BRICK_BREAK
+	end
+
+Route116_EventScript_PickBall3::
+	finditem ITEM_LEPPA_BERRY
+	setflag FLAG_ITEM_ROUTE_TM_BRICK_BREAK
+	end
+@ === RAND_ROUTE116_BALL_END ===

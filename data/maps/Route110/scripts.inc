@@ -1045,3 +1045,28 @@ Route110_Text_KeepAnEyeOutForRival:
 
 Route110_LevelCap:
 	.string "Your Pokémon have leveled up to 25!$"
+
+@ === RAND_ROUTE110_BALL_START ===
+Route110_EventScript_PickBall::
+	multichoice 0, 0, MULTI_ROUTE110_PICK_BALL, FALSE
+	switch VAR_RESULT
+	case 0, Route110_EventScript_PickBall1
+	case 1, Route110_EventScript_PickBall2
+	case 2, Route110_EventScript_PickBall3
+	end
+
+Route110_EventScript_PickBall1::
+	finditem ITEM_HEAVY_DUTY_BOOTS
+	setflag FLAG_ITEM_ROUTE_110_SHEDSHELL
+	end
+
+Route110_EventScript_PickBall2::
+	finditem ITEM_LUM_BERRY
+	setflag FLAG_ITEM_ROUTE_110_SHEDSHELL
+	end
+
+Route110_EventScript_PickBall3::
+	finditem ITEM_BLUNDER_POLICY
+	setflag FLAG_ITEM_ROUTE_110_SHEDSHELL
+	end
+@ === RAND_ROUTE110_BALL_END ===

@@ -737,22 +737,25 @@ static const struct MenuAction MultichoiceList_BattleTowerFeelings[] =
 static const struct MenuAction MultichoiceList_PetalburgWoodsPick[] =
 {
     {COMPOUND_STRING("Meadow Plate")},
-    {COMPOUND_STRING("Splash Plate")},
-    {COMPOUND_STRING("Earth Plate")},
+    {COMPOUND_STRING("Stone Plate")},
+    {COMPOUND_STRING("Draco Plate")},
+    {COMPOUND_STRING("Iron Plate")},
 };
 
 static const struct MenuAction MultichoiceList_Route104PickGem[] =
 {
-    {COMPOUND_STRING("Water Gem")},
-    {COMPOUND_STRING("Flying Gem")},
+    {COMPOUND_STRING("Ground Gem")},
+    {COMPOUND_STRING("Fighting Gem")},
+    {COMPOUND_STRING("Grass Gem")},
     {COMPOUND_STRING("Dark Gem")},
 };
 
 static const struct MenuAction MultichoiceList_Route104PickBerry[] =
 {
-    {COMPOUND_STRING("Passho Berry")},
+    {COMPOUND_STRING("Haban Berry")},
+    {COMPOUND_STRING("Payapa Berry")},
     {COMPOUND_STRING("Charti Berry")},
-    {COMPOUND_STRING("Chople Berry")},
+    {COMPOUND_STRING("Chilan Berry")},
 };
 
 static const struct MenuAction MultichoiceList_Route104PickTM[] =
@@ -800,16 +803,18 @@ static const struct MenuAction MultichoiceList_Route117PickScreen[] =
 
 static const struct MenuAction MultichoiceList_Route117PickBerry[] =
 {
+    {COMPOUND_STRING("Tanga Berry")},
     {COMPOUND_STRING("Wacan Berry")},
-    {COMPOUND_STRING("Occa Berry")},
-    {COMPOUND_STRING("Shuca Berry")},
+    {COMPOUND_STRING("Passho Berry")},
+    {COMPOUND_STRING("Colbur Berry")},
 };
 
 static const struct MenuAction MultichoiceList_Route117PickGem[] =
 {
-    {COMPOUND_STRING("Fire Gem")},
-    {COMPOUND_STRING("Ground Gem")},
-    {COMPOUND_STRING("Fighting Gem")},
+    {COMPOUND_STRING("Poison Gem")},
+    {COMPOUND_STRING("Psychic Gem")},
+    {COMPOUND_STRING("Flying Gem")},
+    {COMPOUND_STRING("Ice Gem")},
 };
 
 static const struct MenuAction MultichoiceList_Route114PickTM[] =
@@ -829,24 +834,25 @@ static const struct MenuAction MultichoiceList_Route115PickTM[] =
 
 static const struct MenuAction MultichoiceList_Route111PickBerry[] =
 {
-    {COMPOUND_STRING("Chilan Berry")},
+    {COMPOUND_STRING("Kasib Berry")},
+    {COMPOUND_STRING("Occa Berry")},
+    {COMPOUND_STRING("Kebia Berry")},
     {COMPOUND_STRING("Yache Berry")},
-    {COMPOUND_STRING("Coba Berry")},
 };
 
 static const struct MenuAction MultichoiceList_Route111PickItem[] =
 {
-    {COMPOUND_STRING("Throat Spray")},
-    {COMPOUND_STRING("Eject Pack")},
+    {COMPOUND_STRING("Shed Shell")},
+    {COMPOUND_STRING("Shell Bell")},
     {COMPOUND_STRING("Custap Berry")},
 };
 
 static const struct MenuAction MultichoiceList_Route118PickBerry[] =
 {
-    {COMPOUND_STRING("Kee Berry")},
-    {COMPOUND_STRING("Maranga Berry")},
-    {COMPOUND_STRING("Jaboca Berry")},
-    {COMPOUND_STRING("Rowap Berry")},
+    {COMPOUND_STRING("Quick Claw")},
+    {COMPOUND_STRING("Sticky Barb")},
+    {COMPOUND_STRING("Adrenaline Orb")},
+    {COMPOUND_STRING("Metronome")},
 };
 
 static const struct MenuAction MultichoiceList_Route118PickTM[] =
@@ -858,9 +864,9 @@ static const struct MenuAction MultichoiceList_Route118PickTM[] =
 
 static const struct MenuAction MultichoiceList_Route120PickItem[] =
 {
-    {COMPOUND_STRING("Mirror Herb")},
-    {COMPOUND_STRING("Adrenaline Orb")},
-    {COMPOUND_STRING("Red Card")},
+    {COMPOUND_STRING("Absorb Bulb")},
+    {COMPOUND_STRING("Focus Band")},
+    {COMPOUND_STRING("Covert Cloak")},
 };
 
 static const struct MenuAction MultichoiceList_Route121PickTM[] =
@@ -872,9 +878,10 @@ static const struct MenuAction MultichoiceList_Route121PickTM[] =
 
 static const struct MenuAction MultichoiceList_Route121PickBerry[] =
 {
-    {COMPOUND_STRING("Payapa Berry")},
-    {COMPOUND_STRING("Colbur Berry")},
-    {COMPOUND_STRING("Tanga Berry")},
+    {COMPOUND_STRING("Chople Berry")},
+    {COMPOUND_STRING("Shuca Berry")},
+    {COMPOUND_STRING("Roseli Berry")},
+    {COMPOUND_STRING("Babiri Berry")},
 };
 
 static const struct MenuAction MultichoiceList_Route124PickChoice[] =
@@ -895,13 +902,13 @@ static const struct MenuAction MultichoiceList_Route116PickOrb[] =
 {
     {COMPOUND_STRING("Flame Orb")},
     {COMPOUND_STRING("Toxic Orb")},
-    {COMPOUND_STRING("Sticky Barb")},
+    {COMPOUND_STRING("Muscle Band")},
 };
 
 static const struct MenuAction MultichoiceList_Route116PickItem[] =
 {
-    {COMPOUND_STRING("Punching Glove")},
-    {COMPOUND_STRING("Big Root")},
+    {COMPOUND_STRING("Luminous Moss")},
+    {COMPOUND_STRING("Zoom Lens")},
     {COMPOUND_STRING("TM Feather Dance")},
 };
 
@@ -909,7 +916,112 @@ static const struct MenuAction MultichoiceList_Route125PickItem[] =
 {
     {COMPOUND_STRING("Weakness Policy")},
     {COMPOUND_STRING("Eject Button")},
+    {COMPOUND_STRING("Punching Glove")},
+};
+
+static const struct MenuAction MultichoiceList_Route102PickBall[] =
+{
+    {COMPOUND_STRING("Sitrus Berry")},
+    {COMPOUND_STRING("Mirror Herb")},
+    {COMPOUND_STRING("Expert Belt")},
+};
+
+static const struct MenuAction MultichoiceList_Route109PickBall[] =
+{
+    {COMPOUND_STRING("Cell Battery")},
+    {COMPOUND_STRING("Protective Pads")},
+    {COMPOUND_STRING("Loaded Dice")},
+};
+
+static const struct MenuAction MultichoiceList_Route110PickBall[] =
+{
+    {COMPOUND_STRING("Heavy Duty Boots")},
+    {COMPOUND_STRING("Lum Berry")},
+    {COMPOUND_STRING("Blunder Policy")},
+};
+
+static const struct MenuAction MultichoiceList_Route111PickBallA[] =
+{
+    {COMPOUND_STRING("Lansat Berry")},
+    {COMPOUND_STRING("Eject Pack")},
+    {COMPOUND_STRING("Mental Herb")},
+};
+
+static const struct MenuAction MultichoiceList_Route111PickBallB[] =
+{
+    {COMPOUND_STRING("Wide Lens")},
+    {COMPOUND_STRING("Binding Band")},
+    {COMPOUND_STRING("Maranga Berry")},
+};
+
+static const struct MenuAction MultichoiceList_Route111PickBallC[] =
+{
+    {COMPOUND_STRING("Bright Powder")},
+    {COMPOUND_STRING("Safety Goggles")},
+    {COMPOUND_STRING("Grip Claw")},
+};
+
+static const struct MenuAction MultichoiceList_Route112PickBall[] =
+{
+    {COMPOUND_STRING("Rindo Berry")},
+    {COMPOUND_STRING("Starf Berry")},
+    {COMPOUND_STRING("Clear Amulet")},
+};
+
+static const struct MenuAction MultichoiceList_Route114PickBallA[] =
+{
+    {COMPOUND_STRING("Float Stone")},
+    {COMPOUND_STRING("Iron Ball")},
+    {COMPOUND_STRING("Throat Spray")},
+};
+
+static const struct MenuAction MultichoiceList_Route114PickBallB[] =
+{
+    {COMPOUND_STRING("Red Card")},
+    {COMPOUND_STRING("Jaboca Berry")},
+    {COMPOUND_STRING("Rocky Helmet")},
+};
+
+static const struct MenuAction MultichoiceList_Route114PickBallC[] =
+{
+    {COMPOUND_STRING("Air Balloon")},
+    {COMPOUND_STRING("Terrain Extender")},
+    {COMPOUND_STRING("Big Root")},
+};
+
+static const struct MenuAction MultichoiceList_Route115PickBall[] =
+{
+    {COMPOUND_STRING("Utility Umbrella")},
+    {COMPOUND_STRING("Room Service")},
+    {COMPOUND_STRING("White Herb")},
+};
+
+static const struct MenuAction MultichoiceList_Route116PickBall[] =
+{
+    {COMPOUND_STRING("Wise Glasses")},
+    {COMPOUND_STRING("Kee Berry")},
     {COMPOUND_STRING("Leppa Berry")},
+};
+
+static const struct MenuAction MultichoiceList_Route124PickBallA[] =
+{
+    {COMPOUND_STRING("Rowap Berry")},
+    {COMPOUND_STRING("Snowball")},
+    {COMPOUND_STRING("Power Herb")},
+};
+
+static const struct MenuAction MultichoiceList_Route124PickBallB[] =
+{
+    {COMPOUND_STRING("Shed Shell")},
+    {COMPOUND_STRING("Shell Bell")},
+    {COMPOUND_STRING("Muscle Band")},
+};
+
+static const struct MenuAction MultichoiceList_Route125PickBall[] =
+{
+    {COMPOUND_STRING("Luminous Moss")},
+    {COMPOUND_STRING("Zoom Lens")},
+    {COMPOUND_STRING("Quick Claw")},
 };
 
 static const struct MenuAction MultichoiceList_SkypillarTopLegend[] =
@@ -1116,6 +1228,21 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_ROUTE116_PICK_ORB]          = MULTICHOICE(MultichoiceList_Route116PickOrb),
     [MULTI_ROUTE116_PICK_ITEM]         = MULTICHOICE(MultichoiceList_Route116PickItem),
     [MULTI_ROUTE125_PICK_ITEM]         = MULTICHOICE(MultichoiceList_Route125PickItem),
+    [MULTI_ROUTE102_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route102PickBall),
+    [MULTI_ROUTE109_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route109PickBall),
+    [MULTI_ROUTE110_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route110PickBall),
+    [MULTI_ROUTE111_PICK_BALL_A]       = MULTICHOICE(MultichoiceList_Route111PickBallA),
+    [MULTI_ROUTE111_PICK_BALL_B]       = MULTICHOICE(MultichoiceList_Route111PickBallB),
+    [MULTI_ROUTE111_PICK_BALL_C]       = MULTICHOICE(MultichoiceList_Route111PickBallC),
+    [MULTI_ROUTE112_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route112PickBall),
+    [MULTI_ROUTE114_PICK_BALL_A]       = MULTICHOICE(MultichoiceList_Route114PickBallA),
+    [MULTI_ROUTE114_PICK_BALL_B]       = MULTICHOICE(MultichoiceList_Route114PickBallB),
+    [MULTI_ROUTE114_PICK_BALL_C]       = MULTICHOICE(MultichoiceList_Route114PickBallC),
+    [MULTI_ROUTE115_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route115PickBall),
+    [MULTI_ROUTE116_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route116PickBall),
+    [MULTI_ROUTE124_PICK_BALL_A]       = MULTICHOICE(MultichoiceList_Route124PickBallA),
+    [MULTI_ROUTE124_PICK_BALL_B]       = MULTICHOICE(MultichoiceList_Route124PickBallB),
+    [MULTI_ROUTE125_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route125PickBall),
     [MULTI_SKYPILLAR_TOP_LEGEND]       = MULTICHOICE(MultichoiceList_SkypillarTopLegend),
 };
 

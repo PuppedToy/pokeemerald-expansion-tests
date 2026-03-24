@@ -140,3 +140,28 @@ Route112_Text_RouteSignLavaridge:
 	.string "ROUTE 112\n"
 	.string "{LEFT_ARROW} LAVARIDGE TOWN$"
 
+
+@ === RAND_ROUTE112_BALL_START ===
+Route112_EventScript_PickBall::
+	multichoice 0, 0, MULTI_ROUTE112_PICK_BALL, FALSE
+	switch VAR_RESULT
+	case 0, Route112_EventScript_PickBall1
+	case 1, Route112_EventScript_PickBall2
+	case 2, Route112_EventScript_PickBall3
+	end
+
+Route112_EventScript_PickBall1::
+	finditem ITEM_RINDO_BERRY
+	setflag FLAG_ITEM_ROUTE_112_WHITE
+	end
+
+Route112_EventScript_PickBall2::
+	finditem ITEM_STARF_BERRY
+	setflag FLAG_ITEM_ROUTE_112_WHITE
+	end
+
+Route112_EventScript_PickBall3::
+	finditem ITEM_CLEAR_AMULET
+	setflag FLAG_ITEM_ROUTE_112_WHITE
+	end
+@ === RAND_ROUTE112_BALL_END ===

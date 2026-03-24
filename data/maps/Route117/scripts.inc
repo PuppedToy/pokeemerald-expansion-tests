@@ -234,51 +234,67 @@ Route117_EventScript_PickLightScreen::
 	setflag FLAG_ITEM_ROUTE_117_CLAY
 	end
 
+@ === RAND_ROUTE117_BERRIES_START ===
 Route117_EventScript_PickBerry::
 	multichoice 0, 0, MULTI_ROUTE117_PICK_BERRY, FALSE
 	switch VAR_RESULT
-	case 0, Route117_EventScript_PickWacan
-	case 1, Route117_EventScript_PickOcca
-	case 2, Route117_EventScript_PickShuca
+	case 0, Route117_EventScript_PickBerry1
+	case 1, Route117_EventScript_PickBerry2
+	case 2, Route117_EventScript_PickBerry3
+	case 3, Route117_EventScript_PickBerry4
 	end
 
-Route117_EventScript_PickWacan::
+Route117_EventScript_PickBerry1::
+	finditem ITEM_TANGA_BERRY
+	setflag FLAG_ITEM_ROUTE_117_WACAN
+	end
+
+Route117_EventScript_PickBerry2::
 	finditem ITEM_WACAN_BERRY
 	setflag FLAG_ITEM_ROUTE_117_WACAN
 	end
 
-Route117_EventScript_PickOcca::
-	finditem ITEM_OCCA_BERRY
+Route117_EventScript_PickBerry3::
+	finditem ITEM_PASSHO_BERRY
 	setflag FLAG_ITEM_ROUTE_117_WACAN
 	end
 
-Route117_EventScript_PickShuca::
-	finditem ITEM_SHUCA_BERRY
+Route117_EventScript_PickBerry4::
+	finditem ITEM_COLBUR_BERRY
 	setflag FLAG_ITEM_ROUTE_117_WACAN
 	end
+@ === RAND_ROUTE117_BERRIES_END ===
 
+@ === RAND_ROUTE117_GEMS_START ===
 Route117_EventScript_PickGem::
 	multichoice 0, 0, MULTI_ROUTE117_PICK_GEM, FALSE
 	switch VAR_RESULT
-	case 0, Route117_EventScript_PickFire
-	case 1, Route117_EventScript_PickGround
-	case 2, Route117_EventScript_PickFighting
+	case 0, Route117_EventScript_PickGem1
+	case 1, Route117_EventScript_PickGem2
+	case 2, Route117_EventScript_PickGem3
+	case 3, Route117_EventScript_PickGem4
 	end
 
-Route117_EventScript_PickFire::
-	finditem ITEM_FIRE_GEM
+Route117_EventScript_PickGem1::
+	finditem ITEM_POISON_GEM
 	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
 	end
 
-Route117_EventScript_PickGround::
-	finditem ITEM_GROUND_GEM
+Route117_EventScript_PickGem2::
+	finditem ITEM_PSYCHIC_GEM
 	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
 	end
 
-Route117_EventScript_PickFighting::
-	finditem ITEM_FIGHTING_GEM
+Route117_EventScript_PickGem3::
+	finditem ITEM_FLYING_GEM
 	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
 	end
+
+Route117_EventScript_PickGem4::
+	finditem ITEM_ICE_GEM
+	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
+	end
+@ === RAND_ROUTE117_GEMS_END ===
 
 Route117_Text_DayCarePokemonHadNewMove:
 	.string "I left my POKéMON at the DAY CARE.\p"

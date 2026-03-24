@@ -212,28 +212,30 @@ Route120_EventScript_Callie::
 	msgbox Route120_Text_CalliePostBattle, MSGBOX_AUTOCLOSE
 	end
 
+@ === RAND_ROUTE120_ITEMS_START ===
 Route120_EventScript_PickItem::
 	multichoice 0, 0, MULTI_ROUTE120_PICK_ITEM, FALSE
 	switch VAR_RESULT
-	case 0, Route120_EventScript_PickMirrorHerb
-	case 1, Route120_EventScript_PickAdrenalineOrb
-	case 2, Route120_EventScript_PickRedCard
+	case 0, Route120_EventScript_PickItem1
+	case 1, Route120_EventScript_PickItem2
+	case 2, Route120_EventScript_PickItem3
 	end
 
-Route120_EventScript_PickMirrorHerb::
-	finditem ITEM_MIRROR_HERB
+Route120_EventScript_PickItem1::
+	finditem ITEM_ABSORB_BULB
 	setflag FLAG_ITEM_ROUTE_120_NEST_BALL
 	end
 
-Route120_EventScript_PickAdrenalineOrb::
-	finditem ITEM_ADRENALINE_ORB
+Route120_EventScript_PickItem2::
+	finditem ITEM_FOCUS_BAND
 	setflag FLAG_ITEM_ROUTE_120_NEST_BALL
 	end
 
-Route120_EventScript_PickRedCard::
-	finditem ITEM_RED_CARD
+Route120_EventScript_PickItem3::
+	finditem ITEM_COVERT_CLOAK
 	setflag FLAG_ITEM_ROUTE_120_NEST_BALL
 	end
+@ === RAND_ROUTE120_ITEMS_END ===
 
 Route120_Text_RouteSignFortree:
 	.string "ROUTE 120\n"

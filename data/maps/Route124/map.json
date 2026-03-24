@@ -128,7 +128,7 @@
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "ITEM_ROOM_SERVICE",
-      "script": "Common_EventScript_FindItem",
+      "script": "Route124_EventScript_PickBallA",
       "flag": "FLAG_ITEM_ROUTE_124_YELLOW_SHARD"
     },
     {
@@ -180,7 +180,7 @@
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "ITEM_IRON_BALL",
-      "script": "Common_EventScript_FindItem",
+      "script": "Route124_EventScript_PickBallB",
       "flag": "FLAG_ITEM_ROUTE_124_IRON_BALL"
     },
     {

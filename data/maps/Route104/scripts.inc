@@ -118,51 +118,67 @@ Route104_EventScript_MayEncounter::
 	releaseall
 	end
 
+@ === RAND_ROUTE104_GEMS_START ===
 Route104_EventScript_PickGem::
 	multichoice 0, 0, MULTI_ROUTE104_PICK_GEM, FALSE
 	switch VAR_RESULT
-	case 0, Route104_EventScript_PickWaterGem
-	case 1, Route104_EventScript_PickFlyingGem
-	case 2, Route104_EventScript_PickDarkGem
+	case 0, Route104_EventScript_PickGem1
+	case 1, Route104_EventScript_PickGem2
+	case 2, Route104_EventScript_PickGem3
+	case 3, Route104_EventScript_PickGem4
 	end
 
-Route104_EventScript_PickWaterGem::
-	finditem ITEM_WATER_GEM
+Route104_EventScript_PickGem1::
+	finditem ITEM_GROUND_GEM
 	setflag FLAG_ITEM_ROUTE_104_GEM
 	end
 
-Route104_EventScript_PickFlyingGem::
-	finditem ITEM_FLYING_GEM
+Route104_EventScript_PickGem2::
+	finditem ITEM_FIGHTING_GEM
 	setflag FLAG_ITEM_ROUTE_104_GEM
 	end
 
-Route104_EventScript_PickDarkGem::
+Route104_EventScript_PickGem3::
+	finditem ITEM_GRASS_GEM
+	setflag FLAG_ITEM_ROUTE_104_GEM
+	end
+
+Route104_EventScript_PickGem4::
 	finditem ITEM_DARK_GEM
 	setflag FLAG_ITEM_ROUTE_104_GEM
 	end
+@ === RAND_ROUTE104_GEMS_END ===
 
+@ === RAND_ROUTE104_BERRIES_START ===
 Route104_EventScript_PickBerry::
 	multichoice 0, 0, MULTI_ROUTE104_PICK_BERRY, FALSE
 	switch VAR_RESULT
-	case 0, Route104_EventScript_PickPasshoBerry
-	case 1, Route104_EventScript_PickChartiBerry
-	case 2, Route104_EventScript_PickChopleBerry
+	case 0, Route104_EventScript_PickBerry1
+	case 1, Route104_EventScript_PickBerry2
+	case 2, Route104_EventScript_PickBerry3
+	case 3, Route104_EventScript_PickBerry4
 	end
 
-Route104_EventScript_PickPasshoBerry::
-	finditem ITEM_PASSHO_BERRY
+Route104_EventScript_PickBerry1::
+	finditem ITEM_HABAN_BERRY
 	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
 	end
 
-Route104_EventScript_PickChartiBerry::
+Route104_EventScript_PickBerry2::
+	finditem ITEM_PAYAPA_BERRY
+	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
+	end
+
+Route104_EventScript_PickBerry3::
 	finditem ITEM_CHARTI_BERRY
 	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
 	end
 
-Route104_EventScript_PickChopleBerry::
-	finditem ITEM_CHOPLE_BERRY
+Route104_EventScript_PickBerry4::
+	finditem ITEM_CHILAN_BERRY
 	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
 	end
+@ === RAND_ROUTE104_BERRIES_END ===
 
 Route104_EventScript_PickTM::
 	multichoice 0, 0, MULTI_ROUTE104_PICK_TM, FALSE

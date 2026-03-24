@@ -585,7 +585,7 @@
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "ITEM_SHED_SHELL",
-      "script": "Common_EventScript_FindItem",
+      "script": "Route111_EventScript_PickBallA",
       "flag": "FLAG_ITEM_ROUTE_111_ELIXIR"
     },
     {
@@ -598,7 +598,7 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "ITEM_POWER_HERB",
-      "script": "Common_EventScript_FindItem",
+      "script": "Route111_EventScript_PickBallB",
       "flag": "FLAG_ITEM_ROUTE_111_POWERHERB"
     },
     {
@@ -650,7 +650,7 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "ITEM_SAFETY_GOGGLES",
-      "script": "Common_EventScript_FindItem",
+      "script": "Route111_EventScript_PickBallC",
       "flag": "FLAG_ITEM_ROUTE_111_ADRENALINE"
     }
   ],

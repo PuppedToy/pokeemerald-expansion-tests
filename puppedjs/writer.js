@@ -45,6 +45,7 @@ const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, cho
 const items = require('./items.js');
 const { savePokemonData } = require('./pokemonWriter.js');
 const { randomizeTMs } = require('./tmRandomizer.js');
+const { randomizeItems } = require('./itemRandomizer.js');
 
 const startersFile = path.resolve(__dirname, '..', 'src', 'starter_choose.c');
 
@@ -216,6 +217,9 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
     console.log('Randomizing TMs...');
     await randomizeTMs();
+
+    console.log('Randomizing items...');
+    randomizeItems();
 
     console.log('Writing pokemon buff / nerfs to files...');
     // Save pokemon buffed / nerfed versions

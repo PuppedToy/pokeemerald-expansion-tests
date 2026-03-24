@@ -218,7 +218,7 @@
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "ITEM_ROCKY_HELMET",
-      "script": "Common_EventScript_FindItem",
+      "script": "Route116_EventScript_PickBall",
       "flag": "FLAG_ITEM_ROUTE_TM_BRICK_BREAK"
     },
     {

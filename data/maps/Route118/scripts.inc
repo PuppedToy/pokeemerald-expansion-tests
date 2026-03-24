@@ -99,34 +99,36 @@ Route118_EventScript_Deandre::
 	msgbox Route118_Text_DeandrePostBattle, MSGBOX_AUTOCLOSE
 	end
 
+@ === RAND_ROUTE118_ITEMS_START ===
 Route118_EventScript_PickBerry::
 	multichoice 0, 0, MULTI_ROUTE118_PICK_BERRY, FALSE
 	switch VAR_RESULT
-	case 0, Route118_EventScript_PickKee
-	case 1, Route118_EventScript_PickMaranga
-	case 2, Route118_EventScript_PickJaboca
-	case 3, Route118_EventScript_PickRowap
+	case 0, Route118_EventScript_PickBerry1
+	case 1, Route118_EventScript_PickBerry2
+	case 2, Route118_EventScript_PickBerry3
+	case 3, Route118_EventScript_PickBerry4
 	end
 
-Route118_EventScript_PickKee::
-	finditem ITEM_KEE_BERRY
+Route118_EventScript_PickBerry1::
+	finditem ITEM_QUICK_CLAW
 	setflag FLAG_ITEM_ROUTE_118_BERRY
 	end
 
-Route118_EventScript_PickMaranga::
-	finditem ITEM_MARANGA_BERRY
+Route118_EventScript_PickBerry2::
+	finditem ITEM_STICKY_BARB
 	setflag FLAG_ITEM_ROUTE_118_BERRY
 	end
 
-Route118_EventScript_PickJaboca::
-	finditem ITEM_JABOCA_BERRY
+Route118_EventScript_PickBerry3::
+	finditem ITEM_ADRENALINE_ORB
 	setflag FLAG_ITEM_ROUTE_118_BERRY
 	end
 
-Route118_EventScript_PickRowap::
-	finditem ITEM_ROWAP_BERRY
+Route118_EventScript_PickBerry4::
+	finditem ITEM_METRONOME
 	setflag FLAG_ITEM_ROUTE_118_BERRY
 	end
+@ === RAND_ROUTE118_ITEMS_END ===
 
 
 Route118_EventScript_PickTM::

@@ -147,3 +147,53 @@ Route124_EventScript_PickFireBlast::
 
 Route124_Text_HuntersHouse:
 	.string "HUNTER'S HOUSE$"
+
+@ === RAND_ROUTE124_BALL_A_START ===
+Route124_EventScript_PickBallA::
+	multichoice 0, 0, MULTI_ROUTE124_PICK_BALL_A, FALSE
+	switch VAR_RESULT
+	case 0, Route124_EventScript_PickBallA1
+	case 1, Route124_EventScript_PickBallA2
+	case 2, Route124_EventScript_PickBallA3
+	end
+
+Route124_EventScript_PickBallA1::
+	finditem ITEM_ROWAP_BERRY
+	setflag FLAG_ITEM_ROUTE_124_YELLOW_SHARD
+	end
+
+Route124_EventScript_PickBallA2::
+	finditem ITEM_SNOWBALL
+	setflag FLAG_ITEM_ROUTE_124_YELLOW_SHARD
+	end
+
+Route124_EventScript_PickBallA3::
+	finditem ITEM_POWER_HERB
+	setflag FLAG_ITEM_ROUTE_124_YELLOW_SHARD
+	end
+@ === RAND_ROUTE124_BALL_A_END ===
+
+@ === RAND_ROUTE124_BALL_B_START ===
+Route124_EventScript_PickBallB::
+	multichoice 0, 0, MULTI_ROUTE124_PICK_BALL_B, FALSE
+	switch VAR_RESULT
+	case 0, Route124_EventScript_PickBallB1
+	case 1, Route124_EventScript_PickBallB2
+	case 2, Route124_EventScript_PickBallB3
+	end
+
+Route124_EventScript_PickBallB1::
+	finditem ITEM_SHED_SHELL
+	setflag FLAG_ITEM_ROUTE_124_IRON_BALL
+	end
+
+Route124_EventScript_PickBallB2::
+	finditem ITEM_SHELL_BELL
+	setflag FLAG_ITEM_ROUTE_124_IRON_BALL
+	end
+
+Route124_EventScript_PickBallB3::
+	finditem ITEM_MUSCLE_BAND
+	setflag FLAG_ITEM_ROUTE_124_IRON_BALL
+	end
+@ === RAND_ROUTE124_BALL_B_END ===

@@ -267,3 +267,78 @@ Route114_Text_LanettesHouse:
 Route114_Text_ReceiveGoodRod:
 	.string "Use the good rod to find better\n"
 	.string "encounters at ponds and seas.$"
+
+@ === RAND_ROUTE114_BALL_A_START ===
+Route114_EventScript_PickBallA::
+	multichoice 0, 0, MULTI_ROUTE114_PICK_BALL_A, FALSE
+	switch VAR_RESULT
+	case 0, Route114_EventScript_PickBallA1
+	case 1, Route114_EventScript_PickBallA2
+	case 2, Route114_EventScript_PickBallA3
+	end
+
+Route114_EventScript_PickBallA1::
+	finditem ITEM_FLOAT_STONE
+	setflag FLAG_ITEM_ROUTE_114_WIDE
+	end
+
+Route114_EventScript_PickBallA2::
+	finditem ITEM_IRON_BALL
+	setflag FLAG_ITEM_ROUTE_114_WIDE
+	end
+
+Route114_EventScript_PickBallA3::
+	finditem ITEM_THROAT_SPRAY
+	setflag FLAG_ITEM_ROUTE_114_WIDE
+	end
+@ === RAND_ROUTE114_BALL_A_END ===
+
+@ === RAND_ROUTE114_BALL_B_START ===
+Route114_EventScript_PickBallB::
+	multichoice 0, 0, MULTI_ROUTE114_PICK_BALL_B, FALSE
+	switch VAR_RESULT
+	case 0, Route114_EventScript_PickBallB1
+	case 1, Route114_EventScript_PickBallB2
+	case 2, Route114_EventScript_PickBallB3
+	end
+
+Route114_EventScript_PickBallB1::
+	finditem ITEM_RED_CARD
+	setflag FLAG_ITEM_ROUTE_114_ZOOM
+	end
+
+Route114_EventScript_PickBallB2::
+	finditem ITEM_JABOCA_BERRY
+	setflag FLAG_ITEM_ROUTE_114_ZOOM
+	end
+
+Route114_EventScript_PickBallB3::
+	finditem ITEM_ROCKY_HELMET
+	setflag FLAG_ITEM_ROUTE_114_ZOOM
+	end
+@ === RAND_ROUTE114_BALL_B_END ===
+
+@ === RAND_ROUTE114_BALL_C_START ===
+Route114_EventScript_PickBallC::
+	multichoice 0, 0, MULTI_ROUTE114_PICK_BALL_C, FALSE
+	switch VAR_RESULT
+	case 0, Route114_EventScript_PickBallC1
+	case 1, Route114_EventScript_PickBallC2
+	case 2, Route114_EventScript_PickBallC3
+	end
+
+Route114_EventScript_PickBallC1::
+	finditem ITEM_AIR_BALLOON
+	setflag FLAG_ITEM_ROUTE_114_ENERGY_POWDER
+	end
+
+Route114_EventScript_PickBallC2::
+	finditem ITEM_TERRAIN_EXTENDER
+	setflag FLAG_ITEM_ROUTE_114_ENERGY_POWDER
+	end
+
+Route114_EventScript_PickBallC3::
+	finditem ITEM_BIG_ROOT
+	setflag FLAG_ITEM_ROUTE_114_ENERGY_POWDER
+	end
+@ === RAND_ROUTE114_BALL_C_END ===

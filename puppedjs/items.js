@@ -264,84 +264,108 @@ const items = {
 
     // Probably not randomized
     premiumItems: [
-        'ITEM_CHOICE_BAND', // Route 124
-        'ITEM_CHOICE_SPECS', // Route 124
-        'ITEM_CHOICE_SCARF', // Route 124
-        'ITEM_LEFTOVERS', // Route 119
-        'ITEM_LIFE_ORB', // Route 106
-        'ITEM_EVIOLITE', // Route 104
-        'ITEM_ASSAULT_VEST', // Route 103
-        'ITEM_FOCUS_SASH', // Route 121
-    ],
-
-    itemPool: [
-        'ITEM_EXPERT_BELT',
-    ],
-
-    goodItems: [
-        'ITEM_SHELL_BELL', // Route 114
-        'ITEM_ROCKY_HELMET', // Route 109
-        'ITEM_SAFETY_GOGGLES', // Desert
-        'ITEM_HEAVY_DUTY_BOOTS', // Route 125
-    ],
-
-    goodSituationalItems: [
-        'ITEM_FLAME_ORB', // Route 115
-        'ITEM_TOXIC_ORB', // Route 112
-        'ITEM_DAMP_ROCK', // Route 109
-        'ITEM_HEAT_ROCK', // Route 109
-        'ITEM_SMOOTH_ROCK', // Route 109
-        'ITEM_ICY_ROCK', // Route 109
-        'ITEM_WIDE_LENS', // Route 114
-        'ITEM_ZOOM_LENS', // Route 114
-        'ITEM_EXPERT_BELT', // Route 102
-        'ITEM_LIGHT_CLAY', // Route 117
-        'ITEM_BLACK_SLUDGE', // Route 116
-        'ITEM_SHED_SHELL', // Route 110
-        'ITEM_TERRAIN_EXTENDER', // Route 110
-        'ITEM_LOADED_DICE', // Route 109
-        'ITEM_BIG_ROOT', // Route 116
-        'ITEM_PUNCHING_GLOVE', // Route 116
+        'ITEM_CHOICE_BAND',
+        'ITEM_CHOICE_SPECS',
+        'ITEM_CHOICE_SCARF',
+        'ITEM_BLACK_SLUDGE',
+        'ITEM_LEFTOVERS',
+        'ITEM_LIFE_ORB',
+        'ITEM_EVIOLITE',
+        'ITEM_ASSAULT_VEST',
+        'ITEM_FOCUS_SASH',
+        'ITEM_WEAKNESS_POLICY',
+        'ITEM_EJECT_BUTTON',
+        'ITEM_CUSTAP_BERRY',
+        'ITEM_LIGHT_CLAY',
     ],
     
-    goodConsumables: [
-        'ITEM_THROAT_SPRAY', // Route 111
-        'ITEM_CUSTAP_BERRY', // Route 111
-        'ITEM_EJECT_PACK', // Route 111
-        'ITEM_WHITE_HERB', // Route 112
-        'ITEM_POWER_HERB', // Route 111
-        'ITEM_AIR_BALLOON', // Route 111
-        'ITEM_MIRROR_HERB', // Route 120
-        'ITEM_ADRENALINE_ORB', // Route 120
-        'ITEM_RED_CARD', // Route 120
-        'ITEM_KEE_BERRY', // Route 118
-        'ITEM_MARANGA_BERRY', // Route 118
-        'ITEM_JABOCA_BERRY', // Route 118
-        'ITEM_ROWAP_BERRY', // Route 118
-        'ITEM_WEAKNESS_POLICY', // Route 125
-        'ITEM_EJECT_BUTTON', // Route 125
-        'ITEM_LEPPA_BERRY', // Route 125
-        'ITEM_ELECTRIC_SEED', // Route 110
-        'ITEM_PSYCHIC_SEED', // Route 110
-        'ITEM_MISTY_SEED', // Route 110
-        'ITEM_GRASSY_SEED', // Route 110
-        'ITEM_ROOM_SERVICE', // Route 124
-        'ITEM_LUM_BERRY', // Route 110
-        'ITEM_SITRUS_BERRY', // Route 111
-        'ITEM_BOOSTER_ENERGY', // New Mauville
-        'ITEM_MASTER_BALL',
+    otherLockedItems: [
+        'ITEM_TOXIC_ORB',
+        'ITEM_FLAME_ORB',
+        'ITEM_DAMP_ROCK',
+        'ITEM_HEAT_ROCK',
+        'ITEM_SMOOTH_ROCK',
+        'ITEM_ICY_ROCK',
+        'ITEM_ELECTRIC_SEED',
+        'ITEM_GRASSY_SEED',
+        'ITEM_MISTY_SEED',
+        'ITEM_PSYCHIC_SEED',
+        'ITEM_ORAN_BERRY',
     ],
 
-    midConsumables: [
-        'ITEM_LIECHI_BERRY',
-        'ITEM_GANLON_BERRY',
-        'ITEM_SALAC_BERRY',
-        'ITEM_PETAYA_BERRY',
-        'ITEM_APICOT_BERRY',
-        'ITEM_LANSAT_BERRY',
-        'ITEM_STARF_BERRY',
-        'ITEM_ENIGMA_BERRY',
-        'ITEM_MICLE_BERRY',
+    // All items found placed in game files (scripts.inc + map.json),
+    // excluding: TMs/HMs, balls, mail, potions/healing, story/key items,
+    // fixed items (Choice Band etc.), and non-randomized consumables.
+    fullItemPool: [
+        // --- Gems (scripts: Route104, Route117, Route119) ---
+        // Route104
+        // Route117
+        // Route119
+
+        // --- Plates (scripts: PetalburgWoods) ---
+        // PetalburgWoods
+
+        // --- Protection berries (scripts) ---
+        // Route104
+        // Route111
+        // Route117
+        // Route121
+
+        // --- Battle berries (scripts) ---
+        'ITEM_KEE_BERRY',       // Route118
+        'ITEM_MARANGA_BERRY',   // Route118
+        'ITEM_JABOCA_BERRY',    // Route118
+        'ITEM_ROWAP_BERRY',     // Route118
+        'ITEM_LEPPA_BERRY',     // Route125
+        'ITEM_LANSAT_BERRY',    // BattleFrontier_ScottsHouse
+        'ITEM_STARF_BERRY',     // BattleFrontier_ScottsHouse
+        'ITEM_THROAT_SPRAY',    // Route111
+        'ITEM_EJECT_PACK',      // Route111
+        'ITEM_MIRROR_HERB',     // Route120
+        'ITEM_ADRENALINE_ORB',  // Route120
+        'ITEM_RED_CARD',        // Route120
+        'ITEM_EXPERT_BELT',     // Route102
+        'ITEM_LOADED_DICE',     // Route109
+        'ITEM_AIR_BALLOON',     // Route110
+        'ITEM_LUM_BERRY',       // Route110
+        'ITEM_TERRAIN_EXTENDER',// Route110
+        'ITEM_SITRUS_BERRY',    // Route111
+        'ITEM_SHED_SHELL',      // Route111
+        'ITEM_POWER_HERB',      // Route111
+        'ITEM_SAFETY_GOGGLES',  // Route111
+        'ITEM_WHITE_HERB',      // Route112
+        'ITEM_WIDE_LENS',       // Route114
+        'ITEM_SHELL_BELL',      // Route114
+        'ITEM_ZOOM_LENS',       // Route114
+        'ITEM_RINDO_BERRY',     // Route115
+        'ITEM_ROCKY_HELMET',    // Route116
+        'ITEM_STICKY_BARB',     // Route116
+        'ITEM_PUNCHING_GLOVE',  // Route116 + Route115
+        'ITEM_BIG_ROOT',        // Route116
+        'ITEM_ROOM_SERVICE',    // Route124
+        'ITEM_IRON_BALL',       // Route124
+        'ITEM_HEAVY_DUTY_BOOTS',// Route125
+        'ITEM_ABSORB_BULB',
+        'ITEM_CELL_BATTERY',
+        'ITEM_LUMINOUS_MOSS',
+        'ITEM_SNOWBALL',
+        'ITEM_BRIGHT_POWDER',
+        'ITEM_QUICK_CLAW',
+        'ITEM_MUSCLE_BAND',
+        'ITEM_WISE_GLASSES',
+        'ITEM_METRONOME',
+        'ITEM_IRON_BALL',
+        'ITEM_GRIP_CLAW',
+        'ITEM_STICKY_BARB',
+        'ITEM_FLOAT_STONE',
+        'ITEM_BINDING_BAND',
+        'ITEM_PROTECTIVE_PADS',
+        'ITEM_UTILITY_UMBRELLA',
+        'ITEM_CLEAR_AMULET',
+        'ITEM_COVERT_CLOAK',
+        'ITEM_FOCUS_BAND',
+        'ITEM_MENTAL_HERB',
+        'ITEM_BLUNDER_POLICY',
     ],
 
     protectionBerries: {
@@ -364,40 +388,6 @@ const items = {
         STEEL: 'ITEM_BABIRI_BERRY',
         FAIRY: 'ITEM_ROSELI_BERRY',
     },
-
-    midItems: [
-        'ITEM_ABSORB_BULB',
-        'ITEM_CELL_BATTERY',
-        'ITEM_LUMINOUS_MOSS',
-        'ITEM_SNOWBALL',
-        'ITEM_BRIGHT_POWDER',
-        'ITEM_QUICK_CLAW',
-        'ITEM_MUSCLE_BAND',
-        'ITEM_WISE_GLASSES',
-        'ITEM_METRONOME',
-        'ITEM_IRON_BALL', // Route 124
-        'ITEM_GRIP_CLAW',
-        'ITEM_STICKY_BARB', // Route 116
-        'ITEM_FLOAT_STONE',
-        'ITEM_BINDING_BAND',
-        'ITEM_PROTECTIVE_PADS',
-        'ITEM_UTILITY_UMBRELLA',
-        'ITEM_CLEAR_AMULET',
-        'ITEM_COVERT_CLOAK',
-    ],
-
-    weakConsumables: [
-        'ITEM_FOCUS_BAND',
-        'ITEM_MENTAL_HERB',
-        'ITEM_BLUNDER_POLICY',
-        'ITEM_CHERI_BERRY',
-        'ITEM_CHESTO_BERRY',
-        'ITEM_PECHA_BERRY',
-        'ITEM_RAWST_BERRY',
-        'ITEM_ASPEAR_BERRY',
-        'ITEM_ORAN_BERRY',
-        'ITEM_PERSIM_BERRY',
-    ],
 
 }
 

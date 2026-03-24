@@ -87,7 +87,7 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "ITEM_EXPERT_BELT",
-      "script": "Common_EventScript_FindItem",
+      "script": "Route102_EventScript_PickBall",
       "flag": "FLAG_ITEM_ROUTE_102_POTION"
     },
     {

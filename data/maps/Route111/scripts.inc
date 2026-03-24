@@ -520,51 +520,61 @@ Route111_EventScript_RegisterBrooke::
 	release
 	end
 
+@ === RAND_ROUTE111_BERRIES_START ===
 Route111_EventScript_PickBerry::
 	multichoice 0, 0, MULTI_ROUTE111_PICK_BERRY, FALSE
 	switch VAR_RESULT
-	case 0, Route111_EventScript_PickChilan
-	case 1, Route111_EventScript_PickYache
-	case 2, Route111_EventScript_PickCoba
+	case 0, Route111_EventScript_PickBerry1
+	case 1, Route111_EventScript_PickBerry2
+	case 2, Route111_EventScript_PickBerry3
+	case 3, Route111_EventScript_PickBerry4
 	end
 
-Route111_EventScript_PickChilan::
-	finditem ITEM_CHILAN_BERRY
+Route111_EventScript_PickBerry1::
+	finditem ITEM_KASIB_BERRY
 	setflag FLAG_ITEM_ROUTE_111_CHILAN
 	end
 
-Route111_EventScript_PickYache::
+Route111_EventScript_PickBerry2::
+	finditem ITEM_OCCA_BERRY
+	setflag FLAG_ITEM_ROUTE_111_CHILAN
+	end
+
+Route111_EventScript_PickBerry3::
+	finditem ITEM_KEBIA_BERRY
+	setflag FLAG_ITEM_ROUTE_111_CHILAN
+	end
+
+Route111_EventScript_PickBerry4::
 	finditem ITEM_YACHE_BERRY
 	setflag FLAG_ITEM_ROUTE_111_CHILAN
 	end
+@ === RAND_ROUTE111_BERRIES_END ===
 
-Route111_EventScript_PickCoba::
-	finditem ITEM_COBA_BERRY
-	setflag FLAG_ITEM_ROUTE_111_CHILAN
-	end
-
+@ === RAND_ROUTE111_ITEMS_START ===
 Route111_EventScript_PickItem::
 	multichoice 0, 0, MULTI_ROUTE111_PICK_ITEM, FALSE
 	switch VAR_RESULT
-	case 0, Route111_EventScript_PickThroatSpray
-	case 1, Route111_EventScript_EjectPack
-	case 2, Route111_EventScript_CustapBerry
+	case 0, Route111_EventScript_PickItem1
+	case 1, Route111_EventScript_PickItem2
+	case 2, Route111_EventScript_PickItem3
 	end
 
-Route111_EventScript_PickThroatSpray::
-	finditem ITEM_THROAT_SPRAY
+Route111_EventScript_PickItem1::
+	finditem ITEM_SHED_SHELL
 	setflag FLAG_ITEM_ROUTE_111_TM_SANDSTORM
 	end
 
-Route111_EventScript_EjectPack::
-	finditem ITEM_EJECT_PACK
+Route111_EventScript_PickItem2::
+	finditem ITEM_SHELL_BELL
 	setflag FLAG_ITEM_ROUTE_111_TM_SANDSTORM
 	end
 
-Route111_EventScript_CustapBerry::
+Route111_EventScript_PickItem3::
 	finditem ITEM_CUSTAP_BERRY
 	setflag FLAG_ITEM_ROUTE_111_TM_SANDSTORM
 	end
+@ === RAND_ROUTE111_ITEMS_END ===
 
 Route111_EventScript_RematchBrooke::
 	trainerbattle_rematch TRAINER_BROOKE_1, Route111_Text_BrookeRematchIntro, Route111_Text_BrookeRematchDefeat
@@ -754,3 +764,78 @@ Route111_Text_TrainerHillSign:
 	.string "“Scale the heights, you hot-blooded\n"
 	.string "TRAINERS!”$"
 
+
+@ === RAND_ROUTE111_BALL_A_START ===
+Route111_EventScript_PickBallA::
+	multichoice 0, 0, MULTI_ROUTE111_PICK_BALL_A, FALSE
+	switch VAR_RESULT
+	case 0, Route111_EventScript_PickBallA1
+	case 1, Route111_EventScript_PickBallA2
+	case 2, Route111_EventScript_PickBallA3
+	end
+
+Route111_EventScript_PickBallA1::
+	finditem ITEM_LANSAT_BERRY
+	setflag FLAG_ITEM_ROUTE_111_ELIXIR
+	end
+
+Route111_EventScript_PickBallA2::
+	finditem ITEM_EJECT_PACK
+	setflag FLAG_ITEM_ROUTE_111_ELIXIR
+	end
+
+Route111_EventScript_PickBallA3::
+	finditem ITEM_MENTAL_HERB
+	setflag FLAG_ITEM_ROUTE_111_ELIXIR
+	end
+@ === RAND_ROUTE111_BALL_A_END ===
+
+@ === RAND_ROUTE111_BALL_B_START ===
+Route111_EventScript_PickBallB::
+	multichoice 0, 0, MULTI_ROUTE111_PICK_BALL_B, FALSE
+	switch VAR_RESULT
+	case 0, Route111_EventScript_PickBallB1
+	case 1, Route111_EventScript_PickBallB2
+	case 2, Route111_EventScript_PickBallB3
+	end
+
+Route111_EventScript_PickBallB1::
+	finditem ITEM_WIDE_LENS
+	setflag FLAG_ITEM_ROUTE_111_POWERHERB
+	end
+
+Route111_EventScript_PickBallB2::
+	finditem ITEM_BINDING_BAND
+	setflag FLAG_ITEM_ROUTE_111_POWERHERB
+	end
+
+Route111_EventScript_PickBallB3::
+	finditem ITEM_MARANGA_BERRY
+	setflag FLAG_ITEM_ROUTE_111_POWERHERB
+	end
+@ === RAND_ROUTE111_BALL_B_END ===
+
+@ === RAND_ROUTE111_BALL_C_START ===
+Route111_EventScript_PickBallC::
+	multichoice 0, 0, MULTI_ROUTE111_PICK_BALL_C, FALSE
+	switch VAR_RESULT
+	case 0, Route111_EventScript_PickBallC1
+	case 1, Route111_EventScript_PickBallC2
+	case 2, Route111_EventScript_PickBallC3
+	end
+
+Route111_EventScript_PickBallC1::
+	finditem ITEM_BRIGHT_POWDER
+	setflag FLAG_ITEM_ROUTE_111_ADRENALINE
+	end
+
+Route111_EventScript_PickBallC2::
+	finditem ITEM_SAFETY_GOGGLES
+	setflag FLAG_ITEM_ROUTE_111_ADRENALINE
+	end
+
+Route111_EventScript_PickBallC3::
+	finditem ITEM_GRIP_CLAW
+	setflag FLAG_ITEM_ROUTE_111_ADRENALINE
+	end
+@ === RAND_ROUTE111_BALL_C_END ===

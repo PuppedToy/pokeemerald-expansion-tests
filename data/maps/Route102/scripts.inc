@@ -70,3 +70,28 @@ Route102_Text_RouteSignPetalburg:
 Route102_Text_GiveYouOneOfMyRods:
 	.string "If you fish, you'll find different\n"
 	.string "encounters. Here, try it.$"
+
+@ === RAND_ROUTE102_BALL_START ===
+Route102_EventScript_PickBall::
+	multichoice 0, 0, MULTI_ROUTE102_PICK_BALL, FALSE
+	switch VAR_RESULT
+	case 0, Route102_EventScript_PickBall1
+	case 1, Route102_EventScript_PickBall2
+	case 2, Route102_EventScript_PickBall3
+	end
+
+Route102_EventScript_PickBall1::
+	finditem ITEM_SITRUS_BERRY
+	setflag FLAG_ITEM_ROUTE_102_POTION
+	end
+
+Route102_EventScript_PickBall2::
+	finditem ITEM_MIRROR_HERB
+	setflag FLAG_ITEM_ROUTE_102_POTION
+	end
+
+Route102_EventScript_PickBall3::
+	finditem ITEM_EXPERT_BELT
+	setflag FLAG_ITEM_ROUTE_102_POTION
+	end
+@ === RAND_ROUTE102_BALL_END ===

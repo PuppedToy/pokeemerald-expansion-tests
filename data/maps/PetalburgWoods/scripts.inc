@@ -296,28 +296,36 @@ PetalburgWoods_EventScript_James::
 	release
 	end
 
+@ === RAND_PETALBURG_PLATES_START ===
 PetalburgWoods_EventScript_PickPlate::
 	multichoice 0, 0, MULTI_PETALBURG_WOODS_PICK, FALSE
 	switch VAR_RESULT
-	case 0, PetalburgWoods_EventScript_PickMeadow
-	case 1, PetalburgWoods_EventScript_PickSplash
-	case 2, PetalburgWoods_EventScript_PickEarth
+	case 0, PetalburgWoods_EventScript_PickPlate1
+	case 1, PetalburgWoods_EventScript_PickPlate2
+	case 2, PetalburgWoods_EventScript_PickPlate3
+	case 3, PetalburgWoods_EventScript_PickPlate4
 	end
 
-PetalburgWoods_EventScript_PickMeadow::
+PetalburgWoods_EventScript_PickPlate1::
 	finditem ITEM_MEADOW_PLATE
 	setflag FLAG_ITEM_PETALBURG_WOODS_PARALYZE_HEAL
 	end
 
-PetalburgWoods_EventScript_PickSplash::
-	finditem ITEM_SPLASH_PLATE
+PetalburgWoods_EventScript_PickPlate2::
+	finditem ITEM_STONE_PLATE
 	setflag FLAG_ITEM_PETALBURG_WOODS_PARALYZE_HEAL
 	end
 
-PetalburgWoods_EventScript_PickEarth::
-	finditem ITEM_EARTH_PLATE
+PetalburgWoods_EventScript_PickPlate3::
+	finditem ITEM_DRACO_PLATE
 	setflag FLAG_ITEM_PETALBURG_WOODS_PARALYZE_HEAL
 	end
+
+PetalburgWoods_EventScript_PickPlate4::
+	finditem ITEM_IRON_PLATE
+	setflag FLAG_ITEM_PETALBURG_WOODS_PARALYZE_HEAL
+	end
+@ === RAND_PETALBURG_PLATES_END ===
 
 PetalburgWoods_EventScript_TryRegisterJames::
 	special PlayerFaceTrainerAfterBattle

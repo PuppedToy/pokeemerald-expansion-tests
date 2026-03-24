@@ -81,25 +81,52 @@ Route125_EventScript_Auron::
 	msgbox Route125_Text_AuronPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+@ === RAND_ROUTE125_ITEMS_START ===
 Route125_EventScript_PickItem::
 	multichoice 0, 0, MULTI_ROUTE125_PICK_ITEM, FALSE
 	switch VAR_RESULT
-	case 0, Route125_EventScript_PickWeaknessPolicy
-	case 1, Route125_EventScript_PickEjectButton
-	case 2, Route125_EventScript_PickLeppaBerry
+	case 0, Route125_EventScript_PickItem1
+	case 1, Route125_EventScript_PickItem2
+	case 2, Route125_EventScript_PickItem3
 	end
 
-Route125_EventScript_PickWeaknessPolicy::
+Route125_EventScript_PickItem1::
 	finditem ITEM_WEAKNESS_POLICY
 	setflag FLAG_ITEM_ROUTE_125_BIG_PEARL
 	end
 
-Route125_EventScript_PickEjectButton::
+Route125_EventScript_PickItem2::
 	finditem ITEM_EJECT_BUTTON
 	setflag FLAG_ITEM_ROUTE_125_BIG_PEARL
 	end
 
-Route125_EventScript_PickLeppaBerry::
-	finditem ITEM_LEPPA_BERRY
+Route125_EventScript_PickItem3::
+	finditem ITEM_PUNCHING_GLOVE
 	setflag FLAG_ITEM_ROUTE_125_BIG_PEARL
 	end
+@ === RAND_ROUTE125_ITEMS_END ===
+
+@ === RAND_ROUTE125_BALL_START ===
+Route125_EventScript_PickBall::
+	multichoice 0, 0, MULTI_ROUTE125_PICK_BALL, FALSE
+	switch VAR_RESULT
+	case 0, Route125_EventScript_PickBall1
+	case 1, Route125_EventScript_PickBall2
+	case 2, Route125_EventScript_PickBall3
+	end
+
+Route125_EventScript_PickBall1::
+	finditem ITEM_LUMINOUS_MOSS
+	setflag FLAG_ITEM_ROUTE_116_KINGS_ROCK
+	end
+
+Route125_EventScript_PickBall2::
+	finditem ITEM_ZOOM_LENS
+	setflag FLAG_ITEM_ROUTE_116_KINGS_ROCK
+	end
+
+Route125_EventScript_PickBall3::
+	finditem ITEM_QUICK_CLAW
+	setflag FLAG_ITEM_ROUTE_116_KINGS_ROCK
+	end
+@ === RAND_ROUTE125_BALL_END ===

@@ -148,7 +148,22 @@
 #define MULTI_ROUTE116_PICK_ORB            137
 #define MULTI_ROUTE116_PICK_ITEM           138
 #define MULTI_ROUTE125_PICK_ITEM           139
-#define MULTI_SKYPILLAR_TOP_LEGEND         140
+#define MULTI_ROUTE102_PICK_BALL           140
+#define MULTI_ROUTE109_PICK_BALL           141
+#define MULTI_ROUTE110_PICK_BALL           142
+#define MULTI_ROUTE111_PICK_BALL_A         143
+#define MULTI_ROUTE111_PICK_BALL_B         144
+#define MULTI_ROUTE111_PICK_BALL_C         145
+#define MULTI_ROUTE112_PICK_BALL           146
+#define MULTI_ROUTE114_PICK_BALL_A         147
+#define MULTI_ROUTE114_PICK_BALL_B         148
+#define MULTI_ROUTE114_PICK_BALL_C         149
+#define MULTI_ROUTE115_PICK_BALL           150
+#define MULTI_ROUTE116_PICK_BALL           151
+#define MULTI_ROUTE124_PICK_BALL_A         152
+#define MULTI_ROUTE124_PICK_BALL_B         153
+#define MULTI_ROUTE125_PICK_BALL           154
+#define MULTI_SKYPILLAR_TOP_LEGEND         155
 
 // Lilycove SS Tidal Multichoice Selections
 #define SSTIDAL_SELECTION_SLATEPORT        0

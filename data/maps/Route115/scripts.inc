@@ -166,3 +166,28 @@ Route115_Text_MeteorFallsSign:
 	.string "METEOR FALLS\n"
 	.string "FALLARBOR TOWN THROUGH HERE$"
 
+
+@ === RAND_ROUTE115_BALL_START ===
+Route115_EventScript_PickBall::
+	multichoice 0, 0, MULTI_ROUTE115_PICK_BALL, FALSE
+	switch VAR_RESULT
+	case 0, Route115_EventScript_PickBall1
+	case 1, Route115_EventScript_PickBall2
+	case 2, Route115_EventScript_PickBall3
+	end
+
+Route115_EventScript_PickBall1::
+	finditem ITEM_UTILITY_UMBRELLA
+	setflag FLAG_ITEM_ROUTE_115_GREAT_BALL
+	end
+
+Route115_EventScript_PickBall2::
+	finditem ITEM_ROOM_SERVICE
+	setflag FLAG_ITEM_ROUTE_115_GREAT_BALL
+	end
+
+Route115_EventScript_PickBall3::
+	finditem ITEM_WHITE_HERB
+	setflag FLAG_ITEM_ROUTE_115_GREAT_BALL
+	end
+@ === RAND_ROUTE115_BALL_END ===

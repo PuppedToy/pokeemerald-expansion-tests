@@ -581,3 +581,28 @@ Route109_Text_TrainerTipsSign:
 	.string "always have identical stats.\p"
 	.string "POKéMON raised by TRAINERS are said\n"
 	.string "to grow stronger than wild POKéMON.$"
+
+@ === RAND_ROUTE109_BALL_START ===
+Route109_EventScript_PickBall::
+	multichoice 0, 0, MULTI_ROUTE109_PICK_BALL, FALSE
+	switch VAR_RESULT
+	case 0, Route109_EventScript_PickBall1
+	case 1, Route109_EventScript_PickBall2
+	case 2, Route109_EventScript_PickBall3
+	end
+
+Route109_EventScript_PickBall1::
+	finditem ITEM_CELL_BATTERY
+	setflag FLAG_ITEM_ROUTE_109_POTION
+	end
+
+Route109_EventScript_PickBall2::
+	finditem ITEM_PROTECTIVE_PADS
+	setflag FLAG_ITEM_ROUTE_109_POTION
+	end
+
+Route109_EventScript_PickBall3::
+	finditem ITEM_LOADED_DICE
+	setflag FLAG_ITEM_ROUTE_109_POTION
+	end
+@ === RAND_ROUTE109_BALL_END ===
