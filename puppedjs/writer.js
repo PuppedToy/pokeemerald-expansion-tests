@@ -44,6 +44,7 @@ const {
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const items = require('./items.js');
 const { savePokemonData } = require('./pokemonWriter.js');
+const { randomizeTMs } = require('./tmRandomizer.js');
 
 const startersFile = path.resolve(__dirname, '..', 'src', 'starter_choose.c');
 
@@ -212,6 +213,9 @@ function getFamilyGroup(familyId) {
 async function writer(pokemonList, moves, abilities, isDebug) {
 
     pokemonList = pokemonList.filter(poke => !bannedSpeciesForPicking.includes(poke.id));
+
+    console.log('Randomizing TMs...');
+    await randomizeTMs();
 
     console.log('Writing pokemon buff / nerfs to files...');
     // Save pokemon buffed / nerfed versions
