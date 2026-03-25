@@ -420,6 +420,49 @@ const unusedSpecialStrategiesMoves = [
     'MOVE_SPEED_SWAP',
 ]
 
+// A6: Move sets used for combo pattern detection in computeComboBonus.
+const setupMoves = new Set([
+    'MOVE_SWORDS_DANCE', 'MOVE_DRAGON_DANCE', 'MOVE_NASTY_PLOT', 'MOVE_CALM_MIND',
+    'MOVE_QUIVER_DANCE', 'MOVE_SHELL_SMASH', 'MOVE_BELLY_DRUM', 'MOVE_SHIFT_GEAR',
+    'MOVE_TAIL_GLOW', 'MOVE_GEOMANCY', 'MOVE_BULK_UP', 'MOVE_COIL', 'MOVE_WORK_UP',
+    'MOVE_HONE_CLAWS', 'MOVE_CURSE', 'MOVE_VICTORY_DANCE', 'MOVE_NO_RETREAT',
+    'MOVE_CLANGOROUS_SOUL', 'MOVE_FILLET_AWAY', 'MOVE_TAKE_HEART',
+]);
+
+const comboPriorityMoves = new Set([
+    'MOVE_BULLET_PUNCH', 'MOVE_MACH_PUNCH', 'MOVE_AQUA_JET', 'MOVE_SHADOW_SNEAK',
+    'MOVE_SUCKER_PUNCH', 'MOVE_EXTREME_SPEED', 'MOVE_ICE_SHARD', 'MOVE_QUICK_ATTACK',
+    'MOVE_VACUUM_WAVE', 'MOVE_JET_PUNCH', 'MOVE_WATER_SHURIKEN',
+    'MOVE_FIRST_IMPRESSION', 'MOVE_FAKE_OUT',
+]);
+
+const comboRecoveryMoves = new Set([
+    'MOVE_RECOVER', 'MOVE_ROOST', 'MOVE_SOFT_BOILED', 'MOVE_SLACK_OFF',
+    'MOVE_MILK_DRINK', 'MOVE_HEAL_ORDER', 'MOVE_SYNTHESIS', 'MOVE_MORNING_SUN',
+    'MOVE_MOONLIGHT', 'MOVE_SHORE_UP', 'MOVE_REST',
+]);
+
+const selfLoweringMoves = new Set([
+    'MOVE_LEAF_STORM', 'MOVE_OVERHEAT', 'MOVE_SUPERPOWER', 'MOVE_DRACO_METEOR',
+    'MOVE_CLOSE_COMBAT', 'MOVE_FLEUR_CANNON', 'MOVE_PSYCHO_BOOST', 'MOVE_HAMMER_ARM',
+    'MOVE_V_CREATE', 'MOVE_CLANGING_SCALES',
+]);
+
+const highFlinchMoves = new Set([
+    'MOVE_AIR_SLASH', 'MOVE_IRON_HEAD', 'MOVE_ROCK_SLIDE', 'MOVE_HEADBUTT',
+    'MOVE_ZEN_HEADBUTT', 'MOVE_BITE', 'MOVE_DARK_PULSE', 'MOVE_ASTONISH',
+    'MOVE_EXTRASENSORY', 'MOVE_NEEDLE_ARM',
+]);
+
+const hazardSetMoves = new Set([
+    'MOVE_STEALTH_ROCK', 'MOVE_SPIKES', 'MOVE_TOXIC_SPIKES', 'MOVE_STICKY_WEB',
+]);
+
+const pivotingMoves = new Set([
+    'MOVE_U_TURN', 'MOVE_VOLT_SWITCH', 'MOVE_FLIP_TURN', 'MOVE_PARTING_SHOT',
+    'MOVE_TELEPORT',
+]);
+
 const statusList = {
     MOVE_SPLASH: 0,
     MOVE_CELEBRATE: 0,
@@ -1869,6 +1912,202 @@ const FLEXIBILITY_THRESHOLD = 20;
 const GOOD_STAT_VALUE = 160;
 const EXCELLENT_STAT_VALUE = 160;
 
+// A6: Combo-aware rating bonus.
+// Detects move+ability synergies that caused pokemon to over-perform their BST in
+// competitive play. Returns an additive bonus (0–1.5) applied directly to absoluteRating
+// AFTER the 80/10/10 weighted formula, so a +0.5 bonus meaningfully shifts a tier.
+// Does NOT double-count patterns already handled elsewhere:
+//   - HUGE_POWER / PARENTAL_BOND: already ×2 in bstRating
+//   - TECHNICIAN + priority: already ×1.5 in rateMoveForAPokemon
+//   - SKILL_LINK + multi-hit: already ×2.5 in rateMoveForAPokemon
+//   - ADAPTABILITY stab: already ×2 in rateMoveForAPokemon
+function computeComboBonus(poke, moveset, moves) {
+    const hasAbility = (ab) => poke.parsedAbilities.includes(ab);
+    const hasMove = (id) => moveset.includes(id);
+    const hasAnyMove = (set) => moveset.some(id => set.has(id));
+
+    let bonus = 0;
+    const bonusLog = [];
+
+    // ── Ability-based bonuses ─────────────────────────────────────────────────
+
+    // Magic Guard: negates Life Orb recoil, hazard chip, residual status — removes
+    // every passive damage drawback simultaneously.
+    if (hasAbility('MAGIC_GUARD')) {
+        bonus += 0.5;
+        bonusLog.push('MAGIC_GUARD +0.5');
+    }
+
+    // Poison Heal: Toxic Orb becomes 12.5% HP/turn healing instead of damage.
+    // Stacks with Sub combos below when applicable.
+    if (hasAbility('POISON_HEAL')) {
+        bonus += 0.4;
+        bonusLog.push('POISON_HEAL +0.4');
+    }
+
+    // Speed Boost: +1 Spe each end-of-turn. With Protect/Detect, gain speed for free
+    // every other turn with no risk. Without Protect still dominant but riskier.
+    if (hasAbility('SPEED_BOOST')) {
+        if (hasMove('MOVE_PROTECT') || hasMove('MOVE_DETECT')
+            || hasMove('MOVE_BANEFUL_BUNKER') || hasMove('MOVE_SPIKY_SHIELD')) {
+            bonus += 0.6;
+            bonusLog.push('SPEED_BOOST+PROTECT +0.6');
+        } else {
+            bonus += 0.3;
+            bonusLog.push('SPEED_BOOST +0.3');
+        }
+    }
+
+    // Protean / Libero: every move gets STAB (1.5×). Equivalent to ~+30% damage
+    // on every single attack across the entire moveset.
+    if (hasAbility('PROTEAN') || hasAbility('LIBERO')) {
+        bonus += 0.4;
+        bonusLog.push('PROTEAN/LIBERO +0.4');
+    }
+
+    // Serene Grace + high-flinch move: doubles secondary effect rates, turning
+    // Air Slash / Iron Head into 60% flinch machines on a faster pokemon.
+    if (hasAbility('SERENE_GRACE') && hasAnyMove(highFlinchMoves)) {
+        bonus += 0.5;
+        bonusLog.push('SERENE_GRACE+flinch +0.5');
+    }
+
+    // Prankster + any status move: gives +1 priority to all non-damaging moves,
+    // meaning Thunder Wave / Taunt / WoW execute before any move including Scarf users.
+    if (hasAbility('PRANKSTER')) {
+        const hasStatusMove = moveset.some(id => {
+            const m = moves[id];
+            return m && m.category === 'DAMAGE_CATEGORY_STATUS';
+        });
+        if (hasStatusMove) {
+            bonus += 0.4;
+            bonusLog.push('PRANKSTER+status +0.4');
+        }
+    }
+
+    // Contrary + self-lowering move: turns a -2 SpA drop (Leaf Storm, Overheat, etc.)
+    // into a +2 SpA boost. Spamming Leaf Storm gives +6 SpA in 3 turns with a 130 BP move.
+    if (hasAbility('CONTRARY') && hasAnyMove(selfLoweringMoves)) {
+        bonus += 0.7;
+        bonusLog.push('CONTRARY+self-lower +0.7');
+    }
+
+    // Mold Breaker (and variants): ignores Levitate, hitting every Ground-immune pokemon.
+    // Levitate is the most common defensive ability — this removes a major wall category.
+    if ((hasAbility('MOLD_BREAKER') || hasAbility('TURBOBLAZE') || hasAbility('TERAVOLT'))
+        && (hasMove('MOVE_EARTHQUAKE') || hasMove('MOVE_EARTH_POWER'))) {
+        bonus += 0.3;
+        bonusLog.push('MOLD_BREAKER+ground +0.3');
+    }
+
+    // Magic Bounce: reflects all hazards and status moves back at the user.
+    // Denies Stealth Rock setup against the entire team passively.
+    if (hasAbility('MAGIC_BOUNCE')) {
+        bonus += 0.3;
+        bonusLog.push('MAGIC_BOUNCE +0.3');
+    }
+
+    // Unaware + recovery: ignores ALL opponent stat boosts when taking/dealing damage.
+    // Hard counter to every setup sweeper in existence as long as it can keep healing.
+    if (hasAbility('UNAWARE') && hasAnyMove(comboRecoveryMoves)) {
+        bonus += 0.4;
+        bonusLog.push('UNAWARE+recovery +0.4');
+    }
+
+    // ── Move combo bonuses ────────────────────────────────────────────────────
+
+    const hasSetup    = hasAnyMove(setupMoves);
+    const hasPriority = hasAnyMove(comboPriorityMoves);
+    const hasRecovery = hasAnyMove(comboRecoveryMoves);
+    const hasHazard   = hasAnyMove(hazardSetMoves);
+    const hasPivot    = hasAnyMove(pivotingMoves);
+    const hasSub      = hasMove('MOVE_SUBSTITUTE');
+    const hasToxic    = hasMove('MOVE_TOXIC') || hasMove('MOVE_WILL_O_WISP');
+
+    // Setup + Priority: after any boost, can't be revenge-killed by faster mons.
+    // This is the single most reliable competitive pattern (Scizor SD+BP, Lucario SD+ESpeed,
+    // Azumarill BD+AquaJet, Kingambit SD+SuckerPunch).
+    if (hasSetup && hasPriority) {
+        bonus += 0.7;
+        bonusLog.push('SETUP+PRIORITY +0.7');
+    } else if (hasSetup && poke.baseSpeed >= 90) {
+        // Fast enough that a single setup turn is already enough to outspeed most threats.
+        bonus += 0.4;
+        bonusLog.push('SETUP+fast(spe>=90) +0.4');
+    }
+
+    // Quiver Dance: the best standalone setup move — +1 SpA, SpD, AND Spe in one turn.
+    // A separate bonus on top of setup+priority / setup+speed when applicable.
+    if (hasMove('MOVE_QUIVER_DANCE')) {
+        bonus += 0.5;
+        bonusLog.push('QUIVER_DANCE +0.5');
+    }
+
+    // Shell Smash: +2 Atk/SpA/Spe at -1 Def/SpDef. White Herb restores the defense drop.
+    // Covered by setup+priority above when it co-occurs with a priority move, but worth
+    // a standalone bonus for the raw power of +2 offense+speed.
+    if (hasMove('MOVE_SHELL_SMASH')) {
+        bonus += 0.4;
+        bonusLog.push('SHELL_SMASH +0.4');
+    }
+
+    // Sub + Toxic/WoW + Recovery: the classic stall loop. Sub blocks direct damage, status
+    // chips the opponent, recovery patches Sub cost. Gliscor, Gengar, Clodsire archetypes.
+    if (hasSub && hasToxic && hasRecovery) {
+        bonus += 0.6;
+        bonusLog.push('SUB+STATUS+RECOVERY +0.6');
+    } else if (hasSub && hasRecovery) {
+        // Sub + recovery without status — still strong (sustained Sub cycling).
+        bonus += 0.3;
+        bonusLog.push('SUB+RECOVERY +0.3');
+    } else if (hasSub && hasAbility('POISON_HEAL')) {
+        // Poison Heal covers Sub's HP cost without a recovery move — also valid.
+        bonus += 0.3;
+        bonusLog.push('SUB+POISON_HEAL +0.3');
+    }
+
+    // Hazard setter + recovery: long-term win condition. Hazards deal ~25% per switch.
+    // With recovery, the setter can maintain hazards indefinitely (Ferrothorn, Skarmory).
+    if (hasHazard && hasRecovery) {
+        bonus += 0.4;
+        bonusLog.push('HAZARD+RECOVERY +0.4');
+    }
+
+    // Pivot + recovery or Regenerator: net HP-positive every pivot cycle.
+    // Makes switch-ins free over the long game (Landorus-T, Tornadus-T, Corviknight).
+    if (hasPivot && (hasRecovery || hasAbility('REGENERATOR'))) {
+        bonus += 0.3;
+        bonusLog.push('PIVOT+RECOVERY +0.3');
+    }
+
+    // ── Wire comboList to absoluteRating ─────────────────────────────────────
+    // comboList already drives move selection, but never affected absoluteRating.
+    // Find the highest-rated comboList entry whose two effects both appear in the moveset.
+    // Scale the rating (6–10) to a small additive bonus (0–0.2) to avoid double-counting
+    // with the patterns above.
+    let bestComboListBonus = 0;
+    for (const combo of comboList) {
+        const matchCount = moveset.filter(id => {
+            const m = moves[id];
+            return m && combo.effects.includes(m.effect);
+        }).length;
+        if (matchCount >= 2) {
+            const scaled = Math.max(0, (combo.rating - 6) / 4 * 0.2);
+            if (scaled > bestComboListBonus) bestComboListBonus = scaled;
+        }
+    }
+    if (bestComboListBonus > 0) {
+        bonus += bestComboListBonus;
+        bonusLog.push(`comboList +${bestComboListBonus.toFixed(2)}`);
+    }
+
+    const finalBonus = Math.min(bonus, 1.5);
+    if (finalBonus > 0) {
+        console.log(`[A6] ${poke.name}: comboBonus=${finalBonus.toFixed(2)} [${bonusLog.join(', ')}]`);
+    }
+    return finalBonus;
+}
+
 // @TODO Maybe add a level-based rating too for the right context
 function ratePokemon(poke, moves, abilities) {
     let bestAbilityRating = 0;
@@ -2006,6 +2245,11 @@ function ratePokemon(poke, moves, abilities) {
 
     let absoluteRating = (bstRating * 0.8) + (movesRating * 0.1) + (bestAbilityRating * 0.1);
 
+    // A6: Additive combo bonus applied after weighted formula, before BST floor clamps.
+    // Keeps BST integrity intact while letting move+ability synergies meaningfully shift tier.
+    const comboBonus = computeComboBonus(poke, moveset, moves);
+    absoluteRating += comboBonus;
+
     let rawBST =
         poke.baseHP
         + poke.baseAttack * abilitiesAttackPowerMultiplier
@@ -2076,6 +2320,7 @@ function ratePokemon(poke, moves, abilities) {
         movesRating,
         bestAbilityRating,
         coverageMetrics,
+        comboBonus,
         tier,
         role,
     };
@@ -2091,4 +2336,5 @@ module.exports = {
     damageMultiplier,
     isSuperEffective,
     computeCoverageMetrics,
+    computeComboBonus,
 }
