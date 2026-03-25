@@ -1925,8 +1925,15 @@ const EXCELLENT_STAT_VALUE = 160;
 //   - ADAPTABILITY stab: already ×2 in rateMoveForAPokemon
 function computeComboBonus(poke, moveset, moves) {
     const hasAbility = (ab) => poke.parsedAbilities.includes(ab);
-    const hasMove = (id) => moveset.includes(id);
-    const hasAnyMove = (set) => moveset.some(id => set.has(id));
+
+    // Use the full learnable pool so combos are detected even when chooseMoveset
+    // picks 4 damage moves and omits setup/hazard/utility moves entirely.
+    const levelUpMoveIds = (poke.learnset || []).map(e => e.move);
+    const teachableMoveIds = poke.teachables || [];
+    const allLearnableMoves = new Set([...moveset, ...levelUpMoveIds, ...teachableMoveIds]);
+
+    const hasMove = (id) => allLearnableMoves.has(id);
+    const hasAnyMove = (set) => [...set].some(id => allLearnableMoves.has(id));
 
     let bonus = 0;
     const bonusLog = [];
@@ -1977,7 +1984,7 @@ function computeComboBonus(poke, moveset, moves) {
     // Prankster + any status move: gives +1 priority to all non-damaging moves,
     // meaning Thunder Wave / Taunt / WoW execute before any move including Scarf users.
     if (hasAbility('PRANKSTER')) {
-        const hasStatusMove = moveset.some(id => {
+        const hasStatusMove = [...allLearnableMoves].some(id => {
             const m = moves[id];
             return m && m.category === 'DAMAGE_CATEGORY_STATUS';
         });
