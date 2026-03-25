@@ -436,6 +436,7 @@ const comboPriorityMoves = new Set([
     'MOVE_SUCKER_PUNCH', 'MOVE_EXTREME_SPEED', 'MOVE_ICE_SHARD', 'MOVE_QUICK_ATTACK',
     'MOVE_VACUUM_WAVE', 'MOVE_JET_PUNCH', 'MOVE_WATER_SHURIKEN',
     'MOVE_FIRST_IMPRESSION', 'MOVE_FAKE_OUT',
+    'MOVE_THUNDERCLAP',  // Raging Bolt signature — priority special Electric
 ]);
 
 const comboRecoveryMoves = new Set([
@@ -1982,8 +1983,14 @@ function computeComboBonus(poke, moveset, moves) {
     // Air Slash / Iron Head into 60% flinch machines on a faster pokemon.
     // Speed >= 70 required: flinch abuse only works when moving first.
     if (hasAbility('SERENE_GRACE') && hasAnyMove(highFlinchMoves) && poke.baseSpeed >= 70) {
-        bonus += 0.5;
-        bonusLog.push('SERENE_GRACE+flinch +0.5');
+        bonus += 0.6;
+        bonusLog.push('SERENE_GRACE+flinch +0.6');
+        // Serene Grace + setup: doubles boost-move secondary effects AND has offensive setup.
+        // Both halves of the combo are independently powerful; together they're exceptional.
+        if (hasAnyMove(setupMoves)) {
+            bonus += 0.3;
+            bonusLog.push('SERENE_GRACE+setup +0.3');
+        }
     }
 
     // Prankster + any status move: gives +1 priority to all non-damaging moves,
@@ -2004,6 +2011,48 @@ function computeComboBonus(poke, moveset, moves) {
     if (hasAbility('CONTRARY') && hasAnyMove(selfLoweringMoves)) {
         bonus += 0.7;
         bonusLog.push('CONTRARY+self-lower +0.7');
+    }
+
+    // PARENTAL_BOND: each move hits twice (second hit at 0.25×). This breaks Focus Sash and
+    // Sturdy on the first hit, then finishes with the second. Combined with priority it is
+    // nearly impossible to counter offensively.
+    if (hasAbility('PARENTAL_BOND')) {
+        bonus += 0.3;
+        bonusLog.push('PARENTAL_BOND +0.3');
+        if (hasAnyMove(comboPriorityMoves)) {
+            bonus += 0.4;
+            bonusLog.push('PARENTAL_BOND+priority +0.4');
+        }
+    }
+
+    // BEAST_BOOST: each KO raises the pokemon's best stat by one stage. In a sweep
+    // scenario this becomes exponentially threatening. Captured as a combo bonus on top
+    // of the 1.3× multiplier already applied to offensePower in the BST formula.
+    if (hasAbility('BEAST_BOOST')) {
+        const bestOffense = Math.max(poke.baseAttack, poke.baseSpAttack);
+        if (bestOffense >= 110) {
+            bonus += 0.5;
+            bonusLog.push('BEAST_BOOST+strong_offense +0.5');
+        } else {
+            bonus += 0.3;
+            bonusLog.push('BEAST_BOOST +0.3');
+        }
+    }
+
+    // STANCE_CHANGE (Aegislash): switches between 150/150 offense (Blade) and 240/240 defense
+    // (Shield) each turn. Effectively gets both roles simultaneously — wall when defending,
+    // sweeper when attacking. This dual-form advantage cannot be captured by raw stats alone.
+    if (hasAbility('STANCE_CHANGE')) {
+        bonus += 1.2;
+        bonusLog.push('STANCE_CHANGE +1.2');
+    }
+
+    // TECHNICIAN + priority move: Bullet Punch / Mach Punch at 90 effective BP (60×1.5) with
+    // STAB and priority. The ×1.5 Technician is already in rateMoveForAPokemon, but the
+    // strategic combo value (guaranteed revenge kill, hazard chip finish, sash break) is extra.
+    if (hasAbility('TECHNICIAN') && hasAnyMove(comboPriorityMoves)) {
+        bonus += 0.4;
+        bonusLog.push('TECHNICIAN+priority +0.4');
     }
 
     // Mold Breaker (and variants): ignores Levitate, hitting every Ground-immune pokemon.
@@ -2039,8 +2088,28 @@ function computeComboBonus(poke, moveset, moves) {
     // ── Move combo bonuses ────────────────────────────────────────────────────
 
     const hasSetup    = hasAnyMove(setupMoves);
-    const hasPriority = hasAnyMove(comboPriorityMoves);
     const hasRecovery = hasAnyMove(comboRecoveryMoves);
+
+    // Stat-aware priority check: physical priority is only strategically relevant to
+    // physical or mixed attackers. Prevents e.g. Sceptile Mega (special attacker) from
+    // getting SETUP+PRIORITY credit for Quick Attack it would never competitively run.
+    const physicalPriorityIds = new Set([
+        'MOVE_BULLET_PUNCH', 'MOVE_MACH_PUNCH', 'MOVE_AQUA_JET', 'MOVE_SHADOW_SNEAK',
+        'MOVE_SUCKER_PUNCH', 'MOVE_EXTREME_SPEED', 'MOVE_ICE_SHARD', 'MOVE_QUICK_ATTACK',
+        'MOVE_JET_PUNCH', 'MOVE_FIRST_IMPRESSION', 'MOVE_FAKE_OUT',
+    ]);
+    const specialPriorityIds = new Set([
+        'MOVE_VACUUM_WAVE', 'MOVE_WATER_SHURIKEN', 'MOVE_THUNDERCLAP',
+    ]);
+    const hasPhysicalPriority = [...physicalPriorityIds].some(id => allLearnableMoves.has(id));
+    const hasSpecialPriority  = [...specialPriorityIds].some(id => allLearnableMoves.has(id));
+    // A pokemon is "clearly physical/special" if its dominant attack exceeds 90% of the other.
+    const isClearlyPhysical = poke.baseAttack > poke.baseSpAttack * 0.9;
+    const isClearlySpecial  = poke.baseSpAttack > poke.baseAttack * 0.9;
+    const hasPriority =
+        (isClearlyPhysical && hasPhysicalPriority)
+        || (isClearlySpecial && hasSpecialPriority)
+        || (!isClearlyPhysical && !isClearlySpecial && (hasPhysicalPriority || hasSpecialPriority));
     const hasHazard   = hasAnyMove(hazardSetMoves);
     const hasPivot    = hasAnyMove(pivotingMoves);
     const hasSub      = hasMove('MOVE_SUBSTITUTE');
@@ -2052,6 +2121,12 @@ function computeComboBonus(poke, moveset, moves) {
     if (hasSetup && hasPriority) {
         bonus += 0.7;
         bonusLog.push('SETUP+PRIORITY +0.7');
+        // Fast + setup + priority: can both outspeed AND use priority — uniquely hard to revenge kill.
+        // Weavile (125 Spe + SD + Sucker Punch) exemplifies this: no speed tier is safe.
+        if (poke.baseSpeed >= 90) {
+            bonus += 0.3;
+            bonusLog.push('SETUP+fast(spe>=90) +0.3');
+        }
     } else if (hasSetup && poke.baseSpeed >= 90) {
         // Fast enough that a single setup turn is already enough to outspeed most threats.
         bonus += 0.4;
@@ -2124,7 +2199,18 @@ function computeComboBonus(poke, moveset, moves) {
         bonusLog.push(`comboList +${bestComboListBonus.toFixed(2)}`);
     }
 
-    const finalBonus = Math.min(bonus, 1.5);
+    // Spectral Thief: steals the opponent's stat boosts and uses them. Completely invalidates
+    // every setup sweeper that isn't Ghost-type. Unique in competitve play.
+    if (hasMove('MOVE_SPECTRAL_THIEF')) {
+        bonus += 0.25;
+        bonusLog.push('SPECTRAL_THIEF +0.25');
+    }
+
+    // STANCE_CHANGE warrants a higher cap because its dual-form advantage is structurally
+    // unique and cannot be captured by the BST formula alone.
+    // 1.6 general cap (up from 1.5) gives top-tier pokemon with multiple synergies slight headroom.
+    const bonusCap = hasAbility('STANCE_CHANGE') ? 2.5 : 1.6;
+    const finalBonus = Math.min(bonus, bonusCap);
     if (finalBonus > 0) {
         console.log(`[A6] ${poke.name}: comboBonus=${finalBonus.toFixed(2)} [${bonusLog.join(', ')}]`);
     }
@@ -2155,6 +2241,12 @@ function ratePokemon(poke, moves, abilities) {
     if (poke.parsedAbilities.includes('PARENTAL_BOND')) {
         abilitiesAttackPowerMultiplier *= 1.25;
         abilitiesSpaPowerMultiplier *= 1.25;
+    }
+    // BEAST_BOOST snowballs after each KO. Model it as a 1.3× offensive multiplier,
+    // simulating that the pokemon progressively becomes more threatening in-game.
+    if (poke.parsedAbilities.includes('BEAST_BOOST')) {
+        abilitiesAttackPowerMultiplier *= 1.3;
+        abilitiesSpaPowerMultiplier *= 1.3;
     }
     if (poke.parsedAbilities.every(abilityId => abilityId === 'TRUANT' || abilityId === 'NONE')) {
         abilitiesAttackPowerMultiplier = 0.5;
@@ -2213,6 +2305,12 @@ function ratePokemon(poke, moves, abilities) {
         speedPower *= 1.1;
     }
 
+    // POISON_HEAL converts Toxic Orb damage into 12.5% HP/turn healing, making the
+    // pokemon significantly bulkier in practice than raw stats suggest.
+    if (poke.parsedAbilities.includes('POISON_HEAL')) {
+        defensePower *= 1.25;
+    }
+
     // Eviolite boost: NFE/LC pokemon with decent defensive bulk benefit from the +50% Def/SpDef
     // item that late-game trainers can give them. Only applied when max(Def, SpDef) >= 50
     // so glass cannons don't get an undeserved defensive boost.
@@ -2250,6 +2348,13 @@ function ratePokemon(poke, moves, abilities) {
         default:
             console.warn(`Warning: Unknown role ${role} for ${poke.name}. Assigning balanced rating.`);
             bstRating = (offensePower + defensePower + speedPower) / 3;
+    }
+
+    // Offensive mega frailty penalty: Beedrill/Alakazam Mega archetype.
+    // Very high offense+speed with almost no bulk — folded by any priority or fast scarfer.
+    // Without penalty, the OFFENSIVE formula grossly over-rates them.
+    if (poke.evolutionData && poke.evolutionData.isMega && role === 'OFFENSIVE' && defensePower <= 4.5) {
+        bstRating *= 0.85;
     }
 
     // Wonder Guard?
@@ -2314,6 +2419,13 @@ function ratePokemon(poke, moves, abilities) {
 
     if ((rawBST >= effectiveGodBSTThreshold || poke.parsedAbilities.includes('POWER_CONSTRUCT')) && absoluteRating < TIER_GOD_THRESHOLD) {
         absoluteRating = TIER_GOD_THRESHOLD + absoluteRating / 100;
+    }
+
+    // TANK pokemon with very low HP (Shuckle archetype): extreme defenses are undermined
+    // by a tiny HP pool — nearly any SE hit OHKOs regardless of 230 Def/SpDef.
+    // Override floor-clamped values to avoid inflating their tier.
+    if (role === 'TANK' && poke.baseHP < 35) {
+        absoluteRating = Math.min(absoluteRating, TIER_BAD_THRESHOLD + 0.5);
     }
 
     // These tiers are kinda working. I should add that OU is actually exclusive pokemon and UU-RU are the average fully evolved ones
