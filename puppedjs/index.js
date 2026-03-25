@@ -633,7 +633,7 @@ async function exe() {
             const fullPoke = {
                 name: nameizyPokemonId(poke.id),
                 // transform "MON_TYPES(TYPE_GRASS, TYPE_POISON)" to ["GRASS", "POISON"]
-                parsedTypes: poke.types.replace(/MON_TYPES\(/, '').replace(/\)/, '').split(', ').map(t => t.replace('TYPE_', '')),
+                parsedTypes: poke.types.replace(/\/\/.*$/, '').trim().replace(/MON_TYPES\(/, '').replace(/\)/, '').split(', ').map(t => t.replace('TYPE_', '')),
                 // transform "{ ABILITY_OVERGROW, ABILITY_NONE, ABILITY_CHLOROPHYLL }" to ["OVERGROW", "NONE", "CHLOROPHYLL"]
                 parsedAbilities: poke.abilities
                     .replace(/\/\/.*$/, '').trim()
