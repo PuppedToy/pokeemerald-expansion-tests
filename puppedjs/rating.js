@@ -24,6 +24,8 @@ const {
     STRONG_BST_THRESHOLD,
     AVERAGE_BST_THRESHOLD,
     WEAK_BST_THRESHOLD,
+    MEGA_GOD_BST_THRESHOLD,
+    MEGA_LEGEND_BST_THRESHOLD,
     EVO_TYPE_NFE_OF_3,
     EVO_TYPE_LC_OF_2,
     EVO_TYPE_LC_OF_3,
@@ -2274,11 +2276,15 @@ function ratePokemon(poke, moves, abilities) {
         absoluteRating = TIER_PREMIUM_THRESHOLD + absoluteRating / 100;
     }
 
-    if (rawBST >= LEGEND_BST_THRESHOLD && absoluteRating < TIER_LEGEND_THRESHOLD) {
+    const isMegaForFloor = poke.evolutionData && poke.evolutionData.isMega;
+    const effectiveLegendBSTThreshold = isMegaForFloor ? MEGA_LEGEND_BST_THRESHOLD : LEGEND_BST_THRESHOLD;
+    const effectiveGodBSTThreshold = isMegaForFloor ? MEGA_GOD_BST_THRESHOLD : GOD_BST_THRESHOLD;
+
+    if (rawBST >= effectiveLegendBSTThreshold && absoluteRating < TIER_LEGEND_THRESHOLD) {
         absoluteRating = TIER_LEGEND_THRESHOLD + absoluteRating / 100;
     }
 
-    if ((rawBST >= GOD_BST_THRESHOLD || poke.parsedAbilities.includes('POWER_CONSTRUCT')) && absoluteRating < TIER_GOD_THRESHOLD) {
+    if ((rawBST >= effectiveGodBSTThreshold || poke.parsedAbilities.includes('POWER_CONSTRUCT')) && absoluteRating < TIER_GOD_THRESHOLD) {
         absoluteRating = TIER_GOD_THRESHOLD + absoluteRating / 100;
     }
 

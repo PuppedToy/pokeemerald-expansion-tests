@@ -39,6 +39,11 @@ const constants = {
     AVERAGE_BST_THRESHOLD: 480,
     WEAK_BST_THRESHOLD: 400,
 
+    // Megas need higher BST floors so they don't all clump at GOD/LEGEND.
+    // Only truly broken megas (Rayquaza, Mewtwo X/Y) should reach GOD.
+    MEGA_GOD_BST_THRESHOLD: 760,
+    MEGA_LEGEND_BST_THRESHOLD: 720,
+
     EVO_TYPE_LC_OF_3: 'EVO_TYPE_LC_OF_3',
     EVO_TYPE_LC_OF_2: 'EVO_TYPE_LC_OF_2',
     EVO_TYPE_NFE_OF_3: 'EVO_TYPE_NFE_OF_3',

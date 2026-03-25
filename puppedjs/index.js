@@ -636,6 +636,7 @@ async function exe() {
                 parsedTypes: poke.types.replace(/MON_TYPES\(/, '').replace(/\)/, '').split(', ').map(t => t.replace('TYPE_', '')),
                 // transform "{ ABILITY_OVERGROW, ABILITY_NONE, ABILITY_CHLOROPHYLL }" to ["OVERGROW", "NONE", "CHLOROPHYLL"]
                 parsedAbilities: poke.abilities
+                    .replace(/\/\/.*$/, '').trim()
                     .replace(/{ /, '').replace(/ }/, '').split(', ').map(a => a.replace('ABILITY_', '')),
                 ...poke,
                 baseHP,
