@@ -5,6 +5,7 @@ const { ratePokemon, rateMove } = require('./rating');
 const writer = require('./writer');
 
 const isDebug = process.argv.includes('--debug');
+const noBalance = process.argv.includes('--no-balance');
 
 const {
     EVO_TYPE_LC_OF_3,
@@ -665,16 +666,19 @@ async function exe() {
         });
     });
 
-    for (let i = 0; i < allPokes.length; i++) {
-        allPokes[i] = balancePokemon(allPokes[i], Object.keys(abilities).map(key => key.replace('ABILITY_', '')), moves);
-        if (allPokes[i].log && allPokes[i].log.length) {
-            allPokes[i].baseBST = allPokes[i].baseHP
-                + allPokes[i].baseAttack
-                + allPokes[i].baseDefense
-                + allPokes[i].baseSpAttack
-                + allPokes[i].baseSpDefense
-                + allPokes[i].baseSpeed;
-            allPokes[i].rating = ratePokemon(allPokes[i], moves, abilities);
+    if (!noBalance) {
+        const abilityKeys = Object.keys(abilities).map(key => key.replace('ABILITY_', ''));
+        for (let i = 0; i < allPokes.length; i++) {
+            allPokes[i] = balancePokemon(allPokes[i], abilityKeys, moves);
+            if (allPokes[i].log && allPokes[i].log.length) {
+                allPokes[i].baseBST = allPokes[i].baseHP
+                    + allPokes[i].baseAttack
+                    + allPokes[i].baseDefense
+                    + allPokes[i].baseSpAttack
+                    + allPokes[i].baseSpDefense
+                    + allPokes[i].baseSpeed;
+                allPokes[i].rating = ratePokemon(allPokes[i], moves, abilities);
+            }
         }
     }
 

@@ -442,6 +442,8 @@ const comboRecoveryMoves = new Set([
     'MOVE_RECOVER', 'MOVE_ROOST', 'MOVE_SOFT_BOILED', 'MOVE_SLACK_OFF',
     'MOVE_MILK_DRINK', 'MOVE_HEAL_ORDER', 'MOVE_SYNTHESIS', 'MOVE_MORNING_SUN',
     'MOVE_MOONLIGHT', 'MOVE_SHORE_UP', 'MOVE_REST',
+    // Passive recovery moves that sustain a pokemon over time
+    'MOVE_LEECH_SEED', 'MOVE_AQUA_RING', 'MOVE_INGRAIN',
 ]);
 
 const selfLoweringMoves = new Set([
@@ -1955,15 +1957,17 @@ function computeComboBonus(poke, moveset, moves) {
     }
 
     // Speed Boost: +1 Spe each end-of-turn. With Protect/Detect, gain speed for free
-    // every other turn with no risk. Without Protect still dominant but riskier.
+    // every other turn with no risk. Bonus scales with offensive power — Ninjask (low Atk,
+    // no real threat) gets a smaller bonus than Blaziken (120 Atk, real kill pressure).
     if (hasAbility('SPEED_BOOST')) {
+        const hasStrongOffense = Math.max(poke.baseAttack, poke.baseSpAttack) >= 100;
         if (hasMove('MOVE_PROTECT') || hasMove('MOVE_DETECT')
             || hasMove('MOVE_BANEFUL_BUNKER') || hasMove('MOVE_SPIKY_SHIELD')) {
-            bonus += 0.6;
-            bonusLog.push('SPEED_BOOST+PROTECT +0.6');
+            bonus += hasStrongOffense ? 0.5 : 0.2;
+            bonusLog.push(hasStrongOffense ? 'SPEED_BOOST+PROTECT +0.5' : 'SPEED_BOOST+PROTECT(weak) +0.2');
         } else {
-            bonus += 0.3;
-            bonusLog.push('SPEED_BOOST +0.3');
+            bonus += hasStrongOffense ? 0.25 : 0.1;
+            bonusLog.push(hasStrongOffense ? 'SPEED_BOOST +0.25' : 'SPEED_BOOST(weak) +0.1');
         }
     }
 
@@ -1976,7 +1980,8 @@ function computeComboBonus(poke, moveset, moves) {
 
     // Serene Grace + high-flinch move: doubles secondary effect rates, turning
     // Air Slash / Iron Head into 60% flinch machines on a faster pokemon.
-    if (hasAbility('SERENE_GRACE') && hasAnyMove(highFlinchMoves)) {
+    // Speed >= 70 required: flinch abuse only works when moving first.
+    if (hasAbility('SERENE_GRACE') && hasAnyMove(highFlinchMoves) && poke.baseSpeed >= 70) {
         bonus += 0.5;
         bonusLog.push('SERENE_GRACE+flinch +0.5');
     }
@@ -2012,8 +2017,16 @@ function computeComboBonus(poke, moveset, moves) {
     // Magic Bounce: reflects all hazards and status moves back at the user.
     // Denies Stealth Rock setup against the entire team passively.
     if (hasAbility('MAGIC_BOUNCE')) {
-        bonus += 0.3;
-        bonusLog.push('MAGIC_BOUNCE +0.3');
+        bonus += 0.15;
+        bonusLog.push('MAGIC_BOUNCE +0.15');
+    }
+
+    // Regenerator + recovery: passive healing on every switch-out combined with
+    // active recovery each turn makes these pokemon nearly impossible to wear down.
+    // Toxapex, Slowbro, Tangrowth all rely on this combo for their defensive viability.
+    if (hasAbility('REGENERATOR') && hasAnyMove(comboRecoveryMoves)) {
+        bonus += 0.15;
+        bonusLog.push('REGENERATOR+recovery +0.15');
     }
 
     // Unaware + recovery: ignores ALL opponent stat boosts when taking/dealing damage.
@@ -2046,10 +2059,11 @@ function computeComboBonus(poke, moveset, moves) {
     }
 
     // Quiver Dance: the best standalone setup move — +1 SpA, SpD, AND Spe in one turn.
-    // A separate bonus on top of setup+priority / setup+speed when applicable.
+    // Boosts three stats simultaneously, including SpDef (unlike Dragon Dance/Shell Smash),
+    // making it uniquely powerful. A separate bonus on top of setup+speed when applicable.
     if (hasMove('MOVE_QUIVER_DANCE')) {
-        bonus += 0.5;
-        bonusLog.push('QUIVER_DANCE +0.5');
+        bonus += 0.6;
+        bonusLog.push('QUIVER_DANCE +0.6');
     }
 
     // Shell Smash: +2 Atk/SpA/Spe at -1 Def/SpDef. White Herb restores the defense drop.
@@ -2171,7 +2185,7 @@ function ratePokemon(poke, moves, abilities) {
         }
     }
     else if (offensePower > defensePower) {
-        if (speedPower > offensePower || Math.abs(offensePower - speedPower) < 1.0 || speedPower > (defensePower + 1)) {
+        if (speedPower > offensePower || Math.abs(offensePower - speedPower) < 1.0 || speedPower > defensePower) {
             role = 'OFFENSIVE';
         }
         else {
@@ -2213,6 +2227,13 @@ function ratePokemon(poke, moves, abilities) {
             defensePower *= 1.15;
         }
     }
+    // Cap each power component at 10 (the "excellent" baseline). This prevents extreme
+    // outlier stats (Blissey 255 HP, Chansey with Eviolite, Ninjask 195 Spe) from
+    // producing absurd bstRatings that push pure walls or niche speedsters to top tiers.
+    offensePower = Math.min(offensePower, 10);
+    speedPower   = Math.min(speedPower,   10);
+    defensePower = Math.min(defensePower, 10);
+
     switch (role) {
         case 'BALANCED':
             bstRating = (offensePower + defensePower + speedPower) / 2.9;
