@@ -1505,6 +1505,56 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
         uniqueMoves = uniqueMoves.filter(move => move.id !== ratedMoves[0].id);
     }
 
+    // A3: Post-process — remove redundant same-type damage moves from the final set.
+    // Keep the highest base-rated move of each type; remove duplicates unless an exception applies.
+    // Exceptions:
+    //   - The two moves have different priority tiers (e.g. Quick Attack vs Return)
+    //   - IRON_FIST ability and both moves are punching moves (Iron Fist punching coverage)
+    const damageByType = {};
+    moveset.forEach(m => {
+        if (m.category === 'DAMAGE_CATEGORY_STATUS') return;
+        if (!damageByType[m.type]) damageByType[m.type] = [];
+        damageByType[m.type].push(m);
+    });
+
+    const toRemoveIds = new Set();
+    for (const typeMoves of Object.values(damageByType)) {
+        if (typeMoves.length < 2) continue;
+        // Sort by base rating (rateMove) descending so index 0 is the keeper
+        typeMoves.sort((a, b) => rateMove(b) - rateMove(a));
+        for (let i = 1; i < typeMoves.length; i++) {
+            const weaker = typeMoves[i];
+            const stronger = typeMoves[0];
+            // Exception: different priority tiers
+            if ((weaker.priority || 0) !== (stronger.priority || 0)) continue;
+            // Exception: Iron Fist with two punching moves of the same type
+            if (ability === 'IRON_FIST' && punchingMoves.includes(weaker.id) && punchingMoves.includes(stronger.id)) continue;
+            // No exception — mark for removal
+            toRemoveIds.add(weaker.id);
+            console.log(`[A3] ${poke.name}: removed ${weaker.id} (kept ${stronger.id}, type=${weaker.type})`);
+        }
+    }
+
+    if (toRemoveIds.size > 0) {
+        // Remove flagged moves from the set
+        for (let i = moveset.length - 1; i >= 0; i--) {
+            if (toRemoveIds.has(moveset[i].id)) {
+                moveset.splice(i, 1);
+            }
+        }
+        // Fill freed slots with the next-best moves from uniqueMoves
+        while (uniqueMoves.length > 0 && moveset.length < 4) {
+            const ratedMoves = uniqueMoves.map(move => {
+                const rating = rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset) * (1 + ((Math.random() ? 1 : -1) * Math.random() * deviation));
+                return { ...move, rating };
+            }).filter(m => m !== null);
+            if (ratedMoves.length === 0) break;
+            ratedMoves.sort((a, b) => b.rating - a.rating);
+            moveset.push(ratedMoves[0]);
+            uniqueMoves = uniqueMoves.filter(move => move.id !== ratedMoves[0].id);
+        }
+    }
+
     moveset.forEach(move => {
         if (!poke.learnset.some(ls => ls.move === move.id)
             && tms.includes(move.id))
