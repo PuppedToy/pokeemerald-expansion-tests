@@ -33,8 +33,8 @@ FortreeCity_Gym_EventScript_WinonaDefeated::
 	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_DEFEATED_FORTREE_GYM
 	setflag FLAG_HIDE_ROUTE_120_STEVEN
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, SPECIES_DRATINI
-	givemon SPECIES_DRATINI, 46
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
+	givemon GYM_REWARD_MON, 46
 	call FortreeCity_Gym_EventScript_ReceivedRewardPokeFanfare
 	setvar VAR_0x8008, 6
 	call Common_EventScript_SetGymTrainers
@@ -66,7 +66,7 @@ FortreeCity_Gym_EventScript_ReceivedRewardPokeFanfare::
 	return
 
 FortreeCity_Gym_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received Dratini!$"
+	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 FortreeCity_Gym_EventScript_GiveAerialAce2::
 	giveitem ITEM_TM32

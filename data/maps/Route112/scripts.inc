@@ -151,17 +151,17 @@ Route112_EventScript_PickBall::
 	end
 
 Route112_EventScript_PickBall1::
-	finditem ITEM_RED_CARD
+	finditem ITEM_RINDO_BERRY
 	setflag FLAG_ITEM_ROUTE_112_WHITE
 	end
 
 Route112_EventScript_PickBall2::
-	finditem ITEM_PROTECTIVE_PADS
+	finditem ITEM_STARF_BERRY
 	setflag FLAG_ITEM_ROUTE_112_WHITE
 	end
 
 Route112_EventScript_PickBall3::
-	finditem ITEM_BLUNDER_POLICY
+	finditem ITEM_CLEAR_AMULET
 	setflag FLAG_ITEM_ROUTE_112_WHITE
 	end
 @ === RAND_ROUTE112_BALL_END ===

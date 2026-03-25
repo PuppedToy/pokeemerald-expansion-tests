@@ -504,7 +504,7 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_MAWILITE",
+      "trainer_sight_or_berry_tree_id": "ITEM_MEGA_01",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_111_STONE_1"
     },
@@ -571,7 +571,7 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_LUCARIONITE",
+      "trainer_sight_or_berry_tree_id": "ITEM_MEGA_03",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_111_STONE_2"
     },

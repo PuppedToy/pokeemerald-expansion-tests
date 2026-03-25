@@ -1056,17 +1056,17 @@ Route110_EventScript_PickBall::
 	end
 
 Route110_EventScript_PickBall1::
-	finditem ITEM_LOADED_DICE
+	finditem ITEM_HEAVY_DUTY_BOOTS
 	setflag FLAG_ITEM_ROUTE_110_SHEDSHELL
 	end
 
 Route110_EventScript_PickBall2::
-	finditem ITEM_MARANGA_BERRY
+	finditem ITEM_LUM_BERRY
 	setflag FLAG_ITEM_ROUTE_110_SHEDSHELL
 	end
 
 Route110_EventScript_PickBall3::
-	finditem ITEM_ROCKY_HELMET
+	finditem ITEM_BLUNDER_POLICY
 	setflag FLAG_ITEM_ROUTE_110_SHEDSHELL
 	end
 @ === RAND_ROUTE110_BALL_END ===

@@ -26,8 +26,8 @@ DewfordTown_Gym_EventScript_BrawlyDefeated::
 	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_DEFEATED_DEWFORD_GYM
 	setflag FLAG_HIDE_ROUTE103_FISHERMAN
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, SPECIES_GLIGAR
-	givemon SPECIES_GLIGAR, 19
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
+	givemon GYM_REWARD_MON, 19
 	call DewfordTown_Gym_EventScript_ReceivedRewardPokeFanfare
 	addvar VAR_PETALBURG_GYM_STATE, 1
 	call_if_eq VAR_PETALBURG_GYM_STATE, 6, Common_EventScript_ReadyPetalburgGymForBattle
@@ -57,7 +57,7 @@ DewfordTown_Gym_EventScript_ReceivedRewardPokeFanfare::
 	return
 
 DewfordTown_Gym_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received Gligar!$"
+	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 DewfordTown_Gym_EventScript_GiveBulkUp::
 	giveitem ITEM_TM61

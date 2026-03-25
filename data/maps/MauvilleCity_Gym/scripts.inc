@@ -104,8 +104,8 @@ MauvilleCity_Gym_EventScript_WattsonDefeated::
 	setflag FLAG_HIDE_RUSTURF_TUNNEL_ROCK_2
 	setflag FLAG_HIDE_RUSTURF_TUNNEL_WANDAS_BOYFRIEND
 	setflag FLAG_HIDE_RUSTURF_TUNNEL_WANDA
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, SPECIES_LATIOS
-	givemon SPECIES_LATIOS, 29, ITEM_LATIOSITE
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
+	givemon GYM_REWARD_MON, 29, GYM_REWARD_ITEM
 	call MauvilleCity_Gym_EventScript_ReceivedRewardPokeFanfare
 	setvar VAR_METEOR_FALLS_STATE, 1
 	addvar VAR_PETALBURG_GYM_STATE, 1
@@ -135,7 +135,7 @@ MauvilleCity_Gym_EventScript_ReceivedRewardPokeFanfare::
 	return
 
 MauvilleCity_Gym_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received Latios!$"
+	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 MauvilleCity_Gym_EventScript_GiveShockWave2::
 	giveitem ITEM_TM11

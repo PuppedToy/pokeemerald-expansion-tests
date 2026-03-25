@@ -592,17 +592,17 @@ Route109_EventScript_PickBall::
 	end
 
 Route109_EventScript_PickBall1::
-	finditem ITEM_ROOM_SERVICE
+	finditem ITEM_CELL_BATTERY
 	setflag FLAG_ITEM_ROUTE_109_POTION
 	end
 
 Route109_EventScript_PickBall2::
-	finditem ITEM_CLEAR_AMULET
+	finditem ITEM_PROTECTIVE_PADS
 	setflag FLAG_ITEM_ROUTE_109_POTION
 	end
 
 Route109_EventScript_PickBall3::
-	finditem ITEM_LUM_BERRY
+	finditem ITEM_LOADED_DICE
 	setflag FLAG_ITEM_ROUTE_109_POTION
 	end
 @ === RAND_ROUTE109_BALL_END ===

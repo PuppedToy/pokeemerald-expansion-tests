@@ -368,7 +368,7 @@ Route116_EventScript_PickOrb2::
 	end
 
 Route116_EventScript_PickOrb3::
-	finditem ITEM_EXPERT_BELT
+	finditem ITEM_MUSCLE_BAND
 	setflag FLAG_ITEM_ROUTE_116_MIND_PLATE
 	end
 @ === RAND_ROUTE116_ORB_END ===
@@ -383,12 +383,12 @@ Route116_EventScript_PickItem::
 	end
 
 Route116_EventScript_PickItem1::
-	finditem ITEM_FLOAT_STONE
+	finditem ITEM_LUMINOUS_MOSS
 	setflag FLAG_ITEM_ROUTE_116_PICK_ITEM
 	end
 
 Route116_EventScript_PickItem2::
-	finditem ITEM_POWER_HERB
+	finditem ITEM_ZOOM_LENS
 	setflag FLAG_ITEM_ROUTE_116_PICK_ITEM
 	end
 
@@ -529,17 +529,17 @@ Route116_EventScript_PickBall::
 	end
 
 Route116_EventScript_PickBall1::
-	finditem ITEM_THROAT_SPRAY
+	finditem ITEM_WISE_GLASSES
 	setflag FLAG_ITEM_ROUTE_TM_BRICK_BREAK
 	end
 
 Route116_EventScript_PickBall2::
-	finditem ITEM_LUMINOUS_MOSS
+	finditem ITEM_KEE_BERRY
 	setflag FLAG_ITEM_ROUTE_TM_BRICK_BREAK
 	end
 
 Route116_EventScript_PickBall3::
-	finditem ITEM_BIG_ROOT
+	finditem ITEM_LEPPA_BERRY
 	setflag FLAG_ITEM_ROUTE_TM_BRICK_BREAK
 	end
 @ === RAND_ROUTE116_BALL_END ===

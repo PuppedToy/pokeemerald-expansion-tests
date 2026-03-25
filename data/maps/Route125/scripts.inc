@@ -116,17 +116,17 @@ Route125_EventScript_PickBall::
 	end
 
 Route125_EventScript_PickBall1::
-	finditem ITEM_FLOAT_STONE
+	finditem ITEM_LUMINOUS_MOSS
 	setflag FLAG_ITEM_ROUTE_116_KINGS_ROCK
 	end
 
 Route125_EventScript_PickBall2::
-	finditem ITEM_POWER_HERB
+	finditem ITEM_ZOOM_LENS
 	setflag FLAG_ITEM_ROUTE_116_KINGS_ROCK
 	end
 
 Route125_EventScript_PickBall3::
-	finditem ITEM_MUSCLE_BAND
+	finditem ITEM_QUICK_CLAW
 	setflag FLAG_ITEM_ROUTE_116_KINGS_ROCK
 	end
 @ === RAND_ROUTE125_BALL_END ===

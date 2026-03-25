@@ -531,22 +531,22 @@ Route111_EventScript_PickBerry::
 	end
 
 Route111_EventScript_PickBerry1::
-	finditem ITEM_OCCA_BERRY
+	finditem ITEM_KASIB_BERRY
 	setflag FLAG_ITEM_ROUTE_111_CHILAN
 	end
 
 Route111_EventScript_PickBerry2::
-	finditem ITEM_PASSHO_BERRY
+	finditem ITEM_OCCA_BERRY
 	setflag FLAG_ITEM_ROUTE_111_CHILAN
 	end
 
 Route111_EventScript_PickBerry3::
-	finditem ITEM_CHARTI_BERRY
+	finditem ITEM_KEBIA_BERRY
 	setflag FLAG_ITEM_ROUTE_111_CHILAN
 	end
 
 Route111_EventScript_PickBerry4::
-	finditem ITEM_PAYAPA_BERRY
+	finditem ITEM_YACHE_BERRY
 	setflag FLAG_ITEM_ROUTE_111_CHILAN
 	end
 @ === RAND_ROUTE111_BERRIES_END ===
@@ -561,12 +561,12 @@ Route111_EventScript_PickItem::
 	end
 
 Route111_EventScript_PickItem1::
-	finditem ITEM_STICKY_BARB
+	finditem ITEM_SHED_SHELL
 	setflag FLAG_ITEM_ROUTE_111_TM_SANDSTORM
 	end
 
 Route111_EventScript_PickItem2::
-	finditem ITEM_LEPPA_BERRY
+	finditem ITEM_SHELL_BELL
 	setflag FLAG_ITEM_ROUTE_111_TM_SANDSTORM
 	end
 
@@ -775,17 +775,17 @@ Route111_EventScript_PickBallA::
 	end
 
 Route111_EventScript_PickBallA1::
-	finditem ITEM_AIR_BALLOON
+	finditem ITEM_LANSAT_BERRY
 	setflag FLAG_ITEM_ROUTE_111_ELIXIR
 	end
 
 Route111_EventScript_PickBallA2::
-	finditem ITEM_HEAVY_DUTY_BOOTS
+	finditem ITEM_EJECT_PACK
 	setflag FLAG_ITEM_ROUTE_111_ELIXIR
 	end
 
 Route111_EventScript_PickBallA3::
-	finditem ITEM_RINDO_BERRY
+	finditem ITEM_MENTAL_HERB
 	setflag FLAG_ITEM_ROUTE_111_ELIXIR
 	end
 @ === RAND_ROUTE111_BALL_A_END ===
@@ -800,17 +800,17 @@ Route111_EventScript_PickBallB::
 	end
 
 Route111_EventScript_PickBallB1::
-	finditem ITEM_JABOCA_BERRY
+	finditem ITEM_WIDE_LENS
 	setflag FLAG_ITEM_ROUTE_111_POWERHERB
 	end
 
 Route111_EventScript_PickBallB2::
-	finditem ITEM_QUICK_CLAW
+	finditem ITEM_BINDING_BAND
 	setflag FLAG_ITEM_ROUTE_111_POWERHERB
 	end
 
 Route111_EventScript_PickBallB3::
-	finditem ITEM_ZOOM_LENS
+	finditem ITEM_MARANGA_BERRY
 	setflag FLAG_ITEM_ROUTE_111_POWERHERB
 	end
 @ === RAND_ROUTE111_BALL_B_END ===
@@ -825,17 +825,17 @@ Route111_EventScript_PickBallC::
 	end
 
 Route111_EventScript_PickBallC1::
-	finditem ITEM_ABSORB_BULB
+	finditem ITEM_BRIGHT_POWDER
 	setflag FLAG_ITEM_ROUTE_111_ADRENALINE
 	end
 
 Route111_EventScript_PickBallC2::
-	finditem ITEM_SHELL_BELL
+	finditem ITEM_SAFETY_GOGGLES
 	setflag FLAG_ITEM_ROUTE_111_ADRENALINE
 	end
 
 Route111_EventScript_PickBallC3::
-	finditem ITEM_WHITE_HERB
+	finditem ITEM_GRIP_CLAW
 	setflag FLAG_ITEM_ROUTE_111_ADRENALINE
 	end
 @ === RAND_ROUTE111_BALL_C_END ===

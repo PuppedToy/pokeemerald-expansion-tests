@@ -68,8 +68,8 @@ MossdeepCity_Gym_EventScript_TateAndLizaDefeated::
 	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_DEFEATED_MOSSDEEP_GYM
 	setflag FLAG_HIDE_AQUA_HIDEOUT_GRUNTS
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, SPECIES_MARSHADOW
-	givemon SPECIES_MARSHADOW, 56
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
+	givemon GYM_REWARD_MON, 56
 	call MossdeepCity_Gym_EventScript_ReceivedRewardPokeFanfare
 	clearflag FLAG_HIDE_SLATEPORT_CITY_STERNS_SHIPYARD_MR_BRINEY
 	clearflag FLAG_UNKNOWN_0x393
@@ -661,4 +661,4 @@ MossdeepCity_Gym_Text_TateAndLizaRematchNeedTwoMons:
 	.string "LIZA: Two POKéMON when you come back.$"
 
 MossdeepCity_Gym_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received Marshadow!$"
+	.string "{PLAYER} received GYM_REWARD_NAME!$"

@@ -307,7 +307,7 @@ PetalburgWoods_EventScript_PickPlate::
 	end
 
 PetalburgWoods_EventScript_PickPlate1::
-	finditem ITEM_TOXIC_PLATE
+	finditem ITEM_MEADOW_PLATE
 	setflag FLAG_ITEM_PETALBURG_WOODS_PARALYZE_HEAL
 	end
 
@@ -317,12 +317,12 @@ PetalburgWoods_EventScript_PickPlate2::
 	end
 
 PetalburgWoods_EventScript_PickPlate3::
-	finditem ITEM_MIND_PLATE
+	finditem ITEM_DRACO_PLATE
 	setflag FLAG_ITEM_PETALBURG_WOODS_PARALYZE_HEAL
 	end
 
 PetalburgWoods_EventScript_PickPlate4::
-	finditem ITEM_MEADOW_PLATE
+	finditem ITEM_IRON_PLATE
 	setflag FLAG_ITEM_PETALBURG_WOODS_PARALYZE_HEAL
 	end
 @ === RAND_PETALBURG_PLATES_END ===

@@ -74,8 +74,8 @@ SlateportCity_OceanicMuseum_2F_EventScript_CaptStern::
 	call Common_EventScript_PlayerHandedOverTheItem
 	msgbox SlateportCity_OceanicMuseum_2F_Text_SternIveGotToGo, MSGBOX_DEFAULT
 	closemessage
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, SPECIES_MAGIKARP
-	givemon SPECIES_MAGIKARP, 23, ITEM_GYARADOSITE
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
+	givemon GYM_REWARD_MON, 23, GYM_REWARD_ITEM
 	call SlateportCity_OceanicMuseum_2F_EventScript_ReceivedRewardPokeFanfare
 	fadescreen FADE_TO_BLACK
 	playfanfare MUS_HEAL
@@ -108,7 +108,7 @@ SlateportCity_OceanicMuseum_2F_EventScript_ReceivedRewardPokeFanfare::
 	return
 
 SlateportCity_OceanicMuseum_2F_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received Magikarp!$"
+	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 SlateportCity_OceanicMuseum_2F_EventScript_ReadyRegisterBirch::
 	setvar VAR_REGISTER_BIRCH_STATE, 1

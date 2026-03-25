@@ -142,10 +142,10 @@ SkyPillar_Top_EventScript_CustomLegendary::
 
 SkyPillar_Top_EventScript_PickLegendary1::
 	closemessage
-	playmoncry SPECIES_ZEKROM, CRY_MODE_ENCOUNTER
+	playmoncry SPECIES_LEGEND1, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-	setwildbattle SPECIES_ZEKROM, 61
+	setwildbattle SPECIES_LEGEND1, 61
 	special BattleSetup_StartLegendaryBattle
 	waitstate
 	setflag FLAG_DEFEATED_RAYQUAZA
@@ -153,10 +153,10 @@ SkyPillar_Top_EventScript_PickLegendary1::
 
 SkyPillar_Top_EventScript_PickLegendary2::
 	closemessage
-	playmoncry SPECIES_PALKIA, CRY_MODE_ENCOUNTER
+	playmoncry SPECIES_LEGEND2, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-	setwildbattle SPECIES_PALKIA, 61
+	setwildbattle SPECIES_LEGEND2, 61
 	special BattleSetup_StartLegendaryBattle
 	waitstate
 	setflag FLAG_DEFEATED_RAYQUAZA
@@ -164,10 +164,10 @@ SkyPillar_Top_EventScript_PickLegendary2::
 
 SkyPillar_Top_EventScript_PickLegendary3::
 	closemessage
-	playmoncry SPECIES_KYOGRE, CRY_MODE_ENCOUNTER
+	playmoncry SPECIES_LEGEND3, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-	setwildbattle SPECIES_KYOGRE, 61
+	setwildbattle SPECIES_LEGEND3, 61
 	special BattleSetup_StartLegendaryBattle
 	waitstate
 	setflag FLAG_DEFEATED_RAYQUAZA

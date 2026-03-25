@@ -81,17 +81,17 @@ Route102_EventScript_PickBall::
 	end
 
 Route102_EventScript_PickBall1::
-	finditem ITEM_UTILITY_UMBRELLA
+	finditem ITEM_SITRUS_BERRY
 	setflag FLAG_ITEM_ROUTE_102_POTION
 	end
 
 Route102_EventScript_PickBall2::
-	finditem ITEM_LANSAT_BERRY
+	finditem ITEM_MIRROR_HERB
 	setflag FLAG_ITEM_ROUTE_102_POTION
 	end
 
 Route102_EventScript_PickBall3::
-	finditem ITEM_BRIGHT_POWDER
+	finditem ITEM_EXPERT_BELT
 	setflag FLAG_ITEM_ROUTE_102_POTION
 	end
 @ === RAND_ROUTE102_BALL_END ===

@@ -72,8 +72,8 @@ Route119_WeatherInstitute_2F_EventScript_ShellyDefeated::
 
 Route119_WeatherInstitute_2F_EventScript_ReceiveCastform::
 	msgbox Route119_WeatherInstitute_2F_Text_ThanksPleaseTakePokemon, MSGBOX_DEFAULT
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, SPECIES_BEEDRILL
-	givemon SPECIES_BEEDRILL, 41, ITEM_BEEDRILLITE
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
+	givemon GYM_REWARD_MON, 41, GYM_REWARD_ITEM
 	call Route119_WeatherInstitute_2F_EventScript_ReceivedRewardPokeFanfare
 	end
 
@@ -85,7 +85,7 @@ Route119_WeatherInstitute_2F_EventScript_ReceivedRewardPokeFanfare::
 	return
 
 Route119_WeatherInstitute_2F_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received Beedrill!$"
+	.string "{PLAYER} received GYM_REWARD_NAME!$"
 
 Route119_WeatherInstitute_2F_EventScript_ReceiveCastformParty::
 	call Route119_WeatherInstitute_2F_EventScript_ReceivedCastformFanfare
