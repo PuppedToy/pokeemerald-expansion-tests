@@ -110,22 +110,22 @@ Route118_EventScript_PickBerry::
 	end
 
 Route118_EventScript_PickBerry1::
-	finditem ITEM_QUICK_CLAW
+	finditem ITEM_MUSCLE_BAND
 	setflag FLAG_ITEM_ROUTE_118_BERRY
 	end
 
 Route118_EventScript_PickBerry2::
-	finditem ITEM_STICKY_BARB
+	finditem ITEM_SNOWBALL
 	setflag FLAG_ITEM_ROUTE_118_BERRY
 	end
 
 Route118_EventScript_PickBerry3::
-	finditem ITEM_ADRENALINE_ORB
+	finditem ITEM_COVERT_CLOAK
 	setflag FLAG_ITEM_ROUTE_118_BERRY
 	end
 
 Route118_EventScript_PickBerry4::
-	finditem ITEM_METRONOME
+	finditem ITEM_MENTAL_HERB
 	setflag FLAG_ITEM_ROUTE_118_BERRY
 	end
 @ === RAND_ROUTE118_ITEMS_END ===

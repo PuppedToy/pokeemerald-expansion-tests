@@ -250,7 +250,7 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_MECH_MAIL",
+      "trainer_sight_or_berry_tree_id": "ITEM_TIMID_MINT",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_121_REVIVE"
     },
@@ -263,7 +263,7 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_WAVE_MAIL",
+      "trainer_sight_or_berry_tree_id": "ITEM_SASSY_MINT",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_121_ZINC"
     },
@@ -354,7 +354,7 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_MEGA_06",
+      "trainer_sight_or_berry_tree_id": "ITEM_CHARIZARDITE_Y",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_111_STONE_3"
     }

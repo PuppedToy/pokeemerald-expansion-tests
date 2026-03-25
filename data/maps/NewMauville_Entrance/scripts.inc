@@ -46,10 +46,10 @@ NewMauville_Entrance_Pokemon::
 	lock
 	faceplayer
 	waitse
-	playmoncry SPECIES_MEW, CRY_MODE_ENCOUNTER
+	playmoncry SPECIES_IRON_TREADS, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-	setwildbattle SPECIES_MEW, 39
+	setwildbattle SPECIES_IRON_TREADS, 39
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special BattleSetup_StartLegendaryBattle
 	waitstate
@@ -68,7 +68,7 @@ NewMauville_Entrance_DefeatedPokemon::
 	end
 
 NewMauville_EventScript_RanFromPokemon::
-	setvar VAR_0x8004, SPECIES_MEW
+	setvar VAR_0x8004, SPECIES_IRON_TREADS
 	goto Common_EventScript_LegendaryFlewAway
 	end
 

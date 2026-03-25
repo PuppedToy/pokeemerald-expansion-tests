@@ -245,22 +245,22 @@ Route117_EventScript_PickBerry::
 	end
 
 Route117_EventScript_PickBerry1::
-	finditem ITEM_TANGA_BERRY
+	finditem ITEM_KASIB_BERRY
 	setflag FLAG_ITEM_ROUTE_117_WACAN
 	end
 
 Route117_EventScript_PickBerry2::
-	finditem ITEM_WACAN_BERRY
+	finditem ITEM_YACHE_BERRY
 	setflag FLAG_ITEM_ROUTE_117_WACAN
 	end
 
 Route117_EventScript_PickBerry3::
-	finditem ITEM_PASSHO_BERRY
+	finditem ITEM_SHUCA_BERRY
 	setflag FLAG_ITEM_ROUTE_117_WACAN
 	end
 
 Route117_EventScript_PickBerry4::
-	finditem ITEM_COLBUR_BERRY
+	finditem ITEM_HABAN_BERRY
 	setflag FLAG_ITEM_ROUTE_117_WACAN
 	end
 @ === RAND_ROUTE117_BERRIES_END ===
@@ -276,22 +276,22 @@ Route117_EventScript_PickGem::
 	end
 
 Route117_EventScript_PickGem1::
-	finditem ITEM_POISON_GEM
+	finditem ITEM_DRAGON_GEM
 	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
 	end
 
 Route117_EventScript_PickGem2::
-	finditem ITEM_PSYCHIC_GEM
-	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
-	end
-
-Route117_EventScript_PickGem3::
 	finditem ITEM_FLYING_GEM
 	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
 	end
 
+Route117_EventScript_PickGem3::
+	finditem ITEM_POISON_GEM
+	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
+	end
+
 Route117_EventScript_PickGem4::
-	finditem ITEM_ICE_GEM
+	finditem ITEM_NORMAL_GEM
 	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
 	end
 @ === RAND_ROUTE117_GEMS_END ===

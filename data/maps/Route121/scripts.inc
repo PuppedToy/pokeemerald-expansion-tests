@@ -207,22 +207,22 @@ Route121_EventScript_PickBerry::
 	end
 
 Route121_EventScript_PickBerry1::
-	finditem ITEM_CHOPLE_BERRY
+	finditem ITEM_RINDO_BERRY
 	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
 	end
 
 Route121_EventScript_PickBerry2::
-	finditem ITEM_SHUCA_BERRY
+	finditem ITEM_COBA_BERRY
 	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
 	end
 
 Route121_EventScript_PickBerry3::
-	finditem ITEM_ROSELI_BERRY
+	finditem ITEM_WACAN_BERRY
 	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
 	end
 
 Route121_EventScript_PickBerry4::
-	finditem ITEM_BABIRI_BERRY
+	finditem ITEM_COLBUR_BERRY
 	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
 	end
 @ === RAND_ROUTE121_BERRIES_END ===

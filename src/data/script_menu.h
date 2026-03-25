@@ -267,11 +267,11 @@ static const struct MenuAction MultichoiceList_GameCornerDolls[] =
 
 static const struct MenuAction MultichoiceList_GameCornerTMs[] =
 {
-    {COMPOUND_STRING("TM Swagger{CLEAR_TO 0x48}1,500 COINS")},
-    {COMPOUND_STRING("TM Spite{CLEAR_TO 0x48}3,500 COINS")},
-    {COMPOUND_STRING("TM Skill Swap{CLEAR_TO 0x48}4,000 COINS")},
-    {COMPOUND_STRING("TM Pain Split{CLEAR_TO 0x48}4,000 COINS")},
-    {COMPOUND_STRING("TM Rock Polish{CLEAR_TO 0x48}4,000 COINS")},
+    {COMPOUND_STRING("TM Amnesia{CLEAR_TO 0x48}1,500 COINS")},
+    {COMPOUND_STRING("TM Double Team{CLEAR_TO 0x48}3,500 COINS")},
+    {COMPOUND_STRING("TM Scary Face{CLEAR_TO 0x48}4,000 COINS")},
+    {COMPOUND_STRING("TM Feather Dance{CLEAR_TO 0x48}4,000 COINS")},
+    {COMPOUND_STRING("TM Spite{CLEAR_TO 0x48}4,000 COINS")},
     {gText_Exit},
 };
 
@@ -736,40 +736,40 @@ static const struct MenuAction MultichoiceList_BattleTowerFeelings[] =
 
 static const struct MenuAction MultichoiceList_PetalburgWoodsPick[] =
 {
-    {COMPOUND_STRING("Meadow Plate")},
+    {COMPOUND_STRING("Toxic Plate")},
     {COMPOUND_STRING("Stone Plate")},
-    {COMPOUND_STRING("Draco Plate")},
-    {COMPOUND_STRING("Iron Plate")},
+    {COMPOUND_STRING("Mind Plate")},
+    {COMPOUND_STRING("Meadow Plate")},
 };
 
 static const struct MenuAction MultichoiceList_Route104PickGem[] =
 {
-    {COMPOUND_STRING("Ground Gem")},
-    {COMPOUND_STRING("Fighting Gem")},
+    {COMPOUND_STRING("Electric Gem")},
     {COMPOUND_STRING("Grass Gem")},
-    {COMPOUND_STRING("Dark Gem")},
+    {COMPOUND_STRING("Rock Gem")},
+    {COMPOUND_STRING("Bug Gem")},
 };
 
 static const struct MenuAction MultichoiceList_Route104PickBerry[] =
 {
-    {COMPOUND_STRING("Haban Berry")},
-    {COMPOUND_STRING("Payapa Berry")},
-    {COMPOUND_STRING("Charti Berry")},
     {COMPOUND_STRING("Chilan Berry")},
+    {COMPOUND_STRING("Chople Berry")},
+    {COMPOUND_STRING("Tanga Berry")},
+    {COMPOUND_STRING("Roseli Berry")},
 };
 
 static const struct MenuAction MultichoiceList_Route104PickTM[] =
 {
-    {COMPOUND_STRING("TM Acid Spray")},
+    {COMPOUND_STRING("TM Infestation")},
     {COMPOUND_STRING("TM Take Down")},
-    {COMPOUND_STRING("TM Magical Leaf")},
+    {COMPOUND_STRING("TM Dragon Tail")},
 };
 
 static const struct MenuAction MultichoiceList_Route106Pick[] =
 {
-    {COMPOUND_STRING("TM Chilling Water")},
-    {COMPOUND_STRING("TM Metal Claw")},
-    {COMPOUND_STRING("TM Assurance")},
+    {COMPOUND_STRING("TM Magical Leaf")},
+    {COMPOUND_STRING("TM Mega Punch")},
+    {COMPOUND_STRING("TM Struggle Bug")},
 };
 
 static const struct MenuAction MultichoiceList_Route109Pick[] =
@@ -803,85 +803,85 @@ static const struct MenuAction MultichoiceList_Route117PickScreen[] =
 
 static const struct MenuAction MultichoiceList_Route117PickBerry[] =
 {
-    {COMPOUND_STRING("Tanga Berry")},
-    {COMPOUND_STRING("Wacan Berry")},
-    {COMPOUND_STRING("Passho Berry")},
-    {COMPOUND_STRING("Colbur Berry")},
+    {COMPOUND_STRING("Kasib Berry")},
+    {COMPOUND_STRING("Yache Berry")},
+    {COMPOUND_STRING("Shuca Berry")},
+    {COMPOUND_STRING("Haban Berry")},
 };
 
 static const struct MenuAction MultichoiceList_Route117PickGem[] =
 {
-    {COMPOUND_STRING("Poison Gem")},
-    {COMPOUND_STRING("Psychic Gem")},
+    {COMPOUND_STRING("Dragon Gem")},
     {COMPOUND_STRING("Flying Gem")},
-    {COMPOUND_STRING("Ice Gem")},
+    {COMPOUND_STRING("Poison Gem")},
+    {COMPOUND_STRING("Normal Gem")},
 };
 
 static const struct MenuAction MultichoiceList_Route114PickTM[] =
 {
-    {COMPOUND_STRING("TM Zen Headbutt")},
-    {COMPOUND_STRING("TM Future Sight")},
-    {COMPOUND_STRING("TM Ice Spinner")},
-    {COMPOUND_STRING("TM Mystical Fire")},
+    {COMPOUND_STRING("TM Stomping Tantrum")},
+    {COMPOUND_STRING("TM Tri Attack")},
+    {COMPOUND_STRING("TM Crunch")},
+    {COMPOUND_STRING("TM Hydro Cannon")},
 };
 
 static const struct MenuAction MultichoiceList_Route115PickTM[] =
 {
-    {COMPOUND_STRING("TM Curse")},
     {COMPOUND_STRING("TM Spikes")},
-    {COMPOUND_STRING("TM Encore")},
+    {COMPOUND_STRING("TM Bulk Up")},
+    {COMPOUND_STRING("TM Trick")},
 };
 
 static const struct MenuAction MultichoiceList_Route111PickBerry[] =
 {
-    {COMPOUND_STRING("Kasib Berry")},
     {COMPOUND_STRING("Occa Berry")},
-    {COMPOUND_STRING("Kebia Berry")},
-    {COMPOUND_STRING("Yache Berry")},
+    {COMPOUND_STRING("Passho Berry")},
+    {COMPOUND_STRING("Charti Berry")},
+    {COMPOUND_STRING("Payapa Berry")},
 };
 
 static const struct MenuAction MultichoiceList_Route111PickItem[] =
 {
-    {COMPOUND_STRING("Shed Shell")},
-    {COMPOUND_STRING("Shell Bell")},
+    {COMPOUND_STRING("Sticky Barb")},
+    {COMPOUND_STRING("Leppa Berry")},
     {COMPOUND_STRING("Custap Berry")},
 };
 
 static const struct MenuAction MultichoiceList_Route118PickBerry[] =
 {
-    {COMPOUND_STRING("Quick Claw")},
-    {COMPOUND_STRING("Sticky Barb")},
-    {COMPOUND_STRING("Adrenaline Orb")},
-    {COMPOUND_STRING("Metronome")},
+    {COMPOUND_STRING("Muscle Band")},
+    {COMPOUND_STRING("Snowball")},
+    {COMPOUND_STRING("Covert Cloak")},
+    {COMPOUND_STRING("Mental Herb")},
 };
 
 static const struct MenuAction MultichoiceList_Route118PickTM[] =
 {
-    {COMPOUND_STRING("TM Heat Wave")},
-    {COMPOUND_STRING("TM Aura Sphere")},
-    {COMPOUND_STRING("TM Ice Beam")},
+    {COMPOUND_STRING("TM Megahorn")},
+    {COMPOUND_STRING("TM Supercell Slam")},
+    {COMPOUND_STRING("TM Flamethrower")},
 };
 
 static const struct MenuAction MultichoiceList_Route120PickItem[] =
 {
-    {COMPOUND_STRING("Absorb Bulb")},
+    {COMPOUND_STRING("Safety Goggles")},
+    {COMPOUND_STRING("Mirror Herb")},
     {COMPOUND_STRING("Focus Band")},
-    {COMPOUND_STRING("Covert Cloak")},
 };
 
 static const struct MenuAction MultichoiceList_Route121PickTM[] =
 {
+    {COMPOUND_STRING("TM Misty Terrain")},
+    {COMPOUND_STRING("TM Calm Mind")},
     {COMPOUND_STRING("TM Trick Room")},
-    {COMPOUND_STRING("TM Thunder Wave")},
-    {COMPOUND_STRING("TM Electric Terrain")},
 };
 
 static const struct MenuAction MultichoiceList_Route121PickBerry[] =
 {
-    {COMPOUND_STRING("Chople Berry")},
-    {COMPOUND_STRING("Shuca Berry")},
-    {COMPOUND_STRING("Roseli Berry")},
-    {COMPOUND_STRING("Babiri Berry")},
+    {COMPOUND_STRING("Rindo Berry")},
+    {COMPOUND_STRING("Coba Berry")},
+    {COMPOUND_STRING("Wacan Berry")},
+    {COMPOUND_STRING("Colbur Berry")},
 };
 
 static const struct MenuAction MultichoiceList_Route124PickChoice[] =
@@ -893,23 +893,23 @@ static const struct MenuAction MultichoiceList_Route124PickChoice[] =
 
 static const struct MenuAction MultichoiceList_Route124PickTM[] =
 {
-    {COMPOUND_STRING("TM Pollen Puff")},
-    {COMPOUND_STRING("TM Phantom Force")},
-    {COMPOUND_STRING("TM Stone Edge")},
+    {COMPOUND_STRING("TM Dragon Pulse")},
+    {COMPOUND_STRING("TM Poltergeist")},
+    {COMPOUND_STRING("TM Ice Beam")},
 };
 
 static const struct MenuAction MultichoiceList_Route116PickOrb[] =
 {
     {COMPOUND_STRING("Flame Orb")},
     {COMPOUND_STRING("Toxic Orb")},
-    {COMPOUND_STRING("Muscle Band")},
+    {COMPOUND_STRING("Expert Belt")},
 };
 
 static const struct MenuAction MultichoiceList_Route116PickItem[] =
 {
-    {COMPOUND_STRING("Luminous Moss")},
-    {COMPOUND_STRING("Zoom Lens")},
-    {COMPOUND_STRING("TM Feather Dance")},
+    {COMPOUND_STRING("Float Stone")},
+    {COMPOUND_STRING("Power Herb")},
+    {COMPOUND_STRING("TM Rock Polish")},
 };
 
 static const struct MenuAction MultichoiceList_Route125PickItem[] =
@@ -921,114 +921,114 @@ static const struct MenuAction MultichoiceList_Route125PickItem[] =
 
 static const struct MenuAction MultichoiceList_Route102PickBall[] =
 {
-    {COMPOUND_STRING("Sitrus Berry")},
-    {COMPOUND_STRING("Mirror Herb")},
-    {COMPOUND_STRING("Expert Belt")},
+    {COMPOUND_STRING("Utility Umbrella")},
+    {COMPOUND_STRING("Lansat Berry")},
+    {COMPOUND_STRING("Bright Powder")},
 };
 
 static const struct MenuAction MultichoiceList_Route109PickBall[] =
 {
-    {COMPOUND_STRING("Cell Battery")},
-    {COMPOUND_STRING("Protective Pads")},
-    {COMPOUND_STRING("Loaded Dice")},
+    {COMPOUND_STRING("Room Service")},
+    {COMPOUND_STRING("Clear Amulet")},
+    {COMPOUND_STRING("Lum Berry")},
 };
 
 static const struct MenuAction MultichoiceList_Route110PickBall[] =
 {
-    {COMPOUND_STRING("Heavy Duty Boots")},
-    {COMPOUND_STRING("Lum Berry")},
-    {COMPOUND_STRING("Blunder Policy")},
+    {COMPOUND_STRING("Loaded Dice")},
+    {COMPOUND_STRING("Maranga Berry")},
+    {COMPOUND_STRING("Rocky Helmet")},
 };
 
 static const struct MenuAction MultichoiceList_Route111PickBallA[] =
 {
-    {COMPOUND_STRING("Lansat Berry")},
-    {COMPOUND_STRING("Eject Pack")},
-    {COMPOUND_STRING("Mental Herb")},
+    {COMPOUND_STRING("Air Balloon")},
+    {COMPOUND_STRING("Heavy Duty Boots")},
+    {COMPOUND_STRING("Rindo Berry")},
 };
 
 static const struct MenuAction MultichoiceList_Route111PickBallB[] =
 {
-    {COMPOUND_STRING("Wide Lens")},
-    {COMPOUND_STRING("Binding Band")},
-    {COMPOUND_STRING("Maranga Berry")},
+    {COMPOUND_STRING("Jaboca Berry")},
+    {COMPOUND_STRING("Quick Claw")},
+    {COMPOUND_STRING("Zoom Lens")},
 };
 
 static const struct MenuAction MultichoiceList_Route111PickBallC[] =
 {
-    {COMPOUND_STRING("Bright Powder")},
-    {COMPOUND_STRING("Safety Goggles")},
-    {COMPOUND_STRING("Grip Claw")},
+    {COMPOUND_STRING("Absorb Bulb")},
+    {COMPOUND_STRING("Shell Bell")},
+    {COMPOUND_STRING("White Herb")},
 };
 
 static const struct MenuAction MultichoiceList_Route112PickBall[] =
 {
-    {COMPOUND_STRING("Rindo Berry")},
-    {COMPOUND_STRING("Starf Berry")},
-    {COMPOUND_STRING("Clear Amulet")},
+    {COMPOUND_STRING("Red Card")},
+    {COMPOUND_STRING("Protective Pads")},
+    {COMPOUND_STRING("Blunder Policy")},
 };
 
 static const struct MenuAction MultichoiceList_Route114PickBallA[] =
 {
-    {COMPOUND_STRING("Float Stone")},
-    {COMPOUND_STRING("Iron Ball")},
-    {COMPOUND_STRING("Throat Spray")},
+    {COMPOUND_STRING("Metronome")},
+    {COMPOUND_STRING("Rowap Berry")},
+    {COMPOUND_STRING("Wide Lens")},
 };
 
 static const struct MenuAction MultichoiceList_Route114PickBallB[] =
 {
-    {COMPOUND_STRING("Red Card")},
-    {COMPOUND_STRING("Jaboca Berry")},
-    {COMPOUND_STRING("Rocky Helmet")},
+    {COMPOUND_STRING("Binding Band")},
+    {COMPOUND_STRING("Kee Berry")},
+    {COMPOUND_STRING("Iron Ball")},
 };
 
 static const struct MenuAction MultichoiceList_Route114PickBallC[] =
 {
-    {COMPOUND_STRING("Air Balloon")},
+    {COMPOUND_STRING("Sitrus Berry")},
+    {COMPOUND_STRING("Adrenaline Orb")},
     {COMPOUND_STRING("Terrain Extender")},
-    {COMPOUND_STRING("Big Root")},
 };
 
 static const struct MenuAction MultichoiceList_Route115PickBall[] =
 {
-    {COMPOUND_STRING("Utility Umbrella")},
-    {COMPOUND_STRING("Room Service")},
-    {COMPOUND_STRING("White Herb")},
+    {COMPOUND_STRING("Wise Glasses")},
+    {COMPOUND_STRING("Eject Pack")},
+    {COMPOUND_STRING("Starf Berry")},
 };
 
 static const struct MenuAction MultichoiceList_Route116PickBall[] =
 {
-    {COMPOUND_STRING("Wise Glasses")},
-    {COMPOUND_STRING("Kee Berry")},
-    {COMPOUND_STRING("Leppa Berry")},
+    {COMPOUND_STRING("Throat Spray")},
+    {COMPOUND_STRING("Luminous Moss")},
+    {COMPOUND_STRING("Big Root")},
 };
 
 static const struct MenuAction MultichoiceList_Route124PickBallA[] =
 {
-    {COMPOUND_STRING("Rowap Berry")},
-    {COMPOUND_STRING("Snowball")},
-    {COMPOUND_STRING("Power Herb")},
+    {COMPOUND_STRING("Grip Claw")},
+    {COMPOUND_STRING("Shed Shell")},
+    {COMPOUND_STRING("Cell Battery")},
 };
 
 static const struct MenuAction MultichoiceList_Route124PickBallB[] =
 {
-    {COMPOUND_STRING("Shed Shell")},
-    {COMPOUND_STRING("Shell Bell")},
-    {COMPOUND_STRING("Muscle Band")},
+    {COMPOUND_STRING("Sticky Barb")},
+    {COMPOUND_STRING("Leppa Berry")},
+    {COMPOUND_STRING("Expert Belt")},
 };
 
 static const struct MenuAction MultichoiceList_Route125PickBall[] =
 {
-    {COMPOUND_STRING("Luminous Moss")},
-    {COMPOUND_STRING("Zoom Lens")},
-    {COMPOUND_STRING("Quick Claw")},
+    {COMPOUND_STRING("Float Stone")},
+    {COMPOUND_STRING("Power Herb")},
+    {COMPOUND_STRING("Muscle Band")},
 };
 
 static const struct MenuAction MultichoiceList_SkypillarTopLegend[] =
 {
-    {COMPOUND_STRING("SPECIES_LEGEND1")},
-    {COMPOUND_STRING("SPECIES_LEGEND2")},
-    {COMPOUND_STRING("SPECIES_LEGEND3")},
+    {COMPOUND_STRING("Zekrom")},
+    {COMPOUND_STRING("Palkia")},
+    {COMPOUND_STRING("Kyogre")},
 };
 
 static const struct MenuAction MultichoiceList_WheresRayquaza[] =

@@ -222,17 +222,17 @@ Route120_EventScript_PickItem::
 	end
 
 Route120_EventScript_PickItem1::
-	finditem ITEM_ABSORB_BULB
+	finditem ITEM_SAFETY_GOGGLES
 	setflag FLAG_ITEM_ROUTE_120_NEST_BALL
 	end
 
 Route120_EventScript_PickItem2::
-	finditem ITEM_FOCUS_BAND
+	finditem ITEM_MIRROR_HERB
 	setflag FLAG_ITEM_ROUTE_120_NEST_BALL
 	end
 
 Route120_EventScript_PickItem3::
-	finditem ITEM_COVERT_CLOAK
+	finditem ITEM_FOCUS_BAND
 	setflag FLAG_ITEM_ROUTE_120_NEST_BALL
 	end
 @ === RAND_ROUTE120_ITEMS_END ===

@@ -129,22 +129,22 @@ Route104_EventScript_PickGem::
 	end
 
 Route104_EventScript_PickGem1::
-	finditem ITEM_GROUND_GEM
+	finditem ITEM_ELECTRIC_GEM
 	setflag FLAG_ITEM_ROUTE_104_GEM
 	end
 
 Route104_EventScript_PickGem2::
-	finditem ITEM_FIGHTING_GEM
-	setflag FLAG_ITEM_ROUTE_104_GEM
-	end
-
-Route104_EventScript_PickGem3::
 	finditem ITEM_GRASS_GEM
 	setflag FLAG_ITEM_ROUTE_104_GEM
 	end
 
+Route104_EventScript_PickGem3::
+	finditem ITEM_ROCK_GEM
+	setflag FLAG_ITEM_ROUTE_104_GEM
+	end
+
 Route104_EventScript_PickGem4::
-	finditem ITEM_DARK_GEM
+	finditem ITEM_BUG_GEM
 	setflag FLAG_ITEM_ROUTE_104_GEM
 	end
 @ === RAND_ROUTE104_GEMS_END ===
@@ -160,22 +160,22 @@ Route104_EventScript_PickBerry::
 	end
 
 Route104_EventScript_PickBerry1::
-	finditem ITEM_HABAN_BERRY
+	finditem ITEM_CHILAN_BERRY
 	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
 	end
 
 Route104_EventScript_PickBerry2::
-	finditem ITEM_PAYAPA_BERRY
+	finditem ITEM_CHOPLE_BERRY
 	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
 	end
 
 Route104_EventScript_PickBerry3::
-	finditem ITEM_CHARTI_BERRY
+	finditem ITEM_TANGA_BERRY
 	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
 	end
 
 Route104_EventScript_PickBerry4::
-	finditem ITEM_CHILAN_BERRY
+	finditem ITEM_ROSELI_BERRY
 	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
 	end
 @ === RAND_ROUTE104_BERRIES_END ===

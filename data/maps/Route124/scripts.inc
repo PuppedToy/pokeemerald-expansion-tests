@@ -158,17 +158,17 @@ Route124_EventScript_PickBallA::
 	end
 
 Route124_EventScript_PickBallA1::
-	finditem ITEM_ROWAP_BERRY
+	finditem ITEM_GRIP_CLAW
 	setflag FLAG_ITEM_ROUTE_124_YELLOW_SHARD
 	end
 
 Route124_EventScript_PickBallA2::
-	finditem ITEM_SNOWBALL
+	finditem ITEM_SHED_SHELL
 	setflag FLAG_ITEM_ROUTE_124_YELLOW_SHARD
 	end
 
 Route124_EventScript_PickBallA3::
-	finditem ITEM_POWER_HERB
+	finditem ITEM_CELL_BATTERY
 	setflag FLAG_ITEM_ROUTE_124_YELLOW_SHARD
 	end
 @ === RAND_ROUTE124_BALL_A_END ===
@@ -183,17 +183,17 @@ Route124_EventScript_PickBallB::
 	end
 
 Route124_EventScript_PickBallB1::
-	finditem ITEM_SHED_SHELL
+	finditem ITEM_STICKY_BARB
 	setflag FLAG_ITEM_ROUTE_124_IRON_BALL
 	end
 
 Route124_EventScript_PickBallB2::
-	finditem ITEM_SHELL_BELL
+	finditem ITEM_LEPPA_BERRY
 	setflag FLAG_ITEM_ROUTE_124_IRON_BALL
 	end
 
 Route124_EventScript_PickBallB3::
-	finditem ITEM_MUSCLE_BAND
+	finditem ITEM_EXPERT_BELT
 	setflag FLAG_ITEM_ROUTE_124_IRON_BALL
 	end
 @ === RAND_ROUTE124_BALL_B_END ===

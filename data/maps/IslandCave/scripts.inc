@@ -91,10 +91,10 @@ IslandCave_EventScript_Regice::
 	lock
 	faceplayer
 	waitse
-	playmoncry SPECIES_REGICE, CRY_MODE_ENCOUNTER
+	playmoncry SPECIES_TAPU_KOKO, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-	setwildbattle SPECIES_REGICE, 39
+	setwildbattle SPECIES_TAPU_KOKO, 39
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special StartRegiBattle
 	waitstate
@@ -113,6 +113,6 @@ IslandCave_EventScript_DefeatedRegice::
 	end
 
 IslandCave_EventScript_RanFromRegice::
-	setvar VAR_0x8004, SPECIES_REGICE
+	setvar VAR_0x8004, SPECIES_TAPU_KOKO
 	goto Common_EventScript_LegendaryFlewAway
 	end

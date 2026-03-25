@@ -278,17 +278,17 @@ Route114_EventScript_PickBallA::
 	end
 
 Route114_EventScript_PickBallA1::
-	finditem ITEM_FLOAT_STONE
+	finditem ITEM_METRONOME
 	setflag FLAG_ITEM_ROUTE_114_WIDE
 	end
 
 Route114_EventScript_PickBallA2::
-	finditem ITEM_IRON_BALL
+	finditem ITEM_ROWAP_BERRY
 	setflag FLAG_ITEM_ROUTE_114_WIDE
 	end
 
 Route114_EventScript_PickBallA3::
-	finditem ITEM_THROAT_SPRAY
+	finditem ITEM_WIDE_LENS
 	setflag FLAG_ITEM_ROUTE_114_WIDE
 	end
 @ === RAND_ROUTE114_BALL_A_END ===
@@ -303,17 +303,17 @@ Route114_EventScript_PickBallB::
 	end
 
 Route114_EventScript_PickBallB1::
-	finditem ITEM_RED_CARD
+	finditem ITEM_BINDING_BAND
 	setflag FLAG_ITEM_ROUTE_114_ZOOM
 	end
 
 Route114_EventScript_PickBallB2::
-	finditem ITEM_JABOCA_BERRY
+	finditem ITEM_KEE_BERRY
 	setflag FLAG_ITEM_ROUTE_114_ZOOM
 	end
 
 Route114_EventScript_PickBallB3::
-	finditem ITEM_ROCKY_HELMET
+	finditem ITEM_IRON_BALL
 	setflag FLAG_ITEM_ROUTE_114_ZOOM
 	end
 @ === RAND_ROUTE114_BALL_B_END ===
@@ -328,17 +328,17 @@ Route114_EventScript_PickBallC::
 	end
 
 Route114_EventScript_PickBallC1::
-	finditem ITEM_AIR_BALLOON
+	finditem ITEM_SITRUS_BERRY
 	setflag FLAG_ITEM_ROUTE_114_ENERGY_POWDER
 	end
 
 Route114_EventScript_PickBallC2::
-	finditem ITEM_TERRAIN_EXTENDER
+	finditem ITEM_ADRENALINE_ORB
 	setflag FLAG_ITEM_ROUTE_114_ENERGY_POWDER
 	end
 
 Route114_EventScript_PickBallC3::
-	finditem ITEM_BIG_ROOT
+	finditem ITEM_TERRAIN_EXTENDER
 	setflag FLAG_ITEM_ROUTE_114_ENERGY_POWDER
 	end
 @ === RAND_ROUTE114_BALL_C_END ===

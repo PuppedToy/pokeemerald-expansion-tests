@@ -177,17 +177,17 @@ Route115_EventScript_PickBall::
 	end
 
 Route115_EventScript_PickBall1::
-	finditem ITEM_UTILITY_UMBRELLA
+	finditem ITEM_WISE_GLASSES
 	setflag FLAG_ITEM_ROUTE_115_GREAT_BALL
 	end
 
 Route115_EventScript_PickBall2::
-	finditem ITEM_ROOM_SERVICE
+	finditem ITEM_EJECT_PACK
 	setflag FLAG_ITEM_ROUTE_115_GREAT_BALL
 	end
 
 Route115_EventScript_PickBall3::
-	finditem ITEM_WHITE_HERB
+	finditem ITEM_STARF_BERRY
 	setflag FLAG_ITEM_ROUTE_115_GREAT_BALL
 	end
 @ === RAND_ROUTE115_BALL_END ===

@@ -15,32 +15,33 @@ Music: Male
 Back Pic: Steven
 AI: Basic Trainer
 
-Metang
-Brave Nature
-Level: 42
-IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
-EVs: 252 Atk / 252 Def / 6 SpA
-- Light Screen
-- Psychic
-- Reflect
-- Metal Claw
-
-Skarmory
-Impish Nature
-Level: 43
-IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
-EVs: 252 HP / 6 SpA / 252 SpD
-- Toxic
+Kartana @ Choice Scarf
+Ability: BEAST_BOOST
+Level: 56
+Nature: Impish
+IVs: 26 HP / 26 Atk / 26 Def / 26 SpA / 26 SpD / 26 Spe
+- Giga Drain
 - Aerial Ace
-- Protect
-- Steel Wing
+- Cut
+- Night Slash
 
-Aggron
-Adamant Nature
-Level: 44
-IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
-EVs: 252 Atk / 252 SpA / 6 SpD
-- Thunder
-- Protect
+Mawile @ Mawilite
+Ability: HYPER_CUTTER
+Level: 56
+Nature: Naughty
+IVs: 26 HP / 26 Atk / 26 Def / 26 SpA / 26 SpD / 26 Spe
+- Iron Head
+- Play Rough
+- Stockpile
 - Solar Beam
-- Dragon Claw
+
+Metagross @ Focus Sash
+Ability: CLEAR_BODY
+Level: 56
+Nature: Jolly
+IVs: 26 HP / 26 Atk / 26 Def / 26 SpA / 26 SpD / 26 Spe
+- Zen Headbutt
+- Hammer Arm
+- Explosion
+- Rock Tomb
+

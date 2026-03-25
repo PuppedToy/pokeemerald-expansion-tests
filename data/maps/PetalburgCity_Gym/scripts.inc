@@ -376,8 +376,8 @@ PetalburgCity_Gym_EventScript_NormanBattle::
 	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_DEFEATED_PETALBURG_GYM
 	setvar VAR_PETALBURG_GYM_STATE, 7
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
-	givemon GYM_REWARD_MON, 39
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, SPECIES_CACNEA
+	givemon SPECIES_CACNEA, 39
 	call PetalburgCity_Gym_EventScript_ReceivedRewardPokeFanfare
 	special ResetHealLocationFromDewford
 	call EventScript_HideMrBriney
@@ -407,7 +407,7 @@ PetalburgCity_Gym_EventScript_ReceivedRewardPokeFanfare::
 	return
 
 PetalburgCity_Gym_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received GYM_REWARD_NAME!$"
+	.string "{PLAYER} received Cacnea!$"
 
 PetalburgCity_Gym_EventScript_GiveFacade::
 	giveitem ITEM_TM31

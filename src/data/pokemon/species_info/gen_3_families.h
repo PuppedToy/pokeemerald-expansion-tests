@@ -77,8 +77,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_GROVYLE] =
     {
-        .baseHP        = 50,
-        .baseAttack    = 65,
+        .baseHP        = 90, // @PUPPED-AUTO-BALANCE #SPECIES_GROVYLE [oldValue = 50] -- previous line was >>         .baseHP        = 50,
+        .baseAttack    = 25, // @PUPPED-AUTO-BALANCE #SPECIES_GROVYLE [oldValue = 65] -- previous line was >>         .baseAttack    = 65,
         .baseDefense   = 45,
         .baseSpeed     = 95,
         .baseSpAttack  = 85,
@@ -147,8 +147,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_SCEPTILE] =
     {
-        .baseHP        = 70,
-        .baseAttack    = 85,
+        .baseHP        = 110, // @PUPPED-AUTO-BALANCE #SPECIES_SCEPTILE [oldValue = 70] -- previous line was >>         .baseHP        = 70,
+        .baseAttack    = 45, // @PUPPED-AUTO-BALANCE #SPECIES_SCEPTILE [oldValue = 85] -- previous line was >>         .baseAttack    = 85,
         .baseDefense   = 65,
         .baseSpeed     = 120,
         .baseSpAttack  = 105,
@@ -223,10 +223,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_MEGA_EVOLUTIONS
     [SPECIES_SCEPTILE_MEGA] =
     {
-        .baseHP        = 70,
-        .baseAttack    = 110,
+        .baseHP        = 80, // @PUPPED-AUTO-BALANCE #SPECIES_SCEPTILE_MEGA [oldValue = 110] -- previous line was >>         .baseHP        = 110, // @PUPPED-AUTO-BALANCE #SPECIES_SCEPTILE_MEGA [oldValue = 70] -- previous line was >>         .baseHP        = 70,
+        .baseAttack    = 70, // @PUPPED-AUTO-BALANCE #SPECIES_SCEPTILE_MEGA [oldValue = 110] -- previous line was >>         .baseAttack    = 110,
         .baseDefense   = 75,
-        .baseSpeed     = 145,
+        .baseSpeed     = 165, // @PUPPED-AUTO-BALANCE #SPECIES_SCEPTILE_MEGA [oldValue = 145] -- previous line was >>         .baseSpeed     = 145,
         .baseSpAttack  = 145,
         .baseSpDefense = 85,
         .types = MON_TYPES(TYPE_GRASS, TYPE_DRAGON),
@@ -297,10 +297,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseHP        = 45,
         .baseAttack    = 60,
         .baseDefense   = 40,
-        .baseSpeed     = 45,
-        .baseSpAttack  = 70,
-        .baseSpDefense = 50,
-        .types = MON_TYPES(TYPE_FIRE),
+        .baseSpeed     = 15, // @PUPPED-AUTO-BALANCE #SPECIES_TORCHIC [oldValue = 45] -- previous line was >>         .baseSpeed     = 45,
+        .baseSpAttack  = 80, // @PUPPED-AUTO-BALANCE #SPECIES_TORCHIC [oldValue = 70] -- previous line was >>         .baseSpAttack  = 70,
+        .baseSpDefense = 60, // @PUPPED-AUTO-BALANCE #SPECIES_TORCHIC [oldValue = 50] -- previous line was >>         .baseSpDefense = 50,
+        .types = MON_TYPES(TYPE_FIRE, TYPE_ROCK), // @PUPPED-AUTO-BALANCE #SPECIES_TORCHIC [oldValue = null] -- previous line was >>         .types = MON_TYPES(TYPE_FIRE),
         .catchRate = 45,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 62 : 65,
         .evYield_SpAttack = 1,
@@ -381,9 +381,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseHP        = 60,
         .baseAttack    = 85,
         .baseDefense   = 60,
-        .baseSpeed     = 55,
-        .baseSpAttack  = 85,
-        .baseSpDefense = 60,
+        .baseSpeed     = 25, // @PUPPED-AUTO-BALANCE #SPECIES_COMBUSKEN [oldValue = 55] -- previous line was >>         .baseSpeed     = 55,
+        .baseSpAttack  = 95, // @PUPPED-AUTO-BALANCE #SPECIES_COMBUSKEN [oldValue = 85] -- previous line was >>         .baseSpAttack  = 85,
+        .baseSpDefense = 70, // @PUPPED-AUTO-BALANCE #SPECIES_COMBUSKEN [oldValue = 60] -- previous line was >>         .baseSpDefense = 60,
         .types = MON_TYPES(TYPE_FIRE, TYPE_FIGHTING),
         .catchRate = 45,
         .expYield = 142,
@@ -460,12 +460,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_BLAZIKEN] =
     {
-        .baseHP        = 80,
-        .baseAttack    = 120,
+        .baseHP        = 70, // @PUPPED-AUTO-BALANCE #SPECIES_BLAZIKEN [oldValue = 80] -- previous line was >>         .baseHP        = 80,
+        .baseAttack    = 130, // @PUPPED-AUTO-BALANCE #SPECIES_BLAZIKEN [oldValue = 120] -- previous line was >>         .baseAttack    = 120,
         .baseDefense   = 70,
-        .baseSpeed     = 80,
-        .baseSpAttack  = 110,
-        .baseSpDefense = 70,
+        .baseSpeed     = 50, // @PUPPED-AUTO-BALANCE #SPECIES_BLAZIKEN [oldValue = 80] -- previous line was >>         .baseSpeed     = 80,
+        .baseSpAttack  = 120, // @PUPPED-AUTO-BALANCE #SPECIES_BLAZIKEN [oldValue = 110] -- previous line was >>         .baseSpAttack  = 110,
+        .baseSpDefense = 80, // @PUPPED-AUTO-BALANCE #SPECIES_BLAZIKEN [oldValue = 70] -- previous line was >>         .baseSpDefense = 70,
         .types = MON_TYPES(TYPE_FIRE, TYPE_FIGHTING),
         .catchRate = 45,
     #if P_UPDATED_EXP_YIELDS >= GEN_8
@@ -551,12 +551,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_MEGA_EVOLUTIONS
     [SPECIES_BLAZIKEN_MEGA] =
     {
-        .baseHP        = 80,
-        .baseAttack    = 160,
+        .baseHP        = 70, // @PUPPED-AUTO-BALANCE #SPECIES_BLAZIKEN_MEGA [oldValue = 80] -- previous line was >>         .baseHP        = 80,
+        .baseAttack    = 170, // @PUPPED-AUTO-BALANCE #SPECIES_BLAZIKEN_MEGA [oldValue = 160] -- previous line was >>         .baseAttack    = 160,
         .baseDefense   = 80,
-        .baseSpeed     = 100,
-        .baseSpAttack  = 130,
-        .baseSpDefense = 80,
+        .baseSpeed     = 70, // @PUPPED-AUTO-BALANCE #SPECIES_BLAZIKEN_MEGA [oldValue = 100] -- previous line was >>         .baseSpeed     = 100,
+        .baseSpAttack  = 140, // @PUPPED-AUTO-BALANCE #SPECIES_BLAZIKEN_MEGA [oldValue = 130] -- previous line was >>         .baseSpAttack  = 130,
+        .baseSpDefense = 110, // @PUPPED-AUTO-BALANCE #SPECIES_BLAZIKEN_MEGA [oldValue = 90] -- previous line was >>         .baseSpDefense = 90, // @PUPPED-AUTO-BALANCE #SPECIES_BLAZIKEN_MEGA [oldValue = 80] -- previous line was >>         .baseSpDefense = 80,
         .types = MON_TYPES(TYPE_FIRE, TYPE_FIGHTING),
         .catchRate = 45,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_8) ? 315 : 284,
@@ -767,12 +767,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_SWAMPERT] =
     {
-        .baseHP        = 100,
-        .baseAttack    = 110,
+        .baseHP        = 110, // @PUPPED-AUTO-BALANCE #SPECIES_SWAMPERT [oldValue = 100] -- previous line was >>         .baseHP        = 100,
+        .baseAttack    = 90, // @PUPPED-AUTO-BALANCE #SPECIES_SWAMPERT [oldValue = 110] -- previous line was >>         .baseAttack    = 110,
         .baseDefense   = 90,
         .baseSpeed     = 60,
         .baseSpAttack  = 85,
-        .baseSpDefense = 90,
+        .baseSpDefense = 80, // @PUPPED-AUTO-BALANCE #SPECIES_SWAMPERT [oldValue = 90] -- previous line was >>         .baseSpDefense = 90,
         .types = MON_TYPES(TYPE_WATER, TYPE_GROUND),
         .catchRate = 45,
     #if P_UPDATED_EXP_YIELDS >= GEN_8
@@ -845,12 +845,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_MEGA_EVOLUTIONS
     [SPECIES_SWAMPERT_MEGA] =
     {
-        .baseHP        = 100,
-        .baseAttack    = 150,
+        .baseHP        = 110, // @PUPPED-AUTO-BALANCE #SPECIES_SWAMPERT_MEGA [oldValue = 100] -- previous line was >>         .baseHP        = 100,
+        .baseAttack    = 130, // @PUPPED-AUTO-BALANCE #SPECIES_SWAMPERT_MEGA [oldValue = 150] -- previous line was >>         .baseAttack    = 150,
         .baseDefense   = 110,
         .baseSpeed     = 70,
-        .baseSpAttack  = 95,
-        .baseSpDefense = 110,
+        .baseSpAttack  = 75, // @PUPPED-AUTO-BALANCE #SPECIES_SWAMPERT_MEGA [oldValue = 95] -- previous line was >>         .baseSpAttack  = 95,
+        .baseSpDefense = 100, // @PUPPED-AUTO-BALANCE #SPECIES_SWAMPERT_MEGA [oldValue = 110] -- previous line was >>         .baseSpDefense = 110,
         .types = MON_TYPES(TYPE_WATER, TYPE_GROUND),
         .catchRate = 45,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_8) ? 318 : 286,
@@ -1079,11 +1079,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_ZIGZAGOON] =
     {
         .baseHP        = 38,
-        .baseAttack    = 30,
-        .baseDefense   = 41,
-        .baseSpeed     = 60,
-        .baseSpAttack  = 30,
-        .baseSpDefense = 41,
+        .baseAttack    = 70, // @PUPPED-AUTO-BALANCE #SPECIES_ZIGZAGOON [oldValue = 30] -- previous line was >>         .baseAttack    = 30,
+        .baseDefense   = 51, // @PUPPED-AUTO-BALANCE #SPECIES_ZIGZAGOON [oldValue = 41] -- previous line was >>         .baseDefense   = 41,
+        .baseSpeed     = 70, // @PUPPED-AUTO-BALANCE #SPECIES_ZIGZAGOON [oldValue = 60] -- previous line was >>         .baseSpeed     = 60,
+        .baseSpAttack  = 50, // @PUPPED-AUTO-BALANCE #SPECIES_ZIGZAGOON [oldValue = 30] -- previous line was >>         .baseSpAttack  = 30,
+        .baseSpDefense = 31, // @PUPPED-AUTO-BALANCE #SPECIES_ZIGZAGOON [oldValue = 41] -- previous line was >>         .baseSpDefense = 41,
         .types = MON_TYPES(TYPE_NORMAL),
         .catchRate = 255,
         .expYield = ZIGZAGOON_EXP_YIELD,
@@ -1096,7 +1096,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .growthRate = GROWTH_MEDIUM_FAST,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_FIELD),
     #if P_UPDATED_ABILITIES >= GEN_4
-        .abilities = { ABILITY_PICKUP, ABILITY_GLUTTONY, ABILITY_QUICK_FEET },
+        .abilities = { ABILITY_PICKUP, ABILITY_GLUTTONY, ABILITY_MOXIE }, // @PUPPED-AUTO-BALANCE #SPECIES_ZIGZAGOON [oldValue = QUICK_FEET] -- previous line was >>         .abilities = { ABILITY_PICKUP, ABILITY_GLUTTONY, ABILITY_QUICK_FEET },
     #else
         .abilities = { ABILITY_PICKUP, ABILITY_NONE, ABILITY_QUICK_FEET },
     #endif
@@ -1156,12 +1156,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_LINOONE] =
     {
-        .baseHP        = 78,
-        .baseAttack    = 70,
-        .baseDefense   = 61,
-        .baseSpeed     = 100,
-        .baseSpAttack  = 50,
-        .baseSpDefense = 61,
+        .baseHP        = 98, // @PUPPED-AUTO-BALANCE #SPECIES_LINOONE [oldValue = 78] -- previous line was >>         .baseHP        = 78,
+        .baseAttack    = 110, // @PUPPED-AUTO-BALANCE #SPECIES_LINOONE [oldValue = 70] -- previous line was >>         .baseAttack    = 70,
+        .baseDefense   = 71, // @PUPPED-AUTO-BALANCE #SPECIES_LINOONE [oldValue = 61] -- previous line was >>         .baseDefense   = 61,
+        .baseSpeed     = 110, // @PUPPED-AUTO-BALANCE #SPECIES_LINOONE [oldValue = 100] -- previous line was >>         .baseSpeed     = 100,
+        .baseSpAttack  = 70, // @PUPPED-AUTO-BALANCE #SPECIES_LINOONE [oldValue = 50] -- previous line was >>         .baseSpAttack  = 50,
+        .baseSpDefense = 51, // @PUPPED-AUTO-BALANCE #SPECIES_LINOONE [oldValue = 61] -- previous line was >>         .baseSpDefense = 61,
         .types = MON_TYPES(TYPE_NORMAL),
         .catchRate = 90,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 147 : 128,
@@ -1174,7 +1174,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .growthRate = GROWTH_MEDIUM_FAST,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_FIELD),
     #if P_UPDATED_ABILITIES >= GEN_4
-        .abilities = { ABILITY_PICKUP, ABILITY_GLUTTONY, ABILITY_QUICK_FEET },
+        .abilities = { ABILITY_PICKUP, ABILITY_GLUTTONY, ABILITY_MOXIE }, // @PUPPED-AUTO-BALANCE #SPECIES_LINOONE [oldValue = QUICK_FEET] -- previous line was >>         .abilities = { ABILITY_PICKUP, ABILITY_GLUTTONY, ABILITY_QUICK_FEET },
     #else
         .abilities = { ABILITY_PICKUP, ABILITY_NONE, ABILITY_QUICK_FEET },
     #endif
@@ -1366,12 +1366,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_OBSTAGOON] =
     {
-        .baseHP        = 93,
-        .baseAttack    = 90,
-        .baseDefense   = 101,
-        .baseSpeed     = 95,
-        .baseSpAttack  = 60,
-        .baseSpDefense = 81,
+        .baseHP        = 123, // @PUPPED-AUTO-BALANCE #SPECIES_OBSTAGOON [oldValue = 103] -- previous line was >>         .baseHP        = 103, // @PUPPED-AUTO-BALANCE #SPECIES_OBSTAGOON [oldValue = 93] -- previous line was >>         .baseHP        = 93,
+        .baseAttack    = 130, // @PUPPED-AUTO-BALANCE #SPECIES_OBSTAGOON [oldValue = 90] -- previous line was >>         .baseAttack    = 90,
+        .baseDefense   = 111, // @PUPPED-AUTO-BALANCE #SPECIES_OBSTAGOON [oldValue = 101] -- previous line was >>         .baseDefense   = 101,
+        .baseSpeed     = 175, // @PUPPED-AUTO-BALANCE #SPECIES_OBSTAGOON [oldValue = 165] -- previous line was >>         .baseSpeed     = 165, // @PUPPED-AUTO-BALANCE #SPECIES_OBSTAGOON [oldValue = 95] -- previous line was >>         .baseSpeed     = 95,
+        .baseSpAttack  = 110, // @PUPPED-AUTO-BALANCE #SPECIES_OBSTAGOON [oldValue = 80] -- previous line was >>         .baseSpAttack  = 80, // @PUPPED-AUTO-BALANCE #SPECIES_OBSTAGOON [oldValue = 60] -- previous line was >>         .baseSpAttack  = 60,
+        .baseSpDefense = 71, // @PUPPED-AUTO-BALANCE #SPECIES_OBSTAGOON [oldValue = 81] -- previous line was >>         .baseSpDefense = 81,
         .types = MON_TYPES(TYPE_DARK, TYPE_NORMAL),
         .catchRate = 45,
         .expYield = 260,
@@ -1513,9 +1513,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseHP        = 50,
         .baseAttack    = 35,
         .baseDefense   = 55,
-        .baseSpeed     = 15,
+        .baseSpeed     = 1, // @PUPPED-AUTO-BALANCE #SPECIES_SILCOON [oldValue = 31] -- previous line was >>         .baseSpeed     = 15,
         .baseSpAttack  = 25,
-        .baseSpDefense = 25,
+        .baseSpDefense = 35, // @PUPPED-AUTO-BALANCE #SPECIES_SILCOON [oldValue = 25] -- previous line was >>         .baseSpDefense = 25,
         .types = MON_TYPES(TYPE_BUG),
         .catchRate = 120,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_4) ? 72 : 71,
@@ -1581,10 +1581,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 60,
         .baseAttack    = 70,
-        .baseDefense   = 50,
-        .baseSpeed     = 65,
-        .baseSpAttack  = P_UPDATED_STATS >= GEN_6 ? 100 : 90,
-        .baseSpDefense = 50,
+        .baseDefense   = 40, // @PUPPED-AUTO-BALANCE #SPECIES_BEAUTIFLY [oldValue = 50] -- previous line was >>         .baseDefense   = 50,
+        .baseSpeed     = 35, // @PUPPED-AUTO-BALANCE #SPECIES_BEAUTIFLY [oldValue = 65] -- previous line was >>         .baseSpeed     = 65,
+        .baseSpAttack  = 170, // @PUPPED-AUTO-BALANCE #SPECIES_BEAUTIFLY [oldValue = 100] -- previous line was >>         .baseSpAttack  = P_UPDATED_STATS >= GEN_6 ? 100 : 90,
+        .baseSpDefense = 60, // @PUPPED-AUTO-BALANCE #SPECIES_BEAUTIFLY [oldValue = 50] -- previous line was >>         .baseSpDefense = 50,
         .types = MON_TYPES(TYPE_BUG, TYPE_FLYING),
         .catchRate = 45,
     #if P_UPDATED_EXP_YIELDS >= GEN_8
@@ -1675,12 +1675,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_CASCOON] =
     {
-        .baseHP        = 50,
+        .baseHP        = 60, // @PUPPED-AUTO-BALANCE #SPECIES_CASCOON [oldValue = 50] -- previous line was >>         .baseHP        = 50,
         .baseAttack    = 35,
-        .baseDefense   = 55,
-        .baseSpeed     = 15,
-        .baseSpAttack  = 25,
-        .baseSpDefense = 25,
+        .baseDefense   = 45, // @PUPPED-AUTO-BALANCE #SPECIES_CASCOON [oldValue = 55] -- previous line was >>         .baseDefense   = 55,
+        .baseSpeed     = 1, // @PUPPED-AUTO-BALANCE #SPECIES_CASCOON [oldValue = 15] -- previous line was >>         .baseSpeed     = 15,
+        .baseSpAttack  = 105, // @PUPPED-AUTO-BALANCE #SPECIES_CASCOON [oldValue = 35] -- previous line was >>         .baseSpAttack  = 35, // @PUPPED-AUTO-BALANCE #SPECIES_CASCOON [oldValue = 25] -- previous line was >>         .baseSpAttack  = 25,
+        .baseSpDefense = 35, // @PUPPED-AUTO-BALANCE #SPECIES_CASCOON [oldValue = 25] -- previous line was >>         .baseSpDefense = 25,
         .types = MON_TYPES(TYPE_BUG),
         .catchRate = 120,
     #if P_UPDATED_EXP_YIELDS >= GEN_7
@@ -1752,12 +1752,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_DUSTOX] =
     {
-        .baseHP        = 60,
+        .baseHP        = 60, // @PUPPED-AUTO-BALANCE #SPECIES_DUSTOX [oldValue = 70] -- previous line was >>         .baseHP        = 70, // @PUPPED-AUTO-BALANCE #SPECIES_DUSTOX [oldValue = 60] -- previous line was >>         .baseHP        = 60,
         .baseAttack    = 50,
-        .baseDefense   = 70,
-        .baseSpeed     = 65,
-        .baseSpAttack  = 50,
-        .baseSpDefense = 90,
+        .baseDefense   = 60, // @PUPPED-AUTO-BALANCE #SPECIES_DUSTOX [oldValue = 70] -- previous line was >>         .baseDefense   = 70,
+        .baseSpeed     = 35, // @PUPPED-AUTO-BALANCE #SPECIES_DUSTOX [oldValue = 65] -- previous line was >>         .baseSpeed     = 65,
+        .baseSpAttack  = 150, // @PUPPED-AUTO-BALANCE #SPECIES_DUSTOX [oldValue = 80] -- previous line was >>         .baseSpAttack  = 80, // @PUPPED-AUTO-BALANCE #SPECIES_DUSTOX [oldValue = 60] -- previous line was >>         .baseSpAttack  = 60, // @PUPPED-AUTO-BALANCE #SPECIES_DUSTOX [oldValue = 50] -- previous line was >>         .baseSpAttack  = 50,
+        .baseSpDefense = 100, // @PUPPED-AUTO-BALANCE #SPECIES_DUSTOX [oldValue = 90] -- previous line was >>         .baseSpDefense = 90,
         .types = MON_TYPES(TYPE_BUG, TYPE_POISON),
         .catchRate = 45,
     #if P_UPDATED_EXP_YIELDS >= GEN_8
@@ -1929,11 +1929,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_LOMBRE] =
     {
         .baseHP        = 60,
-        .baseAttack    = 50,
+        .baseAttack    = 40, // @PUPPED-AUTO-BALANCE #SPECIES_LOMBRE [oldValue = 50] -- previous line was >>         .baseAttack    = 50,
         .baseDefense   = 50,
         .baseSpeed     = 50,
         .baseSpAttack  = 60,
-        .baseSpDefense = 70,
+        .baseSpDefense = 60, // @PUPPED-AUTO-BALANCE #SPECIES_LOMBRE [oldValue = 70] -- previous line was >>         .baseSpDefense = 70,
         .types = MON_TYPES(TYPE_WATER, TYPE_GRASS),
         .catchRate = 120,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 119 : 141,
@@ -1944,7 +1944,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_MEDIUM_SLOW,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_WATER_1, EGG_GROUP_GRASS),
-        .abilities = { ABILITY_SWIFT_SWIM, ABILITY_RAIN_DISH, ABILITY_OWN_TEMPO },
+        .abilities = { ABILITY_SWIFT_SWIM, ABILITY_DRY_SKIN, ABILITY_OWN_TEMPO }, // @PUPPED-AUTO-BALANCE #SPECIES_LOMBRE [oldValue = RAIN_DISH] -- previous line was >>         .abilities = { ABILITY_SWIFT_SWIM, ABILITY_RAIN_DISH, ABILITY_OWN_TEMPO },
         .bodyColor = BODY_COLOR_GREEN,
         .speciesName = _("Lombre"),
         .cryId = CRY_LOMBRE,
@@ -2000,11 +2000,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_LUDICOLO] =
     {
         .baseHP        = 80,
-        .baseAttack    = 70,
+        .baseAttack    = 60, // @PUPPED-AUTO-BALANCE #SPECIES_LUDICOLO [oldValue = 70] -- previous line was >>         .baseAttack    = 70,
         .baseDefense   = 70,
         .baseSpeed     = 70,
         .baseSpAttack  = 90,
-        .baseSpDefense = 100,
+        .baseSpDefense = 90, // @PUPPED-AUTO-BALANCE #SPECIES_LUDICOLO [oldValue = 100] -- previous line was >>         .baseSpDefense = 100,
         .types = MON_TYPES(TYPE_WATER, TYPE_GRASS),
         .catchRate = 45,
     #if P_UPDATED_EXP_YIELDS >= GEN_8
@@ -2021,7 +2021,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_MEDIUM_SLOW,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_WATER_1, EGG_GROUP_GRASS),
-        .abilities = { ABILITY_SWIFT_SWIM, ABILITY_RAIN_DISH, ABILITY_OWN_TEMPO },
+        .abilities = { ABILITY_SWIFT_SWIM, ABILITY_DRY_SKIN, ABILITY_OWN_TEMPO }, // @PUPPED-AUTO-BALANCE #SPECIES_LUDICOLO [oldValue = RAIN_DISH] -- previous line was >>         .abilities = { ABILITY_SWIFT_SWIM, ABILITY_RAIN_DISH, ABILITY_OWN_TEMPO },
         .bodyColor = BODY_COLOR_GREEN,
         .speciesName = _("Ludicolo"),
         .cryId = CRY_LUDICOLO,
@@ -2351,9 +2351,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 40,
         .baseAttack    = 55,
-        .baseDefense   = 30,
+        .baseDefense   = 40, // @PUPPED-AUTO-BALANCE #SPECIES_TAILLOW [oldValue = 30] -- previous line was >>         .baseDefense   = 30,
         .baseSpeed     = 85,
-        .baseSpAttack  = 30,
+        .baseSpAttack  = 60, // @PUPPED-AUTO-BALANCE #SPECIES_TAILLOW [oldValue = 30] -- previous line was >>         .baseSpAttack  = 30,
         .baseSpDefense = 30,
         .types = MON_TYPES(TYPE_NORMAL, TYPE_FLYING),
         .catchRate = 200,
@@ -2426,9 +2426,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 60,
         .baseAttack    = 85,
-        .baseDefense   = 60,
-        .baseSpeed     = 125,
-        .baseSpAttack  = P_UPDATED_STATS >= GEN_7 ? 75 : 50,
+        .baseDefense   = 70, // @PUPPED-AUTO-BALANCE #SPECIES_SWELLOW [oldValue = 60] -- previous line was >>         .baseDefense   = 60,
+        .baseSpeed     = 145, // @PUPPED-AUTO-BALANCE #SPECIES_SWELLOW [oldValue = 125] -- previous line was >>         .baseSpeed     = 125,
+        .baseSpAttack  = 135, // @PUPPED-AUTO-BALANCE #SPECIES_SWELLOW [oldValue = 105] -- previous line was >>         .baseSpAttack  = 105, // @PUPPED-AUTO-BALANCE #SPECIES_SWELLOW [oldValue = 75] -- previous line was >>         .baseSpAttack  = P_UPDATED_STATS >= GEN_7 ? 75 : 50,
         .baseSpDefense = 50,
         .types = MON_TYPES(TYPE_NORMAL, TYPE_FLYING),
         .catchRate = 45,
@@ -2669,8 +2669,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_RALTS] =
     {
-        .baseHP        = 28,
-        .baseAttack    = 25,
+        .baseHP        = 38, // @PUPPED-AUTO-BALANCE #SPECIES_RALTS [oldValue = 28] -- previous line was >>         .baseHP        = 28,
+        .baseAttack    = 35, // @PUPPED-AUTO-BALANCE #SPECIES_RALTS [oldValue = 25] -- previous line was >>         .baseAttack    = 25,
         .baseDefense   = 25,
         .baseSpeed     = 40,
         .baseSpAttack  = 45,
@@ -2684,7 +2684,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = 35,
         .growthRate = GROWTH_SLOW,
         .eggGroups = RALTS_FAMILY_EGG_GROUPS,
-        .abilities = { ABILITY_SYNCHRONIZE, ABILITY_TRACE, ABILITY_TELEPATHY },
+        .abilities = { ABILITY_ZERO_TO_HERO, ABILITY_TRACE, ABILITY_TELEPATHY }, // @PUPPED-AUTO-BALANCE #SPECIES_RALTS [oldValue = SYNCHRONIZE] -- previous line was >>         .abilities = { ABILITY_SYNCHRONIZE, ABILITY_TRACE, ABILITY_TELEPATHY },
         .bodyColor = BODY_COLOR_WHITE,
         .speciesName = _("Ralts"),
         .cryId = CRY_RALTS,
@@ -2738,8 +2738,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_KIRLIA] =
     {
-        .baseHP        = 38,
-        .baseAttack    = 35,
+        .baseHP        = 48, // @PUPPED-AUTO-BALANCE #SPECIES_KIRLIA [oldValue = 38] -- previous line was >>         .baseHP        = 38,
+        .baseAttack    = 45, // @PUPPED-AUTO-BALANCE #SPECIES_KIRLIA [oldValue = 35] -- previous line was >>         .baseAttack    = 35,
         .baseDefense   = 35,
         .baseSpeed     = 50,
         .baseSpAttack  = 65,
@@ -2753,7 +2753,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = 35,
         .growthRate = GROWTH_SLOW,
         .eggGroups = RALTS_FAMILY_EGG_GROUPS,
-        .abilities = { ABILITY_SYNCHRONIZE, ABILITY_TRACE, ABILITY_TELEPATHY },
+        .abilities = { ABILITY_ZERO_TO_HERO, ABILITY_TRACE, ABILITY_TELEPATHY }, // @PUPPED-AUTO-BALANCE #SPECIES_KIRLIA [oldValue = SYNCHRONIZE] -- previous line was >>         .abilities = { ABILITY_SYNCHRONIZE, ABILITY_TRACE, ABILITY_TELEPATHY },
         .bodyColor = BODY_COLOR_WHITE,
         .speciesName = _("Kirlia"),
         .cryId = CRY_KIRLIA,
@@ -2810,8 +2810,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_GARDEVOIR] =
     {
-        .baseHP        = 68,
-        .baseAttack    = 65,
+        .baseHP        = 78, // @PUPPED-AUTO-BALANCE #SPECIES_GARDEVOIR [oldValue = 68] -- previous line was >>         .baseHP        = 68,
+        .baseAttack    = 75, // @PUPPED-AUTO-BALANCE #SPECIES_GARDEVOIR [oldValue = 65] -- previous line was >>         .baseAttack    = 65,
         .baseDefense   = 65,
         .baseSpeed     = 80,
         .baseSpAttack  = 125,
@@ -2831,7 +2831,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = 35,
         .growthRate = GROWTH_SLOW,
         .eggGroups = RALTS_FAMILY_EGG_GROUPS,
-        .abilities = { ABILITY_SYNCHRONIZE, ABILITY_TRACE, ABILITY_TELEPATHY },
+        .abilities = { ABILITY_ZERO_TO_HERO, ABILITY_TRACE, ABILITY_TELEPATHY }, // @PUPPED-AUTO-BALANCE #SPECIES_GARDEVOIR [oldValue = SYNCHRONIZE] -- previous line was >>         .abilities = { ABILITY_SYNCHRONIZE, ABILITY_TRACE, ABILITY_TELEPATHY },
         .bodyColor = BODY_COLOR_WHITE,
         .speciesName = _("Gardevoir"),
         .cryId = CRY_GARDEVOIR,
@@ -2886,11 +2886,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_MEGA_EVOLUTIONS
     [SPECIES_GARDEVOIR_MEGA] =
     {
-        .baseHP        = 68,
-        .baseAttack    = 85,
+        .baseHP        = 78, // @PUPPED-AUTO-BALANCE #SPECIES_GARDEVOIR_MEGA [oldValue = 68] -- previous line was >>         .baseHP        = 68,
+        .baseAttack    = 85, // @PUPPED-AUTO-BALANCE #SPECIES_GARDEVOIR_MEGA [oldValue = 95] -- previous line was >>         .baseAttack    = 95, // @PUPPED-AUTO-BALANCE #SPECIES_GARDEVOIR_MEGA [oldValue = 85] -- previous line was >>         .baseAttack    = 85,
         .baseDefense   = 65,
-        .baseSpeed     = 100,
-        .baseSpAttack  = 165,
+        .baseSpeed     = 120, // @PUPPED-AUTO-BALANCE #SPECIES_GARDEVOIR_MEGA [oldValue = 100] -- previous line was >>         .baseSpeed     = 100,
+        .baseSpAttack  = 185, // @PUPPED-AUTO-BALANCE #SPECIES_GARDEVOIR_MEGA [oldValue = 165] -- previous line was >>         .baseSpAttack  = 165,
         .baseSpDefense = 135,
         .types = MON_TYPES(TYPE_PSYCHIC, RALTS_FAMILY_TYPE2),
         .catchRate = 45,
@@ -2956,11 +2956,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_GEN_4_CROSS_EVOS
     [SPECIES_GALLADE] =
     {
-        .baseHP        = 68,
-        .baseAttack    = 125,
+        .baseHP        = 78, // @PUPPED-AUTO-BALANCE #SPECIES_GALLADE [oldValue = 68] -- previous line was >>         .baseHP        = 68,
+        .baseAttack    = 125, // @PUPPED-AUTO-BALANCE #SPECIES_GALLADE [oldValue = 135] -- previous line was >>         .baseAttack    = 135, // @PUPPED-AUTO-BALANCE #SPECIES_GALLADE [oldValue = 125] -- previous line was >>         .baseAttack    = 125,
         .baseDefense   = 65,
-        .baseSpeed     = 80,
-        .baseSpAttack  = 65,
+        .baseSpeed     = 100, // @PUPPED-AUTO-BALANCE #SPECIES_GALLADE [oldValue = 80] -- previous line was >>         .baseSpeed     = 80,
+        .baseSpAttack  = 95, // @PUPPED-AUTO-BALANCE #SPECIES_GALLADE [oldValue = 75] -- previous line was >>         .baseSpAttack  = 75, // @PUPPED-AUTO-BALANCE #SPECIES_GALLADE [oldValue = 65] -- previous line was >>         .baseSpAttack  = 65,
         .baseSpDefense = 115,
         .types = MON_TYPES(TYPE_PSYCHIC, TYPE_FIGHTING),
         .catchRate = 45,
@@ -3035,11 +3035,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_MEGA_EVOLUTIONS
     [SPECIES_GALLADE_MEGA] =
     {
-        .baseHP        = 68,
-        .baseAttack    = 165,
+        .baseHP        = 78, // @PUPPED-AUTO-BALANCE #SPECIES_GALLADE_MEGA [oldValue = 68] -- previous line was >>         .baseHP        = 68,
+        .baseAttack    = 165, // @PUPPED-AUTO-BALANCE #SPECIES_GALLADE_MEGA [oldValue = 175] -- previous line was >>         .baseAttack    = 175, // @PUPPED-AUTO-BALANCE #SPECIES_GALLADE_MEGA [oldValue = 165] -- previous line was >>         .baseAttack    = 165,
         .baseDefense   = 95,
-        .baseSpeed     = 110,
-        .baseSpAttack  = 65,
+        .baseSpeed     = 130, // @PUPPED-AUTO-BALANCE #SPECIES_GALLADE_MEGA [oldValue = 110] -- previous line was >>         .baseSpeed     = 110,
+        .baseSpAttack  = 95, // @PUPPED-AUTO-BALANCE #SPECIES_GALLADE_MEGA [oldValue = 75] -- previous line was >>         .baseSpAttack  = 75, // @PUPPED-AUTO-BALANCE #SPECIES_GALLADE_MEGA [oldValue = 65] -- previous line was >>         .baseSpAttack  = 65,
         .baseSpDefense = 115,
         .types = MON_TYPES(TYPE_PSYCHIC, TYPE_FIGHTING),
         .catchRate = 45,
@@ -3179,11 +3179,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_MASQUERAIN] =
     {
-        .baseHP        = 70,
+        .baseHP        = 60, // @PUPPED-AUTO-BALANCE #SPECIES_MASQUERAIN [oldValue = 70] -- previous line was >>         .baseHP        = 70,
         .baseAttack    = 60,
         .baseDefense   = 62,
         .baseSpeed     = P_UPDATED_STATS >= GEN_7 ? 80 : 60,
-        .baseSpAttack  = P_UPDATED_STATS >= GEN_7 ? 100 : 80,
+        .baseSpAttack  = 70, // @PUPPED-AUTO-BALANCE #SPECIES_MASQUERAIN [oldValue = 100] -- previous line was >>         .baseSpAttack  = P_UPDATED_STATS >= GEN_7 ? 100 : 80,
         .baseSpDefense = 82,
         .types = MON_TYPES(TYPE_BUG, TYPE_FLYING),
         .catchRate = 75,
@@ -3265,8 +3265,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 60,
         .baseAttack    = 40,
-        .baseDefense   = 60,
-        .baseSpeed     = 35,
+        .baseDefense   = 100, // @PUPPED-AUTO-BALANCE #SPECIES_SHROOMISH [oldValue = 60] -- previous line was >>         .baseDefense   = 60,
+        .baseSpeed     = 25, // @PUPPED-AUTO-BALANCE #SPECIES_SHROOMISH [oldValue = 35] -- previous line was >>         .baseSpeed     = 35,
         .baseSpAttack  = 40,
         .baseSpDefense = 60,
         .types = MON_TYPES(TYPE_GRASS),
@@ -3348,8 +3348,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 60,
         .baseAttack    = 130,
-        .baseDefense   = 80,
-        .baseSpeed     = 70,
+        .baseDefense   = 120, // @PUPPED-AUTO-BALANCE #SPECIES_BRELOOM [oldValue = 80] -- previous line was >>         .baseDefense   = 80,
+        .baseSpeed     = 60, // @PUPPED-AUTO-BALANCE #SPECIES_BRELOOM [oldValue = 70] -- previous line was >>         .baseSpeed     = 70,
         .baseSpAttack  = 60,
         .baseSpDefense = 60,
         .types = MON_TYPES(TYPE_GRASS, TYPE_FIGHTING),
@@ -3427,8 +3427,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseAttack    = 60,
         .baseDefense   = 60,
         .baseSpeed     = 30,
-        .baseSpAttack  = 35,
-        .baseSpDefense = 35,
+        .baseSpAttack  = 25, // @PUPPED-AUTO-BALANCE #SPECIES_SLAKOTH [oldValue = 35] -- previous line was >>         .baseSpAttack  = 35,
+        .baseSpDefense = 45, // @PUPPED-AUTO-BALANCE #SPECIES_SLAKOTH [oldValue = 35] -- previous line was >>         .baseSpDefense = 35,
         .types = MON_TYPES(TYPE_NORMAL),
         .catchRate = 255,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 56 : 83,
@@ -3499,8 +3499,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseAttack    = 80,
         .baseDefense   = 80,
         .baseSpeed     = 90,
-        .baseSpAttack  = 55,
-        .baseSpDefense = 55,
+        .baseSpAttack  = 45, // @PUPPED-AUTO-BALANCE #SPECIES_VIGOROTH [oldValue = 55] -- previous line was >>         .baseSpAttack  = 55,
+        .baseSpDefense = 65, // @PUPPED-AUTO-BALANCE #SPECIES_VIGOROTH [oldValue = 55] -- previous line was >>         .baseSpDefense = 55,
         .types = MON_TYPES(TYPE_NORMAL),
         .catchRate = 120,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 154 : 126,
@@ -3571,8 +3571,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseAttack    = 160,
         .baseDefense   = 100,
         .baseSpeed     = 100,
-        .baseSpAttack  = 95,
-        .baseSpDefense = 65,
+        .baseSpAttack  = 85, // @PUPPED-AUTO-BALANCE #SPECIES_SLAKING [oldValue = 95] -- previous line was >>         .baseSpAttack  = 95,
+        .baseSpDefense = 75, // @PUPPED-AUTO-BALANCE #SPECIES_SLAKING [oldValue = 65] -- previous line was >>         .baseSpDefense = 65,
         .types = MON_TYPES(TYPE_NORMAL),
         .catchRate = 45,
     #if P_UPDATED_EXP_YIELDS >= GEN_8
@@ -3650,8 +3650,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseAttack    = 45,
         .baseDefense   = 90,
         .baseSpeed     = 40,
-        .baseSpAttack  = 30,
-        .baseSpDefense = 30,
+        .baseSpAttack  = 40, // @PUPPED-AUTO-BALANCE #SPECIES_NINCADA [oldValue = 30] -- previous line was >>         .baseSpAttack  = 30,
+        .baseSpDefense = 10, // @PUPPED-AUTO-BALANCE #SPECIES_NINCADA [oldValue = 30] -- previous line was >>         .baseSpDefense = 30,
         .types = MON_TYPES(TYPE_BUG, TYPE_GROUND),
         .catchRate = 255,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 53 : 65,
@@ -3662,7 +3662,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_ERRATIC,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_BUG),
-        .abilities = { ABILITY_COMPOUND_EYES, ABILITY_NONE, ABILITY_RUN_AWAY },
+        .abilities = { ABILITY_COMPOUND_EYES, ABILITY_ILLUMINATE, ABILITY_RUN_AWAY }, // @PUPPED-AUTO-BALANCE #SPECIES_NINCADA [oldValue = NONE] -- previous line was >>         .abilities = { ABILITY_COMPOUND_EYES, ABILITY_NONE, ABILITY_RUN_AWAY },
         .bodyColor = BODY_COLOR_GRAY,
         .speciesName = _("Nincada"),
         .cryId = CRY_NINCADA,
@@ -3726,9 +3726,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseHP        = 61,
         .baseAttack    = 90,
         .baseDefense   = 45,
-        .baseSpeed     = 160,
-        .baseSpAttack  = 50,
-        .baseSpDefense = 50,
+        .baseSpeed     = 170, // @PUPPED-AUTO-BALANCE #SPECIES_NINJASK [oldValue = 160] -- previous line was >>         .baseSpeed     = 160,
+        .baseSpAttack  = 60, // @PUPPED-AUTO-BALANCE #SPECIES_NINJASK [oldValue = 50] -- previous line was >>         .baseSpAttack  = 50,
+        .baseSpDefense = 70, // @PUPPED-AUTO-BALANCE #SPECIES_NINJASK [oldValue = 30] -- previous line was >>         .baseSpDefense = 30, // @PUPPED-AUTO-BALANCE #SPECIES_NINJASK [oldValue = 50] -- previous line was >>         .baseSpDefense = 50,
         .types = MON_TYPES(TYPE_BUG, TYPE_FLYING),
         .catchRate = 120,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 160 : 155,
@@ -3738,7 +3738,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_ERRATIC,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_BUG),
-        .abilities = { ABILITY_SPEED_BOOST, ABILITY_NONE, ABILITY_INFILTRATOR },
+        .abilities = { ABILITY_SPEED_BOOST, ABILITY_ILLUMINATE, ABILITY_INFILTRATOR, ABILITY_// @PUPPED-AUTO-BALANCE #SPECIES_NINJASK [OLDVALUE = NONE] -- PREVIOUS LINE WAS >>         .ABILITIES = { SPEED_BOOST, ABILITY_HOSPITALITY, ABILITY_INFILTRATOR } }, // @PUPPED-AUTO-BALANCE #SPECIES_NINJASK [oldValue = NONE] -- previous line was >>         .abilities = { ABILITY_SPEED_BOOST, ABILITY_ILLUMINATE, ABILITY_INFILTRATOR }, // @PUPPED-AUTO-BALANCE #SPECIES_NINJASK [oldValue = NONE] -- previous line was >>         .abilities = { ABILITY_SPEED_BOOST, ABILITY_NONE, ABILITY_INFILTRATOR },
         .bodyColor = BODY_COLOR_YELLOW,
         .speciesName = _("Ninjask"),
         .cryId = CRY_NINJASK,
@@ -3809,9 +3809,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseHP        = 1,
         .baseAttack    = 90,
         .baseDefense   = 45,
-        .baseSpeed     = 40,
-        .baseSpAttack  = 30,
-        .baseSpDefense = 30,
+        .baseSpeed     = 50, // @PUPPED-AUTO-BALANCE #SPECIES_SHEDINJA [oldValue = 40] -- previous line was >>         .baseSpeed     = 40,
+        .baseSpAttack  = 40, // @PUPPED-AUTO-BALANCE #SPECIES_SHEDINJA [oldValue = 30] -- previous line was >>         .baseSpAttack  = 30,
+        .baseSpDefense = 50, // @PUPPED-AUTO-BALANCE #SPECIES_SHEDINJA [oldValue = 10] -- previous line was >>         .baseSpDefense = 10, // @PUPPED-AUTO-BALANCE #SPECIES_SHEDINJA [oldValue = 30] -- previous line was >>         .baseSpDefense = 30,
         .types = MON_TYPES(TYPE_BUG, TYPE_GHOST),
         .catchRate = 45,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 83 : 95,
@@ -3821,7 +3821,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_ERRATIC,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_MINERAL),
-        .abilities = { ABILITY_WONDER_GUARD, ABILITY_NONE, ABILITY_NONE },
+        .abilities = { ABILITY_WONDER_GUARD, ABILITY_ILLUMINATE, ABILITY_HOSPITALITY, ABILITY_// @PUPPED-AUTO-BALANCE #SPECIES_SHEDINJA [OLDVALUE = NONE] -- PREVIOUS LINE WAS >>         .ABILITIES = { WONDER_GUARD, ABILITY_NONE, ABILITY_NONE } }, // @PUPPED-AUTO-BALANCE #SPECIES_SHEDINJA [oldValue = NONE] -- previous line was >>         .abilities = { ABILITY_WONDER_GUARD, ABILITY_ILLUMINATE, ABILITY_NONE }, // @PUPPED-AUTO-BALANCE #SPECIES_SHEDINJA [oldValue = NONE] -- previous line was >>         .abilities = { ABILITY_WONDER_GUARD, ABILITY_NONE, ABILITY_NONE },
         .bodyColor = BODY_COLOR_BROWN,
         .speciesName = _("Shedinja"),
         .cryId = CRY_SHEDINJA,
@@ -3955,12 +3955,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_LOUDRED] =
     {
         .baseHP        = 84,
-        .baseAttack    = 71,
+        .baseAttack    = 41, // @PUPPED-AUTO-BALANCE #SPECIES_LOUDRED [oldValue = 71] -- previous line was >>         .baseAttack    = 71,
         .baseDefense   = 43,
-        .baseSpeed     = 48,
+        .baseSpeed     = 58, // @PUPPED-AUTO-BALANCE #SPECIES_LOUDRED [oldValue = 68] -- previous line was >>         .baseSpeed     = 68, // @PUPPED-AUTO-BALANCE #SPECIES_LOUDRED [oldValue = 48] -- previous line was >>         .baseSpeed     = 48,
         .baseSpAttack  = 71,
         .baseSpDefense = 43,
-        .types = MON_TYPES(TYPE_NORMAL),
+        .types = MON_TYPES(TYPE_DARK), // @PUPPED-AUTO-BALANCE #SPECIES_LOUDRED [oldValue = NORMAL] -- previous line was >>         .types = MON_TYPES(TYPE_NORMAL),
         .catchRate = 120,
         .expYield = 126,
         .evYield_HP = 2,
@@ -4025,12 +4025,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_EXPLOUD] =
     {
         .baseHP        = 104,
-        .baseAttack    = 91,
+        .baseAttack    = 61, // @PUPPED-AUTO-BALANCE #SPECIES_EXPLOUD [oldValue = 91] -- previous line was >>         .baseAttack    = 91,
         .baseDefense   = 63,
-        .baseSpeed     = 68,
+        .baseSpeed     = 78, // @PUPPED-AUTO-BALANCE #SPECIES_EXPLOUD [oldValue = 88] -- previous line was >>         .baseSpeed     = 88, // @PUPPED-AUTO-BALANCE #SPECIES_EXPLOUD [oldValue = 68] -- previous line was >>         .baseSpeed     = 68,
         .baseSpAttack  = 91,
         .baseSpDefense = P_UPDATED_STATS >= GEN_6 ? 73 : 63,
-        .types = MON_TYPES(TYPE_NORMAL),
+        .types = MON_TYPES(TYPE_DARK), // @PUPPED-AUTO-BALANCE #SPECIES_EXPLOUD [oldValue = NORMAL] -- previous line was >>         .types = MON_TYPES(TYPE_NORMAL),
         .catchRate = 45,
     #if P_UPDATED_EXP_YIELDS >= GEN_8
         .expYield = 245,
@@ -4101,11 +4101,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_MAKUHITA
     [SPECIES_MAKUHITA] =
     {
-        .baseHP        = 72,
+        .baseHP        = 92, // @PUPPED-AUTO-BALANCE #SPECIES_MAKUHITA [oldValue = 72] -- previous line was >>         .baseHP        = 72,
         .baseAttack    = 60,
         .baseDefense   = 30,
         .baseSpeed     = 25,
-        .baseSpAttack  = 20,
+        .baseSpAttack  = 10, // @PUPPED-AUTO-BALANCE #SPECIES_MAKUHITA [oldValue = 20] -- previous line was >>         .baseSpAttack  = 20,
         .baseSpDefense = 30,
         .types = MON_TYPES(TYPE_FIGHTING),
         .catchRate = 180,
@@ -4177,11 +4177,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_HARIYAMA] =
     {
-        .baseHP        = 144,
+        .baseHP        = 164, // @PUPPED-AUTO-BALANCE #SPECIES_HARIYAMA [oldValue = 144] -- previous line was >>         .baseHP        = 144,
         .baseAttack    = 120,
         .baseDefense   = 60,
         .baseSpeed     = 50,
-        .baseSpAttack  = 40,
+        .baseSpAttack  = 30, // @PUPPED-AUTO-BALANCE #SPECIES_HARIYAMA [oldValue = 40] -- previous line was >>         .baseSpAttack  = 40,
         .baseSpDefense = 60,
         .types = MON_TYPES(TYPE_FIGHTING),
         .catchRate = 200,
@@ -4327,10 +4327,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_PROBOPASS] =
     {
         .baseHP        = 60,
-        .baseAttack    = 55,
+        .baseAttack    = 45, // @PUPPED-AUTO-BALANCE #SPECIES_PROBOPASS [oldValue = 65] -- previous line was >>         .baseAttack    = 65, // @PUPPED-AUTO-BALANCE #SPECIES_PROBOPASS [oldValue = 55] -- previous line was >>         .baseAttack    = 55,
         .baseDefense   = 145,
-        .baseSpeed     = 40,
-        .baseSpAttack  = 75,
+        .baseSpeed     = 50, // @PUPPED-AUTO-BALANCE #SPECIES_PROBOPASS [oldValue = 40] -- previous line was >>         .baseSpeed     = 40,
+        .baseSpAttack  = 105, // @PUPPED-AUTO-BALANCE #SPECIES_PROBOPASS [oldValue = 95] -- previous line was >>         .baseSpAttack  = 95, // @PUPPED-AUTO-BALANCE #SPECIES_PROBOPASS [oldValue = 75] -- previous line was >>         .baseSpAttack  = 75,
         .baseSpDefense = 150,
         .types = MON_TYPES(TYPE_ROCK, TYPE_STEEL),
         .catchRate = 60,
@@ -4554,11 +4554,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_SABLEYE
     [SPECIES_SABLEYE] =
     {
-        .baseHP        = 50,
+        .baseHP        = 60, // @PUPPED-AUTO-BALANCE #SPECIES_SABLEYE [oldValue = 50] -- previous line was >>         .baseHP        = 50,
         .baseAttack    = 75,
         .baseDefense   = 75,
         .baseSpeed     = 50,
-        .baseSpAttack  = 65,
+        .baseSpAttack  = 75, // @PUPPED-AUTO-BALANCE #SPECIES_SABLEYE [oldValue = 65] -- previous line was >>         .baseSpAttack  = 65,
         .baseSpDefense = 65,
         .types = MON_TYPES(TYPE_DARK, TYPE_GHOST),
         .catchRate = 45,
@@ -4633,11 +4633,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_MEGA_EVOLUTIONS
     [SPECIES_SABLEYE_MEGA] =
     {
-        .baseHP        = 50,
+        .baseHP        = 60, // @PUPPED-AUTO-BALANCE #SPECIES_SABLEYE_MEGA [oldValue = 50] -- previous line was >>         .baseHP        = 50,
         .baseAttack    = 85,
-        .baseDefense   = 125,
-        .baseSpeed     = 20,
-        .baseSpAttack  = 85,
+        .baseDefense   = 115, // @PUPPED-AUTO-BALANCE #SPECIES_SABLEYE_MEGA [oldValue = 125] -- previous line was >>         .baseDefense   = 125,
+        .baseSpeed     = 30, // @PUPPED-AUTO-BALANCE #SPECIES_SABLEYE_MEGA [oldValue = 20] -- previous line was >>         .baseSpeed     = 20,
+        .baseSpAttack  = 65, // @PUPPED-AUTO-BALANCE #SPECIES_SABLEYE_MEGA [oldValue = 55] -- previous line was >>         .baseSpAttack  = 55, // @PUPPED-AUTO-BALANCE #SPECIES_SABLEYE_MEGA [oldValue = 85] -- previous line was >>         .baseSpAttack  = 85,
         .baseSpDefense = 115,
         .types = MON_TYPES(TYPE_DARK, TYPE_GHOST),
         .catchRate = 45,
@@ -4783,9 +4783,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_MAWILE_MEGA] =
     {
         .baseHP        = 50,
-        .baseAttack    = 105,
-        .baseDefense   = 125,
-        .baseSpeed     = 50,
+        .baseAttack    = 125, // @PUPPED-AUTO-BALANCE #SPECIES_MAWILE_MEGA [oldValue = 105] -- previous line was >>         .baseAttack    = 105,
+        .baseDefense   = 135, // @PUPPED-AUTO-BALANCE #SPECIES_MAWILE_MEGA [oldValue = 125] -- previous line was >>         .baseDefense   = 125,
+        .baseSpeed     = 40, // @PUPPED-AUTO-BALANCE #SPECIES_MAWILE_MEGA [oldValue = 50] -- previous line was >>         .baseSpeed     = 50,
         .baseSpAttack  = 55,
         .baseSpDefense = 95,
         .types = MON_TYPES(TYPE_STEEL, TYPE_FAIRY),
@@ -4856,10 +4856,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_ARON] =
     {
         .baseHP        = 50,
-        .baseAttack    = 70,
+        .baseAttack    = 80, // @PUPPED-AUTO-BALANCE #SPECIES_ARON [oldValue = 70] -- previous line was >>         .baseAttack    = 70,
         .baseDefense   = 100,
         .baseSpeed     = 30,
-        .baseSpAttack  = 40,
+        .baseSpAttack  = 60, // @PUPPED-AUTO-BALANCE #SPECIES_ARON [oldValue = 40] -- previous line was >>         .baseSpAttack  = 40,
         .baseSpDefense = 40,
         .types = MON_TYPES(TYPE_STEEL, TYPE_ROCK),
         .catchRate = 180,
@@ -4927,11 +4927,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_LAIRON] =
     {
-        .baseHP        = 60,
-        .baseAttack    = 90,
+        .baseHP        = 50, // @PUPPED-AUTO-BALANCE #SPECIES_LAIRON [oldValue = 60] -- previous line was >>         .baseHP        = 60,
+        .baseAttack    = 90, // @PUPPED-AUTO-BALANCE #SPECIES_LAIRON [oldValue = 100] -- previous line was >>         .baseAttack    = 100, // @PUPPED-AUTO-BALANCE #SPECIES_LAIRON [oldValue = 90] -- previous line was >>         .baseAttack    = 90,
         .baseDefense   = 140,
         .baseSpeed     = 40,
-        .baseSpAttack  = 50,
+        .baseSpAttack  = 70, // @PUPPED-AUTO-BALANCE #SPECIES_LAIRON [oldValue = 50] -- previous line was >>         .baseSpAttack  = 50,
         .baseSpDefense = 50,
         .types = MON_TYPES(TYPE_STEEL, TYPE_ROCK),
         .catchRate = 90,
@@ -4998,11 +4998,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_AGGRON] =
     {
-        .baseHP        = 70,
-        .baseAttack    = 110,
+        .baseHP        = 60, // @PUPPED-AUTO-BALANCE #SPECIES_AGGRON [oldValue = 70] -- previous line was >>         .baseHP        = 70,
+        .baseAttack    = 110, // @PUPPED-AUTO-BALANCE #SPECIES_AGGRON [oldValue = 120] -- previous line was >>         .baseAttack    = 120, // @PUPPED-AUTO-BALANCE #SPECIES_AGGRON [oldValue = 110] -- previous line was >>         .baseAttack    = 110,
         .baseDefense   = 180,
         .baseSpeed     = 50,
-        .baseSpAttack  = 60,
+        .baseSpAttack  = 80, // @PUPPED-AUTO-BALANCE #SPECIES_AGGRON [oldValue = 60] -- previous line was >>         .baseSpAttack  = 60,
         .baseSpDefense = 60,
         .types = MON_TYPES(TYPE_STEEL, TYPE_ROCK),
         .catchRate = 45,
@@ -5075,13 +5075,13 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_MEGA_EVOLUTIONS
     [SPECIES_AGGRON_MEGA] =
     {
-        .baseHP        = 70,
-        .baseAttack    = 140,
+        .baseHP        = 70, // @PUPPED-AUTO-BALANCE #SPECIES_AGGRON_MEGA [oldValue = 80] -- previous line was >>         .baseHP        = 80, // @PUPPED-AUTO-BALANCE #SPECIES_AGGRON_MEGA [oldValue = 70] -- previous line was >>         .baseHP        = 70,
+        .baseAttack    = 140, // @PUPPED-AUTO-BALANCE #SPECIES_AGGRON_MEGA [oldValue = 150] -- previous line was >>         .baseAttack    = 150, // @PUPPED-AUTO-BALANCE #SPECIES_AGGRON_MEGA [oldValue = 140] -- previous line was >>         .baseAttack    = 140,
         .baseDefense   = 230,
         .baseSpeed     = 50,
-        .baseSpAttack  = 60,
+        .baseSpAttack  = 80, // @PUPPED-AUTO-BALANCE #SPECIES_AGGRON_MEGA [oldValue = 60] -- previous line was >>         .baseSpAttack  = 60,
         .baseSpDefense = 80,
-        .types = MON_TYPES(TYPE_STEEL),
+        .types = MON_TYPES(TYPE_STEEL, TYPE_DRAGON), // @PUPPED-AUTO-BALANCE #SPECIES_AGGRON_MEGA [oldValue = null] -- previous line was >>         .types = MON_TYPES(TYPE_STEEL),
         .catchRate = 45,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_8) ? 315 : 284,
         .evYield_Defense = 3,
@@ -5091,7 +5091,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = 35,
         .growthRate = GROWTH_SLOW,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_MONSTER),
-        .abilities = { ABILITY_FILTER, ABILITY_FILTER, ABILITY_FILTER },
+        .abilities = { ABILITY_TERA_SHELL, ABILITY_FILTER, ABILITY_FILTER }, // @PUPPED-AUTO-BALANCE #SPECIES_AGGRON_MEGA [oldValue = FILTER] -- previous line was >>         .abilities = { ABILITY_FILTER, ABILITY_FILTER, ABILITY_FILTER },
         .bodyColor = BODY_COLOR_GRAY,
         .speciesName = _("Aggron"),
         .cryId = CRY_AGGRON_MEGA,
@@ -5148,10 +5148,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_MEDITITE] =
     {
         .baseHP        = 30,
-        .baseAttack    = 40,
+        .baseAttack    = 60, // @PUPPED-AUTO-BALANCE #SPECIES_MEDITITE [oldValue = 40] -- previous line was >>         .baseAttack    = 40,
         .baseDefense   = 55,
         .baseSpeed     = 60,
-        .baseSpAttack  = 40,
+        .baseSpAttack  = 130, // @PUPPED-AUTO-BALANCE #SPECIES_MEDITITE [oldValue = 40] -- previous line was >>         .baseSpAttack  = 40,
         .baseSpDefense = 55,
         .types = MON_TYPES(TYPE_FIGHTING, TYPE_PSYCHIC),
         .catchRate = 180,
@@ -5230,10 +5230,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_MEDICHAM] =
     {
         .baseHP        = 60,
-        .baseAttack    = 60,
-        .baseDefense   = 75,
+        .baseAttack    = 80, // @PUPPED-AUTO-BALANCE #SPECIES_MEDICHAM [oldValue = 60] -- previous line was >>         .baseAttack    = 60,
+        .baseDefense   = 115, // @PUPPED-AUTO-BALANCE #SPECIES_MEDICHAM [oldValue = 75] -- previous line was >>         .baseDefense   = 75,
         .baseSpeed     = 80,
-        .baseSpAttack  = 60,
+        .baseSpAttack  = 150, // @PUPPED-AUTO-BALANCE #SPECIES_MEDICHAM [oldValue = 60] -- previous line was >>         .baseSpAttack  = 60,
         .baseSpDefense = 75,
         .types = MON_TYPES(TYPE_FIGHTING, TYPE_PSYCHIC),
         .catchRate = 90,
@@ -5317,10 +5317,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_MEDICHAM_MEGA] =
     {
         .baseHP        = 60,
-        .baseAttack    = 100,
-        .baseDefense   = 85,
+        .baseAttack    = 120, // @PUPPED-AUTO-BALANCE #SPECIES_MEDICHAM_MEGA [oldValue = 100] -- previous line was >>         .baseAttack    = 100,
+        .baseDefense   = 125, // @PUPPED-AUTO-BALANCE #SPECIES_MEDICHAM_MEGA [oldValue = 85] -- previous line was >>         .baseDefense   = 85,
         .baseSpeed     = 100,
-        .baseSpAttack  = 80,
+        .baseSpAttack  = 170, // @PUPPED-AUTO-BALANCE #SPECIES_MEDICHAM_MEGA [oldValue = 80] -- previous line was >>         .baseSpAttack  = 80,
         .baseSpDefense = 85,
         .types = MON_TYPES(TYPE_FIGHTING, TYPE_PSYCHIC),
         .catchRate = 90,
@@ -5388,7 +5388,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_ELECTRIKE] =
     {
         .baseHP        = 40,
-        .baseAttack    = 45,
+        .baseAttack    = 35, // @PUPPED-AUTO-BALANCE #SPECIES_ELECTRIKE [oldValue = 45] -- previous line was >>         .baseAttack    = 45,
         .baseDefense   = 40,
         .baseSpeed     = 65,
         .baseSpAttack  = 65,
@@ -5459,8 +5459,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_MANECTRIC] =
     {
         .baseHP        = 70,
-        .baseAttack    = 75,
-        .baseDefense   = 60,
+        .baseAttack    = 65, // @PUPPED-AUTO-BALANCE #SPECIES_MANECTRIC [oldValue = 75] -- previous line was >>         .baseAttack    = 75,
+        .baseDefense   = 70, // @PUPPED-AUTO-BALANCE #SPECIES_MANECTRIC [oldValue = 60] -- previous line was >>         .baseDefense   = 60,
         .baseSpeed     = 105,
         .baseSpAttack  = 105,
         .baseSpDefense = 60,
@@ -5530,9 +5530,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_MEGA_EVOLUTIONS
     [SPECIES_MANECTRIC_MEGA] =
     {
-        .baseHP        = 70,
-        .baseAttack    = 75,
-        .baseDefense   = 80,
+        .baseHP        = 90, // @PUPPED-AUTO-BALANCE #SPECIES_MANECTRIC_MEGA [oldValue = 70] -- previous line was >>         .baseHP        = 70,
+        .baseAttack    = 65, // @PUPPED-AUTO-BALANCE #SPECIES_MANECTRIC_MEGA [oldValue = 75] -- previous line was >>         .baseAttack    = 75,
+        .baseDefense   = 90, // @PUPPED-AUTO-BALANCE #SPECIES_MANECTRIC_MEGA [oldValue = 80] -- previous line was >>         .baseDefense   = 80,
         .baseSpeed     = 135,
         .baseSpAttack  = 135,
         .baseSpDefense = 80,
@@ -5601,11 +5601,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_PLUSLE] =
     {
         .baseHP        = 60,
-        .baseAttack    = 50,
-        .baseDefense   = 40,
+        .baseAttack    = 60, // @PUPPED-AUTO-BALANCE #SPECIES_PLUSLE [oldValue = 50] -- previous line was >>         .baseAttack    = 50,
+        .baseDefense   = 50, // @PUPPED-AUTO-BALANCE #SPECIES_PLUSLE [oldValue = 40] -- previous line was >>         .baseDefense   = 40,
         .baseSpeed     = 95,
         .baseSpAttack  = 85,
-        .baseSpDefense = 75,
+        .baseSpDefense = 65, // @PUPPED-AUTO-BALANCE #SPECIES_PLUSLE [oldValue = 75] -- previous line was >>         .baseSpDefense = 75,
         .types = MON_TYPES(TYPE_ELECTRIC),
         .catchRate = 200,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 142 : 120,
@@ -5679,10 +5679,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 60,
         .baseAttack    = 40,
-        .baseDefense   = 50,
+        .baseDefense   = 60, // @PUPPED-AUTO-BALANCE #SPECIES_MINUN [oldValue = 50] -- previous line was >>         .baseDefense   = 50,
         .baseSpeed     = 95,
         .baseSpAttack  = 75,
-        .baseSpDefense = 85,
+        .baseSpDefense = 95, // @PUPPED-AUTO-BALANCE #SPECIES_MINUN [oldValue = 85] -- previous line was >>         .baseSpDefense = 85,
         .types = MON_TYPES(TYPE_ELECTRIC),
         .catchRate = 200,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 142 : 120,
@@ -5754,11 +5754,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_VOLBEAT_ILLUMISE
     [SPECIES_VOLBEAT] =
     {
-        .baseHP        = 65,
-        .baseAttack    = 73,
-        .baseDefense   = P_UPDATED_STATS >= GEN_7 ? 75 : 55,
+        .baseHP        = 75, // @PUPPED-AUTO-BALANCE #SPECIES_VOLBEAT [oldValue = 65] -- previous line was >>         .baseHP        = 65,
+        .baseAttack    = 83, // @PUPPED-AUTO-BALANCE #SPECIES_VOLBEAT [oldValue = 73] -- previous line was >>         .baseAttack    = 73,
+        .baseDefense   = 85, // @PUPPED-AUTO-BALANCE #SPECIES_VOLBEAT [oldValue = 75] -- previous line was >>         .baseDefense   = P_UPDATED_STATS >= GEN_7 ? 75 : 55,
         .baseSpeed     = 85,
-        .baseSpAttack  = 47,
+        .baseSpAttack  = 37, // @PUPPED-AUTO-BALANCE #SPECIES_VOLBEAT [oldValue = 47] -- previous line was >>         .baseSpAttack  = 47,
         .baseSpDefense = P_UPDATED_STATS >= GEN_7 ? 85 : 75,
         .types = MON_TYPES(TYPE_BUG),
         .catchRate = 150,
@@ -5833,11 +5833,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_ILLUMISE] =
     {
-        .baseHP        = 65,
-        .baseAttack    = 47,
-        .baseDefense   = P_UPDATED_STATS >= GEN_7 ? 75 : 55,
+        .baseHP        = 75, // @PUPPED-AUTO-BALANCE #SPECIES_ILLUMISE [oldValue = 65] -- previous line was >>         .baseHP        = 65,
+        .baseAttack    = 67, // @PUPPED-AUTO-BALANCE #SPECIES_ILLUMISE [oldValue = 57] -- previous line was >>         .baseAttack    = 57, // @PUPPED-AUTO-BALANCE #SPECIES_ILLUMISE [oldValue = 47] -- previous line was >>         .baseAttack    = 47,
+        .baseDefense   = 55, // @PUPPED-AUTO-BALANCE #SPECIES_ILLUMISE [oldValue = 85] -- previous line was >>         .baseDefense   = 85, // @PUPPED-AUTO-BALANCE #SPECIES_ILLUMISE [oldValue = 75] -- previous line was >>         .baseDefense   = P_UPDATED_STATS >= GEN_7 ? 75 : 55,
         .baseSpeed     = 85,
-        .baseSpAttack  = 73,
+        .baseSpAttack  = 73, // @PUPPED-AUTO-BALANCE #SPECIES_ILLUMISE [oldValue = 83] -- previous line was >>         .baseSpAttack  = 83, // @PUPPED-AUTO-BALANCE #SPECIES_ILLUMISE [oldValue = 73] -- previous line was >>         .baseSpAttack  = 73,
         .baseSpDefense = P_UPDATED_STATS >= GEN_7 ? 85 : 75,
         .types = MON_TYPES(TYPE_BUG),
         .catchRate = 150,
@@ -5856,7 +5856,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .growthRate = GROWTH_FLUCTUATING,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_BUG, EGG_GROUP_HUMAN_LIKE),
     #if P_UPDATED_ABILITIES >= GEN_4
-        .abilities = { ABILITY_OBLIVIOUS, ABILITY_TINTED_LENS, ABILITY_PRANKSTER },
+        .abilities = { ABILITY_OBLIVIOUS, ABILITY_TINTED_LENS, ABILITY_SOUNDPROOF }, // @PUPPED-AUTO-BALANCE #SPECIES_ILLUMISE [oldValue = PRANKSTER] -- previous line was >>         .abilities = { ABILITY_OBLIVIOUS, ABILITY_TINTED_LENS, ABILITY_PRANKSTER },
     #else
         .abilities = { ABILITY_OBLIVIOUS, ABILITY_NONE, ABILITY_PRANKSTER },
     #endif
@@ -5918,10 +5918,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_BUDEW] =
     {
         .baseHP        = 40,
-        .baseAttack    = 30,
+        .baseAttack    = 40, // @PUPPED-AUTO-BALANCE #SPECIES_BUDEW [oldValue = 30] -- previous line was >>         .baseAttack    = 30,
         .baseDefense   = 35,
-        .baseSpeed     = 55,
-        .baseSpAttack  = 50,
+        .baseSpeed     = 105, // @PUPPED-AUTO-BALANCE #SPECIES_BUDEW [oldValue = 55] -- previous line was >>         .baseSpeed     = 55,
+        .baseSpAttack  = 30, // @PUPPED-AUTO-BALANCE #SPECIES_BUDEW [oldValue = 50] -- previous line was >>         .baseSpAttack  = 50,
         .baseSpDefense = 70,
         .types = MON_TYPES(TYPE_GRASS, TYPE_POISON),
         .catchRate = 255,
@@ -5990,10 +5990,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_ROSELIA] =
     {
         .baseHP        = 50,
-        .baseAttack    = 60,
+        .baseAttack    = 70, // @PUPPED-AUTO-BALANCE #SPECIES_ROSELIA [oldValue = 60] -- previous line was >>         .baseAttack    = 60,
         .baseDefense   = 45,
-        .baseSpeed     = 65,
-        .baseSpAttack  = 100,
+        .baseSpeed     = 115, // @PUPPED-AUTO-BALANCE #SPECIES_ROSELIA [oldValue = 65] -- previous line was >>         .baseSpeed     = 65,
+        .baseSpAttack  = 80, // @PUPPED-AUTO-BALANCE #SPECIES_ROSELIA [oldValue = 100] -- previous line was >>         .baseSpAttack  = 100,
         .baseSpDefense = 80,
         .types = MON_TYPES(TYPE_GRASS, TYPE_POISON),
         .catchRate = 150,
@@ -6077,10 +6077,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_ROSERADE] =
     {
         .baseHP        = 60,
-        .baseAttack    = 70,
+        .baseAttack    = 80, // @PUPPED-AUTO-BALANCE #SPECIES_ROSERADE [oldValue = 70] -- previous line was >>         .baseAttack    = 70,
         .baseDefense   = P_UPDATED_STATS >= GEN_6 ? 65 : 55,
-        .baseSpeed     = 90,
-        .baseSpAttack  = 125,
+        .baseSpeed     = 140, // @PUPPED-AUTO-BALANCE #SPECIES_ROSERADE [oldValue = 90] -- previous line was >>         .baseSpeed     = 90,
+        .baseSpAttack  = 105, // @PUPPED-AUTO-BALANCE #SPECIES_ROSERADE [oldValue = 125] -- previous line was >>         .baseSpAttack  = 125,
         .baseSpDefense = 105,
         .types = MON_TYPES(TYPE_GRASS, TYPE_POISON),
         .catchRate = 75,
@@ -6169,10 +6169,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_GULPIN] =
     {
         .baseHP        = 70,
-        .baseAttack    = 43,
+        .baseAttack    = 73, // @PUPPED-AUTO-BALANCE #SPECIES_GULPIN [oldValue = 43] -- previous line was >>         .baseAttack    = 43,
         .baseDefense   = 53,
         .baseSpeed     = 40,
-        .baseSpAttack  = 43,
+        .baseSpAttack  = 63, // @PUPPED-AUTO-BALANCE #SPECIES_GULPIN [oldValue = 43] -- previous line was >>         .baseSpAttack  = 43,
         .baseSpDefense = 53,
         .types = MON_TYPES(TYPE_POISON),
         .catchRate = 225,
@@ -6185,7 +6185,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_FLUCTUATING,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_AMORPHOUS),
-        .abilities = { ABILITY_LIQUID_OOZE, ABILITY_STICKY_HOLD, ABILITY_GLUTTONY },
+        .abilities = { ABILITY_LIQUID_OOZE, ABILITY_STICKY_HOLD, ABILITY_LIGHT_METAL }, // @PUPPED-AUTO-BALANCE #SPECIES_GULPIN [oldValue = GLUTTONY] -- previous line was >>         .abilities = { ABILITY_LIQUID_OOZE, ABILITY_STICKY_HOLD, ABILITY_GLUTTONY },
         .bodyColor = BODY_COLOR_GREEN,
         .speciesName = _("Gulpin"),
         .cryId = CRY_GULPIN,
@@ -6255,11 +6255,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_SWALOT] =
     {
         .baseHP        = 100,
-        .baseAttack    = 73,
+        .baseAttack    = 123, // @PUPPED-AUTO-BALANCE #SPECIES_SWALOT [oldValue = 103] -- previous line was >>         .baseAttack    = 103, // @PUPPED-AUTO-BALANCE #SPECIES_SWALOT [oldValue = 73] -- previous line was >>         .baseAttack    = 73,
         .baseDefense   = 83,
         .baseSpeed     = 55,
-        .baseSpAttack  = 73,
-        .baseSpDefense = 83,
+        .baseSpAttack  = 93, // @PUPPED-AUTO-BALANCE #SPECIES_SWALOT [oldValue = 73] -- previous line was >>         .baseSpAttack  = 73,
+        .baseSpDefense = 93, // @PUPPED-AUTO-BALANCE #SPECIES_SWALOT [oldValue = 83] -- previous line was >>         .baseSpDefense = 83,
         .types = MON_TYPES(TYPE_POISON),
         .catchRate = 75,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 163 : 168,
@@ -6271,7 +6271,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_FLUCTUATING,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_AMORPHOUS),
-        .abilities = { ABILITY_LIQUID_OOZE, ABILITY_STICKY_HOLD, ABILITY_GLUTTONY },
+        .abilities = { ABILITY_LIQUID_OOZE, ABILITY_STICKY_HOLD, ABILITY_LIGHT_METAL }, // @PUPPED-AUTO-BALANCE #SPECIES_SWALOT [oldValue = GLUTTONY] -- previous line was >>         .abilities = { ABILITY_LIQUID_OOZE, ABILITY_STICKY_HOLD, ABILITY_GLUTTONY },
         .bodyColor = BODY_COLOR_PURPLE,
         .speciesName = _("Swalot"),
         .cryId = CRY_SWALOT,
@@ -6339,12 +6339,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_CARVANHA
     [SPECIES_CARVANHA] =
     {
-        .baseHP        = 45,
+        .baseHP        = 25, // @PUPPED-AUTO-BALANCE #SPECIES_CARVANHA [oldValue = 45] -- previous line was >>         .baseHP        = 45,
         .baseAttack    = 90,
         .baseDefense   = 20,
         .baseSpeed     = 65,
         .baseSpAttack  = 65,
-        .baseSpDefense = 20,
+        .baseSpDefense = 30, // @PUPPED-AUTO-BALANCE #SPECIES_CARVANHA [oldValue = 20] -- previous line was >>         .baseSpDefense = 20,
         .types = MON_TYPES(TYPE_WATER, TYPE_DARK),
         .catchRate = 225,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 61 : 88,
@@ -6415,12 +6415,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_SHARPEDO] =
     {
-        .baseHP        = 70,
-        .baseAttack    = 120,
-        .baseDefense   = 40,
+        .baseHP        = 50, // @PUPPED-AUTO-BALANCE #SPECIES_SHARPEDO [oldValue = 70] -- previous line was >>         .baseHP        = 70,
+        .baseAttack    = 140, // @PUPPED-AUTO-BALANCE #SPECIES_SHARPEDO [oldValue = 120] -- previous line was >>         .baseAttack    = 120,
+        .baseDefense   = 90, // @PUPPED-AUTO-BALANCE #SPECIES_SHARPEDO [oldValue = 40] -- previous line was >>         .baseDefense   = 40,
         .baseSpeed     = 95,
         .baseSpAttack  = 95,
-        .baseSpDefense = 40,
+        .baseSpDefense = 80, // @PUPPED-AUTO-BALANCE #SPECIES_SHARPEDO [oldValue = 50] -- previous line was >>         .baseSpDefense = 50, // @PUPPED-AUTO-BALANCE #SPECIES_SHARPEDO [oldValue = 40] -- previous line was >>         .baseSpDefense = 40,
         .types = MON_TYPES(TYPE_WATER, TYPE_DARK),
         .catchRate = 60,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 161 : 175,
@@ -6492,12 +6492,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_MEGA_EVOLUTIONS
     [SPECIES_SHARPEDO_MEGA] =
     {
-        .baseHP        = 70,
-        .baseAttack    = 140,
-        .baseDefense   = 70,
+        .baseHP        = 50, // @PUPPED-AUTO-BALANCE #SPECIES_SHARPEDO_MEGA [oldValue = 70] -- previous line was >>         .baseHP        = 70,
+        .baseAttack    = 160, // @PUPPED-AUTO-BALANCE #SPECIES_SHARPEDO_MEGA [oldValue = 140] -- previous line was >>         .baseAttack    = 140,
+        .baseDefense   = 120, // @PUPPED-AUTO-BALANCE #SPECIES_SHARPEDO_MEGA [oldValue = 70] -- previous line was >>         .baseDefense   = 70,
         .baseSpeed     = 105,
         .baseSpAttack  = 110,
-        .baseSpDefense = 65,
+        .baseSpDefense = 105, // @PUPPED-AUTO-BALANCE #SPECIES_SHARPEDO_MEGA [oldValue = 75] -- previous line was >>         .baseSpDefense = 75, // @PUPPED-AUTO-BALANCE #SPECIES_SHARPEDO_MEGA [oldValue = 65] -- previous line was >>         .baseSpDefense = 65,
         .types = MON_TYPES(TYPE_WATER, TYPE_DARK),
         .catchRate = 60,
         .expYield = 196,
@@ -6565,10 +6565,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_WAILMER
     [SPECIES_WAILMER] =
     {
-        .baseHP        = 130,
-        .baseAttack    = 70,
-        .baseDefense   = 35,
-        .baseSpeed     = 60,
+        .baseHP        = 170, // @PUPPED-AUTO-BALANCE #SPECIES_WAILMER [oldValue = 130] -- previous line was >>         .baseHP        = 130,
+        .baseAttack    = 80, // @PUPPED-AUTO-BALANCE #SPECIES_WAILMER [oldValue = 70] -- previous line was >>         .baseAttack    = 70,
+        .baseDefense   = 45, // @PUPPED-AUTO-BALANCE #SPECIES_WAILMER [oldValue = 35] -- previous line was >>         .baseDefense   = 35,
+        .baseSpeed     = 70, // @PUPPED-AUTO-BALANCE #SPECIES_WAILMER [oldValue = 60] -- previous line was >>         .baseSpeed     = 60,
         .baseSpAttack  = 70,
         .baseSpDefense = 35,
         .types = MON_TYPES(TYPE_WATER),
@@ -6580,7 +6580,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_FLUCTUATING,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_FIELD, EGG_GROUP_WATER_2),
-        .abilities = { ABILITY_WATER_VEIL, ABILITY_OBLIVIOUS, ABILITY_PRESSURE },
+        .abilities = { ABILITY_SNIPER, ABILITY_OBLIVIOUS, ABILITY_PRESSURE }, // @PUPPED-AUTO-BALANCE #SPECIES_WAILMER [oldValue = WATER_VEIL] -- previous line was >>         .abilities = { ABILITY_WATER_VEIL, ABILITY_OBLIVIOUS, ABILITY_PRESSURE },
         .bodyColor = BODY_COLOR_BLUE,
         .speciesName = _("Wailmer"),
         .cryId = CRY_WAILMER,
@@ -6638,11 +6638,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_WAILORD] =
     {
-        .baseHP        = 170,
-        .baseAttack    = 90,
-        .baseDefense   = 45,
-        .baseSpeed     = 60,
-        .baseSpAttack  = 90,
+        .baseHP        = 210, // @PUPPED-AUTO-BALANCE #SPECIES_WAILORD [oldValue = 170] -- previous line was >>         .baseHP        = 170,
+        .baseAttack    = 100, // @PUPPED-AUTO-BALANCE #SPECIES_WAILORD [oldValue = 90] -- previous line was >>         .baseAttack    = 90,
+        .baseDefense   = 55, // @PUPPED-AUTO-BALANCE #SPECIES_WAILORD [oldValue = 45] -- previous line was >>         .baseDefense   = 45,
+        .baseSpeed     = 70, // @PUPPED-AUTO-BALANCE #SPECIES_WAILORD [oldValue = 60] -- previous line was >>         .baseSpeed     = 60,
+        .baseSpAttack  = 100, // @PUPPED-AUTO-BALANCE #SPECIES_WAILORD [oldValue = 90] -- previous line was >>         .baseSpAttack  = 90,
         .baseSpDefense = 45,
         .types = MON_TYPES(TYPE_WATER),
         .catchRate = 60,
@@ -6653,7 +6653,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_FLUCTUATING,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_FIELD, EGG_GROUP_WATER_2),
-        .abilities = { ABILITY_WATER_VEIL, ABILITY_OBLIVIOUS, ABILITY_PRESSURE },
+        .abilities = { ABILITY_SNIPER, ABILITY_OBLIVIOUS, ABILITY_PRESSURE }, // @PUPPED-AUTO-BALANCE #SPECIES_WAILORD [oldValue = WATER_VEIL] -- previous line was >>         .abilities = { ABILITY_WATER_VEIL, ABILITY_OBLIVIOUS, ABILITY_PRESSURE },
         .bodyColor = BODY_COLOR_BLUE,
         .speciesName = _("Wailord"),
         .cryId = CRY_WAILORD,
@@ -6710,9 +6710,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 60,
         .baseAttack    = 60,
-        .baseDefense   = 40,
-        .baseSpeed     = 35,
-        .baseSpAttack  = 65,
+        .baseDefense   = 60, // @PUPPED-AUTO-BALANCE #SPECIES_NUMEL [oldValue = 40] -- previous line was >>         .baseDefense   = 40,
+        .baseSpeed     = 25, // @PUPPED-AUTO-BALANCE #SPECIES_NUMEL [oldValue = 35] -- previous line was >>         .baseSpeed     = 35,
+        .baseSpAttack  = 75, // @PUPPED-AUTO-BALANCE #SPECIES_NUMEL [oldValue = 65] -- previous line was >>         .baseSpAttack  = 65,
         .baseSpDefense = 45,
         .types = MON_TYPES(TYPE_FIRE, TYPE_GROUND),
         .catchRate = 255,
@@ -6796,11 +6796,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_CAMERUPT] =
     {
-        .baseHP        = 70,
+        .baseHP        = 60, // @PUPPED-AUTO-BALANCE #SPECIES_CAMERUPT [oldValue = 70] -- previous line was >>         .baseHP        = 70,
         .baseAttack    = 100,
-        .baseDefense   = 70,
-        .baseSpeed     = 40,
-        .baseSpAttack  = 105,
+        .baseDefense   = 90, // @PUPPED-AUTO-BALANCE #SPECIES_CAMERUPT [oldValue = 70] -- previous line was >>         .baseDefense   = 70,
+        .baseSpeed     = 10, // @PUPPED-AUTO-BALANCE #SPECIES_CAMERUPT [oldValue = 30] -- previous line was >>         .baseSpeed     = 30, // @PUPPED-AUTO-BALANCE #SPECIES_CAMERUPT [oldValue = 40] -- previous line was >>         .baseSpeed     = 40,
+        .baseSpAttack  = 115, // @PUPPED-AUTO-BALANCE #SPECIES_CAMERUPT [oldValue = 105] -- previous line was >>         .baseSpAttack  = 105,
         .baseSpDefense = 75,
         .types = MON_TYPES(TYPE_FIRE, TYPE_GROUND),
         .catchRate = 150,
@@ -6888,11 +6888,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_MEGA_EVOLUTIONS
     [SPECIES_CAMERUPT_MEGA] =
     {
-        .baseHP        = 70,
+        .baseHP        = 60, // @PUPPED-AUTO-BALANCE #SPECIES_CAMERUPT_MEGA [oldValue = 70] -- previous line was >>         .baseHP        = 70,
         .baseAttack    = 120,
-        .baseDefense   = 100,
-        .baseSpeed     = 20,
-        .baseSpAttack  = 145,
+        .baseDefense   = 120, // @PUPPED-AUTO-BALANCE #SPECIES_CAMERUPT_MEGA [oldValue = 100] -- previous line was >>         .baseDefense   = 100,
+        .baseSpeed     = 1, // @PUPPED-AUTO-BALANCE #SPECIES_CAMERUPT_MEGA [oldValue = 10] -- previous line was >>         .baseSpeed     = 10, // @PUPPED-AUTO-BALANCE #SPECIES_CAMERUPT_MEGA [oldValue = 20] -- previous line was >>         .baseSpeed     = 20,
+        .baseSpAttack  = 155, // @PUPPED-AUTO-BALANCE #SPECIES_CAMERUPT_MEGA [oldValue = 145] -- previous line was >>         .baseSpAttack  = 145,
         .baseSpDefense = 105,
         .types = MON_TYPES(TYPE_FIRE, TYPE_GROUND),
         .catchRate = 150,
@@ -6960,13 +6960,13 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_TORKOAL
     [SPECIES_TORKOAL] =
     {
-        .baseHP        = 70,
-        .baseAttack    = 85,
+        .baseHP        = 110, // @PUPPED-AUTO-BALANCE #SPECIES_TORKOAL [oldValue = 70] -- previous line was >>         .baseHP        = 70,
+        .baseAttack    = 135, // @PUPPED-AUTO-BALANCE #SPECIES_TORKOAL [oldValue = 85] -- previous line was >>         .baseAttack    = 85,
         .baseDefense   = 140,
         .baseSpeed     = 20,
-        .baseSpAttack  = 85,
+        .baseSpAttack  = 55, // @PUPPED-AUTO-BALANCE #SPECIES_TORKOAL [oldValue = 85] -- previous line was >>         .baseSpAttack  = 85,
         .baseSpDefense = 70,
-        .types = MON_TYPES(TYPE_FIRE),
+        .types = MON_TYPES(TYPE_FIRE, TYPE_BUG), // @PUPPED-AUTO-BALANCE #SPECIES_TORKOAL [oldValue = null] -- previous line was >>         .types = MON_TYPES(TYPE_FIRE),
         .catchRate = 90,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 165 : 161,
         .evYield_Defense = 2,
@@ -7039,9 +7039,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 60,
         .baseAttack    = 25,
-        .baseDefense   = 35,
-        .baseSpeed     = 60,
-        .baseSpAttack  = 70,
+        .baseDefense   = 45, // @PUPPED-AUTO-BALANCE #SPECIES_SPOINK [oldValue = 35] -- previous line was >>         .baseDefense   = 35,
+        .baseSpeed     = 70, // @PUPPED-AUTO-BALANCE #SPECIES_SPOINK [oldValue = 60] -- previous line was >>         .baseSpeed     = 60,
+        .baseSpAttack  = 100, // @PUPPED-AUTO-BALANCE #SPECIES_SPOINK [oldValue = 70] -- previous line was >>         .baseSpAttack  = 70,
         .baseSpDefense = 80,
         .types = MON_TYPES(TYPE_PSYCHIC),
         .catchRate = 255,
@@ -7116,10 +7116,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 80,
         .baseAttack    = 45,
-        .baseDefense   = 65,
-        .baseSpeed     = 80,
-        .baseSpAttack  = 90,
-        .baseSpDefense = 110,
+        .baseDefense   = 75, // @PUPPED-AUTO-BALANCE #SPECIES_GRUMPIG [oldValue = 65] -- previous line was >>         .baseDefense   = 65,
+        .baseSpeed     = 90, // @PUPPED-AUTO-BALANCE #SPECIES_GRUMPIG [oldValue = 80] -- previous line was >>         .baseSpeed     = 80,
+        .baseSpAttack  = 120, // @PUPPED-AUTO-BALANCE #SPECIES_GRUMPIG [oldValue = 90] -- previous line was >>         .baseSpAttack  = 90,
+        .baseSpDefense = 70, // @PUPPED-AUTO-BALANCE #SPECIES_GRUMPIG [oldValue = 110] -- previous line was >>         .baseSpDefense = 110,
         .types = MON_TYPES(TYPE_PSYCHIC),
         .catchRate = 60,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 165 : 164,
@@ -7263,12 +7263,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_TRAPINCH
     [SPECIES_TRAPINCH] =
     {
-        .baseHP        = 45,
+        .baseHP        = 35, // @PUPPED-AUTO-BALANCE #SPECIES_TRAPINCH [oldValue = 45] -- previous line was >>         .baseHP        = 45,
         .baseAttack    = 100,
-        .baseDefense   = 45,
+        .baseDefense   = 35, // @PUPPED-AUTO-BALANCE #SPECIES_TRAPINCH [oldValue = 45] -- previous line was >>         .baseDefense   = 45,
         .baseSpeed     = 10,
         .baseSpAttack  = 45,
-        .baseSpDefense = 45,
+        .baseSpDefense = 35, // @PUPPED-AUTO-BALANCE #SPECIES_TRAPINCH [oldValue = 45] -- previous line was >>         .baseSpDefense = 45,
         .types = MON_TYPES(TYPE_GROUND),
         .catchRate = 255,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 58 : 73,
@@ -7339,12 +7339,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_VIBRAVA] =
     {
-        .baseHP        = 50,
+        .baseHP        = 40, // @PUPPED-AUTO-BALANCE #SPECIES_VIBRAVA [oldValue = 50] -- previous line was >>         .baseHP        = 50,
         .baseAttack    = 70,
-        .baseDefense   = 50,
+        .baseDefense   = 40, // @PUPPED-AUTO-BALANCE #SPECIES_VIBRAVA [oldValue = 50] -- previous line was >>         .baseDefense   = 50,
         .baseSpeed     = 70,
         .baseSpAttack  = 50,
-        .baseSpDefense = 50,
+        .baseSpDefense = 40, // @PUPPED-AUTO-BALANCE #SPECIES_VIBRAVA [oldValue = 50] -- previous line was >>         .baseSpDefense = 50,
         .types = MON_TYPES(TYPE_GROUND, TYPE_DRAGON),
         .catchRate = 120,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 119 : 126,
@@ -7416,12 +7416,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_FLYGON] =
     {
-        .baseHP        = 80,
+        .baseHP        = 70, // @PUPPED-AUTO-BALANCE #SPECIES_FLYGON [oldValue = 80] -- previous line was >>         .baseHP        = 80,
         .baseAttack    = 100,
-        .baseDefense   = 80,
+        .baseDefense   = 70, // @PUPPED-AUTO-BALANCE #SPECIES_FLYGON [oldValue = 80] -- previous line was >>         .baseDefense   = 80,
         .baseSpeed     = 100,
         .baseSpAttack  = 80,
-        .baseSpDefense = 80,
+        .baseSpDefense = 70, // @PUPPED-AUTO-BALANCE #SPECIES_FLYGON [oldValue = 80] -- previous line was >>         .baseSpDefense = 80,
         .types = MON_TYPES(TYPE_GROUND, TYPE_DRAGON),
         .catchRate = 45,
     #if P_UPDATED_EXP_YIELDS >= GEN_8
@@ -7501,9 +7501,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_CACNEA
     [SPECIES_CACNEA] =
     {
-        .baseHP        = 50,
-        .baseAttack    = 85,
-        .baseDefense   = 40,
+        .baseHP        = 40, // @PUPPED-AUTO-BALANCE #SPECIES_CACNEA [oldValue = 50] -- previous line was >>         .baseHP        = 50,
+        .baseAttack    = 125, // @PUPPED-AUTO-BALANCE #SPECIES_CACNEA [oldValue = 85] -- previous line was >>         .baseAttack    = 85,
+        .baseDefense   = 90, // @PUPPED-AUTO-BALANCE #SPECIES_CACNEA [oldValue = 80] -- previous line was >>         .baseDefense   = 80, // @PUPPED-AUTO-BALANCE #SPECIES_CACNEA [oldValue = 40] -- previous line was >>         .baseDefense   = 40,
         .baseSpeed     = 35,
         .baseSpAttack  = 85,
         .baseSpDefense = 40,
@@ -7579,9 +7579,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_CACTURNE] =
     {
-        .baseHP        = 70,
-        .baseAttack    = 115,
-        .baseDefense   = 60,
+        .baseHP        = 60, // @PUPPED-AUTO-BALANCE #SPECIES_CACTURNE [oldValue = 70] -- previous line was >>         .baseHP        = 70,
+        .baseAttack    = 155, // @PUPPED-AUTO-BALANCE #SPECIES_CACTURNE [oldValue = 115] -- previous line was >>         .baseAttack    = 115,
+        .baseDefense   = 110, // @PUPPED-AUTO-BALANCE #SPECIES_CACTURNE [oldValue = 100] -- previous line was >>         .baseDefense   = 100, // @PUPPED-AUTO-BALANCE #SPECIES_CACTURNE [oldValue = 60] -- previous line was >>         .baseDefense   = 60,
         .baseSpeed     = 55,
         .baseSpAttack  = 115,
         .baseSpDefense = 60,
@@ -7739,8 +7739,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 75,
         .baseAttack    = 70,
-        .baseDefense   = 90,
-        .baseSpeed     = 80,
+        .baseDefense   = 110, // @PUPPED-AUTO-BALANCE #SPECIES_ALTARIA [oldValue = 90] -- previous line was >>         .baseDefense   = 90,
+        .baseSpeed     = 90, // @PUPPED-AUTO-BALANCE #SPECIES_ALTARIA [oldValue = 80] -- previous line was >>         .baseSpeed     = 80,
         .baseSpAttack  = 70,
         .baseSpDefense = 105,
         .types = MON_TYPES(TYPE_DRAGON, TYPE_FLYING),
@@ -7812,8 +7812,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 75,
         .baseAttack    = 110,
-        .baseDefense   = 110,
-        .baseSpeed     = 80,
+        .baseDefense   = 130, // @PUPPED-AUTO-BALANCE #SPECIES_ALTARIA_MEGA [oldValue = 110] -- previous line was >>         .baseDefense   = 110,
+        .baseSpeed     = 90, // @PUPPED-AUTO-BALANCE #SPECIES_ALTARIA_MEGA [oldValue = 80] -- previous line was >>         .baseSpeed     = 80,
         .baseSpAttack  = 110,
         .baseSpDefense = 105,
         .types = MON_TYPES(TYPE_DRAGON, TYPE_FAIRY),
@@ -7882,9 +7882,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_ZANGOOSE
     [SPECIES_ZANGOOSE] =
     {
-        .baseHP        = 73,
+        .baseHP        = 63, // @PUPPED-AUTO-BALANCE #SPECIES_ZANGOOSE [oldValue = 73] -- previous line was >>         .baseHP        = 73,
         .baseAttack    = 115,
-        .baseDefense   = 60,
+        .baseDefense   = 80, // @PUPPED-AUTO-BALANCE #SPECIES_ZANGOOSE [oldValue = 60] -- previous line was >>         .baseDefense   = 60,
         .baseSpeed     = 90,
         .baseSpAttack  = 60,
         .baseSpDefense = 60,
@@ -7898,7 +7898,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_ERRATIC,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_FIELD),
-        .abilities = { ABILITY_IMMUNITY, ABILITY_NONE, ABILITY_TOXIC_BOOST },
+        .abilities = { ABILITY_IMMUNITY, ABILITY_RECKLESS, ABILITY_TOXIC_BOOST }, // @PUPPED-AUTO-BALANCE #SPECIES_ZANGOOSE [oldValue = NONE] -- previous line was >>         .abilities = { ABILITY_IMMUNITY, ABILITY_NONE, ABILITY_TOXIC_BOOST },
         .bodyColor = BODY_COLOR_WHITE,
         .noFlip = TRUE,
         .speciesName = _("Zangoose"),
@@ -7959,11 +7959,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_SEVIPER] =
     {
         .baseHP        = 73,
-        .baseAttack    = 100,
+        .baseAttack    = 110, // @PUPPED-AUTO-BALANCE #SPECIES_SEVIPER [oldValue = 100] -- previous line was >>         .baseAttack    = 100,
         .baseDefense   = 60,
-        .baseSpeed     = 65,
+        .baseSpeed     = 65, // @PUPPED-AUTO-BALANCE #SPECIES_SEVIPER [oldValue = 75] -- previous line was >>         .baseSpeed     = 75, // @PUPPED-AUTO-BALANCE #SPECIES_SEVIPER [oldValue = 65] -- previous line was >>         .baseSpeed     = 65,
         .baseSpAttack  = 100,
-        .baseSpDefense = 60,
+        .baseSpDefense = 70, // @PUPPED-AUTO-BALANCE #SPECIES_SEVIPER [oldValue = 60] -- previous line was >>         .baseSpDefense = 60,
         .types = MON_TYPES(TYPE_POISON),
         .catchRate = 90,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 160 : 165,
@@ -8037,8 +8037,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = P_UPDATED_STATS >= GEN_7 ? 90 : 70,
         .baseAttack    = 55,
-        .baseDefense   = 65,
-        .baseSpeed     = 70,
+        .baseDefense   = 125, // @PUPPED-AUTO-BALANCE #SPECIES_LUNATONE [oldValue = 65] -- previous line was >>         .baseDefense   = 65,
+        .baseSpeed     = 90, // @PUPPED-AUTO-BALANCE #SPECIES_LUNATONE [oldValue = 70] -- previous line was >>         .baseSpeed     = 70,
         .baseSpAttack  = 95,
         .baseSpDefense = 85,
         .types = MON_TYPES(TYPE_ROCK, TYPE_PSYCHIC),
@@ -8115,12 +8115,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_SOLROCK
     [SPECIES_SOLROCK] =
     {
-        .baseHP        = P_UPDATED_STATS >= GEN_7 ? 90 : 70,
+        .baseHP        = 130, // @PUPPED-AUTO-BALANCE #SPECIES_SOLROCK [oldValue = 90] -- previous line was >>         .baseHP        = P_UPDATED_STATS >= GEN_7 ? 90 : 70,
         .baseAttack    = 95,
         .baseDefense   = 85,
-        .baseSpeed     = 70,
+        .baseSpeed     = 80, // @PUPPED-AUTO-BALANCE #SPECIES_SOLROCK [oldValue = 70] -- previous line was >>         .baseSpeed     = 70,
         .baseSpAttack  = 55,
-        .baseSpDefense = 65,
+        .baseSpDefense = 75, // @PUPPED-AUTO-BALANCE #SPECIES_SOLROCK [oldValue = 65] -- previous line was >>         .baseSpDefense = 65,
         .types = MON_TYPES(TYPE_ROCK, TYPE_PSYCHIC),
         .catchRate = 45,
     #if P_UPDATED_EXP_YIELDS >= GEN_7
@@ -8280,8 +8280,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_WHISCASH] =
     {
         .baseHP        = 110,
-        .baseAttack    = 78,
-        .baseDefense   = 73,
+        .baseAttack    = 108, // @PUPPED-AUTO-BALANCE #SPECIES_WHISCASH [oldValue = 78] -- previous line was >>         .baseAttack    = 78,
+        .baseDefense   = 83, // @PUPPED-AUTO-BALANCE #SPECIES_WHISCASH [oldValue = 73] -- previous line was >>         .baseDefense   = 73,
         .baseSpeed     = 60,
         .baseSpAttack  = 76,
         .baseSpDefense = 71,
@@ -8435,11 +8435,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_CRAWDAUNT] =
     {
-        .baseHP        = 63,
+        .baseHP        = 43, // @PUPPED-AUTO-BALANCE #SPECIES_CRAWDAUNT [oldValue = 33] -- previous line was >>         .baseHP        = 33, // @PUPPED-AUTO-BALANCE #SPECIES_CRAWDAUNT [oldValue = 63] -- previous line was >>         .baseHP        = 63,
         .baseAttack    = 120,
-        .baseDefense   = 85,
-        .baseSpeed     = 55,
-        .baseSpAttack  = 90,
+        .baseDefense   = 55, // @PUPPED-AUTO-BALANCE #SPECIES_CRAWDAUNT [oldValue = 85] -- previous line was >>         .baseDefense   = 85,
+        .baseSpeed     = 55, // @PUPPED-AUTO-BALANCE #SPECIES_CRAWDAUNT [oldValue = 35] -- previous line was >>         .baseSpeed     = 35, // @PUPPED-AUTO-BALANCE #SPECIES_CRAWDAUNT [oldValue = 55] -- previous line was >>         .baseSpeed     = 55,
+        .baseSpAttack  = 100, // @PUPPED-AUTO-BALANCE #SPECIES_CRAWDAUNT [oldValue = 90] -- previous line was >>         .baseSpAttack  = 90,
         .baseSpDefense = 55,
         .types = MON_TYPES(TYPE_WATER, TYPE_DARK),
         .catchRate = 155,
@@ -8582,10 +8582,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 60,
         .baseAttack    = 70,
-        .baseDefense   = 105,
-        .baseSpeed     = 75,
+        .baseDefense   = 115, // @PUPPED-AUTO-BALANCE #SPECIES_CLAYDOL [oldValue = 105] -- previous line was >>         .baseDefense   = 105,
+        .baseSpeed     = 85, // @PUPPED-AUTO-BALANCE #SPECIES_CLAYDOL [oldValue = 75] -- previous line was >>         .baseSpeed     = 75,
         .baseSpAttack  = 70,
-        .baseSpDefense = 120,
+        .baseSpDefense = 160, // @PUPPED-AUTO-BALANCE #SPECIES_CLAYDOL [oldValue = 120] -- previous line was >>         .baseSpDefense = 120,
         .types = MON_TYPES(TYPE_GROUND, TYPE_PSYCHIC),
         .catchRate = 90,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 175 : 189,
@@ -8659,7 +8659,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseAttack    = 41,
         .baseDefense   = 77,
         .baseSpeed     = 23,
-        .baseSpAttack  = 61,
+        .baseSpAttack  = 71, // @PUPPED-AUTO-BALANCE #SPECIES_LILEEP [oldValue = 61] -- previous line was >>         .baseSpAttack  = 61,
         .baseSpDefense = 87,
         .types = MON_TYPES(TYPE_ROCK, TYPE_GRASS),
         .catchRate = 45,
@@ -8737,7 +8737,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseAttack    = 81,
         .baseDefense   = 97,
         .baseSpeed     = 43,
-        .baseSpAttack  = 81,
+        .baseSpAttack  = 91, // @PUPPED-AUTO-BALANCE #SPECIES_CRADILY [oldValue = 81] -- previous line was >>         .baseSpAttack  = 81,
         .baseSpDefense = 107,
         .types = MON_TYPES(TYPE_ROCK, TYPE_GRASS),
         .catchRate = 45,
@@ -8813,12 +8813,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_ANORITH
     [SPECIES_ANORITH] =
     {
-        .baseHP        = 45,
+        .baseHP        = 35, // @PUPPED-AUTO-BALANCE #SPECIES_ANORITH [oldValue = 45] -- previous line was >>         .baseHP        = 45,
         .baseAttack    = 95,
-        .baseDefense   = 50,
+        .baseDefense   = 60, // @PUPPED-AUTO-BALANCE #SPECIES_ANORITH [oldValue = 50] -- previous line was >>         .baseDefense   = 50,
         .baseSpeed     = 75,
         .baseSpAttack  = 40,
-        .baseSpDefense = 50,
+        .baseSpDefense = 40, // @PUPPED-AUTO-BALANCE #SPECIES_ANORITH [oldValue = 50] -- previous line was >>         .baseSpDefense = 50,
         .types = MON_TYPES(TYPE_ROCK, TYPE_BUG),
         .catchRate = 45,
     #if P_UPDATED_EXP_YIELDS >= GEN_5
@@ -8892,12 +8892,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_ARMALDO] =
     {
-        .baseHP        = 75,
+        .baseHP        = 65, // @PUPPED-AUTO-BALANCE #SPECIES_ARMALDO [oldValue = 75] -- previous line was >>         .baseHP        = 75,
         .baseAttack    = 125,
-        .baseDefense   = 100,
+        .baseDefense   = 110, // @PUPPED-AUTO-BALANCE #SPECIES_ARMALDO [oldValue = 100] -- previous line was >>         .baseDefense   = 100,
         .baseSpeed     = 45,
         .baseSpAttack  = 70,
-        .baseSpDefense = 80,
+        .baseSpDefense = 70, // @PUPPED-AUTO-BALANCE #SPECIES_ARMALDO [oldValue = 80] -- previous line was >>         .baseSpDefense = 80,
         .types = MON_TYPES(TYPE_ROCK, TYPE_BUG),
         .catchRate = 45,
     #if P_UPDATED_EXP_YIELDS >= GEN_5
@@ -8973,8 +8973,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseAttack    = 15,
         .baseDefense   = 20,
         .baseSpeed     = 80,
-        .baseSpAttack  = 10,
-        .baseSpDefense = 55,
+        .baseSpAttack  = 30, // @PUPPED-AUTO-BALANCE #SPECIES_FEEBAS [oldValue = 10] -- previous line was >>         .baseSpAttack  = 10,
+        .baseSpDefense = 85, // @PUPPED-AUTO-BALANCE #SPECIES_FEEBAS [oldValue = 55] -- previous line was >>         .baseSpDefense = 55,
         .types = MON_TYPES(TYPE_WATER),
         .catchRate = 255,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 40 : 61,
@@ -9052,8 +9052,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseAttack    = 60,
         .baseDefense   = 79,
         .baseSpeed     = 81,
-        .baseSpAttack  = 100,
-        .baseSpDefense = 125,
+        .baseSpAttack  = 120, // @PUPPED-AUTO-BALANCE #SPECIES_MILOTIC [oldValue = 100] -- previous line was >>         .baseSpAttack  = 100,
+        .baseSpDefense = 155, // @PUPPED-AUTO-BALANCE #SPECIES_MILOTIC [oldValue = 125] -- previous line was >>         .baseSpDefense = 125,
         .types = MON_TYPES(TYPE_WATER),
         .catchRate = 60,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 189 : 213,
@@ -9141,10 +9141,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 70,
         .baseAttack    = 70,
-        .baseDefense   = 70,
+        .baseDefense   = 90, // @PUPPED-AUTO-BALANCE #SPECIES_CASTFORM_NORMAL [oldValue = 70] -- previous line was >>         .baseDefense   = 70,
         .baseSpeed     = 70,
-        .baseSpAttack  = 70,
-        .baseSpDefense = 70,
+        .baseSpAttack  = 120, // @PUPPED-AUTO-BALANCE #SPECIES_CASTFORM_NORMAL [oldValue = 70] -- previous line was >>         .baseSpAttack  = 70,
+        .baseSpDefense = 80, // @PUPPED-AUTO-BALANCE #SPECIES_CASTFORM_NORMAL [oldValue = 70] -- previous line was >>         .baseSpDefense = 70,
         .types = MON_TYPES(TYPE_NORMAL),
         .catchRate = 45,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 147 : 145,
@@ -9602,7 +9602,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseHP        = 64,
         .baseAttack    = 115,
         .baseDefense   = 65,
-        .baseSpeed     = 65,
+        .baseSpeed     = 75, // @PUPPED-AUTO-BALANCE #SPECIES_BANETTE [oldValue = 65] -- previous line was >>         .baseSpeed     = 65,
         .baseSpAttack  = 83,
         .baseSpDefense = 63,
         .types = MON_TYPES(TYPE_GHOST),
@@ -9682,7 +9682,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseHP        = 64,
         .baseAttack    = 165,
         .baseDefense   = 75,
-        .baseSpeed     = 75,
+        .baseSpeed     = 85, // @PUPPED-AUTO-BALANCE #SPECIES_BANETTE_MEGA [oldValue = 75] -- previous line was >>         .baseSpeed     = 75,
         .baseSpAttack  = 93,
         .baseSpDefense = 83,
         .types = MON_TYPES(TYPE_GHOST),
@@ -9753,10 +9753,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 20,
         .baseAttack    = 40,
-        .baseDefense   = 90,
+        .baseDefense   = 100, // @PUPPED-AUTO-BALANCE #SPECIES_DUSKULL [oldValue = 90] -- previous line was >>         .baseDefense   = 90,
         .baseSpeed     = 25,
         .baseSpAttack  = 30,
-        .baseSpDefense = 90,
+        .baseSpDefense = 90, // @PUPPED-AUTO-BALANCE #SPECIES_DUSKULL [oldValue = 80] -- previous line was >>         .baseSpDefense = 80, // @PUPPED-AUTO-BALANCE #SPECIES_DUSKULL [oldValue = 90] -- previous line was >>         .baseSpDefense = 90,
         .types = MON_TYPES(TYPE_GHOST),
         .catchRate = 190,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 59 : 97,
@@ -9831,10 +9831,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 40,
         .baseAttack    = 70,
-        .baseDefense   = 130,
+        .baseDefense   = 140, // @PUPPED-AUTO-BALANCE #SPECIES_DUSCLOPS [oldValue = 130] -- previous line was >>         .baseDefense   = 130,
         .baseSpeed     = 25,
-        .baseSpAttack  = 60,
-        .baseSpDefense = 130,
+        .baseSpAttack  = 80, // @PUPPED-AUTO-BALANCE #SPECIES_DUSCLOPS [oldValue = 60] -- previous line was >>         .baseSpAttack  = 60,
+        .baseSpDefense = 130, // @PUPPED-AUTO-BALANCE #SPECIES_DUSCLOPS [oldValue = 120] -- previous line was >>         .baseSpDefense = 120, // @PUPPED-AUTO-BALANCE #SPECIES_DUSCLOPS [oldValue = 130] -- previous line was >>         .baseSpDefense = 130,
         .types = MON_TYPES(TYPE_GHOST),
         .catchRate = 90,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 159 : 179,
@@ -9912,10 +9912,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 45,
         .baseAttack    = 100,
-        .baseDefense   = 135,
+        .baseDefense   = 165, // @PUPPED-AUTO-BALANCE #SPECIES_DUSKNOIR [oldValue = 155] -- previous line was >>         .baseDefense   = 155, // @PUPPED-AUTO-BALANCE #SPECIES_DUSKNOIR [oldValue = 135] -- previous line was >>         .baseDefense   = 135,
         .baseSpeed     = 45,
-        .baseSpAttack  = 65,
-        .baseSpDefense = 135,
+        .baseSpAttack  = 85, // @PUPPED-AUTO-BALANCE #SPECIES_DUSKNOIR [oldValue = 65] -- previous line was >>         .baseSpAttack  = 65,
+        .baseSpDefense = 145, // @PUPPED-AUTO-BALANCE #SPECIES_DUSKNOIR [oldValue = 135] -- previous line was >>         .baseSpDefense = 135, // @PUPPED-AUTO-BALANCE #SPECIES_DUSKNOIR [oldValue = 125] -- previous line was >>         .baseSpDefense = 125, // @PUPPED-AUTO-BALANCE #SPECIES_DUSKNOIR [oldValue = 135] -- previous line was >>         .baseSpDefense = 135,
         .types = MON_TYPES(TYPE_GHOST),
         .catchRate = 45,
     #if P_UPDATED_EXP_YIELDS >= GEN_8
@@ -10000,11 +10000,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_TROPIUS
     [SPECIES_TROPIUS] =
     {
-        .baseHP        = 99,
+        .baseHP        = 79, // @PUPPED-AUTO-BALANCE #SPECIES_TROPIUS [oldValue = 69] -- previous line was >>         .baseHP        = 69, // @PUPPED-AUTO-BALANCE #SPECIES_TROPIUS [oldValue = 99] -- previous line was >>         .baseHP        = 99,
         .baseAttack    = 68,
-        .baseDefense   = 83,
-        .baseSpeed     = 51,
-        .baseSpAttack  = 72,
+        .baseDefense   = 93, // @PUPPED-AUTO-BALANCE #SPECIES_TROPIUS [oldValue = 83] -- previous line was >>         .baseDefense   = 83,
+        .baseSpeed     = 41, // @PUPPED-AUTO-BALANCE #SPECIES_TROPIUS [oldValue = 51] -- previous line was >>         .baseSpeed     = 51,
+        .baseSpAttack  = 62, // @PUPPED-AUTO-BALANCE #SPECIES_TROPIUS [oldValue = 72] -- previous line was >>         .baseSpAttack  = 72,
         .baseSpDefense = 87,
         .types = MON_TYPES(TYPE_GRASS, TYPE_FLYING),
         .catchRate = 200,
@@ -10016,7 +10016,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .growthRate = GROWTH_SLOW,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_MONSTER, EGG_GROUP_GRASS),
     #if P_UPDATED_ABILITIES >= GEN_4
-        .abilities = { ABILITY_CHLOROPHYLL, ABILITY_SOLAR_POWER, ABILITY_HARVEST },
+        .abilities = { ABILITY_CHLOROPHYLL, ABILITY_NORMALIZE, ABILITY_HARVEST }, // @PUPPED-AUTO-BALANCE #SPECIES_TROPIUS [oldValue = SOLAR_POWER] -- previous line was >>         .abilities = { ABILITY_CHLOROPHYLL, ABILITY_SOLAR_POWER, ABILITY_HARVEST },
     #else
         .abilities = { ABILITY_CHLOROPHYLL, ABILITY_NONE, ABILITY_HARVEST },
     #endif
@@ -10239,12 +10239,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_ABSOL] =
     {
         .baseHP        = 65,
-        .baseAttack    = 130,
-        .baseDefense   = 60,
+        .baseAttack    = 140, // @PUPPED-AUTO-BALANCE #SPECIES_ABSOL [oldValue = 130] -- previous line was >>         .baseAttack    = 130,
+        .baseDefense   = 70, // @PUPPED-AUTO-BALANCE #SPECIES_ABSOL [oldValue = 60] -- previous line was >>         .baseDefense   = 60,
         .baseSpeed     = 75,
         .baseSpAttack  = 75,
         .baseSpDefense = 60,
-        .types = MON_TYPES(TYPE_DARK),
+        .types = MON_TYPES(TYPE_DARK, TYPE_NORMAL), // @PUPPED-AUTO-BALANCE #SPECIES_ABSOL [oldValue = null] -- previous line was >>         .types = MON_TYPES(TYPE_DARK),
         .catchRate = 30,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 163 : 174,
         .evYield_Attack = 2,
@@ -10318,12 +10318,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_ABSOL_MEGA] =
     {
         .baseHP        = 65,
-        .baseAttack    = 150,
-        .baseDefense   = 60,
+        .baseAttack    = 160, // @PUPPED-AUTO-BALANCE #SPECIES_ABSOL_MEGA [oldValue = 150] -- previous line was >>         .baseAttack    = 150,
+        .baseDefense   = 70, // @PUPPED-AUTO-BALANCE #SPECIES_ABSOL_MEGA [oldValue = 60] -- previous line was >>         .baseDefense   = 60,
         .baseSpeed     = 115,
         .baseSpAttack  = 115,
         .baseSpDefense = 60,
-        .types = MON_TYPES(TYPE_DARK),
+        .types = MON_TYPES(TYPE_BUG, TYPE_NORMAL), // @PUPPED-AUTO-BALANCE #SPECIES_ABSOL_MEGA [oldValue = null] -- previous line was >>         .types = MON_TYPES(TYPE_DARK),
         .catchRate = 30,
         .expYield = 198,
         .evYield_Attack = 2,
@@ -10390,7 +10390,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_SNORUNT
     [SPECIES_SNORUNT] =
     {
-        .baseHP        = 50,
+        .baseHP        = 70, // @PUPPED-AUTO-BALANCE #SPECIES_SNORUNT [oldValue = 50] -- previous line was >>         .baseHP        = 50,
         .baseAttack    = 50,
         .baseDefense   = 50,
         .baseSpeed     = 50,
@@ -10471,9 +10471,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_GLALIE] =
     {
-        .baseHP        = 80,
+        .baseHP        = 120, // @PUPPED-AUTO-BALANCE #SPECIES_GLALIE [oldValue = 100] -- previous line was >>         .baseHP        = 100, // @PUPPED-AUTO-BALANCE #SPECIES_GLALIE [oldValue = 80] -- previous line was >>         .baseHP        = 80,
         .baseAttack    = 80,
-        .baseDefense   = 80,
+        .baseDefense   = 70, // @PUPPED-AUTO-BALANCE #SPECIES_GLALIE [oldValue = 80] -- previous line was >>         .baseDefense   = 80,
         .baseSpeed     = 80,
         .baseSpAttack  = 80,
         .baseSpDefense = 80,
@@ -10548,10 +10548,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_MEGA_EVOLUTIONS
     [SPECIES_GLALIE_MEGA] =
     {
-        .baseHP        = 80,
+        .baseHP        = 120, // @PUPPED-AUTO-BALANCE #SPECIES_GLALIE_MEGA [oldValue = 100] -- previous line was >>         .baseHP        = 100, // @PUPPED-AUTO-BALANCE #SPECIES_GLALIE_MEGA [oldValue = 80] -- previous line was >>         .baseHP        = 80,
         .baseAttack    = 120,
-        .baseDefense   = 80,
-        .baseSpeed     = 100,
+        .baseDefense   = 80, // @PUPPED-AUTO-BALANCE #SPECIES_GLALIE_MEGA [oldValue = 70] -- previous line was >>         .baseDefense   = 70, // @PUPPED-AUTO-BALANCE #SPECIES_GLALIE_MEGA [oldValue = 80] -- previous line was >>         .baseDefense   = 80,
+        .baseSpeed     = 90, // @PUPPED-AUTO-BALANCE #SPECIES_GLALIE_MEGA [oldValue = 100] -- previous line was >>         .baseSpeed     = 100,
         .baseSpAttack  = 120,
         .baseSpDefense = 80,
         .types = MON_TYPES(TYPE_ICE),
@@ -10618,12 +10618,12 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_GEN_4_CROSS_EVOS
     [SPECIES_FROSLASS] =
     {
-        .baseHP        = 70,
-        .baseAttack    = 80,
-        .baseDefense   = 70,
-        .baseSpeed     = 110,
+        .baseHP        = 110, // @PUPPED-AUTO-BALANCE #SPECIES_FROSLASS [oldValue = 90] -- previous line was >>         .baseHP        = 90, // @PUPPED-AUTO-BALANCE #SPECIES_FROSLASS [oldValue = 70] -- previous line was >>         .baseHP        = 70,
+        .baseAttack    = 90, // @PUPPED-AUTO-BALANCE #SPECIES_FROSLASS [oldValue = 80] -- previous line was >>         .baseAttack    = 80,
+        .baseDefense   = 70, // @PUPPED-AUTO-BALANCE #SPECIES_FROSLASS [oldValue = 60] -- previous line was >>         .baseDefense   = 60, // @PUPPED-AUTO-BALANCE #SPECIES_FROSLASS [oldValue = 70] -- previous line was >>         .baseDefense   = 70,
+        .baseSpeed     = 90, // @PUPPED-AUTO-BALANCE #SPECIES_FROSLASS [oldValue = 100] -- previous line was >>         .baseSpeed     = 100, // @PUPPED-AUTO-BALANCE #SPECIES_FROSLASS [oldValue = 110] -- previous line was >>         .baseSpeed     = 110,
         .baseSpAttack  = 80,
-        .baseSpDefense = 70,
+        .baseSpDefense = 100, // @PUPPED-AUTO-BALANCE #SPECIES_FROSLASS [oldValue = 70] -- previous line was >>         .baseSpDefense = 70,
         .types = MON_TYPES(TYPE_ICE, TYPE_GHOST),
         .catchRate = 75,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 168 : 187,
@@ -10633,7 +10633,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_MEDIUM_FAST,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_FAIRY, EGG_GROUP_MINERAL),
-        .abilities = { ABILITY_SNOW_CLOAK, ABILITY_NONE, ABILITY_CURSED_BODY },
+        .abilities = { ABILITY_SNOW_CLOAK, ABILITY_OVERCOAT, ABILITY_CURSED_BODY }, // @PUPPED-AUTO-BALANCE #SPECIES_FROSLASS [oldValue = NONE] -- previous line was >>         .abilities = { ABILITY_SNOW_CLOAK, ABILITY_NONE, ABILITY_CURSED_BODY },
         .bodyColor = BODY_COLOR_WHITE,
         .speciesName = _("Froslass"),
         .cryId = CRY_FROSLASS,
@@ -11229,8 +11229,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_LUVDISC
     [SPECIES_LUVDISC] =
     {
-        .baseHP        = 43,
-        .baseAttack    = 30,
+        .baseHP        = 53, // @PUPPED-AUTO-BALANCE #SPECIES_LUVDISC [oldValue = 43] -- previous line was >>         .baseHP        = 43,
+        .baseAttack    = 50, // @PUPPED-AUTO-BALANCE #SPECIES_LUVDISC [oldValue = 30] -- previous line was >>         .baseAttack    = 30,
         .baseDefense   = 55,
         .baseSpeed     = 97,
         .baseSpAttack  = 40,
@@ -11245,7 +11245,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_FAST,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_WATER_2),
-        .abilities = { ABILITY_SWIFT_SWIM, ABILITY_NONE, ABILITY_HYDRATION },
+        .abilities = { ABILITY_SWIFT_SWIM, ABILITY_GRIM_NEIGH, ABILITY_HYDRATION }, // @PUPPED-AUTO-BALANCE #SPECIES_LUVDISC [oldValue = NONE] -- previous line was >>         .abilities = { ABILITY_SWIFT_SWIM, ABILITY_NONE, ABILITY_HYDRATION },
         .bodyColor = BODY_COLOR_PINK,
         .speciesName = _("Luvdisc"),
         .cryId = CRY_LUVDISC,
@@ -11305,7 +11305,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseHP        = 45,
         .baseAttack    = 75,
         .baseDefense   = 60,
-        .baseSpeed     = 50,
+        .baseSpeed     = 60, // @PUPPED-AUTO-BALANCE #SPECIES_BAGON [oldValue = 50] -- previous line was >>         .baseSpeed     = 50,
         .baseSpAttack  = 40,
         .baseSpDefense = 30,
         .types = MON_TYPES(TYPE_DRAGON),
@@ -11377,7 +11377,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseHP        = 65,
         .baseAttack    = 95,
         .baseDefense   = 100,
-        .baseSpeed     = 50,
+        .baseSpeed     = 60, // @PUPPED-AUTO-BALANCE #SPECIES_SHELGON [oldValue = 50] -- previous line was >>         .baseSpeed     = 50,
         .baseSpAttack  = 60,
         .baseSpDefense = 50,
         .types = MON_TYPES(TYPE_DRAGON),
@@ -11448,7 +11448,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .baseHP        = 95,
         .baseAttack    = 135,
         .baseDefense   = 80,
-        .baseSpeed     = 100,
+        .baseSpeed     = 110, // @PUPPED-AUTO-BALANCE #SPECIES_SALAMENCE [oldValue = 100] -- previous line was >>         .baseSpeed     = 100,
         .baseSpAttack  = 110,
         .baseSpDefense = 80,
         .types = MON_TYPES(TYPE_DRAGON, TYPE_FLYING),
@@ -11526,11 +11526,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_SALAMENCE_MEGA] =
     {
         .baseHP        = 95,
-        .baseAttack    = 145,
+        .baseAttack    = 155, // @PUPPED-AUTO-BALANCE #SPECIES_SALAMENCE_MEGA [oldValue = 145] -- previous line was >>         .baseAttack    = 145,
         .baseDefense   = 130,
-        .baseSpeed     = 120,
-        .baseSpAttack  = 120,
-        .baseSpDefense = 90,
+        .baseSpeed     = 130, // @PUPPED-AUTO-BALANCE #SPECIES_SALAMENCE_MEGA [oldValue = 120] -- previous line was >>         .baseSpeed     = 120,
+        .baseSpAttack  = 130, // @PUPPED-AUTO-BALANCE #SPECIES_SALAMENCE_MEGA [oldValue = 120] -- previous line was >>         .baseSpAttack  = 120,
+        .baseSpDefense = 120, // @PUPPED-AUTO-BALANCE #SPECIES_SALAMENCE_MEGA [oldValue = 90] -- previous line was >>         .baseSpDefense = 90,
         .types = MON_TYPES(TYPE_DRAGON, TYPE_FLYING),
         .catchRate = 45,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_8) ? 350 : 315,
@@ -11599,11 +11599,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 40,
         .baseAttack    = 55,
-        .baseDefense   = 80,
+        .baseDefense   = 60, // @PUPPED-AUTO-BALANCE #SPECIES_BELDUM [oldValue = 80] -- previous line was >>         .baseDefense   = 80,
         .baseSpeed     = 30,
         .baseSpAttack  = 35,
         .baseSpDefense = 60,
-        .types = MON_TYPES(TYPE_STEEL, TYPE_PSYCHIC),
+        .types = MON_TYPES(TYPE_ROCK, TYPE_PSYCHIC), // @PUPPED-AUTO-BALANCE #SPECIES_BELDUM [oldValue = STEEL] -- previous line was >>         .types = MON_TYPES(TYPE_STEEL, TYPE_PSYCHIC),
         .catchRate = 3,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 60 : 103,
         .evYield_Defense = 1,
@@ -11672,11 +11672,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 60,
         .baseAttack    = 75,
-        .baseDefense   = 100,
+        .baseDefense   = 80, // @PUPPED-AUTO-BALANCE #SPECIES_METANG [oldValue = 100] -- previous line was >>         .baseDefense   = 100,
         .baseSpeed     = 50,
         .baseSpAttack  = 55,
         .baseSpDefense = 80,
-        .types = MON_TYPES(TYPE_STEEL, TYPE_PSYCHIC),
+        .types = MON_TYPES(TYPE_ROCK, TYPE_PSYCHIC), // @PUPPED-AUTO-BALANCE #SPECIES_METANG [oldValue = STEEL] -- previous line was >>         .types = MON_TYPES(TYPE_STEEL, TYPE_PSYCHIC),
         .catchRate = 3,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 147 : 153,
         .evYield_Defense = 2,
@@ -11741,13 +11741,13 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_METAGROSS] =
     {
-        .baseHP        = 80,
+        .baseHP        = 90, // @PUPPED-AUTO-BALANCE #SPECIES_METAGROSS [oldValue = 80] -- previous line was >>         .baseHP        = 80,
         .baseAttack    = 135,
-        .baseDefense   = 130,
-        .baseSpeed     = 70,
+        .baseDefense   = 110, // @PUPPED-AUTO-BALANCE #SPECIES_METAGROSS [oldValue = 130] -- previous line was >>         .baseDefense   = 130,
+        .baseSpeed     = 120, // @PUPPED-AUTO-BALANCE #SPECIES_METAGROSS [oldValue = 70] -- previous line was >>         .baseSpeed     = 70,
         .baseSpAttack  = 95,
         .baseSpDefense = 90,
-        .types = MON_TYPES(TYPE_STEEL, TYPE_PSYCHIC),
+        .types = MON_TYPES(TYPE_ROCK, TYPE_PSYCHIC), // @PUPPED-AUTO-BALANCE #SPECIES_METAGROSS [oldValue = STEEL] -- previous line was >>         .types = MON_TYPES(TYPE_STEEL, TYPE_PSYCHIC),
         .catchRate = 3,
     #if P_UPDATED_EXP_YIELDS >= GEN_8
         .expYield = 300,
@@ -11820,13 +11820,13 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_MEGA_EVOLUTIONS
     [SPECIES_METAGROSS_MEGA] =
     {
-        .baseHP        = 80,
+        .baseHP        = 90, // @PUPPED-AUTO-BALANCE #SPECIES_METAGROSS_MEGA [oldValue = 80] -- previous line was >>         .baseHP        = 80,
         .baseAttack    = 145,
-        .baseDefense   = 150,
-        .baseSpeed     = 110,
+        .baseDefense   = 140, // @PUPPED-AUTO-BALANCE #SPECIES_METAGROSS_MEGA [oldValue = 160] -- previous line was >>         .baseDefense   = 160, // @PUPPED-AUTO-BALANCE #SPECIES_METAGROSS_MEGA [oldValue = 150] -- previous line was >>         .baseDefense   = 150,
+        .baseSpeed     = 180, // @PUPPED-AUTO-BALANCE #SPECIES_METAGROSS_MEGA [oldValue = 130] -- previous line was >>         .baseSpeed     = 130, // @PUPPED-AUTO-BALANCE #SPECIES_METAGROSS_MEGA [oldValue = 110] -- previous line was >>         .baseSpeed     = 110,
         .baseSpAttack  = 105,
         .baseSpDefense = 110,
-        .types = MON_TYPES(TYPE_STEEL, TYPE_PSYCHIC),
+        .types = MON_TYPES(TYPE_ROCK, TYPE_PSYCHIC), // @PUPPED-AUTO-BALANCE #SPECIES_METAGROSS_MEGA [oldValue = STEEL] -- previous line was >>         .types = MON_TYPES(TYPE_STEEL, TYPE_PSYCHIC),
         .catchRate = 3,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_8) ? 350 : 315,
         .evYield_Defense = 3,
@@ -11892,8 +11892,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 #if P_FAMILY_REGIROCK
     [SPECIES_REGIROCK] =
     {
-        .baseHP        = 80,
-        .baseAttack    = 100,
+        .baseHP        = 70, // @PUPPED-AUTO-BALANCE #SPECIES_REGIROCK [oldValue = 80] -- previous line was >>         .baseHP        = 80,
+        .baseAttack    = 90, // @PUPPED-AUTO-BALANCE #SPECIES_REGIROCK [oldValue = 100] -- previous line was >>         .baseAttack    = 100,
         .baseDefense   = 200,
         .baseSpeed     = 50,
         .baseSpAttack  = 50,
@@ -12288,10 +12288,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 80,
         .baseAttack    = 90,
-        .baseDefense   = 80,
+        .baseDefense   = 70, // @PUPPED-AUTO-BALANCE #SPECIES_LATIOS [oldValue = 80] -- previous line was >>         .baseDefense   = 80,
         .baseSpeed     = 110,
         .baseSpAttack  = 130,
-        .baseSpDefense = 110,
+        .baseSpDefense = 150, // @PUPPED-AUTO-BALANCE #SPECIES_LATIOS [oldValue = 110] -- previous line was >>         .baseSpDefense = 110,
         .types = MON_TYPES(TYPE_DRAGON, TYPE_PSYCHIC),
         .catchRate = 3,
     #if P_UPDATED_EXP_YIELDS >= GEN_8
@@ -12307,7 +12307,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = 90,
         .growthRate = GROWTH_SLOW,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_NO_EGGS_DISCOVERED),
-        .abilities = { ABILITY_LEVITATE, ABILITY_NONE, ABILITY_NONE },
+        .abilities = { ABILITY_LEVITATE, ABILITY_POISON_PUPPETEER, ABILITY_NONE }, // @PUPPED-AUTO-BALANCE #SPECIES_LATIOS [oldValue = NONE] -- previous line was >>         .abilities = { ABILITY_LEVITATE, ABILITY_NONE, ABILITY_NONE },
         .bodyColor = BODY_COLOR_BLUE,
         .speciesName = _("Latios"),
         .cryId = CRY_LATIOS,
@@ -12369,10 +12369,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     {
         .baseHP        = 80,
         .baseAttack    = 130,
-        .baseDefense   = 100,
+        .baseDefense   = 90, // @PUPPED-AUTO-BALANCE #SPECIES_LATIOS_MEGA [oldValue = 100] -- previous line was >>         .baseDefense   = 100,
         .baseSpeed     = 110,
         .baseSpAttack  = 160,
-        .baseSpDefense = 120,
+        .baseSpDefense = 160, // @PUPPED-AUTO-BALANCE #SPECIES_LATIOS_MEGA [oldValue = 120] -- previous line was >>         .baseSpDefense = 120,
         .types = MON_TYPES(TYPE_DRAGON, TYPE_PSYCHIC),
         .catchRate = 3,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_8) ? 350 : 315,
@@ -12597,11 +12597,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_GROUDON] =
     {
         .baseHP        = 100,
-        .baseAttack    = 150,
+        .baseAttack    = 190, // @PUPPED-AUTO-BALANCE #SPECIES_GROUDON [oldValue = 150] -- previous line was >>         .baseAttack    = 150,
         .baseDefense   = 140,
-        .baseSpeed     = 90,
-        .baseSpAttack  = 100,
-        .baseSpDefense = 90,
+        .baseSpeed     = 70, // @PUPPED-AUTO-BALANCE #SPECIES_GROUDON [oldValue = 90] -- previous line was >>         .baseSpeed     = 90,
+        .baseSpAttack  = 120, // @PUPPED-AUTO-BALANCE #SPECIES_GROUDON [oldValue = 100] -- previous line was >>         .baseSpAttack  = 100,
+        .baseSpDefense = 70, // @PUPPED-AUTO-BALANCE #SPECIES_GROUDON [oldValue = 90] -- previous line was >>         .baseSpDefense = 90,
         .types = MON_TYPES(TYPE_GROUND),
         .catchRate = 3,
     #if P_UPDATED_EXP_YIELDS >= GEN_8
@@ -12678,11 +12678,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_GROUDON_PRIMAL] =
     {
         .baseHP        = 100,
-        .baseAttack    = 180,
+        .baseAttack    = 220, // @PUPPED-AUTO-BALANCE #SPECIES_GROUDON_PRIMAL [oldValue = 180] -- previous line was >>         .baseAttack    = 180,
         .baseDefense   = 160,
-        .baseSpeed     = 90,
-        .baseSpAttack  = 150,
-        .baseSpDefense = 90,
+        .baseSpeed     = 70, // @PUPPED-AUTO-BALANCE #SPECIES_GROUDON_PRIMAL [oldValue = 90] -- previous line was >>         .baseSpeed     = 90,
+        .baseSpAttack  = 170, // @PUPPED-AUTO-BALANCE #SPECIES_GROUDON_PRIMAL [oldValue = 150] -- previous line was >>         .baseSpAttack  = 150,
+        .baseSpDefense = 70, // @PUPPED-AUTO-BALANCE #SPECIES_GROUDON_PRIMAL [oldValue = 90] -- previous line was >>         .baseSpDefense = 90,
         .types = MON_TYPES(TYPE_GROUND, TYPE_FIRE),
         .catchRate = 3,
         .expYield = (P_UPDATED_EXP_YIELDS >= GEN_8) ? 385 : 347,
@@ -13080,8 +13080,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
     [SPECIES_DEOXYS_ATTACK] =
     {
         .baseHP        = 50,
-        .baseAttack    = 180,
-        .baseDefense   = 20,
+        .baseAttack    = 190, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_ATTACK [oldValue = 180] -- previous line was >>         .baseAttack    = 180,
+        .baseDefense   = 30, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_ATTACK [oldValue = 20] -- previous line was >>         .baseDefense   = 20,
         .baseSpeed     = 150,
         .baseSpAttack  = 180,
         .baseSpDefense = 20,
@@ -13095,7 +13095,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = 0,
         .growthRate = GROWTH_SLOW,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_NO_EGGS_DISCOVERED),
-        .abilities = { ABILITY_PRESSURE, ABILITY_NONE, ABILITY_NONE },
+        .abilities = { ABILITY_PRESSURE, ABILITY_BIG_PECKS, ABILITY_NONE }, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_ATTACK [oldValue = NONE] -- previous line was >>         .abilities = { ABILITY_PRESSURE, ABILITY_NONE, ABILITY_NONE },
         .bodyColor = BODY_COLOR_RED,
         .speciesName = _("Deoxys"),
         .cryId = CRY_DEOXYS,
@@ -13149,11 +13149,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_DEOXYS_DEFENSE] =
     {
-        .baseHP        = 50,
-        .baseAttack    = 70,
-        .baseDefense   = 160,
+        .baseHP        = 60, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_DEFENSE [oldValue = 50] -- previous line was >>         .baseHP        = 50,
+        .baseAttack    = 80, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_DEFENSE [oldValue = 70] -- previous line was >>         .baseAttack    = 70,
+        .baseDefense   = 170, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_DEFENSE [oldValue = 160] -- previous line was >>         .baseDefense   = 160,
         .baseSpeed     = 90,
-        .baseSpAttack  = 70,
+        .baseSpAttack  = 80, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_DEFENSE [oldValue = 70] -- previous line was >>         .baseSpAttack  = 70,
         .baseSpDefense = 160,
         .types = MON_TYPES(TYPE_PSYCHIC),
         .catchRate = 3,
@@ -13165,7 +13165,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = 0,
         .growthRate = GROWTH_SLOW,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_NO_EGGS_DISCOVERED),
-        .abilities = { ABILITY_PRESSURE, ABILITY_NONE, ABILITY_NONE },
+        .abilities = { ABILITY_PRESSURE, ABILITY_BIG_PECKS, ABILITY_RIPEN, ABILITY_// @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_DEFENSE [OLDVALUE = NONE] -- PREVIOUS LINE WAS >>         .ABILITIES = { PRESSURE, ABILITY_NONE, ABILITY_NONE } }, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_DEFENSE [oldValue = NONE] -- previous line was >>         .abilities = { ABILITY_PRESSURE, ABILITY_BIG_PECKS, ABILITY_NONE }, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_DEFENSE [oldValue = NONE] -- previous line was >>         .abilities = { ABILITY_PRESSURE, ABILITY_NONE, ABILITY_NONE },
         .bodyColor = BODY_COLOR_RED,
         .speciesName = _("Deoxys"),
         .cryId = CRY_DEOXYS,
@@ -13220,11 +13220,11 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_DEOXYS_SPEED] =
     {
-        .baseHP        = 50,
-        .baseAttack    = 95,
-        .baseDefense   = 90,
+        .baseHP        = 60, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_SPEED [oldValue = 50] -- previous line was >>         .baseHP        = 50,
+        .baseAttack    = 105, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_SPEED [oldValue = 95] -- previous line was >>         .baseAttack    = 95,
+        .baseDefense   = 100, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_SPEED [oldValue = 90] -- previous line was >>         .baseDefense   = 90,
         .baseSpeed     = 180,
-        .baseSpAttack  = 95,
+        .baseSpAttack  = 115, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_SPEED [oldValue = 105] -- previous line was >>         .baseSpAttack  = 105, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_SPEED [oldValue = 95] -- previous line was >>         .baseSpAttack  = 95,
         .baseSpDefense = 90,
         .types = MON_TYPES(TYPE_PSYCHIC),
         .catchRate = 3,
@@ -13235,7 +13235,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .friendship = 0,
         .growthRate = GROWTH_SLOW,
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_NO_EGGS_DISCOVERED),
-        .abilities = { ABILITY_PRESSURE, ABILITY_NONE, ABILITY_NONE },
+        .abilities = { ABILITY_PRESSURE, ABILITY_BIG_PECKS, ABILITY_RIPEN, ABILITY_// @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_SPEED [OLDVALUE = NONE] -- PREVIOUS LINE WAS >>         .ABILITIES = { PRESSURE, ABILITY_NONE, ABILITY_NONE } }, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_SPEED [oldValue = NONE] -- previous line was >>         .abilities = { ABILITY_PRESSURE, ABILITY_BIG_PECKS, ABILITY_NONE }, // @PUPPED-AUTO-BALANCE #SPECIES_DEOXYS_SPEED [oldValue = NONE] -- previous line was >>         .abilities = { ABILITY_PRESSURE, ABILITY_NONE, ABILITY_NONE },
         .bodyColor = BODY_COLOR_RED,
         .noFlip = TRUE,
         .speciesName = _("Deoxys"),
