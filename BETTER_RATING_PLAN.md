@@ -96,6 +96,31 @@ The plan fixes both problems in two phases.
 - A5b. From the notes, extract abstract combo patterns: e.g. "Substitute + status immunity ability," "setup move + speed tier beats common threats," "pivoting move + recovery."
 - A5c. Map each pattern to detectable signals in our data (move IDs, ability IDs, stat thresholds).
 
+### A5.2 — Current system audit + algorithm design
+
+**Goal:** Before implementing combo bonuses, evaluate the current system's strengths and weaknesses against the Smogon research. Produce a design document that explains the new algorithm so A6 is a focused implementation, not an exploration.
+
+**Findings (see `NEW_RATING_ALGORITHM_AFTER_ANALYSIS.md`):**
+- The BST calculation (role detection, HUGE_POWER multiplier, Eviolite bonus, BST floors) is solid — do not change it.
+- The 80/10/10 weighting means even a perfect moveset barely moves `absoluteRating` by ±0.5. Combo bonuses must be **additive to `absoluteRating` after weighting**, not inside movesRating.
+- `comboList` already detects Baton Pass chains during move selection but the bonus is **never wired to `absoluteRating`** — this is the single easiest win.
+- 4 of 24 Smogon patterns are fully handled (HUGE_POWER, ADAPTABILITY, TECHNICIAN, SKILL_LINK). 3 are partial. 17 are completely missing.
+- Key missing patterns: Magic Guard, Poison Heal, Speed Boost+Protect, Protean/Libero, Contrary+self-lowering, Sub+Toxic+Recovery, Setup+Priority, Hazard+Recovery, Prankster+status.
+
+**New formula for A6:**
+```
+comboBonus = computeComboBonus(poke, finalMoveset, ability)   // 0 to 1.5, capped
+absoluteRating = (bstRating × 0.80) + (movesRating × 0.10) + (bestAbilityRating × 0.10)
+absoluteRating += comboBonus   // additive, before BST floor clamps
+```
+
+**Steps:**
+- A5.2a. Read `NEW_RATING_ALGORITHM_AFTER_ANALYSIS.md` — this is the design doc for A6.
+- A5.2b. Dry-run `computeComboBonus` logic mentally against 10 key pokemon (Breloom, Scizor, Gliscor, Serperior, Azumarill, Volcarona, Beldum, Magikarp, Toxapex, Sableye) and verify expected tier outcomes match Part 4 of the design doc.
+- A5.2c. Sign off — confirm no pattern causes a >1 tier jump or double-counts an already-handled case.
+
+---
+
 ### A6 — Combo-aware rating bonuses
 
 **Goal:** Translate the patterns found in A5 into concrete rating bonuses applied during `ratePokemon`.
@@ -257,7 +282,7 @@ Work strictly in this order. Do not start a step until its analysis sub-step is 
 
 ```
 A1 → A1d (analysis) → A2 → A2c (analysis) → A3 → A3c (analysis)
-→ A4 → A4c (analysis) → A5 (research) → A6 → A6d (analysis) → A6e (sign-off)
+→ A4 → A4c (analysis) → A5 (research) → A5.2 (audit + design) → A5.2c (sign-off) → A6 → A6d (analysis) → A6e (sign-off)
 → B1 → B2 → B2f (sign-off) → B3 → B3e (analysis) → B4 → B4f (done)
 ```
 
@@ -274,3 +299,5 @@ Each analysis step produces printed output that we review together before procee
 | `puppedjs/writer.js` | `contextualTier` POKEDEF field, trainer zone logic |
 | `puppedjs/index.js` | Contextual rating pre-computation pass |
 | `COMBO_NOTES.md` (new) | Research output from A5 |
+| `smogon_analysis/` (new) | Full Smogon Gen5-9 research from A5 |
+| `NEW_RATING_ALGORITHM_AFTER_ANALYSIS.md` (new) | A5.2 audit + algorithm design doc |
