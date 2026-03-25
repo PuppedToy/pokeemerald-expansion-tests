@@ -9,6 +9,8 @@ const constants = {
     ABILITIES_FILE_PATH: path.resolve(__dirname, '..', 'src', 'data', 'abilities.h'),
     MEGA_EVOS_PATH: path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'form_change_tables.h'),
 
+    TIER_USELESS: 'USELESS',
+    TIER_TRASH: 'TRASH',
     TIER_BAD: 'BAD',
     TIER_WEAK: 'WEAK',
     TIER_AVERAGE: 'AVERAGE',
@@ -26,7 +28,9 @@ const constants = {
     MID_TIER_AVERAGE_THRESHOLD: 6.5,
     TIER_AVERAGE_THRESHOLD: 6,
     TIER_WEAK_THRESHOLD: 5,
-    TIER_BAD_THRESHOLD: 3,
+    TIER_BAD_THRESHOLD: 4,
+    TIER_TRASH_THRESHOLD: 3.0,
+    // TIER_USELESS is anything below TIER_TRASH_THRESHOLD
 
     GOD_BST_THRESHOLD: 710,
     LEGEND_BST_THRESHOLD: 660,

@@ -740,11 +740,31 @@ async function exe() {
         rayquaza.rating = {...rayquazaMega.rating};
     }
 
-    // const sortedPokesByAbsoluteRating = allPokes.sort((a, b) => {
-    //     return b.rating.absoluteRating - a.rating.absoluteRating;
-    // });
+    // A1 analysis: print tier distribution when --analyze flag is passed
+    const isAnalyze = process.argv.includes('--analyze');
+    if (isAnalyze) {
+        const tierOrder = ['USELESS', 'TRASH', 'BAD', 'WEAK', 'AVERAGE', 'STRONG', 'PREMIUM', 'LEGEND', 'GOD'];
+        const byTier = {};
+        tierOrder.forEach(t => { byTier[t] = []; });
+        allPokes.forEach(p => {
+            const t = p.rating.tier;
+            if (byTier[t]) byTier[t].push(p);
+        });
+        tierOrder.forEach(tierName => {
+            const group = byTier[tierName].sort((a, b) => b.rating.absoluteRating - a.rating.absoluteRating);
+            console.log(`\n=== ${tierName} (${group.length}) ===`);
+            group.forEach(p => {
+                const bst = p.baseBST;
+                const score = p.rating.absoluteRating.toFixed(2);
+                const evo = p.evolutionData ? p.evolutionData.type : '?';
+                console.log(`  ${p.name.padEnd(24)} score=${score}  BST=${bst}  evo=${evo}  moves=${(p.rating.bestMoveset || []).join('|')}`);
+            });
+        });
+        console.log('\n--- Counts ---');
+        tierOrder.forEach(t => console.log(`  ${t.padEnd(10)} ${byTier[t].length}`));
+    }
 
-    // @TODO Algorithm to assing tiers based on rating distribution
+    // @TODO Algorithm to assign tiers based on rating distribution
 
     await fs.writeFile(path.resolve(__dirname, 'evoTree.json'), JSON.stringify(evoTree, null, 2), 'utf-8');
     await fs.writeFile(path.resolve(__dirname, 'pokes.json'), JSON.stringify(allPokes, null, 2), 'utf-8');

@@ -1,4 +1,6 @@
 const {
+    TIER_USELESS,
+    TIER_TRASH,
     TIER_BAD,
     TIER_WEAK,
     TIER_AVERAGE,
@@ -12,6 +14,8 @@ const {
     TIER_STRONG_THRESHOLD,
     TIER_AVERAGE_THRESHOLD,
     TIER_WEAK_THRESHOLD,
+    TIER_BAD_THRESHOLD,
+    TIER_TRASH_THRESHOLD,
     POKEMON_TYPE_POISON,
     POKEMON_TYPE_GRASS,
     GOD_BST_THRESHOLD,
@@ -1956,8 +1960,14 @@ function ratePokemon(poke, moves, abilities) {
     else if (absoluteRating >= TIER_WEAK_THRESHOLD) {
         tier = TIER_WEAK;
     }
-    else {
+    else if (absoluteRating >= TIER_BAD_THRESHOLD) {
         tier = TIER_BAD;
+    }
+    else if (absoluteRating >= TIER_TRASH_THRESHOLD) {
+        tier = TIER_TRASH;
+    }
+    else {
+        tier = TIER_USELESS;
     }
 
     return {

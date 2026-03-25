@@ -32,6 +32,8 @@ const {
     NATURES,
     TRAINER_POKE_MEGA_FROM_STONE,
     GENERIC_DEVIATION,
+    TIER_USELESS,
+    TIER_TRASH,
     TIER_BAD,
     TEMPLATE_MOVES_REPLACEMENT,
     TEMPLATE_ABILITIES_REPLACEMENT,
@@ -138,6 +140,12 @@ const routeFiles = [
     path.resolve(mapsBase, 'ScorchedSlab', 'map.json'),
 ];
 
+// Returns true for any tier below WEAK (BAD, TRASH, USELESS).
+// Use this instead of `=== TIER_BAD` when the intent is "pokemon is in its base/weak form".
+function isSubWeakTier(tier) {
+    return tier === TIER_BAD || tier === TIER_TRASH || tier === TIER_USELESS;
+}
+
 function sampleAndRemove(array) {
     if (array.length === 0) return null;
     const index = Math.floor(Math.random() * array.length);
@@ -231,7 +239,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         return poke.evolutionData.type === EVO_TYPE_LC_OF_3
             && poke.evolutionData.isLC
             && poke.rating.bestEvoTier === TIER_STRONG
-            && poke.rating.tier === TIER_BAD
+            && isSubWeakTier(poke.rating.tier)
     });
 
     const starters = [null, null, null];
@@ -277,7 +285,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             return poke.evolutionData.type === EVO_TYPE_LC_OF_3
                 && poke.evolutionData.isLC
                 && poke.rating.bestEvoTier === TIER_STRONG
-                && poke.rating.tier === TIER_BAD
+                && isSubWeakTier(poke.rating.tier)
             });
         starters[0] = sampleAndRemove(eligiblePokemonForStarters);
         starters[1] = sampleAndRemove(eligiblePokemonForStarters);
@@ -326,7 +334,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         return poke.evolutionData.type === EVO_TYPE_LC_OF_3
             && poke.evolutionData.isLC
             && poke.rating.bestEvoTier === TIER_PREMIUM
-            && poke.rating.tier === TIER_BAD
+            && isSubWeakTier(poke.rating.tier)
             && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
     });
     if (premiumLCPokes.length <= 0) {
@@ -334,7 +342,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         premiumLCPokes = pokemonList.filter(poke => {
             return poke.evolutionData.isLC
                 && (poke.rating.bestEvoTier === TIER_PREMIUM)
-                && poke.rating.tier === TIER_BAD
+                && isSubWeakTier(poke.rating.tier)
                 && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
         });
         if (premiumLCPokes.length <= 0) {
@@ -343,7 +351,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 return poke.evolutionData.type === EVO_TYPE_LC_OF_3
                     && poke.evolutionData.isLC
                     && poke.rating.bestEvoTier === TIER_STRONG
-                    && poke.rating.tier === TIER_BAD
+                    && isSubWeakTier(poke.rating.tier)
                     && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
             });
         }
@@ -362,7 +370,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const strongPokemonLC = pokemonList.filter(poke => {
         return poke.evolutionData.isLC
             && poke.rating.bestEvoTier === TIER_STRONG
-            && poke.rating.tier === TIER_BAD
+            && isSubWeakTier(poke.rating.tier)
             && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
     });
     const strongPokemonLCWithFilteredTypes = strongPokemonLC.filter(poke => {
@@ -410,7 +418,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const averagePokemonLC = pokemonList.filter(poke => {
         return poke.evolutionData.isLC
             && poke.rating.bestEvoTier === TIER_AVERAGE
-            && poke.rating.tier === TIER_BAD
+            && isSubWeakTier(poke.rating.tier)
             && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
     });
     const averagePokemonLCWithFilteredTypes = averagePokemonLC.filter(poke => {
