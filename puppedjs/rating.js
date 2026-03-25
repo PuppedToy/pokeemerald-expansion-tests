@@ -24,6 +24,9 @@ const {
     STRONG_BST_THRESHOLD,
     AVERAGE_BST_THRESHOLD,
     WEAK_BST_THRESHOLD,
+    EVO_TYPE_NFE_OF_3,
+    EVO_TYPE_LC_OF_2,
+    EVO_TYPE_LC_OF_3,
     NATURES,
 } = require('./constants');
 const { plates, protectionBerries } = require('./items');
@@ -1869,6 +1872,21 @@ function ratePokemon(poke, moves, abilities) {
     }
     if (poke.baseSpeed >= GOOD_STAT_VALUE) {
         speedPower *= 1.1;
+    }
+
+    // Eviolite boost: NFE/LC pokemon with decent defensive bulk benefit from the +50% Def/SpDef
+    // item that late-game trainers can give them. Only applied when max(Def, SpDef) >= 50
+    // so glass cannons don't get an undeserved defensive boost.
+    // Role is already determined above (based on raw stats), so this only affects the rating value.
+    if (Math.max(poke.baseDefense, poke.baseSpDefense) >= 50 && poke.evolutionData) {
+        const evoType = poke.evolutionData.type;
+        if (evoType === EVO_TYPE_NFE_OF_3) {
+            defensePower *= 1.35;
+        } else if (evoType === EVO_TYPE_LC_OF_2) {
+            defensePower *= 1.25;
+        } else if (evoType === EVO_TYPE_LC_OF_3) {
+            defensePower *= 1.15;
+        }
     }
     switch (role) {
         case 'BALANCED':
