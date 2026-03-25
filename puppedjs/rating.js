@@ -210,6 +210,33 @@ function isSuperEffective(attackingType, defendingTypes) {
     return damageMultiplier(attackingType, defendingTypes) > 1;
 }
 
+// A4: Coverage metrics — how many types the moveset hits SE and how many can wall the entire set.
+// superEffectiveCount: types (of 18) that at least one damage move hits for >= 2x
+// wallCount: types that resist or are immune to ALL damage moves in the set (<= 0.5x)
+// coverageScore: (superEffectiveCount / 18) * 10 - (wallCount / 18) * 5
+function computeCoverageMetrics(moveset, moves) {
+    const allTypes = Object.keys(typeChart);
+    const damageMoves = moveset
+        .map(id => moves[id])
+        .filter(m => m && m.category !== 'DAMAGE_CATEGORY_STATUS');
+
+    if (damageMoves.length === 0) {
+        return { superEffectiveCount: 0, wallCount: 0, coverageScore: 0 };
+    }
+
+    let superEffectiveCount = 0;
+    let wallCount = 0;
+
+    for (const defType of allTypes) {
+        const multipliers = damageMoves.map(m => damageMultiplier(m.type, [defType]));
+        if (multipliers.some(mult => mult >= 2)) superEffectiveCount++;
+        if (multipliers.every(mult => mult <= 0.5)) wallCount++;
+    }
+
+    const coverageScore = (superEffectiveCount / 18) * 10 - (wallCount / 18) * 5;
+    return { superEffectiveCount, wallCount, coverageScore };
+}
+
 // @TODO Use it later for movesets
 const comboList = [
     {
@@ -1973,6 +2000,10 @@ function ratePokemon(poke, moves, abilities) {
     });
     movesRating *= 0.25;
 
+    // A4: Blend coverage score into moves rating (70% raw moves, 30% coverage).
+    const coverageMetrics = computeCoverageMetrics(moveset, moves);
+    movesRating = movesRating * 0.7 + coverageMetrics.coverageScore * 0.3;
+
     let absoluteRating = (bstRating * 0.8) + (movesRating * 0.1) + (bestAbilityRating * 0.1);
 
     let rawBST =
@@ -2044,6 +2075,7 @@ function ratePokemon(poke, moves, abilities) {
         bestMoveset: moveset,
         movesRating,
         bestAbilityRating,
+        coverageMetrics,
         tier,
         role,
     };
@@ -2058,4 +2090,5 @@ module.exports = {
     rateItemForAPokemon,
     damageMultiplier,
     isSuperEffective,
+    computeCoverageMetrics,
 }
