@@ -442,9 +442,12 @@ const comboPriorityMoves = new Set([
 const comboRecoveryMoves = new Set([
     'MOVE_RECOVER', 'MOVE_ROOST', 'MOVE_SOFT_BOILED', 'MOVE_SLACK_OFF',
     'MOVE_MILK_DRINK', 'MOVE_HEAL_ORDER', 'MOVE_SYNTHESIS', 'MOVE_MORNING_SUN',
-    'MOVE_MOONLIGHT', 'MOVE_SHORE_UP', 'MOVE_REST',
+    'MOVE_MOONLIGHT', 'MOVE_SHORE_UP', 'MOVE_REST', 'MOVE_WISH',
     // Passive recovery moves that sustain a pokemon over time
     'MOVE_LEECH_SEED', 'MOVE_AQUA_RING', 'MOVE_INGRAIN',
+    // Draining moves: provide healing on hit, acting as recovery over multiple turns
+    'MOVE_DRAIN_PUNCH', 'MOVE_GIGA_DRAIN', 'MOVE_LEECH_LIFE', 'MOVE_HORN_LEECH',
+    'MOVE_DRAINING_KISS', 'MOVE_BITTER_BLADE', 'MOVE_OBLIVION_WING',
 ]);
 
 const selfLoweringMoves = new Set([
@@ -2050,9 +2053,40 @@ function computeComboBonus(poke, moveset, moves) {
     // TECHNICIAN + priority move: Bullet Punch / Mach Punch at 90 effective BP (60×1.5) with
     // STAB and priority. The ×1.5 Technician is already in rateMoveForAPokemon, but the
     // strategic combo value (guaranteed revenge kill, hazard chip finish, sash break) is extra.
-    if (hasAbility('TECHNICIAN') && hasAnyMove(comboPriorityMoves)) {
+    // Restricted to moves that are meaningfully powered by Technician (≥45 base BP targets).
+    // Quick Attack (40 BP) with TECHNICIAN gives 60 effective BP — decent but not a reliable
+    // revenge kill tool at high level, unlike Bullet Punch (90 effective BP with STAB).
+    const techPriorityMoves = new Set([
+        'MOVE_BULLET_PUNCH', 'MOVE_MACH_PUNCH', 'MOVE_JET_PUNCH', 'MOVE_ICE_SHARD',
+        'MOVE_SHADOW_SNEAK', 'MOVE_AQUA_JET', 'MOVE_VACUUM_WAVE',
+    ]);
+    if (hasAbility('TECHNICIAN') && hasAnyMove(techPriorityMoves)) {
         bonus += 0.4;
         bonusLog.push('TECHNICIAN+priority +0.4');
+    }
+
+    // UNSEEN_FIST + always-crit moves (Wicked Blow / Surging Strikes): these bypass
+    // Protect AND always land critical hits (1.5× modifier ignoring defense drops and burns).
+    // One of the most reliable damage sources — can't be walled by standard defensive play.
+    if (hasAbility('UNSEEN_FIST') && (hasMove('MOVE_WICKED_BLOW') || hasMove('MOVE_SURGING_STRIKES'))) {
+        bonus += 1.5;
+        bonusLog.push('UNSEEN_FIST+always_crit +1.5');
+    }
+
+    // Strong Jaw + Fishious Rend: Fishious Rend doubles in power when the user moves first
+    // (base 85 → 170 BP), and Strong Jaw adds another 1.5× to bite moves → 255 effective BP
+    // with priority advantage. One of the highest single-hit damage ceilings in the game.
+    if (hasAbility('STRONG_JAW') && hasMove('MOVE_FISHIOUS_REND')) {
+        bonus += 1.3;
+        bonusLog.push('STRONG_JAW+FISHIOUS_REND +1.3');
+    }
+
+    // Rage Fist + setup: Rage Fist gains +50 BP each time the user is hit (max 350 BP).
+    // With a bulk-boosting setup move, the user absorbs more hits, accumulating more
+    // Rage Fist power. Once at +3 boosts with 250+ BP Rage Fist, it's near-unstoppable.
+    if (hasMove('MOVE_RAGE_FIST') && hasAnyMove(setupMoves)) {
+        bonus += 0.5;
+        bonusLog.push('RAGE_FIST+setup +0.5');
     }
 
     // Mold Breaker (and variants): ignores Levitate, hitting every Ground-immune pokemon.
@@ -2064,10 +2098,58 @@ function computeComboBonus(poke, moveset, moves) {
     }
 
     // Magic Bounce: reflects all hazards and status moves back at the user.
-    // Denies Stealth Rock setup against the entire team passively.
+    // Denies Stealth Rock setup, Toxic, Thunder Wave, etc. passively. Hatterene, Espeon,
+    // Mega Sableye — all owe their viability to this ability negating setup entirely.
     if (hasAbility('MAGIC_BOUNCE')) {
-        bonus += 0.15;
-        bonusLog.push('MAGIC_BOUNCE +0.15');
+        bonus += 0.45;
+        bonusLog.push('MAGIC_BOUNCE +0.45');
+    }
+
+    // Terrain setters: each terrain provides passive field-wide benefits every turn the
+    // setter is alive. For setters whose STAB matches the terrain, the 30% move boost
+    // stacks with STAB to create significantly amplified wallbreaking power.
+    // GRASSY_SURGE: boosts Grass moves 30%, heals grounded pokemon 1/16 HP/turn,
+    // and critically gives Grassy Glide +1 priority in the setter's own terrain.
+    if (hasAbility('GRASSY_SURGE')) {
+        bonus += 0.4;
+        bonusLog.push('GRASSY_SURGE +0.4');
+        if (poke.parsedTypes && poke.parsedTypes.includes('GRASS')) {
+            bonus += 0.25;
+            bonusLog.push('GRASSY_SURGE+GRASS_STAB +0.25');
+        }
+        if (hasMove('MOVE_GRASSY_GLIDE')) {
+            bonus += 0.45;
+            bonusLog.push('GRASSY_SURGE+GRASSY_GLIDE +0.45');
+        }
+    }
+    // ELECTRIC_SURGE: boosts Electric moves 30%, prevents sleep for all grounded pokemon.
+    if (hasAbility('ELECTRIC_SURGE')) {
+        bonus += 0.4;
+        bonusLog.push('ELECTRIC_SURGE +0.4');
+        if (poke.parsedTypes && poke.parsedTypes.includes('ELECTRIC')) {
+            bonus += 0.3;
+            bonusLog.push('ELECTRIC_SURGE+ELECTRIC_STAB +0.3');
+        }
+    }
+    // PSYCHIC_SURGE: boosts Psychic moves 30%, blocks all priority moves on the field —
+    // a passive priority nullifier that changes matchups against Sucker Punch, Aqua Jet, etc.
+    if (hasAbility('PSYCHIC_SURGE')) {
+        bonus += 0.4;
+        bonusLog.push('PSYCHIC_SURGE +0.4');
+        if (poke.parsedTypes && poke.parsedTypes.includes('PSYCHIC')) {
+            bonus += 0.3;
+            bonusLog.push('PSYCHIC_SURGE+PSYCHIC_STAB +0.3');
+        }
+    }
+    // MISTY_SURGE: halves Dragon-type moves, prevents all status conditions for all grounded
+    // pokemon. Excellent defensive-utility setter. Tapu Fini leverages it as a Calm Mind wall.
+    if (hasAbility('MISTY_SURGE')) {
+        bonus += 0.45;
+        bonusLog.push('MISTY_SURGE +0.45');
+        if (hasAnyMove(setupMoves)) {
+            bonus += 0.45;
+            bonusLog.push('MISTY_SURGE+setup +0.45');
+        }
     }
 
     // Regenerator + recovery: passive healing on every switch-out combined with
@@ -2097,6 +2179,7 @@ function computeComboBonus(poke, moveset, moves) {
         'MOVE_BULLET_PUNCH', 'MOVE_MACH_PUNCH', 'MOVE_AQUA_JET', 'MOVE_SHADOW_SNEAK',
         'MOVE_SUCKER_PUNCH', 'MOVE_EXTREME_SPEED', 'MOVE_ICE_SHARD', 'MOVE_QUICK_ATTACK',
         'MOVE_JET_PUNCH', 'MOVE_FIRST_IMPRESSION', 'MOVE_FAKE_OUT',
+        'MOVE_GRASSY_GLIDE',  // +1 priority in Grassy Terrain (GRASSY_SURGE setter always creates it)
     ]);
     const specialPriorityIds = new Set([
         'MOVE_VACUUM_WAVE', 'MOVE_WATER_SHURIKEN', 'MOVE_THUNDERCLAP',
@@ -2114,6 +2197,20 @@ function computeComboBonus(poke, moveset, moves) {
     const hasPivot    = hasAnyMove(pivotingMoves);
     const hasSub      = hasMove('MOVE_SUBSTITUTE');
     const hasToxic    = hasMove('MOVE_TOXIC') || hasMove('MOVE_WILL_O_WISP');
+    // Reliable recovery: excludes Rest (2-turn sleep makes it unreliable for combo synergy
+    // unless paried with Sleep Talk/Natural Cure), and excludes passive moves like Leech Seed /
+    // Aqua Ring (no action cost but minimal per-turn healing, not a true recovery move).
+    // Used for SETUP+RECOVERY and PIVOT+RECOVERY checks to prevent every Rest-user from
+    // qualifying. Rest still counts for SUB+STATUS+RECOVERY (Snorlax-style stall).
+    const reliableRecoveryMoves = new Set([
+        'MOVE_RECOVER', 'MOVE_ROOST', 'MOVE_SOFT_BOILED', 'MOVE_SLACK_OFF',
+        'MOVE_MILK_DRINK', 'MOVE_HEAL_ORDER', 'MOVE_SYNTHESIS', 'MOVE_MORNING_SUN',
+        'MOVE_MOONLIGHT', 'MOVE_SHORE_UP', 'MOVE_WISH',
+        // Draining moves heal proportionally on hit — reliable enough to count for combo synergy
+        'MOVE_DRAIN_PUNCH', 'MOVE_GIGA_DRAIN', 'MOVE_LEECH_LIFE', 'MOVE_HORN_LEECH',
+        'MOVE_DRAINING_KISS', 'MOVE_BITTER_BLADE', 'MOVE_OBLIVION_WING',
+    ]);
+    const hasReliableRecovery = [...reliableRecoveryMoves].some(id => allLearnableMoves.has(id));
 
     // Setup + Priority: after any boost, can't be revenge-killed by faster mons.
     // This is the single most reliable competitive pattern (Scizor SD+BP, Lucario SD+ESpeed,
@@ -2151,10 +2248,11 @@ function computeComboBonus(poke, moveset, moves) {
 
     // Sub + Toxic/WoW + Recovery: the classic stall loop. Sub blocks direct damage, status
     // chips the opponent, recovery patches Sub cost. Gliscor, Gengar, Clodsire archetypes.
-    if (hasSub && hasToxic && hasRecovery) {
+    // Use hasReliableRecovery: REST is too universal to count as a "recovery loop" option.
+    if (hasSub && hasToxic && hasReliableRecovery) {
         bonus += 0.6;
         bonusLog.push('SUB+STATUS+RECOVERY +0.6');
-    } else if (hasSub && hasRecovery) {
+    } else if (hasSub && hasReliableRecovery) {
         // Sub + recovery without status — still strong (sustained Sub cycling).
         bonus += 0.3;
         bonusLog.push('SUB+RECOVERY +0.3');
@@ -2166,16 +2264,53 @@ function computeComboBonus(poke, moveset, moves) {
 
     // Hazard setter + recovery: long-term win condition. Hazards deal ~25% per switch.
     // With recovery, the setter can maintain hazards indefinitely (Ferrothorn, Skarmory).
-    if (hasHazard && hasRecovery) {
+    // Use hasReliableRecovery: REST is too universal to count as meaningful sustainability.
+    if (hasHazard && hasReliableRecovery) {
         bonus += 0.4;
         bonusLog.push('HAZARD+RECOVERY +0.4');
     }
 
-    // Pivot + recovery or Regenerator: net HP-positive every pivot cycle.
+    // Pivot + reliable recovery or Regenerator: net HP-positive every pivot cycle.
     // Makes switch-ins free over the long game (Landorus-T, Tornadus-T, Corviknight).
-    if (hasPivot && (hasRecovery || hasAbility('REGENERATOR'))) {
+    // Requires reliable recovery (not Rest) because Rest+Sleep loses 2 turns after pivoting.
+    if (hasPivot && (hasReliableRecovery || hasAbility('REGENERATOR'))) {
         bonus += 0.3;
         bonusLog.push('PIVOT+RECOVERY +0.3');
+    }
+
+    // Setup + reliable recovery: eliminates both "use up the boost" and "die to chip" counterplay.
+    // Classic win conditions: Calm Mind + Recover (Clefable), Bulk Up + Drain Punch (Annihilape),
+    // Dragon Dance + Roost (Dragonite), Shell Smash + Synthesis (Torterra).
+    // Requires reliable recovery (not Rest) — Rest after a setup turn loses too much momentum.
+    if (hasSetup && hasReliableRecovery) {
+        bonus += 0.35;
+        bonusLog.push('SETUP+RECOVERY +0.35');
+    }
+
+    // Huge Power / Pure Power + physical priority: HUGE_POWER already doubles effective attack,
+    // meaning even without setup the pokemon threatens OHKOs from full HP. Physical priority
+    // on top means it can pick off threats that have taken chip, and revenge kill speedsters.
+    // Models Azumarill+Aqua Jet, Mega Mawile+Bullet Punch as always-relevant offensive platforms.
+    if ((hasAbility('HUGE_POWER') || hasAbility('PURE_POWER')) && hasPhysicalPriority) {
+        bonus += 1.0;
+        bonusLog.push('HUGE_POWER+priority +1.0');
+    }
+
+    // -ATE abilities (PIXILATE/AERILATE/REFRIGERATE/GALVANIZE) + sound-based move:
+    // Converts the Normal-type sound move into a typed STAB that goes through Substitute
+    // and Sound-proof immunity. E.g. Sylveon PIXILATE+Hyper Voice = 130 BP Fairy STAB.
+    if ((hasAbility('PIXILATE') || hasAbility('AERILATE') || hasAbility('REFRIGERATE') || hasAbility('GALVANIZE'))
+        && hasAnyMove(soundBasedOffensiveMoves)) {
+        bonus += 0.4;
+        bonusLog.push('-ATE+sound_move +0.4');
+    }
+
+    // Extreme speed tier: at 200+ base Speed, nothing outspeeds without a Scarf.
+    // Regieleki at 200 Speed is functionally always moving first against every non-Scarfer,
+    // and Electro Ball scales to 150 BP against anything below 67 Speed (most of the meta).
+    if (poke.baseSpeed >= 200) {
+        bonus += 0.8;
+        bonusLog.push('SPEED_200+ +0.8');
     }
 
     // ── Wire comboList to absoluteRating ─────────────────────────────────────
@@ -2208,8 +2343,10 @@ function computeComboBonus(poke, moveset, moves) {
 
     // STANCE_CHANGE warrants a higher cap because its dual-form advantage is structurally
     // unique and cannot be captured by the BST formula alone.
-    // 1.6 general cap (up from 1.5) gives top-tier pokemon with multiple synergies slight headroom.
-    const bonusCap = hasAbility('STANCE_CHANGE') ? 2.5 : 1.6;
+    // UNSEEN_FIST warrants a 2.0 cap: its signature always-crit combo is too powerful to
+    // share a 1.6 cap with other combos without losing the signal.
+    // 1.6 general cap gives top-tier pokemon with multiple synergies slight headroom.
+    const bonusCap = hasAbility('STANCE_CHANGE') ? 2.5 : (hasAbility('UNSEEN_FIST') ? 2.0 : 1.6);
     const finalBonus = Math.min(bonus, bonusCap);
     if (finalBonus > 0) {
         console.log(`[A6] ${poke.name}: comboBonus=${finalBonus.toFixed(2)} [${bonusLog.join(', ')}]`);
@@ -2248,6 +2385,12 @@ function ratePokemon(poke, moves, abilities) {
         abilitiesAttackPowerMultiplier *= 1.3;
         abilitiesSpaPowerMultiplier *= 1.3;
     }
+    // TRANSISTOR: boosts Electric-type moves by 1.3×. Regieleki's exclusive ability
+    // combined with 200 Speed makes its Electric STAB significantly stronger than any
+    // other Electric-type attacker. Model as a SpA multiplier (Electric is special primary).
+    if (poke.parsedAbilities.includes('TRANSISTOR')) {
+        abilitiesSpaPowerMultiplier *= 1.3;
+    }
     if (poke.parsedAbilities.every(abilityId => abilityId === 'TRUANT' || abilityId === 'NONE')) {
         abilitiesAttackPowerMultiplier = 0.5;
         abilitiesSpaPowerMultiplier = 0.5;
@@ -2263,6 +2406,10 @@ function ratePokemon(poke, moves, abilities) {
     let offensePower = Math.max(poke.baseAttack * abilitiesAttackPowerMultiplier, poke.baseSpAttack * abilitiesSpaPowerMultiplier) / EXCELLENT_STAT_VALUE * 10;
     let speedPower = poke.baseSpeed * abilitiesSpeedPowerMultiplier / EXCELLENT_STAT_VALUE * 10;
     let defensePower = (poke.baseHP + Math.max(poke.baseDefense, poke.baseSpDefense)* 0.6 + Math.min(poke.baseDefense, poke.baseSpDefense) * 0.4) / (EXCELLENT_STAT_VALUE * 2) * 10;
+    // rawDefensePower captures pre-flexibility bulk for the glass cannon checks below.
+    // Pheromosa's equal 37/37 defenses trigger a flexibility bonus that inflates defensePower
+    // past the 3.5 threshold, so we use rawDefensePower to reliably detect the archetype.
+    const rawDefensePower = defensePower;
 
     let role;
     if (Math.abs(offensePower - defensePower) < 1.0) {
@@ -2356,6 +2503,14 @@ function ratePokemon(poke, moves, abilities) {
     if (poke.evolutionData && poke.evolutionData.isMega && role === 'OFFENSIVE' && defensePower <= 4.5) {
         bstRating *= 0.85;
     }
+    // Non-mega extreme glass cannon penalty: Pheromosa archetype (~70/37/37 in expansion).
+    // BST under 600 with very low bulk means most coverage or priority moves OHKO it before
+    // it can leverage offensive stats. BEAST_BOOST×1.3 + Quiver Dance + combo cap produces
+    // a score that doesn't reflect real staying power. Threshold 3.5 captures Pheromosa
+    // (defensePower≈3.4) but not moderately frail pokemon like Alakazam (≈3.9) or Weavile (≈4.6).
+    if (!(poke.evolutionData && poke.evolutionData.isMega) && role === 'OFFENSIVE' && rawDefensePower <= 3.5) {
+        bstRating *= 0.85;
+    }
 
     // Wonder Guard?
     // @TODO if any stat is a hard outlier, increase bst rating (deoxys, blissey)
@@ -2426,6 +2581,19 @@ function ratePokemon(poke, moves, abilities) {
     // Override floor-clamped values to avoid inflating their tier.
     if (role === 'TANK' && poke.baseHP < 35) {
         absoluteRating = Math.min(absoluteRating, TIER_BAD_THRESHOLD + 0.5);
+    }
+    // IMPOSTER (Ditto): transforms into the opponent's best pokemon with all their stats,
+    // moves, and type. Always mirrors the strongest threat on the field. Floors it to UU
+    // since it is always at least as good as the opponent's best pokemon at STRONG tier.
+    if (poke.parsedAbilities.includes('IMPOSTER')) {
+        absoluteRating = Math.max(absoluteRating, TIER_STRONG_THRESHOLD + 0.1);
+    }
+    // Non-mega extreme glass cannon GOD cap: Pheromosa archetype (~70/37/37 in expansion,
+    // defensePower≈3.375) can reach GOD tier via BEAST_BOOST × Quiver Dance × combo cap,
+    // but in practice it's OHKO'd by priority before it sweeps. Threshold 3.5 matches
+    // the bstRating penalty above. Cap at just below GOD so it remains Uber-tier but not AG.
+    if (!(poke.evolutionData && poke.evolutionData.isMega) && role === 'OFFENSIVE' && rawDefensePower <= 3.5) {
+        absoluteRating = Math.min(absoluteRating, TIER_GOD_THRESHOLD - 0.01);
     }
 
     // These tiers are kinda working. I should add that OU is actually exclusive pokemon and UU-RU are the average fully evolved ones

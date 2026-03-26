@@ -290,6 +290,53 @@ Each analysis step produces printed output that we review together before procee
 
 ---
 
+## Phase C — Game-Accurate Learnset Tiering
+
+### C1 — Audit which competitive moves are actually available
+
+**Problem:** The rating system evaluates every move in a pokemon's learnset, including moves from egg moves, event tutors, and cross-gen TMs that are NOT in this game's TM pool. A pokemon may receive credit for `MOVE_BELLY_DRUM`, `MOVE_AQUA_JET`, `MOVE_GRASSY_GLIDE`, `MOVE_BULLET_PUNCH`, or `MOVE_ROOST` when none of these moves can be taught in this ROM.
+
+This inflates ratings for pokemon whose competitive ceiling depends on these moves:
+- **Azumarill**: rated on HUGE_POWER + Aqua Jet potential, but Aqua Jet and Belly Drum are unavailable → correctly NU/WEAK in this game.
+- **Rillaboom**: GRASSY_SURGE combo fires because `MOVE_GRASSY_GLIDE` is in the learnset data, but the move is not in any teachable pool → no real combo.
+- **Corviknight**: credited for Roost and U-turn, neither of which are in the TM pool → vastly over-rated.
+- **Scizor**: TECHNICIAN+priority combo fires, but Bullet Punch is not teachable → combo should not fire.
+
+**Goal:** Tier pokemon based only on moves they can actually learn in this game — level-up learnset + this game's actual TM/HM pool.
+
+### C2 — Separate "species learnset" from "game-available learnset"
+
+**Approach:**
+- C2a. Enumerate the actual TM list available in this game (`include/constants/tms_hms.h`).
+- C2b. In `rating.js`, when computing `allLearnableMoves` for combo detection, filter out any move that is neither in the level-up learnset nor in the game's TM list.
+- C2c. The move rating pass (`rateMoveset`) should continue using the full learnset (to pick the best possible moveset for a trainer to give), but `computeComboBonus` and `hasReliableRecovery` should use the filtered "game-available" set.
+
+**Why separate the two:** Trainers in this game CAN give pokemon any move from their full learnset via the party editor — so the moveset selection stays broad. But competitive tier depends on what moves a player can actually access, which is TM-restricted.
+
+### C3 — Document game-vs-Smogon tier discrepancies
+
+After C2 is implemented, produce a list of pokemon whose tier changes between "full learnset rating" and "game-available learnset rating." This list explains why some pokemon rate lower than their Smogon equivalents and should be referenced in trainer design decisions.
+
+**Known cases (pre-C2 research):**
+| Pokemon | Key missing move(s) | Impact |
+|---------|---------------------|--------|
+| Azumarill | Belly Drum, Aqua Jet | WEAK instead of OU |
+| Rillaboom | Grassy Glide | STRONG instead of OU |
+| Corviknight | Roost, U-turn | AVERAGE instead of OU |
+| Scizor | Bullet Punch, Roost | STRONG instead of OU |
+| Tapu Bulu | Grassy Glide | STRONG instead of OU |
+| Annihilape | Drain Punch | STRONG instead of OU |
+
+### C4 — Steps
+
+- C4a. Parse `include/constants/tms_hms.h` to extract the full TM list as a Set of move IDs.
+- C4b. In `index.js`, pass the TM set to `ratePokemon` alongside the pokemon data.
+- C4c. In `ratePokemon`, compute `gameAvailableMoves = levelUpMoves ∪ tmMoves` and pass this to `computeComboBonus` instead of `allLearnableMoves`.
+- C4d. Run the pipeline and generate the discrepancy list (see C3).
+- C4e. Review the discrepancy list. Verify that no pokemon that should be OU drops below STRONG due to a missing TM that should be present. Add missing TMs to the game's TM pool if warranted (e.g. if Corviknight without Roost is intentional, accept it; if it's a learnset gap in the source data, patch the TM list).
+
+---
+
 ## Files Affected
 
 | File | Changes |
