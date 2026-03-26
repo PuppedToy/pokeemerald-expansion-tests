@@ -66,7 +66,7 @@ This document captures structural changes and per-pokemon issues discovered duri
 1. Different sessions produce different rebalanced stats for the same pokemon.
 2. After rating changes, the rebalancer may overcorrect (e.g. giving Tapu Koko 170 Speed to hit its target tier when the new combo bonuses already push it close).
 
-**Proposed fix:** Add a `--no-rebalance` flag to `analyze.js` that runs the pipeline with original source stats (no rebalancer). This allows rating algorithm testing against stable base stats, decoupled from the rebalancer.
+**Resolution:** `analyze_no_rebalance.js` (renamed from `analyze_without_mutators.js`) already solves this. Run it instead of `analyze.js` to test rating changes against vanilla stats without the rebalancer mutating base values. Use `analyze.js` for the full rebalanced pipeline, `analyze_no_rebalance.js` for isolated rater testing.
 
 ---
 
@@ -75,6 +75,16 @@ This document captures structural changes and per-pokemon issues discovered duri
 **Problem:** Some pokemon (Lycanroc Dusk, Lycanroc Midday) receive both `SETUP+PRIORITY` and `HAZARD+RECOVERY` bonuses, pushing them above their actual competitive tier. Lycanroc has never been above OU in any tier list and shouldn't reach LEGEND or PREMIUM from these stacked bonuses alone.
 
 **Proposed fix:** Apply a diminishing-returns cap per combo category: if a pokemon already has `SETUP+PRIORITY` (+0.7) and `SETUP+fast` (+0.3), the `HAZARD+RECOVERY` bonus should be halved (as the pokemon is already getting a large bonus). Alternatively: the existing `bonusCap` of 1.6 should be applied more aggressively — consider reducing it to 1.4 for non-Uber archetypes.
+
+Dev notes: This one is hard to understand. I think the important fact with Lycanroc is that setup+priority and setup+fast overlap. Both are good and boost offensive power, but when building a pokemon they don't stack.
+
+Also hazard+recovery shouldn't interact too much because lycanroc is frail, right?
+
+In any case we should be careful with something. The 3 bonuses do not overlap. Pokemon with many talents stacking when those talents cannot work together shouldn't happen. We should get the best one and add a little bonus for flexibility on strategies, but just that.
+
+That said this change is scary because other pokemon might be good because of this build flexibility but lycanroc doesn't because it's very frail. But maybe it's because other reasons. At the end of the day I think hazard+recovery is not good strategy for lycanroc and even so setup+priority doesn't do that much damage on this mon (probably).
+
+Investigate further before actually doing this change. I'm not sure of it.
 
 ---
 
@@ -90,17 +100,23 @@ Azumarill's OU viability historically depended on **Belly Drum + Aqua Jet** — 
 
 Rillaboom's OU status depends on **Grassy Glide** (+1 priority in Grassy Terrain, becomes +2 priority on a GRASSY_SURGE setter). The move exists in the battle engine but is not in any pokemon's learnset in this game (`grep MOVE_GRASSY_GLIDE src/data/pokemon/` returns nothing). Without Grassy Glide, Rillaboom is a GRASSY_SURGE setter with Wood Hammer/Drum Beating — good, but not OU-defining. **Correct tier for this game: STRONG/UU.**
 
+Dev notes: Grassy glide is a TM. Delay until phase C.
+
 ### L3 — Corviknight: no Roost, no U-turn
 
 Corviknight's OU role is **Roost + Bulk Up + Body Press + U-turn** (pivot with reliable recovery + setup threat). This game's learnset has no Roost and likely no U-turn for Corviknight. Without these moves it's a pure defensive wall with no recovery and no pivoting — much less valuable. **Correct tier for this game: AVERAGE/RU.**
 
-### L4 — Scizor: no Bullet Punch, no Roost
+Dev notes: Delay until phase C.
 
-Classic OU Scizor relied on **TECHNICIAN + Bullet Punch** for priority revenge killing and **Roost** for longevity. Both are unavailable. The current STRONG (7.76) rating reflects its decent typing and TECHNICIAN, but the lack of Bullet Punch removes its defining competitive role. **Correct tier for this game: STRONG/UU at best.**
+### L4 — Scizor: no Roost
+
+Classic OU Scizor relied on **TECHNICIAN + Bullet Punch** for priority revenge killing and **Roost** for longevity. Bullet Punch and Swords Dance ARE in Scizor's learnset (Bullet Punch as an evolution move). The missing piece is **Roost** — without it, Scizor has no recovery and can't sustain the defensive-pivot role it played in OU. The TECHNICIAN+priority combo correctly fires. **Correct tier for this game: STRONG/UU; Roost availability tracked in Phase C.**
 
 ### L5 — Tapu Bulu: no Grassy Glide
 
 Same as Rillaboom: Tapu Bulu benefits from the GRASSY_SURGE terrain but cannot use Grassy Glide. Pushes it to STRONG (7.77) instead of PREMIUM (OU). **Correct tier for this game: STRONG/UU.**
+
+Dev notes: Grassy glide is a TM. Delay until phase C.
 
 ---
 

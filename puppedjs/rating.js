@@ -2076,17 +2076,35 @@ function computeComboBonus(poke, moveset, moves) {
     // Strong Jaw + Fishious Rend: Fishious Rend doubles in power when the user moves first
     // (base 85 → 170 BP), and Strong Jaw adds another 1.5× to bite moves → 255 effective BP
     // with priority advantage. One of the highest single-hit damage ceilings in the game.
+    // Speed bonus: the double-power condition fires reliably when base speed >= 80 (outspeeds
+    // most unboosted threats). Below that, Fishious Rend is weaker than many standard moves.
     if (hasAbility('STRONG_JAW') && hasMove('MOVE_FISHIOUS_REND')) {
         bonus += 1.3;
         bonusLog.push('STRONG_JAW+FISHIOUS_REND +1.3');
+        if (poke.baseSpeed >= 80) {
+            bonus += 0.5;
+            bonusLog.push('FISHIOUS_REND+speed_doubling +0.5');
+        }
     }
 
-    // Rage Fist + setup: Rage Fist gains +50 BP each time the user is hit (max 350 BP).
-    // With a bulk-boosting setup move, the user absorbs more hits, accumulating more
-    // Rage Fist power. Once at +3 boosts with 250+ BP Rage Fist, it's near-unstoppable.
+    // Rage Fist + setup: Rage Fist gains +50 BP each time the user is hit (uncapped).
+    // With a bulk-boosting setup move, the user tanks hits while accumulating power.
+    // Scaled by rawDefensePower: bulkier users can take more hits → higher Rage Fist BP.
+    // Base +0.5, +0.05 per bulk unit, capped at +0.8. Ensures the bonus properly rewards
+    // the Annihilape archetype (high defense + setup) over frail pokemon that die first.
     if (hasMove('MOVE_RAGE_FIST') && hasAnyMove(setupMoves)) {
+        const rawBulk = (poke.baseHP + Math.max(poke.baseDefense, poke.baseSpDefense) * 0.6 + Math.min(poke.baseDefense, poke.baseSpDefense) * 0.4) / (160 * 2) * 10;
+        const rageFistBonus = Math.min(0.8, 0.5 + 0.05 * rawBulk);
+        bonus += rageFistBonus;
+        bonusLog.push(`RAGE_FIST+setup +${rageFistBonus.toFixed(2)}`);
+    }
+
+    // MINDS_EYE + Blood Moon: Ursaluna Bloodmoon's exclusive ability makes Normal-type moves
+    // hit Ghost types (removing Normal's only full immunity). With Blood Moon (140 BP, can't
+    // use twice in a row) and high SpA, this creates near-unresisted STAB coverage.
+    if (hasAbility('MINDS_EYE') && hasMove('MOVE_BLOOD_MOON')) {
         bonus += 0.5;
-        bonusLog.push('RAGE_FIST+setup +0.5');
+        bonusLog.push('MINDS_EYE+BLOOD_MOON +0.5');
     }
 
     // Mold Breaker (and variants): ignores Levitate, hitting every Ground-immune pokemon.
@@ -2264,10 +2282,14 @@ function computeComboBonus(poke, moveset, moves) {
 
     // Hazard setter + recovery: long-term win condition. Hazards deal ~25% per switch.
     // With recovery, the setter can maintain hazards indefinitely (Ferrothorn, Skarmory).
-    // Use hasReliableRecovery: REST is too universal to count as meaningful sustainability.
+    // Two tiers: reliable recovery (+0.4) vs REST-only (+0.2). REST is less consistent
+    // (forced sleep 2 turns) but still a real defensive loop on bulky hazard setters.
     if (hasHazard && hasReliableRecovery) {
         bonus += 0.4;
         bonusLog.push('HAZARD+RECOVERY +0.4');
+    } else if (hasHazard && hasAnyMove(new Set(['MOVE_REST']))) {
+        bonus += 0.2;
+        bonusLog.push('HAZARD+REST +0.2');
     }
 
     // Pivot + reliable recovery or Regenerator: net HP-positive every pivot cycle.
@@ -2364,6 +2386,16 @@ function ratePokemon(poke, moves, abilities) {
             bestAbilityRating = abilityRating;
         }
     });
+
+    // S1: Terrain surge abilities are rated very high in abilities.h (9–10), but the combo
+    // system in computeComboBonus already captures their terrain-specific value (+0.4–0.75).
+    // Letting bestAbilityRating contribute its full value to absoluteRating×0.10 on top of
+    // the combo bonus causes terrain setters (Tapu Koko, Tapu Lele, etc.) to rate 0.5–1.0
+    // points above their Smogon tier. Cap at 7.5 to prevent double-counting.
+    const surgeAbilities = new Set(['ELECTRIC_SURGE', 'GRASSY_SURGE', 'PSYCHIC_SURGE', 'MISTY_SURGE']);
+    if (poke.parsedAbilities.some(a => surgeAbilities.has(a))) {
+        bestAbilityRating = Math.min(bestAbilityRating, 7.5);
+    }
 
     // To properly analyze a pokemon, we must understand its role
 
