@@ -2620,6 +2620,17 @@ function ratePokemon(poke, moves, abilities) {
     if (poke.parsedAbilities.includes('IMPOSTER')) {
         absoluteRating = Math.max(absoluteRating, TIER_STRONG_THRESHOLD + 0.1);
     }
+    // STRONG_JAW + FISHIOUS_REND (Dracovish): 255 effective BP bite move when moving first.
+    // Universally considered broken in gen 8 — wallbreaks Blissey, Ho-Oh, and defensive
+    // staples in one hit. The combo score alone can't reach PREMIUM because Dracovish's
+    // mediocre BST (505) drives a low bstRating. Floor to PREMIUM to capture the real threat.
+    const allLearnableForFloor = new Set([
+        ...(poke.learnset || []).map(e => e.move),
+        ...(poke.teachables || []),
+    ]);
+    if (poke.parsedAbilities.includes('STRONG_JAW') && allLearnableForFloor.has('MOVE_FISHIOUS_REND')) {
+        absoluteRating = Math.max(absoluteRating, TIER_PREMIUM_THRESHOLD + 0.1);
+    }
     // Non-mega extreme glass cannon GOD cap: Pheromosa archetype (~70/37/37 in expansion,
     // defensePower≈3.375) can reach GOD tier via BEAST_BOOST × Quiver Dance × combo cap,
     // but in practice it's OHKO'd by priority before it sweeps. Threshold 3.5 matches
