@@ -1929,14 +1929,19 @@ const EXCELLENT_STAT_VALUE = 160;
 //   - TECHNICIAN + priority: already ×1.5 in rateMoveForAPokemon
 //   - SKILL_LINK + multi-hit: already ×2.5 in rateMoveForAPokemon
 //   - ADAPTABILITY stab: already ×2 in rateMoveForAPokemon
-function computeComboBonus(poke, moveset, moves) {
+function computeComboBonus(poke, moveset, moves, tmPool) {
     const hasAbility = (ab) => poke.parsedAbilities.includes(ab);
 
     // Use the full learnable pool so combos are detected even when chooseMoveset
     // picks 4 damage moves and omits setup/hazard/utility moves entirely.
+    // Phase C: if tmPool is provided (default mode), filter teachable moves to only
+    // those covered by this game's actual TM list. null = all-tms mode (unfiltered).
     const levelUpMoveIds = (poke.learnset || []).map(e => e.move);
     const teachableMoveIds = poke.teachables || [];
-    const allLearnableMoves = new Set([...moveset, ...levelUpMoveIds, ...teachableMoveIds]);
+    const gameTeachableMoveIds = tmPool
+        ? teachableMoveIds.filter(m => tmPool.has(m))
+        : teachableMoveIds;
+    const allLearnableMoves = new Set([...moveset, ...levelUpMoveIds, ...gameTeachableMoveIds]);
 
     const hasMove = (id) => allLearnableMoves.has(id);
     const hasAnyMove = (set) => [...set].some(id => allLearnableMoves.has(id));
@@ -2377,7 +2382,7 @@ function computeComboBonus(poke, moveset, moves) {
 }
 
 // @TODO Maybe add a level-based rating too for the right context
-function ratePokemon(poke, moves, abilities) {
+function ratePokemon(poke, moves, abilities, tmPool) {
     let bestAbilityRating = 0;
     poke.parsedAbilities.forEach(abilityId => {
         if (abilityId === 'NONE') return;
@@ -2569,7 +2574,7 @@ function ratePokemon(poke, moves, abilities) {
 
     // A6: Additive combo bonus applied after weighted formula, before BST floor clamps.
     // Keeps BST integrity intact while letting move+ability synergies meaningfully shift tier.
-    const comboBonus = computeComboBonus(poke, moveset, moves);
+    const comboBonus = computeComboBonus(poke, moveset, moves, tmPool);
     absoluteRating += comboBonus;
 
     let rawBST =

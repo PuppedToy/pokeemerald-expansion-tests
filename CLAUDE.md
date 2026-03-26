@@ -28,4 +28,16 @@ Committing them pollutes history with randomizer mutations and corrupts base dat
 - `puppedjs/output/abilities.js` — ability data for the viewer
 - `puppedjs/output/wildpokes.js` — wild encounter data for the viewer
 
-Use `analyze.js` to run the pipeline and auto-reset the source files afterward.
+## Running the pipeline — use these scripts, not `puppedjs/index.js` directly
+
+**Always run the pipeline through one of these three scripts.** Running `puppedjs/index.js` directly generates corrupted output files and leaves mutated `src/` files in place; these scripts clean up correctly after each run.
+
+| Script | What it does | When to use |
+|--------|-------------|-------------|
+| `node analyze.js` | Full pipeline: rebalances stats, runs rater, resets `src/` | Production run — generates the rebalanced game |
+| `node analyze_no_rebalance.js` | Vanilla stats only, no rebalancer mutations, resets `src/` | Testing rater algorithm changes in isolation |
+| `node analyze_no_rebalance_all_tms.js` | Vanilla stats + all teachable moves treated as TMs | Identifying Phase C gaps (which TMs to add for tier targets) |
+
+**Phase C note:** The default pipeline (`analyze.js` / `analyze_no_rebalance.js`) filters teachable moves to only those in this game's actual TM pool (`include/constants/tms_hms.h`). The `--all-tms` variant bypasses that filter to show theoretical maximums. Compare the two outputs to identify pokemon that need a specific TM added to reach their expected tier.
+
+**Important:** `analyze_no_rebalance.js` and `analyze_no_rebalance_all_tms.js` both run `git restore src/` at the end. Any uncommitted changes to `src/` files (learnsets, base stats, etc.) **will be wiped**. Commit `src/` changes before running either of these scripts.

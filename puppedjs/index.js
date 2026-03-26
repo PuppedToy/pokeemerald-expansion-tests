@@ -6,6 +6,11 @@ const writer = require('./writer');
 
 const isDebug = process.argv.includes('--debug');
 const noBalance = process.argv.includes('--no-balance');
+// --all-tms: treat every move in every pokemon's teachable learnset as available.
+// Default (no flag): only moves covered by this game's actual TM pool are considered
+// learnable for combo detection. Use --all-tms for analysis against a hypothetical
+// full-TM game (equivalent to the old behavior before Phase C).
+const allTms = process.argv.includes('--all-tms');
 
 const {
     EVO_TYPE_LC_OF_3,
@@ -584,6 +589,21 @@ async function exe() {
     const TMTeachables = parseTeachableFile(teachablesFileText);
     await fs.writeFile(path.resolve(__dirname, 'teachable_learnsets.json'), JSON.stringify(TMTeachables, null, 2), 'utf-8');
 
+    // Phase C: build the set of move IDs covered by this game's TM pool.
+    // null = --all-tms mode (treat all teachable moves as learnable, legacy behavior).
+    let tmPool = null;
+    if (!allTms) {
+        const tmsHmsPath = path.resolve(__dirname, '..', 'include', 'constants', 'tms_hms.h');
+        const tmsHmsText = await fs.readFile(tmsHmsPath, 'utf-8');
+        tmPool = new Set();
+        const tmRegex = /\bF\((\w+)\)/g;
+        let m;
+        while ((m = tmRegex.exec(tmsHmsText)) !== null) {
+            tmPool.add('MOVE_' + m[1]);
+        }
+        if (isDebug) console.log(`[TM_POOL] Loaded ${tmPool.size} TMs from tms_hms.h`);
+    }
+
     const genPokes = [];
     const allPokes = [];
     const definitions = {
@@ -661,7 +681,7 @@ async function exe() {
                 teachables,
                 evoTree: evoTree[poke.family],
             };
-            fullPoke.rating = ratePokemon(fullPoke, moves, abilities);
+            fullPoke.rating = ratePokemon(fullPoke, moves, abilities, tmPool);
             allPokes.push(fullPoke);
         });
     });
@@ -677,7 +697,7 @@ async function exe() {
                     + allPokes[i].baseSpAttack
                     + allPokes[i].baseSpDefense
                     + allPokes[i].baseSpeed;
-                allPokes[i].rating = ratePokemon(allPokes[i], moves, abilities);
+                allPokes[i].rating = ratePokemon(allPokes[i], moves, abilities, tmPool);
             }
         }
     }
