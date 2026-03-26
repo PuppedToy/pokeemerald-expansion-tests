@@ -2479,6 +2479,7 @@
     "MOVE_COUNTER",
     "MOVE_DIG",
     "MOVE_DOUBLE_EDGE",
+    "MOVE_DRAIN_PUNCH",
     "MOVE_EARTHQUAKE",
     "MOVE_ENDURE",
     "MOVE_FACADE",
@@ -23069,6 +23070,7 @@
     "MOVE_ROCK_TOMB",
     "MOVE_SANDSTORM",
     "MOVE_SLEEP_TALK",
+    "MOVE_SUCKER_PUNCH",
     "MOVE_SWORDS_DANCE",
     "MOVE_TAUNT",
     "MOVE_THIEF",
@@ -26341,6 +26343,7 @@
   "sPrimarinaTeachableLearnset": [
     "MOVE_ATTRACT",
     "MOVE_BLIZZARD",
+    "MOVE_HYPER_VOICE",
     "MOVE_BODY_SLAM",
     "MOVE_CALM_MIND",
     "MOVE_DIVE",
@@ -27904,6 +27907,7 @@
   "sTapuBuluTeachableLearnset": [
     "MOVE_BRICK_BREAK",
     "MOVE_BULK_UP",
+    "MOVE_GRASSY_GLIDE",
     "MOVE_BULLET_SEED",
     "MOVE_CALM_MIND",
     "MOVE_ENDURE",
@@ -28466,6 +28470,7 @@
   "sRillaboomTeachableLearnset": [
     "MOVE_ATTRACT",
     "MOVE_BODY_SLAM",
+    "MOVE_GRASSY_GLIDE",
     "MOVE_BRICK_BREAK",
     "MOVE_BULK_UP",
     "MOVE_BULLET_SEED",
@@ -31622,6 +31627,7 @@
   "sIronTreadsTeachableLearnset": [
     "MOVE_BODY_SLAM",
     "MOVE_DEFENSE_CURL",
+    "MOVE_SWORDS_DANCE",
     "MOVE_DOUBLE_EDGE",
     "MOVE_EARTHQUAKE",
     "MOVE_FACADE",
@@ -32137,6 +32143,7 @@
   "sGougingFireTeachableLearnset": [
     "MOVE_BODY_SLAM",
     "MOVE_DOUBLE_EDGE",
+    "MOVE_DRAGON_DANCE",
     "MOVE_DRAGON_CLAW",
     "MOVE_EARTHQUAKE",
     "MOVE_ENDURE",

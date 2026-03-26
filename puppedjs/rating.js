@@ -1951,11 +1951,12 @@ function computeComboBonus(poke, moveset, moves, tmPool) {
 
     // ── Ability-based bonuses ─────────────────────────────────────────────────
 
-    // Magic Guard: negates Life Orb recoil, hazard chip, residual status — removes
-    // every passive damage drawback simultaneously.
+    // Magic Guard: negates Life Orb recoil, hazard chip, residual status — removes every
+    // passive damage drawback simultaneously. Ability rating is capped at 7.5 in ratePokemon
+    // to prevent double-counting; this gives a reduced additive combo bonus.
     if (hasAbility('MAGIC_GUARD')) {
-        bonus += 0.5;
-        bonusLog.push('MAGIC_GUARD +0.5');
+        bonus += 0.25;
+        bonusLog.push('MAGIC_GUARD +0.25');
     }
 
     // Poison Heal: Toxic Orb becomes 12.5% HP/turn healing instead of damage.
@@ -2044,6 +2045,46 @@ function computeComboBonus(poke, moveset, moves, tmPool) {
         } else {
             bonus += 0.3;
             bonusLog.push('BEAST_BOOST +0.3');
+        }
+    }
+
+    // Protosynthesis / Quark Drive (Paradox pokemon): boosts the highest stat by 30% (or 50%
+    // for Speed) in Sun/Electric Terrain, or when holding Booster Energy — always active with
+    // team support. On offensive mons this is free setup every battle; on speed mons it gives
+    // an unmatched speed tier. Bonus scales with whether it hits offense or speed.
+    if (hasAbility('PROTOSYNTHESIS') || hasAbility('QUARK_DRIVE')) {
+        bonus += 0.45;
+        bonusLog.push('PROTOSYNTHESIS/QUARK_DRIVE +0.45');
+        const isOffensiveBooster = poke.baseAttack >= 85 || poke.baseSpAttack >= 85;
+        // Speed is the highest stat when it exceeds both offensive stats.
+        const isSpeedBooster = poke.baseSpeed > Math.max(poke.baseAttack, poke.baseSpAttack);
+        if (isOffensiveBooster) {
+            bonus += 0.2;
+            bonusLog.push('PROTOSYNTH+offense +0.2');
+        }
+        if (isSpeedBooster) {
+            bonus += 0.2;
+            bonusLog.push('PROTOSYNTH+speed +0.2');
+        }
+    }
+
+    // Ruin abilities (Paldean Treasures of Ruin): passive field-wide stat drops that affect
+    // ALL opponents. Offensive Ruin abilities (Beads, Sword) effectively make the user hit
+    // 33% harder (1 / 0.75 = 1.33×). Defensive ones (Tablets, Chain) reduce incoming damage.
+    if (hasAbility('BEADS_OF_RUIN')) { bonus += 0.5; bonusLog.push('BEADS_OF_RUIN +0.5'); }
+    if (hasAbility('SWORD_OF_RUIN')) { bonus += 0.5; bonusLog.push('SWORD_OF_RUIN +0.5'); }
+    if (hasAbility('TABLETS_OF_RUIN')) { bonus += 0.3; bonusLog.push('TABLETS_OF_RUIN +0.3'); }
+    if (hasAbility('CHAIN_OF_RUIN')) { bonus += 0.3; bonusLog.push('CHAIN_OF_RUIN +0.3'); }
+
+    // Supreme Overlord (Kingambit): gains +10% Atk per fainted ally (max +50% at 5 KOs).
+    // In the endgame Kingambit becomes an auto-boosted sweeper — often at +30-50% after 3-5
+    // teammate KOs. Combined with SD or priority, nearly impossible to stop.
+    if (hasAbility('SUPREME_OVERLORD')) {
+        bonus += 0.75;
+        bonusLog.push('SUPREME_OVERLORD +0.75');
+        if (hasAnyMove(setupMoves) || hasAnyMove(physicalPriorityIds)) {
+            bonus += 0.3;
+            bonusLog.push('SUPREME_OVERLORD+offense +0.3');
         }
     }
 
@@ -2332,6 +2373,30 @@ function computeComboBonus(poke, moveset, moves, tmPool) {
         bonusLog.push('-ATE+sound_move +0.4');
     }
 
+    // Liquid Voice: all sound-based moves become Water-type. Primarina's Hyper Voice becomes a
+    // 90 BP Water-type spread move with STAB that bypasses Substitute — a unique offensive niche
+    // that makes it significantly harder to wall than a typical Water-type special attacker.
+    if (hasAbility('LIQUID_VOICE') && hasMove('MOVE_HYPER_VOICE')) {
+        bonus += 0.6;
+        bonusLog.push('LIQUID_VOICE+HYPER_VOICE +0.6');
+    }
+
+    // Good as Gold (Gholdengo): completely immune to all status moves — Taunt, Thunder Wave,
+    // Will-O-Wisp, Toxic, Encore, Spore, etc. Combined with Ghost/Steel typing, it's nearly
+    // impossible to shut down through traditional defensive tools.
+    if (hasAbility('GOOD_AS_GOLD')) {
+        bonus += 0.35;
+        bonusLog.push('GOOD_AS_GOLD +0.35');
+    }
+
+    // Scrappy + physical attacker: Normal and Fighting moves hit Ghost-types as if there were
+    // no immunity. For strong physical attackers (Lopunny Mega) this gives near-unresisted
+    // Normal/Fighting STAB coverage — directly comparable to MINDS_EYE for Normal/Fighting.
+    if (hasAbility('SCRAPPY') && poke.baseAttack >= 100) {
+        bonus += 0.35;
+        bonusLog.push('SCRAPPY+physical +0.35');
+    }
+
     // Extreme speed tier: at 200+ base Speed, nothing outspeeds without a Scarf.
     // Regieleki at 200 Speed is functionally always moving first against every non-Scarfer,
     // and Electro Ball scales to 150 BP against anything below 67 Speed (most of the meta).
@@ -2400,6 +2465,19 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     const surgeAbilities = new Set(['ELECTRIC_SURGE', 'GRASSY_SURGE', 'PSYCHIC_SURGE', 'MISTY_SURGE']);
     if (poke.parsedAbilities.some(a => surgeAbilities.has(a))) {
         bestAbilityRating = Math.min(bestAbilityRating, 7.5);
+    }
+    // MAGIC_GUARD: has an explicit +0.25 combo bonus, so ability rating (9) would double-count.
+    // Cap at 7.5 to prevent the combined contribution from being too large.
+    // SHADOW_TAG: no direct combo, but rated 10 in abilities.h — contributes 1.0 to the final
+    // score which pushes Shadow Tag megas (Gengar) to GOD. Cap at 7.5.
+    // SPEED_BOOST: SPEED_BOOST+PROTECT combo already models it (+0.5). Cap more aggressively at
+    // 6.5 to prevent double-counting on top of the combo bonus.
+    const capAt75Abilities = new Set(['MAGIC_GUARD', 'SHADOW_TAG']);
+    if (poke.parsedAbilities.some(a => capAt75Abilities.has(a))) {
+        bestAbilityRating = Math.min(bestAbilityRating, 7.5);
+    }
+    if (poke.parsedAbilities.some(a => a === 'SPEED_BOOST')) {
+        bestAbilityRating = Math.min(bestAbilityRating, 6.5);
     }
 
     // To properly analyze a pokemon, we must understand its role

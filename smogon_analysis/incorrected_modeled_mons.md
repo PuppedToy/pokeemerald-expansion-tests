@@ -70,3 +70,36 @@ I see it used to be OU and has UU stats. But are we missing that much to make it
 - Pawmot is considered NU. I think last gen tiers are not explained enough in smogon and we should research all last gen mons 1v1 analysis elsewhere. So I won't keep evaluating from here.
 
 Maybe some inconsistencies are explained by not giving enough value to defensive typing combinations and ofensive typing STABs? We should check.
+
+-- Third wave, after tm implementation and with all tms available --
+
+- Alakazam Uber is wrong | Expected OU
+- Gengar-mega AG is wrong | Expected Uber
+- Sceptile-mega Uber is wrong | Expected OU or even UU
+- Blaziken-mega AG is wrong | Expected Uber
+- Gardevoir-mega Uber is wrong | Expected OU
+- Lopunny-mega UU is wrong | Expected OU
+- Abomasnow-mega OU is wrong | Expected NU. I suppose is hindered by bad typing and snow not being that relevant.
+- Kingambit UU is wrong | Expected OU. "Kingambit shines as one of the tier's most dangerous sweepers thanks to its solid STAB combination, superb defensive typing, high Attack stat, access to Swords Dance, and incredible ability in Supreme Overlord. Its access to Sucker Punch allows it to compensate for its low Speed and serve as a potent revenge killer, picking off a wide range of faster targets such as Dragapult, Deoxys-S, and Iron Moth."
+- Primarina RU is wrong | Expected OU. 
+- Tapus still wrong. All should be OU but Bulu and Fini aren't
+- Kartana Uber is wrong | Expected OU.
+- Urshifu OU is wrong | Expected Uber.
+- Great Tusk UU is wrong | Expected OU
+- Flutter Mane OU is wrong | Expected Uber.
+- Iron Treads is wrong | Expected OU.
+- Iron Bundle is wrong | Expected Uber.
+- Iron Moth is wrong | Expected OU.
+- Gholdengo is wrong | Expected OU.
+- Chi Yu is wrong | Expected Uber (probably ability)
+- Chien Pao is wrong | Expected Uber
+- Roaring Moon is wrong | Expected Uber
+- Walking Wake is wrong | Expected OU
+- Gouging Fire is wrong | Expected Uber
+- Iron Crown is wrong | Expected OU
+
+For all the ones overvalued, we need to understand what are we overvaluing. Same procedure as before, for structural propose, for quick fixes do it.
+
+For all the undervalued, search on the internet other sources than smogon or smogon itself to know why some are considered that tier. What's their strength. That's the key. Once you get a description for each undervalue we can understand how to pump them up.
+
+-- One more question is why does Claude modify teachable_learnsets.json. Seems like something I am not understanding about how that file works.
