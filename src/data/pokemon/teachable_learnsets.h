@@ -2814,6 +2814,7 @@ static const u16 sAnnihilapeTeachableLearnset[] = {
     MOVE_COUNTER,
     MOVE_DIG,
     MOVE_DOUBLE_EDGE,
+    MOVE_DRAIN_PUNCH,
     MOVE_EARTHQUAKE,
     MOVE_ENDURE,
     MOVE_FACADE,
