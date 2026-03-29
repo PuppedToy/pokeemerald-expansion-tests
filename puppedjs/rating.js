@@ -1,31 +1,31 @@
 const {
-    TIER_USELESS,
-    TIER_TRASH,
-    TIER_BAD,
-    TIER_WEAK,
-    TIER_AVERAGE,
-    TIER_STRONG,
-    TIER_PREMIUM,
-    TIER_LEGEND,
-    TIER_GOD,
-    TIER_GOD_THRESHOLD,
-    TIER_LEGEND_THRESHOLD,
-    TIER_PREMIUM_THRESHOLD,
-    TIER_STRONG_THRESHOLD,
-    TIER_AVERAGE_THRESHOLD,
-    TIER_WEAK_THRESHOLD,
-    TIER_BAD_THRESHOLD,
-    TIER_TRASH_THRESHOLD,
+    TIER_MAGIKARP,
+    TIER_ZU,
+    TIER_PU,
+    TIER_NU,
+    TIER_RU,
+    TIER_UU,
+    TIER_OU,
+    TIER_UBERS,
+    TIER_AG,
+    TIER_AG_THRESHOLD,
+    TIER_UBERS_THRESHOLD,
+    TIER_OU_THRESHOLD,
+    TIER_UU_THRESHOLD,
+    TIER_RU_THRESHOLD,
+    TIER_NU_THRESHOLD,
+    TIER_PU_THRESHOLD,
+    TIER_ZU_THRESHOLD,
     POKEMON_TYPE_POISON,
     POKEMON_TYPE_GRASS,
-    GOD_BST_THRESHOLD,
-    LEGEND_BST_THRESHOLD,
-    PREMIUM_BST_THRESHOLD,
-    STRONG_BST_THRESHOLD,
-    AVERAGE_BST_THRESHOLD,
-    WEAK_BST_THRESHOLD,
-    MEGA_GOD_BST_THRESHOLD,
-    MEGA_LEGEND_BST_THRESHOLD,
+    AG_BST_THRESHOLD,
+    UBERS_BST_THRESHOLD,
+    OU_BST_THRESHOLD,
+    UU_BST_THRESHOLD,
+    RU_BST_THRESHOLD,
+    NU_BST_THRESHOLD,
+    MEGA_AG_BST_THRESHOLD,
+    MEGA_UBERS_BST_THRESHOLD,
     EVO_TYPE_NFE_OF_3,
     EVO_TYPE_LC_OF_2,
     EVO_TYPE_LC_OF_3,
@@ -2797,45 +2797,45 @@ function ratePokemon(poke, moves, abilities, tmPool) {
         + poke.baseSpDefense
         + poke.baseSpeed * abilitiesSpeedPowerMultiplier;
     
-    if (rawBST >= WEAK_BST_THRESHOLD && absoluteRating < TIER_WEAK_THRESHOLD) {
-        absoluteRating = TIER_WEAK_THRESHOLD + absoluteRating / 100;
+    if (rawBST >= NU_BST_THRESHOLD && absoluteRating < TIER_NU_THRESHOLD) {
+        absoluteRating = TIER_NU_THRESHOLD + absoluteRating / 100;
     }
 
-    if (rawBST >= AVERAGE_BST_THRESHOLD && absoluteRating < TIER_AVERAGE_THRESHOLD) {
-        absoluteRating = TIER_AVERAGE_THRESHOLD + absoluteRating / 100;
+    if (rawBST >= RU_BST_THRESHOLD && absoluteRating < TIER_RU_THRESHOLD) {
+        absoluteRating = TIER_RU_THRESHOLD + absoluteRating / 100;
     }
 
-    if (rawBST >= STRONG_BST_THRESHOLD && absoluteRating < TIER_STRONG_THRESHOLD) {
-        absoluteRating = TIER_STRONG_THRESHOLD + absoluteRating / 100;
+    if (rawBST >= UU_BST_THRESHOLD && absoluteRating < TIER_UU_THRESHOLD) {
+        absoluteRating = TIER_UU_THRESHOLD + absoluteRating / 100;
     }
 
-    if (rawBST >= PREMIUM_BST_THRESHOLD && absoluteRating < TIER_PREMIUM_THRESHOLD) {
-        absoluteRating = TIER_PREMIUM_THRESHOLD + absoluteRating / 100;
+    if (rawBST >= OU_BST_THRESHOLD && absoluteRating < TIER_OU_THRESHOLD) {
+        absoluteRating = TIER_OU_THRESHOLD + absoluteRating / 100;
     }
 
     const isMegaForFloor = poke.evolutionData && poke.evolutionData.isMega;
-    const effectiveLegendBSTThreshold = isMegaForFloor ? MEGA_LEGEND_BST_THRESHOLD : LEGEND_BST_THRESHOLD;
-    const effectiveGodBSTThreshold = isMegaForFloor ? MEGA_GOD_BST_THRESHOLD : GOD_BST_THRESHOLD;
+    const effectiveLegendBSTThreshold = isMegaForFloor ? MEGA_UBERS_BST_THRESHOLD : UBERS_BST_THRESHOLD;
+    const effectiveGodBSTThreshold = isMegaForFloor ? MEGA_AG_BST_THRESHOLD : AG_BST_THRESHOLD;
 
-    if (rawBST >= effectiveLegendBSTThreshold && absoluteRating < TIER_LEGEND_THRESHOLD) {
-        absoluteRating = TIER_LEGEND_THRESHOLD + absoluteRating / 100;
+    if (rawBST >= effectiveLegendBSTThreshold && absoluteRating < TIER_UBERS_THRESHOLD) {
+        absoluteRating = TIER_UBERS_THRESHOLD + absoluteRating / 100;
     }
 
-    if ((rawBST >= effectiveGodBSTThreshold || poke.parsedAbilities.includes('POWER_CONSTRUCT')) && absoluteRating < TIER_GOD_THRESHOLD) {
-        absoluteRating = TIER_GOD_THRESHOLD + absoluteRating / 100;
+    if ((rawBST >= effectiveGodBSTThreshold || poke.parsedAbilities.includes('POWER_CONSTRUCT')) && absoluteRating < TIER_AG_THRESHOLD) {
+        absoluteRating = TIER_AG_THRESHOLD + absoluteRating / 100;
     }
 
     // TANK pokemon with very low HP (Shuckle archetype): extreme defenses are undermined
     // by a tiny HP pool — nearly any SE hit OHKOs regardless of 230 Def/SpDef.
     // Override floor-clamped values to avoid inflating their tier.
     if (role === 'TANK' && poke.baseHP < 35) {
-        absoluteRating = Math.min(absoluteRating, TIER_BAD_THRESHOLD + 0.5);
+        absoluteRating = Math.min(absoluteRating, TIER_PU_THRESHOLD + 0.5);
     }
     // IMPOSTER (Ditto): transforms into the opponent's best pokemon with all their stats,
     // moves, and type. Always mirrors the strongest threat on the field. Floors it to UU
     // since it is always at least as good as the opponent's best pokemon at STRONG tier.
     if (poke.parsedAbilities.includes('IMPOSTER')) {
-        absoluteRating = Math.max(absoluteRating, TIER_STRONG_THRESHOLD + 0.1);
+        absoluteRating = Math.max(absoluteRating, TIER_UU_THRESHOLD + 0.1);
     }
     // STRONG_JAW + FISHIOUS_REND (Dracovish): 255 effective BP bite move when moving first.
     // Universally considered broken in gen 8 — wallbreaks Blissey, Ho-Oh, and defensive
@@ -2846,39 +2846,39 @@ function ratePokemon(poke, moves, abilities, tmPool) {
         ...(poke.teachables || []),
     ]);
     if (poke.parsedAbilities.includes('STRONG_JAW') && allLearnableForFloor.has('MOVE_FISHIOUS_REND')) {
-        absoluteRating = Math.max(absoluteRating, TIER_PREMIUM_THRESHOLD + 0.1);
+        absoluteRating = Math.max(absoluteRating, TIER_OU_THRESHOLD + 0.1);
     }
     // SWORD_OF_RUIN on strong physical attacker (Chien-Pao): drops all opponents' Defense by 25%.
     // Combined with high Attack (120), Ice/Dark STAB, and high Speed — definitionally Uber wallbreaker.
     // The bonusCap at 1.6 prevents the combo score from reaching LEGEND on its own; floor it instead.
     if (poke.parsedAbilities.includes('SWORD_OF_RUIN') && poke.baseAttack >= 110) {
-        absoluteRating = Math.max(absoluteRating, TIER_LEGEND_THRESHOLD + 0.05);
+        absoluteRating = Math.max(absoluteRating, TIER_UBERS_THRESHOLD + 0.05);
     }
     // UNSEEN_FIST + always-crit moves: Wicked Blow / Surging Strikes always crit and bypass Protect.
     // The +1.5 combo bonus pushes Urshifu to the LEGEND threshold but floating-point rounding
     // or BST headroom can leave it just under 9.0. Floor it firmly at Uber.
     if (poke.parsedAbilities.includes('UNSEEN_FIST') &&
         (allLearnableForFloor.has('MOVE_WICKED_BLOW') || allLearnableForFloor.has('MOVE_SURGING_STRIKES'))) {
-        absoluteRating = Math.max(absoluteRating, TIER_LEGEND_THRESHOLD + 0.05);
+        absoluteRating = Math.max(absoluteRating, TIER_UBERS_THRESHOLD + 0.05);
     }
     // BEADS_OF_RUIN on extreme special attacker (Chi-Yu): all opponents lose 25% SpDef.
     // Chi-Yu's 135 SpA + Fire/Dark STAB becomes effectively ~170 SpA equivalent.
     // Frailty caps the combo score below LEGEND; floor to Uber to capture the real threat.
     if (poke.parsedAbilities.includes('BEADS_OF_RUIN') && poke.baseSpAttack >= 130) {
-        absoluteRating = Math.max(absoluteRating, TIER_LEGEND_THRESHOLD + 0.05);
+        absoluteRating = Math.max(absoluteRating, TIER_UBERS_THRESHOLD + 0.05);
     }
     // QUARK_DRIVE on fast special attacker (Iron Bundle): extremely high Speed + SpA combination.
     // Freeze-Dry + Hydro Pump = nearly unresisted coverage, and Iron Bundle outspeeds the entire
     // non-Scarfed meta. Definitionally Uber despite mediocre BST 570.
     if (poke.parsedAbilities.includes('QUARK_DRIVE') && poke.baseSpAttack >= 120 && poke.baseSpeed >= 130) {
-        absoluteRating = Math.max(absoluteRating, TIER_LEGEND_THRESHOLD + 0.05);
+        absoluteRating = Math.max(absoluteRating, TIER_UBERS_THRESHOLD + 0.05);
     }
     // LIQUID_VOICE + HYPER_VOICE on high SpA attacker (Primarina): converts Hyper Voice to a
     // Water-type 90 BP STAB that bypasses Substitute and hits through screens. Paired with
     // Calm Mind and Wish it's one of the best bulky special attackers in UU/OU.
     if (poke.parsedAbilities.includes('LIQUID_VOICE') && allLearnableForFloor.has('MOVE_HYPER_VOICE') &&
         poke.baseSpAttack >= 120) {
-        absoluteRating = Math.max(absoluteRating, TIER_PREMIUM_THRESHOLD + 0.1);
+        absoluteRating = Math.max(absoluteRating, TIER_OU_THRESHOLD + 0.1);
     }
     // (hasSetup / hasRecovery are scoped to computeComboBonus; re-derive here for floor checks)
     const hasSetupForFloor    = [...allLearnableForFloor].some(m => setupMoves.has(m));
@@ -2886,20 +2886,20 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     // setup wall that is immune to status. Water/Fairy typing gives it excellent defensive typing.
     // Valued as OU despite middling SpA because of its defensive role and terrain support.
     if (poke.parsedAbilities.includes('MISTY_SURGE') && hasSetupForFloor) {
-        absoluteRating = Math.max(absoluteRating, TIER_PREMIUM_THRESHOLD + 0.1);
+        absoluteRating = Math.max(absoluteRating, TIER_OU_THRESHOLD + 0.1);
     }
     // PROTOSYNTHESIS + Dragon Dance on high-BST physical attacker (Gouging Fire, Raging Bolt equiv):
     // PROTOSYNTHESIS boosts the best stat in sun. Dragon Dance + Flare Blitz under PROTOSYNTHESIS
     // turns Gouging Fire into an unkillable sweeper — definitionally Uber.
     if (poke.parsedAbilities.includes('PROTOSYNTHESIS') && hasSetupForFloor && poke.baseAttack >= 110 && poke.baseBST >= 585) {
-        absoluteRating = Math.max(absoluteRating, TIER_LEGEND_THRESHOLD + 0.05);
+        absoluteRating = Math.max(absoluteRating, TIER_UBERS_THRESHOLD + 0.05);
     }
     // MIRROR_ARMOR + BODY_PRESS + IRON_DEFENSE (Corviknight): stat-drop immunity turns this into
     // an unkillable physical wall that attacks with its doubled Defense via Body Press. Despite
     // modest BST 495, this combination makes it nearly impossible to wear down or weaken.
     if (poke.parsedAbilities.includes('MIRROR_ARMOR') &&
         allLearnableForFloor.has('MOVE_BODY_PRESS') && allLearnableForFloor.has('MOVE_IRON_DEFENSE')) {
-        absoluteRating = Math.max(absoluteRating, TIER_PREMIUM_THRESHOLD + 0.1);
+        absoluteRating = Math.max(absoluteRating, TIER_OU_THRESHOLD + 0.1);
     }
     // UNAWARE + TORCH_SONG + recovery (Skeledirge): TORCH_SONG is a SpA-boosting Fire STAB that
     // lets Skeledirge set up through opposing stat boosts (UNAWARE ignores them when defending).
@@ -2909,7 +2909,7 @@ function ratePokemon(poke, moves, abilities, tmPool) {
         'MOVE_MILK_DRINK','MOVE_LEECH_SEED']);
     if (poke.parsedAbilities.includes('UNAWARE') && allLearnableForFloor.has('MOVE_TORCH_SONG') &&
         [...allLearnableForFloor].some(m => comboRecoveryForFloor.has(m))) {
-        absoluteRating = Math.max(absoluteRating, TIER_STRONG_THRESHOLD + 0.1);
+        absoluteRating = Math.max(absoluteRating, TIER_UU_THRESHOLD + 0.1);
     }
     // DRIZZLE / DROUGHT setters (fully evolved): weather setters define the metagame.
     // Their ability dictates team-building for both sides — anything with Drizzle or Drought
@@ -2933,9 +2933,9 @@ function ratePokemon(poke, moves, abilities, tmPool) {
         ]);
         const hasWeatherUtility = [...allLearnableForFloor].some(m => weatherUtilityMoves.has(m));
         if (hasWeatherUtility) {
-            absoluteRating = Math.max(absoluteRating, TIER_PREMIUM_THRESHOLD + 0.1);
+            absoluteRating = Math.max(absoluteRating, TIER_OU_THRESHOLD + 0.1);
         } else {
-            absoluteRating = Math.max(absoluteRating, TIER_STRONG_THRESHOLD + 0.1);
+            absoluteRating = Math.max(absoluteRating, TIER_UU_THRESHOLD + 0.1);
         }
     }
     // SNOW_WARNING + AURORA_VEIL + high Speed: the fast Aurora Veil setter archetype (Ninetales
@@ -2943,52 +2943,52 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     // makes it a unique UU/OU team enabler. Floor to STRONG (UU) for this niche.
     if (isFinalEvo && poke.parsedAbilities.includes('SNOW_WARNING') &&
         allLearnableForFloor.has('MOVE_AURORA_VEIL') && poke.baseSpeed >= 100) {
-        absoluteRating = Math.max(absoluteRating, TIER_STRONG_THRESHOLD + 0.1);
+        absoluteRating = Math.max(absoluteRating, TIER_UU_THRESHOLD + 0.1);
     }
     // Physically frail mega cap: megas with very low Defense (≤65) and high BST (≥600) are
     // severely vulnerable to priority and fast physical attackers despite their raw offensive power.
     // They can't reliably set up or absorb neutral physical hits. Gardevoir Mega (65 Def, 618 BST)
     // typifies this — it has never been Uber in Smogon competitive history despite absurd SpA.
     if (isMegaForFloor && poke.baseDefense <= 65 && poke.baseBST >= 600) {
-        absoluteRating = Math.min(absoluteRating, TIER_LEGEND_THRESHOLD - 0.05);
+        absoluteRating = Math.min(absoluteRating, TIER_UBERS_THRESHOLD - 0.05);
     }
     // Non-mega extreme glass cannon GOD cap: Pheromosa archetype (~70/37/37 in expansion,
     // defensePower≈3.375) can reach GOD tier via BEAST_BOOST × Quiver Dance × combo cap,
     // but in practice it's OHKO'd by priority before it sweeps. Threshold 3.5 matches
     // the bstRating penalty above. Cap at just below GOD so it remains Uber-tier but not AG.
     if (!(poke.evolutionData && poke.evolutionData.isMega) && role === 'OFFENSIVE' && rawDefensePower <= 3.5) {
-        absoluteRating = Math.min(absoluteRating, TIER_GOD_THRESHOLD - 0.01);
+        absoluteRating = Math.min(absoluteRating, TIER_AG_THRESHOLD - 0.01);
     }
 
     // These tiers are kinda working. I should add that OU is actually exclusive pokemon and UU-RU are the average fully evolved ones
     // GOD should only be used by extremely hard bosses. Should not come up in the game in general. Esp. Eternatus Emax
     let tier;
-    if (absoluteRating >= TIER_GOD_THRESHOLD) {
-        tier = TIER_GOD;
+    if (absoluteRating >= TIER_AG_THRESHOLD) {
+        tier = TIER_AG;
     }
-    else if (absoluteRating >= TIER_LEGEND_THRESHOLD) {
-        tier = TIER_LEGEND;
+    else if (absoluteRating >= TIER_UBERS_THRESHOLD) {
+        tier = TIER_UBERS;
     }
-    else if (absoluteRating >= TIER_PREMIUM_THRESHOLD) {
-        tier = TIER_PREMIUM;
+    else if (absoluteRating >= TIER_OU_THRESHOLD) {
+        tier = TIER_OU;
     }
-    else if (absoluteRating >= TIER_STRONG_THRESHOLD) {
-        tier = TIER_STRONG;
+    else if (absoluteRating >= TIER_UU_THRESHOLD) {
+        tier = TIER_UU;
     }
-    else if (absoluteRating >= TIER_AVERAGE_THRESHOLD) {
-        tier = TIER_AVERAGE;
+    else if (absoluteRating >= TIER_RU_THRESHOLD) {
+        tier = TIER_RU;
     }
-    else if (absoluteRating >= TIER_WEAK_THRESHOLD) {
-        tier = TIER_WEAK;
+    else if (absoluteRating >= TIER_NU_THRESHOLD) {
+        tier = TIER_NU;
     }
-    else if (absoluteRating >= TIER_BAD_THRESHOLD) {
-        tier = TIER_BAD;
+    else if (absoluteRating >= TIER_PU_THRESHOLD) {
+        tier = TIER_PU;
     }
-    else if (absoluteRating >= TIER_TRASH_THRESHOLD) {
-        tier = TIER_TRASH;
+    else if (absoluteRating >= TIER_ZU_THRESHOLD) {
+        tier = TIER_ZU;
     }
     else {
-        tier = TIER_USELESS;
+        tier = TIER_MAGIKARP;
     }
 
     return {

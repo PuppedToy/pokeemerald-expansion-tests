@@ -737,7 +737,7 @@ async function exe() {
         if (poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length) {
             let bestMegaEvo = poke.evolutionData.megaEvos[0];
             let bestMegaEvoRating = 0;
-            let bestMegaEvoTier = 'BAD';
+            let bestMegaEvoTier = 'PU';
             poke.evolutionData.megaEvos.forEach(megaEvoId => {
                 const megaEvoPoke = allPokes.find(p => p.id === megaEvoId);
                 if (megaEvoPoke && megaEvoPoke.rating.absoluteRating > bestMegaEvoRating) {
@@ -779,7 +779,7 @@ async function exe() {
     // A1 analysis: print tier distribution when --analyze flag is passed
     const isAnalyze = process.argv.includes('--analyze');
     if (isAnalyze) {
-        const tierOrder = ['USELESS', 'TRASH', 'BAD', 'WEAK', 'AVERAGE', 'STRONG', 'PREMIUM', 'LEGEND', 'GOD'];
+        const tierOrder = ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU', 'UBERS', 'AG'];
         const byTier = {};
         tierOrder.forEach(t => { byTier[t] = []; });
         allPokes.forEach(p => {

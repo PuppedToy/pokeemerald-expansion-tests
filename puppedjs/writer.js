@@ -11,10 +11,10 @@ const {
     EVO_TYPE_LC_OF_3,
     EVO_TYPE_FINAL,
 
-    TIER_AVERAGE,
-    TIER_STRONG,
-    TIER_PREMIUM,
-    TIER_LEGEND,
+    TIER_RU,
+    TIER_UU,
+    TIER_OU,
+    TIER_UBERS,
 
     TRAINER_POKE_ENCOUNTER,
     TRAINER_POKE_STARTER_TREECKO,
@@ -32,16 +32,16 @@ const {
     NATURES,
     TRAINER_POKE_MEGA_FROM_STONE,
     GENERIC_DEVIATION,
-    TIER_USELESS,
-    TIER_TRASH,
-    TIER_BAD,
+    TIER_MAGIKARP,
+    TIER_ZU,
+    TIER_PU,
     TEMPLATE_MOVES_REPLACEMENT,
     TEMPLATE_ABILITIES_REPLACEMENT,
-    TIER_WEAK,
-    TIER_LEGEND_THRESHOLD,
-    TIER_GOD,
+    TIER_NU,
+    TIER_UBERS_THRESHOLD,
+    TIER_AG,
     MEGA_TRAINERS,
-    TIER_AVERAGE_THRESHOLD,
+    TIER_RU_THRESHOLD,
 } = require('./constants');
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 
@@ -154,9 +154,9 @@ const routeFiles = [
 ];
 
 // Returns true for any tier below WEAK (BAD, TRASH, USELESS).
-// Use this instead of `=== TIER_BAD` when the intent is "pokemon is in its base/weak form".
+// Use this instead of `=== TIER_PU` when the intent is "pokemon is in its base/weak form".
 function isSubWeakTier(tier) {
-    return tier === TIER_BAD || tier === TIER_TRASH || tier === TIER_USELESS;
+    return tier === TIER_PU || tier === TIER_ZU || tier === TIER_MAGIKARP;
 }
 
 function sampleAndRemove(array) {
@@ -251,7 +251,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     let eligiblePokemonForStarters = pokemonList.filter(poke => {
         return poke.evolutionData.type === EVO_TYPE_LC_OF_3
             && poke.evolutionData.isLC
-            && poke.rating.bestEvoTier === TIER_STRONG
+            && poke.rating.bestEvoTier === TIER_UU
             && isSubWeakTier(poke.rating.tier)
     });
 
@@ -297,7 +297,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         eligiblePokemonForStarters = pokemonList.filter(poke => {
             return poke.evolutionData.type === EVO_TYPE_LC_OF_3
                 && poke.evolutionData.isLC
-                && poke.rating.bestEvoTier === TIER_STRONG
+                && poke.rating.bestEvoTier === TIER_UU
                 && isSubWeakTier(poke.rating.tier)
             });
         starters[0] = sampleAndRemove(eligiblePokemonForStarters);
@@ -312,7 +312,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const addToFoundMegaEvosIfHasMegaEvo = (poke, levelFound = 0) => {
         if (
             hasValidMega(poke)
-            && poke.rating.megaEvoTier !== TIER_GOD
+            && poke.rating.megaEvoTier !== TIER_AG
             && foundMegaEvos.every((megaEvoData) => megaEvoData.family !== poke.family)
         ) {
             poke.evolutionData.megaEvos.forEach(megaEvoId => {
@@ -346,7 +346,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     let premiumLCPokes = pokemonList.filter(poke => {
         return poke.evolutionData.type === EVO_TYPE_LC_OF_3
             && poke.evolutionData.isLC
-            && poke.rating.bestEvoTier === TIER_PREMIUM
+            && poke.rating.bestEvoTier === TIER_OU
             && isSubWeakTier(poke.rating.tier)
             && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
     });
@@ -354,7 +354,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         console.warn('No premium 3-evo-LC pokemon found for extra starters, using premium LC instead.');
         premiumLCPokes = pokemonList.filter(poke => {
             return poke.evolutionData.isLC
-                && (poke.rating.bestEvoTier === TIER_PREMIUM)
+                && (poke.rating.bestEvoTier === TIER_OU)
                 && isSubWeakTier(poke.rating.tier)
                 && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
         });
@@ -363,7 +363,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             premiumLCPokes = pokemonList.filter(poke => {
                 return poke.evolutionData.type === EVO_TYPE_LC_OF_3
                     && poke.evolutionData.isLC
-                    && poke.rating.bestEvoTier === TIER_STRONG
+                    && poke.rating.bestEvoTier === TIER_UU
                     && isSubWeakTier(poke.rating.tier)
                     && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
             });
@@ -382,7 +382,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
     const strongPokemonLC = pokemonList.filter(poke => {
         return poke.evolutionData.isLC
-            && poke.rating.bestEvoTier === TIER_STRONG
+            && poke.rating.bestEvoTier === TIER_UU
             && isSubWeakTier(poke.rating.tier)
             && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
     });
@@ -411,8 +411,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
     const earlyGameStarter = pokemonList.filter(poke => {
         return (poke.evolutionData.isLC || poke.evolutionData.type === 'EVO_TYPE_SOLO')
-            && poke.rating.bestEvoRating <= TIER_AVERAGE_THRESHOLD
-            && poke.rating.tier === TIER_WEAK
+            && poke.rating.bestEvoRating <= TIER_RU_THRESHOLD
+            && poke.rating.tier === TIER_NU
             && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
     });
     const earlyGameStarterWithFilteredTypes = earlyGameStarter.filter(poke => {
@@ -430,7 +430,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     // Pick 6 other unique pokemon from notTooStrongPokemonLC that are not in eligiblePokemonForStarters
     const averagePokemonLC = pokemonList.filter(poke => {
         return poke.evolutionData.isLC
-            && poke.rating.bestEvoTier === TIER_AVERAGE
+            && poke.rating.bestEvoTier === TIER_RU
             && isSubWeakTier(poke.rating.tier)
             && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
     });
@@ -553,7 +553,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const gym1ReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && !poke.evolutionData.isMega
-        && poke.rating.tier === TIER_WEAK
+        && poke.rating.tier === TIER_NU
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const gym1Replacement = sampleAndRemove(gym1ReplacementList);
@@ -561,9 +561,9 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     addToFoundMegaEvosIfHasMegaEvo(gym1Replacement, 13);
     const gym2ReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.rating.tier === TIER_WEAK
+        && poke.rating.tier === TIER_NU
         && poke.evolutionData.type === 'EVO_TYPE_LC_OF_2'
-        && poke.rating.bestEvoTier === TIER_AVERAGE
+        && poke.rating.bestEvoTier === TIER_RU
         && (poke.evolutions || []).some(
             evo => evo.method === 'ITEM' || (evo.method === 'LEVEL' && parseInt(evo.param) <= 25)
         )
@@ -576,7 +576,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         && !poke.evolutionData.isMega
         && poke.evolutionData.isFinal
         && hasValidMega(poke)
-        && poke.rating.bestEvoRating < TIER_LEGEND_THRESHOLD
+        && poke.rating.bestEvoRating < TIER_UBERS_THRESHOLD
         && checkValidEvo(poke, 29)
     );
     const gym3Replacement = devolveToBase(sampleAndRemove(gym3ReplacementList));
@@ -586,7 +586,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const gym4n5ReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && poke.evolutionData.isLC
-        && poke.rating.bestEvoTier === TIER_STRONG
+        && poke.rating.bestEvoTier === TIER_UU
     );
     const gym4Replacement = sampleAndRemove(gym4n5ReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(gym4Replacement.family));
@@ -600,7 +600,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         && !poke.evolutionData.isMega
         && poke.evolutionData.isFinal
         && hasValidMega(poke)
-        && poke.rating.bestEvoRating < TIER_LEGEND_THRESHOLD
+        && poke.rating.bestEvoRating < TIER_UBERS_THRESHOLD
         && checkValidEvo(poke, 41)
     );
 
@@ -610,7 +610,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const gym6ReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && poke.evolutionData.isLC
-        && poke.rating.bestEvoTier === TIER_PREMIUM
+        && poke.rating.bestEvoTier === TIER_OU
     );
     const gym6Replacement = sampleAndRemove(gym6ReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(gym6Replacement.family));
@@ -619,7 +619,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         && !poke.evolutionData.isMega
         && poke.evolutionData.isFinal
-        && poke.rating.bestEvoTier === TIER_PREMIUM
+        && poke.rating.bestEvoTier === TIER_OU
     );
     const gym7Replacement = sampleAndRemove(gym7n8ReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(gym7Replacement.family));
@@ -630,7 +630,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
     const strongSoloReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.rating.bestEvoTier === TIER_STRONG
+        && poke.rating.bestEvoTier === TIER_UU
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const regirockReplacement = sampleAndRemove(strongSoloReplacementList);
@@ -648,7 +648,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
     const premiumSoloReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.rating.bestEvoTier === TIER_PREMIUM
+        && poke.rating.bestEvoTier === TIER_OU
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const registeelReplacement = sampleAndRemove(premiumSoloReplacementList);
@@ -657,7 +657,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
     const legendReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.rating.bestEvoTier === TIER_LEGEND
+        && poke.rating.bestEvoTier === TIER_UBERS
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const legend1Replacement = sampleAndRemove(legendReplacementList);

@@ -1,17 +1,17 @@
 const path = require('path');
 
 const {
-    TIER_BAD,
-    TIER_WEAK,
-    TIER_AVERAGE,
-    TIER_STRONG,
+    TIER_PU,
+    TIER_NU,
+    TIER_RU,
+    TIER_UU,
 
     EVO_TYPE_LC,
     EVO_TYPE_NFE,
     EVO_TYPE_SOLO,
-    TIER_PREMIUM,
+    TIER_OU,
     EVO_TYPE_FINAL,
-    TIER_LEGEND,
+    TIER_UBERS,
 } = require('./constants.js');
 
 // For fishing, each route will have 1 land and 1 old rod option
@@ -25,97 +25,97 @@ const wildData = {
     file: path.resolve(__dirname, '..', 'src', 'data', 'wild_encounters.json'),
     replacementTypes: {
         LC_WEAK: {
-            replace: [TIER_WEAK],
+            replace: [TIER_NU],
             type: [EVO_TYPE_LC],
         },
         LC_BAD_WEAK_AVERAGE: {
-            replace: [TIER_AVERAGE, TIER_WEAK, TIER_BAD],
+            replace: [TIER_RU, TIER_NU, TIER_PU],
             type: [EVO_TYPE_LC],
         },
         LC_AVERAGE_OR_WEAK: {
-            replace: [TIER_AVERAGE, TIER_WEAK],
+            replace: [TIER_RU, TIER_NU],
             type: [EVO_TYPE_LC],
         },
         LC_AVERAGE: {
-            replace: [TIER_AVERAGE],
+            replace: [TIER_RU],
             type: [EVO_TYPE_LC],
         },
         LC_STRONG: {
-            replace: [TIER_STRONG],
+            replace: [TIER_UU],
             type: [EVO_TYPE_LC],
         },
         LC_AVERAGE_OR_STRONG: {
-            replace: [TIER_AVERAGE, TIER_STRONG],
+            replace: [TIER_RU, TIER_UU],
             type: [EVO_TYPE_LC],
         },
         LC_NFE_OR_SOLO_AVERAGE_OR_STRONG: {
-            replace: [TIER_AVERAGE, TIER_STRONG],
+            replace: [TIER_RU, TIER_UU],
             type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
         LC_NFE_OR_SOLO_AVERAGE_OR_WEAK: {
-            replace: [TIER_AVERAGE, TIER_WEAK],
+            replace: [TIER_RU, TIER_NU],
             type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
         LC_NFE_OR_SOLO_AVERAGE: {
-            replace: [TIER_AVERAGE],
+            replace: [TIER_RU],
             type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
         NFE_OR_SOLO_STRONG: {
-            replace: [TIER_STRONG],
+            replace: [TIER_UU],
             type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
         NFE_OR_LC_PREMIUM: {
-            replace: [TIER_PREMIUM],
+            replace: [TIER_OU],
             type: [EVO_TYPE_NFE, EVO_TYPE_LC],
         },
         NFE_OR_SOLO_PREMIUM: {
-            replace: [TIER_PREMIUM],
+            replace: [TIER_OU],
             type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
         LC_NFE_OR_SOLO_AVERAGE_STRONG: {
-            replace: [TIER_AVERAGE, TIER_STRONG],
+            replace: [TIER_RU, TIER_UU],
             type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
         NFE_OR_LC_STRONG: {
-            replace: [TIER_STRONG],
+            replace: [TIER_UU],
             type: [EVO_TYPE_LC, EVO_TYPE_NFE],
         },
         NFE_MEGA: {
-            replace: [TIER_BAD, TIER_WEAK, TIER_AVERAGE, TIER_STRONG],
+            replace: [TIER_PU, TIER_NU, TIER_RU, TIER_UU],
             hasMega: true,
             type: [EVO_TYPE_LC, EVO_TYPE_NFE],
         },
         FINAL_OR_SOLO_AVERAGE: {
-            replace: [TIER_AVERAGE],
+            replace: [TIER_RU],
             type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
         },
         FINAL_STRONG: {
-            replace: [TIER_STRONG],
+            replace: [TIER_UU],
             type: [EVO_TYPE_FINAL],
         },
         FINAL_OR_SOLO_STRONG: {
-            replace: [TIER_STRONG],
+            replace: [TIER_UU],
             type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
         },
         FINAL_OR_SOLO_AVERAGE_OR_STRONG: {
-            replace: [TIER_AVERAGE, TIER_STRONG],
+            replace: [TIER_RU, TIER_UU],
             type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
         },
         FINAL_PREMIUM: {
-            replace: [TIER_PREMIUM],
+            replace: [TIER_OU],
             type: [EVO_TYPE_FINAL],
         },
         FINAL_OR_SOLO_PREMIUM: {
-            replace: [TIER_PREMIUM],
+            replace: [TIER_OU],
             type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
         },
         FINAL_OR_SOLO_MEGA_LEGENDARY: {
             type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
             hasMega: true,
-            megaTiers: [TIER_LEGEND],
+            megaTiers: [TIER_UBERS],
         },
         LC_NFE_OR_SOLO_AVERAGE: {
-            replace: [TIER_AVERAGE],
+            replace: [TIER_RU],
             type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
     },
