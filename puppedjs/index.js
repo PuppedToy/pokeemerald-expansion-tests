@@ -1,7 +1,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 
-const { ratePokemon, rateMove } = require('./rating');
+const { ratePokemon, rateContextual, rateMove } = require('./rating');
 const writer = require('./writer');
 
 const isDebug = process.argv.includes('--debug');
@@ -763,6 +763,17 @@ async function exe() {
     // Rayquaza is a special case, it's always considered mega for rating
     if (rayquaza && rayquazaMega) {
         rayquaza.rating = {...rayquazaMega.rating};
+    }
+
+    // Phase B: pre-compute contextual ratings at fixed level caps (learnset-only, no TMs).
+    // These are used by writer.js to filter trainer pokemon by their contextual strength
+    // at a given level, rather than their generic (level-100, full-TM) rating.
+    const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
+    for (const poke of allPokes) {
+        poke.contextualRatings = {};
+        for (const cap of LEVEL_CAPS) {
+            poke.contextualRatings[cap] = rateContextual(poke, moves, abilities, { level: cap, tms: [] });
+        }
     }
 
     // A1 analysis: print tier distribution when --analyze flag is passed

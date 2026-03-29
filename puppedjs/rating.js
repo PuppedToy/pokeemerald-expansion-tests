@@ -2068,6 +2068,15 @@ function computeComboBonus(poke, moveset, moves, tmPool) {
         }
     }
 
+    // Declared here (before SUPREME_OVERLORD check) to avoid temporal dead zone —
+    // the full priority analysis block below also references this set.
+    const physicalPriorityIds = new Set([
+        'MOVE_BULLET_PUNCH', 'MOVE_MACH_PUNCH', 'MOVE_AQUA_JET', 'MOVE_SHADOW_SNEAK',
+        'MOVE_SUCKER_PUNCH', 'MOVE_EXTREME_SPEED', 'MOVE_ICE_SHARD', 'MOVE_QUICK_ATTACK',
+        'MOVE_JET_PUNCH', 'MOVE_FIRST_IMPRESSION', 'MOVE_FAKE_OUT',
+        'MOVE_GRASSY_GLIDE',  // +1 priority in Grassy Terrain (GRASSY_SURGE setter always creates it)
+    ]);
+
     // Ruin abilities (Paldean Treasures of Ruin): passive field-wide stat drops that affect
     // ALL opponents. Offensive Ruin abilities (Beads, Sword) effectively make the user hit
     // 33% harder (1 / 0.75 = 1.33×). Defensive ones (Tablets, Chain) reduce incoming damage.
@@ -2307,12 +2316,7 @@ function computeComboBonus(poke, moveset, moves, tmPool) {
     // Stat-aware priority check: physical priority is only strategically relevant to
     // physical or mixed attackers. Prevents e.g. Sceptile Mega (special attacker) from
     // getting SETUP+PRIORITY credit for Quick Attack it would never competitively run.
-    const physicalPriorityIds = new Set([
-        'MOVE_BULLET_PUNCH', 'MOVE_MACH_PUNCH', 'MOVE_AQUA_JET', 'MOVE_SHADOW_SNEAK',
-        'MOVE_SUCKER_PUNCH', 'MOVE_EXTREME_SPEED', 'MOVE_ICE_SHARD', 'MOVE_QUICK_ATTACK',
-        'MOVE_JET_PUNCH', 'MOVE_FIRST_IMPRESSION', 'MOVE_FAKE_OUT',
-        'MOVE_GRASSY_GLIDE',  // +1 priority in Grassy Terrain (GRASSY_SURGE setter always creates it)
-    ]);
+    // (physicalPriorityIds declared earlier to avoid TDZ in SUPREME_OVERLORD check above)
     const specialPriorityIds = new Set([
         'MOVE_VACUUM_WAVE', 'MOVE_WATER_SHURIKEN', 'MOVE_THUNDERCLAP',
     ]);
@@ -3000,8 +3004,30 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     };
 }
 
+/**
+ * rateContextual — same algorithm as ratePokemon, but restricted to a trainer's universe.
+ *
+ * context = { level: number, tms: string[] }
+ *   - level: cap the learnset to moves learned at or below this level
+ *   - tms: only these TM move IDs are considered available (pass [] for learnset-only)
+ *
+ * The generic rating (poke.rating) is never modified by this function.
+ * Calling rateContextual(poke, moves, abilities, { level: 100, tms: [...fullTmPool] })
+ * produces the exact same result as ratePokemon(poke, moves, abilities, fullTmPool).
+ */
+function rateContextual(poke, moves, abilities, context) {
+    const { level = 100, tms = [] } = context;
+    const restrictedPoke = {
+        ...poke,
+        learnset: poke.learnset.filter(entry => entry.level <= level),
+    };
+    const restrictedTmPool = new Set(tms);
+    return ratePokemon(restrictedPoke, moves, abilities, restrictedTmPool);
+}
+
 module.exports = {
     ratePokemon,
+    rateContextual,
     chooseMoveset,
     adjustMoveset,
     chooseNature,

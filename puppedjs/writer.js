@@ -44,6 +44,19 @@ const {
     TIER_AVERAGE_THRESHOLD,
 } = require('./constants');
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
+
+// Must match LEVEL_CAPS in index.js — used for contextualRatings lookups
+const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
+
+// Returns the highest cap that is <= level, or the lowest cap if level is below all caps.
+function nearestCap(level) {
+    let best = LEVEL_CAPS[0];
+    for (const cap of LEVEL_CAPS) {
+        if (cap <= level) best = cap;
+        else break;
+    }
+    return best;
+}
 const items = require('./items.js');
 const { savePokemonData } = require('./pokemonWriter.js');
 const { randomizeTMs } = require('./tmRandomizer.js');
@@ -1169,6 +1182,19 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                     loosePokemon => trainerMonDefinition.absoluteTier.includes(loosePokemon.rating.tier),
                 );
             }
+            if (trainerMonDefinition.contextualTier) {
+                const cap = nearestCap(trainer.level);
+                const beforeCount = pokemonLooseList.length;
+                const filtered = pokemonLooseList.filter(loosePokemon => {
+                    const contextual = loosePokemon.contextualRatings?.[cap];
+                    return contextual && trainerMonDefinition.contextualTier.includes(contextual.tier);
+                });
+                // Fall back to absoluteTier (or unfiltered list) if contextualTier yields nothing
+                pokemonLooseList = filtered.length > 0 ? filtered : pokemonLooseList;
+                if (filtered.length === 0 && beforeCount > 0) {
+                    console.warn(`WARN: contextualTier filter yielded 0 results for trainer ${trainer.id} at level ${trainer.level} (cap=${cap}). Falling back to pre-contextual list.`);
+                }
+            }
             if (trainerMonDefinition.evoType) {
                 pokemonLooseList = pokemonLooseList.filter(loosePokemon => {
                     let result = false;
@@ -1303,10 +1329,19 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 pokemonStrictList = [...pokemonStrictList, ...filteredLooseList];
             }
 
+            // Comparator for pickBest: use contextual rating when contextualTier is active
+            const getRatingForSort = (poke) => {
+                if (trainerMonDefinition.contextualTier) {
+                    const cap = nearestCap(trainer.level);
+                    return poke.contextualRatings?.[cap]?.absoluteRating ?? poke.rating.absoluteRating;
+                }
+                return poke.rating.absoluteRating;
+            };
+
             // If any strict pokemon meet the restrictions, pick from them
             if (pokemonStrictList.length > 0) {
                 if (trainerMonDefinition.pickBest) {
-                    const sortedStrictList = pokemonStrictList.sort((a, b) => b.rating.absoluteRating - a.rating.absoluteRating);
+                    const sortedStrictList = pokemonStrictList.sort((a, b) => getRatingForSort(b) - getRatingForSort(a));
                     chosenTrainerMon = sortedStrictList[0];
                 }
                 else {
@@ -1316,7 +1351,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             // Else forget about unique restriction
             else if (pokemonLooseList.length > 0) {
                 if (trainerMonDefinition.pickBest) {
-                    const sortedLooseList = pokemonLooseList.sort((a, b) => b.rating.absoluteRating - a.rating.absoluteRating);
+                    const sortedLooseList = pokemonLooseList.sort((a, b) => getRatingForSort(b) - getRatingForSort(a));
                     chosenTrainerMon = sortedLooseList[0];
                 }
                 else {
