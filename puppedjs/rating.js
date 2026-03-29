@@ -2381,6 +2381,21 @@ function computeComboBonus(poke, moveset, moves, tmPool) {
         bonusLog.push('LIQUID_VOICE+HYPER_VOICE +0.6');
     }
 
+    // Body Press + Iron Defense: Body Press deals damage equal to the user's Defense stat.
+    // Iron Defense doubles Defense in one turn. Together they create an offensive wall that
+    // sweeps with its boosted Defense — Corviknight's signature OU strategy.
+    if (hasMove('MOVE_BODY_PRESS') && hasMove('MOVE_IRON_DEFENSE')) {
+        bonus += 0.55;
+        bonusLog.push('BODY_PRESS+IRON_DEFENSE +0.55');
+    }
+
+    // Mirror Armor (Corviknight): reflects all stat-lowering effects back to the attacker.
+    // Punishes Intimidate, sticky webs, and any direct debuff, and is a top-tier defensive ability.
+    if (hasAbility('MIRROR_ARMOR')) {
+        bonus += 0.25;
+        bonusLog.push('MIRROR_ARMOR +0.25');
+    }
+
     // Good as Gold (Gholdengo): completely immune to all status moves — Taunt, Thunder Wave,
     // Will-O-Wisp, Toxic, Encore, Spore, etc. Combined with Ghost/Steel typing, it's nearly
     // impossible to shut down through traditional defensive tools.
@@ -2713,6 +2728,69 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     ]);
     if (poke.parsedAbilities.includes('STRONG_JAW') && allLearnableForFloor.has('MOVE_FISHIOUS_REND')) {
         absoluteRating = Math.max(absoluteRating, TIER_PREMIUM_THRESHOLD + 0.1);
+    }
+    // SWORD_OF_RUIN on strong physical attacker (Chien-Pao): drops all opponents' Defense by 25%.
+    // Combined with high Attack (120), Ice/Dark STAB, and high Speed — definitionally Uber wallbreaker.
+    // The bonusCap at 1.6 prevents the combo score from reaching LEGEND on its own; floor it instead.
+    if (poke.parsedAbilities.includes('SWORD_OF_RUIN') && poke.baseAttack >= 110) {
+        absoluteRating = Math.max(absoluteRating, TIER_LEGEND_THRESHOLD + 0.05);
+    }
+    // UNSEEN_FIST + always-crit moves: Wicked Blow / Surging Strikes always crit and bypass Protect.
+    // The +1.5 combo bonus pushes Urshifu to the LEGEND threshold but floating-point rounding
+    // or BST headroom can leave it just under 9.0. Floor it firmly at Uber.
+    if (poke.parsedAbilities.includes('UNSEEN_FIST') &&
+        (allLearnableForFloor.has('MOVE_WICKED_BLOW') || allLearnableForFloor.has('MOVE_SURGING_STRIKES'))) {
+        absoluteRating = Math.max(absoluteRating, TIER_LEGEND_THRESHOLD + 0.05);
+    }
+    // BEADS_OF_RUIN on extreme special attacker (Chi-Yu): all opponents lose 25% SpDef.
+    // Chi-Yu's 135 SpA + Fire/Dark STAB becomes effectively ~170 SpA equivalent.
+    // Frailty caps the combo score below LEGEND; floor to Uber to capture the real threat.
+    if (poke.parsedAbilities.includes('BEADS_OF_RUIN') && poke.baseSpAttack >= 130) {
+        absoluteRating = Math.max(absoluteRating, TIER_LEGEND_THRESHOLD + 0.05);
+    }
+    // QUARK_DRIVE on fast special attacker (Iron Bundle): extremely high Speed + SpA combination.
+    // Freeze-Dry + Hydro Pump = nearly unresisted coverage, and Iron Bundle outspeeds the entire
+    // non-Scarfed meta. Definitionally Uber despite mediocre BST 570.
+    if (poke.parsedAbilities.includes('QUARK_DRIVE') && poke.baseSpAttack >= 120 && poke.baseSpeed >= 130) {
+        absoluteRating = Math.max(absoluteRating, TIER_LEGEND_THRESHOLD + 0.05);
+    }
+    // LIQUID_VOICE + HYPER_VOICE on high SpA attacker (Primarina): converts Hyper Voice to a
+    // Water-type 90 BP STAB that bypasses Substitute and hits through screens. Paired with
+    // Calm Mind and Wish it's one of the best bulky special attackers in UU/OU.
+    if (poke.parsedAbilities.includes('LIQUID_VOICE') && allLearnableForFloor.has('MOVE_HYPER_VOICE') &&
+        poke.baseSpAttack >= 120) {
+        absoluteRating = Math.max(absoluteRating, TIER_PREMIUM_THRESHOLD + 0.1);
+    }
+    // (hasSetup / hasRecovery are scoped to computeComboBonus; re-derive here for floor checks)
+    const hasSetupForFloor    = [...allLearnableForFloor].some(m => setupMoves.has(m));
+    // MISTY_SURGE + setup (Tapu Fini): Calm Mind behind Misty Terrain turns Tapu Fini into a
+    // setup wall that is immune to status. Water/Fairy typing gives it excellent defensive typing.
+    // Valued as OU despite middling SpA because of its defensive role and terrain support.
+    if (poke.parsedAbilities.includes('MISTY_SURGE') && hasSetupForFloor) {
+        absoluteRating = Math.max(absoluteRating, TIER_PREMIUM_THRESHOLD + 0.1);
+    }
+    // PROTOSYNTHESIS + Dragon Dance on high-BST physical attacker (Gouging Fire, Raging Bolt equiv):
+    // PROTOSYNTHESIS boosts the best stat in sun. Dragon Dance + Flare Blitz under PROTOSYNTHESIS
+    // turns Gouging Fire into an unkillable sweeper — definitionally Uber.
+    if (poke.parsedAbilities.includes('PROTOSYNTHESIS') && hasSetupForFloor && poke.baseAttack >= 110 && poke.baseBST >= 585) {
+        absoluteRating = Math.max(absoluteRating, TIER_LEGEND_THRESHOLD + 0.05);
+    }
+    // MIRROR_ARMOR + BODY_PRESS + IRON_DEFENSE (Corviknight): stat-drop immunity turns this into
+    // an unkillable physical wall that attacks with its doubled Defense via Body Press. Despite
+    // modest BST 495, this combination makes it nearly impossible to wear down or weaken.
+    if (poke.parsedAbilities.includes('MIRROR_ARMOR') &&
+        allLearnableForFloor.has('MOVE_BODY_PRESS') && allLearnableForFloor.has('MOVE_IRON_DEFENSE')) {
+        absoluteRating = Math.max(absoluteRating, TIER_PREMIUM_THRESHOLD + 0.1);
+    }
+    // UNAWARE + TORCH_SONG + recovery (Skeledirge): TORCH_SONG is a SpA-boosting Fire STAB that
+    // lets Skeledirge set up through opposing stat boosts (UNAWARE ignores them when defending).
+    // Slack Off recovery means it can stall out most setup sweepers. UU-tier defensive utility.
+    const comboRecoveryForFloor = new Set(['MOVE_RECOVER','MOVE_ROOST','MOVE_MOONLIGHT','MOVE_MORNING_SUN',
+        'MOVE_SLACK_OFF','MOVE_SOFT_BOILED','MOVE_WISH','MOVE_REST','MOVE_SYNTHESIS','MOVE_SHORE_UP',
+        'MOVE_MILK_DRINK','MOVE_LEECH_SEED']);
+    if (poke.parsedAbilities.includes('UNAWARE') && allLearnableForFloor.has('MOVE_TORCH_SONG') &&
+        [...allLearnableForFloor].some(m => comboRecoveryForFloor.has(m))) {
+        absoluteRating = Math.max(absoluteRating, TIER_STRONG_THRESHOLD + 0.1);
     }
     // Non-mega extreme glass cannon GOD cap: Pheromosa archetype (~70/37/37 in expansion,
     // defensePower≈3.375) can reach GOD tier via BEAST_BOOST × Quiver Dance × combo cap,

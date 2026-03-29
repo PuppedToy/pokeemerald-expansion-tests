@@ -19,6 +19,7 @@ Committing them pollutes history with randomizer mutations and corrupts base dat
 ### Puppedjs caches (regenerated from source on each run)
 - `puppedjs/pokes.json` — parsed Pokemon data cache
 - `puppedjs/level_up_learnsets.json` — parsed learnset cache
+- `puppedjs/teachable_learnsets.json` — parsed teachable learnset cache
 
 ### Puppedjs output (fine to keep locally, not useful in history)
 - `puppedjs/output/out.html` — analysis HTML viewer
