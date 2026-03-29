@@ -2913,9 +2913,26 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     // Low-BST setters (Pelipper 440, Politoed 500) can't reach PREMIUM through stats alone
     // but are universally considered OU anchors. Floor to just above PREMIUM threshold.
     const isFinalEvo = poke.evolutionData && poke.evolutionData.isFinal;
+    // DRIZZLE / DROUGHT setters: weather dictates team-building and makes these mons relevant
+    // regardless of their personal stats. But the tier of the floor depends on utility:
+    // - OU (PREMIUM) floor: setter has recovery OR pivot OR a weather-boosted perfect-accuracy
+    //   move (Thunder/Hurricane in rain, Solar Beam in sun). These mons contribute beyond just
+    //   setting weather — Pelipper (Roost+Hurricane), Ninetales (Solar Beam+Nasty Plot), etc.
+    // - UU (STRONG) floor: pure weather setters with no combat utility of their own (Politoed).
+    //   They define rain teams but are outclassed as individual pokemon.
     if (isFinalEvo &&
         (poke.parsedAbilities.includes('DRIZZLE') || poke.parsedAbilities.includes('DROUGHT'))) {
-        absoluteRating = Math.max(absoluteRating, TIER_PREMIUM_THRESHOLD + 0.1);
+        const weatherUtilityMoves = new Set([
+            'MOVE_ROOST','MOVE_RECOVER','MOVE_WISH','MOVE_SLACK_OFF','MOVE_SOFT_BOILED','MOVE_MOONLIGHT','MOVE_MORNING_SUN','MOVE_SYNTHESIS',
+            'MOVE_U_TURN','MOVE_VOLT_SWITCH','MOVE_FLIP_TURN','MOVE_PARTING_SHOT',
+            'MOVE_THUNDER','MOVE_HURRICANE','MOVE_SOLAR_BEAM','MOVE_SOLAR_BLADE',
+        ]);
+        const hasWeatherUtility = [...allLearnableForFloor].some(m => weatherUtilityMoves.has(m));
+        if (hasWeatherUtility) {
+            absoluteRating = Math.max(absoluteRating, TIER_PREMIUM_THRESHOLD + 0.1);
+        } else {
+            absoluteRating = Math.max(absoluteRating, TIER_STRONG_THRESHOLD + 0.1);
+        }
     }
     // SNOW_WARNING + AURORA_VEIL + high Speed: the fast Aurora Veil setter archetype (Ninetales
     // Alola). BLIZZARD bonus doesn't apply (SpA 81 < 100), but its 109 Speed + Veil support
