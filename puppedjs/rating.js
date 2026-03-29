@@ -2341,7 +2341,9 @@ function computeComboBonus(poke, moveset, moves, tmPool) {
     // Pivot + reliable recovery or Regenerator: net HP-positive every pivot cycle.
     // Makes switch-ins free over the long game (Landorus-T, Tornadus-T, Corviknight).
     // Requires reliable recovery (not Rest) because Rest+Sleep loses 2 turns after pivoting.
-    if (hasPivot && (hasReliableRecovery || hasAbility('REGENERATOR'))) {
+    // Also requires physical bulk (Def ≥ 75): frail mons can't safely tank the hit on switch-in
+    // to initiate the pivot cycle — Gardevoir Mega (Def 65) is a counterexample.
+    if (hasPivot && (hasReliableRecovery || hasAbility('REGENERATOR')) && poke.baseDefense >= 75) {
         bonus += 0.3;
         bonusLog.push('PIVOT+RECOVERY +0.3');
     }
@@ -2493,6 +2495,38 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     }
     if (poke.parsedAbilities.some(a => a === 'SPEED_BOOST')) {
         bestAbilityRating = Math.min(bestAbilityRating, 6.5);
+    }
+    // -ATE abilities (PIXILATE, AERILATE, REFRIGERATE, GALVANIZE): the combo system in
+    // computeComboBonus already captures their STAB-conversion value via -ATE+sound (+0.4).
+    // Letting them contribute their full ability.h rating (8) double-counts. Cap at 7.0.
+    const ateAbilities = new Set(['PIXILATE', 'AERILATE', 'REFRIGERATE', 'GALVANIZE']);
+    if (poke.parsedAbilities.some(a => ateAbilities.has(a))) {
+        bestAbilityRating = Math.min(bestAbilityRating, 7.0);
+    }
+    // LIGHTNING_ROD / VOLT_ABSORB / MOTOR_DRIVE: draws or absorbs Electric moves.
+    // In singles the "draw" mechanic is irrelevant; only the immunity matters.
+    // Value scales with how much the Electric immunity helps: removing a 2x weakness is
+    // excellent, but if the holder already resists/is immune to Electric, the ability
+    // adds little. Sceptile Mega (Grass/Dragon) typifies the near-worthless case.
+    // Ground types are already immune to Electric — ability is fully redundant.
+    const elecAbsorbAbilities = new Set(['LIGHTNING_ROD', 'VOLT_ABSORB', 'MOTOR_DRIVE']);
+    if (poke.parsedAbilities.some(a => elecAbsorbAbilities.has(a))) {
+        const isElecWeak   = poke.parsedTypes.some(t => t === 'WATER' || t === 'FLYING');
+        const isElecImmune = poke.parsedTypes.some(t => t === 'GROUND');
+        if (isElecImmune) {
+            // Ground is already immune — ability is completely redundant
+            bestAbilityRating = Math.min(bestAbilityRating, 3.0);
+        } else if (!isElecWeak) {
+            // Neutral or resists Electric: immunity gives some value but far less than removing a weakness
+            bestAbilityRating = Math.min(bestAbilityRating, 4.5);
+        }
+    }
+    // SNOW_WARNING on mega pokemon: mega holders can't equip Light Clay, which is the primary
+    // item that makes Snow Warning / Aurora Veil teams viable (8 turns instead of 5).
+    // Without Light Clay, the snow support value is significantly diminished compared to a
+    // non-mega (Alolan Ninetales) that can hold the item.
+    if (poke.parsedAbilities.includes('SNOW_WARNING') && poke.evolutionData && poke.evolutionData.isMega) {
+        bestAbilityRating = Math.min(bestAbilityRating, 5.0);
     }
 
     // To properly analyze a pokemon, we must understand its role
@@ -2791,6 +2825,13 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     if (poke.parsedAbilities.includes('UNAWARE') && allLearnableForFloor.has('MOVE_TORCH_SONG') &&
         [...allLearnableForFloor].some(m => comboRecoveryForFloor.has(m))) {
         absoluteRating = Math.max(absoluteRating, TIER_STRONG_THRESHOLD + 0.1);
+    }
+    // Physically frail mega cap: megas with very low Defense (≤65) and high BST (≥600) are
+    // severely vulnerable to priority and fast physical attackers despite their raw offensive power.
+    // They can't reliably set up or absorb neutral physical hits. Gardevoir Mega (65 Def, 618 BST)
+    // typifies this — it has never been Uber in Smogon competitive history despite absurd SpA.
+    if (isMegaForFloor && poke.baseDefense <= 65 && poke.baseBST >= 600) {
+        absoluteRating = Math.min(absoluteRating, TIER_LEGEND_THRESHOLD - 0.05);
     }
     // Non-mega extreme glass cannon GOD cap: Pheromosa archetype (~70/37/37 in expansion,
     // defensePower≈3.375) can reach GOD tier via BEAST_BOOST × Quiver Dance × combo cap,
