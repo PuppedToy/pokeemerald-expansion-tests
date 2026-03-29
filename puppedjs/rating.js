@@ -2216,6 +2216,70 @@ function computeComboBonus(poke, moveset, moves, tmPool) {
         }
     }
 
+    // ── Weather ability combo bonuses ─────────────────────────────────────────
+    // Weather is a powerful team-building axis comparable to terrain.
+    // Unlike terrain (4-turn unless extended), permanent weather lasts until changed,
+    // and both offensive (Swift Swim, Chlorophyll) and defensive (reduced Fire/Water damage)
+    // benefits compound across the whole team.
+
+    // DRIZZLE: sets permanent Rain. The setter is the core team anchor.
+    // Rain-specific synergies:
+    //   - THUNDER (100% accuracy in rain) and HURRICANE (100% accuracy in rain): normally
+    //     unreliable 70% and 70% accuracy, becoming fully spammable under rain.
+    //   - WATER_STAB: Rain boosts Water moves 50% — the setter's own Water STAB benefits.
+    //   - Defensive pivot with Roost + Water/Flying typing: Pelipper's defining role.
+    if (hasAbility('DRIZZLE')) {
+        bonus += 0.4;
+        bonusLog.push('DRIZZLE +0.4');
+        if (hasMove('MOVE_THUNDER') || hasMove('MOVE_HURRICANE')) {
+            bonus += 0.35;
+            bonusLog.push('DRIZZLE+perfect_acc_move +0.35');
+        }
+        if (poke.parsedTypes && poke.parsedTypes.includes('WATER')) {
+            bonus += 0.2;
+            bonusLog.push('DRIZZLE+WATER_STAB +0.2');
+        }
+        if (hasMove('MOVE_ROOST') || hasMove('MOVE_RECOVER')) {
+            bonus += 0.2;
+            bonusLog.push('DRIZZLE+recovery +0.2');
+        }
+    }
+    // DROUGHT: sets permanent Sun. Sun-specific synergies:
+    //   - SOLAR_BEAM / SOLAR_BLADE: normally require a charge turn, instant in sun.
+    //   - FIRE_STAB: Sun boosts Fire moves 50% — setter benefits directly.
+    if (hasAbility('DROUGHT')) {
+        bonus += 0.4;
+        bonusLog.push('DROUGHT +0.4');
+        if (hasMove('MOVE_SOLAR_BEAM') || hasMove('MOVE_SOLAR_BLADE')) {
+            bonus += 0.3;
+            bonusLog.push('DROUGHT+instant_solar +0.3');
+        }
+        if (poke.parsedTypes && poke.parsedTypes.includes('FIRE')) {
+            bonus += 0.25;
+            bonusLog.push('DROUGHT+FIRE_STAB +0.25');
+        }
+    }
+    // SAND_STREAM: sets permanent Sandstorm. SpDef boost to Rock types. Chip damage
+    // to non-Rock/Ground/Steel. Strong defensive utility + Excadrill/Tyranitar synergy.
+    if (hasAbility('SAND_STREAM')) {
+        bonus += 0.3;
+        bonusLog.push('SAND_STREAM +0.3');
+        if (poke.parsedTypes && poke.parsedTypes.includes('ROCK')) {
+            bonus += 0.2;
+            bonusLog.push('SAND_STREAM+ROCK_SPDEF +0.2');
+        }
+    }
+    // SNOW_WARNING: sets permanent Snow. BLIZZARD has 100% accuracy in snow.
+    // Defensive value: Ice-type SpDef boost (gen 9 mechanic). Aurora Veil support.
+    if (hasAbility('SNOW_WARNING')) {
+        bonus += 0.25;
+        bonusLog.push('SNOW_WARNING +0.25');
+        if (hasMove('MOVE_BLIZZARD')) {
+            bonus += 0.3;
+            bonusLog.push('SNOW_WARNING+BLIZZARD +0.3');
+        }
+    }
+
     // Regenerator + recovery: passive healing on every switch-out combined with
     // active recovery each turn makes these pokemon nearly impossible to wear down.
     // Toxapex, Slowbro, Tangrowth all rely on this combo for their defensive viability.
@@ -2489,12 +2553,25 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     // score which pushes Shadow Tag megas (Gengar) to GOD. Cap at 7.5.
     // SPEED_BOOST: SPEED_BOOST+PROTECT combo already models it (+0.5). Cap more aggressively at
     // 6.5 to prevent double-counting on top of the combo bonus.
-    const capAt75Abilities = new Set(['MAGIC_GUARD', 'SHADOW_TAG']);
+    const capAt75Abilities = new Set(['MAGIC_GUARD', 'SHADOW_TAG',
+        // Weather abilities rated 9 in abilities.h — cap same as terrain surges (7.5).
+        // Combo system captures their weather-specific value; letting the ability rating
+        // contribute its full 0.9 double-counts alongside the weather combo bonuses.
+        'DRIZZLE', 'DROUGHT', 'SAND_STREAM',
+    ]);
     if (poke.parsedAbilities.some(a => capAt75Abilities.has(a))) {
         bestAbilityRating = Math.min(bestAbilityRating, 7.5);
     }
     if (poke.parsedAbilities.some(a => a === 'SPEED_BOOST')) {
         bestAbilityRating = Math.min(bestAbilityRating, 6.5);
+    }
+    // DROUGHT / DRIZZLE on mega: megas can't hold Heat Rock / Damp Rock (the item that extends
+    // weather to 8 turns). Their weather sets for only 5 turns and is purely self-serving —
+    // the main value is the mon's own offense in sun/rain, not team-wide weather support.
+    // Cap more aggressively than non-mega setters.
+    if (poke.evolutionData && poke.evolutionData.isMega &&
+        (poke.parsedAbilities.includes('DROUGHT') || poke.parsedAbilities.includes('DRIZZLE'))) {
+        bestAbilityRating = Math.min(bestAbilityRating, 4.0);
     }
     // -ATE abilities (PIXILATE, AERILATE, REFRIGERATE, GALVANIZE): the combo system in
     // computeComboBonus already captures their STAB-conversion value via -ATE+sound (+0.4).
@@ -2825,6 +2902,16 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     if (poke.parsedAbilities.includes('UNAWARE') && allLearnableForFloor.has('MOVE_TORCH_SONG') &&
         [...allLearnableForFloor].some(m => comboRecoveryForFloor.has(m))) {
         absoluteRating = Math.max(absoluteRating, TIER_STRONG_THRESHOLD + 0.1);
+    }
+    // DRIZZLE / DROUGHT setters (fully evolved): weather setters define the metagame.
+    // Their ability dictates team-building for both sides — anything with Drizzle or Drought
+    // is always at minimum OU because of their unique, irreplaceable team-support role.
+    // Low-BST setters (Pelipper 440, Politoed 500) can't reach PREMIUM through stats alone
+    // but are universally considered OU anchors. Floor to just above PREMIUM threshold.
+    const isFinalEvo = poke.evolutionData && poke.evolutionData.isFinal;
+    if (isFinalEvo &&
+        (poke.parsedAbilities.includes('DRIZZLE') || poke.parsedAbilities.includes('DROUGHT'))) {
+        absoluteRating = Math.max(absoluteRating, TIER_PREMIUM_THRESHOLD + 0.1);
     }
     // Physically frail mega cap: megas with very low Defense (≤65) and high BST (≥600) are
     // severely vulnerable to priority and fast physical attackers despite their raw offensive power.
