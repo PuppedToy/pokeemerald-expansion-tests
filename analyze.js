@@ -37,7 +37,7 @@ const indexArgs = [path.join('puppedjs', 'index.js')];
 if (isDebug) indexArgs.push('--debug');
 run('node', indexArgs);
 
-// Step 2: Reset all C/H source files — leaves puppedjs/output/ untouched (it's git-ignored)
-run('git', ['restore', 'src/', 'include/']);
+// Step 2: Reset all mutated source files — leaves puppedjs/output/ untouched (it's git-ignored)
+run('git', ['restore', 'src/', 'include/', 'data/']);
 
 console.log('\nDone. Open puppedjs/output/out.html to review results.');

@@ -42,7 +42,7 @@ const indexArgs = [path.join('puppedjs', 'index.js'), '--no-balance', '--all-tms
 if (isDebug) indexArgs.push('--debug');
 run('node', indexArgs);
 
-// Step 2: Reset all C/H source files — leaves puppedjs/output/ untouched
-run('git', ['restore', 'src/', 'include/']);
+// Step 2: Reset all mutated source files — leaves puppedjs/output/ untouched
+run('git', ['restore', 'src/', 'include/', 'data/']);
 
 console.log('\nDone. Open puppedjs/output/out.html to review results (vanilla stats, all TMs available).');
