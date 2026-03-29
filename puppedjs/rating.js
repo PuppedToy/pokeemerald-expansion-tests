@@ -2271,10 +2271,14 @@ function computeComboBonus(poke, moveset, moves, tmPool) {
     }
     // SNOW_WARNING: sets permanent Snow. BLIZZARD has 100% accuracy in snow.
     // Defensive value: Ice-type SpDef boost (gen 9 mechanic). Aurora Veil support.
+    // BLIZZARD bonus only applies if the setter is a credible special attacker AND fast enough
+    // to threaten before being KO'd (SpA >= 100 AND Speed >= 80). Slow/weak Snow setters like
+    // Abomasnow, Aurorus, and Vanilluxe can't survive long enough to exploit their own snow —
+    // the terrain is primarily team support, not personal offense.
     if (hasAbility('SNOW_WARNING')) {
         bonus += 0.25;
         bonusLog.push('SNOW_WARNING +0.25');
-        if (hasMove('MOVE_BLIZZARD')) {
+        if (hasMove('MOVE_BLIZZARD') && poke.baseSpAttack >= 100 && poke.baseSpeed >= 80) {
             bonus += 0.3;
             bonusLog.push('SNOW_WARNING+BLIZZARD +0.3');
         }
@@ -2557,7 +2561,7 @@ function ratePokemon(poke, moves, abilities, tmPool) {
         // Weather abilities rated 9 in abilities.h — cap same as terrain surges (7.5).
         // Combo system captures their weather-specific value; letting the ability rating
         // contribute its full 0.9 double-counts alongside the weather combo bonuses.
-        'DRIZZLE', 'DROUGHT', 'SAND_STREAM',
+        'DRIZZLE', 'DROUGHT', 'SAND_STREAM', 'SNOW_WARNING',
     ]);
     if (poke.parsedAbilities.some(a => capAt75Abilities.has(a))) {
         bestAbilityRating = Math.min(bestAbilityRating, 7.5);
@@ -2912,6 +2916,13 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     if (isFinalEvo &&
         (poke.parsedAbilities.includes('DRIZZLE') || poke.parsedAbilities.includes('DROUGHT'))) {
         absoluteRating = Math.max(absoluteRating, TIER_PREMIUM_THRESHOLD + 0.1);
+    }
+    // SNOW_WARNING + AURORA_VEIL + high Speed: the fast Aurora Veil setter archetype (Ninetales
+    // Alola). BLIZZARD bonus doesn't apply (SpA 81 < 100), but its 109 Speed + Veil support
+    // makes it a unique UU/OU team enabler. Floor to STRONG (UU) for this niche.
+    if (isFinalEvo && poke.parsedAbilities.includes('SNOW_WARNING') &&
+        allLearnableForFloor.has('MOVE_AURORA_VEIL') && poke.baseSpeed >= 100) {
+        absoluteRating = Math.max(absoluteRating, TIER_STRONG_THRESHOLD + 0.1);
     }
     // Physically frail mega cap: megas with very low Defense (≤65) and high BST (≥600) are
     // severely vulnerable to priority and fast physical attackers despite their raw offensive power.
