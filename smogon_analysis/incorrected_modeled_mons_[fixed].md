@@ -101,3 +101,5 @@ Maybe some inconsistencies are explained by not giving enough value to defensive
 For all the ones overvalued, we need to understand what are we overvaluing. Same procedure as before, for structural propose, for quick fixes do it.
 
 For all the undervalued, search on the internet other sources than smogon or smogon itself to know why some are considered that tier. What's their strength. That's the key. Once you get a description for each undervalue we can understand how to pump them up.
+
+-- Tis is fixed and closed --

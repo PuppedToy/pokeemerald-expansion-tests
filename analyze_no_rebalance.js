@@ -17,6 +17,20 @@ const path = require('path');
 const root = __dirname;
 const isDebug = process.argv.includes('--debug');
 
+// Guard: abort if data/ has uncommitted changes that the pipeline would clobber
+function checkDataClean() {
+    const result = spawnSync('git', ['status', '--porcelain', 'data/'], {
+        cwd: root,
+        shell: process.platform === 'win32',
+        encoding: 'utf8',
+    });
+    const dirty = (result.stdout || '').trim();
+    if (dirty) {
+        console.error('\nERROR: Uncommitted changes in data/ detected. Commit or stash them before running:\n' + dirty);
+        process.exit(1);
+    }
+}
+
 function run(cmd, args, opts = {}) {
     console.log(`\n> ${cmd} ${args.join(' ')}`);
     const result = spawnSync(cmd, args, {
@@ -35,12 +49,16 @@ function run(cmd, args, opts = {}) {
     }
 }
 
+// Step 0: Abort if data/ has uncommitted changes
+checkDataClean();
+
 // Step 1: Run without balance/mutations
 const indexArgs = [path.join('puppedjs', 'index.js'), '--no-balance'];
 if (isDebug) indexArgs.push('--debug');
 run('node', indexArgs);
 
 // Step 2: Reset all mutated source files — leaves puppedjs/output/ untouched
-run('git', ['restore', 'src/', 'include/', 'data/']);
+// Only restore data/maps/ — the pipeline only mutates that subdirectory; other data/ files are user-editable
+run('git', ['restore', 'src/', 'include/', 'data/maps/']);
 
 console.log('\nDone. Open puppedjs/output/out.html to review results (vanilla stats, no mutations).');
