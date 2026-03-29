@@ -1,19 +1,19 @@
 # Better Rating Plan
 
-## Context
+## Progress Overview
 
-The current system rates pokemon on a 0–10+ scale with 7 tiers (BAD → GOD), weighting BST at 80%, moves at 10%, and ability at 10%. BST thresholds act as safety floors so high-BST pokemon are never under-tiered. This works well in the late game but has two major failure modes:
-
-1. **Moveset outliers are invisible.** A pokemon with a game-breaking early moveset (Snubbull with coverage punches, Sandile with Hone Claws + Power Trip) gets no credit for it. A pokemon with terrible moves and average BST (Magikarp, Beldum, Applin) gets the same tier as a pokemon that can actually fight.
-2. **The worst tier is too coarse.** Everything below 5.0 is TIER_BAD, but there's a huge difference between a pokemon that's merely weak and one that is genuinely useless at any stage of the game.
-
-The plan fixes both problems in two phases.
+| Phase | Status | Summary |
+|-------|--------|---------|
+| **A** | ✅ DONE | Tier sub-splits, Eviolite, combo bonuses, ability caps, BST floors |
+| **B** | ⏸ DEFERRED | Context-aware early-game rating — complex, revisit after C/D settle |
+| **C** | ✅ DONE | TM-filtered learnsets, third-wave tier corrections, weather system |
+| **D** | 📋 PLANNED | Offensive and defensive typing analysis |
 
 ---
 
-## Phase A — Optimize the Current Tiering System
+## Phase A — Optimize the Current Tiering System ✅ DONE
 
-### A1 — Split TIER_BAD into three sub-tiers
+### A1 — Split TIER_BAD into three sub-tiers ✅
 
 **Goal:** Give trainers finer control over early-game pokemon quality.
 
@@ -33,7 +33,7 @@ The plan fixes both problems in two phases.
 - A1c. Update all POKEDEF templates in `writer.js` that reference `TIER_BAD` to specify which of the three sub-tiers they actually want.
 - A1d. **Analysis:** Print a sorted list of all pokemon landing in each new sub-tier. Manually verify 20–30 edge cases. Adjust score thresholds until the split feels right. Pay special attention to every pokemon that appears in routes 101–110.
 
-### A2 — Eviolite boost for defensive NFE pokemon
+### A2 — Eviolite boost for defensive NFE pokemon ✅
 
 **Goal:** NFE pokemon with good defensive bulk should rate higher because late-game trainers can give them Eviolite (+50% Def and SpDef), making them tankier than many final evolutions.
 
@@ -45,7 +45,7 @@ The plan fixes both problems in two phases.
 - A2c. **Analysis:** List all NFE pokemon whose tier changes due to this bonus. Check that none of them jump more than one tier (if they do, reduce the multiplier).
 - A2d. Update trainer definitions that explicitly ask for NFE pokemon (mid and late-game trainers) to now consider the new tier distribution.
 
-### A3 — Same-type move redundancy filter
+### A3 — Same-type move redundancy filter ✅
 
 **Goal:** When choosing a moveset, never keep two moves of the same type unless there is a specific reason (e.g. one is a status move, one is a damage move, or one gets a specific ability boost).
 
@@ -60,7 +60,7 @@ The plan fixes both problems in two phases.
   - Ability explicitly differentiates them (Iron Fist + Mach Punch vs Close Combat)
 - A3c. **Analysis:** Run the new filter over all ~1000 pokemon. Print any pokemon that lost a move it "shouldn't" have lost. Iterate.
 
-### A4 — Better coverage analysis
+### A4 — Better coverage analysis ✅
 
 **Goal:** Score a moveset not just by the sum of move ratings but by how many of the 18 types it hits super-effectively and how many types can wall the entire set.
 
@@ -77,7 +77,7 @@ The plan fixes both problems in two phases.
 - A4c. **Analysis:** Find pokemon whose `wallCount` is 0 (hit everything super-effectively or neutrally). Find pokemon whose `wallCount` ≥ 10 (completely exploitable). Verify both ends make intuitive sense.
 - A4d. Tune the 0.7/0.3 weights based on analysis output.
 
-### A5 — Smogon historic tier research
+### A5 — Smogon historic tier research ✅
 
 **Goal:** Build a curated list of move+move and move+ability combos that made pokemon outperform their BST — these are the "outlier signals" the rating system should understand.
 
@@ -96,7 +96,7 @@ The plan fixes both problems in two phases.
 - A5b. From the notes, extract abstract combo patterns: e.g. "Substitute + status immunity ability," "setup move + speed tier beats common threats," "pivoting move + recovery."
 - A5c. Map each pattern to detectable signals in our data (move IDs, ability IDs, stat thresholds).
 
-### A5.2 — Current system audit + algorithm design
+### A5.2 — Current system audit + algorithm design ✅
 
 **Goal:** Before implementing combo bonuses, evaluate the current system's strengths and weaknesses against the Smogon research. Produce a design document that explains the new algorithm so A6 is a focused implementation, not an exploration.
 
@@ -121,7 +121,7 @@ absoluteRating += comboBonus   // additive, before BST floor clamps
 
 ---
 
-### A6 — Combo-aware rating bonuses
+### A6 — Combo-aware rating bonuses ✅
 
 **Goal:** Translate the patterns found in A5 into concrete rating bonuses applied during `ratePokemon`.
 
@@ -153,7 +153,11 @@ absoluteRating += comboBonus   // additive, before BST floor clamps
 
 ---
 
-## Phase B — Context-Aware Early Game Rating
+## Phase B — Context-Aware Early Game Rating ⏸ DEFERRED
+
+**Why deferred:** Phase B is the most complex and risky change — it rewrites how trainers select pokemon. It was intentionally skipped to stabilize Phase A and C first. The absolute rating system is now solid enough that Phase B can be built on top without regressions.
+
+**What Phase B does:** Trainers at early game stages (caps 5–26) pick pokemon based on a contextual rating that is heavily move-weighted, not BST-weighted. This fixes the current failure mode where a move-heavy early pokemon (Snubbull with Ice/Thunder/Fire Punch at level 7) gets treated the same as a stat-heavy one.
 
 ### B1 — Design the level-contextual rating algorithm
 
@@ -276,64 +280,168 @@ Where `lerp(a, b, t)` linearly interpolates from `a` to `b` as level_cap goes fr
 
 ---
 
-## Execution Order
+## Phase C — Game-Accurate Learnset Tiering ✅ DONE
 
-Work strictly in this order. Do not start a step until its analysis sub-step is complete and signed off.
+### What was planned
 
-```
-A1 → A1d (analysis) → A2 → A2c (analysis) → A3 → A3c (analysis)
-→ A4 → A4c (analysis) → A5 (research) → A5.2 (audit + design) → A5.2c (sign-off) → A6 → A6d (analysis) → A6e (sign-off)
-→ B1 → B2 → B2f (sign-off) → B3 → B3e (analysis) → B4 → B4f (done)
-```
+Phase C was originally scoped as: filter combo detection to only moves actually available in this game's TM pool, and identify/add missing TMs for key pokemon.
 
-Each analysis step produces printed output that we review together before proceeding.
+### What was actually done (beyond the original spec)
+
+**C1 — TM-filtered rating (the original scope) ✅**
+- Added `--all-tms` mode and `analyze_no_rebalance_all_tms.js` to compare game-available vs full learnset ratings.
+- Combos now filter to `levelUpMoves ∪ gameTMPool` for tier calculation.
+- Added three analysis scripts with proper `git restore src/ include/` cleanup.
+
+**C2 — Third-wave tier corrections ✅**
+Systematic review of all incorrectly-modeled mons from `smogon_analysis/incorrected_modeled_mons.md`:
+
+*Overvalued fixes:*
+- Alakazam Mega: LEGEND → PREMIUM — MAGIC_GUARD combo reduced; ability cap at 7.5
+- Gengar Mega: GOD → LEGEND — SHADOW_TAG ability capped at 7.5
+- Blaziken Mega: GOD → LEGEND — SPEED_BOOST ability capped at 6.5
+- Gardevoir Mega: LEGEND → PREMIUM — frail mega cap (Def ≤ 65 + BST ≥ 600); PIVOT+RECOVERY requires Def ≥ 75; -ATE abilities capped at 7.0
+- Sceptile Mega: LEGEND → PREMIUM — LIGHTNING_ROD type-conditional (capped at 4.5 when not Electric-weak)
+- Abomasnow Mega: (partial fix) — SNOW_WARNING mega capped at 5.0; full fix deferred to Phase D
+
+*Undervalued fixes (new combo bonuses and learnset additions):*
+- Kingambit → OU: SUPREME_OVERLORD +0.75 (+0.30 with setup/priority); added Sucker Punch
+- Primarina → OU: LIQUID_VOICE+HYPER_VOICE +0.60; added Hyper Voice + Wish; OU floor
+- Tapu Bulu → OU: added Grassy Glide (triggers GRASSY_SURGE+GLIDE combo)
+- Corviknight → OU: BODY_PRESS+IRON_DEFENSE +0.55; MIRROR_ARMOR +0.25; added moves + OU floor
+- Skeledirge → UU: UNAWARE+TORCH_SONG+recovery floor; added Slack Off
+- Great Tusk → OU: added Stealth Rock (HAZARD+REST combo)
+- Iron Treads → OU: added Stealth Rock + Swords Dance
+- Gouging Fire → Uber: added Dragon Dance; PROTOSYNTHESIS+setup+Atk≥110+BST≥585 floor
+- All Tapus → OU: terrain surge combos already present; Tapu Fini MISTY_SURGE+setup floor
+- Flutter Mane → Uber, Roaring Moon → Uber, Chien-Pao → Uber, Chi-Yu → Uber
+- Iron Bundle → Uber, Urshifu (both) → Uber
+- Rillaboom → OU: added Grassy Glide
+- Regieleki → Uber: SPEED 200+ bonus
+
+*New combo bonuses added to `computeComboBonus`:*
+- PROTOSYNTHESIS/QUARK_DRIVE: +0.45 base (+0.20 if offensive, +0.20 if speed booster)
+- Ruin abilities: BEADS_OF_RUIN +0.50, SWORD_OF_RUIN +0.50, TABLETS_OF_RUIN +0.30, CHAIN_OF_RUIN +0.30
+- SUPREME_OVERLORD: +0.75 (+0.30 with setup or priority)
+- LIQUID_VOICE+HYPER_VOICE: +0.60
+- GOOD_AS_GOLD: +0.35
+- SCRAPPY+Atk≥100: +0.35
+- BODY_PRESS+IRON_DEFENSE: +0.55
+- MIRROR_ARMOR: +0.25
+- UNSEEN_FIST+always-crit: +1.50 (bonusCap raised to 2.0 for UNSEEN_FIST)
+
+**C3 — Weather system ✅**
+Weather abilities previously had zero combo bonus (terrain surges did). Added full weather combo system:
+- DRIZZLE: +0.40 base; +0.35 Thunder/Hurricane (100% acc); +0.20 Water STAB; +0.20 recovery
+- DROUGHT: +0.40 base; +0.30 Solar Beam/Blade (instant); +0.25 Fire STAB
+- SAND_STREAM: +0.30 base; +0.20 Rock type SpDef boost
+- SNOW_WARNING: +0.25 base; +0.30 Blizzard (only if SpA ≥ 100 AND Speed ≥ 80)
+- Weather abilities capped at 7.5 in ability rating (same as terrain surges)
+- Mega DROUGHT/DRIZZLE capped at 4.0 (no Heat Rock / Damp Rock)
+- DRIZZLE/DROUGHT final-evo floor: OU if has recovery/pivot/weather-accuracy move, UU if pure setter (Politoed)
+- SNOW_WARNING+Aurora Veil+Speed≥100 floor: UU (Ninetales Alola)
+- Pelipper learnset: added Roost, Hydro Pump, Thunder, U-Turn
+
+### Known remaining issues (deferred to Phase D)
+- **Abomasnow / Abomasnow Mega**: still slightly over-tiered (UU/OU). Root cause is terrible Grass/Ice defensive typing (6 weaknesses including double Fire). Requires Phase D typing analysis to fix properly.
+- **Kartana**: stays at Uber in our model — justified because in single-player the player doesn't always have Fire-type answers. Its 4× Fire weakness and SpDef 31 are the competitive containment mechanism.
 
 ---
 
-## Phase C — Game-Accurate Learnset Tiering
+## Phase D — Offensive and Defensive Typing Analysis 📋 PLANNED
 
-### C1 — Audit which competitive moves are actually available
+### The problem
 
-**Problem:** The rating system evaluates every move in a pokemon's learnset, including moves from egg moves, event tutors, and cross-gen TMs that are NOT in this game's TM pool. A pokemon may receive credit for `MOVE_BELLY_DRUM`, `MOVE_AQUA_JET`, `MOVE_GRASSY_GLIDE`, `MOVE_BULLET_PUNCH`, or `MOVE_ROOST` when none of these moves can be taught in this ROM.
+The current algorithm treats all pokemon with the same BST equally regardless of their typing. Two pokemon with identical BST 530 — one with Steel/Fairy typing (9 resistances, 2 weaknesses) and one with Grass/Ice typing (7 weaknesses, 1 double weakness) — get the same bstRating contribution. This is clearly wrong.
 
-This inflates ratings for pokemon whose competitive ceiling depends on these moves:
-- **Azumarill**: rated on HUGE_POWER + Aqua Jet potential, but Aqua Jet and Belly Drum are unavailable → correctly NU/WEAK in this game.
-- **Rillaboom**: GRASSY_SURGE combo fires because `MOVE_GRASSY_GLIDE` is in the learnset data, but the move is not in any teachable pool → no real combo.
-- **Corviknight**: credited for Roost and U-turn, neither of which are in the TM pool → vastly over-rated.
-- **Scizor**: TECHNICIAN+priority combo fires, but Bullet Punch is not teachable → combo should not fire.
+**Known broken cases from Phase C:**
+- **Abomasnow Mega (OU, expected NU)**: 6 weaknesses including 4× Fire, Ice/Grass offensive typing is mostly resisted.
+- **Vanilluxe / Aurorus / Amaura**: Ice-type offensive STAB is 9× resisted in practice (Steel, Fire, Water, Ice all resist it); pure Ice defensive typing is one of the worst in the game.
+- **Gigalith**: Rock/Ground defensive typing is terrible (4× Grass, Water, Fighting).
+- Any Ice-type, Bug-type, or Normal-type is structurally disadvantaged in ways BST can't capture.
 
-**Goal:** Tier pokemon based only on moves they can actually learn in this game — level-up learnset + this game's actual TM/HM pool.
+### D1 — Defensive typing score
 
-### C2 — Separate "species learnset" from "game-available learnset"
+**Goal:** Penalize pokemon with many weaknesses, particularly double-weaknesses to common offensive types. Reward pokemon with many resistances and immunities.
 
-**Approach:**
-- C2a. Enumerate the actual TM list available in this game (`include/constants/tms_hms.h`).
-- C2b. In `rating.js`, when computing `allLearnableMoves` for combo detection, filter out any move that is neither in the level-up learnset nor in the game's TM list.
-- C2c. The move rating pass (`rateMoveset`) should continue using the full learnset (to pick the best possible moveset for a trainer to give), but `computeComboBonus` and `hasReliableRecovery` should use the filtered "game-available" set.
+**Algorithm sketch:**
+```
+// Tier offensive threats by how commonly they appear in the meta
+const COMMON_OFFENSIVE_TYPES = {
+  FIRE: 1.5, WATER: 1.4, GROUND: 1.3, FIGHTING: 1.3, ELECTRIC: 1.2,
+  ROCK: 1.1, ICE: 1.0, GRASS: 1.0, PSYCHIC: 0.9, DARK: 0.9, ...
+}
 
-**Why separate the two:** Trainers in this game CAN give pokemon any move from their full learnset via the party editor — so the moveset selection stays broad. But competitive tier depends on what moves a player can actually access, which is TM-restricted.
+defensiveTypingScore(type1, type2):
+  score = 0
+  for each attacking type T:
+    effectiveness = typeChart(T → [type1, type2])
+    if effectiveness == 4: score -= 1.2 * COMMON_OFFENSIVE_TYPES[T]
+    if effectiveness == 2: score -= 0.5 * COMMON_OFFENSIVE_TYPES[T]
+    if effectiveness == 0.5: score += 0.3 * COMMON_OFFENSIVE_TYPES[T]
+    if effectiveness == 0: score += 0.6 * COMMON_OFFENSIVE_TYPES[T]
+  return normalize(score, -5, +5) → (0, 1)
+```
 
-### C3 — Document game-vs-Smogon tier discrepancies
+**Integration:** Apply as a multiplier on the defensive component of bstRating, not on the full bstRating. Penalty should be meaningful but not catastrophic — a bad typing shouldn't drop a high-BST mon by more than ~0.5 tier.
 
-After C2 is implemented, produce a list of pokemon whose tier changes between "full learnset rating" and "game-available learnset rating." This list explains why some pokemon rate lower than their Smogon equivalents and should be referenced in trainer design decisions.
+### D2 — Offensive typing score
 
-**Known cases (pre-C2 research):**
-| Pokemon | Key missing move(s) | Impact |
-|---------|---------------------|--------|
-| Azumarill | Belly Drum, Aqua Jet | WEAK instead of OU |
-| Rillaboom | Grassy Glide | STRONG instead of OU |
-| Corviknight | Roost, U-turn | AVERAGE instead of OU |
-| Scizor | Bullet Punch, Roost | STRONG instead of OU |
-| Tapu Bulu | Grassy Glide | STRONG instead of OU |
-| Annihilape | Drain Punch | STRONG instead of OU |
+**Goal:** Reward STAB combinations that hit many types super-effectively. Penalize STAB types that are commonly resisted (Ice, Bug, Normal/Normal).
 
-### C4 — Steps
+**Algorithm sketch:**
+```
+offensiveTypingScore(type1, type2, learnset):
+  stab_types = [type1] + ([type2] if type2 != None)
+  // Count how many of the 18 types are hit 2× by at least one STAB move
+  super_effective_count = count types T where stab_types.any(s => typeChart(s → T) == 2)
+  // Common resistors: count how many high-BST pokemon commonly resist your STAB
+  coverage_score = super_effective_count / 18
+  return coverage_score
+```
 
-- C4a. Parse `include/constants/tms_hms.h` to extract the full TM list as a Set of move IDs.
-- C4b. In `index.js`, pass the TM set to `ratePokemon` alongside the pokemon data.
-- C4c. In `ratePokemon`, compute `gameAvailableMoves = levelUpMoves ∪ tmMoves` and pass this to `computeComboBonus` instead of `allLearnableMoves`.
-- C4d. Run the pipeline and generate the discrepancy list (see C3).
-- C4e. Review the discrepancy list. Verify that no pokemon that should be OU drops below STRONG due to a missing TM that should be present. Add missing TMs to the game's TM pool if warranted (e.g. if Corviknight without Roost is intentional, accept it; if it's a learnset gap in the source data, patch the TM list).
+**Integration:** Feed into movesRating component as a mild bonus/penalty. Offensive typing is less decisive than defensive typing — a bad offensive type can be compensated by coverage moves.
+
+### D3 — Snow value scaling for Ice types
+
+**Goal:** SNOW_WARNING value should scale with the setter's physical defense. A physically bulky Ice-type (hypothetical) can switch into attacks and set snow repeatedly. A frail Ice-type gets OHKO'd before it can do anything.
+
+```
+if hasAbility('SNOW_WARNING'):
+  physicalBulk = (baseHP * baseDefense) / 1000
+  snowBulkMultiplier = clamp(physicalBulk / 4.0, 0.3, 1.0)
+  SNOW_WARNING_bonus *= snowBulkMultiplier
+```
+
+Abomasnow: HP 90, Def 75 → physicalBulk ≈ 6.75 / 1000... wait, let's use raw: (90 × 75) = 6750. Scale needs tuning. The point is thin Ice-types like Amaura (HP 77, Def 59) get almost no snow bonus; bulkier ones get more.
+
+### D4 — Steps
+
+- D4a. Build a type effectiveness lookup for all 18×18 matchups. Verify against known cases.
+- D4b. Implement `defensiveTypingScore(types)` with the common-attacker weighting.
+- D4c. Implement `offensiveTypingScore(types)` counting super-effective coverage of STAB.
+- D4d. **Analysis pass 1:** Run the full roster. Find the 20 best and 20 worst typing scores for both defensive and offensive. Manually verify they match intuition (Steel/Fairy best defensive, Ice/Rock worst, Fighting/Ground best offensive, Bug/Normal worst).
+- D4e. Integrate into `ratePokemon` — defensive score as a multiplier on defensive BST component, offensive as a mild movesRating modifier.
+- D4f. **Analysis pass 2:** Check which pokemon tiers change. Specifically verify:
+  - Abomasnow Mega drops from OU toward RU/NU
+  - Ferrothorn / Corviknight / Skarmory hold or improve
+  - Scizor / Kingambit / Corviknight are not hurt (Steel is both offensively and defensively excellent)
+  - Ice-types as a class drop slightly but not catastrophically
+- D4g. Tune weights so no mon moves more than ~1 tier from typing alone (typing is one factor, not destiny).
+- D4h. Sign off. Update `smogon_analysis/incorrected_modeled_mons.md` with any resolved cases.
+
+---
+
+## Execution Order
+
+```
+A (✅ DONE) → C (✅ DONE) → B (deferred, start when ready) → D (planned)
+```
+
+Phase B can be started independently of D — they touch different parts of the system.
+Phase D should run before Phase B is finalized (typing score affects absolute rating which B builds on).
+
+Recommended order: **D → B** or **D and B in parallel** (D changes absolute rating; B adds contextual rating on top).
 
 ---
 
@@ -342,7 +450,7 @@ After C2 is implemented, produce a list of pokemon whose tier changes between "f
 | File | Changes |
 |------|---------|
 | `puppedjs/constants.js` | New tier constants, level zone constants |
-| `puppedjs/rating.js` | Eviolite bonus, coverage metrics, combo bonuses, contextual rating functions |
+| `puppedjs/rating.js` | Eviolite bonus, coverage metrics, combo bonuses, contextual rating functions, typing scores |
 | `puppedjs/writer.js` | `contextualTier` POKEDEF field, trainer zone logic |
 | `puppedjs/index.js` | Contextual rating pre-computation pass |
 | `COMBO_NOTES.md` (new) | Research output from A5 |
