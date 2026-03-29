@@ -41,4 +41,4 @@ Committing them pollutes history with randomizer mutations and corrupts base dat
 
 **Phase C note:** The default pipeline (`analyze.js` / `analyze_no_rebalance.js`) filters teachable moves to only those in this game's actual TM pool (`include/constants/tms_hms.h`). The `--all-tms` variant bypasses that filter to show theoretical maximums. Compare the two outputs to identify pokemon that need a specific TM added to reach their expected tier.
 
-**Important:** `analyze_no_rebalance.js` and `analyze_no_rebalance_all_tms.js` both run `git restore src/` at the end. Any uncommitted changes to `src/` files (learnsets, base stats, etc.) **will be wiped**. Commit `src/` changes before running either of these scripts.
+**Important:** All three scripts run `git restore src/ include/` at the end. Any uncommitted changes to `src/` or `include/` files (learnsets, base stats, TM pool, etc.) **will be wiped**. Commit those changes before running any of these scripts.

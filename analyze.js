@@ -38,6 +38,6 @@ if (isDebug) indexArgs.push('--debug');
 run('node', indexArgs);
 
 // Step 2: Reset all C/H source files — leaves puppedjs/output/ untouched (it's git-ignored)
-run('git', ['restore', 'src/']);
+run('git', ['restore', 'src/', 'include/']);
 
 console.log('\nDone. Open puppedjs/output/out.html to review results.');
