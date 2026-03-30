@@ -1153,13 +1153,13 @@ const roxanneBag = () => [
     sample([...choice104Gem]),
     sample([...choice104Berry]),
     sample([...choice104TMs]),
+    tmItem(39),
 ];
 
 const rusturfGruntBag = () => [
     ...roxanneBag(),
     'Rocky Helmet',
     'Black Sludge',
-    tmItem(39),   // was 'TM_ROCK_TOMB' (Roxanne's gym TM)
 ];
 
 const rivalRustboroBag = () => [
@@ -1172,12 +1172,12 @@ const brawlyBag = () => [
     ...rivalRustboroBag(),
     sample([...choicesDewfordTMs]),
     'Life Orb',
+    tmItem(8),
 ];
 
 const stevenBag = () => [
     ...brawlyBag(),
-    tmItem(8),   // was 'TM_BULK_UP' (Brawly's gym TM)
-    tmItem(47),  // was 'TM_STEEL_WING' (Steven's TM)
+    tmItem(47),  // Steven's TM
 ];
 
 const slateportGruntsBag = () => [
@@ -1209,7 +1209,7 @@ const wattsonBag = () => [
     sample(choiceAishaGems),
     'Light Clay',
     'Assault Vest',
-    tmItem(34),   // was 'TM_SHOCK_WAVE' (Wattson's gym TM)
+    tmItem(34),   // Wattson's gym TM
     'TM_ROCK_SMASH',  // HM, not randomized
 ];
 
@@ -1223,7 +1223,7 @@ const flanneryBag = () => [
     ...magmaChimneyBag(),
     sample(choiceNobTMs),
     sample([...choiceClaudeTMs]),
-    tmItem(50),   // was 'TM_OVERHEAT' (Flannery's gym TM)
+    tmItem(50),   // Flannery's gym TM
     'TM_STRENGTH',  // HM, not randomized
     'White Herb',
     'Power Herb',
@@ -1235,7 +1235,7 @@ const normanBag = () => [
     sample(['Yache Berry', 'Chilan Berry', 'Coba Berry']),
     sample([...choiceHeidiItems]),
     'Safety Goggles',
-    tmItem(42),   // was 'TM_FACADE' (Norman's gym TM)
+    tmItem(42),   // Norman's gym TM
     'TM_SURF',    // HM, not randomized
 ];
 
@@ -1254,7 +1254,7 @@ const rival119Bag = () => [
 const winonaBag = () => [
     ...rival119Bag(),
     sample([...choiceClarissaItems]),
-    tmItem(40),   // was 'TM_AERIAL_ACE' (Winona's gym TM)
+    tmItem(40),   // Winona's gym TM
 ];
 
 const wallyBag2 = () => [
@@ -1270,7 +1270,7 @@ const tateAndLizaBag = () => [
     ...wallyBag2(),
     sample([...choiceIsabellaItem]),
     sample([...choiceGraceTMs]),
-    'TM_CALM_MIND',
+    tmItem(85),   // Tate & Liza's gym TM
 ];
 
 const spaceCenterBag = () => [
@@ -1281,7 +1281,8 @@ const spaceCenterBag = () => [
 
 const juanBag = () => [
     ...spaceCenterBag(),
-    'TM_WATERFALL'
+    tmItem(91),   // Juan's gym TM (randomized)
+    'TM_WATERFALL',   // HM — not randomized
 ];
 
 const trainersData = [
@@ -1611,8 +1612,7 @@ const trainersData = [
         class: 'Lass',
         reward: [...choice104TMs],
         level: 10,
-        bag: [...rival103Bag],
-        tms: [...choice104TMs],
+        bag: [...rival103Bag, ...choice104TMs],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
             ...generatePokemonsWithDefinition(POKEDEF_ZU, 4),
@@ -1663,10 +1663,9 @@ const trainersData = [
         id: 'TRAINER_ROXANNE_1',
         level: 10,
         class: 'Leader Roxanne',
-        reward: ['GYM_REWARD_1'],
+        reward: ['GYM_REWARD_1', tmItem(39)],
         isBoss: true,
         bag: roxanneBag(),
-        tms: ['MOVE_ROCK_TOMB', 'MOVE_ROCK_TOMB'],
         team: [
             {
                 ...POKEDEF_NU,
@@ -1704,8 +1703,7 @@ const trainersData = [
         level: 13,
         class: 'Bug Catcher',
         reward: ['SPECIES_DITTO'],
-        bag: getSampleItemsFromArray(roxanneBag(), 3),
-        tms: getSampleItemsFromArray(choice104TMs, 1),
+        bag: [...getSampleItemsFromArray(roxanneBag(), 3), ...getSampleItemsFromArray(choice104TMs, 1)],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -1719,8 +1717,7 @@ const trainersData = [
         class: 'Youngster',
         reward: ['Ability Patch'],
         level: 13,
-        bag: getSampleItemsFromArray(roxanneBag(), 3),
-        tms: getSampleItemsFromArray(choice104TMs, 1),
+        bag: [...getSampleItemsFromArray(roxanneBag(), 3), ...getSampleItemsFromArray(choice104TMs, 1)],
         team: generatePokemonsWithDefinition(POKEDEF_PU, 6),
     },
     {
@@ -1728,8 +1725,7 @@ const trainersData = [
         class: 'Youngster',
         reward: ['Rocky Helmet'],
         level: 13,
-        bag: [...getSampleItemsFromArray(roxanneBag(), 2), 'Rocky Helmet'],
-        tms: getSampleItemsFromArray(choice104TMs, 1),
+        bag: [...getSampleItemsFromArray(roxanneBag(), 2), 'Rocky Helmet', ...getSampleItemsFromArray(choice104TMs, 1)],
         team: generatePokemonsWithDefinition(POKEDEF_PU, 6),
     },
     {
@@ -1737,8 +1733,7 @@ const trainersData = [
         class: 'Hiker',
         reward: ['Black Sludge'],
         level: 13,
-        bag: getSampleItemsFromArray(roxanneBag(), 2),
-        tms: getSampleItemsFromArray(choice104TMs, 1),
+        bag: [...getSampleItemsFromArray(roxanneBag(), 2), ...getSampleItemsFromArray(choice104TMs, 1)],
         team: [
             {
                 ...POKEDEF_PU,
@@ -1976,8 +1971,7 @@ const trainersData = [
         class: 'Bird Keeper',
         reward: [...choicesDewfordTMs],
         level: 16,
-        bag: getSampleItemsFromArray(rivalRustboroBag(), 1),
-        tms: ['MOVE_BRICK_BREAK', 'MOVE_SHADOW_BALL', 'MOVE_PSYCHIC'],
+        bag: [...getSampleItemsFromArray(rivalRustboroBag(), 1), ...choicesDewfordTMs],
         team: [
             {
                 ...POKEDEF_PU,
@@ -1999,10 +1993,9 @@ const trainersData = [
         id: 'TRAINER_BRAWLY_1',
         class: 'Leader Brawly',
         level: 16,
-        reward: ['GYM_REWARD_2'],
+        reward: ['GYM_REWARD_2', tmItem(8)],
         isBoss: true,
         bag: [...brawlyBag(), 'Fighting Gem'],
-        tms: ['MOVE_BULK_UP', 'MOVE_BULK_UP'],
         bannedItems: ['Flame Orb', 'Toxic Orb'],
         team: [
             gymIsChangedType[1] ? {
@@ -2058,7 +2051,6 @@ const trainersData = [
         level: 19,
         isBoss: true,
         bag: [...stevenBag(), 'Steel Gem'],
-        tms: ['MOVE_STEEL_WING', 'MOVE_STEEL_WING'],
         team: [
             {
                 ...POKEDEF_NU,
@@ -2662,11 +2654,10 @@ const trainersData = [
         id: 'TRAINER_WATTSON_1',
         class: 'Leader Wattson',
         isBoss: true,
-        reward: ['GYM_REWARD_3'],
+        reward: ['GYM_REWARD_3', tmItem(34)],
         level: 26,
         preventShuffle: gymIsChangedType[2],
         bag: [...wattsonBag(), 'Electric Gem'],
-        tms: ['MOVE_SHOCK_WAVE', 'MOVE_SHOCK_WAVE'],
         bannedItems: ['Electric Seed', 'Psychic Seed', 'Misty Seed', 'Grassy Seed'],
         team: [
             gymIsChangedType[2] ? {
@@ -3195,10 +3186,9 @@ const trainersData = [
         id: 'TRAINER_FLANNERY_1',
         class: 'Leader Flannery',
         level: 33,
-        reward: ['GYM_REWARD_4', 'Access to Desert Ruins'],
+        reward: ['GYM_REWARD_4', 'Access to Desert Ruins', tmItem(50)],
         isBoss: true,
         bag: [...flanneryBag(), 'Fire Gem'],
-        tms: ['MOVE_OVERHEAT', 'MOVE_OVERHEAT'],
         team: [
             gymIsChangedType[3] ? {
                 ...POKEDEF_RU,
@@ -3372,9 +3362,8 @@ const trainersData = [
         class: 'Leader Norman',
         level: 36,
         isBoss: true,
-        reward: ['GYM_REWARD_5', 'Access to Island Cave', 'Access to New Mauville'],
+        reward: ['GYM_REWARD_5', 'Access to Island Cave', 'Access to New Mauville', tmItem(42)],
         bag: [...normanBag(), 'Normal Gem'],
-        tms: ['MOVE_FACADE', 'MOVE_FACADE'],
         bannedItems: gymIsChangedType[4] ? [] : ['Assault Vest', 'Flame Orb', 'Toxic Orb'],
         team: [
             gymIsChangedType[4] ? {
@@ -3819,9 +3808,8 @@ const trainersData = [
         class: 'Leader Winona',
         level: 43,
         isBoss: true,
-        reward: ['GYM_REWARD_6', 'Access to Ancient Tomb'],
+        reward: ['GYM_REWARD_6', 'Access to Ancient Tomb', tmItem(40)],
         bag: [...winonaBag(), 'Flying Gem'],
-        tms: ['MOVE_AERIAL_ACE', 'MOVE_AERIAL_ACE'],
         team: [
             {
                 ...POKEDEF_UU,
@@ -4474,10 +4462,9 @@ const trainersData = [
         class: 'Leader Tate And Liza',
         level: 53,
         isBoss: true,
-        reward: ['GYM_REWARD_7', 'Access to Shoal Cave'],
+        reward: ['GYM_REWARD_7', 'Access to Shoal Cave', tmItem(85)],
         preventShuffle: true,
         bag: [...tateAndLizaBag(), 'Psychic Gem'],
-        tms: ['MOVE_CALM_MIND', 'MOVE_CALM_MIND'],
         bannedItems: gymIsChangedType[6] ? ['Focus Sash', 'Room Service'] : ['Focus Sash', 'Room Service', 'Light Clay'],
         team: [
             {
@@ -5097,9 +5084,8 @@ const trainersData = [
         class: 'Leader Juan',
         level: 61,
         isBoss: true,
-        reward: ['GYM_REWARD_8'],
+        reward: ['GYM_REWARD_8', tmItem(91)],
         bag: [...juanBag(), 'Water Gem'],
-        tms: ['MOVE_WATERFALL', 'MOVE_WATER_PULSE'],
         team: [
             gymIsChangedType[7] ? {
                 ...POKEDEF_UU,
