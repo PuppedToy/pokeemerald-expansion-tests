@@ -1332,9 +1332,8 @@ const trainersData = [
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_ZIGZAGOON'],
             },
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 4),
             { ...POKEDEF_MAGIKARP },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 3),
-            { ...POKEDEF_PU_LC },
         ]
     },
     {
@@ -1347,9 +1346,8 @@ const trainersData = [
                 ...POKEDEF_PU_LC,
                 item: 'Oran Berry',
             },
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 4),
             { ...POKEDEF_MAGIKARP },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 3),
-            { ...POKEDEF_PU_LC },
         ],
     },
     {
@@ -1362,9 +1360,8 @@ const trainersData = [
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_SMEARGLE'],
             },
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 4),
             { ...POKEDEF_MAGIKARP },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 3),
-            { ...POKEDEF_PU_LC },
         ]
     },
     // Route 103
@@ -1443,8 +1440,7 @@ const trainersData = [
                 encounterIds: ['SPECIES_WURMPLE'],
                 item: 'Oran Berry',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_PU_LC, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
         ],
     },
     {
@@ -1458,8 +1454,7 @@ const trainersData = [
                 encounterIds: ['SPECIES_WINGULL'],
                 item: 'Oran Berry',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_PU_LC, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
         ]
     },
     {
@@ -1470,11 +1465,10 @@ const trainersData = [
         bag: [...rival103Bag],
         team: [
             {
-                ...POKEDEF_PU_LC,
+                ...POKEDEF_ZU_LC,
                 item: 'Expert Belt',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_PU_LC, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
         ]
     },
     // Route 103
@@ -1489,8 +1483,7 @@ const trainersData = [
                 encounterIds: ['SPECIES_SURSKIT'],
                 item: 'Oran Berry',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_PU_LC, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
         ]
     },
     // Route 104
@@ -1505,8 +1498,7 @@ const trainersData = [
                 encounterIds: ['SPECIES_WEEDLE'],
                 item: 'Oran Berry',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_PU_LC, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
         ]
     },
     {
@@ -1520,8 +1512,7 @@ const trainersData = [
                 encounterIds: ['SPECIES_GEODUDE'],
                 item: 'Oran Berry',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_PU_LC, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
         ]
     },
     {
@@ -1536,8 +1527,7 @@ const trainersData = [
                 evoType: [EVO_TYPE_LC],
                 item: 'Eviolite',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_PU_LC, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
         ]
     },
     // Petalburg Woods
@@ -1548,20 +1538,8 @@ const trainersData = [
         level: 9,
         bag: [...woodsPlatesChoice],
         team: [
-            {
-                ...POKEDEF_ZU_LC,
-                type: [POKEMON_TYPE_GRASS],
-            },
-            {
-                ...POKEDEF_ZU_LC,
-                type: [POKEMON_TYPE_WATER],
-            },
-            {
-                ...POKEDEF_ZU_LC,
-                type: [POKEMON_TYPE_GROUND],
-            },
-            { ...POKEDEF_ZU_LC },
-            ...generatePokemonsWithDefinition(POKEDEF_PU_LC, 2),
+            { ...POKEDEF_PU_LC },
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
         ],
     },
     {
@@ -1573,51 +1551,43 @@ const trainersData = [
         bag: [...petalwoodGruntBag],
         team: [
             {
-                ...POKEDEF_NU,
+                ...POKEDEF_PU_LC,
                 exactTypes: [aquaTeamTypes[0], aquaTeamTypes[1]],
                 fallback: [
                     {
-                        ...POKEDEF_NU,
+                        ...POKEDEF_PU_LC,
                         exactTypes: [aquaTeamTypes[0]],
                         type: [...aquaTeamTypes],
                     },
                     {
-                        ...POKEDEF_NU,
+                        ...POKEDEF_PU_LC,
                         type: [aquaTeamTypes[0]],
                     },
                     {
-                        ...POKEDEF_NU,
+                        ...POKEDEF_PU_LC,
                         type: [...aquaTeamTypes],
-                    },
-                    {
-                        ...POKEDEF_PU,
-                        exactTypes: [aquaTeamTypes[0]],
-                    },
-                    {
-                        ...POKEDEF_PU,
-                        type: [aquaTeamTypes[0]],
                     },
                 ]
             },
             {
-                ...POKEDEF_PU,
+                ...POKEDEF_PU_LC,
+                type: [aquaTeamTypes[0]],
+            },
+            {
+                ...POKEDEF_PU_LC,
                 type: [aquaTeamTypes[1]],
             },
             {
-                ...POKEDEF_PU,
+                ...POKEDEF_ZU_LC,
                 type: [aquaTeamTypes[2]],
             },
             {
-                ...POKEDEF_PU,
+                ...POKEDEF_ZU_LC,
                 type: [aquaTeamTypes[3]],
             },
             {
-                ...POKEDEF_PU,
+                ...POKEDEF_ZU_LC,
                 type: [aquaTeamTypes[4]],
-            },
-            {
-                ...POKEDEF_PU,
-                type: [aquaTeamTypes[0]],
             },
         ],
     },
@@ -1632,8 +1602,7 @@ const trainersData = [
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_PATRAT'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
         ],
     },
     {
@@ -1647,8 +1616,7 @@ const trainersData = [
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_CATERPIE'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
         ],
     },
     // Route 104 again
@@ -1659,30 +1627,8 @@ const trainersData = [
         level: 10,
         bag: [...choice104Berry],
         team: [
-            {
-                ...POKEDEF_ZU,
-                weakToTypes: [POKEMON_TYPE_WATER],
-            },
-            {
-                ...POKEDEF_ZU,
-                weakToTypes: [POKEMON_TYPE_ROCK],
-            },
-            {
-                ...POKEDEF_ZU,
-                weakToTypes: [POKEMON_TYPE_FIGHTING],
-            },
-            {
-                ...POKEDEF_ZU,
-                weakToTypes: [POKEMON_TYPE_WATER],
-            },
-            {
-                ...POKEDEF_PU,
-                weakToTypes: [POKEMON_TYPE_ROCK],
-            },
-            {
-                ...POKEDEF_PU,
-                weakToTypes: [POKEMON_TYPE_FIGHTING],
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
         ]
     },
     {
@@ -1692,31 +1638,9 @@ const trainersData = [
         level: 10,
         bag: getSampleItemsFromArray([...choice104Gem], 2),
         team: [
-            {
-                ...POKEDEF_ZU,
-                type: [POKEMON_TYPE_WATER],
-            },
-            {
-                ...POKEDEF_ZU,
-                type: [POKEMON_TYPE_FLYING],
-            },
-            {
-                ...POKEDEF_ZU,
-                type: [POKEMON_TYPE_DARK],
-            },
-            {
-                ...POKEDEF_ZU,
-                type: [POKEMON_TYPE_WATER],
-            },
-            {
-                ...POKEDEF_PU,
-                type: [POKEMON_TYPE_FLYING],
-            },
-            {
-                ...POKEDEF_PU,
-                type: [POKEMON_TYPE_DARK],
-            },
-        ],
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
+        ]
     },
     {
         id: 'TRAINER_HALEY_1',
@@ -1726,9 +1650,9 @@ const trainersData = [
         bag: [...rival103Bag],
         tms: [...choice104TMs],
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 4),
             ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
-        ],
+            ...generatePokemonsWithDefinition(POKEDEF_ZU, 4),
+        ]
     },
     {
         id: 'TRAINER_TIMOTHY_1',
@@ -1741,8 +1665,7 @@ const trainersData = [
                 encounterIds: ['SPECIES_DELIBIRD'],
                 item: 'Oran Berry',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
         ],
     },
     {
@@ -1757,8 +1680,7 @@ const trainersData = [
                 encounterIds: ['SPECIES_SANDSHREW'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
         ],
     },
     {
@@ -1768,8 +1690,8 @@ const trainersData = [
         level: 10,
         bag: [...rival103Bag],
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 4),
             ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU, 4),
         ],
     },
     // Rustboro City
@@ -1782,16 +1704,16 @@ const trainersData = [
         bag: roxanneBag(),
         tms: ['MOVE_ROCK_TOMB', 'MOVE_ROCK_TOMB'],
         team: [
-            gymIsChangedType[0] ? {
-                ...POKEDEF_NU,
-                type: [gymMainTypes[0]],
-            } : {
-                specificIfTier: 'SPECIES_NOSEPASS',
+            {
                 ...POKEDEF_NU,
                 type: [gymMainTypes[0]],
             },
-            {
-                ...POKEDEF_NU,
+            gymIsChangedType[0] ? {
+                ...POKEDEF_PU,
+                type: [gymMainTypes[0]],
+            } : {
+                specificIfTier: 'SPECIES_NOSEPASS',
+                ...POKEDEF_PU,
                 type: [gymMainTypes[0]],
             },
             {
