@@ -498,6 +498,24 @@ function randomizeItems() {
     updateScripts(a);
     updateScriptMenu(a);
     console.log('[Item Randomizer] Done.');
+
+    // Return display-name assignments for use in trainer generation
+    const dn = (key) => a[key].map(itemDisplayName);
+    return {
+        route102Ball:      dn('route102Ball'),
+        petalburgPlates:   dn('petalburgPlates'),
+        route104Gems:      dn('route104Gems'),
+        route104Berries:   dn('route104Berries'),
+        route111Items:     dn('route111Items'),
+        route111Berries:   dn('route111Berries'),
+        route116OrbItems:  dn('route116OrbItems'),
+        route116Items:     dn('route116Items'),
+        route117Gems:      dn('route117Gems'),
+        route118Items:     dn('route118Items'),
+        route120Items:     dn('route120Items'),
+        route121Berries:   dn('route121Berries'),
+        route125Items:     dn('route125Items'),
+    };
 }
 
 module.exports = { randomizeItems };

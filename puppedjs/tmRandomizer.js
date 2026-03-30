@@ -139,6 +139,8 @@ async function patchScriptMenu(tmList) {
 
 async function randomizeTMs() {
     const tmList = buildTMList();
+    // tmList is returned for use in trainer generation:
+    // tmList[n-1] = move name (without MOVE_ prefix) for TM slot n (1-based)
     const foreachTMBody = formatForeachTM(tmList);
 
     const content =
@@ -169,6 +171,8 @@ ${foreachTMBody}
     console.log('[TM Randomizer] Wrote randomized FOREACH_TM to tms_hms.h');
 
     await patchScriptMenu(tmList);
+
+    return tmList;
 }
 
 module.exports = { randomizeTMs };

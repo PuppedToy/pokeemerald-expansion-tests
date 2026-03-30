@@ -3,7 +3,6 @@ const path = require('path');
 
 const wild = require('./wild.js');
 const trainers = require('./trainers.js');
-const { trainersData } = trainers;
 const {
     EVO_TYPE_LC,
     EVO_TYPE_NFE,
@@ -237,10 +236,12 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     pokemonList = pokemonList.filter(poke => !bannedSpeciesForPicking.includes(poke.id));
 
     console.log('Randomizing TMs...');
-    await randomizeTMs();
+    const tmList = await randomizeTMs();
 
     console.log('Randomizing items...');
-    randomizeItems();
+    const itemAssignments = randomizeItems();
+
+    const trainersData = trainers.getTrainersData(itemAssignments, tmList);
 
     console.log('Writing pokemon buff / nerfs to files...');
     // Save pokemon buffed / nerfed versions

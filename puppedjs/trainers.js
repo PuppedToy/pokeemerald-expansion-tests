@@ -1094,33 +1094,59 @@ const rival103Bag = [
     'Oran Berry',
 ];
 
-const petalwoodGruntBag = [
-    ...rival103Bag,
-    'Expert Belt',
-    'Eviolite',
-    'Splash Plate',
-];
+function getTrainersData(itemAssignments, tmList) {
+    // Pool-derived item arrays (display names from itemRandomizer)
+    const route102BallItems      = itemAssignments.route102Ball;
+    const petalburgPlateItems    = itemAssignments.petalburgPlates;
+    const route104GemItems       = itemAssignments.route104Gems;
+    const route104BerryItems     = itemAssignments.route104Berries;
+    const route111ItemItems      = itemAssignments.route111Items;
+    const route111BerryItems     = itemAssignments.route111Berries;
+    const route116OrbPoolItem    = itemAssignments.route116OrbItems[2];
+    const route116PoolItems      = itemAssignments.route116Items.slice(0, 2);
+    const route117GemItems       = itemAssignments.route117Gems;
+    const route118ItemItems      = itemAssignments.route118Items;
+    const route120ItemItems      = itemAssignments.route120Items;
+    const route121BerryItems     = itemAssignments.route121Berries;
+    const route125ItemItems      = itemAssignments.route125Items;
 
-const woodsPlatesChoice = [
-    'Meadow Plate',
-    'Splash Plate',
-    'Earth Plate'
-];
+    // TM helper: tmItem(n) → 'TM_MOVENAME' for TM slot n (1-based)
+    const tmItem = (n) => `TM_${tmList[n - 1]}`;
 
-const choice104Berry = ['Charti Berry', 'Chople Berry', 'Passho Berry'];
-const choice104Gem = ['Water Gem', 'Flying Gem', 'Dark Gem'];
-const choice104TMs = [
-    'TM_WATER_PULSE',
-    'TM_BULLET_SEED',
-    'TM_DIG',
-];
+    // Pool-derived choice arrays (replace old hardcoded versions below)
+    const woodsPlatesChoice    = petalburgPlateItems;
+    const choice104Berry       = route104BerryItems;
+    const choice104Gem         = route104GemItems;
+    const choice104TMs         = [tmItem(5), tmItem(6), tmItem(7)];
+    const choicesDewfordTMs    = [tmItem(4), tmItem(3), tmItem(2)];
+    const choice110TMs         = [tmItem(63), tmItem(64), tmItem(62)];
+    const choiceMelinaBerries  = route111BerryItems;
+    const choiceAishaGems      = route117GemItems;
+    const choiceNobTMs         = [tmItem(80), tmItem(79), tmItem(81)];
+    const choiceClaudeTMs      = [tmItem(12), tmItem(13), tmItem(15), tmItem(14)];
+    const choiceChesterTMs     = [tmItem(34), tmItem(33), tmItem(35)];
+    const choiceTammyTMs       = [tmItem(82), tmItem(83), tmItem(84)];
+    const choiceGraceTMs       = [tmItem(36), tmItem(37), tmItem(38)];
+    const choiceHeidiItems     = [route111ItemItems[0], route111ItemItems[1], 'Custap Berry'];
+    const choiceWadeBerries    = route118ItemItems;
+    const choiceClarissaItems  = route120ItemItems;
+    const choiceCristinBerries = route121BerryItems;
+    const choicePresleyItems   = ['Weakness Policy', 'Eject Button', route125ItemItems[2]];
+    const choiceJosephSeeds    = ['Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed'];
 
-const bagAfterWoodGrunt = () => [
-    'Oran Berry',
-    'Expert Belt',
-    'Eviolite',
-    sample([...woodsPlatesChoice]),    
-];
+    const petalwoodGruntBag = [
+        ...rival103Bag,
+        route102BallItems[2],   // was 'Expert Belt'
+        'Eviolite',
+        petalburgPlateItems[0], // was 'Splash Plate'
+    ];
+
+    const bagAfterWoodGrunt = () => [
+        'Oran Berry',
+        route102BallItems[2],   // was 'Expert Belt'
+        'Eviolite',
+        sample([...woodsPlatesChoice]),
+    ];
 
 const roxanneBag = () => [
     ...bagAfterWoodGrunt(),
@@ -1133,19 +1159,13 @@ const rusturfGruntBag = () => [
     ...roxanneBag(),
     'Rocky Helmet',
     'Black Sludge',
-    'TM_ROCK_TOMB',
+    tmItem(39),   // was 'TM_ROCK_TOMB' (Roxanne's gym TM)
 ];
 
 const rivalRustboroBag = () => [
     ...rusturfGruntBag(),
-    sample(['Toxic Orb', 'Flame Orb']),
-    sample(['Big Root', 'Punching Glove', 'TM_GIGA_DRAIN']),
-];
-
-const choicesDewfordTMs = [
-    'TM_BRICK_BREAK',
-    'TM_SHADOW_BALL',
-    'TM_PSYCHIC',
+    sample(['Toxic Orb', 'Flame Orb', route116OrbPoolItem]),
+    sample([...route116PoolItems, tmItem(65)]),
 ];
 
 const brawlyBag = () => [
@@ -1156,8 +1176,8 @@ const brawlyBag = () => [
 
 const stevenBag = () => [
     ...brawlyBag(),
-    'TM_BULK_UP',
-    'TM_STEEL_WING',
+    tmItem(8),   // was 'TM_BULK_UP' (Brawly's gym TM)
+    tmItem(47),  // was 'TM_STEEL_WING' (Steven's TM)
 ];
 
 const slateportGruntsBag = () => [
@@ -1169,21 +1189,11 @@ const slateportGruntsBag = () => [
     // 'Icy Rock',
 ];
 
-const choice110TMs = [
-    'TM_DRAGON_CLAW',
-    'TM_EARTHQUAKE',
-    'TM_FOCUS_PUNCH',
-];
-
 const rivalRoute110Bag = () => [
     ...slateportGruntsBag(),
     sample(choice110TMs),
     'Air Balloon',
     // 'Terrain Extender',
-];
-
-const choiceJosephSeeds = [
-    'Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed'
 ];
 
 const wallyBag = () => [
@@ -1192,22 +1202,15 @@ const wallyBag = () => [
     'Lum Berry',
 ];
 
-const choiceMelinaBerries = [
-    'Wacan Berry',
-    'Occa Berry',
-    'Shuca Berry',
-];
-const choiceAishaGems = ['Fire Gem', 'Ground Gem', 'Fighting Gem'];
-
 const wattsonBag = () => [
     ...wallyBag(),
-    sample(['TM_REFLECT', 'TM_LIGHT_SCREEN']),
+    sample([tmItem(77), tmItem(76)]),  // barrier TMs (Route 117)
     sample(choiceMelinaBerries),
     sample(choiceAishaGems),
     'Light Clay',
     'Assault Vest',
-    'TM_SHOCK_WAVE',
-    'TM_ROCK_SMASH',
+    tmItem(34),   // was 'TM_SHOCK_WAVE' (Wattson's gym TM)
+    'TM_ROCK_SMASH',  // HM, not randomized
 ];
 
 const magmaChimneyBag = () => [
@@ -1216,24 +1219,15 @@ const magmaChimneyBag = () => [
     'Sitrus Berry',
 ];
 
-const choiceNobTMs = ['TM_SOLAR_BEAM', 'TM_HYPER_BEAM', 'TM_SLUDGE_BOMB'];
-const choiceClaudeTMs = ['TM_TAUNT', 'TM_TORMENT', 'TM_SKILL_SWAP', 'TM_SNATCH'];
-
 const flanneryBag = () => [
     ...magmaChimneyBag(),
     sample(choiceNobTMs),
     sample([...choiceClaudeTMs]),
-    'TM_OVERHEAT',
-    'TM_STRENGTH',
+    tmItem(50),   // was 'TM_OVERHEAT' (Flannery's gym TM)
+    'TM_STRENGTH',  // HM, not randomized
     'White Herb',
     'Power Herb',
     'Shell Bell',
-];
-
-const choiceHeidiItems = [
-    'Throat Spray',
-    'Eject Pack',
-    'Custap Berry',
 ];
 
 const normanBag = () => [
@@ -1241,21 +1235,8 @@ const normanBag = () => [
     sample(['Yache Berry', 'Chilan Berry', 'Coba Berry']),
     sample([...choiceHeidiItems]),
     'Safety Goggles',
-    'TM_FACADE',
-    'TM_SURF',
-];
-
-const choiceWadeBerries = [
-    'Kee Berry',
-    'Maranga Berry',
-    'Rowap Berry',
-    'Jaboca Berry',
-];
-
-const choiceChesterTMs = [
-    'TM_THUNDERBOLT',
-    'TM_ICE_BEAM',
-    'TM_FLAMETHROWER',
+    tmItem(42),   // was 'TM_FACADE' (Norman's gym TM)
+    'TM_SURF',    // HM, not randomized
 ];
 
 const shellyBag = () => [
@@ -1270,25 +1251,11 @@ const rival119Bag = () => [
     'Leftovers',
 ];
 
-const choiceClarissaItems = [
-    'Mirror Herb',
-    'Adrenaline Orb',
-    'Red Card',
-];
-
 const winonaBag = () => [
     ...rival119Bag(),
     sample([...choiceClarissaItems]),
-    'TM_AERIAL_ACE',
+    tmItem(40),   // was 'TM_AERIAL_ACE' (Winona's gym TM)
 ];
-
-const choiceTammyTMs = [
-    'TM_TOXIC',
-    'TM_PROTECT',
-    'TM_REST',
-];
-
-const choiceCristinBerries = ['Payapa Berry', 'Colbur Berry', 'Tanga Berry'];
 
 const wallyBag2 = () => [
     ...winonaBag(),
@@ -1298,7 +1265,6 @@ const wallyBag2 = () => [
 ];
 
 const choiceIsabellaItem = ['Choice Band', 'Choice Scarf', 'Choice Specs'];
-const choiceGraceTMs = ['TM_BLIZZARD', 'TM_THUNDER', 'TM_FIRE_BLAST'];
 
 const tateAndLizaBag = () => [
     ...wallyBag2(),
@@ -1306,8 +1272,6 @@ const tateAndLizaBag = () => [
     sample([...choiceGraceTMs]),
     'TM_CALM_MIND',
 ];
-
-const choicePresleyItems = ['Weakness Policy', 'Eject Button', 'Leppa Berry'];
 
 const spaceCenterBag = () => [
     ...tateAndLizaBag(),
@@ -1460,13 +1424,13 @@ const trainersData = [
     {
         id: 'TRAINER_TIANA',
         class: 'Lass',
-        reward: ['Expert Belt'],
+        reward: [...route102BallItems],
         level: 9,
         bag: [...rival103Bag],
         team: [
             {
                 ...POKEDEF_ZU_LC,
-                item: 'Expert Belt',
+                item: route102BallItems[2],
             },
             ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
         ]
@@ -1787,7 +1751,7 @@ const trainersData = [
     {
         id: 'TRAINER_CLARK',
         class: 'Hiker',
-        reward: ['Punching Glove', 'Big Root', 'TM_GIGA_DRAIN'],
+        reward: [...route116PoolItems, tmItem(65)],
         level: 13,
         team: [
             {
@@ -1884,7 +1848,7 @@ const trainersData = [
     {
         id: 'TRAINER_JERRY_1',
         class: 'School Kid M',
-        reward: ['Flame Orb', 'Toxic Orb', 'Sticky Barb'],
+        reward: ['Flame Orb', 'Toxic Orb', route116OrbPoolItem],
         level: 14,
         bag: getSampleItemsFromArray(rusturfGruntBag(), 1),
         team: [
@@ -5609,8 +5573,11 @@ const trainersData = [
     },
 ];
 
+    return trainersData;
+}
+
 module.exports = {
     file: trainersFile,
     partnersFile,
-    trainersData,
+    getTrainersData,
 };
