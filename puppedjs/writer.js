@@ -343,74 +343,53 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         addToFoundMegaEvosIfHasMegaEvo(starter);
     });
 
-    let premiumLCPokes = pokemonList.filter(poke => {
+    // Extra slot 1: 1 LC-of-3 that evolves into an OU mon
+    let ouLCPokes = pokemonList.filter(poke => {
         return poke.evolutionData.type === EVO_TYPE_LC_OF_3
             && poke.evolutionData.isLC
             && poke.rating.bestEvoTier === TIER_OU
             && isSubWeakTier(poke.rating.tier)
             && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
     });
-    if (premiumLCPokes.length <= 0) {
-        console.warn('No premium 3-evo-LC pokemon found for extra starters, using premium LC instead.');
-        premiumLCPokes = pokemonList.filter(poke => {
+    if (ouLCPokes.length <= 0) {
+        console.warn('No OU 3-evo-LC pokemon found for extra starters, loosening to any LC.');
+        ouLCPokes = pokemonList.filter(poke => {
             return poke.evolutionData.isLC
-                && (poke.rating.bestEvoTier === TIER_OU)
+                && poke.rating.bestEvoTier === TIER_OU
                 && isSubWeakTier(poke.rating.tier)
                 && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
         });
-        if (premiumLCPokes.length <= 0) {
-            console.error('No premium LC pokemon found for extra starters, using strong LC instead.');
-            premiumLCPokes = pokemonList.filter(poke => {
-                return poke.evolutionData.type === EVO_TYPE_LC_OF_3
-                    && poke.evolutionData.isLC
-                    && poke.rating.bestEvoTier === TIER_UU
-                    && isSubWeakTier(poke.rating.tier)
-                    && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
-            });
-        }
-        if (premiumLCPokes.length <= 0) {
-            throw new Error('No strong 3-evo-LC pokemon found for extra starters, using strong LC instead.');
-        }
+    }
+    if (ouLCPokes.length <= 0) {
+        throw new Error('No OU LC pokemon found for extra starters.');
     }
 
     const alreadyChosenTypes = new Set();
-    const chosenExtraPokemon = [
-        sample(premiumLCPokes),
-    ];
+    const chosenExtraPokemon = [sample(ouLCPokes)];
     alreadyChosenFamilySet.add(getFamilyGroup(chosenExtraPokemon[0].family));
     chosenExtraPokemon[0].parsedTypes.forEach(type => alreadyChosenTypes.add(type));
 
-    const strongPokemonLC = pokemonList.filter(poke => {
+    // Extra slot 2: 1 LC that evolves into a UU mon
+    const uuLCPokes = pokemonList.filter(poke => {
         return poke.evolutionData.isLC
             && poke.rating.bestEvoTier === TIER_UU
             && isSubWeakTier(poke.rating.tier)
             && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
     });
-    const strongPokemonLCWithFilteredTypes = strongPokemonLC.filter(poke => {
+    const uuLCWithFilteredTypes = uuLCPokes.filter(poke => {
         return ![...alreadyChosenTypes].some(type => poke.parsedTypes.includes(type));
     });
-    // Pick 2 strong LC pokemon that don't share types with already chosen ones
-    while (chosenExtraPokemon.length < 3 && strongPokemonLCWithFilteredTypes.length > 0) {
-        const randomPoke = sampleAndRemove(strongPokemonLCWithFilteredTypes);
-        // Remove it also from strongPokemonLC
-        const indexInStrong = strongPokemonLC.findIndex(p => p.id === randomPoke.id);
-        if (indexInStrong >= 0) {
-            strongPokemonLC.splice(indexInStrong, 1);
-        }
-        chosenExtraPokemon.push(randomPoke);
-        alreadyChosenFamilySet.add(getFamilyGroup(randomPoke.family));
-        randomPoke.parsedTypes.forEach(type => alreadyChosenTypes.add(type));
-        // Remove all pokes with at least one of the chosen types
-        for (let i = strongPokemonLCWithFilteredTypes.length - 1; i >= 0; i--) {
-            const poke = strongPokemonLCWithFilteredTypes[i];
-            if ([...alreadyChosenTypes].some(type => poke.parsedTypes.includes(type))) {
-                strongPokemonLCWithFilteredTypes.splice(i, 1);
-            }
-        }
+    const uuPool = uuLCWithFilteredTypes.length > 0 ? uuLCWithFilteredTypes : uuLCPokes;
+    if (uuPool.length > 0) {
+        const pick = sample(uuPool);
+        chosenExtraPokemon.push(pick);
+        alreadyChosenFamilySet.add(getFamilyGroup(pick.family));
+        pick.parsedTypes.forEach(type => alreadyChosenTypes.add(type));
     }
 
+    // Extra slot 3: 1 solo-evolution NU pokemon (no evolutions — stays NU forever)
     const earlyGameStarter = pokemonList.filter(poke => {
-        return (poke.evolutionData.isLC || poke.evolutionData.type === 'EVO_TYPE_SOLO')
+        return poke.evolutionData.type === EVO_TYPE_SOLO
             && poke.rating.bestEvoRating <= TIER_RU_THRESHOLD
             && poke.rating.tier === TIER_NU
             && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
@@ -1107,6 +1086,25 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 const specificPokemon = pokemonList.find(p => p.id === trainerMonDefinition.specific);
                 if (specificPokemon) {
                     pokemonStrictList = [specificPokemon];
+                }
+            }
+            else if (trainerMonDefinition.specificIfTier) {
+                // Use the specific pokemon only if it meets the contextualTier filter at trainer.level.
+                // If it doesn't qualify, fall back to the normal loose list (contextualTier/type filters apply below).
+                const specificPokemon = pokemonList.find(p => p.id === trainerMonDefinition.specificIfTier);
+                let qualifies = false;
+                if (specificPokemon && trainerMonDefinition.contextualTier) {
+                    const cap = nearestCap(trainer.level);
+                    const contextual = specificPokemon.contextualRatings?.[cap];
+                    qualifies = !!(contextual && trainerMonDefinition.contextualTier.includes(contextual.tier));
+                } else if (specificPokemon) {
+                    qualifies = true;
+                }
+                if (qualifies) {
+                    pokemonStrictList = [specificPokemon];
+                } else {
+                    pokemonLooseList = [...pokemonList];
+                    console.log(`INFO: specificIfTier fallback for ${trainerMonDefinition.specificIfTier} in trainer ${trainer.id} (level ${trainer.level}) — tier check failed, using loose list.`);
                 }
             }
             else if (trainerMonDefinition.special === TRAINER_POKE_ENCOUNTER) {
