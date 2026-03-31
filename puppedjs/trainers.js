@@ -1134,16 +1134,16 @@ function getTrainersData(itemAssignments, tmList) {
     const choicePresleyItems   = ['Weakness Policy', 'Eject Button', route125ItemItems[2]];
     const choiceJosephSeeds    = ['Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed'];
 
-    const petalwoodGruntBag = [
+    const petalwoodGruntBag = () => [
         ...rival103Bag,
-        route102BallItems[2],   // was 'Expert Belt'
+        sample([...route102BallItems]),
         'Eviolite',
-        petalburgPlateItems[0], // was 'Splash Plate'
+        sample([...petalburgPlateItems]),
     ];
 
     const bagAfterWoodGrunt = () => [
         'Oran Berry',
-        route102BallItems[2],   // was 'Expert Belt'
+        sample([...route102BallItems]),
         'Eviolite',
         sample([...woodsPlatesChoice]),
     ];
@@ -1513,7 +1513,7 @@ const trainersData = [
         level: 9,
         reward: ['Ability Capsule'],
         isBoss: true,
-        bag: [...petalwoodGruntBag],
+        bag: [...petalwoodGruntBag()],
         team: [
             {
                 ...POKEDEF_PU_LC,
