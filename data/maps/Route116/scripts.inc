@@ -368,7 +368,7 @@ Route116_EventScript_PickOrb2::
 	end
 
 Route116_EventScript_PickOrb3::
-	finditem ITEM_MUSCLE_BAND
+	finditem ITEM_STICKY_BARB
 	setflag FLAG_ITEM_ROUTE_116_MIND_PLATE
 	end
 @ === RAND_ROUTE116_ORB_END ===
