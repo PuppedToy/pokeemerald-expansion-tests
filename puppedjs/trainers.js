@@ -1102,7 +1102,6 @@ function getTrainersData(itemAssignments, tmList) {
     const route104BerryItems     = itemAssignments.route104Berries;
     const route111ItemItems      = itemAssignments.route111Items;
     const route111BerryItems     = itemAssignments.route111Berries;
-    const route116OrbPoolItem    = itemAssignments.route116OrbItems[2];
     const route116PoolItems      = itemAssignments.route116Items.slice(0, 2);
     const route116BallItems      = itemAssignments.route116Ball;
     const route117GemItems       = itemAssignments.route117Gems;
@@ -1165,7 +1164,7 @@ const rusturfGruntBag = () => [
 
 const rivalRustboroBag = () => [
     ...rusturfGruntBag(),
-    sample(['Toxic Orb', 'Flame Orb', route116OrbPoolItem]),
+    sample(['Toxic Orb', 'Flame Orb', 'Sticky Barb']),
     sample([...route116PoolItems, tmItem(65)]),
 ];
 
@@ -1844,7 +1843,7 @@ const trainersData = [
     {
         id: 'TRAINER_JERRY_1',
         class: 'School Kid M',
-        reward: ['Flame Orb', 'Toxic Orb', route116OrbPoolItem],
+        reward: ['Flame Orb', 'Toxic Orb', 'Sticky Barb'],
         level: 14,
         bag: getSampleItemsFromArray(rusturfGruntBag(), 1),
         team: [

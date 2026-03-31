@@ -112,7 +112,7 @@ function buildAssignments() {
         route121Berries:  berry(4),
         // fullItemPool locations
         route111Items:    [...pool(2), 'ITEM_CUSTAP_BERRY'],        // slot 2 = fixed
-        route116OrbItems: ['ITEM_FLAME_ORB', 'ITEM_TOXIC_ORB', pool(1)[0]], // slots 0,1 = fixed
+        route116OrbItems: ['ITEM_FLAME_ORB', 'ITEM_TOXIC_ORB', 'ITEM_STICKY_BARB'],
         route116Items:    [...pool(2), 'ITEM_TM65'],                // slot 2 = TM (name from TM randomizer)
         route118Items:    pool(4),
         route120Items:    pool(3),
@@ -454,11 +454,6 @@ function updateScriptMenu(a) {
         a.route120Items.map(itemDisplayName));
 
     // Mixed lists: only update item slots, leave fixed/TM slots
-    // Route116 orb: slots 0,1 fixed (Flame Orb, Toxic Orb), slot 2 = random pool item
-    src = replaceMenuListSlots(src, 'MultichoiceList_Route116PickOrb', {
-        2: itemDisplayName(a.route116OrbItems[2]),
-    });
-
     // Route116 item: slots 0,1 = random, slot 2 = TM (tmRandomizer owns slot 2 — leave it)
     src = replaceMenuListSlots(src, 'MultichoiceList_Route116PickItem', {
         0: itemDisplayName(a.route116Items[0]),
