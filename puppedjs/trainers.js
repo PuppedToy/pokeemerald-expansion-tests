@@ -1717,7 +1717,10 @@ const trainersData = [
         reward: ['Ability Patch'],
         level: 13,
         bag: [...getSampleItemsFromArray(roxanneBag(), 3), ...getSampleItemsFromArray(choice104TMs, 1)],
-        team: generatePokemonsWithDefinition(POKEDEF_PU, 6),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
+        ],
     },
     {
         id: 'TRAINER_JOHNSON',
@@ -1725,7 +1728,10 @@ const trainersData = [
         reward: [...route116BallItems],
         level: 13,
         bag: [...getSampleItemsFromArray(roxanneBag(), 2), sample([...route116BallItems]), ...getSampleItemsFromArray(choice104TMs, 1)],
-        team: generatePokemonsWithDefinition(POKEDEF_PU, 6),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
+        ],
     },
     {
         id: 'TRAINER_DEVAN',
@@ -1735,7 +1741,7 @@ const trainersData = [
         bag: [...getSampleItemsFromArray(roxanneBag(), 2), ...getSampleItemsFromArray(choice104TMs, 1)],
         team: [
             {
-                ...POKEDEF_PU,
+                ...POKEDEF_NU,
                 type: [POKEMON_TYPE_POISON],
                 item: 'Black Sludge',
             },
@@ -1746,20 +1752,11 @@ const trainersData = [
         id: 'TRAINER_CLARK',
         class: 'Hiker',
         reward: [...route116PoolItems, tmItem(65)],
+        bag: [...route116PoolItems],
         level: 13,
         team: [
-            {
-                ...POKEDEF_PU,
-                mustHaveOneOfMoves: [...punchingMoves],
-                item: 'Punching Glove',
-            },
-            {
-                ...POKEDEF_PU,
-                mustHaveOneOfMoves: ['MOVE_GIGA_DRAIN'],
-                tryToHaveMove: ['MOVE_GIGA_DRAIN'],
-                item: 'Big Root',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
         ],
     },
     // Rusturf Tunnel
@@ -1795,32 +1792,49 @@ const trainersData = [
                 fallback: [
                     {
                         ...POKEDEF_NU,
-                        type: [magmaTeamTypes[1]],
-                    },
+                        type: [...magmaTeamTypes],
+                    }
+                ],
+            },
+            {
+                ...POKEDEF_NU,
+                type: [magmaTeamTypes[1]],
+                fallback: [
                     {
                         ...POKEDEF_NU,
                         type: [...magmaTeamTypes],
-                    },
-                    {
-                        ...POKEDEF_NU,
-                    },
-                ]
+                    }
+                ],
             },
             {
                 ...POKEDEF_PU,
                 type: [magmaTeamTypes[2]],
+                fallback: [
+                    {
+                        ...POKEDEF_PU,
+                        type: [...magmaTeamTypes],
+                    }
+                ],
             },
             {
                 ...POKEDEF_PU,
                 type: [magmaTeamTypes[3]],
+                fallback: [
+                    {
+                        ...POKEDEF_PU,
+                        type: [...magmaTeamTypes],
+                    }
+                ],
             },
             {
                 ...POKEDEF_PU,
                 type: [magmaTeamTypes[4]],
-            },
-            {
-                ...POKEDEF_PU,
-                type: [magmaTeamTypes[0]],
+                fallback: [
+                    {
+                        ...POKEDEF_PU,
+                        type: [...magmaTeamTypes],
+                    }
+                ],
             },
         ],
     },
@@ -1844,19 +1858,27 @@ const trainersData = [
         class: 'School Kid M',
         reward: ['Flame Orb', 'Toxic Orb', 'Sticky Barb'],
         level: 14,
-        bag: getSampleItemsFromArray(rusturfGruntBag(), 1),
+        bag: ['Sticky Barb'],
         team: [
             {
-                contextualTier: [TIER_PU],
-                evoType: [EVO_TYPE_LC],
+                ...POKEDEF_PU,
                 abilities: ['GUTS'],
                 item: 'Flame Orb',
+                fallback: [
+                    {
+                        ...POKEDEF_NU,
+                    },
+                ]
             },
             {
-                contextualTier: [TIER_PU],
-                evoType: [EVO_TYPE_LC],
+                ...POKEDEF_PU,
                 abilities: ['POISON_HEAL'],
                 item: 'Toxic Orb',
+                fallback: [
+                    {
+                        ...POKEDEF_NU,
+                    },
+                ]
             },
             ...generatePokemonsWithDefinition(POKEDEF_PU, 4),
         ],
@@ -1867,7 +1889,10 @@ const trainersData = [
         reward: ['Random Defensive Mint'],
         level: 14,
         bag: getSampleItemsFromArray(rusturfGruntBag(), 3),
-        team: generatePokemonsWithDefinition(POKEDEF_PU, 6),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
+        ]
     },
     {
         id: 'TRAINER_KAREN_1',
@@ -1875,7 +1900,10 @@ const trainersData = [
         reward: ['Random Offensive Mint'],
         level: 14,
         bag: getSampleItemsFromArray(rusturfGruntBag(), 3),
-        team: generatePokemonsWithDefinition(POKEDEF_PU, 6),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
+        ]
     },
     // Rustboro Rival
     {
@@ -1927,7 +1955,10 @@ const trainersData = [
         reward: ['Life Orb'],
         level: 16,
         bag: ['Life Orb', ...getSampleItemsFromArray(rivalRustboroBag(), 3)],
-        team: generatePokemonsWithDefinition(POKEDEF_PU, 6),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
+        ]
     },
     {
         id: 'TRAINER_ELLIOT_1',
@@ -1963,7 +1994,10 @@ const trainersData = [
         reward: ['Ability Capsule'],
         level: 16,
         bag: getSampleItemsFromArray(rivalRustboroBag(), 4),
-        team: generatePokemonsWithDefinition(POKEDEF_PU, 6),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
+        ]
     },
     {
         id: 'TRAINER_JOSUE',
@@ -1972,20 +2006,9 @@ const trainersData = [
         level: 16,
         bag: [...getSampleItemsFromArray(rivalRustboroBag(), 1), ...choicesDewfordTMs],
         team: [
-            {
-                ...POKEDEF_PU,
-                type: [POKEMON_TYPE_FIGHTING],
-            },
-            {
-                ...POKEDEF_PU,
-                type: [POKEMON_TYPE_GHOST],
-            },
-            {
-                ...POKEDEF_PU,
-                type: [POKEMON_TYPE_PSYCHIC],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 3),
-        ],
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
+        ]
     },
     // Dewford Gym
     {
@@ -1994,7 +2017,7 @@ const trainersData = [
         level: 16,
         reward: ['GYM_REWARD_2', tmItem(8)],
         isBoss: true,
-        bag: [...brawlyBag(), 'Fighting Gem'],
+        bag: brawlyBag(),
         bannedItems: ['Flame Orb', 'Toxic Orb'],
         team: [
             gymIsChangedType[1] ? {
@@ -2049,7 +2072,7 @@ const trainersData = [
         class: 'Steven',
         level: 19,
         isBoss: true,
-        bag: [...stevenBag(), 'Steel Gem'],
+        bag: stevenBag(),
         team: [
             {
                 ...POKEDEF_NU,
