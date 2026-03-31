@@ -1268,4 +1268,4 @@ RustboroCity_Text_YouCanHave2On2Battle:
 	.string "could beat two TRAINERS by yourself?$"
 
 RustboroCity_LevelCap:
-	.string "Your level cap raised to 16!$"
+	.string "Your level cap raised to 19!$"

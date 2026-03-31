@@ -323,4 +323,4 @@ SeafloorCavern_Room9_Text_MaxieComeOnPlayer:
 	.string "to get out of here, too!$"
 
 SeafloorCavern_LevelCap:
-	.string "Your Pokémon have leveled up to 61!$"
+	.string "Your Pokémon have leveled up to 64!$"

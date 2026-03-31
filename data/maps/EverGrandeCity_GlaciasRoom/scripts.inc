@@ -90,4 +90,4 @@ EverGrandeCity_GlaciasRoom_Text_PostBattleSpeech:
 	.string "side of the POKéMON LEAGUE.$"
 
 EverGrandeCity_GlaciasRoom_LevelCap:
-	.string "Your Pokémon have leveled up to 73!$"
+	.string "Your Pokémon have leveled up to 76!$"

@@ -322,4 +322,4 @@ Route119_WeatherInstitute_2F_Text_NoAbnormalWeather:
 	.string "really.$"
 
 Route119_WeatherInstitute_LevelCap:
-	.string "Your Pokémon have leveled up to 41!$"
+	.string "Your Pokémon have leveled up to 44!$"

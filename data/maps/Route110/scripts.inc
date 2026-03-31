@@ -1044,7 +1044,7 @@ Route110_Text_KeepAnEyeOutForRival:
 	.string "See you again, {PLAYER}{KUN}!$"
 
 Route110_LevelCap:
-	.string "Your Pokémon have leveled up to 25!$"
+	.string "Your Pokémon have leveled up to 28!$"
 
 @ === RAND_ROUTE110_BALL_START ===
 Route110_EventScript_PickBall::

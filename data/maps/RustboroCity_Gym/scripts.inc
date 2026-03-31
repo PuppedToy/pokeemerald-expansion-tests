@@ -212,7 +212,7 @@ RustboroCity_Gym_Text_RoxanneDefeat:
 
 RustboroCity_Gym_Text_ReceivedStoneBadge:
 	.string "{PLAYER} received the STONE BADGE\n"
-	.string "and your Pokémon have leveled up to 13!$"
+	.string "and your Pokémon have leveled up to 15!$"
 
 RustboroCity_Gym_Text_StoneBadgeInfoTakeThis:
 	.string "The STONE BADGE heightens the ATTACK\n"

@@ -221,4 +221,4 @@ VictoryRoad_1F_Text_KatelynnPostBattle:
 	.string "See if I care.$"
 
 VictoryRoad_LevelCap:
-	.string "Your Pokémon have leveled up to 67!$"
+	.string "Your Pokémon have leveled up to 70!$"

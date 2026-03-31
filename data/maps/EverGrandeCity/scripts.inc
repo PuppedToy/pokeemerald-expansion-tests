@@ -172,4 +172,4 @@ EverGrandeCity_Text_BrendanTimeToHeadBack:
 	.string "I will… Go home. I guess.$"
 
 EverGrandeCity_LevelCap:
-	.string "Your Pokémon have leveled up to 70!$"
+	.string "Your Pokémon have leveled up to 73!$"

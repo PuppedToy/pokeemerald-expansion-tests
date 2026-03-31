@@ -580,7 +580,7 @@ MossdeepCity_Gym_Text_TateAndLizaDefeat:
 
 MossdeepCity_Gym_Text_ReceivedMindBadge:
 	.string "{PLAYER} received the MIND BADGE\n"
-	.string "and your Pokémon have leveled up to 56!$"
+	.string "and your Pokémon have leveled up to 59!$"
 
 MossdeepCity_Gym_Text_ExplainMindBadgeTakeThis:
 	.string "TATE: The MIND BADGE enhances the\n"

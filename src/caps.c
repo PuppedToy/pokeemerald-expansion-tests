@@ -11,40 +11,40 @@ u32 GetCurrentLevelCap(void)
     static const u32 sLevelCapFlagMap[][2] =
     {
         {FLAG_DEFEATED_RIVAL_ROUTE103, 7}, // Boss
-        {FLAG_DEFEATED_AQUA_WOODS, 9}, // Minor boss
-        {FLAG_BADGE01_GET, 10}, // Gym boss Roxanne
-        {FLAG_RECOVERED_DEVON_GOODS, 13}, // Minor boss
-        {FLAG_DEFEATED_RIVAL_RUSTBORO, 14}, // Boss
-        {FLAG_BADGE02_GET, 16}, // Gym boss Brawly
-        {FLAG_DELIVERED_STEVEN_LETTER, 19}, // Boss Steven
-        {FLAG_DELIVERED_DEVON_GOODS, 21}, // Boss gauntlet
-        {FLAG_ROUTE110_RIVAL_DEFEATED, 23}, // Boss
-        {FLAG_DEFEATED_WALLY_MAUVILLE, 25}, // Minor boss
-        {FLAG_BADGE03_GET, 26}, // Gym boss Wattson - gives Megabracelet
+        {FLAG_DEFEATED_AQUA_WOODS, 11}, // Minor boss
+        {FLAG_BADGE01_GET, 11}, // Gym boss Roxanne
+        {FLAG_RECOVERED_DEVON_GOODS, 15}, // Minor boss
+        {FLAG_DEFEATED_RIVAL_RUSTBORO, 17}, // Boss
+        {FLAG_BADGE02_GET, 19}, // Gym boss Brawly
+        {FLAG_DELIVERED_STEVEN_LETTER, 22}, // Boss Steven
+        {FLAG_DELIVERED_DEVON_GOODS, 24}, // Boss gauntlet
+        {FLAG_ROUTE110_RIVAL_DEFEATED, 26}, // Boss
+        {FLAG_DEFEATED_WALLY_MAUVILLE, 28}, // Minor boss
+        {FLAG_BADGE03_GET, 29}, // Gym boss Wattson - gives Megabracelet
         // Get good rod
-        {FLAG_DEFEATED_TABITHA_MT_CHIMNEY, 29}, // Minor boss
-        {FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, 30}, // Major boss
-        {FLAG_BADGE04_GET, 33}, // Gym boss Flannery - gives Regirock
-        {FLAG_BADGE05_GET, 36}, // Gym boss Norman - gives Regice
+        {FLAG_DEFEATED_TABITHA_MT_CHIMNEY, 32}, // Minor boss
+        {FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, 33}, // Major boss
+        {FLAG_BADGE04_GET, 36}, // Gym boss Flannery - gives Regirock
+        {FLAG_BADGE05_GET, 39}, // Gym boss Norman - gives Regice
         // Get surf here
-        {FLAG_DEFEATED_SHELLY_WEATHER_INST, 39}, // Minor boss
-        {FLAG_ROUTE119_RIVAL_DEFEATED, 41}, // Boss
-        {FLAG_BADGE06_GET, 43}, // Gym boss Winona - gives Registeel
-        {FLAG_MET_RIVAL_LILYCOVE, 46}, // Boss (Wally)
+        {FLAG_DEFEATED_SHELLY_WEATHER_INST, 42}, // Minor boss
+        {FLAG_ROUTE119_RIVAL_DEFEATED, 44}, // Boss
+        {FLAG_BADGE06_GET, 46}, // Gym boss Winona - gives Registeel
+        {FLAG_MET_RIVAL_LILYCOVE, 49}, // Boss (Wally)
         // Get super rod here
-        {FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, 48}, // Major boss
-        {FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, 51}, // Boss
-        {FLAG_BADGE07_GET, 53}, // Gym boss Tate and Liza - should give a strong Mon
-        {FLAG_DEFEATED_MAGMA_SPACE_CENTER, 56}, // Boss
-        {FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN, 58}, // Major boss - gives Rayquaza
-        {FLAG_BADGE08_GET, 61}, // Gym boss Juan
-        {FLAG_DEFEATED_WALLY_VICTORY_ROAD, 64}, // Major Boss
-        {FLAG_DEFEATED_EVERGRANDE_RIVAL, 67}, // Major Boss
-        {FLAG_FIRST_DEFEATED_ELITE_4_SIDNEY, 70}, // E4
-        {FLAG_FIRST_DEFEATED_ELITE_4_PHOEBE, 71}, // E4
-        {FLAG_FIRST_DEFEATED_ELITE_4_GLACIA, 72}, // E4
-        {FLAG_FIRST_DEFEATED_ELITE_4_DRAKE, 73}, // E4
-        {FLAG_IS_CHAMPION, 75}, // Champion
+        {FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, 51}, // Major boss
+        {FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, 54}, // Boss
+        {FLAG_BADGE07_GET, 56}, // Gym boss Tate and Liza - should give a strong Mon
+        {FLAG_DEFEATED_MAGMA_SPACE_CENTER, 59}, // Boss
+        {FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN, 61}, // Major boss - gives Rayquaza
+        {FLAG_BADGE08_GET, 64}, // Gym boss Juan
+        {FLAG_DEFEATED_WALLY_VICTORY_ROAD, 67}, // Major Boss
+        {FLAG_DEFEATED_EVERGRANDE_RIVAL, 70}, // Major Boss
+        {FLAG_FIRST_DEFEATED_ELITE_4_SIDNEY, 73}, // E4
+        {FLAG_FIRST_DEFEATED_ELITE_4_PHOEBE, 74}, // E4
+        {FLAG_FIRST_DEFEATED_ELITE_4_GLACIA, 75}, // E4
+        {FLAG_FIRST_DEFEATED_ELITE_4_DRAKE, 76}, // E4
+        {FLAG_IS_CHAMPION, 78}, // Champion
     };
 
     u32 i;

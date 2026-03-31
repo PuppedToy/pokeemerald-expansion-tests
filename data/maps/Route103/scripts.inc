@@ -390,4 +390,4 @@ Route103_Text_SawyerDefeated:
 	.string "Bye!$"
 
 Route103_LevelCap:
-	.string "Your Pokémon have leveled up to 9!$"
+	.string "Your Pokémon have leveled up to 11!$"

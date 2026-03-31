@@ -264,7 +264,7 @@ FortreeCity_Gym_Text_WinonaDefeat:
 
 FortreeCity_Gym_Text_ReceivedFeatherBadge:
 	.string "{PLAYER} received the FEATHER BADGE\n"
-	.string "and your Pokémon have leveled up to 46!$"
+	.string "and your Pokémon have leveled up to 49!$"
 
 FortreeCity_Gym_Text_ExplainFeatherBadgeTakeThis:
 	.string "With the FEATHER BADGE, all POKéMON up\n"

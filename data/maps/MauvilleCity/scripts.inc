@@ -640,4 +640,4 @@ MauvilleCity_Text_BeenCheckingOutTV:
 	.string "Hi, have you been checking out TVs?$"
 
 MauvilleCity_LevelCap:
-	.string "Your Pokémon have leveled up to 26!$"
+	.string "Your Pokémon have leveled up to 29!$"

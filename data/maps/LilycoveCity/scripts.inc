@@ -792,7 +792,7 @@ LilycoveCity_Text_HoneymoonVowToSeeRarePokemon:
 	.string "I mean, we are totally happy!$"
 
 LilycoveCity_LevelCap:
-	.string "Your Pokémon have leveled up to 48!$"
+	.string "Your Pokémon have leveled up to 51!$"
 
 LilycoveCity_Text_WallyHereICome:
 	.string "WALLY: {PLAYER}, I've grown\n"

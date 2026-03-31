@@ -286,7 +286,7 @@ LavaridgeTown_Gym_1F_Text_FlanneryDefeat:
 
 LavaridgeTown_Gym_1F_Text_ReceivedHeatBadge:
 	.string "{PLAYER} received the HEAT BADGE\n"
-	.string "and your Pokémon have leveled up to 36!$"
+	.string "and your Pokémon have leveled up to 39!$"
 
 LavaridgeTown_Gym_1F_Text_ExplainHeatBadgeTakeThis:
 	.string "If you have a HEAT BADGE, all POKéMON\n"
