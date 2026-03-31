@@ -1427,11 +1427,10 @@ const trainersData = [
         class: 'Lass',
         reward: [...route102BallItems],
         level: 9,
-        bag: [...rival103Bag],
+        bag: [...route102BallItems],
         team: [
             {
                 ...POKEDEF_ZU_LC,
-                item: route102BallItems[2],
             },
             ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
         ]
