@@ -12,7 +12,7 @@ u32 GetCurrentLevelCap(void)
     {
         {FLAG_DEFEATED_RIVAL_ROUTE103, 7}, // Boss
         {FLAG_DEFEATED_AQUA_WOODS, 11}, // Minor boss
-        {FLAG_BADGE01_GET, 11}, // Gym boss Roxanne
+        {FLAG_BADGE01_GET, 13}, // Gym boss Roxanne
         {FLAG_RECOVERED_DEVON_GOODS, 15}, // Minor boss
         {FLAG_DEFEATED_RIVAL_RUSTBORO, 17}, // Boss
         {FLAG_BADGE02_GET, 19}, // Gym boss Brawly
