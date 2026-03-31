@@ -187,7 +187,7 @@ function itemIdToName(itemId) {
 
 function isValidEvolution(level, { param, method }) {
     return (!isNaN(parseInt(param)) && parseInt(param) <= level && parseInt(param) > 4)
-        || ((method === 'ITEM' || param === '0') && level > 25);
+        || ((method === 'ITEM' || param === '0') && level > 28);
 }
 
 const invalidMegas = [
@@ -1466,14 +1466,14 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 /* Otherwise choose the best ability */
                 else {
                     validAbilities = [...chosenTrainerMon.parsedAbilities];
-                    if (trainer.level < 25) {
+                    if (trainer.level < 28) {
                         // Take just the 2 first, we don't use hidden
                         validAbilities = validAbilities.slice(0, 2);
                     }
                     validAbilities = validAbilities.filter(a => Boolean(a) && a !== 'NONE')
                         .sort(
                             (a, b) => {
-                                if (trainer.level < 25) {
+                                if (trainer.level < 28) {
                                     // We just sort randomly
                                     return Math.random() - 0.5;
                                 }
@@ -1545,7 +1545,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                     trainer.bag.splice(trainer.bag.indexOf(newTeamMember.item), 1);
                 }
                 if (!newTeamMember.nature) {
-                    if (trainer.level < 25) {
+                    if (trainer.level < 28) {
                         newTeamMember.nature = sample(Object.values(NATURES)).name;
                     }
                     else {
