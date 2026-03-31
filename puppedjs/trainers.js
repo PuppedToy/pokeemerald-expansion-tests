@@ -1104,6 +1104,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route111BerryItems     = itemAssignments.route111Berries;
     const route116OrbPoolItem    = itemAssignments.route116OrbItems[2];
     const route116PoolItems      = itemAssignments.route116Items.slice(0, 2);
+    const route116BallItems      = itemAssignments.route116Ball;
     const route117GemItems       = itemAssignments.route117Gems;
     const route118ItemItems      = itemAssignments.route118Items;
     const route120ItemItems      = itemAssignments.route120Items;
@@ -1158,7 +1159,7 @@ const roxanneBag = () => [
 
 const rusturfGruntBag = () => [
     ...roxanneBag(),
-    'Rocky Helmet',
+    sample([...route116BallItems]),
     'Black Sludge',
 ];
 
@@ -1723,9 +1724,9 @@ const trainersData = [
     {
         id: 'TRAINER_JOHNSON',
         class: 'Youngster',
-        reward: ['Rocky Helmet'],
+        reward: [...route116BallItems],
         level: 13,
-        bag: [...getSampleItemsFromArray(roxanneBag(), 2), 'Rocky Helmet', ...getSampleItemsFromArray(choice104TMs, 1)],
+        bag: [...getSampleItemsFromArray(roxanneBag(), 2), sample([...route116BallItems]), ...getSampleItemsFromArray(choice104TMs, 1)],
         team: generatePokemonsWithDefinition(POKEDEF_PU, 6),
     },
     {
@@ -2017,7 +2018,7 @@ const trainersData = [
                 ],
             } : {
                 specific: 'SPECIES_MAKUHITA',
-                tryToHaveMove: ['MOVE_BULK_UP', 'MOVE_FAKE_OUT', 'MOVE_ROCK_TOMB'],
+                tryToHaveMove: ['MOVE_BULK_UP', 'MOVE_FAKE_OUT'],
                 nature: NATURES.ADAMANT.name,
                 abilities: ['GUTS'],
                 item: 'Flame Orb',
