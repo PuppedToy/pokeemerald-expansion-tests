@@ -498,6 +498,7 @@ function randomizeItems() {
     const dn = (key) => a[key].map(itemDisplayName);
     return {
         route102Ball:      dn('route102Ball'),
+        route109Ball:      dn('route109Ball'),
         petalburgPlates:   dn('petalburgPlates'),
         route104Gems:      dn('route104Gems'),
         route104Berries:   dn('route104Berries'),

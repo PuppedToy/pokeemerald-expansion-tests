@@ -1104,6 +1104,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route111BerryItems     = itemAssignments.route111Berries;
     const route116PoolItems      = itemAssignments.route116Items.slice(0, 2);
     const route116BallItems      = itemAssignments.route116Ball;
+    const route109BallItems      = itemAssignments.route109Ball;
     const route117GemItems       = itemAssignments.route117Gems;
     const route118ItemItems      = itemAssignments.route118Items;
     const route120ItemItems      = itemAssignments.route120Items;
@@ -1182,7 +1183,7 @@ const stevenBag = () => [
 
 const slateportGruntsBag = () => [
     ...brawlyBag(),
-    'Loaded Dice',
+    sample([...route109BallItems]),
     // 'Damp Rock',
     // 'Heat Rock',
     // 'Smooth Rock',
@@ -1750,7 +1751,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CLARK',
-        class: 'Hiker',
+        class: 'Pokemaniac',
         reward: [...route116PoolItems, tmItem(65)],
         bag: [...route116PoolItems],
         level: 15,
@@ -2038,11 +2039,19 @@ const trainersData = [
                     },
                 ],
             } : {
-                specific: 'SPECIES_MAKUHITA',
+                specificIfTier: 'SPECIES_NOSEPASS',
+                ...POKEDEF_PU,
+                type: [gymMainTypes[1]],
                 tryToHaveMove: ['MOVE_BULK_UP', 'MOVE_FAKE_OUT'],
                 nature: NATURES.ADAMANT.name,
                 abilities: ['GUTS'],
                 item: 'Flame Orb',
+                fallback: [
+                    {
+                        ...POKEDEF_PU,
+                        type: [gymMainTypes[1]],
+                    }
+                ],
             },
             {
                 ...POKEDEF_NU,
@@ -2053,7 +2062,7 @@ const trainersData = [
                 type: [gymMainTypes[1]],
             },
             {
-                ...POKEDEF_PU,
+                ...POKEDEF_NU,
                 type: [gymMainTypes[1]],
             },
             {
@@ -2095,7 +2104,7 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
-                ...POKEDEF_PU,
+                ...POKEDEF_NU,
                 type: [POKEMON_TYPE_STEEL],
             },
         ],
@@ -2112,8 +2121,8 @@ const trainersData = [
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_BULBASAUR'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
         ],
     },
     {
@@ -2123,25 +2132,24 @@ const trainersData = [
         level: 24,
         bag: getSampleItemsFromArray(stevenBag(), 5),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
         ]
     },
     {
         id: 'TRAINER_HAILEY',
         class: 'Tuber F',
-        reward: ['Loaded Dice'],
+        reward: [...route109BallItems],
         level: 24,
-        bag: getSampleItemsFromArray(stevenBag(), 4),
+        bag: [...route109BallItems, ...getSampleItemsFromArray(stevenBag(), 4)],
         team: [
             {
                 ...POKEDEF_PU,
-                item: 'Loaded Dice',
                 mustHaveOneOfMoves: goodMultiHitMoves,
                 tryToHaveMove: multiHitMoves,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
         ],
     },
     {
@@ -2151,17 +2159,16 @@ const trainersData = [
         level: 24,
         bag: getSampleItemsFromArray(stevenBag(), 3),
         team: [
-            pokeDefDrizzleMon(POKEDEF_PU),
-            pokeDefDroughtMon(POKEDEF_PU),
-            pokeDefSandStreamMon(POKEDEF_PU),
-            pokeDefSnowWarningMon(POKEDEF_PU),
+            pokeDefDrizzleMon(POKEDEF_NU),
+            pokeDefDroughtMon(POKEDEF_NU),
+            pokeDefSandStreamMon(POKEDEF_NU),
+            pokeDefSnowWarningMon(POKEDEF_NU),
             {
                 ...POKEDEF_NU,
                 abilities: [...rainAbilities, ...sunAbilities, ...sandAbilities, ...snowAbilities],
             },
             {
                 specific: 'SPECIES_CASTFORM_NORMAL',
-                tryToHaveMove: ['MOVE_HEADBUTT', 'MOVE_WATER_PULSE', 'MOVE_POWDER_SNOW', 'MOVE_SHADOW_BALL'],
             },
         ],
     },
