@@ -3374,7 +3374,7 @@ const trainersData = [
             },
             ...generatePokemonsWithDefinition(POKEDEF_UU, 1),
             ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...POKEDEF_UU_OU_MEGA,
+            { ...POKEDEF_UU_OU_MEGA },
         ],
     },
     {
