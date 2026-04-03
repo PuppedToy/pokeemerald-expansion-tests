@@ -1105,6 +1105,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route116PoolItems      = itemAssignments.route116Items.slice(0, 2);
     const route116BallItems      = itemAssignments.route116Ball;
     const route109BallItems      = itemAssignments.route109Ball;
+    const route114BallCItems     = itemAssignments.route114BallC;
     const route117GemItems       = itemAssignments.route117Gems;
     const route118ItemItems      = itemAssignments.route118Items;
     const route120ItemItems      = itemAssignments.route120Items;
@@ -1194,7 +1195,7 @@ const rivalRoute110Bag = () => [
     ...slateportGruntsBag(),
     sample(choice110TMs),
     'Air Balloon',
-    // 'Terrain Extender',
+    sample([...route114BallCItems]),
 ];
 
 const wallyBag = () => [
@@ -2141,14 +2142,9 @@ const trainersData = [
         class: 'Tuber F',
         reward: [...route109BallItems],
         level: 24,
-        bag: [...route109BallItems, ...getSampleItemsFromArray(stevenBag(), 4)],
+        bag: [...route109BallItems, ...getSampleItemsFromArray(stevenBag(), 2)],
         team: [
-            {
-                ...POKEDEF_PU,
-                mustHaveOneOfMoves: goodMultiHitMoves,
-                tryToHaveMove: multiHitMoves,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
             ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
         ],
     },
@@ -2179,8 +2175,8 @@ const trainersData = [
         level: 24,
         bag: getSampleItemsFromArray(stevenBag(), 5),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
         ]
     },
     {
@@ -2190,8 +2186,8 @@ const trainersData = [
         level: 24,
         bag: getSampleItemsFromArray(stevenBag(), 5),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
         ]
     },
     {
@@ -2203,13 +2199,13 @@ const trainersData = [
         preventShuffle: true,
         bag: [...slateportGruntsBag()],
         team: [
-            pokeDefDrizzleMon(POKEDEF_PU),
+            pokeDefDrizzleMon(POKEDEF_NU),
             {
-                ...POKEDEF_PU,
+                ...POKEDEF_NU,
                 abilities: [...rainAbilities],
             },
             {
-                ...POKEDEF_PU,
+                ...POKEDEF_NU,
                 abilities: [...rainAbilities],
             },
             pokeDefDrizzleMon(POKEDEF_PU),
@@ -2232,13 +2228,13 @@ const trainersData = [
         preventShuffle: true,
         bag: [...slateportGruntsBag()],
         team: [
-            pokeDefSnowWarningMon(POKEDEF_PU),
+            pokeDefSnowWarningMon(POKEDEF_NU),
             {
-                ...POKEDEF_PU,
+                ...POKEDEF_NU,
                 abilities: [...snowAbilities],
             },
             {
-                ...POKEDEF_PU,
+                ...POKEDEF_NU,
                 abilities: [...snowAbilities],
             },
             pokeDefSnowWarningMon(POKEDEF_PU),
@@ -2260,51 +2256,19 @@ const trainersData = [
         level: 26,
         bag: [...choice110TMs, ...getSampleItemsFromArray(slateportGruntsBag(), 3)],
         team: [
-            {
-                ...POKEDEF_PU,
-                type: [POKEMON_TYPE_DRAGON],
-            },
-            {
-                ...POKEDEF_NU,
-                type: [POKEMON_TYPE_GROUND],
-            },
-            {
-                ...POKEDEF_NU,
-                type: [POKEMON_TYPE_FIGHTING],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
         ],
     },
     {
         id: 'TRAINER_KALEB',
         class: 'Pokefan M',
-        reward: ['Terrain Extender'],
+        reward: [...route114BallCItems],
         level: 26,
-        bag: getSampleItemsFromArray(slateportGruntsBag(), 3),
+        bag: [...route114BallCItems, ...getSampleItemsFromArray(slateportGruntsBag(), 3)],
         team: [
-            pokeDefGrassySurgeMon(POKEDEF_PU),
-            {
-                ...POKEDEF_NU,
-                tryEvolve: true,
-                item: 'Grassy Seed',
-            },
-            {
-                ...POKEDEF_NU,
-                tryEvolve: true,
-                item: 'Grassy Seed',
-            },
-            {
-                ...POKEDEF_PU,
-                type: [POKEMON_TYPE_GRASS],
-            },
-            {
-                ...POKEDEF_PU,
-                type: [POKEMON_TYPE_GRASS],
-            },
-            {
-                ...POKEDEF_PU,
-                type: [POKEMON_TYPE_GRASS],
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
         ],
     },
     {
@@ -2314,8 +2278,8 @@ const trainersData = [
         level: 26,
         bag: ['Air Balloon', ...getSampleItemsFromArray(slateportGruntsBag(), 5)],
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
         ]
     },
     {
@@ -2330,8 +2294,8 @@ const trainersData = [
                 encounterIds: ['SPECIES_ELECTRIKE'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
         ],
     },
     {
@@ -2346,8 +2310,8 @@ const trainersData = [
                 encounterIds: ['SPECIES_MANECTRIC'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 3)
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
         ],
     },
     // Route 103 (later)
@@ -2358,8 +2322,8 @@ const trainersData = [
         level: 26,
         bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
         ]
     },
     {

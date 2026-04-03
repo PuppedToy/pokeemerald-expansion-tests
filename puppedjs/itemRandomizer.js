@@ -507,6 +507,7 @@ function randomizeItems() {
         route116OrbItems:  dn('route116OrbItems'),
         route116Items:     dn('route116Items'),
         route116Ball:      dn('route116Ball'),
+        route114BallC:     dn('route114BallC'),
         route117Gems:      dn('route117Gems'),
         route118Items:     dn('route118Items'),
         route120Items:     dn('route120Items'),
