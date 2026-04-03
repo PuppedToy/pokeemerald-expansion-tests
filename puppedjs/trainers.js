@@ -1978,7 +1978,7 @@ const trainersData = [
                     },
                 ],
             } : {
-                specificIfTier: 'SPECIES_NOSEPASS',
+                specificIfTier: 'SPECIES_MAKUHITA',
                 ...POKEDEF_PU,
                 type: [gymMainTypes[1]],
                 tryToHaveMove: ['MOVE_BULK_UP', 'MOVE_FAKE_OUT'],
