@@ -606,3 +606,26 @@ Route109_EventScript_PickBall3::
 	setflag FLAG_ITEM_ROUTE_109_POTION
 	end
 @ === RAND_ROUTE109_BALL_END ===
+
+Route109_EventScript_RickyPickTM::
+	multichoice 0, 0, MULTI_ROUTE109_PICK_TM, FALSE
+	switch VAR_RESULT
+	case 0, Route109_EventScript_RickyPickTM1
+	case 1, Route109_EventScript_RickyPickTM2
+	case 2, Route109_EventScript_RickyPickTM3
+	end
+
+Route109_EventScript_RickyPickTM1::
+	finditem ITEM_TM16
+	setflag FLAG_ITEM_ROUTE_109_REDCARD
+	end
+
+Route109_EventScript_RickyPickTM2::
+	finditem ITEM_TM17
+	setflag FLAG_ITEM_ROUTE_109_REDCARD
+	end
+
+Route109_EventScript_RickyPickTM3::
+	finditem ITEM_TM18
+	setflag FLAG_ITEM_ROUTE_109_REDCARD
+	end

@@ -85,6 +85,7 @@ const PICK_LISTS = [
     ['MultichoiceList_Route118PickTM',   [34, 33, 35]],
     ['MultichoiceList_Route121PickTM',   [82, 83, 84]],
     ['MultichoiceList_Route124PickTM',   [36, 37, 38]],
+    ['MultichoiceList_Route109RickyPickTM', [16, 17, 18]],
 ];
 
 // Game Corner TM66-TM70 with their coin prices.

@@ -1128,6 +1128,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceChesterTMs     = [tmItem(34), tmItem(33), tmItem(35)];
     const choiceTammyTMs       = [tmItem(82), tmItem(83), tmItem(84)];
     const choiceKalebTMs       = [tmItem(86), tmItem(87), tmItem(88)];
+    const choiceRickyTMs       = [tmItem(16), tmItem(17), tmItem(18)];
     const choiceGraceTMs       = [tmItem(36), tmItem(37), tmItem(38)];
     const choiceHeidiItems     = [route111ItemItems[0], route111ItemItems[1], 'Custap Berry'];
     const choiceWadeBerries    = route118ItemItems;
@@ -2171,7 +2172,7 @@ const trainersData = [
     {
         id: 'TRAINER_RICKY_1',
         class: 'Tuber M',
-        reward: ['Random Defensive Mint'],
+        reward: [...choiceRickyTMs],
         level: 24,
         bag: getSampleItemsFromArray(stevenBag(), 5),
         team: [
@@ -2399,8 +2400,7 @@ const trainersData = [
         level: 28,
         bag: ['Lum Berry', ...getSampleItemsFromArray(rivalRoute110Bag(), 6)],
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 6),
         ],
     },
     {
@@ -2409,10 +2409,10 @@ const trainersData = [
         reward: [...choiceJosephSeeds],
         level: 28,
         team: [
-            pokeDefPsychicSurgeMon(POKEDEF_PU, 'Psychic Seed'),
-            pokeDefMistySurgeMon(POKEDEF_PU, 'Misty Seed'),
-            pokeDefElectricSurgeMon(POKEDEF_PU, 'Electric Seed'),
-            pokeDefGrassySurgeMon(POKEDEF_PU, 'Grassy Seed'),
+            pokeDefPsychicSurgeMon(POKEDEF_NU, 'Psychic Seed'),
+            pokeDefMistySurgeMon(POKEDEF_NU, 'Misty Seed'),
+            pokeDefElectricSurgeMon(POKEDEF_NU, 'Electric Seed'),
+            pokeDefGrassySurgeMon(POKEDEF_NU, 'Grassy Seed'),
             {
                 ...POKEDEF_NU,
                 type: [POKEMON_TYPE_PSYCHIC, POKEMON_TYPE_FAIRY, POKEMON_TYPE_ELECTRIC, POKEMON_TYPE_GRASS],
@@ -2436,8 +2436,7 @@ const trainersData = [
                 encounterIds: ['SPECIES_CARVANHA'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
         ],
     },
     {
@@ -2447,8 +2446,7 @@ const trainersData = [
         level: 28,
         bag: getSampleItemsFromArray(rivalRoute110Bag(), 7),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 6),
         ],
     },
     // Wally
@@ -2542,7 +2540,8 @@ const trainersData = [
         level: 29,
         bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 6),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
         ]
     },
     {
@@ -2552,7 +2551,8 @@ const trainersData = [
         level: 29,
         bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 6),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
         ]
     },
     {
@@ -2562,7 +2562,8 @@ const trainersData = [
         level: 29,
         bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 6),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
         ]
     },
     {
@@ -2573,13 +2574,13 @@ const trainersData = [
         bag: getSampleItemsFromArray(wallyBag(), 5),
         team: [
             {
-                ...POKEDEF_NU,
+                ...POKEDEF_RU,
                 mustHaveOneOfMoves: ['MOVE_REFLECT'],
                 tryToHaveMove: ['MOVE_REFLECT'],
                 item: 'Light Clay',
             },
             {
-                ...POKEDEF_NU,
+                ...POKEDEF_RU,
                 mustHaveOneOfMoves: ['MOVE_LIGHT_SCREEN'],
                 tryToHaveMove: ['MOVE_LIGHT_SCREEN'],
                 item: 'Light Clay',
@@ -2594,22 +2595,8 @@ const trainersData = [
         level: 29,
         bag: getSampleItemsFromArray(wallyBag(), 5),
         team: [
-            {
-                ...POKEDEF_NU,
-                weakToTypes: [POKEMON_TYPE_ELECTRIC],
-                item: 'Wacan Berry',
-            },
-            {
-                ...POKEDEF_NU,
-                weakToTypes: [POKEMON_TYPE_FIRE],
-                item: 'Occa Berry',
-            },
-            {
-                ...POKEDEF_NU,
-                weakToTypes: [POKEMON_TYPE_GROUND],
-                item: 'Shuca Berry',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
         ],
     },
     {
@@ -2619,19 +2606,8 @@ const trainersData = [
         level: 29,
         bag: [...choiceAishaGems, ...getSampleItemsFromArray(wallyBag(), 5)],
         team: [
-            {
-                ...POKEDEF_NU,
-                type: [POKEMON_TYPE_FIRE],
-            },
-            {
-                ...POKEDEF_NU,
-                type: [POKEMON_TYPE_GROUND],
-            },
-            {
-                ...POKEDEF_NU,
-                type: [POKEMON_TYPE_FIGHTING],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
         ],
     },
     {
@@ -2640,7 +2616,10 @@ const trainersData = [
         reward: ['Assault Vest'],
         level: 29,
         bag: ['Assault Vest', ...getSampleItemsFromArray(wallyBag(), 7)],
-        team: generatePokemonsWithDefinition(POKEDEF_NU, 6),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
+        ],
     },
     // Mauville Gym
     {
@@ -2650,7 +2629,7 @@ const trainersData = [
         reward: ['GYM_REWARD_3', tmItem(34)],
         level: 29,
         preventShuffle: gymIsChangedType[2],
-        bag: [...wattsonBag(), 'Electric Gem'],
+        bag: [...wattsonBag()],
         bannedItems: ['Electric Seed', 'Psychic Seed', 'Misty Seed', 'Grassy Seed'],
         team: [
             gymIsChangedType[2] ? {
@@ -2713,8 +2692,8 @@ const trainersData = [
                 encounterIds: ['SPECIES_DROWZEE'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
         ],
     },
     {
@@ -2728,7 +2707,8 @@ const trainersData = [
                 special: TRAINER_POKE_MEGA_FROM_STONE,
                 megaStone: 'ITEM_MEGA_01',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5)
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
         ],
     },
     {
@@ -2738,8 +2718,8 @@ const trainersData = [
         level: 32,
         bag: [...getSampleItemsFromArray(wattsonBag(), 9), 'Shed Shell'],
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
         ]
     },
     {
@@ -2749,8 +2729,8 @@ const trainersData = [
         level: 32,
         bag: [...getSampleItemsFromArray(wattsonBag(), 9), 'Sitrus Berry'],
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
         ]
     },
     // Route 112
@@ -2766,8 +2746,8 @@ const trainersData = [
                 encounterIds: ['SPECIES_TAILLOW'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
         ],
     },
     {
@@ -2782,8 +2762,8 @@ const trainersData = [
                 encounterIds: ['SPECIES_NUMEL'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
         ],
     },
     {
@@ -2793,8 +2773,8 @@ const trainersData = [
         level: 32,
         bag: getSampleItemsFromArray(wattsonBag(), 10),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
         ]
     },
     {
@@ -2804,8 +2784,8 @@ const trainersData = [
         level: 32,
         bag: getSampleItemsFromArray(wattsonBag(), 10),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
         ],
     },
     {
@@ -2818,7 +2798,7 @@ const trainersData = [
         team: [
             pokeDefSandStreamMon(POKEDEF_RU),
             {
-                ...POKEDEF_RU,
+                ...POKEDEF_UU,
                 abilities: [...sandAbilities],
             },
             {
@@ -2847,7 +2827,7 @@ const trainersData = [
         level: 33,
         bag: [...magmaChimneyBag()],
         team: [
-            pokeDefDroughtMon(POKEDEF_RU),
+            pokeDefDroughtMon(POKEDEF_UU),
             {
                 specific: 'SPECIES_CAMERUPT',
                 item: 'Cameruptite',
@@ -2924,8 +2904,8 @@ const trainersData = [
                     }
                 ]
             },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },
     // Jagged Pass
@@ -2941,8 +2921,8 @@ const trainersData = [
                 encounterIds: ['SPECIES_NOIBAT'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },
     {
@@ -2962,8 +2942,8 @@ const trainersData = [
                 encounterIds: ['SPECIES_WOOBAT'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },
     {
@@ -2977,8 +2957,8 @@ const trainersData = [
                 special: TRAINER_POKE_MEGA_FROM_STONE,
                 megaStone: 'ITEM_MEGA_02',
             },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },
     // Route 111
@@ -3006,8 +2986,8 @@ const trainersData = [
                     }
                 ]
             },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },
     // Route 113
@@ -3023,8 +3003,8 @@ const trainersData = [
                 encounterIds: ['SPECIES_SPINDA'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },
     {
@@ -3044,8 +3024,8 @@ const trainersData = [
                 encounterIds: ['SPECIES_BIBAREL'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },
     {
@@ -3055,8 +3035,8 @@ const trainersData = [
         level: 36,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ]
     },
     {
@@ -3066,8 +3046,8 @@ const trainersData = [
         level: 36,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ]
     },
     {
@@ -3077,8 +3057,8 @@ const trainersData = [
         level: 36,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ]
     },
     // Route 114
@@ -3099,8 +3079,8 @@ const trainersData = [
                 encounterIds: ['SPECIES_SPOINK'],
                 tryEvolve: true,
             },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },
     {
@@ -3114,8 +3094,8 @@ const trainersData = [
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_SWABLU'],
             },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },
     {
@@ -3125,8 +3105,8 @@ const trainersData = [
         level: 36,
         bag: [...choiceClaudeTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 7)],
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ]
     },
     {
@@ -3136,8 +3116,8 @@ const trainersData = [
         level: 36,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ]
     },
     {
@@ -3147,8 +3127,8 @@ const trainersData = [
         level: 36,
         bag: ['Shell Bell', ...getSampleItemsFromArray(magmaChimneyBag(), 10)],
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ]
     },
     // Route 115
@@ -3159,19 +3139,8 @@ const trainersData = [
         level: 36,
         bag: [...getSampleItemsFromArray(magmaChimneyBag(), 8), ...choiceNobTMs],
         team: [
-            {
-                ...POKEDEF_RU,
-                type: [POKEMON_TYPE_GRASS],
-            },
-            {
-                ...POKEDEF_RU,
-                type: [POKEMON_TYPE_POISON],
-            },
-            {
-                ...POKEDEF_RU,
-                type: [POKEMON_TYPE_NORMAL],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },
     // Flannery Gym

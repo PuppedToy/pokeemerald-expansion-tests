@@ -780,6 +780,13 @@ static const struct MenuAction MultichoiceList_Route109Pick[] =
     {COMPOUND_STRING("Icy Rock")},
 };
 
+static const struct MenuAction MultichoiceList_Route109RickyPickTM[] =
+{
+    {COMPOUND_STRING("TM Icicle Crash")},
+    {COMPOUND_STRING("TM Hurricane")},
+    {COMPOUND_STRING("TM Focus Blast")},
+};
+
 static const struct MenuAction MultichoiceList_Route110Pick[] =
 {
     {COMPOUND_STRING("TM Dragon Claw")},
