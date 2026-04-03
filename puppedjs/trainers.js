@@ -3424,7 +3424,7 @@ const trainersData = [
             },
             ...generatePokemonsWithDefinition(POKEDEF_UU, 1),
             ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...POKEDEF_UU_OU_MEGA,
+            { ...POKEDEF_UU_OU_MEGA },
         ],
     },
     {
@@ -3450,7 +3450,7 @@ const trainersData = [
                 tryEvolve: true,
             },
             ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...POKEDEF_UU_OU_MEGA,
+            { ...POKEDEF_UU_OU_MEGA },
         ],
     },
     {
@@ -3589,7 +3589,7 @@ const trainersData = [
             },
             ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
             ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            ...POKEDEF_UU_OU_MEGA,
+            { ...POKEDEF_UU_OU_MEGA },
         ],
     },
     {
@@ -3997,7 +3997,7 @@ const trainersData = [
                 encounterIds: ['SPECIES_PORYGON'],
                 tryEvolve: true,
             },
-            ...POKEDEF_UU_OU_MEGA,
+            { ...POKEDEF_UU_OU_MEGA },
             ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
             ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
         ],
