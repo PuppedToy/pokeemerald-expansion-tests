@@ -1105,7 +1105,6 @@ function getTrainersData(itemAssignments, tmList) {
     const route116PoolItems      = itemAssignments.route116Items.slice(0, 2);
     const route116BallItems      = itemAssignments.route116Ball;
     const route109BallItems      = itemAssignments.route109Ball;
-    const route114BallCItems     = itemAssignments.route114BallC;
     const route117GemItems       = itemAssignments.route117Gems;
     const route118ItemItems      = itemAssignments.route118Items;
     const route120ItemItems      = itemAssignments.route120Items;
@@ -1128,6 +1127,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceClaudeTMs      = [tmItem(12), tmItem(13), tmItem(15), tmItem(14)];
     const choiceChesterTMs     = [tmItem(34), tmItem(33), tmItem(35)];
     const choiceTammyTMs       = [tmItem(82), tmItem(83), tmItem(84)];
+    const choiceKalebTMs       = [tmItem(86), tmItem(87), tmItem(88)];
     const choiceGraceTMs       = [tmItem(36), tmItem(37), tmItem(38)];
     const choiceHeidiItems     = [route111ItemItems[0], route111ItemItems[1], 'Custap Berry'];
     const choiceWadeBerries    = route118ItemItems;
@@ -1195,7 +1195,7 @@ const rivalRoute110Bag = () => [
     ...slateportGruntsBag(),
     sample(choice110TMs),
     'Air Balloon',
-    sample([...route114BallCItems]),
+    sample([...choiceKalebTMs]),
 ];
 
 const wallyBag = () => [
@@ -2263,9 +2263,9 @@ const trainersData = [
     {
         id: 'TRAINER_KALEB',
         class: 'Pokefan M',
-        reward: [...route114BallCItems],
+        reward: [...choiceKalebTMs],
         level: 26,
-        bag: [...route114BallCItems, ...getSampleItemsFromArray(slateportGruntsBag(), 3)],
+        bag: [...choiceKalebTMs, ...getSampleItemsFromArray(slateportGruntsBag(), 3)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
             ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
@@ -2333,8 +2333,8 @@ const trainersData = [
         level: 26,
         bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
         ]
     },
     {
@@ -2344,8 +2344,8 @@ const trainersData = [
         level: 26,
         bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
         ]
     },
     // Route 110 Again
