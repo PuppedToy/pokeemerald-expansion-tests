@@ -282,6 +282,7 @@ const items = {
     otherLockedItems: [
         'ITEM_TOXIC_ORB',
         'ITEM_FLAME_ORB',
+        'ITEM_STICKY_BARB',
         'ITEM_DAMP_ROCK',
         'ITEM_HEAT_ROCK',
         'ITEM_SMOOTH_ROCK',
@@ -339,7 +340,6 @@ const items = {
         'ITEM_ZOOM_LENS',       // Route114
         'ITEM_RINDO_BERRY',     // Route115
         'ITEM_ROCKY_HELMET',    // Route116
-        'ITEM_STICKY_BARB',     // Route116
         'ITEM_PUNCHING_GLOVE',  // Route116 + Route115
         'ITEM_BIG_ROOT',        // Route116
         'ITEM_ROOM_SERVICE',    // Route124
