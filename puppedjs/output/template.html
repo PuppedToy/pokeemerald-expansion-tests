@@ -254,6 +254,70 @@
       .app > .right{order:3}
       header.top{grid-column:1/2;margin-top:0}
     }
+
+    /* ---- Nuzlocke Tracker ---- */
+    .nuzlocke-controls {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .nz-cb-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      cursor: pointer;
+      user-select: none;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .nz-cb-label:hover { background: rgba(255,255,255,0.12); }
+    .nz-cb-label input[type="checkbox"] { width: 13px; height: 13px; cursor: pointer; }
+    .nz-delay-label input[type="checkbox"] { accent-color: #f97316; }
+    .nz-select-label input[type="checkbox"] { accent-color: #22c55e; }
+    .nz-cb-label.nz-disabled { opacity: 0.4; pointer-events: none; }
+
+    /* Wild poke states */
+    .wild-poke.nz-selected {
+      background: rgba(34,197,94,0.18) !important;
+      border: 1px solid #22c55e !important;
+    }
+    .wild-poke.nz-dimmed { opacity: 0.28; }
+    .wild-poke.nz-delayed {
+      background: rgba(249,115,22,0.18) !important;
+      border: 1px solid #f97316 !important;
+    }
+    .wild-poke.nz-auto-selected {
+      background: rgba(56,189,248,0.12) !important;
+      border: 1px solid rgba(56,189,248,0.45) !important;
+    }
+
+    /* Location card states */
+    .location-card.nz-has-delayed { border-color: #f97316 !important; }
+    .nz-stopwatch-badge { font-size: 14px; display: none; margin-left: 4px; vertical-align: middle; }
+    .location-card.nz-has-delayed .nz-stopwatch-badge { display: inline; }
+
+    /* Defeated trainer */
+    .trainer-card.nz-defeated { opacity: 0.45; }
+    .trainer-card.nz-defeated .title { text-decoration: line-through; color: var(--muted); }
+    .nz-defeat-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
+      margin-top: 8px;
+      padding: 4px 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .nz-defeat-label:hover { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.4); }
+    .nz-defeat-label input[type="checkbox"] { accent-color: #ef4444; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -802,12 +866,20 @@
     Object.entries(trainersData).forEach(([trainerId, trainer]) => {
       const card = document.createElement('div');
       card.className = 'card trainer-card';
+      card.dataset.trainerId = trainerId;
+      card.dataset.trainerLevel = trainer.level;
+      card.dataset.isBoss = trainer.isBoss ? '1' : '0';
       if (trainer.isBoss) {
         card.classList.add('specialCard');
       }
       if (trainer.isPartner) {
         card.classList.add('partnerCard');
       }
+      // Tag rival trainer variants for starter-based filtering
+      if (/TRAINER_BRENDAN_/.test(trainerId)) card.classList.add('rival-brendan');
+      if (/TRAINER_MAY_.*_TREECKO$/.test(trainerId)) card.classList.add('rival-may-treecko');
+      if (/TRAINER_MAY_.*_TORCHIC$/.test(trainerId)) card.classList.add('rival-may-torchic');
+      if (/TRAINER_MAY_.*_MUDKIP$/.test(trainerId)) card.classList.add('rival-may-mudkip');
 
       const trainerName = nameify(trainerId.replace('TRAINER_', '').replace(/_\d/g, ''));
 
@@ -863,6 +935,12 @@
           <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:8px;">
             ${teamHTML}
           </div>
+          <div style="margin-top:10px;">
+            <label class="nz-defeat-label">
+              <input type="checkbox" class="nz-defeat-cb" data-trainer-id="${trainerId}">
+              ☑ Defeated
+            </label>
+          </div>
         </div>
       `;
 
@@ -907,13 +985,16 @@
 
     wildPokes.forEach(route => {
       const card = document.createElement('div');
-      card.className = 'card';
+      card.className = 'card location-card';
+      card.dataset.routeId = route.id;
 
       // Clean route name
       const routeName = route.label || nameify(route.id.replace('MAP_', ''));
       const isBossReward        = !!route.boss;
       const isStaticEncounter   = !!route.staticEncounter;
       const isLegendaryEncounter = !!route.legendaryEncounter;
+      const isStarterExtra = route.id === 'STARTER_EXTRA';
+      const autoSelected = isStarterExtra || isBossReward;
 
       const encounterTypes = ['land', 'old', 'good', 'surf', 'underwater', 'super', 'special', 'special1', 'special2', 'special3', 'special4', 'special5', 'special6', 'special7', 'special8', 'special9'];
 
@@ -932,11 +1013,25 @@
           else if (isStaticEncounter)    typeLabel = `<div style="font-size:12px; color:#f87171; margin-bottom:4px;">Static</div>`;
           else if (isLegendaryEncounter) typeLabel = `<div style="font-size:12px; color:#fbbf24; margin-bottom:4px;">Legendary</div>`;
           else                           typeLabel = `<div style="font-size:12px; color:#FFB28A; margin-bottom:4px;">${getRouteTypeName(type)}</div>`;
+          const slotExtraClass = autoSelected ? ' nz-auto-selected' : '';
+          const checkboxHTML = autoSelected ? '' : `
+            <div class="nuzlocke-controls">
+              <label class="nz-cb-label nz-delay-label" title="Delay — save for later">
+                <input type="checkbox" class="nz-delay-cb" data-route="${route.id}" data-slot="${type}">
+                ⏱
+              </label>
+              <label class="nz-cb-label nz-select-label" title="Captured">
+                <input type="checkbox" class="nz-select-cb" data-route="${route.id}" data-slot="${type}">
+                ✓
+              </label>
+            </div>
+          `;
           return `
-            <div class="clicker wild-poke poke-${pokeId}" style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
+            <div class="clicker wild-poke poke-${pokeId}${slotExtraClass}" data-slot="${type}" style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
               ${typeLabel}
               <img src="${img}" style="width:64px;height:64px;object-fit:contain" alt="${pokeName}">
               <div style="font-weight:700;margin-top:4px">${coloredName}${adjustmentIcon}</div>
+              ${checkboxHTML}
             </div>
           `;
         })
@@ -952,7 +1047,7 @@
 
       card.innerHTML = `
         <div class="meta">
-          <div class="title">${routeName}</div>
+          <div class="title">${routeName}<span class="nz-stopwatch-badge">⏱</span></div>
           ${headerBadge}
         </div>
         <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:8px;">
@@ -1219,6 +1314,246 @@
       }
     });
   </script>
+  <!-- nuzlocke tracker -->
+  <script>
+  (function () {
+    'use strict';
+    const LS_KEY = 'nuzlocke_v1';
+
+    // ---------- Location groups ----------
+    // Locations that share the nuzlocke slot: capturing in one blocks the others.
+    const LOCATION_GROUPS = {
+      'SHOAL_CAVE': [
+        'MAP_SHOAL_CAVE_LOW_TIDE_ENTRANCE_ROOM',
+        'MAP_SHOAL_CAVE_HIGH_TIDE_ENTRANCE_ROOM'
+      ]
+    };
+    // Reverse map: routeId → groupId
+    const routeToGroup = {};
+    Object.entries(LOCATION_GROUPS).forEach(function ([groupId, routes]) {
+      routes.forEach(function (r) { routeToGroup[r] = groupId; });
+    });
+
+    // ---------- State ----------
+    let nzState = { locations: {}, trainers: {} };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(LS_KEY);
+        if (raw) nzState = JSON.parse(raw);
+      } catch (e) { /* ignore */ }
+      if (!nzState.locations) nzState.locations = {};
+      if (!nzState.trainers)  nzState.trainers  = {};
+    }
+
+    function saveState() {
+      try { localStorage.setItem(LS_KEY, JSON.stringify(nzState)); } catch (e) { /* ignore */ }
+    }
+
+    function locState(routeId) {
+      if (!nzState.locations[routeId]) nzState.locations[routeId] = { selected: null, delayed: [] };
+      if (!Array.isArray(nzState.locations[routeId].delayed)) nzState.locations[routeId].delayed = [];
+      return nzState.locations[routeId];
+    }
+
+    // ---------- Visual: locations ----------
+    function applyLocVisuals(routeId) {
+      const loc = locState(routeId);
+      const card = document.querySelector('.location-card[data-route-id="' + routeId + '"]');
+      if (!card) return;
+
+      const sel     = loc.selected;
+      const delayed = loc.delayed;
+
+      // Orange border only when delays exist and nothing is captured yet
+      card.classList.toggle('nz-has-delayed', delayed.length > 0 && !sel);
+
+      card.querySelectorAll('.wild-poke[data-slot]').forEach(function (slot) {
+        const s = slot.dataset.slot;
+        slot.classList.remove('nz-selected', 'nz-dimmed', 'nz-delayed');
+
+        if (sel) {
+          slot.classList.add(s === sel ? 'nz-selected' : 'nz-dimmed');
+        } else if (delayed.includes(s)) {
+          slot.classList.add('nz-delayed');
+        }
+
+        // Sync checkbox states and always reset disabled (group effects may have set it)
+        const selCb      = slot.querySelector('.nz-select-cb');
+        const delayCb    = slot.querySelector('.nz-delay-cb');
+        const delayLabel = slot.querySelector('.nz-delay-label');
+        if (selCb)   { selCb.checked  = s === sel;             selCb.disabled  = false; }
+        if (delayCb) { delayCb.checked = delayed.includes(s);  delayCb.disabled = !!sel; }
+        // Disable delay label styling when a pokemon is already captured at this location
+        if (delayLabel) delayLabel.classList.toggle('nz-disabled', !!sel);
+      });
+    }
+
+    function applyAllLocVisuals() {
+      document.querySelectorAll('.location-card[data-route-id]').forEach(function (c) {
+        applyLocVisuals(c.dataset.routeId);
+      });
+    }
+
+    // Apply cross-location dimming for grouped locations (e.g. Shoal Cave tides).
+    // Must be called AFTER applyLocVisuals so it can override per-slot classes.
+    function applyGroupEffects(groupId) {
+      const members = LOCATION_GROUPS[groupId];
+      const capturedId = members.find(function (r) { return !!locState(r).selected; });
+
+      members.forEach(function (memberId) {
+        const card = document.querySelector('.location-card[data-route-id="' + memberId + '"]');
+        if (!card) return;
+
+        if (capturedId && memberId !== capturedId) {
+          // Sibling is blocked — dim all its slots and disable checkboxes
+          card.querySelectorAll('.wild-poke[data-slot]').forEach(function (slot) {
+            slot.classList.remove('nz-selected', 'nz-delayed');
+            slot.classList.add('nz-dimmed');
+            slot.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+              cb.disabled = true;
+              cb.checked  = false;
+            });
+          });
+          card.classList.remove('nz-has-delayed');
+        } else if (!capturedId) {
+          // Nothing captured in this group — restore each member to its own state
+          applyLocVisuals(memberId);
+        }
+      });
+    }
+
+    function applyAllGroupEffects() {
+      Object.keys(LOCATION_GROUPS).forEach(applyGroupEffects);
+    }
+
+    // ---------- Visual: trainers ----------
+    function applyTrainerVisuals(trainerId) {
+      const card = document.querySelector('.trainer-card[data-trainer-id="' + trainerId + '"]');
+      if (!card) return;
+      const defeated = !!nzState.trainers[trainerId];
+      card.classList.toggle('nz-defeated', defeated);
+      const cb = card.querySelector('.nz-defeat-cb');
+      if (cb) cb.checked = defeated;
+    }
+
+    function applyAllTrainerVisuals() {
+      document.querySelectorAll('.trainer-card[data-trainer-id]').forEach(function (c) {
+        applyTrainerVisuals(c.dataset.trainerId);
+      });
+    }
+
+    // ---------- Starter rival visibility ----------
+    // Maps starter slot → rival team suffix class
+    const starterToSuffix = { 'special1': 'treecko', 'special2': 'torchic', 'special3': 'mudkip' };
+
+    function applyStarterRivals() {
+      const sel    = locState('STARTERS').selected; // e.g. 'special1' or null
+      const suffix = sel ? starterToSuffix[sel] : null;
+
+      // Always hide Brendan trainers once a starter is picked; show all when none selected
+      document.querySelectorAll('.trainer-card.rival-brendan').forEach(function (c) {
+        c.style.display = sel ? 'none' : '';
+      });
+
+      // Show only the May variant matching the chosen starter
+      ['treecko', 'torchic', 'mudkip'].forEach(function (s) {
+        document.querySelectorAll('.trainer-card.rival-may-' + s).forEach(function (c) {
+          c.style.display = (sel && suffix !== s) ? 'none' : '';
+        });
+      });
+    }
+
+    // ---------- Handlers ----------
+    function handleSelectChange(routeId, slot, checked) {
+      const loc = locState(routeId);
+      if (checked) {
+        loc.selected = slot;
+        loc.delayed  = []; // capturing clears all delays for this location
+      } else {
+        loc.selected = null;
+      }
+      saveState();
+      applyLocVisuals(routeId);
+      // Re-apply group effects — may need to dim/restore sibling locations
+      const groupId = routeToGroup[routeId];
+      if (groupId) applyGroupEffects(groupId);
+      if (routeId === 'STARTERS') applyStarterRivals();
+    }
+
+    function handleDelayChange(routeId, slot, checked) {
+      const loc = locState(routeId);
+      if (loc.selected) return; // already captured; ignore
+      if (checked) {
+        if (!loc.delayed.includes(slot)) loc.delayed.push(slot);
+      } else {
+        loc.delayed = loc.delayed.filter(function (s) { return s !== slot; });
+      }
+      saveState();
+      applyLocVisuals(routeId);
+    }
+
+    function handleDefeatChange(trainerId, checked) {
+      if (checked) {
+        nzState.trainers[trainerId] = true;
+      } else {
+        delete nzState.trainers[trainerId];
+      }
+
+      // Auto-defeat all trainers 10 levels below any boss that just got checked
+      if (checked) {
+        const card = document.querySelector('.trainer-card[data-trainer-id="' + trainerId + '"]');
+        if (card && card.dataset.isBoss === '1') {
+          const bossLvl = parseInt(card.dataset.trainerLevel, 10);
+          if (!isNaN(bossLvl)) {
+            const threshold = bossLvl - 10;
+            document.querySelectorAll('.trainer-card[data-trainer-id][data-trainer-level]').forEach(function (c) {
+              const lvl = parseInt(c.dataset.trainerLevel, 10);
+              if (!isNaN(lvl) && lvl <= threshold && c.dataset.trainerId) {
+                nzState.trainers[c.dataset.trainerId] = true;
+                applyTrainerVisuals(c.dataset.trainerId);
+              }
+            });
+          }
+        }
+      }
+
+      saveState();
+      applyTrainerVisuals(trainerId);
+    }
+
+    // ---------- Event delegation ----------
+    function setupEvents() {
+      // Stop click propagation on nuzlocke controls in capture phase
+      // so the wild-poke / trainer-poke click-to-modal listeners are not triggered
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('.nuzlocke-controls') || e.target.closest('.nz-defeat-label')) {
+          e.stopPropagation();
+        }
+      }, true);
+
+      document.addEventListener('change', function (e) {
+        const t = e.target;
+        if (t.classList.contains('nz-select-cb')) {
+          handleSelectChange(t.dataset.route, t.dataset.slot, t.checked);
+        } else if (t.classList.contains('nz-delay-cb')) {
+          handleDelayChange(t.dataset.route, t.dataset.slot, t.checked);
+        } else if (t.classList.contains('nz-defeat-cb')) {
+          handleDefeatChange(t.dataset.trainerId, t.checked);
+        }
+      });
+    }
+
+    // ---------- Init ----------
+    loadState();
+    applyAllLocVisuals();
+    applyAllGroupEffects(); // must run after all per-location visuals are set
+    applyAllTrainerVisuals();
+    applyStarterRivals();
+    setupEvents();
+  })();
+  </script>
+
   <!-- loader -->
   <script>
     window.addEventListener('load', () => {
