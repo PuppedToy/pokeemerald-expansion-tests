@@ -295,6 +295,16 @@
       border: 1px solid rgba(56,189,248,0.45) !important;
     }
 
+    /* Fainted state */
+    .nz-faint-label { display: none; }
+    .wild-poke.nz-selected .nz-faint-label,
+    .wild-poke.nz-auto-selected .nz-faint-label { display: inline-flex; }
+    .wild-poke.nz-fainted {
+      background: rgba(239,68,68,0.18) !important;
+      border: 1px solid #ef4444 !important;
+    }
+    .nz-faint-label input[type="checkbox"] { accent-color: #ef4444; }
+
     /* Location card states */
     .location-card.nz-has-delayed { border-color: #f97316 !important; }
     .nz-stopwatch-badge { font-size: 14px; display: none; margin-left: 4px; vertical-align: middle; }
@@ -390,6 +400,7 @@
                 <div class="filter-chip" data-scope="box">In Box</div>
                 <div class="filter-chip" data-scope="obtainable">Obtainable</div>
                 <div class="filter-chip" data-scope="trainers">In Trainers</div>
+                <div class="filter-chip" data-scope="fainted">Fainted</div>
                 <div class="filter-chip" data-scope="all">ALL</div>
               </div>
             </div>
@@ -1080,7 +1091,13 @@
           else if (isLegendaryEncounter) typeLabel = `<div style="font-size:12px; color:#fbbf24; margin-bottom:4px;">Legendary</div>`;
           else                           typeLabel = `<div style="font-size:12px; color:#FFB28A; margin-bottom:4px;">${getRouteTypeName(type)}</div>`;
           const slotExtraClass = autoSelected ? ' nz-auto-selected' : '';
-          const checkboxHTML = autoSelected ? '' : `
+          const faintLabel = `<label class="nz-cb-label nz-faint-label" title="Fainted">
+                <input type="checkbox" class="nz-faint-cb" data-route="${route.id}" data-slot="${type}">
+                💀
+              </label>`;
+          const checkboxHTML = autoSelected ? `
+            <div class="nuzlocke-controls">${faintLabel}</div>
+          ` : `
             <div class="nuzlocke-controls">
               <label class="nz-cb-label nz-delay-label" title="Delay — save for later">
                 <input type="checkbox" class="nz-delay-cb" data-route="${route.id}" data-slot="${type}">
@@ -1090,6 +1107,7 @@
                 <input type="checkbox" class="nz-select-cb" data-route="${route.id}" data-slot="${type}">
                 ✓
               </label>
+              ${faintLabel}
             </div>
           `;
           return `
@@ -1480,11 +1498,31 @@
       var nz = getNzState(), locs = nz.locations || {}, ids = new Set();
       wildPokes.forEach(function(route) {
         var loc = locs[route.id];
-        if (loc && loc.selected && route[loc.selected]) ids.add(route[loc.selected]);
+        if (loc && loc.selected && route[loc.selected]) {
+          var fainted = loc.fainted || [];
+          if (!fainted.includes(loc.selected)) ids.add(route[loc.selected]); // exclude fainted
+        }
       });
-      // STARTER_EXTRA pokemon are always auto-captured
+      // STARTER_EXTRA: auto-captured, but exclude fainted ones
       var extra = wildPokes.find(function(r){ return r.id === 'STARTER_EXTRA'; });
-      if (extra) ENCOUNTER_TYPES.filter(function(t){ return extra[t]; }).forEach(function(t){ ids.add(extra[t]); });
+      if (extra) {
+        var extraFainted = (locs['STARTER_EXTRA'] || {}).fainted || [];
+        ENCOUNTER_TYPES.filter(function(t){ return extra[t]; }).forEach(function(t){
+          if (!extraFainted.includes(t)) ids.add(extra[t]);
+        });
+      }
+      return ids;
+    }
+
+    function getFaintedIds() {
+      var nz = getNzState(), locs = nz.locations || {}, ids = new Set();
+      wildPokes.forEach(function(route) {
+        var loc = locs[route.id];
+        if (!loc) return;
+        (loc.fainted || []).forEach(function(slot) {
+          if (route[slot]) ids.add(route[slot]);
+        });
+      });
       return ids;
     }
 
@@ -1553,6 +1591,7 @@
         if (scope.includes('box'))        expandFamilies(getCapturedIds()).forEach(function(id){ scopeIds.add(id); });
         if (scope.includes('obtainable')) expandFamilies(getObtainableIds()).forEach(function(id){ scopeIds.add(id); });
         if (scope.includes('trainers'))   expandFamilies(getTrainerIds()).forEach(function(id){ scopeIds.add(id); });
+        if (scope.includes('fainted'))    expandFamilies(getFaintedIds()).forEach(function(id){ scopeIds.add(id); });
       }
 
       var stage  = fState.stage  || [];
@@ -1746,8 +1785,9 @@
     }
 
     function locState(routeId) {
-      if (!nzState.locations[routeId]) nzState.locations[routeId] = { selected: null, delayed: [] };
+      if (!nzState.locations[routeId]) nzState.locations[routeId] = { selected: null, delayed: [], fainted: [] };
       if (!Array.isArray(nzState.locations[routeId].delayed)) nzState.locations[routeId].delayed = [];
+      if (!Array.isArray(nzState.locations[routeId].fainted)) nzState.locations[routeId].fainted = [];
       return nzState.locations[routeId];
     }
 
@@ -1759,28 +1799,39 @@
 
       const sel     = loc.selected;
       const delayed = loc.delayed;
+      const fainted = loc.fainted;
 
       // Orange border only when delays exist and nothing is captured yet
       card.classList.toggle('nz-has-delayed', delayed.length > 0 && !sel);
 
       card.querySelectorAll('.wild-poke[data-slot]').forEach(function (slot) {
         const s = slot.dataset.slot;
-        slot.classList.remove('nz-selected', 'nz-dimmed', 'nz-delayed');
+        const isAutoSel = slot.classList.contains('nz-auto-selected');
+        slot.classList.remove('nz-selected', 'nz-dimmed', 'nz-delayed', 'nz-fainted');
 
         if (sel) {
-          slot.classList.add(s === sel ? 'nz-selected' : 'nz-dimmed');
+          if (s === sel) {
+            slot.classList.add('nz-selected');
+            if (fainted.includes(s)) slot.classList.add('nz-fainted');
+          } else {
+            slot.classList.add('nz-dimmed');
+          }
         } else if (delayed.includes(s)) {
           slot.classList.add('nz-delayed');
         }
+
+        // Fainted for auto-selected slots (STARTER_EXTRA)
+        if (isAutoSel && fainted.includes(s)) slot.classList.add('nz-fainted');
 
         // Sync checkbox states and always reset disabled (group effects may have set it)
         const selCb      = slot.querySelector('.nz-select-cb');
         const delayCb    = slot.querySelector('.nz-delay-cb');
         const delayLabel = slot.querySelector('.nz-delay-label');
+        const faintCb    = slot.querySelector('.nz-faint-cb');
         if (selCb)   { selCb.checked  = s === sel;             selCb.disabled  = false; }
         if (delayCb) { delayCb.checked = delayed.includes(s);  delayCb.disabled = !!sel; }
-        // Disable delay label styling when a pokemon is already captured at this location
         if (delayLabel) delayLabel.classList.toggle('nz-disabled', !!sel);
+        if (faintCb) { faintCb.checked = fainted.includes(s); }
       });
     }
 
@@ -1860,13 +1911,27 @@
     }
 
     // ---------- Handlers ----------
+    function handleFaintChange(routeId, slot, checked) {
+      const loc = locState(routeId);
+      if (checked) {
+        if (!loc.fainted.includes(slot)) loc.fainted.push(slot);
+      } else {
+        loc.fainted = loc.fainted.filter(function (s) { return s !== slot; });
+      }
+      saveState();
+      applyLocVisuals(routeId);
+      if (window._renderPokedex) window._renderPokedex();
+    }
+
     function handleSelectChange(routeId, slot, checked) {
       const loc = locState(routeId);
       if (checked) {
         loc.selected = slot;
-        loc.delayed  = []; // capturing clears all delays for this location
+        loc.delayed  = [];
+        loc.fainted  = []; // switching selection clears fainted
       } else {
         loc.selected = null;
+        loc.fainted  = []; // unselecting clears fainted
       }
       saveState();
       applyLocVisuals(routeId);
@@ -1935,6 +2000,8 @@
           handleSelectChange(t.dataset.route, t.dataset.slot, t.checked);
         } else if (t.classList.contains('nz-delay-cb')) {
           handleDelayChange(t.dataset.route, t.dataset.slot, t.checked);
+        } else if (t.classList.contains('nz-faint-cb')) {
+          handleFaintChange(t.dataset.route, t.dataset.slot, t.checked);
         } else if (t.classList.contains('nz-defeat-cb')) {
           handleDefeatChange(t.dataset.trainerId, t.checked);
         }
