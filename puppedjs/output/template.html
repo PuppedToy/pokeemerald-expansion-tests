@@ -404,7 +404,7 @@
             <div class="filter-row">
               <span class="filter-row-label">Changes</span>
               <div class="filter-chips" id="change-chips">
-                <div class="filter-chip" data-change="mutated">Mutated</div>
+                <div class="filter-chip" data-change="adjusted">Adjusted</div>
                 <div class="filter-chip" data-change="buffed">Buffed</div>
                 <div class="filter-chip" data-change="nerfed">Nerfed</div>
                 <div class="filter-chip" data-change="unmutated">Unmutated</div>
@@ -1060,7 +1060,7 @@
       const isStaticEncounter   = !!route.staticEncounter;
       const isLegendaryEncounter = !!route.legendaryEncounter;
       const isStarterExtra = route.id === 'STARTER_EXTRA';
-      const autoSelected = isStarterExtra || isBossReward;
+      const autoSelected = isStarterExtra; // only STARTER_EXTRA is pre-selected; boss rewards etc. are capturable
 
       const encounterTypes = ['land', 'old', 'good', 'surf', 'underwater', 'super', 'special', 'special1', 'special2', 'special3', 'special4', 'special5', 'special6', 'special7', 'special8', 'special9'];
 
@@ -1403,7 +1403,7 @@
       sort: 'id',
       scope: ['box','obtainable','trainers'],
       stage: ['nfe','fe','mega'],
-      change: ['mutated','unmutated'],
+      change: ['adjusted','unmutated'],
       types: ALL_TYPES.slice()
     };
 
@@ -1417,6 +1417,11 @@
       if (!fState.stage)  fState.stage  = DEFAULTS.stage.slice();
       if (!fState.change) fState.change = DEFAULTS.change.slice();
       if (!fState.types)  fState.types  = DEFAULTS.types.slice();
+      // Migrate old 'mutated' key → 'adjusted'
+      if (fState.change.includes('mutated')) {
+        fState.change = fState.change.filter(function(c){ return c !== 'mutated'; });
+        if (!fState.change.includes('adjusted')) fState.change.push('adjusted');
+      }
     }
 
     function saveFilters() {
@@ -1563,12 +1568,13 @@
 
         // Change (OR)
         var log = poke.log || [];
-        var hasBuffs = log.some(function(e){ return e.type==='BUFF'; });
-        var hasNerfs = log.some(function(e){ return e.type==='NERF'; });
+        var allBuffs = log.length > 0 && log.every(function(e){ return e.type==='BUFF'; });
+        var allNerfs = log.length > 0 && log.every(function(e){ return e.type==='NERF'; });
+        var isAdjusted = log.length > 0 && !allBuffs && !allNerfs; // mixed / ADJUSTMENT-only
         var passChange =
-          (change.includes('mutated')   && log.length > 0) ||
-          (change.includes('buffed')    && hasBuffs)        ||
-          (change.includes('nerfed')    && hasNerfs)        ||
+          (change.includes('adjusted')  && isAdjusted)     ||
+          (change.includes('buffed')    && allBuffs)        ||
+          (change.includes('nerfed')    && allNerfs)        ||
           (change.includes('unmutated') && log.length === 0);
         if (!passChange) return false;
 
