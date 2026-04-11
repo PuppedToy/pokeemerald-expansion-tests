@@ -318,6 +318,41 @@
     }
     .nz-defeat-label:hover { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.4); }
     .nz-defeat-label input[type="checkbox"] { accent-color: #ef4444; cursor: pointer; }
+
+    /* ---- Pokedex Controls ---- */
+    #pokedex-controls { margin-bottom: 16px; }
+    #poke-search {
+      width: 100%; padding: 10px 14px; box-sizing: border-box;
+      background: var(--glass-2); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; color: #e9f2ff; font-size: 14px; outline: none;
+      margin-bottom: 10px; font-family: inherit;
+    }
+    #poke-search:focus { border-color: var(--accent); }
+    .filter-row {
+      display: flex; align-items: center; gap: 8px;
+      flex-wrap: wrap; margin-bottom: 7px;
+    }
+    .filter-row-label {
+      font-size: 11px; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      white-space: nowrap; min-width: 58px;
+    }
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 5px; flex: 1; }
+    .filter-chip {
+      padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
+      cursor: pointer; border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04); color: var(--muted);
+      user-select: none; transition: background 0.12s, color 0.12s, border-color 0.12s;
+    }
+    .filter-chip:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .filter-chip.active { background: rgba(255,122,89,0.18); border-color: var(--accent); color: #fff; }
+    .reset-btn {
+      padding: 3px 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
+      cursor: pointer; border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06); color: #e9f2ff; margin-left: auto;
+    }
+    .reset-btn:hover { background: rgba(255,255,255,0.14); }
+    #pokedex-count { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -330,14 +365,6 @@
           <div class="small">Your custom journey dex</div>
         </div>
       </div>
-      <div class="search">
-        <input type="search" placeholder="Search" />
-        <button class="chip">Search</button>
-      </div>
-      <div class="actions">
-        <div class="chip">Sort: Popular</div>
-        <div class="chip">Map</div>
-      </div>
     </header>
 
     <main class="main">
@@ -345,6 +372,50 @@
       <div class="content">
         <section id="pokemon">
           <h2>Pokemon</h2>
+          <div id="pokedex-controls">
+            <input type="search" id="poke-search" placeholder="Search name, move, ability or type…" autocomplete="off">
+            <div class="filter-row">
+              <span class="filter-row-label">Sort</span>
+              <div class="filter-chips" id="sort-chips">
+                <div class="filter-chip" data-sort="id">ID</div>
+                <div class="filter-chip" data-sort="name">Name</div>
+                <div class="filter-chip" data-sort="tier">Tier</div>
+                <div class="filter-chip" data-sort="type">Type</div>
+              </div>
+              <button class="reset-btn" id="filters-reset">↺ Reset</button>
+            </div>
+            <div class="filter-row">
+              <span class="filter-row-label">Scope</span>
+              <div class="filter-chips" id="scope-chips">
+                <div class="filter-chip" data-scope="box">In Box</div>
+                <div class="filter-chip" data-scope="obtainable">Obtainable</div>
+                <div class="filter-chip" data-scope="trainers">In Trainers</div>
+                <div class="filter-chip" data-scope="all">ALL</div>
+              </div>
+            </div>
+            <div class="filter-row">
+              <span class="filter-row-label">Stage</span>
+              <div class="filter-chips" id="stage-chips">
+                <div class="filter-chip" data-stage="nfe">Not FE</div>
+                <div class="filter-chip" data-stage="fe">Fully Evolved</div>
+                <div class="filter-chip" data-stage="mega">Megas</div>
+              </div>
+            </div>
+            <div class="filter-row">
+              <span class="filter-row-label">Changes</span>
+              <div class="filter-chips" id="change-chips">
+                <div class="filter-chip" data-change="mutated">Mutated</div>
+                <div class="filter-chip" data-change="buffed">Buffed</div>
+                <div class="filter-chip" data-change="nerfed">Nerfed</div>
+                <div class="filter-chip" data-change="unmutated">Unmutated</div>
+              </div>
+            </div>
+            <div class="filter-row" style="align-items:flex-start">
+              <span class="filter-row-label" style="padding-top:3px">Type</span>
+              <div class="filter-chips" id="type-chips"></div>
+            </div>
+          </div>
+          <div id="pokedex-count"></div>
           <div class="grid" id="pokemon-cards"></div>
         </section>
   
@@ -695,18 +766,7 @@
   <script src="trainers.js"></script>
   <script src="wildpokes.js"></script>
   <script src="abilities.js"></script>
-  <!-- script to handle pokedex -->
-  <script>
-    const pokemonGrid = document.getElementById('pokemon-cards');
-    pokes.forEach(poke => {
-      const card = document.createElement('div');
-      const cardContent = generatePokeCardContent(poke);
-      card.className = 'card clicker';
-      card.innerHTML = cardContent;
-      card.addEventListener('click', () => showPokemonModal(poke));
-      pokemonGrid.appendChild(card);
-    });
-  </script>
+  <!-- pokedex rendering is handled by the filter module below -->
   <!-- script to handle moves -->
   <script>
     const movesGrid = document.getElementById('moves-cards');
@@ -1314,6 +1374,326 @@
       }
     });
   </script>
+  <!-- pokedex filters, sort, and rendering -->
+  <script>
+  (function () {
+    'use strict';
+    const FS_KEY = 'pokedex_filters_v1';
+    const NZ_KEY = 'nuzlocke_v1';
+
+    const ALL_TYPES = Object.keys(typeColors);
+    const TIER_ORDER = ['AG','UBERS','OU','UU','RU','NU','PU','ZU','MAGIKARP'];
+    const ENCOUNTER_TYPES = ['land','old','good','surf','underwater','super',
+      'special','special1','special2','special3','special4','special5',
+      'special6','special7','special8','special9'];
+    const LOC_GROUPS = {
+      'SHOAL_CAVE': ['MAP_SHOAL_CAVE_LOW_TIDE_ENTRANCE_ROOM','MAP_SHOAL_CAVE_HIGH_TIDE_ENTRANCE_ROOM']
+    };
+    const routeGroup = {};
+    Object.entries(LOC_GROUPS).forEach(function([g,rs]){ rs.forEach(function(r){ routeGroup[r]=g; }); });
+
+    // ---------- Defaults ----------
+    const DEFAULTS = {
+      sort: 'id',
+      scope: ['box','obtainable','trainers'],
+      stage: ['nfe','fe','mega'],
+      change: ['mutated','unmutated'],
+      types: ALL_TYPES.slice()
+    };
+
+    // ---------- Filter state ----------
+    let fState = {};
+
+    function loadFilters() {
+      try { const r = localStorage.getItem(FS_KEY); if (r) fState = JSON.parse(r); } catch(e){}
+      if (!fState.sort)   fState.sort   = DEFAULTS.sort;
+      if (!fState.scope)  fState.scope  = DEFAULTS.scope.slice();
+      if (!fState.stage)  fState.stage  = DEFAULTS.stage.slice();
+      if (!fState.change) fState.change = DEFAULTS.change.slice();
+      if (!fState.types)  fState.types  = DEFAULTS.types.slice();
+    }
+
+    function saveFilters() {
+      try { localStorage.setItem(FS_KEY, JSON.stringify(fState)); } catch(e){}
+    }
+
+    function resetFilters() {
+      fState = { sort: DEFAULTS.sort, scope: DEFAULTS.scope.slice(),
+                 stage: DEFAULTS.stage.slice(), change: DEFAULTS.change.slice(),
+                 types: DEFAULTS.types.slice() };
+      saveFilters();
+      syncUI();
+      renderPokedex();
+    }
+
+    // ---------- Evo family union-find ----------
+    var _uf = {};
+    function ufFind(id) {
+      if (!_uf[id]) _uf[id] = id;
+      if (_uf[id] !== id) _uf[id] = ufFind(_uf[id]);
+      return _uf[id];
+    }
+    function ufUnion(a, b) { var pa=ufFind(a), pb=ufFind(b); if(pa!==pb) _uf[pa]=pb; }
+
+    pokes.forEach(function(poke) {
+      ufFind(poke.id);
+      if (poke.evolutions) poke.evolutions.forEach(function(e){ ufUnion(poke.id, e.pokemon); });
+      if (poke.evolutionData && poke.evolutionData.megaEvos)
+        poke.evolutionData.megaEvos.forEach(function(mid){ ufUnion(poke.id, mid); });
+    });
+
+    var _families = {};
+    pokes.forEach(function(poke) {
+      var root = ufFind(poke.id);
+      if (!_families[root]) _families[root] = new Set();
+      _families[root].add(poke.id);
+    });
+
+    function getFamilyOf(pokeId) { return _families[ufFind(pokeId)] || new Set([pokeId]); }
+
+    function expandFamilies(ids) {
+      var result = new Set();
+      ids.forEach(function(id){ getFamilyOf(id).forEach(function(fid){ result.add(fid); }); });
+      return result;
+    }
+
+    // ---------- Scope helpers ----------
+    function getNzState() {
+      try { return JSON.parse(localStorage.getItem(NZ_KEY)) || {}; } catch(e) { return {}; }
+    }
+
+    function getCapturedIds() {
+      var nz = getNzState(), locs = nz.locations || {}, ids = new Set();
+      wildPokes.forEach(function(route) {
+        var loc = locs[route.id];
+        if (loc && loc.selected && route[loc.selected]) ids.add(route[loc.selected]);
+      });
+      // STARTER_EXTRA pokemon are always auto-captured
+      var extra = wildPokes.find(function(r){ return r.id === 'STARTER_EXTRA'; });
+      if (extra) ENCOUNTER_TYPES.filter(function(t){ return extra[t]; }).forEach(function(t){ ids.add(extra[t]); });
+      return ids;
+    }
+
+    function getObtainableIds() {
+      var nz = getNzState(), locs = nz.locations || {}, ids = new Set();
+      wildPokes.forEach(function(route) {
+        if (route.id === 'STARTER_EXTRA' || route.boss) return;
+        var loc = locs[route.id] || {};
+        if (loc.selected) return;
+        var gid = routeGroup[route.id];
+        if (gid && LOC_GROUPS[gid].some(function(s){ return s !== route.id && (locs[s]||{}).selected; })) return;
+        ENCOUNTER_TYPES.filter(function(t){ return route[t]; }).forEach(function(t){ ids.add(route[t]); });
+      });
+      return ids;
+    }
+
+    function getTrainerIds() {
+      var ids = new Set();
+      Object.values(trainersData).forEach(function(trainer) {
+        trainer.team.forEach(function(m){ if (m.pokemon) ids.add(m.pokemon); });
+      });
+      return ids;
+    }
+
+    // ---------- Pokemon classification ----------
+    function isMega(poke) { return !!(poke.evolutionData && poke.evolutionData.megaItem); }
+
+    function isNFE(poke) {
+      return !!(poke.evolutions && poke.evolutions.some(function(e){
+        return e.method !== 'MEGA' && e.method !== 'PRIMAL';
+      }));
+    }
+
+    function isFE(poke) { return !isNFE(poke) && !isMega(poke); }
+
+    // ---------- Sort ----------
+    function sortedPokes(arr) {
+      var s = arr.slice();
+      if (fState.sort === 'name') {
+        s.sort(function(a,b){ return a.name.localeCompare(b.name); });
+      } else if (fState.sort === 'tier') {
+        s.sort(function(a,b){
+          var ai=TIER_ORDER.indexOf(a.rating.tier), bi=TIER_ORDER.indexOf(b.rating.tier);
+          return ai-bi || a.name.localeCompare(b.name);
+        });
+      } else if (fState.sort === 'type') {
+        s.sort(function(a,b){
+          var at=a.parsedTypes[0]||'', bt=b.parsedTypes[0]||'';
+          return at.localeCompare(bt) || a.name.localeCompare(b.name);
+        });
+      }
+      // 'id' keeps original order
+      return s;
+    }
+
+    // ---------- Render ----------
+    function renderPokedex() {
+      var searchEl = document.getElementById('poke-search');
+      var searchLower = searchEl ? searchEl.value.toLowerCase().trim() : '';
+
+      // Compute scope set
+      var scope = fState.scope || [];
+      var scopeIds = null; // null = ALL (no restriction)
+      if (!scope.includes('all')) {
+        scopeIds = new Set();
+        if (scope.includes('box'))        expandFamilies(getCapturedIds()).forEach(function(id){ scopeIds.add(id); });
+        if (scope.includes('obtainable')) expandFamilies(getObtainableIds()).forEach(function(id){ scopeIds.add(id); });
+        if (scope.includes('trainers'))   expandFamilies(getTrainerIds()).forEach(function(id){ scopeIds.add(id); });
+      }
+
+      var stage  = fState.stage  || [];
+      var change = fState.change || [];
+      var types  = new Set(fState.types || []);
+
+      var filtered = sortedPokes(pokes).filter(function(poke) {
+        // Scope
+        if (scopeIds !== null && !scopeIds.has(poke.id)) return false;
+
+        // Stage (OR)
+        var passStage = (stage.includes('mega') && isMega(poke)) ||
+                        (stage.includes('fe')   && isFE(poke))   ||
+                        (stage.includes('nfe')  && isNFE(poke));
+        if (!passStage) return false;
+
+        // Change (OR)
+        var log = poke.log || [];
+        var hasBuffs = log.some(function(e){ return e.type==='BUFF'; });
+        var hasNerfs = log.some(function(e){ return e.type==='NERF'; });
+        var passChange =
+          (change.includes('mutated')   && log.length > 0) ||
+          (change.includes('buffed')    && hasBuffs)        ||
+          (change.includes('nerfed')    && hasNerfs)        ||
+          (change.includes('unmutated') && log.length === 0);
+        if (!passChange) return false;
+
+        // Type (OR — at least one of pokemon's types must be checked)
+        if (!poke.parsedTypes.some(function(t){ return types.has(t); })) return false;
+
+        // Search (applied last, not stored)
+        if (searchLower) {
+          var candidates = [poke.name.toLowerCase()];
+          poke.parsedTypes.forEach(function(t){ candidates.push(t.toLowerCase()); });
+          (poke.parsedAbilities||[]).forEach(function(a){ candidates.push(nameify(a.replace('ABILITY_','')).toLowerCase()); });
+          (poke.learnset||[]).forEach(function(l){ candidates.push(moveName(l.move).toLowerCase()); });
+          (poke.teachables||[]).forEach(function(m){ candidates.push(moveName(m).toLowerCase()); });
+          if (!candidates.some(function(c){ return c.includes(searchLower); })) return false;
+        }
+
+        return true;
+      });
+
+      var grid = document.getElementById('pokemon-cards');
+      grid.innerHTML = '';
+      filtered.forEach(function(poke) {
+        var card = document.createElement('div');
+        card.className = 'card clicker';
+        card.innerHTML = generatePokeCardContent(poke);
+        card.addEventListener('click', function(){ showPokemonModal(poke); });
+        grid.appendChild(card);
+      });
+
+      var countEl = document.getElementById('pokedex-count');
+      if (countEl) countEl.textContent = 'Showing ' + filtered.length + ' / ' + pokes.length + ' pokemon';
+    }
+
+    // ---------- UI sync ----------
+    function syncUI() {
+      document.querySelectorAll('#sort-chips .filter-chip').forEach(function(c){
+        c.classList.toggle('active', c.dataset.sort === fState.sort);
+      });
+      document.querySelectorAll('#scope-chips .filter-chip').forEach(function(c){
+        c.classList.toggle('active', fState.scope.includes(c.dataset.scope));
+      });
+      document.querySelectorAll('#stage-chips .filter-chip').forEach(function(c){
+        c.classList.toggle('active', fState.stage.includes(c.dataset.stage));
+      });
+      document.querySelectorAll('#change-chips .filter-chip').forEach(function(c){
+        c.classList.toggle('active', fState.change.includes(c.dataset.change));
+      });
+      document.querySelectorAll('#type-chips .filter-chip').forEach(function(c){
+        var type = c.dataset.type;
+        var active = fState.types.includes(type);
+        c.classList.toggle('active', active);
+        c.style.backgroundColor = active ? typeColors[type] : '';
+        c.style.color = active ? '#000' : '';
+      });
+    }
+
+    function buildTypeChips() {
+      var container = document.getElementById('type-chips');
+      ALL_TYPES.forEach(function(type) {
+        var chip = document.createElement('div');
+        chip.className = 'filter-chip';
+        chip.dataset.type = type;
+        chip.textContent = type.charAt(0) + type.slice(1).toLowerCase();
+        container.appendChild(chip);
+      });
+    }
+
+    // ---------- Toggle helpers ----------
+    function toggleArr(arr, val) {
+      var i = arr.indexOf(val);
+      if (i >= 0) arr.splice(i, 1); else arr.push(val);
+    }
+
+    // ---------- Events ----------
+    function setupEvents() {
+      // Sort — exclusive
+      document.getElementById('sort-chips').addEventListener('click', function(e) {
+        var c = e.target.closest('.filter-chip[data-sort]');
+        if (!c) return;
+        fState.sort = c.dataset.sort;
+        saveFilters(); syncUI(); renderPokedex();
+      });
+      // Scope — toggle
+      document.getElementById('scope-chips').addEventListener('click', function(e) {
+        var c = e.target.closest('.filter-chip[data-scope]');
+        if (!c) return;
+        toggleArr(fState.scope, c.dataset.scope);
+        saveFilters(); syncUI(); renderPokedex();
+      });
+      // Stage — toggle
+      document.getElementById('stage-chips').addEventListener('click', function(e) {
+        var c = e.target.closest('.filter-chip[data-stage]');
+        if (!c) return;
+        toggleArr(fState.stage, c.dataset.stage);
+        saveFilters(); syncUI(); renderPokedex();
+      });
+      // Change — toggle
+      document.getElementById('change-chips').addEventListener('click', function(e) {
+        var c = e.target.closest('.filter-chip[data-change]');
+        if (!c) return;
+        toggleArr(fState.change, c.dataset.change);
+        saveFilters(); syncUI(); renderPokedex();
+      });
+      // Type — toggle with color
+      document.getElementById('type-chips').addEventListener('click', function(e) {
+        var c = e.target.closest('.filter-chip[data-type]');
+        if (!c) return;
+        var type = c.dataset.type;
+        toggleArr(fState.types, type);
+        var active = fState.types.includes(type);
+        c.classList.toggle('active', active);
+        c.style.backgroundColor = active ? typeColors[type] : '';
+        c.style.color = active ? '#000' : '';
+        saveFilters(); renderPokedex();
+      });
+      // Search — no storage
+      document.getElementById('poke-search').addEventListener('input', renderPokedex);
+      // Reset
+      document.getElementById('filters-reset').addEventListener('click', resetFilters);
+    }
+
+    // ---------- Init ----------
+    loadFilters();
+    buildTypeChips();
+    syncUI();
+    setupEvents();
+    // renderPokedex is called by the loader after showPokemonModal is defined
+    window._renderPokedex = renderPokedex;
+  })();
+  </script>
+
   <!-- nuzlocke tracker -->
   <script>
   (function () {
@@ -1557,6 +1937,8 @@
   <!-- loader -->
   <script>
     window.addEventListener('load', () => {
+      // Render pokedex now that showPokemonModal is defined
+      if (window._renderPokedex) window._renderPokedex();
       // Activate first tab
       const firstNavLink = document.querySelector('.nav a');
       if (firstNavLink) firstNavLink.click();
