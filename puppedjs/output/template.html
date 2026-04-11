@@ -911,7 +911,9 @@
 
       // Clean route name
       const routeName = route.label || nameify(route.id.replace('MAP_', ''));
-      const isBossReward = !!route.boss;
+      const isBossReward        = !!route.boss;
+      const isStaticEncounter   = !!route.staticEncounter;
+      const isLegendaryEncounter = !!route.legendaryEncounter;
 
       const encounterTypes = ['land', 'old', 'good', 'surf', 'underwater', 'super', 'special', 'special1', 'special2', 'special3', 'special4', 'special5', 'special6', 'special7', 'special8', 'special9'];
 
@@ -925,7 +927,11 @@
           const adjustmentIcon = getFullPokeLogIcon(poke);
           const nameColor = getFullPokeLogColor(poke);
           const coloredName = nameColor ? `<span style="color:${nameColor}">${pokeName}</span>` : pokeName;
-          const typeLabel = isBossReward ? '<div style="font-size:12px; color:#c084fc; margin-bottom:4px;">Reward</div>' : `<div style="font-size:12px; color:#FFB28A; margin-bottom:4px;">${getRouteTypeName(type)}</div>`;
+          let typeLabel;
+          if (isBossReward)         typeLabel = `<div style="font-size:12px; color:#c084fc; margin-bottom:4px;">Reward</div>`;
+          else if (isStaticEncounter)    typeLabel = `<div style="font-size:12px; color:#f87171; margin-bottom:4px;">Static</div>`;
+          else if (isLegendaryEncounter) typeLabel = `<div style="font-size:12px; color:#fbbf24; margin-bottom:4px;">Legendary</div>`;
+          else                           typeLabel = `<div style="font-size:12px; color:#FFB28A; margin-bottom:4px;">${getRouteTypeName(type)}</div>`;
           return `
             <div class="clicker wild-poke poke-${pokeId}" style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
               ${typeLabel}
@@ -936,12 +942,18 @@
         })
         .join('');
 
-      const bossHeaderExtra = isBossReward ? `<div style="font-size:11px; color:#c084fc; font-weight:600; letter-spacing:0.05em; margin-top:2px;">BOSS REWARD</div>` : '';
+      let headerBadge = '';
+      if (isBossReward)
+        headerBadge = `<div style="font-size:11px; color:#c084fc; font-weight:600; letter-spacing:0.05em; margin-top:2px;">BOSS REWARD</div>`;
+      else if (isStaticEncounter)
+        headerBadge = `<div style="font-size:11px; color:#f87171; font-weight:600; letter-spacing:0.05em; margin-top:2px;">STATIC ENCOUNTER</div>`;
+      else if (isLegendaryEncounter)
+        headerBadge = `<div style="font-size:11px; font-weight:800; letter-spacing:0.08em; margin-top:2px; background:linear-gradient(90deg,#f59e0b,#fbbf24,#f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">✦ LEGENDARY ✦</div>`;
 
       card.innerHTML = `
         <div class="meta">
           <div class="title">${routeName}</div>
-          ${bossHeaderExtra}
+          ${headerBadge}
         </div>
         <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:8px;">
           ${encountersHTML}

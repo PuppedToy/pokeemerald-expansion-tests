@@ -1736,23 +1736,50 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         special2: starters[1],
         special3: starters[2],
     });
-    // Insert boss/gym reward extras at their geographic positions
-    const gymExtras = [
-        { afterMap: 'MAP_ROUTE116',     label: 'Roxanne Reward',          special1: pokeRewardReplacements[0].id },
-        { afterMap: 'MAP_GRANITE_CAVE', label: 'Brawly Reward',           special1: pokeRewardReplacements[1].id },
-        { afterMap: 'MAP_ROUTE109',     label: 'Slateport Grunts Reward', special1: pokeRewardReplacements[8].id },
-        { afterMap: 'MAP_ROUTE117',     label: 'Wattson Reward',          special1: pokeRewardReplacements[2].id },
-        { afterMap: 'MAP_JAGGED_PASS',  label: 'Flannery Reward',         special1: pokeRewardReplacements[3].id },
-        { afterMap: 'MAP_ROUTE114',     label: 'Norman Reward',           special1: pokeRewardReplacements[4].id },
-        { afterMap: 'MAP_ROUTE119',     label: 'Shelly Reward',           special1: pokeRewardReplacements[9].id },
-        { afterMap: 'MAP_ROUTE120',     label: 'Winona Reward',           special1: pokeRewardReplacements[5].id },
-        { afterMap: 'MAP_ROUTE121',     label: 'Wally Lilycove Reward',   special1: pokeRewardReplacements[10].id },
-        { afterMap: 'MAP_ROUTE127',     label: 'Tate & Liza Reward',      special1: pokeRewardReplacements[6].id },
-        { afterMap: 'MAP_ROUTE128',     label: 'Juan Reward',             special1: pokeRewardReplacements[7].id },
+    // Extract static/legendary encounter entries to reposition them geographically.
+    // Object.assign mutates and returns the extracted entry so we can add props inline.
+    const extractMap = (id, extra = {}) => {
+        const idx = maps.findIndex(m => m.id === id);
+        return idx !== -1 ? Object.assign(maps.splice(idx, 1)[0], extra) : null;
+    };
+    const desertRuinsEntry = extractMap('MAP_DESERT_RUINS',   { label: 'Desert Ruins',  staticEncounter: true });
+    const islandCaveEntry  = extractMap('MAP_ISLAND_CAVE',    { label: 'Island Cave',   staticEncounter: true });
+    const ancientTombEntry = extractMap('MAP_ANCIENT_TOMB',   { label: 'Ancient Tomb',  staticEncounter: true });
+    const skyPillarEntry   = extractMap('MAP_SKY_PILLAR_TOP', { label: 'Sky Pillar Top', legendaryEncounter: true });
+    const route123Entry    = extractMap('MAP_ROUTE123');
+
+    // Insertions: groups sharing the same afterMap are listed in REVERSE desired order so
+    // repeated splices at idx+1 yield the correct final sequence.
+    const insertions = [
+        // Route 116 → Roxanne
+        { afterMap: 'MAP_ROUTE116', entry: { id: 'BOSS_ROXANNE_REWARD',          label: 'Roxanne Reward',          boss: true, special1: pokeRewardReplacements[0].id } },
+        // Route 106 → Brawly (before Granite Cave)
+        { afterMap: 'MAP_ROUTE106', entry: { id: 'BOSS_BRAWLY_REWARD',           label: 'Brawly Reward',           boss: true, special1: pokeRewardReplacements[1].id } },
+        // Route 109 → Slateport Grunts
+        { afterMap: 'MAP_ROUTE109', entry: { id: 'BOSS_SLATEPORT_GRUNTS_REWARD', label: 'Slateport Grunts Reward', boss: true, special1: pokeRewardReplacements[8].id } },
+        // Route 118 → Wattson
+        { afterMap: 'MAP_ROUTE118', entry: { id: 'BOSS_WATTSON_REWARD',          label: 'Wattson Reward',          boss: true, special1: pokeRewardReplacements[2].id } },
+        // Route 114 group (reverse order → final: Flannery, Desert Ruins, Norman, Island Cave)
+        { afterMap: 'MAP_ROUTE114', entry: islandCaveEntry },
+        { afterMap: 'MAP_ROUTE114', entry: { id: 'BOSS_NORMAN_REWARD',           label: 'Norman Reward',           boss: true, special1: pokeRewardReplacements[4].id } },
+        { afterMap: 'MAP_ROUTE114', entry: desertRuinsEntry },
+        { afterMap: 'MAP_ROUTE114', entry: { id: 'BOSS_FLANNERY_REWARD',         label: 'Flannery Reward',         boss: true, special1: pokeRewardReplacements[3].id } },
+        // Route 119 → Shelly
+        { afterMap: 'MAP_ROUTE119', entry: { id: 'BOSS_SHELLY_REWARD',           label: 'Shelly Reward',           boss: true, special1: pokeRewardReplacements[9].id } },
+        // Route 120 group (reverse order → final: Winona, Ancient Tomb)
+        { afterMap: 'MAP_ROUTE120', entry: ancientTombEntry },
+        { afterMap: 'MAP_ROUTE120', entry: { id: 'BOSS_WINONA_REWARD',           label: 'Winona Reward',           boss: true, special1: pokeRewardReplacements[5].id } },
+        // Route 121 → Wally Lilycove
+        { afterMap: 'MAP_ROUTE121', entry: { id: 'BOSS_WALLY_LILYCOVE',          label: 'Wally Lilycove Reward',   boss: true, special1: pokeRewardReplacements[10].id } },
+        // Route 124 → Tate & Liza (before Route 125)
+        { afterMap: 'MAP_ROUTE124', entry: { id: 'BOSS_TATE_LIZA_REWARD',        label: 'Tate & Liza Reward',      boss: true, special1: pokeRewardReplacements[6].id } },
+        // Route 129 group (reverse order → final: Sky Pillar, Juan, Route 123)
+        { afterMap: 'MAP_ROUTE129', entry: route123Entry },
+        { afterMap: 'MAP_ROUTE129', entry: { id: 'BOSS_JUAN_REWARD',             label: 'Juan Reward',             boss: true, special1: pokeRewardReplacements[7].id } },
+        { afterMap: 'MAP_ROUTE129', entry: skyPillarEntry },
     ];
-    for (const extra of gymExtras) {
-        const idx = maps.findIndex(m => m.id === extra.afterMap);
-        const entry = { id: `BOSS_${extra.label.toUpperCase().replace(/[^A-Z0-9]/g, '_')}`, label: extra.label, boss: true, special1: extra.special1 };
+    for (const { afterMap, entry } of insertions) {
+        const idx = maps.findIndex(m => m.id === afterMap);
         if (idx !== -1) {
             maps.splice(idx + 1, 0, entry);
         } else {
