@@ -448,6 +448,12 @@
           <a class="clicker" data-target="trainers">Trainers</a>
           <a class="clicker" data-target="abilities">Abilities</a>
         </nav>
+        <button id="reset-all-btn" style="
+          margin-top:24px; width:100%; padding:8px 10px;
+          border-radius:10px; font-size:12px; font-weight:600; cursor:pointer;
+          border:1px solid rgba(239,68,68,0.4); background:rgba(239,68,68,0.08);
+          color:#f87171; font-family:inherit;
+        ">⚠ Reset All Data</button>
       </aside>
 
     </main>
@@ -1942,6 +1948,13 @@
       // Activate first tab
       const firstNavLink = document.querySelector('.nav a');
       if (firstNavLink) firstNavLink.click();
+      // Reset all stored data
+      document.getElementById('reset-all-btn').addEventListener('click', () => {
+        if (!confirm('Reset ALL stored data?\n\nThis will clear your nuzlocke progress (captures, delays, defeated trainers) and all filter/sort preferences.')) return;
+        localStorage.removeItem('nuzlocke_v1');
+        localStorage.removeItem('pokedex_filters_v1');
+        window.location.reload();
+      });
     });
   </script>
 </body>
