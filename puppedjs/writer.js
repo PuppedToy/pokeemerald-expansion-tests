@@ -1744,6 +1744,7 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     };
     const desertRuinsEntry = extractMap('MAP_DESERT_RUINS',   { label: 'Desert Ruins',  staticEncounter: true });
     const islandCaveEntry  = extractMap('MAP_ISLAND_CAVE',    { label: 'Island Cave',   staticEncounter: true });
+    const newMauvilleEntry = extractMap('MAP_NEW_MAUVILLE',   { label: 'New Mauville',  staticEncounter: true });
     const ancientTombEntry = extractMap('MAP_ANCIENT_TOMB',   { label: 'Ancient Tomb',  staticEncounter: true });
     const skyPillarEntry   = extractMap('MAP_SKY_PILLAR_TOP', { label: 'Sky Pillar Top', legendaryEncounter: true });
     const route123Entry    = extractMap('MAP_ROUTE123');
@@ -1764,6 +1765,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         { afterMap: 'MAP_ROUTE114', entry: { id: 'BOSS_NORMAN_REWARD',           label: 'Norman Reward',           boss: true, special1: pokeRewardReplacements[4].id } },
         { afterMap: 'MAP_ROUTE114', entry: desertRuinsEntry },
         { afterMap: 'MAP_ROUTE114', entry: { id: 'BOSS_FLANNERY_REWARD',         label: 'Flannery Reward',         boss: true, special1: pokeRewardReplacements[3].id } },
+        // Island Cave → New Mauville (processed after Island Cave is placed)
+        { afterMap: 'MAP_ISLAND_CAVE', entry: newMauvilleEntry },
         // Route 119 → Shelly
         { afterMap: 'MAP_ROUTE119', entry: { id: 'BOSS_SHELLY_REWARD',           label: 'Shelly Reward',           boss: true, special1: pokeRewardReplacements[9].id } },
         // Route 120 group (reverse order → final: Winona, Ancient Tomb)
