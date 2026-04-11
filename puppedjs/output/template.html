@@ -1403,7 +1403,7 @@
       sort: 'id',
       scope: ['box','obtainable','trainers'],
       stage: ['nfe','fe','mega'],
-      change: ['adjusted','unmutated'],
+      change: ['adjusted','buffed','nerfed','unmutated'],
       types: ALL_TYPES.slice()
     };
 
@@ -1422,6 +1422,9 @@
         fState.change = fState.change.filter(function(c){ return c !== 'mutated'; });
         if (!fState.change.includes('adjusted')) fState.change.push('adjusted');
       }
+      // Ensure buffed/nerfed are active if they weren't stored yet
+      if (!fState.change.includes('buffed'))  fState.change.push('buffed');
+      if (!fState.change.includes('nerfed'))  fState.change.push('nerfed');
     }
 
     function saveFilters() {
