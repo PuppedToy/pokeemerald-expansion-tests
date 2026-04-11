@@ -910,7 +910,8 @@
       card.className = 'card';
 
       // Clean route name
-      const routeName = nameify(route.id.replace('MAP_', ''));
+      const routeName = route.label || nameify(route.id.replace('MAP_', ''));
+      const isBossReward = !!route.boss;
 
       const encounterTypes = ['land', 'old', 'good', 'surf', 'underwater', 'super', 'special', 'special1', 'special2', 'special3', 'special4', 'special5', 'special6', 'special7', 'special8', 'special9'];
 
@@ -924,9 +925,10 @@
           const adjustmentIcon = getFullPokeLogIcon(poke);
           const nameColor = getFullPokeLogColor(poke);
           const coloredName = nameColor ? `<span style="color:${nameColor}">${pokeName}</span>` : pokeName;
+          const typeLabel = isBossReward ? '<div style="font-size:12px; color:#c084fc; margin-bottom:4px;">Reward</div>' : `<div style="font-size:12px; color:#FFB28A; margin-bottom:4px;">${getRouteTypeName(type)}</div>`;
           return `
             <div class="clicker wild-poke poke-${pokeId}" style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
-              <div style="font-size:12px; color:#FFB28A; margin-bottom:4px;">${getRouteTypeName(type)}</div>
+              ${typeLabel}
               <img src="${img}" style="width:64px;height:64px;object-fit:contain" alt="${pokeName}">
               <div style="font-weight:700;margin-top:4px">${coloredName}${adjustmentIcon}</div>
             </div>
@@ -934,9 +936,12 @@
         })
         .join('');
 
+      const bossHeaderExtra = isBossReward ? `<div style="font-size:11px; color:#c084fc; font-weight:600; letter-spacing:0.05em; margin-top:2px;">BOSS REWARD</div>` : '';
+
       card.innerHTML = `
         <div class="meta">
           <div class="title">${routeName}</div>
+          ${bossHeaderExtra}
         </div>
         <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:8px;">
           ${encountersHTML}

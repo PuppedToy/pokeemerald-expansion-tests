@@ -1736,6 +1736,29 @@ async function writer(pokemonList, moves, abilities, isDebug) {
         special2: starters[1],
         special3: starters[2],
     });
+    // Insert boss/gym reward extras at their geographic positions
+    const gymExtras = [
+        { afterMap: 'MAP_ROUTE116',     label: 'Roxanne Reward',          special1: pokeRewardReplacements[0].id },
+        { afterMap: 'MAP_GRANITE_CAVE', label: 'Brawly Reward',           special1: pokeRewardReplacements[1].id },
+        { afterMap: 'MAP_ROUTE109',     label: 'Slateport Grunts Reward', special1: pokeRewardReplacements[8].id },
+        { afterMap: 'MAP_ROUTE117',     label: 'Wattson Reward',          special1: pokeRewardReplacements[2].id },
+        { afterMap: 'MAP_JAGGED_PASS',  label: 'Flannery Reward',         special1: pokeRewardReplacements[3].id },
+        { afterMap: 'MAP_ROUTE114',     label: 'Norman Reward',           special1: pokeRewardReplacements[4].id },
+        { afterMap: 'MAP_ROUTE119',     label: 'Shelly Reward',           special1: pokeRewardReplacements[9].id },
+        { afterMap: 'MAP_ROUTE120',     label: 'Winona Reward',           special1: pokeRewardReplacements[5].id },
+        { afterMap: 'MAP_ROUTE121',     label: 'Wally Lilycove Reward',   special1: pokeRewardReplacements[10].id },
+        { afterMap: 'MAP_ROUTE127',     label: 'Tate & Liza Reward',      special1: pokeRewardReplacements[6].id },
+        { afterMap: 'MAP_ROUTE128',     label: 'Juan Reward',             special1: pokeRewardReplacements[7].id },
+    ];
+    for (const extra of gymExtras) {
+        const idx = maps.findIndex(m => m.id === extra.afterMap);
+        const entry = { id: `BOSS_${extra.label.toUpperCase().replace(/[^A-Z0-9]/g, '_')}`, label: extra.label, boss: true, special1: extra.special1 };
+        if (idx !== -1) {
+            maps.splice(idx + 1, 0, entry);
+        } else {
+            maps.push(entry);
+        }
+    }
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_WILDPOKES_REPALCEMENT, `<script>const wildPokes = ${JSON.stringify(maps)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'wildpokes.js'), `const wildPokes = ${JSON.stringify(maps, null, 4)};`, 'utf8');
 
