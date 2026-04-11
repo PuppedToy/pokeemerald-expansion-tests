@@ -1871,6 +1871,8 @@
       const groupId = routeToGroup[routeId];
       if (groupId) applyGroupEffects(groupId);
       if (routeId === 'STARTERS') applyStarterRivals();
+      // Refresh Pokedex — In Box / Obtainable scope depends on capture state
+      if (window._renderPokedex) window._renderPokedex();
     }
 
     function handleDelayChange(routeId, slot, checked) {
