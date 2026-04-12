@@ -210,15 +210,16 @@
     .right.nav-collapsed .nav a { justify-content: center; }
     .right.nav-collapsed #reset-all-btn { justify-content: center; padding: 8px 0; }
     .main {
-      background:transparent;
-      display: flex;
+      background: transparent;
       display: flex;
       width: 100%;
-      margin: 0 40px;
+      box-sizing: border-box;
+      padding: 0 40px;
+      gap: 40px;
     }
     .content {
-      width: 100%;
-      margin-right: 40px;
+      flex: 1;
+      min-width: 0;
     }
     .main section {
       opacity: 0;
