@@ -436,6 +436,12 @@ function parseAbilitiesFile(abilitiesFileText) {
                 description: '',
                 rating: 0,
                 breakable: false,
+                cantBeCopied: false,
+                cantBeOverwritten: false,
+                cantBeSuppressed: false,
+                cantBeSwapped: false,
+                cantBeTraced: false,
+                failsOnImposter: false,
             };
             continue;
         }
@@ -465,6 +471,24 @@ function parseAbilitiesFile(abilitiesFileText) {
         if (lines[i].startsWith('        .breakable = ')) {
             const breakable = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
             abilities[currentAbility].breakable = breakable === 'TRUE';
+        }
+        if (lines[i].startsWith('        .cantBeCopied = ')) {
+            abilities[currentAbility].cantBeCopied = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim() === 'TRUE';
+        }
+        if (lines[i].startsWith('        .cantBeOverwritten = ')) {
+            abilities[currentAbility].cantBeOverwritten = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim() === 'TRUE';
+        }
+        if (lines[i].startsWith('        .cantBeSuppressed = ')) {
+            abilities[currentAbility].cantBeSuppressed = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim() === 'TRUE';
+        }
+        if (lines[i].startsWith('        .cantBeSwapped = ')) {
+            abilities[currentAbility].cantBeSwapped = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim() === 'TRUE';
+        }
+        if (lines[i].startsWith('        .cantBeTraced = ')) {
+            abilities[currentAbility].cantBeTraced = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim() === 'TRUE';
+        }
+        if (lines[i].startsWith('        .failsOnImposter = ')) {
+            abilities[currentAbility].failsOnImposter = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim() === 'TRUE';
         }
     }
     return abilities;

@@ -1232,22 +1232,31 @@
       const card = document.createElement('div');
       card.className = 'card';
 
-      const breakableText = ability.breakable
-        ? `<div class="small" style="color:#ff7979;">Breakable</div>`
-        : `<div class="small" style="color:#8cffd4;">Unbreakable</div>`;
+      const flags = [];
+      if (ability.breakable)          flags.push({ label: 'Breakable',          color: '#ff7979', title: 'Can be suppressed by Mold Breaker and similar' });
+      if (ability.cantBeSuppressed)   flags.push({ label: "Can't be suppressed", color: '#8cffd4', title: 'Gastro Acid and similar have no effect' });
+      if (ability.cantBeCopied)       flags.push({ label: "Can't be copied",     color: '#93c5fd', title: 'Role Play and similar fail' });
+      if (ability.cantBeSwapped)      flags.push({ label: "Can't be swapped",    color: '#93c5fd', title: 'Skill Swap fails' });
+      if (ability.cantBeTraced)       flags.push({ label: "Can't be traced",     color: '#93c5fd', title: 'Trace fails' });
+      if (ability.cantBeOverwritten)  flags.push({ label: "Can't be overwritten",color: '#93c5fd', title: 'Simple Beam and similar fail' });
+      if (ability.failsOnImposter)    flags.push({ label: 'Fails on Imposter',   color: '#fbbf24', title: "Imposter can't replicate this ability" });
+
+      const flagsHTML = flags.length
+        ? `<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:10px;">${
+            flags.map(f => `<span data-tooltip="${f.title}" style="font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(255,255,255,0.06); border:1px solid ${f.color}; color:${f.color};">${f.label}</span>`).join('')
+          }</div>`
+        : '';
 
       card.innerHTML = `
         <div class="meta">
           <div>
             <div class="title">${ability.name}</div>
 
-            <div class="small" style="margin-bottom:12px;">
+            <div class="small" style="margin-bottom:10px;">
               ${ability.description}
             </div>
 
-            <div class="small" style="margin-bottom:6px;">
-              ${breakableText}
-            </div>
+            ${flagsHTML}
           </div>
         </div>
       `;
