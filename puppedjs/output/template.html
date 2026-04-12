@@ -391,13 +391,13 @@
 
     /* ---- Pokedex Controls ---- */
     #pokedex-controls { margin-bottom: 16px; }
-    #poke-search {
+    .tab-search {
       width: 100%; padding: 10px 14px; box-sizing: border-box;
       background: var(--glass-2); border: 1px solid rgba(255,255,255,0.08);
       border-radius: 10px; color: #e9f2ff; font-size: 14px; outline: none;
       margin-bottom: 10px; font-family: inherit;
     }
-    #poke-search:focus { border-color: var(--accent); }
+    .tab-search:focus { border-color: var(--accent); }
     .filter-row {
       display: flex; align-items: center; gap: 8px;
       flex-wrap: wrap; margin-bottom: 7px;
@@ -449,7 +449,7 @@
         <section id="pokemon">
           <h2>Pokemon</h2>
           <div id="pokedex-controls">
-            <input type="search" id="poke-search" placeholder="Search name, move, ability or type…" autocomplete="off">
+            <input type="search" id="poke-search" class="tab-search" placeholder="Search name, move, ability or type…" autocomplete="off">
             <div class="filter-row">
               <span class="filter-row-label">Sort</span>
               <div class="filter-chips" id="sort-chips">
@@ -504,6 +504,7 @@
   
         <section id="moves">
           <h2>Moves</h2>
+          <input type="search" id="move-search" class="tab-search" placeholder="Search name, type, category…" autocomplete="off">
           <div class="grid" id="moves-cards"></div>
         </section>
   
@@ -519,6 +520,7 @@
   
         <section id="abilities">
           <h2>Abilities</h2>
+          <input type="search" id="ability-search" class="tab-search" placeholder="Search name or description…" autocomplete="off">
           <div class="grid" id="abilities-cards"></div>
         </section>
       </div>
@@ -897,39 +899,53 @@
         .replace(/\b\w/g, c => c.toUpperCase());
     }
 
-    sortedMoves.forEach(move => {
-      const card = document.createElement('div');
-      card.className = 'card';
+    function renderMoves() {
+      const q = (document.getElementById('move-search')?.value || '').toLowerCase().trim();
+      movesGrid.innerHTML = '';
+      sortedMoves.forEach(move => {
+        if (q) {
+          const catName = formatCategory(move.category).toLowerCase();
+          const typeName = (move.type || '').toLowerCase();
+          if (![move.name, typeName, catName, move.description || '']
+              .some(s => s.toLowerCase().includes(q))) return;
+        }
 
-      const catName = formatCategory(move.category);
-      const catColor = categoryColor(move.category);
+        const card = document.createElement('div');
+        card.className = 'card';
 
-      card.innerHTML = `<div class="meta">
-        <div>
-          <div class="title">${move.name}</div>
+        const catName = formatCategory(move.category);
+        const catColor = categoryColor(move.category);
 
-          <div style="text-align:center; margin-bottom:10px;">
-            <span class="type" style="background-color:${typeColors[move.type]};">${move.type}</span>
-            <span class="type" style="background-color:${catColor};">${catName}</span>
-          </div>
+        card.innerHTML = `<div class="meta">
+          <div>
+            <div class="title">${move.name}</div>
 
-          <div class="small" style="text-align:center; margin-bottom:6px;">
-            Power: <b>${move.power ?? '-'}</b> &nbsp;•&nbsp;
-            Accuracy: <b>${move.accuracy ?? '-'}</b>% &nbsp;•&nbsp;
-            PP: <b>${move.pp}</b>
-          </div>
+            <div style="text-align:center; margin-bottom:10px;">
+              <span class="type" style="background-color:${typeColors[move.type]};">${move.type}</span>
+              <span class="type" style="background-color:${catColor};">${catName}</span>
+            </div>
 
-          <div class="small" style="text-align:center; margin-bottom:6px;">
-            Priority: <b>${move.priority}</b>
-          </div>
+            <div class="small" style="text-align:center; margin-bottom:6px;">
+              Power: <b>${move.power ?? '-'}</b> &nbsp;•&nbsp;
+              Accuracy: <b>${move.accuracy ?? '-'}</b>% &nbsp;•&nbsp;
+              PP: <b>${move.pp}</b>
+            </div>
 
-          <div class="small" style="text-align:center;">
-            Target: ${cleanTarget(move.target)}
-          </div>
-        </div></div>`;
+            <div class="small" style="text-align:center; margin-bottom:6px;">
+              Priority: <b>${move.priority}</b>
+            </div>
 
-      movesGrid.appendChild(card);
-    });
+            <div class="small" style="text-align:center;">
+              Target: ${cleanTarget(move.target)}
+            </div>
+          </div></div>`;
+
+        movesGrid.appendChild(card);
+      });
+    }
+
+    renderMoves();
+    document.getElementById('move-search').addEventListener('input', renderMoves);
   </script>
   <!-- script to handle trainers -->
   <script>
@@ -1238,43 +1254,51 @@
       .map(([id, ability]) => ({ id, ...ability }))
       .sort((a, b) => a.name.localeCompare(b.name));
 
-    sortedAbilities.forEach(ability => {
-      if (ability.id === 'ABILITY_NONE') return;
+    function renderAbilities() {
+      const q = (document.getElementById('ability-search')?.value || '').toLowerCase().trim();
+      abilitiesGrid.innerHTML = '';
+      sortedAbilities.forEach(ability => {
+        if (ability.id === 'ABILITY_NONE') return;
+        if (q && ![ability.name, ability.description || ''].some(s => s.toLowerCase().includes(q))) return;
 
-      const card = document.createElement('div');
-      card.className = 'card';
+        const card = document.createElement('div');
+        card.className = 'card';
 
-      const flags = [];
-      if (ability.breakable)          flags.push({ label: 'Breakable',          color: '#ff7979', title: 'Can be suppressed by Mold Breaker and similar' });
-      if (ability.cantBeSuppressed)   flags.push({ label: "Can't be suppressed", color: '#8cffd4', title: 'Gastro Acid and similar have no effect' });
-      if (ability.cantBeCopied)       flags.push({ label: "Can't be copied",     color: '#93c5fd', title: 'Role Play and similar fail' });
-      if (ability.cantBeSwapped)      flags.push({ label: "Can't be swapped",    color: '#93c5fd', title: 'Skill Swap fails' });
-      if (ability.cantBeTraced)       flags.push({ label: "Can't be traced",     color: '#93c5fd', title: 'Trace fails' });
-      if (ability.cantBeOverwritten)  flags.push({ label: "Can't be overwritten",color: '#93c5fd', title: 'Simple Beam and similar fail' });
-      if (ability.failsOnImposter)    flags.push({ label: 'Fails on Imposter',   color: '#fbbf24', title: "Imposter can't replicate this ability" });
+        const flags = [];
+        if (ability.breakable)          flags.push({ label: 'Breakable',           color: '#ff7979', title: 'Can be suppressed by Mold Breaker and similar' });
+        if (ability.cantBeSuppressed)   flags.push({ label: "Can't be suppressed", color: '#8cffd4', title: 'Gastro Acid and similar have no effect' });
+        if (ability.cantBeCopied)       flags.push({ label: "Can't be copied",     color: '#93c5fd', title: 'Role Play and similar fail' });
+        if (ability.cantBeSwapped)      flags.push({ label: "Can't be swapped",    color: '#93c5fd', title: 'Skill Swap fails' });
+        if (ability.cantBeTraced)       flags.push({ label: "Can't be traced",     color: '#93c5fd', title: 'Trace fails' });
+        if (ability.cantBeOverwritten)  flags.push({ label: "Can't be overwritten",color: '#93c5fd', title: 'Simple Beam and similar fail' });
+        if (ability.failsOnImposter)    flags.push({ label: 'Fails on Imposter',   color: '#fbbf24', title: "Imposter can't replicate this ability" });
 
-      const flagsHTML = flags.length
-        ? `<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:10px;">${
-            flags.map(f => `<span data-tooltip="${f.title}" style="font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(255,255,255,0.06); border:1px solid ${f.color}; color:${f.color};">${f.label}</span>`).join('')
-          }</div>`
-        : '';
+        const flagsHTML = flags.length
+          ? `<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:10px;">${
+              flags.map(f => `<span data-tooltip="${f.title}" style="font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(255,255,255,0.06); border:1px solid ${f.color}; color:${f.color};">${f.label}</span>`).join('')
+            }</div>`
+          : '';
 
-      card.innerHTML = `
-        <div class="meta">
-          <div>
-            <div class="title">${ability.name}</div>
+        card.innerHTML = `
+          <div class="meta">
+            <div>
+              <div class="title">${ability.name}</div>
 
-            <div class="small" style="margin-bottom:10px;">
-              ${ability.description}
+              <div class="small" style="margin-bottom:10px;">
+                ${ability.description}
+              </div>
+
+              ${flagsHTML}
             </div>
-
-            ${flagsHTML}
           </div>
-        </div>
-      `;
+        `;
 
-      abilitiesGrid.appendChild(card);
-    });
+        abilitiesGrid.appendChild(card);
+      });
+    }
+
+    renderAbilities();
+    document.getElementById('ability-search').addEventListener('input', renderAbilities);
   </script>
   <!-- script to handle modal -->
   <script>
