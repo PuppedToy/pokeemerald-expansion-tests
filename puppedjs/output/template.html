@@ -300,9 +300,8 @@
     .wild-poke.nz-selected .nz-faint-label,
     .wild-poke.nz-auto-selected .nz-faint-label { display: inline-flex; }
 
-    /* When a slot is selected, hide delay + select — only faint remains */
-    .wild-poke.nz-selected .nz-delay-label,
-    .wild-poke.nz-selected .nz-select-label { display: none; }
+    /* When a slot is selected, hide delay only — select stays so it can be unchecked */
+    .wild-poke.nz-selected .nz-delay-label { display: none; }
     /* Dimmed slots (another is captured in this location/group): hide all controls */
     .wild-poke.nz-dimmed .nuzlocke-controls { display: none; }
     .wild-poke.nz-fainted {
