@@ -188,7 +188,8 @@
     #nav-toggle {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: flex-start;
+      gap: 8px;
       width: 100%;
       background: none;
       border: none;
@@ -491,7 +492,7 @@
       </div>
 
       <aside class="right">
-        <button id="nav-toggle" title="Collapse menu">◀</button>
+        <button id="nav-toggle"><span class="nav-icon">▶</span><span class="nav-text">Hide menu</span></button>
         <nav class="nav" id="nav">
           <a class="clicker" data-target="pokemon"><span class="nav-icon">📖</span><span class="nav-text">Pokedex</span></a>
           <a class="clicker" data-target="moves"><span class="nav-icon">⚡</span><span class="nav-text">Moves</span></a>
@@ -541,6 +542,9 @@
           sec.classList.remove('active');
           if (sec.id === targetId) sec.classList.add('active');
         });
+
+        // Re-render Pokedex on demand when switching to that tab
+        if (targetId === 'pokemon' && window._renderPokedex) window._renderPokedex();
       });
     });
   </script>
@@ -1047,17 +1051,17 @@
       card.innerHTML = `
         <div style="text-align:center;">
           <div class="title">${trainerName}</div>
+          <div style="margin-bottom:6px;">
+            <label class="nz-defeat-label">
+              <input type="checkbox" class="nz-defeat-cb" data-trainer-id="${trainerId}">
+              ☑ Defeated
+            </label>
+          </div>
           <img width="60" height="60" src="${getTrainerImg(trainer.class)}">
           <div class="small" style="text-align:center; color:#FFB28A;">Lv. ${trainer.level}</div>
           ${rewards}
           <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:8px;">
             ${teamHTML}
-          </div>
-          <div style="margin-top:10px;">
-            <label class="nz-defeat-label">
-              <input type="checkbox" class="nz-defeat-cb" data-trainer-id="${trainerId}">
-              ☑ Defeated
-            </label>
           </div>
         </div>
       `;
@@ -1961,7 +1965,6 @@
       }
       saveState();
       applyLocVisuals(routeId);
-      if (window._renderPokedex) window._renderPokedex();
     }
 
     function handleSelectChange(routeId, slot, checked) {
@@ -1980,8 +1983,6 @@
       const groupId = routeToGroup[routeId];
       if (groupId) applyGroupEffects(groupId);
       if (routeId === 'STARTERS') applyStarterRivals();
-      // Refresh Pokedex — In Box / Obtainable scope depends on capture state
-      if (window._renderPokedex) window._renderPokedex();
     }
 
     function handleDelayChange(routeId, slot, checked) {
@@ -2069,8 +2070,8 @@
 
       function setCollapsed(collapsed) {
         aside.classList.toggle('nav-collapsed', collapsed);
-        toggleBtn.textContent = collapsed ? '▶' : '◀';
-        toggleBtn.title       = collapsed ? 'Expand menu' : 'Collapse menu';
+        toggleBtn.querySelector('.nav-icon').textContent = collapsed ? '◀' : '▶';
+        toggleBtn.querySelector('.nav-text').textContent = collapsed ? 'Show menu' : 'Hide menu';
         try { localStorage.setItem(NAV_KEY, collapsed ? '1' : '0'); } catch(e) {}
       }
 
@@ -2079,8 +2080,6 @@
     })();
 
     window.addEventListener('load', () => {
-      // Render pokedex now that showPokemonModal is defined
-      if (window._renderPokedex) window._renderPokedex();
       // Activate first tab
       const firstNavLink = document.querySelector('.nav a');
       if (firstNavLink) firstNavLink.click();
