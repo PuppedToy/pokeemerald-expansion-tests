@@ -416,6 +416,12 @@
     }
     .filter-chip:hover { background: rgba(255,255,255,0.1); color: #fff; }
     .filter-chip.active { background: rgba(255,122,89,0.18); border-color: var(--accent); color: #fff; }
+    .select-all-btn {
+      font-size: 11px; padding: 3px 8px; border-radius: 999px; white-space: nowrap;
+      border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05);
+      color: var(--muted); cursor: pointer; font-family: inherit; flex-shrink: 0;
+    }
+    .select-all-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
     .reset-btn {
       padding: 3px 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
       cursor: pointer; border: 1px solid rgba(255,255,255,0.15);
@@ -484,6 +490,12 @@
             <div class="filter-row" style="align-items:flex-start">
               <span class="filter-row-label" style="padding-top:3px">Type</span>
               <div class="filter-chips" id="type-chips"></div>
+              <button class="select-all-btn" id="type-select-all"></button>
+            </div>
+            <div class="filter-row" style="align-items:flex-start">
+              <span class="filter-row-label" style="padding-top:3px">Tier</span>
+              <div class="filter-chips" id="tier-chips"></div>
+              <button class="select-all-btn" id="tier-select-all"></button>
             </div>
           </div>
           <div id="pokedex-count"></div>
@@ -1475,7 +1487,8 @@
       scope: ['box','obtainable','trainers'],
       stage: ['nfe','fe','mega'],
       change: ['adjusted','buffed','nerfed','unmutated'],
-      types: ALL_TYPES.slice()
+      types: ALL_TYPES.slice(),
+      tiers: TIER_ORDER.slice()
     };
 
     // ---------- Filter state ----------
@@ -1488,6 +1501,7 @@
       if (!fState.stage)  fState.stage  = DEFAULTS.stage.slice();
       if (!fState.change) fState.change = DEFAULTS.change.slice();
       if (!fState.types)  fState.types  = DEFAULTS.types.slice();
+      if (!fState.tiers)  fState.tiers  = DEFAULTS.tiers.slice();
       // Migrate old 'mutated' key → 'adjusted'
       if (fState.change.includes('mutated')) {
         fState.change = fState.change.filter(function(c){ return c !== 'mutated'; });
@@ -1505,7 +1519,7 @@
     function resetFilters() {
       fState = { sort: DEFAULTS.sort, scope: DEFAULTS.scope.slice(),
                  stage: DEFAULTS.stage.slice(), change: DEFAULTS.change.slice(),
-                 types: DEFAULTS.types.slice() };
+                 types: DEFAULTS.types.slice(), tiers: DEFAULTS.tiers.slice() };
       saveFilters();
       syncUI();
       renderPokedex();
@@ -1650,6 +1664,7 @@
       var stage  = fState.stage  || [];
       var change = fState.change || [];
       var types  = new Set(fState.types || []);
+      var tiers  = new Set(fState.tiers || []);
 
       var filtered = sortedPokes(pokes).filter(function(poke) {
         // Scope
@@ -1675,6 +1690,9 @@
 
         // Type (OR — at least one of pokemon's types must be checked)
         if (!poke.parsedTypes.some(function(t){ return types.has(t); })) return false;
+
+        // Tier
+        if (!tiers.has(poke.rating.tier)) return false;
 
         // Search (applied last, not stored)
         if (searchLower) {
@@ -1724,6 +1742,17 @@
         c.style.backgroundColor = active ? typeColors[type] : '';
         c.style.color = active ? '#000' : '';
       });
+      document.querySelectorAll('#tier-chips .filter-chip').forEach(function(c){
+        var tier = c.dataset.tier;
+        var active = fState.tiers.includes(tier);
+        c.classList.toggle('active', active);
+        c.style.backgroundColor = active ? (tierColorBgs[tier] || '') : '';
+        c.style.color = active ? (tierColorFonts[tier] || '') : '';
+      });
+      var typeAllBtn = document.getElementById('type-select-all');
+      if (typeAllBtn) typeAllBtn.textContent = fState.types.length === ALL_TYPES.length ? '✗ All' : '✓ All';
+      var tierAllBtn = document.getElementById('tier-select-all');
+      if (tierAllBtn) tierAllBtn.textContent = fState.tiers.length === TIER_ORDER.length ? '✗ All' : '✓ All';
     }
 
     function buildTypeChips() {
@@ -1733,6 +1762,17 @@
         chip.className = 'filter-chip';
         chip.dataset.type = type;
         chip.textContent = type.charAt(0) + type.slice(1).toLowerCase();
+        container.appendChild(chip);
+      });
+    }
+
+    function buildTierChips() {
+      var container = document.getElementById('tier-chips');
+      TIER_ORDER.forEach(function(tier) {
+        var chip = document.createElement('div');
+        chip.className = 'filter-chip';
+        chip.dataset.tier = tier;
+        chip.textContent = tierNames[tier] || tier;
         container.appendChild(chip);
       });
     }
@@ -1779,11 +1819,24 @@
         if (!c) return;
         var type = c.dataset.type;
         toggleArr(fState.types, type);
-        var active = fState.types.includes(type);
-        c.classList.toggle('active', active);
-        c.style.backgroundColor = active ? typeColors[type] : '';
-        c.style.color = active ? '#000' : '';
-        saveFilters(); renderPokedex();
+        saveFilters(); syncUI(); renderPokedex();
+      });
+      // Tier — toggle with color
+      document.getElementById('tier-chips').addEventListener('click', function(e) {
+        var c = e.target.closest('.filter-chip[data-tier]');
+        if (!c) return;
+        toggleArr(fState.tiers, c.dataset.tier);
+        saveFilters(); syncUI(); renderPokedex();
+      });
+      // Type select-all toggle
+      document.getElementById('type-select-all').addEventListener('click', function() {
+        fState.types = fState.types.length === ALL_TYPES.length ? [] : ALL_TYPES.slice();
+        saveFilters(); syncUI(); renderPokedex();
+      });
+      // Tier select-all toggle
+      document.getElementById('tier-select-all').addEventListener('click', function() {
+        fState.tiers = fState.tiers.length === TIER_ORDER.length ? [] : TIER_ORDER.slice();
+        saveFilters(); syncUI(); renderPokedex();
       });
       // Search — no storage
       document.getElementById('poke-search').addEventListener('input', renderPokedex);
@@ -1794,6 +1847,7 @@
     // ---------- Init ----------
     loadFilters();
     buildTypeChips();
+    buildTierChips();
     syncUI();
     setupEvents();
     // renderPokedex is called by the loader after showPokemonModal is defined
