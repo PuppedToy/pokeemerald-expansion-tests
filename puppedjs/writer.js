@@ -1422,8 +1422,9 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                             // Rayquaza mega doesn't need an item
                             megaItem = null;
                             megaMoves.push('MOVE_DRAGON_ASCENT');
+                        } else if (chosenTrainerMon.evolutionData.megaItem) {
+                            megaItem = itemIdToName(chosenTrainerMon.evolutionData.megaItem);
                         }
-                        megaItem = itemIdToName(chosenTrainerMon.evolutionData.megaItem);
                         foundMega = true;
                     }
                 }
