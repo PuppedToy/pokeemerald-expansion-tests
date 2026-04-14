@@ -44,19 +44,39 @@ Route104_PrettyPetalFlowerShop_EventScript_DontExplainBerries::
 Route104_PrettyPetalFlowerShop_EventScript_SellDecorations::
 	message gText_PlayerWhatCanIDoForYou
 	waitmessage
-	pokemartdecoration2 Route104_PrettyPetalFlowerShop_Pokemart_Plants
+	pokemart Route104_PrettyPetalFlowerShop_Pokemart_Plants
 	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
 	release
 	end
 
 	.align 2
 Route104_PrettyPetalFlowerShop_Pokemart_Plants:
-	.2byte DECOR_RED_PLANT
-	.2byte DECOR_TROPICAL_PLANT
-	.2byte DECOR_PRETTY_FLOWERS
-	.2byte DECOR_COLORFUL_PLANT
-	.2byte DECOR_BIG_PLANT
-	.2byte DECOR_GORGEOUS_PLANT
+	.2byte ITEM_ULTRA_BALL
+	.2byte ITEM_QUICK_BALL
+	.2byte ITEM_TIMER_BALL
+	.2byte ITEM_MASTER_BALL
+	.2byte ITEM_LONELY_MINT
+	.2byte ITEM_NAUGHTY_MINT
+	.2byte ITEM_BRAVE_MINT
+	.2byte ITEM_LAX_MINT
+	.2byte ITEM_MILD_MINT
+	.2byte ITEM_RASH_MINT
+	.2byte ITEM_QUIET_MINT
+	.2byte ITEM_GENTLE_MINT
+	.2byte ITEM_HASTY_MINT
+	.2byte ITEM_NAIVE_MINT
+	.2byte ITEM_BOLD_MINT
+	.2byte ITEM_IMPISH_MINT
+	.2byte ITEM_CALM_MINT
+	.2byte ITEM_CAREFUL_MINT
+	.2byte ITEM_RELAXED_MINT
+	.2byte ITEM_SASSY_MINT
+	.2byte ITEM_ADAMANT_MINT
+	.2byte ITEM_JOLLY_MINT
+	.2byte ITEM_MODEST_MINT
+	.2byte ITEM_TIMID_MINT
+	.2byte ITEM_ABILITY_CAPSULE
+	.2byte ITEM_ABILITY_PATCH
 	pokemartlistend
 
 Route104_PrettyPetalFlowerShop_EventScript_WailmerPailGirl::

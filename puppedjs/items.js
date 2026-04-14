@@ -366,6 +366,7 @@ const items = {
         'ITEM_FOCUS_BAND',
         'ITEM_MENTAL_HERB',
         'ITEM_BLUNDER_POLICY',
+        'ITEM_BOOSTER_ENERGY',
     ],
 
     protectionBerries: {
