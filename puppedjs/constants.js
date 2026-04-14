@@ -237,13 +237,13 @@ const constants = {
     EVO_LEVEL_BASE_RANGES: {
         MAGIKARP: [9, 11],
         ZU:       [9, 11],
-        PU:       [9, 11],
-        NU:       [12, 17],
-        RU:       [18, 25],
-        UU:       [26, 35],
-        OU:       [36, 50],
-        UBERS:    [51, 65],
-        AG:       [60, 75],
+        PU:       [10, 12],
+        NU:       [13, 19],
+        RU:       [20, 28],
+        UU:       [29, 35],
+        OU:       [36, 44],
+        UBERS:    [45, 60],
+        AG:       [61, 75],
     },
 
     // Pre-evo modifier ranges per pre-evo tier (the pokemon that HOLDS the evo entry)
