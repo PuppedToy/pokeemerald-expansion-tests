@@ -69,7 +69,7 @@ async function writeEvoLevels(pokemonList) {
         if (!pokemon.evolutions || pokemon.evolutions.length === 0) continue;
 
         for (const evo of pokemon.evolutions) {
-            if (evo.method !== 'EVO_LEVEL') continue;
+            if (evo.method !== 'LEVEL') continue;
 
             const evoPokemon = pokemonMap.get(evo.pokemon);
             if (!evoPokemon) continue;
