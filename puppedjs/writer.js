@@ -60,6 +60,7 @@ const items = require('./items.js');
 const { savePokemonData } = require('./pokemonWriter.js');
 const { randomizeTMs } = require('./tmRandomizer.js');
 const { randomizeItems } = require('./itemRandomizer.js');
+const { writeEvoLevels } = require('./evoLevelWriter.js');
 
 const startersFile = path.resolve(__dirname, '..', 'src', 'starter_choose.c');
 
@@ -246,6 +247,9 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     console.log('Writing pokemon buff / nerfs to files...');
     // Save pokemon buffed / nerfed versions
     await savePokemonData(pokemonList);
+
+    console.log('Randomizing evolution levels...');
+    await writeEvoLevels(pokemonList);
 
     console.log('Updating starter pokemon...');
 

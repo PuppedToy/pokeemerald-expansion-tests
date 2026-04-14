@@ -232,6 +232,51 @@ const constants = {
     POKE_FORM_ROAMING: 'ROAMING',
     POKE_FORM_ARTISAN: 'ARTISAN',
 
+    // Dynamic evo level algorithm constants
+    // Base level ranges per evo-target tier (the pokemon being evolved INTO)
+    EVO_LEVEL_BASE_RANGES: {
+        MAGIKARP: [9, 11],
+        ZU:       [9, 11],
+        PU:       [9, 11],
+        NU:       [12, 17],
+        RU:       [18, 25],
+        UU:       [26, 35],
+        OU:       [36, 50],
+        UBERS:    [51, 65],
+        AG:       [60, 75],
+    },
+
+    // Pre-evo modifier ranges per pre-evo tier (the pokemon that HOLDS the evo entry)
+    // Expressed as decimal fractions (e.g. -0.25 = 25% earlier)
+    EVO_LEVEL_PRE_EVO_MODIFIERS: {
+        MAGIKARP: [-0.25, -0.21],
+        ZU:       [-0.20, -0.16],
+        PU:       [-0.15, -0.11],
+        NU:       [-0.05, -0.01],
+        RU:       [ 0.05,  0.09],
+        UU:       [ 0.15,  0.19],
+        OU:       [ 0.25,  0.29],
+        UBERS:    [ 0.35,  0.39],
+        AG:       [ 0.40,  0.44],
+    },
+
+    // Stage adjustments per evolution type
+    // LC_OF_2 = 2-stage line (single evo) → no adjustment
+    // LC_OF_3 = first of 3-stage line → evolves 20% earlier
+    // NFE_OF_3 = middle of 3-stage line → evolves 20% later
+    EVO_LEVEL_STAGE_ADJUSTMENTS: {
+        EVO_TYPE_LC_OF_2:  0.00,
+        EVO_TYPE_LC_OF_3: -0.20,
+        EVO_TYPE_NFE_OF_3: 0.20,
+    },
+
+    // Random deviation: ±5%
+    EVO_LEVEL_DEVIATION: 0.05,
+
+    // Hard clamps
+    EVO_LEVEL_MIN: 5,
+    EVO_LEVEL_MAX: 65,
+
     MEGA_TRAINERS: [
         {
             id: '01',
