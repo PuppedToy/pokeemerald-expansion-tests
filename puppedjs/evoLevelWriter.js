@@ -62,6 +62,7 @@ async function writeEvoLevels(pokemonList) {
     const pokemonMap = new Map(pokemonList.map(p => [p.id, p]));
 
     // Build a map: evo target species ID → computed level
+    // Also update in-memory evo.param so pokes.js / out.html and trainer logic see the new levels.
     const evoLevelMap = new Map();
 
     for (const pokemon of pokemonList) {
@@ -79,6 +80,9 @@ async function writeEvoLevels(pokemonList) {
 
             const level = computeEvoLevel(preEvoTier, evoTier, stageAdj);
             evoLevelMap.set(evo.pokemon, level);
+
+            // Mutate in-memory so the HTML viewer and trainer logic use the same levels
+            evo.param = String(level);
         }
     }
 
