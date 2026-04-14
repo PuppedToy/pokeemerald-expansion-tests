@@ -8255,31 +8255,82 @@ static void Cmd_hitanimation(void)
 
 static u32 GetTrainerMoneyToGive(u16 trainerId)
 {
-    u32 lastMonLevel = 0;
-    u32 moneyReward;
-    u8 trainerMoney = 0;
-
     if (trainerId == TRAINER_SECRET_BASE)
+        return 20 * gBattleResources->secretBase->party.levels[0] * gBattleStruct->moneyMultiplier;
+
+    if (GetTrainerPartyFromId(trainerId) == NULL)
+        return 20;
+
+    // Gym bosses: 8 gym leaders + 4 Elite Four + 1 Champion = 13 total
+    static const u16 sMuseumGrunts[] = {
+        TRAINER_GRUNT_MUSEUM_1,
+        TRAINER_GRUNT_MUSEUM_2,
+    };
+    static const u16 sSpaceCenterGrunts[] = {
+        TRAINER_GRUNT_SPACE_CENTER_5,
+        TRAINER_GRUNT_SPACE_CENTER_6,
+        TRAINER_GRUNT_SPACE_CENTER_7,
+    };
+    static const u16 sNonGymBosses[] = {
+        TRAINER_MAY_ROUTE_103_TREECKO,
+        TRAINER_MAY_ROUTE_103_TORCHIC,
+        TRAINER_MAY_ROUTE_103_MUDKIP,
+        TRAINER_GRUNT_PETALBURG_WOODS,
+        TRAINER_GRUNT_RUSTURF_TUNNEL,
+        TRAINER_MAY_RUSTBORO_TREECKO,
+        TRAINER_MAY_RUSTBORO_TORCHIC,
+        TRAINER_MAY_RUSTBORO_MUDKIP,
+        TRAINER_STEVEN,
+        TRAINER_MAY_ROUTE_110_TREECKO,
+        TRAINER_MAY_ROUTE_110_TORCHIC,
+        TRAINER_MAY_ROUTE_110_MUDKIP,
+        TRAINER_WALLY_MAUVILLE,
+        TRAINER_TABITHA_MT_CHIMNEY,
+        TRAINER_MAXIE_MT_CHIMNEY,
+        TRAINER_SHELLY_WEATHER_INSTITUTE,
+        TRAINER_MAY_ROUTE_119_TREECKO,
+        TRAINER_MAY_ROUTE_119_TORCHIC,
+        TRAINER_MAY_ROUTE_119_MUDKIP,
+        TRAINER_WALLY_LILYCOVE,
+        TRAINER_MAXIE_MAGMA_HIDEOUT,
+        TRAINER_MATT,
+        TRAINER_TABITHA_MOSSDEEP,
+        TRAINER_MAXIE_MOSSDEEP,
+        TRAINER_ARCHIE,
+        TRAINER_WALLY_VR_1,
+        TRAINER_MAY_EVERGRANDE_CITY_TREECKO,
+        TRAINER_MAY_EVERGRANDE_CITY_TORCHIC,
+        TRAINER_MAY_EVERGRANDE_CITY_MUDKIP,
+    };
+
+    u8 trainerClass = GetTrainerClassFromId(trainerId);
+    u32 baseReward;
+
+    if (trainerClass == TRAINER_CLASS_LEADER
+     || trainerClass == TRAINER_CLASS_ELITE_FOUR
+     || trainerClass == TRAINER_CLASS_CHAMPION)
     {
-        moneyReward = 20 * gBattleResources->secretBase->party.levels[0] * gBattleStruct->moneyMultiplier;
+        baseReward = 5000;
     }
     else
     {
-        const struct TrainerMon *party = GetTrainerPartyFromId(trainerId);
-        if (party == NULL)
-            return 20;
-        lastMonLevel = party[GetTrainerPartySizeFromId(trainerId) - 1].lvl;
-        trainerMoney = gTrainerClasses[GetTrainerClassFromId(trainerId)].money ?: 5;
-
-        if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
-            moneyReward = 4 * lastMonLevel * gBattleStruct->moneyMultiplier * trainerMoney;
-        else if (IsDoubleBattle())
-            moneyReward = 4 * lastMonLevel * gBattleStruct->moneyMultiplier * 2 * trainerMoney;
-        else
-            moneyReward = 4 * lastMonLevel * gBattleStruct->moneyMultiplier * trainerMoney;
+        u32 i;
+        baseReward = 1000; // default: regular trainer
+        for (i = 0; i < ARRAY_COUNT(sMuseumGrunts); i++)
+        {
+            if (trainerId == sMuseumGrunts[i]) { baseReward = 2000; goto done; }
+        }
+        for (i = 0; i < ARRAY_COUNT(sSpaceCenterGrunts); i++)
+        {
+            if (trainerId == sSpaceCenterGrunts[i]) { baseReward = 2000; goto done; }
+        }
+        for (i = 0; i < ARRAY_COUNT(sNonGymBosses); i++)
+        {
+            if (trainerId == sNonGymBosses[i]) { baseReward = 3000; goto done; }
+        }
     }
-
-    return moneyReward;
+done:
+    return baseReward * gBattleStruct->moneyMultiplier;
 }
 
 static void Cmd_getmoneyreward(void)
