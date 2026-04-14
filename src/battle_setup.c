@@ -873,6 +873,19 @@ static void CB2_GiveStarter(void)
     *GetVarPointer(VAR_STARTER_MON) = gSpecialVar_Result;
     starterMon = GetStarterPokemon(gSpecialVar_Result);
     ScriptGiveMon(starterMon, 7, ITEM_NONE);
+    // Force 3 randomly chosen IVs to 31 on the starter
+    {
+        u8 iv31 = MAX_PER_STAT_IVS;
+        u8 ivOrder[NUM_STATS] = {0, 1, 2, 3, 4, 5};
+        u8 k, j, tmp;
+        for (k = NUM_STATS - 1; k > 0; k--)
+        {
+            j = Random() % (k + 1);
+            tmp = ivOrder[k]; ivOrder[k] = ivOrder[j]; ivOrder[j] = tmp;
+        }
+        for (k = 0; k < 3; k++)
+            SetMonData(&gPlayerParty[0], MON_DATA_HP_IV + ivOrder[k], &iv31);
+    }
     for (u16 i = 0; i < GetExtraPokemonCount(); i++)
     {
         u16 nextMon = GetExtraPokemon(i);
