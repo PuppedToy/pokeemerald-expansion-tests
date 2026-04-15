@@ -1541,7 +1541,7 @@ const trainersData = [
         class: 'Lass',
         reward: [...choice104TMs],
         level: 12,
-        bag: [...rival103Bag, ...choice104TMs],
+        bag: [...rival103Bag(), ...choice104TMs],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
             ...generatePokemonsWithDefinition(POKEDEF_ZU, 4),
