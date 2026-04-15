@@ -91,8 +91,6 @@ MauvilleCity_Gym_EventScript_WattsonDefeated::
 	setvar VAR_SLATEPORT_OUTSIDE_MUSEUM_STATE, 3
 	clearflag FLAG_HIDE_VERDANTURF_TOWN_SCOTT
 	giveitem ITEM_MEGA_RING
-	giveitem ITEM_MACH_BIKE
-	giveitem ITEM_ACRO_BIKE
 	giveitem ITEM_HM06
 	setflag FLAG_RECEIVED_BIKE
 	setflag FLAG_RECEIVED_HM_ROCK_SMASH

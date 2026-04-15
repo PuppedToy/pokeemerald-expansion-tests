@@ -189,6 +189,9 @@ void NewGameInitData(void)
     DeactivateAllRoamers();
     gSaveBlock1Ptr->registeredItem = ITEM_NONE;
     ClearBag();
+    AddBagItem(ITEM_OLD_ROD, 1);
+    AddBagItem(ITEM_MACH_BIKE, 1);
+    AddBagItem(ITEM_ACRO_BIKE, 1);
     NewGameInitPCItems();
     ClearPokeblocks();
     ClearDecorationInventories();
