@@ -3,1866 +3,3732 @@
     "name": "-------",
     "description": "No special ability.",
     "rating": 0,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_STENCH": {
     "name": "Stench",
     "description": "May cause a foe to flinch.",
     "rating": 1,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_DRIZZLE": {
     "name": "Drizzle",
     "description": "Summons rain in battle.",
     "rating": 9,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SPEED_BOOST": {
     "name": "Speed Boost",
     "description": "Gradually boosts Speed.",
     "rating": 9,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_BATTLE_ARMOR": {
     "name": "Battle Armor",
     "description": "Blocks critical hits.",
     "rating": 2,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_STURDY": {
     "name": "Sturdy",
     "description": "Negates 1-hit KO attacks.",
     "rating": 6,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_DAMP": {
     "name": "Damp",
     "description": "Prevents self-destruction.",
     "rating": 2,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_LIMBER": {
     "name": "Limber",
     "description": "Prevents paralysis.",
     "rating": 3,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SAND_VEIL": {
     "name": "Sand Veil",
     "description": "Ups evasion in a sandstorm.",
     "rating": 3,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_STATIC": {
     "name": "Static",
     "description": "Paralyzes on contact.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_VOLT_ABSORB": {
     "name": "Volt Absorb",
     "description": "Turns electricity into HP.",
     "rating": 7,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_WATER_ABSORB": {
     "name": "Water Absorb",
     "description": "Changes water into HP.",
     "rating": 7,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_OBLIVIOUS": {
     "name": "Oblivious",
     "description": "Prevents attraction.",
     "rating": 2,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_CLOUD_NINE": {
     "name": "Cloud Nine",
     "description": "Negates weather effects.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_COMPOUND_EYES": {
     "name": "Compound Eyes",
     "description": "Raises accuracy.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_INSOMNIA": {
     "name": "Insomnia",
     "description": "Prevents sleep.",
     "rating": 4,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_COLOR_CHANGE": {
     "name": "Color Change",
     "description": "Changes type to foe's move.",
     "rating": 2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_IMMUNITY": {
     "name": "Immunity",
     "description": "Prevents poisoning.",
     "rating": 4,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_FLASH_FIRE": {
     "name": "Flash Fire",
     "description": "Powers up if hit by fire.",
     "rating": 6,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SHIELD_DUST": {
     "name": "Shield Dust",
     "description": "Prevents added effects.",
     "rating": 5,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_OWN_TEMPO": {
     "name": "Own Tempo",
     "description": "Prevents confusion.",
     "rating": 3,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SUCTION_CUPS": {
     "name": "Suction Cups",
     "description": "Firmly anchors the body.",
     "rating": 2,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_INTIMIDATE": {
     "name": "Intimidate",
     "description": "Lowers the foe's Attack.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SHADOW_TAG": {
     "name": "Shadow Tag",
     "description": "Prevents the foe's escape.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ROUGH_SKIN": {
     "name": "Rough Skin",
     "description": "Hurts to touch.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_WONDER_GUARD": {
     "name": "Wonder Guard",
     "description": "Only “Supereffective” hits.",
     "rating": 10,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_LEVITATE": {
     "name": "Levitate",
     "description": "Not hit by Ground attacks.",
     "rating": 7,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_EFFECT_SPORE": {
     "name": "Effect Spore",
     "description": "Leaves spores on contact.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SYNCHRONIZE": {
     "name": "Synchronize",
     "description": "Passes on status problems.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_CLEAR_BODY": {
     "name": "Clear Body",
     "description": "Prevents ability reduction.",
     "rating": 4,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_NATURAL_CURE": {
     "name": "Natural Cure",
     "description": "Heals upon switching out.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_LIGHTNING_ROD": {
     "name": "Lightning Rod",
     "description": "Draws electrical moves.",
     "rating": 7,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SERENE_GRACE": {
     "name": "Serene Grace",
     "description": "Promotes added effects.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SWIFT_SWIM": {
     "name": "Swift Swim",
     "description": "Raises Speed in rain.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_CHLOROPHYLL": {
     "name": "Chlorophyll",
     "description": "Raises Speed in sunshine.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ILLUMINATE": {
     "name": "Illuminate",
     "description": "Encounter rate increases.",
     "rating": 0,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TRACE": {
     "name": "Trace",
     "description": "Copies special ability.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_HUGE_POWER": {
     "name": "Huge Power",
     "description": "Raises Attack.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_POISON_POINT": {
     "name": "Poison Point",
     "description": "Poisons foe on contact.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_INNER_FOCUS": {
     "name": "Inner Focus",
     "description": "Prevents flinching.",
     "rating": 2,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MAGMA_ARMOR": {
     "name": "Magma Armor",
     "description": "Prevents freezing.",
     "rating": 1,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_WATER_VEIL": {
     "name": "Water Veil",
     "description": "Prevents burns.",
     "rating": 4,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MAGNET_PULL": {
     "name": "Magnet Pull",
     "description": "Traps Steel-type Pokémon.",
     "rating": 9,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SOUNDPROOF": {
     "name": "Soundproof",
     "description": "Avoids sound-based moves.",
     "rating": 4,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_RAIN_DISH": {
     "name": "Rain Dish",
     "description": "Slight HP recovery in rain.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SAND_STREAM": {
     "name": "Sand Stream",
     "description": "Summons a sandstorm.",
     "rating": 9,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PRESSURE": {
     "name": "Pressure",
     "description": "Raises foe's PP usage.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_THICK_FAT": {
     "name": "Thick Fat",
     "description": "Heat-and-cold protection.",
     "rating": 7,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_EARLY_BIRD": {
     "name": "Early Bird",
     "description": "Awakens quickly from sleep.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_FLAME_BODY": {
     "name": "Flame Body",
     "description": "Burns the foe on contact.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_RUN_AWAY": {
     "name": "Run Away",
     "description": "Makes escaping easier.",
     "rating": 0,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_KEEN_EYE": {
     "name": "Keen Eye",
     "description": "Prevents loss of accuracy.",
     "rating": 1,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_HYPER_CUTTER": {
     "name": "Hyper Cutter",
     "description": "Prevents Attack reduction.",
     "rating": 3,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PICKUP": {
     "name": "Pickup",
     "description": "May pick up items.",
     "rating": 1,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TRUANT": {
     "name": "Truant",
     "description": "Moves only every two turns.",
     "rating": -2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_HUSTLE": {
     "name": "Hustle",
     "description": "Trades accuracy for power.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_CUTE_CHARM": {
     "name": "Cute Charm",
     "description": "Infatuates on contact.",
     "rating": 2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PLUS": {
     "name": "Plus",
     "description": "Powers up with Minus.",
     "rating": 0,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MINUS": {
     "name": "Minus",
     "description": "Powers up with Plus.",
     "rating": 0,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_FORECAST": {
     "name": "Forecast",
     "description": "Changes with the weather.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_STICKY_HOLD": {
     "name": "Sticky Hold",
     "description": "Prevents item theft.",
     "rating": 3,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SHED_SKIN": {
     "name": "Shed Skin",
     "description": "Heals the body by shedding.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_GUTS": {
     "name": "Guts",
     "description": "Ups Attack if suffering.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MARVEL_SCALE": {
     "name": "Marvel Scale",
     "description": "Ups Defense if suffering.",
     "rating": 5,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_LIQUID_OOZE": {
     "name": "Liquid Ooze",
     "description": "Draining causes injury.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_OVERGROW": {
     "name": "Overgrow",
     "description": "Ups Grass moves in a pinch.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_BLAZE": {
     "name": "Blaze",
     "description": "Ups Fire moves in a pinch.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TORRENT": {
     "name": "Torrent",
     "description": "Ups Water moves in a pinch.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SWARM": {
     "name": "Swarm",
     "description": "Ups Bug moves in a pinch.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ROCK_HEAD": {
     "name": "Rock Head",
     "description": "Prevents recoil damage.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_DROUGHT": {
     "name": "Drought",
     "description": "Summons sunlight in battle.",
     "rating": 9,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ARENA_TRAP": {
     "name": "Arena Trap",
     "description": "Prevents fleeing.",
     "rating": 9,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_VITAL_SPIRIT": {
     "name": "Vital Spirit",
     "description": "Prevents sleep.",
     "rating": 4,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_WHITE_SMOKE": {
     "name": "White Smoke",
     "description": "Prevents ability reduction.",
     "rating": 4,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PURE_POWER": {
     "name": "Pure Power",
     "description": "Raises Attack.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SHELL_ARMOR": {
     "name": "Shell Armor",
     "description": "Blocks critical hits.",
     "rating": 2,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_AIR_LOCK": {
     "name": "Air Lock",
     "description": "Negates weather effects.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TANGLED_FEET": {
     "name": "Tangled Feet",
     "description": "Ups evasion if confused.",
     "rating": 2,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MOTOR_DRIVE": {
     "name": "Motor Drive",
     "description": "Electricity raises Speed.",
     "rating": 6,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_RIVALRY": {
     "name": "Rivalry",
     "description": "Powers up against rivals.",
     "rating": 1,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_STEADFAST": {
     "name": "Steadfast",
     "description": "Flinching raises Speed.",
     "rating": 2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SNOW_CLOAK": {
     "name": "Snow Cloak",
     "description": "Ups evasion in Hail or Snow.",
     "rating": 3,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_GLUTTONY": {
     "name": "Gluttony",
     "description": "Eats Berries early.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ANGER_POINT": {
     "name": "Anger Point",
     "description": "Critical hits raise Attack.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_UNBURDEN": {
     "name": "Unburden",
     "description": "Using a hold item ups Speed.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_HEATPROOF": {
     "name": "Heatproof",
     "description": "Heat and burn protection.",
     "rating": 5,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SIMPLE": {
     "name": "Simple",
     "description": "Prone to wild stat changes.",
     "rating": 8,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_DRY_SKIN": {
     "name": "Dry Skin",
     "description": "Prefers moisture to heat.",
     "rating": 6,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_DOWNLOAD": {
     "name": "Download",
     "description": "Adjusts power favorably.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_IRON_FIST": {
     "name": "Iron Fist",
     "description": "Boosts punching moves.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_POISON_HEAL": {
     "name": "Poison Heal",
     "description": "Restores HP if poisoned.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ADAPTABILITY": {
     "name": "Adaptability",
     "description": "Boosts same type attacks.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SKILL_LINK": {
     "name": "Skill Link",
     "description": "Multi-hit moves hit 5 times.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_HYDRATION": {
     "name": "Hydration",
     "description": "Cures status in rain.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SOLAR_POWER": {
     "name": "Solar Power",
     "description": "Powers up in sunshine.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_QUICK_FEET": {
     "name": "Quick Feet",
     "description": "Ups Speed if suffering.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_NORMALIZE": {
     "name": "Normalize",
     "description": "Moves become Normal-type.",
     "rating": -1,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SNIPER": {
     "name": "Sniper",
     "description": "Boosts critical hits.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MAGIC_GUARD": {
     "name": "Magic Guard",
     "description": "Only damaged by attacks.",
     "rating": 9,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_NO_GUARD": {
     "name": "No Guard",
     "description": "Ensures that all moves hit.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_STALL": {
     "name": "Stall",
     "description": "Always moves last.",
     "rating": -1,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TECHNICIAN": {
     "name": "Technician",
     "description": "Boosts weaker moves.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_LEAF_GUARD": {
     "name": "Leaf Guard",
     "description": "Blocks status in sunshine.",
     "rating": 2,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_KLUTZ": {
     "name": "Klutz",
     "description": "Can't use hold items.",
     "rating": -1,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MOLD_BREAKER": {
     "name": "Mold Breaker",
     "description": "Moves hit through abilities.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SUPER_LUCK": {
     "name": "Super Luck",
     "description": "Critical hits land often.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_AFTERMATH": {
     "name": "Aftermath",
     "description": "Fainting damages the foe.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ANTICIPATION": {
     "name": "Anticipation",
     "description": "Senses dangerous moves.",
     "rating": 2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_FOREWARN": {
     "name": "Forewarn",
     "description": "Determines a foe's move.",
     "rating": 2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_UNAWARE": {
     "name": "Unaware",
     "description": "Ignores stat changes.",
     "rating": 6,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TINTED_LENS": {
     "name": "Tinted Lens",
     "description": "Ups “not very effective”.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_FILTER": {
     "name": "Filter",
     "description": "Weakens “supereffective”.",
     "rating": 6,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SLOW_START": {
     "name": "Slow Start",
     "description": "Takes a while to get going.",
     "rating": -2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SCRAPPY": {
     "name": "Scrappy",
     "description": "Hits Ghost-type Pokémon.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_STORM_DRAIN": {
     "name": "Storm Drain",
     "description": "Draws in Water moves.",
     "rating": 7,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ICE_BODY": {
     "name": "Ice Body",
     "description": "HP recovery in Hail or Snow.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SOLID_ROCK": {
     "name": "Solid Rock",
     "description": "Weakens “supereffective”.",
     "rating": 6,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SNOW_WARNING": {
     "name": "Snow Warning",
     "description": "Summons snow in battle.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_HONEY_GATHER": {
     "name": "Honey Gather",
     "description": "May gather Honey.",
     "rating": 0,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_FRISK": {
     "name": "Frisk",
     "description": "Checks a foe's item.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_RECKLESS": {
     "name": "Reckless",
     "description": "Boosts moves with recoil.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MULTITYPE": {
     "name": "Multitype",
     "description": "Changes type to its Plate.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_FLOWER_GIFT": {
     "name": "Flower Gift",
     "description": "Allies power up in sunshine.",
     "rating": 4,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_BAD_DREAMS": {
     "name": "Bad Dreams",
     "description": "Damages sleeping Pokémon.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PICKPOCKET": {
     "name": "Pickpocket",
     "description": "Steals the foe's held item.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SHEER_FORCE": {
     "name": "Sheer Force",
     "description": "Trades effects for power.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_CONTRARY": {
     "name": "Contrary",
     "description": "Inverts stat changes.",
     "rating": 8,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_UNNERVE": {
     "name": "Unnerve",
     "description": "Foes can't eat Berries.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_DEFIANT": {
     "name": "Defiant",
     "description": "Lowered stats up Attack.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_DEFEATIST": {
     "name": "Defeatist",
     "description": "Gives up at half HP.",
     "rating": -1,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_CURSED_BODY": {
     "name": "Cursed Body",
     "description": "Disables moves on contact.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_HEALER": {
     "name": "Healer",
     "description": "Heals partner Pokémon.",
     "rating": 0,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_FRIEND_GUARD": {
     "name": "Friend Guard",
     "description": "Lowers damage to partner.",
     "rating": 0,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_WEAK_ARMOR": {
     "name": "Weak Armor",
     "description": "Its stats change when hit.",
     "rating": 2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_HEAVY_METAL": {
     "name": "Heavy Metal",
     "description": "Doubles weight.",
     "rating": -1,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_LIGHT_METAL": {
     "name": "Light Metal",
     "description": "Halves weight.",
     "rating": 2,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MULTISCALE": {
     "name": "Multiscale",
     "description": "Halves damage at full HP.",
     "rating": 8,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TOXIC_BOOST": {
     "name": "Toxic Boost",
     "description": "Ups Attack if poisoned.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_FLARE_BOOST": {
     "name": "Flare Boost",
     "description": "Ups Sp. Atk if burned.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_HARVEST": {
     "name": "Harvest",
     "description": "May recycle a used Berry.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TELEPATHY": {
     "name": "Telepathy",
     "description": "Can't be damaged by an ally.",
     "rating": 0,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MOODY": {
     "name": "Moody",
     "description": "Stats change gradually.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_OVERCOAT": {
     "name": "Overcoat",
     "description": "Blocks weather and powder.",
     "rating": 5,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_POISON_TOUCH": {
     "name": "Poison Touch",
     "description": "Poisons foe on contact.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_REGENERATOR": {
     "name": "Regenerator",
     "description": "Heals upon switching out.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_BIG_PECKS": {
     "name": "Big Pecks",
     "description": "Prevents Defense loss.",
     "rating": 1,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SAND_RUSH": {
     "name": "Sand Rush",
     "description": "Ups Speed in a sandstorm.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_WONDER_SKIN": {
     "name": "Wonder Skin",
     "description": "May avoid status problems.",
     "rating": 4,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ANALYTIC": {
     "name": "Analytic",
     "description": "Moving last boosts power.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ILLUSION": {
     "name": "Illusion",
     "description": "Appears as a partner.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_IMPOSTER": {
     "name": "Imposter",
     "description": "Transforms into the foe.",
     "rating": 9,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_INFILTRATOR": {
     "name": "Infiltrator",
     "description": "Passes through barriers.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MUMMY": {
     "name": "Mummy",
     "description": "Spreads with contact.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MOXIE": {
     "name": "Moxie",
     "description": "KOs raise Attack.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_JUSTIFIED": {
     "name": "Justified",
     "description": "Dark hits raise Attack.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_RATTLED": {
     "name": "Rattled",
     "description": "Raises Speed when scared.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MAGIC_BOUNCE": {
     "name": "Magic Bounce",
     "description": "Reflects status moves.",
     "rating": 9,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SAP_SIPPER": {
     "name": "Sap Sipper",
     "description": "Grass increases Attack.",
     "rating": 7,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PRANKSTER": {
     "name": "Prankster",
     "description": "Status moves go first.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SAND_FORCE": {
     "name": "Sand Force",
     "description": "Powers up in a sandstorm.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_IRON_BARBS": {
     "name": "Iron Barbs",
     "description": "Hurts to touch.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ZEN_MODE": {
     "name": "Zen Mode",
     "description": "Transforms at half HP.",
     "rating": -1,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_VICTORY_STAR": {
     "name": "Victory Star",
     "description": "Raises party accuracy.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TURBOBLAZE": {
     "name": "Turboblaze",
     "description": "Moves hit through abilities.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TERAVOLT": {
     "name": "Teravolt",
     "description": "Moves hit through abilities.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_AROMA_VEIL": {
     "name": "Aroma Veil",
     "description": "Prevents limiting of moves.",
     "rating": 3,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_FLOWER_VEIL": {
     "name": "Flower Veil",
     "description": "Protects Grass-types.",
     "rating": 0,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_CHEEK_POUCH": {
     "name": "Cheek Pouch",
     "description": "Eating Berries restores HP.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PROTEAN": {
     "name": "Protean",
     "description": "Changes type to used move.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_FUR_COAT": {
     "name": "Fur Coat",
     "description": "Raises Defense.",
     "rating": 7,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MAGICIAN": {
     "name": "Magician",
     "description": "Steals the foe's held item.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_BULLETPROOF": {
     "name": "Bulletproof",
     "description": "Avoids some projectiles.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_COMPETITIVE": {
     "name": "Competitive",
     "description": "Lowered stats up Sp. Atk.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_STRONG_JAW": {
     "name": "Strong Jaw",
     "description": "Boosts biting moves.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_REFRIGERATE": {
     "name": "Refrigerate",
     "description": "Normal moves become Ice.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SWEET_VEIL": {
     "name": "Sweet Veil",
     "description": "Prevents party from sleep.",
     "rating": 4,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_STANCE_CHANGE": {
     "name": "Stance Change",
     "description": "Transforms as it battles.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_GALE_WINGS": {
     "name": "Gale Wings",
     "description": "Flying moves go first.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MEGA_LAUNCHER": {
     "name": "Mega Launcher",
     "description": "Boosts pulse moves.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_GRASS_PELT": {
     "name": "Grass Pelt",
     "description": "Ups Defense in grass.",
     "rating": 2,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SYMBIOSIS": {
     "name": "Symbiosis",
     "description": "Passes its item to an ally.",
     "rating": 0,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TOUGH_CLAWS": {
     "name": "Tough Claws",
     "description": "Boosts contact moves.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PIXILATE": {
     "name": "Pixilate",
     "description": "Normal moves become Fairy.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_GOOEY": {
     "name": "Gooey",
     "description": "Lowers Speed on contact.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_AERILATE": {
     "name": "Aerilate",
     "description": "Normal moves become Flying.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PARENTAL_BOND": {
     "name": "Parental Bond",
     "description": "Moves hit twice.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_DARK_AURA": {
     "name": "Dark Aura",
     "description": "Boosts Dark moves.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_FAIRY_AURA": {
     "name": "Fairy Aura",
     "description": "Boosts Fairy moves.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_AURA_BREAK": {
     "name": "Aura Break",
     "description": "Reverse aura abilities.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PRIMORDIAL_SEA": {
     "name": "Primordial Sea",
     "description": "Summons heavy rain.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_DESOLATE_LAND": {
     "name": "Desolate Land",
     "description": "Summons intense sunlight.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_DELTA_STREAM": {
     "name": "Delta Stream",
     "description": "Summons strong winds.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_STAMINA": {
     "name": "Stamina",
     "description": "Boosts Defense when hit.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_WIMP_OUT": {
     "name": "Wimp Out",
     "description": "Flees at half HP.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_EMERGENCY_EXIT": {
     "name": "Emergency Exit",
     "description": "Flees at half HP.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_WATER_COMPACTION": {
     "name": "Water Compaction",
     "description": "Water boosts Defense.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MERCILESS": {
     "name": "Merciless",
     "description": "Criticals poisoned foes.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SHIELDS_DOWN": {
     "name": "Shields Down",
     "description": "Shell breaks at half HP.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_STAKEOUT": {
     "name": "Stakeout",
     "description": "Stronger as foes switch in.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_WATER_BUBBLE": {
     "name": "Water Bubble",
     "description": "Guards from fire and burns.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_STEELWORKER": {
     "name": "Steelworker",
     "description": "Powers up Steel moves.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_BERSERK": {
     "name": "Berserk",
     "description": "Boosts Sp. Atk at low HP.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SLUSH_RUSH": {
     "name": "Slush Rush",
     "description": "Raises Speed in Hail/Snow.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_LONG_REACH": {
     "name": "Long Reach",
     "description": "Never makes contact.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_LIQUID_VOICE": {
     "name": "Liquid Voice",
     "description": "Makes sound moves Water.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TRIAGE": {
     "name": "Triage",
     "description": "Healing moves go first.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_GALVANIZE": {
     "name": "Galvanize",
     "description": "Normal moves turn Electric.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SURGE_SURFER": {
     "name": "Surge Surfer",
     "description": "Faster on electricity.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SCHOOLING": {
     "name": "Schooling",
     "description": "Forms a school when strong.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_DISGUISE": {
     "name": "Disguise",
     "description": "Decoy protects it once.",
     "rating": 8,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": true
   },
   "ABILITY_BATTLE_BOND": {
     "name": "Battle Bond",
     "description": "Changes form after a KO.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_POWER_CONSTRUCT": {
     "name": "Power Construct",
     "description": "Cells aid it when weakened.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_CORROSION": {
     "name": "Corrosion",
     "description": "Poisons any type.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_COMATOSE": {
     "name": "Comatose",
     "description": "Always drowsing.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_QUEENLY_MAJESTY": {
     "name": "Queenly Majesty",
     "description": "Protects from priority.",
     "rating": 6,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_INNARDS_OUT": {
     "name": "Innards Out",
     "description": "Hurts foe when defeated.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_DANCER": {
     "name": "Dancer",
     "description": "Dances along with others.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_BATTERY": {
     "name": "Battery",
     "description": "Boosts ally's Sp. Atk.",
     "rating": 0,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_FLUFFY": {
     "name": "Fluffy",
     "description": "Tougher but flammable.",
     "rating": 5,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_DAZZLING": {
     "name": "Dazzling",
     "description": "Protects from priority.",
     "rating": 5,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SOUL_HEART": {
     "name": "Soul-Heart",
     "description": "KOs raise Sp. Atk.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TANGLING_HAIR": {
     "name": "Tangling Hair",
     "description": "Lowers Speed on contact.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_RECEIVER": {
     "name": "Receiver",
     "description": "Copies ally's ability.",
     "rating": 0,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_POWER_OF_ALCHEMY": {
     "name": "Power Of Alchemy",
     "description": "Copies ally's ability.",
     "rating": 0,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_BEAST_BOOST": {
     "name": "Beast Boost",
     "description": "KOs boost best stat.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_RKS_SYSTEM": {
     "name": "RKS System",
     "description": "Memories change its type.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_ELECTRIC_SURGE": {
     "name": "Electric Surge",
     "description": "Field becomes Electric.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PSYCHIC_SURGE": {
     "name": "Psychic Surge",
     "description": "Field becomes weird.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MISTY_SURGE": {
     "name": "Misty Surge",
     "description": "Field becomes misty.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_GRASSY_SURGE": {
     "name": "Grassy Surge",
     "description": "Field becomes grassy.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_FULL_METAL_BODY": {
     "name": "Full Metal Body",
     "description": "Prevents stat reduction.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SHADOW_SHIELD": {
     "name": "Shadow Shield",
     "description": "Halves damage at full HP.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PRISM_ARMOR": {
     "name": "Prism Armor",
     "description": "Weakens “supereffective”.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_NEUROFORCE": {
     "name": "Neuroforce",
     "description": "Ups “supereffective”.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_INTREPID_SWORD": {
     "name": "Intrepid Sword",
     "description": "Ups Attack on entry.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_DAUNTLESS_SHIELD": {
     "name": "Dauntless Shield",
     "description": "Ups Defense on entry.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_LIBERO": {
     "name": "Libero",
     "description": "Changes type to move's.",
     "rating": 0,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_BALL_FETCH": {
     "name": "Ball Fetch",
     "description": "Fetches failed Poké Ball.",
     "rating": 0,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_COTTON_DOWN": {
     "name": "Cotton Down",
     "description": "Lower Speed of all when hit.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PROPELLER_TAIL": {
     "name": "Propeller Tail",
     "description": "Ignores foe's redirection.",
     "rating": 2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MIRROR_ARMOR": {
     "name": "Mirror Armor",
     "description": "Reflect stat decreases.",
     "rating": 6,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_GULP_MISSILE": {
     "name": "Gulp Missile",
     "description": "If hit, spits prey from sea.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": true
   },
   "ABILITY_STALWART": {
     "name": "Stalwart",
     "description": "Ignores foe's redirection.",
     "rating": 2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_STEAM_ENGINE": {
     "name": "Steam Engine",
     "description": "Fire or Water hits up Speed.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PUNK_ROCK": {
     "name": "Punk Rock",
     "description": "Ups and resists sound.",
     "rating": 2,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SAND_SPIT": {
     "name": "Sand Spit",
     "description": "Creates a sandstorm if hit.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ICE_SCALES": {
     "name": "Ice Scales",
     "description": "Halves special damage.",
     "rating": 7,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_RIPEN": {
     "name": "Ripen",
     "description": "Doubles effect of Berries.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ICE_FACE": {
     "name": "Ice Face",
     "description": "Hail or Snow renew free hit.",
     "rating": 4,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": true
   },
   "ABILITY_POWER_SPOT": {
     "name": "Power Spot",
     "description": "Powers up ally moves.",
     "rating": 2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MIMICRY": {
     "name": "Mimicry",
     "description": "Changes type on terrain.",
     "rating": 2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SCREEN_CLEANER": {
     "name": "Screen Cleaner",
     "description": "Removes walls of light.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_STEELY_SPIRIT": {
     "name": "Steely Spirit",
     "description": "Boosts ally's Steel moves.",
     "rating": 2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PERISH_BODY": {
     "name": "Perish Body",
     "description": "Foe faints in 3 turns if hit.",
     "rating": -1,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_WANDERING_SPIRIT": {
     "name": "Wandering Spirit",
     "description": "Trade abilities on contact.",
     "rating": 2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_GORILLA_TACTICS": {
     "name": "Gorilla Tactics",
     "description": "Ups Attack and locks move.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_NEUTRALIZING_GAS": {
     "name": "Neutralizing Gas",
     "description": "All Abilities are nullified.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": true
   },
   "ABILITY_PASTEL_VEIL": {
     "name": "Pastel Veil",
     "description": "Protects team from poison.",
     "rating": 4,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_HUNGER_SWITCH": {
     "name": "Hunger Switch",
     "description": "Changes form each turn.",
     "rating": 2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": true
   },
   "ABILITY_QUICK_DRAW": {
     "name": "Quick Draw",
     "description": "Moves first occasionally.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_UNSEEN_FIST": {
     "name": "Unseen Fist",
     "description": "Contact evades protection.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_CURIOUS_MEDICINE": {
     "name": "Curious Medicine",
     "description": "Remove ally's stat changes.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TRANSISTOR": {
     "name": "Transistor",
     "description": "Ups Electric-type moves.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_DRAGONS_MAW": {
     "name": "Dragon's Maw",
     "description": "Ups Dragon-type moves.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_CHILLING_NEIGH": {
     "name": "Chilling Neigh",
     "description": "KOs boost Attack stat.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_GRIM_NEIGH": {
     "name": "Grim Neigh",
     "description": "KOs boost Sp. Atk stat.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_AS_ONE_ICE_RIDER": {
     "name": "As One",
     "description": "Unnerve and Chilling Neigh.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_AS_ONE_SHADOW_RIDER": {
     "name": "As One",
     "description": "Unnerve and Grim Neigh.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_LINGERING_AROMA": {
     "name": "Lingering Aroma",
     "description": "Spreads with contact.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SEED_SOWER": {
     "name": "Seed Sower",
     "description": "Affects terrain when hit.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_THERMAL_EXCHANGE": {
     "name": "Thermal Exchange",
     "description": "Fire hits up Attack.",
     "rating": 4,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ANGER_SHELL": {
     "name": "Anger Shell",
     "description": "Gets angry at half HP.",
     "rating": 3,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PURIFYING_SALT": {
     "name": "Purifying Salt",
     "description": "Protected by pure salts.",
     "rating": 6,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_WELL_BAKED_BODY": {
     "name": "Well-Baked Body",
     "description": "Strengthened by Fire.",
     "rating": 5,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_WIND_RIDER": {
     "name": "Wind Rider",
     "description": "Ups Attack if hit by wind.",
     "rating": 4,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_GUARD_DOG": {
     "name": "Guard Dog",
     "description": "Cannot be intimidated.",
     "rating": 5,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ROCKY_PAYLOAD": {
     "name": "Rocky Payload",
     "description": "Powers up Rock moves.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_WIND_POWER": {
     "name": "Wind Power",
     "description": "Gets charged by wind.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ZERO_TO_HERO": {
     "name": "Zero to Hero",
     "description": "Changes form on switch out.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": true
   },
   "ABILITY_COMMANDER": {
     "name": "Commander",
     "description": "Commands from Dondozo.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_ELECTROMORPHOSIS": {
     "name": "Electromorphosis",
     "description": "Gets Charged when hit.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_PROTOSYNTHESIS": {
     "name": "Protosynthesis",
     "description": "Sun boosts best stat.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": true
   },
   "ABILITY_QUARK_DRIVE": {
     "name": "Quark Drive",
     "description": "Elec. field ups best stat.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": true
   },
   "ABILITY_GOOD_AS_GOLD": {
     "name": "Good as Gold",
     "description": "Avoids status moves.",
     "rating": 8,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_VESSEL_OF_RUIN": {
     "name": "Vessel of Ruin",
     "description": "Lowers foes' sp. damage.",
     "rating": 5,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SWORD_OF_RUIN": {
     "name": "Sword of Ruin",
     "description": "Lowers foes' Defense.",
     "rating": 5,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TABLETS_OF_RUIN": {
     "name": "Tablets of Ruin",
     "description": "Lowers foes' damage.",
     "rating": 5,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_BEADS_OF_RUIN": {
     "name": "Beads of Ruin",
     "description": "Lowers foes' Sp. Defense.",
     "rating": 5,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ORICHALCUM_PULSE": {
     "name": "Orichalcum Pulse",
     "description": "Summons sunlight in battle.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_HADRON_ENGINE": {
     "name": "Hadron Engine",
     "description": "Field becomes Electric.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_OPPORTUNIST": {
     "name": "Opportunist",
     "description": "Copies foe's stat change.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_CUD_CHEW": {
     "name": "Cud Chew",
     "description": "Eats a used berry again.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SHARPNESS": {
     "name": "Sharpness",
     "description": "Strengthens slicing moves.",
     "rating": 7,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SUPREME_OVERLORD": {
     "name": "Supreme Overlord",
     "description": "Inherits fallen's strength.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_COSTAR": {
     "name": "Costar",
     "description": "Copies ally's stat changes.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TOXIC_DEBRIS": {
     "name": "Toxic Debris",
     "description": "Throws poison spikes if hit.",
     "rating": 4,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_ARMOR_TAIL": {
     "name": "Armor Tail",
     "description": "Protects from priority.",
     "rating": 5,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_EARTH_EATER": {
     "name": "Earth Eater",
     "description": "Eats ground to heal HP.",
     "rating": 7,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MYCELIUM_MIGHT": {
     "name": "Mycelium Might",
     "description": "Status moves never fail.",
     "rating": 2,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_HOSPITALITY": {
     "name": "Hospitality",
     "description": "Restores ally's HP.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_MINDS_EYE": {
     "name": "Mind's Eye",
     "description": "Keen Eye and Scrappy.",
     "rating": 8,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_EMBODY_ASPECT_TEAL_MASK": {
     "name": "Embody Aspect",
     "description": "Raises Speed.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": true
   },
   "ABILITY_EMBODY_ASPECT_HEARTHFLAME_MASK": {
     "name": "Embody Aspect",
     "description": "Raises Attack.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": true
   },
   "ABILITY_EMBODY_ASPECT_WELLSPRING_MASK": {
     "name": "Embody Aspect",
     "description": "Raises Sp. Def.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": true
   },
   "ABILITY_EMBODY_ASPECT_CORNERSTONE_MASK": {
     "name": "Embody Aspect",
     "description": "Raises Defense.",
     "rating": 6,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": true
   },
   "ABILITY_TOXIC_CHAIN": {
     "name": "Toxic Chain",
     "description": "Moves can poison.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_SUPERSWEET_SYRUP": {
     "name": "Supersweet Syrup",
     "description": "Lowers the foe's Evasion.",
     "rating": 5,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": false,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": false,
+    "cantBeTraced": false,
+    "failsOnImposter": false
   },
   "ABILITY_TERA_SHIFT": {
     "name": "Tera Shift",
     "description": "Terastallizes upon entry.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": true,
+    "cantBeSuppressed": true,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": true
   },
   "ABILITY_TERA_SHELL": {
     "name": "Tera Shell",
     "description": "Resists all at full HP.",
     "rating": 10,
-    "breakable": true
+    "breakable": true,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_TERAFORM_ZERO": {
     "name": "Teraform Zero",
     "description": "Zeroes weather and terrain.",
     "rating": 10,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   },
   "ABILITY_POISON_PUPPETEER": {
     "name": "Poison Puppeteer",
     "description": "Confuses poisoned foes.",
     "rating": 8,
-    "breakable": false
+    "breakable": false,
+    "cantBeCopied": true,
+    "cantBeOverwritten": false,
+    "cantBeSuppressed": false,
+    "cantBeSwapped": true,
+    "cantBeTraced": true,
+    "failsOnImposter": false
   }
 }
