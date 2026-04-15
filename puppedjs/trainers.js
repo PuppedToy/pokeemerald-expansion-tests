@@ -1036,6 +1036,8 @@ function getTrainersData(itemAssignments, tmList) {
     const route111ItemItems      = itemAssignments.route111Items;
     const route111BerryItems     = itemAssignments.route111Berries;
     const route116XSpecialItem   = itemAssignments.route116XSpecial;
+    const route116GemItems       = itemAssignments.route116Gems;
+    const route116BerryItems     = itemAssignments.route116Berries;
     const route116PoolItems      = itemAssignments.route116Items.slice(0, 2);
     const route116BallItems      = itemAssignments.route116Ball;
     const route109BallItems      = itemAssignments.route109Ball;
@@ -1052,6 +1054,8 @@ function getTrainersData(itemAssignments, tmList) {
     const woodsPlatesChoice    = petalburgPlateItems;
     const choice104Berry       = route104BerryItems;
     const choice104Gem         = route104GemItems;
+    const choice116Gem         = route116GemItems;
+    const choice116Berry       = route116BerryItems;
     const choice104TMs         = [tmItem(5), tmItem(6), tmItem(7)];
     const choice104TMs2        = [tmItem(8), tmItem(9), tmItem(10)];
     const choicesDewfordTMs    = [tmItem(4), tmItem(3), tmItem(2)];
@@ -1832,9 +1836,9 @@ const trainersData = [
     {
         id: 'TRAINER_SARAH',
         class: 'Lady',
-        reward: ['Random Defensive Mint'],
+        reward: [...choice116Gem],
         level: 17,
-        bag: getSampleItemsFromArray(rusturfGruntBag(), 3),
+        bag: [...choice116Gem, ...getSampleItemsFromArray(rusturfGruntBag(), 2)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
             ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
@@ -1843,9 +1847,9 @@ const trainersData = [
     {
         id: 'TRAINER_KAREN_1',
         class: 'School Kid F',
-        reward: ['Random Offensive Mint'],
+        reward: [...choice116Berry],
         level: 17,
-        bag: getSampleItemsFromArray(rusturfGruntBag(), 3),
+        bag: [...choice116Berry, ...getSampleItemsFromArray(rusturfGruntBag(), 2)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
             ...generatePokemonsWithDefinition(POKEDEF_PU, 5),

@@ -90,6 +90,7 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 | Location | Flag | Trainer pool |
 |----------|------|-------------|
 | Route 104 | `FLAG_ITEM_ROUTE_104_GEM` | `choice104Gem` → bags from Roxanne onward |
+| Route 116 | `FLAG_ITEM_ROUTE_116_ETHER` | `choice116Gem` → Sarah (`TRAINER_SARAH`) bag/reward |
 | Route 117 | `FLAG_ITEM_ROUTE_117_GROUNDGEM` | `choiceAishaGems` → bags from Wattson onward |
 
 ---
@@ -105,6 +106,7 @@ Chilan (Normal), Occa (Fire), Passho (Water), Wacan (Electric), Rindo (Grass), Y
 | Location | Flag | Trainer pool |
 |----------|------|-------------|
 | Route 104 | `FLAG_ITEM_ROUTE_104_X_ACCURACY` | `choice104Berry` → bags from Roxanne onward |
+| Route 116 | `FLAG_ITEM_ROUTE_116_POTION` | `choice116Berry` → Karen (`TRAINER_KAREN_1`) bag/reward |
 | Route 111 | `FLAG_ITEM_ROUTE_111_CHILAN` | `choiceMelinaBerries` → bags from Wattson onward |
 | Route 117 | `FLAG_ITEM_ROUTE_117_WACAN` | bags from Norman onward |
 | Route 121 | `FLAG_ITEM_ROUTE_121_PICK_BERRY` | `choiceCristinBerries` → bags from Tate & Liza onward |

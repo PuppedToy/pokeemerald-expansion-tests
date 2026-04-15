@@ -348,6 +348,68 @@ Route116_EventScript_Johnson::
 	msgbox Route116_Text_JohnsonPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+@ === RAND_ROUTE116_GEM_START ===
+Route116_EventScript_PickGem::
+	multichoice 0, 0, MULTI_ROUTE116_PICK_GEM, FALSE
+	switch VAR_RESULT
+	case 0, Route116_EventScript_PickGem1
+	case 1, Route116_EventScript_PickGem2
+	case 2, Route116_EventScript_PickGem3
+	case 3, Route116_EventScript_PickGem4
+	end
+
+Route116_EventScript_PickGem1::
+	finditem ITEM_GROUND_GEM
+	setflag FLAG_ITEM_ROUTE_116_ETHER
+	end
+
+Route116_EventScript_PickGem2::
+	finditem ITEM_GROUND_GEM
+	setflag FLAG_ITEM_ROUTE_116_ETHER
+	end
+
+Route116_EventScript_PickGem3::
+	finditem ITEM_GROUND_GEM
+	setflag FLAG_ITEM_ROUTE_116_ETHER
+	end
+
+Route116_EventScript_PickGem4::
+	finditem ITEM_GROUND_GEM
+	setflag FLAG_ITEM_ROUTE_116_ETHER
+	end
+@ === RAND_ROUTE116_GEM_END ===
+
+@ === RAND_ROUTE116_BERRY_START ===
+Route116_EventScript_PickBerry::
+	multichoice 0, 0, MULTI_ROUTE116_PICK_BERRY, FALSE
+	switch VAR_RESULT
+	case 0, Route116_EventScript_PickBerry1
+	case 1, Route116_EventScript_PickBerry2
+	case 2, Route116_EventScript_PickBerry3
+	case 3, Route116_EventScript_PickBerry4
+	end
+
+Route116_EventScript_PickBerry1::
+	finditem ITEM_OCCA_BERRY
+	setflag FLAG_ITEM_ROUTE_116_POTION
+	end
+
+Route116_EventScript_PickBerry2::
+	finditem ITEM_OCCA_BERRY
+	setflag FLAG_ITEM_ROUTE_116_POTION
+	end
+
+Route116_EventScript_PickBerry3::
+	finditem ITEM_OCCA_BERRY
+	setflag FLAG_ITEM_ROUTE_116_POTION
+	end
+
+Route116_EventScript_PickBerry4::
+	finditem ITEM_OCCA_BERRY
+	setflag FLAG_ITEM_ROUTE_116_POTION
+	end
+@ === RAND_ROUTE116_BERRY_END ===
+
 @ === RAND_ROUTE116_X_SPECIAL_START ===
 Route116_EventScript_XSpecial::
 	finditem ITEM_BLACK_SLUDGE

@@ -1017,6 +1017,22 @@ static const struct MenuAction MultichoiceList_Route116PickBall[] =
     {COMPOUND_STRING("Leppa Berry")},
 };
 
+static const struct MenuAction MultichoiceList_Route116PickGem[] =
+{
+    {COMPOUND_STRING("Item Placeholder")},
+    {COMPOUND_STRING("Item Placeholder")},
+    {COMPOUND_STRING("Item Placeholder")},
+    {COMPOUND_STRING("Item Placeholder")},
+};
+
+static const struct MenuAction MultichoiceList_Route116PickBerry[] =
+{
+    {COMPOUND_STRING("Item Placeholder")},
+    {COMPOUND_STRING("Item Placeholder")},
+    {COMPOUND_STRING("Item Placeholder")},
+    {COMPOUND_STRING("Item Placeholder")},
+};
+
 static const struct MenuAction MultichoiceList_Route124PickBallA[] =
 {
     {COMPOUND_STRING("Rowap Berry")},
@@ -1255,6 +1271,8 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_ROUTE114_PICK_BALL_C]       = MULTICHOICE(MultichoiceList_Route114PickBallC),
     [MULTI_ROUTE115_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route115PickBall),
     [MULTI_ROUTE116_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route116PickBall),
+    [MULTI_ROUTE116_PICK_GEM]          = MULTICHOICE(MultichoiceList_Route116PickGem),
+    [MULTI_ROUTE116_PICK_BERRY]        = MULTICHOICE(MultichoiceList_Route116PickBerry),
     [MULTI_ROUTE124_PICK_BALL_A]       = MULTICHOICE(MultichoiceList_Route124PickBallA),
     [MULTI_ROUTE124_PICK_BALL_B]       = MULTICHOICE(MultichoiceList_Route124PickBallB),
     [MULTI_ROUTE125_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route125PickBall),

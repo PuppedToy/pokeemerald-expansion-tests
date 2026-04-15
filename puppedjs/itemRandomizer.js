@@ -113,8 +113,10 @@ function buildAssignments() {
     return {
         petalburgPlates:  plate(4),
         route104Gems:     gem(4),
+        route116Gems:     gem(4),
         route117Gems:     gem(4),
         route104Berries:  berry(4),
+        route116Berries:  berry(4),
         route111Berries:  berry(4),
         route117Berries:  berry(4),
         route121Berries:  berry(4),
@@ -261,6 +263,32 @@ function updateScripts(a) {
             scriptLabel: 'Route116_EventScript_XSpecial',
             item: a.route116XSpecial,
             flag: 'FLAG_ITEM_ROUTE_116_X_SPECIAL',
+        })
+    );
+
+    // Route116 gem pick (4 gems — Sarah's item, FLAG_ITEM_ROUTE_116_ETHER)
+    replaceAnchored(
+        'data/maps/Route116/scripts.inc',
+        'ROUTE116_GEM',
+        genPickerSection({
+            pickerLabel:  'Route116_EventScript_PickGem',
+            multiConst:   'MULTI_ROUTE116_PICK_GEM',
+            flag:         'FLAG_ITEM_ROUTE_116_ETHER',
+            pickedItems:  a.route116Gems,
+            handlerPrefix:'Route116_EventScript_PickGem',
+        })
+    );
+
+    // Route116 berry pick (4 berries — Karen's item, FLAG_ITEM_ROUTE_116_POTION)
+    replaceAnchored(
+        'data/maps/Route116/scripts.inc',
+        'ROUTE116_BERRY',
+        genPickerSection({
+            pickerLabel:  'Route116_EventScript_PickBerry',
+            multiConst:   'MULTI_ROUTE116_PICK_BERRY',
+            flag:         'FLAG_ITEM_ROUTE_116_POTION',
+            pickedItems:  a.route116Berries,
+            handlerPrefix:'Route116_EventScript_PickBerry',
         })
     );
 
@@ -452,6 +480,12 @@ function updateScriptMenu(a) {
     src = replaceMenuList(src, 'MultichoiceList_Route104PickBerry',
         a.route104Berries.map(itemDisplayName));
 
+    src = replaceMenuList(src, 'MultichoiceList_Route116PickGem',
+        a.route116Gems.map(itemDisplayName));
+
+    src = replaceMenuList(src, 'MultichoiceList_Route116PickBerry',
+        a.route116Berries.map(itemDisplayName));
+
     src = replaceMenuList(src, 'MultichoiceList_Route117PickBerry',
         a.route117Berries.map(itemDisplayName));
 
@@ -519,6 +553,8 @@ function randomizeItems() {
     const dn = (key) => a[key].map(itemDisplayName);
     return {
         route116XSpecial:  itemDisplayName(a.route116XSpecial),
+        route116Gems:      dn('route116Gems'),
+        route116Berries:   dn('route116Berries'),
         route102Ball:      dn('route102Ball'),
         route109Ball:      dn('route109Ball'),
         petalburgPlates:   dn('petalburgPlates'),
