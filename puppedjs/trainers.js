@@ -1435,7 +1435,6 @@ const trainersData = [
             {
                 contextualTier: [TIER_PU],
                 evoType: [EVO_TYPE_LC],
-                item: 'Eviolite',
             },
             ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
         ]
