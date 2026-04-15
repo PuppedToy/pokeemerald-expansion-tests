@@ -1035,6 +1035,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route104BerryItems     = itemAssignments.route104Berries;
     const route111ItemItems      = itemAssignments.route111Items;
     const route111BerryItems     = itemAssignments.route111Berries;
+    const route116XSpecialItem   = itemAssignments.route116XSpecial;
     const route116PoolItems      = itemAssignments.route116Items.slice(0, 2);
     const route116BallItems      = itemAssignments.route116Ball;
     const route109BallItems      = itemAssignments.route109Ball;
@@ -1093,7 +1094,7 @@ const roxanneBag = () => [
 const rusturfGruntBag = () => [
     ...roxanneBag(),
     sample([...route116BallItems]),
-    'Black Sludge',
+    route116XSpecialItem,
 ];
 
 const rivalRustboroBag = () => [
@@ -1594,7 +1595,7 @@ const trainersData = [
     {
         id: 'TRAINER_MARLENE',
         class: 'Psychic F',
-        reward: ['Ability Capsule'],
+        reward: ['Ability Patch'],
         level: 12,
         bag: [...rival103Bag()],
         team: [
@@ -1659,7 +1660,7 @@ const trainersData = [
     {
         id: 'TRAINER_JOEY',
         class: 'Youngster',
-        reward: ['Ability Patch'],
+        reward: ['Ability Capsule'],
         level: 15,
         bag: [...getSampleItemsFromArray(roxanneBag(), 3), ...getSampleItemsFromArray(choice104TMs, 1)],
         team: [
@@ -1681,14 +1682,14 @@ const trainersData = [
     {
         id: 'TRAINER_DEVAN',
         class: 'Hiker',
-        reward: ['Black Sludge'],
+        reward: [route116XSpecialItem],
         level: 15,
         bag: [...getSampleItemsFromArray(roxanneBag(), 2), ...getSampleItemsFromArray(choice104TMs, 1)],
         team: [
             {
                 ...POKEDEF_NU,
                 type: [POKEMON_TYPE_POISON],
-                item: 'Black Sludge',
+                item: route116XSpecialItem,
             },
             ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
         ],

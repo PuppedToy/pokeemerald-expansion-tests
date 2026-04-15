@@ -55,3 +55,4 @@ Commit any changes to `src/`, `include/`, or `data/maps/` before running these s
 |------|---------|
 | `tms.md` | Full TM/HM table: slot number, pool (determines what move is randomized into it), and in-world location. Use this to verify gym reward TM slots, pick-list assignments, and to find unplaced slots when designing new item placements. |
 | `pick-list-howto.md` | Step-by-step checklist for wiring up a new 3-choice TM pick: which files to touch (constants, script_menu, tmRandomizer, scripts.inc, map.json, trainers.js) and in what order. |
+| `items.md` | All item categories and pools: fixed items, `goodItemPool` (single-reward high-value), `averageItemPool` (pick-3 utility), `plates`, `gems`, `protectionBerries`, `fullItemPool` (legacy). Lists every world location with its flag, pool, and trainer bag cascade. |

@@ -73,6 +73,12 @@ function replaceMenuListSlots(src, listName, slotMap) {
     });
 }
 
+// Generate a single-item script (no multichoice — item is fixed per run from a pool)
+function genSingleItemScript(cfg) {
+    const { scriptLabel, item, flag } = cfg;
+    return `${scriptLabel}::\n\tfinditem ${item}\n\tsetflag ${flag}\n\tend`;
+}
+
 // Generate a full picker section (multichoice + switch + individual handlers)
 function genPickerSection(cfg) {
     // cfg: { pickerLabel, multiConst, flag, pickedItems, handlerPrefix, extraFindItems? }
@@ -94,13 +100,15 @@ function buildAssignments() {
     const gemsPool     = shuffle([...new Set(items.gems)]);
     const berriesPool  = shuffle([...new Set(Object.values(items.protectionBerries))]);
     const fullPool     = shuffle([...new Set(items.fullItemPool)]);
+    const goodPool     = shuffle([...new Set(items.goodItemPool)]);
 
-    let pI = 0, gI = 0, bI = 0, fI = 0;
+    let pI = 0, gI = 0, bI = 0, fI = 0, gpI = 0;
     const plate  = (n = 1) => platesPool.slice(pI, (pI += n));
     const gem    = (n = 1) => gemsPool.slice(gI, (gI += n));
     const berry  = (n = 1) => berriesPool.slice(bI, (bI += n));
     // Cycling pool: wraps around if we exceed the pool size
     const pool   = (n = 1) => Array.from({ length: n }, () => fullPool[fI++ % fullPool.length]);
+    const good   = (n = 1) => Array.from({ length: n }, () => goodPool[gpI++ % goodPool.length]);
 
     return {
         petalburgPlates:  plate(4),
@@ -112,6 +120,8 @@ function buildAssignments() {
         route121Berries:  berry(4),
         // fullItemPool locations
         route111Items:    [...pool(2), 'ITEM_CUSTAP_BERRY'],        // slot 2 = fixed
+        // goodItemPool single-item locations
+        route116XSpecial:  good(1)[0],
         route116OrbItems: ['ITEM_FLAME_ORB', 'ITEM_TOXIC_ORB', 'ITEM_STICKY_BARB'],
         route116Items:    [...pool(2), 'ITEM_TM65'],                // slot 2 = TM (name from TM randomizer)
         route118Items:    pool(4),
@@ -240,6 +250,17 @@ function updateScripts(a) {
             flag:         'FLAG_ITEM_ROUTE_111_TM_SANDSTORM',
             pickedItems:  a.route111Items,
             handlerPrefix:'Route111_EventScript_PickItem',
+        })
+    );
+
+    // Route116 X Special (single goodItemPool item)
+    replaceAnchored(
+        'data/maps/Route116/scripts.inc',
+        'ROUTE116_X_SPECIAL',
+        genSingleItemScript({
+            scriptLabel: 'Route116_EventScript_XSpecial',
+            item: a.route116XSpecial,
+            flag: 'FLAG_ITEM_ROUTE_116_X_SPECIAL',
         })
     );
 
@@ -497,6 +518,7 @@ function randomizeItems() {
     // Return display-name assignments for use in trainer generation
     const dn = (key) => a[key].map(itemDisplayName);
     return {
+        route116XSpecial:  itemDisplayName(a.route116XSpecial),
         route102Ball:      dn('route102Ball'),
         route109Ball:      dn('route109Ball'),
         petalburgPlates:   dn('petalburgPlates'),

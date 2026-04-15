@@ -348,6 +348,13 @@ Route116_EventScript_Johnson::
 	msgbox Route116_Text_JohnsonPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+@ === RAND_ROUTE116_X_SPECIAL_START ===
+Route116_EventScript_XSpecial::
+	finditem ITEM_BLACK_SLUDGE
+	setflag FLAG_ITEM_ROUTE_116_X_SPECIAL
+	end
+@ === RAND_ROUTE116_X_SPECIAL_END ===
+
 @ === RAND_ROUTE116_ORB_START ===
 Route116_EventScript_PickOrb::
 	multichoice 0, 0, MULTI_ROUTE116_PICK_ORB, FALSE
