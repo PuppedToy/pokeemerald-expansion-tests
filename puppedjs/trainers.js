@@ -1669,7 +1669,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JOHNSON',
-        class: 'Youngster',
+        class: 'Rich Boy',
         reward: [...route116BallItems],
         level: 15,
         bag: [...getSampleItemsFromArray(roxanneBag(), 2), sample([...route116BallItems]), ...getSampleItemsFromArray(choice104TMs, 1)],
