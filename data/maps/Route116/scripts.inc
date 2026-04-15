@@ -442,7 +442,6 @@ Route116_EventScript_PickOrb3::
 	end
 @ === RAND_ROUTE116_ORB_END ===
 
-@ === RAND_ROUTE116_ITEM_START ===
 Route116_EventScript_PickItem::
 	multichoice 0, 0, MULTI_ROUTE116_PICK_ITEM, FALSE
 	switch VAR_RESULT
@@ -452,20 +451,19 @@ Route116_EventScript_PickItem::
 	end
 
 Route116_EventScript_PickItem1::
-	finditem ITEM_LUMINOUS_MOSS
+	finditem ITEM_TM65
 	setflag FLAG_ITEM_ROUTE_116_PICK_ITEM
 	end
 
 Route116_EventScript_PickItem2::
-	finditem ITEM_ZOOM_LENS
+	finditem ITEM_TM66
 	setflag FLAG_ITEM_ROUTE_116_PICK_ITEM
 	end
 
 Route116_EventScript_PickItem3::
-	finditem ITEM_TM65
+	finditem ITEM_TM67
 	setflag FLAG_ITEM_ROUTE_116_PICK_ITEM
 	end
-@ === RAND_ROUTE116_ITEM_END ===
 
 Route116_Text_ScoundrelMadeOffWithPeeko:
 	.string "Ohhh, what am I to do?\p"

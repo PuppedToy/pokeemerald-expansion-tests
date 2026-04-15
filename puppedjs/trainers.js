@@ -1038,7 +1038,6 @@ function getTrainersData(itemAssignments, tmList) {
     const route116XSpecialItem   = itemAssignments.route116XSpecial;
     const route116GemItems       = itemAssignments.route116Gems;
     const route116BerryItems     = itemAssignments.route116Berries;
-    const route116PoolItems      = itemAssignments.route116Items.slice(0, 2);
     const route116BallItems      = itemAssignments.route116Ball;
     const route109BallItems      = itemAssignments.route109Ball;
     const route117GemItems       = itemAssignments.route117Gems;
@@ -1056,6 +1055,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choice104Gem         = route104GemItems;
     const choice116Gem         = route116GemItems;
     const choice116Berry       = route116BerryItems;
+    const choice116PickTMs     = [tmItem(65), tmItem(66), tmItem(67)];
     const choice104TMs         = [tmItem(5), tmItem(6), tmItem(7)];
     const choice104TMs2        = [tmItem(8), tmItem(9), tmItem(10)];
     const choicesDewfordTMs    = [tmItem(4), tmItem(3), tmItem(2)];
@@ -1104,7 +1104,7 @@ const rusturfGruntBag = () => [
 const rivalRustboroBag = () => [
     ...rusturfGruntBag(),
     sample(['Toxic Orb', 'Flame Orb', 'Sticky Barb']),
-    sample([...route116PoolItems, tmItem(65)]),
+    sample([...choice116PickTMs]),
 ];
 
 const brawlyBag = () => [
@@ -1701,8 +1701,8 @@ const trainersData = [
     {
         id: 'TRAINER_CLARK',
         class: 'Pokemaniac',
-        reward: [...route116PoolItems, tmItem(65)],
-        bag: [...route116PoolItems],
+        reward: [...choice116PickTMs],
+        bag: [...choice116PickTMs],
         level: 15,
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),

@@ -215,9 +215,7 @@ MauvilleCity_GameCorner_EventScript_CancelDollSelect::
 MauvilleCity_GameCorner_EventScript_PrizeCornerTMs::
 	lock
 	faceplayer
-	msgbox MauvilleCity_GameCorner_Text_ExchangeCoinsForPrizes, MSGBOX_DEFAULT
-	checkitem ITEM_COIN_CASE
-	goto_if_eq VAR_RESULT, TRUE, MauvilleCity_GameCorner_EventScript_ChooseTMPrizeMessage
+	msgbox MauvilleCity_GameCorner_Text_PrizeCornerClosed, MSGBOX_DEFAULT
 	release
 	end
 
@@ -775,4 +773,10 @@ MauvilleCity_GameCorner_Text_HeresSomeSlotsInfo:
 MauvilleCity_GameCorner_Text_CantPlayWithNoCoinCase:
 	.string "You can't play if you don't have\n"
 	.string "a COIN CASE.$"
+
+MauvilleCity_GameCorner_Text_PrizeCornerClosed:
+	.string "Sorry, the TM prize corner\n"
+	.string "is no longer open.\p"
+	.string "Check other locations for\n"
+	.string "TMs and moves!$"
 

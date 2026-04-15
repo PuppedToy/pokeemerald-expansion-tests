@@ -125,7 +125,6 @@ function buildAssignments() {
         // goodItemPool single-item locations
         route116XSpecial:  good(1)[0],
         route116OrbItems: ['ITEM_FLAME_ORB', 'ITEM_TOXIC_ORB', 'ITEM_STICKY_BARB'],
-        route116Items:    [...pool(2), 'ITEM_TM65'],                // slot 2 = TM (name from TM randomizer)
         route118Items:    pool(4),
         route120Items:    pool(3),
         route125Items:    ['ITEM_WEAKNESS_POLICY', 'ITEM_EJECT_BUTTON', pool(1)[0]], // slots 0,1 = fixed
@@ -302,19 +301,6 @@ function updateScripts(a) {
             flag:         'FLAG_ITEM_ROUTE_116_MIND_PLATE',
             pickedItems:  a.route116OrbItems,
             handlerPrefix:'Route116_EventScript_PickOrb',
-        })
-    );
-
-    // Route116 item (3, slots 0,1 = pool, slot 2 = TM65)
-    replaceAnchored(
-        'data/maps/Route116/scripts.inc',
-        'ROUTE116_ITEM',
-        genPickerSection({
-            pickerLabel:  'Route116_EventScript_PickItem',
-            multiConst:   'MULTI_ROUTE116_PICK_ITEM',
-            flag:         'FLAG_ITEM_ROUTE_116_PICK_ITEM',
-            pickedItems:  a.route116Items,
-            handlerPrefix:'Route116_EventScript_PickItem',
         })
     );
 
@@ -509,12 +495,6 @@ function updateScriptMenu(a) {
         a.route120Items.map(itemDisplayName));
 
     // Mixed lists: only update item slots, leave fixed/TM slots
-    // Route116 item: slots 0,1 = random, slot 2 = TM (tmRandomizer owns slot 2 — leave it)
-    src = replaceMenuListSlots(src, 'MultichoiceList_Route116PickItem', {
-        0: itemDisplayName(a.route116Items[0]),
-        1: itemDisplayName(a.route116Items[1]),
-    });
-
     // Route125: slots 0,1 fixed (Weakness Policy, Eject Button), slot 2 = random
     src = replaceMenuListSlots(src, 'MultichoiceList_Route125PickItem', {
         2: itemDisplayName(a.route125Items[2]),
@@ -563,7 +543,6 @@ function randomizeItems() {
         route111Items:     dn('route111Items'),
         route111Berries:   dn('route111Berries'),
         route116OrbItems:  dn('route116OrbItems'),
-        route116Items:     dn('route116Items'),
         route116Ball:      dn('route116Ball'),
         route114BallC:     dn('route114BallC'),
         route117Gems:      dn('route117Gems'),

@@ -87,12 +87,12 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM62 | avgStatus | Pick — Route 110 (choose 1 of 3) |
 | TM63 | avgStatus | Pick — Route 110 (choose 1 of 3) |
 | TM64 | avgStatus | Pick — Route 110 (choose 1 of 3) |
-| TM65 | avgStatus | Pick — Route 116 item pick (1 of 3 options) |
-| TM66 | avgStatus | Game Corner — 1,500 coins |
-| TM67 | avgStatus | Game Corner — 3,500 coins |
-| TM68 | avgStatus | Game Corner — 4,000 coins |
-| TM69 | avgStatus | Game Corner — 4,000 coins |
-| TM70 | avgStatus | Game Corner — 4,000 coins |
+| TM65 | avgStatus | Pick — Route 116 Clark pick (1 of 3) |
+| TM66 | avgStatus | Pick — Route 116 Clark pick (1 of 3) |
+| TM67 | avgStatus | Pick — Route 116 Clark pick (1 of 3) |
+| TM68 | avgStatus | — Unplaced |
+| TM69 | avgStatus | — Unplaced |
+| TM70 | avgStatus | — Unplaced |
 | TM71 | weather | Item — Abandoned Ship (hidden) |
 | TM72 | weather | Item — Shoal Cave |
 | TM73 | weather | — Unplaced |

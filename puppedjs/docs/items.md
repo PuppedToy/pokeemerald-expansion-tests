@@ -64,7 +64,7 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 | Location | Flag | Slot breakdown |
 |----------|------|---------------|
 | Route 111 items | `FLAG_ITEM_ROUTE_111_TM_SANDSTORM` | slots 0/1 = pool, slot 2 = Custap Berry (fixed) |
-| Route 116 item pick | `FLAG_ITEM_ROUTE_116_PICK_ITEM` | slots 0/1 = pool, slot 2 = TM65 (TM randomizer owns it) |
+| Route 116 Clark pick | `FLAG_ITEM_ROUTE_116_PICK_ITEM` | all 3 = TM65/66/67 — TM randomizer owns all slots (see `tms.md`) |
 | Route 118 items | `FLAG_ITEM_ROUTE_118_BERRY` | all 4 from pool (via `route118Items`) |
 | Route 120 items | `FLAG_ITEM_ROUTE_120_NEST_BALL` | all 3 from pool |
 | Route 125 items | `FLAG_ITEM_ROUTE_125_BIG_PEARL` | slots 0/1 = fixed (Weakness Policy, Eject Button), slot 2 = pool |

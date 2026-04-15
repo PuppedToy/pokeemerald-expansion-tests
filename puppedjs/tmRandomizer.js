@@ -87,6 +87,7 @@ const PICK_LISTS = [
     ['MultichoiceList_Route121PickTM',   [82, 83, 84]],
     ['MultichoiceList_Route124PickTM',   [36, 37, 38]],
     ['MultichoiceList_Route109RickyPickTM', [16, 17, 18]],
+    ['MultichoiceList_Route116PickItem',    [65, 66, 67]],
 ];
 
 // Game Corner TM66-TM70 with their coin prices.
@@ -117,23 +118,6 @@ async function patchScriptMenu(tmList) {
             `$1${newEntries}$2`
         );
     }
-
-    // Game Corner: 5 TM entries with coin prices, followed by {gText_Exit}.
-    const newGCEntries = GAME_CORNER_TMS
-        .map(({ tm, price }) =>
-            `    {COMPOUND_STRING("TM ${name(tm)}{CLEAR_TO 0x48}${price}")},`
-        )
-        .join('\n');
-    src = src.replace(
-        /(static const struct MenuAction MultichoiceList_GameCornerTMs\[\] =\n\{\n)[\s\S]*?(\n    \{gText_Exit\},\n\};)/,
-        `$1${newGCEntries}$2`
-    );
-
-    // Route116PickItem: only the last entry (index 2) is a TM.
-    src = src.replace(
-        /(static const struct MenuAction MultichoiceList_Route116PickItem\[\] =\n\{[\s\S]*?    )\{COMPOUND_STRING\("TM [^"]*"\)},(\n\};)/,
-        `$1{COMPOUND_STRING("TM ${name(65)}")},\n};`
-    );
 
     await fs.writeFile(SCRIPT_MENU_PATH, src, 'utf8');
     console.log('[TM Randomizer] Updated TM names in script_menu.h');
