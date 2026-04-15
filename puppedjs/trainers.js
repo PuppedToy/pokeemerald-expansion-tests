@@ -1414,7 +1414,7 @@ const trainersData = [
         class: 'Lady',
         reward: ['Eviolite'],
         level: 10,
-        bag: [...rival103Bag],
+        bag: [...rival103Bag()],
         team: [
             {
                 contextualTier: [TIER_PU],
@@ -1490,7 +1490,7 @@ const trainersData = [
         class: 'Bug Catcher',
         reward: ['SPECIES_PATRAT'],
         level: 12,
-        bag: [...rival103Bag],
+        bag: [...rival103Bag()],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -1504,7 +1504,7 @@ const trainersData = [
         class: 'Fisherman',
         reward: ['SPECIES_CATERPIE'],
         level: 12,
-        bag: [...rival103Bag],
+        bag: [...rival103Bag()],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -1581,7 +1581,7 @@ const trainersData = [
         class: 'Psychic F',
         reward: ['Ability Capsule'],
         level: 12,
-        bag: [...rival103Bag],
+        bag: [...rival103Bag()],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
             ...generatePokemonsWithDefinition(POKEDEF_ZU, 4),
