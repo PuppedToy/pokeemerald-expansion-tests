@@ -152,63 +152,63 @@
             "encounter_rate": 20,
             "mons": [
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_WURMPLE"
               },
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_WURMPLE"
               },
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_WURMPLE"
               },
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_WURMPLE"
               },
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_WURMPLE"
               },
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_WURMPLE"
               },
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_WURMPLE"
               },
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_WURMPLE"
               },
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_WURMPLE"
               },
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_WURMPLE"
               },
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_WURMPLE"
               },
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_WURMPLE"
               }
             ]
@@ -247,13 +247,13 @@
             "encounter_rate": 30,
             "mons": [
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_WINGULL"
               },
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_WINGULL"
               },
               {
@@ -401,13 +401,13 @@
             "encounter_rate": 30,
             "mons": [
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_SURSKIT"
               },
               {
-                "min_level": 10,
-                "max_level": 10,
+                "min_level": 7,
+                "max_level": 7,
                 "species": "SPECIES_SURSKIT"
               },
               {

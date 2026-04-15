@@ -850,7 +850,7 @@ const rival103Template = (id) => [
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
-        encounterIds: [...rival104Encounters],
+        encounterIds: [...rival102Encounters, ...rival103Encounters],
         tryEvolve: true,
         pickBest: true,
     },
@@ -1027,10 +1027,6 @@ const rivalEvergrandeCityTemplate = (id) => [
     },
 ];
 
-const rival103Bag = [
-    'Oran Berry',
-];
-
 function getTrainersData(itemAssignments, tmList) {
     // Pool-derived item arrays (display names from itemRandomizer)
     const route102BallItems      = itemAssignments.route102Ball;
@@ -1074,22 +1070,19 @@ function getTrainersData(itemAssignments, tmList) {
     const choicePresleyItems   = ['Weakness Policy', 'Eject Button', route125ItemItems[2]];
     const choiceJosephSeeds    = ['Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed'];
 
-    const petalwoodGruntBag = () => [
-        ...rival103Bag,
-        sample([...route102BallItems]),
-        'Eviolite',
-        sample([...petalburgPlateItems]),
-    ];
+const rival103Bag = () => [
+    'Oran Berry',
+    sample([...route102BallItems]),
+];
 
-    const bagAfterWoodGrunt = () => [
-        'Oran Berry',
-        sample([...route102BallItems]),
-        'Eviolite',
-        sample([...woodsPlatesChoice]),
-    ];
+const petalwoodGruntBag = () => [
+    ...rival103Bag(),
+    'Eviolite',
+    sample([...petalburgPlateItems]),
+];
 
 const roxanneBag = () => [
-    ...bagAfterWoodGrunt(),
+    ...petalwoodGruntBag(),
     sample([...choice104Gem]),
     sample([...choice104Berry]),
     sample([...choice104TMs]),
@@ -1255,6 +1248,61 @@ const trainersData = [
             { ...POKEDEF_MAGIKARP },
         ],
     },
+    // Route 102
+    {
+        id: 'TRAINER_ALLEN',
+        class: 'Camper',
+        reward: ['SPECIES_WURMPLE'],
+        level: 7,
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_WURMPLE'],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 4),
+            { ...POKEDEF_MAGIKARP },
+        ],
+    },
+    {
+        id: 'TRAINER_RICK',
+        class: 'Bug Catcher',
+        reward: ['SPECIES_WINGULL'],
+        level: 7,
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_WINGULL'],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 4),
+            { ...POKEDEF_MAGIKARP },
+        ]
+    },
+    {
+        id: 'TRAINER_TIANA',
+        class: 'Lass',
+        reward: [...route102BallItems],
+        level: 7,
+        bag: [...route102BallItems],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
+            { ...POKEDEF_MAGIKARP },
+        ]
+    },
+    // Route 103
+    {
+        id: 'TRAINER_CARTER',
+        class: 'Fisherman',
+        reward: ['SPECIES_SURSKIT'],
+        level: 7,
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SURSKIT'],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 4),
+            { ...POKEDEF_MAGIKARP },
+        ]
+    },
     {
         id: 'TRAINER_SAWYER_1',
         class: 'Hiker',
@@ -1269,11 +1317,11 @@ const trainersData = [
             { ...POKEDEF_MAGIKARP },
         ]
     },
-    // Route 103
     {
         id: 'TRAINER_MAY_ROUTE_103_TREECKO',
         class: 'May',
-        reward: ['Old Rod'],
+        reward: ['TODO'],
+        bag: [...rival103Bag()],
         level: 7,
         isBoss: true,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -1281,7 +1329,6 @@ const trainersData = [
             {
                 id: 'RIVAL_STARTER_TREECKO',
                 special: TRAINER_POKE_STARTER_TORCHIC,
-                item: 'Oran Berry',
             },
             ...rival103Template('TREECKO'),
         ]
@@ -1289,7 +1336,8 @@ const trainersData = [
     {
         id: 'TRAINER_MAY_ROUTE_103_TORCHIC',
         class: 'May',
-        reward: ['Old Rod'],
+        reward: ['TODO'],
+        bag: [...rival103Bag()],
         level: 7,
         isBoss: true,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -1297,7 +1345,6 @@ const trainersData = [
             {
                 id: 'RIVAL_STARTER_TORCHIC',
                 special: TRAINER_POKE_STARTER_MUDKIP,
-                item: 'Oran Berry',
             },
             ...rival103Template('TORCHIC'),
         ]
@@ -1305,7 +1352,8 @@ const trainersData = [
     {
         id: 'TRAINER_MAY_ROUTE_103_MUDKIP',
         class: 'May',
-        reward: ['Old Rod'],
+        reward: ['TODO'],
+        bag: [...rival103Bag()],
         level: 7,
         isBoss: true,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -1313,7 +1361,6 @@ const trainersData = [
             {
                 id: 'RIVAL_STARTER_MUDKIP',
                 special: TRAINER_POKE_STARTER_TREECKO,
-                item: 'Oran Berry',
             },
             ...rival103Template('MUDKIP'),
         ]
@@ -1332,63 +1379,6 @@ const trainersData = [
         id: 'TRAINER_BRENDAN_ROUTE_103_MUDKIP',
         copy: 'TRAINER_MAY_ROUTE_103_MUDKIP',
         class: 'Brendan',
-    },
-    // Route 102
-    {
-        id: 'TRAINER_ALLEN',
-        class: 'Youngster',
-        reward: ['SPECIES_WURMPLE'],
-        level: 10,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_WURMPLE'],
-                item: 'Oran Berry',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
-        ],
-    },
-    {
-        id: 'TRAINER_RICK',
-        class: 'Bug Catcher',
-        reward: ['SPECIES_WINGULL'],
-        level: 10,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_WINGULL'],
-                item: 'Oran Berry',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
-        ]
-    },
-    {
-        id: 'TRAINER_TIANA',
-        class: 'Lass',
-        reward: [...route102BallItems],
-        level: 10,
-        bag: [...route102BallItems],
-        team: [
-            {
-                ...POKEDEF_ZU_LC,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
-        ]
-    },
-    // Route 103
-    {
-        id: 'TRAINER_CARTER',
-        class: 'Fisherman',
-        reward: ['SPECIES_SURSKIT'],
-        level: 10,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SURSKIT'],
-                item: 'Oran Berry',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
-        ]
     },
     // Route 104
     {

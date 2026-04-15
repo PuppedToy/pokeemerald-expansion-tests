@@ -252,7 +252,6 @@
       "SPECIES_KADABRA"
     ],
     [
-      "SPECIES_ALAKAZAM",
       "SPECIES_ALAKAZAM"
     ]
   ],
@@ -262,7 +261,6 @@
       "SPECIES_MACHOKE"
     ],
     [
-      "SPECIES_MACHAMP",
       "SPECIES_MACHAMP"
     ]
   ],
@@ -287,7 +285,6 @@
       "SPECIES_GRAVELER"
     ],
     [
-      "SPECIES_GOLEM",
       "SPECIES_GOLEM"
     ]
   ],
@@ -297,7 +294,6 @@
       "SPECIES_GRAVELER_ALOLA"
     ],
     [
-      "SPECIES_GOLEM_ALOLA",
       "SPECIES_GOLEM_ALOLA"
     ]
   ],
@@ -334,7 +330,6 @@
       "SPECIES_MAGNETON"
     ],
     [
-      "SPECIES_MAGNEZONE",
       "SPECIES_MAGNEZONE"
     ]
   ],
@@ -380,14 +375,12 @@
       "SPECIES_HAUNTER"
     ],
     [
-      "SPECIES_GENGAR",
       "SPECIES_GENGAR"
     ]
   ],
   "P_FAMILY_ONIX": [
     "SPECIES_ONIX",
     [
-      "SPECIES_STEELIX",
       "SPECIES_STEELIX"
     ]
   ],
@@ -456,14 +449,12 @@
       "SPECIES_RHYDON"
     ],
     [
-      "SPECIES_RHYPERIOR",
       "SPECIES_RHYPERIOR"
     ]
   ],
   "P_FAMILY_CHANSEY": [
     "SPECIES_HAPPINY",
     [
-      "SPECIES_CHANSEY",
       "SPECIES_CHANSEY"
     ],
     [
@@ -482,7 +473,6 @@
       "SPECIES_SEADRA"
     ],
     [
-      "SPECIES_KINGDRA",
       "SPECIES_KINGDRA"
     ]
   ],
@@ -531,7 +521,6 @@
       "SPECIES_ELECTABUZZ"
     ],
     [
-      "SPECIES_ELECTIVIRE",
       "SPECIES_ELECTIVIRE"
     ]
   ],
@@ -541,7 +530,6 @@
       "SPECIES_MAGMAR"
     ],
     [
-      "SPECIES_MAGMORTAR",
       "SPECIES_MAGMORTAR"
     ]
   ],
@@ -567,11 +555,9 @@
   "P_FAMILY_PORYGON": [
     "SPECIES_PORYGON",
     [
-      "SPECIES_PORYGON2",
       "SPECIES_PORYGON2"
     ],
     [
-      "SPECIES_PORYGON_Z",
       "SPECIES_PORYGON_Z"
     ]
   ],
@@ -778,7 +764,6 @@
   "P_FAMILY_GLIGAR": [
     "SPECIES_GLIGAR",
     [
-      "SPECIES_GLISCOR",
       "SPECIES_GLISCOR"
     ]
   ],
@@ -797,14 +782,12 @@
   "P_FAMILY_SNEASEL": [
     "SPECIES_SNEASEL",
     [
-      "SPECIES_WEAVILE",
       "SPECIES_WEAVILE"
     ]
   ],
   "P_FAMILY_SNEASEL_HISUI": [
     "SPECIES_SNEASEL_HISUI",
     [
-      "SPECIES_SNEASLER",
       "SPECIES_SNEASLER"
     ]
   ],
@@ -1024,7 +1007,6 @@
   "P_FAMILY_NOSEPASS": [
     "SPECIES_NOSEPASS",
     [
-      "SPECIES_PROBOPASS",
       "SPECIES_PROBOPASS"
     ]
   ],
@@ -1148,8 +1130,6 @@
   "P_FAMILY_FEEBAS": [
     "SPECIES_FEEBAS",
     [
-      "SPECIES_MILOTIC",
-      "SPECIES_MILOTIC",
       "SPECIES_MILOTIC"
     ]
   ],
@@ -1165,7 +1145,6 @@
       "SPECIES_DUSCLOPS"
     ],
     [
-      "SPECIES_DUSKNOIR",
       "SPECIES_DUSKNOIR"
     ]
   ],
@@ -1486,7 +1465,6 @@
       "SPECIES_BOLDORE"
     ],
     [
-      "SPECIES_GIGALITH",
       "SPECIES_GIGALITH"
     ]
   ],
@@ -1508,7 +1486,6 @@
       "SPECIES_GURDURR"
     ],
     [
-      "SPECIES_CONKELDURR",
       "SPECIES_CONKELDURR"
     ]
   ],
@@ -1909,14 +1886,12 @@
   "P_FAMILY_SPRITZEE": [
     "SPECIES_SPRITZEE",
     [
-      "SPECIES_AROMATISSE",
       "SPECIES_AROMATISSE"
     ]
   ],
   "P_FAMILY_SWIRLIX": [
     "SPECIES_SWIRLIX",
     [
-      "SPECIES_SLURPUFF",
       "SPECIES_SLURPUFF"
     ]
   ],
@@ -1981,35 +1956,30 @@
   "P_FAMILY_PHANTUMP": [
     "SPECIES_PHANTUMP",
     [
-      "SPECIES_TREVENANT",
       "SPECIES_TREVENANT"
     ]
   ],
   "P_FAMILY_PUMPKABOO": [
     "SPECIES_PUMPKABOO_AVERAGE",
     [
-      "SPECIES_GOURGEIST_AVERAGE",
       "SPECIES_GOURGEIST_AVERAGE"
     ]
   ],
   "P_FAMILY_PUMPKABOO_SMALL": [
     "SPECIES_PUMPKABOO_SMALL",
     [
-      "SPECIES_GOURGEIST_SMALL",
       "SPECIES_GOURGEIST_SMALL"
     ]
   ],
   "P_FAMILY_PUMPKABOO_LARGE": [
     "SPECIES_PUMPKABOO_LARGE",
     [
-      "SPECIES_GOURGEIST_LARGE",
       "SPECIES_GOURGEIST_LARGE"
     ]
   ],
   "P_FAMILY_PUMPKABOO_SUPER": [
     "SPECIES_PUMPKABOO_SUPER",
     [
-      "SPECIES_GOURGEIST_SUPER",
       "SPECIES_GOURGEIST_SUPER"
     ]
   ],
@@ -2075,14 +2045,12 @@
       "SPECIES_CHARJABUG"
     ],
     [
-      "SPECIES_VIKAVOLT",
       "SPECIES_VIKAVOLT"
     ]
   ],
   "P_FAMILY_CRABRAWLER": [
     "SPECIES_CRABRAWLER",
     [
-      "SPECIES_CRABOMINABLE",
       "SPECIES_CRABOMINABLE"
     ]
   ],
