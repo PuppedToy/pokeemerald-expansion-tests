@@ -30,9 +30,9 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM05 | avgDmg | Pick — Route 104 (choose 1 of 3) |
 | TM06 | avgDmg | Pick — Route 104 (choose 1 of 3) |
 | TM07 | avgDmg | Pick — Route 104 (choose 1 of 3) |
-| TM08 | avgDmg | — Unplaced |
-| TM09 | avgDmg | — Unplaced |
-| TM10 | avgDmg | — Unplaced |
+| TM08 | avgDmg | Pick — Route 104 (choose 1 of 3, item ball near Petalburg Woods) |
+| TM09 | avgDmg | Pick — Route 104 (choose 1 of 3, item ball near Petalburg Woods) |
+| TM10 | avgDmg | Pick — Route 104 (choose 1 of 3, item ball near Petalburg Woods) |
 | TM11 | goodDmg | Gym reward — Wattson (badge 3) |
 | TM12 | goodDmg | Pick — Route 114 (choose 1 of 4) |
 | TM13 | goodDmg | Pick — Route 114 (choose 1 of 4) |

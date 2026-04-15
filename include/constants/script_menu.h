@@ -165,6 +165,7 @@
 #define MULTI_ROUTE125_PICK_BALL           154
 #define MULTI_ROUTE109_PICK_TM             156
 #define MULTI_SKYPILLAR_TOP_LEGEND         157
+#define MULTI_ROUTE104_PICK_TM2            158
 
 // Lilycove SS Tidal Multichoice Selections
 #define SSTIDAL_SELECTION_SLATEPORT        0

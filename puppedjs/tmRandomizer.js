@@ -77,6 +77,7 @@ function formatForeachTM(tmList) {
 // TM numbers are 1-based; order matches the multichoice case ordering in scripts.inc.
 const PICK_LISTS = [
     ['MultichoiceList_Route104PickTM',   [5,  6,  7 ]],
+    ['MultichoiceList_Route104PickTM2',  [8,  9,  10]],
     ['MultichoiceList_Route106Pick',     [4,  3,  2 ]],
     ['MultichoiceList_Route110PickTM',   [63, 64, 62]],
     ['MultichoiceList_Route114PickTM',   [12, 13, 15, 14]],

@@ -1052,6 +1052,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choice104Berry       = route104BerryItems;
     const choice104Gem         = route104GemItems;
     const choice104TMs         = [tmItem(5), tmItem(6), tmItem(7)];
+    const choice104TMs2        = [tmItem(8), tmItem(9), tmItem(10)];
     const choicesDewfordTMs    = [tmItem(4), tmItem(3), tmItem(2)];
     const choice110TMs         = [tmItem(63), tmItem(64), tmItem(62)];
     const choiceMelinaBerries  = route111BerryItems;
@@ -1415,6 +1416,21 @@ const trainersData = [
         reward: ['Eviolite'],
         level: 10,
         bag: [...rival103Bag()],
+        team: [
+            {
+                contextualTier: [TIER_PU],
+                evoType: [EVO_TYPE_LC],
+                item: 'Eviolite',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
+        ]
+    },
+    {
+        id: 'TRAINER_KOICHI',
+        class: 'Black Belt',
+        reward: [...choice104TMs2],
+        level: 10,
+        bag: [...choice104TMs2],
         team: [
             {
                 contextualTier: [TIER_PU],

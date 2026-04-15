@@ -203,6 +203,29 @@ Route104_EventScript_PickDigTM::
 	setflag FLAG_ITEM_ROUTE_104_POTION
 	end
 
+Route104_EventScript_PickTM2::
+	multichoice 0, 0, MULTI_ROUTE104_PICK_TM2, FALSE
+	switch VAR_RESULT
+	case 0, Route104_EventScript_PickTM2_Option1
+	case 1, Route104_EventScript_PickTM2_Option2
+	case 2, Route104_EventScript_PickTM2_Option3
+	end
+
+Route104_EventScript_PickTM2_Option1::
+	finditem ITEM_TM08
+	setflag FLAG_ITEM_ROUTE_104_PP_UP
+	end
+
+Route104_EventScript_PickTM2_Option2::
+	finditem ITEM_TM09
+	setflag FLAG_ITEM_ROUTE_104_PP_UP
+	end
+
+Route104_EventScript_PickTM2_Option3::
+	finditem ITEM_TM10
+	setflag FLAG_ITEM_ROUTE_104_PP_UP
+	end
+
 Route104_Movement_RivalWalkSlowLeft:
 	walk_slow_left
 	step_end
