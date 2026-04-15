@@ -1086,7 +1086,7 @@ const roxanneBag = () => [
     sample([...choice104Gem]),
     sample([...choice104Berry]),
     sample([...choice104TMs]),
-    tmItem(39),
+    tmItem(1),
 ];
 
 const rusturfGruntBag = () => [
@@ -1105,12 +1105,12 @@ const brawlyBag = () => [
     ...rivalRustboroBag(),
     sample([...choicesDewfordTMs]),
     'Life Orb',
-    tmItem(8),
+    tmItem(61),
 ];
 
 const stevenBag = () => [
     ...brawlyBag(),
-    tmItem(47),  // Steven's TM
+    tmItem(19),  // Steven's TM
 ];
 
 const slateportGruntsBag = () => [
@@ -1142,7 +1142,7 @@ const wattsonBag = () => [
     sample(choiceAishaGems),
     'Light Clay',
     'Assault Vest',
-    tmItem(34),   // Wattson's gym TM
+    tmItem(11),   // Wattson's gym TM
     'TM_ROCK_SMASH',  // HM, not randomized
 ];
 
@@ -1156,7 +1156,7 @@ const flanneryBag = () => [
     ...magmaChimneyBag(),
     sample(choiceNobTMs),
     sample([...choiceClaudeTMs]),
-    tmItem(50),   // Flannery's gym TM
+    tmItem(78),   // Flannery's gym TM
     'TM_STRENGTH',  // HM, not randomized
     'White Herb',
     'Power Herb',
@@ -1168,7 +1168,7 @@ const normanBag = () => [
     sample(['Yache Berry', 'Chilan Berry', 'Coba Berry']),
     sample([...choiceHeidiItems]),
     'Safety Goggles',
-    tmItem(42),   // Norman's gym TM
+    tmItem(31),   // Norman's gym TM
     'TM_SURF',    // HM, not randomized
 ];
 
@@ -1187,7 +1187,7 @@ const rival119Bag = () => [
 const winonaBag = () => [
     ...rival119Bag(),
     sample([...choiceClarissaItems]),
-    tmItem(40),   // Winona's gym TM
+    tmItem(32),   // Winona's gym TM
 ];
 
 const wallyBag2 = () => [
@@ -1203,7 +1203,7 @@ const tateAndLizaBag = () => [
     ...wallyBag2(),
     sample([...choiceIsabellaItem]),
     sample([...choiceGraceTMs]),
-    tmItem(85),   // Tate & Liza's gym TM
+    tmItem(91),   // Tate & Liza's gym TM
 ];
 
 const spaceCenterBag = () => [
@@ -1214,7 +1214,7 @@ const spaceCenterBag = () => [
 
 const juanBag = () => [
     ...spaceCenterBag(),
-    tmItem(91),   // Juan's gym TM (randomized)
+    tmItem(51),   // Juan's gym TM (randomized)
     'TM_WATERFALL',   // HM — not randomized
 ];
 
