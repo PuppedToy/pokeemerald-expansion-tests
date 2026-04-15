@@ -46,3 +46,11 @@ Committing them pollutes history with randomizer mutations and corrupts base dat
 2. **Restore after running**: `src/`, `include/`, and `data/maps/` only. Other `data/` subdirectories are left untouched (they may contain intentional user edits).
 
 Commit any changes to `src/`, `include/`, or `data/maps/` before running these scripts.
+
+## puppedjs/docs — design documentation
+
+`puppedjs/docs/` holds human-readable reference files for the pipeline design.
+
+| File | Purpose |
+|------|---------|
+| `tms.md` | Full TM/HM table: slot number, pool (determines what move is randomized into it), and in-world location. Use this to verify gym reward TM slots, pick-list assignments, and to find unplaced slots when designing new item placements. |

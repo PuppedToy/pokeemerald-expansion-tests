@@ -1592,7 +1592,7 @@ const trainersData = [
         id: 'TRAINER_ROXANNE_1',
         level: 12,
         class: 'Leader Roxanne',
-        reward: ['GYM_REWARD_1', tmItem(39)],
+        reward: ['GYM_REWARD_1', tmItem(1)],
         isBoss: true,
         bag: roxanneBag(),
         team: [
@@ -1945,7 +1945,7 @@ const trainersData = [
         id: 'TRAINER_BRAWLY_1',
         class: 'Leader Brawly',
         level: 19,
-        reward: ['GYM_REWARD_2', tmItem(8)],
+        reward: ['GYM_REWARD_2', tmItem(61)],
         isBoss: true,
         bag: brawlyBag(),
         bannedItems: ['Flame Orb', 'Toxic Orb'],
@@ -2553,7 +2553,7 @@ const trainersData = [
         id: 'TRAINER_WATTSON_1',
         class: 'Leader Wattson',
         isBoss: true,
-        reward: ['GYM_REWARD_3', tmItem(34)],
+        reward: ['GYM_REWARD_3', tmItem(11)],
         level: 29,
         preventShuffle: gymIsChangedType[2],
         bag: [...wattsonBag()],
@@ -3075,7 +3075,7 @@ const trainersData = [
         id: 'TRAINER_FLANNERY_1',
         class: 'Leader Flannery',
         level: 36,
-        reward: ['GYM_REWARD_4', 'Access to Desert Ruins', tmItem(50)],
+        reward: ['GYM_REWARD_4', 'Access to Desert Ruins', tmItem(78)],
         isBoss: true,
         bag: flanneryBag(),
         team: [
@@ -3237,7 +3237,7 @@ const trainersData = [
         class: 'Leader Norman',
         level: 39,
         isBoss: true,
-        reward: ['GYM_REWARD_5', 'Access to Island Cave', 'Access to New Mauville', tmItem(42)],
+        reward: ['GYM_REWARD_5', 'Access to Island Cave', 'Access to New Mauville', tmItem(31)],
         bag: normanBag(),
         bannedItems: gymIsChangedType[4] ? [] : ['Assault Vest', 'Flame Orb', 'Toxic Orb'],
         team: [
@@ -3659,7 +3659,7 @@ const trainersData = [
         class: 'Leader Winona',
         level: 46,
         isBoss: true,
-        reward: ['GYM_REWARD_6', 'Access to Ancient Tomb', tmItem(40)],
+        reward: ['GYM_REWARD_6', 'Access to Ancient Tomb', tmItem(32)],
         bag: [...winonaBag(), 'Flying Gem'],
         team: [
             {
@@ -4223,7 +4223,7 @@ const trainersData = [
         class: 'Leader Tate And Liza',
         level: 56,
         isBoss: true,
-        reward: ['GYM_REWARD_7', 'Access to Shoal Cave', tmItem(85)],
+        reward: ['GYM_REWARD_7', 'Access to Shoal Cave', tmItem(91)],
         preventShuffle: true,
         bag: [...tateAndLizaBag()],
         bannedItems: gymIsChangedType[6] ? [] : ['Focus Sash', 'Room Service', 'Light Clay'],
@@ -4895,7 +4895,7 @@ const trainersData = [
         class: 'Leader Juan',
         level: 64,
         isBoss: true,
-        reward: ['GYM_REWARD_8', tmItem(91)],
+        reward: ['GYM_REWARD_8', tmItem(51)],
         bag: [...juanBag(), 'Water Gem'],
         team: [
             pokeDefUbersMega({
