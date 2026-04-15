@@ -916,7 +916,6 @@ static const struct MenuAction MultichoiceList_Route116PickOrb[] =
 {
     {COMPOUND_STRING("Flame Orb")},
     {COMPOUND_STRING("Toxic Orb")},
-    {COMPOUND_STRING("Muscle Band")},
 };
 
 static const struct MenuAction MultichoiceList_Route116PickItem[] =

@@ -1806,9 +1806,9 @@ const trainersData = [
     {
         id: 'TRAINER_JERRY_1',
         class: 'School Kid M',
-        reward: ['Flame Orb', 'Toxic Orb', 'Sticky Barb'],
+        reward: ['Flame Orb', 'Toxic Orb'],
         level: 17,
-        bag: ['Sticky Barb'],
+        bag: ['Flame Orb', 'Toxic Orb'],
         team: [
             {
                 ...POKEDEF_PU,

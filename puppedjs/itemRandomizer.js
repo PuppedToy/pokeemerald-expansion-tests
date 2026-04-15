@@ -124,7 +124,7 @@ function buildAssignments() {
         route111Items:    [...pool(2), 'ITEM_CUSTAP_BERRY'],        // slot 2 = fixed
         // goodItemPool single-item locations
         route116XSpecial:  good(1)[0],
-        route116OrbItems: ['ITEM_FLAME_ORB', 'ITEM_TOXIC_ORB', 'ITEM_STICKY_BARB'],
+
         route118Items:    pool(4),
         route120Items:    pool(3),
         route125Items:    ['ITEM_WEAKNESS_POLICY', 'ITEM_EJECT_BUTTON', pool(1)[0]], // slots 0,1 = fixed
@@ -288,19 +288,6 @@ function updateScripts(a) {
             flag:         'FLAG_ITEM_ROUTE_116_POTION',
             pickedItems:  a.route116Berries,
             handlerPrefix:'Route116_EventScript_PickBerry',
-        })
-    );
-
-    // Route116 orb (3, slots 0,1 = fixed orbs, slot 2 = pool)
-    replaceAnchored(
-        'data/maps/Route116/scripts.inc',
-        'ROUTE116_ORB',
-        genPickerSection({
-            pickerLabel:  'Route116_EventScript_PickOrb',
-            multiConst:   'MULTI_ROUTE116_PICK_ORB',
-            flag:         'FLAG_ITEM_ROUTE_116_MIND_PLATE',
-            pickedItems:  a.route116OrbItems,
-            handlerPrefix:'Route116_EventScript_PickOrb',
         })
     );
 
@@ -542,7 +529,7 @@ function randomizeItems() {
         route104Berries:   dn('route104Berries'),
         route111Items:     dn('route111Items'),
         route111Berries:   dn('route111Berries'),
-        route116OrbItems:  dn('route116OrbItems'),
+
         route116Ball:      dn('route116Ball'),
         route114BallC:     dn('route114BallC'),
         route117Gems:      dn('route117Gems'),

@@ -417,13 +417,11 @@ Route116_EventScript_XSpecial::
 	end
 @ === RAND_ROUTE116_X_SPECIAL_END ===
 
-@ === RAND_ROUTE116_ORB_START ===
 Route116_EventScript_PickOrb::
 	multichoice 0, 0, MULTI_ROUTE116_PICK_ORB, FALSE
 	switch VAR_RESULT
 	case 0, Route116_EventScript_PickOrb1
 	case 1, Route116_EventScript_PickOrb2
-	case 2, Route116_EventScript_PickOrb3
 	end
 
 Route116_EventScript_PickOrb1::
@@ -435,12 +433,6 @@ Route116_EventScript_PickOrb2::
 	finditem ITEM_TOXIC_ORB
 	setflag FLAG_ITEM_ROUTE_116_MIND_PLATE
 	end
-
-Route116_EventScript_PickOrb3::
-	finditem ITEM_STICKY_BARB
-	setflag FLAG_ITEM_ROUTE_116_MIND_PLATE
-	end
-@ === RAND_ROUTE116_ORB_END ===
 
 Route116_EventScript_PickItem::
 	multichoice 0, 0, MULTI_ROUTE116_PICK_ITEM, FALSE
