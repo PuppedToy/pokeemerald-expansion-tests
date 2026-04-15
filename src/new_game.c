@@ -198,7 +198,6 @@ void NewGameInitData(void)
     AddBagItem(ITEM_RAWST_BERRY, 1);
     AddBagItem(ITEM_ASPEAR_BERRY, 1);
     AddBagItem(ITEM_PERSIM_BERRY, 1);
-    AddBagItem(ITEM_LUM_BERRY, 1);
     NewGameInitPCItems();
     ClearPokeblocks();
     ClearDecorationInventories();
