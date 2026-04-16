@@ -1044,6 +1044,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route109GoodItem           = itemAssignments.route109GoodItem;
     const route110GoodItem           = itemAssignments.route110GoodItem;
     const route110LumGoodItem        = itemAssignments.route110LumGoodItem;
+    const route117GoodItem           = itemAssignments.route117GoodItem;
     const route110ExtenderBallItems  = itemAssignments.route110ExtenderBall;
     const route117GemItems       = itemAssignments.route117Gems;
     const route118ItemItems      = itemAssignments.route118Items;
@@ -2565,9 +2566,9 @@ const trainersData = [
     {
         id: 'TRAINER_MARIA_1',
         class: 'Running Triathlete F',
-        reward: ['Assault Vest'],
+        reward: [route117GoodItem],
         level: 29,
-        bag: ['Assault Vest', ...getSampleItemsFromArray(wallyBag(), 7)],
+        bag: [route117GoodItem, ...getSampleItemsFromArray(wallyBag(), 7)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 5),

@@ -127,6 +127,7 @@ function buildAssignments() {
         route109GoodItem:  good(1)[0],
         route110GoodItem:  good(1)[0],
         route110LumGoodItem: good(1)[0],
+        route117GoodItem:    good(1)[0],
         route116XSpecial:  good(1)[0],
 
         route118Items:    pool(4),
@@ -375,6 +376,11 @@ function updateScripts(a) {
         item:        a.route110LumGoodItem,
         flag:        'FLAG_ITEM_ROUTE_110_LUM',
     }));
+    replaceAnchored('data/maps/Route117/scripts.inc', 'ROUTE117_EARTHQUAKE', genSingleItemScript({
+        scriptLabel: 'Route117_EventScript_EarthquakeGoodItem',
+        item:        a.route117GoodItem,
+        flag:        'FLAG_ITEM_ROUTE_117_EARTHQUAKE',
+    }));
     replaceAnchored('data/maps/Route110/scripts.inc', 'ROUTE110_EXTENDER', genPickerSection({
         pickerLabel:   'Route110_EventScript_PickExtender',
         multiConst:    'MULTI_ROUTE110_PICK_EXTENDER',
@@ -553,7 +559,8 @@ function randomizeItems() {
         route109GoodItem:  itemDisplayName(a.route109GoodItem),
         route110GoodItem:     itemDisplayName(a.route110GoodItem),
         route110LumGoodItem:  itemDisplayName(a.route110LumGoodItem),
-        route116XSpecial:  itemDisplayName(a.route116XSpecial),
+        route117GoodItem:     itemDisplayName(a.route117GoodItem),
+        route116XSpecial:     itemDisplayName(a.route116XSpecial),
         route116Gems:      dn('route116Gems'),
         route116Berries:   dn('route116Berries'),
         route106Ball:          dn('route106Ball'),

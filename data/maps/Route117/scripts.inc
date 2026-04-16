@@ -319,5 +319,12 @@ Route117_Text_RouteSignMauville:
 	.string "{RIGHT_ARROW} MAUVILLE CITY$"
 
 Route117_Text_DayCareSign:
-	.string "POKéMON DAY CARE\n"
-	.string "“Let us raise your POKéMON.”$"
+	.string “POKéMON DAY CARE\n”
+	.string “”Let us raise your POKéMON.”$”
+
+@ === RAND_ROUTE117_EARTHQUAKE_START ===
+Route117_EventScript_EarthquakeGoodItem::
+	finditem ITEM_AIR_BALLOON
+	setflag FLAG_ITEM_ROUTE_117_EARTHQUAKE
+	end
+@ === RAND_ROUTE117_EARTHQUAKE_END ===
