@@ -90,9 +90,9 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM65 | avgStatus | Pick — Route 116 Clark pick (1 of 3) |
 | TM66 | avgStatus | Pick — Route 116 Clark pick (1 of 3) |
 | TM67 | avgStatus | Pick — Route 116 Clark pick (1 of 3) |
-| TM68 | avgStatus | — Unplaced |
-| TM69 | avgStatus | — Unplaced |
-| TM70 | avgStatus | — Unplaced |
+| TM68 | avgStatus | Pick — Route 109 Huey (choose 1 of 3) |
+| TM69 | avgStatus | Pick — Route 109 Huey (choose 1 of 3) |
+| TM70 | avgStatus | Pick — Route 109 Huey (choose 1 of 3) |
 | TM71 | weather | Item — Abandoned Ship (hidden) |
 | TM72 | weather | Item — Shoal Cave |
 | TM73 | weather | — Unplaced |

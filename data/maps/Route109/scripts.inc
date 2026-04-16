@@ -611,3 +611,28 @@ Route109_EventScript_RickyPickTM3::
 	finditem ITEM_TM18
 	setflag FLAG_ITEM_ROUTE_109_REDCARD
 	end
+
+@ === RAND_ROUTE109_HUEY_TM_START ===
+Route109_EventScript_HueyPickTM::
+	multichoice 0, 0, MULTI_ROUTE109_PICK_TM2, FALSE
+	switch VAR_RESULT
+	case 0, Route109_EventScript_HueyPickTM1
+	case 1, Route109_EventScript_HueyPickTM2
+	case 2, Route109_EventScript_HueyPickTM3
+	end
+
+Route109_EventScript_HueyPickTM1::
+	finditem ITEM_TM68
+	setflag FLAG_ITEM_ROUTE_109_STRONGMINT
+	end
+
+Route109_EventScript_HueyPickTM2::
+	finditem ITEM_TM69
+	setflag FLAG_ITEM_ROUTE_109_STRONGMINT
+	end
+
+Route109_EventScript_HueyPickTM3::
+	finditem ITEM_TM70
+	setflag FLAG_ITEM_ROUTE_109_STRONGMINT
+	end
+@ === RAND_ROUTE109_HUEY_TM_END ===

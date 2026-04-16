@@ -169,6 +169,7 @@
 #define MULTI_ROUTE116_PICK_GEM            159
 #define MULTI_ROUTE116_PICK_BERRY          160
 #define MULTI_ROUTE106_PICK_BALL           161
+#define MULTI_ROUTE109_PICK_TM2            162
 
 // Lilycove SS Tidal Multichoice Selections
 #define SSTIDAL_SELECTION_SLATEPORT        0

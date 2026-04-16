@@ -2132,9 +2132,9 @@ const trainersData = [
     {
         id: 'TRAINER_HUEY',
         class: 'Sailor',
-        reward: ['Random Offensive Mint'],
+        reward: [tmItem(68), tmItem(69), tmItem(70)],
         level: 24,
-        bag: getSampleItemsFromArray(stevenBag(), 5),
+        bag: [tmItem(68), tmItem(69), tmItem(70), ...getSampleItemsFromArray(stevenBag(), 2)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
             ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
