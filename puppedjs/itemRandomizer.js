@@ -124,6 +124,7 @@ function buildAssignments() {
         route111Items:    [...pool(2), 'ITEM_CUSTAP_BERRY'],        // slot 2 = fixed
         // goodItemPool single-item locations
         route106GoodItem:  good(1)[0],
+        route109GoodItem:  good(1)[0],
         route116XSpecial:  good(1)[0],
 
         route118Items:    pool(4),
@@ -132,7 +133,6 @@ function buildAssignments() {
         // Item ball pick-3 locations
         route106Ball:  pool(3),
         route102Ball:  pool(3),
-        route109Ball:  pool(3),
         route110Ball:  pool(3),
         route111BallA: pool(3),
         route111BallB: pool(3),
@@ -358,12 +358,10 @@ function updateScripts(a) {
         pickedItems:   a.route102Ball,
         handlerPrefix: 'Route102_EventScript_PickBall',
     }));
-    replaceAnchored('data/maps/Route109/scripts.inc', 'ROUTE109_BALL', genPickerSection({
-        pickerLabel:   'Route109_EventScript_PickBall',
-        multiConst:    'MULTI_ROUTE109_PICK_BALL',
-        flag:          'FLAG_ITEM_ROUTE_109_POTION',
-        pickedItems:   a.route109Ball,
-        handlerPrefix: 'Route109_EventScript_PickBall',
+    replaceAnchored('data/maps/Route109/scripts.inc', 'ROUTE109_BALL', genSingleItemScript({
+        scriptLabel: 'Route109_EventScript_GoodItem',
+        item: a.route109GoodItem,
+        flag: 'FLAG_ITEM_ROUTE_109_POTION',
     }));
     replaceAnchored('data/maps/Route110/scripts.inc', 'ROUTE110_BALL', genPickerSection({
         pickerLabel:   'Route110_EventScript_PickBall',
@@ -510,7 +508,6 @@ function updateScriptMenu(a) {
     // Item ball pick-3 lists
     src = replaceMenuList(src, 'MultichoiceList_Route106PickBall',  a.route106Ball.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route102PickBall',  a.route102Ball.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route109PickBall',  a.route109Ball.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route110PickBall',  a.route110Ball.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route111PickBallA', a.route111BallA.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route111PickBallB', a.route111BallB.map(itemDisplayName));
@@ -541,12 +538,12 @@ function randomizeItems() {
     const dn = (key) => a[key].map(itemDisplayName);
     return {
         route106GoodItem:  itemDisplayName(a.route106GoodItem),
+        route109GoodItem:  itemDisplayName(a.route109GoodItem),
         route116XSpecial:  itemDisplayName(a.route116XSpecial),
         route116Gems:      dn('route116Gems'),
         route116Berries:   dn('route116Berries'),
         route106Ball:      dn('route106Ball'),
         route102Ball:      dn('route102Ball'),
-        route109Ball:      dn('route109Ball'),
         petalburgPlates:   dn('petalburgPlates'),
         route104Gems:      dn('route104Gems'),
         route104Berries:   dn('route104Berries'),

@@ -29,6 +29,7 @@ Shuffled once per run. Each "good item" location in the world gets one item draw
 | Location | Flag | Trainer that propagates it |
 |----------|------|---------------------------|
 | Route 106 item ball (near Ned) | `FLAG_ITEM_ROUTE_106_PROTEIN` | Ned (`TRAINER_NED`) bag/reward |
+| Route 109 item ball (near Hailey) | `FLAG_ITEM_ROUTE_109_POTION` | Hailey (`TRAINER_HAILEY`) bag/reward; also in `slateportGruntsBag` |
 | Route 116 item ball (near Devan) | `FLAG_ITEM_ROUTE_116_X_SPECIAL` | Devan (`TRAINER_DEVAN`) — also in `rusturfGruntBag` and all bags that build on it |
 
 > **Adding a new goodItemPool location:** see `pick-list-howto.md` for the general pattern. For single items, use `genSingleItemScript` in `itemRandomizer.js` with a `RAND_*` anchor in the map's `scripts.inc`. Wire the returned display name into `trainers.js` via `itemAssignments.yourNewKey`.
@@ -46,7 +47,6 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 |----------|------|-------------|
 | Route 106 | `FLAG_ITEM_ROUTE_106_CAPSULE` | `route106BallItems` → Andres (`TRAINER_ANDRES_1`) bag/reward |
 | Route 102 | `FLAG_ITEM_ROUTE_102_POTION` | Early game bags |
-| Route 109 | `FLAG_ITEM_ROUTE_109_POTION` | Slateport area bags |
 | Route 110 | `FLAG_ITEM_ROUTE_110_SHEDSHELL` | Route 110 area bags |
 | Route 111 A | `FLAG_ITEM_ROUTE_111_ELIXIR` | Route 111 area bags |
 | Route 111 B | `FLAG_ITEM_ROUTE_111_POWERHERB` | Route 111 area bags |

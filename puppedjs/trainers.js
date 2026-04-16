@@ -1041,7 +1041,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route116GemItems       = itemAssignments.route116Gems;
     const route116BerryItems     = itemAssignments.route116Berries;
     const route116BallItems      = itemAssignments.route116Ball;
-    const route109BallItems      = itemAssignments.route109Ball;
+    const route109GoodItem       = itemAssignments.route109GoodItem;
     const route117GemItems       = itemAssignments.route117Gems;
     const route118ItemItems      = itemAssignments.route118Items;
     const route120ItemItems      = itemAssignments.route120Items;
@@ -1123,7 +1123,7 @@ const stevenBag = () => [
 
 const slateportGruntsBag = () => [
     ...brawlyBag(),
-    sample([...route109BallItems]),
+    route109GoodItem,
     // 'Damp Rock',
     // 'Heat Rock',
     // 'Smooth Rock',
@@ -2090,9 +2090,9 @@ const trainersData = [
     {
         id: 'TRAINER_HAILEY',
         class: 'Tuber F',
-        reward: [...route109BallItems],
+        reward: [route109GoodItem],
         level: 24,
-        bag: [...route109BallItems, ...getSampleItemsFromArray(stevenBag(), 2)],
+        bag: [route109GoodItem, ...getSampleItemsFromArray(stevenBag(), 2)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
             ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
