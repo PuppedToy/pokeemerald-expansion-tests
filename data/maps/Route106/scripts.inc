@@ -77,6 +77,13 @@ Route106_EventScript_Ned::
 	msgbox Route106_Text_NedPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+@ === RAND_ROUTE106_GOOD_ITEM_START ===
+Route106_EventScript_GoodItem::
+	finditem ITEM_LIFE_ORB
+	setflag FLAG_ITEM_ROUTE_106_PROTEIN
+	end
+@ === RAND_ROUTE106_GOOD_ITEM_END ===
+
 Route106_Text_TrainerTips:
 	.string "TRAINER TIPS\p"
 	.string "Advice on catching POKéMON with a ROD:\n"

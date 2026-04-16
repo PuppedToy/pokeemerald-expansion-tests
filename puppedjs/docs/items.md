@@ -28,6 +28,7 @@ Shuffled once per run. Each "good item" location in the world gets one item draw
 
 | Location | Flag | Trainer that propagates it |
 |----------|------|---------------------------|
+| Route 106 item ball (near Ned) | `FLAG_ITEM_ROUTE_106_PROTEIN` | Ned (`TRAINER_NED`) bag/reward |
 | Route 116 item ball (near Devan) | `FLAG_ITEM_ROUTE_116_X_SPECIAL` | Devan (`TRAINER_DEVAN`) — also in `rusturfGruntBag` and all bags that build on it |
 
 > **Adding a new goodItemPool location:** see `pick-list-howto.md` for the general pattern. For single items, use `genSingleItemScript` in `itemRandomizer.js` with a `RAND_*` anchor in the map's `scripts.inc`. Wire the returned display name into `trainers.js` via `itemAssignments.yourNewKey`.

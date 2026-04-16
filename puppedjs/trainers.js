@@ -1035,6 +1035,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route104BerryItems     = itemAssignments.route104Berries;
     const route111ItemItems      = itemAssignments.route111Items;
     const route111BerryItems     = itemAssignments.route111Berries;
+    const route106GoodItem       = itemAssignments.route106GoodItem;
     const route116XSpecialItem   = itemAssignments.route116XSpecial;
     const route116GemItems       = itemAssignments.route116Gems;
     const route116BerryItems     = itemAssignments.route116Berries;
@@ -1902,9 +1903,9 @@ const trainersData = [
     {
         id: 'TRAINER_NED',
         class: 'Fisherman',
-        reward: ['Life Orb'],
+        reward: [route106GoodItem],
         level: 19,
-        bag: ['Life Orb', ...getSampleItemsFromArray(rivalRustboroBag(), 3)],
+        bag: [route106GoodItem, ...getSampleItemsFromArray(rivalRustboroBag(), 3)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
             ...generatePokemonsWithDefinition(POKEDEF_PU, 5),

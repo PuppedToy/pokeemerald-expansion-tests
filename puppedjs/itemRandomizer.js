@@ -123,6 +123,7 @@ function buildAssignments() {
         // fullItemPool locations
         route111Items:    [...pool(2), 'ITEM_CUSTAP_BERRY'],        // slot 2 = fixed
         // goodItemPool single-item locations
+        route106GoodItem:  good(1)[0],
         route116XSpecial:  good(1)[0],
 
         route118Items:    pool(4),
@@ -251,6 +252,17 @@ function updateScripts(a) {
             flag:         'FLAG_ITEM_ROUTE_111_TM_SANDSTORM',
             pickedItems:  a.route111Items,
             handlerPrefix:'Route111_EventScript_PickItem',
+        })
+    );
+
+    // Route106 good item (single goodItemPool item)
+    replaceAnchored(
+        'data/maps/Route106/scripts.inc',
+        'ROUTE106_GOOD_ITEM',
+        genSingleItemScript({
+            scriptLabel: 'Route106_EventScript_GoodItem',
+            item: a.route106GoodItem,
+            flag: 'FLAG_ITEM_ROUTE_106_PROTEIN',
         })
     );
 
@@ -519,6 +531,7 @@ function randomizeItems() {
     // Return display-name assignments for use in trainer generation
     const dn = (key) => a[key].map(itemDisplayName);
     return {
+        route106GoodItem:  itemDisplayName(a.route106GoodItem),
         route116XSpecial:  itemDisplayName(a.route116XSpecial),
         route116Gems:      dn('route116Gems'),
         route116Berries:   dn('route116Berries'),
