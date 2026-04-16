@@ -2037,6 +2037,7 @@ const trainersData = [
         class: 'Steven',
         level: 22,
         isBoss: true,
+        isPartner: true,
         bag: stevenBag(),
         team: [
             {

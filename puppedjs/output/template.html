@@ -1100,12 +1100,12 @@
       card.innerHTML = `
         <div style="text-align:center;">
           <div class="title">${trainerName}</div>
-          <div style="margin-bottom:6px;">
+          ${!trainer.isPartner ? `<div style="margin-bottom:6px;">
             <label class="nz-defeat-label">
               <input type="checkbox" class="nz-defeat-cb" data-trainer-id="${trainerId}">
               ☑ Defeated
             </label>
-          </div>
+          </div>` : ''}
           <img width="60" height="60" src="${getTrainerImg(trainer.class)}">
           <div class="small" style="text-align:center; color:#FFB28A;">Lv. ${trainer.level}</div>
           ${rewards}
