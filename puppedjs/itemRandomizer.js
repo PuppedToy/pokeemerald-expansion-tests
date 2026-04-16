@@ -99,7 +99,7 @@ function buildAssignments() {
     const platesPool   = shuffle([...new Set(Object.keys(items.plates))]);
     const gemsPool     = shuffle([...new Set(items.gems)]);
     const berriesPool  = shuffle([...new Set(Object.values(items.protectionBerries))]);
-    const fullPool     = shuffle([...new Set(items.fullItemPool)]);
+    const fullPool     = shuffle([...new Set(items.averageItemPool)]);
     const goodPool     = shuffle([...new Set(items.goodItemPool)]);
 
     let pI = 0, gI = 0, bI = 0, fI = 0, gpI = 0;
@@ -120,11 +120,12 @@ function buildAssignments() {
         route111Berries:  berry(4),
         route117Berries:  berry(4),
         route121Berries:  berry(4),
-        // fullItemPool locations
+        // averageItemPool locations
         route111Items:    [...pool(2), 'ITEM_CUSTAP_BERRY'],        // slot 2 = fixed
         // goodItemPool single-item locations
         route106GoodItem:  good(1)[0],
         route109GoodItem:  good(1)[0],
+        route110GoodItem:  good(1)[0],
         route116XSpecial:  good(1)[0],
 
         route118Items:    pool(4),
@@ -133,7 +134,7 @@ function buildAssignments() {
         // Item ball pick-3 locations
         route106Ball:  pool(3),
         route102Ball:  pool(3),
-        route110Ball:  pool(3),
+        route110ExtenderBall: pool(3),
         route111BallA: pool(3),
         route111BallB: pool(3),
         route111BallC: pool(3),
@@ -363,12 +364,17 @@ function updateScripts(a) {
         item: a.route109GoodItem,
         flag: 'FLAG_ITEM_ROUTE_109_POTION',
     }));
-    replaceAnchored('data/maps/Route110/scripts.inc', 'ROUTE110_BALL', genPickerSection({
-        pickerLabel:   'Route110_EventScript_PickBall',
-        multiConst:    'MULTI_ROUTE110_PICK_BALL',
-        flag:          'FLAG_ITEM_ROUTE_110_SHEDSHELL',
-        pickedItems:   a.route110Ball,
-        handlerPrefix: 'Route110_EventScript_PickBall',
+    replaceAnchored('data/maps/Route110/scripts.inc', 'ROUTE110_BALL', genSingleItemScript({
+        scriptLabel: 'Route110_EventScript_GoodItem',
+        item:        a.route110GoodItem,
+        flag:        'FLAG_ITEM_ROUTE_110_SHEDSHELL',
+    }));
+    replaceAnchored('data/maps/Route110/scripts.inc', 'ROUTE110_EXTENDER', genPickerSection({
+        pickerLabel:   'Route110_EventScript_PickExtender',
+        multiConst:    'MULTI_ROUTE110_PICK_EXTENDER',
+        flag:          'FLAG_ITEM_ROUTE_110_EXTENDER',
+        pickedItems:   a.route110ExtenderBall,
+        handlerPrefix: 'Route110_EventScript_PickExtender',
     }));
     replaceAnchored('data/maps/Route111/scripts.inc', 'ROUTE111_BALL_A', genPickerSection({
         pickerLabel:   'Route111_EventScript_PickBallA',
@@ -508,7 +514,7 @@ function updateScriptMenu(a) {
     // Item ball pick-3 lists
     src = replaceMenuList(src, 'MultichoiceList_Route106PickBall',  a.route106Ball.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route102PickBall',  a.route102Ball.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route110PickBall',  a.route110Ball.map(itemDisplayName));
+    src = replaceMenuList(src, 'MultichoiceList_Route110PickExtender', a.route110ExtenderBall.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route111PickBallA', a.route111BallA.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route111PickBallB', a.route111BallB.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route111PickBallC', a.route111BallC.map(itemDisplayName));
@@ -539,11 +545,13 @@ function randomizeItems() {
     return {
         route106GoodItem:  itemDisplayName(a.route106GoodItem),
         route109GoodItem:  itemDisplayName(a.route109GoodItem),
+        route110GoodItem:  itemDisplayName(a.route110GoodItem),
         route116XSpecial:  itemDisplayName(a.route116XSpecial),
         route116Gems:      dn('route116Gems'),
         route116Berries:   dn('route116Berries'),
-        route106Ball:      dn('route106Ball'),
-        route102Ball:      dn('route102Ball'),
+        route106Ball:          dn('route106Ball'),
+        route102Ball:          dn('route102Ball'),
+        route110ExtenderBall:  dn('route110ExtenderBall'),
         petalburgPlates:   dn('petalburgPlates'),
         route104Gems:      dn('route104Gems'),
         route104Berries:   dn('route104Berries'),

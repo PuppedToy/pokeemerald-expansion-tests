@@ -24,12 +24,15 @@ Items that are always the same regardless of the run. Never touched by the rando
 ### Pool: `goodItemPool` — Single-reward high-value items
 Shuffled once per run. Each "good item" location in the world gets one item drawn from this pool (no choice menu — just a single item ball).
 
-**Pool contents:** Black Sludge, Life Orb, Assault Vest, Weakness Policy, Air Balloon, Loaded Dice, Sitrus Berry, Shell Bell, Rocky Helmet, Booster Energy
+**Pool contents (10 items):** Black Sludge, Life Orb, Assault Vest, Weakness Policy, Air Balloon, Loaded Dice, Sitrus Berry, Shell Bell, Rocky Helmet, Booster Energy
+
+**Consumed: 4 of 10** — 6 slots remain for future locations.
 
 | Location | Flag | Trainer that propagates it |
 |----------|------|---------------------------|
 | Route 106 item ball (near Ned) | `FLAG_ITEM_ROUTE_106_PROTEIN` | Ned (`TRAINER_NED`) bag/reward |
 | Route 109 item ball (near Hailey) | `FLAG_ITEM_ROUTE_109_POTION` | Hailey (`TRAINER_HAILEY`) bag/reward; also in `slateportGruntsBag` |
+| Route 110 item ball (near Timmy) | `FLAG_ITEM_ROUTE_110_SHEDSHELL` | Timmy (`TRAINER_TIMMY`) bag/reward; also in `rivalRoute110Bag` |
 | Route 116 item ball (near Devan) | `FLAG_ITEM_ROUTE_116_X_SPECIAL` | Devan (`TRAINER_DEVAN`) — also in `rusturfGruntBag` and all bags that build on it |
 
 > **Adding a new goodItemPool location:** see `pick-list-howto.md` for the general pattern. For single items, use `genSingleItemScript` in `itemRandomizer.js` with a `RAND_*` anchor in the map's `scripts.inc`. Wire the returned display name into `trainers.js` via `itemAssignments.yourNewKey`.
@@ -39,7 +42,9 @@ Shuffled once per run. Each "good item" location in the world gets one item draw
 ### Pool: `averageItemPool` — Pick-3 utility items
 Shuffled once per run. Used for the "item ball pick-3" locations where the player sees a multichoice menu and picks one of three items.
 
-**Pool contents (50 items):** Eject Pack, Light Clay, stat-boosting berries (Apicot/Salac/Petaya/Liechi/Ganlon/Kee/Maranga/Jaboca/Rowap/Custap/Leppa/Lansat/Starf/Enigma/Figy), Throat Spray, Mirror Herb, Adrenaline Orb, Red Card, Expert Belt, Terrain Extender, Shed Shell, Power Herb, Safety Goggles, White Herb, Wide/Zoom Lens, Punching Glove, Big Root, Room Service, Iron Ball ×2, Heavy-Duty Boots, Absorb Bulb, Cell Battery, Luminous Moss, Snowball, Sticky Barb, Bright Powder, Quick Claw, Muscle Band, Wise Glasses, Metronome, Grip Claw, Float Stone, Binding Band, Protective Pads, Utility Umbrella, Clear Amulet, Covert Cloak, Focus Band, Mental Herb, Blunder Policy
+**Pool contents (54 unique items):** Eject Pack, Light Clay, stat-boosting berries (Apicot/Salac/Petaya/Liechi/Ganlon/Kee/Maranga/Jaboca/Rowap/Custap/Leppa/Lansat/Starf/Enigma/Figy), Throat Spray, Mirror Herb, Adrenaline Orb, Red Card, Expert Belt, Terrain Extender, Shed Shell, Power Herb, Safety Goggles, White Herb, Wide/Zoom Lens, Punching Glove, Big Root, Room Service, Iron Ball, Heavy-Duty Boots, Absorb Bulb, Cell Battery, Luminous Moss, Snowball, Sticky Barb, Bright Powder, Quick Claw, Muscle Band, Wise Glasses, Metronome, Grip Claw, Float Stone, Binding Band, Protective Pads, Utility Umbrella, Clear Amulet, Covert Cloak, Focus Band, Mental Herb, Blunder Policy
+
+**Consumed: 55 draws from 54 items** — 1 item appears at two locations per run (harmless). Adding more 3-slot locations will increase overlap.
 
 **Pick-3 ball locations** (player chooses 1 of 3 from this pool):
 
@@ -47,7 +52,7 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 |----------|------|-------------|
 | Route 106 | `FLAG_ITEM_ROUTE_106_CAPSULE` | `route106BallItems` → Andres (`TRAINER_ANDRES_1`) bag/reward |
 | Route 102 | `FLAG_ITEM_ROUTE_102_POTION` | Early game bags |
-| Route 110 | `FLAG_ITEM_ROUTE_110_SHEDSHELL` | Route 110 area bags |
+| Route 110 (EXTENDER) | `FLAG_ITEM_ROUTE_110_EXTENDER` | `route110ExtenderBallItems` → Kaleb (`TRAINER_KALEB`) bag/reward |
 | Route 111 A | `FLAG_ITEM_ROUTE_111_ELIXIR` | Route 111 area bags |
 | Route 111 B | `FLAG_ITEM_ROUTE_111_POWERHERB` | Route 111 area bags |
 | Route 111 C | `FLAG_ITEM_ROUTE_111_ADRENALINE` | Route 111 area bags |
@@ -115,20 +120,13 @@ Chilan (Normal), Occa (Fire), Passho (Water), Wacan (Electric), Rindo (Grass), Y
 
 ---
 
-### Pool: `fullItemPool` — General cycling pool (legacy)
-~44 items cycling (wraps around). Used for most pick-3 and single items not covered by other pools. New locations should prefer `goodItemPool` for high-value singles; this pool is for medium-value utility items.
-
----
-
 ## Fixed Single-Item Locations
 
 Items that appear as plain item balls with no randomization.
 
 | Location | Item | Flag |
 |----------|------|------|
-| Route 116 | Ether | `FLAG_ITEM_ROUTE_116_ETHER` |
 | Route 116 | Repel | `FLAG_ITEM_ROUTE_116_REPEL` |
-| Route 116 | Potion | `FLAG_ITEM_ROUTE_116_POTION` |
 | Route 116 | Mind Plate area | `FLAG_ITEM_ROUTE_116_MIND_PLATE` |
 | Various | TM map items (TM20/21/22/41/42/59/60/71/72/88) | see `tms.md` |
 | Various | HMs | see `tms.md` |
@@ -147,6 +145,8 @@ Bag functions in `trainers.js` are cumulative — each gym adds its items on top
 | `rusturfGruntBag` | + Route116 ball pick, **goodItemPool (route116XSpecial)** |
 | `rivalRustboroBag` | + orb pick, Route116 item pick |
 | `brawlyBag` | + Dewford TM picks, Life Orb, TM61 |
+| `slateportGruntsBag` | + **goodItemPool (route109GoodItem)** |
+| `rivalRoute110Bag` | + Isabel TMs pick, **goodItemPool (route110GoodItem)**, Extender ball pick |
 | `stevenBag` | + TM19 |
 | `wattsonBag` | + barrier TMs, Melina berries, gem pick, Light Clay, Assault Vest, TM11 |
 | `flanneryBag` | + Nob/Claude TMs, TM78, Strength HM, White/Power Herb, Shell Bell |

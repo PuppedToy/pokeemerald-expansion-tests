@@ -1041,7 +1041,9 @@ function getTrainersData(itemAssignments, tmList) {
     const route116GemItems       = itemAssignments.route116Gems;
     const route116BerryItems     = itemAssignments.route116Berries;
     const route116BallItems      = itemAssignments.route116Ball;
-    const route109GoodItem       = itemAssignments.route109GoodItem;
+    const route109GoodItem           = itemAssignments.route109GoodItem;
+    const route110GoodItem           = itemAssignments.route110GoodItem;
+    const route110ExtenderBallItems  = itemAssignments.route110ExtenderBall;
     const route117GemItems       = itemAssignments.route117Gems;
     const route118ItemItems      = itemAssignments.route118Items;
     const route120ItemItems      = itemAssignments.route120Items;
@@ -1068,7 +1070,6 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceClaudeTMs      = [tmItem(12), tmItem(13), tmItem(15), tmItem(14)];
     const choiceChesterTMs     = [tmItem(34), tmItem(33), tmItem(35)];
     const choiceTammyTMs       = [tmItem(82), tmItem(83), tmItem(84)];
-    const choiceKalebTMs       = [tmItem(86), tmItem(87), tmItem(88)];
     const choiceRickyTMs       = [tmItem(16), tmItem(17), tmItem(18)];
     const choiceGraceTMs       = [tmItem(36), tmItem(37), tmItem(38)];
     const choiceHeidiItems     = [route111ItemItems[0], route111ItemItems[1], 'Custap Berry'];
@@ -1133,8 +1134,8 @@ const slateportGruntsBag = () => [
 const rivalRoute110Bag = () => [
     ...slateportGruntsBag(),
     sample(choice110TMs),
-    'Air Balloon',
-    sample([...choiceKalebTMs]),
+    route110GoodItem,
+    sample([...route110ExtenderBallItems]),
 ];
 
 const wallyBag = () => [
@@ -2213,9 +2214,9 @@ const trainersData = [
     {
         id: 'TRAINER_KALEB',
         class: 'Pokefan M',
-        reward: [...choiceKalebTMs],
+        reward: [...route110ExtenderBallItems],
         level: 26,
-        bag: [...choiceKalebTMs, ...getSampleItemsFromArray(slateportGruntsBag(), 3)],
+        bag: [...route110ExtenderBallItems, ...getSampleItemsFromArray(slateportGruntsBag(), 3)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
             ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
@@ -2224,9 +2225,9 @@ const trainersData = [
     {
         id: 'TRAINER_TIMMY',
         class: 'Youngster',
-        reward: ['Air Balloon'],
+        reward: [route110GoodItem],
         level: 26,
-        bag: ['Air Balloon', ...getSampleItemsFromArray(slateportGruntsBag(), 5)],
+        bag: [route110GoodItem, ...getSampleItemsFromArray(slateportGruntsBag(), 5)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
             ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
