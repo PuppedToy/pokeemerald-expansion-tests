@@ -2523,9 +2523,9 @@ const trainersData = [
     {
         id: 'TRAINER_ANNA_AND_MEG_1',
         class: 'Sr And Jr',
-        reward: ['MOVE_REFLECT', 'MOVE_LIGHT_SCREEN', 'Light Clay'],
+        reward: [tmItem(77), tmItem(76), 'Light Clay'],
         level: 29,
-        bag: getSampleItemsFromArray(wallyBag(), 5),
+        bag: [tmItem(77), tmItem(76), 'Light Clay', ...getSampleItemsFromArray(wallyBag(), 2)],
         team: [
             {
                 ...POKEDEF_RU,
