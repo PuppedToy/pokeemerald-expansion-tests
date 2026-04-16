@@ -126,6 +126,7 @@ function buildAssignments() {
         route106GoodItem:  good(1)[0],
         route109GoodItem:  good(1)[0],
         route110GoodItem:  good(1)[0],
+        route110LumGoodItem: good(1)[0],
         route116XSpecial:  good(1)[0],
 
         route118Items:    pool(4),
@@ -369,6 +370,11 @@ function updateScripts(a) {
         item:        a.route110GoodItem,
         flag:        'FLAG_ITEM_ROUTE_110_SHEDSHELL',
     }));
+    replaceAnchored('data/maps/Route110/scripts.inc', 'ROUTE110_LUM', genSingleItemScript({
+        scriptLabel: 'Route110_EventScript_LumGoodItem',
+        item:        a.route110LumGoodItem,
+        flag:        'FLAG_ITEM_ROUTE_110_LUM',
+    }));
     replaceAnchored('data/maps/Route110/scripts.inc', 'ROUTE110_EXTENDER', genPickerSection({
         pickerLabel:   'Route110_EventScript_PickExtender',
         multiConst:    'MULTI_ROUTE110_PICK_EXTENDER',
@@ -545,7 +551,8 @@ function randomizeItems() {
     return {
         route106GoodItem:  itemDisplayName(a.route106GoodItem),
         route109GoodItem:  itemDisplayName(a.route109GoodItem),
-        route110GoodItem:  itemDisplayName(a.route110GoodItem),
+        route110GoodItem:     itemDisplayName(a.route110GoodItem),
+        route110LumGoodItem:  itemDisplayName(a.route110LumGoodItem),
         route116XSpecial:  itemDisplayName(a.route116XSpecial),
         route116Gems:      dn('route116Gems'),
         route116Berries:   dn('route116Berries'),

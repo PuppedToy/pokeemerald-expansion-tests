@@ -1077,3 +1077,10 @@ Route110_EventScript_PickExtender3::
 	setflag FLAG_ITEM_ROUTE_110_EXTENDER
 	end
 @ === RAND_ROUTE110_EXTENDER_END ===
+
+@ === RAND_ROUTE110_LUM_START ===
+Route110_EventScript_LumGoodItem::
+	finditem ITEM_AIR_BALLOON
+	setflag FLAG_ITEM_ROUTE_110_LUM
+	end
+@ === RAND_ROUTE110_LUM_END ===

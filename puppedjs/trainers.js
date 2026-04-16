@@ -1043,6 +1043,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route116BallItems      = itemAssignments.route116Ball;
     const route109GoodItem           = itemAssignments.route109GoodItem;
     const route110GoodItem           = itemAssignments.route110GoodItem;
+    const route110LumGoodItem        = itemAssignments.route110LumGoodItem;
     const route110ExtenderBallItems  = itemAssignments.route110ExtenderBall;
     const route117GemItems       = itemAssignments.route117Gems;
     const route118ItemItems      = itemAssignments.route118Items;
@@ -2346,9 +2347,9 @@ const trainersData = [
     {
         id: 'TRAINER_EDWIN_1',
         class: 'Collector',
-        reward: ['Lum Berry'],
+        reward: [route110LumGoodItem],
         level: 28,
-        bag: ['Lum Berry', ...getSampleItemsFromArray(rivalRoute110Bag(), 6)],
+        bag: [route110LumGoodItem, ...getSampleItemsFromArray(rivalRoute110Bag(), 6)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 6),
         ],
