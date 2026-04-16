@@ -1885,6 +1885,19 @@
     'use strict';
     const LS_KEY = 'nuzlocke_v1';
 
+    // ---------- Trainer groups ----------
+    // Trainers that must be marked/unmarked together (fought as a set).
+    const TRAINER_GROUPS = {
+      'MUSEUM_GRUNTS':       ['TRAINER_GRUNT_MUSEUM_1', 'TRAINER_GRUNT_MUSEUM_2'],
+      'SPACE_CENTER_GRUNTS': ['TRAINER_GRUNT_SPACE_CENTER_5', 'TRAINER_GRUNT_SPACE_CENTER_6', 'TRAINER_GRUNT_SPACE_CENTER_7'],
+      'SPACE_CENTER_BOSSES': ['TRAINER_TABITHA_MOSSDEEP', 'TRAINER_MAXIE_MOSSDEEP'],
+    };
+    // Reverse map: trainerId → groupId
+    const trainerToGroup = {};
+    Object.entries(TRAINER_GROUPS).forEach(function ([groupId, ids]) {
+      ids.forEach(function (id) { trainerToGroup[id] = groupId; });
+    });
+
     // ---------- Location groups ----------
     // Locations that share the nuzlocke slot: capturing in one blocks the others.
     const LOCATION_GROUPS = {
@@ -2088,6 +2101,20 @@
         nzState.trainers[trainerId] = true;
       } else {
         delete nzState.trainers[trainerId];
+      }
+
+      // Sync linked group members (e.g. Museum Grunts, Space Center Grunts/Bosses)
+      const groupId = trainerToGroup[trainerId];
+      if (groupId) {
+        TRAINER_GROUPS[groupId].forEach(function (peerId) {
+          if (peerId === trainerId) return;
+          if (checked) {
+            nzState.trainers[peerId] = true;
+          } else {
+            delete nzState.trainers[peerId];
+          }
+          applyTrainerVisuals(peerId);
+        });
       }
 
       // Auto-defeat all trainers 10 levels below any boss that just got checked
