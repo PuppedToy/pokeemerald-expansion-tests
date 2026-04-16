@@ -129,7 +129,7 @@ Items that appear as plain item balls with no randomization.
 |----------|------|------|
 | Route 116 | Repel | `FLAG_ITEM_ROUTE_116_REPEL` |
 | Route 116 | Mind Plate area | `FLAG_ITEM_ROUTE_116_MIND_PLATE` |
-| Various | TM map items (TM20/21/22/41/42/59/60/71/72/88) | see `tms.md` |
+| Various | TM map items (TM41/42/59/60/71/72/88) | see `tms.md` |
 | Various | HMs | see `tms.md` |
 
 ---
