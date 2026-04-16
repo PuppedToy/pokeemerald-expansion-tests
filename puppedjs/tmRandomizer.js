@@ -84,6 +84,7 @@ const PICK_LISTS = [
     ['MultichoiceList_Route115PickTM',   [80, 79, 81]],
     ['MultichoiceList_Route117PickScreen',[77, 76]],
     ['MultichoiceList_Route118PickTM',   [34, 33, 35]],
+    ['MultichoiceList_Route118PickTM2',  [20, 21, 22]],
     ['MultichoiceList_Route121PickTM',   [82, 83, 84]],
     ['MultichoiceList_Route124PickTM',   [36, 37, 38]],
     ['MultichoiceList_Route109RickyPickTM', [16, 17, 18]],

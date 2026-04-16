@@ -42,9 +42,9 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM17 | goodDmg | Pick — Route 109 Ricky (choose 1 of 3) |
 | TM18 | goodDmg | Pick — Route 109 Ricky (choose 1 of 3) |
 | TM19 | goodDmg | Scripted — Granite Cave (Steven gives it) |
-| TM20 | goodDmg | Item — Meteor Falls B1F 2R |
-| TM21 | goodDmg | Item — Mt. Pyre 6F |
-| TM22 | goodDmg | Item — Victory Road B1F |
+| TM20 | goodDmg | Pick — Route 118 Deandre (choose 1 of 3) |
+| TM21 | goodDmg | Pick — Route 118 Deandre (choose 1 of 3) |
+| TM22 | goodDmg | Pick — Route 118 Deandre (choose 1 of 3) |
 | TM23 | goodDmg | — Unplaced |
 | TM24 | goodDmg | — Unplaced |
 | TM25 | goodDmg | — Unplaced |

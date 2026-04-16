@@ -178,3 +178,26 @@ Route118_Text_RouteSign119:
 	.string "ROUTE 118\n"
 	.string "{UP_ARROW} ROUTE 119$"
 
+Route118_EventScript_DeandrePickTM::
+	multichoice 0, 0, MULTI_ROUTE118_PICK_TM2, FALSE
+	switch VAR_RESULT
+	case 0, Route118_EventScript_DeandrePickTM_Option1
+	case 1, Route118_EventScript_DeandrePickTM_Option2
+	case 2, Route118_EventScript_DeandrePickTM_Option3
+	end
+
+Route118_EventScript_DeandrePickTM_Option1::
+	finditem ITEM_TM20
+	setflag FLAG_ITEM_ROUTE_118_HYPER_POTION
+	end
+
+Route118_EventScript_DeandrePickTM_Option2::
+	finditem ITEM_TM21
+	setflag FLAG_ITEM_ROUTE_118_HYPER_POTION
+	end
+
+Route118_EventScript_DeandrePickTM_Option3::
+	finditem ITEM_TM22
+	setflag FLAG_ITEM_ROUTE_118_HYPER_POTION
+	end
+

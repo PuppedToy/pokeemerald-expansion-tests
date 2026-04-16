@@ -1070,6 +1070,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceNobTMs         = [tmItem(80), tmItem(79), tmItem(81)];
     const choiceClaudeTMs      = [tmItem(12), tmItem(13), tmItem(15), tmItem(14)];
     const choiceChesterTMs     = [tmItem(34), tmItem(33), tmItem(35)];
+    const choiceDeandreTMs     = [tmItem(20), tmItem(21), tmItem(22)];
     const choiceTammyTMs       = [tmItem(82), tmItem(83), tmItem(84)];
     const choiceRickyTMs       = [tmItem(16), tmItem(17), tmItem(18)];
     const choiceGraceTMs       = [tmItem(36), tmItem(37), tmItem(38)];
@@ -2393,9 +2394,9 @@ const trainersData = [
     {
         id: 'TRAINER_DEANDRE',
         class: 'Youngster',
-        reward: ['Random Defensive Mint'],
+        reward: [...choiceDeandreTMs],
         level: 28,
-        bag: getSampleItemsFromArray(rivalRoute110Bag(), 7),
+        bag: [...choiceDeandreTMs, ...getSampleItemsFromArray(rivalRoute110Bag(), 4)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 6),
         ],
