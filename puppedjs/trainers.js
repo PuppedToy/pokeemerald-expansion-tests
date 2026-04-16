@@ -1035,6 +1035,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route104BerryItems     = itemAssignments.route104Berries;
     const route111ItemItems      = itemAssignments.route111Items;
     const route111BerryItems     = itemAssignments.route111Berries;
+    const route117BerryItems     = itemAssignments.route117Berries;
     const route106GoodItem       = itemAssignments.route106GoodItem;
     const route106BallItems      = itemAssignments.route106Ball;
     const route116XSpecialItem   = itemAssignments.route116XSpecial;
@@ -1066,7 +1067,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choice104TMs2        = [tmItem(8), tmItem(9), tmItem(10)];
     const choicesDewfordTMs    = [tmItem(4), tmItem(3), tmItem(2)];
     const choice110TMs         = [tmItem(63), tmItem(64), tmItem(62)];
-    const choiceMelinaBerries  = route111BerryItems;
+    const choiceMelinaBerries  = route117BerryItems;
     const choiceAishaGems      = route117GemItems;
     const choiceNobTMs         = [tmItem(80), tmItem(79), tmItem(81)];
     const choiceClaudeTMs      = [tmItem(12), tmItem(13), tmItem(15), tmItem(14)];
