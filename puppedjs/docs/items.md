@@ -44,6 +44,7 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 
 | Location | Flag | Trainer pool |
 |----------|------|-------------|
+| Route 106 | `FLAG_ITEM_ROUTE_106_CAPSULE` | `route106BallItems` → Andres (`TRAINER_ANDRES_1`) bag/reward |
 | Route 102 | `FLAG_ITEM_ROUTE_102_POTION` | Early game bags |
 | Route 109 | `FLAG_ITEM_ROUTE_109_POTION` | Slateport area bags |
 | Route 110 | `FLAG_ITEM_ROUTE_110_SHEDSHELL` | Route 110 area bags |

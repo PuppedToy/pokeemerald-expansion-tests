@@ -130,6 +130,7 @@ function buildAssignments() {
         route120Items:    pool(3),
         route125Items:    ['ITEM_WEAKNESS_POLICY', 'ITEM_EJECT_BUTTON', pool(1)[0]], // slots 0,1 = fixed
         // Item ball pick-3 locations
+        route106Ball:  pool(3),
         route102Ball:  pool(3),
         route109Ball:  pool(3),
         route110Ball:  pool(3),
@@ -343,6 +344,13 @@ function updateScripts(a) {
     );
 
     // Item ball pick-3 locations
+    replaceAnchored('data/maps/Route106/scripts.inc', 'ROUTE106_BALL', genPickerSection({
+        pickerLabel:   'Route106_EventScript_PickBall',
+        multiConst:    'MULTI_ROUTE106_PICK_BALL',
+        flag:          'FLAG_ITEM_ROUTE_106_CAPSULE',
+        pickedItems:   a.route106Ball,
+        handlerPrefix: 'Route106_EventScript_PickBall',
+    }));
     replaceAnchored('data/maps/Route102/scripts.inc', 'ROUTE102_BALL', genPickerSection({
         pickerLabel:   'Route102_EventScript_PickBall',
         multiConst:    'MULTI_ROUTE102_PICK_BALL',
@@ -500,6 +508,7 @@ function updateScriptMenu(a) {
     });
 
     // Item ball pick-3 lists
+    src = replaceMenuList(src, 'MultichoiceList_Route106PickBall',  a.route106Ball.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route102PickBall',  a.route102Ball.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route109PickBall',  a.route109Ball.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route110PickBall',  a.route110Ball.map(itemDisplayName));
@@ -535,6 +544,7 @@ function randomizeItems() {
         route116XSpecial:  itemDisplayName(a.route116XSpecial),
         route116Gems:      dn('route116Gems'),
         route116Berries:   dn('route116Berries'),
+        route106Ball:      dn('route106Ball'),
         route102Ball:      dn('route102Ball'),
         route109Ball:      dn('route109Ball'),
         petalburgPlates:   dn('petalburgPlates'),

@@ -77,6 +77,31 @@ Route106_EventScript_Ned::
 	msgbox Route106_Text_NedPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+@ === RAND_ROUTE106_BALL_START ===
+Route106_EventScript_PickBall::
+	multichoice 0, 0, MULTI_ROUTE106_PICK_BALL, FALSE
+	switch VAR_RESULT
+	case 0, Route106_EventScript_PickBall1
+	case 1, Route106_EventScript_PickBall2
+	case 2, Route106_EventScript_PickBall3
+	end
+
+Route106_EventScript_PickBall1::
+	finditem ITEM_ABILITY_CAPSULE
+	setflag FLAG_ITEM_ROUTE_106_CAPSULE
+	end
+
+Route106_EventScript_PickBall2::
+	finditem ITEM_ABILITY_CAPSULE
+	setflag FLAG_ITEM_ROUTE_106_CAPSULE
+	end
+
+Route106_EventScript_PickBall3::
+	finditem ITEM_ABILITY_CAPSULE
+	setflag FLAG_ITEM_ROUTE_106_CAPSULE
+	end
+@ === RAND_ROUTE106_BALL_END ===
+
 @ === RAND_ROUTE106_GOOD_ITEM_START ===
 Route106_EventScript_GoodItem::
 	finditem ITEM_LIFE_ORB

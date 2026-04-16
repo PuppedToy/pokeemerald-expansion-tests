@@ -1009,6 +1009,13 @@ static const struct MenuAction MultichoiceList_Route115PickBall[] =
     {COMPOUND_STRING("White Herb")},
 };
 
+static const struct MenuAction MultichoiceList_Route106PickBall[] =
+{
+    {COMPOUND_STRING("Item Placeholder")},
+    {COMPOUND_STRING("Item Placeholder")},
+    {COMPOUND_STRING("Item Placeholder")},
+};
+
 static const struct MenuAction MultichoiceList_Route116PickBall[] =
 {
     {COMPOUND_STRING("Wise Glasses")},
@@ -1272,6 +1279,7 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_ROUTE116_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route116PickBall),
     [MULTI_ROUTE116_PICK_GEM]          = MULTICHOICE(MultichoiceList_Route116PickGem),
     [MULTI_ROUTE116_PICK_BERRY]        = MULTICHOICE(MultichoiceList_Route116PickBerry),
+    [MULTI_ROUTE106_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route106PickBall),
     [MULTI_ROUTE124_PICK_BALL_A]       = MULTICHOICE(MultichoiceList_Route124PickBallA),
     [MULTI_ROUTE124_PICK_BALL_B]       = MULTICHOICE(MultichoiceList_Route124PickBallB),
     [MULTI_ROUTE125_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route125PickBall),

@@ -1036,6 +1036,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route111ItemItems      = itemAssignments.route111Items;
     const route111BerryItems     = itemAssignments.route111Berries;
     const route106GoodItem       = itemAssignments.route106GoodItem;
+    const route106BallItems      = itemAssignments.route106Ball;
     const route116XSpecialItem   = itemAssignments.route116XSpecial;
     const route116GemItems       = itemAssignments.route116Gems;
     const route116BerryItems     = itemAssignments.route116Berries;
@@ -1942,9 +1943,9 @@ const trainersData = [
     {
         id: 'TRAINER_ANDRES_1',
         class: 'Ruin Maniac',
-        reward: ['Ability Capsule'],
+        reward: [...route106BallItems],
         level: 19,
-        bag: getSampleItemsFromArray(rivalRustboroBag(), 4),
+        bag: [...route106BallItems, ...getSampleItemsFromArray(rivalRustboroBag(), 1)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
             ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
