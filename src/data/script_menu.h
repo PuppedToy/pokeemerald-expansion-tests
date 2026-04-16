@@ -1253,6 +1253,7 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_ROUTE104_PICK_TM2]          = MULTICHOICE(MultichoiceList_Route104PickTM2),
     [MULTI_ROUTE106_PICK]              = MULTICHOICE(MultichoiceList_Route106Pick),
     [MULTI_ROUTE109_PICK]              = MULTICHOICE(MultichoiceList_Route109Pick),
+    [MULTI_ROUTE109_PICK_TM]           = MULTICHOICE(MultichoiceList_Route109RickyPickTM),
     [MULTI_ROUTE109_PICK_TM2]          = MULTICHOICE(MultichoiceList_Route109HueyPickTM),
     [MULTI_ROUTE110_PICK]              = MULTICHOICE(MultichoiceList_Route110Pick),
     [MULTI_ROUTE110_PICK_SEED]         = MULTICHOICE(MultichoiceList_Route110PickSeed),
