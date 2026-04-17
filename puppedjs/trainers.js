@@ -2648,22 +2648,6 @@ const trainersData = [
     },
     // Route 112
     {
-        id: 'TRAINER_LARRY',
-        class: 'Fisherman',
-        reward: ['SPECIES_TAILLOW'],
-        level: 32,
-        bag: getSampleItemsFromArray(wattsonBag(), 10),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_TAILLOW'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-        ],
-    },
-    {
         id: 'TRAINER_BRYANT',
         class: 'Kindler',
         reward: ['SPECIES_NUMEL'],
@@ -2680,6 +2664,33 @@ const trainersData = [
         ],
     },
     {
+        id: 'TRAINER_LARRY',
+        class: 'Fisherman',
+        reward: ['SPECIES_TAILLOW'],
+        level: 32,
+        bag: getSampleItemsFromArray(wattsonBag(), 10),
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_TAILLOW'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
+        ],
+    },
+    {
+        id: 'TRAINER_CAROL',
+        class: 'Cycling Triathlete F',
+        reward: [...choiceCarolTMs],
+        level: 32,
+        bag: [...choiceCarolTMs, ...getSampleItemsFromArray(wattsonBag(), 7)],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
+        ],
+    },
+    {
         id: 'TRAINER_BRICE',
         class: 'Hiker',
         reward: [...choiceBriceTMs],
@@ -2689,17 +2700,6 @@ const trainersData = [
             ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
         ]
-    },
-    {
-        id: 'TRAINER_CAROL',
-        class: 'Cooltrainer F',
-        reward: [...choiceCarolTMs],
-        level: 32,
-        bag: [...choiceCarolTMs, ...getSampleItemsFromArray(wattsonBag(), 7)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-        ],
     },
     {
         id: 'TRAINER_TABITHA_MT_CHIMNEY',

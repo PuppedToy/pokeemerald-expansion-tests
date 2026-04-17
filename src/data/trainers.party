@@ -3680,10 +3680,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_LARRY ===
 Name: LARRY
-Class: Camper
-Pic: Camper
+Class: Fisherman
+Pic: Fisherman
 Gender: Male
-Music: Male
+Music: Hiker
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -3753,8 +3753,8 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_TRAVIS ===
 Name: TRAVIS
-Class: Camper
-Pic: Camper
+Class: Pkmn Breeder
+Pic: Pokemon Breeder M
 Gender: Male
 Music: Male
 Double Battle: No
@@ -8301,10 +8301,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_CAROL ===
 Name: CAROL
-Class: Picnicker
-Pic: Picnicker
+Class: Triathlete
+Pic: Cycling Triathlete F
 Gender: Female
-Music: Girl
+Music: Female
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
