@@ -130,6 +130,7 @@ function buildAssignments() {
         route110LumGoodItem: good(1)[0],
         route117GoodItem:    good(1)[0],
         route116XSpecial:  good(1)[0],
+        route111HpUpGoodItem: good(1)[0],
 
         route118Items:    pool(4),
         route120Items:    pool(3),
@@ -383,6 +384,12 @@ function updateScripts(a) {
         flag:        'FLAG_ITEM_ROUTE_117_EARTHQUAKE',
     }));
     // Route117 plate pick (4 plates — Lydia's item, FLAG_ITEM_ROUTE_117_GREAT_BALL)
+    // Route111 good item (single goodItemPool item — Travis)
+    replaceAnchored('data/maps/Route111/scripts.inc', 'ROUTE111_HP_UP', genSingleItemScript({
+        scriptLabel: 'Route111_EventScript_HpUpGoodItem',
+        item:        a.route111HpUpGoodItem,
+        flag:        'FLAG_ITEM_ROUTE_111_HP_UP',
+    }));
     replaceAnchored('data/maps/Route117/scripts.inc', 'ROUTE117_PLATE', genPickerSection({
         pickerLabel:  'Route117_EventScript_PickPlate',
         multiConst:   'MULTI_ROUTE117_PICK_PLATE',
@@ -573,6 +580,7 @@ function randomizeItems() {
         route110LumGoodItem:  itemDisplayName(a.route110LumGoodItem),
         route117GoodItem:     itemDisplayName(a.route117GoodItem),
         route116XSpecial:     itemDisplayName(a.route116XSpecial),
+        route111HpUpGoodItem: itemDisplayName(a.route111HpUpGoodItem),
         route116Gems:      dn('route116Gems'),
         route116Berries:   dn('route116Berries'),
         route106Ball:          dn('route106Ball'),

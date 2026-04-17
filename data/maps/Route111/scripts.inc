@@ -839,3 +839,10 @@ Route111_EventScript_PickBallC3::
 	setflag FLAG_ITEM_ROUTE_111_ADRENALINE
 	end
 @ === RAND_ROUTE111_BALL_C_END ===
+
+@ === RAND_ROUTE111_HP_UP_START ===
+Route111_EventScript_HpUpGoodItem::
+	finditem ITEM_SITRUS_BERRY
+	setflag FLAG_ITEM_ROUTE_111_HP_UP
+	end
+@ === RAND_ROUTE111_HP_UP_END ===

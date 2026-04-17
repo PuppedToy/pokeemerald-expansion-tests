@@ -212,8 +212,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_SITRUS_BERRY",
-      "script": "Common_EventScript_FindItem",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route111_EventScript_HpUpGoodItem",
       "flag": "FLAG_ITEM_ROUTE_111_HP_UP"
     },
     {
@@ -230,7 +230,7 @@
       "flag": "FLAG_BADGE04_GET"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "graphics_id": "OBJ_EVENT_GFX_MAN_4",
       "x": 14,
       "y": 71,
       "elevation": 3,
@@ -283,8 +283,8 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_CAMPER",
-      "x": 29,
-      "y": 116,
+      "x": 6,
+      "y": 94,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_UP",
       "movement_range_x": 0,
@@ -361,8 +361,8 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 30,
-      "y": 115,
+      "x": 5,
+      "y": 93,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "movement_range_x": 1,

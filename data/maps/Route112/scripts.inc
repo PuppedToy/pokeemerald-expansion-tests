@@ -165,3 +165,49 @@ Route112_EventScript_PickBall3::
 	setflag FLAG_ITEM_ROUTE_112_WHITE
 	end
 @ === RAND_ROUTE112_BALL_END ===
+
+Route112_EventScript_PickTMStatus::
+	multichoice 0, 0, MULTI_ROUTE112_PICK_TM_STATUS, FALSE
+	switch VAR_RESULT
+	case 0, Route112_EventScript_PickTMStatus1
+	case 1, Route112_EventScript_PickTMStatus2
+	case 2, Route112_EventScript_PickTMStatus3
+	end
+
+Route112_EventScript_PickTMStatus1::
+	finditem ITEM_TM85
+	setflag FLAG_ITEM_ROUTE_112_TOXIC
+	end
+
+Route112_EventScript_PickTMStatus2::
+	finditem ITEM_TM86
+	setflag FLAG_ITEM_ROUTE_112_TOXIC
+	end
+
+Route112_EventScript_PickTMStatus3::
+	finditem ITEM_TM87
+	setflag FLAG_ITEM_ROUTE_112_TOXIC
+	end
+
+Route112_EventScript_PickTMDmg::
+	multichoice 0, 0, MULTI_ROUTE112_PICK_TM_DMG, FALSE
+	switch VAR_RESULT
+	case 0, Route112_EventScript_PickTMDmg1
+	case 1, Route112_EventScript_PickTMDmg2
+	case 2, Route112_EventScript_PickTMDmg3
+	end
+
+Route112_EventScript_PickTMDmg1::
+	finditem ITEM_TM23
+	setflag FLAG_ITEM_ROUTE_112_CAPSULE
+	end
+
+Route112_EventScript_PickTMDmg2::
+	finditem ITEM_TM24
+	setflag FLAG_ITEM_ROUTE_112_CAPSULE
+	end
+
+Route112_EventScript_PickTMDmg3::
+	finditem ITEM_TM25
+	setflag FLAG_ITEM_ROUTE_112_CAPSULE
+	end

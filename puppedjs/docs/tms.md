@@ -45,9 +45,9 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM20 | goodDmg | Pick — Route 118 Deandre (choose 1 of 3) |
 | TM21 | goodDmg | Pick — Route 118 Deandre (choose 1 of 3) |
 | TM22 | goodDmg | Pick — Route 118 Deandre (choose 1 of 3) |
-| TM23 | goodDmg | — Unplaced |
-| TM24 | goodDmg | — Unplaced |
-| TM25 | goodDmg | — Unplaced |
+| TM23 | goodDmg | Pick — Route 112 Brice (choose 1 of 3) |
+| TM24 | goodDmg | Pick — Route 112 Brice (choose 1 of 3) |
+| TM25 | goodDmg | Pick — Route 112 Brice (choose 1 of 3) |
 | TM26 | goodDmg | — Unplaced |
 | TM27 | goodDmg | — Unplaced |
 | TM28 | goodDmg | — Unplaced |
@@ -107,9 +107,9 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM82 | goodStatus | Pick — Route 121 (choose 1 of 3) |
 | TM83 | goodStatus | Pick — Route 121 (choose 1 of 3) |
 | TM84 | goodStatus | Pick — Route 121 (choose 1 of 3) |
-| TM85 | goodStatus | — Unplaced |
-| TM86 | goodStatus | — Unplaced |
-| TM87 | goodStatus | — Unplaced |
+| TM85 | goodStatus | Pick — Route 112 Carol (choose 1 of 3) |
+| TM86 | goodStatus | Pick — Route 112 Carol (choose 1 of 3) |
+| TM87 | goodStatus | Pick — Route 112 Carol (choose 1 of 3) |
 | TM88 | goodStatus | Item — Fiery Path |
 | TM89 | goodStatus | — Unplaced |
 | TM90 | goodStatus | — Unplaced |

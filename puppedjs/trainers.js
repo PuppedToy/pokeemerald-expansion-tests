@@ -1049,6 +1049,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route110ExtenderBallItems  = itemAssignments.route110ExtenderBall;
     const route117GemItems       = itemAssignments.route117Gems;
     const route117PlateItems     = itemAssignments.route117Plates;
+    const route111HpUpGoodItem   = itemAssignments.route111HpUpGoodItem;
     const route118ItemItems      = itemAssignments.route118Items;
     const route120ItemItems      = itemAssignments.route120Items;
     const route121BerryItems     = itemAssignments.route121Berries;
@@ -1074,6 +1075,8 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceClaudeTMs      = [tmItem(12), tmItem(13), tmItem(15), tmItem(14)];
     const choiceChesterTMs     = [tmItem(34), tmItem(33), tmItem(35)];
     const choiceDeandreTMs     = [tmItem(20), tmItem(21), tmItem(22)];
+    const choiceCarolTMs       = [tmItem(85), tmItem(86), tmItem(87)];
+    const choiceBriceTMs       = [tmItem(23), tmItem(24), tmItem(25)];
     const choiceTammyTMs       = [tmItem(82), tmItem(83), tmItem(84)];
     const choiceRickyTMs       = [tmItem(16), tmItem(17), tmItem(18)];
     const choiceGraceTMs       = [tmItem(36), tmItem(37), tmItem(38)];
@@ -2634,10 +2637,10 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TRAVIS',
-        class: 'Camper',
-        reward: ['Sitrus Berry'],
+        class: 'Pokemon Breeder M',
+        reward: [route111HpUpGoodItem],
         level: 32,
-        bag: [...getSampleItemsFromArray(wattsonBag(), 9), 'Sitrus Berry'],
+        bag: [route111HpUpGoodItem, ...getSampleItemsFromArray(wattsonBag(), 8)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
@@ -2646,7 +2649,7 @@ const trainersData = [
     // Route 112
     {
         id: 'TRAINER_LARRY',
-        class: 'Camper',
+        class: 'Fisherman',
         reward: ['SPECIES_TAILLOW'],
         level: 32,
         bag: getSampleItemsFromArray(wattsonBag(), 10),
@@ -2679,9 +2682,9 @@ const trainersData = [
     {
         id: 'TRAINER_BRICE',
         class: 'Hiker',
-        reward: ['Ability Capsule'],
+        reward: [...choiceBriceTMs],
         level: 32,
-        bag: getSampleItemsFromArray(wattsonBag(), 10),
+        bag: [...choiceBriceTMs, ...getSampleItemsFromArray(wattsonBag(), 7)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
@@ -2690,9 +2693,9 @@ const trainersData = [
     {
         id: 'TRAINER_CAROL',
         class: 'Cooltrainer F',
-        reward: ['Random Defensive Mint'],
+        reward: [...choiceCarolTMs],
         level: 32,
-        bag: getSampleItemsFromArray(wattsonBag(), 10),
+        bag: [...choiceCarolTMs, ...getSampleItemsFromArray(wattsonBag(), 7)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 2),

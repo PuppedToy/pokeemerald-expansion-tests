@@ -26,7 +26,7 @@ Shuffled once per run. Each "good item" location in the world gets one item draw
 
 **Pool contents (10 items):** Black Sludge, Life Orb, Assault Vest, Weakness Policy, Air Balloon, Loaded Dice, Sitrus Berry, Shell Bell, Rocky Helmet, Booster Energy
 
-**Consumed: 6 of 10** — 4 slots remain for future locations.
+**Consumed: 7 of 10** — 3 slots remain for future locations.
 
 | Location | Flag | Trainer that propagates it |
 |----------|------|---------------------------|
@@ -36,6 +36,7 @@ Shuffled once per run. Each "good item" location in the world gets one item draw
 | Route 110 item ball (near Edwin) | `FLAG_ITEM_ROUTE_110_LUM` | Edwin (`TRAINER_EDWIN_1`) bag/reward |
 | Route 117 item ball (near Maria) | `FLAG_ITEM_ROUTE_117_EARTHQUAKE` | Maria (`TRAINER_MARIA_1`) bag/reward |
 | Route 116 item ball (near Devan) | `FLAG_ITEM_ROUTE_116_X_SPECIAL` | Devan (`TRAINER_DEVAN`) — also in `rusturfGruntBag` and all bags that build on it |
+| Route 111 item ball (near Travis) | `FLAG_ITEM_ROUTE_111_HP_UP` | Travis (`TRAINER_TRAVIS`) bag/reward |
 
 > **Adding a new goodItemPool location:** see `pick-list-howto.md` for the general pattern. For single items, use `genSingleItemScript` in `itemRandomizer.js` with a `RAND_*` anchor in the map's `scripts.inc`. Wire the returned display name into `trainers.js` via `itemAssignments.yourNewKey`.
 

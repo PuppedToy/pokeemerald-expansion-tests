@@ -1010,6 +1010,20 @@ static const struct MenuAction MultichoiceList_Route112PickBall[] =
     {COMPOUND_STRING("Clear Amulet")},
 };
 
+static const struct MenuAction MultichoiceList_Route112PickTMStatus[] =
+{
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
+};
+
+static const struct MenuAction MultichoiceList_Route112PickTMDmg[] =
+{
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
+};
+
 static const struct MenuAction MultichoiceList_Route114PickBallA[] =
 {
     {COMPOUND_STRING("Float Stone")},
@@ -1305,6 +1319,8 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_ROUTE111_PICK_BALL_B]       = MULTICHOICE(MultichoiceList_Route111PickBallB),
     [MULTI_ROUTE111_PICK_BALL_C]       = MULTICHOICE(MultichoiceList_Route111PickBallC),
     [MULTI_ROUTE112_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route112PickBall),
+    [MULTI_ROUTE112_PICK_TM_STATUS]    = MULTICHOICE(MultichoiceList_Route112PickTMStatus),
+    [MULTI_ROUTE112_PICK_TM_DMG]       = MULTICHOICE(MultichoiceList_Route112PickTMDmg),
     [MULTI_ROUTE114_PICK_BALL_A]       = MULTICHOICE(MultichoiceList_Route114PickBallA),
     [MULTI_ROUTE114_PICK_BALL_B]       = MULTICHOICE(MultichoiceList_Route114PickBallB),
     [MULTI_ROUTE114_PICK_BALL_C]       = MULTICHOICE(MultichoiceList_Route114PickBallC),
