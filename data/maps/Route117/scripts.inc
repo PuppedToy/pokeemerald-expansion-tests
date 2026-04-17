@@ -328,3 +328,34 @@ Route117_EventScript_EarthquakeGoodItem::
 	setflag FLAG_ITEM_ROUTE_117_EARTHQUAKE
 	end
 @ === RAND_ROUTE117_EARTHQUAKE_END ===
+
+@ === RAND_ROUTE117_PLATE_START ===
+Route117_EventScript_PickPlate::
+	multichoice 0, 0, MULTI_ROUTE117_PICK_PLATE, FALSE
+	switch VAR_RESULT
+	case 0, Route117_EventScript_PickPlate1
+	case 1, Route117_EventScript_PickPlate2
+	case 2, Route117_EventScript_PickPlate3
+	case 3, Route117_EventScript_PickPlate4
+	end
+
+Route117_EventScript_PickPlate1::
+	finditem ITEM_FLAME_PLATE
+	setflag FLAG_ITEM_ROUTE_117_GREAT_BALL
+	end
+
+Route117_EventScript_PickPlate2::
+	finditem ITEM_SPLASH_PLATE
+	setflag FLAG_ITEM_ROUTE_117_GREAT_BALL
+	end
+
+Route117_EventScript_PickPlate3::
+	finditem ITEM_MEADOW_PLATE
+	setflag FLAG_ITEM_ROUTE_117_GREAT_BALL
+	end
+
+Route117_EventScript_PickPlate4::
+	finditem ITEM_STONE_PLATE
+	setflag FLAG_ITEM_ROUTE_117_GREAT_BALL
+	end
+@ === RAND_ROUTE117_PLATE_END ===

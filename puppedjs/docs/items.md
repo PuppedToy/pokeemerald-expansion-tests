@@ -88,6 +88,7 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 | Location | Flag | Trainer pool |
 |----------|------|-------------|
 | Petalburg Woods | `FLAG_ITEM_PETALBURG_WOODS_PARALYZE_HEAL` | `woodsPlatesChoice` → early bags |
+| Route 117 (near Lydia) | `FLAG_ITEM_ROUTE_117_GREAT_BALL` | `route117PlateItems` → Lydia (`TRAINER_LYDIA_1`) bag/reward |
 
 ---
 

@@ -1048,6 +1048,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route117GoodItem           = itemAssignments.route117GoodItem;
     const route110ExtenderBallItems  = itemAssignments.route110ExtenderBall;
     const route117GemItems       = itemAssignments.route117Gems;
+    const route117PlateItems     = itemAssignments.route117Plates;
     const route118ItemItems      = itemAssignments.route118Items;
     const route120ItemItems      = itemAssignments.route120Items;
     const route121BerryItems     = itemAssignments.route121Berries;
@@ -2269,40 +2270,6 @@ const trainersData = [
             ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
         ],
     },
-    // Route 103 (later)
-    {
-        id: 'TRAINER_DAISY',
-        class: 'Aroma Lady',
-        reward: ['Random Offensive Mint'],
-        level: 26,
-        bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
-        ]
-    },
-    {
-        id: 'TRAINER_MARCOS',
-        class: 'Guitarist',
-        reward: ['Random Defensive Mint'],
-        level: 26,
-        bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
-        ]
-    },
-    {
-        id: 'TRAINER_ANDREW',
-        class: 'Fisherman',
-        reward: ['Ability Capsule'],
-        level: 26,
-        bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
-        ]
-    },
     // Route 110 Again
     {
         id: 'TRAINER_MAY_ROUTE_110_TREECKO',
@@ -2488,41 +2455,8 @@ const trainersData = [
         ],
     },
     {
-        id: 'TRAINER_DYLAN_1',
-        class: 'Running Triathlete M',
-        reward: ['Random Defensive Mint'],
-        level: 29,
-        bag: getSampleItemsFromArray(wallyBag(), 8),
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-        ]
-    },
-    {
-        id: 'TRAINER_LYDIA_1',
-        class: 'Pokemon Breeder F',
-        reward: ['Ability Capsule'],
-        level: 29,
-        bag: getSampleItemsFromArray(wallyBag(), 8),
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-        ]
-    },
-    {
-        id: 'TRAINER_DEREK',
-        class: 'Bug Maniac',
-        reward: ['Ability Patch'],
-        level: 29,
-        bag: getSampleItemsFromArray(wallyBag(), 8),
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-        ]
-    },
-    {
-        id: 'TRAINER_ANNA_AND_MEG_1',
-        class: 'Sr And Jr',
+        id: 'TRAINER_HECTOR',
+        class: 'Expert M',
         reward: [tmItem(77), tmItem(76), 'Light Clay'],
         level: 29,
         bag: [tmItem(77), tmItem(76), 'Light Clay', ...getSampleItemsFromArray(wallyBag(), 2)],
@@ -2566,7 +2500,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MARIA_1',
-        class: 'Running Triathlete F',
+        class: 'Expert F',
         reward: [route117GoodItem],
         level: 29,
         bag: [route117GoodItem, ...getSampleItemsFromArray(wallyBag(), 7)],
@@ -2574,6 +2508,28 @@ const trainersData = [
             ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
         ],
+    },
+    {
+        id: 'TRAINER_LYDIA_1',
+        class: 'Pokemon Breeder F',
+        reward: [...route117PlateItems],
+        level: 29,
+        bag: [...route117PlateItems, ...getSampleItemsFromArray(wallyBag(), 4)],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
+        ]
+    },
+    {
+        id: 'TRAINER_DEREK',
+        class: 'Bug Maniac',
+        reward: ['Ability Patch'],
+        level: 29,
+        bag: getSampleItemsFromArray(wallyBag(), 8),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
+        ]
     },
     // Mauville Gym
     {

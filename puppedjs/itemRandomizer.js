@@ -112,6 +112,7 @@ function buildAssignments() {
 
     return {
         petalburgPlates:  plate(4),
+        route117Plates:   plate(4),
         route104Gems:     gem(4),
         route116Gems:     gem(4),
         route117Gems:     gem(4),
@@ -381,6 +382,14 @@ function updateScripts(a) {
         item:        a.route117GoodItem,
         flag:        'FLAG_ITEM_ROUTE_117_EARTHQUAKE',
     }));
+    // Route117 plate pick (4 plates — Lydia's item, FLAG_ITEM_ROUTE_117_GREAT_BALL)
+    replaceAnchored('data/maps/Route117/scripts.inc', 'ROUTE117_PLATE', genPickerSection({
+        pickerLabel:  'Route117_EventScript_PickPlate',
+        multiConst:   'MULTI_ROUTE117_PICK_PLATE',
+        flag:         'FLAG_ITEM_ROUTE_117_GREAT_BALL',
+        pickedItems:  a.route117Plates,
+        handlerPrefix:'Route117_EventScript_PickPlate',
+    }));
     replaceAnchored('data/maps/Route110/scripts.inc', 'ROUTE110_EXTENDER', genPickerSection({
         pickerLabel:   'Route110_EventScript_PickExtender',
         multiConst:    'MULTI_ROUTE110_PICK_EXTENDER',
@@ -483,6 +492,9 @@ function updateScriptMenu(a) {
     src = replaceMenuList(src, 'MultichoiceList_PetalburgWoodsPick',
         a.petalburgPlates.map(itemDisplayName));
 
+    src = replaceMenuList(src, 'MultichoiceList_Route117PickPlate',
+        a.route117Plates.map(itemDisplayName));
+
     src = replaceMenuList(src, 'MultichoiceList_Route104PickGem',
         a.route104Gems.map(itemDisplayName));
 
@@ -567,6 +579,7 @@ function randomizeItems() {
         route102Ball:          dn('route102Ball'),
         route110ExtenderBall:  dn('route110ExtenderBall'),
         petalburgPlates:   dn('petalburgPlates'),
+        route117Plates:    dn('route117Plates'),
         route104Gems:      dn('route104Gems'),
         route104Berries:   dn('route104Berries'),
         route111Items:     dn('route111Items'),

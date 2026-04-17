@@ -172,6 +172,7 @@
 #define MULTI_ROUTE109_PICK_TM2            162
 #define MULTI_ROUTE110_PICK_EXTENDER       163
 #define MULTI_ROUTE118_PICK_TM2            164
+#define MULTI_ROUTE117_PICK_PLATE          165
 
 // Lilycove SS Tidal Multichoice Selections
 #define SSTIDAL_SELECTION_SLATEPORT        0
