@@ -3,7 +3,6 @@ Route120_MapScripts::
 	.byte 0
 
 Route120_OnTransition:
-	call GabbyAndTy_EventScript_UpdateLocation
 	call Route120_EventScript_SetWeather
 	end
 
