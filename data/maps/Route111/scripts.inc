@@ -800,3 +800,47 @@ Route111_EventScript_HpUpGoodItem::
 	setflag FLAG_ITEM_ROUTE_111_HP_UP
 	end
 @ === RAND_ROUTE111_HP_UP_END ===
+
+Route111_EventScript_Nob::
+	trainerbattle_single TRAINER_NOB_1, Route115_Text_NobIntro, Route115_Text_NobDefeat, Route111_EventScript_RegisterNob
+	specialvar VAR_RESULT, ShouldTryRematchBattle
+	goto_if_eq VAR_RESULT, TRUE, Route111_EventScript_RematchNob
+	msgbox Route115_Text_NobPostBattle, MSGBOX_DEFAULT
+	release
+	end
+
+Route111_EventScript_RegisterNob::
+	special PlayerFaceTrainerAfterBattle
+	waitmovement 0
+	msgbox Route115_Text_NobRegister, MSGBOX_DEFAULT
+	register_matchcall TRAINER_NOB_1
+	release
+	end
+
+Route111_EventScript_RematchNob::
+	trainerbattle_rematch TRAINER_NOB_1, Route115_Text_NobRematchIntro, Route115_Text_NobRematchDefeat
+	msgbox Route115_Text_NobPostRematch, MSGBOX_AUTOCLOSE
+	end
+
+Route111_EventScript_PickTM::
+	multichoice 0, 0, MULTI_ROUTE111_PICK_TM, FALSE
+	switch VAR_RESULT
+	case 0, Route111_EventScript_PickTM1
+	case 1, Route111_EventScript_PickTM2
+	case 2, Route111_EventScript_PickTM3
+	end
+
+Route111_EventScript_PickTM1::
+	finditem ITEM_TM80
+	setflag FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH
+	end
+
+Route111_EventScript_PickTM2::
+	finditem ITEM_TM79
+	setflag FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH
+	end
+
+Route111_EventScript_PickTM3::
+	finditem ITEM_TM81
+	setflag FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH
+	end

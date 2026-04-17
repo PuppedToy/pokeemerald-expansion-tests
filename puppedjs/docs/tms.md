@@ -101,9 +101,9 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM76 | barriers | Pick — Route 117 (choose 1 of 2) |
 | TM77 | barriers | Pick — Route 117 (choose 1 of 2) |
 | TM78 | goodStatus | Gym reward — Flannery (badge 4) |
-| TM79 | goodStatus | Pick — Route 115 (choose 1 of 3) |
-| TM80 | goodStatus | Pick — Route 115 (choose 1 of 3) |
-| TM81 | goodStatus | Pick — Route 115 (choose 1 of 3) |
+| TM79 | goodStatus | Pick — Route 111 Nob (choose 1 of 3) |
+| TM80 | goodStatus | Pick — Route 111 Nob (choose 1 of 3) |
+| TM81 | goodStatus | Pick — Route 111 Nob (choose 1 of 3) |
 | TM82 | goodStatus | Pick — Route 121 (choose 1 of 3) |
 | TM83 | goodStatus | Pick — Route 121 (choose 1 of 3) |
 | TM84 | goodStatus | Pick — Route 121 (choose 1 of 3) |

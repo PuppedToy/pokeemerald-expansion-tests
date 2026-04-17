@@ -57,27 +57,6 @@ Route115_EventScript_Koichi::
 	msgbox Route115_Text_KoichiPostBattle, MSGBOX_AUTOCLOSE
 	end
 
-Route115_EventScript_Nob::
-	trainerbattle_single TRAINER_NOB_1, Route115_Text_NobIntro, Route115_Text_NobDefeat, Route115_EventScript_RegisterNob
-	specialvar VAR_RESULT, ShouldTryRematchBattle
-	goto_if_eq VAR_RESULT, TRUE, Route115_EventScript_RematchNob
-	msgbox Route115_Text_NobPostBattle, MSGBOX_DEFAULT
-	release
-	end
-
-Route115_EventScript_RegisterNob::
-	special PlayerFaceTrainerAfterBattle
-	waitmovement 0
-	msgbox Route115_Text_NobRegister, MSGBOX_DEFAULT
-	register_matchcall TRAINER_NOB_1
-	release
-	end
-
-Route115_EventScript_RematchNob::
-	trainerbattle_rematch TRAINER_NOB_1, Route115_Text_NobRematchIntro, Route115_Text_NobRematchDefeat
-	msgbox Route115_Text_NobPostRematch, MSGBOX_AUTOCLOSE
-	end
-
 Route115_EventScript_Cyndy::
 	trainerbattle_single TRAINER_CYNDY_1, Route115_Text_CyndyIntro, Route115_Text_CyndyDefeat, Route115_EventScript_RegisterCyndy
 	specialvar VAR_RESULT, ShouldTryRematchBattle
@@ -127,29 +106,6 @@ Route115_EventScript_Helene::
 Route115_EventScript_Marlene::
 	trainerbattle_single TRAINER_MARLENE, Route115_Text_MarleneIntro, Route115_Text_MarleneDefeat
 	msgbox Route115_Text_MarlenePostBattle, MSGBOX_AUTOCLOSE
-	end
-
-Route115_EventScript_PickTM::
-	multichoice 0, 0, MULTI_ROUTE115_PICK_TM, FALSE
-	switch VAR_RESULT
-	case 0, Route115_EventScript_PickSolarBeam
-	case 1, Route115_EventScript_PickHyperBeam
-	case 2, Route115_EventScript_PickSludgeBomb
-	end
-
-Route115_EventScript_PickSolarBeam::
-	finditem ITEM_TM80
-	setflag FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH
-	end
-
-Route115_EventScript_PickHyperBeam::
-	finditem ITEM_TM79
-	setflag FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH
-	end
-
-Route115_EventScript_PickSludgeBomb::
-	finditem ITEM_TM81
-	setflag FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH
 	end
 
 Route115_Text_NeverKnowWhenCavePokemonWillAppear:

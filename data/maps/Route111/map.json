@@ -490,6 +490,32 @@
       "trainer_sight_or_berry_tree_id": "ITEM_SAFETY_GOGGLES",
       "script": "Route111_EventScript_PickBallC",
       "flag": "FLAG_ITEM_ROUTE_111_ADRENALINE"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 25,
+      "y": 54,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "trainer_sight_or_berry_tree_id": "1",
+      "script": "Route111_EventScript_Nob",
+      "flag": "FLAG_DEFEATED_SHELLY_WEATHER_INST"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 26,
+      "y": 54,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route111_EventScript_PickTM",
+      "flag": "FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH"
     }
   ],
   "warp_events": [

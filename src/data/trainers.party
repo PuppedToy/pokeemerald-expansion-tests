@@ -6154,10 +6154,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_NOLAN ===
 Name: NOLAN
-Class: Fisherman
-Pic: Fisherman
+Class: Youngster
+Pic: Youngster
 Gender: Male
-Music: Hiker
+Music: Male
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -12865,10 +12865,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_ANGELINA ===
 Name: ANGELINA
-Class: Picnicker
-Pic: Picnicker
+Class: Battle Girl
+Pic: Battle Girl
 Gender: Female
-Music: Girl
+Music: Intense
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
