@@ -504,6 +504,11 @@ Route111_EventScript_RematchWilton::
 	msgbox Route111_Text_WiltonPostRematch, MSGBOX_AUTOCLOSE
 	end
 
+Route111_EventScript_Shayla::
+	trainerbattle_single TRAINER_SHAYLA, Route112_Text_ShaylaIntro, Route112_Text_ShaylaDefeat
+	msgbox Route112_Text_ShaylaPostBattle, MSGBOX_AUTOCLOSE
+	end
+
 Route111_EventScript_Brooke::
 	trainerbattle_single TRAINER_BROOKE_1, Route111_Text_BrookeIntro, Route111_Text_BrookeDefeat, Route111_EventScript_RegisterBrooke
 	specialvar VAR_RESULT, ShouldTryRematchBattle
@@ -790,7 +795,6 @@ Route111_EventScript_PickBallA3::
 	end
 @ === RAND_ROUTE111_BALL_A_END ===
 
-@ === RAND_ROUTE111_BALL_B_START ===
 Route111_EventScript_PickBallB::
 	multichoice 0, 0, MULTI_ROUTE111_PICK_BALL_B, FALSE
 	switch VAR_RESULT
@@ -800,20 +804,44 @@ Route111_EventScript_PickBallB::
 	end
 
 Route111_EventScript_PickBallB1::
-	finditem ITEM_WIDE_LENS
+	finditem ITEM_TM26
 	setflag FLAG_ITEM_ROUTE_111_POWERHERB
 	end
 
 Route111_EventScript_PickBallB2::
-	finditem ITEM_BINDING_BAND
+	finditem ITEM_TM27
 	setflag FLAG_ITEM_ROUTE_111_POWERHERB
 	end
 
 Route111_EventScript_PickBallB3::
-	finditem ITEM_MARANGA_BERRY
+	finditem ITEM_TM28
 	setflag FLAG_ITEM_ROUTE_111_POWERHERB
 	end
-@ === RAND_ROUTE111_BALL_B_END ===
+
+@ === RAND_ROUTE111_SHAYLA_BALL_START ===
+Route111_EventScript_ShaylaBall::
+	multichoice 0, 0, MULTI_ROUTE112_PICK_BALL, FALSE
+	switch VAR_RESULT
+	case 0, Route111_EventScript_ShaylaBall1
+	case 1, Route111_EventScript_ShaylaBall2
+	case 2, Route111_EventScript_ShaylaBall3
+	end
+
+Route111_EventScript_ShaylaBall1::
+	finditem ITEM_WIDE_LENS
+	setflag FLAG_ITEM_ROUTE_112_WHITE
+	end
+
+Route111_EventScript_ShaylaBall2::
+	finditem ITEM_BINDING_BAND
+	setflag FLAG_ITEM_ROUTE_112_WHITE
+	end
+
+Route111_EventScript_ShaylaBall3::
+	finditem ITEM_MARANGA_BERRY
+	setflag FLAG_ITEM_ROUTE_112_WHITE
+	end
+@ === RAND_ROUTE111_SHAYLA_BALL_END ===
 
 @ === RAND_ROUTE111_BALL_C_START ===
 Route111_EventScript_PickBallC::

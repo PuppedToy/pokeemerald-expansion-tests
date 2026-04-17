@@ -516,6 +516,32 @@
       "trainer_sight_or_berry_tree_id": "ITEM_SAFETY_GOGGLES",
       "script": "Route111_EventScript_PickBallC",
       "flag": "FLAG_ITEM_ROUTE_111_ADRENALINE"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 11,
+      "y": 28,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "trainer_sight_or_berry_tree_id": "1",
+      "script": "Route111_EventScript_Shayla",
+      "flag": "0"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 12,
+      "y": 27,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route111_EventScript_ShaylaBall",
+      "flag": "FLAG_ITEM_ROUTE_112_WHITE"
     }
   ],
   "warp_events": [

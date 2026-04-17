@@ -1050,6 +1050,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route117GemItems       = itemAssignments.route117Gems;
     const route117PlateItems     = itemAssignments.route117Plates;
     const route111HpUpGoodItem   = itemAssignments.route111HpUpGoodItem;
+    const route111ShaylaBallItems = itemAssignments.route111ShaylaBall;
     const route118ItemItems      = itemAssignments.route118Items;
     const route120ItemItems      = itemAssignments.route120Items;
     const route121BerryItems     = itemAssignments.route121Berries;
@@ -1080,6 +1081,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceTammyTMs       = [tmItem(82), tmItem(83), tmItem(84)];
     const choiceRickyTMs       = [tmItem(16), tmItem(17), tmItem(18)];
     const choiceGraceTMs       = [tmItem(36), tmItem(37), tmItem(38)];
+    const choiceWiltonTMs      = [tmItem(26), tmItem(27), tmItem(28)];
     const choiceHeidiItems     = [route111ItemItems[0], route111ItemItems[1], 'Custap Berry'];
     const choiceWadeBerries    = route118ItemItems;
     const choiceClarissaItems  = route120ItemItems;
@@ -2796,28 +2798,11 @@ const trainersData = [
     {
         id: 'TRAINER_SHAYLA',
         class: 'Aroma Lady',
-        reward: ['White Herb'],
+        reward: [...route111ShaylaBallItems],
         level: 36,
-        bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
+        bag: [...route111ShaylaBallItems, ...getSampleItemsFromArray(flanneryBag(), 7)],
         team: [
-            {
-                ...POKEDEF_RU,
-                mustHaveOneOfMoves: [...whiteHerbMoves],
-                tryToHaveMove: [...whiteHerbMoves],
-                item: 'White Herb',
-                fallback: [
-                    {
-                        ...POKEDEF_NU,
-                        mustHaveOneOfMoves: [...whiteHerbMoves],
-                        tryToHaveMove: [...whiteHerbMoves],
-                        item: 'White Herb',
-                    },
-                    {
-                        ...POKEDEF_RU,
-                    }
-                ]
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },
@@ -2878,28 +2863,11 @@ const trainersData = [
     {
         id: 'TRAINER_WILTON_1',
         class: 'Cooltrainer M',
-        reward: ['Power Herb'],
+        reward: [...choiceWiltonTMs],
         level: 36,
-        bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
+        bag: [...choiceWiltonTMs, ...getSampleItemsFromArray(flanneryBag(), 7)],
         team: [
-            {
-                ...POKEDEF_NU_OR_RU,
-                mustHaveOneOfMoves: [...majorPowerHerbMoves],
-                tryToHaveMove: [...majorPowerHerbMoves],
-                item: 'Power Herb',
-                fallback: [
-                    {
-                        ...POKEDEF_NU_OR_RU,
-                        mustHaveOneOfMoves: [...minorPowerHerbMoves],
-                        tryToHaveMove: [...minorPowerHerbMoves],
-                        item: 'Power Herb',
-                    },
-                    {
-                        ...POKEDEF_RU,
-                    }
-                ]
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },

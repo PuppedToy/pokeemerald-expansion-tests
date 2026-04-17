@@ -48,9 +48,9 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM23 | goodDmg | Pick — Route 112 Brice (choose 1 of 3) |
 | TM24 | goodDmg | Pick — Route 112 Brice (choose 1 of 3) |
 | TM25 | goodDmg | Pick — Route 112 Brice (choose 1 of 3) |
-| TM26 | goodDmg | — Unplaced |
-| TM27 | goodDmg | — Unplaced |
-| TM28 | goodDmg | — Unplaced |
+| TM26 | goodDmg | Pick — Route 111 Wilton (choose 1 of 3) |
+| TM27 | goodDmg | Pick — Route 111 Wilton (choose 1 of 3) |
+| TM28 | goodDmg | Pick — Route 111 Wilton (choose 1 of 3) |
 | TM29 | goodDmg | — Unplaced |
 | TM30 | goodDmg | — Unplaced |
 | TM31 | strongDmg | Gym reward — Norman (badge 5) |
