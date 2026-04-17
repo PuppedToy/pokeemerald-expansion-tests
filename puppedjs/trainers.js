@@ -695,7 +695,7 @@ const genericTrainerTeamPostWinona = () => [
 ];
 
 const genericTrainerTeamPostMatt = () => [
-    { ...POKEDEF_MEGA },
+    { ...POKEDEF_UU_OU_MEGA },
     ...generatePokemonsWithDefinition(POKEDEF_OU, 2),
     ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
     ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
@@ -2564,7 +2564,7 @@ const trainersData = [
                 checkValidEvo: true,
             }),
             gymIsChangedType[2] ? {
-                ...POKEDEF_MEGA,
+                ...POKEDEF_UU_OU_MEGA,
                 type: [gymMainTypes[2]],
                 fallback: [
                     {
@@ -2997,18 +2997,6 @@ const trainersData = [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ]
     },
-    // Route 115
-    {
-        id: 'TRAINER_NOB_1',
-        class: 'Black Belt',
-        reward: [...choiceNobTMs],
-        level: 36,
-        bag: [...getSampleItemsFromArray(magmaChimneyBag(), 8), ...choiceNobTMs],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
-    },
     // Flannery Gym
     {
         id: 'TRAINER_FLANNERY_1',
@@ -3029,11 +3017,8 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
-                isMega: true,
-                contextualTier: [TIER_OU, TIER_UBERS],
+                ...POKEDEF_UU_OU_MEGA,
                 type: [gymMainTypes[3]],
-                checkValidEvo: true,
-                tryEvolve: true,
                 fallback: [
                     {
                         isMega: true,
@@ -3087,7 +3072,7 @@ const trainersData = [
     // Route 111
     {
         id: 'TRAINER_CELIA',
-        class: 'Picnicker',
+        class: 'Lass',
         reward: ['SPECIES_TRAPINCH'],
         level: 39,
         bag: getSampleItemsFromArray(flanneryBag(), 13),
@@ -3099,6 +3084,30 @@ const trainersData = [
             },
             ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
         ],
+    },
+    {
+        id: 'TRAINER_BRANDEN',
+        class: 'Expert M',
+        reward: ['Strong Pokemon'],
+        level: 39,
+        bag: getSampleItemsFromArray(flanneryBag(), 13),
+        team: genericTrainerTeamPostNorman(),
+    },
+    {
+        id: 'TRAINER_BEAU',
+        class: 'Camper',
+        reward: ['Master Ball'],
+        level: 39,
+        bag: getSampleItemsFromArray(flanneryBag(), 13),
+        team: genericTrainerTeamPostFlannery(),
+    },
+    {
+        id: 'TRAINER_DREW',
+        class: 'Guitarist',
+        reward: route111BerryItems,
+        level: 39,
+        bag: [...route111BerryItems, ...getSampleItemsFromArray(flanneryBag(), 10)],
+        team: genericTrainerTeamPostFlannery(),
     },
     {
         id: 'TRAINER_CELINA',
@@ -3116,27 +3125,19 @@ const trainersData = [
         ],
     },
     {
-        id: 'TRAINER_BEAU',
-        class: 'Camper',
-        reward: ['Master Ball'],
+        id: 'TRAINER_DUSTY_1',
+        class: 'Ruin Maniac',
+        reward: route111BallCItems,
         level: 39,
-        bag: getSampleItemsFromArray(flanneryBag(), 13),
+        bag: [...route111BallCItems, ...getSampleItemsFromArray(flanneryBag(), 10)],
         team: genericTrainerTeamPostFlannery(),
     },
     {
-        id: 'TRAINER_BRANDEN',
-        class: 'Camper',
-        reward: ['Strong Pokemon'],
+        id: 'TRAINER_NOB_1',
+        class: 'Black Belt',
+        reward: [...choiceNobTMs],
         level: 39,
-        bag: getSampleItemsFromArray(flanneryBag(), 13),
-        team: genericTrainerTeamPostFlannery(),
-    },
-    {
-        id: 'TRAINER_DREW',
-        class: 'Camper',
-        reward: route111BerryItems,
-        level: 39,
-        bag: [...route111BerryItems, ...getSampleItemsFromArray(flanneryBag(), 10)],
+        bag: [...choiceNobTMs, ...getSampleItemsFromArray(flanneryBag(), 10)],
         team: genericTrainerTeamPostFlannery(),
     },
     {
@@ -3149,7 +3150,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BRYAN',
-        class: 'Ruin Maniac',
+        class: 'Youngster',
         reward: choiceBryanTMs,
         level: 39,
         bag: [...choiceBryanTMs, ...getSampleItemsFromArray(flanneryBag(), 10)],
@@ -3157,18 +3158,10 @@ const trainersData = [
     },
     {
         id: 'TRAINER_HEIDI',
-        class: 'Picnicker',
+        class: 'Battle Girl',
         reward: [...choiceHeidiItems],
         level: 39,
         bag: [...choiceHeidiItems, ...getSampleItemsFromArray(flanneryBag(), 10)],
-        team: genericTrainerTeamPostFlannery(),
-    },
-    {
-        id: 'TRAINER_DUSTY_1',
-        class: 'Ruin Maniac',
-        reward: route111BallCItems,
-        level: 39,
-        bag: [...route111BallCItems, ...getSampleItemsFromArray(flanneryBag(), 10)],
         team: genericTrainerTeamPostFlannery(),
     },
     {
@@ -3227,11 +3220,8 @@ const trainersData = [
                 type: [gymMainTypes[4]],
             },
             {
-                isMega: true,
-                contextualTier: [TIER_OU, TIER_UBERS],
+                ...POKEDEF_UU_OU_MEGA,
                 type: [gymMainTypes[4]],
-                checkValidEvo: true,
-                tryEvolve: true,
                 fallback: [
                    {
                         isMega: true,
@@ -3621,11 +3611,8 @@ const trainersData = [
                 ]
             },
             gymIsChangedType[5] ? {
-                isMega: true,
-                contextualTier: [TIER_OU, TIER_UBERS],
+                ...POKEDEF_UU_OU_MEGA,
                 type: [gymMainTypes[5]],
-                checkValidEvo: true,
-                tryEvolve: true,
                 fallback: [
                    {
                         isMega: true,

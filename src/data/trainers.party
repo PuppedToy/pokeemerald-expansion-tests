@@ -3630,10 +3630,10 @@ IVs: 4 HP / 4 Atk / 4 Def / 4 SpA / 4 SpD / 4 Spe
 
 === TRAINER_DREW ===
 Name: DREW
-Class: Camper
-Pic: Camper
+Class: Guitarist
+Pic: Guitarist
 Gender: Male
-Music: Male
+Music: Intense
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -8251,10 +8251,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_HEIDI ===
 Name: HEIDI
-Class: Picnicker
-Pic: Picnicker
+Class: Battle Girl
+Pic: Battle Girl
 Gender: Female
-Music: Girl
+Music: Intense
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -13336,10 +13336,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_CELIA ===
 Name: CELIA
-Class: Picnicker
-Pic: Picnicker
+Class: Lass
+Pic: Lass
 Gender: Female
-Music: Girl
+Music: Female
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -13353,10 +13353,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_BRYAN ===
 Name: BRYAN
-Class: Ruin Maniac
-Pic: Ruin Maniac
+Class: Youngster
+Pic: Youngster
 Gender: Male
-Music: Hiker
+Music: Male
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -13370,10 +13370,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_BRANDEN ===
 Name: BRANDEN
-Class: Camper
-Pic: Camper
+Class: Expert
+Pic: Expert M
 Gender: Male
-Music: Male
+Music: Intense
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
