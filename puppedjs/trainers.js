@@ -2794,18 +2794,6 @@ const trainersData = [
             },
         ],
     },
-    // Route 112
-    {
-        id: 'TRAINER_SHAYLA',
-        class: 'Aroma Lady',
-        reward: [...route111ShaylaBallItems],
-        level: 36,
-        bag: [...route111ShaylaBallItems, ...getSampleItemsFromArray(flanneryBag(), 7)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
-    },
     // Jagged Pass
     {
         id: 'TRAINER_ERIC',
@@ -2860,6 +2848,17 @@ const trainersData = [
         ],
     },
     // Route 111
+    {
+        id: 'TRAINER_SHAYLA',
+        class: 'Aroma Lady',
+        reward: [...route111ShaylaBallItems],
+        level: 36,
+        bag: [...route111ShaylaBallItems, ...getSampleItemsFromArray(flanneryBag(), 7)],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+        ],
+    },
     {
         id: 'TRAINER_WILTON_1',
         class: 'Cooltrainer M',
