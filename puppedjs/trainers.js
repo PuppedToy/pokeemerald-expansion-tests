@@ -2848,29 +2848,6 @@ const trainersData = [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },
-    // Route 111
-    {
-        id: 'TRAINER_SHAYLA',
-        class: 'Aroma Lady',
-        reward: [...route111ShaylaBallItems],
-        level: 36,
-        bag: [...route111ShaylaBallItems, ...getSampleItemsFromArray(flanneryBag(), 7)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
-    },
-    {
-        id: 'TRAINER_WILTON_1',
-        class: 'Cooltrainer M',
-        reward: [...choiceWiltonTMs],
-        level: 36,
-        bag: [...choiceWiltonTMs, ...getSampleItemsFromArray(flanneryBag(), 7)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
-    },
     // Route 113
     {
         id: 'TRAINER_LAWRENCE',
@@ -2909,51 +2886,7 @@ const trainersData = [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },
-    {
-        id: 'TRAINER_LUNG',
-        class: 'Ninja Boy',
-        reward: ['Random Defensive Mint'],
-        level: 36,
-        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ]
-    },
-    {
-        id: 'TRAINER_WYATT',
-        class: 'Pokemaniac',
-        reward: ['Random Offensive Mint'],
-        level: 36,
-        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ]
-    },
-    {
-        id: 'TRAINER_MADELINE_1',
-        class: 'Parasol Lady',
-        reward: ['Ability Capsule'],
-        level: 36,
-        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ]
-    },
     // Route 114
-    {
-        id: 'TRAINER_CHARLOTTE',
-        class: 'Picnicker',
-        reward: [...choiceCharlotteTMs],
-        level: 36,
-        bag: [...choiceCharlotteTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 7)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
-    },
     {
         id: 'TRAINER_STEVE_1',
         class: 'Pokemaniac',
@@ -2991,6 +2924,39 @@ const trainersData = [
         ],
     },
     {
+        id: 'TRAINER_WILTON_1',
+        class: 'Cooltrainer M',
+        reward: [...choiceWiltonTMs],
+        level: 36,
+        bag: [...choiceWiltonTMs, ...getSampleItemsFromArray(flanneryBag(), 7)],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+        ],
+    },
+    {
+        id: 'TRAINER_SHAYLA',
+        class: 'Aroma Lady',
+        reward: [...route111ShaylaBallItems],
+        level: 36,
+        bag: [...route111ShaylaBallItems, ...getSampleItemsFromArray(flanneryBag(), 7)],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+        ],
+    },
+    {
+        id: 'TRAINER_CHARLOTTE',
+        class: 'Picnicker',
+        reward: [...choiceCharlotteTMs],
+        level: 36,
+        bag: [...choiceCharlotteTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 7)],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+        ],
+    },
+    {
         id: 'TRAINER_NOLAN',
         class: 'Fisherman',
         reward: ['Wide Lens', 'Zoom Lens'],
@@ -3004,6 +2970,17 @@ const trainersData = [
     {
         id: 'TRAINER_ANGELINA',
         class: 'Picnicker',
+        reward: ['Shell Bell'],
+        level: 36,
+        bag: ['Shell Bell', ...getSampleItemsFromArray(magmaChimneyBag(), 10)],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+        ]
+    },
+    {
+        id: 'TRAINER_WYATT',
+        class: 'Pokemaniac',
         reward: ['Shell Bell'],
         level: 36,
         bag: ['Shell Bell', ...getSampleItemsFromArray(magmaChimneyBag(), 10)],

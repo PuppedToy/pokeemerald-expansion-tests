@@ -417,7 +417,7 @@ function updateScripts(a) {
         pickedItems:   a.route111BallC,
         handlerPrefix: 'Route111_EventScript_PickBallC',
     }));
-    replaceAnchored('data/maps/Route111/scripts.inc', 'ROUTE111_SHAYLA_BALL', genPickerSection({
+    replaceAnchored('data/maps/Route114/scripts.inc', 'ROUTE114_SHAYLA_BALL', genPickerSection({
         pickerLabel:   'Route111_EventScript_ShaylaBall',
         multiConst:    'MULTI_ROUTE112_PICK_BALL',
         flag:          'FLAG_ITEM_ROUTE_112_WHITE',
