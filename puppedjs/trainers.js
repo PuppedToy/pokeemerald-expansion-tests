@@ -1049,7 +1049,8 @@ function getTrainersData(itemAssignments, tmList) {
     const route110ExtenderBallItems  = itemAssignments.route110ExtenderBall;
     const route117GemItems       = itemAssignments.route117Gems;
     const route117PlateItems     = itemAssignments.route117Plates;
-    const route111HpUpGoodItem   = itemAssignments.route111HpUpGoodItem;
+    const route111HpUpGoodItem    = itemAssignments.route111HpUpGoodItem;
+    const route111BallAItems      = itemAssignments.route111BallA;
     const route111ShaylaBallItems = itemAssignments.route111ShaylaBall;
     const route118ItemItems      = itemAssignments.route118Items;
     const route120ItemItems      = itemAssignments.route120Items;
@@ -2629,9 +2630,9 @@ const trainersData = [
     {
         id: 'TRAINER_IRENE',
         class: 'Picnicker',
-        reward: ['Shed Shell'],
+        reward: [...route111BallAItems],
         level: 32,
-        bag: [...getSampleItemsFromArray(wattsonBag(), 9), 'Shed Shell'],
+        bag: [...route111BallAItems, ...getSampleItemsFromArray(wattsonBag(), 7)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 2),

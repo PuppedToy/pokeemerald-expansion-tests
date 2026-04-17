@@ -584,6 +584,7 @@ function randomizeItems() {
         route111Items:     dn('route111Items'),
         route111Berries:   dn('route111Berries'),
 
+        route111BallA:      dn('route111BallA'),
         route111ShaylaBall: dn('route111ShaylaBall'),
         route116Ball:      dn('route116Ball'),
         route114BallC:     dn('route114BallC'),
