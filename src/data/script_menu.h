@@ -846,7 +846,7 @@ static const struct MenuAction MultichoiceList_Route117PickPlate[] =
     {COMPOUND_STRING("Plate Placeholder")},
 };
 
-static const struct MenuAction MultichoiceList_Route114PickTM[] =
+static const struct MenuAction MultichoiceList_Route114PickCharlotte[] =
 {
     {COMPOUND_STRING("TM Placeholder")},
     {COMPOUND_STRING("TM Placeholder")},
@@ -988,11 +988,11 @@ static const struct MenuAction MultichoiceList_Route111PickBallA[] =
     {COMPOUND_STRING("Mental Herb")},
 };
 
-static const struct MenuAction MultichoiceList_Route111PickBallB[] =
+static const struct MenuAction MultichoiceList_Route111PickWilton[] =
 {
-    {COMPOUND_STRING("Wide Lens")},
-    {COMPOUND_STRING("Binding Band")},
-    {COMPOUND_STRING("Maranga Berry")},
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
 };
 
 static const struct MenuAction MultichoiceList_Route111PickBallC[] =
@@ -1023,25 +1023,19 @@ static const struct MenuAction MultichoiceList_Route112PickTMDmg[] =
     {COMPOUND_STRING("TM Placeholder")},
 };
 
-static const struct MenuAction MultichoiceList_Route114PickBallA[] =
+static const struct MenuAction MultichoiceList_Route114PickNolan[] =
 {
-    {COMPOUND_STRING("Float Stone")},
-    {COMPOUND_STRING("Iron Ball")},
-    {COMPOUND_STRING("Throat Spray")},
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
 };
 
-static const struct MenuAction MultichoiceList_Route114PickBallB[] =
+static const struct MenuAction MultichoiceList_Route114PickAngelina[] =
 {
-    {COMPOUND_STRING("Red Card")},
-    {COMPOUND_STRING("Jaboca Berry")},
-    {COMPOUND_STRING("Rocky Helmet")},
-};
-
-static const struct MenuAction MultichoiceList_Route114PickBallC[] =
-{
-    {COMPOUND_STRING("Air Balloon")},
-    {COMPOUND_STRING("Terrain Extender")},
-    {COMPOUND_STRING("Big Root")},
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
 };
 
 static const struct MenuAction MultichoiceList_Route115PickBall[] =
@@ -1295,7 +1289,7 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_ROUTE117_PICK_SCREEN]       = MULTICHOICE(MultichoiceList_Route117PickScreen),
     [MULTI_ROUTE117_PICK_BERRY]        = MULTICHOICE(MultichoiceList_Route117PickBerry),
     [MULTI_ROUTE117_PICK_GEM]          = MULTICHOICE(MultichoiceList_Route117PickGem),
-    [MULTI_ROUTE114_PICK_TM]           = MULTICHOICE(MultichoiceList_Route114PickTM),
+    [MULTI_ROUTE114_PICK_CHARLOTTE]    = MULTICHOICE(MultichoiceList_Route114PickCharlotte),
     [MULTI_ROUTE115_PICK_TM]           = MULTICHOICE(MultichoiceList_Route115PickTM),
     [MULTI_ROUTE111_PICK_BERRY]        = MULTICHOICE(MultichoiceList_Route111PickBerry),
     [MULTI_ROUTE111_PICK_ITEM]         = MULTICHOICE(MultichoiceList_Route111PickItem),
@@ -1315,14 +1309,13 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_ROUTE110_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route110PickBall),
     [MULTI_ROUTE110_PICK_EXTENDER]     = MULTICHOICE(MultichoiceList_Route110PickExtender),
     [MULTI_ROUTE111_PICK_BALL_A]       = MULTICHOICE(MultichoiceList_Route111PickBallA),
-    [MULTI_ROUTE111_PICK_BALL_B]       = MULTICHOICE(MultichoiceList_Route111PickBallB),
+    [MULTI_ROUTE111_PICK_WILTON]       = MULTICHOICE(MultichoiceList_Route111PickWilton),
     [MULTI_ROUTE111_PICK_BALL_C]       = MULTICHOICE(MultichoiceList_Route111PickBallC),
     [MULTI_ROUTE112_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route112PickBall),
     [MULTI_ROUTE112_PICK_TM_STATUS]    = MULTICHOICE(MultichoiceList_Route112PickTMStatus),
     [MULTI_ROUTE112_PICK_TM_DMG]       = MULTICHOICE(MultichoiceList_Route112PickTMDmg),
-    [MULTI_ROUTE114_PICK_BALL_A]       = MULTICHOICE(MultichoiceList_Route114PickBallA),
-    [MULTI_ROUTE114_PICK_BALL_B]       = MULTICHOICE(MultichoiceList_Route114PickBallB),
-    [MULTI_ROUTE114_PICK_BALL_C]       = MULTICHOICE(MultichoiceList_Route114PickBallC),
+    [MULTI_ROUTE114_PICK_NOLAN]        = MULTICHOICE(MultichoiceList_Route114PickNolan),
+    [MULTI_ROUTE114_PICK_ANGELINA]     = MULTICHOICE(MultichoiceList_Route114PickAngelina),
     [MULTI_ROUTE115_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route115PickBall),
     [MULTI_ROUTE116_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route116PickBall),
     [MULTI_ROUTE116_PICK_GEM]          = MULTICHOICE(MultichoiceList_Route116PickGem),

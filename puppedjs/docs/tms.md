@@ -48,9 +48,9 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM23 | goodDmg | Pick — Route 112 Brice (choose 1 of 3) |
 | TM24 | goodDmg | Pick — Route 112 Brice (choose 1 of 3) |
 | TM25 | goodDmg | Pick — Route 112 Brice (choose 1 of 3) |
-| TM26 | goodDmg | Pick — Route 111 Wilton (choose 1 of 3) |
-| TM27 | goodDmg | Pick — Route 111 Wilton (choose 1 of 3) |
-| TM28 | goodDmg | Pick — Route 111 Wilton (choose 1 of 3) |
+| TM26 | goodDmg | Pick — Route 114 Wilton (choose 1 of 3) |
+| TM27 | goodDmg | Pick — Route 114 Wilton (choose 1 of 3) |
+| TM28 | goodDmg | Pick — Route 114 Wilton (choose 1 of 3) |
 | TM29 | goodDmg | — Unplaced |
 | TM30 | goodDmg | — Unplaced |
 | TM31 | strongDmg | Gym reward — Norman (badge 5) |
@@ -79,10 +79,10 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM54 | godlikeDmg | — Unplaced |
 | TM55 | godlikeDmg | — Unplaced |
 | TM56 | godlikeDmg | — Unplaced |
-| TM57 | niche | — Unplaced |
-| TM58 | niche | — Unplaced |
-| TM59 | niche | Item — Meteor Falls 1F 1R |
-| TM60 | niche | Item — Route 115 |
+| TM57 | niche | Pick — Route 114 Angelina (choose 1 of 4) |
+| TM58 | niche | Pick — Route 114 Angelina (choose 1 of 4) |
+| TM59 | niche | Pick — Route 114 Angelina (choose 1 of 4) |
+| TM60 | niche | Pick — Route 114 Angelina (choose 1 of 4) |
 | TM61 | avgStatus | Gym reward — Brawly (badge 2) |
 | TM62 | avgStatus | Pick — Route 110 (choose 1 of 3) |
 | TM63 | avgStatus | Pick — Route 110 (choose 1 of 3) |
@@ -110,9 +110,9 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM85 | goodStatus | Pick — Route 112 Carol (choose 1 of 3) |
 | TM86 | goodStatus | Pick — Route 112 Carol (choose 1 of 3) |
 | TM87 | goodStatus | Pick — Route 112 Carol (choose 1 of 3) |
-| TM88 | goodStatus | Item — Fiery Path |
-| TM89 | goodStatus | — Unplaced |
-| TM90 | goodStatus | — Unplaced |
+| TM88 | goodStatus | Pick — Route 114 Nolan (choose 1 of 3) |
+| TM89 | goodStatus | Pick — Route 114 Nolan (choose 1 of 3) |
+| TM90 | goodStatus | Pick — Route 114 Nolan (choose 1 of 3) |
 | TM91 | godlikeStatus | Gym reward — Tate & Liza (badge 7) |
 | TM92 | godlikeStatus | — Unplaced |
 | TM93 | godlikeStatus | — Unplaced |

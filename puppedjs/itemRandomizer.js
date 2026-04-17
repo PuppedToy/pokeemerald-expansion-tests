@@ -142,9 +142,7 @@ function buildAssignments() {
         route111BallA: pool(3),
         route111BallC: pool(3),
         route111ShaylaBall: pool(3),
-        route114BallA: pool(3),
-        route114BallB: pool(3),
-        route114BallC: pool(3),
+        route114WyattGoodItem: good(1)[0],
         route115Ball:  pool(3),
         route116Ball:  pool(3),
         route124BallA: pool(3),
@@ -418,32 +416,16 @@ function updateScripts(a) {
         handlerPrefix: 'Route111_EventScript_PickBallC',
     }));
     replaceAnchored('data/maps/Route114/scripts.inc', 'ROUTE114_SHAYLA_BALL', genPickerSection({
-        pickerLabel:   'Route111_EventScript_ShaylaBall',
+        pickerLabel:   'Route111_EventScript_PickShayla',
         multiConst:    'MULTI_ROUTE112_PICK_BALL',
         flag:          'FLAG_ITEM_ROUTE_112_WHITE',
         pickedItems:   a.route111ShaylaBall,
-        handlerPrefix: 'Route111_EventScript_ShaylaBall',
+        handlerPrefix: 'Route111_EventScript_PickShayla',
     }));
-    replaceAnchored('data/maps/Route114/scripts.inc', 'ROUTE114_BALL_A', genPickerSection({
-        pickerLabel:   'Route114_EventScript_PickBallA',
-        multiConst:    'MULTI_ROUTE114_PICK_BALL_A',
-        flag:          'FLAG_ITEM_ROUTE_114_WIDE',
-        pickedItems:   a.route114BallA,
-        handlerPrefix: 'Route114_EventScript_PickBallA',
-    }));
-    replaceAnchored('data/maps/Route114/scripts.inc', 'ROUTE114_BALL_B', genPickerSection({
-        pickerLabel:   'Route114_EventScript_PickBallB',
-        multiConst:    'MULTI_ROUTE114_PICK_BALL_B',
-        flag:          'FLAG_ITEM_ROUTE_114_ZOOM',
-        pickedItems:   a.route114BallB,
-        handlerPrefix: 'Route114_EventScript_PickBallB',
-    }));
-    replaceAnchored('data/maps/Route114/scripts.inc', 'ROUTE114_BALL_C', genPickerSection({
-        pickerLabel:   'Route114_EventScript_PickBallC',
-        multiConst:    'MULTI_ROUTE114_PICK_BALL_C',
+    replaceAnchored('data/maps/Route114/scripts.inc', 'ROUTE114_WYATT_GOOD', genSingleItemScript({
+        scriptLabel:   'Route114_EventScript_PickWyatt',
+        item:          a.route114WyattGoodItem,
         flag:          'FLAG_ITEM_ROUTE_114_ENERGY_POWDER',
-        pickedItems:   a.route114BallC,
-        handlerPrefix: 'Route114_EventScript_PickBallC',
     }));
     replaceAnchored('data/maps/Route115/scripts.inc', 'ROUTE115_BALL', genPickerSection({
         pickerLabel:   'Route115_EventScript_PickBall',
@@ -541,9 +523,6 @@ function updateScriptMenu(a) {
     src = replaceMenuList(src, 'MultichoiceList_Route111PickBallA', a.route111BallA.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route111PickBallC', a.route111BallC.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route112PickBall',  a.route111ShaylaBall.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route114PickBallA', a.route114BallA.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route114PickBallB', a.route114BallB.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route114PickBallC', a.route114BallC.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route115PickBall',  a.route115Ball.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route116PickBall',  a.route116Ball.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route124PickBallA', a.route124BallA.map(itemDisplayName));
@@ -587,7 +566,7 @@ function randomizeItems() {
         route111BallA:      dn('route111BallA'),
         route111ShaylaBall: dn('route111ShaylaBall'),
         route116Ball:      dn('route116Ball'),
-        route114BallC:     dn('route114BallC'),
+        route114WyattGoodItem: itemDisplayName(a.route114WyattGoodItem),
         route117Berries:   dn('route117Berries'),
         route117Gems:      dn('route117Gems'),
         route118Items:     dn('route118Items'),

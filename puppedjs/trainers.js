@@ -1051,7 +1051,8 @@ function getTrainersData(itemAssignments, tmList) {
     const route117PlateItems     = itemAssignments.route117Plates;
     const route111HpUpGoodItem    = itemAssignments.route111HpUpGoodItem;
     const route111BallAItems      = itemAssignments.route111BallA;
-    const route111ShaylaBallItems = itemAssignments.route111ShaylaBall;
+    const route111ShaylaBallItems  = itemAssignments.route111ShaylaBall;
+    const route114WyattGoodItem    = itemAssignments.route114WyattGoodItem;
     const route118ItemItems      = itemAssignments.route118Items;
     const route120ItemItems      = itemAssignments.route120Items;
     const route121BerryItems     = itemAssignments.route121Berries;
@@ -1083,6 +1084,8 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceRickyTMs       = [tmItem(16), tmItem(17), tmItem(18)];
     const choiceGraceTMs       = [tmItem(36), tmItem(37), tmItem(38)];
     const choiceWiltonTMs      = [tmItem(26), tmItem(27), tmItem(28)];
+    const choiceNolanTMs       = [tmItem(88), tmItem(89), tmItem(90)];
+    const choiceAngelinaTMs    = [tmItem(57), tmItem(58), tmItem(59), tmItem(60)];
     const choiceHeidiItems     = [route111ItemItems[0], route111ItemItems[1], 'Custap Berry'];
     const choiceWadeBerries    = route118ItemItems;
     const choiceClarissaItems  = route120ItemItems;
@@ -2958,10 +2961,10 @@ const trainersData = [
     },
     {
         id: 'TRAINER_NOLAN',
-        class: 'Fisherman',
-        reward: ['Wide Lens', 'Zoom Lens'],
+        class: 'Youngster',
+        reward: [...choiceNolanTMs],
         level: 36,
-        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
+        bag: [...choiceNolanTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 7)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
@@ -2969,10 +2972,10 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ANGELINA',
-        class: 'Picnicker',
-        reward: ['Shell Bell'],
+        class: 'Battle Girl',
+        reward: [...choiceAngelinaTMs],
         level: 36,
-        bag: ['Shell Bell', ...getSampleItemsFromArray(magmaChimneyBag(), 10)],
+        bag: [...choiceAngelinaTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 6)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
@@ -2981,9 +2984,9 @@ const trainersData = [
     {
         id: 'TRAINER_WYATT',
         class: 'Pokemaniac',
-        reward: ['Shell Bell'],
+        reward: [route114WyattGoodItem],
         level: 36,
-        bag: ['Shell Bell', ...getSampleItemsFromArray(magmaChimneyBag(), 10)],
+        bag: [route114WyattGoodItem, ...getSampleItemsFromArray(magmaChimneyBag(), 8)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),

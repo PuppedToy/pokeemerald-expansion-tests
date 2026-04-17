@@ -78,7 +78,7 @@
       "flag": "0"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
       "x": 27,
       "y": 42,
       "elevation": 3,
@@ -117,7 +117,7 @@
       "flag": "FLAG_DEFEATED_SHELLY_WEATHER_INST"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "graphics_id": "OBJ_EVENT_GFX_GIRL_3",
       "x": 29,
       "y": 42,
       "elevation": 5,
@@ -139,7 +139,7 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "Route114_EventScript_PickTM",
+      "script": "Route114_EventScript_PickCharlotte",
       "flag": "FLAG_ITEM_ROUTE_114_PROTEIN"
     },
     {
@@ -151,8 +151,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_WIDE_LENS",
-      "script": "Route114_EventScript_PickBallA",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route114_EventScript_PickNolan",
       "flag": "FLAG_ITEM_ROUTE_114_WIDE"
     },
     {
@@ -164,8 +164,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_SHELL_BELL",
-      "script": "Route114_EventScript_PickBallB",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route114_EventScript_PickAngelina",
       "flag": "FLAG_ITEM_ROUTE_114_ZOOM"
     },
     {
@@ -177,8 +177,8 @@
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_ZOOM_LENS",
-      "script": "Route114_EventScript_PickBallC",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route114_EventScript_PickWyatt",
       "flag": "FLAG_ITEM_ROUTE_114_ENERGY_POWDER"
     },
     {
@@ -216,8 +216,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_POWER_HERB",
-      "script": "Route111_EventScript_PickBallB",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route111_EventScript_PickWilton",
       "flag": "FLAG_ITEM_ROUTE_111_POWERHERB"
     },
     {
@@ -231,7 +231,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route111_EventScript_Shayla",
-      "flag": "0"
+      "flag": "FLAG_DEFEATED_SHELLY_WEATHER_INST"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -243,7 +243,7 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "Route111_EventScript_ShaylaBall",
+      "script": "Route111_EventScript_PickShayla",
       "flag": "FLAG_ITEM_ROUTE_112_WHITE"
     }
   ],
@@ -284,8 +284,8 @@
       "dest_warp_id": "0"
     },
     {
-      "x": 4,
-      "y": 33,
+      "x": 5,
+      "y": 35,
       "elevation": 0,
       "dest_map": "MAP_ROUTE111",
       "dest_warp_id": "5"

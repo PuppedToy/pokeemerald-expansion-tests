@@ -202,73 +202,73 @@ Route111_EventScript_Shayla::
 	msgbox Route112_Text_ShaylaPostBattle, MSGBOX_AUTOCLOSE
 	end
 
-Route111_EventScript_PickBallB::
-	multichoice 0, 0, MULTI_ROUTE111_PICK_BALL_B, FALSE
+Route111_EventScript_PickWilton::
+	multichoice 0, 0, MULTI_ROUTE111_PICK_WILTON, FALSE
 	switch VAR_RESULT
-	case 0, Route111_EventScript_PickBallB1
-	case 1, Route111_EventScript_PickBallB2
-	case 2, Route111_EventScript_PickBallB3
+	case 0, Route111_EventScript_PickWilton1
+	case 1, Route111_EventScript_PickWilton2
+	case 2, Route111_EventScript_PickWilton3
 	end
 
-Route111_EventScript_PickBallB1::
+Route111_EventScript_PickWilton1::
 	finditem ITEM_TM26
 	setflag FLAG_ITEM_ROUTE_111_POWERHERB
 	end
 
-Route111_EventScript_PickBallB2::
+Route111_EventScript_PickWilton2::
 	finditem ITEM_TM27
 	setflag FLAG_ITEM_ROUTE_111_POWERHERB
 	end
 
-Route111_EventScript_PickBallB3::
+Route111_EventScript_PickWilton3::
 	finditem ITEM_TM28
 	setflag FLAG_ITEM_ROUTE_111_POWERHERB
 	end
 
 @ === RAND_ROUTE114_SHAYLA_BALL_START ===
-Route111_EventScript_ShaylaBall::
+Route111_EventScript_PickShayla::
 	multichoice 0, 0, MULTI_ROUTE112_PICK_BALL, FALSE
 	switch VAR_RESULT
-	case 0, Route111_EventScript_ShaylaBall1
-	case 1, Route111_EventScript_ShaylaBall2
-	case 2, Route111_EventScript_ShaylaBall3
+	case 0, Route111_EventScript_PickShayla1
+	case 1, Route111_EventScript_PickShayla2
+	case 2, Route111_EventScript_PickShayla3
 	end
 
-Route111_EventScript_ShaylaBall1::
+Route111_EventScript_PickShayla1::
 	finditem ITEM_WIDE_LENS
 	setflag FLAG_ITEM_ROUTE_112_WHITE
 	end
 
-Route111_EventScript_ShaylaBall2::
+Route111_EventScript_PickShayla2::
 	finditem ITEM_BINDING_BAND
 	setflag FLAG_ITEM_ROUTE_112_WHITE
 	end
 
-Route111_EventScript_ShaylaBall3::
+Route111_EventScript_PickShayla3::
 	finditem ITEM_MARANGA_BERRY
 	setflag FLAG_ITEM_ROUTE_112_WHITE
 	end
 @ === RAND_ROUTE114_SHAYLA_BALL_END ===
 
-Route114_EventScript_PickTM::
-	multichoice 0, 0, MULTI_ROUTE114_PICK_TM, FALSE
+Route114_EventScript_PickCharlotte::
+	multichoice 0, 0, MULTI_ROUTE114_PICK_CHARLOTTE, FALSE
 	switch VAR_RESULT
-	case 0, Route114_EventScript_PickTorment
-	case 1, Route114_EventScript_PickSnatch
-	case 2, Route114_EventScript_PickSkillSwap
+	case 0, Route114_EventScript_PickCharlotte1
+	case 1, Route114_EventScript_PickCharlotte2
+	case 2, Route114_EventScript_PickCharlotte3
 	end
 
-Route114_EventScript_PickTorment::
+Route114_EventScript_PickCharlotte1::
 	finditem ITEM_TM13
 	setflag FLAG_ITEM_ROUTE_114_PROTEIN
 	end
 
-Route114_EventScript_PickSnatch::
+Route114_EventScript_PickCharlotte2::
 	finditem ITEM_TM15
 	setflag FLAG_ITEM_ROUTE_114_PROTEIN
 	end
 
-Route114_EventScript_PickSkillSwap::
+Route114_EventScript_PickCharlotte3::
 	finditem ITEM_TM14
 	setflag FLAG_ITEM_ROUTE_114_PROTEIN
 	end
@@ -336,77 +336,61 @@ Route114_Text_ReceiveGoodRod:
 	.string "Use the good rod to find better\n"
 	.string "encounters at ponds and seas.$"
 
-@ === RAND_ROUTE114_BALL_A_START ===
-Route114_EventScript_PickBallA::
-	multichoice 0, 0, MULTI_ROUTE114_PICK_BALL_A, FALSE
+Route114_EventScript_PickNolan::
+	multichoice 0, 0, MULTI_ROUTE114_PICK_NOLAN, FALSE
 	switch VAR_RESULT
-	case 0, Route114_EventScript_PickBallA1
-	case 1, Route114_EventScript_PickBallA2
-	case 2, Route114_EventScript_PickBallA3
+	case 0, Route114_EventScript_PickNolan1
+	case 1, Route114_EventScript_PickNolan2
+	case 2, Route114_EventScript_PickNolan3
 	end
 
-Route114_EventScript_PickBallA1::
-	finditem ITEM_FLOAT_STONE
+Route114_EventScript_PickNolan1::
+	finditem ITEM_TM88
 	setflag FLAG_ITEM_ROUTE_114_WIDE
 	end
 
-Route114_EventScript_PickBallA2::
-	finditem ITEM_IRON_BALL
+Route114_EventScript_PickNolan2::
+	finditem ITEM_TM89
 	setflag FLAG_ITEM_ROUTE_114_WIDE
 	end
 
-Route114_EventScript_PickBallA3::
-	finditem ITEM_THROAT_SPRAY
+Route114_EventScript_PickNolan3::
+	finditem ITEM_TM90
 	setflag FLAG_ITEM_ROUTE_114_WIDE
 	end
-@ === RAND_ROUTE114_BALL_A_END ===
 
-@ === RAND_ROUTE114_BALL_B_START ===
-Route114_EventScript_PickBallB::
-	multichoice 0, 0, MULTI_ROUTE114_PICK_BALL_B, FALSE
+Route114_EventScript_PickAngelina::
+	multichoice 0, 0, MULTI_ROUTE114_PICK_ANGELINA, FALSE
 	switch VAR_RESULT
-	case 0, Route114_EventScript_PickBallB1
-	case 1, Route114_EventScript_PickBallB2
-	case 2, Route114_EventScript_PickBallB3
+	case 0, Route114_EventScript_PickAngelina1
+	case 1, Route114_EventScript_PickAngelina2
+	case 2, Route114_EventScript_PickAngelina3
+	case 3, Route114_EventScript_PickAngelina4
 	end
 
-Route114_EventScript_PickBallB1::
-	finditem ITEM_RED_CARD
+Route114_EventScript_PickAngelina1::
+	finditem ITEM_TM57
 	setflag FLAG_ITEM_ROUTE_114_ZOOM
 	end
 
-Route114_EventScript_PickBallB2::
-	finditem ITEM_JABOCA_BERRY
+Route114_EventScript_PickAngelina2::
+	finditem ITEM_TM58
 	setflag FLAG_ITEM_ROUTE_114_ZOOM
 	end
 
-Route114_EventScript_PickBallB3::
-	finditem ITEM_ROCKY_HELMET
+Route114_EventScript_PickAngelina3::
+	finditem ITEM_TM59
 	setflag FLAG_ITEM_ROUTE_114_ZOOM
 	end
-@ === RAND_ROUTE114_BALL_B_END ===
 
-@ === RAND_ROUTE114_BALL_C_START ===
-Route114_EventScript_PickBallC::
-	multichoice 0, 0, MULTI_ROUTE114_PICK_BALL_C, FALSE
-	switch VAR_RESULT
-	case 0, Route114_EventScript_PickBallC1
-	case 1, Route114_EventScript_PickBallC2
-	case 2, Route114_EventScript_PickBallC3
+Route114_EventScript_PickAngelina4::
+	finditem ITEM_TM60
+	setflag FLAG_ITEM_ROUTE_114_ZOOM
 	end
 
-Route114_EventScript_PickBallC1::
-	finditem ITEM_AIR_BALLOON
+@ === RAND_ROUTE114_WYATT_GOOD_START ===
+Route114_EventScript_PickWyatt::
+	finditem ITEM_SITRUS_BERRY
 	setflag FLAG_ITEM_ROUTE_114_ENERGY_POWDER
 	end
-
-Route114_EventScript_PickBallC2::
-	finditem ITEM_TERRAIN_EXTENDER
-	setflag FLAG_ITEM_ROUTE_114_ENERGY_POWDER
-	end
-
-Route114_EventScript_PickBallC3::
-	finditem ITEM_BIG_ROOT
-	setflag FLAG_ITEM_ROUTE_114_ENERGY_POWDER
-	end
-@ === RAND_ROUTE114_BALL_C_END ===
+@ === RAND_ROUTE114_WYATT_GOOD_END ===
