@@ -844,3 +844,33 @@ Route111_EventScript_PickTM3::
 	finditem ITEM_TM81
 	setflag FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH
 	end
+
+@ === RAND_ROUTE111_GEM_START ===
+Route111_EventScript_GemGoodItem::
+	finditem ITEM_SITRUS_BERRY
+	setflag FLAG_ITEM_ROUTE_111_GEM
+	end
+@ === RAND_ROUTE111_GEM_END ===
+
+Route111_EventScript_PickFocus::
+	multichoice 0, 0, MULTI_ROUTE111_PICK_FOCUS, FALSE
+	switch VAR_RESULT
+	case 0, Route111_EventScript_PickFocus1
+	case 1, Route111_EventScript_PickFocus2
+	case 2, Route111_EventScript_PickFocus3
+	end
+
+Route111_EventScript_PickFocus1::
+	finditem ITEM_TM12
+	setflag FLAG_ITEM_ROUTE_111_FOCUS
+	end
+
+Route111_EventScript_PickFocus2::
+	finditem ITEM_TM29
+	setflag FLAG_ITEM_ROUTE_111_FOCUS
+	end
+
+Route111_EventScript_PickFocus3::
+	finditem ITEM_TM30
+	setflag FLAG_ITEM_ROUTE_111_FOCUS
+	end

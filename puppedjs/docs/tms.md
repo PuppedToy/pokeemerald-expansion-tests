@@ -34,7 +34,7 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM09 | avgDmg | Pick — Route 104 (choose 1 of 3, item ball near Petalburg Woods) |
 | TM10 | avgDmg | Pick — Route 104 (choose 1 of 3, item ball near Petalburg Woods) |
 | TM11 | goodDmg | Gym reward — Wattson (badge 3) |
-| TM12 | goodDmg | — Unplaced |
+| TM12 | goodDmg | Pick — Route 111 Bryan (choose 1 of 3) |
 | TM13 | goodDmg | Pick — Route 114 Charlotte (choose 1 of 3) |
 | TM14 | goodDmg | Pick — Route 114 Charlotte (choose 1 of 3) |
 | TM15 | goodDmg | Pick — Route 114 Charlotte (choose 1 of 3) |
@@ -51,8 +51,8 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM26 | goodDmg | Pick — Route 114 Wilton (choose 1 of 3) |
 | TM27 | goodDmg | Pick — Route 114 Wilton (choose 1 of 3) |
 | TM28 | goodDmg | Pick — Route 114 Wilton (choose 1 of 3) |
-| TM29 | goodDmg | — Unplaced |
-| TM30 | goodDmg | — Unplaced |
+| TM29 | goodDmg | Pick — Route 111 Bryan (choose 1 of 3) |
+| TM30 | goodDmg | Pick — Route 111 Bryan (choose 1 of 3) |
 | TM31 | strongDmg | Gym reward — Norman (badge 5) |
 | TM32 | strongDmg | Gym reward — Winona (badge 6) |
 | TM33 | strongDmg | Pick — Route 118 (choose 1 of 3) |

@@ -1023,6 +1023,13 @@ static const struct MenuAction MultichoiceList_Route112PickTMDmg[] =
     {COMPOUND_STRING("TM Placeholder")},
 };
 
+static const struct MenuAction MultichoiceList_Route111PickFocus[] =
+{
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
+};
+
 static const struct MenuAction MultichoiceList_Route114PickNolan[] =
 {
     {COMPOUND_STRING("TM Placeholder")},
@@ -1314,6 +1321,7 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_ROUTE112_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route112PickBall),
     [MULTI_ROUTE112_PICK_TM_STATUS]    = MULTICHOICE(MultichoiceList_Route112PickTMStatus),
     [MULTI_ROUTE112_PICK_TM_DMG]       = MULTICHOICE(MultichoiceList_Route112PickTMDmg),
+    [MULTI_ROUTE111_PICK_FOCUS]        = MULTICHOICE(MultichoiceList_Route111PickFocus),
     [MULTI_ROUTE114_PICK_NOLAN]        = MULTICHOICE(MultichoiceList_Route114PickNolan),
     [MULTI_ROUTE114_PICK_ANGELINA]     = MULTICHOICE(MultichoiceList_Route114PickAngelina),
     [MULTI_ROUTE115_PICK_BALL]         = MULTICHOICE(MultichoiceList_Route115PickBall),

@@ -1050,7 +1050,9 @@ function getTrainersData(itemAssignments, tmList) {
     const route117GemItems       = itemAssignments.route117Gems;
     const route117PlateItems     = itemAssignments.route117Plates;
     const route111HpUpGoodItem    = itemAssignments.route111HpUpGoodItem;
+    const route111GemGoodItem     = itemAssignments.route111GemGoodItem;
     const route111BallAItems      = itemAssignments.route111BallA;
+    const route111BallCItems      = itemAssignments.route111BallC;
     const route111ShaylaBallItems  = itemAssignments.route111ShaylaBall;
     const route114WyattGoodItem    = itemAssignments.route114WyattGoodItem;
     const route118ItemItems      = itemAssignments.route118Items;
@@ -1086,6 +1088,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceWiltonTMs      = [tmItem(26), tmItem(27), tmItem(28)];
     const choiceNolanTMs       = [tmItem(88), tmItem(89), tmItem(90)];
     const choiceAngelinaTMs    = [tmItem(57), tmItem(58), tmItem(59), tmItem(60)];
+    const choiceBryanTMs       = [tmItem(12), tmItem(29), tmItem(30)];
     const choiceHeidiItems     = [route111ItemItems[0], route111ItemItems[1], 'Custap Berry'];
     const choiceWadeBerries    = route118ItemItems;
     const choiceClarissaItems  = route120ItemItems;
@@ -1188,9 +1191,11 @@ const flanneryBag = () => [
 
 const normanBag = () => [
     ...flanneryBag(),
-    sample(['Yache Berry', 'Chilan Berry', 'Coba Berry']),
+    sample(route111BerryItems),
     sample([...choiceHeidiItems]),
-    'Safety Goggles',
+    sample(route111BallCItems),
+    route111GemGoodItem,
+    sample(choiceBryanTMs),
     tmItem(31),   // Norman's gym TM
     'TM_SURF',    // HM, not randomized
 ];
@@ -3129,25 +3134,25 @@ const trainersData = [
     {
         id: 'TRAINER_DREW',
         class: 'Camper',
-        reward: ['Yache Berry', 'Coba Berry', 'Chilan Berry'],
+        reward: route111BerryItems,
         level: 39,
-        bag: ['Yache Berry', 'Coba Berry', ...getSampleItemsFromArray(flanneryBag(), 10)],
+        bag: [...route111BerryItems, ...getSampleItemsFromArray(flanneryBag(), 10)],
         team: genericTrainerTeamPostFlannery(),
     },
     {
         id: 'TRAINER_BECKY',
         class: 'Picnicker',
-        reward: ['Random Defensive Mint'],
+        reward: [route111GemGoodItem],
         level: 39,
-        bag: getSampleItemsFromArray(flanneryBag(), 13),
+        bag: [route111GemGoodItem, ...getSampleItemsFromArray(flanneryBag(), 12)],
         team: genericTrainerTeamPostFlannery(),
     },
     {
         id: 'TRAINER_BRYAN',
         class: 'Ruin Maniac',
-        reward: ['Ability Patch'],
+        reward: choiceBryanTMs,
         level: 39,
-        bag: getSampleItemsFromArray(flanneryBag(), 13),
+        bag: [...choiceBryanTMs, ...getSampleItemsFromArray(flanneryBag(), 10)],
         team: genericTrainerTeamPostFlannery(),
     },
     {
@@ -3161,9 +3166,9 @@ const trainersData = [
     {
         id: 'TRAINER_DUSTY_1',
         class: 'Ruin Maniac',
-        reward: ['Safety Goggles'],
+        reward: route111BallCItems,
         level: 39,
-        bag: ['Safety Goggles', ...getSampleItemsFromArray(flanneryBag(), 12)],
+        bag: [...route111BallCItems, ...getSampleItemsFromArray(flanneryBag(), 10)],
         team: genericTrainerTeamPostFlannery(),
     },
     {

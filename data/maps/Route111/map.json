@@ -292,7 +292,7 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route111_EventScript_Celina",
-      "flag": "FLAG_BADGE04_GET"
+      "flag": "FLAG_BADGE06_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MAN_5",
@@ -461,8 +461,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_WAVE_MAIL",
-      "script": "Common_EventScript_FindItem",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route111_EventScript_GemGoodItem",
       "flag": "FLAG_ITEM_ROUTE_111_GEM"
     },
     {
@@ -474,8 +474,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_ABILITY_PATCH",
-      "script": "Common_EventScript_FindItem",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route111_EventScript_PickFocus",
       "flag": "FLAG_ITEM_ROUTE_111_FOCUS"
     },
     {
@@ -487,14 +487,14 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_SAFETY_GOGGLES",
+      "trainer_sight_or_berry_tree_id": "0",
       "script": "Route111_EventScript_PickBallC",
       "flag": "FLAG_ITEM_ROUTE_111_ADRENALINE"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
-      "x": 25,
-      "y": 54,
+      "x": 30,
+      "y": 48,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
       "movement_range_x": 0,
@@ -502,12 +502,12 @@
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route111_EventScript_Nob",
-      "flag": "FLAG_DEFEATED_SHELLY_WEATHER_INST"
+      "flag": "FLAG_BADGE06_GET"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 26,
-      "y": 54,
+      "x": 31,
+      "y": 47,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "movement_range_x": 0,

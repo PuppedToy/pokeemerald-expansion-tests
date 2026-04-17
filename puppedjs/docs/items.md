@@ -26,7 +26,7 @@ Shuffled once per run. Each "good item" location in the world gets one item draw
 
 **Pool contents (10 items):** Black Sludge, Life Orb, Assault Vest, Weakness Policy, Air Balloon, Loaded Dice, Sitrus Berry, Shell Bell, Rocky Helmet, Booster Energy
 
-**Consumed: 7 of 10** — 3 slots remain for future locations.
+**Consumed: 8 of 10** — 2 slots remain for future locations.
 
 | Location | Flag | Trainer that propagates it |
 |----------|------|---------------------------|
@@ -37,6 +37,7 @@ Shuffled once per run. Each "good item" location in the world gets one item draw
 | Route 117 item ball (near Maria) | `FLAG_ITEM_ROUTE_117_EARTHQUAKE` | Maria (`TRAINER_MARIA_1`) bag/reward |
 | Route 116 item ball (near Devan) | `FLAG_ITEM_ROUTE_116_X_SPECIAL` | Devan (`TRAINER_DEVAN`) — also in `rusturfGruntBag` and all bags that build on it |
 | Route 111 item ball (near Travis) | `FLAG_ITEM_ROUTE_111_HP_UP` | Travis (`TRAINER_TRAVIS`) bag/reward |
+| Route 111 item ball (near Becky) | `FLAG_ITEM_ROUTE_111_GEM` | Becky (`TRAINER_BECKY`) bag/reward; also in `normanBag` and above |
 
 > **Adding a new goodItemPool location:** see `pick-list-howto.md` for the general pattern. For single items, use `genSingleItemScript` in `itemRandomizer.js` with a `RAND_*` anchor in the map's `scripts.inc`. Wire the returned display name into `trainers.js` via `itemAssignments.yourNewKey`.
 
@@ -58,7 +59,7 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 | Route 110 (EXTENDER) | `FLAG_ITEM_ROUTE_110_EXTENDER` | `route110ExtenderBallItems` → Kaleb (`TRAINER_KALEB`) bag/reward |
 | Route 111 A | `FLAG_ITEM_ROUTE_111_ELIXIR` | Route 111 area bags |
 | Route 111 B | `FLAG_ITEM_ROUTE_111_POWERHERB` | Route 111 area bags |
-| Route 111 C | `FLAG_ITEM_ROUTE_111_ADRENALINE` | Route 111 area bags |
+| Route 111 C | `FLAG_ITEM_ROUTE_111_ADRENALINE` | `route111BallCItems` → Dusty (`TRAINER_DUSTY_1`) bag/reward; `normanBag` and above |
 | Route 112 | `FLAG_ITEM_ROUTE_112_WHITE` | Route 112 area bags |
 | Route 114 A | `FLAG_ITEM_ROUTE_114_WIDE` | Route 114 area bags |
 | Route 114 B | `FLAG_ITEM_ROUTE_114_ZOOM` | Route 114 area bags |
@@ -118,7 +119,7 @@ Chilan (Normal), Occa (Fire), Passho (Water), Wacan (Electric), Rindo (Grass), Y
 |----------|------|-------------|
 | Route 104 | `FLAG_ITEM_ROUTE_104_X_ACCURACY` | `choice104Berry` → bags from Roxanne onward |
 | Route 116 | `FLAG_ITEM_ROUTE_116_POTION` | `choice116Berry` → Karen (`TRAINER_KAREN_1`) bag/reward |
-| Route 111 | `FLAG_ITEM_ROUTE_111_CHILAN` | `choiceMelinaBerries` → bags from Wattson onward |
+| Route 111 | `FLAG_ITEM_ROUTE_111_CHILAN` | `route111BerryItems` → Drew (`TRAINER_DREW`) bag/reward; `normanBag` and above |
 | Route 117 | `FLAG_ITEM_ROUTE_117_WACAN` | bags from Norman onward |
 | Route 121 | `FLAG_ITEM_ROUTE_121_PICK_BERRY` | `choiceCristinBerries` → bags from Tate & Liza onward |
 
@@ -154,7 +155,7 @@ Bag functions in `trainers.js` are cumulative — each gym adds its items on top
 | `stevenBag` | + TM19 |
 | `wattsonBag` | + barrier TMs, Melina berries, gem pick, Light Clay, Assault Vest, TM11 |
 | `flanneryBag` | + Nob/Claude TMs, TM78, Strength HM, White/Power Herb, Shell Bell |
-| `normanBag` | + Heidi items, Safety Goggles, TM31, Surf HM |
+| `normanBag` | + Drew berries, Heidi items, Dusty ball, Becky good item, Bryan TM pick, TM31, Surf HM |
 | `winonaBag` | + Clarissa items, TM32 |
 | `tateAndLizaBag` | + choice items, Grace TMs, TM91 |
 | `juanBag` | + Prestly items, TM51, Waterfall HM |
