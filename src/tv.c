@@ -1025,44 +1025,11 @@ u8 GabbyAndTyGetLastBattleTrivia(void)
     return 0;
 }
 
-// See gabby_and_ty.inc for details
+// Gabby and Ty NPCs have been removed from the game — this function is dead code.
 void GetGabbyAndTyLocalIds(void)
 {
-    switch (GabbyAndTyGetBattleNum())
-    {
-    case 1:
-        gSpecialVar_0x8004 = LOCALID_ROUTE111_GABBY_1;
-        gSpecialVar_0x8005 = LOCALID_ROUTE111_TY_1;
-        break;
-    case 2:
-        gSpecialVar_0x8004 = LOCALID_ROUTE118_GABBY_1;
-        gSpecialVar_0x8005 = LOCALID_ROUTE118_TY_1;
-        break;
-    case 3:
-        gSpecialVar_0x8004 = LOCALID_ROUTE120_GABBY_1;
-        gSpecialVar_0x8005 = LOCALID_ROUTE120_TY_1;
-        break;
-    case 4:
-        gSpecialVar_0x8004 = LOCALID_ROUTE111_GABBY_2;
-        gSpecialVar_0x8005 = LOCALID_ROUTE111_TY_2;
-        break;
-    case 5:
-        gSpecialVar_0x8004 = LOCALID_ROUTE118_GABBY_2;
-        gSpecialVar_0x8005 = LOCALID_ROUTE118_TY_2;
-        break;
-    case 6:
-        gSpecialVar_0x8004 = LOCALID_ROUTE120_GABBY_2;
-        gSpecialVar_0x8005 = LOCALID_ROUTE120_TY_2;
-        break;
-    case 7:
-        gSpecialVar_0x8004 = LOCALID_ROUTE111_GABBY_3;
-        gSpecialVar_0x8005 = LOCALID_ROUTE111_TY_3;
-        break;
-    case 8:
-        gSpecialVar_0x8004 = LOCALID_ROUTE118_GABBY_3;
-        gSpecialVar_0x8005 = LOCALID_ROUTE118_TY_3;
-        break;
-    }
+    gSpecialVar_0x8004 = 0;
+    gSpecialVar_0x8005 = 0;
 }
 
 void InterviewAfter(void)
