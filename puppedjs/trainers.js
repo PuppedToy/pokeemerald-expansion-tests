@@ -1074,7 +1074,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceMelinaBerries  = route117BerryItems;
     const choiceAishaGems      = route117GemItems;
     const choiceNobTMs         = [tmItem(80), tmItem(79), tmItem(81)];
-    const choiceClaudeTMs      = [tmItem(12), tmItem(13), tmItem(15), tmItem(14)];
+    const choiceCharlotteTMs   = [tmItem(13), tmItem(15), tmItem(14)];
     const choiceChesterTMs     = [tmItem(34), tmItem(33), tmItem(35)];
     const choiceDeandreTMs     = [tmItem(20), tmItem(21), tmItem(22)];
     const choiceCarolTMs       = [tmItem(85), tmItem(86), tmItem(87)];
@@ -1175,7 +1175,7 @@ const magmaChimneyBag = () => [
 const flanneryBag = () => [
     ...magmaChimneyBag(),
     sample(choiceNobTMs),
-    sample([...choiceClaudeTMs]),
+    sample([...choiceCharlotteTMs]),
     tmItem(78),   // Flannery's gym TM
     'TM_STRENGTH',  // HM, not randomized
     'White Herb',
@@ -2946,21 +2946,11 @@ const trainersData = [
     {
         id: 'TRAINER_CHARLOTTE',
         class: 'Picnicker',
-        reward: ['SPECIES_ALTARIA', 'SPECIES_SPOINK'],
+        reward: [...choiceCharlotteTMs],
         level: 36,
-        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
+        bag: [...choiceCharlotteTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 7)],
         team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_ALTARIA'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SPOINK'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
         ],
     },
@@ -2982,13 +2972,23 @@ const trainersData = [
     {
         id: 'TRAINER_CLAUDE',
         class: 'Fisherman',
-        reward: [...choiceClaudeTMs],
+        reward: ['SPECIES_ALTARIA', 'SPECIES_SPOINK'],
         level: 36,
-        bag: [...choiceClaudeTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 7)],
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_ALTARIA'],
+                tryEvolve: true,
+            },
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SPOINK'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ]
+        ],
     },
     {
         id: 'TRAINER_NOLAN',

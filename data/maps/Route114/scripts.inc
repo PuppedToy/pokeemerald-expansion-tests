@@ -179,15 +179,9 @@ Route114_EventScript_Kai::
 Route114_EventScript_PickTM::
 	multichoice 0, 0, MULTI_ROUTE114_PICK_TM, FALSE
 	switch VAR_RESULT
-	case 0, Route114_EventScript_PickTaunt
-	case 1, Route114_EventScript_PickTorment
-	case 2, Route114_EventScript_PickSnatch
-	case 3, Route114_EventScript_PickSkillSwap
-	end
-
-Route114_EventScript_PickTaunt::
-	finditem ITEM_TM12
-	setflag FLAG_ITEM_ROUTE_114_PROTEIN
+	case 0, Route114_EventScript_PickTorment
+	case 1, Route114_EventScript_PickSnatch
+	case 2, Route114_EventScript_PickSkillSwap
 	end
 
 Route114_EventScript_PickTorment::

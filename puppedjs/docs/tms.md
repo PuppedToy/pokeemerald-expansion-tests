@@ -34,10 +34,10 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM09 | avgDmg | Pick — Route 104 (choose 1 of 3, item ball near Petalburg Woods) |
 | TM10 | avgDmg | Pick — Route 104 (choose 1 of 3, item ball near Petalburg Woods) |
 | TM11 | goodDmg | Gym reward — Wattson (badge 3) |
-| TM12 | goodDmg | Pick — Route 114 (choose 1 of 4) |
-| TM13 | goodDmg | Pick — Route 114 (choose 1 of 4) |
-| TM14 | goodDmg | Pick — Route 114 (choose 1 of 4) |
-| TM15 | goodDmg | Pick — Route 114 (choose 1 of 4) |
+| TM12 | goodDmg | — Unplaced |
+| TM13 | goodDmg | Pick — Route 114 Charlotte (choose 1 of 3) |
+| TM14 | goodDmg | Pick — Route 114 Charlotte (choose 1 of 3) |
+| TM15 | goodDmg | Pick — Route 114 Charlotte (choose 1 of 3) |
 | TM16 | goodDmg | Pick — Route 109 Ricky (choose 1 of 3) / Item — Route 109 |
 | TM17 | goodDmg | Pick — Route 109 Ricky (choose 1 of 3) |
 | TM18 | goodDmg | Pick — Route 109 Ricky (choose 1 of 3) |
@@ -63,8 +63,8 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM38 | strongDmg | Pick — Route 124 (choose 1 of 3) |
 | TM39 | strongDmg | — Unplaced |
 | TM40 | strongDmg | — Unplaced |
-| TM41 | strongDmg | Item — Abandoned Ship B1F |
-| TM42 | strongDmg | Item — Safari Zone NW |
+| TM41 | strongDmg | — Unplaced |
+| TM42 | strongDmg | — Unplaced |
 | TM43 | strongDmg | — Unplaced |
 | TM44 | strongDmg | — Unplaced |
 | TM45 | strongDmg | — Unplaced |

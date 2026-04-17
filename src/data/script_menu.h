@@ -848,10 +848,9 @@ static const struct MenuAction MultichoiceList_Route117PickPlate[] =
 
 static const struct MenuAction MultichoiceList_Route114PickTM[] =
 {
-    {COMPOUND_STRING("TM Zen Headbutt")},
-    {COMPOUND_STRING("TM Future Sight")},
-    {COMPOUND_STRING("TM Ice Spinner")},
-    {COMPOUND_STRING("TM Mystical Fire")},
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
+    {COMPOUND_STRING("TM Placeholder")},
 };
 
 static const struct MenuAction MultichoiceList_Route115PickTM[] =
