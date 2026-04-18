@@ -7137,10 +7137,10 @@ IVs: 18 HP / 18 Atk / 18 Def / 18 SpA / 18 SpD / 18 Spe
 
 === TRAINER_COLIN ===
 Name: COLIN
-Class: Bird Keeper
-Pic: Bird Keeper
+Class: Expert
+Pic: Expert M
 Gender: Male
-Music: Cool
+Music: Intense
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -7713,8 +7713,8 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_CLARISSA ===
 Name: CLARISSA
-Class: Parasol Lady
-Pic: Parasol Lady
+Class: Aroma Lady
+Pic: Aroma Lady
 Gender: Female
 Music: Female
 Double Battle: No

@@ -61,7 +61,7 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "trainer_sight_or_berry_tree_id": "1",
-      "script": "Route115_EventScript_Hector",
+      "script": "Route119_EventScript_Taylor",
       "flag": "FLAG_DEFEATED_MAGMA_SPACE_CENTER"
     }
   ],
