@@ -60,6 +60,7 @@ const items = require('./items.js');
 const { savePokemonData } = require('./pokemonWriter.js');
 const { randomizeTMs } = require('./tmRandomizer.js');
 const { randomizeItems } = require('./itemRandomizer.js');
+const { buildRunTeachables, buildTmPoolFromFile } = require('./teachableExpander.js');
 const { writeEvoLevels } = require('./evoLevelWriter.js');
 
 const startersFile = path.resolve(__dirname, '..', 'src', 'starter_choose.c');
@@ -238,6 +239,14 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
     console.log('Randomizing TMs...');
     const tmList = await randomizeTMs();
+
+    // Rebuild teachables against the just-randomized TM pool so trainer bags and
+    // pokemon teachables are in sync. This overwrites the preliminary expansion
+    // done in index.js (which used the pre-randomization pool for rating purposes).
+    const randomizedTmPool = await buildTmPoolFromFile();
+    for (const poke of pokemonList) {
+        buildRunTeachables(poke, randomizedTmPool, moves);
+    }
 
     console.log('Randomizing items...');
     const itemAssignments = randomizeItems();
