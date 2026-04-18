@@ -128,7 +128,6 @@ SlateportCity_Pokemart_EnergyGuru:
 	.2byte ITEM_ULTRA_BALL
 	.2byte ITEM_QUICK_BALL
 	.2byte ITEM_TIMER_BALL
-	.2byte ITEM_MASTER_BALL
 	.2byte ITEM_LONELY_MINT
 	.2byte ITEM_NAUGHTY_MINT
 	.2byte ITEM_BRAVE_MINT
@@ -560,7 +559,6 @@ SlateportCity_Pokemart_PowerTMs:
 	.2byte ITEM_ULTRA_BALL
 	.2byte ITEM_QUICK_BALL
 	.2byte ITEM_TIMER_BALL
-	.2byte ITEM_MASTER_BALL
 	.2byte ITEM_LONELY_MINT
 	.2byte ITEM_NAUGHTY_MINT
 	.2byte ITEM_BRAVE_MINT

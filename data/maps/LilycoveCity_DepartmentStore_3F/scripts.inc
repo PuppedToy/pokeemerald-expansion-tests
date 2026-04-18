@@ -16,7 +16,6 @@ LilycoveCity_DepartmentStore_3F_Pokemart_Vitamins:
 	.2byte ITEM_ULTRA_BALL
 	.2byte ITEM_QUICK_BALL
 	.2byte ITEM_TIMER_BALL
-	.2byte ITEM_MASTER_BALL
 	.2byte ITEM_LONELY_MINT
 	.2byte ITEM_NAUGHTY_MINT
 	.2byte ITEM_BRAVE_MINT
@@ -79,7 +78,6 @@ LilycoveCity_DepartmentStore_3F_Pokemart_StatBoosters:
 	.2byte ITEM_ULTRA_BALL
 	.2byte ITEM_QUICK_BALL
 	.2byte ITEM_TIMER_BALL
-	.2byte ITEM_MASTER_BALL
 	.2byte ITEM_LONELY_MINT
 	.2byte ITEM_NAUGHTY_MINT
 	.2byte ITEM_BRAVE_MINT
