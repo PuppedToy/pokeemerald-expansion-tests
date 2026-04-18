@@ -156,4 +156,4 @@ Bag functions in `trainers.js` are cumulative — each gym adds its items on top
 | `winonaBag` | + Clarissa strongDmg TM pick, TM32 |
 | `tateAndLizaBag` | + Tammy TMs, Cristin berries, Walter strongDmg TM pick, Isabella choice items, Grace strongDmg TM pick, TM92 (Spencer), TM53 (Roland), TM91 |
 | `spaceCenterBag` | + Presley strongDmg TM pick, TM54 (Auron) |
-| `juanBag` | + TM51, Waterfall HM |
+| `juanBag` | + TM55 (Aidan), TM93 (Athena), Eject Button (route 127), TM51, Waterfall HM |

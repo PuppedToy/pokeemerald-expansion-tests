@@ -77,7 +77,7 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM52 | godlikeDmg | Item — Route 121 (item ball) |
 | TM53 | godlikeDmg | Item — Route 124 (item ball, Roland) |
 | TM54 | godlikeDmg | Item — Route 125 (item ball, Auron) |
-| TM55 | godlikeDmg | — Unplaced |
+| TM55 | godlikeDmg | Item — Route 127 (item ball, Aidan) |
 | TM56 | godlikeDmg | — Unplaced |
 | TM57 | niche | Pick — Route 114 Angelina (choose 1 of 4) |
 | TM58 | niche | Pick — Route 114 Angelina (choose 1 of 4) |
@@ -115,7 +115,7 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM90 | goodStatus | Pick — Route 114 Nolan (choose 1 of 3) |
 | TM91 | godlikeStatus | Gym reward — Tate & Liza (badge 7) |
 | TM92 | godlikeStatus | Item — Route 124 (item ball, Spencer) |
-| TM93 | godlikeStatus | — Unplaced |
+| TM93 | godlikeStatus | Item — Route 127 (item ball, Athena) |
 | TM94 | godlikeStatus | — Unplaced |
 | TM95 | godlikeStatus | — Unplaced |
 

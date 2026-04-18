@@ -50,9 +50,19 @@ Route127_EventScript_Aidan::
 	msgbox Route127_Text_AidanPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route127_EventScript_AidanGodlikeTM::
+	finditem ITEM_TM55
+	setflag FLAG_ITEM_ROUTE_127_ZINC
+	end
+
 Route127_EventScript_Athena::
 	trainerbattle_single TRAINER_ATHENA, Route127_Text_AthenaIntro, Route127_Text_AthenaDefeat
 	msgbox Route127_Text_AthenaPostBattle, MSGBOX_AUTOCLOSE
+	end
+
+Route127_EventScript_AthenaGodlikeTM::
+	finditem ITEM_TM93
+	setflag FLAG_ITEM_ROUTE_127_CARBOS
 	end
 
 Route127_EventScript_Koji::

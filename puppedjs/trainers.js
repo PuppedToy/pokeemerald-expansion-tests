@@ -1248,6 +1248,9 @@ const spaceCenterBag = () => [
 
 const juanBag = () => [
     ...spaceCenterBag(),
+    tmItem(55),   // Aidan's route 127 TM
+    tmItem(93),   // Athena's route 127 TM
+    'Eject Button',   // route 127 static item
     tmItem(51),   // Juan's gym TM (randomized)
     'TM_WATERFALL',   // HM — not randomized
 ];
@@ -4599,21 +4602,6 @@ const trainersData = [
         ],
     },
     {
-        id: 'TRAINER_KOJI_1',
-        class: 'Black Belt',
-        reward: ['ITEM_MEGA_10'],
-        level: 61,
-        bag: getSampleItemsFromArray(spaceCenterBag(), 25),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_10',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
-        ],
-    },
-    {
         id: 'TRAINER_CAMDEN',
         class: 'Swimming Triathlete M',
         reward: ['SPECIES_RELICANTH'],
@@ -4633,27 +4621,42 @@ const trainersData = [
         ],
     },
     {
-        id: 'TRAINER_AIDAN',
-        class: 'Bird Keeper',
-        reward: ['Ability Patch'],
+        id: 'TRAINER_KOJI_1',
+        class: 'Black Belt',
+        reward: ['ITEM_MEGA_10'],
         level: 61,
         bag: getSampleItemsFromArray(spaceCenterBag(), 25),
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_10',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_OU, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
+        ],
+    },
+    {
+        id: 'TRAINER_AIDAN',
+        class: 'Bird Keeper',
+        reward: [tmItem(55)],
+        level: 61,
+        bag: [tmItem(55), ...getSampleItemsFromArray(spaceCenterBag(), 24)],
         team: genericTrainerTeamPostTateAndLiza(),
     },
     {
         id: 'TRAINER_ATHENA',
         class: 'Cooltrainer F',
-        reward: ['Ability Capsule'],
+        reward: [tmItem(93)],
         level: 61,
-        bag: getSampleItemsFromArray(spaceCenterBag(), 25),
+        bag: [tmItem(93), ...getSampleItemsFromArray(spaceCenterBag(), 24)],
         team: genericTrainerTeamPostTateAndLiza(),
     },
     {
         id: 'TRAINER_HENRY',
         class: 'Fisherman',
-        reward: ['Random Offensive Mint'],
+        reward: ['Eject Button'],
         level: 61,
-        bag: getSampleItemsFromArray(spaceCenterBag(), 25),
+        bag: ['Eject Button', ...getSampleItemsFromArray(spaceCenterBag(), 24)],
         team: genericTrainerTeamPostTateAndLiza(),
     },
     // Route 126
