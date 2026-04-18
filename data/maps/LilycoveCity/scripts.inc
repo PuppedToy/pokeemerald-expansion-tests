@@ -16,18 +16,6 @@ LilycoveCity_OnLoad:
 	end
 
 LilycoveCity_EventScript_SetWailmerMetatiles::
-	setmetatile 76, 12, METATILE_Lilycove_Wailmer0, TRUE
-	setmetatile 77, 12, METATILE_Lilycove_Wailmer1, TRUE
-	setmetatile 76, 13, METATILE_Lilycove_Wailmer2, TRUE
-	setmetatile 77, 13, METATILE_Lilycove_Wailmer3, TRUE
-	setmetatile 76, 14, METATILE_Lilycove_Wailmer0_Alt, TRUE
-	setmetatile 77, 14, METATILE_Lilycove_Wailmer1_Alt, TRUE
-	setmetatile 76, 15, METATILE_Lilycove_Wailmer2, TRUE
-	setmetatile 77, 15, METATILE_Lilycove_Wailmer3, TRUE
-	setmetatile 77, 16, METATILE_Lilycove_Wailmer0_Alt, TRUE
-	setmetatile 78, 16, METATILE_Lilycove_Wailmer1_Alt, TRUE
-	setmetatile 77, 17, METATILE_Lilycove_Wailmer2, TRUE
-	setmetatile 78, 17, METATILE_Lilycove_Wailmer3, TRUE
 	return
 
 LilycoveCity_EventScript_BerryGentleman::
@@ -186,6 +174,10 @@ LilycoveCity_EventScript_TrainerFanClubSign::
 
 LilycoveCity_EventScript_DepartmentStoreSign::
 	msgbox LilycoveCity_Text_DepartmentStoreSign, MSGBOX_SIGN
+	end
+
+LilycoveCity_EventScript_WallySign::
+	msgbox LilycoveCity_Text_WallySign, MSGBOX_SIGN
 	end
 
 LilycoveCity_EventScript_MoveDeletersHouseSign::
@@ -746,6 +738,10 @@ LilycoveCity_Text_DepartmentStoreSign:
 	.string "“A great place to find that something\n"
 	.string "you need!”$"
 
+LilycoveCity_Text_WallySign:
+	.string "You must defeat Wally\p"
+	.string "to progress.$"
+
 LilycoveCity_Text_MoveDeletersHouseSign:
 	.string "MOVE DELETER'S HOUSE\p"
 	.string "“Unwanted POKéMON moves deleted.”$"
@@ -804,8 +800,8 @@ LilycoveCity_Text_WallyDefeat:
 	.string "I lost again…$"
 
 LilycoveCity_Text_WallyHaveSuperRod:
-	.string "WALLY: I will train until\n"
-	.string "I can defeat you.\p"
+	.string "WALLY: You must go to\n"
+	.string "MAGMA HIDEOUT.\p"
 	.string "In the mean time, have this\n"
 	.string "SUPER ROD I no longer need.$"
 

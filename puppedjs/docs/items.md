@@ -50,7 +50,7 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 
 **Pool contents (54 unique items):** Eject Pack, Light Clay, stat-boosting berries (Apicot/Salac/Petaya/Liechi/Ganlon/Kee/Maranga/Jaboca/Rowap/Custap/Leppa/Lansat/Starf/Enigma/Figy), Throat Spray, Mirror Herb, Adrenaline Orb, Red Card, Expert Belt, Terrain Extender, Shed Shell, Power Herb, Safety Goggles, White Herb, Wide/Zoom Lens, Punching Glove, Big Root, Room Service, Iron Ball, Heavy-Duty Boots, Absorb Bulb, Cell Battery, Luminous Moss, Snowball, Sticky Barb, Bright Powder, Quick Claw, Muscle Band, Wise Glasses, Metronome, Grip Claw, Float Stone, Binding Band, Protective Pads, Utility Umbrella, Clear Amulet, Covert Cloak, Focus Band, Mental Herb, Blunder Policy
 
-**Consumed: 52 draws from 54 items** — 2 items go unused per run.
+**Consumed: 46 draws from 54 items** — 8 items go unused per run.
 
 **Pick-3 ball locations** (player chooses 1 of 3 from this pool):
 
@@ -68,8 +68,6 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 | Route 114 C | `FLAG_ITEM_ROUTE_114_ENERGY_POWDER` | Route 114 area bags |
 | Route 115 | `FLAG_ITEM_ROUTE_115_GREAT_BALL` | Route 115 area bags |
 | Route 116 | `FLAG_ITEM_ROUTE_TM_BRICK_BREAK` | `route116Ball` |
-| Route 124 A | `FLAG_ITEM_ROUTE_124_YELLOW_SHARD` | Route 124 area bags |
-| Route 124 B | `FLAG_ITEM_ROUTE_124_IRON_BALL` | Route 124 area bags |
 | Route 125 | `FLAG_ITEM_ROUTE_116_KINGS_ROCK` | Route 125 area bags |
 
 **Mixed pick-3 locations** (some slots random from this pool, others fixed):
@@ -159,5 +157,5 @@ Bag functions in `trainers.js` are cumulative — each gym adds its items on top
 | `flanneryBag` | + Nob/Claude TMs, TM78, Strength HM, White/Power Herb, Shell Bell |
 | `normanBag` | + Drew berries, Heidi items, Dusty ball, Becky good item, Bryan TM pick, TM31, Surf HM |
 | `winonaBag` | + Clarissa strongDmg TM pick, TM32 |
-| `tateAndLizaBag` | + Tammy TMs, Cristin berries, Walter strongDmg TM pick, TM91 |
+| `tateAndLizaBag` | + Tammy TMs, Cristin berries, Walter strongDmg TM pick, Isabella choice items, Grace strongDmg TM pick, TM92 (Spencer), TM53 (Roland), TM91 |
 | `juanBag` | + Prestly items, TM51, Waterfall HM |

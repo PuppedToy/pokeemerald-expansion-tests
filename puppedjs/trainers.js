@@ -1236,6 +1236,8 @@ const tateAndLizaBag = () => [
     ...wallyBag2(),
     sample([...choiceIsabellaItem]),
     sample([...choiceGraceTMs]),
+    tmItem(92),   // Spencer's route 124 TM
+    tmItem(53),   // Roland's route 124 TM
     tmItem(91),   // Tate & Liza's gym TM
 ];
 
@@ -4075,7 +4077,7 @@ const trainersData = [
     // Route 124
     {
         id: 'TRAINER_CHAD',
-        class: 'Swimmer M',
+        class: 'Sailor',
         reward: ['SPECIES_WO_CHIEN'],
         level: 56,
         bag: getSampleItemsFromArray(wallyBag2(), 20),
@@ -4109,7 +4111,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ISABELLA',
-        class: 'Swimming Triathlete F',
+        class: 'Parasol Lady',
         reward: [...choiceIsabellaItem],
         level: 56,
         bag: [...choiceIsabellaItem, ...getSampleItemsFromArray(wallyBag2(), 17)],
@@ -4117,15 +4119,23 @@ const trainersData = [
     },
     {
         id: 'TRAINER_SPENCER',
-        class: 'Swimmer M',
-        reward: ['Room Service', 'Iron Ball'],
+        class: 'Fisherman',
+        reward: [tmItem(92)],
         level: 56,
-        bag: getSampleItemsFromArray(wallyBag2(), 18),
+        bag: [tmItem(92), ...getSampleItemsFromArray(wallyBag2(), 17)],
+        team: genericTrainerTeamPostMatt(),
+    },
+    {
+        id: 'TRAINER_ROLAND',
+        class: 'Expert M',
+        reward: [tmItem(53)],
+        level: 56,
+        bag: [tmItem(53), ...getSampleItemsFromArray(wallyBag2(), 17)],
         team: genericTrainerTeamPostMatt(),
     },
     {
         id: 'TRAINER_GRACE',
-        class: 'Swimmer F',
+        class: 'Expert F',
         reward: [...choiceGraceTMs],
         level: 56,
         bag: [...choiceGraceTMs, ...getSampleItemsFromArray(wallyBag2(), 17)],

@@ -147,8 +147,6 @@ function buildAssignments() {
         route114WyattGoodItem: good(1)[0],
         route115Ball:  pool(3),
         route116Ball:  pool(3),
-        route124BallA: pool(3),
-        route124BallB: pool(3),
         route125Ball:  pool(3),
     };
 }
@@ -453,20 +451,6 @@ function updateScripts(a) {
         pickedItems:   a.route116Ball,
         handlerPrefix: 'Route116_EventScript_PickBall',
     }));
-    replaceAnchored('data/maps/Route124/scripts.inc', 'ROUTE124_BALL_A', genPickerSection({
-        pickerLabel:   'Route124_EventScript_PickBallA',
-        multiConst:    'MULTI_ROUTE124_PICK_BALL_A',
-        flag:          'FLAG_ITEM_ROUTE_124_YELLOW_SHARD',
-        pickedItems:   a.route124BallA,
-        handlerPrefix: 'Route124_EventScript_PickBallA',
-    }));
-    replaceAnchored('data/maps/Route124/scripts.inc', 'ROUTE124_BALL_B', genPickerSection({
-        pickerLabel:   'Route124_EventScript_PickBallB',
-        multiConst:    'MULTI_ROUTE124_PICK_BALL_B',
-        flag:          'FLAG_ITEM_ROUTE_124_IRON_BALL',
-        pickedItems:   a.route124BallB,
-        handlerPrefix: 'Route124_EventScript_PickBallB',
-    }));
     replaceAnchored('data/maps/Route125/scripts.inc', 'ROUTE125_BALL', genPickerSection({
         pickerLabel:   'Route125_EventScript_PickBall',
         multiConst:    'MULTI_ROUTE125_PICK_BALL',
@@ -534,8 +518,6 @@ function updateScriptMenu(a) {
     src = replaceMenuList(src, 'MultichoiceList_Route112PickBall',  a.route111ShaylaBall.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route115PickBall',  a.route115Ball.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route116PickBall',  a.route116Ball.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route124PickBallA', a.route124BallA.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route124PickBallB', a.route124BallB.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route125PickBall',  a.route125Ball.map(itemDisplayName));
 
     fs.writeFileSync(SCRIPT_MENU_PATH, src);

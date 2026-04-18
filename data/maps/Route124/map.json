@@ -41,8 +41,8 @@
   ],
   "object_events": [
     {
-      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M",
-      "x": 33,
+      "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
+      "x": 41,
       "y": 25,
       "elevation": 1,
       "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
@@ -54,20 +54,20 @@
       "flag": "FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M",
-      "x": 8,
-      "y": 48,
+      "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
+      "x": 45,
+      "y": 25,
       "elevation": 1,
-      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_RIGHT",
-      "movement_range_x": 5,
-      "movement_range_y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "7",
+      "trainer_sight_or_berry_tree_id": "1",
       "script": "Route124_EventScript_Roland",
-      "flag": "0"
+      "flag": "FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F",
+      "graphics_id": "OBJ_EVENT_GFX_EXPERT_F",
       "x": 37,
       "y": 25,
       "elevation": 1,
@@ -80,7 +80,7 @@
       "flag": "FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M",
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
       "x": 20,
       "y": 30,
       "elevation": 1,
@@ -94,7 +94,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 28,
+      "x": 32,
       "y": 23,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
@@ -120,21 +120,21 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 32,
+      "x": 40,
       "y": 23,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_ROOM_SERVICE",
-      "script": "Route124_EventScript_PickBallA",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route124_EventScript_SpencerGodlikeTM",
       "flag": "FLAG_ITEM_ROUTE_124_YELLOW_SHARD"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_TUBER_F",
-      "x": 41,
-      "y": 24,
+      "x": 29,
+      "y": 25,
       "elevation": 1,
       "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
       "movement_range_x": 0,
@@ -158,8 +158,8 @@
       "flag": "0"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F",
-      "x": 29,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_5",
+      "x": 33,
       "y": 25,
       "elevation": 1,
       "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
@@ -172,20 +172,20 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 32,
-      "y": 22,
+      "x": 44,
+      "y": 23,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "movement_range_x": 1,
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_IRON_BALL",
-      "script": "Route124_EventScript_PickBallB",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route124_EventScript_RolandGodlikeTM",
       "flag": "FLAG_ITEM_ROUTE_124_IRON_BALL"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 40,
+      "x": 28,
       "y": 23,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",

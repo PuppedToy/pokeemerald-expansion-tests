@@ -144,8 +144,8 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_AQUA_MEMBER_M",
-      "x": 73,
-      "y": 15,
+      "x": 72,
+      "y": 16,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
       "movement_range_x": 0,
@@ -153,7 +153,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "LilycoveCity_EventScript_WailmerTrainerGrunt",
-      "flag": "FLAG_HIDE_LILYCOVE_CITY_AQUA_GRUNTS"
+      "flag": "FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -235,8 +235,8 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_WALLY",
-      "x": 27,
-      "y": 7,
+      "x": 31,
+      "y": 14,
       "elevation": 5,
       "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
       "movement_range_x": 1,
@@ -412,6 +412,13 @@
       "elevation": 0,
       "dest_map": "MAP_LILYCOVE_CITY_LILYCOVE_MUSEUM_1F",
       "dest_warp_id": "1"
+    },
+    {
+      "x": 29,
+      "y": 12,
+      "elevation": 1,
+      "dest_map": "MAP_JAGGED_PASS",
+      "dest_warp_id": "5"
     }
   ],
   "coord_events": [],
@@ -495,6 +502,14 @@
       "elevation": 0,
       "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
       "script": "LilycoveCity_EventScript_MoveDeletersHouseSign"
+    },
+    {
+      "type": "sign",
+      "x": 32,
+      "y": 14,
+      "elevation": 0,
+      "player_facing_dir": "BG_EVENT_PLAYER_FACING_ANY",
+      "script": "LilycoveCity_EventScript_WallySign"
     }
   ]
 }

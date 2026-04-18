@@ -2803,10 +2803,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_SPENCER ===
 Name: SPENCER
-Class: Swimmer M
-Pic: Swimmer M
+Class: Fisherman
+Pic: Fisherman
 Gender: Male
-Music: Swimmer
+Music: Hiker
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -3018,10 +3018,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_CHAD ===
 Name: CHAD
-Class: Swimmer M
-Pic: Swimmer M
+Class: Sailor
+Pic: Sailor
 Gender: Male
-Music: Swimmer
+Music: Male
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -7968,10 +7968,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_GRACE ===
 Name: GRACE
-Class: Swimmer F
-Pic: Swimmer F
+Class: Expert
+Pic: Expert F
 Gender: Female
-Music: Swimmer
+Music: Intense
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -10602,10 +10602,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_ISABELLA ===
 Name: ISABELLA
-Class: Triathlete
-Pic: Swimming Triathlete F
+Class: Parasol Lady
+Pic: Parasol Lady
 Gender: Female
-Music: Swimmer
+Music: Female
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
