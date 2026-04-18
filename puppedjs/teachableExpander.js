@@ -7,19 +7,48 @@ const HM_MOVES = new Set([
     'MOVE_FLASH', 'MOVE_ROCK_SMASH', 'MOVE_WATERFALL', 'MOVE_DIVE',
 ]);
 
-// Chance (in %) that a remaining TM is granted, decreasing with each TM already learned.
 const SAME_TYPE_TM_BASE_CHANCE = 100;
 const DIFFERENT_TYPE_TM_BASE_CHANCE = 35;
+// Chance for TMs whose type only appears in this pokemon's mega form, not the base form.
+const MEGA_TYPE_TM_BASE_CHANCE = 70;
 
-function buildRunTeachables(poke, tmPool, moves) {
-    if (!tmPool) return;  // --all-tms mode: leave teachables unchanged
+// Returns types present in any mega of this pokemon's family that are absent from this pokemon.
+// Only called for non-mega base forms (megas don't get their own mega-type rolls).
+function getMegaExtraTypes(poke, megaEvoTree, pokemonList) {
+    if (poke.evolutionData.isMega) return [];
+    const megaIds = megaEvoTree[poke.family] || [];
+    const extraTypes = new Set();
+    for (const megaId of megaIds) {
+        const megaPoke = pokemonList.find(p => p.id === megaId);
+        if (!megaPoke) continue;
+        for (const t of megaPoke.parsedTypes) {
+            if (!poke.parsedTypes.includes(t)) extraTypes.add(t);
+        }
+    }
+    return [...extraTypes];
+}
 
-    const officialTMs    = poke.teachables.filter(m => tmPool.has(m) && !HM_MOVES.has(m));
-    const hmMoves        = poke.teachables.filter(m => HM_MOVES.has(m));
-    const oldTeachables  = poke.teachables.filter(m => !tmPool.has(m) && !HM_MOVES.has(m));
+function buildRunTeachables(poke, tmPool, moves, preEvoPoke, megaEvoTree, pokemonList) {
+    if (!tmPool) return;
 
-    const officialSet   = new Set(officialTMs);
-    const remaining     = [...tmPool].filter(m => !officialSet.has(m) && !HM_MOVES.has(m));
+    const originalTeachables = poke.teachables;
+    const hmMoves = originalTeachables.filter(m => HM_MOVES.has(m));
+
+    let baseTeachables;
+    let evolutionNewTypes = [];
+
+    if (preEvoPoke) {
+        // Inherit the full non-HM teachable list from the pre-evolution exactly.
+        baseTeachables = preEvoPoke.teachables.filter(m => !HM_MOVES.has(m));
+        // Extra rolls only for types this stage gains that the pre-evo doesn't have.
+        evolutionNewTypes = poke.parsedTypes.filter(t => !preEvoPoke.parsedTypes.includes(t));
+    } else {
+        // Base form: start from official TMs present in this run's pool.
+        baseTeachables = originalTeachables.filter(m => tmPool.has(m) && !HM_MOVES.has(m));
+    }
+
+    const baseSet = new Set(baseTeachables);
+    const remaining = [...tmPool].filter(m => !baseSet.has(m) && !HM_MOVES.has(m));
 
     // Fisher-Yates shuffle
     for (let i = remaining.length - 1; i > 0; i--) {
@@ -27,25 +56,93 @@ function buildRunTeachables(poke, tmPool, moves) {
         [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
     }
 
-    const newTeachables = [];
-    let totalLearned = officialTMs.length;
+    // Types that only appear in this pokemon's mega form — rolled at reduced chance.
+    const megaExtraTypes = getMegaExtraTypes(poke, megaEvoTree, pokemonList);
 
-    for (const tm of remaining) {
-        const move = moves[tm];
-        if (!move) continue;
-        const isSameType = poke.parsedTypes.includes(move.type);
-        const chance = isSameType
-            ? Math.max(0, SAME_TYPE_TM_BASE_CHANCE - totalLearned) / 100
-            : Math.max(0, DIFFERENT_TYPE_TM_BASE_CHANCE - totalLearned) / 100;
-        if (chance > 0 && Math.random() < chance) {
-            newTeachables.push(tm);
-            totalLearned++;
+    const newTeachables = [];
+    let totalLearned = baseTeachables.length;
+
+    if (preEvoPoke) {
+        // Evolution: only roll for newly-gained types and mega-exclusive types.
+        for (const tm of remaining) {
+            const move = moves[tm];
+            if (!move) continue;
+            let chance = 0;
+            if (evolutionNewTypes.includes(move.type)) {
+                chance = Math.max(0, SAME_TYPE_TM_BASE_CHANCE - totalLearned) / 100;
+            } else if (megaExtraTypes.includes(move.type)) {
+                chance = Math.max(0, MEGA_TYPE_TM_BASE_CHANCE - totalLearned) / 100;
+            }
+            if (chance > 0 && Math.random() < chance) {
+                newTeachables.push(tm);
+                totalLearned++;
+            }
+        }
+    } else {
+        // Base form: standard same/different-type expansion plus mega-type rolls.
+        for (const tm of remaining) {
+            const move = moves[tm];
+            if (!move) continue;
+            let chance;
+            if (poke.parsedTypes.includes(move.type)) {
+                chance = Math.max(0, SAME_TYPE_TM_BASE_CHANCE - totalLearned) / 100;
+            } else if (megaExtraTypes.includes(move.type)) {
+                chance = Math.max(0, MEGA_TYPE_TM_BASE_CHANCE - totalLearned) / 100;
+            } else {
+                chance = Math.max(0, DIFFERENT_TYPE_TM_BASE_CHANCE - totalLearned) / 100;
+            }
+            if (chance > 0 && Math.random() < chance) {
+                newTeachables.push(tm);
+                totalLearned++;
+            }
         }
     }
 
-    poke.teachables    = [...officialTMs, ...newTeachables, ...hmMoves];
+    const finalSet = new Set([...baseTeachables, ...newTeachables]);
+    poke.teachables    = [...baseTeachables, ...newTeachables, ...hmMoves];
     poke.newTeachables = newTeachables;
-    poke.oldTeachables = oldTeachables;
+    poke.oldTeachables = originalTeachables.filter(m => !HM_MOVES.has(m) && !finalSet.has(m));
+}
+
+function expandAllTeachables(pokemonList, tmPool, moves) {
+    if (!tmPool) return;
+
+    // Build megaEvoTree: family → [SPECIES_X_MEGA, ...]
+    const megaEvoTree = {};
+    for (const poke of pokemonList) {
+        if (poke.evolutionData.isMega) {
+            if (!megaEvoTree[poke.family]) megaEvoTree[poke.family] = [];
+            megaEvoTree[poke.family].push(poke.id);
+        }
+    }
+
+    // Build preEvoMap: species ID → pre-evolution poke object
+    const preEvoMap = {};
+    for (const poke of pokemonList) {
+        if (poke.evolutions) {
+            for (const evo of poke.evolutions) {
+                if (evo && evo.pokemon) preEvoMap[evo.pokemon] = poke;
+            }
+        }
+        // Mega forms inherit from their base form.
+        if (poke.evolutionData.isMega && poke.evolutionData.megaBaseForm) {
+            const basePoke = pokemonList.find(p => p.id === poke.evolutionData.megaBaseForm);
+            if (basePoke) preEvoMap[poke.id] = basePoke;
+        }
+    }
+
+    // Process in topological order: always expand a pre-evo before its evolutions.
+    const processed = new Set();
+
+    function process(poke) {
+        if (processed.has(poke.id)) return;
+        const preEvo = preEvoMap[poke.id];
+        if (preEvo && !processed.has(preEvo.id)) process(preEvo);
+        buildRunTeachables(poke, tmPool, moves, preEvo || null, megaEvoTree, pokemonList);
+        processed.add(poke.id);
+    }
+
+    for (const poke of pokemonList) process(poke);
 }
 
 async function buildTmPoolFromFile() {
@@ -60,4 +157,4 @@ async function buildTmPoolFromFile() {
     return tmPool;
 }
 
-module.exports = { buildRunTeachables, buildTmPoolFromFile, HM_MOVES };
+module.exports = { buildRunTeachables, expandAllTeachables, buildTmPoolFromFile, HM_MOVES };

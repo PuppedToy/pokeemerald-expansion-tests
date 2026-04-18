@@ -28,7 +28,7 @@ const {
     MEGA_EVOS_PATH,
 } = require('./constants.js');
 const { balancePokemon } = require('./rebalancer.js');
-const { buildRunTeachables, buildTmPoolFromFile, HM_MOVES } = require('./teachableExpander.js');
+const { expandAllTeachables, buildTmPoolFromFile, HM_MOVES } = require('./teachableExpander.js');
 
 const evoIsLC = (evolutionType) => evolutionType === EVO_TYPE_LC_OF_3 || evolutionType === EVO_TYPE_LC_OF_2;
 const evoIsNFE = (evolutionType) => evoIsLC(evolutionType) || evolutionType === EVO_TYPE_NFE_OF_3;
@@ -717,11 +717,14 @@ async function exe() {
                 teachables,
                 evoTree: evoTree[poke.family],
             };
-            buildRunTeachables(fullPoke, tmPool, moves);
-            fullPoke.rating = ratePokemon(fullPoke, moves, abilities, tmPool);
             allPokes.push(fullPoke);
         });
     });
+
+    expandAllTeachables(allPokes, tmPool, moves);
+    for (const poke of allPokes) {
+        poke.rating = ratePokemon(poke, moves, abilities, tmPool);
+    }
 
     if (!noBalance) {
         const abilityKeys = Object.keys(abilities).map(key => key.replace('ABILITY_', ''));
