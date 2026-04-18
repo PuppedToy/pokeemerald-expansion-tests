@@ -21,6 +21,8 @@ function getMegaExtraTypes(poke, megaEvoTree, pokemonList) {
     for (const megaId of megaIds) {
         const megaPoke = pokemonList.find(p => p.id === megaId);
         if (!megaPoke) continue;
+        // Only the direct mega base gets these rolls, not earlier stages in the line.
+        if (megaPoke.evolutionData.megaBaseForm !== poke.id) continue;
         for (const t of megaPoke.parsedTypes) {
             if (!poke.parsedTypes.includes(t)) extraTypes.add(t);
         }
