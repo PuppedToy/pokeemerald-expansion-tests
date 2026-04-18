@@ -1067,8 +1067,8 @@ const stevenBag = () => [
 const slateportGruntsBag = () => [
     ...stevenBag(),
     route109GoodItem,
-    ...sample([...choiceRickyTMs]),
-    ...sample([...choiceHueyTMs]),
+    sample([...choiceRickyTMs]),
+    sample([...choiceHueyTMs]),
     // 'Damp Rock',
     // 'Heat Rock',
     // 'Smooth Rock',
