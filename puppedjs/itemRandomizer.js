@@ -135,7 +135,7 @@ function buildAssignments() {
 
         route118BarnyGoodItem: good(1)[0],
         route118Items:    pool(4),
-        route120Items:    pool(3),
+        route120AngelicaGoodItem: good(1)[0],
         route125Items:    ['ITEM_WEAKNESS_POLICY', 'ITEM_EJECT_BUTTON', pool(1)[0]], // slots 0,1 = fixed
         // Item ball pick-3 locations
         route106Ball:  pool(3),
@@ -338,18 +338,11 @@ function updateScripts(a) {
         })
     );
 
-    // Route120 items (3 all from pool)
-    replaceAnchored(
-        'data/maps/Route120/scripts.inc',
-        'ROUTE120_ITEMS',
-        genPickerSection({
-            pickerLabel:  'Route120_EventScript_PickItem',
-            multiConst:   'MULTI_ROUTE120_PICK_ITEM',
-            flag:         'FLAG_ITEM_ROUTE_120_NEST_BALL',
-            pickedItems:  a.route120Items,
-            handlerPrefix:'Route120_EventScript_PickItem',
-        })
-    );
+    replaceAnchored('data/maps/Route120/scripts.inc', 'ROUTE120_ANGELICA_GOOD', genSingleItemScript({
+        scriptLabel: 'Route120_EventScript_AngelicaGoodItem',
+        item:        a.route120AngelicaGoodItem,
+        flag:        'FLAG_ITEM_ROUTE_119_ZINC',
+    }));
 
     // Route125 items (3, slots 0,1 = fixed, slot 2 = pool)
     replaceAnchored(
@@ -526,9 +519,6 @@ function updateScriptMenu(a) {
     src = replaceMenuList(src, 'MultichoiceList_Route118PickBerry',
         a.route118Items.map(itemDisplayName));
 
-    src = replaceMenuList(src, 'MultichoiceList_Route120PickItem',
-        a.route120Items.map(itemDisplayName));
-
     // Mixed lists: only update item slots, leave fixed/TM slots
     // Route125: slots 0,1 fixed (Weakness Policy, Eject Button), slot 2 = random
     src = replaceMenuListSlots(src, 'MultichoiceList_Route125PickItem', {
@@ -592,7 +582,7 @@ function randomizeItems() {
         route117Gems:      dn('route117Gems'),
         route118BarnyGoodItem: itemDisplayName(a.route118BarnyGoodItem),
         route118Items:     dn('route118Items'),
-        route120Items:     dn('route120Items'),
+        route120AngelicaGoodItem: itemDisplayName(a.route120AngelicaGoodItem),
         route121Berries:   dn('route121Berries'),
         route125Items:     dn('route125Items'),
     };

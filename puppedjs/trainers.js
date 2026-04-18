@@ -1057,7 +1057,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route114WyattGoodItem    = itemAssignments.route114WyattGoodItem;
     const route118BarnyGoodItem  = itemAssignments.route118BarnyGoodItem;
     const route118ItemItems      = itemAssignments.route118Items;
-    const route120ItemItems      = itemAssignments.route120Items;
+    const route120AngelicaGoodItem = itemAssignments.route120AngelicaGoodItem;
     const route121BerryItems     = itemAssignments.route121Berries;
     const route125ItemItems      = itemAssignments.route125Items;
 
@@ -1094,7 +1094,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceHeidiItems     = [route111ItemItems[0], route111ItemItems[1], 'Custap Berry'];
     const choiceWadeBerries    = route118ItemItems;
     const choiceRoseTMs        = [tmItem(39), tmItem(40), tmItem(41)];
-    const choiceClarissaItems  = route120ItemItems;
+    const choiceClarissaTMs    = [tmItem(42), tmItem(43), tmItem(44)];
     const choiceCristinBerries = route121BerryItems;
     const choicePresleyItems   = ['Weakness Policy', 'Eject Button', route125ItemItems[2]];
     const choiceJosephSeeds    = ['Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed'];
@@ -1217,7 +1217,7 @@ const rival119Bag = () => [
 
 const winonaBag = () => [
     ...rival119Bag(),
-    sample([...choiceClarissaItems]),
+    sample([...choiceClarissaTMs]),
     tmItem(32),   // Winona's gym TM
 ];
 
@@ -3500,7 +3500,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_COLIN',
-        class: 'Bird Keeper',
+        class: 'Expert M',
         reward: ['SPECIES_KROKOROK', 'SPECIES_KROOKODILE', 'SPECIES_STUNFISK', 'SPECIES_RIBOMBEE', 'SPECIES_DUSKULL', 'SPECIES_DUSCLOPS', 'SPECIES_DUSKNOIR'],
         level: 46,
         bag: getSampleItemsFromArray(rival119Bag(), 17),
@@ -3555,18 +3555,18 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CLARISSA',
-        class: 'Parasol Lady',
-        reward: [...choiceClarissaItems],
+        class: 'Aroma Lady',
+        reward: [...choiceClarissaTMs],
         level: 46,
-        bag: getSampleItemsFromArray(rival119Bag(), 14),
+        bag: [...choiceClarissaTMs, ...getSampleItemsFromArray(rival119Bag(), 11)],
         team: genericTrainerTeamPostShelly(),
     },
     {
         id: 'TRAINER_ANGELICA',
         class: 'Parasol Lady',
-        reward: ['Random Offensive Mint'],
+        reward: [route120AngelicaGoodItem],
         level: 46,
-        bag: getSampleItemsFromArray(rival119Bag(), 17),
+        bag: [route120AngelicaGoodItem, ...getSampleItemsFromArray(rival119Bag(), 16)],
         team: genericTrainerTeamPostShelly(),
     },
     // Fortree City Gym
@@ -3889,7 +3889,7 @@ const trainersData = [
     },
     // Mt. Pyre
     {
-        id: 'TRAINER_HECTOR',
+        id: 'TRAINER_TAYLOR',
         class: 'Collector',
         reward: ['SPECIES_PORYGON'],
         level: 54,

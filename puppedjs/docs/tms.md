@@ -64,9 +64,9 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM39 | strongDmg | Pick — Route 118 Rose (choose 1 of 3) |
 | TM40 | strongDmg | Pick — Route 118 Rose (choose 1 of 3) |
 | TM41 | strongDmg | Pick — Route 118 Rose (choose 1 of 3) |
-| TM42 | strongDmg | — Unplaced |
-| TM43 | strongDmg | — Unplaced |
-| TM44 | strongDmg | — Unplaced |
+| TM42 | strongDmg | Pick — Route 120 Clarissa (choose 1 of 3) |
+| TM43 | strongDmg | Pick — Route 120 Clarissa (choose 1 of 3) |
+| TM44 | strongDmg | Pick — Route 120 Clarissa (choose 1 of 3) |
 | TM45 | strongDmg | — Unplaced |
 | TM46 | strongDmg | — Unplaced |
 | TM47 | strongDmg | — Unplaced |

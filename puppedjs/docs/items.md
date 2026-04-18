@@ -26,7 +26,7 @@ Shuffled once per run. Each "good item" location in the world gets one item draw
 
 **Pool contents (10 items):** Black Sludge, Life Orb, Assault Vest, Weakness Policy, Air Balloon, Loaded Dice, Sitrus Berry, Shell Bell, Rocky Helmet, Booster Energy
 
-**Consumed: 9 of 10** — 1 slot remains for future locations.
+**Consumed: 10 of 10** — pool is full.
 
 | Location | Flag | Trainer that propagates it |
 |----------|------|---------------------------|
@@ -39,6 +39,7 @@ Shuffled once per run. Each "good item" location in the world gets one item draw
 | Route 111 item ball (near Travis) | `FLAG_ITEM_ROUTE_111_HP_UP` | Travis (`TRAINER_TRAVIS`) bag/reward |
 | Route 111 item ball (near Becky) | `FLAG_ITEM_ROUTE_111_GEM` | Becky (`TRAINER_BECKY`) bag/reward; also in `normanBag` and above |
 | Route 118 item ball (near Barny) | `FLAG_ITEM_ROUTE_118_COBA` | Barny (`TRAINER_BARNY`) bag/reward |
+| Route 120 item ball (near Angelica) | `FLAG_ITEM_ROUTE_119_ZINC` | Angelica (`TRAINER_ANGELICA`) bag/reward |
 
 > **Adding a new goodItemPool location:** see `pick-list-howto.md` for the general pattern. For single items, use `genSingleItemScript` in `itemRandomizer.js` with a `RAND_*` anchor in the map's `scripts.inc`. Wire the returned display name into `trainers.js` via `itemAssignments.yourNewKey`.
 
@@ -49,7 +50,7 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 
 **Pool contents (54 unique items):** Eject Pack, Light Clay, stat-boosting berries (Apicot/Salac/Petaya/Liechi/Ganlon/Kee/Maranga/Jaboca/Rowap/Custap/Leppa/Lansat/Starf/Enigma/Figy), Throat Spray, Mirror Herb, Adrenaline Orb, Red Card, Expert Belt, Terrain Extender, Shed Shell, Power Herb, Safety Goggles, White Herb, Wide/Zoom Lens, Punching Glove, Big Root, Room Service, Iron Ball, Heavy-Duty Boots, Absorb Bulb, Cell Battery, Luminous Moss, Snowball, Sticky Barb, Bright Powder, Quick Claw, Muscle Band, Wise Glasses, Metronome, Grip Claw, Float Stone, Binding Band, Protective Pads, Utility Umbrella, Clear Amulet, Covert Cloak, Focus Band, Mental Herb, Blunder Policy
 
-**Consumed: 55 draws from 54 items** — 1 item appears at two locations per run (harmless). Adding more 3-slot locations will increase overlap.
+**Consumed: 52 draws from 54 items** — 2 items go unused per run.
 
 **Pick-3 ball locations** (player chooses 1 of 3 from this pool):
 
@@ -78,7 +79,7 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 | Route 111 items | `FLAG_ITEM_ROUTE_111_TM_SANDSTORM` | slots 0/1 = pool, slot 2 = Custap Berry (fixed) |
 | Route 116 Clark pick | `FLAG_ITEM_ROUTE_116_PICK_ITEM` | all 3 = TM65/66/67 — TM randomizer owns all slots (see `tms.md`) |
 | Route 118 items | `FLAG_ITEM_ROUTE_118_BERRY` | all 4 from pool (via `route118Items`) |
-| Route 120 items | `FLAG_ITEM_ROUTE_120_NEST_BALL` | all 3 from pool |
+
 | Route 125 items | `FLAG_ITEM_ROUTE_125_BIG_PEARL` | slots 0/1 = fixed (Weakness Policy, Eject Button), slot 2 = pool |
 
 ---
@@ -157,6 +158,6 @@ Bag functions in `trainers.js` are cumulative — each gym adds its items on top
 | `wattsonBag` | + barrier TMs, Melina berries, gem pick, Light Clay, Assault Vest, TM11 |
 | `flanneryBag` | + Nob/Claude TMs, TM78, Strength HM, White/Power Herb, Shell Bell |
 | `normanBag` | + Drew berries, Heidi items, Dusty ball, Becky good item, Bryan TM pick, TM31, Surf HM |
-| `winonaBag` | + Clarissa items, TM32 |
+| `winonaBag` | + Clarissa strongDmg TM pick, TM32 |
 | `tateAndLizaBag` | + choice items, Grace TMs, TM91 |
 | `juanBag` | + Prestly items, TM51, Waterfall HM |

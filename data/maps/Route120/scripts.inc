@@ -211,30 +211,35 @@ Route120_EventScript_Callie::
 	msgbox Route120_Text_CalliePostBattle, MSGBOX_AUTOCLOSE
 	end
 
-@ === RAND_ROUTE120_ITEMS_START ===
-Route120_EventScript_PickItem::
-	multichoice 0, 0, MULTI_ROUTE120_PICK_ITEM, FALSE
+Route120_EventScript_PickTM::
+	multichoice 0, 0, MULTI_ROUTE120_PICK_TM, FALSE
 	switch VAR_RESULT
-	case 0, Route120_EventScript_PickItem1
-	case 1, Route120_EventScript_PickItem2
-	case 2, Route120_EventScript_PickItem3
+	case 0, Route120_EventScript_PickTM_Option1
+	case 1, Route120_EventScript_PickTM_Option2
+	case 2, Route120_EventScript_PickTM_Option3
 	end
 
-Route120_EventScript_PickItem1::
-	finditem ITEM_ABSORB_BULB
+Route120_EventScript_PickTM_Option1::
+	finditem ITEM_TM42
 	setflag FLAG_ITEM_ROUTE_120_NEST_BALL
 	end
 
-Route120_EventScript_PickItem2::
-	finditem ITEM_FOCUS_BAND
+Route120_EventScript_PickTM_Option2::
+	finditem ITEM_TM43
 	setflag FLAG_ITEM_ROUTE_120_NEST_BALL
 	end
 
-Route120_EventScript_PickItem3::
-	finditem ITEM_COVERT_CLOAK
+Route120_EventScript_PickTM_Option3::
+	finditem ITEM_TM44
 	setflag FLAG_ITEM_ROUTE_120_NEST_BALL
 	end
-@ === RAND_ROUTE120_ITEMS_END ===
+
+@ === RAND_ROUTE120_ANGELICA_GOOD_START ===
+Route120_EventScript_AngelicaGoodItem::
+	finditem ITEM_SITRUS_BERRY
+	setflag FLAG_ITEM_ROUTE_119_ZINC
+	end
+@ === RAND_ROUTE120_ANGELICA_GOOD_END ===
 
 Route120_Text_RouteSignFortree:
 	.string "ROUTE 120\n"
