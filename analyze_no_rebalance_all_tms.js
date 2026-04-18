@@ -41,14 +41,17 @@ function run(cmd, args, opts = {}) {
         shell: process.platform === 'win32',
         ...opts,
     });
-    if (result.error) {
-        console.error(`Failed to spawn: ${result.error.message}`);
-        process.exit(1);
-    }
-    if (result.status !== 0) {
-        console.error(`Command exited with code ${result.status}`);
-        process.exit(result.status);
-    }
+    if (result.error) throw new Error(`Failed to spawn: ${result.error.message}`);
+    if (result.status !== 0) throw new Error(`Command exited with code ${result.status}`);
+}
+
+function restore() {
+    console.log('\n> Restoring mutated source files...');
+    spawnSync('git', ['restore', 'src/', 'include/', 'data/maps/'], {
+        cwd: root,
+        stdio: 'inherit',
+        shell: process.platform === 'win32',
+    });
 }
 
 // Step 0: Abort if data/ has uncommitted changes
@@ -57,10 +60,16 @@ checkDataClean();
 // Step 1: Run without balance/mutations and with all TMs treated as available
 const indexArgs = [path.join('puppedjs', 'index.js'), '--no-balance', '--all-tms'];
 if (isDebug) indexArgs.push('--debug');
-run('node', indexArgs);
+try {
+    run('node', indexArgs);
+} catch (err) {
+    console.error(`\nPipeline failed: ${err.message}`);
+    restore();
+    process.exit(1);
+}
 
 // Step 2: Reset all mutated source files — leaves puppedjs/output/ untouched
 // Only restore data/maps/ — the pipeline only mutates that subdirectory; other data/ files are user-editable
-run('git', ['restore', 'src/', 'include/', 'data/maps/']);
+restore();
 
 console.log('\nDone. Open puppedjs/output/out.html to review results (vanilla stats, all TMs available).');

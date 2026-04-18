@@ -2454,7 +2454,7 @@ const trainersData = [
         class: 'Running Triathlete F',
         reward: [...choiceMelinaBerries],
         level: 29,
-        bag: [...choiceMelinaBerries, getSampleItemsFromArray(wallyBag(), 6)],
+        bag: [...choiceMelinaBerries, ...getSampleItemsFromArray(wallyBag(), 6)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
