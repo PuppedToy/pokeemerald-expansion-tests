@@ -1396,12 +1396,11 @@ const trainersData = [
         class: 'Lady',
         reward: ['Eviolite'],
         level: 10,
-        bag: [...rival103Bag()],
+        bag: [...getSampleItemsFromArray(rival103Bag(), 1), 'Eviolite'],
         team: [
             {
                 contextualTier: [TIER_PU],
                 evoType: [EVO_TYPE_LC],
-                item: 'Eviolite',
             },
             ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
         ]
