@@ -6167,10 +6167,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_BARNY ===
 Name: BARNY
-Class: Fisherman
-Pic: Fisherman
+Class: Pkmn Breeder
+Pic: Pokemon Breeder M
 Gender: Male
-Music: Hiker
+Music: Male
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -6184,10 +6184,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_WADE ===
 Name: WADE
-Class: Fisherman
-Pic: Fisherman
+Class: Camper
+Pic: Camper
 Gender: Male
-Music: Hiker
+Music: Male
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -7188,10 +7188,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_CHESTER ===
 Name: CHESTER
-Class: Bird Keeper
-Pic: Bird Keeper
+Class: Black Belt
+Pic: Black Belt
 Gender: Male
-Music: Cool
+Music: Intense
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 

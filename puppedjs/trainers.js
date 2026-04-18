@@ -3300,8 +3300,23 @@ const trainersData = [
         ],
     },
     {
-        id: 'TRAINER_WADE',
+        id: 'TRAINER_CHRIS',
         class: 'Fisherman',
+        reward: ['ITEM_MEGA_04'],
+        level: 42,
+        bag: getSampleItemsFromArray(normanBag(), 14),
+        team: [
+            {
+                special: TRAINER_POKE_MEGA_FROM_STONE,
+                megaStone: 'ITEM_MEGA_04',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
+        ],
+    },
+    {
+        id: 'TRAINER_WADE',
+        class: 'Camper',
         reward: [...choiceWadeBerries],
         level: 42,
         bag: [...choiceWadeBerries, ...getSampleItemsFromArray(normanBag(), 11)],
@@ -3309,7 +3324,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BARNY',
-        class: 'Fisherman',
+        class: 'Pokemon Breeder M',
         reward: [route118BarnyGoodItem],
         level: 42,
         bag: [route118BarnyGoodItem, ...getSampleItemsFromArray(normanBag(), 14)],
@@ -3325,7 +3340,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CHESTER',
-        class: 'Bird Keeper',
+        class: 'Black Belt',
         reward: [...choiceChesterTMs],
         level: 42,
         bag: [...choiceChesterTMs, ...getSampleItemsFromArray(normanBag(), 12)],
@@ -3374,37 +3389,6 @@ const trainersData = [
             ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
             { ...POKEDEF_UU_OU_MEGA },
         ],
-    },
-    {
-        id: 'TRAINER_CHRIS',
-        class: 'Fisherman',
-        reward: ['ITEM_MEGA_04'],
-        level: 42,
-        bag: getSampleItemsFromArray(normanBag(), 14),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_04',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-        ],
-    },
-    {
-        id: 'TRAINER_DOUG',
-        class: 'Bug Catcher',
-        reward: ['Random Defensive Mint'],
-        level: 42,
-        bag: getSampleItemsFromArray(normanBag(), 15),
-        team: genericTrainerTeamPostNorman(),
-    },
-    {
-        id: 'TRAINER_TAYLOR',
-        class: 'Bug Maniac',
-        reward: ['Random Offensive Mint'],
-        level: 42,
-        bag: getSampleItemsFromArray(normanBag(), 15),
-        team: genericTrainerTeamPostNorman(),
     },
     // Weather Institute
     {
