@@ -1049,10 +1049,10 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
         }
     }
     else if (move.category === 'DAMAGE_CATEGORY_PHYSICAL') {
-        rating += poke.baseAttack / 100;
+        rating *= (0.5 + poke.baseAttack / 200);
     }
     else if (move.category === 'DAMAGE_CATEGORY_SPECIAL') {
-        rating += poke.baseSpAttack / 100;
+        rating *= (0.5 + poke.baseSpAttack / 200);
     }
     // Status moves value defenses (except setup, which need to be evaluated differently @TODO)
     else {
