@@ -81,7 +81,14 @@ const familyTracking = {};
 function balancePokemon(pokemon, abilityNames, moves) {
 
     const inheritedLog = [];
-    const newPokemon = { ...pokemon };
+    // Deep-copy mutable sub-arrays so mutations don't corrupt the shared parsed learnset
+    // source (levelUpLearnsets) used by other pokemon with the same .levelUpLearnset key.
+    const newPokemon = {
+        ...pokemon,
+        learnset: pokemon.learnset ? pokemon.learnset.map(l => ({ ...l })) : [],
+        parsedTypes: pokemon.parsedTypes ? [...pokemon.parsedTypes] : [],
+        parsedAbilities: pokemon.parsedAbilities ? [...pokemon.parsedAbilities] : [],
+    };
 
     if (familyTracking[pokemon.family]) {
         const familyLog = familyTracking[pokemon.family] || [];
