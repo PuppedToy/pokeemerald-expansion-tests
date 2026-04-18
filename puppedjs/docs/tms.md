@@ -70,13 +70,13 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM45 | strongDmg | Pick — Route 121 Walter (choose 1 of 3) |
 | TM46 | strongDmg | Pick — Route 121 Walter (choose 1 of 3) |
 | TM47 | strongDmg | Pick — Route 121 Walter (choose 1 of 3) |
-| TM48 | strongDmg | — Unplaced |
-| TM49 | strongDmg | — Unplaced |
-| TM50 | strongDmg | — Unplaced |
+| TM48 | strongDmg | Pick — Route 125 Presley (choose 1 of 3) |
+| TM49 | strongDmg | Pick — Route 125 Presley (choose 1 of 3) |
+| TM50 | strongDmg | Pick — Route 125 Presley (choose 1 of 3) |
 | TM51 | godlikeDmg | Gym reward — Wallace/Juan (badge 8) |
 | TM52 | godlikeDmg | Item — Route 121 (item ball) |
 | TM53 | godlikeDmg | Item — Route 124 (item ball, Roland) |
-| TM54 | godlikeDmg | — Unplaced |
+| TM54 | godlikeDmg | Item — Route 125 (item ball, Auron) |
 | TM55 | godlikeDmg | — Unplaced |
 | TM56 | godlikeDmg | — Unplaced |
 | TM57 | niche | Pick — Route 114 Angelina (choose 1 of 4) |

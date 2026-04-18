@@ -81,52 +81,30 @@ Route125_EventScript_Auron::
 	msgbox Route125_Text_AuronPostBattle, MSGBOX_AUTOCLOSE
 	end
 
-@ === RAND_ROUTE125_ITEMS_START ===
-Route125_EventScript_PickItem::
-	multichoice 0, 0, MULTI_ROUTE125_PICK_ITEM, FALSE
+Route125_EventScript_PresleyPickTM::
+	multichoice 0, 0, MULTI_ROUTE125_PICK_TM, FALSE
 	switch VAR_RESULT
-	case 0, Route125_EventScript_PickItem1
-	case 1, Route125_EventScript_PickItem2
-	case 2, Route125_EventScript_PickItem3
+	case 0, Route125_EventScript_PresleyPickTM_Option1
+	case 1, Route125_EventScript_PresleyPickTM_Option2
+	case 2, Route125_EventScript_PresleyPickTM_Option3
 	end
 
-Route125_EventScript_PickItem1::
-	finditem ITEM_WEAKNESS_POLICY
+Route125_EventScript_PresleyPickTM_Option1::
+	finditem ITEM_TM48
 	setflag FLAG_ITEM_ROUTE_125_BIG_PEARL
 	end
 
-Route125_EventScript_PickItem2::
-	finditem ITEM_EJECT_BUTTON
+Route125_EventScript_PresleyPickTM_Option2::
+	finditem ITEM_TM49
 	setflag FLAG_ITEM_ROUTE_125_BIG_PEARL
 	end
 
-Route125_EventScript_PickItem3::
-	finditem ITEM_PUNCHING_GLOVE
+Route125_EventScript_PresleyPickTM_Option3::
+	finditem ITEM_TM50
 	setflag FLAG_ITEM_ROUTE_125_BIG_PEARL
 	end
-@ === RAND_ROUTE125_ITEMS_END ===
 
-@ === RAND_ROUTE125_BALL_START ===
-Route125_EventScript_PickBall::
-	multichoice 0, 0, MULTI_ROUTE125_PICK_BALL, FALSE
-	switch VAR_RESULT
-	case 0, Route125_EventScript_PickBall1
-	case 1, Route125_EventScript_PickBall2
-	case 2, Route125_EventScript_PickBall3
-	end
-
-Route125_EventScript_PickBall1::
-	finditem ITEM_LUMINOUS_MOSS
+Route125_EventScript_AuronGodlikeTM::
+	finditem ITEM_TM54
 	setflag FLAG_ITEM_ROUTE_116_KINGS_ROCK
 	end
-
-Route125_EventScript_PickBall2::
-	finditem ITEM_ZOOM_LENS
-	setflag FLAG_ITEM_ROUTE_116_KINGS_ROCK
-	end
-
-Route125_EventScript_PickBall3::
-	finditem ITEM_QUICK_CLAW
-	setflag FLAG_ITEM_ROUTE_116_KINGS_ROCK
-	end
-@ === RAND_ROUTE125_BALL_END ===

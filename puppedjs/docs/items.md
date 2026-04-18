@@ -50,7 +50,7 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 
 **Pool contents (54 unique items):** Eject Pack, Light Clay, stat-boosting berries (Apicot/Salac/Petaya/Liechi/Ganlon/Kee/Maranga/Jaboca/Rowap/Custap/Leppa/Lansat/Starf/Enigma/Figy), Throat Spray, Mirror Herb, Adrenaline Orb, Red Card, Expert Belt, Terrain Extender, Shed Shell, Power Herb, Safety Goggles, White Herb, Wide/Zoom Lens, Punching Glove, Big Root, Room Service, Iron Ball, Heavy-Duty Boots, Absorb Bulb, Cell Battery, Luminous Moss, Snowball, Sticky Barb, Bright Powder, Quick Claw, Muscle Band, Wise Glasses, Metronome, Grip Claw, Float Stone, Binding Band, Protective Pads, Utility Umbrella, Clear Amulet, Covert Cloak, Focus Band, Mental Herb, Blunder Policy
 
-**Consumed: 46 draws from 54 items** — 8 items go unused per run.
+**Consumed: 42 draws from 54 items** — 12 items go unused per run.
 
 **Pick-3 ball locations** (player chooses 1 of 3 from this pool):
 
@@ -68,7 +68,6 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 | Route 114 C | `FLAG_ITEM_ROUTE_114_ENERGY_POWDER` | Route 114 area bags |
 | Route 115 | `FLAG_ITEM_ROUTE_115_GREAT_BALL` | Route 115 area bags |
 | Route 116 | `FLAG_ITEM_ROUTE_TM_BRICK_BREAK` | `route116Ball` |
-| Route 125 | `FLAG_ITEM_ROUTE_116_KINGS_ROCK` | Route 125 area bags |
 
 **Mixed pick-3 locations** (some slots random from this pool, others fixed):
 
@@ -77,8 +76,6 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 | Route 111 items | `FLAG_ITEM_ROUTE_111_TM_SANDSTORM` | slots 0/1 = pool, slot 2 = Custap Berry (fixed) |
 | Route 116 Clark pick | `FLAG_ITEM_ROUTE_116_PICK_ITEM` | all 3 = TM65/66/67 — TM randomizer owns all slots (see `tms.md`) |
 | Route 118 items | `FLAG_ITEM_ROUTE_118_BERRY` | all 4 from pool (via `route118Items`) |
-
-| Route 125 items | `FLAG_ITEM_ROUTE_125_BIG_PEARL` | slots 0/1 = fixed (Weakness Policy, Eject Button), slot 2 = pool |
 
 ---
 
@@ -158,4 +155,5 @@ Bag functions in `trainers.js` are cumulative — each gym adds its items on top
 | `normanBag` | + Drew berries, Heidi items, Dusty ball, Becky good item, Bryan TM pick, TM31, Surf HM |
 | `winonaBag` | + Clarissa strongDmg TM pick, TM32 |
 | `tateAndLizaBag` | + Tammy TMs, Cristin berries, Walter strongDmg TM pick, Isabella choice items, Grace strongDmg TM pick, TM92 (Spencer), TM53 (Roland), TM91 |
-| `juanBag` | + Prestly items, TM51, Waterfall HM |
+| `spaceCenterBag` | + Presley strongDmg TM pick, TM54 (Auron) |
+| `juanBag` | + TM51, Waterfall HM |

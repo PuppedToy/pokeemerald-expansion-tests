@@ -1059,7 +1059,6 @@ function getTrainersData(itemAssignments, tmList) {
     const route118ItemItems      = itemAssignments.route118Items;
     const route120AngelicaGoodItem = itemAssignments.route120AngelicaGoodItem;
     const route121BerryItems     = itemAssignments.route121Berries;
-    const route125ItemItems      = itemAssignments.route125Items;
 
     // TM helper: tmItem(n) → 'TM_MOVENAME' for TM slot n (1-based)
     const tmItem = (n) => `TM_${tmList[n - 1]}`;
@@ -1097,7 +1096,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceClarissaTMs    = [tmItem(42), tmItem(43), tmItem(44)];
     const choiceWalterTMs      = [tmItem(45), tmItem(46), tmItem(47)];
     const choiceCristinBerries = route121BerryItems;
-    const choicePresleyItems   = ['Weakness Policy', 'Eject Button', route125ItemItems[2]];
+    const choicePresleyTMs     = [tmItem(48), tmItem(49), tmItem(50)];
     const choiceJosephSeeds    = ['Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed'];
 
 const rival103Bag = () => [
@@ -1243,8 +1242,8 @@ const tateAndLizaBag = () => [
 
 const spaceCenterBag = () => [
     ...tateAndLizaBag(),
-    sample([...choicePresleyItems]),
-    'Heavy-Duty Boots',
+    sample([...choicePresleyTMs]),
+    tmItem(54),   // Auron's route 125 TM
 ];
 
 const juanBag = () => [
@@ -4358,19 +4357,19 @@ const trainersData = [
         ],
     },
     {
-        id: 'TRAINER_AURON',
-        class: 'Expert M',
-        reward: ['Heavy-Duty Boots'],
+        id: 'TRAINER_PRESLEY',
+        class: 'Bird Keeper',
+        reward: [...choicePresleyTMs],
         level: 59,
-        bag: ['Heavy-Duty Boots', ...getSampleItemsFromArray(tateAndLizaBag(), 24)],
+        bag: [...choicePresleyTMs, ...getSampleItemsFromArray(tateAndLizaBag(), 22)],
         team: genericTrainerTeamPostTateAndLiza(),
     },
     {
-        id: 'TRAINER_PRESLEY',
-        class: 'Bird Keeper',
-        reward: [...choicePresleyItems],
+        id: 'TRAINER_AURON',
+        class: 'Expert M',
+        reward: [tmItem(54)],
         level: 59,
-        bag: [...choicePresleyItems, ...getSampleItemsFromArray(tateAndLizaBag(), 22)],
+        bag: [tmItem(54), ...getSampleItemsFromArray(tateAndLizaBag(), 24)],
         team: genericTrainerTeamPostTateAndLiza(),
     },
     // Mossdeep Space Center

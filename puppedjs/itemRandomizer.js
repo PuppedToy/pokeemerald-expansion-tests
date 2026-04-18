@@ -136,7 +136,6 @@ function buildAssignments() {
         route118BarnyGoodItem: good(1)[0],
         route118Items:    pool(4),
         route120AngelicaGoodItem: good(1)[0],
-        route125Items:    ['ITEM_WEAKNESS_POLICY', 'ITEM_EJECT_BUTTON', pool(1)[0]], // slots 0,1 = fixed
         // Item ball pick-3 locations
         route106Ball:  pool(3),
         route102Ball:  pool(3),
@@ -147,7 +146,6 @@ function buildAssignments() {
         route114WyattGoodItem: good(1)[0],
         route115Ball:  pool(3),
         route116Ball:  pool(3),
-        route125Ball:  pool(3),
     };
 }
 
@@ -342,19 +340,6 @@ function updateScripts(a) {
         flag:        'FLAG_ITEM_ROUTE_119_ZINC',
     }));
 
-    // Route125 items (3, slots 0,1 = fixed, slot 2 = pool)
-    replaceAnchored(
-        'data/maps/Route125/scripts.inc',
-        'ROUTE125_ITEMS',
-        genPickerSection({
-            pickerLabel:  'Route125_EventScript_PickItem',
-            multiConst:   'MULTI_ROUTE125_PICK_ITEM',
-            flag:         'FLAG_ITEM_ROUTE_125_BIG_PEARL',
-            pickedItems:  a.route125Items,
-            handlerPrefix:'Route125_EventScript_PickItem',
-        })
-    );
-
     // Item ball pick-3 locations
     replaceAnchored('data/maps/Route106/scripts.inc', 'ROUTE106_BALL', genPickerSection({
         pickerLabel:   'Route106_EventScript_PickBall',
@@ -451,13 +436,6 @@ function updateScripts(a) {
         pickedItems:   a.route116Ball,
         handlerPrefix: 'Route116_EventScript_PickBall',
     }));
-    replaceAnchored('data/maps/Route125/scripts.inc', 'ROUTE125_BALL', genPickerSection({
-        pickerLabel:   'Route125_EventScript_PickBall',
-        multiConst:    'MULTI_ROUTE125_PICK_BALL',
-        flag:          'FLAG_ITEM_ROUTE_116_KINGS_ROCK',
-        pickedItems:   a.route125Ball,
-        handlerPrefix: 'Route125_EventScript_PickBall',
-    }));
 }
 
 // --- script_menu.h updater ---
@@ -503,12 +481,6 @@ function updateScriptMenu(a) {
     src = replaceMenuList(src, 'MultichoiceList_Route118PickBerry',
         a.route118Items.map(itemDisplayName));
 
-    // Mixed lists: only update item slots, leave fixed/TM slots
-    // Route125: slots 0,1 fixed (Weakness Policy, Eject Button), slot 2 = random
-    src = replaceMenuListSlots(src, 'MultichoiceList_Route125PickItem', {
-        2: itemDisplayName(a.route125Items[2]),
-    });
-
     // Item ball pick-3 lists
     src = replaceMenuList(src, 'MultichoiceList_Route106PickBall',  a.route106Ball.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route102PickBall',  a.route102Ball.map(itemDisplayName));
@@ -518,7 +490,6 @@ function updateScriptMenu(a) {
     src = replaceMenuList(src, 'MultichoiceList_Route112PickBall',  a.route111ShaylaBall.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route115PickBall',  a.route115Ball.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route116PickBall',  a.route116Ball.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route125PickBall',  a.route125Ball.map(itemDisplayName));
 
     fs.writeFileSync(SCRIPT_MENU_PATH, src);
     console.log('[Item Randomizer] Updated item names in script_menu.h');
@@ -566,7 +537,6 @@ function randomizeItems() {
         route118Items:     dn('route118Items'),
         route120AngelicaGoodItem: itemDisplayName(a.route120AngelicaGoodItem),
         route121Berries:   dn('route121Berries'),
-        route125Items:     dn('route125Items'),
     };
 }
 
