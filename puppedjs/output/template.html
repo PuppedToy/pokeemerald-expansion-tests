@@ -1343,17 +1343,41 @@
     }
 
     function buildTeachablesList(poke) {
-      return poke.teachables.map(moveId => {
+      const newSet = new Set(poke.newTeachables || []);
+      const mainList = poke.teachables.map(moveId => {
         const m = movesData[moveId];
+        if (!m) return '';
+        const prefix = newSet.has(moveId) ? '⭐️ ' : '';
         return `
           <div class="list-item">
-            <span class="type" style="background:${typeColors[m.type]};">${m.type}</span>
+            ${prefix}<span class="type" style="background:${typeColors[m.type]};">${m.type}</span>
             <b>${moveName(moveId)}</b>
             <span class="small">Pwr: ${m.power ?? '-'}</span>
             <span class="small">Acc: ${m.accuracy ?? '-'}</span>
             <span class="small">PP: ${m.pp}</span>
           </div>`;
       }).join('');
+      let removedSection = '';
+      if (poke.oldTeachables && poke.oldTeachables.length > 0) {
+        const removedMoves = poke.oldTeachables.map(moveId => {
+          const m = movesData[moveId];
+          if (!m) return '';
+          return `
+            <div class="list-item" style="opacity:0.45;">
+              <span class="type" style="background:${typeColors[m.type]};">${m.type}</span>
+              <b style="color:#888;">${moveName(moveId)}</b>
+              <span class="small">Pwr: ${m.power ?? '-'}</span>
+              <span class="small">Acc: ${m.accuracy ?? '-'}</span>
+              <span class="small">PP: ${m.pp}</span>
+            </div>`;
+        }).join('');
+        removedSection = `
+          <div class="list-item" style="margin-top:6px;color:#666;font-size:0.85em;border-top:1px solid #333;padding-top:4px;">
+            <b>No TM this run:</b>
+          </div>
+          ${removedMoves}`;
+      }
+      return mainList + removedSection;
     }
 
     function buildEvoChain(poke) {

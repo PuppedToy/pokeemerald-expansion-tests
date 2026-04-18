@@ -111,6 +111,36 @@ async function editLearnsetsFile(learnsetsFileText, pokemonList) {
     return result;
 }
 
+function editTeachableLearnsets(fileText, pokemonList) {
+    const lines = fileText.split('\n');
+    let currentLearnsetId = null;
+    let currentPokemon = null;
+    let blockStart = -1;
+    let result = fileText;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.startsWith('static const u16 ') && line.includes('TeachableLearnset')) {
+            currentLearnsetId = line.split('static const u16 ')[1].split('[]')[0];
+            currentPokemon = pokemonList.find(p => p.teachableLearnset === currentLearnsetId);
+            blockStart = i;
+            continue;
+        }
+        if (currentPokemon && line.startsWith('};')) {
+            if (!currentPokemon.teachables || currentPokemon.teachables.length === 0) {
+                currentPokemon = null;
+                continue;
+            }
+            const originalBlock = lines.slice(blockStart, i + 1).join('\n');
+            const newMoves = currentPokemon.teachables.map(m => `    ${m},`).join('\n');
+            const newBlock = `static const u16 ${currentLearnsetId}[] = {\n${newMoves}\n    MOVE_UNAVAILABLE,\n};`;
+            result = result.replace(originalBlock, newBlock);
+            currentPokemon = null;
+        }
+    }
+    return result;
+}
+
 async function savePokemonData(pokemonList) {
     for (let gen = 1; gen <= TOTAL_GENS; gen++) {
         const genSpeciesFilePath = path.resolve(SPECIES_DIR, `gen_${gen}_families.h`);
@@ -122,6 +152,11 @@ async function savePokemonData(pokemonList) {
     const learnsetsFileText = await fs.readFile(learnsetsFilePath, 'utf-8');
     const learnsetsResult = await editLearnsetsFile(learnsetsFileText, pokemonList);
     await fs.writeFile(learnsetsFilePath, learnsetsResult, 'utf-8');
+
+    const teachablesFilePath = path.resolve(SPECIES_DIR, '..', 'teachable_learnsets.h');
+    const teachablesFileText = await fs.readFile(teachablesFilePath, 'utf-8');
+    const teachablesResult = editTeachableLearnsets(teachablesFileText, pokemonList);
+    await fs.writeFile(teachablesFilePath, teachablesResult, 'utf-8');
 }
 
 module.exports = {
