@@ -1055,6 +1055,7 @@ function getTrainersData(itemAssignments, tmList) {
     const route111BallCItems      = itemAssignments.route111BallC;
     const route111ShaylaBallItems  = itemAssignments.route111ShaylaBall;
     const route114WyattGoodItem    = itemAssignments.route114WyattGoodItem;
+    const route118BarnyGoodItem  = itemAssignments.route118BarnyGoodItem;
     const route118ItemItems      = itemAssignments.route118Items;
     const route120ItemItems      = itemAssignments.route120Items;
     const route121BerryItems     = itemAssignments.route121Berries;
@@ -1092,6 +1093,7 @@ function getTrainersData(itemAssignments, tmList) {
     const rival103TM           = tmItem(71);
     const choiceHeidiItems     = [route111ItemItems[0], route111ItemItems[1], 'Custap Berry'];
     const choiceWadeBerries    = route118ItemItems;
+    const choiceRoseTMs        = [tmItem(39), tmItem(40), tmItem(41)];
     const choiceClarissaItems  = route120ItemItems;
     const choiceCristinBerries = route121BerryItems;
     const choicePresleyItems   = ['Weakness Policy', 'Eject Button', route125ItemItems[2]];
@@ -3308,17 +3310,17 @@ const trainersData = [
     {
         id: 'TRAINER_BARNY',
         class: 'Fisherman',
-        reward: ['Ability Capsule'],
+        reward: [route118BarnyGoodItem],
         level: 42,
-        bag: getSampleItemsFromArray(normanBag(), 15),
+        bag: [route118BarnyGoodItem, ...getSampleItemsFromArray(normanBag(), 14)],
         team: genericTrainerTeamPostNorman(),
     },
     {
         id: 'TRAINER_ROSE_1',
         class: 'Aroma Lady',
-        reward: ['Random Offensive Mint'],
+        reward: [...choiceRoseTMs],
         level: 42,
-        bag: getSampleItemsFromArray(normanBag(), 15),
+        bag: [...choiceRoseTMs, ...getSampleItemsFromArray(normanBag(), 12)],
         team: genericTrainerTeamPostNorman(),
     },
     {

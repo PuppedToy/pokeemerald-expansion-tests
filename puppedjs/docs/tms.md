@@ -61,9 +61,9 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM36 | strongDmg | Pick — Route 124 (choose 1 of 3) |
 | TM37 | strongDmg | Pick — Route 124 (choose 1 of 3) |
 | TM38 | strongDmg | Pick — Route 124 (choose 1 of 3) |
-| TM39 | strongDmg | — Unplaced |
-| TM40 | strongDmg | — Unplaced |
-| TM41 | strongDmg | — Unplaced |
+| TM39 | strongDmg | Pick — Route 118 Rose (choose 1 of 3) |
+| TM40 | strongDmg | Pick — Route 118 Rose (choose 1 of 3) |
+| TM41 | strongDmg | Pick — Route 118 Rose (choose 1 of 3) |
 | TM42 | strongDmg | — Unplaced |
 | TM43 | strongDmg | — Unplaced |
 | TM44 | strongDmg | — Unplaced |

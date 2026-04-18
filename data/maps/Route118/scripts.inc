@@ -177,6 +177,36 @@ Route118_Text_RouteSign119:
 	.string "ROUTE 118\n"
 	.string "{UP_ARROW} ROUTE 119$"
 
+@ === RAND_ROUTE118_BARNY_GOOD_START ===
+Route118_EventScript_BarnyGoodItem::
+	finditem ITEM_SITRUS_BERRY
+	setflag FLAG_ITEM_ROUTE_118_COBA
+	end
+@ === RAND_ROUTE118_BARNY_GOOD_END ===
+
+Route118_EventScript_RosePickTM::
+	multichoice 0, 0, MULTI_ROUTE118_PICK_TM3, FALSE
+	switch VAR_RESULT
+	case 0, Route118_EventScript_RosePickTM_Option1
+	case 1, Route118_EventScript_RosePickTM_Option2
+	case 2, Route118_EventScript_RosePickTM_Option3
+	end
+
+Route118_EventScript_RosePickTM_Option1::
+	finditem ITEM_TM39
+	setflag FLAG_ITEM_ROUTE_118_KEE
+	end
+
+Route118_EventScript_RosePickTM_Option2::
+	finditem ITEM_TM40
+	setflag FLAG_ITEM_ROUTE_118_KEE
+	end
+
+Route118_EventScript_RosePickTM_Option3::
+	finditem ITEM_TM41
+	setflag FLAG_ITEM_ROUTE_118_KEE
+	end
+
 Route118_EventScript_DeandrePickTM::
 	multichoice 0, 0, MULTI_ROUTE118_PICK_TM2, FALSE
 	switch VAR_RESULT

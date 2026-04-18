@@ -133,6 +133,7 @@ function buildAssignments() {
         route111HpUpGoodItem: good(1)[0],
         route111GemGoodItem:  good(1)[0],
 
+        route118BarnyGoodItem: good(1)[0],
         route118Items:    pool(4),
         route120Items:    pool(3),
         route125Items:    ['ITEM_WEAKNESS_POLICY', 'ITEM_EJECT_BUTTON', pool(1)[0]], // slots 0,1 = fixed
@@ -317,6 +318,12 @@ function updateScripts(a) {
             handlerPrefix:'Route116_EventScript_PickBerry',
         })
     );
+
+    replaceAnchored('data/maps/Route118/scripts.inc', 'ROUTE118_BARNY_GOOD', genSingleItemScript({
+        scriptLabel: 'Route118_EventScript_BarnyGoodItem',
+        item:        a.route118BarnyGoodItem,
+        flag:        'FLAG_ITEM_ROUTE_118_COBA',
+    }));
 
     // Route118 items (4 all from pool)
     replaceAnchored(
@@ -583,6 +590,7 @@ function randomizeItems() {
         route114WyattGoodItem: itemDisplayName(a.route114WyattGoodItem),
         route117Berries:   dn('route117Berries'),
         route117Gems:      dn('route117Gems'),
+        route118BarnyGoodItem: itemDisplayName(a.route118BarnyGoodItem),
         route118Items:     dn('route118Items'),
         route120Items:     dn('route120Items'),
         route121Berries:   dn('route121Berries'),
