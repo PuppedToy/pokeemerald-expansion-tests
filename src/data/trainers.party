@@ -13689,10 +13689,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_MYLES ===
 Name: MYLES
-Class: Pkmn Breeder
-Pic: Pokemon Breeder M
+Class: Fisherman
+Pic: Fisherman
 Gender: Male
-Music: Male
+Music: Hiker
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
