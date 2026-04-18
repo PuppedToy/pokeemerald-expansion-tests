@@ -1141,6 +1141,7 @@ const rivalRustboroBag = () => [
     sample(['Toxic Orb', 'Flame Orb']),
     sample([...choice116Gem]),
     sample([...choice116Berry]),
+    'Lum Berry',
 ];
 
 const brawlyBag = () => [
@@ -1179,7 +1180,6 @@ const wallyBag = () => [
     route110LumGoodItem,
     sample([...choiceJosephSeeds]),
     sample([...choiceDeandreTMs]),
-    'Lum Berry',
 ];
 
 const wattsonBag = () => [
@@ -1930,6 +1930,7 @@ const trainersData = [
         class: 'May',
         isBoss: true,
         level: 17,
+        reward: ['Lum Berry'],
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag()],
         team: [...rivalRustboroTemplate('TREECKO')],
@@ -1939,6 +1940,7 @@ const trainersData = [
         class: 'May',
         isBoss: true,
         level: 17,
+        reward: ['Lum Berry'],
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag()],
         team: [...rivalRustboroTemplate('TORCHIC')],
@@ -1948,6 +1950,7 @@ const trainersData = [
         class: 'May',
         isBoss: true,
         level: 17,
+        reward: ['Lum Berry'],
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag()],
         team: [...rivalRustboroTemplate('MUDKIP')],
