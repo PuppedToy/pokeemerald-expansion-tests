@@ -45,7 +45,6 @@ const { maps: wildMaps } = require('./wild');
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
 const partnersFile = path.resolve(__dirname, '..', 'src', 'data', 'battle_partners.party');
 
-// @TODO Fix booster energy
 const stevenPokemon = [
     'SPECIES_BALTOY',
     'SPECIES_ARON',
@@ -60,98 +59,6 @@ const stevenPokemon = [
     'SPECIES_AMAURA',
     'SPECIES_ARCHEN',
     'SPECIES_TYRUNT',
-];
-
-const goodMultiHitMoves = [
-    'MOVE_BULLET_SEED',
-    'MOVE_ICICLE_SPEAR',
-    'MOVE_PIN_MISSILE',
-    'MOVE_ROCK_BLAST',
-    'MOVE_TAIL_SLAP',
-    'MOVE_BONE_RUSH',
-    'MOVE_SCALE_SHOT',
-];
-
-const multiHitMoves = [
-    'MOVE_BULLET_SEED',
-    'MOVE_ICICLE_SPEAR',
-    'MOVE_PIN_MISSILE',
-    'MOVE_ROCK_BLAST',
-    'MOVE_TAIL_SLAP',
-    'MOVE_BONE_RUSH',
-    'MOVE_SCALE_SHOT',
-    'MOVE_ARM_THRUST',
-    'MOVE_BARRAGE',
-    'MOVE_COMET_PUNCH',
-    'MOVE_DOUBLE_SLAP',
-    'MOVE_FURY_ATTACK',
-    'MOVE_FURY_SWIPES',
-    'MOVE_SPIKE_CANNON',
-    'MOVE_WATER_SHURIKEN',  
-];
-
-const whiteHerbMoves = [
-    'MOVE_OVERHEAT',
-    'MOVE_LEAF_STORM',
-    'MOVE_DRACO_METEOR',
-    'MOVE_FLEUR_CANNON',
-    'MOVE_SUPERPOWER',
-    'MOVE_CLOSE_COMBAT',
-    'MOVE_HAMMER_ARM',
-    'MOVE_V_CREATE',
-    'MOVE_CLANGING_SCALES',
-    'MOVE_PSYCHO_BOOST',
-    'MOVE_SHELL_SMASH',
-];
-
-const majorPowerHerbMoves = [
-    'MOVE_SKY_ATTACK',
-    'MOVE_METEOR_BEAM',
-    'MOVE_GEOMANCY',
-    'MOVE_SOLAR_BEAM',
-    'MOVE_SOLAR_BLADE',
-    'MOVE_SKULL_BASH',
-    'MOVE_RAZOR_WIND',
-    'MOVE_ELECTRO_SHOT',
-    'MOVE_FREEZE_SHOCK',
-    'MOVE_ICE_BURN',
-];
-
-const minorPowerHerbMoves = [
-    'MOVE_DIG',
-    'MOVE_DIVE',
-    'MOVE_FLY',
-    'MOVE_BOUNCE',
-    'MOVE_SHADOW_FORCE',
-    'MOVE_PHANTOM_FORCE',
-    'MOVE_SKY_DROP',
-];
-
-const punchingMoves = [
-    'MOVE_BULLET_PUNCH',
-    'MOVE_COMET_PUNCH',
-    'MOVE_DIZZY_PUNCH',
-    'MOVE_DOUBLE_IRON_BASH',
-    'MOVE_DRAIN_PUNCH',
-    'MOVE_DYNAMIC_PUNCH',
-    'MOVE_FIRE_PUNCH',
-    'MOVE_FOCUS_PUNCH',
-    'MOVE_HAMMER_ARM',
-    'MOVE_HEADLONG_RUSH',
-    'MOVE_ICE_HAMMER',
-    'MOVE_ICE_PUNCH',
-    'MOVE_JET_PUNCH',
-    'MOVE_MACH_PUNCH',
-    'MOVE_MEGA_PUNCH',
-    'MOVE_METEOR_MASH',
-    'MOVE_PLASMA_FISTS',
-    'MOVE_POWER_UP_PUNCH',
-    'MOVE_RAGE_FIST',
-    'MOVE_SHADOW_PUNCH',
-    'MOVE_SKY_UPPERCUT',
-    'MOVE_SURGING_STRIKES',
-    'MOVE_THUNDER_PUNCH',
-    'MOVE_WICKED_BLOW',
 ];
 
 const rainAbilities = ['SWIFT_SWIM', 'RAIN_DISH', 'DRY_SKIN', 'HYDRATION'];
