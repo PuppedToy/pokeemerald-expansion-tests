@@ -3476,21 +3476,13 @@ const trainersData = [
             },
         ],
     },
-    // Route 119 continued
-    {
-        id: 'TRAINER_FABIAN',
-        class: 'Guitarist',
-        reward: ['Leftovers'],
-        level: 44,
-        bag: ['Leftovers', ...getSampleItemsFromArray(shellyBag(), 15)],
-        team: genericTrainerTeamPostShelly(),
-    },
     // Route 119 Rival Battles
     {
         id: 'TRAINER_MAY_ROUTE_119_TREECKO',
         class: 'May',
         isBoss: true,
         level: 44,
+        reward: ['Leftovers'],
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rival119Bag()],
         team: [...rivalRoute119Template('TREECKO')],
@@ -3500,6 +3492,7 @@ const trainersData = [
         class: 'May',
         isBoss: true,
         level: 44,
+        reward: ['Leftovers'],
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rival119Bag()],
         team: [...rivalRoute119Template('TORCHIC')],
@@ -3509,6 +3502,7 @@ const trainersData = [
         class: 'May',
         isBoss: true,
         level: 44,
+        reward: ['Leftovers'],
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rival119Bag()],
         team: [...rivalRoute119Template('MUDKIP')],
