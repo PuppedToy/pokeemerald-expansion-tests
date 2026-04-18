@@ -76,6 +76,13 @@
       "elevation": 0,
       "dest_map": "MAP_VICTORY_ROAD_1F",
       "dest_warp_id": "1"
+    },
+    {
+      "x": 9,
+      "y": 67,
+      "elevation": 0,
+      "dest_map": "MAP_EVER_GRANDE_CITY",
+      "dest_warp_id": "1"
     }
   ],
   "coord_events": [
@@ -173,6 +180,15 @@
       "type": "trigger",
       "x": 26,
       "y": 58,
+      "elevation": 1,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "EverGrandeCity_EventScript_SetVisitedEverGrande"
+    },
+    {
+      "type": "trigger",
+      "x": 9,
+      "y": 68,
       "elevation": 1,
       "var": "VAR_TEMP_1",
       "var_value": "0",

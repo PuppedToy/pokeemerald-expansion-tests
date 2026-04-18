@@ -1255,6 +1255,13 @@ const juanBag = () => [
     'TM_WATERFALL',   // HM — not randomized
 ];
 
+const victoryRoadBag = () => [
+    ...juanBag(),
+    tmItem(56),   // Quincy's victory road TM
+    tmItem(94),   // Katelynn's victory road TM
+    tmItem(95),   // EverGrande rival TM
+];
+
 const trainersData = [
     // Route 101
     {
@@ -4822,7 +4829,7 @@ const trainersData = [
         level: 64,
         isBoss: true,
         reward: ['GYM_REWARD_8', tmItem(51)],
-        bag: [...juanBag(), 'Water Gem'],
+        bag: [...juanBag()],
         team: [
             pokeDefUbersMega({
                 type: [gymMainTypes[7]],
@@ -4865,7 +4872,7 @@ const trainersData = [
         class: 'Collector',
         reward: ['SPECIES_AERODACTYL'],
         level: 67,
-        bag: [...spaceCenterBag()],
+        bag: [...juanBag()],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -4883,7 +4890,7 @@ const trainersData = [
         class: 'Hex Maniac',
         reward: ['SPECIES_KABUTOPS', 'SPECIES_KADABRA', 'SPECIES_ALAKAZAM'],
         level: 67,
-        bag: [...spaceCenterBag()],
+        bag: [...juanBag()],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -4909,7 +4916,7 @@ const trainersData = [
         class: 'Cooltrainer F',
         reward: ['ITEM_MEGA_12'],
         level: 67,
-        bag: [...spaceCenterBag()],
+        bag: [...juanBag()],
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
@@ -4924,7 +4931,7 @@ const trainersData = [
         class: 'Bird Keeper',
         reward: ['ITEM_MEGA_13'],
         level: 67,
-        bag: [...spaceCenterBag()],
+        bag: [...juanBag()],
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
@@ -4939,7 +4946,7 @@ const trainersData = [
         class: 'Psychic M',
         reward: ['ITEM_MEGA_14'],
         level: 67,
-        bag: [...spaceCenterBag()],
+        bag: [...juanBag()],
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
@@ -4954,7 +4961,7 @@ const trainersData = [
         class: 'Parasol Lady',
         reward: ['ITEM_MEGA_15'],
         level: 67,
-        bag: [...spaceCenterBag()],
+        bag: [...juanBag()],
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
@@ -4969,7 +4976,7 @@ const trainersData = [
         class: 'Cooltrainer M',
         reward: ['ITEM_MEGA_16'],
         level: 67,
-        bag: [...spaceCenterBag()],
+        bag: [...juanBag()],
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
@@ -4985,7 +4992,7 @@ const trainersData = [
         class: 'Wally',
         isBoss: true,
         level: 67,
-        bag: [...spaceCenterBag()],
+        bag: [...juanBag()],
         team: [
             pokeDefOnlyUbers(),
             {
@@ -5025,7 +5032,7 @@ const trainersData = [
         class: 'Cooltrainer F',
         reward: ['SPECIES_SHEDINJA', 'SPECIES_MOLTRES', 'SPECIES_ARTICUNO', 'SPECIES_ZAPDOS', 'SPECIES_LUGIA'],
         level: 70,
-        bag: [...spaceCenterBag()],
+        bag: [...juanBag()],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -5052,6 +5059,22 @@ const trainersData = [
             },
         ],
     },
+    {
+        id: 'TRAINER_QUINCY',
+        class: 'Black Belt',
+        reward: [tmItem(56)],
+        level: 70,
+        bag: [tmItem(56), ...getSampleItemsFromArray(juanBag(), 24)],
+        team: genericTrainerTeamPostTateAndLiza(),
+    },
+    {
+        id: 'TRAINER_KATELYNN',
+        class: 'Cooltrainer F',
+        reward: [tmItem(94)],
+        level: 70,
+        bag: [tmItem(94), ...getSampleItemsFromArray(juanBag(), 24)],
+        team: genericTrainerTeamPostTateAndLiza(),
+    },
     // Ever Grande Rival
     {
         id: 'TRAINER_MAY_EVERGRANDE_CITY_TREECKO',
@@ -5059,7 +5082,8 @@ const trainersData = [
         isBoss: true,
         level: 70,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...spaceCenterBag()],
+        reward: [tmItem(95)],
+        bag: [...victoryRoadBag()],
         team: [...rivalEvergrandeCityTemplate('TREECKO')],
     },
     {
@@ -5068,7 +5092,8 @@ const trainersData = [
         isBoss: true,
         level: 70,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...spaceCenterBag()],
+        reward: [tmItem(95)],
+        bag: [...victoryRoadBag()],
         team: [...rivalEvergrandeCityTemplate('TORCHIC')],
     },
     {
@@ -5077,7 +5102,8 @@ const trainersData = [
         isBoss: true,
         level: 70,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
-        bag: [...spaceCenterBag()],
+        reward: [tmItem(95)],
+        bag: [...victoryRoadBag()],
         team: [...rivalEvergrandeCityTemplate('MUDKIP')],
     },
     {
@@ -5101,7 +5127,7 @@ const trainersData = [
         class: 'Aroma Lady',
         reward: ['ITEM_MEGA_17'],
         level: 73,
-        bag: [...spaceCenterBag()],
+        bag: [...victoryRoadBag()],
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
@@ -5115,7 +5141,7 @@ const trainersData = [
         class: 'Psychic F',
         reward: ['ITEM_MEGA_18'],
         level: 73,
-        bag: [...spaceCenterBag()],
+        bag: [...victoryRoadBag()],
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
@@ -5129,7 +5155,7 @@ const trainersData = [
         class: 'Expert M',
         reward: ['ITEM_MEGA_19'],
         level: 73,
-        bag: [...spaceCenterBag()],
+        bag: [...victoryRoadBag()],
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
@@ -5143,7 +5169,7 @@ const trainersData = [
         class: 'Youngster',
         reward: ['ITEM_MEGA_20'],
         level: 73,
-        bag: [...spaceCenterBag()],
+        bag: [...victoryRoadBag()],
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
@@ -5157,7 +5183,7 @@ const trainersData = [
         class: 'Ninja Boy',
         reward: ['ITEM_MEGA_21'],
         level: 73,
-        bag: [...spaceCenterBag()],
+        bag: [...victoryRoadBag()],
         team: [
             {
                 special: TRAINER_POKE_MEGA_FROM_STONE,
@@ -5172,7 +5198,7 @@ const trainersData = [
         class: 'Elite Four Sidney',
         isBoss: true,
         level: 73,
-        bag: [...spaceCenterBag()],
+        bag: [...victoryRoadBag()],
         team: [
             pokeDefOnlyUbers({
                 type: [e41MainType],
@@ -5199,7 +5225,7 @@ const trainersData = [
         class: 'Elite Four Phoebe',
         isBoss: true,
         level: 74,
-        bag: [...spaceCenterBag()],
+        bag: [...victoryRoadBag()],
         team: [
             pokeDefOnlyUbers({
                 type: [e42MainType],
@@ -5226,7 +5252,7 @@ const trainersData = [
         class: 'Elite Four Glacia',
         isBoss: true,
         level: 75,
-        bag: [...spaceCenterBag()],
+        bag: [...victoryRoadBag()],
         team: [
             pokeDefOnlyUbers({
                 type: [e43MainType],
@@ -5253,7 +5279,7 @@ const trainersData = [
         class: 'Elite Four Drake',
         isBoss: true,
         level: 76,
-        bag: [...spaceCenterBag()],
+        bag: [...victoryRoadBag()],
         team: [
             pokeDefOnlyUbers({
                 type: [e44MainType],
@@ -5280,7 +5306,7 @@ const trainersData = [
         class: 'Steven',
         isBoss: true,
         level: 78,
-        bag: [...spaceCenterBag()],
+        bag: [...victoryRoadBag()],
         team: [
             pokeDefOnlyAG({
                 hasStat: ['baseBST', '<', '851'],

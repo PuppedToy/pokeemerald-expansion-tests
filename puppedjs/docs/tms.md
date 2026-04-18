@@ -78,7 +78,7 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM53 | godlikeDmg | Item — Route 124 (item ball, Roland) |
 | TM54 | godlikeDmg | Item — Route 125 (item ball, Auron) |
 | TM55 | godlikeDmg | Item — Route 127 (item ball, Aidan) |
-| TM56 | godlikeDmg | — Unplaced |
+| TM56 | godlikeDmg | Item — Victory Road 1F (item ball, Quincy) |
 | TM57 | niche | Pick — Route 114 Angelina (choose 1 of 4) |
 | TM58 | niche | Pick — Route 114 Angelina (choose 1 of 4) |
 | TM59 | niche | Pick — Route 114 Angelina (choose 1 of 4) |
@@ -116,8 +116,8 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM91 | godlikeStatus | Gym reward — Tate & Liza (badge 7) |
 | TM92 | godlikeStatus | Item — Route 124 (item ball, Spencer) |
 | TM93 | godlikeStatus | Item — Route 127 (item ball, Athena) |
-| TM94 | godlikeStatus | — Unplaced |
-| TM95 | godlikeStatus | — Unplaced |
+| TM94 | godlikeStatus | Item — Victory Road 1F (item ball, Katelynn) |
+| TM95 | godlikeStatus | Scripted — EverGrande City (rival defeat reward) |
 
 ---
 

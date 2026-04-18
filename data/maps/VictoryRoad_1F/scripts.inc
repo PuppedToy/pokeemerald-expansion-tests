@@ -116,9 +116,19 @@ VictoryRoad_1F_EventScript_Quincy::
 	msgbox VictoryRoad_1F_Text_QuincyPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+VictoryRoad_1F_EventScript_QuincyGodlikeTM::
+	finditem ITEM_TM56
+	setflag FLAG_ITEM_VICTORY_ROAD_1F_MAX_ELIXIR
+	end
+
 VictoryRoad_1F_EventScript_Katelynn::
 	trainerbattle_single TRAINER_KATELYNN, VictoryRoad_1F_Text_KatelynnIntro, VictoryRoad_1F_Text_KatelynnDefeat
 	msgbox VictoryRoad_1F_Text_KatelynnPostBattle, MSGBOX_AUTOCLOSE
+	end
+
+VictoryRoad_1F_EventScript_KatelynnGodlikeTM::
+	finditem ITEM_TM94
+	setflag FLAG_ITEM_VICTORY_ROAD_1F_PP_UP
 	end
 
 VictoryRoad_1F_Text_WallyNotGoingToLoseAnymore:
