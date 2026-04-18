@@ -4118,6 +4118,14 @@ const trainersData = [
         team: genericTrainerTeamPostMatt(),
     },
     {
+        id: 'TRAINER_GRACE',
+        class: 'Expert F',
+        reward: [...choiceGraceTMs],
+        level: 56,
+        bag: [...choiceGraceTMs, ...getSampleItemsFromArray(wallyBag2(), 17)],
+        team: genericTrainerTeamPostMatt(),
+    },
+    {
         id: 'TRAINER_SPENCER',
         class: 'Fisherman',
         reward: [tmItem(92)],
@@ -4131,14 +4139,6 @@ const trainersData = [
         reward: [tmItem(53)],
         level: 56,
         bag: [tmItem(53), ...getSampleItemsFromArray(wallyBag2(), 17)],
-        team: genericTrainerTeamPostMatt(),
-    },
-    {
-        id: 'TRAINER_GRACE',
-        class: 'Expert F',
-        reward: [...choiceGraceTMs],
-        level: 56,
-        bag: [...choiceGraceTMs, ...getSampleItemsFromArray(wallyBag2(), 17)],
         team: genericTrainerTeamPostMatt(),
     },
     // Gym Leader - Tate & Liza
