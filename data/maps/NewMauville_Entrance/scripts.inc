@@ -1,7 +1,18 @@
 NewMauville_Entrance_MapScripts::
+	map_script MAP_SCRIPT_ON_RESUME, NewMauville_Entrance_OnResume
 	map_script MAP_SCRIPT_ON_LOAD, NewMauville_Entrance_OnLoad
 	map_script MAP_SCRIPT_ON_TRANSITION, NewMauville_Entrance_OnTransition
 	.byte 0
+
+NewMauville_Entrance_OnResume:
+	call_if_set FLAG_SYS_CTRL_OBJ_DELETE, NewMauville_Entrance_EventScript_TryRemoveMew
+	end
+
+NewMauville_Entrance_EventScript_TryRemoveMew::
+	specialvar VAR_RESULT, GetBattleOutcome
+	goto_if_ne VAR_RESULT, B_OUTCOME_CAUGHT, Common_EventScript_NopReturn
+	removeobject VAR_LAST_TALKED
+	return
 
 NewMauville_Entrance_OnLoad:
 	call_if_eq VAR_NEW_MAUVILLE_STATE, 0, NewMauville_Entrance_EventScript_CloseDoor
@@ -18,7 +29,12 @@ NewMauville_Entrance_EventScript_CloseDoor::
 
 NewMauville_Entrance_OnTransition:
 	setflag FLAG_LANDMARK_NEW_MAUVILLE
+	call_if_unset FLAG_HIDE_NEW_MAUVILLE_ENTRANCE_POKEMON, NewMauville_Entrance_EventScript_ShowMew
 	end
+
+NewMauville_Entrance_EventScript_ShowMew::
+	clearflag FLAG_HIDE_NEW_MAUVILLE_ENTRANCE_POKEMON
+	return
 
 NewMauville_Entrance_EventScript_Door::
 	lockall
@@ -66,6 +82,7 @@ NewMauville_Entrance_DefeatedPokemon::
 	setflag FLAG_HIDE_NEW_MAUVILLE_ENTRANCE_POKEMON
 	goto Common_EventScript_RemoveStaticPokemon
 	end
+
 
 NewMauville_EventScript_RanFromPokemon::
 	setvar VAR_0x8004, SPECIES_MEW
