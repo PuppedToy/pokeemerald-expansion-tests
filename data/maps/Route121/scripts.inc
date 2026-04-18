@@ -173,6 +173,34 @@ Route121_EventScript_RematchCristin::
 	msgbox Route121_Text_CristinPostRematch, MSGBOX_AUTOCLOSE
 	end
 
+Route121_EventScript_WalterPickTM::
+	multichoice 0, 0, MULTI_ROUTE121_PICK_TM2, FALSE
+	switch VAR_RESULT
+	case 0, Route121_EventScript_WalterPickTM_Option1
+	case 1, Route121_EventScript_WalterPickTM_Option2
+	case 2, Route121_EventScript_WalterPickTM_Option3
+	end
+
+Route121_EventScript_WalterPickTM_Option1::
+	finditem ITEM_TM45
+	setflag FLAG_ITEM_ROUTE_121_ZINC
+	end
+
+Route121_EventScript_WalterPickTM_Option2::
+	finditem ITEM_TM46
+	setflag FLAG_ITEM_ROUTE_121_ZINC
+	end
+
+Route121_EventScript_WalterPickTM_Option3::
+	finditem ITEM_TM47
+	setflag FLAG_ITEM_ROUTE_121_ZINC
+	end
+
+Route121_EventScript_GodlikeTM::
+	finditem ITEM_TM52
+	setflag FLAG_ITEM_ROUTE_121_CAPSULE
+	end
+
 Route121_EventScript_PickTM::
 	multichoice 0, 0, MULTI_ROUTE121_PICK_TM, FALSE
 	switch VAR_RESULT

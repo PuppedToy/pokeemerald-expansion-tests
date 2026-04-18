@@ -67,14 +67,14 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM42 | strongDmg | Pick — Route 120 Clarissa (choose 1 of 3) |
 | TM43 | strongDmg | Pick — Route 120 Clarissa (choose 1 of 3) |
 | TM44 | strongDmg | Pick — Route 120 Clarissa (choose 1 of 3) |
-| TM45 | strongDmg | — Unplaced |
-| TM46 | strongDmg | — Unplaced |
-| TM47 | strongDmg | — Unplaced |
+| TM45 | strongDmg | Pick — Route 121 Walter (choose 1 of 3) |
+| TM46 | strongDmg | Pick — Route 121 Walter (choose 1 of 3) |
+| TM47 | strongDmg | Pick — Route 121 Walter (choose 1 of 3) |
 | TM48 | strongDmg | — Unplaced |
 | TM49 | strongDmg | — Unplaced |
 | TM50 | strongDmg | — Unplaced |
 | TM51 | godlikeDmg | Gym reward — Wallace/Juan (badge 8) |
-| TM52 | godlikeDmg | — Unplaced |
+| TM52 | godlikeDmg | Item — Route 121 (item ball) |
 | TM53 | godlikeDmg | — Unplaced |
 | TM54 | godlikeDmg | — Unplaced |
 | TM55 | godlikeDmg | — Unplaced |

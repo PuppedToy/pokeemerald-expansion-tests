@@ -1095,6 +1095,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceWadeBerries    = route118ItemItems;
     const choiceRoseTMs        = [tmItem(39), tmItem(40), tmItem(41)];
     const choiceClarissaTMs    = [tmItem(42), tmItem(43), tmItem(44)];
+    const choiceWalterTMs      = [tmItem(45), tmItem(46), tmItem(47)];
     const choiceCristinBerries = route121BerryItems;
     const choicePresleyItems   = ['Weakness Policy', 'Eject Button', route125ItemItems[2]];
     const choiceJosephSeeds    = ['Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed'];
@@ -1226,6 +1227,7 @@ const wallyBag2 = () => [
     'Focus Sash',
     sample([...choiceTammyTMs]),
     sample([...choiceCristinBerries]),
+    sample([...choiceWalterTMs]),
 ];
 
 const choiceIsabellaItem = ['Choice Band', 'Choice Scarf', 'Choice Specs'];
@@ -3740,9 +3742,9 @@ const trainersData = [
     {
         id: 'TRAINER_WALTER_1',
         class: 'Gentleman',
-        reward: ['Random Defensive Mint'],
+        reward: [...choiceWalterTMs],
         level: 49,
-        bag: getSampleItemsFromArray(winonaBag(), 18),
+        bag: [...choiceWalterTMs, ...getSampleItemsFromArray(winonaBag(), 15)],
         team: genericTrainerTeamPostWinona(),
     },
     {

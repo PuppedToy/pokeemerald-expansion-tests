@@ -159,5 +159,5 @@ Bag functions in `trainers.js` are cumulative — each gym adds its items on top
 | `flanneryBag` | + Nob/Claude TMs, TM78, Strength HM, White/Power Herb, Shell Bell |
 | `normanBag` | + Drew berries, Heidi items, Dusty ball, Becky good item, Bryan TM pick, TM31, Surf HM |
 | `winonaBag` | + Clarissa strongDmg TM pick, TM32 |
-| `tateAndLizaBag` | + choice items, Grace TMs, TM91 |
+| `tateAndLizaBag` | + Tammy TMs, Cristin berries, Walter strongDmg TM pick, TM91 |
 | `juanBag` | + Prestly items, TM51, Waterfall HM |
