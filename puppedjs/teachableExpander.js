@@ -62,7 +62,9 @@ function buildRunTeachables(poke, tmPool, moves, preEvoPoke, megaEvoTree, pokemo
     const newTeachables = [];
     let totalLearned = baseTeachables.length;
 
-    if (preEvoPoke) {
+    if (preEvoPoke && poke.evolutionData.isMega) {
+        // Megas can't be taught moves in combat — pure inheritance, no extra rolls.
+    } else if (preEvoPoke) {
         // Evolution: only roll for newly-gained types and mega-exclusive types.
         for (const tm of remaining) {
             const move = moves[tm];
