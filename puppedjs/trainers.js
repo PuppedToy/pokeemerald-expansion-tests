@@ -264,13 +264,14 @@ const POKEDEF_UBERS = {
 
 const POKEDEF_UU_OU_MEGA = {
     isMega: true,
-    contextualTier: [TIER_UU, TIER_OU],
+    contextualTier: [TIER_RU, TIER_NU, TIER_UU, TIER_OU],
     checkValidEvo: true,
     tryEvolve: true,
 };
 
 const POKEDEF_MEGA = {
     isMega: true,
+    contextualTier: [TIER_UU, TIER_OU, TIER_UBERS],
     checkValidEvo: true,
     tryEvolve: true,
 };
