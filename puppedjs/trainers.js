@@ -207,7 +207,6 @@ const POKEDEF_RU = {
         {
             contextualTier: [TIER_NU],
             checkValidEvo: true,
-            tryEvolve: true,
         }
     ],
 };
@@ -215,19 +214,16 @@ const POKEDEF_RU = {
 const POKEDEF_NU_OR_RU = {
     contextualTier: [TIER_NU, TIER_RU],
     checkValidEvo: true,
-    tryEvolve: true,
 };
 
 const POKEDEF_UP_TO_UU = {
     contextualTier: [TIER_NU, TIER_RU, TIER_UU],
     checkValidEvo: true,
-    tryEvolve: true,
 };
 
 const POKEDEF_UP_TO_OU = {
     contextualTier: [TIER_NU, TIER_RU, TIER_UU, TIER_OU],
     checkValidEvo: true,
-    tryEvolve: true,
 };
 
 const POKEDEF_UP_TO_OU_NOEVO = {
@@ -238,12 +234,10 @@ const POKEDEF_UP_TO_OU_NOEVO = {
 const POKEDEF_UU = {
     contextualTier: [TIER_UU],
     checkValidEvo: true,
-    tryEvolve: true,
     fallback: [
         {
             contextualTier: [TIER_RU],
             checkValidEvo: true,
-            tryEvolve: true,
         }
     ],
 };
@@ -251,17 +245,14 @@ const POKEDEF_UU = {
 const POKEDEF_OU = {
     contextualTier: [TIER_OU],
     checkValidEvo: true,
-    tryEvolve: true,
     fallback: [
         {
             contextualTier: [TIER_UU],
             checkValidEvo: true,
-            tryEvolve: true,
         },
         {
             contextualTier: [TIER_RU],
             checkValidEvo: true,
-            tryEvolve: true,
         },
     ],
 };
@@ -2558,7 +2549,6 @@ const trainersData = [
             {
                 ...POKEDEF_NU,
                 type: [gymMainTypes[2]],
-                tryEvolve: true,
             },
         ],
     },
@@ -2984,7 +2974,6 @@ const trainersData = [
                         contextualTier: [TIER_RU, TIER_UU, TIER_OU, TIER_UBERS],
                         type: [gymMainTypes[3]],
                         checkValidEvo: true,
-                        tryEvolve: true,
                     },
                     {
                         contextualTier: [TIER_OU],
