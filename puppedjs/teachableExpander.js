@@ -101,8 +101,11 @@ function buildRunTeachables(poke, tmPool, moves, preEvoPoke, megaEvoTree, pokemo
     }
 
     const finalSet = new Set([...baseTeachables, ...newTeachables]);
+    const originalNonHMSet = new Set(originalTeachables.filter(m => !HM_MOVES.has(m)));
     poke.teachables    = [...baseTeachables, ...newTeachables, ...hmMoves];
-    poke.newTeachables = newTeachables;
+    // Stars: every TM in the final list that wasn't in this pokemon's own official learnset.
+    poke.newTeachables = [...finalSet].filter(m => !originalNonHMSet.has(m));
+    // Grey: official TMs for this pokemon that have no TM slot this run.
     poke.oldTeachables = originalTeachables.filter(m => !HM_MOVES.has(m) && !finalSet.has(m));
 }
 
