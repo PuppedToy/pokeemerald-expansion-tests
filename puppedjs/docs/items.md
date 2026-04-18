@@ -133,7 +133,7 @@ Items that appear as plain item balls with no randomization.
 |----------|------|------|
 | Route 116 | Repel | `FLAG_ITEM_ROUTE_116_REPEL` |
 | Route 116 | Mind Plate area | `FLAG_ITEM_ROUTE_116_MIND_PLATE` |
-| Various | TM map items (TM41/42/59/60/71/72/88) | see `tms.md` |
+| Various | TM map items (TM41/42/59/60/88) | see `tms.md` |
 | Various | HMs | see `tms.md` |
 
 ---
@@ -144,7 +144,7 @@ Bag functions in `trainers.js` are cumulative — each gym adds its items on top
 
 | Bag function | Adds |
 |---|---|
-| `rival103Bag` | Oran Berry, Route102 ball pick |
+| `rival103Bag` | Oran Berry, Route102 ball pick, TM71 (avgStatus scripted) |
 | `petalwoodGruntBag` | + Eviolite, Petalburg plate pick |
 | `roxanneBag` | + Route104 gem pick, berry pick, TM05-07 pick, TM01 |
 | `rusturfGruntBag` | + Route116 ball pick, **goodItemPool (route116XSpecial)** |

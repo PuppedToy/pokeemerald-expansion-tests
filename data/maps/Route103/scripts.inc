@@ -144,6 +144,7 @@ Route103_EventScript_Sawyer::
 	trainerbattle_single TRAINER_SAWYER_1, Route103_Text_SawyerIntro, Route103_Text_SawyerDefeated
 
 Route103_EventScript_RivalEnd::
+	finditem ITEM_TM71
 	removeobject LOCALID_ROUTE103_RIVAL
 	setflag FLAG_RECEIVED_OLD_ROD
 	setflag FLAG_DEFEATED_RIVAL_ROUTE103

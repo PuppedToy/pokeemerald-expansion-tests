@@ -442,21 +442,25 @@ Route109_EventScript_PickRock::
 
 Route109_EventScript_PickDampRock::
 	finditem ITEM_DAMP_ROCK
+	finditem ITEM_TM72
 	setflag FLAG_ITEM_ROUTE_109_PICK
 	end
 
 Route109_EventScript_PickHeatRock::
 	finditem ITEM_HEAT_ROCK
+	finditem ITEM_TM73
 	setflag FLAG_ITEM_ROUTE_109_PICK
 	end
 
 Route109_EventScript_PickSmoothRock::
 	finditem ITEM_SMOOTH_ROCK
+	finditem ITEM_TM74
 	setflag FLAG_ITEM_ROUTE_109_PICK
 	end
 
 Route109_EventScript_PickIcyRock::
 	finditem ITEM_ICY_ROCK
+	finditem ITEM_TM75
 	setflag FLAG_ITEM_ROUTE_109_PICK
 	end
 

@@ -11,8 +11,8 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | strongDmg | TM31–TM50 | Strong-power damage moves |
 | godlikeDmg | TM51–TM56 | Top-tier damage moves |
 | niche | TM57–TM60 | Niche / situational moves |
-| avgStatus | TM61–TM70 | Average-utility status moves |
-| weather | TM71–TM75 | Weather-setting moves |
+| avgStatus | TM61–TM71 | Average-utility status moves |
+| weather | TM72–TM75 | Fixed weather TMs (Rain Dance / Sunny Day / Sandstorm / Hail) |
 | barriers | TM76–TM77 | Screen / hazard moves |
 | goodStatus | TM78–TM90 | High-utility status moves |
 | godlikeStatus | TM91–TM95 | Top-tier status moves |
@@ -93,11 +93,11 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | TM68 | avgStatus | Pick — Route 109 Huey (choose 1 of 3) |
 | TM69 | avgStatus | Pick — Route 109 Huey (choose 1 of 3) |
 | TM70 | avgStatus | Pick — Route 109 Huey (choose 1 of 3) |
-| TM71 | weather | Item — Abandoned Ship (hidden) |
-| TM72 | weather | Item — Shoal Cave |
-| TM73 | weather | — Unplaced |
-| TM74 | weather | — Unplaced |
-| TM75 | weather | — Unplaced |
+| TM71 | avgStatus | Scripted — Rival Route 103 (defeat reward) |
+| TM72 | weather | Fixed: Rain Dance — Item — Route 109 Chandler (Damp Rock pick) |
+| TM73 | weather | Fixed: Sunny Day — Item — Route 109 Chandler (Heat Rock pick) |
+| TM74 | weather | Fixed: Sandstorm — Item — Route 109 Chandler (Smooth Rock pick) |
+| TM75 | weather | Fixed: Hail — Item — Route 109 Chandler (Icy Rock pick) |
 | TM76 | barriers | Pick — Route 117 (choose 1 of 2) |
 | TM77 | barriers | Pick — Route 117 (choose 1 of 2) |
 | TM78 | goodStatus | Gym reward — Flannery (badge 4) |

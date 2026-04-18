@@ -7,7 +7,6 @@ const {
     godlikeDamagePool,
     nichePool,
     averageStatusMoves,
-    weatherMoves,
     barrierMoves,
     goodStatusMoves,
     godlikeStatusMoves,
@@ -27,12 +26,20 @@ const TM_RANGES = [
     { start: 31, end: 50, pool: strongDamagePool },
     { start: 51, end: 56, pool: godlikeDamagePool },
     { start: 57, end: 60, pool: nichePool },
-    { start: 61, end: 70, pool: averageStatusMoves },
-    { start: 71, end: 75, pool: weatherMoves },
+    { start: 61, end: 71, pool: averageStatusMoves },
+    // TM72-75 are fixed weather TMs (see FIXED_TMS below)
     { start: 76, end: 77, pool: barrierMoves },
     { start: 78, end: 90, pool: goodStatusMoves },
     { start: 91, end: 95, pool: godlikeStatusMoves },
 ];
+
+// TM slots that are hardcoded (not randomized from pools).
+const FIXED_TMS = {
+    72: 'RAIN_DANCE',
+    73: 'SUNNY_DAY',
+    74: 'SANDSTORM',
+    75: 'HAIL',
+};
 
 const TMS_HMS_H_PATH = path.resolve(__dirname, '..', 'include', 'constants', 'tms_hms.h');
 const SCRIPT_MENU_PATH = path.resolve(__dirname, '..', 'src', 'data', 'script_menu.h');
@@ -57,11 +64,16 @@ function toDisplayName(moveName) {
 
 // Returns 0-indexed array: tmList[0] = move for TM01, tmList[4] = move for TM05, etc.
 function buildTMList() {
-    const tmList = [];
+    const tmList = new Array(95).fill(null);
+    for (const [slot, move] of Object.entries(FIXED_TMS)) {
+        tmList[parseInt(slot) - 1] = move;
+    }
     for (const { start, end, pool } of TM_RANGES) {
         const count = end - start + 1;
         const picks = shuffle(pool.filter(m => !HM_MOVES.has(m))).slice(0, count);
-        tmList.push(...picks.map(stripMovePrefix));
+        for (let i = 0; i < count; i++) {
+            tmList[start - 1 + i] = stripMovePrefix(picks[i]);
+        }
     }
     return tmList;
 }

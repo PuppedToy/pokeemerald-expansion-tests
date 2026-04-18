@@ -1089,6 +1089,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceNolanTMs       = [tmItem(88), tmItem(89), tmItem(90)];
     const choiceAngelinaTMs    = [tmItem(57), tmItem(58), tmItem(59), tmItem(60)];
     const choiceBryanTMs       = [tmItem(12), tmItem(29), tmItem(30)];
+    const rival103TM           = tmItem(71);
     const choiceHeidiItems     = [route111ItemItems[0], route111ItemItems[1], 'Custap Berry'];
     const choiceWadeBerries    = route118ItemItems;
     const choiceClarissaItems  = route120ItemItems;
@@ -1318,20 +1319,6 @@ const trainersData = [
     },
     // Route 103
     {
-        id: 'TRAINER_CARTER',
-        class: 'Fisherman',
-        reward: ['SPECIES_SURSKIT'],
-        level: 7,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SURSKIT'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 4),
-            { ...POKEDEF_MAGIKARP },
-        ]
-    },
-    {
         id: 'TRAINER_SAWYER_1',
         class: 'Hiker',
         reward: ['SPECIES_SMEARGLE'],
@@ -1346,10 +1333,24 @@ const trainersData = [
         ]
     },
     {
+        id: 'TRAINER_CARTER',
+        class: 'Fisherman',
+        reward: ['SPECIES_SURSKIT'],
+        level: 7,
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SURSKIT'],
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 4),
+            { ...POKEDEF_MAGIKARP },
+        ]
+    },
+    {
         id: 'TRAINER_MAY_ROUTE_103_TREECKO',
         class: 'May',
-        reward: ['TODO'],
-        bag: [...rival103Bag()],
+        reward: [rival103TM],
+        bag: [rival103TM, ...rival103Bag()],
         level: 7,
         isBoss: true,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -1364,8 +1365,8 @@ const trainersData = [
     {
         id: 'TRAINER_MAY_ROUTE_103_TORCHIC',
         class: 'May',
-        reward: ['TODO'],
-        bag: [...rival103Bag()],
+        reward: [rival103TM],
+        bag: [rival103TM, ...rival103Bag()],
         level: 7,
         isBoss: true,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -1380,8 +1381,8 @@ const trainersData = [
     {
         id: 'TRAINER_MAY_ROUTE_103_MUDKIP',
         class: 'May',
-        reward: ['TODO'],
-        bag: [...rival103Bag()],
+        reward: [rival103TM],
+        bag: [rival103TM, ...rival103Bag()],
         level: 7,
         isBoss: true,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
@@ -1410,20 +1411,6 @@ const trainersData = [
     },
     // Route 104
     {
-        id: 'TRAINER_DARIAN',
-        class: 'Fisherman',
-        reward: ['SPECIES_WEEDLE'],
-        level: 10,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_WEEDLE'],
-                item: 'Oran Berry',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
-        ]
-    },
-    {
         id: 'TRAINER_BILLY',
         class: 'Youngster',
         reward: ['SPECIES_GEODUDE'],
@@ -1432,6 +1419,20 @@ const trainersData = [
             {
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_GEODUDE'],
+                item: 'Oran Berry',
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
+        ]
+    },
+    {
+        id: 'TRAINER_DARIAN',
+        class: 'Fisherman',
+        reward: ['SPECIES_WEEDLE'],
+        level: 10,
+        team: [
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_WEEDLE'],
                 item: 'Oran Berry',
             },
             ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
@@ -1557,6 +1558,17 @@ const trainersData = [
     },
     // Route 104 again
     {
+        id: 'TRAINER_HALEY_1',
+        class: 'Lass',
+        reward: [...choice104TMs],
+        level: 12,
+        bag: [...rival103Bag(), ...choice104TMs],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
+            ...generatePokemonsWithDefinition(POKEDEF_ZU, 4),
+        ]
+    },
+    {
         id: 'TRAINER_WINSTON_1',
         class: 'Rich Boy',
         reward: [...choice104Berry],
@@ -1579,15 +1591,19 @@ const trainersData = [
         ]
     },
     {
-        id: 'TRAINER_HALEY_1',
-        class: 'Lass',
-        reward: [...choice104TMs],
+        id: 'TRAINER_ALIX',
+        class: 'Battle Girl',
+        reward: ['SPECIES_SANDSHREW'],
         level: 12,
-        bag: [...rival103Bag(), ...choice104TMs],
+        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 4),
-        ]
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_SANDSHREW'],
+                tryEvolve: true,
+            },
+            ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
+        ],
     },
     {
         id: 'TRAINER_TIMOTHY_1',
@@ -1599,21 +1615,6 @@ const trainersData = [
                 special: TRAINER_POKE_ENCOUNTER,
                 encounterIds: ['SPECIES_DELIBIRD'],
                 item: 'Oran Berry',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
-        ],
-    },
-    {
-        id: 'TRAINER_ALIX',
-        class: 'Battle Girl',
-        reward: ['SPECIES_SANDSHREW'],
-        level: 12,
-        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SANDSHREW'],
-                tryEvolve: true,
             },
             ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
         ],
@@ -1922,15 +1923,18 @@ const trainersData = [
     },
     // Route 106
     {
-        id: 'TRAINER_NED',
-        class: 'Fisherman',
-        reward: [route106GoodItem],
+        id: 'TRAINER_KYLA',
+        class: 'Tuber F',
+        reward: ['SPECIES_MACHOP'],
         level: 19,
-        bag: [route106GoodItem, ...getSampleItemsFromArray(rivalRustboroBag(), 3)],
+        bag: getSampleItemsFromArray(rivalRustboroBag(), 4),
         team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+            {
+                special: TRAINER_POKE_ENCOUNTER,
+                encounterIds: ['SPECIES_MACHOP'],
+            },
             ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ]
+        ],
     },
     {
         id: 'TRAINER_ELLIOT_1',
@@ -1947,18 +1951,26 @@ const trainersData = [
         ],
     },
     {
-        id: 'TRAINER_KYLA',
-        class: 'Tuber F',
-        reward: ['SPECIES_MACHOP'],
+        id: 'TRAINER_JOSUE',
+        class: 'Bird Keeper',
+        reward: [...choicesDewfordTMs],
         level: 19,
-        bag: getSampleItemsFromArray(rivalRustboroBag(), 4),
+        bag: [...getSampleItemsFromArray(rivalRustboroBag(), 1), ...choicesDewfordTMs],
         team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_MACHOP'],
-            },
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
             ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ],
+        ]
+    },
+    {
+        id: 'TRAINER_NED',
+        class: 'Fisherman',
+        reward: [route106GoodItem],
+        level: 19,
+        bag: [route106GoodItem, ...getSampleItemsFromArray(rivalRustboroBag(), 3)],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
+        ]
     },
     {
         id: 'TRAINER_ANDRES_1',
@@ -1966,17 +1978,6 @@ const trainersData = [
         reward: [...route106BallItems],
         level: 19,
         bag: [...route106BallItems, ...getSampleItemsFromArray(rivalRustboroBag(), 1)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ]
-    },
-    {
-        id: 'TRAINER_JOSUE',
-        class: 'Bird Keeper',
-        reward: [...choicesDewfordTMs],
-        level: 19,
-        bag: [...getSampleItemsFromArray(rivalRustboroBag(), 1), ...choicesDewfordTMs],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
             ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
@@ -2108,6 +2109,28 @@ const trainersData = [
         ]
     },
     {
+        id: 'TRAINER_RICKY_1',
+        class: 'Tuber M',
+        reward: [...choiceRickyTMs],
+        level: 24,
+        bag: getSampleItemsFromArray(stevenBag(), 5),
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
+        ]
+    },
+    {
+        id: 'TRAINER_HUEY',
+        class: 'Pokefan M',
+        reward: [tmItem(68), tmItem(69), tmItem(70)],
+        level: 24,
+        bag: [tmItem(68), tmItem(69), tmItem(70), ...getSampleItemsFromArray(stevenBag(), 2)],
+        team: [
+            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
+            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
+        ]
+    },
+    {
         id: 'TRAINER_HAILEY',
         class: 'Tuber F',
         reward: [route109GoodItem],
@@ -2120,7 +2143,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CHANDLER',
-        class: 'Tuber M',
+        class: 'Youngster',
         reward: ['Heat Rock', 'Damp Rock', 'Smooth Rock', 'Icy Rock'],
         level: 24,
         bag: getSampleItemsFromArray(stevenBag(), 3),
@@ -2137,28 +2160,6 @@ const trainersData = [
                 specific: 'SPECIES_CASTFORM_NORMAL',
             },
         ],
-    },
-    {
-        id: 'TRAINER_RICKY_1',
-        class: 'Tuber M',
-        reward: [...choiceRickyTMs],
-        level: 24,
-        bag: getSampleItemsFromArray(stevenBag(), 5),
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
-        ]
-    },
-    {
-        id: 'TRAINER_HUEY',
-        class: 'Sailor',
-        reward: [tmItem(68), tmItem(69), tmItem(70)],
-        level: 24,
-        bag: [tmItem(68), tmItem(69), tmItem(70), ...getSampleItemsFromArray(stevenBag(), 2)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
-        ]
     },
     {
         id: 'TRAINER_GRUNT_MUSEUM_1',
@@ -3247,7 +3248,7 @@ const trainersData = [
     // Route 105 (Island Cave)
     {
         id: 'TRAINER_IMANI',
-        class: 'Swimmer F',
+        class: 'Tuber F',
         reward: ['Master Ball'],
         level: 42,
         bag: getSampleItemsFromArray(normanBag(), 15),
