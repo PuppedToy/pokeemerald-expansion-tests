@@ -1486,7 +1486,7 @@ const trainersData = [
         class: 'Bug Catcher',
         reward: ['SPECIES_PATRAT'],
         level: 12,
-        bag: [...rival103Bag()],
+        bag: [...getSampleItemsFromArray(petalwoodGruntBag(), 2)],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -1500,7 +1500,7 @@ const trainersData = [
         class: 'Fisherman',
         reward: ['SPECIES_CATERPIE'],
         level: 12,
-        bag: [...rival103Bag()],
+        bag: [...getSampleItemsFromArray(petalwoodGruntBag(), 2)],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -1515,7 +1515,7 @@ const trainersData = [
         class: 'Lass',
         reward: [...choice104TMs],
         level: 12,
-        bag: [...rival103Bag(), ...choice104TMs],
+        bag: [...choice104TMs],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
             ...generatePokemonsWithDefinition(POKEDEF_ZU, 4),
@@ -1537,7 +1537,7 @@ const trainersData = [
         class: 'Fisherman',
         reward: [...choice104Gem],
         level: 12,
-        bag: getSampleItemsFromArray([...choice104Gem], 2),
+        bag: [...choice104Gem],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
             ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
@@ -1548,7 +1548,7 @@ const trainersData = [
         class: 'Battle Girl',
         reward: ['SPECIES_SANDSHREW'],
         level: 12,
-        bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
+        bag: [...getSampleItemsFromArray(petalwoodGruntBag(), 2)],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -1563,6 +1563,7 @@ const trainersData = [
         class: 'Expert M',
         reward: ['SPECIES_DELIBIRD'],
         level: 12,
+        bag: [...getSampleItemsFromArray(petalwoodGruntBag(), 2)],
         team: [
             {
                 special: TRAINER_POKE_ENCOUNTER,
@@ -1577,7 +1578,7 @@ const trainersData = [
         class: 'Psychic F',
         reward: ['Ability Patch'],
         level: 12,
-        bag: [...rival103Bag()],
+        bag: [...getSampleItemsFromArray(petalwoodGruntBag(), 2)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
             ...generatePokemonsWithDefinition(POKEDEF_ZU, 4),
