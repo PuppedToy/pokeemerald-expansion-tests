@@ -5029,7 +5029,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_HOPE',
-        class: 'Cooltrainer F',
+        class: 'Expert F',
         reward: ['SPECIES_SHEDINJA', 'SPECIES_MOLTRES', 'SPECIES_ARTICUNO', 'SPECIES_ZAPDOS', 'SPECIES_LUGIA'],
         level: 70,
         bag: [...juanBag()],

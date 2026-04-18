@@ -1751,10 +1751,10 @@ IVs: 24 HP / 24 Atk / 24 Def / 24 SpA / 24 SpD / 24 Spe
 
 === TRAINER_HOPE ===
 Name: HOPE
-Class: Cooltrainer
-Pic: Cooltrainer F
+Class: Expert
+Pic: Expert F
 Gender: Female
-Music: Cool
+Music: Intense
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
