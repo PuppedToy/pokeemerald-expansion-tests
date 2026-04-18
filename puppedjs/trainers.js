@@ -2146,7 +2146,7 @@ const trainersData = [
     {
         id: 'TRAINER_CHANDLER',
         class: 'Youngster',
-        reward: ['Heat Rock', 'Damp Rock', 'Smooth Rock', 'Icy Rock'],
+        reward: ['Heat Rock', 'Damp Rock', 'Smooth Rock', 'Icy Rock', tmItem(73), tmItem(72), tmItem(74), tmItem(75)],
         level: 24,
         bag: getSampleItemsFromArray(stevenBag(), 3),
         team: [
