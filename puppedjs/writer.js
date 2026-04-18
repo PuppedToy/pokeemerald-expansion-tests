@@ -1546,8 +1546,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
                     if (sortedBagItems.length > 0) {
                         newTeamMember.item = sortedBagItems[0];
+                        trainer.bag.splice(trainer.bag.indexOf(newTeamMember.item), 1);
                     }
-                    trainer.bag.splice(trainer.bag.indexOf(newTeamMember.item), 1);
                 }
                 if (!newTeamMember.nature) {
                     if (trainer.level < 28) {
