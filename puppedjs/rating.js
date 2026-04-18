@@ -843,7 +843,8 @@ function rateMove(move) {
     if (isFlyLike) {
         rating *= 0.7;
     }
-    const isRecoil = moveEffect.includes('EFFECT_RECOIL');
+    const isRecoilIfMiss = moveEffect.includes('EFFECT_RECOIL_IF_MISS');
+    const isRecoil = moveEffect.includes('EFFECT_RECOIL') && !isRecoilIfMiss;
     if (isRecoil) {
         rating *= 0.9;
     }
@@ -869,9 +870,9 @@ function rateMove(move) {
     if (hasAtkDefDrop || hasSpaDrop) {
         rating *= 0.9;
     }
-    const isRecoilIfMiss = moveEffect.includes('EFFECT_RECOIL_IF_MISS');
     if (isRecoilIfMiss) {
-        rating *= (100 - accuracy)/100;
+        // Miss → lose 50% max HP. Penalty = miss_chance × 0.5 recoil cost.
+        rating *= (1 - ((100 - accuracy) / 100) * 0.5);
     }
     const isBasedOnHp = moveEffect.includes('EFFECT_POWER_BASED_ON_USER_HP');
     if (isBasedOnHp) {
@@ -918,8 +919,8 @@ const specialScalingMoves = {
     MOVE_HEAVY_SLAM: 'defvsatk', // Assume certain correlation with weight
     MOVE_BODY_PRESS: 'defense',
     MOVE_FOUL_PLAY: 'defvsatk',
-    MOVE_LOW_KICK: 'none',
-    MOVE_GRASS_KNOT: 'none',
+    // Low Kick and Grass Knot use variable power based on target weight but still
+    // scale with Attack/SpAtk normally — let them fall through to standard scaling.
 };
 
 const atkBoostinEffects = [
@@ -1033,15 +1034,19 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     if (Object.keys(specialScalingMoves).includes(move.id)) {
         const scalingStat = specialScalingMoves[move.id];
         if (scalingStat === 'hp') {
+            // Counter/Mirror Coat: damage = 2× hit received; HP is a proxy for survivability to use it.
             rating += poke.baseHP / 100;
         } else if (scalingStat === '-speed') {
-            rating += (200 - poke.baseSpeed) / 100;
+            // Gyro Ball: slower user → higher power. Cap floor at 0.1 so it's never zero-rated.
+            rating *= Math.max(0.1, (200 - poke.baseSpeed) / 100);
         } else if (scalingStat === 'speed') {
-            rating += poke.baseSpeed / 100;
+            // Electro Ball: faster user → higher power.
+            rating *= poke.baseSpeed / 100;
         } else if (scalingStat === 'weight') {
             rating += Math.min(poke.weight / 100, 2);
         } else if (scalingStat === 'defense') {
-            rating += poke.baseDefense / 100;
+            // Body Press uses Defense as the attacking stat in the damage formula.
+            rating *= poke.baseDefense / 100;
         } else if (scalingStat === 'defvsatk') {
             const maxDefPlusHp = Math.max(poke.baseDefense + poke.baseHP, poke.baseSpDefense + poke.baseHP) / 2;
             const maxAtk = Math.max(poke.baseAttack, poke.baseSpAttack);
