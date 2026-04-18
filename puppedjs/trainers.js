@@ -2009,6 +2009,7 @@ const trainersData = [
         class: 'Steven',
         level: 22,
         isBoss: true,
+        reward: [tmItem(19)],
         bag: stevenBag(),
         team: [
             {
