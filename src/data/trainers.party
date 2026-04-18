@@ -7848,10 +7848,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_IMANI ===
 Name: IMANI
-Class: Swimmer F
-Pic: Swimmer F
+Class: Tuber F
+Pic: Tuber F
 Gender: Female
-Music: Swimmer
+Music: Girl
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -8664,10 +8664,10 @@ IVs: 4 HP / 4 Atk / 4 Def / 4 SpA / 4 SpD / 4 Spe
 
 === TRAINER_HUEY ===
 Name: HUEY
-Class: Sailor
-Pic: Sailor
+Class: Pokefan
+Pic: Pokefan M
 Gender: Male
-Music: Male
+Music: Twins
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
@@ -12655,10 +12655,10 @@ IVs: 0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe
 
 === TRAINER_CHANDLER ===
 Name: CHANDLER
-Class: Tuber M
-Pic: Tuber M
+Class: Youngster
+Pic: Youngster
 Gender: Male
-Music: Girl
+Music: Male
 Double Battle: No
 AI: AI_FLAG_SMART_TRAINER
 
