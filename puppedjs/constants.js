@@ -298,9 +298,9 @@ const constants = {
         },
         {
             id: '04',
-            map: 'Route119',
+            map: 'Route118',
             trainer: 'TRAINER_CHRIS',
-            script: 'Route119_EventScript_Chris',
+            script: 'Route118_EventScript_Chris',
         },
         {
             id: '05',

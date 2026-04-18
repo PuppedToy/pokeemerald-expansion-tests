@@ -177,6 +177,11 @@ Route118_Text_RouteSign119:
 	.string "ROUTE 118\n"
 	.string "{UP_ARROW} ROUTE 119$"
 
+Route118_EventScript_Chris::
+	trainerbattle_single TRAINER_CHRIS, Route119_Text_ChrisIntro, Route119_Text_ChrisDefeat
+	msgbox Route119_Text_ChrisPostBattle, MSGBOX_AUTOCLOSE
+	end
+
 @ === RAND_ROUTE118_BARNY_GOOD_START ===
 Route118_EventScript_BarnyGoodItem::
 	finditem ITEM_SITRUS_BERRY
