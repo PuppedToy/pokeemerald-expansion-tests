@@ -6,7 +6,9 @@ The TM list is randomized each run, but `teachable_learnsets.h` (generated once 
 
 ## How it works (per pokemon)
 
-Runs in `buildRunTeachables()` in `puppedjs/index.js`, called for each pokemon right after assembly and before `ratePokemon()`.
+Runs in `buildRunTeachables()` inside `puppedjs/teachableExpander.js`, orchestrated by `expandAllTeachables()`. Called twice per pipeline run:
+1. In `index.js` after assembly, using the pre-randomization TM pool (for rating/moveset selection).
+2. In `writer.js` after TM randomization, using the freshly randomized pool — this second pass is the one that produces the data written to `teachable_learnsets.h`.
 
 **Inputs:**
 - `poke.teachables` — the official teachable list from `teachable_learnsets.h`
@@ -32,7 +34,7 @@ if chance > 0 and random() < chance → add to newTeachables, increment totalLea
 
 `totalLearned` starts at `officialTMs.length` and increments with every TM added (same-type or not), so the chance decreases globally. The different-type chance hits 0 when `totalLearned == 35`, meaning at most 35 total TMs can be learned before different-type expansion stops.
 
-**Constants** (defined at top of `index.js`):
+**Constants** (defined at top of `puppedjs/teachableExpander.js`):
 - `SAME_TYPE_TM_BASE_CHANCE = 100`
 - `DIFFERENT_TYPE_TM_BASE_CHANCE = 35`
 
@@ -47,7 +49,7 @@ if chance > 0 and random() < chance → add to newTeachables, increment totalLea
 
 `editTeachableLearnsets()` in `puppedjs/pokemonWriter.js` rewrites `src/data/pokemon/teachable_learnsets.h` using the updated `poke.teachables`. It scans for `static const u16 sXxxTeachableLearnset[]` arrays, matches each to its pokemon by `poke.teachableLearnset`, and replaces the array body with the new move list.
 
-Like all `src/` mutations, `git restore src/` rolls this back after the run.
+**Important:** `analyze.js` is for HTML analysis only — it writes the file then immediately runs `git restore src/`. The game is never compiled from the modified file. To get expanded teachables in-game, use `randomize_and_make.sh`, which runs `index.js` → `make` → `git reset --hard` in that order.
 
 ## --all-tms mode
 

@@ -109,6 +109,7 @@ function buildRunTeachables(poke, tmPool, moves, preEvoPoke, megaEvoTree, pokemo
     poke.newTeachables = [...finalSet].filter(m => !originalNonHMSet.has(m));
     // Grey: official TMs for this pokemon that have no TM slot this run.
     poke.oldTeachables = originalTeachables.filter(m => !HM_MOVES.has(m) && !finalSet.has(m));
+
 }
 
 function expandAllTeachables(pokemonList, tmPool, moves) {
@@ -150,6 +151,10 @@ function expandAllTeachables(pokemonList, tmPool, moves) {
     }
 
     for (const poke of pokemonList) process(poke);
+
+    const totalNew = pokemonList.reduce((sum, p) => sum + (p.newTeachables ? p.newTeachables.length : 0), 0);
+    const expanded = pokemonList.filter(p => p.newTeachables && p.newTeachables.length > 0).length;
+    console.log(`[TEACHABLE-DEBUG] expandAllTeachables done: ${pokemonList.length} pokemon processed, ${expanded} gained new teachables, ${totalNew} total new moves added.`);
 }
 
 async function buildTmPoolFromFile() {

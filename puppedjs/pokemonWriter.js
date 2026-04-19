@@ -118,26 +118,44 @@ function editTeachableLearnsets(fileText, pokemonList) {
     let blockStart = -1;
     let result = fileText;
 
+    let blocksFound = 0;
+    let blocksMatched = 0;
+    let blocksReplaced = 0;
+
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         if (line.startsWith('static const u16 ') && line.includes('TeachableLearnset')) {
             currentLearnsetId = line.split('static const u16 ')[1].split('[]')[0];
             currentPokemon = pokemonList.find(p => p.teachableLearnset === currentLearnsetId);
             blockStart = i;
+            blocksFound++;
+            if (!currentPokemon) {
+                console.log(`[TEACHABLE-DEBUG] No pokemon matched learnset: ${currentLearnsetId}`);
+            }
             continue;
         }
         if (currentPokemon && line.startsWith('};')) {
+            blocksMatched++;
             if (!currentPokemon.teachables || currentPokemon.teachables.length === 0) {
+                console.log(`[TEACHABLE-DEBUG] ${currentLearnsetId}: teachables empty, skipping write.`);
                 currentPokemon = null;
                 continue;
             }
             const originalBlock = lines.slice(blockStart, i + 1).join('\n');
             const newMoves = currentPokemon.teachables.map(m => `    ${m},`).join('\n');
             const newBlock = `static const u16 ${currentLearnsetId}[] = {\n${newMoves}\n    MOVE_UNAVAILABLE,\n};`;
+            const before = result;
             result = result.replace(originalBlock, newBlock);
+            if (result === before) {
+                console.log(`[TEACHABLE-DEBUG] REPLACE FAILED for ${currentLearnsetId} — originalBlock not found in file. First 80 chars of block: ${JSON.stringify(originalBlock.slice(0, 80))}`);
+            } else {
+                blocksReplaced++;
+            }
             currentPokemon = null;
         }
     }
+
+    console.log(`[TEACHABLE-DEBUG] editTeachableLearnsets: ${blocksFound} arrays found, ${blocksMatched} matched to pokemon, ${blocksReplaced} successfully replaced.`);
     return result;
 }
 
