@@ -73,11 +73,15 @@ Two deps were found to be newer in practice:
 
 **2. `tools/learnset_helpers/build/all_learnables.json`** — this intermediate file is built by Make on demand (when it doesn't exist, or after `make clean`). When Make needs to build it at the start of the `make -j` run, its timestamp becomes NOW — newer than `teachable_learnsets.h`, which was written seconds earlier by `node`. This is impossible to fix purely in JS.
 
-**The definitive fix:** both `randomize_and_make.sh` and `randomize_and_make_for_debug.sh` run:
-```bash
-touch src/data/pokemon/teachable_learnsets.h
+**The definitive fix:** the Makefile rule was changed to only run `make_teachables.py` if the file doesn't exist yet:
+```makefile
+$(DATA_SRC_SUBDIR)/pokemon/teachable_learnsets.h: $(TEACHABLE_DEPS)
+    @test -f $@ || python3 $(LEARNSET_HELPERS_DIR)/make_teachables.py $<
 ```
-immediately after `node` finishes and before `make -j`. This sets `teachable_learnsets.h`'s timestamp to be the absolute latest, newer than anything Make could build or check, so `make_teachables.py` is never triggered.
+
+Since `teachable_learnsets.h` is committed to the repo, it's always present. Make will never regenerate it during a normal build — it only runs `make_teachables.py` on a completely fresh checkout that lacks the file. The JS pipeline owns the file's content; `git reset --hard` at the end of each run restores the base game data.
+
+A `touch` approach (setting the file's timestamp newer than `all_learnables.json`) was tried first but failed: `all_learnables.json` is built by Make ON DEMAND during `make -j`, giving it a timestamp that is always newer than any `touch` applied before Make starts.
 
 ## Two-pass architecture and docs/game sync
 

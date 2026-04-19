@@ -478,7 +478,7 @@ $(ALL_LEARNABLES_JSON): $(wildcard $(LEARNSET_HELPERS_DATA_DIR)/*.json) | $(LEAR
 	python3 $(LEARNSET_HELPERS_DIR)/make_learnables.py $(LEARNSET_HELPERS_DATA_DIR) $@
 
 $(DATA_SRC_SUBDIR)/pokemon/teachable_learnsets.h: $(TEACHABLE_DEPS)
-	python3 $(LEARNSET_HELPERS_DIR)/make_teachables.py $<
+	@test -f $@ || python3 $(LEARNSET_HELPERS_DIR)/make_teachables.py $<
 
 # Linker script
 LD_SCRIPT := ld_script_modern.ld
