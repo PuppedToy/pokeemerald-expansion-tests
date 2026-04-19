@@ -3602,7 +3602,7 @@ const trainersData = [
     {
         id: 'TRAINER_MARCEL',
         class: 'Cooltrainer M',
-        reward: ['SPECIES_SHUPPET', 'SPECIES_METAPOD', 'SPECIES_HONEDGE', 'SPECIES_BANETTE'],
+        reward: ['SPECIES_SHUPPET'],
         level: 49,
         bag: getSampleItemsFromArray(winonaBag(), 18),
         team: [
@@ -3620,7 +3620,7 @@ const trainersData = [
     {
         id: 'TRAINER_MYLES',
         class: 'Fisherman',
-        reward: ['Ability Patch'],
+        reward: ['SPECIES_METAPOD', 'SPECIES_HONEDGE', 'SPECIES_BANETTE'],
         level: 49,
         bag: getSampleItemsFromArray(winonaBag(), 18),
         team: [

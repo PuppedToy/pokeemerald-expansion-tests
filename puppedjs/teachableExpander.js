@@ -155,6 +155,19 @@ function expandAllTeachables(pokemonList, tmPool, moves) {
     const totalNew = pokemonList.reduce((sum, p) => sum + (p.newTeachables ? p.newTeachables.length : 0), 0);
     const expanded = pokemonList.filter(p => p.newTeachables && p.newTeachables.length > 0).length;
     console.log(`[TEACHABLE-DEBUG] expandAllTeachables done: ${pokemonList.length} pokemon processed, ${expanded} gained new teachables, ${totalNew} total new moves added.`);
+
+    // Sanity check: detect duplicate teachableLearnset values (two pokemon claiming the same C array).
+    const learnsetIdCount = {};
+    for (const poke of pokemonList) {
+        if (!poke.teachableLearnset) continue;
+        if (!learnsetIdCount[poke.teachableLearnset]) learnsetIdCount[poke.teachableLearnset] = [];
+        learnsetIdCount[poke.teachableLearnset].push(poke.id);
+    }
+    for (const [id, owners] of Object.entries(learnsetIdCount)) {
+        if (owners.length > 1) {
+            console.warn(`[TEACHABLE-DUPE] teachableLearnset "${id}" claimed by multiple pokemon: ${owners.join(', ')}`);
+        }
+    }
 }
 
 async function buildTmPoolFromFile() {

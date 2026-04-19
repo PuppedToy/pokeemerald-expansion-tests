@@ -141,6 +141,12 @@ function editTeachableLearnsets(fileText, pokemonList) {
                 currentPokemon = null;
                 continue;
             }
+            // Mismatch detection: derive expected species fragment from array name.
+            // e.g. sGibleTeachableLearnset → GIBLE; warn if matched pokemon ID doesn't contain it.
+            const expectedFragment = currentLearnsetId.slice(1).split('TeachableLearnset')[0].toUpperCase();
+            if (!currentPokemon.id.toUpperCase().includes(expectedFragment)) {
+                console.warn(`[TEACHABLE-MISMATCH] Array "${currentLearnsetId}" (expected ~${expectedFragment}) matched to ${currentPokemon.id} — possible data swap!`);
+            }
             const originalBlock = lines.slice(blockStart, i + 1).join('\n');
             const newMoves = currentPokemon.teachables.map(m => `    ${m},`).join('\n');
             const newBlock = `static const u16 ${currentLearnsetId}[] = {\n${newMoves}\n    MOVE_UNAVAILABLE,\n};`;

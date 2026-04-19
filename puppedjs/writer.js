@@ -250,10 +250,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
 
     const trainersData = trainers.getTrainersData(itemAssignments, tmList);
 
-    console.log('Writing pokemon buff / nerfs to files...');
-    // Save pokemon buffed / nerfed versions
-    await savePokemonData(pokemonList);
-
     console.log('Randomizing evolution levels...');
     await writeEvoLevels(pokemonList);
 
@@ -1702,6 +1698,46 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     await fs.writeFile((trainers.file), trainersFileContent, 'utf8');
     await fs.writeFile((trainers.partnersFile), partnersFileContent, 'utf8');
     console.log('Trainers updated successfully.');
+
+    // Write teachable_learnsets.h LAST among src/ writes so its timestamp is newer than
+    // all data/**/*.inc files. The Makefile's TEACHABLE_DEPS includes those .inc files —
+    // if any .inc is newer than teachable_learnsets.h, make_teachables.py regenerates it,
+    // wiping the expanded teachables. Writing it last prevents that.
+    console.log('Writing expanded teachable learnsets to file...');
+    await savePokemonData(pokemonList);
+
+    // Verify timestamp ordering: teachable_learnsets.h must be newer than all data/**/*.inc files
+    // so Make doesn't call make_teachables.py and overwrite the expanded data.
+    {
+        const teachablePath = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'teachable_learnsets.h');
+        const teachableStat = await fs.stat(teachablePath);
+        const teachableTime = teachableStat.mtimeMs;
+
+        const { execSync } = require('child_process');
+        let latestIncTime = 0;
+        let latestIncFile = '(none)';
+        try {
+            const incFiles = execSync('find data/ -type f -name "*.inc"', {
+                cwd: path.resolve(__dirname, '..'),
+                encoding: 'utf8',
+            }).trim().split('\n').filter(Boolean);
+            for (const incFile of incFiles) {
+                const st = await fs.stat(path.resolve(__dirname, '..', incFile));
+                if (st.mtimeMs > latestIncTime) {
+                    latestIncTime = st.mtimeMs;
+                    latestIncFile = incFile;
+                }
+            }
+        } catch (e) {
+            console.warn('[TEACHABLE-DEBUG] Could not scan data/*.inc timestamps:', e.message);
+        }
+
+        if (latestIncTime > teachableTime) {
+            console.warn(`[TEACHABLE-TIMESTAMP-WARNING] teachable_learnsets.h (${new Date(teachableTime).toISOString()}) is OLDER than "${latestIncFile}" (${new Date(latestIncTime).toISOString()}). make_teachables.py will likely overwrite the expanded teachables!`);
+        } else {
+            console.log(`[TEACHABLE-TIMESTAMP-OK] teachable_learnsets.h is newer than all data/*.inc files (latest was "${latestIncFile}"). Make will NOT regenerate it.`);
+        }
+    }
 
     let htmlOutputTemplate = await fs.readFile(path.resolve(__dirname, OUTPUT_DIR, TEMPLATE_FILE), 'utf8');
 

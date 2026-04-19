@@ -51,6 +51,47 @@ if chance > 0 and random() < chance → add to newTeachables, increment totalLea
 
 **Important:** `analyze.js` is for HTML analysis only — it writes the file then immediately runs `git restore src/`. The game is never compiled from the modified file. To get expanded teachables in-game, use `randomize_and_make.sh`, which runs `index.js` → `make` → `git reset --hard` in that order.
 
+## How the game reads teachables at runtime
+
+`src/pokemon.c` (`GetSpeciesTeachableLearnset` / `CanMonLearnTMHM`, lines ~5643–5677) reads `gSpeciesInfo[species].teachableLearnset`, which points to the array defined in `teachable_learnsets.h`. The check is a simple linear scan: `if (teachableLearnset[i] == move)`. The array must contain the exact `MOVE_*` constant value written into `tms_hms.h` for that TM slot; there is no fuzzy matching.
+
+## Why teachable_learnsets.h must be written last
+
+The Makefile contains this rule:
+```makefile
+TEACHABLE_DEPS := $(ALL_LEARNABLES_JSON) $(shell find data/ -type f -name '*.inc') \
+    $(INCLUDE_DIRS)/constants/tms_hms.h $(INCLUDE_DIRS)/config/pokemon.h $(C_SUBDIR)/pokemon.c
+$(DATA_SRC_SUBDIR)/pokemon/teachable_learnsets.h: $(TEACHABLE_DEPS)
+    python3 $(LEARNSET_HELPERS_DIR)/make_teachables.py $<
+```
+
+`$(shell find data/ -type f -name '*.inc')` lists all `data/**/*.inc` files at Make parse-time. If any of those `.inc` files have a newer timestamp than `teachable_learnsets.h`, Make calls `make_teachables.py` to regenerate the file — **wiping the expanded teachables**.
+
+`writer.js` writes to many `data/maps/**/scripts.inc` files (gym trainers, route items, mega trainer assignments). If those writes happen after `savePokemonData`, their timestamps will be newer than `teachable_learnsets.h`, triggering the regeneration. The fix: `savePokemonData` is called **last** in `writer.js`, after all `data/` writes, so `teachable_learnsets.h` has the newest timestamp when `make` runs.
+
+## Two-pass architecture and docs/game sync
+
+`expandAllTeachables` runs twice per pipeline invocation:
+
+1. **Pass 1** — in `index.js`, immediately after pokemon assembly, using the **pre-randomization** TM pool. This feeds `ratePokemon()` and `chooseMoveset()` so move selection reflects this run's actual TM availability.
+2. **Pass 2** — in `writer.js`, after `tmRandomizer` has written the final `tms_hms.h`. This pass overwrites the pass-1 results and produces the `poke.teachables` values that are (a) written to `teachable_learnsets.h` for compilation and (b) embedded in `pokes.js` for the HTML viewer.
+
+**Critical consequence:** The HTML viewer (`out.html`) and the compiled ROM are always generated from the same pipeline run — they both come from pass 2. If the HTML and the ROM are from **different runs** (e.g. one directory generates docs, another generates the ROM), a move shown in the HTML with ⭐️ may not be in the compiled game's teachable array. Always compare docs and ROM from the same `randomize_and_make.sh` invocation.
+
+## Verifying the feature ran correctly
+
+Check the `[TEACHABLE-DEBUG]` lines in the run log:
+
+```
+[TEACHABLE-DEBUG] expandAllTeachables done: 1203 pokemon processed, 1203 gained new teachables, N total new moves added.
+[TEACHABLE-DEBUG] expandAllTeachables done: 1187 pokemon processed, 1187 gained new teachables, N total new moves added.
+[TEACHABLE-DEBUG] editTeachableLearnsets: 1101 arrays found, 1076 matched to pokemon, 1076 successfully replaced.
+```
+
+- Two `expandAllTeachables` lines = both passes ran (pass 1 in `index.js`, pass 2 in `writer.js`).
+- `editTeachableLearnsets` line: "arrays found" ≈ total arrays in file; "matched" = arrays whose pokemon was in the run's list; "successfully replaced" should equal "matched". Any "REPLACE FAILED" message means a string-replace mismatch — investigate line-ending or whitespace differences.
+- The ~25 unmatched arrays (1101 found, 1076 matched in the example run) are learnsets whose species ID didn't appear in this run's pokemon list — typically regional variants or split-learnset edge cases. This is expected.
+
 ## --all-tms mode
 
 When `--all-tms` is passed (`tmPool === null`), `buildRunTeachables` returns immediately without modifying teachables. `newTeachables` and `oldTeachables` are not set on the poke object. The template handles this gracefully with `|| []` guards.
