@@ -739,7 +739,7 @@ LilycoveCity_Text_DepartmentStoreSign:
 	.string "you need!”$"
 
 LilycoveCity_Text_WallySign:
-	.string "You must defeat Wally\p"
+	.string "You must defeat Wally\n"
 	.string "to progress.$"
 
 LilycoveCity_Text_MoveDeletersHouseSign:

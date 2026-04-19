@@ -55,7 +55,7 @@ if chance > 0 and random() < chance → add to newTeachables, increment totalLea
 
 `src/pokemon.c` (`GetSpeciesTeachableLearnset` / `CanMonLearnTMHM`, lines ~5643–5677) reads `gSpeciesInfo[species].teachableLearnset`, which points to the array defined in `teachable_learnsets.h`. The check is a simple linear scan: `if (teachableLearnset[i] == move)`. The array must contain the exact `MOVE_*` constant value written into `tms_hms.h` for that TM slot; there is no fuzzy matching.
 
-## Why teachable_learnsets.h must be written last
+## Why teachable_learnsets.h must be the last file touched before make
 
 The Makefile contains this rule:
 ```makefile
@@ -65,9 +65,19 @@ $(DATA_SRC_SUBDIR)/pokemon/teachable_learnsets.h: $(TEACHABLE_DEPS)
     python3 $(LEARNSET_HELPERS_DIR)/make_teachables.py $<
 ```
 
-`$(shell find data/ -type f -name '*.inc')` lists all `data/**/*.inc` files at Make parse-time. If any of those `.inc` files have a newer timestamp than `teachable_learnsets.h`, Make calls `make_teachables.py` to regenerate the file — **wiping the expanded teachables**.
+If **any** dep in `TEACHABLE_DEPS` has a newer timestamp than `teachable_learnsets.h`, Make calls `make_teachables.py` to regenerate the file — **wiping the expanded teachables**.
 
-`writer.js` writes to many `data/maps/**/scripts.inc` files (gym trainers, route items, mega trainer assignments). If those writes happen after `savePokemonData`, their timestamps will be newer than `teachable_learnsets.h`, triggering the regeneration. The fix: `savePokemonData` is called **last** in `writer.js`, after all `data/` writes, so `teachable_learnsets.h` has the newest timestamp when `make` runs.
+Two deps were found to be newer in practice:
+
+**1. `data/**/*.inc` files** — `writer.js` writes to many `data/maps/**/scripts.inc` files (gym trainers, route items, mega trainer assignments). Originally `savePokemonData` ran early in `writer.js`; those `.inc` writes happened later, making them newer. Fix: `savePokemonData` is now called **last** in `writer.js`, after all `data/` writes.
+
+**2. `tools/learnset_helpers/build/all_learnables.json`** — this intermediate file is built by Make on demand (when it doesn't exist, or after `make clean`). When Make needs to build it at the start of the `make -j` run, its timestamp becomes NOW — newer than `teachable_learnsets.h`, which was written seconds earlier by `node`. This is impossible to fix purely in JS.
+
+**The definitive fix:** both `randomize_and_make.sh` and `randomize_and_make_for_debug.sh` run:
+```bash
+touch src/data/pokemon/teachable_learnsets.h
+```
+immediately after `node` finishes and before `make -j`. This sets `teachable_learnsets.h`'s timestamp to be the absolute latest, newer than anything Make could build or check, so `make_teachables.py` is never triggered.
 
 ## Two-pass architecture and docs/game sync
 
@@ -80,17 +90,22 @@ $(DATA_SRC_SUBDIR)/pokemon/teachable_learnsets.h: $(TEACHABLE_DEPS)
 
 ## Verifying the feature ran correctly
 
-Check the `[TEACHABLE-DEBUG]` lines in the run log:
+Check the `[TEACHABLE-DEBUG]` and `[TEACHABLE-TIMESTAMP-*]` lines in the run log:
 
 ```
 [TEACHABLE-DEBUG] expandAllTeachables done: 1203 pokemon processed, 1203 gained new teachables, N total new moves added.
 [TEACHABLE-DEBUG] expandAllTeachables done: 1187 pokemon processed, 1187 gained new teachables, N total new moves added.
 [TEACHABLE-DEBUG] editTeachableLearnsets: 1101 arrays found, 1076 matched to pokemon, 1076 successfully replaced.
+[TEACHABLE-TIMESTAMP-OK] teachable_learnsets.h (...) is newer than all TEACHABLE_DEPS. Make will NOT regenerate it.
 ```
 
 - Two `expandAllTeachables` lines = both passes ran (pass 1 in `index.js`, pass 2 in `writer.js`).
-- `editTeachableLearnsets` line: "arrays found" ≈ total arrays in file; "matched" = arrays whose pokemon was in the run's list; "successfully replaced" should equal "matched". Any "REPLACE FAILED" message means a string-replace mismatch — investigate line-ending or whitespace differences.
-- The ~25 unmatched arrays (1101 found, 1076 matched in the example run) are learnsets whose species ID didn't appear in this run's pokemon list — typically regional variants or split-learnset edge cases. This is expected.
+- `editTeachableLearnsets` line: "successfully replaced" should equal "matched". Any "REPLACE FAILED" means a string-replace mismatch — investigate line-ending or whitespace differences.
+- The ~25 unmatched arrays (1101 found, 1076 matched) are learnsets for species not in this run's list — expected.
+- `TEACHABLE-TIMESTAMP-OK` = `teachable_learnsets.h` is newer than all TEACHABLE_DEPS; `make_teachables.py` will not fire.
+- `TEACHABLE-TIMESTAMP-WARNING` = lists exactly which dep is newer — the `touch` in the shell script should prevent this, but if seen, it identifies the culprit.
+- `TEACHABLE-MISMATCH` in `error_log.txt` = a C array name was matched to a pokemon whose ID doesn't contain the expected species fragment. False positives expected for Alola/regional forms (e.g. `sRattataAlolaTeachableLearnset` → `SPECIES_RATTATA_ALOLA`). Any other mismatch is a real data swap.
+- `TEACHABLE-DUPE` in `error_log.txt` = two pokemon share the same `teachableLearnset` array name. Expected for megas, forms, and regional variants that share the base species array. Not a bug.
 
 ## --all-tms mode
 

@@ -1706,36 +1706,61 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     console.log('Writing expanded teachable learnsets to file...');
     await savePokemonData(pokemonList);
 
-    // Verify timestamp ordering: teachable_learnsets.h must be newer than all data/**/*.inc files
-    // so Make doesn't call make_teachables.py and overwrite the expanded data.
+    // Verify timestamp ordering against ALL TEACHABLE_DEPS from the Makefile:
+    //   $(ALL_LEARNABLES_JSON)  tools/learnset_helpers/build/all_learnables.json
+    //   $(shell find data/ -type f -name "*.inc")
+    //   include/constants/tms_hms.h
+    //   include/config/pokemon.h
+    //   src/pokemon.c
+    // If any dep is newer than teachable_learnsets.h, make_teachables.py will overwrite it.
+    // NOTE: the shell scripts now also run `touch teachable_learnsets.h` after node finishes,
+    // which is the definitive guard. This check is purely diagnostic.
     {
-        const teachablePath = path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'teachable_learnsets.h');
+        const repoRoot = path.resolve(__dirname, '..');
+        const teachablePath = path.resolve(repoRoot, 'src', 'data', 'pokemon', 'teachable_learnsets.h');
         const teachableStat = await fs.stat(teachablePath);
         const teachableTime = teachableStat.mtimeMs;
 
         const { execSync } = require('child_process');
-        let latestIncTime = 0;
-        let latestIncFile = '(none)';
+        const knownDeps = [
+            'tools/learnset_helpers/build/all_learnables.json',
+            'include/constants/tms_hms.h',
+            'include/config/pokemon.h',
+            'src/pokemon.c',
+        ];
+        const warnings = [];
+
+        // Check known static deps
+        for (const depFile of knownDeps) {
+            try {
+                const st = await fs.stat(path.resolve(repoRoot, depFile));
+                if (st.mtimeMs > teachableTime) {
+                    warnings.push(`"${depFile}" (${new Date(st.mtimeMs).toISOString()})`);
+                }
+            } catch (_) { /* file may not exist yet */ }
+        }
+
+        // Check all data/**/*.inc files
         try {
             const incFiles = execSync('find data/ -type f -name "*.inc"', {
-                cwd: path.resolve(__dirname, '..'),
+                cwd: repoRoot,
                 encoding: 'utf8',
             }).trim().split('\n').filter(Boolean);
             for (const incFile of incFiles) {
-                const st = await fs.stat(path.resolve(__dirname, '..', incFile));
-                if (st.mtimeMs > latestIncTime) {
-                    latestIncTime = st.mtimeMs;
-                    latestIncFile = incFile;
+                const st = await fs.stat(path.resolve(repoRoot, incFile));
+                if (st.mtimeMs > teachableTime) {
+                    warnings.push(`"${incFile}" (${new Date(st.mtimeMs).toISOString()})`);
                 }
             }
         } catch (e) {
             console.warn('[TEACHABLE-DEBUG] Could not scan data/*.inc timestamps:', e.message);
         }
 
-        if (latestIncTime > teachableTime) {
-            console.warn(`[TEACHABLE-TIMESTAMP-WARNING] teachable_learnsets.h (${new Date(teachableTime).toISOString()}) is OLDER than "${latestIncFile}" (${new Date(latestIncTime).toISOString()}). make_teachables.py will likely overwrite the expanded teachables!`);
+        if (warnings.length > 0) {
+            console.warn(`[TEACHABLE-TIMESTAMP-WARNING] teachable_learnsets.h (${new Date(teachableTime).toISOString()}) is OLDER than these TEACHABLE_DEPS — make_teachables.py may overwrite the expanded teachables:`);
+            warnings.forEach(w => console.warn(`  NEWER: ${w}`));
         } else {
-            console.log(`[TEACHABLE-TIMESTAMP-OK] teachable_learnsets.h is newer than all data/*.inc files (latest was "${latestIncFile}"). Make will NOT regenerate it.`);
+            console.log(`[TEACHABLE-TIMESTAMP-OK] teachable_learnsets.h (${new Date(teachableTime).toISOString()}) is newer than all TEACHABLE_DEPS. Make will NOT regenerate it.`);
         }
     }
 
