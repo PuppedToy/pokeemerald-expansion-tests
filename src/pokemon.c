@@ -1035,6 +1035,8 @@ void CreateMon(struct Pokemon *mon, u16 species, u8 level, u8 fixedIV, u8 hasFix
     CalculateMonStats(mon);
 }
 
+u8 gForcePerfectIVCount = 0;
+
 void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, u8 hasFixedPersonality, u32 fixedPersonality, u8 otIdType, u32 fixedOtId)
 {
     u8 speciesName[POKEMON_NAME_LENGTH + 1];
@@ -1044,7 +1046,6 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
     u8 i;
     u8 availableIVs[NUM_STATS];
     u8 selectedIvs[NUM_STATS];
-    bool32 isShiny;
 
     ZeroBoxMonData(boxMon);
 
@@ -1052,12 +1053,10 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
     if (otIdType == OT_ID_RANDOM_NO_SHINY)
     {
         value = Random32();
-        isShiny = FALSE;
     }
     else if (otIdType == OT_ID_PRESET)
     {
         value = fixedOtId;
-        isShiny = GET_SHINY_VALUE(value, hasFixedPersonality ? fixedPersonality : personality) < SHINY_ODDS;
     }
     else // Player is the OT
     {
@@ -1065,43 +1064,6 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
               | (gSaveBlock2Ptr->playerTrainerId[1] << 8)
               | (gSaveBlock2Ptr->playerTrainerId[2] << 16)
               | (gSaveBlock2Ptr->playerTrainerId[3] << 24);
-
-        if (P_FLAG_FORCE_NO_SHINY != 0 && FlagGet(P_FLAG_FORCE_NO_SHINY))
-        {
-            isShiny = FALSE;
-        }
-        else if (P_FLAG_FORCE_SHINY != 0 && FlagGet(P_FLAG_FORCE_SHINY))
-        {
-            isShiny = TRUE;
-        }
-        else if (P_ONLY_OBTAINABLE_SHINIES && (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE || (B_FLAG_NO_CATCHING != 0 && FlagGet(B_FLAG_NO_CATCHING))))
-        {
-            isShiny = FALSE;
-        }
-        else if (P_NO_SHINIES_WITHOUT_POKEBALLS && !HasAtLeastOnePokeBall())
-        {
-            isShiny = FALSE;
-        }
-        else
-        {
-            u32 totalRerolls = 0;
-            if (CheckBagHasItem(ITEM_SHINY_CHARM, 1))
-                totalRerolls += I_SHINY_CHARM_ADDITIONAL_ROLLS;
-            if (LURE_STEP_COUNT != 0)
-                totalRerolls += 1;
-            if (I_FISHING_CHAIN && gIsFishingEncounter)
-                totalRerolls += CalculateChainFishingShinyRolls();
-            if (gDexNavSpecies)
-                totalRerolls += CalculateDexNavShinyRolls();
-
-            while (GET_SHINY_VALUE(value, personality) >= SHINY_ODDS && totalRerolls > 0)
-            {
-                personality = Random32();
-                totalRerolls--;
-            }
-
-            isShiny = GET_SHINY_VALUE(value, personality) < SHINY_ODDS;
-        }
     }
 
     if (hasFixedPersonality)
@@ -1113,7 +1075,6 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
     checksum = CalculateBoxMonChecksum(boxMon);
     SetBoxMonData(boxMon, MON_DATA_CHECKSUM, &checksum);
     EncryptBoxMon(boxMon);
-    SetBoxMonData(boxMon, MON_DATA_IS_SHINY, &isShiny);
     StringCopy(speciesName, GetSpeciesName(species));
     SetBoxMonData(boxMon, MON_DATA_NICKNAME, speciesName);
     SetBoxMonData(boxMon, MON_DATA_LANGUAGE, &gGameLanguage);
@@ -1201,6 +1162,33 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
                 case STAT_SPDEF:
                     SetBoxMonData(boxMon, MON_DATA_SPDEF_IV, &iv);
                     break;
+                }
+            }
+        }
+
+        if (gForcePerfectIVCount > 0)
+        {
+            u8 forceCount = gForcePerfectIVCount;
+            gForcePerfectIVCount = 0;
+            iv = MAX_PER_STAT_IVS;
+            for (i = 0; i < NUM_STATS; i++)
+                availableIVs[i] = i;
+            for (i = 0; i < NUM_STATS && i < forceCount; i++)
+            {
+                u8 index = Random() % (NUM_STATS - i);
+                selectedIvs[i] = availableIVs[index];
+                RemoveIVIndexFromList(availableIVs, index);
+            }
+            for (i = 0; i < NUM_STATS && i < forceCount; i++)
+            {
+                switch (selectedIvs[i])
+                {
+                case STAT_HP:    SetBoxMonData(boxMon, MON_DATA_HP_IV, &iv);    break;
+                case STAT_ATK:   SetBoxMonData(boxMon, MON_DATA_ATK_IV, &iv);   break;
+                case STAT_DEF:   SetBoxMonData(boxMon, MON_DATA_DEF_IV, &iv);   break;
+                case STAT_SPEED: SetBoxMonData(boxMon, MON_DATA_SPEED_IV, &iv); break;
+                case STAT_SPATK: SetBoxMonData(boxMon, MON_DATA_SPATK_IV, &iv); break;
+                case STAT_SPDEF: SetBoxMonData(boxMon, MON_DATA_SPDEF_IV, &iv); break;
                 }
             }
         }
@@ -2357,6 +2345,16 @@ static ALWAYS_INLINE bool32 IsEggOrBadEgg(struct BoxPokemon *boxMon)
     return GetSubstruct3(boxMon)->isEgg || IsBadEgg(boxMon);
 }
 
+static u32 GetBoxMonIVTotal(const struct BoxPokemon *boxMon)
+{
+    return GetBoxMonData(boxMon, MON_DATA_HP_IV, NULL)
+         + GetBoxMonData(boxMon, MON_DATA_ATK_IV, NULL)
+         + GetBoxMonData(boxMon, MON_DATA_DEF_IV, NULL)
+         + GetBoxMonData(boxMon, MON_DATA_SPEED_IV, NULL)
+         + GetBoxMonData(boxMon, MON_DATA_SPATK_IV, NULL)
+         + GetBoxMonData(boxMon, MON_DATA_SPDEF_IV, NULL);
+}
+
 /* GameFreak called GetBoxMonData with either 2 or 3 arguments, for type
  * safety we have a GetBoxMonData macro (in include/pokemon.h) which
  * dispatches to either GetBoxMonData2 or GetBoxMonData3 based on the
@@ -2804,11 +2802,8 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
             retVal = boxMon->checksum;
             break;
         case MON_DATA_IS_SHINY:
-        {
-            u32 shinyValue = GET_SHINY_VALUE(boxMon->otId, boxMon->personality);
-            retVal = (shinyValue < SHINY_ODDS) ^ boxMon->shinyModifier;
+            retVal = (GetBoxMonIVTotal(boxMon) >= P_SHINY_IV_THRESHOLD);
             break;
-        }
         case MON_DATA_HIDDEN_NATURE:
         {
             u32 nature = GetNatureFromPersonality(boxMon->personality);

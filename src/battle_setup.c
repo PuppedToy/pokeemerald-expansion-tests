@@ -530,6 +530,11 @@ void StartGroudonKyogreBattle(void)
     TryUpdateGymLeaderRematchFromWild();
 }
 
+void ForcePerfectIVsOnNextEncounter(void)
+{
+    gForcePerfectIVCount = 3;
+}
+
 void StartRegiBattle(void)
 {
     u8 transitionId;

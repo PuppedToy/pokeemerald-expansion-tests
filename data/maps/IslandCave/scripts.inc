@@ -96,6 +96,7 @@ IslandCave_EventScript_Regice::
 	waitmoncry
 	setwildbattle SPECIES_REGICE, 39
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
+	special ForcePerfectIVsOnNextEncounter
 	special StartRegiBattle
 	waitstate
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE

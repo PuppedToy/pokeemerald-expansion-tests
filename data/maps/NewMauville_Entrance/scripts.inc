@@ -67,6 +67,7 @@ NewMauville_Entrance_Pokemon::
 	waitmoncry
 	setwildbattle SPECIES_MEW, 39
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
+	special ForcePerfectIVsOnNextEncounter
 	special BattleSetup_StartLegendaryBattle
 	waitstate
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE

@@ -48,6 +48,7 @@ SkyPillar_Top_EventScript_Rayquaza::
 	waitmoncry
 	setwildbattle SPECIES_RAYQUAZA, 70
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
+	special ForcePerfectIVsOnNextEncounter
 	special BattleSetup_StartLegendaryBattle
 	waitstate
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE
@@ -146,6 +147,7 @@ SkyPillar_Top_EventScript_PickLegendary1::
 	delay 40
 	waitmoncry
 	setwildbattle SPECIES_LEGEND1, 61
+	special ForcePerfectIVsOnNextEncounter
 	special BattleSetup_StartLegendaryBattle
 	waitstate
 	setflag FLAG_DEFEATED_RAYQUAZA
@@ -157,6 +159,7 @@ SkyPillar_Top_EventScript_PickLegendary2::
 	delay 40
 	waitmoncry
 	setwildbattle SPECIES_LEGEND2, 61
+	special ForcePerfectIVsOnNextEncounter
 	special BattleSetup_StartLegendaryBattle
 	waitstate
 	setflag FLAG_DEFEATED_RAYQUAZA
@@ -168,6 +171,7 @@ SkyPillar_Top_EventScript_PickLegendary3::
 	delay 40
 	waitmoncry
 	setwildbattle SPECIES_LEGEND3, 61
+	special ForcePerfectIVsOnNextEncounter
 	special BattleSetup_StartLegendaryBattle
 	waitstate
 	setflag FLAG_DEFEATED_RAYQUAZA
