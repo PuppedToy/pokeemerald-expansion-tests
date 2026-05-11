@@ -61,9 +61,9 @@ AncientTomb_EventScript_Registeel::
 	playmoncry SPECIES_REGISTEEL, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
+	special ForcePerfectIVsOnNextEncounter
 	setwildbattle SPECIES_REGISTEEL, 46
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
-	special ForcePerfectIVsOnNextEncounter
 	special StartRegiBattle
 	waitstate
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE

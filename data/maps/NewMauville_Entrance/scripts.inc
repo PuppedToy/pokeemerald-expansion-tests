@@ -65,9 +65,9 @@ NewMauville_Entrance_Pokemon::
 	playmoncry SPECIES_MEW, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
+	special ForcePerfectIVsOnNextEncounter
 	setwildbattle SPECIES_MEW, 39
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
-	special ForcePerfectIVsOnNextEncounter
 	special BattleSetup_StartLegendaryBattle
 	waitstate
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE

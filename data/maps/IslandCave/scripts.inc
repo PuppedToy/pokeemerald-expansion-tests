@@ -94,9 +94,9 @@ IslandCave_EventScript_Regice::
 	playmoncry SPECIES_REGICE, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
+	special ForcePerfectIVsOnNextEncounter
 	setwildbattle SPECIES_REGICE, 39
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
-	special ForcePerfectIVsOnNextEncounter
 	special StartRegiBattle
 	waitstate
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE

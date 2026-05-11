@@ -61,9 +61,9 @@ DesertRuins_EventScript_Regirock::
 	playmoncry SPECIES_REGIROCK, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
+	special ForcePerfectIVsOnNextEncounter
 	setwildbattle SPECIES_REGIROCK, 36
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
-	special ForcePerfectIVsOnNextEncounter
 	special StartRegiBattle
 	waitstate
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE
