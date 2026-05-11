@@ -185,6 +185,12 @@ static EWRAM_DATA struct {
 
 EWRAM_DATA u8 gOriginSummaryScreenPage = 0; // indicates summary screen page that the move relearner was opened from (if opened from PSS)
 
+// Box-mon relearner bridge: lets the relearner run on a PC box mon by temporarily mirroring it into gPlayerParty[0]
+EWRAM_DATA bool8 gBoxMonRelearnerActive = FALSE;
+EWRAM_DATA struct BoxPokemon *gBoxMonRelearnerBoxMonPtr = NULL;
+EWRAM_DATA struct Pokemon gBoxMonRelearnerPartyBackup = {0};
+EWRAM_DATA u8 gBoxMonRelearnerPartyCountBackup = 0;
+
 static const u16 sUI_Pal[] = INCBIN_U16("graphics/interface/ui_learn_move.gbapal");
 
 // The arrow sprites in this spritesheet aren't used. The scroll-arrow system provides its own
@@ -700,6 +706,29 @@ static void DoMoveRelearnerMain(void)
     case MENU_STATE_RETURN_TO_FIELD:
         if (!gPaletteFade.active)
         {
+            if (gBoxMonRelearnerActive)
+            {
+                // Write the modified moves/PP back to the box mon in storage
+                u8 i;
+                for (i = 0; i < MAX_MON_MOVES; i++)
+                {
+                    u16 move = GetMonData(&gPlayerParty[0], MON_DATA_MOVE1 + i, NULL);
+                    u8 pp = GetMonData(&gPlayerParty[0], MON_DATA_PP1 + i, NULL);
+                    SetBoxMonData(gBoxMonRelearnerBoxMonPtr, MON_DATA_MOVE1 + i, &move);
+                    SetBoxMonData(gBoxMonRelearnerBoxMonPtr, MON_DATA_PP1 + i, &pp);
+                }
+                // Restore the party slot we borrowed
+                gPlayerParty[0] = gBoxMonRelearnerPartyBackup;
+                gPlayerPartyCount = gBoxMonRelearnerPartyCountBackup;
+                gBoxMonRelearnerActive = FALSE;
+                // Return directly to the PC — skip the "re-show summary" step
+                MainCallback retCb = gInitialSummaryScreenCallback;
+                gInitialSummaryScreenCallback = NULL;
+                gOriginSummaryScreenPage = 0;
+                FreeMoveRelearnerResources();
+                SetMainCallback2(retCb != NULL ? retCb : CB2_ReturnToField);
+                return;
+            }
             if (gInitialSummaryScreenCallback != NULL)
             {
                 switch (gOriginSummaryScreenPage)

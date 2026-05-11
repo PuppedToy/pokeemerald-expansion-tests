@@ -1746,8 +1746,24 @@ static void Task_HandleInput(u8 taskId)
                 && ShouldShowMoveRelearner()
                 && (sMonSummaryScreen->currPageIndex == PSS_PAGE_BATTLE_MOVES || sMonSummaryScreen->currPageIndex == PSS_PAGE_CONTEST_MOVES))
         {
+            if (sMonSummaryScreen->isBoxMon)
+            {
+                // Box mon: mirror into gPlayerParty[0] so the relearner can operate on it,
+                // then write the result back to the box on return.
+                gBoxMonRelearnerBoxMonPtr = &sMonSummaryScreen->monList.boxMons[sMonSummaryScreen->curMonIndex];
+                gBoxMonRelearnerPartyBackup = gPlayerParty[0];
+                gBoxMonRelearnerPartyCountBackup = gPlayerPartyCount;
+                gPlayerParty[0] = sMonSummaryScreen->currentMon;
+                if (gPlayerPartyCount == 0)
+                    gPlayerPartyCount = 1;
+                gSpecialVar_0x8004 = 0;
+                gBoxMonRelearnerActive = TRUE;
+            }
+            else
+            {
+                gSpecialVar_0x8004 = sMonSummaryScreen->curMonIndex;
+            }
             sMonSummaryScreen->callback = CB2_InitLearnMove;
-            gSpecialVar_0x8004 = sMonSummaryScreen->curMonIndex;
             gOriginSummaryScreenPage = sMonSummaryScreen->currPageIndex;
             StopPokemonAnimations();
             PlaySE(SE_SELECT);
@@ -4649,8 +4665,6 @@ static inline bool32 ShouldShowMoveRelearner(void)
 {
     return (P_SUMMARY_SCREEN_MOVE_RELEARNER
          && !sMonSummaryScreen->lockMovesFlag
-         && !sMonSummaryScreen->isBoxMon
-         && sMonSummaryScreen->mode != SUMMARY_MODE_BOX
          && sMonSummaryScreen->mode != SUMMARY_MODE_BOX_CURSOR
          && sMonSummaryScreen->relearnableMovesNum > 0
          && !InBattleFactory()
