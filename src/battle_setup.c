@@ -878,7 +878,7 @@ static void CB2_GiveStarter(void)
     *GetVarPointer(VAR_STARTER_MON) = gSpecialVar_Result;
     starterMon = GetStarterPokemon(gSpecialVar_Result);
     ScriptGiveMon(starterMon, 7, ITEM_NONE);
-    // Force 3 randomly chosen IVs to 31 on the starter
+    // Force 3 randomly chosen IVs to 31, then top up remaining IVs until shiny threshold
     {
         u8 iv31 = MAX_PER_STAT_IVS;
         u8 ivOrder[NUM_STATS] = {0, 1, 2, 3, 4, 5};
@@ -890,6 +890,22 @@ static void CB2_GiveStarter(void)
         }
         for (k = 0; k < 3; k++)
             SetMonData(&gPlayerParty[0], MON_DATA_HP_IV + ivOrder[k], &iv31);
+        {
+            u32 total = 0, stat;
+            for (stat = 0; stat < NUM_STATS; stat++)
+                total += GetMonData(&gPlayerParty[0], MON_DATA_HP_IV + stat, NULL);
+            for (k = 3; k < NUM_STATS && total < P_SHINY_IV_THRESHOLD; k++)
+            {
+                u32 current = GetMonData(&gPlayerParty[0], MON_DATA_HP_IV + ivOrder[k], NULL);
+                u32 toAdd = MIN(P_SHINY_IV_THRESHOLD - total, MAX_PER_STAT_IVS - current);
+                if (toAdd > 0)
+                {
+                    u8 newIV = current + toAdd;
+                    SetMonData(&gPlayerParty[0], MON_DATA_HP_IV + ivOrder[k], &newIV);
+                    total += toAdd;
+                }
+            }
+        }
     }
     for (u16 i = 0; i < GetExtraPokemonCount(); i++)
     {
