@@ -8261,11 +8261,6 @@ static u32 GetTrainerMoneyToGive(u16 trainerId)
     if (GetTrainerPartyFromId(trainerId) == NULL)
         return 20;
 
-    // Gym bosses: 8 gym leaders + 4 Elite Four + 1 Champion = 13 total
-    static const u16 sMuseumGrunts[] = {
-        TRAINER_GRUNT_MUSEUM_1,
-        TRAINER_GRUNT_MUSEUM_2,
-    };
     static const u16 sSpaceCenterGrunts[] = {
         TRAINER_GRUNT_SPACE_CENTER_5,
         TRAINER_GRUNT_SPACE_CENTER_6,
@@ -8306,20 +8301,24 @@ static u32 GetTrainerMoneyToGive(u16 trainerId)
     u8 trainerClass = GetTrainerClassFromId(trainerId);
     u32 baseReward;
 
-    if (trainerClass == TRAINER_CLASS_LEADER
-     || trainerClass == TRAINER_CLASS_ELITE_FOUR
-     || trainerClass == TRAINER_CLASS_CHAMPION)
+    if (trainerClass == TRAINER_CLASS_CHAMPION)
+    {
+        baseReward = 50000;
+    }
+    else if (trainerClass == TRAINER_CLASS_ELITE_FOUR)
+    {
+        baseReward = 10000;
+    }
+    else if (trainerClass == TRAINER_CLASS_LEADER)
     {
         baseReward = 5000;
     }
     else
     {
         u32 i;
-        baseReward = 1000; // default: regular trainer
-        for (i = 0; i < ARRAY_COUNT(sMuseumGrunts); i++)
-        {
-            if (trainerId == sMuseumGrunts[i]) { baseReward = 2000; goto done; }
-        }
+        baseReward = 250; // default: regular trainer
+        if (trainerId == TRAINER_GRUNT_MUSEUM_2) { baseReward = 2050; goto done; } // museum entry costs $50
+        if (trainerId == TRAINER_GRUNT_MUSEUM_1) { baseReward = 2000; goto done; }
         for (i = 0; i < ARRAY_COUNT(sSpaceCenterGrunts); i++)
         {
             if (trainerId == sSpaceCenterGrunts[i]) { baseReward = 2000; goto done; }
