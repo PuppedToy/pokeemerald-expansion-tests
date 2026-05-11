@@ -1120,8 +1120,6 @@ static bool8 DisplayPartyPokemonDataForMoveTutorOrEvolutionItem(u8 slot)
 
         switch (CheckIfItemIsTMHMOrEvolutionStone(item))
         {
-        default:
-            return FALSE;
         case 1: // TM/HM
             DisplayPartyPokemonDataToTeachMove(slot, ItemIdToBattleMoveId(item));
             break;
@@ -1130,6 +1128,15 @@ static bool8 DisplayPartyPokemonDataForMoveTutorOrEvolutionItem(u8 slot)
                 return FALSE;
             DisplayPartyPokemonDescriptionData(slot, PARTYBOX_DESC_NO_USE);
             break;
+        default:
+            if (item == ITEM_RARE_CANDY) // Evolve Candy: highlight mons that can evolve by level now
+            {
+                if (!GetMonData(currentPokemon, MON_DATA_IS_EGG) && GetEvolutionTargetSpecies(currentPokemon, EVO_MODE_NORMAL, ITEM_NONE, NULL, NULL, CHECK_EVO) != SPECIES_NONE)
+                    return FALSE;
+                DisplayPartyPokemonDescriptionData(slot, PARTYBOX_DESC_NO_USE);
+                break;
+            }
+            return FALSE;
         }
     }
     return TRUE;
