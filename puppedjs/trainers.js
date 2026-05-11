@@ -1596,14 +1596,15 @@ const trainersData = [
         team: [
             {
                 ...POKEDEF_NU,
-                breedTier: 'perfect',
                 type: [gymMainTypes[0]],
             },
             gymIsChangedType[0] ? {
                 ...POKEDEF_PU,
+                breedTier: 'perfect',
                 type: [gymMainTypes[0]],
             } : {
                 specificIfTier: 'SPECIES_NOSEPASS',
+                breedTier: 'perfect',
                 ...POKEDEF_PU,
                 type: [gymMainTypes[0]],
             },
@@ -1956,16 +1957,19 @@ const trainersData = [
                 ...POKEDEF_PU,
                 type: [gymMainTypes[1]],
                 abilities: ['GUTS'],
+                breedTier: 'perfect',
                 item: 'Flame Orb',
                 fallback: [
                     {
                         ...POKEDEF_PU,
                         type: [gymMainTypes[1]],
+                        breedTier: 'perfect',
                         abilities: ['POISON_HEAL'],
                         item: 'Toxic Orb',
                     },
                     {
                         ...POKEDEF_NU,
+                        breedTier: 'perfect',
                         type: [gymMainTypes[1]],
                     },
                 ],
@@ -1975,11 +1979,13 @@ const trainersData = [
                 type: [gymMainTypes[1]],
                 tryToHaveMove: ['MOVE_BULK_UP', 'MOVE_FAKE_OUT'],
                 nature: NATURES.ADAMANT.name,
+                breedTier: 'perfect',
                 abilities: ['GUTS'],
                 item: 'Flame Orb',
                 fallback: [
                     {
                         ...POKEDEF_PU,
+                        breedTier: 'perfect',
                         type: [gymMainTypes[1]],
                     }
                 ],
@@ -2978,34 +2984,32 @@ const trainersData = [
         team: [
             gymIsChangedType[3] ? {
                 ...POKEDEF_RU,
+                breedTier: 'perfect',
                 type: [gymMainTypes[3]],
             } : {
                 specific: 'SPECIES_TORKOAL',
                 abilities: ['DROUGHT'],
                 item: 'Heat Rock',
+                breedTier: 'perfect',
                 checkValidEvo: true,
                 tryEvolve: true,
             },
             {
                 ...POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
                 type: [gymMainTypes[3]],
                 fallback: [
                     {
                         isMega: true,
-                        breedTier: 'perfect',
                         contextualTier: [TIER_RU, TIER_UU, TIER_OU, TIER_UBERS],
                         type: [gymMainTypes[3]],
                         checkValidEvo: true,
                     },
                     {
-                        breedTier: 'perfect',
                         contextualTier: [TIER_OU],
                         checkValidEvo: true,
                         type: [gymMainTypes[3]],
                     },
                     {
-                        breedTier: 'perfect',
                         contextualTier: [TIER_UU],
                         checkValidEvo: true,
                         type: [gymMainTypes[3]],
@@ -3148,10 +3152,12 @@ const trainersData = [
         team: [
             gymIsChangedType[4] ? {
                 ...POKEDEF_UU,
+                breedTier: 'perfect',
                 type: [gymMainTypes[4]],
             } : {
                 specificIfTier: 'SPECIES_SLAKING',
                 ...POKEDEF_UU,
+                breedTier: 'perfect',
                 item: 'Assault Vest',
                 tryToHaveMove: ['MOVE_FIRE_BLAST', 'MOVE_EARTHQUAKE', 'MOVE_FACADE', 'MOVE_SUCKER_PUNCH'],
             },
@@ -3194,25 +3200,21 @@ const trainersData = [
             },
             {
                 ...POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
                 type: [gymMainTypes[4]],
                 fallback: [
                    {
                         isMega: true,
-                        breedTier: 'perfect',
                         contextualTier: [TIER_UU, TIER_OU, TIER_UBERS],
                         type: [gymMainTypes[4]],
                         checkValidEvo: true,
                         tryEvolve: true,
                    },
                    {
-                        breedTier: 'perfect',
                         contextualTier: [TIER_OU],
                         type: [gymMainTypes[4]],
                         checkValidEvo: true,
                    },
                    {
-                        breedTier: 'perfect',
                         contextualTier: [TIER_UU],
                         type: [gymMainTypes[4]],
                         checkValidEvo: true,
@@ -4142,17 +4144,20 @@ const trainersData = [
             },
             gymIsChangedType[6] ? {
                 ...POKEDEF_OU,
+                breedTier: 'perfect',
                 type: [gymMainTypes[6]],
             } : (tateAndLizaUseSolrock ?
             {
                 specific: 'SPECIES_SOLROCK',
                 tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
+                breedTier: 'perfect',
                 item: 'Light Clay',
                 nature: 'Relaxed',
             }
             : {
                 specific: 'SPECIES_LUNATONE',
                 tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
+                breedTier: 'perfect',
                 item: 'Light Clay',
                 nature: 'Sassy',
             }),
@@ -4162,40 +4167,34 @@ const trainersData = [
             } : (tateAndLizaUseSolrock ?
             {
                 specificIfTier: 'SPECIES_LUNALA',
-                breedTier: 'perfect',
                 ...POKEDEF_UBERS,
                 item: 'Room Service',
                 nature: 'Quiet',
                 fallback: [
                     {
                         specificIfTier: 'SPECIES_LUNALA',
-                        breedTier: 'perfect',
                         ...POKEDEF_OU,
                         item: 'Room Service',
                         nature: 'Quiet',
                     },
                     {
-                        breedTier: 'perfect',
                         ...POKEDEF_OU,
                         type: [gymMainTypes[6]],
                     }
                 ]
             } : {
                 specificIfTier: 'SPECIES_SOLGALEO',
-                breedTier: 'perfect',
                 ...POKEDEF_UBERS,
                 item: 'Room Service',
                 nature: 'Brave',
                 fallback: [
                     {
                         specificIfTier: 'SPECIES_SOLGALEO',
-                        breedTier: 'perfect',
                         ...POKEDEF_OU,
                         item: 'Room Service',
                         nature: 'Quiet',
                     },
                     {
-                        breedTier: 'perfect',
                         ...POKEDEF_OU,
                         type: [gymMainTypes[6]],
                     }
@@ -4203,7 +4202,6 @@ const trainersData = [
             }),
             gymIsChangedType[6] ? {
                 ...POKEDEF_MEGA,
-                breedTier: 'perfect',
                 type: [gymMainTypes[6]],
             } : {
                 ...POKEDEF_MEGA,
@@ -4804,7 +4802,6 @@ const trainersData = [
         bag: [...juanBag()],
         team: [
             pokeDefUbersMega({
-                breedTier: 'perfect',
                 type: [gymMainTypes[7]],
             }),
             pokeDefOnlyUbers({
@@ -4822,11 +4819,13 @@ const trainersData = [
             gymIsChangedType[7] ? {
                 ...POKEDEF_UU,
                 type: [gymMainTypes[7]],
+                breedTier: 'perfect',
                 pickBest: true,
             } : {
                 specificIfTier: 'SPECIES_KINGDRA',
                 ...POKEDEF_UU,
                 item: 'Chesto Berry',
+                breedTier: 'perfect',
                 abilities: ['SNIPER'],
                 nature: 'Jolly',
                 tryToHaveMove: ['MOVE_DRAGON_DANCE', 'MOVE_WATERFALL'],
@@ -5004,6 +5003,7 @@ const trainersData = [
     {
         id: 'TRAINER_HOPE',
         class: 'Expert F',
+        breedTier: 'good',
         reward: ['SPECIES_SHEDINJA', 'SPECIES_MOLTRES', 'SPECIES_ARTICUNO', 'SPECIES_ZAPDOS', 'SPECIES_LUGIA'],
         level: 70,
         bag: [...juanBag()],
@@ -5036,6 +5036,7 @@ const trainersData = [
     {
         id: 'TRAINER_QUINCY',
         class: 'Black Belt',
+        breedTier: 'good',
         reward: [quincyTM],
         level: 70,
         bag: [quincyTM, ...getSampleItemsFromArray(juanBag(), 24)],
@@ -5044,6 +5045,7 @@ const trainersData = [
     {
         id: 'TRAINER_KATELYNN',
         class: 'Cooltrainer F',
+        breedTier: 'good',
         reward: [katelynTM],
         level: 70,
         bag: [katelynTM, ...getSampleItemsFromArray(juanBag(), 24)],
