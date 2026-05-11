@@ -6,6 +6,7 @@ const writer = require('./writer');
 
 const isDebug = process.argv.includes('--debug');
 const noBalance = process.argv.includes('--no-balance');
+const difficulty = (process.argv.find(a => a.startsWith('--difficulty=')) || '--difficulty=FAIR').split('=')[1].toUpperCase();
 // --all-tms: treat every move in every pokemon's teachable learnset as available.
 // Default (no flag): only moves covered by this game's actual TM pool are considered
 // learnable for combo detection. Use --all-tms for analysis against a hypothetical
@@ -845,7 +846,7 @@ async function exe() {
     await fs.writeFile(path.resolve(__dirname, 'evoTree.json'), JSON.stringify(evoTree, null, 2), 'utf-8');
     await fs.writeFile(path.resolve(__dirname, 'pokes.json'), JSON.stringify(allPokes, null, 2), 'utf-8');
 
-    await writer(allPokes, moves, abilities, isDebug);
+    await writer(allPokes, moves, abilities, isDebug, difficulty);
 }
 
 exe();

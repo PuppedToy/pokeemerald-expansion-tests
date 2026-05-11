@@ -18,6 +18,7 @@ const path = require('path');
 
 const root = __dirname;
 const isDebug = process.argv.includes('--debug');
+const difficultyArg = process.argv.find(a => a.startsWith('--difficulty='));
 
 // Guard: abort if data/ has uncommitted changes that the pipeline would clobber
 function checkDataClean() {
@@ -60,6 +61,7 @@ checkDataClean();
 // Step 1: Run without balance/mutations and with all TMs treated as available
 const indexArgs = [path.join('puppedjs', 'index.js'), '--no-balance', '--all-tms'];
 if (isDebug) indexArgs.push('--debug');
+if (difficultyArg) indexArgs.push(difficultyArg);
 try {
     run('node', indexArgs);
 } catch (err) {

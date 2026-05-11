@@ -235,14 +235,14 @@ const constants = {
     // Dynamic evo level algorithm constants
     // Base level ranges per evo-target tier (the pokemon being evolved INTO)
     EVO_LEVEL_BASE_RANGES: {
-        MAGIKARP: [9, 11],
-        ZU:       [9, 11],
-        PU:       [10, 12],
-        NU:       [13, 19],
+        MAGIKARP: [7, 9],
+        ZU:       [10, 11],
+        PU:       [12, 13],
+        NU:       [14, 19],
         RU:       [20, 28],
         UU:       [29, 35],
-        OU:       [36, 44],
-        UBERS:    [45, 60],
+        OU:       [39, 48],
+        UBERS:    [49, 60],
         AG:       [61, 75],
     },
 

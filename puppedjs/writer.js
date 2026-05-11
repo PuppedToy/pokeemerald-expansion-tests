@@ -3,6 +3,7 @@ const path = require('path');
 
 const wild = require('./wild.js');
 const trainers = require('./trainers.js');
+const { BAG_SIZE_OFFSET } = require('./presets');
 const {
     EVO_TYPE_LC,
     EVO_TYPE_NFE,
@@ -233,7 +234,7 @@ function getFamilyGroup(familyId) {
     return groupedFamilies[familyId] || familyId;
 }
 
-async function writer(pokemonList, moves, abilities, isDebug) {
+async function writer(pokemonList, moves, abilities, isDebug, difficulty = 'FAIR') {
 
     pokemonList = pokemonList.filter(poke => !bannedSpeciesForPicking.includes(poke.id));
 
@@ -248,7 +249,20 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     console.log('Randomizing items...');
     const itemAssignments = randomizeItems();
 
-    const trainersData = trainers.getTrainersData(itemAssignments, tmList);
+    const trainersData = trainers.getTrainersData(itemAssignments, tmList, difficulty);
+
+    const bagOffset = BAG_SIZE_OFFSET[difficulty] || 0;
+    if (bagOffset !== 0) {
+        for (const trainer of trainersData) {
+            if (trainer.isBoss || !trainer.bag || trainer.bag.length === 0) continue;
+            if (bagOffset < 0) {
+                trainer.bag = trainer.bag.slice(0, Math.max(0, trainer.bag.length + bagOffset));
+            } else {
+                const extra = trainer.bag.slice(-bagOffset);
+                trainer.bag = [...trainer.bag, ...extra];
+            }
+        }
+    }
 
     console.log('Randomizing evolution levels...');
     await writeEvoLevels(pokemonList);

@@ -13,6 +13,7 @@ const path = require('path');
 
 const root = __dirname;
 const isDebug = process.argv.includes('--debug');
+const difficultyArg = process.argv.find(a => a.startsWith('--difficulty='));
 
 // Guard: abort if data/ has uncommitted changes that the pipeline would clobber
 function checkDataClean() {
@@ -55,6 +56,7 @@ checkDataClean();
 // Step 1: Run the randomizer/rater; always restore even if it crashes
 const indexArgs = [path.join('puppedjs', 'index.js')];
 if (isDebug) indexArgs.push('--debug');
+if (difficultyArg) indexArgs.push(difficultyArg);
 try {
     run('node', indexArgs);
 } catch (err) {

@@ -41,6 +41,7 @@ const {
     TRAINER_E4_KEEP_TYPE_AMOUNT,
 } = require("./constants");
 const { maps: wildMaps } = require('./wild');
+const { DIFFICULTY, getBossPreset, getNonBossPreset } = require('./presets');
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
 const partnersFile = path.resolve(__dirname, '..', 'src', 'data', 'battle_partners.party');
@@ -569,42 +570,12 @@ const generatePokemonsWithDefinition = (def, amount) => {
     return new Array(amount).fill(null).map(() => ({ ...def }));
 }
 
-const genericTrainerTeamPostFlannery = () => [
-    ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
-    ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
-];
-
-const genericTrainerTeamPostNorman = () => [
-    { ...POKEDEF_UU_OU_MEGA },
-    ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
-    ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-];
-
-const genericTrainerTeamPostShelly = () => [
-    { ...POKEDEF_UU_OU_MEGA },
-    ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
-    ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-];
-
-const genericTrainerTeamPostWinona = () => [
-    { ...POKEDEF_UU_OU_MEGA },
-    ...generatePokemonsWithDefinition(POKEDEF_OU, 2),
-    ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
-    ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-];
-
-const genericTrainerTeamPostMatt = () => [
-    { ...POKEDEF_UU_OU_MEGA },
-    ...generatePokemonsWithDefinition(POKEDEF_OU, 2),
-    ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
-    ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-];
-
-const genericTrainerTeamPostTateAndLiza = () => [
-    { ...POKEDEF_MEGA },
-    ...generatePokemonsWithDefinition(POKEDEF_OU, 2),
-    ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
-];
+const genericTrainerTeamPostFlannery   = d => getNonBossPreset('NORMAN', d);
+const genericTrainerTeamPostNorman     = d => getNonBossPreset('WINONA', d);
+const genericTrainerTeamPostShelly     = d => getNonBossPreset('WINONA', d);
+const genericTrainerTeamPostWinona     = d => getNonBossPreset('TATE_AND_LIZA', d);
+const genericTrainerTeamPostMatt       = d => getNonBossPreset('TATE_AND_LIZA', d);
+const genericTrainerTeamPostTateAndLiza = d => getNonBossPreset('JUAN', d);
 
 const sample = (array) => {
     return array[Math.floor(Math.random() * array.length)];
@@ -933,7 +904,7 @@ const rivalEvergrandeCityTemplate = (id) => [
     },
 ];
 
-function getTrainersData(itemAssignments, tmList) {
+function getTrainersData(itemAssignments, tmList, difficulty = DIFFICULTY.FAIR) {
     // Pool-derived item arrays (display names from itemRandomizer)
     const route102BallItems      = itemAssignments.route102Ball;
     const petalburgPlateItems    = itemAssignments.petalburgPlates;
@@ -1442,7 +1413,7 @@ const trainersData = [
         bag: [...petalwoodGruntBag()],
         team: [
             {
-                ...POKEDEF_PU_LC,
+                ...getBossPreset('PETALBURG_WOODS_GRUNT', difficulty)[0],
                 exactTypes: [aquaTeamTypes[0], aquaTeamTypes[1]],
                 fallback: [
                     {
@@ -1461,23 +1432,23 @@ const trainersData = [
                 ]
             },
             {
-                ...POKEDEF_PU_LC,
+                ...getBossPreset('PETALBURG_WOODS_GRUNT', difficulty)[1],
                 type: [aquaTeamTypes[0]],
             },
             {
-                ...POKEDEF_PU_LC,
+                ...getBossPreset('PETALBURG_WOODS_GRUNT', difficulty)[2],
                 type: [aquaTeamTypes[1]],
             },
             {
-                ...POKEDEF_ZU_LC,
+                ...getBossPreset('PETALBURG_WOODS_GRUNT', difficulty)[3],
                 type: [aquaTeamTypes[2]],
             },
             {
-                ...POKEDEF_ZU_LC,
+                ...getBossPreset('PETALBURG_WOODS_GRUNT', difficulty)[4],
                 type: [aquaTeamTypes[3]],
             },
             {
-                ...POKEDEF_ZU_LC,
+                ...getBossPreset('PETALBURG_WOODS_GRUNT', difficulty)[5],
                 type: [aquaTeamTypes[4]],
             },
         ],
@@ -1595,33 +1566,33 @@ const trainersData = [
         bag: roxanneBag(),
         team: [
             {
-                ...POKEDEF_NU,
+                ...getBossPreset('ROXANNE', difficulty)[0],
                 type: [gymMainTypes[0]],
             },
             gymIsChangedType[0] ? {
-                ...POKEDEF_PU,
+                ...getBossPreset('ROXANNE', difficulty)[1],
                 breedTier: 'perfect',
                 type: [gymMainTypes[0]],
             } : {
                 specificIfTier: 'SPECIES_NOSEPASS',
                 breedTier: 'perfect',
-                ...POKEDEF_PU,
+                ...getBossPreset('ROXANNE', difficulty)[1],
                 type: [gymMainTypes[0]],
             },
             {
-                ...POKEDEF_PU,
+                ...getBossPreset('ROXANNE', difficulty)[2],
                 type: [gymMainTypes[0]],
             },
             {
-                ...POKEDEF_PU,
+                ...getBossPreset('ROXANNE', difficulty)[3],
                 type: [gymMainTypes[0]],
             },
             {
-                ...POKEDEF_PU,
+                ...getBossPreset('ROXANNE', difficulty)[4],
                 type: [gymMainTypes[0]],
             },
             {
-                ...POKEDEF_PU,
+                ...getBossPreset('ROXANNE', difficulty)[5],
                 type: [gymMainTypes[0]],
             },
         ],
@@ -1698,7 +1669,7 @@ const trainersData = [
         bag: [...rusturfGruntBag()],
         team: [
             {
-                ...POKEDEF_PU,
+                ...getBossPreset('RUSTURF_GRUNT', difficulty)[0],
                 exactTypes: [magmaTeamTypes[0], magmaTeamTypes[1]],
                 fallback: [
                     {
@@ -1717,7 +1688,7 @@ const trainersData = [
                 ]
             },
             {
-                ...POKEDEF_NU,
+                ...getBossPreset('RUSTURF_GRUNT', difficulty)[1],
                 type: [magmaTeamTypes[0]],
                 fallback: [
                     {
@@ -1727,7 +1698,7 @@ const trainersData = [
                 ],
             },
             {
-                ...POKEDEF_NU,
+                ...getBossPreset('RUSTURF_GRUNT', difficulty)[2],
                 type: [magmaTeamTypes[1]],
                 fallback: [
                     {
@@ -1737,7 +1708,7 @@ const trainersData = [
                 ],
             },
             {
-                ...POKEDEF_PU,
+                ...getBossPreset('RUSTURF_GRUNT', difficulty)[3],
                 type: [magmaTeamTypes[2]],
                 fallback: [
                     {
@@ -1747,7 +1718,7 @@ const trainersData = [
                 ],
             },
             {
-                ...POKEDEF_PU,
+                ...getBossPreset('RUSTURF_GRUNT', difficulty)[4],
                 type: [magmaTeamTypes[3]],
                 fallback: [
                     {
@@ -1757,7 +1728,7 @@ const trainersData = [
                 ],
             },
             {
-                ...POKEDEF_PU,
+                ...getBossPreset('RUSTURF_GRUNT', difficulty)[5],
                 type: [magmaTeamTypes[4]],
                 fallback: [
                     {
@@ -1954,7 +1925,7 @@ const trainersData = [
         bannedItems: ['Flame Orb', 'Toxic Orb'],
         team: [
             gymIsChangedType[1] ? {
-                ...POKEDEF_PU,
+                ...getBossPreset('BRAWLY', difficulty)[0],
                 type: [gymMainTypes[1]],
                 abilities: ['GUTS'],
                 breedTier: 'perfect',
@@ -1975,7 +1946,7 @@ const trainersData = [
                 ],
             } : {
                 specificIfTier: 'SPECIES_MAKUHITA',
-                ...POKEDEF_PU,
+                ...getBossPreset('BRAWLY', difficulty)[0],
                 type: [gymMainTypes[1]],
                 tryToHaveMove: ['MOVE_BULK_UP', 'MOVE_FAKE_OUT'],
                 nature: NATURES.ADAMANT.name,
@@ -1991,24 +1962,24 @@ const trainersData = [
                 ],
             },
             {
-                ...POKEDEF_NU,
+                ...getBossPreset('BRAWLY', difficulty)[1],
                 breedTier: 'perfect',
                 type: [gymMainTypes[1]],
             },
             {
-                ...POKEDEF_NU,
+                ...getBossPreset('BRAWLY', difficulty)[2],
                 type: [gymMainTypes[1]],
             },
             {
-                ...POKEDEF_NU,
+                ...getBossPreset('BRAWLY', difficulty)[3],
                 type: [gymMainTypes[1]],
             },
             {
-                ...POKEDEF_PU,
+                ...getBossPreset('BRAWLY', difficulty)[4],
                 type: [gymMainTypes[1]],
             },
             {
-                ...POKEDEF_PU,
+                ...getBossPreset('BRAWLY', difficulty)[5],
                 type: [gymMainTypes[1]],
             },
         ],
@@ -2140,22 +2111,22 @@ const trainersData = [
         preventShuffle: true,
         bag: [...slateportGruntsBag()],
         team: [
-            pokeDefDrizzleMon(POKEDEF_NU),
+            pokeDefDrizzleMon(getBossPreset('MUSEUM_GRUNT_1', difficulty)[0]),
             {
-                ...POKEDEF_NU,
+                ...getBossPreset('MUSEUM_GRUNT_1', difficulty)[1],
                 abilities: [...rainAbilities],
             },
             {
-                ...POKEDEF_NU,
+                ...getBossPreset('MUSEUM_GRUNT_1', difficulty)[2],
                 abilities: [...rainAbilities],
             },
-            pokeDefDrizzleMon(POKEDEF_PU),
+            pokeDefDrizzleMon(getBossPreset('MUSEUM_GRUNT_1', difficulty)[3]),
             {
-                ...POKEDEF_PU,
+                ...getBossPreset('MUSEUM_GRUNT_1', difficulty)[4],
                 abilities: [...rainAbilities],
             },
             {
-                ...POKEDEF_PU,
+                ...getBossPreset('MUSEUM_GRUNT_1', difficulty)[5],
                 abilities: [...rainAbilities],
             },
         ],
@@ -2169,22 +2140,22 @@ const trainersData = [
         preventShuffle: true,
         bag: [...slateportGruntsBag()],
         team: [
-            pokeDefSnowWarningMon(POKEDEF_NU),
+            pokeDefSnowWarningMon(getBossPreset('MUSEUM_GRUNT_2', difficulty)[0]),
             {
-                ...POKEDEF_NU,
+                ...getBossPreset('MUSEUM_GRUNT_2', difficulty)[1],
                 abilities: [...snowAbilities],
             },
             {
-                ...POKEDEF_NU,
+                ...getBossPreset('MUSEUM_GRUNT_2', difficulty)[2],
                 abilities: [...snowAbilities],
             },
-            pokeDefSnowWarningMon(POKEDEF_PU),
+            pokeDefSnowWarningMon(getBossPreset('MUSEUM_GRUNT_2', difficulty)[3]),
             {
-                ...POKEDEF_PU,
+                ...getBossPreset('MUSEUM_GRUNT_2', difficulty)[4],
                 abilities: [...snowAbilities],
             },
             {
-                ...POKEDEF_PU,
+                ...getBossPreset('MUSEUM_GRUNT_2', difficulty)[5],
                 abilities: [...snowAbilities],
             },
         ],
@@ -2530,12 +2501,9 @@ const trainersData = [
         bannedItems: ['Electric Seed', 'Psychic Seed', 'Misty Seed', 'Grassy Seed'],
         team: [
             gymIsChangedType[2] ? {
-                ...POKEDEF_RU,
+                ...getBossPreset('WATTSON', difficulty)[0],
                 type: [gymMainTypes[2]],
-            } : pokeDefElectricSurgeMon({
-                contextualTier: [TIER_PU, TIER_NU, TIER_RU],
-                checkValidEvo: true,
-            }),
+            } : pokeDefElectricSurgeMon(getBossPreset('WATTSON', difficulty)[0]),
             gymIsChangedType[2] ? {
                 ...POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
@@ -2557,23 +2525,23 @@ const trainersData = [
                 item: 'Manectite',
             },
             gymIsChangedType[2] ? {
-                ...POKEDEF_RU,
+                ...getBossPreset('WATTSON', difficulty)[2],
                 type: [gymMainTypes[2]],
             } : {
-                ...POKEDEF_RU,
+                ...getBossPreset('WATTSON', difficulty)[2],
                 type: [gymMainTypes[2]],
                 item: 'Electric Seed',
             },
             {
-                ...POKEDEF_RU,
+                ...getBossPreset('WATTSON', difficulty)[3],
                 type: [gymMainTypes[2]],
             },
             {
-                ...POKEDEF_RU,
+                ...getBossPreset('WATTSON', difficulty)[4],
                 type: [gymMainTypes[2]],
             },
             {
-                ...POKEDEF_NU,
+                ...getBossPreset('WATTSON', difficulty)[5],
                 type: [gymMainTypes[2]],
             },
         ],
@@ -2695,25 +2663,25 @@ const trainersData = [
         preventShuffle: true,
         bag: [...magmaChimneyBag()],
         team: [
-            pokeDefSandStreamMon(POKEDEF_RU),
+            pokeDefSandStreamMon(getBossPreset('TABITHA_CHIMNEY', difficulty)[0]),
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('TABITHA_CHIMNEY', difficulty)[1],
                 abilities: [...sandAbilities],
             },
             {
-                ...POKEDEF_RU,
+                ...getBossPreset('TABITHA_CHIMNEY', difficulty)[2],
                 abilities: [...sandAbilities],
             },
             {
-                ...POKEDEF_RU,
+                ...getBossPreset('TABITHA_CHIMNEY', difficulty)[3],
                 abilities: [...sandAbilities],
             },
             {
-                ...POKEDEF_RU,
+                ...getBossPreset('TABITHA_CHIMNEY', difficulty)[4],
                 abilities: [...sandAbilities],
             },
             {
-                ...POKEDEF_NU,
+                ...getBossPreset('TABITHA_CHIMNEY', difficulty)[5],
                 abilities: [...sandAbilities],
             },
         ],
@@ -2726,7 +2694,7 @@ const trainersData = [
         level: 33,
         bag: [...magmaChimneyBag()],
         team: [
-            pokeDefDroughtMon(POKEDEF_UU),
+            pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY', difficulty)[0]),
             {
                 specific: 'SPECIES_CAMERUPT',
                 breedTier: 'perfect',
@@ -2734,7 +2702,7 @@ const trainersData = [
                 abilities: ['SOLID_ROCK'],
             },
             {
-                ...POKEDEF_RU,
+                ...getBossPreset('MAXIE_CHIMNEY', difficulty)[2],
                 abilities: [...sunAbilities],
                 type: [magmaTeamTypes[0], magmaTeamTypes[1]],
                 fallback: [
@@ -2754,7 +2722,7 @@ const trainersData = [
                 ],
             },
             {
-                ...POKEDEF_RU,
+                ...getBossPreset('MAXIE_CHIMNEY', difficulty)[3],
                 abilities: [...sunAbilities],
                 fallback: [
                     {
@@ -2764,7 +2732,7 @@ const trainersData = [
                 ],
             },
             {
-                ...POKEDEF_RU,
+                ...getBossPreset('MAXIE_CHIMNEY', difficulty)[4],
                 abilities: [...sunAbilities],
                 fallback: [
                     {
@@ -2774,7 +2742,7 @@ const trainersData = [
                 ],
             },
             {
-                ...POKEDEF_RU,
+                ...getBossPreset('MAXIE_CHIMNEY', difficulty)[5],
                 type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
         ],
@@ -2983,15 +2951,15 @@ const trainersData = [
         bag: flanneryBag(),
         team: [
             gymIsChangedType[3] ? {
-                ...POKEDEF_RU,
+                ...getBossPreset('FLANNERY', difficulty)[0],
                 breedTier: 'perfect',
                 type: [gymMainTypes[3]],
             } : {
+                ...getBossPreset('FLANNERY', difficulty)[0],
                 specific: 'SPECIES_TORKOAL',
                 abilities: ['DROUGHT'],
                 item: 'Heat Rock',
                 breedTier: 'perfect',
-                checkValidEvo: true,
                 tryEvolve: true,
             },
             {
@@ -3017,19 +2985,18 @@ const trainersData = [
                 ],
             },
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('FLANNERY', difficulty)[2],
                 type: [gymMainTypes[3]],
             },
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('FLANNERY', difficulty)[3],
                 type: [gymMainTypes[3]],
             },
             gymIsChangedType[3] ? {
-                ...POKEDEF_RU,
+                ...getBossPreset('FLANNERY', difficulty)[4],
                 type: [gymMainTypes[3]],
             } : {
-                contextualTier: [TIER_NU, TIER_RU],
-                checkValidEvo: true,
+                ...getBossPreset('FLANNERY', difficulty)[4],
                 type: [gymMainTypes[3]],
                 abilities: [...sunAbilities],
                 pickBest: true,
@@ -3041,7 +3008,7 @@ const trainersData = [
                 ]
             },
             {
-                ...POKEDEF_RU,
+                ...getBossPreset('FLANNERY', difficulty)[5],
                 type: [gymMainTypes[3]],
             },
         ],
@@ -3068,7 +3035,7 @@ const trainersData = [
         reward: ['Strong Pokemon'],
         level: 39,
         bag: getSampleItemsFromArray(flanneryBag(), 13),
-        team: genericTrainerTeamPostNorman(),
+        team: genericTrainerTeamPostNorman(difficulty),
     },
     {
         id: 'TRAINER_CELINA',
@@ -3091,7 +3058,7 @@ const trainersData = [
         reward: ['Master Ball'],
         level: 39,
         bag: getSampleItemsFromArray(flanneryBag(), 13),
-        team: genericTrainerTeamPostFlannery(),
+        team: genericTrainerTeamPostFlannery(difficulty),
     },
     {
         id: 'TRAINER_DREW',
@@ -3099,7 +3066,7 @@ const trainersData = [
         reward: [...route111BerryItems],
         level: 39,
         bag: [...route111BerryItems, ...getSampleItemsFromArray(flanneryBag(), 12)],
-        team: genericTrainerTeamPostFlannery(),
+        team: genericTrainerTeamPostFlannery(difficulty),
     },
     {
         id: 'TRAINER_DUSTY_1',
@@ -3107,7 +3074,7 @@ const trainersData = [
         reward: [...route111BallCItems],
         level: 39,
         bag: [...route111BallCItems, ...getSampleItemsFromArray(flanneryBag(), 13)],
-        team: genericTrainerTeamPostFlannery(),
+        team: genericTrainerTeamPostFlannery(difficulty),
     },
     {
         id: 'TRAINER_NOB_1',
@@ -3115,7 +3082,7 @@ const trainersData = [
         reward: [...choiceNobTMs],
         level: 39,
         bag: [...choiceNobTMs, ...getSampleItemsFromArray(flanneryBag(), 11)],
-        team: genericTrainerTeamPostFlannery(),
+        team: genericTrainerTeamPostFlannery(difficulty),
     },
     {
         id: 'TRAINER_BECKY',
@@ -3123,7 +3090,7 @@ const trainersData = [
         reward: [route111GemGoodItem],
         level: 39,
         bag: [route111GemGoodItem, ...getSampleItemsFromArray(flanneryBag(), 12)],
-        team: genericTrainerTeamPostFlannery(),
+        team: genericTrainerTeamPostFlannery(difficulty),
     },
     {
         id: 'TRAINER_BRYAN',
@@ -3131,7 +3098,7 @@ const trainersData = [
         reward: [...choiceBryanTMs],
         level: 39,
         bag: [...choiceBryanTMs, ...getSampleItemsFromArray(flanneryBag(), 11)],
-        team: genericTrainerTeamPostFlannery(),
+        team: genericTrainerTeamPostFlannery(difficulty),
     },
     {
         id: 'TRAINER_HEIDI',
@@ -3139,7 +3106,7 @@ const trainersData = [
         reward: [...choiceHeidiItems],
         level: 39,
         bag: [...choiceHeidiItems, ...getSampleItemsFromArray(flanneryBag(), 13)],
-        team: genericTrainerTeamPostFlannery(),
+        team: genericTrainerTeamPostFlannery(difficulty),
     },
     {
         id: 'TRAINER_NORMAN_1',
@@ -3151,21 +3118,21 @@ const trainersData = [
         bannedItems: gymIsChangedType[4] ? [] : ['Assault Vest', 'Flame Orb', 'Toxic Orb'],
         team: [
             gymIsChangedType[4] ? {
-                ...POKEDEF_UU,
+                ...getBossPreset('NORMAN', difficulty)[0],
                 breedTier: 'perfect',
                 type: [gymMainTypes[4]],
             } : {
                 specificIfTier: 'SPECIES_SLAKING',
-                ...POKEDEF_UU,
+                ...getBossPreset('NORMAN', difficulty)[0],
                 breedTier: 'perfect',
                 item: 'Assault Vest',
                 tryToHaveMove: ['MOVE_FIRE_BLAST', 'MOVE_EARTHQUAKE', 'MOVE_FACADE', 'MOVE_SUCKER_PUNCH'],
             },
             gymIsChangedType[4] ? {
-                ...POKEDEF_UU,
+                ...getBossPreset('NORMAN', difficulty)[1],
                 type: [gymMainTypes[4]],
             } : {
-                ...POKEDEF_UU,
+                ...getBossPreset('NORMAN', difficulty)[1],
                 abilities: ['GUTS'],
                 mustHaveOneOfMoves: ['MOVE_FACADE'],
                 tryToHaveMove: ['MOVE_FACADE', 'MOVE_PROTECT'],
@@ -3187,15 +3154,15 @@ const trainersData = [
                 ]
             },
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('NORMAN', difficulty)[2],
                 type: [gymMainTypes[4]],
             },
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('NORMAN', difficulty)[3],
                 type: [gymMainTypes[4]],
             },
             {
-                ...POKEDEF_RU,
+                ...getBossPreset('NORMAN', difficulty)[4],
                 type: [gymMainTypes[4]],
             },
             {
@@ -3230,7 +3197,7 @@ const trainersData = [
         reward: ['Strong Pokemon'],
         level: 42,
         bag: getSampleItemsFromArray(normanBag(), 15),
-        team: genericTrainerTeamPostNorman(),
+        team: genericTrainerTeamPostNorman(difficulty),
     },
     {
         id: 'TRAINER_IMANI',
@@ -3238,7 +3205,7 @@ const trainersData = [
         reward: ['Master Ball'],
         level: 42,
         bag: getSampleItemsFromArray(normanBag(), 15),
-        team: genericTrainerTeamPostNorman(),
+        team: genericTrainerTeamPostNorman(difficulty),
     },
     // Route 110 (New Mauville)
     {
@@ -3247,7 +3214,7 @@ const trainersData = [
         reward: ['Strong Pokemon'],
         level: 42,
         bag: getSampleItemsFromArray(normanBag(), 15),
-        team: genericTrainerTeamPostNorman(),
+        team: genericTrainerTeamPostNorman(difficulty),
     },
     {
         id: 'TRAINER_JACLYN',
@@ -3255,7 +3222,7 @@ const trainersData = [
         reward: ['Master Ball'],
         level: 42,
         bag: getSampleItemsFromArray(normanBag(), 15),
-        team: genericTrainerTeamPostNorman(),
+        team: genericTrainerTeamPostNorman(difficulty),
     },
     // Route 118
     {
@@ -3296,7 +3263,7 @@ const trainersData = [
         reward: [...choiceWadeBerries],
         level: 42,
         bag: [...choiceWadeBerries, ...getSampleItemsFromArray(normanBag(), 14)],
-        team: genericTrainerTeamPostNorman(),
+        team: genericTrainerTeamPostNorman(difficulty),
     },
     {
         id: 'TRAINER_BARNY',
@@ -3304,7 +3271,7 @@ const trainersData = [
         reward: [route118BarnyGoodItem],
         level: 42,
         bag: [route118BarnyGoodItem, ...getSampleItemsFromArray(normanBag(), 14)],
-        team: genericTrainerTeamPostNorman(),
+        team: genericTrainerTeamPostNorman(difficulty),
     },
     {
         id: 'TRAINER_ROSE_1',
@@ -3312,7 +3279,7 @@ const trainersData = [
         reward: [...choiceRoseTMs],
         level: 42,
         bag: [...choiceRoseTMs, ...getSampleItemsFromArray(normanBag(), 13)],
-        team: genericTrainerTeamPostNorman(),
+        team: genericTrainerTeamPostNorman(difficulty),
     },
     {
         id: 'TRAINER_CHESTER',
@@ -3320,7 +3287,7 @@ const trainersData = [
         reward: [...choiceChesterTMs],
         level: 42,
         bag: [...choiceChesterTMs, ...getSampleItemsFromArray(normanBag(), 13)],
-        team: genericTrainerTeamPostNorman(),
+        team: genericTrainerTeamPostNorman(difficulty),
     },
     // Route 119
     {
@@ -3376,23 +3343,23 @@ const trainersData = [
         bag: [...shellyBag()],
         team: [
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('SHELLY_WEATHER', difficulty)[0],
                 type: [aquaTeamTypes[0]],
             },
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('SHELLY_WEATHER', difficulty)[1],
                 type: [aquaTeamTypes[1]],
             },
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('SHELLY_WEATHER', difficulty)[2],
                 type: [aquaTeamTypes[2]],
             },
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('SHELLY_WEATHER', difficulty)[3],
                 type: [aquaTeamTypes[3]],
             },
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('SHELLY_WEATHER', difficulty)[4],
                 type: [aquaTeamTypes[4]],
             },
             {
@@ -3529,7 +3496,7 @@ const trainersData = [
         reward: [...choiceClarissaTMs],
         level: 46,
         bag: [...choiceClarissaTMs, ...getSampleItemsFromArray(rival119Bag(), 15)],
-        team: genericTrainerTeamPostShelly(),
+        team: genericTrainerTeamPostShelly(difficulty),
     },
     {
         id: 'TRAINER_ANGELICA',
@@ -3537,7 +3504,7 @@ const trainersData = [
         reward: [route120AngelicaGoodItem],
         level: 46,
         bag: [route120AngelicaGoodItem, ...getSampleItemsFromArray(rival119Bag(), 16)],
-        team: genericTrainerTeamPostShelly(),
+        team: genericTrainerTeamPostShelly(difficulty),
     },
     // Fortree City Gym
     {
@@ -3549,7 +3516,7 @@ const trainersData = [
         bag: [...winonaBag(), 'Flying Gem'],
         team: [
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('WINONA', difficulty)[0],
                 type: [gymMainTypes[5]],
                 mustHaveOneOfMoves: ['MOVE_TAILWIND'],
                 tryToHaveMove: ['MOVE_TAILWIND'],
@@ -3562,7 +3529,7 @@ const trainersData = [
                         pickBest: true,
                     },
                     {
-                        ...POKEDEF_UU,
+                        ...getBossPreset('WINONA', difficulty)[0],
                         type: [gymMainTypes[5]],
                     }
                 ]
@@ -3599,19 +3566,19 @@ const trainersData = [
                 item: 'Altarianite',
             },
             {
-                ...POKEDEF_OU,
+                ...getBossPreset('WINONA', difficulty)[2],
                 type: [gymMainTypes[5]],
             },
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('WINONA', difficulty)[3],
                 type: [gymMainTypes[5]],
             },
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('WINONA', difficulty)[4],
                 type: [gymMainTypes[5]],
             },
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('WINONA', difficulty)[5],
                 type: [gymMainTypes[5]],
             },
         ],
@@ -3623,7 +3590,7 @@ const trainersData = [
         reward: ['Master Ball'],
         level: 49,
         bag: getSampleItemsFromArray(winonaBag(), 18),
-        team: genericTrainerTeamPostWinona(),
+        team: genericTrainerTeamPostWinona(difficulty),
     },
     {
         id: 'TRAINER_CHIP',
@@ -3631,7 +3598,7 @@ const trainersData = [
         reward: ['Access to Premium Pokemon'],
         level: 49,
         bag: getSampleItemsFromArray(winonaBag(), 18),
-        team: genericTrainerTeamPostWinona(),
+        team: genericTrainerTeamPostWinona(difficulty),
     },
     // Route 121
     {
@@ -3701,7 +3668,7 @@ const trainersData = [
         reward: ['Focus Sash'],
         level: 49,
         bag: ['Focus Sash', ...getSampleItemsFromArray(winonaBag(), 17)],
-        team: genericTrainerTeamPostWinona(),
+        team: genericTrainerTeamPostWinona(difficulty),
     },
     {
         id: 'TRAINER_TAMMY',
@@ -3709,7 +3676,7 @@ const trainersData = [
         reward: [...choiceTammyTMs],
         level: 49,
         bag: [...choiceTammyTMs, ...getSampleItemsFromArray(winonaBag(), 16)],
-        team: genericTrainerTeamPostWinona(),
+        team: genericTrainerTeamPostWinona(difficulty),
     },
     {
         id: 'TRAINER_WALTER_1',
@@ -3717,7 +3684,7 @@ const trainersData = [
         reward: [...choiceWalterTMs],
         level: 49,
         bag: [...choiceWalterTMs, ...getSampleItemsFromArray(winonaBag(), 16)],
-        team: genericTrainerTeamPostWinona(),
+        team: genericTrainerTeamPostWinona(difficulty),
     },
     {
         id: 'TRAINER_JESSICA_1',
@@ -3725,7 +3692,7 @@ const trainersData = [
         reward: [jessicaTM],
         level: 49,
         bag: [jessicaTM, ...getSampleItemsFromArray(winonaBag(), 17)],
-        team: genericTrainerTeamPostWinona(),
+        team: genericTrainerTeamPostWinona(difficulty),
     },
     {
         id: 'TRAINER_CRISTIN_1',
@@ -3733,7 +3700,7 @@ const trainersData = [
         reward: [...choiceCristinBerries],
         level: 49,
         bag: [...choiceCristinBerries, ...getSampleItemsFromArray(winonaBag(), 17)],
-        team: genericTrainerTeamPostWinona(),
+        team: genericTrainerTeamPostWinona(difficulty),
     },
     // Lillycove Wally Rival
     {
@@ -3792,7 +3759,7 @@ const trainersData = [
         preventShuffle: true,
         bag: [...wallyBag2()],
         team: [
-            pokeDefDroughtMon(POKEDEF_OU),
+            pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA', difficulty)[0]),
             {
                 specific: 'SPECIES_CAMERUPT',
                 breedTier: 'perfect',
@@ -3800,8 +3767,7 @@ const trainersData = [
                 abilities: ['SOLID_ROCK'],
             },
             {
-                contextualTier: [TIER_OU],
-                checkValidEvo: true,
+                ...getBossPreset('MAXIE_MAGMA', difficulty)[2],
                 type: [magmaTeamTypes[1]],
                 abilities: [...sunAbilities],
                 fallback: [
@@ -3812,10 +3778,9 @@ const trainersData = [
                     },
                 ]
             },
-            pokeDefDroughtMon(POKEDEF_UU),
+            pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA', difficulty)[3]),
             {
-                contextualTier: [TIER_UU],
-                checkValidEvo: true,
+                ...getBossPreset('MAXIE_MAGMA', difficulty)[4],
                 type: [...magmaTeamTypes],
                 abilities: [...sunAbilities],
                 fallback: [
@@ -3838,8 +3803,7 @@ const trainersData = [
                 ]
             },
             {
-                contextualTier: [TIER_UU],
-                checkValidEvo: true,
+                ...getBossPreset('MAXIE_MAGMA', difficulty)[5],
                 type: [...magmaTeamTypes],
                 abilities: [...sunAbilities],
                 fallback: [
@@ -3963,8 +3927,7 @@ const trainersData = [
                 ],
             },
             {
-                contextualTier: [TIER_OU],
-                checkValidEvo: true,
+                ...getBossPreset('MATT_AQUA', difficulty)[1],
                 abilities: [...snowAbilities],
                 fallback: [
                     {
@@ -3984,14 +3947,9 @@ const trainersData = [
                     },
                 ]
             },
-            pokeDefSnowWarningMon({
-                contextualTier: [TIER_RU, TIER_UU],
-                checkValidEvo: true,
-                pickBest: true,
-            }),
+            pokeDefSnowWarningMon(getBossPreset('MATT_AQUA', difficulty)[2]),
             {
-                contextualTier: [TIER_OU],
-                checkValidEvo: true,
+                ...getBossPreset('MATT_AQUA', difficulty)[3],
                 abilities: [...snowAbilities],
                 fallback: [
                     {
@@ -4012,8 +3970,7 @@ const trainersData = [
                 ]
             },
             {
-                contextualTier: [TIER_UU],
-                checkValidEvo: true,
+                ...getBossPreset('MATT_AQUA', difficulty)[4],
                 abilities: [...snowAbilities],
                 fallback: [
                     {
@@ -4029,8 +3986,7 @@ const trainersData = [
                 ]
             },
             {
-                contextualTier: [TIER_UU],
-                checkValidEvo: true,
+                ...getBossPreset('MATT_AQUA', difficulty)[5],
                 abilities: [...snowAbilities],
                 fallback: [
                     {
@@ -4088,7 +4044,7 @@ const trainersData = [
         reward: [...choiceIsabellaItem],
         level: 56,
         bag: [...choiceIsabellaItem, ...getSampleItemsFromArray(wallyBag2(), 17)],
-        team: genericTrainerTeamPostMatt(),
+        team: genericTrainerTeamPostMatt(difficulty),
     },
     {
         id: 'TRAINER_GRACE',
@@ -4096,7 +4052,7 @@ const trainersData = [
         reward: [...choiceGraceTMs],
         level: 56,
         bag: [...choiceGraceTMs, ...getSampleItemsFromArray(wallyBag2(), 17)],
-        team: genericTrainerTeamPostMatt(),
+        team: genericTrainerTeamPostMatt(difficulty),
     },
     {
         id: 'TRAINER_SPENCER',
@@ -4104,7 +4060,7 @@ const trainersData = [
         reward: [spencerTM],
         level: 56,
         bag: [spencerTM, ...getSampleItemsFromArray(wallyBag2(), 19)],
-        team: genericTrainerTeamPostMatt(),
+        team: genericTrainerTeamPostMatt(difficulty),
     },
     {
         id: 'TRAINER_ROLAND',
@@ -4112,7 +4068,7 @@ const trainersData = [
         reward: [rolandTM],
         level: 56,
         bag: [rolandTM, ...getSampleItemsFromArray(wallyBag2(), 19)],
-        team: genericTrainerTeamPostMatt(),
+        team: genericTrainerTeamPostMatt(difficulty),
     },
     // Gym Leader - Tate & Liza
     {
@@ -4126,10 +4082,10 @@ const trainersData = [
         bannedItems: gymIsChangedType[6] ? [] : ['Focus Sash', 'Room Service', 'Light Clay'],
         team: [
             gymIsChangedType[6] ? {
-                ...POKEDEF_OU,
+                ...getBossPreset('TATE_AND_LIZA', difficulty)[0],
                 type: [gymMainTypes[6]],
             } : {
-                ...POKEDEF_UP_TO_OU,
+                ...getBossPreset('TATE_AND_LIZA', difficulty)[0],
                 mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
                 tryToHaveMove: ['MOVE_TRICK_ROOM'],
                 type: [gymMainTypes[6]],
@@ -4137,13 +4093,14 @@ const trainersData = [
                 pickBest: true,
                 fallback: [
                     {
-                        ...POKEDEF_OU,
+                        contextualTier: [TIER_OU],
+                        checkValidEvo: true,
                         type: [gymMainTypes[6]],
                     },
                 ]
             },
             gymIsChangedType[6] ? {
-                ...POKEDEF_OU,
+                ...getBossPreset('TATE_AND_LIZA', difficulty)[1],
                 breedTier: 'perfect',
                 type: [gymMainTypes[6]],
             } : (tateAndLizaUseSolrock ?
@@ -4162,7 +4119,7 @@ const trainersData = [
                 nature: 'Sassy',
             }),
             gymIsChangedType[6] ? {
-                ...POKEDEF_OU,
+                ...getBossPreset('TATE_AND_LIZA', difficulty)[2],
                 type: [gymMainTypes[6]],
             } : (tateAndLizaUseSolrock ?
             {
@@ -4224,51 +4181,57 @@ const trainersData = [
                 ]
             },
             gymIsChangedType[6] ? {
-                ...POKEDEF_UU,
+                ...getBossPreset('TATE_AND_LIZA', difficulty)[4],
                 type: [gymMainTypes[6]],
             } : {
-                ...POKEDEF_UU,
+                ...getBossPreset('TATE_AND_LIZA', difficulty)[4],
                 type: [gymMainTypes[6]],
                 hasStat: ['baseSpeed', '<', '50'],
                 fallback: [
                     {
-                        ...POKEDEF_UU,
+                        contextualTier: [TIER_UU],
+                        checkValidEvo: true,
                         type: [gymMainTypes[6]],
                         hasStat: ['baseSpeed', '<', '70'],
                     },
                     {
-                        ...POKEDEF_RU,
+                        contextualTier: [TIER_RU],
+                        checkValidEvo: true,
                         type: [gymMainTypes[6]],
                         hasStat: ['baseSpeed', '<', '50'],
                         pickBest: true,
                     },
                     {
-                        ...POKEDEF_UU,
+                        contextualTier: [TIER_UU],
+                        checkValidEvo: true,
                         type: [gymMainTypes[6]],
                     },
                 ],
             },
             gymIsChangedType[6] ? {
-                ...POKEDEF_UU,
+                ...getBossPreset('TATE_AND_LIZA', difficulty)[5],
                 type: [gymMainTypes[6]],
             } : {
-                ...POKEDEF_UU,
+                ...getBossPreset('TATE_AND_LIZA', difficulty)[5],
                 type: [gymMainTypes[6]],
                 hasStat: ['baseSpeed', '<', '50'],
                 fallback: [
                     {
-                        ...POKEDEF_UU,
+                        contextualTier: [TIER_UU],
+                        checkValidEvo: true,
                         type: [gymMainTypes[6]],
                         hasStat: ['baseSpeed', '<', '70'],
                     },
                     {
-                        ...POKEDEF_RU,
+                        contextualTier: [TIER_RU],
+                        checkValidEvo: true,
                         type: [gymMainTypes[6]],
                         hasStat: ['baseSpeed', '<', '50'],
                         pickBest: true,
                     },
                     {
-                        ...POKEDEF_UU,
+                        contextualTier: [TIER_UU],
+                        checkValidEvo: true,
                         type: [gymMainTypes[6]],
                     },
                 ],
@@ -4339,7 +4302,7 @@ const trainersData = [
         reward: [...choicePresleyTMs],
         level: 59,
         bag: [...choicePresleyTMs, ...getSampleItemsFromArray(tateAndLizaBag(), 22)],
-        team: genericTrainerTeamPostTateAndLiza(),
+        team: genericTrainerTeamPostTateAndLiza(difficulty),
     },
     {
         id: 'TRAINER_AURON',
@@ -4347,7 +4310,7 @@ const trainersData = [
         reward: [auronTM],
         level: 59,
         bag: [auronTM, ...getSampleItemsFromArray(tateAndLizaBag(), 24)],
-        team: genericTrainerTeamPostTateAndLiza(),
+        team: genericTrainerTeamPostTateAndLiza(difficulty),
     },
     // Mossdeep Space Center
     {
@@ -4357,30 +4320,12 @@ const trainersData = [
         level: 59,
         bag: [...spaceCenterBag()],
         team: [
-            {
-                ...POKEDEF_UU,
-                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-            },
-            {
-                ...POKEDEF_RU,
-                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-            },
-            {
-                ...POKEDEF_RU,
-                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-            },
-            {
-                ...POKEDEF_RU,
-                type: [...magmaTeamTypes],
-            },
-            {
-                ...POKEDEF_RU,
-                type: [...magmaTeamTypes],
-            },
-            {
-                ...POKEDEF_NU,
-                type: [...magmaTeamTypes],
-            },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_5', difficulty)[0], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_5', difficulty)[1], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_5', difficulty)[2], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_5', difficulty)[3], type: [...magmaTeamTypes] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_5', difficulty)[4], type: [...magmaTeamTypes] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_5', difficulty)[5], type: [...magmaTeamTypes] },
         ],
     },
     {
@@ -4390,30 +4335,12 @@ const trainersData = [
         level: 59,
         bag: [...spaceCenterBag()],
         team: [
-            {
-                ...POKEDEF_UU,
-                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-            },
-            {
-                ...POKEDEF_UU,
-                type: [...magmaTeamTypes],
-            },
-            {
-                ...POKEDEF_UU,
-                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-            },
-            {
-                ...POKEDEF_RU,
-                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-            },
-            {
-                ...POKEDEF_RU,
-                type: [...magmaTeamTypes],
-            },
-            {
-                ...POKEDEF_RU,
-                type: [...magmaTeamTypes],
-            },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_6', difficulty)[0], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_6', difficulty)[1], type: [...magmaTeamTypes] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_6', difficulty)[2], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_6', difficulty)[3], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_6', difficulty)[4], type: [...magmaTeamTypes] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_6', difficulty)[5], type: [...magmaTeamTypes] },
         ],
     },
     {
@@ -4423,30 +4350,12 @@ const trainersData = [
         level: 59,
         bag: [...spaceCenterBag()],
         team: [
-            {
-                ...POKEDEF_UU_OU_MEGA,
-                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-            },
-            {
-                ...POKEDEF_OU,
-                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-            },
-            {
-                ...POKEDEF_UU,
-                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-            },
-            {
-                ...POKEDEF_UU,
-                type: [...magmaTeamTypes],
-            },
-            {
-                ...POKEDEF_RU,
-                type: [...magmaTeamTypes],
-            },
-            {
-                ...POKEDEF_RU,
-                type: [...magmaTeamTypes],
-            },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_7', difficulty)[0], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_7', difficulty)[1], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_7', difficulty)[2], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_7', difficulty)[3], type: [...magmaTeamTypes] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_7', difficulty)[4], type: [...magmaTeamTypes] },
+            { ...getBossPreset('SPACE_CENTER_GRUNT_7', difficulty)[5], type: [...magmaTeamTypes] },
         ],
     },
     {
@@ -4499,11 +4408,12 @@ const trainersData = [
         bag: [...spaceCenterBag()],
         team: [
             {
-                ...POKEDEF_UU,
+                ...getBossPreset('TABITHA_MOSSDEEP', difficulty)[0],
                 abilities: [...sunAbilities],
                 fallback: [
                     {
-                        ...POKEDEF_UP_TO_UU,
+                        contextualTier: [TIER_UU],
+                        checkValidEvo: true,
                         abilities: [...sunAbilities],
                     },
                 ],
@@ -4522,7 +4432,7 @@ const trainersData = [
                     },
                 ]
             },
-            pokeDefDroughtMon(POKEDEF_UP_TO_OU),
+            pokeDefDroughtMon(getBossPreset('TABITHA_MOSSDEEP', difficulty)[2]),
         ],
     },
     {
@@ -4536,19 +4446,20 @@ const trainersData = [
         team: [
             {
                 specificIfTier: 'SPECIES_GROUDON',
-                ...POKEDEF_UBERS,
+                ...getBossPreset('MAXIE_MOSSDEEP', difficulty)[0],
                 item: 'Heat Rock',
                 fallback: [
                     {
                         specificIfTier: 'SPECIES_GROUDON',
-                        ...POKEDEF_OU,
+                        contextualTier: [TIER_OU],
+                        checkValidEvo: true,
                         item: 'Heat Rock',
                     },
-                    pokeDefDroughtMon(POKEDEF_OU),
+                    pokeDefDroughtMon(getBossPreset('MAXIE_MOSSDEEP', difficulty)[0]),
                 ]
             },
             {
-                ...POKEDEF_UP_TO_OU_NOEVO,
+                ...getBossPreset('MAXIE_MOSSDEEP', difficulty)[1],
                 abilities: [...sunAbilities],
                 pickBest: true,
             },
@@ -4617,7 +4528,7 @@ const trainersData = [
         reward: [aidanTM],
         level: 61,
         bag: [aidanTM, ...getSampleItemsFromArray(spaceCenterBag(), 24)],
-        team: genericTrainerTeamPostTateAndLiza(),
+        team: genericTrainerTeamPostTateAndLiza(difficulty),
     },
     {
         id: 'TRAINER_ATHENA',
@@ -4625,7 +4536,7 @@ const trainersData = [
         reward: [athenaTM],
         level: 61,
         bag: [athenaTM, ...getSampleItemsFromArray(spaceCenterBag(), 24)],
-        team: genericTrainerTeamPostTateAndLiza(),
+        team: genericTrainerTeamPostTateAndLiza(difficulty),
     },
     {
         id: 'TRAINER_HENRY',
@@ -4633,7 +4544,7 @@ const trainersData = [
         reward: ['Eject Button'],
         level: 61,
         bag: ['Eject Button', ...getSampleItemsFromArray(spaceCenterBag(), 24)],
-        team: genericTrainerTeamPostTateAndLiza(),
+        team: genericTrainerTeamPostTateAndLiza(difficulty),
     },
     // Route 126
     {
@@ -4686,15 +4597,16 @@ const trainersData = [
         team: [
             {
                 specificIfTier: 'SPECIES_KYOGRE',
-                ...POKEDEF_UBERS,
+                ...getBossPreset('ARCHIE', difficulty)[0],
                 item: 'Damp Rock',
                 fallback: [
                     {
                         specificIfTier: 'SPECIES_KYOGRE',
-                        ...POKEDEF_OU,
+                        contextualTier: [TIER_OU],
+                        checkValidEvo: true,
                         item: 'Damp Rock',
                     },
-                    pokeDefDrizzleMon(POKEDEF_OU),
+                    pokeDefDrizzleMon(getBossPreset('ARCHIE', difficulty)[0]),
                 ]
             },
             {
@@ -4705,9 +4617,8 @@ const trainersData = [
                 nature: 'Adamant',
             },
             {
-                contextualTier: [TIER_OU],
+                ...getBossPreset('ARCHIE', difficulty)[2],
                 abilities: [...rainAbilities],
-                checkValidEvo: true,
                 type: [...aquaTeamTypes],
                 fallback: [
                     {
@@ -4729,23 +4640,21 @@ const trainersData = [
                 ]
             },
             {
-                contextualTier: [TIER_OU],
+                ...getBossPreset('ARCHIE', difficulty)[3],
                 abilities: [...rainAbilities],
-                checkValidEvo: true,
                 type: [aquaTeamTypes[1], aquaTeamTypes[2], aquaTeamTypes[3], aquaTeamTypes[4]],
                 fallback: [
                     {
-                        contextualTier: [TIER_OU],
+                        contextualTier: [TIER_UU],
                         checkValidEvo: true,
                         type: [aquaTeamTypes[1], aquaTeamTypes[2], aquaTeamTypes[3], aquaTeamTypes[4]],
                     }
                 ],
             },
-            pokeDefDrizzleMon(POKEDEF_OU),
+            pokeDefDrizzleMon(getBossPreset('ARCHIE', difficulty)[4]),
             {
-                contextualTier: [TIER_UU],
+                ...getBossPreset('ARCHIE', difficulty)[5],
                 abilities: [...rainAbilities],
-                checkValidEvo: true,
                 type: [...aquaTeamTypes],
                 fallback: [
                     {
@@ -4801,29 +4710,34 @@ const trainersData = [
         reward: ['GYM_REWARD_8', tmItem(51)],
         bag: [...juanBag()],
         team: [
-            pokeDefUbersMega({
+            {
+                ...getBossPreset('JUAN', difficulty)[0],
                 type: [gymMainTypes[7]],
-            }),
-            pokeDefOnlyUbers({
+            },
+            {
+                ...getBossPreset('JUAN', difficulty)[1],
                 type: [gymMainTypes[7]],
-            }),
-            pokeDefOnlyOU({
+            },
+            {
+                ...getBossPreset('JUAN', difficulty)[2],
                 type: [gymMainTypes[7]],
-            }),
-            pokeDefOnlyOU({
+            },
+            {
+                ...getBossPreset('JUAN', difficulty)[3],
                 type: [gymMainTypes[7]],
-            }),
-            pokeDefOnlyOU({
+            },
+            {
+                ...getBossPreset('JUAN', difficulty)[4],
                 type: [gymMainTypes[7]],
-            }),
+            },
             gymIsChangedType[7] ? {
-                ...POKEDEF_UU,
+                ...getBossPreset('JUAN', difficulty)[5],
                 type: [gymMainTypes[7]],
                 breedTier: 'perfect',
                 pickBest: true,
             } : {
                 specificIfTier: 'SPECIES_KINGDRA',
-                ...POKEDEF_UU,
+                ...getBossPreset('JUAN', difficulty)[5],
                 item: 'Chesto Berry',
                 breedTier: 'perfect',
                 abilities: ['SNIPER'],
@@ -4831,7 +4745,8 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_DRAGON_DANCE', 'MOVE_WATERFALL'],
                 fallback: [
                     {
-                        ...POKEDEF_UU,
+                        contextualTier: [TIER_UU],
+                        checkValidEvo: true,
                         type: [gymMainTypes[7]],
                     }
                 ]
@@ -5040,7 +4955,7 @@ const trainersData = [
         reward: [quincyTM],
         level: 70,
         bag: [quincyTM, ...getSampleItemsFromArray(juanBag(), 24)],
-        team: genericTrainerTeamPostTateAndLiza(),
+        team: genericTrainerTeamPostTateAndLiza(difficulty),
     },
     {
         id: 'TRAINER_KATELYNN',
@@ -5049,7 +4964,7 @@ const trainersData = [
         reward: [katelynTM],
         level: 70,
         bag: [katelynTM, ...getSampleItemsFromArray(juanBag(), 24)],
-        team: genericTrainerTeamPostTateAndLiza(),
+        team: genericTrainerTeamPostTateAndLiza(difficulty),
     },
     // Ever Grande Rival
     {
@@ -5177,24 +5092,12 @@ const trainersData = [
         level: 73,
         bag: [...endgameBag()],
         team: [
-            pokeDefOnlyUbers({
-                type: [e41MainType],
-            }),
-            pokeDefOnlyOU({
-                type: [e41MainType],
-            }),
-            pokeDefOnlyOU({
-                type: [e41MainType],
-            }),
-            pokeDefOnlyUU({
-                type: [e41MainType],
-            }),
-            pokeDefOnlyUU({
-                type: [e41MainType],
-            }),
-            pokeDefMega({
-                type: [e41MainType],
-            }),
+            { ...getBossPreset('SIDNEY', difficulty)[0], type: [e41MainType] },
+            { ...getBossPreset('SIDNEY', difficulty)[1], type: [e41MainType] },
+            { ...getBossPreset('SIDNEY', difficulty)[2], type: [e41MainType] },
+            { ...getBossPreset('SIDNEY', difficulty)[3], type: [e41MainType] },
+            { ...getBossPreset('SIDNEY', difficulty)[4], type: [e41MainType] },
+            pokeDefMega({ type: [e41MainType] }),
         ],
     },
     {
@@ -5205,24 +5108,12 @@ const trainersData = [
         level: 74,
         bag: [...endgameBag()],
         team: [
-            pokeDefOnlyUbers({
-                type: [e42MainType],
-            }),
-            pokeDefOnlyOU({
-                type: [e42MainType],
-            }),
-            pokeDefOnlyOU({
-                type: [e42MainType],
-            }),
-            pokeDefOnlyOU({
-                type: [e42MainType],
-            }),
-            pokeDefOnlyUU({
-                type: [e42MainType],
-            }),
-            pokeDefMega({
-                type: [e42MainType],
-            }),
+            { ...getBossPreset('PHOEBE', difficulty)[0], type: [e42MainType] },
+            { ...getBossPreset('PHOEBE', difficulty)[1], type: [e42MainType] },
+            { ...getBossPreset('PHOEBE', difficulty)[2], type: [e42MainType] },
+            { ...getBossPreset('PHOEBE', difficulty)[3], type: [e42MainType] },
+            { ...getBossPreset('PHOEBE', difficulty)[4], type: [e42MainType] },
+            pokeDefMega({ type: [e42MainType] }),
         ],
     },
     {
@@ -5233,24 +5124,12 @@ const trainersData = [
         level: 75,
         bag: [...endgameBag()],
         team: [
-            pokeDefOnlyUbers({
-                type: [e43MainType],
-            }),
-            pokeDefOnlyOU({
-                type: [e43MainType],
-            }),
-            pokeDefOnlyOU({
-                type: [e43MainType],
-            }),
-            pokeDefOnlyOU({
-                type: [e43MainType],
-            }),
-            pokeDefOnlyUU({
-                type: [e43MainType],
-            }),
-            pokeDefUbersMega({
-                type: [e43MainType],
-            }),
+            { ...getBossPreset('GLACIA', difficulty)[0], type: [e43MainType] },
+            { ...getBossPreset('GLACIA', difficulty)[1], type: [e43MainType] },
+            { ...getBossPreset('GLACIA', difficulty)[2], type: [e43MainType] },
+            { ...getBossPreset('GLACIA', difficulty)[3], type: [e43MainType] },
+            { ...getBossPreset('GLACIA', difficulty)[4], type: [e43MainType] },
+            pokeDefUbersMega({ type: [e43MainType] }),
         ],
     },
     {
@@ -5261,24 +5140,12 @@ const trainersData = [
         level: 76,
         bag: [...endgameBag()],
         team: [
-            pokeDefOnlyUbers({
-                type: [e44MainType],
-            }),
-            pokeDefOnlyOU({
-                type: [e44MainType],
-            }),
-            pokeDefOnlyOU({
-                type: [e44MainType],
-            }),
-            pokeDefOnlyOU({
-                type: [e44MainType],
-            }),
-            pokeDefOnlyOU({
-                type: [e44MainType],
-            }),
-            pokeDefUbersMega({
-                type: [e44MainType],
-            }),
+            { ...getBossPreset('DRAKE', difficulty)[0], type: [e44MainType] },
+            { ...getBossPreset('DRAKE', difficulty)[1], type: [e44MainType] },
+            { ...getBossPreset('DRAKE', difficulty)[2], type: [e44MainType] },
+            { ...getBossPreset('DRAKE', difficulty)[3], type: [e44MainType] },
+            { ...getBossPreset('DRAKE', difficulty)[4], type: [e44MainType] },
+            pokeDefUbersMega({ type: [e44MainType] }),
         ],
     },
     {
@@ -5289,10 +5156,11 @@ const trainersData = [
         level: 78,
         bag: [...endgameBag()],
         team: [
-            pokeDefOnlyAG({
+            {
+                ...getBossPreset('CHAMPION_STEVEN', difficulty)[0],
                 hasStat: ['baseBST', '<', '851'],
-            }),
-            pokeDefOnlyOU(),
+            },
+            getBossPreset('CHAMPION_STEVEN', difficulty)[1],
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_MEGA',
@@ -5301,8 +5169,8 @@ const trainersData = [
                     pokeDefUbersMega(),
                 ],
             },
-            pokeDefOnlyOU(),
-            pokeDefOnlyOU(),
+            getBossPreset('CHAMPION_STEVEN', difficulty)[3],
+            getBossPreset('CHAMPION_STEVEN', difficulty)[4],
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_LEGEND',
