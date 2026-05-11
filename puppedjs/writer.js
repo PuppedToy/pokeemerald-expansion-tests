@@ -957,6 +957,25 @@ async function writer(pokemonList, moves, abilities, isDebug) {
     const trainersResults = {};
 
     const storedIds = {};
+    const pokeIdIVCache = {};
+
+    function generateIVs(breedTier, pokeId) {
+        if (pokeId && pokeIdIVCache[pokeId]) return pokeIdIVCache[pokeId];
+        let ivs;
+        if (breedTier === 'perfect') {
+            ivs = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
+        } else if (breedTier === 'good') {
+            const order = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].sort(() => Math.random() - 0.5);
+            ivs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+            Object.keys(ivs).forEach(s => { ivs[s] = Math.floor(Math.random() * 32); });
+            order.slice(0, 3).forEach(s => { ivs[s] = 31; });
+        } else {
+            ivs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+            Object.keys(ivs).forEach(s => { ivs[s] = Math.floor(Math.random() * 32); });
+        }
+        if (pokeId) pokeIdIVCache[pokeId] = ivs;
+        return ivs;
+    }
 
     trainersData.forEach(trainer => {
         for(let i = 0; i < (trainer.bag || []).length; i++) {
@@ -1436,11 +1455,16 @@ async function writer(pokemonList, moves, abilities, isDebug) {
                 if (baseFormMon.id) {
                     storedIds[baseFormMon.id] = chosenTrainerMon.id;
                 }
+                const effectiveBreedTier = trainerMonDefinition.breedTier || trainer.breedTier || null;
+                const pokeId = trainerMonDefinition.id || null;
                 const newTeamMember = {
                     pokemon: baseFormMon,
                     item: megaItem || trainerMonDefinition.item || null,
                     nature: trainerMonDefinition.nature || null,
                     moves: megaMoves,
+                    breedTier: effectiveBreedTier,
+                    pokeId,
+                    ivs: generateIVs(effectiveBreedTier, pokeId),
                 };
                 if (trainerMonDefinition.tryToHaveMove) {
                     trainerMonDefinition.tryToHaveMove.forEach(moveToLearn => {
@@ -1586,22 +1610,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             }
         });
 
-        let ivs = 6;
-        if (trainer.isBoss) {
-            ivs = 31;
-        }
-        else if (trainer.level >= 40) {
-            ivs = 26;
-        }
-        else if (trainer.level >= 30) {
-            ivs = 21;
-        }
-        else if (trainer.level >= 20) {
-            ivs = 16;
-        }
-        else if (trainer.level >= 10) {
-            ivs = 11;
-        }
         trainersResults[trainer.id] = {
             level: trainer.level,
             class: trainer.class || 'Red Back',
@@ -1624,7 +1632,6 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             }) || [],
             isBoss: trainer.isBoss || false,
             isPartner: trainer.isPartner || false,
-            ivs,
             team,
             preventShuffle: trainer.preventShuffle || false,
         };
@@ -1651,8 +1658,8 @@ async function writer(pokemonList, moves, abilities, isDebug) {
             if (teamEntry.nature) {
                 lines.push(`Nature: ${teamEntry.nature}`);
             }
-            const ivs = trainerData.ivs || 31;
-            lines.push(`IVs: ${ivs} HP / ${ivs} Atk / ${ivs} Def / ${ivs} SpA / ${ivs} SpD / ${ivs} Spe`,);
+            const iv = teamEntry.ivs;
+            lines.push(`IVs: ${iv.hp} HP / ${iv.atk} Atk / ${iv.def} Def / ${iv.spa} SpA / ${iv.spd} SpD / ${iv.spe} Spe`);
             if (teamEntry.moves && teamEntry.moves.length > 0) {
                 const moveNames = teamEntry.moves.slice(0, 4)
                     .map(m => moves[m] ? moves[m].name : m);

@@ -755,6 +755,7 @@ const rival103Template = (id) => [
     },
     {
         id: 'RIVAL_MEGA_103_KEEP_' + id,
+        breedTier: 'good',
         ...PROMISING_OU_UBERS_MEGA_LC,
     },
 ];
@@ -763,6 +764,7 @@ const rivalRustboroTemplate = (id) => [
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_STARTER_' + id,
+        breedTier: 'perfect',
         tryEvolve: true,
     },
     {
@@ -784,12 +786,14 @@ const rivalRustboroTemplate = (id) => [
     },
     {
         id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
+        breedTier: 'good',
         evolutionTier: [TIER_OU],
         evoType: [EVO_TYPE_LC],
         tryEvolve: true,
         fallback: [
             {
                 id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
+                breedTier: 'good',
                 evolutionTier: [TIER_UU],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
@@ -828,12 +832,14 @@ const rivalRoute110Template = (id) => [
     },
     {
         id: 'RIVAL_PREMIUM_110_KEEP_' + id,
+        breedTier: 'good',
         evolutionTier: [TIER_OU],
         evoType: [EVO_TYPE_LC],
         tryEvolve: true,
         fallback: [
             {
                 id: 'RIVAL_PREMIUM_110_KEEP_' + id,
+                breedTier: 'good',
                 evolutionTier: [TIER_UU],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
@@ -898,6 +904,7 @@ const rivalEvergrandeCityTemplate = (id) => [
     },
     {
         special: 'PLAYER_LEGEND_' + id,
+        breedTier: 'good',
     },
     {
         special: TRAINER_REPEAT_ID,
@@ -1302,6 +1309,7 @@ const trainersData = [
         team: [
             {
                 id: 'RIVAL_STARTER_TREECKO',
+                breedTier: 'perfect',
                 special: TRAINER_POKE_STARTER_TORCHIC,
             },
             ...rival103Template('TREECKO'),
@@ -1318,6 +1326,7 @@ const trainersData = [
         team: [
             {
                 id: 'RIVAL_STARTER_TORCHIC',
+                breedTier: 'perfect',
                 special: TRAINER_POKE_STARTER_MUDKIP,
             },
             ...rival103Template('TORCHIC'),
@@ -1334,6 +1343,7 @@ const trainersData = [
         team: [
             {
                 id: 'RIVAL_STARTER_MUDKIP',
+                breedTier: 'perfect',
                 special: TRAINER_POKE_STARTER_TREECKO,
             },
             ...rival103Template('MUDKIP'),
@@ -1586,6 +1596,7 @@ const trainersData = [
         team: [
             {
                 ...POKEDEF_NU,
+                breedTier: 'perfect',
                 type: [gymMainTypes[0]],
             },
             gymIsChangedType[0] ? {
@@ -1975,6 +1986,7 @@ const trainersData = [
             },
             {
                 ...POKEDEF_NU,
+                breedTier: 'perfect',
                 type: [gymMainTypes[1]],
             },
             {
@@ -2014,14 +2026,17 @@ const trainersData = [
             },
             {
                 oneOf: stevenPokemon,
+                breedTier: 'good',
                 tryEvolve: true,
             },
             {
                 oneOf: stevenPokemon,
+                breedTier: 'good',
                 tryEvolve: true,
             },
             {
                 oneOf: stevenPokemon,
+                breedTier: 'good',
                 tryEvolve: true,
             },
             {
@@ -2340,6 +2355,7 @@ const trainersData = [
         id: 'TRAINER_WALLY_MAUVILLE',
         class: 'Wally',
         isBoss: true,
+        breedTier: 'good',
         level: 28,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...wallyBag()],
@@ -2516,10 +2532,12 @@ const trainersData = [
             }),
             gymIsChangedType[2] ? {
                 ...POKEDEF_UU_OU_MEGA,
+                breedTier: 'perfect',
                 type: [gymMainTypes[2]],
                 fallback: [
                     {
                         specific: 'SPECIES_MANECTRIC',
+                        breedTier: 'perfect',
                         abilities: ['STATIC'],
                         tryToHaveMove: ['MOVE_THUNDER_WAVE', 'MOVE_FIRE_FANG', 'MOVE_BITE'],
                         item: 'Manectite',
@@ -2527,6 +2545,7 @@ const trainersData = [
                 ]
             } : {
                 specific: 'SPECIES_MANECTRIC',
+                breedTier: 'perfect',
                 abilities: ['STATIC'],
                 tryToHaveMove: ['MOVE_THUNDER_WAVE', 'MOVE_FIRE_FANG', 'MOVE_BITE'],
                 item: 'Manectite',
@@ -2704,6 +2723,7 @@ const trainersData = [
             pokeDefDroughtMon(POKEDEF_UU),
             {
                 specific: 'SPECIES_CAMERUPT',
+                breedTier: 'perfect',
                 item: 'Cameruptite',
                 abilities: ['SOLID_ROCK'],
             },
@@ -2968,20 +2988,24 @@ const trainersData = [
             },
             {
                 ...POKEDEF_UU_OU_MEGA,
+                breedTier: 'perfect',
                 type: [gymMainTypes[3]],
                 fallback: [
                     {
                         isMega: true,
+                        breedTier: 'perfect',
                         contextualTier: [TIER_RU, TIER_UU, TIER_OU, TIER_UBERS],
                         type: [gymMainTypes[3]],
                         checkValidEvo: true,
                     },
                     {
+                        breedTier: 'perfect',
                         contextualTier: [TIER_OU],
                         checkValidEvo: true,
                         type: [gymMainTypes[3]],
                     },
                     {
+                        breedTier: 'perfect',
                         contextualTier: [TIER_UU],
                         checkValidEvo: true,
                         type: [gymMainTypes[3]],
@@ -3170,21 +3194,25 @@ const trainersData = [
             },
             {
                 ...POKEDEF_UU_OU_MEGA,
+                breedTier: 'perfect',
                 type: [gymMainTypes[4]],
                 fallback: [
                    {
                         isMega: true,
+                        breedTier: 'perfect',
                         contextualTier: [TIER_UU, TIER_OU, TIER_UBERS],
                         type: [gymMainTypes[4]],
                         checkValidEvo: true,
                         tryEvolve: true,
                    },
                    {
+                        breedTier: 'perfect',
                         contextualTier: [TIER_OU],
                         type: [gymMainTypes[4]],
                         checkValidEvo: true,
                    },
                    {
+                        breedTier: 'perfect',
                         contextualTier: [TIER_UU],
                         type: [gymMainTypes[4]],
                         checkValidEvo: true,
@@ -3539,21 +3567,25 @@ const trainersData = [
             },
             gymIsChangedType[5] ? {
                 ...POKEDEF_UU_OU_MEGA,
+                breedTier: 'perfect',
                 type: [gymMainTypes[5]],
                 fallback: [
                    {
                         isMega: true,
+                        breedTier: 'perfect',
                         contextualTier: [TIER_UU, TIER_OU, TIER_UBERS],
                         type: [gymMainTypes[5]],
                         checkValidEvo: true,
                         tryEvolve: true,
                    },
                    {
+                        breedTier: 'perfect',
                         contextualTier: [TIER_OU],
                         type: [gymMainTypes[5]],
                         checkValidEvo: true,
                    },
                    {
+                        breedTier: 'perfect',
                         contextualTier: [TIER_UU],
                         type: [gymMainTypes[5]],
                         checkValidEvo: true,
@@ -3561,6 +3593,7 @@ const trainersData = [
                 ]
             } : {
                 specific: 'SPECIES_ALTARIA',
+                breedTier: 'perfect',
                 item: 'Altarianite',
             },
             {
@@ -3705,6 +3738,7 @@ const trainersData = [
         id: 'TRAINER_WALLY_LILYCOVE',
         class: 'Wally',
         isBoss: true,
+        breedTier: 'good',
         reward: ['GYM_REWARD_11'],
         level: 49,
         bag: [...wallyBag2()],
@@ -3759,6 +3793,7 @@ const trainersData = [
             pokeDefDroughtMon(POKEDEF_OU),
             {
                 specific: 'SPECIES_CAMERUPT',
+                breedTier: 'perfect',
                 item: 'Cameruptite',
                 abilities: ['SOLID_ROCK'],
             },
@@ -4127,34 +4162,40 @@ const trainersData = [
             } : (tateAndLizaUseSolrock ?
             {
                 specificIfTier: 'SPECIES_LUNALA',
+                breedTier: 'perfect',
                 ...POKEDEF_UBERS,
                 item: 'Room Service',
                 nature: 'Quiet',
                 fallback: [
                     {
                         specificIfTier: 'SPECIES_LUNALA',
+                        breedTier: 'perfect',
                         ...POKEDEF_OU,
                         item: 'Room Service',
                         nature: 'Quiet',
                     },
                     {
+                        breedTier: 'perfect',
                         ...POKEDEF_OU,
                         type: [gymMainTypes[6]],
                     }
                 ]
             } : {
                 specificIfTier: 'SPECIES_SOLGALEO',
+                breedTier: 'perfect',
                 ...POKEDEF_UBERS,
                 item: 'Room Service',
                 nature: 'Brave',
                 fallback: [
                     {
                         specificIfTier: 'SPECIES_SOLGALEO',
+                        breedTier: 'perfect',
                         ...POKEDEF_OU,
                         item: 'Room Service',
                         nature: 'Quiet',
                     },
                     {
+                        breedTier: 'perfect',
                         ...POKEDEF_OU,
                         type: [gymMainTypes[6]],
                     }
@@ -4162,6 +4203,7 @@ const trainersData = [
             }),
             gymIsChangedType[6] ? {
                 ...POKEDEF_MEGA,
+                breedTier: 'perfect',
                 type: [gymMainTypes[6]],
             } : {
                 ...POKEDEF_MEGA,
@@ -4413,6 +4455,7 @@ const trainersData = [
         id: 'PARTNER_STEVEN',
         class: 'Steven',
         isPartner: true,
+        breedTier: 'perfect',
         preventShuffle: true,
         level: 59,
         bag: [...spaceCenterBag()],
@@ -4488,6 +4531,7 @@ const trainersData = [
         id: 'TRAINER_MAXIE_MOSSDEEP',
         class: 'Magma Leader Maxie',
         isBoss: true,
+        breedTier: 'perfect',
         level: 59,
         preventShuffle: true,
         bag: [...spaceCenterBag()],
@@ -4657,6 +4701,7 @@ const trainersData = [
             },
             {
                 specific: 'SPECIES_SHARPEDO',
+                breedTier: 'perfect',
                 item: 'Sharpedonite',
                 abilities: ['SPEED_BOOST'],
                 nature: 'Adamant',
@@ -4759,6 +4804,7 @@ const trainersData = [
         bag: [...juanBag()],
         team: [
             pokeDefUbersMega({
+                breedTier: 'perfect',
                 type: [gymMainTypes[7]],
             }),
             pokeDefOnlyUbers({
@@ -4918,6 +4964,7 @@ const trainersData = [
         id: 'TRAINER_WALLY_VR_1',
         class: 'Wally',
         isBoss: true,
+        breedTier: 'good',
         level: 67,
         bag: [...juanBag()],
         team: [
@@ -5124,6 +5171,7 @@ const trainersData = [
         id: 'TRAINER_SIDNEY',
         class: 'Elite Four Sidney',
         isBoss: true,
+        breedTier: 'good',
         level: 73,
         bag: [...endgameBag()],
         team: [
@@ -5151,6 +5199,7 @@ const trainersData = [
         id: 'TRAINER_PHOEBE',
         class: 'Elite Four Phoebe',
         isBoss: true,
+        breedTier: 'good',
         level: 74,
         bag: [...endgameBag()],
         team: [
@@ -5178,6 +5227,7 @@ const trainersData = [
         id: 'TRAINER_GLACIA',
         class: 'Elite Four Glacia',
         isBoss: true,
+        breedTier: 'good',
         level: 75,
         bag: [...endgameBag()],
         team: [
@@ -5205,6 +5255,7 @@ const trainersData = [
         id: 'TRAINER_DRAKE',
         class: 'Elite Four Drake',
         isBoss: true,
+        breedTier: 'good',
         level: 76,
         bag: [...endgameBag()],
         team: [
@@ -5232,6 +5283,7 @@ const trainersData = [
         id: 'TRAINER_CHAMPION_STEVEN',
         class: 'Steven',
         isBoss: true,
+        breedTier: 'perfect',
         level: 78,
         bag: [...endgameBag()],
         team: [
