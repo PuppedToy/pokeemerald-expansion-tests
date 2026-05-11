@@ -2345,7 +2345,7 @@ static ALWAYS_INLINE bool32 IsEggOrBadEgg(struct BoxPokemon *boxMon)
     return GetSubstruct3(boxMon)->isEgg || IsBadEgg(boxMon);
 }
 
-static u32 GetBoxMonIVTotal(const struct BoxPokemon *boxMon)
+static u32 GetBoxMonIVTotal(struct BoxPokemon *boxMon)
 {
     return GetBoxMonData(boxMon, MON_DATA_HP_IV, NULL)
          + GetBoxMonData(boxMon, MON_DATA_ATK_IV, NULL)
