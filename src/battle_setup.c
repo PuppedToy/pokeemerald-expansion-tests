@@ -897,7 +897,9 @@ static void CB2_GiveStarter(void)
             for (k = 3; k < NUM_STATS && total < P_SHINY_IV_THRESHOLD; k++)
             {
                 u32 current = GetMonData(&gPlayerParty[0], MON_DATA_HP_IV + ivOrder[k], NULL);
-                u32 toAdd = MIN(P_SHINY_IV_THRESHOLD - total, MAX_PER_STAT_IVS - current);
+                u32 need = P_SHINY_IV_THRESHOLD - total;
+                u32 room = MAX_PER_STAT_IVS - current;
+                u32 toAdd = need < room ? need : room;
                 if (toAdd > 0)
                 {
                     u8 newIV = current + toAdd;
