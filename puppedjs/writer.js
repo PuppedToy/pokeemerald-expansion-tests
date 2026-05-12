@@ -42,6 +42,8 @@ const {
     TIER_AG,
     MEGA_TRAINERS,
     TIER_RU_THRESHOLD,
+    TIER_OU_THRESHOLD,
+    TIER_UU_THRESHOLD,
 } = require('./constants');
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 
@@ -576,7 +578,8 @@ async function writer(pokemonList, moves, abilities, isDebug, difficulty = 'FAIR
         && !poke.evolutionData.isMega
         && poke.evolutionData.isFinal
         && hasValidMega(poke)
-        && poke.rating.bestEvoRating < TIER_UBERS_THRESHOLD
+        && poke.rating.bestEvoRating < TIER_UU_THRESHOLD
+        && poke.rating.megaEvoRating < TIER_UBERS_THRESHOLD
         && checkValidEvo(poke, 29)
     );
     const gym3Replacement = devolveToBase(sampleAndRemove(gym3ReplacementList));
@@ -601,6 +604,7 @@ async function writer(pokemonList, moves, abilities, isDebug, difficulty = 'FAIR
         && poke.evolutionData.isFinal
         && hasValidMega(poke)
         && poke.rating.bestEvoRating < TIER_UBERS_THRESHOLD
+        && poke.rating.megaEvoTier === TIER_OU
         && checkValidEvo(poke, 41)
     );
 
