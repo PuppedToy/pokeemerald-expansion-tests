@@ -308,6 +308,50 @@
       .sidebar{order:2}
       .app > .right{order:3}
       header.top{grid-column:1/2;margin-top:0}
+      .main { flex-direction: column; padding: 0 20px; }
+      .right { position: sticky; width: 100%; height: auto; flex-direction: row; }
+      .nav { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+      #nav-toggle { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .main { flex-direction: column; padding: 0 12px; gap: 0; }
+      .content { padding-bottom: 68px; }
+      .right {
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        width: 100%;
+        height: 56px;
+        flex-direction: row;
+        justify-content: stretch;
+        background: var(--card);
+        border-top: 1px solid rgba(255,255,255,0.08);
+        border-radius: 0;
+        z-index: 999;
+        overflow: visible;
+        top: auto;
+      }
+      #nav-toggle { display: none; }
+      #reset-all-btn { display: none; }
+      .nav {
+        flex-direction: row;
+        flex: 1;
+        gap: 0;
+        overflow: visible;
+        padding: 0;
+      }
+      .nav a.clicker {
+        flex: 1;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        padding: 6px 2px;
+        font-size: 9px;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .trainer-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
     }
 
     /* ---- Nuzlocke Tracker ---- */
@@ -388,6 +432,31 @@
     }
     .nz-defeat-label:hover { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.4); }
     .nz-defeat-label input[type="checkbox"] { accent-color: #ef4444; cursor: pointer; }
+
+    /* Ignored state */
+    .trainer-card { position: relative; }
+    .location-card { position: relative; }
+    .trainer-card.nz-ignored { opacity: 0.45; }
+    .trainer-card.nz-ignored .title { text-decoration: line-through; color: var(--muted); }
+    .location-card.nz-ignored { opacity: 0.45; }
+    .location-card.nz-ignored .title { text-decoration: line-through; color: var(--muted); }
+    .nz-ignored-badge {
+      position: absolute; top: 8px; right: 8px;
+      font-size: 15px; pointer-events: none; opacity: 0.7;
+    }
+    .nz-ignore-btn, .nz-ignore-loc-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 11px;
+      padding: 2px 7px;
+      margin-top: 4px;
+      font-family: inherit;
+    }
+    .nz-ignore-btn:hover, .nz-ignore-loc-btn:hover { background: rgba(255,100,100,0.08); }
+    .nz-ignore-btn.active, .nz-ignore-loc-btn.active { background: rgba(255,100,100,0.15); color: #f87171; border-color: #f87171; }
 
     /* ---- Pokedex Controls ---- */
     #pokedex-controls { margin-bottom: 16px; }
@@ -579,6 +648,14 @@
 
         // Re-render Pokedex on demand when switching to that tab
         if (targetId === 'pokemon' && window._renderPokedex) window._renderPokedex();
+
+        // Scroll to last defeated trainer when switching to Trainers tab
+        if (targetId === 'trainers') {
+          requestAnimationFrame(function() {
+            var defeated = document.querySelectorAll('#trainers .trainer-card.nz-defeated');
+            if (defeated.length) defeated[defeated.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
+        }
       });
     });
   </script>
@@ -1107,6 +1184,7 @@
               <input type="checkbox" class="nz-defeat-cb" data-trainer-id="${trainerId}">
               ☑ Defeated
             </label>
+            ${!trainer.isBoss ? `<br><button class="nz-ignore-btn" data-trainer-id="${trainerId}">🚫 Not interested</button>` : ''}
           </div>` : ''}
           <img width="60" height="60" src="${getTrainerImg(trainer.class)}">
           <div class="small" style="text-align:center; color:#FFB28A;">Lv. ${trainer.level}</div>
@@ -1226,9 +1304,10 @@
         headerBadge = `<div style="font-size:11px; font-weight:800; letter-spacing:0.08em; margin-top:2px; background:linear-gradient(90deg,#f59e0b,#fbbf24,#f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">✦ LEGENDARY ✦</div>`;
 
       card.innerHTML = `
-        <div class="meta">
+        <div class="meta" style="flex-direction:column; align-items:flex-start; gap:2px;">
           <div class="title">${routeName}<span class="nz-stopwatch-badge">⏱</span></div>
           ${headerBadge}
+          <button class="nz-ignore-loc-btn" data-route-id="${route.id}">🚫 Not interested</button>
         </div>
         <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:8px;">
           ${encountersHTML}
@@ -1946,8 +2025,10 @@
         const raw = localStorage.getItem(LS_KEY);
         if (raw) nzState = JSON.parse(raw);
       } catch (e) { /* ignore */ }
-      if (!nzState.locations) nzState.locations = {};
-      if (!nzState.trainers)  nzState.trainers  = {};
+      if (!nzState.locations)       nzState.locations       = {};
+      if (!nzState.trainers)        nzState.trainers        = {};
+      if (!nzState.ignoredTrainers) nzState.ignoredTrainers = {};
+      if (!nzState.ignoredLocs)     nzState.ignoredLocs     = {};
     }
 
     function saveState() {
@@ -2008,6 +2089,7 @@
     function applyAllLocVisuals() {
       document.querySelectorAll('.location-card[data-route-id]').forEach(function (c) {
         applyLocVisuals(c.dataset.routeId);
+        applyIgnoredLoc(c.dataset.routeId);
       });
     }
 
@@ -2056,6 +2138,7 @@
     function applyAllTrainerVisuals() {
       document.querySelectorAll('.trainer-card[data-trainer-id]').forEach(function (c) {
         applyTrainerVisuals(c.dataset.trainerId);
+        applyIgnoredTrainer(c.dataset.trainerId);
       });
     }
 
@@ -2078,6 +2161,90 @@
           c.style.display = (sel && suffix !== s) ? 'none' : '';
         });
       });
+    }
+
+    // ---------- Boss ↔ Wild Location connection maps ----------
+    const wildLocToTrainer = {};
+    const trainerToWildLoc = {};
+
+    wildPokes.forEach(function(w) {
+      if (!w.boss) return;
+      const m = w.id.match(/^BOSS_(.+?)_REWARD$/i);
+      if (!m) return;
+      const parts = m[1].toUpperCase().split('_');
+      const trainerId = Object.keys(trainersData).find(function(id) {
+        if (!trainersData[id].isBoss) return false;
+        const up = id.toUpperCase();
+        return parts.every(function(p) { return up.includes(p); });
+      });
+      if (!trainerId) return;
+      wildLocToTrainer[w.id] = trainerId;
+      if (!trainerToWildLoc[trainerId]) trainerToWildLoc[trainerId] = [];
+      trainerToWildLoc[trainerId].push(w.id);
+    });
+
+    // ---------- Visual: ignored trainers & locations ----------
+    function applyIgnoredTrainer(trainerId) {
+      const card = document.querySelector('.trainer-card[data-trainer-id="' + trainerId + '"]');
+      if (!card) return;
+      const ignored = !!nzState.ignoredTrainers[trainerId];
+      card.classList.toggle('nz-ignored', ignored);
+      let badge = card.querySelector('.nz-ignored-badge');
+      if (ignored && !badge) {
+        badge = document.createElement('span');
+        badge.className = 'nz-ignored-badge';
+        badge.textContent = '🚫';
+        card.appendChild(badge);
+      }
+      if (!ignored && badge) badge.remove();
+      const btn = card.querySelector('.nz-ignore-btn');
+      if (btn) btn.classList.toggle('active', ignored);
+    }
+
+    function applyIgnoredLoc(routeId) {
+      const card = document.querySelector('.location-card[data-route-id="' + routeId + '"]');
+      if (!card) return;
+      const ignored = !!nzState.ignoredLocs[routeId];
+      card.classList.toggle('nz-ignored', ignored);
+      let badge = card.querySelector('.nz-ignored-badge');
+      if (ignored && !badge) {
+        badge = document.createElement('span');
+        badge.className = 'nz-ignored-badge';
+        badge.textContent = '🚫';
+        card.appendChild(badge);
+      }
+      if (!ignored && badge) badge.remove();
+      const btn = card.querySelector('.nz-ignore-loc-btn');
+      if (btn) btn.classList.toggle('active', ignored);
+    }
+
+    function handleIgnoreTrainer(trainerId) {
+      const nowIgnored = !nzState.ignoredTrainers[trainerId];
+      if (nowIgnored) nzState.ignoredTrainers[trainerId] = true;
+      else delete nzState.ignoredTrainers[trainerId];
+      applyIgnoredTrainer(trainerId);
+      if (trainerToWildLoc[trainerId]) {
+        trainerToWildLoc[trainerId].forEach(function(locId) {
+          if (nowIgnored) nzState.ignoredLocs[locId] = true;
+          else delete nzState.ignoredLocs[locId];
+          applyIgnoredLoc(locId);
+        });
+      }
+      saveState();
+    }
+
+    function handleIgnoreLoc(routeId) {
+      const nowIgnored = !nzState.ignoredLocs[routeId];
+      if (nowIgnored) nzState.ignoredLocs[routeId] = true;
+      else delete nzState.ignoredLocs[routeId];
+      applyIgnoredLoc(routeId);
+      const linkedTrainer = wildLocToTrainer[routeId];
+      if (linkedTrainer) {
+        if (nowIgnored) nzState.ignoredTrainers[linkedTrainer] = true;
+        else delete nzState.ignoredTrainers[linkedTrainer];
+        applyIgnoredTrainer(linkedTrainer);
+      }
+      saveState();
     }
 
     // ---------- Handlers ----------
@@ -2108,6 +2275,10 @@
       const groupId = routeToGroup[routeId];
       if (groupId) applyGroupEffects(groupId);
       if (routeId === 'STARTERS') applyStarterRivals();
+      // Bidirectional: obtaining a boss-reward wild loc auto-defeats its trainer
+      if (checked && wildLocToTrainer[routeId]) {
+        handleDefeatChange(wildLocToTrainer[routeId], true);
+      }
     }
 
     function handleDelayChange(routeId, slot, checked) {
@@ -2158,6 +2329,18 @@
               }
             });
           }
+          // Bidirectional: defeating a boss auto-selects their reward wild location
+          if (trainerToWildLoc[trainerId]) {
+            trainerToWildLoc[trainerId].forEach(function(locId) {
+              const loc = locState(locId);
+              if (loc.selected) return;
+              const wildEntry = wildPokes.find(function(w) { return w.id === locId; });
+              if (!wildEntry) return;
+              const slotTypes = ['special1','special2','special3','land','surf','old','good','super','underwater'];
+              const slot = slotTypes.find(function(s) { return wildEntry[s]; });
+              if (slot) handleSelectChange(locId, slot, true);
+            });
+          }
         }
       }
 
@@ -2170,10 +2353,24 @@
       // Stop click propagation on nuzlocke controls in capture phase
       // so the wild-poke / trainer-poke click-to-modal listeners are not triggered
       document.addEventListener('click', function (e) {
-        if (e.target.closest('.nuzlocke-controls') || e.target.closest('.nz-defeat-label')) {
+        if (e.target.closest('.nuzlocke-controls') || e.target.closest('.nz-defeat-label') ||
+            e.target.closest('.nz-ignore-btn') || e.target.closest('.nz-ignore-loc-btn')) {
           e.stopPropagation();
         }
       }, true);
+
+      document.addEventListener('click', function (e) {
+        const ignoreTrainBtn = e.target.closest('.nz-ignore-btn');
+        if (ignoreTrainBtn) {
+          handleIgnoreTrainer(ignoreTrainBtn.dataset.trainerId);
+          return;
+        }
+        const ignoreLocBtn = e.target.closest('.nz-ignore-loc-btn');
+        if (ignoreLocBtn) {
+          handleIgnoreLoc(ignoreLocBtn.dataset.routeId);
+          return;
+        }
+      });
 
       document.addEventListener('change', function (e) {
         const t = e.target;
