@@ -659,13 +659,17 @@ const statusList = {
     MOVE_TOXIC_THREAD: 7,
     MOVE_TOXIC: 8,
     MOVE_WILL_O_WISP: 8,
+    MOVE_POISON_POWDER: 3.5,   // 75% acc, regular poison (vs Poison Gas 90%→4)
     MOVE_GRASS_WHISTLE: 4.5,
+    MOVE_SING: 4.5,             // 55% acc, sleep (same as Grass Whistle)
+    MOVE_HYPNOSIS: 5,           // 60% acc, sleep
     MOVE_YAWN: 5,
     MOVE_LOVELY_KISS: 6.5,
     MOVE_SLEEP_POWDER: 7,
     EFFECT_DARK_VOID: 7,
     MOVE_SPORE: 10,
     MOVE_THUNDER_WAVE: 7,
+    MOVE_STUN_SPORE: 5.5,       // 75% acc, paralysis (vs Thunder Wave 90%→7)
     MOVE_GLARE: 7.5,
 
     MOVE_HEAL_BELL: 6,
