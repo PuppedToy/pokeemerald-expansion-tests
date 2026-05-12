@@ -438,25 +438,24 @@
     .location-card { position: relative; }
     .trainer-card.nz-ignored { opacity: 0.45; }
     .trainer-card.nz-ignored .title { text-decoration: line-through; color: var(--muted); }
-    .location-card.nz-ignored { opacity: 0.45; }
-    .location-card.nz-ignored .title { text-decoration: line-through; color: var(--muted); }
+    .wild-poke.nz-slot-ignored { opacity: 0.35; filter: grayscale(0.5); }
     .nz-ignored-badge {
       position: absolute; top: 8px; right: 8px;
       font-size: 15px; pointer-events: none; opacity: 0.7;
     }
-    .nz-ignore-btn, .nz-ignore-loc-btn {
+    .nz-ignore-btn, .nz-ignore-slot-btn {
       background: none;
       border: 1px solid rgba(255,255,255,0.12);
       border-radius: 6px;
       color: var(--muted);
       cursor: pointer;
       font-size: 11px;
-      padding: 2px 7px;
+      padding: 2px 6px;
       margin-top: 4px;
       font-family: inherit;
     }
-    .nz-ignore-btn:hover, .nz-ignore-loc-btn:hover { background: rgba(255,100,100,0.08); }
-    .nz-ignore-btn.active, .nz-ignore-loc-btn.active { background: rgba(255,100,100,0.15); color: #f87171; border-color: #f87171; }
+    .nz-ignore-btn:hover, .nz-ignore-slot-btn:hover { background: rgba(255,100,100,0.08); }
+    .nz-ignore-btn.active, .nz-ignore-slot-btn.active { background: rgba(255,100,100,0.15); color: #f87171; border-color: #f87171; }
 
     /* ---- Pokedex Controls ---- */
     #pokedex-controls { margin-bottom: 16px; }
@@ -1282,6 +1281,7 @@
                 ✓
               </label>
               ${faintLabel}
+              <button class="nz-ignore-slot-btn" data-route="${route.id}" data-slot="${type}" title="Not interested">🚫</button>
             </div>
           `;
           return `
@@ -1307,7 +1307,6 @@
         <div class="meta" style="flex-direction:column; align-items:flex-start; gap:2px;">
           <div class="title">${routeName}<span class="nz-stopwatch-badge">⏱</span></div>
           ${headerBadge}
-          <button class="nz-ignore-loc-btn" data-route-id="${route.id}">🚫 Not interested</button>
         </div>
         <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:8px;">
           ${encountersHTML}
@@ -2028,7 +2027,6 @@
       if (!nzState.locations)       nzState.locations       = {};
       if (!nzState.trainers)        nzState.trainers        = {};
       if (!nzState.ignoredTrainers) nzState.ignoredTrainers = {};
-      if (!nzState.ignoredLocs)     nzState.ignoredLocs     = {};
     }
 
     function saveState() {
@@ -2036,16 +2034,17 @@
     }
 
     function locState(routeId) {
-      if (!nzState.locations[routeId]) nzState.locations[routeId] = { selected: null, delayed: [], fainted: [] };
-      if (!Array.isArray(nzState.locations[routeId].delayed)) nzState.locations[routeId].delayed = [];
-      if (!Array.isArray(nzState.locations[routeId].fainted)) nzState.locations[routeId].fainted = [];
+      if (!nzState.locations[routeId]) nzState.locations[routeId] = { selected: null, delayed: [], fainted: [], ignoredSlots: [] };
+      if (!Array.isArray(nzState.locations[routeId].delayed))      nzState.locations[routeId].delayed      = [];
+      if (!Array.isArray(nzState.locations[routeId].fainted))      nzState.locations[routeId].fainted      = [];
+      if (!Array.isArray(nzState.locations[routeId].ignoredSlots)) nzState.locations[routeId].ignoredSlots = [];
       return nzState.locations[routeId];
     }
 
     // ---------- Visual: locations ----------
-    function applyLocVisuals(routeId) {
+    function applyLocVisuals(routeId, card) {
       const loc = locState(routeId);
-      const card = document.querySelector('.location-card[data-route-id="' + routeId + '"]');
+      if (!card) card = document.querySelector('.location-card[data-route-id="' + routeId + '"]');
       if (!card) return;
 
       const sel     = loc.selected;
@@ -2083,13 +2082,17 @@
         if (delayCb) { delayCb.checked = delayed.includes(s);  delayCb.disabled = !!sel; }
         if (delayLabel) delayLabel.classList.toggle('nz-disabled', !!sel);
         if (faintCb) { faintCb.checked = fainted.includes(s); }
+
+        const ignored = loc.ignoredSlots.includes(s);
+        slot.classList.toggle('nz-slot-ignored', ignored);
+        const ignoreSlotBtn = slot.querySelector('.nz-ignore-slot-btn');
+        if (ignoreSlotBtn) ignoreSlotBtn.classList.toggle('active', ignored);
       });
     }
 
     function applyAllLocVisuals() {
       document.querySelectorAll('.location-card[data-route-id]').forEach(function (c) {
-        applyLocVisuals(c.dataset.routeId);
-        applyIgnoredLoc(c.dataset.routeId);
+        applyLocVisuals(c.dataset.routeId, c);
       });
     }
 
@@ -2126,8 +2129,8 @@
     }
 
     // ---------- Visual: trainers ----------
-    function applyTrainerVisuals(trainerId) {
-      const card = document.querySelector('.trainer-card[data-trainer-id="' + trainerId + '"]');
+    function applyTrainerVisuals(trainerId, card) {
+      if (!card) card = document.querySelector('.trainer-card[data-trainer-id="' + trainerId + '"]');
       if (!card) return;
       const defeated = !!nzState.trainers[trainerId];
       card.classList.toggle('nz-defeated', defeated);
@@ -2137,8 +2140,8 @@
 
     function applyAllTrainerVisuals() {
       document.querySelectorAll('.trainer-card[data-trainer-id]').forEach(function (c) {
-        applyTrainerVisuals(c.dataset.trainerId);
-        applyIgnoredTrainer(c.dataset.trainerId);
+        applyTrainerVisuals(c.dataset.trainerId, c);
+        applyIgnoredTrainer(c.dataset.trainerId, c);
       });
     }
 
@@ -2183,9 +2186,9 @@
       trainerToWildLoc[trainerId].push(w.id);
     });
 
-    // ---------- Visual: ignored trainers & locations ----------
-    function applyIgnoredTrainer(trainerId) {
-      const card = document.querySelector('.trainer-card[data-trainer-id="' + trainerId + '"]');
+    // ---------- Visual: ignored trainers ----------
+    function applyIgnoredTrainer(trainerId, card) {
+      if (!card) card = document.querySelector('.trainer-card[data-trainer-id="' + trainerId + '"]');
       if (!card) return;
       const ignored = !!nzState.ignoredTrainers[trainerId];
       card.classList.toggle('nz-ignored', ignored);
@@ -2201,49 +2204,32 @@
       if (btn) btn.classList.toggle('active', ignored);
     }
 
-    function applyIgnoredLoc(routeId) {
-      const card = document.querySelector('.location-card[data-route-id="' + routeId + '"]');
-      if (!card) return;
-      const ignored = !!nzState.ignoredLocs[routeId];
-      card.classList.toggle('nz-ignored', ignored);
-      let badge = card.querySelector('.nz-ignored-badge');
-      if (ignored && !badge) {
-        badge = document.createElement('span');
-        badge.className = 'nz-ignored-badge';
-        badge.textContent = '🚫';
-        card.appendChild(badge);
-      }
-      if (!ignored && badge) badge.remove();
-      const btn = card.querySelector('.nz-ignore-loc-btn');
-      if (btn) btn.classList.toggle('active', ignored);
-    }
-
     function handleIgnoreTrainer(trainerId) {
       const nowIgnored = !nzState.ignoredTrainers[trainerId];
       if (nowIgnored) nzState.ignoredTrainers[trainerId] = true;
       else delete nzState.ignoredTrainers[trainerId];
       applyIgnoredTrainer(trainerId);
-      if (trainerToWildLoc[trainerId]) {
-        trainerToWildLoc[trainerId].forEach(function(locId) {
-          if (nowIgnored) nzState.ignoredLocs[locId] = true;
-          else delete nzState.ignoredLocs[locId];
-          applyIgnoredLoc(locId);
-        });
-      }
       saveState();
     }
 
-    function handleIgnoreLoc(routeId) {
-      const nowIgnored = !nzState.ignoredLocs[routeId];
-      if (nowIgnored) nzState.ignoredLocs[routeId] = true;
-      else delete nzState.ignoredLocs[routeId];
-      applyIgnoredLoc(routeId);
-      const linkedTrainer = wildLocToTrainer[routeId];
-      if (linkedTrainer) {
-        if (nowIgnored) nzState.ignoredTrainers[linkedTrainer] = true;
-        else delete nzState.ignoredTrainers[linkedTrainer];
-        applyIgnoredTrainer(linkedTrainer);
-      }
+    // ---------- Visual: ignored wild slots ----------
+    function applySlotIgnored(routeId, slot, card) {
+      if (!card) card = document.querySelector('.location-card[data-route-id="' + routeId + '"]');
+      if (!card) return;
+      const slotEl = card.querySelector('.wild-poke[data-slot="' + slot + '"]');
+      if (!slotEl) return;
+      const ignored = locState(routeId).ignoredSlots.includes(slot);
+      slotEl.classList.toggle('nz-slot-ignored', ignored);
+      const btn = slotEl.querySelector('.nz-ignore-slot-btn');
+      if (btn) btn.classList.toggle('active', ignored);
+    }
+
+    function handleIgnoreSlot(routeId, slot) {
+      const loc = locState(routeId);
+      const idx = loc.ignoredSlots.indexOf(slot);
+      if (idx >= 0) loc.ignoredSlots.splice(idx, 1);
+      else loc.ignoredSlots.push(slot);
+      applySlotIgnored(routeId, slot);
       saveState();
     }
 
@@ -2350,27 +2336,26 @@
 
     // ---------- Event delegation ----------
     function setupEvents() {
-      // Stop click propagation on nuzlocke controls in capture phase
-      // so the wild-poke / trainer-poke click-to-modal listeners are not triggered
-      document.addEventListener('click', function (e) {
-        if (e.target.closest('.nuzlocke-controls') || e.target.closest('.nz-defeat-label') ||
-            e.target.closest('.nz-ignore-btn') || e.target.closest('.nz-ignore-loc-btn')) {
-          e.stopPropagation();
-        }
-      }, true);
-
+      // Capture-phase listener: stop propagation for nuzlocke controls so they don't
+      // bubble up to wild-poke / trainer-poke click-to-modal handlers.
+      // Ignore buttons are also handled here so stopPropagation doesn't kill them.
       document.addEventListener('click', function (e) {
         const ignoreTrainBtn = e.target.closest('.nz-ignore-btn');
         if (ignoreTrainBtn) {
+          e.stopPropagation();
           handleIgnoreTrainer(ignoreTrainBtn.dataset.trainerId);
           return;
         }
-        const ignoreLocBtn = e.target.closest('.nz-ignore-loc-btn');
-        if (ignoreLocBtn) {
-          handleIgnoreLoc(ignoreLocBtn.dataset.routeId);
+        const ignoreSlotBtn = e.target.closest('.nz-ignore-slot-btn');
+        if (ignoreSlotBtn) {
+          e.stopPropagation();
+          handleIgnoreSlot(ignoreSlotBtn.dataset.route, ignoreSlotBtn.dataset.slot);
           return;
         }
-      });
+        if (e.target.closest('.nuzlocke-controls') || e.target.closest('.nz-defeat-label')) {
+          e.stopPropagation();
+        }
+      }, true);
 
       document.addEventListener('change', function (e) {
         const t = e.target;
