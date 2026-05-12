@@ -791,7 +791,11 @@ static u32 ChooseMoveOrAction_Singles(u32 battler)
             }
         }
     }
-    return consideredMoveArray[Random() % numOfBestMoves];
+    u32 chosenMoveIndex = consideredMoveArray[Random() % numOfBestMoves];
+    // Record the turn so the cooldown penalty fires for the next ~5 turns
+    if (IsStatDropStatusMove(gBattleMons[battler].moves[chosenMoveIndex]))
+        gBattleStruct->statDropLastTurn[battler] = gBattleTurnCounter;
+    return chosenMoveIndex;
 }
 
 static u32 ChooseMoveOrAction_Doubles(u32 battler)
@@ -4146,32 +4150,40 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
         ADJUST_SCORE(IncreaseStatUpScore(battlerAtk, battlerDef, STAT_CHANGE_EVASION));
         break;
     case EFFECT_ATTACK_DOWN:
+        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_ATK, 1));
+        break;
     case EFFECT_ATTACK_DOWN_2:
-        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_ATK));
+        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_ATK, 2));
         break;
     case EFFECT_DEFENSE_DOWN:
+        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_DEF, 1));
+        break;
     case EFFECT_DEFENSE_DOWN_2:
-        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_DEF));
+        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_DEF, 2));
         break;
     case EFFECT_SPEED_DOWN:
     case EFFECT_SPEED_DOWN_2:
-        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_SPEED));
+        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_SPEED, 1));
         break;
     case EFFECT_SPECIAL_ATTACK_DOWN:
+        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_SPATK, 1));
+        break;
     case EFFECT_SPECIAL_ATTACK_DOWN_2:
-        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_SPATK));
+        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_SPATK, 2));
         break;
     case EFFECT_SPECIAL_DEFENSE_DOWN:
+        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_SPDEF, 1));
+        break;
     case EFFECT_SPECIAL_DEFENSE_DOWN_2:
-        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_SPDEF));
+        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_SPDEF, 2));
         break;
     case EFFECT_ACCURACY_DOWN:
     case EFFECT_ACCURACY_DOWN_2:
-        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_ACC));
+        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_ACC, 1));
         break;
     case EFFECT_EVASION_DOWN:
     case EFFECT_EVASION_DOWN_2:
-        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_EVASION));
+        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_EVASION, 1));
         break;
     case EFFECT_SPICY_EXTRACT:
         // TODO: Make IncreaseStatDownScore function, just like IncreaseStatUpScore
@@ -4761,7 +4773,7 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
                     && AI_IsSlower(battlerAtk, BATTLE_PARTNER(battlerAtk), move, predictedMoveSpeedCheck, CONSIDER_PRIORITY)) // Partner going first
                     break; // Don't use Defog if partner is going to set up hazards
             }
-            ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_EVASION));
+            ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_EVASION, 1));
         }
         break;
     case EFFECT_TORMENT:
@@ -4987,8 +4999,8 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
             ADJUST_SCORE(WEAK_EFFECT);
         break;
     case EFFECT_TICKLE:
-        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_ATK));
-        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_DEF));
+        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_ATK, 1));
+        ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_DEF, 1));
         break;
     case EFFECT_COSMIC_POWER:
         ADJUST_SCORE(IncreaseStatUpScore(battlerAtk, battlerDef, STAT_CHANGE_DEF));
@@ -5598,7 +5610,7 @@ case EFFECT_GUARD_SPLIT:
                 break;
             case MOVE_EFFECT_SPD_MINUS_1:
             case MOVE_EFFECT_SPD_MINUS_2:
-                ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_SPEED));
+                ADJUST_SCORE(IncreaseStatDownScore(battlerAtk, battlerDef, STAT_SPEED, 1));
                 break;
             case MOVE_EFFECT_ATK_MINUS_1:
             case MOVE_EFFECT_DEF_MINUS_1:

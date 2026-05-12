@@ -782,6 +782,7 @@ struct BattleStruct
     u8 numHazards[NUM_BATTLE_SIDES];
     u8 hazardsCounter:4; // Counter for applying hazard on switch in
     u8 padding2:4;
+    u16 statDropLastTurn[MAX_BATTLERS_COUNT]; // turn when each battler last used a pure stat-drop status move
 };
 
 struct AiBattleData

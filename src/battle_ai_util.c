@@ -2092,77 +2092,186 @@ bool32 CanLowerStat(u32 battlerAtk, u32 battlerDef, struct AiLogicData *aiData, 
     return TRUE;
 }
 
-u32 IncreaseStatDownScore(u32 battlerAtk, u32 battlerDef, u32 stat)
+// Returns TRUE for moves whose sole effect is a 1- or 2-stage ATK/DEF/SpAtk/SpDef drop.
+// Used to gate the new KO-analysis heuristic to pure stat-drop status moves only.
+bool32 IsStatDropStatusMove(u32 move)
 {
-    u32 tempScore = NO_INCREASE;
+    u32 effect = gMovesInfo[SanitizeMoveId(move)].effect;
+    return (effect == EFFECT_ATTACK_DOWN          || effect == EFFECT_ATTACK_DOWN_2
+         || effect == EFFECT_DEFENSE_DOWN         || effect == EFFECT_DEFENSE_DOWN_2
+         || effect == EFFECT_SPECIAL_ATTACK_DOWN  || effect == EFFECT_SPECIAL_ATTACK_DOWN_2
+         || effect == EFFECT_SPECIAL_DEFENSE_DOWN || effect == EFFECT_SPECIAL_DEFENSE_DOWN_2);
+}
 
-    // Don't increase score if target is already -1 stat stage
-    if (stat != STAT_SPEED && gBattleMons[battlerDef].statStages[stat] <= DEFAULT_STAT_STAGE - 1)
-        return NO_INCREASE;
+#define STAT_DROP_COOLDOWN_TURNS 5
 
-    // Don't decrease stat if target will die to residual damage
+s32 IncreaseStatDownScore(u32 battlerAtk, u32 battlerDef, u32 stat, u32 stages)
+{
+    // Shared early exits (unchanged from original)
     if (GetBattlerSecondaryDamage(battlerDef) >= gBattleMons[battlerDef].hp)
         return NO_INCREASE;
-
-    // Don't decrease stat if opposing battler has Encore
     if (HasBattlerSideMoveWithEffect(battlerDef, EFFECT_ENCORE))
         return NO_INCREASE;
-
     if (DoesAbilityRaiseStatsWhenLowered(gAiLogicData->abilities[battlerDef]))
         return NO_INCREASE;
 
-    // TODO: Avoid decreasing stat if
-    // player can kill ai in 2 hits with decreased attack / sp atk stages
-    // ai can kill target in 2 hits without decreasing defense / sp def stages
-
-    switch (stat)
+    // Speed: legacy logic unchanged
+    if (stat == STAT_SPEED)
     {
-    case STAT_ATK:
-        if (HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_PHYSICAL))
-            tempScore += WEAK_EFFECT;
-        break;
-    case STAT_DEF:
-        if (HasMoveWithCategory(battlerAtk, DAMAGE_CATEGORY_PHYSICAL))
-            tempScore += DECENT_EFFECT;
-        break;
-    case STAT_SPEED:
-    {
+        if (gBattleMons[battlerDef].statStages[stat] <= DEFAULT_STAT_STAGE - 1)
+            return NO_INCREASE;
         u32 predictedMoveSpeedCheck = GetIncomingMoveSpeedCheck(battlerAtk, battlerDef, gAiLogicData);
         if (AI_IsSlower(battlerAtk, battlerDef, gAiThinkingStruct->moveConsidered, predictedMoveSpeedCheck, DONT_CONSIDER_PRIORITY))
-            tempScore += DECENT_EFFECT;
-        break;
-    }
-    case STAT_SPATK:
-        if (HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_SPECIAL))
-            tempScore += WEAK_EFFECT;
-        break;
-    case STAT_SPDEF:
-        if (HasMoveWithCategory(battlerAtk, DAMAGE_CATEGORY_SPECIAL))
-            tempScore += DECENT_EFFECT;
-        break;
-    case STAT_ACC:
-        if (gBattleMons[battlerDef].status1 & STATUS1_PSN_ANY)
-            tempScore += WEAK_EFFECT;
-        if (gBattleMons[battlerDef].volatiles.leechSeed)
-            tempScore += WEAK_EFFECT;
-        if (gBattleMons[battlerDef].volatiles.root)
-            tempScore += WEAK_EFFECT;
-        if (gBattleMons[battlerDef].volatiles.cursed)
-            tempScore += WEAK_EFFECT;
-        break;
-    case STAT_EVASION:
-        if (gBattleMons[battlerDef].status1 & STATUS1_PSN_ANY)
-            tempScore += WEAK_EFFECT;
-        if (gBattleMons[battlerDef].volatiles.leechSeed)
-            tempScore += WEAK_EFFECT;
-        if (gBattleMons[battlerDef].volatiles.root)
-            tempScore += WEAK_EFFECT;
-        if (gBattleMons[battlerDef].volatiles.cursed)
-            tempScore += WEAK_EFFECT;
-        break;
+            return DECENT_EFFECT;
+        return NO_INCREASE;
     }
 
-    return (tempScore > BEST_EFFECT) ? BEST_EFFECT : tempScore; // don't inflate score so only max +4
+    // Accuracy / Evasion: legacy logic unchanged
+    if (stat == STAT_ACC || stat == STAT_EVASION)
+    {
+        if (gBattleMons[battlerDef].statStages[stat] <= DEFAULT_STAT_STAGE - 1)
+            return NO_INCREASE;
+        s32 tempScore = NO_INCREASE;
+        if (gBattleMons[battlerDef].status1 & STATUS1_PSN_ANY)  tempScore += WEAK_EFFECT;
+        if (gBattleMons[battlerDef].volatiles.leechSeed)         tempScore += WEAK_EFFECT;
+        if (gBattleMons[battlerDef].volatiles.root)              tempScore += WEAK_EFFECT;
+        if (gBattleMons[battlerDef].volatiles.cursed)            tempScore += WEAK_EFFECT;
+        return (tempScore > BEST_EFFECT) ? BEST_EFFECT : tempScore;
+    }
+
+    // ATK / DEF / SPATK / SPDEF
+    // New KO-analysis heuristic only for pure stat-drop status moves (Leer, Growl, Charm, Screech…).
+    // Ability-evaluation contexts (Intimidate, Tickle, secondary-effect moves) fall back to simple legacy logic.
+    u32 moveConsidered = gAiThinkingStruct->moveConsidered;
+    if (!IsStatDropStatusMove(moveConsidered))
+    {
+        if (gBattleMons[battlerDef].statStages[stat] <= DEFAULT_STAT_STAGE - 1)
+            return NO_INCREASE;
+        switch (stat)
+        {
+        case STAT_ATK:   return HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_PHYSICAL) ? WEAK_EFFECT   : NO_INCREASE;
+        case STAT_DEF:   return HasMoveWithCategory(battlerAtk, DAMAGE_CATEGORY_PHYSICAL) ? DECENT_EFFECT : NO_INCREASE;
+        case STAT_SPATK: return HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_SPECIAL)  ? WEAK_EFFECT   : NO_INCREASE;
+        case STAT_SPDEF: return HasMoveWithCategory(battlerAtk, DAMAGE_CATEGORY_SPECIAL)  ? DECENT_EFFECT : NO_INCREASE;
+        default:         return NO_INCREASE;
+        }
+    }
+
+    // --- Full heuristic for pure stat-drop status moves ---
+
+    s32 currentStage = (s32)gBattleMons[battlerDef].statStages[stat];
+
+    // Stat already lowered: actively discourage (was just NO_INCREASE before)
+    if (currentStage <= (s32)(DEFAULT_STAT_STAGE - 1))
+        return -4;
+
+    // Cooldown: attacker recently used a stat-drop move
+    s32 cooldownPenalty = 0;
+    if (gBattleTurnCounter > gBattleStruct->statDropLastTurn[battlerAtk]
+     && gBattleTurnCounter - gBattleStruct->statDropLastTurn[battlerAtk] < STAT_DROP_COOLDOWN_TURNS)
+        cooldownPenalty = -3;
+
+    // ~10% noise: keeps the AI slightly unpredictable even in clear-cut situations
+    s32 noisePenalty = (Random() % 10 == 0) ? -2 : 0;
+
+    u32 newStage = (u32)max((s32)MIN_STAT_STAGE, currentStage - (s32)stages);
+    s32 base;
+
+    if (stat == STAT_DEF || stat == STAT_SPDEF)
+    {
+        // Offensive drop: does lowering target's DEF/SpDef let the AI KO faster?
+        enum DamageCategory category = (stat == STAT_DEF) ? DAMAGE_CATEGORY_PHYSICAL : DAMAGE_CATEGORY_SPECIAL;
+        u32 bestDmg = 0;
+        u32 i;
+        for (i = 0; i < MAX_MON_MOVES; i++)
+        {
+            u32 move = gBattleMons[battlerAtk].moves[i];
+            if (move == MOVE_NONE) continue;
+            if (GetBattleMoveCategory(move) != category) continue;
+            u32 dmg = gAiLogicData->simulatedDmg[battlerAtk][battlerDef][i].median;
+            if (dmg > bestDmg) bestDmg = dmg;
+        }
+
+        if (bestDmg == 0)
+            return max(-8, -1 + cooldownPenalty + noisePenalty); // no moves of relevant category
+
+        u32 targetHP = gBattleMons[battlerDef].hp;
+        u32 currentHits = GetNoOfHitsToKO(bestDmg, (s32)targetHP);
+
+        // Scale damage to hypothetical post-drop stage.
+        // Lower DEF stage = less defense = more damage (inverse ratio).
+        u32 dmgScaled = (u32)((u64)bestDmg
+                              * gStatStageRatios[currentStage][0]
+                              * gStatStageRatios[newStage][1]
+                              / ((u64)gStatStageRatios[currentStage][1] * gStatStageRatios[newStage][0]));
+        u32 hitsAfterDrop = GetNoOfHitsToKO(dmgScaled, (s32)targetHP);
+
+        if (currentHits <= 2)
+        {
+            base = -2; // Already 2HKO or faster; using the drop wastes a turn
+        }
+        else if (hitsAfterDrop < currentHits)
+        {
+            base = (s32)(currentHits - hitsAfterDrop); // +1 per turn saved
+            if (hitsAfterDrop == 1)
+                base += 2; // Bonus for converting to OHKO
+        }
+        else
+        {
+            base = -1; // Drop doesn't change the KO count
+        }
+
+        return max(-8, min(BEST_EFFECT, base + cooldownPenalty + noisePenalty));
+    }
+    else // STAT_ATK or STAT_SPATK
+    {
+        // Defensive drop: does lowering opponent's ATK/SpAtk help the AI survive longer?
+        enum DamageCategory category = (stat == STAT_ATK) ? DAMAGE_CATEGORY_PHYSICAL : DAMAGE_CATEGORY_SPECIAL;
+        u32 bestOppDmg = 0;
+        u32 i;
+        for (i = 0; i < MAX_MON_MOVES; i++)
+        {
+            u32 move = gBattleMons[battlerDef].moves[i];
+            if (move == MOVE_NONE) continue;
+            if (GetBattleMoveCategory(move) != category) continue;
+            u32 dmg = gAiLogicData->simulatedDmg[battlerDef][battlerAtk][i].median;
+            if (dmg > bestOppDmg) bestOppDmg = dmg;
+        }
+
+        if (bestOppDmg == 0)
+            return max(-8, -2 + cooldownPenalty + noisePenalty); // opponent has no relevant moves
+
+        // Speed check: being slower means opponent hits first — drop benefits are deferred
+        u32 predictedMoveSpeedCheck = GetIncomingMoveSpeedCheck(battlerAtk, battlerDef, gAiLogicData);
+        bool32 isFaster = AI_IsFaster(battlerAtk, battlerDef, moveConsidered, predictedMoveSpeedCheck, DONT_CONSIDER_PRIORITY);
+        s32 speedPenalty = isFaster ? 0 : -2;
+
+        u32 aiHP = gBattleMons[battlerAtk].hp;
+        u32 currentHitsForOppToKO = GetNoOfHitsToKO(bestOppDmg, (s32)aiHP);
+
+        // Scale opponent's damage down after the stat drop.
+        // Lower ATK stage = less attack = less damage (direct ratio).
+        u32 oppDmgAfterDrop = (u32)((u64)bestOppDmg
+                                    * gStatStageRatios[newStage][0]
+                                    * gStatStageRatios[currentStage][1]
+                                    / ((u64)gStatStageRatios[newStage][1] * gStatStageRatios[currentStage][0]));
+        u32 hitsAfterDrop = GetNoOfHitsToKO(oppDmgAfterDrop, (s32)aiHP);
+
+        if (currentHitsForOppToKO <= 1)
+        {
+            base = -2; // OHKOd regardless; drop doesn't help
+        }
+        else if (currentHitsForOppToKO == 2 && isFaster && hitsAfterDrop >= 4)
+        {
+            base = 3; // Peak scenario: faster + drop flips 2HKO to 4HKO (Charm-style)
+        }
+        else
+        {
+            base = (s32)(hitsAfterDrop - currentHitsForOppToKO); // +1 per extra turn survived
+        }
+
+        return max(-8, min(BEST_EFFECT, base + speedPenalty + cooldownPenalty + noisePenalty));
+    }
 }
 
 bool32 BattlerStatCanRise(u32 battler, u32 battlerAbility, u32 stat)
@@ -5700,15 +5809,15 @@ s32 BattlerBenefitsFromAbilityScore(u32 battler, u32 ability, struct AiLogicData
                 }
                 else
                 {
-                    s32 score1 = IncreaseStatDownScore(battler, FOE(battler), STAT_ATK);
-                    s32 score2 = IncreaseStatDownScore(battler, BATTLE_PARTNER(FOE(battler)), STAT_ATK);
+                    s32 score1 = IncreaseStatDownScore(battler, FOE(battler), STAT_ATK, 1);
+                    s32 score2 = IncreaseStatDownScore(battler, BATTLE_PARTNER(FOE(battler)), STAT_ATK, 1);
                     if (score1 > score2)
                         return score1;
                     else
                         return score2;
                 }
             }
-            return IncreaseStatDownScore(battler, FOE(battler), STAT_ATK);
+            return IncreaseStatDownScore(battler, FOE(battler), STAT_ATK, 1);
         }
     }
     case ABILITY_NO_GUARD:
