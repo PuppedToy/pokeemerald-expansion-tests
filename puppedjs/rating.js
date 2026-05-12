@@ -551,7 +551,7 @@ const statusList = {
     MOVE_FAIRY_LOCK: 1,
     MOVE_ION_DELUGE: 1,
     MOVE_WONDER_ROOM: 2,
-    MOVE_POWER_TRICK: 2,
+    MOVE_POWER_TRICK: 0,
     MOVE_POWER_SWAP: 2,
     MOVE_GUARD_SWAP: 2,
     MOVE_SPEED_SWAP: 2,
@@ -742,7 +742,7 @@ function rateMove(move) {
             || move.effect === 'EFFECT_ROAR'
             || move.effect === 'EFFECT_JUNGLE_HEALING'
         ) {
-            return 3;
+            return 1.5;
         }
 
         if (
@@ -760,14 +760,19 @@ function rateMove(move) {
             || move.effect === 'EFFECT_SPEED_DOWN_2'
             || move.effect === 'EFFECT_TAR_SHOT'
             || move.effect === 'EFFECT_PROTECT'
-            || move.effect === 'EFFECT_ATTACK_DOWN_2'
+        ) {
+            return 4.5;
+        }
+
+        if (
+            move.effect === 'EFFECT_ATTACK_DOWN_2'
             || move.effect === 'EFFECT_SPECIAL_ATTACK_DOWN_2'
             || move.effect === 'EFFECT_DEFENSE_DOWN_2'
             || move.effect === 'EFFECT_SPECIAL_DEFENSE_DOWN_2'
             || move.effect === 'EFFECT_TICKLE'
             || move.effect === 'EFFECT_NOBLE_ROAR'
         ) {
-            return 4.5;
+            return 3;
         }
 
         if (
@@ -801,6 +806,14 @@ function rateMove(move) {
     
     const moveEffect = move.effect || '';
     let power = move.power || 50;
+    // Variable HP-scaled moves store power as 1 (truthy, so || 50 doesn't fire).
+    // Treat as 50 — conservative realistic average without Endure.
+    const isVarPowerHp = moveEffect.includes('EFFECT_FLAIL')
+        || moveEffect.includes('EFFECT_REVERSAL')
+        || moveEffect.includes('EFFECT_POWER_BASED_ON_USER_HP');
+    if (isVarPowerHp && (move.power || 0) <= 1) {
+        power = 50;
+    }
     const isMultihit = moveEffect.includes('EFFECT_MULTI_HIT');
     if (isMultihit) {
         power *= 2.5;
@@ -952,6 +965,16 @@ const selfDamagingEffects = [
     'EFFECT_FILLET_AWAY',
     'EFFECT_RECOIL',
 ];
+const OPPONENT_STAT_DROP_EFFECTS = new Set([
+    'EFFECT_ATTACK_DOWN',         'EFFECT_ATTACK_DOWN_2',
+    'EFFECT_DEFENSE_DOWN',        'EFFECT_DEFENSE_DOWN_2',
+    'EFFECT_SPECIAL_ATTACK_DOWN', 'EFFECT_SPECIAL_ATTACK_DOWN_2',
+    'EFFECT_SPECIAL_DEFENSE_DOWN','EFFECT_SPECIAL_DEFENSE_DOWN_2',
+    'EFFECT_SPEED_DOWN',          'EFFECT_SPEED_DOWN_2',
+    'EFFECT_ACCURACY_DOWN',       'EFFECT_EVASION_DOWN',
+    'EFFECT_NOBLE_ROAR',          'EFFECT_TICKLE',
+]);
+
 function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves) {
     if (
         (
@@ -997,6 +1020,22 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
         return ability === abilityToQuery || (!ability && poke.parsedAbilities.includes(abilityToQuery));
     }
 
+    // Toxic Debris renders Toxic Spikes redundant (ability auto-lays them on contact)
+    if (move.id === 'MOVE_TOXIC_SPIKES' && hasAbility('TOXIC_DEBRIS')) {
+        return 0;
+    }
+
+    // Max 1 opponent-stat-lowering move per set
+    const isStatDrop = OPPONENT_STAT_DROP_EFFECTS.has(move.effect);
+    const hasStatDrop = currentMoves.some(m => OPPONENT_STAT_DROP_EFFECTS.has(m.effect));
+    if (isStatDrop && hasStatDrop) return 0;
+
+    // Stat-lowering and setup moves are mutually exclusive goals
+    const isSetupMove = antiComboList[2].includes(move.id) || move.effect === 'EFFECT_SPEED_UP_2';
+    const hasSetupMove = currentMoves.some(m => antiComboList[2].includes(m.id) || m.effect === 'EFFECT_SPEED_UP_2');
+    if (isStatDrop && hasSetupMove) return 0;
+    if (isSetupMove && hasStatDrop) return 0;
+
     let rating = move.rating;
 
     // Combos
@@ -1029,6 +1068,10 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
         if (move.id === 'MOVE_TEATIME') {
             rating = Math.max(0, rating - 1);
         }
+    }
+
+    if (move.effect === 'EFFECT_SPEED_UP_2') {
+        rating *= Math.max(0.5, poke.baseSpeed / 100);
     }
 
     if (Object.keys(specialScalingMoves).includes(move.id)) {
