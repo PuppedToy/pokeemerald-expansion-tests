@@ -2047,9 +2047,10 @@
       if (!card) card = document.querySelector('.location-card[data-route-id="' + routeId + '"]');
       if (!card) return;
 
-      const sel     = loc.selected;
-      const delayed = loc.delayed;
-      const fainted = loc.fainted;
+      const sel            = loc.selected;
+      const delayed        = loc.delayed;
+      const fainted        = loc.fainted;
+      const hasIgnoredSlots = loc.ignoredSlots.length > 0;
 
       // Orange border only when delays exist and nothing is captured yet
       card.classList.toggle('nz-has-delayed', delayed.length > 0 && !sel);
@@ -2083,10 +2084,18 @@
         if (delayLabel) delayLabel.classList.toggle('nz-disabled', !!sel);
         if (faintCb) { faintCb.checked = fainted.includes(s); }
 
-        const ignored = loc.ignoredSlots.includes(s);
-        slot.classList.toggle('nz-slot-ignored', ignored);
-        const ignoreSlotBtn = slot.querySelector('.nz-ignore-slot-btn');
-        if (ignoreSlotBtn) ignoreSlotBtn.classList.toggle('active', ignored);
+        // Ignored-slot class: skip querySelector entirely when no slots are ignored (fast path)
+        if (hasIgnoredSlots) {
+          const ignored = loc.ignoredSlots.includes(s);
+          slot.classList.toggle('nz-slot-ignored', ignored);
+          const ignoreSlotBtn = slot.querySelector('.nz-ignore-slot-btn');
+          if (ignoreSlotBtn) ignoreSlotBtn.classList.toggle('active', ignored);
+        } else if (slot.classList.contains('nz-slot-ignored')) {
+          // Was previously ignored — clear the stale state
+          slot.classList.remove('nz-slot-ignored');
+          const ignoreSlotBtn = slot.querySelector('.nz-ignore-slot-btn');
+          if (ignoreSlotBtn) ignoreSlotBtn.classList.remove('active');
+        }
       });
     }
 
@@ -2314,9 +2323,13 @@
       const groupId = routeToGroup[routeId];
       if (groupId) applyGroupEffects(groupId);
       if (routeId === 'STARTERS') applyStarterRivals();
-      // Bidirectional: capturing a linked slot auto-defeats its trainer
+      // Bidirectional: capturing a linked slot auto-defeats its trainer (guard: skip if already
+      // defeated to prevent re-entry when handleDefeatChange is the one that called us)
       if (checked && wildLocSlotToTrainer[routeId] && wildLocSlotToTrainer[routeId][slot]) {
-        handleDefeatChange(wildLocSlotToTrainer[routeId][slot], true);
+        const linked = wildLocSlotToTrainer[routeId][slot];
+        if (!nzState.trainers[linked]) {
+          handleDefeatChange(linked, true);
+        }
       }
     }
 
