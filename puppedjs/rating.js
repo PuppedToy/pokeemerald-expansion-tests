@@ -1071,7 +1071,12 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     }
 
     if (move.effect === 'EFFECT_SPEED_UP_2') {
-        rating *= Math.max(0.5, poke.baseSpeed / 100);
+        const maxOff = Math.max(poke.baseAttack, poke.baseSpAttack);
+        const spd = poke.baseSpeed;
+        // Valuable only for high-offense mid-speed Pokémon (sweet spot ~45–85 speed)
+        const offScore = Math.max(0, (maxOff - 85) / 85);
+        const spdScore = (spd >= 45 && spd <= 85) ? (1 - Math.abs(spd - 65) / 60) : 0;
+        rating = 7 * offScore * spdScore;
     }
 
     if (Object.keys(specialScalingMoves).includes(move.id)) {
