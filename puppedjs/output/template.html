@@ -2166,10 +2166,22 @@
       });
     }
 
-    // ---------- Boss ↔ Wild Location connection maps ----------
-    const wildLocToTrainer = {};
-    const trainerToWildLoc = {};
+    // ---------- Trainer ↔ Wild Slot connection maps ----------
+    // wildLocSlotToTrainer[routeId][slot] = trainerId
+    // trainerToWildLocSlot[trainerId] = [{routeId, slot}, ...]
+    const wildLocSlotToTrainer = {};
+    const trainerToWildLocSlot = {};
+    const LINK_SLOT_TYPES = ['land','surf','old','good','super','underwater',
+      'special','special1','special2','special3','special4','special5','special6','special7','special8','special9'];
 
+    function _linkSlot(trainerId, routeId, slot) {
+      if (!wildLocSlotToTrainer[routeId]) wildLocSlotToTrainer[routeId] = {};
+      wildLocSlotToTrainer[routeId][slot] = trainerId;
+      if (!trainerToWildLocSlot[trainerId]) trainerToWildLocSlot[trainerId] = [];
+      trainerToWildLocSlot[trainerId].push({ routeId: routeId, slot: slot });
+    }
+
+    // Mechanism 1: Boss reward locations (BOSS_*_REWARD pattern + isBoss trainer match)
     wildPokes.forEach(function(w) {
       if (!w.boss) return;
       const m = w.id.match(/^BOSS_(.+?)_REWARD$/i);
@@ -2181,9 +2193,32 @@
         return parts.every(function(p) { return up.includes(p); });
       });
       if (!trainerId) return;
-      wildLocToTrainer[w.id] = trainerId;
-      if (!trainerToWildLoc[trainerId]) trainerToWildLoc[trainerId] = [];
-      trainerToWildLoc[trainerId].push(w.id);
+      LINK_SLOT_TYPES.forEach(function(s) { if (w[s]) _linkSlot(trainerId, w.id, s); });
+    });
+
+    // Mechanism 2: Trainer reward species → wild encounter slot (name matching)
+    // Build species name → [{routeId, slot}] reverse lookup
+    const _speciesNameToSlots = {};
+    wildPokes.forEach(function(w) {
+      LINK_SLOT_TYPES.forEach(function(s) {
+        if (!w[s]) return;
+        const n = nameify(w[s].replace('SPECIES_', ''));
+        if (!_speciesNameToSlots[n]) _speciesNameToSlots[n] = [];
+        _speciesNameToSlots[n].push({ routeId: w.id, slot: s });
+      });
+    });
+    Object.entries(trainersData).forEach(function([trainerId, trainer]) {
+      if (!Array.isArray(trainer.reward)) return;
+      if (trainerToWildLocSlot[trainerId]) return; // already linked via boss reward
+      trainer.reward.forEach(function(rewardName) {
+        const matches = _speciesNameToSlots[rewardName];
+        if (!matches) return;
+        matches.forEach(function(m) {
+          // Don't overwrite an existing link (e.g. from a different trainer)
+          if (wildLocSlotToTrainer[m.routeId] && wildLocSlotToTrainer[m.routeId][m.slot]) return;
+          _linkSlot(trainerId, m.routeId, m.slot);
+        });
+      });
     });
 
     // ---------- Visual: ignored trainers ----------
@@ -2209,6 +2244,16 @@
       if (nowIgnored) nzState.ignoredTrainers[trainerId] = true;
       else delete nzState.ignoredTrainers[trainerId];
       applyIgnoredTrainer(trainerId);
+      // Sync linked wild slots
+      if (trainerToWildLocSlot[trainerId]) {
+        trainerToWildLocSlot[trainerId].forEach(function(link) {
+          const loc = locState(link.routeId);
+          const idx = loc.ignoredSlots.indexOf(link.slot);
+          if (nowIgnored && idx < 0) loc.ignoredSlots.push(link.slot);
+          else if (!nowIgnored && idx >= 0) loc.ignoredSlots.splice(idx, 1);
+          applySlotIgnored(link.routeId, link.slot);
+        });
+      }
       saveState();
     }
 
@@ -2227,9 +2272,17 @@
     function handleIgnoreSlot(routeId, slot) {
       const loc = locState(routeId);
       const idx = loc.ignoredSlots.indexOf(slot);
-      if (idx >= 0) loc.ignoredSlots.splice(idx, 1);
-      else loc.ignoredSlots.push(slot);
+      const nowIgnored = idx < 0;
+      if (nowIgnored) loc.ignoredSlots.push(slot);
+      else loc.ignoredSlots.splice(idx, 1);
       applySlotIgnored(routeId, slot);
+      // Sync linked trainer
+      const linkedTrainer = wildLocSlotToTrainer[routeId] && wildLocSlotToTrainer[routeId][slot];
+      if (linkedTrainer) {
+        if (nowIgnored) nzState.ignoredTrainers[linkedTrainer] = true;
+        else delete nzState.ignoredTrainers[linkedTrainer];
+        applyIgnoredTrainer(linkedTrainer);
+      }
       saveState();
     }
 
@@ -2261,9 +2314,9 @@
       const groupId = routeToGroup[routeId];
       if (groupId) applyGroupEffects(groupId);
       if (routeId === 'STARTERS') applyStarterRivals();
-      // Bidirectional: obtaining a boss-reward wild loc auto-defeats its trainer
-      if (checked && wildLocToTrainer[routeId]) {
-        handleDefeatChange(wildLocToTrainer[routeId], true);
+      // Bidirectional: capturing a linked slot auto-defeats its trainer
+      if (checked && wildLocSlotToTrainer[routeId] && wildLocSlotToTrainer[routeId][slot]) {
+        handleDefeatChange(wildLocSlotToTrainer[routeId][slot], true);
       }
     }
 
@@ -2315,18 +2368,14 @@
               }
             });
           }
-          // Bidirectional: defeating a boss auto-selects their reward wild location
-          if (trainerToWildLoc[trainerId]) {
-            trainerToWildLoc[trainerId].forEach(function(locId) {
-              const loc = locState(locId);
-              if (loc.selected) return;
-              const wildEntry = wildPokes.find(function(w) { return w.id === locId; });
-              if (!wildEntry) return;
-              const slotTypes = ['special1','special2','special3','land','surf','old','good','super','underwater'];
-              const slot = slotTypes.find(function(s) { return wildEntry[s]; });
-              if (slot) handleSelectChange(locId, slot, true);
-            });
-          }
+        }
+        // Bidirectional: defeating any linked trainer auto-selects their reward wild slot
+        if (trainerToWildLocSlot[trainerId]) {
+          trainerToWildLocSlot[trainerId].forEach(function(link) {
+            const loc = locState(link.routeId);
+            if (loc.selected) return;
+            handleSelectChange(link.routeId, link.slot, true);
+          });
         }
       }
 
