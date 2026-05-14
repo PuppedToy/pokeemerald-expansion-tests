@@ -5,14 +5,15 @@ const path = require('path');
 
 const DEFAULTS = {
     seed: null,
-    mode: 'default',
     difficulty: 'fair',
     rebalance: true,
     balanceChance: 0.2,
+    numROMs: 1,
+    sharedModules: 4,
 };
 
-const VALID_MODES = new Set(['default', 'nuzlocke', 'soul-link']);
 const VALID_DIFFICULTIES = new Set(['easy', 'fair', 'hard']);
+const VALID_SHARED_MODULES = new Set([1, 2, 3, 4]);
 
 function parseCLIArgs(argv) {
     const result = {};
@@ -36,14 +37,17 @@ function validate(config) {
     if (!VALID_DIFFICULTIES.has(config.difficulty)) {
         throw new Error(`Invalid difficulty: "${config.difficulty}". Must be one of: ${[...VALID_DIFFICULTIES].join(', ')}`);
     }
-    if (!VALID_MODES.has(config.mode)) {
-        throw new Error(`Invalid mode: "${config.mode}". Must be one of: ${[...VALID_MODES].join(', ')}`);
-    }
     if (typeof config.balanceChance !== 'number' || config.balanceChance < 0 || config.balanceChance > 1) {
         throw new Error(`balanceChance must be a number between 0 and 1, got: ${config.balanceChance}`);
     }
     if (config.seed !== null && !Number.isInteger(config.seed)) {
         throw new Error(`seed must be null or an integer, got: ${config.seed}`);
+    }
+    if (!Number.isInteger(config.numROMs) || config.numROMs < 1) {
+        throw new Error(`numROMs must be an integer >= 1, got: ${config.numROMs}`);
+    }
+    if (!VALID_SHARED_MODULES.has(config.sharedModules)) {
+        throw new Error(`sharedModules must be 1, 2, 3, or 4, got: ${config.sharedModules}`);
     }
 }
 

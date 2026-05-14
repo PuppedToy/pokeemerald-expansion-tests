@@ -3,10 +3,14 @@ const path = require('path');
 
 const { ratePokemon, rateContextual, rateMove } = require('./rating');
 const writer = require('./writer');
+const { loadConfig } = require('./config');
+const rng = require('./rng');
+
+const config = loadConfig();
+rng.seed(config.seed);
+console.log(`Seed: ${config.seed}`);
 
 const isDebug = process.argv.includes('--debug');
-const noBalance = process.argv.includes('--no-balance');
-const difficulty = (process.argv.find(a => a.startsWith('--difficulty=')) || '--difficulty=FAIR').split('=')[1].toUpperCase();
 // --all-tms: treat every move in every pokemon's teachable learnset as available.
 // Default (no flag): only moves covered by this game's actual TM pool are considered
 // learnable for combo detection. Use --all-tms for analysis against a hypothetical
@@ -727,7 +731,7 @@ async function exe() {
         poke.rating = ratePokemon(poke, moves, abilities, tmPool);
     }
 
-    if (!noBalance) {
+    if (config.rebalance) {
         const abilityKeys = Object.keys(abilities).map(key => key.replace('ABILITY_', ''));
         for (let i = 0; i < allPokes.length; i++) {
             allPokes[i] = balancePokemon(allPokes[i], abilityKeys, moves);
@@ -846,7 +850,7 @@ async function exe() {
     await fs.writeFile(path.resolve(__dirname, 'evoTree.json'), JSON.stringify(evoTree, null, 2), 'utf-8');
     await fs.writeFile(path.resolve(__dirname, 'pokes.json'), JSON.stringify(allPokes, null, 2), 'utf-8');
 
-    await writer(allPokes, moves, abilities, isDebug, difficulty);
+    await writer(allPokes, moves, abilities, isDebug, config.difficulty.toUpperCase());
 }
 
 exe();

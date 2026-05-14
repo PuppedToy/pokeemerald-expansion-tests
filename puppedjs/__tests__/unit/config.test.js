@@ -15,26 +15,21 @@ function freshConfig() {
 }
 
 describe('loadConfig — defaults', () => {
-    test('returns all five default fields', () => {
+    test('returns all default fields', () => {
         const { loadConfig } = freshConfig();
         const cfg = loadConfig({}, { argv: [], configPath: NONEXISTENT_PATH });
         expect(cfg).toHaveProperty('seed');
-        expect(cfg).toHaveProperty('mode');
         expect(cfg).toHaveProperty('difficulty');
         expect(cfg).toHaveProperty('rebalance');
         expect(cfg).toHaveProperty('balanceChance');
+        expect(cfg).toHaveProperty('numROMs');
+        expect(cfg).toHaveProperty('sharedModules');
     });
 
     test('difficulty defaults to "fair"', () => {
         const { loadConfig } = freshConfig();
         const cfg = loadConfig({}, { argv: [], configPath: NONEXISTENT_PATH });
         expect(cfg.difficulty).toBe('fair');
-    });
-
-    test('mode defaults to "default"', () => {
-        const { loadConfig } = freshConfig();
-        const cfg = loadConfig({}, { argv: [], configPath: NONEXISTENT_PATH });
-        expect(cfg.mode).toBe('default');
     });
 
     test('rebalance defaults to true', () => {
@@ -182,12 +177,6 @@ describe('loadConfig — validation', () => {
             .toThrow(/difficulty/i);
     });
 
-    test('throws on invalid mode', () => {
-        const { loadConfig } = freshConfig();
-        expect(() => loadConfig({ mode: 'randomizer' }, { argv: [], configPath: NONEXISTENT_PATH }))
-            .toThrow(/mode/i);
-    });
-
     test('throws when balanceChance > 1', () => {
         const { loadConfig } = freshConfig();
         expect(() => loadConfig({ balanceChance: 1.5 }, { argv: [], configPath: NONEXISTENT_PATH }))
@@ -216,6 +205,60 @@ describe('loadConfig — validation', () => {
         // null seed gets auto-generated — no throw
         const { loadConfig } = freshConfig();
         expect(() => loadConfig({}, { argv: [], configPath: NONEXISTENT_PATH })).not.toThrow();
+    });
+});
+
+describe('loadConfig — numROMs and sharedModules', () => {
+    test('numROMs defaults to 1', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({}, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(cfg.numROMs).toBe(1);
+    });
+
+    test('sharedModules defaults to 4', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({}, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(cfg.sharedModules).toBe(4);
+    });
+
+    test('numROMs override is applied', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({ numROMs: 3 }, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(cfg.numROMs).toBe(3);
+    });
+
+    test('sharedModules override is applied', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({ sharedModules: 2 }, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(cfg.sharedModules).toBe(2);
+    });
+
+    test('throws when numROMs < 1', () => {
+        const { loadConfig } = freshConfig();
+        expect(() => loadConfig({ numROMs: 0 }, { argv: [], configPath: NONEXISTENT_PATH }))
+            .toThrow(/numROMs/i);
+    });
+
+    test('throws when numROMs is not an integer', () => {
+        const { loadConfig } = freshConfig();
+        expect(() => loadConfig({ numROMs: 1.5 }, { argv: [], configPath: NONEXISTENT_PATH }))
+            .toThrow(/numROMs/i);
+    });
+
+    test('throws when sharedModules is not 1, 2, 3, or 4', () => {
+        const { loadConfig } = freshConfig();
+        expect(() => loadConfig({ sharedModules: 5 }, { argv: [], configPath: NONEXISTENT_PATH }))
+            .toThrow(/sharedModules/i);
+        expect(() => loadConfig({ sharedModules: 0 }, { argv: [], configPath: NONEXISTENT_PATH }))
+            .toThrow(/sharedModules/i);
+    });
+
+    test('all four sharedModules values are valid', () => {
+        for (const v of [1, 2, 3, 4]) {
+            const { loadConfig } = freshConfig();
+            expect(() => loadConfig({ sharedModules: v }, { argv: [], configPath: NONEXISTENT_PATH }))
+                .not.toThrow();
+        }
     });
 });
 

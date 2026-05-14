@@ -1,39 +1,35 @@
 'use strict';
 
-const rng = require('../../rng');
 const moves = require('../fixtures/miniMoves');
-const { MACHOP, MACHOKE, MACHAMP } = require('../fixtures/miniPokes');
+const { MACHOP, MACHAMP } = require('../fixtures/miniPokes');
 const abilities = require('../fixtures/miniAbilities');
 
-// We use jest.isolateModules to get a fresh rebalancer (with empty familyTracking)
-// for each test that needs clean family state.
+// We use jest.isolateModules to get a fresh rebalancer (with empty familyTracking).
+// Returns { balancePokemon, rng } where rng is the SAME instance used by that rebalancer,
+// so rng.seed() controls its behavior reliably regardless of Jest's worker/cache state.
 function freshBalancer() {
-    let balancePokemon;
+    let balancePokemon, isolatedRng;
     jest.isolateModules(() => {
-        balancePokemon = require('../../rebalancer').balancePokemon;
+        ({ balancePokemon } = require('../../rebalancer'));
+        isolatedRng = require('../../rng');
     });
-    return balancePokemon;
+    return { balancePokemon, rng: isolatedRng };
 }
 
 const abilityNames = Object.keys(abilities).map(k => k.replace('ABILITY_', ''));
 
-beforeEach(() => {
-    rng.reset(); // always start unseeded between tests
-});
-
 describe('balancePokemon — output shape', () => {
     test('returns an object with a log array', () => {
+        const { balancePokemon, rng } = freshBalancer();
         rng.seed(1);
-        const balancePokemon = freshBalancer();
         const result = balancePokemon({ ...STARMIE_SOLO() }, abilityNames, moves);
         expect(result).toHaveProperty('log');
         expect(Array.isArray(result.log)).toBe(true);
     });
 
     test('mutated stats stay within [1, 255]', () => {
+        const { balancePokemon, rng } = freshBalancer();
         const statKeys = ['baseHP', 'baseAttack', 'baseDefense', 'baseSpeed', 'baseSpAttack', 'baseSpDefense'];
-        const balancePokemon = freshBalancer();
-        // Run with many seeds to stress the bounds
         for (let s = 0; s < 20; s++) {
             rng.seed(s);
             const result = balancePokemon({ ...STARMIE_SOLO() }, abilityNames, moves);
@@ -45,7 +41,7 @@ describe('balancePokemon — output shape', () => {
     });
 
     test('parsedTypes is always a non-empty array of strings', () => {
-        const balancePokemon = freshBalancer();
+        const { balancePokemon, rng } = freshBalancer();
         for (let s = 0; s < 10; s++) {
             rng.seed(s);
             const result = balancePokemon({ ...STARMIE_SOLO() }, abilityNames, moves);
@@ -56,8 +52,8 @@ describe('balancePokemon — output shape', () => {
     });
 
     test('learnset is an array of objects with move and level keys', () => {
+        const { balancePokemon, rng } = freshBalancer();
         rng.seed(42);
-        const balancePokemon = freshBalancer();
         const result = balancePokemon({ ...STARMIE_SOLO() }, abilityNames, moves);
         expect(Array.isArray(result.learnset)).toBe(true);
         result.learnset.forEach(entry => {
@@ -69,12 +65,12 @@ describe('balancePokemon — output shape', () => {
 
 describe('balancePokemon — determinism', () => {
     test('same seed produces identical output for the same pokemon', () => {
-        const b1 = freshBalancer();
-        rng.seed(42);
+        const { balancePokemon: b1, rng: rng1 } = freshBalancer();
+        rng1.seed(42);
         const r1 = b1({ ...STARMIE_SOLO() }, abilityNames, moves);
 
-        const b2 = freshBalancer();
-        rng.seed(42);
+        const { balancePokemon: b2, rng: rng2 } = freshBalancer();
+        rng2.seed(42);
         const r2 = b2({ ...STARMIE_SOLO() }, abilityNames, moves);
 
         expect(r1.parsedTypes).toEqual(r2.parsedTypes);
@@ -84,12 +80,12 @@ describe('balancePokemon — determinism', () => {
     });
 
     test('different seeds may produce different outputs', () => {
-        const b1 = freshBalancer();
-        rng.seed(1);
+        const { balancePokemon: b1, rng: rng1 } = freshBalancer();
+        rng1.seed(1);
         const r1 = b1({ ...STARMIE_SOLO() }, abilityNames, moves);
 
-        const b2 = freshBalancer();
-        rng.seed(999);
+        const { balancePokemon: b2, rng: rng2 } = freshBalancer();
+        rng2.seed(999);
         const r2 = b2({ ...STARMIE_SOLO() }, abilityNames, moves);
 
         // It's theoretically possible (but very unlikely) for two different seeds to produce
@@ -101,31 +97,20 @@ describe('balancePokemon — determinism', () => {
 
 describe('balancePokemon — family propagation', () => {
     test('evolution inherits stat changes from its pre-evo', () => {
-        const balancePokemon = freshBalancer();
-
-        // Force a rebalance that changes Machop's attack
-        // Use seed where BALANCE_CHANCE roll passes (rng.random() <= 0.2)
-        // We'll call both and check that if Machop was buffed, Machamp sees the buff
-        rng.seed(5);
-        const machopResult = balancePokemon({ ...MACHOP }, abilityNames, moves);
-
-        rng.seed(5);
-        // Reset and replay so Machamp sees the same family tracking state
-        const b2 = freshBalancer();
-        rng.seed(5);
+        // Use a fresh isolated balancer — b2 sees the family state set by b2's Machop call.
+        const { balancePokemon: b2, rng: rng2 } = freshBalancer();
+        rng2.seed(5);
         const machopR2 = b2({ ...MACHOP }, abilityNames, moves);
         const machampR2 = b2({ ...MACHAMP }, abilityNames, moves);
 
-        // Machamp's log should contain inherited entries from machopR2's log
-        const inheritedEntries = machampR2.log.filter(e => machopR2.log.some(p => p.target === e.target && p.value === e.value));
-        // If machop had any stat changes, machamp inherits them
+        // If Machop was mutated, Machamp should inherit at least as many log entries.
         if (machopR2.log.length > 0) {
             expect(machampR2.log.length).toBeGreaterThanOrEqual(machopR2.log.length);
         }
     });
 
     test('mega form: original poke parsed arrays are not mutated', () => {
-        const balancePokemon = freshBalancer();
+        const { balancePokemon, rng } = freshBalancer();
         const originalTypes = [...MACHOP.parsedTypes];
         rng.seed(77);
         balancePokemon(MACHOP, abilityNames, moves);
