@@ -1,0 +1,211 @@
+'use strict';
+
+const fs = require('fs').promises;
+const path = require('path');
+const parser = require('../parser');
+const { randomizeTMs } = require('../tmRandomizer');
+const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
+const { ratePokemon, rateContextual, rateMove } = require('../rating');
+const { balancePokemon } = require('../rebalancer');
+const {
+    TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR, ABILITIES_FILE_PATH, MEGA_EVOS_PATH,
+    EVO_TYPE_MEGA,
+} = require('../constants');
+
+const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
+
+async function runPokedexModule(config) {
+    const allTms = process.argv.includes('--all-tms');
+
+    // 1. Parse abilities
+    const abilitiesFileText = await fs.readFile(ABILITIES_FILE_PATH, 'utf-8');
+    const abilities = parser.parseAbilitiesFile(abilitiesFileText);
+    await fs.writeFile(path.resolve(__dirname, '..', 'abilities.json'), JSON.stringify(abilities, null, 2), 'utf-8');
+
+    // 2. Parse mega evo stones
+    const megaEvosFileText = await fs.readFile(MEGA_EVOS_PATH, 'utf-8');
+    const megaEvoStones = parser.parseMegaEvoStonesFile(megaEvosFileText);
+
+    // 3. Parse moves
+    const movesFilePath = path.resolve(__dirname, '..', '..', 'src', 'data', 'moves_info.h');
+    const movesFileText = await fs.readFile(movesFilePath, 'utf-8');
+    const moves = parser.parseMovesFile(movesFileText);
+    Object.keys(moves).forEach(moveId => {
+        moves[moveId].power    = parser.parseMoveStat(moves[moveId].power);
+        moves[moveId].accuracy = parser.parseMoveStat(moves[moveId].accuracy);
+        moves[moveId].pp       = parser.parseMoveStat(moves[moveId].pp);
+        moves[moveId].priority = parser.parseMoveStat(moves[moveId].priority);
+        moves[moveId].type     = moves[moveId].type.replace('TYPE_', '');
+        moves[moveId].rating   = rateMove(moves[moveId]);
+    });
+    await fs.writeFile(path.resolve(__dirname, '..', 'moves.json'), JSON.stringify(moves, null, 2), 'utf-8');
+
+    // 4. Parse learnsets
+    const levelUpLearnsets = {};
+    for (let gen = 1; gen <= TOTAL_GENS; gen++) {
+        const learnsetsFilePath = path.resolve(LEVEL_UP_LEARNSETS_DIR, `gen_${gen}.h`);
+        const learnsetsFileText = await fs.readFile(learnsetsFilePath, 'utf-8');
+        Object.assign(levelUpLearnsets, parser.parseLearnsetsFile(learnsetsFileText));
+    }
+    await fs.writeFile(path.resolve(__dirname, '..', 'level_up_learnsets.json'), JSON.stringify(levelUpLearnsets, null, 2), 'utf-8');
+
+    // 5. Parse teachables
+    const teachablesFilePath = path.resolve(__dirname, '..', '..', 'src', 'data', 'pokemon', 'teachable_learnsets.h');
+    const teachablesFileText = await fs.readFile(teachablesFilePath, 'utf-8');
+    const TMTeachables = parser.parseTeachableFile(teachablesFileText);
+    await fs.writeFile(path.resolve(__dirname, '..', 'teachable_learnsets.json'), JSON.stringify(TMTeachables, null, 2), 'utf-8');
+
+    // 6. Randomize TMs (writes tms_hms.h, returns tmList array)
+    const tmList = await randomizeTMs();
+    // Build randomized tmPool (or null for --all-tms)
+    const tmPool = allTms ? null : await buildTmPoolFromFile();
+
+    // 7. Parse species (all gens)
+    const definitions = { VICTREEBEL_SP_DEF: '70', EXEGGUTOR_SP_DEF: '75' };
+    const evoTree = {};
+    const megaEvoTree = {};
+    const allPokes = [];
+
+    for (let gen = 1; gen <= TOTAL_GENS; gen++) {
+        const genSpeciesFilePath = path.resolve(SPECIES_DIR, `gen_${gen}_families.h`);
+        const genSpeciesFileText = await fs.readFile(genSpeciesFilePath, 'utf-8');
+        const parsedPokes = parser.parseSpeciesFile(genSpeciesFileText, definitions, evoTree);
+
+        parsedPokes.forEach(poke => {
+            const learnset   = (poke.levelUpLearnset  && levelUpLearnsets[poke.levelUpLearnset])  ? levelUpLearnsets[poke.levelUpLearnset]  : [];
+            const teachables = (poke.teachableLearnset && TMTeachables[poke.teachableLearnset]) ? TMTeachables[poke.teachableLearnset] : [];
+
+            const evolutionType = parser.getEvolutionType(poke, evoTree);
+            const isMega = evolutionType === EVO_TYPE_MEGA;
+            let megaBaseForm, megaItem;
+            if (isMega) {
+                if (!megaEvoTree[poke.family]) megaEvoTree[poke.family] = [];
+                megaEvoTree[poke.family].push(poke.id);
+                megaBaseForm = poke.natDexNum.replace('NATIONAL_DEX_', 'SPECIES_');
+                megaItem = megaEvoStones[poke.id];
+            }
+
+            const baseHP        = parser.parseStat(poke.baseHP, definitions);
+            const baseAttack    = parser.parseStat(poke.baseAttack, definitions);
+            const baseDefense   = parser.parseStat(poke.baseDefense, definitions);
+            const baseSpeed     = parser.parseStat(poke.baseSpeed, definitions);
+            const baseSpAttack  = parser.parseStat(poke.baseSpAttack, definitions);
+            const baseSpDefense = parser.parseStat(poke.baseSpDefense, definitions);
+            const baseBST = baseHP + baseAttack + baseDefense + baseSpeed + baseSpAttack + baseSpDefense;
+
+            const fullPoke = {
+                name: parser.nameizyPokemonId(poke.id),
+                parsedTypes: poke.types.replace(/\/\/.*$/, '').trim().replace(/MON_TYPES\(/, '').replace(/\)/, '').split(', ').map(t => t.replace('TYPE_', '')),
+                parsedAbilities: poke.abilities.replace(/\/\/.*$/, '').trim().replace(/{ /, '').replace(/ }/, '').split(', ').map(a => a.replace('ABILITY_', '')),
+                ...poke,
+                baseHP, baseAttack, baseDefense, baseSpeed, baseSpAttack, baseSpDefense, baseBST,
+                evolutionData: {
+                    type: evolutionType,
+                    isMega,
+                    megaBaseForm,
+                    megaItem,
+                    isLC:    parser.evoIsLC(evolutionType),
+                    isNFE:   parser.evoIsNFE(evolutionType),
+                    isFinal: parser.evoIsFinal(evolutionType),
+                },
+                ...parser.FIXED_PROPERTIES,
+                learnset,
+                teachables,
+                evoTree: evoTree[poke.family],
+            };
+            allPokes.push(fullPoke);
+        });
+    }
+
+    // 8. Expand teachables with randomized pool
+    expandAllTeachables(allPokes, tmPool, moves);
+
+    // 9. Rate all pokemon
+    for (const poke of allPokes) {
+        poke.rating = ratePokemon(poke, moves, abilities, tmPool);
+    }
+
+    // 10. Optional rebalance
+    if (config.rebalance) {
+        const abilityKeys = Object.keys(abilities).map(key => key.replace('ABILITY_', ''));
+        for (let i = 0; i < allPokes.length; i++) {
+            allPokes[i] = balancePokemon(allPokes[i], abilityKeys, moves);
+            if (allPokes[i].log && allPokes[i].log.length) {
+                allPokes[i].baseBST = allPokes[i].baseHP + allPokes[i].baseAttack + allPokes[i].baseDefense + allPokes[i].baseSpAttack + allPokes[i].baseSpDefense + allPokes[i].baseSpeed;
+                allPokes[i].rating = ratePokemon(allPokes[i], moves, abilities, tmPool);
+            }
+        }
+    }
+
+    // 11. Best-evo / mega-evo ratings
+    allPokes.forEach(poke => {
+        let bestEvo = poke.id;
+        let bestEvoRating = poke.rating.absoluteRating;
+        let bestEvoTier   = poke.rating.tier;
+        (poke.evoTree || []).forEach(evoStage => {
+            const candidates = Array.isArray(evoStage) ? evoStage : [evoStage];
+            candidates.forEach(evo => {
+                const evoPoke = allPokes.find(p => p.id === evo);
+                if (evoPoke && evoPoke.rating.absoluteRating > bestEvoRating) {
+                    bestEvo = evoPoke.id; bestEvoRating = evoPoke.rating.absoluteRating; bestEvoTier = evoPoke.rating.tier;
+                }
+            });
+        });
+        poke.rating.bestEvo       = bestEvo;
+        poke.rating.bestEvoRating = bestEvoRating;
+        poke.rating.bestEvoTier   = bestEvoTier;
+        if (megaEvoTree[poke.family] && !poke.evolutionData.isMega) {
+            poke.evolutionData.megaEvos = megaEvoTree[poke.family];
+        }
+        if (poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length) {
+            let bestMegaEvo = poke.evolutionData.megaEvos[0];
+            let bestMegaEvoRating = 0;
+            let bestMegaEvoTier = 'PU';
+            poke.evolutionData.megaEvos.forEach(megaEvoId => {
+                const megaEvoPoke = allPokes.find(p => p.id === megaEvoId);
+                if (megaEvoPoke && megaEvoPoke.rating.absoluteRating > bestMegaEvoRating) {
+                    bestMegaEvo = megaEvoPoke.id; bestMegaEvoRating = megaEvoPoke.rating.absoluteRating; bestMegaEvoTier = megaEvoPoke.rating.tier;
+                }
+            });
+            if (bestMegaEvoRating > bestEvoRating) {
+                bestEvo = bestMegaEvo; bestEvoRating = bestMegaEvoRating; bestEvoTier = bestMegaEvoTier;
+            }
+            poke.rating.megaEvo       = bestMegaEvo;
+            poke.rating.megaEvoRating = bestMegaEvoRating;
+            poke.rating.megaEvoTier   = bestMegaEvoTier;
+        }
+    });
+
+    // Rayquaza special case
+    const rayquaza = allPokes.find(p => p.id === 'SPECIES_RAYQUAZA');
+    const rayquazaMega = allPokes.find(p => p.id === 'SPECIES_RAYQUAZA_MEGA');
+    if (rayquaza && rayquazaMega) rayquaza.rating = { ...rayquazaMega.rating };
+
+    // 12. Contextual ratings
+    for (const poke of allPokes) {
+        poke.contextualRatings = {};
+        for (const cap of LEVEL_CAPS) {
+            poke.contextualRatings[cap] = rateContextual(poke, moves, abilities, { level: cap, tms: [] });
+        }
+    }
+
+    // 13. Write JSON caches
+    await fs.writeFile(path.resolve(__dirname, '..', 'evoTree.json'), JSON.stringify(evoTree, null, 2), 'utf-8');
+    await fs.writeFile(path.resolve(__dirname, '..', 'pokes.json'), JSON.stringify(allPokes, null, 2), 'utf-8');
+
+    return {
+        schemaVersion: 1,
+        generatedAt: new Date().toISOString(),
+        seed: config.seed,
+        difficulty: config.difficulty,
+        rebalance: config.rebalance,
+        pokes: allPokes,
+        moves,
+        abilities,
+        evoTree,
+        tmList,
+        tmPool,
+    };
+}
+
+module.exports = { runPokedexModule };

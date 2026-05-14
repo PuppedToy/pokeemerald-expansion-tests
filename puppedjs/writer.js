@@ -4,7 +4,6 @@ const rng = require('./rng');
 
 const wild = require('./wild.js');
 const trainers = require('./trainers.js');
-const { BAG_SIZE_OFFSET } = require('./presets');
 const {
     EVO_TYPE_LC,
     EVO_TYPE_NFE,
@@ -62,9 +61,6 @@ function nearestCap(level) {
 }
 const items = require('./items.js');
 const { savePokemonData } = require('./pokemonWriter.js');
-const { randomizeTMs } = require('./tmRandomizer.js');
-const { randomizeItems } = require('./itemRandomizer.js');
-const { expandAllTeachables, buildTmPoolFromFile } = require('./teachableExpander.js');
 const { writeEvoLevels } = require('./evoLevelWriter.js');
 
 const startersFile = path.resolve(__dirname, '..', 'src', 'starter_choose.c');
@@ -237,100 +233,19 @@ function getFamilyGroup(familyId) {
     return groupedFamilies[familyId] || familyId;
 }
 
-async function writer(pokemonList, moves, abilities, isDebug, difficulty = 'FAIR') {
+async function writer(pokedexArtifact, trainersArtifact, startersArtifact, isDebug) {
+    let { pokes: pokemonList, moves, abilities } = pokedexArtifact;
+    const { trainersData, itemAssignments } = trainersArtifact;
+    const { starters, alreadyChosenFamilies } = startersArtifact;
 
     pokemonList = pokemonList.filter(poke => !bannedSpeciesForPicking.includes(poke.id));
-
-    console.log('Randomizing TMs...');
-    const tmList = await randomizeTMs();
-
-    // Rebuild teachables against the just-randomized TM pool with full inheritance.
-    // This overwrites the preliminary expansion in index.js (pre-randomization pool).
-    const randomizedTmPool = await buildTmPoolFromFile();
-    expandAllTeachables(pokemonList, randomizedTmPool, moves);
-
-    console.log('Randomizing items...');
-    const itemAssignments = randomizeItems();
-
-    const trainersData = trainers.getTrainersData(itemAssignments, tmList, difficulty);
-
-    const bagOffset = BAG_SIZE_OFFSET[difficulty] || 0;
-    if (bagOffset !== 0) {
-        for (const trainer of trainersData) {
-            if (trainer.isBoss || !trainer.bag || trainer.bag.length === 0) continue;
-            if (bagOffset < 0) {
-                trainer.bag = trainer.bag.slice(0, Math.max(0, trainer.bag.length + bagOffset));
-            } else {
-                const extra = trainer.bag.slice(-bagOffset);
-                trainer.bag = [...trainer.bag, ...extra];
-            }
-        }
-    }
 
     console.log('Randomizing evolution levels...');
     await writeEvoLevels(pokemonList);
 
     console.log('Updating starter pokemon...');
 
-    let eligiblePokemonForStarters = pokemonList.filter(poke => {
-        return poke.evolutionData.type === EVO_TYPE_LC_OF_3
-            && poke.evolutionData.isLC
-            && poke.rating.bestEvoTier === TIER_UU
-            && isSubWeakTier(poke.rating.tier)
-    });
-
-    const starters = [null, null, null];
-
-    while (eligiblePokemonForStarters.length > 0 && (starters[0] === null || starters[1] === null || starters[2] === null)) {
-        // First pick the first pokemon randomly
-        starters[0] = sampleAndRemove(eligiblePokemonForStarters);
-
-        // Try to find a pokemon weak to any of starters[0]'s types
-        const starters0Types = starters[0].parsedTypes;
-        const weakToStarters0Types = eligiblePokemonForStarters.filter(poke => {
-            if (poke.id === starters[0].id) return false;
-            return starters0Types.some(type => isSuperEffective(type, poke.parsedTypes));
-        });
-        // If none found, restart
-        if (weakToStarters0Types.length === 0) {
-            starters[0] = null;
-            continue;
-        }
-        starters[1] = sample(weakToStarters0Types);
-
-        // Try to find a pokemon weak to starters1's types and that also fulfills that starters0 is weak to its types
-        const starters1Types = starters[1].parsedTypes;
-        const weakToStarters1TypesAndStrongToStarters0 = eligiblePokemonForStarters.filter(poke => {
-            if (poke.id === starters[1].id) return false;
-            return starters1Types.some(type => isSuperEffective(type, poke.parsedTypes))
-                && poke.parsedTypes.some(type => isSuperEffective(type, starters[0].parsedTypes))
-                && poke.id !== starters[0].id
-                && poke.id !== starters[1].id;
-        });
-
-        if (weakToStarters1TypesAndStrongToStarters0.length === 0) {
-            starters[0] = null;
-            starters[1] = null;
-            continue;
-        }
-        starters[2] = sample(weakToStarters1TypesAndStrongToStarters0);
-    }
-
-    if (starters[0] === null || starters[1] === null || starters[2] === null) {
-        console.error('Failed to find valid starter Pokemon. Going through fallback method.');
-        eligiblePokemonForStarters = pokemonList.filter(poke => {
-            return poke.evolutionData.type === EVO_TYPE_LC_OF_3
-                && poke.evolutionData.isLC
-                && poke.rating.bestEvoTier === TIER_UU
-                && isSubWeakTier(poke.rating.tier)
-            });
-        starters[0] = sampleAndRemove(eligiblePokemonForStarters);
-        starters[1] = sampleAndRemove(eligiblePokemonForStarters);
-        starters[2] = sampleAndRemove(eligiblePokemonForStarters);
-        return;
-    }
-
-    const alreadyChosenFamilySet = new Set();
+    const alreadyChosenFamilySet = new Set(alreadyChosenFamilies.map(f => getFamilyGroup(f)));
     const foundMegaEvos = [];
 
     const addToFoundMegaEvosIfHasMegaEvo = (poke, levelFound = 0) => {
@@ -361,10 +276,10 @@ async function writer(pokemonList, moves, abilities, isDebug, difficulty = 'FAIR
         }
     };
 
-    starters.forEach((starter, index) => {
-        starters[index] = starter.id;
-        alreadyChosenFamilySet.add(getFamilyGroup(starter.family));
-        addToFoundMegaEvosIfHasMegaEvo(starter);
+    // starters are already IDs from startersModule; look up poke objects for mega evo detection
+    starters.forEach(starterId => {
+        const starterPoke = pokemonList.find(p => p.id === starterId);
+        if (starterPoke) addToFoundMegaEvosIfHasMegaEvo(starterPoke);
     });
 
     // Extra slot 1: 1 LC-of-3 that evolves into an OU mon
