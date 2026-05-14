@@ -42,6 +42,7 @@ const {
 } = require("./constants");
 const { maps: wildMaps } = require('./wild');
 const { DIFFICULTY, getBossPreset, getNonBossPreset } = require('./presets');
+const rng = require('./rng');
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
 const partnersFile = path.resolve(__dirname, '..', 'src', 'data', 'battle_partners.party');
@@ -84,7 +85,7 @@ const magmaTeamTypes = [
 ];
 
 function sampleAndRemove(array) {
-    const index = Math.floor(Math.random() * array.length);
+    const index = Math.floor(rng.random() * array.length);
     const item = array[index];
     array.splice(index, 1);
     return item;
@@ -165,7 +166,7 @@ for (let i = 0; i < originalGymTypes.length; i++) {
     }
 }
 
-const tateAndLizaUseSolrock = Math.random() < 0.5;
+const tateAndLizaUseSolrock = rng.random() < 0.5;
 
 // New defs
 
@@ -578,7 +579,7 @@ const genericTrainerTeamPostMatt       = d => getNonBossPreset('TATE_AND_LIZA', 
 const genericTrainerTeamPostTateAndLiza = d => getNonBossPreset('JUAN', d);
 
 const sample = (array) => {
-    return array[Math.floor(Math.random() * array.length)];
+    return array[Math.floor(rng.random() * array.length)];
 }
 
 const getSampleItemsFromArray = (array, amount) => {

@@ -1,6 +1,7 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const rng = require('./rng');
 const items = require('./items.js');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -11,7 +12,7 @@ const SCRIPT_MENU_PATH = path.join(ROOT, 'src', 'data', 'script_menu.h');
 function shuffle(arr) {
     const a = [...arr];
     for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = Math.floor(rng.random() * (i + 1));
         [a[i], a[j]] = [a[j], a[i]];
     }
     return a;

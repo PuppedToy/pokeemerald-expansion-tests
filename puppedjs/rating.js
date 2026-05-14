@@ -32,6 +32,7 @@ const {
     NATURES,
 } = require('./constants');
 const { plates, protectionBerries } = require('./items');
+const rng = require('./rng');
 
 const BEST_RATING_FOR_MEGA_EVO = 780;
 const BEST_RATING_FOR_FULLY_EVO = 720;
@@ -1197,7 +1198,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, banne
     const specialDefensePower = Math.max(poke.baseSpDefense + poke.baseHP)/200;
     let coverageRating = 0;
     const checkedTypes = [];
-    const calculatedDeviation = 1 + ((Math.random() ? 1 : -1) * Math.random() * deviation);
+    const calculatedDeviation = 1 + ((rng.random() ? 1 : -1) * rng.random() * deviation);
     moveset.forEach(move => {
         if (move.category !== 'DAMAGE_CATEGORY_STATUS' && !checkedTypes.includes(move.type)) {
             checkedTypes.push(move.type);
@@ -1516,13 +1517,13 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, banne
         return 5 * calculatedDeviation;
     }
     if (item === 'Weakness Policy') {
-        return 10 * genericDefensePower * Math.random() * calculatedDeviation;
+        return 10 * genericDefensePower * rng.random() * calculatedDeviation;
     }
     if (item === 'Eject Button') {
-        return 10 * Math.random() * calculatedDeviation;
+        return 10 * rng.random() * calculatedDeviation;
     }
     if (item === 'Red Card') {
-        return 7 * Math.random() * calculatedDeviation;
+        return 7 * rng.random() * calculatedDeviation;
     }
     if (item === 'Eject Pack') {
         return 2.5 * calculatedDeviation;
@@ -1548,16 +1549,16 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, banne
         return 6 * specialDefensePower * calculatedDeviation;
     }
     if (item === 'Jaboca Berry') {
-        return 6 * Math.random() * calculatedDeviation;
+        return 6 * rng.random() * calculatedDeviation;
     }
     if (item === 'Rowap Berry') {
-        return 6 * Math.random() * calculatedDeviation;
+        return 6 * rng.random() * calculatedDeviation;
     }
     if (item === 'Mirror Herb') {
-        return 7 * Math.random() * calculatedDeviation;
+        return 7 * rng.random() * calculatedDeviation;
     }
     if (item === 'Adrenaline Orb') {
-        return 5 * Math.random() * calculatedDeviation;
+        return 5 * rng.random() * calculatedDeviation;
     }
     if (item.includes(' Berry')) {
         const protectionBerriesEntries = Object.entries(protectionBerries);
@@ -1628,7 +1629,7 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
 
     while (uniqueMoves.length > 0 && moveset.length < 4) {
         const ratedMoves = uniqueMoves.map(move => {
-            const rating = rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset) * (1 + ((Math.random() ? 1 : -1) * Math.random() * deviation));
+            const rating = rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset) * (1 + ((rng.random() ? 1 : -1) * rng.random() * deviation));
             return {
                 ...move,
                 rating,
@@ -1680,7 +1681,7 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
         // Fill freed slots with the next-best moves from uniqueMoves
         while (uniqueMoves.length > 0 && moveset.length < 4) {
             const ratedMoves = uniqueMoves.map(move => {
-                const rating = rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset) * (1 + ((Math.random() ? 1 : -1) * Math.random() * deviation));
+                const rating = rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset) * (1 + ((rng.random() ? 1 : -1) * rng.random() * deviation));
                 return { ...move, rating };
             }).filter(m => m !== null);
             if (ratedMoves.length === 0) break;
@@ -1745,7 +1746,7 @@ function adjustMoveset(poke, level = 100, moveset, importantMoves, moves, abilit
                 );
                 return {
                     ...move,
-                    rating: rating * (1 + ((Math.random() ? 1 : -1) * Math.random() * deviation)),
+                    rating: rating * (1 + ((rng.random() ? 1 : -1) * rng.random() * deviation)),
                 };
             });
             if (ratedMoves.length === 0) {
@@ -1965,7 +1966,7 @@ function chooseNature(poke, moveset, moves, ability, item, deviation = 0) {
 
         return {
             ...nature,
-            rating: rating + ((Math.random() ? 1 : -1) * Math.random() * deviation * 5),
+            rating: rating + ((rng.random() ? 1 : -1) * rng.random() * deviation * 5),
         }
     });
 

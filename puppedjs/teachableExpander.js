@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs').promises;
+const rng = require('./rng');
 
 // HM moves are always preserved in teachables regardless of the TM pool.
 const HM_MOVES = new Set([
@@ -54,7 +55,7 @@ function buildRunTeachables(poke, tmPool, moves, preEvoPoke, megaEvoTree, pokemo
 
     // Fisher-Yates shuffle
     for (let i = remaining.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = Math.floor(rng.random() * (i + 1));
         [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
     }
 
@@ -77,7 +78,7 @@ function buildRunTeachables(poke, tmPool, moves, preEvoPoke, megaEvoTree, pokemo
             } else if (megaExtraTypes.includes(move.type)) {
                 chance = Math.max(0, MEGA_TYPE_TM_BASE_CHANCE - totalLearned) / 100;
             }
-            if (chance > 0 && Math.random() < chance) {
+            if (chance > 0 && rng.random() < chance) {
                 newTeachables.push(tm);
                 totalLearned++;
             }
@@ -95,7 +96,7 @@ function buildRunTeachables(poke, tmPool, moves, preEvoPoke, megaEvoTree, pokemo
             } else {
                 chance = Math.max(0, DIFFERENT_TYPE_TM_BASE_CHANCE - totalLearned) / 100;
             }
-            if (chance > 0 && Math.random() < chance) {
+            if (chance > 0 && rng.random() < chance) {
                 newTeachables.push(tm);
                 totalLearned++;
             }

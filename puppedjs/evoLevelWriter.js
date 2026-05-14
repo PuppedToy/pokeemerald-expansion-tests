@@ -1,5 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
+const rng = require('./rng');
 
 const {
     SPECIES_DIR,
@@ -29,7 +30,7 @@ function getStageAdjustment(evoType) {
  * Picks a random float uniformly in [min, max].
  */
 function randInRange(min, max) {
-    return min + Math.random() * (max - min);
+    return min + rng.random() * (max - min);
 }
 
 /**

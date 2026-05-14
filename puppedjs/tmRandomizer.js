@@ -1,5 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
+const rng = require('./rng');
 const {
     averageDamagePool,
     goodDamagePool,
@@ -47,7 +48,7 @@ const SCRIPT_MENU_PATH = path.resolve(__dirname, '..', 'src', 'data', 'script_me
 function shuffle(array) {
     const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = Math.floor(rng.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;

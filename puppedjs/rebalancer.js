@@ -1,4 +1,5 @@
 const { LOG_TYPE_BUFF, LOG_TYPE_NERF, POKEMON_TYPES, LOG_TYPE_ADJUSTMENT } = require("./constants");
+const rng = require('./rng');
 
 const BALANCE_CHANCE = 0.2;
 
@@ -44,7 +45,7 @@ const BANNED_ABILITIES = [
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = Math.floor(rng.random() * (i + 1));
         const temp = array[i];
         array[i] = array[j];
         array[j] = temp;
@@ -54,7 +55,7 @@ function shuffleArray(array) {
 
 function getLearnLevelBasedOnRating(move) {
     const baseRating = move && typeof move.rating === 'number' ? move.rating : 5;
-    const rating = baseRating * Math.random() * (1 + MOVE_RATING_DEVIATION);
+    const rating = baseRating * rng.random() * (1 + MOVE_RATING_DEVIATION);
     let level = Math.floor(rating * 5);
     if (level < 1) level = 1;
     if (level > 100) level = 100;
@@ -153,7 +154,7 @@ function balancePokemon(pokemon, abilityNames, moves) {
         });
     }
 
-    if (Math.random() > BALANCE_CHANCE) {
+    if (rng.random() > BALANCE_CHANCE) {
         return {
             ...newPokemon,
             log: inheritedLog,
@@ -171,10 +172,10 @@ function balancePokemon(pokemon, abilityNames, moves) {
         }
     });
     stats.forEach(stat => {
-        if (Math.random() < chance) {
-            const changeDiff = Math.random() < BUFF_STAT_CHANCE ? 10 : -10;
+        if (rng.random() < chance) {
+            const changeDiff = rng.random() < BUFF_STAT_CHANCE ? 10 : -10;
             let change = changeDiff;
-            while (Math.random() < REPEAT_STAT_CHANCE) {
+            while (rng.random() < REPEAT_STAT_CHANCE) {
                 change += changeDiff;
             }
             newPokemon[stat] = Math.min(255, Math.max(1, newPokemon[stat] + change));
@@ -188,9 +189,9 @@ function balancePokemon(pokemon, abilityNames, moves) {
         }
     });
 
-    if (Math.random() < TYPE_BALANCE_CHANCE) {
+    if (rng.random() < TYPE_BALANCE_CHANCE) {
         let oldType = null;
-        if (pokemon.parsedTypes.length === 1 && Math.random() < MONOTYPE_BALANCE_CHANCE) {
+        if (pokemon.parsedTypes.length === 1 && rng.random() < MONOTYPE_BALANCE_CHANCE) {
             oldType = pokemon.parsedTypes[0];
         }
         else if (pokemon.parsedTypes.length === 2) {
@@ -218,7 +219,7 @@ function balancePokemon(pokemon, abilityNames, moves) {
         });
     }
 
-    if (Math.random() < ABILITY_BALANCE_CHANCE) {
+    if (rng.random() < ABILITY_BALANCE_CHANCE) {
         let oldAbility = null;
         if (pokemon.parsedAbilities.includes('NONE')) {
             oldAbility = 'NONE';
@@ -233,7 +234,7 @@ function balancePokemon(pokemon, abilityNames, moves) {
         if (oldAbility) {
             const allAbilities = abilityNames
                 .filter(a => !pokemon.parsedAbilities.includes(a) && !BANNED_ABILITIES.includes(a));
-            const newAbility = allAbilities[Math.floor(Math.random() * allAbilities.length)];
+            const newAbility = allAbilities[Math.floor(rng.random() * allAbilities.length)];
             const oldAbilityIndex = newPokemon.parsedAbilities.indexOf(oldAbility);
             const newParsedAbilities = [...newPokemon.parsedAbilities];
             newParsedAbilities[oldAbilityIndex] = newAbility;
@@ -289,8 +290,8 @@ function balancePokemon(pokemon, abilityNames, moves) {
             }
 
             const shouldChange =
-                (oldType && currentMove.type === oldType && Math.random() < CHANGE_TYPE_MOVE_CHANCE_FROM_OLD_TYPE_CHANCE) ||
-                (!oldType && Math.random() < CHANGE_TYPE_MOVE_CHANCE_FROM_OTHER_TYPE_CHANCE);
+                (oldType && currentMove.type === oldType && rng.random() < CHANGE_TYPE_MOVE_CHANCE_FROM_OLD_TYPE_CHANCE) ||
+                (!oldType && rng.random() < CHANGE_TYPE_MOVE_CHANCE_FROM_OTHER_TYPE_CHANCE);
 
             if (!shouldChange) continue;
 
@@ -334,10 +335,10 @@ function balancePokemon(pokemon, abilityNames, moves) {
 
         // If we couldn't change any move, we need to insert one. Otherwise just random
         let chanceToInsertExtra = Math.max(0, 1 - (amountChanged * CHANGE_MOVE_INSERT_CHANCE));
-        if (Math.random() < chanceToInsertExtra) {
+        if (rng.random() < chanceToInsertExtra) {
             if (movesFromTheNewType.length > 0) {
                 const [newMoveId, newMoveObj] =
-                    movesFromTheNewType[Math.floor(Math.random() * movesFromTheNewType.length)];
+                    movesFromTheNewType[Math.floor(rng.random() * movesFromTheNewType.length)];
 
                 const { learnset: newLearnset, level } =
                     insertMoveIntoLearnset(newPokemon.learnset, newMoveId, newMoveObj);
@@ -355,7 +356,7 @@ function balancePokemon(pokemon, abilityNames, moves) {
     }
 
     // ----- LEARNSET STEP 2 - RANDOM CHANGES -----
-    if (Math.random() < LEARNSET_BALANCE_CHANCE) {
+    if (rng.random() < LEARNSET_BALANCE_CHANCE) {
         let amountChanged = 0;
 
         for (let i = 0; i < newPokemon.learnset.length; i++) {
@@ -368,7 +369,7 @@ function balancePokemon(pokemon, abilityNames, moves) {
                 continue;
             }
 
-            if (Math.random() < CHANGE_TYPE_MOVE_CHANCE_FROM_OTHER_TYPE_CHANCE) {
+            if (rng.random() < CHANGE_TYPE_MOVE_CHANCE_FROM_OTHER_TYPE_CHANCE) {
                 const allMoves = Object.entries(moves);
 
                 const similarMoves = [...allMoves].sort(
@@ -405,12 +406,12 @@ function balancePokemon(pokemon, abilityNames, moves) {
         }
 
         let chanceToInsertExtra = Math.max(0, 1 - (amountChanged * CHANGE_MOVE_INSERT_CHANCE));
-        while (Math.random() < chanceToInsertExtra) {
+        while (rng.random() < chanceToInsertExtra) {
             const allMoves = Object.entries(moves);
             if (allMoves.length === 0) break;
 
             const [newMoveId, newMoveObj] =
-                allMoves[Math.floor(Math.random() * allMoves.length)];
+                allMoves[Math.floor(rng.random() * allMoves.length)];
 
             const { learnset: newLearnset, level } =
                 insertMoveIntoLearnset(newPokemon.learnset, newMoveId, newMoveObj);

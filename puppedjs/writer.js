@@ -1,5 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
+const rng = require('./rng');
 
 const wild = require('./wild.js');
 const trainers = require('./trainers.js');
@@ -165,7 +166,7 @@ function isSubWeakTier(tier) {
 
 function sampleAndRemove(array) {
     if (array.length === 0) return null;
-    const index = Math.floor(Math.random() * array.length);
+    const index = Math.floor(rng.random() * array.length);
     const element = array[index];
     array.splice(index, 1);
     return element;
@@ -173,7 +174,7 @@ function sampleAndRemove(array) {
 
 function sample(array) {
     if (array.length === 0) return null;
-    const index = Math.floor(Math.random() * array.length);
+    const index = Math.floor(rng.random() * array.length);
     return array[index];
 }
 
@@ -700,7 +701,7 @@ async function writer(pokemonList, moves, abilities, isDebug, difficulty = 'FAIR
                 return megaPoke ? megaPoke.evolutionData.megaItem : null;
             }).filter(item => item !== null);
             if (megaEvoItems.length > 0) {
-                const chosenItem = megaEvoItems[Math.floor(Math.random() * megaEvoItems.length)];
+                const chosenItem = megaEvoItems[Math.floor(rng.random() * megaEvoItems.length)];
                 gymFileData = gymFileData.replace(new RegExp(gymItemReplacement, 'g'), chosenItem);
             }
             else {
@@ -848,7 +849,7 @@ async function writer(pokemonList, moves, abilities, isDebug, difficulty = 'FAIR
         addToFoundMegaEvosIfHasMegaEvo(replacement, findReplacementLevel(speciesId));
         replacementLog[speciesId] = replacement.id;
         // entryId must be a unique string that won't reappear in the file
-        const entryId = Math.random().toString(36).substring(2, 15);
+        const entryId = rng.random().toString(36).substring(2, 15);
         auxWildReplacementsFrom[speciesId] = `WILDPOKE_${entryId}`;
 
         const regex = new RegExp(speciesId, 'g');
@@ -983,13 +984,13 @@ async function writer(pokemonList, moves, abilities, isDebug, difficulty = 'FAIR
         if (breedTier === 'perfect') {
             ivs = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
         } else if (breedTier === 'good') {
-            const order = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].sort(() => Math.random() - 0.5);
+            const order = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].sort(() => rng.random() - 0.5);
             ivs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
-            Object.keys(ivs).forEach(s => { ivs[s] = Math.floor(Math.random() * 32); });
+            Object.keys(ivs).forEach(s => { ivs[s] = Math.floor(rng.random() * 32); });
             order.slice(0, 3).forEach(s => { ivs[s] = 31; });
         } else {
             ivs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
-            Object.keys(ivs).forEach(s => { ivs[s] = Math.floor(Math.random() * 32); });
+            Object.keys(ivs).forEach(s => { ivs[s] = Math.floor(rng.random() * 32); });
         }
         if (pokeId) pokeIdIVCache[pokeId] = ivs;
         return ivs;
@@ -1524,14 +1525,14 @@ async function writer(pokemonList, moves, abilities, isDebug, difficulty = 'FAIR
                             (a, b) => {
                                 if (trainer.level < 28) {
                                     // We just sort randomly
-                                    return Math.random() - 0.5;
+                                    return rng.random() - 0.5;
                                 }
 
                                 // @TODO Method rateAbilityForAPokemon
                                 const abilityA = abilities[`ABILITY_${a}`];
                                 const abilityB = abilities[`ABILITY_${b}`];
-                                const ratingA = abilityA?.rating * (1 + (Math.random() * GENERIC_DEVIATION * 2 - GENERIC_DEVIATION));
-                                const ratingB = abilityB?.rating * (1 + (Math.random() * GENERIC_DEVIATION * 2 - GENERIC_DEVIATION));
+                                const ratingA = abilityA?.rating * (1 + (rng.random() * GENERIC_DEVIATION * 2 - GENERIC_DEVIATION));
+                                const ratingB = abilityB?.rating * (1 + (rng.random() * GENERIC_DEVIATION * 2 - GENERIC_DEVIATION));
                                 return ratingB - ratingA;
                             }
                         );
@@ -1662,7 +1663,7 @@ async function writer(pokemonList, moves, abilities, isDebug, difficulty = 'FAIR
             shuffledTeam = [shuffledTeam[0]];
         }
         else if (!trainerData.preventShuffle) {
-            shuffledTeam = shuffledTeam.sort(() => Math.random() - 0.5);
+            shuffledTeam = shuffledTeam.sort(() => rng.random() - 0.5);
         }
 
         const generatedTeamTextLines = shuffledTeam.map(teamEntry => {

@@ -1,0 +1,19 @@
+'use strict';
+
+// Minimal ability objects matching the shape of abilities.json.
+const abilities = {
+    ABILITY_NONE:       { name: '-------', rating: 0, breakable: false },
+    ABILITY_OVERGROW:   { name: 'Overgrow', rating: 3, breakable: false },
+    ABILITY_CHLOROPHYLL:{ name: 'Chlorophyll', rating: 4, breakable: false },
+    ABILITY_BLAZE:      { name: 'Blaze', rating: 3, breakable: false },
+    ABILITY_TORRENT:    { name: 'Torrent', rating: 3, breakable: false },
+    ABILITY_SPEED_BOOST:{ name: 'Speed Boost', rating: 9, breakable: false },
+    ABILITY_LEVITATE:   { name: 'Levitate', rating: 5, breakable: true },
+    ABILITY_WATER_ABSORB:{ name: 'Water Absorb', rating: 6, breakable: true },
+    ABILITY_INTIMIDATE: { name: 'Intimidate', rating: 7, breakable: false },
+    ABILITY_THICK_FAT:  { name: 'Thick Fat', rating: 5, breakable: true },
+    ABILITY_STURDY:     { name: 'Sturdy', rating: 5, breakable: true },
+    ABILITY_INNER_FOCUS:{ name: 'Inner Focus', rating: 2, breakable: false },
+};
+
+module.exports = abilities;
