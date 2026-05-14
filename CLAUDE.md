@@ -48,6 +48,49 @@ Committing them pollutes history with randomizer mutations and corrupts base dat
 
 Commit any changes to `src/`, `include/`, or `data/maps/` before running these scripts.
 
+## Testing and TDD — puppedjs pipeline
+
+All logic in `puppedjs/` (except the HTML template) is covered by automated tests. **Use Test-Driven Development (TDD)** for any new feature or bug fix in these files.
+
+### TDD cycle — always follow this order
+
+1. **Red** — write a failing test that describes the behaviour you need. Run `cd puppedjs && npm test` and confirm it fails for the right reason (not a syntax error, not a missing import — the assertion itself fails).
+2. **Green** — write the minimum production code that makes that test pass. Nothing more.
+3. **Refactor** — clean up without breaking any green test.
+
+Repeat for each behaviour increment. Never write production code without a failing test that justifies it.
+
+### Non-negotiable rules
+
+- **Tests pass before every commit.** Run `cd puppedjs && npm test` and confirm all tests are green. Do not commit with a failing suite.
+- **If an existing test starts failing after your change, the code is wrong — not the test.** Investigate the regression. Only change a test if the *specification* itself changed (i.e., the intended behaviour was deliberately updated). Do not delete or weaken a test because it is inconvenient.
+- **Tests are the specification.** If a behaviour is not tested, it is not specified. Untested paths are invisible to future changes.
+- **Each test must fail for the right reason.** Before writing production code, read the failure message and confirm it matches what you expected.
+
+### What TDD looks like here
+
+- New function in `config.js` → write `config.test.js` assertions first, see them fail, then implement.
+- Bug fix in `rating.js` → write a test that reproduces the bug (it fails), then fix the code (it passes).
+- Refactor in `rebalancer.js` → existing tests must stay green throughout; add new tests only for genuinely new behaviour.
+
+### Running tests
+
+```
+cd puppedjs && npm test          # run all tests
+cd puppedjs && npm test -- --testPathPattern=config   # single file
+```
+
+The suite is fast (<2 s). There is no excuse to skip it.
+
+### Test file locations
+
+```
+puppedjs/__tests__/
+  unit/        ← pure-function tests (no I/O, no filesystem)
+  integration/ ← snapshot tests that exercise the full parse+rate pipeline
+  fixtures/    ← shared miniMoves, miniPokes, miniAbilities objects
+```
+
 ## puppedjs/docs — design documentation
 
 `puppedjs/docs/` holds human-readable reference files for the pipeline design.

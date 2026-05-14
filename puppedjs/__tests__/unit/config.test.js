@@ -1,0 +1,246 @@
+'use strict';
+
+// TDD: these tests were written BEFORE config.js was implemented.
+// Run `npm test` — all tests in this file should fail until config.js exists.
+
+const path = require('path');
+const NONEXISTENT_PATH = path.resolve(__dirname, '../fixtures/nonexistent_config.json');
+const VALID_CONFIG_PATH = path.resolve(__dirname, '../fixtures/sample_config.json');
+
+// Loaded lazily so each test can get a fresh module (resetConfig).
+function freshConfig() {
+    let mod;
+    jest.isolateModules(() => { mod = require('../../config'); });
+    return mod;
+}
+
+describe('loadConfig — defaults', () => {
+    test('returns all five default fields', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({}, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(cfg).toHaveProperty('seed');
+        expect(cfg).toHaveProperty('mode');
+        expect(cfg).toHaveProperty('difficulty');
+        expect(cfg).toHaveProperty('rebalance');
+        expect(cfg).toHaveProperty('balanceChance');
+    });
+
+    test('difficulty defaults to "fair"', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({}, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(cfg.difficulty).toBe('fair');
+    });
+
+    test('mode defaults to "default"', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({}, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(cfg.mode).toBe('default');
+    });
+
+    test('rebalance defaults to true', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({}, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(cfg.rebalance).toBe(true);
+    });
+
+    test('balanceChance defaults to 0.2', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({}, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(cfg.balanceChance).toBe(0.2);
+    });
+
+    test('auto-generates an integer seed when seed is null', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({}, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(Number.isInteger(cfg.seed)).toBe(true);
+        expect(cfg.seed).toBeGreaterThanOrEqual(0);
+    });
+});
+
+describe('loadConfig — explicit overrides', () => {
+    test('override replaces default', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({ difficulty: 'hard' }, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(cfg.difficulty).toBe('hard');
+    });
+
+    test('multiple overrides work together', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({ difficulty: 'easy', rebalance: false }, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(cfg.difficulty).toBe('easy');
+        expect(cfg.rebalance).toBe(false);
+    });
+
+    test('explicit integer seed is kept as-is', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({ seed: 12345 }, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(cfg.seed).toBe(12345);
+    });
+
+    test('false override for boolean field works', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({ rebalance: false }, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(cfg.rebalance).toBe(false);
+    });
+
+    test('balanceChance override is applied', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({ balanceChance: 0.5 }, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(cfg.balanceChance).toBe(0.5);
+    });
+});
+
+describe('loadConfig — config file merging', () => {
+    beforeAll(() => {
+        const fs = require('fs');
+        fs.writeFileSync(VALID_CONFIG_PATH, JSON.stringify({ difficulty: 'easy', balanceChance: 0.1 }));
+    });
+
+    afterAll(() => {
+        const fs = require('fs');
+        try { fs.unlinkSync(VALID_CONFIG_PATH); } catch (_) {}
+    });
+
+    test('values from config.json override defaults', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({}, { argv: [], configPath: VALID_CONFIG_PATH });
+        expect(cfg.difficulty).toBe('easy');
+        expect(cfg.balanceChance).toBe(0.1);
+    });
+
+    test('explicit overrides win over config file values', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({ difficulty: 'hard' }, { argv: [], configPath: VALID_CONFIG_PATH });
+        expect(cfg.difficulty).toBe('hard');   // override wins
+        expect(cfg.balanceChance).toBe(0.1);   // file value kept
+    });
+
+    test('missing config.json is silently ignored', () => {
+        const { loadConfig } = freshConfig();
+        expect(() => loadConfig({}, { argv: [], configPath: NONEXISTENT_PATH })).not.toThrow();
+    });
+});
+
+describe('parseCLIArgs', () => {
+    test('--difficulty=hard → { difficulty: "hard" }', () => {
+        const { parseCLIArgs } = freshConfig();
+        expect(parseCLIArgs(['--difficulty=hard'])).toMatchObject({ difficulty: 'hard' });
+    });
+
+    test('--difficulty=HARD is lowercased', () => {
+        const { parseCLIArgs } = freshConfig();
+        expect(parseCLIArgs(['--difficulty=HARD'])).toMatchObject({ difficulty: 'hard' });
+    });
+
+    test('--no-balance → { rebalance: false }', () => {
+        const { parseCLIArgs } = freshConfig();
+        expect(parseCLIArgs(['--no-balance'])).toMatchObject({ rebalance: false });
+    });
+
+    test('--seed=42 → { seed: 42 }', () => {
+        const { parseCLIArgs } = freshConfig();
+        expect(parseCLIArgs(['--seed=42'])).toMatchObject({ seed: 42 });
+    });
+
+    test('--balance-chance=0.5 → { balanceChance: 0.5 }', () => {
+        const { parseCLIArgs } = freshConfig();
+        expect(parseCLIArgs(['--balance-chance=0.5'])).toMatchObject({ balanceChance: 0.5 });
+    });
+
+    test('--mode=nuzlocke → { mode: "nuzlocke" }', () => {
+        const { parseCLIArgs } = freshConfig();
+        expect(parseCLIArgs(['--mode=nuzlocke'])).toMatchObject({ mode: 'nuzlocke' });
+    });
+
+    test('empty argv returns {}', () => {
+        const { parseCLIArgs } = freshConfig();
+        expect(parseCLIArgs([])).toEqual({});
+    });
+
+    test('unknown flags are ignored', () => {
+        const { parseCLIArgs } = freshConfig();
+        expect(parseCLIArgs(['--debug', '--analyze'])).toEqual({});
+    });
+
+    test('CLI overrides win over config file values in loadConfig', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({}, { argv: ['--difficulty=hard'], configPath: NONEXISTENT_PATH });
+        expect(cfg.difficulty).toBe('hard');
+    });
+
+    test('explicit override wins over CLI arg in loadConfig', () => {
+        const { loadConfig } = freshConfig();
+        const cfg = loadConfig({ difficulty: 'easy' }, { argv: ['--difficulty=hard'], configPath: NONEXISTENT_PATH });
+        expect(cfg.difficulty).toBe('easy');
+    });
+});
+
+describe('loadConfig — validation', () => {
+    test('throws on invalid difficulty', () => {
+        const { loadConfig } = freshConfig();
+        expect(() => loadConfig({ difficulty: 'nightmare' }, { argv: [], configPath: NONEXISTENT_PATH }))
+            .toThrow(/difficulty/i);
+    });
+
+    test('throws on invalid mode', () => {
+        const { loadConfig } = freshConfig();
+        expect(() => loadConfig({ mode: 'randomizer' }, { argv: [], configPath: NONEXISTENT_PATH }))
+            .toThrow(/mode/i);
+    });
+
+    test('throws when balanceChance > 1', () => {
+        const { loadConfig } = freshConfig();
+        expect(() => loadConfig({ balanceChance: 1.5 }, { argv: [], configPath: NONEXISTENT_PATH }))
+            .toThrow(/balanceChance/i);
+    });
+
+    test('throws when balanceChance < 0', () => {
+        const { loadConfig } = freshConfig();
+        expect(() => loadConfig({ balanceChance: -0.1 }, { argv: [], configPath: NONEXISTENT_PATH }))
+            .toThrow(/balanceChance/i);
+    });
+
+    test('balanceChance of exactly 0 and 1 are valid', () => {
+        const { loadConfig } = freshConfig();
+        expect(() => loadConfig({ balanceChance: 0 }, { argv: [], configPath: NONEXISTENT_PATH })).not.toThrow();
+        expect(() => loadConfig({ balanceChance: 1 }, { argv: [], configPath: NONEXISTENT_PATH })).not.toThrow();
+    });
+
+    test('throws on non-integer seed', () => {
+        const { loadConfig } = freshConfig();
+        expect(() => loadConfig({ seed: 3.14 }, { argv: [], configPath: NONEXISTENT_PATH }))
+            .toThrow(/seed/i);
+    });
+
+    test('null seed (before generation) is allowed', () => {
+        // null seed gets auto-generated — no throw
+        const { loadConfig } = freshConfig();
+        expect(() => loadConfig({}, { argv: [], configPath: NONEXISTENT_PATH })).not.toThrow();
+    });
+});
+
+describe('getConfig — caching', () => {
+    test('getConfig returns the config set by loadConfig', () => {
+        const { loadConfig, getConfig } = freshConfig();
+        loadConfig({ seed: 99, difficulty: 'hard' }, { argv: [], configPath: NONEXISTENT_PATH });
+        const cached = getConfig();
+        expect(cached.seed).toBe(99);
+        expect(cached.difficulty).toBe('hard');
+    });
+
+    test('getConfig without prior loadConfig auto-initialises with defaults', () => {
+        const { getConfig } = freshConfig();
+        // Must not throw even without an explicit loadConfig call
+        expect(() => getConfig()).not.toThrow();
+        expect(getConfig().difficulty).toBe('fair');
+    });
+
+    test('resetConfig clears the cache', () => {
+        const { loadConfig, getConfig, resetConfig } = freshConfig();
+        loadConfig({ seed: 77 }, { argv: [], configPath: NONEXISTENT_PATH });
+        expect(getConfig().seed).toBe(77);
+        resetConfig();
+        // After reset, getConfig re-initialises with defaults+CLI (seed will be newly generated)
+        expect(getConfig().seed).not.toBe(77);
+    });
+});

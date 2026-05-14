@@ -1,7 +1,6 @@
 const { LOG_TYPE_BUFF, LOG_TYPE_NERF, POKEMON_TYPES, LOG_TYPE_ADJUSTMENT } = require("./constants");
 const rng = require('./rng');
-
-const BALANCE_CHANCE = 0.2;
+const { getConfig } = require('./config');
 
 const STAT_BALANCE_CHANCE = 0.7;
 const BUFF_STAT_CHANCE = 0.6;
@@ -154,7 +153,7 @@ function balancePokemon(pokemon, abilityNames, moves) {
         });
     }
 
-    if (rng.random() > BALANCE_CHANCE) {
+    if (rng.random() > getConfig().balanceChance) {
         return {
             ...newPokemon,
             log: inheritedLog,
