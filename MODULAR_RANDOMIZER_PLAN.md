@@ -2,7 +2,7 @@
 
 ## Context
 
-The current randomizer is a monolithic Node.js pipeline (`puppedjs/index.js` → `writer.js`) that runs all four randomization domains in a single locked sequence. Modularizing into four independent units enables:
+The current randomizer is a monolithic Node.js pipeline (`randomizer/index.js` → `writer.js`) that runs all four randomization domains in a single locked sequence. Modularizing into four independent units enables:
 
 - **Batch generation**: produce N ROMs where configurable subsets share the same Pokédex, trainers, or starters
 - **Nuzlocke re-runs**: same Pokédex + Trainers + Starters, fresh Wild per run
@@ -16,18 +16,18 @@ The current randomizer is a monolithic Node.js pipeline (`puppedjs/index.js` →
 
 | File | Size | Role |
 |------|------|------|
-| `puppedjs/index.js` | ~850 lines | Main orchestrator — parsing + rating + rebalance + calls writer |
-| `puppedjs/writer.js` | ~1,900 lines | Output orchestrator — TMs, items, trainers, wild, starters, HTML viewer |
-| `puppedjs/rating.js` | ~3,000 lines | Scoring engine — `rateMove`, `ratePokemon`, `chooseMoveset` |
-| `puppedjs/rebalancer.js` | ~450 lines | Probabilistic stat/type/move mutations |
-| `puppedjs/trainers.js` | ~5,200 lines | All trainer team definitions + team assembly |
-| `puppedjs/wild.js` | ~664 lines | Wild encounter tier rules + route definitions |
-| `puppedjs/tmRandomizer.js` | ~188 lines | Randomizes which move is in each TM slot |
-| `puppedjs/itemRandomizer.js` | ~543 lines | Randomizes item drops at ~40 world locations |
-| `puppedjs/teachableExpander.js` | ~320 lines | Builds per-Pokémon TM teachable lists |
-| `puppedjs/constants.js` | ~448 lines | Tier thresholds, BST limits, banned lists |
-| `puppedjs/presets.js` | ~436 lines | Difficulty presets + trainer tier assignments |
-| `puppedjs/config.json` | 3 bytes | User-facing feel settings |
+| `randomizer/index.js` | ~850 lines | Main orchestrator — parsing + rating + rebalance + calls writer |
+| `randomizer/writer.js` | ~1,900 lines | Output orchestrator — TMs, items, trainers, wild, starters, HTML viewer |
+| `randomizer/rating.js` | ~3,000 lines | Scoring engine — `rateMove`, `ratePokemon`, `chooseMoveset` |
+| `randomizer/rebalancer.js` | ~450 lines | Probabilistic stat/type/move mutations |
+| `randomizer/trainers.js` | ~5,200 lines | All trainer team definitions + team assembly |
+| `randomizer/wild.js` | ~664 lines | Wild encounter tier rules + route definitions |
+| `randomizer/tmRandomizer.js` | ~188 lines | Randomizes which move is in each TM slot |
+| `randomizer/itemRandomizer.js` | ~543 lines | Randomizes item drops at ~40 world locations |
+| `randomizer/teachableExpander.js` | ~320 lines | Builds per-Pokémon TM teachable lists |
+| `randomizer/constants.js` | ~448 lines | Tier thresholds, BST limits, banned lists |
+| `randomizer/presets.js` | ~436 lines | Difficulty presets + trainer tier assignments |
+| `randomizer/config.json` | 3 bytes | User-facing feel settings |
 
 ---
 
@@ -37,10 +37,10 @@ Every `Math.random()` call routes through `rng.random()`. Tests call `rng.seed(N
 
 Files updated: `rebalancer.js`, `writer.js`, `tmRandomizer.js`, `itemRandomizer.js`, `teachableExpander.js`, `rating.js`, `trainers.js`, `evoLevelWriter.js`.
 
-Jest test suite: `puppedjs/package.json` → `npm test`.
+Jest test suite: `randomizer/package.json` → `npm test`.
 
 ```
-puppedjs/__tests__/
+randomizer/__tests__/
   unit/
     rateMove.test.js          ✅ 24 tests
     rebalancer.test.js        ✅ 8 tests
@@ -57,7 +57,7 @@ puppedjs/__tests__/
 
 `config.json` holds **feel settings** — things an end user tweaks. Not a pipeline control file.
 
-### Config Schema (`puppedjs/config.json`)
+### Config Schema (`randomizer/config.json`)
 
 ```json
 {
@@ -248,6 +248,6 @@ Note: `pokedexSeed` was removed from Modules 2–4 artifacts. Soul-link integrit
 
 1. `node analyze_no_rebalance.js` — produces `out.html` with correct data, no regressions
 2. `node analyze.js` — full pipeline with rebalance runs without errors
-3. `cd puppedjs && npm test` — all tests pass
+3. `cd randomizer && npm test` — all tests pass
 4. Batch test: `numROMs: 2, sharedModules: 3` → two different `wild.json` files, same `pokedex.json` + `trainers.json`
 5. Seed test: run twice with same `seed` → identical artifacts

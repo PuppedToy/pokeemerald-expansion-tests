@@ -275,7 +275,7 @@ Where `lerp(a, b, t)` linearly interpolates from `a` to `b` as level_cap goes fr
   - No pokemon is more than 1 contextual tier above the trainer's designated tier.
   - No USELESS pokemon appear unless it's specifically a "joke trainer" or early wild encounter.
 - B4d. Identify any caps where the transition causes a sudden quality jump or drop in trainer teams. Smooth the lerp curve at those points.
-- B4e. Final pass: run the full `node ./puppedjs/index.js` and review the complete output. Fix any remaining anomalies.
+- B4e. Final pass: run the full `node ./randomizer/index.js` and review the complete output. Fix any remaining anomalies.
 - B4f. Document final weight values and thresholds in `constants.js` with comments explaining the reasoning.
 
 ---
@@ -449,10 +449,10 @@ Recommended order: **D → B** or **D and B in parallel** (D changes absolute ra
 
 | File | Changes |
 |------|---------|
-| `puppedjs/constants.js` | New tier constants, level zone constants |
-| `puppedjs/rating.js` | Eviolite bonus, coverage metrics, combo bonuses, contextual rating functions, typing scores |
-| `puppedjs/writer.js` | `contextualTier` POKEDEF field, trainer zone logic |
-| `puppedjs/index.js` | Contextual rating pre-computation pass |
+| `randomizer/constants.js` | New tier constants, level zone constants |
+| `randomizer/rating.js` | Eviolite bonus, coverage metrics, combo bonuses, contextual rating functions, typing scores |
+| `randomizer/writer.js` | `contextualTier` POKEDEF field, trainer zone logic |
+| `randomizer/index.js` | Contextual rating pre-computation pass |
 | `COMBO_NOTES.md` (new) | Research output from A5 |
 | `smogon_analysis/` (new) | Full Smogon Gen5-9 research from A5 |
 | `NEW_RATING_ALGORITHM_AFTER_ANALYSIS.md` (new) | A5.2 audit + algorithm design doc |

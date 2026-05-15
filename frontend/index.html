@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokémon Emerald Randomizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/layout.css">
+</head>
+<body>
+
+<!-- ── Top navigation ──────────────────────────────────────────────────── -->
+<nav class="topnav">
+  <a class="topnav-brand" href="#">
+    <div class="topnav-logo">R</div>
+    <span class="topnav-name">Emerald Randomizer</span>
+  </a>
+  <div class="topnav-tabs">
+    <button class="topnav-tab" data-tab="home">Home</button>
+    <button class="topnav-tab" data-tab="randomizer">Randomizer</button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- ── Landing ─────────────────────────────────────────────────────────── -->
+  <section id="tab-home" class="tab-section">
+    <div class="landing">
+      <div class="landing-hero">
+        <div class="landing-eyebrow">Pokémon Emerald Romhack</div>
+        <h1 class="landing-title">A whole new Hoenn</h1>
+        <p class="landing-subtitle">
+          A fully randomized and rebalanced Pokémon Emerald experience.
+          Every run is unique — new Pokémon tiers, randomized trainers, wild encounters, and starter choices.
+          Built on the pokeemerald-expansion base.
+        </p>
+      </div>
+
+      <div class="landing-cards">
+        <div class="card-glass">
+          <div class="landing-card-icon">⚖️</div>
+          <div class="landing-card-title">Rebalanced tiers</div>
+          <div class="landing-card-desc">Pokémon stats and abilities are probabilistically mutated to create a unique competitive landscape each run.</div>
+        </div>
+        <div class="card-glass">
+          <div class="landing-card-icon">🎲</div>
+          <div class="landing-card-title">Fully seeded</div>
+          <div class="landing-card-desc">Every run is reproducible. Share a seed with friends or replay your favourite configuration exactly.</div>
+        </div>
+        <div class="card-glass">
+          <div class="landing-card-icon">🔗</div>
+          <div class="landing-card-title">Soul-Link ready</div>
+          <div class="landing-card-desc">Generate multiple ROMs that share the same Pokédex and trainers — perfect for co-op and soul-link runs.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Randomizer ───────────────────────────────────────────────────────── -->
+  <section id="tab-randomizer" class="tab-section">
+    <div class="randomizer-wrap">
+      <div class="randomizer-header">
+        <h1>Configure your run</h1>
+        <p>Set up your randomization options, then generate a session bundle to send to the server.</p>
+      </div>
+
+      <!-- Step indicator -->
+      <div class="steps">
+        <div class="step active" data-step-num="1">
+          <div class="step-num">1</div>
+          <div class="step-label">Configure</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step" data-step-num="2">
+          <div class="step-num">2</div>
+          <div class="step-label">Review</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step" data-step-num="3">
+          <div class="step-num">3</div>
+          <div class="step-label">Generate</div>
+        </div>
+      </div>
+
+      <!-- Step 1: Config form -->
+      <div class="wizard-panel active" data-step="1">
+        <div id="config-form-mount"></div>
+        <div class="wizard-nav">
+          <div></div>
+          <div class="wizard-nav-right">
+            <button class="btn btn-primary" id="btn-to-review">Review →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Review -->
+      <div class="wizard-panel" data-step="2">
+        <div class="card">
+          <div class="section-title" style="margin-bottom:16px">Run summary</div>
+          <div id="review-rows"></div>
+        </div>
+        <div class="wizard-nav">
+          <button class="btn btn-ghost" id="btn-back-to-config">← Back</button>
+          <div class="wizard-nav-right">
+            <button class="btn btn-primary" id="btn-generate">Generate &amp; download</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Generate (stub) -->
+      <div class="wizard-panel" data-step="3">
+        <div class="card generate-card">
+          <div class="generate-icon">📦</div>
+          <div class="generate-title">Session bundle downloaded</div>
+          <div class="generate-desc">
+            Your configuration has been packaged as a session bundle JSON.<br>
+            The server will use this file to run the randomizer pipeline and produce your patched ROM.
+          </div>
+          <div id="generate-success" class="success-banner" style="display:none;justify-content:center;margin-bottom:24px">
+            <span>✓ session-bundle downloaded</span>
+            <span id="generate-seed-display" style="color:var(--muted);font-size:12px"></span>
+          </div>
+          <div class="generate-actions">
+            <button class="btn btn-secondary" id="btn-start-over">← Start over</button>
+            <button class="btn btn-primary" disabled
+              data-tooltip="Server integration coming soon">
+              Send to server
+            </button>
+            <span class="coming-soon-note">Server integration coming in a future update.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>

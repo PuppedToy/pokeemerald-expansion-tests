@@ -55,7 +55,7 @@ tools/compresSmol/compresSmolTilemap
 *.fastSmol
 *.smolTM
 __pycache__
-!puppedjs/*
-puppedjs/node_modules/
+!randomizer/*
+randomizer/node_modules/
 */.DS_Store
 .autobash

@@ -1,0 +1,17 @@
+{
+  "name": "randomizer",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "test": "jest --testPathPattern=__tests__"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ]
+  }
+}

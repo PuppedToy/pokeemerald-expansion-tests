@@ -95,7 +95,7 @@ async function promptOrParseArgs() {
 }
 
 function buildIndexArgs(opts) {
-    const args = [path.join('puppedjs', 'index.js')];
+    const args = [path.join('randomizer', 'index.js')];
     if (!opts.rebalance) args.push('--no-balance');
     if (opts.allTms) args.push('--all-tms');
     if (opts.difficulty) args.push(`--difficulty=${opts.difficulty}`);
@@ -117,7 +117,7 @@ async function main() {
         restore();
     }
 
-    console.log('\nDone. Open puppedjs/output/out.html to review results.');
+    console.log('\nDone. Open randomizer/output/out.html to review results.');
 }
 
 main().catch(err => {

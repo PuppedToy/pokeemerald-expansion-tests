@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 
 # Run the randomizer
-node ./puppedjs/index.js --debug
+node ./randomizer/index.js --debug
 
 # If $1 = clean, clean the build
 if [ "$1" == "clean" ]; then
