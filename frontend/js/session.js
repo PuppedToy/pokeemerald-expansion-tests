@@ -1,4 +1,17 @@
 /**
+ * Resolve a bundle artifact sentinel to the actual object.
+ * Handles: "shared"/"global" → sharedData[key], "player-N" → sharedData.players[N][key], or pass-through.
+ */
+export function resolveArtifact(value, sharedData, key) {
+    if (value === 'shared' || value === 'global') return sharedData[key];
+    if (typeof value === 'string' && value.startsWith('player-')) {
+        const playerIndex = parseInt(value.split('-')[1], 10);
+        return sharedData.players[playerIndex][key];
+    }
+    return value;
+}
+
+/**
  * Config import/export helpers.
  *
  * The session bundle (actual randomized data) is now generated server-side

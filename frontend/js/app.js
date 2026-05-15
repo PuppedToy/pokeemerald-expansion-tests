@@ -1,4 +1,5 @@
 import { ConfigForm } from './config-form.js';
+import { resolveArtifact } from './session.js';
 
 // ── Tab routing ───────────────────────────────────────────────────────────────
 
@@ -87,6 +88,61 @@ document.getElementById('btn-start-over').addEventListener('click', () => {
 document.getElementById('btn-start-over-err').addEventListener('click', () => {
     closeEventSource();
     showStep(1);
+});
+
+// Download all (ZIP: bundle JSON + per-ROM docs HTML)
+document.getElementById('btn-download-all').addEventListener('click', async () => {
+    if (!currentJobId) return;
+
+    const btn = document.getElementById('btn-download-all');
+    btn.disabled = true;
+    btn.textContent = 'Building ZIP…';
+
+    try {
+        const [bundle, template] = await Promise.all([
+            fetch(`/api/generate/bundle?jobId=${currentJobId}`).then(r => { if (!r.ok) throw new Error(`Bundle fetch failed: ${r.status}`); return r.json(); }),
+            fetch('/template.html').then(r => { if (!r.ok) throw new Error('Template not found'); return r.text(); }),
+        ]);
+
+        const zip = new JSZip();
+        zip.file('bundle.json', JSON.stringify(bundle, null, 2));
+
+        for (const rom of bundle.roms) {
+            const pokedex = resolveArtifact(rom.artifacts.pokedex, bundle.sharedData, 'pokedex');
+
+            let html = template;
+            html = html.replace('<script src="trainers.js"></script>',
+                `<script>const trainersData = ${JSON.stringify(rom.docs.trainersResultsSimplified)};</script>`);
+            html = html.replace('<script src="pokes.js"></script>',
+                `<script>const pokes = ${JSON.stringify(pokedex.pokes)};</script>`);
+            html = html.replace('<script src="moves.js"></script>',
+                `<script>const movesData = ${JSON.stringify(pokedex.moves)};</script>`);
+            html = html.replace('<script src="abilities.js"></script>',
+                `<script>const abilitiesData = ${JSON.stringify(pokedex.abilities)};</script>`);
+            html = html.replace('<script src="wildpokes.js"></script>',
+                `<script>const wildPokes = ${JSON.stringify(rom.docs.wildPokes)};</script>`);
+
+            const label = rom.playerIndex !== undefined
+                ? `docs/player-${rom.playerIndex}-rom-${rom.romIndex}.html`
+                : `docs/rom-${rom.romIndex}.html`;
+            zip.file(label, html);
+        }
+
+        const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+        const seed = bundle.config?.seed ?? 'unknown';
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `run-${seed}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+    } catch (err) {
+        alert(`ZIP generation failed: ${err.message}`);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '⬇ Download all (ZIP)';
+    }
 });
 
 // Download bundle

@@ -5,6 +5,11 @@
  * bundle instead of writing them to game files. Progress is streamed to SSE
  * listeners as each module completes.
  *
+ * After all randomizer modules finish, writerDocs() is called per ROM to
+ * pre-compute the viewer data (trainersResultsSimplified + wildPokes) that
+ * the frontend needs to generate the Nuzlocke-tracker HTML files. The same
+ * per-ROM RNG seed formula is used here and in make.js so docs match the ROM.
+ *
  * CJS randomizer modules are imported via createRequire because the backend
  * package is ESM but the randomizer is CommonJS.
  */
@@ -13,6 +18,7 @@ import { createRequire } from 'module';
 import { fileURLToPath } from 'url';
 import { exec as _exec } from 'child_process';
 import { promisify } from 'util';
+import { readFile } from 'node:fs/promises';
 import path from 'path';
 import crypto from 'crypto';
 
@@ -27,6 +33,7 @@ const { runStartersModule } = require('../randomizer/modules/startersModule.js')
 const { runWildModule }     = require('../randomizer/modules/wildModule.js');
 const wildData              = require('../randomizer/wild.js');
 const rng                   = require('../randomizer/rng.js');
+const writer                = require('../randomizer/writer.js');
 
 // ── Job store ─────────────────────────────────────────────────────────────────
 
@@ -127,6 +134,29 @@ export async function runGeneration(jobId, frontendConfig) {
     }
 }
 
+// ── Docs computation ──────────────────────────────────────────────────────────
+
+// Run writer() with the same per-ROM seed formula used by make.js, read the
+// output JS files it produces, and return the viewer data as plain objects.
+// Game files are restored in the finally block so the next ROM starts clean.
+async function computeRomDocs(pokedex, trainers, starters, wild, romIndex, baseSeed) {
+    rng.seed((baseSeed ^ (romIndex * 0x9E3779B9)) >>> 0);
+    // writer.js mutates trainersData in place (splice removes mega trainers).
+    // Deep-clone so shared artifacts are not corrupted across ROM iterations.
+    const trainersCopy = JSON.parse(JSON.stringify(trainers));
+    try {
+        await writer(pokedex, trainersCopy, starters, wild, false);
+        const trainersJs  = await readFile(path.join(PROJECT_ROOT, 'randomizer/output/trainers.js'),  'utf8');
+        const wildpokesJs = await readFile(path.join(PROJECT_ROOT, 'randomizer/output/wildpokes.js'), 'utf8');
+        return {
+            trainersResultsSimplified: JSON.parse(trainersJs .replace(/^const trainersData = /, '').replace(/;\s*$/, '')),
+            wildPokes:                 JSON.parse(wildpokesJs.replace(/^const wildPokes = /,    '').replace(/;\s*$/, '')),
+        };
+    } finally {
+        await restoreGameFiles();
+    }
+}
+
 // ── Orchestrator ──────────────────────────────────────────────────────────────
 
 async function orchestrate(job, cfg) {
@@ -149,19 +179,24 @@ async function orchestrate(job, cfg) {
 // ── Run-type handlers ─────────────────────────────────────────────────────────
 
 async function generateDefault(job, cfg, mcfg, sessionId) {
-    const totalSteps = 4;
+    const totalSteps = 5; // 4 modules + 1 docs
     let done = 0;
     const tick = (step) => progress(job, Math.round((++done / totalSteps) * 100), step);
 
     progress(job, 0, 'Generating Pokédex...');
-    const pokedex = await runPokedexModule(mcfg); tick('Generating trainer teams...'); await flush();
+    const pokedex  = await runPokedexModule(mcfg); tick('Generating trainer teams...'); await flush();
     const trainers = runTrainersModule(pokedex, mcfg);  tick('Generating starter choices...'); await flush();
     const starters = runStartersModule(pokedex.pokes);  tick('Generating wild encounters...'); await flush();
-    const wild     = runWildModule(pokedex.pokes, starters, wildData); tick('Done'); await flush();
+    const wild     = runWildModule(pokedex.pokes, starters, wildData); tick('Building viewer...'); await flush();
+
+    progress(job, Math.round((done / totalSteps) * 100), 'Building viewer data...');
+    const docs = await computeRomDocs(pokedex, trainers, starters, wild, 0, cfg.seed);
+    tick('Done'); await flush();
 
     return bundle(sessionId, cfg, {}, [{
         romIndex: 0,
         artifacts: { pokedex, trainers, starters, wild },
+        docs,
     }]);
 }
 
@@ -170,7 +205,7 @@ async function generateNuzlocke(job, cfg, mcfg, sessionId) {
     const sharedSteps = (shared.pokedex ? 1 : 0) + (shared.trainers ? 1 : 0) + (shared.starters ? 1 : 0);
     // per-ROM: always wild + any non-shared modules
     const perRomSteps = 1 + (shared.pokedex ? 0 : 1) + (shared.trainers ? 0 : 1) + (shared.starters ? 0 : 1);
-    const totalSteps = sharedSteps + numROMs * perRomSteps;
+    const totalSteps = sharedSteps + numROMs * perRomSteps + numROMs; // +numROMs for docs
     let done = 0;
     const tick = (step) => progress(job, Math.round((++done / totalSteps) * 100), step);
 
@@ -198,7 +233,10 @@ async function generateNuzlocke(job, cfg, mcfg, sessionId) {
     if (sharedTrainers) sharedData.trainers = sharedTrainers;
     if (sharedStarters) sharedData.starters = sharedStarters;
 
+    // Phase 1: run all module steps — store actual artifact objects alongside sentinels
     const roms = [];
+    const romArtifacts = []; // resolved objects needed for docs (not stored in bundle)
+
     for (let i = 0; i < numROMs; i++) {
         const label = numROMs > 1 ? ` (ROM ${i + 1}/${numROMs})` : '';
 
@@ -223,6 +261,7 @@ async function generateNuzlocke(job, cfg, mcfg, sessionId) {
         progress(job, Math.round((done / totalSteps) * 100), `Generating wild encounters${label}...`);
         const wild = runWildModule(pokedex.pokes, starters, wildData); tick(`Wild encounters${label} ready`); await flush();
 
+        romArtifacts.push({ pokedex, trainers, starters, wild });
         roms.push({
             romIndex: i,
             artifacts: {
@@ -232,6 +271,15 @@ async function generateNuzlocke(job, cfg, mcfg, sessionId) {
                 wild,
             },
         });
+    }
+
+    // Phase 2: compute docs for each ROM (deterministic per-ROM seed, same as make.js)
+    for (let i = 0; i < numROMs; i++) {
+        const label = numROMs > 1 ? ` (ROM ${i + 1}/${numROMs})` : '';
+        progress(job, Math.round((done / totalSteps) * 100), `Building viewer${label}...`);
+        const { pokedex, trainers, starters, wild } = romArtifacts[i];
+        roms[i].docs = await computeRomDocs(pokedex, trainers, starters, wild, i, cfg.seed);
+        tick(`Viewer ready${label}`); await flush();
     }
 
     return bundle(sessionId, cfg, sharedData, roms);
@@ -256,7 +304,8 @@ async function generateSoullink(job, cfg, mcfg, sessionId) {
     const totalSteps = globalPdxSteps + globalTrSteps + globalStSteps
         + perPlayerPdxSteps + perPlayerTrSteps + perPlayerStSteps
         + perRomPdxSteps + perRomTrSteps + perRomStSteps
-        + wildSteps;
+        + wildSteps
+        + totalROMs; // +totalROMs for docs
 
     let done = 0;
     const tick = (step) => progress(job, Math.round((++done / totalSteps) * 100), step);
@@ -287,6 +336,7 @@ async function generateSoullink(job, cfg, mcfg, sessionId) {
     if (globalStarters) sharedData.starters = globalStarters;
 
     const roms = [];
+    const romArtifacts = []; // resolved objects needed for docs
     const playersSharedData = [];
     let romIndex = 0;
 
@@ -346,6 +396,7 @@ async function generateSoullink(job, cfg, mcfg, sessionId) {
                 return artifact;
             };
 
+            romArtifacts.push({ pokedex, trainers, starters, wild });
             roms.push({
                 romIndex: romIndex++,
                 playerIndex: p,
@@ -361,6 +412,16 @@ async function generateSoullink(job, cfg, mcfg, sessionId) {
 
     if (playersSharedData.some(p => Object.keys(p).length > 1)) {
         sharedData.players = playersSharedData;
+    }
+
+    // Phase 2: compute docs for each ROM
+    for (let i = 0; i < roms.length; i++) {
+        const rom = roms[i];
+        const label = `player ${(rom.playerIndex ?? 0) + 1} ROM ${rom.romIndex + 1}`;
+        progress(job, Math.round((done / totalSteps) * 100), `Building viewer for ${label}...`);
+        const { pokedex, trainers, starters, wild } = romArtifacts[i];
+        roms[i].docs = await computeRomDocs(pokedex, trainers, starters, wild, i, cfg.seed);
+        tick(`Viewer ready (${label})`); await flush();
     }
 
     return bundle(sessionId, cfg, sharedData, roms);
