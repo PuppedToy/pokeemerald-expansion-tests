@@ -6,6 +6,8 @@ const rng = require('./rng');
 const { runPokedexModule } = require('./modules/pokedexModule');
 const { runTrainersModule } = require('./modules/trainersModule');
 const { runStartersModule } = require('./modules/startersModule');
+const { runWildModule } = require('./modules/wildModule');
+const wild = require('./wild');
 
 const config = loadConfig();
 rng.seed(config.seed);
@@ -20,12 +22,15 @@ async function run() {
         ? runTrainersModule(sharedPokedex, config) : null;
     const sharedStarters = config.sharedModules >= 4 && sharedPokedex
         ? runStartersModule(sharedPokedex.pokes) : null;
+    const sharedWild     = config.sharedModules >= 5 && sharedStarters
+        ? runWildModule(sharedPokedex.pokes, sharedStarters, wild) : null;
 
     for (let i = 0; i < config.numROMs; i++) {
         const pokedex  = sharedPokedex  ?? await runPokedexModule(config);
         const trainers = sharedTrainers ?? runTrainersModule(pokedex, config);
         const starters = sharedStarters ?? runStartersModule(pokedex.pokes);
-        await writer(pokedex, trainers, starters, isDebug);
+        const wildArtifact = sharedWild ?? runWildModule(pokedex.pokes, starters, wild);
+        await writer(pokedex, trainers, starters, wildArtifact, isDebug);
     }
 }
 

@@ -35,6 +35,7 @@ function makePoke(id, family, types, overrides = {}) {
             ...overrides.rating,
         },
         evolutions: overrides.evolutions || [],
+        ...(overrides.evoTree !== undefined ? { evoTree: overrides.evoTree } : {}),
     };
 }
 
@@ -56,6 +57,147 @@ const RU_LC6 = makePoke('SPECIES_RU_LC6', 'P_FAMILY_RU6',  ['DARK'],     { evolu
 
 const richPokemonList = [OU_LC, UU_LC, NU_SOLO, RU_LC1, RU_LC2, RU_LC3, RU_LC4, RU_LC5, RU_LC6];
 
+// ── Extended fixture: gym/static reward slots ──────────────────────────────────
+// gym1: NU SOLO
+const GYM1 = makePoke('SPECIES_GYM1', 'P_FAMILY_GYM1', ['ROCK'], {
+    evolutionData: { type: 'EVO_TYPE_SOLO', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'NU', bestEvoTier: 'NU', bestEvoRating: 5, megaEvoTier: null, megaEvoRating: null },
+});
+// gym2: NU LC_OF_2, bestEvoTier RU, evolves via ITEM
+const GYM2 = makePoke('SPECIES_GYM2', 'P_FAMILY_GYM2', ['FIGHTING'], {
+    evolutionData: { type: 'EVO_TYPE_LC_OF_2', isLC: true, isFinal: false, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'NU', bestEvoTier: 'RU', bestEvoRating: 6.3, megaEvoTier: null, megaEvoRating: null },
+    evolutions: [{ pokemon: 'SPECIES_GYM2_FINAL', method: 'ITEM', param: '0' }],
+});
+// gym3 + slateportGrunts: 2 families with final forms that have megaEvos.
+// checkValidEvo(FINAL, 29): NFE→Final at param 26 ≤ 29 ✓; LC→NFE at param 18 ≤ 29 ✓
+// devolveToBase(FINAL): evoTree[0] = LC id
+const GYM3_FINAL = makePoke('SPECIES_GYM3_FINAL', 'P_FAMILY_GYM3', ['GHOST'], {
+    evolutionData: { type: 'EVO_TYPE_LAST_OF_3', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: ['SPECIES_GYM3_MEGA'] },
+    rating: { tier: 'RU', bestEvoTier: 'RU', bestEvoRating: 6.5, megaEvoTier: 'UU', megaEvoRating: 8.5 },
+    evoTree: ['SPECIES_GYM3_LC'],
+});
+const GYM3_NFE = makePoke('SPECIES_GYM3_NFE', 'P_FAMILY_GYM3', ['GHOST'], {
+    evolutionData: { type: 'EVO_TYPE_NFE_OF_3', isLC: false, isFinal: false, isMega: false, isNFE: true, megaEvos: [] },
+    rating: { tier: 'PU', bestEvoTier: 'RU', bestEvoRating: 6.5, megaEvoTier: null, megaEvoRating: null },
+    evolutions: [{ pokemon: 'SPECIES_GYM3_FINAL', method: 'LEVEL', param: '26' }],
+});
+const GYM3_LC = makePoke('SPECIES_GYM3_LC', 'P_FAMILY_GYM3', ['GHOST'], {
+    // isLC: false — exists only for checkValidEvo traversal; must not enter RU-LC extra-starters pool
+    evolutionData: { type: 'EVO_TYPE_LC_OF_3', isLC: false, isFinal: false, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'PU', bestEvoTier: 'RU', bestEvoRating: 6.5, megaEvoTier: null, megaEvoRating: null },
+    evolutions: [{ pokemon: 'SPECIES_GYM3_NFE', method: 'LEVEL', param: '18' }],
+});
+const SLATEPORT_FINAL = makePoke('SPECIES_SLATEPORT_FINAL', 'P_FAMILY_SLATEPORT', ['POISON'], {
+    evolutionData: { type: 'EVO_TYPE_LAST_OF_3', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: ['SPECIES_SLATEPORT_MEGA'] },
+    rating: { tier: 'RU', bestEvoTier: 'RU', bestEvoRating: 6, megaEvoTier: 'UU', megaEvoRating: 8.5 },
+    evoTree: ['SPECIES_SLATEPORT_LC'],
+});
+const SLATEPORT_NFE = makePoke('SPECIES_SLATEPORT_NFE', 'P_FAMILY_SLATEPORT', ['POISON'], {
+    evolutionData: { type: 'EVO_TYPE_NFE_OF_3', isLC: false, isFinal: false, isMega: false, isNFE: true, megaEvos: [] },
+    rating: { tier: 'PU', bestEvoTier: 'RU', bestEvoRating: 6, megaEvoTier: null, megaEvoRating: null },
+    evolutions: [{ pokemon: 'SPECIES_SLATEPORT_FINAL', method: 'LEVEL', param: '24' }],
+});
+const SLATEPORT_LC = makePoke('SPECIES_SLATEPORT_LC', 'P_FAMILY_SLATEPORT', ['POISON'], {
+    // isLC: false — same reason as GYM3_LC
+    evolutionData: { type: 'EVO_TYPE_LC_OF_3', isLC: false, isFinal: false, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'PU', bestEvoTier: 'RU', bestEvoRating: 6, megaEvoTier: null, megaEvoRating: null },
+    evolutions: [{ pokemon: 'SPECIES_SLATEPORT_NFE', method: 'LEVEL', param: '16' }],
+});
+// gym4+5: 2 UU LC (distinct from UU_LC consumed by extra starters)
+const GYM4 = makePoke('SPECIES_GYM4', 'P_FAMILY_GYM4', ['ICE'], {
+    evolutionData: { type: 'EVO_TYPE_LC', isLC: true, isFinal: false, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'PU', bestEvoTier: 'UU', bestEvoRating: 7.2, megaEvoTier: null, megaEvoRating: null },
+});
+const GYM5 = makePoke('SPECIES_GYM5', 'P_FAMILY_GYM5', ['DARK'], {
+    evolutionData: { type: 'EVO_TYPE_LC', isLC: true, isFinal: false, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'PU', bestEvoTier: 'UU', bestEvoRating: 7.1, megaEvoTier: null, megaEvoRating: null },
+});
+// shellyReward: final+mega, megaEvoTier OU
+// checkValidEvo(SHELLY_FINAL, 41): NFE→Final at param 36 ≤ 41 ✓; LC→NFE at param 18 ≤ 41 ✓
+const SHELLY_FINAL = makePoke('SPECIES_SHELLY_FINAL', 'P_FAMILY_SHELLY', ['STEEL'], {
+    evolutionData: { type: 'EVO_TYPE_LAST_OF_3', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: ['SPECIES_SHELLY_MEGA'] },
+    rating: { tier: 'UU', bestEvoTier: 'UU', bestEvoRating: 7.5, megaEvoTier: 'OU', megaEvoRating: 8.5 },
+    evoTree: ['SPECIES_SHELLY_LC'],
+});
+const SHELLY_NFE = makePoke('SPECIES_SHELLY_NFE', 'P_FAMILY_SHELLY', ['STEEL'], {
+    evolutionData: { type: 'EVO_TYPE_NFE_OF_3', isLC: false, isFinal: false, isMega: false, isNFE: true, megaEvos: [] },
+    rating: { tier: 'RU', bestEvoTier: 'UU', bestEvoRating: 7.5, megaEvoTier: null, megaEvoRating: null },
+    evolutions: [{ pokemon: 'SPECIES_SHELLY_FINAL', method: 'LEVEL', param: '36' }],
+});
+const SHELLY_LC = makePoke('SPECIES_SHELLY_LC', 'P_FAMILY_SHELLY', ['STEEL'], {
+    // isLC: false — same reason as GYM3_LC; checkValidEvo doesn't check isLC on the bottom form
+    evolutionData: { type: 'EVO_TYPE_LC_OF_3', isLC: false, isFinal: false, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'PU', bestEvoTier: 'UU', bestEvoRating: 7.5, megaEvoTier: null, megaEvoRating: null },
+    evolutions: [{ pokemon: 'SPECIES_SHELLY_NFE', method: 'LEVEL', param: '18' }],
+});
+// gym6: 1 OU LC (distinct from OU_LC consumed by extra starters)
+const GYM6 = makePoke('SPECIES_GYM6', 'P_FAMILY_GYM6', ['PSYCHIC'], {
+    evolutionData: { type: 'EVO_TYPE_LC', isLC: true, isFinal: false, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'PU', bestEvoTier: 'OU', bestEvoRating: 8.2, megaEvoTier: null, megaEvoRating: null },
+});
+// gym7+8: 2 OU FINAL (type LC_OF_2 so they don't overlap with the OU SOLO pool for registeel)
+const GYM7 = makePoke('SPECIES_GYM7', 'P_FAMILY_GYM7', ['STEEL'], {
+    evolutionData: { type: 'EVO_TYPE_LAST_OF_2', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'OU', bestEvoTier: 'OU', bestEvoRating: 8.5, megaEvoTier: null, megaEvoRating: null },
+});
+const GYM8 = makePoke('SPECIES_GYM8', 'P_FAMILY_GYM8', ['FAIRY'], {
+    evolutionData: { type: 'EVO_TYPE_LAST_OF_2', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'OU', bestEvoTier: 'OU', bestEvoRating: 8.6, megaEvoTier: null, megaEvoRating: null },
+});
+// regirock+regice+mew+wallyLilycove: 4 UU SOLO
+const REGI1 = makePoke('SPECIES_REGI1', 'P_FAMILY_REGI1', ['GROUND'], {
+    evolutionData: { type: 'EVO_TYPE_SOLO', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'UU', bestEvoTier: 'UU', bestEvoRating: 7.2, megaEvoTier: null, megaEvoRating: null },
+});
+const REGI2 = makePoke('SPECIES_REGI2', 'P_FAMILY_REGI2', ['WATER'], {
+    evolutionData: { type: 'EVO_TYPE_SOLO', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'UU', bestEvoTier: 'UU', bestEvoRating: 7.1, megaEvoTier: null, megaEvoRating: null },
+});
+const REGI3 = makePoke('SPECIES_REGI3', 'P_FAMILY_REGI3', ['BUG'], {
+    evolutionData: { type: 'EVO_TYPE_SOLO', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'UU', bestEvoTier: 'UU', bestEvoRating: 7.3, megaEvoTier: null, megaEvoRating: null },
+});
+const REGI4 = makePoke('SPECIES_REGI4', 'P_FAMILY_REGI4', ['POISON'], {
+    evolutionData: { type: 'EVO_TYPE_SOLO', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'UU', bestEvoTier: 'UU', bestEvoRating: 7.4, megaEvoTier: null, megaEvoRating: null },
+});
+// registeel: 1 OU SOLO
+const PREMIUM = makePoke('SPECIES_PREMIUM', 'P_FAMILY_PREMIUM', ['GHOST'], {
+    // isFinal: false — prevents PREMIUM from entering gym7+8 pool (filter: isFinal=true);
+    // registeel filter uses type===EVO_TYPE_SOLO, not isFinal
+    evolutionData: { type: 'EVO_TYPE_SOLO', isLC: false, isFinal: false, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'OU', bestEvoTier: 'OU', bestEvoRating: 8.3, megaEvoTier: null, megaEvoRating: null },
+});
+// legend1+2+3: 3 UBERS SOLO
+const LEG1 = makePoke('SPECIES_LEG1', 'P_FAMILY_LEG1', ['DRAGON'], {
+    evolutionData: { type: 'EVO_TYPE_SOLO', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'UBERS', bestEvoTier: 'UBERS', bestEvoRating: 9.5, megaEvoTier: null, megaEvoRating: null },
+});
+const LEG2 = makePoke('SPECIES_LEG2', 'P_FAMILY_LEG2', ['PSYCHIC'], {
+    evolutionData: { type: 'EVO_TYPE_SOLO', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'UBERS', bestEvoTier: 'UBERS', bestEvoRating: 9.6, megaEvoTier: null, megaEvoRating: null },
+});
+const LEG3 = makePoke('SPECIES_LEG3', 'P_FAMILY_LEG3', ['ELECTRIC'], {
+    evolutionData: { type: 'EVO_TYPE_SOLO', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: [] },
+    rating: { tier: 'UBERS', bestEvoTier: 'UBERS', bestEvoRating: 9.4, megaEvoTier: null, megaEvoRating: null },
+});
+
+const gymPokemon = [
+    GYM1, GYM2,
+    GYM3_FINAL, GYM3_NFE, GYM3_LC,
+    SLATEPORT_FINAL, SLATEPORT_NFE, SLATEPORT_LC,
+    GYM4, GYM5,
+    SHELLY_FINAL, SHELLY_NFE, SHELLY_LC,
+    GYM6, GYM7, GYM8,
+    REGI1, REGI2, REGI3, REGI4,
+    PREMIUM,
+    LEG1, LEG2, LEG3,
+];
+
+// Extended list used by all tests once wildModule includes gym/static reward selection
+const extendedPokemonList = [...richPokemonList, ...gymPokemon];
+
 // A startersArtifact as returned by runStartersModule — 3 families already claimed
 const startersArtifact = {
     starters: ['SPECIES_FIRE_MON', 'SPECIES_GRASS_MON', 'SPECIES_WATER_MON'],
@@ -76,7 +218,7 @@ describe('runWildModule — output shape', () => {
     test('returns an object with extraStarters, replacementLog, foundMegaEvos', () => {
         const { runWildModule } = require('../../modules/wildModule');
         rng.seed(42);
-        const result = runWildModule(richPokemonList, startersArtifact, emptyWildConfig);
+        const result = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
         expect(result).toHaveProperty('extraStarters');
         expect(result).toHaveProperty('replacementLog');
         expect(result).toHaveProperty('foundMegaEvos');
@@ -85,7 +227,7 @@ describe('runWildModule — output shape', () => {
     test('extraStarters is an array of string ids', () => {
         const { runWildModule } = require('../../modules/wildModule');
         rng.seed(1);
-        const { extraStarters } = runWildModule(richPokemonList, startersArtifact, emptyWildConfig);
+        const { extraStarters } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
         expect(Array.isArray(extraStarters)).toBe(true);
         extraStarters.forEach(id => expect(typeof id).toBe('string'));
     });
@@ -93,7 +235,7 @@ describe('runWildModule — output shape', () => {
     test('replacementLog is a plain object', () => {
         const { runWildModule } = require('../../modules/wildModule');
         rng.seed(1);
-        const { replacementLog } = runWildModule(richPokemonList, startersArtifact, emptyWildConfig);
+        const { replacementLog } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
         expect(typeof replacementLog).toBe('object');
         expect(Array.isArray(replacementLog)).toBe(false);
     });
@@ -101,7 +243,7 @@ describe('runWildModule — output shape', () => {
     test('foundMegaEvos is an array', () => {
         const { runWildModule } = require('../../modules/wildModule');
         rng.seed(1);
-        const { foundMegaEvos } = runWildModule(richPokemonList, startersArtifact, emptyWildConfig);
+        const { foundMegaEvos } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
         expect(Array.isArray(foundMegaEvos)).toBe(true);
     });
 });
@@ -110,9 +252,9 @@ describe('runWildModule — extra starters', () => {
     test('first extra starter is an OU LC pokemon', () => {
         const { runWildModule } = require('../../modules/wildModule');
         rng.seed(42);
-        const { extraStarters } = runWildModule(richPokemonList, startersArtifact, emptyWildConfig);
+        const { extraStarters } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
         expect(extraStarters.length).toBeGreaterThanOrEqual(1);
-        const first = richPokemonList.find(p => p.id === extraStarters[0]);
+        const first = extendedPokemonList.find(p => p.id === extraStarters[0]);
         expect(first).toBeDefined();
         expect(first.rating.bestEvoTier).toBe('OU');
         expect(first.evolutionData.isLC).toBe(true);
@@ -121,10 +263,10 @@ describe('runWildModule — extra starters', () => {
     test('extra starters do not reuse families from starters artifact', () => {
         const { runWildModule } = require('../../modules/wildModule');
         rng.seed(10);
-        const { extraStarters } = runWildModule(richPokemonList, startersArtifact, emptyWildConfig);
+        const { extraStarters } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
         const starterFamilies = new Set(startersArtifact.alreadyChosenFamilies);
         extraStarters.forEach(id => {
-            const poke = richPokemonList.find(p => p.id === id);
+            const poke = extendedPokemonList.find(p => p.id === id);
             expect(poke).toBeDefined();
             expect(starterFamilies.has(poke.family)).toBe(false);
         });
@@ -133,18 +275,27 @@ describe('runWildModule — extra starters', () => {
     test('extra starters are all distinct families', () => {
         const { runWildModule } = require('../../modules/wildModule');
         rng.seed(5);
-        const { extraStarters } = runWildModule(richPokemonList, startersArtifact, emptyWildConfig);
-        const families = extraStarters.map(id => richPokemonList.find(p => p.id === id)?.family);
+        const { extraStarters } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        const families = extraStarters.map(id => extendedPokemonList.find(p => p.id === id)?.family);
         expect(families.length).toBe(new Set(families).size);
     });
 });
 
 describe('runWildModule — wild replacements', () => {
-    test('empty wildConfig replacements → empty replacementLog', () => {
+    test('empty wildConfig replacements → empty replacementLog entries for wild routes', () => {
         const { runWildModule } = require('../../modules/wildModule');
         rng.seed(1);
-        const { replacementLog } = runWildModule(richPokemonList, startersArtifact, emptyWildConfig);
-        expect(Object.keys(replacementLog)).toHaveLength(0);
+        const { replacementLog } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        // With empty wildConfig, the only entries in replacementLog come from gym/static rewards
+        // (those keys start with SPECIES_GYM/SPECIES_LEGEND etc.), not wild route species.
+        // Verify no raw species keys appear (wild route species are game-world ids like SPECIES_ZIGZAGOON).
+        const wildRouteKeys = Object.keys(replacementLog).filter(k =>
+            !k.startsWith('SPECIES_GYM') && !k.startsWith('SPECIES_LEGEND')
+            && !k.startsWith('SPECIES_REGIROCK') && !k.startsWith('SPECIES_REGICE')
+            && !k.startsWith('SPECIES_REGISTEEL') && !k.startsWith('SPECIES_MEW')
+            && !k.startsWith('SPECIES_WALLY')
+        );
+        expect(wildRouteKeys).toHaveLength(0);
     });
 
     test('replacement picks from the matching tier pool', () => {
@@ -167,10 +318,11 @@ describe('runWildModule — wild replacements', () => {
         });
 
         rng.seed(1);
-        const { replacementLog } = runWildModule([...richPokemonList, NU_LC], startersArtifact, wildConfig);
+        const pool = [...extendedPokemonList, NU_LC];
+        const { replacementLog } = runWildModule(pool, startersArtifact, wildConfig);
         expect(replacementLog).toHaveProperty('SPECIES_OLD_PLACEHOLDER');
         const replacementId = replacementLog['SPECIES_OLD_PLACEHOLDER'];
-        const replacementPoke = [...richPokemonList, NU_LC].find(p => p.id === replacementId);
+        const replacementPoke = pool.find(p => p.id === replacementId);
         expect(replacementPoke).toBeDefined();
         expect(replacementPoke.rating.bestEvoTier).toBe('NU');
         expect(replacementPoke.evolutionData.isLC).toBe(true);
@@ -182,12 +334,152 @@ describe('runWildModule — determinism', () => {
         const { runWildModule } = require('../../modules/wildModule');
 
         rng.seed(77);
-        const r1 = runWildModule([...richPokemonList], startersArtifact, emptyWildConfig);
+        const r1 = runWildModule([...extendedPokemonList], startersArtifact, emptyWildConfig);
 
         rng.seed(77);
-        const r2 = runWildModule([...richPokemonList], startersArtifact, emptyWildConfig);
+        const r2 = runWildModule([...extendedPokemonList], startersArtifact, emptyWildConfig);
 
         expect(r1.extraStarters).toEqual(r2.extraStarters);
         expect(r1.replacementLog).toEqual(r2.replacementLog);
+    });
+});
+
+// ── New tests for extended return shape (gym/static rewards) ───────────────────
+// These fail until wildModule is extended to select gym/static rewards.
+
+describe('runWildModule — gym rewards shape', () => {
+    test('returns gymRewards with all 11 slot keys', () => {
+        const { runWildModule } = require('../../modules/wildModule');
+        rng.seed(1);
+        const result = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        expect(result).toHaveProperty('gymRewards');
+        const { gymRewards } = result;
+        expect(gymRewards).toHaveProperty('gym1');
+        expect(gymRewards).toHaveProperty('gym2');
+        expect(gymRewards).toHaveProperty('gym3');
+        expect(gymRewards).toHaveProperty('gym4');
+        expect(gymRewards).toHaveProperty('gym5');
+        expect(gymRewards).toHaveProperty('gym6');
+        expect(gymRewards).toHaveProperty('gym7');
+        expect(gymRewards).toHaveProperty('gym8');
+        expect(gymRewards).toHaveProperty('slateportGrunts');
+        expect(gymRewards).toHaveProperty('shellyReward');
+        expect(gymRewards).toHaveProperty('wallyLilycove');
+    });
+
+    test('each gymReward entry has an id string', () => {
+        const { runWildModule } = require('../../modules/wildModule');
+        rng.seed(1);
+        const { gymRewards } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        Object.values(gymRewards).forEach(reward => {
+            expect(typeof reward.id).toBe('string');
+        });
+    });
+
+    test('gym1 is a NU SOLO pokemon', () => {
+        const { runWildModule } = require('../../modules/wildModule');
+        rng.seed(1);
+        const { gymRewards } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        const gym1 = extendedPokemonList.find(p => p.id === gymRewards.gym1.id);
+        expect(gym1).toBeDefined();
+        expect(gym1.rating.tier).toBe('NU');
+        expect(gym1.evolutionData.type).toBe('EVO_TYPE_SOLO');
+    });
+
+    test('gym3 is the base (devolved) form of a chain with a mega', () => {
+        const { runWildModule } = require('../../modules/wildModule');
+        rng.seed(1);
+        const { gymRewards } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        // gym3 is devolvedToBase: should be the chain's base (not isFinal) or a solo pokemon
+        const gym3 = extendedPokemonList.find(p => p.id === gymRewards.gym3.id);
+        expect(gym3).toBeDefined();
+        expect(!gym3.evolutionData.isFinal || gym3.evolutionData.type === 'EVO_TYPE_SOLO').toBe(true);
+    });
+});
+
+describe('runWildModule — static rewards shape', () => {
+    test('returns staticRewards with all 7 keys', () => {
+        const { runWildModule } = require('../../modules/wildModule');
+        rng.seed(1);
+        const result = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        expect(result).toHaveProperty('staticRewards');
+        const { staticRewards } = result;
+        expect(staticRewards).toHaveProperty('regirock');
+        expect(staticRewards).toHaveProperty('regice');
+        expect(staticRewards).toHaveProperty('mew');
+        expect(staticRewards).toHaveProperty('registeel');
+        expect(staticRewards).toHaveProperty('legend1');
+        expect(staticRewards).toHaveProperty('legend2');
+        expect(staticRewards).toHaveProperty('legend3');
+    });
+
+    test('each staticReward entry has an id string', () => {
+        const { runWildModule } = require('../../modules/wildModule');
+        rng.seed(1);
+        const { staticRewards } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        Object.values(staticRewards).forEach(reward => {
+            expect(typeof reward.id).toBe('string');
+        });
+    });
+
+    test('regirock/regice/mew/wallyLilycove are UU SOLO', () => {
+        const { runWildModule } = require('../../modules/wildModule');
+        rng.seed(1);
+        const { staticRewards } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        ['regirock', 'regice', 'mew'].forEach(key => {
+            const poke = extendedPokemonList.find(p => p.id === staticRewards[key].id);
+            expect(poke.rating.bestEvoTier).toBe('UU');
+            expect(poke.evolutionData.type).toBe('EVO_TYPE_SOLO');
+        });
+    });
+
+    test('legend1/2/3 are UBERS SOLO', () => {
+        const { runWildModule } = require('../../modules/wildModule');
+        rng.seed(1);
+        const { staticRewards } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        ['legend1', 'legend2', 'legend3'].forEach(key => {
+            const poke = extendedPokemonList.find(p => p.id === staticRewards[key].id);
+            expect(poke.rating.bestEvoTier).toBe('UBERS');
+            expect(poke.evolutionData.type).toBe('EVO_TYPE_SOLO');
+        });
+    });
+});
+
+describe('runWildModule — alreadyChosenFamilies returned', () => {
+    test('returns alreadyChosenFamilies array', () => {
+        const { runWildModule } = require('../../modules/wildModule');
+        rng.seed(1);
+        const result = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        expect(result).toHaveProperty('alreadyChosenFamilies');
+        expect(Array.isArray(result.alreadyChosenFamilies)).toBe(true);
+    });
+
+    test('alreadyChosenFamilies has no duplicates', () => {
+        const { runWildModule } = require('../../modules/wildModule');
+        rng.seed(1);
+        const { alreadyChosenFamilies } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        expect(alreadyChosenFamilies.length).toBe(new Set(alreadyChosenFamilies).size);
+    });
+
+    test('starter families are included in alreadyChosenFamilies', () => {
+        const { runWildModule } = require('../../modules/wildModule');
+        rng.seed(1);
+        const { alreadyChosenFamilies } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        startersArtifact.alreadyChosenFamilies.forEach(fam => {
+            expect(alreadyChosenFamilies).toContain(fam);
+        });
+    });
+});
+
+describe('runWildModule — no duplicate families across all rewards', () => {
+    test('gymRewards and staticRewards pick distinct families', () => {
+        const { runWildModule } = require('../../modules/wildModule');
+        rng.seed(1);
+        const { gymRewards, staticRewards } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        const allFamilies = [
+            ...Object.values(gymRewards).map(r => r.family),
+            ...Object.values(staticRewards).map(r => r.family),
+        ];
+        expect(allFamilies.length).toBe(new Set(allFamilies).size);
     });
 });

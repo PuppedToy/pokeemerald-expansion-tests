@@ -8,13 +8,7 @@ const {
     EVO_TYPE_LC,
     EVO_TYPE_NFE,
     EVO_TYPE_SOLO,
-    EVO_TYPE_LC_OF_3,
     EVO_TYPE_FINAL,
-
-    TIER_RU,
-    TIER_UU,
-    TIER_OU,
-    TIER_UBERS,
 
     TRAINER_POKE_ENCOUNTER,
     TRAINER_POKE_STARTER_TREECKO,
@@ -32,20 +26,13 @@ const {
     NATURES,
     TRAINER_POKE_MEGA_FROM_STONE,
     GENERIC_DEVIATION,
-    TIER_MAGIKARP,
-    TIER_ZU,
-    TIER_PU,
     TEMPLATE_MOVES_REPLACEMENT,
     TEMPLATE_ABILITIES_REPLACEMENT,
-    TIER_NU,
-    TIER_UBERS_THRESHOLD,
-    TIER_AG,
     MEGA_TRAINERS,
-    TIER_RU_THRESHOLD,
-    TIER_OU_THRESHOLD,
-    TIER_UU_THRESHOLD,
 } = require('./constants');
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
+const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
+const { sample, checkValidEvo } = require('./modules/utils');
 
 // Must match LEVEL_CAPS in index.js — used for contextualRatings lookups
 const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
@@ -154,26 +141,6 @@ const routeFiles = [
     path.resolve(mapsBase, 'ScorchedSlab', 'map.json'),
 ];
 
-// Returns true for any tier below WEAK (BAD, TRASH, USELESS).
-// Use this instead of `=== TIER_PU` when the intent is "pokemon is in its base/weak form".
-function isSubWeakTier(tier) {
-    return tier === TIER_PU || tier === TIER_ZU || tier === TIER_MAGIKARP;
-}
-
-function sampleAndRemove(array) {
-    if (array.length === 0) return null;
-    const index = Math.floor(rng.random() * array.length);
-    const element = array[index];
-    array.splice(index, 1);
-    return element;
-}
-
-function sample(array) {
-    if (array.length === 0) return null;
-    const index = Math.floor(rng.random() * array.length);
-    return array[index];
-}
-
 function nameify(text) {
     return text
         .toLowerCase()
@@ -192,198 +159,18 @@ function isValidEvolution(level, { param, method }) {
         || ((method === 'ITEM' || param === '0') && level > 28);
 }
 
-const invalidMegas = [
-    'SPECIES_FROSLASS',
-    'SPECIES_KLEAVOR',
-];
-
-function hasValidMega (poke) {
-    return poke.evolutionData.megaEvos
-        && poke.evolutionData.megaEvos.length > 0
-        && !invalidMegas.includes(poke.id);
-}
-
-const bannedSpeciesForPicking = [
-    'SPECIES_WISHIWASHI_SCHOOL',
-    'SPECIES_AEGISLASH_BLADE',
-    'SPECIES_CHERRIM_SUNSHINE',
-    'SPECIES_GRENINJA_ASH',
-    'SPECIES_CASTFORM_SUNNY',
-    'SPECIES_CASTFORM_RAINY',
-    'SPECIES_CASTFORM_SNOWY',
-    'SPECIES_MORPEKO_HANGRY',
-    'SPECIES_ZYGARDE_COMPLETE',
-    'SPECIES_TERAPAGOS_NORMAL',
-    'SPECIES_TERAPAGOS_STELLAR',
-    'SPECIES_DARMANITAN_ZEN',
-    'SPECIES_DARMANITAN_GALAR_ZEN',
-    // @TODO For now I can't handle palafin without very specific logic
-    'SPECIES_FINIZEN',
-    'SPECIES_PALAFIN_ZERO',
-    'SPECIES_PALAFIN_HERO',
-];
-
-const groupedFamilies = {
-    'P_FAMILY_DEERLING_SUMMER': 'P_FAMILY_DEERLING',
-    'P_FAMILY_DEERLING_AUTUMN': 'P_FAMILY_DEERLING',
-    'P_FAMILY_DEERLING_WINTER': 'P_FAMILY_DEERLING',
-};
-
-function getFamilyGroup(familyId) {
-    return groupedFamilies[familyId] || familyId;
-}
-
-async function writer(pokedexArtifact, trainersArtifact, startersArtifact, isDebug) {
+async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug) {
     let { pokes: pokemonList, moves, abilities } = pokedexArtifact;
     const { trainersData, itemAssignments } = trainersArtifact;
-    const { starters, alreadyChosenFamilies } = startersArtifact;
+    const { starters } = startersArtifact;
+    const { extraStarters, gymRewards, staticRewards, replacementLog: wildReplacementLog, foundMegaEvos: wildFoundMegaEvos } = wildArtifact;
 
-    pokemonList = pokemonList.filter(poke => !bannedSpeciesForPicking.includes(poke.id));
+    pokemonList = pokemonList.filter(poke => !BANNED_SPECIES_FOR_PICKING.includes(poke.id));
 
     console.log('Randomizing evolution levels...');
     await writeEvoLevels(pokemonList);
 
     console.log('Updating starter pokemon...');
-
-    const alreadyChosenFamilySet = new Set(alreadyChosenFamilies.map(f => getFamilyGroup(f)));
-    const foundMegaEvos = [];
-
-    const addToFoundMegaEvosIfHasMegaEvo = (poke, levelFound = 0) => {
-        if (
-            hasValidMega(poke)
-            && poke.rating.megaEvoTier !== TIER_AG
-            && foundMegaEvos.every((megaEvoData) => megaEvoData.family !== poke.family)
-        ) {
-            poke.evolutionData.megaEvos.forEach(megaEvoId => {
-                const megaForm = pokemonList.find(p => p.id === megaEvoId);
-                const baseForm = pokemonList.find(p => p.id === megaForm.evolutionData.megaBaseForm);
-                const pokemonThatEvolveToBaseForm = pokemonList.filter(p => {
-                    const evolutions = (p.evolutions || [])
-                        .filter(e => e.pokemon === baseForm.id);
-                    return evolutions.length > 0;
-                })[0];
-                const evolveLevel = (pokemonThatEvolveToBaseForm && pokemonThatEvolveToBaseForm.evolutions)
-                    ? (pokemonThatEvolveToBaseForm.evolutions.find(evo => evo.pokemon === baseForm.id).param || 25)
-                    : 0;
-                foundMegaEvos.push({
-                    family: poke.family,
-                    megaFormId: megaForm.id,
-                    baseFormId: baseForm.id,
-                    item: megaForm.evolutionData.megaItem,
-                    level: Math.max(levelFound, evolveLevel),
-                });
-            });
-        }
-    };
-
-    // starters are already IDs from startersModule; look up poke objects for mega evo detection
-    starters.forEach(starterId => {
-        const starterPoke = pokemonList.find(p => p.id === starterId);
-        if (starterPoke) addToFoundMegaEvosIfHasMegaEvo(starterPoke);
-    });
-
-    // Extra slot 1: 1 LC-of-3 that evolves into an OU mon
-    let ouLCPokes = pokemonList.filter(poke => {
-        return poke.evolutionData.type === EVO_TYPE_LC_OF_3
-            && poke.evolutionData.isLC
-            && poke.rating.bestEvoTier === TIER_OU
-            && isSubWeakTier(poke.rating.tier)
-            && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
-    });
-    if (ouLCPokes.length <= 0) {
-        console.warn('No OU 3-evo-LC pokemon found for extra starters, loosening to any LC.');
-        ouLCPokes = pokemonList.filter(poke => {
-            return poke.evolutionData.isLC
-                && poke.rating.bestEvoTier === TIER_OU
-                && isSubWeakTier(poke.rating.tier)
-                && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
-        });
-    }
-    if (ouLCPokes.length <= 0) {
-        throw new Error('No OU LC pokemon found for extra starters.');
-    }
-
-    const alreadyChosenTypes = new Set();
-    const chosenExtraPokemon = [sample(ouLCPokes)];
-    alreadyChosenFamilySet.add(getFamilyGroup(chosenExtraPokemon[0].family));
-    chosenExtraPokemon[0].parsedTypes.forEach(type => alreadyChosenTypes.add(type));
-
-    // Extra slot 2: 1 LC that evolves into a UU mon
-    const uuLCPokes = pokemonList.filter(poke => {
-        return poke.evolutionData.isLC
-            && poke.rating.bestEvoTier === TIER_UU
-            && isSubWeakTier(poke.rating.tier)
-            && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
-    });
-    const uuLCWithFilteredTypes = uuLCPokes.filter(poke => {
-        return ![...alreadyChosenTypes].some(type => poke.parsedTypes.includes(type));
-    });
-    const uuPool = uuLCWithFilteredTypes.length > 0 ? uuLCWithFilteredTypes : uuLCPokes;
-    if (uuPool.length > 0) {
-        const pick = sample(uuPool);
-        chosenExtraPokemon.push(pick);
-        alreadyChosenFamilySet.add(getFamilyGroup(pick.family));
-        pick.parsedTypes.forEach(type => alreadyChosenTypes.add(type));
-    }
-
-    // Extra slot 3: 1 solo-evolution NU pokemon (no evolutions — stays NU forever)
-    const earlyGameStarter = pokemonList.filter(poke => {
-        return poke.evolutionData.type === EVO_TYPE_SOLO
-            && poke.rating.bestEvoRating <= TIER_RU_THRESHOLD
-            && poke.rating.tier === TIER_NU
-            && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
-    });
-    const earlyGameStarterWithFilteredTypes = earlyGameStarter.filter(poke => {
-        return ![...alreadyChosenTypes].some(type => poke.parsedTypes.includes(type));
-    });
-    
-    // Pick 1 early game starter that doesn't share types with already chosen ones
-    if (earlyGameStarterWithFilteredTypes.length > 0) {
-        const randomPoke = sampleAndRemove(earlyGameStarterWithFilteredTypes);
-        chosenExtraPokemon.push(randomPoke);
-        alreadyChosenFamilySet.add(getFamilyGroup(randomPoke.family));
-        randomPoke.parsedTypes.forEach(type => alreadyChosenTypes.add(type));
-    }
-    
-    // Pick 6 other unique pokemon from notTooStrongPokemonLC that are not in eligiblePokemonForStarters
-    const averagePokemonLC = pokemonList.filter(poke => {
-        return poke.evolutionData.isLC
-            && poke.rating.bestEvoTier === TIER_RU
-            && isSubWeakTier(poke.rating.tier)
-            && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
-    });
-    const averagePokemonLCWithFilteredTypes = averagePokemonLC.filter(poke => {
-        return ![...alreadyChosenTypes].some(type => poke.parsedTypes.includes(type));
-    });
-    while (chosenExtraPokemon.length < 9 && averagePokemonLCWithFilteredTypes.length > 0) {
-        const randomPoke = sampleAndRemove(averagePokemonLCWithFilteredTypes);
-        // Remove it also from averagePokemonLC
-        const indexInAverage = averagePokemonLC.findIndex(p => p.id === randomPoke.id);
-        if (indexInAverage >= 0) {
-            averagePokemonLC.splice(indexInAverage, 1);
-        }
-        chosenExtraPokemon.push(randomPoke);
-        alreadyChosenFamilySet.add(getFamilyGroup(randomPoke.family));
-        randomPoke.parsedTypes.forEach(type => alreadyChosenTypes.add(type));
-        // Remove all pokes with at least one of the chosen types
-        for (let i = averagePokemonLCWithFilteredTypes.length - 1; i >= 0; i--) {
-            const poke = averagePokemonLCWithFilteredTypes[i];
-            if ([...alreadyChosenTypes].some(type => poke.parsedTypes.includes(type))) {
-                averagePokemonLCWithFilteredTypes.splice(i, 1);
-            }
-        }
-    }
-    // Now if we haven't still reached 9 extra starters, just pick randomly from averagePokemonLC
-    while (chosenExtraPokemon.length < 9 && averagePokemonLC.length > 0) {
-        const randomPoke = sampleAndRemove(averagePokemonLC);
-        chosenExtraPokemon.push(randomPoke);
-        alreadyChosenFamilySet.add(getFamilyGroup(randomPoke.family));
-    }
-
-    // Try to find mega evos from the chosen extra pokemon
-    chosenExtraPokemon.forEach(poke => {
-        addToFoundMegaEvosIfHasMegaEvo(poke);
-    });
 
     let newStartersFile = await fs.readFile(startersFile, 'utf8');
 
@@ -403,205 +190,34 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, isDeb
         starterExtraMonText,
         `static const u16 sStarterExtraMon[STARTER_EXTRA_COUNT] =
 {
-    ${chosenExtraPokemon.map(p => p.id).join(',\n    ')},
+    ${extraStarters.join(',\n    ')},
 };`
     );
 
     // Edit starterExtraCountText with actual count of extra starters
     newStartersFile = newStartersFile.replace(
         starterExtraCountText,
-        `#define STARTER_EXTRA_COUNT ${chosenExtraPokemon.length}`
+        `#define STARTER_EXTRA_COUNT ${extraStarters.length}`
     );
 
     await fs.writeFile(startersFile, newStartersFile, 'utf8');
     console.log('Starter pokemon updated successfully.');
 
     console.log(starters);
-    console.log(chosenExtraPokemon.map(p => p.id));
-
-    const devolveToBase = (pokemon) => {
-        if (
-            pokemon.evolutionData.type === EVO_TYPE_SOLO
-            || pokemon.evolutionData.isLC
-            || !pokemon.evoTree?.length
-        ) {
-            return pokemon;
-        }
-        if (pokemon.evolutionData.megaBaseForm) {
-            return devolveToBase(pokemonList.find(p => p.id === pokemon.evolutionData.megaBaseForm));
-        }
-        const baseForm = pokemon.evoTree[0];
-        return pokemonList.find(p => p.id === baseForm);
-    }
-    
-    const checkValidEvo = (evaluatedPokemon, level, trainer) => {
-        let devolvedForm = evaluatedPokemon;
-        if (devolvedForm.evolutionData.megaBaseForm) {
-            devolvedForm = pokemonList.find(p => p.id === devolvedForm.evolutionData.megaBaseForm);
-        }
-        if (devolvedForm.evolutionData.type === EVO_TYPE_SOLO || devolvedForm.evolutionData.isLC) {
-            return true;
-        }
-        if (!devolvedForm) {
-            console.warn(`WARN: Could not find base form for mega pokemon ${evaluatedPokemon.id} when checking valid evolutions for trainer ${trainer.id}.`);
-            return false;
-        }
-        const filterMethod = p => {
-            const evolutions = (p.evolutions || [])
-                .filter(e => e.pokemon === devolvedForm.id);
-            if (!evolutions.length) return false;
-            return evolutions.some(evo => isValidEvolution(level, evo));
-        };
-        let pokemonThatEvolveToThis = pokemonList.filter(filterMethod);
-        if (pokemonThatEvolveToThis.length > 1 && devolvedForm.id !== 'SPECIES_GHOLDENGO' && !devolvedForm.id.includes('SPECIES_LYCANROC')) {
-            console.warn(`WARN: Multiple pre-evolutions found for ${devolvedForm.id} in trainer ${trainer?.id} when checking valid evolutions: ${pokemonThatEvolveToThis.map(p => p.id).join(', ')}.`);
-        }
-        if (pokemonThatEvolveToThis.length === 0) {
-            return false;
-        }
-        if (pokemonThatEvolveToThis[0].evolutionData.isLC) {
-            return true;
-        }
-        // If it's not LC, we keep devolving once more
-        devolvedForm = pokemonThatEvolveToThis[0];
-        pokemonThatEvolveToThis = pokemonList.filter(filterMethod);
-        return pokemonThatEvolveToThis.length > 0;
-    }
-
-    const gym1ReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && !poke.evolutionData.isMega
-        && poke.rating.tier === TIER_NU
-        && poke.evolutionData.type === EVO_TYPE_SOLO
-    );
-    const gym1Replacement = sampleAndRemove(gym1ReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(gym1Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym1Replacement, 13);
-    const gym2ReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.rating.tier === TIER_NU
-        && poke.evolutionData.type === 'EVO_TYPE_LC_OF_2'
-        && poke.rating.bestEvoTier === TIER_RU
-        && (poke.evolutions || []).some(
-            evo => evo.method === 'ITEM' || (evo.method === 'LEVEL' && parseInt(evo.param) <= 25)
-        )
-    );
-    const gym2Replacement = sampleAndRemove(gym2ReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(gym2Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym2Replacement, 19);
-    const gym3ReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && !poke.evolutionData.isMega
-        && poke.evolutionData.isFinal
-        && hasValidMega(poke)
-        && poke.rating.bestEvoRating < TIER_UU_THRESHOLD
-        && poke.rating.megaEvoRating < TIER_UBERS_THRESHOLD
-        && checkValidEvo(poke, 29)
-    );
-    const gym3Replacement = devolveToBase(sampleAndRemove(gym3ReplacementList));
-    alreadyChosenFamilySet.add(getFamilyGroup(gym3Replacement.family));
-    const slateportGruntsReward = devolveToBase(sampleAndRemove(gym3ReplacementList));
-    alreadyChosenFamilySet.add(getFamilyGroup(slateportGruntsReward.family));
-    const gym4n5ReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.evolutionData.isLC
-        && poke.rating.bestEvoTier === TIER_UU
-    );
-    const gym4Replacement = sampleAndRemove(gym4n5ReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(gym4Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym4Replacement, 36);
-    const gym5Replacement = sampleAndRemove(gym4n5ReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(gym5Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym5Replacement, 39);
-
-    const shellyRewardReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && !poke.evolutionData.isMega
-        && poke.evolutionData.isFinal
-        && hasValidMega(poke)
-        && poke.rating.bestEvoRating < TIER_UBERS_THRESHOLD
-        && poke.rating.megaEvoTier === TIER_OU
-        && checkValidEvo(poke, 41)
-    );
-
-    const shellyRewardReplacement = sampleAndRemove(shellyRewardReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(shellyRewardReplacement.family));
-
-    const gym6ReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.evolutionData.isLC
-        && poke.rating.bestEvoTier === TIER_OU
-    );
-    const gym6Replacement = sampleAndRemove(gym6ReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(gym6Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym6Replacement, 46);
-    const gym7n8ReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && !poke.evolutionData.isMega
-        && poke.evolutionData.isFinal
-        && poke.rating.bestEvoTier === TIER_OU
-    );
-    const gym7Replacement = sampleAndRemove(gym7n8ReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(gym7Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym7Replacement, 56);
-    const gym8Replacement = sampleAndRemove(gym7n8ReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(gym8Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym8Replacement, 64);
-
-    const strongSoloReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.rating.bestEvoTier === TIER_UU
-        && poke.evolutionData.type === EVO_TYPE_SOLO
-    );
-    const regirockReplacement = sampleAndRemove(strongSoloReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(regirockReplacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(regirockReplacement, 36);
-    const regiceReplacement = sampleAndRemove(strongSoloReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(regiceReplacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(regiceReplacement, 39);
-    const mewReplacement = sampleAndRemove(strongSoloReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(mewReplacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(mewReplacement, 39);
-    const wallyLilycoveReward = sampleAndRemove(strongSoloReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(wallyLilycoveReward.family));
-    addToFoundMegaEvosIfHasMegaEvo(wallyLilycoveReward, 48);
-
-    const premiumSoloReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.rating.bestEvoTier === TIER_OU
-        && poke.evolutionData.type === EVO_TYPE_SOLO
-    );
-    const registeelReplacement = sampleAndRemove(premiumSoloReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(registeelReplacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(registeelReplacement, 46);
-
-    const legendReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.rating.bestEvoTier === TIER_UBERS
-        && poke.evolutionData.type === EVO_TYPE_SOLO
-    );
-    const legend1Replacement = sampleAndRemove(legendReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(legend1Replacement.family));
-    const legend2Replacement = sampleAndRemove(legendReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(legend2Replacement.family));
-    const legend3Replacement = sampleAndRemove(legendReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(legend3Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(legend1Replacement, 61);
-    addToFoundMegaEvosIfHasMegaEvo(legend2Replacement, 61);
-    addToFoundMegaEvosIfHasMegaEvo(legend3Replacement, 61);
+    console.log(extraStarters);
 
     const pokeRewardReplacements = [
-        gym1Replacement,
-        gym2Replacement,
-        gym3Replacement, // 2 <- mega stone
-        gym4Replacement,
-        gym5Replacement,
-        gym6Replacement,
-        gym7Replacement,
-        gym8Replacement,
-        slateportGruntsReward, // 8 <- mega stone
-        shellyRewardReplacement, // 9 <- mega stone
-        wallyLilycoveReward,
+        gymRewards.gym1,
+        gymRewards.gym2,
+        gymRewards.gym3,  // index 2 — gives mega stone
+        gymRewards.gym4,
+        gymRewards.gym5,
+        gymRewards.gym6,
+        gymRewards.gym7,
+        gymRewards.gym8,
+        gymRewards.slateportGrunts, // index 8 — gives mega stone
+        gymRewards.shellyReward,    // index 9 — gives mega stone
+        gymRewards.wallyLilycove,
     ];
 
     const replacementLog = {};
@@ -627,156 +243,81 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, isDeb
         replacementLog[`SPECIES_GYM${i + 1}_REWARD`] = pokeRewardReplacements[i].id;
     }
 
-    if (regirockReplacement) {
+    if (staticRewards.regirock) {
         let regirockFileData = await fs.readFile(regirockReplacementFile, 'utf8');
-        regirockFileData = regirockFileData.replace(new RegExp(regirockReplacementText, 'g'), regirockReplacement.id);
+        regirockFileData = regirockFileData.replace(new RegExp(regirockReplacementText, 'g'), staticRewards.regirock.id);
         await fs.writeFile(regirockReplacementFile, regirockFileData, 'utf8');
-        replacementLog['SPECIES_REGIROCK'] = regirockReplacement.id;
+        replacementLog['SPECIES_REGIROCK'] = staticRewards.regirock.id;
     }
 
-    if (regiceReplacement) {
+    if (staticRewards.regice) {
         let regiceFileData = await fs.readFile(regiceReplacementFile, 'utf8');
-        regiceFileData = regiceFileData.replace(new RegExp(regiceReplacementText, 'g'), regiceReplacement.id);
+        regiceFileData = regiceFileData.replace(new RegExp(regiceReplacementText, 'g'), staticRewards.regice.id);
         await fs.writeFile(regiceReplacementFile, regiceFileData, 'utf8');
-        replacementLog['SPECIES_REGICE'] = regiceReplacement.id;
+        replacementLog['SPECIES_REGICE'] = staticRewards.regice.id;
     }
 
-    if (mewReplacement) {
+    if (staticRewards.mew) {
         let mewFileData = await fs.readFile(mewReplacementFile, 'utf8');
-        mewFileData = mewFileData.replace(new RegExp(mewReplacementText, 'g'), mewReplacement.id);
+        mewFileData = mewFileData.replace(new RegExp(mewReplacementText, 'g'), staticRewards.mew.id);
         await fs.writeFile(mewReplacementFile, mewFileData, 'utf8');
-        replacementLog['SPECIES_MEW'] = mewReplacement.id;
+        replacementLog['SPECIES_MEW'] = staticRewards.mew.id;
     }
 
-    if (registeelReplacement) {
+    if (staticRewards.registeel) {
         let registeelFileData = await fs.readFile(registeelReplacementFile, 'utf8');
-        registeelFileData = registeelFileData.replace(new RegExp(registeelReplacementText, 'g'), registeelReplacement.id);
+        registeelFileData = registeelFileData.replace(new RegExp(registeelReplacementText, 'g'), staticRewards.registeel.id);
         await fs.writeFile(registeelReplacementFile, registeelFileData, 'utf8');
-        replacementLog['SPECIES_REGISTEEL'] = registeelReplacement.id;
+        replacementLog['SPECIES_REGISTEEL'] = staticRewards.registeel.id;
     }
 
     let skyPillarTopFileData = await fs.readFile(skyPillarTopReplacementFile, 'utf8');
     let scriptMenuFileData = await fs.readFile(scriptMenuReplacementFile, 'utf8');
 
-    if (legend1Replacement) {
-        skyPillarTopFileData = skyPillarTopFileData.replace(new RegExp(legend1ReplacementText, 'g'), legend1Replacement.id);
-        scriptMenuFileData = scriptMenuFileData.replace(new RegExp(legend1ReplacementText, 'g'), legend1Replacement.name);
-        replacementLog['SPECIES_LEGEND1'] = legend1Replacement.id;
+    if (staticRewards.legend1) {
+        skyPillarTopFileData = skyPillarTopFileData.replace(new RegExp(legend1ReplacementText, 'g'), staticRewards.legend1.id);
+        scriptMenuFileData = scriptMenuFileData.replace(new RegExp(legend1ReplacementText, 'g'), staticRewards.legend1.name);
+        replacementLog['SPECIES_LEGEND1'] = staticRewards.legend1.id;
     }
 
-    if (legend2Replacement) {
-        skyPillarTopFileData = skyPillarTopFileData.replace(new RegExp(legend2ReplacementText, 'g'), legend2Replacement.id);
-        scriptMenuFileData = scriptMenuFileData.replace(new RegExp(legend2ReplacementText, 'g'), legend2Replacement.name);        
-        replacementLog['SPECIES_LEGEND2'] = legend2Replacement.id;
+    if (staticRewards.legend2) {
+        skyPillarTopFileData = skyPillarTopFileData.replace(new RegExp(legend2ReplacementText, 'g'), staticRewards.legend2.id);
+        scriptMenuFileData = scriptMenuFileData.replace(new RegExp(legend2ReplacementText, 'g'), staticRewards.legend2.name);
+        replacementLog['SPECIES_LEGEND2'] = staticRewards.legend2.id;
     }
 
-    if (legend3Replacement) {
-        skyPillarTopFileData = skyPillarTopFileData.replace(new RegExp(legend3ReplacementText, 'g'), legend3Replacement.id);
-        scriptMenuFileData = scriptMenuFileData.replace(new RegExp(legend3ReplacementText, 'g'), legend3Replacement.name);
-        replacementLog['SPECIES_LEGEND3'] = legend3Replacement.id;
+    if (staticRewards.legend3) {
+        skyPillarTopFileData = skyPillarTopFileData.replace(new RegExp(legend3ReplacementText, 'g'), staticRewards.legend3.id);
+        scriptMenuFileData = scriptMenuFileData.replace(new RegExp(legend3ReplacementText, 'g'), staticRewards.legend3.name);
+        replacementLog['SPECIES_LEGEND3'] = staticRewards.legend3.id;
     }
 
     await fs.writeFile(skyPillarTopReplacementFile, skyPillarTopFileData, 'utf8');
     await fs.writeFile(scriptMenuReplacementFile, scriptMenuFileData, 'utf8');
 
-    // Routes replacements
+    // Routes replacements — selection was done in wildModule; apply the two-pass substitution here
 
     let wildEncountersFileContent = await fs.readFile((wild.file), 'utf8');
 
-    const { replacementTypes: wildReplacementTypes } = wild;
-    const replacementLists = {};
-
-    Object.entries(wildReplacementTypes).forEach(([key, value]) => {
-        const { replace: tiers, type: types, hasMega, megaTiers } = value;
-        replacementLists[key] = pokemonList.filter(poke => {
-            if (poke.evolutionData.isMega) return false;
-            if (alreadyChosenFamilySet.has(getFamilyGroup(poke.family))) return false;
-            if (tiers && !tiers.includes(poke.rating.bestEvoTier)) return false;
-            if (megaTiers && !megaTiers.includes(poke.rating.megaEvoTier)) return false;
-            if (hasMega && !poke.evolutionData.megaEvos) return false;
-            let hasAnyTypeOfReplacement = false;
-            types.forEach(replacementType => {
-                if (replacementType === EVO_TYPE_LC) {
-                    hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.isLC;
-                }
-                else if (replacementType === EVO_TYPE_NFE) {
-                    hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.isNFE;
-                }
-                else if (replacementType === EVO_TYPE_SOLO) {
-                    hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.type === EVO_TYPE_SOLO;
-                }
-                else if (replacementType === EVO_TYPE_FINAL) {
-                    hasAnyTypeOfReplacement = hasAnyTypeOfReplacement || poke.evolutionData.isFinal;
-                }
-            });
-            return hasAnyTypeOfReplacement;
-        });
-    });
-
     const auxWildReplacementsFrom = {};
 
-    const newlyAddedFamilies = new Set();
-
-    const findReplacementLevel = (replacementId) => {
-        let foundMap = wild.maps.find(wildMap =>
-            wildMap.land === replacementId
-            || wildMap.old === replacementId
-            || wildMap.surf === replacementId
-            || wildMap.underwater === replacementId
-        );
-        if (foundMap) return foundMap.level || 29;
-        foundMap = wild.maps.find(wildMap =>
-            wildMap.good === replacementId
-        );
-        if (foundMap) return foundMap.level || 33;
-        return 48;
-    }
-
-    Object.entries(wild.replacements).forEach(([speciesId, replacementTypeKey]) => {
-        const replacementType = wildReplacementTypes[replacementTypeKey];
-        if (!replacementType) {
-            console.log(`No replacement type found for key ${replacementTypeKey}, skipping replacement for ${speciesId}.`);
-            return;
-        }
-        const replacementList = replacementLists[replacementTypeKey];
-        if (!replacementList || replacementList.length === 0) {
-            console.log(`No replacement list found or empty for type ${replacementTypeKey}, skipping replacement for ${speciesId}.`);
-            return;
-        }
-        // Remove newly added families from the replacement list
-        for (let i = replacementList.length - 1; i >= 0; i--) {
-            const poke = replacementList[i];
-            if (newlyAddedFamilies.has(poke.family)) {
-                replacementList.splice(i, 1);
-            }
-        }
-        if (!replacementList || replacementList.length === 0) {
-            console.log(`No replacement available after filtering for newly added families for type ${replacementTypeKey}, skipping replacement for ${speciesId}.`);
-            return;
-        }
-        const replacement = sampleAndRemove(replacementList);
-        if (!replacement) {
-            console.log(`No replacement found for ${speciesId} of type ${replacementTypeKey}, skipping.`);
-            return;
-        }
-        alreadyChosenFamilySet.add(getFamilyGroup(replacement.family));
-        newlyAddedFamilies.add(replacement.family);
-        addToFoundMegaEvosIfHasMegaEvo(replacement, findReplacementLevel(speciesId));
-        replacementLog[speciesId] = replacement.id;
-        // entryId must be a unique string that won't reappear in the file
+    // Pass 1: replace each original species with a unique placeholder to avoid chained substitutions
+    Object.entries(wildReplacementLog).forEach(([speciesId, replacementId]) => {
         const entryId = rng.random().toString(36).substring(2, 15);
         auxWildReplacementsFrom[speciesId] = `WILDPOKE_${entryId}`;
-
-        const regex = new RegExp(speciesId, 'g');
-        // First we need to use unique IDs so one replacment doesn't affect the other
-        wildEncountersFileContent = wildEncountersFileContent.replace(regex, auxWildReplacementsFrom[speciesId]);
+        wildEncountersFileContent = wildEncountersFileContent.replace(
+            new RegExp(speciesId, 'g'),
+            auxWildReplacementsFrom[speciesId]
+        );
+        replacementLog[speciesId] = replacementId;
     });
-    
-    // Now we replace the unique IDs with the actual replacements
-    Object.keys(wild.replacements).forEach((speciesId) => {
-        const regex = new RegExp(auxWildReplacementsFrom[speciesId], 'g');
-        const replacement = replacementLog[speciesId];
-        wildEncountersFileContent = wildEncountersFileContent.replace(regex, replacement);
+
+    // Pass 2: replace placeholders with actual species
+    Object.entries(auxWildReplacementsFrom).forEach(([speciesId, placeholder]) => {
+        wildEncountersFileContent = wildEncountersFileContent.replace(
+            new RegExp(placeholder, 'g'),
+            wildReplacementLog[speciesId]
+        );
     });
 
     await fs.writeFile((wild.file), wildEncountersFileContent, 'utf8');
@@ -795,7 +336,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, isDeb
     });
 
     // Sort mega evos
-    foundMegaEvos.sort((a, b) => a.level - b.level);
+    const foundMegaEvos = [...wildFoundMegaEvos].sort((a, b) => a.level - b.level);
     
     // Assign mega evos to trainers
     const megaTrainers = MEGA_TRAINERS;
@@ -1087,13 +628,13 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, isDeb
                 pokemonStrictList = [starterPokemon];
             }
             else if (trainerMonDefinition.special === 'PLAYER_LEGEND_TREECKO') {
-                pokemonStrictList = [legend1Replacement];
+                pokemonStrictList = [staticRewards.legend1];
             }
             else if (trainerMonDefinition.special === 'PLAYER_LEGEND_TORCHIC') {
-                pokemonStrictList = [legend2Replacement];
+                pokemonStrictList = [staticRewards.legend2];
             }
             else if (trainerMonDefinition.special === 'PLAYER_LEGEND_MUDKIP') {
-                pokemonStrictList = [legend3Replacement];
+                pokemonStrictList = [staticRewards.legend3];
             }
             else if (trainerMonDefinition.special === TRAINER_REPEAT_ID) {
                 const repeatedId = storedIds[trainerMonDefinition.id];
@@ -1226,7 +767,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, isDeb
             }
             if (trainerMonDefinition.checkValidEvo) {
                 pokemonLooseList = pokemonLooseList.filter(
-                    loosePokemon => checkValidEvo(loosePokemon, trainer.level, trainer)
+                    loosePokemon => checkValidEvo(pokemonList, loosePokemon, trainer.level, trainer)
                 );
             }
 

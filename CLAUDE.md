@@ -30,23 +30,34 @@ Committing them pollutes history with randomizer mutations and corrupts base dat
 - `puppedjs/output/abilities.js` — ability data for the viewer
 - `puppedjs/output/wildpokes.js` — wild encounter data for the viewer
 
-## Running the pipeline — use these scripts, not `puppedjs/index.js` directly
+## Running the pipeline — use `analyze.js`, not `puppedjs/index.js` directly
 
-**Always run the pipeline through one of these three scripts.** Running `puppedjs/index.js` directly generates corrupted output files and leaves mutated `src/` files in place; these scripts clean up correctly after each run.
+**Always run the pipeline through `analyze.js`.** Running `puppedjs/index.js` directly generates corrupted output files and leaves mutated `src/` files in place; `analyze.js` cleans up correctly after each run (even on crash or Ctrl+C).
 
-| Script | What it does | When to use |
-|--------|-------------|-------------|
-| `node analyze.js` | Full pipeline: rebalances stats, runs rater, resets `src/` | Production run — generates the rebalanced game |
-| `node analyze_no_rebalance.js` | Vanilla stats only, no rebalancer mutations, resets `src/` | Testing rater algorithm changes in isolation |
-| `node analyze_no_rebalance_all_tms.js` | Vanilla stats + all teachable moves treated as TMs | Identifying Phase C gaps (which TMs to add for tier targets) |
+```
+node analyze.js                      # interactive prompts
+node analyze.js --no-balance         # vanilla stats, no rebalancer mutations
+node analyze.js --all-tms            # all teachable moves treated as TMs
+node analyze.js --difficulty=hard
+node analyze.js --seed=42
+node analyze.js --debug
+```
 
-**Phase C note:** The default pipeline (`analyze.js` / `analyze_no_rebalance.js`) filters teachable moves to only those in this game's actual TM pool (`include/constants/tms_hms.h`). The `--all-tms` variant bypasses that filter to show theoretical maximums. Compare the two outputs to identify pokemon that need a specific TM added to reach their expected tier.
+**Common combinations:**
 
-**Important:** All three scripts:
-1. **Abort before running** if `data/` has any uncommitted changes — the pipeline mutates `data/maps/` and the guard prevents silent data loss.
-2. **Restore after running**: `src/`, `include/`, and `data/maps/` only. Other `data/` subdirectories are left untouched (they may contain intentional user edits).
+| Use case | Command |
+|----------|---------|
+| Production run — rebalanced game | `node analyze.js` |
+| Test rater in isolation | `node analyze.js --no-balance` |
+| Identify Phase C TM gaps | `node analyze.js --no-balance --all-tms` |
 
-Commit any changes to `src/`, `include/`, or `data/maps/` before running these scripts.
+**Phase C note:** Without `--all-tms`, the pipeline filters teachable moves to only those in this game's actual TM pool (`include/constants/tms_hms.h`). With `--all-tms`, all teachable moves are treated as available. Compare the two outputs to identify pokemon that need a specific TM added to reach their expected tier.
+
+**Important:** `analyze.js`:
+1. **Aborts before running** if `data/` has any uncommitted changes — the pipeline mutates `data/maps/` and the guard prevents silent data loss.
+2. **Restores after running** (via `finally`): `src/`, `include/`, and `data/maps/` only. Other `data/` subdirectories are left untouched (they may contain intentional user edits).
+
+Commit any changes to `src/`, `include/`, or `data/maps/` before running.
 
 ## Testing and TDD — puppedjs pipeline
 

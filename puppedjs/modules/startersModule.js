@@ -1,40 +1,11 @@
 'use strict';
 
-const rng = require('../rng');
 const { isSuperEffective } = require('../rating');
 const {
     EVO_TYPE_LC_OF_3,
     TIER_UU,
-    TIER_PU, TIER_ZU, TIER_MAGIKARP,
 } = require('../constants');
-
-// Deerling seasonal forms map to the same family slot.
-const groupedFamilies = {
-    'P_FAMILY_DEERLING_SUMMER': 'P_FAMILY_DEERLING',
-    'P_FAMILY_DEERLING_AUTUMN': 'P_FAMILY_DEERLING',
-    'P_FAMILY_DEERLING_WINTER': 'P_FAMILY_DEERLING',
-};
-
-function getFamilyGroup(familyId) {
-    return groupedFamilies[familyId] || familyId;
-}
-
-function isSubWeakTier(tier) {
-    return tier === TIER_PU || tier === TIER_ZU || tier === TIER_MAGIKARP;
-}
-
-function sample(array) {
-    if (array.length === 0) return null;
-    return array[Math.floor(rng.random() * array.length)];
-}
-
-function sampleAndRemove(array) {
-    if (array.length === 0) return null;
-    const index = Math.floor(rng.random() * array.length);
-    const element = array[index];
-    array.splice(index, 1);
-    return element;
-}
+const { getFamilyGroup, isSubWeakTier, sample, sampleAndRemove } = require('./utils');
 
 /**
  * Selects 3 starter Pokémon that form a type triangle.
