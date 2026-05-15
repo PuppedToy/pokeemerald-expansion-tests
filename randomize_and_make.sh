@@ -1,17 +1,4 @@
-#!/bin/bash -ex
-
-# Run the randomizer
-node ./randomizer/index.js
-
-# If $1 = clean, clean the build
-if [ "$1" == "clean" ]; then
-    make clean
-fi
-
-# Make
-make -j
-
-# Reset git
-git reset --hard
-
-exit 0
+#!/bin/bash
+# Wrapper — forwards all arguments to make.js.
+# Usage: ./randomize_and_make.sh [--bundle=path.json] [--randomize] [--debug] [--clean] [...]
+exec node "$(dirname "$0")/make.js" "$@"

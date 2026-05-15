@@ -105,8 +105,32 @@ showStep(1);
 
 // ── SSE helpers ───────────────────────────────────────────────────────────────
 
+let _crawlInterval = null;
+let _realPct = 0;
+let _displayPct = 0;
+
+function startCrawl() {
+    stopCrawl();
+    _crawlInterval = setInterval(() => {
+        // Crawl toward (realPct + 18), capped at 95, at 0.25% per 250ms (~1%/s)
+        const ceiling = Math.min(_realPct + 18, 95);
+        if (_displayPct < ceiling) {
+            _displayPct = Math.min(_displayPct + 0.25, ceiling);
+            _setBarUI(Math.round(_displayPct));
+        }
+    }, 250);
+}
+
+function stopCrawl() {
+    if (_crawlInterval) { clearInterval(_crawlInterval); _crawlInterval = null; }
+}
+
 function openProgressStream(jobId) {
     closeEventSource();
+    _realPct = 0;
+    _displayPct = 0;
+    startCrawl();
+
     const es = new EventSource(`/api/generate/stream?jobId=${jobId}`);
     currentEventSource = es;
 
@@ -115,37 +139,51 @@ function openProgressStream(jobId) {
         if (event === 'progress') {
             updateProgressUI(data.progress, data.step);
         } else if (event === 'done') {
+            stopCrawl();
             es.close();
             showGenDone();
         } else if (event === 'error') {
+            stopCrawl();
             es.close();
             showGenError(data.message);
         }
     };
 
     es.onerror = () => {
+        stopCrawl();
         es.close();
         showGenError('Lost connection to server.');
     };
 }
 
 function closeEventSource() {
+    stopCrawl();
     if (currentEventSource) { currentEventSource.close(); currentEventSource = null; }
 }
 
 // ── Step 3 UI states ──────────────────────────────────────────────────────────
 
 function resetGenerateUI() {
+    _realPct = 0;
+    _displayPct = 0;
     document.getElementById('gen-running').style.display = '';
     document.getElementById('gen-done').style.display    = 'none';
     document.getElementById('gen-error').style.display   = 'none';
-    updateProgressUI(0, 'Starting…');
+    _setBarUI(0);
+    document.getElementById('gen-step-label').textContent = 'Starting…';
+}
+
+function _setBarUI(pct) {
+    document.getElementById('gen-progress-fill').style.width = `${pct}%`;
+    document.getElementById('gen-progress-pct').textContent  = `${pct}%`;
 }
 
 function updateProgressUI(pct, step) {
-    document.getElementById('gen-progress-fill').style.width = `${pct}%`;
-    document.getElementById('gen-progress-pct').textContent  = `${pct}%`;
-    document.getElementById('gen-step-label').textContent    = step;
+    _realPct = pct;
+    // Snap forward if the real value overtook the crawl; never go backwards
+    if (pct > _displayPct) _displayPct = pct;
+    _setBarUI(Math.round(_displayPct));
+    document.getElementById('gen-step-label').textContent = step;
 }
 
 function showGenDone() {

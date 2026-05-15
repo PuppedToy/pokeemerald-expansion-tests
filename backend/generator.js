@@ -77,6 +77,12 @@ function progress(job, pct, step) {
     emit(job, 'progress', { progress: pct, step });
 }
 
+// Yield the event loop so each SSE event is flushed to the socket before
+// the next synchronous module call starts. Without this, all events after
+// the async pokedex step arrive in one TCP burst and the browser never
+// renders intermediate progress.
+const flush = () => new Promise(r => setTimeout(r, 80));
+
 // ── Config translation ────────────────────────────────────────────────────────
 
 function toModuleConfig(cfg, seed) {
@@ -148,10 +154,10 @@ async function generateDefault(job, cfg, mcfg, sessionId) {
     const tick = (step) => progress(job, Math.round((++done / totalSteps) * 100), step);
 
     progress(job, 0, 'Generating Pokédex...');
-    const pokedex = await runPokedexModule(mcfg); tick('Generating trainer teams...');
-    const trainers = runTrainersModule(pokedex, mcfg);  tick('Generating starter choices...');
-    const starters = runStartersModule(pokedex.pokes);  tick('Generating wild encounters...');
-    const wild     = runWildModule(pokedex.pokes, starters, wildData); tick('Done');
+    const pokedex = await runPokedexModule(mcfg); tick('Generating trainer teams...'); await flush();
+    const trainers = runTrainersModule(pokedex, mcfg);  tick('Generating starter choices...'); await flush();
+    const starters = runStartersModule(pokedex.pokes);  tick('Generating wild encounters...'); await flush();
+    const wild     = runWildModule(pokedex.pokes, starters, wildData); tick('Done'); await flush();
 
     return bundle(sessionId, cfg, {}, [{
         romIndex: 0,
@@ -176,15 +182,15 @@ async function generateNuzlocke(job, cfg, mcfg, sessionId) {
 
     if (shared.pokedex) {
         progress(job, Math.round((done / totalSteps) * 100), 'Generating shared Pokédex...');
-        sharedPokedex = await runPokedexModule(mcfg); tick('Pokédex ready');
+        sharedPokedex = await runPokedexModule(mcfg); tick('Pokédex ready'); await flush();
     }
     if (shared.trainers && sharedPokedex) {
         progress(job, Math.round((done / totalSteps) * 100), 'Generating shared trainer teams...');
-        sharedTrainers = runTrainersModule(sharedPokedex, mcfg); tick('Trainer teams ready');
+        sharedTrainers = runTrainersModule(sharedPokedex, mcfg); tick('Trainer teams ready'); await flush();
     }
     if (shared.starters && sharedPokedex) {
         progress(job, Math.round((done / totalSteps) * 100), 'Generating shared starters...');
-        sharedStarters = runStartersModule(sharedPokedex.pokes); tick('Starters ready');
+        sharedStarters = runStartersModule(sharedPokedex.pokes); tick('Starters ready'); await flush();
     }
 
     const sharedData = {};
@@ -199,23 +205,23 @@ async function generateNuzlocke(job, cfg, mcfg, sessionId) {
         let pokedex = sharedPokedex;
         if (!pokedex) {
             progress(job, Math.round((done / totalSteps) * 100), `Generating Pokédex${label}...`);
-            pokedex = await runPokedexModule(mcfg); tick(`Pokédex${label} ready`);
+            pokedex = await runPokedexModule(mcfg); tick(`Pokédex${label} ready`); await flush();
         }
 
         let trainers = sharedTrainers;
         if (!trainers) {
             progress(job, Math.round((done / totalSteps) * 100), `Generating trainer teams${label}...`);
-            trainers = runTrainersModule(pokedex, mcfg); tick(`Trainer teams${label} ready`);
+            trainers = runTrainersModule(pokedex, mcfg); tick(`Trainer teams${label} ready`); await flush();
         }
 
         let starters = sharedStarters;
         if (!starters) {
             progress(job, Math.round((done / totalSteps) * 100), `Generating starters${label}...`);
-            starters = runStartersModule(pokedex.pokes); tick(`Starters${label} ready`);
+            starters = runStartersModule(pokedex.pokes); tick(`Starters${label} ready`); await flush();
         }
 
         progress(job, Math.round((done / totalSteps) * 100), `Generating wild encounters${label}...`);
-        const wild = runWildModule(pokedex.pokes, starters, wildData); tick(`Wild encounters${label} ready`);
+        const wild = runWildModule(pokedex.pokes, starters, wildData); tick(`Wild encounters${label} ready`); await flush();
 
         roms.push({
             romIndex: i,
@@ -264,15 +270,15 @@ async function generateSoullink(job, cfg, mcfg, sessionId) {
 
     if (playerShared.pokedex) {
         progress(job, Math.round((done / totalSteps) * 100), 'Generating shared Pokédex (all players)...');
-        globalPokedex = await runPokedexModule(mcfg); tick('Shared Pokédex ready');
+        globalPokedex = await runPokedexModule(mcfg); tick('Shared Pokédex ready'); await flush();
     }
     if (playerShared.trainers && globalPokedex) {
         progress(job, Math.round((done / totalSteps) * 100), 'Generating shared trainer teams (all players)...');
-        globalTrainers = runTrainersModule(globalPokedex, mcfg); tick('Shared trainer teams ready');
+        globalTrainers = runTrainersModule(globalPokedex, mcfg); tick('Shared trainer teams ready'); await flush();
     }
     if (playerShared.starters && globalPokedex) {
         progress(job, Math.round((done / totalSteps) * 100), 'Generating shared starters (all players)...');
-        globalStarters = runStartersModule(globalPokedex.pokes); tick('Shared starters ready');
+        globalStarters = runStartersModule(globalPokedex.pokes); tick('Shared starters ready'); await flush();
     }
 
     const sharedData = {};
@@ -295,17 +301,17 @@ async function generateSoullink(job, cfg, mcfg, sessionId) {
 
         if (!playerShared.pokedex && romShared.pokedex) {
             progress(job, Math.round((done / totalSteps) * 100), `Generating Pokédex for ${pl}...`);
-            playerPokedex = await runPokedexModule(mcfg); tick(`Pokédex for ${pl} ready`);
+            playerPokedex = await runPokedexModule(mcfg); tick(`Pokédex for ${pl} ready`); await flush();
             playerEntry.pokedex = playerPokedex;
         }
         if (!playerShared.trainers && romShared.trainers && playerPokedex) {
             progress(job, Math.round((done / totalSteps) * 100), `Generating trainer teams for ${pl}...`);
-            playerTrainers = runTrainersModule(playerPokedex, mcfg); tick(`Trainer teams for ${pl} ready`);
+            playerTrainers = runTrainersModule(playerPokedex, mcfg); tick(`Trainer teams for ${pl} ready`); await flush();
             playerEntry.trainers = playerTrainers;
         }
         if (!playerShared.starters && romShared.starters && playerPokedex) {
             progress(job, Math.round((done / totalSteps) * 100), `Generating starters for ${pl}...`);
-            playerStarters = runStartersModule(playerPokedex.pokes); tick(`Starters for ${pl} ready`);
+            playerStarters = runStartersModule(playerPokedex.pokes); tick(`Starters for ${pl} ready`); await flush();
             playerEntry.starters = playerStarters;
         }
 
@@ -320,19 +326,19 @@ async function generateSoullink(job, cfg, mcfg, sessionId) {
 
             if (!playerShared.pokedex && !romShared.pokedex) {
                 progress(job, Math.round((done / totalSteps) * 100), `Generating Pokédex for ${pl} ${rl}...`);
-                pokedex = await runPokedexModule(mcfg); tick(`Pokédex ready`);
+                pokedex = await runPokedexModule(mcfg); tick(`Pokédex ready`); await flush();
             }
             if (!playerShared.trainers && !romShared.trainers && pokedex) {
                 progress(job, Math.round((done / totalSteps) * 100), `Generating trainer teams for ${pl} ${rl}...`);
-                trainers = runTrainersModule(pokedex, mcfg); tick(`Trainer teams ready`);
+                trainers = runTrainersModule(pokedex, mcfg); tick(`Trainer teams ready`); await flush();
             }
             if (!playerShared.starters && !romShared.starters && pokedex) {
                 progress(job, Math.round((done / totalSteps) * 100), `Generating starters for ${pl} ${rl}...`);
-                starters = runStartersModule(pokedex.pokes); tick(`Starters ready`);
+                starters = runStartersModule(pokedex.pokes); tick(`Starters ready`); await flush();
             }
 
             progress(job, Math.round((done / totalSteps) * 100), `Generating wild encounters for ${pl} ${rl}...`);
-            const wild = runWildModule(pokedex.pokes, starters, wildData); tick(`Wild encounters ready`);
+            const wild = runWildModule(pokedex.pokes, starters, wildData); tick(`Wild encounters ready`); await flush();
 
             const resolveArtifact = (artifact, globalVal, playerVal, key) => {
                 if (playerShared[key])            return 'global';
