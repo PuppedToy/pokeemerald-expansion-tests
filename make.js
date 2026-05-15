@@ -72,6 +72,19 @@ function resolveArtifact(value, sharedData, key) {
     return value;
 }
 
+// Derive the RNG seed for a ROM based on its trainer-sharing level.
+// Shared trainers use the same base seed so tier-based slots are identical
+// across ROMs. Per-ROM trainers use a unique derived seed.
+function resolveRomSeed(rom, seed) {
+    const t = rom.artifacts.trainers;
+    if (t === 'shared' || t === 'global') return seed;
+    if (typeof t === 'string' && t.startsWith('player-')) {
+        const p = parseInt(t.split('-')[1], 10);
+        return (seed ^ (p * 0x9E3779B9)) >>> 0;
+    }
+    return (seed ^ (rom.romIndex * 0x9E3779B9)) >>> 0;
+}
+
 function romFileName(rom) {
     if (rom.playerIndex !== undefined) {
         return `player-${rom.playerIndex}-rom-${rom.romIndex}.gba`;
@@ -124,9 +137,9 @@ async function bundleMode(bundlePath, isDebug, doClean) {
         const missing = ['pokedex','trainers','starters','wild'].filter(k => !({ pokedex, trainers, starters, wild }[k]));
         if (missing.length) throw new Error(`ROM ${rom.romIndex}: missing artifacts after resolution: ${missing.join(', ')}`);
 
-        // Seed RNG deterministically per-ROM so writer behaviour (movesets, IVs, team shuffle)
-        // is reproducible but different between ROMs.
-        rng.seed((seed ^ (rom.romIndex * 0x9E3779B9)) >>> 0);
+        // Seed RNG: shared-trainer ROMs use baseSeed so tier-based slots are identical;
+        // per-ROM trainer ROMs use a unique derived seed.
+        rng.seed(resolveRomSeed(rom, seed));
 
         try {
             await writer(pokedex, trainers, starters, wild, isDebug);

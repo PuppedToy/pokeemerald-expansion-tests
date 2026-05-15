@@ -136,11 +136,11 @@ export async function runGeneration(jobId, frontendConfig) {
 
 // ── Docs computation ──────────────────────────────────────────────────────────
 
-// Run writer() with the same per-ROM seed formula used by make.js, read the
-// output JS files it produces, and return the viewer data as plain objects.
+// Run writer() with the caller-supplied romSeed, read the output JS files it
+// produces, and return the viewer data as plain objects.
 // Game files are restored in the finally block so the next ROM starts clean.
-async function computeRomDocs(pokedex, trainers, starters, wild, romIndex, baseSeed) {
-    rng.seed((baseSeed ^ (romIndex * 0x9E3779B9)) >>> 0);
+async function computeRomDocs(pokedex, trainers, starters, wild, romSeed) {
+    rng.seed(romSeed);
     // writer.js mutates trainersData in place (splice removes mega trainers).
     // Deep-clone so shared artifacts are not corrupted across ROM iterations.
     const trainersCopy = JSON.parse(JSON.stringify(trainers));
@@ -190,7 +190,7 @@ async function generateDefault(job, cfg, mcfg, sessionId) {
     const wild     = runWildModule(pokedex.pokes, starters, wildData); tick('Building viewer...'); await flush();
 
     progress(job, Math.round((done / totalSteps) * 100), 'Building viewer data...');
-    const docs = await computeRomDocs(pokedex, trainers, starters, wild, 0, cfg.seed);
+    const docs = await computeRomDocs(pokedex, trainers, starters, wild, cfg.seed);
     tick('Done'); await flush();
 
     return bundle(sessionId, cfg, {}, [{
@@ -273,12 +273,17 @@ async function generateNuzlocke(job, cfg, mcfg, sessionId) {
         });
     }
 
-    // Phase 2: compute docs for each ROM (deterministic per-ROM seed, same as make.js)
+    // Phase 2: compute docs for each ROM.
+    // Shared trainers → baseSeed for all ROMs so tier-based slots are identical.
+    // Per-ROM trainers → unique seed per ROM so slots differ (current behaviour).
     for (let i = 0; i < numROMs; i++) {
         const label = numROMs > 1 ? ` (ROM ${i + 1}/${numROMs})` : '';
         progress(job, Math.round((done / totalSteps) * 100), `Building viewer${label}...`);
         const { pokedex, trainers, starters, wild } = romArtifacts[i];
-        roms[i].docs = await computeRomDocs(pokedex, trainers, starters, wild, i, cfg.seed);
+        const romSeed = shared.trainers
+            ? cfg.seed
+            : (cfg.seed ^ (i * 0x9E3779B9)) >>> 0;
+        roms[i].docs = await computeRomDocs(pokedex, trainers, starters, wild, romSeed);
         tick(`Viewer ready${label}`); await flush();
     }
 
@@ -414,13 +419,25 @@ async function generateSoullink(job, cfg, mcfg, sessionId) {
         sharedData.players = playersSharedData;
     }
 
-    // Phase 2: compute docs for each ROM
+    // Phase 2: compute docs for each ROM.
+    // Seed is derived from the trainer-sharing level so that shared trainer
+    // resolution produces identical tier-based slots across the relevant ROMs.
     for (let i = 0; i < roms.length; i++) {
         const rom = roms[i];
         const label = `player ${(rom.playerIndex ?? 0) + 1} ROM ${rom.romIndex + 1}`;
         progress(job, Math.round((done / totalSteps) * 100), `Building viewer for ${label}...`);
         const { pokedex, trainers, starters, wild } = romArtifacts[i];
-        roms[i].docs = await computeRomDocs(pokedex, trainers, starters, wild, i, cfg.seed);
+        const t = rom.artifacts.trainers;
+        let romSeed;
+        if (t === 'global') {
+            romSeed = cfg.seed;  // all ROMs / all players share the same trainer seed
+        } else if (typeof t === 'string' && t.startsWith('player-')) {
+            const p = parseInt(t.split('-')[1], 10);
+            romSeed = (cfg.seed ^ (p * 0x9E3779B9)) >>> 0;  // same seed within a player's ROMs
+        } else {
+            romSeed = (cfg.seed ^ (i * 0x9E3779B9)) >>> 0;  // unique per ROM
+        }
+        roms[i].docs = await computeRomDocs(pokedex, trainers, starters, wild, romSeed);
         tick(`Viewer ready (${label})`); await flush();
     }
 
