@@ -1279,8 +1279,8 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     });
     maps.unshift({
         id: 'STARTER_EXTRA',
-        ...chosenExtraPokemon.reduce((acc, poke, index) => {
-            acc[`special${index + 1}`] = poke.id;
+        ...extraStarters.reduce((acc, id, index) => {
+            acc[`special${index + 1}`] = id;
             return acc;
         }, {}),
     });
