@@ -185,6 +185,32 @@
   margin-bottom: 0;
 }
 
+/* Run-type conditional panels */
+.run-panel {
+  margin-top: 16px;
+  padding: 20px;
+  background: var(--glass-2);
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.run-panel.hidden {
+  display: none;
+}
+
+/* Soul-link subsections */
+.sl-subsection {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sl-subsection:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
 /* Coop sub-panel */
 .coop-panel {
   margin-top: 16px;
@@ -265,6 +291,45 @@
   margin-left: auto;
 }
 
+/* Generation progress bar */
+.gen-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 12px;
+}
+
+.gen-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.gen-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+.gen-progress-pct {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.gen-step-label {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
 /* Generate step */
 .generate-card {
   text-align: center;
@@ -307,7 +372,8 @@
     padding: 0 16px;
   }
 
-  .radio-card-group {
+  .radio-card-group,
+  .radio-card-group-3 {
     grid-template-columns: 1fr;
   }
 

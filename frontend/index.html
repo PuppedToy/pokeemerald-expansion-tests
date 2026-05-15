@@ -109,27 +109,45 @@
         </div>
       </div>
 
-      <!-- Step 3: Generate (stub) -->
+      <!-- Step 3: Generate -->
       <div class="wizard-panel" data-step="3">
         <div class="card generate-card">
-          <div class="generate-icon">📦</div>
-          <div class="generate-title">Session bundle downloaded</div>
-          <div class="generate-desc">
-            Your configuration has been packaged as a session bundle JSON.<br>
-            The server will use this file to run the randomizer pipeline and produce your patched ROM.
+
+          <!-- Generating -->
+          <div id="gen-running">
+            <div class="generate-icon">⚙️</div>
+            <div class="generate-title">Generating your run…</div>
+            <div class="gen-progress-wrap">
+              <div class="gen-progress-bar">
+                <div class="gen-progress-fill" id="gen-progress-fill"></div>
+              </div>
+              <div class="gen-progress-pct" id="gen-progress-pct">0%</div>
+            </div>
+            <div class="gen-step-label" id="gen-step-label">Starting…</div>
           </div>
-          <div id="generate-success" class="success-banner" style="display:none;justify-content:center;margin-bottom:24px">
-            <span>✓ session-bundle downloaded</span>
-            <span id="generate-seed-display" style="color:var(--muted);font-size:12px"></span>
+
+          <!-- Done -->
+          <div id="gen-done" style="display:none">
+            <div class="generate-icon">📦</div>
+            <div class="generate-title">Generation complete</div>
+            <div id="gen-done-meta" class="generate-desc"></div>
+            <div class="generate-actions">
+              <button class="btn btn-secondary" id="btn-start-over">← Start over</button>
+              <button class="btn btn-primary" id="btn-download-bundle">Download bundle</button>
+              <button class="btn btn-ghost" disabled data-tooltip="ROM production coming soon">Send to server</button>
+            </div>
           </div>
-          <div class="generate-actions">
-            <button class="btn btn-secondary" id="btn-start-over">← Start over</button>
-            <button class="btn btn-primary" disabled
-              data-tooltip="Server integration coming soon">
-              Send to server
-            </button>
-            <span class="coming-soon-note">Server integration coming in a future update.</span>
+
+          <!-- Error -->
+          <div id="gen-error" style="display:none">
+            <div class="generate-icon" style="font-size:36px">✗</div>
+            <div class="generate-title">Generation failed</div>
+            <div class="generate-desc" id="gen-error-msg"></div>
+            <div class="generate-actions">
+              <button class="btn btn-secondary" id="btn-start-over-err">← Start over</button>
+            </div>
           </div>
+
         </div>
       </div>
 

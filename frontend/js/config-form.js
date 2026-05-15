@@ -4,38 +4,12 @@ import { downloadConfig, readJsonFile, extractConfig } from './session.js';
 const STORAGE_KEY = 'lastConfig';
 
 const DEFAULTS = {
-    numROMs: 1,
-    sharedModules: 1,
+    runType: 'default',
     difficulty: 'fair',
     rebalance: true,
     balanceChance: 0.2,
-    allTms: false,
     seed: '',
 };
-
-/**
- * Map UI state to sharedModules integer.
- * isCoOp: false → 1
- * coOpFlags: { pokedex: always true, trainers, starters, wild }
- */
-function computeSharedModules(isCoOp, flags) {
-    if (!isCoOp) return 1;
-    if (flags.wild)     return 5;
-    if (flags.starters) return 4;
-    if (flags.trainers) return 3;
-    return 2; // pokedex always locked on in co-op
-}
-
-/**
- * Map sharedModules integer back to UI flags (for restore from storage).
- */
-function sharedModulesToFlags(v) {
-    return {
-        trainers: v >= 3,
-        starters: v >= 4,
-        wild:     v >= 5,
-    };
-}
 
 export class ConfigForm {
     constructor(containerEl, { onConfigChange } = {}) {
@@ -48,50 +22,85 @@ export class ConfigForm {
 
     /** Returns the current validated config object, or null if invalid. */
     getConfig() {
-        const isCoOp = this._q('#run-coop').checked;
-        const numROMs = isCoOp ? (parseInt(this._q('#numroms').value, 10) || 2) : 1;
-        const flags = {
-            trainers: this._q('#share-trainers').checked,
-            starters: this._q('#share-starters').checked,
-            wild:     this._q('#share-wild').checked,
-        };
-        const sharedModules = computeSharedModules(isCoOp, flags);
+        const runType = this._q('input[name="run-type"]:checked')?.value ?? 'default';
         const difficulty = this._q('input[name="difficulty"]:checked')?.value ?? 'fair';
         const rebalance = this._q('#rebalance').checked;
         const balanceChance = rebalance
             ? Math.round(parseInt(this._q('#balance-chance').value, 10)) / 100
             : 0.2;
-        const allTms = this._q('#all-tms').checked;
         const seedRaw = this._q('#seed').value.trim();
         const seed = seedRaw === '' ? null : parseInt(seedRaw, 10);
 
         if (seed !== null && (isNaN(seed) || !Number.isInteger(seed))) return null;
 
-        return { numROMs, sharedModules, difficulty, rebalance, balanceChance, allTms, seed };
+        const base = { runType, difficulty, rebalance, balanceChance, seed };
+
+        if (runType === 'nuzlocke') {
+            const numROMs = parseInt(this._q('#nz-numroms').value, 10) || 3;
+            const shared = {
+                pokedex:  this._q('#nz-share-pokedex').checked,
+                trainers: this._q('#nz-share-trainers').checked,
+                starters: this._q('#nz-share-starters').checked,
+            };
+            return { ...base, numROMs, shared };
+        }
+
+        if (runType === 'soullink') {
+            const numPlayers    = parseInt(this._q('#sl-numplayers').value, 10) || 2;
+            const romsPerPlayer = parseInt(this._q('#sl-roms-per-player').value, 10) || 2;
+            const playerShared = {
+                pokedex:  this._q('#sl-player-share-pokedex').checked,
+                trainers: this._q('#sl-player-share-trainers').checked,
+                starters: this._q('#sl-player-share-starters').checked,
+            };
+            const romShared = {
+                pokedex:  this._q('#sl-rom-share-pokedex').checked,
+                trainers: this._q('#sl-rom-share-trainers').checked,
+                starters: this._q('#sl-rom-share-starters').checked,
+            };
+            return { ...base, numPlayers, romsPerPlayer, playerShared, romShared };
+        }
+
+        return base;
     }
 
     /** Populate the form from a config object (e.g. from localStorage or upload). */
     setConfig(cfg) {
-        const isCoOp = (cfg.numROMs ?? 1) > 1 || (cfg.sharedModules ?? 1) > 1;
-        this._q('#run-solo').checked = !isCoOp;
-        this._q('#run-coop').checked = isCoOp;
-
-        if (isCoOp) {
-            this._q('#numroms').value = cfg.numROMs ?? 2;
-            const flags = sharedModulesToFlags(cfg.sharedModules ?? 4);
-            this._q('#share-trainers').checked = flags.trainers;
-            this._q('#share-starters').checked = flags.starters;
-            this._q('#share-wild').checked     = flags.wild;
+        if (cfg.sharedModules !== undefined && cfg.runType === undefined) {
+            cfg = this._convertLegacy(cfg);
         }
 
-        const diff = cfg.difficulty ?? 'fair';
-        const diffInput = this._q(`input[name="difficulty"][value="${diff}"]`);
+        const runType = cfg.runType ?? 'default';
+        const radio = this._q(`input[name="run-type"][value="${runType}"]`);
+        if (radio) radio.checked = true;
+
+        const diffInput = this._q(`input[name="difficulty"][value="${cfg.difficulty ?? 'fair'}"]`);
         if (diffInput) diffInput.checked = true;
 
         this._q('#rebalance').checked = cfg.rebalance !== false;
         this._q('#balance-chance').value = Math.round((cfg.balanceChance ?? 0.2) * 100);
-        this._q('#all-tms').checked = cfg.allTms === true;
         this._q('#seed').value = cfg.seed != null ? String(cfg.seed) : '';
+
+        if (runType === 'nuzlocke') {
+            this._q('#nz-numroms').value = cfg.numROMs ?? 3;
+            const sh = cfg.shared ?? { pokedex: true, trainers: true, starters: true };
+            this._q('#nz-share-pokedex').checked = sh.pokedex !== false;
+            this._q('#nz-share-trainers').checked = sh.trainers !== false;
+            this._q('#nz-share-starters').checked = sh.starters !== false;
+        }
+
+        if (runType === 'soullink') {
+            this._q('#sl-numplayers').value = cfg.numPlayers ?? 2;
+            this._q('#sl-roms-per-player').value = cfg.romsPerPlayer ?? 2;
+            const ps = cfg.playerShared ?? { pokedex: true, trainers: true, starters: false };
+            const rs = cfg.romShared ?? { pokedex: true, trainers: true, starters: true };
+            this._q('#sl-player-share-pokedex').checked = ps.pokedex !== false;
+            this._q('#sl-player-share-trainers').checked = ps.trainers !== false;
+            this._q('#sl-player-share-starters').checked = ps.starters === true;
+            this._q('#sl-rom-share-pokedex').checked = rs.pokedex !== false;
+            this._q('#sl-rom-share-trainers').checked = rs.trainers !== false;
+            this._q('#sl-rom-share-starters').checked = rs.starters !== false;
+        }
 
         this._syncUI();
     }
@@ -100,60 +109,144 @@ export class ConfigForm {
 
     _q(sel) { return this.container.querySelector(sel); }
 
+    _convertLegacy(cfg) {
+        const sm = cfg.sharedModules ?? 1;
+        if (sm <= 1) return { runType: 'default', difficulty: cfg.difficulty, rebalance: cfg.rebalance, balanceChance: cfg.balanceChance, seed: cfg.seed };
+        return {
+            runType: 'nuzlocke',
+            numROMs: cfg.numROMs ?? 2,
+            shared: { pokedex: sm >= 2, trainers: sm >= 3, starters: sm >= 4 },
+            difficulty: cfg.difficulty ?? 'fair',
+            rebalance: cfg.rebalance !== false,
+            balanceChance: cfg.balanceChance ?? 0.2,
+            seed: cfg.seed ?? null,
+        };
+    }
+
     _build() {
         this.container.innerHTML = `
 <div class="form-section">
   <div class="section-title">Run type</div>
-  <div class="radio-card-group">
+  <div class="radio-card-group radio-card-group-3">
     <label class="radio-card">
-      <input type="radio" name="run-type" id="run-solo" value="solo" checked>
+      <input type="radio" name="run-type" id="run-default" value="default" checked>
       <div class="radio-card-body">
-        <div class="radio-card-title">Solo run</div>
-        <div class="radio-card-desc">Generate one ROM, just for you. All Pokémon, trainers and wild encounters are unique to this run.</div>
+        <div class="radio-card-title">Default</div>
+        <div class="radio-card-desc">Generate one ROM just for you. All Pokémon, trainers and encounters are unique to this run.</div>
       </div>
     </label>
     <label class="radio-card">
-      <input type="radio" name="run-type" id="run-coop" value="coop">
+      <input type="radio" name="run-type" id="run-nuzlocke" value="nuzlocke">
       <div class="radio-card-body">
-        <div class="radio-card-title">Co-op / Soul-Link</div>
-        <div class="radio-card-desc">Generate multiple ROMs. Choose what players share so everyone faces the same world.</div>
+        <div class="radio-card-title">Nuzlocke</div>
+        <div class="radio-card-desc">Generate multiple ROMs in the same shared world. When you lose a run, continue in the next ROM.</div>
+      </div>
+    </label>
+    <label class="radio-card">
+      <input type="radio" name="run-type" id="run-soullink" value="soullink">
+      <div class="radio-card-body">
+        <div class="radio-card-title">Soul-Link</div>
+        <div class="radio-card-desc">Share the same world with a friend. Each player gets their own set of ROMs for their nuzlocke.</div>
       </div>
     </label>
   </div>
 
-  <div id="coop-panel" class="coop-panel hidden">
+  <div id="nuzlocke-panel" class="run-panel hidden">
     <div class="coop-numroms">
-      <label for="numroms">Number of players</label>
-      <input type="number" id="numroms" class="input" value="2" min="2" max="8" style="width:72px">
+      <label for="nz-numroms">Number of ROMs</label>
+      <input type="number" id="nz-numroms" class="input" value="3" min="2" max="10" style="width:72px">
     </div>
-    <div class="section-title" style="margin-bottom:10px">What do players share?</div>
+    <div class="section-title" style="margin-bottom:10px">What's shared across all ROMs?</div>
     <div class="checkbox-row">
-      <input type="checkbox" id="share-pokedex" checked disabled
-        data-tooltip="Required for co-op — all players must encounter the same universe of Pokémon.">
+      <input type="checkbox" id="nz-share-pokedex" checked>
       <div class="checkbox-info">
         <span class="checkbox-label">Same Pokémon universe</span>
-        <span class="checkbox-desc">Every player's Pokédex, base stats and movesets are identical.</span>
+        <span class="checkbox-desc">All ROMs share the same Pokédex, base stats and movesets.</span>
+      </div>
+    </div>
+    <div id="nz-pokedex-warning" class="warning-banner hidden">
+      Games with different Pokémon universes cannot share trainer teams or starter choices.
+    </div>
+    <div class="checkbox-row">
+      <input type="checkbox" id="nz-share-trainers" checked>
+      <div class="checkbox-info">
+        <span class="checkbox-label">Same trainer teams &amp; rewards</span>
+        <span class="checkbox-desc">All ROMs face the same randomized gym leaders, rivals and item rewards.</span>
       </div>
     </div>
     <div class="checkbox-row">
-      <input type="checkbox" id="share-trainers" checked>
+      <input type="checkbox" id="nz-share-starters" checked>
       <div class="checkbox-info">
-        <span class="checkbox-label">Same gym teams</span>
-        <span class="checkbox-desc">All players fight the same randomized gym leaders and rivals.</span>
+        <span class="checkbox-label">Same starters</span>
+        <span class="checkbox-desc">All ROMs share the same randomized starter pool.</span>
       </div>
     </div>
-    <div class="checkbox-row">
-      <input type="checkbox" id="share-starters" checked>
-      <div class="checkbox-info">
-        <span class="checkbox-label">Same starter choices</span>
-        <span class="checkbox-desc">Everyone picks from the same randomized starter pool — standard soul-link.</span>
+  </div>
+
+  <div id="soullink-panel" class="run-panel hidden">
+    <div class="sl-subsection">
+      <div class="section-title">Between players</div>
+      <div class="coop-numroms">
+        <label for="sl-numplayers">Number of players</label>
+        <input type="number" id="sl-numplayers" class="input" value="2" min="2" max="8" style="width:72px">
+      </div>
+      <div class="section-title" style="font-size:10px;margin-bottom:8px;margin-top:4px">What do all players share?</div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="sl-player-share-pokedex" checked>
+        <div class="checkbox-info">
+          <span class="checkbox-label">Same Pokémon universe</span>
+          <span class="checkbox-desc">Every player encounters the same Pokédex, base stats and movesets.</span>
+        </div>
+      </div>
+      <div id="sl-player-pokedex-warning" class="warning-banner hidden">
+        Players with different Pokémon universes cannot share trainer teams or starter choices.
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="sl-player-share-trainers" checked>
+        <div class="checkbox-info">
+          <span class="checkbox-label">Same trainer teams &amp; rewards</span>
+          <span class="checkbox-desc">All players fight the same randomized gym leaders and rivals.</span>
+        </div>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="sl-player-share-starters">
+        <div class="checkbox-info">
+          <span class="checkbox-label">Same starters</span>
+          <span class="checkbox-desc">All players pick from the same randomized starter pool.</span>
+        </div>
       </div>
     </div>
-    <div class="checkbox-row">
-      <input type="checkbox" id="share-wild">
-      <div class="checkbox-info">
-        <span class="checkbox-label">Identical wild routes</span>
-        <span class="checkbox-desc">Every route holds the same species for all players — strict soul-link variant.</span>
+
+    <div class="sl-subsection">
+      <div class="section-title">Within each player's runs</div>
+      <div class="coop-numroms">
+        <label for="sl-roms-per-player">ROMs per player</label>
+        <input type="number" id="sl-roms-per-player" class="input" value="2" min="1" max="10" style="width:72px">
+      </div>
+      <div class="section-title" style="font-size:10px;margin-bottom:8px;margin-top:4px">What's shared across a player's ROMs?</div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="sl-rom-share-pokedex" checked>
+        <div class="checkbox-info">
+          <span class="checkbox-label">Same Pokémon universe</span>
+          <span class="checkbox-desc">All of a player's ROMs share the same Pokédex.</span>
+        </div>
+      </div>
+      <div id="sl-rom-pokedex-warning" class="warning-banner hidden">
+        ROMs with different Pokémon universes cannot share trainer teams or starter choices.
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="sl-rom-share-trainers" checked>
+        <div class="checkbox-info">
+          <span class="checkbox-label">Same trainer teams &amp; rewards</span>
+          <span class="checkbox-desc">All of a player's ROMs face the same gym leaders and rivals.</span>
+        </div>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="sl-rom-share-starters" checked>
+        <div class="checkbox-info">
+          <span class="checkbox-label">Same starters</span>
+          <span class="checkbox-desc">All of a player's ROMs share the same randomized starter pool.</span>
+        </div>
       </div>
     </div>
   </div>
@@ -212,17 +305,6 @@ export class ConfigForm {
       </div>
       <span class="field-hint">Fraction of Pokémon whose stats get mutated. 0% = no mutations, 50% = aggressive.</span>
     </div>
-
-    <div class="toggle-wrap">
-      <div>
-        <div class="toggle-label">All TMs available</div>
-        <div class="toggle-desc">Treat all teachable moves as available via TM (ignores actual TM pool).</div>
-      </div>
-      <label class="toggle">
-        <input type="checkbox" id="all-tms">
-        <span class="toggle-track"></span>
-      </label>
-    </div>
   </div>
 </div>
 
@@ -274,29 +356,87 @@ export class ConfigForm {
     }
 
     _syncUI() {
-        const isCoOp = this._q('#run-coop').checked;
-        this._q('#coop-panel').classList.toggle('hidden', !isCoOp);
+        const runType = this._q('input[name="run-type"]:checked')?.value ?? 'default';
+
+        this._q('#nuzlocke-panel').classList.toggle('hidden', runType !== 'nuzlocke');
+        this._q('#soullink-panel').classList.toggle('hidden', runType !== 'soullink');
 
         const rebalanceOn = this._q('#rebalance').checked;
         this._q('#balance-chance-row').style.display = rebalanceOn ? '' : 'none';
+        this._q('#balance-chance-val').textContent = this._q('#balance-chance').value + '%';
 
-        const val = this._q('#balance-chance').value;
-        this._q('#balance-chance-val').textContent = val + '%';
+        if (runType === 'nuzlocke') this._syncNuzlocke();
+        if (runType === 'soullink') this._syncSoullink();
+    }
+
+    _syncNuzlocke() {
+        const pdxOn = this._q('#nz-share-pokedex').checked;
+        if (!pdxOn) {
+            this._q('#nz-share-trainers').checked = false;
+            this._q('#nz-share-starters').checked = false;
+        }
+        this._q('#nz-share-trainers').disabled = !pdxOn;
+        this._q('#nz-share-starters').disabled = !pdxOn;
+        this._q('#nz-pokedex-warning').classList.toggle('hidden', pdxOn);
+    }
+
+    _syncSoullink() {
+        const pp = this._q('#sl-player-share-pokedex').checked;
+
+        // Player-level pokedex dependency
+        if (!pp) {
+            this._q('#sl-player-share-trainers').checked = false;
+            this._q('#sl-player-share-starters').checked = false;
+        }
+        this._q('#sl-player-share-trainers').disabled = !pp;
+        this._q('#sl-player-share-starters').disabled = !pp;
+        this._q('#sl-player-pokedex-warning').classList.toggle('hidden', pp);
+
+        const pt = this._q('#sl-player-share-trainers').checked;
+        const ps = this._q('#sl-player-share-starters').checked;
+
+        const rpdEl = this._q('#sl-rom-share-pokedex');
+        const rtrEl = this._q('#sl-rom-share-trainers');
+        const rstEl = this._q('#sl-rom-share-starters');
+
+        // Player-shared forces ROM-shared on and disabled
+        if (pp) { rpdEl.checked = true; rpdEl.disabled = true; }
+        else     { rpdEl.disabled = false; }
+
+        if (pt) { rtrEl.checked = true; rtrEl.disabled = true; }
+        else    { rtrEl.disabled = false; }
+
+        if (ps) { rstEl.checked = true; rstEl.disabled = true; }
+        else    { rstEl.disabled = false; }
+
+        // ROM-level pokedex dependency (only for non-forced items)
+        const romPdxOn = rpdEl.checked;
+        if (!romPdxOn) {
+            if (!pt) { rtrEl.checked = false; rtrEl.disabled = true; }
+            if (!ps) { rstEl.checked = false; rstEl.disabled = true; }
+        }
+        this._q('#sl-rom-pokedex-warning').classList.toggle('hidden', romPdxOn);
     }
 
     _wireEvents() {
         const onChange = () => { this._syncUI(); this._save(); };
 
-        this._q('#run-solo').addEventListener('change', onChange);
-        this._q('#run-coop').addEventListener('change', onChange);
-        this._q('#numroms').addEventListener('input', onChange);
-        this._q('#share-trainers').addEventListener('change', onChange);
-        this._q('#share-starters').addEventListener('change', onChange);
-        this._q('#share-wild').addEventListener('change', onChange);
+        this.container.querySelectorAll('input[name="run-type"]').forEach(el => el.addEventListener('change', onChange));
+        this._q('#nz-numroms').addEventListener('input', onChange);
+        this._q('#nz-share-pokedex').addEventListener('change', onChange);
+        this._q('#nz-share-trainers').addEventListener('change', onChange);
+        this._q('#nz-share-starters').addEventListener('change', onChange);
+        this._q('#sl-numplayers').addEventListener('input', onChange);
+        this._q('#sl-player-share-pokedex').addEventListener('change', onChange);
+        this._q('#sl-player-share-trainers').addEventListener('change', onChange);
+        this._q('#sl-player-share-starters').addEventListener('change', onChange);
+        this._q('#sl-roms-per-player').addEventListener('input', onChange);
+        this._q('#sl-rom-share-pokedex').addEventListener('change', onChange);
+        this._q('#sl-rom-share-trainers').addEventListener('change', onChange);
+        this._q('#sl-rom-share-starters').addEventListener('change', onChange);
         this.container.querySelectorAll('input[name="difficulty"]').forEach(el => el.addEventListener('change', onChange));
         this._q('#rebalance').addEventListener('change', onChange);
         this._q('#balance-chance').addEventListener('input', onChange);
-        this._q('#all-tms').addEventListener('change', onChange);
         this._q('#seed').addEventListener('input', onChange);
 
         this._q('#btn-randomize-seed').addEventListener('click', () => {
