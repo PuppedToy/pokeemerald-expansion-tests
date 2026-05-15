@@ -159,7 +159,17 @@ function isValidEvolution(level, { param, method }) {
         || ((method === 'ITEM' || param === '0') && level > 28);
 }
 
-async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug) {
+// DJB2 hash — used for per-slot RNG reseeding when trainers are shared across ROMs
+function djb2Hash(str) {
+    let h = 5381;
+    for (let i = 0; i < str.length; i++) h = (Math.imul(h, 33) ^ str.charCodeAt(i)) >>> 0;
+    return h;
+}
+
+// baseRngSeed: when non-null, the RNG is reseeded at the start of each trainer slot
+// using hash(baseRngSeed, trainer.id, slotIndex). This makes tier-based slots
+// deterministic across ROMs that share a trainer artifact but differ in wild data.
+async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null) {
     let { pokes: pokemonList, moves, abilities } = pokedexArtifact;
     const { trainersData, itemAssignments } = trainersArtifact;
     const { starters } = startersArtifact;
@@ -862,7 +872,13 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
         }
 
         const team = [];
-        trainer.team.forEach(trainerMonDefinition => {
+        trainer.team.forEach((trainerMonDefinition, slotIndex) => {
+            if (baseRngSeed !== null) {
+                // Reseed per slot so tier-based Pokémon choices are identical across shared-trainer ROMs
+                // regardless of how many RNG calls the previous slot consumed (encounter/moveset/IV).
+                const slotSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainer.id + ':' + slotIndex), 0x9E3779B9)) >>> 0;
+                rng.seed(slotSeed);
+            }
             let chosenTrainerMon = choosePokemonFromDefinition(trainerMonDefinition);
             
             if (!chosenTrainerMon && trainerMonDefinition.fallback && trainerMonDefinition.fallback.length) {
