@@ -3,7 +3,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 const parser = require('../parser');
-const { randomizeTMs } = require('../tmRandomizer');
+const { randomizeTMs, buildTMList } = require('../tmRandomizer');
 const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
 const { ratePokemon, rateContextual, rateMove } = require('../rating');
 const { balancePokemon } = require('../rebalancer');
@@ -14,13 +14,12 @@ const {
 
 const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
 
-async function runPokedexModule(config) {
-    const allTms = config.allTms ?? false;
-
+// Parse all source .h files → raw deterministic objects.
+// No RNG, no file writes. Called by build.js and (as fallback) by runPokedexModule in Node.
+async function parseBaseData() {
     // 1. Parse abilities
     const abilitiesFileText = await fs.readFile(ABILITIES_FILE_PATH, 'utf-8');
     const abilities = parser.parseAbilitiesFile(abilitiesFileText);
-    await fs.writeFile(path.resolve(__dirname, '..', 'abilities.json'), JSON.stringify(abilities, null, 2), 'utf-8');
 
     // 2. Parse mega evo stones
     const megaEvosFileText = await fs.readFile(MEGA_EVOS_PATH, 'utf-8');
@@ -38,7 +37,6 @@ async function runPokedexModule(config) {
         moves[moveId].type     = moves[moveId].type.replace('TYPE_', '');
         moves[moveId].rating   = rateMove(moves[moveId]);
     });
-    await fs.writeFile(path.resolve(__dirname, '..', 'moves.json'), JSON.stringify(moves, null, 2), 'utf-8');
 
     // 4. Parse learnsets
     const levelUpLearnsets = {};
@@ -47,20 +45,13 @@ async function runPokedexModule(config) {
         const learnsetsFileText = await fs.readFile(learnsetsFilePath, 'utf-8');
         Object.assign(levelUpLearnsets, parser.parseLearnsetsFile(learnsetsFileText));
     }
-    await fs.writeFile(path.resolve(__dirname, '..', 'level_up_learnsets.json'), JSON.stringify(levelUpLearnsets, null, 2), 'utf-8');
 
     // 5. Parse teachables
     const teachablesFilePath = path.resolve(__dirname, '..', '..', 'src', 'data', 'pokemon', 'teachable_learnsets.h');
     const teachablesFileText = await fs.readFile(teachablesFilePath, 'utf-8');
     const TMTeachables = parser.parseTeachableFile(teachablesFileText);
-    await fs.writeFile(path.resolve(__dirname, '..', 'teachable_learnsets.json'), JSON.stringify(TMTeachables, null, 2), 'utf-8');
 
-    // 6. Randomize TMs (writes tms_hms.h, returns tmList array)
-    const tmList = await randomizeTMs();
-    // Build randomized tmPool (or null for --all-tms)
-    const tmPool = allTms ? null : await buildTmPoolFromFile();
-
-    // 7. Parse species (all gens)
+    // 6. Parse species (all gens) — deterministic enrichment with learnsets/teachables/evoTree
     const definitions = { VICTREEBEL_SP_DEF: '70', EXEGGUTOR_SP_DEF: '75' };
     const evoTree = {};
     const megaEvoTree = {};
@@ -117,15 +108,51 @@ async function runPokedexModule(config) {
         });
     }
 
-    // 8. Expand teachables with randomized pool
+    return { abilities, megaEvoStones, moves, levelUpLearnsets, TMTeachables, evoTree, megaEvoTree, allPokes };
+}
+
+// Run the full pokedex pipeline.
+//
+// baseData: pre-parsed result from parseBaseData(). Pass this from the browser
+//   (loaded from base-data.json) to skip all file I/O.
+//   When null (Node CLI), parseBaseData() is called internally and JSON caches are written.
+async function runPokedexModule(config, baseData = null) {
+    const allTms  = config.allTms ?? false;
+    const nodeMode = !baseData;
+
+    if (nodeMode) {
+        baseData = await parseBaseData();
+        // Write JSON caches (Node-only — used by the HTML viewer and as intermediate artifacts)
+        await fs.writeFile(path.resolve(__dirname, '..', 'abilities.json'),             JSON.stringify(baseData.abilities,         null, 2), 'utf-8');
+        await fs.writeFile(path.resolve(__dirname, '..', 'moves.json'),                 JSON.stringify(baseData.moves,             null, 2), 'utf-8');
+        await fs.writeFile(path.resolve(__dirname, '..', 'level_up_learnsets.json'),    JSON.stringify(baseData.levelUpLearnsets,  null, 2), 'utf-8');
+        await fs.writeFile(path.resolve(__dirname, '..', 'teachable_learnsets.json'),   JSON.stringify(baseData.TMTeachables,      null, 2), 'utf-8');
+    }
+
+    const { abilities, moves, evoTree, megaEvoTree, allPokes: basePokes } = baseData;
+
+    // Deep-clone allPokes so we never mutate the shared pre-cooked base data.
+    const allPokes = JSON.parse(JSON.stringify(basePokes));
+
+    // 6. Randomize TMs — Node: writes tms_hms.h + script_menu.h; Browser: RNG only
+    let tmList, tmPool;
+    if (nodeMode) {
+        tmList = await randomizeTMs();
+        tmPool = allTms ? null : await buildTmPoolFromFile();
+    } else {
+        tmList = buildTMList();
+        tmPool = allTms ? null : new Set(tmList.map(m => 'MOVE_' + m));
+    }
+
+    // 7. Expand teachables with randomized pool
     expandAllTeachables(allPokes, tmPool, moves);
 
-    // 9. Rate all pokemon
+    // 8. Rate all pokemon
     for (const poke of allPokes) {
         poke.rating = ratePokemon(poke, moves, abilities, tmPool);
     }
 
-    // 10. Optional rebalance
+    // 9. Optional rebalance
     if (config.rebalance) {
         const abilityKeys = Object.keys(abilities).map(key => key.replace('ABILITY_', ''));
         for (let i = 0; i < allPokes.length; i++) {
@@ -137,7 +164,7 @@ async function runPokedexModule(config) {
         }
     }
 
-    // 11. Best-evo / mega-evo ratings
+    // 10. Best-evo / mega-evo ratings
     allPokes.forEach(poke => {
         let bestEvo = poke.id;
         let bestEvoRating = poke.rating.absoluteRating;
@@ -181,7 +208,7 @@ async function runPokedexModule(config) {
     const rayquazaMega = allPokes.find(p => p.id === 'SPECIES_RAYQUAZA_MEGA');
     if (rayquaza && rayquazaMega) rayquaza.rating = { ...rayquazaMega.rating };
 
-    // 12. Contextual ratings
+    // 11. Contextual ratings
     for (const poke of allPokes) {
         poke.contextualRatings = {};
         for (const cap of LEVEL_CAPS) {
@@ -189,9 +216,11 @@ async function runPokedexModule(config) {
         }
     }
 
-    // 13. Write JSON caches
-    await fs.writeFile(path.resolve(__dirname, '..', 'evoTree.json'), JSON.stringify(evoTree, null, 2), 'utf-8');
-    await fs.writeFile(path.resolve(__dirname, '..', 'pokes.json'), JSON.stringify(allPokes, null, 2), 'utf-8');
+    // Write final JSON caches (Node-only)
+    if (nodeMode) {
+        await fs.writeFile(path.resolve(__dirname, '..', 'evoTree.json'), JSON.stringify(evoTree, null, 2), 'utf-8');
+        await fs.writeFile(path.resolve(__dirname, '..', 'pokes.json'),   JSON.stringify(allPokes, null, 2), 'utf-8');
+    }
 
     return {
         schemaVersion: 1,
@@ -208,4 +237,4 @@ async function runPokedexModule(config) {
     };
 }
 
-module.exports = { runPokedexModule };
+module.exports = { runPokedexModule, parseBaseData };

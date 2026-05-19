@@ -12,11 +12,8 @@ export function resolveArtifact(value, sharedData, key) {
 }
 
 /**
- * Config import/export helpers.
- *
- * The session bundle (actual randomized data) is now generated server-side
- * via /api/generate and downloaded directly from /api/generate/bundle.
- * This file handles only the config save/load that lives in Step 1.
+ * Config import/export helpers for Step 1.
+ * The session bundle is generated entirely in the browser (randomizer-worker.js).
  */
 
 export function downloadConfig(config) {

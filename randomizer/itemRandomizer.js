@@ -4,6 +4,8 @@ const path = require('path');
 const rng = require('./rng');
 const items = require('./items.js');
 
+const IS_NODE = typeof process !== 'undefined' && !!process.versions?.node;
+
 const ROOT = path.resolve(__dirname, '..');
 const SCRIPT_MENU_PATH = path.join(ROOT, 'src', 'data', 'script_menu.h');
 
@@ -500,9 +502,11 @@ function updateScriptMenu(a) {
 
 function randomizeItems() {
     const a = buildAssignments();
-    updateScripts(a);
-    updateScriptMenu(a);
-    console.log('[Item Randomizer] Done.');
+    if (IS_NODE) {
+        updateScripts(a);
+        updateScriptMenu(a);
+        console.log('[Item Randomizer] Done.');
+    }
 
     // Return display-name assignments for use in trainer generation
     const dn = (key) => a[key].map(itemDisplayName);

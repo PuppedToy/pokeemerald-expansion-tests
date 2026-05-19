@@ -51,3 +51,64 @@ If you are looking to [report a bug](CONTRIBUTING.md#Bug-Report), [open a pull r
 [![](https://dcbadge.limes.pink/api/server/6CzjAG6GZk)](https://discord.gg/6CzjAG6GZk)
 
 Our community uses the [ROM Hacking Hideout (RHH) Discord server](https://discord.gg/6CzjAG6GZk) to communicate and organize. Most of our discussions take place there, and we welcome anybody to join us!
+
+---
+
+# Randomizer
+
+This fork includes a fully seeded randomizer and rebalancer on top of pokeemerald-expansion.
+All randomization runs in the **browser** — no server needed for generation.
+
+## Quick-start (web frontend)
+
+```bash
+# One-time build (re-run after any source .h file change):
+node build.js
+
+# Start the local server:
+cd backend && npm start
+# → open http://localhost:3000
+```
+
+Configure your run (Default / Nuzlocke / Soul-Link), review settings, click **Generate**.
+The full randomizer pipeline runs client-side in a Web Worker.
+Download a **ZIP** containing per-ROM Nuzlocke tracker docs, or the raw **bundle JSON**.
+
+## CLI tools
+
+### `analyze.js` — Quick randomization health check
+
+Runs the full pipeline and opens an HTML viewer with trainer teams, wild encounters,
+and starter picks. Does **not** compile a ROM.
+
+```bash
+node analyze.js                      # interactive prompts
+node analyze.js --seed=42            # fixed seed
+node analyze.js --difficulty=hard
+node analyze.js --no-balance         # skip stat rebalancing
+node analyze.js --all-tms            # treat all teachable moves as TMs
+node analyze.js --debug              # level 5 teams, single-slot trainers
+```
+
+Output: opens `randomizer/output/out.html` in the default browser.
+
+### `make.js` — ROM production
+
+Randomizes and compiles GBA ROM(s). Requires devkitPro / agbcc toolchain on PATH.
+
+```bash
+# Full pipeline: fresh randomization → compile ROM
+node make.js --randomize [--seed=42] [--difficulty=hard] [--no-balance] [--debug] [--clean]
+
+# Bundle mode: compile ROM(s) from a pre-generated session bundle
+node make.js --bundle=./path/to/bundle.json [--clean]
+
+# Interactive mode (prompts for all options)
+node make.js
+```
+
+Output: ROM(s) written to `roms/<sessionId>/`.
+
+## Architecture
+
+See [docs/RANDOMIZER.md](docs/RANDOMIZER.md) for the full pipeline design.

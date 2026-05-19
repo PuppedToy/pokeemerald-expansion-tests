@@ -22,8 +22,8 @@ setActiveTab('home');
 
 let currentStep = 1;
 let currentConfig = null;
-let currentJobId = null;
-let currentEventSource = null;
+let currentBundle = null;
+let currentWorker = null;
 
 const form = new ConfigForm(document.getElementById('config-form-mount'), {
     onConfigChange(cfg) { currentConfig = cfg; },
@@ -53,62 +53,49 @@ document.getElementById('btn-to-review').addEventListener('click', () => {
 // Step 2 → 1: Back
 document.getElementById('btn-back-to-config').addEventListener('click', () => showStep(1));
 
-// Step 2 → 3: Generate — calls server, streams progress
-document.getElementById('btn-generate').addEventListener('click', async () => {
+// Step 2 → 3: Generate — runs the randomizer in a Web Worker (no API call)
+document.getElementById('btn-generate').addEventListener('click', () => {
     currentConfig = form.getConfig();
     if (!currentConfig) { alert('Please check your settings.'); return; }
 
-    if (currentConfig.seed === null) {
-        currentConfig.seed = Math.floor(Math.random() * 0xFFFFFFFF);
+    if (currentConfig.seed == null) {
+        currentConfig.seed = (Math.random() * 0xFFFFFFFF) >>> 0;
     }
 
     showStep(3);
     resetGenerateUI();
-
-    try {
-        const res = await fetch('/api/generate/start', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(currentConfig),
-        });
-        if (!res.ok) throw new Error(`Server error ${res.status}`);
-        const { jobId } = await res.json();
-        currentJobId = jobId;
-        openProgressStream(jobId);
-    } catch (err) {
-        showGenError(err.message);
-    }
+    startWorker(currentConfig);
 });
 
 // Step 3 → 1: Start over
 document.getElementById('btn-start-over').addEventListener('click', () => {
-    closeEventSource();
+    terminateWorker();
     showStep(1);
 });
 document.getElementById('btn-start-over-err').addEventListener('click', () => {
-    closeEventSource();
+    terminateWorker();
     showStep(1);
 });
 
 // Download all (ZIP: bundle JSON + per-ROM docs HTML)
 document.getElementById('btn-download-all').addEventListener('click', async () => {
-    if (!currentJobId) return;
+    if (!currentBundle) return;
 
     const btn = document.getElementById('btn-download-all');
     btn.disabled = true;
     btn.textContent = 'Building ZIP…';
 
     try {
-        const [bundle, template] = await Promise.all([
-            fetch(`/api/generate/bundle?jobId=${currentJobId}`).then(r => { if (!r.ok) throw new Error(`Bundle fetch failed: ${r.status}`); return r.json(); }),
-            fetch('/template.html').then(r => { if (!r.ok) throw new Error('Template not found'); return r.text(); }),
-        ]);
+        const template = await fetch('/template.html').then(r => {
+            if (!r.ok) throw new Error('Template not found');
+            return r.text();
+        });
 
         const zip = new JSZip();
-        zip.file('bundle.json', JSON.stringify(bundle, null, 2));
+        zip.file('bundle.json', JSON.stringify(currentBundle, null, 2));
 
-        for (const rom of bundle.roms) {
-            const pokedex = resolveArtifact(rom.artifacts.pokedex, bundle.sharedData, 'pokedex');
+        for (const rom of currentBundle.roms) {
+            const pokedex = resolveArtifact(rom.artifacts.pokedex, currentBundle.sharedData, 'pokedex');
 
             let html = template;
             html = html.replace('<script src="trainers.js"></script>',
@@ -129,7 +116,7 @@ document.getElementById('btn-download-all').addEventListener('click', async () =
         }
 
         const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
-        const seed = bundle.config?.seed ?? 'unknown';
+        const seed = currentBundle.config?.seed ?? 'unknown';
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = `run-${seed}.zip`;
@@ -145,21 +132,67 @@ document.getElementById('btn-download-all').addEventListener('click', async () =
     }
 });
 
-// Download bundle
+// Download bundle (in-memory — no server fetch needed)
 document.getElementById('btn-download-bundle').addEventListener('click', () => {
-    if (!currentJobId) return;
+    if (!currentBundle) return;
+    const json = JSON.stringify(currentBundle, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
     const a = document.createElement('a');
-    a.href = `/api/generate/bundle?jobId=${currentJobId}`;
+    a.href = URL.createObjectURL(blob);
     a.download = `session-bundle-${currentConfig?.seed ?? 'unknown'}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
 });
 
 // Init
 showStep(1);
 
-// ── SSE helpers ───────────────────────────────────────────────────────────────
+// ── Web Worker helpers ────────────────────────────────────────────────────────
+
+function startWorker(config) {
+    terminateWorker();
+    _realPct = 0;
+    _displayPct = 0;
+    startCrawl();
+
+    const worker = new Worker('/js/randomizer.bundle.js');
+    currentWorker = worker;
+
+    worker.onmessage = ({ data }) => {
+        if (data.type === 'progress') {
+            updateProgressUI(data.pct, data.step);
+        } else if (data.type === 'done') {
+            stopCrawl();
+            currentBundle = data.bundle;
+            worker.terminate();
+            currentWorker = null;
+            showGenDone();
+        } else if (data.type === 'error') {
+            stopCrawl();
+            worker.terminate();
+            currentWorker = null;
+            showGenError(data.message);
+        }
+    };
+
+    worker.onerror = (e) => {
+        stopCrawl();
+        worker.terminate();
+        currentWorker = null;
+        showGenError(e.message || 'Worker crashed.');
+    };
+
+    worker.postMessage({ type: 'generate', config });
+}
+
+function terminateWorker() {
+    stopCrawl();
+    if (currentWorker) { currentWorker.terminate(); currentWorker = null; }
+}
+
+// ── Progress crawl animation ──────────────────────────────────────────────────
 
 let _crawlInterval = null;
 let _realPct = 0;
@@ -168,7 +201,6 @@ let _displayPct = 0;
 function startCrawl() {
     stopCrawl();
     _crawlInterval = setInterval(() => {
-        // Crawl toward (realPct + 18), capped at 95, at 0.25% per 250ms (~1%/s)
         const ceiling = Math.min(_realPct + 18, 95);
         if (_displayPct < ceiling) {
             _displayPct = Math.min(_displayPct + 0.25, ceiling);
@@ -179,42 +211,6 @@ function startCrawl() {
 
 function stopCrawl() {
     if (_crawlInterval) { clearInterval(_crawlInterval); _crawlInterval = null; }
-}
-
-function openProgressStream(jobId) {
-    closeEventSource();
-    _realPct = 0;
-    _displayPct = 0;
-    startCrawl();
-
-    const es = new EventSource(`/api/generate/stream?jobId=${jobId}`);
-    currentEventSource = es;
-
-    es.onmessage = (e) => {
-        const { event, data } = JSON.parse(e.data);
-        if (event === 'progress') {
-            updateProgressUI(data.progress, data.step);
-        } else if (event === 'done') {
-            stopCrawl();
-            es.close();
-            showGenDone();
-        } else if (event === 'error') {
-            stopCrawl();
-            es.close();
-            showGenError(data.message);
-        }
-    };
-
-    es.onerror = () => {
-        stopCrawl();
-        es.close();
-        showGenError('Lost connection to server.');
-    };
-}
-
-function closeEventSource() {
-    stopCrawl();
-    if (currentEventSource) { currentEventSource.close(); currentEventSource = null; }
 }
 
 // ── Step 3 UI states ──────────────────────────────────────────────────────────
@@ -236,7 +232,6 @@ function _setBarUI(pct) {
 
 function updateProgressUI(pct, step) {
     _realPct = pct;
-    // Snap forward if the real value overtook the crawl; never go backwards
     if (pct > _displayPct) _displayPct = pct;
     _setBarUI(Math.round(_displayPct));
     document.getElementById('gen-step-label').textContent = step;

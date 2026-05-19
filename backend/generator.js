@@ -1,14 +1,13 @@
 /**
  * Randomizer pipeline orchestrator.
  *
+ * NOTE: This module is a transitional artifact (Phase G). Phase K moves all
+ * randomization to the browser. This file will be deleted when Phase K is complete.
+ *
  * Mirrors randomizer/index.js but collects module artifacts into a session
  * bundle instead of writing them to game files. Progress is streamed to SSE
- * listeners as each module completes.
- *
- * After all randomizer modules finish, writerDocs() is called per ROM to
- * pre-compute the viewer data (trainersResultsSimplified + wildPokes) that
- * the frontend needs to generate the Nuzlocke-tracker HTML files. The same
- * per-ROM RNG seed formula is used here and in make.js so docs match the ROM.
+ * listeners as each module completes. Docs are computed via writerDocs (no
+ * file I/O) so the server never writes game source files during generation.
  *
  * CJS randomizer modules are imported via createRequire because the backend
  * package is ESM but the randomizer is CommonJS.
@@ -16,13 +15,8 @@
 
 import { createRequire } from 'module';
 import { fileURLToPath } from 'url';
-import { exec as _exec } from 'child_process';
-import { promisify } from 'util';
-import { readFile } from 'node:fs/promises';
 import path from 'path';
 import crypto from 'crypto';
-
-const exec = promisify(_exec);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
@@ -33,7 +27,7 @@ const { runStartersModule } = require('../randomizer/modules/startersModule.js')
 const { runWildModule }     = require('../randomizer/modules/wildModule.js');
 const wildData              = require('../randomizer/wild.js');
 const rng                   = require('../randomizer/rng.js');
-const writer                = require('../randomizer/writer.js');
+const { writerDocs }        = require('../randomizer/writerDocs.js');
 
 // ── Job store ─────────────────────────────────────────────────────────────────
 
@@ -104,16 +98,6 @@ function toModuleConfig(cfg, seed) {
 
 // ── Generation entry point ────────────────────────────────────────────────────
 
-const PROJECT_ROOT = path.resolve(__dirname, '..');
-
-async function restoreGameFiles() {
-    try {
-        await exec('git checkout -- data/maps/ src/ include/', { cwd: PROJECT_ROOT });
-    } catch {
-        // Not fatal — files may not have changed or git may not be available
-    }
-}
-
 export async function runGeneration(jobId, frontendConfig) {
     const job = jobs.get(jobId);
     if (!job) throw new Error('Job not found');
@@ -129,37 +113,18 @@ export async function runGeneration(jobId, frontendConfig) {
         job.status = 'error';
         job.error = err.message;
         emit(job, 'error', { message: err.message });
-    } finally {
-        await restoreGameFiles();
     }
 }
 
 // ── Docs computation ──────────────────────────────────────────────────────────
 
-// Run writer() with the caller-supplied romSeed, read the output JS files it
-// produces, and return the viewer data as plain objects.
-// Game files are restored in the finally block so the next ROM starts clean.
-// romSeed: seeds the RNG for wild placeholder generation (before trainer forEach).
-// trainingBaseSeed: when non-null, writer reseeds the RNG at the start of each
-//   trainer slot using hash(trainingBaseSeed, trainer.id, slotIndex), making
-//   tier-based slots identical across shared-trainer ROMs regardless of RNG drift
-//   from encounter slots. Pass null for per-ROM trainers (existing behaviour).
+// Compute trainer viewer data using writerDocs (no file I/O, no game files written).
+// romSeed: seeds the RNG at the start of docs computation.
+// trainingBaseSeed: when non-null, per-slot RNG reseeding makes tier-based trainer
+//   slots identical across shared-trainer ROMs. Pass null for per-ROM trainers.
 async function computeRomDocs(pokedex, trainers, starters, wild, romSeed, trainingBaseSeed = null) {
     rng.seed(romSeed);
-    // writer.js mutates trainersData in place (splice removes mega trainers).
-    // Deep-clone so shared artifacts are not corrupted across ROM iterations.
-    const trainersCopy = JSON.parse(JSON.stringify(trainers));
-    try {
-        await writer(pokedex, trainersCopy, starters, wild, false, trainingBaseSeed);
-        const trainersJs  = await readFile(path.join(PROJECT_ROOT, 'randomizer/output/trainers.js'),  'utf8');
-        const wildpokesJs = await readFile(path.join(PROJECT_ROOT, 'randomizer/output/wildpokes.js'), 'utf8');
-        return {
-            trainersResultsSimplified: JSON.parse(trainersJs .replace(/^const trainersData = /, '').replace(/;\s*$/, '')),
-            wildPokes:                 JSON.parse(wildpokesJs.replace(/^const wildPokes = /,    '').replace(/;\s*$/, '')),
-        };
-    } finally {
-        await restoreGameFiles();
-    }
+    return writerDocs(pokedex, trainers, starters, wild, trainingBaseSeed);
 }
 
 // ── Orchestrator ──────────────────────────────────────────────────────────────

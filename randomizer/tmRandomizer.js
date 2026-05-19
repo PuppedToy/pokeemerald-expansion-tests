@@ -186,4 +186,5 @@ ${foreachTMBody}
     return tmList;
 }
 
-module.exports = { randomizeTMs };
+// buildTMList is exported for browser use — RNG-only, no file I/O.
+module.exports = { randomizeTMs, buildTMList };
