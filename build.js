@@ -58,7 +58,7 @@ async function main() {
         platform:    'browser',
         format:      'iife',
         outfile:     path.join(FRONT_JS, 'randomizer.bundle.js'),
-        define:      { 'process.env.NODE_ENV': '"production"' },
+        define:      { 'process.env.NODE_ENV': '"production"', '__dirname': '"."' },
         // Redirect Node built-ins to browser stubs.
         // fs/path calls in the randomizer are guarded by IS_NODE and never execute
         // in the browser — the stubs just satisfy the static require() at load time.
