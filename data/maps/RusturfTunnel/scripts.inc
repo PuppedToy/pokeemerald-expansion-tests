@@ -68,6 +68,8 @@ RusturfTunnel_EventScript_ClearTunnelScene::
 	call_if_eq VAR_TEMP_1, 1, RusturfTunnel_EventScript_WandaAndBoyfriendExit1
 	call_if_eq VAR_TEMP_1, 2, RusturfTunnel_EventScript_WandaAndBoyfriendExit
 	call_if_eq VAR_TEMP_1, 3, RusturfTunnel_EventScript_WandaAndBoyfriendExit
+	removeobject LOCALID_RUSTURF_TUNNEL_WANDAS_BF
+	removeobject LOCALID_RUSTURF_TUNNEL_WANDA
 	call RusturfTunnel_EventScript_SetRusturfTunnelOpen
 	releaseall
 	end
