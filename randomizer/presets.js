@@ -1,11 +1,13 @@
 'use strict';
 
 const {
-    TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS, TIER_AG,
+    TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS, TIER_AG,
 } = require('./constants');
 
 // Ordered lowest → highest; index used for tier arithmetic.
-const TIER_SEQ = [TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS, TIER_AG];
+// TIER_MAGIKARP is the absolute floor — slots at this tier cannot shift further down,
+// and ZU slots shifted down at low difficulty levels land here.
+const TIER_SEQ = [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS, TIER_AG];
 
 function shiftTier(t, delta) {
     const i = TIER_SEQ.indexOf(t);

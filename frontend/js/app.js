@@ -285,7 +285,7 @@ function renderReview(cfg) {
         rows.push(['ROM sharing', fmtShared(cfg.romShared)]);
     }
 
-    rows.push(['Difficulty',      cfg.difficulty.charAt(0).toUpperCase() + cfg.difficulty.slice(1)]);
+    rows.push(['Difficulty',      String(cfg.difficulty)]);
     rows.push(['Rebalance stats', cfg.rebalance ? 'Yes' : 'No']);
     if (cfg.rebalance) rows.push(['Balance chance', Math.round(cfg.balanceChance * 100) + '%']);
     rows.push(['Seed', cfg.seed != null ? cfg.seed : '(random — assigned on Generate)']);
