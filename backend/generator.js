@@ -90,7 +90,7 @@ function toModuleConfig(cfg, seed) {
     return {
         seed: seed ?? cfg.seed,
         difficulty: cfg.difficulty ?? 'fair',
-        noBalance: cfg.rebalance === false,
+        rebalance: cfg.rebalance !== false,
         balanceChance: cfg.balanceChance ?? 0.2,
         allTms: false,
     };
