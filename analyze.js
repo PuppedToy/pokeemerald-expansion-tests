@@ -79,7 +79,7 @@ async function promptOrParseArgs() {
 
     const rebalanceStr  = await ask(rl, 'Rebalance stats? (y/n) [y]: ');
     const allTmsStr     = await ask(rl, 'All TMs available? (y/n) [n]: ');
-    const difficultyStr = await ask(rl, 'Difficulty (easy/fair/hard) [fair]: ');
+    const difficultyStr = await ask(rl, 'Difficulty (1-13, or easy/fair/hard) [7]: ');
     const seedStr       = await ask(rl, 'Seed (blank = random): ');
     const debugStr      = await ask(rl, 'Debug output? (y/n) [n]: ');
 

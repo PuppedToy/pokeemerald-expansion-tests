@@ -46,7 +46,7 @@ function uuid() {
 function toModuleConfig(cfg) {
     return {
         seed: cfg.seed,
-        difficulty: cfg.difficulty ?? 'fair',
+        difficulty: cfg.difficulty ?? 7,
         rebalance: cfg.rebalance !== false,
         balanceChance: cfg.balanceChance ?? 0.2,
         allTms: false,

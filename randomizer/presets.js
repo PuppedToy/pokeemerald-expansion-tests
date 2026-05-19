@@ -4,8 +4,6 @@ const {
     TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS, TIER_AG,
 } = require('./constants');
 
-const DIFFICULTY = { EASY: 'EASY', FAIR: 'FAIR', HARD: 'HARD' };
-
 // Ordered lowest → highest; index used for tier arithmetic.
 const TIER_SEQ = [TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS, TIER_AG];
 
@@ -14,11 +12,11 @@ function shiftTier(t, delta) {
     return i === -1 ? t : TIER_SEQ[Math.max(0, Math.min(TIER_SEQ.length - 1, i + delta))];
 }
 
-// delta = -1 (EASY) or +1 (HARD).
-// topOrBottom = 'top'  → sort desc, shift top-2 down  (EASY)
-//             = 'bottom' → sort asc,  shift bottom-2 up (HARD)
-// Slots with isMega:true are excluded from every transform.
-function applyTransform(team, delta, topOrBottom) {
+// delta: -1 (down) or +1 (up).
+// topOrBottom: 'top' → shift the N highest-tier slots down; 'bottom' → shift N lowest up.
+// numShifts: how many slots to shift (|level - 7|).
+// Slots without contextualTier (isMega, special, oneOf, etc.) are naturally skipped.
+function applyTransform(team, delta, topOrBottom, numShifts) {
     const result = team.map(s => ({
         ...s,
         contextualTier: s.contextualTier ? [...s.contextualTier] : s.contextualTier,
@@ -27,26 +25,37 @@ function applyTransform(team, delta, topOrBottom) {
         .map((s, i) => ({ i, idx: TIER_SEQ.indexOf(s.contextualTier?.[0]) }))
         .filter(x => x.idx !== -1 && !result[x.i].isMega)
         .sort((a, b) => topOrBottom === 'top' ? b.idx - a.idx : a.idx - b.idx);
-    for (let k = 0; k < 2 && k < eligible.length; k++) {
+    for (let k = 0; k < numShifts && k < eligible.length; k++) {
         const s = result[eligible[k].i];
         s.contextualTier = [shiftTier(s.contextualTier[0], delta)];
     }
     return result;
 }
 
-const easyTransform = team => applyTransform(team, -1, 'top');
-const hardTransform = team => applyTransform(team, +1, 'bottom');
+// Returns { numShifts, delta, direction } for a 1–13 difficulty level.
+function getDifficultyTransform(level) {
+    const n = Math.abs(level - 7);
+    if (level < 7) return { numShifts: n, delta: -1, direction: 'top' };
+    if (level > 7) return { numShifts: n, delta: +1, direction: 'bottom' };
+    return { numShifts: 0, delta: 0, direction: null };
+}
 
-function getBossTeam(split, difficulty) {
-    if (difficulty === DIFFICULTY.EASY) return split.easy || easyTransform(split.fair);
-    if (difficulty === DIFFICULTY.HARD) return split.hard || hardTransform(split.fair);
+// Bag size offset relative to fair (level 7): ±7 at checkpoints 4/10, ±14 at extremes 1/13.
+function getBagSizeOffset(level) {
+    return Math.round((level - 7) * 7 / 3);
+}
+
+// Non-boss baseline = 2 tiers below the fair boss baseline.
+const easyTransform = team => applyTransform(team, -1, 'top', 2);
+
+function getBossTeam(split) {
     return split.fair;
 }
 
-// Non-boss team = EASY_transform(boss team at given difficulty),
+// Non-boss team = 2-shift-down of the fair boss team,
 // with any isMega slots replaced by the lowest non-mega tier in the result.
-function getNonBossTeam(split, difficulty) {
-    const bossTeam = getBossTeam(split, difficulty);
+function getNonBossTeam(split) {
+    const bossTeam = getBossTeam(split);
     const transformed = easyTransform(bossTeam);
     const nonMegaSlots = transformed.filter(s => !s.isMega && s.contextualTier?.[0]);
     if (nonMegaSlots.length === 0) return transformed;
@@ -59,9 +68,6 @@ function getNonBossTeam(split, difficulty) {
         s.isMega ? { contextualTier: [lowestTier], checkValidEvo: true } : s
     );
 }
-
-// Non-boss trainer bag trim/extend relative to FAIR.
-const BAG_SIZE_OFFSET = { EASY: -5, FAIR: 0, HARD: +5 };
 
 // ─── SPLITS ──────────────────────────────────────────────────────────────────
 // Slot order matches the team array order in trainers.js.
@@ -416,21 +422,22 @@ const SPLITS = [
 
 // ─── Public accessors ────────────────────────────────────────────────────────
 
-function getBossPreset(splitId, difficulty) {
+function getBossPreset(splitId) {
     const split = SPLITS.find(s => s.id === splitId);
     if (!split) throw new Error(`No preset split: ${splitId}`);
-    return getBossTeam(split, difficulty);
+    return getBossTeam(split);
 }
 
-function getNonBossPreset(splitId, difficulty) {
+function getNonBossPreset(splitId) {
     const split = SPLITS.find(s => s.id === splitId);
     if (!split) throw new Error(`No preset split: ${splitId}`);
-    return getNonBossTeam(split, difficulty);
+    return getNonBossTeam(split);
 }
 
 module.exports = {
-    DIFFICULTY,
-    BAG_SIZE_OFFSET,
     getBossPreset,
     getNonBossPreset,
+    getDifficultyTransform,
+    getBagSizeOffset,
+    applyTransform,
 };

@@ -2,21 +2,37 @@
 
 const { randomizeItems } = require('../itemRandomizer');
 const trainers = require('../trainers');
-const { BAG_SIZE_OFFSET } = require('../presets');
+const { getDifficultyTransform, getBagSizeOffset, applyTransform } = require('../presets');
+
+const EXEMPT_TRAINER_PREFIXES = ['TRAINER_WALLY_', 'TRAINER_MAY_', 'TRAINER_BRENDAN_'];
+const EXEMPT_TRAINER_IDS = new Set(['TRAINER_STEVEN']);
+
+function isExempt(id) {
+    return EXEMPT_TRAINER_IDS.has(id) || EXEMPT_TRAINER_PREFIXES.some(p => id.startsWith(p));
+}
 
 /**
- * Randomizes items and assembles trainer teams.
+ * Randomizes items and assembles trainer teams, then applies a uniform difficulty
+ * transform to every non-exempt trainer (bosses, gym leaders, E4, champion, grunts).
  *
- * @param {Object} pokedexArtifact - Must include `tmList` (array of TM move IDs).
- * @param {Object} config          - Must include `difficulty` ('easy'|'fair'|'hard').
+ * @param {Object} pokedexArtifact - Must include `tmList`.
+ * @param {Object} config          - Must include `difficulty` (integer 1–13).
  * @returns {{ trainersData: Object[], itemAssignments: Object }}
  */
 function runTrainersModule(pokedexArtifact, config) {
     const itemAssignments = randomizeItems();
-    const difficulty = config.difficulty.toUpperCase();
-    const trainersData = trainers.getTrainersData(itemAssignments, pokedexArtifact.tmList, difficulty);
+    const level = config.difficulty ?? 7;
+    const trainersData = trainers.getTrainersData(itemAssignments, pokedexArtifact.tmList);
 
-    const bagOffset = BAG_SIZE_OFFSET[difficulty] || 0;
+    const { numShifts, delta, direction } = getDifficultyTransform(level);
+    if (numShifts > 0) {
+        for (const trainer of trainersData) {
+            if (isExempt(trainer.id)) continue;
+            trainer.team = applyTransform(trainer.team, delta, direction, numShifts);
+        }
+    }
+
+    const bagOffset = getBagSizeOffset(level);
     if (bagOffset !== 0) {
         for (const trainer of trainersData) {
             if (trainer.isBoss || !trainer.bag || trainer.bag.length === 0) continue;

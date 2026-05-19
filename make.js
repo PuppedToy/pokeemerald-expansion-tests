@@ -268,7 +268,7 @@ async function parseOpts() {
     } else {
         mode = 'randomize';
         const rebalanceStr  = await ask(rl, 'Rebalance stats? (y/n) [y]: ');
-        const difficultyStr = await ask(rl, 'Difficulty (easy/fair/hard) [fair]: ');
+        const difficultyStr = await ask(rl, 'Difficulty (1-13, or easy/fair/hard) [7]: ');
         const seedStr       = await ask(rl, 'Seed (blank = random): ');
         randOpts = {
             debug,

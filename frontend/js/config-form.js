@@ -5,11 +5,18 @@ const STORAGE_KEY = 'lastConfig';
 
 const DEFAULTS = {
     runType: 'default',
-    difficulty: 'fair',
+    difficulty: 7,
     rebalance: true,
     balanceChance: 0.2,
     seed: '',
 };
+
+function getDifficultyDesc(level) {
+    const n = Math.abs(level - 7);
+    if (level === 7) return 'In fair difficulty, trainers are expected to have access to the same quality of Pokémon the player has access to.';
+    const dir = level < 7 ? 'below' : 'above';
+    return `Each trainer will have ${n} Pokémon ${dir} the player's expected team quality.`;
+}
 
 export class ConfigForm {
     constructor(containerEl, { onConfigChange } = {}) {
@@ -23,7 +30,7 @@ export class ConfigForm {
     /** Returns the current validated config object, or null if invalid. */
     getConfig() {
         const runType = this._q('input[name="run-type"]:checked')?.value ?? 'default';
-        const difficulty = this._q('input[name="difficulty"]:checked')?.value ?? 'fair';
+        const difficulty = parseInt(this._q('#difficultySlider')?.value ?? '7', 10);
         const rebalance = this._q('#rebalance').checked;
         const balanceChance = rebalance
             ? Math.round(parseInt(this._q('#balance-chance').value, 10)) / 100
@@ -74,8 +81,8 @@ export class ConfigForm {
         const radio = this._q(`input[name="run-type"][value="${runType}"]`);
         if (radio) radio.checked = true;
 
-        const diffInput = this._q(`input[name="difficulty"][value="${cfg.difficulty ?? 'fair'}"]`);
-        if (diffInput) diffInput.checked = true;
+        const slider = this._q('#difficultySlider');
+        if (slider) slider.value = cfg.difficulty ?? 7;
 
         this._q('#rebalance').checked = cfg.rebalance !== false;
         this._q('#balance-chance').value = Math.round((cfg.balanceChance ?? 0.2) * 100);
@@ -116,7 +123,7 @@ export class ConfigForm {
             runType: 'nuzlocke',
             numROMs: cfg.numROMs ?? 2,
             shared: { pokedex: sm >= 2, trainers: sm >= 3, starters: sm >= 4 },
-            difficulty: cfg.difficulty ?? 'fair',
+            difficulty: cfg.difficulty ?? 7,
             rebalance: cfg.rebalance !== false,
             balanceChance: cfg.balanceChance ?? 0.2,
             seed: cfg.seed ?? null,
@@ -256,28 +263,16 @@ export class ConfigForm {
 
 <div class="form-section">
   <div class="section-title">Difficulty</div>
-  <div class="difficulty-group">
-    <label class="radio-card">
-      <input type="radio" name="difficulty" value="easy">
-      <div class="radio-card-body">
-        <div class="radio-card-title">Easy</div>
-        <div class="radio-card-desc">Trainers use weaker teams.</div>
-      </div>
-    </label>
-    <label class="radio-card">
-      <input type="radio" name="difficulty" value="fair" checked>
-      <div class="radio-card-body">
-        <div class="radio-card-title">Fair</div>
-        <div class="radio-card-desc">Balanced challenge.</div>
-      </div>
-    </label>
-    <label class="radio-card">
-      <input type="radio" name="difficulty" value="hard">
-      <div class="radio-card-body">
-        <div class="radio-card-title">Hard</div>
-        <div class="radio-card-desc">Trainers use stronger teams.</div>
-      </div>
-    </label>
+  <div class="difficulty-slider-wrap">
+    <input type="range" name="difficulty" id="difficultySlider" min="1" max="13" value="7" step="1">
+    <div class="difficulty-ticks">
+      <span>1<br><small>Easiest</small></span>
+      <span>4<br><small>Easy</small></span>
+      <span>7<br><small>Fair</small></span>
+      <span>10<br><small>Hard</small></span>
+      <span>13<br><small>Hardest</small></span>
+    </div>
+    <p id="difficultyDesc" class="difficulty-desc"></p>
   </div>
 </div>
 
@@ -365,6 +360,10 @@ export class ConfigForm {
         this._q('#balance-chance-row').style.display = rebalanceOn ? '' : 'none';
         this._q('#balance-chance-val').textContent = this._q('#balance-chance').value + '%';
 
+        const diffLevel = parseInt(this._q('#difficultySlider')?.value ?? '7', 10);
+        const descEl = this._q('#difficultyDesc');
+        if (descEl) descEl.textContent = getDifficultyDesc(diffLevel);
+
         if (runType === 'nuzlocke') this._syncNuzlocke();
         if (runType === 'soullink') this._syncSoullink();
     }
@@ -434,7 +433,7 @@ export class ConfigForm {
         this._q('#sl-rom-share-pokedex').addEventListener('change', onChange);
         this._q('#sl-rom-share-trainers').addEventListener('change', onChange);
         this._q('#sl-rom-share-starters').addEventListener('change', onChange);
-        this.container.querySelectorAll('input[name="difficulty"]').forEach(el => el.addEventListener('change', onChange));
+        this._q('#difficultySlider').addEventListener('input', onChange);
         this._q('#rebalance').addEventListener('change', onChange);
         this._q('#balance-chance').addEventListener('input', onChange);
         this._q('#seed').addEventListener('input', onChange);
