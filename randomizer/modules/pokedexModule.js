@@ -156,7 +156,7 @@ async function runPokedexModule(config, baseData = null) {
     if (config.rebalance) {
         const abilityKeys = Object.keys(abilities).map(key => key.replace('ABILITY_', ''));
         for (let i = 0; i < allPokes.length; i++) {
-            allPokes[i] = balancePokemon(allPokes[i], abilityKeys, moves);
+            allPokes[i] = balancePokemon(allPokes[i], abilityKeys, moves, config.balanceChance);
             if (allPokes[i].log && allPokes[i].log.length) {
                 allPokes[i].baseBST = allPokes[i].baseHP + allPokes[i].baseAttack + allPokes[i].baseDefense + allPokes[i].baseSpAttack + allPokes[i].baseSpDefense + allPokes[i].baseSpeed;
                 allPokes[i].rating = ratePokemon(allPokes[i], moves, abilities, tmPool);

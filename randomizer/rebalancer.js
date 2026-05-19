@@ -78,7 +78,7 @@ function insertMoveIntoLearnset(learnset, moveId, move) {
 
 const familyTracking = {};
 
-function balancePokemon(pokemon, abilityNames, moves) {
+function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined) {
 
     const inheritedLog = [];
     // Deep-copy mutable sub-arrays so mutations don't corrupt the shared parsed learnset
@@ -153,7 +153,8 @@ function balancePokemon(pokemon, abilityNames, moves) {
         });
     }
 
-    if (rng.random() > getConfig().balanceChance) {
+    const balanceThreshold = balanceChance !== undefined ? balanceChance : getConfig().balanceChance;
+    if (rng.random() > balanceThreshold) {
         return {
             ...newPokemon,
             log: inheritedLog,
