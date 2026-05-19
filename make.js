@@ -85,6 +85,18 @@ function resolveRomSeed(rom, seed) {
     return (seed ^ (rom.romIndex * 0x9E3779B9)) >>> 0;
 }
 
+// Returns the baseRngSeed to pass to writer() for per-slot trainer reseeding.
+// Must match the trainingBaseSeed logic in randomizer-worker.js so docs == ROM.
+function resolveTrainingBaseSeed(rom, seed) {
+    const t = rom.artifacts.trainers;
+    if (t === 'shared' || t === 'global') return seed;
+    if (typeof t === 'string' && t.startsWith('player-')) {
+        const p = parseInt(t.split('-')[1], 10);
+        return (seed ^ (p * 0x9E3779B9)) >>> 0;
+    }
+    return null; // per-ROM trainers: sequential RNG, no reseeding
+}
+
 function romFileName(rom) {
     if (rom.playerIndex !== undefined) {
         return `player-${rom.playerIndex}-rom-${rom.romIndex}.gba`;
@@ -142,7 +154,7 @@ async function bundleMode(bundlePath, isDebug, doClean) {
         rng.seed(resolveRomSeed(rom, seed));
 
         try {
-            await writer(pokedex, trainers, starters, wild, isDebug);
+            await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed));
             run('make', ['-j']);
 
             const dest = path.join(outDir, label);
