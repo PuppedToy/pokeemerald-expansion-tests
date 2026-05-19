@@ -27,6 +27,36 @@ const { sample, checkValidEvo } = require('./modules/utils');
 
 const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
 
+const CONTEXTUAL_TIER_SEQ = ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU', 'UBERS', 'AG'];
+
+function filterByNearestContextualTier(list, requestedTiers, cap) {
+    const tryFilter = (tiers) => list.filter(p => {
+        const contextual = p.contextualRatings?.[cap];
+        return contextual && tiers.includes(contextual.tier);
+    });
+
+    const exact = tryFilter(requestedTiers);
+    if (exact.length > 0) return exact;
+
+    const indices = requestedTiers.map(t => CONTEXTUAL_TIER_SEQ.indexOf(t)).filter(i => i !== -1);
+    if (indices.length === 0) return list;
+
+    const minIdx = Math.min(...indices);
+    const maxIdx = Math.max(...indices);
+
+    for (let d = 1; d < CONTEXTUAL_TIER_SEQ.length; d++) {
+        if (maxIdx + d < CONTEXTUAL_TIER_SEQ.length) {
+            const up = tryFilter([CONTEXTUAL_TIER_SEQ[maxIdx + d]]);
+            if (up.length > 0) return up;
+        }
+        if (minIdx - d >= 0) {
+            const down = tryFilter([CONTEXTUAL_TIER_SEQ[minIdx - d]]);
+            if (down.length > 0) return down;
+        }
+    }
+    return list;
+}
+
 function nearestCap(level) {
     let best = LEVEL_CAPS[0];
     for (const cap of LEVEL_CAPS) {
@@ -317,14 +347,10 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
             }
             if (trainerMonDefinition.contextualTier) {
                 const cap = nearestCap(trainer.level);
-                const beforeCount = pokemonLooseList.length;
-                const filtered = pokemonLooseList.filter(p => {
-                    const contextual = p.contextualRatings?.[cap];
-                    return contextual && trainerMonDefinition.contextualTier.includes(contextual.tier);
-                });
-                pokemonLooseList = filtered.length > 0 ? filtered : pokemonLooseList;
-                if (filtered.length === 0 && beforeCount > 0) {
-                    console.warn(`WARN: contextualTier filter yielded 0 results for trainer ${trainer.id} at level ${trainer.level} (cap=${cap}). Falling back.`);
+                const before = pokemonLooseList;
+                pokemonLooseList = filterByNearestContextualTier(pokemonLooseList, trainerMonDefinition.contextualTier, cap);
+                if (pokemonLooseList === before && before.length > 0) {
+                    console.warn(`WARN: contextualTier [${trainerMonDefinition.contextualTier}] + adjacent tiers yielded 0 results for trainer ${trainer.id} at level ${trainer.level} (cap=${cap}). Using unconstrained list.`);
                 }
             }
             if (trainerMonDefinition.evoType) {
@@ -656,4 +682,4 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     return { trainersResultsSimplified, wildPokes: maps };
 }
 
-module.exports = { writerDocs };
+module.exports = { writerDocs, filterByNearestContextualTier };
