@@ -22,6 +22,12 @@ function applyTransform(team, delta, topOrBottom, numShifts) {
     const result = team.map(s => ({
         ...s,
         contextualTier: s.contextualTier ? [...s.contextualTier] : s.contextualTier,
+        fallback: s.fallback
+            ? s.fallback.map(fb => ({
+                ...fb,
+                contextualTier: fb.contextualTier ? [...fb.contextualTier] : fb.contextualTier,
+            }))
+            : s.fallback,
     }));
     const eligible = result
         .map((s, i) => ({ i, idx: TIER_SEQ.indexOf(s.contextualTier?.[0]) }))
@@ -30,6 +36,11 @@ function applyTransform(team, delta, topOrBottom, numShifts) {
     for (let k = 0; k < numShifts && k < eligible.length; k++) {
         const s = result[eligible[k].i];
         s.contextualTier = [shiftTier(s.contextualTier[0], delta)];
+        if (s.fallback) {
+            for (const fb of s.fallback) {
+                if (fb.contextualTier) fb.contextualTier = [shiftTier(fb.contextualTier[0], delta)];
+            }
+        }
     }
     return result;
 }
