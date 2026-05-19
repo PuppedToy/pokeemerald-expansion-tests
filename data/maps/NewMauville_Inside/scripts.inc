@@ -149,7 +149,7 @@ NewMauville_Inside_EventScript_RedButton::
 	end
 
 NewMauville_Inside_EventScript_SetGeneratorOffMetatiles::
-	setmetatile 33, 6, METATILE_BikeShop_Button_Pressed, FALSE
+	setmetatile 29, 38, METATILE_BikeShop_Button_Pressed, FALSE
 	setmetatile 32, 2, METATILE_BikeShop_Generator_Off_Tile0, TRUE
 	setmetatile 33, 2, METATILE_BikeShop_Generator_Off_Tile1, TRUE
 	setmetatile 34, 2, METATILE_BikeShop_Generator_Off_Tile2, TRUE
