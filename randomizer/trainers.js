@@ -102,71 +102,6 @@ const originalGymTypes = [
     POKEMON_TYPE_PSYCHIC,
     POKEMON_TYPE_WATER,
 ];
-const coinsForE4Types = [0, 1, 2, 3];
-const coinsForGymTypes = [0, 1, 2, 3, 4, 5, 6, 7];
-const whoKeepsE4Type = [];
-const whoKeepsGymType = [];
-for (let i = 0; i < TRAINER_E4_KEEP_TYPE_AMOUNT; i++) {
-    whoKeepsE4Type.push(sampleAndRemove(coinsForE4Types));
-}
-for (let i = 0; i < TRAINER_GYM_LEADERS_KEEP_TYPE_AMOUNT; i++) {
-    const chosenType = sampleAndRemove(coinsForGymTypes);
-    whoKeepsGymType.push(chosenType);
-}
-const e4AllowedTypes = [...POKEMON_TYPES];
-for (let i = 0; i < originalE4Types.length; i++) {
-    e4AllowedTypes.splice(e4AllowedTypes.indexOf(originalE4Types[i]), 1);
-}
-e4AllowedTypes.splice(e4AllowedTypes.indexOf(POKEMON_TYPE_STEEL), 1);
-const gymAllowedTypes = [...POKEMON_TYPES];
-for (let i = 0; i < originalGymTypes.length; i++) {
-    gymAllowedTypes.splice(gymAllowedTypes.indexOf(originalGymTypes[i]), 1);
-}
-gymAllowedTypes.splice(gymAllowedTypes.indexOf(POKEMON_TYPE_STEEL), 1);
-
-let e41MainType;
-let e42MainType;
-let e43MainType;
-let e44MainType;
-
-if (whoKeepsE4Type.includes(0)) {
-    e41MainType = originalE4Types[0];
-}
-if (whoKeepsE4Type.includes(1)) {
-    e42MainType = originalE4Types[1];
-}
-if (whoKeepsE4Type.includes(2)) {
-    e43MainType = originalE4Types[2];
-}
-if (whoKeepsE4Type.includes(3)) {
-    e44MainType = originalE4Types[3];
-}
-if (!e41MainType) {
-    e41MainType = sampleAndRemove(e4AllowedTypes);
-}
-if (!e42MainType) {
-    e42MainType = sampleAndRemove(e4AllowedTypes);
-}
-if (!e43MainType) {
-    e43MainType = sampleAndRemove(e4AllowedTypes);
-}
-if (!e44MainType) {
-    e44MainType = sampleAndRemove(e4AllowedTypes);
-}
-
-const gymIsChangedType = [];
-const gymMainTypes = [];
-for (let i = 0; i < originalGymTypes.length; i++) {
-    if (whoKeepsGymType.includes(i)) {
-        gymMainTypes.push(originalGymTypes[i]);
-        gymIsChangedType.push(false);
-    } else {
-        gymMainTypes.push(sampleAndRemove(gymAllowedTypes));
-        gymIsChangedType.push(true);
-    }
-}
-
-const tateAndLizaUseSolrock = rng.random() < 0.5;
 
 // New defs
 
@@ -906,6 +841,57 @@ const rivalEvergrandeCityTemplate = (id) => [
 ];
 
 function getTrainersData(itemAssignments, tmList, difficulty = DIFFICULTY.FAIR) {
+    // Gym / E4 type randomization — seeded here so it respects rng.seed(config.seed)
+    const coinsForE4Types = [0, 1, 2, 3];
+    const coinsForGymTypes = [0, 1, 2, 3, 4, 5, 6, 7];
+    const whoKeepsE4Type = [];
+    const whoKeepsGymType = [];
+    for (let i = 0; i < TRAINER_E4_KEEP_TYPE_AMOUNT; i++) {
+        whoKeepsE4Type.push(sampleAndRemove(coinsForE4Types));
+    }
+    for (let i = 0; i < TRAINER_GYM_LEADERS_KEEP_TYPE_AMOUNT; i++) {
+        const chosenType = sampleAndRemove(coinsForGymTypes);
+        whoKeepsGymType.push(chosenType);
+    }
+    const e4AllowedTypes = [...POKEMON_TYPES];
+    for (let i = 0; i < originalE4Types.length; i++) {
+        e4AllowedTypes.splice(e4AllowedTypes.indexOf(originalE4Types[i]), 1);
+    }
+    e4AllowedTypes.splice(e4AllowedTypes.indexOf(POKEMON_TYPE_STEEL), 1);
+    const gymAllowedTypes = [...POKEMON_TYPES];
+    for (let i = 0; i < originalGymTypes.length; i++) {
+        gymAllowedTypes.splice(gymAllowedTypes.indexOf(originalGymTypes[i]), 1);
+    }
+    gymAllowedTypes.splice(gymAllowedTypes.indexOf(POKEMON_TYPE_STEEL), 1);
+
+    let e41MainType;
+    let e42MainType;
+    let e43MainType;
+    let e44MainType;
+
+    if (whoKeepsE4Type.includes(0)) { e41MainType = originalE4Types[0]; }
+    if (whoKeepsE4Type.includes(1)) { e42MainType = originalE4Types[1]; }
+    if (whoKeepsE4Type.includes(2)) { e43MainType = originalE4Types[2]; }
+    if (whoKeepsE4Type.includes(3)) { e44MainType = originalE4Types[3]; }
+    if (!e41MainType) { e41MainType = sampleAndRemove(e4AllowedTypes); }
+    if (!e42MainType) { e42MainType = sampleAndRemove(e4AllowedTypes); }
+    if (!e43MainType) { e43MainType = sampleAndRemove(e4AllowedTypes); }
+    if (!e44MainType) { e44MainType = sampleAndRemove(e4AllowedTypes); }
+
+    const gymIsChangedType = [];
+    const gymMainTypes = [];
+    for (let i = 0; i < originalGymTypes.length; i++) {
+        if (whoKeepsGymType.includes(i)) {
+            gymMainTypes.push(originalGymTypes[i]);
+            gymIsChangedType.push(false);
+        } else {
+            gymMainTypes.push(sampleAndRemove(gymAllowedTypes));
+            gymIsChangedType.push(true);
+        }
+    }
+
+    const tateAndLizaUseSolrock = rng.random() < 0.5;
+
     // Pool-derived item arrays (display names from itemRandomizer)
     const route102BallItems      = itemAssignments.route102Ball;
     const petalburgPlateItems    = itemAssignments.petalburgPlates;
