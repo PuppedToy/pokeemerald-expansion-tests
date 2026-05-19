@@ -593,6 +593,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
 
         trainersResults[trainer.id] = {
             level: trainer.level,
+            label: trainer.label || null,
             class: trainer.class || 'Red Back',
             reward: (trainer.reward || []).map(r => {
                 if (r.startsWith('SPECIES_')) return nameify(replacementLog[r].replace('SPECIES_', ''));

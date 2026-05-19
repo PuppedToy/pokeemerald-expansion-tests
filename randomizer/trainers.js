@@ -4011,6 +4011,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_LILA_AND_ROY_1',
+        label: 'Lila',
         class: 'Tuber F',
         reward: ['ITEM_MEGA_08'],
         level: 56,

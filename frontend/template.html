@@ -1054,7 +1054,7 @@
       if (/TRAINER_MAY_.*_TORCHIC$/.test(trainerId)) card.classList.add('rival-may-torchic');
       if (/TRAINER_MAY_.*_MUDKIP$/.test(trainerId)) card.classList.add('rival-may-mudkip');
 
-      const trainerName = nameify(trainerId.replace('TRAINER_', '').replace(/_\d/g, ''));
+      const trainerName = trainer.label || nameify(trainerId.replace('TRAINER_', '').replace(/_\d/g, ''));
 
       // Build each Pokémon slot
       const teamHTML = trainer.team.map(member => {
