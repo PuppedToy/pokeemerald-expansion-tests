@@ -171,7 +171,10 @@ function djb2Hash(str) {
 // deterministic across ROMs that share a trainer artifact but differ in wild data.
 async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null) {
     let { pokes: pokemonList, moves, abilities } = pokedexArtifact;
-    const { trainersData, itemAssignments } = trainersArtifact;
+    // Deep-clone trainersData — mega trainer processing splices entries in-place,
+    // which would corrupt the shared artifact when the same trainers object is used across ROMs.
+    const { trainersData: _rawTrainersData, itemAssignments } = trainersArtifact;
+    const trainersData = JSON.parse(JSON.stringify(_rawTrainersData));
     const { starters } = startersArtifact;
     const { extraStarters, gymRewards, staticRewards, replacementLog: wildReplacementLog, foundMegaEvos: wildFoundMegaEvos } = wildArtifact;
 
