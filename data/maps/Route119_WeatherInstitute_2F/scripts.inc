@@ -75,6 +75,8 @@ Route119_WeatherInstitute_2F_EventScript_ReceiveCastform::
 	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
 	givemon GYM_REWARD_MON, 41, GYM_REWARD_ITEM
 	call Route119_WeatherInstitute_2F_EventScript_ReceivedRewardPokeFanfare
+	closemessage
+	release
 	end
 
 Route119_WeatherInstitute_2F_EventScript_ReceivedRewardPokeFanfare::
