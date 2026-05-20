@@ -917,7 +917,6 @@ function getTrainersData(itemAssignments, tmList) {
     const route111GemGoodItem     = itemAssignments.route111GemGoodItem;
     const route111BallAItems      = itemAssignments.route111BallA;
     const route111BallCItems      = itemAssignments.route111BallC;
-    const route111ShaylaBallItems  = itemAssignments.route111ShaylaBall;
     const route114WyattGoodItem    = itemAssignments.route114WyattGoodItem;
     const route118BarnyGoodItem  = itemAssignments.route118BarnyGoodItem;
     const route118ItemItems      = itemAssignments.route118Items;
@@ -2876,9 +2875,9 @@ const trainersData = [
     {
         id: 'TRAINER_SHAYLA',
         class: 'Aroma Lady',
-        reward: [...route111ShaylaBallItems],
+        reward: ['Nugget'],
         level: 36,
-        bag: [...route111ShaylaBallItems, ...getSampleItemsFromArray(magmaChimneyBag(), 10)],
+        bag: ['Nugget', ...getSampleItemsFromArray(magmaChimneyBag(), 10)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),

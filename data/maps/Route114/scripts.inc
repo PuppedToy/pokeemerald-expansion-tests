@@ -225,30 +225,10 @@ Route111_EventScript_PickWilton3::
 	setflag FLAG_ITEM_ROUTE_111_POWERHERB
 	end
 
-@ === RAND_ROUTE114_SHAYLA_BALL_START ===
 Route111_EventScript_PickShayla::
-	multichoice 0, 0, MULTI_ROUTE112_PICK_BALL, FALSE
-	switch VAR_RESULT
-	case 0, Route111_EventScript_PickShayla1
-	case 1, Route111_EventScript_PickShayla2
-	case 2, Route111_EventScript_PickShayla3
-	end
-
-Route111_EventScript_PickShayla1::
-	finditem ITEM_WIDE_LENS
+	finditem ITEM_NUGGET
 	setflag FLAG_ITEM_ROUTE_112_WHITE
 	end
-
-Route111_EventScript_PickShayla2::
-	finditem ITEM_BINDING_BAND
-	setflag FLAG_ITEM_ROUTE_112_WHITE
-	end
-
-Route111_EventScript_PickShayla3::
-	finditem ITEM_MARANGA_BERRY
-	setflag FLAG_ITEM_ROUTE_112_WHITE
-	end
-@ === RAND_ROUTE114_SHAYLA_BALL_END ===
 
 Route114_EventScript_PickCharlotte::
 	multichoice 0, 0, MULTI_ROUTE114_PICK_CHARLOTTE, FALSE
