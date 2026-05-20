@@ -186,6 +186,11 @@ Route120_EventScript_Clarissa::
 	msgbox Route120_Text_ClarissaPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route120_EventScript_Jackson::
+	trainerbattle_single TRAINER_JACKSON_1, Route120_Text_JacksonIntro, Route120_Text_JacksonDefeat
+	msgbox Route120_Text_JacksonPostBattle, MSGBOX_AUTOCLOSE
+	end
+
 Route120_EventScript_Angelica::
 	trainerbattle_single TRAINER_ANGELICA, Route120_Text_AngelicaIntro, Route120_Text_AngelicaDefeat
 	msgbox Route120_Text_AngelicaPostBattle, MSGBOX_AUTOCLOSE

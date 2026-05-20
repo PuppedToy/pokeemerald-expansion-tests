@@ -2762,35 +2762,19 @@ Route119_Text_KentDefeat:
 Route119_Text_KentPostBattle:
 	.string "Won't you join our MIMIC CIRCLE?$"
 
-Route119_Text_JacksonIntro:
+Route120_Text_JacksonIntro:
 	.string "Who has the knowledge and\n"
 	.string "the technique for survival?\p"
 	.string "POKéMON RANGERS, that's who!$"
 
-Route119_Text_JacksonDefeat:
+Route120_Text_JacksonDefeat:
 	.string "I didn't have enough POKéMON\n"
 	.string "know-how…$"
 
-Route119_Text_JacksonPostBattle:
+Route120_Text_JacksonPostBattle:
 	.string "To break away from civilization and\n"
 	.string "awaken the wild spirit within!\p"
 	.string "That's our vision.$"
-
-Route119_Text_JacksonRegister:
-	.string "I hope you'll give me a rematch without\n"
-	.string "mocking my lack of knowledge.$"
-
-Route119_Text_JacksonRematchIntro:
-	.string "I'm going to regain my wild spirit by\n"
-	.string "being together with POKéMON.$"
-
-Route119_Text_JacksonRematchDefeat:
-	.string "You've remained strong!$"
-
-Route119_Text_JacksonPostRematch:
-	.string "Believe in your POKéMON.\n"
-	.string "Believe in yourself.\p"
-	.string "The road will reveal itself to you.$"
 
 Route119_Text_CatherineIntro:
 	.string "Oh? Look at you.\p"

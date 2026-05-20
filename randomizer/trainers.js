@@ -3490,6 +3490,14 @@ const trainersData = [
         bag: [route120AngelicaGoodItem, ...getSampleItemsFromArray(rival119Bag(), 16)],
         team: genericTrainerTeamPostShelly(),
     },
+    {
+        id: 'TRAINER_JACKSON_1',
+        class: 'Pokemon Ranger M',
+        reward: ['Nugget'],
+        level: 46,
+        bag: ['Nugget', ...getSampleItemsFromArray(rival119Bag(), 16)],
+        team: genericTrainerTeamPostShelly(),
+    },
     // Fortree City Gym
     {
         id: 'TRAINER_WINONA_1',
