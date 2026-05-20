@@ -1072,7 +1072,7 @@ const flanneryBag = () => [
     sample([...choiceCharlotteTMs]),
     sample([...choiceNolanTMs]),
     sample([...choiceAngelinaTMs]),
-    sample([...route111ShaylaBallItems]),
+    'Nugget',
     tmItem(78),   // Flannery's gym TM
     'TM_STRENGTH',  // HM, not randomized
 ];
