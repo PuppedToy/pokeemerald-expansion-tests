@@ -530,30 +530,10 @@ Route111_EventScript_PickBerry4::
 	end
 @ === RAND_ROUTE111_BERRIES_END ===
 
-@ === RAND_ROUTE111_ITEMS_START ===
 Route111_EventScript_PickItem::
-	multichoice 0, 0, MULTI_ROUTE111_PICK_ITEM, FALSE
-	switch VAR_RESULT
-	case 0, Route111_EventScript_PickItem1
-	case 1, Route111_EventScript_PickItem2
-	case 2, Route111_EventScript_PickItem3
-	end
-
-Route111_EventScript_PickItem1::
-	finditem ITEM_SHED_SHELL
+	finditem ITEM_NUGGET
 	setflag FLAG_ITEM_ROUTE_111_TM_SANDSTORM
 	end
-
-Route111_EventScript_PickItem2::
-	finditem ITEM_SHELL_BELL
-	setflag FLAG_ITEM_ROUTE_111_TM_SANDSTORM
-	end
-
-Route111_EventScript_PickItem3::
-	finditem ITEM_CUSTAP_BERRY
-	setflag FLAG_ITEM_ROUTE_111_TM_SANDSTORM
-	end
-@ === RAND_ROUTE111_ITEMS_END ===
 
 Route111_EventScript_RematchBrooke::
 	trainerbattle_rematch TRAINER_BROOKE_1, Route111_Text_BrookeRematchIntro, Route111_Text_BrookeRematchDefeat

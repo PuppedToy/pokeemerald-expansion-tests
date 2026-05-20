@@ -50,7 +50,7 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 
 **Pool contents (53 unique items):** Eject Pack, stat-boosting berries (Apicot/Salac/Petaya/Liechi/Ganlon/Kee/Maranga/Jaboca/Rowap/Custap/Leppa/Lansat/Starf/Enigma/Figy), Throat Spray, Mirror Herb, Adrenaline Orb, Red Card, Expert Belt, Terrain Extender, Shed Shell, Power Herb, Safety Goggles, White Herb, Wide/Zoom Lens, Punching Glove, Big Root, Room Service, Iron Ball, Heavy-Duty Boots, Absorb Bulb, Cell Battery, Luminous Moss, Snowball, Sticky Barb, Bright Powder, Quick Claw, Muscle Band, Wise Glasses, Metronome, Grip Claw, Float Stone, Binding Band, Protective Pads, Utility Umbrella, Clear Amulet, Covert Cloak, Focus Band, Mental Herb, Blunder Policy
 
-**Consumed: 39 draws from 53 items** — 14 items go unused per run.
+**Consumed: 37 draws from 53 items** — 16 items go unused per run.
 
 **Pick-3 ball locations** (player chooses 1 of 3 from this pool):
 
@@ -72,7 +72,6 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 
 | Location | Flag | Slot breakdown |
 |----------|------|---------------|
-| Route 111 items | `FLAG_ITEM_ROUTE_111_TM_SANDSTORM` | slots 0/1 = pool, slot 2 = Custap Berry (fixed) |
 | Route 116 Clark pick | `FLAG_ITEM_ROUTE_116_PICK_ITEM` | all 3 = TM65/66/67 — TM randomizer owns all slots (see `tms.md`) |
 | Route 118 items | `FLAG_ITEM_ROUTE_118_BERRY` | all 4 from pool (via `route118Items`) |
 
