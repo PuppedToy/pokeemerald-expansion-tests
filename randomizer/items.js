@@ -175,7 +175,6 @@ const items = {
 
     averageItemPool: [
         'ITEM_EJECT_PACK',
-        'ITEM_LIGHT_CLAY',
         'ITEM_APICOT_BERRY',
         'ITEM_ENIGMA_BERRY',
         'ITEM_FIGY_BERRY',
