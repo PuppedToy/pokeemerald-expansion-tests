@@ -125,6 +125,7 @@ function buildAssignments() {
         route117Berries:  berry(4),
         route121Berries:  berry(4),
         // averageItemPool locations
+        route111Items:    [...pool(2), 'ITEM_CUSTAP_BERRY'],        // slot 2 = fixed
         // goodItemPool single-item locations
         route106GoodItem:  good(1)[0],
         route109GoodItem:  good(1)[0],
@@ -252,6 +253,19 @@ function updateScripts(a) {
             scriptLabel: 'Route111_EventScript_GemGoodItem',
             item: a.route111GemGoodItem,
             flag: 'FLAG_ITEM_ROUTE_111_GEM',
+        })
+    );
+
+    // Route111 items (3, items change — slot 2 = CUSTAP_BERRY fixed)
+    replaceAnchored(
+        'data/maps/Route111/scripts.inc',
+        'ROUTE111_ITEMS',
+        genPickerSection({
+            pickerLabel:  'Route111_EventScript_PickItem',
+            multiConst:   'MULTI_ROUTE111_PICK_ITEM',
+            flag:         'FLAG_ITEM_ROUTE_111_TM_SANDSTORM',
+            pickedItems:  a.route111Items,
+            handlerPrefix:'Route111_EventScript_PickItem',
         })
     );
 
@@ -456,6 +470,8 @@ function updateScriptMenu(a) {
         a.route121Berries.map(itemDisplayName));
 
     // 3-choice lists where all items change
+    src = replaceMenuList(src, 'MultichoiceList_Route111PickItem',
+        a.route111Items.map(itemDisplayName));
 
     src = replaceMenuList(src, 'MultichoiceList_Route118PickBerry',
         a.route118Items.map(itemDisplayName));
@@ -504,6 +520,7 @@ function randomizeItems() {
         route117Plates:    dn('route117Plates'),
         route104Gems:      dn('route104Gems'),
         route104Berries:   dn('route104Berries'),
+        route111Items:     dn('route111Items'),
         route111Berries:   dn('route111Berries'),
 
         route111BallA:      dn('route111BallA'),

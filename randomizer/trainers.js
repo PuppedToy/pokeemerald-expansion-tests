@@ -897,6 +897,7 @@ function getTrainersData(itemAssignments, tmList) {
     const petalburgPlateItems    = itemAssignments.petalburgPlates;
     const route104GemItems       = itemAssignments.route104Gems;
     const route104BerryItems     = itemAssignments.route104Berries;
+    const route111ItemItems      = itemAssignments.route111Items;
     const route111BerryItems     = itemAssignments.route111Berries;
     const route117BerryItems     = itemAssignments.route117Berries;
     const route106GoodItem       = itemAssignments.route106GoodItem;
@@ -954,6 +955,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceAngelinaTMs    = [tmItem(57), tmItem(58), tmItem(59), tmItem(60)];
     const choiceBryanTMs       = [tmItem(12), tmItem(29), tmItem(30)];
     const rival103TM           = tmItem(71);
+    const choiceHeidiItems     = [route111ItemItems[0], route111ItemItems[1], 'Custap Berry'];
     const choiceWadeBerries    = route118ItemItems;
     const choiceRoseTMs        = [tmItem(39), tmItem(40), tmItem(41)];
     const choiceClarissaTMs    = [tmItem(42), tmItem(43), tmItem(44)];
@@ -1082,7 +1084,7 @@ const normanBag = () => [
     sample([...route111BallCItems]),
     sample([...choiceNobTMs]),
     sample([...choiceBryanTMs]),
-    'Nugget',
+    sample([...choiceHeidiItems]),
     tmItem(31),   // Norman's gym TM
     'TM_SURF',    // HM, not randomized
 ];
@@ -3087,9 +3089,9 @@ const trainersData = [
     {
         id: 'TRAINER_HEIDI',
         class: 'Battle Girl',
-        reward: ['Nugget'],
+        reward: [...choiceHeidiItems],
         level: 39,
-        bag: ['Nugget', ...getSampleItemsFromArray(flanneryBag(), 13)],
+        bag: [...choiceHeidiItems, ...getSampleItemsFromArray(flanneryBag(), 13)],
         team: genericTrainerTeamPostFlannery(),
     },
     {
