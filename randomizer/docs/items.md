@@ -48,9 +48,9 @@ Shuffled once per run. Each "good item" location in the world gets one item draw
 ### Pool: `averageItemPool` — Pick-3 utility items
 Shuffled once per run. Used for the "item ball pick-3" locations where the player sees a multichoice menu and picks one of three items.
 
-**Pool contents (54 unique items):** Eject Pack, Light Clay, stat-boosting berries (Apicot/Salac/Petaya/Liechi/Ganlon/Kee/Maranga/Jaboca/Rowap/Custap/Leppa/Lansat/Starf/Enigma/Figy), Throat Spray, Mirror Herb, Adrenaline Orb, Red Card, Expert Belt, Terrain Extender, Shed Shell, Power Herb, Safety Goggles, White Herb, Wide/Zoom Lens, Punching Glove, Big Root, Room Service, Iron Ball, Heavy-Duty Boots, Absorb Bulb, Cell Battery, Luminous Moss, Snowball, Sticky Barb, Bright Powder, Quick Claw, Muscle Band, Wise Glasses, Metronome, Grip Claw, Float Stone, Binding Band, Protective Pads, Utility Umbrella, Clear Amulet, Covert Cloak, Focus Band, Mental Herb, Blunder Policy
+**Pool contents (53 unique items):** Eject Pack, stat-boosting berries (Apicot/Salac/Petaya/Liechi/Ganlon/Kee/Maranga/Jaboca/Rowap/Custap/Leppa/Lansat/Starf/Enigma/Figy), Throat Spray, Mirror Herb, Adrenaline Orb, Red Card, Expert Belt, Terrain Extender, Shed Shell, Power Herb, Safety Goggles, White Herb, Wide/Zoom Lens, Punching Glove, Big Root, Room Service, Iron Ball, Heavy-Duty Boots, Absorb Bulb, Cell Battery, Luminous Moss, Snowball, Sticky Barb, Bright Powder, Quick Claw, Muscle Band, Wise Glasses, Metronome, Grip Claw, Float Stone, Binding Band, Protective Pads, Utility Umbrella, Clear Amulet, Covert Cloak, Focus Band, Mental Herb, Blunder Policy
 
-**Consumed: 42 draws from 54 items** — 12 items go unused per run.
+**Consumed: 37 draws from 53 items** — 16 items go unused per run.
 
 **Pick-3 ball locations** (player chooses 1 of 3 from this pool):
 
@@ -62,7 +62,6 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 | Route 111 A | `FLAG_ITEM_ROUTE_111_ELIXIR` | Route 111 area bags |
 | Route 111 B | `FLAG_ITEM_ROUTE_111_POWERHERB` | Route 111 area bags |
 | Route 111 C | `FLAG_ITEM_ROUTE_111_ADRENALINE` | `route111BallCItems` → Dusty (`TRAINER_DUSTY_1`) bag/reward; `normanBag` and above |
-| Route 112 | `FLAG_ITEM_ROUTE_112_WHITE` | Route 112 area bags |
 | Route 114 A | `FLAG_ITEM_ROUTE_114_WIDE` | Route 114 area bags |
 | Route 114 B | `FLAG_ITEM_ROUTE_114_ZOOM` | Route 114 area bags |
 | Route 114 C | `FLAG_ITEM_ROUTE_114_ENERGY_POWDER` | Route 114 area bags |
@@ -73,7 +72,6 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 
 | Location | Flag | Slot breakdown |
 |----------|------|---------------|
-| Route 111 items | `FLAG_ITEM_ROUTE_111_TM_SANDSTORM` | slots 0/1 = pool, slot 2 = Custap Berry (fixed) |
 | Route 116 Clark pick | `FLAG_ITEM_ROUTE_116_PICK_ITEM` | all 3 = TM65/66/67 — TM randomizer owns all slots (see `tms.md`) |
 | Route 118 items | `FLAG_ITEM_ROUTE_118_BERRY` | all 4 from pool (via `route118Items`) |
 

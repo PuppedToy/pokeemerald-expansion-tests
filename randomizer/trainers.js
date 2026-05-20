@@ -897,7 +897,6 @@ function getTrainersData(itemAssignments, tmList) {
     const petalburgPlateItems    = itemAssignments.petalburgPlates;
     const route104GemItems       = itemAssignments.route104Gems;
     const route104BerryItems     = itemAssignments.route104Berries;
-    const route111ItemItems      = itemAssignments.route111Items;
     const route111BerryItems     = itemAssignments.route111Berries;
     const route117BerryItems     = itemAssignments.route117Berries;
     const route106GoodItem       = itemAssignments.route106GoodItem;
@@ -917,7 +916,6 @@ function getTrainersData(itemAssignments, tmList) {
     const route111GemGoodItem     = itemAssignments.route111GemGoodItem;
     const route111BallAItems      = itemAssignments.route111BallA;
     const route111BallCItems      = itemAssignments.route111BallC;
-    const route111ShaylaBallItems  = itemAssignments.route111ShaylaBall;
     const route114WyattGoodItem    = itemAssignments.route114WyattGoodItem;
     const route118BarnyGoodItem  = itemAssignments.route118BarnyGoodItem;
     const route118ItemItems      = itemAssignments.route118Items;
@@ -956,7 +954,6 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceAngelinaTMs    = [tmItem(57), tmItem(58), tmItem(59), tmItem(60)];
     const choiceBryanTMs       = [tmItem(12), tmItem(29), tmItem(30)];
     const rival103TM           = tmItem(71);
-    const choiceHeidiItems     = [route111ItemItems[0], route111ItemItems[1], 'Custap Berry'];
     const choiceWadeBerries    = route118ItemItems;
     const choiceRoseTMs        = [tmItem(39), tmItem(40), tmItem(41)];
     const choiceClarissaTMs    = [tmItem(42), tmItem(43), tmItem(44)];
@@ -1073,7 +1070,7 @@ const flanneryBag = () => [
     sample([...choiceCharlotteTMs]),
     sample([...choiceNolanTMs]),
     sample([...choiceAngelinaTMs]),
-    sample([...route111ShaylaBallItems]),
+    'Nugget',
     tmItem(78),   // Flannery's gym TM
     'TM_STRENGTH',  // HM, not randomized
 ];
@@ -1085,7 +1082,7 @@ const normanBag = () => [
     sample([...route111BallCItems]),
     sample([...choiceNobTMs]),
     sample([...choiceBryanTMs]),
-    sample([...choiceHeidiItems]),
+    'Nugget',
     tmItem(31),   // Norman's gym TM
     'TM_SURF',    // HM, not randomized
 ];
@@ -1535,7 +1532,7 @@ const trainersData = [
     {
         id: 'TRAINER_MARLENE',
         class: 'Psychic F',
-        reward: ['Ability Patch'],
+        reward: ['Nugget'],
         level: 12,
         bag: [...getSampleItemsFromArray(petalwoodGruntBag(), 2)],
         team: [
@@ -1602,7 +1599,7 @@ const trainersData = [
     {
         id: 'TRAINER_JOEY',
         class: 'Youngster',
-        reward: ['Ability Capsule'],
+        reward: ['Nugget'],
         level: 15,
         bag: [...getSampleItemsFromArray(roxanneBag(), 4)],
         team: [
@@ -2028,7 +2025,7 @@ const trainersData = [
     {
         id: 'TRAINER_EDMOND',
         class: 'Sailor',
-        reward: ['Ability Capsule'],
+        reward: ['Nugget'],
         level: 24,
         bag: getSampleItemsFromArray(stevenBag(), 5),
         team: [
@@ -2468,7 +2465,7 @@ const trainersData = [
     {
         id: 'TRAINER_DEREK',
         class: 'Bug Maniac',
-        reward: ['Ability Patch'],
+        reward: ['Nugget'],
         level: 29,
         bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
@@ -2876,9 +2873,9 @@ const trainersData = [
     {
         id: 'TRAINER_SHAYLA',
         class: 'Aroma Lady',
-        reward: [...route111ShaylaBallItems],
+        reward: ['Nugget'],
         level: 36,
-        bag: [...route111ShaylaBallItems, ...getSampleItemsFromArray(magmaChimneyBag(), 10)],
+        bag: ['Nugget', ...getSampleItemsFromArray(magmaChimneyBag(), 10)],
         team: [
             ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
             ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
@@ -3090,9 +3087,9 @@ const trainersData = [
     {
         id: 'TRAINER_HEIDI',
         class: 'Battle Girl',
-        reward: [...choiceHeidiItems],
+        reward: ['Nugget'],
         level: 39,
-        bag: [...choiceHeidiItems, ...getSampleItemsFromArray(flanneryBag(), 13)],
+        bag: ['Nugget', ...getSampleItemsFromArray(flanneryBag(), 13)],
         team: genericTrainerTeamPostFlannery(),
     },
     {

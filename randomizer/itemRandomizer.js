@@ -125,7 +125,6 @@ function buildAssignments() {
         route117Berries:  berry(4),
         route121Berries:  berry(4),
         // averageItemPool locations
-        route111Items:    [...pool(2), 'ITEM_CUSTAP_BERRY'],        // slot 2 = fixed
         // goodItemPool single-item locations
         route106GoodItem:  good(1)[0],
         route109GoodItem:  good(1)[0],
@@ -145,7 +144,6 @@ function buildAssignments() {
         route110ExtenderBall: pool(3),
         route111BallA: pool(3),
         route111BallC: pool(3),
-        route111ShaylaBall: pool(3),
         route114WyattGoodItem: good(1)[0],
         route115Ball:  pool(3),
         route116Ball:  pool(3),
@@ -254,19 +252,6 @@ function updateScripts(a) {
             scriptLabel: 'Route111_EventScript_GemGoodItem',
             item: a.route111GemGoodItem,
             flag: 'FLAG_ITEM_ROUTE_111_GEM',
-        })
-    );
-
-    // Route111 items (3, items change — slot 2 = CUSTAP_BERRY fixed)
-    replaceAnchored(
-        'data/maps/Route111/scripts.inc',
-        'ROUTE111_ITEMS',
-        genPickerSection({
-            pickerLabel:  'Route111_EventScript_PickItem',
-            multiConst:   'MULTI_ROUTE111_PICK_ITEM',
-            flag:         'FLAG_ITEM_ROUTE_111_TM_SANDSTORM',
-            pickedItems:  a.route111Items,
-            handlerPrefix:'Route111_EventScript_PickItem',
         })
     );
 
@@ -413,13 +398,6 @@ function updateScripts(a) {
         pickedItems:   a.route111BallC,
         handlerPrefix: 'Route111_EventScript_PickBallC',
     }));
-    replaceAnchored('data/maps/Route114/scripts.inc', 'ROUTE114_SHAYLA_BALL', genPickerSection({
-        pickerLabel:   'Route111_EventScript_PickShayla',
-        multiConst:    'MULTI_ROUTE112_PICK_BALL',
-        flag:          'FLAG_ITEM_ROUTE_112_WHITE',
-        pickedItems:   a.route111ShaylaBall,
-        handlerPrefix: 'Route111_EventScript_PickShayla',
-    }));
     replaceAnchored('data/maps/Route114/scripts.inc', 'ROUTE114_WYATT_GOOD', genSingleItemScript({
         scriptLabel:   'Route114_EventScript_PickWyatt',
         item:          a.route114WyattGoodItem,
@@ -478,8 +456,6 @@ function updateScriptMenu(a) {
         a.route121Berries.map(itemDisplayName));
 
     // 3-choice lists where all items change
-    src = replaceMenuList(src, 'MultichoiceList_Route111PickItem',
-        a.route111Items.map(itemDisplayName));
 
     src = replaceMenuList(src, 'MultichoiceList_Route118PickBerry',
         a.route118Items.map(itemDisplayName));
@@ -490,7 +466,6 @@ function updateScriptMenu(a) {
     src = replaceMenuList(src, 'MultichoiceList_Route110PickExtender', a.route110ExtenderBall.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route111PickBallA', a.route111BallA.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route111PickBallC', a.route111BallC.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route112PickBall',  a.route111ShaylaBall.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route115PickBall',  a.route115Ball.map(itemDisplayName));
     src = replaceMenuList(src, 'MultichoiceList_Route116PickBall',  a.route116Ball.map(itemDisplayName));
 
@@ -529,11 +504,9 @@ function randomizeItems() {
         route117Plates:    dn('route117Plates'),
         route104Gems:      dn('route104Gems'),
         route104Berries:   dn('route104Berries'),
-        route111Items:     dn('route111Items'),
         route111Berries:   dn('route111Berries'),
 
         route111BallA:      dn('route111BallA'),
-        route111ShaylaBall: dn('route111ShaylaBall'),
         route116Ball:      dn('route116Ball'),
         route114WyattGoodItem: itemDisplayName(a.route114WyattGoodItem),
         route117Berries:   dn('route117Berries'),
