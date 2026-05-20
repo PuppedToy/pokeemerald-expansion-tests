@@ -914,7 +914,6 @@ function getTrainersData(itemAssignments, tmList) {
     const route117GemItems       = itemAssignments.route117Gems;
     const route117PlateItems     = itemAssignments.route117Plates;
     const route111HpUpGoodItem    = itemAssignments.route111HpUpGoodItem;
-    const route111GemGoodItem     = itemAssignments.route111GemGoodItem;
     const route111BallAItems      = itemAssignments.route111BallA;
     const route111BallCItems      = itemAssignments.route111BallC;
     const route114WyattGoodItem    = itemAssignments.route114WyattGoodItem;
@@ -1079,7 +1078,6 @@ const flanneryBag = () => [
 
 const normanBag = () => [
     ...flanneryBag(),
-    route111GemGoodItem,
     sample([...route111BerryItems]),
     sample([...route111BallCItems]),
     sample([...choiceNobTMs]),
@@ -3073,9 +3071,9 @@ const trainersData = [
     {
         id: 'TRAINER_BECKY',
         class: 'Picnicker',
-        reward: [route111GemGoodItem],
+        reward: ['Nugget'],
         level: 39,
-        bag: [route111GemGoodItem, ...getSampleItemsFromArray(flanneryBag(), 12)],
+        bag: getSampleItemsFromArray(flanneryBag(), 12),
         team: genericTrainerTeamPostFlannery(),
     },
     {

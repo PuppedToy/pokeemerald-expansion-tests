@@ -845,12 +845,10 @@ Route111_EventScript_PickTM3::
 	setflag FLAG_ITEM_ROUTE_115_TM_FOCUS_PUNCH
 	end
 
-@ === RAND_ROUTE111_GEM_START ===
 Route111_EventScript_GemGoodItem::
-	finditem ITEM_SITRUS_BERRY
+	finditem ITEM_NUGGET
 	setflag FLAG_ITEM_ROUTE_111_GEM
 	end
-@ === RAND_ROUTE111_GEM_END ===
 
 Route111_EventScript_PickFocus::
 	multichoice 0, 0, MULTI_ROUTE111_PICK_FOCUS, FALSE

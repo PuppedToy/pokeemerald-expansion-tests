@@ -37,7 +37,6 @@ Shuffled once per run. Each "good item" location in the world gets one item draw
 | Route 117 item ball (near Maria) | `FLAG_ITEM_ROUTE_117_EARTHQUAKE` | Maria (`TRAINER_MARIA_1`) bag/reward |
 | Route 116 item ball (near Devan) | `FLAG_ITEM_ROUTE_116_X_SPECIAL` | Devan (`TRAINER_DEVAN`) — also in `rusturfGruntBag` and all bags that build on it |
 | Route 111 item ball (near Travis) | `FLAG_ITEM_ROUTE_111_HP_UP` | Travis (`TRAINER_TRAVIS`) bag/reward |
-| Route 111 item ball (near Becky) | `FLAG_ITEM_ROUTE_111_GEM` | Becky (`TRAINER_BECKY`) bag/reward; also in `normanBag` and above |
 | Route 118 item ball (near Barny) | `FLAG_ITEM_ROUTE_118_COBA` | Barny (`TRAINER_BARNY`) bag/reward |
 | Route 120 item ball (near Angelica) | `FLAG_ITEM_ROUTE_119_ZINC` | Angelica (`TRAINER_ANGELICA`) bag/reward |
 

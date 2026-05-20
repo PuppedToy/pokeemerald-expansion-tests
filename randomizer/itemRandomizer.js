@@ -134,7 +134,6 @@ function buildAssignments() {
         route117GoodItem:    good(1)[0],
         route116XSpecial:  good(1)[0],
         route111HpUpGoodItem: good(1)[0],
-        route111GemGoodItem:  good(1)[0],
 
         route118BarnyGoodItem: good(1)[0],
         route118Items:    pool(4),
@@ -245,16 +244,6 @@ function updateScripts(a) {
         })
     );
 
-    // Route111 gem (single goodItemPool item — Becky)
-    replaceAnchored(
-        'data/maps/Route111/scripts.inc',
-        'ROUTE111_GEM',
-        genSingleItemScript({
-            scriptLabel: 'Route111_EventScript_GemGoodItem',
-            item: a.route111GemGoodItem,
-            flag: 'FLAG_ITEM_ROUTE_111_GEM',
-        })
-    );
 
     // Route111 items (3, items change — slot 2 = CUSTAP_BERRY fixed)
     replaceAnchored(
@@ -509,7 +498,6 @@ function randomizeItems() {
         route117GoodItem:     itemDisplayName(a.route117GoodItem),
         route116XSpecial:     itemDisplayName(a.route116XSpecial),
         route111HpUpGoodItem: itemDisplayName(a.route111HpUpGoodItem),
-        route111GemGoodItem:  itemDisplayName(a.route111GemGoodItem),
         route111BallC:        dn('route111BallC'),
         route116Gems:      dn('route116Gems'),
         route116Berries:   dn('route116Berries'),
