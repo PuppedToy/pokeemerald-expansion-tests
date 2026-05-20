@@ -125,7 +125,7 @@ function buildAssignments() {
         route117Berries:  berry(4),
         route121Berries:  berry(4),
         // averageItemPool locations
-        route111Items:    [...pool(2), 'ITEM_CUSTAP_BERRY'],        // slot 2 = fixed
+        route111Items:    pool(3),
         // goodItemPool single-item locations
         route106GoodItem:  good(1)[0],
         route109GoodItem:  good(1)[0],

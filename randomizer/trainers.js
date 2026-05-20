@@ -955,7 +955,7 @@ function getTrainersData(itemAssignments, tmList) {
     const choiceAngelinaTMs    = [tmItem(57), tmItem(58), tmItem(59), tmItem(60)];
     const choiceBryanTMs       = [tmItem(12), tmItem(29), tmItem(30)];
     const rival103TM           = tmItem(71);
-    const choiceHeidiItems     = [route111ItemItems[0], route111ItemItems[1], 'Custap Berry'];
+    const choiceHeidiItems     = [...route111ItemItems];
     const choiceWadeBerries    = route118ItemItems;
     const choiceRoseTMs        = [tmItem(39), tmItem(40), tmItem(41)];
     const choiceClarissaTMs    = [tmItem(42), tmItem(43), tmItem(44)];
