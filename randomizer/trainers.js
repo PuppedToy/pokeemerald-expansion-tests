@@ -1535,7 +1535,7 @@ const trainersData = [
     {
         id: 'TRAINER_MARLENE',
         class: 'Psychic F',
-        reward: ['Ability Patch'],
+        reward: ['Nugget'],
         level: 12,
         bag: [...getSampleItemsFromArray(petalwoodGruntBag(), 2)],
         team: [
@@ -1602,7 +1602,7 @@ const trainersData = [
     {
         id: 'TRAINER_JOEY',
         class: 'Youngster',
-        reward: ['Ability Capsule'],
+        reward: ['Nugget'],
         level: 15,
         bag: [...getSampleItemsFromArray(roxanneBag(), 4)],
         team: [
@@ -2028,7 +2028,7 @@ const trainersData = [
     {
         id: 'TRAINER_EDMOND',
         class: 'Sailor',
-        reward: ['Ability Capsule'],
+        reward: ['Nugget'],
         level: 24,
         bag: getSampleItemsFromArray(stevenBag(), 5),
         team: [
@@ -2468,7 +2468,7 @@ const trainersData = [
     {
         id: 'TRAINER_DEREK',
         class: 'Bug Maniac',
-        reward: ['Ability Patch'],
+        reward: ['Nugget'],
         level: 29,
         bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
