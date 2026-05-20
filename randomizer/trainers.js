@@ -1158,6 +1158,7 @@ const trainersData = [
     // Route 101
     {
         id: 'TRAINER_CALVIN_1',
+        location: 'Route 101',
         class: 'Youngster',
         reward: ['SPECIES_ZIGZAGOON'],
         level: 7,
@@ -1172,6 +1173,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ELIJAH',
+        location: 'Route 101',
         class: 'Bird Keeper',
         reward: ['Oran Berry'],
         level: 7,
@@ -1187,6 +1189,7 @@ const trainersData = [
     // Route 102
     {
         id: 'TRAINER_ALLEN',
+        location: 'Route 102',
         class: 'Camper',
         reward: ['SPECIES_WURMPLE'],
         level: 7,
@@ -1201,6 +1204,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_RICK',
+        location: 'Route 102',
         class: 'Bug Catcher',
         reward: ['SPECIES_WINGULL'],
         level: 7,
@@ -1215,6 +1219,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TIANA',
+        location: 'Route 102',
         class: 'Lass',
         reward: [...route102BallItems],
         level: 7,
@@ -1227,6 +1232,7 @@ const trainersData = [
     // Route 103
     {
         id: 'TRAINER_SAWYER_1',
+        location: 'Route 103',
         class: 'Hiker',
         reward: ['SPECIES_SMEARGLE'],
         level: 7,
@@ -1241,6 +1247,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CARTER',
+        location: 'Route 103',
         class: 'Fisherman',
         reward: ['SPECIES_SURSKIT'],
         level: 7,
@@ -1255,6 +1262,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_ROUTE_103_TREECKO',
+        location: 'Route 103',
         class: 'May',
         reward: [rival103TM],
         bag: [...rival103Bag()],
@@ -1272,6 +1280,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_ROUTE_103_TORCHIC',
+        location: 'Route 103',
         class: 'May',
         reward: [rival103TM],
         bag: [...rival103Bag()],
@@ -1289,6 +1298,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_ROUTE_103_MUDKIP',
+        location: 'Route 103',
         class: 'May',
         reward: [rival103TM],
         bag: [...rival103Bag()],
@@ -1306,22 +1316,26 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BRENDAN_ROUTE_103_TREECKO',
+        location: 'Route 103',
         copy: 'TRAINER_MAY_ROUTE_103_TREECKO',
         class: 'Brendan',
     },
     {
         id: 'TRAINER_BRENDAN_ROUTE_103_TORCHIC',
+        location: 'Route 103',
         copy: 'TRAINER_MAY_ROUTE_103_TORCHIC',
         class: 'Brendan',
     },
     {
         id: 'TRAINER_BRENDAN_ROUTE_103_MUDKIP',
+        location: 'Route 103',
         copy: 'TRAINER_MAY_ROUTE_103_MUDKIP',
         class: 'Brendan',
     },
     // Route 104
     {
         id: 'TRAINER_BILLY',
+        location: 'Route 104',
         class: 'Youngster',
         reward: ['SPECIES_GEODUDE'],
         level: 10,
@@ -1336,6 +1350,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DARIAN',
+        location: 'Route 104',
         class: 'Fisherman',
         reward: ['SPECIES_WEEDLE'],
         level: 10,
@@ -1350,6 +1365,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CINDY_1',
+        location: 'Route 104',
         class: 'Lady',
         reward: ['Eviolite'],
         level: 10,
@@ -1364,6 +1380,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_KOICHI',
+        location: 'Route 115',
         class: 'Black Belt',
         reward: [...choice104TMs2],
         level: 10,
@@ -1379,6 +1396,7 @@ const trainersData = [
     // Petalburg Woods
     {
         id: 'TRAINER_LYLE',
+        location: 'Petalburg Woods',
         class: 'Bug Catcher',
         reward: [...woodsPlatesChoice],
         level: 10,
@@ -1390,6 +1408,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_GRUNT_PETALBURG_WOODS',
+        location: 'Petalburg Woods',
         class: 'Aqua Grunt M',
         level: 10,
         reward: ['Ability Capsule'],
@@ -1439,6 +1458,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JAMES_1',
+        location: 'Petalburg Woods',
         class: 'Bug Catcher',
         reward: ['SPECIES_PATRAT'],
         level: 12,
@@ -1453,6 +1473,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DAREJAN',
+        location: 'Petalburg Woods',
         class: 'Fisherman',
         reward: ['SPECIES_CATERPIE'],
         level: 12,
@@ -1468,6 +1489,7 @@ const trainersData = [
     // Route 104 again
     {
         id: 'TRAINER_HALEY_1',
+        location: 'Route 104',
         class: 'Lass',
         reward: [...choice104TMs],
         level: 12,
@@ -1479,6 +1501,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_WINSTON_1',
+        location: 'Route 104',
         class: 'Rich Boy',
         reward: [...choice104Berry],
         level: 12,
@@ -1490,6 +1513,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_IVAN',
+        location: 'Route 104',
         class: 'Fisherman',
         reward: [...choice104Gem],
         level: 12,
@@ -1501,6 +1525,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ALIX',
+        location: 'Route 115',
         class: 'Battle Girl',
         reward: ['SPECIES_SANDSHREW'],
         level: 12,
@@ -1516,6 +1541,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TIMOTHY_1',
+        location: 'Route 115',
         class: 'Expert M',
         reward: ['SPECIES_DELIBIRD'],
         level: 12,
@@ -1531,6 +1557,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MARLENE',
+        location: 'Route 115',
         class: 'Psychic F',
         reward: ['Nugget'],
         level: 12,
@@ -1543,6 +1570,7 @@ const trainersData = [
     // Rustboro City
     {
         id: 'TRAINER_ROXANNE_1',
+        location: 'Rustboro Gym',
         level: 12,
         class: 'Leader Roxanne',
         reward: ['GYM_REWARD_1', tmItem(1)],
@@ -1584,6 +1612,7 @@ const trainersData = [
     // Route 116
     {
         id: 'TRAINER_JOSE',
+        location: 'Route 116',
         level: 15,
         class: 'Bug Catcher',
         reward: ['SPECIES_DITTO'],
@@ -1598,6 +1627,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JOEY',
+        location: 'Route 116',
         class: 'Youngster',
         reward: ['Nugget'],
         level: 15,
@@ -1609,6 +1639,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JOHNSON',
+        location: 'Route 116',
         class: 'Rich Boy',
         reward: [...route116BallItems],
         level: 15,
@@ -1620,6 +1651,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DEVAN',
+        location: 'Route 116',
         class: 'Hiker',
         reward: [route116XSpecialItem],
         level: 15,
@@ -1635,6 +1667,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CLARK',
+        location: 'Route 116',
         class: 'Pokemaniac',
         reward: [...choice116PickTMs],
         bag: [...getSampleItemsFromArray(roxanneBag(), 3), ...choice116PickTMs],
@@ -1647,6 +1680,7 @@ const trainersData = [
     // Rusturf Tunnel
     {
         id: 'TRAINER_GRUNT_RUSTURF_TUNNEL',
+        location: 'Rusturf Tunnel',
         level: 15,
         class: 'Magma Grunt F',
         isBoss: true,
@@ -1726,6 +1760,7 @@ const trainersData = [
     // Route 116 again
     {
         id: 'TRAINER_JANICE',
+        location: 'Route 116',
         class: 'Lass',
         reward: ['SPECIES_SENTRET'],
         level: 17,
@@ -1740,6 +1775,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JERRY_1',
+        location: 'Route 116',
         class: 'School Kid M',
         reward: ['Flame Orb', 'Toxic Orb'],
         level: 17,
@@ -1770,6 +1806,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_SARAH',
+        location: 'Route 116',
         class: 'Lady',
         reward: [...choice116Gem],
         level: 17,
@@ -1781,6 +1818,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_KAREN_1',
+        location: 'Route 116',
         class: 'School Kid F',
         reward: [...choice116Berry],
         level: 17,
@@ -1793,6 +1831,7 @@ const trainersData = [
     // Rustboro Rival
     {
         id: 'TRAINER_MAY_RUSTBORO_TREECKO',
+        location: 'Rustboro City',
         class: 'May',
         isBoss: true,
         level: 17,
@@ -1803,6 +1842,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_RUSTBORO_TORCHIC',
+        location: 'Rustboro City',
         class: 'May',
         isBoss: true,
         level: 17,
@@ -1813,6 +1853,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_RUSTBORO_MUDKIP',
+        location: 'Rustboro City',
         class: 'May',
         isBoss: true,
         level: 17,
@@ -1823,22 +1864,26 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BRENDAN_RUSTBORO_TREECKO',
+        location: 'Rustboro City',
         copy: 'TRAINER_MAY_RUSTBORO_TREECKO',
         class: 'Brendan',
     },
     {
         id: 'TRAINER_BRENDAN_RUSTBORO_TORCHIC',
+        location: 'Rustboro City',
         copy: 'TRAINER_MAY_RUSTBORO_TORCHIC',
         class: 'Brendan',
     },
     {
         id: 'TRAINER_BRENDAN_RUSTBORO_MUDKIP',
+        location: 'Rustboro City',
         copy: 'TRAINER_MAY_RUSTBORO_MUDKIP',
         class: 'Brendan',
     },
     // Route 106
     {
         id: 'TRAINER_KYLA',
+        location: 'Route 106',
         class: 'Tuber F',
         reward: ['SPECIES_MACHOP'],
         level: 19,
@@ -1853,6 +1898,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ELLIOT_1',
+        location: 'Route 106',
         class: 'Fisherman',
         reward: ['SPECIES_CHARMANDER'],
         level: 19,
@@ -1867,6 +1913,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JOSUE',
+        location: 'Route 106',
         class: 'Bird Keeper',
         reward: [...choicesDewfordTMs],
         level: 19,
@@ -1878,6 +1925,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_NED',
+        location: 'Route 106',
         class: 'Fisherman',
         reward: [route106GoodItem],
         level: 19,
@@ -1889,6 +1937,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ANDRES_1',
+        location: 'Route 106',
         class: 'Ruin Maniac',
         reward: [...route106BallItems],
         level: 19,
@@ -1901,6 +1950,7 @@ const trainersData = [
     // Dewford Gym
     {
         id: 'TRAINER_BRAWLY_1',
+        location: 'Dewford Gym',
         class: 'Leader Brawly',
         level: 19,
         reward: ['GYM_REWARD_2', tmItem(61)],
@@ -1971,6 +2021,7 @@ const trainersData = [
     // Granite Cave
     {
         id: 'TRAINER_STEVEN',
+        location: 'Granite Cave',
         class: 'Steven',
         level: 22,
         isBoss: true,
@@ -2009,6 +2060,7 @@ const trainersData = [
     // Route 106
     {
         id: 'TRAINER_LOLA_1',
+        location: 'Route 109',
         class: 'Tuber F',
         reward: ['SPECIES_BULBASAUR'],
         level: 24,
@@ -2024,6 +2076,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_EDMOND',
+        location: 'Route 109',
         class: 'Sailor',
         reward: ['Nugget'],
         level: 24,
@@ -2035,6 +2088,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_RICKY_1',
+        location: 'Route 109',
         class: 'Tuber M',
         reward: [...choiceRickyTMs],
         level: 24,
@@ -2046,6 +2100,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_HUEY',
+        location: 'Route 109',
         class: 'Pokefan M',
         reward: [...choiceHueyTMs],
         level: 24,
@@ -2057,6 +2112,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_HAILEY',
+        location: 'Route 109',
         class: 'Tuber F',
         reward: [route109GoodItem],
         level: 24,
@@ -2068,6 +2124,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CHANDLER',
+        location: 'Route 109',
         class: 'Youngster',
         reward: ['Heat Rock', 'Damp Rock', 'Smooth Rock', 'Icy Rock', tmItem(73), tmItem(72), tmItem(74), tmItem(75)],
         level: 24,
@@ -2088,6 +2145,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_GRUNT_MUSEUM_1',
+        location: 'Slateport Museum',
         class: 'Aqua Grunt M',
         isBoss: true,
         reward: ['GYM_REWARD_9'],
@@ -2117,6 +2175,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_GRUNT_MUSEUM_2',
+        location: 'Slateport Museum',
         class: 'Aqua Grunt M',
         isBoss: true,
         reward: ['GYM_REWARD_9'],
@@ -2147,6 +2206,7 @@ const trainersData = [
     // Route 110
     {
         id: 'TRAINER_ISABEL_1',
+        location: 'Route 110',
         class: 'Pokefan F',
         reward: [...choice110TMs],
         level: 26,
@@ -2158,6 +2218,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_KALEB',
+        location: 'Route 110',
         class: 'Pokefan M',
         reward: [...route110ExtenderBallItems],
         level: 26,
@@ -2169,6 +2230,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TIMMY',
+        location: 'Route 110',
         class: 'Youngster',
         reward: [route110GoodItem],
         level: 26,
@@ -2180,6 +2242,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_EDWARD',
+        location: 'Route 110',
         class: 'Psychic M',
         reward: ['SPECIES_ELECTRIKE'],
         level: 26,
@@ -2196,6 +2259,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DALE',
+        location: 'Route 110',
         class: 'Fisherman',
         reward: ['SPECIES_MANECTRIC'],
         level: 26,
@@ -2213,6 +2277,7 @@ const trainersData = [
     // Route 110 Again
     {
         id: 'TRAINER_MAY_ROUTE_110_TREECKO',
+        location: 'Route 110',
         class: 'May',
         isBoss: true,
         level: 26,
@@ -2222,6 +2287,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_ROUTE_110_TORCHIC',
+        location: 'Route 110',
         class: 'May',
         isBoss: true,
         level: 26,
@@ -2231,6 +2297,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_ROUTE_110_MUDKIP',
+        location: 'Route 110',
         class: 'May',
         isBoss: true,
         level: 26,
@@ -2240,22 +2307,26 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BRENDAN_ROUTE_110_TREECKO',
+        location: 'Route 110',
         copy: 'TRAINER_MAY_ROUTE_110_TREECKO',
         class: 'Brendan',
     },
     {
         id: 'TRAINER_BRENDAN_ROUTE_110_TORCHIC',
+        location: 'Route 110',
         copy: 'TRAINER_MAY_ROUTE_110_TORCHIC',
         class: 'Brendan',
     },
     {
         id: 'TRAINER_BRENDAN_ROUTE_110_MUDKIP',
+        location: 'Route 110',
         copy: 'TRAINER_MAY_ROUTE_110_MUDKIP',
         class: 'Brendan',
     },
     // Route 110 after rival
     {
         id: 'TRAINER_EDWIN_1',
+        location: 'Route 110',
         class: 'Collector',
         reward: [route110LumGoodItem],
         level: 28,
@@ -2266,6 +2337,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JOSEPH',
+        location: 'Route 110',
         class: 'Guitarist',
         reward: [...choiceJosephSeeds],
         bag: [...getSampleItemsFromArray(rivalRoute110Bag(), 3)],
@@ -2288,6 +2360,7 @@ const trainersData = [
     // Route 118
     {
         id: 'TRAINER_DALTON_1',
+        location: 'Route 118',
         class: 'Guitarist',
         reward: ['SPECIES_CARVANHA'],
         level: 28,
@@ -2303,6 +2376,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DEANDRE',
+        location: 'Route 118',
         class: 'Youngster',
         reward: [...choiceDeandreTMs],
         level: 28,
@@ -2314,6 +2388,7 @@ const trainersData = [
     // Wally
     {
         id: 'TRAINER_WALLY_MAUVILLE',
+        location: 'Route 110',
         class: 'Wally',
         isBoss: true,
         breedTier: 'good',
@@ -2368,6 +2443,7 @@ const trainersData = [
     // Route 117
     {
         id: 'TRAINER_BRANDI',
+        location: 'Route 117',
         class: 'Psychic F',
         reward: ['SPECIES_ODDISH'],
         level: 29,
@@ -2383,6 +2459,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ISAAC_1',
+        location: 'Route 117',
         class: 'Pokemon Breeder M',
         reward: ['SPECIES_GLOOM'],
         level: 29,
@@ -2398,6 +2475,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_HECTOR',
+        location: 'Route 115',
         class: 'Expert M',
         reward: [...choiceHectorTMs, 'Light Clay'],
         level: 29,
@@ -2420,6 +2498,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MELINA',
+        location: 'Route 117',
         class: 'Running Triathlete F',
         reward: [...choiceMelinaBerries],
         level: 29,
@@ -2431,6 +2510,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_AISHA',
+        location: 'Route 117',
         class: 'Battle Girl',
         reward: [...choiceAishaGems],
         level: 29,
@@ -2442,6 +2522,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MARIA_1',
+        location: 'Route 117',
         class: 'Expert F',
         reward: [route117GoodItem],
         level: 29,
@@ -2453,6 +2534,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_LYDIA_1',
+        location: 'Route 117',
         class: 'Pokemon Breeder F',
         reward: [...route117PlateItems],
         level: 29,
@@ -2464,6 +2546,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DEREK',
+        location: 'Route 117',
         class: 'Bug Maniac',
         reward: ['Nugget'],
         level: 29,
@@ -2476,6 +2559,7 @@ const trainersData = [
     // Mauville Gym
     {
         id: 'TRAINER_WATTSON_1',
+        location: 'Mauville Gym',
         class: 'Leader Wattson',
         isBoss: true,
         reward: ['GYM_REWARD_3', tmItem(11)],
@@ -2533,6 +2617,7 @@ const trainersData = [
     // Route 111
     {
         id: 'TRAINER_HAYDEN',
+        location: 'Route 111',
         class: 'Kindler',
         reward: ['SPECIES_DROWZEE'],
         level: 32,
@@ -2549,6 +2634,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TYRON',
+        location: 'Route 111',
         class: 'Camper',
         reward: ['ITEM_MEGA_01'],
         level: 32,
@@ -2564,6 +2650,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_IRENE',
+        location: 'Route 111',
         class: 'Picnicker',
         reward: [...route111BallAItems],
         level: 32,
@@ -2575,6 +2662,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TRAVIS',
+        location: 'Route 111',
         class: 'Pokemon Breeder M',
         reward: [route111HpUpGoodItem],
         level: 32,
@@ -2587,6 +2675,7 @@ const trainersData = [
     // Route 112
     {
         id: 'TRAINER_BRYANT',
+        location: 'Route 112',
         class: 'Kindler',
         reward: ['SPECIES_NUMEL'],
         level: 32,
@@ -2603,6 +2692,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_LARRY',
+        location: 'Route 112',
         class: 'Fisherman',
         reward: ['SPECIES_TAILLOW'],
         level: 32,
@@ -2619,6 +2709,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CAROL',
+        location: 'Route 112',
         class: 'Cycling Triathlete F',
         reward: [...choiceCarolTMs],
         level: 32,
@@ -2630,6 +2721,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BRICE',
+        location: 'Route 112',
         class: 'Hiker',
         reward: [...choiceBriceTMs],
         level: 32,
@@ -2641,6 +2733,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TABITHA_MT_CHIMNEY',
+        location: 'Mt. Chimney',
         class: 'Magma Admin',
         isBoss: true,
         level: 32,
@@ -2672,6 +2765,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAXIE_MT_CHIMNEY',
+        location: 'Mt. Chimney',
         class: 'Magma Leader Maxie',
         isBoss: true,
         reward: ['Good Rod'],
@@ -2734,6 +2828,7 @@ const trainersData = [
     // Jagged Pass
     {
         id: 'TRAINER_ERIC',
+        location: 'Jagged Pass',
         class: 'Hiker',
         reward: ['SPECIES_NOIBAT'],
         level: 36,
@@ -2750,6 +2845,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JULIO',
+        location: 'Jagged Pass',
         class: 'Cycling Triathlete M',
         reward: ['SPECIES_NOIVERN', 'SPECIES_WOOBAT'],
         level: 36,
@@ -2771,6 +2867,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_AUTUMN',
+        location: 'Jagged Pass',
         class: 'Picnicker',
         reward: ['ITEM_MEGA_02'],
         level: 36,
@@ -2787,6 +2884,7 @@ const trainersData = [
     // Route 113
     {
         id: 'TRAINER_LAWRENCE',
+        location: 'Route 113',
         class: 'Camper',
         reward: ['SPECIES_SPINDA'],
         level: 36,
@@ -2803,6 +2901,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JAYLEN',
+        location: 'Route 113',
         class: 'Youngster',
         reward: ['SPECIES_BIDOOF', 'SPECIES_BIBAREL'],
         level: 36,
@@ -2825,6 +2924,7 @@ const trainersData = [
     // Route 114
     {
         id: 'TRAINER_STEVE_1',
+        location: 'Route 114',
         class: 'Pokemaniac',
         reward: ['SPECIES_SWABLU'],
         level: 36,
@@ -2840,6 +2940,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CLAUDE',
+        location: 'Route 114',
         class: 'Fisherman',
         reward: ['SPECIES_ALTARIA', 'SPECIES_SPOINK'],
         level: 36,
@@ -2861,6 +2962,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_WILTON_1',
+        location: 'Route 114',
         class: 'Cooltrainer M',
         reward: [...choiceWiltonTMs],
         level: 36,
@@ -2872,6 +2974,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_SHAYLA',
+        location: 'Route 114',
         class: 'Aroma Lady',
         reward: ['Nugget'],
         level: 36,
@@ -2883,6 +2986,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CHARLOTTE',
+        location: 'Route 114',
         class: 'Picnicker',
         reward: [...choiceCharlotteTMs],
         level: 36,
@@ -2894,6 +2998,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_NOLAN',
+        location: 'Route 114',
         class: 'Youngster',
         reward: [...choiceNolanTMs],
         level: 36,
@@ -2905,6 +3010,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ANGELINA',
+        location: 'Route 114',
         class: 'Battle Girl',
         reward: [...choiceAngelinaTMs],
         level: 36,
@@ -2916,6 +3022,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_WYATT',
+        location: 'Route 113',
         class: 'Pokemaniac',
         reward: [route114WyattGoodItem],
         level: 36,
@@ -2928,6 +3035,7 @@ const trainersData = [
     // Flannery Gym
     {
         id: 'TRAINER_FLANNERY_1',
+        location: 'Lavaridge Gym',
         class: 'Leader Flannery',
         level: 36,
         reward: ['GYM_REWARD_4', 'Access to Desert Ruins', tmItem(78)],
@@ -3000,6 +3108,7 @@ const trainersData = [
     // Route 111
     {
         id: 'TRAINER_CELIA',
+        location: 'Route 111',
         class: 'Lass',
         reward: ['SPECIES_TRAPINCH'],
         level: 39,
@@ -3015,6 +3124,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BRANDEN',
+        location: 'Route 111',
         class: 'Expert M',
         reward: ['Strong Pokemon'],
         level: 39,
@@ -3023,6 +3133,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CELINA',
+        location: 'Route 111',
         class: 'Aroma Lady',
         reward: ['ITEM_MEGA_03'],
         level: 39,
@@ -3038,6 +3149,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BEAU',
+        location: 'Route 111',
         class: 'Camper',
         reward: ['Master Ball'],
         level: 39,
@@ -3046,6 +3158,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DREW',
+        location: 'Route 111',
         class: 'Guitarist',
         reward: [...route111BerryItems],
         level: 39,
@@ -3054,6 +3167,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DUSTY_1',
+        location: 'Route 111',
         class: 'Ruin Maniac',
         reward: [...route111BallCItems],
         level: 39,
@@ -3062,6 +3176,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_NOB_1',
+        location: 'Route 111',
         class: 'Black Belt',
         reward: [...choiceNobTMs],
         level: 39,
@@ -3070,6 +3185,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BECKY',
+        location: 'Route 111',
         class: 'Picnicker',
         reward: ['Nugget'],
         level: 39,
@@ -3078,6 +3194,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BRYAN',
+        location: 'Route 111',
         class: 'Youngster',
         reward: [...choiceBryanTMs],
         level: 39,
@@ -3086,6 +3203,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_HEIDI',
+        location: 'Route 111',
         class: 'Battle Girl',
         reward: [...choiceHeidiItems],
         level: 39,
@@ -3094,6 +3212,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_NORMAN_1',
+        location: 'Petalburg Gym',
         class: 'Leader Norman',
         level: 39,
         isBoss: true,
@@ -3177,6 +3296,7 @@ const trainersData = [
     // Route 105 (Island Cave)
     {
         id: 'TRAINER_FOSTER',
+        location: 'Route 105',
         class: 'Ruin Maniac',
         reward: ['Strong Pokemon'],
         level: 42,
@@ -3185,6 +3305,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_IMANI',
+        location: 'Route 105',
         class: 'Tuber F',
         reward: ['Master Ball'],
         level: 42,
@@ -3194,6 +3315,7 @@ const trainersData = [
     // Route 110 (New Mauville)
     {
         id: 'TRAINER_ABIGAIL_1',
+        location: 'Route 110',
         class: 'Cycling Triathlete F',
         reward: ['Strong Pokemon'],
         level: 42,
@@ -3202,6 +3324,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JACLYN',
+        location: 'Route 110',
         class: 'Psychic F',
         reward: ['Master Ball'],
         level: 42,
@@ -3211,6 +3334,7 @@ const trainersData = [
     // Route 118
     {
         id: 'TRAINER_PERRY',
+        location: 'Route 118',
         class: 'Bird Keeper',
         reward: ['SPECIES_DEDENNE'],
         level: 42,
@@ -3228,6 +3352,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CHRIS',
+        location: 'Route 118',
         class: 'Fisherman',
         reward: ['ITEM_MEGA_04'],
         level: 42,
@@ -3243,6 +3368,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_WADE',
+        location: 'Route 118',
         class: 'Camper',
         reward: [...choiceWadeBerries],
         level: 42,
@@ -3251,6 +3377,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BARNY',
+        location: 'Route 118',
         class: 'Pokemon Breeder M',
         reward: [route118BarnyGoodItem],
         level: 42,
@@ -3259,6 +3386,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ROSE_1',
+        location: 'Route 118',
         class: 'Aroma Lady',
         reward: [...choiceRoseTMs],
         level: 42,
@@ -3267,6 +3395,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CHESTER',
+        location: 'Route 118',
         class: 'Black Belt',
         reward: [...choiceChesterTMs],
         level: 42,
@@ -3276,6 +3405,7 @@ const trainersData = [
     // Route 119
     {
         id: 'TRAINER_KENT',
+        location: 'Route 119',
         class: 'Bug Catcher',
         reward: ['SPECIES_LINOONE'],
         level: 42,
@@ -3293,6 +3423,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BRENT',
+        location: 'Route 119',
         class: 'Bug Maniac',
         reward: ['SPECIES_SERVINE', 'SPECIES_SNIVY'],
         level: 42,
@@ -3320,6 +3451,7 @@ const trainersData = [
     // Weather Institute
     {
         id: 'TRAINER_SHELLY_WEATHER_INSTITUTE',
+        location: 'Weather Institute',
         class: 'Aqua Admin F',
         level: 42,
         reward: ['GYM_REWARD_10'],
@@ -3358,6 +3490,7 @@ const trainersData = [
     // Route 119 Rival Battles
     {
         id: 'TRAINER_MAY_ROUTE_119_TREECKO',
+        location: 'Route 119',
         class: 'May',
         isBoss: true,
         level: 44,
@@ -3368,6 +3501,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_ROUTE_119_TORCHIC',
+        location: 'Route 119',
         class: 'May',
         isBoss: true,
         level: 44,
@@ -3378,6 +3512,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_ROUTE_119_MUDKIP',
+        location: 'Route 119',
         class: 'May',
         isBoss: true,
         level: 44,
@@ -3388,22 +3523,26 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BRENDAN_ROUTE_119_TREECKO',
+        location: 'Route 119',
         copy: 'TRAINER_MAY_ROUTE_119_TREECKO',
         class: 'May',
     },
     {
         id: 'TRAINER_BRENDAN_ROUTE_119_TORCHIC',
+        location: 'Route 119',
         copy: 'TRAINER_MAY_ROUTE_119_TORCHIC',
         class: 'May',
     },
     {
         id: 'TRAINER_BRENDAN_ROUTE_119_MUDKIP',
+        location: 'Route 119',
         copy: 'TRAINER_MAY_ROUTE_119_MUDKIP',
         class: 'May',
     },
     // Route 119 continued
     {
         id: 'TRAINER_LEONEL',
+        location: 'Route 120',
         class: 'Cooltrainer M',
         reward: ['SPECIES_SANDILE'],
         level: 46,
@@ -3421,6 +3560,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_COLIN',
+        location: 'Route 120',
         class: 'Expert M',
         reward: ['SPECIES_KROKOROK', 'SPECIES_KROOKODILE', 'SPECIES_STUNFISK', 'SPECIES_RIBOMBEE', 'SPECIES_DUSKULL', 'SPECIES_DUSCLOPS', 'SPECIES_DUSKNOIR'],
         level: 46,
@@ -3461,6 +3601,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ROBERT_1',
+        location: 'Route 120',
         class: 'Bird Keeper',
         reward: ['ITEM_MEGA_05'],
         level: 46,
@@ -3476,6 +3617,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CLARISSA',
+        location: 'Route 120',
         class: 'Aroma Lady',
         reward: [...choiceClarissaTMs],
         level: 46,
@@ -3484,6 +3626,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ANGELICA',
+        location: 'Route 120',
         class: 'Parasol Lady',
         reward: [route120AngelicaGoodItem],
         level: 46,
@@ -3492,6 +3635,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JACKSON_1',
+        location: 'Route 120',
         class: 'Pokemon Ranger M',
         reward: ['Nugget'],
         level: 46,
@@ -3501,6 +3645,7 @@ const trainersData = [
     // Fortree City Gym
     {
         id: 'TRAINER_WINONA_1',
+        location: 'Fortree Gym',
         class: 'Leader Winona',
         level: 46,
         isBoss: true,
@@ -3578,6 +3723,7 @@ const trainersData = [
     // Route 120 After Gym
     {
         id: 'TRAINER_JEFFREY_1',
+        location: 'Route 120',
         class: 'Bug Maniac',
         reward: ['Master Ball'],
         level: 49,
@@ -3586,6 +3732,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CHIP',
+        location: 'Route 120',
         class: 'Ruin Maniac',
         reward: ['Access to Premium Pokemon'],
         level: 49,
@@ -3595,6 +3742,7 @@ const trainersData = [
     // Route 121
     {
         id: 'TRAINER_MARCEL',
+        location: 'Route 121',
         class: 'Cooltrainer M',
         reward: ['SPECIES_SHUPPET'],
         level: 49,
@@ -3613,6 +3761,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MYLES',
+        location: 'Route 121',
         class: 'Fisherman',
         reward: ['SPECIES_METAPOD', 'SPECIES_HONEDGE', 'SPECIES_BANETTE'],
         level: 49,
@@ -3640,6 +3789,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BIANCA',
+        location: 'Route 121',
         class: 'Camper',
         reward: ['ITEM_MEGA_06'],
         level: 49,
@@ -3656,6 +3806,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CALE',
+        location: 'Route 121',
         class: 'Bug Maniac',
         reward: ['Focus Sash'],
         level: 49,
@@ -3664,6 +3815,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TAMMY',
+        location: 'Route 121',
         class: 'Hex Maniac',
         reward: [...choiceTammyTMs],
         level: 49,
@@ -3672,6 +3824,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_WALTER_1',
+        location: 'Route 121',
         class: 'Gentleman',
         reward: [...choiceWalterTMs],
         level: 49,
@@ -3680,6 +3833,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JESSICA_1',
+        location: 'Route 121',
         class: 'Beauty',
         reward: [jessicaTM],
         level: 49,
@@ -3688,6 +3842,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CRISTIN_1',
+        location: 'Route 121',
         class: 'Cooltrainer F',
         reward: [...choiceCristinBerries],
         level: 49,
@@ -3697,6 +3852,7 @@ const trainersData = [
     // Lillycove Wally Rival
     {
         id: 'TRAINER_WALLY_LILYCOVE',
+        location: 'Route 121',
         class: 'Wally',
         isBoss: true,
         breedTier: 'good',
@@ -3745,6 +3901,7 @@ const trainersData = [
     // Magma Hideout
     {
         id: 'TRAINER_MAXIE_MAGMA_HIDEOUT',
+        location: 'Magma Hideout',
         class: 'Magma Leader Maxie',
         isBoss: true,
         level: 51,
@@ -3822,6 +3979,7 @@ const trainersData = [
     // Mt. Pyre
     {
         id: 'TRAINER_TAYLOR',
+        location: 'Route 119',
         class: 'Collector',
         reward: ['SPECIES_PORYGON'],
         level: 54,
@@ -3839,6 +3997,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MARK',
+        location: 'Mt. Pyre',
         class: 'Pokemaniac',
         reward: ['SPECIES_SPINARAK', 'SPECIES_ARIADOS', 'SPECIES_SPIDOPS', 'SPECIES_SPIRITOMB'],
         level: 54,
@@ -3869,6 +4028,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_LEAH',
+        location: 'Mt. Pyre',
         class: 'Hex Maniac',
         reward: ['ITEM_MEGA_07'],
         level: 54,
@@ -3886,6 +4046,7 @@ const trainersData = [
     // Aqua Hideout
     {
         id: 'TRAINER_MATT',
+        location: 'Aqua Hideout',
         class: 'Aqua Admin M',
         isBoss: true,
         level: 54,
@@ -3998,6 +4159,7 @@ const trainersData = [
     // Route 124
     {
         id: 'TRAINER_CHAD',
+        location: 'Route 124',
         class: 'Sailor',
         reward: ['SPECIES_WO_CHIEN'],
         level: 56,
@@ -4016,6 +4178,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_LILA_AND_ROY_1',
+        location: 'Route 124',
         label: 'Lila',
         class: 'Tuber F',
         reward: ['ITEM_MEGA_08'],
@@ -4033,6 +4196,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ISABELLA',
+        location: 'Route 124',
         class: 'Parasol Lady',
         reward: [...choiceIsabellaItem],
         level: 56,
@@ -4041,6 +4205,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_GRACE',
+        location: 'Route 124',
         class: 'Expert F',
         reward: [...choiceGraceTMs],
         level: 56,
@@ -4049,6 +4214,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_SPENCER',
+        location: 'Route 124',
         class: 'Fisherman',
         reward: [spencerTM],
         level: 56,
@@ -4057,6 +4223,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ROLAND',
+        location: 'Route 124',
         class: 'Expert M',
         reward: [rolandTM],
         level: 56,
@@ -4066,6 +4233,7 @@ const trainersData = [
     // Gym Leader - Tate & Liza
     {
         id: 'TRAINER_TATE_AND_LIZA_1',
+        location: 'Mossdeep Gym',
         class: 'Leader Tate And Liza',
         level: 56,
         isBoss: true,
@@ -4234,6 +4402,7 @@ const trainersData = [
     // Route 125
     {
         id: 'TRAINER_ERNEST_1',
+        location: 'Route 125',
         class: 'Sailor',
         reward: ['SPECIES_FROAKIE', 'SPECIES_FROGADIER'],
         level: 59,
@@ -4257,6 +4426,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_STAN',
+        location: 'Route 125',
         class: 'Rich Boy',
         reward: ['SPECIES_CINDERACE'],
         level: 59,
@@ -4276,6 +4446,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TANYA',
+        location: 'Route 125',
         class: 'Tuber F',
         reward: ['ITEM_MEGA_09'],
         level: 59,
@@ -4291,6 +4462,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_PRESLEY',
+        location: 'Route 125',
         class: 'Bird Keeper',
         reward: [...choicePresleyTMs],
         level: 59,
@@ -4299,6 +4471,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_AURON',
+        location: 'Route 125',
         class: 'Expert M',
         reward: [auronTM],
         level: 59,
@@ -4308,6 +4481,7 @@ const trainersData = [
     // Mossdeep Space Center
     {
         id: 'TRAINER_GRUNT_SPACE_CENTER_5',
+        location: 'Mossdeep Space Center',
         class: 'Magma Grunt M',
         isBoss: true,
         level: 59,
@@ -4323,6 +4497,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_GRUNT_SPACE_CENTER_6',
+        location: 'Mossdeep Space Center',
         class: 'Magma Grunt M',
         isBoss: true,
         level: 59,
@@ -4338,6 +4513,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_GRUNT_SPACE_CENTER_7',
+        location: 'Mossdeep Space Center',
         class: 'Magma Grunt M',
         isBoss: true,
         level: 59,
@@ -4394,6 +4570,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_TABITHA_MOSSDEEP',
+        location: 'Mossdeep Space Center',
         class: 'Magma Admin',
         isBoss: true,
         level: 59,
@@ -4430,6 +4607,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAXIE_MOSSDEEP',
+        location: 'Mossdeep Space Center',
         class: 'Magma Leader Maxie',
         isBoss: true,
         breedTier: 'perfect',
@@ -4464,6 +4642,7 @@ const trainersData = [
     // Route 127
     {
         id: 'TRAINER_DONNY',
+        location: 'Route 127',
         class: 'Swimming Triathlete F',
         reward: ['SPECIES_SCREAM_TAIL'],
         level: 61,
@@ -4483,6 +4662,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CAMDEN',
+        location: 'Route 127',
         class: 'Swimming Triathlete M',
         reward: ['SPECIES_RELICANTH'],
         level: 61,
@@ -4502,6 +4682,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_KOJI_1',
+        location: 'Route 127',
         class: 'Black Belt',
         reward: ['ITEM_MEGA_10'],
         level: 61,
@@ -4517,6 +4698,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_AIDAN',
+        location: 'Route 127',
         class: 'Bird Keeper',
         reward: [aidanTM],
         level: 61,
@@ -4525,6 +4707,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ATHENA',
+        location: 'Route 127',
         class: 'Cooltrainer F',
         reward: [athenaTM],
         level: 61,
@@ -4533,6 +4716,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_HENRY',
+        location: 'Route 127',
         class: 'Fisherman',
         reward: ['Eject Button'],
         level: 61,
@@ -4542,6 +4726,7 @@ const trainersData = [
     // Route 126
     {
         id: 'TRAINER_BRENDA',
+        location: 'Route 126',
         class: 'Swimmer F',
         reward: ['Random Defensive Mint', 'SPECIES_FLUTTER_MANE'],
         level: 61,
@@ -4561,6 +4746,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_LEONARDO',
+        location: 'Route 126',
         class: 'Swimmer M',
         reward: ['SPECIES_HUNTAIL'],
         level: 61,
@@ -4581,6 +4767,7 @@ const trainersData = [
     // Seafloor Cavern
     {
         id: 'TRAINER_ARCHIE',
+        location: 'Seafloor Cavern',
         class: 'Aqua Leader Archie',
         reward: ['Access to Sky Pillar'],
         isBoss: true,
@@ -4662,6 +4849,7 @@ const trainersData = [
     // Route 129
     {
         id: 'TRAINER_CLARENCE',
+        location: 'Route 129',
         class: 'Sailor',
         reward: ['SPECIES_DARKRAI'],
         level: 64,
@@ -4681,6 +4869,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ALLISON',
+        location: 'Route 129',
         class: 'Tuber F',
         reward: ['ITEM_MEGA_11'],
         level: 64,
@@ -4697,6 +4886,7 @@ const trainersData = [
     // Sootopolis Gym
     {
         id: 'TRAINER_JUAN_1',
+        location: 'Sootopolis Gym',
         class: 'Leader Juan',
         level: 64,
         isBoss: true,
@@ -4749,6 +4939,7 @@ const trainersData = [
     // Route 123
     {
         id: 'TRAINER_ED',
+        location: 'Route 123',
         class: 'Collector',
         reward: ['SPECIES_AERODACTYL'],
         level: 67,
@@ -4767,6 +4958,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_KINDRA',
+        location: 'Route 123',
         class: 'Hex Maniac',
         reward: ['SPECIES_KABUTOPS', 'SPECIES_KADABRA', 'SPECIES_ALAKAZAM'],
         level: 67,
@@ -4793,6 +4985,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_WENDY',
+        location: 'Route 123',
         class: 'Cooltrainer F',
         reward: ['ITEM_MEGA_12'],
         level: 67,
@@ -4808,6 +5001,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_ALBERTO',
+        location: 'Route 123',
         class: 'Bird Keeper',
         reward: ['ITEM_MEGA_13'],
         level: 67,
@@ -4823,6 +5017,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CAMERON_1',
+        location: 'Route 123',
         class: 'Psychic M',
         reward: ['ITEM_MEGA_14'],
         level: 67,
@@ -4838,6 +5033,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_KAYLEY',
+        location: 'Route 123',
         class: 'Parasol Lady',
         reward: ['ITEM_MEGA_15'],
         level: 67,
@@ -4853,6 +5049,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BRAXTON',
+        location: 'Route 123',
         class: 'Cooltrainer M',
         reward: ['ITEM_MEGA_16'],
         level: 67,
@@ -4869,6 +5066,7 @@ const trainersData = [
     // Victory Road
     {
         id: 'TRAINER_WALLY_VR_1',
+        location: 'Victory Road',
         class: 'Wally',
         isBoss: true,
         breedTier: 'good',
@@ -4910,6 +5108,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_HOPE',
+        location: 'Victory Road',
         class: 'Expert F',
         breedTier: 'good',
         reward: ['SPECIES_SHEDINJA', 'SPECIES_MOLTRES', 'SPECIES_ARTICUNO', 'SPECIES_ZAPDOS', 'SPECIES_LUGIA'],
@@ -4943,6 +5142,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_QUINCY',
+        location: 'Victory Road',
         class: 'Black Belt',
         breedTier: 'good',
         reward: [quincyTM],
@@ -4952,6 +5152,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_KATELYNN',
+        location: 'Victory Road',
         class: 'Cooltrainer F',
         breedTier: 'good',
         reward: [katelynTM],
@@ -4962,6 +5163,7 @@ const trainersData = [
     // Ever Grande Rival
     {
         id: 'TRAINER_MAY_EVERGRANDE_CITY_TREECKO',
+        location: 'Ever Grande City',
         class: 'May',
         isBoss: true,
         level: 70,
@@ -4972,6 +5174,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_EVERGRANDE_CITY_TORCHIC',
+        location: 'Ever Grande City',
         class: 'May',
         isBoss: true,
         level: 70,
@@ -4982,6 +5185,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_MAY_EVERGRANDE_CITY_MUDKIP',
+        location: 'Ever Grande City',
         class: 'May',
         isBoss: true,
         level: 70,
@@ -4992,22 +5196,26 @@ const trainersData = [
     },
     {
         id: 'TRAINER_BRENDAN_EVERGRANDE_TREECKO',
+        location: 'Ever Grande City',
         copy: 'TRAINER_MAY_EVERGRANDE_CITY_TREECKO',
         class: 'Brendan',
     },
     {
         id: 'TRAINER_BRENDAN_EVERGRANDE_TORCHIC',
+        location: 'Ever Grande City',
         copy: 'TRAINER_MAY_EVERGRANDE_CITY_TORCHIC',
         class: 'Brendan',
     },
     {
         id: 'TRAINER_BRENDAN_EVERGRANDE_MUDKIP',
+        location: 'Ever Grande City',
         copy: 'TRAINER_MAY_EVERGRANDE_CITY_MUDKIP',
         class: 'Brendan',
     },
     // Last 123 mega trainers
     {
         id: 'TRAINER_VIOLET',
+        location: 'Route 123',
         class: 'Aroma Lady',
         reward: ['ITEM_MEGA_17'],
         level: 73,
@@ -5022,6 +5230,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JACKI_1',
+        location: 'Route 123',
         class: 'Psychic F',
         reward: ['ITEM_MEGA_18'],
         level: 73,
@@ -5036,6 +5245,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_FREDRICK',
+        location: 'Route 123',
         class: 'Expert M',
         reward: ['ITEM_MEGA_19'],
         level: 73,
@@ -5050,6 +5260,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DAVIS',
+        location: 'Route 123',
         class: 'Youngster',
         reward: ['ITEM_MEGA_20'],
         level: 73,
@@ -5064,6 +5275,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_JONAS',
+        location: 'Route 123',
         class: 'Ninja Boy',
         reward: ['ITEM_MEGA_21'],
         level: 73,
@@ -5079,6 +5291,7 @@ const trainersData = [
     // E4 & Champion
     {
         id: 'TRAINER_SIDNEY',
+        location: 'Elite Four',
         class: 'Elite Four Sidney',
         isBoss: true,
         breedTier: 'good',
@@ -5095,6 +5308,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_PHOEBE',
+        location: 'Elite Four',
         class: 'Elite Four Phoebe',
         isBoss: true,
         breedTier: 'good',
@@ -5111,6 +5325,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_GLACIA',
+        location: 'Elite Four',
         class: 'Elite Four Glacia',
         isBoss: true,
         breedTier: 'good',
@@ -5127,6 +5342,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_DRAKE',
+        location: 'Elite Four',
         class: 'Elite Four Drake',
         isBoss: true,
         breedTier: 'good',
@@ -5143,6 +5359,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_CHAMPION_STEVEN',
+        location: 'Champion',
         class: 'Steven',
         isBoss: true,
         breedTier: 'perfect',

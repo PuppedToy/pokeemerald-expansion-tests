@@ -1126,6 +1126,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             }) || [],
             isBoss: trainer.isBoss || false,
             isPartner: trainer.isPartner || false,
+            location: trainer.location || null,
             team,
             preventShuffle: trainer.preventShuffle || false,
         };

@@ -604,6 +604,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
             }) || [],
             isBoss: trainer.isBoss || false,
             isPartner: trainer.isPartner || false,
+            location: trainer.location || null,
             team,
             preventShuffle: trainer.preventShuffle || false,
         };

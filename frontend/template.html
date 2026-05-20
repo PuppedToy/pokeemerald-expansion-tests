@@ -1110,6 +1110,7 @@
           </div>` : ''}
           <img width="60" height="60" src="${getTrainerImg(trainer.class)}">
           <div class="small" style="text-align:center; color:#FFB28A;">Lv. ${trainer.level}</div>
+          ${trainer.location ? `<div class="small" style="text-align:center; color:#8BC4FF; margin-top:2px;">📍 ${trainer.location}</div>` : ''}
           ${rewards}
           <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:8px;">
             ${teamHTML}
