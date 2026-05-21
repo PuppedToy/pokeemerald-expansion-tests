@@ -2368,21 +2368,11 @@ const trainersData = [
                 ...POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
                 type: [gymMainTypes[2]],
-                fallback: [
-                    {
-                        specific: 'SPECIES_MANECTRIC',
-                        breedTier: 'perfect',
-                        abilities: ['STATIC'],
-                        tryToHaveMove: ['MOVE_THUNDER_WAVE', 'MOVE_FIRE_FANG', 'MOVE_BITE'],
-                        item: 'Manectite',
-                    }
-                ]
             } : {
-                specific: 'SPECIES_MANECTRIC',
+                specificIfTier: 'SPECIES_MANECTRIC_MEGA',
+                ...POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
-                abilities: ['STATIC'],
-                tryToHaveMove: ['MOVE_THUNDER_WAVE', 'MOVE_FIRE_FANG', 'MOVE_BITE'],
-                item: 'Manectite',
+                type: [gymMainTypes[2]],
             },
             gymIsChangedType[2] ? {
                 ...getBossPreset('WATTSON')[2],
