@@ -2817,34 +2817,17 @@ const trainersData = [
                 breedTier: 'perfect',
                 type: [gymMainTypes[3]],
             } : {
+                specificIfTier: 'SPECIES_TORKOAL',
                 ...getBossPreset('FLANNERY')[0],
-                specific: 'SPECIES_TORKOAL',
+                type: [gymMainTypes[3]],
                 abilities: ['DROUGHT'],
-                item: 'Heat Rock',
                 breedTier: 'perfect',
+                item: 'Heat Rock',
                 tryEvolve: true,
             },
             {
                 ...POKEDEF_UU_OU_MEGA,
                 type: [gymMainTypes[3]],
-                fallback: [
-                    {
-                        isMega: true,
-                        contextualTier: [TIER_RU, TIER_UU, TIER_OU, TIER_UBERS],
-                        type: [gymMainTypes[3]],
-                        checkValidEvo: true,
-                    },
-                    {
-                        contextualTier: [TIER_OU],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[3]],
-                    },
-                    {
-                        contextualTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[3]],
-                    }
-                ],
             },
             {
                 ...getBossPreset('FLANNERY')[2],
@@ -2861,13 +2844,6 @@ const trainersData = [
                 ...getBossPreset('FLANNERY')[4],
                 type: [gymMainTypes[3]],
                 abilities: [...sunAbilities],
-                pickBest: true,
-                fallback: [
-                    {
-                        ...POKEDEF_RU,
-                        type: [gymMainTypes[3]],
-                    },
-                ]
             },
             {
                 ...getBossPreset('FLANNERY')[5],
@@ -2990,41 +2966,19 @@ const trainersData = [
         bag: normanBag(),
         bannedItems: gymIsChangedType[4] ? [] : ['Assault Vest', 'Flame Orb', 'Toxic Orb'],
         team: [
-            gymIsChangedType[4] ? {
+            {
                 ...getBossPreset('NORMAN')[0],
+                type: [gymMainTypes[4]],
+            },
+            gymIsChangedType[4] ? {
+                ...getBossPreset('NORMAN')[1],
                 breedTier: 'perfect',
                 type: [gymMainTypes[4]],
             } : {
                 specificIfTier: 'SPECIES_SLAKING',
-                ...getBossPreset('NORMAN')[0],
+                ...getBossPreset('NORMAN')[1],
                 breedTier: 'perfect',
-                item: 'Assault Vest',
-                tryToHaveMove: ['MOVE_FIRE_BLAST', 'MOVE_EARTHQUAKE', 'MOVE_FACADE', 'MOVE_SUCKER_PUNCH'],
-            },
-            gymIsChangedType[4] ? {
-                ...getBossPreset('NORMAN')[1],
                 type: [gymMainTypes[4]],
-            } : {
-                ...getBossPreset('NORMAN')[1],
-                abilities: ['GUTS'],
-                mustHaveOneOfMoves: ['MOVE_FACADE'],
-                tryToHaveMove: ['MOVE_FACADE', 'MOVE_PROTECT'],
-                type: [gymMainTypes[4]],
-                item: 'Flame Orb',
-                fallback: [
-                    {
-                        ...POKEDEF_NU_OR_RU,
-                        abilities: ['GUTS'],
-                        mustHaveOneOfMoves: ['MOVE_FACADE', 'MOVE_PROTECT'],
-                        type: [gymMainTypes[4]],
-                        item: 'Flame Orb',
-                        pickBest: true,
-                    },
-                    {
-                        ...POKEDEF_UU,
-                        mustHaveOneOfMoves: ['MOVE_FACADE'],
-                    },
-                ]
             },
             {
                 ...getBossPreset('NORMAN')[2],
@@ -3429,48 +3383,20 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_TAILWIND'],
                 fallback: [
                     {
-                        ...POKEDEF_RU,
-                        type: [gymMainTypes[5]],
-                        mustHaveOneOfMoves: ['MOVE_TAILWIND'],
-                        tryToHaveMove: ['MOVE_TAILWIND'],
-                        pickBest: true,
-                    },
-                    {
                         ...getBossPreset('WINONA')[0],
                         type: [gymMainTypes[5]],
-                    }
+                    },
                 ]
             },
             gymIsChangedType[5] ? {
                 ...POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
                 type: [gymMainTypes[5]],
-                fallback: [
-                   {
-                        isMega: true,
-                        breedTier: 'perfect',
-                        contextualTier: [TIER_UU, TIER_OU, TIER_UBERS],
-                        type: [gymMainTypes[5]],
-                        checkValidEvo: true,
-                        tryEvolve: true,
-                   },
-                   {
-                        breedTier: 'perfect',
-                        contextualTier: [TIER_OU],
-                        type: [gymMainTypes[5]],
-                        checkValidEvo: true,
-                   },
-                   {
-                        breedTier: 'perfect',
-                        contextualTier: [TIER_UU],
-                        type: [gymMainTypes[5]],
-                        checkValidEvo: true,
-                   }
-                ]
             } : {
-                specific: 'SPECIES_ALTARIA',
+                specificIfTier: 'SPECIES_ALTARIA_MEGA',
+                ...POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
-                item: 'Altarianite',
+                type: [gymMainTypes[5]],
             },
             {
                 ...getBossPreset('WINONA')[2],
