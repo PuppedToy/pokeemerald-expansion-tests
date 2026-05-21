@@ -44,6 +44,16 @@ const moves = {
     MOVE_DRAGON_DANCE: { ...base, id: 'MOVE_DRAGON_DANCE', name: 'Dragon Dance', category: 'DAMAGE_CATEGORY_STATUS', type: 'DRAGON', power: 0, accuracy: 0, effect: 'EFFECT_DRAGON_DANCE' },
     MOVE_TAIL_WHIP: { ...base, id: 'MOVE_TAIL_WHIP', name: 'Tail Whip', category: 'DAMAGE_CATEGORY_STATUS', type: 'NORMAL', power: 0, accuracy: 100, effect: 'EFFECT_DEFENSE_DOWN' },
     MOVE_PROTECT: { ...base, id: 'MOVE_PROTECT', name: 'Protect', category: 'DAMAGE_CATEGORY_STATUS', type: 'NORMAL', power: 0, accuracy: 0, effect: 'EFFECT_PROTECT' },
+
+    // --- Force-switch phazing moves (priority -6, EFFECT_HIT_SWITCH_TARGET) ---
+    MOVE_CIRCLE_THROW: { ...base, id: 'MOVE_CIRCLE_THROW', name: 'Circle Throw', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'FIGHTING', power: 60, accuracy: 90, effect: 'EFFECT_HIT_SWITCH_TARGET', priority: -6 },
+    MOVE_DRAGON_TAIL:  { ...base, id: 'MOVE_DRAGON_TAIL',  name: 'Dragon Tail',  category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'DRAGON',   power: 60, accuracy: 90, effect: 'EFFECT_HIT_SWITCH_TARGET', priority: -6 },
+
+    // --- Normal physical (for comparison) ---
+    MOVE_MEGA_PUNCH: { ...base, id: 'MOVE_MEGA_PUNCH', name: 'Mega Punch', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'NORMAL', power: 80, accuracy: 85, effect: 'EFFECT_HIT' },
+
+    // --- Doubles-only status (useless in singles) ---
+    MOVE_WIDE_GUARD: { ...base, id: 'MOVE_WIDE_GUARD', name: 'Wide Guard', category: 'DAMAGE_CATEGORY_STATUS', type: 'ROCK', power: 0, accuracy: 0, effect: 'EFFECT_PROTECT' },
 };
 
 module.exports = moves;

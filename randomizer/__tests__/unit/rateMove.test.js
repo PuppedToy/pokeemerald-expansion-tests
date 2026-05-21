@@ -128,3 +128,23 @@ describe('rateMove — status moves by effect (not in statusList)', () => {
         expect(rateMove(moves.MOVE_SING)).toBeGreaterThan(rateMove(moves.MOVE_TAIL_WHIP));
     });
 });
+
+describe('rateMove — EFFECT_HIT_SWITCH_TARGET (phazing moves)', () => {
+    test('Circle Throw rates above 0 (not penalised by its -6 priority tag)', () => {
+        expect(rateMove(moves.MOVE_CIRCLE_THROW)).toBeGreaterThan(0);
+    });
+
+    test('Dragon Tail rates above 0', () => {
+        expect(rateMove(moves.MOVE_DRAGON_TAIL)).toBeGreaterThan(0);
+    });
+
+    test('Circle Throw rates above Wide Guard (useless singles move)', () => {
+        expect(rateMove(moves.MOVE_CIRCLE_THROW)).toBeGreaterThan(rateMove(moves.MOVE_WIDE_GUARD));
+    });
+});
+
+describe('rateMove — doubles-only moves rate 0 in singles', () => {
+    test('Wide Guard rates 0 (spread-move protection is useless in singles)', () => {
+        expect(rateMove(moves.MOVE_WIDE_GUARD)).toBe(0);
+    });
+});

@@ -541,7 +541,7 @@ const statusList = {
     MOVE_ELECTRIC_TERRAIN: 2,
     MOVE_PSYCHIC_TERRAIN: 2,
     
-    MOVE_WIDE_GUARD: 1,
+    MOVE_WIDE_GUARD: 0,
     MOVE_QUICK_GUARD: 1,
     MOVE_ALLY_SWITCH: 1,
     MOVE_HEAL_PULSE: 1,
@@ -727,7 +727,7 @@ const statusList = {
 };
 
 function rateMove(move) {
-    if (statusList[move.id]) {
+    if (move.id in statusList) {
         return statusList[move.id];
     }
 
@@ -844,7 +844,12 @@ function rateMove(move) {
     if (accuracy == 0) accuracy = 110;
     rating -= (100 - accuracy) / 10;
     const priority = move.priority || 0;
-    rating += priority;
+    // EFFECT_HIT_SWITCH_TARGET moves (Circle Throw, Dragon Tail) carry -6 as a phazing
+    // mechanics tag, not as a "goes last and loses value" signal. Skip the priority penalty
+    // for them; the force-switch effect is neutral in singles.
+    if (!moveEffect.includes('EFFECT_HIT_SWITCH_TARGET')) {
+        rating += priority;
+    }
     const isSuckerPunch = moveEffect.includes('EFFECT_SUCKER_PUNCH');
     if (isSuckerPunch) rating -= 0.5;
     const isFirstTurnOnly = moveEffect.includes('EFFECT_FIRST_TURN_ONLY');
