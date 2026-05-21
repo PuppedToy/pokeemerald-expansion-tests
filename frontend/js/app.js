@@ -132,7 +132,7 @@ document.getElementById('btn-download-all').addEventListener('click', async () =
     }
 });
 
-// Download bundle (in-memory — no server fetch needed)
+// Export run — download session bundle JSON
 document.getElementById('btn-download-bundle').addEventListener('click', () => {
     if (!currentBundle) return;
     const json = JSON.stringify(currentBundle, null, 2);
@@ -145,6 +145,75 @@ document.getElementById('btn-download-bundle').addEventListener('click', () => {
     document.body.removeChild(a);
     URL.revokeObjectURL(a.href);
 });
+
+// Download docs — single HTML file for one ROM
+async function downloadSingleDoc(rom, btnEl, btnLabel) {
+    if (!currentBundle) return;
+    btnEl.disabled = true;
+    btnEl.textContent = 'Building…';
+    try {
+        const template = await fetch('/template.html').then(r => {
+            if (!r.ok) throw new Error('Template not found');
+            return r.text();
+        });
+        const pokedex = resolveArtifact(rom.artifacts.pokedex, currentBundle.sharedData, 'pokedex');
+        let html = template;
+        html = html.replace('<script src="trainers.js"></script>',
+            `<script>const trainersData = ${JSON.stringify(rom.docs.trainersResultsSimplified)};</script>`);
+        html = html.replace('<script src="pokes.js"></script>',
+            `<script>const pokes = ${JSON.stringify(pokedex.pokes)};</script>`);
+        html = html.replace('<script src="moves.js"></script>',
+            `<script>const movesData = ${JSON.stringify(pokedex.moves)};</script>`);
+        html = html.replace('<script src="abilities.js"></script>',
+            `<script>const abilitiesData = ${JSON.stringify(pokedex.abilities)};</script>`);
+        html = html.replace('<script src="wildpokes.js"></script>',
+            `<script>const wildPokes = ${JSON.stringify(rom.docs.wildPokes)};</script>`);
+        const seed = currentBundle.config?.seed ?? 'unknown';
+        const filename = rom.playerIndex !== undefined
+            ? `docs-player-${rom.playerIndex}-rom-${rom.romIndex}-${seed}.html`
+            : `docs-rom-${rom.romIndex}-${seed}.html`;
+        const blob = new Blob([html], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+    } catch (err) {
+        alert(`Download failed: ${err.message}`);
+    } finally {
+        btnEl.disabled = false;
+        btnEl.textContent = btnLabel;
+    }
+}
+
+function renderDocsButtons(cfg) {
+    const container = document.getElementById('btn-docs-container');
+    container.innerHTML = '';
+    if (!currentBundle) return;
+    const roms = currentBundle.roms;
+
+    function makeBtn(label, rom) {
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-primary';
+        btn.textContent = label;
+        btn.addEventListener('click', () => downloadSingleDoc(rom, btn, label));
+        container.appendChild(btn);
+    }
+
+    if (cfg.runType === 'default') {
+        makeBtn('Download docs', roms[0]);
+    } else if (cfg.runType === 'nuzlocke') {
+        for (const rom of roms) {
+            makeBtn(`Download docs for ROM ${rom.romIndex}`, rom);
+        }
+    } else if (cfg.runType === 'soullink') {
+        for (const rom of roms) {
+            makeBtn(`Download docs for ROM ${rom.romIndex} Player ${rom.playerIndex}`, rom);
+        }
+    }
+}
 
 // Init
 showStep(1);
@@ -248,6 +317,8 @@ function showGenDone() {
 
     document.getElementById('gen-done-meta').textContent =
         `Seed: ${cfg.seed}  ·  ${numROMs} ROM${numROMs !== 1 ? 's' : ''} ready to download`;
+
+    renderDocsButtons(cfg);
 }
 
 function showGenError(message) {
