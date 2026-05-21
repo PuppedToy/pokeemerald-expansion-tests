@@ -34,6 +34,7 @@ const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, cho
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
 const { sample, checkValidEvo } = require('./modules/utils');
 const { selectWithAutoFallback } = require('./modules/trainerFallback');
+const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 
 // Must match LEVEL_CAPS in index.js — used for contextualRatings lookups
 const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
@@ -1131,6 +1132,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
         }
         else if (!trainerData.preventShuffle) {
             shuffledTeam = shuffledTeam.sort(() => rng.random() - 0.5);
+            shuffledTeam = applyLeadLogic(shuffledTeam, () => rng.random());
         }
 
         const generatedTeamTextLines = shuffledTeam.map(teamEntry => {

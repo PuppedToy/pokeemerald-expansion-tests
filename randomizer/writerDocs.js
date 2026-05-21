@@ -25,6 +25,7 @@ const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, cho
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
 const { sample, checkValidEvo } = require('./modules/utils');
 const { applyEvoLevels } = require('./evoLevelWriter.js');
+const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 
 const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
 
@@ -92,7 +93,8 @@ function djb2Hash(str) {
 
 // Pure docs computation — same trainer resolution as writer.js but no file I/O.
 // baseRngSeed: when non-null, per-slot RNG reseeding is applied (shared trainer determinism).
-async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, baseRngSeed = null) {
+async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, baseRngSeed = null, options = {}) {
+    const showExactPositions = options.showExactPositions === true;
     let { pokes: pokemonList, moves, abilities } = pokedexArtifact;
     const { trainersData: rawTrainersData, itemAssignments } = trainersArtifact;
     const { starters } = startersArtifact;
@@ -617,9 +619,18 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     // Build trainersResultsSimplified (pokemon object → pokemon.id)
     const trainersResultsSimplified = {};
     Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
+        let docsTeam = trainerData.team;
+
+        if (showExactPositions && !trainerData.preventShuffle && baseRngSeed !== null) {
+            const shuffleSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainerId + ':shuffle'), 0x9E3779B9)) >>> 0;
+            rng.seed(shuffleSeed);
+            docsTeam = [...docsTeam].sort(() => rng.random() - 0.5);
+            docsTeam = applyLeadLogic(docsTeam, () => rng.random());
+        }
+
         trainersResultsSimplified[trainerId] = {
             ...trainerData,
-            team: trainerData.team.map(teamEntry => ({
+            team: docsTeam.map(teamEntry => ({
                 ...teamEntry,
                 pokemon: teamEntry.pokemon.id,
             })),

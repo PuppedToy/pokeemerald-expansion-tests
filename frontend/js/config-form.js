@@ -9,6 +9,7 @@ const DEFAULTS = {
     rebalance: true,
     balanceChance: 0.2,
     seed: '',
+    showExactPositions: false,
 };
 
 function getDifficultyDesc(level) {
@@ -40,7 +41,8 @@ export class ConfigForm {
 
         if (seed !== null && (isNaN(seed) || !Number.isInteger(seed))) return null;
 
-        const base = { runType, difficulty, rebalance, balanceChance, seed };
+        const showExactPositions = this._q('#show-exact-positions').checked;
+        const base = { runType, difficulty, rebalance, balanceChance, seed, showExactPositions };
 
         if (runType === 'nuzlocke') {
             const numROMs = parseInt(this._q('#nz-numroms').value, 10) || 3;
@@ -87,6 +89,7 @@ export class ConfigForm {
         this._q('#rebalance').checked = cfg.rebalance !== false;
         this._q('#balance-chance').value = Math.round((cfg.balanceChance ?? 0.2) * 100);
         this._q('#seed').value = cfg.seed != null ? String(cfg.seed) : '';
+        this._q('#show-exact-positions').checked = cfg.showExactPositions === true;
 
         if (runType === 'nuzlocke') {
             this._q('#nz-numroms').value = cfg.numROMs ?? 3;
@@ -318,6 +321,17 @@ export class ConfigForm {
         </div>
         <span class="field-hint">Same seed + same config = identical run every time.</span>
       </div>
+      <hr class="divider" style="margin:16px 0">
+      <div class="checkbox-row">
+        <input type="checkbox" id="show-exact-positions">
+        <div class="checkbox-info">
+          <span class="checkbox-label">Show exact positions in teams</span>
+          <span class="checkbox-desc"
+                title="When enabled, the docs show each Pokémon in the exact slot it occupies in-game, including lead and Illusion placement. Disabled by default to preserve in-game surprise.">
+            Show each Pokémon's exact in-game position in the documentation.
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -437,6 +451,7 @@ export class ConfigForm {
         this._q('#rebalance').addEventListener('change', onChange);
         this._q('#balance-chance').addEventListener('input', onChange);
         this._q('#seed').addEventListener('input', onChange);
+        this._q('#show-exact-positions').addEventListener('change', onChange);
 
         this._q('#btn-randomize-seed').addEventListener('click', () => {
             this._q('#seed').value = Math.floor(Math.random() * 0xFFFFFFFF);

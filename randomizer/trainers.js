@@ -1262,26 +1262,11 @@ const trainersData = [
         team: [
             {
                 ...getBossPreset('PETALBURG_WOODS_GRUNT')[0],
-                exactTypes: [aquaTeamTypes[0], aquaTeamTypes[1]],
-                fallback: [
-                    {
-                        ...POKEDEF_PU_LC,
-                        exactTypes: [aquaTeamTypes[0]],
-                        type: [...aquaTeamTypes],
-                    },
-                    {
-                        ...POKEDEF_PU_LC,
-                        type: [aquaTeamTypes[0]],
-                    },
-                    {
-                        ...POKEDEF_PU_LC,
-                        type: [...aquaTeamTypes],
-                    },
-                ]
+                type: [aquaTeamTypes[0]],
             },
             {
                 ...getBossPreset('PETALBURG_WOODS_GRUNT')[1],
-                type: [aquaTeamTypes[0]],
+                exactTypes: [aquaTeamTypes[0], aquaTeamTypes[1]],
             },
             {
                 ...getBossPreset('PETALBURG_WOODS_GRUNT')[2],
@@ -1426,17 +1411,17 @@ const trainersData = [
                 ...getBossPreset('ROXANNE')[0],
                 type: [gymMainTypes[0]],
             },
-            gymIsChangedType[0] ? {
+            {
                 ...getBossPreset('ROXANNE')[1],
+                type: [gymMainTypes[0]],
+            },
+            gymIsChangedType[0] ? {
+                ...getBossPreset('ROXANNE')[2],
                 breedTier: 'perfect',
                 type: [gymMainTypes[0]],
             } : {
                 specificIfTier: 'SPECIES_NOSEPASS',
                 breedTier: 'perfect',
-                ...getBossPreset('ROXANNE')[1],
-                type: [gymMainTypes[0]],
-            },
-            {
                 ...getBossPreset('ROXANNE')[2],
                 type: [gymMainTypes[0]],
             },
@@ -1532,46 +1517,15 @@ const trainersData = [
         bag: [...rusturfGruntBag()],
         team: [
             {
-                ...getBossPreset('RUSTURF_GRUNT')[1],
+                ...getBossPreset('RUSTURF_GRUNT')[0],
                 type: [magmaTeamTypes[0]],
-                fallback: [
-                    {
-                        ...POKEDEF_NU,
-                        type: [...magmaTeamTypes],
-                    }
-                ],
+            },
+            {
+                ...getBossPreset('RUSTURF_GRUNT')[1],
+                type: [magmaTeamTypes[1]],
             },
             {
                 ...getBossPreset('RUSTURF_GRUNT')[2],
-                type: [magmaTeamTypes[1]],
-                fallback: [
-                    {
-                        ...POKEDEF_NU,
-                        type: [...magmaTeamTypes],
-                    }
-                ],
-            },
-            {
-                ...getBossPreset('RUSTURF_GRUNT')[0],
-                exactTypes: [magmaTeamTypes[0], magmaTeamTypes[1]],
-                fallback: [
-                    {
-                        ...POKEDEF_PU,
-                        exactTypes: [magmaTeamTypes[1]],
-                        type: [...magmaTeamTypes],
-                    },
-                    {
-                        ...POKEDEF_PU,
-                        type: [magmaTeamTypes[1]],
-                    },
-                    {
-                        ...POKEDEF_PU,
-                        type: [...magmaTeamTypes],
-                    },
-                ]
-            },
-            {
-                ...getBossPreset('RUSTURF_GRUNT')[3],
                 type: [magmaTeamTypes[2]],
                 fallback: [
                     {
@@ -1581,14 +1535,12 @@ const trainersData = [
                 ],
             },
             {
-                ...getBossPreset('RUSTURF_GRUNT')[4],
+                ...getBossPreset('RUSTURF_GRUNT')[3],
                 type: [magmaTeamTypes[3]],
-                fallback: [
-                    {
-                        ...POKEDEF_PU,
-                        type: [...magmaTeamTypes],
-                    }
-                ],
+            },
+            {
+                ...getBossPreset('RUSTURF_GRUNT')[4],
+                exactTypes: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 ...getBossPreset('RUSTURF_GRUNT')[5],
@@ -1805,7 +1757,6 @@ const trainersData = [
         team: [
             {
                 ...getBossPreset('BRAWLY')[0],
-                breedTier: 'perfect',
                 type: [gymMainTypes[1]],
             },
             {
@@ -1852,20 +1803,6 @@ const trainersData = [
                 breedTier: 'perfect',
                 abilities: ['GUTS'],
                 item: 'Flame Orb',
-                fallback: [
-                    {
-                        ...POKEDEF_PU,
-                        type: [gymMainTypes[1]],
-                        breedTier: 'perfect',
-                        abilities: ['POISON_HEAL'],
-                        item: 'Toxic Orb',
-                    },
-                    {
-                        ...POKEDEF_PU,
-                        breedTier: 'perfect',
-                        type: [gymMainTypes[1]],
-                    }
-                ],
             },
         ],
     },

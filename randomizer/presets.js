@@ -101,11 +101,11 @@ const SPLITS = [
     {
         id: 'RUSTURF_GRUNT',
         fair: [
+            { contextualTier: [TIER_NU], checkValidEvo: true },
+            { contextualTier: [TIER_NU], checkValidEvo: true },
+            { contextualTier: [TIER_NU], checkValidEvo: true },
+            { contextualTier: [TIER_NU], checkValidEvo: true },
             { contextualTier: [TIER_PU], checkValidEvo: true },
-            { contextualTier: [TIER_NU], checkValidEvo: true },
-            { contextualTier: [TIER_NU], checkValidEvo: true },
-            { contextualTier: [TIER_NU], checkValidEvo: true },
-            { contextualTier: [TIER_NU], checkValidEvo: true },
             { contextualTier: [TIER_PU], checkValidEvo: true },
         ],
     },

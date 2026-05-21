@@ -50,6 +50,7 @@ function toModuleConfig(cfg) {
         rebalance: cfg.rebalance !== false,
         balanceChance: cfg.balanceChance ?? 0.2,
         allTms: false,
+        showExactPositions: cfg.showExactPositions === true,
     };
 }
 
@@ -78,7 +79,7 @@ async function generateDefault(cfg, mcfg, sessionId) {
     const wild     = runWildModule(pokedex.pokes, starters, wildData); tick('Building docs...');
 
     rng.seed(cfg.seed);
-    const docs = await writerDocs(pokedex, trainers, starters, wild, null);
+    const docs = await writerDocs(pokedex, trainers, starters, wild, null, { showExactPositions: mcfg.showExactPositions });
     tick('Done');
 
     return bundle(sessionId, cfg, {}, [{ romIndex: 0, artifacts: { pokedex, trainers, starters, wild }, docs }]);
@@ -159,7 +160,7 @@ async function generateNuzlocke(cfg, mcfg, sessionId) {
         const romSeed = (cfg.seed ^ (i * 0x9E3779B9)) >>> 0;
         const trainingBaseSeed = shared.trainers ? cfg.seed : null;
         rng.seed(romSeed);
-        roms[i].docs = await writerDocs(pokedex, trainers, starters, wild, trainingBaseSeed);
+        roms[i].docs = await writerDocs(pokedex, trainers, starters, wild, trainingBaseSeed, { showExactPositions: mcfg.showExactPositions });
         tick(`Docs${label} ready`);
     }
 
@@ -302,7 +303,7 @@ async function generateSoullink(cfg, mcfg, sessionId) {
             trainingBaseSeed = null;
         }
         rng.seed(romSeed);
-        roms[i].docs = await writerDocs(pokedex, trainers, starters, wild, trainingBaseSeed);
+        roms[i].docs = await writerDocs(pokedex, trainers, starters, wild, trainingBaseSeed, { showExactPositions: mcfg.showExactPositions });
         tick(`Docs ready (${label})`);
     }
 
