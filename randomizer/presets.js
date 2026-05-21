@@ -133,6 +133,14 @@ const SPLITS = [
             { contextualTier: [TIER_PU], checkValidEvo: true },
         ],
     },
+    {
+        id: 'GRANITE_CAVE_STEVEN',
+        fair: [
+            { contextualTier: [TIER_NU], checkValidEvo: true },
+            { contextualTier: [TIER_NU], checkValidEvo: true },
+            { contextualTier: [TIER_NU], checkValidEvo: true },
+        ],
+    },
 
     // ── Museum grunts (shared split; each has its own entry) ─────────────────
     {

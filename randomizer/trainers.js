@@ -1783,21 +1783,21 @@ const trainersData = [
                 item: 'Flame Orb',
                 fallback: [
                     {
-                        ...POKEDEF_PU,
+                        ...getBossPreset('BRAWLY')[5],
                         type: [gymMainTypes[1]],
-                        breedTier: 'perfect',
                         abilities: ['POISON_HEAL'],
+                        breedTier: 'perfect',
                         item: 'Toxic Orb',
                     },
                     {
-                        ...POKEDEF_PU,
+                        ...getBossPreset('BRAWLY')[5],
                         breedTier: 'perfect',
                         type: [gymMainTypes[1]],
                     },
                 ],
             } : {
                 specificIfTier: 'SPECIES_MAKUHITA',
-                ...getBossPreset('BRAWLY')[0],
+                ...getBossPreset('BRAWLY')[5],
                 type: [gymMainTypes[1]],
                 nature: NATURES.ADAMANT.name,
                 breedTier: 'perfect',
@@ -1817,18 +1817,18 @@ const trainersData = [
         bag: stevenBag(),
         team: [
             {
+                ...getBossPreset('GRANITE_CAVE_STEVEN')[0],
                 specificIfTier: 'SPECIES_METANG',
                 breedTier: 'perfect',
-                ...POKEDEF_NU,
                 type: [POKEMON_TYPE_STEEL],
             },
             {
-                ...POKEDEF_NU,
+                ...getBossPreset('GRANITE_CAVE_STEVEN')[1],
                 breedTier: 'good',
                 type: [POKEMON_TYPE_STEEL],
             },
             {
-                ...POKEDEF_NU,
+                ...getBossPreset('GRANITE_CAVE_STEVEN')[2],
                 breedTier: 'good',
                 type: [POKEMON_TYPE_STEEL],
             },

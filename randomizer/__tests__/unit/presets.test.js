@@ -1,6 +1,6 @@
 'use strict';
 
-const { applyTransform } = require('../../presets');
+const { applyTransform, getBossPreset } = require('../../presets');
 
 describe('applyTransform', () => {
     test('shifts primary contextualTier for the eligible bottom-N slots (up)', () => {
@@ -65,5 +65,20 @@ describe('applyTransform', () => {
         const result = applyTransform(team, +1, 'bottom', 1);
         expect(result[0].fallback[0].contextualTier).toBeUndefined();
         expect(result[0].fallback[0].evoType).toEqual(['EVO_TYPE_FINAL']);
+    });
+});
+
+describe('getBossPreset – GRANITE_CAVE_STEVEN', () => {
+    test('returns 3 slots (one per steel-type team member)', () => {
+        const slots = getBossPreset('GRANITE_CAVE_STEVEN');
+        expect(slots).toHaveLength(3);
+    });
+
+    test('all slots are NU at fair difficulty with checkValidEvo', () => {
+        const slots = getBossPreset('GRANITE_CAVE_STEVEN');
+        slots.forEach(slot => {
+            expect(slot.contextualTier).toEqual(['NU']);
+            expect(slot.checkValidEvo).toBe(true);
+        });
     });
 });
