@@ -2554,10 +2554,9 @@ const trainersData = [
         team: [
             pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY')[0]),
             {
-                specific: 'SPECIES_CAMERUPT',
+                specificIfTier: 'SPECIES_CAMERUPT_MEGA',
+                ...POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
-                item: 'Cameruptite',
-                abilities: ['SOLID_ROCK'],
             },
             {
                 ...getBossPreset('MAXIE_CHIMNEY')[2],
