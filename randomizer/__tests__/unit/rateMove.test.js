@@ -148,3 +148,27 @@ describe('rateMove — doubles-only moves rate 0 in singles', () => {
         expect(rateMove(moves.MOVE_WIDE_GUARD)).toBe(0);
     });
 });
+
+describe('rateMove — EFFECT_LOW_KICK (variable weight-based power)', () => {
+    test('Low Kick (power: 1 in game data) rates above 4 (treated as ~70 avg power)', () => {
+        expect(rateMove(moves.MOVE_LOW_KICK)).toBeGreaterThan(4);
+    });
+
+    test('Low Kick rates higher than Low Sweep (65 BP)', () => {
+        expect(rateMove(moves.MOVE_LOW_KICK)).toBeGreaterThan(rateMove(moves.MOVE_LOW_SWEEP));
+    });
+});
+
+describe('rateMove — EFFECT_REVENGE conditional-power moves', () => {
+    test('Revenge (priority -4) rates above 0 — priority penalty is not applied', () => {
+        expect(rateMove(moves.MOVE_REVENGE)).toBeGreaterThan(0);
+    });
+
+    test('Avalanche (priority -4, EFFECT_REVENGE) rates above 0', () => {
+        expect(rateMove(moves.MOVE_AVALANCHE)).toBeGreaterThan(0);
+    });
+
+    test('Revenge rates higher than Low Sweep (65 BP) — conditional double power bonus applied', () => {
+        expect(rateMove(moves.MOVE_REVENGE)).toBeGreaterThan(rateMove(moves.MOVE_LOW_SWEEP));
+    });
+});

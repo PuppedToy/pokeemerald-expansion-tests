@@ -159,6 +159,43 @@ const punchingMoves = [
     'MOVE_WICKED_BLOW',
 ];
 
+// Moves that keep utility alongside a same-type STAB move: penalty 0.6× instead of 0.3×.
+// Categories: priority moves (speed niche), draining (recovery niche), item removal, conditional-power.
+const sameTypeLowerPenaltyMoves = [
+    // Priority (+1 or higher) — speed niche is distinct from raw damage
+    'MOVE_BULLET_PUNCH',
+    'MOVE_MACH_PUNCH',
+    'MOVE_SHADOW_SNEAK',
+    'MOVE_SUCKER_PUNCH',
+    'MOVE_AQUA_JET',
+    'MOVE_ICE_SHARD',
+    'MOVE_VACUUM_WAVE',
+    'MOVE_WATER_SHURIKEN',
+    'MOVE_JET_PUNCH',
+    'MOVE_THUNDERCLAP',
+    'MOVE_EXTREME_SPEED',
+    'MOVE_FIRST_IMPRESSION',
+    'MOVE_ACCELEROCK',
+    'MOVE_QUICK_ATTACK',
+    // Draining — recovery niche alongside raw STAB
+    'MOVE_DRAIN_PUNCH',
+    'MOVE_LEECH_LIFE',
+    'MOVE_HORN_LEECH',
+    'MOVE_GIGA_DRAIN',
+    'MOVE_PARABOLIC_CHARGE',
+    'MOVE_DRAINING_KISS',
+    'MOVE_OBLIVION_WING',
+    // Item removal — useful regardless of type overlap
+    'MOVE_KNOCK_OFF',
+    // Conditional-power (doubles if hit first) — mechanically distinct from static STAB
+    'MOVE_REVENGE',
+    'MOVE_AVALANCHE',
+    // 30%+ secondary status — adds a win condition beyond raw damage
+    'MOVE_SCALD',
+    'MOVE_DISCHARGE',
+    'MOVE_LAVA_PLUME',
+];
+
 const healingMoves = [
     'MOVE_ABSORB',
     'AQUA_RING',
@@ -819,6 +856,12 @@ function rateMove(move) {
     if (isVarPowerHp && (move.power || 0) <= 1) {
         power = 50;
     }
+    // Low Kick / Grass Knot: power is stored as 1 in game data (weight-variable).
+    // Average effective power vs typical opponents is ~70; treat it as such.
+    const isLowKick = moveEffect === 'EFFECT_LOW_KICK';
+    if (isLowKick) {
+        power = 70;
+    }
     const isMultihit = moveEffect.includes('EFFECT_MULTI_HIT');
     if (isMultihit) {
         power *= 2.5;
@@ -844,11 +887,15 @@ function rateMove(move) {
     if (accuracy == 0) accuracy = 110;
     rating -= (100 - accuracy) / 10;
     const priority = move.priority || 0;
-    // EFFECT_HIT_SWITCH_TARGET moves (Circle Throw, Dragon Tail) carry -6 as a phazing
-    // mechanics tag, not as a "goes last and loses value" signal. Skip the priority penalty
-    // for them; the force-switch effect is neutral in singles.
-    if (!moveEffect.includes('EFFECT_HIT_SWITCH_TARGET')) {
+    // EFFECT_HIT_SWITCH_TARGET: -6 is a phazing mechanics tag, not a "goes last" penalty.
+    // EFFECT_REVENGE (Revenge + Avalanche): -4 means "you get hit first → power doubles".
+    // The trigger is near-certain in trainer battles, so skip the penalty and apply a bonus.
+    const isConditionalPower = moveEffect === 'EFFECT_REVENGE';
+    if (!moveEffect.includes('EFFECT_HIT_SWITCH_TARGET') && !isConditionalPower) {
         rating += priority;
+    }
+    if (isConditionalPower) {
+        rating *= 1.5;
     }
     const isSuckerPunch = moveEffect.includes('EFFECT_SUCKER_PUNCH');
     if (isSuckerPunch) rating -= 0.5;
@@ -1178,9 +1225,11 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
             rating *= 1.5;
         }
 
-        // If another damaging move of the same type exists, devalue this move
+        // If another damaging move of the same type exists, devalue this move.
+        // Whitelisted moves have a distinct textbox niche (priority, drain, item removal, conditional
+        // power) so they receive a lighter 0.6× penalty instead of the standard 0.3×.
         if (currentMoves.some(m => m.category !== 'DAMAGE_CATEGORY_STATUS' && m.type === move.type)) {
-            rating *= 0.3;
+            rating *= sameTypeLowerPenaltyMoves.includes(move.id) ? 0.6 : 0.3;
         }
     }
 
@@ -1670,6 +1719,8 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
             if ((weaker.priority || 0) !== (stronger.priority || 0)) continue;
             // Exception: Iron Fist with two punching moves of the same type
             if (ability === 'IRON_FIST' && punchingMoves.includes(weaker.id) && punchingMoves.includes(stronger.id)) continue;
+            // Exception: whitelisted moves have utility distinct from the stronger same-type move
+            if (sameTypeLowerPenaltyMoves.includes(weaker.id)) continue;
             // No exception — mark for removal
             toRemoveIds.add(weaker.id);
             console.log(`[A3] ${poke.name}: removed ${weaker.id} (kept ${stronger.id}, type=${weaker.type})`);

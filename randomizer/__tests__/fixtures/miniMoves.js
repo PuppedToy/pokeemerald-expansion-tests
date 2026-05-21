@@ -54,6 +54,17 @@ const moves = {
 
     // --- Doubles-only status (useless in singles) ---
     MOVE_WIDE_GUARD: { ...base, id: 'MOVE_WIDE_GUARD', name: 'Wide Guard', category: 'DAMAGE_CATEGORY_STATUS', type: 'ROCK', power: 0, accuracy: 0, effect: 'EFFECT_PROTECT' },
+
+    // --- Variable-power moves ---
+    MOVE_LOW_KICK:  { ...base, id: 'MOVE_LOW_KICK',  name: 'Low Kick',  category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'FIGHTING', power: 1, accuracy: 100, effect: 'EFFECT_LOW_KICK' },
+    MOVE_LOW_SWEEP: { ...base, id: 'MOVE_LOW_SWEEP', name: 'Low Sweep', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'FIGHTING', power: 65, accuracy: 100, effect: 'EFFECT_HIT', additionalEffects: ['MOVE_EFFECT_SPD_MINUS_1'] },
+
+    // --- Conditional-power (EFFECT_REVENGE covers both Revenge and Avalanche) ---
+    MOVE_REVENGE:   { ...base, id: 'MOVE_REVENGE',   name: 'Revenge',   category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'FIGHTING', power: 60, accuracy: 100, effect: 'EFFECT_REVENGE', priority: -4 },
+    MOVE_AVALANCHE: { ...base, id: 'MOVE_AVALANCHE', name: 'Avalanche',  category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'ICE',      power: 60, accuracy: 100, effect: 'EFFECT_REVENGE', priority: -4 },
+
+    // --- Draining move ---
+    MOVE_DRAIN_PUNCH: { ...base, id: 'MOVE_DRAIN_PUNCH', name: 'Drain Punch', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'FIGHTING', power: 75, accuracy: 100, effect: 'EFFECT_DRAIN_HP' },
 };
 
 module.exports = moves;
