@@ -2004,6 +2004,9 @@ function computeComboBonus(poke, moveset, moves, tmPool) {
     const hasMove = (id) => allLearnableMoves.has(id);
     const hasAnyMove = (set) => [...set].some(id => allLearnableMoves.has(id));
 
+    const isFinalEvo = !!(poke.evolutionData && poke.evolutionData.isFinal);
+    const isMega = !!(poke.evolutionData && poke.evolutionData.isMega);
+
     let bonus = 0;
     const bonusLog = [];
 
@@ -2289,12 +2292,9 @@ function computeComboBonus(poke, moveset, moves, tmPool) {
     // and both offensive (Swift Swim, Chlorophyll) and defensive (reduced Fire/Water damage)
     // benefits compound across the whole team.
 
-    // DRIZZLE: sets permanent Rain. The setter is the core team anchor.
-    // Rain-specific synergies:
-    //   - THUNDER (100% accuracy in rain) and HURRICANE (100% accuracy in rain): normally
-    //     unreliable 70% and 70% accuracy, becoming fully spammable under rain.
-    //   - WATER_STAB: Rain boosts Water moves 50% — the setter's own Water STAB benefits.
-    //   - Defensive pivot with Roost + Water/Flying typing: Pelipper's defining role.
+    // DRIZZLE: offensive weather — permanently doubles effective Water damage (1.5×) and
+    // unlocks perfect-accuracy Thunder/Hurricane. Teambuilding bonus for final-evo setters
+    // because Drizzle defines entire team archetypes (Swift Swim sweepers, rain cores).
     if (hasAbility('DRIZZLE')) {
         bonus += 0.4;
         bonusLog.push('DRIZZLE +0.4');
@@ -2303,27 +2303,37 @@ function computeComboBonus(poke, moveset, moves, tmPool) {
             bonusLog.push('DRIZZLE+perfect_acc_move +0.35');
         }
         if (poke.parsedTypes && poke.parsedTypes.includes('WATER')) {
-            bonus += 0.2;
-            bonusLog.push('DRIZZLE+WATER_STAB +0.2');
+            bonus += 0.25;
+            bonusLog.push('DRIZZLE+WATER_STAB +0.25');
         }
-        if (hasMove('MOVE_ROOST') || hasMove('MOVE_RECOVER')) {
-            bonus += 0.2;
-            bonusLog.push('DRIZZLE+recovery +0.2');
+        if (hasMove('MOVE_ROOST') || hasMove('MOVE_RECOVER') ||
+            hasMove('MOVE_SOFT_BOILED') || hasMove('MOVE_SLACK_OFF') || hasMove('MOVE_WISH')) {
+            bonus += 0.15;
+            bonusLog.push('DRIZZLE+recovery +0.15');
+        }
+        if (isFinalEvo && !isMega) {
+            bonus += 0.3;
+            bonusLog.push('DRIZZLE+teambuilding +0.3');
         }
     }
-    // DROUGHT: sets permanent Sun. Sun-specific synergies:
-    //   - SOLAR_BEAM / SOLAR_BLADE: normally require a charge turn, instant in sun.
-    //   - FIRE_STAB: Sun boosts Fire moves 50% — setter benefits directly.
+    // DROUGHT: offensive weather — permanently doubles effective Fire damage (1.5×) and
+    // turns Solar Beam/Blade from a 2-turn move into an instant 120 BP move.
+    // Teambuilding bonus for final-evo setters: Drought enables Chlorophyll sweepers
+    // and sun cores that compound with FIRE_STAB.
     if (hasAbility('DROUGHT')) {
         bonus += 0.4;
         bonusLog.push('DROUGHT +0.4');
         if (hasMove('MOVE_SOLAR_BEAM') || hasMove('MOVE_SOLAR_BLADE')) {
-            bonus += 0.3;
-            bonusLog.push('DROUGHT+instant_solar +0.3');
+            bonus += 0.25;
+            bonusLog.push('DROUGHT+instant_solar +0.25');
         }
         if (poke.parsedTypes && poke.parsedTypes.includes('FIRE')) {
             bonus += 0.25;
             bonusLog.push('DROUGHT+FIRE_STAB +0.25');
+        }
+        if (isFinalEvo && !isMega) {
+            bonus += 0.3;
+            bonusLog.push('DROUGHT+teambuilding +0.3');
         }
     }
     // SAND_STREAM: sets permanent Sandstorm. SpDef boost to Rock types. Chip damage
@@ -2343,8 +2353,8 @@ function computeComboBonus(poke, moveset, moves, tmPool) {
     // Abomasnow, Aurorus, and Vanilluxe can't survive long enough to exploit their own snow —
     // the terrain is primarily team support, not personal offense.
     if (hasAbility('SNOW_WARNING')) {
-        bonus += 0.25;
-        bonusLog.push('SNOW_WARNING +0.25');
+        bonus += 0.20;
+        bonusLog.push('SNOW_WARNING +0.2');
         if (hasMove('MOVE_BLIZZARD') && poke.baseSpAttack >= 100 && poke.baseSpeed >= 80) {
             bonus += 0.3;
             bonusLog.push('SNOW_WARNING+BLIZZARD +0.3');
@@ -2975,27 +2985,6 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     // Low-BST setters (Pelipper 440, Politoed 500) can't reach PREMIUM through stats alone
     // but are universally considered OU anchors. Floor to just above PREMIUM threshold.
     const isFinalEvo = poke.evolutionData && poke.evolutionData.isFinal;
-    // DRIZZLE / DROUGHT setters: weather dictates team-building and makes these mons relevant
-    // regardless of their personal stats. But the tier of the floor depends on utility:
-    // - OU (PREMIUM) floor: setter has recovery OR pivot OR a weather-boosted perfect-accuracy
-    //   move (Thunder/Hurricane in rain, Solar Beam in sun). These mons contribute beyond just
-    //   setting weather — Pelipper (Roost+Hurricane), Ninetales (Solar Beam+Nasty Plot), etc.
-    // - UU (STRONG) floor: pure weather setters with no combat utility of their own (Politoed).
-    //   They define rain teams but are outclassed as individual pokemon.
-    if (isFinalEvo &&
-        (poke.parsedAbilities.includes('DRIZZLE') || poke.parsedAbilities.includes('DROUGHT'))) {
-        const weatherUtilityMoves = new Set([
-            'MOVE_ROOST','MOVE_RECOVER','MOVE_WISH','MOVE_SLACK_OFF','MOVE_SOFT_BOILED','MOVE_MOONLIGHT','MOVE_MORNING_SUN','MOVE_SYNTHESIS',
-            'MOVE_U_TURN','MOVE_VOLT_SWITCH','MOVE_FLIP_TURN','MOVE_PARTING_SHOT',
-            'MOVE_THUNDER','MOVE_HURRICANE','MOVE_SOLAR_BEAM','MOVE_SOLAR_BLADE',
-        ]);
-        const hasWeatherUtility = [...allLearnableForFloor].some(m => weatherUtilityMoves.has(m));
-        if (hasWeatherUtility) {
-            absoluteRating = Math.max(absoluteRating, TIER_OU_THRESHOLD + 0.1);
-        } else {
-            absoluteRating = Math.max(absoluteRating, TIER_UU_THRESHOLD + 0.1);
-        }
-    }
     // SNOW_WARNING + AURORA_VEIL + high Speed: the fast Aurora Veil setter archetype (Ninetales
     // Alola). BLIZZARD bonus doesn't apply (SpA 81 < 100), but its 109 Speed + Veil support
     // makes it a unique UU/OU team enabler. Floor to STRONG (UU) for this niche.
