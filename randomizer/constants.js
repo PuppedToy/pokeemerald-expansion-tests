@@ -446,4 +446,17 @@ constants.POKE_FORMS = [
     constants.POKE_FORM_ARTISAN,
 ];
 
+// Tier order lowest → highest; index used for tier arithmetic in presets and fallback logic.
+constants.TIER_SEQ = [
+    constants.TIER_MAGIKARP,
+    constants.TIER_ZU,
+    constants.TIER_PU,
+    constants.TIER_NU,
+    constants.TIER_RU,
+    constants.TIER_UU,
+    constants.TIER_OU,
+    constants.TIER_UBERS,
+    constants.TIER_AG,
+];
+
 module.exports = constants;

@@ -33,6 +33,7 @@ const {
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
 const { sample, checkValidEvo } = require('./modules/utils');
+const { selectWithAutoFallback } = require('./modules/trainerFallback');
 
 // Must match LEVEL_CAPS in index.js — used for contextualRatings lookups
 const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
@@ -882,26 +883,16 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                 const slotSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainer.id + ':' + slotIndex), 0x9E3779B9)) >>> 0;
                 rng.seed(slotSeed);
             }
-            let chosenTrainerMon = choosePokemonFromDefinition(trainerMonDefinition);
-            
-            if (!chosenTrainerMon && trainerMonDefinition.fallback && trainerMonDefinition.fallback.length) {
-                console.log(`No pokemon meet the restrictions for trainer ${trainer.id} with definition ${JSON.stringify(trainerMonDefinition)}. Trying fallback definitions.`);
-                let fallbackCount = 1;
-                let fallbackDefinition;
-                do {
-                    console.log(`Trying fallback definition #${fallbackCount++} for trainer ${trainer.id}`);
-                    fallbackDefinition = trainerMonDefinition.fallback.shift();
-                    chosenTrainerMon = choosePokemonFromDefinition(fallbackDefinition);
-                } while (!chosenTrainerMon && trainerMonDefinition.fallback && trainerMonDefinition.fallback.length);
-                if (fallbackDefinition) {
-                    trainerMonDefinition = fallbackDefinition;
-                }
-            }
+            const chosenTrainerMon = selectWithAutoFallback(
+                trainerMonDefinition,
+                choosePokemonFromDefinition,
+            );
             if (!chosenTrainerMon) {
-                console.warn(`WARN: No pokemon available for trainer ${trainer.id} with definition ${JSON.stringify(trainerMonDefinition)}. Picking a random one.`);
-                // Pick a random pokemon
-                const randomPokemon = sample(pokemonList);
-                chosenTrainerMon = randomPokemon;
+                console.error(
+                    `No pokemon found for trainer ${trainer.id} slot ${slotIndex} — check definition: ` +
+                    JSON.stringify(trainerMonDefinition),
+                );
+                return;
             }
 
             if (trainerMonDefinition.tryMega) {

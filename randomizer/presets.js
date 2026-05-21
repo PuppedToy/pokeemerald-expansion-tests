@@ -2,12 +2,8 @@
 
 const {
     TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS, TIER_AG,
+    TIER_SEQ,
 } = require('./constants');
-
-// Ordered lowest → highest; index used for tier arithmetic.
-// TIER_MAGIKARP is the absolute floor — slots at this tier cannot shift further down,
-// and ZU slots shifted down at low difficulty levels land here.
-const TIER_SEQ = [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS, TIER_AG];
 
 function shiftTier(t, delta) {
     const i = TIER_SEQ.indexOf(t);
@@ -22,6 +18,7 @@ function applyTransform(team, delta, topOrBottom, numShifts) {
     const result = team.map(s => ({
         ...s,
         contextualTier: s.contextualTier ? [...s.contextualTier] : s.contextualTier,
+        maxTierDownSteps: s.maxTierDownSteps,
         fallback: s.fallback
             ? s.fallback.map(fb => ({
                 ...fb,

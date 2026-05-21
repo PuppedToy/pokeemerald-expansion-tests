@@ -140,12 +140,6 @@ const POKEDEF_NU = {
 const POKEDEF_RU = {
     contextualTier: [TIER_RU],
     checkValidEvo: true,
-    fallback: [
-        {
-            contextualTier: [TIER_NU],
-            checkValidEvo: true,
-        }
-    ],
 };
 
 const POKEDEF_NU_OR_RU = {
@@ -171,27 +165,11 @@ const POKEDEF_UP_TO_OU_NOEVO = {
 const POKEDEF_UU = {
     contextualTier: [TIER_UU],
     checkValidEvo: true,
-    fallback: [
-        {
-            contextualTier: [TIER_RU],
-            checkValidEvo: true,
-        }
-    ],
 };
 
 const POKEDEF_OU = {
     contextualTier: [TIER_OU],
     checkValidEvo: true,
-    fallback: [
-        {
-            contextualTier: [TIER_UU],
-            checkValidEvo: true,
-        },
-        {
-            contextualTier: [TIER_RU],
-            checkValidEvo: true,
-        },
-    ],
 };
 
 const POKEDEF_UBERS = {
@@ -213,288 +191,155 @@ const POKEDEF_MEGA = {
     tryEvolve: true,
 };
 
-const pokeDefUbersMega = (BASE_POKE_DEF) => ({
+// Auto-tier-down through all mega tiers; if no mega found, drop isMega and retry from top.
+const pokeDefUbersMega = (BASE_POKE_DEF = {}) => ({
     isMega: true,
     contextualTier: [TIER_UBERS],
     checkValidEvo: true,
     ...BASE_POKE_DEF,
-    fallback: [
-        {
-            isMega: true,
-            contextualTier: [TIER_OU],
-            checkValidEvo: true,
-            ...BASE_POKE_DEF,
-        },
-        {
-            isMega: true,
-            contextualTier: [TIER_UBERS],
-            checkValidEvo: true,
-        },
-        {
-            isMega: true,
-            contextualTier: [TIER_OU],
-            checkValidEvo: true,
-        },
-    ]
+    fallback: [{
+        contextualTier: [TIER_UBERS],
+        checkValidEvo: true,
+        ...BASE_POKE_DEF,
+    }],
 });
 
-const pokeDefUbersOrAGMega = (BASE_POKE_DEF) => ({
+const pokeDefUbersOrAGMega = (BASE_POKE_DEF = {}) => ({
     isMega: true,
     contextualTier: [TIER_UBERS, TIER_AG],
     checkValidEvo: true,
     ...BASE_POKE_DEF,
-    fallback: [
-        {
-            isMega: true,
-            contextualTier: [TIER_OU],
-            checkValidEvo: true,
-            ...BASE_POKE_DEF,
-        },
-        {
-            isMega: true,
-            contextualTier: [TIER_UBERS],
-            checkValidEvo: true,
-        },
-        {
-            isMega: true,
-            contextualTier: [TIER_OU],
-            checkValidEvo: true,
-        },
-    ]
+    fallback: [{
+        contextualTier: [TIER_UBERS, TIER_AG],
+        checkValidEvo: true,
+        ...BASE_POKE_DEF,
+    }],
 });
 
-const pokeDefMega = (BASE_POKE_DEF) => ({
+const pokeDefMega = (BASE_POKE_DEF = {}) => ({
     isMega: true,
     contextualTier: [TIER_OU, TIER_UBERS],
     checkValidEvo: true,
+    tryEvolve: true,
     ...BASE_POKE_DEF,
-    fallback: [
-        {
-            isMega: true,
-            contextualTier: [TIER_UU],
-            checkValidEvo: true,
-            ...BASE_POKE_DEF,
-        },
-        {
-            isMega: true,
-            contextualTier: [TIER_OU],
-            checkValidEvo: true,
-        },
-        {
-            isMega: true,
-            contextualTier: [TIER_UU],
-            checkValidEvo: true,
-        },
-    ]
-});
-
-const pokeDefOnlyAG = (BASE_POKE_DEF = {}) => ({
-    contextualTier: [TIER_AG],
-    checkValidEvo: true,
-    ...BASE_POKE_DEF,
-    fallback: [
-        {
-            contextualTier: [TIER_AG],
-            checkValidEvo: true,
-        },
-    ],
-});
-
-const pokeDefOnlyUbers = (BASE_POKE_DEF = {}) => ({
-    contextualTier: [TIER_UBERS],
-    checkValidEvo: true,
-    ...BASE_POKE_DEF,
-    fallback: [
-        {
-            contextualTier: [TIER_UBERS],
-            checkValidEvo: true,
-        },
-    ],
-});
-
-const pokeDefOnlyOU = (BASE_POKE_DEF = {}) => ({
-    contextualTier: [TIER_OU],
-    checkValidEvo: true,
-    ...BASE_POKE_DEF,
-    fallback: [
-        {
-            contextualTier: [TIER_OU],
-            checkValidEvo: true,
-        },
-    ],
-});
-
-const pokeDefOnlyUU = (BASE_POKE_DEF = {}) => ({
-    contextualTier: [TIER_UU],
-    checkValidEvo: true,
-    ...BASE_POKE_DEF,
-    fallback: [
-        {
-            contextualTier: [TIER_UU],
-            checkValidEvo: true,
-        },
-    ],
-});
-
-const pokeDefDrizzleMon = (BASE_POKE_DEF) => {
-    return {
+    fallback: [{
+        contextualTier: [TIER_OU, TIER_UBERS],
+        checkValidEvo: true,
         ...BASE_POKE_DEF,
-        abilities: ['DRIZZLE'],
+    }],
+});
+
+// Weather/terrain setter pattern:
+// maxTierDownSteps:1 limits ability-setter phase to T and T-1.
+// fallback[0] = move-setter at original T (full auto-tier-down from there).
+
+const pokeDefDrizzleMon = (BASE_POKE_DEF) => ({
+    ...BASE_POKE_DEF,
+    abilities: ['DRIZZLE'],
+    item: 'Damp Rock',
+    maxTierDownSteps: 1,
+    fallback: [{
+        ...BASE_POKE_DEF,
+        mustHaveOneOfMoves: ['MOVE_RAIN_DANCE'],
+        tryToHaveMove: ['MOVE_RAIN_DANCE'],
+        abilities: [...rainAbilities],
         item: 'Damp Rock',
-        fallback: [
-            {
-                ...BASE_POKE_DEF,
-                mustHaveOneOfMoves: ['MOVE_RAIN_DANCE'],
-                tryToHaveMove: ['MOVE_RAIN_DANCE'],
-                item: 'Damp Rock',
-                abilities: [...rainAbilities],
-            },
-            {
-                ...BASE_POKE_DEF,
-            },
-        ],
-    };
-};
+    }],
+});
 
-const pokeDefSnowWarningMon = (BASE_POKE_DEF) => {
-    return {
+const pokeDefSnowWarningMon = (BASE_POKE_DEF) => ({
+    ...BASE_POKE_DEF,
+    abilities: ['SNOW_WARNING'],
+    item: 'Icy Rock',
+    maxTierDownSteps: 1,
+    fallback: [{
         ...BASE_POKE_DEF,
-        abilities: ['SNOW_WARNING'],
+        mustHaveOneOfMoves: ['MOVE_HAIL'],
+        tryToHaveMove: ['MOVE_HAIL'],
+        abilities: [...snowAbilities],
         item: 'Icy Rock',
-        fallback: [
-            {
-                ...BASE_POKE_DEF,
-                mustHaveOneOfMoves: ['MOVE_HAIL'],
-                tryToHaveMove: ['MOVE_HAIL'],
-                item: 'Icy Rock',
-                abilities: [...snowAbilities],
-            },
-            {
-                ...BASE_POKE_DEF,
-            },
-        ],
-    };
-};
+    }],
+});
 
-const pokeDefDroughtMon = (BASE_POKE_DEF) => {
-    return {
+const pokeDefDroughtMon = (BASE_POKE_DEF) => ({
+    ...BASE_POKE_DEF,
+    abilities: ['DROUGHT'],
+    item: 'Heat Rock',
+    maxTierDownSteps: 1,
+    fallback: [{
         ...BASE_POKE_DEF,
-        abilities: ['DROUGHT'],
+        mustHaveOneOfMoves: ['MOVE_SUNNY_DAY'],
+        tryToHaveMove: ['MOVE_SUNNY_DAY'],
+        abilities: [...sunAbilities],
         item: 'Heat Rock',
-        fallback: [
-            {
-                ...BASE_POKE_DEF,
-                mustHaveOneOfMoves: ['MOVE_SUNNY_DAY'],
-                tryToHaveMove: ['MOVE_SUNNY_DAY'],
-                item: 'Heat Rock',
-                abilities: [...sunAbilities],
-            },
-            {
-                ...BASE_POKE_DEF,
-            },
-        ],
-    };
-};
+    }],
+});
 
-const pokeDefSandStreamMon = (BASE_POKE_DEF) => {
-    return {
+const pokeDefSandStreamMon = (BASE_POKE_DEF) => ({
+    ...BASE_POKE_DEF,
+    abilities: ['SAND_STREAM'],
+    item: 'Smooth Rock',
+    maxTierDownSteps: 1,
+    fallback: [{
         ...BASE_POKE_DEF,
-        abilities: ['SAND_STREAM'],
+        mustHaveOneOfMoves: ['MOVE_SANDSTORM'],
+        tryToHaveMove: ['MOVE_SANDSTORM'],
+        abilities: [...sandAbilities],
         item: 'Smooth Rock',
-        fallback: [
-            {
-                ...BASE_POKE_DEF,
-                mustHaveOneOfMoves: ['MOVE_SANDSTORM'],
-                tryToHaveMove: ['MOVE_SANDSTORM'],
-                item: 'Smooth Rock',
-                abilities: [...sandAbilities],
-            },
-            {
-                ...BASE_POKE_DEF,
-            },
-        ],
-    };
-};
+    }],
+});
 
-const pokeDefPsychicSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
-    return {
+const pokeDefPsychicSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => ({
+    ...BASE_POKE_DEF,
+    abilities: ['PSYCHIC_SURGE'],
+    item,
+    maxTierDownSteps: 1,
+    fallback: [{
         ...BASE_POKE_DEF,
-        abilities: ['PSYCHIC_SURGE'],
+        mustHaveOneOfMoves: ['MOVE_PSYCHIC_TERRAIN'],
+        tryToHaveMove: ['MOVE_PSYCHIC_TERRAIN'],
         item,
-        fallback: [
-            {
-                ...BASE_POKE_DEF,
-                mustHaveOneOfMoves: ['MOVE_PSYCHIC_TERRAIN'],
-                tryToHaveMove: ['MOVE_PSYCHIC_TERRAIN'],
-                item,
-                abilities: ['PSYCHIC_SURGE'],
-            },
-            {
-                ...BASE_POKE_DEF,
-            },
-        ],
-    };
-};
+    }],
+});
 
-const pokeDefMistySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
-    return {
+const pokeDefMistySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => ({
+    ...BASE_POKE_DEF,
+    abilities: ['MISTY_SURGE'],
+    item,
+    maxTierDownSteps: 1,
+    fallback: [{
         ...BASE_POKE_DEF,
-        abilities: ['MISTY_SURGE'],
+        mustHaveOneOfMoves: ['MOVE_MISTY_TERRAIN'],
+        tryToHaveMove: ['MOVE_MISTY_TERRAIN'],
         item,
-        fallback: [
-            {
-                ...BASE_POKE_DEF,
-                mustHaveOneOfMoves: ['MOVE_MISTY_TERRAIN'],
-                tryToHaveMove: ['MOVE_MISTY_TERRAIN'],
-                item,
-                abilities: ['MISTY_SURGE'],
-            },
-            {
-                ...BASE_POKE_DEF,
-            },
-        ],
-    };
-};
+    }],
+});
 
-const pokeDefElectricSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
-    return {
+const pokeDefElectricSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => ({
+    ...BASE_POKE_DEF,
+    abilities: ['ELECTRIC_SURGE'],
+    item,
+    maxTierDownSteps: 1,
+    fallback: [{
         ...BASE_POKE_DEF,
-        abilities: ['ELECTRIC_SURGE'],
+        mustHaveOneOfMoves: ['MOVE_ELECTRIC_TERRAIN'],
+        tryToHaveMove: ['MOVE_ELECTRIC_TERRAIN'],
         item,
-        fallback: [
-            {
-                ...BASE_POKE_DEF,
-                mustHaveOneOfMoves: ['MOVE_ELECTRIC_TERRAIN'],
-                tryToHaveMove: ['MOVE_ELECTRIC_TERRAIN'],
-                item,
-                abilities: ['ELECTRIC_SURGE'],
-            },
-            {
-                ...BASE_POKE_DEF,
-            },
-        ],
-    };
-};
+    }],
+});
 
-const pokeDefGrassySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => {
-    return {
+const pokeDefGrassySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => ({
+    ...BASE_POKE_DEF,
+    abilities: ['GRASSY_SURGE'],
+    item,
+    maxTierDownSteps: 1,
+    fallback: [{
         ...BASE_POKE_DEF,
-        abilities: ['GRASSY_SURGE'],
+        mustHaveOneOfMoves: ['MOVE_GRASSY_TERRAIN'],
+        tryToHaveMove: ['MOVE_GRASSY_TERRAIN'],
         item,
-        fallback: [
-            {
-                ...BASE_POKE_DEF,
-                mustHaveOneOfMoves: ['MOVE_GRASSY_TERRAIN'],
-                tryToHaveMove: ['MOVE_GRASSY_TERRAIN'],
-                item,
-                abilities: ['GRASSY_SURGE'],
-            },
-            {
-                ...BASE_POKE_DEF,
-            },
-        ],
-    };
-};
+    }],
+});
 
 const PROMISING_OU_UBERS_MEGA_LC = {
     megaTier: [TIER_OU, TIER_UBERS],
@@ -5072,7 +4917,7 @@ const trainersData = [
         level: 67,
         bag: [...juanBag()],
         team: [
-            pokeDefOnlyUbers(),
+            POKEDEF_UBERS,
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'WALLY_1',
