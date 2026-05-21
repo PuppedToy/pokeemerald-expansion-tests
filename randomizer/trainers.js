@@ -2554,6 +2554,7 @@ const trainersData = [
         team: [
             pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY')[0]),
             {
+                id: 'MAXIE_MEGA',
                 specificIfTier: 'SPECIES_CAMERUPT_MEGA',
                 ...POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
@@ -3606,69 +3607,26 @@ const trainersData = [
         team: [
             pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA')[0]),
             {
-                specific: 'SPECIES_CAMERUPT',
-                breedTier: 'perfect',
-                item: 'Cameruptite',
-                abilities: ['SOLID_ROCK'],
+                special: TRAINER_REPEAT_ID,
+                id: 'MAXIE_MEGA',
+                tryEvolve: true,
+                tryMega: true,
             },
             {
                 ...getBossPreset('MAXIE_MAGMA')[2],
                 type: [magmaTeamTypes[1]],
                 abilities: [...sunAbilities],
-                fallback: [
-                    {
-                        contextualTier: [TIER_OU],
-                        checkValidEvo: true,
-                        type: [magmaTeamTypes[1]],
-                    },
-                ]
             },
             pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA')[3]),
             {
                 ...getBossPreset('MAXIE_MAGMA')[4],
                 type: [...magmaTeamTypes],
                 abilities: [...sunAbilities],
-                fallback: [
-                    {
-                        contextualTier: [TIER_UU],
-                        checkValidEvo: true,
-                        abilities: [...sunAbilities],
-                    },
-                    {
-                        contextualTier: [TIER_RU],
-                        checkValidEvo: true,
-                        type: [...magmaTeamTypes],
-                        abilities: [...sunAbilities],
-                    },
-                    {
-                        contextualTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [...magmaTeamTypes],
-                    }
-                ]
             },
             {
                 ...getBossPreset('MAXIE_MAGMA')[5],
                 type: [...magmaTeamTypes],
                 abilities: [...sunAbilities],
-                fallback: [
-                    {
-                        contextualTier: [TIER_UU],
-                        checkValidEvo: true,
-                        abilities: [...sunAbilities],
-                    },
-                    {
-                        contextualTier: [TIER_RU],
-                        checkValidEvo: true,
-                        type: [...magmaTeamTypes],
-                        abilities: [...sunAbilities],
-                    },
-                    {
-                        contextualTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [...magmaTeamTypes],
-                    }
-                ]
             },
         ],
     },
@@ -3754,101 +3712,23 @@ const trainersData = [
                 checkValidEvo: true,
                 pickBest: true,
                 abilities: ['SNOW_WARNING'],
-                fallback: [
-                    {
-                        contextualTier: [TIER_OU],
-                        isMega: true,
-                        type: [POKEMON_TYPE_ICE],
-                        pickBest: true,
-                        checkValidEvo: true,
-                        mustHaveOneOfMoves: ['MOVE_HAIL'],
-                        tryToHaveMove: ['MOVE_HAIL'],
-                    },
-                    {
-                        contextualTier: [TIER_UU],
-                        isMega: true,
-                        type: [POKEMON_TYPE_ICE],
-                        pickBest: true,
-                        checkValidEvo: true,
-                        mustHaveOneOfMoves: ['MOVE_HAIL'],
-                        tryToHaveMove: ['MOVE_HAIL'],
-                    },
-                ],
             },
             {
                 ...getBossPreset('MATT_AQUA')[1],
                 abilities: [...snowAbilities],
-                fallback: [
-                    {
-                        contextualTier: [TIER_OU],
-                        checkValidEvo: true,
-                        type: [POKEMON_TYPE_ICE],
-                    },
-                    {
-                        contextualTier: [TIER_UU],
-                        checkValidEvo: true,
-                        abilities: [...snowAbilities],
-                    },
-                    {
-                        contextualTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [POKEMON_TYPE_ICE],
-                    },
-                ]
             },
             pokeDefSnowWarningMon(getBossPreset('MATT_AQUA')[2]),
             {
                 ...getBossPreset('MATT_AQUA')[3],
                 abilities: [...snowAbilities],
-                fallback: [
-                    {
-                        contextualTier: [TIER_OU],
-                        checkValidEvo: true,
-                        type: [POKEMON_TYPE_ICE],
-                    },
-                    {
-                        contextualTier: [TIER_UU],
-                        checkValidEvo: true,
-                        abilities: [...snowAbilities],
-                    },
-                    {
-                        contextualTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [POKEMON_TYPE_ICE],
-                    },
-                ]
             },
             {
                 ...getBossPreset('MATT_AQUA')[4],
                 abilities: [...snowAbilities],
-                fallback: [
-                    {
-                        contextualTier: [TIER_RU],
-                        checkValidEvo: true,
-                        abilities: [...snowAbilities],
-                    },
-                    {
-                        contextualTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [POKEMON_TYPE_ICE],
-                    },
-                ]
             },
             {
                 ...getBossPreset('MATT_AQUA')[5],
                 abilities: [...snowAbilities],
-                fallback: [
-                    {
-                        contextualTier: [TIER_RU],
-                        checkValidEvo: true,
-                        abilities: [...snowAbilities],
-                    },
-                    {
-                        contextualTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [POKEMON_TYPE_ICE],
-                    },
-                ]
             },
         ],
     },
@@ -3950,9 +3830,10 @@ const trainersData = [
                 pickBest: true,
                 fallback: [
                     {
-                        contextualTier: [TIER_OU],
+                        ...getBossPreset('TATE_AND_LIZA')[0],
                         checkValidEvo: true,
                         type: [gymMainTypes[6]],
+                        item: 'Focus Sash',
                     },
                 ]
             },
@@ -4319,7 +4200,6 @@ const trainersData = [
                     {
                         specificIfTier: 'SPECIES_GROUDON',
                         contextualTier: [TIER_OU],
-                        checkValidEvo: true,
                         item: 'Heat Rock',
                     },
                     pokeDefDroughtMon(getBossPreset('MAXIE_MOSSDEEP')[0]),
@@ -4486,59 +4366,26 @@ const trainersData = [
                 ]
             },
             {
-                specific: 'SPECIES_SHARPEDO',
+                specificIfTier: 'SPECIES_SHARPEDO_MEGA',
+                ...POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
-                item: 'Sharpedonite',
-                abilities: ['SPEED_BOOST'],
                 nature: 'Adamant',
             },
             {
                 ...getBossPreset('ARCHIE')[2],
                 abilities: [...rainAbilities],
                 type: [...aquaTeamTypes],
-                fallback: [
-                    {
-                        contextualTier: [TIER_OU],
-                        abilities: [...rainAbilities],
-                        checkValidEvo: true,
-                    },
-                    {
-                        contextualTier: [TIER_UU],
-                        abilities: [...rainAbilities],
-                        checkValidEvo: true,
-                        type: [...aquaTeamTypes],
-                    },
-                    {
-                        contextualTier: [TIER_UU],
-                        abilities: [...rainAbilities],
-                        checkValidEvo: true,
-                    },
-                ]
             },
             {
                 ...getBossPreset('ARCHIE')[3],
                 abilities: [...rainAbilities],
                 type: [aquaTeamTypes[1], aquaTeamTypes[2], aquaTeamTypes[3], aquaTeamTypes[4]],
-                fallback: [
-                    {
-                        contextualTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [aquaTeamTypes[1], aquaTeamTypes[2], aquaTeamTypes[3], aquaTeamTypes[4]],
-                    }
-                ],
             },
             pokeDefDrizzleMon(getBossPreset('ARCHIE')[4]),
             {
                 ...getBossPreset('ARCHIE')[5],
                 abilities: [...rainAbilities],
                 type: [...aquaTeamTypes],
-                fallback: [
-                    {
-                        contextualTier: [TIER_UU],
-                        abilities: [...rainAbilities],
-                        checkValidEvo: true,
-                    },
-                ]
             },
         ],
     },
@@ -4624,7 +4471,7 @@ const trainersData = [
                 tryToHaveMove: ['MOVE_DRAGON_DANCE', 'MOVE_WATERFALL'],
                 fallback: [
                     {
-                        contextualTier: [TIER_UU],
+                        ...getBossPreset('JUAN')[5],
                         checkValidEvo: true,
                         type: [gymMainTypes[7]],
                     }
