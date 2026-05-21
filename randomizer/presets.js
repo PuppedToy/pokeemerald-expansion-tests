@@ -129,11 +129,11 @@ const SPLITS = [
         id: 'BRAWLY',
         fair: [
             { contextualTier: [TIER_RU], checkValidEvo: true },
+            { contextualTier: [TIER_RU], checkValidEvo: true },
             { contextualTier: [TIER_NU], checkValidEvo: true },
             { contextualTier: [TIER_NU], checkValidEvo: true },
             { contextualTier: [TIER_NU], checkValidEvo: true },
-            { contextualTier: [TIER_NU], checkValidEvo: true },
-            { contextualTier: [TIER_NU], checkValidEvo: true },
+            { contextualTier: [TIER_PU], checkValidEvo: true },
         ],
     },
 

@@ -1687,25 +1687,6 @@ const trainersData = [
         bag: [...rusturfGruntBag()],
         team: [
             {
-                ...getBossPreset('RUSTURF_GRUNT')[0],
-                exactTypes: [magmaTeamTypes[0], magmaTeamTypes[1]],
-                fallback: [
-                    {
-                        ...POKEDEF_PU,
-                        exactTypes: [magmaTeamTypes[1]],
-                        type: [...magmaTeamTypes],
-                    },
-                    {
-                        ...POKEDEF_PU,
-                        type: [magmaTeamTypes[1]],
-                    },
-                    {
-                        ...POKEDEF_PU,
-                        type: [...magmaTeamTypes],
-                    },
-                ]
-            },
-            {
                 ...getBossPreset('RUSTURF_GRUNT')[1],
                 type: [magmaTeamTypes[0]],
                 fallback: [
@@ -1724,6 +1705,25 @@ const trainersData = [
                         type: [...magmaTeamTypes],
                     }
                 ],
+            },
+            {
+                ...getBossPreset('RUSTURF_GRUNT')[0],
+                exactTypes: [magmaTeamTypes[0], magmaTeamTypes[1]],
+                fallback: [
+                    {
+                        ...POKEDEF_PU,
+                        exactTypes: [magmaTeamTypes[1]],
+                        type: [...magmaTeamTypes],
+                    },
+                    {
+                        ...POKEDEF_PU,
+                        type: [magmaTeamTypes[1]],
+                    },
+                    {
+                        ...POKEDEF_PU,
+                        type: [...magmaTeamTypes],
+                    },
+                ]
             },
             {
                 ...getBossPreset('RUSTURF_GRUNT')[3],
@@ -1958,46 +1958,13 @@ const trainersData = [
         bag: brawlyBag(),
         bannedItems: ['Flame Orb', 'Toxic Orb'],
         team: [
-            gymIsChangedType[1] ? {
+            {
                 ...getBossPreset('BRAWLY')[0],
-                type: [gymMainTypes[1]],
-                abilities: ['GUTS'],
                 breedTier: 'perfect',
-                item: 'Flame Orb',
-                fallback: [
-                    {
-                        ...POKEDEF_PU,
-                        type: [gymMainTypes[1]],
-                        breedTier: 'perfect',
-                        abilities: ['POISON_HEAL'],
-                        item: 'Toxic Orb',
-                    },
-                    {
-                        ...POKEDEF_NU,
-                        breedTier: 'perfect',
-                        type: [gymMainTypes[1]],
-                    },
-                ],
-            } : {
-                specificIfTier: 'SPECIES_MAKUHITA',
-                ...getBossPreset('BRAWLY')[0],
                 type: [gymMainTypes[1]],
-                tryToHaveMove: ['MOVE_BULK_UP', 'MOVE_FAKE_OUT'],
-                nature: NATURES.ADAMANT.name,
-                breedTier: 'perfect',
-                abilities: ['GUTS'],
-                item: 'Flame Orb',
-                fallback: [
-                    {
-                        ...POKEDEF_PU,
-                        breedTier: 'perfect',
-                        type: [gymMainTypes[1]],
-                    }
-                ],
             },
             {
                 ...getBossPreset('BRAWLY')[1],
-                breedTier: 'perfect',
                 type: [gymMainTypes[1]],
             },
             {
@@ -2012,9 +1979,48 @@ const trainersData = [
                 ...getBossPreset('BRAWLY')[4],
                 type: [gymMainTypes[1]],
             },
-            {
+            gymIsChangedType[1] ? {
                 ...getBossPreset('BRAWLY')[5],
                 type: [gymMainTypes[1]],
+                abilities: ['GUTS'],
+                breedTier: 'perfect',
+                item: 'Flame Orb',
+                fallback: [
+                    {
+                        ...POKEDEF_PU,
+                        type: [gymMainTypes[1]],
+                        breedTier: 'perfect',
+                        abilities: ['POISON_HEAL'],
+                        item: 'Toxic Orb',
+                    },
+                    {
+                        ...POKEDEF_PU,
+                        breedTier: 'perfect',
+                        type: [gymMainTypes[1]],
+                    },
+                ],
+            } : {
+                specificIfTier: 'SPECIES_MAKUHITA',
+                ...getBossPreset('BRAWLY')[0],
+                type: [gymMainTypes[1]],
+                nature: NATURES.ADAMANT.name,
+                breedTier: 'perfect',
+                abilities: ['GUTS'],
+                item: 'Flame Orb',
+                fallback: [
+                    {
+                        ...POKEDEF_PU,
+                        type: [gymMainTypes[1]],
+                        breedTier: 'perfect',
+                        abilities: ['POISON_HEAL'],
+                        item: 'Toxic Orb',
+                    },
+                    {
+                        ...POKEDEF_PU,
+                        breedTier: 'perfect',
+                        type: [gymMainTypes[1]],
+                    }
+                ],
             },
         ],
     },
@@ -2029,11 +2035,19 @@ const trainersData = [
         bag: stevenBag(),
         team: [
             {
+                specificIfTier: 'SPECIES_METANG',
+                breedTier: 'perfect',
                 ...POKEDEF_NU,
                 type: [POKEMON_TYPE_STEEL],
             },
             {
                 ...POKEDEF_NU,
+                breedTier: 'good',
+                type: [POKEMON_TYPE_STEEL],
+            },
+            {
+                ...POKEDEF_NU,
+                breedTier: 'good',
                 type: [POKEMON_TYPE_STEEL],
             },
             {
@@ -2050,10 +2064,6 @@ const trainersData = [
                 oneOf: stevenPokemon,
                 breedTier: 'good',
                 tryEvolve: true,
-            },
-            {
-                ...POKEDEF_NU,
-                type: [POKEMON_TYPE_STEEL],
             },
         ],
     },
