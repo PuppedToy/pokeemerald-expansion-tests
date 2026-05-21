@@ -1527,12 +1527,6 @@ const trainersData = [
             {
                 ...getBossPreset('RUSTURF_GRUNT')[2],
                 type: [magmaTeamTypes[2]],
-                fallback: [
-                    {
-                        ...POKEDEF_PU,
-                        type: [...magmaTeamTypes],
-                    }
-                ],
             },
             {
                 ...getBossPreset('RUSTURF_GRUNT')[3],
@@ -1545,12 +1539,6 @@ const trainersData = [
             {
                 ...getBossPreset('RUSTURF_GRUNT')[5],
                 type: [magmaTeamTypes[4]],
-                fallback: [
-                    {
-                        ...POKEDEF_PU,
-                        type: [...magmaTeamTypes],
-                    }
-                ],
             },
         ],
     },
