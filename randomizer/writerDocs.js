@@ -24,6 +24,7 @@ const {
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
 const { sample, checkValidEvo } = require('./modules/utils');
+const { applyEvoLevels } = require('./evoLevelWriter.js');
 
 const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
 
@@ -98,6 +99,9 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     const { extraStarters, gymRewards, staticRewards, replacementLog: wildReplacementLog, foundMegaEvos: wildFoundMegaEvos } = wildArtifact;
 
     pokemonList = pokemonList.filter(poke => !BANNED_SPECIES_FOR_PICKING.includes(poke.id));
+
+    // Apply dynamic evo levels based on tier (same computation as writer.js, in-memory only)
+    applyEvoLevels(pokemonList);
 
     // Deep-clone trainersData — mega trainer processing splices the array in-place
     const trainersData = JSON.parse(JSON.stringify(rawTrainersData));

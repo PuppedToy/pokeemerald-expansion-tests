@@ -55,15 +55,14 @@ function computeEvoLevel(preEvoTier, evoTier, stageAdj) {
 
 /**
  * Scans pokemonList for every EVO_LEVEL evolution, computes a dynamic level,
- * and writes the updated levels into the gen_*_families.h source files.
+ * and mutates evo.param in-memory. Does NOT write to any files.
+ * Call this from any pipeline that needs the updated levels without touching game files.
  *
- * @param {Array} pokemonList - Full rated pokemon list from index.js
+ * @param {Array} pokemonList - Full rated pokemon list
+ * @returns {Map<string, number>} evoLevelMap — species ID → computed level
  */
-async function writeEvoLevels(pokemonList) {
+function applyEvoLevels(pokemonList) {
     const pokemonMap = new Map(pokemonList.map(p => [p.id, p]));
-
-    // Build a map: evo target species ID → computed level
-    // Also update in-memory evo.param so pokes.js / out.html and trainer logic see the new levels.
     const evoLevelMap = new Map();
 
     for (const pokemon of pokemonList) {
@@ -82,10 +81,22 @@ async function writeEvoLevels(pokemonList) {
             const level = computeEvoLevel(preEvoTier, evoTier, stageAdj);
             evoLevelMap.set(evo.pokemon, level);
 
-            // Mutate in-memory so the HTML viewer and trainer logic use the same levels
+            // Mutate in-memory so the HTML viewer and trainer logic use the new levels
             evo.param = String(level);
         }
     }
+
+    return evoLevelMap;
+}
+
+/**
+ * Scans pokemonList for every EVO_LEVEL evolution, computes a dynamic level,
+ * and writes the updated levels into the gen_*_families.h source files.
+ *
+ * @param {Array} pokemonList - Full rated pokemon list from index.js
+ */
+async function writeEvoLevels(pokemonList) {
+    const evoLevelMap = applyEvoLevels(pokemonList);
 
     if (evoLevelMap.size === 0) {
         console.log('No EVO_LEVEL evolutions found — skipping evo level write.');
@@ -135,4 +146,4 @@ async function writeEvoLevels(pokemonList) {
     console.log(`Done — replaced ${totalReplaced} EVO_LEVEL entries.`);
 }
 
-module.exports = { writeEvoLevels };
+module.exports = { applyEvoLevels, writeEvoLevels };
