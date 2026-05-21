@@ -325,7 +325,7 @@ const SPLITS = [
         id: 'MAXIE_MOSSDEEP',
         // Slot 2: UBERS mega (fixed)
         fair: [
-            { contextualTier: [TIER_OU], checkValidEvo: true },
+            { contextualTier: [TIER_UBERS], checkValidEvo: true },
             { contextualTier: [TIER_OU], checkValidEvo: true },
             { isMega: true },
         ],
