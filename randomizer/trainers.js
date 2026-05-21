@@ -2429,7 +2429,7 @@ const trainersData = [
             },
             {
                 id: 'WALLY_4',
-                evolutionTier: [TIER_UU],
+                evolutionTier: [TIER_OU],
                 evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
                 checkValidEvo: true,
@@ -2759,10 +2759,7 @@ const trainersData = [
                 ...getBossPreset('TABITHA_CHIMNEY')[2],
                 abilities: [...sandAbilities],
             },
-            {
-                ...getBossPreset('TABITHA_CHIMNEY')[3],
-                abilities: [...sandAbilities],
-            },
+            pokeDefSandStreamMon(getBossPreset('TABITHA_CHIMNEY')[3]),
             {
                 ...getBossPreset('TABITHA_CHIMNEY')[4],
                 abilities: [...sandAbilities],
@@ -2780,6 +2777,7 @@ const trainersData = [
         isBoss: true,
         reward: ['Good Rod'],
         level: 33,
+        preventShuffle: true,
         bag: [...magmaChimneyBag()],
         team: [
             pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY')[0]),
@@ -2809,16 +2807,7 @@ const trainersData = [
                     }
                 ],
             },
-            {
-                ...getBossPreset('MAXIE_CHIMNEY')[3],
-                abilities: [...sunAbilities],
-                fallback: [
-                    {
-                        ...POKEDEF_RU,
-                        type: [...magmaTeamTypes],
-                    }
-                ],
-            },
+            pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY')[3]),
             {
                 ...getBossPreset('MAXIE_CHIMNEY')[4],
                 abilities: [...sunAbilities],

@@ -189,9 +189,9 @@ const SPLITS = [
         id: 'MAXIE_CHIMNEY',
         // Slot 1: Cameruptite mega (fixed)
         fair: [
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { isMega: true },
             { contextualTier: [TIER_RU], checkValidEvo: true },
+            { isMega: true },
+            { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_RU], checkValidEvo: true },
             { contextualTier: [TIER_RU], checkValidEvo: true },
             { contextualTier: [TIER_RU], checkValidEvo: true },
@@ -274,32 +274,32 @@ const SPLITS = [
     {
         id: 'SPACE_CENTER_GRUNT_5',
         fair: [
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
+            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { contextualTier: [TIER_RU], checkValidEvo: true },
+            { contextualTier: [TIER_RU], checkValidEvo: true },
         ],
     },
     {
         id: 'SPACE_CENTER_GRUNT_6',
         fair: [
             { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
+            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { contextualTier: [TIER_RU], checkValidEvo: true },
         ],
     },
     {
         // Slot 0 in current code uses POKEDEF_UU_OU_MEGA; for FAIR it becomes plain OU.
         id: 'SPACE_CENTER_GRUNT_7',
         fair: [
+            { isMega: true },
             { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
+            { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
