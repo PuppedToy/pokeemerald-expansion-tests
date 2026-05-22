@@ -65,6 +65,21 @@ const moves = {
 
     // --- Draining move ---
     MOVE_DRAIN_PUNCH: { ...base, id: 'MOVE_DRAIN_PUNCH', name: 'Drain Punch', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'FIGHTING', power: 75, accuracy: 100, effect: 'EFFECT_DRAIN_HP' },
+
+    // --- Priority moves for Fix 3 tests ---
+    MOVE_QUICK_ATTACK: { ...base, id: 'MOVE_QUICK_ATTACK', name: 'Quick Attack', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'NORMAL', power: 40, accuracy: 100, effect: 'EFFECT_HIT', priority: 1 },
+    MOVE_FEINT:        { ...base, id: 'MOVE_FEINT',        name: 'Feint',        category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'NORMAL', power: 30, accuracy: 100, effect: 'EFFECT_HIT', priority: 2 },
+
+    // --- Focus Energy for Fix 5 tests ---
+    MOVE_FOCUS_ENERGY: { ...base, id: 'MOVE_FOCUS_ENERGY', name: 'Focus Energy', category: 'DAMAGE_CATEGORY_STATUS', type: 'NORMAL', power: 0, accuracy: 0, effect: 'EFFECT_FOCUS_ENERGY' },
+
+    // --- Coverage / Counter fixtures for rateMoveForAPokemon tests ---
+    MOVE_METAL_CLAW: { ...base, id: 'MOVE_METAL_CLAW', name: 'Metal Claw', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'STEEL', power: 50, accuracy: 95, effect: 'EFFECT_HIT' },
+    MOVE_COUNTER:    { ...base, id: 'MOVE_COUNTER',    name: 'Counter',    category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'FIGHTING', power: 1, accuracy: 100, effect: 'EFFECT_COUNTER', priority: -5 },
+    MOVE_ENDURE:     { ...base, id: 'MOVE_ENDURE',     name: 'Endure',     category: 'DAMAGE_CATEGORY_STATUS',   type: 'NORMAL', power: 0, accuracy: 0, effect: 'EFFECT_ENDURE', priority: 4 },
+    MOVE_FLAIL:      { ...base, id: 'MOVE_FLAIL',      name: 'Flail',      category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'NORMAL', power: 1, accuracy: 100, effect: 'EFFECT_FLAIL' },
+    MOVE_SAND_ATTACK: { ...base, id: 'MOVE_SAND_ATTACK', name: 'Sand Attack', category: 'DAMAGE_CATEGORY_STATUS', type: 'GROUND', power: 0, accuracy: 100, effect: 'EFFECT_ACCURACY_DOWN' },
+    MOVE_WORK_UP:    { ...base, id: 'MOVE_WORK_UP',    name: 'Work Up',    category: 'DAMAGE_CATEGORY_STATUS',   type: 'NORMAL', power: 0, accuracy: 0, effect: 'EFFECT_ATTACK_SPATK_UP' },
 };
 
 module.exports = moves;

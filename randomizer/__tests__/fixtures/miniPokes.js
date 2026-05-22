@@ -148,4 +148,34 @@ const SLOWBRO_MEGA = {
     oldTeachables: [],
 };
 
-module.exports = { MACHOP, MACHOKE, MACHAMP, STARMIE, SLOWBRO_MEGA };
+// Offensive Pokémon for rateMoveForAPokemon tests (offRatio = 70/40 = 1.75)
+const RIOLU = {
+    id: 'SPECIES_RIOLU',
+    family: 'P_FAMILY_RIOLU',
+    form: null,
+    parsedTypes: ['FIGHTING'],
+    parsedAbilities: ['STEADFAST', 'INNER_FOCUS'],
+    baseHP: 40, baseAttack: 70, baseDefense: 40,
+    baseSpeed: 60, baseSpAttack: 35, baseSpDefense: 40,
+    baseBST: 285,
+    evolutions: [{ method: 'HAPPINESS', param: 'DAY', pokemon: 'SPECIES_LUCARIO' }],
+    evolutionData: { type: 'EVO_TYPE_LC_OF_2', isMega: false, isLC: true, isNFE: true, isFinal: false, megaEvos: [] },
+    learnset: [], teachables: [], newTeachables: [], oldTeachables: [],
+};
+
+// Defensive Pokémon for rateMoveForAPokemon tests (offRatio = 75/133 = 0.56)
+const BLISSEY = {
+    id: 'SPECIES_BLISSEY',
+    family: 'P_FAMILY_CHANSEY',
+    form: null,
+    parsedTypes: ['NORMAL'],
+    parsedAbilities: ['NATURAL_CURE', 'SERENE_GRACE', 'HEALER'],
+    baseHP: 255, baseAttack: 10, baseDefense: 10,
+    baseSpeed: 55, baseSpAttack: 75, baseSpDefense: 135,
+    baseBST: 540,
+    evolutions: [],
+    evolutionData: { type: 'EVO_TYPE_FINAL', isMega: false, isLC: false, isNFE: false, isFinal: true, megaEvos: [] },
+    learnset: [], teachables: [], newTeachables: [], oldTeachables: [],
+};
+
+module.exports = { MACHOP, MACHOKE, MACHAMP, STARMIE, SLOWBRO_MEGA, RIOLU, BLISSEY };

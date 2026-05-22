@@ -440,6 +440,7 @@ const antiComboList = [
         'MOVE_FILLET_AWAY',
         'MOVE_NO_RETREAT',
         'MOVE_CLANGOROUS_SOUL',
+        'MOVE_FOCUS_ENERGY',
     ],
 ];
 
@@ -654,7 +655,7 @@ const statusList = {
     MOVE_CORROSIVE_GAS: 5,
 
     MOVE_DOUBLE_TEAM: 5,
-    MOVE_FOCUS_ENERGY: 5,
+    MOVE_FOCUS_ENERGY: 1.5,
     MOVE_DRAGON_CHEER: 6,
     MOVE_LASER_FOCUS: 6,
     MOVE_MINIMIZE: 6,
@@ -787,9 +788,12 @@ function rateMove(move) {
             return 1.5;
         }
 
+        if (move.effect === 'EFFECT_ACCURACY_DOWN') {
+            return 2.0;
+        }
+
         if (
-            move.effect === 'EFFECT_ACCURACY_DOWN'
-            || move.effect === 'EFFECT_DEFENSE_CURL'
+            move.effect === 'EFFECT_DEFENSE_CURL'
             || move.effect === 'EFFECT_DEFENSE_UP'
             || move.effect === 'EFFECT_ENDURE'
             || move.effect === 'EFFECT_CHARGE'
@@ -977,8 +981,8 @@ function rateMove(move) {
 }
 
 const specialScalingMoves = {
-    MOVE_COUNTER: 'hp',
-    MOVE_MIRROR_COAT: 'hp',
+    MOVE_COUNTER: 'counter-bulk',
+    MOVE_MIRROR_COAT: 'mirror-bulk',
     MOVE_COMEUPPANCE: 'hp',
     MOVE_METAL_BURST: 'hp',
     MOVE_GYRO_BALL: '-speed',
@@ -1077,6 +1081,11 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
         return ability === abilityToQuery || (!ability && poke.parsedAbilities.includes(abilityToQuery));
     }
 
+    const maxOff = Math.max(poke.baseAttack, poke.baseSpAttack);
+    const avgBulk = (poke.baseHP + poke.baseDefense + poke.baseSpDefense) / 3;
+    const offRatio = maxOff / avgBulk;
+    const offensiveness = Math.max(0, Math.min(1, (offRatio - 0.7) / 1.0));
+
     // Toxic Debris renders Toxic Spikes redundant (ability auto-lays them on contact)
     if (move.id === 'MOVE_TOXIC_SPIKES' && hasAbility('TOXIC_DEBRIS')) {
         return 0;
@@ -1087,13 +1096,22 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     const hasStatDrop = currentMoves.some(m => OPPONENT_STAT_DROP_EFFECTS.has(m.effect));
     if (isStatDrop && hasStatDrop) return 0;
 
-    // Stat-lowering and setup moves are mutually exclusive goals
+    // Stat-lowering and setup moves are mutually exclusive for offensive Pokémon.
+    // Defensive Pokémon (offRatio ≤ 1.2) may combine both strategies.
     const isSetupMove = antiComboList[2].includes(move.id) || move.effect === 'EFFECT_SPEED_UP_2';
     const hasSetupMove = currentMoves.some(m => antiComboList[2].includes(m.id) || m.effect === 'EFFECT_SPEED_UP_2');
-    if (isStatDrop && hasSetupMove) return 0;
-    if (isSetupMove && hasStatDrop) return 0;
+    if (isStatDrop && hasSetupMove && offRatio > 1.2) return 0;
+    if (isSetupMove && hasStatDrop && offRatio > 1.2) return 0;
 
     let rating = move.rating;
+
+    // Fix 7: second status move on an offensive Pokémon is penalised
+    if (move.category === 'DAMAGE_CATEGORY_STATUS') {
+        const hasStatusMove = currentMoves.some(m => m.category === 'DAMAGE_CATEGORY_STATUS');
+        if (hasStatusMove && offRatio > 1.2) {
+            rating *= Math.max(0.15, 1 - (offRatio - 1.2) / 0.8);
+        }
+    }
 
     // Combos
     const comboIndex = comboList.findIndex(combo => combo.effects.includes(move.effect));
@@ -1102,6 +1120,13 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
         if (currentMoves.some(m => combo.effects.includes(m.effect) && m.id !== move.id)) {
             rating = combo.rating;
         }
+    }
+
+    // Fix 1: Endure is only useful with a combo partner (Flail / Reversal / Endeavor)
+    if (move.effect === 'EFFECT_ENDURE') {
+        const comboPartnerEffects = new Set(['EFFECT_FLAIL', 'EFFECT_REVERSAL', 'EFFECT_ENDEAVOR']);
+        const hasPartner = [...currentMoves, ...otherMoves].some(m => comboPartnerEffects.has(m.effect));
+        if (!hasPartner) return 0;
     }
 
     // Special Ratings
@@ -1128,12 +1153,20 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     }
 
     if (move.effect === 'EFFECT_SPEED_UP_2') {
-        const maxOff = Math.max(poke.baseAttack, poke.baseSpAttack);
         const spd = poke.baseSpeed;
         // Valuable only for high-offense mid-speed Pokémon (sweet spot ~45–85 speed)
         const offScore = Math.max(0, (maxOff - 85) / 85);
         const spdScore = (spd >= 45 && spd <= 85) ? (1 - Math.abs(spd - 65) / 60) : 0;
         rating = 7 * offScore * spdScore;
+    }
+
+    // Fix 5: Focus Energy only valuable with a crit-enhancing ability, item, or move
+    if (move.id === 'MOVE_FOCUS_ENERGY' || move.id === 'MOVE_LASER_FOCUS') {
+        const hasCritAbility = ability === 'SNIPER' || ability === 'SUPER_LUCK';
+        const hasCritItem = item === 'Razor Claw' || item === 'Scope Lens';
+        const hasCritMove = [...currentMoves, ...otherMoves]
+            .some(m => highCritMoves.includes(m.id) || superCritMoves.includes(m.id));
+        if (!hasCritAbility && !hasCritItem && !hasCritMove) return 0;
     }
 
     if (Object.keys(specialScalingMoves).includes(move.id)) {
@@ -1156,6 +1189,12 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
             const maxDefPlusHp = Math.max(poke.baseDefense + poke.baseHP, poke.baseSpDefense + poke.baseHP) / 2;
             const maxAtk = Math.max(poke.baseAttack, poke.baseSpAttack);
             rating += maxDefPlusHp / maxAtk;
+        } else if (scalingStat === 'counter-bulk') {
+            // Counter: damage = 2× physical hit received; bulk (HP + Def) determines how often it fires.
+            rating = (poke.baseHP + poke.baseDefense) / 60;
+        } else if (scalingStat === 'mirror-bulk') {
+            // Mirror Coat: same principle using special bulk.
+            rating = (poke.baseHP + poke.baseSpDefense) / 60;
         }
     }
     else if (move.category === 'DAMAGE_CATEGORY_PHYSICAL') {
@@ -1167,6 +1206,11 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     // Status moves value defenses (except setup, which need to be evaluated differently @TODO)
     else {
         rating += (poke.baseHP + poke.baseDefense + poke.baseSpDefense) / 300;
+    }
+
+    // Fix 6: opponent-stat-drop moves are a poor fit on offensive Pokémon
+    if (OPPONENT_STAT_DROP_EFFECTS.has(move.effect) && offRatio > 1.2) {
+        rating *= Math.max(0.1, 1 - (offRatio - 1.2) / 0.8);
     }
 
     if (move.category !== 'DAMAGE_CATEGORY_STATUS') {
@@ -1223,6 +1267,34 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
 
         if (hasSpaBoostingMove && move.category === 'DAMAGE_CATEGORY_SPECIAL') {
             rating *= 1.5;
+        }
+
+        // Fix 3: once a ≥+1 priority move is already selected, strip the priority bonus from
+        // additional priority candidates. Fake Out (EFFECT_FIRST_TURN_ONLY) is exempt — it is a
+        // unique flinch-on-turn-1 effect, not just speed.
+        const hasPriorityMove = currentMoves.some(m =>
+            (m.priority || 0) >= 1 && m.effect !== 'EFFECT_FIRST_TURN_ONLY'
+        );
+        const isFirstTurnOnly = move.effect === 'EFFECT_FIRST_TURN_ONLY';
+        if (hasPriorityMove && !isFirstTurnOnly && (move.priority || 0) >= 1) {
+            rating -= (move.priority || 0);
+        }
+
+        // Fix 4: reward moves that break type immunities or resistances in the current moveset
+        const currentDmg = currentMoves.filter(m => m.category !== 'DAMAGE_CATEGORY_STATUS');
+        if (currentDmg.length > 0) {
+            let coverageBonus = 0;
+            for (const defType of Object.keys(typeChart)) {
+                const bestCurrentMult = Math.max(...currentDmg.map(m => damageMultiplier(m.type, [defType])));
+                const candidateMult = damageMultiplier(move.type, [defType]);
+                if (candidateMult <= bestCurrentMult) continue;
+                let bonus = 0;
+                if (bestCurrentMult === 0)        bonus = 3.0 * offensiveness + 0.5;
+                else if (bestCurrentMult <= 0.25) bonus = 1.5 * offensiveness + 0.2;
+                else if (bestCurrentMult <= 0.5)  bonus = 0.4 * offensiveness;
+                coverageBonus = Math.max(coverageBonus, bonus);
+            }
+            rating += coverageBonus;
         }
 
         // If another damaging move of the same type exists, devalue this move.
@@ -3135,6 +3207,7 @@ module.exports = {
     adjustMoveset,
     chooseNature,
     rateMove,
+    rateMoveForAPokemon,
     rateItemForAPokemon,
     damageMultiplier,
     isSuperEffective,
