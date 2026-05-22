@@ -698,16 +698,10 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             }
             if (trainerMonDefinition.contextualTier) {
                 const cap = nearestCap(trainer.level);
-                const beforeCount = pokemonLooseList.length;
-                const filtered = pokemonLooseList.filter(loosePokemon => {
+                pokemonLooseList = pokemonLooseList.filter(loosePokemon => {
                     const contextual = loosePokemon.contextualRatings?.[cap];
                     return contextual && trainerMonDefinition.contextualTier.includes(contextual.tier);
                 });
-                // Fall back to absoluteTier (or unfiltered list) if contextualTier yields nothing
-                pokemonLooseList = filtered.length > 0 ? filtered : pokemonLooseList;
-                if (filtered.length === 0 && beforeCount > 0) {
-                    console.warn(`WARN: contextualTier filter yielded 0 results for trainer ${trainer.id} at level ${trainer.level} (cap=${cap}). Falling back to pre-contextual list.`);
-                }
             }
             if (trainerMonDefinition.evoType) {
                 pokemonLooseList = pokemonLooseList.filter(loosePokemon => {

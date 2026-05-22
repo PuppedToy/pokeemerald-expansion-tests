@@ -1267,6 +1267,12 @@ const trainersData = [
             {
                 ...getBossPreset('PETALBURG_WOODS_GRUNT')[1],
                 exactTypes: [aquaTeamTypes[0], aquaTeamTypes[1]],
+                fallback: [
+                    {
+                        ...getBossPreset('PETALBURG_WOODS_GRUNT')[1],
+                        type: [aquaTeamTypes[0], aquaTeamTypes[1]],
+                    }
+                ]
             },
             {
                 ...getBossPreset('PETALBURG_WOODS_GRUNT')[2],
@@ -1535,6 +1541,12 @@ const trainersData = [
             {
                 ...getBossPreset('RUSTURF_GRUNT')[4],
                 exactTypes: [magmaTeamTypes[0], magmaTeamTypes[1]],
+                fallback: [
+                    {
+                        ...getBossPreset('RUSTURF_GRUNT')[4],
+                        type: [magmaTeamTypes[0], magmaTeamTypes[1]],
+                    }
+                ]
             },
             {
                 ...getBossPreset('RUSTURF_GRUNT')[5],
