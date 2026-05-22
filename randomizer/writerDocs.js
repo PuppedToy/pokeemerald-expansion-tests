@@ -217,6 +217,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                     `No pokemon found for trainer ${trainer.id} slot ${slotIndex} — check definition: ` +
                     JSON.stringify(trainerMonDefinition),
                 );
+                return;
             }
 
             if (trainerMonDefinition.tryMega) {

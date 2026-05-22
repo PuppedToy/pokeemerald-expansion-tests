@@ -210,3 +210,32 @@ describe('createChooser — isMega filter', () => {
         expect(result.id).toBe('SPECIES_BASE3');
     });
 });
+
+describe('createChooser — TRAINER_POKE_ENCOUNTER + tryMega', () => {
+    test('returns the encounter pokemon even when it has no mega (does not filter by hasValidMega)', () => {
+        // Froakie has no mega — if hasValidMega were applied, pool would empty → undefined
+        const froakie = makePoke('SPECIES_FROAKIE', { tier: 'NU', isLC: true });
+        const ctx = makeContext();
+        const chooser = makeChooser([froakie], makeTrainer(59), ctx, {
+            replacementLog: {},   // no replacement → encounterIds lookup finds froakie directly
+        });
+
+        const result = chooser({
+            special: 'TRAINER_POKE_ENCOUNTER',
+            encounterIds: ['SPECIES_FROAKIE'],
+            tryMega: true,
+        });
+        expect(result).toBeDefined();
+        expect(result.id).toBe('SPECIES_FROAKIE');
+    });
+
+    test('still applies hasValidMega to the general random pool when tryMega is set', () => {
+        // General pool slot: only non-mega-capable mons → hasValidMega should filter them → undefined
+        const noMegaMon = makePoke('SPECIES_NO_MEGA', { tier: 'NU', isFinal: true });
+        const ctx = makeContext();
+        const chooser = makeChooser([noMegaMon], makeTrainer(32), ctx);
+
+        const result = chooser({ contextualTier: ['NU'], tryMega: true });
+        expect(result).toBeUndefined();
+    });
+});

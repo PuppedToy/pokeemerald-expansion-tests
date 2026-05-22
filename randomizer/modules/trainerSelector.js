@@ -101,6 +101,7 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         let pokemonStrictList = [];
         let pokemonLooseList = [];
         let chosenTrainerMon;
+        let isEncounterPool = false;
 
         if (trainerMonDefinition.oneOf) {
             pokemonLooseList = trainerMonDefinition.oneOf.map(p => pokemonList.find(pl => pl.id === p));
@@ -127,6 +128,7 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
                 const replacedId = replacementLog[encounterId];
                 return pokemonList.find(p => p.id === (replacedId || encounterId));
             });
+            isEncounterPool = true;
         } else if (trainerMonDefinition.special === TRAINER_POKE_STARTER_TREECKO) {
             pokemonStrictList = [pokemonList.find(p => p.id === starters[1])];
         } else if (trainerMonDefinition.special === TRAINER_POKE_STARTER_TORCHIC) {
@@ -216,8 +218,10 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         if (trainerMonDefinition.mustHaveOneOfMoves) {
             pokemonLooseList = pokemonLooseList.filter(p => canLearnAnyOfMoves(p, trainerMonDefinition.mustHaveOneOfMoves));
         }
-        // Only allow pokemon with valid megas when filling a tryMega slot that hasn't been claimed yet.
-        if (trainerMonDefinition.tryMega && !foundMega) {
+        // Only pre-filter the random pool to mega-capable pokemon when filling a tryMega slot.
+        // Skip for encounter slots — the pokemon is fixed by game-world logic; the post-selection
+        // block will mega-evolve it if possible, and gracefully skip mega if not.
+        if (trainerMonDefinition.tryMega && !foundMega && !isEncounterPool) {
             pokemonLooseList = pokemonLooseList.filter(hasValidMega);
         }
         if (trainerMonDefinition.tryEvolve) {
