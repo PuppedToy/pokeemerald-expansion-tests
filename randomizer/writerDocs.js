@@ -23,7 +23,8 @@ const {
 } = require('./constants');
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
-const { sample, checkValidEvo } = require('./modules/utils');
+const { sample, checkValidEvo, getFamilyGroup, hasValidMega } = require('./modules/utils');
+const { selectWithAutoFallback } = require('./modules/trainerFallback');
 const { applyEvoLevels } = require('./evoLevelWriter.js');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 
@@ -353,11 +354,10 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
             }
             if (trainerMonDefinition.contextualTier) {
                 const cap = nearestCap(trainer.level);
-                const before = pokemonLooseList;
-                pokemonLooseList = filterByNearestContextualTier(pokemonLooseList, trainerMonDefinition.contextualTier, cap);
-                if (pokemonLooseList === before && before.length > 0) {
-                    console.warn(`WARN: contextualTier [${trainerMonDefinition.contextualTier}] + adjacent tiers yielded 0 results for trainer ${trainer.id} at level ${trainer.level} (cap=${cap}). Using unconstrained list.`);
-                }
+                pokemonLooseList = pokemonLooseList.filter(loosePokemon => {
+                    const contextual = loosePokemon.contextualRatings?.[cap];
+                    return contextual && trainerMonDefinition.contextualTier.includes(contextual.tier);
+                });
             }
             if (trainerMonDefinition.evoType) {
                 pokemonLooseList = pokemonLooseList.filter(p => {
@@ -407,13 +407,25 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                 pokemonLooseList = pokemonLooseList.filter(p => canLearnAnyOfMoves(p, trainerMonDefinition.mustHaveOneOfMoves));
             }
 
+            if (trainerMonDefinition.tryMega && !foundMega) {
+                pokemonLooseList = pokemonLooseList.filter(hasValidMega);
+            }
+
             if (trainerMonDefinition.tryEvolve) {
                 pokemonLooseList = pokemonLooseList.map(p => tryEvolve(p, trainerMonDefinition.tryMega && !foundMega));
                 pokemonStrictList = pokemonStrictList.map(p => tryEvolve(p, trainerMonDefinition.tryMega && !foundMega));
             }
 
             if (pokemonLooseList.length > 0) {
-                let filteredLooseList = pokemonLooseList.filter(p => !team.find(tp => tp.pokemon.id === p.id));
+                let filteredLooseList = pokemonLooseList.filter(loosePokemon => {
+                    const candidateFamily = getFamilyGroup(loosePokemon.family);
+                    const candidateBase   = loosePokemon.evolutionData?.megaBaseForm || loosePokemon.id;
+                    return !team.find(teamPokemon => {
+                        if (getFamilyGroup(teamPokemon.pokemon.family) === candidateFamily) return true;
+                        if (teamPokemon.pokemon.id === candidateBase) return true;
+                        return false;
+                    });
+                });
                 (trainer.restrictions || []).forEach(restriction => {
                     if (restriction === TRAINER_RESTRICTION_NO_REPEATED_TYPE) {
                         const selectedTypes = new Set(...team.map(pokemon => pokemon.parsedTypes).flat());
@@ -440,9 +452,22 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                     ? pokemonStrictList.sort((a, b) => getRatingForSort(b) - getRatingForSort(a))[0]
                     : sample(pokemonStrictList);
             } else if (pokemonLooseList.length > 0) {
-                chosenTrainerMon = trainerMonDefinition.pickBest
-                    ? pokemonLooseList.sort((a, b) => getRatingForSort(b) - getRatingForSort(a))[0]
-                    : sample(pokemonLooseList);
+                const familyFiltered = pokemonLooseList.filter(loosePokemon => {
+                    const candidateFamily = getFamilyGroup(loosePokemon.family);
+                    const candidateBase   = loosePokemon.evolutionData?.megaBaseForm || loosePokemon.id;
+                    return !team.find(teamPokemon => {
+                        if (getFamilyGroup(teamPokemon.pokemon.family) === candidateFamily) return true;
+                        if (teamPokemon.pokemon.id === candidateBase) return true;
+                        return false;
+                    });
+                });
+                if (familyFiltered.length > 0) {
+                    chosenTrainerMon = trainerMonDefinition.pickBest
+                        ? familyFiltered.sort((a, b) => getRatingForSort(b) - getRatingForSort(a))[0]
+                        : sample(familyFiltered);
+                }
+                // else: all candidates excluded by family dedup — return undefined so
+                // selectWithAutoFallback tiers down to find variety.
             }
 
             return chosenTrainerMon;
@@ -454,19 +479,12 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                 const slotSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainer.id + ':' + slotIndex), 0x9E3779B9)) >>> 0;
                 rng.seed(slotSeed);
             }
-            let chosenTrainerMon = choosePokemonFromDefinition(trainerMonDefinition);
-
-            if (!chosenTrainerMon && trainerMonDefinition.fallback && trainerMonDefinition.fallback.length) {
-                let fallbackCount = 1;
-                let fallbackDefinition;
-                do {
-                    fallbackDefinition = trainerMonDefinition.fallback.shift();
-                    chosenTrainerMon = choosePokemonFromDefinition(fallbackDefinition);
-                } while (!chosenTrainerMon && trainerMonDefinition.fallback && trainerMonDefinition.fallback.length);
-                if (fallbackDefinition) trainerMonDefinition = fallbackDefinition;
-            }
+            let chosenTrainerMon = selectWithAutoFallback(trainerMonDefinition, choosePokemonFromDefinition);
             if (!chosenTrainerMon) {
-                chosenTrainerMon = sample(pokemonList);
+                console.error(
+                    `No pokemon found for trainer ${trainer.id} slot ${slotIndex} — check definition: ` +
+                    JSON.stringify(trainerMonDefinition),
+                );
             }
 
             if (trainerMonDefinition.tryMega) {
