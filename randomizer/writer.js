@@ -32,7 +32,7 @@ const {
 } = require('./constants');
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
-const { sample, checkValidEvo } = require('./modules/utils');
+const { sample, checkValidEvo, getFamilyGroup, hasValidMega } = require('./modules/utils');
 const { selectWithAutoFallback } = require('./modules/trainerFallback');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 
@@ -792,6 +792,13 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                 );
             }
 
+            // When this slot needs a mega, only consider Pokémon that can actually mega-evolve.
+            // Prevents mons without megas (e.g. Pheromosa) from entering a tryMega pool and
+            // burning the slot — the empty pool falls through to selectWithAutoFallback tier-down.
+            if (trainerMonDefinition.tryMega && !foundMega) {
+                pokemonLooseList = pokemonLooseList.filter(hasValidMega);
+            }
+
             // Try evolve all of them
             if (trainerMonDefinition.tryEvolve) {
                 pokemonLooseList = pokemonLooseList.map(
@@ -811,11 +818,20 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                 );
             }
 
-            // Always apply unique restriction
+            // Always apply unique restriction — family-based so megas and their bases,
+            // and same-line evolutions, are all excluded when any family member is on the team.
             if (pokemonLooseList.length > 0) {
-                let filteredLooseList = pokemonLooseList.filter(
-                    loosePokemon => !team.find(teamPokemon => teamPokemon.pokemon.id === loosePokemon.id)
-                );
+                let filteredLooseList = pokemonLooseList.filter(loosePokemon => {
+                    const candidateFamily = getFamilyGroup(loosePokemon.family);
+                    const candidateBase   = loosePokemon.evolutionData?.megaBaseForm || loosePokemon.id;
+                    return !team.find(teamPokemon => {
+                        // Same family (handles evolutions and evolution-line duplicates)
+                        if (getFamilyGroup(teamPokemon.pokemon.family) === candidateFamily) return true;
+                        // Mega/base cross-check: if candidate is Mega Latios, candidateBase = Latios
+                        if (teamPokemon.pokemon.id === candidateBase) return true;
+                        return false;
+                    });
+                });
                 
                 // Then apply other restrictions
                 (trainer.restrictions || []).forEach(restriction => {
@@ -862,14 +878,25 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                     chosenTrainerMon = sample(pokemonStrictList);
                 }
             }
-            // Else forget about unique restriction
+            // Else forget exact-ID uniqueness but still honour family dedup.
+            // Only truly repeat a family if absolutely no other option exists.
             else if (pokemonLooseList.length > 0) {
+                const familyFiltered = pokemonLooseList.filter(loosePokemon => {
+                    const candidateFamily = getFamilyGroup(loosePokemon.family);
+                    const candidateBase   = loosePokemon.evolutionData?.megaBaseForm || loosePokemon.id;
+                    return !team.find(teamPokemon => {
+                        if (getFamilyGroup(teamPokemon.pokemon.family) === candidateFamily) return true;
+                        if (teamPokemon.pokemon.id === candidateBase) return true;
+                        return false;
+                    });
+                });
+                const candidatePool = familyFiltered.length > 0 ? familyFiltered : pokemonLooseList;
                 if (trainerMonDefinition.pickBest) {
-                    const sortedLooseList = pokemonLooseList.sort((a, b) => getRatingForSort(b) - getRatingForSort(a));
-                    chosenTrainerMon = sortedLooseList[0];
+                    const sorted = candidatePool.sort((a, b) => getRatingForSort(b) - getRatingForSort(a));
+                    chosenTrainerMon = sorted[0];
                 }
                 else {
-                    chosenTrainerMon = sample(pokemonLooseList);
+                    chosenTrainerMon = sample(candidatePool);
                 }
             }
 
