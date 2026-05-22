@@ -136,7 +136,7 @@ const SPLITS = [
     {
         id: 'GRANITE_CAVE_STEVEN',
         fair: [
-            { contextualTier: [TIER_NU], checkValidEvo: true },
+            { contextualTier: [TIER_RU], checkValidEvo: true },
             { contextualTier: [TIER_NU], checkValidEvo: true },
             { contextualTier: [TIER_NU], checkValidEvo: true },
         ],

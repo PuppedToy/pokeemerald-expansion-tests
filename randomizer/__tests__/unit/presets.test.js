@@ -74,10 +74,11 @@ describe('getBossPreset – GRANITE_CAVE_STEVEN', () => {
         expect(slots).toHaveLength(3);
     });
 
-    test('all slots are NU at fair difficulty with checkValidEvo', () => {
+    test('all slots have checkValidEvo and expected tiers at fair difficulty', () => {
         const slots = getBossPreset('GRANITE_CAVE_STEVEN');
-        slots.forEach(slot => {
-            expect(slot.contextualTier).toEqual(['NU']);
+        const expectedTiers = [['RU'], ['NU'], ['NU']];
+        slots.forEach((slot, i) => {
+            expect(slot.contextualTier).toEqual(expectedTiers[i]);
             expect(slot.checkValidEvo).toBe(true);
         });
     });

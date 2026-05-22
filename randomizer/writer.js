@@ -884,14 +884,17 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                         return false;
                     });
                 });
-                const candidatePool = familyFiltered.length > 0 ? familyFiltered : pokemonLooseList;
-                if (trainerMonDefinition.pickBest) {
-                    const sorted = candidatePool.sort((a, b) => getRatingForSort(b) - getRatingForSort(a));
-                    chosenTrainerMon = sorted[0];
+                if (familyFiltered.length > 0) {
+                    if (trainerMonDefinition.pickBest) {
+                        const sorted = familyFiltered.sort((a, b) => getRatingForSort(b) - getRatingForSort(a));
+                        chosenTrainerMon = sorted[0];
+                    }
+                    else {
+                        chosenTrainerMon = sample(familyFiltered);
+                    }
                 }
-                else {
-                    chosenTrainerMon = sample(candidatePool);
-                }
+                // else: all loose candidates are from excluded families — return undefined so
+                // selectWithAutoFallback tiers down to find variety.
             }
 
             return chosenTrainerMon;
