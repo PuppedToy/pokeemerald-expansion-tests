@@ -1,0 +1,292 @@
+'use strict';
+
+const {
+    EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO, EVO_TYPE_FINAL,
+    TRAINER_POKE_ENCOUNTER,
+    TRAINER_POKE_STARTER_TREECKO, TRAINER_POKE_STARTER_TORCHIC, TRAINER_POKE_STARTER_MUDKIP,
+    TRAINER_REPEAT_ID, TRAINER_POKE_MEGA_FROM_STONE,
+    TRAINER_RESTRICTION_NO_REPEATED_TYPE,
+    TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
+    TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES,
+} = require('../constants');
+const { sample, checkValidEvo, getFamilyGroup, hasValidMega } = require('./utils');
+
+const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
+
+function nearestCap(level) {
+    let best = LEVEL_CAPS[0];
+    for (const cap of LEVEL_CAPS) {
+        if (cap <= level) best = cap;
+        else break;
+    }
+    return best;
+}
+
+function isValidEvolution(level, { param, method }) {
+    return (!isNaN(parseInt(param)) && parseInt(param) <= level && parseInt(param) > 4)
+        || ((method === 'ITEM' || param === '0') && level > 28);
+}
+
+/**
+ * Creates a choosePokemonFromDefinition function bound to a trainer + mutable context.
+ * The context object is read by reference on each call so callers can update team/foundMega
+ * between slots.
+ *
+ * @param {object[]} pokemonList - filtered pokemon pool
+ * @param {object}   trainer     - trainer object (.level, .restrictions, etc.)
+ * @param {object}   context     - mutable { team, foundMega, storedIds }
+ * @param {object}   opts        - { starters, staticRewards, replacementLog, megaReplacementLog, isSuperEffective }
+ * @returns {function} choosePokemonFromDefinition(def) => pokemon|undefined
+ */
+function createChooser(pokemonList, trainer, context, opts = {}) {
+    const {
+        starters = [null, null, null],
+        staticRewards = {},
+        replacementLog = {},
+        megaReplacementLog = {},
+        isSuperEffective = () => false,
+    } = opts;
+
+    const canLearnMove = (pokemon, moveToLearn) =>
+        (pokemon.teachables && pokemon.teachables.includes(moveToLearn)) ||
+        (pokemon.learnset && pokemon.learnset.some(lu => lu.move === moveToLearn && lu.level <= trainer.level));
+
+    const canLearnAnyOfMoves = (pokemon, movesToLearn) =>
+        movesToLearn.some(m => canLearnMove(pokemon, m));
+
+    const tryEvolve = (pokemon, tryMega) => {
+        let current = { ...pokemon };
+        let possibleEvolutions;
+        do {
+            if (!current.evolutions || current.evolutions.length === 0) break;
+            possibleEvolutions = current.evolutions.filter((evo) => {
+                if (current.isFinal) return false;
+                if (tryMega) {
+                    const megaForms = pokemonList.filter(p => p.evolutionData.megaBaseForm && p.evolutionData.megaBaseForm === evo.pokemon);
+                    if (megaForms.length) return true;
+                    let i = 1;
+                    do {
+                        if (!current.evolutions || current.evolutions.length === 0) return false;
+                        for (let j = 0; j < current.evolutions.length; j++) {
+                            const evolvedForm = pokemonList.find(p => p.id === current.evolutions[j].pokemon);
+                            if (!evolvedForm) continue;
+                            if (pokemonList.filter(p => p.evolutionData.megaBaseForm && p.evolutionData.megaBaseForm === evolvedForm.id).length > 0) return true;
+                        }
+                        if (current.evolutions.length > 0) {
+                            const randomEvo = sample(current.evolutions);
+                            const randomEvolvedForm = pokemonList.find(p => p.id === randomEvo.pokemon);
+                            if (randomEvolvedForm) { current = randomEvolvedForm; continue; }
+                        }
+                        return false;
+                    } while (i < 100);
+                    return false;
+                }
+                return isValidEvolution(trainer.level, evo);
+            });
+            if (possibleEvolutions.length > 0) {
+                possibleEvolutions.sort((a, b) => parseInt(b.param) - parseInt(a.param));
+                let evolvedForm;
+                for (let i = 0; i < possibleEvolutions.length && !evolvedForm; i++) {
+                    evolvedForm = pokemonList.find(p => p.id === possibleEvolutions[i].pokemon);
+                    if (evolvedForm) current = evolvedForm;
+                }
+                if (!evolvedForm) break;
+            }
+        } while (possibleEvolutions.length > 0);
+        return current;
+    };
+
+    function choosePokemonFromDefinition(trainerMonDefinition) {
+        const { team, foundMega, storedIds } = context;
+        let pokemonStrictList = [];
+        let pokemonLooseList = [];
+        let chosenTrainerMon;
+
+        if (trainerMonDefinition.oneOf) {
+            pokemonLooseList = trainerMonDefinition.oneOf.map(p => pokemonList.find(pl => pl.id === p));
+        } else if (trainerMonDefinition.specific) {
+            const specificPokemon = pokemonList.find(p => p.id === trainerMonDefinition.specific);
+            if (specificPokemon) pokemonStrictList = [specificPokemon];
+        } else if (trainerMonDefinition.specificIfTier) {
+            const specificPokemon = pokemonList.find(p => p.id === trainerMonDefinition.specificIfTier);
+            let qualifies = false;
+            if (specificPokemon && trainerMonDefinition.contextualTier) {
+                const cap = nearestCap(trainer.level);
+                const contextual = specificPokemon.contextualRatings?.[cap];
+                qualifies = !!(contextual && trainerMonDefinition.contextualTier.includes(contextual.tier));
+            } else if (specificPokemon) {
+                qualifies = true;
+            }
+            if (qualifies) {
+                pokemonStrictList = [specificPokemon];
+            } else {
+                pokemonLooseList = [...pokemonList];
+            }
+        } else if (trainerMonDefinition.special === TRAINER_POKE_ENCOUNTER) {
+            pokemonLooseList = trainerMonDefinition.encounterIds.map((encounterId) => {
+                const replacedId = replacementLog[encounterId];
+                return pokemonList.find(p => p.id === (replacedId || encounterId));
+            });
+        } else if (trainerMonDefinition.special === TRAINER_POKE_STARTER_TREECKO) {
+            pokemonStrictList = [pokemonList.find(p => p.id === starters[1])];
+        } else if (trainerMonDefinition.special === TRAINER_POKE_STARTER_TORCHIC) {
+            pokemonStrictList = [pokemonList.find(p => p.id === starters[2])];
+        } else if (trainerMonDefinition.special === TRAINER_POKE_STARTER_MUDKIP) {
+            pokemonStrictList = [pokemonList.find(p => p.id === starters[0])];
+        } else if (trainerMonDefinition.special === 'PLAYER_LEGEND_TREECKO') {
+            pokemonStrictList = [staticRewards.legend1];
+        } else if (trainerMonDefinition.special === 'PLAYER_LEGEND_TORCHIC') {
+            pokemonStrictList = [staticRewards.legend2];
+        } else if (trainerMonDefinition.special === 'PLAYER_LEGEND_MUDKIP') {
+            pokemonStrictList = [staticRewards.legend3];
+        } else if (trainerMonDefinition.special === TRAINER_REPEAT_ID) {
+            const repeatedId = storedIds[trainerMonDefinition.id];
+            if (repeatedId) {
+                const repeatedPokemon = pokemonList.find(p => p.id === repeatedId);
+                if (repeatedPokemon) pokemonStrictList = [repeatedPokemon];
+            }
+        } else if (trainerMonDefinition.special === TRAINER_POKE_MEGA_FROM_STONE) {
+            const megaStone = megaReplacementLog[trainerMonDefinition.megaStone];
+            const mega = pokemonList.filter(p => p.evolutionData.megaItem === megaStone);
+            if (mega.length === 1) pokemonStrictList = mega;
+        } else {
+            pokemonLooseList = [...pokemonList];
+        }
+
+        // General filters on the loose list
+        if (trainerMonDefinition.isMega) {
+            pokemonLooseList = pokemonLooseList.filter(p => p.evolutionData.isMega);
+        } else {
+            pokemonLooseList = pokemonLooseList.filter(p => !p.evolutionData.isMega);
+        }
+        if (trainerMonDefinition.absoluteTier) {
+            pokemonLooseList = pokemonLooseList.filter(p => trainerMonDefinition.absoluteTier.includes(p.rating.tier));
+        }
+        if (trainerMonDefinition.contextualTier) {
+            const cap = nearestCap(trainer.level);
+            pokemonLooseList = pokemonLooseList.filter(p => {
+                const contextual = p.contextualRatings?.[cap];
+                return contextual && trainerMonDefinition.contextualTier.includes(contextual.tier);
+            });
+        }
+        if (trainerMonDefinition.evoType) {
+            pokemonLooseList = pokemonLooseList.filter(p => {
+                let result = false;
+                trainerMonDefinition.evoType.forEach(evoType => {
+                    if (evoType === EVO_TYPE_LC)         result = result || p.evolutionData.isLC;
+                    else if (evoType === EVO_TYPE_NFE)   result = result || p.evolutionData.isNFE;
+                    else if (evoType === EVO_TYPE_SOLO)  result = result || p.evolutionData.type === EVO_TYPE_SOLO;
+                    else if (evoType === EVO_TYPE_FINAL) result = result || p.evolutionData.isFinal;
+                });
+                return result;
+            });
+        }
+        if (trainerMonDefinition.megaTier) {
+            pokemonLooseList = pokemonLooseList.filter(p =>
+                p.evolutionData.megaEvos && p.evolutionData.megaEvos.length > 0 &&
+                trainerMonDefinition.megaTier.includes(p.rating.megaEvoTier)
+            );
+        }
+        if (trainerMonDefinition.evolutionTier) {
+            pokemonLooseList = pokemonLooseList.filter(p => trainerMonDefinition.evolutionTier.includes(p.rating.bestEvoTier));
+        }
+        if (trainerMonDefinition.exactTypes) {
+            pokemonLooseList = pokemonLooseList.filter(p => trainerMonDefinition.exactTypes.every(t => p.parsedTypes.includes(t)));
+        }
+        if (trainerMonDefinition.type) {
+            pokemonLooseList = pokemonLooseList.filter(p => p.parsedTypes.some(t => trainerMonDefinition.type.includes(t)));
+        } else if (trainerMonDefinition.weakToTypes) {
+            pokemonLooseList = pokemonLooseList.filter(p =>
+                trainerMonDefinition.weakToTypes.some(t => isSuperEffective(t, p.parsedTypes))
+            );
+        }
+        if (trainerMonDefinition.abilities) {
+            pokemonLooseList = pokemonLooseList.filter(p => p.parsedAbilities.some(a => trainerMonDefinition.abilities.includes(a)));
+        }
+        if (trainerMonDefinition.hasStat) {
+            const [statName, comparator, value] = trainerMonDefinition.hasStat;
+            let check = () => true;
+            if (comparator === '<') check = (p) => p[statName] < value;
+            else if (comparator === '>') check = (p) => p[statName] > value;
+            pokemonLooseList = pokemonLooseList.filter(check);
+        }
+        if (trainerMonDefinition.checkValidEvo) {
+            pokemonLooseList = pokemonLooseList.filter(p => checkValidEvo(pokemonList, p, trainer.level, trainer));
+        }
+        if (trainerMonDefinition.mustHaveOneOfMoves) {
+            pokemonLooseList = pokemonLooseList.filter(p => canLearnAnyOfMoves(p, trainerMonDefinition.mustHaveOneOfMoves));
+        }
+        // Only allow pokemon with valid megas when filling a tryMega slot that hasn't been claimed yet.
+        if (trainerMonDefinition.tryMega && !foundMega) {
+            pokemonLooseList = pokemonLooseList.filter(hasValidMega);
+        }
+        if (trainerMonDefinition.tryEvolve) {
+            pokemonLooseList = pokemonLooseList.map(p => tryEvolve(p, trainerMonDefinition.tryMega && !foundMega));
+            pokemonStrictList = pokemonStrictList.map(p => tryEvolve(p, trainerMonDefinition.tryMega && !foundMega));
+        }
+
+        // Family-based dedup + trainer restrictions
+        if (pokemonLooseList.length > 0) {
+            const familyDedup = (loosePokemon) => {
+                const candidateFamily = getFamilyGroup(loosePokemon.family);
+                const candidateBase   = loosePokemon.evolutionData?.megaBaseForm || loosePokemon.id;
+                return !team.find(teamPokemon => {
+                    if (getFamilyGroup(teamPokemon.pokemon.family) === candidateFamily) return true;
+                    if (teamPokemon.pokemon.id === candidateBase) return true;
+                    return false;
+                });
+            };
+            let filteredLooseList = pokemonLooseList.filter(familyDedup);
+            (trainer.restrictions || []).forEach(restriction => {
+                if (restriction === TRAINER_RESTRICTION_NO_REPEATED_TYPE) {
+                    const selectedTypes = new Set(team.map(p => p.parsedTypes).flat());
+                    filteredLooseList = filteredLooseList.filter(p => !p.parsedTypes.some(t => selectedTypes.has(t)));
+                } else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_TYPES) {
+                    if (trainer.types) filteredLooseList = filteredLooseList.filter(p => p.parsedTypes.some(t => trainer.types.includes(t)));
+                } else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES) {
+                    if (trainer.abilities) filteredLooseList = filteredLooseList.filter(p => p.parsedAbilities.some(a => trainer.abilities.includes(a)));
+                }
+            });
+            pokemonStrictList = [...pokemonStrictList, ...filteredLooseList];
+        }
+
+        const getRatingForSort = (poke) => {
+            if (trainerMonDefinition.contextualTier) {
+                const cap = nearestCap(trainer.level);
+                return poke.contextualRatings?.[cap]?.absoluteRating ?? poke.rating.absoluteRating;
+            }
+            return poke.rating.absoluteRating;
+        };
+
+        if (pokemonStrictList.length > 0) {
+            chosenTrainerMon = trainerMonDefinition.pickBest
+                ? pokemonStrictList.sort((a, b) => getRatingForSort(b) - getRatingForSort(a))[0]
+                : sample(pokemonStrictList);
+        } else if (pokemonLooseList.length > 0) {
+            // Strict list was empty (all candidates had the same family as someone on the team).
+            // Apply family dedup again here; only repeat a family if truly no other option remains.
+            const familyFiltered = pokemonLooseList.filter(loosePokemon => {
+                const candidateFamily = getFamilyGroup(loosePokemon.family);
+                const candidateBase   = loosePokemon.evolutionData?.megaBaseForm || loosePokemon.id;
+                return !team.find(teamPokemon => {
+                    if (getFamilyGroup(teamPokemon.pokemon.family) === candidateFamily) return true;
+                    if (teamPokemon.pokemon.id === candidateBase) return true;
+                    return false;
+                });
+            });
+            if (familyFiltered.length > 0) {
+                chosenTrainerMon = trainerMonDefinition.pickBest
+                    ? familyFiltered.sort((a, b) => getRatingForSort(b) - getRatingForSort(a))[0]
+                    : sample(familyFiltered);
+            }
+            // else: all candidates excluded by family dedup — return undefined so
+            // selectWithAutoFallback tiers down to find variety.
+        }
+
+        return chosenTrainerMon;
+    }
+
+    return choosePokemonFromDefinition;
+}
+
+module.exports = { createChooser };
