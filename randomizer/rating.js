@@ -1114,11 +1114,13 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     }
 
     // Combos
+    let comboActivated = false;
     const comboIndex = comboList.findIndex(combo => combo.effects.includes(move.effect));
     if (comboIndex >= 0) {
         const combo = comboList[comboIndex];
         if (currentMoves.some(m => combo.effects.includes(m.effect) && m.id !== move.id)) {
             rating = combo.rating;
+            comboActivated = true;
         }
     }
 
@@ -1282,8 +1284,8 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
 
         // Fix 4: reward moves that break type immunities or resistances in the current moveset
         const currentDmg = currentMoves.filter(m => m.category !== 'DAMAGE_CATEGORY_STATUS');
+        let coverageBonus = 0;
         if (currentDmg.length > 0) {
-            let coverageBonus = 0;
             for (const defType of Object.keys(typeChart)) {
                 const bestCurrentMult = Math.max(...currentDmg.map(m => damageMultiplier(m.type, [defType])));
                 const candidateMult = damageMultiplier(move.type, [defType]);
@@ -1295,6 +1297,21 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
                 coverageBonus = Math.max(coverageBonus, bonus);
             }
             rating += coverageBonus;
+        }
+
+        // Fix 8: non-STAB Normal moves add no type coverage once the moveset already has a
+        // damage move. The only exemption is when Normal genuinely breaks a type immunity the
+        // current set can't reach (coverageBonus ≥ 0.5, from the immunity tier of Fix 4).
+        // Combo payoffs (Endure+Flail) and Normal-type STAB are also exempt.
+        if (
+            move.type === 'NORMAL'
+            && !poke.parsedTypes.includes('NORMAL')
+            && (move.priority || 0) === 0
+            && !comboActivated
+            && currentDmg.length >= 1
+            && coverageBonus < 0.5
+        ) {
+            rating *= 0.5;
         }
 
         // If another damaging move of the same type exists, devalue this move.

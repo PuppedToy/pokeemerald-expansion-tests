@@ -237,3 +237,49 @@ describe('Fix 7 — Second status move penalty on offensive Pokémon', () => {
         expect(second).toBeCloseTo(first, 5);
     });
 });
+
+// ──────────────────────────────────────────────────────────────────────────────
+describe('Fix 8 — Non-STAB Normal redundancy penalty', () => {
+    const { rateMove } = require('../../rating');
+
+    // True red test: with broad coverage non-STAB Normal should lose to a weaker typed move.
+    // Metal Claw (50 BP Steel) rates ~2.9; without Fix 8, Strength (80 BP Normal) rates ~4.4
+    // and wins. With Fix 8 (0.5× penalty), Strength drops to ~2.2 and correctly loses.
+    test('Strength loses to Metal Claw when moveset already has diverse coverage (no immunity gap)', () => {
+        const strengthRate  = rate(moves.MOVE_STRENGTH,  RIOLU, { currentMoves: [r.MOVE_EARTHQUAKE, r.MOVE_CLOSE_COMBAT], otherMoves: [] });
+        const metalClawRate = rate(moves.MOVE_METAL_CLAW, RIOLU, { currentMoves: [r.MOVE_EARTHQUAKE, r.MOVE_CLOSE_COMBAT], otherMoves: [] });
+        expect(strengthRate).toBeLessThan(metalClawRate);
+    });
+
+    // Coverage gate guard: Normal breaking a type immunity keeps its full value (no penalty).
+    // If Fix 8 were applied here it would halve the Flying-immunity bonus, dropping below rateMove.
+    test('Strength is NOT penalized when Normal breaks a Flying immunity (Ground-only set)', () => {
+        const result = rate(moves.MOVE_STRENGTH, RIOLU, {
+            currentMoves: [r.MOVE_EARTHQUAKE],
+            otherMoves: [],
+        });
+        expect(result).toBeGreaterThan(rateMove(moves.MOVE_STRENGTH));
+    });
+
+    // comboActivated guard: Flail+Endure combo overrides the Normal penalty.
+    test('Flail+Endure combo exempts Flail from Normal penalty (comboActivated)', () => {
+        const withEndure = rate(moves.MOVE_FLAIL, RIOLU, {
+            currentMoves: [r.MOVE_CLOSE_COMBAT, r.MOVE_EARTHQUAKE, r.MOVE_ENDURE],
+            otherMoves: [],
+        });
+        const withoutEndure = rate(moves.MOVE_FLAIL, RIOLU, {
+            currentMoves: [r.MOVE_CLOSE_COMBAT, r.MOVE_EARTHQUAKE],
+            otherMoves: [],
+        });
+        expect(withEndure).toBeGreaterThan(withoutEndure);
+    });
+
+    // Normal-type guard: STAB Normal moves are never penalized.
+    // If Fix 8 incorrectly fired for Normal-type Pokémon, normalRate would drop below fightingRate.
+    test('Normal-type Pokémon is not penalized for Normal moves (STAB exemption)', () => {
+        const NORMAL_RIOLU = { ...RIOLU, parsedTypes: ['NORMAL'] };
+        const normalRate   = rate(moves.MOVE_STRENGTH, NORMAL_RIOLU, { currentMoves: [r.MOVE_EARTHQUAKE, r.MOVE_CLOSE_COMBAT], otherMoves: [] });
+        const fightingRate = rate(moves.MOVE_STRENGTH, RIOLU,        { currentMoves: [r.MOVE_EARTHQUAKE, r.MOVE_CLOSE_COMBAT], otherMoves: [] });
+        expect(normalRate).toBeGreaterThan(fightingRate);
+    });
+});

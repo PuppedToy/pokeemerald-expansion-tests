@@ -80,6 +80,9 @@ const moves = {
     MOVE_FLAIL:      { ...base, id: 'MOVE_FLAIL',      name: 'Flail',      category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'NORMAL', power: 1, accuracy: 100, effect: 'EFFECT_FLAIL' },
     MOVE_SAND_ATTACK: { ...base, id: 'MOVE_SAND_ATTACK', name: 'Sand Attack', category: 'DAMAGE_CATEGORY_STATUS', type: 'GROUND', power: 0, accuracy: 100, effect: 'EFFECT_ACCURACY_DOWN' },
     MOVE_WORK_UP:    { ...base, id: 'MOVE_WORK_UP',    name: 'Work Up',    category: 'DAMAGE_CATEGORY_STATUS',   type: 'NORMAL', power: 0, accuracy: 0, effect: 'EFFECT_ATTACK_SPATK_UP' },
+
+    // --- Fix 8: non-STAB Normal redundancy penalty ---
+    MOVE_STRENGTH: { ...base, id: 'MOVE_STRENGTH', name: 'Strength', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'NORMAL', power: 80, accuracy: 100, effect: 'EFFECT_HIT' },
 };
 
 module.exports = moves;
