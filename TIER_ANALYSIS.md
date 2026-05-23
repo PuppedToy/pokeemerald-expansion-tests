@@ -2,6 +2,22 @@
 
 Bundle: `debug/run-58482498`
 
+## AG (non-mega)
+
+| Pokémon | Rating |
+|---|---|
+| Naganadel | 10.409 |
+| Regieleki | 10.062 |
+| Calyrex Shadow | 10.029 |
+| Rayquaza | 9.994 |
+| Necrozma Ultra | 9.938 |
+| Palafin Hero | 9.918 |
+| Iron Hands | 9.722 |
+| Eternatus Eternamax | 9.696 |
+| Zygarde Complete | 9.694 |
+| Zygarde 50 Power Construct | 9.681 |
+| Greninja Ash | 9.644 |
+
 ## LEGEND (non-mega)
 
 | Pokémon | Rating |
