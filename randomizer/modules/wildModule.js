@@ -15,6 +15,7 @@ const {
     TIER_ZU,
     TIER_MAGIKARP,
     TIER_UBERS,
+    TIER_LEGEND,
     TIER_AG,
     TIER_RU_THRESHOLD,
     TIER_UU_THRESHOLD,
@@ -343,7 +344,7 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig) {
 
     const legendReplacementList = pokemonList.filter(poke =>
         !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.rating.bestEvoTier === TIER_UBERS
+        && poke.rating.bestEvoTier === TIER_LEGEND
         && poke.evolutionData.type === EVO_TYPE_SOLO
     );
     const legend1Replacement = sampleAndRemove(legendReplacementList);

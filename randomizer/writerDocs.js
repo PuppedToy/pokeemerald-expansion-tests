@@ -17,7 +17,7 @@ const { createChooser } = require('./modules/trainerSelector');
 const { applyEvoLevels } = require('./evoLevelWriter.js');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 
-const CONTEXTUAL_TIER_SEQ = ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU', 'UBERS', 'AG'];
+const CONTEXTUAL_TIER_SEQ = ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU', 'UBERS', 'LEGEND', 'AG'];
 
 function filterByNearestContextualTier(list, requestedTiers, cap) {
     const tryFilter = (tiers) => list.filter(p => {

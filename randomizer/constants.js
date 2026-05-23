@@ -17,9 +17,11 @@ const constants = {
     TIER_UU: 'UU',
     TIER_OU: 'OU',
     TIER_UBERS: 'UBERS',
+    TIER_LEGEND: 'LEGEND',
     TIER_AG: 'AG',
 
-    TIER_AG_THRESHOLD: 9.5,
+    TIER_AG_THRESHOLD: 9.6,
+    TIER_LEGEND_THRESHOLD: 9.3,
     TIER_UBERS_THRESHOLD: 9,
     MID_TIER_OU_THRESHOLD: 8.5,
     TIER_OU_THRESHOLD: 8,
@@ -33,7 +35,7 @@ const constants = {
     // TIER_MAGIKARP is anything below TIER_ZU_THRESHOLD
 
     AG_BST_THRESHOLD: 720,
-    UBERS_BST_THRESHOLD: 660,
+    LEGEND_BST_THRESHOLD: 660,
     OU_BST_THRESHOLD: 600,
     UU_BST_THRESHOLD: 540,
     RU_BST_THRESHOLD: 480,
@@ -242,8 +244,9 @@ const constants = {
         RU:       [20, 28],
         UU:       [29, 35],
         OU:       [39, 48],
-        UBERS:    [49, 60],
-        AG:       [61, 75],
+        UBERS:    [49, 54],
+        LEGEND:   [55, 62],
+        AG:       [63, 75],
     },
 
     // Pre-evo modifier ranges per pre-evo tier (the pokemon that HOLDS the evo entry)
@@ -456,6 +459,7 @@ constants.TIER_SEQ = [
     constants.TIER_UU,
     constants.TIER_OU,
     constants.TIER_UBERS,
+    constants.TIER_LEGEND,
     constants.TIER_AG,
 ];
 

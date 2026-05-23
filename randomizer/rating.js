@@ -7,8 +7,10 @@ const {
     TIER_UU,
     TIER_OU,
     TIER_UBERS,
+    TIER_LEGEND,
     TIER_AG,
     TIER_AG_THRESHOLD,
+    TIER_LEGEND_THRESHOLD,
     TIER_UBERS_THRESHOLD,
     TIER_OU_THRESHOLD,
     TIER_UU_THRESHOLD,
@@ -19,7 +21,7 @@ const {
     POKEMON_TYPE_POISON,
     POKEMON_TYPE_GRASS,
     AG_BST_THRESHOLD,
-    UBERS_BST_THRESHOLD,
+    LEGEND_BST_THRESHOLD,
     OU_BST_THRESHOLD,
     UU_BST_THRESHOLD,
     RU_BST_THRESHOLD,
@@ -3027,10 +3029,14 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     }
 
     const isMegaForFloor = poke.evolutionData && poke.evolutionData.isMega;
-    const effectiveLegendBSTThreshold = isMegaForFloor ? MEGA_UBERS_BST_THRESHOLD : UBERS_BST_THRESHOLD;
     const effectiveGodBSTThreshold = isMegaForFloor ? MEGA_AG_BST_THRESHOLD : AG_BST_THRESHOLD;
 
-    if (rawBST >= effectiveLegendBSTThreshold && absoluteRating < TIER_UBERS_THRESHOLD) {
+    // Non-megas: BST ≥ 660 floors to LEGEND. Megas: no LEGEND BST floor — only base-form rule.
+    if (!isMegaForFloor && rawBST >= LEGEND_BST_THRESHOLD && absoluteRating < TIER_LEGEND_THRESHOLD) {
+        absoluteRating = TIER_LEGEND_THRESHOLD + absoluteRating / 100;
+    }
+    // Megas: BST ≥ 720 floors to UBERS (unchanged from before).
+    if (isMegaForFloor && rawBST >= MEGA_UBERS_BST_THRESHOLD && absoluteRating < TIER_UBERS_THRESHOLD) {
         absoluteRating = TIER_UBERS_THRESHOLD + absoluteRating / 100;
     }
 
@@ -3157,6 +3163,9 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     let tier;
     if (absoluteRating >= TIER_AG_THRESHOLD) {
         tier = TIER_AG;
+    }
+    else if (absoluteRating >= TIER_LEGEND_THRESHOLD) {
+        tier = TIER_LEGEND;
     }
     else if (absoluteRating >= TIER_UBERS_THRESHOLD) {
         tier = TIER_UBERS;

@@ -169,18 +169,18 @@ const PREMIUM = makePoke('SPECIES_PREMIUM', 'P_FAMILY_PREMIUM', ['GHOST'], {
     evolutionData: { type: 'EVO_TYPE_SOLO', isLC: false, isFinal: false, isMega: false, isNFE: false, megaEvos: [] },
     rating: { tier: 'OU', bestEvoTier: 'OU', bestEvoRating: 8.3, megaEvoTier: null, megaEvoRating: null },
 });
-// legend1+2+3: 3 UBERS SOLO
+// legend1+2+3: 3 LEGEND SOLO
 const LEG1 = makePoke('SPECIES_LEG1', 'P_FAMILY_LEG1', ['DRAGON'], {
     evolutionData: { type: 'EVO_TYPE_SOLO', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: [] },
-    rating: { tier: 'UBERS', bestEvoTier: 'UBERS', bestEvoRating: 9.5, megaEvoTier: null, megaEvoRating: null },
+    rating: { tier: 'LEGEND', bestEvoTier: 'LEGEND', bestEvoRating: 9.5, megaEvoTier: null, megaEvoRating: null },
 });
 const LEG2 = makePoke('SPECIES_LEG2', 'P_FAMILY_LEG2', ['PSYCHIC'], {
     evolutionData: { type: 'EVO_TYPE_SOLO', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: [] },
-    rating: { tier: 'UBERS', bestEvoTier: 'UBERS', bestEvoRating: 9.6, megaEvoTier: null, megaEvoRating: null },
+    rating: { tier: 'LEGEND', bestEvoTier: 'LEGEND', bestEvoRating: 9.6, megaEvoTier: null, megaEvoRating: null },
 });
 const LEG3 = makePoke('SPECIES_LEG3', 'P_FAMILY_LEG3', ['ELECTRIC'], {
     evolutionData: { type: 'EVO_TYPE_SOLO', isLC: false, isFinal: true, isMega: false, isNFE: false, megaEvos: [] },
-    rating: { tier: 'UBERS', bestEvoTier: 'UBERS', bestEvoRating: 9.4, megaEvoTier: null, megaEvoRating: null },
+    rating: { tier: 'LEGEND', bestEvoTier: 'LEGEND', bestEvoRating: 9.4, megaEvoTier: null, megaEvoRating: null },
 });
 
 const gymPokemon = [
@@ -439,7 +439,7 @@ describe('runWildModule — static rewards shape', () => {
         const { staticRewards } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
         ['legend1', 'legend2', 'legend3'].forEach(key => {
             const poke = extendedPokemonList.find(p => p.id === staticRewards[key].id);
-            expect(poke.rating.bestEvoTier).toBe('UBERS');
+            expect(poke.rating.bestEvoTier).toBe('LEGEND');
             expect(poke.evolutionData.type).toBe('EVO_TYPE_SOLO');
         });
     });

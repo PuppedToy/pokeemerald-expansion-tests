@@ -32,6 +32,7 @@ const {
     POKEMON_TYPE_DRAGON,
     POKEMON_TYPE_ELECTRIC,
     TIER_UBERS,
+    TIER_LEGEND,
     TRAINER_POKE_MEGA_FROM_STONE,
     POKEMON_TYPE_NORMAL,
     POKEMON_TYPE_GHOST,
@@ -177,6 +178,11 @@ const POKEDEF_UBERS = {
     checkValidEvo: true,
 };
 
+const POKEDEF_LEGEND = {
+    contextualTier: [TIER_LEGEND],
+    checkValidEvo: true,
+};
+
 const POKEDEF_UU_OU_MEGA = {
     isMega: true,
     contextualTier: [TIER_RU, TIER_NU, TIER_UU, TIER_OU],
@@ -280,13 +286,15 @@ const pokeDefSandStreamMon = (BASE_POKE_DEF) => ({
     abilities: ['SAND_STREAM'],
     item: 'Smooth Rock',
     maxTierDownSteps: 1,
-    fallback: [{
-        ...BASE_POKE_DEF,
-        mustHaveOneOfMoves: ['MOVE_SANDSTORM'],
-        tryToHaveMove: ['MOVE_SANDSTORM'],
-        abilities: [...sandAbilities],
-        item: 'Smooth Rock',
-    }],
+    fallback: [
+        {
+            ...BASE_POKE_DEF,
+            mustHaveOneOfMoves: ['MOVE_SANDSTORM'],
+            tryToHaveMove: ['MOVE_SANDSTORM'],
+            abilities: [...sandAbilities],
+            item: 'Smooth Rock',
+        }
+    ],
 });
 
 const pokeDefPsychicSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => ({
@@ -3717,11 +3725,11 @@ const trainersData = [
                 ...getBossPreset('MATT_AQUA')[1],
                 abilities: [...snowAbilities],
             },
-            pokeDefSnowWarningMon(getBossPreset('MATT_AQUA')[2]),
             {
-                ...getBossPreset('MATT_AQUA')[3],
+                ...getBossPreset('MATT_AQUA')[2],
                 abilities: [...snowAbilities],
             },
+            pokeDefSnowWarningMon(getBossPreset('MATT_AQUA')[3]),
             {
                 ...getBossPreset('MATT_AQUA')[4],
                 abilities: [...snowAbilities],
