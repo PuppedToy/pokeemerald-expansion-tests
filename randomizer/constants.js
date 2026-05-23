@@ -20,8 +20,8 @@ const constants = {
     TIER_LEGEND: 'LEGEND',
     TIER_AG: 'AG',
 
-    TIER_AG_THRESHOLD: 9.6,
-    TIER_LEGEND_THRESHOLD: 9.3,
+    TIER_AG_THRESHOLD: 9.75,
+    TIER_LEGEND_THRESHOLD: 9.5,
     TIER_UBERS_THRESHOLD: 9,
     MID_TIER_OU_THRESHOLD: 8.5,
     TIER_OU_THRESHOLD: 8,
@@ -35,7 +35,7 @@ const constants = {
     // TIER_MAGIKARP is anything below TIER_ZU_THRESHOLD
 
     AG_BST_THRESHOLD: 720,
-    LEGEND_BST_THRESHOLD: 660,
+    LEGEND_BST_THRESHOLD: 670,
     OU_BST_THRESHOLD: 600,
     UU_BST_THRESHOLD: 540,
     RU_BST_THRESHOLD: 480,
@@ -43,7 +43,7 @@ const constants = {
 
     // Megas need higher BST floors so they don't all clump at AG/UBERS.
     // Only truly broken megas (Rayquaza, Mewtwo X/Y) should reach AG.
-    MEGA_AG_BST_THRESHOLD: 760,
+    MEGA_AG_BST_THRESHOLD: 770,
     MEGA_UBERS_BST_THRESHOLD: 720,
 
     EVO_TYPE_LC_OF_3: 'EVO_TYPE_LC_OF_3',

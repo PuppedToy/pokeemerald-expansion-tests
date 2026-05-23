@@ -110,7 +110,25 @@ Bundle: `debug/run-58482498`
 
 ## Notes
 
-- `TIER_LEGEND_THRESHOLD` is currently **9.3**.
-- Iron Valiant (BST 590), Roaring Moon, Kartana, and Pheromosa reach LEGEND through pure scoring, not the BST floor (660). These are paradox/Ultra Beast pokemon, not legendaries.
-- Raising the threshold to **9.35** would move Iron Valiant, Roaring Moon, Kartana, and Pheromosa back to UBERS while keeping all mythicals and box legendaries in LEGEND.
-- Blacephalon sits at 9.2998 (displays as 9.300) — just below LEGEND, correctly in UBERS.
+Thresholds as of this analysis: `TIER_LEGEND_THRESHOLD = 9.5`, `TIER_AG_THRESHOLD = 9.75`, `LEGEND_BST_THRESHOLD = 670`, `MEGA_AG_BST_THRESHOLD = 770`.
+
+### Why is Regieleki so high? (AG 10.06)
+200 Speed is the highest in the game. The rating system multiplies Speed into `rawBST` via `abilitiesSpeedPowerMultiplier`, and TRANSISTOR gets a 1.3× SpA multiplier on top. Its best moveset is **Supercell Slam / Thrash / Outrage / Megahorn** — all strong moves that cover 6 types super-effectively. The `comboBonus` is capped at 1.6. Speed alone warps every scoring component upward.
+
+### Why is Naganadel so high? (AG 10.41)
+BEAST_BOOST applies a 1.3× multiplier to both Attack and SpA in the BST calculation, inflating `rawBST` well above 610. Its ability rating of 7 adds directly to the score, and its moveset (**Sludge Wave / Dragon Pulse / Overheat / Leaf Storm**) hits 9 types super-effectively with 0 walls — a perfect coverage score of 5.0. Highest-rated pokemon in this bundle.
+
+### Why is Mega Sceptile so high? (AG 9.68)
+GRASS/DRAGON typing is rare and hits 9 super-effective matchups. 145 SpA and 145 Speed are both elite. Its TM pool includes **Outrage / Solar Blade / Dual Wingbeat / U-Turn**, giving it 4-move perfect mixed coverage. comboBonus 1.45. The BST floor (630 < 670) doesn't apply — it earns this through pure scoring.
+
+### Why is Iron Hands so high? (AG 9.72)
+154 HP / 150 Atk / 138 Def is an unprecedented defensive-physical stat spread. QUARK_DRIVE boosts its Attack further via the 1.3× BEAST_BOOST multiplier path. Its best moveset (**Close Combat / Supercell Slam / Fake Out / Outrage**) covers 8 types with a comboBonus of 1.6 (capped). The BULKY role rating compounds defensive bulk with offensive output. Scores above almost all megas.
+
+### Why is Mega Lucario so high? (AG 9.64)
+ADAPTABILITY is the highest ability rating (8) among non-broken abilities — it directly adds ~0.8 to the final score. 145 Atk / 140 SpA combined with FIGHTING/STEEL typing means its STAB moves (**Close Combat / Aura Sphere**) deal boosted damage, and the TM pool adds **Draco Meteor / Extreme Speed / Overheat** for 8 super-effective matchups. comboBonus 1.35.
+
+### Why is Mega Lopunny so high? (UBERS 9.21)
+SCRAPPY (ability rating 6) lets Normal/Fighting moves hit Ghosts. High Jump Kick at 130 BP is among the strongest moves in the game and is its core STAB. 136 Atk / 135 Speed is a strong offensive spread. The moveset (**High Jump Kick / Mega Kick / Fire Punch / Swords Dance**) covers 7 types. At 9.21 it actually sits just above the new UBERS floor — consistent with its Smogon history.
+
+### Why is Mega Pinsir so high? (UBERS 9.04)
+AERILATE converts Normal moves into Flying-type with a 1.2× power boost. This makes **Dual Wingbeat** a 80×2 BP STAB Flying move. Combined with 155 Atk (highest physical Attack among the megas here) and access to **Outrage / Superpower / U-Turn**, it achieves 10 super-effective matchups — the best coverage score (5.56) in this list. Moves rating 7.15 is the highest of the 7 pokemon analyzed. The score is held back only by its 600 BST hitting the MEGA_UBERS_BST_THRESHOLD floor rather than AG.

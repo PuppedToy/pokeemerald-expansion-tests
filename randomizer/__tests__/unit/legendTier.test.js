@@ -18,16 +18,16 @@ describe('LEGEND tier — constants', () => {
         expect(TIER_LEGEND).toBe('LEGEND');
     });
 
-    test('TIER_LEGEND_THRESHOLD is 9.3', () => {
-        expect(TIER_LEGEND_THRESHOLD).toBe(9.3);
+    test('TIER_LEGEND_THRESHOLD is 9.5', () => {
+        expect(TIER_LEGEND_THRESHOLD).toBe(9.5);
     });
 
-    test('TIER_AG_THRESHOLD is 9.6 (raised from 9.5)', () => {
-        expect(TIER_AG_THRESHOLD).toBe(9.6);
+    test('TIER_AG_THRESHOLD is 9.75', () => {
+        expect(TIER_AG_THRESHOLD).toBe(9.75);
     });
 
-    test('LEGEND_BST_THRESHOLD is 660', () => {
-        expect(LEGEND_BST_THRESHOLD).toBe(660);
+    test('LEGEND_BST_THRESHOLD is 670', () => {
+        expect(LEGEND_BST_THRESHOLD).toBe(670);
     });
 
     test('LEGEND is in TIER_SEQ between UBERS and AG', () => {
