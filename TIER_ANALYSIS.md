@@ -18,6 +18,34 @@ Bundle: `debug/run-58482498`
 | Zygarde 50 Power Construct | 9.681 |
 | Greninja Ash | 9.644 |
 
+## AG (mega)
+
+| Pokémon | Rating |
+|---|---|
+| Rayquaza Mega | 9.994 |
+| Diancie Mega | 9.952 |
+| Kangaskhan Mega | 9.908 |
+| Mewtwo Mega Y | 9.693 |
+| Kyogre Primal | 9.692 |
+| Mewtwo Mega X | 9.691 |
+| Sceptile Mega | 9.675 |
+| Lucario Mega | 9.640 |
+| Medicham Mega | 9.635 |
+
+## UBERS (mega)
+
+| Pokémon | Rating |
+|---|---|
+| Gengar Mega | 9.290 |
+| Blaziken Mega | 9.290 |
+| Latios Mega | 9.290 |
+| Lopunny Mega | 9.208 |
+| Tyranitar Mega | 9.180 |
+| Salamence Mega | 9.158 |
+| Groudon Primal | 9.088 |
+| Pinsir Mega | 9.044 |
+| Glalie Mega | 9.011 |
+
 ## LEGEND (non-mega)
 
 | Pokémon | Rating |
