@@ -27,7 +27,7 @@ const moves = {
 
     // --- Special damage ---
     MOVE_SURF: { ...base, id: 'MOVE_SURF', name: 'Surf', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'WATER', power: 90, accuracy: 100, effect: 'EFFECT_HIT' },
-    MOVE_THUNDERBOLT: { ...base, id: 'MOVE_THUNDERBOLT', name: 'Thunderbolt', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'ELECTRIC', power: 90, accuracy: 100, effect: 'EFFECT_HIT' },
+    MOVE_THUNDERBOLT: { ...base, id: 'MOVE_THUNDERBOLT', name: 'Thunderbolt', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'ELECTRIC', power: 90, accuracy: 100, effect: 'EFFECT_HIT', rating: 8 },
     MOVE_FLAMETHROWER: { ...base, id: 'MOVE_FLAMETHROWER', name: 'Flamethrower', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'FIRE', power: 90, accuracy: 100, effect: 'EFFECT_HIT' },
     MOVE_SOLAR_BEAM: { ...base, id: 'MOVE_SOLAR_BEAM', name: 'Solar Beam', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'GRASS', power: 120, accuracy: 100, effect: 'EFFECT_SOLAR_BEAM' },
     MOVE_BLIZZARD: { ...base, id: 'MOVE_BLIZZARD', name: 'Blizzard', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'ICE', power: 110, accuracy: 70, effect: 'EFFECT_HIT' },
@@ -41,7 +41,7 @@ const moves = {
     MOVE_STUN_SPORE: { ...base, id: 'MOVE_STUN_SPORE', name: 'Stun Spore', category: 'DAMAGE_CATEGORY_STATUS', type: 'GRASS', power: 0, accuracy: 75, effect: 'EFFECT_NON_VOLATILE_STATUS' },
     MOVE_POISON_POWDER: { ...base, id: 'MOVE_POISON_POWDER', name: 'PoisonPowder', category: 'DAMAGE_CATEGORY_STATUS', type: 'POISON', power: 0, accuracy: 75, effect: 'EFFECT_NON_VOLATILE_STATUS' },
     MOVE_SWORDS_DANCE: { ...base, id: 'MOVE_SWORDS_DANCE', name: 'Swords Dance', category: 'DAMAGE_CATEGORY_STATUS', type: 'NORMAL', power: 0, accuracy: 0, effect: 'EFFECT_ATTACK_UP_2' },
-    MOVE_DRAGON_DANCE: { ...base, id: 'MOVE_DRAGON_DANCE', name: 'Dragon Dance', category: 'DAMAGE_CATEGORY_STATUS', type: 'DRAGON', power: 0, accuracy: 0, effect: 'EFFECT_DRAGON_DANCE' },
+    MOVE_DRAGON_DANCE: { ...base, id: 'MOVE_DRAGON_DANCE', name: 'Dragon Dance', category: 'DAMAGE_CATEGORY_STATUS', type: 'DRAGON', power: 0, accuracy: 0, effect: 'EFFECT_DRAGON_DANCE', rating: 8 },
     MOVE_TAIL_WHIP: { ...base, id: 'MOVE_TAIL_WHIP', name: 'Tail Whip', category: 'DAMAGE_CATEGORY_STATUS', type: 'NORMAL', power: 0, accuracy: 100, effect: 'EFFECT_DEFENSE_DOWN' },
     MOVE_PROTECT: { ...base, id: 'MOVE_PROTECT', name: 'Protect', category: 'DAMAGE_CATEGORY_STATUS', type: 'NORMAL', power: 0, accuracy: 0, effect: 'EFFECT_PROTECT' },
 
@@ -64,7 +64,7 @@ const moves = {
     MOVE_AVALANCHE: { ...base, id: 'MOVE_AVALANCHE', name: 'Avalanche',  category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'ICE',      power: 60, accuracy: 100, effect: 'EFFECT_REVENGE', priority: -4 },
 
     // --- Draining move ---
-    MOVE_DRAIN_PUNCH: { ...base, id: 'MOVE_DRAIN_PUNCH', name: 'Drain Punch', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'FIGHTING', power: 75, accuracy: 100, effect: 'EFFECT_DRAIN_HP' },
+    MOVE_DRAIN_PUNCH: { ...base, id: 'MOVE_DRAIN_PUNCH', name: 'Drain Punch', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'FIGHTING', power: 75, accuracy: 100, effect: 'EFFECT_DRAIN_HP', rating: 8 },
 
     // --- Priority moves for Fix 3 tests ---
     MOVE_QUICK_ATTACK: { ...base, id: 'MOVE_QUICK_ATTACK', name: 'Quick Attack', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'NORMAL', power: 40, accuracy: 100, effect: 'EFFECT_HIT', priority: 1 },
@@ -83,6 +83,10 @@ const moves = {
 
     // --- Fix 8: non-STAB Normal redundancy penalty ---
     MOVE_STRENGTH: { ...base, id: 'MOVE_STRENGTH', name: 'Strength', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'NORMAL', power: 80, accuracy: 100, effect: 'EFFECT_HIT' },
+
+    // --- Hazard and recovery moves for HAZARD+RECOVERY combo tests ---
+    MOVE_STEALTH_ROCK: { ...base, id: 'MOVE_STEALTH_ROCK', name: 'Stealth Rock', category: 'DAMAGE_CATEGORY_STATUS', type: 'ROCK', power: 0, accuracy: 0, effect: 'EFFECT_STEALTH_ROCK' },
+    MOVE_ROOST:        { ...base, id: 'MOVE_ROOST',        name: 'Roost',        category: 'DAMAGE_CATEGORY_STATUS', type: 'FLYING', power: 0, accuracy: 0, effect: 'EFFECT_ROOST' },
 };
 
 module.exports = moves;

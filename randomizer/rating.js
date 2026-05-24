@@ -28,6 +28,7 @@ const {
     NU_BST_THRESHOLD,
     MEGA_AG_BST_THRESHOLD,
     MEGA_UBERS_BST_THRESHOLD,
+    MEGA_AG_RATING_THRESHOLD,
     EVO_TYPE_NFE_OF_3,
     EVO_TYPE_LC_OF_2,
     EVO_TYPE_LC_OF_3,
@@ -2134,7 +2135,7 @@ const EXCELLENT_STAT_VALUE = 160;
 //   - TECHNICIAN + priority: already ×1.5 in rateMoveForAPokemon
 //   - SKILL_LINK + multi-hit: already ×2.5 in rateMoveForAPokemon
 //   - ADAPTABILITY stab: already ×2 in rateMoveForAPokemon
-function computeComboBonus(poke, moveset, moves, tmPool) {
+function computeComboBonus(poke, moveset, moves, tmPool, role = null, defensePower = Infinity) {
     const hasAbility = (ab) => poke.parsedAbilities.includes(ab);
 
     // Use the full learnable pool so combos are detected even when chooseMoveset
@@ -2617,7 +2618,10 @@ function computeComboBonus(poke, moveset, moves, tmPool) {
     // With recovery, the setter can maintain hazards indefinitely (Ferrothorn, Skarmory).
     // Two tiers: reliable recovery (+0.4) vs REST-only (+0.2). REST is less consistent
     // (forced sleep 2 turns) but still a real defensive loop on bulky hazard setters.
-    if (hasHazard && hasReliableRecovery) {
+    // Bulk guard: an OFFENSIVE glass cannon with a hazard move via TM is not a real hazard
+    // setter — it cannot survive long enough to leverage the hazard+recovery loop. Require
+    // defensePower ≥ 5.5 for OFFENSIVE pokemon (≈ 80 HP / 85 Def / 80 SpD or better).
+    if (hasHazard && hasReliableRecovery && (role !== 'OFFENSIVE' || defensePower >= 5.5)) {
         bonus += 0.4;
         bonusLog.push('HAZARD+RECOVERY +0.4');
     } else if (hasHazard && hasAnyMove(new Set(['MOVE_REST']))) {
@@ -2874,6 +2878,10 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     // Pheromosa's equal 37/37 defenses trigger a flexibility bonus that inflates defensePower
     // past the 3.5 threshold, so we use rawDefensePower to reliably detect the archetype.
     const rawDefensePower = defensePower;
+    // rawOffensePower: base-stat-only offense, used by the speed guard below.
+    // Intentionally does NOT include ability multipliers so that TRANSISTOR / BEAST_BOOST
+    // cannot circumvent the guard on behalf of a fundamentally low-base-attack pokemon.
+    const rawOffensePower = Math.max(poke.baseAttack, poke.baseSpAttack) / EXCELLENT_STAT_VALUE * 10;
 
     let role;
     if (Math.abs(offensePower - defensePower) < 1.0) {
@@ -2914,6 +2922,15 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     }
     if (poke.baseSpeed >= GOOD_STAT_VALUE) {
         speedPower *= 1.1;
+    }
+
+    // Speed/offense ratio guard: extreme speed (Spe≥160, post-outlier) inflates speedPower
+    // far above what a mediocre base offense can leverage. Cap speedPower to rawOffensePower+1.5
+    // when base offense is weak (< 8.0, i.e. base Atk/SpA < ~128). This prevents Regieleki-style
+    // pokemon from scoring LEGEND/AG through speed alone without real offensive presence.
+    // The SPEED_200+ combo bonus (+0.8) still fires, capturing the real strategic upside.
+    if (rawOffensePower < 8.0 && speedPower > rawOffensePower + 1.5) {
+        speedPower = rawOffensePower + 1.5;
     }
 
     // POISON_HEAL converts Toxic Orb damage into 12.5% HP/turn healing, making the
@@ -3001,7 +3018,7 @@ function ratePokemon(poke, moves, abilities, tmPool) {
 
     // A6: Additive combo bonus applied after weighted formula, before BST floor clamps.
     // Keeps BST integrity intact while letting move+ability synergies meaningfully shift tier.
-    const comboBonus = computeComboBonus(poke, moveset, moves, tmPool);
+    const comboBonus = computeComboBonus(poke, moveset, moves, tmPool, role, defensePower);
     absoluteRating += comboBonus;
 
     let rawBST =
@@ -3028,7 +3045,9 @@ function ratePokemon(poke, moves, abilities, tmPool) {
         absoluteRating = TIER_OU_THRESHOLD + absoluteRating / 100;
     }
 
-    const isMegaForFloor = poke.evolutionData && poke.evolutionData.isMega;
+    // Stoneless megas (Rayquaza: Dragon Ascent, no stone) follow non-mega BST floor and tier rules.
+    const isStoneMega = !!(poke.evolutionData && poke.evolutionData.isMega && poke.evolutionData.megaItem);
+    const isMegaForFloor = isStoneMega;
     const effectiveGodBSTThreshold = isMegaForFloor ? MEGA_AG_BST_THRESHOLD : AG_BST_THRESHOLD;
 
     // Non-megas: BST ≥ 660 floors to LEGEND. Megas: no LEGEND BST floor — only base-form rule.
@@ -3160,8 +3179,13 @@ function ratePokemon(poke, moves, abilities, tmPool) {
 
     // These tiers are kinda working. I should add that OU is actually exclusive pokemon and UU-RU are the average fully evolved ones
     // GOD should only be used by extremely hard bosses. Should not come up in the game in general. Esp. Eternatus Emax
+    // Stone megas need MEGA_AG_RATING_THRESHOLD (10.0) to reach AG; non-megas and stoneless megas
+    // (Rayquaza) need only TIER_AG_THRESHOLD (9.75). Stone megas have inflated stats the model rewards
+    // generously; stoneless megas like Rayquaza are effectively the same pokemon as their base form.
+    const isMegaForTier = isStoneMega;
+    const agRatingThreshold = isMegaForTier ? MEGA_AG_RATING_THRESHOLD : TIER_AG_THRESHOLD;
     let tier;
-    if (absoluteRating >= TIER_AG_THRESHOLD) {
+    if (absoluteRating >= agRatingThreshold) {
         tier = TIER_AG;
     }
     else if (absoluteRating >= TIER_LEGEND_THRESHOLD) {

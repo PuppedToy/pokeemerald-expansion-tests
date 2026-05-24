@@ -482,7 +482,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                 const slotSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainer.id + ':' + slotIndex), 0x9E3779B9)) >>> 0;
                 rng.seed(slotSeed);
             }
-            const chosenTrainerMon = selectWithAutoFallback(
+            let chosenTrainerMon = selectWithAutoFallback(
                 trainerMonDefinition,
                 choosePokemonFromDefinition,
             );

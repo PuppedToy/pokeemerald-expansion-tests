@@ -10,7 +10,7 @@ const { balancePokemon } = require('../rebalancer');
 const {
     TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR, ABILITIES_FILE_PATH, MEGA_EVOS_PATH,
     EVO_TYPE_MEGA,
-    TIER_LEGEND, TIER_UBERS, TIER_LEGEND_THRESHOLD,
+    TIER_LEGEND, TIER_UBERS, TIER_LEGEND_THRESHOLD, TIER_SEQ,
 } = require('../constants');
 
 const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
@@ -204,11 +204,13 @@ async function runPokedexModule(config, baseData = null) {
         }
     });
 
-    // Megas can only reach LEGEND if their base form is also LEGEND.
+    // Megas can only reach LEGEND if their base form is LEGEND or higher (AG).
+    // Using TIER_SEQ comparison: base-form-AG megas (e.g. Mega Rayquaza) are allowed through,
+    // since their base form is objectively stronger than LEGEND. Base-form-UBERS megas are capped.
     for (const poke of allPokes) {
         if (poke.evolutionData.isMega && poke.rating.tier === TIER_LEGEND) {
             const baseForm = allPokes.find(p => p.id === poke.evolutionData.megaBaseForm);
-            if (!baseForm || baseForm.rating.tier !== TIER_LEGEND) {
+            if (!baseForm || TIER_SEQ.indexOf(baseForm.rating.tier) < TIER_SEQ.indexOf(TIER_LEGEND)) {
                 poke.rating.tier = TIER_UBERS;
                 poke.rating.absoluteRating = TIER_LEGEND_THRESHOLD - 0.01;
             }

@@ -45,6 +45,10 @@ const constants = {
     // Only truly broken megas (Rayquaza, Mewtwo X/Y) should reach AG.
     MEGA_AG_BST_THRESHOLD: 770,
     MEGA_UBERS_BST_THRESHOLD: 720,
+    // Megas require a higher absolute rating to reach AG (10.0 vs 9.75 for non-megas).
+    // Megas have inflated raw stats that the model rewards generously; the higher threshold
+    // prevents strong-but-not-broken megas (Sceptile, Lucario) from reaching AG.
+    MEGA_AG_RATING_THRESHOLD: 10.0,
 
     EVO_TYPE_LC_OF_3: 'EVO_TYPE_LC_OF_3',
     EVO_TYPE_LC_OF_2: 'EVO_TYPE_LC_OF_2',
