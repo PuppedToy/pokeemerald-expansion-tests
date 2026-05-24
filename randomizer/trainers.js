@@ -51,7 +51,6 @@ const partnersFile = path.resolve(__dirname, '..', 'src', 'data', 'battle_partne
 const stevenPokemon = [
     'SPECIES_BALTOY',
     'SPECIES_ARON',
-    'SPECIES_BELDUM',
     'SPECIES_KABUTO',
     'SPECIES_OMANYTE',
     'SPECIES_LILEEP',
@@ -1825,34 +1824,34 @@ const trainersData = [
         bag: stevenBag(),
         team: [
             {
-                ...getBossPreset('GRANITE_CAVE_STEVEN')[0],
-                specificIfTier: 'SPECIES_METANG',
+                id: 'STEVEN_MEGA',
                 breedTier: 'perfect',
+                type: [POKEMON_TYPE_STEEL],
+                tryEvolve: true,
+                ...PROMISING_OU_UBERS_MEGA_LC,
+            },
+            {
+                id: 'STEVEN_OU',
+                breedTier: 'perfect',
+                evolutionTier: [TIER_OU],
+                evoType: [EVO_TYPE_LC],
+                tryEvolve: true,
+                type: [POKEMON_TYPE_STEEL],
+            },
+            {
+                ...getBossPreset('GRANITE_CAVE_STEVEN')[0],
                 type: [POKEMON_TYPE_STEEL],
             },
             {
                 ...getBossPreset('GRANITE_CAVE_STEVEN')[1],
-                breedTier: 'good',
-                type: [POKEMON_TYPE_STEEL],
-            },
-            {
-                ...getBossPreset('GRANITE_CAVE_STEVEN')[2],
-                breedTier: 'good',
                 type: [POKEMON_TYPE_STEEL],
             },
             {
                 oneOf: stevenPokemon,
-                breedTier: 'good',
                 tryEvolve: true,
             },
             {
                 oneOf: stevenPokemon,
-                breedTier: 'good',
-                tryEvolve: true,
-            },
-            {
-                oneOf: stevenPokemon,
-                breedTier: 'good',
                 tryEvolve: true,
             },
         ],
@@ -3870,10 +3869,16 @@ const trainersData = [
             } : (tateAndLizaUseSolrock ?
             {
                 specificIfTier: 'SPECIES_LUNALA',
-                ...POKEDEF_UBERS,
+                ...POKEDEF_LEGEND,
                 item: 'Room Service',
                 nature: 'Quiet',
                 fallback: [
+                    {
+                        specificIfTier: 'SPECIES_LUNALA',
+                        ...POKEDEF_UBERS,
+                        item: 'Room Service',
+                        nature: 'Quiet',
+                    },
                     {
                         specificIfTier: 'SPECIES_LUNALA',
                         ...POKEDEF_OU,
@@ -3887,10 +3892,16 @@ const trainersData = [
                 ]
             } : {
                 specificIfTier: 'SPECIES_SOLGALEO',
-                ...POKEDEF_UBERS,
+                ...POKEDEF_LEGEND,
                 item: 'Room Service',
                 nature: 'Brave',
                 fallback: [
+                    {
+                        specificIfTier: 'SPECIES_SOLGALEO',
+                        ...POKEDEF_UBERS,
+                        item: 'Room Service',
+                        nature: 'Quiet',
+                    },
                     {
                         specificIfTier: 'SPECIES_SOLGALEO',
                         ...POKEDEF_OU,
@@ -4123,32 +4134,29 @@ const trainersData = [
         team: [
             {
                 id: 'STEVEN_LEGEND',
-                ...POKEDEF_UBERS,
+                ...POKEDEF_LEGEND,
                 type: [POKEMON_TYPE_STEEL],
-                hasStat: ['baseBST', '>', '659'],
                 fallback: [
                     {
                         id: 'STEVEN_LEGEND',
-                        ...POKEDEF_UBERS,
+                        ...POKEDEF_LEGEND,
                         type: [POKEMON_TYPE_ROCK],
-                        hasStat: ['baseBST', '>', '659'],
                     },
                     {
                         id: 'STEVEN_LEGEND',
-                        ...POKEDEF_UBERS,
-                        hasStat: ['baseBST', '>', '659'],
+                        ...POKEDEF_LEGEND,
                     },
                 ],
             },
-            pokeDefUbersOrAGMega({
-                id: 'STEVEN_MEGA',
-                type: [POKEMON_TYPE_STEEL],
-                pickBest: true,
-            }),
             {
-                id: 'BEST_STEVEN_POKE',
-                oneOf: [...stevenPokemon],
-                pickBest: true,
+                special: TRAINER_REPEAT_ID,
+                id: 'STEVEN_MEGA',
+                tryEvolve: true,
+                tryMega: true,
+            },
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'STEVEN_OU',
                 tryEvolve: true,
             },
         ],
@@ -4364,6 +4372,12 @@ const trainersData = [
                 ...getBossPreset('ARCHIE')[0],
                 item: 'Damp Rock',
                 fallback: [
+                    {
+                        specificIfTier: 'SPECIES_KYOGRE',
+                        contextualTier: [TIER_UBERS],
+                        checkValidEvo: true,
+                        item: 'Damp Rock',
+                    },
                     {
                         specificIfTier: 'SPECIES_KYOGRE',
                         contextualTier: [TIER_OU],
@@ -4921,21 +4935,24 @@ const trainersData = [
                 ...getBossPreset('CHAMPION_STEVEN')[0],
                 hasStat: ['baseBST', '<', '851'],
             },
-            getBossPreset('CHAMPION_STEVEN')[1],
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'STEVEN_MEGA',
-                tryMega: true,
-                fallback: [
-                    pokeDefUbersMega(),
-                ],
-            },
-            getBossPreset('CHAMPION_STEVEN')[3],
-            getBossPreset('CHAMPION_STEVEN')[4],
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_LEGEND',
             },
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'STEVEN_MEGA',
+                tryEvolve: true,
+                tryMega: true,
+            },
+            getBossPreset('CHAMPION_STEVEN')[1],
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'STEVEN_OU',
+                tryEvolve: true,
+                tryMega: true,
+            },
+            getBossPreset('CHAMPION_STEVEN')[2],
         ],
     },
 ];

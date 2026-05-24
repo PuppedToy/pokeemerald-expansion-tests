@@ -3,6 +3,7 @@
 const {
     TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS, TIER_AG,
     TIER_SEQ,
+    TIER_LEGEND,
 } = require('./constants');
 
 function shiftTier(t, delta) {
@@ -136,7 +137,6 @@ const SPLITS = [
     {
         id: 'GRANITE_CAVE_STEVEN',
         fair: [
-            { contextualTier: [TIER_RU], checkValidEvo: true },
             { contextualTier: [TIER_NU], checkValidEvo: true },
             { contextualTier: [TIER_NU], checkValidEvo: true },
         ],
@@ -268,8 +268,8 @@ const SPLITS = [
         fair: [
             { isMega: true },
             { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_OU], checkValidEvo: true },
+            { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
         ],
@@ -349,7 +349,7 @@ const SPLITS = [
         id: 'ARCHIE',
         // Slot 1: Sharpedonite mega (fixed; uses specific: 'SPECIES_SHARPEDO')
         fair: [
-            { contextualTier: [TIER_UBERS], checkValidEvo: true },
+            { contextualTier: [TIER_LEGEND], checkValidEvo: true },
             { isMega: true },
             { contextualTier: [TIER_OU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
@@ -362,8 +362,8 @@ const SPLITS = [
         // Current slot 0 is pokeDefUbersMega; FAIR makes it plain UBERS.
         id: 'JUAN',
         fair: [
-            { contextualTier: [TIER_UBERS], checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
+            { contextualTier: [TIER_LEGEND], checkValidEvo: true },
+            { contextualTier: [TIER_UBERS],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
@@ -376,8 +376,8 @@ const SPLITS = [
         id: 'SIDNEY',
         // Slot 5: mega (fixed)
         fair: [
-            { contextualTier: [TIER_UBERS], checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
+            { contextualTier: [TIER_LEGEND], checkValidEvo: true },
+            { contextualTier: [TIER_UBERS],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
             { contextualTier: [TIER_UU],    checkValidEvo: true },
@@ -388,8 +388,8 @@ const SPLITS = [
         id: 'PHOEBE',
         // Slot 5: mega (fixed)
         fair: [
+            { contextualTier: [TIER_LEGEND],    checkValidEvo: true },
             { contextualTier: [TIER_UBERS], checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
             { contextualTier: [TIER_UU],    checkValidEvo: true },
@@ -400,8 +400,8 @@ const SPLITS = [
         id: 'GLACIA',
         // Slot 5: UBERS mega (fixed)
         fair: [
+            { contextualTier: [TIER_LEGEND],    checkValidEvo: true },
             { contextualTier: [TIER_UBERS], checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
@@ -412,8 +412,8 @@ const SPLITS = [
         id: 'DRAKE',
         // Slot 5: UBERS mega (fixed)
         fair: [
+            { contextualTier: [TIER_LEGEND],    checkValidEvo: true },
             { contextualTier: [TIER_UBERS], checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
@@ -423,17 +423,11 @@ const SPLITS = [
 
     // ── Champion ──────────────────────────────────────────────────────────────
     {
-        // Slot 2: TRAINER_REPEAT_ID for STEVEN_MEGA (treated as mega/fixed).
-        // Slot 5: TRAINER_REPEAT_ID for STEVEN_LEGEND (UBERS); participates in
-        //         transform math but the repeat mechanic ignores contextualTier.
         id: 'CHAMPION_STEVEN',
         fair: [
             { contextualTier: [TIER_AG],    checkValidEvo: true },
+            { contextualTier: [TIER_UBERS],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
-            { isMega: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
-            { contextualTier: [TIER_UBERS], checkValidEvo: true },
         ],
     },
 ];
