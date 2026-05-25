@@ -2061,7 +2061,7 @@ const trainersData = [
         bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
             { special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_ODDISH'], tryEvolve: true },
-            ...genericTrainerTeamPostWattson().slice(1),
+            ...genericTrainerTeamPostMuseumGrunts().slice(1),
         ],
     },
     {
@@ -2073,7 +2073,7 @@ const trainersData = [
         bag: getSampleItemsFromArray(wallyBag(), 8),
         team: [
             { special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_GLOOM'], tryEvolve: true },
-            ...genericTrainerTeamPostWattson().slice(1),
+            ...genericTrainerTeamPostMuseumGrunts().slice(1),
         ],
     },
     {
@@ -2083,7 +2083,7 @@ const trainersData = [
         reward: [...choiceHectorTMs, 'Light Clay'],
         level: 29,
         bag: [...getSampleItemsFromArray(wallyBag(), 5)],
-        team: genericTrainerTeamPostWattson(),
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     {
         id: 'TRAINER_MELINA',
@@ -2092,7 +2092,7 @@ const trainersData = [
         reward: [...choiceMelinaBerries],
         level: 29,
         bag: [...choiceMelinaBerries, ...getSampleItemsFromArray(wallyBag(), 6)],
-        team: genericTrainerTeamPostWattson(),
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     {
         id: 'TRAINER_AISHA',
@@ -2101,7 +2101,7 @@ const trainersData = [
         reward: [...choiceAishaGems],
         level: 29,
         bag: [...choiceAishaGems, ...getSampleItemsFromArray(wallyBag(), 6)],
-        team: genericTrainerTeamPostWattson(),
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     {
         id: 'TRAINER_MARIA_1',
@@ -2110,7 +2110,7 @@ const trainersData = [
         reward: [route117GoodItem],
         level: 29,
         bag: [route117GoodItem, ...getSampleItemsFromArray(wallyBag(), 7)],
-        team: genericTrainerTeamPostWattson(),
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     {
         id: 'TRAINER_LYDIA_1',
@@ -2119,7 +2119,7 @@ const trainersData = [
         reward: [...route117PlateItems],
         level: 29,
         bag: [...route117PlateItems, ...getSampleItemsFromArray(wallyBag(), 4)],
-        team: genericTrainerTeamPostWattson(),
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     {
         id: 'TRAINER_DEREK',
@@ -2128,7 +2128,7 @@ const trainersData = [
         reward: ['Nugget'],
         level: 29,
         bag: getSampleItemsFromArray(wallyBag(), 8),
-        team: genericTrainerTeamPostWattson(),
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     // Mauville Gym
     {
@@ -3196,12 +3196,6 @@ const trainersData = [
         team: [
             pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA')[0]),
             {
-                special: TRAINER_REPEAT_ID,
-                id: 'MAXIE_MEGA',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
                 ...getBossPreset('MAXIE_MAGMA')[1],
                 type: [magmaTeamTypes[1]],
                 abilities: [...sunAbilities],
@@ -3216,6 +3210,12 @@ const trainersData = [
                 ...getBossPreset('MAXIE_MAGMA')[4],
                 type: [...magmaTeamTypes],
                 abilities: [...sunAbilities],
+            },
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'MAXIE_MEGA',
+                tryEvolve: true,
+                tryMega: true,
             },
         ],
     },
@@ -3270,12 +3270,6 @@ const trainersData = [
         bag: [...wallyBag2()],
         team: [
             {
-                isMega: true,
-                checkValidEvo: true,
-                pickBest: true,
-                abilities: ['SNOW_WARNING'],
-            },
-            {
                 ...getBossPreset('MATT_AQUA')[0],
                 abilities: [...snowAbilities],
             },
@@ -3291,6 +3285,12 @@ const trainersData = [
             {
                 ...getBossPreset('MATT_AQUA')[4],
                 abilities: [...snowAbilities],
+            },
+            {
+                isMega: true,
+                checkValidEvo: true,
+                pickBest: true,
+                abilities: ['SNOW_WARNING'],
             },
         ],
     },
@@ -3670,14 +3670,14 @@ const trainersData = [
             },
             {
                 special: TRAINER_REPEAT_ID,
-                id: 'STEVEN_MEGA',
+                id: 'STEVEN_OU',
                 tryEvolve: true,
-                tryMega: true,
             },
             {
                 special: TRAINER_REPEAT_ID,
-                id: 'STEVEN_OU',
+                id: 'STEVEN_MEGA',
                 tryEvolve: true,
+                tryMega: true,
             },
         ],
     },
@@ -4328,20 +4328,19 @@ const trainersData = [
                 special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_LEGEND',
             },
+            getBossPreset('CHAMPION_STEVEN')[1],
+            {
+                special: TRAINER_REPEAT_ID,
+                id: 'STEVEN_OU',
+                tryEvolve: true,
+            },
+            getBossPreset('CHAMPION_STEVEN')[2],
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_MEGA',
                 tryEvolve: true,
                 tryMega: true,
             },
-            getBossPreset('CHAMPION_STEVEN')[1],
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'STEVEN_OU',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            getBossPreset('CHAMPION_STEVEN')[2],
         ],
     },
 ];
