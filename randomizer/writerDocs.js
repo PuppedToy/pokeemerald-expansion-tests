@@ -353,7 +353,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
             label: trainer.label || null,
             class: trainer.class || 'Red Back',
             reward: (trainer.reward || []).map(r => {
-                if (r.startsWith('SPECIES_')) return nameify(replacementLog[r].replace('SPECIES_', ''));
+                if (r.startsWith('SPECIES_')) return nameify((replacementLog[r] || r).replace('SPECIES_', ''));
                 if (r.startsWith('ITEM_')) return itemIdToName(megaReplacementLog[r]);
                 if (r.startsWith('TM_')) return 'TM ' + nameify(r.replace('TM_', ''));
                 if (r.startsWith('GYM_REWARD_')) return pokeRewardReplacements[parseInt(r.replace('GYM_REWARD_', '')) - 1].name;

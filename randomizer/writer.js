@@ -699,7 +699,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             class: trainer.class || 'Red Back',
             reward: (trainer.reward || []).map(r => {
                 if (r.startsWith('SPECIES_')) {
-                    return nameify(replacementLog[r].replace('SPECIES_', ''));
+                    return nameify((replacementLog[r] || r).replace('SPECIES_', ''));
                 }
                 if (r.startsWith('ITEM_')) {
                     const megaStone = megaReplacementLog[r];
