@@ -377,7 +377,7 @@ const SPLITS = [
             { contextualTier: [TIER_UBERS],  checkValidEvo: true },
             { contextualTier: [TIER_OU],     checkValidEvo: true },
             { contextualTier: [TIER_OU],     checkValidEvo: true },
-            { contextualTier: [TIER_OU],     checkValidEvo: true },
+            { contextualTier: [TIER_UU],     checkValidEvo: true },
             { isMega: true },
         ],
     },
