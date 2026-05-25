@@ -2105,12 +2105,16 @@ const trainersData = [
                 type: [gymMainTypes[2]],
             },
             gymIsChangedType[2] ? {
-                ...getBossPreset('WATTSON')[2],
+                ...getBossPreset('WATTSON')[1],
                 type: [gymMainTypes[2]],
             } : {
-                ...getBossPreset('WATTSON')[2],
+                ...getBossPreset('WATTSON')[1],
                 type: [gymMainTypes[2]],
                 item: 'Electric Seed',
+            },
+            {
+                ...getBossPreset('WATTSON')[2],
+                type: [gymMainTypes[2]],
             },
             {
                 ...getBossPreset('WATTSON')[3],
@@ -2118,10 +2122,6 @@ const trainersData = [
             },
             {
                 ...getBossPreset('WATTSON')[4],
-                type: [gymMainTypes[2]],
-            },
-            {
-                ...getBossPreset('WATTSON')[5],
                 type: [gymMainTypes[2]],
             },
         ],
@@ -2239,7 +2239,7 @@ const trainersData = [
         preventShuffle: true,
         bag: [...magmaChimneyBag()],
         team: [
-            pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY')[0]),
+            pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY')[1]),
             {
                 id: 'MAXIE_MEGA',
                 specificIfTier: 'SPECIES_CAMERUPT_MEGA',
@@ -2247,7 +2247,7 @@ const trainersData = [
                 breedTier: 'perfect',
             },
             {
-                ...getBossPreset('MAXIE_CHIMNEY')[2],
+                ...getBossPreset('MAXIE_CHIMNEY')[0],
                 abilities: [...sunAbilities],
                 type: [magmaTeamTypes[0], magmaTeamTypes[1]],
                 fallback: [
@@ -2266,9 +2266,9 @@ const trainersData = [
                     }
                 ],
             },
-            pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY')[3]),
+            pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY')[2]),
             {
-                ...getBossPreset('MAXIE_CHIMNEY')[4],
+                ...getBossPreset('MAXIE_CHIMNEY')[3],
                 abilities: [...sunAbilities],
                 fallback: [
                     {
@@ -2278,7 +2278,7 @@ const trainersData = [
                 ],
             },
             {
-                ...getBossPreset('MAXIE_CHIMNEY')[5],
+                ...getBossPreset('MAXIE_CHIMNEY')[4],
                 type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
         ],
@@ -2431,23 +2431,23 @@ const trainersData = [
                 type: [gymMainTypes[3]],
             },
             {
-                ...getBossPreset('FLANNERY')[2],
+                ...getBossPreset('FLANNERY')[1],
                 type: [gymMainTypes[3]],
             },
             {
-                ...getBossPreset('FLANNERY')[3],
+                ...getBossPreset('FLANNERY')[2],
                 type: [gymMainTypes[3]],
             },
             gymIsChangedType[3] ? {
-                ...getBossPreset('FLANNERY')[4],
+                ...getBossPreset('FLANNERY')[3],
                 type: [gymMainTypes[3]],
             } : {
-                ...getBossPreset('FLANNERY')[4],
+                ...getBossPreset('FLANNERY')[3],
                 type: [gymMainTypes[3]],
                 abilities: [...sunAbilities],
             },
             {
-                ...getBossPreset('FLANNERY')[5],
+                ...getBossPreset('FLANNERY')[4],
                 type: [gymMainTypes[3]],
             },
         ],
@@ -2895,6 +2895,10 @@ const trainersData = [
                 type: [gymMainTypes[5]],
             },
             {
+                ...getBossPreset('WINONA')[1],
+                type: [gymMainTypes[5]],
+            },
+            {
                 ...getBossPreset('WINONA')[2],
                 type: [gymMainTypes[5]],
             },
@@ -2904,10 +2908,6 @@ const trainersData = [
             },
             {
                 ...getBossPreset('WINONA')[4],
-                type: [gymMainTypes[5]],
-            },
-            {
-                ...getBossPreset('WINONA')[5],
                 type: [gymMainTypes[5]],
             },
         ],
@@ -3071,18 +3071,18 @@ const trainersData = [
                 tryMega: true,
             },
             {
-                ...getBossPreset('MAXIE_MAGMA')[2],
+                ...getBossPreset('MAXIE_MAGMA')[1],
                 type: [magmaTeamTypes[1]],
                 abilities: [...sunAbilities],
             },
-            pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA')[3]),
+            pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA')[2]),
             {
-                ...getBossPreset('MAXIE_MAGMA')[4],
+                ...getBossPreset('MAXIE_MAGMA')[3],
                 type: [...magmaTeamTypes],
                 abilities: [...sunAbilities],
             },
             {
-                ...getBossPreset('MAXIE_MAGMA')[5],
+                ...getBossPreset('MAXIE_MAGMA')[4],
                 type: [...magmaTeamTypes],
                 abilities: [...sunAbilities],
             },
@@ -3133,20 +3133,20 @@ const trainersData = [
                 abilities: ['SNOW_WARNING'],
             },
             {
+                ...getBossPreset('MATT_AQUA')[0],
+                abilities: [...snowAbilities],
+            },
+            {
                 ...getBossPreset('MATT_AQUA')[1],
                 abilities: [...snowAbilities],
             },
+            pokeDefSnowWarningMon(getBossPreset('MATT_AQUA')[2]),
             {
-                ...getBossPreset('MATT_AQUA')[2],
+                ...getBossPreset('MATT_AQUA')[3],
                 abilities: [...snowAbilities],
             },
-            pokeDefSnowWarningMon(getBossPreset('MATT_AQUA')[3]),
             {
                 ...getBossPreset('MATT_AQUA')[4],
-                abilities: [...snowAbilities],
-            },
-            {
-                ...getBossPreset('MATT_AQUA')[5],
                 abilities: [...snowAbilities],
             },
         ],
@@ -3332,10 +3332,10 @@ const trainersData = [
                 ]
             },
             gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA')[4],
+                ...getBossPreset('TATE_AND_LIZA')[3],
                 type: [gymMainTypes[6]],
             } : {
-                ...getBossPreset('TATE_AND_LIZA')[4],
+                ...getBossPreset('TATE_AND_LIZA')[3],
                 type: [gymMainTypes[6]],
                 hasStat: ['baseSpeed', '<', '50'],
                 fallback: [
@@ -3360,10 +3360,10 @@ const trainersData = [
                 ],
             },
             gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA')[5],
+                ...getBossPreset('TATE_AND_LIZA')[4],
                 type: [gymMainTypes[6]],
             } : {
-                ...getBossPreset('TATE_AND_LIZA')[5],
+                ...getBossPreset('TATE_AND_LIZA')[4],
                 type: [gymMainTypes[6]],
                 hasStat: ['baseSpeed', '<', '50'],
                 fallback: [
@@ -3556,7 +3556,7 @@ const trainersData = [
                     },
                 ]
             },
-            pokeDefDroughtMon(getBossPreset('TABITHA_MOSSDEEP')[2]),
+            pokeDefDroughtMon(getBossPreset('TABITHA_MOSSDEEP')[1]),
         ],
     },
     {
@@ -3704,18 +3704,18 @@ const trainersData = [
                 nature: 'Adamant',
             },
             {
-                ...getBossPreset('ARCHIE')[2],
+                ...getBossPreset('ARCHIE')[1],
                 abilities: [...rainAbilities],
                 type: [...aquaTeamTypes],
             },
             {
-                ...getBossPreset('ARCHIE')[3],
+                ...getBossPreset('ARCHIE')[2],
                 abilities: [...rainAbilities],
                 type: [aquaTeamTypes[1], aquaTeamTypes[2], aquaTeamTypes[3], aquaTeamTypes[4]],
             },
-            pokeDefDrizzleMon(getBossPreset('ARCHIE')[4]),
+            pokeDefDrizzleMon(getBossPreset('ARCHIE')[3]),
             {
-                ...getBossPreset('ARCHIE')[5],
+                ...getBossPreset('ARCHIE')[4],
                 abilities: [...rainAbilities],
                 type: [...aquaTeamTypes],
             },
@@ -3771,25 +3771,14 @@ const trainersData = [
                 type: [gymMainTypes[7]],
             },
             gymIsChangedType[7] ? {
-                ...getBossPreset('JUAN')[5],
-                type: [gymMainTypes[7]],
+                ...POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
-                pickBest: true,
+                type: [gymMainTypes[7]],
             } : {
                 specificIfTier: 'SPECIES_KINGDRA',
-                ...getBossPreset('JUAN')[5],
-                item: 'Chesto Berry',
+                ...POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
-                abilities: ['SNIPER'],
-                nature: 'Jolly',
-                tryToHaveMove: ['MOVE_DRAGON_DANCE', 'MOVE_WATERFALL'],
-                fallback: [
-                    {
-                        ...getBossPreset('JUAN')[5],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[7]],
-                    }
-                ]
+                type: [gymMainTypes[7]],
             },
         ],
     },

@@ -181,14 +181,14 @@ const SPLITS = [
     // ── More gym leaders & villain bosses ────────────────────────────────────
     {
         id: 'WATTSON',
-        // Slot 1: Manectric mega (fixed)
+        // Slot 5: Manectric mega (fixed)
         fair: [
             { contextualTier: [TIER_RU], checkValidEvo: true },
+            { contextualTier: [TIER_RU], checkValidEvo: true },
+            { contextualTier: [TIER_RU], checkValidEvo: true },
+            { contextualTier: [TIER_RU], checkValidEvo: true },
+            { contextualTier: [TIER_RU], checkValidEvo: true },
             { isMega: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
         ],
     },
     {
@@ -204,26 +204,26 @@ const SPLITS = [
     },
     {
         id: 'MAXIE_CHIMNEY',
-        // Slot 1: Cameruptite mega (fixed)
+        // Slot 5: Cameruptite mega (fixed)
         fair: [
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { isMega: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_RU], checkValidEvo: true },
             { contextualTier: [TIER_RU], checkValidEvo: true },
             { contextualTier: [TIER_RU], checkValidEvo: true },
+            { contextualTier: [TIER_RU], checkValidEvo: true },
+            { isMega: true },
         ],
     },
     {
         id: 'FLANNERY',
-        // Slot 1: mega (fixed)
+        // Slot 5: mega (fixed)
         fair: [
             { contextualTier: [TIER_UU], checkValidEvo: true },
+            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { contextualTier: [TIER_RU], checkValidEvo: true },
+            { contextualTier: [TIER_RU], checkValidEvo: true },
             { isMega: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
         ],
     },
     {
@@ -252,38 +252,38 @@ const SPLITS = [
     },
     {
         id: 'WINONA',
-        // Slot 1: Altaria mega (fixed)
+        // Slot 5: Altaria mega (fixed)
         fair: [
             { contextualTier: [TIER_OU], checkValidEvo: true },
-            { isMega: true },
             { contextualTier: [TIER_OU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
+            { isMega: true },
         ],
     },
     {
         id: 'MAXIE_MAGMA',
-        // Slot 1: Cameruptite mega (fixed)
+        // Slot 5: Cameruptite mega (fixed)
         fair: [
             { contextualTier: [TIER_OU], checkValidEvo: true },
-            { isMega: true },
             { contextualTier: [TIER_OU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
+            { isMega: true },
         ],
     },
     {
         id: 'MATT_AQUA',
-        // Slot 0: Snow Warning mega (fixed)
+        // Slot 5: Snow Warning mega (fixed)
         fair: [
+            { contextualTier: [TIER_OU], checkValidEvo: true },
+            { contextualTier: [TIER_OU], checkValidEvo: true },
+            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { contextualTier: [TIER_UU], checkValidEvo: true },
             { isMega: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
         ],
     },
 
@@ -311,26 +311,26 @@ const SPLITS = [
         ],
     },
     {
-        // Slot 0 in current code uses POKEDEF_UU_OU_MEGA; for FAIR it becomes plain OU.
+        // Slot 5: mega (fixed); slot 0 is plain OU.
         id: 'SPACE_CENTER_GRUNT_7',
         fair: [
-            { isMega: true },
             { contextualTier: [TIER_OU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
+            { isMega: true },
         ],
     },
 
     // ── Mossdeep encounters (3-slot teams) ───────────────────────────────────
     {
         id: 'TABITHA_MOSSDEEP',
-        // Slot 1: mega (fixed)
+        // Slot 2: mega (fixed)
         fair: [
             { contextualTier: [TIER_OU], checkValidEvo: true },
-            { isMega: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
+            { isMega: true },
         ],
     },
     {
@@ -347,39 +347,38 @@ const SPLITS = [
     {
         id: 'TATE_AND_LIZA',
         // Slot 1: specific Solrock/Lunatone (no tier; preset OU is informational for transforms)
-        // Slot 3: mega (fixed)
+        // Slot 5: mega (fixed)
         fair: [
             { contextualTier: [TIER_UBERS], checkValidEvo: true },
             { contextualTier: [TIER_OU], checkValidEvo: true },
             { contextualTier: [TIER_OU], checkValidEvo: true },
+            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { contextualTier: [TIER_UU], checkValidEvo: true },
             { isMega: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
         ],
     },
     {
         id: 'ARCHIE',
-        // Slot 1: Sharpedonite mega (fixed; uses specific: 'SPECIES_SHARPEDO')
+        // Slot 5: Sharpedonite mega (fixed; uses specific: 'SPECIES_SHARPEDO')
         fair: [
             { contextualTier: [TIER_LEGEND], checkValidEvo: true },
+            { contextualTier: [TIER_OU], checkValidEvo: true },
+            { contextualTier: [TIER_OU], checkValidEvo: true },
+            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { contextualTier: [TIER_UU], checkValidEvo: true },
             { isMega: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
         ],
     },
     {
-        // No mega for Juan (FAIR spec removes it).
-        // Current slot 0 is pokeDefUbersMega; FAIR makes it plain UBERS.
         id: 'JUAN',
+        // Slot 5: Water mega (fixed)
         fair: [
             { contextualTier: [TIER_LEGEND], checkValidEvo: true },
-            { contextualTier: [TIER_UBERS],    checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
-            { contextualTier: [TIER_UU],    checkValidEvo: true },
+            { contextualTier: [TIER_UBERS],  checkValidEvo: true },
+            { contextualTier: [TIER_OU],     checkValidEvo: true },
+            { contextualTier: [TIER_OU],     checkValidEvo: true },
+            { contextualTier: [TIER_OU],     checkValidEvo: true },
+            { isMega: true },
         ],
     },
 

@@ -72,7 +72,7 @@ describe('applyTransform', () => {
 describe('getNonBossPreset — megaTier injection', () => {
     test('megaTier=null: isMega slot replaced with plain tier slot (no tryMega)', () => {
         const team = getNonBossPreset('WATTSON');
-        const replacedSlot = team[1];
+        const replacedSlot = team[5];
         expect(replacedSlot.tryMega).toBeUndefined();
         expect(replacedSlot.isMega).toBeUndefined();
         expect(replacedSlot.contextualTier).toBeDefined();
@@ -86,13 +86,13 @@ describe('getNonBossPreset — megaTier injection', () => {
     });
 
     test('megaTier=TIER_UBERS on split without isMega: injects tryMega at slot 0', () => {
-        const team = getNonBossPreset('JUAN', TIER_UBERS);
+        const team = getNonBossPreset('CHAMPION_STEVEN', TIER_UBERS);
         expect(team[0].tryMega).toBe(true);
         expect(team[0].contextualTier).toEqual([TIER_UBERS]);
     });
 
     test('megaTier=null on split without isMega: returns untouched transformed team (no tryMega)', () => {
-        const team = getNonBossPreset('JUAN');
+        const team = getNonBossPreset('CHAMPION_STEVEN');
         expect(team.some(s => s.tryMega)).toBe(false);
     });
 });
