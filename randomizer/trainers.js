@@ -2469,7 +2469,7 @@ const trainersData = [
         reward: ['Strong Pokemon'],
         level: 39,
         bag: getSampleItemsFromArray(flanneryBag(), 13),
-        team: genericTrainerTeamPostNorman(),
+        team: genericTrainerTeamPostFlannery(),
     },
     {
         id: 'TRAINER_CELINA',
@@ -3627,7 +3627,7 @@ const trainersData = [
         reward: [aidanTM],
         level: 61,
         bag: [aidanTM, ...getSampleItemsFromArray(spaceCenterBag(), 24)],
-        team: genericTrainerTeamPostTateAndLiza(),
+        team: genericTrainerTeamPostMaxieMossdeep(),
     },
     {
         id: 'TRAINER_ATHENA',
@@ -3636,7 +3636,7 @@ const trainersData = [
         reward: [athenaTM],
         level: 61,
         bag: [athenaTM, ...getSampleItemsFromArray(spaceCenterBag(), 24)],
-        team: genericTrainerTeamPostTateAndLiza(),
+        team: genericTrainerTeamPostMaxieMossdeep(),
     },
     {
         id: 'TRAINER_HENRY',
@@ -3645,7 +3645,7 @@ const trainersData = [
         reward: ['Eject Button'],
         level: 61,
         bag: ['Eject Button', ...getSampleItemsFromArray(spaceCenterBag(), 24)],
-        team: genericTrainerTeamPostTateAndLiza(),
+        team: genericTrainerTeamPostMaxieMossdeep(),
     },
     // Route 126
     {
@@ -3918,7 +3918,7 @@ const trainersData = [
         reward: [quincyTM],
         level: 70,
         bag: [quincyTM, ...getSampleItemsFromArray(juanBag(), 24)],
-        team: genericTrainerTeamPostTateAndLiza(),
+        team: genericTrainerTeamPostJuan(),
     },
     {
         id: 'TRAINER_KATELYNN',
@@ -3928,7 +3928,7 @@ const trainersData = [
         reward: [katelynTM],
         level: 70,
         bag: [katelynTM, ...getSampleItemsFromArray(juanBag(), 24)],
-        team: genericTrainerTeamPostTateAndLiza(),
+        team: genericTrainerTeamPostJuan(),
     },
     // Ever Grande Rival
     {
