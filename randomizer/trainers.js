@@ -3269,15 +3269,15 @@ const trainersData = [
         preventShuffle: true,
         bag: [...wallyBag2()],
         team: [
-            {
-                ...getBossPreset('MATT_AQUA')[0],
-                abilities: [...snowAbilities],
-            },
+            pokeDefSnowWarningMon(getBossPreset('MATT_AQUA')[0]),
             {
                 ...getBossPreset('MATT_AQUA')[1],
                 abilities: [...snowAbilities],
             },
-            pokeDefSnowWarningMon(getBossPreset('MATT_AQUA')[2]),
+            {
+                ...getBossPreset('MATT_AQUA')[2],
+                abilities: [...snowAbilities],
+            },
             {
                 ...getBossPreset('MATT_AQUA')[3],
                 abilities: [...snowAbilities],
