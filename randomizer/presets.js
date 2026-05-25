@@ -4,6 +4,7 @@ const {
     TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS, TIER_AG,
     TIER_SEQ,
     TIER_LEGEND,
+    EVO_TYPE_LC,
 } = require('./constants');
 
 function shiftTier(t, delta) {
@@ -99,6 +100,32 @@ function getNonBossTeam(split, megaTier = null) {
 //                  getNonBossTeam() with the lowest non-mega tier.
 
 const SPLITS = [
+    // ── Pre-boss fictional splits (no real boss; designed so easyTransform = intended non-boss team) ──
+    {
+        // fair → easyTransform → [ZU_LC×5, MAGIKARP]
+        id: 'PRE_RIVAL',
+        fair: [
+            { contextualTier: [TIER_PU], evoType: [EVO_TYPE_LC], checkValidEvo: true },
+            { contextualTier: [TIER_PU], evoType: [EVO_TYPE_LC], checkValidEvo: true },
+            { contextualTier: [TIER_ZU], evoType: [EVO_TYPE_LC], checkValidEvo: true },
+            { contextualTier: [TIER_ZU], evoType: [EVO_TYPE_LC], checkValidEvo: true },
+            { contextualTier: [TIER_ZU], evoType: [EVO_TYPE_LC], checkValidEvo: true },
+            { contextualTier: [TIER_MAGIKARP], checkValidEvo: true },
+        ],
+    },
+    {
+        // fair → easyTransform → [PU_LC, ZU_LC×5]
+        id: 'POST_RIVAL',
+        fair: [
+            { contextualTier: [TIER_NU], evoType: [EVO_TYPE_LC], checkValidEvo: true },
+            { contextualTier: [TIER_PU], evoType: [EVO_TYPE_LC], checkValidEvo: true },
+            { contextualTier: [TIER_ZU], evoType: [EVO_TYPE_LC], checkValidEvo: true },
+            { contextualTier: [TIER_ZU], evoType: [EVO_TYPE_LC], checkValidEvo: true },
+            { contextualTier: [TIER_ZU], evoType: [EVO_TYPE_LC], checkValidEvo: true },
+            { contextualTier: [TIER_ZU], evoType: [EVO_TYPE_LC], checkValidEvo: true },
+        ],
+    },
+
     // ── Early villain bosses ─────────────────────────────────────────────────
     {
         id: 'PETALBURG_WOODS_GRUNT',
@@ -120,6 +147,18 @@ const SPLITS = [
             { contextualTier: [TIER_NU], checkValidEvo: true },
             { contextualTier: [TIER_PU], checkValidEvo: true },
             { contextualTier: [TIER_PU], checkValidEvo: true },
+        ],
+    },
+    {
+        // fair → easyTransform → [RU, NU×5]  (Route 110 interlude, before Wattson)
+        id: 'POST_MUSEUM_GRUNTS',
+        fair: [
+            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { contextualTier: [TIER_RU], checkValidEvo: true },
+            { contextualTier: [TIER_NU], checkValidEvo: true },
+            { contextualTier: [TIER_NU], checkValidEvo: true },
+            { contextualTier: [TIER_NU], checkValidEvo: true },
+            { contextualTier: [TIER_NU], checkValidEvo: true },
         ],
     },
 

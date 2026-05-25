@@ -358,21 +358,10 @@ const generatePokemonsWithDefinition = (def, amount) => {
     return new Array(amount).fill(null).map(() => ({ ...def }));
 }
 
-// ── Early-game fixed splits (not derived from a boss split) ──────────────────
-const genericTrainerTeamPreRival = () => [
-    ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
-    { ...POKEDEF_MAGIKARP },
-];
-const genericTrainerTeamPostRival = () => [
-    { ...POKEDEF_PU_LC },
-    ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
-];
+const genericTrainerTeamPreRival         = () => getNonBossPreset('PRE_RIVAL');
+const genericTrainerTeamPostRival        = () => getNonBossPreset('POST_RIVAL');
 const genericTrainerTeamPostWoodsGrunt   = () => getNonBossPreset('PETALBURG_WOODS_GRUNT');
-// Route 110 interlude (after Slateport museum grunts, before Wattson): 1×RU + 5×NU
-const genericTrainerTeamPostMuseumGrunts = () => [
-    { ...POKEDEF_RU },
-    ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-];
+const genericTrainerTeamPostMuseumGrunts = () => getNonBossPreset('POST_MUSEUM_GRUNTS');
 
 // ── Pre-Flannery post-boss (no mega slot) ─────────────────────────────────────
 const genericTrainerTeamPostRoxanne      = () => getNonBossPreset('ROXANNE');
