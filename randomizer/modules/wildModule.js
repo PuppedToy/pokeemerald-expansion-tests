@@ -115,7 +115,50 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig) {
 
     // ── Extra starters ─────────────────────────────────────────────────────────
 
-    // Slot 1: 1 OU LC-of-3, fallback to any OU LC
+    // Slot 1: 1 UBERS LC (prefer LC-of-3, then LC-of-2, then any UBERS LC; fallback OU LC)
+    let slot1Pool = pokemonList.filter(poke =>
+        poke.evolutionData.type === EVO_TYPE_LC_OF_3
+        && poke.evolutionData.isLC
+        && poke.rating.bestEvoTier === TIER_UBERS
+        && isSubWeakTier(poke.rating.tier)
+        && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
+    );
+    if (slot1Pool.length === 0) {
+        slot1Pool = pokemonList.filter(poke =>
+            poke.evolutionData.type === EVO_TYPE_LC_OF_2
+            && poke.evolutionData.isLC
+            && poke.rating.bestEvoTier === TIER_UBERS
+            && isSubWeakTier(poke.rating.tier)
+            && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
+        );
+    }
+    if (slot1Pool.length === 0) {
+        slot1Pool = pokemonList.filter(poke =>
+            poke.evolutionData.isLC
+            && poke.rating.bestEvoTier === TIER_UBERS
+            && isSubWeakTier(poke.rating.tier)
+            && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
+        );
+    }
+    if (slot1Pool.length === 0) {
+        slot1Pool = pokemonList.filter(poke =>
+            poke.evolutionData.isLC
+            && poke.rating.bestEvoTier === TIER_OU
+            && isSubWeakTier(poke.rating.tier)
+            && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
+        );
+    }
+    if (slot1Pool.length === 0) {
+        throw new Error('No UBERS or OU LC pokemon found for extra starters slot 1.');
+    }
+
+    const alreadyChosenTypes = new Set();
+    const chosenExtraPokemon = [sample(slot1Pool)];
+    alreadyChosenFamilySet.add(getFamilyGroup(chosenExtraPokemon[0].family));
+    chosenExtraPokemon[0].parsedTypes.forEach(t => alreadyChosenTypes.add(t));
+    addToFoundMegaEvosIfHasMegaEvo(chosenExtraPokemon[0]);
+
+    // Slot 2: 1 OU LC (prefer LC-of-3, fallback any OU LC; type-diverse)
     let ouLCPokes = pokemonList.filter(poke =>
         poke.evolutionData.type === EVO_TYPE_LC_OF_3
         && poke.evolutionData.isLC
@@ -131,17 +174,19 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig) {
             && !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
         );
     }
-    if (ouLCPokes.length === 0) {
-        throw new Error('No OU LC pokemon found for extra starters.');
+    const ouLCFiltered = ouLCPokes.filter(p =>
+        ![...alreadyChosenTypes].some(t => p.parsedTypes.includes(t))
+    );
+    const ouPool = ouLCFiltered.length > 0 ? ouLCFiltered : ouLCPokes;
+    if (ouPool.length > 0) {
+        const pick = sample(ouPool);
+        chosenExtraPokemon.push(pick);
+        alreadyChosenFamilySet.add(getFamilyGroup(pick.family));
+        pick.parsedTypes.forEach(t => alreadyChosenTypes.add(t));
+        addToFoundMegaEvosIfHasMegaEvo(pick);
     }
 
-    const alreadyChosenTypes = new Set();
-    const chosenExtraPokemon = [sample(ouLCPokes)];
-    alreadyChosenFamilySet.add(getFamilyGroup(chosenExtraPokemon[0].family));
-    chosenExtraPokemon[0].parsedTypes.forEach(t => alreadyChosenTypes.add(t));
-    addToFoundMegaEvosIfHasMegaEvo(chosenExtraPokemon[0]);
-
-    // Slot 2: 1 UU LC (prefer type-diverse pick)
+    // Slot 3: 1 UU LC (prefer type-diverse pick)
     const uuLCPokes = pokemonList.filter(poke =>
         poke.evolutionData.isLC
         && poke.rating.bestEvoTier === TIER_UU
@@ -160,7 +205,7 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig) {
         addToFoundMegaEvosIfHasMegaEvo(pick);
     }
 
-    // Slot 3: 1 NU SOLO (earlyGame)
+    // Slot 4: 1 NU SOLO (earlyGame)
     const earlyGame = pokemonList.filter(poke =>
         poke.evolutionData.type === EVO_TYPE_SOLO
         && poke.rating.bestEvoRating <= TIER_RU_THRESHOLD
@@ -178,7 +223,7 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig) {
         addToFoundMegaEvosIfHasMegaEvo(pick);
     }
 
-    // Slots 4-9: up to 6 RU LC (type-diverse first, then unrestricted)
+    // Slots 5-9: up to 5 RU LC (type-diverse first, then unrestricted)
     const ruLC = pokemonList.filter(poke =>
         poke.evolutionData.isLC
         && poke.rating.bestEvoTier === TIER_RU

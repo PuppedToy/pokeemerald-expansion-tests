@@ -40,11 +40,13 @@ function makePoke(id, family, types, overrides = {}) {
 }
 
 // Build a rich enough pokemon list to satisfy all extraStarters slots:
-//  slot 1: 1 OU LC-of-3 (strict) or OU LC (fallback)
-//  slot 2: 1 UU LC (not already chosen)
-//  slot 3: 1 NU SOLO (earlyGame)
-//  slots 4-9: up to 6 RU LC
+//  slot 1: 1 UBERS LC (prefer LC-of-3/LC-of-2, fallback OU LC)
+//  slot 2: 1 OU LC (not already chosen, type-diverse)
+//  slot 3: 1 UU LC (not already chosen, type-diverse)
+//  slot 4: 1 NU SOLO (earlyGame)
+//  slots 5-9: up to 5 RU LC
 
+const UBERS_LC = makePoke('SPECIES_UBERS_LC', 'P_FAMILY_UBERS', ['PSYCHIC'], { evolutionData: { type: 'EVO_TYPE_LC_OF_3', isLC: true, isMega: false, isFinal: false, megaEvos: [] }, rating: { bestEvoTier: 'UBERS', tier: 'PU', bestEvoRating: 9.1 } });
 const OU_LC = makePoke('SPECIES_OU_LC',   'P_FAMILY_OU',   ['FIRE'],     { evolutionData: { type: 'EVO_TYPE_LC_OF_3', isLC: true, isMega: false, isFinal: false, megaEvos: [] }, rating: { bestEvoTier: 'OU',  tier: 'PU', bestEvoRating: 8 } });
 const UU_LC = makePoke('SPECIES_UU_LC',   'P_FAMILY_UU2',  ['WATER'],    { evolutionData: { type: 'EVO_TYPE_LC',      isLC: true, isMega: false, isFinal: false, megaEvos: [] }, rating: { bestEvoTier: 'UU',  tier: 'PU', bestEvoRating: 7 } });
 const NU_SOLO= makePoke('SPECIES_NU_SOLO','P_FAMILY_NU',   ['NORMAL'],   { evolutionData: { type: 'EVO_TYPE_SOLO',    isLC: false,isMega: false, isFinal: true,  megaEvos: [] }, rating: { bestEvoTier: 'NU',  tier: 'NU', bestEvoRating: 5 } });
@@ -55,7 +57,7 @@ const RU_LC4 = makePoke('SPECIES_RU_LC4', 'P_FAMILY_RU4',  ['DRAGON'],   { evolu
 const RU_LC5 = makePoke('SPECIES_RU_LC5', 'P_FAMILY_RU5',  ['STEEL'],    { evolutionData: { type: 'EVO_TYPE_LC',      isLC: true, isMega: false, isFinal: false, megaEvos: [] }, rating: { bestEvoTier: 'RU',  tier: 'PU' } });
 const RU_LC6 = makePoke('SPECIES_RU_LC6', 'P_FAMILY_RU6',  ['DARK'],     { evolutionData: { type: 'EVO_TYPE_LC',      isLC: true, isMega: false, isFinal: false, megaEvos: [] }, rating: { bestEvoTier: 'RU',  tier: 'PU' } });
 
-const richPokemonList = [OU_LC, UU_LC, NU_SOLO, RU_LC1, RU_LC2, RU_LC3, RU_LC4, RU_LC5, RU_LC6];
+const richPokemonList = [UBERS_LC, OU_LC, UU_LC, NU_SOLO, RU_LC1, RU_LC2, RU_LC3, RU_LC4, RU_LC5, RU_LC6];
 
 // ── Extended fixture: gym/static reward slots ──────────────────────────────────
 // gym1: NU SOLO
@@ -249,15 +251,26 @@ describe('runWildModule — output shape', () => {
 });
 
 describe('runWildModule — extra starters', () => {
-    test('first extra starter is an OU LC pokemon', () => {
-        const { runWildModule } = require('../../modules/wildModule');
+    test('first extra starter is a UBERS LC pokemon', () => {
+        const { runWildModule } = freshModule();
         rng.seed(42);
         const { extraStarters } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
         expect(extraStarters.length).toBeGreaterThanOrEqual(1);
         const first = extendedPokemonList.find(p => p.id === extraStarters[0]);
         expect(first).toBeDefined();
-        expect(first.rating.bestEvoTier).toBe('OU');
+        expect(first.rating.bestEvoTier).toBe('UBERS');
         expect(first.evolutionData.isLC).toBe(true);
+    });
+
+    test('second extra starter is an OU LC pokemon', () => {
+        const { runWildModule } = freshModule();
+        rng.seed(42);
+        const { extraStarters } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        expect(extraStarters.length).toBeGreaterThanOrEqual(2);
+        const second = extendedPokemonList.find(p => p.id === extraStarters[1]);
+        expect(second).toBeDefined();
+        expect(second.rating.bestEvoTier).toBe('OU');
+        expect(second.evolutionData.isLC).toBe(true);
     });
 
     test('extra starters do not reuse families from starters artifact', () => {
