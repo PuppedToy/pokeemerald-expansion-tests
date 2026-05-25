@@ -358,12 +358,47 @@ const generatePokemonsWithDefinition = (def, amount) => {
     return new Array(amount).fill(null).map(() => ({ ...def }));
 }
 
-const genericTrainerTeamPostFlannery   = () => getNonBossPreset('NORMAN');
-const genericTrainerTeamPostNorman     = () => getNonBossPreset('WINONA');
-const genericTrainerTeamPostShelly     = () => getNonBossPreset('WINONA');
-const genericTrainerTeamPostWinona     = () => getNonBossPreset('TATE_AND_LIZA');
-const genericTrainerTeamPostMatt       = () => getNonBossPreset('TATE_AND_LIZA');
-const genericTrainerTeamPostTateAndLiza = () => getNonBossPreset('JUAN');
+// ── Early-game fixed splits (not derived from a boss split) ──────────────────
+const genericTrainerTeamPreRival = () => [
+    ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
+    { ...POKEDEF_MAGIKARP },
+];
+const genericTrainerTeamPostRival = () => [
+    { ...POKEDEF_PU_LC },
+    ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
+];
+const genericTrainerTeamPostWoodsGrunt   = () => getNonBossPreset('PETALBURG_WOODS_GRUNT');
+// Route 110 interlude (after Slateport museum grunts, before Wattson): 1×RU + 5×NU
+const genericTrainerTeamPostMuseumGrunts = () => [
+    { ...POKEDEF_RU },
+    ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
+];
+
+// ── Pre-Flannery post-boss (no mega slot) ─────────────────────────────────────
+const genericTrainerTeamPostRoxanne      = () => getNonBossPreset('ROXANNE');
+const genericTrainerTeamPostRusturfGrunt = () => getNonBossPreset('RUSTURF_GRUNT');
+const genericTrainerTeamPostBrawly       = () => getNonBossPreset('BRAWLY');
+const genericTrainerTeamPostWattson      = () => getNonBossPreset('WATTSON');
+const genericTrainerTeamPostMaxieChimney = () => getNonBossPreset('MAXIE_CHIMNEY');
+
+// ── Post-Flannery era (OU mega) ───────────────────────────────────────────────
+const genericTrainerTeamPostFlannery      = () => getNonBossPreset('FLANNERY',       TIER_OU);
+const genericTrainerTeamPostNorman        = () => getNonBossPreset('NORMAN',         TIER_OU);
+const genericTrainerTeamPostShelly        = () => getNonBossPreset('SHELLY_WEATHER', TIER_OU);
+const genericTrainerTeamPostWinona        = () => getNonBossPreset('WINONA',         TIER_OU);
+const genericTrainerTeamPostMaxieMagma    = () => getNonBossPreset('MAXIE_MAGMA',    TIER_OU);
+const genericTrainerTeamPostMatt          = () => getNonBossPreset('MATT_AQUA',      TIER_OU);
+const genericTrainerTeamPostTateAndLiza   = () => getNonBossPreset('TATE_AND_LIZA',  TIER_OU);
+const genericTrainerTeamPostMaxieMossdeep = () => getNonBossPreset('MAXIE_MOSSDEEP', TIER_OU);
+const genericTrainerTeamPostArchie        = () => getNonBossPreset('ARCHIE',         TIER_OU);
+
+// ── Post-Juan era (UBERS mega) ────────────────────────────────────────────────
+const genericTrainerTeamPostJuan     = () => getNonBossPreset('JUAN',            TIER_UBERS);
+const genericTrainerTeamPostSidney   = () => getNonBossPreset('SIDNEY',          TIER_UBERS);
+const genericTrainerTeamPostPhoebe   = () => getNonBossPreset('PHOEBE',          TIER_UBERS);
+const genericTrainerTeamPostGlacia   = () => getNonBossPreset('GLACIA',          TIER_UBERS);
+const genericTrainerTeamPostDrake    = () => getNonBossPreset('DRAKE',           TIER_UBERS);
+const genericTrainerTeamPostChampion = () => getNonBossPreset('CHAMPION_STEVEN', TIER_UBERS);
 
 const sample = (array) => {
     return array[Math.floor(rng.random() * array.length)];
@@ -1014,14 +1049,7 @@ const trainersData = [
         class: 'Youngster',
         reward: ['SPECIES_ZIGZAGOON'],
         level: 7,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_ZIGZAGOON'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 4),
-            { ...POKEDEF_MAGIKARP },
-        ]
+        team: genericTrainerTeamPreRival(),
     },
     {
         id: 'TRAINER_ELIJAH',
@@ -1029,14 +1057,7 @@ const trainersData = [
         class: 'Bird Keeper',
         reward: ['Oran Berry'],
         level: 7,
-        team: [
-            {
-                ...POKEDEF_PU_LC,
-                item: 'Oran Berry',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 4),
-            { ...POKEDEF_MAGIKARP },
-        ],
+        team: genericTrainerTeamPreRival(),
     },
     // Route 102
     {
@@ -1045,14 +1066,7 @@ const trainersData = [
         class: 'Camper',
         reward: ['SPECIES_WURMPLE'],
         level: 7,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_WURMPLE'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 4),
-            { ...POKEDEF_MAGIKARP },
-        ],
+        team: genericTrainerTeamPreRival(),
     },
     {
         id: 'TRAINER_RICK',
@@ -1060,14 +1074,7 @@ const trainersData = [
         class: 'Bug Catcher',
         reward: ['SPECIES_WINGULL'],
         level: 7,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_WINGULL'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 4),
-            { ...POKEDEF_MAGIKARP },
-        ]
+        team: genericTrainerTeamPreRival(),
     },
     {
         id: 'TRAINER_TIANA',
@@ -1076,10 +1083,7 @@ const trainersData = [
         reward: [...route102BallItems],
         level: 7,
         bag: [...route102BallItems],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
-            { ...POKEDEF_MAGIKARP },
-        ]
+        team: genericTrainerTeamPreRival(),
     },
     // Route 103
     {
@@ -1088,14 +1092,7 @@ const trainersData = [
         class: 'Hiker',
         reward: ['SPECIES_SMEARGLE'],
         level: 7,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SMEARGLE'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 4),
-            { ...POKEDEF_MAGIKARP },
-        ]
+        team: genericTrainerTeamPreRival(),
     },
     {
         id: 'TRAINER_CARTER',
@@ -1103,14 +1100,7 @@ const trainersData = [
         class: 'Fisherman',
         reward: ['SPECIES_SURSKIT'],
         level: 7,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SURSKIT'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 4),
-            { ...POKEDEF_MAGIKARP },
-        ]
+        team: genericTrainerTeamPreRival(),
     },
     {
         id: 'TRAINER_MAY_ROUTE_103_TREECKO',
@@ -1191,14 +1181,7 @@ const trainersData = [
         class: 'Youngster',
         reward: ['SPECIES_GEODUDE'],
         level: 10,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_GEODUDE'],
-                item: 'Oran Berry',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
-        ]
+        team: genericTrainerTeamPostRival(),
     },
     {
         id: 'TRAINER_DARIAN',
@@ -1206,14 +1189,7 @@ const trainersData = [
         class: 'Fisherman',
         reward: ['SPECIES_WEEDLE'],
         level: 10,
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_WEEDLE'],
-                item: 'Oran Berry',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
-        ]
+        team: genericTrainerTeamPostRival(),
     },
     {
         id: 'TRAINER_CINDY_1',
@@ -1222,13 +1198,7 @@ const trainersData = [
         reward: ['Eviolite'],
         level: 10,
         bag: [...getSampleItemsFromArray(rival103Bag(), 1), 'Eviolite'],
-        team: [
-            {
-                contextualTier: [TIER_PU],
-                evoType: [EVO_TYPE_LC],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
-        ]
+        team: genericTrainerTeamPostRival(),
     },
     {
         id: 'TRAINER_KOICHI',
@@ -1237,13 +1207,7 @@ const trainersData = [
         reward: [...choice104TMs2],
         level: 10,
         bag: [...choice104TMs2],
-        team: [
-            {
-                contextualTier: [TIER_PU],
-                evoType: [EVO_TYPE_LC],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
-        ]
+        team: genericTrainerTeamPostRival(),
     },
     // Petalburg Woods
     {
@@ -1253,10 +1217,7 @@ const trainersData = [
         reward: [...woodsPlatesChoice],
         level: 10,
         bag: [...woodsPlatesChoice],
-        team: [
-            { ...POKEDEF_PU_LC },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU_LC, 5),
-        ],
+        team: genericTrainerTeamPostRival(),
     },
     {
         id: 'TRAINER_GRUNT_PETALBURG_WOODS',
@@ -1306,13 +1267,7 @@ const trainersData = [
         reward: ['SPECIES_PATRAT'],
         level: 12,
         bag: [...getSampleItemsFromArray(petalwoodGruntBag(), 2)],
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_PATRAT'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
-        ],
+        team: genericTrainerTeamPostWoodsGrunt(),
     },
     {
         id: 'TRAINER_DAREJAN',
@@ -1321,13 +1276,7 @@ const trainersData = [
         reward: ['SPECIES_CATERPIE'],
         level: 12,
         bag: [...getSampleItemsFromArray(petalwoodGruntBag(), 2)],
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_CATERPIE'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
-        ],
+        team: genericTrainerTeamPostWoodsGrunt(),
     },
     // Route 104 again
     {
@@ -1337,10 +1286,7 @@ const trainersData = [
         reward: [...choice104TMs],
         level: 12,
         bag: [...choice104TMs],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 4),
-        ]
+        team: genericTrainerTeamPostWoodsGrunt(),
     },
     {
         id: 'TRAINER_WINSTON_1',
@@ -1349,10 +1295,7 @@ const trainersData = [
         reward: [...choice104Berry],
         level: 12,
         bag: [...choice104Berry],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
-        ]
+        team: genericTrainerTeamPostWoodsGrunt(),
     },
     {
         id: 'TRAINER_IVAN',
@@ -1361,10 +1304,7 @@ const trainersData = [
         reward: [...choice104Gem],
         level: 12,
         bag: [...choice104Gem],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
-        ]
+        team: genericTrainerTeamPostWoodsGrunt(),
     },
     {
         id: 'TRAINER_ALIX',
@@ -1373,14 +1313,7 @@ const trainersData = [
         reward: ['SPECIES_SANDSHREW'],
         level: 12,
         bag: [...getSampleItemsFromArray(petalwoodGruntBag(), 2)],
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SANDSHREW'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
-        ],
+        team: genericTrainerTeamPostWoodsGrunt(),
     },
     {
         id: 'TRAINER_TIMOTHY_1',
@@ -1389,14 +1322,7 @@ const trainersData = [
         reward: ['SPECIES_DELIBIRD'],
         level: 12,
         bag: [...getSampleItemsFromArray(petalwoodGruntBag(), 2)],
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_DELIBIRD'],
-                item: 'Oran Berry',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 5),
-        ],
+        team: genericTrainerTeamPostWoodsGrunt(),
     },
     {
         id: 'TRAINER_MARLENE',
@@ -1405,10 +1331,7 @@ const trainersData = [
         reward: ['Nugget'],
         level: 12,
         bag: [...getSampleItemsFromArray(petalwoodGruntBag(), 2)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_ZU, 4),
-        ],
+        team: genericTrainerTeamPostWoodsGrunt(),
     },
     // Rustboro City
     {
@@ -1460,13 +1383,7 @@ const trainersData = [
         class: 'Bug Catcher',
         reward: ['SPECIES_DITTO'],
         bag: [...getSampleItemsFromArray(roxanneBag(), 4)],
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_DITTO'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ],
+        team: genericTrainerTeamPostRoxanne(),
     },
     {
         id: 'TRAINER_JOEY',
@@ -1475,10 +1392,7 @@ const trainersData = [
         reward: ['Nugget'],
         level: 15,
         bag: [...getSampleItemsFromArray(roxanneBag(), 4)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ],
+        team: genericTrainerTeamPostRoxanne(),
     },
     {
         id: 'TRAINER_JOHNSON',
@@ -1487,10 +1401,7 @@ const trainersData = [
         reward: [...route116BallItems],
         level: 15,
         bag: [...getSampleItemsFromArray(roxanneBag(), 3), sample([...route116BallItems])],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ],
+        team: genericTrainerTeamPostRoxanne(),
     },
     {
         id: 'TRAINER_DEVAN',
@@ -1499,14 +1410,7 @@ const trainersData = [
         reward: [route116XSpecialItem],
         level: 15,
         bag: [...getSampleItemsFromArray(roxanneBag(), 3), route116XSpecialItem],
-        team: [
-            {
-                ...POKEDEF_NU,
-                type: [POKEMON_TYPE_POISON],
-                item: route116XSpecialItem,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ],
+        team: genericTrainerTeamPostRoxanne(),
     },
     {
         id: 'TRAINER_CLARK',
@@ -1515,10 +1419,7 @@ const trainersData = [
         reward: [...choice116PickTMs],
         bag: [...getSampleItemsFromArray(roxanneBag(), 3), ...choice116PickTMs],
         level: 15,
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ],
+        team: genericTrainerTeamPostRoxanne(),
     },
     // Rusturf Tunnel
     {
@@ -1569,13 +1470,7 @@ const trainersData = [
         reward: ['SPECIES_SENTRET'],
         level: 17,
         bag: getSampleItemsFromArray(rusturfGruntBag(), 4),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SENTRET'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ],
+        team: genericTrainerTeamPostRusturfGrunt(),
     },
     {
         id: 'TRAINER_JERRY_1',
@@ -1584,29 +1479,7 @@ const trainersData = [
         reward: ['Flame Orb', 'Toxic Orb'],
         level: 17,
         bag: getSampleItemsFromArray(rusturfGruntBag(), 2),
-        team: [
-            {
-                ...POKEDEF_PU,
-                abilities: ['GUTS'],
-                item: 'Flame Orb',
-                fallback: [
-                    {
-                        ...POKEDEF_NU,
-                    },
-                ]
-            },
-            {
-                ...POKEDEF_PU,
-                abilities: ['POISON_HEAL'],
-                item: 'Toxic Orb',
-                fallback: [
-                    {
-                        ...POKEDEF_NU,
-                    },
-                ]
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 4),
-        ],
+        team: genericTrainerTeamPostRusturfGrunt(),
     },
     {
         id: 'TRAINER_SARAH',
@@ -1615,10 +1488,7 @@ const trainersData = [
         reward: [...choice116Gem],
         level: 17,
         bag: [...choice116Gem, ...getSampleItemsFromArray(rusturfGruntBag(), 2)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ]
+        team: genericTrainerTeamPostRusturfGrunt(),
     },
     {
         id: 'TRAINER_KAREN_1',
@@ -1627,10 +1497,7 @@ const trainersData = [
         reward: [...choice116Berry],
         level: 17,
         bag: [...choice116Berry, ...getSampleItemsFromArray(rusturfGruntBag(), 2)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ]
+        team: genericTrainerTeamPostRusturfGrunt(),
     },
     // Rustboro Rival
     {
@@ -1692,13 +1559,7 @@ const trainersData = [
         reward: ['SPECIES_MACHOP'],
         level: 19,
         bag: getSampleItemsFromArray(rivalRustboroBag(), 4),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_MACHOP'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ],
+        team: genericTrainerTeamPostRusturfGrunt(),
     },
     {
         id: 'TRAINER_ELLIOT_1',
@@ -1707,13 +1568,7 @@ const trainersData = [
         reward: ['SPECIES_CHARMANDER'],
         level: 19,
         bag: getSampleItemsFromArray(rivalRustboroBag(), 4),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_CHARMANDER'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ],
+        team: genericTrainerTeamPostRusturfGrunt(),
     },
     {
         id: 'TRAINER_JOSUE',
@@ -1722,10 +1577,7 @@ const trainersData = [
         reward: [...choicesDewfordTMs],
         level: 19,
         bag: [...getSampleItemsFromArray(rivalRustboroBag(), 1), ...choicesDewfordTMs],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ]
+        team: genericTrainerTeamPostRusturfGrunt(),
     },
     {
         id: 'TRAINER_NED',
@@ -1734,10 +1586,7 @@ const trainersData = [
         reward: [route106GoodItem],
         level: 19,
         bag: [route106GoodItem, ...getSampleItemsFromArray(rivalRustboroBag(), 3)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ]
+        team: genericTrainerTeamPostRusturfGrunt(),
     },
     {
         id: 'TRAINER_ANDRES_1',
@@ -1746,10 +1595,7 @@ const trainersData = [
         reward: [...route106BallItems],
         level: 19,
         bag: [...route106BallItems, ...getSampleItemsFromArray(rivalRustboroBag(), 2)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 5),
-        ]
+        team: genericTrainerTeamPostRusturfGrunt(),
     },
     // Dewford Gym
     {
@@ -1856,7 +1702,7 @@ const trainersData = [
             },
         ],
     },
-    // Route 106
+    // Route 109
     {
         id: 'TRAINER_LOLA_1',
         location: 'Route 109',
@@ -1864,14 +1710,7 @@ const trainersData = [
         reward: ['SPECIES_BULBASAUR'],
         level: 24,
         bag: getSampleItemsFromArray(stevenBag(), 5),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_BULBASAUR'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
-        ],
+        team: genericTrainerTeamPostBrawly(),
     },
     {
         id: 'TRAINER_EDMOND',
@@ -1880,10 +1719,7 @@ const trainersData = [
         reward: ['Nugget'],
         level: 24,
         bag: getSampleItemsFromArray(stevenBag(), 5),
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
-        ]
+        team: genericTrainerTeamPostBrawly(),
     },
     {
         id: 'TRAINER_RICKY_1',
@@ -1892,10 +1728,7 @@ const trainersData = [
         reward: [...choiceRickyTMs],
         level: 24,
         bag: [...choiceRickyTMs, ...getSampleItemsFromArray(stevenBag(), 3)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
-        ]
+        team: genericTrainerTeamPostBrawly(),
     },
     {
         id: 'TRAINER_HUEY',
@@ -1904,10 +1737,7 @@ const trainersData = [
         reward: [...choiceHueyTMs],
         level: 24,
         bag: [...choiceHueyTMs, ...getSampleItemsFromArray(stevenBag(), 3)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
-        ]
+        team: genericTrainerTeamPostBrawly(),
     },
     {
         id: 'TRAINER_HAILEY',
@@ -1916,10 +1746,7 @@ const trainersData = [
         reward: [route109GoodItem],
         level: 24,
         bag: [route109GoodItem, ...getSampleItemsFromArray(stevenBag(), 4)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 2),
-        ],
+        team: genericTrainerTeamPostBrawly(),
     },
     {
         id: 'TRAINER_CHANDLER',
@@ -1928,19 +1755,7 @@ const trainersData = [
         reward: ['Heat Rock', 'Damp Rock', 'Smooth Rock', 'Icy Rock', tmItem(73), tmItem(72), tmItem(74), tmItem(75)],
         level: 24,
         bag: getSampleItemsFromArray(stevenBag(), 3),
-        team: [
-            pokeDefDrizzleMon(POKEDEF_NU),
-            pokeDefDroughtMon(POKEDEF_NU),
-            pokeDefSandStreamMon(POKEDEF_NU),
-            pokeDefSnowWarningMon(POKEDEF_NU),
-            {
-                ...POKEDEF_NU,
-                abilities: [...rainAbilities, ...sunAbilities, ...sandAbilities, ...snowAbilities],
-            },
-            {
-                specific: 'SPECIES_CASTFORM_NORMAL',
-            },
-        ],
+        team: genericTrainerTeamPostBrawly(),
     },
     {
         id: 'TRAINER_GRUNT_MUSEUM_1',
@@ -2010,10 +1825,7 @@ const trainersData = [
         reward: [...choice110TMs],
         level: 26,
         bag: [...choice110TMs, ...getSampleItemsFromArray(slateportGruntsBag(), 4)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
-        ],
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     {
         id: 'TRAINER_KALEB',
@@ -2022,10 +1834,7 @@ const trainersData = [
         reward: [...route110ExtenderBallItems],
         level: 26,
         bag: [...route110ExtenderBallItems, ...getSampleItemsFromArray(slateportGruntsBag(), 5)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
-        ],
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     {
         id: 'TRAINER_TIMMY',
@@ -2034,10 +1843,7 @@ const trainersData = [
         reward: [route110GoodItem],
         level: 26,
         bag: [route110GoodItem, ...getSampleItemsFromArray(slateportGruntsBag(), 5)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
-        ]
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     {
         id: 'TRAINER_EDWARD',
@@ -2046,15 +1852,7 @@ const trainersData = [
         reward: ['SPECIES_ELECTRIKE'],
         level: 26,
         bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_ELECTRIKE'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
-        ],
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     {
         id: 'TRAINER_DALE',
@@ -2063,15 +1861,7 @@ const trainersData = [
         reward: ['SPECIES_MANECTRIC'],
         level: 26,
         bag: getSampleItemsFromArray(slateportGruntsBag(), 6),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_MANECTRIC'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_PU, 1),
-        ],
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     // Route 110 Again
     {
@@ -2130,9 +1920,7 @@ const trainersData = [
         reward: [route110LumGoodItem],
         level: 28,
         bag: [route110LumGoodItem, ...getSampleItemsFromArray(rivalRoute110Bag(), 6)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 6),
-        ],
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     {
         id: 'TRAINER_JOSEPH',
@@ -2141,20 +1929,7 @@ const trainersData = [
         reward: [...choiceJosephSeeds],
         bag: [...getSampleItemsFromArray(rivalRoute110Bag(), 3)],
         level: 28,
-        team: [
-            pokeDefPsychicSurgeMon(POKEDEF_NU, 'Psychic Seed'),
-            pokeDefMistySurgeMon(POKEDEF_NU, 'Misty Seed'),
-            pokeDefElectricSurgeMon(POKEDEF_NU, 'Electric Seed'),
-            pokeDefGrassySurgeMon(POKEDEF_NU, 'Grassy Seed'),
-            {
-                ...POKEDEF_NU,
-                type: [POKEMON_TYPE_PSYCHIC, POKEMON_TYPE_FAIRY, POKEMON_TYPE_ELECTRIC, POKEMON_TYPE_GRASS],
-            },
-            {
-                ...POKEDEF_NU,
-                type: [POKEMON_TYPE_PSYCHIC, POKEMON_TYPE_FAIRY, POKEMON_TYPE_ELECTRIC, POKEMON_TYPE_GRASS],
-            },
-        ],
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     // Route 118
     {
@@ -2164,14 +1939,7 @@ const trainersData = [
         reward: ['SPECIES_CARVANHA'],
         level: 28,
         bag: getSampleItemsFromArray(rivalRoute110Bag(), 7),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_CARVANHA'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-        ],
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     {
         id: 'TRAINER_DEANDRE',
@@ -2180,9 +1948,7 @@ const trainersData = [
         reward: [...choiceDeandreTMs],
         level: 28,
         bag: [...choiceDeandreTMs, ...getSampleItemsFromArray(rivalRoute110Bag(), 4)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 6),
-        ],
+        team: genericTrainerTeamPostMuseumGrunts(),
     },
     // Wally
     {
@@ -2247,14 +2013,7 @@ const trainersData = [
         reward: ['SPECIES_ODDISH'],
         level: 29,
         bag: getSampleItemsFromArray(wallyBag(), 8),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_ODDISH'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-        ],
+        team: genericTrainerTeamPostWattson(),
     },
     {
         id: 'TRAINER_ISAAC_1',
@@ -2263,14 +2022,7 @@ const trainersData = [
         reward: ['SPECIES_GLOOM'],
         level: 29,
         bag: getSampleItemsFromArray(wallyBag(), 8),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_GLOOM'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-        ],
+        team: genericTrainerTeamPostWattson(),
     },
     {
         id: 'TRAINER_HECTOR',
@@ -2279,21 +2031,7 @@ const trainersData = [
         reward: [...choiceHectorTMs, 'Light Clay'],
         level: 29,
         bag: [...getSampleItemsFromArray(wallyBag(), 5)],
-        team: [
-            {
-                ...POKEDEF_RU,
-                mustHaveOneOfMoves: ['MOVE_REFLECT'],
-                tryToHaveMove: ['MOVE_REFLECT'],
-                item: 'Light Clay',
-            },
-            {
-                ...POKEDEF_RU,
-                mustHaveOneOfMoves: ['MOVE_LIGHT_SCREEN'],
-                tryToHaveMove: ['MOVE_LIGHT_SCREEN'],
-                item: 'Light Clay',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 4),
-        ],
+        team: genericTrainerTeamPostWattson(),
     },
     {
         id: 'TRAINER_MELINA',
@@ -2302,10 +2040,7 @@ const trainersData = [
         reward: [...choiceMelinaBerries],
         level: 29,
         bag: [...choiceMelinaBerries, ...getSampleItemsFromArray(wallyBag(), 6)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-        ],
+        team: genericTrainerTeamPostWattson(),
     },
     {
         id: 'TRAINER_AISHA',
@@ -2314,10 +2049,7 @@ const trainersData = [
         reward: [...choiceAishaGems],
         level: 29,
         bag: [...choiceAishaGems, ...getSampleItemsFromArray(wallyBag(), 6)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-        ],
+        team: genericTrainerTeamPostWattson(),
     },
     {
         id: 'TRAINER_MARIA_1',
@@ -2326,10 +2058,7 @@ const trainersData = [
         reward: [route117GoodItem],
         level: 29,
         bag: [route117GoodItem, ...getSampleItemsFromArray(wallyBag(), 7)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-        ],
+        team: genericTrainerTeamPostWattson(),
     },
     {
         id: 'TRAINER_LYDIA_1',
@@ -2338,10 +2067,7 @@ const trainersData = [
         reward: [...route117PlateItems],
         level: 29,
         bag: [...route117PlateItems, ...getSampleItemsFromArray(wallyBag(), 4)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-        ]
+        team: genericTrainerTeamPostWattson(),
     },
     {
         id: 'TRAINER_DEREK',
@@ -2350,10 +2076,7 @@ const trainersData = [
         reward: ['Nugget'],
         level: 29,
         bag: getSampleItemsFromArray(wallyBag(), 8),
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 5),
-        ]
+        team: genericTrainerTeamPostWattson(),
     },
     // Mauville Gym
     {
@@ -2411,15 +2134,7 @@ const trainersData = [
         reward: ['SPECIES_DROWZEE'],
         level: 32,
         bag: getSampleItemsFromArray(wattsonBag(), 10),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_DROWZEE'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-        ],
+        team: genericTrainerTeamPostWattson(),
     },
     {
         id: 'TRAINER_TYRON',
@@ -2428,14 +2143,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_01'],
         level: 32,
         bag: getSampleItemsFromArray(wattsonBag(), 9),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_01',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-        ],
+        team: genericTrainerTeamPostWattson(),
     },
     {
         id: 'TRAINER_IRENE',
@@ -2444,10 +2152,7 @@ const trainersData = [
         reward: [...route111BallAItems],
         level: 32,
         bag: [...route111BallAItems, ...getSampleItemsFromArray(wattsonBag(), 8)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-        ]
+        team: genericTrainerTeamPostWattson(),
     },
     {
         id: 'TRAINER_TRAVIS',
@@ -2456,10 +2161,7 @@ const trainersData = [
         reward: [route111HpUpGoodItem],
         level: 32,
         bag: [route111HpUpGoodItem, ...getSampleItemsFromArray(wattsonBag(), 8)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-        ]
+        team: genericTrainerTeamPostWattson(),
     },
     // Route 112
     {
@@ -2469,15 +2171,7 @@ const trainersData = [
         reward: ['SPECIES_NUMEL'],
         level: 32,
         bag: getSampleItemsFromArray(wattsonBag(), 10),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_NUMEL'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-        ],
+        team: genericTrainerTeamPostWattson(),
     },
     {
         id: 'TRAINER_LARRY',
@@ -2486,15 +2180,7 @@ const trainersData = [
         reward: ['SPECIES_TAILLOW'],
         level: 32,
         bag: getSampleItemsFromArray(wattsonBag(), 10),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_TAILLOW'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-        ],
+        team: genericTrainerTeamPostWattson(),
     },
     {
         id: 'TRAINER_CAROL',
@@ -2503,10 +2189,7 @@ const trainersData = [
         reward: [...choiceCarolTMs],
         level: 32,
         bag: [...choiceCarolTMs, ...getSampleItemsFromArray(wattsonBag(), 7)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-        ],
+        team: genericTrainerTeamPostWattson(),
     },
     {
         id: 'TRAINER_BRICE',
@@ -2515,10 +2198,7 @@ const trainersData = [
         reward: [...choiceBriceTMs],
         level: 32,
         bag: [...choiceBriceTMs, ...getSampleItemsFromArray(wattsonBag(), 7)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 2),
-        ]
+        team: genericTrainerTeamPostWattson(),
     },
     {
         id: 'TRAINER_TABITHA_MT_CHIMNEY',
@@ -2611,15 +2291,7 @@ const trainersData = [
         reward: ['SPECIES_NOIBAT'],
         level: 36,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_NOIBAT'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
+        team: genericTrainerTeamPostMaxieChimney(),
     },
     {
         id: 'TRAINER_JULIO',
@@ -2628,20 +2300,7 @@ const trainersData = [
         reward: ['SPECIES_NOIVERN', 'SPECIES_WOOBAT'],
         level: 36,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_NOIVERN'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_WOOBAT'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
+        team: genericTrainerTeamPostMaxieChimney(),
     },
     {
         id: 'TRAINER_AUTUMN',
@@ -2650,14 +2309,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_02'],
         level: 36,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_02',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
+        team: genericTrainerTeamPostMaxieChimney(),
     },
     // Route 113
     {
@@ -2667,15 +2319,7 @@ const trainersData = [
         reward: ['SPECIES_SPINDA'],
         level: 36,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SPINDA'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
+        team: genericTrainerTeamPostMaxieChimney(),
     },
     {
         id: 'TRAINER_JAYLEN',
@@ -2684,20 +2328,7 @@ const trainersData = [
         reward: ['SPECIES_BIDOOF', 'SPECIES_BIBAREL'],
         level: 36,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_BIDOOF'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_BIBAREL'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
+        team: genericTrainerTeamPostMaxieChimney(),
     },
     // Route 114
     {
@@ -2707,14 +2338,7 @@ const trainersData = [
         reward: ['SPECIES_SWABLU'],
         level: 36,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SWABLU'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
+        team: genericTrainerTeamPostMaxieChimney(),
     },
     {
         id: 'TRAINER_CLAUDE',
@@ -2723,20 +2347,7 @@ const trainersData = [
         reward: ['SPECIES_ALTARIA', 'SPECIES_SPOINK'],
         level: 36,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_ALTARIA'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SPOINK'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
+        team: genericTrainerTeamPostMaxieChimney(),
     },
     {
         id: 'TRAINER_WILTON_1',
@@ -2745,10 +2356,7 @@ const trainersData = [
         reward: [...choiceWiltonTMs],
         level: 36,
         bag: [...choiceWiltonTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 9)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
+        team: genericTrainerTeamPostMaxieChimney(),
     },
     {
         id: 'TRAINER_SHAYLA',
@@ -2757,10 +2365,7 @@ const trainersData = [
         reward: ['Nugget'],
         level: 36,
         bag: ['Nugget', ...getSampleItemsFromArray(magmaChimneyBag(), 10)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
+        team: genericTrainerTeamPostMaxieChimney(),
     },
     {
         id: 'TRAINER_CHARLOTTE',
@@ -2769,10 +2374,7 @@ const trainersData = [
         reward: [...choiceCharlotteTMs],
         level: 36,
         bag: [...choiceCharlotteTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 9)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ],
+        team: genericTrainerTeamPostMaxieChimney(),
     },
     {
         id: 'TRAINER_NOLAN',
@@ -2781,10 +2383,7 @@ const trainersData = [
         reward: [...choiceNolanTMs],
         level: 36,
         bag: [...choiceNolanTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 9)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ]
+        team: genericTrainerTeamPostMaxieChimney(),
     },
     {
         id: 'TRAINER_ANGELINA',
@@ -2793,10 +2392,7 @@ const trainersData = [
         reward: [...choiceAngelinaTMs],
         level: 36,
         bag: [...choiceAngelinaTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 9)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ]
+        team: genericTrainerTeamPostMaxieChimney(),
     },
     {
         id: 'TRAINER_WYATT',
@@ -2805,10 +2401,7 @@ const trainersData = [
         reward: [route114WyattGoodItem],
         level: 36,
         bag: [route114WyattGoodItem, ...getSampleItemsFromArray(magmaChimneyBag(), 10)],
-        team: [
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-            ...generatePokemonsWithDefinition(POKEDEF_NU, 1),
-        ]
+        team: genericTrainerTeamPostMaxieChimney(),
     },
     // Flannery Gym
     {
@@ -2867,14 +2460,7 @@ const trainersData = [
         reward: ['SPECIES_TRAPINCH'],
         level: 39,
         bag: getSampleItemsFromArray(flanneryBag(), 13),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_TRAPINCH'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 5),
-        ],
+        team: genericTrainerTeamPostFlannery(),
     },
     {
         id: 'TRAINER_BRANDEN',
@@ -2892,14 +2478,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_03'],
         level: 39,
         bag: getSampleItemsFromArray(flanneryBag(), 12),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_03',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 4),
-        ],
+        team: genericTrainerTeamPostFlannery(),
     },
     {
         id: 'TRAINER_BEAU',
@@ -3071,16 +2650,7 @@ const trainersData = [
         reward: ['SPECIES_DEDENNE'],
         level: 42,
         bag: getSampleItemsFromArray(normanBag(), 15),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_DEDENNE'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            { ...POKEDEF_UU_OU_MEGA },
-        ],
+        team: genericTrainerTeamPostNorman(),
     },
     {
         id: 'TRAINER_CHRIS',
@@ -3089,14 +2659,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_04'],
         level: 42,
         bag: getSampleItemsFromArray(normanBag(), 14),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_04',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-        ],
+        team: genericTrainerTeamPostNorman(),
     },
     {
         id: 'TRAINER_WADE',
@@ -3142,16 +2705,7 @@ const trainersData = [
         reward: ['SPECIES_LINOONE'],
         level: 42,
         bag: getSampleItemsFromArray(normanBag(), 15),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_LINOONE'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 3),
-            { ...POKEDEF_UU_OU_MEGA },
-        ],
+        team: genericTrainerTeamPostNorman(),
     },
     {
         id: 'TRAINER_BRENT',
@@ -3160,25 +2714,7 @@ const trainersData = [
         reward: ['SPECIES_SERVINE', 'SPECIES_SNIVY'],
         level: 42,
         bag: getSampleItemsFromArray(normanBag(), 15),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SERVINE'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SNIVY'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SERPERIOR'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            { ...POKEDEF_UU_OU_MEGA },
-        ],
+        team: genericTrainerTeamPostNorman(),
     },
     // Weather Institute
     {
@@ -3279,16 +2815,7 @@ const trainersData = [
         reward: ['SPECIES_SANDILE'],
         level: 46,
         bag: getSampleItemsFromArray(rival119Bag(), 17),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SANDILE'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-            { ...POKEDEF_UU_OU_MEGA },
-        ],
+        team: genericTrainerTeamPostShelly(),
     },
     {
         id: 'TRAINER_COLIN',
@@ -3297,39 +2824,7 @@ const trainersData = [
         reward: ['SPECIES_KROKOROK', 'SPECIES_KROOKODILE', 'SPECIES_STUNFISK', 'SPECIES_RIBOMBEE', 'SPECIES_DUSKULL', 'SPECIES_DUSCLOPS', 'SPECIES_DUSKNOIR'],
         level: 46,
         bag: getSampleItemsFromArray(rival119Bag(), 17),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_RIBOMBEE'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_DUSKULL'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_DUSCLOPS'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_DUSKNOIR'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_KROKOROK', 'SPECIES_KROOKODILE', 'SPECIES_STUNFISK'],
-                pickBest: true,
-                tryEvolve: true,
-            },
-            {
-                isMega: true,
-                contextualTier: [TIER_UU, TIER_OU],
-                checkValidEvo: true,
-            },
-        ],
+        team: genericTrainerTeamPostShelly(),
     },
     {
         id: 'TRAINER_ROBERT_1',
@@ -3338,14 +2833,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_05'],
         level: 46,
         bag: getSampleItemsFromArray(rival119Bag(), 16),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_05',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 2),
-        ],
+        team: genericTrainerTeamPostShelly(),
     },
     {
         id: 'TRAINER_CLARISSA',
@@ -3451,17 +2939,7 @@ const trainersData = [
         reward: ['SPECIES_SHUPPET'],
         level: 49,
         bag: getSampleItemsFromArray(winonaBag(), 18),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SHUPPET'],
-                tryEvolve: true,
-            },
-            { ...POKEDEF_UU_OU_MEGA },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-        ],
+        team: genericTrainerTeamPostWinona(),
     },
     {
         id: 'TRAINER_MYLES',
@@ -3470,26 +2948,7 @@ const trainersData = [
         reward: ['SPECIES_METAPOD', 'SPECIES_HONEDGE', 'SPECIES_BANETTE'],
         level: 49,
         bag: getSampleItemsFromArray(winonaBag(), 18),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_METAPOD'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_HONEDGE'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_BANETTE'],
-                tryEvolve: true,
-            },
-            { ...POKEDEF_UU_OU_MEGA },
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-        ],
+        team: genericTrainerTeamPostWinona(),
     },
     {
         id: 'TRAINER_BIANCA',
@@ -3498,15 +2957,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_06'],
         level: 49,
         bag: getSampleItemsFromArray(winonaBag(), 17),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_06',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-        ],
+        team: genericTrainerTeamPostWinona(),
     },
     {
         id: 'TRAINER_CALE',
@@ -3645,16 +3096,7 @@ const trainersData = [
         reward: ['SPECIES_PORYGON'],
         level: 54,
         bag: getSampleItemsFromArray(wallyBag2(), 20),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_PORYGON'],
-                tryEvolve: true,
-            },
-            { ...POKEDEF_UU_OU_MEGA },
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-        ],
+        team: genericTrainerTeamPostMaxieMagma(),
     },
     {
         id: 'TRAINER_MARK',
@@ -3663,29 +3105,7 @@ const trainersData = [
         reward: ['SPECIES_SPINARAK', 'SPECIES_ARIADOS', 'SPECIES_SPIDOPS', 'SPECIES_SPIRITOMB'],
         level: 54,
         bag: getSampleItemsFromArray(wallyBag2(), 20),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SPINARAK'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_ARIADOS'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SPIDOPS'],
-                tryEvolve: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SPIRITOMB'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
-        ],
+        team: genericTrainerTeamPostMaxieMagma(),
     },
     {
         id: 'TRAINER_LEAH',
@@ -3694,15 +3114,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_07'],
         level: 54,
         bag: getSampleItemsFromArray(wallyBag2(), 19),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_07',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-        ],
+        team: genericTrainerTeamPostMaxieMagma(),
     },
     // Aqua Hideout
     {
@@ -3747,17 +3159,7 @@ const trainersData = [
         reward: ['SPECIES_WO_CHIEN'],
         level: 56,
         bag: getSampleItemsFromArray(wallyBag2(), 20),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_WO_CHIEN'],
-                tryEvolve: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_MEGA, 1),
-        ],
+        team: genericTrainerTeamPostMatt(),
     },
     {
         id: 'TRAINER_LILA_AND_ROY_1',
@@ -3767,15 +3169,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_08'],
         level: 56,
         bag: getSampleItemsFromArray(wallyBag2(), 19),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_08',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_RU, 1),
-        ],
+        team: genericTrainerTeamPostMatt(),
     },
     {
         id: 'TRAINER_ISABELLA',
@@ -4003,22 +3397,7 @@ const trainersData = [
         reward: ['SPECIES_FROAKIE', 'SPECIES_FROGADIER'],
         level: 59,
         bag: getSampleItemsFromArray(tateAndLizaBag(), 25),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_FROAKIE'],
-                tryMega: true,
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_FROGADIER'],
-                tryMega: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
-            {
-                ...POKEDEF_MEGA,
-            },
-        ],
+        team: genericTrainerTeamPostTateAndLiza(),
     },
     {
         id: 'TRAINER_STAN',
@@ -4027,18 +3406,7 @@ const trainersData = [
         reward: ['SPECIES_CINDERACE'],
         level: 59,
         bag: getSampleItemsFromArray(tateAndLizaBag(), 25),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_CINDERACE'],
-                tryMega: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
-            {
-                ...POKEDEF_MEGA,
-            },
-        ],
+        team: genericTrainerTeamPostTateAndLiza(),
     },
     {
         id: 'TRAINER_TANYA',
@@ -4047,14 +3415,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_09'],
         level: 59,
         bag: getSampleItemsFromArray(tateAndLizaBag(), 25),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_09',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
-        ],
+        team: genericTrainerTeamPostTateAndLiza(),
     },
     {
         id: 'TRAINER_PRESLEY',
@@ -4239,18 +3600,7 @@ const trainersData = [
         reward: ['SPECIES_SCREAM_TAIL'],
         level: 61,
         bag: getSampleItemsFromArray(spaceCenterBag(), 25),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SCREAM_TAIL'],
-                tryMega: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
-            {
-                ...POKEDEF_MEGA,
-            },
-        ],
+        team: genericTrainerTeamPostMaxieMossdeep(),
     },
     {
         id: 'TRAINER_CAMDEN',
@@ -4259,18 +3609,7 @@ const trainersData = [
         reward: ['SPECIES_RELICANTH'],
         level: 61,
         bag: getSampleItemsFromArray(spaceCenterBag(), 25),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_RELICANTH'],
-                tryMega: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
-            {
-                ...POKEDEF_MEGA,
-            },
-        ],
+        team: genericTrainerTeamPostMaxieMossdeep(),
     },
     {
         id: 'TRAINER_KOJI_1',
@@ -4279,14 +3618,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_10'],
         level: 61,
         bag: getSampleItemsFromArray(spaceCenterBag(), 24),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_10',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
-        ],
+        team: genericTrainerTeamPostMaxieMossdeep(),
     },
     {
         id: 'TRAINER_AIDAN',
@@ -4323,18 +3655,7 @@ const trainersData = [
         reward: ['Random Defensive Mint', 'SPECIES_FLUTTER_MANE'],
         level: 61,
         bag: getSampleItemsFromArray(spaceCenterBag(), 25),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_FLUTTER_MANE'],
-                tryMega: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
-            {
-                ...POKEDEF_MEGA,
-            },
-        ],
+        team: genericTrainerTeamPostMaxieMossdeep(),
     },
     {
         id: 'TRAINER_LEONARDO',
@@ -4343,18 +3664,7 @@ const trainersData = [
         reward: ['SPECIES_HUNTAIL'],
         level: 61,
         bag: getSampleItemsFromArray(spaceCenterBag(), 25),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_HUNTAIL'],
-                tryMega: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 3),
-            {
-                ...POKEDEF_MEGA,
-            },
-        ],
+        team: genericTrainerTeamPostMaxieMossdeep(),
     },
     // Seafloor Cavern
     {
@@ -4419,18 +3729,7 @@ const trainersData = [
         reward: ['SPECIES_DARKRAI'],
         level: 64,
         bag: getSampleItemsFromArray(spaceCenterBag(), 25),
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_DARKRAI'],
-                tryMega: true,
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 2),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
-            {
-                ...POKEDEF_UU_OU_MEGA,
-            },
-        ],
+        team: genericTrainerTeamPostArchie(),
     },
     {
         id: 'TRAINER_ALLISON',
@@ -4439,14 +3738,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_11'],
         level: 64,
         bag: getSampleItemsFromArray(spaceCenterBag(), 25),
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_11',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 2),
-        ],
+        team: genericTrainerTeamPostArchie(),
     },
     // Sootopolis Gym
     {
@@ -4509,17 +3801,7 @@ const trainersData = [
         reward: ['SPECIES_AERODACTYL'],
         level: 67,
         bag: [...juanBag()],
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_AERODACTYL'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 3),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 1),
-            {
-                ...POKEDEF_MEGA,
-            },
-        ],
+        team: genericTrainerTeamPostJuan(),
     },
     {
         id: 'TRAINER_KINDRA',
@@ -4528,25 +3810,7 @@ const trainersData = [
         reward: ['SPECIES_KABUTOPS', 'SPECIES_KADABRA', 'SPECIES_ALAKAZAM'],
         level: 67,
         bag: [...juanBag()],
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_KABUTOPS'],
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_KADABRA'],
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_ALAKAZAM'],
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 1),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 1),
-            {
-                ...POKEDEF_MEGA,
-            },
-        ],
+        team: genericTrainerTeamPostJuan(),
     },
     {
         id: 'TRAINER_WENDY',
@@ -4555,14 +3819,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_12'],
         level: 67,
         bag: [...juanBag()],
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_12',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 1),
-        ],
+        team: genericTrainerTeamPostJuan(),
     },
     {
         id: 'TRAINER_ALBERTO',
@@ -4571,14 +3828,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_13'],
         level: 67,
         bag: [...juanBag()],
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_13',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 1),
-        ],
+        team: genericTrainerTeamPostJuan(),
     },
     {
         id: 'TRAINER_CAMERON_1',
@@ -4587,14 +3837,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_14'],
         level: 67,
         bag: [...juanBag()],
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_14',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 1),
-        ],
+        team: genericTrainerTeamPostJuan(),
     },
     {
         id: 'TRAINER_KAYLEY',
@@ -4603,14 +3846,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_15'],
         level: 67,
         bag: [...juanBag()],
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_15',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 1),
-        ],
+        team: genericTrainerTeamPostJuan(),
     },
     {
         id: 'TRAINER_BRAXTON',
@@ -4619,14 +3855,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_16'],
         level: 67,
         bag: [...juanBag()],
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_16',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 4),
-            ...generatePokemonsWithDefinition(POKEDEF_UU, 1),
-        ],
+        team: genericTrainerTeamPostJuan(),
     },
     // Victory Road
     {
@@ -4679,31 +3908,7 @@ const trainersData = [
         reward: ['SPECIES_SHEDINJA', 'SPECIES_MOLTRES', 'SPECIES_ARTICUNO', 'SPECIES_ZAPDOS', 'SPECIES_LUGIA'],
         level: 70,
         bag: [...juanBag()],
-        team: [
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_SHEDINJA'],
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_MOLTRES'],
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_ARTICUNO'],
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_ZAPDOS'],
-            },
-            {
-                special: TRAINER_POKE_ENCOUNTER,
-                encounterIds: ['SPECIES_LUGIA'],
-            },
-            {
-                ...POKEDEF_MEGA,
-            },
-        ],
+        team: genericTrainerTeamPostJuan(),
     },
     {
         id: 'TRAINER_QUINCY',
@@ -4785,13 +3990,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_17'],
         level: 73,
         bag: [...endgameBag()],
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_17',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 5),
-        ],
+        team: genericTrainerTeamPostJuan(),
     },
     {
         id: 'TRAINER_JACKI_1',
@@ -4800,13 +3999,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_18'],
         level: 73,
         bag: [...endgameBag()],
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_18',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 5),
-        ],
+        team: genericTrainerTeamPostJuan(),
     },
     {
         id: 'TRAINER_FREDRICK',
@@ -4815,13 +4008,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_19'],
         level: 73,
         bag: [...endgameBag()],
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_19',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 5),
-        ],
+        team: genericTrainerTeamPostJuan(),
     },
     {
         id: 'TRAINER_DAVIS',
@@ -4830,13 +4017,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_20'],
         level: 73,
         bag: [...endgameBag()],
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_20',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 5),
-        ],
+        team: genericTrainerTeamPostJuan(),
     },
     {
         id: 'TRAINER_JONAS',
@@ -4845,13 +4026,7 @@ const trainersData = [
         reward: ['ITEM_MEGA_21'],
         level: 73,
         bag: [...endgameBag()],
-        team: [
-            {
-                special: TRAINER_POKE_MEGA_FROM_STONE,
-                megaStone: 'ITEM_MEGA_21',
-            },
-            ...generatePokemonsWithDefinition(POKEDEF_OU, 5),
-        ],
+        team: genericTrainerTeamPostJuan(),
     },
     // E4 & Champion
     {

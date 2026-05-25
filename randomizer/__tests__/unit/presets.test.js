@@ -1,6 +1,7 @@
 'use strict';
 
-const { applyTransform, getBossPreset } = require('../../presets');
+const { applyTransform, getBossPreset, getNonBossPreset } = require('../../presets');
+const { TIER_OU, TIER_UBERS } = require('../../constants');
 
 describe('applyTransform', () => {
     test('shifts primary contextualTier for the eligible bottom-N slots (up)', () => {
@@ -65,6 +66,34 @@ describe('applyTransform', () => {
         const result = applyTransform(team, +1, 'bottom', 1);
         expect(result[0].fallback[0].contextualTier).toBeUndefined();
         expect(result[0].fallback[0].evoType).toEqual(['EVO_TYPE_FINAL']);
+    });
+});
+
+describe('getNonBossPreset — megaTier injection', () => {
+    test('megaTier=null: isMega slot replaced with plain tier slot (no tryMega)', () => {
+        const team = getNonBossPreset('WATTSON');
+        const replacedSlot = team[1];
+        expect(replacedSlot.tryMega).toBeUndefined();
+        expect(replacedSlot.isMega).toBeUndefined();
+        expect(replacedSlot.contextualTier).toBeDefined();
+    });
+
+    test('megaTier=TIER_OU: isMega slot becomes { tryMega: true, contextualTier: [TIER_OU] }', () => {
+        const team = getNonBossPreset('FLANNERY', TIER_OU);
+        const megaSlot = team.find(s => s.tryMega);
+        expect(megaSlot).toBeDefined();
+        expect(megaSlot.contextualTier).toEqual([TIER_OU]);
+    });
+
+    test('megaTier=TIER_UBERS on split without isMega: injects tryMega at slot 0', () => {
+        const team = getNonBossPreset('JUAN', TIER_UBERS);
+        expect(team[0].tryMega).toBe(true);
+        expect(team[0].contextualTier).toEqual([TIER_UBERS]);
+    });
+
+    test('megaTier=null on split without isMega: returns untouched transformed team (no tryMega)', () => {
+        const team = getNonBossPreset('JUAN');
+        expect(team.some(s => s.tryMega)).toBe(false);
     });
 });
 

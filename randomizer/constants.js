@@ -248,8 +248,8 @@ const constants = {
         RU:       [20, 28],
         UU:       [29, 35],
         OU:       [39, 48],
-        UBERS:    [49, 54],
-        LEGEND:   [55, 62],
+        UBERS:    [49, 56],
+        LEGEND:   [57, 62],
         AG:       [63, 75],
     },
 

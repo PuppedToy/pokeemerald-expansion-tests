@@ -63,11 +63,22 @@ function getBossTeam(split) {
     return split.fair;
 }
 
-// Non-boss team = 2-shift-down of the fair boss team,
-// with any isMega slots replaced by the lowest non-mega tier in the result.
-function getNonBossTeam(split) {
+// Non-boss team = 2-shift-down of the fair boss team.
+// megaTier=null: isMega slots replaced with lowest non-mega tier (no tryMega).
+// megaTier=TIER_X: isMega slots become { tryMega: true, contextualTier: [TIER_X] }.
+// If the split has no isMega slot and megaTier is provided, injects tryMega at slot 0.
+function getNonBossTeam(split, megaTier = null) {
     const bossTeam = getBossTeam(split);
     const transformed = easyTransform(bossTeam);
+    const hasMegaSlot = transformed.some(s => s.isMega);
+
+    if (!hasMegaSlot) {
+        if (!megaTier) return transformed;
+        const result = [...transformed];
+        result[0] = { tryMega: true, contextualTier: [megaTier], checkValidEvo: true };
+        return result;
+    }
+
     const nonMegaSlots = transformed.filter(s => !s.isMega && s.contextualTier?.[0]);
     if (nonMegaSlots.length === 0) return transformed;
     const lowestIdx = nonMegaSlots.reduce((min, s) => {
@@ -75,9 +86,10 @@ function getNonBossTeam(split) {
         return idx < min ? idx : min;
     }, TIER_SEQ.length - 1);
     const lowestTier = TIER_SEQ[lowestIdx];
-    return transformed.map(s =>
-        s.isMega ? { contextualTier: [lowestTier], checkValidEvo: true } : s
-    );
+    const megaSlot = megaTier
+        ? { tryMega: true, contextualTier: [megaTier], checkValidEvo: true }
+        : { contextualTier: [lowestTier], checkValidEvo: true };
+    return transformed.map(s => s.isMega ? megaSlot : s);
 }
 
 // ─── SPLITS ──────────────────────────────────────────────────────────────────
@@ -325,7 +337,7 @@ const SPLITS = [
         id: 'MAXIE_MOSSDEEP',
         // Slot 2: UBERS mega (fixed)
         fair: [
-            { contextualTier: [TIER_UBERS], checkValidEvo: true },
+            { contextualTier: [TIER_LEGEND], checkValidEvo: true },
             { contextualTier: [TIER_OU], checkValidEvo: true },
             { isMega: true },
         ],
@@ -337,7 +349,7 @@ const SPLITS = [
         // Slot 1: specific Solrock/Lunatone (no tier; preset OU is informational for transforms)
         // Slot 3: mega (fixed)
         fair: [
-            { contextualTier: [TIER_OU], checkValidEvo: true },
+            { contextualTier: [TIER_UBERS], checkValidEvo: true },
             { contextualTier: [TIER_OU], checkValidEvo: true },
             { contextualTier: [TIER_OU], checkValidEvo: true },
             { isMega: true },
@@ -352,7 +364,7 @@ const SPLITS = [
             { contextualTier: [TIER_LEGEND], checkValidEvo: true },
             { isMega: true },
             { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { contextualTier: [TIER_OU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
             { contextualTier: [TIER_UU], checkValidEvo: true },
         ],
@@ -414,7 +426,7 @@ const SPLITS = [
         fair: [
             { contextualTier: [TIER_LEGEND],    checkValidEvo: true },
             { contextualTier: [TIER_UBERS], checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
+            { contextualTier: [TIER_UBERS],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
             { contextualTier: [TIER_OU],    checkValidEvo: true },
             { isMega: true },
@@ -440,10 +452,10 @@ function getBossPreset(splitId) {
     return getBossTeam(split);
 }
 
-function getNonBossPreset(splitId) {
+function getNonBossPreset(splitId, megaTier = null) {
     const split = SPLITS.find(s => s.id === splitId);
     if (!split) throw new Error(`No preset split: ${splitId}`);
-    return getNonBossTeam(split);
+    return getNonBossTeam(split, megaTier);
 }
 
 module.exports = {
