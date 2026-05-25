@@ -98,14 +98,14 @@ describe('getNonBossPreset — megaTier injection', () => {
 });
 
 describe('getBossPreset – GRANITE_CAVE_STEVEN', () => {
-    test('returns 3 slots (one per steel-type team member)', () => {
+    test('returns 2 slots', () => {
         const slots = getBossPreset('GRANITE_CAVE_STEVEN');
-        expect(slots).toHaveLength(3);
+        expect(slots).toHaveLength(2);
     });
 
     test('all slots have checkValidEvo and expected tiers at fair difficulty', () => {
         const slots = getBossPreset('GRANITE_CAVE_STEVEN');
-        const expectedTiers = [['RU'], ['NU'], ['NU']];
+        const expectedTiers = [['NU'], ['NU']];
         slots.forEach((slot, i) => {
             expect(slot.contextualTier).toEqual(expectedTiers[i]);
             expect(slot.checkValidEvo).toBe(true);

@@ -3766,18 +3766,18 @@ const trainersData = [
                 ...getBossPreset('JUAN')[3],
                 type: [gymMainTypes[7]],
             },
-            {
-                ...getBossPreset('JUAN')[4],
-                type: [gymMainTypes[7]],
-            },
             gymIsChangedType[7] ? {
-                ...POKEDEF_UU_OU_MEGA,
+                ...getBossPreset('JUAN')[4],
                 breedTier: 'perfect',
                 type: [gymMainTypes[7]],
             } : {
                 specificIfTier: 'SPECIES_KINGDRA',
-                ...POKEDEF_UU_OU_MEGA,
+                ...getBossPreset('JUAN')[4],
                 breedTier: 'perfect',
+                type: [gymMainTypes[7]],
+            },
+            {
+                ...getBossPreset('JUAN')[5],
                 type: [gymMainTypes[7]],
             },
         ],
