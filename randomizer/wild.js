@@ -44,45 +44,16 @@ const wildData = {
             replace: [TIER_UU],
             type: [EVO_TYPE_LC],
         },
-        LC_AVERAGE_OR_STRONG: {
-            replace: [TIER_RU, TIER_UU],
-            type: [EVO_TYPE_LC],
-        },
-        LC_NFE_OR_SOLO_AVERAGE_OR_STRONG: {
-            replace: [TIER_RU, TIER_UU],
-            type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
-        },
-        LC_NFE_OR_SOLO_AVERAGE_OR_WEAK: {
-            replace: [TIER_RU, TIER_NU],
-            type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
-        },
         LC_NFE_OR_SOLO_AVERAGE: {
             replace: [TIER_RU],
             type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
-        },
-        NFE_OR_SOLO_STRONG: {
-            replace: [TIER_UU],
-            type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
         NFE_OR_LC_PREMIUM: {
             replace: [TIER_OU],
             type: [EVO_TYPE_NFE, EVO_TYPE_LC],
         },
-        NFE_OR_SOLO_PREMIUM: {
-            replace: [TIER_OU],
-            type: [EVO_TYPE_NFE, EVO_TYPE_SOLO],
-        },
-        LC_NFE_OR_SOLO_AVERAGE_STRONG: {
-            replace: [TIER_RU, TIER_UU],
-            type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
-        },
         NFE_OR_LC_STRONG: {
             replace: [TIER_UU],
-            type: [EVO_TYPE_LC, EVO_TYPE_NFE],
-        },
-        NFE_MEGA: {
-            replace: [TIER_PU, TIER_NU, TIER_RU, TIER_UU],
-            hasMega: true,
             type: [EVO_TYPE_LC, EVO_TYPE_NFE],
         },
         FINAL_OR_SOLO_AVERAGE: {
@@ -93,14 +64,6 @@ const wildData = {
             replace: [TIER_UU],
             type: [EVO_TYPE_FINAL],
         },
-        FINAL_OR_SOLO_STRONG: {
-            replace: [TIER_UU],
-            type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
-        },
-        FINAL_OR_SOLO_AVERAGE_OR_STRONG: {
-            replace: [TIER_RU, TIER_UU],
-            type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
-        },
         FINAL_PREMIUM: {
             replace: [TIER_OU],
             type: [EVO_TYPE_FINAL],
@@ -109,14 +72,9 @@ const wildData = {
             replace: [TIER_OU],
             type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
         },
-        FINAL_OR_SOLO_MEGA_LEGENDARY: {
+        FINAL_OR_SOLO_UBERS: {
+            replace: [TIER_UBERS],
             type: [EVO_TYPE_FINAL, EVO_TYPE_SOLO],
-            hasMega: true,
-            megaTiers: [TIER_UBERS],
-        },
-        LC_NFE_OR_SOLO_AVERAGE: {
-            replace: [TIER_RU],
-            type: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
         },
     },
     replacements: {
