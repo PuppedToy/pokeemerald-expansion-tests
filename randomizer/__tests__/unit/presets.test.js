@@ -118,8 +118,9 @@ describe('getNonBossPreset — useAbsoluteTier', () => {
         });
     });
 
-    test('useAbsoluteTier=false (default): non-mega slots still use contextualTier', () => {
-        const team = getNonBossPreset('FLANNERY', TIER_OU);
+    test('useAbsoluteTier=false (default): pre-Wattson non-mega slots use contextualTier', () => {
+        // WATTSON is the last pre-absolute-era boss; its SPLIT stores contextualTier
+        const team = getNonBossPreset('WATTSON', TIER_UU);
         const nonMegaSlots = team.filter(s => !s.isMega && !s.tryMega);
         expect(nonMegaSlots.length).toBeGreaterThan(0);
         nonMegaSlots.forEach(slot => {
@@ -182,8 +183,9 @@ describe('getNonBossPreset — maxBaseTier', () => {
 });
 
 describe('getBossPreset — useAbsoluteTier', () => {
-    test('useAbsoluteTier=false (default): slots use contextualTier', () => {
-        const slots = getBossPreset('NORMAN');
+    test('useAbsoluteTier=false (default): pre-Wattson boss slots use contextualTier', () => {
+        // WATTSON is the last pre-absolute-era boss; its SPLIT stores contextualTier
+        const slots = getBossPreset('WATTSON');
         const nonMegaSlots = slots.filter(s => !s.isMega);
         expect(nonMegaSlots.length).toBeGreaterThan(0);
         nonMegaSlots.forEach(slot => {

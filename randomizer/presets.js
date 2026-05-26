@@ -110,10 +110,12 @@ function getNonBossTeam(split, megaTier = null, useAbsoluteTier = false) {
         return result;
     }
 
-    const nonMegaSlots = transformed.filter(s => !s.isMega && s.contextualTier?.[0]);
+    const nonMegaSlots = transformed.filter(s => !s.isMega && (s.contextualTier?.[0] || s.absoluteTier?.[0]));
     if (nonMegaSlots.length === 0) return transformed;
+    const usesAbsoluteTier = nonMegaSlots[0].absoluteTier != null;
     const lowestIdx = nonMegaSlots.reduce((min, s) => {
-        const idx = TIER_SEQ.indexOf(s.contextualTier[0]);
+        const tier = s.contextualTier?.[0] ?? s.absoluteTier?.[0];
+        const idx = TIER_SEQ.indexOf(tier);
         return idx < min ? idx : min;
     }, TIER_SEQ.length - 1);
     const lowestTier = TIER_SEQ[lowestIdx];
@@ -125,7 +127,9 @@ function getNonBossTeam(split, megaTier = null, useAbsoluteTier = false) {
             ...(megaBaseTierCap !== undefined ? { maxBaseTier: megaBaseTierCap } : {}),
             checkValidEvo: true,
           }
-        : { contextualTier: [lowestTier], checkValidEvo: true };
+        : usesAbsoluteTier
+            ? { absoluteTier: [lowestTier], checkValidEvo: true }
+            : { contextualTier: [lowestTier], checkValidEvo: true };
     const result = transformed.map(s => s.isMega ? megaSlot : s);
     if (useAbsoluteTier) return result.map(convertSlotToAbsolute);
     return result;
@@ -271,23 +275,23 @@ const SPLITS = [
     {
         id: 'TABITHA_CHIMNEY',
         fair: [
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
         ],
     },
     {
         id: 'MAXIE_CHIMNEY',
         // Slot 5: Cameruptite mega (fixed)
         fair: [
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -295,11 +299,11 @@ const SPLITS = [
         id: 'FLANNERY',
         // Slot 5: mega (fixed)
         fair: [
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -307,11 +311,11 @@ const SPLITS = [
         id: 'NORMAN',
         // Slot 5: mega (fixed)
         fair: [
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -319,11 +323,11 @@ const SPLITS = [
         id: 'SHELLY_WEATHER',
         // Slot 5: mega (fixed)
         fair: [
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -331,11 +335,11 @@ const SPLITS = [
         id: 'WINONA',
         // Slot 5: Altaria mega (fixed)
         fair: [
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -343,11 +347,11 @@ const SPLITS = [
         id: 'MAXIE_MAGMA',
         // Slot 5: Cameruptite mega (fixed)
         fair: [
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -355,11 +359,11 @@ const SPLITS = [
         id: 'MATT_AQUA',
         // Slot 5: Snow Warning mega (fixed)
         fair: [
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -368,34 +372,34 @@ const SPLITS = [
     {
         id: 'SPACE_CENTER_GRUNT_5',
         fair: [
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
         ],
     },
     {
         id: 'SPACE_CENTER_GRUNT_6',
         fair: [
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
         ],
     },
     {
         // Slot 5: mega (fixed); slot 0 is plain OU.
         id: 'SPACE_CENTER_GRUNT_7',
         fair: [
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -405,8 +409,8 @@ const SPLITS = [
         id: 'TABITHA_MOSSDEEP',
         // Slot 2: mega (fixed)
         fair: [
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -414,8 +418,8 @@ const SPLITS = [
         id: 'MAXIE_MOSSDEEP',
         // Slot 2: UBERS mega (fixed)
         fair: [
-            { contextualTier: [TIER_LEGEND], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_LEGEND], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -426,11 +430,11 @@ const SPLITS = [
         // Slot 1: specific Solrock/Lunatone (no tier; preset OU is informational for transforms)
         // Slot 5: mega (fixed)
         fair: [
-            { contextualTier: [TIER_UBERS], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UBERS], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -438,11 +442,11 @@ const SPLITS = [
         id: 'ARCHIE',
         // Slot 5: Sharpedonite mega (fixed; uses specific: 'SPECIES_SHARPEDO')
         fair: [
-            { contextualTier: [TIER_LEGEND], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_OU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
-            { contextualTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_LEGEND], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -450,11 +454,11 @@ const SPLITS = [
         id: 'JUAN',
         // Slot 5: Water mega (fixed)
         fair: [
-            { contextualTier: [TIER_LEGEND], checkValidEvo: true },
-            { contextualTier: [TIER_UBERS],  checkValidEvo: true },
-            { contextualTier: [TIER_OU],     checkValidEvo: true },
-            { contextualTier: [TIER_OU],     checkValidEvo: true },
-            { contextualTier: [TIER_UU],     checkValidEvo: true },
+            { absoluteTier: [TIER_LEGEND], checkValidEvo: true },
+            { absoluteTier: [TIER_UBERS],  checkValidEvo: true },
+            { absoluteTier: [TIER_OU],     checkValidEvo: true },
+            { absoluteTier: [TIER_OU],     checkValidEvo: true },
+            { absoluteTier: [TIER_UU],     checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -464,11 +468,11 @@ const SPLITS = [
         id: 'SIDNEY',
         // Slot 5: mega (fixed)
         fair: [
-            { contextualTier: [TIER_LEGEND], checkValidEvo: true },
-            { contextualTier: [TIER_UBERS],    checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
-            { contextualTier: [TIER_UU],    checkValidEvo: true },
+            { absoluteTier: [TIER_LEGEND], checkValidEvo: true },
+            { absoluteTier: [TIER_UBERS],  checkValidEvo: true },
+            { absoluteTier: [TIER_OU],     checkValidEvo: true },
+            { absoluteTier: [TIER_OU],     checkValidEvo: true },
+            { absoluteTier: [TIER_UU],     checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -476,11 +480,11 @@ const SPLITS = [
         id: 'PHOEBE',
         // Slot 5: mega (fixed)
         fair: [
-            { contextualTier: [TIER_LEGEND],    checkValidEvo: true },
-            { contextualTier: [TIER_UBERS], checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
-            { contextualTier: [TIER_UU],    checkValidEvo: true },
+            { absoluteTier: [TIER_LEGEND], checkValidEvo: true },
+            { absoluteTier: [TIER_UBERS],  checkValidEvo: true },
+            { absoluteTier: [TIER_OU],     checkValidEvo: true },
+            { absoluteTier: [TIER_OU],     checkValidEvo: true },
+            { absoluteTier: [TIER_UU],     checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -488,11 +492,11 @@ const SPLITS = [
         id: 'GLACIA',
         // Slot 5: UBERS mega (fixed)
         fair: [
-            { contextualTier: [TIER_LEGEND],    checkValidEvo: true },
-            { contextualTier: [TIER_UBERS], checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
+            { absoluteTier: [TIER_LEGEND], checkValidEvo: true },
+            { absoluteTier: [TIER_UBERS],  checkValidEvo: true },
+            { absoluteTier: [TIER_OU],     checkValidEvo: true },
+            { absoluteTier: [TIER_OU],     checkValidEvo: true },
+            { absoluteTier: [TIER_OU],     checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -500,11 +504,11 @@ const SPLITS = [
         id: 'DRAKE',
         // Slot 5: UBERS mega (fixed)
         fair: [
-            { contextualTier: [TIER_LEGEND],    checkValidEvo: true },
-            { contextualTier: [TIER_UBERS], checkValidEvo: true },
-            { contextualTier: [TIER_UBERS],    checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
+            { absoluteTier: [TIER_LEGEND], checkValidEvo: true },
+            { absoluteTier: [TIER_UBERS],  checkValidEvo: true },
+            { absoluteTier: [TIER_UBERS],  checkValidEvo: true },
+            { absoluteTier: [TIER_OU],     checkValidEvo: true },
+            { absoluteTier: [TIER_OU],     checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -513,9 +517,9 @@ const SPLITS = [
     {
         id: 'CHAMPION_STEVEN',
         fair: [
-            { contextualTier: [TIER_AG],    checkValidEvo: true },
-            { contextualTier: [TIER_UBERS],    checkValidEvo: true },
-            { contextualTier: [TIER_OU],    checkValidEvo: true },
+            { absoluteTier: [TIER_AG],    checkValidEvo: true },
+            { absoluteTier: [TIER_UBERS], checkValidEvo: true },
+            { absoluteTier: [TIER_OU],    checkValidEvo: true },
         ],
     },
 ];
