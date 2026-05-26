@@ -100,6 +100,13 @@ function checkValidEvo(pokemonList, evaluatedPokemon, level, trainer) {
     return pokemonThatEvolveToThis.length > 0;
 }
 
+function canLearnMove(pokemon, moveToLearn, trainerLevel) {
+    return (
+        (pokemon.teachables && pokemon.teachables.includes(moveToLearn)) ||
+        (pokemon.learnset && pokemon.learnset.some(lu => lu.move === moveToLearn && lu.level <= trainerLevel))
+    );
+}
+
 module.exports = {
     getFamilyGroup,
     isSubWeakTier,
@@ -108,4 +115,5 @@ module.exports = {
     hasValidMega,
     devolveToBase,
     checkValidEvo,
+    canLearnMove,
 };

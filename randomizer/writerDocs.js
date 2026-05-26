@@ -11,7 +11,7 @@ const {
 } = require('./constants');
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
-const { sample } = require('./modules/utils');
+const { sample, canLearnMove } = require('./modules/utils');
 const { selectWithAutoFallback } = require('./modules/trainerFallback');
 const { createChooser } = require('./modules/trainerSelector');
 const { applyEvoLevels } = require('./evoLevelWriter.js');
@@ -197,10 +197,6 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
             return;
         }
 
-        const canLearnMove = (pokemon, moveToLearn) =>
-            (pokemon.teachables && pokemon.teachables.includes(moveToLearn)) ||
-            (pokemon.learnset && pokemon.learnset.some(lu => lu.move === moveToLearn && lu.level <= trainer.level));
-
         const team = [];
         const context = { team, foundMega: false, storedIds };
         const choosePokemonFromDefinition = createChooser(pokemonList, trainer, context, {
@@ -267,7 +263,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
 
                 if (effectiveDef?.tryToHaveMove) {
                     effectiveDef.tryToHaveMove.forEach(moveToLearn => {
-                        if (canLearnMove(chosenTrainerMon, moveToLearn) && !newTeamMember.moves.includes(moveToLearn)) {
+                        if (canLearnMove(chosenTrainerMon, moveToLearn, trainer.level) && !newTeamMember.moves.includes(moveToLearn)) {
                             newTeamMember.moves.push(moveToLearn);
                         }
                     });
