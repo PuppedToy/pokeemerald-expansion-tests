@@ -34,7 +34,7 @@ function spy(inner) {
 test('primary succeeds — returns result immediately', () => {
     const fn = spy(alwaysSucceeds);
     const result = selectWithAutoFallback({ contextualTier: [TIER_OU] }, fn);
-    expect(result).toBe(POKEMON);
+    expect(result?.pokemon).toBe(POKEMON);
     expect(fn.calls).toHaveLength(1);
 });
 
@@ -43,7 +43,7 @@ test('primary succeeds — returns result immediately', () => {
 test('primary fails → auto-tier-down one step → succeeds', () => {
     const fn = spy(chooserFor(TIER_UU)); // only UU succeeds
     const result = selectWithAutoFallback({ contextualTier: [TIER_OU] }, fn);
-    expect(result).toBe(POKEMON);
+    expect(result?.pokemon).toBe(POKEMON);
     // Called with OU (fails), then UU (succeeds)
     expect(fn.calls.map(d => d.contextualTier[0])).toEqual([TIER_OU, TIER_UU]);
 });
@@ -86,7 +86,7 @@ test('maxTierDownSteps:1 → ability setter exhausted → explicit fallback succ
         }],
     };
     const result = selectWithAutoFallback(def, fn);
-    expect(result).toBe(POKEMON);
+    expect(result?.pokemon).toBe(POKEMON);
     // Primary at OU (no moveFlag → fails), OU-1=UU (no moveFlag → fails), then fallback OU with moveFlag → succeeds
     const tries = fn.calls;
     expect(tries.some(d => d.moveFlag)).toBe(true);
@@ -105,7 +105,7 @@ test('multi-tier contextualTier — primary fails → no auto-tier-down, falls t
         fallback: [{ contextualTier: [TIER_RU] }],
     };
     const result = selectWithAutoFallback(def, fn);
-    expect(result).toBe(POKEMON);
+    expect(result?.pokemon).toBe(POKEMON);
     // First call is multi-tier (should fail), second call is RU from explicit fallback
     expect(fn.calls[0].contextualTier).toEqual([TIER_OU, TIER_UBERS]);
     expect(fn.calls[1].contextualTier).toEqual([TIER_RU]);
@@ -122,7 +122,7 @@ test('primary fails → explicit fallback[0] succeeds immediately', () => {
         fallback: [{ contextualTier: [TIER_MAGIKARP], specialFlag: true }],
     };
     const result = selectWithAutoFallback(def, fn);
-    expect(result).toBe(POKEMON);
+    expect(result?.pokemon).toBe(POKEMON);
 });
 
 // ── 8. Explicit fallback gets its own auto-tier-down ─────────────────────────
@@ -134,7 +134,7 @@ test('explicit fallback fails at its stated tier → fallback auto-tier-down suc
         fallback: [{ contextualTier: [TIER_NU] }], // fallback at NU, auto-tiers down to PU
     };
     const result = selectWithAutoFallback(def, fn);
-    expect(result).toBe(POKEMON);
+    expect(result?.pokemon).toBe(POKEMON);
 });
 
 // ── 9. Everything fails → returns null ───────────────────────────────────────
@@ -176,6 +176,27 @@ test('definition without contextualTier — no auto-tier-down, falls straight to
         fallback: [{ specialFlag: true }],
     };
     const result = selectWithAutoFallback(def, fn);
-    expect(result).toBe(POKEMON);
+    expect(result?.pokemon).toBe(POKEMON);
     expect(fn.calls).toHaveLength(2); // primary + fallback, no auto-tier-down
+});
+
+// ── 12. effectiveDef is returned alongside the pokemon ───────────────────────
+
+test('when primary succeeds, effectiveDef is the primary definition', () => {
+    const def = { contextualTier: [TIER_OU] };
+    const result = selectWithAutoFallback(def, alwaysSucceeds);
+    expect(result?.pokemon).toBe(POKEMON);
+    expect(result?.effectiveDef).toBe(def);
+});
+
+test('when explicit fallback fires, effectiveDef is the fallback definition not the primary', () => {
+    const fallbackDef = { contextualTier: [TIER_PU], tryToHaveMove: ['MOVE_SUNNY_DAY'] };
+    // fn succeeds only at PU — primary (MAGIKARP=floor, no auto-tier-down) fails → explicit fallback fires
+    const fn = (def) => def.contextualTier?.[0] === TIER_PU ? POKEMON : null;
+    const result = selectWithAutoFallback(
+        { contextualTier: [TIER_MAGIKARP], fallback: [fallbackDef] },
+        fn,
+    );
+    expect(result?.pokemon).toBe(POKEMON);
+    expect(result?.effectiveDef).toBe(fallbackDef);
 });

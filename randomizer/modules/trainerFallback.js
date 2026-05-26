@@ -16,8 +16,8 @@ const { TIER_SEQ } = require('../constants');
  */
 function selectWithAutoFallback(definition, chooseFn) {
     // 1. Try primary
-    let result = chooseFn(definition);
-    if (result) return result;
+    let pokemon = chooseFn(definition);
+    if (pokemon) return { pokemon, effectiveDef: definition };
 
     // 2. Auto-tier-down — only for single-tier defs
     if (definition.contextualTier && definition.contextualTier.length === 1) {
@@ -29,8 +29,8 @@ function selectWithAutoFallback(definition, chooseFn) {
                 contextualTier: [TIER_SEQ[i]],
                 maxTierDownSteps: undefined,
             });
-            result = chooseFn(tierDownDef);
-            if (result) return result;
+            pokemon = chooseFn(tierDownDef);
+            if (pokemon) return { pokemon, effectiveDef: tierDownDef };
         }
     }
 
@@ -38,8 +38,8 @@ function selectWithAutoFallback(definition, chooseFn) {
     const fallbacks = definition.fallback;
     if (fallbacks && fallbacks.length > 0) {
         for (const fb of fallbacks) {
-            result = selectWithAutoFallback(fb, chooseFn);
-            if (result) return result;
+            const fbResult = selectWithAutoFallback(fb, chooseFn);
+            if (fbResult) return fbResult;
         }
     }
 

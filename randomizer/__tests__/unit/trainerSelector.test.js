@@ -81,7 +81,7 @@ describe('createChooser — contextualTier', () => {
         const chooser = makeChooser(pokemonList, makeTrainer(32), ctx);
 
         const result = selectWithAutoFallback({ contextualTier: ['RU'] }, chooser);
-        expect(result.id).toBe('SPECIES_NU_MON');
+        expect(result?.pokemon.id).toBe('SPECIES_NU_MON');
     });
 
     test('maxTierDownSteps=1 stops after one tier-down and does not reach PU', () => {

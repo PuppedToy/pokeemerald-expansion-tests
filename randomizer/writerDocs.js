@@ -211,7 +211,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                 const slotSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainer.id + ':' + slotIndex), 0x9E3779B9)) >>> 0;
                 rng.seed(slotSeed);
             }
-            let chosenTrainerMon = selectWithAutoFallback(trainerMonDefinition, choosePokemonFromDefinition);
+            let { pokemon: chosenTrainerMon, effectiveDef } = selectWithAutoFallback(trainerMonDefinition, choosePokemonFromDefinition) ?? {};
             if (!chosenTrainerMon) {
                 console.error(
                     `No pokemon found for trainer ${trainer.id} slot ${slotIndex} — check definition: ` +
@@ -265,8 +265,8 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                     ivs: generateIVs(effectiveBreedTier, pokeId),
                 };
 
-                if (trainerMonDefinition.tryToHaveMove) {
-                    trainerMonDefinition.tryToHaveMove.forEach(moveToLearn => {
+                if (effectiveDef?.tryToHaveMove) {
+                    effectiveDef.tryToHaveMove.forEach(moveToLearn => {
                         if (canLearnMove(chosenTrainerMon, moveToLearn) && !newTeamMember.moves.includes(moveToLearn)) {
                             newTeamMember.moves.push(moveToLearn);
                         }
