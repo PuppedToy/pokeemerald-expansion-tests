@@ -105,134 +105,14 @@ const originalGymTypes = [
 
 // New defs
 
-const CONTEXTUAL_POKEDEF_MAGIKARP = {
-    contextualTier: [TIER_MAGIKARP],
-    checkValidEvo: true,
-};
 
-const CONTEXTUAL_POKEDEF_ZU = {
-    contextualTier: [TIER_ZU],
-    checkValidEvo: true,
-};
-
-const CONTEXTUAL_CONTEXTUAL_POKEDEF_ZU_LC = {
-    contextualTier: [TIER_ZU],
-    evoType: [EVO_TYPE_LC],
-    checkValidEvo: true,
-};
-
-const CONTEXTUAL_CONTEXTUAL_POKEDEF_PU_LC = {
-    contextualTier: [TIER_PU],
-    evoType: [EVO_TYPE_LC],
-    checkValidEvo: true,
-};
-
-const CONTEXTUAL_POKEDEF_PU = {
-    contextualTier: [TIER_PU],
-    checkValidEvo: true,
-};
-
-const CONTEXTUAL_POKEDEF_NU = {
-    contextualTier: [TIER_NU],
-    checkValidEvo: true,
-};
-
-const CONTEXTUAL_POKEDEF_RU = {
-    contextualTier: [TIER_RU],
-    checkValidEvo: true,
-};
-
-const CONTEXTUAL_CONTEXTUAL_POKEDEF_NU_OR_RU = {
-    contextualTier: [TIER_NU, TIER_RU],
-    checkValidEvo: true,
-};
-
-const CONTEXTUAL_POKEDEF_UP_TO_UU = {
-    contextualTier: [TIER_NU, TIER_RU, TIER_UU],
-    checkValidEvo: true,
-};
-
-const CONTEXTUAL_POKEDEF_UP_TO_OU = {
-    contextualTier: [TIER_NU, TIER_RU, TIER_UU, TIER_OU],
-    checkValidEvo: true,
-};
-
-const CONTEXTUAL_CONTEXTUAL_POKEDEF_UP_TO_OU_NOEVO = {
-    contextualTier: [TIER_NU, TIER_RU, TIER_UU, TIER_OU],
-    checkValidEvo: true,
-};
-
-const CONTEXTUAL_POKEDEF_UU = {
-    contextualTier: [TIER_UU],
-    checkValidEvo: true,
-};
-
-const CONTEXTUAL_POKEDEF_OU = {
-    contextualTier: [TIER_OU],
-    checkValidEvo: true,
-};
-
-const CONTEXTUAL_POKEDEF_UBERS = {
-    contextualTier: [TIER_UBERS],
-    checkValidEvo: true,
-};
-
-const CONTEXTUAL_POKEDEF_LEGEND = {
-    contextualTier: [TIER_LEGEND],
-    checkValidEvo: true,
-};
-
-const CONTEXTUAL_CONTEXTUAL_POKEDEF_UU_OU_MEGA = {
+const CONTEXTUAL_POKEDEF_UU_OU_MEGA = {
     isMega: true,
     contextualTier: [TIER_RU, TIER_NU, TIER_UU, TIER_OU],
     checkValidEvo: true,
     tryEvolve: true,
 };
 
-const CONTEXTUAL_POKEDEF_MEGA = {
-    isMega: true,
-    contextualTier: [TIER_UU, TIER_OU, TIER_UBERS],
-    checkValidEvo: true,
-    tryEvolve: true,
-};
-
-// Auto-tier-down through all mega tiers; if no mega found, drop isMega and retry from top.
-const contextualPokeDefUbersMega = (BASE_POKE_DEF = {}) => ({
-    isMega: true,
-    contextualTier: [TIER_UBERS],
-    checkValidEvo: true,
-    ...BASE_POKE_DEF,
-    fallback: [{
-        contextualTier: [TIER_UBERS],
-        checkValidEvo: true,
-        ...BASE_POKE_DEF,
-    }],
-});
-
-const contextualPokeDefUbersOrAGMega = (BASE_POKE_DEF = {}) => ({
-    isMega: true,
-    contextualTier: [TIER_UBERS, TIER_AG],
-    checkValidEvo: true,
-    ...BASE_POKE_DEF,
-    fallback: [{
-        contextualTier: [TIER_UBERS, TIER_AG],
-        checkValidEvo: true,
-        ...BASE_POKE_DEF,
-    }],
-});
-
-const contextualPokeDefMega = (BASE_POKE_DEF = {}) => ({
-    isMega: true,
-    contextualTier: [TIER_OU, TIER_UBERS],
-    checkValidEvo: true,
-    tryEvolve: true,
-    ...BASE_POKE_DEF,
-    fallback: [{
-        contextualTier: [TIER_OU, TIER_UBERS],
-        checkValidEvo: true,
-        ...BASE_POKE_DEF,
-    }],
-});
 
 // Weather/terrain setter pattern:
 // maxTierDownSteps:1 limits ability-setter phase to T and T-1.
@@ -296,31 +176,6 @@ const pokeDefSandStreamMon = (BASE_POKE_DEF) => ({
     ],
 });
 
-const pokeDefPsychicSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => ({
-    ...BASE_POKE_DEF,
-    abilities: ['PSYCHIC_SURGE'],
-    item,
-    maxTierDownSteps: 1,
-    fallback: [{
-        ...BASE_POKE_DEF,
-        mustHaveOneOfMoves: ['MOVE_PSYCHIC_TERRAIN'],
-        tryToHaveMove: ['MOVE_PSYCHIC_TERRAIN'],
-        item,
-    }],
-});
-
-const pokeDefMistySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => ({
-    ...BASE_POKE_DEF,
-    abilities: ['MISTY_SURGE'],
-    item,
-    maxTierDownSteps: 1,
-    fallback: [{
-        ...BASE_POKE_DEF,
-        mustHaveOneOfMoves: ['MOVE_MISTY_TERRAIN'],
-        tryToHaveMove: ['MOVE_MISTY_TERRAIN'],
-        item,
-    }],
-});
 
 const pokeDefElectricSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => ({
     ...BASE_POKE_DEF,
@@ -335,18 +190,6 @@ const pokeDefElectricSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => ({
     }],
 });
 
-const pokeDefGrassySurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => ({
-    ...BASE_POKE_DEF,
-    abilities: ['GRASSY_SURGE'],
-    item,
-    maxTierDownSteps: 1,
-    fallback: [{
-        ...BASE_POKE_DEF,
-        mustHaveOneOfMoves: ['MOVE_GRASSY_TERRAIN'],
-        tryToHaveMove: ['MOVE_GRASSY_TERRAIN'],
-        item,
-    }],
-});
 
 const PROMISING_OU_UBERS_MEGA_LC = {
     megaTier: [TIER_OU, TIER_UBERS],
@@ -355,19 +198,19 @@ const PROMISING_OU_UBERS_MEGA_LC = {
 };
 
 // ── Absolute-tier POKEDEF variants (post-Wattson boss trainers) ───────────────
-const ABSOLUTE_CONTEXTUAL_POKEDEF_RU     = { absoluteTier: [TIER_RU],     checkValidEvo: true };
-const ABSOLUTE_CONTEXTUAL_POKEDEF_UU     = { absoluteTier: [TIER_UU],     checkValidEvo: true };
-const ABSOLUTE_CONTEXTUAL_POKEDEF_OU     = { absoluteTier: [TIER_OU],     checkValidEvo: true };
-const ABSOLUTE_CONTEXTUAL_POKEDEF_UBERS  = { absoluteTier: [TIER_UBERS],  checkValidEvo: true };
-const ABSOLUTE_CONTEXTUAL_POKEDEF_LEGEND = { absoluteTier: [TIER_LEGEND], checkValidEvo: true };
+const ABSOLUTE_POKEDEF_RU     = { absoluteTier: [TIER_RU],     checkValidEvo: true };
+const ABSOLUTE_POKEDEF_UU     = { absoluteTier: [TIER_UU],     checkValidEvo: true };
+const ABSOLUTE_POKEDEF_OU     = { absoluteTier: [TIER_OU],     checkValidEvo: true };
+const ABSOLUTE_POKEDEF_UBERS  = { absoluteTier: [TIER_UBERS],  checkValidEvo: true };
+const ABSOLUTE_POKEDEF_LEGEND = { absoluteTier: [TIER_LEGEND], checkValidEvo: true };
 
-const ABSOLUTE_CONTEXTUAL_CONTEXTUAL_POKEDEF_UU_OU_MEGA = {
+const ABSOLUTE_POKEDEF_UU_OU_MEGA = {
     isMega: true,
     absoluteTier: [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU],
     checkValidEvo: true,
     tryEvolve: true,
 };
-const ABSOLUTE_CONTEXTUAL_POKEDEF_MEGA = {
+const ABSOLUTE_POKEDEF_MEGA = {
     isMega: true,
     absoluteTier: [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS],
     checkValidEvo: true,
@@ -399,9 +242,6 @@ const absolutePokeDefMega = (BASE_POKE_DEF = {}) => ({
     }],
 });
 
-const generatePokemonsWithDefinition = (def, amount) => {
-    return new Array(amount).fill(null).map(() => ({ ...def }));
-}
 
 const genericTrainerTeamPreRival         = () => getNonBossPreset('PRE_RIVAL');
 const genericTrainerTeamPostRival        = () => getNonBossPreset('POST_RIVAL');
@@ -430,11 +270,6 @@ const genericTrainerTeamPostArchie        = () => getNonBossPreset('ARCHIE',    
 
 // ── Post-Juan era (absolute tier, UBERS mega) ─────────────────────────────────
 const genericTrainerTeamPostJuan     = () => getNonBossPreset('JUAN',            TIER_UBERS, true);
-const genericTrainerTeamPostSidney   = () => getNonBossPreset('SIDNEY',          TIER_UBERS, true);
-const genericTrainerTeamPostPhoebe   = () => getNonBossPreset('PHOEBE',          TIER_UBERS, true);
-const genericTrainerTeamPostGlacia   = () => getNonBossPreset('GLACIA',          TIER_UBERS, true);
-const genericTrainerTeamPostDrake    = () => getNonBossPreset('DRAKE',           TIER_UBERS, true);
-const genericTrainerTeamPostChampion = () => getNonBossPreset('CHAMPION_STEVEN', TIER_UBERS, true);
 
 const sample = (array) => {
     return array[Math.floor(rng.random() * array.length)];
@@ -2194,12 +2029,12 @@ const trainersData = [
                 type: [gymMainTypes[2]],
             } : pokeDefElectricSurgeMon(getBossPreset('WATTSON')[0]),
             gymIsChangedType[2] ? {
-                ...CONTEXTUAL_CONTEXTUAL_POKEDEF_UU_OU_MEGA,
+                ...CONTEXTUAL_POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
                 type: [gymMainTypes[2]],
             } : {
                 specificIfTier: 'SPECIES_MANECTRIC_MEGA',
-                ...CONTEXTUAL_CONTEXTUAL_POKEDEF_UU_OU_MEGA,
+                ...CONTEXTUAL_POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
                 type: [gymMainTypes[2]],
             },
@@ -2357,16 +2192,16 @@ const trainersData = [
                 type: [magmaTeamTypes[0], magmaTeamTypes[1]],
                 fallback: [
                     {
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_RU,
+                        ...ABSOLUTE_POKEDEF_RU,
                         type: [magmaTeamTypes[0], magmaTeamTypes[1]],
                     },
                     {
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_RU,
+                        ...ABSOLUTE_POKEDEF_RU,
                         type: [...magmaTeamTypes],
                         abilities: [...sunAbilities],
                     },
                     {
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_RU,
+                        ...ABSOLUTE_POKEDEF_RU,
                         type: [...magmaTeamTypes],
                     }
                 ],
@@ -2377,7 +2212,7 @@ const trainersData = [
                 abilities: [...sunAbilities],
                 fallback: [
                     {
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_RU,
+                        ...ABSOLUTE_POKEDEF_RU,
                         type: [...magmaTeamTypes],
                     }
                 ],
@@ -2389,7 +2224,7 @@ const trainersData = [
             {
                 id: 'MAXIE_MEGA',
                 specificIfTier: 'SPECIES_CAMERUPT_MEGA',
-                ...ABSOLUTE_CONTEXTUAL_CONTEXTUAL_POKEDEF_UU_OU_MEGA,
+                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
             },
         ],
@@ -2562,7 +2397,7 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
-                ...ABSOLUTE_CONTEXTUAL_CONTEXTUAL_POKEDEF_UU_OU_MEGA,
+                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
                 type: [gymMainTypes[3]],
             },
             {
@@ -2721,7 +2556,7 @@ const trainersData = [
                 type: [gymMainTypes[4]],
             },
             {
-                ...ABSOLUTE_CONTEXTUAL_CONTEXTUAL_POKEDEF_UU_OU_MEGA,
+                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
                 type: [gymMainTypes[4]],
                 fallback: [
                    {
@@ -3052,12 +2887,12 @@ const trainersData = [
                 ]
             },
             gymIsChangedType[5] ? {
-                ...ABSOLUTE_CONTEXTUAL_CONTEXTUAL_POKEDEF_UU_OU_MEGA,
+                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
                 type: [gymMainTypes[5]],
             } : {
                 specificIfTier: 'SPECIES_ALTARIA_MEGA',
-                ...ABSOLUTE_CONTEXTUAL_CONTEXTUAL_POKEDEF_UU_OU_MEGA,
+                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
                 type: [gymMainTypes[5]],
             },
@@ -3459,70 +3294,70 @@ const trainersData = [
             } : (tateAndLizaUseSolrock ?
             {
                 specificIfTier: 'SPECIES_LUNALA',
-                ...ABSOLUTE_CONTEXTUAL_POKEDEF_LEGEND,
+                ...ABSOLUTE_POKEDEF_LEGEND,
                 item: 'Room Service',
                 nature: 'Quiet',
                 fallback: [
                     {
                         specificIfTier: 'SPECIES_LUNALA',
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_UBERS,
+                        ...ABSOLUTE_POKEDEF_UBERS,
                         item: 'Room Service',
                         nature: 'Quiet',
                     },
                     {
                         specificIfTier: 'SPECIES_LUNALA',
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_OU,
+                        ...ABSOLUTE_POKEDEF_OU,
                         item: 'Room Service',
                         nature: 'Quiet',
                     },
                     {
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_OU,
+                        ...ABSOLUTE_POKEDEF_OU,
                         type: [gymMainTypes[6]],
                     }
                 ]
             } : {
                 specificIfTier: 'SPECIES_SOLGALEO',
-                ...ABSOLUTE_CONTEXTUAL_POKEDEF_LEGEND,
+                ...ABSOLUTE_POKEDEF_LEGEND,
                 item: 'Room Service',
                 nature: 'Brave',
                 fallback: [
                     {
                         specificIfTier: 'SPECIES_SOLGALEO',
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_UBERS,
+                        ...ABSOLUTE_POKEDEF_UBERS,
                         item: 'Room Service',
                         nature: 'Quiet',
                     },
                     {
                         specificIfTier: 'SPECIES_SOLGALEO',
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_OU,
+                        ...ABSOLUTE_POKEDEF_OU,
                         item: 'Room Service',
                         nature: 'Quiet',
                     },
                     {
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_OU,
+                        ...ABSOLUTE_POKEDEF_OU,
                         type: [gymMainTypes[6]],
                     }
                 ]
             }),
             gymIsChangedType[6] ? {
-                ...ABSOLUTE_CONTEXTUAL_POKEDEF_MEGA,
+                ...ABSOLUTE_POKEDEF_MEGA,
                 type: [gymMainTypes[6]],
             } : {
-                ...ABSOLUTE_CONTEXTUAL_POKEDEF_MEGA,
+                ...ABSOLUTE_POKEDEF_MEGA,
                 hasStat: ['baseSpeed', '<', '50'],
                 type: [gymMainTypes[6]],
                 fallback: [
                     {
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_MEGA,
+                        ...ABSOLUTE_POKEDEF_MEGA,
                         hasStat: ['baseSpeed', '<', '70'],
                         type: [gymMainTypes[6]],
                     },
                     {
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_MEGA,
+                        ...ABSOLUTE_POKEDEF_MEGA,
                         type: [gymMainTypes[6]],
                     },
                     {
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_OU,
+                        ...ABSOLUTE_POKEDEF_OU,
                         type: [gymMainTypes[6]],
                     },
                 ]
@@ -3701,17 +3536,17 @@ const trainersData = [
         team: [
             {
                 id: 'STEVEN_LEGEND',
-                ...ABSOLUTE_CONTEXTUAL_POKEDEF_LEGEND,
+                ...ABSOLUTE_POKEDEF_LEGEND,
                 type: [POKEMON_TYPE_STEEL],
                 fallback: [
                     {
                         id: 'STEVEN_LEGEND',
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_LEGEND,
+                        ...ABSOLUTE_POKEDEF_LEGEND,
                         type: [POKEMON_TYPE_ROCK],
                     },
                     {
                         id: 'STEVEN_LEGEND',
-                        ...ABSOLUTE_CONTEXTUAL_POKEDEF_LEGEND,
+                        ...ABSOLUTE_POKEDEF_LEGEND,
                     },
                 ],
             },
@@ -3749,15 +3584,15 @@ const trainersData = [
                 ],
             },
             {
-                ...ABSOLUTE_CONTEXTUAL_CONTEXTUAL_POKEDEF_UU_OU_MEGA,
+                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
                 type: [magmaTeamTypes[0]],
                 fallback: [
                     {
-                        ...ABSOLUTE_CONTEXTUAL_CONTEXTUAL_POKEDEF_UU_OU_MEGA,
+                        ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
                         type: [magmaTeamTypes[0]],
                     },
                     {
-                        ...ABSOLUTE_CONTEXTUAL_CONTEXTUAL_POKEDEF_UU_OU_MEGA,
+                        ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
                         type: [...magmaTeamTypes],
                     },
                 ]
@@ -3920,7 +3755,7 @@ const trainersData = [
             },
             {
                 specificIfTier: 'SPECIES_SHARPEDO_MEGA',
-                ...ABSOLUTE_CONTEXTUAL_CONTEXTUAL_POKEDEF_UU_OU_MEGA,
+                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
                 breedTier: 'perfect',
                 nature: 'Adamant',
             },
@@ -4106,7 +3941,7 @@ const trainersData = [
         level: 67,
         bag: [...juanBag()],
         team: [
-            ABSOLUTE_CONTEXTUAL_POKEDEF_UBERS,
+            ABSOLUTE_POKEDEF_UBERS,
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'WALLY_1',
