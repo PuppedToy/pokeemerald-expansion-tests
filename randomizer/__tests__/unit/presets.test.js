@@ -181,6 +181,36 @@ describe('getNonBossPreset — maxBaseTier', () => {
     });
 });
 
+describe('getBossPreset — useAbsoluteTier', () => {
+    test('useAbsoluteTier=false (default): slots use contextualTier', () => {
+        const slots = getBossPreset('NORMAN');
+        const nonMegaSlots = slots.filter(s => !s.isMega);
+        expect(nonMegaSlots.length).toBeGreaterThan(0);
+        nonMegaSlots.forEach(slot => {
+            expect(slot.contextualTier).toBeDefined();
+            expect(slot.absoluteTier).toBeUndefined();
+        });
+    });
+
+    test('useAbsoluteTier=true: non-mega slots converted to absoluteTier', () => {
+        const slots = getBossPreset('NORMAN', true);
+        const nonMegaSlots = slots.filter(s => !s.isMega);
+        expect(nonMegaSlots.length).toBeGreaterThan(0);
+        nonMegaSlots.forEach(slot => {
+            expect(slot.absoluteTier).toBeDefined();
+            expect(slot.contextualTier).toBeUndefined();
+        });
+    });
+
+    test('useAbsoluteTier=true: bare isMega slot is unchanged (no contextualTier to convert)', () => {
+        const slots = getBossPreset('NORMAN', true);
+        const megaSlot = slots.find(s => s.isMega);
+        expect(megaSlot).toBeDefined();
+        expect(megaSlot.contextualTier).toBeUndefined();
+        expect(megaSlot.absoluteTier).toBeUndefined();
+    });
+});
+
 describe('getBossPreset – GRANITE_CAVE_STEVEN', () => {
     test('returns 2 slots', () => {
         const slots = getBossPreset('GRANITE_CAVE_STEVEN');

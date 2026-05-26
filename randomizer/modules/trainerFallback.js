@@ -33,6 +33,19 @@ function selectWithAutoFallback(definition, chooseFn) {
             if (pokemon) return { pokemon, effectiveDef: tierDownDef };
         }
     }
+    if (definition.absoluteTier && definition.absoluteTier.length === 1) {
+        const startIdx = TIER_SEQ.indexOf(definition.absoluteTier[0]);
+        const maxSteps = definition.maxTierDownSteps != null ? definition.maxTierDownSteps : Infinity;
+        let stepsDown = 0;
+        for (let i = startIdx - 1; i >= 0 && stepsDown < maxSteps; i--, stepsDown++) {
+            const tierDownDef = Object.assign({}, definition, {
+                absoluteTier: [TIER_SEQ[i]],
+                maxTierDownSteps: undefined,
+            });
+            pokemon = chooseFn(tierDownDef);
+            if (pokemon) return { pokemon, effectiveDef: tierDownDef };
+        }
+    }
 
     // 3. Walk explicit fallback array — each entry also gets auto-tier-down recursively
     const fallbacks = definition.fallback;

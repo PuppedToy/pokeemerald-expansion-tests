@@ -7,11 +7,19 @@ const {
 
 const POKEMON = { id: 'SPECIES_BULBASAUR' };
 
-// Helper: chooseFn that succeeds only for the given tier(s)
+// Helper: chooseFn that succeeds only for the given contextualTier(s)
 function chooserFor(...tiers) {
     return (def) => {
         if (!def.contextualTier) return null;
         return def.contextualTier.some(t => tiers.includes(t)) ? POKEMON : null;
+    };
+}
+
+// Helper: chooseFn that succeeds only for the given absoluteTier(s)
+function chooserForAbs(...tiers) {
+    return (def) => {
+        if (!def.absoluteTier) return null;
+        return def.absoluteTier.some(t => tiers.includes(t)) ? POKEMON : null;
     };
 }
 
@@ -199,4 +207,45 @@ test('when explicit fallback fires, effectiveDef is the fallback definition not 
     );
     expect(result?.pokemon).toBe(POKEMON);
     expect(result?.effectiveDef).toBe(fallbackDef);
+});
+
+// ── absoluteTier auto-tier-down ───────────────────────────────────────────────
+
+describe('absoluteTier auto-tier-down', () => {
+    test('primary fails → auto-tier-down one step → succeeds', () => {
+        const fn = spy(chooserForAbs(TIER_UU)); // only UU succeeds
+        const result = selectWithAutoFallback({ absoluteTier: [TIER_OU] }, fn);
+        expect(result?.pokemon).toBe(POKEMON);
+        // Called with OU (fails), then UU (succeeds)
+        expect(fn.calls.map(d => d.absoluteTier[0])).toEqual([TIER_OU, TIER_UU]);
+    });
+
+    test('multi-tier absoluteTier — no auto-tier-down, falls to explicit fallback', () => {
+        const fn = spy((def) => {
+            if (def.absoluteTier?.length === 1 && def.absoluteTier[0] === TIER_RU) return POKEMON;
+            return null;
+        });
+        const def = {
+            absoluteTier: [TIER_OU, TIER_UBERS],
+            fallback: [{ absoluteTier: [TIER_RU] }],
+        };
+        const result = selectWithAutoFallback(def, fn);
+        expect(result?.pokemon).toBe(POKEMON);
+        expect(fn.calls[0].absoluteTier).toEqual([TIER_OU, TIER_UBERS]);
+        expect(fn.calls[1].absoluteTier).toEqual([TIER_RU]);
+        expect(fn.calls).toHaveLength(2);
+    });
+
+    test('maxTierDownSteps:1 stops absoluteTier tier-down before reaching ZU', () => {
+        const fn = spy(chooserForAbs(TIER_ZU)); // only ZU succeeds — 2 steps below NU
+        const result = selectWithAutoFallback(
+            { absoluteTier: [TIER_NU], maxTierDownSteps: 1 },
+            fn,
+        );
+        expect(result).toBeNull();
+        const tried = fn.calls.map(d => d.absoluteTier[0]);
+        expect(tried).toContain(TIER_NU);
+        expect(tried).toContain(TIER_PU);
+        expect(tried).not.toContain(TIER_ZU);
+    });
 });

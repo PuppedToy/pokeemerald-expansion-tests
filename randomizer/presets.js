@@ -522,10 +522,12 @@ const SPLITS = [
 
 // ─── Public accessors ────────────────────────────────────────────────────────
 
-function getBossPreset(splitId) {
+function getBossPreset(splitId, useAbsoluteTier = false) {
     const split = SPLITS.find(s => s.id === splitId);
     if (!split) throw new Error(`No preset split: ${splitId}`);
-    return getBossTeam(split);
+    const team = getBossTeam(split);
+    if (useAbsoluteTier) return team.map(convertSlotToAbsolute);
+    return team;
 }
 
 function getNonBossPreset(splitId, megaTier = null, useAbsoluteTier = false) {

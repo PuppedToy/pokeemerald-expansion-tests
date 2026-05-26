@@ -354,6 +354,51 @@ const PROMISING_OU_UBERS_MEGA_LC = {
     evoType: [EVO_TYPE_LC],
 };
 
+// ── Absolute-tier POKEDEF variants (post-Wattson boss trainers) ───────────────
+const POKEDEF_RU_ABS     = { absoluteTier: [TIER_RU],     checkValidEvo: true };
+const POKEDEF_UU_ABS     = { absoluteTier: [TIER_UU],     checkValidEvo: true };
+const POKEDEF_OU_ABS     = { absoluteTier: [TIER_OU],     checkValidEvo: true };
+const POKEDEF_UBERS_ABS  = { absoluteTier: [TIER_UBERS],  checkValidEvo: true };
+const POKEDEF_LEGEND_ABS = { absoluteTier: [TIER_LEGEND], checkValidEvo: true };
+
+const POKEDEF_UU_OU_MEGA_ABS = {
+    isMega: true,
+    absoluteTier: [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU],
+    checkValidEvo: true,
+    tryEvolve: true,
+};
+const POKEDEF_MEGA_ABS = {
+    isMega: true,
+    absoluteTier: [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS],
+    checkValidEvo: true,
+    tryEvolve: true,
+};
+
+const pokeDefUbersMegaAbs = (BASE_POKE_DEF = {}) => ({
+    isMega: true,
+    absoluteTier: [TIER_UBERS],
+    checkValidEvo: true,
+    ...BASE_POKE_DEF,
+    fallback: [{
+        absoluteTier: [TIER_UBERS],
+        checkValidEvo: true,
+        ...BASE_POKE_DEF,
+    }],
+});
+
+const pokeDefMegaAbs = (BASE_POKE_DEF = {}) => ({
+    isMega: true,
+    absoluteTier: [TIER_OU, TIER_UBERS],
+    checkValidEvo: true,
+    tryEvolve: true,
+    ...BASE_POKE_DEF,
+    fallback: [{
+        absoluteTier: [TIER_OU, TIER_UBERS],
+        checkValidEvo: true,
+        ...BASE_POKE_DEF,
+    }],
+});
+
 const generatePokemonsWithDefinition = (def, amount) => {
     return new Array(amount).fill(null).map(() => ({ ...def }));
 }
@@ -2275,22 +2320,22 @@ const trainersData = [
         preventShuffle: true,
         bag: [...magmaChimneyBag()],
         team: [
-            pokeDefSandStreamMon(getBossPreset('TABITHA_CHIMNEY')[0]),
+            pokeDefSandStreamMon(getBossPreset('TABITHA_CHIMNEY', true)[0]),
             {
-                ...getBossPreset('TABITHA_CHIMNEY')[1],
+                ...getBossPreset('TABITHA_CHIMNEY', true)[1],
                 abilities: [...sandAbilities],
             },
             {
-                ...getBossPreset('TABITHA_CHIMNEY')[2],
+                ...getBossPreset('TABITHA_CHIMNEY', true)[2],
                 abilities: [...sandAbilities],
             },
-            pokeDefSandStreamMon(getBossPreset('TABITHA_CHIMNEY')[3]),
+            pokeDefSandStreamMon(getBossPreset('TABITHA_CHIMNEY', true)[3]),
             {
-                ...getBossPreset('TABITHA_CHIMNEY')[4],
+                ...getBossPreset('TABITHA_CHIMNEY', true)[4],
                 abilities: [...sandAbilities],
             },
             {
-                ...getBossPreset('TABITHA_CHIMNEY')[5],
+                ...getBossPreset('TABITHA_CHIMNEY', true)[5],
                 abilities: [...sandAbilities],
             },
         ],
@@ -2305,46 +2350,46 @@ const trainersData = [
         preventShuffle: true,
         bag: [...magmaChimneyBag()],
         team: [
-            pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY')[1]),
+            pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY', true)[1]),
             {
-                ...getBossPreset('MAXIE_CHIMNEY')[0],
+                ...getBossPreset('MAXIE_CHIMNEY', true)[0],
                 abilities: [...sunAbilities],
                 type: [magmaTeamTypes[0], magmaTeamTypes[1]],
                 fallback: [
                     {
-                        ...POKEDEF_RU,
+                        ...POKEDEF_RU_ABS,
                         type: [magmaTeamTypes[0], magmaTeamTypes[1]],
                     },
                     {
-                        ...POKEDEF_RU,
+                        ...POKEDEF_RU_ABS,
                         type: [...magmaTeamTypes],
                         abilities: [...sunAbilities],
                     },
                     {
-                        ...POKEDEF_RU,
+                        ...POKEDEF_RU_ABS,
                         type: [...magmaTeamTypes],
                     }
                 ],
             },
-            pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY')[2]),
+            pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY', true)[2]),
             {
-                ...getBossPreset('MAXIE_CHIMNEY')[3],
+                ...getBossPreset('MAXIE_CHIMNEY', true)[3],
                 abilities: [...sunAbilities],
                 fallback: [
                     {
-                        ...POKEDEF_RU,
+                        ...POKEDEF_RU_ABS,
                         type: [...magmaTeamTypes],
                     }
                 ],
             },
             {
-                ...getBossPreset('MAXIE_CHIMNEY')[4],
+                ...getBossPreset('MAXIE_CHIMNEY', true)[4],
                 type: [magmaTeamTypes[0], magmaTeamTypes[1]],
             },
             {
                 id: 'MAXIE_MEGA',
                 specificIfTier: 'SPECIES_CAMERUPT_MEGA',
-                ...POKEDEF_UU_OU_MEGA,
+                ...POKEDEF_UU_OU_MEGA_ABS,
                 breedTier: 'perfect',
             },
         ],
@@ -2504,12 +2549,12 @@ const trainersData = [
         bag: flanneryBag(),
         team: [
             gymIsChangedType[3] ? {
-                ...getBossPreset('FLANNERY')[0],
+                ...getBossPreset('FLANNERY', true)[0],
                 breedTier: 'perfect',
                 type: [gymMainTypes[3]],
             } : {
                 specificIfTier: 'SPECIES_TORKOAL',
-                ...getBossPreset('FLANNERY')[0],
+                ...getBossPreset('FLANNERY', true)[0],
                 type: [gymMainTypes[3]],
                 abilities: ['DROUGHT'],
                 breedTier: 'perfect',
@@ -2517,27 +2562,27 @@ const trainersData = [
                 tryEvolve: true,
             },
             {
-                ...POKEDEF_UU_OU_MEGA,
+                ...POKEDEF_UU_OU_MEGA_ABS,
                 type: [gymMainTypes[3]],
             },
             {
-                ...getBossPreset('FLANNERY')[1],
+                ...getBossPreset('FLANNERY', true)[1],
                 type: [gymMainTypes[3]],
             },
             {
-                ...getBossPreset('FLANNERY')[2],
+                ...getBossPreset('FLANNERY', true)[2],
                 type: [gymMainTypes[3]],
             },
             gymIsChangedType[3] ? {
-                ...getBossPreset('FLANNERY')[3],
+                ...getBossPreset('FLANNERY', true)[3],
                 type: [gymMainTypes[3]],
             } : {
-                ...getBossPreset('FLANNERY')[3],
+                ...getBossPreset('FLANNERY', true)[3],
                 type: [gymMainTypes[3]],
                 abilities: [...sunAbilities],
             },
             {
-                ...getBossPreset('FLANNERY')[4],
+                ...getBossPreset('FLANNERY', true)[4],
                 type: [gymMainTypes[3]],
             },
         ],
@@ -2650,49 +2695,49 @@ const trainersData = [
         bannedItems: gymIsChangedType[4] ? [] : ['Assault Vest', 'Flame Orb', 'Toxic Orb'],
         team: [
             {
-                ...getBossPreset('NORMAN')[0],
+                ...getBossPreset('NORMAN', true)[0],
                 type: [gymMainTypes[4]],
             },
             gymIsChangedType[4] ? {
-                ...getBossPreset('NORMAN')[1],
+                ...getBossPreset('NORMAN', true)[1],
                 breedTier: 'perfect',
                 type: [gymMainTypes[4]],
             } : {
                 specificIfTier: 'SPECIES_SLAKING',
-                ...getBossPreset('NORMAN')[1],
+                ...getBossPreset('NORMAN', true)[1],
                 breedTier: 'perfect',
                 type: [gymMainTypes[4]],
             },
             {
-                ...getBossPreset('NORMAN')[2],
+                ...getBossPreset('NORMAN', true)[2],
                 type: [gymMainTypes[4]],
             },
             {
-                ...getBossPreset('NORMAN')[3],
+                ...getBossPreset('NORMAN', true)[3],
                 type: [gymMainTypes[4]],
             },
             {
-                ...getBossPreset('NORMAN')[4],
+                ...getBossPreset('NORMAN', true)[4],
                 type: [gymMainTypes[4]],
             },
             {
-                ...POKEDEF_UU_OU_MEGA,
+                ...POKEDEF_UU_OU_MEGA_ABS,
                 type: [gymMainTypes[4]],
                 fallback: [
                    {
                         isMega: true,
-                        contextualTier: [TIER_UU, TIER_OU, TIER_UBERS],
+                        absoluteTier: [TIER_UU, TIER_OU, TIER_UBERS],
                         type: [gymMainTypes[4]],
                         checkValidEvo: true,
                         tryEvolve: true,
                    },
                    {
-                        contextualTier: [TIER_OU],
+                        absoluteTier: [TIER_OU],
                         type: [gymMainTypes[4]],
                         checkValidEvo: true,
                    },
                    {
-                        contextualTier: [TIER_UU],
+                        absoluteTier: [TIER_UU],
                         type: [gymMainTypes[4]],
                         checkValidEvo: true,
                    }
@@ -2836,28 +2881,28 @@ const trainersData = [
         bag: [...shellyBag()],
         team: [
             {
-                ...getBossPreset('SHELLY_WEATHER')[0],
+                ...getBossPreset('SHELLY_WEATHER', true)[0],
                 type: [aquaTeamTypes[0]],
             },
             {
-                ...getBossPreset('SHELLY_WEATHER')[1],
+                ...getBossPreset('SHELLY_WEATHER', true)[1],
                 type: [aquaTeamTypes[1]],
             },
             {
-                ...getBossPreset('SHELLY_WEATHER')[2],
+                ...getBossPreset('SHELLY_WEATHER', true)[2],
                 type: [aquaTeamTypes[2]],
             },
             {
-                ...getBossPreset('SHELLY_WEATHER')[3],
+                ...getBossPreset('SHELLY_WEATHER', true)[3],
                 type: [aquaTeamTypes[3]],
             },
             {
-                ...getBossPreset('SHELLY_WEATHER')[4],
+                ...getBossPreset('SHELLY_WEATHER', true)[4],
                 type: [aquaTeamTypes[4]],
             },
             {
                 isMega: true,
-                contextualTier: [TIER_UU, TIER_OU],
+                absoluteTier: [TIER_UU, TIER_OU],
                 checkValidEvo: true,
                 tryEvolve: true,
                 type: [...aquaTeamTypes],
@@ -2995,41 +3040,41 @@ const trainersData = [
         bag: [...winonaBag(), 'Flying Gem'],
         team: [
             {
-                ...getBossPreset('WINONA')[0],
+                ...getBossPreset('WINONA', true)[0],
                 type: [gymMainTypes[5]],
                 mustHaveOneOfMoves: ['MOVE_TAILWIND'],
                 tryToHaveMove: ['MOVE_TAILWIND'],
                 fallback: [
                     {
-                        ...getBossPreset('WINONA')[0],
+                        ...getBossPreset('WINONA', true)[0],
                         type: [gymMainTypes[5]],
                     },
                 ]
             },
             gymIsChangedType[5] ? {
-                ...POKEDEF_UU_OU_MEGA,
+                ...POKEDEF_UU_OU_MEGA_ABS,
                 breedTier: 'perfect',
                 type: [gymMainTypes[5]],
             } : {
                 specificIfTier: 'SPECIES_ALTARIA_MEGA',
-                ...POKEDEF_UU_OU_MEGA,
+                ...POKEDEF_UU_OU_MEGA_ABS,
                 breedTier: 'perfect',
                 type: [gymMainTypes[5]],
             },
             {
-                ...getBossPreset('WINONA')[1],
+                ...getBossPreset('WINONA', true)[1],
                 type: [gymMainTypes[5]],
             },
             {
-                ...getBossPreset('WINONA')[2],
+                ...getBossPreset('WINONA', true)[2],
                 type: [gymMainTypes[5]],
             },
             {
-                ...getBossPreset('WINONA')[3],
+                ...getBossPreset('WINONA', true)[3],
                 type: [gymMainTypes[5]],
             },
             {
-                ...getBossPreset('WINONA')[4],
+                ...getBossPreset('WINONA', true)[4],
                 type: [gymMainTypes[5]],
             },
         ],
@@ -3196,20 +3241,20 @@ const trainersData = [
         preventShuffle: true,
         bag: [...wallyBag2()],
         team: [
-            pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA')[0]),
+            pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA', true)[0]),
             {
-                ...getBossPreset('MAXIE_MAGMA')[1],
+                ...getBossPreset('MAXIE_MAGMA', true)[1],
                 type: [magmaTeamTypes[1]],
                 abilities: [...sunAbilities],
             },
-            pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA')[2]),
+            pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA', true)[2]),
             {
-                ...getBossPreset('MAXIE_MAGMA')[3],
+                ...getBossPreset('MAXIE_MAGMA', true)[3],
                 type: [...magmaTeamTypes],
                 abilities: [...sunAbilities],
             },
             {
-                ...getBossPreset('MAXIE_MAGMA')[4],
+                ...getBossPreset('MAXIE_MAGMA', true)[4],
                 type: [...magmaTeamTypes],
                 abilities: [...sunAbilities],
             },
@@ -3271,21 +3316,21 @@ const trainersData = [
         preventShuffle: true,
         bag: [...wallyBag2()],
         team: [
-            pokeDefSnowWarningMon(getBossPreset('MATT_AQUA')[0]),
+            pokeDefSnowWarningMon(getBossPreset('MATT_AQUA', true)[0]),
             {
-                ...getBossPreset('MATT_AQUA')[1],
+                ...getBossPreset('MATT_AQUA', true)[1],
                 abilities: [...snowAbilities],
             },
             {
-                ...getBossPreset('MATT_AQUA')[2],
+                ...getBossPreset('MATT_AQUA', true)[2],
                 abilities: [...snowAbilities],
             },
             {
-                ...getBossPreset('MATT_AQUA')[3],
+                ...getBossPreset('MATT_AQUA', true)[3],
                 abilities: [...snowAbilities],
             },
             {
-                ...getBossPreset('MATT_AQUA')[4],
+                ...getBossPreset('MATT_AQUA', true)[4],
                 abilities: [...snowAbilities],
             },
             {
@@ -3371,10 +3416,10 @@ const trainersData = [
         bannedItems: gymIsChangedType[6] ? [] : ['Focus Sash', 'Room Service', 'Light Clay'],
         team: [
             gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA')[0],
+                ...getBossPreset('TATE_AND_LIZA', true)[0],
                 type: [gymMainTypes[6]],
             } : {
-                ...getBossPreset('TATE_AND_LIZA')[0],
+                ...getBossPreset('TATE_AND_LIZA', true)[0],
                 mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
                 tryToHaveMove: ['MOVE_TRICK_ROOM'],
                 type: [gymMainTypes[6]],
@@ -3382,7 +3427,7 @@ const trainersData = [
                 pickBest: true,
                 fallback: [
                     {
-                        ...getBossPreset('TATE_AND_LIZA')[0],
+                        ...getBossPreset('TATE_AND_LIZA', true)[0],
                         checkValidEvo: true,
                         type: [gymMainTypes[6]],
                         item: 'Focus Sash',
@@ -3390,7 +3435,7 @@ const trainersData = [
                 ]
             },
             gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA')[1],
+                ...getBossPreset('TATE_AND_LIZA', true)[1],
                 breedTier: 'perfect',
                 type: [gymMainTypes[6]],
             } : (tateAndLizaUseSolrock ?
@@ -3409,130 +3454,130 @@ const trainersData = [
                 nature: 'Sassy',
             }),
             gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA')[2],
+                ...getBossPreset('TATE_AND_LIZA', true)[2],
                 type: [gymMainTypes[6]],
             } : (tateAndLizaUseSolrock ?
             {
                 specificIfTier: 'SPECIES_LUNALA',
-                ...POKEDEF_LEGEND,
+                ...POKEDEF_LEGEND_ABS,
                 item: 'Room Service',
                 nature: 'Quiet',
                 fallback: [
                     {
                         specificIfTier: 'SPECIES_LUNALA',
-                        ...POKEDEF_UBERS,
+                        ...POKEDEF_UBERS_ABS,
                         item: 'Room Service',
                         nature: 'Quiet',
                     },
                     {
                         specificIfTier: 'SPECIES_LUNALA',
-                        ...POKEDEF_OU,
+                        ...POKEDEF_OU_ABS,
                         item: 'Room Service',
                         nature: 'Quiet',
                     },
                     {
-                        ...POKEDEF_OU,
+                        ...POKEDEF_OU_ABS,
                         type: [gymMainTypes[6]],
                     }
                 ]
             } : {
                 specificIfTier: 'SPECIES_SOLGALEO',
-                ...POKEDEF_LEGEND,
+                ...POKEDEF_LEGEND_ABS,
                 item: 'Room Service',
                 nature: 'Brave',
                 fallback: [
                     {
                         specificIfTier: 'SPECIES_SOLGALEO',
-                        ...POKEDEF_UBERS,
+                        ...POKEDEF_UBERS_ABS,
                         item: 'Room Service',
                         nature: 'Quiet',
                     },
                     {
                         specificIfTier: 'SPECIES_SOLGALEO',
-                        ...POKEDEF_OU,
+                        ...POKEDEF_OU_ABS,
                         item: 'Room Service',
                         nature: 'Quiet',
                     },
                     {
-                        ...POKEDEF_OU,
+                        ...POKEDEF_OU_ABS,
                         type: [gymMainTypes[6]],
                     }
                 ]
             }),
             gymIsChangedType[6] ? {
-                ...POKEDEF_MEGA,
+                ...POKEDEF_MEGA_ABS,
                 type: [gymMainTypes[6]],
             } : {
-                ...POKEDEF_MEGA,
+                ...POKEDEF_MEGA_ABS,
                 hasStat: ['baseSpeed', '<', '50'],
                 type: [gymMainTypes[6]],
                 fallback: [
                     {
-                        ...POKEDEF_MEGA,
+                        ...POKEDEF_MEGA_ABS,
                         hasStat: ['baseSpeed', '<', '70'],
                         type: [gymMainTypes[6]],
                     },
                     {
-                        ...POKEDEF_MEGA,
+                        ...POKEDEF_MEGA_ABS,
                         type: [gymMainTypes[6]],
                     },
                     {
-                        ...POKEDEF_OU,
+                        ...POKEDEF_OU_ABS,
                         type: [gymMainTypes[6]],
                     },
                 ]
             },
             gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA')[3],
+                ...getBossPreset('TATE_AND_LIZA', true)[3],
                 type: [gymMainTypes[6]],
             } : {
-                ...getBossPreset('TATE_AND_LIZA')[3],
+                ...getBossPreset('TATE_AND_LIZA', true)[3],
                 type: [gymMainTypes[6]],
                 hasStat: ['baseSpeed', '<', '50'],
                 fallback: [
                     {
-                        contextualTier: [TIER_UU],
+                        absoluteTier: [TIER_UU],
                         checkValidEvo: true,
                         type: [gymMainTypes[6]],
                         hasStat: ['baseSpeed', '<', '70'],
                     },
                     {
-                        contextualTier: [TIER_RU],
+                        absoluteTier: [TIER_RU],
                         checkValidEvo: true,
                         type: [gymMainTypes[6]],
                         hasStat: ['baseSpeed', '<', '50'],
                         pickBest: true,
                     },
                     {
-                        contextualTier: [TIER_UU],
+                        absoluteTier: [TIER_UU],
                         checkValidEvo: true,
                         type: [gymMainTypes[6]],
                     },
                 ],
             },
             gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA')[4],
+                ...getBossPreset('TATE_AND_LIZA', true)[4],
                 type: [gymMainTypes[6]],
             } : {
-                ...getBossPreset('TATE_AND_LIZA')[4],
+                ...getBossPreset('TATE_AND_LIZA', true)[4],
                 type: [gymMainTypes[6]],
                 hasStat: ['baseSpeed', '<', '50'],
                 fallback: [
                     {
-                        contextualTier: [TIER_UU],
+                        absoluteTier: [TIER_UU],
                         checkValidEvo: true,
                         type: [gymMainTypes[6]],
                         hasStat: ['baseSpeed', '<', '70'],
                     },
                     {
-                        contextualTier: [TIER_RU],
+                        absoluteTier: [TIER_RU],
                         checkValidEvo: true,
                         type: [gymMainTypes[6]],
                         hasStat: ['baseSpeed', '<', '50'],
                         pickBest: true,
                     },
                     {
-                        contextualTier: [TIER_UU],
+                        absoluteTier: [TIER_UU],
                         checkValidEvo: true,
                         type: [gymMainTypes[6]],
                     },
@@ -3656,17 +3701,17 @@ const trainersData = [
         team: [
             {
                 id: 'STEVEN_LEGEND',
-                ...POKEDEF_LEGEND,
+                ...POKEDEF_LEGEND_ABS,
                 type: [POKEMON_TYPE_STEEL],
                 fallback: [
                     {
                         id: 'STEVEN_LEGEND',
-                        ...POKEDEF_LEGEND,
+                        ...POKEDEF_LEGEND_ABS,
                         type: [POKEMON_TYPE_ROCK],
                     },
                     {
                         id: 'STEVEN_LEGEND',
-                        ...POKEDEF_LEGEND,
+                        ...POKEDEF_LEGEND_ABS,
                     },
                 ],
             },
@@ -3693,31 +3738,31 @@ const trainersData = [
         bag: [...spaceCenterBag()],
         team: [
             {
-                ...getBossPreset('TABITHA_MOSSDEEP')[0],
+                ...getBossPreset('TABITHA_MOSSDEEP', true)[0],
                 abilities: [...sunAbilities],
                 fallback: [
                     {
-                        contextualTier: [TIER_UU],
+                        absoluteTier: [TIER_UU],
                         checkValidEvo: true,
                         abilities: [...sunAbilities],
                     },
                 ],
             },
             {
-                ...POKEDEF_UU_OU_MEGA,
+                ...POKEDEF_UU_OU_MEGA_ABS,
                 type: [magmaTeamTypes[0]],
                 fallback: [
                     {
-                        ...POKEDEF_UU_OU_MEGA,
+                        ...POKEDEF_UU_OU_MEGA_ABS,
                         type: [magmaTeamTypes[0]],
                     },
                     {
-                        ...POKEDEF_UU_OU_MEGA,
+                        ...POKEDEF_UU_OU_MEGA_ABS,
                         type: [...magmaTeamTypes],
                     },
                 ]
             },
-            pokeDefDroughtMon(getBossPreset('TABITHA_MOSSDEEP')[1]),
+            pokeDefDroughtMon(getBossPreset('TABITHA_MOSSDEEP', true)[1]),
         ],
     },
     {
@@ -3732,23 +3777,23 @@ const trainersData = [
         team: [
             {
                 specificIfTier: 'SPECIES_GROUDON',
-                ...getBossPreset('MAXIE_MOSSDEEP')[0],
+                ...getBossPreset('MAXIE_MOSSDEEP', true)[0],
                 item: 'Heat Rock',
                 fallback: [
                     {
                         specificIfTier: 'SPECIES_GROUDON',
-                        contextualTier: [TIER_OU],
+                        absoluteTier: [TIER_OU],
                         item: 'Heat Rock',
                     },
-                    pokeDefDroughtMon(getBossPreset('MAXIE_MOSSDEEP')[0]),
+                    pokeDefDroughtMon(getBossPreset('MAXIE_MOSSDEEP', true)[0]),
                 ]
             },
             {
-                ...getBossPreset('MAXIE_MOSSDEEP')[1],
+                ...getBossPreset('MAXIE_MOSSDEEP', true)[1],
                 abilities: [...sunAbilities],
                 pickBest: true,
             },
-            pokeDefUbersMega({
+            pokeDefUbersMegaAbs({
                 type: [magmaTeamTypes[0]],
             }),
         ],
@@ -3855,43 +3900,43 @@ const trainersData = [
         team: [
             {
                 specificIfTier: 'SPECIES_KYOGRE',
-                ...getBossPreset('ARCHIE')[0],
+                ...getBossPreset('ARCHIE', true)[0],
                 item: 'Damp Rock',
                 fallback: [
                     {
                         specificIfTier: 'SPECIES_KYOGRE',
-                        contextualTier: [TIER_UBERS],
+                        absoluteTier: [TIER_UBERS],
                         checkValidEvo: true,
                         item: 'Damp Rock',
                     },
                     {
                         specificIfTier: 'SPECIES_KYOGRE',
-                        contextualTier: [TIER_OU],
+                        absoluteTier: [TIER_OU],
                         checkValidEvo: true,
                         item: 'Damp Rock',
                     },
-                    pokeDefDrizzleMon(getBossPreset('ARCHIE')[0]),
+                    pokeDefDrizzleMon(getBossPreset('ARCHIE', true)[0]),
                 ]
             },
             {
                 specificIfTier: 'SPECIES_SHARPEDO_MEGA',
-                ...POKEDEF_UU_OU_MEGA,
+                ...POKEDEF_UU_OU_MEGA_ABS,
                 breedTier: 'perfect',
                 nature: 'Adamant',
             },
             {
-                ...getBossPreset('ARCHIE')[1],
+                ...getBossPreset('ARCHIE', true)[1],
                 abilities: [...rainAbilities],
                 type: [...aquaTeamTypes],
             },
             {
-                ...getBossPreset('ARCHIE')[2],
+                ...getBossPreset('ARCHIE', true)[2],
                 abilities: [...rainAbilities],
                 type: [aquaTeamTypes[1], aquaTeamTypes[2], aquaTeamTypes[3], aquaTeamTypes[4]],
             },
-            pokeDefDrizzleMon(getBossPreset('ARCHIE')[3]),
+            pokeDefDrizzleMon(getBossPreset('ARCHIE', true)[3]),
             {
-                ...getBossPreset('ARCHIE')[4],
+                ...getBossPreset('ARCHIE', true)[4],
                 abilities: [...rainAbilities],
                 type: [...aquaTeamTypes],
             },
@@ -3933,33 +3978,33 @@ const trainersData = [
         bag: [...juanBag()],
         team: [
             {
-                ...getBossPreset('JUAN')[0],
+                ...getBossPreset('JUAN', true)[0],
                 type: [gymMainTypes[7]],
             },
             {
-                ...getBossPreset('JUAN')[1],
+                ...getBossPreset('JUAN', true)[1],
                 type: [gymMainTypes[7]],
             },
             {
-                ...getBossPreset('JUAN')[2],
+                ...getBossPreset('JUAN', true)[2],
                 type: [gymMainTypes[7]],
             },
             {
-                ...getBossPreset('JUAN')[3],
+                ...getBossPreset('JUAN', true)[3],
                 type: [gymMainTypes[7]],
             },
             gymIsChangedType[7] ? {
-                ...getBossPreset('JUAN')[4],
+                ...getBossPreset('JUAN', true)[4],
                 breedTier: 'perfect',
                 type: [gymMainTypes[7]],
             } : {
                 specificIfTier: 'SPECIES_KINGDRA',
-                ...getBossPreset('JUAN')[4],
+                ...getBossPreset('JUAN', true)[4],
                 breedTier: 'perfect',
                 type: [gymMainTypes[7]],
             },
             {
-                ...getBossPreset('JUAN')[5],
+                ...getBossPreset('JUAN', true)[5],
                 type: [gymMainTypes[7]],
             },
         ],
@@ -4061,7 +4106,7 @@ const trainersData = [
         level: 67,
         bag: [...juanBag()],
         team: [
-            POKEDEF_UBERS,
+            POKEDEF_UBERS_ABS,
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'WALLY_1',
@@ -4254,12 +4299,12 @@ const trainersData = [
         level: 73,
         bag: [...endgameBag()],
         team: [
-            { ...getBossPreset('SIDNEY')[0], type: [e41MainType] },
-            { ...getBossPreset('SIDNEY')[1], type: [e41MainType] },
-            { ...getBossPreset('SIDNEY')[2], type: [e41MainType] },
-            { ...getBossPreset('SIDNEY')[3], type: [e41MainType] },
-            { ...getBossPreset('SIDNEY')[4], type: [e41MainType] },
-            pokeDefMega({ type: [e41MainType] }),
+            { ...getBossPreset('SIDNEY', true)[0], type: [e41MainType] },
+            { ...getBossPreset('SIDNEY', true)[1], type: [e41MainType] },
+            { ...getBossPreset('SIDNEY', true)[2], type: [e41MainType] },
+            { ...getBossPreset('SIDNEY', true)[3], type: [e41MainType] },
+            { ...getBossPreset('SIDNEY', true)[4], type: [e41MainType] },
+            pokeDefMegaAbs({ type: [e41MainType] }),
         ],
     },
     {
@@ -4271,12 +4316,12 @@ const trainersData = [
         level: 74,
         bag: [...endgameBag()],
         team: [
-            { ...getBossPreset('PHOEBE')[0], type: [e42MainType] },
-            { ...getBossPreset('PHOEBE')[1], type: [e42MainType] },
-            { ...getBossPreset('PHOEBE')[2], type: [e42MainType] },
-            { ...getBossPreset('PHOEBE')[3], type: [e42MainType] },
-            { ...getBossPreset('PHOEBE')[4], type: [e42MainType] },
-            pokeDefMega({ type: [e42MainType] }),
+            { ...getBossPreset('PHOEBE', true)[0], type: [e42MainType] },
+            { ...getBossPreset('PHOEBE', true)[1], type: [e42MainType] },
+            { ...getBossPreset('PHOEBE', true)[2], type: [e42MainType] },
+            { ...getBossPreset('PHOEBE', true)[3], type: [e42MainType] },
+            { ...getBossPreset('PHOEBE', true)[4], type: [e42MainType] },
+            pokeDefMegaAbs({ type: [e42MainType] }),
         ],
     },
     {
@@ -4288,12 +4333,12 @@ const trainersData = [
         level: 75,
         bag: [...endgameBag()],
         team: [
-            { ...getBossPreset('GLACIA')[0], type: [e43MainType] },
-            { ...getBossPreset('GLACIA')[1], type: [e43MainType] },
-            { ...getBossPreset('GLACIA')[2], type: [e43MainType] },
-            { ...getBossPreset('GLACIA')[3], type: [e43MainType] },
-            { ...getBossPreset('GLACIA')[4], type: [e43MainType] },
-            pokeDefUbersMega({ type: [e43MainType] }),
+            { ...getBossPreset('GLACIA', true)[0], type: [e43MainType] },
+            { ...getBossPreset('GLACIA', true)[1], type: [e43MainType] },
+            { ...getBossPreset('GLACIA', true)[2], type: [e43MainType] },
+            { ...getBossPreset('GLACIA', true)[3], type: [e43MainType] },
+            { ...getBossPreset('GLACIA', true)[4], type: [e43MainType] },
+            pokeDefUbersMegaAbs({ type: [e43MainType] }),
         ],
     },
     {
@@ -4305,12 +4350,12 @@ const trainersData = [
         level: 76,
         bag: [...endgameBag()],
         team: [
-            { ...getBossPreset('DRAKE')[0], type: [e44MainType] },
-            { ...getBossPreset('DRAKE')[1], type: [e44MainType] },
-            { ...getBossPreset('DRAKE')[2], type: [e44MainType] },
-            { ...getBossPreset('DRAKE')[3], type: [e44MainType] },
-            { ...getBossPreset('DRAKE')[4], type: [e44MainType] },
-            pokeDefUbersMega({ type: [e44MainType] }),
+            { ...getBossPreset('DRAKE', true)[0], type: [e44MainType] },
+            { ...getBossPreset('DRAKE', true)[1], type: [e44MainType] },
+            { ...getBossPreset('DRAKE', true)[2], type: [e44MainType] },
+            { ...getBossPreset('DRAKE', true)[3], type: [e44MainType] },
+            { ...getBossPreset('DRAKE', true)[4], type: [e44MainType] },
+            pokeDefUbersMegaAbs({ type: [e44MainType] }),
         ],
     },
     {
@@ -4323,20 +4368,20 @@ const trainersData = [
         bag: [...endgameBag()],
         team: [
             {
-                ...getBossPreset('CHAMPION_STEVEN')[0],
+                ...getBossPreset('CHAMPION_STEVEN', true)[0],
                 hasStat: ['baseBST', '<', '851'],
             },
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_LEGEND',
             },
-            getBossPreset('CHAMPION_STEVEN')[1],
+            getBossPreset('CHAMPION_STEVEN', true)[1],
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_OU',
                 tryEvolve: true,
             },
-            getBossPreset('CHAMPION_STEVEN')[2],
+            getBossPreset('CHAMPION_STEVEN', true)[2],
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_MEGA',
