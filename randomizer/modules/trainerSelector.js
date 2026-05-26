@@ -9,7 +9,13 @@ const {
     TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
     TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES,
 } = require('../constants');
+const { TIER_SEQ } = require('../constants');
 const { sample, checkValidEvo, getFamilyGroup, hasValidMega } = require('./utils');
+
+function tiersUpTo(maxTier) {
+    const idx = TIER_SEQ.indexOf(maxTier);
+    return idx === -1 ? [maxTier] : TIER_SEQ.slice(0, idx + 1);
+}
 
 const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
 
@@ -163,6 +169,15 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         }
         if (trainerMonDefinition.absoluteTier) {
             pokemonLooseList = pokemonLooseList.filter(p => trainerMonDefinition.absoluteTier.includes(p.rating.tier));
+        }
+        if (trainerMonDefinition.maxBaseTier) {
+            const allowedBaseTiers = tiersUpTo(trainerMonDefinition.maxBaseTier);
+            pokemonLooseList = pokemonLooseList.filter(p => {
+                const baseFormId = p.evolutionData?.megaBaseForm;
+                if (!baseFormId) return false;
+                const baseForm = pokemonList.find(b => b.id === baseFormId);
+                return baseForm && allowedBaseTiers.includes(baseForm.rating.tier);
+            });
         }
         if (trainerMonDefinition.contextualTier) {
             const cap = nearestCap(trainer.level);

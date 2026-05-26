@@ -69,19 +69,44 @@ function getBossTeam(split) {
     return split.fair;
 }
 
+function convertSlotToAbsolute(slot) {
+    if (!slot) return slot;
+    const result = { ...slot };
+    if (result.contextualTier && !result.isMega) {
+        result.absoluteTier = result.contextualTier;
+        delete result.contextualTier;
+    }
+    if (result.fallback) {
+        result.fallback = result.fallback.map(convertSlotToAbsolute);
+    }
+    return result;
+}
+
+const BASE_TIER_CAPS = {
+    [TIER_UU]: TIER_RU,
+    [TIER_OU]: TIER_UU,
+};
+
+const MEGA_BASE_TIER_EXEMPT_SPLITS = new Set(['WATTSON', 'WINONA']);
+
 // Non-boss team = 2-shift-down of the fair boss team.
 // megaTier=null: isMega slots replaced with lowest non-mega tier (no tryMega).
-// megaTier=TIER_X: isMega slots become { tryMega: true, contextualTier: [TIER_X] }.
+// megaTier=TIER_X: isMega slots become { isMega: true, absoluteTier: tiersUpTo(TIER_X), maxBaseTier? }.
 // If the split has no isMega slot and megaTier is provided, injects tryMega at slot 0.
-function getNonBossTeam(split, megaTier = null) {
+// useAbsoluteTier=true: converts all non-mega contextualTier slots to absoluteTier.
+function getNonBossTeam(split, megaTier = null, useAbsoluteTier = false) {
     const bossTeam = getBossTeam(split);
     const transformed = easyTransform(bossTeam);
     const hasMegaSlot = transformed.some(s => s.isMega);
 
     if (!hasMegaSlot) {
-        if (!megaTier) return transformed;
+        if (!megaTier) {
+            if (useAbsoluteTier) return transformed.map(convertSlotToAbsolute);
+            return transformed;
+        }
         const result = [...transformed];
         result[0] = { tryMega: true, contextualTier: [megaTier], checkValidEvo: true };
+        if (useAbsoluteTier) return result.map(convertSlotToAbsolute);
         return result;
     }
 
@@ -92,10 +117,18 @@ function getNonBossTeam(split, megaTier = null) {
         return idx < min ? idx : min;
     }, TIER_SEQ.length - 1);
     const lowestTier = TIER_SEQ[lowestIdx];
+    const megaBaseTierCap = megaTier ? BASE_TIER_CAPS[megaTier] : undefined;
     const megaSlot = megaTier
-        ? { isMega: true, absoluteTier: tiersUpTo(megaTier), checkValidEvo: true }
+        ? {
+            isMega: true,
+            absoluteTier: tiersUpTo(megaTier),
+            ...(megaBaseTierCap !== undefined ? { maxBaseTier: megaBaseTierCap } : {}),
+            checkValidEvo: true,
+          }
         : { contextualTier: [lowestTier], checkValidEvo: true };
-    return transformed.map(s => s.isMega ? megaSlot : s);
+    const result = transformed.map(s => s.isMega ? megaSlot : s);
+    if (useAbsoluteTier) return result.map(convertSlotToAbsolute);
+    return result;
 }
 
 // ─── SPLITS ──────────────────────────────────────────────────────────────────
@@ -495,10 +528,20 @@ function getBossPreset(splitId) {
     return getBossTeam(split);
 }
 
-function getNonBossPreset(splitId, megaTier = null) {
+function getNonBossPreset(splitId, megaTier = null, useAbsoluteTier = false) {
     const split = SPLITS.find(s => s.id === splitId);
     if (!split) throw new Error(`No preset split: ${splitId}`);
-    return getNonBossTeam(split, megaTier);
+    let team = getNonBossTeam(split, megaTier, useAbsoluteTier);
+    if (MEGA_BASE_TIER_EXEMPT_SPLITS.has(splitId)) {
+        team = team.map(slot => {
+            if (slot.maxBaseTier !== undefined) {
+                const { maxBaseTier, ...rest } = slot;
+                return rest;
+            }
+            return slot;
+        });
+    }
+    return team;
 }
 
 module.exports = {

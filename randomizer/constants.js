@@ -256,15 +256,15 @@ const constants = {
     // Pre-evo modifier ranges per pre-evo tier (the pokemon that HOLDS the evo entry)
     // Expressed as decimal fractions (e.g. -0.25 = 25% earlier)
     EVO_LEVEL_PRE_EVO_MODIFIERS: {
-        MAGIKARP: [-0.25, -0.21],
-        ZU:       [-0.20, -0.16],
-        PU:       [-0.15, -0.11],
-        NU:       [-0.05, -0.01],
-        RU:       [ 0.05,  0.09],
-        UU:       [ 0.15,  0.19],
-        OU:       [ 0.25,  0.29],
-        UBERS:    [ 0.35,  0.39],
-        AG:       [ 0.40,  0.44],
+        MAGIKARP: [-0.20, -0.16],
+        ZU:       [-0.15, -0.11],
+        PU:       [-0.10, -0.06],
+        NU:       [-0.05,  0.00],
+        RU:       [ 0.01,  0.05],
+        UU:       [ 0.06,  0.10],
+        OU:       [ 0.11,  0.20],
+        UBERS:    [ 0.21,  0.40],
+        AG:       [ 0.41,  0.60],
     },
 
     // Stage adjustments per evolution type
@@ -273,8 +273,8 @@ const constants = {
     // NFE_OF_3 = middle of 3-stage line → evolves 20% later
     EVO_LEVEL_STAGE_ADJUSTMENTS: {
         EVO_TYPE_LC_OF_2:  0.00,
-        EVO_TYPE_LC_OF_3: -0.20,
-        EVO_TYPE_NFE_OF_3: 0.20,
+        EVO_TYPE_LC_OF_3: -0.10,
+        EVO_TYPE_NFE_OF_3: 0.10,
     },
 
     // Random deviation: ±5%

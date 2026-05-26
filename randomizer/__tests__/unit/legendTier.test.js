@@ -1,6 +1,6 @@
 'use strict';
 
-const { ratePokemon } = require('../../rating');
+const { ratePokemon, rateContextual } = require('../../rating');
 const moves = require('../fixtures/miniMoves');
 const abilities = require('../fixtures/miniAbilities');
 const {
@@ -246,5 +246,44 @@ describe('Stoneless mega (Rayquaza-like) — non-mega tier rules', () => {
         // BST=780 > AG_BST_THRESHOLD(720): non-mega AG BST floor fires → absoluteRating ≥ 9.75 → AG
         const result = ratePokemon(stonelessMega, moves, abilities, new Set());
         expect(result.tier).toBe('AG');
+    });
+});
+
+// Pokemon with no damaging moves at all (e.g. Metapod at low level in contextual rating).
+// Even if teachables include strong moves, an empty tmPool means those aren't available
+// in context — only learnset moves count, and if none are damaging → MAGIKARP.
+const statusOnlyPoke = {
+    id: 'SPECIES_METAPOD_LIKE',
+    family: 'P_FAMILY_TEST_STATUSONLY',
+    form: null,
+    parsedTypes: ['BUG'],
+    parsedAbilities: ['SHED_SKIN'],
+    baseHP: 50, baseAttack: 20, baseDefense: 55,
+    baseSpeed: 30, baseSpAttack: 25, baseSpDefense: 25,
+    baseBST: 205,
+    evolutions: [],
+    evolutionData: { type: 'EVO_TYPE_NFE_OF_3', isMega: false, isLC: false, isNFE: true, isFinal: false, megaEvos: [] },
+    learnset: [
+        { level: 0, move: 'MOVE_HARDEN' },
+        { level: 1, move: 'MOVE_HARDEN' },
+    ],
+    // Teachables contain strong moves (simulating Caterpie-inherited expansion).
+    teachables: ['MOVE_CLOSE_COMBAT', 'MOVE_FLAMETHROWER', 'MOVE_EARTHQUAKE'],
+    newTeachables: [],
+    oldTeachables: [],
+};
+
+describe('no-damage-move MAGIKARP floor', () => {
+    test('rateContextual with tms=[] forces MAGIKARP when all learnset moves are status moves', () => {
+        // No TMs available: only learnset HARDEN accessible → no damage → must be MAGIKARP.
+        const result = rateContextual(statusOnlyPoke, moves, abilities, { level: 15, tms: [] });
+        expect(result.tier).toBe('MAGIKARP');
+    });
+
+    test('ratePokemon with a tmPool that includes a damage move does not zero out absoluteRating', () => {
+        // CLOSE_COMBAT is a teachable and is in the pool → damage is available → override must not fire.
+        // absoluteRating > 0 confirms the force-MAGIKARP override (which sets it to 0) did not run.
+        const result = ratePokemon(statusOnlyPoke, moves, abilities, new Set(['MOVE_CLOSE_COMBAT']));
+        expect(result.absoluteRating).toBeGreaterThan(0);
     });
 });

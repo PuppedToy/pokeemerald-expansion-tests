@@ -211,6 +211,38 @@ describe('createChooser — isMega filter', () => {
     });
 });
 
+describe('createChooser — maxBaseTier filter', () => {
+    test('passes mega whose base form absolute tier is within maxBaseTier', () => {
+        const base = makePoke('SPECIES_BASE_RU', { tier: 'RU', isFinal: true });
+        const mega = makePoke('SPECIES_BASE_RU_MEGA', { tier: 'OU', isMega: true, megaBaseForm: 'SPECIES_BASE_RU' });
+        const ctx = makeContext();
+        const chooser = makeChooser([base, mega], makeTrainer(32), ctx);
+
+        const result = chooser({ isMega: true, absoluteTier: ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU'], maxBaseTier: 'RU' });
+        expect(result?.id).toBe('SPECIES_BASE_RU_MEGA');
+    });
+
+    test('filters out mega whose base form absolute tier exceeds maxBaseTier', () => {
+        const base = makePoke('SPECIES_BASE_UU', { tier: 'UU', isFinal: true });
+        const mega = makePoke('SPECIES_BASE_UU_MEGA', { tier: 'OU', isMega: true, megaBaseForm: 'SPECIES_BASE_UU' });
+        const ctx = makeContext();
+        const chooser = makeChooser([base, mega], makeTrainer(32), ctx);
+
+        const result = chooser({ isMega: true, absoluteTier: ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU'], maxBaseTier: 'RU' });
+        expect(result).toBeUndefined();
+    });
+
+    test('without maxBaseTier all megas remain eligible regardless of base form tier', () => {
+        const base = makePoke('SPECIES_BASE_UU2', { tier: 'UU', isFinal: true });
+        const mega = makePoke('SPECIES_BASE_UU2_MEGA', { tier: 'OU', isMega: true, megaBaseForm: 'SPECIES_BASE_UU2' });
+        const ctx = makeContext();
+        const chooser = makeChooser([base, mega], makeTrainer(32), ctx);
+
+        const result = chooser({ isMega: true, absoluteTier: ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU'] });
+        expect(result?.id).toBe('SPECIES_BASE_UU2_MEGA');
+    });
+});
+
 describe('createChooser — TRAINER_POKE_ENCOUNTER + tryMega', () => {
     test('returns the encounter pokemon even when it has no mega (does not filter by hasValidMega)', () => {
         // Froakie has no mega — if hasValidMega were applied, pool would empty → undefined

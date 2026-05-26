@@ -1,7 +1,7 @@
 'use strict';
 
 const { applyTransform, getBossPreset, getNonBossPreset } = require('../../presets');
-const { TIER_OU, TIER_UBERS } = require('../../constants');
+const { TIER_OU, TIER_UBERS, TIER_UU, TIER_RU } = require('../../constants');
 
 describe('applyTransform', () => {
     test('shifts primary contextualTier for the eligible bottom-N slots (up)', () => {
@@ -104,6 +104,80 @@ describe('getNonBossPreset — megaTier injection', () => {
     test('megaTier=null on split without isMega: returns untouched transformed team (no tryMega)', () => {
         const team = getNonBossPreset('CHAMPION_STEVEN');
         expect(team.some(s => s.tryMega)).toBe(false);
+    });
+});
+
+describe('getNonBossPreset — useAbsoluteTier', () => {
+    test('useAbsoluteTier=true: non-mega slots use absoluteTier, not contextualTier', () => {
+        const team = getNonBossPreset('FLANNERY', TIER_OU, true);
+        const nonMegaSlots = team.filter(s => !s.isMega && !s.tryMega);
+        expect(nonMegaSlots.length).toBeGreaterThan(0);
+        nonMegaSlots.forEach(slot => {
+            expect(slot.contextualTier).toBeUndefined();
+            expect(slot.absoluteTier).toBeDefined();
+        });
+    });
+
+    test('useAbsoluteTier=false (default): non-mega slots still use contextualTier', () => {
+        const team = getNonBossPreset('FLANNERY', TIER_OU);
+        const nonMegaSlots = team.filter(s => !s.isMega && !s.tryMega);
+        expect(nonMegaSlots.length).toBeGreaterThan(0);
+        nonMegaSlots.forEach(slot => {
+            expect(slot.contextualTier).toBeDefined();
+            expect(slot.absoluteTier).toBeUndefined();
+        });
+    });
+
+    test('fallback slots are also converted to absoluteTier when useAbsoluteTier=true', () => {
+        // WATTSON has weather-combo slots with fallback entries that carry contextualTier
+        const team = getNonBossPreset('WATTSON', TIER_UU, true);
+        const slotsWithFallback = team.filter(s => s.fallback && s.fallback.length > 0);
+        slotsWithFallback.forEach(slot => {
+            slot.fallback.forEach(fb => {
+                if (fb.contextualTier !== undefined) {
+                    // If the fallback had contextualTier, it should have been converted
+                    expect(fb.absoluteTier).toBeDefined();
+                    expect(fb.contextualTier).toBeUndefined();
+                }
+            });
+        });
+    });
+});
+
+describe('getNonBossPreset — maxBaseTier', () => {
+    test('megaTier=TIER_UU: isMega slot has maxBaseTier=TIER_RU', () => {
+        const team = getNonBossPreset('FLANNERY', TIER_UU, true);
+        const megaSlot = team.find(s => s.isMega);
+        expect(megaSlot).toBeDefined();
+        expect(megaSlot.maxBaseTier).toBe(TIER_RU);
+    });
+
+    test('megaTier=TIER_OU: isMega slot has maxBaseTier=TIER_UU', () => {
+        const team = getNonBossPreset('FLANNERY', TIER_OU, true);
+        const megaSlot = team.find(s => s.isMega);
+        expect(megaSlot).toBeDefined();
+        expect(megaSlot.maxBaseTier).toBe(TIER_UU);
+    });
+
+    test('megaTier=TIER_UBERS: isMega slot has no maxBaseTier (unrestricted)', () => {
+        const team = getNonBossPreset('FLANNERY', TIER_UBERS, true);
+        const megaSlot = team.find(s => s.isMega);
+        expect(megaSlot).toBeDefined();
+        expect(megaSlot.maxBaseTier).toBeUndefined();
+    });
+
+    test('WATTSON split: mega slot has no maxBaseTier despite TIER_UU cap', () => {
+        const team = getNonBossPreset('WATTSON', TIER_UU, true);
+        const megaSlot = team.find(s => s.isMega);
+        expect(megaSlot).toBeDefined();
+        expect(megaSlot.maxBaseTier).toBeUndefined();
+    });
+
+    test('WINONA split: mega slot has no maxBaseTier despite TIER_OU cap', () => {
+        const team = getNonBossPreset('WINONA', TIER_OU, true);
+        const megaSlot = team.find(s => s.isMega);
+        expect(megaSlot).toBeDefined();
+        expect(megaSlot.maxBaseTier).toBeUndefined();
     });
 });
 

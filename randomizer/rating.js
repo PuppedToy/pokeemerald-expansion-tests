@@ -3216,6 +3216,21 @@ function ratePokemon(poke, moves, abilities, tmPool) {
         tier = TIER_MAGIKARP;
     }
 
+    // If no damage moves are reachable in this context (learnset + tmPool-filtered teachables),
+    // the pokemon cannot contribute offensively at all. Force MAGIKARP regardless of BST/ability.
+    // This fires for contextual ratings (tmPool = empty Set) when all learnset moves are status moves.
+    const availableMoveIds = [
+        ...poke.learnset.map(ls => ls.move),
+        ...(poke.teachables || []).filter(m => tmPool && tmPool.has(m)),
+    ];
+    if (!availableMoveIds.some(id => {
+        const m = moves[id];
+        return m && (m.category === 'DAMAGE_CATEGORY_PHYSICAL' || m.category === 'DAMAGE_CATEGORY_SPECIAL');
+    })) {
+        tier = TIER_MAGIKARP;
+        absoluteRating = 0;
+    }
+
     return {
         absoluteRating,
         absoluteBSTRating: bstRating,

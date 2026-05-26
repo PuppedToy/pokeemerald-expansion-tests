@@ -363,31 +363,33 @@ const genericTrainerTeamPostRival        = () => getNonBossPreset('POST_RIVAL');
 const genericTrainerTeamPostWoodsGrunt   = () => getNonBossPreset('PETALBURG_WOODS_GRUNT');
 const genericTrainerTeamPostMuseumGrunts = () => getNonBossPreset('POST_MUSEUM_GRUNTS');
 
-// ── Pre-Flannery post-boss (no mega slot) ─────────────────────────────────────
+// ── Pre-Wattson (contextual tier, no mega) ────────────────────────────────────
 const genericTrainerTeamPostRoxanne      = () => getNonBossPreset('ROXANNE');
 const genericTrainerTeamPostRusturfGrunt = () => getNonBossPreset('RUSTURF_GRUNT');
 const genericTrainerTeamPostBrawly       = () => getNonBossPreset('BRAWLY');
-const genericTrainerTeamPostWattson      = () => getNonBossPreset('WATTSON');
-const genericTrainerTeamPostMaxieChimney = () => getNonBossPreset('MAXIE_CHIMNEY');
 
-// ── Post-Flannery era (OU mega) ───────────────────────────────────────────────
-const genericTrainerTeamPostFlannery      = () => getNonBossPreset('FLANNERY',       TIER_OU);
-const genericTrainerTeamPostNorman        = () => getNonBossPreset('NORMAN',         TIER_OU);
-const genericTrainerTeamPostShelly        = () => getNonBossPreset('SHELLY_WEATHER', TIER_OU);
-const genericTrainerTeamPostWinona        = () => getNonBossPreset('WINONA',         TIER_OU);
-const genericTrainerTeamPostMaxieMagma    = () => getNonBossPreset('MAXIE_MAGMA',    TIER_OU);
-const genericTrainerTeamPostMatt          = () => getNonBossPreset('MATT_AQUA',      TIER_OU);
-const genericTrainerTeamPostTateAndLiza   = () => getNonBossPreset('TATE_AND_LIZA',  TIER_OU);
-const genericTrainerTeamPostMaxieMossdeep = () => getNonBossPreset('MAXIE_MOSSDEEP', TIER_OU);
-const genericTrainerTeamPostArchie        = () => getNonBossPreset('ARCHIE',         TIER_OU);
+// ── PostWattson/PreFlannery (absolute tier, UU mega) ──────────────────────────
+const genericTrainerTeamPostWattson      = () => getNonBossPreset('WATTSON',        TIER_UU, true);
+const genericTrainerTeamPostMaxieChimney = () => getNonBossPreset('MAXIE_CHIMNEY',  TIER_UU, true);
 
-// ── Post-Juan era (UBERS mega) ────────────────────────────────────────────────
-const genericTrainerTeamPostJuan     = () => getNonBossPreset('JUAN',            TIER_UBERS);
-const genericTrainerTeamPostSidney   = () => getNonBossPreset('SIDNEY',          TIER_UBERS);
-const genericTrainerTeamPostPhoebe   = () => getNonBossPreset('PHOEBE',          TIER_UBERS);
-const genericTrainerTeamPostGlacia   = () => getNonBossPreset('GLACIA',          TIER_UBERS);
-const genericTrainerTeamPostDrake    = () => getNonBossPreset('DRAKE',           TIER_UBERS);
-const genericTrainerTeamPostChampion = () => getNonBossPreset('CHAMPION_STEVEN', TIER_UBERS);
+// ── Post-Flannery era (absolute tier, OU mega) ────────────────────────────────
+const genericTrainerTeamPostFlannery      = () => getNonBossPreset('FLANNERY',       TIER_OU, true);
+const genericTrainerTeamPostNorman        = () => getNonBossPreset('NORMAN',         TIER_OU, true);
+const genericTrainerTeamPostShelly        = () => getNonBossPreset('SHELLY_WEATHER', TIER_OU, true);
+const genericTrainerTeamPostWinona        = () => getNonBossPreset('WINONA',         TIER_OU, true);
+const genericTrainerTeamPostMaxieMagma    = () => getNonBossPreset('MAXIE_MAGMA',    TIER_OU, true);
+const genericTrainerTeamPostMatt          = () => getNonBossPreset('MATT_AQUA',      TIER_OU, true);
+const genericTrainerTeamPostTateAndLiza   = () => getNonBossPreset('TATE_AND_LIZA',  TIER_OU, true);
+const genericTrainerTeamPostMaxieMossdeep = () => getNonBossPreset('MAXIE_MOSSDEEP', TIER_OU, true);
+const genericTrainerTeamPostArchie        = () => getNonBossPreset('ARCHIE',         TIER_OU, true);
+
+// ── Post-Juan era (absolute tier, UBERS mega) ─────────────────────────────────
+const genericTrainerTeamPostJuan     = () => getNonBossPreset('JUAN',            TIER_UBERS, true);
+const genericTrainerTeamPostSidney   = () => getNonBossPreset('SIDNEY',          TIER_UBERS, true);
+const genericTrainerTeamPostPhoebe   = () => getNonBossPreset('PHOEBE',          TIER_UBERS, true);
+const genericTrainerTeamPostGlacia   = () => getNonBossPreset('GLACIA',          TIER_UBERS, true);
+const genericTrainerTeamPostDrake    = () => getNonBossPreset('DRAKE',           TIER_UBERS, true);
+const genericTrainerTeamPostChampion = () => getNonBossPreset('CHAMPION_STEVEN', TIER_UBERS, true);
 
 const sample = (array) => {
     return array[Math.floor(rng.random() * array.length)];
@@ -2305,12 +2307,6 @@ const trainersData = [
         team: [
             pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY')[1]),
             {
-                id: 'MAXIE_MEGA',
-                specificIfTier: 'SPECIES_CAMERUPT_MEGA',
-                ...POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
-            },
-            {
                 ...getBossPreset('MAXIE_CHIMNEY')[0],
                 abilities: [...sunAbilities],
                 type: [magmaTeamTypes[0], magmaTeamTypes[1]],
@@ -2344,6 +2340,12 @@ const trainersData = [
             {
                 ...getBossPreset('MAXIE_CHIMNEY')[4],
                 type: [magmaTeamTypes[0], magmaTeamTypes[1]],
+            },
+            {
+                id: 'MAXIE_MEGA',
+                specificIfTier: 'SPECIES_CAMERUPT_MEGA',
+                ...POKEDEF_UU_OU_MEGA,
+                breedTier: 'perfect',
             },
         ],
     },
