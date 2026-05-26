@@ -560,8 +560,8 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                 if (trainer.abilities && trainer.abilities.length > 0) {
                     validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => trainer.abilities.includes(a))];
                 }
-                if (trainerMonDefinition.abilities) {
-                    validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => trainerMonDefinition.abilities.includes(a))];
+                if (effectiveDef?.abilities) {
+                    validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => effectiveDef.abilities.includes(a))];
                 }
                 let ability = null;
                 if (validAbilities.length > 0) {
