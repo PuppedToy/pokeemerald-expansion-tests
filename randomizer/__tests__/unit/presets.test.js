@@ -78,11 +78,21 @@ describe('getNonBossPreset — megaTier injection', () => {
         expect(replacedSlot.contextualTier).toBeDefined();
     });
 
-    test('megaTier=TIER_OU: isMega slot becomes { tryMega: true, contextualTier: [TIER_OU] }', () => {
+    test('megaTier=TIER_OU: isMega slot becomes { isMega: true, absoluteTier: up to OU, no tryMega }', () => {
         const team = getNonBossPreset('FLANNERY', TIER_OU);
-        const megaSlot = team.find(s => s.tryMega);
+        const megaSlot = team.find(s => s.isMega);
         expect(megaSlot).toBeDefined();
-        expect(megaSlot.contextualTier).toEqual([TIER_OU]);
+        expect(megaSlot.tryMega).toBeUndefined();
+        expect(megaSlot.absoluteTier).toContain(TIER_OU);
+        expect(megaSlot.absoluteTier).not.toContain(TIER_UBERS);
+    });
+
+    test('megaTier=TIER_UBERS on split with isMega: slot has absoluteTier including UBERS', () => {
+        const team = getNonBossPreset('FLANNERY', TIER_UBERS);
+        const megaSlot = team.find(s => s.isMega);
+        expect(megaSlot).toBeDefined();
+        expect(megaSlot.absoluteTier).toContain(TIER_OU);
+        expect(megaSlot.absoluteTier).toContain(TIER_UBERS);
     });
 
     test('megaTier=TIER_UBERS on split without isMega: injects tryMega at slot 0', () => {

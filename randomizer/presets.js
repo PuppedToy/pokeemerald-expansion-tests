@@ -7,6 +7,11 @@ const {
     EVO_TYPE_LC,
 } = require('./constants');
 
+function tiersUpTo(maxTier) {
+    const maxIdx = TIER_SEQ.indexOf(maxTier);
+    return maxIdx === -1 ? [maxTier] : TIER_SEQ.slice(0, maxIdx + 1);
+}
+
 function shiftTier(t, delta) {
     const i = TIER_SEQ.indexOf(t);
     return i === -1 ? t : TIER_SEQ[Math.max(0, Math.min(TIER_SEQ.length - 1, i + delta))];
@@ -88,7 +93,7 @@ function getNonBossTeam(split, megaTier = null) {
     }, TIER_SEQ.length - 1);
     const lowestTier = TIER_SEQ[lowestIdx];
     const megaSlot = megaTier
-        ? { tryMega: true, contextualTier: [megaTier], checkValidEvo: true }
+        ? { isMega: true, absoluteTier: tiersUpTo(megaTier), checkValidEvo: true }
         : { contextualTier: [lowestTier], checkValidEvo: true };
     return transformed.map(s => s.isMega ? megaSlot : s);
 }
