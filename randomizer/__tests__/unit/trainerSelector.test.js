@@ -99,6 +99,41 @@ describe('createChooser — contextualTier', () => {
     });
 });
 
+describe('createChooser — contextualTier absolute cap', () => {
+    function makePokeDissonant(id, absoluteTier, contextualTierAtCap) {
+        return {
+            ...makePoke(id, { tier: absoluteTier }),
+            contextualRatings: { 32: { tier: contextualTierAtCap, absoluteRating: 50 } },
+        };
+    }
+
+    test('excludes pokemon whose absolute tier exceeds contextual tier (OU absolute, NU contextual in NU slot)', () => {
+        const ouAbsNuCtx = makePokeDissonant('OU_ABS', 'OU', 'NU');
+        const nuAbsNuCtx = makePoke('NU_ABS', { tier: 'NU' });
+        const chooser = makeChooser([ouAbsNuCtx, nuAbsNuCtx], makeTrainer(32), makeContext());
+
+        const seen = new Set();
+        for (let i = 0; i < 50; i++) {
+            const r = chooser({ contextualTier: ['NU'] });
+            if (r) seen.add(r.id);
+        }
+        expect(seen.has('OU_ABS')).toBe(false);
+        expect(seen.has('NU_ABS')).toBe(true);
+    });
+
+    test('includes pokemon whose absolute tier is below contextual tier (PU absolute, NU contextual in NU slot)', () => {
+        const puAbsNuCtx = makePokeDissonant('PU_ABS', 'PU', 'NU');
+        const chooser = makeChooser([puAbsNuCtx], makeTrainer(32), makeContext());
+        expect(chooser({ contextualTier: ['NU'] })?.id).toBe('PU_ABS');
+    });
+
+    test('includes pokemon whose absolute tier equals contextual tier (NU absolute, NU contextual in NU slot)', () => {
+        const nuAbsNuCtx = makePoke('NU_EXACT', { tier: 'NU' });
+        const chooser = makeChooser([nuAbsNuCtx], makeTrainer(32), makeContext());
+        expect(chooser({ contextualTier: ['NU'] })?.id).toBe('NU_EXACT');
+    });
+});
+
 describe('createChooser — abilities filter', () => {
     test('returns pokemon with the required ability', () => {
         const sandMon = makePoke('SPECIES_SAND', { abilities: ['SAND_STREAM', 'NONE'], tier: 'NU' });

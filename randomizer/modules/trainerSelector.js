@@ -120,7 +120,9 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
             if (specificPokemon && trainerMonDefinition.contextualTier) {
                 const cap = nearestCap(trainer.level);
                 const contextual = specificPokemon.contextualRatings?.[cap];
-                qualifies = !!(contextual && trainerMonDefinition.contextualTier.includes(contextual.tier));
+                qualifies = !!(contextual
+                    && trainerMonDefinition.contextualTier.includes(contextual.tier)
+                    && TIER_SEQ.indexOf(specificPokemon.rating.tier) <= TIER_SEQ.indexOf(contextual.tier));
             } else if (specificPokemon) {
                 qualifies = true;
             }
@@ -183,7 +185,9 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
             const cap = nearestCap(trainer.level);
             pokemonLooseList = pokemonLooseList.filter(p => {
                 const contextual = p.contextualRatings?.[cap];
-                return contextual && trainerMonDefinition.contextualTier.includes(contextual.tier);
+                return contextual
+                    && trainerMonDefinition.contextualTier.includes(contextual.tier)
+                    && TIER_SEQ.indexOf(p.rating.tier) <= TIER_SEQ.indexOf(contextual.tier);
             });
         }
         if (trainerMonDefinition.evoType) {
