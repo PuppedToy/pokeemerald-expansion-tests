@@ -87,6 +87,12 @@ const moves = {
     // --- Hazard and recovery moves for HAZARD+RECOVERY combo tests ---
     MOVE_STEALTH_ROCK: { ...base, id: 'MOVE_STEALTH_ROCK', name: 'Stealth Rock', category: 'DAMAGE_CATEGORY_STATUS', type: 'ROCK', power: 0, accuracy: 0, effect: 'EFFECT_STEALTH_ROCK' },
     MOVE_ROOST:        { ...base, id: 'MOVE_ROOST',        name: 'Roost',        category: 'DAMAGE_CATEGORY_STATUS', type: 'FLYING', power: 0, accuracy: 0, effect: 'EFFECT_ROOST' },
+
+    // --- Fix 9: Dream Eater + sleep move combos ---
+    MOVE_DREAM_EATER:  { ...base, id: 'MOVE_DREAM_EATER',  name: 'Dream Eater',  category: 'DAMAGE_CATEGORY_SPECIAL', type: 'PSYCHIC', power: 100, accuracy: 100, effect: 'EFFECT_DREAM_EATER' },
+    MOVE_SLEEP_POWDER: { ...base, id: 'MOVE_SLEEP_POWDER', name: 'Sleep Powder', category: 'DAMAGE_CATEGORY_STATUS',  type: 'GRASS',   power: 0,   accuracy: 75,  effect: 'EFFECT_NON_VOLATILE_STATUS' },
+    MOVE_SPORE:        { ...base, id: 'MOVE_SPORE',        name: 'Spore',        category: 'DAMAGE_CATEGORY_STATUS',  type: 'GRASS',   power: 0,   accuracy: 100, effect: 'EFFECT_NON_VOLATILE_STATUS' },
+    MOVE_YAWN:         { ...base, id: 'MOVE_YAWN',         name: 'Yawn',         category: 'DAMAGE_CATEGORY_STATUS',  type: 'NORMAL',  power: 0,   accuracy: 0,   effect: 'EFFECT_YAWN' },
 };
 
 module.exports = moves;

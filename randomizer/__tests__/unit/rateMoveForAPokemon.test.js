@@ -283,3 +283,54 @@ describe('Fix 8 — Non-STAB Normal redundancy penalty', () => {
         expect(normalRate).toBeGreaterThan(fightingRate);
     });
 });
+
+// ──────────────────────────────────────────────────────────────────────────────
+describe('Fix 9 — Dream Eater: zero-rated without sleep move, combo-rated with one', () => {
+    test('Dream Eater alone (no sleep move in pool) returns 0', () => {
+        const result = rate(moves.MOVE_DREAM_EATER, RIOLU, {
+            currentMoves: [r.MOVE_TACKLE],
+            otherMoves:   [r.MOVE_SURF],
+        });
+        expect(result).toBe(0);
+    });
+
+    test('Dream Eater with Sleep Powder in otherMoves returns 7', () => {
+        const result = rate(moves.MOVE_DREAM_EATER, RIOLU, {
+            currentMoves: [r.MOVE_TACKLE],
+            otherMoves:   [r.MOVE_SLEEP_POWDER],
+        });
+        expect(result).toBe(7);
+    });
+
+    test('Dream Eater with Sleep Powder already in currentMoves returns 7', () => {
+        const result = rate(moves.MOVE_DREAM_EATER, RIOLU, {
+            currentMoves: [r.MOVE_TACKLE, r.MOVE_SLEEP_POWDER],
+            otherMoves:   [],
+        });
+        expect(result).toBe(7);
+    });
+
+    test('Dream Eater with Spore in otherMoves returns 8', () => {
+        const result = rate(moves.MOVE_DREAM_EATER, RIOLU, {
+            currentMoves: [r.MOVE_TACKLE],
+            otherMoves:   [r.MOVE_SPORE],
+        });
+        expect(result).toBe(8);
+    });
+
+    test('Dream Eater with Spore already in currentMoves returns 8', () => {
+        const result = rate(moves.MOVE_DREAM_EATER, RIOLU, {
+            currentMoves: [r.MOVE_TACKLE, r.MOVE_SPORE],
+            otherMoves:   [],
+        });
+        expect(result).toBe(8);
+    });
+
+    test('Yawn in pool still triggers combo rating 7', () => {
+        const result = rate(moves.MOVE_DREAM_EATER, RIOLU, {
+            currentMoves: [],
+            otherMoves:   [r.MOVE_YAWN],
+        });
+        expect(result).toBe(7);
+    });
+});

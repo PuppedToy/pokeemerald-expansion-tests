@@ -1134,6 +1134,18 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
         if (!hasPartner) return 0;
     }
 
+    // Fix 2: Dream Eater is worthless without a sleep move in the moveset or learnable pool
+    if (move.id === 'MOVE_DREAM_EATER') {
+        const sleepMoveIds = new Set([
+            'MOVE_SLEEP_POWDER', 'MOVE_SPORE', 'MOVE_HYPNOSIS',
+            'MOVE_GRASS_WHISTLE', 'MOVE_SING', 'MOVE_LOVELY_KISS',
+            'MOVE_YAWN', 'MOVE_DARK_VOID',
+        ]);
+        const allMoves = [...currentMoves, ...otherMoves];
+        if (!allMoves.some(m => sleepMoveIds.has(m.id))) return 0;
+        return allMoves.some(m => m.id === 'MOVE_SPORE') ? 8 : 7;
+    }
+
     // Special Ratings
     if (move.id === 'MOVE_AURORA_VEIL' && hasAbility('SNOW_WARNING')) {
         rating = 10;
