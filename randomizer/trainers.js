@@ -1590,20 +1590,20 @@ const trainersData = [
                 id: 'STEVEN_MEGA',
                 breedTier: 'perfect',
                 type: [POKEMON_TYPE_STEEL],
-                tryEvolve: true,
+                specificIfTier: 'SPECIES_METANG',
                 checkValidEvo: true,
                 megaTier: [TIER_UBERS],
-                contextualTier: [TIER_RU, TIER_NU, TIER_PU, TIER_ZU],
+                contextualTier: [TIER_RU, TIER_NU],
                 evoType: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
                 fallback: [
                     {
                         id: 'STEVEN_MEGA',
                         breedTier: 'perfect',
                         type: [POKEMON_TYPE_STEEL],
-                        tryEvolve: true,
+                        specificIfTier: 'SPECIES_METANG',
                         checkValidEvo: true,
                         megaTier: [TIER_OU, TIER_UU],
-                        contextualTier: [TIER_RU, TIER_NU, TIER_PU, TIER_ZU],
+                        contextualTier: [TIER_RU, TIER_NU],
                         evoType: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
                     }
                 ]
@@ -3773,6 +3773,7 @@ const trainersData = [
         team: [
             {
                 specificIfTier: 'SPECIES_KYOGRE',
+                absoluteTier: [TIER_LEGEND],
                 ...getBossPreset('ARCHIE', true)[0],
                 item: 'Damp Rock',
                 fallback: [
@@ -3792,14 +3793,7 @@ const trainersData = [
                 ]
             },
             {
-                specificIfTier: 'SPECIES_SHARPEDO_MEGA',
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
-                nature: 'Adamant',
-            },
-            {
                 ...getBossPreset('ARCHIE', true)[1],
-                abilities: [...rainAbilities],
                 type: [...aquaTeamTypes],
             },
             {
@@ -3812,6 +3806,11 @@ const trainersData = [
                 ...getBossPreset('ARCHIE', true)[4],
                 abilities: [...rainAbilities],
                 type: [...aquaTeamTypes],
+            },
+            {
+                specificIfTier: 'SPECIES_SHARPEDO_MEGA',
+                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
+                breedTier: 'perfect',
             },
         ],
     },
