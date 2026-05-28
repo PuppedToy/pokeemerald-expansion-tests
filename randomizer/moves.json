@@ -413,7 +413,7 @@
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Whirlwind",
     "validApprenticeMove": "TRUE",
-    "rating": 3
+    "rating": 1.5
   },
   "MOVE_FLY": {
     "id": "MOVE_FLY",
@@ -603,7 +603,7 @@
     "contestComboMoves": "{COMBO_STARTER_MIND_READER}",
     "battleAnimScript": "gBattleAnimMove_JumpKick",
     "validApprenticeMove": "TRUE",
-    "rating": 0.29892857142857143
+    "rating": 6.476785714285715
   },
   "MOVE_ROLLING_KICK": {
     "id": "MOVE_ROLLING_KICK",
@@ -651,7 +651,7 @@
     "contestComboMoves": "{COMBO_STARTER_MUD_SLAP, COMBO_STARTER_SANDSTORM}",
     "battleAnimScript": "gBattleAnimMove_SandAttack",
     "validApprenticeMove": "TRUE",
-    "rating": 3.5
+    "rating": 2
   },
   "MOVE_HEADBUTT": {
     "id": "MOVE_HEADBUTT",
@@ -903,7 +903,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{COMBO_STARTER_CHARM}",
     "battleAnimScript": "gBattleAnimMove_TailWhip",
-    "rating": 3
+    "rating": 1.5
   },
   "MOVE_POISON_STING": {
     "id": "MOVE_POISON_STING",
@@ -992,7 +992,7 @@
     "contestComboStarterId": "COMBO_STARTER_LEER",
     "contestComboMoves": "{COMBO_STARTER_RAGE, COMBO_STARTER_SCARY_FACE}",
     "battleAnimScript": "gBattleAnimMove_Leer",
-    "rating": 3
+    "rating": 1.5
   },
   "MOVE_BITE": {
     "id": "MOVE_BITE",
@@ -1041,7 +1041,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{COMBO_STARTER_CHARM}",
     "battleAnimScript": "gBattleAnimMove_Growl",
-    "rating": 3
+    "rating": 1.5
   },
   "MOVE_ROAR": {
     "id": "MOVE_ROAR",
@@ -1069,7 +1069,7 @@
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Roar",
     "validApprenticeMove": "TRUE",
-    "rating": 3
+    "rating": 1.5
   },
   "MOVE_SING": {
     "id": "MOVE_SING",
@@ -1095,7 +1095,7 @@
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Sing",
     "validApprenticeMove": "TRUE",
-    "rating": 1
+    "rating": 4.5
   },
   "MOVE_SUPERSONIC": {
     "id": "MOVE_SUPERSONIC",
@@ -1549,7 +1549,7 @@
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_LowKick",
     "validApprenticeMove": "TRUE",
-    "rating": 0.07142857142857142
+    "rating": 5
   },
   "MOVE_COUNTER": {
     "id": "MOVE_COUNTER",
@@ -1788,7 +1788,7 @@
     "contestComboMoves": "{COMBO_STARTER_SWEET_SCENT}",
     "battleAnimScript": "gBattleAnimMove_PoisonPowder",
     "validApprenticeMove": "TRUE",
-    "rating": 1
+    "rating": 3.5
   },
   "MOVE_STUN_SPORE": {
     "id": "MOVE_STUN_SPORE",
@@ -1813,7 +1813,7 @@
     "contestComboMoves": "{COMBO_STARTER_SWEET_SCENT}",
     "battleAnimScript": "gBattleAnimMove_StunSpore",
     "validApprenticeMove": "TRUE",
-    "rating": 1
+    "rating": 5.5
   },
   "MOVE_SLEEP_POWDER": {
     "id": "MOVE_SLEEP_POWDER",
@@ -2215,7 +2215,7 @@
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Hypnosis",
     "validApprenticeMove": "TRUE",
-    "rating": 1
+    "rating": 5
   },
   "MOVE_MEDITATE": {
     "id": "MOVE_MEDITATE",
@@ -2531,7 +2531,7 @@
     "contestComboMoves": "{COMBO_STARTER_SMOG}",
     "battleAnimScript": "gBattleAnimMove_Smokescreen",
     "validApprenticeMove": "TRUE",
-    "rating": 3.5
+    "rating": 2
   },
   "MOVE_CONFUSE_RAY": {
     "id": "MOVE_CONFUSE_RAY",
@@ -2730,7 +2730,7 @@
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_FocusEnergy",
     "validApprenticeMove": "TRUE",
-    "rating": 5
+    "rating": 1.5
   },
   "MOVE_BIDE": {
     "id": "MOVE_BIDE",
@@ -3157,7 +3157,7 @@
     "contestComboMoves": "{COMBO_STARTER_CONFUSION, COMBO_STARTER_PSYCHIC}",
     "battleAnimScript": "gBattleAnimMove_Kinesis",
     "validApprenticeMove": "TRUE",
-    "rating": 3.5
+    "rating": 2
   },
   "MOVE_SOFT_BOILED": {
     "id": "MOVE_SOFT_BOILED",
@@ -3206,7 +3206,7 @@
     "contestComboMoves": "{COMBO_STARTER_MIND_READER}",
     "battleAnimScript": "gBattleAnimMove_HighJumpKick",
     "validApprenticeMove": "TRUE",
-    "rating": 0.7457142857142859
+    "rating": 7.871428571428572
   },
   "MOVE_GLARE": {
     "id": "MOVE_GLARE",
@@ -3497,7 +3497,7 @@
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Flash",
     "validApprenticeMove": "TRUE",
-    "rating": 3.5
+    "rating": 2
   },
   "MOVE_PSYWAVE": {
     "id": "MOVE_PSYWAVE",
@@ -3542,7 +3542,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Splash",
-    "rating": 1
+    "rating": 0
   },
   "MOVE_ACID_ARMOR": {
     "id": "MOVE_ACID_ARMOR",
@@ -3903,7 +3903,7 @@
     "battleAnimScript": "gBattleAnimMove_Struggle",
     "validApprenticeMove": "TRUE",
     "accuracy": 0,
-    "rating": 4.571428571428571
+    "rating": 0
   },
   "MOVE_SKETCH": {
     "id": "MOVE_SKETCH",
@@ -4152,7 +4152,7 @@
     "contestComboMoves": "{COMBO_STARTER_ENDURE}",
     "battleAnimScript": "gBattleAnimMove_Flail",
     "validApprenticeMove": "TRUE",
-    "rating": 0.07142857142857142
+    "rating": 3.5714285714285716
   },
   "MOVE_CONVERSION_2": {
     "id": "MOVE_CONVERSION_2",
@@ -4246,7 +4246,7 @@
     "contestComboMoves": "{COMBO_STARTER_ENDURE}",
     "battleAnimScript": "gBattleAnimMove_Reversal",
     "validApprenticeMove": "TRUE",
-    "rating": 0.07142857142857142
+    "rating": 3.5714285714285716
   },
   "MOVE_SPITE": {
     "id": "MOVE_SPITE",
@@ -4852,7 +4852,7 @@
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Charm",
     "validApprenticeMove": "TRUE",
-    "rating": 4.5
+    "rating": 3
   },
   "MOVE_ROLLOUT": {
     "id": "MOVE_ROLLOUT",
@@ -6671,7 +6671,7 @@
     "contestComboMoves": "{COMBO_STARTER_PAYBACK}",
     "battleAnimScript": "gBattleAnimMove_Revenge",
     "validApprenticeMove": "TRUE",
-    "rating": 0.2857142857142856
+    "rating": 6.428571428571429
   },
   "MOVE_BRICK_BREAK": {
     "id": "MOVE_BRICK_BREAK",
@@ -7102,7 +7102,7 @@
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_FeatherDance",
     "validApprenticeMove": "TRUE",
-    "rating": 4.5
+    "rating": 3
   },
   "MOVE_TEETER_DANCE": {
     "id": "MOVE_TEETER_DANCE",
@@ -7489,7 +7489,7 @@
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_FakeTears",
     "validApprenticeMove": "TRUE",
-    "rating": 4.5
+    "rating": 3
   },
   "MOVE_AIR_CUTTER": {
     "id": "MOVE_AIR_CUTTER",
@@ -7633,7 +7633,7 @@
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_MetalSound",
     "validApprenticeMove": "TRUE",
-    "rating": 4.5
+    "rating": 3
   },
   "MOVE_GRASS_WHISTLE": {
     "id": "MOVE_GRASS_WHISTLE",
@@ -7682,7 +7682,7 @@
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Tickle",
     "validApprenticeMove": "TRUE",
-    "rating": 4.5
+    "rating": 3
   },
   "MOVE_COSMIC_POWER": {
     "id": "MOVE_COSMIC_POWER",
@@ -9022,7 +9022,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_PowerTrick",
-    "rating": 2
+    "rating": 0
   },
   "MOVE_GASTRO_ACID": {
     "id": "MOVE_GASTRO_ACID",
@@ -9943,7 +9943,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Avalanche",
-    "rating": 0.2857142857142856
+    "rating": 6.428571428571429
   },
   "MOVE_ICE_SHARD": {
     "id": "MOVE_ICE_SHARD",
@@ -10573,7 +10573,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_GrassKnot",
-    "rating": 0.07142857142857142
+    "rating": 5
   },
   "MOVE_CHATTER": {
     "id": "MOVE_CHATTER",
@@ -11086,7 +11086,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_WideGuard",
-    "rating": 1
+    "rating": 0
   },
   "MOVE_GUARD_SPLIT": {
     "id": "MOVE_GUARD_SPLIT",
@@ -11998,7 +11998,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_CircleThrow",
-    "rating": -2.7142857142857144
+    "rating": 3.2857142857142856
   },
   "MOVE_INCINERATE": {
     "id": "MOVE_INCINERATE",
@@ -12349,7 +12349,7 @@
     "contestComboStarterId": "COMBO_STARTER_DRAGON_TAIL",
     "contestComboMoves": "{COMBO_STARTER_DRAGON_BREATH, COMBO_STARTER_DRAGON_DANCE, COMBO_STARTER_DRAGON_RAGE, COMBO_STARTER_DRAGON_RUSH}",
     "battleAnimScript": "gBattleAnimMove_DragonTail",
-    "rating": -2.7142857142857144
+    "rating": 3.2857142857142856
   },
   "MOVE_WORK_UP": {
     "id": "MOVE_WORK_UP",
@@ -13235,7 +13235,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Rototiller",
-    "rating": 1
+    "rating": 0
   },
   "MOVE_STICKY_WEB": {
     "id": "MOVE_STICKY_WEB",
@@ -13357,7 +13357,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_NobleRoar",
-    "rating": 4.5
+    "rating": 3
   },
   "MOVE_ION_DELUGE": {
     "id": "MOVE_ION_DELUGE",
@@ -13840,7 +13840,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_PlayNice",
-    "rating": 3
+    "rating": 1.5
   },
   "MOVE_CONFIDE": {
     "id": "MOVE_CONFIDE",
@@ -13865,7 +13865,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Confide",
-    "rating": 3
+    "rating": 1.5
   },
   "MOVE_DIAMOND_STORM": {
     "id": "MOVE_DIAMOND_STORM",
@@ -14030,7 +14030,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_AromaticMist",
-    "rating": 1
+    "rating": 0
   },
   "MOVE_EERIE_IMPULSE": {
     "id": "MOVE_EERIE_IMPULSE",
@@ -14052,7 +14052,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_EerieImpulse",
-    "rating": 4.5
+    "rating": 3
   },
   "MOVE_VENOM_DRENCH": {
     "id": "MOVE_VENOM_DRENCH",
@@ -14147,7 +14147,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_MagneticFlux",
-    "rating": 1
+    "rating": 0
   },
   "MOVE_HAPPY_HOUR": {
     "id": "MOVE_HAPPY_HOUR",
@@ -14170,7 +14170,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_HappyHour",
-    "rating": 1
+    "rating": 0
   },
   "MOVE_ELECTRIC_TERRAIN": {
     "id": "MOVE_ELECTRIC_TERRAIN",
@@ -14243,7 +14243,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Celebrate",
-    "rating": 1
+    "rating": 0
   },
   "MOVE_HOLD_HANDS": {
     "id": "MOVE_HOLD_HANDS",
@@ -14272,7 +14272,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_HoldHands",
-    "rating": 1
+    "rating": 0
   },
   "MOVE_BABY_DOLL_EYES": {
     "id": "MOVE_BABY_DOLL_EYES",
@@ -14294,7 +14294,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_BabyDollEyes",
-    "rating": 3
+    "rating": 1.5
   },
   "MOVE_NUZZLE": {
     "id": "MOVE_NUZZLE",
@@ -14779,7 +14779,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_FloralHealing",
-    "rating": 1
+    "rating": 0
   },
   "MOVE_HIGH_HORSEPOWER": {
     "id": "MOVE_HIGH_HORSEPOWER",
@@ -14894,7 +14894,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Spotlight",
-    "rating": 1
+    "rating": 0
   },
   "MOVE_TOXIC_THREAD": {
     "id": "MOVE_TOXIC_THREAD",
@@ -14965,7 +14965,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_GearUp",
-    "rating": 1
+    "rating": 0
   },
   "MOVE_THROAT_CHOP": {
     "id": "MOVE_THROAT_CHOP",
@@ -15423,7 +15423,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{COMBO_STARTER_HAIL}",
     "battleAnimScript": "gBattleAnimMove_AuroraVeil",
-    "rating": 1
+    "rating": 0
   },
   "MOVE_SHELL_TRAP": {
     "id": "MOVE_SHELL_TRAP",
@@ -15696,7 +15696,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_TearfulLook",
-    "rating": 4.5
+    "rating": 3
   },
   "MOVE_ZING_ZAP": {
     "id": "MOVE_ZING_ZAP",
@@ -16487,7 +16487,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Decorate",
-    "rating": 1
+    "rating": 0
   },
   "MOVE_DRUM_BEATING": {
     "id": "MOVE_DRUM_BEATING",
@@ -17260,7 +17260,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_Coaching",
-    "rating": 1
+    "rating": 0
   },
   "MOVE_FLIP_TURN": {
     "id": "MOVE_FLIP_TURN",
@@ -17373,7 +17373,7 @@
     "contestComboStarterId": "0",
     "contestComboMoves": "{0}",
     "battleAnimScript": "gBattleAnimMove_JungleHealing",
-    "rating": 3
+    "rating": 1.5
   },
   "MOVE_WICKED_BLOW": {
     "id": "MOVE_WICKED_BLOW",
@@ -18040,7 +18040,7 @@
     "mirrorMoveBanned": "TRUE",
     "healingMove": "TRUE",
     "battleAnimScript": "gBattleAnimMove_LunarBlessing",
-    "rating": 3
+    "rating": 1.5
   },
   "MOVE_TAKE_HEART": {
     "id": "MOVE_TAKE_HEART",
@@ -18117,7 +18117,7 @@
     "category": "DAMAGE_CATEGORY_PHYSICAL",
     "makesContact": "TRUE",
     "battleAnimScript": "gBattleAnimMove_AxeKick",
-    "rating": 0.6814285714285715
+    "rating": 7.192857142857142
   },
   "MOVE_LAST_RESPECTS": {
     "id": "MOVE_LAST_RESPECTS",
@@ -19345,7 +19345,7 @@
     "makesContact": "TRUE",
     "minimizeDoubleDamage": "TRUE",
     "battleAnimScript": "gBattleAnimMove_SupercellSlam",
-    "rating": 0.29892857142857143
+    "rating": 6.476785714285715
   },
   "MOVE_PSYCHIC_NOISE": {
     "id": "MOVE_PSYCHIC_NOISE",
