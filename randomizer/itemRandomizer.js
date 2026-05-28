@@ -20,6 +20,11 @@ function shuffle(arr) {
     return a;
 }
 
+// "Meadow Plate" → ITEM_MEADOW_PLATE
+function displayNameToItemConst(name) {
+    return 'ITEM_' + name.split(' ').map(w => w.toUpperCase()).join('_');
+}
+
 // ITEM_MEADOW_PLATE → "Meadow Plate"
 function itemDisplayName(constant) {
     const ABBREVS = new Set(['PP', 'HP', 'TM', 'HM', 'EV']);
@@ -520,7 +525,19 @@ function randomizeItems() {
         route118Items:     dn('route118Items'),
         route120AngelicaGoodItem: itemDisplayName(a.route120AngelicaGoodItem),
         route121Berries:   dn('route121Berries'),
+        route115Ball:      dn('route115Ball'),
     };
 }
 
-module.exports = { randomizeItems, updateScripts };
+// Takes itemAssignments with display names (as stored in bundles) and writes all script files.
+function writeItemFilesFromBundle(itemAssignments) {
+    const toConst = name => displayNameToItemConst(name);
+    const raw = {};
+    for (const [k, v] of Object.entries(itemAssignments)) {
+        raw[k] = Array.isArray(v) ? v.map(toConst) : toConst(v);
+    }
+    updateScripts(raw);
+    updateScriptMenu(raw);
+}
+
+module.exports = { randomizeItems, updateScripts, writeItemFilesFromBundle };
