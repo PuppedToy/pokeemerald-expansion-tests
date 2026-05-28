@@ -125,8 +125,10 @@ async function bundleMode(bundlePath, isDebug, doClean) {
     const outDir    = path.join(root, 'roms', sessionId);
     fs.mkdirSync(outDir, { recursive: true });
 
-    const rng    = require('./randomizer/rng');
-    const writer = require('./randomizer/writer');
+    const rng                        = require('./randomizer/rng');
+    const writer                     = require('./randomizer/writer');
+    const { writeTMsFromList }       = require('./randomizer/tmRandomizer');
+    const { updateScripts }          = require('./randomizer/itemRandomizer');
 
     console.log(`Session:   ${sessionId}`);
     console.log(`ROMs:      ${bundle.roms.length}`);
@@ -155,6 +157,8 @@ async function bundleMode(bundlePath, isDebug, doClean) {
 
         try {
             await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed));
+            await writeTMsFromList(pokedex.tmList);
+            updateScripts(trainers.itemAssignments);
             run('make', ['-j']);
 
             const dest = path.join(outDir, label);

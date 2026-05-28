@@ -72,11 +72,11 @@
     F(VENOM_DRENCH) \
     F(ROCK_POLISH) \
     F(SLEEP_TALK) \
+    F(AGILITY) \
     F(RAIN_DANCE) \
     F(SUNNY_DAY) \
-    F(SNOWSCAPE) \
-    F(HAIL) \
     F(SANDSTORM) \
+    F(HAIL) \
     F(LIGHT_SCREEN) \
     F(REFLECT) \
     F(TAUNT) \

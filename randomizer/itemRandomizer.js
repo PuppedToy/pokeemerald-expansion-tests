@@ -523,4 +523,4 @@ function randomizeItems() {
     };
 }
 
-module.exports = { randomizeItems };
+module.exports = { randomizeItems, updateScripts };

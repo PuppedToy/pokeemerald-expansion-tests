@@ -148,10 +148,7 @@ async function patchScriptMenu(tmList) {
     console.log('[TM Randomizer] Updated TM names in script_menu.h');
 }
 
-async function randomizeTMs() {
-    const tmList = buildTMList();
-    // tmList is returned for use in trainer generation:
-    // tmList[n-1] = move name (without MOVE_ prefix) for TM slot n (1-based)
+async function writeTMsFromList(tmList) {
     const foreachTMBody = formatForeachTM(tmList);
 
     const content =
@@ -182,9 +179,15 @@ ${foreachTMBody}
     console.log('[TM Randomizer] Wrote randomized FOREACH_TM to tms_hms.h');
 
     await patchScriptMenu(tmList);
+}
 
+async function randomizeTMs() {
+    // tmList[n-1] = move name (without MOVE_ prefix) for TM slot n (1-based)
+    const tmList = buildTMList();
+    await writeTMsFromList(tmList);
     return tmList;
 }
 
-// buildTMList is exported for browser use — RNG-only, no file I/O.
-module.exports = { randomizeTMs, buildTMList };
+// buildTMList exported for browser use (RNG-only, no file I/O).
+// writeTMsFromList exported for bundle mode compilation in make.js.
+module.exports = { randomizeTMs, buildTMList, writeTMsFromList };
