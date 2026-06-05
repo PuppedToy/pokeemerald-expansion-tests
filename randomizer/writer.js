@@ -139,6 +139,16 @@ function djb2Hash(str) {
     return h;
 }
 
+// Returns a map of speciesId → unique placeholder string for two-pass wild substitution.
+// Uses counter-based IDs (not RNG) so this never advances the shared RNG state.
+function buildWildPlaceholderMap(entries) {
+    const result = {};
+    entries.forEach(([speciesId], idx) => {
+        result[speciesId] = `WILDPOKE_P${idx}`;
+    });
+    return result;
+}
+
 // baseRngSeed: when non-null, the RNG is reseeded at the start of each trainer slot
 // using hash(baseRngSeed, trainer.id, slotIndex). This makes tier-based slots
 // deterministic across ROMs that share a trainer artifact but differ in wild data.
@@ -285,12 +295,9 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
 
     let wildEncountersFileContent = await fs.readFile((wild.file), 'utf8');
 
-    const auxWildReplacementsFrom = {};
-
     // Pass 1: replace each original species with a unique placeholder to avoid chained substitutions
+    const auxWildReplacementsFrom = buildWildPlaceholderMap(Object.entries(wildReplacementLog));
     Object.entries(wildReplacementLog).forEach(([speciesId, replacementId]) => {
-        const entryId = rng.random().toString(36).substring(2, 15);
-        auxWildReplacementsFrom[speciesId] = `WILDPOKE_${entryId}`;
         wildEncountersFileContent = wildEncountersFileContent.replace(
             new RegExp(speciesId, 'g'),
             auxWildReplacementsFrom[speciesId]
@@ -966,3 +973,4 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
 }
 
 module.exports = writer;
+module.exports.buildWildPlaceholderMap = buildWildPlaceholderMap;
