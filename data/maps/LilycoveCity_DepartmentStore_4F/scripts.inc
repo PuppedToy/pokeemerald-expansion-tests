@@ -25,10 +25,7 @@ LilycoveCity_DepartmentStore_4F_EventScript_ClerkLeft::
 
 	.align 2
 LilycoveCity_DepartmentStore_4F_Pokemart_AttackTMs:
-	.2byte ITEM_TM16
-	.2byte ITEM_TM17
-	.2byte ITEM_TM18
-	.2byte ITEM_TM39
+	.2byte ITEM_NUGGET
 	pokemartlistend
 
 LilycoveCity_DepartmentStore_4F_EventScript_ClerkRight::
@@ -43,10 +40,7 @@ LilycoveCity_DepartmentStore_4F_EventScript_ClerkRight::
 
 	.align 2
 LilycoveCity_DepartmentStore_4F_Pokemart_DefenseTMs:
-	.2byte ITEM_TM40
-	.2byte ITEM_TM85
-	.2byte ITEM_TM86
-	.2byte ITEM_TM87
+	.2byte ITEM_NUGGET
 	pokemartlistend
 
 LilycoveCity_DepartmentStore_4F_Text_AttackOrDefenseTM:

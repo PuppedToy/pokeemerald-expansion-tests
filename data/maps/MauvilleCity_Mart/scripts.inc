@@ -16,6 +16,12 @@ MauvilleCity_Mart_Pokemart:
 	.2byte ITEM_ULTRA_BALL
 	.2byte ITEM_QUICK_BALL
 	.2byte ITEM_TIMER_BALL
+	.2byte ITEM_TM02
+	.2byte ITEM_TM05
+	.2byte ITEM_TM08
+	.2byte ITEM_TM62
+	.2byte ITEM_TM65
+	.2byte ITEM_TM68
 	.2byte ITEM_LONELY_MINT
 	.2byte ITEM_NAUGHTY_MINT
 	.2byte ITEM_BRAVE_MINT
