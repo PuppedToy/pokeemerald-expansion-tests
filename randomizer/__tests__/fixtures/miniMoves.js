@@ -93,6 +93,13 @@ const moves = {
     MOVE_SLEEP_POWDER: { ...base, id: 'MOVE_SLEEP_POWDER', name: 'Sleep Powder', category: 'DAMAGE_CATEGORY_STATUS',  type: 'GRASS',   power: 0,   accuracy: 75,  effect: 'EFFECT_NON_VOLATILE_STATUS' },
     MOVE_SPORE:        { ...base, id: 'MOVE_SPORE',        name: 'Spore',        category: 'DAMAGE_CATEGORY_STATUS',  type: 'GRASS',   power: 0,   accuracy: 100, effect: 'EFFECT_NON_VOLATILE_STATUS' },
     MOVE_YAWN:         { ...base, id: 'MOVE_YAWN',         name: 'Yawn',         category: 'DAMAGE_CATEGORY_STATUS',  type: 'NORMAL',  power: 0,   accuracy: 0,   effect: 'EFFECT_YAWN' },
+
+    // --- Pivot / switch moves (EFFECT_HIT_ESCAPE) for Zero-to-Hero tests ---
+    MOVE_FLIP_TURN:    { ...base, id: 'MOVE_FLIP_TURN',   name: 'Flip Turn',   category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'WATER',    power: 60, accuracy: 100, effect: 'EFFECT_HIT_ESCAPE' },
+    MOVE_U_TURN:       { ...base, id: 'MOVE_U_TURN',      name: 'U-turn',      category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'BUG',      power: 70, accuracy: 100, effect: 'EFFECT_HIT_ESCAPE' },
+    MOVE_VOLT_SWITCH:  { ...base, id: 'MOVE_VOLT_SWITCH', name: 'Volt Switch', category: 'DAMAGE_CATEGORY_SPECIAL',  type: 'ELECTRIC', power: 70, accuracy: 100, effect: 'EFFECT_HIT_ESCAPE' },
+    // Strong same-type (Water) physical attacker — used to prove the forced pivot survives A3 dedup.
+    MOVE_WAVE_CRASH:   { ...base, id: 'MOVE_WAVE_CRASH',  name: 'Wave Crash',  category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'WATER',    power: 120, accuracy: 100, effect: 'EFFECT_RECOIL' },
 };
 
 module.exports = moves;

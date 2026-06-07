@@ -33,6 +33,8 @@ const {
     EVO_TYPE_LC_OF_2,
     EVO_TYPE_LC_OF_3,
     NATURES,
+    WISHIWASHI_SCHOOL_LEVEL,
+    WISHIWASHI_SCHOOL_HP_FACTOR,
 } = require('./constants');
 const { plates, protectionBerries } = require('./items');
 const rng = require('./rng');
@@ -1785,6 +1787,26 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
         };
     }).filter(m => m !== null);
 
+    // Zero-to-Hero (Palafin): the transform triggers on switch out, so a pivot/switch move is
+    // always wanted. Force the best available pivot (by normal rating — STAB/stats) into the set
+    // before the greedy fill, unless the starting moveset already has one. Keyed on the ability
+    // (passed arg OR the poke's own abilities) so it applies both at placement and in the
+    // rating-internal chooseMoveset(poke, moves) call.
+    const hasZeroToHero = ability === 'ZERO_TO_HERO'
+        || (poke.parsedAbilities || []).includes('ZERO_TO_HERO');
+    let forcedPivotId = null;
+    if (hasZeroToHero && moveset.length < 4 && !moveset.some(m => pivotingMoves.has(m.id))) {
+        const pivotCandidates = uniqueMoves.filter(m => pivotingMoves.has(m.id));
+        if (pivotCandidates.length > 0) {
+            const bestPivot = pivotCandidates
+                .map(move => ({ move, rating: rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset) }))
+                .sort((a, b) => b.rating - a.rating)[0].move;
+            moveset.push(bestPivot);
+            forcedPivotId = bestPivot.id;
+            uniqueMoves = uniqueMoves.filter(move => move.id !== bestPivot.id);
+        }
+    }
+
     while (uniqueMoves.length > 0 && moveset.length < 4) {
         const ratedMoves = uniqueMoves.map(move => {
             const rating = rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset) * (1 + ((rng.random() ? 1 : -1) * rng.random() * deviation));
@@ -1819,6 +1841,9 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
         for (let i = 1; i < typeMoves.length; i++) {
             const weaker = typeMoves[i];
             const stronger = typeMoves[0];
+            // Exception: the forced Zero-to-Hero pivot is always kept (its switch utility is
+            // distinct from a same-type attacker, and the rule guarantees its presence).
+            if (forcedPivotId && weaker.id === forcedPivotId) continue;
             // Exception: different priority tiers
             if ((weaker.priority || 0) !== (stronger.priority || 0)) continue;
             // Exception: Iron Fist with two punching moves of the same type
@@ -3257,6 +3282,66 @@ function ratePokemon(poke, moves, abilities, tmPool) {
 }
 
 /**
+ * wishiwashiEffectivePoke — Schooling special case.
+ *
+ * Wishiwashi's Solo form schools into the School form at level 20+ (and reverts to Solo if
+ * its HP drops to <=25%). Since only the Solo form is ever placed, the rater must score it
+ * as the School form once it can school. Schooling swaps the entire form, so we take the
+ * School entry's 6 base stats AND its typing, then nerf HP by 25% (the revert zone is dead
+ * weight). Solo's abilities / learnset / teachables are kept — the party member is the Solo
+ * species; only its stats and typing change on transform. The inputs are never mutated.
+ *
+ * level defaults to Infinity so absolute callers always get the School form; contextual
+ * callers pass the level cap and get the Solo form back unchanged below level 20.
+ */
+function wishiwashiEffectivePoke(soloPoke, schoolPoke, level = Infinity) {
+    if (level < WISHIWASHI_SCHOOL_LEVEL) return soloPoke; // can't school yet → Solo form
+    const baseHP = Math.floor(schoolPoke.baseHP * WISHIWASHI_SCHOOL_HP_FACTOR);
+    const eff = {
+        ...soloPoke, // keep id / abilities / learnset / teachables
+        baseHP,
+        baseAttack:    schoolPoke.baseAttack,
+        baseDefense:   schoolPoke.baseDefense,
+        baseSpeed:     schoolPoke.baseSpeed,
+        baseSpAttack:  schoolPoke.baseSpAttack,
+        baseSpDefense: schoolPoke.baseSpDefense,
+        parsedTypes:   schoolPoke.parsedTypes, // Schooling swaps the full form → School's typing
+        types:         schoolPoke.types,
+    };
+    eff.baseBST = eff.baseHP + eff.baseAttack + eff.baseDefense
+                + eff.baseSpeed + eff.baseSpAttack + eff.baseSpDefense;
+    return eff;
+}
+
+/**
+ * palafinEffectivePoke — Zero-to-Hero special case.
+ *
+ * Palafin Zero transforms into the battle-only Hero form the first time it switches out. The
+ * switch is essentially free and the change is permanent for the battle, so in practice the mon
+ * is always Hero. We keep Zero's identity (id / learnset / teachables / abilities — the forms
+ * share learnsets) but adopt Hero's full stats and typing.
+ *
+ * Unlike wishiwashiEffectivePoke there is NO level gate and NO HP nerf: the transform has no
+ * level requirement and the single turn spent in Zero form before switching is negligible.
+ */
+function palafinEffectivePoke(zeroPoke, heroPoke) {
+    const eff = {
+        ...zeroPoke, // keep id / abilities / learnset / teachables (forms share learnsets)
+        baseHP:        heroPoke.baseHP,
+        baseAttack:    heroPoke.baseAttack,
+        baseDefense:   heroPoke.baseDefense,
+        baseSpeed:     heroPoke.baseSpeed,
+        baseSpAttack:  heroPoke.baseSpAttack,
+        baseSpDefense: heroPoke.baseSpDefense,
+        parsedTypes:   heroPoke.parsedTypes, // Zero-to-Hero swaps the full form → Hero's typing
+        types:         heroPoke.types,
+    };
+    eff.baseBST = eff.baseHP + eff.baseAttack + eff.baseDefense
+                + eff.baseSpeed + eff.baseSpAttack + eff.baseSpDefense;
+    return eff;
+}
+
+/**
  * rateContextual — same algorithm as ratePokemon, but restricted to a trainer's universe.
  *
  * context = { level: number, tms: string[] }
@@ -3280,6 +3365,8 @@ function rateContextual(poke, moves, abilities, context) {
 module.exports = {
     ratePokemon,
     rateContextual,
+    wishiwashiEffectivePoke,
+    palafinEffectivePoke,
     chooseMoveset,
     adjustMoveset,
     chooseNature,

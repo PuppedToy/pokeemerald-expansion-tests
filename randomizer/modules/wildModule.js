@@ -46,8 +46,8 @@ const BANNED_SPECIES_FOR_PICKING = [
     'SPECIES_TERAPAGOS_STELLAR',
     'SPECIES_DARMANITAN_ZEN',
     'SPECIES_DARMANITAN_GALAR_ZEN',
-    'SPECIES_FINIZEN',
-    'SPECIES_PALAFIN_ZERO',
+    // Palafin: Zero is the placeable form (rated/moved as Hero via palafinEffectivePoke); Finizen
+    // is its placeable base form. Only Hero (battle-only, like Wishiwashi School) stays banned.
     'SPECIES_PALAFIN_HERO',
 ];
 

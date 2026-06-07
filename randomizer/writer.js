@@ -16,8 +16,10 @@ const {
     TEMPLATE_MOVES_REPLACEMENT,
     TEMPLATE_ABILITIES_REPLACEMENT,
     MEGA_TRAINERS,
+    PALAFIN_ZERO_ID,
+    PALAFIN_HERO_ID,
 } = require('./constants');
-const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
+const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature, palafinEffectivePoke } = require('./rating.js');
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
 const { sample, canLearnMove } = require('./modules/utils');
 const { selectWithAutoFallback } = require('./modules/trainerFallback');
@@ -160,6 +162,10 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     const trainersData = JSON.parse(JSON.stringify(_rawTrainersData));
     const { starters } = startersArtifact;
     const { extraStarters, gymRewards, staticRewards, replacementLog: wildReplacementLog, foundMegaEvos: wildFoundMegaEvos } = wildArtifact;
+
+    // Palafin Hero is banned from picking (battle-only) but is the stat/type source for the
+    // placed Zero form. Capture it before the ban filter strips it from pokemonList.
+    const palafinHero = pokemonList.find(poke => poke.id === PALAFIN_HERO_ID);
 
     pokemonList = pokemonList.filter(poke => !BANNED_SPECIES_FOR_PICKING.includes(poke.id));
 
@@ -617,8 +623,14 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                     }
                     newTeamMember.ability = originalAbility;
                 }
+                // Palafin Zero is placed but battles as Hero (Zero-to-Hero). Use Hero's stats &
+                // typing for all stat-based decisions (moveset, item, nature) while keeping the
+                // placed species id. The effective poke retains Zero's id/learnset/teachables.
+                const battlePoke = (chosenTrainerMon.id === PALAFIN_ZERO_ID && palafinHero)
+                    ? palafinEffectivePoke(chosenTrainerMon, palafinHero)
+                    : chosenTrainerMon;
                 let { moveset, tmsUsed } = chooseMoveset(
-                    chosenTrainerMon,
+                    battlePoke,
                     moves,
                     trainer.level,
                     newTeamMember.moves, // We use the already chosen moves (tryToHaveMove)
@@ -639,7 +651,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                         .map(bagItemId => {
                             const rating = rateItemForAPokemon(
                                 bagItemId,
-                                chosenTrainerMon,
+                                battlePoke,
                                 ability,
                                 movesetObjects,
                                 trainer.level,
@@ -668,7 +680,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                     }
                     else {
                         newTeamMember.nature = chooseNature(
-                            chosenTrainerMon,
+                            battlePoke,
                             moveset,
                             moves,
                             ability,
@@ -679,7 +691,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                 }
                 if (newTeamMember.item) {
                     moveset = adjustMoveset(
-                        chosenTrainerMon,
+                        battlePoke,
                         trainer.level,
                         moveset,
                         newTeamMember.moves, // Fixed important moves

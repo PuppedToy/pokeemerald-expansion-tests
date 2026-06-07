@@ -8,8 +8,10 @@ const {
     NATURES,
     GENERIC_DEVIATION,
     MEGA_TRAINERS,
+    PALAFIN_ZERO_ID,
+    PALAFIN_HERO_ID,
 } = require('./constants');
-const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
+const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature, palafinEffectivePoke } = require('./rating.js');
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
 const { sample, canLearnMove } = require('./modules/utils');
 const { selectWithAutoFallback } = require('./modules/trainerFallback');
@@ -73,6 +75,10 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     const { trainersData: rawTrainersData, itemAssignments } = trainersArtifact;
     const { starters } = startersArtifact;
     const { extraStarters, gymRewards, staticRewards, replacementLog: wildReplacementLog, foundMegaEvos: wildFoundMegaEvos } = wildArtifact;
+
+    // Palafin Hero (battle-only, banned) is the stat/type source for the placed Zero form —
+    // capture it before the ban filter strips it from pokemonList.
+    const palafinHero = pokemonList.find(poke => poke.id === PALAFIN_HERO_ID);
 
     pokemonList = pokemonList.filter(poke => !BANNED_SPECIES_FOR_PICKING.includes(poke.id));
 
@@ -304,8 +310,13 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                     newTeamMember.ability = originalAbility;
                 }
 
+                // Palafin Zero is placed but battles as Hero — use Hero stats/typing for the
+                // stat-based decisions (moveset, item, nature) while keeping the placed species id.
+                const battlePoke = (chosenTrainerMon.id === PALAFIN_ZERO_ID && palafinHero)
+                    ? palafinEffectivePoke(chosenTrainerMon, palafinHero)
+                    : chosenTrainerMon;
                 let { moveset, tmsUsed } = chooseMoveset(
-                    chosenTrainerMon, moves, trainer.level,
+                    battlePoke, moves, trainer.level,
                     newTeamMember.moves, ability, newTeamMember.item, trainer.tms || [], 0.1,
                 );
                 tmsUsed.forEach(tmUsed => {
@@ -317,7 +328,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                     const sortedBagItems = trainer.bag
                         .map(bagItemId => ({
                             id: bagItemId,
-                            rating: rateItemForAPokemon(bagItemId, chosenTrainerMon, ability, movesetObjects, trainer.level, trainer.bag.length, trainer.bannedItems || [], GENERIC_DEVIATION),
+                            rating: rateItemForAPokemon(bagItemId, battlePoke, ability, movesetObjects, trainer.level, trainer.bag.length, trainer.bannedItems || [], GENERIC_DEVIATION),
                         }))
                         .filter(bi => bi.rating > 0)
                         .sort((a, b) => b.rating - a.rating)
@@ -332,12 +343,12 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                     if (trainer.level < 28) {
                         newTeamMember.nature = sample(Object.values(NATURES)).name;
                     } else {
-                        newTeamMember.nature = chooseNature(chosenTrainerMon, moveset, moves, ability, newTeamMember.item, GENERIC_DEVIATION);
+                        newTeamMember.nature = chooseNature(battlePoke, moveset, moves, ability, newTeamMember.item, GENERIC_DEVIATION);
                     }
                 }
 
                 if (newTeamMember.item) {
-                    moveset = adjustMoveset(chosenTrainerMon, trainer.level, moveset, newTeamMember.moves, moves, ability, newTeamMember.item, 0.1);
+                    moveset = adjustMoveset(battlePoke, trainer.level, moveset, newTeamMember.moves, moves, ability, newTeamMember.item, 0.1);
                 }
                 newTeamMember.moves = moveset;
                 team.push(newTeamMember);

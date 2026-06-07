@@ -178,4 +178,120 @@ const BLISSEY = {
     learnset: [], teachables: [], newTeachables: [], oldTeachables: [],
 };
 
-module.exports = { MACHOP, MACHOKE, MACHAMP, STARMIE, SLOWBRO_MEGA, RIOLU, BLISSEY };
+// Wishiwashi Solo form — the entry that actually appears in-game (BST 175, ZU on raw stats).
+// Schools into the School form at lvl 20+; both share the Schooling ability and learnset.
+const WISHIWASHI_SOLO = {
+    id: 'SPECIES_WISHIWASHI_SOLO',
+    family: 'P_FAMILY_WISHIWASHI',
+    form: null,
+    parsedTypes: ['WATER'],
+    parsedAbilities: ['SCHOOLING', 'NONE', 'NONE'],
+    baseHP: 45,
+    baseAttack: 20,
+    baseDefense: 20,
+    baseSpeed: 40,
+    baseSpAttack: 25,
+    baseSpDefense: 25,
+    baseBST: 175,
+    evolutions: [],
+    evolutionData: { type: 'EVO_TYPE_FINAL', isMega: false, isLC: false, isNFE: false, isFinal: true, megaEvos: [] },
+    learnset: [
+        { level: '1', move: 'MOVE_TACKLE' },
+        { level: '12', move: 'MOVE_SURF' },
+        { level: '20', move: 'MOVE_FLAMETHROWER' },
+    ],
+    teachables: ['MOVE_SURF', 'MOVE_FLAMETHROWER'],
+    levelUpLearnset: 'sLoloWishiwashiLearnset',
+    teachableLearnset: 'sWishiwashiTeachableLearnset',
+    newTeachables: [],
+    oldTeachables: [],
+};
+
+// Wishiwashi School form — banned from picking; only used as the stat/type source for the
+// Solo form's effective rating (BST 620).
+const WISHIWASHI_SCHOOL = {
+    id: 'SPECIES_WISHIWASHI_SCHOOL',
+    family: 'P_FAMILY_WISHIWASHI',
+    form: null,
+    parsedTypes: ['WATER'],
+    parsedAbilities: ['SCHOOLING', 'NONE', 'NONE'],
+    baseHP: 45,
+    baseAttack: 140,
+    baseDefense: 130,
+    baseSpeed: 30,
+    baseSpAttack: 140,
+    baseSpDefense: 135,
+    baseBST: 620,
+    evolutions: [],
+    evolutionData: { type: 'EVO_TYPE_FINAL', isMega: false, isLC: false, isNFE: false, isFinal: true, megaEvos: [] },
+    learnset: [
+        { level: '1', move: 'MOVE_TACKLE' },
+        { level: '12', move: 'MOVE_SURF' },
+        { level: '20', move: 'MOVE_FLAMETHROWER' },
+    ],
+    teachables: ['MOVE_SURF', 'MOVE_FLAMETHROWER'],
+    levelUpLearnset: 'sLoloWishiwashiLearnset',
+    teachableLearnset: 'sWishiwashiTeachableLearnset',
+    newTeachables: [],
+    oldTeachables: [],
+};
+
+// Palafin Zero form — the placed form. Weak on its own (BST 457), but Zero-to-Hero transforms
+// it into the Hero form on the first switch out. Rated/moved as Hero.
+const PALAFIN_ZERO = {
+    id: 'SPECIES_PALAFIN_ZERO',
+    family: 'P_FAMILY_FINIZEN',
+    form: null,
+    parsedTypes: ['WATER'],
+    parsedAbilities: ['ZERO_TO_HERO', 'NONE', 'NONE'],
+    baseHP: 100,
+    baseAttack: 70,
+    baseDefense: 72,
+    baseSpeed: 100,
+    baseSpAttack: 53,
+    baseSpDefense: 62,
+    baseBST: 457,
+    evolutions: [],
+    evolutionData: { type: 'EVO_TYPE_FINAL', isMega: false, isLC: false, isNFE: false, isFinal: true, megaEvos: [] },
+    learnset: [
+        { level: '1', move: 'MOVE_FLIP_TURN' },
+        { level: '1', move: 'MOVE_WAVE_CRASH' },
+        { level: '1', move: 'MOVE_TACKLE' },
+    ],
+    teachables: ['MOVE_FLIP_TURN', 'MOVE_WAVE_CRASH', 'MOVE_U_TURN', 'MOVE_KNOCK_OFF'],
+    levelUpLearnset: 'sPalafinLevelUpLearnset',
+    teachableLearnset: 'sPalafinTeachableLearnset',
+    newTeachables: [],
+    oldTeachables: [],
+};
+
+// Palafin Hero form — battle-only, banned from picking. Only used as the stat/type source for
+// the Zero form's effective rating (BST 650, physical attacker).
+const PALAFIN_HERO = {
+    id: 'SPECIES_PALAFIN_HERO',
+    family: 'P_FAMILY_FINIZEN',
+    form: null,
+    parsedTypes: ['WATER'],
+    parsedAbilities: ['ZERO_TO_HERO', 'NONE', 'NONE'],
+    baseHP: 100,
+    baseAttack: 160,
+    baseDefense: 97,
+    baseSpeed: 100,
+    baseSpAttack: 106,
+    baseSpDefense: 87,
+    baseBST: 650,
+    evolutions: [],
+    evolutionData: { type: 'EVO_TYPE_FINAL', isMega: false, isLC: false, isNFE: false, isFinal: true, megaEvos: [] },
+    learnset: [
+        { level: '1', move: 'MOVE_FLIP_TURN' },
+        { level: '1', move: 'MOVE_WAVE_CRASH' },
+        { level: '1', move: 'MOVE_TACKLE' },
+    ],
+    teachables: ['MOVE_FLIP_TURN', 'MOVE_WAVE_CRASH', 'MOVE_U_TURN', 'MOVE_KNOCK_OFF'],
+    levelUpLearnset: 'sPalafinLevelUpLearnset',
+    teachableLearnset: 'sPalafinTeachableLearnset',
+    newTeachables: [],
+    oldTeachables: [],
+};
+
+module.exports = { MACHOP, MACHOKE, MACHAMP, STARMIE, SLOWBRO_MEGA, RIOLU, BLISSEY, WISHIWASHI_SOLO, WISHIWASHI_SCHOOL, PALAFIN_ZERO, PALAFIN_HERO };
