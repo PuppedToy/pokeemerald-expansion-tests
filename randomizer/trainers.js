@@ -794,6 +794,12 @@ const rivalRoute110Bag = () => [
     sample([...choice110TMs]),
     route110GoodItem,
     sample([...route110ExtenderBallItems]),
+    tmItem(2),
+    tmItem(5),
+    tmItem(8),
+    tmItem(62),
+    tmItem(65),
+    tmItem(68),
 ];
 
 const wallyBag = () => [
@@ -865,6 +871,12 @@ const winonaBag = () => [
     route120AngelicaGoodItem,
     sample([...choiceClarissaTMs]),
     tmItem(32),   // Winona's gym TM
+    tmItem(12),
+    tmItem(13),
+    tmItem(16),
+    tmItem(20),
+    tmItem(23),
+    tmItem(26),
 ];
 
 const wallyBag2 = () => [
@@ -913,6 +925,20 @@ const endgameBag = () => [
     tmItem(95),   // EverGrande rival TM
 ];
 
+const leagueBag = () => [
+    ...endgameBag(),
+    tmItem(33),
+    tmItem(36),
+    tmItem(39),
+    tmItem(42),
+    tmItem(45),
+    tmItem(48),
+    tmItem(79),
+    tmItem(82),
+    tmItem(85),
+    tmItem(88),
+];
+
 const trainersData = [
     // Route 101
     {
@@ -930,6 +956,7 @@ const trainersData = [
         id: 'TRAINER_ELIJAH',
         location: 'Route 101',
         class: 'Bird Keeper',
+        bag: ['Oran Berry'],
         reward: ['Oran Berry'],
         level: 7,
         team: genericTrainerTeamPreRival(),
@@ -4168,7 +4195,7 @@ const trainersData = [
         isBoss: true,
         breedTier: 'good',
         level: 73,
-        bag: [...endgameBag()],
+        bag: [...leagueBag()],
         team: [
             { ...getBossPreset('SIDNEY', true)[0], type: [e41MainType] },
             { ...getBossPreset('SIDNEY', true)[1], type: [e41MainType] },
@@ -4185,7 +4212,7 @@ const trainersData = [
         isBoss: true,
         breedTier: 'good',
         level: 74,
-        bag: [...endgameBag()],
+        bag: [...leagueBag()],
         team: [
             { ...getBossPreset('PHOEBE', true)[0], type: [e42MainType] },
             { ...getBossPreset('PHOEBE', true)[1], type: [e42MainType] },
@@ -4202,7 +4229,7 @@ const trainersData = [
         isBoss: true,
         breedTier: 'good',
         level: 75,
-        bag: [...endgameBag()],
+        bag: [...leagueBag()],
         team: [
             { ...getBossPreset('GLACIA', true)[0], type: [e43MainType] },
             { ...getBossPreset('GLACIA', true)[1], type: [e43MainType] },
@@ -4219,7 +4246,7 @@ const trainersData = [
         isBoss: true,
         breedTier: 'good',
         level: 76,
-        bag: [...endgameBag()],
+        bag: [...leagueBag()],
         team: [
             { ...getBossPreset('DRAKE', true)[0], type: [e44MainType] },
             { ...getBossPreset('DRAKE', true)[1], type: [e44MainType] },
@@ -4236,7 +4263,7 @@ const trainersData = [
         isBoss: true,
         breedTier: 'perfect',
         level: 78,
-        bag: [...endgameBag()],
+        bag: [...leagueBag()],
         team: [
             {
                 ...getBossPreset('CHAMPION_STEVEN', true)[0],
