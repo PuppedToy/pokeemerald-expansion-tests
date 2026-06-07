@@ -148,6 +148,20 @@ u32 GetCurrentEVCap(void)
     return MAX_TOTAL_EVS;
 }
 
+static void FillEmptyMoveSlots(struct BoxPokemon *boxMon, u16 species, u32 cap)
+{
+    const struct LevelUpMove *learnset = GetSpeciesLevelUpLearnset(species);
+    const struct LevelUpMove *move;
+
+    for (move = learnset; move->move != LEVEL_UP_MOVE_END; move++)
+    {
+        if (move->level > cap)
+            continue;
+        if (GiveMoveToBoxMon(boxMon, move->move) == MON_HAS_MAX_MOVES)
+            break;
+    }
+}
+
 void LevelUpAllPokemonToCap(void)
 {
     u32 cap = GetCurrentLevelCap();
@@ -167,6 +181,7 @@ void LevelUpAllPokemonToCap(void)
             SetMonData(mon, MON_DATA_EXP, &exp);
             SetMonData(mon, MON_DATA_LEVEL, &level);
             CalculateMonStats(mon);
+            FillEmptyMoveSlots(&mon->box, species, cap);
         }
     }
 
@@ -185,6 +200,7 @@ void LevelUpAllPokemonToCap(void)
                 u32 exp = gExperienceTables[gSpeciesInfo[species].growthRate][cap];
                 SetBoxMonData(boxMon, MON_DATA_EXP, &exp);
                 SetBoxMonData(boxMon, MON_DATA_LEVEL, &level);
+                FillEmptyMoveSlots(boxMon, species, cap);
             }
         }
     }
