@@ -1,7 +1,7 @@
 'use strict';
 
 const rng = require('../../rng');
-const { buildWildPlaceholderMap, substituteWildSpecies } = require('../../writer');
+const { buildWildPlaceholderMap, substituteWildSpecies, buildTrainersResultsFromDocs } = require('../../writer');
 
 afterEach(() => rng.reset());
 
@@ -99,5 +99,81 @@ describe('substituteWildSpecies', () => {
         expect(result).toContain('"SPECIES_YAMPER"');
         expect(result).toContain('"SPECIES_MAREEP"');
         expect(result).not.toMatch(/SPECIES_YAMPER_PALDEA_COMBAT/);
+    });
+});
+
+describe('buildTrainersResultsFromDocs', () => {
+    const pokemonList = [
+        { id: 'SPECIES_MUDKIP', name: 'Mudkip' },
+        { id: 'SPECIES_CHARMANDER', name: 'Charmander' },
+    ];
+
+    const docsTrainers = {
+        TRAINER_CALVIN_1: {
+            level: 7,
+            label: null,
+            class: 'Youngster',
+            reward: ['Mudkip'],
+            isBoss: false,
+            isPartner: false,
+            location: 'Route 101',
+            preventShuffle: false,
+            team: [
+                {
+                    pokemon: 'SPECIES_MUDKIP',
+                    item: null,
+                    nature: 'Naive',
+                    moves: ['MOVE_WATER_GUN', 'MOVE_TACKLE'],
+                    breedTier: null,
+                    pokeId: null,
+                    ivs: { hp: 22, atk: 30, def: 25, spa: 2, spd: 14, spe: 23 },
+                    ability: 'TORRENT',
+                },
+            ],
+        },
+    };
+
+    test('maps each team member species id to its pokemon object', () => {
+        const result = buildTrainersResultsFromDocs(docsTrainers, pokemonList);
+        const mon = result.TRAINER_CALVIN_1.team[0];
+        expect(mon.pokemon).toEqual({ id: 'SPECIES_MUDKIP', name: 'Mudkip' });
+    });
+
+    test('passes through resolved team-member fields verbatim', () => {
+        const result = buildTrainersResultsFromDocs(docsTrainers, pokemonList);
+        const mon = result.TRAINER_CALVIN_1.team[0];
+        expect(mon.item).toBeNull();
+        expect(mon.nature).toBe('Naive');
+        expect(mon.moves).toEqual(['MOVE_WATER_GUN', 'MOVE_TACKLE']);
+        expect(mon.ability).toBe('TORRENT');
+        expect(mon.ivs).toEqual({ hp: 22, atk: 30, def: 25, spa: 2, spd: 14, spe: 23 });
+    });
+
+    test('passes through trainer-level fields', () => {
+        const result = buildTrainersResultsFromDocs(docsTrainers, pokemonList);
+        const t = result.TRAINER_CALVIN_1;
+        expect(t.level).toBe(7);
+        expect(t.class).toBe('Youngster');
+        expect(t.reward).toEqual(['Mudkip']);
+        expect(t.location).toBe('Route 101');
+        expect(t.isBoss).toBe(false);
+        expect(t.preventShuffle).toBe(false);
+    });
+
+    test('does not consume any RNG calls', () => {
+        rng.seed(42);
+        const baseline = rng.random();
+        rng.seed(42);
+        buildTrainersResultsFromDocs(docsTrainers, pokemonList);
+        const after = rng.random();
+        expect(after).toBe(baseline);
+    });
+
+    test('falls back to a derived name when a species is not in the pokemon list', () => {
+        const docs = {
+            T1: { level: 5, class: 'X', team: [{ pokemon: 'SPECIES_GHOST_MON', moves: [], ivs: {} }] },
+        };
+        const result = buildTrainersResultsFromDocs(docs, pokemonList);
+        expect(result.T1.team[0].pokemon).toEqual({ id: 'SPECIES_GHOST_MON', name: 'Ghost Mon' });
     });
 });

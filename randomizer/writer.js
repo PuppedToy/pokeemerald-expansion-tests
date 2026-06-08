@@ -178,10 +178,40 @@ function substituteWildSpecies(content, wildReplacementLog) {
     return result;
 }
 
+// Build the trainersResults structure from the pre-resolved docs teams stored in the bundle
+// (rom.docs.trainersResultsSimplified). The docs already hold every fully-resolved member
+// (species, item, nature, moves, IVs, ability) so the ROM is guaranteed to match the docs —
+// this is the single source of truth that removes the RNG re-resolution desync entirely.
+// The only transformation needed is mapping the species id back to its pokemon object, since
+// the .party formatter reads pokemon.name. Consumes no RNG.
+function buildTrainersResultsFromDocs(docsTrainers, pokemonList) {
+    const byId = new Map(pokemonList.map(p => [p.id, p]));
+    const result = {};
+    Object.entries(docsTrainers).forEach(([trainerId, td]) => {
+        result[trainerId] = {
+            level: td.level,
+            class: td.class,
+            reward: td.reward || [],
+            isBoss: td.isBoss || false,
+            isPartner: td.isPartner || false,
+            location: td.location || null,
+            preventShuffle: td.preventShuffle || false,
+            team: (td.team || []).map(member => ({
+                ...member,
+                pokemon: byId.get(member.pokemon)
+                    || { id: member.pokemon, name: nameify(member.pokemon.replace('SPECIES_', '')) },
+            })),
+        };
+    });
+    return result;
+}
+
 // baseRngSeed: when non-null, the RNG is reseeded at the start of each trainer slot
 // using hash(baseRngSeed, trainer.id, slotIndex). This makes tier-based slots
 // deterministic across ROMs that share a trainer artifact but differ in wild data.
-async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null) {
+// docs: when provided (bundle mode), trainer teams are taken verbatim from the pre-resolved
+// docs instead of re-resolved via RNG — guaranteeing the ROM matches the bundle's docs.
+async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null, docs = null) {
     let { pokes: pokemonList, moves, abilities } = pokedexArtifact;
     // Deep-clone trainersData — mega trainer processing splices entries in-place,
     // which would corrupt the shared artifact when the same trainers object is used across ROMs.
@@ -464,6 +494,11 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
         return ivs;
     }
 
+    if (docs) {
+        // Single source of truth: take the fully-resolved teams from the bundle's docs
+        // instead of re-resolving them via RNG. Guarantees the ROM matches the docs.
+        Object.assign(trainersResults, buildTrainersResultsFromDocs(docs.trainersResultsSimplified, pokemonList));
+    } else {
     trainersData.forEach(trainer => {
         for(let i = 0; i < (trainer.bag || []).length; i++) {
             const item = trainer.bag[i];
@@ -743,6 +778,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             preventShuffle: trainer.preventShuffle || false,
         };
     });
+    }
 
     Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
         let shuffledTeam = [...trainerData.team];
@@ -750,7 +786,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             trainerData.level = 5;
             shuffledTeam = [shuffledTeam[0]];
         }
-        else if (!trainerData.preventShuffle) {
+        else if (!docs && !trainerData.preventShuffle) {
             shuffledTeam = shuffledTeam.sort(() => rng.random() - 0.5);
             shuffledTeam = applyLeadLogic(shuffledTeam, () => rng.random());
         }
@@ -994,3 +1030,4 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
 module.exports = writer;
 module.exports.buildWildPlaceholderMap = buildWildPlaceholderMap;
 module.exports.substituteWildSpecies = substituteWildSpecies;
+module.exports.buildTrainersResultsFromDocs = buildTrainersResultsFromDocs;

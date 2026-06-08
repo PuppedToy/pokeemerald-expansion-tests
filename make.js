@@ -156,7 +156,7 @@ async function bundleMode(bundlePath, isDebug, doClean) {
         rng.seed(resolveRomSeed(rom, seed));
 
         try {
-            await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed));
+            await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed), rom.docs);
             await writeTMsFromList(pokedex.tmList);
             writeItemFilesFromBundle(trainers.itemAssignments);
             run('make', ['-j']);
