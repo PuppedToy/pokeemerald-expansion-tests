@@ -343,11 +343,16 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig) {
     addToFoundMegaEvosIfHasMegaEvo(gym8Replacement, 64);
 
     // Decide the mega stone each mega-giving reward hands out HERE, at bundle-creation
-    // time, and store it on the reward. The ROM maker then writes this verbatim instead
-    // of re-deriving it via RNG — keeping the bundle the single source of truth.
-    gym3Replacement.megaStone        = resolveRewardMegaStone(gym3Replacement, pokemonList);
-    slateportGruntsReward.megaStone  = resolveRewardMegaStone(slateportGruntsReward, pokemonList);
-    shellyRewardReplacement.megaStone = resolveRewardMegaStone(shellyRewardReplacement, pokemonList);
+    // time, picking one of the family's stones at random, and store it on the reward.
+    // The ROM maker then writes this verbatim with no RNG — keeping the bundle the
+    // single source of truth (so e.g. Charizardite X vs Y varies per seed).
+    const chooseMegaStone = (poke) => {
+        const stones = rewardMegaStones(poke, pokemonList);
+        return stones.length > 0 ? sample(stones) : null;
+    };
+    gym3Replacement.megaStone        = chooseMegaStone(gym3Replacement);
+    slateportGruntsReward.megaStone  = chooseMegaStone(slateportGruntsReward);
+    shellyRewardReplacement.megaStone = chooseMegaStone(shellyRewardReplacement);
 
     const gymRewards = {
         gym1: gym1Replacement,
@@ -482,19 +487,24 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig) {
     };
 }
 
-// Returns the mega stone item a gym reward should hand out, derived deterministically
-// (first available family mega stone) so it consumes no RNG. Returns null when the
-// reward pokemon has no family mega evolution.
-function resolveRewardMegaStone(rewardPoke, pokemonList) {
+// Every mega stone item a reward pokemon's family can use (pure, no RNG). The bundler
+// picks one of these at random (sample) when assigning a gym reward's stone.
+function rewardMegaStones(rewardPoke, pokemonList) {
     const megaEvos = rewardPoke && rewardPoke.evolutionData && rewardPoke.evolutionData.megaEvos;
-    if (!megaEvos || megaEvos.length === 0) return null;
-    const stones = megaEvos
+    if (!megaEvos || megaEvos.length === 0) return [];
+    return megaEvos
         .map(megaId => {
             const megaPoke = pokemonList.find(p => p.id === megaId);
             return megaPoke ? megaPoke.evolutionData.megaItem : null;
         })
         .filter(Boolean);
+}
+
+// Deterministic mega stone (first family stone) — used only as the ROM maker's RNG-free
+// fallback for older bundles that didn't store a chosen stone. Returns null when none.
+function resolveRewardMegaStone(rewardPoke, pokemonList) {
+    const stones = rewardMegaStones(rewardPoke, pokemonList);
     return stones.length > 0 ? stones[0] : null;
 }
 
-module.exports = { runWildModule, BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone };
+module.exports = { runWildModule, BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone, rewardMegaStones };

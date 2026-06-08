@@ -534,3 +534,30 @@ describe('resolveRewardMegaStone', () => {
         expect(rng.random()).toBe(baseline);
     });
 });
+
+describe('rewardMegaStones', () => {
+    const { rewardMegaStones } = require('../../modules/wildModule');
+    const pokemonList = [
+        { id: 'SPECIES_CHARIZARD_MEGA_X', evolutionData: { megaItem: 'ITEM_CHARIZARDITE_X' } },
+        { id: 'SPECIES_CHARIZARD_MEGA_Y', evolutionData: { megaItem: 'ITEM_CHARIZARDITE_Y' } },
+    ];
+
+    test('returns every family mega stone (so the bundler can pick among them)', () => {
+        const reward = { id: 'SPECIES_CHARMANDER', evolutionData: { megaEvos: ['SPECIES_CHARIZARD_MEGA_X', 'SPECIES_CHARIZARD_MEGA_Y'] } };
+        expect(rewardMegaStones(reward, pokemonList)).toEqual(['ITEM_CHARIZARDITE_X', 'ITEM_CHARIZARDITE_Y']);
+    });
+
+    test('returns [] when the reward has no mega evolutions', () => {
+        expect(rewardMegaStones({ id: 'SPECIES_X', evolutionData: { megaEvos: [] } }, pokemonList)).toEqual([]);
+        expect(rewardMegaStones(null, pokemonList)).toEqual([]);
+    });
+
+    test('does not consume any RNG calls', () => {
+        const reward = { id: 'SPECIES_CHARMANDER', evolutionData: { megaEvos: ['SPECIES_CHARIZARD_MEGA_X'] } };
+        rng.seed(42);
+        const baseline = rng.random();
+        rng.seed(42);
+        rewardMegaStones(reward, pokemonList);
+        expect(rng.random()).toBe(baseline);
+    });
+});
