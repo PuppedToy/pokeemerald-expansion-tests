@@ -60,6 +60,36 @@ node analyze.js --debug
 
 Commit any changes to `src/`, `include/`, or `data/maps/` before running.
 
+## Debug runs (`debug/`) and the ROM-builder pipeline
+
+`analyze.js` only analyses — it never compiles a ROM. Actual ROMs are produced by a
+separate pipeline that runs on a dedicated ROM-builder machine:
+
+1. A **bundle** (`bundle.json`) is generated from the frontend. It contains the full
+   randomizer output for one session (`config`, `sharedData`, and a `roms[]` array, each
+   with resolved `artifacts`: `pokedex`, `trainers`, `starters`, `wild`).
+2. The bundle is moved to the ROM-builder machine.
+3. `node make.js --bundle=./path/to/bundle.json` reads the bundle and, for each ROM,
+   writes the game files (`randomizer/writer.js` + TM/item writers) → runs `make` →
+   saves the ROM → restores the mutated source files.
+
+**Anything under `debug/<run>/` was produced this way on the builder machine.** Each run
+directory holds the inputs and captured output of one failed/sample build:
+
+| File | What it is |
+|------|------------|
+| `bundle.json` | The exact input bundle fed to `make.js --bundle` |
+| `log.txt` | Full stdout of the build (writer logs, `make` output) |
+| `logError.txt` | stderr — warnings plus the fatal compiler error that aborted the build |
+| `rom-*.html` | The analysis HTML viewer for the produced ROM |
+
+To debug a failed run, read `logError.txt` (the real error is usually near the **end** —
+the top is mostly benign `WARN`/`SPECIES_FILE_WRITER` noise), then reproduce the writer
+behaviour locally by feeding `bundle.json` through the relevant `randomizer/` function.
+A bundle is clean input; corruption of generated source files almost always originates in
+the writers (`randomizer/writer.js`, `tmRandomizer.js`, `itemRandomizer.js`), not the
+bundle.
+
 ## Testing and TDD — randomizer pipeline
 
 All logic in `randomizer/` (except the HTML template) is covered by automated tests. **Use Test-Driven Development (TDD)** for any new feature or bug fix in these files.

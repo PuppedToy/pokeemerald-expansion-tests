@@ -149,6 +149,35 @@ function buildWildPlaceholderMap(entries) {
     return result;
 }
 
+// Apply the two-pass wild-encounter species substitution to a wild_encounters.json
+// blob. Returns the rewritten content.
+//
+// Both passes anchor their match with word boundaries (\b). This is essential:
+// otherwise a token that is a substring-prefix of a longer token corrupts it.
+// e.g. placeholder WILDPOKE_P1 is a prefix of WILDPOKE_P10..P19 and WILDPOKE_P100.. ,
+// so an unanchored /WILDPOKE_P1/g rewrites the start of WILDPOKE_P19 and leaves a
+// stray "9" glued onto the replacement species (SPECIES_FOO9 — undeclared at build
+// time). The same hazard applies in pass 1 to any base species that is a prefix of
+// another (SPECIES_TAUROS vs SPECIES_TAUROS_PALDEA_COMBAT). Species ids and
+// placeholders are all [A-Z0-9_]+ (no regex metacharacters), so \b anchoring is
+// sufficient and correct — the surrounding "/,/space/} are all non-word characters.
+function substituteWildSpecies(content, wildReplacementLog) {
+    let result = content;
+    const placeholders = buildWildPlaceholderMap(Object.entries(wildReplacementLog));
+
+    // Pass 1: replace each original species with a unique placeholder to avoid chained substitutions.
+    Object.keys(wildReplacementLog).forEach((speciesId) => {
+        result = result.replace(new RegExp('\\b' + speciesId + '\\b', 'g'), placeholders[speciesId]);
+    });
+
+    // Pass 2: replace placeholders with the actual replacement species.
+    Object.entries(placeholders).forEach(([speciesId, placeholder]) => {
+        result = result.replace(new RegExp('\\b' + placeholder + '\\b', 'g'), wildReplacementLog[speciesId]);
+    });
+
+    return result;
+}
+
 // baseRngSeed: when non-null, the RNG is reseeded at the start of each trainer slot
 // using hash(baseRngSeed, trainer.id, slotIndex). This makes tier-based slots
 // deterministic across ROMs that share a trainer artifact but differ in wild data.
@@ -295,22 +324,12 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
 
     let wildEncountersFileContent = await fs.readFile((wild.file), 'utf8');
 
-    // Pass 1: replace each original species with a unique placeholder to avoid chained substitutions
-    const auxWildReplacementsFrom = buildWildPlaceholderMap(Object.entries(wildReplacementLog));
-    Object.entries(wildReplacementLog).forEach(([speciesId, replacementId]) => {
-        wildEncountersFileContent = wildEncountersFileContent.replace(
-            new RegExp(speciesId, 'g'),
-            auxWildReplacementsFrom[speciesId]
-        );
-        replacementLog[speciesId] = replacementId;
-    });
+    // Two-pass placeholder substitution (see substituteWildSpecies for why).
+    wildEncountersFileContent = substituteWildSpecies(wildEncountersFileContent, wildReplacementLog);
 
-    // Pass 2: replace placeholders with actual species
-    Object.entries(auxWildReplacementsFrom).forEach(([speciesId, placeholder]) => {
-        wildEncountersFileContent = wildEncountersFileContent.replace(
-            new RegExp(placeholder, 'g'),
-            wildReplacementLog[speciesId]
-        );
+    // Record the applied replacements for the documentation log.
+    Object.entries(wildReplacementLog).forEach(([speciesId, replacementId]) => {
+        replacementLog[speciesId] = replacementId;
     });
 
     await fs.writeFile((wild.file), wildEncountersFileContent, 'utf8');
@@ -974,3 +993,4 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
 
 module.exports = writer;
 module.exports.buildWildPlaceholderMap = buildWildPlaceholderMap;
+module.exports.substituteWildSpecies = substituteWildSpecies;
