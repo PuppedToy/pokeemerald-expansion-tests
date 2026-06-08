@@ -90,13 +90,41 @@ function applyEvoLevels(pokemonList) {
 }
 
 /**
- * Scans pokemonList for every EVO_LEVEL evolution, computes a dynamic level,
- * and writes the updated levels into the gen_*_families.h source files.
+ * Builds the species → evo-level map from the levels ALREADY stored on each
+ * pokemon's evolutions[].param, without recomputing anything (and without
+ * consuming RNG). Used in bundle mode, where the levels were chosen once at
+ * bundle-creation time (writerDocs → applyEvoLevels) so the ROM writes exactly
+ * those values rather than re-rolling them with a second RNG stream.
+ *
+ * @param {Array} pokemonList
+ * @returns {Map<string, number>} evoSpeciesId → level
+ */
+function buildEvoLevelMapFromParams(pokemonList) {
+    const evoLevelMap = new Map();
+    for (const pokemon of pokemonList) {
+        if (!pokemon.evolutions || pokemon.evolutions.length === 0) continue;
+        for (const evo of pokemon.evolutions) {
+            if (evo.method !== 'LEVEL') continue;
+            evoLevelMap.set(evo.pokemon, parseInt(evo.param, 10));
+        }
+    }
+    return evoLevelMap;
+}
+
+/**
+ * Scans pokemonList for every EVO_LEVEL evolution and writes the levels into
+ * the gen_*_families.h source files.
  *
  * @param {Array} pokemonList - Full rated pokemon list from index.js
+ * @param {object} [opts]
+ * @param {boolean} [opts.recompute=true] - When true, re-roll levels via RNG
+ *        (randomize/analyze mode). When false, write the levels already stored
+ *        on evo.param (bundle mode — single source of truth, no RNG).
  */
-async function writeEvoLevels(pokemonList) {
-    const evoLevelMap = applyEvoLevels(pokemonList);
+async function writeEvoLevels(pokemonList, { recompute = true } = {}) {
+    const evoLevelMap = recompute
+        ? applyEvoLevels(pokemonList)
+        : buildEvoLevelMapFromParams(pokemonList);
 
     if (evoLevelMap.size === 0) {
         console.log('No EVO_LEVEL evolutions found — skipping evo level write.');
@@ -146,4 +174,4 @@ async function writeEvoLevels(pokemonList) {
     console.log(`Done — replaced ${totalReplaced} EVO_LEVEL entries.`);
 }
 
-module.exports = { applyEvoLevels, writeEvoLevels };
+module.exports = { applyEvoLevels, writeEvoLevels, buildEvoLevelMapFromParams };

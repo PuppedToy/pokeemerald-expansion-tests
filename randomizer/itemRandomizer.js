@@ -496,6 +496,12 @@ function randomizeItems() {
     // Return display-name assignments for use in trainer generation
     const dn = (key) => a[key].map(itemDisplayName);
     return {
+        // Mint order for the route mail items, chosen ONCE here (bundle-creation time) and
+        // stored so the ROM maker writes it deterministically with no RNG of its own.
+        woodMailMints: shuffle(items.midMints).map(itemDisplayName),
+        waveMailMints: shuffle(items.strongDefMints).map(itemDisplayName),
+        mechMailMints: shuffle(items.strongAtkMints).map(itemDisplayName),
+
         route106GoodItem:  itemDisplayName(a.route106GoodItem),
         route109GoodItem:  itemDisplayName(a.route109GoodItem),
         route110GoodItem:     itemDisplayName(a.route110GoodItem),
@@ -540,4 +546,4 @@ function writeItemFilesFromBundle(itemAssignments) {
     updateScriptMenu(raw);
 }
 
-module.exports = { randomizeItems, updateScripts, writeItemFilesFromBundle };
+module.exports = { randomizeItems, updateScripts, writeItemFilesFromBundle, displayNameToItemConst };

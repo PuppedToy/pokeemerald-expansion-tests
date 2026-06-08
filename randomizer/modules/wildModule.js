@@ -342,6 +342,13 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig) {
     alreadyChosenFamilySet.add(getFamilyGroup(gym8Replacement.family));
     addToFoundMegaEvosIfHasMegaEvo(gym8Replacement, 64);
 
+    // Decide the mega stone each mega-giving reward hands out HERE, at bundle-creation
+    // time, and store it on the reward. The ROM maker then writes this verbatim instead
+    // of re-deriving it via RNG — keeping the bundle the single source of truth.
+    gym3Replacement.megaStone        = resolveRewardMegaStone(gym3Replacement, pokemonList);
+    slateportGruntsReward.megaStone  = resolveRewardMegaStone(slateportGruntsReward, pokemonList);
+    shellyRewardReplacement.megaStone = resolveRewardMegaStone(shellyRewardReplacement, pokemonList);
+
     const gymRewards = {
         gym1: gym1Replacement,
         gym2: gym2Replacement,
@@ -475,4 +482,19 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig) {
     };
 }
 
-module.exports = { runWildModule, BANNED_SPECIES_FOR_PICKING };
+// Returns the mega stone item a gym reward should hand out, derived deterministically
+// (first available family mega stone) so it consumes no RNG. Returns null when the
+// reward pokemon has no family mega evolution.
+function resolveRewardMegaStone(rewardPoke, pokemonList) {
+    const megaEvos = rewardPoke && rewardPoke.evolutionData && rewardPoke.evolutionData.megaEvos;
+    if (!megaEvos || megaEvos.length === 0) return null;
+    const stones = megaEvos
+        .map(megaId => {
+            const megaPoke = pokemonList.find(p => p.id === megaId);
+            return megaPoke ? megaPoke.evolutionData.megaItem : null;
+        })
+        .filter(Boolean);
+    return stones.length > 0 ? stones[0] : null;
+}
+
+module.exports = { runWildModule, BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone };

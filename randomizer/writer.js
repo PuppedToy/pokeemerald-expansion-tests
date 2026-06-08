@@ -18,7 +18,8 @@ const {
     MEGA_TRAINERS,
 } = require('./constants');
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
-const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
+const { BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone } = require('./modules/wildModule');
+const { displayNameToItemConst } = require('./itemRandomizer');
 const { sample, canLearnMove } = require('./modules/utils');
 const { selectWithAutoFallback } = require('./modules/trainerFallback');
 const { createChooser } = require('./modules/trainerSelector');
@@ -206,6 +207,21 @@ function buildTrainersResultsFromDocs(docsTrainers, pokemonList) {
     return result;
 }
 
+// Resolve the ordered mint pools used to replace the route mail items, as ITEM_ consts.
+// The order is chosen once at bundle-creation time (randomizeItems) and stored on
+// itemAssignments as display names; here we just convert it back. Falls back to the
+// static pools (definition order) for older bundles / when not provided. No RNG.
+function resolveMailMints(itemAssignments, items) {
+    const toConsts = (stored, pool) => (stored && stored.length)
+        ? stored.map(displayNameToItemConst)
+        : [...pool];
+    return {
+        wood: toConsts(itemAssignments.woodMailMints, items.midMints),
+        wave: toConsts(itemAssignments.waveMailMints, items.strongDefMints),
+        mech: toConsts(itemAssignments.mechMailMints, items.strongAtkMints),
+    };
+}
+
 // baseRngSeed: when non-null, the RNG is reseeded at the start of each trainer slot
 // using hash(baseRngSeed, trainer.id, slotIndex). This makes tier-based slots
 // deterministic across ROMs that share a trainer artifact but differ in wild data.
@@ -222,8 +238,11 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
 
     pokemonList = pokemonList.filter(poke => !BANNED_SPECIES_FOR_PICKING.includes(poke.id));
 
-    console.log('Randomizing evolution levels...');
-    await writeEvoLevels(pokemonList);
+    // In bundle mode the evo levels were already chosen at bundle-creation time and
+    // are stored on pokemonList[].evolutions[].param — write those verbatim (no RNG).
+    // In randomize/analyze mode (no docs) roll them fresh.
+    console.log(docs ? 'Writing evolution levels from bundle...' : 'Randomizing evolution levels...');
+    await writeEvoLevels(pokemonList, { recompute: !docs });
 
     console.log('Updating starter pokemon...');
 
@@ -282,12 +301,11 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
         gymFileData = gymFileData.replace(new RegExp(gymMonReplacement, 'g'), pokeRewardReplacements[i].id);
         gymFileData = gymFileData.replace(new RegExp(gymNameReplacement, 'g'), pokeRewardReplacements[i].name);
         if (i === 2 || i === 8 || i === 9) { // Mauville City Gym, Slateport Grunts, and Shelly give a mega stone
-            const megaEvoItems = pokeRewardReplacements[i].evolutionData.megaEvos.map(me => {
-                const megaPoke = pokemonList.find(p => p.id === me);
-                return megaPoke ? megaPoke.evolutionData.megaItem : null;
-            }).filter(item => item !== null);
-            if (megaEvoItems.length > 0) {
-                const chosenItem = megaEvoItems[Math.floor(rng.random() * megaEvoItems.length)];
+            // The stone was chosen at bundle-creation time and stored on the reward; read it
+            // (no RNG). Fall back to a deterministic resolution for older bundles / randomize mode.
+            const chosenItem = pokeRewardReplacements[i].megaStone
+                || resolveRewardMegaStone(pokeRewardReplacements[i], pokemonList);
+            if (chosenItem) {
                 gymFileData = gymFileData.replace(new RegExp(gymItemReplacement, 'g'), chosenItem);
             }
             else {
@@ -367,15 +385,20 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
 
     // Items
 
-    routeFiles.forEach(async (routeFile) => {
+    // Replace the route mail items with the pre-chosen mint order (no RNG): the order was
+    // decided at bundle-creation time and stored on itemAssignments. Consume it sequentially
+    // across all route files (awaited, deterministic — not fire-and-forget).
+    const mailMints = resolveMailMints(itemAssignments, items);
+    let woodIdx = 0, waveIdx = 0, mechIdx = 0;
+    for (const routeFile of routeFiles) {
         let routeFileContent = await fs.readFile(routeFile, 'utf8');
-        
-        routeFileContent = routeFileContent.replace(/ITEM_WOOD_MAIL/g, () => sample(items.midMints));
-        routeFileContent = routeFileContent.replace(/ITEM_WAVE_MAIL/g, () => sample(items.strongDefMints));
-        routeFileContent = routeFileContent.replace(/ITEM_MECH_MAIL/g, () => sample(items.strongAtkMints));
+
+        routeFileContent = routeFileContent.replace(/ITEM_WOOD_MAIL/g, () => mailMints.wood[woodIdx++ % mailMints.wood.length]);
+        routeFileContent = routeFileContent.replace(/ITEM_WAVE_MAIL/g, () => mailMints.wave[waveIdx++ % mailMints.wave.length]);
+        routeFileContent = routeFileContent.replace(/ITEM_MECH_MAIL/g, () => mailMints.mech[mechIdx++ % mailMints.mech.length]);
 
         await fs.writeFile(routeFile, routeFileContent, 'utf8');
-    });
+    }
 
     // Sort mega evos
     const foundMegaEvos = [...wildFoundMegaEvos].sort((a, b) => a.level - b.level);
@@ -1031,3 +1054,4 @@ module.exports = writer;
 module.exports.buildWildPlaceholderMap = buildWildPlaceholderMap;
 module.exports.substituteWildSpecies = substituteWildSpecies;
 module.exports.buildTrainersResultsFromDocs = buildTrainersResultsFromDocs;
+module.exports.resolveMailMints = resolveMailMints;

@@ -1,7 +1,7 @@
 'use strict';
 
 const rng = require('../../rng');
-const { buildWildPlaceholderMap, substituteWildSpecies, buildTrainersResultsFromDocs } = require('../../writer');
+const { buildWildPlaceholderMap, substituteWildSpecies, buildTrainersResultsFromDocs, resolveMailMints } = require('../../writer');
 
 afterEach(() => rng.reset());
 
@@ -175,5 +175,40 @@ describe('buildTrainersResultsFromDocs', () => {
         };
         const result = buildTrainersResultsFromDocs(docs, pokemonList);
         expect(result.T1.team[0].pokemon).toEqual({ id: 'SPECIES_GHOST_MON', name: 'Ghost Mon' });
+    });
+});
+
+describe('resolveMailMints', () => {
+    const items = {
+        midMints: ['ITEM_LONELY_MINT', 'ITEM_NAUGHTY_MINT'],
+        strongDefMints: ['ITEM_BOLD_MINT', 'ITEM_IMPISH_MINT'],
+        strongAtkMints: ['ITEM_ADAMANT_MINT', 'ITEM_JOLLY_MINT'],
+    };
+
+    test('uses the bundle-stored mint order (display names) converted to ITEM_ consts', () => {
+        const itemAssignments = {
+            woodMailMints: ['Naughty Mint', 'Lonely Mint'],
+            waveMailMints: ['Impish Mint', 'Bold Mint'],
+            mechMailMints: ['Jolly Mint', 'Adamant Mint'],
+        };
+        const r = resolveMailMints(itemAssignments, items);
+        expect(r.wood).toEqual(['ITEM_NAUGHTY_MINT', 'ITEM_LONELY_MINT']);
+        expect(r.wave).toEqual(['ITEM_IMPISH_MINT', 'ITEM_BOLD_MINT']);
+        expect(r.mech).toEqual(['ITEM_JOLLY_MINT', 'ITEM_ADAMANT_MINT']);
+    });
+
+    test('falls back to the static pools when the bundle has no mint order (older bundles)', () => {
+        const r = resolveMailMints({}, items);
+        expect(r.wood).toEqual(items.midMints);
+        expect(r.wave).toEqual(items.strongDefMints);
+        expect(r.mech).toEqual(items.strongAtkMints);
+    });
+
+    test('consumes no RNG', () => {
+        rng.seed(42);
+        const baseline = rng.random();
+        rng.seed(42);
+        resolveMailMints({ woodMailMints: ['Lonely Mint'] }, items);
+        expect(rng.random()).toBe(baseline);
     });
 });

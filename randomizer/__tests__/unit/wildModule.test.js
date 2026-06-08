@@ -496,3 +496,41 @@ describe('runWildModule — no duplicate families across all rewards', () => {
         expect(allFamilies.length).toBe(new Set(allFamilies).size);
     });
 });
+
+describe('resolveRewardMegaStone', () => {
+    const { resolveRewardMegaStone } = require('../../modules/wildModule');
+
+    const pokemonList = [
+        { id: 'SPECIES_BEEDRILL', evolutionData: { megaItem: 'ITEM_BEEDRILLITE' } },
+        { id: 'SPECIES_CHARIZARD_MEGA_X', evolutionData: { megaItem: 'ITEM_CHARIZARDITE_X' } },
+        { id: 'SPECIES_CHARIZARD_MEGA_Y', evolutionData: { megaItem: 'ITEM_CHARIZARDITE_Y' } },
+    ];
+
+    test('returns the mega stone for a reward with a single family mega', () => {
+        const reward = { id: 'SPECIES_WEEDLE', evolutionData: { megaEvos: ['SPECIES_BEEDRILL'] } };
+        expect(resolveRewardMegaStone(reward, pokemonList)).toBe('ITEM_BEEDRILLITE');
+    });
+
+    test('is deterministic (first family mega stone) when several exist', () => {
+        const reward = { id: 'SPECIES_CHARMANDER', evolutionData: { megaEvos: ['SPECIES_CHARIZARD_MEGA_X', 'SPECIES_CHARIZARD_MEGA_Y'] } };
+        const a = resolveRewardMegaStone(reward, pokemonList);
+        const b = resolveRewardMegaStone(reward, pokemonList);
+        expect(a).toBe('ITEM_CHARIZARDITE_X');
+        expect(a).toBe(b);
+    });
+
+    test('returns null when the reward has no mega evolutions', () => {
+        expect(resolveRewardMegaStone({ id: 'SPECIES_X', evolutionData: { megaEvos: [] } }, pokemonList)).toBeNull();
+        expect(resolveRewardMegaStone({ id: 'SPECIES_X', evolutionData: {} }, pokemonList)).toBeNull();
+        expect(resolveRewardMegaStone(null, pokemonList)).toBeNull();
+    });
+
+    test('does not consume any RNG calls', () => {
+        const reward = { id: 'SPECIES_WEEDLE', evolutionData: { megaEvos: ['SPECIES_BEEDRILL'] } };
+        rng.seed(42);
+        const baseline = rng.random();
+        rng.seed(42);
+        resolveRewardMegaStone(reward, pokemonList);
+        expect(rng.random()).toBe(baseline);
+    });
+});
