@@ -300,6 +300,8 @@ enum EvolutionConditions {
     IF_PID_MODULO_100_LT,               // The Pokémon's personality value's modulo by 100 is lower than the defined value.
     IF_MIN_OVERWORLD_STEPS,             // The Player has taken a specific amount of steps in the overworld with the Pokémon following them or in the first slot of the party.
     IF_BAG_ITEM_COUNT,                  // The Player has the specific amount of an item in the bag. It then removes those items.
+    // Custom
+    IF_MIN_LEVEL,                       // The Pokémon is at least the defined level. Used to level-gate stone (and other) evolutions.
     CONDITIONS_END
 };
 

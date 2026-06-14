@@ -4736,6 +4736,11 @@ bool32 DoesMonMeetAdditionalConditions(struct Pokemon *mon, const struct Evoluti
                     *canStopEvo = FALSE;
             }
             break;
+        // Custom
+        case IF_MIN_LEVEL:
+            if (GetMonData(mon, MON_DATA_LEVEL, 0) >= params[i].arg1)
+                currentCondition = TRUE;
+            break;
         case CONDITIONS_END:
             break;
         }
