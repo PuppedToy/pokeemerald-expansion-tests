@@ -25,5 +25,5 @@ Route124_DivingTreasureHuntersHouse_Text_Retired:
 	.string "the whole set! Those were the days.$"
 
 Route124_DivingTreasureHuntersHouse_Text_ShardTradeBoard:
-	.string "“Out of business — all my EVOLUTION\n"
-	.string "STONES have found new homes!”$"
+	.string "“Out of business! All my EVOLUTION\n"
+	.string "STONES have found new homes.”$"
