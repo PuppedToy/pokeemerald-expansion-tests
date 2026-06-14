@@ -26,8 +26,8 @@ describe('LEGEND tier — constants', () => {
         expect(TIER_AG_THRESHOLD).toBe(9.75);
     });
 
-    test('LEGEND_BST_THRESHOLD is 670', () => {
-        expect(LEGEND_BST_THRESHOLD).toBe(670);
+    test('LEGEND_BST_THRESHOLD is 660', () => {
+        expect(LEGEND_BST_THRESHOLD).toBe(660);
     });
 
     test('LEGEND is in TIER_SEQ between UBERS and AG', () => {
