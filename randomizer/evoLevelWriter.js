@@ -63,13 +63,16 @@ function computeEvoLevel(preEvoTier, evoTier, stageAdj) {
  */
 function applyEvoLevels(pokemonList) {
     const pokemonMap = new Map(pokemonList.map(p => [p.id, p]));
-    const evoLevelMap = new Map();
+    const levelMap = new Map();   // EVO_LEVEL target → level (stored on evo.param)
+    const stoneMap = new Map();   // EVO_ITEM  target → level (stored on evo.minLevel)
 
     for (const pokemon of pokemonList) {
         if (!pokemon.evolutions || pokemon.evolutions.length === 0) continue;
 
         for (const evo of pokemon.evolutions) {
-            if (evo.method !== 'LEVEL') continue;
+            const isLevel = evo.method === 'LEVEL';
+            const isStone = evo.method === 'ITEM';
+            if (!isLevel && !isStone) continue;
 
             const evoPokemon = pokemonMap.get(evo.pokemon);
             if (!evoPokemon) continue;
@@ -78,15 +81,24 @@ function applyEvoLevels(pokemonList) {
             const evoTier    = evoPokemon.rating.tier;
             const stageAdj   = getStageAdjustment(pokemon.evolutionData.type);
 
+            // Every branch is balanced from its own target's tier, so per-branch levels
+            // (level vs stone, and stone vs stone) are independent.
             const level = computeEvoLevel(preEvoTier, evoTier, stageAdj);
-            evoLevelMap.set(evo.pokemon, level);
 
-            // Mutate in-memory so the HTML viewer and trainer logic use the new levels
-            evo.param = String(level);
+            // Mutate in-memory so the HTML viewer and trainer logic use the new levels.
+            if (isLevel) {
+                levelMap.set(evo.pokemon, level);
+                evo.param = String(level);
+            } else {
+                // Stone evolutions keep their item in evo.param; the level lives on
+                // evo.minLevel (written to the CONDITIONS({IF_MIN_LEVEL, N}) clause).
+                stoneMap.set(evo.pokemon, level);
+                evo.minLevel = String(level);
+            }
         }
     }
 
-    return evoLevelMap;
+    return { levelMap, stoneMap };
 }
 
 /**
@@ -100,15 +112,41 @@ function applyEvoLevels(pokemonList) {
  * @returns {Map<string, number>} evoSpeciesId → level
  */
 function buildEvoLevelMapFromParams(pokemonList) {
-    const evoLevelMap = new Map();
+    const levelMap = new Map();
+    const stoneMap = new Map();
     for (const pokemon of pokemonList) {
         if (!pokemon.evolutions || pokemon.evolutions.length === 0) continue;
         for (const evo of pokemon.evolutions) {
-            if (evo.method !== 'LEVEL') continue;
-            evoLevelMap.set(evo.pokemon, parseInt(evo.param, 10));
+            if (evo.method === 'LEVEL') {
+                levelMap.set(evo.pokemon, parseInt(evo.param, 10));
+            } else if (evo.method === 'ITEM' && evo.minLevel !== undefined) {
+                stoneMap.set(evo.pokemon, parseInt(evo.minLevel, 10));
+            }
         }
     }
-    return evoLevelMap;
+    return { levelMap, stoneMap };
+}
+
+/**
+ * Pure helper: rewrite the level in a plain {EVO_LEVEL, <n>, SPECIES} tuple.
+ * Deliberately only matches tuples that close immediately after the species, so
+ * conditional level evolutions ({EVO_LEVEL, 0, SPECIES, CONDITIONS(...)}) are left alone.
+ */
+function patchEvoLevelInContent(content, evoSpecies, level) {
+    const regex = new RegExp(`\\{EVO_LEVEL,\\s*\\d+,\\s*${evoSpecies}\\}`, 'g');
+    return content.replace(regex, `{EVO_LEVEL, ${level}, ${evoSpecies}}`);
+}
+
+/**
+ * Pure helper: rewrite only the IF_MIN_LEVEL number inside a stone evolution
+ * {EVO_ITEM, ITEM_X, SPECIES, CONDITIONS({IF_MIN_LEVEL, <n>})}, keeping the item and species.
+ */
+function patchStoneMinLevelInContent(content, evoSpecies, level) {
+    const regex = new RegExp(
+        `(\\{EVO_ITEM,\\s*ITEM_\\w+,\\s*${evoSpecies},\\s*CONDITIONS\\(\\{IF_MIN_LEVEL,\\s*)\\d+(\\}\\)\\})`,
+        'g'
+    );
+    return content.replace(regex, `$1${level}$2`);
 }
 
 /**
@@ -122,16 +160,16 @@ function buildEvoLevelMapFromParams(pokemonList) {
  *        on evo.param (bundle mode — single source of truth, no RNG).
  */
 async function writeEvoLevels(pokemonList, { recompute = true } = {}) {
-    const evoLevelMap = recompute
+    const { levelMap, stoneMap } = recompute
         ? applyEvoLevels(pokemonList)
         : buildEvoLevelMapFromParams(pokemonList);
 
-    if (evoLevelMap.size === 0) {
-        console.log('No EVO_LEVEL evolutions found — skipping evo level write.');
+    if (levelMap.size === 0 && stoneMap.size === 0) {
+        console.log('No evolutions with levels found — skipping evo level write.');
         return;
     }
 
-    console.log(`Updating ${evoLevelMap.size} EVO_LEVEL entries across gen files...`);
+    console.log(`Updating ${levelMap.size} EVO_LEVEL and ${stoneMap.size} stone (IF_MIN_LEVEL) entries across gen files...`);
 
     // All gen files are single flat .h files
     const genFiles = [];
@@ -151,14 +189,17 @@ async function writeEvoLevels(pokemonList, { recompute = true } = {}) {
 
         let modified = false;
 
-        for (const [evoSpecies, level] of evoLevelMap) {
-            // Match {EVO_LEVEL, <any number>, SPECIES_XXX} — handles optional spaces
-            const regex = new RegExp(
-                `\\{EVO_LEVEL,\\s*\\d+,\\s*${evoSpecies}\\}`,
-                'g'
-            );
-            const replacement = `{EVO_LEVEL, ${level}, ${evoSpecies}}`;
-            const updated = content.replace(regex, replacement);
+        for (const [evoSpecies, level] of levelMap) {
+            const updated = patchEvoLevelInContent(content, evoSpecies, level);
+            if (updated !== content) {
+                content = updated;
+                modified = true;
+                totalReplaced++;
+            }
+        }
+
+        for (const [evoSpecies, level] of stoneMap) {
+            const updated = patchStoneMinLevelInContent(content, evoSpecies, level);
             if (updated !== content) {
                 content = updated;
                 modified = true;
@@ -171,7 +212,13 @@ async function writeEvoLevels(pokemonList, { recompute = true } = {}) {
         }
     }
 
-    console.log(`Done — replaced ${totalReplaced} EVO_LEVEL entries.`);
+    console.log(`Done — replaced ${totalReplaced} evolution level entries.`);
 }
 
-module.exports = { applyEvoLevels, writeEvoLevels, buildEvoLevelMapFromParams };
+module.exports = {
+    applyEvoLevels,
+    writeEvoLevels,
+    buildEvoLevelMapFromParams,
+    patchEvoLevelInContent,
+    patchStoneMinLevelInContent,
+};

@@ -1407,15 +1407,17 @@
       }
       function buildEvoItem(evo) {
         const methodMap = {
-          'LEVEL': `Level ${evo.param}`,
-          'ITEM': `${evo.param.replace('ITEM_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}`,
+          // Plain level-ups now also need the Evolve Candy (or natural level-up). param 0 = a
+          // conditional special evolution (friendship/time/etc.), shown without a level.
+          'LEVEL': evo.param === '0' ? 'Special Evolution' : `Level ${evo.param} + Evolve Candy`,
+          // Stone evolutions are level-gated via IF_MIN_LEVEL (evo.minLevel) + the stone itself.
+          'ITEM': evo.minLevel ? `Level ${evo.minLevel} + ${formatItem(evo.param)}` : formatItem(evo.param),
           'TRADE': 'Trade',
           'FRIENDSHIP': 'High Friendship',
-          'HOLD_ITEM': `Hold ${evo.param.replace('ITEM_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}`,
+          'HOLD_ITEM': `Hold ${formatItem(evo.param)}`,
           // Add more methods as needed
         };
         let methodText = methodMap[evo.method] || evo.method;
-        if (methodText === 'Level 0') methodText = 'Special Evolution';
         return `<div style="margin-bottom: 20px;">
           <div class="tag evo-link" data-id="${evo.pokemon}">${format(evo.pokemon)} ${methodText}</div>
         </div>`;

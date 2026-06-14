@@ -228,11 +228,17 @@ function parseEvo(familyId, pokeId, line, evoTree) {
                 > ${line}`);
             }
         }
-        return {
+        const evo = {
             method: method.trim(),
             param: param.trim(),
             pokemon: pokemon.trim(),
         };
+        // Capture an optional IF_MIN_LEVEL condition (used to level-gate stone evolutions).
+        const minLevelMatch = line.match(/IF_MIN_LEVEL,\s*(\d+)/);
+        if (minLevelMatch) {
+            evo.minLevel = minLevelMatch[1];
+        }
+        return evo;
     }
     return null;
 }
@@ -566,6 +572,7 @@ function getEvolutionType(pokemon, evoTree) {
 }
 
 module.exports = {
+    parseEvo,
     evoIsLC,
     evoIsNFE,
     evoIsFinal,
