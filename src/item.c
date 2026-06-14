@@ -12,6 +12,7 @@
 #include "strings.h"
 #include "load_save.h"
 #include "item_use.h"
+#include "move.h"
 #include "battle_pyramid.h"
 #include "battle_pyramid_bag.h"
 #include "graphics.h"
@@ -824,6 +825,11 @@ u32 GetItemHoldEffectParam(u32 itemId)
 
 const u8 *GetItemDescription(u16 itemId)
 {
+    // TM/HM descriptions are derived from the move they teach (single source of
+    // truth: FOREACH_TM in tms_hms.h), so randomized TMs always show the real
+    // move name (e.g. "Ice Beam") instead of stale hardcoded description text.
+    if (GetItemPocket(itemId) == POCKET_TM_HM)
+        return GetMoveName(GetItemTMHMMoveId(itemId));
     return gItemsInfo[SanitizeItemId(itemId)].description;
 }
 
