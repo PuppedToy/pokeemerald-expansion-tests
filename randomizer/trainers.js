@@ -1827,6 +1827,7 @@ const trainersData = [
         level: 26,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag()],
+        reward: ['Evolution Stones'],
         team: [...rivalRoute110Template('TREECKO')],
     },
     {
@@ -1837,6 +1838,7 @@ const trainersData = [
         level: 26,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag()],
+        reward: ['Evolution Stones'],
         team: [...rivalRoute110Template('TORCHIC')],
     },
     {
@@ -1847,6 +1849,7 @@ const trainersData = [
         level: 26,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag()],
+        reward: ['Evolution Stones'],
         team: [...rivalRoute110Template('MUDKIP')],
     },
     {
