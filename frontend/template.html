@@ -1059,8 +1059,9 @@
 
       const trainerName = trainer.label || nameify(trainerId.replace('TRAINER_', '').replace(/_\d/g, ''));
 
-      // Build each Pokémon slot
-      const teamHTML = trainer.team.map(member => {
+      // Build each Pokémon slot. displayTeam (pre-shuffle order) is present only when
+      // "Show exact positions" was off; otherwise team is the real in-game order.
+      const teamHTML = (trainer.displayTeam || trainer.team).map(member => {
         const pokeId = member.pokemon || '';
         const _trainerPoke = findPoke(pokeId);
         const _trainerPokeColor = getFullPokeLogColor(_trainerPoke);

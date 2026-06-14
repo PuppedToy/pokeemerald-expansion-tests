@@ -938,7 +938,10 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
         }
     }
 
-    let htmlOutputTemplate = await fs.readFile(path.resolve(__dirname, OUTPUT_DIR, TEMPLATE_FILE), 'utf8');
+    // Single source of truth: the docs template lives at frontend/template.html (the file the
+    // browser serves via fetch('/template.html')). The Node/analyze path reads the same file so
+    // the two runtimes never drift. out.html is still written into OUTPUT_DIR below.
+    let htmlOutputTemplate = await fs.readFile(path.resolve(__dirname, '..', 'frontend', TEMPLATE_FILE), 'utf8');
 
     const trainersResultsSimplified = {};
     Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
