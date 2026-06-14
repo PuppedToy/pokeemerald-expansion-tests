@@ -65,6 +65,41 @@ function djb2Hash(str) {
     return h;
 }
 
+// Builds the simplified (pokemon → pokemon.id) trainer map that becomes the bundle's
+// single source of truth.
+//
+// The in-game ordering layer (random shuffle + applyLeadLogic) is ALWAYS applied here
+// (unless the trainer is preventShuffle), because the ROM consumes this team verbatim.
+// `showExactPositions` only affects the DOCS DISPLAY, not the in-game order:
+//   - ON  → docs show the in-game order (no separate displayTeam; viewer uses `team`).
+//   - OFF → docs show the pre-shuffle (default) order, carried in `displayTeam`.
+function buildTrainersResultsSimplified(trainersResults, { showExactPositions, baseRngSeed }) {
+    const simplify = (team) => team.map(teamEntry => ({
+        ...teamEntry,
+        pokemon: teamEntry.pokemon.id,
+    }));
+
+    const result = {};
+    Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
+        const preShuffleTeam = trainerData.team;
+        let ingameTeam = preShuffleTeam;
+
+        if (!trainerData.preventShuffle) {
+            const shuffleSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainerId + ':shuffle'), 0x9E3779B9)) >>> 0;
+            rng.seed(shuffleSeed);
+            ingameTeam = [...preShuffleTeam].sort(() => rng.random() - 0.5);
+            ingameTeam = applyLeadLogic(ingameTeam, () => rng.random());
+        }
+
+        const entry = { ...trainerData, team: simplify(ingameTeam) };
+        if (!showExactPositions && !trainerData.preventShuffle) {
+            entry.displayTeam = simplify(preShuffleTeam);
+        }
+        result[trainerId] = entry;
+    });
+    return result;
+}
+
 // Pure docs computation — same trainer resolution as writer.js but no file I/O.
 // baseRngSeed: when non-null, per-slot RNG reseeding is applied (shared trainer determinism).
 async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, baseRngSeed = null, options = {}) {
@@ -363,25 +398,11 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
         };
     });
 
-    // Build trainersResultsSimplified (pokemon object → pokemon.id)
-    const trainersResultsSimplified = {};
-    Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
-        let docsTeam = trainerData.team;
-
-        if (showExactPositions && !trainerData.preventShuffle && baseRngSeed !== null) {
-            const shuffleSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainerId + ':shuffle'), 0x9E3779B9)) >>> 0;
-            rng.seed(shuffleSeed);
-            docsTeam = [...docsTeam].sort(() => rng.random() - 0.5);
-            docsTeam = applyLeadLogic(docsTeam, () => rng.random());
-        }
-
-        trainersResultsSimplified[trainerId] = {
-            ...trainerData,
-            team: docsTeam.map(teamEntry => ({
-                ...teamEntry,
-                pokemon: teamEntry.pokemon.id,
-            })),
-        };
+    // Build trainersResultsSimplified (pokemon object → pokemon.id). The in-game ordering
+    // layer is always applied here; showExactPositions only controls the docs display.
+    const trainersResultsSimplified = buildTrainersResultsSimplified(trainersResults, {
+        showExactPositions,
+        baseRngSeed,
     });
 
     // Build wildPokes map (same as writer.js lines 1285-1361)
@@ -446,4 +467,4 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     return { trainersResultsSimplified, wildPokes: maps };
 }
 
-module.exports = { writerDocs, filterByNearestContextualTier };
+module.exports = { writerDocs, filterByNearestContextualTier, buildTrainersResultsSimplified };

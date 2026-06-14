@@ -79,7 +79,9 @@ async function generateDefault(cfg, mcfg, sessionId) {
     const wild     = runWildModule(pokedex.pokes, starters, wildData); tick('Building docs...');
 
     rng.seed(cfg.seed);
-    const docs = await writerDocs(pokedex, trainers, starters, wild, null, { showExactPositions: mcfg.showExactPositions });
+    // Base seed must be non-null so the in-game ordering layer (shuffle + lead logic)
+    // runs deterministically; the bundle is the single source of truth for the ROM.
+    const docs = await writerDocs(pokedex, trainers, starters, wild, cfg.seed, { showExactPositions: mcfg.showExactPositions });
     tick('Done');
 
     return bundle(sessionId, cfg, {}, [{ romIndex: 0, artifacts: { pokedex, trainers, starters, wild }, docs }]);
@@ -158,7 +160,10 @@ async function generateNuzlocke(cfg, mcfg, sessionId) {
         post('progress', Math.round((done / totalSteps) * 100), `Building docs${label}...`);
         const { pokedex, trainers, starters, wild } = romArtifacts[i];
         const romSeed = (cfg.seed ^ (i * 0x9E3779B9)) >>> 0;
-        const trainingBaseSeed = shared.trainers ? cfg.seed : null;
+        // Shared trainers reuse cfg.seed so the same trainer orders identically across ROMs;
+        // non-shared trainers get a deterministic per-ROM seed (never null — the ordering
+        // layer must always run).
+        const trainingBaseSeed = shared.trainers ? cfg.seed : romSeed;
         rng.seed(romSeed);
         roms[i].docs = await writerDocs(pokedex, trainers, starters, wild, trainingBaseSeed, { showExactPositions: mcfg.showExactPositions });
         tick(`Docs${label} ready`);
@@ -300,7 +305,9 @@ async function generateSoullink(cfg, mcfg, sessionId) {
         } else if (typeof t === 'string' && t.startsWith('player-')) {
             trainingBaseSeed = (cfg.seed ^ (parseInt(t.split('-')[1], 10) * 0x9E3779B9)) >>> 0;
         } else {
-            trainingBaseSeed = null;
+            // Per-ROM (non-shared) trainers: deterministic per-ROM seed, never null —
+            // the in-game ordering layer must always run.
+            trainingBaseSeed = romSeed;
         }
         rng.seed(romSeed);
         roms[i].docs = await writerDocs(pokedex, trainers, starters, wild, trainingBaseSeed, { showExactPositions: mcfg.showExactPositions });
