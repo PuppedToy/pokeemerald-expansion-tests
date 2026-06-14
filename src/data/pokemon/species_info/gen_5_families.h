@@ -657,7 +657,7 @@ const struct SpeciesInfo gSpeciesInfoGen5[] =
         .levelUpLearnset = sDewottLevelUpLearnset,
         .teachableLearnset = sDewottTeachableLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 36, SPECIES_SAMUROTT},
-                                {EVO_ITEM, ITEM_DUSK_STONE, SPECIES_SAMUROTT_HISUI}),
+                                {EVO_ITEM, ITEM_DUSK_STONE, SPECIES_SAMUROTT_HISUI, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
     [SPECIES_SAMUROTT] =
@@ -4151,7 +4151,7 @@ const struct SpeciesInfo gSpeciesInfoGen5[] =
         .teachableLearnset = sPetililTeachableLearnset,
         .eggMoveLearnset = sPetililEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 28, SPECIES_LILLIGANT},
-                                {EVO_ITEM, ITEM_SUN_STONE, SPECIES_LILLIGANT_HISUI}),
+                                {EVO_ITEM, ITEM_SUN_STONE, SPECIES_LILLIGANT_HISUI, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
     [SPECIES_LILLIGANT] =
@@ -4496,8 +4496,8 @@ const struct SpeciesInfo gSpeciesInfoGen5[] =
         .teachableLearnset = sBasculinWhiteStripedTeachableLearnset,
         .eggMoveLearnset = sBasculinWhiteStripedEggMoveLearnset,
         .formSpeciesIdTable = sBasculinFormSpeciesIdTable,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_SUN_STONE, SPECIES_BASCULEGION_M},
-                                {EVO_ITEM, ITEM_MOON_STONE, SPECIES_BASCULEGION_F}),
+        .evolutions = EVOLUTION({EVO_ITEM, ITEM_SUN_STONE, SPECIES_BASCULEGION_M, CONDITIONS({IF_MIN_LEVEL, 25})},
+                                {EVO_ITEM, ITEM_MOON_STONE, SPECIES_BASCULEGION_F, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
     [SPECIES_BASCULEGION_M] =
@@ -11309,7 +11309,7 @@ const struct SpeciesInfo gSpeciesInfoGen5[] =
         .levelUpLearnset = sRuffletLevelUpLearnset,
         .teachableLearnset = sRuffletTeachableLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 54, SPECIES_BRAVIARY},
-                                {EVO_ITEM, ITEM_DAWN_STONE, SPECIES_BRAVIARY_HISUI}),
+                                {EVO_ITEM, ITEM_DAWN_STONE, SPECIES_BRAVIARY_HISUI, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
     [SPECIES_BRAVIARY] =

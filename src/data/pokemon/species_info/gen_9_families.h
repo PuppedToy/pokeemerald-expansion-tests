@@ -2272,8 +2272,8 @@ const struct SpeciesInfo gSpeciesInfoGen9[] =
         .levelUpLearnset = sCharcadetLevelUpLearnset,
         .teachableLearnset = sCharcadetTeachableLearnset,
         .eggMoveLearnset = sCharcadetEggMoveLearnset,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_DAWN_STONE, SPECIES_ARMAROUGE},
-                                {EVO_ITEM, ITEM_DUSK_STONE, SPECIES_CERULEDGE}),
+        .evolutions = EVOLUTION({EVO_ITEM, ITEM_DAWN_STONE, SPECIES_ARMAROUGE, CONDITIONS({IF_MIN_LEVEL, 25})},
+                                {EVO_ITEM, ITEM_DUSK_STONE, SPECIES_CERULEDGE, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
     [SPECIES_ARMAROUGE] =

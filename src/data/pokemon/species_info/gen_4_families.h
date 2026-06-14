@@ -1871,7 +1871,7 @@ const struct SpeciesInfo gSpeciesInfoGen4[] =
         .formSpeciesIdTable = sBurmyFormSpeciesIdTable,
         .formChangeTable = sBurmyFormChangeTable,
         .evolutions = EVOLUTION({EVO_LEVEL, 20, SPECIES_WORMADAM_PLANT},
-                                {EVO_ITEM, ITEM_DAWN_STONE, SPECIES_MOTHIM_PLANT}),
+                                {EVO_ITEM, ITEM_DAWN_STONE, SPECIES_MOTHIM_PLANT, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
     [SPECIES_BURMY_SANDY] =
@@ -1940,7 +1940,7 @@ const struct SpeciesInfo gSpeciesInfoGen4[] =
         .formSpeciesIdTable = sBurmyFormSpeciesIdTable,
         .formChangeTable = sBurmyFormChangeTable,
         .evolutions = EVOLUTION({EVO_LEVEL, 20, SPECIES_WORMADAM_SANDY},
-                                {EVO_ITEM, ITEM_DAWN_STONE, SPECIES_MOTHIM_SANDY}),
+                                {EVO_ITEM, ITEM_DAWN_STONE, SPECIES_MOTHIM_SANDY, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
     [SPECIES_BURMY_TRASH] =
@@ -2009,7 +2009,7 @@ const struct SpeciesInfo gSpeciesInfoGen4[] =
         .formSpeciesIdTable = sBurmyFormSpeciesIdTable,
         .formChangeTable = sBurmyFormChangeTable,
         .evolutions = EVOLUTION({EVO_LEVEL, 20, SPECIES_WORMADAM_TRASH},
-                                {EVO_ITEM, ITEM_DAWN_STONE, SPECIES_MOTHIM_TRASH}),
+                                {EVO_ITEM, ITEM_DAWN_STONE, SPECIES_MOTHIM_TRASH, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
     [SPECIES_WORMADAM_PLANT] =

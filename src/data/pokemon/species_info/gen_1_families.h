@@ -2948,8 +2948,8 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .teachableLearnset = sPikachuTeachableLearnset,
         .formSpeciesIdTable = sPikachuFormSpeciesIdTable,
         .formChangeTable = sPikachuFormChangeTable,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_THUNDER_STONE, SPECIES_RAICHU},
-                                {EVO_ITEM, ITEM_SUN_STONE, SPECIES_RAICHU_ALOLA}),
+        .evolutions = EVOLUTION({EVO_ITEM, ITEM_THUNDER_STONE, SPECIES_RAICHU, CONDITIONS({IF_MIN_LEVEL, 25})},
+                                {EVO_ITEM, ITEM_SUN_STONE, SPECIES_RAICHU_ALOLA, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
 #if P_COSPLAY_PIKACHU_FORMS
@@ -5968,9 +5968,9 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         )
         .levelUpLearnset = sGloomLevelUpLearnset,
         .teachableLearnset = sGloomTeachableLearnset,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_LEAF_STONE, SPECIES_VILEPLUME}
+        .evolutions = EVOLUTION({EVO_ITEM, ITEM_LEAF_STONE, SPECIES_VILEPLUME, CONDITIONS({IF_MIN_LEVEL, 25})}
                             #if P_GEN_2_CROSS_EVOS
-                                ,{EVO_ITEM, ITEM_SUN_STONE, SPECIES_BELLOSSOM}
+                                ,{EVO_ITEM, ITEM_SUN_STONE, SPECIES_BELLOSSOM, CONDITIONS({IF_MIN_LEVEL, 25})}
                             #endif
                             ),
     },
@@ -8058,9 +8058,9 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         )
         .levelUpLearnset = sPoliwhirlLevelUpLearnset,
         .teachableLearnset = sPoliwhirlTeachableLearnset,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_WATER_STONE, SPECIES_POLIWRATH}
+        .evolutions = EVOLUTION({EVO_ITEM, ITEM_WATER_STONE, SPECIES_POLIWRATH, CONDITIONS({IF_MIN_LEVEL, 25})}
                             #if P_GEN_2_CROSS_EVOS
-                                ,{EVO_ITEM, ITEM_SHINY_STONE, SPECIES_POLITOED}
+                                ,{EVO_ITEM, ITEM_SHINY_STONE, SPECIES_POLITOED, CONDITIONS({IF_MIN_LEVEL, 25})}
                             #endif
                             ),
     },
@@ -10039,7 +10039,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .formSpeciesIdTable = sSlowpokeFormSpeciesIdTable,
         .evolutions = EVOLUTION({EVO_LEVEL, 37, SPECIES_SLOWBRO}
                             #if P_GEN_2_CROSS_EVOS
-                                ,{EVO_ITEM, ITEM_SHINY_STONE, SPECIES_SLOWKING}
+                                ,{EVO_ITEM, ITEM_SHINY_STONE, SPECIES_SLOWKING, CONDITIONS({IF_MIN_LEVEL, 25})}
                             #endif
                             ),
     },
@@ -10320,9 +10320,9 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .teachableLearnset = sSlowpokeGalarTeachableLearnset,
         .eggMoveLearnset = sSlowpokeGalarEggMoveLearnset,
         .formSpeciesIdTable = sSlowpokeFormSpeciesIdTable,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_DAWN_STONE, SPECIES_SLOWBRO_GALAR}
+        .evolutions = EVOLUTION({EVO_ITEM, ITEM_DAWN_STONE, SPECIES_SLOWBRO_GALAR, CONDITIONS({IF_MIN_LEVEL, 25})}
                             #if P_GEN_2_CROSS_EVOS
-                                ,{EVO_ITEM, ITEM_SHINY_STONE, SPECIES_SLOWKING_GALAR}
+                                ,{EVO_ITEM, ITEM_SHINY_STONE, SPECIES_SLOWKING_GALAR, CONDITIONS({IF_MIN_LEVEL, 25})}
                             #endif
                             ),
     },
@@ -12995,7 +12995,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .teachableLearnset = sExeggcuteTeachableLearnset,
         .eggMoveLearnset = sExeggcuteEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 28, SPECIES_EXEGGUTOR},
-                                {EVO_ITEM, ITEM_LEAF_STONE, SPECIES_EXEGGUTOR_ALOLA}),
+                                {EVO_ITEM, ITEM_LEAF_STONE, SPECIES_EXEGGUTOR_ALOLA, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
 #if P_UPDATED_EXP_YIELDS >= GEN_7
@@ -13222,7 +13222,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .teachableLearnset = sCuboneTeachableLearnset,
         .eggMoveLearnset = sCuboneEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 28, SPECIES_MAROWAK},
-                                {EVO_ITEM, ITEM_FIRE_STONE, SPECIES_MAROWAK_ALOLA}),
+                                {EVO_ITEM, ITEM_FIRE_STONE, SPECIES_MAROWAK_ALOLA, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
     [SPECIES_MAROWAK] =
@@ -13497,9 +13497,9 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .levelUpLearnset = sTyrogueLevelUpLearnset,
         .teachableLearnset = sTyrogueTeachableLearnset,
         .eggMoveLearnset = sTyrogueEggMoveLearnset,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_FIRE_STONE, SPECIES_HITMONCHAN},
-                                {EVO_ITEM, ITEM_WATER_STONE, SPECIES_HITMONLEE},
-                                {EVO_ITEM, ITEM_THUNDER_STONE, SPECIES_HITMONTOP}),
+        .evolutions = EVOLUTION({EVO_ITEM, ITEM_FIRE_STONE, SPECIES_HITMONCHAN, CONDITIONS({IF_MIN_LEVEL, 25})},
+                                {EVO_ITEM, ITEM_WATER_STONE, SPECIES_HITMONLEE, CONDITIONS({IF_MIN_LEVEL, 25})},
+                                {EVO_ITEM, ITEM_THUNDER_STONE, SPECIES_HITMONTOP, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 #endif //P_GEN_2_CROSS_EVOS
 
@@ -13954,7 +13954,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .teachableLearnset = sKoffingTeachableLearnset,
         .eggMoveLearnset = sKoffingEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 35, SPECIES_WEEZING},
-                                {EVO_ITEM, ITEM_MOON_STONE, SPECIES_WEEZING_GALAR}),
+                                {EVO_ITEM, ITEM_MOON_STONE, SPECIES_WEEZING_GALAR, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
     [SPECIES_WEEZING] =
@@ -15524,7 +15524,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .teachableLearnset = sMimeJrTeachableLearnset,
         .eggMoveLearnset = sMimeJrEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 35, SPECIES_MR_MIME},
-                                {EVO_ITEM, ITEM_ICE_STONE, SPECIES_MR_MIME_GALAR}),
+                                {EVO_ITEM, ITEM_ICE_STONE, SPECIES_MR_MIME_GALAR, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 #endif //P_GEN_4_CROSS_EVOS
 
@@ -15827,13 +15827,13 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
     #if P_GEN_2_CROSS_EVOS || P_GEN_8_CROSS_EVOS
         .evolutions = EVOLUTION(
                             #if P_GEN_2_CROSS_EVOS
-                                {EVO_ITEM, ITEM_THUNDER_STONE, SPECIES_SCIZOR}
+                                {EVO_ITEM, ITEM_THUNDER_STONE, SPECIES_SCIZOR, CONDITIONS({IF_MIN_LEVEL, 25})}
                             #if P_GEN_8_CROSS_EVOS
                                 ,
                             #endif
                             #endif
                             #if P_GEN_8_CROSS_EVOS
-                                {EVO_ITEM, ITEM_LEAF_STONE, SPECIES_KLEAVOR}
+                                {EVO_ITEM, ITEM_LEAF_STONE, SPECIES_KLEAVOR, CONDITIONS({IF_MIN_LEVEL, 25})}
                             #endif
                             ),
     #endif
@@ -17618,19 +17618,19 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .formSpeciesIdTable = sEeveeFormSpeciesIdTable,
         .formChangeTable = sEeveeFormChangeTable,
         .evolutions = EVOLUTION(
-                {EVO_ITEM, ITEM_THUNDER_STONE, SPECIES_JOLTEON},
-                {EVO_ITEM, ITEM_WATER_STONE, SPECIES_VAPOREON},
-                {EVO_ITEM, ITEM_FIRE_STONE, SPECIES_FLAREON}
+                {EVO_ITEM, ITEM_THUNDER_STONE, SPECIES_JOLTEON, CONDITIONS({IF_MIN_LEVEL, 25})},
+                {EVO_ITEM, ITEM_WATER_STONE, SPECIES_VAPOREON, CONDITIONS({IF_MIN_LEVEL, 25})},
+                {EVO_ITEM, ITEM_FIRE_STONE, SPECIES_FLAREON, CONDITIONS({IF_MIN_LEVEL, 25})}
             #if P_GEN_6_CROSS_EVOS
-                ,{EVO_ITEM, ITEM_SHINY_STONE, SPECIES_SYLVEON}
+                ,{EVO_ITEM, ITEM_SHINY_STONE, SPECIES_SYLVEON, CONDITIONS({IF_MIN_LEVEL, 25})}
             #endif
             #if P_GEN_2_CROSS_EVOS
-                ,{EVO_ITEM, ITEM_DAWN_STONE, SPECIES_ESPEON}
-                ,{EVO_ITEM, ITEM_DUSK_STONE, SPECIES_UMBREON}
+                ,{EVO_ITEM, ITEM_DAWN_STONE, SPECIES_ESPEON, CONDITIONS({IF_MIN_LEVEL, 25})}
+                ,{EVO_ITEM, ITEM_DUSK_STONE, SPECIES_UMBREON, CONDITIONS({IF_MIN_LEVEL, 25})}
             #endif
             #if P_GEN_4_CROSS_EVOS
-                ,{EVO_ITEM, ITEM_LEAF_STONE, SPECIES_LEAFEON}
-                ,{EVO_ITEM, ITEM_ICE_STONE, SPECIES_GLACEON}
+                ,{EVO_ITEM, ITEM_LEAF_STONE, SPECIES_LEAFEON, CONDITIONS({IF_MIN_LEVEL, 25})}
+                ,{EVO_ITEM, ITEM_ICE_STONE, SPECIES_GLACEON, CONDITIONS({IF_MIN_LEVEL, 25})}
             #endif
         ),
     },

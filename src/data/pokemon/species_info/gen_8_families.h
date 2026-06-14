@@ -2465,8 +2465,8 @@ const struct SpeciesInfo gSpeciesInfoGen8[] =
         .levelUpLearnset = sApplinLevelUpLearnset,
         .teachableLearnset = sApplinTeachableLearnset,
         .eggMoveLearnset = sApplinEggMoveLearnset,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_FIRE_STONE, SPECIES_FLAPPLE},
-                                {EVO_ITEM, ITEM_LEAF_STONE, SPECIES_APPLETUN}
+        .evolutions = EVOLUTION({EVO_ITEM, ITEM_FIRE_STONE, SPECIES_FLAPPLE, CONDITIONS({IF_MIN_LEVEL, 25})},
+                                {EVO_ITEM, ITEM_LEAF_STONE, SPECIES_APPLETUN, CONDITIONS({IF_MIN_LEVEL, 25})}
                             #if P_GEN_9_CROSS_EVOS
                                 ,{EVO_LEVEL, 30, SPECIES_DIPPLIN}
                             #endif
@@ -7203,7 +7203,7 @@ const struct SpeciesInfo gSpeciesInfoGen8[] =
         .levelUpLearnset = sKubfuLevelUpLearnset,
         .teachableLearnset = sKubfuTeachableLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 50, SPECIES_URSHIFU_SINGLE_STRIKE},
-                                {EVO_ITEM, ITEM_WATER_STONE, SPECIES_URSHIFU_RAPID_STRIKE}),
+                                {EVO_ITEM, ITEM_WATER_STONE, SPECIES_URSHIFU_RAPID_STRIKE, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
     [SPECIES_URSHIFU_SINGLE_STRIKE] =
