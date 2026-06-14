@@ -81,29 +81,6 @@ EverGrandeCity_PokemonLeague_1F_Pokemart:
 	.2byte ITEM_TIMID_MINT
 	.2byte ITEM_ABILITY_CAPSULE
 	.2byte ITEM_ABILITY_PATCH
-	.2byte ITEM_FIRE_STONE
-	.2byte ITEM_WATER_STONE
-	.2byte ITEM_THUNDER_STONE
-	.2byte ITEM_LEAF_STONE
-	.2byte ITEM_ICE_STONE
-	.2byte ITEM_SUN_STONE
-	.2byte ITEM_MOON_STONE
-	.2byte ITEM_SHINY_STONE
-	.2byte ITEM_DUSK_STONE
-	.2byte ITEM_DAWN_STONE
-	.2byte ITEM_KINGS_ROCK
-	.2byte ITEM_METAL_COAT
-	.2byte ITEM_BLACK_AUGURITE
-	.2byte ITEM_GALARICA_CUFF
-	.2byte ITEM_GALARICA_WREATH
-	.2byte ITEM_PEAT_BLOCK
-	.2byte ITEM_DEEP_SEA_TOOTH
-	.2byte ITEM_DEEP_SEA_SCALE
-	.2byte ITEM_TART_APPLE
-	.2byte ITEM_SWEET_APPLE
-	.2byte ITEM_SYRUPY_APPLE
-	.2byte ITEM_AUSPICIOUS_ARMOR
-	.2byte ITEM_MALICIOUS_ARMOR
 	pokemartlistend
 
 @ The door guards only check for FLAG_BADGE06_GET because Winonas badge is the only one that can be skipped
