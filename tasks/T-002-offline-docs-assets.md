@@ -1,12 +1,12 @@
 ---
 id: T-002
 title: Fully offline docs + reusable embedded static-assets folder
-status: proposed
+status: abandoned
 type: feature
 created: 2026-06-19
 updated: 2026-06-19
 target-version: 0.1.0
-links: [tasks/T-001-local-sprites.md]
+links: [tasks/T-001-local-sprites.md, tasks/T-004-docs-overhaul.md]
 blocked-by: []
 ---
 
@@ -60,4 +60,7 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+- **2026-06-19** — Abandoned (not dropped): superseded by **T-004**, the docs overhaul,
+  which folds this scope (full self-containment — fonts + header logo — and the reusable
+  `frontend/assets/` embedding mechanism) together with the Obsidian re-skin and the
+  size/load optimization pass. The `frontend/assets/README.md` scaffold from T-001 stands.

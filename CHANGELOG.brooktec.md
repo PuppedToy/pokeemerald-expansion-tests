@@ -9,6 +9,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- Docs overhaul: the generated docs are now fully self-contained (fonts + assets embedded as base64; **zero** external network requests), re-skinned to the Obsidian UI kit to match the app, and ~65% smaller (15.8 → 5.5 MB) by dropping unrendered pipeline fields at injection time. Adds a reusable `frontend/assets/` embedding mechanism. Supersedes T-002 (T-004).
 - Re-skinned the randomizer front-end app with the Obsidian UI kit (retro 8-bit / GBA-era: navy surfaces, ember-orange + cyan, Press Start 2P + VT323, hard edges, offset shadows). Re-authored `frontend/css/{base,components,layout}.css` keeping all class names; the docs are unaffected (T-003).
 
 ### Added
