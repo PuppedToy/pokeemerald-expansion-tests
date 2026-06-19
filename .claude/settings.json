@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/check-tracker.mjs || { echo 'Tracker inconsistent: fix tasks/bugs/indexes before finishing (see output above).' >&2; exit 2; }"
+          }
+        ]
+      }
+    ]
+  }
+}
