@@ -6,3 +6,4 @@
 |---|---|---|---|---|
 | [T-001](T-001-local-sprites.md) | Bundle Pokémon and trainer sprites locally into frontend/sprites | done | 0.1.0 | 2026-06-19 |
 | [T-002](T-002-offline-docs-assets.md) | Fully offline docs + reusable embedded static-assets folder | proposed | 0.1.0 | 2026-06-19 |
+| [T-003](T-003-obsidian-frontend-reskin.md) | Re-skin the randomizer front-end with the Obsidian UI kit | done | 0.1.0 | 2026-06-19 |

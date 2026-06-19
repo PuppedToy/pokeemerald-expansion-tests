@@ -322,15 +322,18 @@ export class ConfigForm {
         <span class="field-hint">Same seed + same config = identical run every time.</span>
       </div>
       <hr class="divider" style="margin:16px 0">
-      <div class="checkbox-row">
-        <input type="checkbox" id="show-exact-positions">
-        <div class="checkbox-info">
-          <span class="checkbox-label">Show exact positions in teams</span>
-          <span class="checkbox-desc"
-                title="When enabled, the docs show each Pokémon in the exact slot it occupies in-game, including lead and Illusion placement. Disabled by default to preserve in-game surprise.">
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Show exact positions in teams</div>
+          <div class="toggle-desc"
+               title="When enabled, the docs show each Pokémon in the exact slot it occupies in-game, including lead and Illusion placement. Disabled by default to preserve in-game surprise.">
             Show each Pokémon's exact in-game position in the documentation.
-          </span>
+          </div>
         </div>
+        <label class="toggle">
+          <input type="checkbox" id="show-exact-positions">
+          <span class="toggle-track"></span>
+        </label>
       </div>
     </div>
   </div>

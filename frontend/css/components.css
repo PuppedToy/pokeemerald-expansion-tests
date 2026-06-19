@@ -1,111 +1,131 @@
-/* Reusable component classes */
+/* Reusable component classes — Obsidian UI kit (T-003) */
 
-/* ── Cards ── */
+/* ── Cards / panels ── */
 .card {
-  background: var(--card);
-  border-radius: var(--radius);
+  background: var(--obs-surface);
+  border: var(--obs-border);
+  box-shadow: var(--obs-shadow-lg);
+  border-radius: 0;
   padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .card-glass {
-  background: var(--glass);
-  border-radius: var(--radius);
+  background: var(--obs-surface);
+  border: var(--obs-border);
+  box-shadow: var(--obs-shadow-md);
+  border-radius: 0;
   padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(4px);
 }
 
 /* ── Buttons ── */
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 10px 20px;
-  border-radius: var(--radius);
-  border: none;
-  font-weight: 600;
-  font-size: 14px;
+  font-family: var(--obs-font-display);
+  font-size: 10px;
+  letter-spacing: var(--obs-tracking);
+  padding: 14px 18px;
+  border: var(--obs-border);
+  border-radius: 0;
+  background: var(--obs-orange);
+  color: var(--obs-on-orange);
+  box-shadow: var(--obs-shadow-md);
   cursor: pointer;
-  transition: opacity 0.15s, transform 0.1s;
   text-decoration: none;
+  transition: transform var(--obs-ease), box-shadow var(--obs-ease), background var(--obs-ease), color var(--obs-ease);
 }
 
 .btn:hover:not(:disabled) {
-  opacity: 0.85;
-  transform: translateY(-1px);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--obs-shadow-lg);
 }
 
 .btn:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 var(--obs-shadow);
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--obs-cyan);
+  outline-offset: 3px;
 }
 
 .btn:disabled {
-  opacity: 0.35;
+  background: var(--obs-surface-2);
+  color: var(--obs-text-mute);
+  border-color: #122639;
+  box-shadow: none;
   cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
 }
 
 .btn-primary {
-  background: var(--accent);
-  color: #fff;
+  background: var(--obs-orange);
+  color: var(--obs-on-orange);
 }
 
 .btn-secondary {
-  background: var(--glass-3);
-  color: var(--text);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--obs-cyan);
+  color: var(--obs-on-cyan);
 }
 
 .btn-ghost {
   background: transparent;
-  color: var(--muted);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--obs-orange);
+  border-color: var(--obs-orange);
+  box-shadow: var(--obs-shadow-sm);
 }
 
 .btn-ghost:hover:not(:disabled) {
-  background: var(--glass);
-  color: var(--text);
-  opacity: 1;
+  background: var(--obs-orange);
+  color: var(--obs-on-orange);
+  border-color: var(--obs-shadow);
 }
 
 /* ── Form elements ── */
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .field label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--muted);
+  font-family: var(--obs-font-display);
+  font-size: 9px;
+  letter-spacing: var(--obs-tracking);
+  color: var(--obs-text-dim);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .field-hint {
-  font-size: 12px;
-  color: var(--muted);
+  font-size: 17px;
+  color: var(--obs-text-mute);
   margin-top: 2px;
 }
 
 .input {
-  background: var(--glass-2);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  padding: 10px 14px;
-  color: var(--text);
-  outline: none;
-  transition: border-color 0.15s;
   width: 100%;
+  font-family: var(--obs-font-body);
+  font-size: 22px;
+  background: var(--obs-well);
+  color: var(--obs-text);
+  border: var(--obs-border);
+  border-radius: 0;
+  box-shadow: var(--obs-inset);
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color var(--obs-ease);
 }
 
 .input:focus {
-  border-color: var(--accent);
+  border-color: var(--obs-orange);
 }
 
 .input::placeholder {
-  color: var(--muted);
+  color: var(--obs-text-mute);
 }
 
 /* Number input — hide spinners */
@@ -114,7 +134,7 @@
   -webkit-appearance: none;
 }
 
-/* ── Toggle switch ── */
+/* ── Toggle switch (square, Obsidian) ── */
 .toggle-wrap {
   display: flex;
   align-items: center;
@@ -123,20 +143,21 @@
 }
 
 .toggle-label {
-  font-size: 14px;
-  font-weight: 600;
+  font-family: var(--obs-font-display);
+  font-size: 10px;
+  letter-spacing: var(--obs-tracking);
 }
 
 .toggle-desc {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 2px;
+  font-size: 17px;
+  color: var(--obs-text-dim);
+  margin-top: 4px;
 }
 
 .toggle {
   position: relative;
-  width: 44px;
-  height: 24px;
+  width: 54px;
+  height: 28px;
   flex-shrink: 0;
 }
 
@@ -150,49 +171,68 @@
 .toggle-track {
   position: absolute;
   inset: 0;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
+  border-radius: 0;
+  background: var(--obs-well);
+  border: var(--obs-border);
+  box-shadow: var(--obs-shadow-sm);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background var(--obs-ease);
 }
 
 .toggle input:checked + .toggle-track {
-  background: var(--accent);
+  background: var(--obs-cyan);
 }
 
 .toggle-track::after {
   content: '';
   position: absolute;
-  left: 3px;
-  top: 3px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #fff;
-  transition: transform 0.2s;
+  left: 0;
+  top: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 0;
+  background: var(--obs-bg);
+  border: var(--obs-border);
+  transition: left var(--obs-ease);
 }
 
 .toggle input:checked + .toggle-track::after {
-  transform: translateX(20px);
+  left: 26px;
 }
 
-/* ── Slider ── */
-.slider {
+/* ── Slider (square pixel thumb) ── */
+.slider,
+input[type="range"][name="difficulty"] {
   -webkit-appearance: none;
+  appearance: none;
   width: 100%;
-  height: 4px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.12);
+  height: 14px;
+  border-radius: 0;
+  background: var(--obs-well);
+  border: var(--obs-border);
+  box-shadow: var(--obs-inset);
   outline: none;
   cursor: pointer;
 }
 
-.slider::-webkit-slider-thumb {
+.slider::-webkit-slider-thumb,
+input[type="range"][name="difficulty"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--accent);
+  width: 18px;
+  height: 18px;
+  border-radius: 0;
+  background: var(--obs-orange);
+  border: var(--obs-border);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb,
+input[type="range"][name="difficulty"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 0;
+  background: var(--obs-orange);
+  border: var(--obs-border);
   cursor: pointer;
 }
 
@@ -222,68 +262,75 @@
 .radio-card-body {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 20px;
-  border-radius: var(--radius);
-  background: var(--glass-2);
-  border: 2px solid rgba(255, 255, 255, 0.06);
-  transition: border-color 0.15s, background 0.15s;
-}
-
-.radio-card input[type="radio"]:checked + .radio-card-body {
-  border-color: var(--accent);
-  background: rgba(255, 122, 89, 0.07);
+  gap: 8px;
+  padding: 18px;
+  border-radius: 0;
+  background: var(--obs-surface);
+  border: var(--obs-border);
+  box-shadow: var(--obs-shadow-sm);
+  transition: transform var(--obs-ease), box-shadow var(--obs-ease), background var(--obs-ease), border-color var(--obs-ease);
 }
 
 .radio-card-body:hover {
-  border-color: rgba(255, 255, 255, 0.15);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--obs-shadow-md);
+}
+
+.radio-card input[type="radio"]:checked + .radio-card-body {
+  border-color: var(--obs-orange);
+  background: var(--obs-surface-2);
+  box-shadow: var(--obs-shadow-md);
+}
+
+.radio-card input[type="radio"]:focus-visible + .radio-card-body {
+  outline: 3px solid var(--obs-cyan);
+  outline-offset: 2px;
 }
 
 .radio-card-title {
-  font-weight: 700;
-  font-size: 15px;
-}
-
-.radio-card-desc {
-  font-size: 13px;
-  color: var(--muted);
+  font-family: var(--obs-font-display);
+  font-size: 11px;
+  letter-spacing: var(--obs-tracking);
   line-height: 1.5;
 }
 
-/* ── Difficulty radio buttons ── */
+.radio-card-desc {
+  font-size: 18px;
+  color: var(--obs-text-dim);
+  line-height: 1.3;
+}
+
+/* ── Difficulty slider ── */
 .difficulty-slider-wrap {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .difficulty-ticks {
   display: flex;
   justify-content: space-between;
-  font-size: 0.75rem;
-  color: var(--muted);
+  font-family: var(--obs-font-display);
+  font-size: 8px;
+  letter-spacing: var(--obs-tracking);
+  color: var(--obs-text-mute);
   text-align: center;
 }
 
 .difficulty-desc {
-  font-size: 0.85rem;
-  color: var(--muted);
+  font-size: 18px;
+  color: var(--obs-text-dim);
   margin: 4px 0 0;
   min-height: 2.5em;
-}
-
-input[type="range"][name="difficulty"] {
-  width: 100%;
-  accent-color: var(--accent);
 }
 
 /* ── Checkbox ── */
 .checkbox-row {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 2px dashed var(--obs-line);
 }
 
 .checkbox-row:last-child {
@@ -291,11 +338,11 @@ input[type="range"][name="difficulty"] {
 }
 
 .checkbox-row input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   margin-top: 1px;
   flex-shrink: 0;
-  accent-color: var(--accent);
+  accent-color: var(--obs-orange);
   cursor: pointer;
 }
 
@@ -307,34 +354,36 @@ input[type="range"][name="difficulty"] {
 .checkbox-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .checkbox-label {
-  font-size: 14px;
-  font-weight: 600;
+  font-family: var(--obs-font-display);
+  font-size: 10px;
+  letter-spacing: var(--obs-tracking);
+  line-height: 1.5;
   cursor: pointer;
 }
 
 .checkbox-desc {
-  font-size: 12px;
-  color: var(--muted);
+  font-size: 17px;
+  color: var(--obs-text-dim);
 }
 
 /* ── Section titles ── */
 .section-title {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-family: var(--obs-font-display);
+  font-size: 9px;
+  letter-spacing: var(--obs-tracking);
   text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 14px;
+  color: var(--obs-orange);
+  margin-bottom: 16px;
 }
 
 /* ── Divider ── */
 .divider {
-  border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border: 0;
+  border-top: 3px dashed var(--obs-line);
   margin: 24px 0;
 }
 
@@ -342,35 +391,40 @@ input[type="range"][name="difficulty"] {
 .chip {
   display: inline-flex;
   align-items: center;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: var(--glass-3);
-  font-size: 12px;
-  font-weight: 600;
+  font-family: var(--obs-font-display);
+  font-size: 8px;
+  letter-spacing: var(--obs-tracking);
+  padding: 8px 12px;
+  border: var(--obs-border);
+  box-shadow: var(--obs-shadow-sm);
+  border-radius: 0;
+  background: var(--obs-orange);
+  color: var(--obs-on-orange);
 }
 
 /* ── Collapsible / details ── */
 .collapsible-toggle {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   background: none;
   border: none;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 600;
+  color: var(--obs-cyan);
+  font-family: var(--obs-font-display);
+  font-size: 10px;
+  letter-spacing: var(--obs-tracking);
   cursor: pointer;
-  padding: 8px 0;
+  padding: 10px 0;
   width: 100%;
   text-align: left;
 }
 
 .collapsible-toggle:hover {
-  color: var(--text);
+  color: var(--obs-text);
 }
 
 .collapsible-toggle .arrow {
-  transition: transform 0.2s;
+  transition: transform var(--obs-ease);
   font-size: 10px;
 }
 
@@ -397,7 +451,7 @@ input[type="range"][name="difficulty"] {
 .step {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex: 1;
 }
 
@@ -406,49 +460,52 @@ input[type="range"][name="difficulty"] {
 }
 
 .step-num {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--glass-3);
+  width: 34px;
+  height: 34px;
+  border-radius: 0;
+  background: var(--obs-well);
+  border: var(--obs-border);
+  box-shadow: var(--obs-shadow-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 13px;
-  color: var(--muted);
+  font-family: var(--obs-font-display);
+  font-size: 10px;
+  color: var(--obs-text-mute);
   flex-shrink: 0;
 }
 
 .step.active .step-num {
-  background: var(--accent);
-  color: #fff;
+  background: var(--obs-orange);
+  color: var(--obs-on-orange);
 }
 
 .step.done .step-num {
-  background: rgba(80, 220, 140, 0.25);
-  color: #50dc8c;
+  background: var(--obs-green);
+  color: #06230f;
 }
 
 .step-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--muted);
+  font-family: var(--obs-font-display);
+  font-size: 9px;
+  letter-spacing: var(--obs-tracking);
+  color: var(--obs-text-mute);
   white-space: nowrap;
 }
 
 .step.active .step-label {
-  color: var(--text);
+  color: var(--obs-text);
 }
 
 .step.done .step-label {
-  color: #50dc8c;
+  color: var(--obs-green);
 }
 
 .step-connector {
   flex: 1;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-  margin: 0 12px;
+  height: 0;
+  border-top: 3px dashed var(--obs-line);
+  margin: 0 14px;
 }
 
 /* ── Summary rows (review step) ── */
@@ -456,9 +513,9 @@ input[type="range"][name="difficulty"] {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  font-size: 14px;
+  padding: 12px 0;
+  border-bottom: 2px dashed var(--obs-line);
+  font-size: 20px;
   gap: 16px;
 }
 
@@ -467,13 +524,12 @@ input[type="range"][name="difficulty"] {
 }
 
 .summary-key {
-  color: var(--muted);
-  font-size: 13px;
+  color: var(--obs-text-dim);
   flex-shrink: 0;
 }
 
 .summary-val {
-  font-weight: 600;
+  color: var(--obs-text);
   text-align: right;
 }
 
@@ -488,17 +544,18 @@ input[type="range"][name="difficulty"] {
   bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  background: #1a2540;
-  color: var(--text);
-  font-size: 12px;
-  padding: 6px 10px;
-  border-radius: 8px;
-  white-space: nowrap;
+  background: var(--obs-bg-deep);
+  color: var(--obs-text);
+  font-family: var(--obs-font-body);
+  font-size: 17px;
+  padding: 8px 12px;
+  border-radius: 0;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.15s;
+  transition: opacity var(--obs-ease);
   z-index: 100;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: var(--obs-border);
+  box-shadow: var(--obs-shadow-sm);
   max-width: 240px;
   white-space: normal;
   text-align: center;
@@ -508,17 +565,19 @@ input[type="range"][name="difficulty"] {
   opacity: 1;
 }
 
-/* ── Warning banner ── */
+/* ── Warning banner (Obsidian alert) ── */
 .warning-banner {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 12px 16px;
-  background: rgba(255, 180, 50, 0.08);
-  border: 1px solid rgba(255, 180, 50, 0.22);
-  border-radius: var(--radius);
-  color: #ffb432;
-  font-size: 13px;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--obs-surface);
+  border: var(--obs-border);
+  border-left: 8px solid var(--obs-yellow);
+  box-shadow: var(--obs-shadow-md);
+  border-radius: 0;
+  color: var(--obs-yellow);
+  font-size: 18px;
   margin: 8px 0 4px;
 }
 
@@ -526,15 +585,19 @@ input[type="range"][name="difficulty"] {
   display: none;
 }
 
-/* ── Success state ── */
+/* ── Success state (Obsidian alert) ── */
 .success-banner {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 16px 20px;
-  background: rgba(80, 220, 140, 0.1);
-  border: 1px solid rgba(80, 220, 140, 0.25);
-  border-radius: var(--radius);
-  color: #50dc8c;
-  font-weight: 600;
+  background: var(--obs-surface);
+  border: var(--obs-border);
+  border-left: 8px solid var(--obs-green);
+  box-shadow: var(--obs-shadow-md);
+  border-radius: 0;
+  color: var(--obs-green);
+  font-family: var(--obs-font-display);
+  font-size: 10px;
+  letter-spacing: var(--obs-tracking);
 }
