@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Obsidian UI Kit — Style Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d1b2a;--deep:#081320;--surface:#16293f;--surface2:#1d3550;--well:#0a1726;
+    --line:#2c4a6a;--shadow:#04080f;--orange:#ff7a18;--cyan:#2fe0d0;--green:#56d96b;
+    --yellow:#ffce3f;--red:#ff5d5d;--text:#eaf1f8;--dim:#8ba2bb;--mute:#566f8a;
+    --disp:'Press Start 2P',monospace;--body:'VT323',monospace;
+  }
+  *{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  html,body{margin:0;padding:0;background:#05080e;}
+  body{font-family:var(--body);color:var(--text);font-size:18px;line-height:1.4;}
+  .page{
+    width:794px;min-height:1123px;margin:0 auto;background:var(--bg);
+    padding:64px 60px;position:relative;
+    background-image:linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,.08) 50%);
+    background-size:100% 6px;
+  }
+  .page + .page{margin-top:24px;}
+  .disp{font-family:var(--disp);letter-spacing:1px;line-height:1.5;}
+  .eyebrow{font-family:var(--disp);font-size:10px;letter-spacing:1px;color:var(--orange);}
+  h1{font-family:var(--disp);font-size:34px;line-height:1.5;letter-spacing:1px;margin:0;text-shadow:5px 5px 0 var(--shadow);}
+  h2{font-family:var(--disp);font-size:18px;line-height:1.5;letter-spacing:1px;margin:0 0 22px;}
+  h3{font-family:var(--disp);font-size:11px;letter-spacing:1px;color:var(--dim);margin:0 0 14px;}
+  p{margin:0 0 12px;color:#b9cadd;font-size:20px;}
+  .lead{font-size:22px;color:#b9cadd;}
+  .row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .panel{background:var(--surface);border:3px solid var(--shadow);box-shadow:6px 6px 0 var(--shadow);padding:24px;}
+  .divider{border:0;border-top:3px dashed var(--line);margin:30px 0;}
+  .foot{position:absolute;bottom:30px;left:60px;right:60px;display:flex;justify-content:space-between;font-family:var(--disp);font-size:8px;letter-spacing:1px;color:var(--mute);}
+
+  /* swatches */
+  .swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .sw{border:3px solid var(--shadow);box-shadow:4px 4px 0 var(--shadow);background:var(--surface);}
+  .sw .chip{height:60px;border-bottom:3px solid var(--shadow);}
+  .sw .meta{padding:9px 11px;}
+  .sw .name{font-family:var(--disp);font-size:8px;letter-spacing:1px;line-height:1.6;}
+  .sw .hex{font-size:17px;color:var(--dim);text-transform:uppercase;}
+
+  /* components */
+  .btn{font-family:var(--disp);font-size:11px;letter-spacing:1px;padding:14px 18px;border:3px solid var(--shadow);box-shadow:4px 4px 0 var(--shadow);cursor:default;}
+  .btn.o{background:var(--orange);color:#0d1b2a;}
+  .btn.c{background:var(--cyan);color:#06231f;}
+  .btn.g{background:transparent;color:var(--orange);border-color:var(--orange);}
+  .btn.d{background:var(--red);color:#2a0606;}
+  .badge{font-family:var(--disp);font-size:9px;letter-spacing:1px;padding:8px 12px;border:3px solid var(--shadow);box-shadow:3px 3px 0 var(--shadow);}
+  .b-o{background:var(--orange);color:#0d1b2a;}.b-c{background:var(--cyan);color:#06231f;}
+  .b-g{background:var(--green);color:#06230f;}.b-y{background:var(--yellow);color:#2a2000;}.b-r{background:var(--red);color:#2a0606;}
+  .input{width:100%;font-family:var(--body);font-size:20px;background:var(--well);color:var(--text);border:3px solid var(--shadow);box-shadow:inset 3px 3px 0 rgba(0,0,0,.4);padding:11px 13px;}
+  .flabel{font-family:var(--disp);font-size:9px;letter-spacing:1px;color:var(--dim);margin-bottom:10px;display:block;}
+  .progress{height:22px;background:var(--well);border:3px solid var(--shadow);box-shadow:inset 2px 2px 0 rgba(0,0,0,.4);padding:2px;}
+  .pbar{height:100%;}
+  .alert{display:flex;align-items:center;gap:14px;background:var(--surface);border:3px solid var(--shadow);box-shadow:4px 4px 0 var(--shadow);padding:13px 16px;}
+  .alert .dot{width:13px;height:13px;flex:none;}
+  .atitle{font-family:var(--disp);font-size:9px;letter-spacing:1px;margin-bottom:5px;}
+  table{width:100%;border-collapse:collapse;border:3px solid var(--shadow);box-shadow:6px 6px 0 var(--shadow);background:var(--surface);}
+  th{background:var(--orange);color:#0d1b2a;font-family:var(--disp);font-size:8px;letter-spacing:1px;text-align:left;padding:12px;border-bottom:3px solid var(--shadow);}
+  td{padding:11px 12px;font-size:20px;border-bottom:2px solid var(--well);}
+  tr:nth-child(even) td{background:#13243a;}
+  .dl{display:grid;grid-template-columns:auto 1fr;gap:8px 18px;font-size:19px;align-items:baseline;}
+  .dl .k{font-family:var(--disp);font-size:9px;color:var(--orange);letter-spacing:1px;white-space:nowrap;}
+  .check{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:20px;}
+  .ok{color:var(--green);font-family:var(--disp);font-size:11px;}
+  .no{color:var(--red);font-family:var(--disp);font-size:11px;}
+  ul.clean{list-style:none;padding:0;margin:0;}
+  ul.clean li{font-size:20px;color:#b9cadd;padding:6px 0 6px 22px;position:relative;}
+  ul.clean li::before{content:'▸';position:absolute;left:0;color:var(--orange);}
+
+  @page{size:A4;margin:0;}
+  @media print{
+    body{background:#fff;}
+    .page{margin:0;width:100%;min-height:100vh;break-after:page;break-inside:avoid;}
+    .page:last-of-type{break-after:auto;}
+  }
+</style>
+</head>
+<body>
+
+  <!-- COVER -->
+  <section class="page" style="display:flex;flex-direction:column;justify-content:center;">
+    <div class="row" style="gap:14px;margin-bottom:46px;">
+      <div style="width:34px;height:34px;background:var(--orange);border:3px solid var(--shadow);box-shadow:4px 4px 0 var(--shadow);"></div>
+      <span class="disp" style="font-size:14px;">OBSIDIAN</span>
+    </div>
+    <div class="eyebrow" style="margin-bottom:22px;">▸ DESIGN SYSTEM · v1.0</div>
+    <h1>OBSIDIAN<br><span style="color:var(--orange);">UI KIT</span></h1>
+    <p class="lead" style="max-width:520px;margin-top:26px;">A retro 8-bit (GBA-era) component system, dark-mode native. Pixel borders, chunky offset shadows, deep-navy surfaces, ember-orange controls.</p>
+    <div class="row" style="gap:24px;margin-top:36px;">
+      <span class="disp" style="font-size:9px;color:var(--dim);"><span style="color:var(--orange);">14</span> COMPONENT TYPES</span>
+      <span class="disp" style="font-size:9px;color:var(--dim);"><span style="color:var(--cyan);">2</span> PIXEL FONTS</span>
+      <span class="disp" style="font-size:9px;color:var(--dim);"><span style="color:var(--green);">100%</span> DARK MODE</span>
+    </div>
+    <div class="foot"><span>OBSIDIAN UI KIT · STYLE GUIDE</span><span>01</span></div>
+  </section>
+
+  <!-- PRINCIPLES + COLOR -->
+  <section class="page">
+    <div class="eyebrow">01 / FOUNDATION</div>
+    <h1 style="font-size:24px;margin:12px 0 30px;text-shadow:4px 4px 0 var(--shadow);">PRINCIPLES & COLOR</h1>
+    <ul class="clean" style="margin-bottom:8px;">
+      <li><b style="color:var(--text);">Hard edges only.</b> border-radius is always 0.</li>
+      <li><b style="color:var(--text);">Offset shadows = depth.</b> Solid, non-blurred, down-right (e.g. 4px 4px 0 #04080f). Lift on hover, sink on press.</li>
+      <li><b style="color:var(--text);">Navy surfaces, orange action.</b> Orange = primary CTA, cyan = secondary/interactive. Accents pop against the navy.</li>
+      <li><b style="color:var(--text);">Pixel type, two roles.</b> Press Start 2P for chrome, VT323 for reading.</li>
+      <li><b style="color:var(--text);">Snappy, stepped motion.</b> 0.08s transitions; steps() spinners.</li>
+    </ul>
+    <hr class="divider">
+    <h3>COLOR TOKENS</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#0d1b2a;"></div><div class="meta"><div class="name">BG BASE</div><div class="hex">#0d1b2a</div></div></div>
+      <div class="sw"><div class="chip" style="background:#081320;"></div><div class="meta"><div class="name">BG DEEP</div><div class="hex">#081320</div></div></div>
+      <div class="sw"><div class="chip" style="background:#16293f;"></div><div class="meta"><div class="name">SURFACE</div><div class="hex">#16293f</div></div></div>
+      <div class="sw"><div class="chip" style="background:#1d3550;"></div><div class="meta"><div class="name">SURFACE+</div><div class="hex">#1d3550</div></div></div>
+      <div class="sw"><div class="chip" style="background:#0a1726;"></div><div class="meta"><div class="name">WELL</div><div class="hex">#0a1726</div></div></div>
+      <div class="sw"><div class="chip" style="background:#04080f;"></div><div class="meta"><div class="name">SHADOW</div><div class="hex">#04080f</div></div></div>
+      <div class="sw"><div class="chip" style="background:#ff7a18;"></div><div class="meta"><div class="name">ORANGE</div><div class="hex">#ff7a18</div></div></div>
+      <div class="sw"><div class="chip" style="background:#2fe0d0;"></div><div class="meta"><div class="name">CYAN</div><div class="hex">#2fe0d0</div></div></div>
+      <div class="sw"><div class="chip" style="background:#56d96b;"></div><div class="meta"><div class="name">GREEN</div><div class="hex">#56d96b</div></div></div>
+      <div class="sw"><div class="chip" style="background:#ffce3f;"></div><div class="meta"><div class="name">YELLOW</div><div class="hex">#ffce3f</div></div></div>
+      <div class="sw"><div class="chip" style="background:#ff5d5d;"></div><div class="meta"><div class="name">RED</div><div class="hex">#ff5d5d</div></div></div>
+      <div class="sw"><div class="chip" style="background:#eaf1f8;"></div><div class="meta"><div class="name">TEXT</div><div class="hex">#eaf1f8</div></div></div>
+    </div>
+    <p style="font-size:18px;margin-top:18px;">On orange fills use text <b style="color:var(--text);">#0d1b2a</b>; on cyan use <b style="color:var(--text);">#06231f</b>. Never white text on accent fills. Keep new accents on the same chroma/lightness ring (oklch).</p>
+    <div class="foot"><span>OBSIDIAN UI KIT · STYLE GUIDE</span><span>02</span></div>
+  </section>
+
+  <!-- TYPOGRAPHY -->
+  <section class="page">
+    <div class="eyebrow">02 / FOUNDATION</div>
+    <h1 style="font-size:24px;margin:12px 0 30px;text-shadow:4px 4px 0 var(--shadow);">TYPOGRAPHY</h1>
+    <div class="grid2" style="margin-bottom:24px;">
+      <div class="panel">
+        <h3 style="color:var(--cyan);">DISPLAY — PRESS START 2P</h3>
+        <div class="disp" style="font-size:26px;margin-bottom:14px;">Aa Bb 12</div>
+        <div class="disp" style="font-size:14px;color:#b9cadd;margin-bottom:12px;">Heading 14px</div>
+        <div class="disp" style="font-size:10px;color:var(--dim);">Label / UI 10px</div>
+      </div>
+      <div class="panel">
+        <h3 style="color:var(--cyan);">BODY — VT323</h3>
+        <div style="font-size:38px;line-height:1.1;margin-bottom:8px;">Aa Bb Cc 123</div>
+        <div style="font-size:22px;color:#b9cadd;margin-bottom:6px;">Body 21px — readable pixel serif for long-form copy.</div>
+        <div style="font-size:18px;color:var(--dim);">Caption 19px — secondary text and metadata.</div>
+      </div>
+    </div>
+    <h3>TYPE SCALE</h3>
+    <div class="dl">
+      <span class="k">HERO</span><span>Press Start 2P · 42px / 1.5 · text-shadow 5px 5px 0</span>
+      <span class="k">H1</span><span>Press Start 2P · 28px / 1.5 — section titles</span>
+      <span class="k">H2</span><span>Press Start 2P · 20px / 1.5 — sub-sections</span>
+      <span class="k">H3</span><span>Press Start 2P · 14px / 1.6 — card & modal titles</span>
+      <span class="k">LABEL</span><span>Press Start 2P · 10px — buttons, tabs</span>
+      <span class="k">MICRO</span><span>Press Start 2P · 8px — badges, table heads, eyebrows</span>
+      <span class="k">LEAD</span><span>VT323 · 24px — intro paragraphs</span>
+      <span class="k">BODY</span><span>VT323 · 21px — default copy</span>
+      <span class="k">CAPTION</span><span>VT323 · 19px — metadata</span>
+    </div>
+    <p style="font-size:18px;margin-top:20px;">Press Start 2P needs generous line-height (1.5–1.7) and 1px tracking. Never use it for long-form body or below 8px.</p>
+    <div class="foot"><span>OBSIDIAN UI KIT · STYLE GUIDE</span><span>03</span></div>
+  </section>
+
+  <!-- BUTTONS + FORMS -->
+  <section class="page">
+    <div class="eyebrow">03 / COMPONENTS</div>
+    <h1 style="font-size:24px;margin:12px 0 30px;text-shadow:4px 4px 0 var(--shadow);">BUTTONS & FORMS</h1>
+    <div class="panel" style="margin-bottom:22px;">
+      <h3>BUTTONS · .obs-btn</h3>
+      <div class="row">
+        <span class="btn o">PRIMARY</span>
+        <span class="btn c">SECONDARY</span>
+        <span class="btn g">GHOST</span>
+        <span class="btn d">DANGER</span>
+        <span class="btn" style="background:#1d3550;color:#566f8a;border-color:#122639;box-shadow:none;opacity:.55;">DISABLED</span>
+      </div>
+      <p style="font-size:17px;margin-top:18px;margin-bottom:0;">Hover lifts (translate −2,−2 + bigger shadow); active sinks (translate +2,+2 + shadow 0). Sizes: <b style="color:var(--text);">--sm</b>, <b style="color:var(--text);">--lg</b>.</p>
+    </div>
+    <div class="grid2">
+      <div class="panel">
+        <h3>INPUTS</h3>
+        <label class="flabel">TRAINER NAME</label>
+        <input class="input" value="Type here..." readonly style="margin-bottom:16px;">
+        <label class="flabel">STARTER TYPE</label>
+        <div style="position:relative;">
+          <input class="input" value="Fire — Charmander" readonly style="padding-right:36px;">
+          <span style="position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--orange);">▼</span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>SELECTION</h3>
+        <div class="row" style="gap:14px;margin-bottom:16px;">
+          <div style="width:50px;height:26px;background:var(--cyan);border:3px solid var(--shadow);box-shadow:3px 3px 0 var(--shadow);position:relative;"><div style="position:absolute;right:0;top:0;width:20px;height:20px;background:#0d1b2a;border:3px solid var(--shadow);"></div></div>
+          <span style="font-size:19px;">Toggle (on)</span>
+        </div>
+        <div class="row" style="gap:14px;margin-bottom:16px;">
+          <div style="width:24px;height:24px;background:var(--well);border:3px solid var(--shadow);box-shadow:3px 3px 0 var(--shadow);display:flex;align-items:center;justify-content:center;"><div style="width:11px;height:11px;background:var(--orange);"></div></div>
+          <span style="font-size:19px;">Checkbox (checked)</span>
+        </div>
+        <div class="row" style="gap:14px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--well);border:3px solid var(--shadow);display:flex;align-items:center;justify-content:center;"><div style="width:11px;height:11px;border-radius:50%;background:var(--cyan);"></div></div>
+          <span style="font-size:19px;">Radio (selected)</span>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><span>OBSIDIAN UI KIT · STYLE GUIDE</span><span>04</span></div>
+  </section>
+
+  <!-- BADGES, TABS, PROGRESS, TABLE -->
+  <section class="page">
+    <div class="eyebrow">04 / COMPONENTS</div>
+    <h1 style="font-size:24px;margin:12px 0 30px;text-shadow:4px 4px 0 var(--shadow);">DATA & STATUS</h1>
+    <div class="panel" style="margin-bottom:20px;">
+      <h3>BADGES · .obs-badge</h3>
+      <div class="row">
+        <span class="badge b-o">NEW</span><span class="badge b-c">BETA</span><span class="badge b-g">DONE</span>
+        <span class="badge b-y">WIP</span><span class="badge b-r">BUG</span>
+        <span class="badge" style="background:transparent;color:var(--orange);border-color:var(--orange);box-shadow:none;">OUTLINE</span>
+      </div>
+    </div>
+    <div class="panel" style="margin-bottom:20px;">
+      <h3>PROGRESS · .obs-progress</h3>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="progress"><div class="pbar" style="width:82%;background:var(--green);"></div></div>
+        <div class="progress"><div class="pbar" style="width:54%;background:var(--orange);"></div></div>
+        <div class="progress"><div class="pbar" style="width:38%;background-image:repeating-linear-gradient(45deg,#2fe0d0 0 8px,#138b80 8px 16px);background-size:32px 32px;"></div></div>
+      </div>
+    </div>
+    <h3>TABLE · .obs-table</h3>
+    <table>
+      <thead><tr><th style="width:50px;">#</th><th>POKÉMON</th><th style="width:110px;">TYPE</th><th style="width:70px;text-align:right;">CP</th></tr></thead>
+      <tbody>
+        <tr><td class="disp" style="font-size:9px;color:var(--dim);">004</td><td>Charmander</td><td><span class="badge b-o" style="font-size:8px;padding:4px 7px;box-shadow:none;border-width:2px;">FIRE</span></td><td style="text-align:right;color:var(--orange);">981</td></tr>
+        <tr><td class="disp" style="font-size:9px;color:var(--dim);">007</td><td>Squirtle</td><td><span class="badge b-c" style="font-size:8px;padding:4px 7px;box-shadow:none;border-width:2px;">WATER</span></td><td style="text-align:right;color:var(--orange);">1024</td></tr>
+        <tr><td class="disp" style="font-size:9px;color:var(--dim);">001</td><td>Bulbasaur</td><td><span class="badge b-g" style="font-size:8px;padding:4px 7px;box-shadow:none;border-width:2px;">GRASS</span></td><td style="text-align:right;color:var(--orange);">897</td></tr>
+      </tbody>
+    </table>
+    <div class="foot"><span>OBSIDIAN UI KIT · STYLE GUIDE</span><span>05</span></div>
+  </section>
+
+  <!-- ALERTS, MODAL, DO/DONT -->
+  <section class="page">
+    <div class="eyebrow">05 / COMPONENTS & RULES</div>
+    <h1 style="font-size:24px;margin:12px 0 30px;text-shadow:4px 4px 0 var(--shadow);">FEEDBACK & GUARDRAILS</h1>
+    <h3>ALERTS · .obs-alert</h3>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
+      <div class="alert" style="border-left:7px solid var(--cyan);"><div class="dot" style="background:var(--cyan);"></div><div><div class="atitle" style="color:var(--cyan);">INFO</div><div style="font-size:18px;color:#b9cadd;">A new patch (v2.4) is available.</div></div></div>
+      <div class="alert" style="border-left:7px solid var(--green);"><div class="dot" style="background:var(--green);"></div><div><div class="atitle" style="color:var(--green);">SUCCESS</div><div style="font-size:18px;color:#b9cadd;">ROM patched successfully.</div></div></div>
+      <div class="alert" style="border-left:7px solid var(--yellow);"><div class="dot" style="background:var(--yellow);"></div><div><div class="atitle" style="color:var(--yellow);">WARNING</div><div style="font-size:18px;color:#b9cadd;">This seed disables the level cap.</div></div></div>
+      <div class="alert" style="border-left:7px solid var(--red);"><div class="dot" style="background:var(--red);"></div><div><div class="atitle" style="color:var(--red);">ERROR</div><div style="font-size:18px;color:#b9cadd;">Checksum mismatch — re-upload ROM.</div></div></div>
+    </div>
+    <hr class="divider">
+    <div class="grid2">
+      <div>
+        <div class="ok" style="margin-bottom:14px;">✓ DO</div>
+        <div class="check">Keep all corners square</div>
+        <div class="check">Solid offset shadows for depth</div>
+        <div class="check">One orange CTA per view</div>
+        <div class="check">Press Start 2P chrome · VT323 body</div>
+        <div class="check">steps() + short durations</div>
+      </div>
+      <div>
+        <div class="no" style="margin-bottom:14px;">✕ DON'T</div>
+        <div class="check">Rounded corners, blur or glow</div>
+        <div class="check">Smooth gradient fills</div>
+        <div class="check">Body copy in Press Start 2P</div>
+        <div class="check">New high-saturation colors</div>
+        <div class="check">White text on accent fills</div>
+      </div>
+    </div>
+    <div class="foot"><span>OBSIDIAN UI KIT · STYLE GUIDE</span><span>06</span></div>
+  </section>
+
+<script>
+  addEventListener('load', () => {
+    (async () => {
+      try { await document.fonts.ready; } catch (e) {}
+      // print is triggered manually by the user (Cmd/Ctrl+P) or via open_for_print
+    })();
+  });
+</script>
+</body>
+</html>

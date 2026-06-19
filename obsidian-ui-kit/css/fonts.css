@@ -1,0 +1,35 @@
+/* ============================================================
+   OBSIDIAN UI KIT — FONTS
+   Two pixel typefaces, both open-source (SIL Open Font License):
+     · Press Start 2P  — display / UI chrome (headings, buttons, labels)
+     · VT323           — body copy (readable pixel serif)
+
+   DEFAULT: loaded from Google Fonts CDN (zero setup).
+   OFFLINE / SELF-HOSTED: download the .woff2 files (links below),
+   drop them in ./fonts/ and swap the @import block for the
+   commented @font-face block underneath.
+   ============================================================ */
+
+/* --- Option A: Google Fonts CDN (default) --- */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+/* --- Option B: self-hosted (uncomment, remove the @import above) ---
+   Download:
+     Press Start 2P → https://fonts.google.com/specimen/Press+Start+2P
+     VT323          → https://fonts.google.com/specimen/VT323
+
+@font-face {
+  font-family: 'Press Start 2P';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/PressStart2P-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'VT323';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/VT323-Regular.woff2') format('woff2');
+}
+*/

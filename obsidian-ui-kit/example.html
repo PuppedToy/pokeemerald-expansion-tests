@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Obsidian UI Kit — Example</title>
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/obsidian.css">
+</head>
+<body class="obs">
+
+  <!-- HEADER -->
+  <header style="position:sticky;top:0;z-index:40;background:var(--obs-bg-deep);border-bottom:var(--obs-border);box-shadow:0 4px 0 rgba(0,0,0,.5);">
+    <div class="obs-container" style="padding-top:14px;padding-bottom:14px;display:flex;align-items:center;gap:24px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="obs-pixel-box" style="width:26px;height:26px;background:var(--obs-orange);"></div>
+        <span class="obs-h3">OBSIDIAN</span>
+      </div>
+      <nav style="display:flex;gap:6px;margin-left:auto;">
+        <a class="obs-label" href="#components" style="color:var(--obs-text-dim);text-decoration:none;padding:11px 13px;border:3px solid transparent;">COMPONENTS</a>
+        <a class="obs-label" href="#generator" style="color:var(--obs-text-dim);text-decoration:none;padding:11px 13px;border:3px solid transparent;">GENERATOR</a>
+      </nav>
+      <a class="obs-btn obs-btn--sm" href="#download">DOWNLOAD</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section style="border-bottom:var(--obs-border);background:var(--obs-bg);">
+    <div class="obs-container" style="padding:78px 24px 64px;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;">
+      <div>
+        <div class="obs-badge obs-badge--outline" style="border-color:var(--obs-cyan);color:var(--obs-cyan);margin-bottom:26px;">▸ GEN III ROMHACK · v2.4</div>
+        <h1 class="obs-hero">POKÉMON<br><span class="obs-c-orange">OBSIDIAN</span></h1>
+        <p class="obs-lead" style="max-width:480px;margin:24px 0 34px;font-size:25px;">A fan-made overhaul with rebalanced encounters, regional forms and a built-in randomizer. Roll a seed, patch your ROM, rediscover the region.</p>
+        <div class="obs-row">
+          <a class="obs-btn obs-btn--lg" href="#generator">GENERATE A SEED</a>
+          <a class="obs-btn obs-btn--ghost obs-btn--lg" href="#download" style="color:var(--obs-cyan);border-color:var(--obs-cyan);">PATCH NOTES</a>
+        </div>
+      </div>
+      <div class="obs-pixel-box" style="box-shadow:var(--obs-shadow-xl);background:#13243a;padding:12px;">
+        <div class="obs-image-slot" style="aspect-ratio:10/9;flex-direction:column;gap:14px;">
+          <div class="obs-pixel-box" style="width:46px;height:46px;background:var(--obs-orange);"></div>
+          <span>[ game screen capture ]</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 4px 2px;">
+          <span class="obs-micro obs-c-dim">OBSIDIAN.GBA</span>
+          <span class="obs-micro" style="color:var(--obs-green);">● LIVE</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="obs-container">
+
+    <!-- COMPONENTS -->
+    <section class="obs-section" id="components">
+      <div class="obs-eyebrow">▸ COMPONENT REFERENCE</div>
+      <h2 class="obs-h1" style="margin:14px 0 36px;">THE KIT</h2>
+
+      <!-- buttons -->
+      <div class="obs-panel" style="margin-bottom:24px;">
+        <div class="obs-micro obs-c-dim" style="margin-bottom:18px;">BUTTONS</div>
+        <div class="obs-row">
+          <button class="obs-btn">PRIMARY</button>
+          <button class="obs-btn obs-btn--secondary">SECONDARY</button>
+          <button class="obs-btn obs-btn--ghost">GHOST</button>
+          <button class="obs-btn obs-btn--danger">DANGER</button>
+          <button class="obs-btn" disabled>DISABLED</button>
+        </div>
+      </div>
+
+      <!-- forms + states -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
+        <div class="obs-panel obs-stack">
+          <div class="obs-field">
+            <label class="obs-field__label">TRAINER NAME</label>
+            <input class="obs-input" type="text" placeholder="Type here...">
+          </div>
+          <div class="obs-field">
+            <label class="obs-field__label">STARTER TYPE</label>
+            <div class="obs-select-wrap">
+              <select class="obs-select">
+                <option>Fire — Charmander</option>
+                <option>Water — Squirtle</option>
+                <option>Grass — Bulbasaur</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="obs-panel obs-stack">
+          <label class="obs-toggle"><input type="checkbox" checked><span class="obs-toggle__track"></span><span class="obs-body">Shiny odds boost</span></label>
+          <label class="obs-toggle"><input type="checkbox"><span class="obs-toggle__track"></span><span class="obs-body">Nuzlocke mode</span></label>
+          <label class="obs-check"><input type="checkbox" checked><span class="obs-check__box"></span><span class="obs-body">Randomize wild encounters</span></label>
+          <div class="obs-row" style="gap:22px;">
+            <label class="obs-radio"><input type="radio" name="t" checked><span class="obs-radio__dot"></span><span class="obs-body">Fire</span></label>
+            <label class="obs-radio"><input type="radio" name="t"><span class="obs-radio__dot"></span><span class="obs-body">Water</span></label>
+            <label class="obs-radio"><input type="radio" name="t"><span class="obs-radio__dot"></span><span class="obs-body">Grass</span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- badges -->
+      <div class="obs-panel obs-row" style="margin-bottom:24px;">
+        <span class="obs-badge">NEW</span>
+        <span class="obs-badge obs-badge--cyan">BETA</span>
+        <span class="obs-badge obs-badge--green">DONE</span>
+        <span class="obs-badge obs-badge--yellow">WIP</span>
+        <span class="obs-badge obs-badge--red">BUG</span>
+        <span class="obs-badge obs-badge--outline">OUTLINE</span>
+      </div>
+
+      <!-- tabs -->
+      <div class="obs-tabs" style="margin-bottom:24px;" id="demoTabs">
+        <div class="obs-tabs__list" role="tablist">
+          <button class="obs-tab is-active" data-tab="0">OVERVIEW</button>
+          <button class="obs-tab" data-tab="1">GENERATOR</button>
+          <button class="obs-tab" data-tab="2">TOOLS</button>
+          <button class="obs-tab" data-tab="3">ABOUT</button>
+        </div>
+        <div class="obs-tabs__panel">
+          <div class="obs-h3 obs-c-orange" id="tabTitle" style="margin-bottom:16px;">OVERVIEW</div>
+          <p class="obs-lead" id="tabBody" style="margin:0;max-width:560px;">A complete graphical overhaul of Gen III with rebalanced encounters and a hand-tuned difficulty curve.</p>
+        </div>
+      </div>
+
+      <!-- progress -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
+        <div class="obs-panel obs-stack">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px;"><span class="obs-micro obs-c-dim">HP</span><span class="obs-micro" style="color:var(--obs-green);">82%</span></div>
+            <div class="obs-progress"><div class="obs-progress__bar obs-progress__bar--green" style="width:82%;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px;"><span class="obs-micro obs-c-dim">BUILDING ROM</span><span class="obs-micro" style="color:var(--obs-cyan);">···</span></div>
+            <div class="obs-progress"><div class="obs-progress__bar obs-progress__bar--striped" style="width:38%;"></div></div>
+          </div>
+        </div>
+        <div class="obs-panel" style="display:flex;align-items:center;justify-content:center;gap:30px;">
+          <div class="obs-dots"><span></span><span></span><span></span><span></span></div>
+          <div class="obs-spinner"></div>
+          <div class="obs-label">LOADING<span class="obs-blink">_</span></div>
+        </div>
+      </div>
+
+      <!-- table -->
+      <table class="obs-table" style="margin-bottom:24px;">
+        <thead><tr><th style="width:60px;">#</th><th>POKÉMON</th><th style="width:130px;">TYPE</th><th style="width:90px;text-align:right;">CP</th></tr></thead>
+        <tbody>
+          <tr><td class="obs-label obs-c-dim">004</td><td>Charmander</td><td><span class="obs-badge" style="font-size:8px;padding:5px 8px;box-shadow:none;border-width:2px;">FIRE</span></td><td style="text-align:right;color:var(--obs-orange);">981</td></tr>
+          <tr><td class="obs-label obs-c-dim">007</td><td>Squirtle</td><td><span class="obs-badge obs-badge--cyan" style="font-size:8px;padding:5px 8px;box-shadow:none;border-width:2px;">WATER</span></td><td style="text-align:right;color:var(--obs-orange);">1024</td></tr>
+          <tr><td class="obs-label obs-c-dim">001</td><td>Bulbasaur</td><td><span class="obs-badge obs-badge--green" style="font-size:8px;padding:5px 8px;box-shadow:none;border-width:2px;">GRASS</span></td><td style="text-align:right;color:var(--obs-orange);">897</td></tr>
+        </tbody>
+      </table>
+
+      <!-- alerts -->
+      <div class="obs-stack" style="gap:16px;">
+        <div class="obs-alert"><div class="obs-alert__dot"></div><div><div class="obs-alert__title">INFO</div><div class="obs-caption">A new patch (v2.4) is available for download.</div></div></div>
+        <div class="obs-alert obs-alert--success"><div class="obs-alert__dot"></div><div><div class="obs-alert__title">SUCCESS</div><div class="obs-caption">Your ROM was patched successfully — happy hunting!</div></div></div>
+        <div class="obs-alert obs-alert--warning"><div class="obs-alert__dot"></div><div><div class="obs-alert__title">WARNING</div><div class="obs-caption">This seed disables the level cap. Proceed with care.</div></div></div>
+        <div class="obs-alert obs-alert--error"><div class="obs-alert__dot"></div><div><div class="obs-alert__title">ERROR</div><div class="obs-caption">Checksum mismatch. Please re-upload your base ROM.</div></div></div>
+        <div class="obs-row" style="margin-top:8px;">
+          <button class="obs-btn obs-btn--secondary" id="toastBtn">TRIGGER TOAST →</button>
+          <button class="obs-btn" id="modalBtn">OPEN DIALOG</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARDS -->
+    <section class="obs-section" id="download" style="padding-top:0;">
+      <div class="obs-eyebrow">▸ CARDS</div>
+      <h2 class="obs-h1" style="margin:14px 0 36px;">FEATURED</h2>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+        <article class="obs-card obs-card--hover">
+          <div class="obs-card__media" style="background-color:var(--obs-orange);"></div>
+          <div class="obs-card__body"><div class="obs-h3" style="margin-bottom:10px;">CHARIZARD</div><p class="obs-caption" style="margin:0;">Fire / Flying. Redesigned movepool with new signature moves.</p></div>
+        </article>
+        <article class="obs-card obs-card--hover">
+          <div class="obs-card__media" style="background-color:var(--obs-cyan);"></div>
+          <div class="obs-card__body"><div class="obs-h3" style="margin-bottom:10px;">BLASTOISE</div><p class="obs-caption" style="margin:0;">Water. Rebalanced bulk and a fresh shiny palette.</p></div>
+        </article>
+        <article class="obs-card obs-card--hover">
+          <div class="obs-card__media" style="background-color:var(--obs-green);"></div>
+          <div class="obs-card__body"><div class="obs-h3" style="margin-bottom:10px;">VENUSAUR</div><p class="obs-caption" style="margin:0;">Grass / Poison. Hidden ability swap and tweaked stats.</p></div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <footer style="border-top:var(--obs-border);background:var(--obs-bg-deep);">
+    <div class="obs-container" style="padding:30px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <span class="obs-micro obs-text-mute" style="color:var(--obs-text-mute);">© 2026 OBSIDIAN TEAM · FAN PROJECT</span>
+      <span class="obs-micro" style="color:var(--obs-text-mute);">NOT AFFILIATED WITH NINTENDO / GAME FREAK</span>
+    </div>
+  </footer>
+
+  <!-- MODAL -->
+  <div class="obs-modal-backdrop" id="modal" style="display:none;">
+    <div class="obs-modal">
+      <div class="obs-modal__head"><span class="obs-modal__title">CONFIRM</span><button class="obs-modal__close" data-close>✕</button></div>
+      <div class="obs-modal__body"><p class="obs-body" style="margin:0 0 8px;">Apply this patch to your base ROM?</p><p class="obs-caption" style="margin:0;">This rewrites encounter tables and cannot be undone.</p></div>
+      <div class="obs-modal__foot"><button class="obs-btn obs-btn--ghost" data-close style="color:var(--obs-text-dim);border-color:var(--obs-line);">CANCEL</button><button class="obs-btn" data-close>APPLY</button></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="obs-toast" id="toast" style="display:none;">
+    <div class="obs-alert__dot" style="background:var(--obs-green);"></div>
+    <div><div class="obs-alert__title" style="color:var(--obs-green);">SAVED!</div><div class="obs-caption" style="font-size:19px;">Your build settings were written to slot 1.</div></div>
+  </div>
+
+<script>
+  // Tabs
+  var tabBodies = [
+    ['OVERVIEW','A complete graphical overhaul of Gen III with rebalanced encounters and a hand-tuned difficulty curve.'],
+    ['GENERATOR','Roll a fresh randomized seed: shuffle starters, wild tables and trainer parties, then export a patch.'],
+    ['TOOLS','Sprite editor, encounter viewer, party builder and a live type-matchup calculator — all in the browser.'],
+    ['ABOUT','A community-built romhack maintained by volunteers. Bring your own legally-dumped base ROM.']
+  ];
+  document.querySelectorAll('#demoTabs .obs-tab').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('#demoTabs .obs-tab').forEach(function(b){ b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+      var i = +btn.dataset.tab;
+      document.getElementById('tabTitle').textContent = tabBodies[i][0];
+      document.getElementById('tabBody').textContent  = tabBodies[i][1];
+    });
+  });
+  // Modal
+  var modal = document.getElementById('modal');
+  document.getElementById('modalBtn').addEventListener('click', function(){ modal.style.display = 'flex'; });
+  modal.addEventListener('click', function(e){ if (e.target === modal || e.target.hasAttribute('data-close')) modal.style.display = 'none'; });
+  // Toast
+  var toast = document.getElementById('toast'), tt;
+  document.getElementById('toastBtn').addEventListener('click', function(){
+    toast.style.display = 'flex'; clearTimeout(tt); tt = setTimeout(function(){ toast.style.display = 'none'; }, 3200);
+  });
+</script>
+</body>
+</html>
