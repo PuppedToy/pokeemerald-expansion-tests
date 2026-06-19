@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node scripts/check-tracker.mjs || { echo 'Tracker inconsistent: fix tasks/bugs/indexes before finishing (see output above).' >&2; exit 2; }"
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && node scripts/check-tracker.mjs || { echo 'Tracker inconsistent: fix tasks/bugs/indexes before finishing (see output above).' >&2; exit 2; }"
           }
         ]
       }
