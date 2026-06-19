@@ -13,5 +13,8 @@
     "testMatch": [
       "**/__tests__/**/*.test.js"
     ]
+  },
+  "dependencies": {
+    "pngjs": "7.0.0"
   }
 }

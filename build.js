@@ -71,6 +71,14 @@ async function main() {
     const bundleKb = Math.round(fs.statSync(path.join(FRONT_JS, 'randomizer.bundle.js')).size / 1024);
     console.log(`[build] Wrote randomizer.bundle.js (${bundleKb} KB) → ${path.join(FRONT_JS, 'randomizer.bundle.js')}`);
 
+    // ── Step 3: Generate sprite map (T-001) ───────────────────────────────────
+    // Encodes in-repo Pokémon/trainer art into frontend/data/sprites.json (base64).
+    // The frontend embeds only the referenced sprites into each generated doc, so
+    // docs are fully self-contained and depend on no external CDN. Output gitignored.
+    console.log('[build] Generating sprite map...');
+    const { generateSprites } = require('./randomizer/generateSprites.js');
+    generateSprites({ root: ROOT, log: (m) => console.log(m) });
+
     console.log('[build] Done.');
 }
 

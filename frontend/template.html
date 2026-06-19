@@ -722,68 +722,14 @@
       return nameify(moveId.replace('MOVE_', ''));
     }
 
+    // 1x1 transparent PNG, used when a sprite isn't embedded in this doc.
+    const BLANK_SPRITE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M8AAAMBAQDJ/pLvAAAAAElFTkSuQmCC';
+
     function getPokeImg(pokeId) {
-      return `https://forwardfeed.github.io/ER-nextdex/sprites/${pokeId.replace('SPECIES_', '')}.png`
-        .replace('ALOLA', 'ALOLAN')
-        .replace('GALAR', 'GALARIAN')
-        .replace('HISUI', 'HISUIAN')
-        .replace('PALDEA', 'PALDEAN')
-        .replace(/TAUROS_PALDEAN_(\w+)/, 'TAUROS_PALDEAN_$1_BREED')
-        .replace('DUDUNSPARCE_TWO_SEGMENT', 'DUDUNSPARCE_THREE_SEGMENT')
-        .replace('CASTFORM_NORMAL', 'CASTFORM')
-        .replace('_WEST', '')
-        .replace('_EAST', '_EAST_SEA')
-        .replace('GIRATINA_ALTERED', 'GIRATINA')
-        .replace('SHAYMIN_LAND', 'SHAYMIN')
-        .replace('_RED_STRIPED', '')
-        .replace('_WHITE_STRIPED', '_WHITESTRIPED')
-        .replace('BASCULEGION_M', 'BASCULEGION')
-        .replace('_STANDARD', '')
-        .replace('_ZEN', '_ZEN_MODE')
-        .replace('_GALARIAN_ZEN_MODE', '_ZEN_MODE_GALARIAN')
-        .replace('_SPRING', '')
-        .replace('_INCARNATE', '')
-        .replace('_ORDINARY', '')
-        .replace('_ARIA', '')
-        .replace('MEOWSTIC_M', 'MEOWSTIC')
-        .replace('MEOWSTIC_F', 'MEOWSTIC_FEMALE')
-        .replace('_SHIELD', '')
-        .replace('_AVERAGE', '')
-        .replace('_NEUTRAL', '')
-        .replace('/ZYGARDE_50.', '/ZYGARDE.')
-        .replace('_AURA_BREAK', '')
-        .replace('_CONFINED', '')
-        .replace('_BAILE', '')
-        .replace('_MIDDAY', '')
-        .replace('_SOLO', '')
-        .replace('_DISGUISED', '')
-        .replace('_ORIGINAL', '_ORIGINAL_COLOR')
-        .replace('_AMPED', '')
-        .replace('_PHONY', '')
-        .replace('EISCUE_ICE', 'EISCUE')
-        .replace('EISCUE_NOICE', 'EISCUE_NOICE_FACE')
-        .replace('INDEEDEE_M', 'INDEEDEE')
-        .replace('INDEEDEE_F', 'INDEEDEE_FEMALE')
-        .replace('_FULL_BELLY', '')
-        .replace('_HERO', '')
-        .replace('ZACIAN_CROWNED', 'ZACIAN_CROWNED_SWORD')
-        .replace('ZAMAZENTA_CROWNED', 'ZAMAZENTA_CROWNED_SHIELD')
-        .replace('_SINGLE_STRIKE', '')
-        .replace('_RAPID_STRIKE', '_RAPID_STRIKE_STYLE')
-        .replace('CALYREX_ICE', 'CALYREX_ICE_RIDER')
-        .replace('CALYREX_SHADOW', 'CALYREX_SHADOW_RIDER')
-        .replace('OINKOLOGNE_M', 'OINKOLOGNE')
-        .replace('OINKOLOGNE_F', 'OINKOLOGNE')
-        .replace('MAUSHOLD_THREE', 'MAUSHOLD_FOUR')
-        .replace(/(SQUAWKABILLY_\w+)/, '$1_PLUMAGE')
-        .replace('_ZERO', '')
-        .replace('GIMMIGHOUL_CHEST', 'GIMMIGHOUL')
-        .replace(/POLTCHAGEIST_\w+/, 'POLTCHAGEIST')
-        .replace(/SINISTCHA_\w+/, 'SINISTCHA')
-        .replace('TERAPAGOS_NORMAL', 'TERAPAGOS')
-        .replace('TERAPAGOS_TERASTAL', 'TERAPAGOS')
-        .replace('DEOXYS_NORMAL', 'DEOXYS')
-        .replace('CHERRIM_OVERCAST', 'CHERRIM');
+      // Sprites are base64-embedded into this doc (EMBEDDED_SPRITES) at generation
+      // time, keyed by the exact species constant — fully self-contained, no CDN (T-001).
+      const key = String(pokeId).replace('SPECIES_', '');
+      return (typeof EMBEDDED_SPRITES !== 'undefined' && EMBEDDED_SPRITES.pokemon[key]) || BLANK_SPRITE;
     }
 
     function getFormattedPokeTypes(types) {
@@ -866,6 +812,7 @@
   <script src="trainers.js"></script>
   <script src="wildpokes.js"></script>
   <script src="abilities.js"></script>
+  <script src="sprites.js"></script>
   <!-- pokedex rendering is handled by the filter module below -->
   <!-- script to handle moves -->
   <script>
@@ -952,85 +899,35 @@
   </script>
   <!-- script to handle trainers -->
   <script>
-    const trainerSprites = {
-      'Unknown': '/b/bf/Spr_FRLG_Oak_Beta.png',
-      'Youngster': '/c/c5/Spr_RS_Youngster.png',
-      'Bird Keeper': '/4/4f/Spr_RS_Bird_Keeper.png',
-      'May': '/a/a4/Spr_E_May.png',
-      'Brendan': '/e/e6/Spr_E_Brendan.png',
-      'Bug Catcher': '/7/7f/Spr_RS_Bug_Catcher.png',
-      'Lass': '/1/16/Spr_RS_Lass.png',
-      'Fisherman': '/9/9a/Spr_RS_Fisherman.png',
-      'Lady': '/2/2d/Spr_RS_Lady.png',
-      'Aqua Grunt M': '/7/74/Spr_RS_Team_Aqua_Grunt_M.png',
-      'Rich Boy': '/d/d7/Spr_RS_Rich_Boy.png',
-      'Twins': '/3/34/Spr_RS_Twins.png',
-      'Expert M': '/d/d0/Spr_RS_Expert_M.png',
-      'Expert F': '/6/66/Spr_RS_Expert_F.png',
-      'Psychic F': '/6/6b/Spr_RS_Psychic_F.png',
-      'Leader Roxanne': '/e/ef/Spr_RS_Roxanne.png',
-      'Hiker': '/b/b7/Spr_RS_Hiker.png',
-      'School Kid M': '/5/54/Spr_RS_School_Kid_M.png',
-      'School Kid F': '/4/4f/Spr_RS_School_Kid_F.png',
-      'Ruin Maniac': '/9/9a/Spr_RS_Ruin_Maniac.png',
-      'Leader Brawly': '/9/92/Spr_RS_Brawly.png',
-      'Steven': '/a/ad/Spr_RS_Steven.png',
-      'Tuber F': '/d/d9/Spr_RS_Tuber_F.png',
-      'Sailor': '/f/f1/Spr_RS_Sailor.png',
-      'Tuber M': '/e/ed/Spr_RS_Tuber_M.png',
-      'Pokefan F': '/6/63/Spr_RS_Pokéfan_F.png',
-      'Pokefan M': '/a/a3/Spr_RS_Pokéfan_M.png',
-      'Psychic M': '/b/b7/Spr_RS_Psychic_M.png',
-      'Aroma Lady': '/2/22/Spr_RS_Aroma_Lady.png',
-      'Guitarist': '/1/14/Spr_RS_Guitarist.png',
-      'Collector': '/2/28/Spr_RS_Collector.png',
-      'Wally': '/8/87/Spr_RS_Wally.png',
-      'Pokemon Breeder M': '/5/55/Spr_RS_Pokémon_Breeder_M.png',
-      'Running Triathlete M': '/8/8d/Spr_RS_Triathlete_Runner_M.png',
-      'Pokemon Breeder F': '/a/a8/Spr_RS_Pokémon_Breeder_F.png',
-      'Bug Maniac': '/4/4f/Spr_RS_Bug_Maniac.png',
-      'Sr And Jr': '/7/70/Spr_RS_Sr_and_Jr.png',
-      'Running Triathlete F': '/2/21/Spr_RS_Triathlete_Runner_F.png',
-      'Battle Girl': '/5/54/Spr_RS_Battle_Girl.png',
-      'Leader Wattson': '/b/b2/Spr_RS_Wattson.png',
-      'Kindler': '/0/07/Spr_RS_Kindler.png',
-      'Camper': '/e/e1/Spr_RS_Camper.png',
-      'Picnicker': '/7/71/Spr_RS_Picnicker.png',
-      'Cooltrainer F': '/7/78/Spr_RS_Cooltrainer_F.png',
-      'Magma Admin': '/5/51/Spr_RS_Tabitha.png',
-      'Magma Leader Maxie': '/e/e3/Spr_RS_Maxie.png',
-      'Cooltrainer M': '/f/f8/Spr_RS_Cooltrainer_M.png',
-      'Ninja Boy': '/b/bc/Spr_RS_Ninja_Boy.png',
-      'Pokemaniac': '/6/61/Spr_RS_PokéManiac.png',
-      'Parasol Lady': '/e/ea/Spr_RS_Parasol_Lady.png',
-      'Black Belt': '/f/f8/Spr_RS_Black_Belt.png',
-      'Leader Flannery': '/b/be/Spr_RS_Flannery.png',
-      'Leader Norman': '/7/75/Spr_RS_Norman.png',
-      'Swimmer F': '/7/77/Spr_RS_Swimmer_F.png',
-      'Cycling Triathlete F': '/0/0d/Spr_RS_Triathlete_Biker_F.png',
-      'Cycling Triathlete M': '/2/29/Spr_RS_Triathlete_Biker_M.png',
-      'Aqua Admin F': '/e/e2/Spr_RS_Shelly.png',
-      'Leader Winona': '/0/0e/Spr_RS_Winona.png',
-      'Hex Maniac': '/3/3d/Spr_RS_Hex_Maniac.png',
-      'Beauty': '/c/cb/Spr_RS_Beauty.png',
-      'Gentleman': '/f/f8/Spr_RS_Gentleman.png',
-      'Aqua Admin M': '/d/d0/Spr_RS_Matt.png',
-      'Swimmer M': '/6/6e/Spr_RS_Swimmer_M.png',
-      'Swimming Triathlete F': '/6/60/Spr_RS_Triathlete_Swimmer_F.png',
-      'Leader Tate And Liza': '/3/38/Spr_RS_Tate_and_Liza.png',
-      'Magma Grunt M': '/a/a0/Spr_RS_Team_Magma_Grunt_M.png',
-      'Magma Grunt F': '/0/03/Spr_RS_Team_Magma_Grunt_F.png',
-      'Swimming Triathlete M': '/8/8a/Spr_RS_Triathlete_Swimmer_M.png',
-      'Aqua Leader Archie': '/f/fe/Spr_RS_Archie.png',
-      'Leader Juan': '/1/16/Spr_E_Juan.png',
-      'Elite Four Sidney': '/8/86/Spr_RS_Sidney.png',
-      'Elite Four Phoebe': '/e/e6/Spr_RS_Phoebe.png',
-      'Elite Four Glacia': '/7/71/Spr_RS_Glacia.png',
-      'Elite Four Drake': '/0/04/Spr_RS_Drake.png',
-    };
+    // Trainer classes the docs reference. Kept as the canonical list so the
+    // build-time sprite generator can warn when a class has no local sprite
+    // (see randomizer/generateSprites.js / spriteMapper.parseTrainerClasses).
+    // Sprites themselves come from frontend/sprites/trainers/ (T-001).
+    const trainerClasses = [
+      'Unknown', 'Youngster', 'Bird Keeper', 'May', 'Brendan', 'Bug Catcher',
+      'Lass', 'Fisherman', 'Lady', 'Aqua Grunt M', 'Rich Boy', 'Twins',
+      'Expert M', 'Expert F', 'Psychic F', 'Leader Roxanne', 'Hiker',
+      'School Kid M', 'School Kid F', 'Ruin Maniac', 'Leader Brawly', 'Steven',
+      'Tuber F', 'Sailor', 'Tuber M', 'Pokefan F', 'Pokefan M', 'Psychic M',
+      'Aroma Lady', 'Guitarist', 'Collector', 'Wally', 'Pokemon Breeder M',
+      'Running Triathlete M', 'Pokemon Breeder F', 'Bug Maniac', 'Sr And Jr',
+      'Running Triathlete F', 'Battle Girl', 'Leader Wattson', 'Kindler',
+      'Camper', 'Picnicker', 'Cooltrainer F', 'Magma Admin', 'Magma Leader Maxie',
+      'Cooltrainer M', 'Ninja Boy', 'Pokemaniac', 'Parasol Lady', 'Black Belt',
+      'Leader Flannery', 'Leader Norman', 'Swimmer F', 'Cycling Triathlete F',
+      'Cycling Triathlete M', 'Aqua Admin F', 'Leader Winona', 'Hex Maniac',
+      'Beauty', 'Gentleman', 'Aqua Admin M', 'Swimmer M', 'Swimming Triathlete F',
+      'Leader Tate And Liza', 'Magma Grunt M', 'Magma Grunt F',
+      'Swimming Triathlete M', 'Aqua Leader Archie', 'Leader Juan',
+      'Elite Four Sidney', 'Elite Four Phoebe', 'Elite Four Glacia',
+      'Elite Four Drake',
+    ];
 
     function getTrainerImg(trainerClass) {
-      return `https://archives.bulbagarden.net/media/upload${trainerSprites[trainerClass] || trainerSprites.Unknown}`;
+      // Base64-embedded into this doc (EMBEDDED_SPRITES) at generation time,
+      // keyed by class lowercased with spaces -> underscores (T-001).
+      const key = String(trainerClass).toLowerCase().replace(/\s+/g, '_');
+      return (typeof EMBEDDED_SPRITES !== 'undefined' && EMBEDDED_SPRITES.trainers[key]) || BLANK_SPRITE;
     }
 
     function findPoke(pokeId) {
