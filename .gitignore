@@ -67,6 +67,8 @@ frontend/data/base-data.json
 frontend/js/randomizer.bundle.js
 # Base64 sprite map embedded into self-contained docs (node randomizer/generateSprites.js) — T-001
 frontend/data/sprites.json
+# Base64 static-asset map (fonts/logo/icons) embedded into self-contained docs (T-004)
+frontend/data/assets.json
 
 # ROM production run directories
 run-*/

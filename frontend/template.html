@@ -4,31 +4,45 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>PuppedJS</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
+    /* Fonts embedded as base64 at doc-build time (T-004) — the data URIs are
+       substituted in by app.js from frontend/assets/. Fully offline, no CDN. */
+    @font-face{font-family:'Press Start 2P';font-style:normal;font-weight:400;font-display:swap;src:url(__FONT_PRESS_START_2P__) format('woff2');}
+    @font-face{font-family:'VT323';font-style:normal;font-weight:400;font-display:swap;src:url(__FONT_VT323__) format('woff2');}
     :root{
-      --bg:#0f1724; /* deep navy */
-      --card:#0b1220;
-      --muted:#98a0b3;
-      --accent:#ff7a59;
-      --glass: rgba(255,255,255,0.03);
-      --glass-2: rgba(255,255,255,0.02);
-      --glass-3: rgba(255,255,255,0.1);
-      --radius:12px;
+      /* Obsidian UI kit tokens (T-004 docs re-skin) */
+      --obs-bg:#0d1b2a; --obs-bg-deep:#081320; --obs-surface:#16293f; --obs-surface-2:#1d3550;
+      --obs-well:#0a1726; --obs-line:#2c4a6a; --obs-shadow:#04080f;
+      --obs-orange:#ff7a18; --obs-orange-deep:#b34e00; --obs-cyan:#2fe0d0; --obs-cyan-deep:#138b80;
+      --obs-green:#56d96b; --obs-yellow:#ffce3f; --obs-red:#ff5d5d;
+      --obs-text:#eaf1f8; --obs-text-dim:#8ba2bb; --obs-text-mute:#566f8a;
+      --obs-on-orange:#0d1b2a; --obs-on-cyan:#06231f;
+      --obs-font-display:'Press Start 2P',monospace; --obs-font-body:'VT323',monospace;
+      --obs-border:3px solid var(--obs-shadow);
+      --obs-shadow-sm:3px 3px 0 var(--obs-shadow); --obs-shadow-md:4px 4px 0 var(--obs-shadow);
+      --obs-shadow-lg:6px 6px 0 var(--obs-shadow); --obs-inset:inset 3px 3px 0 rgba(0,0,0,.4);
+      --obs-tracking:1px; --obs-ease:0.08s;
+      /* legacy aliases → Obsidian, so token-based rules read Obsidian automatically */
+      --bg:var(--obs-bg); --card:var(--obs-surface); --muted:var(--obs-text-dim);
+      --accent:var(--obs-orange); --glass:var(--obs-surface); --glass-2:var(--obs-well);
+      --glass-3:var(--obs-surface-2); --radius:0;
       color-scheme: dark;
     }
     *{box-sizing:border-box}
     html,body{height:100%; width:100%;}
     body{
       margin:0;
-      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-      background: #071022;
-      color:#e6eef8;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+      font-family:var(--obs-font-body);
+      font-size:19px;
+      line-height:1.35;
+      background: var(--obs-bg);
+      color:var(--obs-text);
+      -webkit-font-smoothing:none;
+      font-smooth:never;
       display:flex;
       min-height:100vh;
     }
+    img{image-rendering:pixelated;}
 
     /* Modal */
     .modal {
@@ -429,13 +443,108 @@
     }
     .reset-btn:hover { background: rgba(255,255,255,0.14); }
     #pokedex-count { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+
+    /* ============================================================
+       OBSIDIAN RE-SKIN OVERRIDES (T-004)
+       Appended last so they win by cascade. Hard edges, offset
+       shadows, navy/orange/cyan, Press Start 2P (chrome) + VT323.
+       ============================================================ */
+    ::selection{ background:var(--obs-orange); color:var(--obs-on-orange); }
+    ::-webkit-scrollbar{ width:14px; height:14px; }
+    ::-webkit-scrollbar-track{ background:var(--obs-bg-deep); }
+    ::-webkit-scrollbar-thumb{ background:var(--obs-orange); border:3px solid var(--obs-bg-deep); }
+
+    h1,h2,h3{ font-family:var(--obs-font-display); font-weight:400; letter-spacing:var(--obs-tracking); line-height:1.5; }
+    a{ color:var(--obs-cyan); }
+
+    /* Sidebar / nav */
+    .right{ background:var(--obs-bg-deep); border-left:var(--obs-border); padding:14px 12px; }
+    .logo .badge{ width:44px; height:44px; border-radius:0; background:var(--obs-orange);
+      border:var(--obs-border); box-shadow:var(--obs-shadow-sm); color:var(--obs-on-orange);
+      font-family:var(--obs-font-display); font-size:14px; }
+    h1{ font-size:13px; }
+    .small,.sub{ font-family:var(--obs-font-body); font-size:16px; color:var(--obs-text-dim); }
+    .nav{ margin-top:18px; }
+    .nav a{ border-radius:0; border:3px solid transparent; color:var(--obs-text-dim);
+      font-family:var(--obs-font-display); font-size:9px; letter-spacing:var(--obs-tracking); padding:12px 10px; }
+    .nav a:hover{ background:var(--obs-surface); color:var(--obs-text); }
+    .nav a.active{ background:var(--obs-orange); color:var(--obs-on-orange); }
+    .nav-icon{ font-size:14px; }
+    #nav-toggle{ font-family:var(--obs-font-display); font-size:8px; color:var(--obs-text-dim);
+      border-radius:0; letter-spacing:var(--obs-tracking); }
+    #nav-toggle:hover{ background:var(--obs-surface); color:var(--obs-text); }
+    #reset-all-btn,.reset-btn,.select-all-btn{ font-family:var(--obs-font-display); font-size:8px;
+      letter-spacing:var(--obs-tracking); border-radius:0; border:var(--obs-border);
+      background:var(--obs-surface); color:var(--obs-text); box-shadow:var(--obs-shadow-sm); cursor:pointer; }
+    #reset-all-btn:hover,.reset-btn:hover,.select-all-btn:hover{ background:var(--obs-surface-2); color:var(--obs-text); }
+
+    /* Header / search */
+    .search input,.tab-search{ background:var(--obs-well); border:var(--obs-border); border-radius:0;
+      box-shadow:var(--obs-inset); color:var(--obs-text); font-family:var(--obs-font-body); font-size:18px; }
+    .search input:focus,.tab-search:focus{ border-color:var(--obs-orange); outline:none; }
+    .chip{ background:var(--obs-surface); border:var(--obs-border); box-shadow:var(--obs-shadow-sm);
+      border-radius:0; font-family:var(--obs-font-display); font-size:8px; letter-spacing:var(--obs-tracking); color:var(--obs-text); }
+
+    /* Cards / panels */
+    .card,.panel,.location-card,.modal-content{
+      background:var(--obs-surface); border:var(--obs-border); border-radius:0; box-shadow:var(--obs-shadow-lg); }
+    .card{ box-shadow:var(--obs-shadow-md); }
+    .panel h3{ font-size:11px; }
+    .title{ font-family:var(--obs-font-display); font-size:13px; line-height:1.5; }
+    .thumb{ background:var(--obs-well); border:var(--obs-border); border-radius:0; }
+    .thumb img,.poke-miniature img{ image-rendering:pixelated; }
+    .meta{ font-family:var(--obs-font-body); }
+    .poke-miniature{ font-family:var(--obs-font-body); font-size:17px; }
+
+    /* Type badges + tags + abilities + moves */
+    .type{ border-radius:0; border:2px solid var(--obs-shadow); font-family:var(--obs-font-display);
+      font-size:8px; letter-spacing:var(--obs-tracking); padding:5px 7px; color:var(--obs-on-orange); }
+    .tag,.list-item{ background:var(--obs-well); border:2px solid var(--obs-line); border-radius:0;
+      font-family:var(--obs-font-body); font-size:16px; color:var(--obs-text); }
+    .ability-tag{ background:var(--obs-well); border:var(--obs-border); box-shadow:var(--obs-shadow-sm);
+      padding:8px 10px; }
+    .move-item{ border-radius:0; border:2px solid var(--obs-shadow); font-weight:700; }
+    .card-log-item{ border-radius:0; font-family:var(--obs-font-body); font-size:15px; }
+    .reward-item{ color:var(--obs-yellow); }
+    .specialCard{ background:#2a0f08; }
+    .partnerCard{ background:#0a2a12; }
+
+    /* Filters */
+    .filter-row-label{ font-family:var(--obs-font-display); font-size:8px; color:var(--obs-text-dim); }
+    .filter-chip{ border-radius:0; border:var(--obs-border); background:var(--obs-surface);
+      color:var(--obs-text-dim); font-family:var(--obs-font-display); font-size:8px; letter-spacing:var(--obs-tracking); padding:6px 9px; }
+    .filter-chip:hover{ background:var(--obs-surface-2); color:var(--obs-text); }
+    .filter-chip.active{ background:var(--obs-orange); border-color:var(--obs-shadow); color:var(--obs-on-orange); }
+    #pokedex-count{ font-family:var(--obs-font-body); font-size:17px; color:var(--obs-text-dim); }
+
+    /* Modal */
+    .modal-content{ box-shadow:var(--obs-shadow-lg); }
+    .modal-close{ border-radius:0; background:var(--obs-orange); color:var(--obs-on-orange);
+      border:var(--obs-border); font-family:var(--obs-font-display); font-size:10px; }
+    .modal-close:hover{ background:var(--obs-orange-deep); }
+
+    /* Tooltip */
+    [data-tooltip]::after{ background:var(--obs-bg-deep); color:var(--obs-text); border:var(--obs-border);
+      border-radius:0; box-shadow:var(--obs-shadow-sm); font-family:var(--obs-font-body); font-size:16px; }
+
+    /* Footer */
+    footer{ color:var(--obs-text-mute); border-top:3px dashed var(--obs-line); font-family:var(--obs-font-body); }
+
+    /* Nuzlocke state colors → Obsidian palette (semantics preserved) */
+    .nz-cb-label{ border-radius:0; background:var(--obs-surface); border:2px solid var(--obs-line); font-family:var(--obs-font-body); font-size:15px; }
+    .wild-poke.nz-selected{ background:rgba(86,217,107,0.18) !important; border:2px solid var(--obs-green) !important; }
+    .wild-poke.nz-delayed{ background:rgba(255,206,63,0.16) !important; border:2px solid var(--obs-yellow) !important; }
+    .wild-poke.nz-auto-selected{ background:rgba(47,224,208,0.14) !important; border:2px solid var(--obs-cyan) !important; }
+    .wild-poke.nz-fainted{ background:rgba(255,93,93,0.18) !important; border:2px solid var(--obs-red) !important; }
+    .location-card.nz-has-delayed{ border-color:var(--obs-yellow) !important; }
+    .nz-defeat-label{ border-radius:0; background:var(--obs-surface); border:2px solid var(--obs-line); font-family:var(--obs-font-body); font-size:15px; }
   </style>
 </head>
 <body>
   <div class="app">
     <header class="top">
       <div class="logo">
-        <img height="60" width="60" src="https://lh4.googleusercontent.com/proxy/1ZU_ZpT8noxzxfsKEqWSQWAbxk-3puSoLlV360G1sxdHpbjNSmmxxNSY_dHGm2vX7NwmmPhK4jvnrpc1_PjZGWtYeglgvc5GVgCXXQFvTxZ0Ba_Yxdo8oqURAqARybK07xKxvw">
+        <div class="badge">P</div>
         <div>
           <h1>PuppedJS</h1>
           <div class="small">Your custom journey dex</div>
@@ -807,6 +916,8 @@
       return card;
     }
   </script>
+  <script src="assets.js"></script>
+  <script>function getAsset(p){return (typeof EMBEDDED_ASSETS !== 'undefined' && EMBEDDED_ASSETS[p]) || '';}</script>
   <script src="pokes.js"></script>
   <script src="moves.js"></script>
   <script src="trainers.js"></script>

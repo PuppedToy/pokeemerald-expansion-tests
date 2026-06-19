@@ -79,6 +79,13 @@ async function main() {
     const { generateSprites } = require('./randomizer/generateSprites.js');
     generateSprites({ root: ROOT, log: (m) => console.log(m) });
 
+    // ── Step 4: Embed static assets (T-004) ───────────────────────────────────
+    // Fonts/logo/icons in frontend/assets/ → frontend/data/assets.json (base64),
+    // inlined into each doc so the output depends on no external host. Gitignored.
+    console.log('[build] Embedding static assets...');
+    const { generateAssets } = require('./randomizer/generateAssets.js');
+    generateAssets({ root: ROOT, log: (m) => console.log(m) });
+
     console.log('[build] Done.');
 }
 
