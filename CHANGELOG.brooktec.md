@@ -7,6 +7,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Fixed
+
+- Difficulty now scales trainers across the whole game. Previously the difficulty slider only affected trainers whose teams used contextual tiers, so from Flannery onward (gym leaders, Elite Four, Champion Steven, and their route trainers) it did nothing. The team-tier transform now shifts absolute-tier slots too — keeping mega slots and the rival/Wally/Steven "evolves-with-you" Pokémon fixed. This also corrects the baseline: late-game route trainers are now properly a step weaker than their gym leader (B-001, T-012).
+
 ### Changed
 
 - Moves tab in the generated docs now shows each move's in-game description on its card, a `TM{NN}` badge for TM moves with the in-world location it's obtained from (route + trainer), and a "TMs only" filter that orders results by TM number; hovering a move in the Pokédex modal shows its description. Move descriptions are parsed properly from `moves_info.h` (single-line, multi-line and shared-constant `.description`s), TM numbers are derived from the run's TM pool, and TM locations come from the `randomizer/docs/tms.md` SSOT (T-011).
