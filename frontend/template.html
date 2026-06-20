@@ -711,6 +711,34 @@
     const navLinks = document.querySelectorAll('.nav a');
     const sections = document.querySelectorAll('main section');
 
+    // T-010: per-section scroll policy on open. The page itself (window) is the scroll container.
+    // Encounters lands on the last captured route, Trainers on the last defeated trainer; every other
+    // tab opens at the top. Runs after a frame so the just-activated section has laid out.
+    function applySectionScroll(targetId) {
+      function run() {
+        let target = null;
+        if (targetId === 'wildpokes') {
+          const caps = document.querySelectorAll('#wildpokes .wild-poke.nz-selected, #wildpokes .wild-poke.nz-auto-selected');
+          if (caps.length) target = caps[caps.length - 1].closest('.location-card');
+        } else if (targetId === 'trainers') {
+          const def = document.querySelectorAll('#trainers .trainer-card.nz-defeated');
+          if (def.length) target = def[def.length - 1];
+        }
+        if (target) {
+          // Center the target via an absolute scroll. getBoundingClientRect() forces a reflow so the
+          // just-activated section's real layout is used (scrollIntoView mis-fires mid-tab-switch).
+          const top = target.getBoundingClientRect().top + window.scrollY - (window.innerHeight / 2) + (target.offsetHeight / 2);
+          window.scrollTo(0, Math.max(0, top));
+        } else {
+          window.scrollTo(0, 0);
+        }
+      }
+      // Run once on the next frame and again after a short settle: a freshly-activated section may not
+      // be laid out yet on the first try, so the later pass is the authority for the final position.
+      requestAnimationFrame(run);
+      setTimeout(run, 150);
+    }
+
     navLinks.forEach(link => {
       link.addEventListener('click', () => {
         const targetId = link.dataset.target;
@@ -729,6 +757,8 @@
         if (targetId === 'pokemon' && window._renderPokedex) window._renderPokedex();
         // Re-render the PC box grid when switching to it (reflects latest box state)
         if (targetId === 'pc' && window.renderPC) window.renderPC();
+
+        applySectionScroll(targetId);
       });
     });
   </script>

@@ -1,7 +1,7 @@
 ---
 id: T-010
 title: Per-section scroll policy on load/switch in the generated docs
-status: proposed
+status: done
 type: feature
 created: 2026-06-20
 updated: 2026-06-20
@@ -44,10 +44,10 @@ Notes / open questions to resolve at implementation:
   (default top).
 
 ## Acceptance criteria
-- [ ] Switching to Encounters scrolls to the last captured entry (top if none).
-- [ ] Switching to Trainers scrolls to the last defeated trainer (top if none).
-- [ ] Mail, Pokédex, Moves, Abilities always open scrolled to the top.
-- [ ] Policy fires on every section switch (not only first load); app (`index.html`) unaffected;
+- [x] Switching to Encounters scrolls to the last captured entry (top if none).
+- [x] Switching to Trainers scrolls to the last defeated trainer (top if none).
+- [x] Mail, Pokédex, Moves, Abilities (and PC) always open scrolled to the top.
+- [x] Policy fires on every section switch (not only first load); app (`index.html`) unaffected;
       docs stay self-contained; `cd randomizer && npm test` green; `node scripts/check-tracker.mjs` green.
 
 ## Progress log
@@ -56,7 +56,34 @@ Notes / open questions to resolve at implementation:
 
 - **2026-06-20** — Task created (noted for the future, per user request). Captures the per-section
   scroll-on-load policy table.
+- **2026-06-20** — Implemented on `feature/T-010-section-scroll-policy`. Added `applySectionScroll(targetId)`
+  to the nav-switch handler (also covers initial load, since `window.load` fires `firstNavLink.click()`).
+  The page itself (window) is the scroll container. Policy: **wildpokes** → centre the last
+  `.location-card` containing a captured slot (`.wild-poke.nz-selected`/`.nz-auto-selected`);
+  **trainers** → centre the last `.trainer-card.nz-defeated`; **mail / pokemon / moves / abilities /
+  pc** (and the no-capture/no-defeat fallback) → `window.scrollTo(0,0)`. Centres via an absolute
+  `scrollTo` computed from `getBoundingClientRect()` (forces a reflow so the just-activated section's
+  real layout is used — `scrollIntoView` mis-fired mid-tab-switch). Runs on `requestAnimationFrame`
+  **and** again after a 150 ms settle, because a freshly-activated section isn't always laid out on the
+  first try (headless showed single-rAF fixed Encounters but not Trainers, double-rAF the reverse; the
+  rAF+settle pair makes the later pass the authority and gets both right).
+  - Verified (headless, all routes captured + all 32 bosses defeated): Encounters lands on the last
+    captured card (`inView=true` in a 900px viewport); Trainers lands on the last defeated trainer
+    (scrolled to the bottom where it sits); Mail/Pokédex/Moves/Abilities open at `scrollY=0`.
+    `cd randomizer && npm test` 422 green; `node scripts/check-tracker.mjs` OK.
+  - **Pending user manual test before closing.**
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+- **2026-06-20** — Closed at the user's explicit request (`Commit, merge & close`) after manual testing.
+
+**Shipped:** A per-section scroll-on-open policy in the generated docs. `applySectionScroll(targetId)`
+in the nav-switch handler (also runs on initial load via `firstNavLink.click()`): Encounters centers
+the last captured route card, Trainers the last defeated trainer card, and Mail / Pokédex / Moves /
+Abilities / PC (plus the no-progress fallback) reset to the top. Centering uses an absolute `scrollTo`
+from `getBoundingClientRect()` run on `requestAnimationFrame` + a 150 ms settle (the later pass is the
+authority, since a just-activated section isn't always laid out on the first try).
+
+**Deviations from plan:** none of substance — PC (added by T-009 after this task was written) is covered
+by the same top-default branch, as the plan anticipated. UI-only (`frontend/template.html`), outside the
+Jest suite per CLAUDE.md; verified by headless probes.
