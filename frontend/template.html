@@ -572,6 +572,7 @@
           <div class="small">Your custom journey dex</div>
         </div>
       </div>
+      <div id="level-cap-readout" class="level-cap-readout" title="Rises each time you defeat the next boss">Current level cap: <strong id="level-cap-value">—</strong></div>
     </header>
 
     <main class="main">
@@ -644,6 +645,12 @@
           <div class="trainer-grid" id="trainers-cards"></div>
         </section>
 
+        <section id="pc">
+          <h2>PC</h2>
+          <div id="pc-empty" class="small" style="display:none; margin-top:12px;">No Pokémon in your box yet — capture some in the Encounters tab.</div>
+          <div id="pc-grid" class="pc-grid"></div>
+        </section>
+
         <section id="mail">
           <h2>Mail</h2>
           <div id="mail-controls"></div>
@@ -668,6 +675,7 @@
         <nav class="nav" id="nav">
           <a class="clicker" data-target="wildpokes"><span class="nav-icon" data-icon="encounters">🗺️</span><span class="nav-text">Encounters</span></a>
           <a class="clicker" data-target="trainers"><span class="nav-icon" data-icon="trainers">⚔️</span><span class="nav-text">Trainers</span></a>
+          <a class="clicker" data-target="pc"><span class="nav-icon" data-icon="pc">📦</span><span class="nav-text">PC</span></a>
           <a class="clicker" data-target="mail"><span class="nav-icon" data-icon="mail">✉</span><span class="nav-text">Mail</span><span class="mail-bubble" id="mail-bubble" style="display:none">0</span></a>
           <a class="clicker" data-target="pokemon"><span class="nav-icon" data-icon="pokedex">📖</span><span class="nav-text">Pokedex</span></a>
           <a class="clicker" data-target="moves"><span class="nav-icon" data-icon="moves">⚡</span><span class="nav-text">Moves</span></a>
@@ -718,6 +726,8 @@
 
         // Re-render Pokedex on demand when switching to that tab
         if (targetId === 'pokemon' && window._renderPokedex) window._renderPokedex();
+        // Re-render the PC box grid when switching to it (reflects latest box state)
+        if (targetId === 'pc' && window.renderPC) window.renderPC();
       });
     });
   </script>
@@ -1548,6 +1558,8 @@
           </div>
         </div>
 
+        ${(typeof window.docBoxSectionHTML === 'function' ? window.docBoxSectionHTML(poke.id) : '')}
+
         <h3>Evolution</h3>
         <div>${buildEvoChain(poke)}</div>
 
@@ -2316,7 +2328,15 @@
 
     function nz(){ try { var r = localStorage.getItem(NZ_KEY); if (r) return JSON.parse(r); } catch(e){} return { locations:{}, trainers:{} }; }
     function isBossDefeated(b, st){ return b.trainers.some(function(id){ return st.trainers && st.trainers[id]; }); }
-    function levelEvos(poke){ return ((poke&&poke.evolutions)||[]).filter(function(e){ return (e.method==='LEVEL'||e.method==='LEVEL_BATTLE_ONLY') && /^\d+$/.test(String(e.param)); }); }
+    // Level-gated evolutions, returned as { pokemon, level, method, param }. Includes pure level
+    // evos (param = level) AND stone evos, which in this romhack are stone + IF_MIN_LEVEL (method
+    // ITEM, evo.minLevel) — so e.g. Hisuian forms notify and surface in the modal just like level evos.
+    function evoGateLevel(e){
+      if ((e.method==='LEVEL'||e.method==='LEVEL_BATTLE_ONLY') && /^\d+$/.test(String(e.param))) return parseInt(e.param,10);
+      if (e.method==='ITEM' && e.minLevel!=null && /^\d+$/.test(String(e.minLevel))) return parseInt(e.minLevel,10);
+      return null;
+    }
+    function levelEvos(poke){ return ((poke&&poke.evolutions)||[]).map(function(e){ var lv=evoGateLevel(e); return lv==null?null:{ pokemon:e.pokemon, level:lv, method:e.method, param:e.param }; }).filter(Boolean); }
     function currentCapLevel(st){ for (var i=0;i<bossCaps.length;i++){ if (!isBossDefeated(bossCaps[i],st)) return bossCaps[i].level; } return MAX_LEVEL; }
     function lastDefeatedFlag(st){ var f=null; bossCaps.forEach(function(b){ if (isBossDefeated(b,st)) f=b.flag; }); return f || bossCaps[0].flag; }
     function tmMoveOfReward(rw){ var name = rw.replace(/^TM\s+/,'').trim();
@@ -2324,21 +2344,24 @@
       return 'MOVE_'+name.toUpperCase().replace(/[^A-Z0-9]+/g,'_'); }
 
     // ---------- box (membership from nuzlocke state + evo overlay) ----------
-    function boxMembers(){
+    // All captured encounters (selected route slots + auto-captured STARTER_EXTRA), each with a
+    // `fainted` flag and the current (possibly evolved) species via the overlay.
+    function capturedEntries(){
       var st = nz(), locs = st.locations||{}, out = [];
       (typeof wildPokes!=='undefined'?wildPokes:[]).forEach(function(route){
         var loc = locs[route.id];
         if (route.id === 'STARTER_EXTRA') {
           var f = (loc&&loc.fainted)||[];
-          ENCOUNTER_TYPES.forEach(function(slot){ if (route[slot] && f.indexOf(slot)<0) out.push(mk(route.id,slot,route[slot])); });
+          ENCOUNTER_TYPES.forEach(function(slot){ if (route[slot]) out.push(mk(route.id,slot,route[slot], f.indexOf(slot)>=0)); });
         } else if (loc && loc.selected && route[loc.selected]) {
           var ff = loc.fainted||[];
-          if (ff.indexOf(loc.selected)<0) out.push(mk(route.id, loc.selected, route[loc.selected]));
+          out.push(mk(route.id, loc.selected, route[loc.selected], ff.indexOf(loc.selected)>=0));
         }
       });
       return out;
-      function mk(routeId, slot, base){ var key=routeId+'|'+slot; return { encounterKey:key, baseSpecies:base, currentSpecies: store.evo[key]||base }; }
+      function mk(routeId, slot, base, fainted){ var key=routeId+'|'+slot; return { encounterKey:key, routeId:routeId, slot:slot, baseSpecies:base, currentSpecies: store.evo[key]||base, fainted:fainted }; }
     }
+    function boxMembers(){ return capturedEntries().filter(function(e){ return !e.fainted; }); }
     function liveKeys(){ var s={}; boxMembers().forEach(function(e){ s[e.encounterKey]=e; }); return s; }
     function curSpeciesOf(key, fallback){ var e = liveKeys()[key]; return (e&&e.currentSpecies) || fallback; }
     function reconcileEvo(){
@@ -2361,27 +2384,51 @@
       });
       box.forEach(function(e){
         var poke = pokeById[e.currentSpecies]; if (!poke) return;
-        levelEvos(poke).forEach(function(ev){ var lvl=parseInt(ev.param,10); if (lvl>prev && lvl<=next)
+        levelEvos(poke).forEach(function(ev){ var lvl=ev.level; if (lvl>prev && lvl<=next)
           addMail({ id:'evo|'+b.flag+'|'+e.encounterKey+'|'+ev.pokemon, type:'evolution', capFlag:b.flag, subject:e.encounterKey, payload:{ encounterKey:e.encounterKey, fromSpecies:e.currentSpecies, toSpecies:ev.pokemon, level:lvl } }); });
         ((poke.learnset)||[]).forEach(function(l){ var lv=parseInt(l.level,10); if (lv>prev && lv<=next)
           addMail({ id:'level|'+b.flag+'|'+e.encounterKey+'|'+l.move, type:'level', capFlag:b.flag, subject:e.encounterKey, payload:{ encounterKey:e.encounterKey, species:e.currentSpecies, move:l.move, level:lv } }); });
       });
+      // A boss can map to several trainer variants that are the SAME logical fight (e.g. the rival
+      // exists as BRENDAN/MAY × the 3 starter-counters). They award the same TM, so the mail id is
+      // keyed by (flag, encounterKey, moveId) — NOT by trainer — so identical rewards collapse to one
+      // mail (idempotent addMail). Boss-own rewards are attributed to the boss label; level-banded
+      // trainers keep their own. Boss trainers are listed first so their label wins on a tie.
+      var ownTrainers={}; (b.trainers||[]).forEach(function(id){ ownTrainers[id]=1; });
+      // Trainers belonging to ANY other boss must not leak into this segment's rewards: the next
+      // boss often shares the cap level (window upper bound is inclusive), which would attribute its
+      // TM to this boss AND duplicate it when that boss is later defeated. Exclude all other bosses.
+      var otherBossTrainers={}; bossCaps.forEach(function(bb){ if (bb.flag!==b.flag) (bb.trainers||[]).forEach(function(id){ otherBossTrainers[id]=1; }); });
       var seg={}; (b.trainers||[]).forEach(function(id){seg[id]=1;});
-      if (typeof trainersData!=='undefined') Object.keys(trainersData).forEach(function(id){ var t=trainersData[id]; if (t && typeof t.level==='number' && t.level>prev && t.level<=next) seg[id]=1; });
+      if (typeof trainersData!=='undefined') Object.keys(trainersData).forEach(function(id){ var t=trainersData[id]; if (t && typeof t.level==='number' && t.level>prev && t.level<=next && !otherBossTrainers[id]) seg[id]=1; });
       Object.keys(seg).forEach(function(tid){ var t=trainersData&&trainersData[tid]; if (!t||!t.reward) return;
+        var label = ownTrainers[tid] ? b.label : trainerLabel(tid);
         t.reward.forEach(function(rw){ if (!/^TM\s+/.test(rw)) return; var moveId=tmMoveOfReward(rw);
           box.forEach(function(e){ var poke=pokeById[e.currentSpecies]; if (poke && (poke.teachables||[]).indexOf(moveId)>=0)
-            addMail({ id:'tm|'+b.flag+'|'+tid+'|'+e.encounterKey+'|'+moveId, type:'tm', capFlag:b.flag, subject:e.encounterKey, payload:{ encounterKey:e.encounterKey, species:e.currentSpecies, trainerId:tid, trainerLabel:trainerLabel(tid), moveId:moveId, moveName:moveName(moveId) } }); });
+            addMail({ id:'tm|'+b.flag+'|'+e.encounterKey+'|'+moveId, type:'tm', capFlag:b.flag, subject:e.encounterKey, payload:{ encounterKey:e.encounterKey, species:e.currentSpecies, trainerId:tid, trainerLabel:label, moveId:moveId, moveName:moveName(moveId) } }); });
         });
       });
     }
     function deleteMailsForFlag(flag){ store.mails = store.mails.filter(function(m){ return m.capFlag!==flag; }); }
+    // Self-heal: collapse TM mails that share (capFlag, encounterKey, moveId) — pre-fix stores keyed
+    // the id by trainer, so the rival's variants produced duplicate "TM Psych Up" mails. Keeps the
+    // first (oldest) of each group and preserves an already-read mail's read state.
+    function dedupeTmMails(){
+      var seen={}, before=store.mails.length;
+      store.mails = store.mails.filter(function(m){
+        if (m.type!=='tm') return true;
+        var k = m.capFlag+'|'+(m.payload&&m.payload.encounterKey)+'|'+(m.payload&&m.payload.moveId);
+        if (seen[k]){ if (m.read) seen[k].read=true; return false; } seen[k]=m; return true;
+      });
+      return store.mails.length!==before;
+    }
     function reconcile(){
       var st=nz(), defeated={}; bossCaps.forEach(function(b){ if (isBossDefeated(b,st)) defeated[b.flag]=1; });
       store._gen = store._gen.filter(function(flag){ if (!defeated[flag]){ deleteMailsForFlag(flag); return false; } return true; });
       var genSet={}; store._gen.forEach(function(f){genSet[f]=1;});
       bossCaps.forEach(function(b,i){ if (defeated[b.flag] && !genSet[b.flag]){ generateForBoss(i); store._gen.push(b.flag); } });
-      save(); refreshBubble(); if (isMailActive()) render();
+      dedupeTmMails();
+      save(); refreshBubble(); refreshCap(); if (isMailActive()) render();
     }
 
     // ---------- hooks ----------
@@ -2406,13 +2453,33 @@
     window.onBoxMaybeChanged = function(){ if (reconcileEvo()) save(); refreshBubble(); if (isMailActive()) render(); };
 
     // ---------- actions ----------
+    // Evolve one box entry from `fromSp` to `toSp`. Sets the overlay, then deletes ONLY the non-chosen
+    // sibling evolution branches for this encounter (same pre-evo form, a different target — e.g. once
+    // you take Rufflet→Braviary, the Rufflet→Braviary-Hisui mail goes). The taken mail is kept and
+    // marked "evolved" (shows "Evolved ✓"); the form's level/TM move mails are left untouched. After a
+    // brief interval the taken mail is marked read, so the user sees a moment of feedback before it dims.
+    // Finally one-hop chains the new form's next level-gated evolution.
+    function evolveEntry(key, fromSp, toSp){
+      store.evo[key] = toSp;
+      store.mails = store.mails.filter(function(m){ return !(m.type==='evolution' && m.payload
+        && m.payload.encounterKey===key && m.payload.fromSpecies===fromSp && m.payload.toSpecies!==toSp); });
+      var taken = store.mails.find(function(m){ return m.type==='evolution' && m.payload
+        && m.payload.encounterKey===key && m.payload.fromSpecies===fromSp && m.payload.toSpecies===toSp; });
+      if (taken) taken.evolved = true;
+      var st=nz(), cap=currentCapLevel(st), capFlag=lastDefeatedFlag(st), np=pokeById[toSp];
+      levelEvos(np).forEach(function(ev){ if (ev.level<=cap)
+        addMail({ id:'evo|'+capFlag+'|'+key+'|'+ev.pokemon, type:'evolution', capFlag:capFlag, subject:key, payload:{ encounterKey:key, fromSpecies:toSp, toSpecies:ev.pokemon, level:ev.level } }); });
+      save(); refreshBubble(); refreshCap(); render();
+      if (typeof window.renderPC==='function') window.renderPC();   // keep the PC grid (T-009) in sync after an in-place evolve
+      if (taken) setTimeout(function(){ taken.read = true; save(); refreshBubble(); if (isMailActive()) render(); }, 500);
+    }
     function doEvolve(mailId){
       var m = store.mails.find(function(x){return x.id===mailId;}); if (!m || m.type!=='evolution') return;
-      store.evo[m.payload.encounterKey] = m.payload.toSpecies; m.read=true; m.evolved=true;
-      var st=nz(), cap=currentCapLevel(st), capFlag=lastDefeatedFlag(st), poke=pokeById[m.payload.toSpecies];
-      levelEvos(poke).forEach(function(ev){ var lvl=parseInt(ev.param,10); if (lvl<=cap)
-        addMail({ id:'evo|'+capFlag+'|'+m.payload.encounterKey+'|'+ev.pokemon, type:'evolution', capFlag:capFlag, subject:m.payload.encounterKey, payload:{ encounterKey:m.payload.encounterKey, fromSpecies:m.payload.toSpecies, toSpecies:ev.pokemon, level:lvl } }); });
-      save(); refreshBubble(); render();
+      var key=m.payload.encounterKey, fromSp=m.payload.fromSpecies, toSp=m.payload.toSpecies;
+      // Guard: only act if this encounter is still in the box AND currently the mail's pre-evo form —
+      // a stale button (entry already evolved / fainted) must not mutate anything.
+      var cur=liveKeys()[key]; if (!cur || cur.currentSpecies!==fromSp) { reconcileEvo(); save(); render(); return; }
+      evolveEntry(key, fromSp, toSp);
     }
     function toggleRead(mailId){ var m=store.mails.find(function(x){return x.id===mailId;}); if (m){ m.read=!m.read; save(); refreshBubble(); render(); } }
     function markAllRead(){ store.mails.forEach(function(m){ m.read=true; }); save(); refreshBubble(); render(); }
@@ -2466,7 +2533,7 @@
         actions += '<button class="mail-readtoggle" data-read="'+m.id+'">'+(m.read?'Unread':'Read')+'</button>';
         return '<div class="mail-row mail-'+m.type+(m.read?' mail-read':'')+'">' +
           '<span class="mail-env" title="'+(m.read?'read':'unread')+'">'+env+'<span class="mail-type-badge" title="'+TYPE_LABEL[m.type]+'">'+badge+'</span></span>' +
-          '<span class="mail-thumb">'+(sp?sprite(sp,40):'')+'</span>' +
+          '<span class="mail-thumb'+(sp?' evo-link':'')+'"'+(sp?' data-id="'+sp+'" title="View '+nm(sp)+'"':'')+'>'+(sp?sprite(sp,40):'')+'</span>' +
           '<div class="mail-body"><div class="mail-title">'+mailTitle(m)+'</div><div class="mail-sub small">['+TYPE_LABEL[m.type]+'] '+mailSub(m)+'</div></div>' +
           '<div class="mail-actions">'+actions+'</div></div>';
       }).join('');
@@ -2499,13 +2566,134 @@
       + '.mail-actions{display:flex;gap:8px;flex-shrink:0;align-items:center;}'
       + '.mail-evolve{font-family:var(--obs-font-display);font-size:9px;letter-spacing:1px;background:var(--obs-cyan);color:var(--obs-on-cyan);border:var(--obs-border);box-shadow:var(--obs-shadow-sm);padding:8px 10px;cursor:pointer;}'
       + '.mail-evolved{font-family:var(--obs-font-body);font-size:16px;color:var(--obs-green);}'
-      + '.mail-readtoggle{font-family:var(--obs-font-body);font-size:15px;background:var(--obs-well);color:var(--obs-text-dim);border:2px solid var(--obs-line);padding:6px 10px;cursor:pointer;}';
+      + '.mail-readtoggle{font-family:var(--obs-font-body);font-size:15px;background:var(--obs-well);color:var(--obs-text-dim);border:2px solid var(--obs-line);padding:6px 10px;cursor:pointer;}'
+      // T-008: level-cap readout + Pokédex modal box-coherence section
+      + '.level-cap-readout{margin-left:auto;align-self:center;font-family:var(--obs-font-body);font-size:18px;color:var(--obs-text-dim);border:var(--obs-border);background:var(--obs-surface);box-shadow:var(--obs-shadow-sm);padding:8px 12px;}'
+      + '.level-cap-readout strong{color:var(--obs-orange);font-family:var(--obs-font-display);font-size:12px;margin-left:6px;}'
+      + '.box-section{background:var(--obs-well);border:var(--obs-border);box-shadow:var(--obs-shadow-sm);padding:12px 14px;margin:0 0 14px;}'
+      + '.box-tag{font-family:var(--obs-font-display);font-size:11px;letter-spacing:1px;color:var(--obs-green);display:inline-flex;align-items:center;gap:6px;}'
+      + '.box-label{font-family:var(--obs-font-display);font-size:9px;letter-spacing:1px;color:var(--obs-text-dim);}'
+      + '.box-fainted{color:var(--obs-red);font-family:var(--obs-font-body);font-size:18px;display:inline-flex;align-items:center;gap:6px;}'
+      + '.box-obtainable{font-family:var(--obs-font-body);font-size:18px;color:var(--obs-text);display:inline-flex;align-items:center;gap:6px;}'
+      + '.box-evo-block{margin-top:10px;} .box-evo-title{color:var(--obs-text-dim);margin-bottom:6px;}'
+      + '.box-evo-row{display:flex;align-items:center;gap:8px;margin:6px 0;font-family:var(--obs-font-body);font-size:18px;}'
+      + '.box-tag-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px;}'
+      + '.box-faintbtn{font-family:var(--obs-font-display);font-size:9px;letter-spacing:1px;background:var(--obs-well);color:var(--obs-text-dim);border:2px solid var(--obs-line);box-shadow:var(--obs-shadow-sm);padding:7px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;} .box-faintbtn:hover{color:var(--obs-text);} .box-faintbtn img{height:14px;width:14px;image-rendering:pixelated;}'
+      + '.box-section img{image-rendering:pixelated;vertical-align:middle;} .box-section .evo-link{cursor:pointer;}';
     document.head.appendChild(css);
+
+    // ---------- T-008: box/evolution coherence (modal section + level-cap readout) ----------
+    // Family grouping via union-find over BOTH the `family` field AND the evolution graph. The field
+    // alone splits regional branches the expansion data files separately (e.g. Goomy = P_FAMILY_GOOMY
+    // but Goodra-Hisui = P_FAMILY_GOOMY_HISUI), yet Goomy's own evolutions point to Sliggoo-Hisui, so
+    // walking the evolution edges re-unites them. Unioning by the field too preserves every grouping
+    // the field already provided (forms with no evolution links, etc.).
+    var ufParent = {};
+    function ufFind(x){ if (ufParent[x]===undefined) ufParent[x]=x; return ufParent[x]===x ? x : (ufParent[x]=ufFind(ufParent[x])); }
+    function ufUnion(a,b){ var ra=ufFind(a), rb=ufFind(b); if (ra!==rb) ufParent[ra]=rb; }
+    (function(){
+      var byField = {};
+      (typeof pokes!=='undefined'?pokes:[]).forEach(function(p){
+        if (!p) return; ufFind(p.id);
+        (p.evolutions||[]).forEach(function(e){ if (e && e.pokemon) ufUnion(p.id, e.pokemon); });
+        if (p.family){ (byField[p.family]=byField[p.family]||[]).push(p.id); }
+      });
+      Object.keys(byField).forEach(function(f){ var a=byField[f]; for (var i=1;i<a.length;i++) ufUnion(a[0], a[i]); });
+    })();
+    var famComponent = {};
+    (typeof pokes!=='undefined'?pokes:[]).forEach(function(p){ if (!p) return; var r=ufFind(p.id); (famComponent[r]=famComponent[r]||[]).push(p.id); });
+    function familySet(speciesId){ var s={}; s[speciesId]=1; (famComponent[ufFind(speciesId)]||[]).forEach(function(id){ s[id]=1; }); return s; }
+    function findObtainable(famSet){ var found=null; (typeof wildPokes!=='undefined'?wildPokes:[]).forEach(function(route){ if (found || route.id==='STARTER_EXTRA') return; ENCOUNTER_TYPES.forEach(function(slot){ if (found) return; if (route[slot] && famSet[route[slot]]) found={ label: route.label || nm(route.id), species: route[slot] }; }); }); return found; }
+
+    function refreshCap(){ var el=document.getElementById('level-cap-value'); if (el) el.textContent = currentCapLevel(nz()); }
+    window.docCurrentCap = function(){ return currentCapLevel(nz()); };
+    // Non-fainted box entries (one per encounter, evolution overlay applied) for the PC tab (T-009).
+    window.docBoxList = function(){ return boxMembers(); };
+
+    // HTML for the Pokédex modal "box" block (before Evolution); '' when the species/family is unrelated to the box.
+    window.docBoxSectionHTML = function(speciesId){
+      var poke = pokeById[speciesId]; if (!poke) return '';
+      var caps = capturedEntries(), famSet = familySet(speciesId), cap = currentCapLevel(nz());
+      function wrap(h){ return '<div class="box-section">'+h+'</div>'; }
+      var exact = caps.find(function(e){ return !e.fainted && e.currentSpecies===speciesId; });
+      if (exact){
+        var evos = levelEvos(poke).filter(function(ev){ return ev.level <= cap; });
+        var inner=''; if (evos.length){ inner = '<div class="box-evo-block"><div class="box-evo-title small">This Pokémon can evolve:</div>' + evos.map(function(ev){
+          return '<div class="box-evo-row"><span class="evo-link" data-id="'+ev.pokemon+'">'+sprite(ev.pokemon,32)+'</span> '+icon('evolution','🧬')+' <span class="evo-link" data-id="'+ev.pokemon+'">'+nm(ev.pokemon)+'</span> <button class="mail-evolve box-evolve" data-box-evolve="'+speciesId+'|'+ev.pokemon+'">Evolve</button></div>';
+        }).join('') + '</div>'; }
+        var faintBtn = '<button class="box-faintbtn" data-box-faint="'+exact.routeId+'|'+exact.slot+'|1|'+speciesId+'">'+icon('fainted','💀')+' Mark fainted</button>';
+        return wrap('<div class="box-tag-row"><span class="box-tag">'+icon('pc','📦')+' IN BOX</span>'+faintBtn+'</div>'+inner);
+      }
+      var alive = caps.find(function(e){ return !e.fainted && famSet[e.currentSpecies]; });
+      if (alive) return wrap('<span class="box-label">Family Pokémon in box:</span> <span class="evo-link" data-id="'+alive.currentSpecies+'">'+sprite(alive.currentSpecies,32)+' '+nm(alive.currentSpecies)+'</span>');
+      var fainted = caps.find(function(e){ return e.fainted && famSet[e.currentSpecies]; });
+      if (fainted) return wrap('<div class="box-tag-row"><span class="box-fainted">'+icon('fainted','💀')+' <span class="evo-link" data-id="'+fainted.currentSpecies+'">'+sprite(fainted.currentSpecies,32)+'</span> '+nm(fainted.currentSpecies)+' is fainted</span><button class="box-faintbtn box-undo" data-box-faint="'+fainted.routeId+'|'+fainted.slot+'|0|'+speciesId+'">Undo</button></div>');
+      var obt = findObtainable(famSet);
+      if (obt) return wrap('<span class="box-obtainable">'+icon('location','📍')+' Obtainable in '+obt.label+' <span class="evo-link" data-id="'+obt.species+'">'+sprite(obt.species,32)+'</span></span>');
+      return '';
+    };
+
+    // In-box Evolve from the modal: evolve the matching box entry (overlay + stale-mail purge + chain,
+    // shared with the mail button), then re-open the modal at the evolved species.
+    window.docBoxEvolve = function(fromId, toId){
+      var e = boxMembers().find(function(x){ return x.currentSpecies===fromId; }); if (!e) return;
+      evolveEntry(e.encounterKey, fromId, toId);
+      var np=pokeById[toId]; if (typeof showPokemonModal==='function' && np) showPokemonModal(np);
+    };
+    document.addEventListener('click', function(e){ var b=e.target.closest('[data-box-evolve]'); if (b){ e.stopPropagation(); var parts=b.getAttribute('data-box-evolve').split('|'); window.docBoxEvolve(parts[0], parts[1]); } });
+
+    // Mark/unmark a box entry fainted from the modal (T-008): toggles the same per-encounter faint
+    // checkbox the Encounters tab uses, so both screens stay in sync (handleFaintChange → mail/box/PC),
+    // then re-opens the modal so its box section reflects the new state.
+    window.docSetFainted = function(routeId, slot, fainted, speciesId){
+      var cb = document.querySelector('.nz-faint-cb[data-route="'+routeId+'"][data-slot="'+slot+'"]');
+      if (cb && cb.checked !== fainted){ cb.checked = fainted; cb.dispatchEvent(new Event('change',{bubbles:true})); }
+      var p = pokeById[speciesId]; if (typeof showPokemonModal==='function' && p) showPokemonModal(p);
+    };
+    document.addEventListener('click', function(e){ var b=e.target.closest('[data-box-faint]'); if (b){ e.stopPropagation(); var p=b.getAttribute('data-box-faint').split('|'); window.docSetFainted(p[0], p[1], p[2]==='1', p[3]); } });
 
     // ---------- init ----------
     var mailNav = document.querySelector('.nav a[data-target="mail"]');
     if (mailNav) mailNav.addEventListener('click', render);   // re-render whenever the tab is opened
-    reconcileEvo(); reconcile(); refreshBubble(); render();
+    reconcileEvo(); reconcile(); refreshBubble(); refreshCap(); render();
+  })();
+  </script>
+
+  <!-- T-009: PC tab — scrollable grid of the (non-fainted) box, each cell opens the Pokémon modal. -->
+  <script>
+  (function(){
+    'use strict';
+    var css = document.createElement('style'); css.textContent = ''
+      + '.pc-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(120px, 1fr));gap:12px;margin-top:14px;}'
+      + '.pc-cell{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;cursor:pointer;'
+      + 'background:var(--obs-surface);border:var(--obs-border);box-shadow:var(--obs-shadow-sm);transition:transform .05s ease, box-shadow .05s ease;}'
+      + '.pc-cell:hover{transform:translate(-2px,-2px);box-shadow:var(--obs-shadow-md);}'
+      + '.pc-cell img{image-rendering:pixelated;width:64px;height:64px;}'
+      + '.pc-name{font-family:var(--obs-font-body);font-size:16px;color:var(--obs-text);text-align:center;line-height:1.1;}';
+    document.head.appendChild(css);
+
+    function pcName(id){ return nameify(String(id).replace(/^SPECIES_/, '')); }
+    window.renderPC = function(){
+      var grid = document.getElementById('pc-grid'), empty = document.getElementById('pc-empty');
+      if (!grid) return;
+      var box = (typeof window.docBoxList === 'function') ? window.docBoxList() : [];
+      if (empty) empty.style.display = box.length ? 'none' : '';
+      grid.innerHTML = box.map(function(e){
+        var id = e.currentSpecies, nm = pcName(id);
+        return '<div class="pc-cell" data-species="'+id+'" title="'+nm+'">' +
+          '<img src="'+getPokeImg(id)+'" alt="'+nm+'">' +
+          '<span class="pc-name">'+nm+'</span></div>';
+      }).join('');
+    };
+
+    var grid = document.getElementById('pc-grid');
+    if (grid) grid.addEventListener('click', function(ev){
+      var cell = ev.target.closest('.pc-cell'); if (!cell) return;
+      var p = (typeof pokes !== 'undefined') && pokes.find(function(x){ return x.id === cell.dataset.species; });
+      if (p && typeof showPokemonModal === 'function') showPokemonModal(p);
+    });
+
+    window.renderPC();   // initial paint (also re-rendered on tab open + after in-place evolve)
   })();
   </script>
 
