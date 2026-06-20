@@ -122,11 +122,24 @@ function slimPokes(pokes) {
     });
 }
 
+// T-005 — per-run localStorage namespace. Mirrors randomizer/writer.js docRunNamespace
+// (canonical formula lives there). Baked into each generated doc so docs from different
+// runs opened in the same browser/origin never share UI state.
+function docRunNamespace(seed, playerIndex, romIndex) {
+    const parts = [];
+    if (seed !== undefined && seed !== null && String(seed) !== '') parts.push(`s${seed}`);
+    if (playerIndex !== undefined && playerIndex !== null) parts.push(`p${playerIndex}`);
+    if (romIndex !== undefined && romIndex !== null) parts.push(`r${romIndex}`);
+    return parts.join('-').replace(/[^A-Za-z0-9_-]/g, '');
+}
+
 // Inline a ROM's data (+ the shared sprite map) into the template, producing a
 // fully self-contained doc HTML. Single source for both download paths.
-function buildDocHtml(template, rom, pokedex, spritesText, assetsText) {
+function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed) {
     const assets = JSON.parse(assetsText);
+    const runNs = docRunNamespace(seed, rom.playerIndex, rom.romIndex);
     return template
+        .split('%%DOC_RUN_NS%%').join(runNs)
         .replace('<script src="sprites.js"></script>',
             `<script>const EMBEDDED_SPRITES = ${spritesText};</script>`)
         .replace('<script src="assets.js"></script>',
@@ -167,7 +180,7 @@ document.getElementById('btn-download-all').addEventListener('click', async () =
         for (const rom of currentBundle.roms) {
             const pokedex = resolveArtifact(rom.artifacts.pokedex, currentBundle.sharedData, 'pokedex');
 
-            const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText);
+            const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, currentBundle.config?.seed ?? 'unknown');
 
             const label = rom.playerIndex !== undefined
                 ? `docs/player-${rom.playerIndex}-rom-${rom.romIndex}.html`
@@ -219,8 +232,8 @@ async function downloadSingleDoc(rom, btnEl, btnLabel) {
         const spritesText = await loadSpriteMapText();
         const assetsText = await loadAssetMapText();
         const pokedex = resolveArtifact(rom.artifacts.pokedex, currentBundle.sharedData, 'pokedex');
-        const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText);
         const seed = currentBundle.config?.seed ?? 'unknown';
+        const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed);
         const filename = rom.playerIndex !== undefined
             ? `docs-player-${rom.playerIndex}-rom-${rom.romIndex}-${seed}.html`
             : `docs-rom-${rom.romIndex}-${seed}.html`;

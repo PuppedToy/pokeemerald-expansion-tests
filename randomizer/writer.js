@@ -227,7 +227,7 @@ function resolveMailMints(itemAssignments, items) {
 // deterministic across ROMs that share a trainer artifact but differ in wild data.
 // docs: when provided (bundle mode), trainer teams are taken verbatim from the pre-resolved
 // docs instead of re-resolved via RNG — guaranteeing the ROM matches the bundle's docs.
-async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null, docs = null) {
+async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null, docs = null, runNs = '') {
     let { pokes: pokemonList, moves, abilities } = pokedexArtifact;
     // Deep-clone trainersData — mega trainer processing splices entries in-place,
     // which would corrupt the shared artifact when the same trainers object is used across ROMs.
@@ -1041,6 +1041,12 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_WILDPOKES_REPALCEMENT, `<script>const wildPokes = ${JSON.stringify(maps)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'wildpokes.js'), `const wildPokes = ${JSON.stringify(maps, null, 4)};`, 'utf8');
 
+    // T-005 — bake the per-run localStorage namespace into the doc so runs don't collide.
+    // Left intact (token still present) when runNs is empty → template falls back to shared keys.
+    if (runNs) {
+        htmlOutputTemplate = htmlOutputTemplate.split('%%DOC_RUN_NS%%').join(runNs);
+    }
+
     // @TODO Out name depends on a param
     const outFile = path.resolve(__dirname, OUTPUT_DIR, 'out.html');
     await fs.writeFile(outFile, htmlOutputTemplate, 'utf8');
@@ -1053,7 +1059,22 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     console.log(`Output HTML file generated at ${outFile}`);
 }
 
+// T-005 — per-run localStorage namespace. Generated docs persist UI state (pokedex
+// filters, nuzlocke tracker, nav) in localStorage. Without a namespace every doc shares
+// the same keys, so two runs opened in the same browser/origin collide. This derives a
+// stable id (baked into the doc via the %%DOC_RUN_NS%% token) so each run owns its own
+// storage bucket. The browser path (frontend/js/app.js) mirrors this formula.
+// Returns '' for empty input → the template then falls back to the legacy shared keys.
+function docRunNamespace({ seed, playerIndex, romIndex } = {}) {
+    const parts = [];
+    if (seed !== undefined && seed !== null && String(seed) !== '') parts.push(`s${seed}`);
+    if (playerIndex !== undefined && playerIndex !== null) parts.push(`p${playerIndex}`);
+    if (romIndex !== undefined && romIndex !== null) parts.push(`r${romIndex}`);
+    return parts.join('-').replace(/[^A-Za-z0-9_-]/g, '');
+}
+
 module.exports = writer;
+module.exports.docRunNamespace = docRunNamespace;
 module.exports.buildWildPlaceholderMap = buildWildPlaceholderMap;
 module.exports.substituteWildSpecies = substituteWildSpecies;
 module.exports.buildTrainersResultsFromDocs = buildTrainersResultsFromDocs;

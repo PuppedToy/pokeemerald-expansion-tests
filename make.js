@@ -156,7 +156,8 @@ async function bundleMode(bundlePath, isDebug, doClean) {
         rng.seed(resolveRomSeed(rom, seed));
 
         try {
-            await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed), rom.docs);
+            const runNs = writer.docRunNamespace({ seed, playerIndex: rom.playerIndex, romIndex: rom.romIndex });
+            await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed), rom.docs, runNs);
             await writeTMsFromList(pokedex.tmList);
             writeItemFilesFromBundle(trainers.itemAssignments);
             run('make', ['-j']);
@@ -208,7 +209,8 @@ async function randomizeMode(opts, doClean) {
         const starters = runStartersModule(pokedex.pokes);
         const wild     = runWildModule(pokedex.pokes, starters, wildData);
 
-        await writer(pokedex, trainers, starters, wild, opts.debug);
+        await writer(pokedex, trainers, starters, wild, opts.debug, null, null,
+            writer.docRunNamespace({ seed: config.seed }));
         run('make', ['-j']);
 
         const dest = path.join(outDir, `rom-${config.seed}.gba`);
