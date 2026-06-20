@@ -14,3 +14,4 @@
 | [T-008](T-008-box-evolution-coherence.md) | Box/evolution coherence — level-cap display + Pokédex modal "in box" section | done | 0.1.0 | 2026-06-20 |
 | [T-009](T-009-pc-box-grid.md) | PC tab — scrollable grid of the player's (non-fainted) box Pokémon | done | 0.1.0 | 2026-06-20 |
 | [T-010](T-010-section-scroll-policy.md) | Per-section scroll policy on load/switch in the generated docs | done | 0.1.0 | 2026-06-20 |
+| [T-011](T-011-moves-surfacing-icon-polish-champion-mail.md) | Moves TM/description surfacing + icon & tooltip polish + champion victory mail | done | 0.1.0 | 2026-06-20 |

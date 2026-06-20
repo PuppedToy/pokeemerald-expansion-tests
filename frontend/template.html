@@ -637,6 +637,12 @@
         <section id="moves">
           <h2>Moves</h2>
           <input type="search" id="move-search" class="tab-search" placeholder="Search name, type, category…" autocomplete="off">
+          <div class="filter-row">
+            <span class="filter-row-label">Filter</span>
+            <div class="filter-chips">
+              <div class="filter-chip" id="moves-tm-only" role="button" tabindex="0">TMs only</div>
+            </div>
+          </div>
           <div class="grid" id="moves-cards"></div>
         </section>
   
@@ -951,7 +957,7 @@
           abilityContent = `🔧 <span class="dashed">${nameify(abilityLogEntry.oldValue)}</span> <strong>${abilityContent}</strong>`;
         }
         else if (abilityLogEntry) {
-          abilityContent = `⭐️ ${abilityContent}`;
+          abilityContent = `${getIcon('star','⭐️')} ${abilityContent}`;
         }
         const desc = (abilitiesData['ABILITY_' + ability] || {}).description || '';
         return `<span class="tag ability-tag" data-tooltip="${desc}">${abilityContent}</span>`;
@@ -1048,14 +1054,23 @@
         .replace(/\b\w/g, c => c.toUpperCase());
     }
 
+    // Zero-padded TM label, e.g. 1 → "TM01". Moves not in the TM pool have no `tm` field.
+    function tmLabel(move) { return move.tm ? 'TM' + String(move.tm).padStart(2, '0') : ''; }
+    // Escape text for HTML body content (TM location strings carry "&", "—", etc.). Local to this
+    // block so the initial renderMoves() call doesn't depend on helpers defined in later scripts.
+    function escMoveText(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
     function renderMoves() {
       const q = (document.getElementById('move-search')?.value || '').toLowerCase().trim();
+      const tmOnly = document.getElementById('moves-tm-only')?.classList.contains('active');
       movesGrid.innerHTML = '';
-      sortedMoves.forEach(move => {
+      // When "TMs only" is on, list TM moves ordered by TM number; otherwise keep the alphabetical sort.
+      const list = tmOnly ? sortedMoves.filter(m => m.tm).slice().sort((a, b) => a.tm - b.tm) : sortedMoves;
+      list.forEach(move => {
         if (q) {
           const catName = formatCategory(move.category).toLowerCase();
           const typeName = (move.type || '').toLowerCase();
-          if (![move.name, typeName, catName, move.description || '']
+          if (![move.name, typeName, catName, move.description || '', tmLabel(move), move.tmLocation || '']
               .some(s => s.toLowerCase().includes(q))) return;
         }
 
@@ -1064,15 +1079,30 @@
 
         const catName = formatCategory(move.category);
         const catColor = categoryColor(move.category);
+        const tm = tmLabel(move);
+        const tmBadge = tm
+          ? `<div style="text-align:center; margin-bottom:6px;"><span class="type" style="background-color:var(--obs-cyan); color:var(--obs-on-cyan);">${tm}</span></div>`
+          : '';
+        // Where this TM is obtained (route + trainer), from the fixed slot→location map.
+        const locHTML = (move.tm && move.tmLocation)
+          ? `<div class="small" style="text-align:center; margin-bottom:8px; color:var(--obs-cyan);">${getIcon('location','📍')} ${escMoveText(move.tmLocation)}</div>`
+          : '';
+        const descHTML = move.description
+          ? `<div class="small" style="text-align:center; margin:8px 0 4px; color:var(--obs-text-dim); font-style:italic;">${move.description}</div>`
+          : '';
 
         card.innerHTML = `<div class="meta">
           <div>
             <div class="title">${move.name}</div>
+            ${tmBadge}
+            ${locHTML}
 
             <div style="text-align:center; margin-bottom:10px;">
               <span class="type" style="background-color:${typeColors[move.type]};">${move.type}</span>
               <span class="type" style="background-color:${catColor};">${catName}</span>
             </div>
+
+            ${descHTML}
 
             <div class="small" style="text-align:center; margin-bottom:6px;">
               Power: <b>${move.power ?? '-'}</b> &nbsp;•&nbsp;
@@ -1095,6 +1125,13 @@
 
     renderMoves();
     document.getElementById('move-search').addEventListener('input', renderMoves);
+    // "TMs only" toggle chip — flip .active then re-render (keyboard-accessible).
+    const tmOnlyChip = document.getElementById('moves-tm-only');
+    if (tmOnlyChip) {
+      const toggleTmOnly = () => { tmOnlyChip.classList.toggle('active'); renderMoves(); };
+      tmOnlyChip.addEventListener('click', toggleTmOnly);
+      tmOnlyChip.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTmOnly(); } });
+    }
   </script>
   <!-- script to handle trainers -->
   <script>
@@ -1288,7 +1325,7 @@
           else if (isLegendaryEncounter) typeLabel = `<div style="font-size:12px; color:#fbbf24; margin-bottom:4px;">Legendary</div>`;
           else                           typeLabel = `<div style="font-size:12px; color:#FFB28A; margin-bottom:4px;">${getRouteTypeName(type)}</div>`;
           const slotExtraClass = autoSelected ? ' nz-auto-selected' : '';
-          const faintLabel = `<label class="nz-cb-label nz-faint-label" title="Fainted">
+          const faintLabel = `<label class="nz-cb-label nz-faint-label" data-tooltip="Mark as fainted">
                 <input type="checkbox" class="nz-faint-cb" data-route="${route.id}" data-slot="${type}">
                 ${getIcon('fainted','💀')}
               </label>`;
@@ -1296,13 +1333,13 @@
             <div class="nuzlocke-controls">${faintLabel}</div>
           ` : `
             <div class="nuzlocke-controls">
-              <label class="nz-cb-label nz-delay-label" title="Delay — save for later">
+              <label class="nz-cb-label nz-delay-label" data-tooltip="Mark as delayed">
                 <input type="checkbox" class="nz-delay-cb" data-route="${route.id}" data-slot="${type}">
                 ${getIcon('clock','⏱')}
               </label>
-              <label class="nz-cb-label nz-select-label" title="Captured">
+              <label class="nz-cb-label nz-select-label" data-tooltip="Mark as captured">
                 <input type="checkbox" class="nz-select-cb" data-route="${route.id}" data-slot="${type}">
-                ${getIcon('check','✓')}
+                ${getIcon('pokeball','✓')}
               </label>
               ${faintLabel}
             </div>
@@ -1325,7 +1362,7 @@
       else if (isStaticEncounter)
         headerBadge = `<div style="${badgeStyle} color:var(--obs-red);">STATIC ENCOUNTER</div>`;
       else if (isLegendaryEncounter)
-        headerBadge = `<div style="${badgeStyle} color:var(--obs-yellow);">${getIcon('legendary','✦')} LEGENDARY ${getIcon('legendary','✦')}</div>`;
+        headerBadge = `<div style="${badgeStyle} color:var(--obs-yellow);">${getIcon('star','✦')} LEGENDARY ${getIcon('star','✦')}</div>`;
 
       card.innerHTML = `
         <div class="meta">
@@ -1418,13 +1455,26 @@
       modalBody.innerHTML = buildPokemonDetailHTML(poke);
     }
 
+    // Escape text for safe use inside a double-quoted HTML attribute (move descriptions can carry
+    // quotes/ampersands). Used for the hover tooltip on move rows in the modal.
+    function escAttr(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    // Hover tooltip showing a move's description (T-011); empty when the move has none.
+    // Uses the app's data-tooltip mechanism (styled CSS tooltip) — native title doesn't surface here.
+    function moveDescAttr(m) {
+      return (m && m.description) ? ` data-tooltip="${escAttr(m.description)}" style="cursor:help;"` : '';
+    }
+
     function buildLearnsetList(poke) {
       return poke.learnset.map(l => {
         const m = movesData[l.move];
         let balanceIcon = '';
         const logEntry = (poke.log || []).find(entry => entry.target === 'learnsetMove' && entry.value === l.move);
         if (logEntry && logEntry.oldValue === null) {
-          balanceIcon = '⭐️ '; // Added move
+          balanceIcon = getIcon('star', '⭐️') + ' '; // Added move
         } else if (logEntry && logEntry.oldValue !== null) {
           balanceIcon = '🔧 ';
         }
@@ -1433,7 +1483,7 @@
           move = `<span style="color:${getLogColor(logEntry)}"><span class="dashed">${moveName(logEntry.oldValue)}</span> <strong>${move}</strong></span>`;
         }
         return `
-          <div class="list-item">
+          <div class="list-item"${moveDescAttr(m)}>
             ${balanceIcon}<span style="min-width:60px;color:#8cf;">Lv ${l.level}</span>
             <span class="type" style="background:${typeColors[m.type]};">${m.type}</span>
             <b>${move}</b>
@@ -1449,9 +1499,9 @@
       const mainList = poke.teachables.map(moveId => {
         const m = movesData[moveId];
         if (!m) return '';
-        const prefix = newSet.has(moveId) ? '⭐️ ' : '';
+        const prefix = newSet.has(moveId) ? getIcon('star', '⭐️') + ' ' : '';
         return `
-          <div class="list-item">
+          <div class="list-item"${moveDescAttr(m)}>
             ${prefix}<span class="type" style="background:${typeColors[m.type]};">${m.type}</span>
             <b>${moveName(moveId)}</b>
             <span class="small">Pwr: ${m.power ?? '-'}</span>
@@ -1465,7 +1515,7 @@
           const m = movesData[moveId];
           if (!m) return '';
           return `
-            <div class="list-item" style="opacity:0.45;">
+            <div class="list-item" style="opacity:0.45;"${m && m.description ? ` data-tooltip="${escAttr(m.description)}"` : ''}>
               <span class="type" style="background:${typeColors[m.type]};">${m.type}</span>
               <b style="color:#888;">${moveName(moveId)}</b>
               <span class="small">Pwr: ${m.power ?? '-'}</span>
@@ -2343,10 +2393,12 @@
     // for STARTER_EXTRA's 9 mons) — otherwise box membership silently drops slots.
     var ENCOUNTER_TYPES = ['land','old','good','surf','underwater','super',
       'special','special1','special2','special3','special4','special5','special6','special7','special8','special9'];
-    var TYPE_PRIORITY = { static:0, evolution:1, level:2, tm:3 };
-    var TYPE_LABEL = { static:'Static', evolution:'Evolution', level:'Level-up move', tm:'TM move' };
+    // champion = the beat-the-game victory mail (T-011). Priority -1 so it sorts above everything;
+    // it is filterable but intentionally NOT in the mute list (you don't mute your own victory).
+    var TYPE_PRIORITY = { champion:-1, static:0, evolution:1, level:2, tm:3 };
+    var TYPE_LABEL = { champion:'Champion', static:'Static', evolution:'Evolution', level:'Level-up move', tm:'TM move' };
     // Small badge overlaid on the bottom-right of the envelope icon, per mail type.
-    var TYPE_BADGE = { static:['encounters','🗺'], evolution:['evolution','🧬'], level:['buffed','📈'], tm:['moves','💿'] };
+    var TYPE_BADGE = { champion:['star','⭐️'], static:['encounters','🗺'], evolution:['evolution','🧬'], level:['buffed','📈'], tm:['moves','💿'] };
     // Static-encounter unlocks keyed by the boss flag that unlocks them (species read live).
     var STATIC_UNLOCKS = {
       FLAG_BADGE04_GET: ['MAP_DESERT_RUINS'],
@@ -2426,7 +2478,7 @@
       Object.keys(store.evo).forEach(function(k){ if (!capt[k]){ delete store.evo[k]; changed=true; } });
       // Mails are actionable only for non-fainted box members; drop them when the encounter leaves the box.
       var before = store.mails.length;
-      store.mails = store.mails.filter(function(m){ return m.type==='static' || (m.payload && live[m.payload.encounterKey]); });
+      store.mails = store.mails.filter(function(m){ return m.type==='static' || m.type==='champion' || (m.payload && live[m.payload.encounterKey]); });
       if (store.mails.length!==before) changed=true;
       return changed;
     }
@@ -2435,6 +2487,9 @@
     function addMail(m){ if (store.mails.some(function(x){return x.id===m.id;})) return; m.read = !!store.settings.muted[m.type]; m.date = nextTs(); store.mails.push(m); }
     function generateForBoss(i){
       var b=bossCaps[i], prev=b.level, next=bossCaps[i+1]?bossCaps[i+1].level:MAX_LEVEL, box=boxMembers();
+      // Beating Champion Steven (FLAG_IS_CHAMPION = the final cap) drops a one-off victory mail (T-011).
+      if (b.flag==='FLAG_IS_CHAMPION')
+        addMail({ id:'champion|'+b.flag, type:'champion', capFlag:b.flag, subject:'champion', payload:{} });
       (STATIC_UNLOCKS[b.flag]||[]).forEach(function(routeId){
         var route = (wildPokes||[]).find(function(r){return r.id===routeId;}); if (!route) return;
         ENCOUNTER_TYPES.forEach(function(slot){ if (!route[slot]) return;
@@ -2550,9 +2605,10 @@
     function isMailActive(){ var s=document.getElementById('mail'); return s && s.classList.contains('active'); }
     function refreshBubble(){ var b=document.getElementById('mail-bubble'); if (!b) return; var n=unreadCount(); if (n>0){ b.textContent=n>99?'99+':String(n); b.style.display=''; } else b.style.display='none'; }
 
-    function subjSpecies(m){ return m.type==='static' ? m.subject : curSpeciesOf(m.payload.encounterKey, m.payload.species||m.payload.fromSpecies||''); }
+    function subjSpecies(m){ if (m.type==='champion') return ''; return m.type==='static' ? m.subject : curSpeciesOf(m.payload.encounterKey, m.payload.species||m.payload.fromSpecies||''); }
     function mailTitle(m){
       var sp = subjSpecies(m);
+      if (m.type==='champion') return 'Congratulations — you beat the game!';
       if (m.type==='static') return nm(sp)+' available at '+(m.payload.label||'');
       if (m.type==='evolution') return nm(m.payload.fromSpecies)+' → '+nm(m.payload.toSpecies)+' (Lv '+m.payload.level+')';
       if (m.type==='level') return nm(sp)+' can learn '+moveName(m.payload.move);
@@ -2560,6 +2616,7 @@
       return '';
     }
     function mailSub(m){
+      if (m.type==='champion') return 'You defeated Champion Steven — the Hoenn League is yours!';
       if (m.type==='level') return 'Learned at Lv '+m.payload.level;
       if (m.type==='tm') return 'TM from '+m.payload.trainerLabel;
       if (m.type==='evolution') return 'Reached at level '+m.payload.level;
@@ -2570,8 +2627,11 @@
       if (!list) return;
       // controls
       var TYPES=['static','evolution','level','tm'];
+      // The Champion filter chip surfaces only once a victory mail exists (no pre-win spoiler); it is
+      // not in the mute list. Mutes stay scoped to the four routine notification types.
+      var FILTER_TYPES = (store.mails.some(function(m){return m.type==='champion';}) ? ['champion'] : []).concat(TYPES);
       var chips = '<button class="filter-chip mail-filter'+(activeFilter==='all'?' active':'')+'" data-filter="all">All</button>' +
-        TYPES.map(function(t){ return '<button class="filter-chip mail-filter'+(activeFilter===t?' active':'')+'" data-filter="'+t+'">'+TYPE_LABEL[t]+'</button>'; }).join('');
+        FILTER_TYPES.map(function(t){ return '<button class="filter-chip mail-filter'+(activeFilter===t?' active':'')+'" data-filter="'+t+'">'+TYPE_LABEL[t]+'</button>'; }).join('');
       var mutes = TYPES.map(function(t){ return '<label class="mail-mute"><input type="checkbox" data-mute="'+t+'"'+(store.settings.muted[t]?' checked':'')+'> mute '+TYPE_LABEL[t]+'</label>'; }).join('');
       ctrls.innerHTML = '<div class="mail-controls-row">'+chips+'</div>' +
         '<div class="mail-controls-row"><span class="small">Mute:</span> '+mutes+' <button class="reset-btn mail-markall">Mark all read</button></div>';
@@ -2625,6 +2685,9 @@
       + '.mail-actions{display:flex;gap:8px;flex-shrink:0;align-items:center;}'
       + '.mail-evolve{font-family:var(--obs-font-display);font-size:9px;letter-spacing:1px;background:var(--obs-cyan);color:var(--obs-on-cyan);border:var(--obs-border);box-shadow:var(--obs-shadow-sm);padding:8px 10px;cursor:pointer;}'
       + '.mail-evolved{font-family:var(--obs-font-body);font-size:16px;color:var(--obs-green);}'
+      // T-011: the champion victory mail stands out with a gold accent.
+      + '.mail-row.mail-champion{border-color:var(--obs-yellow);box-shadow:0 0 0 2px var(--obs-yellow) inset, var(--obs-shadow-sm);}'
+      + '.mail-row.mail-champion .mail-title{color:var(--obs-yellow);}'
       + '.mail-readtoggle{font-family:var(--obs-font-body);font-size:15px;background:var(--obs-well);color:var(--obs-text-dim);border:2px solid var(--obs-line);padding:6px 10px;cursor:pointer;}'
       // T-008: level-cap readout + Pokédex modal box-coherence section
       + '.level-cap-readout{margin-left:auto;align-self:center;font-family:var(--obs-font-body);font-size:18px;color:var(--obs-text-dim);border:var(--obs-border);background:var(--obs-surface);box-shadow:var(--obs-shadow-sm);padding:8px 12px;}'
@@ -2682,7 +2745,7 @@
         var inner=''; if (evos.length){ inner = '<div class="box-evo-block"><div class="box-evo-title small">This Pokémon can evolve:</div>' + evos.map(function(ev){
           return '<div class="box-evo-row"><span class="evo-link" data-id="'+ev.pokemon+'">'+sprite(ev.pokemon,32)+'</span> '+icon('evolution','🧬')+' <span class="evo-link" data-id="'+ev.pokemon+'">'+nm(ev.pokemon)+'</span> <button class="mail-evolve box-evolve" data-box-evolve="'+speciesId+'|'+ev.pokemon+'">Evolve</button></div>';
         }).join('') + '</div>'; }
-        var faintBtn = '<button class="box-faintbtn" data-box-faint="'+exact.routeId+'|'+exact.slot+'|1|'+speciesId+'">'+icon('fainted','💀')+' Mark fainted</button>';
+        var faintBtn = '<button class="box-faintbtn" data-tooltip="Mark as fainted" data-box-faint="'+exact.routeId+'|'+exact.slot+'|1|'+speciesId+'">'+icon('fainted','💀')+' Mark fainted</button>';
         return wrap('<div class="box-tag-row"><span class="box-tag">'+icon('pc','📦')+' IN BOX</span>'+faintBtn+'</div>'+inner);
       }
       var alive = caps.find(function(e){ return !e.fainted && famSet[e.currentSpecies]; });
