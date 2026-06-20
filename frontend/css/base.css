@@ -112,3 +112,7 @@ button, input, select, textarea {
 
 /* Pixel art stays crisp wherever sprites/screens appear in the app */
 img { image-rendering: pixelated; }
+
+/* Pixel icons that replace emojis in the app UI (T-006) */
+.px-icon { image-rendering: pixelated; vertical-align: middle; height: 1em; width: auto; }
+.px-icon--lg { width: 48px; height: 48px; }

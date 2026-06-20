@@ -75,4 +75,4 @@ run-*/
 roms/
 
 # Large rendered doc artifacts used for manual review (not source)
-tasks/T-001-Assets/
+tasks/*-Assets/

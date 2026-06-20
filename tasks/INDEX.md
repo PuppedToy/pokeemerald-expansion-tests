@@ -9,3 +9,4 @@
 | [T-003](T-003-obsidian-frontend-reskin.md) | Re-skin the randomizer front-end with the Obsidian UI kit | done | 0.1.0 | 2026-06-19 |
 | [T-004](T-004-docs-overhaul.md) | Docs overhaul — Obsidian re-skin, full self-containment, size/load optimization | done | 0.1.0 | 2026-06-19 |
 | [T-005](T-005-per-run-docs-localstorage.md) | Isolate localStorage per generated docs run | done | 0.1.0 | 2026-06-20 |
+| [T-006](T-006-docs-obsidian-polish.md) | Finish aligning the docs with Obsidian (flatten leftovers) + pixel-icon wiring | done | 0.1.0 | 2026-06-20 |
