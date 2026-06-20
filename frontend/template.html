@@ -643,7 +643,14 @@
           <h2>Trainers</h2>
           <div class="trainer-grid" id="trainers-cards"></div>
         </section>
-  
+
+        <section id="mail">
+          <h2>Mail</h2>
+          <div id="mail-controls"></div>
+          <div id="mail-empty" class="small" style="display:none; margin-top:12px;">No mail yet — mark bosses defeated in the Trainers tab to unlock progress notifications.</div>
+          <div id="mail-list"></div>
+        </section>
+
         <section id="wildpokes">
           <h2>Encounters</h2>
           <div class="grid" id="wildpokes-cards"></div>
@@ -661,6 +668,7 @@
         <nav class="nav" id="nav">
           <a class="clicker" data-target="wildpokes"><span class="nav-icon" data-icon="encounters">🗺️</span><span class="nav-text">Encounters</span></a>
           <a class="clicker" data-target="trainers"><span class="nav-icon" data-icon="trainers">⚔️</span><span class="nav-text">Trainers</span></a>
+          <a class="clicker" data-target="mail"><span class="nav-icon" data-icon="mail">✉</span><span class="nav-text">Mail</span><span class="mail-bubble" id="mail-bubble" style="display:none">0</span></a>
           <a class="clicker" data-target="pokemon"><span class="nav-icon" data-icon="pokedex">📖</span><span class="nav-text">Pokedex</span></a>
           <a class="clicker" data-target="moves"><span class="nav-icon" data-icon="moves">⚡</span><span class="nav-text">Moves</span></a>
           <a class="clicker" data-target="abilities"><span class="nav-icon" data-icon="abilities">✨</span><span class="nav-text">Abilities</span></a>
@@ -802,11 +810,11 @@
     function getLogIcon(logEntry) {
       if (!logEntry) return '';
       if (logEntry.type === 'BUFF') {
-        return ' ' + getIcon('star', '⭐️');
+        return ' ' + getIcon('buffed', '⭐️');
       } else if (logEntry.type === 'NERF') {
-        return ' ' + getIcon('arrow-down', '🔻');
+        return ' ' + getIcon('nerfed', '🔻');
       } else {
-        return ' ' + getIcon('wrench', '🔧');
+        return ' ' + getIcon('adjusted', '🔧');
       }
     }
 
@@ -827,11 +835,11 @@
       const allLogIsNerfs = (poke.log || []).every(entry => entry.type === 'NERF');
       if (poke.log && poke.log.length > 0) {
         if (allLogIsBuffs) {
-          fullLogIcon = ' ' + getIcon('star', '⭐️');
+          fullLogIcon = ' ' + getIcon('buffed', '⭐️');
         } else if (allLogIsNerfs) {
-          fullLogIcon = ' ' + getIcon('arrow-down', '🔻');
+          fullLogIcon = ' ' + getIcon('nerfed', '🔻');
         } else {
-          fullLogIcon = ' ' + getIcon('wrench', '🔧');
+          fullLogIcon = ' ' + getIcon('adjusted', '🔧');
         }
       }
       return fullLogIcon;
@@ -881,7 +889,7 @@
         + (spaLogEntry?.value || 0)
         + (spdLogEntry?.value || 0)
         + (speLogEntry?.value || 0);
-      const bstIcon = BSTChangeValue > 0 ? ' ' + getIcon('star', '⭐️') : BSTChangeValue < 0 ? ' ' + getIcon('arrow-down', '🔻') : '';
+      const bstIcon = BSTChangeValue > 0 ? ' ' + getIcon('buffed', '⭐️') : BSTChangeValue < 0 ? ' ' + getIcon('nerfed', '🔻') : '';
       const typeEntry = (poke.log || []).find(entry => entry.target === 'type');
       const typeIcon = getLogIcon(typeEntry);
       const abilityEntry = (poke.log || []).find(entry => entry.target === 'ability');
@@ -950,6 +958,7 @@
   <script src="wildpokes.js"></script>
   <script src="abilities.js"></script>
   <script src="sprites.js"></script>
+  <script src="bosscaps.js"></script>
   <!-- T-005 — per-run localStorage namespace. The run-namespace token below is replaced
        at doc-generation time (randomizer/writer.js, frontend/js/app.js) with a stable
        per-run id (see docRunNamespace). nsKey() suffixes every storage key with it so
@@ -1151,7 +1160,7 @@
       // Final card markup
       card.innerHTML = `
         <div style="text-align:center;">
-          <div class="title">${trainerName}</div>
+          <div class="title">${trainer.isBoss ? getIcon('boss','👑')+' ' : ''}${trainerName}</div>
           ${!trainer.isPartner ? `<div style="margin-bottom:6px;">
             <label class="nz-defeat-label">
               <input type="checkbox" class="nz-defeat-cb" data-trainer-id="${trainerId}">
@@ -1240,7 +1249,7 @@
           const slotExtraClass = autoSelected ? ' nz-auto-selected' : '';
           const faintLabel = `<label class="nz-cb-label nz-faint-label" title="Fainted">
                 <input type="checkbox" class="nz-faint-cb" data-route="${route.id}" data-slot="${type}">
-                ${getIcon('skull','💀')}
+                ${getIcon('fainted','💀')}
               </label>`;
           const checkboxHTML = autoSelected ? `
             <div class="nuzlocke-controls">${faintLabel}</div>
@@ -1271,7 +1280,7 @@
       let headerBadge = '';
       const badgeStyle = `font-family:var(--obs-font-display); font-size:8px; letter-spacing:1px; margin-top:4px;`;
       if (isBossReward)
-        headerBadge = `<div style="${badgeStyle} color:var(--obs-cyan);">BOSS REWARD</div>`;
+        headerBadge = `<div style="${badgeStyle} color:var(--obs-cyan);">${getIcon('boss','')} BOSS REWARD</div>`;
       else if (isStaticEncounter)
         headerBadge = `<div style="${badgeStyle} color:var(--obs-red);">STATIC ENCOUNTER</div>`;
       else if (isLegendaryEncounter)
@@ -2144,6 +2153,7 @@
       }
       saveState();
       applyLocVisuals(routeId);
+      if (window.onBoxMaybeChanged) window.onBoxMaybeChanged();   // T-007 mail hook
     }
 
     function handleSelectChange(routeId, slot, checked) {
@@ -2162,6 +2172,7 @@
       const groupId = routeToGroup[routeId];
       if (groupId) applyGroupEffects(groupId);
       if (routeId === 'STARTERS') applyStarterRivals();
+      if (window.onBoxMaybeChanged) window.onBoxMaybeChanged();   // T-007 mail hook
     }
 
     function handleDelayChange(routeId, slot, checked) {
@@ -2217,6 +2228,7 @@
 
       saveState();
       applyTrainerVisuals(trainerId);
+      if (window.onBossDefeatChange) window.onBossDefeatChange(trainerId, checked);   // T-007 mail hook
     }
 
     // ---------- Event delegation ----------
@@ -2253,6 +2265,250 @@
   })();
   </script>
 
+  <!-- T-007 — Mail notifications engine (self-contained: reads nuzlocke state from
+       localStorage + injected globals bossCaps/wildPokes/pokes/trainersData/movesData) -->
+  <script>
+  (function () {
+    if (typeof bossCaps === 'undefined' || !Array.isArray(bossCaps) || !bossCaps.length) return;
+
+    var MAIL_KEY = (window.nsKey ? window.nsKey('mail_v1') : 'mail_v1');
+    var NZ_KEY   = (window.nsKey ? window.nsKey('nuzlocke_v1') : 'nuzlocke_v1');
+    var MAX_LEVEL = 100;
+    // MUST match the canonical ENCOUNTER_TYPES in the nuzlocke render (incl. special1..special9
+    // for STARTER_EXTRA's 9 mons) — otherwise box membership silently drops slots.
+    var ENCOUNTER_TYPES = ['land','old','good','surf','underwater','super',
+      'special','special1','special2','special3','special4','special5','special6','special7','special8','special9'];
+    var TYPE_PRIORITY = { static:0, evolution:1, level:2, tm:3 };
+    var TYPE_LABEL = { static:'Static', evolution:'Evolution', level:'Level-up move', tm:'TM move' };
+    // Small badge overlaid on the bottom-right of the envelope icon, per mail type.
+    var TYPE_BADGE = { static:['encounters','🗺'], evolution:['evolution','🧬'], level:['buffed','📈'], tm:['moves','💿'] };
+    // Static-encounter unlocks keyed by the boss flag that unlocks them (species read live).
+    var STATIC_UNLOCKS = {
+      FLAG_BADGE04_GET: ['MAP_DESERT_RUINS'],
+      FLAG_BADGE05_GET: ['MAP_ISLAND_CAVE','MAP_NEW_MAUVILLE'],
+      FLAG_BADGE06_GET: ['MAP_ANCIENT_TOMB'],
+      FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN: ['MAP_SKY_PILLAR_TOP']
+    };
+
+    var pokeById = {}; (typeof pokes!=='undefined'?pokes:[]).forEach(function(p){ pokeById[p.id]=p; });
+
+    // ---------- store ----------
+    function freshStore(){ return { version:1, settings:{ muted:{static:false,evolution:false,level:false,tm:false} }, evo:{}, mails:[], _gen:[], _lastTs:0 }; }
+    var store = freshStore();
+    try { var raw = localStorage.getItem(MAIL_KEY); if (raw) {
+      var p = JSON.parse(raw); store = Object.assign(freshStore(), p);
+      store.settings = { muted: Object.assign({static:false,evolution:false,level:false,tm:false}, ((p.settings||{}).muted)||{}) };
+      if (!Array.isArray(store.mails)) store.mails = [];
+      if (!Array.isArray(store._gen)) store._gen = [];
+      if (!store.evo) store.evo = {};
+    } } catch(e){}
+    function save(){ try { localStorage.setItem(MAIL_KEY, JSON.stringify(store)); } catch(e){} }
+    function nextTs(){ store._lastTs = Math.max(Date.now(), (store._lastTs||0)+1); return store._lastTs; }
+
+    // ---------- helpers ----------
+    function nm(s){ return String(s).replace(/^SPECIES_|^MOVE_|^TRAINER_|^MAP_/,'').replace(/_/g,' ').toLowerCase().replace(/\b\w/g,function(c){return c.toUpperCase();}); }
+    function icon(name, fb){ return (typeof getIcon==='function') ? getIcon(name, fb) : (fb||''); }
+    function sprite(id, sz){ try { return '<img src="'+getPokeImg(id)+'" width="'+(sz||40)+'" height="'+(sz||40)+'" style="image-rendering:pixelated;vertical-align:middle">'; } catch(e){ return ''; } }
+    function moveName(id){ try { return (typeof movesData!=='undefined' && movesData[id] && movesData[id].name) || nm(id); } catch(e){ return nm(id); } }
+    // Full trainer display name (class + given name), mirroring the Trainers tab:
+    // label if present, else the id minus the trailing _N, e.g. TRAINER_LASS_HALEY_1 → "Lass Haley".
+    function trainerLabel(id){ var t = (typeof trainersData!=='undefined') && trainersData[id]; return (t && t.label) || nm(id.replace(/_\d+$/, '')); }
+
+    function nz(){ try { var r = localStorage.getItem(NZ_KEY); if (r) return JSON.parse(r); } catch(e){} return { locations:{}, trainers:{} }; }
+    function isBossDefeated(b, st){ return b.trainers.some(function(id){ return st.trainers && st.trainers[id]; }); }
+    function levelEvos(poke){ return ((poke&&poke.evolutions)||[]).filter(function(e){ return (e.method==='LEVEL'||e.method==='LEVEL_BATTLE_ONLY') && /^\d+$/.test(String(e.param)); }); }
+    function currentCapLevel(st){ for (var i=0;i<bossCaps.length;i++){ if (!isBossDefeated(bossCaps[i],st)) return bossCaps[i].level; } return MAX_LEVEL; }
+    function lastDefeatedFlag(st){ var f=null; bossCaps.forEach(function(b){ if (isBossDefeated(b,st)) f=b.flag; }); return f || bossCaps[0].flag; }
+    function tmMoveOfReward(rw){ var name = rw.replace(/^TM\s+/,'').trim();
+      if (typeof movesData!=='undefined') for (var id in movesData) if (movesData[id] && movesData[id].name===name) return id;
+      return 'MOVE_'+name.toUpperCase().replace(/[^A-Z0-9]+/g,'_'); }
+
+    // ---------- box (membership from nuzlocke state + evo overlay) ----------
+    function boxMembers(){
+      var st = nz(), locs = st.locations||{}, out = [];
+      (typeof wildPokes!=='undefined'?wildPokes:[]).forEach(function(route){
+        var loc = locs[route.id];
+        if (route.id === 'STARTER_EXTRA') {
+          var f = (loc&&loc.fainted)||[];
+          ENCOUNTER_TYPES.forEach(function(slot){ if (route[slot] && f.indexOf(slot)<0) out.push(mk(route.id,slot,route[slot])); });
+        } else if (loc && loc.selected && route[loc.selected]) {
+          var ff = loc.fainted||[];
+          if (ff.indexOf(loc.selected)<0) out.push(mk(route.id, loc.selected, route[loc.selected]));
+        }
+      });
+      return out;
+      function mk(routeId, slot, base){ var key=routeId+'|'+slot; return { encounterKey:key, baseSpecies:base, currentSpecies: store.evo[key]||base }; }
+    }
+    function liveKeys(){ var s={}; boxMembers().forEach(function(e){ s[e.encounterKey]=e; }); return s; }
+    function curSpeciesOf(key, fallback){ var e = liveKeys()[key]; return (e&&e.currentSpecies) || fallback; }
+    function reconcileEvo(){
+      var live = liveKeys(), changed=false;
+      Object.keys(store.evo).forEach(function(k){ if (!live[k]){ delete store.evo[k]; changed=true; } });
+      var before = store.mails.length;
+      store.mails = store.mails.filter(function(m){ return m.type==='static' || (m.payload && live[m.payload.encounterKey]); });
+      if (store.mails.length!==before) changed=true;
+      return changed;
+    }
+
+    // ---------- generation ----------
+    function addMail(m){ if (store.mails.some(function(x){return x.id===m.id;})) return; m.read = !!store.settings.muted[m.type]; m.date = nextTs(); store.mails.push(m); }
+    function generateForBoss(i){
+      var b=bossCaps[i], prev=b.level, next=bossCaps[i+1]?bossCaps[i+1].level:MAX_LEVEL, box=boxMembers();
+      (STATIC_UNLOCKS[b.flag]||[]).forEach(function(routeId){
+        var route = (wildPokes||[]).find(function(r){return r.id===routeId;}); if (!route) return;
+        ENCOUNTER_TYPES.forEach(function(slot){ if (!route[slot]) return;
+          addMail({ id:'static|'+b.flag+'|'+routeId+'|'+slot, type:'static', capFlag:b.flag, subject:route[slot], payload:{ routeId:routeId, slot:slot, label:route.label||nm(routeId) } }); });
+      });
+      box.forEach(function(e){
+        var poke = pokeById[e.currentSpecies]; if (!poke) return;
+        levelEvos(poke).forEach(function(ev){ var lvl=parseInt(ev.param,10); if (lvl>prev && lvl<=next)
+          addMail({ id:'evo|'+b.flag+'|'+e.encounterKey+'|'+ev.pokemon, type:'evolution', capFlag:b.flag, subject:e.encounterKey, payload:{ encounterKey:e.encounterKey, fromSpecies:e.currentSpecies, toSpecies:ev.pokemon, level:lvl } }); });
+        ((poke.learnset)||[]).forEach(function(l){ var lv=parseInt(l.level,10); if (lv>prev && lv<=next)
+          addMail({ id:'level|'+b.flag+'|'+e.encounterKey+'|'+l.move, type:'level', capFlag:b.flag, subject:e.encounterKey, payload:{ encounterKey:e.encounterKey, species:e.currentSpecies, move:l.move, level:lv } }); });
+      });
+      var seg={}; (b.trainers||[]).forEach(function(id){seg[id]=1;});
+      if (typeof trainersData!=='undefined') Object.keys(trainersData).forEach(function(id){ var t=trainersData[id]; if (t && typeof t.level==='number' && t.level>prev && t.level<=next) seg[id]=1; });
+      Object.keys(seg).forEach(function(tid){ var t=trainersData&&trainersData[tid]; if (!t||!t.reward) return;
+        t.reward.forEach(function(rw){ if (!/^TM\s+/.test(rw)) return; var moveId=tmMoveOfReward(rw);
+          box.forEach(function(e){ var poke=pokeById[e.currentSpecies]; if (poke && (poke.teachables||[]).indexOf(moveId)>=0)
+            addMail({ id:'tm|'+b.flag+'|'+tid+'|'+e.encounterKey+'|'+moveId, type:'tm', capFlag:b.flag, subject:e.encounterKey, payload:{ encounterKey:e.encounterKey, species:e.currentSpecies, trainerId:tid, trainerLabel:trainerLabel(tid), moveId:moveId, moveName:moveName(moveId) } }); });
+        });
+      });
+    }
+    function deleteMailsForFlag(flag){ store.mails = store.mails.filter(function(m){ return m.capFlag!==flag; }); }
+    function reconcile(){
+      var st=nz(), defeated={}; bossCaps.forEach(function(b){ if (isBossDefeated(b,st)) defeated[b.flag]=1; });
+      store._gen = store._gen.filter(function(flag){ if (!defeated[flag]){ deleteMailsForFlag(flag); return false; } return true; });
+      var genSet={}; store._gen.forEach(function(f){genSet[f]=1;});
+      bossCaps.forEach(function(b,i){ if (defeated[b.flag] && !genSet[b.flag]){ generateForBoss(i); store._gen.push(b.flag); } });
+      save(); refreshBubble(); if (isMailActive()) render();
+    }
+
+    // ---------- hooks ----------
+    var _suppress=false;
+    function setCheckbox(trainerId, checked){ var cb=document.querySelector('.nz-defeat-cb[data-trainer-id="'+trainerId+'"]'); if (cb && cb.checked!==checked){ cb.checked=checked; cb.dispatchEvent(new Event('change',{bubbles:true})); } }
+    function repTrainer(b){ for (var i=0;i<b.trainers.length;i++){ if (document.querySelector('.nz-defeat-cb[data-trainer-id="'+b.trainers[i]+'"]')) return b.trainers[i]; } return b.trainers[0]; }
+    window.onBossDefeatChange = function(trainerId, checked){
+      if (_suppress) return;
+      var idx=-1; for (var i=0;i<bossCaps.length;i++){ if (bossCaps[i].trainers.indexOf(trainerId)>=0){ idx=i; break; } }
+      if (idx<0) return;
+      if (checked){
+        var st=nz(), earlier=[]; for (var j=0;j<idx;j++){ if (!isBossDefeated(bossCaps[j],st)) earlier.push(j); }
+        if (earlier.length){
+          if (!confirm('Marking "'+bossCaps[idx].label+'" but '+earlier.length+' earlier boss(es) are still unmarked.\n\nMark all earlier bosses too (in order) so notifications arrive correctly?')){
+            _suppress=true; setCheckbox(trainerId,false); _suppress=false; return;
+          }
+          _suppress=true; earlier.forEach(function(j){ setCheckbox(repTrainer(bossCaps[j]), true); }); _suppress=false;
+        }
+      }
+      reconcile();
+    };
+    window.onBoxMaybeChanged = function(){ if (reconcileEvo()) save(); refreshBubble(); if (isMailActive()) render(); };
+
+    // ---------- actions ----------
+    function doEvolve(mailId){
+      var m = store.mails.find(function(x){return x.id===mailId;}); if (!m || m.type!=='evolution') return;
+      store.evo[m.payload.encounterKey] = m.payload.toSpecies; m.read=true; m.evolved=true;
+      var st=nz(), cap=currentCapLevel(st), capFlag=lastDefeatedFlag(st), poke=pokeById[m.payload.toSpecies];
+      levelEvos(poke).forEach(function(ev){ var lvl=parseInt(ev.param,10); if (lvl<=cap)
+        addMail({ id:'evo|'+capFlag+'|'+m.payload.encounterKey+'|'+ev.pokemon, type:'evolution', capFlag:capFlag, subject:m.payload.encounterKey, payload:{ encounterKey:m.payload.encounterKey, fromSpecies:m.payload.toSpecies, toSpecies:ev.pokemon, level:lvl } }); });
+      save(); refreshBubble(); render();
+    }
+    function toggleRead(mailId){ var m=store.mails.find(function(x){return x.id===mailId;}); if (m){ m.read=!m.read; save(); refreshBubble(); render(); } }
+    function markAllRead(){ store.mails.forEach(function(m){ m.read=true; }); save(); refreshBubble(); render(); }
+    function toggleMute(type){ store.settings.muted[type] = !store.settings.muted[type]; save(); render(); }
+
+    // ---------- render ----------
+    var activeFilter = 'all';
+    function unreadCount(){ return store.mails.filter(function(m){return !m.read;}).length; }
+    function isMailActive(){ var s=document.getElementById('mail'); return s && s.classList.contains('active'); }
+    function refreshBubble(){ var b=document.getElementById('mail-bubble'); if (!b) return; var n=unreadCount(); if (n>0){ b.textContent=n>99?'99+':String(n); b.style.display=''; } else b.style.display='none'; }
+
+    function subjSpecies(m){ return m.type==='static' ? m.subject : curSpeciesOf(m.payload.encounterKey, m.payload.species||m.payload.fromSpecies||''); }
+    function mailTitle(m){
+      var sp = subjSpecies(m);
+      if (m.type==='static') return nm(sp)+' available at '+(m.payload.label||'');
+      if (m.type==='evolution') return nm(m.payload.fromSpecies)+' → '+nm(m.payload.toSpecies)+' (Lv '+m.payload.level+')';
+      if (m.type==='level') return nm(sp)+' can learn '+moveName(m.payload.move);
+      if (m.type==='tm') return nm(sp)+' can learn TM '+m.payload.moveName;
+      return '';
+    }
+    function mailSub(m){
+      if (m.type==='level') return 'Learned at Lv '+m.payload.level;
+      if (m.type==='tm') return 'TM from '+m.payload.trainerLabel;
+      if (m.type==='evolution') return 'Reached at level '+m.payload.level;
+      return '';
+    }
+    function render(){
+      var list=document.getElementById('mail-list'), ctrls=document.getElementById('mail-controls'), empty=document.getElementById('mail-empty');
+      if (!list) return;
+      // controls
+      var TYPES=['static','evolution','level','tm'];
+      var chips = '<button class="filter-chip mail-filter'+(activeFilter==='all'?' active':'')+'" data-filter="all">All</button>' +
+        TYPES.map(function(t){ return '<button class="filter-chip mail-filter'+(activeFilter===t?' active':'')+'" data-filter="'+t+'">'+TYPE_LABEL[t]+'</button>'; }).join('');
+      var mutes = TYPES.map(function(t){ return '<label class="mail-mute"><input type="checkbox" data-mute="'+t+'"'+(store.settings.muted[t]?' checked':'')+'> mute '+TYPE_LABEL[t]+'</label>'; }).join('');
+      ctrls.innerHTML = '<div class="mail-controls-row">'+chips+'</div>' +
+        '<div class="mail-controls-row"><span class="small">Mute:</span> '+mutes+' <button class="reset-btn mail-markall">Mark all read</button></div>';
+      // mails
+      var mails = store.mails.filter(function(m){ return activeFilter==='all' || m.type===activeFilter; });
+      mails.sort(function(a,b){
+        if (a.read!==b.read) return a.read ? 1 : -1;             // unread first, read dimmed below
+        var pa=TYPE_PRIORITY[a.type], pb=TYPE_PRIORITY[b.type]; if (pa!==pb) return pa-pb;
+        return b.date - a.date;                                  // new > old
+      });
+      if (empty) empty.style.display = store.mails.length ? 'none' : '';
+      list.innerHTML = mails.map(function(m){
+        var sp = subjSpecies(m);
+        var env = m.read ? icon('openMail','📭') : icon('mail','✉');
+        var badge = TYPE_BADGE[m.type] ? icon(TYPE_BADGE[m.type][0], TYPE_BADGE[m.type][1]) : '';
+        var actions = '';
+        if (m.type==='evolution') actions += m.evolved ? '<span class="mail-evolved">Evolved ✓</span>' : '<button class="mail-evolve" data-evolve="'+m.id+'">Evolve</button>';
+        actions += '<button class="mail-readtoggle" data-read="'+m.id+'">'+(m.read?'Unread':'Read')+'</button>';
+        return '<div class="mail-row mail-'+m.type+(m.read?' mail-read':'')+'">' +
+          '<span class="mail-env" title="'+(m.read?'read':'unread')+'">'+env+'<span class="mail-type-badge" title="'+TYPE_LABEL[m.type]+'">'+badge+'</span></span>' +
+          '<span class="mail-thumb">'+(sp?sprite(sp,40):'')+'</span>' +
+          '<div class="mail-body"><div class="mail-title">'+mailTitle(m)+'</div><div class="mail-sub small">['+TYPE_LABEL[m.type]+'] '+mailSub(m)+'</div></div>' +
+          '<div class="mail-actions">'+actions+'</div></div>';
+      }).join('');
+    }
+
+    // ---------- events (delegated on the mail section) ----------
+    var section = document.getElementById('mail');
+    if (section) section.addEventListener('click', function(e){
+      var el = e.target.closest('[data-evolve],[data-read],[data-filter],.mail-markall');
+      if (!el) { var mu = e.target.closest('[data-mute]'); return; }
+      if (el.dataset.evolve) doEvolve(el.dataset.evolve);
+      else if (el.dataset.read) toggleRead(el.dataset.read);
+      else if (el.dataset.filter){ activeFilter = el.dataset.filter; render(); }
+      else if (el.classList.contains('mail-markall')) markAllRead();
+    });
+    if (section) section.addEventListener('change', function(e){ var mu=e.target.closest('[data-mute]'); if (mu) toggleMute(mu.dataset.mute); });
+
+    // ---------- styles ----------
+    var css = document.createElement('style'); css.textContent = ''
+      + '.mail-bubble{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;margin-left:6px;padding:0 4px;background:var(--obs-orange);color:var(--obs-on-orange);font-family:var(--obs-font-display);font-size:8px;border:2px solid var(--obs-shadow);}'
+      + '#mail-controls{margin-bottom:14px;}'
+      + '.mail-controls-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px;}'
+      + '.mail-mute{display:inline-flex;align-items:center;gap:4px;font-family:var(--obs-font-body);font-size:15px;color:var(--obs-text-dim);}'
+      + '.mail-row{display:flex;align-items:center;gap:12px;background:var(--obs-surface);border:var(--obs-border);box-shadow:var(--obs-shadow-sm);padding:10px 12px;margin-bottom:8px;}'
+      + '.mail-row.mail-read{opacity:0.5;}'
+      + '.mail-env{position:relative;display:inline-block;font-size:20px;flex-shrink:0;width:30px;height:30px;line-height:30px;text-align:center;} .mail-env > img{height:28px;width:28px;image-rendering:pixelated;}'
+      + '.mail-type-badge{position:absolute;right:-4px;bottom:-4px;width:16px;height:16px;line-height:16px;font-size:11px;text-align:center;} .mail-type-badge img{height:16px;width:16px;image-rendering:pixelated;}'
+      + '.mail-thumb{flex-shrink:0;width:40px;} .mail-thumb img{image-rendering:pixelated;}'
+      + '.mail-body{flex:1;min-width:0;} .mail-title{font-family:var(--obs-font-body);font-size:19px;color:var(--obs-text);}'
+      + '.mail-actions{display:flex;gap:8px;flex-shrink:0;align-items:center;}'
+      + '.mail-evolve{font-family:var(--obs-font-display);font-size:9px;letter-spacing:1px;background:var(--obs-cyan);color:var(--obs-on-cyan);border:var(--obs-border);box-shadow:var(--obs-shadow-sm);padding:8px 10px;cursor:pointer;}'
+      + '.mail-evolved{font-family:var(--obs-font-body);font-size:16px;color:var(--obs-green);}'
+      + '.mail-readtoggle{font-family:var(--obs-font-body);font-size:15px;background:var(--obs-well);color:var(--obs-text-dim);border:2px solid var(--obs-line);padding:6px 10px;cursor:pointer;}';
+    document.head.appendChild(css);
+
+    // ---------- init ----------
+    var mailNav = document.querySelector('.nav a[data-target="mail"]');
+    if (mailNav) mailNav.addEventListener('click', render);   // re-render whenever the tab is opened
+    reconcileEvo(); reconcile(); refreshBubble(); render();
+  })();
+  </script>
+
   <!-- loader -->
   <script>
     // Nav collapse/expand (runs immediately so there's no flash)
@@ -2281,6 +2537,7 @@
         if (!confirm('Reset ALL stored data?\n\nThis will clear your nuzlocke progress (captures, delays, defeated trainers) and all filter/sort preferences.')) return;
         localStorage.removeItem(nsKey('nuzlocke_v1'));
         localStorage.removeItem(nsKey('pokedex_filters_v1'));
+        localStorage.removeItem(nsKey('mail_v1'));
         window.location.reload();
       });
     });
