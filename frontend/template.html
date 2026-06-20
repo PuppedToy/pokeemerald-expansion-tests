@@ -647,7 +647,8 @@
 
         <section id="pc">
           <h2>PC</h2>
-          <div id="pc-empty" class="small" style="display:none; margin-top:12px;">No Pokémon in your box yet — capture some in the Encounters tab.</div>
+          <div id="pc-controls"></div>
+          <div id="pc-empty" class="small" style="display:none; margin-top:12px;"></div>
           <div id="pc-grid" class="pc-grid"></div>
         </section>
 
@@ -1277,10 +1278,10 @@
             </div>
           `;
           return `
-            <div class="clicker wild-poke poke-${pokeId}${slotExtraClass}" data-slot="${type}" style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
+            <div class="clicker wild-poke poke-${pokeId}${slotExtraClass}" data-slot="${type}" data-base-species="${pokeId}" style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
               ${typeLabel}
-              <img src="${img}" style="width:64px;height:64px;object-fit:contain" alt="${pokeName}">
-              <div style="font-weight:700;margin-top:4px">${coloredName}${adjustmentIcon}</div>
+              <img class="nz-poke-img" src="${img}" style="width:64px;height:64px;object-fit:contain" alt="${pokeName}">
+              <div class="nz-poke-name" style="font-weight:700;margin-top:4px">${coloredName}${adjustmentIcon}</div>
               ${checkboxHTML}
             </div>
           `;
@@ -2037,10 +2038,15 @@
     }
 
     // ---------- Visual: locations ----------
+    // The evolution overlay (obtained Pokémon's current stage) is owned by the Mail engine and
+    // persisted in its store; read it straight from localStorage so the Encounters tab reflects it
+    // regardless of script-init order. Keys are "<routeId>|<slot>".
+    function evoOverlay() { try { const r = localStorage.getItem(nsKey('mail_v1')); return r ? (JSON.parse(r).evo || {}) : {}; } catch (e) { return {}; } }
     function applyLocVisuals(routeId) {
       const loc = locState(routeId);
       const card = document.querySelector('.location-card[data-route-id="' + routeId + '"]');
       if (!card) return;
+      const overlay = evoOverlay();
 
       const sel     = loc.selected;
       const delayed = loc.delayed;
@@ -2077,6 +2083,20 @@
         if (delayCb) { delayCb.checked = delayed.includes(s);  delayCb.disabled = !!sel; }
         if (delayLabel) delayLabel.classList.toggle('nz-disabled', !!sel);
         if (faintCb) { faintCb.checked = fainted.includes(s); }
+
+        // Reflect the evolution overlay: show the obtained Pokémon's current evolution stage (its base
+        // form when there's no overlay — e.g. after deselecting, which rolls it back).
+        const base = slot.dataset.baseSpecies;
+        if (base) {
+          const cur = overlay[routeId + '|' + s] || base;
+          const imgEl = slot.querySelector('.nz-poke-img');
+          const nameEl = slot.querySelector('.nz-poke-name');
+          if (imgEl) { const src = getPokeImg(cur); if (imgEl.getAttribute('src') !== src) imgEl.setAttribute('src', src); }
+          if (nameEl) {
+            const p = findPoke(cur), col = getFullPokeLogColor(p), txt = nameify(cur.replace('SPECIES_', ''));
+            nameEl.innerHTML = (col ? '<span style="color:' + col + '">' + txt + '</span>' : txt) + getFullPokeLogIcon(p);
+          }
+        }
       });
     }
 
@@ -2085,6 +2105,9 @@
         applyLocVisuals(c.dataset.routeId);
       });
     }
+    // Let the Mail engine refresh the Encounters tab after an evolve / box change so its sprites stay
+    // in sync with the overlay (T-009 form coherence).
+    window.nzRefreshAll = applyAllLocVisuals;
 
     // Apply cross-location dimming for grouped locations (e.g. Shoal Cave tides).
     // Must be called AFTER applyLocVisuals so it can override per-slot classes.
@@ -2366,7 +2389,12 @@
     function curSpeciesOf(key, fallback){ var e = liveKeys()[key]; return (e&&e.currentSpecies) || fallback; }
     function reconcileEvo(){
       var live = liveKeys(), changed=false;
-      Object.keys(store.evo).forEach(function(k){ if (!live[k]){ delete store.evo[k]; changed=true; } });
+      // The overlay = the obtained Pokémon's current evolution stage. Keep it for ANY still-captured
+      // encounter — including fainted ones, so a fainted Pokémon freezes at the form it fainted at.
+      // Purge only when the encounter is no longer captured (deselected → rollback to the base form).
+      var capt={}; capturedEntries().forEach(function(e){ capt[e.encounterKey]=1; });
+      Object.keys(store.evo).forEach(function(k){ if (!capt[k]){ delete store.evo[k]; changed=true; } });
+      // Mails are actionable only for non-fainted box members; drop them when the encounter leaves the box.
       var before = store.mails.length;
       store.mails = store.mails.filter(function(m){ return m.type==='static' || (m.payload && live[m.payload.encounterKey]); });
       if (store.mails.length!==before) changed=true;
@@ -2450,7 +2478,7 @@
       }
       reconcile();
     };
-    window.onBoxMaybeChanged = function(){ if (reconcileEvo()) save(); refreshBubble(); if (isMailActive()) render(); };
+    window.onBoxMaybeChanged = function(){ if (reconcileEvo()) save(); refreshBubble(); if (isMailActive()) render(); if (typeof window.renderPC==='function') window.renderPC(); if (typeof window.nzRefreshAll==='function') window.nzRefreshAll(); };
 
     // ---------- actions ----------
     // Evolve one box entry from `fromSp` to `toSp`. Sets the overlay, then deletes ONLY the non-chosen
@@ -2471,6 +2499,7 @@
         addMail({ id:'evo|'+capFlag+'|'+key+'|'+ev.pokemon, type:'evolution', capFlag:capFlag, subject:key, payload:{ encounterKey:key, fromSpecies:toSp, toSpecies:ev.pokemon, level:ev.level } }); });
       save(); refreshBubble(); refreshCap(); render();
       if (typeof window.renderPC==='function') window.renderPC();   // keep the PC grid (T-009) in sync after an in-place evolve
+      if (typeof window.nzRefreshAll==='function') window.nzRefreshAll();   // keep the Encounters tab's sprite/name in sync with the new form
       if (taken) setTimeout(function(){ taken.read = true; save(); refreshBubble(); if (isMailActive()) render(); }, 500);
     }
     function doEvolve(mailId){
@@ -2607,8 +2636,10 @@
 
     function refreshCap(){ var el=document.getElementById('level-cap-value'); if (el) el.textContent = currentCapLevel(nz()); }
     window.docCurrentCap = function(){ return currentCapLevel(nz()); };
-    // Non-fainted box entries (one per encounter, evolution overlay applied) for the PC tab (T-009).
+    // Box entries (one per encounter, evolution overlay applied) for the PC tab (T-009):
+    // docBoxList = available (non-fainted), docFaintedList = fainted.
     window.docBoxList = function(){ return boxMembers(); };
+    window.docFaintedList = function(){ return capturedEntries().filter(function(e){ return e.fainted; }); };
 
     // HTML for the Pokédex modal "box" block (before Evolution); '' when the species/family is unrelated to the box.
     window.docBoxSectionHTML = function(speciesId){
@@ -2656,6 +2687,7 @@
     var mailNav = document.querySelector('.nav a[data-target="mail"]');
     if (mailNav) mailNav.addEventListener('click', render);   // re-render whenever the tab is opened
     reconcileEvo(); reconcile(); refreshBubble(); refreshCap(); render();
+    if (typeof window.nzRefreshAll==='function') window.nzRefreshAll();   // reflect overlays in the Encounters tab on load
   })();
   </script>
 
@@ -2664,36 +2696,49 @@
   (function(){
     'use strict';
     var css = document.createElement('style'); css.textContent = ''
+      + '#pc-controls{display:flex;gap:8px;margin-top:6px;}'
       + '.pc-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(120px, 1fr));gap:12px;margin-top:14px;}'
       + '.pc-cell{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;cursor:pointer;'
       + 'background:var(--obs-surface);border:var(--obs-border);box-shadow:var(--obs-shadow-sm);transition:transform .05s ease, box-shadow .05s ease;}'
       + '.pc-cell:hover{transform:translate(-2px,-2px);box-shadow:var(--obs-shadow-md);}'
       + '.pc-cell img{image-rendering:pixelated;width:64px;height:64px;}'
-      + '.pc-name{font-family:var(--obs-font-body);font-size:16px;color:var(--obs-text);text-align:center;line-height:1.1;}';
+      + '.pc-name{font-family:var(--obs-font-body);font-size:16px;color:var(--obs-text);text-align:center;line-height:1.1;}'
+      // Fainted view: black-and-white sprite + dimmed name.
+      + '.pc-cell.pc-fainted img{filter:grayscale(1);opacity:0.85;}'
+      + '.pc-cell.pc-fainted .pc-name{color:var(--obs-text-dim);}';
     document.head.appendChild(css);
 
+    var pcView = 'available';   // 'available' | 'fainted'
     function pcName(id){ return nameify(String(id).replace(/^SPECIES_/, '')); }
     window.renderPC = function(){
-      var grid = document.getElementById('pc-grid'), empty = document.getElementById('pc-empty');
+      var grid = document.getElementById('pc-grid'), empty = document.getElementById('pc-empty'), ctrls = document.getElementById('pc-controls');
       if (!grid) return;
-      var box = (typeof window.docBoxList === 'function') ? window.docBoxList() : [];
-      if (empty) empty.style.display = box.length ? 'none' : '';
-      grid.innerHTML = box.map(function(e){
+      var fainted = pcView === 'fainted';
+      var list = fainted
+        ? ((typeof window.docFaintedList === 'function') ? window.docFaintedList() : [])
+        : ((typeof window.docBoxList === 'function') ? window.docBoxList() : []);
+      if (ctrls) ctrls.innerHTML =
+        '<button class="filter-chip'+(!fainted?' active':'')+'" data-pc-view="available">Available</button>' +
+        '<button class="filter-chip'+(fainted?' active':'')+'" data-pc-view="fainted">Fainted</button>';
+      if (empty){ empty.textContent = fainted ? 'No fainted Pokémon — none have fainted yet.' : 'No Pokémon in your box yet — capture some in the Encounters tab.'; empty.style.display = list.length ? 'none' : ''; }
+      grid.innerHTML = list.map(function(e){
         var id = e.currentSpecies, nm = pcName(id);
-        return '<div class="pc-cell" data-species="'+id+'" title="'+nm+'">' +
+        return '<div class="pc-cell'+(fainted?' pc-fainted':'')+'" data-species="'+id+'" title="'+nm+'">' +
           '<img src="'+getPokeImg(id)+'" alt="'+nm+'">' +
           '<span class="pc-name">'+nm+'</span></div>';
       }).join('');
     };
 
-    var grid = document.getElementById('pc-grid');
-    if (grid) grid.addEventListener('click', function(ev){
+    var section = document.getElementById('pc');
+    if (section) section.addEventListener('click', function(ev){
+      var chip = ev.target.closest('[data-pc-view]');
+      if (chip){ pcView = chip.dataset.pcView; window.renderPC(); return; }
       var cell = ev.target.closest('.pc-cell'); if (!cell) return;
       var p = (typeof pokes !== 'undefined') && pokes.find(function(x){ return x.id === cell.dataset.species; });
       if (p && typeof showPokemonModal === 'function') showPokemonModal(p);
     });
 
-    window.renderPC();   // initial paint (also re-rendered on tab open + after in-place evolve)
+    window.renderPC();   // initial paint (also re-rendered on tab open, box change, and after in-place evolve)
   })();
   </script>
 

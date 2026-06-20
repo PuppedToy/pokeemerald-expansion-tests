@@ -12,5 +12,5 @@
 | [T-006](T-006-docs-obsidian-polish.md) | Finish aligning the docs with Obsidian (flatten leftovers) + pixel-icon wiring | done | 0.1.0 | 2026-06-20 |
 | [T-007](T-007-mail-notifications.md) | Mail notification tab in the docs (level-cap-driven, between Trainers and Pokedex) | done | 0.1.0 | 2026-06-20 |
 | [T-008](T-008-box-evolution-coherence.md) | Box/evolution coherence — level-cap display + Pokédex modal "in box" section | done | 0.1.0 | 2026-06-20 |
-| [T-009](T-009-pc-box-grid.md) | PC tab — scrollable grid of the player's (non-fainted) box Pokémon | in-progress | 0.1.0 | 2026-06-20 |
+| [T-009](T-009-pc-box-grid.md) | PC tab — scrollable grid of the player's (non-fainted) box Pokémon | done | 0.1.0 | 2026-06-20 |
 | [T-010](T-010-section-scroll-policy.md) | Per-section scroll policy on load/switch in the generated docs | proposed | 0.1.0 | 2026-06-20 |

@@ -1,7 +1,7 @@
 ---
 id: T-009
 title: PC tab — scrollable grid of the player's (non-fainted) box Pokémon
-status: in-progress
+status: done
 type: feature
 created: 2026-06-20
 updated: 2026-06-20
@@ -58,6 +58,9 @@ Acceptance criteria:
       is empty; fainted Pokémon never appear.
 - [x] App (`index.html`) unaffected; `cd randomizer && npm test` green; `node scripts/check-tracker.mjs`
       green; docs stay self-contained (0 new external requests).
+- [x] **Available ↔ Fainted toggle** (scope added during review): the PC tab has a two-chip toggle;
+      "Available" shows the non-fainted box, "Fainted" shows fainted entries with a black-and-white
+      (grayscale) filter over each Pokémon. Cells stay clickable in both views.
 
 ## Progress log
 
@@ -79,9 +82,56 @@ Acceptance criteria:
   build-side changes; `cd randomizer && npm test` green; `node scripts/check-tracker.mjs` green.
   - **Note (workflow):** developed alongside T-008 per the user's request to proceed while T-008 is
     manually tested. It will be its own logical commit; merge order is T-008 then T-009.
+- **2026-06-20** — T-008 merged to master (carrying this PC tab's base). Continued T-009 on a fresh
+  `feature/T-009-pc-box-grid` branch off master.
+- **2026-06-20** — Added the **Available ↔ Fainted toggle** (user request: "Fainted aplicará un filtro
+  blanco y negro sobre cada pokemon"). PC section gains `#pc-controls` with two `.filter-chip` buttons;
+  a module `pcView` state (default `available`, in-memory like the mail filter) drives `renderPC()`,
+  which pulls `window.docBoxList()` (available) or the new `window.docFaintedList()` (= captured-and-
+  fainted entries) and tags fainted cells `.pc-fainted` → `img{filter:grayscale(1);opacity:.85}` + dim
+  name. Cells stay clickable in both views (open the modal, where fainted shows the Undo control).
+  `onBoxMaybeChanged` now also calls `renderPC()` so the grid tracks capture/faint changes live.
+  Verified (headless, 3 of 9 STARTER_EXTRA fainted): Available = 6 colour cells (`grayscale=0`),
+  Fainted = 3 cells all `grayscale=3`; toggle active-state correct. Suite 422 green.
+  - **Pending user manual test before closing.** Note: fainting purges the evo overlay (existing T-007
+    behaviour), so a fainted evolved mon shows its base species in the Fainted view.
+- **2026-06-20** — Evolution-form coherence (user follow-up: "freeze the fainted pokemon in the form it
+  fainted"). Root cause of fainted-shows-base: `reconcileEvo` purged the evo overlay whenever an
+  encounter left the **box** (i.e. on faint *or* deselect). Reworked so the overlay = the obtained
+  Pokémon's current evolution stage, persisted for any **still-captured** encounter (purged only when
+  the encounter is no longer captured → deselect rollback to base). Mails still drop on faint
+  (unactionable). Also made the **Encounters tab reflect the current form**: each obtained slot now
+  carries `data-base-species`, and `applyLocVisuals` swaps the slot sprite/name to the overlay species
+  (base when none) — reading the overlay straight from `localStorage[nsKey('mail_v1')].evo` so it's
+  init-order-independent. Exposed `window.nzRefreshAll` (= `applyAllLocVisuals`); the Mail engine calls
+  it from `evolveEntry`, `onBoxMaybeChanged`, and mail-init so Encounters stays in sync after an
+  evolve / box change / on load. Net effect: Encounters, box, PC (incl. Fainted, frozen at the evolved
+  stage) and the modal all show the same form. Verified by headless: seeding Chimchar→Monferno overlay,
+  the Encounters STARTER_EXTRA slot shows **Monferno** (others stay base) and the PC Fainted view shows
+  **Monferno** grayscale (was base before); interactive deselect on a route slot rolled it back to
+  **Chimchar** with the overlay purged. `cd randomizer && npm test` 422 green; `check-tracker` OK.
+  - **Touches shared behaviour:** changes the T-007/T-008 overlay-purge rule and the Encounters-tab
+    (T-005) rendering. Still pending user manual test before closing T-009.
   - **To confirm in manual test:** the grid against a real run; the empty state with nothing captured;
     that evolving from a modal opened over the PC tab updates the grid behind it.
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+- **2026-06-20** — Closed at the user's explicit request (`commit, merge y cierra`) after manual testing.
+
+**Shipped:** A **PC** tab in the generated docs (between Trainers and Mail) — a single scrollable,
+non-paginated grid of the box, each cell opening its detail modal — with an **Available ↔ Fainted**
+toggle (Fainted renders each Pokémon in black-and-white). Plus **evolution-form coherence**: the
+obtained Pokémon's current stage is shown consistently across the Encounters tab, box, PC (incl. the
+Fainted view, frozen at the form it fainted at) and the modal; deselecting a Pokémon rolls it back to
+its base form.
+
+**Deviations / scope growth from the original plan:** the plan was just the grid. Review added the
+Available/Fainted toggle, and the form-coherence fix — which reworked the T-007/T-008 evo-overlay
+purge rule (keep on faint, purge only on deselect) and the Encounters-tab (T-005) rendering
+(`applyLocVisuals` now swaps sprite/name to the overlay form via a new `window.nzRefreshAll` hook).
+All UI logic in `frontend/template.html`, outside the Jest suite per CLAUDE.md; verified by data
+simulation + headless screenshots. Suite stayed 422 green.
+
+**Notes:** developed on its own branch off master after T-008 merged (T-009 depends on T-008's box
+helpers). **T-010** (per-section scroll policy) remains noted for later.
