@@ -188,6 +188,18 @@ async function randomizeTMs() {
     return tmList;
 }
 
+// Stamp each move with its 1-based TM number from a tmList (tmList[0] → TM01; entries are move
+// names without the MOVE_ prefix). Mutates and returns `moves`. Non-TM moves are left untouched.
+// Used by the docs pipeline so the Moves tab can show a "TM01" label and filter by TM (T-011).
+function annotateTmNumbers(moves, tmList) {
+    (tmList || []).forEach((mv, idx) => {
+        if (!mv) return;
+        const id = 'MOVE_' + mv;
+        if (moves[id]) moves[id].tm = idx + 1;
+    });
+    return moves;
+}
+
 // buildTMList exported for browser use (RNG-only, no file I/O).
 // writeTMsFromList exported for bundle mode compilation in make.js.
-module.exports = { randomizeTMs, buildTMList, writeTMsFromList };
+module.exports = { randomizeTMs, buildTMList, writeTMsFromList, annotateTmNumbers };

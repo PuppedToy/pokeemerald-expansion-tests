@@ -326,9 +326,37 @@ function parseSpeciesFile(genSpeciesFileText, definitions, evoTree) {
     return pokemonList;
 }
 
+// Concatenate every "..." segment of a C string literal (possibly spread over several lines,
+// e.g. inside COMPOUND_STRING(...) or _(...)) into one human-readable string. The pokeemerald
+// text control codes \n / \l / \p become spaces; escaped quotes/backslashes are unescaped.
+function joinStringSegments(str) {
+    const segments = [];
+    const re = /"((?:\\.|[^"\\])*)"/g;
+    let m;
+    while ((m = re.exec(str)) !== null) segments.push(m[1]);
+    return segments.join('')
+        .replace(/\\[nlp]/g, ' ')
+        .replace(/\\"/g, '"')
+        .replace(/\\\\/g, '\\')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+// Map shared move-description constants (`static const u8 sXxxDescription[] = _(...)`,
+// also the exported `const u8 gNotDoneYetDescription[]`) to their text, so a move whose
+// .description points at one (e.g. `.description = sMegaDrainDescription,`) can be resolved.
+function parseDescriptionConsts(text) {
+    const consts = {};
+    const re = /(?:static\s+)?const u8\s+(\w+)\s*\[\]\s*=\s*_\(([\s\S]*?)\);/g;
+    let m;
+    while ((m = re.exec(text)) !== null) consts[m[1]] = joinStringSegments(m[2]);
+    return consts;
+}
+
 function parseMovesFile(movesFileText) {
     const lines = movesFileText.split('\n');
     const moves = {};
+    const descConsts = parseDescriptionConsts(movesFileText);
     let currentMove;
 
     for (let i = 0; i < lines.length; i++) {
@@ -349,6 +377,23 @@ function parseMovesFile(movesFileText) {
         if (!currentMove) continue;
         if (lines[i].startsWith('        .') && !lines[i].startsWith('        .additionalEffects =')) {
             const currentProperty = lines[i].trim().split('.')[1].split(' ')[0];
+            // .description can be a single-line COMPOUND_STRING, a multi-line COMPOUND_STRING, or a
+            // pointer to a shared const. Gather the whole RHS (a struct field always ends with a
+            // trailing comma; intermediate string-literal lines end with a quote) before resolving.
+            if (currentProperty === 'description') {
+                let rhs = lines[i];
+                while (!rhs.trimEnd().endsWith(',') && i < lines.length - 1) {
+                    i++;
+                    rhs += ' ' + lines[i];
+                }
+                if (rhs.includes('"')) {
+                    currentMove.description = joinStringSegments(rhs);
+                } else {
+                    const token = rhs.slice(rhs.indexOf('=') + 1).replace(/,\s*$/, '').trim();
+                    currentMove.description = descConsts[token] !== undefined ? descConsts[token] : '';
+                }
+                continue;
+            }
             let currentValue = lines[i].trim().replace(/.*?=/, '').replace(/,$/, '').trim();
             const compoundMatch = currentValue.match(/COMPOUND_STRING\("(.*)"\),?/);
             if (compoundMatch) {

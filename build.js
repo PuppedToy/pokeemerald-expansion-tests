@@ -40,6 +40,7 @@ async function main() {
         evoTree:          data.evoTree,
         megaEvoTree:      data.megaEvoTree,
         allPokes:         data.allPokes,
+        tmLocations:      data.tmLocations,
     };
 
     fs.mkdirSync(FRONT_DATA, { recursive: true });

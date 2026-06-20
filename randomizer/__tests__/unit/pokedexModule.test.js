@@ -49,6 +49,12 @@ jest.mock('../../parser', () => ({
 
 jest.mock('../../tmRandomizer', () => ({
     randomizeTMs: jest.fn(async () => ['MOVE_FLAMETHROWER', 'MOVE_THUNDERBOLT']),
+    buildTMList: jest.fn(() => ['MOVE_FLAMETHROWER', 'MOVE_THUNDERBOLT']),
+    // 1-based TM stamp from a tmList; mirrors the real signature (mutates & returns moves).
+    annotateTmNumbers: jest.fn((moves, tmList) => {
+        (tmList || []).forEach((mv, idx) => { if (mv && moves['MOVE_' + mv]) moves['MOVE_' + mv].tm = idx + 1; });
+        return moves;
+    }),
 }));
 
 jest.mock('../../teachableExpander', () => ({

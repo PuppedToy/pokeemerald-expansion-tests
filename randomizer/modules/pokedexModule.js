@@ -3,7 +3,8 @@
 const fs = require('fs').promises;
 const path = require('path');
 const parser = require('../parser');
-const { randomizeTMs, buildTMList } = require('../tmRandomizer');
+const { randomizeTMs, buildTMList, annotateTmNumbers } = require('../tmRandomizer');
+const { parseTmLocations } = require('../tmLocations');
 const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
 const { ratePokemon, rateContextual, rateMove } = require('../rating');
 const { balancePokemon } = require('../rebalancer');
@@ -30,6 +31,13 @@ async function parseBaseData() {
     const movesFilePath = path.resolve(__dirname, '..', '..', 'src', 'data', 'moves_info.h');
     const movesFileText = await fs.readFile(movesFilePath, 'utf-8');
     const moves = parser.parseMovesFile(movesFileText);
+    // TM in-world locations (fixed per slot) — parsed from the docs SSOT so the Moves tab can show
+    // where each TM is obtained (route + trainer). Best-effort: missing file → empty map (T-011).
+    let tmLocations = {};
+    try {
+        const tmsMdText = await fs.readFile(path.resolve(__dirname, '..', 'docs', 'tms.md'), 'utf-8');
+        tmLocations = parseTmLocations(tmsMdText);
+    } catch (e) { tmLocations = {}; }
     Object.keys(moves).forEach(moveId => {
         moves[moveId].power    = parser.parseMoveStat(moves[moveId].power);
         moves[moveId].accuracy = parser.parseMoveStat(moves[moveId].accuracy);
@@ -109,7 +117,7 @@ async function parseBaseData() {
         });
     }
 
-    return { abilities, megaEvoStones, moves, levelUpLearnsets, TMTeachables, evoTree, megaEvoTree, allPokes };
+    return { abilities, megaEvoStones, moves, levelUpLearnsets, TMTeachables, evoTree, megaEvoTree, allPokes, tmLocations };
 }
 
 // Run the full pokedex pipeline.
@@ -144,6 +152,12 @@ async function runPokedexModule(config, baseData = null) {
         tmList = buildTMList();
         tmPool = allTms ? null : new Set(tmList.map(m => 'MOVE_' + m));
     }
+
+    // Stamp each move with its TM number (1-based) so the docs can label/filter TM moves (T-011).
+    annotateTmNumbers(moves, tmList);
+    // Attach the fixed in-world location of each TM slot (route + trainer) for the Moves tab (T-011).
+    const tmLocations = baseData.tmLocations || {};
+    Object.keys(moves).forEach(id => { if (moves[id].tm && tmLocations[moves[id].tm]) moves[id].tmLocation = tmLocations[moves[id].tm]; });
 
     // 7. Expand teachables with randomized pool
     expandAllTeachables(allPokes, tmPool, moves);
