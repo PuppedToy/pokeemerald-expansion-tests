@@ -924,6 +924,18 @@
   <script src="wildpokes.js"></script>
   <script src="abilities.js"></script>
   <script src="sprites.js"></script>
+  <!-- T-005 — per-run localStorage namespace. The run-namespace token below is replaced
+       at doc-generation time (randomizer/writer.js, frontend/js/app.js) with a stable
+       per-run id (see docRunNamespace). nsKey() suffixes every storage key with it so
+       docs from different runs opened in the same browser/origin never share state.
+       Un-generated template (token left intact, contains '%') → fall back to shared keys. -->
+  <script>
+    window.__DOC_RUN_NS = "%%DOC_RUN_NS%%";
+    window.nsKey = function (base) {
+      var ns = window.__DOC_RUN_NS;
+      return (ns && ns.indexOf('%') === -1) ? base + '::' + ns : base;
+    };
+  </script>
   <!-- pokedex rendering is handled by the filter module below -->
   <!-- script to handle moves -->
   <script>
@@ -1532,8 +1544,8 @@
   <script>
   (function () {
     'use strict';
-    const FS_KEY = 'pokedex_filters_v1';
-    const NZ_KEY = 'nuzlocke_v1';
+    const FS_KEY = nsKey('pokedex_filters_v1');
+    const NZ_KEY = nsKey('nuzlocke_v1');
 
     const ALL_TYPES = Object.keys(typeColors);
     const TIER_ORDER = ['AG','LEGEND','UBERS','OU','UU','RU','NU','PU','ZU','MAGIKARP'];
@@ -1924,7 +1936,7 @@
   <script>
   (function () {
     'use strict';
-    const LS_KEY = 'nuzlocke_v1';
+    const LS_KEY = nsKey('nuzlocke_v1');
 
     // ---------- Trainer groups ----------
     // Trainers that must be marked/unmarked together (fought as a set).
@@ -2220,7 +2232,7 @@
     (function () {
       const aside      = document.querySelector('.right');
       const toggleBtn  = document.getElementById('nav-toggle');
-      const NAV_KEY    = 'nav_collapsed';
+      const NAV_KEY    = nsKey('nav_collapsed');
 
       function setCollapsed(collapsed) {
         aside.classList.toggle('nav-collapsed', collapsed);
@@ -2240,8 +2252,8 @@
       // Reset all stored data
       document.getElementById('reset-all-btn').addEventListener('click', () => {
         if (!confirm('Reset ALL stored data?\n\nThis will clear your nuzlocke progress (captures, delays, defeated trainers) and all filter/sort preferences.')) return;
-        localStorage.removeItem('nuzlocke_v1');
-        localStorage.removeItem('pokedex_filters_v1');
+        localStorage.removeItem(nsKey('nuzlocke_v1'));
+        localStorage.removeItem(nsKey('pokedex_filters_v1'));
         window.location.reload();
       });
     });
