@@ -355,6 +355,13 @@
   margin-bottom: 20px;
 }
 
+/* Spin the generating gear while a run is being generated (stepped = retro). */
+#gen-running .generate-icon img {
+  animation: gen-gear-spin 1.2s steps(12) infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes gen-gear-spin { to { transform: rotate(360deg); } }
+
 .generate-title {
   font-family: var(--obs-font-display);
   font-size: 14px;

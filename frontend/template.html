@@ -469,7 +469,8 @@
       font-family:var(--obs-font-display); font-size:9px; letter-spacing:var(--obs-tracking); padding:12px 10px; }
     .nav a:hover{ background:var(--obs-surface); color:var(--obs-text); }
     .nav a.active{ background:var(--obs-orange); color:var(--obs-on-orange); }
-    .nav-icon{ font-size:14px; }
+    .nav-icon{ font-size:20px; display:inline-flex; align-items:center; }
+    .nav-icon img.ico{ height:24px; width:24px; vertical-align:middle; }
     #nav-toggle{ font-family:var(--obs-font-display); font-size:8px; color:var(--obs-text-dim);
       border-radius:0; letter-spacing:var(--obs-tracking); }
     #nav-toggle:hover{ background:var(--obs-surface); color:var(--obs-text); }
@@ -503,7 +504,11 @@
       font-family:var(--obs-font-body); font-size:16px; color:var(--obs-text); }
     .ability-tag{ background:var(--obs-well); border:var(--obs-border); box-shadow:var(--obs-shadow-sm);
       padding:8px 10px; }
-    .move-item{ border-radius:0; border:2px solid var(--obs-shadow); font-weight:700; }
+    /* Trainer-team moves: full type-colour fill (set inline), dark text, bigger VT323 for
+       readability — the box size was the real issue, not the colour. T-006. */
+    .move-item{ border-radius:0; border:2px solid var(--obs-shadow); color:#0d1b2a;
+      font-family:var(--obs-font-body); font-size:19px; font-weight:700; line-height:1.1;
+      text-align:center; padding:6px 10px; margin:5px 0; }
     .card-log-item{ border-radius:0; font-family:var(--obs-font-body); font-size:15px; }
     .reward-item{ color:var(--obs-yellow); }
     .specialCard{ background:#2a0f08; }
@@ -538,6 +543,23 @@
     .wild-poke.nz-fainted{ background:rgba(255,93,93,0.18) !important; border:2px solid var(--obs-red) !important; }
     .location-card.nz-has-delayed{ border-color:var(--obs-yellow) !important; }
     .nz-defeat-label{ border-radius:0; background:var(--obs-surface); border:2px solid var(--obs-line); font-family:var(--obs-font-body); font-size:15px; }
+
+    /* ============================================================
+       T-006 — flatten remaining non-retro leftovers.
+       border-radius !important beats the inline styles in the render JS
+       (tier badges, poke cards, flag pills, buttons). The kit is square always.
+       ============================================================ */
+    *, *::before, *::after { border-radius: 0 !important; }
+    /* default poke rows: flat well instead of glassy white (nuzlocke state
+       classes keep winning by higher specificity) */
+    .trainer-poke, .wild-poke { background: var(--obs-well) !important; border: 2px solid var(--obs-line); }
+    /* pixel-icon glyphs that replace emojis (T-006) */
+    .ico { height: 1em; width: auto; image-rendering: pixelated; vertical-align: -0.12em; }
+    /* Tier badge: a raised pixel plaque (3px border + offset shadow) so it reads as a
+       distinct game component, not another flat type chip. Colors stay inline (per tier). T-006. */
+    .tier-badge { display:inline-block; margin-top:6px; padding:8px 14px;
+      border: var(--obs-border); box-shadow: var(--obs-shadow-md);
+      font-family: var(--obs-font-display); font-size: 9px; letter-spacing: var(--obs-tracking); line-height: 1.5; }
   </style>
 </head>
 <body>
@@ -637,11 +659,11 @@
       <aside class="right">
         <button id="nav-toggle"><span class="nav-icon">▶</span><span class="nav-text">Hide menu</span></button>
         <nav class="nav" id="nav">
-          <a class="clicker" data-target="wildpokes"><span class="nav-icon">🗺️</span><span class="nav-text">Encounters</span></a>
-          <a class="clicker" data-target="trainers"><span class="nav-icon">⚔️</span><span class="nav-text">Trainers</span></a>
-          <a class="clicker" data-target="pokemon"><span class="nav-icon">📖</span><span class="nav-text">Pokedex</span></a>
-          <a class="clicker" data-target="moves"><span class="nav-icon">⚡</span><span class="nav-text">Moves</span></a>
-          <a class="clicker" data-target="abilities"><span class="nav-icon">✨</span><span class="nav-text">Abilities</span></a>
+          <a class="clicker" data-target="wildpokes"><span class="nav-icon" data-icon="encounters">🗺️</span><span class="nav-text">Encounters</span></a>
+          <a class="clicker" data-target="trainers"><span class="nav-icon" data-icon="trainers">⚔️</span><span class="nav-text">Trainers</span></a>
+          <a class="clicker" data-target="pokemon"><span class="nav-icon" data-icon="pokedex">📖</span><span class="nav-text">Pokedex</span></a>
+          <a class="clicker" data-target="moves"><span class="nav-icon" data-icon="moves">⚡</span><span class="nav-text">Moves</span></a>
+          <a class="clicker" data-target="abilities"><span class="nav-icon" data-icon="abilities">✨</span><span class="nav-text">Abilities</span></a>
         </nav>
         <button id="reset-all-btn" style="
           display:flex; align-items:center; gap:6px;
@@ -649,13 +671,13 @@
           border-radius:10px; font-size:12px; font-weight:600; cursor:pointer;
           border:1px solid rgba(239,68,68,0.4); background:rgba(239,68,68,0.08);
           color:#f87171; font-family:inherit;
-        ">⚠<span class="nav-text"> Reset All Data</span></button>
+        "><span data-icon="warning">⚠</span><span class="nav-text"> Reset All Data</span></button>
       </aside>
 
     </main>
     
     <footer>
-      Made with ❤️ — use this to aid your custom journey
+      Made with <span data-icon="heart">❤️</span> — use this to aid your custom journey
     </footer>
   </div>
 
@@ -780,11 +802,11 @@
     function getLogIcon(logEntry) {
       if (!logEntry) return '';
       if (logEntry.type === 'BUFF') {
-        return ' ⭐️';
+        return ' ' + getIcon('star', '⭐️');
       } else if (logEntry.type === 'NERF') {
-        return ' 🔻';
+        return ' ' + getIcon('arrow-down', '🔻');
       } else {
-        return ' 🔧';
+        return ' ' + getIcon('wrench', '🔧');
       }
     }
 
@@ -805,11 +827,11 @@
       const allLogIsNerfs = (poke.log || []).every(entry => entry.type === 'NERF');
       if (poke.log && poke.log.length > 0) {
         if (allLogIsBuffs) {
-          fullLogIcon = ' ⭐️';
+          fullLogIcon = ' ' + getIcon('star', '⭐️');
         } else if (allLogIsNerfs) {
-          fullLogIcon = ' 🔻';
+          fullLogIcon = ' ' + getIcon('arrow-down', '🔻');
         } else {
-          fullLogIcon = ' 🔧';
+          fullLogIcon = ' ' + getIcon('wrench', '🔧');
         }
       }
       return fullLogIcon;
@@ -859,7 +881,7 @@
         + (spaLogEntry?.value || 0)
         + (spdLogEntry?.value || 0)
         + (speLogEntry?.value || 0);
-      const bstIcon = BSTChangeValue > 0 ? ' ⭐️' : BSTChangeValue < 0 ? ' 🔻' : '';
+      const bstIcon = BSTChangeValue > 0 ? ' ' + getIcon('star', '⭐️') : BSTChangeValue < 0 ? ' ' + getIcon('arrow-down', '🔻') : '';
       const typeEntry = (poke.log || []).find(entry => entry.target === 'type');
       const typeIcon = getLogIcon(typeEntry);
       const abilityEntry = (poke.log || []).find(entry => entry.target === 'ability');
@@ -894,7 +916,7 @@
                 <div style="margin-top: 10px; text-align: center; width: 100%;">${abilities}</div>
                 <div>
                     <div style="text-align: center; font-weight: 700; margin-top: 6px; color: #FFDDC9">BST: ${adjustedBST}${bstIcon}</div>
-                    <div style="text-align: center"><div style="text-align: center; font-weight: 700; margin-top: 6px; background-color: ${tierColorBgs[poke.rating.tier]}; color: ${tierColorFonts[poke.rating.tier]}; display: inline-block; padding: 4px 12px; border-radius: 999px;">${tierNames[poke.rating.tier]} (${poke.rating.role})</div></div>
+                    <div style="text-align: center"><div class="tier-badge" style="background-color: ${tierColorBgs[poke.rating.tier]}; color: ${tierColorFonts[poke.rating.tier]};">${tierNames[poke.rating.tier]} (${poke.rating.role})</div></div>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, auto); gap: 6px; margin-top: 10px;">
                         <div style="font-weight: 700; color: #BDF8FF">HP</div>
                         <div style="font-weight: 700; color: #BDF8FF">ATK</div>
@@ -917,7 +939,11 @@
     }
   </script>
   <script src="assets.js"></script>
-  <script>function getAsset(p){return (typeof EMBEDDED_ASSETS !== 'undefined' && EMBEDDED_ASSETS[p]) || '';}</script>
+  <script>function getAsset(p){return (typeof EMBEDDED_ASSETS !== 'undefined' && EMBEDDED_ASSETS[p]) || '';}
+  /* T-006: resolve a pixel-icon by name from frontend/assets/<name>.png (or icons/<name>.png).
+     Lets the user add icon PNGs incrementally — until one exists, the emoji fallback shows. */
+  function iconAsset(name){ return getAsset(name+'.png') || getAsset('icons/'+name+'.png'); }
+  function getIcon(name, fallback){ var u=iconAsset(name); return u ? '<img class="ico" src="'+u+'" alt="">' : (fallback||''); }</script>
   <script src="pokes.js"></script>
   <script src="moves.js"></script>
   <script src="trainers.js"></script>
@@ -1117,7 +1143,7 @@
       let rewards = '';
       if (trainer.reward && trainer.reward.length > 0) {
         rewards = `<div class="rewards">
-          ${trainer.reward.map(r => '<div class="reward-item">🎁 ' + r + '</div>').join('')}
+          ${trainer.reward.map(r => '<div class="reward-item">' + getIcon('reward','🎁') + ' ' + r + '</div>').join('')}
         </div>
         `;
       }
@@ -1134,7 +1160,7 @@
           </div>` : ''}
           <img width="60" height="60" src="${getTrainerImg(trainer.class)}">
           <div class="small" style="text-align:center; color:#FFB28A;">Lv. ${trainer.level}</div>
-          ${trainer.location ? `<div class="small" style="text-align:center; color:#8BC4FF; margin-top:2px;">📍 ${trainer.location}</div>` : ''}
+          ${trainer.location ? `<div class="small" style="text-align:center; color:var(--obs-cyan); margin-top:2px;">${getIcon('location','📍')} ${trainer.location}</div>` : ''}
           ${rewards}
           <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:8px;">
             ${teamHTML}
@@ -1214,7 +1240,7 @@
           const slotExtraClass = autoSelected ? ' nz-auto-selected' : '';
           const faintLabel = `<label class="nz-cb-label nz-faint-label" title="Fainted">
                 <input type="checkbox" class="nz-faint-cb" data-route="${route.id}" data-slot="${type}">
-                💀
+                ${getIcon('skull','💀')}
               </label>`;
           const checkboxHTML = autoSelected ? `
             <div class="nuzlocke-controls">${faintLabel}</div>
@@ -1222,11 +1248,11 @@
             <div class="nuzlocke-controls">
               <label class="nz-cb-label nz-delay-label" title="Delay — save for later">
                 <input type="checkbox" class="nz-delay-cb" data-route="${route.id}" data-slot="${type}">
-                ⏱
+                ${getIcon('clock','⏱')}
               </label>
               <label class="nz-cb-label nz-select-label" title="Captured">
                 <input type="checkbox" class="nz-select-cb" data-route="${route.id}" data-slot="${type}">
-                ✓
+                ${getIcon('check','✓')}
               </label>
               ${faintLabel}
             </div>
@@ -1243,16 +1269,17 @@
         .join('');
 
       let headerBadge = '';
+      const badgeStyle = `font-family:var(--obs-font-display); font-size:8px; letter-spacing:1px; margin-top:4px;`;
       if (isBossReward)
-        headerBadge = `<div style="font-size:11px; color:#c084fc; font-weight:600; letter-spacing:0.05em; margin-top:2px;">BOSS REWARD</div>`;
+        headerBadge = `<div style="${badgeStyle} color:var(--obs-cyan);">BOSS REWARD</div>`;
       else if (isStaticEncounter)
-        headerBadge = `<div style="font-size:11px; color:#f87171; font-weight:600; letter-spacing:0.05em; margin-top:2px;">STATIC ENCOUNTER</div>`;
+        headerBadge = `<div style="${badgeStyle} color:var(--obs-red);">STATIC ENCOUNTER</div>`;
       else if (isLegendaryEncounter)
-        headerBadge = `<div style="font-size:11px; font-weight:800; letter-spacing:0.08em; margin-top:2px; background:linear-gradient(90deg,#f59e0b,#fbbf24,#f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">✦ LEGENDARY ✦</div>`;
+        headerBadge = `<div style="${badgeStyle} color:var(--obs-yellow);">${getIcon('legendary','✦')} LEGENDARY ${getIcon('legendary','✦')}</div>`;
 
       card.innerHTML = `
         <div class="meta">
-          <div class="title">${routeName}<span class="nz-stopwatch-badge">⏱</span></div>
+          <div class="title">${routeName}<span class="nz-stopwatch-badge">${getIcon('clock','⏱')}</span></div>
           ${headerBadge}
         </div>
         <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:8px;">
@@ -2256,6 +2283,14 @@
         localStorage.removeItem(nsKey('pokedex_filters_v1'));
         window.location.reload();
       });
+    });
+  </script>
+  <!-- T-006: swap static [data-icon] emoji placeholders for pixel-icon PNGs when present.
+       Until the user adds frontend/assets/icons/<name>.png, the emoji fallback stays. -->
+  <script>
+    document.querySelectorAll('[data-icon]').forEach(function(el){
+      var u = (typeof iconAsset === 'function') && iconAsset(el.getAttribute('data-icon'));
+      if (u) el.innerHTML = '<img class="ico" src="' + u + '" alt="">';
     });
   </script>
 </body>
