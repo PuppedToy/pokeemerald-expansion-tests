@@ -17,33 +17,55 @@ function shiftTier(t, delta) {
     return i === -1 ? t : TIER_SEQ[Math.max(0, Math.min(TIER_SEQ.length - 1, i + delta))];
 }
 
+// A slot's shiftable "primary tier" index in TIER_SEQ, or -1 if the slot must not move.
+// contextualTier[0], or a SINGLE-element absoluteTier — both tier systems shift identically (B-001:
+// absolute-tier trainers scale with difficulty AND derive non-boss teams just like contextual ones).
+// isMega slots (megas stay fixed — this also covers every multi-tier absolute range, which are all
+// mega slots) and evolutionTier slots (rival/Wally/Steven progressive mons) never move.
+function primaryTierIdx(slot) {
+    if (slot.isMega || slot.evolutionTier) return -1;
+    if (slot.contextualTier) return TIER_SEQ.indexOf(slot.contextualTier[0]);
+    if (slot.absoluteTier && slot.absoluteTier.length === 1) return TIER_SEQ.indexOf(slot.absoluteTier[0]);
+    return -1;
+}
+
+// Shift a slot's (or fallback entry's) primary tier by delta in place. Mirrors primaryTierIdx's
+// eligibility so nothing protected (mega/evolutionTier/multi-tier absolute) is ever moved.
+function shiftSlotTier(slot, delta) {
+    if (slot.isMega || slot.evolutionTier) return;
+    if (slot.contextualTier) slot.contextualTier = [shiftTier(slot.contextualTier[0], delta)];
+    else if (slot.absoluteTier && slot.absoluteTier.length === 1) slot.absoluteTier = [shiftTier(slot.absoluteTier[0], delta)];
+}
+
 // delta: -1 (down) or +1 (up).
 // topOrBottom: 'top' → shift the N highest-tier slots down; 'bottom' → shift N lowest up.
 // numShifts: how many slots to shift (|level - 7|).
-// Slots without contextualTier (isMega, special, oneOf, etc.) are naturally skipped.
+// Eligible slots are ranked by primaryTierIdx (contextualTier or single-tier absoluteTier); mega,
+// special, oneOf and evolutionTier slots are skipped. Used both for the difficulty transform and for
+// deriving non-boss teams (easyTransform).
 function applyTransform(team, delta, topOrBottom, numShifts) {
     const result = team.map(s => ({
         ...s,
         contextualTier: s.contextualTier ? [...s.contextualTier] : s.contextualTier,
+        absoluteTier: s.absoluteTier ? [...s.absoluteTier] : s.absoluteTier,
         maxTierDownSteps: s.maxTierDownSteps,
         fallback: s.fallback
             ? s.fallback.map(fb => ({
                 ...fb,
                 contextualTier: fb.contextualTier ? [...fb.contextualTier] : fb.contextualTier,
+                absoluteTier: fb.absoluteTier ? [...fb.absoluteTier] : fb.absoluteTier,
             }))
             : s.fallback,
     }));
     const eligible = result
-        .map((s, i) => ({ i, idx: TIER_SEQ.indexOf(s.contextualTier?.[0]) }))
-        .filter(x => x.idx !== -1 && !result[x.i].isMega)
+        .map((s, i) => ({ i, idx: primaryTierIdx(s) }))
+        .filter(x => x.idx !== -1)
         .sort((a, b) => topOrBottom === 'top' ? b.idx - a.idx : a.idx - b.idx);
     for (let k = 0; k < numShifts && k < eligible.length; k++) {
         const s = result[eligible[k].i];
-        s.contextualTier = [shiftTier(s.contextualTier[0], delta)];
+        shiftSlotTier(s, delta);
         if (s.fallback) {
-            for (const fb of s.fallback) {
-                if (fb.contextualTier) fb.contextualTier = [shiftTier(fb.contextualTier[0], delta)];
-            }
+            for (const fb of s.fallback) shiftSlotTier(fb, delta);
         }
     }
     return result;

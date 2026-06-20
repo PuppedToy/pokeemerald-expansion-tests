@@ -69,6 +69,69 @@ describe('applyTransform', () => {
     });
 });
 
+// B-001: applyTransform must shift single-tier absoluteTier slots exactly like contextualTier ones
+// (Flannery → Champion etc.) — for both difficulty scaling and non-boss team derivation — while
+// never touching evolutionTier slots (rival/Wally/Steven progressive mons) or megas.
+describe('applyTransform — absoluteTier & evolutionTier (B-001)', () => {
+    test('shifts a single-tier absoluteTier slot up (harder)', () => {
+        const result = applyTransform([{ absoluteTier: ['NU'] }], +1, 'bottom', 1);
+        expect(result[0].absoluteTier).toEqual(['RU']);
+    });
+
+    test('shifts a single-tier absoluteTier slot down (easier)', () => {
+        const result = applyTransform([{ absoluteTier: ['RU'] }], -1, 'top', 1);
+        expect(result[0].absoluteTier).toEqual(['NU']);
+    });
+
+    test('ranks contextual and absolute slots together by their primary tier', () => {
+        // bottom + numShifts=2 → the two lowest-tier slots shift up, regardless of tier system.
+        const team = [{ absoluteTier: ['RU'] }, { contextualTier: ['NU'] }, { absoluteTier: ['UU'] }];
+        const result = applyTransform(team, +1, 'bottom', 2);
+        expect(result[1].contextualTier).toEqual(['RU']); // NU (lowest) → RU
+        expect(result[0].absoluteTier).toEqual(['UU']);    // RU (2nd lowest) → UU
+        expect(result[2].absoluteTier).toEqual(['UU']);    // UU (highest) untouched
+    });
+
+    test('shifts a single-tier absoluteTier slot in fallback when the primary is shifted', () => {
+        const team = [{ absoluteTier: ['NU'], fallback: [{ absoluteTier: ['PU'] }] }];
+        const result = applyTransform(team, +1, 'bottom', 1);
+        expect(result[0].absoluteTier).toEqual(['RU']);
+        expect(result[0].fallback[0].absoluteTier).toEqual(['NU']);
+    });
+
+    test('does NOT shift a slot carrying evolutionTier (progressive mons stay fixed)', () => {
+        const team = [{ contextualTier: ['NU'], evolutionTier: ['OU'] }];
+        const result = applyTransform(team, +1, 'bottom', 1);
+        expect(result[0].contextualTier).toEqual(['NU']);
+    });
+
+    test('does NOT shift isMega slots even when they carry an absoluteTier', () => {
+        const team = [{ isMega: true, absoluteTier: ['UU'] }];
+        const result = applyTransform(team, +1, 'bottom', 1);
+        expect(result[0].absoluteTier).toEqual(['UU']);
+    });
+
+    test('does not mutate the original absoluteTier array', () => {
+        const team = [{ absoluteTier: ['NU'] }];
+        applyTransform(team, +1, 'bottom', 1);
+        expect(team[0].absoluteTier).toEqual(['NU']);
+    });
+});
+
+// B-001: non-boss teams must be the 2-shift-down of the boss for absolute-tier splits too, so
+// generic late-game trainers are weaker than the leader (matching early-game behaviour).
+describe('getNonBossPreset — absolute-split derivation is 2-shift-down (B-001)', () => {
+    test('FLANNERY non-boss non-mega tiers = boss UU,UU,UU,RU,RU shifted 2-down → one UU, four RU', () => {
+        const team = getNonBossPreset('FLANNERY', TIER_OU, true);
+        const nonMega = team.filter(s => !s.isMega && !s.tryMega).map(s => s.absoluteTier[0]);
+        const counts = nonMega.reduce((m, t) => (m[t] = (m[t] || 0) + 1, m), {});
+        expect(counts).toEqual({ UU: 1, RU: 4 });
+        // strictly weaker than the boss (which is UU,UU,UU,RU,RU)
+        const boss = getBossPreset('FLANNERY', true).filter(s => !s.isMega).map(s => s.absoluteTier[0]);
+        expect(boss.filter(t => t === 'UU').length).toBe(3);
+    });
+});
+
 describe('getNonBossPreset — megaTier injection', () => {
     test('megaTier=null: isMega slot replaced with plain tier slot (no tryMega)', () => {
         const team = getNonBossPreset('WATTSON');

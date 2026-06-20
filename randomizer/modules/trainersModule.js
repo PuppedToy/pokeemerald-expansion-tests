@@ -28,6 +28,8 @@ function runTrainersModule(pokedexArtifact, config) {
     if (numShifts > 0) {
         for (const trainer of trainersData) {
             if (isExempt(trainer.id)) continue;
+            // applyTransform shifts both contextualTier and single-tier absoluteTier slots (B-001),
+            // so difficulty scales every non-exempt trainer; evolutionTier slots and megas stay fixed.
             trainer.team = applyTransform(trainer.team, delta, direction, numShifts);
         }
     }
