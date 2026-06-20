@@ -86,6 +86,17 @@ async function main() {
     const { generateAssets } = require('./randomizer/generateAssets.js');
     generateAssets({ root: ROOT, log: (m) => console.log(m) });
 
+    // ── Step 5: Level-cap boss data (T-007) ───────────────────────────────────
+    // Join src/caps.c (sLevelCapFlagMap → levels/order, SSOT) with the boss↔flag
+    // trainer map; the 1-to-1 assertion throws here if caps.c drifts. Injected into
+    // each doc as `bossCaps` to drive the Mail feature. Output gitignored.
+    console.log('[build] Building level-cap boss data...');
+    const { buildBossCaps } = require('./randomizer/bossCaps.js');
+    const capsC = fs.readFileSync(path.join(ROOT, 'src', 'caps.c'), 'utf-8');
+    const bossCaps = buildBossCaps(capsC);
+    fs.writeFileSync(path.join(FRONT_DATA, 'bosscaps.json'), JSON.stringify(bossCaps));
+    console.log(`[build] Wrote bosscaps.json (${bossCaps.length} bosses) → ${path.join(FRONT_DATA, 'bosscaps.json')}`);
+
     console.log('[build] Done.');
 }
 

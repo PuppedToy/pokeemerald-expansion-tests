@@ -69,6 +69,8 @@ frontend/js/randomizer.bundle.js
 frontend/data/sprites.json
 # Base64 static-asset map (fonts/logo/icons) embedded into self-contained docs (T-004)
 frontend/data/assets.json
+# Level-cap boss data joined from src/caps.c at build time (T-007)
+frontend/data/bosscaps.json
 
 # ROM production run directories
 run-*/
