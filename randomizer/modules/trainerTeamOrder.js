@@ -5,6 +5,12 @@ function isHazard1Setter(entry) {
         || entry.ability === 'TOXIC_DEBRIS';
 }
 
+// Sticky Web is a lead hazard like Stealth Rock, but ranked below it (T-013): its phase runs after
+// the Stealth Rock phase, so a Stealth Rock setter wins the lead when a team carries both.
+function isStickyWebSetter(entry) {
+    return entry.moves && entry.moves.includes('MOVE_STICKY_WEB');
+}
+
 function isHazard2Setter(entry) {
     return entry.moves && (
         entry.moves.includes('MOVE_SPIKES') || entry.moves.includes('MOVE_TOXIC_SPIKES')
@@ -31,6 +37,17 @@ function applyLeadLogic(team, rngFn) {
     if (h1 !== -1 && rngFn() < 0.90) {
         const r = [...team];
         const [m] = r.splice(h1, 1);
+        r.unshift(m);
+        return r;
+    }
+
+    // Phase 1b — Sticky Web: 90% lead, but only reached if no Stealth Rock setter took the lead
+    // above (so Stealth Rock keeps priority). Like Phase 1, the roll is consumed only when a setter
+    // exists, so teams without Sticky Web are unaffected.
+    const web = team.findIndex(isStickyWebSetter);
+    if (web !== -1 && rngFn() < 0.90) {
+        const r = [...team];
+        const [m] = r.splice(web, 1);
         r.unshift(m);
         return r;
     }

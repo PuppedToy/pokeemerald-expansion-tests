@@ -694,6 +694,18 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                     }
                     newTeamMember.ability = originalAbility;
                 }
+                // T-013: weather an EARLIER teammate sets (lingering setters only — primals are
+                // own-only, handled in the rater) + whether a Power Herb is available (held or in the
+                // bag). Drives Solar Beam/Blade, Electro Shot, Weather Ball, Growth, Thunder, Blizzard,
+                // Aurora Veil and the Meteor Beam / Geomancy combo.
+                const selCtx = {
+                    sun:  team.some(m => m.ability === 'DROUGHT' || m.ability === 'ORICHALCUM_PULSE' || (m.moves || []).includes('MOVE_SUNNY_DAY')),
+                    rain: team.some(m => m.ability === 'DRIZZLE' || (m.moves || []).includes('MOVE_RAIN_DANCE')),
+                    snow: team.some(m => m.ability === 'SNOW_WARNING' || (m.moves || []).includes('MOVE_HAIL') || (m.moves || []).includes('MOVE_SNOWSCAPE')),
+                    sand: team.some(m => m.ability === 'SAND_STREAM' || (m.moves || []).includes('MOVE_SANDSTORM')),
+                    powerHerb: newTeamMember.item === 'Power Herb' || (trainer.bag || []).includes('Power Herb'),
+                };
+
                 let { moveset, tmsUsed } = chooseMoveset(
                     chosenTrainerMon,
                     moves,
@@ -703,6 +715,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                     newTeamMember.item, // If we have a pre-selected item, use it
                     trainer.tms || [],
                     0.1, // Deviation for trainer bias
+                    selCtx,
                 );
                 // Remove the first appereance of each used TM from trainer's inventory
                 tmsUsed.forEach(tmUsed => {
@@ -764,6 +777,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                         ability,
                         newTeamMember.item,
                         0.1,
+                        selCtx,
                     );
                 }
                 newTeamMember.moves = moveset;

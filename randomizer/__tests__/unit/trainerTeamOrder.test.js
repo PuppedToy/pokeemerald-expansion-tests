@@ -24,6 +24,7 @@ const SR  = makeEntry('SR',  ['MOVE_STEALTH_ROCK']);
 const TD  = makeEntry('TD',  [],                   'TOXIC_DEBRIS');
 const SPK = makeEntry('SPK', ['MOVE_SPIKES']);
 const TSP = makeEntry('TSP', ['MOVE_TOXIC_SPIKES']);
+const WEB = makeEntry('WEB', ['MOVE_STICKY_WEB']);
 const ILL = makeEntry('ILL', [],                   'ILLUSION');
 const ILL2 = makeEntry('ILL2', [],                 'ILLUSION');
 
@@ -92,6 +93,49 @@ test('SR roll fails → Spikes roll succeeds → Spikes goes first', () => {
     const team = [SR, SPK, A];
     // Phase 1: SR found, roll = 0.91 (fails). Phase 2: SPK found, roll = 0.50 (succeeds).
     const result = applyLeadLogic(team, makeRng(0.91, 0.50));
+    expect(result[0]._id).toBe('SPK');
+});
+
+// ── Sticky Web: lead hazard, ranked below Stealth Rock (T-013) ────────────────
+
+test('Sticky Web setter (no SR) + roll 0.89 → Sticky Web goes first', () => {
+    const team = [A, B, WEB, C];
+    const result = applyLeadLogic(team, makeRng(0.89));
+    expect(result[0]._id).toBe('WEB');
+    expect(result).toHaveLength(4);
+});
+
+test('Sticky Web setter + roll 0.90 → does NOT go first (falls through)', () => {
+    const team = [A, WEB, B];
+    const result = applyLeadLogic(team, makeRng(0.90));
+    expect(result[0]._id).toBe('A');
+});
+
+test('Stealth Rock is prioritized over Sticky Web when both present (SR roll succeeds)', () => {
+    const team = [A, WEB, SR, B];
+    // Phase 1: SR found, roll 0.50 succeeds → SR leads; Sticky Web phase not reached.
+    const result = applyLeadLogic(team, makeRng(0.50));
+    expect(result[0]._id).toBe('SR');
+});
+
+test('SR roll fails → Sticky Web leads (still ahead of Spikes)', () => {
+    const team = [SR, WEB, SPK, A];
+    // Phase 1 SR roll 0.91 (fails) → Sticky Web roll 0.50 (succeeds). Spikes never consulted.
+    const result = applyLeadLogic(team, makeRng(0.91, 0.50));
+    expect(result[0]._id).toBe('WEB');
+});
+
+test('Sticky Web leads before Spikes when no SR', () => {
+    const team = [A, SPK, WEB];
+    // No SR (no roll). Sticky Web roll 0.50 succeeds → WEB leads before the Spikes phase.
+    const result = applyLeadLogic(team, makeRng(0.50));
+    expect(result[0]._id).toBe('WEB');
+});
+
+test('no Sticky Web → web phase rngFn is NOT called', () => {
+    // Only a Spikes setter; Sticky Web phase must not consume a roll.
+    const team = [A, B, SPK];
+    const result = applyLeadLogic(team, makeRng(0.50)); // single roll → Spikes phase
     expect(result[0]._id).toBe('SPK');
 });
 

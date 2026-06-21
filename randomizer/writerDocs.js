@@ -339,9 +339,23 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                     newTeamMember.ability = originalAbility;
                 }
 
+                // T-013: this mon's own weather/herb is handled in the rater; here we add the weather
+                // EARLIER teammates set (lingering setters only — primals like Desolate Land /
+                // Primordial Sea are own-only) plus whether a Power Herb is available (held or in the
+                // bag). Drives Solar Beam/Blade, Electro Shot, Weather Ball, Growth, Thunder, Blizzard,
+                // Aurora Veil and the Meteor Beam / Geomancy combo.
+                const selCtx = {
+                    sun:  team.some(m => m.ability === 'DROUGHT' || m.ability === 'ORICHALCUM_PULSE' || (m.moves || []).includes('MOVE_SUNNY_DAY')),
+                    rain: team.some(m => m.ability === 'DRIZZLE' || (m.moves || []).includes('MOVE_RAIN_DANCE')),
+                    snow: team.some(m => m.ability === 'SNOW_WARNING' || (m.moves || []).includes('MOVE_HAIL') || (m.moves || []).includes('MOVE_SNOWSCAPE')),
+                    sand: team.some(m => m.ability === 'SAND_STREAM' || (m.moves || []).includes('MOVE_SANDSTORM')),
+                    powerHerb: newTeamMember.item === 'Power Herb' || (trainer.bag || []).includes('Power Herb'),
+                };
+
                 let { moveset, tmsUsed } = chooseMoveset(
                     chosenTrainerMon, moves, trainer.level,
                     newTeamMember.moves, ability, newTeamMember.item, trainer.tms || [], 0.1,
+                    selCtx,
                 );
                 tmsUsed.forEach(tmUsed => {
                     if (trainer.tms && trainer.tms.includes(tmUsed)) trainer.tms.splice(trainer.tms.indexOf(tmUsed), 1);
@@ -372,7 +386,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                 }
 
                 if (newTeamMember.item) {
-                    moveset = adjustMoveset(chosenTrainerMon, trainer.level, moveset, newTeamMember.moves, moves, ability, newTeamMember.item, 0.1);
+                    moveset = adjustMoveset(chosenTrainerMon, trainer.level, moveset, newTeamMember.moves, moves, ability, newTeamMember.item, 0.1, selCtx);
                 }
                 newTeamMember.moves = moveset;
                 team.push(newTeamMember);

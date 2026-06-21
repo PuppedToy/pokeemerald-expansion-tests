@@ -16,3 +16,5 @@
 | [T-010](T-010-section-scroll-policy.md) | Per-section scroll policy on load/switch in the generated docs | done | 0.1.0 | 2026-06-20 |
 | [T-011](T-011-moves-surfacing-icon-polish-champion-mail.md) | Moves TM/description surfacing + icon & tooltip polish + champion victory mail | done | 0.1.0 | 2026-06-20 |
 | [T-012](T-012-difficulty-affects-absolute-tier.md) | Difficulty must scale absolute-tier trainers (fix B-001), keeping evolutionTier & megas fixed | done | 0.1.0 | 2026-06-20 |
+| [T-013](T-013-move-rating-heuristics.md) | Move-rating heuristics — two-turn moves w/o Power Herb, Belch w/o Berry, Sticky Web lead order | done | 0.1.0 | 2026-06-20 |
+| [T-014](T-014-full-team-sun-twopass.md) | Full-team sun visibility for Solar Beam/Blade via a determinism-preserving two-pass build | proposed | 0.2.0 | 2026-06-20 |
