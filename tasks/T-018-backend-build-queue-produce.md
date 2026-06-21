@@ -6,7 +6,7 @@ type: feature
 created: 2026-06-21
 updated: 2026-06-21
 target-version: 0.3.0
-links: [docs/adr/ADR-001-rom-build-server-provider.md, docs/adr/ADR-002-build-server-iac-docker.md, docs/adr/ADR-003-persistence-job-lifecycle-recovery.md, docs/adr/ADR-004-auth-email-password-jwt.md, docs/adr/ADR-005-two-tier-preemptive-build-queue.md, docs/adr/ADR-006-untrusted-bundle-build-sandbox.md, docs/adr/ADR-007-transactional-email-notifications.md, T-017, T-019, T-020, T-021, T-022, T-023, T-024, T-025, T-026, T-027, T-028]
+links: [docs/adr/ADR-001-rom-build-server-provider.md, docs/adr/ADR-002-build-server-iac-docker.md, docs/adr/ADR-003-persistence-job-lifecycle-recovery.md, docs/adr/ADR-004-auth-email-password-jwt.md, docs/adr/ADR-005-two-tier-preemptive-build-queue.md, docs/adr/ADR-006-untrusted-bundle-build-sandbox.md, docs/adr/ADR-007-transactional-email-notifications.md, docs/adr/ADR-008-rom-delivery-full-rom-ownership-gate.md, T-017, T-019, T-020, T-021, T-022, T-023, T-024, T-025, T-026, T-027, T-028]
 blocked-by: []
 ---
 
@@ -114,6 +114,11 @@ ownership → T-021/T-022; seed history → T-023 `runs`).
   ("occasionally take a slow one"). **Open decision:** delivery format — server returns the built
   ROM (current design) vs client-side patch + hash-only validation (lower legal exposure; no
   bandwidth win here). Not legal advice; pending owner call before T-022/T-025/T-028 finalize.
+- **2026-06-21** — Delivery decision resolved by the owner: **server builds and delivers the full
+  ROM**, ownership-by-hash gate as the accepted mitigation; legal exposure explicitly accepted (real
+  legal sign-off recommended before any wide public launch). Recorded as
+  [ADR-008](../docs/adr/ADR-008-rom-delivery-full-rom-ownership-gate.md). T-022/T-025/T-028 already
+  match this model — no rework needed.
 
 ## Outcome
 

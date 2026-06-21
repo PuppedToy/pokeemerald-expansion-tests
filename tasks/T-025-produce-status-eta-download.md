@@ -6,7 +6,7 @@ type: feature
 created: 2026-06-21
 updated: 2026-06-21
 target-version: 0.3.0
-links: [docs/adr/ADR-005-two-tier-preemptive-build-queue.md, docs/adr/ADR-003-persistence-job-lifecycle-recovery.md, T-018, T-021, T-022, T-023, T-024]
+links: [docs/adr/ADR-005-two-tier-preemptive-build-queue.md, docs/adr/ADR-003-persistence-job-lifecycle-recovery.md, docs/adr/ADR-008-rom-delivery-full-rom-ownership-gate.md, T-018, T-021, T-022, T-023, T-024]
 blocked-by: [T-021, T-022, T-023, T-024]
 ---
 

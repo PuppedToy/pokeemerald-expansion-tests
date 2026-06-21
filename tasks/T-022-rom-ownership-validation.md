@@ -6,7 +6,7 @@ type: feature
 created: 2026-06-21
 updated: 2026-06-21
 target-version: 0.3.0
-links: [docs/adr/ADR-004-auth-email-password-jwt.md, T-018, T-021]
+links: [docs/adr/ADR-004-auth-email-password-jwt.md, docs/adr/ADR-008-rom-delivery-full-rom-ownership-gate.md, T-018, T-021]
 blocked-by: [T-021]
 ---
 
