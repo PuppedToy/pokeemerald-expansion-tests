@@ -1,13 +1,13 @@
 ---
 id: T-020
 title: Optional user accounts — ROM-ownership verification + seed/run history
-status: proposed
+status: abandoned
 type: feature
 created: 2026-06-21
 updated: 2026-06-21
 target-version: 0.4.0
-links: [T-018, T-019]
-blocked-by: [T-018]
+links: [T-018, T-021, T-022, T-023]
+blocked-by: []
 ---
 
 # T-020 — Optional user accounts — ROM-ownership verification + seed/run history
@@ -75,7 +75,16 @@ Acceptance criteria (draft):
 - **2026-06-21** — Task created (broad strokes). Future/optional feature on top of the
   T-018/T-019 delivery pipeline; target-version 0.4.0 chosen as a default (delivery flow at
   0.3.0 must exist first) — confirm/adjust before work starts.
+- **2026-06-21** — Abandoned: superseded by the T-018 backend epic (owner-approved). The full
+  backend spec made accounts + ownership a requirement of the MVP delivery flow, not an optional
+  later layer, so this task's scope was absorbed: accounts → [T-021](T-021-auth-accounts.md),
+  ROM-ownership-by-hash → [T-022](T-022-rom-ownership-validation.md), and the seed/run history →
+  the `runs` table in [T-023](T-023-persistence-lifecycle-recovery.md) (minimal metadata, no ROM
+  bytes — the owner chose to keep run history while still purging handled requests).
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Superseded by the T-018 epic before any implementation. No code shipped. Scope re-homed into
+T-021 (accounts), T-022 (ownership validation) and T-023 (`runs` history). The original
+ownership-gate intent (delivery conditioned on proving you own a legit Emerald) survives in T-022;
+the seed-history convenience survives as T-023's `runs`.

@@ -21,6 +21,14 @@
 | [T-015](T-015-rebrand-emerald-cut.md) | Rebrand the app to "Pokémon Emerald Cut" everywhere | done | 0.2.0 | 2026-06-21 |
 | [T-016](T-016-landing-redesign-features-page.md) | Redesign the landing and add a Features menu item | done | 0.2.0 | 2026-06-21 |
 | [T-017](T-017-cloud-deployment-provider-analysis.md) | Cloud hosting requirements analysis + provider selection for the ROM-build server | done | 0.2.0 | 2026-06-21 |
-| [T-018](T-018-backend-build-queue-produce.md) | Backend ROM-production endpoint + serial build queue | proposed | 0.3.0 | 2026-06-21 |
+| [T-018](T-018-backend-build-queue-produce.md) | EPIC — Backend ROM-production service (accounts, ownership, queue, delivery) | in-progress | 0.3.0 | 2026-06-21 |
 | [T-019](T-019-infra-dockerized-build-server-deploy.md) | Dockerized build-server image + deploy to the VPS | proposed | 0.3.0 | 2026-06-21 |
-| [T-020](T-020-user-accounts-rom-ownership-seed-history.md) | Optional user accounts — ROM-ownership verification + seed/run history | proposed | 0.4.0 | 2026-06-21 |
+| [T-020](T-020-user-accounts-rom-ownership-seed-history.md) | Optional user accounts — ROM-ownership verification + seed/run history | abandoned | 0.4.0 | 2026-06-21 |
+| [T-021](T-021-auth-accounts.md) | Auth & accounts — register/login/forgot, email verification, JWT | proposed | 0.3.0 | 2026-06-21 |
+| [T-022](T-022-rom-ownership-validation.md) | ROM-ownership validation by hash (validate-and-delete) | proposed | 0.3.0 | 2026-06-21 |
+| [T-023](T-023-persistence-lifecycle-recovery.md) | SQLite persistence, request state machine, crash recovery & retention sweeper | proposed | 0.3.0 | 2026-06-21 |
+| [T-024](T-024-build-worker-fast-slow-queue.md) | Build worker with two-tier (fast/slow) preemptive serial queue | proposed | 0.3.0 | 2026-06-21 |
+| [T-025](T-025-produce-status-eta-download.md) | Produce endpoint + status/ETA + ROM download | proposed | 0.3.0 | 2026-06-21 |
+| [T-026](T-026-untrusted-bundle-build-sandbox.md) | Untrusted-bundle build sandbox — schema validation + hardened container | proposed | 0.3.0 | 2026-06-21 |
+| [T-027](T-027-transactional-email.md) | Transactional email service — verification, reset & ROM-ready notification | proposed | 0.3.0 | 2026-06-21 |
+| [T-028](T-028-frontend-account-generation-flow.md) | Frontend — login/explainer, dual-action download, status/ETA & "my ROMs" | proposed | 0.3.0 | 2026-06-21 |
