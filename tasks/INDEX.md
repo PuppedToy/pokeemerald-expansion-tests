@@ -20,7 +20,7 @@
 | [T-014](T-014-full-team-sun-twopass.md) | Full-team sun visibility for Solar Beam/Blade via a determinism-preserving two-pass build | proposed | 0.2.0 | 2026-06-20 |
 | [T-015](T-015-rebrand-emerald-cut.md) | Rebrand the app to "Pokémon Emerald Cut" everywhere | done | 0.2.0 | 2026-06-21 |
 | [T-016](T-016-landing-redesign-features-page.md) | Redesign the landing and add a Features menu item | done | 0.2.0 | 2026-06-21 |
-| [T-017](T-017-cloud-deployment-provider-analysis.md) | Cloud hosting requirements analysis + provider selection for the ROM-build server | in-progress | 0.2.0 | 2026-06-21 |
+| [T-017](T-017-cloud-deployment-provider-analysis.md) | Cloud hosting requirements analysis + provider selection for the ROM-build server | done | 0.2.0 | 2026-06-21 |
 | [T-018](T-018-backend-build-queue-produce.md) | Backend ROM-production endpoint + serial build queue | proposed | 0.3.0 | 2026-06-21 |
 | [T-019](T-019-infra-dockerized-build-server-deploy.md) | Dockerized build-server image + deploy to the VPS | proposed | 0.3.0 | 2026-06-21 |
 | [T-020](T-020-user-accounts-rom-ownership-seed-history.md) | Optional user accounts — ROM-ownership verification + seed/run history | proposed | 0.4.0 | 2026-06-21 |
