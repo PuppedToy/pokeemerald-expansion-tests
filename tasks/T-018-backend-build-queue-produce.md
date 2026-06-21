@@ -26,9 +26,16 @@ ROM(s)** from that bundle (`make.js` → `make`), on the limited single-box capa
 
 Full owner spec (2026-06-21), goal = keep serving small jobs under load with limited resources:
 
-- **Docs are free & anonymous.** One "Download documentation" button builds the docs zip
-  (+ `bundle.json`) client-side and always downloads. If the user is logged in & eligible, the
-  same click also submits the bundle to build the ROM; otherwise it warns what's missing.
+- **One "Generate" button drives everything.** Clicking *Generate* builds the bundle and
+  renders the docs client-side **and**, for an eligible user (logged in + verified + owns-rom +
+  no active request), the **ROM build starts automatically from the same bundle** — there is no
+  separate "build" button, and starting the build is **not** tied to downloading the docs.
+- **Docs download is a separate, backend-free action.** A "Download documentation" button just
+  packages the locally-held bundle into the docs zip; it hits no endpoint and can be used anytime,
+  including while the ROMs build. The bundle is held client-side (IndexedDB — a ~32 MB bundle does
+  not fit in localStorage) and server-side on the request, so on reload the docs can be regenerated
+  (lazily, via a "Regenerate docs" button). When the ROM(s) are ready, the ROM-download button
+  carries a **"single-use" warning** (downloading deletes them server-side).
 - **Generation requires a verified account.** Login is mandatory because the user must (1) prove
   ROM ownership and (2) give an email for long-queue notification. A randomizer section explains
   this. Login remembers the bundle so the flow isn't repeated.
@@ -99,6 +106,14 @@ ownership → T-021/T-022; seed history → T-023 `runs`).
   **minimal run-history** (seed/params, no bytes) — reconciles T-020; add **light email
   verification** — closes DoS/reset/spam at once. Recorded ADR-003…ADR-007 and split the epic into
   T-021…T-028. Re-scoped T-018 from a single task into this epic; T-020 superseded.
+- **2026-06-21** — Owner refinements: (1) corrected the trigger model — **Generate** starts docs
+  *and* the ROM build; docs download is a separate backend-free action (was wrongly recorded as
+  "download docs = launch build"). Adjusted T-028/T-025/T-023. (2) Email constrained to a
+  **free-forever** tier (zero cost) → Brevo as the pick (ADR-007/T-027). (3) Accepted ROM set =
+  all official Emerald releases, locked from the No-Intro DAT (T-022). (4) Aging confirmed
+  ("occasionally take a slow one"). **Open decision:** delivery format — server returns the built
+  ROM (current design) vs client-side patch + hash-only validation (lower legal exposure; no
+  bandwidth win here). Not legal advice; pending owner call before T-022/T-025/T-028 finalize.
 
 ## Outcome
 

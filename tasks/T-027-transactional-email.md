@@ -20,8 +20,9 @@ consumed by auth (T-021: verification + reset links) and produce (T-025: opt-in 
 
 ## Plan
 
-- Integrate a **transactional email provider** (Resend / Postmark / SES — pick by free-tier fit;
-  API key in env). A thin `sendMail(template, to, vars)` wrapper the rest of the backend calls.
+- Integrate a **transactional email provider on a free-forever tier (zero cost — hard constraint)**.
+  Pick: **Brevo** (9 000/mo · 300/day, most headroom); alternatives Mailjet (6 000/mo) / Resend
+  (3 000/mo). API key in env. A thin `sendMail(template, to, vars)` wrapper the rest of the backend calls.
 - Templates: account verification, password reset, ROM-ready. Ready mail is opt-in and only when
   ETA ≥ 2 min; it **links back to the site**, never attaches the ROM.
 - Configure sender **SPF + DKIM (+ DMARC)** DNS for deliverability (record in the deploy runbook, T-019).
@@ -37,7 +38,10 @@ Acceptance criteria:
 
 ## Progress log
 
-- **2026-06-21** — Task created from the T-018 epic breakdown (decisions in ADR-007). Provider pick
-  is open; decide by free-tier fit before implementing.
+- **2026-06-21** — Task created from the T-018 epic breakdown (decisions in ADR-007).
+- **2026-06-21** — Owner constraint: **zero cost** (no paid plans). Provider narrowed to free-forever
+  tiers; **Brevo** chosen for headroom (300/day covers low-traffic verification + notifications).
+  Note: verification mail is on the registration critical path, so the free cap bounds new sign-ups,
+  not existing downloads.
 
 ## Outcome

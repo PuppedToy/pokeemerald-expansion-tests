@@ -16,8 +16,10 @@ needs a real sending path and DNS, not a raw SMTP socket from the box.
 
 Send all mail through a **transactional email provider** over an API, with proper sender DNS.
 
-- **Provider:** a transactional API (e.g. Resend / Postmark / SES — free/low tier covers this
-  volume); the exact pick and API key live in env, chosen in T-027.
+- **Provider:** a transactional API on a **free-forever tier — zero cost is a hard constraint**
+  (the owner will not pay). Candidates (Jun 2026 free limits): **Brevo** 9 000/mo · 300/day (the
+  pick — most headroom), **Mailjet** 6 000/mo · 200/day, **Resend** 3 000/mo. Final pick + API key
+  in env, chosen in T-027.
 - **DNS:** configure **SPF + DKIM** (and DMARC) for the sending domain so verification/reset mail
   is deliverable.
 - **Messages:** verification link, password-reset link, ROM-ready notification. The ready
@@ -37,8 +39,11 @@ Send all mail through a **transactional email provider** over an API, with prope
 
 ## Consequences
 
-- A new external dependency (provider + domain DNS) and a tiny recurring cost (likely $0 at this
-  volume). Outbound email failure must degrade gracefully: a build still completes and is
+- A new external dependency (provider + domain DNS) at **zero cost** (free tier). The free cap is a
+  real ceiling: because verification mail is on the **registration critical path**, hitting the daily
+  cap would stall *new sign-ups* (not existing users' downloads) — so we pick a provider with
+  comfortable headroom (Brevo's 300/day) and treat approaching the cap as a product signal, never a
+  surprise bill. Outbound email failure must degrade gracefully: a build still completes and is
   downloadable from the site even if the notification mail fails.
 - We commit to managing the API key (env), the SPF/DKIM records, and opt-in handling. Implemented
   in T-027; consumed by T-021 (verification/reset) and T-025 (ready notification).
