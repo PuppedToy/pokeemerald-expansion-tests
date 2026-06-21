@@ -1,8 +1,8 @@
-# Randomizer — Session Reference
+# Pokémon Emerald Cut — Randomizer Session Reference
 
 ## What This Is
 
-A Node.js randomizer/rebalancer for a Pokémon Emerald romhack built on the `pokeemerald-expansion` base. It reads the game's C source files, processes all Pokémon/moves/abilities data, applies random rebalancing, then writes modified C files back and generates an HTML viewer.
+The randomizer/rebalancer engine behind **Pokémon Emerald Cut** — a Node.js randomizer/rebalancer for a Pokémon Emerald romhack built on the `pokeemerald-expansion` base. It reads the game's C source files, processes all Pokémon/moves/abilities data, applies random rebalancing, then writes modified C files back and generates an HTML viewer.
 
 ## Entry Point & Flow
 

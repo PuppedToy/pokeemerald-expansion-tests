@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pokémon Emerald Randomizer</title>
+  <title>Pokémon Emerald Cut</title>
+  <link rel="icon" type="image/png" href="/assets/emeraldCut.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -17,11 +18,12 @@
 <!-- ── Top navigation ──────────────────────────────────────────────────── -->
 <nav class="topnav">
   <a class="topnav-brand" href="#">
-    <div class="topnav-logo">R</div>
-    <span class="topnav-name">Emerald Randomizer</span>
+    <img class="topnav-logo" src="/assets/emeraldCut.png" alt="Pokémon Emerald Cut logo">
+    <span class="topnav-name">Pokémon Emerald Cut</span>
   </a>
   <div class="topnav-tabs">
     <button class="topnav-tab" data-tab="home">Home</button>
+    <button class="topnav-tab" data-tab="features">Features</button>
     <button class="topnav-tab" data-tab="randomizer">Randomizer</button>
   </div>
 </nav>
@@ -32,30 +34,45 @@
   <section id="tab-home" class="tab-section">
     <div class="landing">
       <div class="landing-hero">
-        <div class="landing-eyebrow">Pokémon Emerald Romhack</div>
-        <h1 class="landing-title">A whole new Hoenn</h1>
+        <h1 class="landing-title">Pokémon Emerald Cut</h1>
+        <p class="landing-slogan">Your emerald cut for controlled chaos.</p>
         <p class="landing-subtitle">
-          A fully randomized and rebalanced Pokémon Emerald experience.
-          Every run is unique — new Pokémon tiers, randomized trainers, wild encounters, and starter choices.
-          Built on the pokeemerald-expansion base.
+          A customizable, randomized Emerald romhack that skips most of the story to bring
+          the most fair battles possible and focus on good progression within the run.
         </p>
       </div>
 
-      <div class="landing-cards">
-        <div class="card-glass">
-          <div class="landing-card-icon">⚖️</div>
-          <div class="landing-card-title">Rebalanced tiers</div>
-          <div class="landing-card-desc">Pokémon stats and abilities are probabilistically mutated to create a unique competitive landscape each run.</div>
+      <div class="landing-boxes">
+        <div class="card info-box">
+          <div class="section-title">What is this?</div>
+          <p class="info-lead">A 2-in-1 experience:</p>
+          <p>
+            It's a romhack that comes from pokeemerald-expansion (9 gen Pokémon + Megas).
+            Lots of QoL to focus on fair progression, economy and battles. Most of the overworld
+            is edited so every non-boss trainer is optional and guards a reward. Only boss trainers
+            are required to advance the story.
+          </p>
+          <p>
+            It's also a balanced randomizer that comes with documentation for each run. And by
+            balanced I mean a lot of things together, but the focus point of the randomization is
+            a progression that feels good — Pokémon that haven't lost their soul, but enough changes
+            to allow lots of replayability. We can call it <strong>VERY controlled chaos</strong>.
+          </p>
+          <p>
+            You can play it normally, you can nuzlocke it or you can soul-link it. Customizable
+            difficulty. Play it however you want.
+          </p>
+          <button class="btn btn-ghost goto-tab" data-goto-tab="features">See the full feature list →</button>
         </div>
-        <div class="card-glass">
-          <div class="landing-card-icon">🎲</div>
-          <div class="landing-card-title">Fully seeded</div>
-          <div class="landing-card-desc">Every run is reproducible. Share a seed with friends or replay your favourite configuration exactly.</div>
-        </div>
-        <div class="card-glass">
-          <div class="landing-card-icon">🔗</div>
-          <div class="landing-card-title">Soul-Link ready</div>
-          <div class="landing-card-desc">Generate multiple ROMs that share the same Pokédex and trainers — perfect for co-op and soul-link runs.</div>
+
+        <div class="card info-box">
+          <div class="section-title">What's in the future?</div>
+          <ul class="feature-list">
+            <li>Hackdex support.</li>
+            <li>Highly customizable settings. This will be my main focus — getting as many things in the randomizer as possible to be customizable, so people can create their own themes.</li>
+            <li>Smarter rating, smarter teams. Polishing after more playthroughs.</li>
+            <li>Community requests.</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -156,6 +173,96 @@
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <!-- ── Features ─────────────────────────────────────────────────────────── -->
+  <section id="tab-features" class="tab-section">
+    <div class="features-wrap">
+      <div class="features-header">
+        <h1>Features</h1>
+        <p>Two things in one — a quality-of-life romhack and a balanced randomizer with self-contained, per-run docs.</p>
+        <ul class="feature-list feature-highlights">
+          <li>Generated docs per run, plus a built-in nuzlocke tracker for your runs.</li>
+          <li>Three ready-made presets — Default, Nuzlocke and Soul-Link.</li>
+        </ul>
+      </div>
+
+      <div class="subtabs" role="tablist">
+        <button class="subtab active" data-subtab="rom" role="tab">ROM</button>
+        <button class="subtab" data-subtab="randomizer" role="tab">Randomizer</button>
+        <button class="subtab" data-subtab="docs" role="tab">Generated docs</button>
+      </div>
+
+      <!-- ROM features (brainstorm §3.2) -->
+      <div class="subtab-panel active" data-subtab-panel="rom" role="tabpanel">
+        <div class="card">
+          <ul class="feature-list">
+            <li>Automatic leveling per cap — no EXP management and no grinding.</li>
+            <li>All non-branch evolutions are level evolutions. Evolve candy and the evolution stones are key items. Branch evolutions require specific levels and a stone.</li>
+            <li>Pokémon fully healed after each fight. Consumable items recovered after each fight.</li>
+            <li>Removed EVs entirely.</li>
+            <li>Removed most non-critical story events and simplified the story line so you don't waste time. Most texts reduced to quick sentences.</li>
+            <li>Only boss battles are needed to progress. Non-boss battles are optional and provide resources or access to wild Pokémon.</li>
+            <li>Wild encounters are predictable. Each wild zone has only 1 possible Pokémon, and is guarded by a trainer who has that Pokémon in their team.</li>
+            <li>A meaningful economy system to buy optimization items.</li>
+            <li>Shiny untied from randomness: any Pokémon with an IV sum of at least 150 is shiny (~0.4%). Your starter is guaranteed 150+ IV, and static encounters guarantee 3 perfect IVs.</li>
+            <li>Every fight is 6 vs 6.</li>
+            <li>Start the game with 9 Pokémon in your box, automatically balanced for progression.</li>
+            <li>Every boss battle gives a reward (or more!).</li>
+            <li>Multiple-choice item rewards — Choice Scarf, Choice Specs or Choice Band? Choose wisely, you can only have one. Don't worry, enemy trainers choose only one too.</li>
+            <li>Easy move relearning.</li>
+            <li>HMs are not needed throughout most of the game.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Randomizer features (brainstorm §3.3) -->
+      <div class="subtab-panel" data-subtab-panel="randomizer" role="tabpanel">
+        <div class="card">
+          <ul class="feature-list">
+            <li>Pokémon are randomized by a mutating algorithm: they're preserved as in the original (updated) games in general, but a % of them get mutations on stats, typing, learnsets and/or abilities. Mutations carry over evolutions. Customizable — by default a Pokémon has a 20% chance to be mutated.</li>
+            <li>Mutations stay coherent across a family: changes propagate down the evolution line and gently decay, so a line still feels like one line.</li>
+            <li>The randomizer gives a tier to every Pokémon, keeping sanity across all the intertwining systems for max balance and progression. E.g. if a Pokémon mutates to 20 Attack, its expected quality is re-evaluated; or if Roost is available this run and a defensive mon like Skarmory can learn it, it counts as higher quality. The more you progress, the more quality Pokémon you (and enemy trainers) can use.</li>
+            <li>A full 10-tier competitive ladder under the hood — MAGIKARP → ZU → PU → NU → RU → UU → OU → UBERS → LEGEND → AG — and each Pokémon is re-rated at every level cap, so "quality" always tracks where you are in the run.</li>
+            <li>Each run rebuilds every Pokémon's TM compatibility around that run's actual TM pool (same-type moves favoured), so the randomized TMs are always useful to someone.</li>
+            <li>Item rewards are shuffled and balanced to help progression — including TMs, based on TM quality.</li>
+            <li>Enemy trainers build their teams only from Pokémon of qualities the player has access to, and use items and TMs the player has access to. Only bosses are a small step ahead.</li>
+            <li>Enemy trainers are bound by the same rules as the player — they never use an evolution that can't be obtained at their level.</li>
+            <li>Enemy trainers try to be real team-builders: no two Pokémon from the same family, gym-specific restrictions (mono-type, no repeated type, signature abilities), good movesets, hazard-setters led up front.</li>
+            <li>Customizable difficulty for enemy Pokémon quality. By default (fair), bosses field the expected quality for that point of the game and non-bosses are slightly worse. The slider changes how many trainers get an upgraded quality — e.g. at +6 every trainer fields a +1-quality team (an all-RU team becomes all-UU).</li>
+            <li>The rival uses Pokémon found in routes you've visited and carries over + upgrades their team each encounter. Same for Wally. Other recurring trainers carry some Pokémon over to the next fight.</li>
+            <li>Evolution levels are automatically adjusted based on Pokémon quality. Non-branching item evolutions removed.</li>
+            <li>Every obtainable Pokémon with a Mega has its Mega Stone somewhere in the world.</li>
+            <li>Static encounters randomized at the 3 Regi caves and New Mauville. At Sky Pillar you get a 3-choice of legendary-quality Pokémon.</li>
+            <li>2 gyms have a random type; 2 Elite Four members have a random type.</li>
+            <li>Gym leaders try to use their favourite Pokémon :)</li>
+            <li>Your 3 starters always form a type triangle (each beats the next), and your 9-mon starting box is tier-curated for a smooth early game.</li>
+            <li>Nuzlocke runs are a group of ROMs within the same universe of mutations and trainers but with different encounters — when a ROM is lost, you open the next one. Customizable.</li>
+            <li>In Soul-Link / shared runs, trainers and their rewards are deterministically identical across every player's ROM. Customizable.</li>
+            <li>Difficulty is a 13-step slider (not just easy/fair/hard), and it also scales how many items enemy trainers carry.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Generated docs features (brainstorm §3.4) -->
+      <div class="subtab-panel" data-subtab-panel="docs" role="tabpanel">
+        <div class="card">
+          <ul class="feature-list">
+            <li>A single, self-contained file per ROM: works 100% offline with zero network requests, every sprite and font embedded (~5.5 MB).</li>
+            <li>Seven tabs: Encounters, Trainers, PC, Mail, Pokédex, Moves and Abilities.</li>
+            <li>Encounters: a route-by-route wild list with BOSS REWARD / STATIC / LEGENDARY badges and built-in nuzlocke controls — mark each encounter captured, delayed or fainted, with live colour states.</li>
+            <li>Trainers: every trainer's full team with sprite, held item, ability, nature, moveset, level, location and rewards; bosses are badged; tick them off as you defeat them (and optionally view teams in true in-game battle order).</li>
+            <li>PC: a scrollable grid of your caught Pokémon with an Available ↔ Fainted toggle (fainted mons shown in black-and-white).</li>
+            <li>Mail: a level-cap-driven inbox — as you beat bosses it surfaces newly-unlocked static encounters, available evolutions, and newly learnable level-up / TM moves for the Pokémon in your box.</li>
+            <li>Pokédex: every Pokémon with sprite, types, abilities (with tooltips) and a full stat block showing buffs/nerfs vs the original game, plus a tier badge and role; deep filtering by search, sort, scope, evolution stage, change type, type and tier.</li>
+            <li>Per-Pokémon detail: full learnset, this-run teachable TMs (new ones starred, plus a "no TM this run" note), evolution tree, and how that Pokémon relates to your box.</li>
+            <li>Moves: every move with its in-game description, type/category, power/accuracy/PP, a TM## badge and exactly where to get that TM in the world (route + trainer), with a "TMs only" view sorted by TM number.</li>
+            <li>Abilities: every ability with its description and mechanic flags (breakable, can't be copied / suppressed / swapped, etc.).</li>
+            <li>Each run's doc keeps its own progress: nuzlocke state, filters and reading position are stored per-run (by seed + player + ROM), so multiple runs never collide in the same browser.</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </section>
 
