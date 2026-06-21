@@ -15,8 +15,13 @@ const r = Object.fromEntries(Object.entries(moves).map(([k, v]) => [k, rated(v)]
 
 // Minimal no-item no-ability calls
 function rate(move, poke, opts = {}) {
-    const { ability = null, item = null, otherMoves = [], currentMoves = [] } = opts;
-    return rateMoveForAPokemon(rated(move), poke, ability, item, otherMoves, currentMoves);
+    const {
+        ability = null, item = null, otherMoves = [], currentMoves = [],
+        // legacy opts map onto the ctx object; new tests can pass rain/snow/sand/sun/powerHerb directly
+        teamHasSun = false, powerHerbAvailable = false,
+        sun = teamHasSun, rain = false, snow = false, sand = false, powerHerb = powerHerbAvailable,
+    } = opts;
+    return rateMoveForAPokemon(rated(move), poke, ability, item, otherMoves, currentMoves, { sun, rain, snow, sand, powerHerb });
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -332,5 +337,142 @@ describe('Fix 9 — Dream Eater: zero-rated without sleep move, combo-rated with
             otherMoves:   [r.MOVE_YAWN],
         });
         expect(result).toBe(7);
+    });
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
+// T-013 — two-turn / charge moves need an enabler (Power Herb, or sun for Solar moves)
+const TWO_TURN_BASE = { additionalEffects: [], pp: 10, priority: 0, makesContact: 'FALSE', strikeCount: '1', accuracy: 100 };
+const SOLAR_BEAM = { ...TWO_TURN_BASE, id: 'MOVE_SOLAR_BEAM', name: 'Solar Beam', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'GRASS', power: 120, effect: 'EFFECT_TWO_TURNS_ATTACK' };
+const BELCH      = { ...TWO_TURN_BASE, id: 'MOVE_BELCH', name: 'Belch', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'POISON', power: 120, accuracy: 90, effect: 'EFFECT_BELCH' };
+
+describe('T-013 — two-turn / charge moves without an enabler', () => {
+    const cm = { currentMoves: [r.MOVE_TACKLE], otherMoves: [] };
+
+    test('Solar Beam rates much lower without Power Herb than with', () => {
+        const without  = rate(SOLAR_BEAM, RIOLU, cm);
+        const withHerb = rate(SOLAR_BEAM, RIOLU, { ...cm, item: 'Power Herb' });
+        expect(without).toBeLessThan(withHerb);
+        expect(without).toBeLessThan(withHerb * 0.5); // "much" lower
+    });
+
+    test('Fly (semi-invulnerable) rates much lower without Power Herb', () => {
+        const without  = rate(moves.MOVE_FLY, RIOLU, cm);
+        const withHerb = rate(moves.MOVE_FLY, RIOLU, { ...cm, item: 'Power Herb' });
+        expect(without).toBeLessThan(withHerb);
+    });
+
+    test('Solar Beam is exempt when the mon sets sun (Drought)', () => {
+        const noSun = rate(SOLAR_BEAM, RIOLU, cm);
+        const sun   = rate(SOLAR_BEAM, RIOLU, { ...cm, ability: 'DROUGHT' });
+        expect(sun).toBeGreaterThan(noSun);
+    });
+
+    test('Solar Beam is exempt with own Desolate Land (own-only sun)', () => {
+        const noSun = rate(SOLAR_BEAM, RIOLU, cm);
+        const sun   = rate(SOLAR_BEAM, RIOLU, { ...cm, ability: 'DESOLATE_LAND' });
+        expect(sun).toBeGreaterThan(noSun);
+    });
+
+    const SUNNY_DAY = { id: 'MOVE_SUNNY_DAY', name: 'Sunny Day', category: 'DAMAGE_CATEGORY_STATUS', type: 'FIRE', power: 0, accuracy: 0, effect: 'EFFECT_SUNNY_DAY', additionalEffects: [], pp: 15, priority: 0 };
+
+    test('Solar Beam is exempt when the mon itself runs Sunny Day', () => {
+        const noSun = rate(SOLAR_BEAM, RIOLU, cm);
+        const ownSun = rate(SOLAR_BEAM, RIOLU, { currentMoves: [r.MOVE_TACKLE, SUNNY_DAY], otherMoves: [] });
+        expect(ownSun).toBeGreaterThan(noSun);
+    });
+
+    test('Solar Beam is exempt when a teammate provides sun (teamHasSun)', () => {
+        const noSun = rate(SOLAR_BEAM, RIOLU, cm);
+        const teamSun = rate(SOLAR_BEAM, RIOLU, { ...cm, teamHasSun: true });
+        expect(teamSun).toBeGreaterThan(noSun);
+    });
+
+    test('teammate sun does NOT rescue Fly (only Solar moves benefit from sun)', () => {
+        const flyTeamSun = rate(moves.MOVE_FLY, RIOLU, { ...cm, teamHasSun: true });
+        const flyHerb    = rate(moves.MOVE_FLY, RIOLU, { ...cm, item: 'Power Herb' });
+        expect(flyTeamSun).toBeLessThan(flyHerb);
+    });
+
+    test('Fly is NOT exempted by Drought (only Solar moves are) — still penalized vs Power Herb', () => {
+        const flyDrought = rate(moves.MOVE_FLY, RIOLU, { ...cm, ability: 'DROUGHT' });
+        const flyHerb    = rate(moves.MOVE_FLY, RIOLU, { ...cm, item: 'Power Herb' });
+        expect(flyDrought).toBeLessThan(flyHerb);
+    });
+});
+
+describe('T-013 — Meteor Beam / Power Herb combo', () => {
+    const cm = { currentMoves: [r.MOVE_TACKLE], otherMoves: [] };
+    const METEOR_BEAM = { ...TWO_TURN_BASE, id: 'MOVE_METEOR_BEAM', name: 'Meteor Beam', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'ROCK', power: 120, effect: 'EFFECT_TWO_TURNS_ATTACK' };
+
+    test('Meteor Beam rates poorly with no Power Herb anywhere', () => {
+        const none = rate(METEOR_BEAM, RIOLU, cm);
+        const held = rate(METEOR_BEAM, RIOLU, { ...cm, item: 'Power Herb' });
+        expect(none).toBeLessThan(held);
+    });
+
+    test('Meteor Beam is stimulated when a Power Herb is available in the bag (combo)', () => {
+        const none      = rate(METEOR_BEAM, RIOLU, cm);
+        const available = rate(METEOR_BEAM, RIOLU, { ...cm, powerHerbAvailable: true });
+        expect(available).toBeGreaterThan(none);
+        // and the available-in-bag boost matches the held-item value (combo recognised either way)
+        const held = rate(METEOR_BEAM, RIOLU, { ...cm, item: 'Power Herb' });
+        expect(available).toBeCloseTo(held, 5);
+    });
+});
+
+describe('T-013 — weather-conditional moves (self / earlier teammate)', () => {
+    const ELECTRO_SHOT = { ...TWO_TURN_BASE, id: 'MOVE_ELECTRO_SHOT', name: 'Electro Shot', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'ELECTRIC', power: 130, effect: 'EFFECT_TWO_TURNS_ATTACK' };
+    const WEATHER_BALL = { ...TWO_TURN_BASE, id: 'MOVE_WEATHER_BALL', name: 'Weather Ball', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'NORMAL', power: 50, effect: 'EFFECT_WEATHER_BALL' };
+    const THUNDER      = { ...TWO_TURN_BASE, id: 'MOVE_THUNDER', name: 'Thunder', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'ELECTRIC', power: 110, accuracy: 70, effect: 'EFFECT_HIT' };
+    const BLIZZARD     = { ...TWO_TURN_BASE, id: 'MOVE_BLIZZARD', name: 'Blizzard', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'ICE', power: 110, accuracy: 70, effect: 'EFFECT_HIT' };
+    const GROWTH       = { ...TWO_TURN_BASE, id: 'MOVE_GROWTH', name: 'Growth', category: 'DAMAGE_CATEGORY_STATUS', type: 'NORMAL', power: 0, accuracy: 0, effect: 'EFFECT_GROWTH' };
+    const AURORA_VEIL  = { ...TWO_TURN_BASE, id: 'MOVE_AURORA_VEIL', name: 'Aurora Veil', category: 'DAMAGE_CATEGORY_STATUS', type: 'ICE', power: 0, accuracy: 0, effect: 'EFFECT_AURORA_VEIL' };
+    // 2 damage moves (1 physical + 1 special, neither Normal) so status/boost gating doesn't interfere
+    const dmg2 = { currentMoves: [r.MOVE_SURF, r.MOVE_EARTHQUAKE], otherMoves: [] };
+
+    test('Electro Shot is MUY PREMIUM in rain — beats the no-rain Power-Herb case', () => {
+        const none = rate(ELECTRO_SHOT, RIOLU, dmg2);
+        const rain = rate(ELECTRO_SHOT, RIOLU, { ...dmg2, rain: true });
+        const herb = rate(ELECTRO_SHOT, RIOLU, { ...dmg2, powerHerb: true });
+        expect(rain).toBeGreaterThan(none);
+        expect(herb).toBeGreaterThan(none);
+        expect(rain).toBeGreaterThan(herb);
+    });
+
+    test('Weather Ball is much better under weather', () => {
+        expect(rate(WEATHER_BALL, RIOLU, { ...dmg2, sun: true })).toBeGreaterThan(rate(WEATHER_BALL, RIOLU, dmg2));
+    });
+
+    test('Thunder is better in rain (100% accurate)', () => {
+        expect(rate(THUNDER, RIOLU, { ...dmg2, rain: true })).toBeGreaterThan(rate(THUNDER, RIOLU, dmg2));
+    });
+
+    test('Blizzard is better in snow (100% accurate)', () => {
+        expect(rate(BLIZZARD, RIOLU, { ...dmg2, snow: true })).toBeGreaterThan(rate(BLIZZARD, RIOLU, dmg2));
+    });
+
+    test('Growth reaches setup quality in sun', () => {
+        expect(rate(GROWTH, RIOLU, { ...dmg2, sun: true })).toBeGreaterThan(rate(GROWTH, RIOLU, dmg2));
+    });
+
+    test('Aurora Veil is dead weight without snow and premium with it', () => {
+        expect(rate(AURORA_VEIL, RIOLU, dmg2)).toBe(0);
+        expect(rate(AURORA_VEIL, RIOLU, { ...dmg2, snow: true })).toBe(10);
+    });
+});
+
+describe('T-013 — Belch needs a Berry', () => {
+    const cm = { currentMoves: [r.MOVE_TACKLE], otherMoves: [] };
+
+    test('Belch rates near-zero (last resort) without a Berry', () => {
+        expect(rate(BELCH, RIOLU, cm)).toBeLessThanOrEqual(0.05);
+    });
+
+    test('Belch rates much higher with a Berry held', () => {
+        const berry   = rate(BELCH, RIOLU, { ...cm, item: 'Sitrus Berry' });
+        const noBerry = rate(BELCH, RIOLU, cm);
+        expect(berry).toBeGreaterThan(noBerry);
+        expect(berry).toBeGreaterThan(1);
     });
 });

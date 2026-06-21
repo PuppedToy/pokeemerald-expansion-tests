@@ -1039,7 +1039,10 @@ const OPPONENT_STAT_DROP_EFFECTS = new Set([
     'EFFECT_NOBLE_ROAR',          'EFFECT_TICKLE',
 ]);
 
-function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves) {
+// ctx (optional) carries team/run context for weather- and item-conditional move heuristics (T-013):
+//   { sun, rain, snow, sand, powerHerb } — sun/rain/snow/sand = an EARLIER teammate sets that weather;
+//   powerHerb = a Power Herb is available (held or in the trainer's bag). All default false.
+function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves, ctx = {}) {
     if (
         (
             currentMoves.filter(m => m.category !== 'DAMAGE_CATEGORY_STATUS').length < 2
@@ -1083,6 +1086,20 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     const hasAbility = (abilityToQuery) => {
         return ability === abilityToQuery || (!ability && poke.parsedAbilities.includes(abilityToQuery));
     }
+
+    // T-013: weather context — active if THIS mon sets it (own ability/move, incl. the self-only
+    // primals Desolate Land / Primordial Sea) OR an EARLIER teammate does (ctx.* from the build loop;
+    // lingering setters only — primals are own-only there). Drives Solar Beam/Blade, Electro Shot,
+    // Weather Ball, Growth, Thunder, Blizzard and Aurora Veil. Own weather-move detection is
+    // best-effort (only sees moves already on the set — same ordering caveat as Sunny Day).
+    const inSun  = hasAbility('DROUGHT') || hasAbility('ORICHALCUM_PULSE') || hasAbility('DESOLATE_LAND')
+        || currentMoves.some(m => m.id === 'MOVE_SUNNY_DAY') || ctx.sun === true;
+    const inRain = hasAbility('DRIZZLE') || hasAbility('PRIMORDIAL_SEA')
+        || currentMoves.some(m => m.id === 'MOVE_RAIN_DANCE') || ctx.rain === true;
+    const inSnow = hasAbility('SNOW_WARNING')
+        || currentMoves.some(m => m.id === 'MOVE_HAIL' || m.id === 'MOVE_SNOWSCAPE') || ctx.snow === true;
+    const inSand = hasAbility('SAND_STREAM')
+        || currentMoves.some(m => m.id === 'MOVE_SANDSTORM') || ctx.sand === true;
 
     const maxOff = Math.max(poke.baseAttack, poke.baseSpAttack);
     const avgBulk = (poke.baseHP + poke.baseDefense + poke.baseSpDefense) / 3;
@@ -1147,8 +1164,16 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     }
 
     // Special Ratings
-    if (move.id === 'MOVE_AURORA_VEIL' && hasAbility('SNOW_WARNING')) {
-        rating = 10;
+    // T-013: weather-conditional utility / accuracy moves (magnitudes provisional — see task).
+    // (Aurora Veil is finalised at the very end so its 0/10 isn't nudged by downstream bonuses.)
+    if (move.id === 'MOVE_GROWTH' && inSun) {
+        rating = 8;                          // +2 Atk / +2 SpA in sun ≈ Swords Dance / Nasty Plot
+    }
+    if (move.id === 'MOVE_THUNDER' && inRain) {
+        rating += (100 - (move.accuracy || 100)) / 10;   // 100% accurate in rain (undo the acc penalty)
+    }
+    if (move.id === 'MOVE_BLIZZARD' && inSnow) {
+        rating += (100 - (move.accuracy || 100)) / 10;   // 100% accurate in snow
     }
     if (move.id === 'MOVE_MAGNETIC_FLUX' && (hasAbility('PLUS') || hasAbility('MINUS'))) {
         rating = 8;
@@ -1335,6 +1360,45 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
         if (currentMoves.some(m => m.category !== 'DAMAGE_CATEGORY_STATUS' && m.type === move.type)) {
             rating *= sameTypeLowerPenaltyMoves.includes(move.id) ? 0.6 : 0.3;
         }
+    }
+
+    // T-013: two-turn / charge moves (Solar Beam, Sky Attack, Fly, Dig, …) waste the first turn
+    // unless the holder can skip it. Heavily devalue them UNLESS holding a Power Herb; Solar Beam /
+    // T-013: charge & weather-conditional damage-move heuristics (magnitudes provisional — see task).
+    // The base rating already halved two-turn moves (rateMove ×0.5); the ×2.x factors below restore
+    // ~full power when the enabler is present, while ×0.2 keeps the charge liability when it isn't.
+    // - Solar Beam / Blade: good in sun (own or earlier-teammate Drought/Orichalcum/Sunny Day, own
+    //   Desolate Land) or with a held Power Herb.
+    // - Meteor Beam: premium with a Power Herb available (held or in the bag).
+    // - Electro Shot: in rain it's instant — MUY PREMIUM; otherwise treat like Meteor Beam (Power Herb).
+    // - Geomancy: instant +2/+2/+2 with a Power Herb, special-only (Ubers+); else a weak slow setup.
+    // - Weather Ball: in any weather it's a 100-power move of that weather's type (+STAB if shared).
+    // - Every other two-turn / semi-invulnerable move (Dig, Fly, Sky Attack, …) needs a HELD Power Herb.
+    const herbReady = item === 'Power Herb' || ctx.powerHerb === true;
+    if (move.id === 'MOVE_SOLAR_BEAM' || move.id === 'MOVE_SOLAR_BLADE') {
+        rating *= (item === 'Power Herb' || inSun) ? 2.4 : 0.2;
+    } else if (move.id === 'MOVE_METEOR_BEAM') {
+        rating *= herbReady ? 2.6 : 0.2;
+    } else if (move.id === 'MOVE_ELECTRO_SHOT') {
+        rating *= inRain ? 3.0 : (herbReady ? 2.6 : 0.2);
+    } else if (move.id === 'MOVE_GEOMANCY') {
+        const special = [TIER_UBERS, TIER_AG, TIER_LEGEND].includes(poke.rating && poke.rating.tier);
+        rating = (herbReady && special) ? 9 : rating * 0.2;
+    } else if (move.id === 'MOVE_WEATHER_BALL') {
+        const wType = inSun ? 'FIRE' : inRain ? 'WATER' : inSnow ? 'ICE' : inSand ? 'ROCK' : null;
+        if (wType) rating = poke.parsedTypes.includes(wType) ? 10.5 : 7;
+    } else if (move.effect === 'EFFECT_TWO_TURNS_ATTACK' || move.effect === 'EFFECT_SEMI_INVULNERABLE') {
+        rating *= (item === 'Power Herb') ? 2.0 : 0.2;
+    }
+
+    // T-013: Aurora Veil — finalised here (after any downstream bonuses) so it's exactly 0 without
+    // snow on the team and 10 with it.
+    if (move.id === 'MOVE_AURORA_VEIL') rating = inSnow ? 10 : 0;
+
+    // T-013: Belch can only fire after the holder eats a Berry. On a berryless mon it never works, so
+    // make it a true last resort (tiny positive) — only ever picked when nothing else is available.
+    if (move.effect === 'EFFECT_BELCH' && !(typeof item === 'string' && / Berry$/.test(item))) {
+        rating = Math.min(rating, 0.05);
     }
 
     // @TODO move base rating + stab + ability synergy + other moves synergy, coverage
@@ -1765,7 +1829,7 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, banne
 // deviation is a value from 0 to 1 indicating how much randomness to add to the rating, so a
 // trainer may have their own bias towards certain moves
 // Recommanded value: 0.1
-function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability = null, item = null, tmsInBag = null, deviation = 0) {
+function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability = null, item = null, tmsInBag = null, deviation = 0, ctx = {}) {
     const moveset = [...startingMoveset].map(move => moves[move] ? moves[move] : null).filter(m => m !== null);
     const tmsUsed = [];
     const tms = tmsInBag && Array.isArray(tmsInBag) ? poke.teachables.filter(tm => tmsInBag.includes(tm)) : poke.teachables;
@@ -1787,7 +1851,7 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
 
     while (uniqueMoves.length > 0 && moveset.length < 4) {
         const ratedMoves = uniqueMoves.map(move => {
-            const rating = rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset) * (1 + ((rng.random() ? 1 : -1) * rng.random() * deviation));
+            const rating = rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset, ctx) * (1 + ((rng.random() ? 1 : -1) * rng.random() * deviation));
             return {
                 ...move,
                 rating,
@@ -1841,7 +1905,7 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
         // Fill freed slots with the next-best moves from uniqueMoves
         while (uniqueMoves.length > 0 && moveset.length < 4) {
             const ratedMoves = uniqueMoves.map(move => {
-                const rating = rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset) * (1 + ((rng.random() ? 1 : -1) * rng.random() * deviation));
+                const rating = rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset, ctx) * (1 + ((rng.random() ? 1 : -1) * rng.random() * deviation));
                 return { ...move, rating };
             }).filter(m => m !== null);
             if (ratedMoves.length === 0) break;
@@ -1865,7 +1929,7 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
     };
 }
 
-function adjustMoveset(poke, level = 100, moveset, importantMoves, moves, ability = null, item = null, deviation = 0) {
+function adjustMoveset(poke, level = 100, moveset, importantMoves, moves, ability = null, item = null, deviation = 0, ctx = {}) {
     if (!moveset || moveset.length !== 4) {
         // We just can't replace non full sets
         return moveset;
@@ -1884,7 +1948,8 @@ function adjustMoveset(poke, level = 100, moveset, importantMoves, moves, abilit
             ability,
             item,
             learnableMoves,
-            movesWithoutThisMove
+            movesWithoutThisMove,
+            ctx
         ));
     }
 
@@ -1902,7 +1967,8 @@ function adjustMoveset(poke, level = 100, moveset, importantMoves, moves, abilit
                     ability,
                     item,
                     learnableMoves,
-                    movesWithoutThisMove
+                    movesWithoutThisMove,
+                    ctx
                 );
                 return {
                     ...move,
