@@ -1,3 +1,17 @@
+<div align="center">
+  <img src="frontend/assets/emeraldCut.png" alt="Pokémon Emerald Cut logo" width="96"><br>
+  <h1>Pokémon Emerald Cut</h1>
+  <p><em>Your emerald cut for controlled chaos.</em></p>
+</div>
+
+**Pokémon Emerald Cut** is a fully randomized and rebalanced Pokémon Emerald experience. Every run is unique — mutated Pokémon tiers, randomized trainers, wild encounters and starters — and each ROM ships with a self-contained, offline, per-run documentation viewer (Encounters, Trainers, PC, Mail, Pokédex, Moves, Abilities). Play it normally, as a nuzlocke, or soul-linked, at a customizable difficulty.
+
+The randomizer / analysis / ROM-builder pipeline lives under [`randomizer/`](randomizer/README.md), `analyze.js` and `backend/`. Run the app locally with `cd backend && npm start`, then open <http://localhost:3000>.
+
+Pokémon Emerald Cut is built on **RHH's `pokeemerald-expansion`**, whose original project README follows below.
+
+---
+
 # About `pokeemerald-expansion`
 
 ![Gif that shows debugging functionality that is unique to pokeemerald-expansion such as rerolling Trainer ID, Cheat Start, PC from Debug Menu, Debug PC Fill, Pokémon Sprite Visualizer, Debug Warp to Map, and Battle Debug Menu](https://github.com/user-attachments/assets/cf9dfbee-4c6b-4bca-8e0a-07f116ef891c) ![Gif that shows overworld functionality that is unique to pokeemerald-expansion such as indoor running, BW2 style map popups, overworld followers, DNA Splicers, Gen 1 style fishing, OW Item descriptions, Quick Run from Battle, Use Last Ball, Wild Double Battles, and Catch from EXP](https://github.com/user-attachments/assets/383af243-0904-4d41-bced-721492fbc48e) ![Gif that shows off a number of modern Pokémon battle mechanics happening in the pokeemerald-expansion engine: 2 vs 1 battles, modern Pokémon, items, moves, abilities, fully customizable opponents and partners, Trainer Slides, and generational gimmicks](https://github.com/user-attachments/assets/50c576bc-415e-4d66-a38f-ad712f3316be)

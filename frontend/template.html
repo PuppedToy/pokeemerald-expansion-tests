@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PuppedJS</title>
+  <title>Pokémon Emerald Cut</title>
   <style>
     /* Fonts embedded as base64 at doc-build time (T-004) — the data URIs are
        substituted in by app.js from frontend/assets/. Fully offline, no CDN. */
@@ -459,9 +459,11 @@
 
     /* Sidebar / nav */
     .right{ background:var(--obs-bg-deep); border-left:var(--obs-border); padding:14px 12px; }
-    .logo .badge{ width:44px; height:44px; border-radius:0; background:var(--obs-orange);
-      border:var(--obs-border); box-shadow:var(--obs-shadow-sm); color:var(--obs-on-orange);
+    .logo .badge{ width:44px; height:44px; border-radius:0; background:transparent;
+      border:none; box-shadow:none; color:var(--obs-orange); padding:0;
+      display:flex; align-items:center; justify-content:center;
       font-family:var(--obs-font-display); font-size:14px; }
+    .logo .badge img.ico{ width:44px; height:44px; image-rendering:pixelated; }
     h1{ font-size:13px; }
     .small,.sub{ font-family:var(--obs-font-body); font-size:16px; color:var(--obs-text-dim); }
     .nav{ margin-top:18px; }
@@ -566,10 +568,10 @@
   <div class="app">
     <header class="top">
       <div class="logo">
-        <div class="badge">P</div>
+        <div class="badge" data-icon="emeraldCut">E</div>
         <div>
-          <h1>PuppedJS</h1>
-          <div class="small">Your custom journey dex</div>
+          <h1>Pokémon Emerald Cut</h1>
+          <div class="small">Your emerald cut for controlled chaos.</div>
         </div>
       </div>
       <div id="level-cap-readout" class="level-cap-readout" title="Rises each time you defeat the next boss">Current level cap: <strong id="level-cap-value">—</strong></div>
@@ -700,7 +702,7 @@
     </main>
     
     <footer>
-      Made with <span data-icon="heart">❤️</span> — use this to aid your custom journey
+      Made with <span data-icon="heart">❤️</span> — your field guide for this Emerald Cut run
     </footer>
   </div>
 
@@ -998,7 +1000,9 @@
   /* T-006: resolve a pixel-icon by name from frontend/assets/<name>.png (or icons/<name>.png).
      Lets the user add icon PNGs incrementally — until one exists, the emoji fallback shows. */
   function iconAsset(name){ return getAsset(name+'.png') || getAsset('icons/'+name+'.png'); }
-  function getIcon(name, fallback){ var u=iconAsset(name); return u ? '<img class="ico" src="'+u+'" alt="">' : (fallback||''); }</script>
+  function getIcon(name, fallback){ var u=iconAsset(name); return u ? '<img class="ico" src="'+u+'" alt="">' : (fallback||''); }
+  /* Favicon from the embedded logo — keeps the downloaded doc fully offline. */
+  (function(){ var u=iconAsset('emeraldCut'); if(u){ var l=document.createElement('link'); l.rel='icon'; l.type='image/png'; l.href=u; document.head.appendChild(l); } })();</script>
   <script src="pokes.js"></script>
   <script src="moves.js"></script>
   <script src="trainers.js"></script>

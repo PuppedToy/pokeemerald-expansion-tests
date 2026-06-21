@@ -16,7 +16,26 @@ document.querySelectorAll('.topnav-tab').forEach(btn => {
     btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
 });
 
+// In-page links that jump to a top-nav tab (e.g. the landing "See the full feature list" CTA).
+document.querySelectorAll('[data-goto-tab]').forEach(el => {
+    el.addEventListener('click', () => setActiveTab(el.dataset.gotoTab));
+});
+
 setActiveTab('home');
+
+// ── Features sub-tabs ───────────────────────────────────────────────────────────
+function setActiveSubtab(subtabId) {
+    document.querySelectorAll('.subtab').forEach(el => {
+        el.classList.toggle('active', el.dataset.subtab === subtabId);
+    });
+    document.querySelectorAll('.subtab-panel').forEach(el => {
+        el.classList.toggle('active', el.dataset.subtabPanel === subtabId);
+    });
+}
+
+document.querySelectorAll('.subtab').forEach(btn => {
+    btn.addEventListener('click', () => setActiveSubtab(btn.dataset.subtab));
+});
 
 // ── Randomizer wizard ─────────────────────────────────────────────────────────
 
