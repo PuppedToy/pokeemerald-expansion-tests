@@ -12,7 +12,8 @@ Entry point to all project documentation. **A document not listed here does not 
 ## Decisions (ADRs)
 
 <!-- One line per ADR, newest first. -->
-- _none yet_
+- [ADR-002](adr/ADR-002-build-server-iac-docker.md) — build server ships as a single Docker image (Compose + Caddy), for reproducibility and cheap provider portability
+- [ADR-001](adr/ADR-001-rom-build-server-provider.md) — a single fixed cheap VPS (Hetzner CX43) behind a serial queue hosts the ROM-build server
 
 ## Guides
 
