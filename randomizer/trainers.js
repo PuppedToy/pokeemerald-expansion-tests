@@ -1095,7 +1095,7 @@ const trainersData = [
     },
     {
         id: 'TRAINER_KOICHI',
-        location: 'Route 115',
+        location: 'Route 104',
         class: 'Black Belt',
         reward: [...choice104TMs2],
         level: 10,
