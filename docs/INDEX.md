@@ -12,6 +12,7 @@ Entry point to all project documentation. **A document not listed here does not 
 ## Decisions (ADRs)
 
 <!-- One line per ADR, newest first. -->
+- [ADR-008](adr/ADR-008-rom-delivery-full-rom-ownership-gate.md) — the server builds and delivers the full ROM; the ownership-by-hash gate is the accepted mitigation
 - [ADR-007](adr/ADR-007-transactional-email-notifications.md) — a transactional email provider sends verification, password-reset and ROM-ready mail
 - [ADR-006](adr/ADR-006-untrusted-bundle-build-sandbox.md) — the ROM build runs in a hardened sandbox because the bundle is untrusted input
 - [ADR-005](adr/ADR-005-two-tier-preemptive-build-queue.md) — a two-tier (fast/slow) preemptive serial queue schedules builds, preempting at ROM granularity
