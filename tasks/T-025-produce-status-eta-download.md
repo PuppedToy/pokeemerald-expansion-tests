@@ -24,7 +24,12 @@ watch progress/ETA, download the result. Replaces the 501 stub at
 - `POST /api/produce` (authenticated, verified, `owns_valid_rom`, no active request): accept the
   ~32 MB bundle, **validate against the strict schema** (T-026/ADR-006), classify fast/slow,
   enqueue (T-024), persist (T-023), return a request id + initial ETA. If ETA ≥ 2 min, the response
-  flags that email-on-ready can be offered.
+  flags that email-on-ready can be offered. This is called automatically when the user clicks
+  **Generate** (T-028) — it is the *only* trigger; docs are produced/downloaded client-side and
+  never touch this endpoint.
+- **Bundle is stored on disk** for the active request (the build reads `--bundle=path`), referenced
+  by the request row, and **purged when the request reaches a terminal state** (downloaded/expired).
+  It is also retrievable for the front's lazy "Regenerate docs" fallback (T-028).
 - `GET /api/status` (own request): state, queue position, live ETA (ADR-005 model: EWMA
   `avg_rom_secs`). SSE or polling — reuse the job-store pattern in
   [backend/generator.js](../backend/generator.js).

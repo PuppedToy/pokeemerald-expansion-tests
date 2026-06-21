@@ -23,7 +23,11 @@ of junk. Consumed by the queue worker (T-024) and the API (T-025).
 
 - **Schema (SQLite, on the ADR-002 persistent volume):** `users` (shared with T-021),
   `requests` (one active per user — enforce atomically; state, fast/slow, ROMs done k/N,
-  timestamps, ETA inputs), `runs` (minimal history: seed + params, **no ROM bytes**).
+  timestamps, ETA inputs, **bundle path**), `runs` (minimal history: seed + params, **no ROM bytes**).
+- **Bundle on disk, not in SQLite:** the ~32 MB bundle is written to a per-request file (the build
+  reads `--bundle=path`) and referenced by the row; deleting the row in a terminal state also deletes
+  the bundle file and any output ROM. Keeps SQLite small and lets the front fetch the bundle for its
+  lazy "Regenerate docs" fallback (T-028) while the request is alive.
 - **State machine:** `queued_fast | queued_slow | building | paused | ready | failed`;
   terminal `downloaded→purged` / `expired→purged` (purge the `requests` row, keep/write `runs`).
 - **Recovery on startup (ADR-003 order):** (1) `git checkout -- src include data/maps` to clean
