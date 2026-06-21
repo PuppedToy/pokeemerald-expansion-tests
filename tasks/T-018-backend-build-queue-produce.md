@@ -1,49 +1,105 @@
 ---
 id: T-018
-title: Backend ROM-production endpoint + serial build queue
-status: proposed
+title: EPIC — Backend ROM-production service (accounts, ownership, queue, delivery)
+status: in-progress
 type: feature
 created: 2026-06-21
 updated: 2026-06-21
 target-version: 0.3.0
-links: [docs/adr/ADR-001-rom-build-server-provider.md, T-017]
+links: [docs/adr/ADR-001-rom-build-server-provider.md, docs/adr/ADR-002-build-server-iac-docker.md, docs/adr/ADR-003-persistence-job-lifecycle-recovery.md, docs/adr/ADR-004-auth-email-password-jwt.md, docs/adr/ADR-005-two-tier-preemptive-build-queue.md, docs/adr/ADR-006-untrusted-bundle-build-sandbox.md, docs/adr/ADR-007-transactional-email-notifications.md, T-017, T-019, T-020, T-021, T-022, T-023, T-024, T-025, T-026, T-027, T-028]
 blocked-by: []
 ---
 
-# T-018 — Backend ROM-production endpoint + serial build queue
+# T-018 — EPIC — Backend ROM-production service
+
+> This is the **epic** tracking the whole backend. It owns the global design and the decisions;
+> the actual work ships in the child tasks below. The "one in-progress task" focus rule applies
+> to the implementation children, not to this tracker.
 
 ## Context
 
-Today `POST /api/produce` ([backend/server.js](../backend/server.js)) is a 501 stub.
-This task wires the real flow: receive a session bundle, queue it, build the ROM with
-`node make.js`, and serve the result — under the single-fixed-box + serial-queue model
-decided in [ADR-001](../docs/adr/ADR-001-rom-build-server-provider.md). Sizing rationale
-in [T-017](T-017-cloud-deployment-provider-analysis.md).
+The frontend randomizes in the browser and produces a session **bundle** (`bundle.json`, array
+of ROMs — `bundle.roms`, make.js:140). The backend's only heavy job is **compiling the GBA
+ROM(s)** from that bundle (`make.js` → `make`), on the limited single-box capacity decided in
+[ADR-001](../docs/adr/ADR-001-rom-build-server-provider.md). Today `POST /api/produce`
+([backend/server.js](../backend/server.js):18) is a 501 stub.
 
-This is a **broad-strokes** task to be detailed before work starts.
+Full owner spec (2026-06-21), goal = keep serving small jobs under load with limited resources:
 
-## Plan
+- **Docs are free & anonymous.** One "Download documentation" button builds the docs zip
+  (+ `bundle.json`) client-side and always downloads. If the user is logged in & eligible, the
+  same click also submits the bundle to build the ROM; otherwise it warns what's missing.
+- **Generation requires a verified account.** Login is mandatory because the user must (1) prove
+  ROM ownership and (2) give an email for long-queue notification. A randomizer section explains
+  this. Login remembers the bundle so the flow isn't repeated.
+- **ROM ownership** is proven by hash: upload → validate → **delete immediately**, store only a
+  flag. Remembered after the first time.
+- **Two-tier queue.** A build is ~10–15 s **per ROM**; requests are *fast* (few ROMs) or *slow*
+  (many). Fast served first; a slow request is preempted **between ROMs** to drain the fast queue,
+  then resumes. One active request per user.
+- **ETA** is estimated algorithmically (per-ROM time × queue ahead), shown live to the frontend.
+  If initial ETA ≥ 2 min, offer email-on-ready.
+- **Delivery & retention.** ROMs live in a "my ROMs" area for **48 h**, deleted on download or at
+  48 h. Handled requests are purged; only a minimal **run history** (seed + params, no bytes) is
+  kept so a user can re-generate from a seed.
+- **Resilience.** On restart the backend recovers the in-flight work and loses nothing.
 
-Strokes (to refine):
-- `POST /api/produce` accepts the ~32 MB bundle (limit already 50mb), validates it,
-  enqueues a job, returns a job id. Progress over SSE (reuse the job-store pattern in
-  [backend/generator.js](../backend/generator.js)).
-- **Serial queue**: one worker, one `node make.js --bundle=…` at a time; the box keeps
-  `build/` warm so each job is incremental. Decide persistence (in-memory vs SQLite/BullMQ)
-  — durability vs simplicity, leaning simple.
-- Serve the finished `.gba` for download; apply a **TTL cleanup** for output ROMs (ADR-001).
-- Bound `make -j` to the core count (T-017 note on the unbounded `make -j` at make.js:164).
-- Concurrency/safety: `make.js` mutates + restores `src/`; serial execution must be enforced
-  so jobs never overlap on the shared working tree.
+## Global design
 
-Acceptance criteria (draft):
-- [ ] `/api/produce` enqueues and returns a job id; status/progress observable.
-- [ ] Builds run strictly serially; a ROM is produced and downloadable.
-- [ ] Output ROMs are cleaned up by TTL; `make -j` is bounded.
-- [ ] Covered by tests where logic is non-trivial (queue ordering, validation).
+- **One box** (ADR-001), **one serial build worker** — the two-tier queue is smarter scheduling,
+  not parallelism (two builds can never share the tree).
+- **API** (Express): auth, me, validate, produce, status, download.
+- **SQLite** ([ADR-003](../docs/adr/ADR-003-persistence-job-lifecycle-recovery.md)) on the ADR-002
+  persistent volume: `users`, `requests`, `runs`.
+- **Scheduler/worker** ([ADR-005](../docs/adr/ADR-005-two-tier-preemptive-build-queue.md)): fast/slow
+  FIFOs, preemption at ROM boundary, aging, bounded `make -j`, warm `build/` cache.
+- **Auth** ([ADR-004](../docs/adr/ADR-004-auth-email-password-jwt.md)): email+password, argon2id,
+  **light email verification**, JWT, rate limits.
+- **Email** ([ADR-007](../docs/adr/ADR-007-transactional-email-notifications.md)): transactional
+  provider for verification/reset/ready — new external dependency.
+- **Sandbox** ([ADR-006](../docs/adr/ADR-006-untrusted-bundle-build-sandbox.md)): the bundle is
+  untrusted input driving a native build → strict schema + hardened container (extends ADR-002).
+
+**Request state machine:** `queued_fast | queued_slow | building | paused | ready | failed`
+→ terminal `downloaded→purged` / `expired→purged`. Recovery: restore tree → re-queue `building`
+→ resume from the persisted queue.
+
+## Breakdown (child tasks)
+
+| Child | Scope | ADR |
+|---|---|---|
+| [T-021](T-021-auth-accounts.md) | Auth & accounts (register/login/forgot, verification, JWT, `/api/me`) | ADR-004 |
+| [T-022](T-022-rom-ownership-validation.md) | ROM-ownership validation by hash (validate-and-delete) | ADR-004 |
+| [T-023](T-023-persistence-lifecycle-recovery.md) | SQLite, state machine, crash recovery, retention sweeper | ADR-003 |
+| [T-024](T-024-build-worker-fast-slow-queue.md) | Build worker + two-tier preemptive serial queue | ADR-005 |
+| [T-025](T-025-produce-status-eta-download.md) | `/api/produce` + status/ETA + download | ADR-005/003 |
+| [T-026](T-026-untrusted-bundle-build-sandbox.md) | Untrusted-bundle schema + hardened build sandbox | ADR-006 |
+| [T-027](T-027-transactional-email.md) | Transactional email (verification/reset/ready) | ADR-007 |
+| [T-028](T-028-frontend-account-generation-flow.md) | Frontend: login/explainer, dual-action button, status/ETA, "my ROMs" | — |
+
+Suggested order: foundations T-023 / T-027 / T-021 → T-022, T-024, T-026 → T-025 → T-028; deploy
+([T-019](T-019-infra-dockerized-build-server-deploy.md)) last, blocked on T-025 + T-026.
+[T-020](T-020-user-accounts-rom-ownership-seed-history.md) is superseded by this epic (accounts &
+ownership → T-021/T-022; seed history → T-023 `runs`).
+
+## Acceptance criteria
+
+- [ ] All child tasks (T-021…T-028) closed and their criteria met.
+- [ ] End-to-end: anonymous docs; verified login; ROM validated-and-deleted; bundle → queued →
+      built → downloadable; ETA live; email-on-ready when long; 48 h TTL; restart loses nothing.
+- [ ] `cd randomizer && npm test` green; no SSOT violations.
 
 ## Progress log
 
-- **2026-06-21** — Task created (broad strokes) alongside ADR-001/ADR-002 and T-017.
+- **2026-06-21** — Created (broad strokes) alongside ADR-001/ADR-002 and T-017.
+- **2026-06-21** — Owner delivered the full backend spec. Reviewed for completeness and risk;
+  surfaced the top dangers (untrusted-bundle RCE, DoS via open registration, crash-recovery =
+  restore-and-re-run not continue, slow-queue starvation, ROM-vs-bundle preemption granularity,
+  download-then-delete ordering, legal exposure of serving built ROMs). Owner decisions: keep a
+  **minimal run-history** (seed/params, no bytes) — reconciles T-020; add **light email
+  verification** — closes DoS/reset/spam at once. Recorded ADR-003…ADR-007 and split the epic into
+  T-021…T-028. Re-scoped T-018 from a single task into this epic; T-020 superseded.
 
 ## Outcome
+
+<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned. -->

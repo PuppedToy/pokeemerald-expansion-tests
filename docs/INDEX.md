@@ -12,6 +12,11 @@ Entry point to all project documentation. **A document not listed here does not 
 ## Decisions (ADRs)
 
 <!-- One line per ADR, newest first. -->
+- [ADR-007](adr/ADR-007-transactional-email-notifications.md) — a transactional email provider sends verification, password-reset and ROM-ready mail
+- [ADR-006](adr/ADR-006-untrusted-bundle-build-sandbox.md) — the ROM build runs in a hardened sandbox because the bundle is untrusted input
+- [ADR-005](adr/ADR-005-two-tier-preemptive-build-queue.md) — a two-tier (fast/slow) preemptive serial queue schedules builds, preempting at ROM granularity
+- [ADR-004](adr/ADR-004-auth-email-password-jwt.md) — authentication is email + password with light email verification and JWT
+- [ADR-003](adr/ADR-003-persistence-job-lifecycle-recovery.md) — SQLite persists the request lifecycle; recovery restores the tree and re-runs in-flight jobs
 - [ADR-002](adr/ADR-002-build-server-iac-docker.md) — build server ships as a single Docker image (Compose + Caddy), for reproducibility and cheap provider portability
 - [ADR-001](adr/ADR-001-rom-build-server-provider.md) — a single fixed cheap VPS (Hetzner CX43) behind a serial queue hosts the ROM-build server
 

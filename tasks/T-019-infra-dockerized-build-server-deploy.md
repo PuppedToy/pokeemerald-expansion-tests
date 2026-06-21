@@ -6,8 +6,8 @@ type: chore
 created: 2026-06-21
 updated: 2026-06-21
 target-version: 0.3.0
-links: [docs/adr/ADR-002-build-server-iac-docker.md, docs/adr/ADR-001-rom-build-server-provider.md, T-017]
-blocked-by: [T-018]
+links: [docs/adr/ADR-002-build-server-iac-docker.md, docs/adr/ADR-001-rom-build-server-provider.md, docs/adr/ADR-006-untrusted-bundle-build-sandbox.md, T-017, T-018, T-025, T-026]
+blocked-by: [T-025, T-026]
 ---
 
 # T-019 — Dockerized build-server image + deploy to the VPS
@@ -42,5 +42,9 @@ Acceptance criteria (draft):
 ## Progress log
 
 - **2026-06-21** — Task created (future, broad strokes) alongside ADR-002 and T-017.
+- **2026-06-21** — Re-pointed by the T-018 epic: deploy now depends on the real backend
+  (T-025) and the hardened build sandbox (T-026, ADR-006), not just the old T-018 stub. The
+  Compose stack must add the SQLite/ROM/`build/` persistent volume (ADR-003) and SPF/DKIM DNS
+  for email (ADR-007). The build-time benchmark ADR-001 commits to still lives here.
 
 ## Outcome
