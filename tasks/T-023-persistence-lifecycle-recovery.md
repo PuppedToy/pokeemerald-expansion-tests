@@ -1,7 +1,7 @@
 ---
 id: T-023
 title: SQLite persistence, request state machine, crash recovery & retention sweeper
-status: in-progress
+status: done
 type: feature
 created: 2026-06-21
 updated: 2026-06-22
@@ -144,5 +144,23 @@ Acceptance criteria:
   so the test script is bare `node --test` (cwd auto-discovery). Added `backend/data/` to `.gitignore`.
   **Not yet wired into `server.js` boot** — deferred until there are consumers (T-021 auth / T-024 worker
   / T-025 produce) so we don't open a DB file with nothing using it. Ready for user review.
+- **2026-06-22** — Closed (owner-approved). Owner OK'd the two judgment calls (a `ready` ROM occupies
+  the user's slot; `failed` is non-blocking) and authorized closing test-only tasks on a green suite.
+  Backend 14/14, randomizer 464/464.
 
 ## Outcome
+
+**Shipped:** the durable persistence backbone for the backend epic (ADR-003), on the built-in
+`node:sqlite` with a new `node:test` backend suite (14 tests). Modules: `db/index.js`
+(open + idempotent migration, `ACTIVE_STATES` + `TRANSITIONS`), `db/requests.js` (request repo +
+state machine + one-active-per-user partial unique index), `db/runs.js` (seed/params history, never
+bytes), `lifecycle/{recovery,sweeper,complete}.js` (restore-and-re-run recovery keeping `roms_done`;
+48 h expiry purge; atomic mark-ready-and-record-run).
+
+**Deviations from the plan:** (1) the active-slot set includes `ready` and `failed` is non-blocking
+(owner-approved). (2) Added `seed`/`params_json` to the `requests` row so run history is written at
+`ready`. (3) Not wired into `server.js` boot yet — deferred until consumers exist.
+
+**Follow-ups:** none new. Consumers of this layer: T-021 (auth/users table), T-024 (worker uses the
+requests repo + state machine), T-025 (produce/status/download). No changelog line — internal infra,
+not user-visible.
