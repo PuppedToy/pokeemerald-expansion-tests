@@ -38,6 +38,8 @@ Acceptance criteria (draft):
 - [ ] Compose stack (server + Caddy + warm-cache volume) runs on the target VPS with HTTPS.
 - [ ] Benchmarked build times recorded; `make -j` bounded to container CPUs.
 - [ ] Deploy runbook in `docs/`, linked from `docs/INDEX.md`.
+- [ ] Email live: Brevo account + `BREVO_API_KEY` + sender SPF/DKIM/DMARC configured, one live send
+      confirmed (operational enablement handed off from T-027).
 
 ## Progress log
 
