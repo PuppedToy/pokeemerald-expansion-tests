@@ -115,11 +115,11 @@ Purge = delete bundle + output files, then delete the `requests` row. `runs` is 
 5. `runs` never stores ROM bytes (only seed/params).
 
 Acceptance criteria:
-- [ ] `node:sqlite` schema created/migrated idempotently on boot; backend `node:test` suite runnable.
-- [ ] One-active-request-per-user enforced atomically (partial unique index), with a test.
-- [ ] State transitions implemented and unit-tested (legal edges pass, illegal throw, paused↔queued).
-- [ ] Simulated crash (seed `building`) recovers: tree-restore invoked, request re-queued, `roms_done` kept.
-- [ ] Sweeper marks >48 h rows `expired` and purges (files + row); `runs` retains seed/params only, no bytes.
+- [x] `node:sqlite` schema created/migrated idempotently on boot; backend `node:test` suite runnable.
+- [x] One-active-request-per-user enforced atomically (partial unique index), with a test.
+- [x] State transitions implemented and unit-tested (legal edges pass, illegal throw, paused↔queued).
+- [x] Simulated crash (seed `building`) recovers: tree-restore invoked, request re-queued, `roms_done` kept.
+- [x] Sweeper marks >48 h rows `expired` and purges (files + row); `runs` retains seed/params only, no bytes.
 
 ## Progress log
 
@@ -132,5 +132,17 @@ Acceptance criteria:
   for one-active-per-user, bundle on disk), the full state-transition table, the ADR-003 startup
   recovery (keep `roms_done`), the sweeper, the module surface, and a Red-first test list. Next: write
   the failing `node:test` specs, then the migration + repo.
+- **2026-06-22** — Implemented (Red→Green). Wrote 6 failing specs first (saw them fail on the missing
+  `db/index.js`, the right reason), then the modules: `db/index.js` (open + idempotent migration +
+  `ACTIVE_STATES`/`TRANSITIONS`), `db/requests.js`, `db/runs.js`, `lifecycle/{recovery,sweeper,complete}.js`.
+  **Backend suite: 14/14 green** (`cd backend && npm test` via `node --test`); randomizer Jest untouched
+  (464/464). All 5 acceptance criteria met and ticked. Refinements vs the plan, both logged here:
+  (1) the one-active partial index includes **`ready`** (an undownloaded ready ROM occupies the user's
+  single slot); `failed` is non-blocking so users can retry. (2) Added `seed`/`params_json` to the
+  `requests` row so `finishBuild` can write the `runs` history at the moment of `ready`. Tooling notes:
+  `node:sqlite` works on Node 24 with no flag/warning; `node --test <dir>` is treated as a script entry,
+  so the test script is bare `node --test` (cwd auto-discovery). Added `backend/data/` to `.gitignore`.
+  **Not yet wired into `server.js` boot** — deferred until there are consumers (T-021 auth / T-024 worker
+  / T-025 produce) so we don't open a DB file with nothing using it. Ready for user review.
 
 ## Outcome
