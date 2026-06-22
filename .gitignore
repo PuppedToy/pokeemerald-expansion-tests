@@ -58,6 +58,7 @@ __pycache__
 !randomizer/*
 randomizer/node_modules/
 backend/node_modules/
+backend/data/
 node_modules/
 */.DS_Store
 .autobash
