@@ -26,7 +26,7 @@
 | [T-020](T-020-user-accounts-rom-ownership-seed-history.md) | Optional user accounts — ROM-ownership verification + seed/run history | abandoned | 0.4.0 | 2026-06-21 |
 | [T-021](T-021-auth-accounts.md) | Auth & accounts — register/login/forgot, email verification, JWT | proposed | 0.3.0 | 2026-06-21 |
 | [T-022](T-022-rom-ownership-validation.md) | ROM-ownership validation by hash (validate-and-delete) | proposed | 0.3.0 | 2026-06-21 |
-| [T-023](T-023-persistence-lifecycle-recovery.md) | SQLite persistence, request state machine, crash recovery & retention sweeper | proposed | 0.3.0 | 2026-06-21 |
+| [T-023](T-023-persistence-lifecycle-recovery.md) | SQLite persistence, request state machine, crash recovery & retention sweeper | in-progress | 0.3.0 | 2026-06-22 |
 | [T-024](T-024-build-worker-fast-slow-queue.md) | Build worker with two-tier (fast/slow) preemptive serial queue | proposed | 0.3.0 | 2026-06-21 |
 | [T-025](T-025-produce-status-eta-download.md) | Produce endpoint + status/ETA + ROM download | proposed | 0.3.0 | 2026-06-21 |
 | [T-026](T-026-untrusted-bundle-build-sandbox.md) | Untrusted-bundle build sandbox — schema validation + hardened container | proposed | 0.3.0 | 2026-06-21 |
