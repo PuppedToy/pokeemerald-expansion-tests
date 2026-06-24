@@ -47,8 +47,19 @@ echo "Image: $IMAGE"
 echo "ADs:   ${ADS[*]}"
 echo "Shape: $SHAPE  ${OCPUS} OCPU / ${MEM} GB / ${BOOT_GB} GB boot"
 
+# A prior attempt may have actually created the instance but timed out reading the
+# response — reuse it instead of duplicating.
+find_instance() {
+  oci compute instance list --compartment-id "$OCI_COMPARTMENT_OCID" --output json 2>/dev/null \
+    | jq -r --arg n "$NAME" '.data[]? | select(."display-name"==$n and ."lifecycle-state"!="TERMINATED" and ."lifecycle-state"!="TERMINATING") | .id' | head -1
+}
+
+IID=""
 attempt=0
-while true; do
+while [ -z "$IID" ] || [ "$IID" = "null" ]; do
+  EXIST=$(find_instance)
+  if [ -n "$EXIST" ] && [ "$EXIST" != "null" ]; then IID="$EXIST"; echo "reusing existing instance $IID"; break; fi
+
   for AD in "${ADS[@]}"; do
     attempt=$((attempt + 1))
     printf '[%s] launching in %s ... ' "$attempt" "$AD"
@@ -63,20 +74,29 @@ while true; do
         --boot-volume-size-in-gbs "$BOOT_GB" \
         --display-name "$NAME" \
         --metadata "{\"ssh_authorized_keys\": \"$PUBKEY\"}" \
-        --wait-for-state RUNNING 2>/tmp/oci-launch.err); then
+        2>/tmp/oci-launch.err); then
       IID=$(echo "$OUT" | jq -r '.data.id')
-      IP=$(oci compute instance list-vnics --instance-id "$IID" --query 'data[0]."public-ip"' --raw-output 2>/dev/null)
-      echo "✅ RUNNING"
-      echo "Instance: $IID"
-      echo "Public IP: ${IP:-<check console>}"
-      exit 0
+      echo "✅ accepted ($IID)"
+      break
     fi
-    if grep -qiE 'capacity|out of host|InternalError|500' /tmp/oci-launch.err; then
+    # Never abort the loop: capacity AND transient/unknown errors just retry.
+    if grep -qiE 'capacity|out of host|InternalError|LimitExceeded|TooManyRequests|429|500' /tmp/oci-launch.err; then
       echo "no capacity"
+    elif grep -qiE 'timed out|timeout|connection|temporarily|RequestException' /tmp/oci-launch.err; then
+      echo "transient — will retry"
     else
-      echo "ERROR (not capacity):"; tail -5 /tmp/oci-launch.err; exit 1
+      echo "unexpected (will retry) — last lines:"; tail -3 /tmp/oci-launch.err
     fi
   done
+
+  [ -n "$IID" ] && [ "$IID" != "null" ] && break
   echo "    round done — sleeping ${SLEEP}s"
   sleep "$SLEEP"
 done
+
+echo "==> instance $IID — waiting for RUNNING + public IP"
+oci compute instance get --instance-id "$IID" --wait-for-state RUNNING --max-wait-seconds 600 >/dev/null 2>&1 || true
+IP=$(oci compute instance list-vnics --instance-id "$IID" --query 'data[0]."public-ip"' --raw-output 2>/dev/null)
+echo "✅ RUNNING"
+echo "Instance: $IID"
+echo "Public IP: ${IP:-<run: oci compute instance list-vnics --instance-id $IID>}"
