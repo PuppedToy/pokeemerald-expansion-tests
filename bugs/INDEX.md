@@ -5,3 +5,4 @@
 | Id | Title | Status | Severity | Found in | Fixed in | Regression test |
 |---|---|---|---|---|---|---|
 | [B-001](B-001-difficulty-ignores-absolute-tier-trainers.md) | Frontend difficulty has no effect on trainers whose slots use absoluteTier (Flannery onward) | fixed | major | 0.1.0 | 0.1.0 | randomizer/__tests__/unit/presets.test.js |
+| [B-002](B-002-opendatabase-missing-parent-dir.md) | openDatabase fails ("unable to open database file") when the data dir doesn't exist | fixed | major | 0.3.0 | 0.3.0 | backend/__tests__/db.test.js |
