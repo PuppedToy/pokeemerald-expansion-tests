@@ -86,6 +86,11 @@ export function createRequestsRepo(db) {
       return this.setState(id, 'downloaded', now);
     },
 
+    setOutputPath(id, outputPath, now = Date.now()) {
+      db.prepare('UPDATE requests SET output_path = ?, updated_at = ? WHERE id = ?').run(outputPath, now, id);
+      return this.get(id);
+    },
+
     deleteRow(id) {
       db.prepare('DELETE FROM requests WHERE id = ?').run(id);
     },
