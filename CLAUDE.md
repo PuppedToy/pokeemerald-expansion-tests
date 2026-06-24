@@ -144,6 +144,7 @@ These are regenerated from source on every run; committing them pollutes history
 - Do NOT repurpose the upstream `CHANGELOG.md`; Brooktec versioning lives in `CHANGELOG.brooktec.md`.
 - Do NOT duplicate a fact that already has a home — link to it.
 - Do NOT weaken, skip or delete tests, lint rules or hooks to get to green.
+- Do NOT commit credentials. OCI CLI config + API key live in `~/.oci/`; the deploy box's SSH key in `~/.ssh/emerald_box`; deploy secrets (subnet/host/keys) in the gitignored `deploy/.env` / `deploy/.env.local`. The in-project `.oci/` is gitignored too. Deploy how-to: `docs/deploy-oracle.md`.
 
 ---
 Based on **Brooktec Base** ([brooktec-claude](https://github.com/brooktec/brooktec-claude)) — adopted version: **0.0.1**. To upgrade, diff against the newer `template/` and apply.
