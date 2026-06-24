@@ -1,5 +1,6 @@
 import { ConfigForm } from './config-form.js';
 import { resolveArtifact } from './session.js';
+import { initAccount, onBundleReady } from './account.js';
 
 // ── Tab routing ───────────────────────────────────────────────────────────────
 
@@ -318,6 +319,7 @@ function renderDocsButtons(cfg) {
 
 // Init
 showStep(1);
+initAccount(); // T-028: wire the account modal + recover any in-flight build on reload
 
 // ── Web Worker helpers ────────────────────────────────────────────────────────
 
@@ -420,6 +422,10 @@ function showGenDone() {
         `Seed: ${cfg.seed}  ·  ${numROMs} ROM${numROMs !== 1 ? 's' : ''} ready to download`;
 
     renderDocsButtons(cfg);
+
+    // T-028: docs are ready; kick off the ROM build (if the user is eligible) and
+    // show its status. Docs download above is independent and always available.
+    onBundleReady(currentBundle);
 }
 
 function showGenError(message) {

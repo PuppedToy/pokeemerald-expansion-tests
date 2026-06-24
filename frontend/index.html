@@ -25,8 +25,41 @@
     <button class="topnav-tab" data-tab="home">Home</button>
     <button class="topnav-tab" data-tab="features">Features</button>
     <button class="topnav-tab" data-tab="randomizer">Randomizer</button>
+    <button class="topnav-tab topnav-account-btn" id="account-btn">Log in</button>
   </div>
 </nav>
+
+<!-- ── Auth modal (T-028) ──────────────────────────────────────────────── -->
+<div class="modal-overlay" id="auth-modal" hidden>
+  <div class="modal card">
+    <button class="modal-close" id="auth-close" aria-label="Close">×</button>
+    <div class="auth-explainer">
+      <p><strong>Why an account?</strong> Building your ROM needs one, for two reasons:</p>
+      <ol>
+        <li>You upload your original Pokémon Emerald ROM so we can verify you own the game.</li>
+        <li>You give an email so, if the queue is long, we can notify you when your ROM is ready.</li>
+      </ol>
+      <p class="auth-explainer-foot">Generating the documentation never needs an account — it's free.</p>
+    </div>
+    <div class="auth-tabs" id="auth-tabs">
+      <button class="auth-tab active" data-auth-tab="login">Log in</button>
+      <button class="auth-tab" data-auth-tab="register">Register</button>
+    </div>
+    <form class="auth-form" id="auth-form-login" data-auth-panel="login">
+      <input class="input" type="email" id="login-email" placeholder="Email" required>
+      <input class="input" type="password" id="login-password" placeholder="Password" required>
+      <button class="btn btn-primary" type="submit">Log in</button>
+      <a href="#" id="forgot-link" class="auth-link">Forgot your password?</a>
+    </form>
+    <form class="auth-form" id="auth-form-register" data-auth-panel="register" hidden>
+      <input class="input" type="email" id="reg-email" placeholder="Email" required>
+      <input class="input" type="password" id="reg-password" placeholder="Password (min 8 chars)" minlength="8" required>
+      <button class="btn btn-primary" type="submit">Create account</button>
+    </form>
+    <div class="auth-account" id="auth-account" hidden></div>
+    <p class="auth-msg" id="auth-msg"></p>
+  </div>
+</div>
 
 <div class="page-wrap">
 
@@ -156,8 +189,9 @@
               <button class="btn btn-primary" id="btn-download-all">⬇ Download all (ZIP)</button>
               <div id="btn-docs-container"></div>
               <button class="btn btn-primary" id="btn-download-bundle">Export run</button>
-              <button class="btn btn-ghost" disabled data-tooltip="ROM production coming soon">Send to server</button>
             </div>
+            <!-- ROM delivery (T-028): the build auto-starts here when you're eligible -->
+            <div id="delivery-panel" class="delivery-panel"></div>
           </div>
 
           <!-- Error -->
