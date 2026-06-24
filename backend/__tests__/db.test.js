@@ -9,7 +9,7 @@ test('migration is idempotent (safe to run on every boot)', () => {
   const tables = db.prepare(
     "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
   ).all().map((r) => r.name);
-  assert.deepEqual(tables, ['requests', 'runs', 'users']);
+  assert.deepEqual(tables, ['auth_tokens', 'requests', 'runs', 'users']);
 });
 
 test('foreign keys are enforced', () => {
