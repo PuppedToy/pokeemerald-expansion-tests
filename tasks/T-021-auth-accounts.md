@@ -1,7 +1,7 @@
 ---
 id: T-021
 title: Auth & accounts — register/login/forgot, email verification, JWT
-status: in-progress
+status: done
 type: feature
 created: 2026-06-21
 updated: 2026-06-24
@@ -54,5 +54,14 @@ Acceptance criteria:
   to expect the new table (deliberate schema change). Logic (hash/jwt/tokens/service/middleware/rate-limit)
   is unit-tested; the express routes are thin glue whose end-to-end behaviour is checked in the final
   manual pass — so the task stays **in-progress** (HTTP surface), code merged to master to unblock T-025.
+- **2026-06-24** — Closed per owner. Full end-to-end UI verification is **deferred to T-029** (manual
+  test task); the owner will run it after deploying (T-019). Auth chain (register → verify → login →
+  `/api/me` verified:true) confirmed via a boot smoke test.
 
 ## Outcome
+
+Auth implemented: `auth/{password,jwt,tokens,users,service,middleware,routes}.js` — scrypt hashing,
+hand-rolled HS256 JWT, single-use hashed verify/reset tokens (`auth_tokens`), register/login/forgot/
+reset, `/api/me`, per-IP rate limit. 18 unit tests; register→verify→login smoke-verified. **Deviation:**
+`crypto.scrypt` instead of ADR-004's literal argon2id (built-in, zero native dep — easy swap later).
+**Not yet verified end-to-end through the browser UI — owns by [T-029](T-029-full-flow-manual-test.md).**

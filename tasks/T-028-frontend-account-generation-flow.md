@@ -1,7 +1,7 @@
 ---
 id: T-028
 title: Frontend — login/explainer, dual-action download, status/ETA & "my ROMs"
-status: in-progress
+status: done
 type: feature
 created: 2026-06-21
 updated: 2026-06-24
@@ -70,5 +70,13 @@ _Visual/DOM rendering and the produce→status→download happy path (needs a re
   (1) "Regenerate docs" from the stored bundle on reload; (2) the email-on-ready opt-in checkbox. Stays
   **in-progress** for the final manual pass (browser UI + the full produce→download with a real Emerald
   ROM). Note: only the (USA, Europe) Emerald hash is in the accepted set so far — use that dump to test.
+- **2026-06-24** — Closed per owner. Browser UI + full produce→download flow are **deferred to T-029**.
+  Static serving of all new files + the auth UI wiring confirmed via smoke (app opened locally on :3007).
 
 ## Outcome
+
+Implemented: `js/account.js` (auth modal, IndexedDB bundle store, ROM upload, Generate→auto-produce,
+status/ETA polling, single-use download, reload recovery), `verify.html`/`reset.html`, index.html modal
++ explainer + delivery panel, components.css, app.js hooks. Smoke-verified (files served; auth UI calls
+the API). **Deferred polish:** regenerate-docs-on-reload and the email-on-ready opt-in checkbox.
+**Visual/DOM + full flow not yet verified — owned by [T-029](T-029-full-flow-manual-test.md).**

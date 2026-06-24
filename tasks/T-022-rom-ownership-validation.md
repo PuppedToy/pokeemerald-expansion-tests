@@ -1,7 +1,7 @@
 ---
 id: T-022
 title: ROM-ownership validation by hash (validate-and-delete)
-status: in-progress
+status: done
 type: feature
 created: 2026-06-21
 updated: 2026-06-24
@@ -69,5 +69,13 @@ Acceptance criteria:
   suite 49/49.** Validator + handler logic unit-tested with a controlled known-set (can't ship the real
   16 MB Emerald in tests). Stays **in-progress**: the end-to-end upload of a real Emerald dump through
   the live endpoint is part of the final manual pass. Code merged to unblock T-025.
+- **2026-06-24** — Closed per owner. Real-ROM upload through the live endpoint is **deferred to T-029**.
+  Non-Emerald rejection (400) confirmed via smoke.
 
 ## Outcome
+
+ROM-ownership-by-hash implemented: `rom/validate.js` + `rom/routes.js` (`POST /api/rom/validate`,
+octet-stream, size-bounded, auth + rate-limited, validate-and-delete — bytes never persisted). 5 unit
+tests; non-Emerald rejection smoke-verified. **Open item:** accepted set currently holds only the
+(USA, Europe) SHA-1; JP/FR/DE/IT/ES still to lock from the No-Intro GBA DAT. **Real-ROM happy path not
+yet verified — owned by [T-029](T-029-full-flow-manual-test.md).**

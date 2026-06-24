@@ -119,6 +119,13 @@ ownership → T-021/T-022; seed history → T-023 `runs`).
   legal sign-off recommended before any wide public launch). Recorded as
   [ADR-008](../docs/adr/ADR-008-rom-delivery-full-rom-ownership-gate.md). T-022/T-025/T-028 already
   match this model — no rework needed.
+- **2026-06-24** — Whole backend implemented (TDD, 67 backend tests) and wired into `server.js` with a
+  `FAKE_BUILD` mode; boot smoke-verified (register→verify→login; gates). Fixed B-002 (DB dir on boot).
+  Children **closed** per owner with end-to-end verification explicitly deferred: T-023/T-024/T-026/T-027
+  done on green; **T-021/T-022/T-025/T-028 closed** with e2e owned by **[T-029](T-029-full-flow-manual-test.md)**
+  (manual full-flow test). Deploy goes to **Oracle ARM free tier** via **[T-019](T-019-infra-dockerized-build-server-deploy.md)**
+  (also wires the real per-ROM build adapter). **This epic stays `in-progress`** until T-019 (deploy) +
+  T-029 (e2e) confirm the full flow end-to-end on the live box.
 
 ## Outcome
 

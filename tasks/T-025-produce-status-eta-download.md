@@ -1,7 +1,7 @@
 ---
 id: T-025
 title: Produce endpoint + status/ETA + ROM download
-status: in-progress
+status: done
 type: feature
 created: 2026-06-21
 updated: 2026-06-24
@@ -57,5 +57,13 @@ _Live HTTP endpoints + a real bundle POST + a real streamed download = final man
   8 tests; **backend suite 66/66**. Stays **in-progress**: the live endpoints, a real 32 MB bundle POST and
   a streamed real download are the final manual pass. fs ops (persist bundle / read output / delete) are
   injected — wired with FAKE_BUILD in the server-integration step. Code merged.
+- **2026-06-24** — Closed per owner. Live produce→status→download with a real bundle is **deferred to
+  T-029**; the **real per-ROM build adapter** (FAKE_BUILD off, bounded `make -j`) is wired in **T-019**.
+  Gates + handler logic confirmed via smoke.
 
 ## Outcome
+
+Implemented: `produce/{eta,handlers,routes}.js` + `build/zip.js` (zero-dep STORE zip) — `/api/produce`
+(validate/classify/enqueue/persist + initial ETA), `/api/status` (live ETA), `/api/download` (zip then
+mark-downloaded + purge). 8 unit tests; produce gates (403/409) smoke-verified. **Deferred:** real
+bundle POST + streamed download → [T-029](T-029-full-flow-manual-test.md); real build adapter → T-019.
