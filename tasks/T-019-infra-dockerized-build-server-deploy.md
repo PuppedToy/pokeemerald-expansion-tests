@@ -6,7 +6,7 @@ type: chore
 created: 2026-06-21
 updated: 2026-06-24
 target-version: 0.3.0
-links: [docs/adr/ADR-002-build-server-iac-docker.md, docs/adr/ADR-001-rom-build-server-provider.md, docs/adr/ADR-006-untrusted-bundle-build-sandbox.md, docs/adr/ADR-007-transactional-email-notifications.md, T-017, T-018, T-025, T-026, T-029]
+links: [docs/adr/ADR-002-build-server-iac-docker.md, docs/adr/ADR-001-rom-build-server-provider.md, docs/adr/ADR-006-untrusted-bundle-build-sandbox.md, docs/adr/ADR-007-transactional-email-notifications.md, T-017, T-018, T-025, T-026, T-029, T-030]
 blocked-by: []
 ---
 
@@ -27,10 +27,9 @@ the owner through provisioning interactively; the goal is **minimal, repeatable*
 script + Docker, so moving to another box tomorrow is a few commands. **No secrets ever committed**
 (SSH key/host and API keys live in a gitignored `deploy/.env` / the owner's `~/.ssh`).
 
-1. **Real-build wiring (carried over from T-024/T-025 handoffs).** Refactor `make.js`'s bundle loop
-   into a callable **per-ROM** unit; implement the real `buildRom` adapter (replaces FAKE_BUILD),
-   bound `make -j` to the container CPUs, preserve the per-ROM `restore()`. This is the one piece of
-   app code left; everything else here is infra.
+1. **Real-build wiring → [T-030](T-030-real-per-rom-build-adapter.md)** (split out — it's app code, not
+   infra). T-019 deploys with `FAKE_BUILD=1` first to validate the flow over HTTPS; the real build (and
+   the benchmark below) lands once T-030 is in and `FAKE_BUILD` is switched off.
 2. **Dockerfile** (ARM): base Linux + the **`arm-none-eabi` / devkitARM** toolchain + host build deps
    (make, gcc, libpng…) + Node; repo pulled at build; pin base + toolchain versions. Validate the ARM
    toolchain path once (the cross-compiler output is host-arch-independent — ADR-001).
@@ -52,7 +51,8 @@ script + Docker, so moving to another box tomorrow is a few commands. **No secre
    linked from `docs/INDEX.md`. Then run [T-029](T-029-full-flow-manual-test.md) against the live box.
 
 Acceptance criteria (draft):
-- [ ] Real `buildRom` adapter produces a ROM via `make.js` inside the container; `make -j` bounded.
+- [ ] Real build (via [T-030](T-030-real-per-rom-build-adapter.md)) produces a ROM inside the container;
+      `make -j` bounded — validated here on the box, then `FAKE_BUILD` off.
 - [ ] Compose stack (server + Caddy + persistent volume) runs on the Oracle ARM box with HTTPS.
 - [ ] `deploy/bootstrap.sh` brings up a fresh box with minimal manual steps; **no secrets in the repo**.
 - [ ] `deploy/update.sh` redeploys an update to the running box (creds read from gitignored `deploy/.env`).
@@ -82,5 +82,8 @@ Acceptance criteria (draft):
   and switch it off. Scripts `bash -n` clean. **Remaining:** the per-ROM `make.js` adapter (next), then
   provision + bootstrap + benchmark + T-029. Decisions captured: domain `pokemon-emerald-cut.com`
   (Cloudflare), private repo → SSH deploy key.
+- **2026-06-24** — Split the real-build adapter into its own task **[T-030](T-030-real-per-rom-build-adapter.md)**
+  (it's app code, not infra). T-019 is now infra/deploy only; it deploys FAKE first and turns the real
+  build on once T-030 lands. Continuing T-019 to guide the owner through Oracle provisioning.
 
 ## Outcome
