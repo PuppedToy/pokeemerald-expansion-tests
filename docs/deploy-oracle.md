@@ -23,6 +23,27 @@ Point `pokemon-emerald-cut.com` (and `www`) **A record → the box's public IP**
 *(Alternative: keep the orange-cloud proxy, set SSL/TLS → "Full (strict)", and install a Cloudflare
 Origin Certificate in Caddy — more setup; grey-cloud + Caddy LE is simplest.)*
 
+## 2b. "Out of host capacity" — auto-retry the launch
+
+The free A1 shape is often capacity-constrained ("Out of host capacity" across all ADs). Instead of
+clicking Create by hand, leave **`deploy/oci-retry-launch.sh`** running — it loops over the ADs and
+retries until a slot frees up, then prints the public IP.
+
+One-time setup (on your machine):
+```bash
+brew install oci-cli jq          # or the official OCI CLI installer
+oci setup config                 # generates an API key; upload the printed public key:
+                                 #   Console → Profile → My profile → API keys → Add
+```
+Fill the `OCI_*` vars in `deploy/.env.local` (compartment + public-subnet OCIDs, your SSH public key
+file), then:
+```bash
+nohup deploy/oci-retry-launch.sh > oci-retry.log 2>&1 &   # leave it running
+tail -f oci-retry.log
+```
+Upgrading to Pay-As-You-Go also fixes capacity (priority hardware, still €0 within Always Free limits)
+— but it requires a card and, in some regions, an upfront payment; the retry script keeps it free.
+
 ## 3. First bring-up
 
 SSH in (`ssh ubuntu@<ip>`), then:
