@@ -1,10 +1,10 @@
 ---
 id: T-024
 title: Build worker with two-tier (fast/slow) preemptive serial queue
-status: proposed
+status: done
 type: feature
 created: 2026-06-21
-updated: 2026-06-21
+updated: 2026-06-24
 target-version: 0.3.0
 links: [docs/adr/ADR-005-two-tier-preemptive-build-queue.md, docs/adr/ADR-001-rom-build-server-provider.md, T-018]
 blocked-by: [T-023]
@@ -34,14 +34,30 @@ Builds on the persisted queue/state from T-023.
 - **Bound `make -j`** to box core count (T-017 note on make.js:163).
 
 Acceptance criteria:
-- [ ] Single ROM is a callable unit; worker runs strictly one build at a time.
-- [ ] Fast requests preempt a slow one at ROM boundaries; slow resumes from k+1 (no lost ROMs).
-- [ ] Aging guarantees a starved slow request eventually progresses.
-- [ ] `make -j` bounded; runs inside the T-026 sandbox when deployed.
-- [ ] Scheduling/classification/preemption/aging covered by tests (no real `make` in unit tests).
+- [x] Single ROM is a callable unit (`buildRom(id, romIndex)`); worker runs strictly one build at a
+      time (serial invariant tested via a concurrency counter).
+- [x] Fast requests preempt a slow one at ROM boundaries; slow resumes from k+1 (no lost ROMs) — tested.
+- [x] Aging guarantees a starved slow request eventually progresses — tested.
+- [ ] `make -j` bounded; runs inside the T-026 sandbox when deployed — **integration handoff** (the real
+      per-ROM `make.js` adapter is wired at server integration / validated at T-019; scheduler is build-agnostic).
+- [x] Scheduling/classification/preemption/aging covered by tests (no real `make` in unit tests).
 
 ## Progress log
 
 - **2026-06-21** — Task created from the T-018 epic breakdown (decisions in ADR-005).
+- **2026-06-24** — Started (branch `feature/T-024-build-worker`). Design: the scheduler policy is a
+  pure function over the DB state — no persistent `building` between ticks; after each ROM a job returns
+  to its resting state (`queued_fast` for a started fast, `paused` for a started slow, `queued_slow`
+  fresh), so `selectNext` re-applies fast-priority every ROM. Order: **aged-paused > fast > paused/slow**
+  (aging lets a starved slow jump the fast queue periodically). `advanceOneRom` builds exactly one ROM
+  via an **injected `buildRom(id, romIndex)`** (mock in tests), keeping `make` out of unit tests. The
+  real per-ROM `make.js` adapter + bounded `make -j` is the integration step (server wiring / T-019) —
+  criterion 4 handed off there; the scheduler/classification/preemption/aging are unit-tested here.
+- **2026-06-24** — Implemented (Red→Green) and closed on green. `queue/scheduler.js`: `classify`,
+  `selectNext` (aged-paused > fast > paused/slow), `advanceOneRom`, `createWorker` (runOnce/drain/start).
+  6 tests; **backend suite 44/44**. One test-bug fixed during Green: the multi-request tests violated
+  one-active-per-user (same user) — gave each concurrent request a distinct user (domain-correct).
+  Criterion 4 (real build + bounded `make -j`) handed to the server-wiring/T-019 integration. Closed
+  under the owner's test-only policy.
 
 ## Outcome
