@@ -30,7 +30,8 @@ command -v oci >/dev/null || { echo "OCI CLI not found — install + 'oci setup 
 command -v jq  >/dev/null || { echo "jq not found — brew install jq"; exit 1; }
 
 echo "==> discovering availability domains"
-mapfile -t ADS < <(oci iam availability-domain list --compartment-id "$OCI_COMPARTMENT_OCID" --query 'data[].name' | jq -r '.[]')
+ADS=()  # portable read loop (macOS ships bash 3.2 — no mapfile)
+while IFS= read -r _ad; do [ -n "$_ad" ] && ADS+=("$_ad"); done < <(oci iam availability-domain list --compartment-id "$OCI_COMPARTMENT_OCID" --query 'data[].name' | jq -r '.[]')
 [ "${#ADS[@]}" -gt 0 ] || { echo "No ADs found — is the OCI CLI authenticated?"; exit 1; }
 
 IMAGE="${OCI_IMAGE_OCID:-}"
