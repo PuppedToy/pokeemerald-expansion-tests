@@ -79,3 +79,6 @@ roms/
 
 # Large rendered doc artifacts used for manual review (not source)
 tasks/*-Assets/
+# Deploy secrets (T-019) — never commit
+deploy/.env
+deploy/.env.local

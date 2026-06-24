@@ -22,7 +22,7 @@
 | [T-016](T-016-landing-redesign-features-page.md) | Redesign the landing and add a Features menu item | done | 0.2.0 | 2026-06-21 |
 | [T-017](T-017-cloud-deployment-provider-analysis.md) | Cloud hosting requirements analysis + provider selection for the ROM-build server | done | 0.2.0 | 2026-06-21 |
 | [T-018](T-018-backend-build-queue-produce.md) | EPIC — Backend ROM-production service (accounts, ownership, queue, delivery) | in-progress | 0.3.0 | 2026-06-21 |
-| [T-019](T-019-infra-dockerized-build-server-deploy.md) | Dockerized build-server image + deploy to Oracle Cloud (ARM free tier) | proposed | 0.3.0 | 2026-06-24 |
+| [T-019](T-019-infra-dockerized-build-server-deploy.md) | Dockerized build-server image + deploy to Oracle Cloud (ARM free tier) | in-progress | 0.3.0 | 2026-06-24 |
 | [T-020](T-020-user-accounts-rom-ownership-seed-history.md) | Optional user accounts — ROM-ownership verification + seed/run history | abandoned | 0.4.0 | 2026-06-21 |
 | [T-021](T-021-auth-accounts.md) | Auth & accounts — register/login/forgot, email verification, JWT | done | 0.3.0 | 2026-06-24 |
 | [T-022](T-022-rom-ownership-validation.md) | ROM-ownership validation by hash (validate-and-delete) | done | 0.3.0 | 2026-06-24 |
