@@ -84,3 +84,7 @@ deploy/.env
 deploy/.env.local
 .oci/
 .oci
+
+# backend/build/ holds SOURCE modules (zip, schema, storage, build adapter) — not the decomp build output
+!backend/build/
+!backend/build/**
