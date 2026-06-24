@@ -1,7 +1,7 @@
 ---
 id: T-030
 title: Real per-ROM build adapter (make.js refactor + bounded make -j)
-status: proposed
+status: in-progress
 type: feature
 created: 2026-06-24
 updated: 2026-06-24
@@ -45,14 +45,24 @@ so it lands alongside T-019's first real build.
 
 ## Acceptance criteria
 
-- [ ] `make.js` refactored into a per-ROM callable; the CLI bundle build is unchanged (still produces the
-      same ROMs).
-- [ ] Backend real `buildRom` compiles `roms[romIndex]` via `make`; `make -j` bounded to the box cores.
-- [ ] One real ROM builds end-to-end inside the Docker image and is downloadable (with T-019); `FAKE_BUILD` off.
-- [ ] The refactor's non-`make` logic (arg/bundle/output-path handling) covered by tests.
+- [x] `make.js` refactored into a per-ROM callable (`buildOneRom`); `bundleMode` loops it (CLI behaviour
+      preserved — randomizer suite 464/464; `make.js` now `require`-able without running `main`). Byte-for-byte
+      ROM equivalence is checked on the box.
+- [x] Backend real `buildRom` shells out to `make.js --bundle --rom --out` (async, non-blocking);
+      `make -j` bounded to box cores via `resolveJobs` (`BUILD_JOBS` overrides). Logic tested.
+- [ ] One real ROM builds end-to-end inside the Docker image and is downloadable; `FAKE_BUILD` off —
+      **box validation, with [T-019](T-019-infra-dockerized-build-server-deploy.md)**.
+- [x] The refactor's non-`make` logic (spawn argv, output-path, FAKE placeholder) covered by tests.
 
 ## Progress log
 
 - **2026-06-24** — Split out of T-019 (app code vs infra). Owner asked for it as its own task.
+- **2026-06-24** — Implemented (while the box was being provisioned). `make.js`: extracted `buildOneRom`
+  ({rom,bundle,seed,outDir,isDebug,jobs}); `bundleMode` loops it + accepts `--rom/--out/--jobs`; `make -j`
+  bounded via `resolveJobs()`; `main` guarded by `require.main` + `module.exports` so it's importable.
+  Backend `build/buildRom.js`: real path spawns `node make.js --bundle --rom --out` (async), sets
+  `output_path`, rejects on non-zero exit; `spawnFn`/`repoRoot` injectable. 4 tests; **backend 71/71**,
+  **randomizer 464/464** (no regression). Stays **in-progress**: the real compile + `FAKE_BUILD` off is
+  validated on the box with T-019.
 
 ## Outcome

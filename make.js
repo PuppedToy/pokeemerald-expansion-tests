@@ -19,6 +19,7 @@
 const { spawnSync } = require('child_process');
 const fs   = require('fs');
 const path = require('path');
+const os   = require('os');
 const readline = require('readline');
 
 const root    = __dirname;
@@ -53,6 +54,15 @@ function restore() {
     spawnSync('git', ['checkout', '--', 'src/', 'include/', 'data/maps/'], {
         cwd: root, stdio: 'inherit', shell: process.platform === 'win32',
     });
+}
+
+// `make -j` bounded to the box core count (BUILD_JOBS overrides) — unbounded -j
+// over-spawns on a small box (T-024/T-030).
+function resolveJobs() {
+    const env = parseInt(process.env.BUILD_JOBS, 10);
+    if (Number.isInteger(env) && env > 0) return env;
+    const cores = (typeof os.availableParallelism === 'function' ? os.availableParallelism() : os.cpus().length) || 1;
+    return Math.max(1, cores);
 }
 
 // ── Interactive prompt ───────────────────────────────────────────────────────
@@ -104,9 +114,49 @@ function romFileName(rom) {
     return `rom-${rom.romIndex}.gba`;
 }
 
+// ── Single-ROM build — the unit the backend queue drives (T-030) ──────────────
+
+async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = resolveJobs() }) {
+    const rng                          = require('./randomizer/rng');
+    const writer                       = require('./randomizer/writer');
+    const { writeTMsFromList }          = require('./randomizer/tmRandomizer');
+    const { writeItemFilesFromBundle }  = require('./randomizer/itemRandomizer');
+
+    const label    = romFileName(rom);
+    const pokedex  = resolveArtifact(rom.artifacts.pokedex,  bundle.sharedData, 'pokedex');
+    const trainers = resolveArtifact(rom.artifacts.trainers, bundle.sharedData, 'trainers');
+    const starters = resolveArtifact(rom.artifacts.starters, bundle.sharedData, 'starters');
+    const wild     = rom.artifacts.wild;
+
+    const missing = ['pokedex','trainers','starters','wild'].filter(k => !({ pokedex, trainers, starters, wild }[k]));
+    if (missing.length) throw new Error(`ROM ${rom.romIndex}: missing artifacts after resolution: ${missing.join(', ')}`);
+
+    fs.mkdirSync(outDir, { recursive: true });
+
+    // Seed RNG: shared-trainer ROMs use baseSeed so tier-based slots are identical
+    // across ROMs; per-ROM trainer ROMs use a unique derived seed.
+    rng.seed(resolveRomSeed(rom, seed));
+
+    try {
+        const runNs = writer.docRunNamespace({ seed, playerIndex: rom.playerIndex, romIndex: rom.romIndex });
+        await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed), rom.docs, runNs);
+        await writeTMsFromList(pokedex.tmList);
+        writeItemFilesFromBundle(trainers.itemAssignments);
+        run('make', ['-j', String(jobs)]);
+
+        const dest = path.join(outDir, label);
+        fs.copyFileSync(ROM_SRC, dest);
+        console.log(`\n  ✓  Saved: ${dest}`);
+        return dest;
+    } finally {
+        restore();
+    }
+}
+
 // ── Bundle mode ──────────────────────────────────────────────────────────────
 
-async function bundleMode(bundlePath, isDebug, doClean) {
+async function bundleMode(bundlePath, isDebug, doClean, opts = {}) {
+    const { romIndex = null, outDir: outDirOverride = null, jobs = resolveJobs() } = opts;
     console.log(`\nLoading bundle: ${bundlePath}`);
 
     let bundle;
@@ -122,56 +172,31 @@ async function bundleMode(bundlePath, isDebug, doClean) {
 
     const seed      = bundle.config?.seed ?? 0;
     const sessionId = bundle.sessionId ?? `session-${Date.now()}`;
-    const outDir    = path.join(root, 'roms', sessionId);
+    const outDir    = outDirOverride || path.join(root, 'roms', sessionId);
     fs.mkdirSync(outDir, { recursive: true });
 
-    const rng                        = require('./randomizer/rng');
-    const writer                     = require('./randomizer/writer');
-    const { writeTMsFromList }          = require('./randomizer/tmRandomizer');
-    const { writeItemFilesFromBundle }  = require('./randomizer/itemRandomizer');
+    if (romIndex != null && !bundle.roms[romIndex]) {
+        throw new Error(`ROM index ${romIndex} out of range (bundle has ${bundle.roms.length})`);
+    }
+    const roms = romIndex != null ? [bundle.roms[romIndex]] : bundle.roms;
 
     console.log(`Session:   ${sessionId}`);
-    console.log(`ROMs:      ${bundle.roms.length}`);
+    console.log(`ROMs:      ${roms.length}${romIndex != null ? ` (index ${romIndex})` : ''}`);
     console.log(`Seed:      ${seed}`);
     console.log(`Output:    ${outDir}`);
+    console.log(`Jobs:      make -j${jobs}`);
 
     if (doClean) run('make', ['clean']);
 
-    for (const rom of bundle.roms) {
-        const label = romFileName(rom);
+    for (const rom of roms) {
         console.log(`\n${'─'.repeat(64)}`);
-        console.log(`ROM ${rom.romIndex + 1} / ${bundle.roms.length}  →  ${label}`);
+        console.log(`ROM ${rom.romIndex + 1} / ${bundle.roms.length}  →  ${romFileName(rom)}`);
         console.log('─'.repeat(64));
-
-        const pokedex  = resolveArtifact(rom.artifacts.pokedex,  bundle.sharedData, 'pokedex');
-        const trainers = resolveArtifact(rom.artifacts.trainers, bundle.sharedData, 'trainers');
-        const starters = resolveArtifact(rom.artifacts.starters, bundle.sharedData, 'starters');
-        const wild     = rom.artifacts.wild;
-
-        const missing = ['pokedex','trainers','starters','wild'].filter(k => !({ pokedex, trainers, starters, wild }[k]));
-        if (missing.length) throw new Error(`ROM ${rom.romIndex}: missing artifacts after resolution: ${missing.join(', ')}`);
-
-        // Seed RNG: shared-trainer ROMs use baseSeed so tier-based slots are identical;
-        // per-ROM trainer ROMs use a unique derived seed.
-        rng.seed(resolveRomSeed(rom, seed));
-
-        try {
-            const runNs = writer.docRunNamespace({ seed, playerIndex: rom.playerIndex, romIndex: rom.romIndex });
-            await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed), rom.docs, runNs);
-            await writeTMsFromList(pokedex.tmList);
-            writeItemFilesFromBundle(trainers.itemAssignments);
-            run('make', ['-j']);
-
-            const dest = path.join(outDir, label);
-            fs.copyFileSync(ROM_SRC, dest);
-            console.log(`\n  ✓  Saved: ${dest}`);
-        } finally {
-            restore();
-        }
+        await buildOneRom({ rom, bundle, seed, outDir, isDebug, jobs });
     }
 
     console.log(`\n${'='.repeat(64)}`);
-    console.log(`Done! ${bundle.roms.length} ROM(s) in:`);
+    console.log(`Done! ${roms.length} ROM(s) in:`);
     console.log(`  ${outDir}`);
     console.log('='.repeat(64));
 }
@@ -211,7 +236,7 @@ async function randomizeMode(opts, doClean) {
 
         await writer(pokedex, trainers, starters, wild, opts.debug, null, null,
             writer.docRunNamespace({ seed: config.seed }));
-        run('make', ['-j']);
+        run('make', ['-j', String(resolveJobs())]);
 
         const dest = path.join(outDir, `rom-${config.seed}.gba`);
         fs.copyFileSync(ROM_SRC, dest);
@@ -239,6 +264,11 @@ async function parseOpts() {
             bundlePath: bundleFlag ? path.resolve(bundleFlag.replace('--bundle=', '')) : null,
             isDebug,
             doClean,
+            bundleOpts: {
+                romIndex: (argv.find(a => a.startsWith('--rom='))  || '').replace('--rom=',  '') || null,
+                outDir:   (argv.find(a => a.startsWith('--out='))  || '').replace('--out=',  '') || null,
+                jobs:     (argv.find(a => a.startsWith('--jobs=')) || '').replace('--jobs=', '') || null,
+            },
             randOpts: {
                 debug:      isDebug,
                 rebalance:  !argv.includes('--no-balance'),
@@ -297,13 +327,23 @@ async function main() {
     process.on('SIGINT', () => process.exit(130));
 
     if (opts.mode === 'bundle') {
-        await bundleMode(opts.bundlePath, opts.isDebug, opts.doClean);
+        const bo = opts.bundleOpts || {};
+        await bundleMode(opts.bundlePath, opts.isDebug, opts.doClean, {
+            romIndex: bo.romIndex != null ? parseInt(bo.romIndex, 10) : null,
+            outDir:   bo.outDir ? path.resolve(bo.outDir) : null,
+            jobs:     bo.jobs ? parseInt(bo.jobs, 10) : resolveJobs(),
+        });
     } else {
         await randomizeMode(opts.randOpts, opts.doClean);
     }
 }
 
-main().catch(err => {
-    console.error(`\nPipeline failed: ${err.message}`);
-    process.exit(1);
-});
+// Run only when invoked directly, so the backend/tests can `require` the builders.
+if (require.main === module) {
+    main().catch(err => {
+        console.error(`\nPipeline failed: ${err.message}`);
+        process.exit(1);
+    });
+}
+
+module.exports = { buildOneRom, bundleMode, resolveJobs, romFileName, resolveArtifact, resolveRomSeed, resolveTrainingBaseSeed };

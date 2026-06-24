@@ -33,4 +33,4 @@
 | [T-027](T-027-transactional-email.md) | Transactional email service — verification, reset & ROM-ready notification | done | 0.3.0 | 2026-06-22 |
 | [T-028](T-028-frontend-account-generation-flow.md) | Frontend — login/explainer, dual-action download, status/ETA & "my ROMs" | done | 0.3.0 | 2026-06-24 |
 | [T-029](T-029-full-flow-manual-test.md) | End-to-end manual test of the full ROM-delivery flow | proposed | 0.3.0 | 2026-06-24 |
-| [T-030](T-030-real-per-rom-build-adapter.md) | Real per-ROM build adapter (make.js refactor + bounded make -j) | proposed | 0.3.0 | 2026-06-24 |
+| [T-030](T-030-real-per-rom-build-adapter.md) | Real per-ROM build adapter (make.js refactor + bounded make -j) | in-progress | 0.3.0 | 2026-06-24 |
