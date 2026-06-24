@@ -69,6 +69,17 @@ CREATE TABLE IF NOT EXISTS runs (
   params_json TEXT NOT NULL,
   created_at  INTEGER NOT NULL
 );
+
+-- Single-use, optionally-expiring tokens for email verification and password reset (T-021).
+-- The raw token is emailed; only its SHA-256 hash is stored, so a DB leak exposes no live tokens.
+CREATE TABLE IF NOT EXISTS auth_tokens (
+  token_hash TEXT PRIMARY KEY,
+  user_id    INTEGER NOT NULL REFERENCES users(id),
+  kind       TEXT NOT NULL,          -- 'verify' | 'reset'
+  expires_at INTEGER,                -- nullable (verify links need not expire)
+  created_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS auth_tokens_by_user ON auth_tokens(user_id, kind);
 `;
 
 export function migrate(db) {
