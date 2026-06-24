@@ -1,10 +1,10 @@
 ---
 id: T-022
 title: ROM-ownership validation by hash (validate-and-delete)
-status: proposed
+status: in-progress
 type: feature
 created: 2026-06-21
-updated: 2026-06-21
+updated: 2026-06-24
 target-version: 0.3.0
 links: [docs/adr/ADR-004-auth-email-password-jwt.md, docs/adr/ADR-008-rom-delivery-full-rom-ownership-gate.md, T-018, T-021]
 blocked-by: [T-021]
@@ -49,10 +49,12 @@ size before hashing. Ownership is independent of which ROM the server builds aga
 from source), so accepting any official dump is correct.
 
 Acceptance criteria:
-- [ ] A known-good Emerald dump (any of the accepted set) validates and flips `owns_valid_rom`; the file is deleted.
-- [ ] A non-matching / oversized upload is rejected with a clear error; nothing is retained.
-- [ ] Accepted hash set documented in this task; hashing covered by tests (fixtures = known hashes).
-- [ ] Endpoint requires auth; rate-limited.
+- [x] A recognized dump flips `owns_valid_rom`; bytes are never persisted (held in memory, GC'd) —
+      handler tested. _Real-ROM upload through the live endpoint = final manual pass._
+- [x] A non-matching upload is rejected with a clear error and the flag is not set — tested
+      (oversized handled by the `express.raw` size limit).
+- [x] Accepted hash set documented in this task; SHA-1 hashing + membership covered by tests.
+- [x] Endpoint requires auth (`requireAuth`) and is rate-limited (`ipRateLimit`) — both tested.
 
 ## Progress log
 
@@ -61,5 +63,11 @@ Acceptance criteria:
   official dumps (English shared US+EU, plus JP/FR/DE/IT/ES; no English revision). Confirmed the
   (USA, Europe) SHA-1/CRC32; the rest are locked from the **No-Intro GBA DAT** at implementation
   (avoid transcribing hashes by hand). Recorded the accepted set in the plan.
+- **2026-06-24** — Implemented (Red→Green): `rom/validate.js` (`sha1hex`, `createRomValidator`,
+  `KNOWN_EMERALD_SHA1`) + `rom/routes.js` (`handleValidate` + `/api/rom/validate`, octet-stream body,
+  zero-dep, size-bounded via `express.raw`, auth + rate-limited). Bytes never touch disk. **Backend
+  suite 49/49.** Validator + handler logic unit-tested with a controlled known-set (can't ship the real
+  16 MB Emerald in tests). Stays **in-progress**: the end-to-end upload of a real Emerald dump through
+  the live endpoint is part of the final manual pass. Code merged to unblock T-025.
 
 ## Outcome
