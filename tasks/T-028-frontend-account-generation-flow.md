@@ -1,10 +1,10 @@
 ---
 id: T-028
 title: Frontend — login/explainer, dual-action download, status/ETA & "my ROMs"
-status: proposed
+status: in-progress
 type: feature
 created: 2026-06-21
-updated: 2026-06-21
+updated: 2026-06-24
 target-version: 0.3.0
 links: [T-018, T-021, T-022, T-025]
 blocked-by: [T-021, T-025]
@@ -44,18 +44,31 @@ API (T-021 auth, T-022 validate, T-025 produce/status/download).
   request → land straight on its status).
 
 Acceptance criteria:
-- [ ] Generate renders docs for anyone; the ROM build auto-starts (same bundle → `/api/produce`)
-      only when fully eligible, decoupled from the docs download; clear warnings otherwise.
-- [ ] Docs download hits no endpoint and works anytime (including during a build); bundle held in
-      IndexedDB; on reload the active request + ETA are recovered and "Regenerate docs" works.
-- [ ] Login/verify/forgot flow works against the API; explainer present.
-- [ ] ROM upload appears only when needed; remembered after validation.
-- [ ] Status/ETA updates live; email opt-in shown when ETA ≥ 2 min; "my ROMs" shows TTL + a
-      single-use-warned download.
-- [ ] Session restored on re-entry to the active request.
+- [x] Generate renders docs for anyone; the ROM build auto-starts (same bundle → `/api/produce`) only
+      when eligible, decoupled from the docs download; clear warnings otherwise. (`onBundleReady`.)
+- [~] Docs download hits no endpoint and works anytime; bundle held in IndexedDB; on reload the active
+      request + ETA are recovered. **Deferred:** "Regenerate docs" from the stored bundle on reload.
+- [x] Login/verify/forgot flow works against the API; explainer present. (Verified end-to-end via smoke:
+      register → verify → login → `/api/me` verified:true.)
+- [x] ROM upload appears only when needed; remembered after validation (`owns_valid_rom`).
+- [~] Status/ETA updates live (polling); "my ROMs" shows a single-use-warned download. **Deferred:** the
+      email-on-ready opt-in checkbox when ETA ≥ 2 min (`canDeferEmail` is already returned by produce).
+- [x] Session restored on re-entry to the active request (`initAccount` resumes status + polling).
+
+_Visual/DOM rendering and the produce→status→download happy path (needs a real Emerald ROM) = final manual pass._
 
 ## Progress log
 
 - **2026-06-21** — Task created from the T-018 epic breakdown.
+- **2026-06-24** — Implemented. New `js/account.js` (auth state, modal wiring, IndexedDB bundle store,
+  ROM upload, produce + status polling + ROM download, reload recovery); `verify.html` + `reset.html`;
+  index.html got the account modal + "why login" explainer + a `#delivery-panel` (replacing the old
+  disabled "Send to server" button); CSS in components.css; app.js calls `initAccount()` on load and
+  `onBundleReady(bundle)` from `showGenDone`. Verified by smoke test: all new files served (200), and
+  register → verify (token from dev mailer) → login → `/api/me` verified:true; rom-validate rejects a
+  non-Emerald (400); produce gated without a ROM (403). account.js is valid ESM. **Deferred polish:**
+  (1) "Regenerate docs" from the stored bundle on reload; (2) the email-on-ready opt-in checkbox. Stays
+  **in-progress** for the final manual pass (browser UI + the full produce→download with a real Emerald
+  ROM). Note: only the (USA, Europe) Emerald hash is in the accepted set so far — use that dump to test.
 
 ## Outcome

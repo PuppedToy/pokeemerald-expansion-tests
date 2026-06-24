@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify email — Pokémon Emerald Cut</title>
+  <link rel="icon" type="image/png" href="/assets/emeraldCut.png">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+  <div class="page-wrap">
+    <div class="card" style="max-width:480px;margin:60px auto;text-align:center">
+      <h1>Email verification</h1>
+      <p id="msg">Verifying…</p>
+      <a class="btn btn-primary" href="/">Back to Emerald Cut</a>
+    </div>
+  </div>
+  <script type="module">
+    const t = new URLSearchParams(location.search).get('t');
+    const msg = document.getElementById('msg');
+    (async () => {
+      if (!t) { msg.textContent = 'Missing verification token.'; return; }
+      try {
+        const res = await fetch('/api/verify', {
+          method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ token: t }),
+        });
+        const data = await res.json().catch(() => ({}));
+        msg.textContent = (res.ok && data.ok)
+          ? 'Your email is verified ✓ — you can now log in and build ROMs.'
+          : 'This verification link is invalid or has already been used.';
+      } catch { msg.textContent = 'Could not reach the server.'; }
+    })();
+  </script>
+</body>
+</html>

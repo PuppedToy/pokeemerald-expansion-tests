@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset password — Pokémon Emerald Cut</title>
+  <link rel="icon" type="image/png" href="/assets/emeraldCut.png">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+  <div class="page-wrap">
+    <div class="card" style="max-width:480px;margin:60px auto">
+      <h1>Reset your password</h1>
+      <form id="reset-form" class="auth-form">
+        <input type="password" id="pw" class="input" placeholder="New password" minlength="8" required>
+        <button class="btn btn-primary" type="submit">Set new password</button>
+      </form>
+      <p id="msg" class="auth-msg"></p>
+      <a class="btn btn-ghost" href="/">Back to Emerald Cut</a>
+    </div>
+  </div>
+  <script type="module">
+    const t = new URLSearchParams(location.search).get('t');
+    const msg = document.getElementById('msg');
+    if (!t) msg.textContent = 'Missing reset token.';
+    document.getElementById('reset-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const res = await fetch('/api/reset', {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ token: t, password: document.getElementById('pw').value }),
+        });
+        const data = await res.json().catch(() => ({}));
+        msg.textContent = (res.ok && data.ok)
+          ? 'Password updated ✓ — you can now log in.'
+          : 'This reset link is invalid or has expired.';
+        msg.className = `auth-msg ${(res.ok && data.ok) ? 'ok' : 'err'}`;
+      } catch { msg.textContent = 'Could not reach the server.'; }
+    });
+  </script>
+</body>
+</html>

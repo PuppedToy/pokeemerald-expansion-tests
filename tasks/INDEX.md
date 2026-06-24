@@ -31,4 +31,4 @@
 | [T-025](T-025-produce-status-eta-download.md) | Produce endpoint + status/ETA + ROM download | in-progress | 0.3.0 | 2026-06-24 |
 | [T-026](T-026-untrusted-bundle-build-sandbox.md) | Untrusted-bundle build sandbox — schema validation + hardened container | done | 0.3.0 | 2026-06-24 |
 | [T-027](T-027-transactional-email.md) | Transactional email service — verification, reset & ROM-ready notification | done | 0.3.0 | 2026-06-22 |
-| [T-028](T-028-frontend-account-generation-flow.md) | Frontend — login/explainer, dual-action download, status/ETA & "my ROMs" | proposed | 0.3.0 | 2026-06-21 |
+| [T-028](T-028-frontend-account-generation-flow.md) | Frontend — login/explainer, dual-action download, status/ETA & "my ROMs" | in-progress | 0.3.0 | 2026-06-24 |
