@@ -10,6 +10,8 @@ import { createRateLimiter } from '../email/rateLimiter.js';
 export function createAuthRouter({ service, users, requests, jwtSecret }) {
   const router = express.Router();
 
+  router.use(express.json({ limit: '1mb' })); // auth bodies are small JSON
+
   // Per-IP throttle on the abuse-prone routes (ADR-004 anti-abuse).
   const limiter = createRateLimiter({ max: 20, windowMs: 60 * 1000 });
   const throttle = ipRateLimit(limiter);
