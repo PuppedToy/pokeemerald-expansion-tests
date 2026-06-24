@@ -8,6 +8,8 @@
  */
 
 import { DatabaseSync } from 'node:sqlite';
+import fs from 'node:fs';
+import path from 'node:path';
 
 // States that occupy a user's single active slot (block a new request).
 // Terminal states (downloaded, expired) are purged; `failed` is non-blocking
@@ -87,6 +89,8 @@ export function migrate(db) {
 }
 
 export function openDatabase(filename = process.env.DB_PATH || 'data/app.db') {
+  // node:sqlite won't create the parent dir; ensure it exists (B-002).
+  if (filename !== ':memory:') fs.mkdirSync(path.dirname(filename), { recursive: true });
   const db = new DatabaseSync(filename);
   db.exec('PRAGMA foreign_keys = ON');
   migrate(db);

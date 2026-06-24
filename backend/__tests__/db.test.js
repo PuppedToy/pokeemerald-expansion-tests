@@ -1,7 +1,22 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 
 import { openDatabase, migrate } from '../db/index.js';
+
+test('openDatabase creates the parent directory if missing (B-002)', () => {
+  const dir = path.join(os.tmpdir(), `ec-db-${process.pid}`, 'nested');
+  fs.rmSync(path.join(os.tmpdir(), `ec-db-${process.pid}`), { recursive: true, force: true });
+  const file = path.join(dir, 'app.db');
+  try {
+    assert.doesNotThrow(() => { openDatabase(file).close?.(); });
+    assert.ok(fs.existsSync(file), 'db file created in the freshly-made directory');
+  } finally {
+    fs.rmSync(path.join(os.tmpdir(), `ec-db-${process.pid}`), { recursive: true, force: true });
+  }
+});
 
 test('migration is idempotent (safe to run on every boot)', () => {
   const db = openDatabase(':memory:'); // migrates once
