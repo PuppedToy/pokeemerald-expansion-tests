@@ -1,7 +1,7 @@
 ---
 id: T-019
 title: Dockerized build-server image + deploy to Oracle Cloud (ARM free tier)
-status: proposed
+status: in-progress
 type: chore
 created: 2026-06-21
 updated: 2026-06-24
@@ -71,5 +71,16 @@ Acceptance criteria (draft):
   `update.sh`, **no committed secrets**), the **real per-ROM build adapter** wiring (the last app-code
   piece, carried from T-024/T-025), the ARM toolchain, Brevo+DNS enablement, and locking the remaining
   Emerald hashes. Unblocked (T-025/T-026 done). T-029 runs against the live box once up.
+- **2026-06-24** — **Fase A (infra) delivered** (branch `feature/T-019-deploy`): `deploy/Dockerfile`
+  (node:24-bookworm + the exact decomp toolchain from UBUNTU.md/CI), `deploy/docker-compose.yml`
+  (app non-root + bind-mounted repo + Caddy, cert volume), `deploy/Caddyfile` (auto-HTTPS for
+  pokemon-emerald-cut.com; Cloudflare grey-cloud noted), `deploy/.env.example` + `.env.local.example`
+  (+ both gitignored), `deploy/bootstrap.sh` (Docker, host firewall, **read-only GitHub deploy key**,
+  clone, JWT gen, deps, up — idempotent, no secrets) and `deploy/update.sh` (local redeploy, creds from
+  gitignored `.env.local`). Runbook `docs/deploy-oracle.md` (linked in INDEX). **Staged rollout:** ship
+  with `FAKE_BUILD=1` to validate the whole flow over real HTTPS first, then land the real build adapter
+  and switch it off. Scripts `bash -n` clean. **Remaining:** the per-ROM `make.js` adapter (next), then
+  provision + bootstrap + benchmark + T-029. Decisions captured: domain `pokemon-emerald-cut.com`
+  (Cloudflare), private repo → SSH deploy key.
 
 ## Outcome

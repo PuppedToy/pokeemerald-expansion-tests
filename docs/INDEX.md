@@ -24,4 +24,4 @@ Entry point to all project documentation. **A document not listed here does not 
 ## Guides
 
 <!-- Architecture, conventions, runbooks… One line per document. -->
-- _none yet_
+- [deploy-oracle.md](deploy-oracle.md) — deploy runbook: provision the Oracle ARM box, DNS/HTTPS, bootstrap, update, ops (T-019)

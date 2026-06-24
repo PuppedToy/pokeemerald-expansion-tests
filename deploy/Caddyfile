@@ -1,0 +1,20 @@
+# Automatic HTTPS for Emerald Cut (T-019, ADR-002).
+# Caddy obtains + renews a Let's Encrypt certificate on its own, provided:
+#   - ports 80 and 443 reach this box (Oracle security list + host firewall), and
+#   - the domain's A/AAAA record points here. On Cloudflare, set the record to
+#     "DNS only" (grey cloud) so Caddy can complete the ACME challenge; if you keep
+#     the orange-cloud proxy, use SSL/TLS mode "Full (strict)" + a Cloudflare Origin
+#     Certificate instead (see docs/deploy-oracle.md).
+
+{
+	email admin@pokemon-emerald-cut.com
+}
+
+pokemon-emerald-cut.com {
+	encode gzip
+	reverse_proxy app:3000
+}
+
+www.pokemon-emerald-cut.com {
+	redir https://pokemon-emerald-cut.com{uri} permanent
+}

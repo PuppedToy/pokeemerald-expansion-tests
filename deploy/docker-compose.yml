@@ -1,0 +1,39 @@
+# Emerald Cut deploy stack (T-019, ADR-002). Run from the repo root:
+#   docker compose -f deploy/docker-compose.yml up -d --build
+# Relative paths resolve from this file's dir (deploy/), so ../ is the repo root.
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: emerald-cut:latest
+    working_dir: /app
+    user: "1000:1000"          # matches the host owner of the bind-mounted repo (ADR-006 non-root)
+    volumes:
+      - ../:/app               # the repo (host): source, .git (needed for make.js restore),
+                               # backend/data (SQLite), roms/ outputs and the warm build/ cache
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    expose:
+      - "3000"
+    restart: unless-stopped
+
+  caddy:                       # automatic HTTPS (Let's Encrypt) — ADR-002
+    image: caddy:2
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data       # persists the issued TLS certificates
+      - caddy_config:/config
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:
