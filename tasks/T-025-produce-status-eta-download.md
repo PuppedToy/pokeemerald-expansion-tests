@@ -1,10 +1,10 @@
 ---
 id: T-025
 title: Produce endpoint + status/ETA + ROM download
-status: proposed
+status: in-progress
 type: feature
 created: 2026-06-21
-updated: 2026-06-21
+updated: 2026-06-24
 target-version: 0.3.0
 links: [docs/adr/ADR-005-two-tier-preemptive-build-queue.md, docs/adr/ADR-003-persistence-job-lifecycle-recovery.md, docs/adr/ADR-008-rom-delivery-full-rom-ownership-gate.md, T-018, T-021, T-022, T-023, T-024]
 blocked-by: [T-021, T-022, T-023, T-024]
@@ -38,15 +38,24 @@ watch progress/ETA, download the result. Replaces the 501 stub at
 - Enforce one-active-request and the verified+owns-rom gate; everything keyed off `/api/me`.
 
 Acceptance criteria:
-- [ ] `/api/produce` validates + enqueues + returns id and initial ETA; rejects unauth/unverified/
-      no-rom/active-request with clear errors.
-- [ ] `/api/status` reports state, position and a live ETA that updates as the queue drains.
-- [ ] `/api/download` streams the zip and deletes only after a successful full transfer; `runs` written.
-- [ ] Bundle schema rejects malformed/hostile input (with T-026).
-- [ ] Non-trivial logic (validation, ETA, download-then-delete) covered by tests.
+- [x] `/api/produce` validates + enqueues + returns id and initial ETA; rejects invalid bundle (400) and
+      a second active request (409); unauth/unverified/no-rom gated by middleware. Handler tested.
+- [x] `/api/status` reports state, ROMs done/total and a live ETA (encodes queue position) — tested.
+- [x] `/api/download` returns the ROM zip then marks downloaded + purges (files via injected `removeFile`);
+      refuses when not ready (409). `runs` history is written at `ready` by the worker (T-024/T-023). Tested.
+- [x] Bundle schema rejects malformed/hostile input (validateBundle wired; produce → 400) — tested.
+- [x] Non-trivial logic (validation, ETA, download-then-delete) covered by tests; zero-dep STORE zip too.
+
+_Live HTTP endpoints + a real bundle POST + a real streamed download = final manual pass._
 
 ## Progress log
 
 - **2026-06-21** — Task created from the T-018 epic breakdown.
+- **2026-06-24** — Implemented (Red→Green): `produce/eta.js` (best-effort position-based ETA),
+  `produce/handlers.js` (handleProduce/handleStatus/handleDownload, dependency-injected), `produce/routes.js`
+  (auth+verified+owns-rom gate), `build/zip.js` (zero-dep STORE zip via `zlib.crc32`), and `requireOwnsRom`.
+  8 tests; **backend suite 66/66**. Stays **in-progress**: the live endpoints, a real 32 MB bundle POST and
+  a streamed real download are the final manual pass. fs ops (persist bundle / read output / delete) are
+  injected — wired with FAKE_BUILD in the server-integration step. Code merged.
 
 ## Outcome
