@@ -1,6 +1,7 @@
-# Deploy runbook — Oracle Cloud (ARM free tier)
+# Deploy runbook — Oracle Cloud free tier (primary attempt) + Hetzner fallback
 
-Operational guide for hosting the Emerald Cut backend on an Oracle Always Free ARM box.
+Operational guide for hosting the Emerald Cut backend. Try the **free Oracle A1** first (§1–2b); if its
+capacity never frees up, fall back to a **~€4/mo Hetzner** box (§2c) — same image, same scripts.
 Decisions: [ADR-001](adr/ADR-001-rom-build-server-provider.md) (provider) ·
 [ADR-002](adr/ADR-002-build-server-iac-docker.md) (Docker/Compose/Caddy). Task: [T-019](../tasks/T-019-infra-dockerized-build-server-deploy.md).
 
@@ -44,9 +45,28 @@ tail -f oci-retry.log
 Upgrading to Pay-As-You-Go also fixes capacity (priority hardware, still €0 within Always Free limits)
 — but it requires a card and, in some regions, an upfront payment; the retry script keeps it free.
 
+## 2c. Fallback — deploy to Hetzner instead (instant, ~€4/mo, no capacity hunt)
+
+If the free A1 never frees up (Oracle says it can take days), Hetzner deploys **immediately**. ADR-001
+already named Hetzner the primary and Oracle only the €0 bootstrap, so this is in-plan. **Nothing in the
+repo changes** — the Dockerfile is multi-arch (`node:24-bookworm` + the `arm-none-eabi` *cross*-compiler,
+so it builds the same on x86 or ARM), and `bootstrap.sh` / Compose / Caddyfile are provider-agnostic.
+
+1. **Hetzner Cloud Console → Add Server:**
+   - Location: an EU site (Falkenstein / Nuremberg / Helsinki).
+   - Image: **Ubuntu 22.04**.
+   - Type: **CX22** (x86, 2 vCPU / 4 GB, ~€4/mo) — friction-free (ADR-001 prefers x86). If a build OOMs,
+     resize to **CX32** (8 GB, ~€7). *(ARM **CAX11/CAX21** also work — identical image.)*
+   - Add your **SSH key**; create; note the **public IP**.
+2. **Firewall:** Hetzner boxes are open by default. Optionally add a **Hetzner Cloud Firewall** allowing
+   TCP 22/80/443, or on the box `sudo ufw allow 22,80,443`. (bootstrap.sh's iptables step is harmless here.)
+3. **DNS:** same as §2 — point the Cloudflare A record at the **Hetzner IP** (grey cloud).
+4. **Bring-up & ops:** identical to §3–§5 below, with **one difference: Hetzner's default SSH user is
+   `root`** (Oracle's is `ubuntu`) — so `ssh root@<ip>` and set `DEPLOY_USER=root` in `deploy/.env.local`.
+
 ## 3. First bring-up
 
-SSH in (`ssh ubuntu@<ip>`), then:
+SSH in (`ssh ubuntu@<ip>` on Oracle, `ssh root@<ip>` on Hetzner), then:
 
 ```bash
 # clone just enough to get the script, or scp it; then:

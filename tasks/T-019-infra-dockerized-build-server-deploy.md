@@ -71,6 +71,13 @@ Acceptance criteria (draft):
   `update.sh`, **no committed secrets**), the **real per-ROM build adapter** wiring (the last app-code
   piece, carried from T-024/T-025), the ARM toolchain, Brevo+DNS enablement, and locking the remaining
   Emerald hashes. Unblocked (T-025/T-026 done). T-029 runs against the live box once up.
+- **2026-06-25** — Researched current (Jun 2026) Oracle free-A1 capacity: still exists but genuinely
+  scarce ("can take days"; bots compete) and the owner can't use the PAYG capacity-priority fix (Oracle
+  demanded ~€93 upfront). So prepared the **Hetzner fallback** (owner-approved) in the runbook (§2c):
+  **~€4/mo CX22**, instant, no capacity games. Confirmed **zero code changes** are needed — the Dockerfile
+  is multi-arch (`node:24-bookworm` + `arm-none-eabi` cross-compiler builds the same on x86/ARM) and
+  bootstrap/Compose/Caddy are provider-agnostic; only diff is the SSH user (`root` vs `ubuntu`). The
+  Oracle retry loop keeps running overnight in parallel — whichever lands first wins.
 - **2026-06-24** — **Fase A (infra) delivered** (branch `feature/T-019-deploy`): `deploy/Dockerfile`
   (node:24-bookworm + the exact decomp toolchain from UBUNTU.md/CI), `deploy/docker-compose.yml`
   (app non-root + bind-mounted repo + Caddy, cert volume), `deploy/Caddyfile` (auto-HTTPS for
