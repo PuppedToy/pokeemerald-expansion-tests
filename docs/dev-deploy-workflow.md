@@ -38,6 +38,10 @@ git push origin master --follow-tags
 
 ## 4. Deploy to the box — `deploy/update.sh`
 
+> **Owner-gated (agent has no push permission).** The **owner** runs the `git push` in step 3 and then
+> **explicitly greenlights** the deploy; only then does the agent run `deploy/update.sh`. The agent never
+> pushes and never deploys un-pushed or un-greenlit code. (Doing it yourself is fine — it's one command.)
+
 One command does everything, and **aborts before touching the box if anything is red**:
 
 1. **Preflight** — runs the randomizer + backend test suites and `check-tracker`. Any failure → abort.

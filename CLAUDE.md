@@ -134,10 +134,12 @@ These are regenerated from source on every run; committing them pollutes history
 - Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`…), one logical change per commit, reference the task/bug ID in the body.
 - Definition of done: acceptance criteria met, `cd randomizer && npm test` green, task log updated, `CHANGELOG.brooktec.md` line added (if user-visible), no SSOT violations introduced.
 - After two failed attempts at the same fix, stop, log the dead end in the task, and reassess the plan.
+- **Deploys are owner-gated.** The agent has **no push permission**: to deploy a change, the **owner runs `git push`** and then **explicitly gives the go-ahead**, and only then does the agent run `deploy/update.sh`. The agent never pushes and never deploys un-pushed or un-greenlit code. (DNS / docs / changelog-only changes need no deploy — `update.sh` is for code.) Full loop: `docs/dev-deploy-workflow.md`.
 
 ## Do NOT
 
 - Do NOT close a task without the user's explicit confirmation that they manually tested it and it is OK.
+- Do NOT `git push` or deploy on your own — the owner pushes to origin and gives the go-ahead first, then you run `deploy/update.sh` (see Workflow).
 - Do NOT mark a bug fixed without its regression test.
 - Do NOT run `randomizer/index.js` directly — always go through `analyze.js`.
 - Do NOT commit randomizer-generated files (see the never-commit list above) or edit generated files (`tasks/INDEX.md`, `bugs/INDEX.md`).
