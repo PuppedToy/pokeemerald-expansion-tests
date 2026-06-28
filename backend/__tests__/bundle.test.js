@@ -14,6 +14,18 @@ test('a well-formed bundle validates', () => {
   assert.equal(validateBundle(validBundle()).ok, true);
 });
 
+test('accepts the real frontend top-level keys formatVersion + generatedAt (B-005)', () => {
+  const b = {
+    formatVersion: 2,
+    generatedAt: '2026-06-28T00:00:00.000Z',
+    sessionId: '4eeff242-a688-4eb7-a6b4-43167197d007',
+    config: { seed: 7 },
+    sharedData: {},
+    roms: [validRom()],
+  };
+  assert.equal(validateBundle(b).ok, true, JSON.stringify(validateBundle(b).errors));
+});
+
 test('a non-object bundle is rejected', () => {
   assert.equal(validateBundle(null).ok, false);
   assert.equal(validateBundle('x').ok, false);

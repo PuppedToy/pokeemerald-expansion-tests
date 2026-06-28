@@ -8,3 +8,4 @@
 | [B-002](B-002-opendatabase-missing-parent-dir.md) | openDatabase fails ("unable to open database file") when the data dir doesn't exist | fixed | major | 0.3.0 | 0.3.0 | backend/__tests__/db.test.js |
 | [B-003](B-003-backend-build-gitignored.md) | backend/build/ source modules excluded from git by the decomp's build/ ignore rule | fixed | major | 0.3.0 | 0.3.0 | backend/__tests__/zip.test.js |
 | [B-004](B-004-env-file-inline-comments.md) | Docker Compose env_file captures inline comments → BREVO_API_KEY set to garbage, email crashes | fixed | major | 0.3.0 | 0.3.0 | backend/__tests__/deploy-env.test.js |
+| [B-005](B-005-bundle-schema-rejects-frontend-keys.md) | Bundle schema rejects the frontend's formatVersion/generatedAt keys → every produce 400s | fixed | critical | 0.3.0 | 0.3.0 | backend/__tests__/bundle.test.js |

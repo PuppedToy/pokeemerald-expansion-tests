@@ -14,7 +14,8 @@ import path from 'node:path';
 
 const SAFE_SLUG = /^[A-Za-z0-9_-]{1,64}$/;
 const SAFE_PATH = /^[A-Za-z0-9_./-]+$/;
-const TOP_KEYS = new Set(['roms', 'config', 'sharedData', 'sessionId', 'version']);
+// The frontend's bundle (frontend/js/randomizer-worker.js) emits these top-level keys.
+const TOP_KEYS = new Set(['roms', 'config', 'sharedData', 'sessionId', 'formatVersion', 'generatedAt']);
 const REQUIRED_ARTIFACTS = ['pokedex', 'trainers', 'starters', 'wild'];
 
 const isPlainObject = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
