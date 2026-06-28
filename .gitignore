@@ -82,8 +82,8 @@ tasks/*-Assets/
 # Deploy secrets (T-019) — never commit
 deploy/.env
 deploy/.env.local
-.oci/
-.oci
+.claudeSecrets/
+.claudeSecrets
 
 # backend/build/ holds SOURCE modules (zip, schema, storage, build adapter) — not the decomp build output
 !backend/build/
