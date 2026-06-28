@@ -24,4 +24,5 @@ Entry point to all project documentation. **A document not listed here does not 
 ## Guides
 
 <!-- Architecture, conventions, runbooks… One line per document. -->
+- [dev-deploy-workflow.md](dev-deploy-workflow.md) — the canonical dev → test → commit → push → `update.sh` deploy loop (preflight-gated) (T-031)
 - [deploy-oracle.md](deploy-oracle.md) — deploy runbook: Oracle free A1 (primary) + Hetzner fallback, DNS/HTTPS, bootstrap, update, ops (T-019)

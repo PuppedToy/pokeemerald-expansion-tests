@@ -50,4 +50,10 @@ plus the two **not-yet-built** frontend-polish items deferred from [T-028](T-028
   **No-Intro GBA DAT** or the ROM files to compute real SHA-1s (won't hardcode unverified). **Still open:**
   the 2 UI-polish features, live edge-flow re-checks, DMARC (owner DNS).
 
+- **2026-06-28** — Hardened the dev→deploy flow (owner's priority): `update.sh` now runs a **preflight**
+  (randomizer + backend suites + `check-tracker`) and aborts if anything is red, then rsyncs + recreates +
+  health-checks — proven end-to-end with a real deploy (preflight OK → health /api/me 401 → deployed; box
+  fully synced). Added the canonical [dev-deploy-workflow.md](../docs/dev-deploy-workflow.md) (linked in
+  INDEX). The deploy-pipeline part of this task is done; UI polish / edge re-checks / DMARC / hashes remain.
+
 ## Outcome
