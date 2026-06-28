@@ -138,16 +138,45 @@ function setRomRow(cat, bodyHtml, ico) {
   el.innerHTML = `<span class="status-ico" aria-hidden="true">${ico}</span><div class="status-body">${bodyHtml}</div>`;
 }
 
-// Enable/disable the actions-row "Download ROM" button + its single-use note.
-function setRomDownload({ enabled, count = 1, note = false }) {
+// How many ROMs this run produces (from the active request, or the stored bundle as a fallback).
+function romCount() {
+  return state?.activeRequest?.romsTotal ?? lastBundle?.roms?.length ?? 1;
+}
+
+// Enable/disable the actions-row "Download ROM(s)" button + its single-use note. `reason` is the
+// tooltip shown while disabled, so it always states the real reason (not ready / failed / downloaded…).
+function setRomDownload({ enabled, count = romCount(), note = false, reason = "Your ROM isn't ready yet." }) {
   const btn = $('btn-download-rom');
   if (btn) {
     btn.disabled = !enabled;
-    btn.title = enabled ? '' : "Your ROM isn't ready yet.";
+    btn.title = enabled ? '' : reason;
     btn.textContent = count > 1 ? '⬇ Download ROMs' : '⬇ Download ROM';
   }
   const noteEl = $('rom-dl-note');
   if (noteEl) noteEl.hidden = !note;
+}
+
+// Keep the screen's title + one-line summary honest about what is actually ready. Docs are always
+// ready on this screen; only when the ROM is ready too does it become "Your run is ready".
+function setHeadline(cat) {
+  const n = romCount();
+  const roms = `${n} ROM${n === 1 ? '' : 's'}`;
+  const seed = lastBundle?.config?.seed;
+  const STATUS = {
+    ready: 'everything is ready to download',
+    building: 'your ROM is building below',
+    queued: 'your ROM is queued below',
+    failed: 'the ROM build failed — see below',
+    downloaded: 'your ROM has been downloaded',
+    gating: 'sign in to also build a ROM',
+  };
+  const titleEl = $('gen-done-title');
+  const metaEl = $('gen-done-meta');
+  if (titleEl) titleEl.textContent = cat === 'ready' ? 'Your run is ready' : 'Your documentation is ready';
+  if (metaEl) {
+    const status = STATUS[cat] || '';
+    metaEl.textContent = `${seed != null ? `Seed ${seed} · ` : ''}${roms}${status ? ` · ${status}` : ''}`;
+  }
 }
 
 function clearBuildBar() {
@@ -174,7 +203,8 @@ async function reevaluateDelivery() {
   lastCategory = null; // any path below either re-renders via renderRom or sets the row directly
 
   if (!state) {
-    setRomDownload({ enabled: false });
+    setHeadline('gating');
+    setRomDownload({ enabled: false, reason: 'Log in and verify your Emerald to build a ROM.' });
     setRomRow('todo',
       `<div class="status-title">Randomized ROM</div>
        <div class="status-sub">Log in and verify your Emerald to build one — your docs are ready regardless.</div>
@@ -183,14 +213,16 @@ async function reevaluateDelivery() {
     return;
   }
   if (!state.verified) {
-    setRomDownload({ enabled: false });
+    setHeadline('gating');
+    setRomDownload({ enabled: false, reason: 'Verify your email to build your ROM.' });
     setRomRow('todo',
       `<div class="status-title">Verify your email</div>
        <div class="status-sub">Open the link we emailed you — then your ROM build starts automatically.</div>`, '✉');
     return;
   }
   if (!state.ownsValidRom) {
-    setRomDownload({ enabled: false });
+    setHeadline('gating');
+    setRomDownload({ enabled: false, reason: 'Verify your Emerald to build your ROM.' });
     setRomRow('todo',
       `<div class="status-title">Verify your Emerald</div>
        <div class="status-sub">Upload your Emerald ROM to prove ownership — then your build starts.</div>
@@ -202,7 +234,8 @@ async function reevaluateDelivery() {
   if (state.activeRequest) { renderRom(state.activeRequest); startPolling(); return; }
 
   if (delivered) {
-    setRomDownload({ enabled: false });
+    setHeadline('downloaded');
+    setRomDownload({ enabled: false, reason: 'Already downloaded — removed from the server. Start a new run to build another.' });
     setRomRow('done',
       `<div class="status-title">ROM downloaded</div>
        <div class="status-sub">Removed from the server. Start a new run to build another.</div>`, '✓');
@@ -210,7 +243,8 @@ async function reevaluateDelivery() {
   }
 
   if (lastBundle) {
-    setRomDownload({ enabled: false });
+    setHeadline('building');
+    setRomDownload({ enabled: false, reason: 'Starting your build…' });
     setRomRow('building', `<div class="status-title">Starting your ROM build…</div>`, GEAR_ICO);
     const { ok, data } = await api('/api/produce', { method: 'POST', body: lastBundle, auth: true });
     if (ok) { await refreshMe(); lastCategory = null; renderRom(state.activeRequest, data); startPolling(); }
@@ -233,19 +267,21 @@ function categoryOf(req) {
 function renderRom(req, info = {}) {
   if (!req || !romRow()) return;
   const cat = categoryOf(req);
+  const count = req.romsTotal ?? romCount();
+  setHeadline(cat);
 
   if (cat === 'ready') {
     clearBuildBar(); lastCategory = 'ready';
     setRomRow('done',
       `<div class="status-title">Your ROM is ready</div>
        <div class="status-sub">Download it below.</div>`, '✓');
-    setRomDownload({ enabled: true, count: req.romsTotal ?? 1, note: true });
+    setRomDownload({ enabled: true, count, note: true });
     return;
   }
 
   if (cat === 'failed') {
     clearBuildBar(); lastCategory = 'failed';
-    setRomDownload({ enabled: false });
+    setRomDownload({ enabled: false, count, reason: 'The build failed — start over to try again.' });
     setRomRow('failed',
       `<div class="status-title">Build failed</div>
        <div class="status-sub">Something went wrong building your ROM. Please start over and try again.</div>`, '✕');
@@ -253,7 +289,7 @@ function renderRom(req, info = {}) {
   }
 
   if (cat === 'building') {
-    setRomDownload({ enabled: false });
+    setRomDownload({ enabled: false, count });
     const total = req.romsTotal ?? 1;
     const current = Math.min((req.romsDone ?? 0) + 1, total);
     if (lastCategory !== 'building') {
@@ -275,7 +311,7 @@ function renderRom(req, info = {}) {
 
   // queued — clean, no gear/bar; show position + ETA, email opt-in, and the docs-meanwhile hint.
   clearBuildBar();
-  setRomDownload({ enabled: false });
+  setRomDownload({ enabled: false, count });
   const etaTxt = info.eta != null ? `ETA ~${Math.max(1, Math.round(info.eta / 60))} min` : '';
   const ahead = info.romsAhead;
   let line;

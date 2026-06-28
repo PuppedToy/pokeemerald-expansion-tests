@@ -119,4 +119,13 @@ plus the two **not-yet-built** frontend-polish items deferred from [T-028](T-028
   of silently stopping. Tests: produce.test.js (romsAhead) — backend 86/86; randomizer 464/464; JS
   syntax-validated. **Not deployed** (owner-gated). Pending owner visual review.
 
+- **2026-06-28** — Owner reviewed (preview + live deploy of the redesign) and asked for 3 refinements,
+  now done: (1) the Download button pluralizes — **"Download ROMs"** for multi-ROM runs (count threaded
+  through every state, not just `ready`); (2) the screen **title is now honest** — "Your documentation is
+  ready" (+ a one-line status: "your ROM is queued/building below") until the ROM is also done, then
+  "Your run is ready" (new `setHeadline()` owns title+meta per state); (3) the disabled Download button's
+  **tooltip states the real reason** per state (not ready / build failed / sign in / **already
+  downloaded**). Frontend-only; backend 86/86, randomizer 464/464; preview artifact updated to match.
+  **Not deployed** (owner-gated).
+
 ## Outcome
