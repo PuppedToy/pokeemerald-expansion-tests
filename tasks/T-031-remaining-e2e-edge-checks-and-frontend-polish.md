@@ -61,4 +61,11 @@ plus the two **not-yet-built** frontend-polish items deferred from [T-028](T-028
   one SPF record, correct value). SPF+DKIM+DMARC all green → the DMARC item of this task is done.
   Remaining: UI polish (owner feedback), live edge-flow re-checks, Emerald hashes (blocked on No-Intro DAT).
 
+- **2026-06-28** — **email-on-ready opt-in built (TDD)** — one of the two deferred UI features:
+  `requests.setEmailOnReady` + `finishBuild` fires the `ready` mail when opted-in (worker wired with
+  mailer/users/baseUrl) + `POST /api/notify-on-ready` + a delivery-panel checkbox shown when ETA ≥ 2 min.
+  5 tests; **backend 81/81**. **Not deployed** (owner-gated — awaits owner push + go-ahead). Remaining in
+  this task: 'regenerate docs on reload' (frontend-only, no browser test harness → best done with browser
+  verification / owner UI feedback); live edge re-checks (unit-covered); Emerald hashes (blocked on No-Intro DAT).
+
 ## Outcome

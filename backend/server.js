@@ -58,7 +58,7 @@ const buildRom = createBuildRom({ requests, storage, fake: FAKE_BUILD });
 // restore (it would clobber a dev working tree); real builds use the default restore.
 runOnStartup({ requests, restoreTree: FAKE_BUILD ? () => {} : undefined });
 
-const worker = createWorker({ requests, runs, db, buildRom });
+const worker = createWorker({ requests, runs, db, buildRom, mailer, users, baseUrl: BASE_URL });
 worker.start();
 startSweeper({ requests, removeFile: storage.removeFile });
 

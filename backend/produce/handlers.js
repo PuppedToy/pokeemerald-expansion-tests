@@ -30,6 +30,16 @@ export function handleProduce({ requests, classify, validateBundle, persistBundl
   };
 }
 
+// Opt in to a "your ROM is ready" email for the active request (offered when ETA >= 2 min, T-031).
+export function handleNotifyOnReady({ requests }) {
+  return (req, res) => {
+    const active = requests.getActiveForUser(req.userId);
+    if (!active) return res.status(404).json({ error: 'no active request' });
+    requests.setEmailOnReady(active.id, true);
+    res.json({ ok: true });
+  };
+}
+
 export function handleStatus({ requests, avgRomSecs }) {
   return (req, res) => {
     const active = requests.getActiveForUser(req.userId);

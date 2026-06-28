@@ -91,6 +91,11 @@ export function createRequestsRepo(db) {
       return this.get(id);
     },
 
+    setEmailOnReady(id, val, now = Date.now()) {
+      db.prepare('UPDATE requests SET email_on_ready = ?, updated_at = ? WHERE id = ?').run(val ? 1 : 0, now, id);
+      return this.get(id);
+    },
+
     deleteRow(id) {
       db.prepare('DELETE FROM requests WHERE id = ?').run(id);
     },

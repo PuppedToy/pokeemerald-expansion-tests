@@ -119,6 +119,7 @@ async function doForgot(email) {
 // ── delivery flow ────────────────────────────────────────────────────────────────
 export async function onBundleReady(bundle) {
   lastBundle = bundle;
+  emailOptedIn = false;
   try { await idbSet('bundle', bundle); } catch { /* storage full / private mode */ }
   await refreshMe();
   reevaluateDelivery();
@@ -154,6 +155,8 @@ async function reevaluateDelivery() {
   }
 }
 
+let emailOptedIn = false;
+
 function showStatus(req, produce) {
   const el = $('delivery-panel');
   if (!el || !req) return;
@@ -164,10 +167,25 @@ function showStatus(req, produce) {
     $('dl-rom').addEventListener('click', downloadRom);
     return;
   }
-  const eta = produce?.eta != null ? `~${Math.max(1, Math.round(produce.eta / 60))} min` : '…';
+  const etaSecs = produce?.eta;
+  const eta = etaSecs != null ? `~${Math.max(1, Math.round(etaSecs / 60))} min` : '…';
+  // Offer the email-on-ready opt-in when the queue is long (ETA >= 2 min) — T-031.
+  const offerEmail = emailOptedIn || (etaSecs != null && etaSecs >= 120);
+  const emailBit = !offerEmail ? ''
+    : emailOptedIn
+      ? `<div class="delivery-hint">✓ We'll email you when it's ready.</div>`
+      : `<label class="delivery-hint"><input type="checkbox" id="notify-email"> Email me when it's ready</label>`;
   el.innerHTML = `<div class="delivery-note">Building your ROM — <strong>${req.state}</strong>
     (${req.romsDone}/${req.romsTotal} ROMs) · ETA ${eta}
-    <div class="delivery-hint">Download your docs meanwhile; this updates automatically.</div></div>`;
+    <div class="delivery-hint">Download your docs meanwhile; this updates automatically.</div>
+    ${emailBit}</div>`;
+  if (offerEmail && !emailOptedIn) {
+    $('notify-email').addEventListener('change', async (e) => {
+      if (!e.target.checked) return;
+      const { ok } = await api('/api/notify-on-ready', { method: 'POST', auth: true });
+      if (ok) { emailOptedIn = true; showStatus(req, produce); }
+    });
+  }
 }
 
 function startPolling() {
