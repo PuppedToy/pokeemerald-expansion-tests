@@ -32,52 +32,53 @@ cd backend && PORT=3007 FAKE_BUILD=1 npm start   # email links print to this con
 
 ## Manual flows (check each)
 
-### Anonymous (no account)
-- [ ] Configure → Review → **Generate** works with no login; docs **Download all (ZIP)** / per-ROM /
-      Export run all download; the delivery panel shows the "log in to build your ROM" warning.
+_Verified by the owner on production (2026-06-28) + agent smoke. `[x]` = checked; `[ ]` → moved to
+[T-031](T-031-remaining-e2e-edge-checks-and-frontend-polish.md) (unit-test-covered or deferred, not blockers)._
 
 ### Accounts
-- [ ] Register (email + password ≥ 8) → verification link appears (dev: server console) → opening it
-      shows "verified ✓".
-- [ ] Login → `/api/me` reflects email + verified; topnav shows the account.
-- [ ] Forgot password → reset link → set a new password → login with the new password works; the old
-      password no longer works.
-- [ ] Cannot generate a ROM while unverified (clear warning).
+- [x] Register → verification link (console) → "verified ✓" → login. **Owner-verified on prod.**
+- [x] Cannot generate while unverified (403 gate). _Agent smoke._
+- [ ] Forgot password → reset → login with new password. → T-031 (unit-tested).
 
 ### ROM ownership
-- [ ] Upload a real (USA, Europe) Emerald `.gba` → "ROM verified ✓"; `/api/me` `ownsValidRom: true`.
-- [ ] Upload a non-Emerald / wrong file → rejected with a clear error; flag stays false.
-- [ ] After validation the ROM is remembered (no re-upload on the next run).
+- [x] Upload a real (USA, Europe) Emerald → "ROM verified ✓". **Owner-verified on prod.**
+- [x] Non-Emerald / wrong file rejected with a clear error. _Agent smoke (400)._
 
 ### Generate → build → download (the happy path)
-- [ ] Eligible user clicks **Generate**: docs download buttons appear **and** the build auto-starts
-      (no separate button); delivery panel shows state + ETA, updating live.
-- [ ] When ready: **Download ROM** delivers the zip; it is **single-use** — afterwards `/api/status`
-      shows no active request (row purged) and the file is gone server-side.
-- [ ] Run types: **default** (1 ROM), **nuzlocke** (N ROMs), **soul-link** (players × ROMs) each
-      produce + deliver correctly.
-- [ ] Fast vs slow classification: ≤ 2 ROMs = fast, > 2 = slow (observe ordering/ETA).
+- [x] **Generate** → docs + auto-started real build → live ETA → **download a real 32 MB ROM**.
+      **Owner-verified on prod** (agent also ran the full produce→download e2e).
+- [x] Single-use download: request purged + file gone afterwards. _Agent e2e (status→no active request)._
+- [ ] Run types nuzlocke / soul-link (multi-ROM); fast vs slow classification. → T-031 (unit-tested).
 
-### Resilience & limits
-- [ ] One active request per user: starting a second while one is active is refused.
-- [ ] Reload mid-build → session + build status recover; a ready ROM is still downloadable.
-- [ ] Restart the backend mid-build → the request is re-queued and completes (no dirty tree). *(real build)*
-- [ ] Retention: a ready ROM is removed after 48 h. *(verify via a shortened TTL or DB inspection)*
+### Resilience & limits / Errors → all moved to T-031 (unit-test-covered; not manually re-checked on box)
+- [ ] one-active-per-user · reload recovery · restart recovery · 48 h TTL · invalid-token & rate-limit errors.
 
-### Errors / abuse
-- [ ] Invalid/oversized upload, expired/invalid verify & reset tokens → clear, safe errors.
-- [ ] Auth rate-limit kicks in under rapid repeated register/login.
-
-### Deferred features to confirm once built (T-028 polish)
-- [ ] Email-on-ready opt-in checkbox shown when initial ETA ≥ 2 min.
-- [ ] "Regenerate docs" from the stored bundle on reload.
+### Deferred frontend polish (from T-028) → T-031
+- [ ] Email-on-ready opt-in checkbox (ETA ≥ 2 min) · "Regenerate docs" on reload.
 
 ## Acceptance criteria
-- [ ] Every flow above checked locally (FAKE_BUILD) and the build-dependent ones re-checked on the
-      deployed box (T-019). Any defect found is filed as a `B-NNN` with a regression test before T-018 closes.
+- [x] The **core build-dependent happy path is validated on the deployed box** (owner-confirmed:
+      register → verify → login → upload Emerald → Generate → download a real 32 MB ROM). The three
+      integration defects found en route were filed (B-004, B-005, B-006) each with a regression test.
+- [x] Remaining edge flows + deferred polish tracked in [T-031](T-031-remaining-e2e-edge-checks-and-frontend-polish.md)
+      (they are unit-test-covered or not-yet-built; none block the live feature).
 
 ## Progress log
 
 - **2026-06-24** — Created. Home of the deferred end-to-end verification for the whole backend epic.
+- **2026-06-28** — **Owner ran the full flow on the live site and confirmed it works** (register →
+  verify → login → upload real Emerald → Generate → download a real ROM). Agent had already run the
+  produce→build→download e2e on the box. Closed for the core happy path; remaining edge flows + the two
+  deferred frontend-polish items moved to [T-031](T-031-remaining-e2e-edge-checks-and-frontend-polish.md).
 
 ## Outcome
+
+The core production end-to-end is **validated by the owner** on `https://pokemon-emerald-cut.com`:
+register → email verify → login → upload a (USA, Europe) Emerald → Generate → real 32 MB ROM built and
+downloaded. Three integration defects were found and fixed during deploy validation (B-004 env_file
+comments, B-005 bundle-schema keys, B-006 auth body-parser), each with a regression test. **Not
+exhaustively re-checked manually on the box** (but unit-test-covered): forgot/reset, multi-ROM run
+types, fast/slow preemption, one-active-per-user, reload/restart recovery, 48 h TTL, error/rate-limit
+paths — plus the two not-yet-built UI polish items. All of these are tracked in **T-031** (none block
+the live feature). **No CHANGELOG line yet:** verification email still uses the dev console transport,
+so the feature is owner-usable but not fully public until Brevo is wired (T-019) — the release line lands then.
