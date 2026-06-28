@@ -1,7 +1,7 @@
 ---
 id: T-031
 title: Remaining e2e edge checks + deferred frontend polish
-status: proposed
+status: in-progress
 type: chore
 created: 2026-06-28
 updated: 2026-06-28
@@ -41,5 +41,13 @@ plus the two **not-yet-built** frontend-polish items deferred from [T-028](T-028
 
 - **2026-06-28** — Created from the T-029 close to track non-happy-path verification + the T-028
   deferred polish, so nothing is lost. None of it blocks the live feature.
+
+- **2026-06-28** — Started. **Done:** `deploy/update.sh` rewritten as a one-command **rsync redeploy**
+  (the method actually used for the live box — preserves `.git`/`backend/data`/`build/`; `--dry-run`
+  supported; env-overridable; encodes the deploy gotchas) + `.env.local.example` aligned to Hetzner
+  (root / `/opt/emerald` / `emerald_box`). Syntax-validated; rsync+recreate steps proven in the live deploy.
+  **Blocked:** remaining Emerald regional hashes (JP/FR/DE/IT/ES) aren't reliably web-sourceable — need the
+  **No-Intro GBA DAT** or the ROM files to compute real SHA-1s (won't hardcode unverified). **Still open:**
+  the 2 UI-polish features, live edge-flow re-checks, DMARC (owner DNS).
 
 ## Outcome
