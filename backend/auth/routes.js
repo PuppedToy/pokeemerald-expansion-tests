@@ -10,13 +10,16 @@ import { createRateLimiter } from '../email/rateLimiter.js';
 export function createAuthRouter({ service, users, requests, jwtSecret }) {
   const router = express.Router();
 
-  router.use(express.json({ limit: '1mb' })); // auth bodies are small JSON
+  // Parse JSON per-route (NOT router.use): this router is mounted at /api, so a
+  // router-level body parser would also run for /api/produce (32 MB) and reject it
+  // with its small limit before the produce router's 50 MB parser — see B-006.
+  const json = express.json({ limit: '1mb' }); // auth bodies are small JSON
 
   // Per-IP throttle on the abuse-prone routes (ADR-004 anti-abuse).
   const limiter = createRateLimiter({ max: 20, windowMs: 60 * 1000 });
   const throttle = ipRateLimit(limiter);
 
-  router.post('/register', throttle, async (req, res) => {
+  router.post('/register', throttle, json, async (req, res) => {
     const { email, password } = req.body ?? {};
     if (!email || !password) return res.status(400).json({ error: 'email and password required' });
     try {
@@ -27,7 +30,7 @@ export function createAuthRouter({ service, users, requests, jwtSecret }) {
     }
   });
 
-  router.post('/login', throttle, async (req, res) => {
+  router.post('/login', throttle, json, async (req, res) => {
     const { email, password } = req.body ?? {};
     try {
       res.json(await service.login({ email, password }));
@@ -36,17 +39,17 @@ export function createAuthRouter({ service, users, requests, jwtSecret }) {
     }
   });
 
-  router.post('/verify', async (req, res) => {
+  router.post('/verify', json, async (req, res) => {
     const ok = await service.verifyEmail(req.body?.token);
     res.status(ok ? 200 : 400).json({ ok });
   });
 
-  router.post('/forgot', throttle, async (req, res) => {
+  router.post('/forgot', throttle, json, async (req, res) => {
     await service.requestReset(req.body?.email);
     res.json({ ok: true });
   });
 
-  router.post('/reset', async (req, res) => {
+  router.post('/reset', json, async (req, res) => {
     const ok = await service.resetPassword(req.body?.token, req.body?.password);
     res.status(ok ? 200 : 400).json({ ok });
   });
