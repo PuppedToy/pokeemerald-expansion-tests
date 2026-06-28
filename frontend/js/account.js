@@ -212,10 +212,11 @@ async function downloadRom() {
   reevaluateDelivery();
 }
 
-export async function initAccount() {
+export async function initAccount(opts = {}) {
   $('account-btn').addEventListener('click', openModal);
   $('auth-close').addEventListener('click', closeModal);
   $('auth-modal').addEventListener('click', (e) => { if (e.target.id === 'auth-modal') closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('auth-modal').hidden) closeModal(); });
 
   document.querySelectorAll('.auth-tab').forEach((t) => t.addEventListener('click', () => {
     document.querySelectorAll('.auth-tab').forEach((x) => x.classList.toggle('active', x === t));
@@ -233,6 +234,12 @@ export async function initAccount() {
 
   await refreshMe();
   updateAccountBtn();
-  // reload recovery: surface an in-flight build (and the ready ROM download) without re-generating
-  if (state?.activeRequest) { showStatus(state.activeRequest); startPolling(); }
+  // reload recovery: surface an in-flight build (and the ready ROM download) without re-generating.
+  // onRecover (app.js) makes the delivery panel visible (jump to step 3) + restores the docs buttons,
+  // otherwise the status would be written to a hidden panel.
+  if (state?.activeRequest) {
+    try { await opts.onRecover?.(); } catch { /* ignore */ }
+    showStatus(state.activeRequest);
+    startPolling();
+  }
 }

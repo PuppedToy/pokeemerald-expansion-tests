@@ -68,4 +68,17 @@ plus the two **not-yet-built** frontend-polish items deferred from [T-028](T-028
   this task: 'regenerate docs on reload' (frontend-only, no browser test harness → best done with browser
   verification / owner UI feedback); live edge re-checks (unit-covered); Emerald hashes (blocked on No-Intro DAT).
 
+- **2026-06-28** — **Autonomous UI/UX pass (my own review, pending owner visual verification).** Frontend-only,
+  zero backend change. (1) **Reload recovery** — real bug: on reload with an in-flight build, `initAccount`
+  wrote the build status into `#delivery-panel`, which lives inside the hidden step-3 `#gen-done` while the
+  user sat on the Home tab → status was invisible. Fix: `initAccount(opts)` now `await opts.onRecover?.()`
+  before `showStatus`; `app.js` passes an `onRecover` that restores `currentBundle` from IndexedDB
+  (`getStoredBundle`), jumps to the Randomizer tab + step 3, reveals `#gen-done`, and re-renders the docs
+  buttons — so a refreshed user lands back on their build with docs intact. (2) `renderDocsButtons` gained a
+  generic per-ROM fallback for restored bundles whose `config.runType` is absent. (3) **Esc closes the auth
+  modal** (was click-outside / ✗ only). (4) Button label `Generate & download` → **`Generate`** (the click
+  generates docs + starts the server build; download happens later from the delivery panel — old label
+  implied an immediate download). ESM syntax-validated (`node --check`), randomizer 464/464. **Not deployed**
+  (owner-gated). These are MY-UX-review changes → await owner visual review before close.
+
 ## Outcome

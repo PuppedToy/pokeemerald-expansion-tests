@@ -1,6 +1,6 @@
 import { ConfigForm } from './config-form.js';
 import { resolveArtifact } from './session.js';
-import { initAccount, onBundleReady } from './account.js';
+import { initAccount, onBundleReady, getStoredBundle } from './account.js';
 
 // ── Tab routing ───────────────────────────────────────────────────────────────
 
@@ -314,12 +314,33 @@ function renderDocsButtons(cfg) {
         for (const rom of roms) {
             makeBtn(`Download docs for ROM ${rom.romIndex} Player ${rom.playerIndex}`, rom);
         }
+    } else {
+        // unknown/absent runType (e.g. restored from a stored bundle on reload) — generic per-ROM
+        roms.forEach((rom, i) => makeBtn(roms.length > 1 ? `Download docs (ROM ${rom.romIndex ?? i})` : 'Download docs', rom));
     }
 }
 
 // Init
 showStep(1);
-initAccount(); // T-028: wire the account modal + recover any in-flight build on reload
+// T-028/T-031: wire the account modal; on reload with an in-flight build, surface it — the status
+// panel lives in step 3 (hidden by default), so jump there and restore the docs from the stored bundle.
+initAccount({
+    onRecover: async () => {
+        try {
+            const b = await getStoredBundle();
+            if (b) { currentBundle = b; currentConfig = b.config || currentConfig; }
+        } catch { /* ignore */ }
+        setActiveTab('randomizer');
+        showStep(3);
+        document.getElementById('gen-running').style.display = 'none';
+        document.getElementById('gen-error').style.display = 'none';
+        document.getElementById('gen-done').style.display = '';
+        document.getElementById('gen-done-meta').textContent = currentBundle
+            ? 'Your run — build status below; your documentation is ready to download.'
+            : 'You have a build in progress — status below.';
+        if (currentBundle) renderDocsButtons(currentConfig || {});
+    },
+});
 
 // ── Web Worker helpers ────────────────────────────────────────────────────────
 
