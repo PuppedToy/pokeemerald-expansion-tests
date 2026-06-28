@@ -117,12 +117,14 @@
 }
 
 /* "Emerald Cut" in brand green, with the brand icon standing in for the "C" of Cut (T-034).
-   Size/alignment picked visually (option "F" + a hair left); the icon's visible C is smaller than
-   its tile, so it needs ~1.4em to match the cap height. */
+   Size picked visually (option "F" = 1.4em, since the icon's visible C is smaller than its tile).
+   position:relative nudges ONLY the C — 8px away from the "u" and 6px up (option #15) — so "ut" stays
+   put (margin would have shifted the whole word). */
 .title-accent { color: var(--obs-green); }
 .title-logo {
   height: 1.4em; width: auto; vertical-align: -0.12em;
-  image-rendering: pixelated; margin: 0 0.03em 0 -0.04em;
+  image-rendering: pixelated; margin: 0 0.03em;
+  position: relative; left: -8px; top: -6px;
 }
 
 .landing-slogan {
