@@ -3,8 +3,20 @@
 const {
     EVO_TYPE_MEGA, EVO_TYPE_LC_OF_2, EVO_TYPE_LC_OF_3,
     EVO_TYPE_NFE_OF_3, EVO_TYPE_LAST_OF_2, EVO_TYPE_LAST_OF_3, EVO_TYPE_SOLO,
-    POKE_FORMS,
+    POKE_FORMS, FAMILY_TYPE_MACROS,
 } = require('./constants');
+
+// Parse a `.types = MON_TYPES(...)` value into an array of real type names. Strips a trailing comment,
+// the MON_TYPES(...) wrapper and the TYPE_ prefix, and resolves config-driven family-type macros
+// (e.g. RALTS_FAMILY_TYPE2) to their concrete type so nothing downstream sees a raw macro (B-010).
+function parseMonTypes(rawTypes) {
+    return String(rawTypes)
+        .replace(/\/\/.*$/, '').trim()
+        .replace(/MON_TYPES\(/, '').replace(/\)/, '')
+        .split(',').map(s => s.trim()).filter(Boolean)
+        .map(t => t.replace('TYPE_', ''))
+        .map(t => FAMILY_TYPE_MACROS[t] ?? t);
+}
 
 const evoIsLC = (evolutionType) => evolutionType === EVO_TYPE_LC_OF_3 || evolutionType === EVO_TYPE_LC_OF_2;
 const evoIsNFE = (evolutionType) => evoIsLC(evolutionType) || evolutionType === EVO_TYPE_NFE_OF_3;
@@ -629,6 +641,7 @@ module.exports = {
     parseMegaEvoStonesFile,
     parseStat,
     parseMoveStat,
+    parseMonTypes,
     nameizyPokemonId,
     getEvolutionType,
     processLineForDefinitions,

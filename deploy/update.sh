@@ -42,6 +42,14 @@ if [ -z "$SKIP_TESTS" ]; then
   echo "    preflight OK ✓"
 fi
 
+# --- build the browser frontend ---------------------------------------------------
+# randomizer.bundle.js + base-data.json are gitignored, generated from the randomizer source, and
+# shipped by the rsync below. Rebuild them every deploy so the deployed browser code can never lag
+# the source (a stale bundle is how the B-010 type-macro fix would otherwise miss the frontend).
+echo "==> building frontend bundle (node build.js)"
+node build.js >/tmp/ec-build.log 2>&1 || { echo "  ✗ frontend build FAILED — aborting"; tail -12 /tmp/ec-build.log; exit 1; }
+echo "    bundle built ✓"
+
 # --- sync ------------------------------------------------------------------------
 echo "==> rsync working tree -> ${TARGET}:${DEPLOY_PATH} ${DRY}"
 # /build/ is anchored (a bare build/ would also drop the app's backend/build/ source — B-003).

@@ -38,6 +38,9 @@ jest.mock('../../parser', () => ({
     parseSpeciesFile: jest.fn(() => []),
     parseStat: jest.fn((v) => parseInt(v, 10) || 0),
     parseMoveStat: jest.fn((v) => parseInt(v, 10) || 0),
+    parseMonTypes: jest.fn((raw) => String(raw).replace(/\/\/.*$/, '').trim()
+        .replace(/MON_TYPES\(/, '').replace(/\)/, '')
+        .split(',').map((s) => s.trim()).filter(Boolean).map((t) => t.replace('TYPE_', ''))),
     nameizyPokemonId: jest.fn((id) => id),
     getEvolutionType: jest.fn(() => 'EVO_TYPE_SOLO'),
     evoIsLC: jest.fn(() => false),

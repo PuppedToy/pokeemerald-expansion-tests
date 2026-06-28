@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs").promises;
 
-const { TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR } = require("./constants");
+const { TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR, POKEMON_TYPES } = require("./constants");
 
 function editSpeciesFile(genSpeciesFileText, pokemonList) {
     const lines = genSpeciesFileText.split('\n');
@@ -66,7 +66,14 @@ function editSpeciesFile(genSpeciesFileText, pokemonList) {
             if (typeEntryIndex === -1) continue;
             const oldValue = currentLog[typeEntryIndex].oldValue;
             currentLog.splice(typeEntryIndex, 1);
-            const monTypes = currentPokemon.parsedTypes.map(t => `TYPE_${t.toUpperCase()}`).join(', ');
+            const monTypes = currentPokemon.parsedTypes.map(t => {
+                const up = String(t).toUpperCase();
+                if (POKEMON_TYPES.includes(up)) return `TYPE_${up}`;
+                // B-010 guard: an unrecognized token is a config macro (e.g. *_FAMILY_TYPE*) already
+                // valid in the source — emit it verbatim, never an undefined TYPE_<macro>.
+                console.warn(`[pokemonWriter] ${currentPokemon.id}: non-type token "${t}" in .types — emitting verbatim`);
+                return t;
+            }).join(', ');
             lines[i] = `        .types = MON_TYPES(${monTypes}), // @PUPPED-AUTO-BALANCE #${currentPokemon.id} [oldValue = ${oldValue}] -- previous line was >> ${lines[i]}`;
         }
         if (lines[i].startsWith('        .abilities')) {
@@ -185,4 +192,5 @@ async function savePokemonData(pokemonList) {
 
 module.exports = {
     savePokemonData,
+    editSpeciesFile,
 };

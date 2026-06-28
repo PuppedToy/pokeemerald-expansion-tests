@@ -95,7 +95,7 @@ async function parseBaseData() {
 
             const fullPoke = {
                 name: parser.nameizyPokemonId(poke.id),
-                parsedTypes: poke.types.replace(/\/\/.*$/, '').trim().replace(/MON_TYPES\(/, '').replace(/\)/, '').split(', ').map(t => t.replace('TYPE_', '')),
+                parsedTypes: parser.parseMonTypes(poke.types),
                 parsedAbilities: poke.abilities.replace(/\/\/.*$/, '').trim().replace(/{ /, '').replace(/ }/, '').split(', ').map(a => a.replace('ABILITY_', '')),
                 ...poke,
                 baseHP, baseAttack, baseDefense, baseSpeed, baseSpAttack, baseSpDefense, baseBST,

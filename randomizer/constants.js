@@ -435,6 +435,15 @@ constants.POKEMON_TYPES = [
     constants.POKEMON_TYPE_ELECTRIC,
 ];
 
+// Config-driven family-type MACROS used inside species_info/*.h (NOT TYPE_ constants). They expand to
+// `(P_UPDATED_TYPES >= GEN_6 ? TYPE_FAIRY : TYPE_<old>)`; the expansion ships P_UPDATED_TYPES =
+// GEN_LATEST, so both resolve to FAIRY. The parser resolves them so the rater/rebalancer/writer only
+// ever deal with real types — otherwise the writer emitted an undefined `TYPE_<macro>` (B-010).
+constants.FAMILY_TYPE_MACROS = {
+    RALTS_FAMILY_TYPE2: constants.POKEMON_TYPE_FAIRY,
+    TOGEPI_FAMILY_TYPE: constants.POKEMON_TYPE_FAIRY,
+};
+
 constants.POKE_FORMS = [
     constants.POKE_FORM_ALOLA,
     constants.POKE_FORM_GALAR,

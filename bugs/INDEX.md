@@ -13,3 +13,4 @@
 | [B-007](B-007-flaky-starters-type-triangle-test.md) | Starters type-triangle unit test is flaky (unseeded isolated rng) | fixed | minor | 0.3.0 | 0.4.0 | randomizer/__tests__/unit/startersModule.test.js |
 | [B-008](B-008-build-failure-crashes-worker-crashloop.md) | A failed ROM build crashes the backend and crash-loops the site (502) | fixed | critical | 0.3.0 | 0.4.0 | backend/__tests__/queue.test.js |
 | [B-009](B-009-deploy-ships-host-tool-binaries.md) | Deploy rsyncs host-compiled decomp tool binaries, breaking make on the Linux box | fixed | major | 0.3.0 | 0.4.0 | backend/__tests__/deploy-env.test.js |
+| [B-010](B-010-type-family-macro-mangled-by-writer.md) | Rebalancing a config-driven family-type Pokémon writes an undefined TYPE_ macro, breaking make | fixed | major | 0.3.0 | 0.4.0 | randomizer/__tests__/unit/parseMonTypes.test.js |
