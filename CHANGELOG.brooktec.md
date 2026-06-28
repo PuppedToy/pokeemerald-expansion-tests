@@ -7,6 +7,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-28
+
 ### Fixed
 
 - Difficulty now scales trainers across the whole game. Previously the difficulty slider only affected trainers whose teams used contextual tiers, so from Flannery onward (gym leaders, Elite Four, Champion Steven, and their route trainers) it did nothing. The team-tier transform now shifts absolute-tier slots too — keeping mega slots and the rival/Wally/Steven "evolves-with-you" Pokémon fixed. This also corrects the baseline: late-game route trainers are now properly a step weaker than their gym leader (B-001, T-012).
