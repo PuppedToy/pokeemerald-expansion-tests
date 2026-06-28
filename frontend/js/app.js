@@ -193,11 +193,11 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
             `<script>const wildPokes = ${JSON.stringify(rom.docs.wildPokes)};</script>`);
 }
 
-// Download all (ZIP: bundle JSON + per-ROM docs HTML)
-document.getElementById('btn-download-all').addEventListener('click', async () => {
+// Download docs (ZIP: per-ROM docs HTML + the run bundle.json)
+document.getElementById('btn-download-docs').addEventListener('click', async () => {
     if (!currentBundle) return;
 
-    const btn = document.getElementById('btn-download-all');
+    const btn = document.getElementById('btn-download-docs');
     btn.disabled = true;
     btn.textContent = 'Building ZIP…';
 
@@ -237,88 +237,9 @@ document.getElementById('btn-download-all').addEventListener('click', async () =
         alert(`ZIP generation failed: ${err.message}`);
     } finally {
         btn.disabled = false;
-        btn.textContent = '⬇ Download all (ZIP)';
+        btn.textContent = '⬇ Download docs';
     }
 });
-
-// Export run — download session bundle JSON
-document.getElementById('btn-download-bundle').addEventListener('click', () => {
-    if (!currentBundle) return;
-    const json = JSON.stringify(currentBundle, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `session-bundle-${currentConfig?.seed ?? 'unknown'}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(a.href);
-});
-
-// Download docs — single HTML file for one ROM
-async function downloadSingleDoc(rom, btnEl, btnLabel) {
-    if (!currentBundle) return;
-    btnEl.disabled = true;
-    btnEl.textContent = 'Building…';
-    try {
-        const template = await fetch('/template.html').then(r => {
-            if (!r.ok) throw new Error('Template not found');
-            return r.text();
-        });
-        const spritesText = await loadSpriteMapText();
-        const assetsText = await loadAssetMapText();
-        const bossCapsText = await loadBossCapsText();
-        const pokedex = resolveArtifact(rom.artifacts.pokedex, currentBundle.sharedData, 'pokedex');
-        const seed = currentBundle.config?.seed ?? 'unknown';
-        const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText);
-        const filename = rom.playerIndex !== undefined
-            ? `docs-player-${rom.playerIndex}-rom-${rom.romIndex}-${seed}.html`
-            : `docs-rom-${rom.romIndex}-${seed}.html`;
-        const blob = new Blob([html], { type: 'text/html' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(a.href);
-    } catch (err) {
-        alert(`Download failed: ${err.message}`);
-    } finally {
-        btnEl.disabled = false;
-        btnEl.textContent = btnLabel;
-    }
-}
-
-function renderDocsButtons(cfg) {
-    const container = document.getElementById('btn-docs-container');
-    container.innerHTML = '';
-    if (!currentBundle) return;
-    const roms = currentBundle.roms;
-
-    function makeBtn(label, rom) {
-        const btn = document.createElement('button');
-        btn.className = 'btn btn-primary';
-        btn.textContent = label;
-        btn.addEventListener('click', () => downloadSingleDoc(rom, btn, label));
-        container.appendChild(btn);
-    }
-
-    if (cfg.runType === 'default') {
-        makeBtn('Download docs', roms[0]);
-    } else if (cfg.runType === 'nuzlocke') {
-        for (const rom of roms) {
-            makeBtn(`Download docs for ROM ${rom.romIndex}`, rom);
-        }
-    } else if (cfg.runType === 'soullink') {
-        for (const rom of roms) {
-            makeBtn(`Download docs for ROM ${rom.romIndex} Player ${rom.playerIndex}`, rom);
-        }
-    } else {
-        // unknown/absent runType (e.g. restored from a stored bundle on reload) — generic per-ROM
-        roms.forEach((rom, i) => makeBtn(roms.length > 1 ? `Download docs (ROM ${rom.romIndex ?? i})` : 'Download docs', rom));
-    }
-}
 
 // Init
 showStep(1);
@@ -336,9 +257,9 @@ initAccount({
         document.getElementById('gen-error').style.display = 'none';
         document.getElementById('gen-done').style.display = '';
         document.getElementById('gen-done-meta').textContent = currentBundle
-            ? 'Your run — build status below; your documentation is ready to download.'
+            ? 'Picked up your in-flight run — your ROM status is below.'
             : 'You have a build in progress — status below.';
-        if (currentBundle) renderDocsButtons(currentConfig || {});
+        // account.js fills the ROM checklist row + manages the Download buttons.
     },
 });
 
@@ -440,12 +361,10 @@ function showGenDone() {
         : (cfg.numPlayers ?? 1) * (cfg.romsPerPlayer ?? 1);
 
     document.getElementById('gen-done-meta').textContent =
-        `Seed: ${cfg.seed}  ·  ${numROMs} ROM${numROMs !== 1 ? 's' : ''} ready to download`;
+        `Seed ${cfg.seed} · ${numROMs} ROM${numROMs !== 1 ? 's' : ''}`;
 
-    renderDocsButtons(cfg);
-
-    // T-028: docs are ready; kick off the ROM build (if the user is eligible) and
-    // show its status. Docs download above is independent and always available.
+    // T-028: docs are ready (download button is always available); kick off the ROM build if the
+    // user is eligible and let account.js drive the ROM checklist row + the Download ROM button.
     onBundleReady(currentBundle);
 }
 

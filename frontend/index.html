@@ -181,17 +181,36 @@
 
           <!-- Done -->
           <div id="gen-done" style="display:none">
-            <div class="generate-icon">📦</div>
-            <div class="generate-title">Generation complete</div>
+            <div class="generate-icon"><img src="/assets/reward.png" alt="" class="px-icon px-icon--lg"></div>
+            <div class="generate-title">Your run is ready</div>
             <div id="gen-done-meta" class="generate-desc"></div>
+
+            <!-- Process checklist: docs are generated in your browser (always ready here); the ROM is
+                 built on the server, and its row below updates live (T-031). -->
+            <ul class="status-checklist">
+              <li class="status-item done">
+                <span class="status-ico" aria-hidden="true">✓</span>
+                <div class="status-body">
+                  <div class="status-title">Documentation</div>
+                  <div class="status-sub">Ready — download it below.</div>
+                </div>
+              </li>
+              <li class="status-item" id="rom-status">
+                <!-- filled by account.js based on eligibility + build state -->
+              </li>
+            </ul>
+
             <div class="generate-actions">
-              <button class="btn btn-secondary" id="btn-start-over">← Start over</button>
-              <button class="btn btn-primary" id="btn-download-all">⬇ Download all (ZIP)</button>
-              <div id="btn-docs-container"></div>
-              <button class="btn btn-primary" id="btn-download-bundle">Export run</button>
+              <div class="action-row">
+                <button class="btn btn-primary" id="btn-download-docs">⬇ Download docs</button>
+                <button class="btn btn-primary" id="btn-download-rom" disabled
+                        title="Your ROM isn't ready yet.">⬇ Download ROM</button>
+              </div>
+              <div id="rom-dl-note" class="delivery-hint" hidden>
+                ⚠ Single-use: downloading removes the ROM from the server (kept up to 48 h otherwise).
+              </div>
+              <button class="btn btn-ghost btn-sm" id="btn-start-over">Start over</button>
             </div>
-            <!-- ROM delivery (T-028): the build auto-starts here when you're eligible -->
-            <div id="delivery-panel" class="delivery-panel"></div>
           </div>
 
           <!-- Error -->

@@ -105,4 +105,18 @@ plus the two **not-yet-built** frontend-polish items deferred from [T-028](T-028
   recreate). Backend 85/85. **These fixes are committed but NOT deployed** — owner-gated: awaiting push +
   go-ahead before redeploy (the live box currently runs the still-unhardened worker).
 
+- **2026-06-28** — **Generation-screen redesign from owner feedback (4 points).** Reworked the
+  "Generation complete" screen into a 2-step status checklist (Documentation ✓ always; ROM row live).
+  (1) Buttons reduced to **Download docs** (was "Download all (ZIP)") + a single **Download ROM**
+  disabled w/ tooltip until ready; removed per-ROM doc buttons, "Export run", and the in-panel ready
+  button; single-use warning moved next to the ROM download (shown when ready). (2) 📦 → `reward.png`.
+  (3) ROM states: **queued** = clean "There are N ROMs before yours (ETA ~X min)" + email opt-in +
+  "download docs meanwhile" (queue-only); **building** = spinning gear + ETA-driven progress bar (no
+  queue text/email); **ready** = ✓. (4) The whole screen is now the checklist with ✓/gear/state colors.
+  Backend: `/api/status` + `/api/produce` now expose `romsAhead` (queue position) via a new `romsAhead()`
+  in eta.js (refactor; estimateEta unchanged). Also fixed two latent flow bugs: no auto-rebuild after a
+  successful download (`delivered` guard), and a mid-build 404 now renders a "Build failed" row instead
+  of silently stopping. Tests: produce.test.js (romsAhead) — backend 86/86; randomizer 464/464; JS
+  syntax-validated. **Not deployed** (owner-gated). Pending owner visual review.
+
 ## Outcome

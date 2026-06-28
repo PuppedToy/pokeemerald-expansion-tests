@@ -4,7 +4,7 @@
  * owns-rom gate is in routes.js.
  */
 
-import { estimateEta } from './eta.js';
+import { estimateEta, romsAhead } from './eta.js';
 
 const DEFER_THRESHOLD_SECS = 120; // offer email-on-ready when the initial ETA is >= 2 min
 
@@ -26,7 +26,10 @@ export function handleProduce({ requests, classify, validateBundle, persistBundl
     });
 
     const eta = estimateEta(requests, id, { avgRomSecs });
-    res.status(201).json({ requestId: id, eta, canDeferEmail: eta >= DEFER_THRESHOLD_SECS });
+    res.status(201).json({
+      requestId: id, eta, romsAhead: romsAhead(requests, id),
+      canDeferEmail: eta >= DEFER_THRESHOLD_SECS,
+    });
   };
 }
 
@@ -50,6 +53,7 @@ export function handleStatus({ requests, avgRomSecs }) {
       romsDone: active.roms_done,
       romsTotal: active.roms_total,
       eta: estimateEta(requests, active.id, { avgRomSecs }),
+      romsAhead: romsAhead(requests, active.id),
     });
   };
 }

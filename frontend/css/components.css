@@ -665,3 +665,52 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
 .delivery-note.ok   { border-left: 4px solid var(--obs-green); }
 .delivery-note.err  { border-left: 4px solid var(--obs-red); }
 .delivery-hint { font-size: 15px; color: var(--obs-text-mute); }
+
+/* ── Generation screen: process checklist (T-031) ─────────────────────────────── */
+.status-checklist {
+  list-style: none; margin: 8px auto 28px; padding: 0;
+  max-width: 460px; text-align: left;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.status-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: var(--obs-well); border: var(--obs-border); box-shadow: var(--obs-shadow-sm);
+  padding: 14px 16px; border-left: 4px solid var(--obs-text-mute);
+}
+.status-item.done    { border-left-color: var(--obs-green); }
+.status-item.building { border-left-color: var(--obs-orange); }
+.status-item.queued  { border-left-color: var(--obs-yellow); }
+.status-item.failed  { border-left-color: var(--obs-red); }
+.status-item.todo    { border-left-color: var(--obs-text-mute); }
+
+.status-ico {
+  flex-shrink: 0; width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; line-height: 1;
+}
+.status-item.done .status-ico    { color: var(--obs-green); }
+.status-item.failed .status-ico  { color: var(--obs-red); }
+.status-ico .px-icon { width: 24px; height: 24px; }
+
+.status-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.status-title {
+  font-family: var(--obs-font-display); font-size: 12px; line-height: 1.5;
+  letter-spacing: var(--obs-tracking); color: var(--obs-text);
+}
+.status-sub { font-size: 16px; color: var(--obs-text-dim); }
+.status-sub.muted { color: var(--obs-text-mute); font-size: 14px; }
+.status-check {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 15px; color: var(--obs-text-dim); cursor: pointer; margin-top: 2px;
+}
+
+/* compact ROM build bar reuses .gen-progress-bar/.gen-progress-fill */
+.gen-progress-wrap.compact { margin: 4px 0; }
+
+/* spinning gear, anywhere (reuses the gen-gear-spin keyframe defined in layout.css) */
+.px-icon.spin { animation: gen-gear-spin 1.2s steps(12) infinite; transform-origin: 50% 50%; }
+
+/* the two download buttons sit side by side; they stack on narrow screens */
+.action-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+.btn-sm { padding: 8px 14px; font-size: 12px; }

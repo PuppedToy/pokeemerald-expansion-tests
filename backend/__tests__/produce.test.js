@@ -92,6 +92,24 @@ test('status reports the active request state + eta, or 404', () => {
   assert.equal(res404.statusCode, 404);
 });
 
+// T-031: the queue view shows "N ROMs before yours", so produce + status expose romsAhead.
+test('produce and status expose romsAhead (ROMs queued before this one)', () => {
+  const { requests } = setup();
+  // user 1 has 2 ROMs queued ahead of user 2's request (distinct created_at: 1000 then 2000)
+  handleProduce(produceDeps(requests))({ userId: 1, body: validBundle(2) }, fakeRes());
+  const prod = fakeRes();
+  handleProduce(produceDeps(requests, { idGen: () => 'req2', now: () => 2000 }))({ userId: 2, body: validBundle(1) }, prod);
+  assert.equal(prod.body.romsAhead, 2, 'req2 sees user 1\'s 2 ROMs ahead');
+
+  const stat = fakeRes();
+  handleStatus({ requests, avgRomSecs: 10 })({ userId: 2 }, stat);
+  assert.equal(stat.body.romsAhead, 2);
+
+  const first = fakeRes();
+  handleStatus({ requests, avgRomSecs: 10 })({ userId: 1 }, first);
+  assert.equal(first.body.romsAhead, 0, 'the first request has nothing ahead');
+});
+
 test('download streams a ready ROM, then marks downloaded and purges', () => {
   const { requests } = setup();
   requests.create({ id: 'r1', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b/r1', outputPath: null, seed: '1', params: {}, now: 1 });

@@ -18,13 +18,19 @@ function ranksAhead(r, target) {
   return rFast || r.created_at < target.created_at;   // any fast, or an earlier slow, beats a slow
 }
 
-export function estimateEta(requests, id, { avgRomSecs = DEFAULT_AVG } = {}) {
+/** ROMs ranked ahead of this request in the queue (the currently-building one counts). */
+export function romsAhead(requests, id) {
   const target = requests.get(id);
   if (!target) return 0;
-
   let ahead = 0;
   for (const r of requests.findByStates(QUEUE_STATES)) {
     if (r.id !== id && ranksAhead(r, target)) ahead += remaining(r);
   }
-  return Math.round((ahead + remaining(target)) * avgRomSecs);
+  return ahead;
+}
+
+export function estimateEta(requests, id, { avgRomSecs = DEFAULT_AVG } = {}) {
+  const target = requests.get(id);
+  if (!target) return 0;
+  return Math.round((romsAhead(requests, id) + remaining(target)) * avgRomSecs);
 }

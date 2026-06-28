@@ -7,6 +7,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Changed
+
+- Redesigned the "Generation complete" screen around a clear two-step checklist — **Documentation** (always ready, built in your browser) and your server-built **ROM** — each row turning green with a ✓ as it completes. The ROM row now shows distinct, clean states: **queued** ("There are N ROMs before yours (ETA ~X min)", with the optional "email me when it's ready" opt-in and a "download your docs meanwhile" hint shown only here); **building** (a spinning gear + a progress bar that advances with the ETA, so it's obvious work is happening); and **ready** (✓). The action buttons are reduced to **Download docs** and a single **Download ROM** that stays disabled (with a tooltip) until the ROM is ready; the per-ROM doc buttons, "Export run", and the in-panel ready-button are gone, and the single-use warning now appears at the moment the ROM is downloadable. The bundle 📦 emoji is replaced by the `reward.png` icon (T-031).
+
 ### Added
 
 - ROM builds now write a persistent per-build log under `DATA_DIR/logs/` (in addition to the live container output), so a failed build's output survives the container recreate that `docker logs` does not — making post-mortems possible after a deploy (T-033).
