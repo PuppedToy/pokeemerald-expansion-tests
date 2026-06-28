@@ -5,7 +5,7 @@ status: proposed
 type: chore
 created: 2026-06-28
 updated: 2026-06-28
-target-version: 0.3.0
+target-version: 0.4.0
 links: [T-018, T-019, T-028, T-029]
 blocked-by: []
 ---

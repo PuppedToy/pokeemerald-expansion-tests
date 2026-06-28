@@ -1,7 +1,7 @@
 ---
 id: T-019
 title: Dockerized build-server image + deploy to Oracle Cloud (ARM free tier)
-status: in-progress
+status: done
 type: chore
 created: 2026-06-21
 updated: 2026-06-24
@@ -50,14 +50,17 @@ script + Docker, so moving to another box tomorrow is a few commands. **No secre
 9. **Runbook** under `docs/` (provision → bootstrap → update → rollback → where logs/data live),
    linked from `docs/INDEX.md`. Then run [T-029](T-029-full-flow-manual-test.md) against the live box.
 
-Acceptance criteria (draft):
-- [ ] Real build (via [T-030](T-030-real-per-rom-build-adapter.md)) produces a ROM inside the container;
-      `make -j` bounded — validated here on the box, then `FAKE_BUILD` off.
-- [ ] Compose stack (server + Caddy + persistent volume) runs on the Oracle ARM box with HTTPS.
-- [ ] `deploy/bootstrap.sh` brings up a fresh box with minimal manual steps; **no secrets in the repo**.
-- [ ] `deploy/update.sh` redeploys an update to the running box (creds read from gitignored `deploy/.env`).
-- [ ] Email live (Brevo + SPF/DKIM/DMARC, one live send); remaining Emerald hashes locked from No-Intro.
-- [ ] Build times benchmarked + recorded; deploy runbook in `docs/` linked from `docs/INDEX.md`.
+Acceptance criteria:
+- [x] Real build (T-030) produces a 32 MB ROM inside the container; `make -j` bounded; `FAKE_BUILD` off.
+- [x] Compose stack (server + Caddy + persistent volume) runs **on the Hetzner CX23 box with HTTPS**
+      (ADR-001 allowed Hetzner; the Oracle free A1 never gave capacity — see CHANGELOG/T-019 log).
+- [x] Bring-up is reproducible with **no secrets in the repo** (the live deploy used rsync + the
+      documented gotchas; `deploy/bootstrap.sh` covers the clone path; secrets only in box `.env`).
+- [~] `deploy/update.sh` exists for redeploys; the live updates were done via rsync + `--force-recreate`.
+      _Fold the rsync path into `update.sh` → tracked in T-031 (0.4.0)._
+- [x] Email live (Brevo, real verify mail delivered). _Remaining Emerald hashes (JP/FR/DE/IT/ES) and
+      DMARC deferred to **0.4.0** (T-031); USA/Europe accepted today._
+- [x] Build benchmarked (~277s cold) + recorded; runbook in `docs/` (incl. deploy gotchas), linked from `docs/INDEX.md`.
 
 ## Progress log
 
@@ -124,5 +127,18 @@ Acceptance criteria (draft):
 - **2026-06-24** — Split the real-build adapter into its own task **[T-030](T-030-real-per-rom-build-adapter.md)**
   (it's app code, not infra). T-019 is now infra/deploy only; it deploys FAKE first and turns the real
   build on once T-030 lands. Continuing T-019 to guide the owner through Oracle provisioning.
+- **2026-06-28** — Closed (owner-approved). Live on **Hetzner CX23** (Oracle free A1 never had capacity;
+  Hetzner was ADR-001's primary anyway). HTTPS via Caddy/Let's Encrypt, real build on, Brevo email live,
+  full produce→download of a real ROM validated. Deploy gotchas documented in the runbook. Remaining
+  hashes + `update.sh` rsync-path + DMARC deferred to **0.4.0** (T-031).
 
 ## Outcome
+
+Shipped the production deployment: a single Docker image (Node + `arm-none-eabi` toolchain) + Caddy
+(automatic HTTPS) on a **Hetzner CX23** (€6.64/mo), serving the full backend at
+**https://pokemon-emerald-cut.com** with a real per-ROM compile (T-030), SQLite/ROM/`build/` on a
+persistent bind-mount, and Brevo transactional email. Validated end-to-end (register → verify email →
+upload Emerald → Generate → download a real 32 MB ROM). **Deviations:** target moved Oracle→Hetzner
+(capacity); the live deploy used rsync rather than `bootstrap.sh`'s git-clone (gotchas now in the
+runbook). **Deferred to 0.4.0 (T-031):** remaining Emerald regional hashes, DMARC, folding the rsync
+path into `update.sh`. Three integration bugs found & fixed en route (B-004/5/6).

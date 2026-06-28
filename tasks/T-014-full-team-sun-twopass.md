@@ -4,8 +4,8 @@ title: Full-team sun visibility for Solar Beam/Blade via a determinism-preservin
 status: proposed
 type: feature
 created: 2026-06-20
-updated: 2026-06-20
-target-version: 0.2.0
+updated: 2026-06-28
+target-version: 0.4.0
 links: [tasks/T-013-move-rating-heuristics.md]
 blocked-by: []
 ---

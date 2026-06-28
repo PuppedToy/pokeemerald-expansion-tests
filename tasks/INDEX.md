@@ -17,12 +17,12 @@
 | [T-011](T-011-moves-surfacing-icon-polish-champion-mail.md) | Moves TM/description surfacing + icon & tooltip polish + champion victory mail | done | 0.1.0 | 2026-06-20 |
 | [T-012](T-012-difficulty-affects-absolute-tier.md) | Difficulty must scale absolute-tier trainers (fix B-001), keeping evolutionTier & megas fixed | done | 0.1.0 | 2026-06-20 |
 | [T-013](T-013-move-rating-heuristics.md) | Move-rating heuristics — two-turn moves w/o Power Herb, Belch w/o Berry, Sticky Web lead order | done | 0.1.0 | 2026-06-20 |
-| [T-014](T-014-full-team-sun-twopass.md) | Full-team sun visibility for Solar Beam/Blade via a determinism-preserving two-pass build | proposed | 0.2.0 | 2026-06-20 |
+| [T-014](T-014-full-team-sun-twopass.md) | Full-team sun visibility for Solar Beam/Blade via a determinism-preserving two-pass build | proposed | 0.4.0 | 2026-06-28 |
 | [T-015](T-015-rebrand-emerald-cut.md) | Rebrand the app to "Pokémon Emerald Cut" everywhere | done | 0.2.0 | 2026-06-21 |
 | [T-016](T-016-landing-redesign-features-page.md) | Redesign the landing and add a Features menu item | done | 0.2.0 | 2026-06-21 |
 | [T-017](T-017-cloud-deployment-provider-analysis.md) | Cloud hosting requirements analysis + provider selection for the ROM-build server | done | 0.2.0 | 2026-06-21 |
-| [T-018](T-018-backend-build-queue-produce.md) | EPIC — Backend ROM-production service (accounts, ownership, queue, delivery) | in-progress | 0.3.0 | 2026-06-21 |
-| [T-019](T-019-infra-dockerized-build-server-deploy.md) | Dockerized build-server image + deploy to Oracle Cloud (ARM free tier) | in-progress | 0.3.0 | 2026-06-24 |
+| [T-018](T-018-backend-build-queue-produce.md) | EPIC — Backend ROM-production service (accounts, ownership, queue, delivery) | done | 0.3.0 | 2026-06-28 |
+| [T-019](T-019-infra-dockerized-build-server-deploy.md) | Dockerized build-server image + deploy to Oracle Cloud (ARM free tier) | done | 0.3.0 | 2026-06-24 |
 | [T-020](T-020-user-accounts-rom-ownership-seed-history.md) | Optional user accounts — ROM-ownership verification + seed/run history | abandoned | 0.4.0 | 2026-06-21 |
 | [T-021](T-021-auth-accounts.md) | Auth & accounts — register/login/forgot, email verification, JWT | done | 0.3.0 | 2026-06-24 |
 | [T-022](T-022-rom-ownership-validation.md) | ROM-ownership validation by hash (validate-and-delete) | done | 0.3.0 | 2026-06-24 |
@@ -34,4 +34,4 @@
 | [T-028](T-028-frontend-account-generation-flow.md) | Frontend — login/explainer, dual-action download, status/ETA & "my ROMs" | done | 0.3.0 | 2026-06-24 |
 | [T-029](T-029-full-flow-manual-test.md) | End-to-end manual test of the full ROM-delivery flow | done | 0.3.0 | 2026-06-28 |
 | [T-030](T-030-real-per-rom-build-adapter.md) | Real per-ROM build adapter (make.js refactor + bounded make -j) | done | 0.3.0 | 2026-06-24 |
-| [T-031](T-031-remaining-e2e-edge-checks-and-frontend-polish.md) | Remaining e2e edge checks + deferred frontend polish | proposed | 0.3.0 | 2026-06-28 |
+| [T-031](T-031-remaining-e2e-edge-checks-and-frontend-polish.md) | Remaining e2e edge checks + deferred frontend polish | proposed | 0.4.0 | 2026-06-28 |

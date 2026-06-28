@@ -1,10 +1,10 @@
 ---
 id: T-018
 title: EPIC — Backend ROM-production service (accounts, ownership, queue, delivery)
-status: in-progress
+status: done
 type: feature
 created: 2026-06-21
-updated: 2026-06-21
+updated: 2026-06-28
 target-version: 0.3.0
 links: [docs/adr/ADR-001-rom-build-server-provider.md, docs/adr/ADR-002-build-server-iac-docker.md, docs/adr/ADR-003-persistence-job-lifecycle-recovery.md, docs/adr/ADR-004-auth-email-password-jwt.md, docs/adr/ADR-005-two-tier-preemptive-build-queue.md, docs/adr/ADR-006-untrusted-bundle-build-sandbox.md, docs/adr/ADR-007-transactional-email-notifications.md, docs/adr/ADR-008-rom-delivery-full-rom-ownership-gate.md, T-017, T-019, T-020, T-021, T-022, T-023, T-024, T-025, T-026, T-027, T-028]
 blocked-by: []
@@ -91,10 +91,12 @@ ownership → T-021/T-022; seed history → T-023 `runs`).
 
 ## Acceptance criteria
 
-- [ ] All child tasks (T-021…T-028) closed and their criteria met.
-- [ ] End-to-end: anonymous docs; verified login; ROM validated-and-deleted; bundle → queued →
-      built → downloadable; ETA live; email-on-ready when long; 48 h TTL; restart loses nothing.
-- [ ] `cd randomizer && npm test` green; no SSOT violations.
+- [x] All child tasks closed: T-021/T-022/T-023/T-024/T-025/T-026/T-027/T-028 + the real-build adapter
+      T-030; deploy T-019; e2e T-029. (T-020 superseded; T-031 = 0.4.0 polish.)
+- [x] End-to-end **validated live** by the owner on https://pokemon-emerald-cut.com: anonymous docs;
+      verified login; ROM ownership by hash; bundle → queued → real build → downloadable 32 MB ROM; live
+      ETA. _(email-on-ready checkbox + 48 h-TTL/restart manual re-checks → T-031, unit-test-covered.)_
+- [x] `cd randomizer && npm test` green (464); backend suite green (76); no SSOT violations.
 
 ## Progress log
 
@@ -129,4 +131,19 @@ ownership → T-021/T-022; seed history → T-023 `runs`).
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned. -->
+**Shipped the entire backend ROM-production service, live and public** at
+https://pokemon-emerald-cut.com. From a 501 stub to: accounts (email+password, JWT, light email
+verification, argon2-class scrypt), ROM-ownership-by-hash gate (validate-and-delete), SQLite persistence
+with a request state machine + crash recovery + retention sweeper, a two-tier (fast/slow) preemptive
+serial build queue with aging + live ETA, a strict untrusted-bundle schema, transactional email (Brevo),
+the real per-ROM `make.js` build, and a frontend that turns one **Generate** into docs + an auto-started
+server build with a "my ROMs" download. Deployed as one Docker image + Caddy (auto-HTTPS) on a Hetzner
+CX23. **Decisions:** ADR-003…ADR-008. **Children:** T-021–T-028, T-030 (impl), T-019 (deploy), T-029 (e2e).
+**Deviations:** scrypt instead of argon2id (zero-native-dep); Oracle→Hetzner (capacity); accounts/ownership
+absorbed from the superseded T-020; delivery = full ROM (ADR-008). **Follow-ups (0.4.0, T-031):** remaining
+Emerald regional hashes, DMARC, `update.sh` rsync path, two UI-polish items, edge-flow manual re-checks.
+**Bugs found & fixed during bring-up:** B-002 (DB dir), B-003 (tracked modules), B-004/5/6 (deploy
+integration). Validated end-to-end by the owner on production.
+
+- **2026-06-28** — Epic closed (owner-approved). The full feature is live, public and owner-validated;
+  CHANGELOG `[Unreleased]` line added; remaining polish split to T-031 (0.4.0). Ready for release 0.3.0.

@@ -97,6 +97,24 @@ deploy/update.sh                                  # ssh → git pull → rebuild
 
 Requires the code to be **pushed to `origin`** first (the box pulls from GitHub).
 
+## 4b. Deploy gotchas (learned bringing up the Hetzner box — B-004/5/6 & build)
+
+- **`docker compose env_file` keeps inline comments** — a `KEY=val  # ...` line stores the comment as
+  the value. Keep comments on their own lines (B-004; guarded by a test).
+- **`docker compose restart` does NOT reload `.env`.** After editing `deploy/.env`, use
+  `docker compose up -d --force-recreate <svc>`.
+- **If deploying by rsync (not git clone):** exclude `/build/` (anchored — a bare `build/` also drops the
+  app's `backend/build/` source) and `node_modules/`, but **do not** carry the host-arch compiled tool
+  binaries — run **`make clean` once** inside the container so `tools/` rebuild for the box (else
+  `tools/mapjson: Exec format error`). The bind-mounted repo must be **chowned to uid 1000** (the
+  container user) after rsync.
+- **`.git` is required for real builds** (`make.js` restores `src/` via `git checkout`) — rsync it too,
+  or `git clone` on the box.
+- **Caddy + Cloudflare:** the A record must be **grey-cloud (DNS only)** for the ACME challenge; if Caddy
+  first tried before DNS propagated, `docker compose restart caddy` clears the backoff and it issues the cert.
+- **Bundle schema must match the real frontend keys** (`formatVersion`/`generatedAt`) or every produce
+  413s/400s — derive allow-lists from the producer, not by guessing (B-005/B-006).
+
 ## 5. Where things live / ops
 
 - **App data** (SQLite, output ROMs, warm `build/` cache): on the host inside the cloned repo
