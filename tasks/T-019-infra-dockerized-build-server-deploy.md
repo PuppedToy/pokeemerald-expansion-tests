@@ -71,6 +71,18 @@ Acceptance criteria (draft):
   `update.sh`, **no committed secrets**), the **real per-ROM build adapter** wiring (the last app-code
   piece, carried from T-024/T-025), the ARM toolchain, Brevo+DNS enablement, and locking the remaining
   Emerald hashes. Unblocked (T-025/T-026 done). T-029 runs against the live box once up.
+- **2026-06-25** — **Deployed to Hetzner CX23** (2 vCPU/4 GB/40 GB, Ubuntu 24.04, IP 167.233.130.107)
+  in **FAKE_BUILD** mode. Box prep: 4 GB swap, ufw 22/80/443, Docker 29.6 + Compose v5. Image builds
+  fine (multi-arch held). Deployed by **rsync** of the working tree (not git clone) → the box has no
+  `.git` yet, so updates are currently re-rsync, and the real build's `git` restore (T-030) will need
+  `.git` added before FAKE_BUILD is turned off. **Full auth e2e green on the box** (register → verify
+  link in logs → verify → login → `/api/me` verified:true); DB wiped to a clean state for launch.
+  Two deploy bugs found & fixed: (1) an rsync `--exclude 'build/'` also dropped `backend/build/`
+  (source) — anchored to `/build/`; (2) **[B-004](../bugs/B-004-env-file-inline-comments.md)** —
+  env_file inline comments became values (BREVO key garbage → email crash); fixed `.env.example` +
+  regression test. Note: `docker compose restart` ≠ env reload → use `up -d --force-recreate`.
+  **Pending:** Cloudflare A record → the IP (owner) for Caddy HTTPS; then T-030 real build + benchmark;
+  then T-029.
 - **2026-06-25** — Researched current (Jun 2026) Oracle free-A1 capacity: still exists but genuinely
   scarce ("can take days"; bots compete) and the owner can't use the PAYG capacity-priority fix (Oracle
   demanded ~€93 upfront). So prepared the **Hetzner fallback** (owner-approved) in the runbook (§2c):

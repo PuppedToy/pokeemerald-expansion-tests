@@ -7,3 +7,4 @@
 | [B-001](B-001-difficulty-ignores-absolute-tier-trainers.md) | Frontend difficulty has no effect on trainers whose slots use absoluteTier (Flannery onward) | fixed | major | 0.1.0 | 0.1.0 | randomizer/__tests__/unit/presets.test.js |
 | [B-002](B-002-opendatabase-missing-parent-dir.md) | openDatabase fails ("unable to open database file") when the data dir doesn't exist | fixed | major | 0.3.0 | 0.3.0 | backend/__tests__/db.test.js |
 | [B-003](B-003-backend-build-gitignored.md) | backend/build/ source modules excluded from git by the decomp's build/ ignore rule | fixed | major | 0.3.0 | 0.3.0 | backend/__tests__/zip.test.js |
+| [B-004](B-004-env-file-inline-comments.md) | Docker Compose env_file captures inline comments → BREVO_API_KEY set to garbage, email crashes | fixed | major | 0.3.0 | 0.3.0 | backend/__tests__/deploy-env.test.js |
