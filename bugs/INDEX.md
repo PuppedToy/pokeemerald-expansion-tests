@@ -11,3 +11,5 @@
 | [B-005](B-005-bundle-schema-rejects-frontend-keys.md) | Bundle schema rejects the frontend's formatVersion/generatedAt keys → every produce 400s | fixed | critical | 0.3.0 | 0.3.0 | backend/__tests__/bundle.test.js |
 | [B-006](B-006-auth-router-bodyparser-blocks-produce.md) | Auth router's body parser (mounted at /api) rejects the 32 MB produce bundle with 413 | fixed | critical | 0.3.0 | 0.3.0 | backend/__tests__/routing.test.js |
 | [B-007](B-007-flaky-starters-type-triangle-test.md) | Starters type-triangle unit test is flaky (unseeded isolated rng) | fixed | minor | 0.3.0 | 0.4.0 | randomizer/__tests__/unit/startersModule.test.js |
+| [B-008](B-008-build-failure-crashes-worker-crashloop.md) | A failed ROM build crashes the backend and crash-loops the site (502) | fixed | critical | 0.3.0 | 0.4.0 | backend/__tests__/queue.test.js |
+| [B-009](B-009-deploy-ships-host-tool-binaries.md) | Deploy rsyncs host-compiled decomp tool binaries, breaking make on the Linux box | fixed | major | 0.3.0 | 0.4.0 | backend/__tests__/deploy-env.test.js |

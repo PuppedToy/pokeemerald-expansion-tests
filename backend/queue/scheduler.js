@@ -50,7 +50,16 @@ export async function advanceOneRom(ctx, id, { now }) {
   const before = requests.get(id);
   requests.setState(id, 'building', now);
 
-  await buildRom(id, before.roms_done); // 0-indexed: build the next undone ROM
+  try {
+    await buildRom(id, before.roms_done); // 0-indexed: build the next undone ROM
+  } catch (err) {
+    // B-008: a build failure must NEVER crash the worker/process. Move the request to the terminal,
+    // non-blocking `failed` state and return — the loop keeps serving other jobs, and startup
+    // recovery won't re-run it (recovery only re-queues `building`/`paused`), so no crash loop.
+    console.error(`[build] request ${id} rom ${before.roms_done} failed:`, err?.message ?? err);
+    requests.setState(id, 'failed', now);
+    return;
+  }
 
   requests.incRomDone(id, now);
   const after = requests.get(id);
@@ -85,7 +94,15 @@ export function createWorker(ctx) {
     let stopped = false;
     (async function loop() {
       while (!stopped) {
-        const did = await runOnce();
+        let did = false;
+        try {
+          did = await runOnce();
+        } catch (err) {
+          // B-008 last-resort guard: the build daemon must never die. advanceOneRom already
+          // contains build failures; this catches anything unexpected (DB, etc.) so the loop
+          // survives. A request left mid-flight is cleaned by startup recovery on the next boot.
+          console.error('[worker] unexpected error in runOnce:', err?.message ?? err);
+        }
         if (!did) await new Promise((r) => setTimeout(r, idleMs));
       }
     })();

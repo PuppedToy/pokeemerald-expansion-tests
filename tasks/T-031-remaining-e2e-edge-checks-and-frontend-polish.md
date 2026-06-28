@@ -92,4 +92,17 @@ plus the two **not-yet-built** frontend-polish items deferred from [T-028](T-028
   pending:** the B-007 fix is a new local commit, so per the owner-gated rule the owner must push it before
   I deploy (I never deploy un-pushed code) — awaiting owner push + re-greenlight.
 
+- **2026-06-28** — Owner pushed + re-greenlit; deployed the UI pass live (preflight green, rsync,
+  recreate, health 401; verified `Generate` label + `onRecover` + Esc serving on prod). **Then a
+  production incident:** the site went 502 in a crash loop. Recovered the logs
+  (`debug/20260628-crash-mapjson/app-crashloop.log`) — a real ROM build hit a host-compiled tool binary
+  (`tools/mapjson` "Exec format error") and the failure crashed the whole backend, which startup recovery
+  then crash-looped. **Restored by hand** (marked the stuck request `failed` in the prod DB, rebuilt the
+  Linux tools, restarted → site back). Filed + fixed (TDD) the two root causes and the owner's log ask:
+  [B-008](../bugs/B-008-build-failure-crashes-worker-crashloop.md) (worker now contains build failures →
+  `failed`, never crashes), [B-009](../bugs/B-009-deploy-ships-host-tool-binaries.md) (`update.sh` rebuilds
+  Linux tools post-rsync), [T-033](T-033-persistent-build-logs.md) (persistent per-build logs that survive
+  recreate). Backend 85/85. **These fixes are committed but NOT deployed** — owner-gated: awaiting push +
+  go-ahead before redeploy (the live box currently runs the still-unhardened worker).
+
 ## Outcome

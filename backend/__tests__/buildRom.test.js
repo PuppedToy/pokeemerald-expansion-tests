@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
+import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -62,6 +63,26 @@ test('real build rejects when make.js exits non-zero', async () => {
     () => createBuildRom({ requests, storage, fake: false, spawnFn })('r1', 0),
     /exited with code 1/,
   );
+  clean();
+});
+
+test('real build tees make output to a persistent per-ROM log file (T-033)', async () => {
+  clean();
+  const dir = path.join(TMP, 'logged');
+  const logPath = path.join(TMP, 'logs', 'r1-rom0.log');
+  const requests = { get: () => ({ bundle_path: '/b', output_path: dir }), setOutputPath: () => {} };
+  const storage = { outputDirFor: () => dir, logPathFor: () => logPath };
+  // a real child so the stdout/stderr piping + exit are exercised end-to-end (no mock timing)
+  const spawnFn = () => spawn('node', ['-e',
+    "process.stdout.write('hello from make\\n');process.stderr.write('a warning\\n')"]);
+
+  await createBuildRom({ requests, storage, fake: false, spawnFn })('r1', 0);
+
+  const log = fs.readFileSync(logPath, 'utf8');
+  assert.match(log, /build start: request=r1 rom=0/);
+  assert.match(log, /hello from make/, 'child stdout is captured to the persistent log');
+  assert.match(log, /a warning/, 'child stderr is captured to the persistent log');
+  assert.match(log, /build end: code=0/);
   clean();
 });
 

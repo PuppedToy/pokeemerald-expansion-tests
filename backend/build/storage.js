@@ -12,12 +12,15 @@ import { createZip } from './zip.js';
 export function createStorage({ dataDir }) {
   const bundlesDir = path.join(dataDir, 'bundles');
   const outputsDir = path.join(dataDir, 'outputs');
+  const logsDir = path.join(dataDir, 'logs');
   fs.mkdirSync(bundlesDir, { recursive: true });
   fs.mkdirSync(outputsDir, { recursive: true });
+  fs.mkdirSync(logsDir, { recursive: true });
 
   return {
     bundlesDir,
     outputsDir,
+    logsDir,
 
     persistBundle(id, bundle) {
       const p = path.join(bundlesDir, `${id}.json`);
@@ -27,6 +30,15 @@ export function createStorage({ dataDir }) {
 
     outputDirFor(id) {
       return path.join(outputsDir, id);
+    },
+
+    /**
+     * Persistent per-ROM build-log path (T-033). Lives under DATA_DIR/logs (bind-mounted,
+     * rsync-excluded) so a failed build's output survives the container recreate that `docker
+     * logs` does not. Kept OUT of the output dir so it never ends up in the user's download zip.
+     */
+    logPathFor(id, romIndex) {
+      return path.join(logsDir, `${id}-rom${romIndex}.log`);
     },
 
     /** Zip every produced ROM in the request's output dir into one downloadable buffer. */

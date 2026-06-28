@@ -17,3 +17,17 @@ test('deploy/.env.example has no inline comments on KEY=value lines (B-004)', ()
     .filter((l) => l.includes('#'));                   // ...carrying an inline comment
   assert.deepEqual(offenders, [], `inline comments leak into env_file values:\n${offenders.join('\n')}`);
 });
+
+// B-009: update.sh rsyncs the working tree, which includes HOST-compiled decomp tool binaries
+// (tools/*/). On the Linux box those are not executable -> `make` dies with "Exec format error"
+// and every ROM build fails. The deploy MUST rebuild the Linux tools after the rsync, before the
+// app is recreated. Guard the step so a future refactor can't silently drop it.
+test('update.sh rebuilds the Linux decomp tools after rsync, before recreate (B-009)', () => {
+  const sh = fs.readFileSync(path.join(root, 'deploy', 'update.sh'), 'utf8');
+  assert.match(sh, /make clean-tools/, 'must clean the rsynced host tool binaries first (mtime trap)');
+  assert.match(sh, /make tools/, 'must rebuild the tools for Linux');
+  const toolsIdx = sh.indexOf('make tools');
+  const recreateIdx = sh.indexOf('up -d --force-recreate');
+  assert.ok(toolsIdx > -1 && recreateIdx > -1 && toolsIdx < recreateIdx,
+    'tools must be rebuilt before the app container is recreated');
+});

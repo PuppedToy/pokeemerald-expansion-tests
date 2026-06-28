@@ -111,3 +111,30 @@ test('builds run strictly one at a time (serial invariant)', async () => {
   await worker.drain();
   assert.equal(rec.maxActive(), 1, 'never more than one concurrent build');
 });
+
+// B-008: a failing build (e.g. `make` errors) must never crash the worker/process. Before the fix
+// the rejection propagated out of the worker loop -> unhandled rejection -> the whole backend died,
+// and startup recovery re-queued the still-`building` request, crash-looping the site (502).
+test('a failing build marks the request failed and does not crash the worker (B-008)', async () => {
+  const { requests, ctx } = setup();
+  mk(requests, { id: 'boom', userId: 1, queueClass: 'fast', romsTotal: 1, now: 1 });
+  const worker = createWorker({ ...ctx, buildRom: async () => { throw new Error('make exploded'); } });
+
+  await assert.doesNotReject(() => worker.runOnce(), 'a build failure must not reject out of the worker');
+  assert.equal(requests.get('boom').state, 'failed', 'failed build -> terminal non-blocking `failed`');
+  assert.equal(requests.get('boom').roms_done, 0, 'no ROM counted for a failed build');
+});
+
+test('the worker keeps serving other jobs after one build fails (B-008)', async () => {
+  const { requests, ctx } = setup();
+  mk(requests, { id: 'boom', userId: 1, queueClass: 'fast', romsTotal: 1, now: 1 });
+  mk(requests, { id: 'ok',   userId: 2, queueClass: 'fast', romsTotal: 1, now: 2 });
+  const worker = createWorker({
+    ...ctx,
+    buildRom: async (id) => { if (id === 'boom') throw new Error('boom'); },
+  });
+
+  await worker.drain();
+  assert.equal(requests.get('boom').state, 'failed');
+  assert.equal(requests.get('ok').state, 'ready', 'a healthy job still completes after a failed one');
+});

@@ -55,11 +55,17 @@ rsync -az --delete ${DRY} -e "${SSH}" \
 if [ -n "$DRY" ]; then echo "==> dry-run only; skipped ownership + recreate"; exit 0; fi
 
 # --- activate --------------------------------------------------------------------
-echo "==> ownership + backend deps + recreate + health-check"
+echo "==> ownership + backend deps + Linux tools + recreate + health-check"
+# B-009: the rsync above mirrors the working tree, which includes the HOST-compiled (e.g. macOS)
+# decomp tool binaries under tools/*/ — those are not executable on the Linux box and make `make`
+# die with "Exec format error", failing every ROM build. `clean-tools` first because rsync leaves
+# the host binary with a fresh mtime, so `make tools` alone would think it's up to date and skip it.
 # shellcheck disable=SC2029
 ${SSH} "${TARGET}" "cd ${DEPLOY_PATH} \
   && chown -R 1000:1000 . \
   && docker compose -f deploy/docker-compose.yml run --rm app sh -lc 'cd backend && npm ci --omit=dev' >/dev/null 2>&1 \
+  && echo '   rebuilding Linux decomp tools (host binaries were just rsynced over)…' \
+  && docker compose -f deploy/docker-compose.yml run --rm app sh -lc 'make clean-tools >/dev/null && make tools' \
   && docker compose -f deploy/docker-compose.yml up -d --force-recreate app \
   && sleep 5 \
   && docker compose -f deploy/docker-compose.yml exec -T app node -e \"fetch('http://localhost:3000/api/me').then(r=>console.log('   health /api/me:',r.status)).catch(e=>console.log('   ERR',e.message))\" </dev/null"
