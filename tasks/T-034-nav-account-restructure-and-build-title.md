@@ -52,6 +52,13 @@ Acceptance criteria:
   (owner-gated). Pending owner visual review. (Note: interpreted "the home icon" as the brand logo,
   which is itself a green C — fits the C substitution cleanly.)
 
+- **2026-06-28** — Title icon-C tuning (owner review, point 3). The icon is a full tile (orange bg +
+  green/cyan C, transparent corners) whose visible C is smaller than its box, so it rendered too small
+  and low at `0.92em`. Tuned visually via a side-by-side compare artifact (real font + logo): owner
+  picked **F** (`height: 1.4em`) + a hair left. Final: `height 1.4em; vertical-align -0.12em;
+  margin 0 .03em 0 -0.04em`. Sub-pixel left/up nudges below this were imperceptible at the title size,
+  so not pursued. CSS-only.
+
 ## Outcome
 
 <!-- Filled when closing. -->
