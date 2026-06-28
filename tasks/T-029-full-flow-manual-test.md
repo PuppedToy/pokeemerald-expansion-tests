@@ -1,10 +1,10 @@
 ---
 id: T-029
 title: End-to-end manual test of the full ROM-delivery flow
-status: proposed
+status: done
 type: chore
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-28
 target-version: 0.3.0
 links: [T-018, T-019, T-021, T-022, T-025, T-028]
 blocked-by: []
