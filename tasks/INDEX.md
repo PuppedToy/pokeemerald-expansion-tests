@@ -37,3 +37,4 @@
 | [T-031](T-031-remaining-e2e-edge-checks-and-frontend-polish.md) | Remaining e2e edge checks + deferred frontend polish | in-progress | 0.4.0 | 2026-06-28 |
 | [T-032](T-032-exhaustive-starter-triangle-search.md) | Make starter type-triangle search exhaustive (no fallback when a triangle exists) | proposed | 0.5.0 | 2026-06-28 |
 | [T-033](T-033-persistent-build-logs.md) | Persist per-build logs so they survive a container recreate | in-progress | 0.4.0 | 2026-06-28 |
+| [T-034](T-034-nav-account-restructure-and-build-title.md) | Nav + account UX restructure, home logo treatment, and build progress in the tab title | in-progress | 0.4.0 | 2026-06-28 |

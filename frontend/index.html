@@ -17,7 +17,7 @@
 
 <!-- ── Top navigation ──────────────────────────────────────────────────── -->
 <nav class="topnav">
-  <a class="topnav-brand" href="#">
+  <a class="topnav-brand" id="brand-home" href="#" aria-label="Go to home">
     <img class="topnav-logo" src="/assets/emeraldCut.png" alt="Pokémon Emerald Cut logo">
     <span class="topnav-name">Pokémon Emerald Cut</span>
   </a>
@@ -25,8 +25,10 @@
     <button class="topnav-tab" data-tab="home">Home</button>
     <button class="topnav-tab" data-tab="features">Features</button>
     <button class="topnav-tab" data-tab="randomizer">Randomizer</button>
-    <button class="topnav-tab topnav-account-btn" id="account-btn">Log in</button>
+    <button class="topnav-tab" data-tab="settings">Settings</button>
   </div>
+  <!-- account area (T-034): identity + log out when signed in, otherwise a Log in link -->
+  <div class="topnav-account" id="nav-account"></div>
 </nav>
 
 <!-- ── Auth modal (T-028) ──────────────────────────────────────────────── -->
@@ -56,7 +58,6 @@
       <input class="input" type="password" id="reg-password" placeholder="Password (min 8 chars)" minlength="8" required>
       <button class="btn btn-primary" type="submit">Create account</button>
     </form>
-    <div class="auth-account" id="auth-account" hidden></div>
     <p class="auth-msg" id="auth-msg"></p>
   </div>
 </div>
@@ -67,7 +68,7 @@
   <section id="tab-home" class="tab-section">
     <div class="landing">
       <div class="landing-hero">
-        <h1 class="landing-title">Pokémon Emerald Cut</h1>
+        <h1 class="landing-title">Pokémon <span class="title-accent">Emerald <img class="title-logo" src="/assets/emeraldCut.png" alt="C">ut</span></h1>
         <p class="landing-slogan">Your emerald cut for controlled chaos.</p>
         <p class="landing-subtitle">
           A customizable, randomized Emerald romhack that skips most of the story to bring
@@ -316,6 +317,14 @@
           </ul>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ── Settings (T-034): account status + ROM ownership; account.js fills #settings-content ── -->
+  <section id="tab-settings" class="tab-section">
+    <div class="settings-wrap">
+      <h1 class="settings-title">Settings</h1>
+      <div id="settings-content"></div>
     </div>
   </section>
 

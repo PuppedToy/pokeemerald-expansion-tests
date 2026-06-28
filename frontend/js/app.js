@@ -17,6 +17,12 @@ document.querySelectorAll('.topnav-tab').forEach(btn => {
     btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
 });
 
+// T-034: clicking the brand returns to Home.
+document.getElementById('brand-home').addEventListener('click', (e) => {
+    e.preventDefault();
+    setActiveTab('home');
+});
+
 // In-page links that jump to a top-nav tab (e.g. the landing "See the full feature list" CTA).
 document.querySelectorAll('[data-goto-tab]').forEach(el => {
     el.addEventListener('click', () => setActiveTab(el.dataset.gotoTab));

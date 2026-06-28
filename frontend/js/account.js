@@ -70,36 +70,68 @@ async function refreshMe() {
   return state;
 }
 
-// ── modal ──────────────────────────────────────────────────────────────────────
-function openModal() { $('auth-modal').hidden = false; renderModal(); }
+// ── browser tab title (T-034) ────────────────────────────────────────────────────
+const DEFAULT_TITLE = 'Pokémon Emerald Cut';
+// A long build / queue is easy to miss on a background tab, so surface progress in document.title.
+function setTabTitle(prefix) { document.title = prefix ? `${prefix} · ${DEFAULT_TITLE}` : DEFAULT_TITLE; }
+
+// ── auth modal (login / register only — T-034) ────────────────────────────────────
+// The modal opens only when the app needs auth (the nav "Log in" link or a gated CTA), never from a
+// profile click. Account status + ROM upload live on the Settings page, not here.
+function openModal() { if (state) return; $('auth-modal').hidden = false; setMsg(''); }
 function closeModal() { $('auth-modal').hidden = true; }
 function setMsg(m, kind = '') { const el = $('auth-msg'); el.textContent = m || ''; el.className = `auth-msg ${kind}`; }
-function updateAccountBtn() { $('account-btn').textContent = state ? state.email.split('@')[0] : 'Log in'; }
+function setSettingsMsg(m, kind = '') { const el = $('settings-msg'); if (el) { el.textContent = m || ''; el.className = `settings-note ${kind}`; } }
+function goToSettings() { document.querySelector('.topnav-tab[data-tab="settings"]')?.click(); }
 
-function renderModal() {
-  const loggedIn = !!state;
-  $('auth-tabs').hidden = loggedIn;
-  document.querySelectorAll('[data-auth-panel]').forEach((el) => { el.hidden = loggedIn; });
-  const acct = $('auth-account');
-  acct.hidden = !loggedIn;
-  if (!loggedIn) return;
-  acct.innerHTML = `
-    <p>Signed in as <strong>${state.email}</strong></p>
-    <p>Email verified: <strong>${state.verified ? 'yes ✓' : 'no — open the link we emailed you'}</strong></p>
-    <p>ROM ownership: <strong>${state.ownsValidRom ? 'verified ✓' : 'not yet'}</strong></p>
-    ${state.ownsValidRom ? '' : `<label class="btn btn-primary">Upload your Emerald ROM
-        <input type="file" id="rom-file" accept=".gba,application/octet-stream" hidden></label>`}
-    <button class="btn btn-ghost" id="logout-btn">Log out</button>`;
-  if (!state.ownsValidRom) $('rom-file').addEventListener('change', onRomUpload);
-  $('logout-btn').addEventListener('click', () => {
-    clearToken(); state = null; updateAccountBtn(); renderModal(); reevaluateDelivery();
-  });
+function logout() {
+  clearToken(); state = null;
+  closeModal();
+  updateNavAccount();
+  reevaluateDelivery();
+}
+
+// Render the nav-right identity area + the Settings page from the current auth state.
+function updateNavAccount() {
+  const nav = $('nav-account');
+  if (nav) {
+    nav.innerHTML = state
+      ? `<span class="nav-account-id">Logged in as <strong>${state.email}</strong></span> <a href="#" id="nav-logout">log out</a>`
+      : `<a href="#" id="nav-login" class="nav-account-login">Log in</a>`;
+    $('nav-login')?.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+    $('nav-logout')?.addEventListener('click', (e) => { e.preventDefault(); logout(); });
+  }
+  renderSettings();
+}
+
+function renderSettings() {
+  const el = $('settings-content');
+  if (!el) return;
+  if (!state) {
+    el.innerHTML = `
+      <p class="settings-note">Log in to manage your account and build ROMs. Generating documentation never needs an account — it's free and anonymous.</p>
+      <button class="btn btn-primary" id="settings-login">Log in / Register</button>`;
+    $('settings-login')?.addEventListener('click', openModal);
+    return;
+  }
+  el.innerHTML = `
+    <div class="settings-rows">
+      <div class="settings-row"><span class="settings-key">Account</span><span class="settings-val">${state.email}</span></div>
+      <div class="settings-row"><span class="settings-key">Email verified</span><span class="settings-val ${state.verified ? 'ok' : ''}">${state.verified ? 'Yes ✓' : 'No — open the link we emailed you'}</span></div>
+      <div class="settings-row"><span class="settings-key">ROM ownership</span><span class="settings-val ${state.ownsValidRom ? 'ok' : ''}">${state.ownsValidRom ? 'Verified ✓' : 'Not verified yet'}</span></div>
+    </div>
+    ${state.ownsValidRom ? '' : `<label class="btn btn-primary settings-upload">Upload your Emerald ROM
+        <input type="file" id="rom-file" accept=".gba,application/octet-stream" hidden></label>
+      <p class="settings-note" id="settings-msg"></p>`}
+    <button class="btn btn-ghost" id="settings-logout">Log out</button>`;
+  if (!state.ownsValidRom) $('rom-file')?.addEventListener('change', onRomUpload);
+  $('settings-logout')?.addEventListener('click', logout);
 }
 
 async function onRomUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
-  setMsg('Validating your ROM…');
+  setSettingsMsg('Validating your ROM…');
   const buf = await file.arrayBuffer();
   const res = await fetch('/api/rom/validate', {
     method: 'POST',
@@ -107,8 +139,8 @@ async function onRomUpload(e) {
     body: buf,
   });
   const data = await res.json().catch(() => ({}));
-  if (res.ok && data.ok) { setMsg('ROM verified ✓', 'ok'); await refreshMe(); renderModal(); reevaluateDelivery(); }
-  else setMsg(data.error || 'That file is not a recognized Pokémon Emerald ROM.', 'err');
+  if (res.ok && data.ok) { await refreshMe(); updateNavAccount(); reevaluateDelivery(); } // row now reads "Verified ✓"
+  else setSettingsMsg(data.error || 'That file is not a recognized Pokémon Emerald ROM.', 'err');
 }
 
 async function doRegister(email, password) {
@@ -117,7 +149,7 @@ async function doRegister(email, password) {
 }
 async function doLogin(email, password) {
   const { ok, data } = await api('/api/login', { method: 'POST', body: { email, password } });
-  if (ok && data.token) { setToken(data.token); await refreshMe(); updateAccountBtn(); renderModal(); setMsg('Logged in ✓', 'ok'); reevaluateDelivery(); }
+  if (ok && data.token) { setToken(data.token); await refreshMe(); updateNavAccount(); closeModal(); reevaluateDelivery(); }
   else setMsg(data?.error || 'Login failed', 'err');
 }
 async function doForgot(email) {
@@ -201,6 +233,7 @@ export async function onBundleReady(bundle) {
 async function reevaluateDelivery() {
   if (!romRow()) return;
   lastCategory = null; // any path below either re-renders via renderRom or sets the row directly
+  setTabTitle(null);   // renderRom (active request) overrides this for the building/queued states
 
   if (!state) {
     setHeadline('gating');
@@ -225,9 +258,9 @@ async function reevaluateDelivery() {
     setRomDownload({ enabled: false, reason: 'Verify your Emerald to build your ROM.' });
     setRomRow('todo',
       `<div class="status-title">Verify your Emerald</div>
-       <div class="status-sub">Upload your Emerald ROM to prove ownership — then your build starts.</div>
-       <button class="btn btn-primary btn-sm" id="rom-cta">Upload ROM</button>`, '🔒');
-    $('rom-cta')?.addEventListener('click', openModal);
+       <div class="status-sub">Upload your Emerald ROM in Settings to prove ownership — then your build starts.</div>
+       <button class="btn btn-primary btn-sm" id="rom-cta">Go to Settings</button>`, '🔒');
+    $('rom-cta')?.addEventListener('click', goToSettings);
     return;
   }
 
@@ -272,6 +305,7 @@ function renderRom(req, info = {}) {
 
   if (cat === 'ready') {
     clearBuildBar(); lastCategory = 'ready';
+    setTabTitle('✓ ROM ready');
     setRomRow('done',
       `<div class="status-title">Your ROM is ready</div>
        <div class="status-sub">Download it below.</div>`, '✓');
@@ -281,6 +315,7 @@ function renderRom(req, info = {}) {
 
   if (cat === 'failed') {
     clearBuildBar(); lastCategory = 'failed';
+    setTabTitle(null);
     setRomDownload({ enabled: false, count, reason: 'The build failed — start over to try again.' });
     setRomRow('failed',
       `<div class="status-title">Build failed</div>
@@ -319,6 +354,8 @@ function renderRom(req, info = {}) {
   else if (ahead <= 0) line = `You're next in line.${etaTxt ? ` ${etaTxt}.` : ''}`;
   else line = `There ${ahead === 1 ? 'is' : 'are'} ${ahead} ROM${ahead === 1 ? '' : 's'} before yours${etaTxt ? ` (${etaTxt})` : ''}.`;
 
+  setTabTitle(ahead == null ? 'Queued' : ahead <= 0 ? "You're next" : `${ahead} ahead`);
+
   // avoid rebuilding (and resetting the email checkbox) when nothing visible changed
   if (lastCategory === 'queued' && lastQueuedLine === line + emailOptedIn) return;
   lastCategory = 'queued'; lastQueuedLine = line + emailOptedIn;
@@ -343,11 +380,11 @@ function renderRom(req, info = {}) {
 function startBuildBar() {
   if (buildBarTimer) clearInterval(buildBarTimer);
   const tick = () => {
-    const fill = $('rom-progress-fill');
-    if (!fill) return;
     const elapsed = (Date.now() - (buildStartMs ?? Date.now())) / 1000;
     const pct = Math.min(95, Math.round((elapsed / (buildEtaSec || 120)) * 100));
-    fill.style.width = `${pct}%`;
+    setTabTitle(`Building ${pct}%`);   // T-034: surface build progress on the tab
+    const fill = $('rom-progress-fill');
+    if (fill) fill.style.width = `${pct}%`;
   };
   tick();
   buildBarTimer = setInterval(tick, 500);
@@ -389,7 +426,6 @@ async function downloadRom() {
 }
 
 export async function initAccount(opts = {}) {
-  $('account-btn').addEventListener('click', openModal);
   $('auth-close').addEventListener('click', closeModal);
   $('auth-modal').addEventListener('click', (e) => { if (e.target.id === 'auth-modal') closeModal(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('auth-modal').hidden) closeModal(); });
@@ -412,7 +448,7 @@ export async function initAccount(opts = {}) {
   $('btn-download-rom')?.addEventListener('click', downloadRom);
 
   await refreshMe();
-  updateAccountBtn();
+  updateNavAccount();
   // reload recovery: surface an in-flight build (and the ready ROM download) without re-generating.
   // onRecover (app.js) makes the generation screen visible (jump to step 3) so the ROM row isn't hidden.
   if (state?.activeRequest) {

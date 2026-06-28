@@ -602,8 +602,46 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
   letter-spacing: var(--obs-tracking);
 }
 
+/* ── Nav account area + Settings page (T-034) ──────────────────────────────── */
+.topnav-account {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--obs-font-body); font-size: 18px; color: var(--obs-text-dim);
+}
+.topnav-account strong { color: var(--obs-text); font-weight: normal; }
+.topnav-account a { color: var(--obs-cyan); text-decoration: none; }
+.topnav-account a:hover { text-decoration: underline; }
+.nav-account-login {
+  font-family: var(--obs-font-display); font-size: 10px; letter-spacing: var(--obs-tracking);
+  color: var(--obs-orange) !important;
+}
+
+.settings-wrap { max-width: 720px; margin: 0 auto; padding: 60px 28px; }
+.settings-title {
+  font-family: var(--obs-font-display); font-size: clamp(1.1rem, 3vw, 1.6rem);
+  letter-spacing: var(--obs-tracking); margin-bottom: 28px; text-shadow: 4px 4px 0 var(--obs-shadow);
+}
+.settings-rows {
+  display: flex; flex-direction: column; gap: 0;
+  border: var(--obs-border); box-shadow: var(--obs-shadow-sm); background: var(--obs-well); margin-bottom: 22px;
+}
+.settings-row {
+  display: flex; justify-content: space-between; gap: 16px; align-items: baseline;
+  padding: 14px 18px; border-bottom: 1px solid var(--obs-line);
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-key {
+  font-family: var(--obs-font-display); font-size: 9px; letter-spacing: var(--obs-tracking);
+  text-transform: uppercase; color: var(--obs-text-dim); flex-shrink: 0;
+}
+.settings-val { font-size: 19px; color: var(--obs-text); text-align: right; }
+.settings-val.ok { color: var(--obs-green); }
+.settings-note { font-size: 18px; color: var(--obs-text-mute); margin: 12px 0; }
+.settings-note.ok { color: var(--obs-green); }
+.settings-note.err { color: var(--obs-red); }
+.settings-upload { margin-right: 12px; }
+
 /* ── Account modal + ROM delivery (T-028) ──────────────────────────────────── */
-.topnav-account-btn { margin-left: auto; }
 
 .modal-overlay {
   position: fixed; inset: 0; z-index: 1000;
