@@ -109,8 +109,12 @@ describe('runStartersModule — eligibility', () => {
 });
 
 describe('runStartersModule — type triangle', () => {
+    // B-007: non-isolated require so the beforeEach `rng.seed(42)` controls the module's OWN rng
+    // instance. With freshModule()/jest.isolateModules the module gets a SEPARATE, unseeded rng, so
+    // the draw was uncontrolled — and ~14% of unseeded draws exhaust the candidate pool and hit the
+    // no-triangle fallback, making this test flaky. Seed 42 deterministically forms FIRE>GRASS>WATER.
     test('the 3 starters form a type-triangle (A beats B, B beats C, C beats A)', () => {
-        const { runStartersModule } = freshModule();
+        const { runStartersModule } = require('../../modules/startersModule');
         const { starters } = runStartersModule(starterPokes);
         const [s0, s1, s2] = starters.map(id => starterPokes.find(p => p.id === id));
         // s0 types are SE against s1

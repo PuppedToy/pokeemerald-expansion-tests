@@ -35,3 +35,4 @@
 | [T-029](T-029-full-flow-manual-test.md) | End-to-end manual test of the full ROM-delivery flow | done | 0.3.0 | 2026-06-28 |
 | [T-030](T-030-real-per-rom-build-adapter.md) | Real per-ROM build adapter (make.js refactor + bounded make -j) | done | 0.3.0 | 2026-06-24 |
 | [T-031](T-031-remaining-e2e-edge-checks-and-frontend-polish.md) | Remaining e2e edge checks + deferred frontend polish | in-progress | 0.4.0 | 2026-06-28 |
+| [T-032](T-032-exhaustive-starter-triangle-search.md) | Make starter type-triangle search exhaustive (no fallback when a triangle exists) | proposed | 0.5.0 | 2026-06-28 |

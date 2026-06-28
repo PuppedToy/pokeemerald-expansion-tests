@@ -7,6 +7,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Fixed
+
+- The starters type-triangle unit test is no longer flaky: it built the module with an isolated rng instance that `beforeEach`'s seed couldn't reach, so ~14% of runs took the no-triangle fallback and failed — randomly aborting deploys at the preflight gate. The test now uses the seeded module so it deterministically exercises a valid triangle (B-007). The deeper greedy-search weakness it exposed (the algorithm can fall back even when a triangle exists) is tracked separately (T-032).
+
 ## [0.3.0] - 2026-06-28
 
 ### Fixed

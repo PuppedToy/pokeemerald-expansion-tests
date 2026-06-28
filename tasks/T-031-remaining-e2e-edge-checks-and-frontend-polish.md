@@ -81,4 +81,15 @@ plus the two **not-yet-built** frontend-polish items deferred from [T-028](T-028
   implied an immediate download). ESM syntax-validated (`node --check`), randomizer 464/464. **Not deployed**
   (owner-gated). These are MY-UX-review changes → await owner visual review before close.
 
+- **2026-06-28** — Owner gave the green light to deploy; push was already on origin (`9c5e377376`). The
+  `update.sh` **preflight caught a pre-existing flaky test** and (correctly) aborted the deploy:
+  `startersModule.test.js` "type-triangle" built the module via `jest.isolateModules`, so `beforeEach`'s
+  `rng.seed(42)` never reached the module's own rng — ~14% of uncontrolled draws hit the no-triangle
+  fallback (empirically 43/300 fixed seeds). Filed [B-007](../bugs/B-007-flaky-starters-type-triangle-test.md)
+  and fixed it test-only (non-isolated require → seeded → deterministic FIRE>GRASS>WATER); verified green
+  5/5 (file) + 3/3 (full suite, 464/464). Did **not** touch production starter logic — the greedy-search
+  weakness it exposed is deferred to [T-032](T-032-exhaustive-starter-triangle-search.md). **Deploy still
+  pending:** the B-007 fix is a new local commit, so per the owner-gated rule the owner must push it before
+  I deploy (I never deploy un-pushed code) — awaiting owner push + re-greenlight.
+
 ## Outcome
