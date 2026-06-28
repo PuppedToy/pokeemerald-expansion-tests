@@ -94,6 +94,15 @@ Acceptance criteria (draft):
   fixes "Exec format error") nor `backend/build/` under a `build/` exclude. **Remaining for closing
   T-019:** Brevo email + SPF/DKIM (optional), lock the rest of the Emerald hashes, fold the rsync/clean
   gotchas into the runbook + `update.sh`. Core infra goal met; T-029 (manual e2e) can run now.
+- **2026-06-28** — **Brevo email LIVE.** Owner created the Free account, authenticated the domain
+  (DKIM/SPF in Cloudflare) and supplied the API key (kept only on the box `deploy/.env` + the owner's
+  gitignored `.claudeSecrets`, never in the repo/transcript). Validated the `brevoTransport` shape with
+  a test, set the key on the box, recreated the app (Brevo transport active), and a real registration
+  delivered a verification email to the owner's Gmail ✓. **Public email verification works** — the last
+  launch blocker. **Remaining to fully close T-019:** lock the rest of the Emerald hashes (JP/FR/DE/IT/ES
+  from the No-Intro DAT; only USA/Europe accepted today), and fold the deploy gotchas (rsync excludes
+  `/build/` not `build/`; `make clean` once to drop host-arch tool binaries; `up -d --force-recreate`
+  ≠ `restart` for env reload) into the runbook + `update.sh`. Optional: DMARC for deliverability.
 - **2026-06-25** — Researched current (Jun 2026) Oracle free-A1 capacity: still exists but genuinely
   scarce ("can take days"; bots compete) and the owner can't use the PAYG capacity-priority fix (Oracle
   demanded ~€93 upfront). So prepared the **Hetzner fallback** (owner-approved) in the runbook (§2c):
