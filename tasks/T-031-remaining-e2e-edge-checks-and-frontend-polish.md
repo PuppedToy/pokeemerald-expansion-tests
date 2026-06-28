@@ -56,4 +56,9 @@ plus the two **not-yet-built** frontend-polish items deferred from [T-028](T-028
   fully synced). Added the canonical [dev-deploy-workflow.md](../docs/dev-deploy-workflow.md) (linked in
   INDEX). The deploy-pipeline part of this task is done; UI polish / edge re-checks / DMARC / hashes remain.
 
+- **2026-06-28** — Email auth completed (DNS, owner). DMARC was already present (Brevo, `p=none`); DKIM
+  was set during domain auth; **added apex SPF** `v=spf1 include:spf.brevo.com ~all` (verified: exactly
+  one SPF record, correct value). SPF+DKIM+DMARC all green → the DMARC item of this task is done.
+  Remaining: UI polish (owner feedback), live edge-flow re-checks, Emerald hashes (blocked on No-Intro DAT).
+
 ## Outcome
