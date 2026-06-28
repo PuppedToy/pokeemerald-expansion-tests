@@ -83,6 +83,17 @@ Acceptance criteria (draft):
   regression test. Note: `docker compose restart` ≠ env reload → use `up -d --force-recreate`.
   **Pending:** Cloudflare A record → the IP (owner) for Caddy HTTPS; then T-030 real build + benchmark;
   then T-029.
+- **2026-06-28** — **LIVE on HTTPS.** Owner added the Cloudflare A record (grey cloud) for apex + www →
+  the box; Caddy obtained Let's Encrypt certs (after a restart to clear the pre-DNS backoff).
+  `https://pokemon-emerald-cut.com` serves the app (200, valid cert), `/api/me` 401, www→apex 301.
+  Then **real build wired** (T-030): added `.git`, `FAKE_BUILD=0`, `AVG_ROM_SECS=180`; validated a full
+  produce→build→download of a **32 MB real ROM** via the API. Three integration bugs found & fixed on
+  the box (B-004 env_file comments, B-005 schema keys, B-006 auth body-parser 413). Test data wiped;
+  warm `build/` cache kept. **Deploy method caveat (for the runbook):** deployed via rsync (no git
+  pull); `.git` added separately; and rsync must NOT carry host-arch tool binaries (`make clean` once
+  fixes "Exec format error") nor `backend/build/` under a `build/` exclude. **Remaining for closing
+  T-019:** Brevo email + SPF/DKIM (optional), lock the rest of the Emerald hashes, fold the rsync/clean
+  gotchas into the runbook + `update.sh`. Core infra goal met; T-029 (manual e2e) can run now.
 - **2026-06-25** — Researched current (Jun 2026) Oracle free-A1 capacity: still exists but genuinely
   scarce ("can take days"; bots compete) and the owner can't use the PAYG capacity-priority fix (Oracle
   demanded ~€93 upfront). So prepared the **Hetzner fallback** (owner-approved) in the runbook (§2c):

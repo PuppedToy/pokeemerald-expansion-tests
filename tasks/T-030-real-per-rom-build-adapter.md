@@ -1,7 +1,7 @@
 ---
 id: T-030
 title: Real per-ROM build adapter (make.js refactor + bounded make -j)
-status: in-progress
+status: done
 type: feature
 created: 2026-06-24
 updated: 2026-06-24
@@ -50,8 +50,9 @@ so it lands alongside T-019's first real build.
       ROM equivalence is checked on the box.
 - [x] Backend real `buildRom` shells out to `make.js --bundle --rom --out` (async, non-blocking);
       `make -j` bounded to box cores via `resolveJobs` (`BUILD_JOBS` overrides). Logic tested.
-- [ ] One real ROM builds end-to-end inside the Docker image and is downloadable; `FAKE_BUILD` off —
-      **box validation, with [T-019](T-019-infra-dockerized-build-server-deploy.md)**.
+- [x] One real ROM builds end-to-end inside the Docker image and is downloadable; `FAKE_BUILD` off —
+      **validated on the Hetzner box**: cold `make.js --bundle` → 32 MB ROM in ~277s; then full backend
+      produce e2e (produce 201 → build → status ready → download a 33,554,548-byte real-ROM zip).
 - [x] The refactor's non-`make` logic (spawn argv, output-path, FAKE placeholder) covered by tests.
 
 ## Progress log
@@ -65,4 +66,19 @@ so it lands alongside T-019's first real build.
   **randomizer 464/464** (no regression). Stays **in-progress**: the real compile + `FAKE_BUILD` off is
   validated on the box with T-019.
 
+- **2026-06-28** — Validated on the deployed box (T-019). Added `.git` so `make.js` restore works;
+  confirmed the toolchain (arm-none-eabi-gcc 12.2.1) compiles. A cold `node make.js --bundle --rom=0
+  --out --jobs=2 --clean` produced a **32 MB ROM in 277s**; the writer correctly regenerated the
+  gitignored `data/maps/**/scripts.inc` from the bundle (a plain `make` had failed on stale
+  randomizer-mutated scripts — moot for the real path). Then `FAKE_BUILD=0` and a full backend produce
+  e2e over the API: `produce 201 → status building → ready → download` a **33,554,548-byte** real-ROM
+  zip. Three integration bugs surfaced & fixed along the way: B-004 (env_file inline comments),
+  B-005 (bundle schema missing `formatVersion`/`generatedAt`), B-006 (auth body parser 413'd produce).
+  `AVG_ROM_SECS` seeded to 180. All acceptance criteria met → done.
+
 ## Outcome
+
+Real per-ROM build adapter shipped and **proven in production**: `make.js buildOneRom` (CLI unchanged,
+randomizer 464/464), backend `buildRom` shelling `make.js --bundle --rom --out` with bounded `make -j`,
+validated end-to-end on the Hetzner box (32 MB real ROM built + downloaded via the API; FAKE_BUILD off).
+Backend suite 74/74. Deploy specifics + the 3 integration bugs live in T-019 / B-004..B-006.
