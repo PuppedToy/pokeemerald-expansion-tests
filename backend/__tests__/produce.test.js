@@ -5,7 +5,7 @@ import { openDatabase } from '../db/index.js';
 import { createRequestsRepo } from '../db/requests.js';
 import { classify } from '../queue/scheduler.js';
 import { validateBundle } from '../build/bundleSchema.js';
-import { estimateEta } from '../produce/eta.js';
+import { estimateEta, buildProgress } from '../produce/eta.js';
 import { handleProduce, handleStatus, handleDownload, handleCancel } from '../produce/handlers.js';
 
 function fakeRes() {
@@ -136,6 +136,20 @@ test('cancel marks the active request failed, frees the slot and deletes its fil
   assert.equal(requests.get('c1').state, 'failed', 'cancelled request is terminal/failed');
   assert.equal(requests.getActiveForUser(1), null, 'failed is non-blocking → slot freed');
   assert.ok(removed.includes('/b/c1.json'), 'the bundle file is deleted');
+});
+
+test('buildProgress derives progress + eta from server state, not a client clock (B-013)', () => {
+  const { requests } = setup();
+  requests.create({ id: 'b1', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b', seed: '1', params: {}, now: 1000 });
+  requests.setState('b1', 'building', 1000); // the ROM started building at t=1000 ms
+  // 135 s into a 270 s/ROM build → halfway, regardless of any client/page state
+  const p = buildProgress(requests, 'b1', { avgRomSecs: 270, now: 1000 + 135_000 });
+  assert.equal(p.progress, 50);
+  assert.equal(p.etaSecs, 135);
+
+  // a queued (not-yet-started) request reports 0 %
+  requests.create({ id: 'b2', userId: 2, queueClass: 'slow', romsTotal: 3, bundlePath: '/b2', seed: '1', params: {}, now: 2000 });
+  assert.equal(buildProgress(requests, 'b2', { avgRomSecs: 270, now: 9_000_000 }).progress, 0);
 });
 
 test('cancel with no active request is a no-op (ok:false)', () => {

@@ -73,9 +73,6 @@ let emailOptedIn = false; // opted in to the "ready" email for the current reque
 let delivered = false;    // ROM downloaded this session — don't auto-start another build
 let lastCategory = null;  // last rendered ROM-row category — avoid rebuilding the building view each poll
 let lastQueuedLine = null;// last queued message — avoid resetting the email checkbox each poll
-let buildStartMs = null;  // when the build entered the "building" view (drives the synthetic bar)
-let buildEtaSec = null;   // ETA (s) captured at building start — the bar advances against it
-let buildBarTimer = null;
 
 async function refreshMe() {
   if (!getToken()) { state = null; return null; }
@@ -240,9 +237,12 @@ function setHeadline(cat) {
   }
 }
 
-function clearBuildBar() {
-  if (buildBarTimer) { clearInterval(buildBarTimer); buildBarTimer = null; }
-  buildStartMs = null; buildEtaSec = null;
+// Build progress + ETA are now server-authoritative (B-013) — no client-side timer to clear.
+function etaText(secs) {
+  if (secs == null) return 'Estimating…';
+  if (secs >= 60) return `About ${Math.round(secs / 60)} min remaining`;
+  if (secs > 5) return 'Less than a minute remaining';
+  return 'Finishing up…';
 }
 
 // The gen-done bottom button (T-035): "Cancel" (+ confirm) before/while the ROM is being made;
@@ -265,7 +265,6 @@ async function clearRun() {
   try { await idbDel('bundle'); } catch { /* ignore */ }
   try { if (lastBundle) localStorage.removeItem(deliveredKey(lastBundle)); } catch { /* ignore */ }
   stopPolling();
-  clearBuildBar();
   lastBundle = null; delivered = false; emailOptedIn = false; lastCategory = null; lastQueuedLine = null;
   setTabTitle(null);
 }
@@ -278,7 +277,6 @@ export async function onBundleReady(bundle) {
   delivered = false;
   lastCategory = null;
   lastQueuedLine = null;
-  clearBuildBar();
   try { await idbSet('bundle', bundle); } catch { /* storage full / private mode */ }
   await refreshMe();
   reevaluateDelivery();
@@ -366,7 +364,7 @@ function renderRom(req, info = {}) {
   setStartOverBtn(cat);
 
   if (cat === 'ready') {
-    clearBuildBar(); lastCategory = 'ready';
+    lastCategory = 'ready';
     setTabTitle('✓ ROM ready');
     setRomRow('done',
       `<div class="status-title">Your ROM is ready</div>
@@ -376,7 +374,7 @@ function renderRom(req, info = {}) {
   }
 
   if (cat === 'failed') {
-    clearBuildBar(); lastCategory = 'failed';
+    lastCategory = 'failed';
     setTabTitle(null);
     setRomDownload({ enabled: false, count, reason: 'The build failed — start over to try again.' });
     setRomRow('failed',
@@ -391,8 +389,6 @@ function renderRom(req, info = {}) {
     const current = Math.min((req.romsDone ?? 0) + 1, total);
     if (lastCategory !== 'building') {
       lastCategory = 'building';
-      buildStartMs = Date.now();
-      buildEtaSec = (info.eta != null && info.eta > 0) ? info.eta : 120;
       setRomRow('building',
         `<div class="status-title">Building your ROM…</div>
          ${total > 1 ? `<div class="status-sub" id="rom-counter">ROM ${current} of ${total}</div>` : ''}
@@ -400,15 +396,18 @@ function renderRom(req, info = {}) {
          <div class="status-sub" id="rom-eta">Estimating…</div>
          <div class="status-sub muted">You can leave this page open — it updates automatically.</div>`,
         GEAR_ICO);
-      startBuildBar();
-    } else if (total > 1) {
-      const c = $('rom-counter'); if (c) c.textContent = `ROM ${current} of ${total}`;
     }
+    // Server-authoritative bar + ETA (B-013): identical whether or not the page was reloaded, refreshed
+    // every poll. The CSS width transition eases the 3-second steps. No client clock.
+    const pct = info.progress != null ? info.progress : 0;
+    const fill = $('rom-progress-fill'); if (fill) fill.style.width = `${pct}%`;
+    setTabTitle(`Building ${pct}%`);
+    const etaEl = $('rom-eta'); if (etaEl && info.eta != null) etaEl.textContent = etaText(info.eta);
+    if (total > 1) { const c = $('rom-counter'); if (c) c.textContent = `ROM ${current} of ${total}`; }
     return;
   }
 
   // queued — clean, no gear/bar; show position + ETA, email opt-in, and the docs-meanwhile hint.
-  clearBuildBar();
   setRomDownload({ enabled: false, count });
   const etaTxt = info.eta != null ? `ETA ~${Math.max(1, Math.round(info.eta / 60))} min` : '';
   const ahead = info.romsAhead;
@@ -440,30 +439,11 @@ function renderRom(req, info = {}) {
   }
 }
 
-function startBuildBar() {
-  if (buildBarTimer) clearInterval(buildBarTimer);
-  const tick = () => {
-    const elapsed = (Date.now() - (buildStartMs ?? Date.now())) / 1000;
-    const total = buildEtaSec || 120;
-    const pct = Math.min(95, Math.round((elapsed / total) * 100));
-    setTabTitle(`Building ${pct}%`);   // T-034: surface build progress on the tab
-    const fill = $('rom-progress-fill');
-    if (fill) fill.style.width = `${pct}%`;
-    const eta = $('rom-eta');           // T-035: exact ETA countdown
-    if (eta) {
-      const rem = Math.max(0, total - elapsed);
-      eta.textContent = rem >= 60 ? `About ${Math.round(rem / 60)} min remaining`
-        : rem > 5 ? 'Less than a minute remaining'
-        : 'Finishing up…';
-    }
-  };
-  tick();
-  buildBarTimer = setInterval(tick, 500);
-}
-
+// Ask the backend for the truth and render it (B-013). One fetch now (so a reload shows real progress
+// immediately, not zero) + every 3 s after. The frontend computes nothing about progress/ETA itself.
 function startPolling() {
   stopPolling();
-  pollTimer = setInterval(async () => {
+  const poll = async () => {
     const { ok, status, data } = await api('/api/status', { auth: true });
     if (!ok) {
       stopPolling();
@@ -473,10 +453,12 @@ function startPolling() {
     }
     renderRom(
       { state: data.state, romsDone: data.romsDone, romsTotal: data.romsTotal },
-      { eta: data.eta, romsAhead: data.romsAhead },
+      { eta: data.eta, progress: data.progress, romsAhead: data.romsAhead },
     );
     if (data.state === 'ready') stopPolling();
-  }, 3000);
+  };
+  poll();                                  // immediate — no "starts from zero" flash on reload
+  pollTimer = setInterval(poll, 3000);
 }
 function stopPolling() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
 

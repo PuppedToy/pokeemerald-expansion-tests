@@ -4,7 +4,7 @@
  * owns-rom gate is in routes.js.
  */
 
-import { estimateEta, romsAhead } from './eta.js';
+import { estimateEta, romsAhead, buildProgress } from './eta.js';
 
 const DEFER_THRESHOLD_SECS = 120; // offer email-on-ready when the initial ETA is >= 2 min
 
@@ -54,16 +54,19 @@ export function handleNotifyOnReady({ requests }) {
   };
 }
 
-export function handleStatus({ requests, avgRomSecs }) {
+export function handleStatus({ requests, avgRomSecs, now = () => Date.now() }) {
   return (req, res) => {
     const active = requests.getActiveForUser(req.userId);
     if (!active) return res.status(404).json({ error: 'no active request' });
+    // Server-authoritative progress + ETA so the bar/countdown are identical across reloads (B-013).
+    const { progress, etaSecs } = buildProgress(requests, active.id, { avgRomSecs, now: now() });
     res.json({
       requestId: active.id,
       state: active.state,
       romsDone: active.roms_done,
       romsTotal: active.roms_total,
-      eta: estimateEta(requests, active.id, { avgRomSecs }),
+      eta: etaSecs,
+      progress,
       romsAhead: romsAhead(requests, active.id),
     });
   };
