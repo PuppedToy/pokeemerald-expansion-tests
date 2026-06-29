@@ -1,12 +1,12 @@
 ---
 id: B-013
 title: Build progress + ETA reset to zero on reload (computed client-side, not from the backend)
-status: fixing
+status: fixed
 severity: major
 created: 2026-06-29
 updated: 2026-06-29
 found-in: 0.4.0
-fixed-in:
+fixed-in: 0.4.0
 regression-test: backend/__tests__/produce.test.js  # buildProgress (server-derived); frontend render is manual
 links: [T-035, T-031]
 ---
@@ -46,3 +46,8 @@ across reloads:
 
 Regression test: `buildProgress` is unit-tested (backend/__tests__/produce.test.js — halfway through a
 ROM → 50 %, queued → 0 %). The frontend render has no automated harness; verified manually.
+
+Closed **fixed** in 0.4.0 (2026-06-29): the fix's core — server-derived progress/ETA — is exercised by
+the `buildProgress` regression test (the function didn't exist before, so the old client-synthesized
+behaviour had no equivalent server truth to assert; the new test pins the elapsed-from-`updated_at`
+derivation). Owner verified the reload-consistency on the live site.

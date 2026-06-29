@@ -34,8 +34,10 @@
 | [T-028](T-028-frontend-account-generation-flow.md) | Frontend — login/explainer, dual-action download, status/ETA & "my ROMs" | done | 0.3.0 | 2026-06-24 |
 | [T-029](T-029-full-flow-manual-test.md) | End-to-end manual test of the full ROM-delivery flow | done | 0.3.0 | 2026-06-28 |
 | [T-030](T-030-real-per-rom-build-adapter.md) | Real per-ROM build adapter (make.js refactor + bounded make -j) | done | 0.3.0 | 2026-06-24 |
-| [T-031](T-031-remaining-e2e-edge-checks-and-frontend-polish.md) | Remaining e2e edge checks + deferred frontend polish | in-progress | 0.4.0 | 2026-06-28 |
+| [T-031](T-031-remaining-e2e-edge-checks-and-frontend-polish.md) | Remaining e2e edge checks + deferred frontend polish | done | 0.4.0 | 2026-06-29 |
 | [T-032](T-032-exhaustive-starter-triangle-search.md) | Make starter type-triangle search exhaustive (no fallback when a triangle exists) | proposed | 0.5.0 | 2026-06-28 |
-| [T-033](T-033-persistent-build-logs.md) | Persist per-build logs so they survive a container recreate | in-progress | 0.4.0 | 2026-06-28 |
-| [T-034](T-034-nav-account-restructure-and-build-title.md) | Nav + account UX restructure, home logo treatment, and build progress in the tab title | in-progress | 0.4.0 | 2026-06-28 |
-| [T-035](T-035-generation-and-settings-ux-refinements.md) | Generation + Settings UX refinements (cancel, delete account, run details, exact ETA, emphasis) | in-progress | 0.4.0 | 2026-06-29 |
+| [T-033](T-033-persistent-build-logs.md) | Persist per-build logs so they survive a container recreate | done | 0.4.0 | 2026-06-29 |
+| [T-034](T-034-nav-account-restructure-and-build-title.md) | Nav + account UX restructure, home logo treatment, and build progress in the tab title | done | 0.4.0 | 2026-06-29 |
+| [T-035](T-035-generation-and-settings-ux-refinements.md) | Generation + Settings UX refinements (cancel, delete account, run details, exact ETA, emphasis) | done | 0.4.0 | 2026-06-29 |
+| [T-036](T-036-frontend-test-harness.md) | Frontend test harness + regression tests for the frontend bugs (B-011, B-012) | proposed | 0.5.0 | 2026-06-29 |
+| [T-037](T-037-accept-additional-emerald-revisions.md) | Accept additional legal Emerald regional ROM revisions (JP/FR/DE/IT/ES …) | proposed | 0.5.0 | 2026-06-29 |

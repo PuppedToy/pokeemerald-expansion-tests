@@ -1,7 +1,7 @@
 ---
 id: T-035
 title: Generation + Settings UX refinements (cancel, delete account, run details, exact ETA, emphasis)
-status: in-progress
+status: done
 type: feature
 created: 2026-06-29
 updated: 2026-06-29
@@ -33,13 +33,13 @@ their requests/runs/tokens, FKs are not ON DELETE CASCADE), and a realistic `AVG
 the ETA/bar are meaningful.
 
 Acceptance criteria:
-- [ ] Bottom button: Cancel (+confirm) pre/at build; Start-over disabled (tooltip) when ready-not-downloaded; Start-over when downloaded.
-- [ ] Download ROM is emerald green.
-- [ ] Settings has a red delete-account button with an irreversible-confirm; the account + its data are removed.
-- [ ] A collapsed run-details disclosure shows the Review content (shared render) throughout step 3.
-- [ ] Building shows an ETA countdown in minutes.
-- [ ] The single-use warning is visually emphasised.
-- [ ] randomizer + backend suites green; owner visual review.
+- [x] Bottom button: Cancel (+confirm) pre/at build; Start-over disabled (tooltip) when ready-not-downloaded; Start-over when downloaded.
+- [x] Download ROM is emerald green.
+- [x] Settings has a red delete-account button with an irreversible-confirm; the account + its data are removed.
+- [x] A collapsed run-details disclosure shows the Review content (shared render) throughout step 3.
+- [x] Building shows an ETA countdown in minutes.
+- [x] The single-use warning is visually emphasised (amber — caution, not red/error).
+- [x] randomizer + backend suites green; owner visual review.
 
 ## Progress log
 
@@ -83,4 +83,10 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+- **2026-06-29** — Shipped + deployed; owner confirmed. All 7 points live, plus two improvements the
+  review surfaced: cancel/account-deletion now **kill the in-flight `make` tree** immediately (frees the
+  box for the next build), and the **Download ROM** click gives instant feedback (disable + spinner while
+  the server delivers). Backend additions: `POST /api/cancel`, `DELETE /api/account` (cascade), realistic
+  `AVG_ROM_SECS=270` default, `killActiveBuild`. Backend 93/93. **Known follow-up (not blocking):**
+  `AVG_ROM_SECS=270` overestimates the ETA when warm-cache builds finish in ~20 s — calibrate the env var
+  to the box's real build time (owner, one number, no code change).

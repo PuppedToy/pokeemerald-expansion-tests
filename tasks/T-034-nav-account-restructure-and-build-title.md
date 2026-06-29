@@ -1,10 +1,10 @@
 ---
 id: T-034
 title: Nav + account UX restructure, home logo treatment, and build progress in the tab title
-status: in-progress
+status: done
 type: feature
 created: 2026-06-28
-updated: 2026-06-28
+updated: 2026-06-29
 target-version: 0.4.0
 links: [T-031]
 ---
@@ -29,12 +29,12 @@ randomizer bundle). Six points across the nav, the home hero, and the build stat
      asks for login (the "Log in" link or a gated CTA) — never from clicking a profile.
 
 Acceptance criteria:
-- [ ] While building, the tab title is the live `NN% · …`; while queued, `N ahead · …`; otherwise the default.
-- [ ] Home hero: "Emerald Cut" is green and the "C" is the brand icon, sized to the text.
-- [ ] Clicking the brand activates the Home tab.
-- [ ] A Settings page shows account status + ROM upload (logged in) or a login prompt (logged out).
-- [ ] Top-right shows "Logged in as <email> · log out" / "Log in"; the login modal no longer opens from a profile click.
-- [ ] JS syntax valid; randomizer + backend suites green; owner visual review.
+- [x] While building, the tab title is the live `NN% · …`; while queued, `N ahead · …`; otherwise the default.
+- [x] Home hero: "Emerald Cut" is green and the "C" is the brand icon, sized to the text.
+- [x] Clicking the brand activates the Home tab.
+- [x] A Settings page shows account status + ROM upload (logged in) or a login prompt (logged out).
+- [x] Top-right shows "Logged in as <email> · log out" / "Log in"; the login modal no longer opens from a profile click.
+- [x] JS syntax valid; randomizer + backend suites green; owner visual review.
 
 ## Progress log
 
@@ -70,4 +70,9 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+- **2026-06-29** — Shipped + deployed; owner confirmed it's good. All six points live: tab-title build
+  progress (`Building NN%` / `N ahead` / `✓ ROM ready`), the green "Emerald Cut" with the brand-icon "C"
+  (the logo is itself a green C, so it fits cleanly — the size/position was then fine-tuned to match the
+  caps in the follow-up), brand→Home, a real Settings page (status + ROM upload), the nav-right identity
+  area, and the login modal only on actual auth requests. The "Verify your Emerald" wording fix landed
+  here too. No deviation from plan.

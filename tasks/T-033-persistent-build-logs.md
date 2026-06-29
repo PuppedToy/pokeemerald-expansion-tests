@@ -1,10 +1,10 @@
 ---
 id: T-033
 title: Persist per-build logs so they survive a container recreate
-status: in-progress
+status: done
 type: feature
 created: 2026-06-28
-updated: 2026-06-28
+updated: 2026-06-29
 target-version: 0.4.0
 links: [B-008, B-009]
 ---
@@ -33,7 +33,7 @@ Acceptance criteria:
 - [x] FAKE build and callers without `logPathFor` keep the old inherited-stdio behavior (no break).
 - [x] Regression-style test: a real child's stdout/stderr is captured to the log file (T-033).
 - [x] `cd backend && npm test` green (85/85).
-- [ ] Verified on the box after the (owner-gated) redeploy: a build writes `DATA_DIR/logs/<id>-rom0.log`.
+- [x] Verified on the box after the (owner-gated) redeploy: a build writes `DATA_DIR/logs/<id>-rom0.log`.
 
 ## Progress log
 
@@ -48,4 +48,9 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+- **2026-06-29** — Shipped. Real builds tee stdout+stderr to `DATA_DIR/logs/<id>-rom<N>.log` (bind-mounted,
+  rsync-excluded) with start/end markers, while still mirroring to the container stdio. **Proven in the
+  wild:** during a later production diagnosis the box held per-build logs (`c69a13af-…-rom0.log`,
+  `df48b198-…-rom0.log`, …) that survived multiple `--force-recreate` deploys — the exact recovery the
+  owner asked for. No deviations from plan. Follow-up (not blocking): prune logs older than the request
+  TTL via the sweeper — left as a known, low-priority loose end.

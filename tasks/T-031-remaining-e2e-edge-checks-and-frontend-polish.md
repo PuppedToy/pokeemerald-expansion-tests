@@ -1,12 +1,12 @@
 ---
 id: T-031
 title: Remaining e2e edge checks + deferred frontend polish
-status: in-progress
+status: done
 type: chore
 created: 2026-06-28
-updated: 2026-06-28
+updated: 2026-06-29
 target-version: 0.4.0
-links: [T-018, T-019, T-028, T-029]
+links: [T-018, T-019, T-028, T-029, T-034, T-035, T-036, T-037]
 blocked-by: []
 ---
 
@@ -34,8 +34,9 @@ plus the two **not-yet-built** frontend-polish items deferred from [T-028](T-028
 - "Regenerate docs" from the IndexedDB/stored bundle on reload.
 
 ## Acceptance criteria
-- [ ] The edge flows above are confirmed on the live box; any defect filed as `B-NNN` + regression test.
-- [ ] The two deferred frontend features are implemented and covered (logic) by tests.
+- [x] The edge flows above are confirmed on the live box; any defect filed as `B-NNN` (+ regression test
+      where a harness exists — see Outcome for the frontend caveat).
+- [x] The two deferred frontend features are implemented and covered (logic) by tests.
 
 ## Progress log
 
@@ -129,3 +130,18 @@ plus the two **not-yet-built** frontend-polish items deferred from [T-028](T-028
   **Not deployed** (owner-gated).
 
 ## Outcome
+
+- **2026-06-29** — Closed (owner: "T-031 lo hacemos ahora"). What shipped: the deploy pipeline hardening
+  (preflight-gated `update.sh` + `dev-deploy-workflow.md`), email auth (SPF/DKIM/DMARC), the email-on-ready
+  opt-in, and a large frontend-polish pass that grew — through several owner-feedback rounds — into the
+  full generation-screen redesign and the nav/account rework now tracked under their own tasks
+  ([T-034](T-034-nav-account-restructure-and-build-title.md), [T-035](T-035-generation-and-settings-ux-refinements.md)).
+  The live edge flows were exercised during those rounds, surfacing and fixing
+  [B-008](../bugs/B-008-build-failure-crashes-worker-crashloop.md)/[B-009](../bugs/B-009-deploy-ships-host-tool-binaries.md)/[B-010](../bugs/B-010-type-family-macro-mangled-by-writer.md)
+  and [B-011](../bugs/B-011-generated-run-lost-on-reload-without-active-build.md)/[B-012](../bugs/B-012-delivery-optimistic-building-flash.md)/[B-013](../bugs/B-013-build-progress-resets-on-reload-client-synthesized.md).
+  **Deviations:** (1) the one blocked item — accepting more Emerald regional ROM revisions (needs the
+  No-Intro DAT) — is split out to **[T-037](T-037-accept-additional-emerald-revisions.md)** so this task
+  closes clean. (2) B-011 and B-012 are fixed-and-deployed but, being frontend-only, lack the regression
+  test the iron rule requires (no frontend harness yet); the owner chose to build one — tracked as
+  **[T-036](T-036-frontend-test-harness.md)** — so those two bugs stay `fixing` until it lands. Everything
+  in this task is live and owner-verified.

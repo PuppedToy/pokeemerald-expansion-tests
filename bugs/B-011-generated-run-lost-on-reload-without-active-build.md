@@ -7,8 +7,8 @@ created: 2026-06-29
 updated: 2026-06-29
 found-in: 0.4.0
 fixed-in:
-regression-test:        # frontend has no automated harness — manual repro below; verified by owner
-links: [T-034]
+regression-test:        # blocked: no frontend test harness yet — to be written under T-036, then closed
+links: [T-034, T-036]
 ---
 
 # B-011 — A generated run is lost on reload when no build is in flight
