@@ -249,23 +249,22 @@ document.getElementById('btn-download-docs').addEventListener('click', async () 
 
 // Init
 showStep(1);
-// T-028/T-031: wire the account modal; on reload with an in-flight build, surface it — the status
-// panel lives in step 3 (hidden by default), so jump there and restore the docs from the stored bundle.
+// T-028/T-031/B-011: wire the account flow; on reload, restore a previously generated run from
+// IndexedDB so it survives reloads and the email-verification round-trip. account.js calls this when
+// an in-flight build exists OR a stored bundle is present; it asks us to switch to the Randomizer tab
+// only for an in-flight build (otherwise the run just waits under Randomizer, shown when clicked).
 initAccount({
-    onRecover: async () => {
+    onRecover: async ({ switchTab = false } = {}) => {
         try {
             const b = await getStoredBundle();
             if (b) { currentBundle = b; currentConfig = b.config || currentConfig; }
         } catch { /* ignore */ }
-        setActiveTab('randomizer');
+        if (switchTab) setActiveTab('randomizer');
         showStep(3);
         document.getElementById('gen-running').style.display = 'none';
         document.getElementById('gen-error').style.display = 'none';
         document.getElementById('gen-done').style.display = '';
-        document.getElementById('gen-done-meta').textContent = currentBundle
-            ? 'Picked up your in-flight run — your ROM status is below.'
-            : 'You have a build in progress — status below.';
-        // account.js fills the ROM checklist row + manages the Download buttons.
+        // account.js fills the ROM checklist row + the title/meta + manages the Download buttons.
     },
 });
 

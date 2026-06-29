@@ -14,3 +14,4 @@
 | [B-008](B-008-build-failure-crashes-worker-crashloop.md) | A failed ROM build crashes the backend and crash-loops the site (502) | fixed | critical | 0.3.0 | 0.4.0 | backend/__tests__/queue.test.js |
 | [B-009](B-009-deploy-ships-host-tool-binaries.md) | Deploy rsyncs host-compiled decomp tool binaries, breaking make on the Linux box | fixed | major | 0.3.0 | 0.4.0 | backend/__tests__/deploy-env.test.js |
 | [B-010](B-010-type-family-macro-mangled-by-writer.md) | Rebalancing a config-driven family-type Pokémon writes an undefined TYPE_ macro, breaking make | fixed | major | 0.3.0 | 0.4.0 | randomizer/__tests__/unit/parseMonTypes.test.js |
+| [B-011](B-011-generated-run-lost-on-reload-without-active-build.md) | A generated run is lost on reload when no build is in flight (e.g. after email verification) | fixing | major | 0.4.0 |  |  |

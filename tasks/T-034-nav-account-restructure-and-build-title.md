@@ -59,6 +59,15 @@ Acceptance criteria:
   margin 0 .03em 0 -0.04em`. Sub-pixel left/up nudges below this were imperceptible at the title size,
   so not pursued. CSS-only.
 
+- **2026-06-29** — Owner feedback round: fixed [[B-011]] (a generated run was lost on reload when no
+  build was in flight — notably after the email-verification round-trip). `account.js` now restores a
+  stored run on load whenever an active build **or** a stored bundle exists; `app.js`'s
+  `onRecover({ switchTab })` only jumps to the Randomizer tab for an in-flight build. Guarded the
+  re-build-on-reload regression by persisting "already downloaded" per bundle in `localStorage`. Also
+  reworded the "needs a ROM" gating from the confusing "Verify your Emerald" to **"Upload your Emerald
+  ROM"** (clear explanation + "Upload in Settings" CTA). Frontend has no automated harness → verified
+  by manual repro; randomizer 470/470, backend 86/86. Not deployed (owner-gated).
+
 ## Outcome
 
 <!-- Filled when closing. -->

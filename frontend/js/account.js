@@ -48,6 +48,12 @@ async function idbGet(key) {
 }
 export async function getStoredBundle() { try { return await idbGet('bundle'); } catch { return null; } }
 
+// "Already downloaded" must survive a reload (B-011): otherwise restoring a stored bundle would
+// auto-start a fresh build of an already-delivered run on every reload. Keyed by bundle identity.
+const deliveredKey = (b) => `ec_delivered_${b?.sessionId ?? b?.config?.seed ?? ''}`;
+function markDelivered(b) { try { localStorage.setItem(deliveredKey(b), '1'); } catch { /* ignore */ } }
+function isDelivered(b) { try { return localStorage.getItem(deliveredKey(b)) === '1'; } catch { return false; } }
+
 // ── account state ────────────────────────────────────────────────────────────────
 let state = null;        // /api/me
 let lastBundle = null;
@@ -255,11 +261,11 @@ async function reevaluateDelivery() {
   }
   if (!state.ownsValidRom) {
     setHeadline('gating');
-    setRomDownload({ enabled: false, reason: 'Verify your Emerald to build your ROM.' });
+    setRomDownload({ enabled: false, reason: 'Upload your Emerald ROM to build it.' });
     setRomRow('todo',
-      `<div class="status-title">Verify your Emerald</div>
-       <div class="status-sub">Upload your Emerald ROM in Settings to prove ownership — then your build starts.</div>
-       <button class="btn btn-primary btn-sm" id="rom-cta">Go to Settings</button>`, '🔒');
+      `<div class="status-title">Upload your Emerald ROM</div>
+       <div class="status-sub">Building needs your original Emerald ROM, to verify you own the game. Upload it in Settings and your build starts.</div>
+       <button class="btn btn-primary btn-sm" id="rom-cta">Upload in Settings</button>`, '⬆');
     $('rom-cta')?.addEventListener('click', goToSettings);
     return;
   }
@@ -421,6 +427,7 @@ async function downloadRom() {
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(a.href);
   delivered = true;         // a successful download purges the request server-side — don't re-build
+  markDelivered(lastBundle); // persist across reloads so a restored bundle isn't rebuilt (B-011)
   await refreshMe();
   reevaluateDelivery();
 }
@@ -449,11 +456,15 @@ export async function initAccount(opts = {}) {
 
   await refreshMe();
   updateNavAccount();
-  // reload recovery: surface an in-flight build (and the ready ROM download) without re-generating.
-  // onRecover (app.js) makes the generation screen visible (jump to step 3) so the ROM row isn't hidden.
-  if (state?.activeRequest) {
-    try { await opts.onRecover?.(); } catch { /* ignore */ }
-    renderRom(state.activeRequest);
-    startPolling();
+  // reload recovery (B-011): restore a previously generated run whenever an in-flight build exists
+  // OR a bundle is still in IndexedDB. The latter is the key fix — a run generated logged-out (then
+  // an email-verification round-trip) has no active build yet, but must survive the reload. onRecover
+  // (app.js) makes the step-3 view ready; it only jumps to the Randomizer tab for an in-flight build.
+  const storedBundle = await getStoredBundle();
+  if (state?.activeRequest || storedBundle) {
+    if (storedBundle) { lastBundle = storedBundle; delivered = isDelivered(storedBundle); }
+    try { await opts.onRecover?.({ switchTab: !!state?.activeRequest }); } catch { /* ignore */ }
+    if (state?.activeRequest) { renderRom(state.activeRequest); startPolling(); }
+    else { reevaluateDelivery(); }
   }
 }
