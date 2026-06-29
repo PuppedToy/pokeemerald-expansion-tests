@@ -1,0 +1,9 @@
+{
+  "name": "emerald-cut-frontend",
+  "private": true,
+  "type": "module",
+  "description": "Static frontend (randomizer wizard + account/delivery flow). Tests run under node:test against a zero-dep DOM stub (ADR-009).",
+  "scripts": {
+    "test": "node --test"
+  }
+}

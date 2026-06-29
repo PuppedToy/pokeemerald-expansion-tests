@@ -37,6 +37,8 @@ if [ -z "$SKIP_TESTS" ]; then
   (cd randomizer && npm test) >/tmp/ec-pre-rand.log 2>&1 || { echo "  ✗ randomizer tests FAILED — aborting"; tail -8 /tmp/ec-pre-rand.log; exit 1; }
   echo "==> preflight: backend tests"
   (cd backend && npm test) >/tmp/ec-pre-back.log 2>&1 || { echo "  ✗ backend tests FAILED — aborting"; tail -8 /tmp/ec-pre-back.log; exit 1; }
+  echo "==> preflight: frontend tests"
+  (cd frontend && npm test) >/tmp/ec-pre-front.log 2>&1 || { echo "  ✗ frontend tests FAILED — aborting"; tail -8 /tmp/ec-pre-front.log; exit 1; }
   echo "==> preflight: tracker consistency"
   node scripts/check-tracker.mjs >/dev/null || { echo "  ✗ tracker stale — run: node scripts/check-tracker.mjs --write"; exit 1; }
   echo "    preflight OK ✓"

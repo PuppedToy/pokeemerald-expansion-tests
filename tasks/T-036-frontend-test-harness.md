@@ -1,11 +1,11 @@
 ---
 id: T-036
 title: Frontend test harness + regression tests for the frontend bugs (B-011, B-012)
-status: proposed
+status: done
 type: chore
 created: 2026-06-29
 updated: 2026-06-29
-target-version: 0.5.0
+target-version: 0.4.0
 links: [B-011, B-012, T-031]
 ---
 
@@ -40,16 +40,26 @@ get real regression coverage.
 - Wire the harness into the `update.sh` preflight alongside the other suites.
 
 ## Acceptance criteria
-- [ ] A frontend test command exists and runs in CI/preflight.
-- [ ] B-011 and B-012 each have a test that FAILS before their fix and PASSES after; their
+- [x] A frontend test command exists and runs in CI/preflight.
+- [x] B-011 and B-012 each have a test that FAILS before their fix and PASSES after; their
       `regression-test` fields are filled and both bugs move to `fixed`.
-- [ ] Harness choice recorded as an ADR.
+- [x] Harness choice recorded as an ADR.
 
 ## Progress log
 
 - **2026-06-29** — Created when closing T-031 (owner chose "create a frontend harness" over waiving the
   iron rule for B-011/B-012). Backlog; not started.
 
+- **2026-06-29** — Built it. Chose a **zero-dependency DOM/env stub** under `node --test` over jsdom/
+  happy-dom (ADR-009) — `account.js` is import-free ESM and uses optional chaining for dynamic children,
+  so a cached-fake-element `getElementById` + minimal `localStorage`/`indexedDB`/`fetch`/timer stubs
+  suffice. `frontend/__tests__/helpers/dom-env.js` + `account.test.js` (fresh module per test via a
+  cache-busting import). Regression tests for B-011 and B-012 both verified **FAIL before / PASS after**
+  (temporarily reverted each fix to confirm). Wired into the `update.sh` preflight (`cd frontend &&
+  npm test`). 3/3 green.
+
 ## Outcome
 
-<!-- Filled when closing. -->
+- **2026-06-29** — Done. Frontend now has an automated test harness (zero new deps, ADR-009) in the
+  preflight gate. B-011 and B-012 got real regression tests and moved to `fixed`. Test-infra task →
+  closed on green (nothing to manually test). Future frontend logic can extend the stub as needed.

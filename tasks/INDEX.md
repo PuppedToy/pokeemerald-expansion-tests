@@ -39,5 +39,5 @@
 | [T-033](T-033-persistent-build-logs.md) | Persist per-build logs so they survive a container recreate | done | 0.4.0 | 2026-06-29 |
 | [T-034](T-034-nav-account-restructure-and-build-title.md) | Nav + account UX restructure, home logo treatment, and build progress in the tab title | done | 0.4.0 | 2026-06-29 |
 | [T-035](T-035-generation-and-settings-ux-refinements.md) | Generation + Settings UX refinements (cancel, delete account, run details, exact ETA, emphasis) | done | 0.4.0 | 2026-06-29 |
-| [T-036](T-036-frontend-test-harness.md) | Frontend test harness + regression tests for the frontend bugs (B-011, B-012) | proposed | 0.5.0 | 2026-06-29 |
+| [T-036](T-036-frontend-test-harness.md) | Frontend test harness + regression tests for the frontend bugs (B-011, B-012) | done | 0.4.0 | 2026-06-29 |
 | [T-037](T-037-accept-additional-emerald-revisions.md) | Accept additional legal Emerald regional ROM revisions (JP/FR/DE/IT/ES …) | proposed | 0.5.0 | 2026-06-29 |

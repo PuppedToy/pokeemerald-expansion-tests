@@ -1,13 +1,13 @@
 ---
 id: B-011
 title: A generated run is lost on reload when no build is in flight (e.g. after email verification)
-status: fixing          # open | fixing | fixed | wont-fix
+status: fixed           # open | fixing | fixed | wont-fix
 severity: major
 created: 2026-06-29
 updated: 2026-06-29
 found-in: 0.4.0
-fixed-in:
-regression-test:        # blocked: no frontend test harness yet — to be written under T-036, then closed
+fixed-in: 0.4.0
+regression-test: frontend/__tests__/account.test.js  # "a stored run is restored on init with no active build"
 links: [T-034, T-036]
 ---
 
@@ -42,6 +42,9 @@ row via `reevaluateDelivery()`. `app.js`'s `onRecover({ switchTab })` restores `
 `currentConfig` from IndexedDB and shows step 3; it only jumps to the Randomizer tab when there's an
 in-flight build (kept the original behaviour for that case).
 
-Regression test: the frontend (`app.js`/`account.js`) has no automated harness in this repo (only
-`randomizer/` + `backend/` are unit-tested). Verified manually against the repro above; the bug
-stays `fixing` until the owner confirms.
+Regression test: closed **fixed** in 0.4.0 once the frontend harness landed (T-036, ADR-009).
+`frontend/__tests__/account.test.js` → "a stored run is restored on init with no active build" pins
+it: with a bundle in (stubbed) IndexedDB and `/api/me` reporting no active request, `initAccount`
+fires `onRecover` and renders the ROM row. Verified to **FAIL** against the pre-fix `initAccount`
+(restore guarded by `if (state?.activeRequest)`) and **PASS** after. Also manually verified live by the
+owner.

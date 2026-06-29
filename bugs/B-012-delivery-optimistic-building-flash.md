@@ -1,13 +1,13 @@
 ---
 id: B-012
 title: Delivery panel flashes "Building your ROM" before the server confirms (then flips to "Queued")
-status: fixing
+status: fixed
 severity: minor
 created: 2026-06-29
 updated: 2026-06-29
 found-in: 0.4.0
-fixed-in:
-regression-test:        # blocked: no frontend test harness yet — to be written under T-036, then closed
+fixed-in: 0.4.0
+regression-test: frontend/__tests__/account.test.js  # "optimistic submit state is neutral, not a false Building flash"
 links: [T-035, T-031, T-036]
 ---
 
@@ -38,4 +38,8 @@ The optimistic pre-`produce` render is now **neutral**: "Submitting your run…"
 (clock, no gear, no "building" headline). The real state (`renderRom` from the produce response +
 polling) then shows queued or building accurately, so the UI never claims building before the server does.
 
-Regression test: frontend has no automated harness in this repo; verified by the manual repro above.
+Regression test: closed **fixed** in 0.4.0 with the frontend harness (T-036, ADR-009).
+`frontend/__tests__/account.test.js` → "optimistic submit state is neutral, not a false Building flash"
+asserts the optimistic `rom-status` row is `status-item queued` with "Submitting your run…" and **no**
+gear / "Building" text. Verified to **FAIL** against the pre-fix code (which set `status-item building`
++ "Starting your ROM build…") and **PASS** after.
