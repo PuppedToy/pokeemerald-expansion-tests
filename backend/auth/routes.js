@@ -7,7 +7,7 @@ import express from 'express';
 import { requireAuth, ipRateLimit } from './middleware.js';
 import { createRateLimiter } from '../email/rateLimiter.js';
 
-export function createAuthRouter({ service, users, requests, runs, tokens, jwtSecret, removeFile, db }) {
+export function createAuthRouter({ service, users, requests, runs, tokens, jwtSecret, removeFile, db, killActiveBuild }) {
   const router = express.Router();
 
   // Parse JSON per-route (NOT router.use): this router is mounted at /api, so a
@@ -59,6 +59,8 @@ export function createAuthRouter({ service, users, requests, runs, tokens, jwtSe
   router.delete('/account', requireAuth(jwtSecret), (req, res) => {
     const uid = req.userId;
     if (!users.get(uid)) return res.status(404).json({ error: 'not found' });
+    // a build for this user may be running (serial worker → at most one); note it to kill after purge
+    const active = requests?.getActiveForUser?.(uid);
     const run = () => {
       requests?.purgeAllForUser?.(uid, removeFile);
       runs?.deleteForUser?.(uid);
@@ -70,6 +72,7 @@ export function createAuthRouter({ service, users, requests, runs, tokens, jwtSe
       try { run(); db.exec('COMMIT'); }
       catch (err) { db.exec('ROLLBACK'); return res.status(500).json({ error: 'could not delete account' }); }
     } else { run(); }
+    if (active) killActiveBuild?.(active.id); // stop the in-flight make now that its row is gone (T-035)
     res.json({ ok: true });
   });
 

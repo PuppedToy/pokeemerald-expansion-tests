@@ -53,8 +53,13 @@ export async function advanceOneRom(ctx, id, { now }) {
   try {
     await buildRom(id, before.roms_done); // 0-indexed: build the next undone ROM
   } catch (err) {
-    // B-008: a build failure must NEVER crash the worker/process. Move the request to the terminal,
-    // non-blocking `failed` state and return — the loop keeps serving other jobs, and startup
+    // The build may have been killed on purpose — a user cancel (row → failed) or account deletion
+    // (row gone) mid-build (T-035). In that case it's already terminal: don't log it as a failure or
+    // attempt an illegal transition; just drop it cleanly.
+    const row = requests.get(id);
+    if (!row || row.state !== 'building') return;
+    // B-008: a genuine build failure must NEVER crash the worker/process. Move the request to the
+    // terminal, non-blocking `failed` state and return — the loop keeps serving other jobs, and startup
     // recovery won't re-run it (recovery only re-queues `building`/`paused`), so no crash loop.
     console.error(`[build] request ${id} rom ${before.roms_done} failed:`, err?.message ?? err);
     requests.setState(id, 'failed', now);

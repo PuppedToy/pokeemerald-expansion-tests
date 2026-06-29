@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { createBuildRom } from '../build/buildRom.js';
+import { createBuildRom, killActiveBuild } from '../build/buildRom.js';
 import makejs from '../../make.js';
 
 const TMP = path.join(os.tmpdir(), `ec-buildrom-${process.pid}`);
@@ -83,6 +83,29 @@ test('real build tees make output to a persistent per-ROM log file (T-033)', asy
   assert.match(log, /hello from make/, 'child stdout is captured to the persistent log');
   assert.match(log, /a warning/, 'child stderr is captured to the persistent log');
   assert.match(log, /build end: code=0/);
+  clean();
+});
+
+test('killActiveBuild signals the running build, and only the matching one (T-035)', async () => {
+  clean();
+  const dir = path.join(TMP, 'kill');
+  const requests = { get: () => ({ bundle_path: '/b', output_path: dir }), setOutputPath: () => {} };
+  const storage = { outputDirFor: () => dir };
+  const child = new EventEmitter();
+  let killed = 0;
+  child.kill = () => { killed += 1; };          // no `.pid` → skip the process-group kill, use child.kill
+  const spawnFn = () => child;                  // never emits exit → the build stays "running"
+
+  const building = createBuildRom({ requests, storage, fake: false, spawnFn })('rk', 0);
+
+  assert.equal(killActiveBuild('someone-else'), false, 'only kills the matching request');
+  assert.equal(killed, 0);
+  assert.equal(killActiveBuild('rk'), true, 'kills the active build');
+  assert.equal(killed, 1);
+
+  child.emit('exit', null);                     // killed build settles (rejects); let it drain
+  await building.catch(() => {});
+  assert.equal(killActiveBuild('rk'), false, 'no longer active once it has exited');
   clean();
 });
 

@@ -15,6 +15,25 @@ import { fileURLToPath } from 'node:url';
 
 const REPO_ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 
+// The serial worker runs at most ONE build at a time; track it so a cancel / account-deletion can
+// stop it immediately instead of waiting for the current ROM to finish (T-035).
+let activeBuild = null; // { id, child }
+
+/**
+ * Kill the in-flight build for `id` (if it's the one running). Builds are spawned `detached`, so the
+ * child is its own process-group leader and `process.kill(-pid)` takes down the whole tree
+ * (node make.js → make → gcc/as/ld …), not just the node parent. Best-effort + idempotent.
+ */
+export function killActiveBuild(id) {
+  if (!activeBuild || activeBuild.id !== id) return false;
+  const { child } = activeBuild;
+  if (typeof child.pid === 'number') {
+    try { process.kill(-child.pid, 'SIGTERM'); } catch { /* group already gone / not a leader */ }
+  }
+  try { child.kill?.('SIGTERM'); } catch { /* already exited */ }
+  return true;
+}
+
 export function createBuildRom({ requests, storage, fake = true, spawnFn = spawn, repoRoot = REPO_ROOT }) {
   return async (id, romIndex) => {
     const req = requests.get(id);
@@ -46,13 +65,16 @@ export function createBuildRom({ requests, storage, fake = true, spawnFn = spawn
       const args = ['make.js', `--bundle=${req.bundle_path}`, `--rom=${romIndex}`, `--out=${dir}`];
       const child = spawnFn('node', args, {
         cwd: repoRoot,
+        detached: true, // own process group, so killActiveBuild can take down the whole make tree
         stdio: logStream ? ['ignore', 'pipe', 'pipe'] : 'inherit',
       });
+      activeBuild = { id, child };
       if (logStream) {
         child.stdout?.on('data', (d) => { process.stdout.write(d); logStream.write(d); });
         child.stderr?.on('data', (d) => { process.stderr.write(d); logStream.write(d); });
       }
       const finish = (code, err) => {
+        if (activeBuild && activeBuild.child === child) activeBuild = null;
         const done = () => (err ? reject(err) : resolve());
         if (!logStream) return done();
         logStream.end(`=== build end: ${err ? err.message : `code=${code}`} ===\n`);

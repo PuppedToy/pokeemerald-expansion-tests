@@ -14,7 +14,7 @@ import { createRomRouter } from './rom/routes.js';
 import { createProduceRouter } from './produce/routes.js';
 import { createMailer, brevoTransport } from './email/index.js';
 import { createStorage } from './build/storage.js';
-import { createBuildRom } from './build/buildRom.js';
+import { createBuildRom, killActiveBuild } from './build/buildRom.js';
 import { createWorker } from './queue/scheduler.js';
 import { runOnStartup } from './lifecycle/recovery.js';
 import { startSweeper } from './lifecycle/sweeper.js';
@@ -67,7 +67,7 @@ const app = express();
 
 app.use('/api', createAuthRouter({
   service: authService, users, requests, runs, tokens, jwtSecret: JWT_SECRET,
-  removeFile: (p) => storage.removeFile(p), db,
+  removeFile: (p) => storage.removeFile(p), db, killActiveBuild,
 }));
 app.use('/api/rom', createRomRouter({ users, jwtSecret: JWT_SECRET }));
 app.use('/api', createProduceRouter({
@@ -75,6 +75,7 @@ app.use('/api', createProduceRouter({
   persistBundle: (id, b) => storage.persistBundle(id, b),
   readOutput: (r) => storage.readOutput(r),
   removeFile: (p) => storage.removeFile(p),
+  killActiveBuild,
   idGen: () => randomUUID(),
 }));
 

@@ -13,7 +13,7 @@ import { handleProduce, handleStatus, handleDownload, handleNotifyOnReady, handl
 
 export function createProduceRouter({
   requests, users, jwtSecret,
-  persistBundle, readOutput, removeFile,
+  persistBundle, readOutput, removeFile, killActiveBuild,
   idGen = () => randomUUID(), avgRomSecs,
 }) {
   const router = express.Router();
@@ -27,7 +27,7 @@ export function createProduceRouter({
   );
 
   router.post('/notify-on-ready', auth, handleNotifyOnReady({ requests }));
-  router.post('/cancel', auth, handleCancel({ requests, removeFile }));
+  router.post('/cancel', auth, handleCancel({ requests, removeFile, killActiveBuild }));
   router.get('/status', auth, handleStatus({ requests, avgRomSecs }));
   router.get('/download', auth, handleDownload({ requests, readOutput, removeFile }));
 

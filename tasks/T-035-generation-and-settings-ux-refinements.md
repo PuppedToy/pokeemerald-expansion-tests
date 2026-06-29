@@ -67,6 +67,14 @@ Acceptance criteria:
   cancel/delete — the ROM currently compiling runs to completion before the worker moves on (delivery
   is still prevented and the slot freed). Killing the build tree promptly is a possible follow-up.
 
+- **2026-06-29** — Resolved the earlier "make not killed" limitation: cancel / account-deletion now
+  **kill the in-flight build immediately**. Builds spawn `detached` (own process group); `buildRom`
+  tracks the single active build and exports `killActiveBuild(id)`, which `process.kill(-pid)`s the
+  whole tree (node make.js → make → gcc/as/ld …). `handleCancel` and `DELETE /api/account` call it, so
+  the box is freed at once and the next queued build starts without waiting for the current ROM.
+  `advanceOneRom`'s catch re-checks the row so a killed build drops cleanly (no spurious failure log).
+  Test added (fake child) → backend 93/93.
+
 - **2026-06-29** — Owner feedback: the **Download ROM** click now gives immediate feedback. On click it
   disables instantly (can't double-click) and shows a spinning gear + "Preparing your ROM…" while the
   server prepares + streams the zip; on success it moves to the downloaded state, on error it restores
