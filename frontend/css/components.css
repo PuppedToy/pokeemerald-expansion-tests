@@ -792,3 +792,7 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
   font-family: var(--obs-font-display); font-size: 9px; letter-spacing: var(--obs-tracking);
   text-transform: uppercase; color: var(--obs-red); margin-bottom: 12px;
 }
+
+/* T-035: "Download ROM" while the server prepares + streams the zip — disabled but clearly working
+   (spinner inside), not the dead grey of a normal disabled button. Higher specificity than .btn:disabled. */
+.btn.is-working { opacity: 0.92; cursor: progress; }

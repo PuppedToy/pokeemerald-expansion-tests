@@ -67,6 +67,12 @@ Acceptance criteria:
   cancel/delete — the ROM currently compiling runs to completion before the worker moves on (delivery
   is still prevented and the slot freed). Killing the build tree promptly is a possible follow-up.
 
+- **2026-06-29** — Owner feedback: the **Download ROM** click now gives immediate feedback. On click it
+  disables instantly (can't double-click) and shows a spinning gear + "Preparing your ROM…" while the
+  server prepares + streams the zip; on success it moves to the downloaded state, on error it restores
+  to the enabled button. `setRomDownload` clears the working indicator; `.btn.is-working` styles it as
+  "busy" rather than dead-grey. Frontend-only.
+
 ## Outcome
 
 <!-- Filled when closing. -->

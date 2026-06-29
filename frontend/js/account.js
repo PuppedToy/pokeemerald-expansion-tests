@@ -206,6 +206,7 @@ function romCount() {
 function setRomDownload({ enabled, count = romCount(), note = false, reason = "Your ROM isn't ready yet." }) {
   const btn = $('btn-download-rom');
   if (btn) {
+    btn.classList.remove('is-working');   // clear any in-flight download indicator
     btn.disabled = !enabled;
     btn.title = enabled ? '' : reason;
     btn.textContent = count > 1 ? '⬇ Download ROMs' : '⬇ Download ROM';
@@ -464,19 +465,29 @@ function stopPolling() { if (pollTimer) { clearInterval(pollTimer); pollTimer = 
 
 async function downloadRom() {
   const btn = $('btn-download-rom');
-  if (btn?.disabled) return;
-  const res = await fetch('/api/download', { headers: { authorization: `Bearer ${getToken()}` } });
-  if (!res.ok) { alert('Download failed — try again.'); return; }
-  const blob = await res.blob();
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'emerald-cut-roms.zip';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(a.href);
-  delivered = true;         // a successful download purges the request server-side — don't re-build
-  markDelivered(lastBundle); // persist across reloads so a restored bundle isn't rebuilt (B-011)
-  await refreshMe();
-  reevaluateDelivery();
+  if (!btn || btn.disabled) return;
+  // Immediate feedback (T-035): disable + a spinner the instant it's clicked, so a slow delivery
+  // doesn't feel unresponsive and the button can't be double-clicked. Restored on completion/error.
+  btn.disabled = true;
+  btn.classList.add('is-working');
+  btn.innerHTML = '<img src="/assets/generating.png" alt="" class="px-icon spin"> Preparing your ROM…';
+  try {
+    const res = await fetch('/api/download', { headers: { authorization: `Bearer ${getToken()}` } });
+    if (!res.ok) throw new Error(`download failed (${res.status})`);
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'emerald-cut-roms.zip';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+    delivered = true;         // a successful download purges the request server-side — don't re-build
+    markDelivered(lastBundle); // persist across reloads so a restored bundle isn't rebuilt (B-011)
+    await refreshMe();
+    reevaluateDelivery();     // → "downloaded" state; setRomDownload clears the spinner + resets the button
+  } catch {
+    setRomDownload({ enabled: true, count: romCount(), note: true }); // restore "Download ROM(s)" + clear spinner
+    alert('Download failed — please try again.');
+  }
 }
 
 export async function initAccount(opts = {}) {
