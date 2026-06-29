@@ -332,9 +332,14 @@ async function reevaluateDelivery() {
   }
 
   if (lastBundle) {
-    setHeadline('building');
-    setRomDownload({ enabled: false, reason: 'Starting your build…' });
-    setRomRow('building', `<div class="status-title">Starting your ROM build…</div>`, GEAR_ICO);
+    // Optimistic submit state — NEUTRAL, not "building": the 32 MB bundle upload takes a moment and the
+    // server may well queue the run (slow/multi-ROM, or the single builder is busy). Claiming "building"
+    // here is what made the UI flash Building → Queued; renderRom below shows the real state.
+    setHeadline('queued');
+    setRomDownload({ enabled: false, reason: "Your ROM isn't ready yet." });
+    setRomRow('queued',
+      `<div class="status-title">Submitting your run…</div>
+       <div class="status-sub muted">Uploading and queueing — this can take a moment for a multi-ROM run.</div>`, '🕒');
     const { ok, data } = await api('/api/produce', { method: 'POST', body: lastBundle, auth: true });
     if (ok) { await refreshMe(); lastCategory = null; renderRom(state.activeRequest, data); startPolling(); }
     else setRomRow('failed',
