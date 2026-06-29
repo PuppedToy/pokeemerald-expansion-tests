@@ -760,16 +760,17 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
 .btn-danger { background: var(--obs-red); color: #fff; border-color: var(--obs-shadow); }
 .btn-danger:hover:not(:disabled) { filter: brightness(1.08); }
 
-/* Single-use warning, emphasised (P7) — a real callout, not a faint hint. */
+/* Single-use warning, emphasised (P7) — a real callout. Amber (caution), not red: red reads as
+   error/danger, yellow reads as "heads-up" which is what a single-use download is (T-035 feedback). */
 .single-use-warning {
   display: flex; align-items: flex-start; gap: 10px;
   max-width: 460px; margin: 6px auto 0; padding: 12px 14px; text-align: left;
-  border: var(--obs-border); border-left: 5px solid var(--obs-red);
-  background: rgba(255, 93, 93, 0.12);
+  border: var(--obs-border); border-left: 5px solid var(--obs-yellow);
+  background: rgba(255, 206, 63, 0.13);
   color: var(--obs-text); font-size: 17px; line-height: 1.35;
 }
-.single-use-icon { color: var(--obs-red); font-size: 22px; line-height: 1.1; flex-shrink: 0; }
-.single-use-warning strong { color: var(--obs-red); }
+.single-use-icon { color: var(--obs-yellow); font-size: 22px; line-height: 1.1; flex-shrink: 0; }
+.single-use-warning strong { color: var(--obs-yellow); }
 
 /* Run-details disclosure (P5) — collapsed by default, throughout the generation screen. */
 .run-details {

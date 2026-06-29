@@ -61,6 +61,13 @@ export async function advanceOneRom(ctx, id, { now }) {
     return;
   }
 
+  // The request may have been cancelled (state → failed) or the account deleted (row gone) WHILE this
+  // ROM was compiling (T-035). Re-read before recording progress: if it's no longer `building`, drop it
+  // cleanly — the finished ROM simply isn't delivered, and we don't attempt an illegal transition or
+  // touch a missing row. This also stops any remaining ROMs of a cancelled multi-ROM run.
+  const mid = requests.get(id);
+  if (!mid || mid.state !== 'building') return;
+
   requests.incRomDone(id, now);
   const after = requests.get(id);
 

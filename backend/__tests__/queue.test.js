@@ -48,6 +48,26 @@ test('classify splits fast vs slow by ROM count', () => {
   assert.equal(classify(3), 'slow');
 });
 
+test('a request cancelled mid-build is dropped cleanly; the worker keeps going (T-035)', async () => {
+  const { db, requests, runs } = setup();
+  mk(requests, { id: 'c', userId: 1, queueClass: 'fast', romsTotal: 1, now: 1 });
+  mk(requests, { id: 'next', userId: 2, queueClass: 'fast', romsTotal: 1, now: 2 });
+  // buildRom cancels 'c' WHILE it is building (exactly what POST /api/cancel does mid-build)
+  const ctx = {
+    db, requests, runs, agingMs: 1e9, now: () => 100,
+    buildRom: async (id) => { if (id === 'c') requests.cancel('c', () => {}, 100); },
+  };
+  const worker = createWorker(ctx);
+
+  await worker.runOnce(); // builds 'c' → cancelled mid-build
+  assert.equal(requests.get('c').state, 'failed', 'cancelled request stays failed (not ready)');
+  assert.equal(requests.get('c').roms_done, 0, 'no progress recorded for a cancelled build');
+  assert.equal(runs.listForUser(1).length, 0, 'no run recorded for a cancelled build');
+
+  await worker.runOnce(); // worker survives and serves the next job
+  assert.equal(requests.get('next').state, 'ready');
+});
+
 test('the fast queue is served before a not-yet-started slow', async () => {
   const { requests, rec, ctx } = setup();
   mk(requests, { id: 'slow', userId: 1, queueClass: 'slow', romsTotal: 3, now: 1 });

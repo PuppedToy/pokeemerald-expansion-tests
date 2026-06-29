@@ -58,6 +58,15 @@ Acceptance criteria:
   countdown driven by the same timer as the bar. (7) single-use warning is now an emphasised callout.
   JS syntax-validated; randomizer 470/470. **Not deployed** (owner-gated). Pending owner visual review.
 
+- **2026-06-29** — Owner review questions → hardening + a colour tweak. (a) The single-use warning is
+  now **amber** (`--obs-yellow`), not red — red read as error/danger, amber reads as caution. (b) The
+  worker now **re-reads the request after each ROM build**: if it was cancelled (→`failed`) or its
+  account deleted (row gone) mid-build, it drops cleanly (no run recorded, no illegal-transition
+  throw, remaining ROMs skipped) and keeps serving the queue — `advanceOneRom` + a queue test
+  (backend 92/92). **Known limitation (not changed):** the in-flight `make` child is NOT killed on
+  cancel/delete — the ROM currently compiling runs to completion before the worker moves on (delivery
+  is still prevented and the slot freed). Killing the build tree promptly is a possible follow-up.
+
 ## Outcome
 
 <!-- Filled when closing. -->
