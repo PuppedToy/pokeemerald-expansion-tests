@@ -197,6 +197,46 @@
   margin-top: 6px;
 }
 
+/* "2-in-1" numbered list: each item led by a square ember plaque (hard edges,
+   offset shadow) so the two halves of the experience read as 1 and 2. */
+.info-2in1 {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+  counter-reset: twoinone;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.info-2in1 li {
+  counter-increment: twoinone;
+  position: relative;
+  padding-left: 44px;
+  font-size: 18px;
+  color: var(--obs-text-dim);
+  line-height: 1.45;
+}
+
+.info-2in1 li::before {
+  content: counter(twoinone);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--obs-orange);
+  color: var(--obs-on-orange);
+  border: var(--obs-border);
+  box-shadow: var(--obs-shadow-sm);
+  font-family: var(--obs-font-display);
+  font-size: 11px;
+  line-height: 1;
+}
+
 /* Feature lists (landing boxes + Features section) */
 .feature-list {
   list-style: none;
