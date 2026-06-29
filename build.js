@@ -50,27 +50,12 @@ async function main() {
     console.log(`[build] Wrote base-data.json (${sizeKb} KB) → ${outPath}`);
 
     // ── Step 2: Bundle randomizer worker ──────────────────────────────────────
+    // esbuild config lives in buildWorker.cjs (shared with the B-014 regression test).
     console.log('[build] Bundling randomizer worker...');
-    const esbuild = require('esbuild');
-    const SHIMS = path.join(FRONT_JS, 'shims');
-    await esbuild.build({
-        entryPoints: [path.join(FRONT_JS, 'randomizer-worker.js')],
-        bundle:      true,
-        platform:    'browser',
-        format:      'iife',
-        outfile:     path.join(FRONT_JS, 'randomizer.bundle.js'),
-        define:      { 'process.env.NODE_ENV': '"production"', '__dirname': '"."' },
-        // Redirect Node built-ins to browser stubs.
-        // fs/path calls in the randomizer are guarded by IS_NODE and never execute
-        // in the browser — the stubs just satisfy the static require() at load time.
-        alias: {
-            'fs':            path.join(SHIMS, 'fs.js'),
-            'path':          path.join(SHIMS, 'path.js'),
-            'child_process': path.join(SHIMS, 'child_process.js'),
-        },
-    });
-    const bundleKb = Math.round(fs.statSync(path.join(FRONT_JS, 'randomizer.bundle.js')).size / 1024);
-    console.log(`[build] Wrote randomizer.bundle.js (${bundleKb} KB) → ${path.join(FRONT_JS, 'randomizer.bundle.js')}`);
+    const { bundleWorker } = require('./buildWorker.cjs');
+    const bundlePath = await bundleWorker();
+    const bundleKb = Math.round(fs.statSync(bundlePath).size / 1024);
+    console.log(`[build] Wrote randomizer.bundle.js (${bundleKb} KB) → ${bundlePath}`);
 
     // ── Step 3: Generate sprite map (T-001) ───────────────────────────────────
     // Encodes in-repo Pokémon/trainer art into frontend/data/sprites.json (base64).
