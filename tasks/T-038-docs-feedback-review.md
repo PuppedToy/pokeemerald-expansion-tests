@@ -47,6 +47,7 @@ Acceptance criteria:
   - Frontend test harness green (`cd frontend && npm test`, 4/4); no test asserts on this copy. No generated/derived files touched.
   - Awaiting the user's next feedback items (and any manual review of the landing) before closing.
 - **2026-06-29** — Feedback: em dashes read as "very AI". Scoped (per user) to the Home and Features tabs only in `frontend/index.html`. Removed all 18 em dashes there (19 chars; L291 had a pair), each recast with a different construction rather than a single replacement: sentence splits, colons, parentheses, comma clauses, "For example,". Out-of-scope em dashes left untouched (auth modal L44; Generate tab L199/L215). Verified 0 em dashes remain in lines 68–118 and 244–333. Frontend tests green (4/4). **done**
+- **2026-06-29** — Feedback: the nuzlocke tracker is important enough to surface in the core, not only the features list. Added it to core item 2 of the "What is this?" box: "…full documentation for every run, and those docs double as a built-in nuzlocke tracker." No em dash, Oxford spelling kept; the features-header highlight already mentioned it, so the two stay consistent. Frontend tests green (4/4). **done**
 
 ## Outcome
 
