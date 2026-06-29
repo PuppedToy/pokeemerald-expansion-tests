@@ -22,48 +22,34 @@ function runStartersModule(pokemonList) {
         && poke.rating.bestEvoTier === TIER_UU
         && isSubWeakTier(poke.rating.tier);
 
-    let eligiblePokemonForStarters = pokemonList.filter(eligibleFilter);
+    const eligiblePokemonForStarters = pokemonList.filter(eligibleFilter);
 
-    const starters = [null, null, null];
+    // True when any of x's types is super-effective against y (i.e. "x beats y").
+    const beats = (x, y) => x.parsedTypes.some(type => isSuperEffective(type, y.parsedTypes));
 
-    while (eligiblePokemonForStarters.length > 0 && (starters[0] === null || starters[1] === null || starters[2] === null)) {
-        starters[0] = sampleAndRemove(eligiblePokemonForStarters);
-
-        const starters0Types = starters[0].parsedTypes;
-        const weakToStarters0Types = eligiblePokemonForStarters.filter(poke => {
-            if (poke.id === starters[0].id) return false;
-            return starters0Types.some(type => isSuperEffective(type, poke.parsedTypes));
-        });
-
-        if (weakToStarters0Types.length === 0) {
-            starters[0] = null;
-            continue;
+    // Exhaustive search (T-032): enumerate EVERY valid type triangle (a beats b, b beats c, c beats a)
+    // in the eligible pool, then pick one at random. The previous greedy version committed to a single
+    // random `starters[1]` and discarded `starters[0]` on a dead end, so it could exhaust the pool and
+    // hit the fallback even when a triangle existed (~14% of seeds — B-007). Enumerating first means a
+    // triangle is found whenever one exists, and the random pick stays unbiased across all of them.
+    const triangles = [];
+    for (const a of eligiblePokemonForStarters) {
+        for (const b of eligiblePokemonForStarters) {
+            if (b.id === a.id || !beats(a, b)) continue;
+            for (const c of eligiblePokemonForStarters) {
+                if (c.id === a.id || c.id === b.id) continue;
+                if (beats(b, c) && beats(c, a)) triangles.push([a, b, c]);
+            }
         }
-        starters[1] = sample(weakToStarters0Types);
-
-        const starters1Types = starters[1].parsedTypes;
-        const weakToStarters1TypesAndStrongToStarters0 = eligiblePokemonForStarters.filter(poke => {
-            if (poke.id === starters[1].id) return false;
-            return starters1Types.some(type => isSuperEffective(type, poke.parsedTypes))
-                && poke.parsedTypes.some(type => isSuperEffective(type, starters[0].parsedTypes))
-                && poke.id !== starters[0].id
-                && poke.id !== starters[1].id;
-        });
-
-        if (weakToStarters1TypesAndStrongToStarters0.length === 0) {
-            starters[0] = null;
-            starters[1] = null;
-            continue;
-        }
-        starters[2] = sample(weakToStarters1TypesAndStrongToStarters0);
     }
 
     const alreadyChosenFamilySet = new Set();
 
-    if (starters[0] === null || starters[1] === null || starters[2] === null) {
-        // Fallback: no type triangle found — pick any 3 eligible without type constraints.
+    if (triangles.length === 0) {
+        // Fallback: the pool genuinely admits no triangle — pick any 3 eligible without type constraints.
         console.error('Failed to find valid starter Pokémon. Going through fallback method.');
         const fallbackPool = pokemonList.filter(eligibleFilter);
+        const starters = [null, null, null];
         for (let i = 0; i < 3; i++) {
             const picked = sampleAndRemove(fallbackPool);
             starters[i] = picked;
@@ -75,13 +61,11 @@ function runStartersModule(pokemonList) {
         };
     }
 
-    starters.forEach((starter, index) => {
-        starters[index] = starter.id;
-        alreadyChosenFamilySet.add(getFamilyGroup(starter.family));
-    });
+    const chosen = sample(triangles); // uniform among all valid triangles; deterministic per seed
+    chosen.forEach(starter => alreadyChosenFamilySet.add(getFamilyGroup(starter.family)));
 
     return {
-        starters,
+        starters: chosen.map(s => s.id),
         alreadyChosenFamilies: [...alreadyChosenFamilySet],
     };
 }

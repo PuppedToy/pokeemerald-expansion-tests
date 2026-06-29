@@ -142,6 +142,48 @@ describe('runStartersModule — determinism', () => {
     });
 });
 
+describe('runStartersModule — exhaustive triangle search (T-032)', () => {
+  // non-isolated require so rng.seed() per iteration controls the module's own rng
+  const { runStartersModule } = require('../../modules/startersModule');
+  const formsTriangle = (starters) => {
+    const [s0, s1, s2] = starters.map(id => starterPokes.find(p => p.id === id));
+    if (!s0 || !s1 || !s2) return false;
+    return s0.parsedTypes.some(t => isSuperEffective(t, s1.parsedTypes))
+      && s1.parsedTypes.some(t => isSuperEffective(t, s2.parsedTypes))
+      && s2.parsedTypes.some(t => isSuperEffective(t, s0.parsedTypes));
+  };
+
+  // The whole point of T-032: a triangle exists in this pool (FIRE>GRASS>WATER>FIRE), so the module
+  // must return one for EVERY seed — never the no-constraint fallback. The greedy version fell back on
+  // ~14% of seeds, so this sweep fails before the fix and passes after.
+  test('returns a real triangle for every seed when one exists (0 fallbacks)', () => {
+    for (let seed = 0; seed < 300; seed++) {
+      rng.seed(seed);
+      const { starters } = runStartersModule([...starterPokes]);
+      expect(new Set(starters).size).toBe(3);
+      expect(formsTriangle(starters)).toBe(true);
+    }
+  });
+
+  test('selection is randomized among valid triangles, not fixed to one ordering', () => {
+    const seen = new Set();
+    for (let seed = 0; seed < 60; seed++) {
+      rng.seed(seed);
+      seen.add(runStartersModule([...starterPokes]).starters.join('>'));
+    }
+    expect(seen.size).toBeGreaterThan(1);
+  });
+
+  test('fallback triggers ONLY when the pool admits no triangle', () => {
+    for (let seed = 0; seed < 30; seed++) {
+      rng.seed(seed);
+      const { starters } = runStartersModule([...normalPokes]); // all-NORMAL → no triangle possible
+      expect(starters).toHaveLength(3);
+      expect(formsTriangle(starters)).toBe(false);
+    }
+  });
+});
+
 describe('runStartersModule — fallback path', () => {
     test('fallback: still returns 3 starters when no type triangle is possible', () => {
         const { runStartersModule } = freshModule();

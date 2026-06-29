@@ -1,10 +1,10 @@
 ---
 id: T-032
 title: Make starter type-triangle search exhaustive (no fallback when a triangle exists)
-status: proposed
+status: in-progress
 type: refactor
 created: 2026-06-28
-updated: 2026-06-28
+updated: 2026-06-29
 target-version: 0.5.0
 links: [B-007]
 ---
@@ -29,13 +29,13 @@ all valid `starters[1]` (not one random pick) and all valid `starters[2]`; rando
 among valid complete triangles* rather than randomizing mid-search and giving up.
 
 Acceptance criteria:
-- [ ] For any pool containing at least one type triangle, the module returns a triangle for **every**
+- [x] For any pool containing at least one type triangle, the module returns a triangle for **every**
       rng seed (verify over a wide seed sweep on the B-007 fixture — 0 fallbacks).
-- [ ] The fallback still triggers (and only triggers) when the pool admits no triangle (e.g. the
+- [x] The fallback still triggers (and only triggers) when the pool admits no triangle (e.g. the
       all-NORMAL fixture).
-- [ ] Determinism preserved: same seed → same starters.
-- [ ] Selection stays unbiased/random among valid triangles (not always the first found).
-- [ ] `cd randomizer && npm test` green.
+- [x] Determinism preserved: same seed → same starters.
+- [x] Selection stays unbiased/random among valid triangles (not always the first found).
+- [x] `cd randomizer && npm test` green.
 
 ## Progress log
 
@@ -43,6 +43,17 @@ Acceptance criteria:
 
 - **2026-06-28** — Task created as the production-logic follow-up to B-007 (which fixed only the flaky
   test by controlling the seed). Deferred out of T-031 to keep the frontend deploy low-risk.
+
+- **2026-06-29** — Implemented (TDD). Replaced the greedy pick-one-`starters[1]`-then-give-up loop with
+  an **exhaustive enumeration** of every valid triangle (a beats b, b beats c, c beats a) over the
+  eligible pool, then a single uniform `sample()` among them; the fallback now triggers only when the
+  enumeration is empty. Red→Green: added a 300-seed sweep that asserts a real triangle for every seed
+  (failed on the greedy code as expected — ~14% fallbacks — passes now), plus "randomized among valid
+  triangles" and "fallback only when no triangle" tests. Pipeline order is pokedex→trainers→**starters**
+  →wild, and `sample`/`sampleAndRemove` draw from the shared rng, so the new draw count (1 vs the old
+  3+) **shifts the downstream `wild` module's output for a given seed** — deliberate and acceptable (no
+  snapshot pins it; full suite stays green at 473/473). Reaches the browser on the next deploy (update.sh
+  rebuilds the bundle). Awaiting owner OK to close (changes generated output).
 
 ## Outcome
 
