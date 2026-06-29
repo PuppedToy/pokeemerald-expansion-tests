@@ -22,6 +22,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- Starter selection now **always forms a type triangle when one exists** in the eligible pool. The
+  search was greedy (it committed to one random second starter and gave up on the first, hitting a
+  no-constraint fallback on ~14% of seeds even when a valid triangle was available); it now enumerates
+  every valid triangle and picks one at random, falling back only when the pool genuinely has none (T-032).
 - Build progress and ETA are now **server-authoritative** and survive a reload (B-013). They were synthesised on the client (a local clock started when the page first showed the building view), so reloading restarted the bar/ETA from zero. The backend now derives progress + remaining time from durable build state (`GET /api/status` returns `progress`), and the frontend just renders it — consistent whether or not you reload, and fetched immediately on load (no zero-flash). This also closes the class of "the front shows X before asking the back" glitches.
 - The delivery panel no longer flashes "Building your ROM" before the server confirms — the optimistic state on Generate is now a neutral "Submitting your run…" (B-012).
 - A generated run is no longer lost on reload when no build is in flight — notably after the email-verification round-trip (generate logged-out → register → open the verification link → back to the site). The run's bundle was already saved in your browser, but the app only restored it on reload when a build was active; now it always restores, so clicking Randomizer shows your completed run (docs + ROM status) again. "Already downloaded" is remembered across reloads so a restored run isn't rebuilt (B-011).

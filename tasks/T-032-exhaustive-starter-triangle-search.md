@@ -1,7 +1,7 @@
 ---
 id: T-032
 title: Make starter type-triangle search exhaustive (no fallback when a triangle exists)
-status: in-progress
+status: done
 type: refactor
 created: 2026-06-28
 updated: 2026-06-29
@@ -57,4 +57,9 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+- **2026-06-29** — Done (owner OK'd close). Greedy single-pick search replaced by exhaustive triangle
+  enumeration + one uniform `sample()`; fallback only when the pool admits no triangle. All acceptance
+  criteria met and test-verified (300-seed sweep = 0 fallbacks, fallback-only-when-none, determinism,
+  randomized selection). randomizer 473/473. Deviation/cost: the new rng draw count shifts the
+  downstream `wild` module's per-seed output (deliberate, unpinned). Ships to the browser bundle on the
+  next deploy (`update.sh` rebuilds it). No follow-ups.
