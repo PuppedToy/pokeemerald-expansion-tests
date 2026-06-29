@@ -15,6 +15,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- ROM-ownership verification now accepts **every legal Pokémon Emerald revision** — Japan, Germany,
+  France, Italy and Spain, in addition to USA/Europe — so non-English owners can prove ownership and
+  build. SHA-1s are taken (and cross-verified) from the No-Intro GBA DAT (T-037).
 - You can now **cancel a run** in progress: the step-3 button reads **Cancel** before/while the ROM is being built (with an "are you sure? permanent" confirm) and frees your queue slot server-side (`POST /api/cancel`); it only becomes **Start over** once the ROM is downloaded (and is a disabled "Start over" — "Download your ROM to start over" — while the ROM is ready but not yet downloaded). Cancelling mid-build (or deleting your account mid-build) **kills the in-flight build immediately** (the whole `make` process tree, not just the parent), so the box is freed and the next queued build starts right away; the request is dropped, any remaining ROMs of a multi-ROM run are skipped, and the build worker keeps serving the queue (T-035).
 - A **Delete account permanently** button in Settings (red, with an "irreversible" confirm) removes your account and all its data — requests, run history, tokens and files (`DELETE /api/account`) (T-035).
 - A collapsed **Run details** disclosure on the generation screen shows your run's settings (the same summary as the step-2 Review) throughout the process (T-035).

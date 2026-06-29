@@ -10,12 +10,18 @@ import { createHash } from 'node:crypto';
 export const EMERALD_SIZE = 16 * 1024 * 1024;
 
 /**
- * Accepted official dumps (No-Intro). (USA, Europe) is confirmed; the JP/FR/DE/IT/ES
- * SHA-1s are locked from the No-Intro GBA DAT before the real upload path goes live
- * (see T-022). Ownership is independent of which ROM the server builds against.
+ * Accepted official dumps — every legal Pokémon Emerald revision, SHA-1s taken from the No-Intro
+ * "Nintendo - Game Boy Advance" DAT (serials AGB-BPE*). The (USA, Europe) hash matches the value the
+ * codebase already trusted, which anchors the rest of the set; each SHA-1 was cross-checked against
+ * the DAT's MD5 for the same entry (T-037). Ownership is independent of which ROM the server builds against.
  */
 export const KNOWN_EMERALD_SHA1 = new Set([
-  'f3ae088181bf583e55daf962a92bb46f4f1d07b7', // Pokémon - Emerald Version (USA, Europe)
+  'f3ae088181bf583e55daf962a92bb46f4f1d07b7', // Pokémon - Emerald Version (USA, Europe)   [BPEE]
+  'd7cf8f156ba9c455d164e1ea780a6bf1945465c2', // Pocket Monsters - Emerald (Japan)          [BPEJ]
+  '61c2eb2b380b1a75f0c94b767a2d4c26cd7ce4e3', // Pokémon - Smaragd-Edition (Germany)        [BPED]
+  'ca666651374d89ca439007bed54d839eb7bd14d0', // Pokémon - Version Émeraude (France)        [BPEF]
+  '1692db322400c3141c5de2db38469913ceb1f4d4', // Pokémon - Versione Smeraldo (Italy)        [BPEI]
+  'fe1558a3dcb0360ab558969e09b690888b846dd9', // Pokémon - Edición Esmeralda (Spain)        [BPES]
 ]);
 
 export function sha1hex(buffer) {
