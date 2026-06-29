@@ -31,6 +31,9 @@ export function createUsersRepo(db) {
     setOwnsValidRom(id, owns, now = Date.now()) {
       db.prepare('UPDATE users SET owns_valid_rom = ?, updated_at = ? WHERE id = ?').run(owns ? 1 : 0, now, id);
     },
+    delete(id) {
+      db.prepare('DELETE FROM users WHERE id = ?').run(id);
+    },
   };
   return repo;
 }

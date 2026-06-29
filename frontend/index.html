@@ -204,14 +204,21 @@
             <div class="generate-actions">
               <div class="action-row">
                 <button class="btn btn-primary" id="btn-download-docs">⬇ Download docs</button>
-                <button class="btn btn-primary" id="btn-download-rom" disabled
+                <button class="btn btn-emerald" id="btn-download-rom" disabled
                         title="Your ROM isn't ready yet.">⬇ Download ROM</button>
               </div>
-              <div id="rom-dl-note" class="delivery-hint" hidden>
-                ⚠ Single-use: downloading removes the ROM from the server (kept up to 48 h otherwise).
+              <div id="rom-dl-note" class="single-use-warning" hidden>
+                <span class="single-use-icon" aria-hidden="true">⚠</span>
+                <span><strong>Single use.</strong> Downloading removes the ROM from the server for good — save it somewhere safe. (Otherwise it's kept up to 48 h.)</span>
               </div>
               <button class="btn btn-ghost btn-sm" id="btn-start-over">Start over</button>
             </div>
+
+            <!-- Run details (T-035): collapsed by default; same content as the step-2 Review (shared render). -->
+            <details class="run-details" id="run-details">
+              <summary>Run details</summary>
+              <div id="run-details-rows" class="summary-rows"></div>
+            </details>
           </div>
 
           <!-- Error -->

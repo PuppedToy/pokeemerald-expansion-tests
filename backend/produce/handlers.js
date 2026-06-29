@@ -33,6 +33,17 @@ export function handleProduce({ requests, classify, validateBundle, persistBundl
   };
 }
 
+// Cancel the active request (T-035): move it to the terminal `failed` state + delete its files, so
+// the user's active slot is freed and the build won't be delivered. Idempotent (no active → ok:false).
+export function handleCancel({ requests, removeFile, now = () => Date.now() }) {
+  return (req, res) => {
+    const active = requests.getActiveForUser(req.userId);
+    if (!active) return res.json({ ok: false, reason: 'no active request' });
+    requests.cancel(active.id, removeFile, now());
+    res.json({ ok: true });
+  };
+}
+
 // Opt in to a "your ROM is ready" email for the active request (offered when ETA >= 2 min, T-031).
 export function handleNotifyOnReady({ requests }) {
   return (req, res) => {

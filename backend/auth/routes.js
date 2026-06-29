@@ -7,7 +7,7 @@ import express from 'express';
 import { requireAuth, ipRateLimit } from './middleware.js';
 import { createRateLimiter } from '../email/rateLimiter.js';
 
-export function createAuthRouter({ service, users, requests, jwtSecret }) {
+export function createAuthRouter({ service, users, requests, runs, tokens, jwtSecret, removeFile, db }) {
   const router = express.Router();
 
   // Parse JSON per-route (NOT router.use): this router is mounted at /api, so a
@@ -52,6 +52,25 @@ export function createAuthRouter({ service, users, requests, jwtSecret }) {
   router.post('/reset', json, async (req, res) => {
     const ok = await service.resetPassword(req.body?.token, req.body?.password);
     res.status(ok ? 200 : 400).json({ ok });
+  });
+
+  // Delete the account + all its data (T-035). FKs aren't ON DELETE CASCADE, so children go first:
+  // purge requests (and their files), then runs, tokens, finally the user — atomically.
+  router.delete('/account', requireAuth(jwtSecret), (req, res) => {
+    const uid = req.userId;
+    if (!users.get(uid)) return res.status(404).json({ error: 'not found' });
+    const run = () => {
+      requests?.purgeAllForUser?.(uid, removeFile);
+      runs?.deleteForUser?.(uid);
+      tokens?.deleteForUser?.(uid);
+      users.delete(uid);
+    };
+    if (db) {
+      db.exec('BEGIN');
+      try { run(); db.exec('COMMIT'); }
+      catch (err) { db.exec('ROLLBACK'); return res.status(500).json({ error: 'could not delete account' }); }
+    } else { run(); }
+    res.json({ ok: true });
   });
 
   router.get('/me', requireAuth(jwtSecret), (req, res) => {

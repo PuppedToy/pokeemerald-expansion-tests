@@ -46,6 +46,15 @@ async function idbGet(key) {
     r.onerror = () => reject(r.error);
   });
 }
+async function idbDel(key) {
+  const db = await idb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('kv', 'readwrite');
+    tx.objectStore('kv').delete(key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
 export async function getStoredBundle() { try { return await idbGet('bundle'); } catch { return null; } }
 
 // "Already downloaded" must survive a reload (B-011): otherwise restoring a stored bundle would
@@ -127,11 +136,25 @@ function renderSettings() {
       <div class="settings-row"><span class="settings-key">ROM ownership</span><span class="settings-val ${state.ownsValidRom ? 'ok' : ''}">${state.ownsValidRom ? 'Verified ✓' : 'Not verified yet'}</span></div>
     </div>
     ${state.ownsValidRom ? '' : `<label class="btn btn-primary settings-upload">Upload your Emerald ROM
-        <input type="file" id="rom-file" accept=".gba,application/octet-stream" hidden></label>
-      <p class="settings-note" id="settings-msg"></p>`}
-    <button class="btn btn-ghost" id="settings-logout">Log out</button>`;
+        <input type="file" id="rom-file" accept=".gba,application/octet-stream" hidden></label>`}
+    <p class="settings-note" id="settings-msg"></p>
+    <button class="btn btn-ghost" id="settings-logout">Log out</button>
+    <div class="settings-danger">
+      <div class="settings-danger-label">Danger zone</div>
+      <button class="btn btn-danger" id="settings-delete">Delete account permanently</button>
+    </div>`;
   if (!state.ownsValidRom) $('rom-file')?.addEventListener('change', onRomUpload);
   $('settings-logout')?.addEventListener('click', logout);
+  $('settings-delete')?.addEventListener('click', deleteAccount);
+}
+
+async function deleteAccount() {
+  if (!confirm('Delete your account permanently?\n\nThis action is irreversible — your account and any in-flight run will be removed.')) return;
+  const { ok } = await api('/api/account', { method: 'DELETE', auth: true });
+  if (!ok) { setSettingsMsg('Could not delete the account — please try again.', 'err'); return; }
+  await clearRun();
+  logout();
+  alert('Your account has been deleted.');
 }
 
 async function onRomUpload(e) {
@@ -222,6 +245,31 @@ function clearBuildBar() {
   buildStartMs = null; buildEtaSec = null;
 }
 
+// The gen-done bottom button (T-035): "Cancel" (+ confirm) before/while the ROM is being made;
+// "Start over" only once delivered; while the ROM is ready-but-undownloaded it's a disabled
+// "Start over" nudging the download. `dataset.mode` is read by the click handler wired in initAccount.
+function setStartOverBtn(cat) {
+  const btn = $('btn-start-over');
+  if (!btn) return;
+  if (cat === 'downloaded') {
+    btn.disabled = false; btn.textContent = 'Start over'; btn.title = ''; btn.dataset.mode = 'startover';
+  } else if (cat === 'ready') {
+    btn.disabled = true; btn.textContent = 'Start over'; btn.title = 'Download your ROM to start over.'; btn.dataset.mode = 'ready';
+  } else { // queued / building / gating / failed / starting — the run isn't downloaded yet
+    btn.disabled = false; btn.textContent = 'Cancel'; btn.title = ''; btn.dataset.mode = 'cancel';
+  }
+}
+
+// Forget the current run client-side: drop the stored bundle + delivered flag + delivery state.
+async function clearRun() {
+  try { await idbDel('bundle'); } catch { /* ignore */ }
+  try { if (lastBundle) localStorage.removeItem(deliveredKey(lastBundle)); } catch { /* ignore */ }
+  stopPolling();
+  clearBuildBar();
+  lastBundle = null; delivered = false; emailOptedIn = false; lastCategory = null; lastQueuedLine = null;
+  setTabTitle(null);
+}
+
 const GEAR_ICO = '<img src="/assets/generating.png" alt="" class="px-icon spin">';
 
 export async function onBundleReady(bundle) {
@@ -240,6 +288,7 @@ async function reevaluateDelivery() {
   if (!romRow()) return;
   lastCategory = null; // any path below either re-renders via renderRom or sets the row directly
   setTabTitle(null);   // renderRom (active request) overrides this for the building/queued states
+  setStartOverBtn('cancel'); // default; the delivered branch / renderRom override it
 
   if (!state) {
     setHeadline('gating');
@@ -274,6 +323,7 @@ async function reevaluateDelivery() {
 
   if (delivered) {
     setHeadline('downloaded');
+    setStartOverBtn('downloaded');
     setRomDownload({ enabled: false, reason: 'Already downloaded — removed from the server. Start a new run to build another.' });
     setRomRow('done',
       `<div class="status-title">ROM downloaded</div>
@@ -308,6 +358,7 @@ function renderRom(req, info = {}) {
   const cat = categoryOf(req);
   const count = req.romsTotal ?? romCount();
   setHeadline(cat);
+  setStartOverBtn(cat);
 
   if (cat === 'ready') {
     clearBuildBar(); lastCategory = 'ready';
@@ -341,7 +392,8 @@ function renderRom(req, info = {}) {
         `<div class="status-title">Building your ROM…</div>
          ${total > 1 ? `<div class="status-sub" id="rom-counter">ROM ${current} of ${total}</div>` : ''}
          <div class="gen-progress-wrap compact"><div class="gen-progress-bar"><div class="gen-progress-fill" id="rom-progress-fill"></div></div></div>
-         <div class="status-sub muted">This usually takes a few minutes — you can leave this page open.</div>`,
+         <div class="status-sub" id="rom-eta">Estimating…</div>
+         <div class="status-sub muted">You can leave this page open — it updates automatically.</div>`,
         GEAR_ICO);
       startBuildBar();
     } else if (total > 1) {
@@ -387,10 +439,18 @@ function startBuildBar() {
   if (buildBarTimer) clearInterval(buildBarTimer);
   const tick = () => {
     const elapsed = (Date.now() - (buildStartMs ?? Date.now())) / 1000;
-    const pct = Math.min(95, Math.round((elapsed / (buildEtaSec || 120)) * 100));
+    const total = buildEtaSec || 120;
+    const pct = Math.min(95, Math.round((elapsed / total) * 100));
     setTabTitle(`Building ${pct}%`);   // T-034: surface build progress on the tab
     const fill = $('rom-progress-fill');
     if (fill) fill.style.width = `${pct}%`;
+    const eta = $('rom-eta');           // T-035: exact ETA countdown
+    if (eta) {
+      const rem = Math.max(0, total - elapsed);
+      eta.textContent = rem >= 60 ? `About ${Math.round(rem / 60)} min remaining`
+        : rem > 5 ? 'Less than a minute remaining'
+        : 'Finishing up…';
+    }
   };
   tick();
   buildBarTimer = setInterval(tick, 500);
@@ -453,6 +513,21 @@ export async function initAccount(opts = {}) {
 
   // the unified actions-row "Download ROM" button; renderRom enables it once the ROM is ready
   $('btn-download-rom')?.addEventListener('click', downloadRom);
+
+  // the gen-done "Start over / Cancel" button (T-035). Mode is set by setStartOverBtn:
+  //  - cancel:    confirm, then cancel the server build + forget the run + reset the wizard
+  //  - startover: forget the (already-downloaded) run + reset the wizard
+  //  - ready:     disabled (download first) — no-op
+  $('btn-start-over')?.addEventListener('click', async () => {
+    const mode = $('btn-start-over').dataset.mode;
+    if (mode === 'ready') return;
+    if (mode === 'cancel') {
+      if (!confirm('Cancel this run?\n\nIt will be permanently deleted.')) return;
+      await api('/api/cancel', { method: 'POST', auth: true }).catch(() => {});
+    }
+    await clearRun();
+    opts.onStartOver?.();
+  });
 
   await refreshMe();
   updateNavAccount();

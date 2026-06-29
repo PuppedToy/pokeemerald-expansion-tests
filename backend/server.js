@@ -65,7 +65,10 @@ startSweeper({ requests, removeFile: storage.removeFile });
 // ── HTTP ────────────────────────────────────────────────────────────────────────
 const app = express();
 
-app.use('/api', createAuthRouter({ service: authService, users, requests, jwtSecret: JWT_SECRET }));
+app.use('/api', createAuthRouter({
+  service: authService, users, requests, runs, tokens, jwtSecret: JWT_SECRET,
+  removeFile: (p) => storage.removeFile(p), db,
+}));
 app.use('/api/rom', createRomRouter({ users, jwtSecret: JWT_SECRET }));
 app.use('/api', createProduceRouter({
   requests, users, jwtSecret: JWT_SECRET,

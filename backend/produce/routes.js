@@ -9,7 +9,7 @@ import { randomUUID } from 'node:crypto';
 import { requireAuth, requireVerified, requireOwnsRom } from '../auth/middleware.js';
 import { classify } from '../queue/scheduler.js';
 import { validateBundle } from '../build/bundleSchema.js';
-import { handleProduce, handleStatus, handleDownload, handleNotifyOnReady } from './handlers.js';
+import { handleProduce, handleStatus, handleDownload, handleNotifyOnReady, handleCancel } from './handlers.js';
 
 export function createProduceRouter({
   requests, users, jwtSecret,
@@ -27,6 +27,7 @@ export function createProduceRouter({
   );
 
   router.post('/notify-on-ready', auth, handleNotifyOnReady({ requests }));
+  router.post('/cancel', auth, handleCancel({ requests, removeFile }));
   router.get('/status', auth, handleStatus({ requests, avgRomSecs }));
   router.get('/download', auth, handleDownload({ requests, readOutput, removeFile }));
 

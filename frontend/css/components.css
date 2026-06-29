@@ -752,3 +752,42 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
 .action-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 
 .btn-sm { padding: 8px 14px; font-size: 12px; }
+
+/* ── T-035: button variants, single-use warning, run-details, danger zone ──────── */
+/* Emerald-green "Download ROM" — a colour used for nothing else, so it stands out (P3). */
+.btn-emerald { background: var(--obs-green); color: var(--obs-bg-deep); border-color: var(--obs-shadow); }
+.btn-emerald:hover:not(:disabled) { background: var(--obs-green); filter: brightness(1.08); }
+.btn-danger { background: var(--obs-red); color: #fff; border-color: var(--obs-shadow); }
+.btn-danger:hover:not(:disabled) { filter: brightness(1.08); }
+
+/* Single-use warning, emphasised (P7) — a real callout, not a faint hint. */
+.single-use-warning {
+  display: flex; align-items: flex-start; gap: 10px;
+  max-width: 460px; margin: 6px auto 0; padding: 12px 14px; text-align: left;
+  border: var(--obs-border); border-left: 5px solid var(--obs-red);
+  background: rgba(255, 93, 93, 0.12);
+  color: var(--obs-text); font-size: 17px; line-height: 1.35;
+}
+.single-use-icon { color: var(--obs-red); font-size: 22px; line-height: 1.1; flex-shrink: 0; }
+.single-use-warning strong { color: var(--obs-red); }
+
+/* Run-details disclosure (P5) — collapsed by default, throughout the generation screen. */
+.run-details {
+  max-width: 460px; margin: 24px auto 0; text-align: left;
+  border: var(--obs-border); box-shadow: var(--obs-shadow-sm); background: var(--obs-well);
+}
+.run-details > summary {
+  cursor: pointer; padding: 12px 16px; list-style: none; user-select: none;
+  font-family: var(--obs-font-display); font-size: 10px; letter-spacing: var(--obs-tracking); color: var(--obs-text-dim);
+}
+.run-details > summary::-webkit-details-marker { display: none; }
+.run-details > summary::before { content: '▸ '; color: var(--obs-orange); }
+.run-details[open] > summary::before { content: '▾ '; }
+.run-details .summary-rows { padding: 2px 16px 14px; }
+
+/* Settings danger zone (P4). */
+.settings-danger { margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--obs-line); }
+.settings-danger-label {
+  font-family: var(--obs-font-display); font-size: 9px; letter-spacing: var(--obs-tracking);
+  text-transform: uppercase; color: var(--obs-red); margin-bottom: 12px;
+}

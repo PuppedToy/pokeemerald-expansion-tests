@@ -17,5 +17,8 @@ export function createRunsRepo(db) {
     listForUser(userId) {
       return forUser.all(userId);
     },
+    deleteForUser(userId) {
+      db.prepare('DELETE FROM runs WHERE user_id = ?').run(userId);
+    },
   };
 }

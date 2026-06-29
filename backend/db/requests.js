@@ -108,6 +108,27 @@ export function createRequestsRepo(db) {
       if (row.output_path) removeFile(row.output_path);
       this.deleteRow(id);
     },
+
+    /**
+     * User-initiated cancel (T-035). Move the request to the terminal, non-blocking `failed` state
+     * (so it leaves the active set and the worker won't continue it) and delete its files. The row
+     * stays as history. Safe if the worker is mid-build: the next state write there is contained (B-008).
+     */
+    cancel(id, removeFile = defaultRemoveFile, now = Date.now()) {
+      const row = this.get(id);
+      if (!row) return null;
+      try { this.setState(id, 'failed', now); } catch { /* already terminal — leave as-is */ }
+      removeFile(row.bundle_path);
+      if (row.output_path) removeFile(row.output_path);
+      return this.get(id);
+    },
+
+    /** Delete every request for a user (+ their files). Used by account deletion (T-035). */
+    purgeAllForUser(userId, removeFile = defaultRemoveFile) {
+      const rows = db.prepare('SELECT id FROM requests WHERE user_id = ?').all(userId);
+      for (const { id } of rows) this.purge(id, removeFile);
+      return rows.length;
+    },
   };
 
   return repo;

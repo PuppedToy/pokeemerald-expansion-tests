@@ -6,7 +6,7 @@ import { createRequestsRepo } from '../db/requests.js';
 import { classify } from '../queue/scheduler.js';
 import { validateBundle } from '../build/bundleSchema.js';
 import { estimateEta } from '../produce/eta.js';
-import { handleProduce, handleStatus, handleDownload } from '../produce/handlers.js';
+import { handleProduce, handleStatus, handleDownload, handleCancel } from '../produce/handlers.js';
 
 function fakeRes() {
   return {
@@ -122,6 +122,27 @@ test('download streams a ready ROM, then marks downloaded and purges', () => {
 
   assert.equal(res.sent.toString(), 'ZIPDATA');
   assert.equal(requests.get('r1'), null, 'row purged after a successful download');
+});
+
+test('cancel marks the active request failed, frees the slot and deletes its files (T-035)', () => {
+  const { requests } = setup();
+  requests.create({ id: 'c1', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b/c1.json', seed: '1', params: {}, now: 1 });
+
+  const removed = [];
+  const res = fakeRes();
+  handleCancel({ requests, removeFile: (p) => removed.push(p), now: () => 9 })({ userId: 1 }, res);
+
+  assert.equal(res.body.ok, true);
+  assert.equal(requests.get('c1').state, 'failed', 'cancelled request is terminal/failed');
+  assert.equal(requests.getActiveForUser(1), null, 'failed is non-blocking → slot freed');
+  assert.ok(removed.includes('/b/c1.json'), 'the bundle file is deleted');
+});
+
+test('cancel with no active request is a no-op (ok:false)', () => {
+  const { requests } = setup();
+  const res = fakeRes();
+  handleCancel({ requests, removeFile: () => {} })({ userId: 2 }, res);
+  assert.equal(res.body.ok, false);
 });
 
 test('download refuses when the request is not ready (409)', () => {

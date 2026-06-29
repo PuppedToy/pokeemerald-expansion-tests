@@ -4,7 +4,9 @@
  * A slow request's ETA is intentionally non-monotonic (incoming fast requests push it back).
  */
 
-const DEFAULT_AVG = Number(process.env.AVG_ROM_SECS) || 15;
+// A real ROM build is ~4–5 min on the box (T-019 measured ~277 s); 270 s makes the ETA + progress
+// bar meaningful out of the box. Override per-instance with AVG_ROM_SECS once calibrated.
+const DEFAULT_AVG = Number(process.env.AVG_ROM_SECS) || 270;
 const QUEUE_STATES = ['queued_fast', 'queued_slow', 'building', 'paused'];
 
 const remaining = (r) => Math.max(0, r.roms_total - r.roms_done);

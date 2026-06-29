@@ -31,5 +31,9 @@ export function createTokensRepo(db) {
       if (row.expires_at != null && now >= row.expires_at) return null;
       return row.user_id;
     },
+
+    deleteForUser(userId) {
+      db.prepare('DELETE FROM auth_tokens WHERE user_id = ?').run(userId);
+    },
   };
 }
