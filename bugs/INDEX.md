@@ -18,3 +18,4 @@
 | [B-012](B-012-delivery-optimistic-building-flash.md) | Delivery panel flashes "Building your ROM" before the server confirms (then flips to "Queued") | fixed | minor | 0.4.0 | 0.4.0 | frontend/__tests__/account.test.js |
 | [B-013](B-013-build-progress-resets-on-reload-client-synthesized.md) | Build progress + ETA reset to zero on reload (computed client-side, not from the backend) | fixed | major | 0.4.0 | 0.4.0 | backend/__tests__/produce.test.js |
 | [B-014](B-014-worker-bundle-module-not-defined-type-module.md) | Generation crashes with "module is not defined" — type:module made esbuild mis-bundle the CJS worker | fixed | critical | 0.4.0 | 0.4.0 | frontend/__tests__/worker-bundle.test.js |
+| [B-015](B-015-topbar-not-sticky-scrolls-away.md) | Top bar scrolls away instead of staying pinned | fixed | major | 0.3.1 | 0.3.1 | frontend/__tests__/topbar-sticky.test.js |

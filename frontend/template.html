@@ -171,6 +171,11 @@
     /* Main content */
     .app{
       width: 100%;
+      /* B-015: <body> is display:flex; the default align-items:stretch would clamp .app to 100vh,
+         which clips the sticky top bar (it can only stay pinned within its containing block). Let
+         .app grow to its full content height instead, while still filling the viewport when short. */
+      align-self: flex-start;
+      min-height: 100vh;
     }
     .grid{
       display:grid;

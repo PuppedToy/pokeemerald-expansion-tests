@@ -26,6 +26,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- The doc-viewer top bar now stays pinned to the top while scrolling (unless you unpin it); it was sliding out of view because the flex body clamped its container to one screen height (B-015).
 - Starter selection now **always forms a type triangle when one exists** in the eligible pool. The
   search was greedy (it committed to one random second starter and gave up on the first, hitting a
   no-constraint fallback on ~14% of seeds even when a valid triangle was available); it now enumerates
