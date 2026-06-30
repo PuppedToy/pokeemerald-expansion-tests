@@ -184,19 +184,20 @@
     }
     .trainer-grid{
       display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(400px,1fr));
+      grid-template-columns:1fr;   /* one trainer per row, full content width (T-038) */
       gap:16px;
     }
     .right {
       position: sticky;
-      top: 0;
-      height: 100vh;
+      top: var(--tbh, 0px);
+      height: calc(100vh - var(--tbh, 0px));
       overflow-y: auto;
       flex-shrink: 0;
       width: 210px;
       transition: width 0.2s ease;
     }
-    .right.nav-collapsed { width: 50px; }
+    .app.topbar-unpinned .right { top: 0; height: 100vh; }
+    .right.nav-collapsed { width: 80px; }
 
     /* Nav toggle button */
     #nav-toggle {
@@ -222,8 +223,14 @@
     .nav-icon { font-size: 16px; flex-shrink: 0; }
     .nav-text { overflow: hidden; white-space: nowrap; transition: max-width 0.2s ease, opacity 0.15s ease; max-width: 180px; }
     .right.nav-collapsed .nav-text { max-width: 0; opacity: 0; pointer-events: none; }
-    .right.nav-collapsed .nav a { justify-content: center; }
-    .right.nav-collapsed #reset-all-btn { justify-content: center; padding: 8px 0; }
+    /* gap:0 → the hidden (zero-width) label no longer offsets the icon via the flex gap,
+       so the active orange marker sits truly centred over the icon when collapsed. T-038 */
+    .right.nav-collapsed .nav a { justify-content: center; gap: 0; }
+    /* T-038: Reset is destructive — only show it when expanded (!important beats the inline display). */
+    .right.nav-collapsed #reset-all-btn { display: none !important; }
+    /* T-038: collapsed Mail → envelope centred, unread count as a bottom-right bubble. */
+    .right.nav-collapsed .nav a[data-target="mail"] { position: relative; }
+    .right.nav-collapsed #mail-bubble { position: absolute; right: 7px; bottom: 4px; margin: 0; }
     .main {
       background: transparent;
       display: flex;
@@ -291,7 +298,10 @@
       border-radius: 6px;
       padding: 5px 9px;
       font-size: 11px;
-      white-space: nowrap;
+      white-space: pre-line;          /* honour \n in tooltips (e.g. move stats) and wrap long text */
+      max-width: 280px;
+      width: max-content;
+      text-align: left;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.15s;
@@ -381,8 +391,29 @@
 
     /* Location card states */
     .location-card.nz-has-delayed { border-color: #f97316 !important; }
-    .nz-stopwatch-badge { font-size: 14px; display: none; margin-left: 4px; vertical-align: middle; }
+    .nz-stopwatch-badge { font-size: 20px; display: none; margin-left: 6px; vertical-align: middle; }
     .location-card.nz-has-delayed .nz-stopwatch-badge { display: inline; }
+
+    /* Encounter slots: type label as readable as the name, name a touch bigger (T-038). */
+    .enc-type-label { display:flex; align-items:center; justify-content:center; gap:6px;
+      font-size:19px; line-height:1.1; margin-bottom:6px; }
+    .enc-type-label .ico { height:0.9em; }
+    .nz-poke-name { font-size:22px; }
+
+    /* T-038: encounter slots are a fixed-size grid — at most 3 rows, columns = ceil(N/3)
+       (fill a column of 3, then start the next). Slot width is constant so cards never get
+       squished on resize; the location card hugs its grid and the cards wrap by content width. */
+    #wildpokes-cards { display:flex; flex-wrap:wrap; gap:16px; align-items:flex-start; }
+    .location-card { flex:0 0 auto; width:max-content; }
+    .enc-slots { display:grid; grid-auto-flow:column; grid-template-rows:repeat(3, auto);
+      grid-auto-columns:168px; gap:8px; }
+
+    /* T-038: the buff/nerf/adjusted indicator next to a Pokémon name inherits the name's
+       font-size, so it's oversized on the big card names and undersized in the small modal
+       title. Pin it per context. */
+    .nz-poke-name .ico { height:0.72em; }                                /* Encounters */
+    .roster-pname .ico { height:0.72em; }                                /* Trainers */
+    .modal-content .title .ico { height:1.45em; vertical-align:-0.22em; } /* Modal — bump up */
 
     /* Defeated trainer */
     .trainer-card.nz-defeated { opacity: 0.45; }
@@ -562,19 +593,109 @@
     .tier-badge { display:inline-block; margin-top:6px; padding:8px 14px;
       border: var(--obs-border); box-shadow: var(--obs-shadow-md);
       font-family: var(--obs-font-display); font-size: 9px; letter-spacing: var(--obs-tracking); line-height: 1.5; }
+
+    /* ============================================================
+       T-038 — Trainers "Roster Sheet" layout.
+       A fixed left rail holds the trainer dossier (name, portrait, level,
+       location, rewards, defeat toggle); the team runs as dense rows
+       (sprite · name+item/ability/nature · 2x2 move grid). Placed last so it
+       wins source-order over the shared .card rules above.
+       ============================================================ */
+    .trainer-card { display:block; padding:0; min-height:0; }
+    .roster { display:grid; grid-template-columns:204px 1fr; }
+    .roster-rail { background:var(--obs-well); border-right:3px solid var(--obs-shadow);
+      padding:16px; display:flex; flex-direction:column; gap:12px; align-items:flex-start; }
+    .trainer-card.specialCard .roster-rail { background:linear-gradient(180deg,#2a130b,#160b07); }
+    .trainer-card.partnerCard .roster-rail { background:linear-gradient(180deg,#0a2a12,#07160b); }
+    .roster-rail .title { margin:0; text-align:left; font-size:15px; line-height:1.5; }
+    .trainer-card.specialCard .roster-rail .title { color:var(--obs-yellow); }
+    .roster-portrait { width:100%; height:150px; background:var(--obs-bg-deep); border:var(--obs-border);
+      box-shadow:var(--obs-inset); display:grid; place-items:center; }
+    .roster-portrait-img { width:auto; height:120px; image-rendering:pixelated; }
+    .roster-facts { display:flex; flex-direction:column; gap:8px; align-items:flex-start; }
+    .roster-lv { font-family:var(--obs-font-display); font-size:9px; letter-spacing:1px; color:var(--obs-on-orange);
+      background:var(--obs-orange); border:var(--obs-border); box-shadow:var(--obs-shadow-sm); padding:7px 10px; white-space:nowrap; }
+    .roster-loc { display:inline-flex; align-items:center; gap:6px; font-size:18px; color:var(--obs-cyan);
+      background:var(--obs-well); border:2px solid var(--obs-line); padding:5px 9px; }
+    .roster-loc .ico { height:1.05em; }
+    .roster-rail .rewards { display:flex; flex-direction:column; gap:6px; align-self:stretch; margin:0; }
+    .roster-rail .reward-item { display:flex; align-items:center; gap:7px; background:var(--obs-well);
+      border:2px solid var(--obs-line); padding:5px 9px; font-size:18px; }
+    .roster-rail .nz-defeat-label { margin-top:auto; }
+    /* Fixed-width Pokémon cards: they do NOT stretch. The team just fits as many cards
+       per row as the width allows and wraps the rest — so the moves never drift away from
+       the info on wide screens. Add a 2nd column only when another card genuinely fits. T-038. */
+    .roster-team { padding:14px; display:flex; flex-wrap:wrap; gap:12px; }
+    .roster-row { width:640px; max-width:100%;
+      display:grid; grid-template-columns:60px 1fr minmax(150px,190px); gap:12px;
+      align-items:center; border:2px solid var(--obs-line); box-shadow:var(--obs-shadow-sm);
+      padding:9px 11px; text-align:left; }
+    .roster-row--nomoves { grid-template-columns:60px 1fr; }
+    .roster-row-spr { width:60px; height:60px; object-fit:contain; image-rendering:pixelated; }
+    .roster-info { min-width:0; }
+    .roster-pname { font-weight:700; font-size:21px; line-height:1.1; }
+    .roster-meta { font-size:16px; color:var(--obs-text-dim); line-height:1.35; margin-top:4px; }
+    .roster-meta .rm-ability { color:#D1F2FF; }
+    .roster-meta .rm-nature  { color:#A5D9B8; }
+    .roster-meta .rm-item    { color:#FFD580; }
+    .roster-meta .rm-sep     { color:var(--obs-text-mute); }
+    /* align-items:start → a shorter chip keeps its height and leaves a gap instead of
+       stretching to match a taller neighbour; flex-centre keeps multi-line names balanced. T-038 */
+    .roster-moves { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin:0; padding:0; align-items:start; }
+    .roster-moves .move-item { margin:0; font-size:16px; padding:4px 6px; display:flex; align-items:center; justify-content:center; }
+    @media (max-width:760px){
+      .roster { grid-template-columns:1fr; }
+      .roster-rail { border-right:none; border-bottom:3px solid var(--obs-shadow); }
+      .roster-row { grid-template-columns:56px 1fr; }
+      .roster-moves { grid-column:1 / -1; }
+    }
+
+    /* ============================================================
+       T-038 — Top bar: brand title + run stats (level cap / box / deaths / next boss).
+       Sticky by default; the 📌 button unpins it so it scrolls away with the page.
+       --tbh (set live by JS to the bar's height) offsets the sticky sidebar below it.
+       ============================================================ */
+    .topbar { position:sticky; top:0; z-index:60; background:var(--obs-bg-deep);
+      border-bottom:3px solid var(--obs-shadow); box-shadow:var(--obs-shadow-sm); }
+    .app.topbar-unpinned .topbar { position:static; }
+    .topbar-inner { display:flex; align-items:center; gap:18px 24px; flex-wrap:wrap; padding:12px 40px; }
+    .ec-title { font-family:var(--obs-font-display); font-size:18px; line-height:1.5; letter-spacing:var(--obs-tracking);
+      color:var(--obs-green); text-shadow:3px 3px 0 var(--obs-shadow); white-space:nowrap; }
+    .ec-logo .ico { height:1.3em; width:auto; image-rendering:pixelated; vertical-align:-0.22em;
+      position:relative; left:-0.18em; top:-0.12em; }
+    .topbar-stats { display:flex; align-items:stretch; gap:10px; margin-left:auto; flex-wrap:wrap; }
+    .tb-stat { display:flex; flex-direction:row; align-items:center; gap:9px;
+      background:var(--obs-surface); border:2px solid var(--obs-line); box-shadow:var(--obs-shadow-sm); padding:6px 12px; }
+    .tb-ico { flex:none; display:inline-flex; align-items:center; }
+    .tb-ico .ico { height:26px; width:auto; image-rendering:pixelated; }
+    .tb-col { display:flex; flex-direction:column; justify-content:center; gap:3px; min-width:0; }
+    .tb-label { font-family:var(--obs-font-display); font-size:7px; letter-spacing:1px; color:var(--obs-text-mute); text-transform:uppercase; white-space:nowrap; }
+    .tb-value { font-family:var(--obs-font-body); font-size:22px; line-height:1; color:var(--obs-text); white-space:nowrap; }
+    .tb-value.tb-cap { color:var(--obs-orange); }
+    .tb-value.tb-deaths { color:var(--obs-red); }
+    .tb-stat--boss .tb-value { color:var(--obs-cyan); font-size:18px; max-width:30ch; overflow:hidden; text-overflow:ellipsis; }
+    .topbar-pin { flex:none; background:var(--obs-surface); border:var(--obs-border); box-shadow:var(--obs-shadow-sm);
+      color:var(--obs-text-dim); cursor:pointer; padding:7px 10px; font-size:15px; line-height:1;
+      display:inline-flex; align-items:center; }
+    .topbar-pin .ico { height:18px; width:auto; image-rendering:pixelated; }
+    .topbar-pin:hover { background:var(--obs-surface-2); }
+    .app.topbar-unpinned .topbar-pin { opacity:0.45; }
+    @media (max-width:700px){ .topbar-stats { margin-left:0; } .topbar-inner { padding:12px 20px; } }
   </style>
 </head>
 <body>
   <div class="app">
-    <header class="top">
-      <div class="logo">
-        <div class="badge" data-icon="emeraldCut">E</div>
-        <div>
-          <h1>Pokémon Emerald Cut</h1>
-          <div class="small">Your emerald cut for controlled chaos</div>
+    <header class="topbar" id="topbar">
+      <div class="topbar-inner">
+        <div class="ec-title">Emerald <span class="ec-logo" data-icon="emeraldCut">C</span>ut</div>
+        <div class="topbar-stats">
+          <div class="tb-stat"><span class="tb-ico" data-icon="buffed"></span><span class="tb-col"><span class="tb-label">Level cap</span><span class="tb-value tb-cap" id="tb-cap">—</span></span></div>
+          <div class="tb-stat"><span class="tb-ico" data-icon="pc"></span><span class="tb-col"><span class="tb-label">Pokémon in box</span><span class="tb-value" id="tb-box">—</span></span></div>
+          <div class="tb-stat"><span class="tb-ico" data-icon="fainted"></span><span class="tb-col"><span class="tb-label">Deaths</span><span class="tb-value tb-deaths" id="tb-deaths">—</span></span></div>
+          <div class="tb-stat tb-stat--boss"><span class="tb-ico" data-icon="boss"></span><span class="tb-col"><span class="tb-label">Next boss</span><span class="tb-value" id="tb-boss">—</span></span></div>
         </div>
+        <button class="topbar-pin" id="topbar-pin" type="button" aria-pressed="true" title="Pin the bar to the top while scrolling">📌</button>
       </div>
-      <div id="level-cap-readout" class="level-cap-readout" title="Rises each time you defeat the next boss">Current level cap: <strong id="level-cap-value">—</strong></div>
     </header>
 
     <main class="main">
@@ -1198,6 +1319,7 @@
 
       // Build each Pokémon slot. displayTeam (pre-shuffle order) is present only when
       // "Show exact positions" was off; otherwise team is the real in-game order.
+      // Each Pokémon is a dense roster row: sprite · name+item/ability/nature · 2x2 move grid.
       const teamHTML = (trainer.displayTeam || trainer.team).map(member => {
         const pokeId = member.pokemon || '';
         const _trainerPoke = findPoke(pokeId);
@@ -1205,28 +1327,46 @@
         const pokeNamePlain = pokeId.replace('SPECIES_', '').replace(/_/g, ' ');
         const pokeName = (_trainerPokeColor ? `<span style="color:${_trainerPokeColor}">` : '') + pokeNamePlain + (_trainerPokeColor ? '</span>' : '') + getFullPokeLogIcon(_trainerPoke);
         const imgSrc = getPokeImg(pokeId);
-        const item = member.item ? `<div class="small" style="color:#FFD580">🎒 ${member.item}</div>` : '';
-        const ability = member.ability ? `<div class="small" style="color:#D1F2FF; margin-top: 4px">${nameify(member.ability)}</div>` : '';
-        const nature = member.nature ? `<div class="small" style="color:#A5D9B8; margin-top: 4px">${natures[member.nature]}</div>` : '';
-        const moves =
-          member.moves && member.moves.length > 0
-            ? `<div class="move-list">
+        // Ability · Nature · Item on a single line. Full details live in hover tooltips:
+        // ability description, the nature's stat spread, and per-move power/accuracy/pp.
+        const attr = s => String(s).replace(/"/g, '&quot;');
+        const abilityHTML = member.ability
+          ? `<span class="rm-ability" data-tooltip="${attr((abilitiesData['ABILITY_' + member.ability] || {}).description || 'No description.')}">${nameify(member.ability)}</span>`
+          : '';
+        const natFull = natures[member.nature] || '';
+        const natEff = (natFull.match(/\(([^)]*)\)/) || [, ''])[1];
+        const expandStat = s => s
+          .replace(/\bSpa\b/g, 'Special Attack').replace(/\bSpd\b/g, 'Special Defense')
+          .replace(/\bSpe\b/g, 'Speed').replace(/\bAtk\b/g, 'Attack').replace(/\bDef\b/g, 'Defense');
+        const natTip = (!natEff || natEff === '-') ? 'Neutral — no stat change' : expandStat(natEff);
+        const natureHTML = member.nature
+          ? `<span class="rm-nature" data-tooltip="${attr(natTip)}">${member.nature}</span>`
+          : '';
+        const itemHTML = member.item ? `<span class="rm-item">${getIcon('pokeball','🎒')} ${member.item}</span>` : '';
+        const metaLine = [abilityHTML, natureHTML, itemHTML].filter(Boolean).join('<span class="rm-sep"> · </span>');
+        const hasMoves = member.moves && member.moves.length > 0;
+        const movesHTML = hasMoves
+          ? `<div class="move-list roster-moves">
                 ${member.moves.map(m => {
                   const move = movesData[m];
                   const typeColor = move ? typeColors[move.type] : '#888';
-                  return `<div class="move-item" style="background-color:${typeColor}">${nameify(m.replace('MOVE_', ''))}</div>`;
+                  const nm = nameify(m.replace('MOVE_', ''));
+                  const tip = move
+                    ? `${move.description || nm}\nPower ${move.power ?? '—'} · Acc ${move.accuracy ?? '—'} · PP ${move.pp ?? '—'}`
+                    : nm;
+                  return `<div class="move-item" style="background-color:${typeColor}" data-tooltip="${attr(tip)}">${nm}</div>`;
                 }).join('')}
               </div>`
-            : '';
+          : '';
 
         return `
-          <div class="clicker trainer-poke poke-${pokeId}" style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
-            <img src="${imgSrc}" style="width:64px;height:64px;object-fit:contain" alt="${pokeNamePlain}">
-            <div style="font-weight:700;margin-top:4px">${pokeName}</div>
-            ${item}
-            ${ability}
-            ${nature}
-            ${moves}
+          <div class="clicker trainer-poke poke-${pokeId} roster-row${hasMoves ? '' : ' roster-row--nomoves'}">
+            <img class="roster-row-spr" src="${imgSrc}" alt="${pokeNamePlain}">
+            <div class="roster-info">
+              <div class="roster-pname">${pokeName}</div>
+              ${metaLine ? `<div class="roster-meta">${metaLine}</div>` : ''}
+            </div>
+            ${movesHTML}
           </div>
         `;
       }).join('');
@@ -1239,21 +1379,25 @@
         `;
       }
 
-      // Final card markup
+      // Final card markup — Roster Sheet (T-038): dossier rail + dense team rows.
       card.innerHTML = `
-        <div style="text-align:center;">
-          <div class="title">${trainer.isBoss ? getIcon('boss','👑')+' ' : ''}${trainerName}</div>
-          ${!trainer.isPartner ? `<div style="margin-bottom:6px;">
-            <label class="nz-defeat-label">
+        <div class="roster">
+          <div class="roster-rail">
+            <div class="title">${trainer.isBoss ? getIcon('boss','👑')+' ' : ''}${trainerName}</div>
+            <div class="roster-portrait">
+              <img class="roster-portrait-img" src="${getTrainerImg(trainer.class)}" alt="${trainerName}">
+            </div>
+            <div class="roster-facts">
+              <span class="roster-lv">Lv. ${trainer.level}</span>
+              ${trainer.location ? `<span class="roster-loc">${getIcon('location','📍')} ${trainer.location}</span>` : ''}
+            </div>
+            ${rewards}
+            ${!trainer.isPartner ? `<label class="nz-defeat-label">
               <input type="checkbox" class="nz-defeat-cb" data-trainer-id="${trainerId}">
               ☑ Defeated
-            </label>
-          </div>` : ''}
-          <img width="60" height="60" src="${getTrainerImg(trainer.class)}">
-          <div class="small" style="text-align:center; color:#FFB28A;">Lv. ${trainer.level}</div>
-          ${trainer.location ? `<div class="small" style="text-align:center; color:var(--obs-cyan); margin-top:2px;">${getIcon('location','📍')} ${trainer.location}</div>` : ''}
-          ${rewards}
-          <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:8px;">
+            </label>` : ''}
+          </div>
+          <div class="roster-team">
             ${teamHTML}
           </div>
         </div>
@@ -1296,6 +1440,24 @@
       }
     }
 
+    // T-038: pixel icon for each encounter slot. Boss/static/legendary win over the
+    // slot type (they describe the whole card); rods stack a tier marker + the rod.
+    function getEncounterIcon(type, flags) {
+      if (flags.isBossReward)        return getIcon('reward','🎁');
+      if (flags.isStaticEncounter)   return getIcon('boss','👑');
+      if (flags.isLegendaryEncounter) return getIcon('star','✦') + getIcon('boss','👑');
+      const rod = getIcon('fishingrod','🎣');
+      switch (type) {
+        case 'land':       return getIcon('grass','🌿');
+        case 'old':        return rod;   // rod alone — the label says which rod (T-038)
+        case 'good':       return rod;
+        case 'super':      return rod;
+        case 'surf':
+        case 'underwater': return getIcon('moves','🌊');
+        default:           return getIcon('star','✦'); // special / special1..9
+      }
+    }
+
     const routesGrid = document.getElementById('wildpokes-cards');
 
     wildPokes.forEach(route => {
@@ -1323,11 +1485,13 @@
           const adjustmentIcon = getFullPokeLogIcon(poke);
           const nameColor = getFullPokeLogColor(poke);
           const coloredName = nameColor ? `<span style="color:${nameColor}">${pokeName}</span>` : pokeName;
-          let typeLabel;
-          if (isBossReward)         typeLabel = `<div style="font-size:12px; color:#c084fc; margin-bottom:4px;">Reward</div>`;
-          else if (isStaticEncounter)    typeLabel = `<div style="font-size:12px; color:#f87171; margin-bottom:4px;">Static</div>`;
-          else if (isLegendaryEncounter) typeLabel = `<div style="font-size:12px; color:#fbbf24; margin-bottom:4px;">Legendary</div>`;
-          else                           typeLabel = `<div style="font-size:12px; color:#FFB28A; margin-bottom:4px;">${getRouteTypeName(type)}</div>`;
+          const encIcon = getEncounterIcon(type, { isBossReward, isStaticEncounter, isLegendaryEncounter });
+          let labelText, labelColor;
+          if (isBossReward)              { labelText = 'Reward';    labelColor = '#c084fc'; }
+          else if (isStaticEncounter)    { labelText = 'Static';    labelColor = '#f87171'; }
+          else if (isLegendaryEncounter) { labelText = 'Legendary'; labelColor = '#fbbf24'; }
+          else                           { labelText = getRouteTypeName(type); labelColor = '#FFB28A'; }
+          const typeLabel = `<div class="enc-type-label" style="color:${labelColor}">${encIcon}<span>${labelText}</span></div>`;
           const slotExtraClass = autoSelected ? ' nz-auto-selected' : '';
           const faintLabel = `<label class="nz-cb-label nz-faint-label" data-tooltip="Mark as fainted">
                 <input type="checkbox" class="nz-faint-cb" data-route="${route.id}" data-slot="${type}">
@@ -1339,7 +1503,7 @@
             <div class="nuzlocke-controls">
               <label class="nz-cb-label nz-delay-label" data-tooltip="Mark as delayed">
                 <input type="checkbox" class="nz-delay-cb" data-route="${route.id}" data-slot="${type}">
-                ${getIcon('clock','⏱')}
+                ${getIcon('stopwatch','⏱')}
               </label>
               <label class="nz-cb-label nz-select-label" data-tooltip="Mark as captured">
                 <input type="checkbox" class="nz-select-cb" data-route="${route.id}" data-slot="${type}">
@@ -1359,21 +1523,11 @@
         })
         .join('');
 
-      let headerBadge = '';
-      const badgeStyle = `font-family:var(--obs-font-display); font-size:8px; letter-spacing:1px; margin-top:4px;`;
-      if (isBossReward)
-        headerBadge = `<div style="${badgeStyle} color:var(--obs-cyan);">${getIcon('boss','')} BOSS REWARD</div>`;
-      else if (isStaticEncounter)
-        headerBadge = `<div style="${badgeStyle} color:var(--obs-red);">STATIC ENCOUNTER</div>`;
-      else if (isLegendaryEncounter)
-        headerBadge = `<div style="${badgeStyle} color:var(--obs-yellow);">${getIcon('star','✦')} LEGENDARY ${getIcon('star','✦')}</div>`;
-
       card.innerHTML = `
-        <div class="meta">
-          <div class="title">${routeName}<span class="nz-stopwatch-badge">${getIcon('clock','⏱')}</span></div>
-          ${headerBadge}
+        <div class="meta" style="justify-content:center;">
+          <div class="title">${routeName}<span class="nz-stopwatch-badge">${getIcon('stopwatch','⏱')}</span></div>
         </div>
-        <div class="grid" style="grid-template-columns:repeat(auto-fill, minmax(100px,1fr)); gap:8px;">
+        <div class="enc-slots">
           ${encountersHTML}
         </div>
       `;
@@ -2567,7 +2721,7 @@
       }
       reconcile();
     };
-    window.onBoxMaybeChanged = function(){ if (reconcileEvo()) save(); refreshBubble(); if (isMailActive()) render(); if (typeof window.renderPC==='function') window.renderPC(); if (typeof window.nzRefreshAll==='function') window.nzRefreshAll(); };
+    window.onBoxMaybeChanged = function(){ if (reconcileEvo()) save(); refreshBubble(); refreshCap(); if (isMailActive()) render(); if (typeof window.renderPC==='function') window.renderPC(); if (typeof window.nzRefreshAll==='function') window.nzRefreshAll(); };
 
     // ---------- actions ----------
     // Evolve one box entry from `fromSp` to `toSp`. Sets the overlay, then deletes ONLY the non-chosen
@@ -2731,7 +2885,18 @@
     function familySet(speciesId){ var s={}; s[speciesId]=1; (famComponent[ufFind(speciesId)]||[]).forEach(function(id){ s[id]=1; }); return s; }
     function findObtainable(famSet){ var found=null; (typeof wildPokes!=='undefined'?wildPokes:[]).forEach(function(route){ if (found || route.id==='STARTER_EXTRA') return; ENCOUNTER_TYPES.forEach(function(slot){ if (found) return; if (route[slot] && famSet[route[slot]]) found={ label: route.label || nm(route.id), species: route[slot] }; }); }); return found; }
 
-    function refreshCap(){ var el=document.getElementById('level-cap-value'); if (el) el.textContent = currentCapLevel(nz()); }
+    function nextBossLabel(st){ for (var i=0;i<bossCaps.length;i++){ if (!isBossDefeated(bossCaps[i],st)) return bossCaps[i].label; } return 'All cleared'; }
+    // Refreshes the whole top bar (level cap / box / deaths / next boss). Name kept for its
+    // existing call sites; box & deaths change on capture/faint, the rest on boss defeat.
+    function refreshCap(){
+      var st = nz();
+      var set = function(id, v){ var el=document.getElementById(id); if (el) el.textContent = v; };
+      set('tb-cap', currentCapLevel(st));
+      set('tb-box', boxMembers().length);
+      set('tb-deaths', capturedEntries().filter(function(e){ return e.fainted; }).length);
+      set('tb-boss', nextBossLabel(st));
+      set('level-cap-value', currentCapLevel(st)); // legacy id, if still present
+    }
     window.docCurrentCap = function(){ return currentCapLevel(nz()); };
     // Box entries (one per encounter, evolution overlay applied) for the PC tab (T-009):
     // docBoxList = available (non-fainted), docFaintedList = fainted.
@@ -2793,7 +2958,12 @@
   (function(){
     'use strict';
     var css = document.createElement('style'); css.textContent = ''
-      + '#pc-controls{display:flex;gap:8px;margin-top:6px;}'
+      + '#pc-controls{display:flex;gap:10px;margin-top:6px;}'
+      // T-038: PC view toggles use the body font at a readable size (the shared .filter-chip
+      // is an 8px Press Start 2P pixel chip) and carry an icon for quick scanning.
+      + '.filter-chip.pc-view-btn{font-family:var(--obs-font-body);font-size:20px;letter-spacing:0;'
+      + 'display:inline-flex;align-items:center;gap:8px;padding:8px 16px;}'
+      + '.filter-chip.pc-view-btn .ico{height:1.1em;}'
       + '.pc-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(120px, 1fr));gap:12px;margin-top:14px;}'
       + '.pc-cell{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;cursor:pointer;'
       + 'background:var(--obs-surface);border:var(--obs-border);box-shadow:var(--obs-shadow-sm);transition:transform .05s ease, box-shadow .05s ease;}'
@@ -2815,8 +2985,8 @@
         ? ((typeof window.docFaintedList === 'function') ? window.docFaintedList() : [])
         : ((typeof window.docBoxList === 'function') ? window.docBoxList() : []);
       if (ctrls) ctrls.innerHTML =
-        '<button class="filter-chip'+(!fainted?' active':'')+'" data-pc-view="available">Available</button>' +
-        '<button class="filter-chip'+(fainted?' active':'')+'" data-pc-view="fainted">Fainted</button>';
+        '<button class="filter-chip pc-view-btn'+(!fainted?' active':'')+'" data-pc-view="available">'+getIcon('pokeball','')+'<span>Available</span></button>' +
+        '<button class="filter-chip pc-view-btn'+(fainted?' active':'')+'" data-pc-view="fainted">'+getIcon('fainted','')+'<span>Fainted</span></button>';
       if (empty){ empty.textContent = fainted ? 'No fainted Pokémon — none have fainted yet.' : 'No Pokémon in your box yet — capture some in the Encounters tab.'; empty.style.display = list.length ? 'none' : ''; }
       grid.innerHTML = list.map(function(e){
         var id = e.currentSpecies, nm = pcName(id);
@@ -2879,6 +3049,33 @@
       var u = (typeof iconAsset === 'function') && iconAsset(el.getAttribute('data-icon'));
       if (u) el.innerHTML = '<img class="ico" src="' + u + '" alt="">';
     });
+  </script>
+  <!-- T-038: top-bar pin toggle + measure its height into --tbh (offsets the sticky sidebar).
+       Runs after the icon swap so the measured height includes the brand logo. -->
+  <script>
+    (function(){
+      var app = document.querySelector('.app'), bar = document.getElementById('topbar'), pin = document.getElementById('topbar-pin');
+      if (!app || !bar || !pin) return;
+      function setTbh(){ document.documentElement.style.setProperty('--tbh', bar.offsetHeight + 'px'); }
+      function applyPinned(pinned){
+        app.classList.toggle('topbar-unpinned', !pinned);
+        pin.setAttribute('aria-pressed', pinned ? 'true' : 'false');
+        pin.innerHTML = (typeof getIcon === 'function')
+          ? getIcon(pinned ? 'pinned' : 'unpinned', pinned ? '📌' : '📍')
+          : (pinned ? '📌' : '📍');
+        pin.title = pinned ? 'Unpin the bar (let it scroll away)' : 'Pin the bar to the top while scrolling';
+        setTbh();
+      }
+      var stored = null; try { stored = localStorage.getItem('ec-topbar-pinned'); } catch(e){}
+      applyPinned(stored === null ? true : stored === '1');
+      pin.addEventListener('click', function(){
+        var next = app.classList.contains('topbar-unpinned'); // currently unpinned → next = pin it
+        applyPinned(next);
+        try { localStorage.setItem('ec-topbar-pinned', next ? '1' : '0'); } catch(e){}
+      });
+      window.addEventListener('resize', setTbh);
+      setTbh();
+    })();
   </script>
 </body>
 </html>

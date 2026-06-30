@@ -41,4 +41,4 @@
 | [T-035](T-035-generation-and-settings-ux-refinements.md) | Generation + Settings UX refinements (cancel, delete account, run details, exact ETA, emphasis) | done | 0.4.0 | 2026-06-29 |
 | [T-036](T-036-frontend-test-harness.md) | Frontend test harness + regression tests for the frontend bugs (B-011, B-012) | done | 0.4.0 | 2026-06-29 |
 | [T-037](T-037-accept-additional-emerald-revisions.md) | Accept additional legal Emerald regional ROM revisions (JP/FR/DE/IT/ES …) | done | 0.4.0 | 2026-06-29 |
-| [T-038](T-038-docs-feedback-review.md) | Documentation feedback review and improvements | in-progress | 0.3.1 | 2026-06-29 |
+| [T-038](T-038-docs-feedback-review.md) | Documentation feedback review and improvements | done | 0.3.1 | 2026-06-30 |
