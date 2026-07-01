@@ -5,7 +5,7 @@ status: proposed
 type: feature
 created: 2026-06-20
 updated: 2026-07-01
-target-version: 0.5.0
+target-version: 9.9.9
 links: [tasks/T-013-move-rating-heuristics.md]
 blocked-by: []
 ---
@@ -84,6 +84,11 @@ order and therefore **silently change every generated team** for a given seed.
   earlier-teammates-only version). Not scheduled.
 - **2026-07-01** — Re-targeted 0.4.0 → 0.5.0: still unstarted when 0.4.0 was cut (viewer redesign
   + fixes), so it moves to the next minor rather than blocking the release.
+- **2026-07-01** — **Postponed indefinitely** (owner). Rather than bump it release-to-release again,
+  parked out of the release train: `target-version` set to the backlog sentinel **9.9.9** (the tracker
+  requires an X.Y.Z, so this is our "unscheduled/someday" marker — not a real planned 9.9.9 release).
+  Stays `proposed`, **not abandoned**; re-target to a concrete version if/when it's picked up. Unblocks
+  the 0.5.0 release.
 
 ## Outcome
 
