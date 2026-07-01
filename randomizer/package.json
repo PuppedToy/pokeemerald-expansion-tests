@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "type": "commonjs",
   "scripts": {
-    "test": "jest --testPathPattern=__tests__"
+    "test": "jest --testPathPattern=__tests__",
+    "test:determinism": "RUN_DETERMINISM=1 jest --testPathPattern=crossRomBossDeterminism"
   },
   "devDependencies": {
     "jest": "^29.7.0"

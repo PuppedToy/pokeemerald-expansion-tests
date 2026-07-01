@@ -7,6 +7,20 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Fixed
+
+- Shared-trainer soul-link ROMs no longer diverge, and a trainer can no longer field an evolved
+  Pokémon below its evolution level (e.g. a level-15 trainer with a Ludicolo). Evolution levels
+  are now rolled **once per Pokédex** instead of being re-rolled per ROM during bundle generation,
+  so every ROM's teams are resolved against — and match — the evolution data the bundle ships
+  (B-017, T-042).
+
+### Added
+
+- Cross-ROM boss-team determinism guarantee test (`npm run test:determinism`): generates a
+  shared-trainer soul-link and fails if any boss battle without a per-ROM-dependent slot differs
+  across ROMs — a standing net against unjustified inter-ROM nondeterminism (T-043).
+
 ## [0.5.0] - 2026-07-01
 
 ### Added
