@@ -43,3 +43,4 @@
 | [T-037](T-037-accept-additional-emerald-revisions.md) | Accept additional legal Emerald regional ROM revisions (JP/FR/DE/IT/ES …) | done | 0.4.0 | 2026-06-29 |
 | [T-038](T-038-docs-feedback-review.md) | Documentation feedback review and improvements | done | 0.3.1 | 2026-06-30 |
 | [T-039](T-039-encounters-viewer-polish.md) | Encounters viewer polish — labels, icon, reading order, type colours | done | 0.3.1 | 2026-07-01 |
+| [T-040](T-040-mobile-responsive.md) | Mobile-responsive frontend & generated docs viewer | in-progress | 0.5.0 | 2026-07-01 |

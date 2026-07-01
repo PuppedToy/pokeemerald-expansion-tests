@@ -7,6 +7,18 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Added
+
+- The whole web frontend **and** the generated documentation viewer are now **mobile-responsive**, while
+  the desktop rendering stays exactly as it was (T-040). On phones (≤600px) the top navigation and the
+  viewer's sidebar collapse into a **hamburger + off-canvas drawer**; the randomizer step indicator goes
+  compact, tap targets are ≥44px, the viewer's content goes full width and its top-bar run-stats reflow.
+  **iPad and desktop are untouched** (the desktop layout serves tablets; no horizontal overflow at 768/1024).
+  The **Obsidian UI kit** gained a documented mobile layer (breakpoint scale + responsive component rules).
+  Backed by a new **dev-only visual-regression harness** (`visual-tests/`, Playwright — [ADR-010](docs/adr/ADR-010-visual-regression-playwright-dev-tool.md)):
+  it locks the desktop rendering pixel-for-pixel, asserts no mobile overflow, and screenshots every screen
+  at every resolution; plus fast zero-dep structural guards under `node --test`.
+
 ## [0.4.0] - 2026-07-01
 
 ### Changed
