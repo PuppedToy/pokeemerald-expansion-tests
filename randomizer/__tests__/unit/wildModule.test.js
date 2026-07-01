@@ -561,3 +561,19 @@ describe('rewardMegaStones', () => {
         expect(rng.random()).toBe(baseline);
     });
 });
+
+describe('BANNED_SPECIES_FOR_PICKING — Palafin Zero-to-Hero', () => {
+    const { BANNED_SPECIES_FOR_PICKING } = require('../../modules/wildModule');
+
+    test('Palafin Zero is placeable (rated/moved as Hero)', () => {
+        expect(BANNED_SPECIES_FOR_PICKING).not.toContain('SPECIES_PALAFIN_ZERO');
+    });
+
+    test('Finizen is placeable (base form, evolves into Palafin)', () => {
+        expect(BANNED_SPECIES_FOR_PICKING).not.toContain('SPECIES_FINIZEN');
+    });
+
+    test('Palafin Hero stays banned (battle-only form)', () => {
+        expect(BANNED_SPECIES_FOR_PICKING).toContain('SPECIES_PALAFIN_HERO');
+    });
+});

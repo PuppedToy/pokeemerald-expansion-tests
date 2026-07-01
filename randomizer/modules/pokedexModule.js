@@ -6,12 +6,14 @@ const parser = require('../parser');
 const { randomizeTMs, buildTMList, annotateTmNumbers } = require('../tmRandomizer');
 const { parseTmLocations } = require('../tmLocations');
 const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
-const { ratePokemon, rateContextual, rateMove } = require('../rating');
+const { ratePokemon, rateContextual, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove } = require('../rating');
 const { balancePokemon } = require('../rebalancer');
 const {
     TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR, ABILITIES_FILE_PATH, MEGA_EVOS_PATH,
     EVO_TYPE_MEGA,
     TIER_LEGEND, TIER_UBERS, TIER_LEGEND_THRESHOLD, TIER_SEQ,
+    WISHIWASHI_SOLO_ID, WISHIWASHI_SCHOOL_ID,
+    PALAFIN_ZERO_ID, PALAFIN_HERO_ID,
 } = require('../constants');
 
 const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
@@ -179,6 +181,26 @@ async function runPokedexModule(config, baseData = null) {
         }
     }
 
+    // 9b. Wishiwashi special case — the placed Solo form schools into the School form at
+    // lvl 20+. Rate Solo using the live School entry's stats + typing (post-rebalance),
+    // nerfed 25% HP for the unusable revert zone. Runs after rebalance so both forms have
+    // final stats, and before best-evo so downstream tier/bestEvo use the corrected rating.
+    const wishiSolo   = allPokes.find(p => p.id === WISHIWASHI_SOLO_ID);
+    const wishiSchool = allPokes.find(p => p.id === WISHIWASHI_SCHOOL_ID);
+    if (wishiSolo && wishiSchool) {
+        wishiSolo.rating = ratePokemon(wishiwashiEffectivePoke(wishiSolo, wishiSchool), moves, abilities, tmPool);
+    }
+
+    // 9c. Palafin Zero-to-Hero special case — the placed Zero form transforms into the battle-only
+    // Hero form on its first switch out (free, permanent). Rate Zero using the live Hero entry's
+    // stats + typing (post-rebalance), with NO level gate and NO HP nerf. Runs after rebalance so
+    // both forms have final stats, and before best-evo so Finizen inherits the elevated rating.
+    const palafinZero = allPokes.find(p => p.id === PALAFIN_ZERO_ID);
+    const palafinHero = allPokes.find(p => p.id === PALAFIN_HERO_ID);
+    if (palafinZero && palafinHero) {
+        palafinZero.rating = ratePokemon(palafinEffectivePoke(palafinZero, palafinHero), moves, abilities, tmPool);
+    }
+
     // 10. Best-evo / mega-evo ratings
     allPokes.forEach(poke => {
         let bestEvo = poke.id;
@@ -240,7 +262,15 @@ async function runPokedexModule(config, baseData = null) {
     for (const poke of allPokes) {
         poke.contextualRatings = {};
         for (const cap of LEVEL_CAPS) {
-            poke.contextualRatings[cap] = rateContextual(poke, moves, abilities, { level: cap, tms: [] });
+            // Wishiwashi Solo: below lvl 20 it's the weak Solo form; at 20+ it schools.
+            // Palafin Zero: rated as Hero at every level (no level gate — the transform is free).
+            let ctxPoke = poke;
+            if (poke.id === WISHIWASHI_SOLO_ID && wishiSchool) {
+                ctxPoke = wishiwashiEffectivePoke(poke, wishiSchool, cap);
+            } else if (poke.id === PALAFIN_ZERO_ID && palafinHero) {
+                ctxPoke = palafinEffectivePoke(poke, palafinHero);
+            }
+            poke.contextualRatings[cap] = rateContextual(ctxPoke, moves, abilities, { level: cap, tms: [] });
         }
     }
 
