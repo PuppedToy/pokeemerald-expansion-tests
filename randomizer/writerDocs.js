@@ -14,7 +14,6 @@ const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
 const { sample, canLearnMove } = require('./modules/utils');
 const { selectWithAutoFallback } = require('./modules/trainerFallback');
 const { createChooser } = require('./modules/trainerSelector');
-const { applyEvoLevels } = require('./evoLevelWriter.js');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 
 const CONTEXTUAL_TIER_SEQ = ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU', 'UBERS', 'LEGEND', 'AG'];
@@ -111,8 +110,12 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
 
     pokemonList = pokemonList.filter(poke => !BANNED_SPECIES_FOR_PICKING.includes(poke.id));
 
-    // Apply dynamic evo levels based on tier (same computation as writer.js, in-memory only)
-    applyEvoLevels(pokemonList);
+    // NOTE: evolution levels are NOT rolled here. They are a property of the pokedex and are
+    // chosen exactly once, when the pokedex is created (see randomizer/generate.js → makePokedex),
+    // so every ROM's trainer resolution uses the same levels that get serialized into the bundle.
+    // Rolling them here (once per ROM, under the per-ROM rng.seed) was B-017: teams resolved
+    // against a per-ROM roll while the bundle stored only the last ROM's — producing illegal
+    // evolved mons (e.g. a level-15 trainer with a Ludicolo) and divergent shared-trainer teams.
 
     // Deep-clone trainersData — mega trainer processing splices the array in-place
     const trainersData = JSON.parse(JSON.stringify(rawTrainersData));
