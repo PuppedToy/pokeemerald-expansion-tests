@@ -1,7 +1,7 @@
 ---
 id: T-040
 title: Mobile-responsive frontend & generated docs viewer
-status: in-progress
+status: done
 type: feature
 created: 2026-07-01
 updated: 2026-07-01
@@ -54,7 +54,7 @@ Acceptance criteria:
 - [x] obsidian-ui-kit ships a documented responsive layer + breakpoint scale; `example.html` has viewport meta.
 - [x] Zero-dep responsive guards added and green (frontend 14/14); `backend` 94/94; `randomizer` 473/473 (<2s, no new deps).
 - [x] `visual-tests` Playwright suite runnable (70/70); `npm run shoot` produces per-viewport PNGs for agent review; ADR-010 recorded and linked in docs/INDEX.
-- [ ] Owner manually tested on a real phone and confirmed OK. ← only open item (close gate).
+- [x] Owner manually tested on the phone (live on PRO) and confirmed OK ("muy buen responsive, se ve perfecto") — 2026-07-01.
 
 ## Progress log
 
@@ -131,7 +131,44 @@ Acceptance criteria:
   documentScrollWidth=375 with 0 elements past the edge on both tabs; unpin probe shows
   bar=sticky/stats=none/burger=visible. Desktop guard **14/14 unchanged**, interaction **4/4**, full
   visual **74/74** after refreshing the mobile encounters/trainers baselines.
+- **2026-07-01** — Feedback fixes committed and redeployed to PRO (owner green-light); verified prod
+  serves all three fixes. Owner re-tested on mobile and confirmed: "muy buen responsive, se ve perfecto,
+  cerramos tarea." All acceptance criteria met, all suites green — **task closed (done)**. Target 0.5.0.
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Shipped a full mobile-responsive layer for the web app **and** the generated docs viewer while keeping
+desktop (and iPad ≥601px) **byte-identical** — the guiding invariant was "additive `max-width:600px`
+media queries only, never edit a base rule", proved by locking desktop+iPad pixel baselines before any
+edit and keeping them green throughout.
+
+**What shipped:**
+- **App** (`frontend/`): top-nav → hamburger + off-canvas drawer (`.topnav-menu` is `display:contents`
+  on desktop so nothing changes there; scrim at `z-index:999` below `.topnav` so the drawer, trapped in
+  `.topnav`'s stacking context, stays tappable), compact numbered stepper, 44px tap targets, modal/wrap
+  paddings, verified reset/verify/settings/auth.
+- **Docs viewer** (`frontend/template.html`): sidebar → off-canvas drawer, full-width content, compact
+  top bar; **feedback round**: unpin keeps the bar (burger + title) pinned and only hides the stat tiles,
+  Encounters became full-width vertically-scrolling rows (no fixed-column matrix), Trainers fit the
+  screen (no horizontal scroll). Removed the dead `@media(max-width:1000px)` block. B-015/B-016 and
+  T-038/T-039 preserved.
+- **Obsidian UI kit**: documented responsive `@media` layer (§15) + breakpoint scale (STYLE_GUIDE §8) +
+  `.obs-scroll-x` utility.
+- **Testing**: a new **isolated, dev-only** Playwright harness (`visual-tests/`, [ADR-010](../docs/adr/ADR-010-visual-regression-playwright-dev-tool.md))
+  — per-viewport pixel baselines (desktop = the "must not change" lock), a no-overflow assertion, an
+  interaction spec (drawer navigation), a deterministic offline docs fixture builder, and `shoot.mjs`
+  for hands-free multi-resolution screenshots — plus fast zero-dep structural guards
+  (`frontend/__tests__/responsive.test.js`). Final: visual 74/74, frontend 14/14, backend 94, randomizer 473.
+
+**Deviations from the plan:** none material. The plan's "two-layer testing" was realised as ADR-010's
+isolated Playwright tool + node --test guards. iPad confirmed as desktop-first (no overflow at 768/1024),
+so no dedicated tablet design was needed. The mdBook site (`docs/`) was out of scope (already responsive).
+
+**Defects found & fixed in-task (owner review, unreleased code — logged here, no B-NNN):** drawer links
+were unclickable because the scrim outranked `.topnav`'s stacking context (fixed: scrim `z-index:999`,
+regression test in `visual-tests/interaction.spec.mjs`); the fixture builder was mutating generated
+source as a pipeline side-effect (fixed: it now restores `src`/`include`/`data/maps` in a `finally`).
+
+**Follow-ups:** none required. Optional tidy — `deploy/update.sh` rsyncs `visual-tests/` (dev-only) to
+the box; could add `--exclude 'visual-tests/'` in a future pass (harmless, not served). Released under
+**0.5.0** (CHANGELOG `[Unreleased]`). Live and owner-validated on https://pokemon-emerald-cut.com.
