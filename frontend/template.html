@@ -637,23 +637,31 @@
        per row as the width allows and wraps the rest — so the moves never drift away from
        the info on wide screens. Add a 2nd column only when another card genuinely fits. T-038. */
     .roster-team { padding:14px; display:flex; flex-wrap:wrap; gap:12px; }
+    /* Fixed 640px so two rows still fit the 1536px card cap (B-016). The moves column is
+       ~2× its old width so names never wrap; the info column flexes and holds the now-stacked
+       ability/nature/item. The sprite fills the row's full height (align-items:stretch). T-045. */
     .roster-row { width:640px; max-width:100%;
-      display:grid; grid-template-columns:60px 1fr minmax(150px,190px); gap:12px;
-      align-items:center; border:2px solid var(--obs-line); box-shadow:var(--obs-shadow-sm);
+      display:grid; grid-template-columns:108px minmax(0,1fr) 320px; gap:12px;
+      align-items:stretch; border:2px solid var(--obs-line); box-shadow:var(--obs-shadow-sm);
       padding:9px 11px; text-align:left; }
-    .roster-row--nomoves { grid-template-columns:60px 1fr; }
-    .roster-row-spr { width:60px; height:60px; object-fit:contain; image-rendering:pixelated; }
-    .roster-info { min-width:0; }
+    .roster-row--nomoves { grid-template-columns:108px 1fr; }
+    .roster-row-spr { width:108px; height:100%; object-fit:contain; image-rendering:pixelated; }
+    /* info/moves stay vertically centred while the sprite stretches; a little extra air after the sprite. */
+    .roster-info { min-width:0; align-self:center; margin-left:6px; }
     .roster-pname { font-weight:700; font-size:21px; line-height:1.1; }
-    .roster-meta { font-size:16px; color:var(--obs-text-dim); line-height:1.35; margin-top:4px; }
+    .roster-meta { font-size:16px; color:var(--obs-text-dim); line-height:1.4; margin-top:4px; }
+    /* Ability / nature / item each on its own line (T-045). */
+    .roster-meta .rm-ability, .roster-meta .rm-nature, .roster-meta .rm-item { display:block; }
     .roster-meta .rm-ability { color:#D1F2FF; }
     .roster-meta .rm-nature  { color:#A5D9B8; }
     .roster-meta .rm-item    { color:#FFD580; }
-    .roster-meta .rm-sep     { color:var(--obs-text-mute); }
-    /* align-items:start → a shorter chip keeps its height and leaves a gap instead of
-       stretching to match a taller neighbour; flex-centre keeps multi-line names balanced. T-038 */
-    .roster-moves { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin:0; padding:0; align-items:start; }
-    .roster-moves .move-item { margin:0; font-size:16px; padding:4px 6px; display:flex; align-items:center; justify-content:center; }
+    /* Wider 2×2 grid so names fit on one line; chips stretch to a uniform height. T-045. */
+    .roster-moves { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0; padding:0;
+      align-items:stretch; align-self:center; }
+    /* Deliberate, owner-approved exception to the global square-corner reset (T-006, line ~598):
+       the trainer move chips get slightly rounded corners — hence the !important. T-045. */
+    .roster-moves .move-item { margin:0; font-size:16px; padding:7px 9px; min-height:38px;
+      border-radius:8px !important; display:flex; align-items:center; justify-content:center; }
     @media (max-width:760px){
       .roster { grid-template-columns:1fr; }
       .roster-rail { border-right:none; border-bottom:3px solid var(--obs-shadow); }
@@ -1446,7 +1454,8 @@
           ? `<span class="rm-nature" data-tooltip="${attr(natTip)}">${member.nature}</span>`
           : '';
         const itemHTML = member.item ? `<span class="rm-item">${getIcon('pokeball','🎒')} ${member.item}</span>` : '';
-        const metaLine = [abilityHTML, natureHTML, itemHTML].filter(Boolean).join('<span class="rm-sep"> · </span>');
+        // Ability / nature / item stack on their own lines (the spans are display:block). T-045.
+        const metaLine = [abilityHTML, natureHTML, itemHTML].filter(Boolean).join('');
         const hasMoves = member.moves && member.moves.length > 0;
         const movesHTML = hasMoves
           ? `<div class="move-list roster-moves">
