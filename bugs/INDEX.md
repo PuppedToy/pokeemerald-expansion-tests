@@ -20,3 +20,4 @@
 | [B-014](B-014-worker-bundle-module-not-defined-type-module.md) | Generation crashes with "module is not defined" — type:module made esbuild mis-bundle the CJS worker | fixed | critical | 0.4.0 | 0.4.0 | frontend/__tests__/worker-bundle.test.js |
 | [B-015](B-015-topbar-not-sticky-scrolls-away.md) | Top bar scrolls away instead of staying pinned | fixed | major | 0.3.1 | 0.3.1 | frontend/__tests__/topbar-sticky.test.js |
 | [B-016](B-016-trainer-card-overexpands-wide.md) | Trainer cards over-expand on large monitors (team spreads to 3 columns) | fixed | minor | 0.3.1 | 0.3.1 | frontend/__tests__/trainer-card-width.test.js |
+| [B-017](B-017-per-rom-evo-level-reroll-breaks-shared-trainers.md) | Per-ROM evolution-level re-roll makes shared-trainer teams diverge and can place illegal evolved mons | fixed | major | 0.5.0 | 0.5.1 | randomizer/__tests__/integration/crossRomBossDeterminism.test.js |
