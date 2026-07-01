@@ -26,6 +26,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- Trainer cards no longer over-expand on large monitors: they're capped at a two-Pokémon-column width and centred (splitting into two trainer columns only on very wide displays), instead of stretching edge-to-edge into a sparse three-column team (B-016).
 - The doc-viewer top bar now stays pinned to the top while scrolling (unless you unpin it); it was sliding out of view because the flex body clamped its container to one screen height (B-015).
 - Starter selection now **always forms a type triangle when one exists** in the eligible pool. The
   search was greedy (it committed to one random second starter and gave up on the first, hitting a

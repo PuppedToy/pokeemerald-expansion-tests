@@ -189,7 +189,11 @@
     }
     .trainer-grid{
       display:grid;
-      grid-template-columns:1fr;   /* one trainer per row, full content width (T-038) */
+      /* B-016: cap each trainer card at ~2 Pokémon columns and centre it, instead of one
+         full-width card that spreads the team to 3 columns on large monitors. Only splits into
+         two trainer columns on very wide (~3072px+) displays. */
+      grid-template-columns:repeat(auto-fit, minmax(min(1536px, 100%), 1fr));
+      justify-items:center;
       gap:16px;
     }
     .right {
@@ -606,7 +610,7 @@
        (sprite · name+item/ability/nature · 2x2 move grid). Placed last so it
        wins source-order over the shared .card rules above.
        ============================================================ */
-    .trainer-card { display:block; padding:0; min-height:0; }
+    .trainer-card { display:block; padding:0; min-height:0; width:100%; max-width:1536px; }
     .roster { display:grid; grid-template-columns:204px 1fr; }
     .roster-rail { background:var(--obs-well); border-right:3px solid var(--obs-shadow);
       padding:16px; display:flex; flex-direction:column; gap:12px; align-items:flex-start; }
