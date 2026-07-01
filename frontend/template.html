@@ -335,13 +335,10 @@
     /* footer */
     footer{grid-column:1/4;margin-top:18px;padding:12px;text-align:center;color:var(--muted)}
 
-    /* Responsive */
-    @media (max-width:1000px){
-      .app{grid-template-columns:1fr;}
-      .sidebar{order:2}
-      .app > .right{order:3}
-      header.top{grid-column:1/2;margin-top:0}
-    }
+    /* Responsive — the real mobile layer lives at the end of this <style> (T-040).
+       (The former @media(max-width:1000px) block here was dead code: it targeted `.sidebar`,
+       `.app` as a grid and `header.top`, none of which exist — the layout is `.main` flex with
+       a `.content` + `.right`. Removed so it can't mislead; desktop rendering is unchanged.) */
 
     /* ---- Nuzlocke Tracker ---- */
     .nuzlocke-controls {
@@ -690,12 +687,85 @@
     .topbar-pin:hover { background:var(--obs-surface-2); }
     .app.topbar-unpinned .topbar-pin { opacity:0.45; }
     @media (max-width:700px){ .topbar-stats { margin-left:0; } .topbar-inner { padding:12px 20px; } }
+
+    /* ============================================================
+       T-040 — Mobile layer (≤600px). ADDITIVE ONLY: every rule below is inside the media query
+       (plus the hidden-by-default burger/scrim), so desktop and iPad (≥601px) keep the exact
+       current layout — B-015 sticky, B-016 trainer cap, T-038/T-039 all untouched above.
+       On phones the right sidebar becomes an off-canvas drawer and the content goes full width.
+       ============================================================ */
+    .nav-burger-docs { display: none; }
+    .nav-scrim-docs { display: none; }
+    .nav-burger-bars, .nav-burger-bars::before, .nav-burger-bars::after {
+      content: ''; display: block; width: 20px; height: 3px; background: var(--obs-text);
+    }
+    .nav-burger-bars { position: relative; }
+    .nav-burger-bars::before { position: absolute; left: 0; top: -6px; }
+    .nav-burger-bars::after  { position: absolute; left: 0; top: 6px; }
+
+    @media (max-width: 600px) {
+      /* Stack: content full width, sidebar out of flow (drawer, below). */
+      .main { flex-direction: column; padding: 0 16px; gap: 16px; }
+      .content { width: 100%; min-width: 0; }
+
+      /* Encounters (T-040 feedback #2): drop the fixed-width column matrix — stack each location card
+         and its slots into full-width rows and scroll vertically (no horizontal scroll). */
+      #wildpokes-cards { flex-direction: column; }
+      .location-card { width: 100%; }
+      .enc-slots { grid-template-columns: 1fr !important; } /* overrides the inline per-location grid */
+
+      /* Trainers (T-040 feedback #3): let the roster fit the screen instead of scrolling sideways.
+         With no section-level horizontal scroll, the card's width:100% / max-width:100% constrain to
+         the viewport; force the Pokémon rows full-width so nothing spills out. */
+      .roster-row { width: 100%; }
+
+      /* Sidebar → right off-canvas drawer (full height; overlays the bar when open). */
+      .right, .right.nav-collapsed {
+        position: fixed; top: 0; right: 0; height: 100dvh; width: min(82vw, 300px);
+        background: var(--obs-bg-deep); border-left: 3px solid var(--obs-shadow);
+        padding: 14px 12px; z-index: 200; overflow-y: auto;
+        transform: translateX(100%); transition: transform 0.2s ease;
+      }
+      .app.docs-nav-open .right { transform: translateX(0); }
+
+      /* Neutralise the desktop collapse state inside the drawer: full labels, reset shown, no toggle. */
+      #nav-toggle { display: none; }
+      .right .nav-text, .right.nav-collapsed .nav-text { max-width: none; opacity: 1; pointer-events: auto; }
+      .right .nav a, .right.nav-collapsed .nav a { justify-content: flex-start; gap: 10px; }
+      #reset-all-btn, .right.nav-collapsed #reset-all-btn { display: flex !important; }
+
+      .nav-scrim-docs { position: fixed; inset: 0; background: rgba(4, 8, 15, 0.6); z-index: 190; }
+      .app.docs-nav-open .nav-scrim-docs { display: block; }
+
+      .nav-burger-docs {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 40px; height: 40px; padding: 0; flex: none; cursor: pointer;
+        background: var(--obs-surface); border: 2px solid var(--obs-line);
+      }
+
+      /* Compact top bar so the four stat tiles don't swallow a phone screen. */
+      .topbar-inner { padding: 10px 14px; gap: 10px 12px; }
+      .ec-title { font-size: 13px; }
+      .tb-stat { padding: 5px 9px; gap: 7px; }
+      .tb-ico .ico { height: 20px; }
+      .tb-value { font-size: 18px; }
+      .tb-stat--boss .tb-value { font-size: 15px; }
+
+      /* Unpin on mobile (T-040 feedback #1): keep the bar — hamburger + title — pinned; only the extra
+         stat tiles unpin (hide). Desktop keeps its own behaviour (the whole bar goes static) untouched. */
+      .app.topbar-unpinned .topbar { position: sticky; }
+      .app.topbar-unpinned .topbar-stats { display: none; }
+    }
   </style>
 </head>
 <body>
   <div class="app">
     <header class="topbar" id="topbar">
       <div class="topbar-inner">
+        <!-- Mobile-only menu button (T-040): hidden on desktop; opens the nav drawer. -->
+        <button class="nav-burger-docs" id="nav-burger-docs" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+          <span class="nav-burger-bars" aria-hidden="true"></span>
+        </button>
         <div class="ec-title">Emerald <span class="ec-logo" data-icon="emeraldCut">C</span>ut</div>
         <div class="topbar-stats">
           <div class="tb-stat"><span class="tb-ico" data-icon="buffed"></span><span class="tb-col"><span class="tb-label">Level cap</span><span class="tb-value tb-cap" id="tb-cap">—</span></span></div>
@@ -706,6 +776,8 @@
         <button class="topbar-pin" id="topbar-pin" type="button" aria-pressed="true" title="Pin the bar to the top while scrolling">📌</button>
       </div>
     </header>
+    <!-- Nav drawer scrim (T-040): shown only on mobile when the drawer is open; tap to close. -->
+    <div class="nav-scrim-docs" id="nav-scrim-docs"></div>
 
     <main class="main">
 
@@ -849,6 +921,19 @@
     const navLinks = document.querySelectorAll('.nav a');
     const sections = document.querySelectorAll('main section');
 
+    // --- Mobile nav drawer (T-040) --- desktop unaffected: drawer/scrim CSS is scoped to ≤600px;
+    // this only toggles a class on .app.
+    const docsApp = document.querySelector('.app');
+    const docsBurger = document.getElementById('nav-burger-docs');
+    const docsScrim = document.getElementById('nav-scrim-docs');
+    function setDocsNav(open) {
+      docsApp.classList.toggle('docs-nav-open', open);
+      if (docsBurger) docsBurger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    if (docsBurger) docsBurger.addEventListener('click', () => setDocsNav(!docsApp.classList.contains('docs-nav-open')));
+    if (docsScrim) docsScrim.addEventListener('click', () => setDocsNav(false));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setDocsNav(false); });
+
     // T-010: per-section scroll policy on open. The page itself (window) is the scroll container.
     // Encounters lands on the last captured route, Trainers on the last defeated trainer; every other
     // tab opens at the top. Runs after a frame so the just-activated section has laid out.
@@ -884,6 +969,9 @@
         // update active nav
         navLinks.forEach(l => l.classList.remove('active'));
         link.classList.add('active');
+
+        // Picking a section closes the mobile drawer (no-op on desktop).
+        setDocsNav(false);
 
         // show/hide sections
         sections.forEach(sec => {

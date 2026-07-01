@@ -1,0 +1,16 @@
+{
+  "name": "visual-tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Isolated dev-only visual-regression + agent-preview harness (T-040, ADR-010). Not part of the app runtime.",
+  "scripts": {
+    "fixture": "node fixtures/build-doc-sample.cjs 42 fixtures/docs-sample.html",
+    "shoot": "node shoot.mjs",
+    "visual": "playwright test",
+    "visual:update": "playwright test --update-snapshots"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}

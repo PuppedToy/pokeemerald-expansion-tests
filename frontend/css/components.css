@@ -796,3 +796,19 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
 /* T-035: "Download ROM" while the server prepares + streams the zip — disabled but clearly working
    (spinner inside), not the dead grey of a normal disabled button. Higher specificity than .btn:disabled. */
 .btn.is-working { opacity: 0.92; cursor: progress; }
+
+/* ── Mobile component overrides (T-040) ──
+   Additive only — every rule is scoped to ≤600px, so desktop rendering is untouched. */
+@media (max-width: 600px) {
+  /* Finger-sized tap targets (WCAG 2.5.8 / iOS 44px). */
+  .btn { min-height: 44px; }
+
+  /* Step indicator: drop the text labels so the numbered circles fit without overflow
+     (the panel heading already says which step you're on). */
+  .steps { margin-bottom: 24px; }
+  .step-label { display: none; }
+  .step-connector { margin: 0 8px; }
+
+  /* Auth/ROM modal: less dead space at the top on short screens; the card already caps at 440px. */
+  .modal-overlay { padding: 24px 12px; }
+}

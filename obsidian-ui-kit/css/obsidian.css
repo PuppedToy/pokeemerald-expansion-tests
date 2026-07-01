@@ -352,3 +352,36 @@
   display: flex; align-items: center; justify-content: center;
   font-family: var(--obs-font-body); color: var(--obs-text-mute); font-size: 18px; letter-spacing: 1px;
 }
+
+/* Wrap a wide element (table, tab strip) so it scrolls horizontally instead of overflowing the
+   page — works at every width, but it's on mobile that it earns its keep. */
+.obs-scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+
+/* ---------- 15. RESPONSIVE (T-040) ----------
+   The kit is desktop-first: everything above is the desktop design and is never touched here.
+   This single mobile band (≤600px) is *additive* — it only shrinks spacing/type and enlarges tap
+   targets, so at any width >600px the rendering is exactly the desktop design. See STYLE_GUIDE §8.
+   Breakpoints: mobile ≤600 (this block) · tablet/iPad 601–1024 = desktop layout · desktop ≥1025. */
+@media (max-width: 600px) {
+  .obs-container { padding-left: var(--obs-sp-3); padding-right: var(--obs-sp-3); }
+  .obs-section   { padding-top: var(--obs-sp-5); padding-bottom: var(--obs-sp-5); }
+
+  /* Finger-sized tap targets (WCAG 2.5.8 min 24px; 44px is the iOS/best-practice benchmark). */
+  .obs-btn { min-height: 44px; }
+  .obs-check, .obs-radio, .obs-toggle { min-height: 44px; }
+
+  /* 18px keeps inputs readable without triggering iOS auto-zoom (which needs <16px). */
+  .obs-input, .obs-select, .obs-textarea { font-size: 18px; }
+
+  /* Panels/cards breathe less on small screens. */
+  .obs-panel { padding: var(--obs-sp-4); }
+
+  /* Modal goes near-full-width with tighter chrome. */
+  .obs-modal-backdrop { padding: 12px; }
+  .obs-modal { width: 100%; }
+  .obs-modal__body { padding: var(--obs-sp-3) var(--obs-sp-3); }
+  .obs-modal__foot { padding: 0 var(--obs-sp-3) var(--obs-sp-3); }
+
+  /* Toast spans the width instead of floating in a corner. */
+  .obs-toast { left: 12px; right: 12px; bottom: 12px; max-width: none; }
+}

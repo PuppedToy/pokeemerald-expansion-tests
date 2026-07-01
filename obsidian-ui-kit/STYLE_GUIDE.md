@@ -148,3 +148,21 @@ Backdrop dims to `rgba(4,8,15,.78)`; modal has an orange title bar (`.obs-modal_
 ## 7. Imagery
 
 There are **no decorative SVG illustrations** in this system. Real artwork (sprites, screenshots, key art) goes in `.obs-image-slot` placeholders — a diagonal-striped well with a monospace caption describing what belongs there (e.g. `[ game screen capture ]`). Replace with real assets at build time. Sprites should be pixel art rendered with `image-rendering: pixelated`.
+
+## 8. Responsive (T-040)
+
+The kit is **desktop-first**. All component rules describe the desktop design; a single **additive**
+mobile band overrides only spacing, type size and tap targets, so **above the breakpoint the rendering
+is byte-identical to the desktop design**.
+
+| Band | Range | Behaviour |
+|------|-------|-----------|
+| Mobile | ≤ 600px | The `@media (max-width:600px)` block in `obsidian.css` §15: tighter container/section/panel/modal padding, `font-size:18px` inputs (no iOS auto-zoom), `min-height:44px` tap targets (WCAG 2.5.8 min 24px; 44px is the iOS/best-practice benchmark), full-width toast. |
+| Tablet / iPad | 601–1024px | **Desktop layout** — no dedicated tablet design; add a targeted rule only if real content breaks. |
+| Desktop | ≥ 1025px | The base design, unchanged. |
+
+Rules:
+
+- **Never edit a base rule to make mobile work.** Add a `@media (max-width:600px)` override instead — that is what keeps desktop pixel-identical.
+- Wrap anything intrinsically wide (a `.obs-table`, a `.obs-tabs` strip) in **`.obs-scroll-x`** so it scrolls horizontally rather than overflowing the page.
+- Always ship `<meta name="viewport" content="width=device-width, initial-scale=1.0">` (see `example.html`).

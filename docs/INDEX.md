@@ -12,6 +12,7 @@ Entry point to all project documentation. **A document not listed here does not 
 ## Decisions (ADRs)
 
 <!-- One line per ADR, newest first. -->
+- [ADR-010](adr/ADR-010-visual-regression-playwright-dev-tool.md) — responsive visual regression runs in an isolated Playwright dev tool, separate from the zero-dep unit harness
 - [ADR-009](adr/ADR-009-frontend-test-harness-zero-dep.md) — the frontend is tested with a zero-dependency DOM/env stub under `node --test`
 - [ADR-008](adr/ADR-008-rom-delivery-full-rom-ownership-gate.md) — the server builds and delivers the full ROM; the ownership-by-hash gate is the accepted mitigation
 - [ADR-007](adr/ADR-007-transactional-email-notifications.md) — a transactional email provider sends verification, password-reset and ROM-ready mail
@@ -27,3 +28,4 @@ Entry point to all project documentation. **A document not listed here does not 
 <!-- Architecture, conventions, runbooks… One line per document. -->
 - [dev-deploy-workflow.md](dev-deploy-workflow.md) — the canonical dev → test → commit → push → `update.sh` deploy loop (preflight-gated) (T-031)
 - [deploy-oracle.md](deploy-oracle.md) — deploy runbook: Oracle free A1 (primary) + Hetzner fallback, DNS/HTTPS, bootstrap, update, ops (T-019)
+- [../visual-tests/README.md](../visual-tests/README.md) — dev-only responsive visual-regression + agent-preview harness (Playwright); the desktop-lock workflow (T-040, ADR-010)
