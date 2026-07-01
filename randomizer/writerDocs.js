@@ -15,6 +15,7 @@ const { sample, canLearnMove } = require('./modules/utils');
 const { selectWithAutoFallback } = require('./modules/trainerFallback');
 const { createChooser } = require('./modules/trainerSelector');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
+const { typeMainColors } = require('./trainerColors');
 
 const CONTEXTUAL_TIER_SEQ = ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU', 'UBERS', 'LEGEND', 'AG'];
 
@@ -231,6 +232,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                 isBoss: target.isBoss,
                 team: [...target.team],
                 class: trainer.class,
+                colors: trainer.colors,   // T-044 — copied team, but this trainer's own card colours
             };
             return;
         }
@@ -410,6 +412,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
             isBoss: trainer.isBoss || false,
             isPartner: trainer.isPartner || false,
             location: trainer.location || null,
+            colors: trainer.colors,   // T-044 — docs-viewer card colours (SSOT: trainerColors.js)
             team,
             preventShuffle: trainer.preventShuffle || false,
         };
@@ -481,7 +484,9 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
         else maps.push(entry);
     }
 
-    return { trainersResultsSimplified, wildPokes: maps };
+    // T-044 — type main colours (move chips) for the browser doc-builder to inject.
+    // SSOT is trainerColors.js; both runtimes derive the same values.
+    return { trainersResultsSimplified, wildPokes: maps, typeColors: typeMainColors() };
 }
 
 module.exports = { writerDocs, filterByNearestContextualTier, buildTrainersResultsSimplified };

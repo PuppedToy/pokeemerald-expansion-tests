@@ -74,7 +74,10 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
         .replace('<script src="abilities.js"></script>',
             `<script>const abilitiesData = ${JSON.stringify(pokedex.abilities)};</script>`)
         .replace('<script src="wildpokes.js"></script>',
-            `<script>const wildPokes = ${JSON.stringify(rom.docs.wildPokes)};</script>`);
+            `<script>const wildPokes = ${JSON.stringify(rom.docs.wildPokes)};</script>`)
+        // T-044 — move-chip type colours (SSOT: randomizer/trainerColors.js) via rom.docs.typeColors.
+        .replace('<script src="colors.js"></script>',
+            `<script>const typeColors = ${JSON.stringify(rom.docs.typeColors)};</script>`);
 }
 
 async function main() {

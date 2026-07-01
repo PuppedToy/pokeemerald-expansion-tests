@@ -4266,6 +4266,31 @@ const trainersData = [
     },
 ];
 
+    // T-044 — tag typed bosses with the type they actually run this seed, so the docs
+    // viewer can colour their cards. Gym leaders follow gymMainTypes[0..7] (Roxanne→Juan),
+    // E4 follow e4NMainType (Sidney→Drake), Steven is always Steel. Verified against the
+    // team-slot `type: [gymMainTypes[i]]` / `[e4NMainType]` references above. One pass
+    // covers every battle instance (rematches, endgame) by class name.
+    const themeTypeByClass = {
+        'Leader Roxanne': gymMainTypes[0],
+        'Leader Brawly': gymMainTypes[1],
+        'Leader Wattson': gymMainTypes[2],
+        'Leader Flannery': gymMainTypes[3],
+        'Leader Norman': gymMainTypes[4],
+        'Leader Winona': gymMainTypes[5],
+        'Leader Tate And Liza': gymMainTypes[6],
+        'Leader Juan': gymMainTypes[7],
+        'Elite Four Sidney': e41MainType,
+        'Elite Four Phoebe': e42MainType,
+        'Elite Four Glacia': e43MainType,
+        'Elite Four Drake': e44MainType,
+        'Steven': POKEMON_TYPE_STEEL,
+    };
+    for (const trainer of trainersData) {
+        const themeType = themeTypeByClass[trainer.class];
+        if (themeType) trainer.themeType = themeType;
+    }
+
     return trainersData;
 }
 

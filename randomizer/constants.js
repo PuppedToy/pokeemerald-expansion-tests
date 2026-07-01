@@ -217,6 +217,7 @@ const constants = {
     TEMPLATE_ABILITIES_REPLACEMENT: '<script src="abilities.js"></script>',
     TEMPLATE_TRAINERS_REPLACEMENT: '<script src="trainers.js"></script>',
     TEMPLATE_WILDPOKES_REPALCEMENT: '<script src="wildpokes.js"></script>',
+    TEMPLATE_COLORS_REPLACEMENT: '<script src="colors.js"></script>',
 
     LOG_TYPE_BUFF: 'BUFF',
     LOG_TYPE_NERF: 'NERF',
