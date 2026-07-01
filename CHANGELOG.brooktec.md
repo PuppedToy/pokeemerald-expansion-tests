@@ -7,6 +7,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-07-01
+
 ### Added
 
 - The whole web frontend **and** the generated documentation viewer are now **mobile-responsive**, while
@@ -24,6 +26,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 - The app's top-navigation brand title now matches the Home hero: **"Emerald Cut"** in brand green with
   the logo standing in for the **"C"** of "Cut", instead of plain-white text beside a separate square
   logo (T-041).
+- Starter type-triangle selection is now **exhaustive**: it always finds a valid type triangle when one
+  exists instead of sometimes taking the no-triangle fallback (T-032).
 
 ## [0.4.0] - 2026-07-01
 
