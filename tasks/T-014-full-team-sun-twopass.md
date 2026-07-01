@@ -4,8 +4,8 @@ title: Full-team sun visibility for Solar Beam/Blade via a determinism-preservin
 status: proposed
 type: feature
 created: 2026-06-20
-updated: 2026-06-28
-target-version: 0.4.0
+updated: 2026-07-01
+target-version: 0.5.0
 links: [tasks/T-013-move-rating-heuristics.md]
 blocked-by: []
 ---
@@ -82,6 +82,8 @@ order and therefore **silently change every generated team** for a given seed.
 
 - **2026-06-20** — Proposed. Investigation + plan captured during T-013 (which shipped the
   earlier-teammates-only version). Not scheduled.
+- **2026-07-01** — Re-targeted 0.4.0 → 0.5.0: still unstarted when 0.4.0 was cut (viewer redesign
+  + fixes), so it moves to the next minor rather than blocking the release.
 
 ## Outcome
 

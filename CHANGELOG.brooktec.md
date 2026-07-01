@@ -7,6 +7,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-01
+
 ### Changed
 
 - Encounters-tab polish (T-039): fishing slots read "Old Rod" / "Good Rod" / "Super Rod" (shorter, with the rod icon beside the label); multi-slot locations fill left-to-right then top-to-bottom (reading order, still capped at 3 rows); and each encounter type has its own label colour — grass green, old rod light blue, good rod/surf/dive medium blue, super rod and special orange.
