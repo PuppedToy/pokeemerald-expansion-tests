@@ -48,3 +48,4 @@
 | [T-042](T-042-trainer-illegal-evolved-mon.md) | Diagnose illegal evolved mon assigned to under-levelled trainer (Grunt Rusturf Tunnel → Ludicolo) | done | 0.5.1 | 2026-07-01 |
 | [T-043](T-043-cross-rom-boss-determinism-test.md) | Cross-ROM boss-team determinism guarantee test | done | 0.5.1 | 2026-07-01 |
 | [T-044](T-044-boss-type-color-system.md) | Per-type color system for boss trainer cards | done | 0.6.0 | 2026-07-01 |
+| [T-045](T-045-trainer-move-boxes.md) | Wider trainer move boxes so move names never wrap to two lines | done | 0.6.0 | 2026-07-01 |
