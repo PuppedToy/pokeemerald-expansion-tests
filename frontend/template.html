@@ -768,6 +768,17 @@
          stat tiles unpin (hide). Desktop keeps its own behaviour (the whole bar goes static) untouched. */
       .app.topbar-unpinned .topbar { position: sticky; }
       .app.topbar-unpinned .topbar-stats { display: none; }
+
+      /* Pokémon detail modal (T-046 — missed by T-040): fit the phone, no sideways scroll.
+         Reclaim width with smaller padding; reflow the Learnset/Teachables rows so the
+         Pwr/Acc/PP stats wrap to a second line instead of spilling off the right edge. */
+      .modal-content { width: 94%; padding: 16px; overflow-x: hidden; }
+      .modal-content .list-item { flex-wrap: wrap; gap: 4px 10px; }
+      /* keep the evo chain / any wide inline content from forcing horizontal scroll */
+      .modal-content .poke-miniature { flex-wrap: wrap; }
+      /* .modal-bg is a transparent z-index:-1 filler; width:100% of the padding box makes it
+         16px wider than the scrollbar-reduced content, the last thing forcing overflow. Hide it. */
+      .modal-bg { display: none; }
     }
   </style>
 </head>
