@@ -17,6 +17,7 @@ const abilities = {
     ABILITY_TRANSISTOR:  { name: 'Transistor', rating: 6, breakable: false },
     ABILITY_HUGE_POWER:  { name: 'Huge Power', rating: 10, breakable: true },
     ABILITY_SHED_SKIN:   { name: 'Shed Skin', rating: 7, breakable: false },
+    ABILITY_ZERO_TO_HERO:{ name: 'Zero to Hero', rating: 10, breakable: false },
 };
 
 module.exports = abilities;

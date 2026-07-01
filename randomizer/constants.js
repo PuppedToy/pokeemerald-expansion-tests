@@ -34,6 +34,21 @@ const constants = {
     TIER_ZU_THRESHOLD: 3.0,
     // TIER_MAGIKARP is anything below TIER_ZU_THRESHOLD
 
+    // Wishiwashi Schooling special case — Solo form schools into School form at lvl 20+
+    // and reverts to Solo if HP drops to <=25%. The rater treats Solo as the School form
+    // (with a 25% HP nerf for the unusable revert zone) once it can school.
+    WISHIWASHI_SOLO_ID:          'SPECIES_WISHIWASHI_SOLO',
+    WISHIWASHI_SCHOOL_ID:        'SPECIES_WISHIWASHI_SCHOOL',
+    WISHIWASHI_SCHOOL_LEVEL:     20,   // "level 20 or above"
+    WISHIWASHI_SCHOOL_HP_FACTOR: 0.75, // bottom 25% of HP is dead weight (revert zone)
+
+    // Palafin Zero-to-Hero special case — the placed Zero form transforms into the battle-only
+    // Hero form the first time it switches out. The switch is essentially free, so the rater
+    // treats Zero as Hero (full Hero stats + typing, no nerf, at every level). Hero stays banned
+    // from picking; Zero (and Finizen) are placeable.
+    PALAFIN_ZERO_ID:             'SPECIES_PALAFIN_ZERO',
+    PALAFIN_HERO_ID:             'SPECIES_PALAFIN_HERO',
+
     AG_BST_THRESHOLD: 720,
     LEGEND_BST_THRESHOLD: 660,
     OU_BST_THRESHOLD: 600,

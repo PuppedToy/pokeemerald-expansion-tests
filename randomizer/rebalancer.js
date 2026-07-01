@@ -31,6 +31,7 @@ const BANNED_ABILITIES = [
     'FLOWER_GIFT',
     'GULP_MISSILE',
     'HUNGER_SWITCH',
+    'ZERO_TO_HERO',
 
     // These are a hell to rebalance, but I'd like to do so. For now they are banned.
     'WONDER_GUARD',
