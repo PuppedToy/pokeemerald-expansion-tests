@@ -24,13 +24,16 @@
   flex-shrink: 0;
 }
 
+/* T-041: the logo stands in for the "C" of "Cut" inside the brand title, matching the Home hero
+   (T-034) and the docs-viewer top bar (.ec-logo). em-based nudges so it scales with the nav font. */
 .topnav-logo {
-  width: 36px;
-  height: 36px;
-  border-radius: 0;
+  height: 1.3em;
+  width: auto;
   image-rendering: pixelated;
-  flex-shrink: 0;
-  object-fit: contain;
+  vertical-align: -0.22em;
+  position: relative;
+  left: -0.1em;
+  top: -0.04em;
 }
 
 .topnav-name {
@@ -39,6 +42,8 @@
   letter-spacing: var(--obs-tracking);
   color: var(--obs-text);
 }
+/* "Emerald Cut" in brand green, like the Home hero (.title-accent is green globally; scoped here for clarity). */
+.topnav-name .title-accent { color: var(--obs-green); }
 
 .topnav-tabs {
   display: flex;
