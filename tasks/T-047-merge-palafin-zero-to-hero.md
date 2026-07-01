@@ -1,7 +1,7 @@
 ---
 id: T-047
 title: Merge the orphaned Palafin Zero-to-Hero rating branch into master
-status: in-progress
+status: done
 type: feature
 created: 2026-07-02
 updated: 2026-07-02
@@ -48,19 +48,43 @@ Integration-branch approach (keep master clean until verified):
    and fixtures — these validate the merge). Green before considering done.
 
 Acceptance criteria:
-- [ ] Palafin Zero placeable & rated as Hero; Palafin Hero + Wishiwashi School stay banned from picking.
-- [ ] No duplicated logic (master's existing Wishiwashi bans reused, not re-added).
-- [ ] `cd randomizer && npm test` green (including the branch's new palafin/wishiwashi tests).
-- [ ] T-044 (boss colours) and other recent work intact after the merge.
+- [x] Palafin Zero placeable & rated as Hero; Palafin Hero + Wishiwashi School stay banned from picking.
+- [x] No duplicated logic (master's existing Wishiwashi bans reused, not re-added).
+- [x] `cd randomizer && npm test` green (including the branch's new palafin/wishiwashi tests).
+- [x] T-044 (boss colours) and other recent work intact after the merge.
 
 ## Progress log
 
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
+- **2026-07-02** — Merged `palafin-zero-to-hero-rating` into `feature/T-047-merge-palafin`. Of the
+  branch-touched files, **all auto-merged cleanly except 3** (writer.js, writerDocs.js,
+  wildModule.test.js). Resolutions: (a) writer/writerDocs imports — kept the T-044 lines
+  (`typeMainColors`, `resolveRewardMegaStone`, `displayNameToItemConst`) **and** added
+  `palafinEffectivePoke`; (b) the moveset region — kept **both** master's `selCtx` (T-013) block and
+  the branch's `battlePoke` block, and every rater call now uses `battlePoke` + passes `selCtx`
+  (the multi-line call sites had auto-merged both; only the single-line `adjustMoveset` in
+  writerDocs needed the combine); (c) wildModule.test.js — kept master's `resolveRewardMegaStone` /
+  `rewardMegaStones` describes **and** the branch's Palafin banned-list describe. No duplication: the
+  banned list auto-resolved to `WISHIWASHI_SCHOOL`+`PALAFIN_HERO` banned, `PALAFIN_ZERO`+`FINIZEN`
+  unbanned (branch intent); `rebalancer.js` kept pre-existing `SCHOOLING` + added `ZERO_TO_HERO`;
+  rating/pokedex/constants logic is net-new. Verified: randomizer **523 pass** (37 suites — new
+  palafin.test.js + wishiwashi.test.js run), backend 94, frontend 14; `analyze.js` runs the full
+  pipeline end-to-end (Palafin + T-044 colours coexist). Awaiting owner review before merging to master.
 - **2026-07-02** — Task created after investigating the orphan branch (see Context). Chose an
   integration-branch merge (not a raw merge on master, not a hand-port) so the branch history is
   preserved, master stays clean until tests pass, and the branch's own tests validate the result.
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Landed the orphaned `palafin-zero-to-hero-rating` (166 commits stale) on master via an integration
+branch. Palafin Zero is now placeable and rated/moved as its battle-only Hero form
+(`palafinEffectivePoke` + `battlePoke` in both writers), Finizen is placeable, and Palafin Hero +
+Wishiwashi School stay banned from picking; `ZERO_TO_HERO` joins `SCHOOLING` in the rebalancer ban
+list. Wishiwashi Schooling rating special-case and its tests came along in the same branch.
+
+Only 3 of the branch-touched files conflicted (writer.js, writerDocs.js, wildModule.test.js), all
+resolved by **combining** both sides — the T-044 imports/logic kept alongside the palafin additions,
+master's `selCtx` (T-013) kept alongside `battlePoke`, and both test suites' describes kept. No code
+duplicated (master's pre-existing Wishiwashi bans reused). Verified: randomizer 523 / backend 94 /
+frontend 14 green, plus a full `analyze.js` end-to-end run. No follow-ups.
