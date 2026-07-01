@@ -118,6 +118,19 @@ Acceptance criteria:
   (app+docs × mobile+phone-sm). Additive/mobile-only, desktop lock unaffected. (Kept as a T-040
   iteration, not a B-NNN: the drawer is unreleased code from this same task — happy to formalise a bug
   entry if preferred.)
+- **2026-07-01** — Deployed to PRO (`deploy/update.sh`, owner green-light) and verified prod serves the
+  new code. Owner tested the generated docs on mobile and gave 3 mobile-only fixes (desktop must stay
+  as-is), all in `template.html` ≤600px: (1) **unpin** now keeps the bar (hamburger + title) pinned and
+  only hides the extra stat tiles — `.app.topbar-unpinned .topbar{position:sticky}` +
+  `.topbar-stats{display:none}` inside the media query (desktop's static-bar unpin untouched);
+  (2) **Encounters** drop the fixed 168px column matrix → `#wildpokes-cards` column, `.location-card`
+  100% wide, `.enc-slots{grid-template-columns:1fr!important}` = full-width rows, vertical scroll;
+  (3) **Trainers** fit the screen — removed the section `overflow-x:auto` (it broke width:100%/max-width
+  capping and forced the 640px rows to horizontal-scroll) and set `.roster-row{width:100%}`. Diagnosed
+  the overflow via a getBoundingClientRect probe (roster was 668px), fixed, re-verified:
+  documentScrollWidth=375 with 0 elements past the edge on both tabs; unpin probe shows
+  bar=sticky/stats=none/burger=visible. Desktop guard **14/14 unchanged**, interaction **4/4**, full
+  visual **74/74** after refreshing the mobile encounters/trainers baselines.
 
 ## Outcome
 

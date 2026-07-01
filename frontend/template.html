@@ -707,9 +707,17 @@
       /* Stack: content full width, sidebar out of flow (drawer, below). */
       .main { flex-direction: column; padding: 0 16px; gap: 16px; }
       .content { width: 100%; min-width: 0; }
-      /* Wide inner content (encounter matrices, trainer rosters, tables) scrolls instead of being
-         clipped by the section's overflow:hidden. */
-      .main section.active { overflow-x: auto; }
+
+      /* Encounters (T-040 feedback #2): drop the fixed-width column matrix — stack each location card
+         and its slots into full-width rows and scroll vertically (no horizontal scroll). */
+      #wildpokes-cards { flex-direction: column; }
+      .location-card { width: 100%; }
+      .enc-slots { grid-template-columns: 1fr !important; } /* overrides the inline per-location grid */
+
+      /* Trainers (T-040 feedback #3): let the roster fit the screen instead of scrolling sideways.
+         With no section-level horizontal scroll, the card's width:100% / max-width:100% constrain to
+         the viewport; force the Pokémon rows full-width so nothing spills out. */
+      .roster-row { width: 100%; }
 
       /* Sidebar → right off-canvas drawer (full height; overlays the bar when open). */
       .right, .right.nav-collapsed {
@@ -742,6 +750,11 @@
       .tb-ico .ico { height: 20px; }
       .tb-value { font-size: 18px; }
       .tb-stat--boss .tb-value { font-size: 15px; }
+
+      /* Unpin on mobile (T-040 feedback #1): keep the bar — hamburger + title — pinned; only the extra
+         stat tiles unpin (hide). Desktop keeps its own behaviour (the whole bar goes static) untouched. */
+      .app.topbar-unpinned .topbar { position: sticky; }
+      .app.topbar-unpinned .topbar-stats { display: none; }
     }
   </style>
 </head>
