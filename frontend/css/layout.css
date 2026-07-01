@@ -71,6 +71,28 @@
   color: var(--obs-on-orange);
 }
 
+/* ── Mobile nav (T-040) ──
+   Desktop keeps the exact inline layout: the menu wrapper is transparent (display:contents so
+   .topnav-tabs / .topnav-account still lay out directly in the .topnav flex, margins intact),
+   and the burger + scrim are hidden. All drawer behaviour is scoped to the ≤600px media query
+   below, so desktop is byte-identical. */
+.topnav-menu { display: contents; }
+.topnav-burger { display: none; }
+.nav-scrim { display: none; }
+
+.topnav-burger-bars,
+.topnav-burger-bars::before,
+.topnav-burger-bars::after {
+  content: '';
+  display: block;
+  width: 22px;
+  height: 3px;
+  background: var(--obs-text);
+}
+.topnav-burger-bars { position: relative; }
+.topnav-burger-bars::before { position: absolute; left: 0; top: -7px; }
+.topnav-burger-bars::after  { position: absolute; left: 0; top: 7px; }
+
 /* Page layout */
 .page-wrap {
   padding-top: 64px;
@@ -566,6 +588,72 @@
     padding: 0 16px;
   }
 
+  /* Hamburger drawer: the burger appears at the right of the bar; the menu wrapper turns from a
+     transparent passthrough into an off-canvas panel that slides in when body.nav-open (T-040). */
+  .topnav-burger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .topnav-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    position: fixed;
+    top: 64px;
+    right: 0;
+    width: min(80vw, 320px);
+    height: calc(100dvh - 64px);
+    padding: 16px;
+    background: var(--obs-bg-deep);
+    border-left: var(--obs-border);
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.2s ease;
+    z-index: 1200;
+  }
+
+  body.nav-open .topnav-menu { transform: translateX(0); }
+
+  .topnav-tabs {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    margin: 0;
+  }
+
+  .topnav-tab {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    text-align: left;
+  }
+
+  .topnav-account {
+    margin: 8px 0 0;
+    justify-content: flex-start;
+  }
+
+  /* Scrim must sit BELOW .topnav (z-index:1000): the drawer is .topnav-menu, trapped inside .topnav's
+     stacking context, so it can never rise above a scrim that outranks .topnav — the scrim would eat
+     every tap on the menu. z-index:999 keeps the scrim above the page content but under the drawer. */
+  .nav-scrim {
+    position: fixed;
+    inset: 64px 0 0 0;
+    background: rgba(4, 8, 15, 0.6);
+    z-index: 999;
+  }
+  body.nav-open .nav-scrim { display: block; }
+
   .radio-card-group,
   .radio-card-group-3 {
     grid-template-columns: 1fr;
@@ -575,8 +663,12 @@
     grid-template-columns: 1fr;
   }
 
-  .randomizer-wrap, .landing {
+  .randomizer-wrap, .landing,
+  .features-wrap, .settings-wrap {
     padding-left: 16px;
     padding-right: 16px;
   }
+
+  .landing { padding-top: 48px; }
+  .settings-wrap { padding-top: 36px; }
 }

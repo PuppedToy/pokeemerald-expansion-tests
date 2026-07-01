@@ -30,6 +30,22 @@ document.querySelectorAll('[data-goto-tab]').forEach(el => {
 
 setActiveTab('home');
 
+// ── Mobile nav drawer (T-040) ─────────────────────────────────────────────────────
+// Desktop is unaffected: the drawer/scrim CSS is scoped to ≤600px; this only toggles a body class.
+const navBurger = document.getElementById('nav-burger');
+const navScrim  = document.getElementById('nav-scrim');
+function setNavOpen(open) {
+    document.body.classList.toggle('nav-open', open);
+    navBurger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+navBurger?.addEventListener('click', () => setNavOpen(!document.body.classList.contains('nav-open')));
+navScrim?.addEventListener('click', () => setNavOpen(false));
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setNavOpen(false); });
+// Choosing a destination (tab or an account action) closes the drawer.
+document.querySelectorAll('.topnav-tab, .topnav-account').forEach((el) => {
+    el.addEventListener('click', () => setNavOpen(false));
+});
+
 // ── Features sub-tabs ───────────────────────────────────────────────────────────
 function setActiveSubtab(subtabId) {
     document.querySelectorAll('.subtab').forEach(el => {
