@@ -409,13 +409,13 @@
     .enc-type-label .ico { height:0.9em; }
     .nz-poke-name { font-size:22px; }
 
-    /* T-038: encounter slots are a fixed-size grid — at most 3 rows, columns = ceil(N/3)
-       (fill a column of 3, then start the next). Slot width is constant so cards never get
-       squished on resize; the location card hugs its grid and the cards wrap by content width. */
+    /* T-038/T-039: encounter slots are a fixed-size grid — columns = ceil(N/3) (set inline per
+       location) so the matrix stays ≤3 rows, filled left-to-right, top-to-bottom (reading order).
+       Slot width is constant so cards never get squished on resize; the location card hugs its
+       grid and the cards wrap by content width. */
     #wildpokes-cards { display:flex; flex-wrap:wrap; gap:16px; align-items:flex-start; }
     .location-card { flex:0 0 auto; width:max-content; }
-    .enc-slots { display:grid; grid-auto-flow:column; grid-template-rows:repeat(3, auto);
-      grid-auto-columns:168px; gap:8px; }
+    .enc-slots { display:grid; gap:8px; }
 
     /* T-038: the buff/nerf/adjusted indicator next to a Pokémon name inherits the name's
        font-size, so it's oversized on the big card names and undersized in the small modal
@@ -1429,11 +1429,11 @@
     function getRouteTypeName(type) {
       switch (type) {
         case 'land': return 'Grass';
-        case 'old': return 'Fishing (Old Rod)';
-        case 'good': return 'Fishing (Good Rod)';
+        case 'old': return 'Old Rod';
+        case 'good': return 'Good Rod';
         case 'surf': return 'Surf';
         case 'underwater': return 'Underwater';
-        case 'super': return 'Fishing (Super Rod)';
+        case 'super': return 'Super Rod';
         case 'special':
         case 'special1':
         case 'special2':
@@ -1446,6 +1446,19 @@
         case 'special9':
           return 'Special';
         default: return type;
+      }
+    }
+
+    // T-039: label colour per encounter type. grass green, old rod light blue, good rod / surf /
+    // dive medium blue, super rod & special keep the orange. (boss/static/legendary set elsewhere.)
+    function getRouteTypeColor(type) {
+      switch (type) {
+        case 'land':       return '#7AC74C'; // grass — green
+        case 'old':        return '#97D8FF'; // old rod — light blue
+        case 'good':
+        case 'surf':
+        case 'underwater': return '#5FA5E8'; // good rod / surf / dive — medium blue
+        default:           return '#FFB28A'; // super rod / special — orange
       }
     }
 
@@ -1484,8 +1497,12 @@
 
       const encounterTypes = ['land', 'old', 'good', 'surf', 'underwater', 'super', 'special', 'special1', 'special2', 'special3', 'special4', 'special5', 'special6', 'special7', 'special8', 'special9'];
 
-      const encountersHTML = encounterTypes
-        .filter(type => route[type])
+      // Reading order (T-039): fill left-to-right then top-to-bottom. Fix the column count to
+      // ceil(N/3) so the matrix stays ≤3 rows, and let the default row-major grid flow do the rest.
+      const presentTypes = encounterTypes.filter(type => route[type]);
+      const encCols = Math.max(1, Math.ceil(presentTypes.length / 3));
+
+      const encountersHTML = presentTypes
         .map(type => {
           const pokeId = route[type];
           const pokeName = nameify(pokeId.replace('SPECIES_', ''));
@@ -1499,7 +1516,7 @@
           if (isBossReward)              { labelText = 'Reward';    labelColor = '#c084fc'; }
           else if (isStaticEncounter)    { labelText = 'Static';    labelColor = '#f87171'; }
           else if (isLegendaryEncounter) { labelText = 'Legendary'; labelColor = '#fbbf24'; }
-          else                           { labelText = getRouteTypeName(type); labelColor = '#FFB28A'; }
+          else                           { labelText = getRouteTypeName(type); labelColor = getRouteTypeColor(type); }
           const typeLabel = `<div class="enc-type-label" style="color:${labelColor}">${encIcon}<span>${labelText}</span></div>`;
           const slotExtraClass = autoSelected ? ' nz-auto-selected' : '';
           const faintLabel = `<label class="nz-cb-label nz-faint-label" data-tooltip="Mark as fainted">
@@ -1536,7 +1553,7 @@
         <div class="meta" style="justify-content:center;">
           <div class="title">${routeName}<span class="nz-stopwatch-badge">${getIcon('stopwatch','⏱')}</span></div>
         </div>
-        <div class="enc-slots">
+        <div class="enc-slots" style="grid-template-columns:repeat(${encCols}, 168px)">
           ${encountersHTML}
         </div>
       `;

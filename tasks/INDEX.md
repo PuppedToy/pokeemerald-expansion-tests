@@ -42,3 +42,4 @@
 | [T-036](T-036-frontend-test-harness.md) | Frontend test harness + regression tests for the frontend bugs (B-011, B-012) | done | 0.4.0 | 2026-06-29 |
 | [T-037](T-037-accept-additional-emerald-revisions.md) | Accept additional legal Emerald regional ROM revisions (JP/FR/DE/IT/ES …) | done | 0.4.0 | 2026-06-29 |
 | [T-038](T-038-docs-feedback-review.md) | Documentation feedback review and improvements | done | 0.3.1 | 2026-06-30 |
+| [T-039](T-039-encounters-viewer-polish.md) | Encounters viewer polish — labels, icon, reading order, type colours | done | 0.3.1 | 2026-07-01 |
