@@ -19,6 +19,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   it locks the desktop rendering pixel-for-pixel, asserts no mobile overflow, and screenshots every screen
   at every resolution; plus fast zero-dep structural guards under `node --test`.
 
+### Changed
+
+- The app's top-navigation brand title now matches the Home hero: **"Emerald Cut"** in brand green with
+  the logo standing in for the **"C"** of "Cut", instead of plain-white text beside a separate square
+  logo (T-041).
+
 ## [0.4.0] - 2026-07-01
 
 ### Changed

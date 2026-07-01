@@ -44,4 +44,4 @@
 | [T-038](T-038-docs-feedback-review.md) | Documentation feedback review and improvements | done | 0.3.1 | 2026-06-30 |
 | [T-039](T-039-encounters-viewer-polish.md) | Encounters viewer polish — labels, icon, reading order, type colours | done | 0.3.1 | 2026-07-01 |
 | [T-040](T-040-mobile-responsive.md) | Mobile-responsive frontend & generated docs viewer | done | 0.5.0 | 2026-07-01 |
-| [T-041](T-041-topnav-brand-title.md) | Match the app top-nav brand title to the Home hero title (green accent + icon-as-C) | in-progress | 0.5.0 | 2026-07-01 |
+| [T-041](T-041-topnav-brand-title.md) | Match the app top-nav brand title to the Home hero title (green accent + icon-as-C) | done | 0.5.0 | 2026-07-01 |
