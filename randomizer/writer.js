@@ -15,8 +15,10 @@ const {
     GENERIC_DEVIATION,
     TEMPLATE_MOVES_REPLACEMENT,
     TEMPLATE_ABILITIES_REPLACEMENT,
+    TEMPLATE_COLORS_REPLACEMENT,
     MEGA_TRAINERS,
 } = require('./constants');
+const { typeMainColors } = require('./trainerColors');
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature } = require('./rating.js');
 const { BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone } = require('./modules/wildModule');
 const { displayNameToItemConst } = require('./itemRandomizer');
@@ -546,6 +548,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                 isBoss: target.isBoss,
                 team: [...target.team],
                 class: trainer.class,
+                colors: trainer.colors,   // T-044 — copied team, but this trainer's own card colours
             };
             return;
         }
@@ -811,6 +814,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             isBoss: trainer.isBoss || false,
             isPartner: trainer.isPartner || false,
             location: trainer.location || null,
+            colors: trainer.colors,   // T-044 — docs-viewer card colours (SSOT: trainerColors.js)
             team,
             preventShuffle: trainer.preventShuffle || false,
         };
@@ -969,6 +973,11 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     });
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_TRAINERS_REPLACEMENT, `<script>const trainersData = ${JSON.stringify(trainersResultsSimplified)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'trainers.js'), `const trainersData = ${JSON.stringify(trainersResultsSimplified, null, 4)};`, 'utf8');
+    // T-044 — move-chip type colours (SSOT: trainerColors.js). Injected here for out.html;
+    // the browser doc-builder (frontend/js/app.js) injects the same from rom.docs.typeColors.
+    const typeColorsData = typeMainColors();
+    htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_COLORS_REPLACEMENT, `<script>const typeColors = ${JSON.stringify(typeColorsData)};</script>`);
+    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'colors.js'), `const typeColors = ${JSON.stringify(typeColorsData, null, 4)};`, 'utf8');
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_POKEMON_REPLACEMENT, `<script>const pokes = ${JSON.stringify(pokemonList)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'pokes.js'), `const pokes = ${JSON.stringify(pokemonList, null, 4)};`, 'utf8');
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_MOVES_REPLACEMENT, `<script>const movesData = ${JSON.stringify(moves)};</script>`);

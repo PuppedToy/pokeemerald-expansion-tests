@@ -12,6 +12,7 @@ Entry point to all project documentation. **A document not listed here does not 
 ## Decisions (ADRs)
 
 <!-- One line per ADR, newest first. -->
+- [ADR-011](adr/ADR-011-trainer-colour-ssot.md) — the docs-viewer trainer colour system lives in one home (`randomizer/trainerColors.js`) and is resolved once in the pipeline onto each trainer
 - [ADR-010](adr/ADR-010-visual-regression-playwright-dev-tool.md) — responsive visual regression runs in an isolated Playwright dev tool, separate from the zero-dep unit harness
 - [ADR-009](adr/ADR-009-frontend-test-harness-zero-dep.md) — the frontend is tested with a zero-dependency DOM/env stub under `node --test`
 - [ADR-008](adr/ADR-008-rom-delivery-full-rom-ownership-gate.md) — the server builds and delivers the full ROM; the ownership-by-hash gate is the accepted mitigation

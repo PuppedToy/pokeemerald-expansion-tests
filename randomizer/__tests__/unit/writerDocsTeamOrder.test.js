@@ -46,6 +46,12 @@ describe('buildTrainersResultsSimplified', () => {
         expect(ids(res.TRAINER_A.team).slice().sort()).toEqual(defaultIds.slice().sort());
     });
 
+    test('T-044 — preserves the trainer.colors object into the viewer data', () => {
+        const colors = { kind: 'typed', bar: ['#EE8130', '#F7C94B'], title: '#EE8130', railBg: '#3A1206', cardBg: '#1E0C05' };
+        const res = buildTrainersResultsSimplified(makeTrainers({ colors }), { showExactPositions: true, baseRngSeed: 1 });
+        expect(res.TRAINER_A.colors).toEqual(colors);
+    });
+
     test('the ordering layer ALWAYS runs — team differs from default order for some seed', () => {
         const trainers = makeTrainers();
         const defaultIds = trainers.TRAINER_A.team.map(m => m.pokemon.id);

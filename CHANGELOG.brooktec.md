@@ -17,6 +17,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- Every **boss trainer card** in the docs viewer is now coloured by identity instead of the old
+  uniform red (T-044). Gym leaders, Elite Four and the champion (always Steel for Steven) use the
+  palette of the **type they actually run this seed**; Team Aqua mixes Water+Dark and Team Magma
+  Fire+Ground; the rival gets emerald with red/blue accents and Wally emerald with white
+  (Gardevoir-like). Each boss card gains a **top gradient bar**, a coloured title, a themed
+  dossier-rail background and themed Pokémon-card backgrounds. Common trainers stay a neutral
+  slate (no bar), kept distinct from Water/Ice. All four colours per type live in one home
+  (`randomizer/trainerColors.js`); the viewer's move-chip colours are now derived from it too
+  ([ADR-011](docs/adr/ADR-011-trainer-colour-ssot.md)).
 - Cross-ROM boss-team determinism guarantee test (`npm run test:determinism`): generates a
   shared-trainer soul-link and fails if any boss battle without a per-ROM-dependent slot differs
   across ROMs — a standing net against unjustified inter-ROM nondeterminism (T-043).

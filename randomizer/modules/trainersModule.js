@@ -3,6 +3,7 @@
 const { randomizeItems } = require('../itemRandomizer');
 const trainers = require('../trainers');
 const { getDifficultyTransform, getBagSizeOffset, applyTransform } = require('../presets');
+const { resolveTrainerColors } = require('../trainerColors');
 
 const EXEMPT_TRAINER_PREFIXES = ['TRAINER_WALLY_', 'TRAINER_MAY_', 'TRAINER_BRENDAN_'];
 const EXEMPT_TRAINER_IDS = new Set(['TRAINER_STEVEN']);
@@ -45,6 +46,14 @@ function runTrainersModule(pokedexArtifact, config) {
                 trainer.bag = [...trainer.bag, ...extra];
             }
         }
+    }
+
+    // T-044 — resolve each trainer's docs-viewer card colours here, the single seam both
+    // writer.js (out.html) and writerDocs.js (browser bundle) consume, so both runtimes
+    // colour identically. Colours depend only on static fields (class / isBoss / themeType),
+    // never on the resolved team, so this is safe before team resolution.
+    for (const trainer of trainersData) {
+        trainer.colors = resolveTrainerColors(trainer);
     }
 
     return { trainersData, itemAssignments };

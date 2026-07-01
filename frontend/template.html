@@ -288,8 +288,15 @@
     .title{font-weight:700; font-size: 26px; margin-bottom: 12px; text-align: center;}
     .sub{font-size:12px;color:var(--muted)}
     .type{display:inline-block;padding:4px 8px;border-radius:8px;font-size:12px;color:#081017;font-weight:600;margin-right:6px;margin-bottom:6px}
-    .specialCard{background-color: #450B00;}
+    /* T-044 — trainer card colours are set inline from trainer.colors (SSOT:
+       randomizer/trainerColors.js). .partnerCard (battle allies) keeps its own green. */
     .partnerCard{background-color: #004d00;}
+    /* Top gradient bar for bosses (main → secondary); the gradient itself is inline. */
+    .roster-bar{ height:6px; width:100%; }
+    /* Friendly "Ally" tag for battle partners (T-044 feedback). */
+    .roster-ally-tag{ align-self:flex-start; font-family:var(--obs-font-display); font-size:8px;
+      letter-spacing:1px; color:#08170D; background:#56D96B; border:var(--obs-border);
+      box-shadow:var(--obs-shadow-sm); padding:5px 8px; }
     .tags{display:flex;gap:8px;flex-wrap:wrap}
     .tag{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:8px;font-size:12px;}
     .evo-link{cursor:pointer;}
@@ -611,10 +618,8 @@
     .roster { display:grid; grid-template-columns:204px 1fr; }
     .roster-rail { background:var(--obs-well); border-right:3px solid var(--obs-shadow);
       padding:16px; display:flex; flex-direction:column; gap:12px; align-items:flex-start; }
-    .trainer-card.specialCard .roster-rail { background:linear-gradient(180deg,#2a130b,#160b07); }
     .trainer-card.partnerCard .roster-rail { background:linear-gradient(180deg,#0a2a12,#07160b); }
     .roster-rail .title { margin:0; text-align:left; font-size:15px; line-height:1.5; }
-    .trainer-card.specialCard .roster-rail .title { color:var(--obs-yellow); }
     .roster-portrait { width:100%; height:150px; background:var(--obs-bg-deep); border:var(--obs-border);
       box-shadow:var(--obs-inset); display:grid; place-items:center; }
     .roster-portrait-img { width:auto; height:120px; image-rendering:pixelated; }
@@ -988,28 +993,13 @@
       });
     });
   </script>
+  <!-- Type palette main colours (typeColors) — SSOT: randomizer/trainerColors.js.
+       Injected at build time by writer.js (out.html) / app.js (browser). Boss-card
+       colours are pre-resolved per trainer (trainer.colors); this map is only the
+       bright per-type colour the move chips paint with (T-044). -->
+  <script src="colors.js"></script>
   <!-- common constants -->
   <script>
-    const typeColors = {
-        "NORMAL":   "#A8A77A",
-        "FIRE":     "#EE8130",
-        "WATER":    "#6390F0",
-        "ELECTRIC": "#F7D02C",
-        "GRASS":    "#7AC74C",
-        "ICE":      "#96D9D6",
-        "FIGHTING": "#C22E28",
-        "POISON":   "#A33EA1",
-        "GROUND":   "#E2BF65",
-        "FLYING":   "#A98FF3",
-        "PSYCHIC":  "#F95587",
-        "BUG":      "#A6B91A",
-        "ROCK":     "#B6A136",
-        "GHOST":    "#735797",
-        "DRAGON":   "#6F35FC",
-        "DARK":     "#705746",
-        "STEEL":    "#B7B7CE",
-        "FAIRY":    "#D685AD"
-    };
     const tierNames = {
       "AG": "AG",
       "LEGEND": "Legendary",
@@ -1412,6 +1402,22 @@
       if (/TRAINER_MAY_.*_TORCHIC$/.test(trainerId)) card.classList.add('rival-may-torchic');
       if (/TRAINER_MAY_.*_MUDKIP$/.test(trainerId)) card.classList.add('rival-may-mudkip');
 
+      // T-044 — per-trainer card colours (SSOT: randomizer/trainerColors.js), resolved in the
+      // pipeline onto trainer.colors. Applied inline: bosses use their type/identity palette
+      // (top bar main→secondary, title in main, rail in mainBg, cards in secondaryBg); common
+      // trainers get the neutral generic palette with no bar. Partners (no .colors) keep their CSS.
+      const colors = trainer.colors || null;
+      if (colors) card.style.background = colors.cardBg;
+      const barHTML = (colors && colors.bar)
+        ? `<div class="roster-bar" style="background:linear-gradient(90deg, ${colors.bar[0]}, ${colors.bar[1]})"></div>`
+        : '';
+      const railStyle = colors ? ` style="background:${colors.railBg}"` : '';
+      const titleStyle = colors ? ` style="color:${colors.title}"` : '';
+      // Battle allies (partners, e.g. Steven) get a friendly green "Ally" tag instead of a crown.
+      const allyTagHTML = trainer.isPartner
+        ? `<div class="roster-ally-tag">Ally</div>`
+        : '';
+
       const trainerName = trainer.label || nameify(trainerId.replace('TRAINER_', '').replace(/_\d/g, ''));
 
       // Build each Pokémon slot. displayTeam (pre-shuffle order) is present only when
@@ -1478,9 +1484,11 @@
 
       // Final card markup — Roster Sheet (T-038): dossier rail + dense team rows.
       card.innerHTML = `
+        ${barHTML}
         <div class="roster">
-          <div class="roster-rail">
-            <div class="title">${trainer.isBoss ? getIcon('boss','👑')+' ' : ''}${trainerName}</div>
+          <div class="roster-rail"${railStyle}>
+            <div class="title"${titleStyle}>${trainer.isBoss ? getIcon('boss','👑')+' ' : ''}${trainerName}</div>
+            ${allyTagHTML}
             <div class="roster-portrait">
               <img class="roster-portrait-img" src="${getTrainerImg(trainer.class)}" alt="${trainerName}">
             </div>
