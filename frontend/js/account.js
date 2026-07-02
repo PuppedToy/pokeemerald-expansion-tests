@@ -9,7 +9,7 @@ const clearToken = () => localStorage.removeItem(TOKEN_KEY);
 
 const $ = (id) => document.getElementById(id);
 
-async function api(path, { method = 'GET', body = null, auth = false } = {}) {
+export async function api(path, { method = 'GET', body = null, auth = false } = {}) {
   const headers = {};
   if (body != null) headers['content-type'] = 'application/json';
   if (auth && getToken()) headers.authorization = `Bearer ${getToken()}`;
@@ -68,6 +68,13 @@ let state = null;        // /api/me
 let lastBundle = null;
 let pollTimer = null;
 
+// Auth-state subscription (T-048): other modules (e.g. feedback.js) react to login/logout without
+// importing account internals. Listeners fire from updateNavAccount(), which runs on every transition.
+const authListeners = [];
+export function getAuthState() { return state; }
+export function onAuthChange(fn) { if (typeof fn === 'function') authListeners.push(fn); }
+function emitAuthChange() { for (const fn of authListeners) { try { fn(state); } catch { /* isolate */ } } }
+
 // delivery / ROM-status state
 let emailOptedIn = false; // opted in to the "ready" email for the current request
 let delivered = false;    // ROM downloaded this session — don't auto-start another build
@@ -114,6 +121,7 @@ function updateNavAccount() {
     $('nav-logout')?.addEventListener('click', (e) => { e.preventDefault(); logout(); });
   }
   renderSettings();
+  emitAuthChange(); // notify subscribers (feedback.js) of the current auth state (T-048)
 }
 
 function renderSettings() {
@@ -271,6 +279,7 @@ async function clearRun() {
 }
 
 const GEAR_ICO = '<img src="/assets/generating.png" alt="" class="px-icon spin">';
+const LOCK_ICO = '<img src="/assets/locked.png" alt="" class="px-icon">'; // closed padlock (T-048)
 
 export async function onBundleReady(bundle) {
   lastBundle = bundle;
@@ -295,7 +304,7 @@ async function reevaluateDelivery() {
     setRomRow('todo',
       `<div class="status-title">Randomized ROM</div>
        <div class="status-sub">Log in and verify your Emerald to build one — your docs are ready regardless.</div>
-       <button class="btn btn-primary btn-sm" id="rom-cta">Log in / Register</button>`, '🔒');
+       <button class="btn btn-primary btn-sm" id="rom-cta">Log in / Register</button>`, LOCK_ICO);
     $('rom-cta')?.addEventListener('click', openModal);
     return;
   }

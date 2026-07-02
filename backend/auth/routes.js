@@ -7,7 +7,7 @@ import express from 'express';
 import { requireAuth, ipRateLimit } from './middleware.js';
 import { createRateLimiter } from '../email/rateLimiter.js';
 
-export function createAuthRouter({ service, users, requests, runs, tokens, jwtSecret, removeFile, db, killActiveBuild }) {
+export function createAuthRouter({ service, users, requests, runs, tokens, feedback, jwtSecret, removeFile, db, killActiveBuild }) {
   const router = express.Router();
 
   // Parse JSON per-route (NOT router.use): this router is mounted at /api, so a
@@ -65,6 +65,7 @@ export function createAuthRouter({ service, users, requests, runs, tokens, jwtSe
       requests?.purgeAllForUser?.(uid, removeFile);
       runs?.deleteForUser?.(uid);
       tokens?.deleteForUser?.(uid);
+      feedback?.deleteForUser?.(uid); // FK is not ON DELETE CASCADE — clear feedback before the user (T-048)
       users.delete(uid);
     };
     if (db) {

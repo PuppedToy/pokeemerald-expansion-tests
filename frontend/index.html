@@ -30,6 +30,7 @@
       <button class="topnav-tab" data-tab="home">Home</button>
       <button class="topnav-tab" data-tab="features">Features</button>
       <button class="topnav-tab" data-tab="randomizer">Randomizer</button>
+      <button class="topnav-tab" data-tab="feedback">Feedback</button>
       <button class="topnav-tab" data-tab="settings">Settings</button>
     </div>
     <!-- account area (T-034): identity + log out when signed in, otherwise a Log in link -->
@@ -333,6 +334,33 @@
             <li>Abilities: every ability with its description and mechanic flags (breakable, can't be copied / suppressed / swapped, etc.).</li>
             <li>Each run's doc keeps its own progress: nuzlocke state, filters and reading position are saved per run (by seed + player + ROM), so multiple runs never collide in the same browser.</li>
           </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Feedback (T-048): submit form (auth-gated) + curated placeholder lists ── -->
+  <section id="tab-feedback" class="tab-section">
+    <div class="feedback-wrap">
+      <div class="feedback-header">
+        <h1>Feedback</h1>
+        <p>Tell us what you'd love to see or what's broken. We read everything and shape the project around it.</p>
+      </div>
+
+      <!-- Submit form: feedback.js renders the interactive form when logged in, a locked version otherwise. -->
+      <div class="card" id="feedback-form-mount"></div>
+
+      <!-- Curated lists — empty for now, filled by hand later. -->
+      <div class="feedback-lists">
+        <div class="subtabs" role="tablist">
+          <button class="fb-tab active" data-fb-tab="features" role="tab">Most requested features</button>
+          <button class="fb-tab" data-fb-tab="bugs" role="tab">Known bugs</button>
+        </div>
+        <div class="fb-panel active" data-fb-panel="features" role="tabpanel">
+          <div class="card fb-empty">No requests have been processed yet. Coming soon!</div>
+        </div>
+        <div class="fb-panel" data-fb-panel="bugs" role="tabpanel">
+          <div class="card fb-empty">No bugs have been processed yet. Coming soon!</div>
         </div>
       </div>
     </div>

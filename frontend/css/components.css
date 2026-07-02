@@ -704,6 +704,41 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
 .delivery-note.err  { border-left: 4px solid var(--obs-red); }
 .delivery-hint { font-size: 15px; color: var(--obs-text-mute); }
 
+/* ── Feedback form (T-048) ─────────────────────────────────────────────────────── */
+.feedback-form { display: flex; flex-direction: column; gap: 14px; border: 0; padding: 0; margin: 0; }
+.feedback-form[disabled] { opacity: 0.6; }
+.fb-field-label {
+  font-family: var(--obs-font-display); font-size: 10px; letter-spacing: var(--obs-tracking);
+  color: var(--obs-text-dim); margin-top: 4px;
+}
+.fb-option .radio-card-body { padding: 12px 14px; align-items: center; text-align: center; }
+.feedback-textarea {
+  width: 100%; font-family: var(--obs-font-body); font-size: 20px; line-height: 1.4;
+  background: var(--obs-well); color: var(--obs-text); border: var(--obs-border);
+  box-shadow: var(--obs-inset); padding: 12px 14px; outline: none; resize: vertical; min-height: 120px;
+  transition: border-color var(--obs-ease);
+}
+.feedback-textarea:focus { border-color: var(--obs-orange); }
+.feedback-textarea::placeholder { color: var(--obs-text-mute); }
+.feedback-textarea:disabled { cursor: not-allowed; }
+.feedback-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.feedback-msg { font-family: var(--obs-font-body); font-size: 17px; color: var(--obs-text-dim); margin: 0; }
+.feedback-msg.ok { color: var(--obs-green); }
+.feedback-msg.err { color: var(--obs-red); }
+
+.feedback-locked { display: flex; flex-direction: column; gap: 16px; }
+.feedback-lock-note {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  font-family: var(--obs-font-body); font-size: 18px; color: var(--obs-text);
+  background: var(--obs-well); border: var(--obs-border); border-left: 4px solid var(--obs-orange);
+  box-shadow: var(--obs-shadow-sm); padding: 14px 16px;
+}
+.feedback-lock-icon { display: inline-flex; align-items: center; }
+.feedback-lock-icon .px-icon { width: 20px; height: 20px; }
+
+.feedback-thanks { text-align: center; padding: 28px 20px; display: flex; flex-direction: column; gap: 16px; align-items: center; }
+.feedback-thanks-title { font-family: var(--obs-font-body); font-size: 22px; color: var(--obs-green); }
+
 /* ── Generation screen: process checklist (T-031) ─────────────────────────────── */
 .status-checklist {
   list-style: none; margin: 8px auto 28px; padding: 0;

@@ -1,6 +1,7 @@
 import { ConfigForm } from './config-form.js';
 import { resolveArtifact } from './session.js';
-import { initAccount, onBundleReady, getStoredBundle } from './account.js';
+import { initAccount, onBundleReady, getStoredBundle, getAuthState, onAuthChange, api } from './account.js';
+import { initFeedback } from './feedback.js';
 
 // ── Tab routing ───────────────────────────────────────────────────────────────
 
@@ -290,6 +291,15 @@ initAccount({
     },
     // T-035: account.js owns the gen-done "Start over / Cancel" button; this resets the wizard.
     onStartOver: doStartOver,
+});
+
+// T-048: Feedback section. Dependency-injected with account.js's auth state + API helper; the
+// "Log in / Register" link (shown when logged out) reuses the nav's login flow.
+initFeedback({
+    getAuthState,
+    onAuthChange,
+    api,
+    onRequestLogin: () => document.getElementById('nav-login')?.click(),
 });
 
 // ── Web Worker helpers ────────────────────────────────────────────────────────
