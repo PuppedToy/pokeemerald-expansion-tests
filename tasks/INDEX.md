@@ -51,4 +51,4 @@
 | [T-045](T-045-trainer-move-boxes.md) | Wider trainer move boxes so move names never wrap to two lines | done | 0.6.0 | 2026-07-01 |
 | [T-046](T-046-pokemon-modal-mobile.md) | Make the Pokémon detail modal mobile-responsive (learnset/teachables + no horizontal scroll) | done | 0.6.0 | 2026-07-02 |
 | [T-047](T-047-merge-palafin-zero-to-hero.md) | Merge the orphaned Palafin Zero-to-Hero rating branch into master | done | 0.6.0 | 2026-07-02 |
-| [T-048](T-048-frontend-feedback.md) | Frontend feedback section — submit form + placeholder lists | in-progress | 0.6.0 | 2026-07-02 |
+| [T-048](T-048-frontend-feedback.md) | Frontend feedback section — submit form + placeholder lists | done | 0.6.0 | 2026-07-02 |

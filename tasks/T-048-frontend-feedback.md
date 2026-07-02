@@ -1,7 +1,7 @@
 ---
 id: T-048
 title: Frontend feedback section — submit form + placeholder lists
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-02
 updated: 2026-07-02
@@ -52,13 +52,13 @@ module pattern (per T-028/T-034), so no new ADR is warranted.
 plus a structural guard that `index.html` ships the tab/section/placeholders.
 
 Acceptance criteria:
-- [ ] Logged-in user can submit feedback; row stored with author + timestamp; success message shown.
-- [ ] Logged-out user sees a non-interactive form with the "must be logged in" notice.
-- [ ] Feedback page shows two tabbed, empty lists with the "Coming soon" placeholder.
-- [ ] Category defaults to "Feature request"; "Bug Report" and "Other" also selectable & stored.
-- [ ] Whole page is responsive (reuses the ≤600px layer).
-- [ ] Feedback is retrievable for manual analysis (export script), and account deletion still works.
-- [ ] `cd backend && npm test` and `cd frontend && npm test` green.
+- [x] Logged-in user can submit feedback; row stored with author + timestamp; success message shown.
+- [x] Logged-out user sees a non-interactive form with the "must be logged in" notice.
+- [x] Feedback page shows two tabbed, empty lists with the "Coming soon" placeholder.
+- [x] Category defaults to "Feature request"; "Bug Report" and "Other" also selectable & stored.
+- [x] Whole page is responsive (reuses the ≤600px layer).
+- [x] Feedback is retrievable for manual analysis (export script), and account deletion still works.
+- [x] `cd backend && npm test` and `cd frontend && npm test` green.
 
 ## Progress log
 
@@ -89,7 +89,45 @@ Acceptance criteria:
   (owner-provided) rendered as a `px-icon`: the logged-out feedback lock note (`feedback.js`) and the
   "Log in and verify" ROM-status row (`account.js`, new `LOCK_ICO` constant). No open-padlock (🔓)
   emojis existed, so `assets/unlocked.png` is available but currently unused. Frontend suite still 21 ✓.
+- **2026-07-02** — Merged `feature/T-048-frontend-feedback` into `master` (`--no-ff`, merge
+  `18fbdb6010`). Owner pushed to `origin/master` and greenlit the deploy; ran `deploy/update.sh`:
+  preflight (randomizer 523 / backend 106 / frontend 21 + tracker) green, bundle built, rsynced,
+  Linux decomp tools rebuilt, container recreated, `health /api/me: 401` (expected). Live on
+  https://pokemon-emerald-cut.com. Production smoke-test green (Feedback tab + section + placeholder,
+  `/js/feedback.js` 200, `/assets/locked.png` & `/assets/unlocked.png` 200, `POST /api/feedback`
+  without token → 401). **Awaiting owner's manual production test before closing.**
+- **2026-07-02** — Owner manually tested in production: submitted a feature request and a bug report,
+  then asked to verify them via the export tooling and delete them. Confirmed against the live DB
+  (in-container `export-feedback.mjs`): id 1 `feature` "Feature request test." and id 2 `bug`
+  "Bug request test." — both from `alcazar.sacris@gmail.com`, correctly differentiated by category
+  with author + timestamps. Deleted both by id (`DELETED rows: 2`, `AFTER: []`), independently
+  re-confirmed empty, and cleaned up the one-off script. Owner explicitly confirmed OK to close.
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Shipped the Feedback section end-to-end and deployed to production (https://pokemon-emerald-cut.com).
+
+**Backend:** `feedback` table (`db/index.js`) + repo (`db/feedback.js`, `FEEDBACK_CATEGORIES`);
+`POST /api/feedback` behind `requireAuth` + a 10/min per-IP limit (`feedback/routes.js` +
+`feedback/handlers.js`), wired into `server.js` and the account-deletion cascade (`auth/routes.js`,
+optional param so prior tests are unaffected). `backend/scripts/export-feedback.mjs` provides the
+manual JSON/CSV dump (also documented in CLAUDE.md Commands).
+
+**Frontend:** Feedback nav tab + `#tab-feedback` section (auth-gated form + two empty tabbed lists
+with a "coming soon" placeholder); `js/feedback.js` (DI); `account.js` now exports
+`getAuthState`/`onAuthChange`/`api` and emits auth changes; `app.js` wires `initFeedback`. Responsive
+CSS reusing `radio-card` + `subtabs`.
+
+**Tests:** backend 106 (12 new), frontend 21 (7 new), randomizer 523 — all green; verified live in
+prod (submit → store with author+date → retrieve/differentiate → targeted delete).
+
+**Deviations from the plan:**
+- UI copy is in **English** (spec copy was given in Spanish) to match the rest of the app.
+- Added a **lock-icon** swap not in the original plan: replaced the two 🔒 emojis with the
+  owner-provided `assets/locked.png` (`px-icon`); `assets/unlocked.png` also shipped.
+
+**Follow-ups (deferred, not blocking):**
+- `assets/unlocked.png` is deployed but currently **unused** — candidate to wire into the Settings
+  "verified ✓" rows. No task opened yet; raise one if/when desired.
+- The two curated lists are intentionally empty placeholders, to be filled by hand later from the
+  exported feedback.
