@@ -6,12 +6,14 @@ import { randomUUID } from 'node:crypto';
 import { openDatabase } from './db/index.js';
 import { createRequestsRepo } from './db/requests.js';
 import { createRunsRepo } from './db/runs.js';
+import { createFeedbackRepo } from './db/feedback.js';
 import { createUsersRepo } from './auth/users.js';
 import { createTokensRepo } from './auth/tokens.js';
 import { createAuthService } from './auth/service.js';
 import { createAuthRouter } from './auth/routes.js';
 import { createRomRouter } from './rom/routes.js';
 import { createProduceRouter } from './produce/routes.js';
+import { createFeedbackRouter } from './feedback/routes.js';
 import { createMailer, brevoTransport } from './email/index.js';
 import { createStorage } from './build/storage.js';
 import { createBuildRom, killActiveBuild } from './build/buildRom.js';
@@ -34,6 +36,7 @@ const users = createUsersRepo(db);
 const tokens = createTokensRepo(db);
 const requests = createRequestsRepo(db);
 const runs = createRunsRepo(db);
+const feedback = createFeedbackRepo(db);
 
 // ── email (ADR-007): real provider if configured, else a dev console transport ──
 const transport = process.env.BREVO_API_KEY
@@ -66,10 +69,11 @@ startSweeper({ requests, removeFile: storage.removeFile });
 const app = express();
 
 app.use('/api', createAuthRouter({
-  service: authService, users, requests, runs, tokens, jwtSecret: JWT_SECRET,
+  service: authService, users, requests, runs, tokens, feedback, jwtSecret: JWT_SECRET,
   removeFile: (p) => storage.removeFile(p), db, killActiveBuild,
 }));
 app.use('/api/rom', createRomRouter({ users, jwtSecret: JWT_SECRET }));
+app.use('/api', createFeedbackRouter({ feedback, jwtSecret: JWT_SECRET }));
 app.use('/api', createProduceRouter({
   requests, users, jwtSecret: JWT_SECRET,
   persistBundle: (id, b) => storage.persistBundle(id, b),

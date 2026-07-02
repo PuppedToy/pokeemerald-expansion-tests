@@ -82,6 +82,17 @@ CREATE TABLE IF NOT EXISTS auth_tokens (
   created_at INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS auth_tokens_by_user ON auth_tokens(user_id, kind);
+
+-- User feedback (T-048): free-text messages categorised as feature/bug/other, kept with the
+-- author and a timestamp. Curated into the on-site lists manually, off-line — nothing automatic.
+CREATE TABLE IF NOT EXISTS feedback (
+  id         INTEGER PRIMARY KEY,
+  user_id    INTEGER NOT NULL REFERENCES users(id),
+  category   TEXT NOT NULL,          -- 'feature' | 'bug' | 'other'
+  message    TEXT NOT NULL,
+  created_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS feedback_by_user ON feedback(user_id);
 `;
 
 export function migrate(db) {

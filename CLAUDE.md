@@ -14,6 +14,7 @@ Stack: Node.js pipeline (`randomizer/`, Jest tests) + Express backend/frontend (
 - `node analyze.js` — run the randomizer pipeline (analysis only; never compiles a ROM). See **Randomizer pipeline** below for flags.
 - `node make.js --bundle=./path/to/bundle.json` — build ROM(s) from a bundle (ROM-builder machine only)
 - `node scripts/check-tracker.mjs` — validate tasks/bugs/changelog consistency (`--write` regenerates indexes)
+- `cd backend && node scripts/export-feedback.mjs [--csv]` — dump all submitted user feedback (JSON, or `--csv`) for manual analysis
 
 ## Single Source of Truth (SSOT)
 

@@ -353,6 +353,45 @@
   display: block;
 }
 
+/* ── Feedback section (T-048) ── */
+.feedback-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 28px 80px;
+}
+
+.feedback-header { margin-bottom: 24px; }
+.feedback-header h1 { font-size: 20px; }
+.feedback-header p { color: var(--obs-text-dim); font-size: 19px; margin: 12px 0 0; }
+
+.feedback-lists { margin-top: 36px; }
+
+/* Curated-list tabs — same treatment as the Features sub-tabs. */
+.fb-tab {
+  padding: 12px 18px;
+  font-family: var(--obs-font-display);
+  font-size: 10px;
+  letter-spacing: var(--obs-tracking);
+  color: var(--obs-text-dim);
+  cursor: pointer;
+  border: var(--obs-border);
+  background: var(--obs-surface);
+  box-shadow: var(--obs-shadow-sm);
+  transition: background var(--obs-ease), color var(--obs-ease);
+}
+.fb-tab:hover { background: var(--obs-surface-2); color: var(--obs-text); }
+.fb-tab.active { background: var(--obs-orange); color: var(--obs-on-orange); }
+
+.fb-panel { display: none; }
+.fb-panel.active { display: block; }
+
+.fb-empty {
+  color: var(--obs-text-mute);
+  font-size: 19px;
+  text-align: center;
+  padding: 40px 24px;
+}
+
 /* ── Randomizer wizard ── */
 .randomizer-wrap {
   max-width: 760px;
@@ -669,7 +708,7 @@
   }
 
   .randomizer-wrap, .landing,
-  .features-wrap, .settings-wrap {
+  .features-wrap, .settings-wrap, .feedback-wrap {
     padding-left: 16px;
     padding-right: 16px;
   }

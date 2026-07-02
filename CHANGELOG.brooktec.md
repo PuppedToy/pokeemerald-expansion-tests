@@ -17,6 +17,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- New **Feedback** page in the app (T-048). Logged-in users can send free-text feedback tagged as
+  a **Feature request** (default), **Bug report** or **Other**; each submission is stored with the
+  author and a timestamp, and confirmed with a "thanks for the feedback" message. Logged-out
+  visitors see a non-interactive form explaining they must log in. The same page shows two curated,
+  tabbed lists — **Most requested features** and **Known bugs** — currently empty with a
+  "coming soon" placeholder, to be filled by hand. Submissions can be exported for manual analysis
+  with `node scripts/export-feedback.mjs` (JSON, or `--csv`).
 - Every **boss trainer card** in the docs viewer is now coloured by identity instead of the old
   uniform red (T-044). Gym leaders, Elite Four and the champion (always Steel for Steven) use the
   palette of the **type they actually run this seed**; Team Aqua mixes Water+Dark and Team Magma
