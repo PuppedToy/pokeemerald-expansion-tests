@@ -496,6 +496,25 @@ async function patchZipToRoms(zipBlob, romBytes) {
   return roms;
 }
 
+// Core delivery: fetch the patch zip; if a ROM is stored, apply it locally into the finished .gba(s),
+// else hand over the raw .bps. NOT gated on the button, so it also runs right after an inline ROM add.
+async function deliverPatch() {
+  const res = await fetch('/api/download', { headers: { authorization: `Bearer ${getToken()}` } });
+  if (!res.ok) throw new Error(`download failed (${res.status})`);
+  const zipBlob = await res.blob();
+  const rom = await getRom();
+  if (rom) {
+    const roms = await patchZipToRoms(zipBlob, rom);
+    for (const { name, bytes } of roms) triggerDownload(new Blob([bytes], { type: 'application/octet-stream' }), name);
+  } else {
+    triggerDownload(zipBlob, 'emerald-cut-patch.zip');
+  }
+  // The patch stays re-downloadable server-side (until the 48h sweep or the next run); remember delivery
+  // so a reload doesn't auto-resubmit the bundle (B-011).
+  delivered = true;
+  markDelivered(lastBundle);
+}
+
 async function downloadRom() {
   const btn = $('btn-download-rom');
   if (!btn || btn.disabled) return;
@@ -505,27 +524,12 @@ async function downloadRom() {
   btn.classList.add('is-working');
   btn.innerHTML = '<img src="/assets/generating.png" alt="" class="px-icon spin"> Preparing your ROM…';
   try {
-    const res = await fetch('/api/download', { headers: { authorization: `Bearer ${getToken()}` } });
-    if (!res.ok) throw new Error(`download failed (${res.status})`);
-    const zipBlob = await res.blob();
-    const rom = await getRom();
-    if (rom) {
-      // ROM on hand → produce the finished, playable ROM(s) locally.
-      const roms = await patchZipToRoms(zipBlob, rom);
-      for (const { name, bytes } of roms) triggerDownload(new Blob([bytes], { type: 'application/octet-stream' }), name);
-    } else {
-      // No ROM yet → hand over the patch; they can add their Emerald in Settings to auto-patch next time.
-      triggerDownload(zipBlob, 'emerald-cut-patch.zip');
-    }
-    // The BPS stays available server-side (re-downloadable until the 48h sweep or the next run). We still
-    // remember it was delivered so a reload doesn't auto-resubmit the bundle (B-011).
-    delivered = true;
-    markDelivered(lastBundle);
+    await deliverPatch();
     await refreshMe();
     reevaluateDelivery();
   } catch (err) {
     setRomDownload({ enabled: true, count: romCount(), note: true }); // restore the button + clear spinner
-    alert(/source/i.test(err?.message) ? 'That patch is for Pokémon Emerald (USA, Europe) — the ROM you saved does not match. Re-add the correct ROM in Settings.' : 'Download failed — please try again.');
+    alert(/source/i.test(err?.message) ? 'That patch is for Pokémon Emerald (USA, Europe) — the ROM you saved does not match. Re-add the correct ROM.' : 'Download failed — please try again.');
   }
 }
 
@@ -543,11 +547,14 @@ async function hydrateReadyRow(count) {
     setRomDownload({ enabled: true, count, note: true, label: count > 1 ? '⬇ Download ROMs' : '⬇ Download ROM' });
   } else {
     setRomRow('done',
-      `<div class="status-title">Your patch is ready</div>
-       <div class="status-sub" id="rom-ready-msg">Add your Pokémon Emerald (USA, Europe) to build the finished game here — it stays in your browser, never uploaded.</div>
+      `<div class="status-title">Your randomized ROM is ready</div>
+       <div class="status-sub" id="rom-ready-msg">Add your Pokémon Emerald (USA, Europe) to build the playable ROM — it stays in your browser, never uploaded.</div>
        <label class="btn btn-primary btn-sm">⬆ Add your Emerald ROM<input type="file" id="rom-file-ready" accept=".gba,application/octet-stream" hidden></label>
-       <button class="btn btn-ghost btn-sm" id="rom-dl-bps">Download patch (.bps) only</button>`, '✓');
-    setRomDownload({ enabled: true, count, note: true, label: '⬇ Download patch (.bps)' });
+       <button class="btn btn-ghost btn-sm" id="rom-dl-bps">Download raw patch (.bps) only</button>`, '✓');
+    // Green "Download ROM" is for the playable ROM → gated until a ROM is added (clear, not a 2nd .bps
+    // button). The raw .bps stays reachable via the ghost button for people who patch elsewhere.
+    setRomDownload({ enabled: false, note: false, label: count > 1 ? '⬇ Download ROMs' : '⬇ Download ROM',
+      reason: 'Add your Emerald ROM (USA, Europe) above to build the playable ROM.' });
     $('rom-file-ready')?.addEventListener('change', onReadyRomAdd);
   }
   $('rom-dl-bps')?.addEventListener('click', downloadBpsOnly);
@@ -568,7 +575,15 @@ async function onReadyRomAdd(e) {
     return;
   }
   await refreshMe(); updateNavAccount();
-  await downloadRom(); // ROM saved → patch + download the finished game (also re-renders the ready row)
+  try {
+    await deliverPatch(); // ROM saved → build + download the finished game now (bypasses the button guard)
+  } catch (err) {
+    if (msg) msg.textContent = /source/i.test(err?.message)
+      ? 'That ROM does not match Pokémon Emerald (USA, Europe).'
+      : 'Could not build the ROM — please try again.';
+    return;
+  }
+  reevaluateDelivery(); // re-render the ready row → ROM-present view (green Download enabled)
 }
 
 // Download just the raw patch (.bps) without applying it — for users who patch elsewhere (ADR-013).

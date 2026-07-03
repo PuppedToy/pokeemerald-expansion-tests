@@ -94,7 +94,14 @@ test('T-053: ready state with no stored ROM offers an inline add-ROM path', asyn
     const row = env.getEl('rom-status');
     assert.match(row.innerHTML, /Add your Emerald ROM/, 'inline add-ROM affordance is shown');
     assert.match(row.innerHTML, /rom-file-ready/, 'with a file input to pick the ROM');
-    assert.match(row.innerHTML, /patch \(\.bps\) only/i, 'plus a raw-.bps fallback');
+    assert.match(row.innerHTML, /raw patch \(\.bps\) only/i, 'plus a raw-.bps fallback (the only .bps control)');
+    // The green Download ROM button is for the playable ROM → gated (disabled) until a ROM is added, so
+    // it never reads as a 2nd "download .bps" button.
+    const green = env.getEl('btn-download-rom');
+    assert.equal(green.disabled, true, 'green Download ROM is disabled with no ROM stored');
+    assert.match(green.textContent, /Download ROM/, 'and labelled Download ROM, not .bps');
+    assert.doesNotMatch(green.textContent, /\.bps/, 'the green button never offers the .bps');
+    assert.match(green.title, /Add your Emerald ROM/i, 'its tooltip says to add the ROM first');
     // T-053: Start over must be usable even with a downloadable patch (no longer disabled).
     const startOver = env.getEl('btn-start-over');
     assert.equal(startOver.disabled, false, 'Start over is enabled while a patch is ready');
@@ -119,6 +126,7 @@ test('T-053: ready state with a stored ROM shows the finished-ROM download', asy
     const row = env.getEl('rom-status');
     assert.match(row.innerHTML, /saved in this browser/, 'finished-ROM view when a ROM is stored');
     assert.doesNotMatch(row.innerHTML, /Add your Emerald ROM/, 'no add-ROM prompt when one is already saved');
+    assert.equal(env.getEl('btn-download-rom').disabled, false, 'green Download ROM is enabled once a ROM is stored');
   } finally { env.restore(); }
 });
 

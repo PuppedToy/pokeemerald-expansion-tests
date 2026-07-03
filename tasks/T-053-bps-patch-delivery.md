@@ -121,6 +121,12 @@ Acceptance criteria:
   a discarded run can't be resurrected on reload. Fixed a latent backend bug this exposed: `cancel` on a
   `ready` run tried the illegal `ready→failed` transition and left the row stuck `ready` (active, files
   deleted); it now falls back to `ready→expired`, freeing the slot. Backend 109, frontend 44 green.
+- **2026-07-03** — Manual-test feedback: with no ROM added, BOTH buttons read "Download BPS" (confusing).
+  Fixed: the green **Download ROM** button is now for the playable ROM only → **disabled until a ROM is
+  added**, with a tooltip prompting to add it; the raw `.bps` is reachable solely via the ghost "Download
+  raw patch (.bps) only". Refactored the delivery into `deliverPatch()` (no button guard) so the inline
+  "add your ROM" flow still builds + downloads the finished ROM even though the green button is disabled.
+  Frontend 44 green (ready-state tests now assert the green button's disabled/enabled state).
 
 ## Outcome
 
