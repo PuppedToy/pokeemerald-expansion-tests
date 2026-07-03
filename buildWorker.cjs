@@ -18,6 +18,11 @@ const SHIMS = path.join(FRONT_JS, 'shims');
 const WORKER_ENTRY = path.join(FRONT_JS, 'randomizer-worker.cjs');
 const DEFAULT_OUTFILE = path.join(FRONT_JS, 'randomizer.bundle.js');
 
+// The BPS codec (T-053, ADR-013). Bundled as an ESM module so the browser main thread can APPLY the
+// patches the builder CREATES with the very same randomizer/bps.js — one codec, no duplication.
+const BPS_ENTRY = path.join(__dirname, 'randomizer', 'bps.js');
+const BPS_OUTFILE = path.join(FRONT_JS, 'bps.bundle.js');
+
 async function bundleWorker(outfile = DEFAULT_OUTFILE) {
   const esbuild = require('esbuild');
   await esbuild.build({
@@ -37,4 +42,16 @@ async function bundleWorker(outfile = DEFAULT_OUTFILE) {
   return outfile;
 }
 
-module.exports = { bundleWorker, WORKER_ENTRY, DEFAULT_OUTFILE };
+async function bundleBps(outfile = BPS_OUTFILE) {
+  const esbuild = require('esbuild');
+  await esbuild.build({
+    entryPoints: [BPS_ENTRY],
+    bundle: true,
+    platform: 'browser',
+    format: 'esm', // ESM so the main-thread modules (account.js) can `import` applyBps
+    outfile,
+  });
+  return outfile;
+}
+
+module.exports = { bundleWorker, bundleBps, WORKER_ENTRY, DEFAULT_OUTFILE, BPS_ENTRY, BPS_OUTFILE };

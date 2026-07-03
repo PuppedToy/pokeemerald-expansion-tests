@@ -41,36 +41,50 @@ test('the production set carries all six legal Emerald revisions (No-Intro, T-03
   assert.equal(KNOWN_EMERALD_SHA1.has('0000000000000000000000000000000000000000'), false);
 });
 
-test('a recognized ROM flips owns_valid_rom and the bytes are never persisted', () => {
+// T-053, ADR-013: /api/rom/validate is now hash-only — the client hashes its own ROM and sends just
+// { sha1 }. The ROM bytes never leave the browser. `validateHash` checks the hash against the known set.
+test('validateHash accepts a hash in the known set, rejects others', () => {
+  const good = Buffer.from('a legitimate dump');
+  const validator = createRomValidator({ knownHashes: [sha1hex(good)] });
+  assert.equal(validator.validateHash(sha1hex(good)).ok, true);
+  assert.equal(validator.validateHash(sha1hex(good).toUpperCase()).ok, true, 'case-insensitive');
+  assert.equal(validator.validateHash(sha1hex(Buffer.from('other'))).ok, false);
+});
+
+test('a recognized ROM hash flips owns_valid_rom (bytes never leave the client)', () => {
   const good = Buffer.from('vanilla emerald bytes');
   const validator = createRomValidator({ knownHashes: [sha1hex(good)] });
   const calls = [];
   const users = { setOwnsValidRom: (id, v) => calls.push([id, v]) };
 
   const res = fakeRes();
-  handleValidate({ users, validator })({ userId: 7, body: good }, res);
+  handleValidate({ users, validator })({ userId: 7, body: { sha1: sha1hex(good) } }, res);
 
   assert.equal(res.statusCode, 200);
   assert.equal(res.body.ok, true);
   assert.deepEqual(calls, [[7, true]]);
 });
 
-test('an unrecognized upload is rejected and the flag is NOT set', () => {
-  const validator = createRomValidator({ knownHashes: ['deadbeef'] });
+test('an unrecognized hash is rejected and the flag is NOT set', () => {
+  const validator = createRomValidator({ knownHashes: [sha1hex(Buffer.from('emerald'))] });
   const calls = [];
   const users = { setOwnsValidRom: (id, v) => calls.push([id, v]) };
 
   const res = fakeRes();
-  handleValidate({ users, validator })({ userId: 7, body: Buffer.from('not emerald') }, res);
+  handleValidate({ users, validator })({ userId: 7, body: { sha1: sha1hex(Buffer.from('not emerald')) } }, res);
 
   assert.equal(res.statusCode, 400);
   assert.equal(res.body.ok, false);
   assert.equal(calls.length, 0);
 });
 
-test('an empty upload is a 400', () => {
+test('a missing or malformed sha1 is a 400', () => {
   const validator = createRomValidator({ knownHashes: ['x'] });
   const res = fakeRes();
-  handleValidate({ users: {}, validator })({ userId: 1, body: Buffer.alloc(0) }, res);
+  handleValidate({ users: {}, validator })({ userId: 1, body: {} }, res);
   assert.equal(res.statusCode, 400);
+
+  const res2 = fakeRes();
+  handleValidate({ users: {}, validator })({ userId: 1, body: { sha1: 'not-a-hash' } }, res2);
+  assert.equal(res2.statusCode, 400);
 });

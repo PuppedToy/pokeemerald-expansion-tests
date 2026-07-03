@@ -48,6 +48,7 @@ function makeIndexedDB(store) {
       const os = {
         get(key) { const r = {}; soon(() => { r.result = store.has(key) ? store.get(key) : null; r.onsuccess?.(); }); return r; },
         put(val, key) { store.set(key, val); soon(() => tx.oncomplete?.()); return {}; },
+        delete(key) { store.delete(key); soon(() => tx.oncomplete?.()); return {}; },
       };
       tx.objectStore = () => os;
       return tx;

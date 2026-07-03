@@ -12,6 +12,7 @@
  * Non-interactive flags:
  *   node make.js --bundle=./path/to/bundle.json
  *   node make.js --randomize [--seed=42] [--difficulty=hard] [--no-balance]
+ *   node make.js --full-rom     (emit the full .gba instead of a BPS patch; default is .bps — ADR-013)
  *   node make.js --debug
  *   node make.js --clean        (runs 'make clean' before the first make)
  */
@@ -116,12 +117,13 @@ function romFileName(rom) {
 
 // ── Single-ROM build — the unit the backend queue drives (T-030) ──────────────
 
-async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = resolveJobs() }) {
+async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = resolveJobs(), fullRom = false }) {
     const rng                          = require('./randomizer/rng');
     const writer                       = require('./randomizer/writer');
     const { writeTMsFromList }          = require('./randomizer/tmRandomizer');
     const { writeItemFilesFromBundle }  = require('./randomizer/itemRandomizer');
     const { writeMoney }                = require('./randomizer/moneyWriter');
+    const { emitArtifact, resolveVanillaPath } = require('./randomizer/romArtifact');
 
     const label    = romFileName(rom);
     const pokedex  = resolveArtifact(rom.artifacts.pokedex,  bundle.sharedData, 'pokedex');
@@ -147,8 +149,9 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
         await writeMoney(bundle.config?.money);
         run('make', ['-j', String(jobs)]);
 
-        const dest = path.join(outDir, label);
-        fs.copyFileSync(ROM_SRC, dest);
+        // Default delivery is a BPS delta (vanilla→built); --full-rom copies the .gba verbatim (ADR-013).
+        const vanillaPath = fullRom ? null : resolveVanillaPath(root);
+        const dest = emitArtifact({ builtRomPath: ROM_SRC, outDir, label, fullRom, vanillaPath });
         console.log(`\n  ✓  Saved: ${dest}`);
         return dest;
     } finally {
@@ -159,7 +162,7 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
 // ── Bundle mode ──────────────────────────────────────────────────────────────
 
 async function bundleMode(bundlePath, isDebug, doClean, opts = {}) {
-    const { romIndex = null, outDir: outDirOverride = null, jobs = resolveJobs() } = opts;
+    const { romIndex = null, outDir: outDirOverride = null, jobs = resolveJobs(), fullRom = false } = opts;
     console.log(`\nLoading bundle: ${bundlePath}`);
 
     let bundle;
@@ -188,6 +191,7 @@ async function bundleMode(bundlePath, isDebug, doClean, opts = {}) {
     console.log(`Seed:      ${seed}`);
     console.log(`Output:    ${outDir}`);
     console.log(`Jobs:      make -j${jobs}`);
+    console.log(`Artifact:  ${fullRom ? 'full ROM (.gba)' : 'BPS patch (.bps, vanilla→built)'}`);
 
     if (doClean) run('make', ['clean']);
 
@@ -195,7 +199,7 @@ async function bundleMode(bundlePath, isDebug, doClean, opts = {}) {
         console.log(`\n${'─'.repeat(64)}`);
         console.log(`ROM ${rom.romIndex + 1} / ${bundle.roms.length}  →  ${romFileName(rom)}`);
         console.log('─'.repeat(64));
-        await buildOneRom({ rom, bundle, seed, outDir, isDebug, jobs });
+        await buildOneRom({ rom, bundle, seed, outDir, isDebug, jobs, fullRom });
     }
 
     console.log(`\n${'='.repeat(64)}`);
@@ -215,6 +219,7 @@ async function randomizeMode(opts, doClean) {
     const wildData = require('./randomizer/wild');
     const rng      = require('./randomizer/rng');
     const writer   = require('./randomizer/writer');
+    const { emitArtifact, resolveVanillaPath } = require('./randomizer/romArtifact');
 
     const config = loadConfig({
         seed:         opts.seed ? parseInt(opts.seed, 10) : null,
@@ -231,6 +236,7 @@ async function randomizeMode(opts, doClean) {
 
     if (doClean) run('make', ['clean']);
 
+    let dest;
     try {
         const pokedex  = await runPokedexModule(config);
         const trainers = runTrainersModule(pokedex, config);
@@ -241,14 +247,17 @@ async function randomizeMode(opts, doClean) {
             writer.docRunNamespace({ seed: config.seed }));
         run('make', ['-j', String(resolveJobs())]);
 
-        const dest = path.join(outDir, `rom-${config.seed}.gba`);
-        fs.copyFileSync(ROM_SRC, dest);
+        // Default delivery is a BPS delta; --full-rom copies the .gba verbatim (ADR-013).
+        const vanillaPath = opts.fullRom ? null : resolveVanillaPath(root);
+        dest = emitArtifact({
+            builtRomPath: ROM_SRC, outDir, label: `rom-${config.seed}.gba`, fullRom: opts.fullRom, vanillaPath,
+        });
         console.log(`\n  ✓  Saved: ${dest}`);
     } finally {
         restore();
     }
 
-    console.log(`\n  Done! ROM saved to: ${path.join(outDir, `rom-${config.seed}.gba`)}`);
+    console.log(`\n  Done! Saved to: ${dest}`);
 }
 
 // ── Argument parsing + interactive prompts ───────────────────────────────────
@@ -260,6 +269,7 @@ async function parseOpts() {
     const doRandomize = argv.includes('--randomize');
     const isDebug     = argv.includes('--debug');
     const doClean     = argv.includes('--clean');
+    const doFullRom   = argv.includes('--full-rom');
 
     if (bundleFlag || doRandomize) {
         return {
@@ -271,12 +281,14 @@ async function parseOpts() {
                 romIndex: (argv.find(a => a.startsWith('--rom='))  || '').replace('--rom=',  '') || null,
                 outDir:   (argv.find(a => a.startsWith('--out='))  || '').replace('--out=',  '') || null,
                 jobs:     (argv.find(a => a.startsWith('--jobs=')) || '').replace('--jobs=', '') || null,
+                fullRom:  doFullRom,
             },
             randOpts: {
                 debug:      isDebug,
                 rebalance:  !argv.includes('--no-balance'),
                 difficulty: (argv.find(a => a.startsWith('--difficulty=')) || '').replace('--difficulty=', '') || null,
                 seed:       (argv.find(a => a.startsWith('--seed='))       || '').replace('--seed=',       '') || null,
+                fullRom:    doFullRom,
             },
         };
     }
@@ -291,6 +303,9 @@ async function parseOpts() {
 
     const cleanStr = await ask(rl, 'Run \'make clean\' first? (y/n) [n]: ');
     const clean    = cleanStr.trim().toLowerCase() === 'y';
+
+    const fullRomStr = await ask(rl, 'Emit full ROM (.gba) instead of a BPS patch? (y/n) [n]: ');
+    const fullRom    = fullRomStr.trim().toLowerCase() === 'y';
 
     console.log('\nSource:');
     console.log('  1  Bundle JSON  — apply pre-generated randomizer data, then compile');
@@ -314,11 +329,12 @@ async function parseOpts() {
             rebalance:  rebalanceStr.trim().toLowerCase() !== 'n',
             difficulty: difficultyStr.trim() || null,
             seed:       seedStr.trim() || null,
+            fullRom,
         };
     }
 
     rl.close();
-    return { mode, bundlePath, isDebug: debug, doClean: clean, randOpts };
+    return { mode, bundlePath, isDebug: debug, doClean: clean, bundleOpts: { fullRom }, randOpts };
 }
 
 // ── Entry point ──────────────────────────────────────────────────────────────
@@ -335,6 +351,7 @@ async function main() {
             romIndex: bo.romIndex != null ? parseInt(bo.romIndex, 10) : null,
             outDir:   bo.outDir ? path.resolve(bo.outDir) : null,
             jobs:     bo.jobs ? parseInt(bo.jobs, 10) : resolveJobs(),
+            fullRom:  !!bo.fullRom,
         });
     } else {
         await randomizeMode(opts.randOpts, opts.doClean);

@@ -35,5 +35,12 @@ export function createRomValidator({ knownHashes = KNOWN_EMERALD_SHA1 } = {}) {
       const sha1 = sha1hex(buffer);
       return { ok: known.has(sha1), sha1 };
     },
+    // Hash-only path (T-053, ADR-013): the client hashes its own ROM and sends just the SHA-1, so the
+    // ROM bytes never leave the user's machine. Ownership is an attestation, not DRM (the BPS is inert
+    // without a genuine base ROM), so trusting the client-computed hash is acceptable here.
+    validateHash(sha1) {
+      const hex = String(sha1).toLowerCase();
+      return { ok: known.has(hex), sha1: hex };
+    },
   };
 }
