@@ -12,11 +12,12 @@ Entry point to all project documentation. **A document not listed here does not 
 ## Decisions (ADRs)
 
 <!-- One line per ADR, newest first. -->
+- [ADR-013](adr/ADR-013-bps-patch-delivery-client-side.md) — delivery switches to a server-generated BPS patched client-side against a ROM held in the browser's IndexedDB; server never stores/serves a full ROM (supersedes ADR-008)
 - [ADR-012](adr/ADR-012-upstream-bugfix-cherry-pick-sync.md) — upstream is absorbed as bugfixes only, cherry-picked per version (no feature merges, sensitive randomizer files excluded); the ledger is the SSOT for the bugfix frontier
 - [ADR-011](adr/ADR-011-trainer-colour-ssot.md) — the docs-viewer trainer colour system lives in one home (`randomizer/trainerColors.js`) and is resolved once in the pipeline onto each trainer
 - [ADR-010](adr/ADR-010-visual-regression-playwright-dev-tool.md) — responsive visual regression runs in an isolated Playwright dev tool, separate from the zero-dep unit harness
 - [ADR-009](adr/ADR-009-frontend-test-harness-zero-dep.md) — the frontend is tested with a zero-dependency DOM/env stub under `node --test`
-- [ADR-008](adr/ADR-008-rom-delivery-full-rom-ownership-gate.md) — the server builds and delivers the full ROM; the ownership-by-hash gate is the accepted mitigation
+- [ADR-008](adr/ADR-008-rom-delivery-full-rom-ownership-gate.md) — the server builds and delivers the full ROM; the ownership-by-hash gate is the accepted mitigation *(superseded by ADR-013)*
 - [ADR-007](adr/ADR-007-transactional-email-notifications.md) — a transactional email provider sends verification, password-reset and ROM-ready mail
 - [ADR-006](adr/ADR-006-untrusted-bundle-build-sandbox.md) — the ROM build runs in a hardened sandbox because the bundle is untrusted input
 - [ADR-005](adr/ADR-005-two-tier-preemptive-build-queue.md) — a two-tier (fast/slow) preemptive serial queue schedules builds, preempting at ROM granularity

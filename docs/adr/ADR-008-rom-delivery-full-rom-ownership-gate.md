@@ -1,6 +1,6 @@
 # ADR-008: The server builds and delivers the full ROM; the ownership-by-hash gate is the accepted mitigation
 
-- **Status:** accepted
+- **Status:** superseded by [ADR-013](ADR-013-bps-patch-delivery-client-side.md) (2026-07-03)
 - **Date:** 2026-06-21
 - **Task:** T-018
 
