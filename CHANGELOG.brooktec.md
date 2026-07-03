@@ -28,6 +28,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
     list reproduces the previous nine.
   - Full reference: [randomizer/docs/randomization-options.md](randomizer/docs/randomization-options.md).
 
+- A **Reset to defaults** button in the randomizer options restores every setting to its default in one
+  click (T-055).
+
 ### Changed
 
 - **The site now delivers a patch, not a full ROM — and your ROM never leaves your computer.** You add
@@ -39,6 +42,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- In the generated docs, a trainer's **"Defeated"** toggle now sits directly under that trainer's reward
+  instead of being pushed to the bottom of the card (T-055).
 - Shared-trainer soul-link ROMs no longer diverge, and a trainer can no longer field an evolved
   Pokémon below its evolution level (e.g. a level-15 trainer with a Ludicolo). Evolution levels
   are now rolled **once per Pokédex** instead of being re-rolled per ROM during bundle generation,

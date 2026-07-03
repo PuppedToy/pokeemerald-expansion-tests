@@ -36,6 +36,14 @@ test('the generic "Advanced" block is removed (only a scoped Mutations Advanced 
   assert.match(src, /id="mutations-advanced-body"/, 'Mutations must keep a scoped Advanced body');
 });
 
+test('T-055: a "reset to defaults" control exists and resets from the canonical DEFAULTS', () => {
+  assert.match(src, /id="btn-reset-config"/, 'the config actions must include a reset button');
+  assert.match(src, /resetToDefaults\s*\(\)\s*\{/, 'ConfigForm exposes a resetToDefaults() method');
+  const body = src.slice(src.indexOf('resetToDefaults'), src.indexOf('resetToDefaults') + 200);
+  assert.match(body, /setConfig\(DEFAULTS\)/, 'resetToDefaults applies the DEFAULTS object (not ad-hoc values)');
+  assert.match(src, /#btn-reset-config'\)\?\.addEventListener/, 'the reset button is wired');
+});
+
 test('seed + show-exact-positions moved into the General category', () => {
   const generalIdx = src.indexOf('data-cat="general"');
   assert.ok(generalIdx > 0, 'General category must exist');

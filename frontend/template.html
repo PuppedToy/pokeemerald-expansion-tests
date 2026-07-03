@@ -632,7 +632,7 @@
     .roster-rail .rewards { display:flex; flex-direction:column; gap:6px; align-self:stretch; margin:0; }
     .roster-rail .reward-item { display:flex; align-items:center; gap:7px; background:var(--obs-well);
       border:2px solid var(--obs-line); padding:5px 9px; font-size:18px; }
-    .roster-rail .nz-defeat-label { margin-top:auto; }
+    /* T-055: the Defeated toggle sits right under the reward (no margin-top:auto pushing it to the card bottom). */
     /* Fixed-width Pokémon cards: they do NOT stretch. The team just fits as many cards
        per row as the width allows and wraps the rest — so the moves never drift away from
        the info on wide screens. Add a 2nd column only when another card genuinely fits. T-038. */

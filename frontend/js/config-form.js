@@ -784,6 +784,7 @@ export class ConfigForm {
     Load
     <input type="file" accept=".json" id="upload-config" style="display:none">
   </label>
+  <button type="button" class="btn btn-ghost" id="btn-reset-config">Reset to defaults</button>
   <span id="config-saved-note" style="font-size:12px;color:var(--muted);display:none">Saved ✓</span>
 </div>
 `;
@@ -792,6 +793,13 @@ export class ConfigForm {
     _restore() {
         const saved = storageGet(STORAGE_KEY, DEFAULTS);
         this.setConfig(saved);
+    }
+
+    /** Reset every randomizer option back to its default (T-055). */
+    resetToDefaults() {
+        this.setConfig(DEFAULTS);
+        this._syncUI();
+        this._save();
     }
 
     _save() {
@@ -983,6 +991,10 @@ export class ConfigForm {
         this._q('#btn-save-config').addEventListener('click', () => {
             const cfg = this.getConfig();
             if (cfg) downloadConfig(cfg);
+        });
+
+        this._q('#btn-reset-config')?.addEventListener('click', () => {
+            if (confirm('Reset all randomizer options to their defaults?')) this.resetToDefaults();
         });
 
         this._q('#upload-config').addEventListener('change', async e => {
