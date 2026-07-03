@@ -52,3 +52,6 @@
 | [T-046](T-046-pokemon-modal-mobile.md) | Make the Pokémon detail modal mobile-responsive (learnset/teachables + no horizontal scroll) | done | 0.6.0 | 2026-07-02 |
 | [T-047](T-047-merge-palafin-zero-to-hero.md) | Merge the orphaned Palafin Zero-to-Hero rating branch into master | done | 0.6.0 | 2026-07-02 |
 | [T-048](T-048-frontend-feedback.md) | Frontend feedback section — submit form + placeholder lists | done | 0.6.0 | 2026-07-02 |
+| [T-049](T-049-upstream-expansion-sync-strategy.md) | Research a controlled, reproducible upstream sync with pokeemerald-expansion | in-progress | 0.6.0 | 2026-07-03 |
+| [T-050](T-050-sync-1.13.3-bugfixes.md) | Absorb expansion 1.13.3 bugfixes (incl. Endure) | in-progress | 0.6.0 | 2026-07-03 |
+| [T-051](T-051-sync-1.13.4-bugfixes.md) | Absorb expansion 1.13.4 bugfixes | proposed | 0.6.0 | 2026-07-03 |

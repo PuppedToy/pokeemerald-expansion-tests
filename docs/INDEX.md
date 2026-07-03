@@ -12,6 +12,7 @@ Entry point to all project documentation. **A document not listed here does not 
 ## Decisions (ADRs)
 
 <!-- One line per ADR, newest first. -->
+- [ADR-012](adr/ADR-012-upstream-bugfix-cherry-pick-sync.md) — upstream is absorbed as bugfixes only, cherry-picked per version (no feature merges, sensitive randomizer files excluded); the ledger is the SSOT for the bugfix frontier
 - [ADR-011](adr/ADR-011-trainer-colour-ssot.md) — the docs-viewer trainer colour system lives in one home (`randomizer/trainerColors.js`) and is resolved once in the pipeline onto each trainer
 - [ADR-010](adr/ADR-010-visual-regression-playwright-dev-tool.md) — responsive visual regression runs in an isolated Playwright dev tool, separate from the zero-dep unit harness
 - [ADR-009](adr/ADR-009-frontend-test-harness-zero-dep.md) — the frontend is tested with a zero-dependency DOM/env stub under `node --test`
@@ -27,6 +28,7 @@ Entry point to all project documentation. **A document not listed here does not 
 ## Guides
 
 <!-- Architecture, conventions, runbooks… One line per document. -->
+- [upstream-bugfix-sync.md](upstream-bugfix-sync.md) — how we cherry-pick RHH bugfixes per version + the state ledger of how far we're patched (T-049, ADR-012)
 - [dev-deploy-workflow.md](dev-deploy-workflow.md) — the canonical dev → test → commit → push → `update.sh` deploy loop (preflight-gated) (T-031)
 - [deploy-oracle.md](deploy-oracle.md) — deploy runbook: Oracle free A1 (primary) + Hetzner fallback, DNS/HTTPS, bootstrap, update, ops (T-019)
 - [../visual-tests/README.md](../visual-tests/README.md) — dev-only responsive visual-regression + agent-preview harness (Playwright); the desktop-lock workflow (T-040, ADR-010)
