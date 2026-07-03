@@ -51,6 +51,87 @@ const BANNED_SPECIES_FOR_PICKING = [
     'SPECIES_PALAFIN_HERO',
 ];
 
+// T-052 — extra-starter categories. Each slot is { tier, kind: 'line'|'solo', lineLength }.
+//  - 'line': an early (LC) base whose family's best evolution is `tier`; lineLength prefers a
+//    3-stage ('3') or 2-stage ('2') line, falling back to any length.
+//  - 'solo': a non-evolving mon of `tier` (early-game, best-evo rating ≤ RU).
+// The DEFAULT preset reproduces today's 9 exactly (the engine delegates to the legacy path for it).
+const EXTRA_STARTER_TIERS = {
+    LEGEND: TIER_LEGEND, UBERS: TIER_UBERS, OU: TIER_OU, UU: TIER_UU, RU: TIER_RU, NU: TIER_NU, PU: TIER_PU,
+};
+const DEFAULT_EXTRA_STARTER_PRESET = [
+    { tier: 'UBERS', kind: 'line', lineLength: '3' },
+    { tier: 'OU',    kind: 'line', lineLength: '3' },
+    { tier: 'UU',    kind: 'line', lineLength: 'any' },
+    { tier: 'NU',    kind: 'solo', lineLength: 'any' },
+    { tier: 'RU',    kind: 'line', lineLength: 'any' },
+    { tier: 'RU',    kind: 'line', lineLength: 'any' },
+    { tier: 'RU',    kind: 'line', lineLength: 'any' },
+    { tier: 'RU',    kind: 'line', lineLength: 'any' },
+    { tier: 'RU',    kind: 'line', lineLength: 'any' },
+];
+function normalizeStarterSpec(s) {
+    s = s || {};
+    return {
+        tier: String(s.tier || ''),
+        kind: s.kind === 'solo' ? 'solo' : 'line',
+        lineLength: s.lineLength === '3' ? '3' : s.lineLength === '2' ? '2' : 'any',
+    };
+}
+function isDefaultStarterPreset(specs) {
+    if (!Array.isArray(specs) || specs.length !== DEFAULT_EXTRA_STARTER_PRESET.length) return false;
+    return specs.every((s, i) => {
+        const a = normalizeStarterSpec(s);
+        const b = DEFAULT_EXTRA_STARTER_PRESET[i];
+        return a.tier === b.tier && a.kind === b.kind && a.lineLength === b.lineLength;
+    });
+}
+
+/**
+ * T-052 — config-driven extra-starter selection for CUSTOM lists (unlimited slots, expanded
+ * vocabulary). Pure over its ctx; the DEFAULT preset uses the legacy path (kept byte-identical).
+ *
+ * @param {Array} specs - [{ tier, kind:'line'|'solo', lineLength:'any'|'3'|'2' }, ...]
+ * @param {Object} ctx  - { pokemonList, alreadyChosenFamilySet (mutated), alreadyChosenTypes
+ *                          (mutated), onPick?(poke) }
+ * @returns {Array} chosen pokemon objects
+ */
+function pickExtraStartersFromSpecs(specs, ctx) {
+    const { pokemonList, alreadyChosenFamilySet, alreadyChosenTypes, onPick } = ctx;
+    const chosen = [];
+    const notChosenFamily = p => !alreadyChosenFamilySet.has(getFamilyGroup(p.family));
+    const typeDiverse = (pool) => {
+        const filtered = pool.filter(p => ![...alreadyChosenTypes].some(t => p.parsedTypes.includes(t)));
+        return filtered.length > 0 ? filtered : pool;
+    };
+    const linePool = (tier, lineLength) => {
+        const base = pokemonList.filter(p =>
+            p.evolutionData.isLC && p.rating.bestEvoTier === tier
+            && isSubWeakTier(p.rating.tier) && notChosenFamily(p));
+        if (lineLength === '3') { const f = base.filter(p => p.evolutionData.type === EVO_TYPE_LC_OF_3); if (f.length) return f; }
+        if (lineLength === '2') { const f = base.filter(p => p.evolutionData.type === EVO_TYPE_LC_OF_2); if (f.length) return f; }
+        return base;
+    };
+    const soloPool = (tier) => pokemonList.filter(p =>
+        p.evolutionData.type === EVO_TYPE_SOLO
+        && p.rating.bestEvoRating <= TIER_RU_THRESHOLD
+        && p.rating.tier === tier && notChosenFamily(p));
+    for (const rawSpec of specs) {
+        const spec = normalizeStarterSpec(rawSpec);
+        const tier = EXTRA_STARTER_TIERS[spec.tier];
+        if (!tier) continue; // unknown tier → skip this slot
+        let pool = spec.kind === 'solo' ? soloPool(tier) : linePool(tier, spec.lineLength);
+        pool = typeDiverse(pool);
+        if (pool.length === 0) continue; // unsatisfiable slot → skip gracefully
+        const pick = sample(pool);
+        chosen.push(pick);
+        alreadyChosenFamilySet.add(getFamilyGroup(pick.family));
+        pick.parsedTypes.forEach(t => alreadyChosenTypes.add(t));
+        if (onPick) onPick(pick);
+    }
+    return chosen;
+}
+
 /**
  * Selects extra starters, gym/static pokemon rewards, and wild encounter replacements.
  *
@@ -67,7 +148,7 @@ const BANNED_SPECIES_FOR_PICKING = [
  *   alreadyChosenFamilies: string[],
  * }}
  */
-function runWildModule(rawPokemonList, startersArtifact, wildConfig) {
+function runWildModule(rawPokemonList, startersArtifact, wildConfig, moduleConfig = {}) {
     if (!wildConfig) {
         wildConfig = require('../wild');
     }
@@ -114,7 +195,11 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig) {
     });
 
     // ── Extra starters ─────────────────────────────────────────────────────────
+    const alreadyChosenTypes = new Set();
+    const starterSpecs = moduleConfig && moduleConfig.extraStarters;
 
+    // Legacy selection (default preset / no config) — byte-identical to pre-T-052 behaviour.
+    const selectDefaultExtraStarters = () => {
     // Slot 1: 1 UBERS LC (prefer LC-of-3, then LC-of-2, then any UBERS LC; fallback OU LC)
     let slot1Pool = pokemonList.filter(poke =>
         poke.evolutionData.type === EVO_TYPE_LC_OF_3
@@ -152,7 +237,6 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig) {
         throw new Error('No UBERS or OU LC pokemon found for extra starters slot 1.');
     }
 
-    const alreadyChosenTypes = new Set();
     const chosenExtraPokemon = [sample(slot1Pool)];
     alreadyChosenFamilySet.add(getFamilyGroup(chosenExtraPokemon[0].family));
     chosenExtraPokemon[0].parsedTypes.forEach(t => alreadyChosenTypes.add(t));
@@ -253,6 +337,19 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig) {
         alreadyChosenFamilySet.add(getFamilyGroup(pick.family));
         addToFoundMegaEvosIfHasMegaEvo(pick);
     }
+    return chosenExtraPokemon;
+    }; // end selectDefaultExtraStarters
+
+    // The default preset (or no config) uses the legacy path above (byte-identical); custom lists
+    // go through the pure spec selector.
+    const chosenExtraPokemon = (Array.isArray(starterSpecs) && !isDefaultStarterPreset(starterSpecs))
+        ? pickExtraStartersFromSpecs(starterSpecs, {
+            pokemonList,
+            alreadyChosenFamilySet,
+            alreadyChosenTypes,
+            onPick: addToFoundMegaEvosIfHasMegaEvo,
+        })
+        : selectDefaultExtraStarters();
 
     const extraStarters = chosenExtraPokemon.map(p => p.id);
 
@@ -507,4 +604,8 @@ function resolveRewardMegaStone(rewardPoke, pokemonList) {
     return stones.length > 0 ? stones[0] : null;
 }
 
-module.exports = { runWildModule, BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone, rewardMegaStones };
+module.exports = {
+    runWildModule, BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone, rewardMegaStones,
+    // Exported for the frontend default + unit testing (T-052).
+    DEFAULT_EXTRA_STARTER_PRESET, isDefaultStarterPreset, EXTRA_STARTER_TIERS, pickExtraStartersFromSpecs,
+};

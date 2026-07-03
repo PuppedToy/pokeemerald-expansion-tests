@@ -285,8 +285,8 @@ const constants = {
 
     // Stage adjustments per evolution type
     // LC_OF_2 = 2-stage line (single evo) → no adjustment
-    // LC_OF_3 = first of 3-stage line → evolves 20% earlier
-    // NFE_OF_3 = middle of 3-stage line → evolves 20% later
+    // LC_OF_3 = first of 3-stage line → evolves 10% earlier
+    // NFE_OF_3 = middle of 3-stage line → evolves 10% later
     EVO_LEVEL_STAGE_ADJUSTMENTS: {
         EVO_TYPE_LC_OF_2:  0.00,
         EVO_TYPE_LC_OF_3: -0.10,

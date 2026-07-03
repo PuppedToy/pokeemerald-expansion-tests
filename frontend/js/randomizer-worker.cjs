@@ -55,7 +55,22 @@ function toModuleConfig(cfg) {
         difficulty: cfg.difficulty ?? 7,
         rebalance: cfg.rebalance !== false,
         balanceChance: cfg.balanceChance ?? 0.2,
+        // T-052 — per-category mutation toggles
+        mutateStats: cfg.mutateStats !== false,
+        mutateAbilities: cfg.mutateAbilities !== false,
+        mutateTypes: cfg.mutateTypes !== false,
+        mutateLearnsets: cfg.mutateLearnsets !== false,
+        mutationProbs: cfg.mutationProbs,
+        // T-052 — evolution-level tuning
+        evoLevels: cfg.evoLevels,
+        // T-052 — extra-starter category list
+        extraStarters: cfg.extraStarters,
         allTms: false,
         showExactPositions: cfg.showExactPositions === true,
+        // T-052 — Trainers & bosses
+        gymsTypeChanged: cfg.gymsTypeChanged ?? 2,
+        e4TypeChanged: cfg.e4TypeChanged ?? 2,
+        aquaTypes: cfg.aquaTypes,
+        magmaTypes: cfg.magmaTypes,
     };
 }

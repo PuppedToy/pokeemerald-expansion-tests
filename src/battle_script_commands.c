@@ -8253,6 +8253,18 @@ static void Cmd_hitanimation(void)
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
+// T-052 — configurable trainer prize money. The randomizer's money writer (randomizer/moneyWriter.js)
+// patches the three tunable literals below per run; the museum/space-center grunts derive from the
+// boss value (round(boss * 2/3), museum entry adds $50), so at the defaults they stay $2000 / $2050.
+// Elite Four and Champion are intentionally fixed.
+#define NORMAL_TRAINER_MONEY 250
+#define BOSS_TRAINER_MONEY 3000
+#define GYM_LEADER_MONEY 5000
+#define ELITE_FOUR_MONEY 10000
+#define CHAMPION_MONEY 50000
+#define MUSEUM_SPACE_MONEY ((BOSS_TRAINER_MONEY * 2) / 3)  // ~65% of the boss reward
+#define MUSEUM_2_MONEY (MUSEUM_SPACE_MONEY + 50)           // + museum entry fee
+
 static u32 GetTrainerMoneyToGive(u16 trainerId)
 {
     if (trainerId == TRAINER_SECRET_BASE)
@@ -8303,29 +8315,29 @@ static u32 GetTrainerMoneyToGive(u16 trainerId)
 
     if (trainerClass == TRAINER_CLASS_CHAMPION)
     {
-        baseReward = 50000;
+        baseReward = CHAMPION_MONEY;
     }
     else if (trainerClass == TRAINER_CLASS_ELITE_FOUR)
     {
-        baseReward = 10000;
+        baseReward = ELITE_FOUR_MONEY;
     }
     else if (trainerClass == TRAINER_CLASS_LEADER)
     {
-        baseReward = 5000;
+        baseReward = GYM_LEADER_MONEY;
     }
     else
     {
         u32 i;
-        baseReward = 250; // default: regular trainer
-        if (trainerId == TRAINER_GRUNT_MUSEUM_2) { baseReward = 2050; goto done; } // museum entry costs $50
-        if (trainerId == TRAINER_GRUNT_MUSEUM_1) { baseReward = 2000; goto done; }
+        baseReward = NORMAL_TRAINER_MONEY; // default: regular trainer
+        if (trainerId == TRAINER_GRUNT_MUSEUM_2) { baseReward = MUSEUM_2_MONEY; goto done; } // museum entry costs $50
+        if (trainerId == TRAINER_GRUNT_MUSEUM_1) { baseReward = MUSEUM_SPACE_MONEY; goto done; }
         for (i = 0; i < ARRAY_COUNT(sSpaceCenterGrunts); i++)
         {
-            if (trainerId == sSpaceCenterGrunts[i]) { baseReward = 2000; goto done; }
+            if (trainerId == sSpaceCenterGrunts[i]) { baseReward = MUSEUM_SPACE_MONEY; goto done; }
         }
         for (i = 0; i < ARRAY_COUNT(sNonGymBosses); i++)
         {
-            if (trainerId == sNonGymBosses[i]) { baseReward = 3000; goto done; }
+            if (trainerId == sNonGymBosses[i]) { baseReward = BOSS_TRAINER_MONEY; goto done; }
         }
     }
 done:

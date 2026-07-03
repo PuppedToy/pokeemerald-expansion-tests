@@ -17,13 +17,33 @@ const {
 } = require('./constants');
 
 /**
+ * T-052 — resolve the evolution-level knobs from config, each falling back to its historical
+ * constant so a no-config call is byte-identical. `stageAdjustments` uses the frontend's
+ * lcOf2/lcOf3/nfeOf3 keys; `baseRanges`/`preEvoModifiers` are whole-table overrides (Step 8).
+ */
+function resolveEvoParams(cfg = {}) {
+    const num = (v, def) => (typeof v === 'number' && Number.isFinite(v) ? v : def);
+    const stage = cfg.stageAdjustments || {};
+    return {
+        baseRanges: cfg.baseRanges || EVO_LEVEL_BASE_RANGES,
+        preEvoModifiers: cfg.preEvoModifiers || EVO_LEVEL_PRE_EVO_MODIFIERS,
+        deviation: num(cfg.deviation, EVO_LEVEL_DEVIATION),
+        min: num(cfg.min, EVO_LEVEL_MIN),
+        max: num(cfg.max, EVO_LEVEL_MAX),
+        stageAdjustments: {
+            [EVO_TYPE_LC_OF_2]:  num(stage.lcOf2,  EVO_LEVEL_STAGE_ADJUSTMENTS[EVO_TYPE_LC_OF_2]),
+            [EVO_TYPE_LC_OF_3]:  num(stage.lcOf3,  EVO_LEVEL_STAGE_ADJUSTMENTS[EVO_TYPE_LC_OF_3]),
+            [EVO_TYPE_NFE_OF_3]: num(stage.nfeOf3, EVO_LEVEL_STAGE_ADJUSTMENTS[EVO_TYPE_NFE_OF_3]),
+        },
+    };
+}
+
+/**
  * Returns the stage adjustment multiplier for a given evo type.
  * Defaults to 0 (no adjustment) for any type not explicitly listed.
  */
-function getStageAdjustment(evoType) {
-    return EVO_LEVEL_STAGE_ADJUSTMENTS[evoType] !== undefined
-        ? EVO_LEVEL_STAGE_ADJUSTMENTS[evoType]
-        : 0;
+function getStageAdjustment(evoType, stageAdjustments = EVO_LEVEL_STAGE_ADJUSTMENTS) {
+    return stageAdjustments[evoType] !== undefined ? stageAdjustments[evoType] : 0;
 }
 
 /**
@@ -39,18 +59,19 @@ function randInRange(min, max) {
  * @param {string} preEvoTier - Tier of the pokemon holding the evo entry (e.g. 'ZU')
  * @param {string} evoTier    - Tier of the target pokemon being evolved into
  * @param {number} stageAdj  - Stage adjustment fraction (e.g. -0.20)
+ * @param {Object} params    - Resolved evo params (from resolveEvoParams); defaults = constants
  * @returns {number} - Final clamped integer evo level
  */
-function computeEvoLevel(preEvoTier, evoTier, stageAdj) {
-    const baseRange = EVO_LEVEL_BASE_RANGES[evoTier] || EVO_LEVEL_BASE_RANGES[TIER_MAGIKARP];
-    const modRange  = EVO_LEVEL_PRE_EVO_MODIFIERS[preEvoTier] || EVO_LEVEL_PRE_EVO_MODIFIERS[TIER_MAGIKARP];
+function computeEvoLevel(preEvoTier, evoTier, stageAdj, params = resolveEvoParams()) {
+    const baseRange = params.baseRanges[evoTier] || params.baseRanges[TIER_MAGIKARP] || EVO_LEVEL_BASE_RANGES[TIER_MAGIKARP];
+    const modRange  = params.preEvoModifiers[preEvoTier] || params.preEvoModifiers[TIER_MAGIKARP] || EVO_LEVEL_PRE_EVO_MODIFIERS[TIER_MAGIKARP];
 
     const baseLevel = randInRange(baseRange[0], baseRange[1]);
     const modifier  = randInRange(modRange[0],  modRange[1]);
-    const deviation = randInRange(-EVO_LEVEL_DEVIATION, EVO_LEVEL_DEVIATION);
+    const deviation = randInRange(-params.deviation, params.deviation);
 
     const raw = baseLevel * (1 + modifier + stageAdj + deviation);
-    return Math.round(Math.max(EVO_LEVEL_MIN, Math.min(EVO_LEVEL_MAX, raw)));
+    return Math.round(Math.max(params.min, Math.min(params.max, raw)));
 }
 
 /**
@@ -61,7 +82,8 @@ function computeEvoLevel(preEvoTier, evoTier, stageAdj) {
  * @param {Array} pokemonList - Full rated pokemon list
  * @returns {Map<string, number>} evoLevelMap — species ID → computed level
  */
-function applyEvoLevels(pokemonList) {
+function applyEvoLevels(pokemonList, evoConfig = {}) {
+    const params = resolveEvoParams(evoConfig);
     const pokemonMap = new Map(pokemonList.map(p => [p.id, p]));
     const levelMap = new Map();   // EVO_LEVEL target → level (stored on evo.param)
     const stoneMap = new Map();   // EVO_ITEM  target → level (stored on evo.minLevel)
@@ -79,11 +101,11 @@ function applyEvoLevels(pokemonList) {
 
             const preEvoTier = pokemon.rating.tier;
             const evoTier    = evoPokemon.rating.tier;
-            const stageAdj   = getStageAdjustment(pokemon.evolutionData.type);
+            const stageAdj   = getStageAdjustment(pokemon.evolutionData.type, params.stageAdjustments);
 
             // Every branch is balanced from its own target's tier, so per-branch levels
             // (level vs stone, and stone vs stone) are independent.
-            const level = computeEvoLevel(preEvoTier, evoTier, stageAdj);
+            const level = computeEvoLevel(preEvoTier, evoTier, stageAdj, params);
 
             // Mutate in-memory so the HTML viewer and trainer logic use the new levels.
             if (isLevel) {
@@ -159,9 +181,9 @@ function patchStoneMinLevelInContent(content, evoSpecies, level) {
  *        (randomize/analyze mode). When false, write the levels already stored
  *        on evo.param (bundle mode — single source of truth, no RNG).
  */
-async function writeEvoLevels(pokemonList, { recompute = true } = {}) {
+async function writeEvoLevels(pokemonList, { recompute = true, evoConfig = {} } = {}) {
     const { levelMap, stoneMap } = recompute
-        ? applyEvoLevels(pokemonList)
+        ? applyEvoLevels(pokemonList, evoConfig)
         : buildEvoLevelMapFromParams(pokemonList);
 
     if (levelMap.size === 0 && stoneMap.size === 0) {
@@ -221,4 +243,7 @@ module.exports = {
     buildEvoLevelMapFromParams,
     patchEvoLevelInContent,
     patchStoneMinLevelInContent,
+    // Exported for unit testing (T-052).
+    resolveEvoParams,
+    computeEvoLevel,
 };

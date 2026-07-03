@@ -30,7 +30,10 @@ const { applyEvoLevels } = require('./evoLevelWriter');
 // levels the bundle didn't keep — yielding illegal evolved mons and divergent shared teams.
 async function makePokedex(mcfg, baseData) {
     const pokedex = await runPokedexModule(mcfg, baseData);
-    applyEvoLevels(pokedex.pokes);
+    // T-052 — evolution-level adjustment is now optional + tunable. When disabled, base-game
+    // evolution levels are left untouched; when enabled (default) the config tunes the algorithm.
+    const evoConfig = mcfg.evoLevels || {};
+    if (evoConfig.enabled !== false) applyEvoLevels(pokedex.pokes, evoConfig);
     return pokedex;
 }
 
@@ -82,7 +85,7 @@ async function generateDefault(cfg, mcfg, sessionId, ctx) {
     const pokedex  = await makePokedex(mcfg, baseData); tick('Generating trainer teams...'); await flush();
     const trainers = runTrainersModule(pokedex, mcfg);       tick('Generating starters...'); await flush();
     const starters = runStartersModule(pokedex.pokes);       tick('Generating wild encounters...'); await flush();
-    const wild     = runWildModule(pokedex.pokes, starters, wildData); tick('Building docs...'); await flush();
+    const wild     = runWildModule(pokedex.pokes, starters, wildData, mcfg); tick('Building docs...'); await flush();
 
     // Base seed policy differs per caller (worker: cfg.seed; backend: null). romSeed is
     // cfg.seed for the single ROM; computeRomDocs reseeds it before writerDocs.
@@ -155,7 +158,7 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
         }
 
         progress(Math.round((done / totalSteps) * 100), `Generating wild encounters${label}...`);
-        const wild = runWildModule(pokedex.pokes, starters, wildData); tick(`Wild encounters${label} ready`); await flush();
+        const wild = runWildModule(pokedex.pokes, starters, wildData, mcfg); tick(`Wild encounters${label} ready`); await flush();
 
         romArtifacts.push({ pokedex, trainers, starters, wild });
         roms.push({
@@ -286,7 +289,7 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
             }
 
             progress(Math.round((done / totalSteps) * 100), `Generating wild encounters for ${pl} ${rl}...`);
-            const wild = runWildModule(pokedex.pokes, starters, wildData); tick(`Wild encounters ready`); await flush();
+            const wild = runWildModule(pokedex.pokes, starters, wildData, mcfg); tick(`Wild encounters ready`); await flush();
 
             const resolveArtifact = (artifact, key) => {
                 if (playerShared[key]) return 'global';

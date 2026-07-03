@@ -7,6 +7,27 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Added
+
+- The randomizer settings are now split into collapsible **categories** (Run type · Difficulty ·
+  Pokémon mutations · Evolution levels · Trainers & bosses · Rewards · Starters · General), and a
+  large batch of previously-hardcoded behaviours became **frontend options** — all of them save/load
+  with your config and are remembered between visits (T-052):
+  - **Trainers & bosses:** number of gyms (0–8) and Elite Four (0–4) whose type theme is randomized
+    (default 2 each); and the five type slots for **Team Aqua** and **Team Magma** (each a fixed type
+    or Random — the 5th slot now defaults to Random).
+  - **Pokémon mutations:** independent **Mutate stats / abilities / types / learnsets** toggles, plus
+    an **Advanced** panel exposing every mutation probability.
+  - **Evolution levels:** an on/off toggle and tuning for the level each Pokémon evolves at
+    (min/max/randomness/stage spacing, with the full per-tier tables under **Advanced**).
+  - **Rewards:** configurable prize money for normal trainers ($250), bosses ($3000) and gym leaders
+    ($5000); the museum and Space-Center grunts derive from the boss value (≈⅔, +$50 for the museum
+    entry). Elite Four and Champion stay fixed. *(This is the only option here that affects the ROM build.)*
+  - **Starters:** the list of **extra starters** is now an unlimited, editable list — each slot picks
+    a Pokémon by category (best-evolution tier × evolving-line/standalone × line length). The default
+    list reproduces the previous nine.
+  - Full reference: [randomizer/docs/randomization-options.md](randomizer/docs/randomization-options.md).
+
 ### Fixed
 
 - Shared-trainer soul-link ROMs no longer diverge, and a trainer can no longer field an evolved

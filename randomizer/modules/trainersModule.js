@@ -23,7 +23,9 @@ function isExempt(id) {
 function runTrainersModule(pokedexArtifact, config) {
     const itemAssignments = randomizeItems();
     const level = config.difficulty ?? 7;
-    const trainersData = trainers.getTrainersData(itemAssignments, pokedexArtifact.tmList);
+    // T-052: config carries the trainer-facing knobs (gym/E4 type-change counts, Aqua/Magma
+    // types, …) that getTrainersData reads; absent keys fall back to historical defaults.
+    const trainersData = trainers.getTrainersData(itemAssignments, pokedexArtifact.tmList, config);
 
     const { numShifts, delta, direction } = getDifficultyTransform(level);
     if (numShifts > 0) {

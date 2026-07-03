@@ -1,0 +1,69 @@
+/**
+ * T-052 Step 11 — a full config (every new option set to a non-default value) survives the
+ * import/export path: JSON serialization (Save → Load via session.js) and extractConfig (which
+ * accepts either a raw config or a full session bundle). The DOM-coupled setConfig↔getConfig loop
+ * is guarded structurally in config-form.test.js (ADR-009: the stub doesn't parse innerHTML).
+ */
+
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { extractConfig } from '../js/session.js';
+
+const FULL_CONFIG = {
+    runType: 'default',
+    difficulty: 10,
+    rebalance: true,
+    balanceChance: 0.35,
+    mutateStats: true,
+    mutateAbilities: false,
+    mutateTypes: true,
+    mutateLearnsets: false,
+    mutationProbs: {
+        statBalanceChance: 0.5, buffStatChance: 0.7, repeatStatChance: 0.4,
+        typeBalanceChance: 0.2, monotypeBalanceChance: 0.15, abilityBalanceChance: 0.3,
+        learnsetBalanceChance: 0.25, changeTypeMoveFromOldChance: 0.8,
+        changeTypeMoveFromOtherChance: 0.1, moveInsertChance: 0.6, moveRatingDeviation: 0.3,
+    },
+    evoLevels: {
+        enabled: true, min: 8, max: 60, deviation: 0.1,
+        stageAdjustments: { lcOf2: 0.05, lcOf3: -0.2, nfeOf3: 0.2 },
+        baseRanges: { MAGIKARP: [6, 8], OU: [40, 50] },
+        preEvoModifiers: { NU: [-0.04, 0.02] },
+    },
+    money: { normal: 500, boss: 4000, gym: 7500 },
+    extraStarters: [
+        { tier: 'UBERS', kind: 'line', lineLength: '3' },
+        { tier: 'RU', kind: 'line', lineLength: 'any' },
+        { tier: 'NU', kind: 'solo', lineLength: 'any' },
+    ],
+    gymsTypeChanged: 5,
+    e4TypeChanged: 1,
+    aquaTypes: ['GRASS', 'FIRE', 'RANDOM', 'WATER', 'ICE'],
+    magmaTypes: ['STEEL', 'DRAGON', 'ROCK', 'GRASS', 'RANDOM'],
+    seed: 123456,
+    showExactPositions: true,
+};
+
+test('a full config survives JSON serialize → parse unchanged (Save/Load)', () => {
+    const round = JSON.parse(JSON.stringify(FULL_CONFIG));
+    assert.deepEqual(round, FULL_CONFIG);
+});
+
+test('extractConfig passes through a raw config object', () => {
+    assert.deepEqual(extractConfig(FULL_CONFIG), FULL_CONFIG);
+});
+
+test('extractConfig pulls the config out of a full session bundle', () => {
+    const bundle = { formatVersion: 2, generatedAt: 'x', sessionId: 's', config: FULL_CONFIG, roms: [] };
+    assert.deepEqual(extractConfig(bundle), FULL_CONFIG);
+});
+
+test('nested option objects round-trip deeply (no shallow loss)', () => {
+    const round = JSON.parse(JSON.stringify(FULL_CONFIG));
+    assert.equal(round.mutationProbs.moveRatingDeviation, 0.3);
+    assert.deepEqual(round.evoLevels.stageAdjustments, { lcOf2: 0.05, lcOf3: -0.2, nfeOf3: 0.2 });
+    assert.deepEqual(round.evoLevels.baseRanges.OU, [40, 50]);
+    assert.equal(round.extraStarters.length, 3);
+    assert.deepEqual(round.aquaTypes, ['GRASS', 'FIRE', 'RANDOM', 'WATER', 'ICE']);
+    assert.deepEqual(round.money, { normal: 500, boss: 4000, gym: 7500 });
+});

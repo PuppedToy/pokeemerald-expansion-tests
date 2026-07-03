@@ -108,8 +108,13 @@ function typedColors(themeType) {
     };
 }
 
-function evilColors(team) {
-    const [t1, t2] = EVIL_TEAM_TYPES[team];
+function evilColors(team, override) {
+    // T-052 — when the run configured this team's types, follow its main/secondary; otherwise use
+    // the static two-type mix. `override` is the resolved [main, secondary] carried on the trainer.
+    const [t1, t2] = (Array.isArray(override) && override.length === 2
+        && TYPE_PALETTES[override[0]] && TYPE_PALETTES[override[1]])
+        ? override
+        : EVIL_TEAM_TYPES[team];
     const p1 = TYPE_PALETTES[t1];
     const p2 = TYPE_PALETTES[t2];
     return {
@@ -152,8 +157,8 @@ function resolveTrainerColors(trainer = {}) {
     }
 
     // Fixed identities (classes are stable regardless of type randomization).
-    if (cls.includes('Aqua')) return evilColors('aqua');
-    if (cls.includes('Magma')) return evilColors('magma');
+    if (cls.includes('Aqua')) return evilColors('aqua', trainer.evilThemeTypes);
+    if (cls.includes('Magma')) return evilColors('magma', trainer.evilThemeTypes);
     if (cls === 'May' || cls === 'Brendan') return fixedColors(RIVAL_PALETTE, 'rival');
     if (cls === 'Wally') return fixedColors(WALLY_PALETTE, 'wally');
 

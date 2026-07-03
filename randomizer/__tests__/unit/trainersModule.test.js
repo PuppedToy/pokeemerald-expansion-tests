@@ -78,23 +78,23 @@ describe('runTrainersModule — calls dependencies correctly', () => {
         expect(randomizeItems).toHaveBeenCalledTimes(1);
     });
 
-    test('calls getTrainersData with itemAssignments and tmList (no difficulty arg)', () => {
+    // T-052 spec change: getTrainersData now also receives the module config as a 3rd arg so the
+    // trainer-facing knobs (gym/E4 type-change counts, Aqua/Magma types) can reach it.
+    test('calls getTrainersData with itemAssignments, tmList and the config', () => {
         const { runTrainersModule } = freshModule();
         runTrainersModule(mockPokedexArtifact, fairConfig);
         expect(trainers.getTrainersData).toHaveBeenCalledWith(
             { pick1: 'ITEM_WATER_STONE', pick2: 'ITEM_FIRE_STONE' },
-            mockPokedexArtifact.tmList
+            mockPokedexArtifact.tmList,
+            fairConfig
         );
     });
 
-    test('getTrainersData is called with 2 arguments regardless of difficulty level', () => {
+    test('getTrainersData receives the config object as its 3rd argument', () => {
         const { runTrainersModule } = freshModule();
         runTrainersModule(mockPokedexArtifact, hardConfig);
-        expect(trainers.getTrainersData).toHaveBeenCalledWith(
-            expect.anything(),
-            expect.anything()
-        );
-        expect(trainers.getTrainersData.mock.calls[0].length).toBe(2);
+        expect(trainers.getTrainersData.mock.calls[0].length).toBe(3);
+        expect(trainers.getTrainersData.mock.calls[0][2]).toBe(hardConfig);
     });
 });
 
