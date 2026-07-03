@@ -8,14 +8,19 @@ import { estimateEta, romsAhead, buildProgress } from './eta.js';
 
 const DEFER_THRESHOLD_SECS = 120; // offer email-on-ready when the initial ETA is >= 2 min
 
-export function handleProduce({ requests, classify, validateBundle, persistBundle, idGen, now = () => Date.now(), avgRomSecs }) {
+export function handleProduce({ requests, classify, validateBundle, persistBundle, idGen, now = () => Date.now(), avgRomSecs, removeFile, killActiveBuild }) {
   return (req, res) => {
-    if (requests.getActiveForUser(req.userId)) {
-      return res.status(409).json({ error: 'you already have an active request' });
-    }
     const bundle = req.body;
     const { ok, errors } = validateBundle(bundle);
     if (!ok) return res.status(400).json({ error: 'invalid bundle', details: errors });
+
+    // One artifact per user at a time: a new randomization REPLACES any previous request (T-053,
+    // ADR-013). Validate the new bundle first (above) so an invalid one never destroys a good run.
+    const active = requests.getActiveForUser(req.userId);
+    if (active) {
+      killActiveBuild?.(active.id);          // stop any in-flight build immediately
+      requests.purge(active.id, removeFile); // free the slot + delete its files (safe mid-build: B-008)
+    }
 
     const romsTotal = bundle.roms.length;
     const id = idGen();
@@ -73,19 +78,18 @@ export function handleStatus({ requests, avgRomSecs, now = () => Date.now() }) {
   };
 }
 
-export function handleDownload({ requests, readOutput, removeFile, now = () => Date.now() }) {
+export function handleDownload({ requests, readOutput }) {
   return (req, res) => {
     const active = requests.getActiveForUser(req.userId);
     if (!active) return res.status(404).json({ error: 'no request' });
     if (active.state !== 'ready') return res.status(409).json({ error: 'not ready', state: active.state });
 
+    // The download is a zip of the produced BPS patch(es); the browser applies them to the ROM it holds
+    // in IndexedDB (T-053, ADR-013). The request STAYS `ready` so it is re-downloadable — cleanup is the
+    // 48h sweeper (unchanged) or a replacing new randomization. No more single-use purge-on-download.
     const data = readOutput(active);
     res.set?.('Content-Type', 'application/zip');
     res.set?.('Content-Disposition', `attachment; filename="emerald-cut-${active.id}.zip"`);
     res.send(data);
-
-    // success → record + purge (delete bundle/output files, drop the row). Run history (T-023) survives.
-    requests.markDownloaded(active.id, now());
-    requests.purge(active.id, removeFile);
   };
 }

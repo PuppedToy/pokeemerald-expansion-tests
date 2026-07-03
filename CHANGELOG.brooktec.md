@@ -28,6 +28,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
     list reproduces the previous nine.
   - Full reference: [randomizer/docs/randomization-options.md](randomizer/docs/randomization-options.md).
 
+### Changed
+
+- **The site now delivers a patch, not a full ROM — and your ROM never leaves your computer.** You add
+  your Pokémon Emerald (USA/Europe) **once**; it's kept in your browser and is never uploaded (we only
+  send its fingerprint to confirm ownership). Generating now produces a small **BPS patch** that your
+  browser applies to your ROM in one click to build the finished game. You can even generate and download
+  the patch *before* adding a ROM (you'll get the `.bps` to apply yourself). Patches stay re-downloadable
+  for 48 hours, and starting a new randomization replaces the previous one (T-053, ADR-013).
+
 ### Fixed
 
 - Shared-trainer soul-link ROMs no longer diverge, and a trainer can no longer field an evolved

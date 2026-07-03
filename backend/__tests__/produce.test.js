@@ -39,6 +39,8 @@ function produceDeps(requests, over = {}) {
     idGen: () => 'req1',
     now: () => 1000,
     avgRomSecs: 10,
+    removeFile: () => {},
+    killActiveBuild: () => {},
     ...over,
   };
 }
@@ -71,12 +73,32 @@ test('produce rejects an invalid bundle with 400 and enqueues nothing', () => {
   assert.equal(requests.getActiveForUser(2), null);
 });
 
-test('produce refuses a second active request (409)', () => {
+test('a second produce REPLACES the previous active request (one per user, T-053)', () => {
+  const { requests } = setup();
+  const removed = [];
+  const killed = [];
+  handleProduce(produceDeps(requests))({ userId: 1, body: validBundle(1) }, fakeRes());
+  assert.equal(requests.get('req1').state, 'queued_fast');
+
+  const res2 = fakeRes();
+  handleProduce(produceDeps(requests, {
+    idGen: () => 'req2', removeFile: (p) => removed.push(p), killActiveBuild: (id) => killed.push(id),
+  }))({ userId: 1, body: validBundle(1) }, res2);
+
+  assert.equal(res2.statusCode, 201, 'the new randomization is accepted, not blocked');
+  assert.equal(requests.get('req1'), null, 'the previous request is purged');
+  assert.equal(requests.getActiveForUser(1).id, 'req2', 'req2 is now the active one');
+  assert.ok(removed.includes('/bundles/req1.json'), "the replaced request's files are deleted");
+  assert.deepEqual(killed, ['req1'], 'any in-flight build for the replaced request is killed');
+});
+
+test('an invalid new bundle does NOT destroy the existing request', () => {
   const { requests } = setup();
   handleProduce(produceDeps(requests))({ userId: 1, body: validBundle(1) }, fakeRes());
   const res2 = fakeRes();
-  handleProduce(produceDeps(requests, { idGen: () => 'req2' }))({ userId: 1, body: validBundle(1) }, res2);
-  assert.equal(res2.statusCode, 409);
+  handleProduce(produceDeps(requests, { idGen: () => 'req2' }))({ userId: 1, body: { roms: [] } }, res2);
+  assert.equal(res2.statusCode, 400);
+  assert.equal(requests.get('req1').state, 'queued_fast', 'the good run survives an invalid replace attempt');
 });
 
 test('status reports the active request state + eta, or 404', () => {
@@ -110,18 +132,21 @@ test('produce and status expose romsAhead (ROMs queued before this one)', () => 
   assert.equal(first.body.romsAhead, 0, 'the first request has nothing ahead');
 });
 
-test('download streams a ready ROM, then marks downloaded and purges', () => {
+test('download streams the ready patch and leaves it re-downloadable (T-053)', () => {
   const { requests } = setup();
   requests.create({ id: 'r1', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b/r1', outputPath: null, seed: '1', params: {}, now: 1 });
   requests.setState('r1', 'building', 2);
   requests.markReady('r1', 3);
 
-  const removed = [];
   const res = fakeRes();
-  handleDownload({ requests, readOutput: () => Buffer.from('ZIPDATA'), removeFile: (p) => removed.push(p), now: () => 9 })({ userId: 1 }, res);
-
+  handleDownload({ requests, readOutput: () => Buffer.from('ZIPDATA') })({ userId: 1 }, res);
   assert.equal(res.sent.toString(), 'ZIPDATA');
-  assert.equal(requests.get('r1'), null, 'row purged after a successful download');
+  assert.equal(requests.get('r1').state, 'ready', 'stays ready — re-downloadable, not purged on download');
+
+  // a second download still works (the 48h sweeper / a replacing produce clean it up, not the download)
+  const res2 = fakeRes();
+  handleDownload({ requests, readOutput: () => Buffer.from('ZIPDATA') })({ userId: 1 }, res2);
+  assert.equal(res2.sent.toString(), 'ZIPDATA');
 });
 
 test('cancel marks the active request failed, frees the slot and deletes its files (T-035)', () => {

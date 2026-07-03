@@ -1,6 +1,13 @@
-// T-028 — account + ROM-delivery flow (talks to the T-021/T-022/T-025 backend).
-// Docs stay anonymous; ROM generation needs a verified account + a validated ROM.
+// T-028 — account + ROM-delivery flow. T-053, ADR-013: the server delivers a BPS patch; the browser
+// applies it to the user's ROM (held in IndexedDB, never uploaded). Generation is DECOUPLED from ROM
+// ownership — you can build & download the patch before providing a ROM.
 // The bundle lives in IndexedDB (a ~32 MB bundle does not fit in localStorage).
+
+import { putRom, getRom, clearRom } from './rom-store.js';
+
+// applyBps comes from the generated ESM bundle (frontend/js/bps.bundle.js — the SAME codec the builder
+// uses to create patches). Loaded lazily and injectable so tests need not build the bundle.
+let loadCodec = () => import('./bps.bundle.js').then((m) => (m.applyBps ? m : m.default));
 
 const TOKEN_KEY = 'ec_jwt';
 const getToken = () => localStorage.getItem(TOKEN_KEY);
@@ -162,19 +169,22 @@ async function deleteAccount() {
   alert('Your account has been deleted.');
 }
 
+// T-053, ADR-013: hash the ROM in the browser and store the bytes in IndexedDB — send only the SHA-1.
+// The ROM never leaves the user's machine; the bytes are reused to apply the BPS patch at download time.
 async function onRomUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
-  setSettingsMsg('Validating your ROM…');
-  const buf = await file.arrayBuffer();
-  const res = await fetch('/api/rom/validate', {
-    method: 'POST',
-    headers: { 'content-type': 'application/octet-stream', authorization: `Bearer ${getToken()}` },
-    body: buf,
-  });
-  const data = await res.json().catch(() => ({}));
-  if (res.ok && data.ok) { await refreshMe(); updateNavAccount(); reevaluateDelivery(); } // row now reads "Verified ✓"
-  else setSettingsMsg(data.error || 'That file is not a recognized Pokémon Emerald ROM.', 'err');
+  setSettingsMsg('Checking your ROM…');
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const sha1 = await putRom(bytes); // saved locally; never uploaded
+  const { ok, data } = await api('/api/rom/validate', { method: 'POST', body: { sha1 }, auth: true });
+  if (ok && data?.ok) {
+    await refreshMe(); updateNavAccount(); reevaluateDelivery(); // row now reads "Verified ✓"
+    setSettingsMsg('ROM verified and saved in your browser ✓', 'ok');
+  } else {
+    await clearRom();
+    setSettingsMsg(data?.error || 'That file is not a recognized Pokémon Emerald ROM.', 'err');
+  }
 }
 
 async function doRegister(email, password) {
@@ -316,16 +326,9 @@ async function reevaluateDelivery() {
        <div class="status-sub">Open the link we emailed you — then your ROM build starts automatically.</div>`, '✉');
     return;
   }
-  if (!state.ownsValidRom) {
-    setHeadline('gating');
-    setRomDownload({ enabled: false, reason: 'Upload your Emerald ROM to build it.' });
-    setRomRow('todo',
-      `<div class="status-title">Upload your Emerald ROM</div>
-       <div class="status-sub">Building needs your original Emerald ROM, to verify you own the game. Upload it in Settings and your build starts.</div>
-       <button class="btn btn-primary btn-sm" id="rom-cta">Upload in Settings</button>`, '⬆');
-    $('rom-cta')?.addEventListener('click', goToSettings);
-    return;
-  }
+  // T-053, ADR-013: NO ROM-ownership gate here — generation is decoupled from ownership. The user can
+  // build and download the BPS patch without a ROM; the ROM only matters at download time, to apply the
+  // patch locally (otherwise they get the raw .bps to patch elsewhere).
 
   if (state.activeRequest) { renderRom(state.activeRequest); startPolling(); return; }
 
@@ -472,6 +475,28 @@ function startPolling() {
 }
 function stopPolling() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
 
+function triggerDownload(blob, filename) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+// Apply every .bps in the downloaded zip to the user's ROM, entirely in the browser (ADR-013). A wrong
+// base ROM makes applyBps throw (source-checksum guard) → surfaced as a clear error to the user.
+async function patchZipToRoms(zipBlob, romBytes) {
+  const zip = await JSZip.loadAsync(zipBlob);
+  const entries = Object.values(zip.files).filter((f) => !f.dir && /\.bps$/i.test(f.name));
+  const { applyBps } = await loadCodec();
+  const roms = [];
+  for (const f of entries) {
+    const patch = new Uint8Array(await f.async('arraybuffer'));
+    roms.push({ name: f.name.replace(/\.bps$/i, '.gba'), bytes: applyBps(patch, romBytes) });
+  }
+  return roms;
+}
+
 async function downloadRom() {
   const btn = $('btn-download-rom');
   if (!btn || btn.disabled) return;
@@ -483,23 +508,30 @@ async function downloadRom() {
   try {
     const res = await fetch('/api/download', { headers: { authorization: `Bearer ${getToken()}` } });
     if (!res.ok) throw new Error(`download failed (${res.status})`);
-    const blob = await res.blob();
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'emerald-cut-roms.zip';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(a.href);
-    delivered = true;         // a successful download purges the request server-side — don't re-build
-    markDelivered(lastBundle); // persist across reloads so a restored bundle isn't rebuilt (B-011)
+    const zipBlob = await res.blob();
+    const rom = await getRom();
+    if (rom) {
+      // ROM on hand → produce the finished, playable ROM(s) locally.
+      const roms = await patchZipToRoms(zipBlob, rom);
+      for (const { name, bytes } of roms) triggerDownload(new Blob([bytes], { type: 'application/octet-stream' }), name);
+    } else {
+      // No ROM yet → hand over the patch; they can add their Emerald in Settings to auto-patch next time.
+      triggerDownload(zipBlob, 'emerald-cut-patch.zip');
+    }
+    // The BPS stays available server-side (re-downloadable until the 48h sweep or the next run). We still
+    // remember it was delivered so a reload doesn't auto-resubmit the bundle (B-011).
+    delivered = true;
+    markDelivered(lastBundle);
     await refreshMe();
-    reevaluateDelivery();     // → "downloaded" state; setRomDownload clears the spinner + resets the button
-  } catch {
-    setRomDownload({ enabled: true, count: romCount(), note: true }); // restore "Download ROM(s)" + clear spinner
-    alert('Download failed — please try again.');
+    reevaluateDelivery();
+  } catch (err) {
+    setRomDownload({ enabled: true, count: romCount(), note: true }); // restore the button + clear spinner
+    alert(/source/i.test(err?.message) ? 'That patch is for Pokémon Emerald (USA, Europe) — the ROM you saved does not match. Re-add the correct ROM in Settings.' : 'Download failed — please try again.');
   }
 }
 
 export async function initAccount(opts = {}) {
+  if (opts.loadCodec) loadCodec = opts.loadCodec; // test seam for the BPS bundle
   $('auth-close').addEventListener('click', closeModal);
   $('auth-modal').addEventListener('click', (e) => { if (e.target.id === 'auth-modal') closeModal(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('auth-modal').hidden) closeModal(); });

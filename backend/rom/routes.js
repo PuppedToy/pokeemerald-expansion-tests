@@ -1,24 +1,25 @@
 /**
- * ROM-ownership endpoint (T-022, ADR-008). POST /api/rom/validate accepts the raw
- * ROM as an octet-stream body (zero-dep, no multer), hashes it, and on a match flips
- * the user's `owns_valid_rom` flag. The bytes live only in memory for the request and
- * are never written to disk — validate-and-delete.
+ * ROM-ownership endpoint (T-022; ADR-008 → superseded by ADR-013). POST /api/rom/validate now accepts
+ * a JSON body `{ sha1 }` — the SHA-1 the CLIENT computed over the ROM it holds in IndexedDB. The server
+ * only checks that hash against the known-good Emerald dumps and flips `owns_valid_rom`. The ROM bytes
+ * never leave the user's machine, so there is nothing to upload or delete (T-053).
  */
 
 import express from 'express';
 import { requireAuth, ipRateLimit } from '../auth/middleware.js';
 import { createRateLimiter } from '../email/rateLimiter.js';
-import { createRomValidator, EMERALD_SIZE } from './validate.js';
+import { createRomValidator } from './validate.js';
 
-/** Testable handler: assumes req.userId (auth) and req.body (Buffer). */
+const SHA1_RE = /^[0-9a-f]{40}$/i;
+
+/** Testable handler: assumes req.userId (auth) and req.body === { sha1 }. */
 export function handleValidate({ users, validator }) {
   return (req, res) => {
-    const buf = req.body;
-    if (!Buffer.isBuffer(buf) || buf.length === 0) {
-      return res.status(400).json({ error: 'no ROM uploaded' });
+    const sha1 = req.body?.sha1;
+    if (typeof sha1 !== 'string' || !SHA1_RE.test(sha1)) {
+      return res.status(400).json({ error: 'missing or malformed sha1' });
     }
-    const { ok } = validator.validate(buf);
-    if (!ok) {
+    if (!validator.validateHash(sha1).ok) {
       return res.status(400).json({ ok: false, error: 'not a recognized Pokémon Emerald ROM' });
     }
     users.setOwnsValidRom(req.userId, true);
@@ -34,8 +35,7 @@ export function createRomRouter({ users, jwtSecret, validator = createRomValidat
     '/validate',
     requireAuth(jwtSecret),
     throttle,
-    // size-bound the upload to just over the vanilla size before reading it
-    express.raw({ type: '*/*', limit: EMERALD_SIZE + 64 * 1024 }),
+    express.json({ limit: '4kb' }), // just a hash now — not a 16 MB ROM upload
     handleValidate({ users, validator }),
   );
 
