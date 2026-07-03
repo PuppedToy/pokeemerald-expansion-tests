@@ -440,6 +440,115 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
   display: none;
 }
 
+/* ── Config accordion (T-052): collapsible setting categories ── */
+.config-accordion {
+  display: flex;
+  flex-direction: column;
+}
+.config-category {
+  border-top: 3px dashed var(--obs-line);
+}
+.config-category:last-of-type {
+  border-bottom: 3px dashed var(--obs-line);
+}
+.config-cat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 18px 4px;
+  text-align: left;
+}
+.config-cat-title {
+  font-family: var(--obs-font-display);
+  font-size: 11px;
+  letter-spacing: var(--obs-tracking);
+  text-transform: uppercase;
+  color: var(--obs-orange);
+}
+.config-cat-arrow {
+  transition: transform var(--obs-ease);
+  font-size: 10px;
+  color: var(--obs-cyan);
+}
+.config-cat-header:hover .config-cat-arrow {
+  color: var(--obs-text);
+}
+.config-cat-header[aria-expanded="true"] .config-cat-arrow {
+  transform: rotate(90deg);
+}
+.config-cat-body {
+  padding: 0 4px 24px;
+}
+.config-cat-body.hidden {
+  display: none;
+}
+
+/* Evil-team (Aqua/Magma) 5-slot type selector — T-052 */
+.type-slot-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.type-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.type-slot label {
+  font-family: var(--obs-font-display);
+  font-size: 8px;
+  letter-spacing: var(--obs-tracking);
+  text-transform: uppercase;
+  color: var(--obs-text-dim);
+}
+.type-select {
+  width: 100%;
+}
+
+/* Evolution-level tuning — T-052 */
+.evo-scalars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.evo-tier-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.evo-tier-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 1fr;
+  align-items: center;
+  gap: 10px;
+}
+.evo-tier-name {
+  font-family: var(--obs-font-display);
+  font-size: 8px;
+  letter-spacing: var(--obs-tracking);
+  text-transform: uppercase;
+  color: var(--obs-text-dim);
+}
+
+/* Extra-starter list — T-052 */
+#starter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.starter-row {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
 /* ── Step indicator ── */
 .steps {
   display: flex;
@@ -837,6 +946,16 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
 @media (max-width: 600px) {
   /* Finger-sized tap targets (WCAG 2.5.8 / iOS 44px). */
   .btn { min-height: 44px; }
+  /* Config accordion category headers must stay finger-sized too (T-052). */
+  .config-cat-header { min-height: 44px; }
+  /* Evil-team type selectors: stack to 2 columns and keep finger-sized dropdowns (T-052). */
+  .type-slot-grid { grid-template-columns: 1fr 1fr; }
+  .type-select { min-height: 44px; }
+  /* Evolution tier rows: tighter tier label so the two inputs still fit (T-052). */
+  .evo-tier-row { grid-template-columns: 64px 1fr 1fr; gap: 8px; }
+  /* Extra-starter rows: tier+kind on top, length+remove below; selects finger-sized (T-052). */
+  .starter-row { grid-template-columns: 1fr 1fr; }
+  .starter-row .input, .starter-row .btn { min-height: 44px; }
 
   /* Step indicator: drop the text labels so the numbered circles fit without overflow
      (the panel heading already says which step you're on). */

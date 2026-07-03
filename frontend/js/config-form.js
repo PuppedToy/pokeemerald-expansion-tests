@@ -3,14 +3,145 @@ import { downloadConfig, readJsonFile, extractConfig } from './session.js';
 
 const STORAGE_KEY = 'lastConfig';
 
+// T-052 — every tunable probability in the Pokémon-mutation algorithm (rebalancer.js). Surfaced in
+// the Mutations → Advanced panel; each falls back to `def` (its historical constant) in the engine.
+const MUTATION_PROB_FIELDS = [
+    { key: 'statBalanceChance',            label: 'Stat change chance',        def: 0.7,  group: 'Stats',     hint: 'Per-stat chance to shift (diminishes after each change).' },
+    { key: 'buffStatChance',               label: 'Buff vs nerf',              def: 0.6,  group: 'Stats',     hint: 'Chance a stat change is a buff (+) rather than a nerf (−).' },
+    { key: 'repeatStatChance',             label: 'Extra ±10 step chance',     def: 0.5,  group: 'Stats',     hint: 'Chance to stack another ±10 onto a stat change.' },
+    { key: 'typeBalanceChance',            label: 'Type change chance',        def: 0.1,  group: 'Types',     hint: 'Chance a Pokémon’s typing is touched at all.' },
+    { key: 'monotypeBalanceChance',        label: 'Mono-type replace chance',  def: 0.1,  group: 'Types',     hint: 'For single-type mons: replace the type (otherwise add a 2nd).' },
+    { key: 'abilityBalanceChance',         label: 'Ability swap chance',       def: 0.1,  group: 'Abilities', hint: 'Chance to swap one ability for another.' },
+    { key: 'learnsetBalanceChance',        label: 'Random learnset pass',      def: 0.2,  group: 'Learnsets', hint: 'Chance to run the independent random move-swap pass.' },
+    { key: 'changeTypeMoveFromOldChance',  label: 'Replace old-type move',     def: 0.9,  group: 'Learnsets', hint: 'After a type change, chance each old-type move is swapped to the new type.' },
+    { key: 'changeTypeMoveFromOtherChance',label: 'Swap other move',           def: 0.05, group: 'Learnsets', hint: 'Per-move swap chance (type-add case and the random pass).' },
+    { key: 'moveInsertChance',             label: 'Move insertion decay',      def: 0.5,  group: 'Learnsets', hint: 'Controls how many extra moves get inserted (chance = 1 − N×this).' },
+    { key: 'moveRatingDeviation',          label: 'Insert level spread',       def: 0.2,  group: 'Learnsets', max: 2, hint: 'Randomness of the level at which inserted moves are learned.' },
+];
+const MUTATION_PROB_DEFAULTS = Object.fromEntries(MUTATION_PROB_FIELDS.map(f => [f.key, f.def]));
+
+function mutationProbInputs() {
+    let html = '';
+    let lastGroup = null;
+    for (const f of MUTATION_PROB_FIELDS) {
+        if (f.group !== lastGroup) { html += `<div class="section-title" style="margin-top:8px">${f.group}</div>`; lastGroup = f.group; }
+        html += `
+      <div class="field">
+        <label for="mutprob-${f.key}">${f.label}</label>
+        <input type="number" id="mutprob-${f.key}" class="input" min="0" max="${f.max || 1}" step="0.05" value="${f.def}" style="width:100px">
+        <span class="field-hint">${f.hint} Default ${f.def}.</span>
+      </div>`;
+    }
+    return html;
+}
+
+// T-052 — Evolution-level tuning. Tier tables mirror randomizer/constants.js
+// (EVO_LEVEL_BASE_RANGES / EVO_LEVEL_PRE_EVO_MODIFIERS); scalars mirror MIN/MAX/DEVIATION and the
+// three stage adjustments. Whole tables live under the Evolution → Advanced panel.
+const EVO_BASE_RANGE_TIERS = [
+    ['MAGIKARP', 7, 9], ['ZU', 10, 11], ['PU', 12, 13], ['NU', 14, 19], ['RU', 20, 28],
+    ['UU', 29, 35], ['OU', 39, 48], ['UBERS', 49, 56], ['LEGEND', 57, 62], ['AG', 63, 75],
+];
+const EVO_PREEVO_MOD_TIERS = [
+    ['MAGIKARP', -0.20, -0.16], ['ZU', -0.15, -0.11], ['PU', -0.10, -0.06], ['NU', -0.05, 0.00],
+    ['RU', 0.01, 0.05], ['UU', 0.06, 0.10], ['OU', 0.11, 0.20], ['UBERS', 0.21, 0.40], ['AG', 0.41, 0.60],
+];
+const EVO_LEVELS_DEFAULT = {
+    enabled: true, min: 5, max: 65, deviation: 0.05,
+    stageAdjustments: { lcOf2: 0, lcOf3: -0.10, nfeOf3: 0.10 },
+    baseRanges: Object.fromEntries(EVO_BASE_RANGE_TIERS.map(([t, a, b]) => [t, [a, b]])),
+    preEvoModifiers: Object.fromEntries(EVO_PREEVO_MOD_TIERS.map(([t, a, b]) => [t, [a, b]])),
+};
+function evoTierRows(prefix, tiers, step) {
+    return tiers.map(([tier, lo, hi]) => `
+        <div class="evo-tier-row">
+          <span class="evo-tier-name">${tier}</span>
+          <input type="number" id="${prefix}-${tier}-min" class="input" step="${step}" value="${lo}">
+          <input type="number" id="${prefix}-${tier}-max" class="input" step="${step}" value="${hi}">
+        </div>`).join('');
+}
+
+// T-052 — extra-starter categories. Each slot: { tier, kind:'line'|'solo', lineLength:'any'|'3'|'2' }.
+// Mirrors randomizer/modules/wildModule.js DEFAULT_EXTRA_STARTER_PRESET (default = today's 9).
+const EXTRA_STARTER_TIER_OPTIONS = ['LEGEND', 'UBERS', 'OU', 'UU', 'RU', 'NU', 'PU'];
+const EXTRA_STARTER_DEFAULT_PRESET = [
+    { tier: 'UBERS', kind: 'line', lineLength: '3' },
+    { tier: 'OU', kind: 'line', lineLength: '3' },
+    { tier: 'UU', kind: 'line', lineLength: 'any' },
+    { tier: 'NU', kind: 'solo', lineLength: 'any' },
+    { tier: 'RU', kind: 'line', lineLength: 'any' },
+    { tier: 'RU', kind: 'line', lineLength: 'any' },
+    { tier: 'RU', kind: 'line', lineLength: 'any' },
+    { tier: 'RU', kind: 'line', lineLength: 'any' },
+    { tier: 'RU', kind: 'line', lineLength: 'any' },
+];
+function normalizeStarterSpec(s) {
+    s = s || {};
+    return {
+        tier: EXTRA_STARTER_TIER_OPTIONS.includes(s.tier) ? s.tier : 'RU',
+        kind: s.kind === 'solo' ? 'solo' : 'line',
+        lineLength: s.lineLength === '3' ? '3' : s.lineLength === '2' ? '2' : 'any',
+    };
+}
+function starterRowHtml(spec, idx) {
+    const tierOpts = EXTRA_STARTER_TIER_OPTIONS
+        .map(t => `<option value="${t}"${t === spec.tier ? ' selected' : ''}>${t}</option>`).join('');
+    const isSolo = spec.kind === 'solo';
+    const lenOpts = [['any', 'Any length'], ['3', '3-stage'], ['2', '2-stage']]
+        .map(([v, l]) => `<option value="${v}"${v === spec.lineLength ? ' selected' : ''}>${l}</option>`).join('');
+    return `<div class="starter-row" data-idx="${idx}">
+      <select class="input starter-tier" aria-label="Best-evolution tier">${tierOpts}</select>
+      <select class="input starter-kind" aria-label="Category kind"><option value="line"${!isSolo ? ' selected' : ''}>Evolving line</option><option value="solo"${isSolo ? ' selected' : ''}>Standalone</option></select>
+      <select class="input starter-length" aria-label="Line length"${isSolo ? ' disabled' : ''}>${lenOpts}</select>
+      <button type="button" class="btn btn-ghost btn-sm starter-remove" aria-label="Remove this slot">✕</button>
+    </div>`;
+}
+
 const DEFAULTS = {
     runType: 'default',
     difficulty: 7,
     rebalance: true,
     balanceChance: 0.2,
+    // T-052 — Pokémon mutation category toggles (only apply when rebalance is on)
+    mutateStats: true,
+    mutateAbilities: true,
+    mutateTypes: true,
+    mutateLearnsets: true,
+    mutationProbs: MUTATION_PROB_DEFAULTS,
+    evoLevels: EVO_LEVELS_DEFAULT,
+    // T-052 — Rewards (money). Applied at ROM-build time (patches src/battle_script_commands.c).
+    money: { normal: 250, boss: 3000, gym: 5000 },
+    // T-052 — extra-starter category list (unlimited; default = today's 9)
+    extraStarters: EXTRA_STARTER_DEFAULT_PRESET,
     seed: '',
     showExactPositions: false,
+    // T-052 — Trainers & bosses
+    gymsTypeChanged: 2,   // 0..8 gym leaders get a randomized type theme
+    e4TypeChanged: 2,     // 0..4 Elite Four members get a randomized type theme
+    aquaTypes: ['WATER', 'DARK', 'POISON', 'ICE', 'RANDOM'],   // main, secondary, other 1..3
+    magmaTypes: ['FIRE', 'GROUND', 'ROCK', 'GRASS', 'RANDOM'],
 };
+
+// T-052 — the 18 Pokémon types plus the RANDOM token, and the 5 evil-team slot labels. Used to
+// render the reusable Team Aqua / Team Magma type-selector component.
+const POKEMON_TYPE_LIST = [
+    'NORMAL', 'FIRE', 'WATER', 'ELECTRIC', 'GRASS', 'ICE', 'FIGHTING', 'POISON', 'GROUND',
+    'FLYING', 'PSYCHIC', 'BUG', 'ROCK', 'GHOST', 'DRAGON', 'DARK', 'STEEL', 'FAIRY',
+];
+const TEAM_TYPE_SLOTS = ['Main type', 'Secondary type', 'Other type 1', 'Other type 2', 'Other type 3'];
+
+function typeSelectOptions(selected) {
+    const entries = [['RANDOM', 'Random'], ...POKEMON_TYPE_LIST.map(t => [t, t[0] + t.slice(1).toLowerCase()])];
+    return entries.map(([v, l]) => `<option value="${v}"${v === selected ? ' selected' : ''}>${l}</option>`).join('');
+}
+
+function teamTypeSelectors(prefix, defaults) {
+    return TEAM_TYPE_SLOTS.map((label, i) => `
+      <div class="type-slot">
+        <label for="${prefix}-type-${i}">${label}</label>
+        <select id="${prefix}-type-${i}" class="input type-select">${typeSelectOptions(defaults[i])}</select>
+      </div>`).join('');
+}
 
 function getDifficultyDesc(level) {
     const n = Math.abs(level - 7);
@@ -42,7 +173,25 @@ export class ConfigForm {
         if (seed !== null && (isNaN(seed) || !Number.isInteger(seed))) return null;
 
         const showExactPositions = this._q('#show-exact-positions').checked;
-        const base = { runType, difficulty, rebalance, balanceChance, seed, showExactPositions };
+        const mutateStats = this._q('#mutate-stats').checked;
+        const mutateAbilities = this._q('#mutate-abilities').checked;
+        const mutateTypes = this._q('#mutate-types').checked;
+        const mutateLearnsets = this._q('#mutate-learnsets').checked;
+        const mutationProbs = this._readMutationProbs();
+        const evoLevels = this._readEvoLevels();
+        const money = {
+            normal: this._intField('#reward-normal', 250, 0, 999999),
+            boss: this._intField('#reward-boss', 3000, 0, 999999),
+            gym: this._intField('#reward-gym', 5000, 0, 999999),
+        };
+        const gymsTypeChanged = this._intField('#gyms-type-changed', 2, 0, 8);
+        const e4TypeChanged = this._intField('#e4-type-changed', 2, 0, 4);
+        const aquaTypes = this._readTeamTypes('aqua');
+        const magmaTypes = this._readTeamTypes('magma');
+        const extraStarters = (this._starterSpecs || []).map(s => ({ ...s }));
+        const base = { runType, difficulty, rebalance, balanceChance,
+            mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs, evoLevels,
+            money, extraStarters, seed, showExactPositions, gymsTypeChanged, e4TypeChanged, aquaTypes, magmaTypes };
 
         if (runType === 'nuzlocke') {
             const numROMs = parseInt(this._q('#nz-numroms').value, 10) || 3;
@@ -88,8 +237,24 @@ export class ConfigForm {
 
         this._q('#rebalance').checked = cfg.rebalance !== false;
         this._q('#balance-chance').value = Math.round((cfg.balanceChance ?? 0.2) * 100);
+        this._q('#mutate-stats').checked = cfg.mutateStats !== false;
+        this._q('#mutate-abilities').checked = cfg.mutateAbilities !== false;
+        this._q('#mutate-types').checked = cfg.mutateTypes !== false;
+        this._q('#mutate-learnsets').checked = cfg.mutateLearnsets !== false;
+        this._setMutationProbs(cfg.mutationProbs);
+        this._setEvoLevels(cfg.evoLevels);
+        const money = cfg.money || {};
+        this._q('#reward-normal').value = money.normal ?? 250;
+        this._q('#reward-boss').value = money.boss ?? 3000;
+        this._q('#reward-gym').value = money.gym ?? 5000;
+        this._starterSpecs = (cfg.extraStarters || EXTRA_STARTER_DEFAULT_PRESET).map(normalizeStarterSpec);
+        this._renderStarterList();
         this._q('#seed').value = cfg.seed != null ? String(cfg.seed) : '';
         this._q('#show-exact-positions').checked = cfg.showExactPositions === true;
+        this._q('#gyms-type-changed').value = cfg.gymsTypeChanged ?? 2;
+        this._q('#e4-type-changed').value = cfg.e4TypeChanged ?? 2;
+        this._setTeamTypes('aqua', cfg.aquaTypes ?? DEFAULTS.aquaTypes);
+        this._setTeamTypes('magma', cfg.magmaTypes ?? DEFAULTS.magmaTypes);
 
         if (runType === 'nuzlocke') {
             this._q('#nz-numroms').value = cfg.numROMs ?? 3;
@@ -119,6 +284,108 @@ export class ConfigForm {
 
     _q(sel) { return this.container.querySelector(sel); }
 
+    /** Read an integer input, clamped to [min,max], falling back to `def` when blank/invalid. */
+    _intField(sel, def, min, max) {
+        const el = this._q(sel);
+        if (!el) return def;
+        const n = parseInt(el.value, 10);
+        if (isNaN(n)) return def;
+        return Math.max(min, Math.min(max, n));
+    }
+
+    /** Read the 5 evil-team type slots (`<prefix>-type-0..4`) as an array of type/RANDOM tokens. */
+    _readTeamTypes(prefix) {
+        const arr = [];
+        for (let i = 0; i < TEAM_TYPE_SLOTS.length; i++) {
+            const el = this._q(`#${prefix}-type-${i}`);
+            arr.push(el ? el.value : 'RANDOM');
+        }
+        return arr;
+    }
+
+    /** Populate the 5 evil-team type slots from an array. */
+    _setTeamTypes(prefix, types) {
+        for (let i = 0; i < TEAM_TYPE_SLOTS.length; i++) {
+            const el = this._q(`#${prefix}-type-${i}`);
+            if (el) el.value = (types && types[i]) || 'RANDOM';
+        }
+    }
+
+    /** Re-render the extra-starter rows from this._starterSpecs (the source of truth). */
+    _renderStarterList() {
+        const el = this._q('#starter-list');
+        if (!el) return;
+        this._starterSpecs = this._starterSpecs || EXTRA_STARTER_DEFAULT_PRESET.map(normalizeStarterSpec);
+        el.innerHTML = this._starterSpecs.map((s, i) => starterRowHtml(s, i)).join('');
+    }
+
+    /** Read the whole Evolution-levels config (scalars + stage spacing + per-tier tables). */
+    _readEvoLevels() {
+        const num = (sel, def) => { const el = this._q(sel); const n = el ? parseFloat(el.value) : NaN; return isNaN(n) ? def : n; };
+        const readTable = (prefix, tiers) => {
+            const out = {};
+            for (const [t, a, b] of tiers) out[t] = [num(`#${prefix}-${t}-min`, a), num(`#${prefix}-${t}-max`, b)];
+            return out;
+        };
+        return {
+            enabled: this._q('#evo-enabled').checked,
+            min: num('#evo-min', 5),
+            max: num('#evo-max', 65),
+            deviation: num('#evo-deviation', 0.05),
+            stageAdjustments: {
+                lcOf2: num('#evo-stage-lcOf2', 0),
+                lcOf3: num('#evo-stage-lcOf3', -0.1),
+                nfeOf3: num('#evo-stage-nfeOf3', 0.1),
+            },
+            baseRanges: readTable('evo-base', EVO_BASE_RANGE_TIERS),
+            preEvoModifiers: readTable('evo-mod', EVO_PREEVO_MOD_TIERS),
+        };
+    }
+
+    /** Populate the Evolution-levels controls from config. */
+    _setEvoLevels(evo) {
+        evo = evo || EVO_LEVELS_DEFAULT;
+        const set = (sel, v) => { const el = this._q(sel); if (el) el.value = v; };
+        this._q('#evo-enabled').checked = evo.enabled !== false;
+        set('#evo-min', evo.min ?? 5);
+        set('#evo-max', evo.max ?? 65);
+        set('#evo-deviation', evo.deviation ?? 0.05);
+        const st = evo.stageAdjustments || {};
+        set('#evo-stage-lcOf2', st.lcOf2 ?? 0);
+        set('#evo-stage-lcOf3', st.lcOf3 ?? -0.1);
+        set('#evo-stage-nfeOf3', st.nfeOf3 ?? 0.1);
+        const setTable = (prefix, tiers, table) => {
+            table = table || {};
+            for (const [t, a, b] of tiers) {
+                const r = table[t] || [a, b];
+                set(`#${prefix}-${t}-min`, r[0]);
+                set(`#${prefix}-${t}-max`, r[1]);
+            }
+        };
+        setTable('evo-base', EVO_BASE_RANGE_TIERS, evo.baseRanges);
+        setTable('evo-mod', EVO_PREEVO_MOD_TIERS, evo.preEvoModifiers);
+    }
+
+    /** Read the Advanced mutation probability inputs, clamped to each field's [0,max]. */
+    _readMutationProbs() {
+        const out = {};
+        for (const f of MUTATION_PROB_FIELDS) {
+            const el = this._q(`#mutprob-${f.key}`);
+            const n = el ? parseFloat(el.value) : NaN;
+            out[f.key] = isNaN(n) ? f.def : Math.max(0, Math.min(f.max || 1, n));
+        }
+        return out;
+    }
+
+    /** Populate the Advanced mutation probability inputs. */
+    _setMutationProbs(probs) {
+        probs = probs || {};
+        for (const f of MUTATION_PROB_FIELDS) {
+            const el = this._q(`#mutprob-${f.key}`);
+            if (el) el.value = typeof probs[f.key] === 'number' ? probs[f.key] : f.def;
+        }
+    }
+
     _convertLegacy(cfg) {
         const sm = cfg.sharedModules ?? 1;
         if (sm <= 1) return { runType: 'default', difficulty: cfg.difficulty, rebalance: cfg.rebalance, balanceChance: cfg.balanceChance, seed: cfg.seed };
@@ -135,8 +402,13 @@ export class ConfigForm {
 
     _build() {
         this.container.innerHTML = `
-<div class="form-section">
-  <div class="section-title">Run type</div>
+<div class="config-accordion">
+
+<section class="config-category" data-cat="run-type">
+  <button type="button" class="config-cat-header" aria-expanded="true" aria-controls="cat-body-run-type">
+    <span class="config-cat-title">Run type</span><span class="config-cat-arrow">▶</span>
+  </button>
+  <div class="config-cat-body" id="cat-body-run-type">
   <div class="radio-card-group radio-card-group-3">
     <label class="radio-card">
       <input type="radio" name="run-type" id="run-default" value="default" checked>
@@ -260,12 +532,14 @@ export class ConfigForm {
       </div>
     </div>
   </div>
-</div>
+  </div>
+</section>
 
-<hr class="divider">
-
-<div class="form-section">
-  <div class="section-title">Difficulty</div>
+<section class="config-category" data-cat="difficulty">
+  <button type="button" class="config-cat-header" aria-expanded="true" aria-controls="cat-body-difficulty">
+    <span class="config-cat-title">Difficulty</span><span class="config-cat-arrow">▶</span>
+  </button>
+  <div class="config-cat-body" id="cat-body-difficulty">
   <div class="difficulty-slider-wrap">
     <input type="range" name="difficulty" id="difficultySlider" min="1" max="13" value="7" step="1">
     <div class="difficulty-ticks">
@@ -277,12 +551,14 @@ export class ConfigForm {
     </div>
     <p id="difficultyDesc" class="difficulty-desc"></p>
   </div>
-</div>
+  </div>
+</section>
 
-<hr class="divider">
-
-<div class="form-section">
-  <div class="section-title">Randomization settings</div>
+<section class="config-category" data-cat="mutations">
+  <button type="button" class="config-cat-header" aria-expanded="true" aria-controls="cat-body-mutations">
+    <span class="config-cat-title">Pokémon mutations</span><span class="config-cat-arrow">▶</span>
+  </button>
+  <div class="config-cat-body" id="cat-body-mutations">
 
   <div class="card-glass" style="display:flex;flex-direction:column;gap:20px;padding:20px">
     <div class="toggle-wrap">
@@ -303,16 +579,176 @@ export class ConfigForm {
       </div>
       <span class="field-hint">Fraction of Pokémon whose stats get mutated. 0% = no mutations, 50% = aggressive.</span>
     </div>
-  </div>
-</div>
 
-<div class="form-section">
-  <button type="button" class="collapsible-toggle" id="advanced-toggle" aria-expanded="false">
-    <span class="arrow">▶</span>
-    Advanced
+    <div id="mutation-categories" style="display:flex;flex-direction:column;gap:20px">
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Mutate stats</div>
+          <div class="toggle-desc">Randomly shift base stats up or down in ±10 steps.</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="mutate-stats" checked><span class="toggle-track"></span></label>
+      </div>
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Mutate abilities</div>
+          <div class="toggle-desc">Randomly swap an ability for another (banned abilities excluded).</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="mutate-abilities" checked><span class="toggle-track"></span></label>
+      </div>
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Mutate types</div>
+          <div class="toggle-desc">Randomly change or add a type. Level-up moves adapt toward the new type.</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="mutate-types" checked><span class="toggle-track"></span></label>
+      </div>
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Mutate learnsets</div>
+          <div class="toggle-desc">Randomly swap or add level-up moves (independent of the type-driven pass above).</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="mutate-learnsets" checked><span class="toggle-track"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section" style="margin-top:16px">
+    <button type="button" class="collapsible-toggle" id="mutations-advanced-toggle" aria-expanded="false">
+      <span class="arrow">▶</span>
+      Advanced
+    </button>
+    <div class="collapsible-body hidden" id="mutations-advanced-body">
+      <div class="card-glass" style="margin-top:12px;padding:20px;display:flex;flex-direction:column;gap:14px">
+        <span class="field-hint">Fine-tune the mutation algorithm. Every value falls back to its default, so leaving these unchanged reproduces the standard run.</span>
+        ${mutationProbInputs()}
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+
+<section class="config-category" data-cat="evolution">
+  <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-evolution">
+    <span class="config-cat-title">Evolution levels</span><span class="config-cat-arrow">▶</span>
   </button>
-  <div class="collapsible-body hidden" id="advanced-body">
-    <div class="card-glass" style="margin-top:12px;padding:20px">
+  <div class="config-cat-body hidden" id="cat-body-evolution">
+    <div class="card-glass" style="display:flex;flex-direction:column;gap:20px;padding:20px">
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Adjust evolution levels</div>
+          <div class="toggle-desc">Recompute the level each Pokémon evolves at, scaled by tier. Off = keep base-game levels.</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="evo-enabled" checked><span class="toggle-track"></span></label>
+      </div>
+      <div id="evo-tuning" style="display:flex;flex-direction:column;gap:16px">
+        <div class="evo-scalars">
+          <div class="field"><label for="evo-min">Min level</label><input type="number" id="evo-min" class="input" min="1" max="100" value="5" style="width:88px"></div>
+          <div class="field"><label for="evo-max">Max level</label><input type="number" id="evo-max" class="input" min="1" max="100" value="65" style="width:88px"></div>
+          <div class="field"><label for="evo-deviation">Randomness (±)</label><input type="number" id="evo-deviation" class="input" min="0" max="1" step="0.01" value="0.05" style="width:88px"></div>
+        </div>
+        <div class="section-title" style="margin-top:4px">Stage spacing (fraction of base level)</div>
+        <div class="evo-scalars">
+          <div class="field"><label for="evo-stage-lcOf2">2-stage line</label><input type="number" id="evo-stage-lcOf2" class="input" step="0.05" value="0" style="width:88px"></div>
+          <div class="field"><label for="evo-stage-lcOf3">3-stage · first</label><input type="number" id="evo-stage-lcOf3" class="input" step="0.05" value="-0.1" style="width:88px"></div>
+          <div class="field"><label for="evo-stage-nfeOf3">3-stage · middle</label><input type="number" id="evo-stage-nfeOf3" class="input" step="0.05" value="0.1" style="width:88px"></div>
+        </div>
+        <span class="field-hint">A negative value evolves earlier, positive later. The evolution target's tier sets the base level; the Pokémon's own tier nudges it via the Advanced modifier table.</span>
+        <div class="form-section">
+          <button type="button" class="collapsible-toggle" id="evolution-advanced-toggle" aria-expanded="false">
+            <span class="arrow">▶</span>
+            Advanced
+          </button>
+          <div class="collapsible-body hidden" id="evolution-advanced-body">
+            <div class="card-glass" style="margin-top:12px;padding:20px;display:flex;flex-direction:column;gap:8px">
+              <div class="section-title">Base level range — by target tier</div>
+              <span class="field-hint">The evolution TARGET's competitive tier picks a base level range (min–max).</span>
+              <div class="evo-tier-table">${evoTierRows('evo-base', EVO_BASE_RANGE_TIERS, '1')}</div>
+              <div class="section-title" style="margin-top:12px">Pre-evo modifier — by holder tier</div>
+              <span class="field-hint">The evolving Pokémon's OWN tier adds a fraction (min–max) to the base level.</span>
+              <div class="evo-tier-table">${evoTierRows('evo-mod', EVO_PREEVO_MOD_TIERS, '0.01')}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="config-category" data-cat="trainers">
+  <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-trainers">
+    <span class="config-cat-title">Trainers &amp; bosses</span><span class="config-cat-arrow">▶</span>
+  </button>
+  <div class="config-cat-body hidden" id="cat-body-trainers">
+    <div class="card-glass" style="display:flex;flex-direction:column;gap:20px;padding:20px">
+      <div class="field">
+        <label for="gyms-type-changed">Gyms with changed types</label>
+        <input type="number" id="gyms-type-changed" class="input" min="0" max="8" value="2" style="width:88px">
+        <span class="field-hint">How many of the 8 gym leaders get a randomized type theme (0–8). The rest keep their canonical type; the champion is unaffected.</span>
+      </div>
+      <div class="field">
+        <label for="e4-type-changed">Elite Four with changed types</label>
+        <input type="number" id="e4-type-changed" class="input" min="0" max="4" value="2" style="width:88px">
+        <span class="field-hint">How many of the 4 Elite Four members get a randomized type theme (0–4). The champion is always Steel.</span>
+      </div>
+    </div>
+    <div class="card-glass" style="padding:20px;margin-top:16px">
+      <div class="section-title">Team Aqua types</div>
+      <div class="type-slot-grid">${teamTypeSelectors('aqua', DEFAULTS.aquaTypes)}</div>
+      <span class="field-hint">Each slot is a fixed type or Random (rolled per run). Team Aqua trainers field Pokémon of these types; the main + secondary drive their card colour.</span>
+    </div>
+    <div class="card-glass" style="padding:20px;margin-top:16px">
+      <div class="section-title">Team Magma types</div>
+      <div class="type-slot-grid">${teamTypeSelectors('magma', DEFAULTS.magmaTypes)}</div>
+      <span class="field-hint">Each slot is a fixed type or Random (rolled per run). Team Magma trainers field Pokémon of these types; the main + secondary drive their card colour.</span>
+    </div>
+  </div>
+</section>
+
+<section class="config-category" data-cat="rewards">
+  <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-rewards">
+    <span class="config-cat-title">Rewards</span><span class="config-cat-arrow">▶</span>
+  </button>
+  <div class="config-cat-body hidden" id="cat-body-rewards">
+    <div class="card-glass" style="display:flex;flex-direction:column;gap:20px;padding:20px">
+      <div class="field">
+        <label for="reward-normal">Normal trainer money ($)</label>
+        <input type="number" id="reward-normal" class="input" min="0" step="50" value="250" style="width:120px">
+        <span class="field-hint">Prize money for a regular trainer. Game default: 250.</span>
+      </div>
+      <div class="field">
+        <label for="reward-boss">Boss money ($)</label>
+        <input type="number" id="reward-boss" class="input" min="0" step="100" value="3000" style="width:120px">
+        <span class="field-hint">Prize money for rivals, admins, Steven, Wally, etc. Game default: 3000. Museum &amp; Space-Center grunts derive from this (≈⅔ of it; the 2nd museum grunt adds $50), so at 3000 they stay $2000 / $2050.</span>
+      </div>
+      <div class="field">
+        <label for="reward-gym">Gym leader money ($)</label>
+        <input type="number" id="reward-gym" class="input" min="0" step="100" value="5000" style="width:120px">
+        <span class="field-hint">Prize money for gym leaders. Game default: 5000. Elite Four ($10k) and the Champion ($50k) are fixed.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="config-category" data-cat="starters">
+  <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-starters">
+    <span class="config-cat-title">Starters</span><span class="config-cat-arrow">▶</span>
+  </button>
+  <div class="config-cat-body hidden" id="cat-body-starters">
+    <div class="card-glass" style="display:flex;flex-direction:column;gap:14px;padding:20px">
+      <span class="field-hint">Extra starter choices offered in-game, beyond the 3 normal starters. Each slot picks a Pokémon by category: an early Pokémon whose evolution line peaks at a given competitive tier (optionally a 3- or 2-stage line), or a standalone (non-evolving) Pokémon of that tier. Add or remove as many as you like.</span>
+      <div id="starter-list"></div>
+      <div><button type="button" class="btn btn-ghost btn-sm" id="add-starter">+ Add extra starter</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="config-category" data-cat="general">
+  <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-general">
+    <span class="config-cat-title">General</span><span class="config-cat-arrow">▶</span>
+  </button>
+  <div class="config-cat-body hidden" id="cat-body-general">
+    <div class="card-glass" style="padding:20px">
       <div class="field">
         <label for="seed">Seed</label>
         <div style="display:flex;gap:10px">
@@ -337,6 +773,8 @@ export class ConfigForm {
       </div>
     </div>
   </div>
+</section>
+
 </div>
 
 <div class="config-actions">
@@ -375,7 +813,12 @@ export class ConfigForm {
 
         const rebalanceOn = this._q('#rebalance').checked;
         this._q('#balance-chance-row').style.display = rebalanceOn ? '' : 'none';
+        this._q('#mutation-categories').style.display = rebalanceOn ? '' : 'none';
         this._q('#balance-chance-val').textContent = this._q('#balance-chance').value + '%';
+
+        const evoOn = this._q('#evo-enabled')?.checked;
+        const evoTuning = this._q('#evo-tuning');
+        if (evoTuning) evoTuning.style.display = evoOn ? '' : 'none';
 
         const diffLevel = parseInt(this._q('#difficultySlider')?.value ?? '7', 10);
         const descEl = this._q('#difficultyDesc');
@@ -453,21 +896,89 @@ export class ConfigForm {
         this._q('#difficultySlider').addEventListener('input', onChange);
         this._q('#rebalance').addEventListener('change', onChange);
         this._q('#balance-chance').addEventListener('input', onChange);
+        this._q('#mutate-stats').addEventListener('change', onChange);
+        this._q('#mutate-abilities').addEventListener('change', onChange);
+        this._q('#mutate-types').addEventListener('change', onChange);
+        this._q('#mutate-learnsets').addEventListener('change', onChange);
+        for (const f of MUTATION_PROB_FIELDS) {
+            this._q(`#mutprob-${f.key}`)?.addEventListener('input', onChange);
+        }
+        // Evolution levels: scalars, stage spacing, and every per-tier table input.
+        for (const sel of ['#evo-enabled', '#evo-min', '#evo-max', '#evo-deviation',
+            '#evo-stage-lcOf2', '#evo-stage-lcOf3', '#evo-stage-nfeOf3']) {
+            this._q(sel)?.addEventListener(sel === '#evo-enabled' ? 'change' : 'input', onChange);
+        }
+        for (const [prefix, tiers] of [['evo-base', EVO_BASE_RANGE_TIERS], ['evo-mod', EVO_PREEVO_MOD_TIERS]]) {
+            for (const [t] of tiers) {
+                this._q(`#${prefix}-${t}-min`)?.addEventListener('input', onChange);
+                this._q(`#${prefix}-${t}-max`)?.addEventListener('input', onChange);
+            }
+        }
         this._q('#seed').addEventListener('input', onChange);
         this._q('#show-exact-positions').addEventListener('change', onChange);
+        this._q('#gyms-type-changed').addEventListener('input', onChange);
+        this._q('#e4-type-changed').addEventListener('input', onChange);
+        this._q('#reward-normal').addEventListener('input', onChange);
+        this._q('#reward-boss').addEventListener('input', onChange);
+        this._q('#reward-gym').addEventListener('input', onChange);
+
+        // Extra-starter list: add / remove / edit rows (event delegation, since rows re-render).
+        this._q('#add-starter')?.addEventListener('click', () => {
+            this._starterSpecs = this._starterSpecs || [];
+            this._starterSpecs.push({ tier: 'RU', kind: 'line', lineLength: 'any' });
+            this._renderStarterList();
+            this._save();
+        });
+        this._q('#starter-list')?.addEventListener('click', (e) => {
+            const btn = e.target.closest && e.target.closest('.starter-remove');
+            if (!btn) return;
+            const row = btn.closest('.starter-row');
+            const idx = parseInt(row?.dataset.idx, 10);
+            if (!isNaN(idx)) { this._starterSpecs.splice(idx, 1); this._renderStarterList(); this._save(); }
+        });
+        this._q('#starter-list')?.addEventListener('change', (e) => {
+            const row = e.target.closest && e.target.closest('.starter-row');
+            if (!row) return;
+            const idx = parseInt(row.dataset.idx, 10);
+            if (isNaN(idx) || !this._starterSpecs[idx]) return;
+            if (e.target.classList.contains('starter-tier')) this._starterSpecs[idx].tier = e.target.value;
+            else if (e.target.classList.contains('starter-kind')) { this._starterSpecs[idx].kind = e.target.value; this._renderStarterList(); }
+            else if (e.target.classList.contains('starter-length')) this._starterSpecs[idx].lineLength = e.target.value;
+            this._save();
+        });
+        for (const prefix of ['aqua', 'magma']) {
+            for (let i = 0; i < TEAM_TYPE_SLOTS.length; i++) {
+                this._q(`#${prefix}-type-${i}`)?.addEventListener('change', onChange);
+            }
+        }
 
         this._q('#btn-randomize-seed').addEventListener('click', () => {
             this._q('#seed').value = Math.floor(Math.random() * 0xFFFFFFFF);
             onChange();
         });
 
-        this._q('#advanced-toggle').addEventListener('click', () => {
-            const body = this._q('#advanced-body');
-            const toggle = this._q('#advanced-toggle');
-            const expanded = toggle.getAttribute('aria-expanded') === 'true';
-            toggle.setAttribute('aria-expanded', String(!expanded));
-            body.classList.toggle('hidden', expanded);
+        // Category accordion (T-052): each header toggles its own body independently.
+        this.container.querySelectorAll('.config-cat-header').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const expanded = btn.getAttribute('aria-expanded') === 'true';
+                btn.setAttribute('aria-expanded', String(!expanded));
+                const body = this.container.querySelector('#' + btn.getAttribute('aria-controls'));
+                if (body) body.classList.toggle('hidden', expanded);
+            });
         });
+
+        // Scoped "Advanced" sub-panel inside Pokémon mutations (T-052). Evolution levels gets its
+        // own in a later step; both reuse the .collapsible-toggle / .collapsible-body pattern.
+        for (const id of ['mutations-advanced', 'evolution-advanced']) {
+            const toggle = this._q(`#${id}-toggle`);
+            const body = this._q(`#${id}-body`);
+            if (!toggle || !body) continue;
+            toggle.addEventListener('click', () => {
+                const expanded = toggle.getAttribute('aria-expanded') === 'true';
+                toggle.setAttribute('aria-expanded', String(!expanded));
+                body.classList.toggle('hidden', expanded);
+            });
+        }
 
         this._q('#btn-save-config').addEventListener('click', () => {
             const cfg = this.getConfig();

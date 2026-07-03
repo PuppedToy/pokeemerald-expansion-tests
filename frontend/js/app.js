@@ -448,7 +448,26 @@ function reviewRowsHtml(cfg) {
 
     rows.push(['Difficulty',      String(cfg.difficulty)]);
     rows.push(['Rebalance stats', cfg.rebalance ? 'Yes' : 'No']);
-    if (cfg.rebalance) rows.push(['Balance chance', Math.round(cfg.balanceChance * 100) + '%']);
+    if (cfg.rebalance) {
+        rows.push(['Balance chance', Math.round(cfg.balanceChance * 100) + '%']);
+        const cats = [];
+        if (cfg.mutateStats !== false) cats.push('stats');
+        if (cfg.mutateAbilities !== false) cats.push('abilities');
+        if (cfg.mutateTypes !== false) cats.push('types');
+        if (cfg.mutateLearnsets !== false) cats.push('learnsets');
+        rows.push(['Mutate', cats.length ? cats.join(', ') : 'none']);
+    }
+
+    // T-052 — new option summaries (shared by the Review step and the Run-details disclosure).
+    const fmtTypes = arr => (arr || []).map(t => t === 'RANDOM' ? 'Random' : t[0] + t.slice(1).toLowerCase()).join(' / ');
+    rows.push(['Gym / E4 types changed', `${cfg.gymsTypeChanged ?? 2} / ${cfg.e4TypeChanged ?? 2}`]);
+    if (cfg.aquaTypes) rows.push(['Team Aqua', fmtTypes(cfg.aquaTypes)]);
+    if (cfg.magmaTypes) rows.push(['Team Magma', fmtTypes(cfg.magmaTypes)]);
+    rows.push(['Evolution levels', cfg.evoLevels && cfg.evoLevels.enabled === false ? 'Base game' : 'Adjusted']);
+    const money = cfg.money || {};
+    rows.push(['Reward money', `$${money.normal ?? 250} / $${money.boss ?? 3000} / $${money.gym ?? 5000}`]);
+    rows.push(['Extra starters', String((cfg.extraStarters || []).length)]);
+
     rows.push(['Seed', cfg.seed != null ? cfg.seed : '(random — assigned on Generate)']);
 
     return rows.map(([k, v]) => `

@@ -121,6 +121,7 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
     const writer                       = require('./randomizer/writer');
     const { writeTMsFromList }          = require('./randomizer/tmRandomizer');
     const { writeItemFilesFromBundle }  = require('./randomizer/itemRandomizer');
+    const { writeMoney }                = require('./randomizer/moneyWriter');
 
     const label    = romFileName(rom);
     const pokedex  = resolveArtifact(rom.artifacts.pokedex,  bundle.sharedData, 'pokedex');
@@ -142,6 +143,8 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
         await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed), rom.docs, runNs);
         await writeTMsFromList(pokedex.tmList);
         writeItemFilesFromBundle(trainers.itemAssignments);
+        // T-052 — patch configurable prize money into the C source (restored by restore() after build).
+        await writeMoney(bundle.config?.money);
         run('make', ['-j', String(jobs)]);
 
         const dest = path.join(outDir, label);

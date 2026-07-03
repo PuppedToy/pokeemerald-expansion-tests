@@ -90,7 +90,20 @@ function toModuleConfig(cfg, seed) {
         difficulty: cfg.difficulty ?? 'fair',
         rebalance: cfg.rebalance !== false,
         balanceChance: cfg.balanceChance ?? 0.2,
+        // T-052 — per-category mutation toggles
+        mutateStats: cfg.mutateStats !== false,
+        mutateAbilities: cfg.mutateAbilities !== false,
+        mutateTypes: cfg.mutateTypes !== false,
+        mutateLearnsets: cfg.mutateLearnsets !== false,
+        mutationProbs: cfg.mutationProbs,
+        evoLevels: cfg.evoLevels,
+        extraStarters: cfg.extraStarters,
         allTms: false,
+        // T-052 — trainer-facing knobs (mirrors the browser worker's toModuleConfig).
+        gymsTypeChanged: cfg.gymsTypeChanged ?? 2,
+        e4TypeChanged: cfg.e4TypeChanged ?? 2,
+        aquaTypes: cfg.aquaTypes,
+        magmaTypes: cfg.magmaTypes,
     };
 }
 

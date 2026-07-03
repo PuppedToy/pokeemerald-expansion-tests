@@ -172,8 +172,16 @@ async function runPokedexModule(config, baseData = null) {
     // 9. Optional rebalance
     if (config.rebalance) {
         const abilityKeys = Object.keys(abilities).map(key => key.replace('ABILITY_', ''));
+        // T-052 — per-category mutation toggles + probability overrides (default on / defaults).
+        const mutationOptions = {
+            mutateStats: config.mutateStats !== false,
+            mutateAbilities: config.mutateAbilities !== false,
+            mutateTypes: config.mutateTypes !== false,
+            mutateLearnsets: config.mutateLearnsets !== false,
+            probs: config.mutationProbs,
+        };
         for (let i = 0; i < allPokes.length; i++) {
-            allPokes[i] = balancePokemon(allPokes[i], abilityKeys, moves, config.balanceChance);
+            allPokes[i] = balancePokemon(allPokes[i], abilityKeys, moves, config.balanceChance, mutationOptions);
             if (allPokes[i].log && allPokes[i].log.length) {
                 allPokes[i].baseBST = allPokes[i].baseHP + allPokes[i].baseAttack + allPokes[i].baseDefense + allPokes[i].baseSpAttack + allPokes[i].baseSpDefense + allPokes[i].baseSpeed;
                 allPokes[i].rating = ratePokemon(allPokes[i], moves, abilities, tmPool);

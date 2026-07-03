@@ -53,9 +53,9 @@ function shuffleArray(array) {
     return array;
 }
 
-function getLearnLevelBasedOnRating(move) {
+function getLearnLevelBasedOnRating(move, deviation = MOVE_RATING_DEVIATION) {
     const baseRating = move && typeof move.rating === 'number' ? move.rating : 5;
-    const rating = baseRating * rng.random() * (1 + MOVE_RATING_DEVIATION);
+    const rating = baseRating * rng.random() * (1 + deviation);
     let level = Math.floor(rating * 5);
     if (level < 1) level = 1;
     if (level > 100) level = 100;
@@ -66,9 +66,9 @@ function getLearnLevelBasedOnRating(move) {
  * Insert a move into a learnset using its ID and rating to derive the level.
  * Returns the new learnset and the level used.
  */
-function insertMoveIntoLearnset(learnset, moveId, move) {
+function insertMoveIntoLearnset(learnset, moveId, move, deviation = MOVE_RATING_DEVIATION) {
     const learnsetCopy = [...learnset];
-    const level = getLearnLevelBasedOnRating(move);
+    const level = getLearnLevelBasedOnRating(move, deviation);
     learnsetCopy.push({ move: moveId, level: String(level) });
     learnsetCopy.sort((a, b) => Number(a.level) - Number(b.level));
     return {
@@ -79,7 +79,7 @@ function insertMoveIntoLearnset(learnset, moveId, move) {
 
 const familyTracking = {};
 
-function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined) {
+function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined, options = {}) {
 
     const inheritedLog = [];
     // Deep-copy mutable sub-arrays so mutations don't corrupt the shared parsed learnset
@@ -164,8 +164,34 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined)
 
     const log = [];
 
+    // T-052 — per-category mutation toggles (default on). Disabling a category skips its whole
+    // block; with all four on and default probabilities the output is byte-identical to before.
+    // Coupling: the type-change-driven learnset edit (step 1) is a consequence of a type change, so
+    // it lives under `mutateTypes`; the independent random learnset pass (step 2) is `mutateLearnsets`.
+    const mutateStats = options.mutateStats !== false;
+    const mutateTypes = options.mutateTypes !== false;
+    const mutateAbilities = options.mutateAbilities !== false;
+    const mutateLearnsets = options.mutateLearnsets !== false;
+
+    // T-052 — per-category probability overrides (Advanced). Each falls back to its historical
+    // constant when not supplied, so default runs are byte-identical.
+    const probs = options.probs || {};
+    const num = (v, def) => (typeof v === 'number' && Number.isFinite(v) ? v : def);
+    const statBalanceChance = num(probs.statBalanceChance, STAT_BALANCE_CHANCE);
+    const buffStatChance = num(probs.buffStatChance, BUFF_STAT_CHANCE);
+    const repeatStatChance = num(probs.repeatStatChance, REPEAT_STAT_CHANCE);
+    const typeBalanceChance = num(probs.typeBalanceChance, TYPE_BALANCE_CHANCE);
+    const monotypeBalanceChance = num(probs.monotypeBalanceChance, MONOTYPE_BALANCE_CHANCE);
+    const abilityBalanceChance = num(probs.abilityBalanceChance, ABILITY_BALANCE_CHANCE);
+    const learnsetBalanceChance = num(probs.learnsetBalanceChance, LEARNSET_BALANCE_CHANCE);
+    const changeTypeMoveFromOldChance = num(probs.changeTypeMoveFromOldChance, CHANGE_TYPE_MOVE_CHANCE_FROM_OLD_TYPE_CHANCE);
+    const changeTypeMoveFromOtherChance = num(probs.changeTypeMoveFromOtherChance, CHANGE_TYPE_MOVE_CHANCE_FROM_OTHER_TYPE_CHANCE);
+    const moveInsertChance = num(probs.moveInsertChance, CHANGE_MOVE_INSERT_CHANCE);
+    const moveRatingDeviation = num(probs.moveRatingDeviation, MOVE_RATING_DEVIATION);
+
+    if (mutateStats) {
     const stats = shuffleArray(['baseHP', 'baseAttack', 'baseDefense', 'baseSpAttack', 'baseSpDefense', 'baseSpeed']);
-    let chance = STAT_BALANCE_CHANCE;
+    let chance = statBalanceChance;
     inheritedLog.forEach(entry => {
         if (stats.includes(entry.target)) {
             chance *= 0.5;
@@ -174,9 +200,9 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined)
     });
     stats.forEach(stat => {
         if (rng.random() < chance) {
-            const changeDiff = rng.random() < BUFF_STAT_CHANCE ? 10 : -10;
+            const changeDiff = rng.random() < buffStatChance ? 10 : -10;
             let change = changeDiff;
-            while (rng.random() < REPEAT_STAT_CHANCE) {
+            while (rng.random() < repeatStatChance) {
                 change += changeDiff;
             }
             newPokemon[stat] = Math.min(255, Math.max(1, newPokemon[stat] + change));
@@ -189,10 +215,12 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined)
             });
         }
     });
+    }
 
-    if (rng.random() < TYPE_BALANCE_CHANCE) {
+    if (mutateTypes) {
+    if (rng.random() < typeBalanceChance) {
         let oldType = null;
-        if (pokemon.parsedTypes.length === 1 && rng.random() < MONOTYPE_BALANCE_CHANCE) {
+        if (pokemon.parsedTypes.length === 1 && rng.random() < monotypeBalanceChance) {
             oldType = pokemon.parsedTypes[0];
         }
         else if (pokemon.parsedTypes.length === 2) {
@@ -219,8 +247,10 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined)
             value: newType,
         });
     }
+    }
 
-    if (rng.random() < ABILITY_BALANCE_CHANCE) {
+    if (mutateAbilities) {
+    if (rng.random() < abilityBalanceChance) {
         let oldAbility = null;
         if (pokemon.parsedAbilities.includes('NONE')) {
             oldAbility = 'NONE';
@@ -255,9 +285,11 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined)
             });
         }
     }
+    }
 
     // ----- LEARNSET CHANGES AFTER TYPE CHANGE -----
-
+    // Under mutateTypes: only runs when a type actually changed (a consequence of the Types block).
+    if (mutateTypes) {
     const typeChangeLogs = log.filter(entry => entry.target === 'type');
 
     // Learnset step 1 - if a type changed, the pokemon needs to at least learn one move of the new type
@@ -291,8 +323,8 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined)
             }
 
             const shouldChange =
-                (oldType && currentMove.type === oldType && rng.random() < CHANGE_TYPE_MOVE_CHANCE_FROM_OLD_TYPE_CHANCE) ||
-                (!oldType && rng.random() < CHANGE_TYPE_MOVE_CHANCE_FROM_OTHER_TYPE_CHANCE);
+                (oldType && currentMove.type === oldType && rng.random() < changeTypeMoveFromOldChance) ||
+                (!oldType && rng.random() < changeTypeMoveFromOtherChance);
 
             if (!shouldChange) continue;
 
@@ -335,14 +367,14 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined)
         }
 
         // If we couldn't change any move, we need to insert one. Otherwise just random
-        let chanceToInsertExtra = Math.max(0, 1 - (amountChanged * CHANGE_MOVE_INSERT_CHANCE));
+        let chanceToInsertExtra = Math.max(0, 1 - (amountChanged * moveInsertChance));
         if (rng.random() < chanceToInsertExtra) {
             if (movesFromTheNewType.length > 0) {
                 const [newMoveId, newMoveObj] =
                     movesFromTheNewType[Math.floor(rng.random() * movesFromTheNewType.length)];
 
                 const { learnset: newLearnset, level } =
-                    insertMoveIntoLearnset(newPokemon.learnset, newMoveId, newMoveObj);
+                    insertMoveIntoLearnset(newPokemon.learnset, newMoveId, newMoveObj, moveRatingDeviation);
                 newPokemon.learnset = newLearnset;
 
                 log.push({
@@ -355,9 +387,11 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined)
             }
         }
     }
+    }
 
     // ----- LEARNSET STEP 2 - RANDOM CHANGES -----
-    if (rng.random() < LEARNSET_BALANCE_CHANCE) {
+    if (mutateLearnsets) {
+    if (rng.random() < learnsetBalanceChance) {
         let amountChanged = 0;
 
         for (let i = 0; i < newPokemon.learnset.length; i++) {
@@ -370,7 +404,7 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined)
                 continue;
             }
 
-            if (rng.random() < CHANGE_TYPE_MOVE_CHANCE_FROM_OTHER_TYPE_CHANCE) {
+            if (rng.random() < changeTypeMoveFromOtherChance) {
                 const allMoves = Object.entries(moves);
 
                 const similarMoves = [...allMoves].sort(
@@ -406,7 +440,7 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined)
             }
         }
 
-        let chanceToInsertExtra = Math.max(0, 1 - (amountChanged * CHANGE_MOVE_INSERT_CHANCE));
+        let chanceToInsertExtra = Math.max(0, 1 - (amountChanged * moveInsertChance));
         while (rng.random() < chanceToInsertExtra) {
             const allMoves = Object.entries(moves);
             if (allMoves.length === 0) break;
@@ -415,7 +449,7 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined)
                 allMoves[Math.floor(rng.random() * allMoves.length)];
 
             const { learnset: newLearnset, level } =
-                insertMoveIntoLearnset(newPokemon.learnset, newMoveId, newMoveObj);
+                insertMoveIntoLearnset(newPokemon.learnset, newMoveId, newMoveObj, moveRatingDeviation);
             newPokemon.learnset = newLearnset;
 
             log.push({
@@ -427,8 +461,9 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined)
             });
 
             amountChanged++;
-            chanceToInsertExtra = Math.max(0, 1 - (amountChanged * CHANGE_MOVE_INSERT_CHANCE));
+            chanceToInsertExtra = Math.max(0, 1 - (amountChanged * moveInsertChance));
         }
+    }
     }
 
     if (!familyTracking[newPokemon.family]) {

@@ -28,6 +28,7 @@ Entry point to all project documentation. **A document not listed here does not 
 ## Guides
 
 <!-- Architecture, conventions, runbooks… One line per document. -->
+- [../randomizer/docs/randomization-options.md](../randomizer/docs/randomization-options.md) — every frontend randomization option: category, config key, default, algorithm effect, RNG caveat, money ROM-build note (T-052)
 - [upstream-bugfix-sync.md](upstream-bugfix-sync.md) — how we cherry-pick RHH bugfixes per version + the state ledger of how far we're patched (T-049, ADR-012)
 - [dev-deploy-workflow.md](dev-deploy-workflow.md) — the canonical dev → test → commit → push → `update.sh` deploy loop (preflight-gated) (T-031)
 - [deploy-oracle.md](deploy-oracle.md) — deploy runbook: Oracle free A1 (primary) + Hetzner fallback, DNS/HTTPS, bootstrap, update, ops (T-019)

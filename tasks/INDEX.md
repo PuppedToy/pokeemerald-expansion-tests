@@ -55,3 +55,4 @@
 | [T-049](T-049-upstream-expansion-sync-strategy.md) | Research a controlled, reproducible upstream sync with pokeemerald-expansion | in-progress | 0.6.0 | 2026-07-03 |
 | [T-050](T-050-sync-1.13.3-bugfixes.md) | Absorb expansion 1.13.3 bugfixes (incl. Endure) | in-progress | 0.6.0 | 2026-07-03 |
 | [T-051](T-051-sync-1.13.4-bugfixes.md) | Absorb expansion 1.13.4 bugfixes | proposed | 0.6.0 | 2026-07-03 |
+| [T-052](T-052-configurable-randomization-options.md) | Configurable randomization options — batch 1 (categorized settings) | done | 0.6.0 | 2026-07-03 |

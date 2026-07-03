@@ -70,7 +70,12 @@ const sunAbilities = ['FLOWER_GIFT', 'CHLOROPHYLL', 'LEAF_GUARD', 'SOLAR_POWER',
 const sandAbilities = ['SAND_FORCE', 'SAND_RUSH', 'SAND_VEIL'];
 const snowAbilities = ['ICE_BODY', 'SNOW_CLOAK', 'SLUSH_RUSH'];
 
-const aquaTeamTypes = [
+// T-052 — evil-team type themes are configurable via 5 ordered slots
+// (main, secondary, other 1..3), each a specific type or the 'RANDOM' token. These historical
+// arrays are the no-config fallback (byte-identical for CLI/determinism callers that pass no
+// config); the frontend supplies its own defaults (slot 5 = RANDOM). `let` because getTrainersData
+// re-resolves them from config on each call.
+const AQUA_DEFAULT_TYPES = [
     POKEMON_TYPE_WATER,
     POKEMON_TYPE_DARK,
     POKEMON_TYPE_POISON,
@@ -78,7 +83,7 @@ const aquaTeamTypes = [
     POKEMON_TYPE_FLYING,
 ];
 
-const magmaTeamTypes = [
+const MAGMA_DEFAULT_TYPES = [
     POKEMON_TYPE_FIRE,
     POKEMON_TYPE_GROUND,
     POKEMON_TYPE_ROCK,
@@ -86,11 +91,42 @@ const magmaTeamTypes = [
     POKEMON_TYPE_FIGHTING,
 ];
 
+let aquaTeamTypes = [...AQUA_DEFAULT_TYPES];
+let magmaTeamTypes = [...MAGMA_DEFAULT_TYPES];
+
 function sampleAndRemove(array) {
     const index = Math.floor(rng.random() * array.length);
     const item = array[index];
     array.splice(index, 1);
     return item;
+}
+
+/**
+ * Resolve a team's 5 type slots from config. Each configured entry is either a valid POKEMON_TYPE
+ * or the 'RANDOM' token (also: missing/invalid entries are treated as RANDOM). RANDOM slots draw —
+ * in order, seed-deterministically via rng — from the pool of types not already chosen for this
+ * team, so slots never collide. When `configTypes` is not an array, returns the historical defaults
+ * WITHOUT consuming any rng (keeps no-config runs byte-identical).
+ *
+ * @param {Array<string>|undefined} configTypes
+ * @param {Array<string>} defaults - length defines the number of slots
+ * @returns {Array<string>}
+ */
+function resolveTeamTypes(configTypes, defaults) {
+    if (!Array.isArray(configTypes)) return [...defaults];
+    const valid = new Set(POKEMON_TYPES);
+    const slots = [];
+    for (let i = 0; i < defaults.length; i++) {
+        const v = configTypes[i];
+        slots.push(valid.has(v) ? v : 'RANDOM');
+    }
+    const used = new Set(slots.filter(s => s !== 'RANDOM'));
+    const pool = POKEMON_TYPES.filter(t => !used.has(t));
+    return slots.map(s => {
+        if (s !== 'RANDOM') return s;
+        if (pool.length === 0) return defaults[0];
+        return sampleAndRemove(pool);
+    });
 }
 
 const originalE4Types = [POKEMON_TYPE_DARK, POKEMON_TYPE_GHOST, POKEMON_TYPE_ICE, POKEMON_TYPE_DRAGON];
@@ -599,16 +635,33 @@ const rivalEvergrandeCityTemplate = (id) => [
     },
 ];
 
-function getTrainersData(itemAssignments, tmList) {
-    // Gym / E4 type randomization — seeded here so it respects rng.seed(config.seed)
+function getTrainersData(itemAssignments, tmList, config = {}) {
+    // Gym / E4 type randomization — seeded here so it respects rng.seed(config.seed).
+    // T-052: the frontend exposes how many gyms / E4 CHANGE their type; internally we keep the
+    // complement (keep = total − changed). Absent/invalid config falls back to the historical keep
+    // constants so default runs stay byte-identical.
+    const clampChanged = (value, total, defaultChanged) => {
+        if (typeof value !== 'number' || !Number.isFinite(value)) return defaultChanged;
+        return Math.max(0, Math.min(total, Math.round(value)));
+    };
+    const gymsChanged = clampChanged(config.gymsTypeChanged, originalGymTypes.length, originalGymTypes.length - TRAINER_GYM_LEADERS_KEEP_TYPE_AMOUNT);
+    const e4Changed = clampChanged(config.e4TypeChanged, originalE4Types.length, originalE4Types.length - TRAINER_E4_KEEP_TYPE_AMOUNT);
+    const gymLeadersKeepTypeAmount = originalGymTypes.length - gymsChanged;
+    const e4KeepTypeAmount = originalE4Types.length - e4Changed;
+
+    // T-052 — resolve the configurable Aqua/Magma type themes (RANDOM slots consume rng only when
+    // present, so a no-config call is byte-identical). Done before gym/E4 selection.
+    aquaTeamTypes = resolveTeamTypes(config.aquaTypes, AQUA_DEFAULT_TYPES);
+    magmaTeamTypes = resolveTeamTypes(config.magmaTypes, MAGMA_DEFAULT_TYPES);
+
     const coinsForE4Types = [0, 1, 2, 3];
     const coinsForGymTypes = [0, 1, 2, 3, 4, 5, 6, 7];
     const whoKeepsE4Type = [];
     const whoKeepsGymType = [];
-    for (let i = 0; i < TRAINER_E4_KEEP_TYPE_AMOUNT; i++) {
+    for (let i = 0; i < e4KeepTypeAmount; i++) {
         whoKeepsE4Type.push(sampleAndRemove(coinsForE4Types));
     }
-    for (let i = 0; i < TRAINER_GYM_LEADERS_KEEP_TYPE_AMOUNT; i++) {
+    for (let i = 0; i < gymLeadersKeepTypeAmount; i++) {
         const chosenType = sampleAndRemove(coinsForGymTypes);
         whoKeepsGymType.push(chosenType);
     }
@@ -4316,6 +4369,11 @@ const trainersData = [
     for (const trainer of trainersData) {
         const themeType = themeTypeByClass[trainer.class];
         if (themeType) trainer.themeType = themeType;
+        // T-052 — carry the resolved evil-team main/secondary so the docs card colours follow the
+        // configured types (trainerColors.evilColors reads this; falls back to its static map).
+        const cls = typeof trainer.class === 'string' ? trainer.class : '';
+        if (cls.includes('Aqua')) trainer.evilThemeTypes = [aquaTeamTypes[0], aquaTeamTypes[1]];
+        else if (cls.includes('Magma')) trainer.evilThemeTypes = [magmaTeamTypes[0], magmaTeamTypes[1]];
     }
 
     return trainersData;
@@ -4325,4 +4383,8 @@ module.exports = {
     file: trainersFile,
     partnersFile,
     getTrainersData,
+    // Exported for unit testing (T-052).
+    resolveTeamTypes,
+    AQUA_DEFAULT_TYPES,
+    MAGMA_DEFAULT_TYPES,
 };
