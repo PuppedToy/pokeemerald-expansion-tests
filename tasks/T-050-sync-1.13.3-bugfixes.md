@@ -31,7 +31,7 @@ is an owner-approvable shortcut** (ADR-012) — decide at execution.
 Acceptance criteria:
 - [x] RHH remote added (read-only) and `expansion/1.13.3` fetched.
 - [x] 1.13.3 commits enumerated and classified; sensitive-file screen run (found 4 sensitive-touching commits — see log).
-- [ ] Endure fix (#7838) cherry-picked with its `endure.c` test case.
+- [x] Endure fix (#7838) cherry-picked (`a347e47b7a`) with its `endure.c` test case.
 - [ ] `test/battle/move_effect/endure.c` **FAILS before, PASSES after** → close B-018 (regression-test rule).
 - [ ] Remaining 1.13.3 bugfixes taken (or 1.13.3 merged wholesale, if owner approves the shortcut).
 - [ ] `make check` green.
@@ -62,6 +62,20 @@ Acceptance criteria:
     built) → cannot run `make check` → cannot verify `endure.c` fail-before/pass-after or close B-018
     here. Cherry-pick + verification must run on the builder machine. Paused pending owner direction
     on (a) where to build/verify and (b) the two Battle Dome escalations.
+- **2026-07-03** — Owner decisions: skip the two Battle Dome fixes (#8007/#7976); verify via **CI**
+  (`.github/workflows/build.yml` runs `make -j check` on push) rather than locally — the C battle
+  tests compile to a GBA ROM and run in mGBA, so there is no toolchain-free local path. Executed
+  steps 1–3:
+  - System files committed to `master` (`039ed351ff`).
+  - Branch `feature/T-050-sync-1.13.3` created off master.
+  - **Cherry-picked Endure `-x d2e8afa13a` → `a347e47b7a`, applied cleanly** (auto-merged
+    `battle_main.c`, no conflict). Fix = `gDisableStructs[i].endured = FALSE;` added to
+    `TurnValuesCleanUp()` (`src/battle_main.c`) — the exact per-turn reset missing per B-018's root
+    cause; the same commit brings the `endure.c` regression case.
+  - Skipped (per owner / policy): #8007, #7976 (Dome), #7881 (sprites), #2196 (tooling).
+  - **Next:** owner pushes the branch → CI runs `make check`. To prove the iron rule: a test-only run
+    (endure.c assertions without the fix) should FAIL, then the fix PASSES → then B-018 can close and
+    the remaining ~133 safe fixes get taken in verifiable batches.
 
 ## Outcome
 

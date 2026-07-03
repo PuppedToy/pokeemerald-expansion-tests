@@ -43,3 +43,9 @@ Regression test: `test/battle/move_effect/endure.c` — the case added by #7838,
 alongside the fix, run via `make check`. Per the iron rule it must FAIL on our current base and PASS
 after the pick; **this bug stays `open` until that is verified**. (Not distinct from PR #7687
 "Endure and Eject Pack issues" — that is a related but separate change; #7838 is the persistence fix.)
+
+**Staged (2026-07-03):** cherry-pick `a347e47b7a` (from upstream #7838) on branch
+`feature/T-050-sync-1.13.3` adds the per-turn reset `gDisableStructs[i].endured = FALSE;` to
+`TurnValuesCleanUp()` in `src/battle_main.c` — precisely the missing reset above. Verification runs in
+CI (`make check`), not locally (no GBA toolchain here). Stays `open` until CI confirms
+FAIL-before / PASS-after.
