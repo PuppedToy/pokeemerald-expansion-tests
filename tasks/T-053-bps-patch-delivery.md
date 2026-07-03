@@ -114,6 +114,13 @@ Acceptance criteria:
   stays `ready`). (2) the download note still warned "Single use — removes the ROM from the server";
   corrected to the re-downloadable / applied-in-browser reality. Frontend suite 44 green (added
   ready-state coverage: ROM present vs. absent). Awaiting redeploy + re-test.
+- **2026-07-03** — More manual-test feedback on the "Start over" button, fixed: it was **disabled** while
+  a patch was ready ("download first") — wrong under the re-downloadable model. It's now always enabled
+  and **always confirms** that starting over permanently deletes the generated ROM (the user's own
+  Emerald in IndexedDB is untouched). Start over / Cancel now also removes the **server-side** request so
+  a discarded run can't be resurrected on reload. Fixed a latent backend bug this exposed: `cancel` on a
+  `ready` run tried the illegal `ready→failed` transition and left the row stuck `ready` (active, files
+  deleted); it now falls back to `ready→expired`, freeing the slot. Backend 109, frontend 44 green.
 
 ## Outcome
 

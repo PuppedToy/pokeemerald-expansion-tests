@@ -163,6 +163,23 @@ test('cancel marks the active request failed, frees the slot and deletes its fil
   assert.ok(removed.includes('/b/c1.json'), 'the bundle file is deleted');
 });
 
+test('cancel discards a ready (re-downloadable) run too — frees the slot + deletes files (T-053)', () => {
+  const { requests } = setup();
+  requests.create({ id: 'd1', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b/d1.json', seed: '1', params: {}, now: 1 });
+  requests.setState('d1', 'building', 2);
+  requests.markReady('d1', 3);
+  requests.setOutputPath('d1', '/out/d1', 4);
+
+  const removed = [];
+  const res = fakeRes();
+  handleCancel({ requests, removeFile: (p) => removed.push(p), now: () => 9 })({ userId: 1 }, res);
+
+  assert.equal(res.body.ok, true);
+  assert.equal(requests.getActiveForUser(1), null, 'a ready run leaves the active set on cancel (slot freed)');
+  assert.ok(removed.includes('/b/d1.json'), 'the bundle file is deleted');
+  assert.ok(removed.includes('/out/d1'), 'the output patch is deleted');
+});
+
 test('buildProgress derives progress + eta from server state, not a client clock (B-013)', () => {
   const { requests } = setup();
   requests.create({ id: 'b1', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b', seed: '1', params: {}, now: 1000 });

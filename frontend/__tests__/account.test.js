@@ -95,6 +95,10 @@ test('T-053: ready state with no stored ROM offers an inline add-ROM path', asyn
     assert.match(row.innerHTML, /Add your Emerald ROM/, 'inline add-ROM affordance is shown');
     assert.match(row.innerHTML, /rom-file-ready/, 'with a file input to pick the ROM');
     assert.match(row.innerHTML, /patch \(\.bps\) only/i, 'plus a raw-.bps fallback');
+    // T-053: Start over must be usable even with a downloadable patch (no longer disabled).
+    const startOver = env.getEl('btn-start-over');
+    assert.equal(startOver.disabled, false, 'Start over is enabled while a patch is ready');
+    assert.equal(startOver.dataset.mode, 'discard', 'and set to the confirmed discard mode');
   } finally { env.restore(); }
 });
 

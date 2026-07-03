@@ -270,12 +270,14 @@ function etaText(secs) {
 function setStartOverBtn(cat) {
   const btn = $('btn-start-over');
   if (!btn) return;
-  if (cat === 'downloaded') {
-    btn.disabled = false; btn.textContent = 'Start over'; btn.title = ''; btn.dataset.mode = 'startover';
-  } else if (cat === 'ready') {
-    btn.disabled = true; btn.textContent = 'Start over'; btn.title = 'Download your ROM to start over.'; btn.dataset.mode = 'ready';
-  } else { // queued / building / gating / failed / starting — the run isn't downloaded yet
-    btn.disabled = false; btn.textContent = 'Cancel'; btn.title = ''; btn.dataset.mode = 'cancel';
+  btn.disabled = false; // T-053: never blocked — you can start over even with a downloadable patch
+  btn.title = '';
+  if (cat === 'ready' || cat === 'downloaded') {
+    // A generated patch exists (re-downloadable server-side). Start over discards it — always allowed,
+    // always confirmed. Downloading is no longer a precondition for starting over.
+    btn.textContent = 'Start over'; btn.dataset.mode = 'discard';
+  } else { // queued / building / gating / failed / starting — the run isn't finished
+    btn.textContent = 'Cancel'; btn.dataset.mode = 'cancel';
   }
 }
 
@@ -608,11 +610,14 @@ export async function initAccount(opts = {}) {
   //  - ready:     disabled (download first) — no-op
   $('btn-start-over')?.addEventListener('click', async () => {
     const mode = $('btn-start-over').dataset.mode;
-    if (mode === 'ready') return;
-    if (mode === 'cancel') {
-      if (!confirm('Cancel this run?\n\nIt will be permanently deleted.')) return;
-      await api('/api/cancel', { method: 'POST', auth: true }).catch(() => {});
-    }
+    // Both discard the run permanently → always confirm (T-053). "discard" = a generated patch exists;
+    // "cancel" = an in-progress run. Either way the server-side request is removed so it can't be
+    // resurrected on reload. The user's own Emerald ROM (IndexedDB) is NOT touched.
+    const msg = mode === 'discard'
+      ? "Start over?\n\nThe randomized ROM you generated will be permanently deleted and you'll build a new one. (Your own Emerald stays saved in this browser.)"
+      : 'Cancel this run?\n\nIt will be permanently deleted.';
+    if (!confirm(msg)) return;
+    await api('/api/cancel', { method: 'POST', auth: true }).catch(() => {});
     await clearRun();
     opts.onStartOver?.();
   });

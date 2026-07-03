@@ -117,7 +117,12 @@ export function createRequestsRepo(db) {
     cancel(id, removeFile = defaultRemoveFile, now = Date.now()) {
       const row = this.get(id);
       if (!row) return null;
-      try { this.setState(id, 'failed', now); } catch { /* already terminal — leave as-is */ }
+      // Leave the active set so the slot frees + the worker won't continue it. `failed` fits an
+      // in-flight/queued run (a retryable history row); a `ready` (re-downloadable) run can't go to
+      // failed, so expire it instead (T-053). Whichever legal transition applies first wins.
+      for (const to of ['failed', 'expired']) {
+        try { this.setState(id, to, now); break; } catch { /* illegal from this state — try the next */ }
+      }
       removeFile(row.bundle_path);
       if (row.output_path) removeFile(row.output_path);
       return this.get(id);
