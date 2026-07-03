@@ -75,3 +75,24 @@ that case. This is the exception, not the rule.
   reproduces the fixed bug — this is how a C-engine bug like Endure satisfies the regression-test
   iron rule); plus `cd randomizer && npm test` + a full `node analyze.js` **only if** a cherry-pick
   ever touches a sensitive file (it should not, by policy).
+
+## Amendment (2026-07-03) — merge-then-revert is the default for pure-bugfix patch releases
+
+Executing T-050 (absorbing 1.13.3) proved the "cost" bullet above in practice: piecemeal
+cherry-picking a *whole* release fights its internal fix→refactor chain. Of 1.13.3's commits, ~98
+applied cleanly but 7 real fixes could not — they target code that **later 1.13.3 refactors (already
+picked) had moved/renamed** (e.g. Throat Spray moveend relocated to `battle_util.c`), so isolated
+picks mis-anchor, and the clean picks themselves carry integration-gap risk until compiled.
+
+Refinement to the Decision:
+- **Pure-bugfix patch releases (`X.Y.Z`, Z>0) — DEFAULT to merge-then-revert:** `git merge
+  expansion/X.Y.Z`, then `git revert` only the handful of feature/sensitive commits. This preserves
+  fix→refactor ordering, avoids the entanglement entirely, and lets `expansion.h` advance to the
+  merged version — which is now *accurate* (we really do have that release minus a few reverts). The
+  earlier "we never merge tags / expansion.h stays at merge-base" stance applies only to the
+  cherry-pick track.
+- **Feature releases (`X.Y.0`) — keep piecemeal cherry-pick:** here we must exclude whole features
+  and data-format migrations, so a merge is wrong; screen commit-by-commit as originally decided.
+
+Net: cherry-pick is for feature releases; merge-then-revert is for patch releases. Both still verify
+via CI/builder and log to the ledger.
