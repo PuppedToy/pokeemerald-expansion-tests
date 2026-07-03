@@ -18,25 +18,25 @@ First hop of the upstream bugfix-sync campaign ([ADR-012](../docs/adr/ADR-012-up
 procedure & ledger in [docs/upstream-bugfix-sync.md](../docs/upstream-bugfix-sync.md)). We are on
 expansion 1.13.2; 1.13.3 is the immediate next patch and is **bugfix-only**. It carries the trigger
 fix, **Endure lasting forever** (PR #7838 → [B-018](../bugs/B-018-endure-persists-whole-battle.md)),
-plus ~15 other battle-mechanic fixes and a minor-fix tail. The T-049 audit found **no sensitive-file
-changes** in 1.13.3, so this hop is low-risk.
+plus ~15 other battle-mechanic fixes and a minor-fix tail. (The commit-level screen later found 4
+commits touching sensitive files — sprites #7881, Dome #8007/#7976, tooling #2196 — correcting the
+changelog-level audit; those are reverted on merge.)
 
 ## Plan
 
-Follow the per-version procedure in the runbook. Cherry-pick `-x` only the bugfix commits (all of
-1.13.3 by policy), take each fix's `test/battle/**` test with it, escalate anything unexpected.
-Because 1.13.3 is 100% bugfix and touches no sensitive file, a **wholesale merge of `expansion/1.13.3`
-is an owner-approvable shortcut** (ADR-012) — decide at execution.
+**Revised approach (2026-07-03, see log + ADR-012 amendment).** The Endure fix (the trigger) is
+cherry-picked now on `feature/T-050-sync-1.13.3` — clean, minimal, shippable. The *rest* of 1.13.3 is
+absorbed on the **builder** via **merge-then-revert** (`git merge expansion/1.13.3` + revert the 4
+feature/sensitive commits), because a piecemeal-cherry-pick trial proved 1.13.3's internal
+fix→refactor chain makes isolated picks mis-anchor, and nothing compiles on this machine.
 
 Acceptance criteria:
-- [x] RHH remote added (read-only) and `expansion/1.13.3` fetched.
-- [x] 1.13.3 commits enumerated and classified; sensitive-file screen run (found 4 sensitive-touching commits — see log).
-- [x] Endure fix (#7838) cherry-picked (`a347e47b7a`) with its `endure.c` test case.
-- [ ] `test/battle/move_effect/endure.c` **FAILS before, PASSES after** → close B-018 (regression-test rule).
-- [ ] Remaining 1.13.3 bugfixes taken (or 1.13.3 merged wholesale, if owner approves the shortcut).
-- [ ] `make check` green.
-- [ ] Ledger updated (frontier → 1.13.3; taken/skipped/deferred recorded) in `docs/upstream-bugfix-sync.md`.
-- [ ] `CHANGELOG.brooktec.md` line added (Endure fix is user-visible).
+- [x] RHH remote added (read-only) and `expansion/1.13.3` fetched; commits enumerated + sensitive-screened.
+- [x] Endure #7838 cherry-picked (`a347e47b7a`) with its `endure.c` test — clean, non-sensitive.
+- [x] Ledger + ADR-012 updated (two-track strategy; merge-then-revert for patch releases).
+- [ ] **Builder:** `git merge expansion/1.13.3`, revert #7881 / #8007 / #7976 / #2196, resolve fork conflicts.
+- [ ] `make check` green (CI or builder); `endure.c` FAILS before / PASSES after → **close B-018**.
+- [ ] `expansion.h` advanced to 1.13.3; `CHANGELOG.brooktec.md` line added (Endure + 1.13.3 fixes).
 
 ## Progress log
 
@@ -76,6 +76,16 @@ Acceptance criteria:
   - **Next:** owner pushes the branch → CI runs `make check`. To prove the iron rule: a test-only run
     (endure.c assertions without the fix) should FAIL, then the fix PASSES → then B-018 can close and
     the remaining ~133 safe fixes get taken in verifiable batches.
+- **2026-07-03** — **Approach revised (owner delegated the decision).** Ran a piecemeal-cherry-pick
+  trial for the rest of 1.13.3: 98 commits applied cleanly, but 7 real fixes were entangled with
+  later 1.13.3 refactors already picked (Throat Spray moveend → `battle_util.c`, RNG enum, immunity
+  heal fn), so isolated picks mis-anchor — and none of it compiles on this machine anyway. **Reset the
+  branch back to Endure-only** (`git reset --hard f7b8756dc1`); dropped the 98 unverified picks.
+  Decision: absorb the rest of 1.13.3 on the **builder** via **merge-then-revert** (merge the tag,
+  revert the 4 feature/sensitive commits) — brings every fix in correct order, verified. Codified in
+  the [ADR-012 amendment](../docs/adr/ADR-012-upstream-bugfix-cherry-pick-sync.md) (merge-then-revert
+  = default for pure-bugfix patch releases; piecemeal only for feature `.0` releases). Branch now = 2
+  commits over master (Endure fix + docs); the Endure fix is clean and ready to push→CI.
 
 ## Outcome
 

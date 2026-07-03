@@ -5,8 +5,11 @@ how far we have. Decision & rationale: [ADR-012](adr/ADR-012-upstream-bugfix-che
 Motivating investigation: [T-049](../tasks/T-049-upstream-expansion-sync-strategy.md).
 
 This file has two parts: the **Procedure** (stable — how we do each version) and the **Ledger**
-(state — what we have absorbed). The Ledger is the single source of truth for the *bugfix frontier*;
-`include/constants/expansion.h` stays at our true merge-base **1.13.2** because we never merge tags.
+(state — what we have absorbed). The Ledger is the single source of truth for the *bugfix frontier*.
+Two tracks (see [ADR-012](adr/ADR-012-upstream-bugfix-cherry-pick-sync.md) + its 2026-07-03
+amendment): **pure-bugfix patch releases** are taken by *merge-then-revert* (so `expansion.h`
+advances to that version); **feature `.0` releases** are taken by piecemeal *cherry-pick* (so
+`expansion.h` stays put and the ledger is the only frontier record).
 
 ## Sensitive files (never taken without owner approval)
 
@@ -54,7 +57,8 @@ instead of step 5, with owner approval for that version.
 
 ## Ledger — bugfix frontier
 
-**Bugfixes absorbed up to: _none yet_ (base = expansion 1.13.2).**
+**Bugfixes absorbed up to: _none merged yet_. Endure fix (#7838) staged on `feature/T-050-sync-1.13.3`
+(unverified). Full 1.13.3 planned as a merge-then-revert on the builder. Base = expansion 1.13.2.**
 Target of the campaign: **1.16.2** (latest as of 2026-07-03). Revisit when RHH releases more.
 
 Per-version status lives in the linked task (SSOT for work status). This table adds the roadmap and
@@ -63,7 +67,7 @@ the per-version sensitive-file warnings surfaced by the T-049 audit; the commit-
 
 | Version | Kind | Task | Sensitive-file warnings from audit (screen these out) | Frontier status |
 |---|---|---|---|---|
-| 1.13.3 | patch (bugfix) | [T-050](../tasks/T-050-sync-1.13.3-bugfixes.md) | **commit-level screen (authoritative):** #7881 sprites → `species_info/gen_1_families.h`; #8007/#7976 Dome fixes → Dome map script; #2196 tooling → 3 harbor map scripts. Endure #7838 itself is clean. | analysed (138 commits); build/verify pending |
+| 1.13.3 | patch (bugfix) | [T-050](../tasks/T-050-sync-1.13.3-bugfixes.md) | revert on merge: #7881 sprites (`species_info`); #8007/#7976 Dome + #2196 tooling (map scripts) | Endure staged; **do 1.13.3 via merge-then-revert on builder** |
 | 1.13.4 | patch (bugfix) | [T-051](../tasks/T-051-sync-1.13.4-bugfixes.md) | `.party` → git-LFS (tooling, not format) | pending |
 | 1.14.0 | **minor (features)** | _minted when reached_ | `teachingType` enum, tutor→`special_movesets.json`, `wild_encounters.json`, `.party` LFS | pending |
 | 1.14.1 | patch | _minted when reached_ | audio `.aif`→`.wav` migration script (build-blocking) | pending |
@@ -88,10 +92,16 @@ the per-version sensitive-file warnings surfaced by the T-049 audit; the commit-
 Filled as each version's task runs. Format per version: **Taken** (sha `-x`, PR) · **Skipped —
 feature** · **Skipped — sensitive** (file) · **Deferred — owner** (reason).
 
-- **1.13.3** — _analysed 2026-07-03 (T-050); cherry-pick + `make check` pending builder access._
-  - **Take:** `d2e8afa13a` Endure #7838 (`-x`, with its `endure.c` test → B-018) + ~133 battle-engine
-    fixes touching no sensitive file.
-  - **Skip — feature+sensitive:** `95d98305dd` #7881 (Krabby/Kingler follower sprites, `gen_1_families.h`).
-  - **Skip — tooling (not a fix):** `d1d5435487` #2196 (assembler messages, 3 harbor map scripts).
-  - **Deferred — owner:** `b4041535cf` #8007 + `90c3a8cb2c` #7976 (Battle Dome fixes, Dome map script).
+- **1.13.3** — _Endure staged 2026-07-03 (T-050). Decision: absorb the rest via merge-then-revert on
+  the builder (see below). `expansion.h` will advance to 1.13.3._
+  - **Staged now:** `a347e47b7a` Endure #7838 (`-x`, with its `endure.c` test → B-018), on
+    `feature/T-050-sync-1.13.3`. Clean, unverified (CI pending).
+  - **Why not piecemeal:** a trial run cherry-picked 98 of 1.13.3's commits cleanly but 7 real fixes
+    were entangled with later refactors already picked (Throat Spray moveend → `battle_util.c`, RNG
+    enum restructured, `TryImmunityAbilityHealStatus` moved), and none of it could be compiled here.
+    Reverted that trial; keeping only the clean Endure fix.
+  - **Builder step — merge-then-revert:** `git merge expansion/1.13.3`, then `git revert` the
+    feature/sensitive commits: `95d98305dd` (#7881 sprites), `b4041535cf` (#8007) + `90c3a8cb2c`
+    (#7976) (Dome — owner: skip), `d1d5435487` (#2196 tooling). Brings all 1.13.3 fixes (incl. the 7)
+    in correct order; verify with `make check`.
 - **1.13.4** — _pending (T-051)._
