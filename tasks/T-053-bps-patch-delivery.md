@@ -105,6 +105,15 @@ Acceptance criteria:
     applies byte-identical to the full build + measure its real size; (b) **owner manual browser test** of
     the full flow (upload ROM → generate → download → patched ROM boots); (c) `node build.js` now also
     emits `bps.bundle.js` (run on deploy — already part of `npm start`). Task stays in-progress pending (b).
+- **2026-07-03** — Deployed to production (placed the gitignored vanilla ref on the box; verified it
+  resolves inside the container; `update.sh`). Manual browser test surfaced two UX gaps, both fixed:
+  (1) the **ready** screen only handed over the raw `.bps` when no ROM was stored, with no way to add a
+  ROM and build the playable game — now it shows an inline "⬆ Add your Emerald ROM" action (validate +
+  store → patch + download the finished ROM) plus a raw-`.bps` fallback, and the finished-ROM download
+  when a ROM is already saved; the add-ROM option persists even after the `.bps` was downloaded (the run
+  stays `ready`). (2) the download note still warned "Single use — removes the ROM from the server";
+  corrected to the re-downloadable / applied-in-browser reality. Frontend suite 44 green (added
+  ready-state coverage: ROM present vs. absent). Awaiting redeploy + re-test.
 
 ## Outcome
 

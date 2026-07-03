@@ -77,6 +77,47 @@ test('B-011: a stored run is restored on init with no active build', async () =>
   } finally { env.restore(); }
 });
 
+// T-053, ADR-013: when the ROM is ready but the user has NO ROM stored, the ready row must offer an
+// inline "add your Emerald ROM" path (build the finished game) + a raw-.bps fallback — not a dead end.
+test('T-053: ready state with no stored ROM offers an inline add-ROM path', async () => {
+  const env = installDomEnv();
+  try {
+    global.localStorage.setItem('ec_jwt', 'tok');
+    env.setFetch(async (path) => {
+      if (path === '/api/me') return ME({ ownsValidRom: false, activeRequest: { id: 'r1', state: 'ready', romsDone: 1, romsTotal: 1 } });
+      if (path === '/api/status') return { ok: true, status: 200, json: async () => ({ state: 'ready', romsDone: 1, romsTotal: 1, eta: 0, progress: 100, romsAhead: 0 }) };
+      throw new Error(`unexpected fetch ${path}`);
+    });
+    const account = await freshAccount();
+    await account.initAccount({});
+    await flush(); await flush();
+    const row = env.getEl('rom-status');
+    assert.match(row.innerHTML, /Add your Emerald ROM/, 'inline add-ROM affordance is shown');
+    assert.match(row.innerHTML, /rom-file-ready/, 'with a file input to pick the ROM');
+    assert.match(row.innerHTML, /patch \(\.bps\) only/i, 'plus a raw-.bps fallback');
+  } finally { env.restore(); }
+});
+
+// T-053: when the ROM IS stored in the browser, the ready row builds the finished game locally (no add).
+test('T-053: ready state with a stored ROM shows the finished-ROM download', async () => {
+  const env = installDomEnv();
+  try {
+    global.localStorage.setItem('ec_jwt', 'tok');
+    env.idb.set('rom', Uint8Array.from([1, 2, 3, 4])); // ROM already saved in this browser
+    env.setFetch(async (path) => {
+      if (path === '/api/me') return ME({ activeRequest: { id: 'r1', state: 'ready', romsDone: 1, romsTotal: 1 } });
+      if (path === '/api/status') return { ok: true, status: 200, json: async () => ({ state: 'ready', romsDone: 1, romsTotal: 1, eta: 0, progress: 100, romsAhead: 0 }) };
+      throw new Error(`unexpected fetch ${path}`);
+    });
+    const account = await freshAccount();
+    await account.initAccount({});
+    await flush(); await flush();
+    const row = env.getEl('rom-status');
+    assert.match(row.innerHTML, /saved in this browser/, 'finished-ROM view when a ROM is stored');
+    assert.doesNotMatch(row.innerHTML, /Add your Emerald ROM/, 'no add-ROM prompt when one is already saved');
+  } finally { env.restore(); }
+});
+
 // Guard the inverse so the harness itself is trustworthy: with neither an active build NOR a stored
 // bundle, onRecover must NOT fire (nothing to restore).
 test('init does not restore when there is no stored run and no active build', async () => {
