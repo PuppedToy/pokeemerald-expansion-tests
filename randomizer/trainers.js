@@ -815,7 +815,6 @@ const rivalRustboroBag = () => [
     sample(['Toxic Orb', 'Flame Orb']),
     sample([...choice116Gem]),
     sample([...choice116Berry]),
-    'Lum Berry',
 ];
 
 const brawlyBag = () => [
@@ -846,6 +845,7 @@ const rivalRoute110Bag = () => [
     ...slateportGruntsBag(),
     sample([...choice110TMs]),
     route110GoodItem,
+    'Lum Berry', // T-056: opponents start carrying Lum Berry from the Route 110 rival, not Rustboro
     sample([...route110ExtenderBallItems]),
     tmItem(2),
     tmItem(5),
@@ -1497,7 +1497,7 @@ const trainersData = [
         class: 'May',
         isBoss: true,
         level: 17,
-        reward: ['Lum Berry'],
+        reward: ['Evolution Stones'],
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag()],
         team: [...rivalRustboroTemplate('TREECKO')],
@@ -1508,7 +1508,7 @@ const trainersData = [
         class: 'May',
         isBoss: true,
         level: 17,
-        reward: ['Lum Berry'],
+        reward: ['Evolution Stones'],
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag()],
         team: [...rivalRustboroTemplate('TORCHIC')],
@@ -1519,7 +1519,7 @@ const trainersData = [
         class: 'May',
         isBoss: true,
         level: 17,
-        reward: ['Lum Berry'],
+        reward: ['Evolution Stones'],
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag()],
         team: [...rivalRustboroTemplate('MUDKIP')],
@@ -1907,7 +1907,7 @@ const trainersData = [
         level: 26,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag()],
-        reward: ['Evolution Stones'],
+        reward: ['Lum Berry'],
         team: [...rivalRoute110Template('TREECKO')],
     },
     {
@@ -1918,7 +1918,7 @@ const trainersData = [
         level: 26,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag()],
-        reward: ['Evolution Stones'],
+        reward: ['Lum Berry'],
         team: [...rivalRoute110Template('TORCHIC')],
     },
     {
@@ -1929,7 +1929,7 @@ const trainersData = [
         level: 26,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag()],
-        reward: ['Evolution Stones'],
+        reward: ['Lum Berry'],
         team: [...rivalRoute110Template('MUDKIP')],
     },
     {

@@ -59,3 +59,4 @@
 | [T-053](T-053-bps-patch-delivery.md) | BPS patch delivery + client-side patching (IndexedDB) | in-progress | 0.6.0 | 2026-07-03 |
 | [T-054](T-054-binary-injection-randomizer-viability.md) | Viability analysis — randomize a prebuilt ROM by binary injection (vs. compiling from scratch) | proposed | 0.7.0 | 2026-07-03 |
 | [T-055](T-055-frontend-ux-tweaks.md) | Frontend UX tweaks — docs "Defeated" placement + reset-options button | in-progress | 0.6.0 | 2026-07-03 |
+| [T-056](T-056-rival-rewards-rebalance.md) | Rebalance — swap rival rewards (stones earlier) + move Lum Berry bag entry | in-progress | 0.6.0 | 2026-07-04 |
