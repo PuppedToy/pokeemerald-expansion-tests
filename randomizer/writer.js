@@ -24,7 +24,7 @@ const { typeMainColors } = require('./trainerColors');
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature, palafinEffectivePoke } = require('./rating.js');
 const { BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone } = require('./modules/wildModule');
 const { displayNameToItemConst } = require('./itemRandomizer');
-const { sample, canLearnMove } = require('./modules/utils');
+const { sample, canLearnMove, usesStrategicNature, usesStrategicAbility } = require('./modules/utils');
 const { selectWithAutoFallback } = require('./modules/trainerFallback');
 const { createChooser } = require('./modules/trainerSelector');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
@@ -670,14 +670,14 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                 /* Otherwise choose the best ability */
                 else {
                     validAbilities = [...chosenTrainerMon.parsedAbilities];
-                    if (trainer.level < 28) {
+                    if (!usesStrategicAbility(trainer.level)) {
                         // Take just the 2 first, we don't use hidden
                         validAbilities = validAbilities.slice(0, 2);
                     }
                     validAbilities = validAbilities.filter(a => Boolean(a) && a !== 'NONE')
                         .sort(
                             (a, b) => {
-                                if (trainer.level < 28) {
+                                if (!usesStrategicAbility(trainer.level)) {
                                     // We just sort randomly
                                     return rng.random() - 0.5;
                                 }
@@ -768,10 +768,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                     }
                 }
                 if (!newTeamMember.nature) {
-                    if (trainer.level < 28) {
-                        newTeamMember.nature = sample(Object.values(NATURES)).name;
-                    }
-                    else {
+                    if (usesStrategicNature(trainer.level)) {
                         newTeamMember.nature = chooseNature(
                             battlePoke,
                             moveset,
@@ -780,6 +777,9 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                             newTeamMember.item,
                             GENERIC_DEVIATION,
                         );
+                    }
+                    else {
+                        newTeamMember.nature = sample(Object.values(NATURES)).name;
                     }
                 }
                 if (newTeamMember.item) {

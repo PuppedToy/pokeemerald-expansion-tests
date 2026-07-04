@@ -4,6 +4,14 @@ const constants = {
     TOTAL_GENS: 9,
     GENERIC_DEVIATION: 0.1,
 
+    // T-057: from this trainer level up, a mon's nature is chosen strategically (chooseNature,
+    // from its moveset/stats) instead of at random. 12 = Roxanne, the first gym leader.
+    NATURE_STRATEGY_MIN_LEVEL: 12,
+    // T-057: from this trainer level up, a mon's ability is chosen strategically (best-rated, hidden
+    // slot allowed) instead of randomly among its first two slots. 12 = Roxanne. Separate knob from
+    // nature (independently tunable) but same default level.
+    ABILITY_STRATEGY_MIN_LEVEL: 12,
+
     SPECIES_DIR: path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'species_info'),
     LEVEL_UP_LEARNSETS_DIR: path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'level_up_learnsets'),
     ABILITIES_FILE_PATH: path.resolve(__dirname, '..', 'src', 'data', 'abilities.h'),

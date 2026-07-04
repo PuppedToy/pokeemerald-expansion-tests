@@ -60,3 +60,4 @@
 | [T-054](T-054-binary-injection-randomizer-viability.md) | Viability analysis — randomize a prebuilt ROM by binary injection (vs. compiling from scratch) | proposed | 0.7.0 | 2026-07-03 |
 | [T-055](T-055-frontend-ux-tweaks.md) | Frontend UX tweaks — docs "Defeated" placement + reset-options button | in-progress | 0.6.0 | 2026-07-03 |
 | [T-056](T-056-rival-rewards-rebalance.md) | Rebalance — swap rival rewards (stones earlier) + move Lum Berry bag entry | in-progress | 0.6.0 | 2026-07-04 |
+| [T-057](T-057-nature-strategy-min-level.md) | Lower the level at which trainers pick strategic natures and abilities to 12 (Roxanne) | in-progress | 0.6.0 | 2026-07-04 |

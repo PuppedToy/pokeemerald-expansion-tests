@@ -33,6 +33,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- Trainers now pick **strategic natures and abilities** (natures matched to each Pokémon's moveset and
+  stats; abilities best-rated, hidden slot allowed) from **level 12 (Roxanne)** onward instead of only
+  from level 28 — so gym-era teams have coherent natures and abilities much earlier. Below level 12 both
+  stay random (T-057).
 - Early-game rebalance: the **Rustboro** rival now rewards **Evolution Stones** (they arrive earlier) and
   the **Route 110** rival rewards a **Lum Berry**; opponents only start carrying Lum Berry in their bags
   from the Route 110 rival onward, not from Rustboro (T-056).

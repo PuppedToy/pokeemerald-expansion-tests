@@ -13,7 +13,7 @@ const {
 } = require('./constants');
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature, palafinEffectivePoke } = require('./rating.js');
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
-const { sample, canLearnMove } = require('./modules/utils');
+const { sample, canLearnMove, usesStrategicNature, usesStrategicAbility } = require('./modules/utils');
 const { selectWithAutoFallback } = require('./modules/trainerFallback');
 const { createChooser } = require('./modules/trainerSelector');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
@@ -331,11 +331,11 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                     newTeamMember.ability = originalAbility;
                 } else {
                     validAbilities = [...chosenTrainerMon.parsedAbilities];
-                    if (trainer.level < 28) {
+                    if (!usesStrategicAbility(trainer.level)) {
                         validAbilities = validAbilities.slice(0, 2);
                     }
                     validAbilities = validAbilities.filter(a => Boolean(a) && a !== 'NONE').sort((a, b) => {
-                        if (trainer.level < 28) return rng.random() - 0.5;
+                        if (!usesStrategicAbility(trainer.level)) return rng.random() - 0.5;
                         const abilityA = abilities[`ABILITY_${a}`];
                         const abilityB = abilities[`ABILITY_${b}`];
                         const ratingA = abilityA?.rating * (1 + (rng.random() * GENERIC_DEVIATION * 2 - GENERIC_DEVIATION));
@@ -394,10 +394,10 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                 }
 
                 if (!newTeamMember.nature) {
-                    if (trainer.level < 28) {
-                        newTeamMember.nature = sample(Object.values(NATURES)).name;
-                    } else {
+                    if (usesStrategicNature(trainer.level)) {
                         newTeamMember.nature = chooseNature(battlePoke, moveset, moves, ability, newTeamMember.item, GENERIC_DEVIATION);
+                    } else {
+                        newTeamMember.nature = sample(Object.values(NATURES)).name;
                     }
                 }
 

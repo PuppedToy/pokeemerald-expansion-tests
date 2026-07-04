@@ -6,6 +6,8 @@ const {
     TIER_ZU,
     TIER_MAGIKARP,
     EVO_TYPE_SOLO,
+    NATURE_STRATEGY_MIN_LEVEL,
+    ABILITY_STRATEGY_MIN_LEVEL,
 } = require('../constants');
 
 const groupedFamilies = {
@@ -100,6 +102,16 @@ function checkValidEvo(pokemonList, evaluatedPokemon, level, trainer) {
     return pokemonThatEvolveToThis.length > 0;
 }
 
+// T-057: whether a trainer of this level picks a strategic nature (true) or a random one (false).
+function usesStrategicNature(level) {
+    return level >= NATURE_STRATEGY_MIN_LEVEL;
+}
+
+// T-057: whether a trainer of this level picks a strategic ability (true) or a random one (false).
+function usesStrategicAbility(level) {
+    return level >= ABILITY_STRATEGY_MIN_LEVEL;
+}
+
 function canLearnMove(pokemon, moveToLearn, trainerLevel) {
     return (
         (pokemon.teachables && pokemon.teachables.includes(moveToLearn)) ||
@@ -116,4 +128,6 @@ module.exports = {
     devolveToBase,
     checkValidEvo,
     canLearnMove,
+    usesStrategicNature,
+    usesStrategicAbility,
 };
