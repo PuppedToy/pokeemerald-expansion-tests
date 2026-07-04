@@ -39,7 +39,8 @@ Acceptance criteria:
       `getTrainersData` pipeline; full randomizer suite green.
 - [x] **ROM (map scripts) swapped too:** the Rustboro rival script now grants the 10 evolution stones and
       the Route 110 rival grants a Lum Berry — the swap is real in-game, not only the docs label.
-- [ ] Deploy: the server's git HEAD must be synced so `make.js` `checkDataClean` stays clean (see log).
+- [x] Deploy: `update.sh` snapshots the tracked base into the box's in-container git after rsync, so
+      `make.js` `checkDataClean` stays clean when a tracked `data/`/`src` file changes (guarded by a test).
 
 ## Progress log
 
@@ -63,6 +64,13 @@ Acceptance criteria:
     "Uncommitted changes in data/". Fix needed before deploy: sync the box's git (snapshot-commit the
     working tree inside the container after rsync, or `git reset --hard` to the pushed commit). Not yet
     resolved — flagged to owner.
+- **2026-07-04** — Deploy gap fixed (owner-approved): `update.sh` now snapshot-commits `data/ src/
+  include/` into the box's in-container git right after rsync + `chown`, before the app is recreated
+  (`git commit -q -m deploy-snapshot || true` — "nothing to commit" is the normal case). The commit lands
+  in `/opt/emerald/.git` (mounted into the container, persisted, rsync-excluded), so `make.js`
+  `checkDataClean` sees a clean `data/` and `restore()` checks out the deployed base. Guarded by a new
+  `deploy-env` test (asserts the step + its ordering before recreate). Backend suite 110 green. This
+  unblocks deploying the ROM-side rival swap and any future `data/`/`src` change.
 
 ## Outcome
 

@@ -70,9 +70,15 @@ echo "==> ownership + backend deps + Linux tools + recreate + health-check"
 # decomp tool binaries under tools/*/ — those are not executable on the Linux box and make `make`
 # die with "Exec format error", failing every ROM build. `clean-tools` first because rsync leaves
 # the host binary with a fresh mtime, so `make tools` alone would think it's up to date and skip it.
+# T-056: the rsync excludes .git, so the box's git HEAD lags the rsynced tree. A change to a tracked
+# data/maps or src file would then leave the working tree ahead of HEAD, and make.js `checkDataClean`
+# (git status --porcelain data/) would abort every ROM build. Snapshot the tracked base into the
+# in-container git (runs as the tree-owning container user -> no "dubious ownership"; `|| true` because
+# "nothing to commit" is the normal case) so data/ stays clean and restore() checks out the deployed base.
 # shellcheck disable=SC2029
 ${SSH} "${TARGET}" "cd ${DEPLOY_PATH} \
   && chown -R 1000:1000 . \
+  && docker compose -f deploy/docker-compose.yml run --rm app sh -lc 'git add -A data/ src/ include/ && git -c user.email=deploy@emerald-cut -c user.name=deploy commit -q -m deploy-snapshot || true' \
   && docker compose -f deploy/docker-compose.yml run --rm app sh -lc 'cd backend && npm ci --omit=dev' >/dev/null 2>&1 \
   && echo '   rebuilding Linux decomp tools (host binaries were just rsynced over)…' \
   && docker compose -f deploy/docker-compose.yml run --rm app sh -lc 'make clean-tools >/dev/null && make tools' \

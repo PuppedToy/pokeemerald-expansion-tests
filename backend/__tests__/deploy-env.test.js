@@ -31,3 +31,17 @@ test('update.sh rebuilds the Linux decomp tools after rsync, before recreate (B-
   assert.ok(toolsIdx > -1 && recreateIdx > -1 && toolsIdx < recreateIdx,
     'tools must be rebuilt before the app container is recreated');
 });
+
+// T-056: update.sh rsyncs the working tree but EXCLUDES .git, so the box's git HEAD lags the rsynced
+// files. The first change to a tracked data/maps (or src) file therefore leaves the working tree ahead
+// of HEAD, and make.js `checkDataClean` (git status --porcelain data/) aborts every ROM build. The
+// deploy MUST snapshot the tracked base into the in-container git so data/ stays clean. Guard it.
+test('update.sh snapshots the tracked base into git so make.js checkDataClean stays clean (T-056)', () => {
+  const sh = fs.readFileSync(path.join(root, 'deploy', 'update.sh'), 'utf8');
+  assert.match(sh, /git add -A data\/ src\/ include\//, 'must stage the tracked base (data/ src/ include/)');
+  assert.match(sh, /commit -q -m deploy-snapshot/, 'must commit the snapshot');
+  const snapIdx = sh.indexOf('deploy-snapshot');
+  const recreateIdx = sh.indexOf('up -d --force-recreate');
+  assert.ok(snapIdx > -1 && recreateIdx > -1 && snapIdx < recreateIdx,
+    'the snapshot must happen before the app is recreated (before any user build can run checkDataClean)');
+});
