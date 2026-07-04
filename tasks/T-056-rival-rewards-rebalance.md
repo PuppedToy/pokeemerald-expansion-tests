@@ -37,6 +37,9 @@ Acceptance criteria:
 - [x] `Lum Berry` is absent from the Rustboro rival's bag and present in the Route 110 rival's bag.
 - [x] Deterministic guard test (`__tests__/integration/rivalRewards.test.js`) covers both, via the real
       `getTrainersData` pipeline; full randomizer suite green.
+- [x] **ROM (map scripts) swapped too:** the Rustboro rival script now grants the 10 evolution stones and
+      the Route 110 rival grants a Lum Berry — the swap is real in-game, not only the docs label.
+- [ ] Deploy: the server's git HEAD must be synced so `make.js` `checkDataClean` stays clean (see log).
 
 ## Progress log
 
@@ -46,6 +49,20 @@ Acceptance criteria:
   moved from `rivalRustboroBag` to `rivalRoute110Bag`. Added a TDD guard (Red → Green). Randomizer suite
   609 green. (A second, later `'Lum Berry'` in `shellyBag` is left as-is — it sits after Route 110, so it
   stays consistent with "from Route 110 onward".)
+- **2026-07-04** — The rival `reward` was NOT only a docs label — the in-game `giveitem` scripts already
+  existed, so the swap must also happen in the ROM (owner clarified). Swapped the **map scripts**: moved
+  `EventScript_GiveEvolutionStones` (+ its "Obtained the Evolution Stones!" text) into
+  `data/maps/RustboroCity/scripts.inc` and pointed the 6 Rustboro rival branches at it; the 2 Route 110
+  rival branches now `finditem ITEM_LUM_BERRY`, and the rival dialogue text was updated (Evolution Stones
+  → Lum Berry). Diff touches only static content — no `RAND_`-anchored sections. Verified counts + asm by
+  hand (no local GBA toolchain; `make` validates on CI/builder).
+  - **Deploy caveat (blocks the ROM change reaching prod):** this is the first change to a git-tracked
+    `data/maps` file. `make.js` `checkDataClean` aborts a build if `git status data/` is dirty. The deploy
+    (`update.sh`) rsyncs the working tree but **excludes `.git`**, so the box's git HEAD (currently
+    `17fa476`, clean) would no longer match the rsynced `scripts.inc` → every build would abort with
+    "Uncommitted changes in data/". Fix needed before deploy: sync the box's git (snapshot-commit the
+    working tree inside the container after rsync, or `git reset --hard` to the pushed commit). Not yet
+    resolved — flagged to owner.
 
 ## Outcome
 

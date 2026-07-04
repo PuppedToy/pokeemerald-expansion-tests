@@ -474,7 +474,7 @@ Route110_EventScript_MayBattleMudkip::
 
 Route110_EventScript_MayDefeated::
 	msgbox Route110_Text_MayTakeThis, MSGBOX_DEFAULT
-	call Route110_EventScript_GiveEvolutionStones
+	finditem ITEM_LUM_BERRY
 	goto Route110_EventScript_RivalExit
 	end
 
@@ -503,26 +503,9 @@ Route110_EventScript_BrendanBattleMudkip::
 
 Route110_EventScript_BrendanDefeated::
 	msgbox Route110_Text_BrendanTakeThis, MSGBOX_DEFAULT
-	call Route110_EventScript_GiveEvolutionStones
+	finditem ITEM_LUM_BERRY
 	goto Route110_EventScript_RivalExit
 	end
-
-Route110_EventScript_GiveEvolutionStones::
-	additem ITEM_FIRE_STONE
-	additem ITEM_WATER_STONE
-	additem ITEM_THUNDER_STONE
-	additem ITEM_LEAF_STONE
-	additem ITEM_ICE_STONE
-	additem ITEM_SUN_STONE
-	additem ITEM_MOON_STONE
-	additem ITEM_SHINY_STONE
-	additem ITEM_DUSK_STONE
-	additem ITEM_DAWN_STONE
-	playfanfare MUS_OBTAIN_ITEM
-	message Route110_Text_ObtainedEvolutionStones
-	waitmessage
-	waitfanfare
-	return
 
 Route110_EventScript_RivalExit::
 	closemessage
@@ -836,11 +819,8 @@ Route110_Text_MayTakeThis:
 	.string "MAY: {PLAYER}{KUN}, you've been busy\n"
 	.string "training, too, haven't you?\p"
 	.string "I think you deserve a reward!\n"
-	.string "Here, take my whole set of\l"
-	.string "Evolution Stones!$"
-
-Route110_Text_ObtainedEvolutionStones:
-	.string "Obtained the Evolution Stones!$"
+	.string "Here, take this\l"
+	.string "LUM BERRY!$"
 
 Route110_Text_MayExplainItemfinder:
 	.string "MAY: That's an ITEMFINDER.\p"
@@ -866,8 +846,8 @@ Route110_Text_BrendanTakeThis:
 	.string "BRENDAN: {PLAYER}, you've trained\n"
 	.string "without me noticing…\p"
 	.string "Good enough!\n"
-	.string "Here, take my whole set of\l"
-	.string "Evolution Stones!$"
+	.string "Here, take this\l"
+	.string "LUM BERRY!$"
 
 Route110_Text_BrendanExplainItemfinder:
 	.string "BRENDAN: That's an ITEMFINDER.\p"

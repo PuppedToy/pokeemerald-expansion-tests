@@ -878,21 +878,21 @@ RustboroCity_EventScript_RestoreBgm::
 
 RustboroCity_EventScript_BattleMayTreecko::
 	trainerbattle_no_intro TRAINER_MAY_RUSTBORO_TREECKO, RustboroCity_Text_MayDefeat
-	finditem ITEM_LUM_BERRY
+	call RustboroCity_EventScript_GiveEvolutionStones
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
 	goto RustboroCity_EventScript_MayBrineyHint
 	end
 
 RustboroCity_EventScript_BattleMayTorchic::
 	trainerbattle_no_intro TRAINER_MAY_RUSTBORO_TORCHIC, RustboroCity_Text_MayDefeat
-	finditem ITEM_LUM_BERRY
+	call RustboroCity_EventScript_GiveEvolutionStones
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
 	goto RustboroCity_EventScript_MayBrineyHint
 	end
 
 RustboroCity_EventScript_BattleMayMudkip::
 	trainerbattle_no_intro TRAINER_MAY_RUSTBORO_MUDKIP, RustboroCity_Text_MayDefeat
-	finditem ITEM_LUM_BERRY
+	call RustboroCity_EventScript_GiveEvolutionStones
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
 	goto RustboroCity_EventScript_MayBrineyHint
 	end
@@ -940,24 +940,44 @@ RustboroCity_EventScript_BrendanBrineyHint::
 
 RustboroCity_EventScript_BattleBrendanTreecko::
 	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_TREECKO, RustboroCity_Text_BrendanDefeat
-	finditem ITEM_LUM_BERRY
+	call RustboroCity_EventScript_GiveEvolutionStones
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
 	goto RustboroCity_EventScript_BrendanBrineyHint
 	end
 
 RustboroCity_EventScript_BattleBrendanTorchic::
 	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_TORCHIC, RustboroCity_Text_BrendanDefeat
-	finditem ITEM_LUM_BERRY
+	call RustboroCity_EventScript_GiveEvolutionStones
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
 	goto RustboroCity_EventScript_BrendanBrineyHint
 	end
 
 RustboroCity_EventScript_BattleBrendanMudkip::
 	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_MUDKIP, RustboroCity_Text_BrendanDefeat
-	finditem ITEM_LUM_BERRY
+	call RustboroCity_EventScript_GiveEvolutionStones
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
 	goto RustboroCity_EventScript_BrendanBrineyHint
 	end
+
+RustboroCity_EventScript_GiveEvolutionStones::
+	additem ITEM_FIRE_STONE
+	additem ITEM_WATER_STONE
+	additem ITEM_THUNDER_STONE
+	additem ITEM_LEAF_STONE
+	additem ITEM_ICE_STONE
+	additem ITEM_SUN_STONE
+	additem ITEM_MOON_STONE
+	additem ITEM_SHINY_STONE
+	additem ITEM_DUSK_STONE
+	additem ITEM_DAWN_STONE
+	playfanfare MUS_OBTAIN_ITEM
+	message RustboroCity_Text_ObtainedEvolutionStones
+	waitmessage
+	waitfanfare
+	return
+
+RustboroCity_Text_ObtainedEvolutionStones:
+	.string "Obtained the Evolution Stones!$"
 
 RustboroCity_Movement_RivalApproachPlayer0:
 	walk_down
