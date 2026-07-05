@@ -40,6 +40,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 - Early-game rebalance: the **Rustboro** rival now rewards **Evolution Stones** (they arrive earlier) and
   the **Route 110** rival rewards a **Lum Berry**; opponents only start carrying Lum Berry in their bags
   from the Route 110 rival onward, not from Rustboro (T-056).
+- **Wattson** now rewards a single **Ability Patch** for clearing New Mauville, instead of the two Kubfu
+  scrolls (Scroll of Darkness + Scroll of Waters) (T-059).
 - **The site now delivers a patch, not a full ROM — and your ROM never leaves your computer.** You add
   your Pokémon Emerald (USA/Europe) **once**; it's kept in your browser and is never uploaded (we only
   send its fingerprint to confirm ownership). Generating now produces a small **BPS patch** that your
