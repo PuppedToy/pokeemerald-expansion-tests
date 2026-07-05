@@ -426,9 +426,7 @@ MauvilleCity_EventScript_BegunNewMauville::
 
 MauvilleCity_EventScript_CompletedNewMauville::
 	msgbox MauvilleCity_Text_WattsonThanksTakeTM, MSGBOX_DEFAULT
-	giveitem ITEM_SCROLL_OF_DARKNESS
-	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
-	giveitem ITEM_SCROLL_OF_WATERS
+	giveitem ITEM_ABILITY_PATCH
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	setflag FLAG_GOT_TM_THUNDERBOLT_FROM_WATTSON
 	msgbox MauvilleCity_Text_WattsonYoungTakeCharge, MSGBOX_DEFAULT

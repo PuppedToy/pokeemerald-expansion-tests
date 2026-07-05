@@ -62,3 +62,4 @@
 | [T-056](T-056-rival-rewards-rebalance.md) | Rebalance — swap rival rewards (stones earlier) + move Lum Berry bag entry | in-progress | 0.6.0 | 2026-07-04 |
 | [T-057](T-057-nature-strategy-min-level.md) | Lower the level at which trainers pick strategic natures and abilities to 12 (Roxanne) | in-progress | 0.6.0 | 2026-07-04 |
 | [T-058](T-058-brawly-five-pokemon-bundle.md) | Analyze why Brawly has 5 pokemon instead of 6 in a bundle | done | 0.5.1 | 2026-07-05 |
+| [T-059](T-059-wattson-ability-patch-reward.md) | Wattson gives an Ability Patch after New Mauville instead of two scrolls | in-progress | 0.6.0 | 2026-07-05 |
