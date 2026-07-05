@@ -1653,6 +1653,18 @@ const trainersData = [
                 breedTier: 'perfect',
                 abilities: ['GUTS'],
                 item: 'Flame Orb',
+                // B-019: Makuhita's base tier (NU) is stronger than its contextual tier (PU) at
+                // this level, so it never qualifies for its own specificIfTier slot, and the
+                // constrained loose pool (Fighting + GUTS + weak tier + family-dedup) can be
+                // empty — dropping the 6th mon. Fall back to a generic typed slot so the slot is
+                // always fillable.
+                fallback: [
+                    {
+                        ...getBossPreset('BRAWLY')[5],
+                        type: [gymMainTypes[1]],
+                        breedTier: 'perfect',
+                    },
+                ],
             },
         ],
     },
