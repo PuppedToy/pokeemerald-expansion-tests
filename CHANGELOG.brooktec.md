@@ -56,6 +56,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   are now rolled **once per Pokédex** instead of being re-rolled per ROM during bundle generation,
   so every ROM's teams are resolved against — and match — the evolution data the bundle ships
   (B-017, T-042).
+- **Brawly** no longer fields only 5 Pokémon. When his gym kept the Fighting type, his 6th slot
+  (a Makuhita-specific pick) could resolve to nothing and be dropped silently; it now has a
+  generic Fighting fallback so the team is always complete (B-019, T-058).
 
 ### Added
 
