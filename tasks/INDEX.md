@@ -69,5 +69,5 @@
 | [T-063](T-063-multiform-family-encounter-dedup.md) | Limit multi-form families to one obtainable per run | in-progress | 0.6.0 | 2026-07-06 |
 | [T-064](T-064-meloetta-pirouette-form-handling.md) | Never place Meloetta-Pirouette; blend its tier and prioritize Relic Song | in-progress | 0.6.0 | 2026-07-06 |
 | [T-065](T-065-weather-fallback-ability-fix.md) | Weather-archetype fallback must keep the weather ability | in-progress | 0.6.0 | 2026-07-06 |
-| [T-066](T-066-evo-delay-by-final-stage-tier.md) | Delay stage0→1 evolution by the final stage-2 power tier | proposed | 0.6.0 | 2026-07-06 |
+| [T-066](T-066-evo-delay-by-final-stage-tier.md) | Delay stage0→1 evolution by the final stage-2 power tier | in-progress | 0.6.0 | 2026-07-06 |
 | [T-067](T-067-remaining-battle-only-forms-exclusion.md) | Exclude remaining battle-only forms from placement | proposed | 0.6.0 | 2026-07-06 |

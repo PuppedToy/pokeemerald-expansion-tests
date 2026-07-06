@@ -33,6 +33,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Strong 3-stage lines now evolve later.** On top of the existing "weak first stage evolves early"
+  rule, a 3-stage line whose FINAL Pokémon is powerful now gets an extra delay on its first
+  evolution, scaled by the final's tier (OU a little, then Ubers, Legendary and AG progressively
+  more) — so lines into powerhouses like Bagon→Shelgon→Salamence take longer to get going, like the
+  official games. A safeguard keeps at least 2 levels between the first and second evolution, and
+  branching lines (Wurmple, Ralts…) are delayed per branch by that branch's own final (T-066).
 - **Branching evolutions are now standardized**: every Pokémon that can evolve into more than one
   species now takes its most neutral/default form via **Rare Candy (level-up)** and the alternates via
   **evolution stones**. Gender- and nature-locked splits (Espurr, Lechonk, Basculin, Toxel) become free

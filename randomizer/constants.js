@@ -318,6 +318,17 @@ const constants = {
     EVO_LEVEL_MIN: 5,
     EVO_LEVEL_MAX: 65,
 
+    // T-066 — EXTRA stage0→1 delay for 3-stage lines whose FINAL (stage-2) mon is strong, so lines
+    // into powerhouses (e.g. Bagon→Shelgon→Salamence) evolve later, like the official games. Keyed
+    // by the final stage-2 tier; expressed as decimal fractions added into the same multiplicative
+    // bracket as the other modifiers. Tiers below OU are intentionally absent (no delay).
+    EVO_LEVEL_FINAL_STAGE_DELAYS: {
+        OU:     [0.01, 0.10],
+        UBERS:  [0.11, 0.20],
+        LEGEND: [0.21, 0.30],
+        AG:     [0.31, 0.50],
+    },
+
     MEGA_TRAINERS: [
         {
             id: '01',
