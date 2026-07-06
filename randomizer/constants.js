@@ -57,6 +57,16 @@ const constants = {
     PALAFIN_ZERO_ID:             'SPECIES_PALAFIN_ZERO',
     PALAFIN_HERO_ID:             'SPECIES_PALAFIN_HERO',
 
+    // Meloetta special case (T-064) — Meloetta can switch Aria<->Pirouette in battle via Relic Song.
+    // Only base Aria is ever placed (Pirouette is battle-only, banned from picking). Aria's tier is
+    // a weighted blend of both forms' ratings, reflecting its in-battle access to Pirouette.
+    MELOETTA_ARIA_ID:            'SPECIES_MELOETTA_ARIA',
+    MELOETTA_PIROUETTE_ID:       'SPECIES_MELOETTA_PIROUETTE',
+    MELOETTA_ARIA_WEIGHT:        0.55,
+    MELOETTA_PIROUETTE_WEIGHT:   0.45,
+    MELOETTA_RELIC_SONG_ID:      'MOVE_RELIC_SONG',
+    MELOETTA_FAMILY:             'P_FAMILY_MELOETTA',
+
     AG_BST_THRESHOLD: 720,
     LEGEND_BST_THRESHOLD: 660,
     OU_BST_THRESHOLD: 600,

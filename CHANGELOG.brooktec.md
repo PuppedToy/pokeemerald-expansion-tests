@@ -78,6 +78,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   family for the "one obtainable per family per run" rule, so you won't get e.g. a Pumpkaboo-Super
   in the wild *and* a Pumpkaboo-Average as a gym reward. Regional forms (Alola/Galar/Hisui/Paldea)
   stay separate — they're genuinely different Pokémon (T-063).
+- **Meloetta-Pirouette** (a battle-only form reached with Relic Song) can no longer show up as a
+  wild encounter, reward or trainer Pokémon — only base Meloetta is ever placed now. Meloetta is
+  still rated as the strong Pokémon it is: its tier is a weighted blend of both forms (55% Aria /
+  45% Pirouette), reflecting its in-battle access to Pirouette, and a trainer's Meloetta always
+  carries **Relic Song** so it can actually make the switch (T-064).
 
 ### Added
 

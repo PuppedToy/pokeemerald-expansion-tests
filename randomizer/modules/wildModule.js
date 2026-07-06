@@ -49,6 +49,9 @@ const BANNED_SPECIES_FOR_PICKING = [
     // Palafin: Zero is the placeable form (rated/moved as Hero via palafinEffectivePoke); Finizen
     // is its placeable base form. Only Hero (battle-only, like Wishiwashi School) stays banned.
     'SPECIES_PALAFIN_HERO',
+    // Meloetta: Pirouette is a battle-only form reached via Relic Song. Only base Aria is placeable;
+    // Aria's tier accounts for Pirouette via a weighted blend (see meloetta.js / T-064).
+    'SPECIES_MELOETTA_PIROUETTE',
 ];
 
 // T-052 — extra-starter categories. Each slot is { tier, kind: 'line'|'solo', lineLength }.

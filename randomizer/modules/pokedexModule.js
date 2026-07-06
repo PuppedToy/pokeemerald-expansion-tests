@@ -9,6 +9,7 @@ const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpand
 const { ratePokemon, rateContextual, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove } = require('../rating');
 const { balancePokemon } = require('../rebalancer');
 const { applyMegaBaseStab } = require('../megaBaseStab');
+const { applyMeloettaTierBlend } = require('../meloetta');
 const {
     TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR, ABILITIES_FILE_PATH, MEGA_EVOS_PATH,
     EVO_TYPE_MEGA,
@@ -209,6 +210,11 @@ async function runPokedexModule(config, baseData = null) {
     if (palafinZero && palafinHero) {
         palafinZero.rating = ratePokemon(palafinEffectivePoke(palafinZero, palafinHero), moves, abilities, tmPool);
     }
+
+    // 9c-bis. Meloetta (T-064) — Aria (placeable) can switch to Pirouette (battle-only, banned) via
+    // Relic Song, so Aria's tier is a weighted blend of both forms. Runs after both forms are rated
+    // and before best-evo so the blended rating propagates. Unconditional (a classification fix).
+    applyMeloettaTierBlend(allPokes);
 
     // 9d. Mega base-form STAB (T-062) — when a mega's type was MUTATED this run to a type its base
     // lacks (e.g. Mega Aggron gaining Fighting), the base form gains a damaging move of that type.

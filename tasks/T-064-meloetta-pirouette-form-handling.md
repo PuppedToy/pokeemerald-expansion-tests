@@ -1,7 +1,7 @@
 ---
 id: T-064
 title: Never place Meloetta-Pirouette; blend its tier and prioritize Relic Song
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-07-06
 updated: 2026-07-06
@@ -59,10 +59,11 @@ Relic Song: `MOVE_RELIC_SONG` exists (Normal, Special, power 75, 30% sleep). Bot
 **(C) Trainer moveset (force/boost Relic Song):** mirror the Zero-to-Hero forced-move rule in `chooseMoveset` (`:1854-1872`): if the poke is Meloetta, it learns Relic Song, and the set lacks it, push it in and exempt it from A3 same-type dedup (like `forcedPivotId`). Relic Song is Special so SpA-driven rating applies; add the Meloetta-specific boost per spec. One rule covers ROM parties, docs, and pokedex bestMoveset (single funnel).
 
 Acceptance criteria:
-- [ ] `SPECIES_MELOETTA_PIROUETTE` never appears in any wild slot, reward, or trainer team across all ROMs; base `MELOETTA_ARIA` remains placeable.
-- [ ] Meloetta-Aria's `absoluteRating` = `0.55*aria + 0.45*pirouette` (±epsilon) and its tier = `tierFromRating(blend)`; `bestEvoTier` propagates.
-- [ ] A trainer's Meloetta moveset contains Relic Song (forced/boosted); a non-Meloetta mon that can learn it is NOT forced to.
-- [ ] `cd randomizer && npm test` green; failing-first tests added.
+- [x] `SPECIES_MELOETTA_PIROUETTE` never appears in any wild slot, reward, or trainer team across all ROMs; base `MELOETTA_ARIA` remains placeable. — verified e2e (Pirouette absent from wild + trainer output; Aria present).
+- [x] Meloetta-Aria's `absoluteRating` = `0.55*aria + 0.45*pirouette` (±epsilon) and its tier = `tierFromRating(blend)`; `bestEvoTier` propagates. — unit-tested; e2e Aria rating pulled up to 8.5322 (OU).
+- [x] A trainer's Meloetta moveset contains Relic Song (forced/boosted); a non-Meloetta mon that can learn it is NOT forced to.
+- [x] `cd randomizer && npm test` green; failing-first tests added.
+- [ ] **User manual test** (build ROM(s); confirm Pirouette never appears and a trainer Meloetta runs Relic Song) — closing gate.
 
 ## Test plan (TDD, red first)
 
@@ -89,6 +90,7 @@ Remaining implementation choices (defaults chosen; override in the log if implem
 
 - **2026-07-06** — Task created from T-061 investigation dossier (issue 3). Root cause (Pirouette missing from `BANNED_SPECIES_FOR_PICKING`) + two new features (weighted-tier blend, Relic Song boost) verified against bundle + code.
 - **2026-07-06** — User decision: **Meloetta-only** now; the 4 other battle-only forms (Zacian/Zamazenta-Crowned, Eternatus-Eternamax, Terapagos-Terastal) go to a separate task **T-067**. Other open items defaulted per recommendations.
+- **2026-07-06** — Implemented (TDD). **(A) Exclusion:** added `SPECIES_MELOETTA_PIROUETTE` to `BANNED_SPECIES_FOR_PICKING` (`wildModule.js`). **(B) Tiering:** extracted `tierFromRating(rating, {isStoneMega})` from `ratePokemon` (exported); new `randomizer/meloetta.js` `applyMeloettaTierBlend(allPokes)` sets Aria's `absoluteRating = 0.55*aria + 0.45*pirouette` and recomputes its tier; wired unconditionally as step 9c-bis in `pokedexModule.js` (after Palafin, before best-evo, so `bestEvoTier` propagates). Added Meloetta ids/weights to `constants.js`. **(C) Trainer moveset:** `chooseMoveset` now force-includes `MOVE_RELIC_SONG` for Meloetta (family/id-keyed), mirroring the Zero-to-Hero forced pivot, and exempts it from the A3 same-type dedup. Added `MOVE_RELIC_SONG` + `MELOETTA_*` fixtures. New `__tests__/unit/meloetta.test.js` (ban, blend math + no-op, forced Relic Song, non-Meloetta not forced). Confirmed the forcing test **RED** (neutralized `isMeloetta`) then **GREEN**; full suite green (648 passed). E2E `analyze.js --seed=3370362284 --difficulty=7`: exit 0, Pirouette absent from wild + trainer output (was in Victory Road/HOPE/rivals in the bundle), Aria present OU (rating 8.5322, blended), no new warnings. Awaiting user manual test to close.
 
 ## Outcome
 
