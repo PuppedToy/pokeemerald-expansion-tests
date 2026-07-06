@@ -18,6 +18,11 @@ const abilities = {
     ABILITY_HUGE_POWER:  { name: 'Huge Power', rating: 10, breakable: true },
     ABILITY_SHED_SKIN:   { name: 'Shed Skin', rating: 7, breakable: false },
     ABILITY_ZERO_TO_HERO:{ name: 'Zero to Hero', rating: 10, breakable: false },
+    // Weather abilities (T-065) — rated below Intimidate/Sturdy on purpose, so the generic
+    // best-ability pick would (wrongly) prefer Intimidate/Sturdy over the weather ability.
+    ABILITY_SWIFT_SWIM:  { name: 'Swift Swim', rating: 5, breakable: false },
+    ABILITY_POISON_POINT:{ name: 'Poison Point', rating: 2, breakable: false },
+    ABILITY_SAND_RUSH:   { name: 'Sand Rush', rating: 3, breakable: false },
 };
 
 module.exports = abilities;

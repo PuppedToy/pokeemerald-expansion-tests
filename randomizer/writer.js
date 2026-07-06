@@ -25,6 +25,7 @@ const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, cho
 const { BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone } = require('./modules/wildModule');
 const { displayNameToItemConst } = require('./itemRandomizer');
 const { sample, canLearnMove, usesStrategicNature, usesStrategicAbility } = require('./modules/utils');
+const { pickTrainerMonAbility } = require('./modules/trainerAbility');
 const { selectWithAutoFallback } = require('./modules/trainerFallback');
 const { createChooser } = require('./modules/trainerSelector');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
@@ -649,60 +650,18 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                         }
                     });
                 }
-                let validAbilities = [];
-                if (trainer.abilities && trainer.abilities.length > 0) {
-                    validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => trainer.abilities.includes(a))];
-                }
-                if (effectiveDef?.abilities) {
-                    validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => effectiveDef.abilities.includes(a))];
-                }
-                let ability = null;
-                if (validAbilities.length > 0) {
-                    ability = sample(validAbilities);
-                    let abilityIndex = chosenTrainerMon.parsedAbilities.indexOf(ability);
-                    let originalAbility = baseFormMon.parsedAbilities[abilityIndex];
-                    if (originalAbility === 'NONE') {
-                        abilityIndex = 0;
-                        originalAbility = baseFormMon.parsedAbilities[0];
-                    }
-                    newTeamMember.ability = originalAbility;
-                }
-                /* Otherwise choose the best ability */
-                else {
-                    validAbilities = [...chosenTrainerMon.parsedAbilities];
-                    if (!usesStrategicAbility(trainer.level)) {
-                        // Take just the 2 first, we don't use hidden
-                        validAbilities = validAbilities.slice(0, 2);
-                    }
-                    validAbilities = validAbilities.filter(a => Boolean(a) && a !== 'NONE')
-                        .sort(
-                            (a, b) => {
-                                if (!usesStrategicAbility(trainer.level)) {
-                                    // We just sort randomly
-                                    return rng.random() - 0.5;
-                                }
-
-                                // @TODO Method rateAbilityForAPokemon
-                                const abilityA = abilities[`ABILITY_${a}`];
-                                const abilityB = abilities[`ABILITY_${b}`];
-                                const ratingA = abilityA?.rating * (1 + (rng.random() * GENERIC_DEVIATION * 2 - GENERIC_DEVIATION));
-                                const ratingB = abilityB?.rating * (1 + (rng.random() * GENERIC_DEVIATION * 2 - GENERIC_DEVIATION));
-                                return ratingB - ratingA;
-                            }
-                        );
-                    
-                    if (!validAbilities) {
-                        throw new Error(`WARN: No valid abilities found for pokemon ${chosenTrainerMon.id} in trainer ${trainer.id} while picking the best one.`);
-                    }
-                    ability = validAbilities[0];
-                    let abilityIndex = chosenTrainerMon.parsedAbilities.indexOf(ability);
-                    let originalAbility = baseFormMon.parsedAbilities[abilityIndex];
-                    if (originalAbility === 'NONE') {
-                        abilityIndex = 0;
-                        originalAbility = baseFormMon.parsedAbilities[0];
-                    }
-                    newTeamMember.ability = originalAbility;
-                }
+                // T-065: shared SSOT helper (same logic previously inlined here). Kept in sync with
+                // writerDocs.js so the two resolvers can't silently diverge again. `ability` (the pick
+                // on the chosen/mega form) stays in scope for the downstream mega/moveset/nature code.
+                const { ability, originalAbility } = pickTrainerMonAbility({
+                    chosenTrainerMon,
+                    baseFormMon,
+                    trainerAbilities: trainer.abilities,
+                    effectiveDef,
+                    level: trainer.level,
+                    abilities,
+                });
+                newTeamMember.ability = originalAbility;
                 // T-013: weather an EARLIER teammate sets (lingering setters only — primals are
                 // own-only, handled in the rater) + whether a Power Herb is available (held or in the
                 // bag). Drives Solar Beam/Blade, Electro Shot, Weather Ball, Growth, Thunder, Blizzard,
