@@ -33,6 +33,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Strong 3-stage lines now evolve later.** On top of the existing "weak first stage evolves early"
+  rule, a 3-stage line whose FINAL Pokémon is powerful now gets an extra delay on its first
+  evolution, scaled by the final's tier (OU a little, then Ubers, Legendary and AG progressively
+  more) — so lines into powerhouses like Bagon→Shelgon→Salamence take longer to get going, like the
+  official games. A safeguard keeps at least 2 levels between the first and second evolution, and
+  branching lines (Wurmple, Ralts…) are delayed per branch by that branch's own final (T-066).
 - **Branching evolutions are now standardized**: every Pokémon that can evolve into more than one
   species now takes its most neutral/default form via **Rare Candy (level-up)** and the alternates via
   **evolution stones**. Gender- and nature-locked splits (Espurr, Lechonk, Basculin, Toxel) become free
@@ -67,6 +73,30 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 - **Brawly** no longer fields only 5 Pokémon. When his gym kept the Fighting type, his 6th slot
   (a Makuhita-specific pick) could resolve to nothing and be dropped silently; it now has a
   generic Fighting fallback so the team is always complete (B-019, T-058).
+- When the randomizer changes a **Mega Evolution's type** to one its base form lacks (e.g. Mega
+  Aggron gaining Fighting, Mega Garchomp gaining Steel), the base form now learns at least one
+  damaging move of that new type — so the Mega actually gets usable STAB. Previously those moves
+  were added to the Mega's own learnset, which a Mega can't use (it fights with the base's known
+  moves) and which is discarded at build time anyway (T-062).
+- A run can no longer hand you **two forms of the same cosmetic family**. All size/seasonal/sea
+  variants — Pumpkaboo/Gourgeist (Small/Average/Large/Super), Shellos/Gastrodon (East/West),
+  Deerling/Sawsbuck (seasons) and Sinistea/Poltergeist (Phony/Antique) — now count as a single
+  family for the "one obtainable per family per run" rule, so you won't get e.g. a Pumpkaboo-Super
+  in the wild *and* a Pumpkaboo-Average as a gym reward. Regional forms (Alola/Galar/Hisui/Paldea)
+  stay separate — they're genuinely different Pokémon (T-063).
+- **Meloetta-Pirouette** (a battle-only form reached with Relic Song) can no longer show up as a
+  wild encounter, reward or trainer Pokémon — only base Meloetta is ever placed now. Meloetta is
+  still rated as the strong Pokémon it is: its tier is a weighted blend of both forms (55% Aria /
+  45% Pirouette), reflecting its in-battle access to Pirouette, and a trainer's Meloetta always
+  carries **Relic Song** so it can actually make the switch (T-064).
+- Other **battle-only forms** no longer leak into the game either — Zacian-Crowned, Zamazenta-Crowned,
+  Eternatus-Eternamax and Terapagos-Terastal are now excluded from wild/reward/trainer placement (their
+  base forms — Zacian-Hero, Zamazenta-Hero, Eternatus — stay obtainable) (T-067).
+- **Weather teams now keep their weather ability.** When a trainer's weather slot (rain/sun/sand/
+  snow) can't find a real weather *setter* and falls back to a weather *abuser*, that mon now gets
+  the matching weather ability (e.g. a Hisuian Qwilfish rain-abuser gets **Swift Swim**) instead of
+  a random high-rated ability like **Intimidate**. The ability pick — previously duplicated and
+  silently diverged between the two team resolvers — now lives in one shared helper (T-065).
 
 ### Added
 

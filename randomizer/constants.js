@@ -57,6 +57,16 @@ const constants = {
     PALAFIN_ZERO_ID:             'SPECIES_PALAFIN_ZERO',
     PALAFIN_HERO_ID:             'SPECIES_PALAFIN_HERO',
 
+    // Meloetta special case (T-064) — Meloetta can switch Aria<->Pirouette in battle via Relic Song.
+    // Only base Aria is ever placed (Pirouette is battle-only, banned from picking). Aria's tier is
+    // a weighted blend of both forms' ratings, reflecting its in-battle access to Pirouette.
+    MELOETTA_ARIA_ID:            'SPECIES_MELOETTA_ARIA',
+    MELOETTA_PIROUETTE_ID:       'SPECIES_MELOETTA_PIROUETTE',
+    MELOETTA_ARIA_WEIGHT:        0.55,
+    MELOETTA_PIROUETTE_WEIGHT:   0.45,
+    MELOETTA_RELIC_SONG_ID:      'MOVE_RELIC_SONG',
+    MELOETTA_FAMILY:             'P_FAMILY_MELOETTA',
+
     AG_BST_THRESHOLD: 720,
     LEGEND_BST_THRESHOLD: 660,
     OU_BST_THRESHOLD: 600,
@@ -307,6 +317,17 @@ const constants = {
     // Hard clamps
     EVO_LEVEL_MIN: 5,
     EVO_LEVEL_MAX: 65,
+
+    // T-066 — EXTRA stage0→1 delay for 3-stage lines whose FINAL (stage-2) mon is strong, so lines
+    // into powerhouses (e.g. Bagon→Shelgon→Salamence) evolve later, like the official games. Keyed
+    // by the final stage-2 tier; expressed as decimal fractions added into the same multiplicative
+    // bracket as the other modifiers. Tiers below OU are intentionally absent (no delay).
+    EVO_LEVEL_FINAL_STAGE_DELAYS: {
+        OU:     [0.01, 0.10],
+        UBERS:  [0.11, 0.20],
+        LEGEND: [0.21, 0.30],
+        AG:     [0.31, 0.50],
+    },
 
     MEGA_TRAINERS: [
         {

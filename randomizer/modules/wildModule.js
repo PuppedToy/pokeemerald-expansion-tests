@@ -49,6 +49,16 @@ const BANNED_SPECIES_FOR_PICKING = [
     // Palafin: Zero is the placeable form (rated/moved as Hero via palafinEffectivePoke); Finizen
     // is its placeable base form. Only Hero (battle-only, like Wishiwashi School) stays banned.
     'SPECIES_PALAFIN_HERO',
+    // Meloetta: Pirouette is a battle-only form reached via Relic Song. Only base Aria is placeable;
+    // Aria's tier accounts for Pirouette via a weighted blend (see meloetta.js / T-064).
+    'SPECIES_MELOETTA_PIROUETTE',
+    // T-067 — other battle-only / transient forms that leaked the same way as Pirouette. Their
+    // placeable base forms (Zacian-Hero, Zamazenta-Hero, Eternatus) stay pickable; Terapagos is fully
+    // battle-only (Normal/Stellar already banned above, Terastal added here).
+    'SPECIES_ZACIAN_CROWNED',
+    'SPECIES_ZAMAZENTA_CROWNED',
+    'SPECIES_ETERNATUS_ETERNAMAX',
+    'SPECIES_TERAPAGOS_TERASTAL',
 ];
 
 // T-052 — extra-starter categories. Each slot is { tier, kind: 'line'|'solo', lineLength }.
@@ -563,13 +573,13 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig, moduleConfi
         const list = replacementLists[replacementTypeKey];
         if (!list || list.length === 0) return;
         for (let i = list.length - 1; i >= 0; i--) {
-            if (newlyAddedFamilies.has(list[i].family)) list.splice(i, 1);
+            if (newlyAddedFamilies.has(getFamilyGroup(list[i].family))) list.splice(i, 1);
         }
         if (list.length === 0) return;
         const replacement = sampleAndRemove(list);
         if (!replacement) return;
         alreadyChosenFamilySet.add(getFamilyGroup(replacement.family));
-        newlyAddedFamilies.add(replacement.family);
+        newlyAddedFamilies.add(getFamilyGroup(replacement.family));
         addToFoundMegaEvosIfHasMegaEvo(replacement, findReplacementLevel(speciesId));
         replacementLog[speciesId] = replacement.id;
     });

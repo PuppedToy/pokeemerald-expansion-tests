@@ -1,7 +1,7 @@
 ---
 id: T-062
 title: Guarantee base form learns STAB of a mega's added/mutated type
-status: proposed        # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-06
 updated: 2026-07-06
@@ -79,11 +79,12 @@ Algorithm per `poke` with `poke.evolutionData.isMega` **whose type-change log sh
 Determinism note: this pass consumes `rng.random()`, so seeded output changes downstream — an intended spec change; iterate `allPokes` in fixed order.
 
 Acceptance criteria:
-- [ ] For every mega whose type was **mutated/added this run** to a type the base lacks, the base learnset ends with ≥1 damaging move of that type. (Canonical-typed megas like Pinsir/Sceptile are out of scope.)
-- [ ] Inserted moves are damaging (never status) and are **additions** — all pre-existing base entries remain.
-- [ ] If the base already has a damaging move of that type, nothing is injected (idempotent/skip).
-- [ ] Extra-move count decays (mostly 1, occasionally 2, ~never 3 at `moveInsertChance = 0.5`) and is deterministic per seed.
-- [ ] `cd randomizer && npm test` green; new failing-first test added.
+- [x] For every mega whose type was **mutated/added this run** to a type the base lacks, the base learnset ends with ≥1 damaging move of that type. (Canonical-typed megas like Pinsir/Sceptile are out of scope.) — verified e2e: Mega Gardevoir (mutated +Dark) → base Gardevoir learned `MOVE_BADDY_BAD`.
+- [x] Inserted moves are damaging (never status) and are **additions** — all pre-existing base entries remain.
+- [x] If the base already has a damaging move of that type, nothing is injected (idempotent/skip).
+- [x] Extra-move count decays (mostly 1, occasionally 2, ~never 3 at `moveInsertChance = 0.5`) and is deterministic per seed.
+- [x] `cd randomizer && npm test` green; new failing-first test added.
+- [ ] **User manual test** (build a ROM; confirm a mutated-mega base — e.g. Aggron/Garchomp — learns the new-type STAB and the Mega uses it) — closing gate.
 
 ## Test plan (TDD, red first)
 
@@ -112,7 +113,9 @@ Remaining implementation choices (defaults chosen; override in the log if implem
 
 - **2026-07-06** — Task created from T-061 investigation dossier (issue 1). Root cause verified against bundle + code.
 - **2026-07-06** — User decision: scope to **randomizer-mutated types only** (canonical-typed megas out). Plan/acceptance/decisions updated accordingly; 5 of the 7 detected gaps are in scope (Steelix, Tyranitar, Aggron, Latias, Garchomp).
+- **2026-07-06** — Implemented (TDD). New `randomizer/megaBaseStab.js` (`applyMegaBaseStab(allPokes, moves, {moveInsertChance, moveRatingDeviation})` + `isDamaging`): for each mega with a type-change log, injects damaging move(s) of the mutated new type the base lacks into the **base** learnset (guarantee ≥1, decaying odds mirroring `rebalancer.js:443-465`), skips if already covered, logs each insert, returns affected bases. Exported `insertMoveIntoLearnset`/`getLearnLevelBasedOnRating` from `rebalancer.js`. Wired as step **9d** in `pokedexModule.js` (after Palafin 9c, before best-evo), gated on `config.rebalance`, re-rating each affected base. New test `__tests__/unit/megaBaseStab.test.js` (7 cases: guarantee ≥1, damaging-only, addition-not-replacement, skip-when-covered, canonical-ignored, determinism, decay distribution). Confirmed **RED** first (neutralized fn → 4 assertion failures for the right reason), then **GREEN**. Full suite green (628 passed, 1 skipped). Changelog line added under Fixed.
+- **2026-07-06** — E2E verified via `node analyze.js`. `--seed=42` ran clean but its one mutated mega (Gallade +Flying) already had Flying STAB → correctly skipped (0 insertions). `--seed=3370362284 --difficulty=7` fired a real insertion: **Mega Gardevoir** mutated to gain **Dark**, base Gardevoir lacked a Dark damaging move → `MOVE_BADDY_BAD` inserted at L8 (`reason:megaStab` log serialized). Canonical-typed megas (Pinsir/Sceptile) stayed untouched as intended; no spurious insertions; pipeline exit 0, `src/` restored. Implementation criteria met — awaiting user manual test (ROM build) to close.
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped `randomizer/megaBaseStab.js` (`applyMegaBaseStab`), a post-rebalance pass wired as step 9d in `pokedexModule.js`: when a mega's type is randomizer-mutated to one its base lacks, it injects a damaging move of that type into the **base** learnset (guaranteed ≥1, decaying extras), so megas get usable STAB. Scoped to mutated types only (canonical-typed megas untouched, per user). Verified by 7 unit tests (RED→GREEN) + e2e (Mega Gardevoir +Dark → base learned Baddy Bad). Closed per the user's explicit instruction; implementation and e2e verified, combined manual ROM test deferred to the user.

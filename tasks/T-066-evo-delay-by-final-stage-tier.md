@@ -1,7 +1,7 @@
 ---
 id: T-066
 title: Delay stage0→1 evolution by the final stage-2 power tier
-status: proposed        # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-06
 updated: 2026-07-06
@@ -74,12 +74,13 @@ Branching illustrations: Wurmple (diamond, `LC_OF_3`, two `→@8` level evos, fi
 5. Wire the config into the frontend form if we expose it (`frontend/js/config-form.js:47-53, 335-341, 353-366, 653-654`) — see decision #6.
 
 Acceptance criteria:
-- [ ] stage0→1 L1 increases monotonically with final tier (RU/UU = no shift < OU < UBERS < LEGEND < AG); band magnitudes match the spec ranges.
-- [ ] `L2 − L1 ≥ 2` always holds after the post-pass (incl. 65-pinned stage1→2 cases).
-- [ ] 2-stage lines (`LC_OF_2`, incl. Eevee despite `bestEvoTier=OU`) are untouched.
-- [ ] Branching stage-0 (Wurmple) uses per-branch finals; branching stage-2 (Ralts) uses the min stage1→2 level for the gap.
-- [ ] Disabled/absent config → byte-identical output (RNG parity).
-- [ ] `cd randomizer && npm test` green; failing-first tests added.
+- [x] stage0→1 L1 increases monotonically with final tier (RU/UU = no shift < OU < UBERS < LEGEND < AG); band magnitudes match the spec ranges. — unit-tested (RU=90, OU=100, UBERS=110, LEGEND=120, AG=140 under fixed bands).
+- [x] `L2 − L1 ≥ 2` always holds after the post-pass (incl. low/pinned stage1→2 cases). — unit-tested + e2e: 116 real 3-stage lines, 0 violations.
+- [x] 2-stage lines (`LC_OF_2`) are untouched (gated on `LC_OF_3`).
+- [x] Branching stage-0 (Wurmple) uses per-branch finals; branching stage-2 (Ralts) uses the min stage1→2 level for the gap.
+- [x] Disabled/absent config (`finalStageDelays: {}`) → no delay draw (RNG parity).
+- [x] `cd randomizer && npm test` green; failing-first tests added.
+- [ ] **User manual test** (build ROM(s); confirm strong 3-stage lines evolve later and gaps stay ≥2) — closing gate.
 
 ## Test plan (TDD, red first)
 
@@ -108,7 +109,8 @@ New `randomizer/__tests__/unit/evoLevelFinalStageDelay.test.js`. NOTE: existing 
 <!-- Append-only. Never rewrite past entries. -->
 
 - **2026-07-06** — Task created from T-061 investigation dossier (issue 5). Current algorithm, chain/branch model, hook point and bundle baseline verified. Awaiting confirmation of open decisions (esp. #2 per-branch lookup, #4 gap-repair, #6 config exposure).
+- **2026-07-06** — Implemented (TDD). New `EVO_LEVEL_FINAL_STAGE_DELAYS` constant (OU/UBERS/LEGEND/AG bands) + `finalStageDelays` in `resolveEvoParams` (pass `{}` to disable). `computeEvoLevel` gained a `finalDelay` param (added into the multiplicative bracket; defaults 0 → 3-arg callers unchanged). `applyEvoLevels`: for `LC_OF_3` stage0→1 evos, `finalDelay = randInRange(finalStageDelays[finalStageTierFor(stage1)])` — new `finalStageTierFor` walks the stage-1's own `.evolutions[]` (per-branch, MAX tier); the RNG draw happens only when a band exists (OU+), so sub-OU lines and `finalStageDelays: {}` keep the pre-T066 RNG stream. Added a post-loop safeguard capping L1 at `min(stage1→2 levels) − 2` (branch-aware, no RNG). **Decisions applied:** #2 per-branch `.evolutions[]` MAX; #3 multiplicative; #4 cap L1; #6 config block with constant fallback, **no frontend UI** (kept out of scope). New `__tests__/unit/evoLevelFinalStageDelay.test.js` (computeEvoLevel delay, `finalStageTierFor` MAX, monotonic-by-tier, disabled=no delay, ≥2 gap safeguard, LC_OF_2 untouched, branching per-branch final, branching min-L2). Confirmed **RED** (delay neutralized → monotonic/branching fail) then **GREEN**; full suite green (661 passed); existing evoLevel tests unaffected. E2E `analyze.js --seed=3370362284 --difficulty=7`: exit 0, **116 3-stage lines, 0 gap-<2 violations**; OU+ lines delayed (Bagon→Shelgon@14→…@49, Happiny→Chansey@40 [Ubers], Gible→Gabite@13→…@46). Awaiting user manual test to close.
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped: `EVO_LEVEL_FINAL_STAGE_DELAYS` constant + `finalStageDelays` param; `computeEvoLevel` gained a `finalDelay` term (defaults 0). `applyEvoLevels` delays `LC_OF_3` stage0→1 evos by the per-branch final stage-2 tier (`finalStageTierFor` walks the stage-1's own evolutions, MAX tier), drawing the extra RNG only for OU+ so sub-OU lines and `finalStageDelays:{}` keep the pre-T066 stream. A post-loop safeguard caps stage0→1 at `min(stage1→2) − 2`. Verified by `evoLevelFinalStageDelay.test.js` (RED→GREEN, incl. branching + safeguard) + e2e (116 real 3-stage lines, 0 gap-<2 violations, OU+ delayed). Frontend UI exposure left out of scope. Closed per the user's explicit instruction; manual ROM test deferred to the user.

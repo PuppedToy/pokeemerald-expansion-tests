@@ -10,14 +10,22 @@ const {
     ABILITY_STRATEGY_MIN_LEVEL,
 } = require('../constants');
 
-const groupedFamilies = {
-    'P_FAMILY_DEERLING_SUMMER': 'P_FAMILY_DEERLING',
-    'P_FAMILY_DEERLING_AUTUMN': 'P_FAMILY_DEERLING',
-    'P_FAMILY_DEERLING_WINTER': 'P_FAMILY_DEERLING',
-};
+// T-063 — cosmetic multi-form suffixes. A family named `P_FAMILY_<BASE>_<SUFFIX>` whose suffix is
+// one of these is a size/seasonal/sea/antique variant of `P_FAMILY_<BASE>` and must collapse to it,
+// so the "one obtainable per family per run" dedup treats all its forms as one. Deliberately a
+// curated SUBSET of POKE_FORMS: regional forms (ALOLA/GALAR/HISUI/PALDEA) and functional forms
+// (OWN_TEMPO/ROAMING/ARTISAN) are genuinely distinct Pokémon and stay their own families.
+const COSMETIC_FORM_SUFFIXES = ['EAST', 'SUMMER', 'AUTUMN', 'WINTER', 'SMALL', 'LARGE', 'SUPER', 'ANTIQUE'];
+
+// Explicit overrides (win over the suffix strip) for any family that can't be derived by stripping.
+const groupedFamilies = {};
 
 function getFamilyGroup(familyId) {
-    return groupedFamilies[familyId] || familyId;
+    if (groupedFamilies[familyId]) return groupedFamilies[familyId];
+    for (const suffix of COSMETIC_FORM_SUFFIXES) {
+        if (familyId.endsWith('_' + suffix)) return familyId.slice(0, -(suffix.length + 1));
+    }
+    return familyId;
 }
 
 function isSubWeakTier(tier) {

@@ -8,6 +8,8 @@ const { parseTmLocations } = require('../tmLocations');
 const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
 const { ratePokemon, rateContextual, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove } = require('../rating');
 const { balancePokemon } = require('../rebalancer');
+const { applyMegaBaseStab } = require('../megaBaseStab');
+const { applyMeloettaTierBlend } = require('../meloetta');
 const {
     TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR, ABILITIES_FILE_PATH, MEGA_EVOS_PATH,
     EVO_TYPE_MEGA,
@@ -207,6 +209,28 @@ async function runPokedexModule(config, baseData = null) {
     const palafinHero = allPokes.find(p => p.id === PALAFIN_HERO_ID);
     if (palafinZero && palafinHero) {
         palafinZero.rating = ratePokemon(palafinEffectivePoke(palafinZero, palafinHero), moves, abilities, tmPool);
+    }
+
+    // 9c-bis. Meloetta (T-064) — Aria (placeable) can switch to Pirouette (battle-only, banned) via
+    // Relic Song, so Aria's tier is a weighted blend of both forms. Runs after both forms are rated
+    // and before best-evo so the blended rating propagates. Unconditional (a classification fix).
+    applyMeloettaTierBlend(allPokes);
+
+    // 9d. Mega base-form STAB (T-062) — when a mega's type was MUTATED this run to a type its base
+    // lacks (e.g. Mega Aggron gaining Fighting), the base form gains a damaging move of that type.
+    // A mega fights with the base's known moves and its own learnset is discarded at write, so the
+    // base is the only place the STAB can live. Runs after rebalance (so mega type logs exist) and
+    // before best-evo (so the re-rated base propagates into bestEvo/megaEvo ratings). No-op when
+    // rebalance/mutateTypes didn't run (no type logs).
+    if (config.rebalance) {
+        const megaStabbedBases = applyMegaBaseStab(allPokes, moves, {
+            moveInsertChance: config.mutationProbs && config.mutationProbs.moveInsertChance,
+            moveRatingDeviation: config.mutationProbs && config.mutationProbs.moveRatingDeviation,
+        });
+        for (const base of megaStabbedBases) {
+            base.baseBST = base.baseHP + base.baseAttack + base.baseDefense + base.baseSpAttack + base.baseSpDefense + base.baseSpeed;
+            base.rating = ratePokemon(base, moves, abilities, tmPool);
+        }
     }
 
     // 10. Best-evo / mega-evo ratings

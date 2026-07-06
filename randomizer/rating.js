@@ -35,6 +35,8 @@ const {
     NATURES,
     WISHIWASHI_SCHOOL_LEVEL,
     WISHIWASHI_SCHOOL_HP_FACTOR,
+    MELOETTA_FAMILY,
+    MELOETTA_RELIC_SONG_ID,
 } = require('./constants');
 const { plates, protectionBerries } = require('./items');
 const rng = require('./rng');
@@ -1871,6 +1873,22 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
         }
     }
 
+    // Meloetta (T-064): Meloetta switches Aria<->Pirouette in battle via Relic Song, so a trainer's
+    // Meloetta should always carry it. Force Relic Song into the set before the greedy fill (like the
+    // Zero-to-Hero pivot above) whenever the user is Meloetta and can learn it; protect it from the
+    // A3 same-type dedup below. Relic Song is Special, so its normal move rating still applies — this
+    // just guarantees the "strongly prioritize Relic Song when the user is Meloetta" behavior.
+    let forcedMeloettaMoveId = null;
+    const isMeloetta = poke.family === MELOETTA_FAMILY || (poke.id || '').startsWith('SPECIES_MELOETTA');
+    if (isMeloetta && moveset.length < 4 && !moveset.some(m => m.id === MELOETTA_RELIC_SONG_ID)) {
+        const relicSong = uniqueMoves.find(m => m.id === MELOETTA_RELIC_SONG_ID);
+        if (relicSong) {
+            moveset.push(relicSong);
+            forcedMeloettaMoveId = relicSong.id;
+            uniqueMoves = uniqueMoves.filter(move => move.id !== relicSong.id);
+        }
+    }
+
     while (uniqueMoves.length > 0 && moveset.length < 4) {
         const ratedMoves = uniqueMoves.map(move => {
             const rating = rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset, ctx) * (1 + ((rng.random() ? 1 : -1) * rng.random() * deviation));
@@ -1908,6 +1926,8 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
             // Exception: the forced Zero-to-Hero pivot is always kept (its switch utility is
             // distinct from a same-type attacker, and the rule guarantees its presence).
             if (forcedPivotId && weaker.id === forcedPivotId) continue;
+            // Exception: the forced Meloetta Relic Song is always kept (guaranteed transform move).
+            if (forcedMeloettaMoveId && weaker.id === forcedMeloettaMoveId) continue;
             // Exception: different priority tiers
             if ((weaker.priority || 0) !== (stronger.priority || 0)) continue;
             // Exception: Iron Fist with two punching moves of the same type
@@ -2857,6 +2877,24 @@ function computeComboBonus(poke, moveset, moves, tmPool, role = null, defensePow
     return finalBonus;
 }
 
+// Map an absoluteRating to a competitive tier. Stone megas need a higher AG threshold (their
+// inflated stats are rewarded generously); non-megas and stoneless megas use TIER_AG_THRESHOLD.
+// Extracted so cross-form re-rates (e.g. the Meloetta Aria/Pirouette blend, T-064) recompute the
+// tier the exact same way ratePokemon does.
+function tierFromRating(absoluteRating, { isStoneMega = false } = {}) {
+    const agRatingThreshold = isStoneMega ? MEGA_AG_RATING_THRESHOLD : TIER_AG_THRESHOLD;
+    if (absoluteRating >= agRatingThreshold)      return TIER_AG;
+    if (absoluteRating >= TIER_LEGEND_THRESHOLD)  return TIER_LEGEND;
+    if (absoluteRating >= TIER_UBERS_THRESHOLD)   return TIER_UBERS;
+    if (absoluteRating >= TIER_OU_THRESHOLD)      return TIER_OU;
+    if (absoluteRating >= TIER_UU_THRESHOLD)      return TIER_UU;
+    if (absoluteRating >= TIER_RU_THRESHOLD)      return TIER_RU;
+    if (absoluteRating >= TIER_NU_THRESHOLD)      return TIER_NU;
+    if (absoluteRating >= TIER_PU_THRESHOLD)      return TIER_PU;
+    if (absoluteRating >= TIER_ZU_THRESHOLD)      return TIER_ZU;
+    return TIER_MAGIKARP;
+}
+
 // @TODO Maybe add a level-based rating too for the right context
 function ratePokemon(poke, moves, abilities, tmPool) {
     let bestAbilityRating = 0;
@@ -3285,39 +3323,7 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     // Stone megas need MEGA_AG_RATING_THRESHOLD (10.0) to reach AG; non-megas and stoneless megas
     // (Rayquaza) need only TIER_AG_THRESHOLD (9.75). Stone megas have inflated stats the model rewards
     // generously; stoneless megas like Rayquaza are effectively the same pokemon as their base form.
-    const isMegaForTier = isStoneMega;
-    const agRatingThreshold = isMegaForTier ? MEGA_AG_RATING_THRESHOLD : TIER_AG_THRESHOLD;
-    let tier;
-    if (absoluteRating >= agRatingThreshold) {
-        tier = TIER_AG;
-    }
-    else if (absoluteRating >= TIER_LEGEND_THRESHOLD) {
-        tier = TIER_LEGEND;
-    }
-    else if (absoluteRating >= TIER_UBERS_THRESHOLD) {
-        tier = TIER_UBERS;
-    }
-    else if (absoluteRating >= TIER_OU_THRESHOLD) {
-        tier = TIER_OU;
-    }
-    else if (absoluteRating >= TIER_UU_THRESHOLD) {
-        tier = TIER_UU;
-    }
-    else if (absoluteRating >= TIER_RU_THRESHOLD) {
-        tier = TIER_RU;
-    }
-    else if (absoluteRating >= TIER_NU_THRESHOLD) {
-        tier = TIER_NU;
-    }
-    else if (absoluteRating >= TIER_PU_THRESHOLD) {
-        tier = TIER_PU;
-    }
-    else if (absoluteRating >= TIER_ZU_THRESHOLD) {
-        tier = TIER_ZU;
-    }
-    else {
-        tier = TIER_MAGIKARP;
-    }
+    let tier = tierFromRating(absoluteRating, { isStoneMega });
 
     // If no damage moves are reachable in this context (learnset + tmPool-filtered teachables),
     // the pokemon cannot contribute offensively at all. Force MAGIKARP regardless of BST/ability.
@@ -3430,6 +3436,7 @@ function rateContextual(poke, moves, abilities, context) {
 
 module.exports = {
     ratePokemon,
+    tierFromRating,
     rateContextual,
     wishiwashiEffectivePoke,
     palafinEffectivePoke,

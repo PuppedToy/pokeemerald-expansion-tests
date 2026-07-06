@@ -14,6 +14,7 @@ const {
 const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature, palafinEffectivePoke } = require('./rating.js');
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
 const { sample, canLearnMove, usesStrategicNature, usesStrategicAbility } = require('./modules/utils');
+const { pickTrainerMonAbility } = require('./modules/trainerAbility');
 const { selectWithAutoFallback } = require('./modules/trainerFallback');
 const { createChooser } = require('./modules/trainerSelector');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
@@ -315,40 +316,19 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                     });
                 }
 
-                let validAbilities = [];
-                if (trainer.abilities && trainer.abilities.length > 0) {
-                    validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => trainer.abilities.includes(a))];
-                }
-                if (trainerMonDefinition.abilities) {
-                    validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => trainerMonDefinition.abilities.includes(a))];
-                }
-                let ability = null;
-                if (validAbilities.length > 0) {
-                    ability = sample(validAbilities);
-                    let abilityIndex = chosenTrainerMon.parsedAbilities.indexOf(ability);
-                    let originalAbility = baseFormMon.parsedAbilities[abilityIndex];
-                    if (originalAbility === 'NONE') { abilityIndex = 0; originalAbility = baseFormMon.parsedAbilities[0]; }
-                    newTeamMember.ability = originalAbility;
-                } else {
-                    validAbilities = [...chosenTrainerMon.parsedAbilities];
-                    if (!usesStrategicAbility(trainer.level)) {
-                        validAbilities = validAbilities.slice(0, 2);
-                    }
-                    validAbilities = validAbilities.filter(a => Boolean(a) && a !== 'NONE').sort((a, b) => {
-                        if (!usesStrategicAbility(trainer.level)) return rng.random() - 0.5;
-                        const abilityA = abilities[`ABILITY_${a}`];
-                        const abilityB = abilities[`ABILITY_${b}`];
-                        const ratingA = abilityA?.rating * (1 + (rng.random() * GENERIC_DEVIATION * 2 - GENERIC_DEVIATION));
-                        const ratingB = abilityB?.rating * (1 + (rng.random() * GENERIC_DEVIATION * 2 - GENERIC_DEVIATION));
-                        return ratingB - ratingA;
-                    });
-                    if (!validAbilities) throw new Error(`WARN: No valid abilities found for ${chosenTrainerMon.id} in trainer ${trainer.id}.`);
-                    ability = validAbilities[0];
-                    let abilityIndex = chosenTrainerMon.parsedAbilities.indexOf(ability);
-                    let originalAbility = baseFormMon.parsedAbilities[abilityIndex];
-                    if (originalAbility === 'NONE') { abilityIndex = 0; originalAbility = baseFormMon.parsedAbilities[0]; }
-                    newTeamMember.ability = originalAbility;
-                }
+                // T-065: single SSOT helper (fallback-aware — uses effectiveDef.abilities, so a
+                // weather-abuser fallback keeps its weather ability instead of a generic one).
+                // `ability` (the pick on the chosen/mega form) stays in scope for the downstream
+                // moveset/nature/item code below.
+                const { ability, originalAbility } = pickTrainerMonAbility({
+                    chosenTrainerMon,
+                    baseFormMon,
+                    trainerAbilities: trainer.abilities,
+                    effectiveDef,
+                    level: trainer.level,
+                    abilities,
+                });
+                newTeamMember.ability = originalAbility;
 
                 // T-013: this mon's own weather/herb is handled in the rater; here we add the weather
                 // EARLIER teammates set (lingering setters only — primals like Desolate Land /

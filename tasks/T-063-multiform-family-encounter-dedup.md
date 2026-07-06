@@ -1,7 +1,7 @@
 ---
 id: T-063
 title: Limit multi-form families to one obtainable per run
-status: proposed        # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-07-06
 updated: 2026-07-06
@@ -62,10 +62,11 @@ Confirmed cosmetic multi-form families in this game's data: **Pumpkaboo/Gourgeis
 Both fixes route through the single existing dedup mechanism — no new tracking structures.
 
 Acceptance criteria:
-- [ ] `getFamilyGroup` returns the same canonical family for all cosmetic forms (Pumpkaboo/Shellos/Deerling, + ANTIQUE per decision #3), and still returns the base for the existing Deerling cases.
-- [ ] For each ROM, mapping every obtainable species (extraStarters ∪ gymRewards ∪ staticRewards ∪ wild replacements) through the corrected `getFamilyGroup` yields all-distinct family keys — no cosmetic family obtainable twice.
-- [ ] Regional forms behave per decision #1 (default: stay distinct).
-- [ ] `cd randomizer && npm test` green; failing-first tests added.
+- [x] `getFamilyGroup` returns the same canonical family for all cosmetic forms (Pumpkaboo/Shellos/Deerling, + ANTIQUE per decision #3), and still returns the base for the existing Deerling cases.
+- [x] For each ROM, mapping every obtainable species (extraStarters ∪ gymRewards ∪ staticRewards ∪ wild replacements) through the corrected `getFamilyGroup` yields all-distinct family keys — no cosmetic family obtainable twice.
+- [x] Regional forms behave per decision #1 (default: stay distinct).
+- [x] `cd randomizer && npm test` green; failing-first tests added.
+- [ ] **User manual test** (build ROM(s); confirm no run yields two forms of one cosmetic family, e.g. no Pumpkaboo-Super wild + Pumpkaboo-Average reward) — closing gate.
 
 ## Test plan (TDD, red first)
 
@@ -91,7 +92,8 @@ Remaining implementation choices (defaults chosen; override in the log if implem
 
 - **2026-07-06** — Task created from T-061 investigation dossier (issue 2). Two independent defects (A: `getFamilyGroup` doesn't collapse cosmetic forms; B: wild loop dedups by raw family) verified against bundle + code. 29 collisions catalogued.
 - **2026-07-06** — User decision: **regional forms OUT of scope** (cosmetic-only collapse). Curated `COSMETIC_FORMS` subset confirmed; ANTIQUE in, OWN_TEMPO/ROAMING/ARTISAN out. Scope = 6 cosmetic (+1 ANTIQUE) collisions.
+- **2026-07-06** — Implemented (TDD). **Fix A:** `modules/utils.js` `getFamilyGroup` now strips a curated `COSMETIC_FORM_SUFFIXES` set (`EAST/SUMMER/AUTUMN/WINTER/SMALL/LARGE/SUPER/ANTIQUE`) so all cosmetic forms collapse to the base family; replaced the 3-entry Deerling map with an (empty) explicit-override hook. **Fix B:** `modules/wildModule.js` wild-replacement loop now keys `newlyAddedFamilies` by `getFamilyGroup(...)` (lines ~566/572) instead of raw family. Verified no false-positive collapses (only Deerling/Pumpkaboo/Shellos/Sinistea families end in those suffixes). New `__tests__/unit/familyGroup.test.js` (collapse + regional/functional stay distinct) and a wild↔wild dedup test appended to `wildModule.test.js` (two Pumpkaboo forms, unique `ZU` tier to isolate the wild path). Confirmed **RED** (cosmetic collapse failing + pumpkaboo=2), then **GREEN**. Full suite green (641 passed). E2E: `analyze.js --seed=3370362284 --difficulty=7` exit 0, no new warnings, wild output shows 1 form per cosmetic family. Awaiting user manual test to close.
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped two fixes: **A** — `getFamilyGroup` (`modules/utils.js`) now collapses a curated set of cosmetic form suffixes (EAST/SUMMER/AUTUMN/WINTER/SMALL/LARGE/SUPER/ANTIQUE) to the base family; **B** — the wild-replacement loop (`modules/wildModule.js`) dedups by grouped family. Cosmetic families (Pumpkaboo/Shellos/Deerling/Sinistea) are now limited to one obtainable per run; regional forms stay distinct (per user). Verified by new `familyGroup.test.js` + a wild↔wild dedup test (RED→GREEN) and e2e (one form per cosmetic family in wild output). Closed per the user's explicit instruction; manual ROM test deferred to the user.

@@ -577,3 +577,61 @@ describe('BANNED_SPECIES_FOR_PICKING — Palafin Zero-to-Hero', () => {
         expect(BANNED_SPECIES_FOR_PICKING).toContain('SPECIES_PALAFIN_HERO');
     });
 });
+
+describe('BANNED_SPECIES_FOR_PICKING — battle-only forms (T-067)', () => {
+    const { BANNED_SPECIES_FOR_PICKING } = require('../../modules/wildModule');
+
+    test.each([
+        'SPECIES_ZACIAN_CROWNED',
+        'SPECIES_ZAMAZENTA_CROWNED',
+        'SPECIES_ETERNATUS_ETERNAMAX',
+        'SPECIES_TERAPAGOS_TERASTAL',
+    ])('%s is banned (battle-only form)', (id) => {
+        expect(BANNED_SPECIES_FOR_PICKING).toContain(id);
+    });
+
+    test.each([
+        'SPECIES_ZACIAN_HERO',
+        'SPECIES_ZAMAZENTA_HERO',
+        'SPECIES_ETERNATUS',
+    ])('%s stays placeable (base form)', (id) => {
+        expect(BANNED_SPECIES_FOR_PICKING).not.toContain(id);
+    });
+});
+
+// T-063 Fix B — the wild-replacement loop must dedup by grouped family, not raw family, so two
+// cosmetic forms of one family (e.g. Pumpkaboo-Average + Pumpkaboo-Super) can't both be placed as
+// wild encounters in the same run. Both forms are given a unique bestEvoTier ('ZU') matched only by
+// the custom replacement type, so they are the sole candidates and rewards never claim them —
+// isolating the wild↔wild path.
+describe('runWildModule — cosmetic multi-form dedup (T-063)', () => {
+    const mkForm = (id, family) => makePoke(id, family, ['GHOST'], {
+        evolutionData: { type: 'EVO_TYPE_LC', isLC: true, isMega: false, isFinal: false, isNFE: false, megaEvos: [] },
+        rating: { bestEvoTier: 'ZU', tier: 'PU', bestEvoRating: 3, megaEvoTier: null, megaEvoRating: null },
+    });
+    const wildConfig = {
+        file: null, maps: [],
+        replacementTypes: { PUMPKA: { replace: ['ZU'], type: ['EVO_TYPE_LC'], hasMega: false, megaTiers: null } },
+        replacements: { SPECIES_PLACE_A: 'PUMPKA', SPECIES_PLACE_B: 'PUMPKA' },
+    };
+
+    test('two Pumpkaboo forms are never both obtainable in one run', () => {
+        const { runWildModule } = require('../../modules/wildModule');
+        rng.seed(1);
+        const pool = [
+            ...extendedPokemonList,
+            mkForm('SPECIES_PUMPKABOO_AVERAGE', 'P_FAMILY_PUMPKABOO'),
+            mkForm('SPECIES_PUMPKABOO_SUPER', 'P_FAMILY_PUMPKABOO_SUPER'),
+        ];
+        const r = runWildModule(pool, startersArtifact, wildConfig);
+        const idOf = x => (typeof x === 'string' ? x : x && x.id);
+        const obtainable = [
+            ...r.extraStarters,
+            ...Object.values(r.gymRewards || {}),
+            ...Object.values(r.staticRewards || {}),
+            ...Object.values(r.replacementLog || {}),
+        ].map(idOf).filter(Boolean);
+        const pumpkaboo = obtainable.filter(id => id.startsWith('SPECIES_PUMPKABOO'));
+        expect(pumpkaboo.length).toBeLessThanOrEqual(1);
+    });
+});

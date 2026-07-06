@@ -488,4 +488,6 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined,
 
 module.exports = {
     balancePokemon,
+    insertMoveIntoLearnset,
+    getLearnLevelBasedOnRating,
 };

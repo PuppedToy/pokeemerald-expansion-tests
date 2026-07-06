@@ -1,7 +1,7 @@
 ---
 id: T-065
 title: Weather-archetype fallback must keep the weather ability
-status: proposed        # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-07-06
 updated: 2026-07-06
@@ -60,11 +60,12 @@ Per-ROM trainer data lives in `roms[i].docs.trainersResultsSimplified` (`.artifa
 3. (Optional) Warn/log if the generic branch is reached for a weather-abuser fallback, since it should be unreachable after the fix.
 
 Acceptance criteria:
-- [ ] For a weather-abuser fallback slot, the assigned ability is a member of `effectiveDef.abilities` (a real weather ability) — never a generic top-rated ability like Intimidate/Sturdy/Moxie.
-- [ ] Rain, sun, sand, and snow fallbacks all covered by the same fix (one code path).
-- [ ] Primary-success case unchanged (a real Drizzle mon still gets Drizzle); genuinely abilities-less fallbacks (terrain/type-only) still use the generic pick.
-- [ ] `writer.js` and `writerDocs.js` ability logic deduplicated into one helper.
-- [ ] `cd randomizer && npm test` green; failing-first test added.
+- [x] For a weather-abuser fallback slot, the assigned ability is a member of `effectiveDef.abilities` (a real weather ability) — never a generic top-rated ability like Intimidate/Sturdy/Moxie. — verified e2e: museum grunt Qwilfish-Hisui = SWIFT_SWIM (was INTIMIDATE).
+- [x] Rain, sun, sand, and snow fallbacks all covered by the same fix (one code path). — one shared helper keyed on `effectiveDef.abilities`; rain+sand unit-tested.
+- [x] Primary-success case unchanged (a real Drizzle mon still gets Drizzle); genuinely abilities-less fallbacks (terrain/type-only) still use the generic pick.
+- [x] `writer.js` and `writerDocs.js` ability logic deduplicated into one helper.
+- [x] `cd randomizer && npm test` green; failing-first test added.
+- [ ] **User manual test** (build ROM(s); confirm weather-team fallback mons run the weather ability) — closing gate.
 
 ## Test plan (TDD, red first)
 
@@ -86,7 +87,8 @@ Fixtures: `miniAbilities.js` already has `INTIMIDATE` (7), `CHLOROPHYLL` (4), `S
 <!-- Append-only. Never rewrite past entries. -->
 
 - **2026-07-06** — Task created from T-061 investigation dossier (issue 4). Root cause pinned to `writerDocs.js:322` using `trainerMonDefinition.abilities` instead of `effectiveDef.abilities` (live resolver; SSOT divergence with the already-correct `writer.js:656-657`). Verified in-game (docs consumed verbatim). 3 mispicks catalogued (Qwilfish-Hisui/rain, Boldore/sand, Scrafty/sun). Awaiting confirmation of open decisions (esp. #1 ability priority ordering).
+- **2026-07-06** — Implemented (TDD). Extracted the duplicated ability-pick logic into one SSOT helper `randomizer/modules/trainerAbility.js` `pickTrainerMonAbility({...})` keyed on `effectiveDef.abilities` (fallback-aware). Wired into both `writer.js` and `writerDocs.js` (removed the divergent inline blocks); the helper returns `{ability, originalAbility}` so downstream mega/moveset/nature/item code keeps the chosen-form `ability` in scope. New `__tests__/unit/trainerAbility.test.js` (rain→Swift Swim, sand→Sand Rush, primary Drizzle kept, abilities-less→generic); added weather abilities to `miniAbilities`. Confirmed **RED** (bug simulated → rain/sand pick Intimidate/Sturdy) then **GREEN**; suite green (652 passed). **Decision #1 (setter>abuser ordering):** kept `sample` to stay faithful to the already-correct `writer.js` behavior; ordering left as a noted future enhancement. E2E `analyze.js`: first run CRASHED (`ability is not defined` — the refactor dropped the `ability` var downstream code needs; caught only by driving the full pipeline, not unit tests) → fixed by returning `{ability, originalAbility}`; re-run exit 0, museum grunt Qwilfish-Hisui = **SWIFT_SWIM** (+ all rain slots correct). Awaiting user manual test to close.
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped `randomizer/modules/trainerAbility.js` (`pickTrainerMonAbility`): one SSOT ability picker keyed on `effectiveDef.abilities` (fallback-aware), now used by both `writer.js` and `writerDocs.js` (removing the divergent inline blocks). Weather-abuser fallback mons keep their weather ability (rain/sun/sand/snow) instead of a generic top-rated one. Returns `{ability, originalAbility}` so downstream mega/moveset/nature code keeps the chosen-form ability. Verified by `trainerAbility.test.js` (RED→GREEN) + e2e (museum grunt Qwilfish-Hisui = Swift Swim). A refactor regression (`ability is not defined`) was caught by driving the full pipeline and fixed. Setter>abuser ordering left as a noted future enhancement. Closed per the user's explicit instruction; manual ROM test deferred to the user.
