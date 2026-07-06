@@ -563,13 +563,13 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig, moduleConfi
         const list = replacementLists[replacementTypeKey];
         if (!list || list.length === 0) return;
         for (let i = list.length - 1; i >= 0; i--) {
-            if (newlyAddedFamilies.has(list[i].family)) list.splice(i, 1);
+            if (newlyAddedFamilies.has(getFamilyGroup(list[i].family))) list.splice(i, 1);
         }
         if (list.length === 0) return;
         const replacement = sampleAndRemove(list);
         if (!replacement) return;
         alreadyChosenFamilySet.add(getFamilyGroup(replacement.family));
-        newlyAddedFamilies.add(replacement.family);
+        newlyAddedFamilies.add(getFamilyGroup(replacement.family));
         addToFoundMegaEvosIfHasMegaEvo(replacement, findReplacementLevel(speciesId));
         replacementLog[speciesId] = replacement.id;
     });

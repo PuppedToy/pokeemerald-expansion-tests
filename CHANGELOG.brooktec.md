@@ -72,6 +72,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   damaging move of that new type — so the Mega actually gets usable STAB. Previously those moves
   were added to the Mega's own learnset, which a Mega can't use (it fights with the base's known
   moves) and which is discarded at build time anyway (T-062).
+- A run can no longer hand you **two forms of the same cosmetic family**. All size/seasonal/sea
+  variants — Pumpkaboo/Gourgeist (Small/Average/Large/Super), Shellos/Gastrodon (East/West),
+  Deerling/Sawsbuck (seasons) and Sinistea/Poltergeist (Phony/Antique) — now count as a single
+  family for the "one obtainable per family per run" rule, so you won't get e.g. a Pumpkaboo-Super
+  in the wild *and* a Pumpkaboo-Average as a gym reward. Regional forms (Alola/Galar/Hisui/Paldea)
+  stay separate — they're genuinely different Pokémon (T-063).
 
 ### Added
 
