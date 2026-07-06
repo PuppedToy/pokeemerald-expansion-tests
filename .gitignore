@@ -92,3 +92,6 @@ deploy/.env.local
 
 # Generated BPS patches (T-053) — never commit
 *.bps
+
+# Task investigation assets (large bundle.json inputs, etc.) — kept locally, not versioned
+tasks/assets/
