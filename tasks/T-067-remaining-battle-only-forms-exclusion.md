@@ -1,7 +1,7 @@
 ---
 id: T-067
 title: Exclude remaining battle-only forms from placement
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-07-06
 updated: 2026-07-06
@@ -63,4 +63,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped: added `SPECIES_ZACIAN_CROWNED`, `SPECIES_ZAMAZENTA_CROWNED`, `SPECIES_ETERNATUS_ETERNAMAX`, `SPECIES_TERAPAGOS_TERASTAL` to `BANNED_SPECIES_FOR_PICKING`; their placeable base forms (Zacian-Hero, Zamazenta-Hero, Eternatus) stay pickable. Per the user's decision this was a plain removal — the optional Zacian/Zamazenta weighted-tier blend was dropped. Verified by extended `wildModule.test.js` BANNED assertions. Closed per the user's explicit instruction; manual ROM test deferred to the user.

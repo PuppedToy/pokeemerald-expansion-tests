@@ -1,7 +1,7 @@
 ---
 id: T-064
 title: Never place Meloetta-Pirouette; blend its tier and prioritize Relic Song
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-07-06
 updated: 2026-07-06
@@ -94,4 +94,4 @@ Remaining implementation choices (defaults chosen; override in the log if implem
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped all three parts: (A) `SPECIES_MELOETTA_PIROUETTE` added to `BANNED_SPECIES_FOR_PICKING`; (B) `randomizer/meloetta.js` `applyMeloettaTierBlend` sets Aria's tier from a 0.55/0.45 blend (via the extracted `tierFromRating`), wired in `pokedexModule.js`; (C) `chooseMoveset` force-includes Relic Song for Meloetta. Verified by `meloetta.test.js` (RED→GREEN) + e2e (Pirouette absent from wild/trainers, Aria OU). The four other battle-only forms were split to **T-067**. Closed per the user's explicit instruction; manual ROM test deferred to the user.

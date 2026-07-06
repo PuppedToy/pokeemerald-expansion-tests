@@ -1,7 +1,7 @@
 ---
 id: T-063
 title: Limit multi-form families to one obtainable per run
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-07-06
 updated: 2026-07-06
@@ -96,4 +96,4 @@ Remaining implementation choices (defaults chosen; override in the log if implem
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped two fixes: **A** — `getFamilyGroup` (`modules/utils.js`) now collapses a curated set of cosmetic form suffixes (EAST/SUMMER/AUTUMN/WINTER/SMALL/LARGE/SUPER/ANTIQUE) to the base family; **B** — the wild-replacement loop (`modules/wildModule.js`) dedups by grouped family. Cosmetic families (Pumpkaboo/Shellos/Deerling/Sinistea) are now limited to one obtainable per run; regional forms stay distinct (per user). Verified by new `familyGroup.test.js` + a wild↔wild dedup test (RED→GREEN) and e2e (one form per cosmetic family in wild output). Closed per the user's explicit instruction; manual ROM test deferred to the user.

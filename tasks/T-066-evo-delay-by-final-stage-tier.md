@@ -1,7 +1,7 @@
 ---
 id: T-066
 title: Delay stage0→1 evolution by the final stage-2 power tier
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-06
 updated: 2026-07-06
@@ -113,4 +113,4 @@ New `randomizer/__tests__/unit/evoLevelFinalStageDelay.test.js`. NOTE: existing 
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped: `EVO_LEVEL_FINAL_STAGE_DELAYS` constant + `finalStageDelays` param; `computeEvoLevel` gained a `finalDelay` term (defaults 0). `applyEvoLevels` delays `LC_OF_3` stage0→1 evos by the per-branch final stage-2 tier (`finalStageTierFor` walks the stage-1's own evolutions, MAX tier), drawing the extra RNG only for OU+ so sub-OU lines and `finalStageDelays:{}` keep the pre-T066 stream. A post-loop safeguard caps stage0→1 at `min(stage1→2) − 2`. Verified by `evoLevelFinalStageDelay.test.js` (RED→GREEN, incl. branching + safeguard) + e2e (116 real 3-stage lines, 0 gap-<2 violations, OU+ delayed). Frontend UI exposure left out of scope. Closed per the user's explicit instruction; manual ROM test deferred to the user.

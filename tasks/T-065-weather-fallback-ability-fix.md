@@ -1,7 +1,7 @@
 ---
 id: T-065
 title: Weather-archetype fallback must keep the weather ability
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-07-06
 updated: 2026-07-06
@@ -91,4 +91,4 @@ Fixtures: `miniAbilities.js` already has `INTIMIDATE` (7), `CHLOROPHYLL` (4), `S
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped `randomizer/modules/trainerAbility.js` (`pickTrainerMonAbility`): one SSOT ability picker keyed on `effectiveDef.abilities` (fallback-aware), now used by both `writer.js` and `writerDocs.js` (removing the divergent inline blocks). Weather-abuser fallback mons keep their weather ability (rain/sun/sand/snow) instead of a generic top-rated one. Returns `{ability, originalAbility}` so downstream mega/moveset/nature code keeps the chosen-form ability. Verified by `trainerAbility.test.js` (RED→GREEN) + e2e (museum grunt Qwilfish-Hisui = Swift Swim). A refactor regression (`ability is not defined`) was caught by driving the full pipeline and fixed. Setter>abuser ordering left as a noted future enhancement. Closed per the user's explicit instruction; manual ROM test deferred to the user.

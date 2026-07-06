@@ -1,7 +1,7 @@
 ---
 id: T-062
 title: Guarantee base form learns STAB of a mega's added/mutated type
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-06
 updated: 2026-07-06
@@ -118,4 +118,4 @@ Remaining implementation choices (defaults chosen; override in the log if implem
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped `randomizer/megaBaseStab.js` (`applyMegaBaseStab`), a post-rebalance pass wired as step 9d in `pokedexModule.js`: when a mega's type is randomizer-mutated to one its base lacks, it injects a damaging move of that type into the **base** learnset (guaranteed ≥1, decaying extras), so megas get usable STAB. Scoped to mutated types only (canonical-typed megas untouched, per user). Verified by 7 unit tests (RED→GREEN) + e2e (Mega Gardevoir +Dark → base learned Baddy Bad). Closed per the user's explicit instruction; implementation and e2e verified, combined manual ROM test deferred to the user.
