@@ -2948,7 +2948,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .teachableLearnset = sPikachuTeachableLearnset,
         .formSpeciesIdTable = sPikachuFormSpeciesIdTable,
         .formChangeTable = sPikachuFormChangeTable,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_THUNDER_STONE, SPECIES_RAICHU, CONDITIONS({IF_MIN_LEVEL, 25})},
+        .evolutions = EVOLUTION({EVO_LEVEL, 30, SPECIES_RAICHU},
                                 {EVO_ITEM, ITEM_SUN_STONE, SPECIES_RAICHU_ALOLA, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
@@ -5968,7 +5968,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         )
         .levelUpLearnset = sGloomLevelUpLearnset,
         .teachableLearnset = sGloomTeachableLearnset,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_LEAF_STONE, SPECIES_VILEPLUME, CONDITIONS({IF_MIN_LEVEL, 25})}
+        .evolutions = EVOLUTION({EVO_LEVEL, 38, SPECIES_VILEPLUME}
                             #if P_GEN_2_CROSS_EVOS
                                 ,{EVO_ITEM, ITEM_SUN_STONE, SPECIES_BELLOSSOM, CONDITIONS({IF_MIN_LEVEL, 25})}
                             #endif
@@ -8058,7 +8058,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         )
         .levelUpLearnset = sPoliwhirlLevelUpLearnset,
         .teachableLearnset = sPoliwhirlTeachableLearnset,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_WATER_STONE, SPECIES_POLIWRATH, CONDITIONS({IF_MIN_LEVEL, 25})}
+        .evolutions = EVOLUTION({EVO_LEVEL, 37, SPECIES_POLIWRATH}
                             #if P_GEN_2_CROSS_EVOS
                                 ,{EVO_ITEM, ITEM_SHINY_STONE, SPECIES_POLITOED, CONDITIONS({IF_MIN_LEVEL, 25})}
                             #endif
@@ -10320,7 +10320,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .teachableLearnset = sSlowpokeGalarTeachableLearnset,
         .eggMoveLearnset = sSlowpokeGalarEggMoveLearnset,
         .formSpeciesIdTable = sSlowpokeFormSpeciesIdTable,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_DAWN_STONE, SPECIES_SLOWBRO_GALAR, CONDITIONS({IF_MIN_LEVEL, 25})}
+        .evolutions = EVOLUTION({EVO_LEVEL, 37, SPECIES_SLOWBRO_GALAR}
                             #if P_GEN_2_CROSS_EVOS
                                 ,{EVO_ITEM, ITEM_SHINY_STONE, SPECIES_SLOWKING_GALAR, CONDITIONS({IF_MIN_LEVEL, 25})}
                             #endif
@@ -13499,7 +13499,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .eggMoveLearnset = sTyrogueEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_ITEM, ITEM_FIRE_STONE, SPECIES_HITMONCHAN, CONDITIONS({IF_MIN_LEVEL, 25})},
                                 {EVO_ITEM, ITEM_WATER_STONE, SPECIES_HITMONLEE, CONDITIONS({IF_MIN_LEVEL, 25})},
-                                {EVO_ITEM, ITEM_THUNDER_STONE, SPECIES_HITMONTOP, CONDITIONS({IF_MIN_LEVEL, 25})}),
+                                {EVO_LEVEL, 28, SPECIES_HITMONTOP}),
     },
 #endif //P_GEN_2_CROSS_EVOS
 

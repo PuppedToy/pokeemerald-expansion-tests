@@ -648,8 +648,8 @@ const struct SpeciesInfo gSpeciesInfoGen9[] =
         .levelUpLearnset = sLechonkLevelUpLearnset,
         .teachableLearnset = sLechonkTeachableLearnset,
         .eggMoveLearnset = sLechonkEggMoveLearnset,
-        .evolutions = EVOLUTION({EVO_LEVEL, 18, SPECIES_OINKOLOGNE_M, CONDITIONS({IF_GENDER, MON_MALE})},
-                                {EVO_LEVEL, 18, SPECIES_OINKOLOGNE_F, CONDITIONS({IF_GENDER, MON_FEMALE})}),
+        .evolutions = EVOLUTION({EVO_ITEM, ITEM_DAWN_STONE, SPECIES_OINKOLOGNE_M, CONDITIONS({IF_MIN_LEVEL, 25})},
+                                {EVO_LEVEL, 18, SPECIES_OINKOLOGNE_F}),
     },
 
     [SPECIES_OINKOLOGNE_M] =
@@ -2272,7 +2272,7 @@ const struct SpeciesInfo gSpeciesInfoGen9[] =
         .levelUpLearnset = sCharcadetLevelUpLearnset,
         .teachableLearnset = sCharcadetTeachableLearnset,
         .eggMoveLearnset = sCharcadetEggMoveLearnset,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_DAWN_STONE, SPECIES_ARMAROUGE, CONDITIONS({IF_MIN_LEVEL, 25})},
+        .evolutions = EVOLUTION({EVO_LEVEL, 30, SPECIES_ARMAROUGE},
                                 {EVO_ITEM, ITEM_DUSK_STONE, SPECIES_CERULEDGE, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 

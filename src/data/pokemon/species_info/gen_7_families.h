@@ -2023,7 +2023,7 @@ const struct SpeciesInfo gSpeciesInfoGen7[] =
         .teachableLearnset = sRockruffTeachableLearnset,
         .eggMoveLearnset = sRockruffEggMoveLearnset,
         .formSpeciesIdTable = sRockruffFormSpeciesIdTable,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_SUN_STONE, SPECIES_LYCANROC_MIDDAY, CONDITIONS({IF_MIN_LEVEL, 25})},
+        .evolutions = EVOLUTION({EVO_LEVEL, 28, SPECIES_LYCANROC_MIDDAY},
                                 {EVO_ITEM, ITEM_MOON_STONE, SPECIES_LYCANROC_MIDNIGHT, CONDITIONS({IF_MIN_LEVEL, 25})},
                                 {EVO_ITEM, ITEM_DUSK_STONE, SPECIES_LYCANROC_DUSK, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
@@ -2089,7 +2089,7 @@ const struct SpeciesInfo gSpeciesInfoGen7[] =
         .formSpeciesIdTable = sRockruffFormSpeciesIdTable,
         .evolutions = EVOLUTION({EVO_ITEM, ITEM_SUN_STONE, SPECIES_LYCANROC_MIDDAY, CONDITIONS({IF_MIN_LEVEL, 25})},
                                 {EVO_ITEM, ITEM_MOON_STONE, SPECIES_LYCANROC_MIDNIGHT, CONDITIONS({IF_MIN_LEVEL, 25})},
-                                {EVO_ITEM, ITEM_DUSK_STONE, SPECIES_LYCANROC_DUSK, CONDITIONS({IF_MIN_LEVEL, 25})}),
+                                {EVO_LEVEL, 28, SPECIES_LYCANROC_DUSK}),
     },
 
     [SPECIES_LYCANROC_MIDDAY] =
@@ -5970,7 +5970,7 @@ const struct SpeciesInfo gSpeciesInfoGen7[] =
         .perfectIVCount = LEGENDARY_PERFECT_IV_COUNT,
         .levelUpLearnset = sCosmoemLevelUpLearnset,
         .teachableLearnset = sCosmoemTeachableLearnset,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_SUN_STONE, SPECIES_SOLGALEO, CONDITIONS({IF_MIN_LEVEL, 25})},
+        .evolutions = EVOLUTION({EVO_LEVEL, 53, SPECIES_SOLGALEO},
                                 {EVO_ITEM, ITEM_MOON_STONE, SPECIES_LUNALA, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
