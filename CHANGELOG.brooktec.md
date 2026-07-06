@@ -33,6 +33,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Branching evolutions are now standardized**: every Pokémon that can evolve into more than one
+  species now takes its most neutral/default form via **Rare Candy (level-up)** and the alternates via
+  **evolution stones**. Gender- and nature-locked splits (Espurr, Lechonk, Basculin, Toxel) become free
+  player choices instead of being fixed by the Pokémon's gender/nature, and Milcery drops its 63
+  cosmetic Alcremie forms down to a single base form. Eevee keeps its all-stones spread; Dunsparce and
+  Tandemaus keep their rare 1/100 forms (T-060).
 - Trainers now pick **strategic natures and abilities** (natures matched to each Pokémon's moveset and
   stats; abilities best-rated, hidden slot allowed) from **level 12 (Roxanne)** onward instead of only
   from level 28 — so gym-era teams have coherent natures and abilities much earlier. Below level 12 both

@@ -5913,7 +5913,7 @@ const struct SpeciesInfo gSpeciesInfoGen2[] =
         .levelUpLearnset = sUrsaringLevelUpLearnset,
         .teachableLearnset = sUrsaringTeachableLearnset,
     #if P_GEN_8_CROSS_EVOS
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_DUSK_STONE, SPECIES_URSALUNA, CONDITIONS({IF_MIN_LEVEL, 25})},
+        .evolutions = EVOLUTION({EVO_LEVEL, 45, SPECIES_URSALUNA},
                                 {EVO_ITEM, ITEM_MOON_STONE, SPECIES_URSALUNA_BLOODMOON, CONDITIONS({IF_MIN_LEVEL, 25})}),
     #endif
     },

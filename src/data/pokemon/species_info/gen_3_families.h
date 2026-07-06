@@ -1504,8 +1504,8 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .tmIlliterate = TRUE,
         .levelUpLearnset = sWurmpleLevelUpLearnset,
         .teachableLearnset = sWurmpleTeachableLearnset,
-        .evolutions = EVOLUTION({EVO_LEVEL, 7, SPECIES_SILCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_GT, 4})},
-                                {EVO_LEVEL, 7, SPECIES_CASCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_LT, 5})}),
+        .evolutions = EVOLUTION({EVO_LEVEL, 7, SPECIES_SILCOON},
+                                {EVO_ITEM, ITEM_MOON_STONE, SPECIES_CASCOON, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
     [SPECIES_SILCOON] =
@@ -10988,7 +10988,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .teachableLearnset = sClamperlTeachableLearnset,
         .eggMoveLearnset = sClamperlEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_ITEM, ITEM_DUSK_STONE, SPECIES_HUNTAIL, CONDITIONS({IF_MIN_LEVEL, 25})},
-                                {EVO_ITEM, ITEM_DAWN_STONE, SPECIES_GOREBYSS, CONDITIONS({IF_MIN_LEVEL, 25})}),
+                                {EVO_LEVEL, 30, SPECIES_GOREBYSS}),
     },
 
     [SPECIES_HUNTAIL] =

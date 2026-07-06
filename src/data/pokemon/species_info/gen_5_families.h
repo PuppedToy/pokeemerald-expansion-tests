@@ -4496,8 +4496,8 @@ const struct SpeciesInfo gSpeciesInfoGen5[] =
         .teachableLearnset = sBasculinWhiteStripedTeachableLearnset,
         .eggMoveLearnset = sBasculinWhiteStripedEggMoveLearnset,
         .formSpeciesIdTable = sBasculinFormSpeciesIdTable,
-        .evolutions = EVOLUTION({EVO_ITEM, ITEM_SUN_STONE, SPECIES_BASCULEGION_M, CONDITIONS({IF_MIN_LEVEL, 25})},
-                                {EVO_ITEM, ITEM_MOON_STONE, SPECIES_BASCULEGION_F, CONDITIONS({IF_MIN_LEVEL, 25})}),
+        .evolutions = EVOLUTION({EVO_ITEM, ITEM_DAWN_STONE, SPECIES_BASCULEGION_M, CONDITIONS({IF_MIN_LEVEL, 25})},
+                                {EVO_LEVEL, 40, SPECIES_BASCULEGION_F}),
     },
 
     [SPECIES_BASCULEGION_M] =
