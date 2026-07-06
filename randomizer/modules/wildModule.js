@@ -52,6 +52,13 @@ const BANNED_SPECIES_FOR_PICKING = [
     // Meloetta: Pirouette is a battle-only form reached via Relic Song. Only base Aria is placeable;
     // Aria's tier accounts for Pirouette via a weighted blend (see meloetta.js / T-064).
     'SPECIES_MELOETTA_PIROUETTE',
+    // T-067 — other battle-only / transient forms that leaked the same way as Pirouette. Their
+    // placeable base forms (Zacian-Hero, Zamazenta-Hero, Eternatus) stay pickable; Terapagos is fully
+    // battle-only (Normal/Stellar already banned above, Terastal added here).
+    'SPECIES_ZACIAN_CROWNED',
+    'SPECIES_ZAMAZENTA_CROWNED',
+    'SPECIES_ETERNATUS_ETERNAMAX',
+    'SPECIES_TERAPAGOS_TERASTAL',
 ];
 
 // T-052 — extra-starter categories. Each slot is { tier, kind: 'line'|'solo', lineLength }.

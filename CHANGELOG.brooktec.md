@@ -89,6 +89,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   still rated as the strong Pokémon it is: its tier is a weighted blend of both forms (55% Aria /
   45% Pirouette), reflecting its in-battle access to Pirouette, and a trainer's Meloetta always
   carries **Relic Song** so it can actually make the switch (T-064).
+- Other **battle-only forms** no longer leak into the game either — Zacian-Crowned, Zamazenta-Crowned,
+  Eternatus-Eternamax and Terapagos-Terastal are now excluded from wild/reward/trainer placement (their
+  base forms — Zacian-Hero, Zamazenta-Hero, Eternatus — stay obtainable) (T-067).
 - **Weather teams now keep their weather ability.** When a trainer's weather slot (rain/sun/sand/
   snow) can't find a real weather *setter* and falls back to a weather *abuser*, that mon now gets
   the matching weather ability (e.g. a Hisuian Qwilfish rain-abuser gets **Swift Swim**) instead of
