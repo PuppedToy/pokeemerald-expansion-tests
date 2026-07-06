@@ -65,7 +65,7 @@
 | [T-059](T-059-wattson-ability-patch-reward.md) | Wattson gives an Ability Patch after New Mauville instead of two scrolls | in-progress | 0.6.0 | 2026-07-05 |
 | [T-060](T-060-standardize-branching-evolutions.md) | Standardize branching evolutions (rare-candy default + stones) | done | 0.6.0 | 2026-07-06 |
 | [T-061](T-061-bundle-json-analysis.md) | Analyze bundle.json and spawn per-issue tasks | done | 0.6.0 | 2026-07-06 |
-| [T-062](T-062-mega-base-form-stab-moves.md) | Guarantee base form learns STAB of a mega's added/mutated type | proposed | 0.6.0 | 2026-07-06 |
+| [T-062](T-062-mega-base-form-stab-moves.md) | Guarantee base form learns STAB of a mega's added/mutated type | in-progress | 0.6.0 | 2026-07-06 |
 | [T-063](T-063-multiform-family-encounter-dedup.md) | Limit multi-form families to one obtainable per run | proposed | 0.6.0 | 2026-07-06 |
 | [T-064](T-064-meloetta-pirouette-form-handling.md) | Never place Meloetta-Pirouette; blend its tier and prioritize Relic Song | proposed | 0.6.0 | 2026-07-06 |
 | [T-065](T-065-weather-fallback-ability-fix.md) | Weather-archetype fallback must keep the weather ability | proposed | 0.6.0 | 2026-07-06 |

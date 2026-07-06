@@ -67,6 +67,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 - **Brawly** no longer fields only 5 Pokémon. When his gym kept the Fighting type, his 6th slot
   (a Makuhita-specific pick) could resolve to nothing and be dropped silently; it now has a
   generic Fighting fallback so the team is always complete (B-019, T-058).
+- When the randomizer changes a **Mega Evolution's type** to one its base form lacks (e.g. Mega
+  Aggron gaining Fighting, Mega Garchomp gaining Steel), the base form now learns at least one
+  damaging move of that new type — so the Mega actually gets usable STAB. Previously those moves
+  were added to the Mega's own learnset, which a Mega can't use (it fights with the base's known
+  moves) and which is discarded at build time anyway (T-062).
 
 ### Added
 
