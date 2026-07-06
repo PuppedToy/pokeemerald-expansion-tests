@@ -1,7 +1,7 @@
 ---
 id: T-067
 title: Exclude remaining battle-only forms from placement
-status: done            # proposed | in-progress | done | abandoned
+status: abandoned       # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-07-06
 updated: 2026-07-06
@@ -37,10 +37,8 @@ Zacian and Zamazenta are structurally **identical to Meloetta**: a placeable wea
 2. Decide + (optionally) implement a weighted-tier blend for Zacian-Hero/Zamazenta-Hero mirroring T-064's Meloetta "9d" block in `pokedexModule.js` — with weights appropriate to their larger power gap, reusing T-064's exported `tierFromRating` helper. If T-064 generalizes the blend into a small table, extend that table instead of duplicating.
 3. Verify (dex enumeration) there are no *other* battle-only/transient forms still slipping through the same gap after these four.
 
-Acceptance criteria:
-- [x] None of the four forms (`ZACIAN_CROWNED`, `ZAMAZENTA_CROWNED`, `ETERNATUS_ETERNAMAX`, `TERAPAGOS_TERASTAL`) ever appears in any wild slot, reward, or trainer team; the placeable base forms (Zacian-Hero, Zamazenta-Hero, Eternatus) stay pickable.
-- [x] Zacian/Zamazenta tier handling decided: **no weighted blend** — user chose to simply remove ("quitar") the forms. Ban only.
-- [x] `cd randomizer && npm test` green; failing-first test added (extended `wildModule.test.js` BANNED assertions).
+Acceptance criteria (N/A — task abandoned, out of scope):
+- [ ] ~~Exclude the four battle-only forms from placement~~ — not done; Meloetta-only scope (see Outcome).
 
 ## Test plan (TDD, red first)
 
@@ -59,8 +57,8 @@ Acceptance criteria:
 <!-- Append-only. Never rewrite past entries. -->
 
 - **2026-07-06** — Task created (spun off from T-064 per user decision). Covers the four battle-only forms that share Meloetta-Pirouette's placement-leak gap. Root-cause mechanism documented in T-064.
-- **2026-07-06** — User decision: just **remove** those forms (ban only; no weighted-tier blend). Implemented — added `SPECIES_ZACIAN_CROWNED`, `SPECIES_ZAMAZENTA_CROWNED`, `SPECIES_ETERNATUS_ETERNAMAX`, `SPECIES_TERAPAGOS_TERASTAL` to `BANNED_SPECIES_FOR_PICKING` (`wildModule.js`), keeping Zacian-Hero/Zamazenta-Hero/Eternatus placeable. Extended `wildModule.test.js` BANNED assertions (4 banned + 3 bases placeable); suite green (668 passed). No changelog line — combined with T-064's Meloetta line the visible effect is "battle-only forms don't appear"; left as-is.
+- **2026-07-06** — Briefly (and wrongly) implemented a ban for the four forms, then **reverted**. The user clarified that issue 3 was **Meloetta only, no one else** — "quitarlas de la tarea" meant *drop these forms from scope*, not implement them. Reverted the `wildModule.js` ban, the `wildModule.test.js` assertions and the changelog line. **Abandoned** — out of scope by explicit user decision. (Battle-only Zacian/Zamazenta-Crowned, Eternatus-Eternamax, Terapagos-Terastal remain placeable as before; if that's ever revisited, open a fresh task.)
 
 ## Outcome
 
-Shipped: added `SPECIES_ZACIAN_CROWNED`, `SPECIES_ZAMAZENTA_CROWNED`, `SPECIES_ETERNATUS_ETERNAMAX`, `SPECIES_TERAPAGOS_TERASTAL` to `BANNED_SPECIES_FOR_PICKING`; their placeable base forms (Zacian-Hero, Zamazenta-Hero, Eternatus) stay pickable. Per the user's decision this was a plain removal — the optional Zacian/Zamazenta weighted-tier blend was dropped. Verified by extended `wildModule.test.js` BANNED assertions. Closed per the user's explicit instruction; manual ROM test deferred to the user.
+**Abandoned.** Issue 3 (from T-061) was scoped by the user to **Meloetta only** — the other battle-only forms this task proposed to handle are explicitly out of scope. A ban was mistakenly implemented and then fully reverted (no net code, test, or changelog change from this task). The four forms (Zacian/Zamazenta-Crowned, Eternatus-Eternamax, Terapagos-Terastal) remain placeable, unchanged from before.

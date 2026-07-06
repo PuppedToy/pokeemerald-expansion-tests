@@ -578,27 +578,6 @@ describe('BANNED_SPECIES_FOR_PICKING — Palafin Zero-to-Hero', () => {
     });
 });
 
-describe('BANNED_SPECIES_FOR_PICKING — battle-only forms (T-067)', () => {
-    const { BANNED_SPECIES_FOR_PICKING } = require('../../modules/wildModule');
-
-    test.each([
-        'SPECIES_ZACIAN_CROWNED',
-        'SPECIES_ZAMAZENTA_CROWNED',
-        'SPECIES_ETERNATUS_ETERNAMAX',
-        'SPECIES_TERAPAGOS_TERASTAL',
-    ])('%s is banned (battle-only form)', (id) => {
-        expect(BANNED_SPECIES_FOR_PICKING).toContain(id);
-    });
-
-    test.each([
-        'SPECIES_ZACIAN_HERO',
-        'SPECIES_ZAMAZENTA_HERO',
-        'SPECIES_ETERNATUS',
-    ])('%s stays placeable (base form)', (id) => {
-        expect(BANNED_SPECIES_FOR_PICKING).not.toContain(id);
-    });
-});
-
 // T-063 Fix B — the wild-replacement loop must dedup by grouped family, not raw family, so two
 // cosmetic forms of one family (e.g. Pumpkaboo-Average + Pumpkaboo-Super) can't both be placed as
 // wild encounters in the same run. Both forms are given a unique bestEvoTier ('ZU') matched only by
