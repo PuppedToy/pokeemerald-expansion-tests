@@ -102,6 +102,11 @@ Acceptance criteria:
   invoked the REAL `defaultRestoreTree` (`git checkout -- src/`), so `cd backend && npm test` reverted
   uncommitted `src/` edits and mutated the working tree. Fixed by injecting a no-op `restoreTree` into every
   `fake:false` test. (Not a product bug — test infrastructure only; noted here for traceability.)
+- **2026-07-07** — Merged to master, deployed. Post-deploy box compile-verify caught **B-022**:
+  `location_nicknames.c` was missing `constants/characters.h` (EOS) and the map-constant headers
+  (`maps.h`/`map_groups.h`, needed by the writer-filled rows) → the committed file didn't compile, breaking
+  all ROM builds. Fixed by adding the includes (+ `characters.h` to `wild_encounter.c`). Awaiting re-push +
+  redeploy + re-verify. Same class as B-020 → recommend a CI/deploy game-compile gate (see B-022).
 - **2026-07-07** — Deliberate scope: roamers (Latias/Latios), eggs and in-game trades are NOT covered
   (not location encounters). Gender-lock forces gender for wild + gift; static maps hold single genderless
   legendaries so their gender isn't forced (name still applied). Pending owner in-game verification on a build.

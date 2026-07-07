@@ -25,3 +25,4 @@
 | [B-019](B-019-brawly-five-pokemon-team.md) | Brawly's team resolves to 5 pokemon instead of 6 (Makuhita slot dropped, no fallback) | fixed | major | 0.5.0 | 0.5.1 | randomizer/__tests__/unit/trainersBrawlyFallback.test.js |
 | [B-020](B-020-starter-nickname-pointer-array-build.md) | Starter-extra nickname array used _() in a pointer array — breaks the C build | fixed | critical | 0.6.0 | 0.6.0 | randomizer/__tests__/unit/starterNameWriter.test.js |
 | [B-021](B-021-killed-build-wedges-tree.md) | A killed build leaves the tree dirty and wedges every subsequent build | fixed | major | 0.5.0 | 0.6.0 | backend/__tests__/buildRom.test.js |
+| [B-022](B-022-location-nicknames-missing-includes.md) | location_nicknames.c missing includes (EOS / map constants) — breaks the C build | fixing | critical | 0.6.0 |  |  |

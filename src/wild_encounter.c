@@ -2,6 +2,7 @@
 #include "wild_encounter.h"
 #include "pokemon.h"
 #include "location_nicknames.h"
+#include "constants/characters.h" // EOS (used by the T-070 location-nickname hook)
 #include "metatile_behavior.h"
 #include "fieldmap.h"
 #include "follower_npc.h"

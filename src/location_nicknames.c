@@ -1,6 +1,9 @@
 #include "global.h"
 #include "pokemon.h"
 #include "location_nicknames.h"
+#include "constants/characters.h"  // EOS
+#include "constants/maps.h"        // MAP_GROUP / MAP_NUM (used by the writer-filled rows)
+#include "constants/map_groups.h"  // MAP_* constants (used by the writer-filled rows)
 
 // T-070 — per-ROM location -> nickname/gender table (see tasks/T-070). The committed default is a single
 // non-matching sentinel: it keeps the array non-empty (an empty `{}` array is a -Werror zero-length array,
