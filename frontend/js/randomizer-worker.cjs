@@ -72,5 +72,7 @@ function toModuleConfig(cfg) {
         e4TypeChanged: cfg.e4TypeChanged ?? 2,
         aquaTypes: cfg.aquaTypes,
         magmaTypes: cfg.magmaTypes,
+        // T-068 — starter nickname assignment (drives generate.js attachStarterNaming)
+        nicknames: cfg.nicknames,
     };
 }

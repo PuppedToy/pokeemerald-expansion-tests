@@ -877,7 +877,9 @@ static void CB2_GiveStarter(void)
 
     *GetVarPointer(VAR_STARTER_MON) = gSpecialVar_Result;
     starterMon = GetStarterPokemon(gSpecialVar_Result);
-    ScriptGiveMon(starterMon, 7, ITEM_NONE);
+    // T-068 — apply the bundle-decided gender + nickname for the chosen starter (defaults: MON_GENDERLESS
+    // + empty name → random gender + species name, i.e. unchanged when the feature is off).
+    ScriptGiveMonWithGenderAndNickname(starterMon, 7, ITEM_NONE, GetStarterGender(), GetStarterNickname());
     // Force 3 randomly chosen IVs to 31, then top up remaining IVs until shiny threshold
     {
         u8 iv31 = MAX_PER_STAT_IVS;
@@ -912,7 +914,9 @@ static void CB2_GiveStarter(void)
     for (u16 i = 0; i < GetExtraPokemonCount(); i++)
     {
         u16 nextMon = GetExtraPokemon(i);
-        ScriptGiveMon(nextMon, 7, ITEM_NONE);
+        // T-068 — nickname is set on the mon before placement, so it applies even to extras that
+        // overflow the 6-slot party into the PC.
+        ScriptGiveMonWithGenderAndNickname(nextMon, 7, ITEM_NONE, GetExtraStarterGender(i), GetExtraStarterNickname(i));
     }
     ResetTasks();
     PlayBattleBGM();

@@ -20,6 +20,7 @@ const { runWildModule } = require('./modules/wildModule');
 const wildData = require('./wild');
 const { writerDocs } = require('./writerDocs');
 const { applyEvoLevels } = require('./evoLevelWriter');
+const { buildStarterNaming } = require('./modules/starterNames');
 
 // Create a pokedex and roll its dynamic evolution levels EXACTLY ONCE, here, when the
 // pokedex is born. applyEvoLevels mutates each evo.param in place, so the levels become a
@@ -35,6 +36,22 @@ async function makePokedex(mcfg, baseData) {
     const evoConfig = mcfg.evoLevels || {};
     if (evoConfig.enabled !== false) applyEvoLevels(pokedex.pokes, evoConfig);
     return pokedex;
+}
+
+// T-068 — when the starter-nickname feature is on, decide per-ROM nicknames + coin genders and
+// attach them as the per-ROM `starterNaming` artifact (always per-ROM, never shared). `romDescriptors`
+// carries the {player, run} used to compute sharing groups. No-op when the feature is off, so a
+// feature-off bundle is byte-identical to before.
+function attachStarterNaming(cfg, mcfg, roms, romDescriptors) {
+    const nicknames = mcfg.nicknames;
+    if (!nicknames || !nicknames.enabled) return;
+    const extraCount = roms.reduce((max, r) => {
+        const list = r.artifacts.wild && r.artifacts.wild.extraStarters;
+        return Math.max(max, Array.isArray(list) ? list.length : 0);
+    }, 0);
+    if (extraCount === 0 && !nicknames.includeStarter) return;
+    const naming = buildStarterNaming({ nicknames, roms: romDescriptors, extraCount, seed: cfg.seed });
+    roms.forEach((rom, i) => { rom.artifacts.starterNaming = naming[i]; });
 }
 
 function bundle(sessionId, cfg, sharedData, roms, generatedAt) {
@@ -93,11 +110,13 @@ async function generateDefault(cfg, mcfg, sessionId, ctx) {
     const docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, cfg.seed, baseSeed);
     tick('Done'); await flush();
 
-    return bundle(sessionId, cfg, {}, [{
+    const roms = [{
         romIndex: 0,
         artifacts: { pokedex, trainers, starters, wild },
         docs,
-    }], ctx.generatedAt);
+    }];
+    attachStarterNaming(cfg, mcfg, roms, [{ player: 0, run: 0 }]);
+    return bundle(sessionId, cfg, {}, roms, ctx.generatedAt);
 }
 
 async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
@@ -135,9 +154,11 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
 
     const roms = [];
     const romArtifacts = []; // resolved objects needed for docs (not stored in bundle)
+    const romDescriptors = []; // {player, run} for starter-name sharing groups (T-068)
 
     for (let i = 0; i < numROMs; i++) {
         const label = numROMs > 1 ? ` (ROM ${i + 1}/${numROMs})` : '';
+        romDescriptors.push({ player: 0, run: i });
 
         let pokedex = sharedPokedex;
         if (!pokedex) {
@@ -182,6 +203,7 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
         tick(`Viewer ready${label}`); await flush();
     }
 
+    attachStarterNaming(cfg, mcfg, roms, romDescriptors);
     return bundle(sessionId, cfg, sharedData, roms, ctx.generatedAt);
 }
 
@@ -238,6 +260,7 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
 
     const roms = [];
     const romArtifacts = []; // resolved objects needed for docs
+    const romDescriptors = []; // {player, run} for starter-name sharing groups (T-068)
     const playersSharedData = [];
     let romIndex = 0;
 
@@ -298,6 +321,7 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
             };
 
             romArtifacts.push({ pokedex, trainers, starters, wild });
+            romDescriptors.push({ player: p, run: r });
             roms.push({
                 romIndex: romIndex++,
                 playerIndex: p,
@@ -341,6 +365,7 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
         tick(`Viewer ready (${label})`); await flush();
     }
 
+    attachStarterNaming(cfg, mcfg, roms, romDescriptors);
     return bundle(sessionId, cfg, sharedData, roms, ctx.generatedAt);
 }
 
@@ -359,4 +384,4 @@ async function runGeneration(cfg, mcfg, sessionId, hooks = {}) {
     throw new Error(`Unknown runType: ${cfg.runType}`);
 }
 
-module.exports = { runGeneration, generateDefault, generateNuzlocke, generateSoullink, bundle };
+module.exports = { runGeneration, generateDefault, generateNuzlocke, generateSoullink, bundle, attachStarterNaming };

@@ -14,6 +14,9 @@ import path from 'node:path';
 
 const SAFE_SLUG = /^[A-Za-z0-9_-]{1,64}$/;
 const SAFE_PATH = /^[A-Za-z0-9_./-]+$/;
+// T-068 — starter nicknames become C string literals in starter_choose.c, so restrict the charset
+// (letters/digits/space) and the length (POKEMON_NAME_LENGTH = 12) before the writer ever sees them.
+const SAFE_NICKNAME = /^[A-Za-z0-9 ]{0,12}$/;
 // The frontend's bundle (frontend/js/randomizer-worker.js) emits these top-level keys.
 const TOP_KEYS = new Set(['roms', 'config', 'sharedData', 'sessionId', 'formatVersion', 'generatedAt']);
 const REQUIRED_ARTIFACTS = ['pokedex', 'trainers', 'starters', 'wild'];
@@ -27,6 +30,26 @@ export function isSafeRelPath(p) {
   const norm = path.normalize(p);
   if (norm === '..' || norm.startsWith(`..${path.sep}`) || norm.includes(`${path.sep}..`)) return false;
   return true;
+}
+
+// T-068 — optional per-ROM `artifacts.starterNaming` = { starter: slot|null, extras: slot[] }
+// where slot = { gender: 'M'|'F', nickname: string|null }. Names are sanitized here (defence-in-depth).
+function validateSlot(slot, where, errors) {
+  if (slot === null) return;
+  if (!isPlainObject(slot)) { errors.push(`${where} must be an object or null`); return; }
+  if (slot.gender !== 'M' && slot.gender !== 'F') errors.push(`${where}.gender must be 'M' or 'F'`);
+  if (slot.nickname !== null && slot.nickname !== undefined
+      && (typeof slot.nickname !== 'string' || !SAFE_NICKNAME.test(slot.nickname))) {
+    errors.push(`${where}.nickname must be null or [A-Za-z0-9 ]{0,12}`);
+  }
+}
+
+function validateStarterNaming(sn, i, errors) {
+  const where = `roms[${i}].artifacts.starterNaming`;
+  if (!isPlainObject(sn)) { errors.push(`${where} must be an object`); return; }
+  if (sn.starter !== undefined) validateSlot(sn.starter, `${where}.starter`, errors);
+  if (!Array.isArray(sn.extras)) { errors.push(`${where}.extras must be an array`); return; }
+  sn.extras.forEach((slot, j) => validateSlot(slot, `${where}.extras[${j}]`, errors));
 }
 
 function validateRom(rom, i, errors) {
@@ -44,6 +67,9 @@ function validateRom(rom, i, errors) {
   const wild = rom.artifacts.wild;
   if (isPlainObject(wild) && wild.file !== undefined && !isSafeRelPath(wild.file)) {
     errors.push(`roms[${i}].artifacts.wild.file is not a safe relative path`);
+  }
+  if (rom.artifacts.starterNaming !== undefined) {
+    validateStarterNaming(rom.artifacts.starterNaming, i, errors);
   }
 }
 

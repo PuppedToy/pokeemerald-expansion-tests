@@ -131,6 +131,39 @@ static const u16 sStarterExtraMon[STARTER_EXTRA_COUNT] =
     SPECIES_SNORUNT,
 };
 
+// T-068 — optional baked-in starter nicknames + forced genders. Vanilla defaults (empty name,
+// MON_GENDERLESS) leave behavior unchanged; the ROM maker (randomizer/starterNameWriter.js) rewrites
+// these per-ROM from the bundle when the nickname feature is enabled. An empty name means "keep the
+// species name"; MON_GENDERLESS means "don't force a gender" (also used for genderless species).
+static const u8 sStarterNickname[] = _("");
+static const u8 sStarterGender = MON_GENDERLESS;
+
+static const u8 *const sStarterExtraNicknames[STARTER_EXTRA_COUNT] =
+{
+    _(""),
+    _(""),
+    _(""),
+    _(""),
+    _(""),
+    _(""),
+    _(""),
+    _(""),
+    _(""),
+};
+
+static const u8 sStarterExtraGenders[STARTER_EXTRA_COUNT] =
+{
+    MON_GENDERLESS,
+    MON_GENDERLESS,
+    MON_GENDERLESS,
+    MON_GENDERLESS,
+    MON_GENDERLESS,
+    MON_GENDERLESS,
+    MON_GENDERLESS,
+    MON_GENDERLESS,
+    MON_GENDERLESS,
+};
+
 static const struct BgTemplate sBgTemplates[3] =
 {
     {
@@ -379,6 +412,31 @@ u16 GetExtraPokemon(u16 extraPokemonId)
     if (extraPokemonId > STARTER_EXTRA_COUNT)
         extraPokemonId = 0;
     return sStarterExtraMon[extraPokemonId];
+}
+
+// T-068 — starter nickname / forced-gender accessors (see the arrays above).
+const u8 *GetStarterNickname(void)
+{
+    return sStarterNickname;
+}
+
+u8 GetStarterGender(void)
+{
+    return sStarterGender;
+}
+
+const u8 *GetExtraStarterNickname(u16 extraPokemonId)
+{
+    if (extraPokemonId >= STARTER_EXTRA_COUNT)
+        extraPokemonId = 0;
+    return sStarterExtraNicknames[extraPokemonId];
+}
+
+u8 GetExtraStarterGender(u16 extraPokemonId)
+{
+    if (extraPokemonId >= STARTER_EXTRA_COUNT)
+        extraPokemonId = 0;
+    return sStarterExtraGenders[extraPokemonId];
 }
 
 static void VblankCB_StarterChoose(void)
