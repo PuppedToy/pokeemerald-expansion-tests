@@ -52,6 +52,29 @@ function validateStarterNaming(sn, i, errors) {
   sn.extras.forEach((slot, j) => validateSlot(slot, `${where}.extras[${j}]`, errors));
 }
 
+// T-070 — optional per-ROM `artifacts.locationNaming` = { <MAP_* key>: slot } where slot is the same
+// { gender:'M'|'F'|null, nickname:string|null } shape. Map keys are C constant names; restrict to a safe
+// identifier charset (they become MAP_* tokens in generated C). Names are sanitized like starter nicknames.
+const SAFE_MAP_KEY = /^[A-Za-z0-9_]{1,64}$/;
+
+function validateLocationNaming(ln, i, errors) {
+  const where = `roms[${i}].artifacts.locationNaming`;
+  if (!isPlainObject(ln)) { errors.push(`${where} must be an object`); return; }
+  for (const key of Object.keys(ln)) {
+    if (!SAFE_MAP_KEY.test(key)) { errors.push(`${where} key "${key}" is not a safe MAP_* identifier`); continue; }
+    const slot = ln[key];
+    if (!isPlainObject(slot)) { errors.push(`${where}.${key} must be an object`); continue; }
+    // Unlike starter slots, a location's gender may be null (gender-lock off = names only).
+    if (slot.gender !== 'M' && slot.gender !== 'F' && slot.gender !== null && slot.gender !== undefined) {
+      errors.push(`${where}.${key}.gender must be 'M', 'F' or null`);
+    }
+    if (slot.nickname !== null && slot.nickname !== undefined
+        && (typeof slot.nickname !== 'string' || !SAFE_NICKNAME.test(slot.nickname))) {
+      errors.push(`${where}.${key}.nickname must be null or [A-Za-z0-9 ]{0,12}`);
+    }
+  }
+}
+
 function validateRom(rom, i, errors) {
   if (!isPlainObject(rom)) { errors.push(`roms[${i}] must be an object`); return; }
   if (!Number.isInteger(rom.romIndex) || rom.romIndex < 0) {
@@ -70,6 +93,9 @@ function validateRom(rom, i, errors) {
   }
   if (rom.artifacts.starterNaming !== undefined) {
     validateStarterNaming(rom.artifacts.starterNaming, i, errors);
+  }
+  if (rom.artifacts.locationNaming !== undefined) {
+    validateLocationNaming(rom.artifacts.locationNaming, i, errors);
   }
 }
 

@@ -47,6 +47,10 @@ const FULL_CONFIG = {
         shareAcrossSoullink: false, differentPerGender: false,
         pools: { both: ['Alex', 'Sam'], female: ['Mei'], male: ['Ivan'], single: ['Robin', 'Kai'] },
     },
+    locationNicknames: {
+        enabled: true, genderLockPerRoute: true, sameNamesAcrossRuns: true,
+        shareAcrossSoullink: false, pool: ['Percy', 'Rocky', 'Misty'],
+    },
 };
 
 test('a full config survives JSON serialize → parse unchanged (Save/Load)', () => {

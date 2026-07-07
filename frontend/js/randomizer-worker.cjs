@@ -74,5 +74,7 @@ function toModuleConfig(cfg) {
         magmaTypes: cfg.magmaTypes,
         // T-068 — starter nickname assignment (drives generate.js attachStarterNaming)
         nicknames: cfg.nicknames,
+        // T-070 — location-based nickname assignment (drives generate.js attachLocationNaming)
+        locationNicknames: cfg.locationNicknames,
     };
 }

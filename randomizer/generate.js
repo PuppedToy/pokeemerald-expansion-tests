@@ -21,6 +21,8 @@ const wildData = require('./wild');
 const { writerDocs } = require('./writerDocs');
 const { applyEvoLevels } = require('./evoLevelWriter');
 const { buildStarterNaming } = require('./modules/starterNames');
+const { buildLocationNaming } = require('./modules/locationNames');
+const { ENCOUNTER_LOCATIONS } = require('./data/encounterLocations');
 
 // Create a pokedex and roll its dynamic evolution levels EXACTLY ONCE, here, when the
 // pokedex is born. applyEvoLevels mutates each evo.param in place, so the levels become a
@@ -52,6 +54,17 @@ function attachStarterNaming(cfg, mcfg, roms, romDescriptors) {
     if (extraCount === 0 && !nicknames.includeStarter) return;
     const naming = buildStarterNaming({ nicknames, roms: romDescriptors, extraCount, seed: cfg.seed });
     roms.forEach((rom, i) => { rom.artifacts.starterNaming = naming[i]; });
+}
+
+// T-070 — when the location-nickname feature is on, decide a per-location nickname (+ optional locked
+// gender) for every encounter map and attach it as the per-ROM `locationNaming` artifact (always per-ROM,
+// never shared). Sharing groups reuse the same {player, run} descriptors as attachStarterNaming. No-op when
+// off, so a feature-off bundle is byte-identical.
+function attachLocationNaming(cfg, mcfg, roms, romDescriptors) {
+    const config = mcfg.locationNicknames;
+    if (!config || !config.enabled) return;
+    const naming = buildLocationNaming({ config, locations: ENCOUNTER_LOCATIONS, roms: romDescriptors, seed: cfg.seed });
+    roms.forEach((rom, i) => { rom.artifacts.locationNaming = naming[i]; });
 }
 
 function bundle(sessionId, cfg, sharedData, roms, generatedAt) {
@@ -116,6 +129,7 @@ async function generateDefault(cfg, mcfg, sessionId, ctx) {
         docs,
     }];
     attachStarterNaming(cfg, mcfg, roms, [{ player: 0, run: 0 }]);
+    attachLocationNaming(cfg, mcfg, roms, [{ player: 0, run: 0 }]);
     return bundle(sessionId, cfg, {}, roms, ctx.generatedAt);
 }
 
@@ -204,6 +218,7 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
     }
 
     attachStarterNaming(cfg, mcfg, roms, romDescriptors);
+    attachLocationNaming(cfg, mcfg, roms, romDescriptors);
     return bundle(sessionId, cfg, sharedData, roms, ctx.generatedAt);
 }
 
@@ -366,6 +381,7 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
     }
 
     attachStarterNaming(cfg, mcfg, roms, romDescriptors);
+    attachLocationNaming(cfg, mcfg, roms, romDescriptors);
     return bundle(sessionId, cfg, sharedData, roms, ctx.generatedAt);
 }
 
@@ -384,4 +400,4 @@ async function runGeneration(cfg, mcfg, sessionId, hooks = {}) {
     throw new Error(`Unknown runType: ${cfg.runType}`);
 }
 
-module.exports = { runGeneration, generateDefault, generateNuzlocke, generateSoullink, bundle, attachStarterNaming };
+module.exports = { runGeneration, generateDefault, generateNuzlocke, generateSoullink, bundle, attachStarterNaming, attachLocationNaming };

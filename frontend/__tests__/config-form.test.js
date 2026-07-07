@@ -69,6 +69,18 @@ test('Starters category is a dynamic add/remove list (Step 10)', () => {
   assert.match(src, /EXTRA_STARTER_TIER_OPTIONS\s*=\s*\['LEGEND', 'UBERS', 'OU', 'UU', 'RU', 'NU', 'PU'\]/, 'expanded tier vocabulary');
 });
 
+test('T-070: Location nicknames category with master toggle, gender-lock, sharing and a pool', () => {
+  assert.match(src, /data-cat="location-nicknames"/, 'Location nicknames category must exist');
+  for (const id of ['locnick-enabled', 'locnick-gender-lock', 'locnick-same-across-runs', 'locnick-share-soullink', 'locnick-pool']) {
+    assert.match(src, new RegExp(`id="${id}"`), `missing location control #${id}`);
+  }
+  assert.match(src, /locationNicknames:\s*LOCATION_NICKNAMES_DEFAULT/, 'DEFAULTS carries locationNicknames');
+  // Visibility wiring: box + run-type-gated rows.
+  assert.match(src, /#locnick-box/, 'master toggle shows/hides the box');
+  assert.match(src, /#locnick-same-runs-row/, 'same-across-runs row is run-type gated');
+  assert.match(src, /#locnick-share-soullink-row/, 'share-soul-link row is soul-link gated');
+});
+
 test('T-068: Starter nicknames category with master toggle, switches and gendered pools', () => {
   assert.match(src, /data-cat="nicknames"/, 'Nicknames category must exist');
   for (const id of ['nickname-enabled', 'nickname-include-starter', 'nickname-same-across-runs',
@@ -159,7 +171,7 @@ test('Mutations Advanced panel exposes every probability knob (Step 6)', () => {
 test('new option keys round-trip through DEFAULTS, getConfig and setConfig', () => {
   const workerSrc = fs.readFileSync(path.join(FE, 'js', 'randomizer-worker.cjs'), 'utf8');
   for (const key of ['gymsTypeChanged', 'e4TypeChanged', 'mutateStats', 'mutateAbilities', 'mutateTypes',
-    'mutateLearnsets', 'mutationProbs', 'evoLevels', 'extraStarters', 'aquaTypes', 'magmaTypes', 'nicknames']) {
+    'mutateLearnsets', 'mutationProbs', 'evoLevels', 'extraStarters', 'aquaTypes', 'magmaTypes', 'nicknames', 'locationNicknames']) {
     // defaults block + read (getConfig base) + restore (setConfig) + worker forwarding
     const occurrences = (src.match(new RegExp(key, 'g')) || []).length;
     assert.ok(occurrences >= 3, `${key} must appear in DEFAULTS, getConfig and setConfig (found ${occurrences})`);

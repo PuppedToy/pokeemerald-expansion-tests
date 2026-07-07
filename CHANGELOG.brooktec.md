@@ -9,6 +9,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Location nicknames (optional, off by default).** A new **Location nicknames** setting names every
+  wild, gift and static Pokémon after **where** it's found — one name per route/area (e.g. every Pokémon
+  caught on Route 102 is "Percy"). Names are drawn uniquely per run from an editable pool; an optional
+  **lock gender per route** makes all of a route's encounters share a gender for coherence (genderless /
+  fixed-gender species keep their own). For nuzlocke / soul-link you can keep the mapping consistent across
+  a player's runs or share it between players (T-070).
+
 - **Starter nicknames (optional, off by default).** A new **Starter nicknames** settings section can give
   the extra starters — and, optionally, your chosen starter — baked-in nicknames with matching genders. A
   50/50 coin picks each slot's gender (the maker applies it only where the species allows one; genderless
