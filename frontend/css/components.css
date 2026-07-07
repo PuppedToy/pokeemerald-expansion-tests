@@ -830,6 +830,21 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
 .feedback-textarea:focus { border-color: var(--obs-orange); }
 .feedback-textarea::placeholder { color: var(--obs-text-mute); }
 .feedback-textarea:disabled { cursor: not-allowed; }
+
+/* T-068 — starter-nickname pool tabs (Both / Female / Male). Scoped to the config form so they do not
+   collide with the document-wide Features .subtab handler. Mirrors the .subtab look. */
+.nick-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.nick-tab {
+  padding: 8px 16px; font-family: var(--obs-font-display); font-size: 10px;
+  letter-spacing: var(--obs-tracking); color: var(--obs-text-dim); cursor: pointer;
+  border: var(--obs-border); background: var(--obs-surface); box-shadow: var(--obs-shadow-sm);
+  transition: background var(--obs-ease), color var(--obs-ease);
+}
+.nick-tab:hover { background: var(--obs-surface-2); color: var(--obs-text); }
+.nick-tab.active { background: var(--obs-orange); color: var(--obs-on-orange); }
+.nick-tab-panel { display: none; flex-direction: column; gap: 8px; }
+.nick-tab-panel.active { display: flex; }
+
 .feedback-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .feedback-msg { font-family: var(--obs-font-body); font-size: 17px; color: var(--obs-text-dim); margin: 0; }
 .feedback-msg.ok { color: var(--obs-green); }

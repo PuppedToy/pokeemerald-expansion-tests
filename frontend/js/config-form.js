@@ -1,7 +1,26 @@
 import { storageGet, storageSet } from './storage.js';
 import { downloadConfig, readJsonFile, extractConfig } from './session.js';
+import { STARTER_NAME_POOLS } from './data/starterNames.js';
 
 const STORAGE_KEY = 'lastConfig';
+
+// T-068 — starter-nickname feature defaults. The default pools come from the SSOT data module; the
+// single pool (used when "different per gender" is off) is the union of all three. Pools are stored as
+// arrays in the config and shown newline-joined in the textareas.
+const NICKNAME_SINGLE_DEFAULT = [...STARTER_NAME_POOLS.both, ...STARTER_NAME_POOLS.female, ...STARTER_NAME_POOLS.male];
+const NICKNAMES_DEFAULT = {
+    enabled: false,
+    includeStarter: false,
+    sameNamesAcrossRuns: false,
+    shareAcrossSoullink: true,
+    differentPerGender: true,
+    pools: {
+        both: STARTER_NAME_POOLS.both.slice(),
+        female: STARTER_NAME_POOLS.female.slice(),
+        male: STARTER_NAME_POOLS.male.slice(),
+        single: NICKNAME_SINGLE_DEFAULT.slice(),
+    },
+};
 
 // T-052 — every tunable probability in the Pokémon-mutation algorithm (rebalancer.js). Surfaced in
 // the Mutations → Advanced panel; each falls back to `def` (its historical constant) in the engine.
@@ -120,6 +139,8 @@ const DEFAULTS = {
     e4TypeChanged: 2,     // 0..4 Elite Four members get a randomized type theme
     aquaTypes: ['WATER', 'DARK', 'POISON', 'ICE', 'RANDOM'],   // main, secondary, other 1..3
     magmaTypes: ['FIRE', 'GROUND', 'ROCK', 'GRASS', 'RANDOM'],
+    // T-068 — starter nickname assignment (default OFF)
+    nicknames: NICKNAMES_DEFAULT,
 };
 
 // T-052 — the 18 Pokémon types plus the RANDOM token, and the 5 evil-team slot labels. Used to
@@ -189,9 +210,10 @@ export class ConfigForm {
         const aquaTypes = this._readTeamTypes('aqua');
         const magmaTypes = this._readTeamTypes('magma');
         const extraStarters = (this._starterSpecs || []).map(s => ({ ...s }));
+        const nicknames = this._readNicknames();
         const base = { runType, difficulty, rebalance, balanceChance,
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs, evoLevels,
-            money, extraStarters, seed, showExactPositions, gymsTypeChanged, e4TypeChanged, aquaTypes, magmaTypes };
+            money, extraStarters, seed, showExactPositions, gymsTypeChanged, e4TypeChanged, aquaTypes, magmaTypes, nicknames };
 
         if (runType === 'nuzlocke') {
             const numROMs = parseInt(this._q('#nz-numroms').value, 10) || 3;
@@ -255,6 +277,7 @@ export class ConfigForm {
         this._q('#e4-type-changed').value = cfg.e4TypeChanged ?? 2;
         this._setTeamTypes('aqua', cfg.aquaTypes ?? DEFAULTS.aquaTypes);
         this._setTeamTypes('magma', cfg.magmaTypes ?? DEFAULTS.magmaTypes);
+        this._setNicknames(cfg.nicknames);
 
         if (runType === 'nuzlocke') {
             this._q('#nz-numroms').value = cfg.numROMs ?? 3;
@@ -309,6 +332,43 @@ export class ConfigForm {
             const el = this._q(`#${prefix}-type-${i}`);
             if (el) el.value = (types && types[i]) || 'RANDOM';
         }
+    }
+
+    /** Read the starter-nickname config (T-068). Textareas → arrays (one trimmed name per line). */
+    _readNicknames() {
+        const parsePool = (sel) => (this._q(sel)?.value ?? '').split('\n').map(s => s.trim()).filter(Boolean);
+        return {
+            enabled: this._q('#nickname-enabled').checked,
+            includeStarter: this._q('#nickname-include-starter').checked,
+            sameNamesAcrossRuns: this._q('#nickname-same-across-runs').checked,
+            shareAcrossSoullink: this._q('#nickname-share-soullink').checked,
+            differentPerGender: this._q('#nickname-different-per-gender').checked,
+            pools: {
+                both: parsePool('#nickname-pool-both'),
+                female: parsePool('#nickname-pool-female'),
+                male: parsePool('#nickname-pool-male'),
+                single: parsePool('#nickname-pool-single'),
+            },
+        };
+    }
+
+    /** Populate the starter-nickname controls from a config object (T-068). */
+    _setNicknames(n) {
+        n = n || {};
+        const pools = n.pools || {};
+        this._q('#nickname-enabled').checked = n.enabled === true;
+        this._q('#nickname-include-starter').checked = n.includeStarter === true;
+        this._q('#nickname-same-across-runs').checked = n.sameNamesAcrossRuns === true;
+        this._q('#nickname-share-soullink').checked = n.shareAcrossSoullink !== false;   // default ON
+        this._q('#nickname-different-per-gender').checked = n.differentPerGender !== false; // default ON
+        const setPool = (sel, arr, def) => {
+            const el = this._q(sel);
+            if (el) el.value = (Array.isArray(arr) ? arr : def).join('\n');
+        };
+        setPool('#nickname-pool-both', pools.both, STARTER_NAME_POOLS.both);
+        setPool('#nickname-pool-female', pools.female, STARTER_NAME_POOLS.female);
+        setPool('#nickname-pool-male', pools.male, STARTER_NAME_POOLS.male);
+        setPool('#nickname-pool-single', pools.single, NICKNAME_SINGLE_DEFAULT);
     }
 
     /** Re-render the extra-starter rows from this._starterSpecs (the source of truth). */
@@ -743,6 +803,82 @@ export class ConfigForm {
   </div>
 </section>
 
+<section class="config-category" data-cat="nicknames">
+  <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-nicknames">
+    <span class="config-cat-title">Starter nicknames</span><span class="config-cat-arrow">▶</span>
+  </button>
+  <div class="config-cat-body hidden" id="cat-body-nicknames">
+    <div class="card-glass" style="display:flex;flex-direction:column;gap:14px;padding:20px">
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Enable starter nicknames</div>
+          <div class="toggle-desc">Give the extra starters (and, optionally, your chosen starter) baked-in nicknames with matching genders.</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="nickname-enabled"><span class="toggle-track"></span></label>
+      </div>
+
+      <div id="nickname-box" style="display:none;flex-direction:column;gap:14px">
+        <div class="toggle-wrap">
+          <div>
+            <div class="toggle-label">Include the main starter</div>
+            <div class="toggle-desc">Also nickname the starter you pick. Off = only the extra starters are named.</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="nickname-include-starter"><span class="toggle-track"></span></label>
+        </div>
+
+        <div class="toggle-wrap" id="nickname-same-runs-row">
+          <div>
+            <div class="toggle-label">Same names across runs</div>
+            <div class="toggle-desc">Every ROM of this nuzlocke / soul-link uses the same name for the same starter slot. Off = each ROM rolls fresh names.</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="nickname-same-across-runs"><span class="toggle-track"></span></label>
+        </div>
+
+        <div class="toggle-wrap" id="nickname-share-soullink-row">
+          <div>
+            <div class="toggle-label">Share names between soul-link players</div>
+            <div class="toggle-desc">Each player's ROM at the same position shares slot names (e.g. every player's ROM 1 gets the same names).</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="nickname-share-soullink" checked><span class="toggle-track"></span></label>
+        </div>
+
+        <div class="toggle-wrap">
+          <div>
+            <div class="toggle-label">Different names per gender</div>
+            <div class="toggle-desc">Draw male / female names from separate pools plus a shared unisex pool. Off = one pool for everyone.</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="nickname-different-per-gender" checked><span class="toggle-track"></span></label>
+        </div>
+
+        <div id="nickname-pools-gendered">
+          <div class="nick-tabs" role="tablist">
+            <button type="button" class="nick-tab active" data-nick-tab="both">Both</button>
+            <button type="button" class="nick-tab" data-nick-tab="female">Female</button>
+            <button type="button" class="nick-tab" data-nick-tab="male">Male</button>
+          </div>
+          <div class="nick-tab-panel active" data-nick-panel="both">
+            <span class="field-hint">Unisex names — usable for either gender. One name per line; letters/digits/spaces only, max 12 characters.</span>
+            <textarea id="nickname-pool-both" class="feedback-textarea" rows="8" spellcheck="false"></textarea>
+          </div>
+          <div class="nick-tab-panel" data-nick-panel="female">
+            <span class="field-hint">Female names. One name per line; letters/digits/spaces only, max 12 characters.</span>
+            <textarea id="nickname-pool-female" class="feedback-textarea" rows="8" spellcheck="false"></textarea>
+          </div>
+          <div class="nick-tab-panel" data-nick-panel="male">
+            <span class="field-hint">Male names. One name per line; letters/digits/spaces only, max 12 characters.</span>
+            <textarea id="nickname-pool-male" class="feedback-textarea" rows="8" spellcheck="false"></textarea>
+          </div>
+        </div>
+
+        <div id="nickname-pool-single-wrap">
+          <span class="field-hint">Name pool — one name per line; letters/digits/spaces only, max 12 characters.</span>
+          <textarea id="nickname-pool-single" class="feedback-textarea" rows="8" spellcheck="false"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="config-category" data-cat="general">
   <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-general">
     <span class="config-cat-title">General</span><span class="config-cat-arrow">▶</span>
@@ -831,6 +967,21 @@ export class ConfigForm {
         const diffLevel = parseInt(this._q('#difficultySlider')?.value ?? '7', 10);
         const descEl = this._q('#difficultyDesc');
         if (descEl) descEl.textContent = getDifficultyDesc(diffLevel);
+
+        // T-068 — starter nicknames: master toggle shows the box; run-type gates the sharing switches;
+        // "different per gender" swaps the tabbed pools ↔ the single pool.
+        const nickOn = this._q('#nickname-enabled')?.checked;
+        const nickBox = this._q('#nickname-box');
+        if (nickBox) nickBox.style.display = nickOn ? 'flex' : 'none';
+        const sameRunsRow = this._q('#nickname-same-runs-row');
+        if (sameRunsRow) sameRunsRow.style.display = (runType === 'nuzlocke' || runType === 'soullink') ? '' : 'none';
+        const shareSlRow = this._q('#nickname-share-soullink-row');
+        if (shareSlRow) shareSlRow.style.display = (runType === 'soullink') ? '' : 'none';
+        const diffGender = this._q('#nickname-different-per-gender')?.checked;
+        const genderedPools = this._q('#nickname-pools-gendered');
+        const singlePool = this._q('#nickname-pool-single-wrap');
+        if (genderedPools) genderedPools.style.display = diffGender ? '' : 'none';
+        if (singlePool) singlePool.style.display = diffGender ? 'none' : '';
 
         if (runType === 'nuzlocke') this._syncNuzlocke();
         if (runType === 'soullink') this._syncSoullink();
@@ -959,6 +1110,24 @@ export class ConfigForm {
                 this._q(`#${prefix}-type-${i}`)?.addEventListener('change', onChange);
             }
         }
+
+        // T-068 — starter-nickname controls: toggles resync + save; pool textareas save on input.
+        for (const id of ['#nickname-enabled', '#nickname-include-starter', '#nickname-same-across-runs',
+            '#nickname-share-soullink', '#nickname-different-per-gender']) {
+            this._q(id)?.addEventListener('change', onChange);
+        }
+        for (const id of ['#nickname-pool-both', '#nickname-pool-female', '#nickname-pool-male', '#nickname-pool-single']) {
+            this._q(id)?.addEventListener('input', onChange);
+        }
+        // Nickname pool tabs (Both / Female / Male) — scoped to this form (distinct from the Features .subtab).
+        this.container.querySelectorAll('.nick-tab[data-nick-tab]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.nickTab;
+                this.container.querySelectorAll('.nick-tab[data-nick-tab]').forEach(b => b.classList.toggle('active', b === btn));
+                this.container.querySelectorAll('.nick-tab-panel[data-nick-panel]').forEach(p =>
+                    p.classList.toggle('active', p.dataset.nickPanel === tab));
+            });
+        });
 
         this._q('#btn-randomize-seed').addEventListener('click', () => {
             this._q('#seed').value = Math.floor(Math.random() * 0xFFFFFFFF);

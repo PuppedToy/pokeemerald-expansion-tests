@@ -69,6 +69,27 @@ test('Starters category is a dynamic add/remove list (Step 10)', () => {
   assert.match(src, /EXTRA_STARTER_TIER_OPTIONS\s*=\s*\['LEGEND', 'UBERS', 'OU', 'UU', 'RU', 'NU', 'PU'\]/, 'expanded tier vocabulary');
 });
 
+test('T-068: Starter nicknames category with master toggle, switches and gendered pools', () => {
+  assert.match(src, /data-cat="nicknames"/, 'Nicknames category must exist');
+  for (const id of ['nickname-enabled', 'nickname-include-starter', 'nickname-same-across-runs',
+    'nickname-share-soullink', 'nickname-different-per-gender']) {
+    assert.match(src, new RegExp(`id="${id}"`), `missing nickname control #${id}`);
+  }
+  for (const id of ['nickname-pool-both', 'nickname-pool-female', 'nickname-pool-male', 'nickname-pool-single']) {
+    assert.match(src, new RegExp(`id="${id}"`), `missing pool textarea #${id}`);
+  }
+  // Master toggle default OFF; share-soul-link + different-per-gender default ON in DEFAULTS.
+  assert.match(src, /nicknames:\s*NICKNAMES_DEFAULT/, 'DEFAULTS carries nicknames');
+  assert.match(src, /enabled:\s*false/, 'nicknames default OFF');
+  // Gendered pool tabs use scoped classes (not the document-wide .subtab).
+  assert.match(src, /class="nick-tab active"[^>]*data-nick-tab="both"/, 'Both tab active by default');
+  assert.match(src, /data-nick-panel="male"/, 'male pool panel present');
+  // Visibility wiring: box + run-type-gated rows + gendered/single swap.
+  assert.match(src, /#nickname-box/, 'master toggle shows/hides the box');
+  assert.match(src, /#nickname-same-runs-row/, 'same-across-runs row is run-type gated');
+  assert.match(src, /#nickname-share-soullink-row/, 'share-soul-link row is soul-link gated');
+});
+
 test('category headers are wired for accordion toggling', () => {
   assert.match(src, /querySelectorAll\('\.config-cat-header'\)/, 'headers must be wired to toggle their body');
 });
@@ -138,7 +159,7 @@ test('Mutations Advanced panel exposes every probability knob (Step 6)', () => {
 test('new option keys round-trip through DEFAULTS, getConfig and setConfig', () => {
   const workerSrc = fs.readFileSync(path.join(FE, 'js', 'randomizer-worker.cjs'), 'utf8');
   for (const key of ['gymsTypeChanged', 'e4TypeChanged', 'mutateStats', 'mutateAbilities', 'mutateTypes',
-    'mutateLearnsets', 'mutationProbs', 'evoLevels', 'extraStarters', 'aquaTypes', 'magmaTypes']) {
+    'mutateLearnsets', 'mutationProbs', 'evoLevels', 'extraStarters', 'aquaTypes', 'magmaTypes', 'nicknames']) {
     // defaults block + read (getConfig base) + restore (setConfig) + worker forwarding
     const occurrences = (src.match(new RegExp(key, 'g')) || []).length;
     assert.ok(occurrences >= 3, `${key} must appear in DEFAULTS, getConfig and setConfig (found ${occurrences})`);

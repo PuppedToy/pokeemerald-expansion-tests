@@ -65,6 +65,37 @@ test('wild.file (a writer-written path) must be a safe relative path', () => {
   assert.equal(validateBundle(validBundle({ roms: [bad] })).ok, false);
 });
 
+// ── T-068: starterNaming (optional per-ROM artifact) ─────────────────────────
+const withNaming = (naming) => validRom({
+  artifacts: { pokedex: 'p', trainers: 't', starters: 's', wild: { file: 'data/wild_encounters.json' }, starterNaming: naming },
+});
+const okBundle = (naming) => validateBundle(validBundle({ roms: [withNaming(naming)] }));
+
+test('starterNaming: a well-formed naming validates', () => {
+  const r = okBundle({ starter: { gender: 'M', nickname: 'Yuki' }, extras: [{ gender: 'F', nickname: 'Aada' }, { gender: 'M', nickname: null }] });
+  assert.equal(r.ok, true, JSON.stringify(r.errors));
+});
+
+test('starterNaming: starter may be null (include-starter off) and nickname may be empty', () => {
+  assert.equal(okBundle({ starter: null, extras: [{ gender: 'M', nickname: '' }] }).ok, true);
+});
+
+test('starterNaming: bad gender is rejected', () => {
+  assert.equal(okBundle({ starter: null, extras: [{ gender: 'X', nickname: 'Ana' }] }).ok, false);
+});
+
+test('starterNaming: unsafe nicknames (injection / bad chars / too long) are rejected', () => {
+  assert.equal(okBundle({ starter: null, extras: [{ gender: 'M', nickname: '"),SPECIES_X' }] }).ok, false);
+  assert.equal(okBundle({ starter: null, extras: [{ gender: 'M', nickname: 'a"b' }] }).ok, false);
+  assert.equal(okBundle({ starter: null, extras: [{ gender: 'M', nickname: 'ThirteenChars' }] }).ok, false); // 13 > 12
+});
+
+test('starterNaming: malformed shape is rejected', () => {
+  assert.equal(okBundle('nope').ok, false);
+  assert.equal(okBundle({ starter: null, extras: 'nope' }).ok, false);
+  assert.equal(okBundle({ starter: { gender: 'M' /* nickname missing is ok */ }, extras: [] }).ok, true);
+});
+
 test('isSafeRelPath blocks absolute, traversal and odd chars', () => {
   assert.equal(isSafeRelPath('data/wild.json'), true);
   assert.equal(isSafeRelPath('/etc/passwd'), false);

@@ -10,6 +10,10 @@ extern const u32 gPokeballSelection_Gfx[];
 u16 GetStarterPokemon(u16 chosenStarterId);
 u16 GetExtraPokemonCount();
 u16 GetExtraPokemon(u16 nextExtraPokemon);
+const u8 *GetStarterNickname(void);
+u8 GetStarterGender(void);
+const u8 *GetExtraStarterNickname(u16 extraPokemonId);
+u8 GetExtraStarterGender(u16 extraPokemonId);
 void CB2_ChooseStarter(void);
 
 #endif // GUARD_STARTER_CHOOSE_H

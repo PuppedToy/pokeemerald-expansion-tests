@@ -42,6 +42,11 @@ const FULL_CONFIG = {
     magmaTypes: ['STEEL', 'DRAGON', 'ROCK', 'GRASS', 'RANDOM'],
     seed: 123456,
     showExactPositions: true,
+    nicknames: {
+        enabled: true, includeStarter: true, sameNamesAcrossRuns: true,
+        shareAcrossSoullink: false, differentPerGender: false,
+        pools: { both: ['Alex', 'Sam'], female: ['Mei'], male: ['Ivan'], single: ['Robin', 'Kai'] },
+    },
 };
 
 test('a full config survives JSON serialize → parse unchanged (Save/Load)', () => {

@@ -9,6 +9,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Starter nicknames (optional, off by default).** A new **Starter nicknames** settings section can give
+  the extra starters — and, optionally, your chosen starter — baked-in nicknames with matching genders. A
+  50/50 coin picks each slot's gender (the maker applies it only where the species allows one; genderless
+  Pokémon like Magnemite are unaffected) and a unique name is drawn from editable pools. Pools ship with 300
+  male, 300 female and 50 unisex multilingual names; you can switch to a single shared pool, include/exclude
+  the main starter, and (for nuzlocke / soul-link) keep names consistent across a player's runs or share them
+  between players. Names never repeat within a game (T-068).
+
 - The randomizer settings are now split into collapsible **categories** (Run type · Difficulty ·
   Pokémon mutations · Evolution levels · Trainers & bosses · Rewards · Starters · General), and a
   large batch of previously-hardcoded behaviours became **frontend options** — all of them save/load

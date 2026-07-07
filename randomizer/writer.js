@@ -33,6 +33,7 @@ const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 const items = require('./items.js');
 const { savePokemonData } = require('./pokemonWriter.js');
 const { writeEvoLevels } = require('./evoLevelWriter.js');
+const { applyStarterNames } = require('./starterNameWriter.js');
 
 const startersFile = path.resolve(__dirname, '..', 'src', 'starter_choose.c');
 
@@ -232,7 +233,7 @@ function resolveMailMints(itemAssignments, items) {
 // deterministic across ROMs that share a trainer artifact but differ in wild data.
 // docs: when provided (bundle mode), trainer teams are taken verbatim from the pre-resolved
 // docs instead of re-resolved via RNG — guaranteeing the ROM matches the bundle's docs.
-async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null, docs = null, runNs = '') {
+async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null, docs = null, runNs = '', starterNaming = null) {
     let { pokes: pokemonList, moves, abilities } = pokedexArtifact;
     // Deep-clone trainersData — mega trainer processing splices entries in-place,
     // which would corrupt the shared artifact when the same trainers object is used across ROMs.
@@ -282,6 +283,13 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
         starterExtraCountText,
         `#define STARTER_EXTRA_COUNT ${extraStarters.length}`
     );
+
+    // T-068 — in bundle mode with the nickname feature on, rewrite the nickname/gender arrays from the
+    // bundle's per-ROM naming. When starterNaming is null (analyze/randomize mode, or feature off) the
+    // committed vanilla defaults stay (empty names, MON_GENDERLESS) → unchanged behavior.
+    if (starterNaming) {
+        newStartersFile = applyStarterNames(newStartersFile, starterNaming, extraStarters.length);
+    }
 
     await fs.writeFile(startersFile, newStartersFile, 'utf8');
     console.log('Starter pokemon updated successfully.');
