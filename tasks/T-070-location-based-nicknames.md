@@ -107,6 +107,14 @@ Acceptance criteria:
   (`maps.h`/`map_groups.h`, needed by the writer-filled rows) → the committed file didn't compile, breaking
   all ROM builds. Fixed by adding the includes (+ `characters.h` to `wild_encounter.c`). Awaiting re-push +
   redeploy + re-verify. Same class as B-020 → recommend a CI/deploy game-compile gate (see B-022).
+- **2026-07-07** — Config restructure (owner feedback): location nicknames are no longer a separate
+  category with their own pool. They now live INSIDE the "Nicknames" section as an "Auto-nickname every
+  Pokémon by location" switch and share the same pools + `differentPerGender`. "Lock gender per route" is
+  disabled unless auto-location AND different-per-gender are both on. Config: `locationNicknames` removed;
+  `nicknames` gained `autoLocation` + `lockGenderPerRoute`. `buildLocationNaming` now consumes the shared
+  `nicknames` config (gender coin picks the pool when differentPerGender; forced only when lockGenderPerRoute).
+  The per-ROM `locationNaming` artifact + C/writer are UNCHANGED (no recompile). Suites green
+  (randomizer 737, backend 121, frontend 23); build.js OK; e2e smoke OK.
 - **2026-07-07** — Deliberate scope: roamers (Latias/Latios), eggs and in-game trades are NOT covered
   (not location encounters). Gender-lock forces gender for wild + gift; static maps hold single genderless
   legendaries so their gender isn't forced (name still applied). Pending owner in-game verification on a build.

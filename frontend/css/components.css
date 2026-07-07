@@ -845,6 +845,9 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
 .nick-tab-panel { display: none; flex-direction: column; gap: 8px; }
 .nick-tab-panel.active { display: flex; }
 
+/* T-070 — a toggle row whose control is currently unavailable (e.g. lock-gender-per-route). */
+.control-disabled { opacity: 0.45; }
+
 .feedback-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .feedback-msg { font-family: var(--obs-font-body); font-size: 17px; color: var(--obs-text-dim); margin: 0; }
 .feedback-msg.ok { color: var(--obs-green); }

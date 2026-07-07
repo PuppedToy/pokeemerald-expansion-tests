@@ -50,13 +50,9 @@ const FULL_CONFIG = {
     seed: 123456,
     showExactPositions: true,
     nicknames: {
-        enabled: true, includeStarter: true, sameNamesAcrossRuns: true,
-        shareAcrossSoullink: false, differentPerGender: false,
+        enabled: true, includeStarter: true, autoLocation: true, lockGenderPerRoute: true,
+        sameNamesAcrossRuns: true, shareAcrossSoullink: false, differentPerGender: true,
         pools: { both: ['Alex', 'Sam'], female: ['Mei'], male: ['Ivan'], single: ['Robin', 'Kai'] },
-    },
-    locationNicknames: {
-        enabled: true, genderLockPerRoute: true, sameNamesAcrossRuns: true,
-        shareAcrossSoullink: false, pool: ['Percy', 'Rocky', 'Misty'],
     },
 };
 

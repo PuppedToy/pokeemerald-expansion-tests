@@ -56,14 +56,14 @@ function attachStarterNaming(cfg, mcfg, roms, romDescriptors) {
     roms.forEach((rom, i) => { rom.artifacts.starterNaming = naming[i]; });
 }
 
-// T-070 — when the location-nickname feature is on, decide a per-location nickname (+ optional locked
-// gender) for every encounter map and attach it as the per-ROM `locationNaming` artifact (always per-ROM,
-// never shared). Sharing groups reuse the same {player, run} descriptors as attachStarterNaming. No-op when
-// off, so a feature-off bundle is byte-identical.
+// T-070 — location-based nicknames are part of the shared `nicknames` feature (same pools/settings as
+// starters), gated by its master toggle + the `autoLocation` switch. Decides a per-location nickname
+// (+ optional locked gender) for every encounter map and attaches it as the per-ROM `locationNaming`
+// artifact (always per-ROM, never shared). No-op when off, so a feature-off bundle is byte-identical.
 function attachLocationNaming(cfg, mcfg, roms, romDescriptors) {
-    const config = mcfg.locationNicknames;
-    if (!config || !config.enabled) return;
-    const naming = buildLocationNaming({ config, locations: ENCOUNTER_LOCATIONS, roms: romDescriptors, seed: cfg.seed });
+    const nicknames = mcfg.nicknames;
+    if (!nicknames || !nicknames.enabled || !nicknames.autoLocation) return;
+    const naming = buildLocationNaming({ nicknames, locations: ENCOUNTER_LOCATIONS, roms: romDescriptors, seed: cfg.seed });
     roms.forEach((rom, i) => { rom.artifacts.locationNaming = naming[i]; });
 }
 

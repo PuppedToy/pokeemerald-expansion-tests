@@ -2,34 +2,55 @@
 
 // T-070 — location-based nickname assignment (bundle side).
 //
-// Pure, seeded, no I/O. Assigns ONE unique nickname per LOCATION (a MAP_* key) per ROM, drawn without
-// replacement from a single pool, plus an optional per-location gender coin used only when
-// `genderLockPerRoute` (so all encounters on a route can share a gender for coherence). The ROM maker
-// applies the name to every wild/gift/static mon spawned on that map, and forces the gender only where
-// the species allows it (genderless/fixed-gender mons keep their real gender).
+// Part of the SAME nickname feature as T-068 starters: it reuses the shared `nicknames` config — the same
+// name pools and the `differentPerGender` switch — so there is only ever ONE name list. Assigns one
+// unique nickname per LOCATION (a MAP_* key) per ROM, drawn without replacement.
 //
-// Sharing (nuzlocke same-across-runs, soul-link share-per-player) reuses T-068's group logic verbatim:
-// ROMs in one sharing group get an identical location→name mapping; independent groups draw from fresh
-// pool copies (names may coincide across separate games — that's fine).
+// Gender: when `differentPerGender` is on, a coin picks which gender pool (∪ both) the route's name comes
+// from; that gender is FORCED in-game only when `lockGenderPerRoute` is also on (else the name is still
+// gendered-pool-derived but the mons keep their natural gender). When `differentPerGender` is off, names
+// come from the single pool and no gender is forced (gender-lock is disabled in the UI).
+//
+// Sharing (nuzlocke same-across-runs, soul-link share-per-player) reuses T-068's group logic.
 
 const rng = require('../rng');
 const { groupKeyFor, normalizePool } = require('./starterNames');
 
 const GOLDEN = 0x9E3779B9;
+// Salt so location group seeds don't collide with starter group seeds (both derive from cfg.seed), which
+// would otherwise correlate the first starter name with the first location's name.
+const LOCATION_SALT = 0x1B873593;
+
+function mergePools(a, b) {
+    const out = a.slice();
+    const seen = new Set(a.map((n) => n.toLowerCase()));
+    for (const n of b) {
+        const key = n.toLowerCase();
+        if (!seen.has(key)) { seen.add(key); out.push(n); }
+    }
+    return out;
+}
 
 // One location→{nickname,gender} mapping for a whole sharing group.
-function rollGroup(pool, locations, genderLock) {
+function rollGroup({ femalePool, malePool, singlePool, differentPerGender, lockGender }, locations) {
     const used = new Set();
     const map = {};
     for (const loc of locations) {
-        const gender = genderLock ? (rng.random() < 0.5 ? 'M' : 'F') : null;
-        const avail = pool.filter((n) => !used.has(n.toLowerCase()));
+        let coin = null;
+        let candidates;
+        if (differentPerGender) {
+            coin = rng.random() < 0.5 ? 'M' : 'F';
+            candidates = coin === 'F' ? femalePool : malePool;
+        } else {
+            candidates = singlePool;
+        }
+        const avail = candidates.filter((n) => !used.has(n.toLowerCase()));
         let nickname = null;
         if (avail.length > 0) {
             nickname = avail[Math.floor(rng.random() * avail.length)];
             used.add(nickname.toLowerCase());
         }
-        map[loc] = { nickname, gender };
+        map[loc] = { nickname, gender: (differentPerGender && lockGender) ? coin : null };
     }
     return map;
 }
@@ -42,21 +63,31 @@ const cloneMap = (m) => {
 
 /**
  * @param {object}   args
- * @param {object}   args.config     the `locationNicknames` config (enabled/genderLockPerRoute/…/pool)
+ * @param {object}   args.nicknames  the shared `nicknames` config (pools, differentPerGender,
+ *                                    lockGenderPerRoute, sameNamesAcrossRuns, shareAcrossSoullink)
  * @param {string[]} args.locations  the location keys (MAP_* strings) that need a name
  * @param {Array}    args.roms       per-ROM descriptors in bundle order: [{ player, run }, …]
  * @param {number}   args.seed       base RNG seed (cfg.seed)
  * @returns {Array<Object<string,{nickname:?string,gender:?('M'|'F')}>>} one location→naming map per ROM
  */
-function buildLocationNaming({ config, locations, roms, seed }) {
-    const pool = normalizePool(config.pool);
-    // Canonical draw order so a location's name depends only on the location SET + seed, never on the
-    // order the caller happened to list them in.
+function buildLocationNaming({ nicknames, locations, roms, seed }) {
+    const male = normalizePool(nicknames.pools?.male);
+    const female = normalizePool(nicknames.pools?.female);
+    const both = normalizePool(nicknames.pools?.both);
+    let single = normalizePool(nicknames.pools?.single);
+    if (single.length === 0) single = mergePools(mergePools(both, female), male);
+    const groupPools = {
+        femalePool: mergePools(female, both),
+        malePool: mergePools(male, both),
+        singlePool: single,
+        differentPerGender: nicknames.differentPerGender !== false,
+        lockGender: nicknames.lockGenderPerRoute === true,
+    };
+
     const sortedLocations = [...new Set(locations)].sort();
-    // groupKeyFor only reads shareAcrossSoullink + sameNamesAcrossRuns off this object.
     const shareCfg = {
-        shareAcrossSoullink: config.shareAcrossSoullink,
-        sameNamesAcrossRuns: config.sameNamesAcrossRuns,
+        shareAcrossSoullink: nicknames.shareAcrossSoullink,
+        sameNamesAcrossRuns: nicknames.sameNamesAcrossRuns,
     };
 
     const seqByKey = new Map();
@@ -64,9 +95,8 @@ function buildLocationNaming({ config, locations, roms, seed }) {
     for (const rom of roms) {
         const key = groupKeyFor(rom, shareCfg);
         if (seqByKey.has(key)) continue;
-        const groupSeed = (seed ^ (ordinal * GOLDEN)) >>> 0;
-        rng.seed(groupSeed);
-        seqByKey.set(key, rollGroup(pool, sortedLocations, config.genderLockPerRoute));
+        rng.seed(((seed ^ (ordinal * GOLDEN)) ^ LOCATION_SALT) >>> 0);
+        seqByKey.set(key, rollGroup(groupPools, sortedLocations));
         ordinal++;
     }
 

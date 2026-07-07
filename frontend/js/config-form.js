@@ -11,6 +11,10 @@ const NICKNAME_SINGLE_DEFAULT = [...STARTER_NAME_POOLS.both, ...STARTER_NAME_POO
 const NICKNAMES_DEFAULT = {
     enabled: false,
     includeStarter: false,
+    // T-070 — location-based auto-nicknames share this same feature/pools. `autoLocation` turns them on;
+    // `lockGenderPerRoute` (only usable when autoLocation + differentPerGender) forces a route's gender.
+    autoLocation: false,
+    lockGenderPerRoute: false,
     sameNamesAcrossRuns: false,
     shareAcrossSoullink: true,
     differentPerGender: true,
@@ -20,17 +24,6 @@ const NICKNAMES_DEFAULT = {
         male: STARTER_NAME_POOLS.male.slice(),
         single: NICKNAME_SINGLE_DEFAULT.slice(),
     },
-};
-
-// T-070 — location-based nickname feature defaults. Its own single name pool (routes aren't gendered);
-// gender-lock is a separate optional per-route forced gender. Sharing switches mirror T-068 but are
-// independent of the starter feature.
-const LOCATION_NICKNAMES_DEFAULT = {
-    enabled: false,
-    genderLockPerRoute: false,
-    sameNamesAcrossRuns: false,
-    shareAcrossSoullink: true,
-    pool: NICKNAME_SINGLE_DEFAULT.slice(),
 };
 
 // T-052 — every tunable probability in the Pokémon-mutation algorithm (rebalancer.js). Surfaced in
@@ -228,10 +221,8 @@ const DEFAULTS = {
     e4TypeChanged: 2,     // 0..4 Elite Four members get a randomized type theme
     aquaTypes: ['WATER', 'DARK', 'POISON', 'ICE', 'RANDOM'],   // main, secondary, other 1..3
     magmaTypes: ['FIRE', 'GROUND', 'ROCK', 'GRASS', 'RANDOM'],
-    // T-068 — starter nickname assignment (default OFF)
+    // T-068/T-070 — nicknames (starters + location-based), default OFF
     nicknames: NICKNAMES_DEFAULT,
-    // T-070 — location-based nickname assignment (default OFF)
-    locationNicknames: LOCATION_NICKNAMES_DEFAULT,
 };
 
 // T-052 — the 18 Pokémon types plus the RANDOM token, and the 5 evil-team slot labels. Used to
@@ -304,11 +295,10 @@ export class ConfigForm {
         const starterQualityRaw = (this._q('#starter-quality') || {}).value;
         const starterQuality = EXTRA_STARTER_TIER_OPTIONS.includes(starterQualityRaw) ? starterQualityRaw : 'UU';
         const nicknames = this._readNicknames();
-        const locationNicknames = this._readLocationNicknames();
         const prices = this._readPrices();
         const base = { runType, difficulty, rebalance, balanceChance,
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs, evoLevels,
-            money, prices, starterQuality, extraStarters, seed, showExactPositions, gymsTypeChanged, e4TypeChanged, aquaTypes, magmaTypes, nicknames, locationNicknames };
+            money, prices, starterQuality, extraStarters, seed, showExactPositions, gymsTypeChanged, e4TypeChanged, aquaTypes, magmaTypes, nicknames };
 
         if (runType === 'nuzlocke') {
             const numROMs = parseInt(this._q('#nz-numroms').value, 10) || 3;
@@ -376,7 +366,6 @@ export class ConfigForm {
         this._setTeamTypes('aqua', cfg.aquaTypes ?? DEFAULTS.aquaTypes);
         this._setTeamTypes('magma', cfg.magmaTypes ?? DEFAULTS.magmaTypes);
         this._setNicknames(cfg.nicknames);
-        this._setLocationNicknames(cfg.locationNicknames);
 
         if (runType === 'nuzlocke') {
             this._q('#nz-numroms').value = cfg.numROMs ?? 3;
@@ -439,6 +428,8 @@ export class ConfigForm {
         return {
             enabled: this._q('#nickname-enabled').checked,
             includeStarter: this._q('#nickname-include-starter').checked,
+            autoLocation: this._q('#nickname-auto-location').checked,
+            lockGenderPerRoute: this._q('#nickname-lock-gender-route').checked,
             sameNamesAcrossRuns: this._q('#nickname-same-across-runs').checked,
             shareAcrossSoullink: this._q('#nickname-share-soullink').checked,
             differentPerGender: this._q('#nickname-different-per-gender').checked,
@@ -457,6 +448,8 @@ export class ConfigForm {
         const pools = n.pools || {};
         this._q('#nickname-enabled').checked = n.enabled === true;
         this._q('#nickname-include-starter').checked = n.includeStarter === true;
+        this._q('#nickname-auto-location').checked = n.autoLocation === true;
+        this._q('#nickname-lock-gender-route').checked = n.lockGenderPerRoute === true;
         this._q('#nickname-same-across-runs').checked = n.sameNamesAcrossRuns === true;
         this._q('#nickname-share-soullink').checked = n.shareAcrossSoullink !== false;   // default ON
         this._q('#nickname-different-per-gender').checked = n.differentPerGender !== false; // default ON
@@ -468,29 +461,6 @@ export class ConfigForm {
         setPool('#nickname-pool-female', pools.female, STARTER_NAME_POOLS.female);
         setPool('#nickname-pool-male', pools.male, STARTER_NAME_POOLS.male);
         setPool('#nickname-pool-single', pools.single, NICKNAME_SINGLE_DEFAULT);
-    }
-
-    /** Read the location-nickname config (T-070). Single pool textarea → array (one trimmed name per line). */
-    _readLocationNicknames() {
-        const pool = (this._q('#locnick-pool')?.value ?? '').split('\n').map(s => s.trim()).filter(Boolean);
-        return {
-            enabled: this._q('#locnick-enabled').checked,
-            genderLockPerRoute: this._q('#locnick-gender-lock').checked,
-            sameNamesAcrossRuns: this._q('#locnick-same-across-runs').checked,
-            shareAcrossSoullink: this._q('#locnick-share-soullink').checked,
-            pool,
-        };
-    }
-
-    /** Populate the location-nickname controls from a config object (T-070). */
-    _setLocationNicknames(n) {
-        n = n || {};
-        this._q('#locnick-enabled').checked = n.enabled === true;
-        this._q('#locnick-gender-lock').checked = n.genderLockPerRoute === true;
-        this._q('#locnick-same-across-runs').checked = n.sameNamesAcrossRuns === true;
-        this._q('#locnick-share-soullink').checked = n.shareAcrossSoullink !== false; // default ON
-        const el = this._q('#locnick-pool');
-        if (el) el.value = (Array.isArray(n.pool) ? n.pool : NICKNAME_SINGLE_DEFAULT).join('\n');
     }
 
     /** Re-render the extra-starter rows from this._starterSpecs (the source of truth). */
@@ -978,14 +948,14 @@ export class ConfigForm {
 
 <section class="config-category" data-cat="nicknames">
   <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-nicknames">
-    <span class="config-cat-title">Starter nicknames</span><span class="config-cat-arrow">▶</span>
+    <span class="config-cat-title">Nicknames</span><span class="config-cat-arrow">▶</span>
   </button>
   <div class="config-cat-body hidden" id="cat-body-nicknames">
     <div class="card-glass" style="display:flex;flex-direction:column;gap:14px;padding:20px">
       <div class="toggle-wrap">
         <div>
-          <div class="toggle-label">Enable starter nicknames</div>
-          <div class="toggle-desc">Give the extra starters (and, optionally, your chosen starter) baked-in nicknames with matching genders.</div>
+          <div class="toggle-label">Enable nicknames</div>
+          <div class="toggle-desc">Give the extra starters (and, optionally, your chosen starter) baked-in nicknames with matching genders. All nickname options below — including location-based names — share the same name pool.</div>
         </div>
         <label class="toggle"><input type="checkbox" id="nickname-enabled"><span class="toggle-track"></span></label>
       </div>
@@ -999,10 +969,26 @@ export class ConfigForm {
           <label class="toggle"><input type="checkbox" id="nickname-include-starter"><span class="toggle-track"></span></label>
         </div>
 
+        <div class="toggle-wrap">
+          <div>
+            <div class="toggle-label">Auto-nickname every Pokémon by location</div>
+            <div class="toggle-desc">Also name every wild, gift and static Pokémon after where it's found — one name per route/area (e.g. every Pokémon on Route 102 is "Percy"), drawn from the same pool below.</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="nickname-auto-location"><span class="toggle-track"></span></label>
+        </div>
+
+        <div class="toggle-wrap" id="nickname-lock-gender-route-row">
+          <div>
+            <div class="toggle-label">Lock gender per route</div>
+            <div class="toggle-desc">Make all of a route's encounters share one gender for coherence (genderless / fixed-gender species keep their own). Available only with location nicknames and different-names-per-gender both on.</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="nickname-lock-gender-route"><span class="toggle-track"></span></label>
+        </div>
+
         <div class="toggle-wrap" id="nickname-same-runs-row">
           <div>
             <div class="toggle-label">Same names across runs</div>
-            <div class="toggle-desc">Every ROM of this nuzlocke / soul-link uses the same name for the same starter slot. Off = each ROM rolls fresh names.</div>
+            <div class="toggle-desc">Every ROM of this nuzlocke / soul-link uses the same name for the same starter slot / route. Off = each ROM rolls fresh names.</div>
           </div>
           <label class="toggle"><input type="checkbox" id="nickname-same-across-runs"><span class="toggle-track"></span></label>
         </div>
@@ -1010,7 +996,7 @@ export class ConfigForm {
         <div class="toggle-wrap" id="nickname-share-soullink-row">
           <div>
             <div class="toggle-label">Share names between soul-link players</div>
-            <div class="toggle-desc">Each player's ROM at the same position shares slot names (e.g. every player's ROM 1 gets the same names).</div>
+            <div class="toggle-desc">Each player's ROM at the same position shares slot / route names (e.g. every player's ROM 1 gets the same names).</div>
           </div>
           <label class="toggle"><input type="checkbox" id="nickname-share-soullink" checked><span class="toggle-track"></span></label>
         </div>
@@ -1046,54 +1032,6 @@ export class ConfigForm {
         <div id="nickname-pool-single-wrap">
           <span class="field-hint">Name pool — one name per line; letters/digits/spaces only, max 12 characters.</span>
           <textarea id="nickname-pool-single" class="feedback-textarea" rows="8" spellcheck="false"></textarea>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="config-category" data-cat="location-nicknames">
-  <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-location-nicknames">
-    <span class="config-cat-title">Location nicknames</span><span class="config-cat-arrow">▶</span>
-  </button>
-  <div class="config-cat-body hidden" id="cat-body-location-nicknames">
-    <div class="card-glass" style="display:flex;flex-direction:column;gap:14px;padding:20px">
-      <div class="toggle-wrap">
-        <div>
-          <div class="toggle-label">Auto-nickname every Pokémon by location</div>
-          <div class="toggle-desc">Every wild, gift and static Pokémon is named after where it's found — one name per route (e.g. every Pokémon on Route 102 is "Percy").</div>
-        </div>
-        <label class="toggle"><input type="checkbox" id="locnick-enabled"><span class="toggle-track"></span></label>
-      </div>
-
-      <div id="locnick-box" style="display:none;flex-direction:column;gap:14px">
-        <div class="toggle-wrap">
-          <div>
-            <div class="toggle-label">Lock gender per route</div>
-            <div class="toggle-desc">All encounters on a route share one gender for coherence (genderless / fixed-gender species keep their own).</div>
-          </div>
-          <label class="toggle"><input type="checkbox" id="locnick-gender-lock"><span class="toggle-track"></span></label>
-        </div>
-
-        <div class="toggle-wrap" id="locnick-same-runs-row">
-          <div>
-            <div class="toggle-label">Same names across runs</div>
-            <div class="toggle-desc">Every ROM of this nuzlocke / soul-link uses the same name for the same route. Off = each ROM rolls fresh.</div>
-          </div>
-          <label class="toggle"><input type="checkbox" id="locnick-same-across-runs"><span class="toggle-track"></span></label>
-        </div>
-
-        <div class="toggle-wrap" id="locnick-share-soullink-row">
-          <div>
-            <div class="toggle-label">Share names between soul-link players</div>
-            <div class="toggle-desc">Each player's ROM at the same position shares its route names.</div>
-          </div>
-          <label class="toggle"><input type="checkbox" id="locnick-share-soullink" checked><span class="toggle-track"></span></label>
-        </div>
-
-        <div>
-          <span class="field-hint">Name pool — one name per line; letters/digits/spaces only, max 12 characters. Each location draws a unique name from this pool.</span>
-          <textarea id="locnick-pool" class="feedback-textarea" rows="8" spellcheck="false"></textarea>
         </div>
       </div>
     </div>
@@ -1189,8 +1127,9 @@ export class ConfigForm {
         const descEl = this._q('#difficultyDesc');
         if (descEl) descEl.textContent = getDifficultyDesc(diffLevel);
 
-        // T-068 — starter nicknames: master toggle shows the box; run-type gates the sharing switches;
-        // "different per gender" swaps the tabbed pools ↔ the single pool.
+        // T-068/T-070 — nicknames: master toggle shows the box; run-type gates the sharing switches;
+        // "different per gender" swaps the tabbed pools ↔ the single pool. Location naming (autoLocation)
+        // lives in the same box; "lock gender per route" is only usable with autoLocation + differentPerGender.
         const nickOn = this._q('#nickname-enabled')?.checked;
         const nickBox = this._q('#nickname-box');
         if (nickBox) nickBox.style.display = nickOn ? 'flex' : 'none';
@@ -1203,15 +1142,13 @@ export class ConfigForm {
         const singlePool = this._q('#nickname-pool-single-wrap');
         if (genderedPools) genderedPools.style.display = diffGender ? '' : 'none';
         if (singlePool) singlePool.style.display = diffGender ? 'none' : '';
-
-        // T-070 — location nicknames: master toggle shows the box; run-type gates the sharing switches.
-        const locOn = this._q('#locnick-enabled')?.checked;
-        const locBox = this._q('#locnick-box');
-        if (locBox) locBox.style.display = locOn ? 'flex' : 'none';
-        const locSameRuns = this._q('#locnick-same-runs-row');
-        if (locSameRuns) locSameRuns.style.display = (runType === 'nuzlocke' || runType === 'soullink') ? '' : 'none';
-        const locShareSl = this._q('#locnick-share-soullink-row');
-        if (locShareSl) locShareSl.style.display = (runType === 'soullink') ? '' : 'none';
+        // Lock-gender-per-route: enabled only while auto-location AND different-per-gender are both ON.
+        const autoLoc = this._q('#nickname-auto-location')?.checked;
+        const lockGenderEl = this._q('#nickname-lock-gender-route');
+        const lockGenderRow = this._q('#nickname-lock-gender-route-row');
+        const lockAllowed = !!(autoLoc && diffGender);
+        if (lockGenderEl) lockGenderEl.disabled = !lockAllowed;
+        if (lockGenderRow) lockGenderRow.classList.toggle('control-disabled', !lockAllowed);
 
         if (runType === 'nuzlocke') this._syncNuzlocke();
         if (runType === 'soullink') this._syncSoullink();
@@ -1345,8 +1282,9 @@ export class ConfigForm {
             }
         }
 
-        // T-068 — starter-nickname controls: toggles resync + save; pool textareas save on input.
-        for (const id of ['#nickname-enabled', '#nickname-include-starter', '#nickname-same-across-runs',
+        // T-068/T-070 — nickname controls: toggles resync + save; pool textareas save on input.
+        for (const id of ['#nickname-enabled', '#nickname-include-starter', '#nickname-auto-location',
+            '#nickname-lock-gender-route', '#nickname-same-across-runs',
             '#nickname-share-soullink', '#nickname-different-per-gender']) {
             this._q(id)?.addEventListener('change', onChange);
         }
@@ -1362,12 +1300,6 @@ export class ConfigForm {
                     p.classList.toggle('active', p.dataset.nickPanel === tab));
             });
         });
-
-        // T-070 — location-nickname controls: toggles resync + save; pool textarea saves on input.
-        for (const id of ['#locnick-enabled', '#locnick-gender-lock', '#locnick-same-across-runs', '#locnick-share-soullink']) {
-            this._q(id)?.addEventListener('change', onChange);
-        }
-        this._q('#locnick-pool')?.addEventListener('input', onChange);
 
         this._q('#btn-randomize-seed').addEventListener('click', () => {
             this._q('#seed').value = Math.floor(Math.random() * 0xFFFFFFFF);

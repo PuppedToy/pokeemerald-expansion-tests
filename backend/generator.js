@@ -106,10 +106,9 @@ function toModuleConfig(cfg, seed) {
         e4TypeChanged: cfg.e4TypeChanged ?? 2,
         aquaTypes: cfg.aquaTypes,
         magmaTypes: cfg.magmaTypes,
-        // T-068 — starter nickname assignment (drives generate.js attachStarterNaming)
+        // T-068/T-070 — nicknames (starters + location-based). Location naming reuses this same object
+        // (autoLocation / lockGenderPerRoute), so there is only one name list.
         nicknames: cfg.nicknames,
-        // T-070 — location-based nickname assignment (drives generate.js attachLocationNaming)
-        locationNicknames: cfg.locationNicknames,
     };
 }
 

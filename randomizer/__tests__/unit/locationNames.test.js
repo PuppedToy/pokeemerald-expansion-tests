@@ -1,21 +1,26 @@
 'use strict';
 
-// T-070 — buildLocationNaming: one unique nickname per LOCATION per ROM (single pool, without
-// replacement), an optional per-location gender coin (only when genderLockPerRoute), reusing T-068's
-// sharing-group logic for nuzlocke / soul-link. Pure + deterministic (seeded).
+// T-070 — buildLocationNaming: one unique nickname per LOCATION per ROM, drawn from the SHARED nickname
+// pools (same list as starters). Gender coin picks the pool when differentPerGender; it's forced only when
+// lockGenderPerRoute. Reuses T-068 sharing groups. Pure + deterministic (seeded).
 
 const rng = require('../../rng');
 const { buildLocationNaming } = require('../../modules/locationNames');
 
 const LOCATIONS = ['MAP_ROUTE101', 'MAP_ROUTE102', 'MAP_ROUTE103', 'MAP_PETALBURG_WOODS', 'MAP_DESERT_RUINS'];
-const bigPool = Array.from({ length: 60 }, (_, i) => `Name${i}`);
 
+const pools = () => ({
+    male: Array.from({ length: 40 }, (_, i) => `M${i}`),
+    female: Array.from({ length: 40 }, (_, i) => `F${i}`),
+    both: Array.from({ length: 20 }, (_, i) => `B${i}`),
+    single: Array.from({ length: 80 }, (_, i) => `S${i}`),
+});
 const cfg = (over = {}) => ({
-    enabled: true,
-    genderLockPerRoute: false,
+    differentPerGender: false,
+    lockGenderPerRoute: false,
     sameNamesAcrossRuns: false,
     shareAcrossSoullink: true,
-    pool: bigPool,
+    pools: pools(),
     ...over,
 });
 
@@ -29,77 +34,84 @@ const romsSoul = (p, r) => {
 
 afterEach(() => rng.reset());
 
-describe('buildLocationNaming — shape & basics', () => {
-    test('one entry per ROM; each maps every location to a name', () => {
-        const out = buildLocationNaming({ config: cfg(), locations: LOCATIONS, roms: roms1, seed: 1 });
+describe('buildLocationNaming — pools & gender', () => {
+    test('one entry per ROM mapping every location to a name', () => {
+        const out = buildLocationNaming({ nicknames: cfg(), locations: LOCATIONS, roms: roms1, seed: 1 });
         expect(out).toHaveLength(1);
         expect(Object.keys(out[0]).sort()).toEqual([...LOCATIONS].sort());
         for (const loc of LOCATIONS) expect(typeof out[0][loc].nickname).toBe('string');
     });
 
-    test('genderLockPerRoute OFF → gender is null (names only)', () => {
-        const out = buildLocationNaming({ config: cfg({ genderLockPerRoute: false }), locations: LOCATIONS, roms: roms1, seed: 3 });
-        for (const loc of LOCATIONS) expect(out[0][loc].gender).toBeNull();
+    test('!differentPerGender → single pool, gender null', () => {
+        const out = buildLocationNaming({ nicknames: cfg({ differentPerGender: false }), locations: LOCATIONS, roms: roms1, seed: 3 });
+        for (const loc of LOCATIONS) {
+            expect(out[0][loc].gender).toBeNull();
+            expect(out[0][loc].nickname.startsWith('S')).toBe(true); // drawn from single (S*) pool
+        }
     });
 
-    test('genderLockPerRoute ON → every location gets a coin gender M or F', () => {
-        const out = buildLocationNaming({ config: cfg({ genderLockPerRoute: true }), locations: LOCATIONS, roms: roms1, seed: 3 });
-        for (const loc of LOCATIONS) expect(['M', 'F']).toContain(out[0][loc].gender);
+    test('differentPerGender + lockGenderPerRoute → coin gender forced (M/F), name from that gender pool ∪ both', () => {
+        const out = buildLocationNaming({ nicknames: cfg({ differentPerGender: true, lockGenderPerRoute: true }), locations: LOCATIONS, roms: roms1, seed: 3 });
+        for (const loc of LOCATIONS) {
+            const { gender, nickname } = out[0][loc];
+            expect(['M', 'F']).toContain(gender);
+            const prefix = gender === 'F' ? /^[FB]/ : /^[MB]/;
+            expect(nickname).toMatch(prefix);
+        }
+    });
+
+    test('differentPerGender WITHOUT lockGenderPerRoute → name from a gender pool but gender NOT forced (null)', () => {
+        const out = buildLocationNaming({ nicknames: cfg({ differentPerGender: true, lockGenderPerRoute: false }), locations: LOCATIONS, roms: roms1, seed: 3 });
+        for (const loc of LOCATIONS) {
+            expect(out[0][loc].gender).toBeNull();
+            expect(out[0][loc].nickname).toMatch(/^[MFB]/); // still from a gender/both pool
+        }
     });
 });
 
 describe('buildLocationNaming — determinism & uniqueness', () => {
     test('same seed + inputs → identical output', () => {
-        const a = buildLocationNaming({ config: cfg(), locations: LOCATIONS, roms: romsNuz(3), seed: 42 });
-        const b = buildLocationNaming({ config: cfg(), locations: LOCATIONS, roms: romsNuz(3), seed: 42 });
+        const a = buildLocationNaming({ nicknames: cfg(), locations: LOCATIONS, roms: romsNuz(3), seed: 42 });
+        const b = buildLocationNaming({ nicknames: cfg(), locations: LOCATIONS, roms: romsNuz(3), seed: 42 });
         expect(a).toEqual(b);
     });
 
-    test('names are unique across locations within a ROM', () => {
-        const out = buildLocationNaming({ config: cfg(), locations: LOCATIONS, roms: roms1, seed: 9 });
-        const names = LOCATIONS.map((l) => out[0][l].nickname.toLowerCase());
-        expect(new Set(names).size).toBe(names.length);
+    test('names unique across locations within a ROM, incl. cross-gender (both pool not reused)', () => {
+        // female/male empty → all draws come from `both`; two locations → distinct both-names.
+        const p = { male: [], female: [], both: ['Alex', 'Sam'], single: [] };
+        const out = buildLocationNaming({ nicknames: cfg({ differentPerGender: true, pools: p }), locations: ['MAP_A', 'MAP_B'], roms: roms1, seed: 5 });
+        const names = ['MAP_A', 'MAP_B'].map((l) => out[0][l].nickname).sort();
+        expect(names).toEqual(['Alex', 'Sam']);
     });
 
-    test('location order does not affect the location→name assignment (keyed, not positional)', () => {
-        const a = buildLocationNaming({ config: cfg(), locations: LOCATIONS, roms: roms1, seed: 5 });
-        const b = buildLocationNaming({ config: cfg(), locations: [...LOCATIONS].reverse(), roms: roms1, seed: 5 });
-        // Same seed + same location SET → same name per location regardless of input order.
+    test('assignment is location-keyed, independent of input order', () => {
+        const a = buildLocationNaming({ nicknames: cfg(), locations: LOCATIONS, roms: roms1, seed: 5 });
+        const b = buildLocationNaming({ nicknames: cfg(), locations: [...LOCATIONS].reverse(), roms: roms1, seed: 5 });
         for (const loc of LOCATIONS) expect(b[0][loc].nickname).toBe(a[0][loc].nickname);
     });
 
-    test('pool exhaustion → surplus locations get a null nickname, no throw', () => {
-        const out = buildLocationNaming({ config: cfg({ pool: ['Only', 'Two'] }), locations: LOCATIONS, roms: roms1, seed: 1 });
-        const named = LOCATIONS.map((l) => out[0][l].nickname).filter(Boolean);
-        expect(named).toHaveLength(2);
-        expect(new Set(named.map((n) => n.toLowerCase())).size).toBe(2);
-    });
-
-    test('duplicate / blank pool entries are normalized away', () => {
-        const out = buildLocationNaming({ config: cfg({ pool: [' Percy ', 'percy', 'PERCY', '', '  '] }), locations: LOCATIONS, roms: roms1, seed: 1 });
-        const named = LOCATIONS.map((l) => out[0][l].nickname).filter(Boolean);
-        expect(named).toHaveLength(1);
-        expect(named[0].toLowerCase()).toBe('percy');
+    test('pool exhaustion → surplus locations get null nickname, no throw', () => {
+        const out = buildLocationNaming({ nicknames: cfg({ pools: { male: [], female: [], both: [], single: ['Only', 'Two'] } }), locations: LOCATIONS, roms: roms1, seed: 1 });
+        expect(LOCATIONS.map((l) => out[0][l].nickname).filter(Boolean)).toHaveLength(2);
     });
 });
 
 describe('buildLocationNaming — sharing groups (mirrors T-068)', () => {
-    test('nuzlocke sameNamesAcrossRuns ON → all ROMs share the same mapping', () => {
-        const out = buildLocationNaming({ config: cfg({ sameNamesAcrossRuns: true }), locations: LOCATIONS, roms: romsNuz(3), seed: 4 });
+    test('nuzlocke sameNamesAcrossRuns ON → all ROMs share the mapping', () => {
+        const out = buildLocationNaming({ nicknames: cfg({ sameNamesAcrossRuns: true }), locations: LOCATIONS, roms: romsNuz(3), seed: 4 });
         expect(out[1]).toEqual(out[0]);
         expect(out[2]).toEqual(out[0]);
     });
 
-    test('nuzlocke sameNamesAcrossRuns OFF → ROMs are independent (differ)', () => {
-        const out = buildLocationNaming({ config: cfg({ sameNamesAcrossRuns: false }), locations: LOCATIONS, roms: romsNuz(3), seed: 4 });
+    test('nuzlocke sameNamesAcrossRuns OFF → ROMs are independent', () => {
+        const out = buildLocationNaming({ nicknames: cfg({ sameNamesAcrossRuns: false }), locations: LOCATIONS, roms: romsNuz(3), seed: 4 });
         expect(out[0]).not.toEqual(out[1]);
     });
 
     test('soul-link share ON + sameRuns OFF → same run index shares across players; runs differ', () => {
-        const out = buildLocationNaming({ config: cfg({ shareAcrossSoullink: true, sameNamesAcrossRuns: false }), locations: LOCATIONS, roms: romsSoul(2, 2), seed: 21 });
-        // order: (0,0)(0,1)(1,0)(1,1)
-        expect(out[0]).toEqual(out[2]); // both players' run 0
-        expect(out[1]).toEqual(out[3]); // both players' run 1
+        const out = buildLocationNaming({ nicknames: cfg({ shareAcrossSoullink: true, sameNamesAcrossRuns: false }), locations: LOCATIONS, roms: romsSoul(2, 2), seed: 21 });
+        expect(out[0]).toEqual(out[2]);
+        expect(out[1]).toEqual(out[3]);
         expect(out[0]).not.toEqual(out[1]);
     });
 });
