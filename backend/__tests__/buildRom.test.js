@@ -38,7 +38,7 @@ test('real build spawns make.js for the given ROM and sets output_path', async (
     queueMicrotask(() => ev.emit('exit', 0));
     return ev;
   };
-  await createBuildRom({ requests, storage, fake: false, spawnFn, repoRoot: '/repo' })('r1', 2);
+  await createBuildRom({ requests, storage, fake: false, spawnFn, repoRoot: '/repo', restoreTree() {} })('r1', 2);
 
   assert.equal(calls[0].cmd, 'node');
   assert.ok(calls[0].args.includes('make.js'));
@@ -89,7 +89,7 @@ test('real build rejects when make.js exits non-zero', async () => {
     return ev;
   };
   await assert.rejects(
-    () => createBuildRom({ requests, storage, fake: false, spawnFn })('r1', 0),
+    () => createBuildRom({ requests, storage, fake: false, spawnFn, restoreTree() {} })('r1', 0),
     /exited with code 1/,
   );
   clean();
@@ -105,7 +105,7 @@ test('real build tees make output to a persistent per-ROM log file (T-033)', asy
   const spawnFn = () => spawn('node', ['-e',
     "process.stdout.write('hello from make\\n');process.stderr.write('a warning\\n')"]);
 
-  await createBuildRom({ requests, storage, fake: false, spawnFn })('r1', 0);
+  await createBuildRom({ requests, storage, fake: false, spawnFn, restoreTree() {} })('r1', 0);
 
   const log = fs.readFileSync(logPath, 'utf8');
   assert.match(log, /build start: request=r1 rom=0/);
@@ -125,7 +125,7 @@ test('killActiveBuild signals the running build, and only the matching one (T-03
   child.kill = () => { killed += 1; };          // no `.pid` → skip the process-group kill, use child.kill
   const spawnFn = () => child;                  // never emits exit → the build stays "running"
 
-  const building = createBuildRom({ requests, storage, fake: false, spawnFn })('rk', 0);
+  const building = createBuildRom({ requests, storage, fake: false, spawnFn, restoreTree() {} })('rk', 0);
 
   assert.equal(killActiveBuild('someone-else'), false, 'only kills the matching request');
   assert.equal(killed, 0);

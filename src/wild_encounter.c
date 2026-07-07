@@ -1,6 +1,7 @@
 #include "global.h"
 #include "wild_encounter.h"
 #include "pokemon.h"
+#include "location_nicknames.h"
 #include "metatile_behavior.h"
 #include "fieldmap.h"
 #include "follower_npc.h"
@@ -480,38 +481,59 @@ u8 PickWildMonNature(void)
 void CreateWildMon(u16 species, u8 level)
 {
     bool32 checkCuteCharm = TRUE;
+    u8 genderRatio = gSpeciesInfo[species].genderRatio;
+    u8 locGender;
+    const u8 *locNick;
 
     ZeroEnemyPartyMons();
 
-    switch (gSpeciesInfo[species].genderRatio)
+    // T-070 — per-route gender lock: force the location's gender when the species allows it. Genderless /
+    // fixed-gender species (and gender-lock-off, where locGender is MON_GENDERLESS) fall through to the
+    // normal cute-charm/random path. The location nickname is applied after creation, below.
+    locNick = GetLocationNickname(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum, &locGender);
+    if (locNick != NULL
+        && ((locGender == MON_MALE && genderRatio != MON_FEMALE && genderRatio != MON_GENDERLESS)
+         || (locGender == MON_FEMALE && genderRatio != MON_MALE && genderRatio != MON_GENDERLESS)))
     {
-    case MON_MALE:
-    case MON_FEMALE:
-    case MON_GENDERLESS:
-        checkCuteCharm = FALSE;
-        break;
+        CreateMonWithGenderNatureLetter(&gEnemyParty[0], species, level, USE_RANDOM_IVS, locGender, PickWildMonNature(), 0);
     }
-
-    if (checkCuteCharm
-        && !GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG)
-        && GetMonAbility(&gPlayerParty[0]) == ABILITY_CUTE_CHARM
-        && Random() % 3 != 0)
+    else
     {
-        u16 leadingMonSpecies = GetMonData(&gPlayerParty[0], MON_DATA_SPECIES);
-        u32 leadingMonPersonality = GetMonData(&gPlayerParty[0], MON_DATA_PERSONALITY);
-        u8 gender = GetGenderFromSpeciesAndPersonality(leadingMonSpecies, leadingMonPersonality);
+        switch (genderRatio)
+        {
+        case MON_MALE:
+        case MON_FEMALE:
+        case MON_GENDERLESS:
+            checkCuteCharm = FALSE;
+            break;
+        }
 
-        // misses mon is genderless check, although no genderless mon can have cute charm as ability
-        if (gender == MON_FEMALE)
-            gender = MON_MALE;
+        if (checkCuteCharm
+            && !GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG)
+            && GetMonAbility(&gPlayerParty[0]) == ABILITY_CUTE_CHARM
+            && Random() % 3 != 0)
+        {
+            u16 leadingMonSpecies = GetMonData(&gPlayerParty[0], MON_DATA_SPECIES);
+            u32 leadingMonPersonality = GetMonData(&gPlayerParty[0], MON_DATA_PERSONALITY);
+            u8 gender = GetGenderFromSpeciesAndPersonality(leadingMonSpecies, leadingMonPersonality);
+
+            // misses mon is genderless check, although no genderless mon can have cute charm as ability
+            if (gender == MON_FEMALE)
+                gender = MON_MALE;
+            else
+                gender = MON_FEMALE;
+
+            CreateMonWithGenderNatureLetter(&gEnemyParty[0], species, level, USE_RANDOM_IVS, gender, PickWildMonNature(), 0);
+        }
         else
-            gender = MON_FEMALE;
-
-        CreateMonWithGenderNatureLetter(&gEnemyParty[0], species, level, USE_RANDOM_IVS, gender, PickWildMonNature(), 0);
-        return;
+        {
+            CreateMonWithNature(&gEnemyParty[0], species, level, USE_RANDOM_IVS, PickWildMonNature());
+        }
     }
 
-    CreateMonWithNature(&gEnemyParty[0], species, level, USE_RANDOM_IVS, PickWildMonNature());
+    // T-070 — apply the location nickname (no-op when the map has no entry or an empty name).
+    if (locNick != NULL && locNick[0] != EOS)
+        SetMonData(&gEnemyParty[0], MON_DATA_NICKNAME, locNick);
 }
 #ifdef BUGFIX
 #define TRY_GET_ABILITY_INFLUENCED_WILD_MON_INDEX(wildPokemon, type, ability, ptr, count) TryGetAbilityInfluencedWildMonIndex(wildPokemon, type, ability, ptr, count)

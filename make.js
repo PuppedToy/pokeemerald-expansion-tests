@@ -123,6 +123,7 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
     const { writeTMsFromList }          = require('./randomizer/tmRandomizer');
     const { writeItemFilesFromBundle }  = require('./randomizer/itemRandomizer');
     const { writeMoney }                = require('./randomizer/moneyWriter');
+    const { writeLocationNames }        = require('./randomizer/locationNameWriter');
     const { emitArtifact, resolveVanillaPath } = require('./randomizer/romArtifact');
 
     const label    = romFileName(rom);
@@ -148,6 +149,8 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
         writeItemFilesFromBundle(trainers.itemAssignments);
         // T-052 — patch configurable prize money into the C source (restored by restore() after build).
         await writeMoney(bundle.config?.money);
+        // T-070 — per-ROM location→nickname table (per-ROM, never shared; restored by restore()).
+        await writeLocationNames(rom.artifacts.locationNaming || null);
         run('make', ['-j', String(jobs)]);
 
         // Default delivery is a BPS delta (vanilla→built); --full-rom copies the .gba verbatim (ADR-013).

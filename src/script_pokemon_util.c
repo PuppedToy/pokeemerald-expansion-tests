@@ -1,6 +1,7 @@
 #include "global.h"
 #include "battle.h"
 #include "caps.h"
+#include "location_nicknames.h"
 #include "battle_gfx_sfx_util.h"
 #include "berry.h"
 #include "data.h"
@@ -127,6 +128,7 @@ void CreateScriptedWildMon(u16 species, u8 level, u16 item)
         heldItem[1] = item >> 8;
         SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, heldItem);
     }
+    SetLocationNicknameOnMon(&gEnemyParty[0]); // T-070 — static/legendary auto-nickname
 }
 void CreateScriptedDoubleWildMon(u16 species1, u8 level1, u16 item1, u16 species2, u8 level2, u16 item2)
 {
@@ -156,6 +158,8 @@ void CreateScriptedDoubleWildMon(u16 species1, u8 level1, u16 item1, u16 species
         heldItem2[1] = item2 >> 8;
         SetMonData(&gEnemyParty[1], MON_DATA_HELD_ITEM, heldItem2);
     }
+    SetLocationNicknameOnMon(&gEnemyParty[0]); // T-070 — static/legendary auto-nickname
+    SetLocationNicknameOnMon(&gEnemyParty[1]);
 }
 
 void ScriptSetMonMoveSlot(u8 monIndex, u16 move, u8 slot)
@@ -350,6 +354,21 @@ static u32 ScriptGiveMonParameterized(u8 side, u8 slot, u16 species, u8 level, u
             nature = PickWildMonNature();
         else
             nature = Random() % NUM_NATURES;
+    }
+
+    // T-070 — location-based default: when the caller supplied no nickname (e.g. a plain `givemon` gift
+    // or fossil revival), use the current location's auto-nickname, and its locked gender if the caller
+    // didn't force one. Callers that pass an explicit nickname (e.g. the T-068 starters) are unaffected.
+    if (nickname == NULL)
+    {
+        u8 locGender;
+        const u8 *locNick = GetLocationNickname(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum, &locGender);
+        if (locNick != NULL)
+        {
+            nickname = locNick;
+            if (gender == MON_GENDERLESS)
+                gender = locGender;
+        }
     }
 
     // create a Pokémon with basic data
