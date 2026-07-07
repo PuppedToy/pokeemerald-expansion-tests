@@ -75,3 +75,5 @@
 | [T-069](T-069-starter-nickname-viewer-docs.md) | Surface starter nicknames & genders in the generated viewer docs | proposed | 0.6.0 | 2026-07-07 |
 | [T-070](T-070-location-based-nicknames.md) | Location-based automatic nicknames for all wild / gift / static Pokémon | in-progress | 0.6.0 | 2026-07-07 |
 | [T-071](T-071-ci-game-compile-gate.md) | Gate deploys/CI on a real game compile (catch box-only C errors before PRO) | proposed | 0.6.0 | 2026-07-07 |
+| [T-072](T-072-starter-quality-selector.md) | Starter quality selector for the 3 main starters + extra-starter count & visual separation | in-progress | 0.6.0 | 2026-07-07 |
+| [T-073](T-073-configurable-shop-prices.md) | Configurable shop item prices (mints, ability items, balls, TMs by pool) | in-progress | 0.6.0 | 2026-07-07 |

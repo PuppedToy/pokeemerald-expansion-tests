@@ -69,6 +69,16 @@ test('Starters category is a dynamic add/remove list (Step 10)', () => {
   assert.match(src, /EXTRA_STARTER_TIER_OPTIONS\s*=\s*\['LEGEND', 'UBERS', 'OU', 'UU', 'RU', 'NU', 'PU'\]/, 'expanded tier vocabulary');
 });
 
+test('T-072: Starters category has a quality selector (default UU) and a live extra-starter count', () => {
+  assert.match(src, /id="starter-quality"/, 'a single quality selector for the 3 main starters');
+  assert.match(src, /starterQuality:\s*'UU'/, 'DEFAULTS carries starterQuality defaulting to UU');
+  assert.match(src, /id="starter-count"/, 'a live count of extra starters is shown');
+  // The quality selector reuses the extra-starter tier vocabulary.
+  const startersIdx = src.indexOf('data-cat="starters"');
+  const tail = src.slice(startersIdx, startersIdx + 1200);
+  assert.match(tail, /starter-quality[\s\S]*EXTRA_STARTER_TIER_OPTIONS/, 'quality options reuse the tier vocabulary');
+});
+
 test('T-070: Location nicknames category with master toggle, gender-lock, sharing and a pool', () => {
   assert.match(src, /data-cat="location-nicknames"/, 'Location nicknames category must exist');
   for (const id of ['locnick-enabled', 'locnick-gender-lock', 'locnick-same-across-runs', 'locnick-share-soullink', 'locnick-pool']) {
@@ -153,6 +163,36 @@ test('Rewards category exposes normal/boss/gym money (Step 9)', () => {
   assert.match(src, /money:\s*\{ normal: 250, boss: 3000, gym: 5000 \}/, 'DEFAULTS carries money with real defaults');
 });
 
+test('T-073: Rewards exposes a Shop prices block (balls, 20 mints, ability items, TM pools)', () => {
+  // The block container id is literal; the per-item field ids are GENERATED (templated / arg-driven),
+  // so we assert the generator inputs, not literal id="price-..." strings.
+  assert.match(src, /id="shop-prices"/, 'a Shop prices container');
+  assert.match(src, /function shopPricesBlock\(\)/, 'a generator builds the price block');
+  // Balls + ability items pass their id as a literal string arg to priceCell(...).
+  for (const id of ['price-ball-ultra', 'price-ball-quick', 'price-ball-timer',
+    'price-ability-capsule', 'price-ability-patch']) {
+    assert.match(src, new RegExp(`priceCell\\('${id}'`), `missing priceCell for ${id}`);
+  }
+  // Mint + TM fields are generated per key (one templated id each, not literals).
+  assert.match(src, /`price-mint-\$\{n\}`/, 'mint fields generated as price-mint-<NAME>');
+  assert.match(src, /`price-tm-\$\{k\}`/, 'TM fields generated as price-tm-<pool>');
+  // The 20 shop mints and the 10 TM pools are enumerated.
+  const mintsBlock = src.slice(src.indexOf('MINT_PRICE_NAMES ='), src.indexOf('MINT_PRICE_NAMES =') + 400);
+  for (const n of ['LONELY', 'BOLD', 'ADAMANT', 'JOLLY', 'SASSY', 'NAIVE']) {
+    assert.ok(mintsBlock.includes(`'${n}'`), `MINT_PRICE_NAMES must include ${n}`);
+  }
+  const tmBlock = src.slice(src.indexOf('TM_POOL_LABELS ='), src.indexOf('TM_POOL_LABELS =') + 700);
+  for (const k of ['avgDmg', 'strongDmg', 'weather', 'godlikeStatus']) {
+    assert.ok(tmBlock.includes(`'${k}'`), `TM_POOL_LABELS must include ${k}`);
+  }
+  assert.match(src, /prices:\s*PRICE_DEFAULTS/, 'DEFAULTS carries prices');
+  // Round-trip plumbing: read + restore helpers exist and are called + wired.
+  assert.match(src, /_readPrices\s*\(\)\s*\{/, 'getConfig reads prices via _readPrices');
+  assert.match(src, /_setPrices\s*\(prices\)\s*\{/, 'setConfig restores prices via _setPrices');
+  assert.match(src, /prices\s*=\s*this\._readPrices\(\)/, 'prices are read into the config');
+  assert.match(src, /#shop-prices'\)\?\.addEventListener/, 'the price block is wired for live save');
+});
+
 test('Mutations Advanced panel exposes every probability knob (Step 6)', () => {
   const keys = [
     'statBalanceChance', 'buffStatChance', 'repeatStatChance', 'typeBalanceChance',
@@ -171,7 +211,7 @@ test('Mutations Advanced panel exposes every probability knob (Step 6)', () => {
 test('new option keys round-trip through DEFAULTS, getConfig and setConfig', () => {
   const workerSrc = fs.readFileSync(path.join(FE, 'js', 'randomizer-worker.cjs'), 'utf8');
   for (const key of ['gymsTypeChanged', 'e4TypeChanged', 'mutateStats', 'mutateAbilities', 'mutateTypes',
-    'mutateLearnsets', 'mutationProbs', 'evoLevels', 'extraStarters', 'aquaTypes', 'magmaTypes', 'nicknames', 'locationNicknames']) {
+    'mutateLearnsets', 'mutationProbs', 'evoLevels', 'extraStarters', 'starterQuality', 'aquaTypes', 'magmaTypes', 'nicknames', 'locationNicknames']) {
     // defaults block + read (getConfig base) + restore (setConfig) + worker forwarding
     const occurrences = (src.match(new RegExp(key, 'g')) || []).length;
     assert.ok(occurrences >= 3, `${key} must appear in DEFAULTS, getConfig and setConfig (found ${occurrences})`);

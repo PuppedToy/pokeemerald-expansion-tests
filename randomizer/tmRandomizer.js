@@ -202,4 +202,6 @@ function annotateTmNumbers(moves, tmList) {
 
 // buildTMList exported for browser use (RNG-only, no file I/O).
 // writeTMsFromList exported for bundle mode compilation in make.js.
-module.exports = { randomizeTMs, buildTMList, writeTMsFromList, annotateTmNumbers };
+// TM_RANGES / FIXED_TMS exported so the item-price writer (T-073) maps TM# → pool from the same
+// SSOT (a cross-check test guards drift). Ranges are the pool boundaries; FIXED_TMS are the weather slots.
+module.exports = { randomizeTMs, buildTMList, writeTMsFromList, annotateTmNumbers, TM_RANGES, FIXED_TMS };

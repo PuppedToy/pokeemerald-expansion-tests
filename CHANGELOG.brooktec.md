@@ -9,6 +9,18 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Starter quality selector.** The **Starters** settings now have a single **Starter quality** tier
+  selector (same tiers as the extra starters — LEGEND · UBERS · OU · UU · RU · NU · PU) that sets how
+  strong the 3 normal starters' evolution lines end up. They stay early 3-stage (Little Cup) lines with
+  a weak base; this only changes their peak. Default **UU** reproduces the previous behaviour. The extra
+  starter list is now visually separated and shows a live count of how many are configured (T-072).
+
+- **Configurable shop prices.** The **Rewards** settings gained a **Shop prices** section to set the
+  buy price of every item sold in Marts: the 3 balls (Ultra/Quick/Timer), all 20 mints (each on its own),
+  Ability Capsule, Ability Patch, and TMs priced by category (the randomizer's 10 move pools — average /
+  good / strong / top-tier damage, niche, average / good / top-tier status, weather, screens). Defaults
+  match the current game; the chosen prices are baked into each generated ROM (T-073).
+
 - **Location nicknames (optional, off by default).** A new **Location nicknames** setting names every
   wild, gift and static Pokémon after **where** it's found — one name per route/area (e.g. every Pokémon
   caught on Route 102 is "Percy"). Names are drawn uniquely per run from an editable pool; an optional

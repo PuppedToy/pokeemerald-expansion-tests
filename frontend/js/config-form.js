@@ -127,6 +127,79 @@ function starterRowHtml(spec, idx) {
     </div>`;
 }
 
+// T-073 — Shop item prices. Applied at ROM-build time (patches src/data/items.h). MIRRORS
+// randomizer/itemPriceWriter.js ITEM_PRICE_DEFAULTS — keep the two in sync. TMs are priced by the
+// randomizer's move POOL (power tier), not individually.
+const PRICE_DEFAULTS = {
+    balls: { ultra: 10, quick: 10, timer: 10 },
+    mints: {
+        LONELY: 250, NAUGHTY: 250, BRAVE: 250, LAX: 250, MILD: 250,
+        RASH: 250, QUIET: 250, GENTLE: 250, HASTY: 250, NAIVE: 250,
+        BOLD: 2000, IMPISH: 2000, CALM: 2000, CAREFUL: 2000, RELAXED: 2000, SASSY: 2000,
+        ADAMANT: 3000, MODEST: 3000, TIMID: 3000, JOLLY: 3000,
+    },
+    abilityCapsule: 3000,
+    abilityPatch: 5000,
+    tms: {
+        avgDmg: 2500, avgStatus: 2500, goodDmg: 5000, goodStatus: 5000,
+        niche: 3000, weather: 3000, barriers: 3000,
+        strongDmg: 10000, godlikeDmg: 15000, godlikeStatus: 15000,
+    },
+};
+// Display order for the 20 shop mints (grouped by current price).
+const MINT_PRICE_NAMES = [
+    'LONELY', 'NAUGHTY', 'BRAVE', 'LAX', 'MILD', 'RASH', 'QUIET', 'GENTLE', 'HASTY', 'NAIVE',
+    'BOLD', 'IMPISH', 'CALM', 'CAREFUL', 'RELAXED', 'SASSY', 'ADAMANT', 'MODEST', 'TIMID', 'JOLLY',
+];
+// TM pool key → human label (with slot range from randomizer/docs/tms.md).
+const TM_POOL_LABELS = [
+    ['avgDmg', 'Average damage (TM01–10)'],
+    ['goodDmg', 'Good damage (TM11–30)'],
+    ['strongDmg', 'Strong damage (TM31–50)'],
+    ['godlikeDmg', 'Top-tier damage (TM51–56)'],
+    ['niche', 'Niche (TM57–60)'],
+    ['avgStatus', 'Average status (TM61–71)'],
+    ['weather', 'Weather (TM72–75)'],
+    ['barriers', 'Screens / hazards (TM76–77)'],
+    ['goodStatus', 'Good status (TM78–90)'],
+    ['godlikeStatus', 'Top-tier status (TM91–95)'],
+];
+const _prettyMint = (n) => n[0] + n.slice(1).toLowerCase();
+function priceCell(id, label, value) {
+    return `<label class="price-cell" for="${id}" style="display:flex;flex-direction:column;gap:3px;font-size:0.82em">
+      <span>${label}</span>
+      <input type="number" id="${id}" class="input" min="0" step="10" value="${value}">
+    </label>`;
+}
+function priceGrid(cells) {
+    return `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">${cells.join('')}</div>`;
+}
+function shopPricesBlock() {
+    const D = PRICE_DEFAULTS;
+    const sub = (t) => `<strong style="font-size:0.85em;opacity:0.85">${t}</strong>`;
+    const balls = priceGrid([
+        priceCell('price-ball-ultra', 'Ultra Ball', D.balls.ultra),
+        priceCell('price-ball-quick', 'Quick Ball', D.balls.quick),
+        priceCell('price-ball-timer', 'Timer Ball', D.balls.timer),
+    ]);
+    const mints = priceGrid(MINT_PRICE_NAMES.map(n => priceCell(`price-mint-${n}`, _prettyMint(n), D.mints[n])));
+    const ability = priceGrid([
+        priceCell('price-ability-capsule', 'Ability Capsule', D.abilityCapsule),
+        priceCell('price-ability-patch', 'Ability Patch', D.abilityPatch),
+    ]);
+    const tms = priceGrid(TM_POOL_LABELS.map(([k, l]) => priceCell(`price-tm-${k}`, l, D.tms[k])));
+    return `<div id="shop-prices" style="border-top:1px solid rgba(255,255,255,0.12);padding-top:16px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <strong style="font-size:0.95em">Shop prices</strong>
+        <span class="field-hint">Buy prices for the items sold in Marts. Applied at ROM-build time (patches src/data/items.h); defaults match the current game.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">${sub('Poké Balls')}${balls}</div>
+      <div style="display:flex;flex-direction:column;gap:8px">${sub('Mints')}${mints}</div>
+      <div style="display:flex;flex-direction:column;gap:8px">${sub('Ability items')}${ability}</div>
+      <div style="display:flex;flex-direction:column;gap:8px">${sub('TMs by category')}<span class="field-hint" style="margin:0">Priced by the randomizer's move pool (power tier), not per TM.</span>${tms}</div>
+    </div>`;
+}
+
 const DEFAULTS = {
     runType: 'default',
     difficulty: 7,
@@ -141,6 +214,11 @@ const DEFAULTS = {
     evoLevels: EVO_LEVELS_DEFAULT,
     // T-052 — Rewards (money). Applied at ROM-build time (patches src/battle_script_commands.c).
     money: { normal: 250, boss: 3000, gym: 5000 },
+    // T-073 — Shop item prices. Applied at ROM-build time (patches src/data/items.h).
+    prices: PRICE_DEFAULTS,
+    // T-072 — quality tier for the 3 main starters (same vocabulary as extra starters).
+    // Default UU reproduces the historical hardcoded behaviour (3-stage LC line peaking at UU).
+    starterQuality: 'UU',
     // T-052 — extra-starter category list (unlimited; default = today's 9)
     extraStarters: EXTRA_STARTER_DEFAULT_PRESET,
     seed: '',
@@ -223,11 +301,14 @@ export class ConfigForm {
         const aquaTypes = this._readTeamTypes('aqua');
         const magmaTypes = this._readTeamTypes('magma');
         const extraStarters = (this._starterSpecs || []).map(s => ({ ...s }));
+        const starterQualityRaw = (this._q('#starter-quality') || {}).value;
+        const starterQuality = EXTRA_STARTER_TIER_OPTIONS.includes(starterQualityRaw) ? starterQualityRaw : 'UU';
         const nicknames = this._readNicknames();
         const locationNicknames = this._readLocationNicknames();
+        const prices = this._readPrices();
         const base = { runType, difficulty, rebalance, balanceChance,
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs, evoLevels,
-            money, extraStarters, seed, showExactPositions, gymsTypeChanged, e4TypeChanged, aquaTypes, magmaTypes, nicknames, locationNicknames };
+            money, prices, starterQuality, extraStarters, seed, showExactPositions, gymsTypeChanged, e4TypeChanged, aquaTypes, magmaTypes, nicknames, locationNicknames };
 
         if (runType === 'nuzlocke') {
             const numROMs = parseInt(this._q('#nz-numroms').value, 10) || 3;
@@ -283,6 +364,9 @@ export class ConfigForm {
         this._q('#reward-normal').value = money.normal ?? 250;
         this._q('#reward-boss').value = money.boss ?? 3000;
         this._q('#reward-gym').value = money.gym ?? 5000;
+        this._setPrices(cfg.prices);
+        const sq = this._q('#starter-quality');
+        if (sq) sq.value = EXTRA_STARTER_TIER_OPTIONS.includes(cfg.starterQuality) ? cfg.starterQuality : 'UU';
         this._starterSpecs = (cfg.extraStarters || EXTRA_STARTER_DEFAULT_PRESET).map(normalizeStarterSpec);
         this._renderStarterList();
         this._q('#seed').value = cfg.seed != null ? String(cfg.seed) : '';
@@ -415,6 +499,45 @@ export class ConfigForm {
         if (!el) return;
         this._starterSpecs = this._starterSpecs || EXTRA_STARTER_DEFAULT_PRESET.map(normalizeStarterSpec);
         el.innerHTML = this._starterSpecs.map((s, i) => starterRowHtml(s, i)).join('');
+        const count = this._q('#starter-count');
+        if (count) {
+            const n = this._starterSpecs.length;
+            count.textContent = `${n} extra starter${n === 1 ? '' : 's'}`;
+        }
+    }
+
+    /** T-073 — read the Shop-prices block into a { balls, mints, abilityCapsule, abilityPatch, tms } object. */
+    _readPrices() {
+        const D = PRICE_DEFAULTS;
+        const int = (sel, def) => this._intField(sel, def, 0, 999999);
+        const balls = {
+            ultra: int('#price-ball-ultra', D.balls.ultra),
+            quick: int('#price-ball-quick', D.balls.quick),
+            timer: int('#price-ball-timer', D.balls.timer),
+        };
+        const mints = {};
+        for (const n of MINT_PRICE_NAMES) mints[n] = int(`#price-mint-${n}`, D.mints[n]);
+        const tms = {};
+        for (const [k] of TM_POOL_LABELS) tms[k] = int(`#price-tm-${k}`, D.tms[k]);
+        return {
+            balls, mints, tms,
+            abilityCapsule: int('#price-ability-capsule', D.abilityCapsule),
+            abilityPatch: int('#price-ability-patch', D.abilityPatch),
+        };
+    }
+
+    /** T-073 — populate the Shop-prices inputs from a prices config (per-item default fallback). */
+    _setPrices(prices) {
+        const p = prices || {};
+        const D = PRICE_DEFAULTS;
+        const set = (sel, v) => { const el = this._q(sel); if (el) el.value = v; };
+        set('#price-ball-ultra', (p.balls && p.balls.ultra) ?? D.balls.ultra);
+        set('#price-ball-quick', (p.balls && p.balls.quick) ?? D.balls.quick);
+        set('#price-ball-timer', (p.balls && p.balls.timer) ?? D.balls.timer);
+        for (const n of MINT_PRICE_NAMES) set(`#price-mint-${n}`, (p.mints && p.mints[n]) ?? D.mints[n]);
+        for (const [k] of TM_POOL_LABELS) set(`#price-tm-${k}`, (p.tms && p.tms[k]) ?? D.tms[k]);
+        set('#price-ability-capsule', p.abilityCapsule ?? D.abilityCapsule);
+        set('#price-ability-patch', p.abilityPatch ?? D.abilityPatch);
     }
 
     /** Read the whole Evolution-levels config (scalars + stage spacing + per-tier tables). */
@@ -824,6 +947,7 @@ export class ConfigForm {
         <input type="number" id="reward-gym" class="input" min="0" step="100" value="5000" style="width:120px">
         <span class="field-hint">Prize money for gym leaders. Game default: 5000. Elite Four ($10k) and the Champion ($50k) are fixed.</span>
       </div>
+      ${shopPricesBlock()}
     </div>
   </div>
 </section>
@@ -834,9 +958,20 @@ export class ConfigForm {
   </button>
   <div class="config-cat-body hidden" id="cat-body-starters">
     <div class="card-glass" style="display:flex;flex-direction:column;gap:14px;padding:20px">
-      <span class="field-hint">Extra starter choices offered in-game, beyond the 3 normal starters. Each slot picks a Pokémon by category: an early Pokémon whose evolution line peaks at a given competitive tier (optionally a 3- or 2-stage line), or a standalone (non-evolving) Pokémon of that tier. Add or remove as many as you like.</span>
-      <div id="starter-list"></div>
-      <div><button type="button" class="btn btn-ghost btn-sm" id="add-starter">+ Add extra starter</button></div>
+      <div class="field">
+        <label for="starter-quality">Starter quality</label>
+        <select id="starter-quality" class="input" style="width:140px">${EXTRA_STARTER_TIER_OPTIONS.map(t => `<option value="${t}"${t === DEFAULTS.starterQuality ? ' selected' : ''}>${t}</option>`).join('')}</select>
+        <span class="field-hint">Competitive tier the <strong>3 normal starters</strong>' evolution lines peak at. They are always early 3-stage (Little Cup) lines with a weak base — this sets how strong their final evolution ends up. Game default: UU.</span>
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <strong style="font-size:0.95em">Extra starters</strong>
+          <span class="field-hint" id="starter-count" style="margin:0"></span>
+        </div>
+        <span class="field-hint">Extra starter choices offered in-game, beyond the 3 normal starters. Each slot picks a Pokémon by category: an early Pokémon whose evolution line peaks at a given competitive tier (optionally a 3- or 2-stage line), or a standalone (non-evolving) Pokémon of that tier. Add or remove as many as you like.</span>
+        <div id="starter-list"></div>
+        <div><button type="button" class="btn btn-ghost btn-sm" id="add-starter">+ Add extra starter</button></div>
+      </div>
     </div>
   </div>
 </section>
@@ -1175,6 +1310,10 @@ export class ConfigForm {
         this._q('#reward-normal').addEventListener('input', onChange);
         this._q('#reward-boss').addEventListener('input', onChange);
         this._q('#reward-gym').addEventListener('input', onChange);
+        // T-073 — shop prices (many inputs → one delegated listener on the block)
+        this._q('#shop-prices')?.addEventListener('input', onChange);
+        // T-072 — quality tier for the 3 main starters
+        this._q('#starter-quality')?.addEventListener('change', onChange);
 
         // Extra-starter list: add / remove / edit rows (event delegation, since rows re-render).
         this._q('#add-starter')?.addEventListener('click', () => {

@@ -31,6 +31,13 @@ const FULL_CONFIG = {
         preEvoModifiers: { NU: [-0.04, 0.02] },
     },
     money: { normal: 500, boss: 4000, gym: 7500 },
+    prices: {
+        balls: { ultra: 50, quick: 60, timer: 70 },
+        mints: { LONELY: 111, BOLD: 222, ADAMANT: 333 },
+        abilityCapsule: 4444, abilityPatch: 5555,
+        tms: { avgDmg: 1000, strongDmg: 8000, weather: 3500, godlikeStatus: 20000 },
+    },
+    starterQuality: 'OU',
     extraStarters: [
         { tier: 'UBERS', kind: 'line', lineLength: '3' },
         { tier: 'RU', kind: 'line', lineLength: 'any' },
@@ -73,6 +80,10 @@ test('nested option objects round-trip deeply (no shallow loss)', () => {
     assert.deepEqual(round.evoLevels.stageAdjustments, { lcOf2: 0.05, lcOf3: -0.2, nfeOf3: 0.2 });
     assert.deepEqual(round.evoLevels.baseRanges.OU, [40, 50]);
     assert.equal(round.extraStarters.length, 3);
+    assert.equal(round.starterQuality, 'OU');
     assert.deepEqual(round.aquaTypes, ['GRASS', 'FIRE', 'RANDOM', 'WATER', 'ICE']);
     assert.deepEqual(round.money, { normal: 500, boss: 4000, gym: 7500 });
+    assert.equal(round.prices.tms.godlikeStatus, 20000);
+    assert.deepEqual(round.prices.balls, { ultra: 50, quick: 60, timer: 70 });
+    assert.equal(round.prices.mints.ADAMANT, 333);
 });
