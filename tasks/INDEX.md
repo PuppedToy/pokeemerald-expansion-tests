@@ -71,4 +71,5 @@
 | [T-065](T-065-weather-fallback-ability-fix.md) | Weather-archetype fallback must keep the weather ability | done | 0.6.0 | 2026-07-06 |
 | [T-066](T-066-evo-delay-by-final-stage-tier.md) | Delay stage0→1 evolution by the final stage-2 power tier | done | 0.6.0 | 2026-07-06 |
 | [T-067](T-067-remaining-battle-only-forms-exclusion.md) | Exclude remaining battle-only forms from placement | abandoned | 0.6.0 | 2026-07-06 |
-| [T-068](T-068-starter-nicknames.md) | Starter-extra nickname & gender assignment system | in-progress | 0.6.0 | 2026-07-07 |
+| [T-068](T-068-starter-nicknames.md) | Starter-extra nickname & gender assignment system | done | 0.6.0 | 2026-07-07 |
+| [T-069](T-069-starter-nickname-viewer-docs.md) | Surface starter nicknames & genders in the generated viewer docs | proposed | 0.6.0 | 2026-07-07 |

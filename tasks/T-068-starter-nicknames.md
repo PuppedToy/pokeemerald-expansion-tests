@@ -1,12 +1,12 @@
 ---
 id: T-068
 title: Starter-extra nickname & gender assignment system
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-07
 updated: 2026-07-07
 target-version: 0.6.0
-links: [frontend/js/data/starterNames.js]
+links: [frontend/js/data/starterNames.js, B-020, B-021, T-069]
 blocked-by: []
 ---
 
@@ -48,17 +48,17 @@ Key facts driving the design:
    `make.js` passes the per-ROM naming, `writerDocs.js` surfaces it.
 
 Acceptance criteria:
-- [ ] Default OFF; with the feature off, a generated bundle is byte-identical to today and the built ROM is unchanged.
-- [ ] Frontend: master toggle hides/shows the box; same-across-runs hidden unless nuzlocke/soul-link;
+- [x] Default OFF; with the feature off, a generated bundle is byte-identical to today and the built ROM is unchanged.
+- [x] Frontend: master toggle hides/shows the box; same-across-runs hidden unless nuzlocke/soul-link;
       share-soul-link hidden unless soul-link; different-per-gender swaps tabbed pools ↔ single pool.
       Config round-trips (save/load/reset) and forwards to the worker.
-- [ ] `buildStarterNaming` is deterministic per seed; names never repeat within a ROM (across genders);
+- [x] `buildStarterNaming` is deterministic per seed; names never repeat within a ROM (across genders);
       sharing groups behave per switch matrix (default / nuzlocke / soul-link); include-starter on/off honored.
-- [ ] Bundle carries valid per-ROM `starterNaming`; `validateBundle` accepts it and rejects malformed/unsafe names.
-- [ ] Writer produces compilable C; genderless species (e.g. Magnemite) keep their gender; the chosen main
+- [x] Bundle carries valid per-ROM `starterNaming`; `validateBundle` accepts it and rejects malformed/unsafe names.
+- [x] Writer produces compilable C; genderless species (e.g. Magnemite) keep their gender; the chosen main
       starter is named only when include-starter is ON.
-- [ ] `cd randomizer && npm test` and `cd backend && npm test` green; `node build.js` succeeds.
-- [ ] Owner manually tests a built ROM (extra starters carry the expected nicknames/genders) and confirms.
+- [x] `cd randomizer && npm test` and `cd backend && npm test` green; `node build.js` succeeds.
+- [x] Owner manually tests a built ROM (extra starters carry the expected nicknames/genders) and confirms.
 
 ## Progress log
 
@@ -96,7 +96,9 @@ Acceptance criteria:
 - **2026-07-07** — DEFERRED (follow-up): surfacing the chosen nicknames/genders in the generated viewer docs
   (`writerDocs.js` + `frontend/template.html`). It requires computing the naming BEFORE the per-ROM docs
   pass (naming is currently attached after) and untested HTML-template work; it is a viewer nicety, not part
-  of the ROM behavior or the acceptance criteria. Tracked here for a future task.
+  of the ROM behavior or the acceptance criteria. Tracked as **T-069**.
+- **2026-07-07** — Owner built a ROM with the feature on and confirmed it works in-game. All acceptance
+  criteria met, all suites green, both rollout bugs (B-020, B-021) fixed + deployed. Closing as **done**.
 
 ## Step 1 deliverable — default name pools
 
@@ -115,5 +117,28 @@ Aada, Adaeze, Adina, Agata, Ahuva, Ainhoa, Alba, Alexandra, Alina, Alva, Amara, 
 Adi, Akira, Alexis, An, Andy, Aoi, Ariel, Aytac, Bar, Blair, Chen, Dakota, Deniz, Dominique, Emerson, Evren, Gal, Hinata, Ilkay, Jae, Jean, Jiwoo, Jules, Kai, Kaoru, Kim, Kris, Liron, Marion, Min, Nikita, Noam, Ocean, Or, Parker, Phoenix, Reese, Riley, Robin, Rowan, Sacha, Sawyer, Shay, Skylar, Sunny, Taylor, Tsubasa, Val, Xuan, Yu
 
 ## Outcome
+
+Shipped and confirmed working in-game by the owner (2026-07-07). The full feature landed across all three
+layers:
+- **Frontend** — "Starter nicknames" settings category (master toggle + include-starter + same-across-runs
+  + share-soul-link + different-per-gender + Both/Female/Male editable pools), `nicknames` config forwarded
+  by the browser worker and the backend generator. Default pools SSOT: `frontend/js/data/starterNames.js`
+  (300 male / 300 female / 50 unisex, multilingual).
+- **Bundle** — `randomizer/modules/starterNames.js` `buildStarterNaming` (50/50 gender coin per named slot,
+  pool-unique names across genders, per-mode sharing groups), attached as a per-ROM `starterNaming` artifact
+  in `generate.js`, validated + name-sanitized in `backend/build/bundleSchema.js`.
+- **ROM maker / C** — `randomizer/starterNameWriter.js` rewrites the `starter_choose.c` arrays; a `nickname`
+  param threaded through `ScriptGiveMonParameterized` (set before placement, so PC-overflow extras are named
+  too) + public `ScriptGiveMonWithGenderAndNickname`; `CB2_GiveStarter` applies gender + nickname.
+
+Deviations from the plan:
+- **B-020 (critical):** the initial C used `_("…")` inside a `const u8 *const []` pointer array, which does
+  not compile (`-Werror`) — it broke ALL ROM builds on the box (local Jest can't compile GBA C). Fixed with
+  `COMPOUND_STRING("…")`. See `bugs/B-020-*`.
+- **B-021 (major):** a killed build left the tree dirty and wedged every subsequent build; fixed by having
+  the backend restore the tree before each real build (self-heal). See `bugs/B-021-*`.
+
+Follow-up spawned: **T-069** — surface the chosen nicknames/genders in the generated viewer docs (deferred
+here; viewer-only nicety, not ROM behavior).
 
 <!-- Filled when closing. -->
