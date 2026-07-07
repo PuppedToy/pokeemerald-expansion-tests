@@ -140,15 +140,15 @@ static const u8 sStarterGender = MON_GENDERLESS;
 
 static const u8 *const sStarterExtraNicknames[STARTER_EXTRA_COUNT] =
 {
-    _(""),
-    _(""),
-    _(""),
-    _(""),
-    _(""),
-    _(""),
-    _(""),
-    _(""),
-    _(""),
+    COMPOUND_STRING(""),
+    COMPOUND_STRING(""),
+    COMPOUND_STRING(""),
+    COMPOUND_STRING(""),
+    COMPOUND_STRING(""),
+    COMPOUND_STRING(""),
+    COMPOUND_STRING(""),
+    COMPOUND_STRING(""),
+    COMPOUND_STRING(""),
 };
 
 static const u8 sStarterExtraGenders[STARTER_EXTRA_COUNT] =

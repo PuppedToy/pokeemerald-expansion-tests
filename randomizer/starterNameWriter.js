@@ -30,7 +30,7 @@ const DEFAULT_STARTER_NICKNAME = 'static const u8 sStarterNickname[] = _("");';
 const DEFAULT_STARTER_GENDER = 'static const u8 sStarterGender = MON_GENDERLESS;';
 
 function defaultExtraNicknames(count) {
-    const lines = Array.from({ length: count }, () => '    _(""),');
+    const lines = Array.from({ length: count }, () => '    COMPOUND_STRING(""),');
     return `static const u8 *const sStarterExtraNicknames[STARTER_EXTRA_COUNT] =\n{\n${lines.join('\n')}\n};`;
 }
 function defaultExtraGenders(count) {
@@ -48,7 +48,8 @@ function buildStarterNameCode(naming, extraCount) {
     const genderLines = [];
     for (let i = 0; i < extraCount; i++) {
         const e = extras[i];
-        nickLines.push(`    _("${sanitizeNickname(e && e.nickname)}"),`);
+        // Pointer-array element → COMPOUND_STRING compound literal, NOT a bare _() brace-list (B-020).
+        nickLines.push(`    COMPOUND_STRING("${sanitizeNickname(e && e.nickname)}"),`);
         genderLines.push(`    ${genderConst(e && e.gender)},`);
     }
 

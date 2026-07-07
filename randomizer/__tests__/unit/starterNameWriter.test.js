@@ -49,11 +49,24 @@ describe('buildStarterNameCode', () => {
         expect(c.starterNickname).toBe('static const u8 sStarterNickname[] = _("Kai");');
         expect(c.starterGender).toBe('static const u8 sStarterGender = MON_MALE;');
         expect(c.extraNicknames).toBe(
-            'static const u8 *const sStarterExtraNicknames[STARTER_EXTRA_COUNT] =\n{\n    _("Aada"),\n    _(""),\n};'
+            'static const u8 *const sStarterExtraNicknames[STARTER_EXTRA_COUNT] =\n{\n    COMPOUND_STRING("Aada"),\n    COMPOUND_STRING(""),\n};'
         );
         expect(c.extraGenders).toBe(
             'static const u8 sStarterExtraGenders[STARTER_EXTRA_COUNT] =\n{\n    MON_FEMALE,\n    MON_MALE,\n};'
         );
+    });
+
+    // B-020: the extras are a pointer array (`const u8 *const []`). Bare `_("x")` there expands to a
+    // brace byte-list `{...}` and fails to compile (-Werror: "braces around scalar initializer" /
+    // int→pointer), which broke ALL ROM builds on the box. Inline string pointers MUST use the
+    // COMPOUND_STRING compound-literal macro. Regresses to a build-breaking C form.
+    test('B-020: extras array uses COMPOUND_STRING (pointer-valid), never a bare _() entry', () => {
+        const c = buildStarterNameCode({ starter: null, extras: [{ gender: 'M', nickname: 'Kai' }, { gender: 'F', nickname: null }] }, 2);
+        expect(c.extraNicknames).toMatch(/const u8 \*const sStarterExtraNicknames\[STARTER_EXTRA_COUNT\]/);
+        expect(c.extraNicknames).toContain('COMPOUND_STRING("Kai")');
+        expect(c.extraNicknames).toContain('COMPOUND_STRING("")');
+        // No entry may be a bare `_(...)` (would not compile as a pointer element).
+        expect(c.extraNicknames).not.toMatch(/\n {4}_\(/);
     });
 
     test('null starter → empty name + genderless scalar', () => {
@@ -64,7 +77,7 @@ describe('buildStarterNameCode', () => {
 
     test('pads with defaults when fewer extras than extraCount', () => {
         const c = buildStarterNameCode({ starter: null, extras: [{ gender: 'F', nickname: 'Mei' }] }, 3);
-        expect(c.extraNicknames).toContain('    _("Mei"),\n    _(""),\n    _(""),');
+        expect(c.extraNicknames).toContain('    COMPOUND_STRING("Mei"),\n    COMPOUND_STRING(""),\n    COMPOUND_STRING(""),');
         expect(c.extraGenders).toContain('    MON_FEMALE,\n    MON_GENDERLESS,\n    MON_GENDERLESS,');
     });
 });
@@ -86,7 +99,7 @@ describe('applyStarterNames', () => {
         const out = applyStarterNames(sample, naming, 1);
         expect(out).toContain('sStarterNickname[] = _("Lucia");');
         expect(out).toContain('sStarterGender = MON_FEMALE;');
-        expect(out).toContain('_("Ivan"),');
+        expect(out).toContain('COMPOUND_STRING("Ivan"),');
         expect(out).toContain('MON_MALE,');
         // The default placeholders are gone.
         expect(out).not.toContain('sStarterNickname[] = _("");');
@@ -99,7 +112,7 @@ describe('applyStarterNames', () => {
         const naming = { starter: null, extras: [{ gender: 'M', nickname: '"),(void)SPECIES_MEW,_("' }] };
         const out = applyStarterNames(sample, naming, 1);
         // Only [A-Za-z0-9 ] survive → "voidSPECIESMEW", truncated to 12 → "voidSPECIESM".
-        expect(out).toContain('_("voidSPECIESM"),');
+        expect(out).toContain('COMPOUND_STRING("voidSPECIESM"),');
         expect(out).not.toContain('(void)');
         expect(out).not.toContain('SPECIES_MEW');
     });

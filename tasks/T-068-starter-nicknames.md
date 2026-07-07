@@ -86,6 +86,13 @@ Acceptance criteria:
   extras are covered too), `src/battle_setup.c` `CB2_GiveStarter`. Frontend: `frontend/js/config-form.js`
   "Starter nicknames" category, `frontend/js/data/starterNames.js` SSOT pools, worker + backend `toModuleConfig`
   forwarding, CSS, and config-form/roundtrip tests.
+- **2026-07-07** — Committed (cd0c9a8), merged to master (e381b44), deployed to PRO.
+- **2026-07-07** — **B-020 (critical):** the PRO box build failed — `sStarterExtraNicknames` used `_()` inside
+  a `const u8 *const []` pointer array, which doesn't compile (`_()` is a brace byte-list, not a pointer).
+  Broke ALL ROM builds (even feature-off, from the committed defaults); local Jest couldn't catch it (no GBA
+  toolchain). Diagnosed from `backend/data/logs/*.log` on the box. Fixed by switching the extra-nickname
+  entries to `COMPOUND_STRING("…")` in both `src/starter_choose.c` and `randomizer/starterNameWriter.js`;
+  regression added to `starterNameWriter.test.js` (RED→GREEN). See `bugs/B-020-*`.
 - **2026-07-07** — DEFERRED (follow-up): surfacing the chosen nicknames/genders in the generated viewer docs
   (`writerDocs.js` + `frontend/template.html`). It requires computing the naming BEFORE the per-ROM docs
   pass (naming is currently attached after) and untested HTML-template work; it is a viewer nicety, not part
