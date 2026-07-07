@@ -65,6 +65,8 @@ function toModuleConfig(cfg) {
         evoLevels: cfg.evoLevels,
         // T-052 — extra-starter category list
         extraStarters: cfg.extraStarters,
+        // T-072 — quality tier for the 3 main starters (defaults to UU)
+        starterQuality: cfg.starterQuality,
         allTms: false,
         showExactPositions: cfg.showExactPositions === true,
         // T-052 — Trainers & bosses

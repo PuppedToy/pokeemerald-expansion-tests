@@ -123,6 +123,7 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
     const { writeTMsFromList }          = require('./randomizer/tmRandomizer');
     const { writeItemFilesFromBundle }  = require('./randomizer/itemRandomizer');
     const { writeMoney }                = require('./randomizer/moneyWriter');
+    const { writeItemPrices }           = require('./randomizer/itemPriceWriter');
     const { writeLocationNames }        = require('./randomizer/locationNameWriter');
     const { emitArtifact, resolveVanillaPath } = require('./randomizer/romArtifact');
 
@@ -149,6 +150,8 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
         writeItemFilesFromBundle(trainers.itemAssignments);
         // T-052 — patch configurable prize money into the C source (restored by restore() after build).
         await writeMoney(bundle.config?.money);
+        // T-073 — patch configurable shop item prices into src/data/items.h (restored by restore()).
+        await writeItemPrices(bundle.config?.prices);
         // T-070 — per-ROM location→nickname table (per-ROM, never shared; restored by restore()).
         await writeLocationNames(rom.artifacts.locationNaming || null);
         run('make', ['-j', String(jobs)]);
@@ -244,7 +247,7 @@ async function randomizeMode(opts, doClean) {
     try {
         const pokedex  = await runPokedexModule(config);
         const trainers = runTrainersModule(pokedex, config);
-        const starters = runStartersModule(pokedex.pokes);
+        const starters = runStartersModule(pokedex.pokes, { quality: config.starterQuality });
         const wild     = runWildModule(pokedex.pokes, starters, wildData);
 
         await writer(pokedex, trainers, starters, wild, opts.debug, null, null,

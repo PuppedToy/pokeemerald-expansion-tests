@@ -3,23 +3,39 @@
 const { isSuperEffective } = require('../rating');
 const {
     EVO_TYPE_LC_OF_3,
-    TIER_UU,
+    TIER_LEGEND, TIER_UBERS, TIER_OU, TIER_UU, TIER_RU, TIER_NU, TIER_PU,
 } = require('../constants');
 const { getFamilyGroup, isSubWeakTier, sample, sampleAndRemove } = require('./utils');
+
+// T-072 — the tier vocabulary offered by the "Starter quality" selector, mirroring the extra-starter
+// tiers (EXTRA_STARTER_TIER_OPTIONS in the frontend / wildModule). The TIER_* constants ARE these
+// strings, so the UI value maps to poke.rating.bestEvoTier with no translation. UU is the default and
+// reproduces the historical hardcoded behaviour (3-stage LC line peaking at UU).
+const STARTER_QUALITY_TIERS = [TIER_LEGEND, TIER_UBERS, TIER_OU, TIER_UU, TIER_RU, TIER_NU, TIER_PU];
+const DEFAULT_STARTER_QUALITY = TIER_UU;
+
+function resolveStarterQuality(quality) {
+    return STARTER_QUALITY_TIERS.includes(quality) ? quality : DEFAULT_STARTER_QUALITY;
+}
 
 /**
  * Selects 3 starter Pokémon that form a type triangle.
  *
  * @param {Object[]} pokemonList - Rated pokémon list (already filtered for banned species).
+ * @param {Object}   [opts]
+ * @param {string}   [opts.quality='UU'] - Target family best-evolution tier (LEGEND|UBERS|OU|UU|RU|NU|PU).
+ *   Invalid/absent falls back to UU. Only the peak tier varies — the 3-stage-LC / sub-weak-base
+ *   constraint is unchanged.
  * @returns {{ starters: string[], alreadyChosenFamilies: string[] }}
  *   starters: array of 3 species ID strings
  *   alreadyChosenFamilies: family IDs already claimed by starters (for wild/rewards modules)
  */
-function runStartersModule(pokemonList) {
+function runStartersModule(pokemonList, { quality } = {}) {
+    const targetTier = resolveStarterQuality(quality);
     const eligibleFilter = poke =>
         poke.evolutionData.type === EVO_TYPE_LC_OF_3
         && poke.evolutionData.isLC
-        && poke.rating.bestEvoTier === TIER_UU
+        && poke.rating.bestEvoTier === targetTier
         && isSubWeakTier(poke.rating.tier);
 
     const eligiblePokemonForStarters = pokemonList.filter(eligibleFilter);
@@ -70,4 +86,4 @@ function runStartersModule(pokemonList) {
     };
 }
 
-module.exports = { runStartersModule };
+module.exports = { runStartersModule, STARTER_QUALITY_TIERS, DEFAULT_STARTER_QUALITY };

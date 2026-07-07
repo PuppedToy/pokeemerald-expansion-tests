@@ -184,6 +184,51 @@ describe('runStartersModule — exhaustive triangle search (T-032)', () => {
   });
 });
 
+describe('runStartersModule — configurable quality tier (T-072)', () => {
+    // non-isolated require so rng.seed() controls the module's own rng instance
+    const { runStartersModule } = require('../../modules/startersModule');
+
+    // OU-tier eligible mons: still LC-of-3 lines with a sub-weak base, but the family's
+    // best evolution rates OU instead of UU. Their own type triangle (FIRE>GRASS>WATER).
+    const ouPokes = [
+        makePoke('SPECIES_OU_FIRE',  'P_FAMILY_OU_FIRE',  ['FIRE'],  { rating: { bestEvoTier: 'OU', tier: 'PU' } }),
+        makePoke('SPECIES_OU_GRASS', 'P_FAMILY_OU_GRASS', ['GRASS'], { rating: { bestEvoTier: 'OU', tier: 'PU' } }),
+        makePoke('SPECIES_OU_WATER', 'P_FAMILY_OU_WATER', ['WATER'], { rating: { bestEvoTier: 'OU', tier: 'PU' } }),
+    ];
+    // Mixed pool: a UU triangle (starterPokes) + an OU triangle. Quality selects which one is eligible.
+    const mixed = [...starterPokes, ...ouPokes];
+    const tierOf = (list, id) => list.find(p => p.id === id).rating.bestEvoTier;
+
+    test('quality "OU" only picks starters whose family bestEvoTier === OU', () => {
+        rng.seed(3);
+        const { starters } = runStartersModule([...mixed], { quality: 'OU' });
+        expect(starters).toHaveLength(3);
+        starters.forEach(id => expect(tierOf(mixed, id)).toBe('OU'));
+    });
+
+    test('default call (no opts) reproduces today\'s UU behaviour', () => {
+        rng.seed(3);
+        const { starters } = runStartersModule([...mixed]);
+        expect(starters).toHaveLength(3);
+        starters.forEach(id => expect(tierOf(mixed, id)).toBe('UU'));
+    });
+
+    test('invalid / absent quality falls back to UU', () => {
+        rng.seed(3);
+        const bogus = runStartersModule([...mixed], { quality: 'NONSENSE' }).starters;
+        bogus.forEach(id => expect(tierOf(mixed, id)).toBe('UU'));
+    });
+
+    test('explicit quality "UU" is byte-identical to the default call for a seed', () => {
+        rng.seed(9);
+        const a = runStartersModule([...mixed]);
+        rng.seed(9);
+        const b = runStartersModule([...mixed], { quality: 'UU' });
+        expect(b.starters).toEqual(a.starters);
+        expect(b.alreadyChosenFamilies).toEqual(a.alreadyChosenFamilies);
+    });
+});
+
 describe('runStartersModule — fallback path', () => {
     test('fallback: still returns 3 starters when no type triangle is possible', () => {
         const { runStartersModule } = freshModule();

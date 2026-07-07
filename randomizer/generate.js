@@ -114,7 +114,7 @@ async function generateDefault(cfg, mcfg, sessionId, ctx) {
     progress(0, 'Generating Pokédex...');
     const pokedex  = await makePokedex(mcfg, baseData); tick('Generating trainer teams...'); await flush();
     const trainers = runTrainersModule(pokedex, mcfg);       tick('Generating starters...'); await flush();
-    const starters = runStartersModule(pokedex.pokes);       tick('Generating wild encounters...'); await flush();
+    const starters = runStartersModule(pokedex.pokes, { quality: mcfg.starterQuality });       tick('Generating wild encounters...'); await flush();
     const wild     = runWildModule(pokedex.pokes, starters, wildData, mcfg); tick('Building docs...'); await flush();
 
     // Base seed policy differs per caller (worker: cfg.seed; backend: null). romSeed is
@@ -158,7 +158,7 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
     }
     if (shared.starters && sharedPokedex) {
         progress(Math.round((done / totalSteps) * 100), 'Generating shared starters...');
-        sharedStarters = runStartersModule(sharedPokedex.pokes); tick('Starters ready'); await flush();
+        sharedStarters = runStartersModule(sharedPokedex.pokes, { quality: mcfg.starterQuality }); tick('Starters ready'); await flush();
     }
 
     const sharedData = {};
@@ -189,7 +189,7 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
         let starters = sharedStarters;
         if (!starters) {
             progress(Math.round((done / totalSteps) * 100), `Generating starters${label}...`);
-            starters = runStartersModule(pokedex.pokes); tick(`Starters${label} ready`); await flush();
+            starters = runStartersModule(pokedex.pokes, { quality: mcfg.starterQuality }); tick(`Starters${label} ready`); await flush();
         }
 
         progress(Math.round((done / totalSteps) * 100), `Generating wild encounters${label}...`);
@@ -265,7 +265,7 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
     }
     if (playerShared.starters && globalPokedex) {
         progress(Math.round((done / totalSteps) * 100), 'Generating shared starters (all players)...');
-        globalStarters = runStartersModule(globalPokedex.pokes); tick('Shared starters ready'); await flush();
+        globalStarters = runStartersModule(globalPokedex.pokes, { quality: mcfg.starterQuality }); tick('Shared starters ready'); await flush();
     }
 
     const sharedData = {};
@@ -300,7 +300,7 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
         }
         if (!playerShared.starters && romShared.starters && playerPokedex) {
             progress(Math.round((done / totalSteps) * 100), `Generating starters for ${pl}...`);
-            playerStarters = runStartersModule(playerPokedex.pokes); tick(`Starters for ${pl} ready`); await flush();
+            playerStarters = runStartersModule(playerPokedex.pokes, { quality: mcfg.starterQuality }); tick(`Starters for ${pl} ready`); await flush();
             playerEntry.starters = playerStarters;
         }
 
@@ -323,7 +323,7 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
             }
             if (!playerShared.starters && !romShared.starters && pokedex) {
                 progress(Math.round((done / totalSteps) * 100), `Generating starters for ${pl} ${rl}...`);
-                starters = runStartersModule(pokedex.pokes); tick(`Starters ready`); await flush();
+                starters = runStartersModule(pokedex.pokes, { quality: mcfg.starterQuality }); tick(`Starters ready`); await flush();
             }
 
             progress(Math.round((done / totalSteps) * 100), `Generating wild encounters for ${pl} ${rl}...`);
