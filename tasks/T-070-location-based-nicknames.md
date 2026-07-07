@@ -88,6 +88,23 @@ Acceptance criteria:
 
 - **2026-07-07** — Task created (child of T-068). Viability investigated across engine + randomizer +
   capture flow → VIABLE, no hard blockers. Plan above. Starting with the randomizer core (TDD).
+- **2026-07-07** — Implemented all layers. New: `randomizer/modules/locationNames.js` (buildLocationNaming,
+  11 tests), `randomizer/data/encounterLocations.js` (134 maps = 120 wild + 16 gift/static),
+  `randomizer/locationNameWriter.js` (C-table writer, 5 tests), `src/location_nicknames.c` +
+  `include/location_nicknames.h` (table + `GetLocationNickname` lookup + `SetLocationNicknameOnMon`).
+  Hooks: `CreateWildMon` (name + optional gender-lock), `CreateScripted(Double)WildMon` (static),
+  `ScriptGiveMonParameterized` (gift fallback when no nickname supplied). Wired: `generate.js`
+  (attachLocationNaming ×3 run paths, 4 tests), `bundleSchema.js` (validateLocationNaming, 4 tests),
+  worker + backend `toModuleConfig`, `make.js` (writeLocationNames), frontend "Location nicknames" category
+  (config-form + config-roundtrip tests). All suites green (randomizer 718→+, backend 121, frontend 21);
+  `node build.js` OK; fs-stubbed e2e smoke confirmed 134-location coverage + nuzlocke sharing + validateBundle.
+- **2026-07-07** — Test-hygiene fix (found during this work): the T-068/B-021 `buildRom` real-build tests
+  invoked the REAL `defaultRestoreTree` (`git checkout -- src/`), so `cd backend && npm test` reverted
+  uncommitted `src/` edits and mutated the working tree. Fixed by injecting a no-op `restoreTree` into every
+  `fake:false` test. (Not a product bug — test infrastructure only; noted here for traceability.)
+- **2026-07-07** — Deliberate scope: roamers (Latias/Latios), eggs and in-game trades are NOT covered
+  (not location encounters). Gender-lock forces gender for wild + gift; static maps hold single genderless
+  legendaries so their gender isn't forced (name still applied). Pending owner in-game verification on a build.
 
 ## Outcome
 
