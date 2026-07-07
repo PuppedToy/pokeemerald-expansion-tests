@@ -12,6 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { defaultRestoreTree } from '../lifecycle/recovery.js';
 
 const REPO_ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 
@@ -34,7 +35,7 @@ export function killActiveBuild(id) {
   return true;
 }
 
-export function createBuildRom({ requests, storage, fake = true, spawnFn = spawn, repoRoot = REPO_ROOT }) {
+export function createBuildRom({ requests, storage, fake = true, spawnFn = spawn, repoRoot = REPO_ROOT, restoreTree = defaultRestoreTree }) {
   return async (id, romIndex) => {
     const req = requests.get(id);
     const dir = storage.outputDirFor(id);
@@ -46,6 +47,13 @@ export function createBuildRom({ requests, storage, fake = true, spawnFn = spawn
       fs.writeFileSync(path.join(dir, `rom-${romIndex}.gba`), data);
       return;
     }
+
+    // B-021: a SIGKILLed prior build (cancel, queue preemption, deploy-recreate, OOM) skips make.js's
+    // `finally { restore() }`, leaving the tree dirty — and make.js's clean-data guard then ABORTS every
+    // subsequent build until the backend restarts. Restore proactively before each REAL build so the box
+    // self-heals. Scoped to real mode only: under FAKE_BUILD (local dev) we must never git-checkout over a
+    // developer's uncommitted source — the same reason make.js aborts instead of auto-restoring locally.
+    restoreTree();
 
     // Real build: shell out to make.js for a single ROM (async — keeps the server
     // responsive; make.js bounds `make -j` to the box cores). Validated on the box (T-019).

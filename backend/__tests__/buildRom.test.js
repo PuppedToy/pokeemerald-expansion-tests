@@ -50,6 +50,35 @@ test('real build spawns make.js for the given ROM and sets output_path', async (
   clean();
 });
 
+test('B-021: real build restores the working tree BEFORE spawning make.js (self-heals a killed build)', async () => {
+  clean();
+  const dir = path.join(TMP, 'selfheal');
+  const requests = { get: () => ({ bundle_path: '/b', output_path: dir }), setOutputPath: () => {} };
+  const storage = { outputDirFor: () => dir };
+  const order = [];
+  const restoreTree = () => { order.push('restore'); };
+  const spawnFn = () => {
+    order.push('spawn');
+    const ev = new EventEmitter();
+    queueMicrotask(() => ev.emit('exit', 0));
+    return ev;
+  };
+  await createBuildRom({ requests, storage, fake: false, spawnFn, restoreTree })('r1', 0);
+  assert.deepEqual(order, ['restore', 'spawn'], 'the tree is restored before make.js runs its clean-data guard');
+  clean();
+});
+
+test('B-021: FAKE build never restores the tree (protects a dev\'s uncommitted work)', async () => {
+  clean();
+  const dir = path.join(TMP, 'fake-norestore');
+  const requests = { get: () => ({ seed: '7', output_path: null }), setOutputPath: () => {} };
+  const storage = { outputDirFor: () => dir };
+  let restored = 0;
+  await createBuildRom({ requests, storage, fake: true, restoreTree: () => { restored += 1; } })('r1', 0);
+  assert.equal(restored, 0, 'FAKE_BUILD (local dev) must not git-checkout over uncommitted source');
+  clean();
+});
+
 test('real build rejects when make.js exits non-zero', async () => {
   const dir = path.join(TMP, 'fail');
   const requests = { get: () => ({ bundle_path: '/b', output_path: dir }), setOutputPath: () => {} };
