@@ -98,6 +98,8 @@ function toModuleConfig(cfg, seed) {
         mutationProbs: cfg.mutationProbs,
         evoLevels: cfg.evoLevels,
         extraStarters: cfg.extraStarters,
+        // T-072 — quality tier for the 3 main starters (family best-evo tier; defaults to UU)
+        starterQuality: cfg.starterQuality,
         allTms: false,
         // T-052 — trainer-facing knobs (mirrors the browser worker's toModuleConfig).
         gymsTypeChanged: cfg.gymsTypeChanged ?? 2,
