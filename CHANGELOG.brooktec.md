@@ -90,6 +90,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Generated-docs responsive layout & resize smoothness.** In the Trainers view the Pokémon cards no
+  longer waste half the screen at laptop widths (they now pack two columns), and the sprite/moves no
+  longer overlap the text or get clipped as the window narrows — the card reflows fluidly at any size.
+  Resizing the window is also smooth now instead of "chasing" for ~1s: off-screen cards are skipped
+  during layout (`content-visibility`) across the heavy grids (Trainers, Pokédex, Moves, Abilities,
+  Encounters), dropping a full reflow from ~400ms to sub-millisecond (T-074).
 - In the generated docs, a trainer's **"Defeated"** toggle now sits directly under that trainer's reward
   instead of being pushed to the bottom of the card (T-055).
 - Shared-trainer soul-link ROMs no longer diverge, and a trainer can no longer field an evolved
