@@ -187,6 +187,15 @@
       grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
       gap:16px;
     }
+    /* content-visibility (T-074): the same off-screen-skip perf hint as .trainer-card, applied to the
+       other large card grids (pokedex ~1000 cards, moves ~850, abilities ~310, encounters ~56) so
+       window resizes stay snappy instead of "chasing" for ~1s. Scoped to each grid's own children —
+       NOT the shared .card class, which the pokémon-detail modal also uses. `auto` remembers each
+       card's real height after first render; the length is the pre-render placeholder. No visual change. */
+    #pokemon-cards > .card            { content-visibility:auto; contain-intrinsic-size:auto 673px; }
+    #moves-cards > .card              { content-visibility:auto; contain-intrinsic-size:auto 260px; }
+    #abilities-cards > .card          { content-visibility:auto; contain-intrinsic-size:auto 150px; }
+    #wildpokes-cards > .location-card { content-visibility:auto; contain-intrinsic-size:auto 500px; }
     .trainer-grid{
       display:grid;
       /* B-016: cap each trainer card at ~2 Pokémon columns and centre it, instead of one
@@ -614,8 +623,15 @@
        (sprite · name+item/ability/nature · 2x2 move grid). Placed last so it
        wins source-order over the shared .card rules above.
        ============================================================ */
-    .trainer-card { display:block; padding:0; min-height:0; width:100%; max-width:1536px; }
-    .roster { display:grid; grid-template-columns:204px 1fr; }
+    /* content-visibility (T-074): the Trainers view is huge (200+ cards, ~20k nodes) so a full
+       relayout costs ~400ms — during a window drag the browser can't keep up and the layout
+       visibly "chases" the cursor for ~1s. Skipping layout/paint for off-screen cards drops a
+       resize reflow to just the handful on screen, so it snaps. `auto` remembers each card's real
+       height after it's been rendered once; 480px is the pre-render placeholder. Purely a
+       performance hint — no visual change. */
+    .trainer-card { display:block; padding:0; min-height:0; width:100%; max-width:1536px;
+      content-visibility:auto; contain-intrinsic-size:auto 480px; }
+    .roster { display:grid; grid-template-columns:204px minmax(0,1fr); }
     .roster-rail { background:var(--obs-well); border-right:3px solid var(--obs-shadow);
       padding:16px; display:flex; flex-direction:column; gap:12px; align-items:flex-start; }
     .trainer-card.partnerCard .roster-rail { background:linear-gradient(180deg,#0a2a12,#07160b); }
@@ -633,21 +649,28 @@
     .roster-rail .reward-item { display:flex; align-items:center; gap:7px; background:var(--obs-well);
       border:2px solid var(--obs-line); padding:5px 9px; font-size:18px; }
     /* T-055: the Defeated toggle sits right under the reward (no margin-top:auto pushing it to the card bottom). */
-    /* Fixed-width Pokémon cards: they do NOT stretch. The team just fits as many cards
-       per row as the width allows and wraps the rest — so the moves never drift away from
-       the info on wide screens. Add a 2nd column only when another card genuinely fits. T-038. */
-    .roster-team { padding:14px; display:flex; flex-wrap:wrap; gap:12px; }
-    /* Fixed 640px so two rows still fit the 1536px card cap (B-016). The moves column is
-       ~2× its old width so names never wrap; the info column flexes and holds the now-stacked
-       ability/nature/item. The sprite fills the row's full height (align-items:stretch). T-045. */
-    .roster-row { width:640px; max-width:100%;
-      display:grid; grid-template-columns:108px minmax(0,1fr) 320px; gap:12px;
-      align-items:stretch; border:2px solid var(--obs-line); box-shadow:var(--obs-shadow-sm);
+    /* Fluid Pokémon cards (T-074). The team is a responsive grid that packs as many card
+       columns as fit and stretches them to fill — so 2 columns appear at laptop width instead
+       of one card wasting the right half. The 430px min is tuned to a narrow band: it fits a
+       2nd column from ~1400px viewports up, yet stays at 2 columns even at the 1536px
+       trainer-card cap (3 would need <427px each) — so B-016's "≤2 Pokémon columns" holds. */
+    .roster-team { padding:14px; display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(min(430px, 100%), 1fr)); gap:12px; align-items:start; }
+    /* The card itself is flex-wrap, NOT a fixed grid (T-074): sprite · info · moves sit in one
+       row while the card is wide, and the moves block wraps to a full-width line below when the
+       card is narrow. Reflow is driven by the card's OWN width, so it behaves correctly whether
+       the team shows 1 or 2 columns — and nothing overflows or clips (no fixed track widths). */
+    .roster-row { min-width:0;
+      display:flex; flex-wrap:wrap; align-items:center; gap:12px;
+      border:2px solid var(--obs-line); box-shadow:var(--obs-shadow-sm);
       padding:9px 11px; text-align:left; }
-    .roster-row--nomoves { grid-template-columns:108px 1fr; }
-    .roster-row-spr { width:108px; height:100%; object-fit:contain; image-rendering:pixelated; }
-    /* info/moves stay vertically centred while the sprite stretches; a little extra air after the sprite. */
-    .roster-info { min-width:0; align-self:center; margin-left:6px; }
+    /* Sprite is a real flex item — fixed width, natural height — so it can never overlap the
+       meta text the way the old fixed 108px img did inside a shrunk grid column (T-074). */
+    .roster-row-spr { flex:0 0 auto; width:100px; height:auto; max-height:112px;
+      object-fit:contain; image-rendering:pixelated; align-self:center; }
+    /* Info grows to fill the row; moves (below) get a comfortable basis and wrap when they
+       don't fit beside the info → full-width 2×2 grid on their own line. */
+    .roster-info { flex:1 1 170px; min-width:0; align-self:center; }
     .roster-pname { font-weight:700; font-size:21px; line-height:1.1; }
     .roster-meta { font-size:16px; color:var(--obs-text-dim); line-height:1.4; margin-top:4px; }
     /* Ability / nature / item each on its own line (T-045). */
@@ -655,18 +678,21 @@
     .roster-meta .rm-ability { color:#D1F2FF; }
     .roster-meta .rm-nature  { color:#A5D9B8; }
     .roster-meta .rm-item    { color:#FFD580; }
-    /* Wider 2×2 grid so names fit on one line; chips stretch to a uniform height. T-045. */
-    .roster-moves { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0; padding:0;
+    /* 2×2 grid; chips stretch to a uniform height. As a flex child (T-074) it sits beside the
+       info on wide cards and wraps to its own full-width line below on narrow cards. */
+    .roster-moves { flex:1 1 240px; min-width:0;
+      display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0; padding:0;
       align-items:stretch; align-self:center; }
     /* Deliberate, owner-approved exception to the global square-corner reset (T-006, line ~598):
        the trainer move chips get slightly rounded corners — hence the !important. T-045. */
     .roster-moves .move-item { margin:0; font-size:16px; padding:7px 9px; min-height:38px;
       border-radius:8px !important; display:flex; align-items:center; justify-content:center; }
-    @media (max-width:760px){
-      .roster { grid-template-columns:1fr; }
+    /* Below ~900px the dossier rail stacks on top so the team rows get the full card width
+       (T-074). The card's own flex-wrap handles the sprite/info/moves reflow — no per-column
+       overrides needed here anymore. */
+    @media (max-width:900px){
+      .roster { grid-template-columns:minmax(0,1fr); }
       .roster-rail { border-right:none; border-bottom:3px solid var(--obs-shadow); }
-      .roster-row { grid-template-columns:56px 1fr; }
-      .roster-moves { grid-column:1 / -1; }
     }
 
     /* ============================================================
@@ -727,10 +753,8 @@
       .location-card { width: 100%; }
       .enc-slots { grid-template-columns: 1fr !important; } /* overrides the inline per-location grid */
 
-      /* Trainers (T-040 feedback #3): let the roster fit the screen instead of scrolling sideways.
-         With no section-level horizontal scroll, the card's width:100% / max-width:100% constrain to
-         the viewport; force the Pokémon rows full-width so nothing spills out. */
-      .roster-row { width: 100%; }
+      /* Trainers: the fluid flex card (T-074) already fits the screen at any width — the old
+         fixed-width override here is no longer needed. */
 
       /* Sidebar → right off-canvas drawer (full height; overlays the bar when open). */
       .right, .right.nav-collapsed {
@@ -3215,7 +3239,15 @@
         applyPinned(next);
         try { localStorage.setItem('ec-topbar-pinned', next ? '1' : '0'); } catch(e){}
       });
-      window.addEventListener('resize', setTbh);
+      // rAF-throttle (T-074): setTbh reads bar.offsetHeight, which forces a synchronous full-page
+      // layout. Firing it on every resize event during a drag stacks those forced layouts and adds
+      // to the "chasing" jank. Coalesce to at most one measurement per frame.
+      var tbhQueued = false;
+      window.addEventListener('resize', function(){
+        if (tbhQueued) return;
+        tbhQueued = true;
+        requestAnimationFrame(function(){ tbhQueued = false; setTbh(); });
+      });
       setTbh();
     })();
   </script>

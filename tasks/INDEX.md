@@ -77,3 +77,4 @@
 | [T-071](T-071-ci-game-compile-gate.md) | Gate deploys/CI on a real game compile (catch box-only C errors before PRO) | proposed | 0.6.0 | 2026-07-07 |
 | [T-072](T-072-starter-quality-selector.md) | Starter quality selector for the 3 main starters + extra-starter count & visual separation | in-progress | 0.6.0 | 2026-07-07 |
 | [T-073](T-073-configurable-shop-prices.md) | Configurable shop item prices (mints, ability items, balls, TMs by pool) | in-progress | 0.6.0 | 2026-07-07 |
+| [T-074](T-074-docs-responsive-fixes.md) | Fix documentation responsive rendering issues | in-progress | 0.6.0 | 2026-07-08 |
