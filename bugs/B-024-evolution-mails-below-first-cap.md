@@ -1,13 +1,13 @@
 ---
 id: B-024
 title: Evolution mails never fire for evolutions available at or below the first level cap
-status: fixing          # open | fixing | fixed | wont-fix
+status: fixed           # open | fixing | fixed | wont-fix
 severity: major         # critical | major | minor
 created: 2026-07-09
 updated: 2026-07-09
 found-in: 0.6.0
-fixed-in:
-regression-test: visual-tests/interaction.spec.mjs (B-024)
+fixed-in: 0.6.0
+regression-test: visual-tests/interaction.spec.mjs  # B-024 describe block
 links: []
 ---
 

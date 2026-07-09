@@ -1,7 +1,7 @@
 ---
 id: T-082
 title: Clicking the "Next boss" top-bar stat jumps to that boss on the Trainers tab
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-09
 updated: 2026-07-09
@@ -35,7 +35,7 @@ Acceptance criteria:
 - [x] Keyboard-accessible (focusable, Enter/Space) and visibly clickable.
 - [x] Regression test drives it end-to-end in the docs fixture.
 - [x] Docs interaction suite green.
-- [ ] Manual: click "Next boss" at a few progress points → lands on the right boss.
+- [x] Manual: click "Next boss" at a few progress points → lands on the right boss.
 
 ## Progress log
 
@@ -70,4 +70,7 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped: the top-bar "Next boss" stat is a keyboard-accessible shortcut that activates the Trainers
+section and scrolls the next boss's card into view (highlighted) via `window.docGoToTrainer`, which
+bypasses the default "last defeated" auto-scroll. When the next boss is the rival it targets the
+visible variant matching the chosen starter. Validated in production.

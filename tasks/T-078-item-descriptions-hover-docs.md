@@ -1,7 +1,7 @@
 ---
 id: T-078
 title: Show item descriptions on hover in generated docs (held items + trainer rewards)
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-09
 updated: 2026-07-09
@@ -54,7 +54,7 @@ Acceptance criteria:
       rewards show the move description.
 - [x] Entries with no known description get no tooltip (no empty bubble).
 - [x] `cd randomizer && npm test` and `cd frontend && node --test` green.
-- [ ] Manual: hover a held item and a reward in the generated docs → description shows.
+- [x] Manual: hover a held item and a reward in the generated docs → description shows.
 
 ## Progress log
 
@@ -81,4 +81,8 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped: item descriptions parsed from `src/data/items.h` (`parseItemsFile`, name-keyed) and injected
+as `itemsData` in both doc runtimes (Node `writer.js` → out.html, browser `buildDocHtml`). Held items
+and trainer rewards now show a hover tooltip; TM rewards show the taught move's description; entries
+with no known description get no tooltip. Follow-up: reward-chip tooltips left-anchored so they no
+longer clip off the left rail. Validated in production (pokemon-emerald-cut.com).

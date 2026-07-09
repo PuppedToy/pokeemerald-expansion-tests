@@ -1,7 +1,7 @@
 ---
 id: T-081
 title: Number-field validation in randomization settings (gym/E4 min-max + full review)
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-07-09
 updated: 2026-07-09
@@ -40,7 +40,7 @@ Acceptance criteria:
 - [x] All `input[type=number]` with `min`/`max` clamp typed out-of-range values on blur.
 - [x] No number field yields a negative where negatives are invalid.
 - [x] `cd frontend && node --test` green (existing + new validation assertions).
-- [ ] Manual: typing 99 / -5 into gym, E4, #ROMs, #players clamps to the allowed range.
+- [x] Manual: typing 99 / -5 into gym, E4, #ROMs, #players clamps to the allowed range.
 
 ## Progress log
 
@@ -61,4 +61,7 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped: every `input[type=number]` clamps to its `min`/`max` on blur (gym 0–8, E4 0–4, champion %,
+rewards, prices, ROM/player counts, seed). `getConfig` hardened to clamp `numROMs`/`numPlayers`/
+`romsPerPlayer` and the evolution scalars (min 1–100, max ≥ min, deviation 0–1); the seed can't go
+negative. Exposed a pure `clampToRange` helper (unit-tested). Validated in production.

@@ -1,7 +1,7 @@
 ---
 id: T-079
 title: Transparent, patch-first ROM delivery feedback (3-step, singular/plural)
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-09
 updated: 2026-07-09
@@ -41,7 +41,7 @@ Acceptance criteria:
 - [x] Multi-ROM delivery produces one zip of finished games (step 3), single-ROM downloads the
       one `.gba` directly (no step 3).
 - [x] `cd frontend && node --test` green (existing + new assertions on the copy/steps).
-- [ ] Manual: single-ROM and multi-ROM delivery both show correct steps + wording.
+- [x] Manual: single-ROM and multi-ROM delivery both show correct steps + wording.
 
 ## Progress log
 
@@ -65,4 +65,8 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped: patch-first delivery UX. The action button reads "Download patch & apply to my ROM"
+(plural for multi-ROM) and no copy claims a ROM is downloaded. Clicking it shows a live 3-step
+checklist (downloading patch → applying to my ROM → generating zip, the last only for multi-ROM),
+and multi-ROM runs now deliver a single zip of the finished games. All delivery/ready/queued copy is
+singular/plural by ROM count. Validated in production.

@@ -1,13 +1,13 @@
 ---
 id: B-023
 title: Encounter tile click opens the base species modal instead of the evolved one
-status: fixing          # open | fixing | fixed | wont-fix
+status: fixed           # open | fixing | fixed | wont-fix
 severity: minor         # critical | major | minor
 created: 2026-07-09
 updated: 2026-07-09
 found-in: 0.6.0
-fixed-in:
-regression-test: visual-tests/interaction.spec.mjs (B-023)
+fixed-in: 0.6.0
+regression-test: visual-tests/interaction.spec.mjs  # B-023 describe block
 links: []
 ---
 

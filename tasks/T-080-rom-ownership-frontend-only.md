@@ -1,7 +1,7 @@
 ---
 id: T-080
 title: ROM ownership is frontend-only (backend stops tracking/gating it)
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: refactor          # feature | fix | refactor | docs | chore
 created: 2026-07-09
 updated: 2026-07-09
@@ -47,7 +47,7 @@ Acceptance criteria:
 - [x] Settings + delivery ROM UI reflect local `hasRom()`; ROM validated in the browser.
 - [x] Every ROM-upload point states the ROM never leaves the browser.
 - [x] `cd backend && npm test` and `cd frontend && node --test` green.
-- [ ] Manual: add a ROM in Settings and on the delivery screen; both work offline-of-server
+- [x] Manual: add a ROM in Settings and on the delivery screen; both work offline-of-server
       and never call a validate endpoint.
 
 ## Progress log
@@ -71,4 +71,9 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped: ROM ownership is a frontend-only fact. The ROM is hashed and validated in the browser
+against the known Emerald dumps (`isKnownEmeraldRom` in rom-store); all ROM-presence UI is driven by
+`hasRom()`. Removed the `owns_valid_rom` column, `setOwnsValidRom`, the `/api/me` field, the unused
+`requireOwnsRom` middleware and the whole `backend/rom/` router+validator+test. Every add-ROM point
+states the ROM never leaves the browser; the auth explainer no longer claims an upload. Validated in
+production.
