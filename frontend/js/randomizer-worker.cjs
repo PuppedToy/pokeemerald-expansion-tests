@@ -82,6 +82,8 @@ function toModuleConfig(cfg) {
         // T-052 — Trainers & bosses
         gymsTypeChanged: cfg.gymsTypeChanged ?? 2,
         e4TypeChanged: cfg.e4TypeChanged ?? 2,
+        // T-076 — probability the champion (Steven) also gets a randomized type (default 0.05).
+        championTypeChangeChance: cfg.championTypeChangeChance ?? 0.05,
         aquaTypes: cfg.aquaTypes,
         magmaTypes: cfg.magmaTypes,
         // T-068/T-070 — nicknames (starters + location-based). Location naming reuses this same object

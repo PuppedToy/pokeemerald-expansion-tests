@@ -2,9 +2,11 @@
 
 // T-052 Step 2 — the number of gyms / Elite Four whose type theme is CHANGED is configurable
 // (config.gymsTypeChanged 0..8, config.e4TypeChanged 0..4; default 2/2). Internally this maps to
-// the existing "keep" constants (keep = total − changed). A changed boss always draws a type from a
-// pool that excludes every canonical type of its group, so "themeType !== canonical" is an exact
-// count of changed bosses.
+// the existing "keep" constants (keep = total − changed).
+//
+// T-076 — a changed boss now draws from the shared 13-boss pool but still excludes its OWN canonical
+// type, so "themeType !== that boss's canonical" remains an exact count of changed bosses (it may
+// coincide with ANOTHER group's canonical — that cross-group sharing is covered in bossTypePool.test.js).
 //
 // itemRandomizer is mocked (its real randomizeItems writes files) — same pattern as
 // trainerColorsPipeline.test.js.

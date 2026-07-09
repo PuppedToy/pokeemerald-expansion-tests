@@ -124,6 +124,13 @@ test('Trainers & bosses category exposes gym / E4 type-change counts (Step 2)', 
   assert.match(src, /id="e4-type-changed"[^>]*min="0"[^>]*max="4"/, 'E4 count input 0–4');
 });
 
+test('Trainers & bosses category exposes the champion type-change chance (T-076)', () => {
+  // Percentage input 0–100; the form converts it to a 0..1 probability (championTypeChangeChance).
+  assert.match(src, /id="champion-type-change-pct"[^>]*min="0"[^>]*max="100"/, 'champion percent input 0–100');
+  assert.match(src, /championTypeChangeChance/, 'read into championTypeChangeChance');
+  assert.match(src, /#champion-type-change-pct'[^)]*\)\s*\/\s*100/, 'percent is divided by 100 into a 0..1 probability');
+});
+
 test('Team Aqua / Magma expose 5 type selectors each (Steps 3–4)', () => {
   assert.match(src, /Team Aqua types/, 'Team Aqua block must exist');
   assert.match(src, /Team Magma types/, 'Team Magma block must exist');
@@ -212,7 +219,7 @@ test('Mutations Advanced panel exposes every probability knob (Step 6)', () => {
 
 test('new option keys round-trip through DEFAULTS, getConfig and setConfig', () => {
   const workerSrc = fs.readFileSync(path.join(FE, 'js', 'randomizer-worker.cjs'), 'utf8');
-  for (const key of ['gymsTypeChanged', 'e4TypeChanged', 'mutateStats', 'mutateAbilities', 'mutateTypes',
+  for (const key of ['gymsTypeChanged', 'e4TypeChanged', 'championTypeChangeChance', 'mutateStats', 'mutateAbilities', 'mutateTypes',
     'mutateLearnsets', 'mutationProbs', 'evoLevels', 'extraStarters', 'starterQuality', 'aquaTypes', 'magmaTypes', 'nicknames']) {
     // defaults block + read (getConfig base) + restore (setConfig) + worker forwarding
     const occurrences = (src.match(new RegExp(key, 'g')) || []).length;

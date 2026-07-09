@@ -53,9 +53,17 @@ SoT: `randomizer/trainers.js` `getTrainersData` (threaded via `runTrainersModule
 | Config key | Default | Effect |
 |---|---|---|
 | `gymsTypeChanged` | 2 (of 8) | how many gym leaders get a randomized type theme (internally `keep = 8 − changed`). |
-| `e4TypeChanged` | 2 (of 4) | how many Elite Four get a randomized type theme (champion stays Steel). |
+| `e4TypeChanged` | 2 (of 4) | how many Elite Four get a randomized type theme (internally `keep = 4 − changed`). |
+| `championTypeChangeChance` | 0.05 | probability (0‑1) the champion (Steven) also gets a randomized type; otherwise he keeps Steel. All Steven battles (Granite Cave, partner, champion) run the resulting type. |
 | `aquaTypes` | Water, Dark, Poison, Ice, **Random** | Team Aqua's 5 type slots (main, secondary, other 1‑3); each a type or `RANDOM`. |
 | `magmaTypes` | Fire, Ground, Rock, Grass, **Random** | Team Magma's 5 type slots. |
+
+**Unified boss type pool (T-076).** The 13 typed bosses (8 gyms + 4 E4 + champion) share one pool.
+Fixed bosses keep their canonical type; the pool is every type *not* claimed by a fixed boss; each
+changed boss draws from that pool, excluding only its own canonical (so "changed" always differs). A
+type freed by a changed boss in one group is therefore claimable by any other changed boss — e.g. if
+Roxanne changes off Rock, another gym or an E4 can take Rock; when the champion changes, its Steel
+joins the pool (and is otherwise reserved from gyms/E4).
 
 *Behaviour change:* the Aqua/Magma **5th slot default is now `RANDOM`** (was a fixed
 Flying/Fighting). The main+secondary also drive the docs card colours (`trainerColors.js`).
