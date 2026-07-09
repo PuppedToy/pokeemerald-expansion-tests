@@ -28,6 +28,26 @@ function runTrainersModule(pokedexArtifact, config) {
     // types, …) that getTrainersData reads; absent keys fall back to historical defaults.
     const trainersData = trainers.getTrainersData(itemAssignments, pokedexArtifact.tmList, config);
 
+    // T-089/ADR-014 — League Run & Bun: give each Elite Four member a doubles-flavoured clone
+    // (TRAINER_<X>_DOUBLES, committed in opponents.h). Same slot definitions → the per-slot RNG
+    // reseed (keyed by trainer.id) resolves a distinct team. The base E4 stay singles; the battle-type
+    // pass below marks the clones doubles. Cloned before the difficulty transform so both variants get
+    // the identical (deterministic) transform.
+    // TODO(T-109): once the doubles rating/archetypes land, regenerate the clone's team with the
+    // doubles-shaped engine instead of reusing the singles slot definitions verbatim.
+    if (config.battleFormat === 'mixed' && config.leagueRunAndBun === true) {
+        const E4_BASE_IDS = ['TRAINER_SIDNEY', 'TRAINER_PHOEBE', 'TRAINER_GLACIA', 'TRAINER_DRAKE'];
+        const clones = [];
+        for (const baseId of E4_BASE_IDS) {
+            const base = trainersData.find(t => t.id === baseId);
+            if (!base) continue;
+            const clone = structuredClone(base);
+            clone.id = `${baseId}_DOUBLES`;
+            clones.push(clone);
+        }
+        trainersData.push(...clones);
+    }
+
     const { numShifts, delta, direction } = getDifficultyTransform(level);
     if (numShifts > 0) {
         for (const trainer of trainersData) {

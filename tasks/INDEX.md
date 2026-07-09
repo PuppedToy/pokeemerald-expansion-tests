@@ -92,7 +92,7 @@
 | [T-086](T-086-randomizer-assign-battle-type.md) | Randomizer assigns per-trainer battle type by pool proportions and marks it in the bundle | in-progress | 0.7.0 | 2026-07-09 |
 | [T-087](T-087-writer-emit-double-battle-line.md) | Writer emits/rewrites the Double Battle header per trainer from the bundle battle type | in-progress | 0.7.0 | 2026-07-09 |
 | [T-088](T-088-decomp-e4-doubles-trainers.md) | Add committed E4 doubles trainer constants + base .party entries (Run & Bun) | in-progress | 0.7.0 | 2026-07-09 |
-| [T-089](T-089-randomizer-runandbun-duplicate-e4-teams.md) | Randomizer generates duplicated E4 singles+doubles teams for Run & Bun | proposed | 0.7.0 | 2026-07-09 |
+| [T-089](T-089-randomizer-runandbun-duplicate-e4-teams.md) | Randomizer generates duplicated E4 singles+doubles teams for Run & Bun | in-progress | 0.7.0 | 2026-07-09 |
 | [T-090](T-090-rom-e4-battle-style-prompt.md) | ROM E4 scripts — in-game singles/doubles prompt + remaining-choices counter + build-time VAR | proposed | 0.7.0 | 2026-07-09 |
 | [T-091](T-091-maker-set-battle-format-var.md) | Maker sets the battle-format / Run & Bun VAR at build time and wires new bundle fields | proposed | 0.7.0 | 2026-07-09 |
 | [T-092](T-092-group1-checkpoint-e2e.md) | Group 1 checkpoint — end-to-end ROM builds + manual test in every battle-format mode | proposed | 0.7.0 | 2026-07-09 |
