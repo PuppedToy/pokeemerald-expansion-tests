@@ -198,6 +198,11 @@ function shopPricesBlock() {
 
 const DEFAULTS = {
     runType: 'default',
+    // T-085/ADR-014 — global battle format (singles | doubles | mixed). singlesPercent (% of single
+    // battles) and leagueRunAndBun only apply to 'mixed'.
+    battleFormat: 'singles',
+    singlesPercent: 60,
+    leagueRunAndBun: false,
     difficulty: 7,
     rebalance: true,
     balanceChance: 0.2,
@@ -270,6 +275,15 @@ export function clampToRange(raw, min, max) {
     return out;
 }
 
+// T-085/ADR-014 — Run & Bun ingame Elite Four split: round(%singles × 4) clamped to 1–3, so the
+// player is always offered at least one singles and one doubles E4 fight. Pure + exported for tests.
+export function runAndBunE4Split(singlesPercent) {
+    const total = 4;
+    const pct = Number.isFinite(Number(singlesPercent)) ? Number(singlesPercent) : 60;
+    const singles = Math.max(1, Math.min(total - 1, Math.round((pct / 100) * total)));
+    return { singles, doubles: total - singles };
+}
+
 export class ConfigForm {
     constructor(containerEl, { onConfigChange } = {}) {
         this.container = containerEl;
@@ -282,6 +296,10 @@ export class ConfigForm {
     /** Returns the current validated config object, or null if invalid. */
     getConfig() {
         const runType = this._q('input[name="run-type"]:checked')?.value ?? 'default';
+        // T-085/ADR-014 — battle format + mixed-only proportion / Run & Bun.
+        const battleFormat = this._q('input[name="battle-format"]:checked')?.value ?? 'singles';
+        const singlesPercent = this._intField('#singles-percent', 60, 0, 100);
+        const leagueRunAndBun = this._q('#league-runandbun')?.checked === true;
         const difficulty = parseInt(this._q('#difficultySlider')?.value ?? '7', 10);
         const rebalance = this._q('#rebalance').checked;
         const balanceChance = rebalance
@@ -315,7 +333,7 @@ export class ConfigForm {
         const starterQuality = EXTRA_STARTER_TIER_OPTIONS.includes(starterQualityRaw) ? starterQualityRaw : 'UU';
         const nicknames = this._readNicknames();
         const prices = this._readPrices();
-        const base = { runType, difficulty, rebalance, balanceChance,
+        const base = { runType, battleFormat, singlesPercent, leagueRunAndBun, difficulty, rebalance, balanceChance,
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs, evoLevels,
             money, prices, starterQuality, extraStarters, seed, showExactPositions, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, nicknames };
 
@@ -360,6 +378,12 @@ export class ConfigForm {
         const runType = cfg.runType ?? 'default';
         const radio = this._q(`input[name="run-type"][value="${runType}"]`);
         if (radio) radio.checked = true;
+
+        // T-085/ADR-014 — battle format + mixed-only proportion / Run & Bun.
+        const bf = this._q(`input[name="battle-format"][value="${cfg.battleFormat ?? 'singles'}"]`);
+        if (bf) bf.checked = true;
+        const sp = this._q('#singles-percent'); if (sp) sp.value = cfg.singlesPercent ?? 60;
+        const rb = this._q('#league-runandbun'); if (rb) rb.checked = cfg.leagueRunAndBun === true;
 
         const slider = this._q('#difficultySlider');
         if (slider) slider.value = cfg.difficulty ?? 7;
@@ -768,6 +792,51 @@ export class ConfigForm {
   </div>
 </section>
 
+<section class="config-category" data-cat="battle-format">
+  <button type="button" class="config-cat-header" aria-expanded="true" aria-controls="cat-body-battle-format">
+    <span class="config-cat-title">Battle format</span><span class="config-cat-arrow">▶</span>
+  </button>
+  <div class="config-cat-body" id="cat-body-battle-format">
+  <div class="radio-card-group radio-card-group-3">
+    <label class="radio-card">
+      <input type="radio" name="battle-format" id="battle-format-singles" value="singles" checked>
+      <div class="radio-card-body">
+        <div class="radio-card-title">Singles</div>
+        <div class="radio-card-desc">Every trainer battle is a single battle, like the classic game.</div>
+      </div>
+    </label>
+    <label class="radio-card">
+      <input type="radio" name="battle-format" id="battle-format-doubles" value="doubles">
+      <div class="radio-card-body">
+        <div class="radio-card-title">Doubles</div>
+        <div class="radio-card-desc">Every eligible trainer (2+ Pokémon) is fought as a double battle.</div>
+      </div>
+    </label>
+    <label class="radio-card">
+      <input type="radio" name="battle-format" id="battle-format-mixed" value="mixed">
+      <div class="radio-card-body">
+        <div class="radio-card-title">Mixed</div>
+        <div class="radio-card-desc">A blend of singles and doubles, spread across trainer groups by a proportion you choose.</div>
+      </div>
+    </label>
+  </div>
+
+  <div id="singles-percent-row" class="coop-numroms hidden" style="margin-top:14px">
+    <label for="singles-percent">Single battles (%)</label>
+    <input type="number" id="singles-percent" class="input" value="60" min="0" max="100" style="width:72px">
+    <span class="field-hint" style="margin:0">% of single battles (the rest are doubles). Each trainer group is set as close to this as possible; the Champion always takes the majority type.</span>
+  </div>
+
+  <div id="league-runandbun-row" class="checkbox-row hidden" style="margin-top:12px">
+    <input type="checkbox" id="league-runandbun">
+    <div class="checkbox-info">
+      <span class="checkbox-label">League style "Run &amp; Bun"</span>
+      <span class="checkbox-desc" id="league-runandbun-desc"></span>
+    </div>
+  </div>
+  </div>
+</section>
+
 <section class="config-category" data-cat="difficulty">
   <button type="button" class="config-cat-header" aria-expanded="true" aria-controls="cat-body-difficulty">
     <span class="config-cat-title">Difficulty</span><span class="config-cat-arrow">▶</span>
@@ -1161,6 +1230,18 @@ export class ConfigForm {
         this._q('#nuzlocke-panel').classList.toggle('hidden', runType !== 'nuzlocke');
         this._q('#soullink-panel').classList.toggle('hidden', runType !== 'soullink');
 
+        // T-085/ADR-014 — the % proportion and Run & Bun controls only apply to 'mixed'; the Run & Bun
+        // description shows the live ingame E4 split derived from the chosen %.
+        const battleFormat = this._q('input[name="battle-format"]:checked')?.value ?? 'singles';
+        const isMixed = battleFormat === 'mixed';
+        const spRow = this._q('#singles-percent-row'); if (spRow) spRow.classList.toggle('hidden', !isMixed);
+        const rbRow = this._q('#league-runandbun-row'); if (rbRow) rbRow.classList.toggle('hidden', !isMixed);
+        const rbDesc = this._q('#league-runandbun-desc');
+        if (rbDesc) {
+            const { singles, doubles } = runAndBunE4Split(parseInt(this._q('#singles-percent')?.value ?? '60', 10));
+            rbDesc.textContent = `Each Elite Four member has a singles and a doubles version of their team; you choose which to fight in-game. At this proportion you'll fight ${singles} in singles and ${doubles} in doubles across the four members (the Champion always uses the majority type).`;
+        }
+
         const rebalanceOn = this._q('#rebalance').checked;
         this._q('#balance-chance-row').style.display = rebalanceOn ? '' : 'none';
         this._q('#mutation-categories').style.display = rebalanceOn ? '' : 'none';
@@ -1264,6 +1345,10 @@ export class ConfigForm {
         });
 
         this.container.querySelectorAll('input[name="run-type"]').forEach(el => el.addEventListener('change', onChange));
+        // T-085/ADR-014 — battle format controls.
+        this.container.querySelectorAll('input[name="battle-format"]').forEach(el => el.addEventListener('change', onChange));
+        this._q('#singles-percent')?.addEventListener('input', onChange);
+        this._q('#league-runandbun')?.addEventListener('change', onChange);
         this._q('#nz-numroms').addEventListener('input', onChange);
         this._q('#nz-share-pokedex').addEventListener('change', onChange);
         this._q('#nz-share-trainers').addEventListener('change', onChange);

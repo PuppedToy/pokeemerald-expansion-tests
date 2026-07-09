@@ -79,6 +79,10 @@ function toModuleConfig(cfg) {
         starterQuality: cfg.starterQuality,
         allTms: false,
         showExactPositions: cfg.showExactPositions === true,
+        // T-085/ADR-014 — battle format (singles | doubles | mixed) + mixed-only proportion / Run & Bun.
+        battleFormat: cfg.battleFormat ?? 'singles',
+        singlesPercent: cfg.singlesPercent ?? 60,
+        leagueRunAndBun: cfg.leagueRunAndBun === true,
         // T-052 — Trainers & bosses
         gymsTypeChanged: cfg.gymsTypeChanged ?? 2,
         e4TypeChanged: cfg.e4TypeChanged ?? 2,
