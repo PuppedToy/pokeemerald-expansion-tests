@@ -86,3 +86,35 @@
 | [T-080](T-080-rom-ownership-frontend-only.md) | ROM ownership is frontend-only (backend stops tracking/gating it) | done | 0.6.0 | 2026-07-09 |
 | [T-081](T-081-settings-number-validation.md) | Number-field validation in randomization settings (gym/E4 min-max + full review) | done | 0.6.0 | 2026-07-09 |
 | [T-082](T-082-next-boss-jump-to-trainer.md) | Clicking the "Next boss" top-bar stat jumps to that boss on the Trainers tab | done | 0.6.0 | 2026-07-09 |
+| [T-083](T-083-epic-battle-formats-and-teambuilding.md) | EPIC — Battle formats (singles/doubles/mixed) + doubles-aware rating & teambuilding redesign | proposed | 0.7.0 | 2026-07-09 |
+| [T-084](T-084-battle-format-architecture-adr.md) | Design the battle-format architecture (bundle representation, pools, Run & Bun) + ADR-014 | proposed | 0.7.0 | 2026-07-09 |
+| [T-085](T-085-frontend-battle-format-setting.md) | Frontend battle-format setting — big-box singles/doubles/mixed + % + Run & Bun | proposed | 0.7.0 | 2026-07-09 |
+| [T-086](T-086-randomizer-assign-battle-type.md) | Randomizer assigns per-trainer battle type by pool proportions and marks it in the bundle | proposed | 0.7.0 | 2026-07-09 |
+| [T-087](T-087-writer-emit-double-battle-line.md) | Writer emits/rewrites the Double Battle header per trainer from the bundle battle type | proposed | 0.7.0 | 2026-07-09 |
+| [T-088](T-088-decomp-e4-doubles-trainers.md) | Add committed E4 doubles trainer constants + base .party entries (Run & Bun) | proposed | 0.7.0 | 2026-07-09 |
+| [T-089](T-089-randomizer-runandbun-duplicate-e4-teams.md) | Randomizer generates duplicated E4 singles+doubles teams for Run & Bun | proposed | 0.7.0 | 2026-07-09 |
+| [T-090](T-090-rom-e4-battle-style-prompt.md) | ROM E4 scripts — in-game singles/doubles prompt + remaining-choices counter + build-time VAR | proposed | 0.7.0 | 2026-07-09 |
+| [T-091](T-091-maker-set-battle-format-var.md) | Maker sets the battle-format / Run & Bun VAR at build time and wires new bundle fields | proposed | 0.7.0 | 2026-07-09 |
+| [T-092](T-092-group1-checkpoint-e2e.md) | Group 1 checkpoint — end-to-end ROM builds + manual test in every battle-format mode | proposed | 0.7.0 | 2026-07-09 |
+| [T-093](T-093-dual-rating-design-adr.md) | Design the dual singles/doubles rating dimension + ADR-015 | proposed | 0.8.0 | 2026-07-09 |
+| [T-094](T-094-doubles-move-spread-rating.md) | Doubles move rating — spread detection (move.target) + rateMoveDoubles | proposed | 0.8.0 | 2026-07-09 |
+| [T-095](T-095-doubles-support-move-revaluation.md) | Doubles re-valuation of support/gimmick moves (Follow Me, Rage Powder, Trick Room…) | proposed | 0.8.0 | 2026-07-09 |
+| [T-096](T-096-doubles-ability-rating.md) | Doubles ability rating — redirection, Intimidate, Friend Guard, Telepathy… | proposed | 0.8.0 | 2026-07-09 |
+| [T-097](T-097-doubles-pokemon-tiers.md) | Doubles Pokémon tiers — ratePokemonDoubles + contextualRatingsDoubles | proposed | 0.8.0 | 2026-07-09 |
+| [T-098](T-098-research-vgc-doubles-teams.md) | Research — historic VGC doubles teams (gen 6–7) → cited reference docs | proposed | 0.8.0 | 2026-07-09 |
+| [T-099](T-099-research-smogon-singles-teams.md) | Research — historic Smogon singles teams (gen 6–7) → cited reference docs | proposed | 0.8.0 | 2026-07-09 |
+| [T-100](T-100-synergy-antisynergy-synthesis.md) | Synthesize a synergy / anti-synergy catalog and cross-check the current rating/combo logic | proposed | 0.8.0 | 2026-07-09 |
+| [T-101](T-101-singles-archetype-model.md) | Singles archetype model — JSON of archetypes, entry conditions and team structure | proposed | 0.8.0 | 2026-07-09 |
+| [T-102](T-102-doubles-archetype-model.md) | Doubles archetype model — JSON of archetypes (weather, TR, redirection, ability-swap…) | proposed | 0.8.0 | 2026-07-09 |
+| [T-103](T-103-teambuilding-engine-design-adr.md) | Design the archetype-driven teambuilding engine + ADR-016 (+ teardown plan) | proposed | 0.8.0 | 2026-07-09 |
+| [T-104](T-104-collapse-dual-resolver.md) | Collapse the writer.js / writerDocs.js dual resolver into one shared module | proposed | 0.8.0 | 2026-07-09 |
+| [T-105](T-105-sophistication-scalar.md) | Engine — sophistication scalar driven by boss progression | proposed | 0.8.0 | 2026-07-09 |
+| [T-106](T-106-backwards-generation.md) | Engine — backwards generation (endgame-first, devolve preserving ID continuity) | proposed | 0.8.0 | 2026-07-09 |
+| [T-107](T-107-preference-rules-system.md) | Engine — preference/rules system replacing fixed slots (archetype-fit scoring) | proposed | 0.8.0 | 2026-07-09 |
+| [T-108](T-108-port-fixed-id-special-cases.md) | Engine — port fixed-ID / continuity / special cases into the new engine | proposed | 0.8.0 | 2026-07-09 |
+| [T-109](T-109-doubles-teambuilding-path.md) | Engine — doubles teambuilding path (spread / redirection / TR-aware) | proposed | 0.8.0 | 2026-07-09 |
+| [T-110](T-110-replace-old-engine-cleanup.md) | Integration — replace the old engine, remove dead slot/preset code, parity & diagnostics | proposed | 0.8.0 | 2026-07-09 |
+| [T-111](T-111-viewer-per-format-tiers.md) | Viewer — surface singles/doubles tiers per Pokémon (mixed shows both) | proposed | 0.8.0 | 2026-07-09 |
+| [T-112](T-112-docs-format-tiers-and-behavior.md) | Docs — reflect format-based tiers + battle-format behaviour | proposed | 0.8.0 | 2026-07-09 |
+| [T-113](T-113-group2-checkpoint-e2e.md) | Group 2 checkpoint — end-to-end builds + per-format team-quality review | proposed | 0.8.0 | 2026-07-09 |
+| [T-114](T-114-battle-ai-per-archetype.md) | Battle AI tuned per team archetype / format (deferred) | proposed | 0.9.0 | 2026-07-09 |
