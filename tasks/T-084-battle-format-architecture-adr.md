@@ -1,7 +1,7 @@
 ---
 id: T-084
 title: Design the battle-format architecture (bundle representation, pools, Run & Bun) + ADR-014
-status: proposed
+status: in-progress
 type: docs
 created: 2026-07-09
 updated: 2026-07-09
@@ -48,10 +48,11 @@ Write **ADR-014** deciding, and this task carries no runtime code beyond fixture
   Count formula: `round(singlesPercent/100 × 4)` clamped to 1–3.
 
 Acceptance criteria:
-- [ ] `docs/adr/ADR-014.md` written (accepted), added to `docs/INDEX.md`.
-- [ ] The exact bundle field names/shapes are specified and agreed (documented in the ADR).
-- [ ] The five pools are defined by concrete trainer-ID membership rules.
-- [ ] The doubles-eligibility rule (team ≥2, exclusions) and the champion majority + Run & Bun count
+- [ ] `docs/adr/ADR-014.md` written (accepted), added to `docs/INDEX.md`. *(Written + indexed; owner
+      acceptance pending — includes the Tate & Liza sign-off.)*
+- [x] The exact bundle field names/shapes are specified and agreed (documented in the ADR).
+- [x] The five pools are defined by concrete trainer-ID membership rules.
+- [x] The doubles-eligibility rule (team ≥2, exclusions) and the champion majority + Run & Bun count
       formula are written down with worked examples (50%, 60%, 90%, 100%).
 
 ## Progress log
@@ -59,6 +60,14 @@ Acceptance criteria:
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-09** — Task created.
+- **2026-07-09** — Started on `feature/T-084-battle-format-architecture`. Wrote `docs/adr/ADR-014.md`
+  fixing the battle-format contract: config fields, bundle `battleType` stamping, the five pools with
+  concrete trainer-ID membership, the proportion + champion-majority rules, doubles eligibility (≥2
+  mons) and the Mossdeep tag-battle exclusion, and the Run & Bun duplicate-trainer-ID mechanism with
+  the `round(%singles×4)` clamped-1–3 count formula and worked examples. Flagged one special case for
+  owner confirmation: **Tate & Liza** is canonically a double-battle gym leader (one trainer id that
+  sends out two mons); the ADR's default is that they follow the global format (single in a `singles`
+  run) — noted as an open decision. Added ADR-014 to `docs/INDEX.md`.
 
 ## Outcome
 
