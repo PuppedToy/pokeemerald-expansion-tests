@@ -192,6 +192,29 @@ function substituteWildSpecies(content, wildReplacementLog) {
 // this is the single source of truth that removes the RNG re-resolution desync entirely.
 // The only transformation needed is mapping the species id back to its pokemon object, since
 // the .party formatter reads pokemon.name. Consumes no RNG.
+// T-087/ADR-014 — set a trainer's `Double Battle:` header line from its resolved battle type.
+// `battleType` is 'singles' | 'doubles'; anything else (undefined) leaves the header untouched, so
+// bundles predating the field behave exactly as before. Replaces an existing line, else inserts it
+// before the `AI:` line (or before the header's trailing blank line as a last resort).
+function applyDoubleBattleHeader(headerBlock, battleType) {
+    if (battleType !== 'singles' && battleType !== 'doubles') return headerBlock;
+    const desired = `Double Battle: ${battleType === 'doubles' ? 'Yes' : 'No'}`;
+    if (/^Double Battle:.*$/m.test(headerBlock)) {
+        return headerBlock.replace(/^Double Battle:.*$/m, desired);
+    }
+    if (/^AI:.*$/m.test(headerBlock)) {
+        return headerBlock.replace(/^(AI:.*)$/m, `${desired}\n$1`);
+    }
+    return headerBlock.replace(/(\r?\n\r?\n)/, `\n${desired}$1`);
+}
+
+// T-087 — safety net for ADR-014's ≥2-mon rule: a trainer marked doubles whose written team has
+// fewer than 2 members is emitted as singles (a double battle needs two Pokémon).
+function effectiveBattleType(battleType, teamLength) {
+    if (battleType === 'doubles' && teamLength < 2) return 'singles';
+    return battleType;
+}
+
 function buildTrainersResultsFromDocs(docsTrainers, pokemonList) {
     const byId = new Map(pokemonList.map(p => [p.id, p]));
     const result = {};
@@ -203,6 +226,7 @@ function buildTrainersResultsFromDocs(docsTrainers, pokemonList) {
             isBoss: td.isBoss || false,
             isPartner: td.isPartner || false,
             location: td.location || null,
+            battleType: td.battleType || 'singles',   // T-087/ADR-014
             preventShuffle: td.preventShuffle || false,
             team: (td.team || []).map(member => ({
                 ...member,
@@ -797,6 +821,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             colors: trainer.colors,   // T-044 — docs-viewer card colours (SSOT: trainerColors.js)
             team,
             preventShuffle: trainer.preventShuffle || false,
+            battleType: trainer.battleType || 'singles',   // T-087/ADR-014
         };
     });
     }
@@ -858,12 +883,16 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
         // Group 2 is the text to replace (the team)
         // Group 3 is the === of the next trainer or end of file, to keep as is
         // Mind, Group 2 could appear multiple times in the file and I want to replace this specific trainer
-        const fullReplacementText = `$1${generatedTeamTextLines}\n$3`;
+        // T-087/ADR-014 — rewrite the header's `Double Battle:` line from the trainer's battle type
+        // (with the ≥2-mon safety net based on the actually-written team); partners keep their header.
+        const effBattleType = effectiveBattleType(trainerData.battleType, shuffledTeam.length);
+        const replacer = (match, header, _team, tail) =>
+            `${trainerData.isPartner ? header : applyDoubleBattleHeader(header, effBattleType)}${generatedTeamTextLines}\n${tail}`;
         if (trainerData.isPartner) {
-            partnersFileContent = partnersFileContent.replace(replaceRegex, fullReplacementText);
+            partnersFileContent = partnersFileContent.replace(replaceRegex, replacer);
         }
         else {
-            trainersFileContent = trainersFileContent.replace(replaceRegex, fullReplacementText);
+            trainersFileContent = trainersFileContent.replace(replaceRegex, replacer);
         }
     });
 
@@ -1087,3 +1116,5 @@ module.exports.buildWildPlaceholderMap = buildWildPlaceholderMap;
 module.exports.substituteWildSpecies = substituteWildSpecies;
 module.exports.buildTrainersResultsFromDocs = buildTrainersResultsFromDocs;
 module.exports.resolveMailMints = resolveMailMints;
+module.exports.applyDoubleBattleHeader = applyDoubleBattleHeader;   // T-087/ADR-014
+module.exports.effectiveBattleType = effectiveBattleType;          // T-087/ADR-014

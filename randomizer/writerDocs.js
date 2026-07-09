@@ -244,6 +244,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                 team: [...target.team],
                 class: trainer.class,
                 colors: trainer.colors,   // T-044 — copied team, but this trainer's own card colours
+                battleType: trainer.battleType || 'singles',   // T-087/ADR-014
             };
             return;
         }
@@ -440,6 +441,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
             colors: trainer.colors,   // T-044 — docs-viewer card colours (SSOT: trainerColors.js)
             team,
             preventShuffle: trainer.preventShuffle || false,
+            battleType: trainer.battleType || 'singles',   // T-087/ADR-014
         };
     });
 
