@@ -3,7 +3,7 @@
 // ownership — you can build & download the patch before providing a ROM.
 // The bundle lives in IndexedDB (a ~32 MB bundle does not fit in localStorage).
 
-import { putRom, getRom, hasRom, clearRom } from './rom-store.js';
+import { putRom, getRom, hasRom, clearRom, sha1Hex, isKnownEmeraldRom } from './rom-store.js';
 
 // applyBps comes from the generated ESM bundle (frontend/js/bps.bundle.js — the SAME codec the builder
 // uses to create patches). Loaded lazily and injectable so tests need not build the bundle.
@@ -145,19 +145,47 @@ function renderSettings() {
     <div class="settings-rows">
       <div class="settings-row"><span class="settings-key">Account</span><span class="settings-val">${state.email}</span></div>
       <div class="settings-row"><span class="settings-key">Email verified</span><span class="settings-val ${state.verified ? 'ok' : ''}">${state.verified ? 'Yes ✓' : 'No — open the link we emailed you'}</span></div>
-      <div class="settings-row"><span class="settings-key">ROM ownership</span><span class="settings-val ${state.ownsValidRom ? 'ok' : ''}">${state.ownsValidRom ? 'Verified ✓' : 'Not verified yet'}</span></div>
+      <div class="settings-row"><span class="settings-key">Your Emerald ROM</span><span class="settings-val" id="settings-rom-state">Checking…</span></div>
     </div>
-    ${state.ownsValidRom ? '' : `<label class="btn btn-primary settings-upload">Upload your Emerald ROM
-        <input type="file" id="rom-file" accept=".gba,application/octet-stream" hidden></label>`}
+    <div id="settings-rom-actions"></div>
     <p class="settings-note" id="settings-msg"></p>
     <button class="btn btn-ghost" id="settings-logout">Log out</button>
     <div class="settings-danger">
       <div class="settings-danger-label">Danger zone</div>
       <button class="btn btn-danger" id="settings-delete">Delete account permanently</button>
     </div>`;
-  if (!state.ownsValidRom) $('rom-file')?.addEventListener('change', onRomUpload);
   $('settings-logout')?.addEventListener('click', logout);
   $('settings-delete')?.addEventListener('click', deleteAccount);
+  // T-080: ROM presence is a local, frontend-only fact — the row + upload affordance reflect the
+  // IndexedDB store (hasRom), not any server flag. Async, so it fills the row after render.
+  hydrateSettingsRom();
+}
+
+// T-080 — render the Settings "Your Emerald ROM" row + add/replace controls from the LOCAL store.
+// The ROM never leaves the browser; that is stated wherever it can be added.
+async function hydrateSettingsRom() {
+  const present = await hasRom().catch(() => false);
+  const stateEl = $('settings-rom-state');
+  const actionsEl = $('settings-rom-actions');
+  if (!stateEl || !actionsEl) return; // settings re-rendered / navigated away while awaiting
+  if (present) {
+    stateEl.textContent = 'Saved in your browser ✓';
+    stateEl.className = 'settings-val ok';
+    actionsEl.innerHTML = `
+      <label class="btn btn-ghost settings-upload">Replace ROM
+        <input type="file" id="rom-file" accept=".gba,application/octet-stream" hidden></label>
+      <button class="btn btn-ghost btn-sm" id="rom-forget">Remove from this browser</button>
+      <p class="settings-note">Your ROM stays on this device — it is never uploaded.</p>`;
+    $('rom-forget')?.addEventListener('click', async () => { await clearRom(); renderSettings(); reevaluateDelivery(); });
+  } else {
+    stateEl.textContent = 'Not added yet';
+    stateEl.className = 'settings-val';
+    actionsEl.innerHTML = `
+      <label class="btn btn-primary settings-upload">Add your Emerald ROM
+        <input type="file" id="rom-file" accept=".gba,application/octet-stream" hidden></label>
+      <p class="settings-note">Only needed to build a playable ROM. It stays in your browser — never uploaded.</p>`;
+  }
+  $('rom-file')?.addEventListener('change', onRomUpload);
 }
 
 async function deleteAccount() {
@@ -169,22 +197,23 @@ async function deleteAccount() {
   alert('Your account has been deleted.');
 }
 
-// T-053, ADR-013: hash the ROM in the browser and store the bytes in IndexedDB — send only the SHA-1.
-// The ROM never leaves the user's machine; the bytes are reused to apply the BPS patch at download time.
+// T-080, ADR-013: hash the ROM and validate it ENTIRELY in the browser against the known Emerald
+// dumps — the bytes (and even the hash) never leave the machine. Only a valid ROM is stored; the
+// bytes are reused to apply the BPS patch at download time.
 async function onRomUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
   setSettingsMsg('Checking your ROM…');
   const bytes = new Uint8Array(await file.arrayBuffer());
-  const sha1 = await putRom(bytes); // saved locally; never uploaded
-  const { ok, data } = await api('/api/rom/validate', { method: 'POST', body: { sha1 }, auth: true });
-  if (ok && data?.ok) {
-    await refreshMe(); updateNavAccount(); reevaluateDelivery(); // row now reads "Verified ✓"
-    setSettingsMsg('ROM verified and saved in your browser ✓', 'ok');
-  } else {
-    await clearRom();
-    setSettingsMsg(data?.error || 'That file is not a recognized Pokémon Emerald ROM.', 'err');
+  const sha1 = await sha1Hex(bytes);
+  if (!isKnownEmeraldRom(sha1)) {
+    setSettingsMsg('That file is not a recognized Pokémon Emerald ROM.', 'err');
+    return; // nothing stored — never leaves the browser either way
   }
+  await putRom(bytes); // saved locally; never uploaded
+  renderSettings();    // re-render → "Saved in your browser ✓"
+  setSettingsMsg('ROM saved in your browser ✓ — it never leaves your device.', 'ok');
+  reevaluateDelivery();
 }
 
 async function doRegister(email, password) {
@@ -567,16 +596,15 @@ async function onReadyRomAdd(e) {
   const msg = $('rom-ready-msg');
   if (msg) msg.textContent = 'Checking your ROM…';
   const bytes = new Uint8Array(await file.arrayBuffer());
-  const sha1 = await putRom(bytes); // saved locally; never uploaded
-  const { ok, data } = await api('/api/rom/validate', { method: 'POST', body: { sha1 }, auth: true });
-  if (!(ok && data?.ok)) {
-    await clearRom();
-    if (msg) msg.textContent = data?.error || 'That file is not a recognized Pokémon Emerald (USA, Europe) ROM.';
+  const sha1 = await sha1Hex(bytes);
+  if (!isKnownEmeraldRom(sha1)) { // validated in-browser; bytes never leave the machine
+    if (msg) msg.textContent = 'That file is not a recognized Pokémon Emerald (USA, Europe) ROM.';
     return;
   }
-  await refreshMe(); updateNavAccount();
+  await putRom(bytes); // saved locally; never uploaded
+  updateNavAccount(); // refresh the Settings ROM row (now present)
   try {
-    await deliverPatch(); // ROM saved → build + download the finished game now (bypasses the button guard)
+    await deliverPatch(); // ROM saved → apply the patch(es) locally now (bypasses the button guard)
   } catch (err) {
     if (msg) msg.textContent = /source/i.test(err?.message)
       ? 'That ROM does not match Pokémon Emerald (USA, Europe).'

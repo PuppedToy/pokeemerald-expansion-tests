@@ -12,7 +12,6 @@ import { createUsersRepo } from './auth/users.js';
 import { createTokensRepo } from './auth/tokens.js';
 import { createAuthService } from './auth/service.js';
 import { createAuthRouter } from './auth/routes.js';
-import { createRomRouter } from './rom/routes.js';
 import { createProduceRouter } from './produce/routes.js';
 import { createFeedbackRouter } from './feedback/routes.js';
 import { createDiagnosticsRouter } from './diagnostics/routes.js';
@@ -75,7 +74,6 @@ app.use('/api', createAuthRouter({
   service: authService, users, requests, runs, tokens, feedback, diagnostics, jwtSecret: JWT_SECRET,
   removeFile: (p) => storage.removeFile(p), db, killActiveBuild,
 }));
-app.use('/api/rom', createRomRouter({ users, jwtSecret: JWT_SECRET }));
 app.use('/api', createFeedbackRouter({ feedback, jwtSecret: JWT_SECRET }));
 app.use('/api', createDiagnosticsRouter({ diagnostics, jwtSecret: JWT_SECRET }));
 app.use('/api', createProduceRouter({

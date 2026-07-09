@@ -11,9 +11,10 @@ import { installDomEnv, flush } from './helpers/dom-env.js';
 let caseId = 0;
 const freshAccount = () => import(`../js/account.js?case=${caseId++}`);
 
+// T-080: /api/me no longer returns ownsValidRom — ROM presence is a frontend-only fact (hasRom).
 const ME = (over = {}) => ({
   ok: true, status: 200,
-  json: async () => ({ email: 'u@x.test', verified: true, ownsValidRom: true, activeRequest: null, ...over }),
+  json: async () => ({ email: 'u@x.test', verified: true, activeRequest: null, ...over }),
 });
 
 // B-012 — the optimistic state shown the instant you hit Generate must be neutral ("Submitting…"),
@@ -58,7 +59,7 @@ test('B-011: a stored run is restored on init with no active build', async () =>
     // T-053, ADR-013: generation is now DECOUPLED from ROM ownership. A restored run with no ROM yet no
     // longer stops at an "Upload your ROM" gate — it proceeds to build the BPS patch (produce).
     env.setFetch(async (path) => {
-      if (path === '/api/me') return ME({ ownsValidRom: false });
+      if (path === '/api/me') return ME();
       if (path === '/api/produce') return { ok: true, status: 201, json: async () => ({ requestId: 'r1', eta: 60, romsAhead: 0 }) };
       if (path === '/api/status') return { ok: true, status: 200, json: async () => ({ state: 'queued_fast', romsDone: 0, romsTotal: 1, eta: 60, progress: 0, romsAhead: 0 }) };
       throw new Error(`unexpected fetch ${path}`);
@@ -84,7 +85,7 @@ test('T-053: ready state with no stored ROM offers an inline add-ROM path', asyn
   try {
     global.localStorage.setItem('ec_jwt', 'tok');
     env.setFetch(async (path) => {
-      if (path === '/api/me') return ME({ ownsValidRom: false, activeRequest: { id: 'r1', state: 'ready', romsDone: 1, romsTotal: 1 } });
+      if (path === '/api/me') return ME({ activeRequest: { id: 'r1', state: 'ready', romsDone: 1, romsTotal: 1 } });
       if (path === '/api/status') return { ok: true, status: 200, json: async () => ({ state: 'ready', romsDone: 1, romsTotal: 1, eta: 0, progress: 100, romsAhead: 0 }) };
       throw new Error(`unexpected fetch ${path}`);
     });
@@ -137,7 +138,7 @@ test('init does not restore when there is no stored run and no active build', as
   try {
     global.localStorage.setItem('ec_jwt', 'tok');
     env.setFetch(async (path) => {
-      if (path === '/api/me') return ME({ ownsValidRom: false });
+      if (path === '/api/me') return ME();
       throw new Error(`unexpected fetch ${path}`);
     });
     const account = await freshAccount();

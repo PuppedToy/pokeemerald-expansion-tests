@@ -85,7 +85,8 @@ export function createAuthRouter({ service, users, requests, runs, tokens, feedb
     res.json({
       email: user.email,
       verified: !!user.verified,
-      ownsValidRom: !!user.owns_valid_rom,
+      // T-080: ROM ownership is a frontend-only fact (the ROM lives in the browser and is validated
+      // client-side). The backend no longer tracks or gates on it, so `/api/me` omits it.
       activeRequest: active
         ? { id: active.id, state: active.state, romsDone: active.roms_done, romsTotal: active.roms_total }
         : null,

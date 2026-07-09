@@ -42,12 +42,12 @@ Frontend (`account.js`, `index.html`) + backend (`auth/routes.js`, `rom/*`, `db/
 5. Update backend tests (rom/produce/me) to the new contract.
 
 Acceptance criteria:
-- [ ] `/api/me` no longer returns `ownsValidRom`; `/api/rom/validate` is gone.
-- [ ] `owns_valid_rom` column + `setOwnsValidRom` removed; no backend code references ownership.
-- [ ] Settings + delivery ROM UI reflect local `hasRom()`; ROM validated in the browser.
-- [ ] Every ROM-upload point states the ROM never leaves the browser.
-- [ ] `cd backend && npm test` and `cd frontend && node --test` green.
-- [ ] Manual: upload a ROM in Settings and on the delivery screen; both work offline-of-server
+- [x] `/api/me` no longer returns `ownsValidRom`; `/api/rom/validate` is gone.
+- [x] `owns_valid_rom` column + `setOwnsValidRom` removed; no backend code references ownership.
+- [x] Settings + delivery ROM UI reflect local `hasRom()`; ROM validated in the browser.
+- [x] Every ROM-upload point states the ROM never leaves the browser.
+- [x] `cd backend && npm test` and `cd frontend && node --test` green.
+- [ ] Manual: add a ROM in Settings and on the delivery screen; both work offline-of-server
       and never call a validate endpoint.
 
 ## Progress log
@@ -58,6 +58,16 @@ Acceptance criteria:
   (`produce/routes.js` requires only auth+verified). Ownership survives only as a persisted flag
   + Settings display. Plan: move validation client-side, delete the flag/endpoint/column, drive
   UI off `hasRom()`.
+- **2026-07-09** — Implemented. Backend: dropped the `owns_valid_rom` column (db/index.js),
+  `setOwnsValidRom` (users.js), the `/api/me` field (auth/routes.js), the unused `requireOwnsRom`
+  middleware, and deleted the whole `backend/rom/` router + validator + `rom.test.js`; unwired the
+  rom router in server.js. Updated the 8 test-fixture INSERTs to the 6-column users row. Frontend:
+  moved the known-Emerald SHA-1 set + `isKnownEmeraldRom` into `rom-store.js`; `account.js` now
+  hashes + validates the ROM in the browser (no `/api/rom/validate`), and the Settings ROM row +
+  add/replace/remove controls are driven by `hasRom()` (async `hydrateSettingsRom`). Every add
+  point states the ROM never leaves the browser; rewrote the auth-modal explainer (no more "upload
+  to verify"). Tests: `isKnownEmeraldRom` + structural guards (`rom-ownership.test.js`), account
+  mock updated. Backend (132) + frontend (62) suites green. Pending: manual add-ROM check.
 
 ## Outcome
 
