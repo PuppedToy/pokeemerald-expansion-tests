@@ -22,6 +22,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Randomization settings now validate their number fields.** Every numeric input clamps to its
+  allowed range on blur — the gym type-change count to 0–8 and the Elite-Four count to 0–4, plus
+  the champion %, reward money, shop prices, evolution levels, and the nuzlocke/soul-link ROM and
+  player counts (now bounded in the config too). The seed can no longer be negative (T-081).
+
 - **Gym / E4 / champion type randomization now shares one pool.** The 13 typed bosses (8 gyms,
   4 Elite Four, 1 champion) are marked *fixed* or *changed*; fixed bosses keep their canonical type
   and a shared pool is built from every type they do **not** claim; changed bosses draw from that
