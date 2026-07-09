@@ -87,7 +87,7 @@
 | [T-081](T-081-settings-number-validation.md) | Number-field validation in randomization settings (gym/E4 min-max + full review) | done | 0.6.0 | 2026-07-09 |
 | [T-082](T-082-next-boss-jump-to-trainer.md) | Clicking the "Next boss" top-bar stat jumps to that boss on the Trainers tab | done | 0.6.0 | 2026-07-09 |
 | [T-083](T-083-epic-battle-formats-and-teambuilding.md) | EPIC — Battle formats (singles/doubles/mixed) + doubles-aware rating & teambuilding redesign | proposed | 0.7.0 | 2026-07-09 |
-| [T-084](T-084-battle-format-architecture-adr.md) | Design the battle-format architecture (bundle representation, pools, Run & Bun) + ADR-014 | proposed | 0.7.0 | 2026-07-09 |
+| [T-084](T-084-battle-format-architecture-adr.md) | Design the battle-format architecture (bundle representation, pools, Run & Bun) + ADR-014 | done | 0.7.0 | 2026-07-09 |
 | [T-085](T-085-frontend-battle-format-setting.md) | Frontend battle-format setting — big-box singles/doubles/mixed + % + Run & Bun | proposed | 0.7.0 | 2026-07-09 |
 | [T-086](T-086-randomizer-assign-battle-type.md) | Randomizer assigns per-trainer battle type by pool proportions and marks it in the bundle | proposed | 0.7.0 | 2026-07-09 |
 | [T-087](T-087-writer-emit-double-battle-line.md) | Writer emits/rewrites the Double Battle header per trainer from the bundle battle type | proposed | 0.7.0 | 2026-07-09 |
