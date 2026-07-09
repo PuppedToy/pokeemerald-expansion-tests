@@ -1048,6 +1048,29 @@
         applySectionScroll(targetId);
       });
     });
+
+    // T-082 — activate the Trainers section and scroll to a SPECIFIC trainer card (with a brief
+    // highlight), instead of the default "last defeated" section scroll. Exposed for the Next-boss
+    // shortcut, which must land on the next boss regardless of which trainer you last beat.
+    window.docGoToTrainer = function (trainerId) {
+      const link = document.querySelector('.nav a[data-target="trainers"]');
+      navLinks.forEach(l => l.classList.remove('active'));
+      if (link) link.classList.add('active');
+      setDocsNav(false); // close the mobile drawer (no-op on desktop)
+      sections.forEach(sec => { sec.classList.remove('active'); if (sec.id === 'trainers') sec.classList.add('active'); });
+      // Same reflow-safe centering as applySectionScroll, but to our chosen card; run on the next
+      // frame and again after a short settle so a freshly-activated section is laid out first.
+      const run = () => {
+        const card = trainerId && document.querySelector('.trainer-card[data-trainer-id="' + trainerId + '"]');
+        if (!card) { window.scrollTo(0, 0); return; }
+        const top = card.getBoundingClientRect().top + window.scrollY - (window.innerHeight / 2) + (card.offsetHeight / 2);
+        window.scrollTo(0, Math.max(0, top));
+        card.classList.add('nz-boss-focus');
+        setTimeout(() => card.classList.remove('nz-boss-focus'), 1800);
+      };
+      requestAnimationFrame(run);
+      setTimeout(run, 160);
+    };
   </script>
   <!-- Type palette main colours (typeColors) — SSOT: randomizer/trainerColors.js.
        Injected at build time by writer.js (out.html) / app.js (browser). Boss-card
@@ -3118,23 +3141,20 @@
       set('tb-boss', nextBossLabel(st));
       set('level-cap-value', currentCapLevel(st)); // legacy id, if still present
     }
-    // T-082 — jump from the "Next boss" top-bar stat to that boss on the Trainers tab and scroll to it.
+    // T-082 — jump from the "Next boss" top-bar stat to that boss on the Trainers tab. Resolve the
+    // next boss's first rendered trainer card, then hand off to docGoToTrainer, which owns the section
+    // switch + scroll (bypassing the default "last defeated" auto-scroll that would otherwise win).
     function goToNextBoss(){
       var st = nz();
       var nb = null;
       for (var i=0;i<bossCaps.length;i++){ if (!isBossDefeated(bossCaps[i],st)){ nb = bossCaps[i]; break; } }
-      var trainersNav = document.querySelector('.nav a[data-target="trainers"]');
-      if (trainersNav) trainersNav.click();   // activate the Trainers section (+ close the mobile drawer)
-      if (!nb) return;                         // all bosses cleared — nothing left to scroll to
-      var card = null;
-      for (var j=0;j<nb.trainers.length;j++){
-        var c = document.querySelector('.trainer-card[data-trainer-id="'+nb.trainers[j]+'"]');
-        if (c){ card = c; break; }
+      var trainerId = null;
+      if (nb){
+        for (var j=0;j<nb.trainers.length;j++){
+          if (document.querySelector('.trainer-card[data-trainer-id="'+nb.trainers[j]+'"]')){ trainerId = nb.trainers[j]; break; }
+        }
       }
-      if (!card) return;
-      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      card.classList.add('nz-boss-focus');
-      setTimeout(function(){ card.classList.remove('nz-boss-focus'); }, 1800);
+      if (typeof window.docGoToTrainer === 'function') window.docGoToTrainer(trainerId);
     }
     window.docCurrentCap = function(){ return currentCapLevel(nz()); };
     // Box entries (one per encounter, evolution overlay applied) for the PC tab (T-009):
