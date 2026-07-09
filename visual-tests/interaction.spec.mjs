@@ -174,6 +174,56 @@ test.describe('T-082: Next boss shortcut', () => {
   });
 });
 
+// B-024 regression: evolution mails must fire for evolutions available at or below the first cap.
+// The Mail engine's per-boss windows are (bossCaps[i].level, bossCaps[i+1].level], whose union starts
+// at the first cap — so a low/immediate (level ≤ first cap, incl. 0) evolution never got a mail. We
+// defeat the first boss and assert the evolution mail for a box mon with such an evo now exists.
+test.describe('B-024: evolution mails below the first cap', () => {
+  test('docs viewer: defeating the first boss surfaces low-evolution mails', async ({ page }) => {
+    test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');
+    await page.goto(DOCS_FIXTURE_URL, { waitUntil: 'domcontentloaded' });
+
+    // A STARTER_EXTRA box mon whose evolution level is ≤ the first cap (the case that never notified).
+    const expected = await page.evaluate(() => {
+      const evoGate = (e) => {
+        if ((e.method === 'LEVEL' || e.method === 'LEVEL_BATTLE_ONLY') && /^\d+$/.test(String(e.param))) return +e.param;
+        if (e.method === 'ITEM' && e.minLevel != null && /^\d+$/.test(String(e.minLevel))) return +e.minLevel;
+        return null;
+      };
+      const byId = {}; pokes.forEach((p) => { byId[p.id] = p; });
+      const firstCap = bossCaps[0].level;
+      const se = wildPokes.find((r) => r.id === 'STARTER_EXTRA');
+      for (const k of Object.keys(se).filter((x) => x.startsWith('special'))) {
+        const p = byId[se[k]]; if (!p || !p.evolutions) continue;
+        for (const e of p.evolutions) { const lv = evoGate(e); if (lv != null && lv <= firstCap) return { to: e.pokemon, encounterKey: 'STARTER_EXTRA|' + k, level: lv }; }
+      }
+      return null;
+    });
+    expect(expected, 'seed-42 fixture has a box mon evolving at ≤ first cap').toBeTruthy();
+
+    // Defeat the first boss (any of its trainer variants) → the mail engine regenerates.
+    const defeated = await page.evaluate((ids) => {
+      for (const id of ids) {
+        const cb = document.querySelector('.trainer-card[data-trainer-id="' + id + '"] .nz-defeat-cb');
+        if (cb) { cb.checked = true; cb.dispatchEvent(new Event('change', { bubbles: true })); return id; }
+      }
+      return null;
+    }, await page.evaluate(() => bossCaps[0].trainers));
+    expect(defeated).toBeTruthy();
+
+    // Open Mail so the list renders, then assert the evolution mail for that low-evo mon is present.
+    await page.dispatchEvent('.nav a[data-target="mail"]', 'click');
+    await page.waitForSelector('section#mail.active');
+    const found = await page.evaluate((exp) => {
+      return [...document.querySelectorAll('[data-evolve]')].some((b) => {
+        const v = b.getAttribute('data-evolve') || '';
+        return v.includes(exp.encounterKey) && v.endsWith(exp.to);
+      });
+    }, expected);
+    expect(found).toBe(true);
+  });
+});
+
 test.describe('T-078: item descriptions on hover', () => {
   test('docs viewer: itemsData is injected and held items carry a description tooltip', async ({ page }) => {
     test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');

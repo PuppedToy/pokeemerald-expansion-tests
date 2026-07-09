@@ -20,6 +20,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Docs viewer: evolution mails now fire for low-level evolutions.** Evolutions available at or below
+  the first level cap (e.g. a run with all evolutions at level 5, or any level-0/immediate evo) never
+  produced a Mail notification, because the mail windows started at the first cap. They're now surfaced
+  with the first boss defeat (B-024).
+
 - **Docs viewer: clicking an evolved encounter opens the evolved species.** In the Encounters tab,
   a captured encounter marked as evolved shows the evolved species in green; clicking it now opens
   that evolved species' detail modal instead of the captured base form (B-023).
