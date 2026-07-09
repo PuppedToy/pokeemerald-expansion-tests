@@ -37,17 +37,33 @@ ROM SSOT) by the writer path; battle type must be stamped on both.
   the ≥2 gate, the exclusion, and determinism across a shared-trainer set.
 
 Acceptance criteria:
-- [ ] `singles`/`doubles`/`mixed` produce the expected battle-type distribution per pool (tested).
-- [ ] Champion follows the majority rule; the Mossdeep tag battle is never converted.
-- [ ] No trainer with <2 mons is marked doubles.
-- [ ] `battleType` appears on both `trainersData` and `docs.trainersResultsSimplified` in the bundle.
-- [ ] Assignment is deterministic under the seed; `cd randomizer && npm test` green.
+- [x] `singles`/`doubles`/`mixed` produce the expected battle-type distribution per pool (tested).
+- [x] Champion follows the majority rule; the Mossdeep tag battle is never converted.
+- [x] No trainer with <2 mons is marked doubles.
+- [~] `battleType` appears on both `trainersData` and `docs.trainersResultsSimplified` in the bundle.
+      *(Stamped on `trainersData` here; copying it onto the resolved docs SSOT is done by the writer
+      in T-087, which also re-checks the resolved team size as the ≥2 safety net.)*
+- [x] Assignment is deterministic under the seed; `cd randomizer && npm test` green.
 
 ## Progress log
 
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-09** — Task created.
+- **2026-07-09** — Implemented on `feature/T-086-assign-battle-type` (TDD, red→green). New pure module
+  `randomizer/battleFormat.js`: `poolOf` (champion / e4 / gymBosses / bossTrainers / normalTrainers /
+  excluded by concrete trainer-ID membership), `isEligible` (teamSize ≥2 and not the excluded Mossdeep
+  tag battle), and `assignBattleTypes(trainers, {battleFormat, singlesPercent, seed})`. Mixed mode:
+  champion = majority (>50 singles / <50 doubles / =50 seeded coin-flip), multi-member pools mark
+  `round(fraction×eligible)` singles and fill doubles from the front of a deterministic order — the gym
+  pool pins Tate & Liza first (ADR-014 rule 8). Uses an **isolated** mulberry32 seeded from the run
+  seed, so the global rng stream is untouched; in `singles` (default) it consumes no randomness, so
+  existing seeded output is byte-identical. Wired into `runTrainersModule` after the colours pass to
+  stamp `trainer.battleType` on every `trainersData` entry (mirrors `trainer.colors`), using the
+  definition slot count as the ≥2 proxy. Tests: `__tests__/unit/battleFormat.test.js` (9 cases —
+  pools, eligibility, pure formats, proportions, champion rule, Tate & Liza priority, determinism).
+  Full suite green (783 pass / 1 skip; +9). Docs-SSOT propagation + resolved-team safety net + the
+  `Double Battle:` emission are T-087. Kept `in-progress` for the T-092 checkpoint. Merged to master.
 
 ## Outcome
 

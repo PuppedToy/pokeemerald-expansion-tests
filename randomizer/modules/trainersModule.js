@@ -4,6 +4,7 @@ const { randomizeItems } = require('../itemRandomizer');
 const trainers = require('../trainers');
 const { getDifficultyTransform, getBagSizeOffset, applyTransform } = require('../presets');
 const { resolveTrainerColors } = require('../trainerColors');
+const { assignBattleTypes } = require('../battleFormat');
 
 const EXEMPT_TRAINER_PREFIXES = ['TRAINER_WALLY_', 'TRAINER_MAY_', 'TRAINER_BRENDAN_'];
 const EXEMPT_TRAINER_IDS = new Set(['TRAINER_STEVEN']);
@@ -56,6 +57,20 @@ function runTrainersModule(pokedexArtifact, config) {
     // never on the resolved team, so this is safe before team resolution.
     for (const trainer of trainersData) {
         trainer.colors = resolveTrainerColors(trainer);
+    }
+
+    // T-086/ADR-014 — decide each trainer's battle type (singles/doubles) from the run's battle
+    // format and stamp it on the trainer. This flows into the bundle's trainersData; writerDocs copies
+    // it onto the resolved docs SSOT and the writer emits the `Double Battle:` line (T-087). The
+    // definition slot count is the ≥2-mon eligibility proxy here; the writer re-checks the resolved
+    // team as a safety net. Uses an isolated PRNG, so the global rng stream (and existing seeded
+    // team/starter/wild output) is untouched.
+    const { assignments: battleTypes } = assignBattleTypes(
+        trainersData.map(t => ({ id: t.id, isBoss: t.isBoss, teamSize: Array.isArray(t.team) ? t.team.length : 0 })),
+        config,
+    );
+    for (const trainer of trainersData) {
+        trainer.battleType = battleTypes.get(trainer.id) ?? 'singles';
     }
 
     return { trainersData, itemAssignments };
