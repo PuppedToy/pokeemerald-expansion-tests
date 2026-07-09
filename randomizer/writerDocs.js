@@ -19,6 +19,7 @@ const { selectWithAutoFallback } = require('./modules/trainerFallback');
 const { createChooser } = require('./modules/trainerSelector');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 const { typeMainColors } = require('./trainerColors');
+const { noopDiagnostics, DIAGNOSTIC_CODES } = require('./diagnostics');
 
 const CONTEXTUAL_TIER_SEQ = ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU', 'UBERS', 'LEGEND', 'AG'];
 
@@ -107,6 +108,9 @@ function buildTrainersResultsSimplified(trainersResults, { showExactPositions, b
 // baseRngSeed: when non-null, per-slot RNG reseeding is applied (shared trainer determinism).
 async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, baseRngSeed = null, options = {}) {
     const showExactPositions = options.showExactPositions === true;
+    // T-075 — structured diagnostics sink. Defaults to a no-op so callers that don't wire
+    // one (the ROM-write path, older tests) behave exactly as before.
+    const diag = options.diag || noopDiagnostics();
     let { pokes: pokemonList, moves, abilities } = pokedexArtifact;
     const { trainersData: rawTrainersData, itemAssignments } = trainersArtifact;
     const { starters } = startersArtifact;
@@ -256,9 +260,19 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
             }
             let { pokemon: chosenTrainerMon, effectiveDef } = selectWithAutoFallback(trainerMonDefinition, choosePokemonFromDefinition) ?? {};
             if (!chosenTrainerMon) {
-                console.error(
-                    `No pokemon found for trainer ${trainer.id} slot ${slotIndex} — check definition: ` +
-                    JSON.stringify(trainerMonDefinition),
+                // T-075 — the slot found no pokemon after every fallback was exhausted. The slot
+                // is dropped (accepted "team of 5" degradation); record it richly so it's auditable.
+                diag.error(
+                    DIAGNOSTIC_CODES.TRAINER_SLOT_DROPPED,
+                    `No pokemon found for trainer ${trainer.id} slot ${slotIndex} — check definition`,
+                    {
+                        trainerId: trainer.id,
+                        trainerName: trainer.label || trainer.id,
+                        class: trainer.class || null,
+                        level: trainer.level ?? null,
+                        slotIndex,
+                        definition: trainerMonDefinition,
+                    },
                 );
                 return;
             }
@@ -388,6 +402,26 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                 team.push(newTeamMember);
             }
         });
+
+        // T-075 — the flagship "team of 5" diagnostic: after resolving every slot, a team
+        // that came back shorter than its definition means one or more slots were dropped.
+        // One summary event per trainer (the per-slot detail is in TRAINER_SLOT_DROPPED).
+        const expectedTeamSize = trainer.team.length;
+        if (team.length < expectedTeamSize) {
+            diag.warn(
+                DIAGNOSTIC_CODES.TRAINER_TEAM_SHORT,
+                `Trainer ${trainer.id} team is short: ${team.length}/${expectedTeamSize} slots filled`,
+                {
+                    trainerId: trainer.id,
+                    trainerName: trainer.label || trainer.id,
+                    class: trainer.class || null,
+                    level: trainer.level ?? null,
+                    expected: expectedTeamSize,
+                    actual: team.length,
+                    dropped: expectedTeamSize - team.length,
+                },
+            );
+        }
 
         trainersResults[trainer.id] = {
             level: trainer.level,

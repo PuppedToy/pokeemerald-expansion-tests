@@ -1,3 +1,4 @@
+const { activeDiagnostics, DIAGNOSTIC_CODES } = require('./diagnostics');
 const {
     TIER_MAGIKARP,
     TIER_ZU,
@@ -1844,7 +1845,11 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
     let uniqueMoves = Array.from(new Set(allMoves)).map(moveId => {
         const move = moves[moveId];
         if (!move) {
-            console.warn(`Warning: Move ${moveId} not found for ${poke.name}`);
+            activeDiagnostics().warn(
+                DIAGNOSTIC_CODES.MOVE_NOT_FOUND,
+                `Move ${moveId} not found in the moves database for ${poke.name}`,
+                { move: moveId, pokemon: poke.id || poke.name },
+            );
             return null;
         }
         return {
@@ -3115,7 +3120,11 @@ function ratePokemon(poke, moves, abilities, tmPool) {
             bstRating = defensePower * 0.8 + offensePower * 0.15 + speedPower * 0.05;
             break;
         default:
-            console.warn(`Warning: Unknown role ${role} for ${poke.name}. Assigning balanced rating.`);
+            activeDiagnostics().warn(
+                DIAGNOSTIC_CODES.ROLE_UNKNOWN,
+                `Unknown battle role ${role} for ${poke.name} — assigning a balanced rating`,
+                { role, pokemon: poke.id || poke.name },
+            );
             bstRating = (offensePower + defensePower + speedPower) / 3;
     }
 
