@@ -6,6 +6,7 @@ const {
     TIER_LEGEND, TIER_UBERS, TIER_OU, TIER_UU, TIER_RU, TIER_NU, TIER_PU,
 } = require('../constants');
 const { getFamilyGroup, isSubWeakTier, sample, sampleAndRemove } = require('./utils');
+const { activeDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
 
 // T-072 — the tier vocabulary offered by the "Starter quality" selector, mirroring the extra-starter
 // tiers (EXTRA_STARTER_TIER_OPTIONS in the frontend / wildModule). The TIER_* constants ARE these
@@ -63,7 +64,11 @@ function runStartersModule(pokemonList, { quality } = {}) {
 
     if (triangles.length === 0) {
         // Fallback: the pool genuinely admits no triangle — pick any 3 eligible without type constraints.
-        console.error('Failed to find valid starter Pokémon. Going through fallback method.');
+        activeDiagnostics().error(
+            DIAGNOSTIC_CODES.STARTER_FALLBACK,
+            'No valid starter type-triangle in the pool — using the unconstrained fallback',
+            { eligibleForTriangle: eligiblePokemonForStarters.length },
+        );
         const fallbackPool = pokemonList.filter(eligibleFilter);
         const starters = [null, null, null];
         for (let i = 0; i < 3; i++) {

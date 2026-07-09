@@ -19,6 +19,21 @@ export function requireAuth(jwtSecret) {
   };
 }
 
+/**
+ * Optional bearer-JWT gate (T-075): sets req.userId when a valid token is present, otherwise
+ * continues anonymously (req.userId stays undefined). Used by endpoints that logged-out users
+ * may still hit — e.g. diagnostics reporting (randomization does not require an account).
+ */
+export function optionalAuth(jwtSecret) {
+  return (req, _res, next) => {
+    const m = /^Bearer (.+)$/.exec(req.headers?.authorization || '');
+    if (m) {
+      try { req.userId = verifyJwt(m[1], jwtSecret).sub; } catch { /* ignore: stay anonymous */ }
+    }
+    next();
+  };
+}
+
 export function requireVerified(users) {
   return (req, res, next) => {
     const user = users.get(req.userId);

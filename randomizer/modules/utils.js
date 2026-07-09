@@ -9,6 +9,7 @@ const {
     NATURE_STRATEGY_MIN_LEVEL,
     ABILITY_STRATEGY_MIN_LEVEL,
 } = require('../constants');
+const { activeDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
 
 // T-063 — cosmetic multi-form suffixes. A family named `P_FAMILY_<BASE>_<SUFFIX>` whose suffix is
 // one of these is a size/seasonal/sea/antique variant of `P_FAMILY_<BASE>` and must collapse to it,
@@ -82,7 +83,11 @@ function checkValidEvo(pokemonList, evaluatedPokemon, level, trainer) {
     }
     if (!devolvedForm) {
         if (trainer) {
-            console.warn(`WARN: Could not find base form for mega pokemon ${evaluatedPokemon.id} when checking valid evolutions for trainer ${trainer.id}.`);
+            activeDiagnostics().warn(
+                DIAGNOSTIC_CODES.MEGA_NO_BASE_FORM,
+                `Could not find base form for mega pokemon ${evaluatedPokemon.id} when checking valid evolutions`,
+                { pokemon: evaluatedPokemon.id, trainerId: trainer.id },
+            );
         }
         return false;
     }
@@ -96,7 +101,15 @@ function checkValidEvo(pokemonList, evaluatedPokemon, level, trainer) {
         && devolvedForm.id !== 'SPECIES_GHOLDENGO'
         && !devolvedForm.id.includes('SPECIES_LYCANROC')) {
         if (trainer) {
-            console.warn(`WARN: Multiple pre-evolutions found for ${devolvedForm.id} in trainer ${trainer?.id}: ${pokemonThatEvolveToThis.map(p => p.id).join(', ')}.`);
+            activeDiagnostics().warn(
+                DIAGNOSTIC_CODES.MULTIPLE_PRE_EVOLUTIONS,
+                `Multiple pre-evolutions found for ${devolvedForm.id}`,
+                {
+                    pokemon: devolvedForm.id,
+                    trainerId: trainer?.id,
+                    preEvolutions: pokemonThatEvolveToThis.map(p => p.id),
+                },
+            );
         }
     }
     if (pokemonThatEvolveToThis.length === 0) {

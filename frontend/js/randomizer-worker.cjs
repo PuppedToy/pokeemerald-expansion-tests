@@ -8,6 +8,7 @@
 // mints a session id, and applies the browser's config policy.
 
 const { runGeneration } = require('../../randomizer/generate.js');
+const { createDiagnostics } = require('../../randomizer/diagnostics.js');
 
 // Pre-cooked base data loaded once from /data/base-data.json
 let baseData = null;
@@ -27,15 +28,24 @@ self.onmessage = async ({ data: { type, config } }) => {
             config = { ...config, seed: (Math.random() * 0xFFFFFFFF) >>> 0 };
         }
 
+        // T-075 — collect this run's warnings/errors (still mirrored to devtools). Returned
+        // as a SIBLING of the bundle (never inside it), so the bundle shape is unchanged.
+        const diag = createDiagnostics();
+
         const bundle = await runGeneration(config, toModuleConfig(config), uuid(), {
             progress: (pct, step) => post('progress', pct, step),
             baseData,
+            diagnostics: diag,
             // Browser policy (unchanged): the in-game ordering layer must always run,
             // so single-ROM `default` uses cfg.seed and per-ROM trainers use romSeed.
             defaultBaseSeed: config.seed,
             unsharedTrainingBaseSeed: (romSeed) => romSeed,
         });
-        self.postMessage({ type: 'done', bundle });
+        self.postMessage({
+            type: 'done', bundle,
+            diagnostics: diag.all(),
+            diagnosticsCounts: diag.counts(),
+        });
     } catch (err) {
         self.postMessage({ type: 'error', message: err.message });
     }

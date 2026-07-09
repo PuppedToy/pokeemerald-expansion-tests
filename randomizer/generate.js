@@ -23,6 +23,7 @@ const { applyEvoLevels } = require('./evoLevelWriter');
 const { buildStarterNaming } = require('./modules/starterNames');
 const { buildLocationNaming } = require('./modules/locationNames');
 const { ENCOUNTER_LOCATIONS } = require('./data/encounterLocations');
+const { noopDiagnostics, setActiveDiagnostics, clearActiveDiagnostics } = require('./diagnostics');
 
 // Create a pokedex and roll its dynamic evolution levels EXACTLY ONCE, here, when the
 // pokedex is born. applyEvoLevels mutates each evo.param in place, so the levels become a
@@ -93,15 +94,19 @@ function resolveContext(hooks) {
         // baseRngSeed for per-ROM (non-shared) trainers: worker uses romSeed, backend uses null.
         unsharedTrainingBaseSeed: hooks.unsharedTrainingBaseSeed || ((romSeed) => romSeed),
         generatedAt: hooks.generatedAt || new Date().toISOString(),
+        // T-075 — structured diagnostics sink; the worker injects a real one and reads it back
+        // AFTER the run (as a bundle sibling, never inside the bundle). Defaults to no-op.
+        diagnostics: hooks.diagnostics || noopDiagnostics(),
     };
 }
 
 // Resolve one ROM's docs. Seeds the RNG to romSeed (wild placeholders + evo levels),
 // then defers to writerDocs. showExactPositions flows from the module config.
-async function computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed) {
+async function computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, diag) {
     rng.seed(romSeed);
     return writerDocs(pokedex, trainers, starters, wild, trainingBaseSeed, {
         showExactPositions: mcfg.showExactPositions,
+        diag,
     });
 }
 
@@ -120,7 +125,7 @@ async function generateDefault(cfg, mcfg, sessionId, ctx) {
     // Base seed policy differs per caller (worker: cfg.seed; backend: null). romSeed is
     // cfg.seed for the single ROM; computeRomDocs reseeds it before writerDocs.
     const baseSeed = ctx.defaultBaseSeed !== undefined ? ctx.defaultBaseSeed : cfg.seed;
-    const docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, cfg.seed, baseSeed);
+    const docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, cfg.seed, baseSeed, ctx.diagnostics);
     tick('Done'); await flush();
 
     const roms = [{
@@ -213,7 +218,7 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
         const { pokedex, trainers, starters, wild } = romArtifacts[i];
         const romSeed = (cfg.seed ^ (i * 0x9E3779B9)) >>> 0;
         const trainingBaseSeed = shared.trainers ? cfg.seed : unsharedTrainingBaseSeed(romSeed);
-        roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed);
+        roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics);
         tick(`Viewer ready${label}`); await flush();
     }
 
@@ -376,7 +381,7 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
         } else {
             trainingBaseSeed = unsharedTrainingBaseSeed(romSeed);
         }
-        roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed);
+        roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics);
         tick(`Viewer ready (${label})`); await flush();
     }
 
@@ -394,10 +399,17 @@ async function runGeneration(cfg, mcfg, sessionId, hooks = {}) {
     const ctx = resolveContext(hooks);
     rng.seed(cfg.seed);
 
-    if (cfg.runType === 'default')  return generateDefault(cfg, mcfg, sessionId, ctx);
-    if (cfg.runType === 'nuzlocke') return generateNuzlocke(cfg, mcfg, sessionId, ctx);
-    if (cfg.runType === 'soullink') return generateSoullink(cfg, mcfg, sessionId, ctx);
-    throw new Error(`Unknown runType: ${cfg.runType}`);
+    // T-075 — make the sink ambient for the whole run so deep helpers (utils.js, rating.js)
+    // can record without threading it through every signature. Cleared in finally.
+    setActiveDiagnostics(ctx.diagnostics);
+    try {
+        if (cfg.runType === 'default')  return await generateDefault(cfg, mcfg, sessionId, ctx);
+        if (cfg.runType === 'nuzlocke') return await generateNuzlocke(cfg, mcfg, sessionId, ctx);
+        if (cfg.runType === 'soullink') return await generateSoullink(cfg, mcfg, sessionId, ctx);
+        throw new Error(`Unknown runType: ${cfg.runType}`);
+    } finally {
+        clearActiveDiagnostics();
+    }
 }
 
 module.exports = { runGeneration, generateDefault, generateNuzlocke, generateSoullink, bundle, attachStarterNaming, attachLocationNaming };
