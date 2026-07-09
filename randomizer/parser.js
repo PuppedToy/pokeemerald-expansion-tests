@@ -421,6 +421,43 @@ function parseMovesFile(movesFileText) {
     return moves;
 }
 
+// T-078: parse src/data/items.h into a { [displayName]: description } map. The generated docs render
+// held items and rewards as display NAMES (e.g. "Choice Scarf"), not ITEM_ ids, so the tooltip lookup
+// is keyed by name. Names use ITEM_NAME("…"); descriptions are single/multi-line COMPOUND_STRING or a
+// shared description-const pointer — all resolved with the same helpers as parseMovesFile.
+function parseItemsFile(itemsFileText) {
+    const lines = itemsFileText.split('\n');
+    const items = {};
+    const descConsts = parseDescriptionConsts(itemsFileText);
+    let current = null;
+    const record = () => { if (current && current.name && current.description) items[current.name] = current.description; };
+
+    for (let i = 0; i < lines.length; i++) {
+        const headerMatch = lines[i].match(/^\s*\[(ITEM_[A-Z0-9_]+)\]\s*=/);
+        if (headerMatch) { current = { name: '', description: '' }; continue; }
+        if (!current) continue;
+
+        const trimmed = lines[i].trim();
+        if (trimmed.startsWith('.name = ')) {
+            // ITEM_NAME("…") (or a bare COMPOUND_STRING) → the quoted segment(s).
+            current.name = joinStringSegments(trimmed);
+            record();
+        } else if (trimmed.startsWith('.description = ')) {
+            // Gather the whole RHS (multi-line COMPOUND_STRING ends on the trailing comma).
+            let rhs = lines[i];
+            while (!rhs.trimEnd().endsWith(',') && i < lines.length - 1) { i++; rhs += ' ' + lines[i]; }
+            if (rhs.includes('"')) {
+                current.description = joinStringSegments(rhs);
+            } else {
+                const token = rhs.slice(rhs.indexOf('=') + 1).replace(/,\s*$/, '').trim();
+                current.description = descConsts[token] !== undefined ? descConsts[token] : '';
+            }
+            record();
+        }
+    }
+    return items;
+}
+
 function parseLearnsetsFile(learnsetsFileText) {
     const learnsets = {};
     const lines = learnsetsFileText.split('\n');
@@ -635,6 +672,7 @@ module.exports = {
     evoIsFinal,
     parseSpeciesFile,
     parseMovesFile,
+    parseItemsFile,
     parseLearnsetsFile,
     parseTeachableFile,
     parseAbilitiesFile,

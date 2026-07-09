@@ -7,6 +7,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Added
+
+- **Item descriptions on hover in the generated docs.** Hovering a Pokémon's held item or a
+  trainer's reward on the Trainers tab now shows the item's in-game description (parsed from
+  `src/data/items.h`), matching the existing ability/move/nature tooltips. `TM <Move>` rewards
+  show the taught move's description (T-078).
+
 ### Fixed
 
 - **Docs viewer: clicking an evolved encounter opens the evolved species.** In the Encounters tab,

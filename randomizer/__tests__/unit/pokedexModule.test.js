@@ -29,6 +29,7 @@ jest.mock('fs', () => ({
 
 jest.mock('../../parser', () => ({
     parseAbilitiesFile: jest.fn(() => ({ ABILITY_OVERGROW: { name: 'Overgrow', rating: 3 } })),
+    parseItemsFile: jest.fn(() => ({ 'Leftovers': 'A hold item that gradually restores HP in battle.' })),
     parseMegaEvoStonesFile: jest.fn(() => ({})),
     parseMovesFile: jest.fn(() => ({
         MOVE_TACKLE: { id: 'MOVE_TACKLE', power: '40', accuracy: '100', pp: '35', priority: '0', type: 'TYPE_NORMAL', additionalEffects: [] },
@@ -194,6 +195,13 @@ describe('runPokedexModule — orchestration calls', () => {
         expect(parser.parseMovesFile).toHaveBeenCalledTimes(1);
     });
 
+    test('T-078: surfaces the parsed item descriptions on the pokedex artifact', async () => {
+        const { runPokedexModule } = freshModule();
+        const pokedex = await runPokedexModule(baseConfig);
+        expect(parser.parseItemsFile).toHaveBeenCalledTimes(1);
+        expect(pokedex.items).toEqual({ 'Leftovers': 'A hold item that gradually restores HP in battle.' });
+    });
+
     test('calls expandAllTeachables once', async () => {
         const { runPokedexModule } = freshModule();
         await runPokedexModule(baseConfig);
@@ -237,13 +245,14 @@ describe('runPokedexModule — orchestration calls', () => {
         );
     });
 
-    test('writes abilities.json, moves.json, pokes.json, evoTree.json', async () => {
+    test('writes abilities.json, items.json, moves.json, pokes.json, evoTree.json', async () => {
         const fs = require('fs');
         const { runPokedexModule } = freshModule();
         await runPokedexModule(baseConfig);
         const writtenPaths = fs.promises.writeFile.mock.calls.map(c => String(c[0]));
         const check = (suffix) => writtenPaths.some(p => p.endsWith(suffix));
         expect(check('abilities.json')).toBe(true);
+        expect(check('items.json')).toBe(true);
         expect(check('moves.json')).toBe(true);
         expect(check('pokes.json')).toBe(true);
         expect(check('evoTree.json')).toBe(true);

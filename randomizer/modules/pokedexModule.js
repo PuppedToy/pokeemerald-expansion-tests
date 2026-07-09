@@ -11,7 +11,7 @@ const { balancePokemon } = require('../rebalancer');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
 const {
-    TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR, ABILITIES_FILE_PATH, MEGA_EVOS_PATH,
+    TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR, ABILITIES_FILE_PATH, ITEMS_FILE_PATH, MEGA_EVOS_PATH,
     EVO_TYPE_MEGA,
     TIER_LEGEND, TIER_UBERS, TIER_LEGEND_THRESHOLD, TIER_SEQ,
     WISHIWASHI_SOLO_ID, WISHIWASHI_SCHOOL_ID,
@@ -30,6 +30,11 @@ async function parseBaseData() {
     // 2. Parse mega evo stones
     const megaEvosFileText = await fs.readFile(MEGA_EVOS_PATH, 'utf-8');
     const megaEvoStones = parser.parseMegaEvoStonesFile(megaEvosFileText);
+
+    // 2b. Parse item descriptions (T-078) — keyed by display name so the docs can show a hover
+    // tooltip on held items and trainer rewards (both reach the viewer as display names).
+    const itemsFileText = await fs.readFile(ITEMS_FILE_PATH, 'utf-8');
+    const items = parser.parseItemsFile(itemsFileText);
 
     // 3. Parse moves
     const movesFilePath = path.resolve(__dirname, '..', '..', 'src', 'data', 'moves_info.h');
@@ -121,7 +126,7 @@ async function parseBaseData() {
         });
     }
 
-    return { abilities, megaEvoStones, moves, levelUpLearnsets, TMTeachables, evoTree, megaEvoTree, allPokes, tmLocations };
+    return { abilities, items, megaEvoStones, moves, levelUpLearnsets, TMTeachables, evoTree, megaEvoTree, allPokes, tmLocations };
 }
 
 // Run the full pokedex pipeline.
@@ -137,12 +142,13 @@ async function runPokedexModule(config, baseData = null) {
         baseData = await parseBaseData();
         // Write JSON caches (Node-only — used by the HTML viewer and as intermediate artifacts)
         await fs.writeFile(path.resolve(__dirname, '..', 'abilities.json'),             JSON.stringify(baseData.abilities,         null, 2), 'utf-8');
+        await fs.writeFile(path.resolve(__dirname, '..', 'items.json'),                 JSON.stringify(baseData.items,             null, 2), 'utf-8');
         await fs.writeFile(path.resolve(__dirname, '..', 'moves.json'),                 JSON.stringify(baseData.moves,             null, 2), 'utf-8');
         await fs.writeFile(path.resolve(__dirname, '..', 'level_up_learnsets.json'),    JSON.stringify(baseData.levelUpLearnsets,  null, 2), 'utf-8');
         await fs.writeFile(path.resolve(__dirname, '..', 'teachable_learnsets.json'),   JSON.stringify(baseData.TMTeachables,      null, 2), 'utf-8');
     }
 
-    const { abilities, moves, evoTree, megaEvoTree, allPokes: basePokes } = baseData;
+    const { abilities, items, moves, evoTree, megaEvoTree, allPokes: basePokes } = baseData;
 
     // Deep-clone allPokes so we never mutate the shared pre-cooked base data.
     const allPokes = JSON.parse(JSON.stringify(basePokes));
@@ -321,6 +327,7 @@ async function runPokedexModule(config, baseData = null) {
         pokes: allPokes,
         moves,
         abilities,
+        items: items || {},
         evoTree,
         tmList,
         tmPool,

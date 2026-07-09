@@ -1259,6 +1259,7 @@
   <script src="trainers.js"></script>
   <script src="wildpokes.js"></script>
   <script src="abilities.js"></script>
+  <script src="items.js"></script>
   <script src="sprites.js"></script>
   <script src="bosscaps.js"></script>
   <!-- T-005 — per-run localStorage namespace. The run-namespace token below is replaced
@@ -1425,6 +1426,30 @@
       return pokes.find(p => p.id === pokeId);
     }
 
+    // T-078 — hover-tooltip text for a held item or a trainer reward: the item's description
+    // (name-keyed itemsData, injected at generation time) or, for a "TM <Move>" reward, the taught
+    // move's description. Returns '' when there is nothing to show → no tooltip is attached.
+    let _moveByDisplayName = null;
+    function itemRewardTooltip(label) {
+      if (!label) return '';
+      if (typeof itemsData !== 'undefined' && itemsData[label]) return itemsData[label];
+      if (label.indexOf('TM ') === 0 && typeof movesData !== 'undefined') {
+        if (!_moveByDisplayName) {
+          _moveByDisplayName = {};
+          for (const id in movesData) _moveByDisplayName[nameify(id.replace('MOVE_', ''))] = movesData[id];
+        }
+        const mv = _moveByDisplayName[label.slice(3)];
+        if (mv && mv.description) return mv.description;
+      }
+      return '';
+    }
+    // Escape for a double-quoted HTML attribute. Local to this (early) script — the modal script's
+    // escAttr isn't defined yet when the trainer cards are built synchronously on load.
+    function itemAttrEsc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
     const trainersGrid = document.getElementById('trainers-cards');
 
     Object.entries(trainersData).forEach(([trainerId, trainer]) => {
@@ -1488,7 +1513,10 @@
         const natureHTML = member.nature
           ? `<span class="rm-nature" data-tooltip="${attr(natTip)}">${member.nature}</span>`
           : '';
-        const itemHTML = member.item ? `<span class="rm-item">${getIcon('pokeball','🎒')} ${member.item}</span>` : '';
+        const itemTip = itemRewardTooltip(member.item);
+        const itemHTML = member.item
+          ? `<span class="rm-item"${itemTip ? ` data-tooltip="${itemAttrEsc(itemTip)}" style="cursor:help"` : ''}>${getIcon('pokeball','🎒')} ${member.item}</span>`
+          : '';
         // Ability / nature / item stack on their own lines (the spans are display:block). T-045.
         const metaLine = [abilityHTML, natureHTML, itemHTML].filter(Boolean).join('');
         const hasMoves = member.moves && member.moves.length > 0;
@@ -1521,7 +1549,11 @@
       let rewards = '';
       if (trainer.reward && trainer.reward.length > 0) {
         rewards = `<div class="rewards">
-          ${trainer.reward.map(r => '<div class="reward-item">' + getIcon('reward','🎁') + ' ' + r + '</div>').join('')}
+          ${trainer.reward.map(r => {
+            const t = itemRewardTooltip(r);
+            const tipAttr = t ? ` data-tooltip="${itemAttrEsc(t)}" style="cursor:help"` : '';
+            return `<div class="reward-item"${tipAttr}>${getIcon('reward','🎁')} ${r}</div>`;
+          }).join('')}
         </div>
         `;
       }
