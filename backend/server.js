@@ -7,6 +7,7 @@ import { openDatabase } from './db/index.js';
 import { createRequestsRepo } from './db/requests.js';
 import { createRunsRepo } from './db/runs.js';
 import { createFeedbackRepo } from './db/feedback.js';
+import { createDiagnosticsRepo } from './db/diagnostics.js';
 import { createUsersRepo } from './auth/users.js';
 import { createTokensRepo } from './auth/tokens.js';
 import { createAuthService } from './auth/service.js';
@@ -14,6 +15,7 @@ import { createAuthRouter } from './auth/routes.js';
 import { createRomRouter } from './rom/routes.js';
 import { createProduceRouter } from './produce/routes.js';
 import { createFeedbackRouter } from './feedback/routes.js';
+import { createDiagnosticsRouter } from './diagnostics/routes.js';
 import { createMailer, brevoTransport } from './email/index.js';
 import { createStorage } from './build/storage.js';
 import { createBuildRom, killActiveBuild } from './build/buildRom.js';
@@ -37,6 +39,7 @@ const tokens = createTokensRepo(db);
 const requests = createRequestsRepo(db);
 const runs = createRunsRepo(db);
 const feedback = createFeedbackRepo(db);
+const diagnostics = createDiagnosticsRepo(db);
 
 // ── email (ADR-007): real provider if configured, else a dev console transport ──
 const transport = process.env.BREVO_API_KEY
@@ -63,17 +66,18 @@ runOnStartup({ requests, restoreTree: FAKE_BUILD ? () => {} : undefined });
 
 const worker = createWorker({ requests, runs, db, buildRom, mailer, users, baseUrl: BASE_URL });
 worker.start();
-startSweeper({ requests, removeFile: storage.removeFile });
+startSweeper({ requests, diagnostics, removeFile: storage.removeFile });
 
 // ── HTTP ────────────────────────────────────────────────────────────────────────
 const app = express();
 
 app.use('/api', createAuthRouter({
-  service: authService, users, requests, runs, tokens, feedback, jwtSecret: JWT_SECRET,
+  service: authService, users, requests, runs, tokens, feedback, diagnostics, jwtSecret: JWT_SECRET,
   removeFile: (p) => storage.removeFile(p), db, killActiveBuild,
 }));
 app.use('/api/rom', createRomRouter({ users, jwtSecret: JWT_SECRET }));
 app.use('/api', createFeedbackRouter({ feedback, jwtSecret: JWT_SECRET }));
+app.use('/api', createDiagnosticsRouter({ diagnostics, jwtSecret: JWT_SECRET }));
 app.use('/api', createProduceRouter({
   requests, users, jwtSecret: JWT_SECRET,
   persistBundle: (id, b) => storage.persistBundle(id, b),

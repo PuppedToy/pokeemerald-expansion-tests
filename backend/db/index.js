@@ -93,6 +93,25 @@ CREATE TABLE IF NOT EXISTS feedback (
   created_at INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS feedback_by_user ON feedback(user_id);
+
+-- Randomization diagnostics (T-075): one row per completed browser generation. The front
+-- reports every run's warnings/errors here so degraded outcomes (e.g. a trainer team of 5)
+-- become auditable. user_id is nullable (generation does not require login); the sweeper
+-- purges rows 48 h after created_at, matching the bundle/output retention window.
+CREATE TABLE IF NOT EXISTS diagnostics (
+  id           TEXT PRIMARY KEY,               -- runId (bundle sessionId)
+  user_id      INTEGER REFERENCES users(id),   -- nullable → anonymous run
+  created_at   INTEGER NOT NULL,               -- epoch ms, server receive time (TTL base)
+  generated_at INTEGER,                        -- epoch ms, client generation time
+  seed         TEXT,
+  run_type     TEXT,
+  app_version  TEXT,
+  user_agent   TEXT,
+  counts_json  TEXT NOT NULL,                  -- {fatal,error,warning}
+  events_json  TEXT NOT NULL                   -- array of {seq,severity,code,message,context}
+);
+CREATE INDEX IF NOT EXISTS diagnostics_by_created ON diagnostics(created_at);
+CREATE INDEX IF NOT EXISTS diagnostics_by_user ON diagnostics(user_id);
 `;
 
 export function migrate(db) {

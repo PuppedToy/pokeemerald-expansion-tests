@@ -322,6 +322,7 @@ function startWorker(config) {
             worker.terminate();
             currentWorker = null;
             showGenDone();
+            reportDiagnostics(data); // T-075 — ship this run's warnings/errors to the server
         } else if (data.type === 'error') {
             stopCrawl();
             worker.terminate();
@@ -343,6 +344,30 @@ function startWorker(config) {
 function terminateWorker() {
     stopCrawl();
     if (currentWorker) { currentWorker.terminate(); currentWorker = null; }
+}
+
+// T-075 — report every completed generation's diagnostics to the server (48h store), so
+// degraded outcomes (e.g. a trainer team of 5) are auditable off-line. Fire-and-forget:
+// telemetry must never block, slow, or fail the generation UX. Sends even when there are
+// zero events, to give the audit tool a denominator (how many runs had no warnings).
+function reportDiagnostics(data) {
+    try {
+        const bundle = data.bundle || {};
+        const cfg = bundle.config || {};
+        api('/api/diagnostics', {
+            method: 'POST',
+            auth: true, // attaches the JWT if logged in; anonymous otherwise (optional auth)
+            body: {
+                runId: bundle.sessionId,
+                generatedAt: Date.parse(bundle.generatedAt) || null,
+                seed: cfg.seed != null ? String(cfg.seed) : null,
+                runType: cfg.runType || null,
+                formatVersion: bundle.formatVersion ?? null,
+                counts: data.diagnosticsCounts || null,
+                diagnostics: data.diagnostics || [],
+            },
+        }).catch(() => {});
+    } catch { /* never let telemetry break generation */ }
 }
 
 // ── Progress crawl animation ──────────────────────────────────────────────────
