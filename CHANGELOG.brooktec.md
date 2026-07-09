@@ -22,6 +22,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Transparent, patch-first ROM delivery.** The green action button now reads "Download patch &
+  apply to my ROM" (plural for nuzlocke / soul-link runs) and never speaks of downloading a ROM.
+  Pressing it shows a live checklist of what actually happens — *downloading patch → applying patch
+  to my ROM* — plus a third *generating zip* step for multi-ROM runs (which now download as a single
+  zip of the finished games instead of one file at a time). All delivery/ready/queued copy is
+  singular/plural by ROM count (T-079).
+
 - **Randomization settings now validate their number fields.** Every numeric input clamps to its
   allowed range on blur — the gym type-change count to 0–8 and the Elite-Four count to 0–4, plus
   the champion %, reward money, shop prices, evolution levels, and the nuzlocke/soul-link ROM and

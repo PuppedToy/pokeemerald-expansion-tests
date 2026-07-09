@@ -35,12 +35,12 @@ All in `frontend/js/account.js` (+ `frontend/index.html` static button text):
 3. Make all delivery/ready/queued copy conditional on ROM count for correct singular/plural.
 
 Acceptance criteria:
-- [ ] No user-facing string says or implies "download a ROM"; all say patch(es) applied locally.
-- [ ] Button label is singular for 1 ROM, plural for >1, everywhere it appears.
-- [ ] Clicking delivery shows the 3-step checklist; step 3 appears only when count > 1.
-- [ ] Multi-ROM delivery produces one zip of finished games (step 3), single-ROM downloads the
+- [x] No user-facing string says or implies "download a ROM"; all say patch(es) applied locally.
+- [x] Button label is singular for 1 ROM, plural for >1, everywhere it appears.
+- [x] Clicking delivery shows the 3-step checklist; step 3 appears only when count > 1.
+- [x] Multi-ROM delivery produces one zip of finished games (step 3), single-ROM downloads the
       one `.gba` directly (no step 3).
-- [ ] `cd frontend && node --test` green (existing + new assertions on the copy/steps).
+- [x] `cd frontend && node --test` green (existing + new assertions on the copy/steps).
 - [ ] Manual: single-ROM and multi-ROM delivery both show correct steps + wording.
 
 ## Progress log
@@ -51,6 +51,17 @@ Acceptance criteria:
   (`deliverPatch`/`downloadRom`/`hydrateReadyRow`/`renderRom`) and the static button in
   `index.html`. Depends on T-080 (frontend-only ROM ownership) since both touch the same
   ready-row/settings code — will implement after T-080 merges.
+- **2026-07-09** — Implemented (after T-080 merged). Button + all delivery copy are now patch-first
+  and count-aware via `dlLabel` ("Download patch & apply to my ROM" / "…patches & apply to my ROMs");
+  removed every "Download ROM(s)" / "your ROM has been downloaded" / "ROM downloaded" phrasing (the
+  delivered state now reads "Patch applied to your ROM"). `deliverPatch(onStep)` reports a live
+  3-step checklist (`#dl-steps`, styled in components.css): download patch(es) → apply to my ROM(s)
+  → generate zip (multi-ROM only); multi-ROM now downloads one zip of the finished `.gba`s (new
+  `zipRoms`), single-ROM downloads the one `.gba`. `downloadRom` + `onReadyRomAdd` both drive the
+  checklist. Fixed a stale "verify your Emerald" gating line (leftover from the old ownership model).
+  Tests: `dlLabel` unit test + structural guards (`delivery-feedback.test.js`); updated the T-053
+  ready-row assertion to the new label spec. Frontend suite green (67). Pending: manual delivery
+  check (single + multi ROM).
 
 ## Outcome
 

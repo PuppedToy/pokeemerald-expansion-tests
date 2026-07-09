@@ -904,6 +904,26 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
   font-size: 15px; color: var(--obs-text-dim); cursor: pointer; margin-top: 2px;
 }
 
+/* ── T-079: live delivery checklist (download patch → apply to my ROM → generate zip) ─────────── */
+.dl-steps {
+  list-style: none; margin: 12px auto 0; padding: 0;
+  max-width: 460px; text-align: left;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.dl-step {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 15px; color: var(--obs-text-mute);
+}
+.dl-step[data-state="active"] { color: var(--obs-text); }
+.dl-step[data-state="done"]   { color: var(--obs-green); }
+.dl-step-ico {
+  flex-shrink: 0; width: 1.3em; height: 1.3em;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.dl-step[data-state="pending"] .dl-step-ico::before { content: "○"; opacity: 0.5; }
+.dl-step[data-state="active"]  .dl-step-ico::before { content: "◍"; }
+.dl-step[data-state="done"]    .dl-step-ico::before { content: "✓"; }
+
 /* compact ROM build bar reuses .gen-progress-bar/.gen-progress-fill */
 .gen-progress-wrap.compact { margin: 4px 0; }
 
