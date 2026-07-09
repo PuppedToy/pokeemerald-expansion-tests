@@ -78,3 +78,45 @@ describe('stripWildHeldItems (T-077)', () => {
         expect(stripWildHeldItems(input)).toBe(input);
     });
 });
+
+describe('stripWildHeldItems inside #define macros (B-025)', () => {
+    // B-025: some held-item fields live inside multi-line `#define ..._SPECIES_INFO` /
+    // `..._MISC_INFO` macros (form species like MOTHIM_SPECIES_INFO / MINIOR_MISC_INFO), where
+    // every body line ends in a `\` line-continuation. Dropping that `\` terminates the macro
+    // before its closing `}`, so it expands to an unclosed brace and the whole gSpeciesInfo[]
+    // array is corrupted -> `-Werror` build failure (make: *** [pokemon.o] Error 1).
+    const mothimMacro = [
+        '#define MOTHIM_SPECIES_INFO                                                 \\',
+        '    {                                                                       \\',
+        '        .baseHP        = 70,                                                \\',
+        '        .expYield = (P_UPDATED_EXP_YIELDS >= GEN_5) ? 148 : 159,            \\',
+        '        .itemRare = ITEM_SILVER_POWDER,                                     \\',
+        '        .genderRatio = MON_MALE,                                            \\',
+        '        .formSpeciesIdTable = sMothimFormSpeciesIdTable,                    \\',
+        '    }',
+    ].join('\n');
+
+    test('neutralizes the held item but preserves the macro line-continuation', () => {
+        const itemLine = stripWildHeldItems(mothimMacro)
+            .split('\n')
+            .find((l) => /\.itemRare\s*=/.test(l));
+        expect(itemLine).toMatch(/=\s*ITEM_NONE,/);          // item neutralized
+        expect(itemLine).not.toContain('ITEM_SILVER_POWDER');
+        expect(/\\\s*$/.test(itemLine)).toBe(true);          // <-- continuation preserved
+    });
+
+    test('drops no `\\` continuation from the macro body', () => {
+        const count = (text) => text.split('\n').filter((l) => /\\\s*$/.test(l)).length;
+        expect(count(stripWildHeldItems(mothimMacro))).toBe(count(mothimMacro));
+    });
+
+    test('a rewritten continuation line uses no `//` comment (which would swallow the next macro line)', () => {
+        const itemLine = stripWildHeldItems(mothimMacro)
+            .split('\n')
+            .find((l) => /\.itemRare\s*=/.test(l));
+        // a `//` comment followed by a trailing `\` continues the comment onto `.genderRatio`
+        expect(itemLine).not.toMatch(/\/\/.*\\\s*$/);
+        // the audit marker still survives (as a block comment)
+        expect(itemLine).toContain('@PUPPED-NO-WILD-ITEMS');
+    });
+});

@@ -28,3 +28,4 @@
 | [B-022](B-022-location-nicknames-missing-includes.md) | location_nicknames.c missing includes (EOS / map constants) — breaks the C build | fixing | critical | 0.6.0 |  |  |
 | [B-023](B-023-encounter-click-opens-base-species.md) | Encounter tile click opens the base species modal instead of the evolved one | fixed | minor | 0.6.0 | 0.6.0 | visual-tests/interaction.spec.mjs |
 | [B-024](B-024-evolution-mails-below-first-cap.md) | Evolution mails never fire for evolutions available at or below the first level cap | fixed | major | 0.6.0 | 0.6.0 | visual-tests/interaction.spec.mjs |
+| [B-025](B-025-writer-drops-macro-line-continuation.md) | Writer drops the `\` line-continuation of held-item fields inside | fixing | critical | Unreleased |  | randomizer/__tests__/unit/pokemonWriterHeldItems.test.js |
