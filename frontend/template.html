@@ -3150,9 +3150,18 @@
       for (var i=0;i<bossCaps.length;i++){ if (!isBossDefeated(bossCaps[i],st)){ nb = bossCaps[i]; break; } }
       var trainerId = null;
       if (nb){
+        // A rival boss maps to 6 trainer variants (Brendan/May × the 3 starter counters); once a
+        // starter is picked, applyStarterRivals hides all but the matching one via inline display:none.
+        // Prefer that VISIBLE card so we scroll to the rival that actually applies. (offsetParent can't
+        // be used — the Trainers section may still be inactive when this runs.)
+        var firstExisting = null;
         for (var j=0;j<nb.trainers.length;j++){
-          if (document.querySelector('.trainer-card[data-trainer-id="'+nb.trainers[j]+'"]')){ trainerId = nb.trainers[j]; break; }
+          var c = document.querySelector('.trainer-card[data-trainer-id="'+nb.trainers[j]+'"]');
+          if (!c) continue;
+          if (firstExisting === null) firstExisting = nb.trainers[j];
+          if (c.style.display !== 'none'){ trainerId = nb.trainers[j]; break; }
         }
+        if (!trainerId) trainerId = firstExisting; // fallback: no visible variant found
       }
       if (typeof window.docGoToTrainer === 'function') window.docGoToTrainer(trainerId);
     }

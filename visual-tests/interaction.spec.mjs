@@ -126,6 +126,52 @@ test.describe('T-082: Next boss shortcut', () => {
       .evaluate((el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < window.innerHeight; });
     expect(inView).toBe(true);
   });
+
+  // When the next boss is the rival, there are 6 variant cards (Brendan/May × 3 starters); once a
+  // starter is picked only the matching one is shown. The jump must target that VISIBLE variant, not
+  // the first (now-hidden) one in the boss's trainer list.
+  test('docs viewer: with a starter picked, "Next boss" targets the visible rival variant', async ({ page }) => {
+    test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');
+    await page.goto(DOCS_FIXTURE_URL, { waitUntil: 'domcontentloaded' });
+
+    // Pick a starter (STARTERS route, slot special1) → applyStarterRivals hides the other rival cards.
+    const picked = await page.evaluate(() => {
+      const cb = document.querySelector('.location-card[data-route-id="STARTERS"] .wild-poke[data-slot="special1"] .nz-select-cb');
+      if (!cb) return false;
+      cb.checked = true;
+      cb.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
+    });
+    expect(picked).toBe(true);
+
+    // The next boss is still the rival (picking a starter defeats nothing). Its first-listed variant is
+    // now hidden; exactly one variant is visible.
+    const ids = await page.evaluate(() => {
+      const nb = bossCaps[0];
+      let firstExisting = null, visible = null;
+      for (const id of nb.trainers) {
+        const c = document.querySelector('.trainer-card[data-trainer-id="' + id + '"]');
+        if (!c) continue;
+        if (firstExisting === null) firstExisting = id;
+        if (visible === null && c.style.display !== 'none') visible = id;
+      }
+      const firstHidden = firstExisting
+        ? document.querySelector('.trainer-card[data-trainer-id="' + firstExisting + '"]').style.display === 'none'
+        : null;
+      return { firstExisting, visible, firstHidden };
+    });
+    expect(ids.visible).toBeTruthy();
+    expect(ids.firstHidden).toBe(true);          // the naive "first variant" is hidden now
+    expect(ids.visible).not.toBe(ids.firstExisting);
+
+    // Clicking "Next boss" must highlight the VISIBLE variant (the fix), not the hidden first one.
+    await page.click('.tb-stat--boss');
+    await expect(page.locator('section#trainers')).toHaveClass(/\bactive\b/);
+    await expect(page.locator('.trainer-card[data-trainer-id="' + ids.visible + '"]')).toHaveClass(/\bnz-boss-focus\b/);
+    const hiddenFocused = await page.locator('.trainer-card[data-trainer-id="' + ids.firstExisting + '"]')
+      .evaluate((el) => el.classList.contains('nz-boss-focus'));
+    expect(hiddenFocused).toBe(false);           // never targets the hidden variant
+  });
 });
 
 test.describe('T-078: item descriptions on hover', () => {

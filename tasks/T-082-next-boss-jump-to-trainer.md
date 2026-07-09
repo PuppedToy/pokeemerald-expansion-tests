@@ -59,6 +59,15 @@ Acceptance criteria:
   far-down trainer first (so the two scroll targets differ) and assert the next boss ends up in the
   viewport — verified it FAILS on the old code and PASSES on the fix.
 
+- **2026-07-09** — Fix 2 (user feedback): when the next boss is the rival, the jump went to the wrong
+  card. A rival maps to 6 variant cards (Brendan/May × 3 starter counters); once a starter is picked,
+  `applyStarterRivals` hides all but the matching one via inline `display:none`. `goToNextBoss` picked
+  the first *existing* variant (a now-hidden Brendan card), so it scrolled nowhere. Now it prefers the
+  first variant whose inline `style.display !== 'none'` (the visible one), falling back to the first
+  existing if none is visible. `offsetParent` can't be used (the Trainers section may be inactive when
+  clicked). Added a second regression test (pick a starter → assert the jump targets the visible rival
+  variant, never the hidden first one); verified FAIL before, PASS after.
+
 ## Outcome
 
 <!-- Filled when closing. -->
