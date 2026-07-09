@@ -9,8 +9,8 @@ function setup() {
   const now = 1000;
   for (const id of [1, 2]) {
     db.prepare(
-      `INSERT INTO users (id,email,password_hash,verified,owns_valid_rom,created_at,updated_at)
-       VALUES (?,?,?,1,1,?,?)`
+      `INSERT INTO users (id,email,password_hash,verified,created_at,updated_at)
+       VALUES (?,?,?,1,?,?)`
     ).run(id, `u${id}@x.test`, 'hash', now, now);
   }
   return { db, requests: createRequestsRepo(db) };

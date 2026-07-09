@@ -9,8 +9,8 @@ import { finishBuild } from '../lifecycle/complete.js';
 function setup() {
   const db = openDatabase(':memory:');
   db.prepare(
-    `INSERT INTO users (id,email,password_hash,verified,owns_valid_rom,created_at,updated_at)
-     VALUES (1,'u1@x.test','h',1,1,0,0)`
+    `INSERT INTO users (id,email,password_hash,verified,created_at,updated_at)
+     VALUES (1,'u1@x.test','h',1,0,0)`
   ).run();
   return { db, requests: createRequestsRepo(db), runs: createRunsRepo(db) };
 }

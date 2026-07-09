@@ -8,8 +8,8 @@ import { runOnStartup } from '../lifecycle/recovery.js';
 function setup() {
   const db = openDatabase(':memory:');
   db.prepare(
-    `INSERT INTO users (id,email,password_hash,verified,owns_valid_rom,created_at,updated_at)
-     VALUES (1,'u1@x.test','h',1,1,1000,1000)`
+    `INSERT INTO users (id,email,password_hash,verified,created_at,updated_at)
+     VALUES (1,'u1@x.test','h',1,1000,1000)`
   ).run();
   return { db, requests: createRequestsRepo(db) };
 }

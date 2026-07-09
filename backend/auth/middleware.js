@@ -42,14 +42,6 @@ export function requireVerified(users) {
   };
 }
 
-export function requireOwnsRom(users) {
-  return (req, res, next) => {
-    const user = users.get(req.userId);
-    if (!user || !user.owns_valid_rom) return res.status(403).json({ error: 'ROM ownership not verified' });
-    next();
-  };
-}
-
 /** Per-IP throttle backed by the shared rolling-window limiter. */
 export function ipRateLimit(limiter) {
   return (req, res, next) => {

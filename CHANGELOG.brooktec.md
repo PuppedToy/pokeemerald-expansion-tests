@@ -37,6 +37,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Removed
 
+- **Server-side ROM ownership tracking.** "I have a ROM" is now a purely frontend fact: the ROM is
+  validated in the browser against the known official Emerald dumps and its presence is read from the
+  local store, so the `owns_valid_rom` column, the `POST /api/rom/validate` endpoint and the
+  `ownsValidRom` field on `/api/me` are gone. The backend never tracks or gates on ROM ownership;
+  Settings and the delivery screen show whether a ROM is saved in this browser, and every point that
+  adds a ROM states it never leaves the device (T-080).
+
 - **Wild Pokémon no longer hold items.** Every species' wild held items (`.itemCommon`/`.itemRare`)
   are zeroed at ROM-write time, so wild encounters (and the dexnav readout) never carry an item —
   no more Cherubi with a Miracle Seed or Luvdisc with a Heart Scale. Trainer, gift and static

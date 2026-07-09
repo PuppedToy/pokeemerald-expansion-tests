@@ -5,7 +5,7 @@
 
 export function createUsersRepo(db) {
   const insert = db.prepare(
-    'INSERT INTO users (email,password_hash,verified,owns_valid_rom,created_at,updated_at) VALUES (?,?,0,0,?,?)'
+    'INSERT INTO users (email,password_hash,verified,created_at,updated_at) VALUES (?,?,0,?,?)'
   );
   const byEmail = db.prepare('SELECT * FROM users WHERE email = ?');
   const byId = db.prepare('SELECT * FROM users WHERE id = ?');
@@ -27,9 +27,6 @@ export function createUsersRepo(db) {
     },
     setPassword(id, passwordHash, now = Date.now()) {
       db.prepare('UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?').run(passwordHash, now, id);
-    },
-    setOwnsValidRom(id, owns, now = Date.now()) {
-      db.prepare('UPDATE users SET owns_valid_rom = ?, updated_at = ? WHERE id = ?').run(owns ? 1 : 0, now, id);
     },
     delete(id) {
       db.prepare('DELETE FROM users WHERE id = ?').run(id);

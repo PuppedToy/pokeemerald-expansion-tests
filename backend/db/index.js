@@ -37,7 +37,6 @@ CREATE TABLE IF NOT EXISTS users (
   email          TEXT UNIQUE NOT NULL,
   password_hash  TEXT NOT NULL,
   verified       INTEGER NOT NULL DEFAULT 0,
-  owns_valid_rom INTEGER NOT NULL DEFAULT 0,
   created_at     INTEGER NOT NULL,
   updated_at     INTEGER NOT NULL
 );

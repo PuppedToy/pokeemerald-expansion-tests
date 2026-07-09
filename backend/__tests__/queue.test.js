@@ -26,8 +26,8 @@ function setup({ agingMs = 1e9, now = () => 100 } = {}) {
   // several users: one active request per user, so concurrent requests need distinct users
   for (const id of [1, 2, 3, 4]) {
     db.prepare(
-      `INSERT INTO users (id,email,password_hash,verified,owns_valid_rom,created_at,updated_at)
-       VALUES (?,?,?,1,1,0,0)`
+      `INSERT INTO users (id,email,password_hash,verified,created_at,updated_at)
+       VALUES (?,?,?,1,0,0)`
     ).run(id, `u${id}@x.test`, 'h');
   }
   const requests = createRequestsRepo(db);
