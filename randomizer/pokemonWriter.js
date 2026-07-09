@@ -101,6 +101,16 @@ function stripWildHeldItems(fileText) {
         const [, indent, field, ws] = m;
         // Emit no reference to the stripped item — not even in the comment — so the old item
         // name survives nowhere in the source (keeps greps for e.g. ITEM_HEART_SCALE clean).
+        //
+        // B-025: some held-item fields sit inside multi-line `#define ..._SPECIES_INFO` /
+        // `..._MISC_INFO` macros (form species like MOTHIM_SPECIES_INFO / MINIOR_MISC_INFO),
+        // where the line ends in a `\` continuation. Dropping it terminates the macro before its
+        // closing `}` and corrupts the whole gSpeciesInfo[] array (-> `-Werror` build failure).
+        // Preserve the continuation, and annotate with a block comment: a `//` comment before a
+        // trailing `\` would continue the comment onto — and swallow — the next macro line.
+        if (/\\\s*$/.test(line)) {
+            return `${indent}.${field}${ws}= ITEM_NONE, /* @PUPPED-NO-WILD-ITEMS (T-077) */ \\`;
+        }
         return `${indent}.${field}${ws}= ITEM_NONE, // @PUPPED-NO-WILD-ITEMS (T-077)`;
     }).join('\n');
 }

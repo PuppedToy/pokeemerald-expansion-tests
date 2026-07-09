@@ -20,6 +20,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **ROM build no longer aborts on form-species held items.** The writer strips wild held items by
+  rewriting `.itemCommon`/`.itemRare` lines, but dropped the trailing `\` on the two such fields that
+  live inside multi-line `#define ..._SPECIES_INFO`/`..._MISC_INFO` macros (Mothim, Minior). That broke
+  the macro and corrupted `gSpeciesInfo[]`, failing the `make` compile with `-Werror`. The continuation
+  is now preserved (B-025).
+
 - **Docs viewer: evolution mails now fire for low-level evolutions.** Evolutions available at or below
   the first level cap (e.g. a run with all evolutions at level 5, or any level-0/immediate evo) never
   produced a Mail notification, because the mail windows started at the first cap. They're now surfaced
