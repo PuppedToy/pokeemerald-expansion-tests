@@ -30,17 +30,25 @@ In `frontend/template.html` (docs viewer), inside the Mail-engine IIFE (which ow
 3. When all bosses are cleared, just switch to Trainers (nothing to scroll to).
 
 Acceptance criteria:
-- [ ] Clicking "Next boss" activates the Trainers section and scrolls that boss's card into view.
-- [ ] Works after progress changes (defeating bosses advances which card it targets).
-- [ ] Keyboard-accessible (focusable, Enter/Space) and visibly clickable.
-- [ ] Regression test drives it end-to-end in the docs fixture.
-- [ ] Docs interaction suite green.
+- [x] Clicking "Next boss" activates the Trainers section and scrolls that boss's card into view.
+- [x] Works after progress changes (resolved live from `nz()` each click, so it advances).
+- [x] Keyboard-accessible (focusable, Enter/Space) and visibly clickable.
+- [x] Regression test drives it end-to-end in the docs fixture.
+- [x] Docs interaction suite green.
+- [ ] Manual: click "Next boss" at a few progress points → lands on the right boss.
 
 ## Progress log
 
 - **2026-07-09** — Task created (extra task before the PRO deploy). Mapped `bossCaps`
   (`{trainers[],label,…}`), `isBossDefeated`, and that `data-trainer-id` on cards matches the boss
   trainer ids, so the next boss resolves to a card to scroll to.
+- **2026-07-09** — Implemented in the Mail-engine IIFE: `goToNextBoss()` finds the first undefeated
+  `bossCaps` entry, clicks the existing `.nav a[data-target="trainers"]` link, then `scrollIntoView`
+  the first `.trainer-card[data-trainer-id=…]` among that boss's trainers with a brief
+  `.nz-boss-focus` flash. Wired `.tb-stat--boss` for click + Enter/Space (`role=button`, `tabindex`,
+  `cursor:pointer`, hover/focus styling). Verified in the seed-42 fixture the next boss ("Rival –
+  Route 103") resolves to a real card. Playwright regression in `interaction.spec.mjs`; docs suite +
+  frontend suite (69) green. Pending: manual check at a few progress points.
 
 ## Outcome
 

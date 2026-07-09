@@ -85,3 +85,4 @@
 | [T-079](T-079-transparent-patch-delivery-feedback.md) | Transparent, patch-first ROM delivery feedback (3-step, singular/plural) | in-progress | 0.6.0 | 2026-07-09 |
 | [T-080](T-080-rom-ownership-frontend-only.md) | ROM ownership is frontend-only (backend stops tracking/gating it) | in-progress | 0.6.0 | 2026-07-09 |
 | [T-081](T-081-settings-number-validation.md) | Number-field validation in randomization settings (gym/E4 min-max + full review) | in-progress | 0.6.0 | 2026-07-09 |
+| [T-082](T-082-next-boss-jump-to-trainer.md) | Clicking the "Next boss" top-bar stat jumps to that boss on the Trainers tab | in-progress | 0.6.0 | 2026-07-09 |

@@ -9,6 +9,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **"Next boss" is a shortcut in the docs.** Clicking the top-bar *Next boss* stat jumps to the
+  Trainers tab and scrolls that boss's card into view (with a brief highlight). Keyboard-accessible
+  (T-082).
+
 - **Item descriptions on hover in the generated docs.** Hovering a Pokémon's held item or a
   trainer's reward on the Trainers tab now shows the item's in-game description (parsed from
   `src/data/items.h`), matching the existing ability/move/nature tooltips. `TM <Move>` rewards

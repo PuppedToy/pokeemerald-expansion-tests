@@ -722,6 +722,16 @@
     .tb-value.tb-cap { color:var(--obs-orange); }
     .tb-value.tb-deaths { color:var(--obs-red); }
     .tb-stat--boss .tb-value { color:var(--obs-cyan); font-size:18px; max-width:30ch; overflow:hidden; text-overflow:ellipsis; }
+    /* T-082 — the "Next boss" stat is a clickable shortcut to that boss on the Trainers tab. */
+    .tb-stat--boss { cursor:pointer; }
+    .tb-stat--boss:hover { border-color:var(--obs-cyan); }
+    .tb-stat--boss:focus-visible { outline:2px solid var(--obs-cyan); outline-offset:2px; }
+    /* Brief highlight on the boss card we scrolled to. */
+    .trainer-card.nz-boss-focus { animation: nzBossFocus 1.8s ease-out; }
+    @keyframes nzBossFocus {
+      0%, 20% { box-shadow: 0 0 0 3px var(--obs-cyan); }
+      100%    { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+    }
     .topbar-pin { flex:none; background:var(--obs-surface); border:var(--obs-border); box-shadow:var(--obs-shadow-sm);
       color:var(--obs-text-dim); cursor:pointer; padding:7px 10px; font-size:15px; line-height:1;
       display:inline-flex; align-items:center; }
@@ -3108,6 +3118,24 @@
       set('tb-boss', nextBossLabel(st));
       set('level-cap-value', currentCapLevel(st)); // legacy id, if still present
     }
+    // T-082 — jump from the "Next boss" top-bar stat to that boss on the Trainers tab and scroll to it.
+    function goToNextBoss(){
+      var st = nz();
+      var nb = null;
+      for (var i=0;i<bossCaps.length;i++){ if (!isBossDefeated(bossCaps[i],st)){ nb = bossCaps[i]; break; } }
+      var trainersNav = document.querySelector('.nav a[data-target="trainers"]');
+      if (trainersNav) trainersNav.click();   // activate the Trainers section (+ close the mobile drawer)
+      if (!nb) return;                         // all bosses cleared — nothing left to scroll to
+      var card = null;
+      for (var j=0;j<nb.trainers.length;j++){
+        var c = document.querySelector('.trainer-card[data-trainer-id="'+nb.trainers[j]+'"]');
+        if (c){ card = c; break; }
+      }
+      if (!card) return;
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      card.classList.add('nz-boss-focus');
+      setTimeout(function(){ card.classList.remove('nz-boss-focus'); }, 1800);
+    }
     window.docCurrentCap = function(){ return currentCapLevel(nz()); };
     // Box entries (one per encounter, evolution overlay applied) for the PC tab (T-009):
     // docBoxList = available (non-fainted), docFaintedList = fainted.
@@ -3159,6 +3187,15 @@
     // ---------- init ----------
     var mailNav = document.querySelector('.nav a[data-target="mail"]');
     if (mailNav) mailNav.addEventListener('click', render);   // re-render whenever the tab is opened
+    // T-082 — make the "Next boss" stat a shortcut to that boss on the Trainers tab.
+    var bossStat = document.querySelector('.tb-stat--boss');
+    if (bossStat){
+      bossStat.setAttribute('role', 'button');
+      bossStat.setAttribute('tabindex', '0');
+      bossStat.title = 'Go to this boss on the Trainers tab';
+      bossStat.addEventListener('click', goToNextBoss);
+      bossStat.addEventListener('keydown', function(e){ if (e.key==='Enter' || e.key===' '){ e.preventDefault(); goToNextBoss(); } });
+    }
     reconcileEvo(); reconcile(); refreshBubble(); refreshCap(); render();
     if (typeof window.nzRefreshAll==='function') window.nzRefreshAll();   // reflect overlays in the Encounters tab on load
   })();
