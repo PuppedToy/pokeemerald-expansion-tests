@@ -99,8 +99,9 @@ test('T-053: ready state with no stored ROM offers an inline add-ROM path', asyn
     // The green Download ROM button is for the playable ROM → gated (disabled) until a ROM is added, so
     // it never reads as a 2nd "download .bps" button.
     const green = env.getEl('btn-download-rom');
-    assert.equal(green.disabled, true, 'green Download ROM is disabled with no ROM stored');
-    assert.match(green.textContent, /Download ROM/, 'and labelled Download ROM, not .bps');
+    assert.equal(green.disabled, true, 'the green delivery button is disabled with no ROM stored');
+    // T-079: patch-first label — "Download patch & apply to my ROM", never "download a ROM" or ".bps".
+    assert.match(green.textContent, /Download patch & apply to my ROM/, 'labelled patch-first');
     assert.doesNotMatch(green.textContent, /\.bps/, 'the green button never offers the .bps');
     assert.match(green.title, /Add your Emerald ROM/i, 'its tooltip says to add the ROM first');
     // T-053: Start over must be usable even with a downloadable patch (no longer disabled).

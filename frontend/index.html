@@ -217,11 +217,14 @@
               <div class="action-row">
                 <button class="btn btn-primary" id="btn-download-docs">⬇ Download docs</button>
                 <button class="btn btn-emerald" id="btn-download-rom" disabled
-                        title="Your ROM isn't ready yet.">⬇ Download ROM</button>
+                        title="Your ROM isn't ready yet.">⬇ Download patch &amp; apply to my ROM</button>
               </div>
+              <!-- T-079: live delivery checklist (downloading patch → applying to my ROM → generating zip
+                   for multi-ROM runs), populated by account.js while the button runs. -->
+              <ul class="dl-steps" id="dl-steps" hidden></ul>
               <div id="rom-dl-note" class="single-use-warning" hidden>
                 <span class="single-use-icon" aria-hidden="true">ℹ</span>
-                <span><strong>Applied in your browser.</strong> Your ROM never leaves your device — the patch is combined with it locally. This patch stays re-downloadable for 48&nbsp;h, or until you start a new run.</span>
+                <span><strong>Applied in your browser.</strong> Your ROM never leaves your device — the patch is applied to it locally. Your generated run stays re-downloadable for 48&nbsp;h, or until you start a new run.</span>
               </div>
               <button class="btn btn-ghost btn-sm" id="btn-start-over">Start over</button>
             </div>

@@ -248,19 +248,46 @@ function romCount() {
   return state?.activeRequest?.romsTotal ?? lastBundle?.roms?.length ?? 1;
 }
 
-// Enable/disable the actions-row "Download ROM(s)" button + its single-use note. `reason` is the
-// tooltip shown while disabled, so it always states the real reason (not ready / failed / downloaded…).
+// T-079 — the action button is patch-first and never says "download a ROM": you download the patch
+// and it is applied to YOUR ROM locally. Singular/plural by how many ROMs this run produces.
+// Exported for unit testing.
+export function dlLabel(count) {
+  return count > 1 ? '⬇ Download patches & apply to my ROMs' : '⬇ Download patch & apply to my ROM';
+}
+
+// Enable/disable the actions-row delivery button + its note. `reason` is the tooltip shown while
+// disabled, so it always states the real reason (not ready / failed / downloaded…).
 function setRomDownload({ enabled, count = romCount(), note = false, reason = "Your ROM isn't ready yet.", label = null }) {
   const btn = $('btn-download-rom');
   if (btn) {
     btn.classList.remove('is-working');   // clear any in-flight download indicator
     btn.disabled = !enabled;
     btn.title = enabled ? '' : reason;
-    btn.textContent = label || (count > 1 ? '⬇ Download ROMs' : '⬇ Download ROM');
+    btn.textContent = label || dlLabel(count);
   }
   const noteEl = $('rom-dl-note');
   if (noteEl) noteEl.hidden = !note;
 }
+
+// T-079 — the live delivery checklist under the button. Steps: download patch(es) → apply to my
+// ROM(s) → (multi-ROM only) generate zip. Returns an update fn (key, 'active'|'done'); a no-op when
+// the element is absent. `clearDlSteps` hides + empties it between states.
+function startDlSteps(count) {
+  const el = $('dl-steps');
+  if (!el) return () => {};
+  const plural = count > 1;
+  const steps = [
+    ['download', plural ? 'Downloading patches' : 'Downloading patch'],
+    ['apply',    plural ? 'Applying patches to my ROMs' : 'Applying patch to my ROM'],
+  ];
+  if (plural) steps.push(['zip', 'Generating zip']);
+  el.hidden = false;
+  el.innerHTML = steps
+    .map(([k, label]) => `<li class="dl-step" id="dl-step-${k}" data-state="pending"><span class="dl-step-ico" aria-hidden="true"></span><span>${label}</span></li>`)
+    .join('');
+  return (key, stateVal) => { const li = $(`dl-step-${key}`); if (li) li.dataset.state = stateVal; };
+}
+function clearDlSteps() { const el = $('dl-steps'); if (el) { el.hidden = true; el.innerHTML = ''; } }
 
 // Keep the screen's title + one-line summary honest about what is actually ready. Docs are always
 // ready on this screen; only when the ROM is ready too does it become "Your run is ready".
@@ -270,10 +297,10 @@ function setHeadline(cat) {
   const seed = lastBundle?.config?.seed;
   const STATUS = {
     ready: 'everything is ready to download',
-    building: 'your ROM is building below',
-    queued: 'your ROM is queued below',
-    failed: 'the ROM build failed — see below',
-    downloaded: 'your ROM has been downloaded',
+    building: 'your run is building below',
+    queued: 'your run is queued below',
+    failed: 'the build failed — see below',
+    downloaded: n > 1 ? 'patches applied to your ROMs' : 'patch applied to your ROM',
     gating: 'sign in to also build a ROM',
   };
   const titleEl = $('gen-done-title');
@@ -335,16 +362,17 @@ export async function onBundleReady(bundle) {
 
 async function reevaluateDelivery() {
   if (!romRow()) return;
+  clearDlSteps(); // T-079 — the delivery checklist is transient; drop it between states
   lastCategory = null; // any path below either re-renders via renderRom or sets the row directly
   setTabTitle(null);   // renderRom (active request) overrides this for the building/queued states
   setStartOverBtn('cancel'); // default; the delivered branch / renderRom override it
 
   if (!state) {
     setHeadline('gating');
-    setRomDownload({ enabled: false, reason: 'Log in and verify your Emerald to build a ROM.' });
+    setRomDownload({ enabled: false, reason: 'Log in to build a ROM.' });
     setRomRow('todo',
       `<div class="status-title">Randomized ROM</div>
-       <div class="status-sub">Log in and verify your Emerald to build one — your docs are ready regardless.</div>
+       <div class="status-sub">Log in to build one — your docs are ready regardless.</div>
        <button class="btn btn-primary btn-sm" id="rom-cta">Log in / Register</button>`, LOCK_ICO);
     $('rom-cta')?.addEventListener('click', openModal);
     return;
@@ -364,11 +392,12 @@ async function reevaluateDelivery() {
   if (state.activeRequest) { renderRom(state.activeRequest); startPolling(); return; }
 
   if (delivered) {
+    const n = romCount();
     setHeadline('downloaded');
     setStartOverBtn('downloaded');
-    setRomDownload({ enabled: false, reason: 'Already downloaded — removed from the server. Start a new run to build another.' });
+    setRomDownload({ enabled: false, reason: 'Already delivered — removed from the server. Start a new run to build another.' });
     setRomRow('done',
-      `<div class="status-title">ROM downloaded</div>
+      `<div class="status-title">${n > 1 ? 'Patches applied to your ROMs' : 'Patch applied to your ROM'}</div>
        <div class="status-sub">Removed from the server. Start a new run to build another.</div>`, '✓');
     return;
   }
@@ -525,16 +554,37 @@ async function patchZipToRoms(zipBlob, romBytes) {
   return roms;
 }
 
-// Core delivery: fetch the patch zip; if a ROM is stored, apply it locally into the finished .gba(s),
-// else hand over the raw .bps. NOT gated on the button, so it also runs right after an inline ROM add.
-async function deliverPatch() {
+// Zip the finished games (multi-ROM runs: nuzlocke / soul-link) into one download.
+async function zipRoms(roms) {
+  const zip = new JSZip();
+  for (const { name, bytes } of roms) zip.file(name, bytes);
+  return zip.generateAsync({ type: 'blob' });
+}
+
+// Core delivery (T-079): download the patch(es), apply them to the user's ROM locally, and hand back
+// the finished game(s) — a single .gba for one ROM, or a zip for a multi-ROM run. `onStep(key,state)`
+// drives the live checklist (download → apply → zip). NOT gated on the button, so it also runs right
+// after an inline ROM add. If somehow no ROM is stored, the raw patch archive is handed over unchanged.
+async function deliverPatch(onStep = () => {}) {
+  onStep('download', 'active');
   const res = await fetch('/api/download', { headers: { authorization: `Bearer ${getToken()}` } });
   if (!res.ok) throw new Error(`download failed (${res.status})`);
   const zipBlob = await res.blob();
+  onStep('download', 'done');
+
   const rom = await getRom();
   if (rom) {
+    onStep('apply', 'active');
     const roms = await patchZipToRoms(zipBlob, rom);
-    for (const { name, bytes } of roms) triggerDownload(new Blob([bytes], { type: 'application/octet-stream' }), name);
+    onStep('apply', 'done');
+    if (roms.length > 1) {
+      onStep('zip', 'active');
+      const outZip = await zipRoms(roms);
+      onStep('zip', 'done');
+      triggerDownload(outZip, `emerald-cut-${lastBundle?.config?.seed ?? 'run'}.zip`);
+    } else {
+      triggerDownload(new Blob([roms[0].bytes], { type: 'application/octet-stream' }), roms[0].name);
+    }
   } else {
     triggerDownload(zipBlob, 'emerald-cut-patch.zip');
   }
@@ -547,43 +597,50 @@ async function deliverPatch() {
 async function downloadRom() {
   const btn = $('btn-download-rom');
   if (!btn || btn.disabled) return;
-  // Immediate feedback (T-035): disable + a spinner the instant it's clicked, so a slow delivery
-  // doesn't feel unresponsive and the button can't be double-clicked. Restored on completion/error.
+  const count = romCount();
+  // Immediate feedback (T-035, T-079): disable + a spinner the instant it's clicked, and show the live
+  // 3-step checklist below, so a slow delivery is transparent and the button can't be double-clicked.
   btn.disabled = true;
   btn.classList.add('is-working');
-  btn.innerHTML = '<img src="/assets/generating.png" alt="" class="px-icon spin"> Preparing your ROM…';
+  btn.innerHTML = '<img src="/assets/generating.png" alt="" class="px-icon spin"> Working…';
+  const onStep = startDlSteps(count);
   try {
-    await deliverPatch();
+    await deliverPatch(onStep);
     await refreshMe();
-    reevaluateDelivery();
+    reevaluateDelivery(); // clears the checklist + re-renders the delivered state
   } catch (err) {
-    setRomDownload({ enabled: true, count: romCount(), note: true }); // restore the button + clear spinner
+    clearDlSteps();
+    setRomDownload({ enabled: true, count, note: true }); // restore the button + clear spinner
     alert(/source/i.test(err?.message) ? 'That patch is for Pokémon Emerald (USA, Europe) — the ROM you saved does not match. Re-add the correct ROM.' : 'Download failed — please try again.');
   }
 }
 
-// Ready state (T-053, ADR-013): if the user's ROM is saved in this browser, Download builds the
-// finished game locally; if not, offer an inline "add your ROM" affordance (+ a raw-.bps fallback).
-// Async because it reads IndexedDB — guarded against the run moving on while we await.
+// Ready state (T-053, ADR-013; T-079): if the user's ROM is saved in this browser, the button
+// downloads the patch(es) and applies them locally to build the finished game(s); if not, offer an
+// inline "add your ROM" affordance (+ a raw-.bps fallback). Async — reads IndexedDB, guarded against
+// the run moving on while we await. Copy is patch-first + singular/plural by ROM count.
 async function hydrateReadyRow(count) {
   const romPresent = await hasRom().catch(() => false);
   if (lastCategory !== 'ready' || !romRow()) return;
+  const runNoun = count > 1 ? 'runs are' : 'run is';
+  const gameNoun = count > 1 ? 'games' : 'game';
+  const patchNoun = count > 1 ? 'patches' : 'patch';
   if (romPresent) {
     setRomRow('done',
-      `<div class="status-title">Your randomized ROM is ready</div>
-       <div class="status-sub" id="rom-ready-msg">Your Emerald is saved in this browser — Download builds the finished game locally.</div>
-       <button class="btn btn-ghost btn-sm" id="rom-dl-bps">Download the raw patch (.bps) instead</button>`, '✓');
-    setRomDownload({ enabled: true, count, note: true, label: count > 1 ? '⬇ Download ROMs' : '⬇ Download ROM' });
+      `<div class="status-title">Your randomized ${count > 1 ? 'ROMs are' : 'ROM is'} ready</div>
+       <div class="status-sub" id="rom-ready-msg">Your Emerald is saved in this browser — we download the ${patchNoun} and apply ${count > 1 ? 'them' : 'it'} here to build your ${gameNoun}.</div>
+       <button class="btn btn-ghost btn-sm" id="rom-dl-bps">Download the raw ${patchNoun} (.bps) instead</button>`, '✓');
+    setRomDownload({ enabled: true, count, note: true, label: dlLabel(count) });
   } else {
     setRomRow('done',
-      `<div class="status-title">Your randomized ROM is ready</div>
-       <div class="status-sub" id="rom-ready-msg">Add your Pokémon Emerald (USA, Europe) to build the playable ROM — it stays in your browser, never uploaded.</div>
+      `<div class="status-title">Your randomized ${runNoun} ready</div>
+       <div class="status-sub" id="rom-ready-msg">Add your Pokémon Emerald (USA, Europe) to build the playable ${gameNoun} — it stays in your browser, never uploaded.</div>
        <label class="btn btn-primary btn-sm">⬆ Add your Emerald ROM<input type="file" id="rom-file-ready" accept=".gba,application/octet-stream" hidden></label>
-       <button class="btn btn-ghost btn-sm" id="rom-dl-bps">Download raw patch (.bps) only</button>`, '✓');
-    // Green "Download ROM" is for the playable ROM → gated until a ROM is added (clear, not a 2nd .bps
-    // button). The raw .bps stays reachable via the ghost button for people who patch elsewhere.
-    setRomDownload({ enabled: false, note: false, label: count > 1 ? '⬇ Download ROMs' : '⬇ Download ROM',
-      reason: 'Add your Emerald ROM (USA, Europe) above to build the playable ROM.' });
+       <button class="btn btn-ghost btn-sm" id="rom-dl-bps">Download raw ${patchNoun} (.bps) only</button>`, '✓');
+    // The green button applies the patch(es) to the playable ROM → gated until a ROM is added (clear,
+    // not a 2nd .bps button). The raw .bps stays reachable via the ghost button for those who patch elsewhere.
+    setRomDownload({ enabled: false, note: false, label: dlLabel(count),
+      reason: 'Add your Emerald ROM (USA, Europe) above to build the playable game.' });
     $('rom-file-ready')?.addEventListener('change', onReadyRomAdd);
   }
   $('rom-dl-bps')?.addEventListener('click', downloadBpsOnly);
@@ -604,14 +661,16 @@ async function onReadyRomAdd(e) {
   await putRom(bytes); // saved locally; never uploaded
   updateNavAccount(); // refresh the Settings ROM row (now present)
   try {
-    await deliverPatch(); // ROM saved → apply the patch(es) locally now (bypasses the button guard)
+    // ROM saved → download the patch(es) + apply locally now (same 3-step checklist as the button).
+    await deliverPatch(startDlSteps(romCount()));
   } catch (err) {
+    clearDlSteps();
     if (msg) msg.textContent = /source/i.test(err?.message)
       ? 'That ROM does not match Pokémon Emerald (USA, Europe).'
-      : 'Could not build the ROM — please try again.';
+      : 'Could not build the game — please try again.';
     return;
   }
-  reevaluateDelivery(); // re-render the ready row → ROM-present view (green Download enabled)
+  reevaluateDelivery(); // re-render the ready row → ROM-present view (green button enabled)
 }
 
 // Download just the raw patch (.bps) without applying it — for users who patch elsewhere (ADR-013).
