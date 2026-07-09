@@ -82,6 +82,27 @@ test.describe('B-023: encounter click opens the evolved species', () => {
 // T-078 regression: held items and trainer rewards must carry an item-description hover tooltip
 // (data-tooltip), sourced from the injected itemsData map. Verifies the whole chain: parseItemsFile →
 // base-data → pokedex.items → buildDocHtml injection → template render.
+// T-082 regression: the top-bar "Next boss" stat is a shortcut — clicking it activates the Trainers
+// section and scrolls that boss's card into view (flashing .nz-boss-focus). On a fresh doc the next
+// boss is bossCaps[0]; the scroll target is the first of its trainers that has a rendered card.
+test.describe('T-082: Next boss shortcut', () => {
+  test('docs viewer: clicking "Next boss" opens Trainers and highlights that boss', async ({ page }) => {
+    test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');
+    await page.goto(DOCS_FIXTURE_URL, { waitUntil: 'domcontentloaded' });
+    const targetId = await page.evaluate(() => {
+      const nb = bossCaps[0]; // fresh doc → nothing defeated → the first entry is the next boss
+      for (const id of nb.trainers) {
+        if (document.querySelector('.trainer-card[data-trainer-id="' + id + '"]')) return id;
+      }
+      return null;
+    });
+    expect(targetId).toBeTruthy();
+    await page.click('.tb-stat--boss');
+    await expect(page.locator('section#trainers')).toHaveClass(/\bactive\b/);
+    await expect(page.locator('.trainer-card[data-trainer-id="' + targetId + '"]')).toHaveClass(/\bnz-boss-focus\b/);
+  });
+});
+
 test.describe('T-078: item descriptions on hover', () => {
   test('docs viewer: itemsData is injected and held items carry a description tooltip', async ({ page }) => {
     test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');
