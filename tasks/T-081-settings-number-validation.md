@@ -34,12 +34,12 @@ a review shows several number fields accept out-of-range values (negatives, absu
 4. Ensure the seed input can't go negative.
 
 Acceptance criteria:
-- [ ] Gym field clamps to [0,8], E4 field to [0,4], in both the UI and `getConfig()`.
-- [ ] `numROMs`/`numPlayers`/`romsPerPlayer` are clamped to their documented ranges in
+- [x] Gym field clamps to [0,8], E4 field to [0,4], in both the UI and `getConfig()`.
+- [x] `numROMs`/`numPlayers`/`romsPerPlayer` are clamped to their documented ranges in
       `getConfig()` (no negatives / absurd values pass through).
-- [ ] All `input[type=number]` with `min`/`max` clamp typed out-of-range values on blur.
-- [ ] No number field yields a negative where negatives are invalid.
-- [ ] `cd frontend && node --test` green (existing + new validation assertions).
+- [x] All `input[type=number]` with `min`/`max` clamp typed out-of-range values on blur.
+- [x] No number field yields a negative where negatives are invalid.
+- [x] `cd frontend && node --test` green (existing + new validation assertions).
 - [ ] Manual: typing 99 / -5 into gym, E4, #ROMs, #players clamps to the allowed range.
 
 ## Progress log
@@ -49,6 +49,15 @@ Acceptance criteria:
 - **2026-07-09** — Task created. Reviewed `config-form.js`: gym/E4/champion/rewards/prices use
   `_intField` (clamped) already, but `numROMs`/`numPlayers`/`romsPerPlayer` use `parseInt ||
   default` (unclamped) and evo scalars use an unclamped `num()`. No live UI clamp exists.
+- **2026-07-09** — Implemented. Added a pure exported `clampToRange(raw,min,max)` + a delegated
+  `change` listener (`_clampNumberInput`) that clamps every `input[type=number]` to its own
+  min/max on blur (visible validation for gym 0–8, E4 0–4, champion% 0–100, rewards, prices,
+  #ROMs/#players, seed…). Hardened `getConfig` to read `numROMs` [2,10], `numPlayers` [2,8],
+  `romsPerPlayer` [1,10] via `_intField` (was `parseInt || default`). Clamped the evo scalars
+  (min 1–100, max ≥ min, deviation 0–1) and added min/max to the evo stage-adjustment inputs, the
+  evo tier tables and the seed input (min 0). Tests: `clampToRange` unit tests + structural guards
+  in `frontend/__tests__/config-validation.test.js`; frontend suite green (58). Pending: manual
+  UI check.
 
 ## Outcome
 

@@ -75,12 +75,15 @@ const EVO_LEVELS_DEFAULT = {
     baseRanges: Object.fromEntries(EVO_BASE_RANGE_TIERS.map(([t, a, b]) => [t, [a, b]])),
     preEvoModifiers: Object.fromEntries(EVO_PREEVO_MOD_TIERS.map(([t, a, b]) => [t, [a, b]])),
 };
-function evoTierRows(prefix, tiers, step) {
+function evoTierRows(prefix, tiers, step, min, max) {
+    // T-081 — carry min/max onto every tier input so the generic number-field clamp validates them
+    // (base ranges are levels ≥ 1; pre-evo modifiers are fractions in [-1, 1]).
+    const bounds = (min !== undefined ? ` min="${min}"` : '') + (max !== undefined ? ` max="${max}"` : '');
     return tiers.map(([tier, lo, hi]) => `
         <div class="evo-tier-row">
           <span class="evo-tier-name">${tier}</span>
-          <input type="number" id="${prefix}-${tier}-min" class="input" step="${step}" value="${lo}">
-          <input type="number" id="${prefix}-${tier}-max" class="input" step="${step}" value="${hi}">
+          <input type="number" id="${prefix}-${tier}-min" class="input" step="${step}"${bounds} value="${lo}">
+          <input type="number" id="${prefix}-${tier}-max" class="input" step="${step}"${bounds} value="${hi}">
         </div>`).join('');
 }
 
@@ -254,6 +257,19 @@ function getDifficultyDesc(level) {
     return `Each trainer will have ${n} Pokémon ${dir} the player's expected team quality.`;
 }
 
+// T-081 — clamp a raw numeric field value into [min,max]. Returns the clamped Number, or null when
+// the value is blank / non-numeric (those are left untouched — e.g. a blank seed means "random").
+// min/max may be '' | null | undefined to mean "unbounded on that side". Exported for unit testing.
+export function clampToRange(raw, min, max) {
+    if (raw === '' || raw === null || raw === undefined) return null;
+    const n = typeof raw === 'number' ? raw : parseFloat(raw);
+    if (Number.isNaN(n)) return null;
+    let out = n;
+    if (min !== '' && min !== null && min !== undefined && Number.isFinite(Number(min))) out = Math.max(Number(min), out);
+    if (max !== '' && max !== null && max !== undefined && Number.isFinite(Number(max))) out = Math.min(Number(max), out);
+    return out;
+}
+
 export class ConfigForm {
     constructor(containerEl, { onConfigChange } = {}) {
         this.container = containerEl;
@@ -304,7 +320,9 @@ export class ConfigForm {
             money, prices, starterQuality, extraStarters, seed, showExactPositions, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, nicknames };
 
         if (runType === 'nuzlocke') {
-            const numROMs = parseInt(this._q('#nz-numroms').value, 10) || 3;
+            // T-081 — clamp to the field's documented range (matches the input's min/max) so a
+            // negative or absurd count can never reach the pipeline.
+            const numROMs = this._intField('#nz-numroms', 3, 2, 10);
             const shared = {
                 pokedex:  this._q('#nz-share-pokedex').checked,
                 trainers: this._q('#nz-share-trainers').checked,
@@ -314,8 +332,9 @@ export class ConfigForm {
         }
 
         if (runType === 'soullink') {
-            const numPlayers    = parseInt(this._q('#sl-numplayers').value, 10) || 2;
-            const romsPerPlayer = parseInt(this._q('#sl-roms-per-player').value, 10) || 2;
+            // T-081 — clamp to each field's documented range (matches the inputs' min/max).
+            const numPlayers    = this._intField('#sl-numplayers', 2, 2, 8);
+            const romsPerPlayer = this._intField('#sl-roms-per-player', 2, 1, 10);
             const playerShared = {
                 pokedex:  this._q('#sl-player-share-pokedex').checked,
                 trainers: this._q('#sl-player-share-trainers').checked,
@@ -407,6 +426,19 @@ export class ConfigForm {
         const n = parseInt(el.value, 10);
         if (isNaN(n)) return def;
         return Math.max(min, Math.min(max, n));
+    }
+
+    /**
+     * T-081 — clamp a number input to its own `min`/`max` attributes (visible validation on blur).
+     * Returns true when the displayed value was changed. Blank/non-numeric inputs are left alone.
+     */
+    _clampNumberInput(el) {
+        if (!el || el.type !== 'number') return false;
+        const clamped = clampToRange(el.value, el.min, el.max);
+        if (clamped === null) return false;
+        const next = String(clamped);
+        if (next !== String(el.value).trim()) { el.value = next; return true; }
+        return false;
     }
 
     /** Read the 5 evil-team type slots (`<prefix>-type-0..4`) as an array of type/RANDOM tokens. */
@@ -523,11 +555,16 @@ export class ConfigForm {
             for (const [t, a, b] of tiers) out[t] = [num(`#${prefix}-${t}-min`, a), num(`#${prefix}-${t}-max`, b)];
             return out;
         };
+        // T-081 — clamp the scalars to sane bounds (levels 1..100, deviation 0..1) and keep max ≥ min,
+        // so a hand-typed or imported value can't produce an impossible evolution-level window.
+        const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+        const evoMin = clamp(num('#evo-min', 5), 1, 100);
+        const evoMax = Math.max(evoMin, clamp(num('#evo-max', 65), 1, 100));
         return {
             enabled: this._q('#evo-enabled').checked,
-            min: num('#evo-min', 5),
-            max: num('#evo-max', 65),
-            deviation: num('#evo-deviation', 0.05),
+            min: evoMin,
+            max: evoMax,
+            deviation: clamp(num('#evo-deviation', 0.05), 0, 1),
             stageAdjustments: {
                 lcOf2: num('#evo-stage-lcOf2', 0),
                 lcOf3: num('#evo-stage-lcOf3', -0.1),
@@ -845,9 +882,9 @@ export class ConfigForm {
         </div>
         <div class="section-title" style="margin-top:4px">Stage spacing (fraction of base level)</div>
         <div class="evo-scalars">
-          <div class="field"><label for="evo-stage-lcOf2">2-stage line</label><input type="number" id="evo-stage-lcOf2" class="input" step="0.05" value="0" style="width:88px"></div>
-          <div class="field"><label for="evo-stage-lcOf3">3-stage · first</label><input type="number" id="evo-stage-lcOf3" class="input" step="0.05" value="-0.1" style="width:88px"></div>
-          <div class="field"><label for="evo-stage-nfeOf3">3-stage · middle</label><input type="number" id="evo-stage-nfeOf3" class="input" step="0.05" value="0.1" style="width:88px"></div>
+          <div class="field"><label for="evo-stage-lcOf2">2-stage line</label><input type="number" id="evo-stage-lcOf2" class="input" min="-1" max="1" step="0.05" value="0" style="width:88px"></div>
+          <div class="field"><label for="evo-stage-lcOf3">3-stage · first</label><input type="number" id="evo-stage-lcOf3" class="input" min="-1" max="1" step="0.05" value="-0.1" style="width:88px"></div>
+          <div class="field"><label for="evo-stage-nfeOf3">3-stage · middle</label><input type="number" id="evo-stage-nfeOf3" class="input" min="-1" max="1" step="0.05" value="0.1" style="width:88px"></div>
         </div>
         <span class="field-hint">A negative value evolves earlier, positive later. The evolution target's tier sets the base level; the Pokémon's own tier nudges it via the Advanced modifier table.</span>
         <div class="form-section">
@@ -859,10 +896,10 @@ export class ConfigForm {
             <div class="card-glass" style="margin-top:12px;padding:20px;display:flex;flex-direction:column;gap:8px">
               <div class="section-title">Base level range — by target tier</div>
               <span class="field-hint">The evolution TARGET's competitive tier picks a base level range (min–max).</span>
-              <div class="evo-tier-table">${evoTierRows('evo-base', EVO_BASE_RANGE_TIERS, '1')}</div>
+              <div class="evo-tier-table">${evoTierRows('evo-base', EVO_BASE_RANGE_TIERS, '1', 1, 100)}</div>
               <div class="section-title" style="margin-top:12px">Pre-evo modifier — by holder tier</div>
               <span class="field-hint">The evolving Pokémon's OWN tier adds a fraction (min–max) to the base level.</span>
-              <div class="evo-tier-table">${evoTierRows('evo-mod', EVO_PREEVO_MOD_TIERS, '0.01')}</div>
+              <div class="evo-tier-table">${evoTierRows('evo-mod', EVO_PREEVO_MOD_TIERS, '0.01', -1, 1)}</div>
             </div>
           </div>
         </div>
@@ -1057,7 +1094,7 @@ export class ConfigForm {
       <div class="field">
         <label for="seed">Seed</label>
         <div style="display:flex;gap:10px">
-          <input type="number" id="seed" class="input" placeholder="Leave blank for random" style="flex:1">
+          <input type="number" id="seed" class="input" min="0" step="1" placeholder="Leave blank for random" style="flex:1">
           <button type="button" class="btn btn-ghost" id="btn-randomize-seed">Roll</button>
         </div>
         <span class="field-hint">Same seed + same config = identical run every time.</span>
@@ -1215,6 +1252,16 @@ export class ConfigForm {
 
     _wireEvents() {
         const onChange = () => { this._syncUI(); this._save(); };
+
+        // T-081 — validate every number field against its own min/max on blur/commit, so typed
+        // out-of-range values (negatives, absurd counts) are clamped in the UI, not silently later.
+        this.container.addEventListener('change', (e) => {
+            const el = e.target;
+            if (el && el.matches && el.matches('input[type="number"]') && this._clampNumberInput(el)) {
+                this._syncUI();
+                this._save();
+            }
+        });
 
         this.container.querySelectorAll('input[name="run-type"]').forEach(el => el.addEventListener('change', onChange));
         this._q('#nz-numroms').addEventListener('input', onChange);
