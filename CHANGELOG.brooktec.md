@@ -17,6 +17,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   old algorithm walled Rock off entirely). Gyms, Elite Four and the champion no longer have separate
   type spaces (T-076).
 
+### Removed
+
+- **Wild Pokémon no longer hold items.** Every species' wild held items (`.itemCommon`/`.itemRare`)
+  are zeroed at ROM-write time, so wild encounters (and the dexnav readout) never carry an item —
+  no more Cherubi with a Miracle Seed or Luvdisc with a Heart Scale. Trainer, gift and static
+  held items are unaffected (T-077).
+
 ### Added
 
 - **Champion type-change chance.** The **Trainers & bosses** settings gained a **Champion

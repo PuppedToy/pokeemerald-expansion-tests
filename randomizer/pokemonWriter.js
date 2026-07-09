@@ -88,6 +88,23 @@ function editSpeciesFile(genSpeciesFileText, pokemonList) {
     return lines.join('\n');
 }
 
+// T-077: neutralize every wild held item. The only source of a wild held item is
+// gSpeciesInfo[species].itemCommon/.itemRare (read exclusively by SetWildMonHeldItem() in
+// src/pokemon.c), so rewriting both fields to ITEM_NONE guarantees zero items on wild
+// Pokémon. Runs for EVERY species, independent of the rebalance log. The original value is
+// preserved in a trailing comment for auditability, matching the writer's @PUPPED style.
+function stripWildHeldItems(fileText) {
+    const heldItemLine = /^(\s*)\.(itemCommon|itemRare)(\s*)=\s*ITEM_[A-Za-z0-9_]+\s*,.*$/;
+    return fileText.split('\n').map((line) => {
+        const m = line.match(heldItemLine);
+        if (!m) return line;
+        const [, indent, field, ws] = m;
+        // Emit no reference to the stripped item — not even in the comment — so the old item
+        // name survives nowhere in the source (keeps greps for e.g. ITEM_HEART_SCALE clean).
+        return `${indent}.${field}${ws}= ITEM_NONE, // @PUPPED-NO-WILD-ITEMS (T-077)`;
+    }).join('\n');
+}
+
 async function editLearnsetsFile(learnsetsFileText, pokemonList) {
     const learnsetLines = learnsetsFileText.split('\n');
     let currentPokemon;
@@ -176,7 +193,7 @@ async function savePokemonData(pokemonList) {
     for (let gen = 1; gen <= TOTAL_GENS; gen++) {
         const genSpeciesFilePath = path.resolve(SPECIES_DIR, `gen_${gen}_families.h`);
         const genSpeciesFileText = await fs.readFile(genSpeciesFilePath, 'utf-8');
-        const result = editSpeciesFile(genSpeciesFileText, pokemonList);
+        const result = stripWildHeldItems(editSpeciesFile(genSpeciesFileText, pokemonList));
         await fs.writeFile(genSpeciesFilePath, result, 'utf-8');
     }
     const learnsetsFilePath = path.resolve(LEVEL_UP_LEARNSETS_DIR, 'gen_9.h');
@@ -193,4 +210,5 @@ async function savePokemonData(pokemonList) {
 module.exports = {
     savePokemonData,
     editSpeciesFile,
+    stripWildHeldItems,
 };
