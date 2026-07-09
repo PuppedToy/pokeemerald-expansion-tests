@@ -29,6 +29,7 @@ Entry point to all project documentation. **A document not listed here does not 
 ## Guides
 
 <!-- Architecture, conventions, runbooks… One line per document. -->
+- [randomizer-diagnostics.md](randomizer-diagnostics.md) — how randomization warnings/errors (e.g. a short trainer team) are captured, POSTed to the server's 48h store, and audited from local; the diagnostic-code catalog + emission inventory (T-075)
 - [../randomizer/docs/randomization-options.md](../randomizer/docs/randomization-options.md) — every frontend randomization option: category, config key, default, algorithm effect, RNG caveat, money ROM-build note (T-052)
 - [upstream-bugfix-sync.md](upstream-bugfix-sync.md) — how we cherry-pick RHH bugfixes per version + the state ledger of how far we're patched (T-049, ADR-012)
 - [dev-deploy-workflow.md](dev-deploy-workflow.md) — the canonical dev → test → commit → push → `update.sh` deploy loop (preflight-gated) (T-031)

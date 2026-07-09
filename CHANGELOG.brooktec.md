@@ -9,6 +9,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Randomization diagnostics + audit.** Every randomization now records its warnings and errors
+  (with rich context) — chiefly when a trainer team comes back short (a slot exhausted all its
+  fallbacks). The browser reports each run's diagnostics to a new `POST /api/diagnostics` endpoint
+  that stores them server-side for 48h (purged by the same retention sweeper as bundles). A local
+  read-only tool (`backend/scripts/scan-diagnostics.mjs`) and the `/diagnostics-audit` skill pull the
+  live data over SSH, classify the warnings into distinct problem classes, and propose a fix per
+  class. See `docs/randomizer-diagnostics.md` (T-075).
+
 - **Starter quality selector.** The **Starters** settings now have a single **Starter quality** tier
   selector (same tiers as the extra starters — LEGEND · UBERS · OU · UU · RU · NU · PU) that sets how
   strong the 3 normal starters' evolution lines end up. They stay early 3-stage (Little Cup) lines with
