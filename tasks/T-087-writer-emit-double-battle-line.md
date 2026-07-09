@@ -34,17 +34,33 @@ already fully support doubles — no C change needed here.
   `Double Battle: Yes`; a singles trainer shows `No`; the header is otherwise byte-identical.
 
 Acceptance criteria:
-- [ ] Written `.party` `Double Battle:` line matches each trainer's `battleType`.
-- [ ] Trainers with/without an existing `Double Battle:` line are both handled correctly.
-- [ ] The rest of the header block is preserved unchanged (test).
-- [ ] Excluded/partner trainers are not modified.
-- [ ] `cd randomizer && npm test` green.
+- [x] Written `.party` `Double Battle:` line matches each trainer's `battleType` (helper + writer
+      wiring unit-tested; the built `.party` file is confirmed end-to-end at the T-092 checkpoint).
+- [x] Trainers with/without an existing `Double Battle:` line are both handled correctly.
+- [x] The rest of the header block is preserved unchanged (test).
+- [x] Excluded/partner trainers are not modified.
+- [x] `cd randomizer && npm test` green.
 
 ## Progress log
 
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-09** — Task created.
+- **2026-07-09** — Implemented on `feature/T-087-writer-double-battle` (TDD, red→green). Two pure
+  exported helpers in `writer.js`: `applyDoubleBattleHeader(headerBlock, battleType)` replaces the
+  header's `Double Battle:` line (or inserts it before `AI:` when absent), and leaves the header
+  untouched for undefined/unknown battleType (back-compat with pre-field bundles);
+  `effectiveBattleType(battleType, teamLength)` is the ≥2-mon safety net (doubles with <2 written mons
+  → singles). The `.party` write loop now uses a function replacer that rewrites group-1 (the header)
+  via these helpers for non-partner trainers, keyed off the actually-written `shuffledTeam.length`.
+  Propagated `battleType` into the resolved objects so it reaches the docs SSOT and the ROM: `writer.js`
+  `buildTrainersResultsFromDocs` + the randomize-mode builder, and `writerDocs.js` both the normal and
+  the `copy:` (Brendan↔May) builders (defaulting to `'singles'`). `buildTrainersResultsSimplified`
+  spreads `{...trainerData}`, so `docs.trainersResultsSimplified` now carries `battleType`
+  automatically. Tests: `__tests__/unit/battleTypeWriter.test.js` (7 cases). Full suite green
+  (790 pass / 1 skip; +7). Note: the `node analyze.js` (non-bundle) randomize copy path keeps a copy
+  trainer's base `Double Battle` line when battleType is absent — harmless (production is docs-driven).
+  Kept `in-progress` for the T-092 checkpoint. Merged to master.
 
 ## Outcome
 
