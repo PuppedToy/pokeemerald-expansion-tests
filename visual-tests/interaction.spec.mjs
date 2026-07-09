@@ -83,23 +83,48 @@ test.describe('B-023: encounter click opens the evolved species', () => {
 // (data-tooltip), sourced from the injected itemsData map. Verifies the whole chain: parseItemsFile →
 // base-data → pokedex.items → buildDocHtml injection → template render.
 // T-082 regression: the top-bar "Next boss" stat is a shortcut — clicking it activates the Trainers
-// section and scrolls that boss's card into view (flashing .nz-boss-focus). On a fresh doc the next
-// boss is bossCaps[0]; the scroll target is the first of its trainers that has a rendered card.
+// section and scrolls THAT boss's card into view (flashing .nz-boss-focus), even when the default
+// section-scroll would land on the last trainer you defeated (which is the bug this guards). We defeat
+// a far-down non-boss trainer first so the two scroll targets differ, then assert Next-boss wins.
 test.describe('T-082: Next boss shortcut', () => {
-  test('docs viewer: clicking "Next boss" opens Trainers and highlights that boss', async ({ page }) => {
+  test('docs viewer: "Next boss" scrolls to that boss, not the last defeated trainer', async ({ page }) => {
     test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');
     await page.goto(DOCS_FIXTURE_URL, { waitUntil: 'domcontentloaded' });
+
+    // The next boss on a fresh doc is bossCaps[0]; its target is the first of its trainers with a card.
     const targetId = await page.evaluate(() => {
-      const nb = bossCaps[0]; // fresh doc → nothing defeated → the first entry is the next boss
+      const nb = bossCaps[0];
       for (const id of nb.trainers) {
         if (document.querySelector('.trainer-card[data-trainer-id="' + id + '"]')) return id;
       }
       return null;
     });
     expect(targetId).toBeTruthy();
+
+    // Defeat a far-down NON-boss trainer (no boss-cascade, doesn't advance the next boss) so the
+    // default "last defeated" section scroll would jump far away from the next boss.
+    const farId = await page.evaluate(() => {
+      const cards = [...document.querySelectorAll('#trainers .trainer-card[data-trainer-id][data-is-boss="0"]')]
+        .filter((c) => c.querySelector('.nz-defeat-cb'));
+      const last = cards[cards.length - 1];
+      if (!last) return null;
+      const cb = last.querySelector('.nz-defeat-cb');
+      cb.checked = true;
+      cb.dispatchEvent(new Event('change', { bubbles: true }));
+      return last.dataset.trainerId;
+    });
+    expect(farId).toBeTruthy();
+    expect(farId).not.toBe(targetId);
+    await expect(page.locator('.trainer-card[data-trainer-id="' + farId + '"]')).toHaveClass(/\bnz-defeated\b/);
+
+    // Click "Next boss" → lands on the next boss (highlighted + in viewport), not the defeated card.
     await page.click('.tb-stat--boss');
     await expect(page.locator('section#trainers')).toHaveClass(/\bactive\b/);
     await expect(page.locator('.trainer-card[data-trainer-id="' + targetId + '"]')).toHaveClass(/\bnz-boss-focus\b/);
+    await page.waitForTimeout(350); // let every scroll pass settle (incl. any default 150ms pass)
+    const inView = await page.locator('.trainer-card[data-trainer-id="' + targetId + '"]')
+      .evaluate((el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < window.innerHeight; });
+    expect(inView).toBe(true);
   });
 });
 

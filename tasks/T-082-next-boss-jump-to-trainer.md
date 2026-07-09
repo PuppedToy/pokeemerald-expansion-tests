@@ -50,6 +50,15 @@ Acceptance criteria:
   Route 103") resolves to a real card. Playwright regression in `interaction.spec.mjs`; docs suite +
   frontend suite (69) green. Pending: manual check at a few progress points.
 
+- **2026-07-09** — Fix (user feedback): the jump switched tabs but didn't scroll to the boss —
+  the nav-click triggered `applySectionScroll('trainers')`, whose `setTimeout(150ms)` settle pass
+  re-scrolled to the *last defeated* trainer, overriding the jump. Replaced the nav-click + inline
+  `scrollIntoView` with a dedicated `window.docGoToTrainer(trainerId)` (in the nav script) that
+  activates the section and scrolls to the specific card using the same reflow-safe centering,
+  bypassing the default section scroll entirely. Strengthened the regression test to defeat a
+  far-down trainer first (so the two scroll targets differ) and assert the next boss ends up in the
+  viewport — verified it FAILS on the old code and PASSES on the fix.
+
 ## Outcome
 
 <!-- Filled when closing. -->
