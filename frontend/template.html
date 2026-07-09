@@ -2889,6 +2889,12 @@
     function addMail(m){ if (store.mails.some(function(x){return x.id===m.id;})) return; m.read = !!store.settings.muted[m.type]; m.date = nextTs(); store.mails.push(m); }
     function generateForBoss(i){
       var b=bossCaps[i], prev=b.level, next=bossCaps[i+1]?bossCaps[i+1].level:MAX_LEVEL, box=boxMembers();
+      // B-024: evolutions available at or below the FIRST cap (low or level-0/immediate evos) have no
+      // earlier boss to unlock them — the box auto-levels to the first cap from the start. Surface them
+      // with the first boss defeat by dropping the evolution window's lower bound for boss 0. Higher
+      // bosses keep (prev, next] so each evolution is still announced exactly once. (Level-up-move and
+      // TM windows keep prev — a mon already knows its ≤cap moves at capture, so those would be noise.)
+      var evoPrev = (i === 0) ? -Infinity : prev;
       // Beating Champion Steven (FLAG_IS_CHAMPION = the final cap) drops a one-off victory mail (T-011).
       if (b.flag==='FLAG_IS_CHAMPION')
         addMail({ id:'champion|'+b.flag, type:'champion', capFlag:b.flag, subject:'champion', payload:{} });
@@ -2899,7 +2905,7 @@
       });
       box.forEach(function(e){
         var poke = pokeById[e.currentSpecies]; if (!poke) return;
-        levelEvos(poke).forEach(function(ev){ var lvl=ev.level; if (lvl>prev && lvl<=next)
+        levelEvos(poke).forEach(function(ev){ var lvl=ev.level; if (lvl>evoPrev && lvl<=next)
           addMail({ id:'evo|'+b.flag+'|'+e.encounterKey+'|'+ev.pokemon, type:'evolution', capFlag:b.flag, subject:e.encounterKey, payload:{ encounterKey:e.encounterKey, fromSpecies:e.currentSpecies, toSpecies:ev.pokemon, level:lvl } }); });
         ((poke.learnset)||[]).forEach(function(l){ var lv=parseInt(l.level,10); if (lv>prev && lv<=next)
           addMail({ id:'level|'+b.flag+'|'+e.encounterKey+'|'+l.move, type:'level', capFlag:b.flag, subject:e.encounterKey, payload:{ encounterKey:e.encounterKey, species:e.currentSpecies, move:l.move, level:lv } }); });
