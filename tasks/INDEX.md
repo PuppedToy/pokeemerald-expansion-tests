@@ -80,3 +80,4 @@
 | [T-074](T-074-docs-responsive-fixes.md) | Fix documentation responsive rendering issues | in-progress | 0.6.0 | 2026-07-08 |
 | [T-075](T-075-randomizer-diagnostics.md) | Randomizer diagnostics — audit warnings, rich 48h server store, local classification action | done | 0.6.0 | 2026-07-09 |
 | [T-076](T-076-unified-boss-type-pool.md) | Unified fixed/changed type pool for gyms, E4 and champion | done | 0.6.0 | 2026-07-09 |
+| [T-077](T-077-no-wild-held-items.md) | Remove all held items from wild Pokémon | in-progress | 0.6.0 | 2026-07-09 |
