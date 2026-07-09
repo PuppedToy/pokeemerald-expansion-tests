@@ -101,6 +101,10 @@ function toModuleConfig(cfg, seed) {
         // T-072 — quality tier for the 3 main starters (family best-evo tier; defaults to UU)
         starterQuality: cfg.starterQuality,
         allTms: false,
+        // T-085/ADR-014 — battle format (singles | doubles | mixed) + mixed-only proportion / Run & Bun.
+        battleFormat: cfg.battleFormat ?? 'singles',
+        singlesPercent: cfg.singlesPercent ?? 60,
+        leagueRunAndBun: cfg.leagueRunAndBun === true,
         // T-052 — trainer-facing knobs (mirrors the browser worker's toModuleConfig).
         gymsTypeChanged: cfg.gymsTypeChanged ?? 2,
         e4TypeChanged: cfg.e4TypeChanged ?? 2,

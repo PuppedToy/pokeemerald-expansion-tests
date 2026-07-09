@@ -42,19 +42,33 @@ All in `frontend/js/config-form.js` unless noted, following the Run-type pattern
   the E4-count formula used by the dynamic description.
 
 Acceptance criteria:
-- [ ] Three big boxes render (singles default); `#singles-percent-row` and `#league-runandbun-row`
-      appear only for `mixed`.
-- [ ] The Run & Bun description updates live and shows the correct clamped E4 split for 50/60/90/100%.
-- [ ] `battleFormat`, `singlesPercent`, `leagueRunAndBun` round-trip through DEFAULTS/getConfig/setConfig
+- [x] Three big boxes render (singles default); `#singles-percent-row` and `#league-runandbun-row`
+      appear only for `mixed`. *(Structure + toggle logic implemented & tested; live visual render
+      confirmed at the T-092 checkpoint.)*
+- [x] The Run & Bun description updates live and shows the correct clamped E4 split for 50/60/90/100%.
+- [x] `battleFormat`, `singlesPercent`, `leagueRunAndBun` round-trip through DEFAULTS/getConfig/setConfig
       and appear in `bundle.config`.
-- [ ] Both `toModuleConfig` copies forward the three fields.
-- [ ] Frontend `node --test` green.
+- [x] Both `toModuleConfig` copies forward the three fields.
+- [x] Frontend `node --test` green.
 
 ## Progress log
 
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-09** — Task created.
+- **2026-07-09** — Implemented on `feature/T-085-frontend-battle-format` (TDD, red→green). Added a
+  `data-cat="battle-format"` accordion section after Run type in `config-form.js` (`_build`): three
+  big boxes (`name="battle-format"`, singles default) reusing `radio-card-group-3`, a mixed-only
+  `#singles-percent` number input (0–100, default 60) in `#singles-percent-row`, and a mixed-only
+  `#league-runandbun` checkbox with a dynamic `#league-runandbun-desc`. Wired `DEFAULTS`
+  (`battleFormat/singlesPercent/leagueRunAndBun`), `getConfig`, `setConfig`, `_syncUI` (visibility +
+  live description from the new exported pure fn `runAndBunE4Split` = `clamp(round(%s×4),1,3)`), and
+  `_wireEvents`. Forwarded the three fields through both `toModuleConfig` copies
+  (`randomizer-worker.cjs` + `backend/generator.js`). No CSS change (reused `radio-card-group-3`).
+  Tests: 4 new tests in `config-form.test.js` (structure, mixed-only rows, round-trip + dual-engine
+  forwarding, and the split formula). Full frontend suite green (73 pass / 0 fail). Kept
+  `in-progress`: live visual render + the end-to-end flow are confirmed at the T-092 checkpoint
+  (batch-test-together). Merged to master.
 
 ## Outcome
 

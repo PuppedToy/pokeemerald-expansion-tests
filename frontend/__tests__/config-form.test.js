@@ -14,6 +14,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { runAndBunE4Split } from '../js/config-form.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FE = path.join(__dirname, '..');
@@ -232,4 +233,49 @@ test('accordion has a responsive layer with finger-sized headers', () => {
   assert.match(componentsCss, /\.config-cat-header/, 'components.css must style the accordion header');
   const mobile = componentsCss.slice(componentsCss.search(/@media[^{]*max-width:\s*600px/));
   assert.match(mobile, /\.config-cat-header\s*\{\s*min-height:\s*44px/, 'mobile layer must give headers a 44px tap target');
+});
+
+// ── T-085 — Battle format (singles / doubles / mixed) + Run & Bun (ADR-014) ──────────────────
+
+test('T-085: Battle format category renders three big boxes (singles default)', () => {
+  assert.match(src, /data-cat="battle-format"/, 'Battle format category must exist');
+  assert.match(src, /name="battle-format"[^>]*value="singles"[^>]*checked/, 'singles big box, checked by default');
+  assert.match(src, /name="battle-format"[^>]*value="doubles"/, 'doubles big box');
+  assert.match(src, /name="battle-format"[^>]*value="mixed"/, 'mixed big box');
+  assert.match(src, /radio-card-group-3/, 'reuses the 3-up big-box layout');
+});
+
+test('T-085: mixed-only % input + Run & Bun checkbox with a dynamic description', () => {
+  assert.match(src, /id="singles-percent"[^>]*min="0"[^>]*max="100"/, 'singles-percent input 0–100');
+  assert.match(src, /id="singles-percent-row"/, 'a row wrapper to show/hide the % input');
+  assert.match(src, /id="league-runandbun"/, 'Run & Bun checkbox');
+  assert.match(src, /id="league-runandbun-row"/, 'a row wrapper to show/hide the checkbox');
+  assert.match(src, /id="league-runandbun-desc"/, 'a dynamic description span');
+  // Both rows toggle on the 'mixed' format.
+  assert.match(src, /#singles-percent-row'\)[^\n]*classList\.toggle\('hidden'/, 'percent row toggled by battle format');
+  assert.match(src, /#league-runandbun-row'\)[^\n]*classList\.toggle\('hidden'/, 'run & bun row toggled by battle format');
+});
+
+test('T-085: battle-format keys round-trip through DEFAULTS/getConfig/setConfig and both engines', () => {
+  const workerSrc = fs.readFileSync(path.join(FE, 'js', 'randomizer-worker.cjs'), 'utf8');
+  const backendSrc = fs.readFileSync(path.join(FE, '..', 'backend', 'generator.js'), 'utf8');
+  for (const key of ['battleFormat', 'singlesPercent', 'leagueRunAndBun']) {
+    const occurrences = (src.match(new RegExp(key, 'g')) || []).length;
+    assert.ok(occurrences >= 3, `${key} must appear in DEFAULTS, getConfig and setConfig (found ${occurrences})`);
+    assert.match(workerSrc, new RegExp(key), `browser worker toModuleConfig must forward ${key}`);
+    assert.match(backendSrc, new RegExp(key), `backend generator toModuleConfig must forward ${key}`);
+  }
+  assert.match(src, /battleFormat:\s*'singles'/, 'default battle format is singles');
+  assert.match(src, /singlesPercent:\s*60/, 'default singles percent is 60');
+  assert.match(src, /leagueRunAndBun:\s*false/, 'run & bun default off');
+});
+
+test('T-085: runAndBunE4Split rounds %singles×4 and clamps to 1–3 (always one of each)', () => {
+  assert.deepEqual(runAndBunE4Split(50),  { singles: 2, doubles: 2 });
+  assert.deepEqual(runAndBunE4Split(60),  { singles: 2, doubles: 2 });   // round(2.4)=2
+  assert.deepEqual(runAndBunE4Split(90),  { singles: 3, doubles: 1 });   // round(3.6)=4 → clamp 3
+  assert.deepEqual(runAndBunE4Split(100), { singles: 3, doubles: 1 });   // clamped, never 4/0
+  assert.deepEqual(runAndBunE4Split(0),   { singles: 1, doubles: 3 });   // clamped, never 0/4
+  assert.deepEqual(runAndBunE4Split(75),  { singles: 3, doubles: 1 });   // round(3.0)=3
+  assert.deepEqual(runAndBunE4Split(40),  { singles: 2, doubles: 2 });   // round(1.6)=2
 });
