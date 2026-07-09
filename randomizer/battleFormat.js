@@ -12,6 +12,8 @@
 
 const CHAMPION_ID = 'TRAINER_CHAMPION_STEVEN';
 const E4_IDS = ['TRAINER_SIDNEY', 'TRAINER_PHOEBE', 'TRAINER_GLACIA', 'TRAINER_DRAKE'];
+// T-089 — the committed Run & Bun doubles clones of the E4 (see include/constants/opponents.h).
+const E4_DOUBLES_IDS = new Set(E4_IDS.map(id => `${id}_DOUBLES`));
 const TATE_AND_LIZA_ID = 'TRAINER_TATE_AND_LIZA_1';
 const GYM_BOSS_IDS = ['TRAINER_ROXANNE_1', 'TRAINER_BRAWLY_1', 'TRAINER_WATTSON_1', 'TRAINER_FLANNERY_1',
     'TRAINER_NORMAN_1', 'TRAINER_WINONA_1', TATE_AND_LIZA_ID, 'TRAINER_JUAN_1'];
@@ -39,6 +41,7 @@ function poolOf(trainer) {
     if (EXCLUDED_IDS.has(id)) return 'excluded';
     if (id === CHAMPION_ID) return 'champion';
     if (E4_IDS.includes(id)) return 'e4';
+    if (E4_DOUBLES_IDS.has(id)) return 'e4Doubles';
     if (GYM_BOSS_IDS.includes(id)) return 'gymBosses';
     if (isBoss) return 'bossTrainers';
     return 'normalTrainers';
@@ -89,11 +92,15 @@ function assignBattleTypes(trainers, config = {}) {
     const rand = mulberry32(Number.isFinite(config.seed) ? (config.seed ^ 0x5EED) : 0x5EED);
     const singlesFraction = Math.min(1, Math.max(0, (config.singlesPercent ?? 60) / 100));
 
-    const pools = { champion: [], e4: [], gymBosses: [], bossTrainers: [], normalTrainers: [], excluded: [] };
+    const runAndBun = config.leagueRunAndBun === true;
+    const pools = { champion: [], e4: [], e4Doubles: [], gymBosses: [], bossTrainers: [], normalTrainers: [], excluded: [] };
     for (const t of trainers) pools[poolOf(t)].push(t);
 
     // Excluded → always singles (their .party stays "No"; the multi battle is script-driven).
     for (const t of pools.excluded) setType(t.id, 'singles', 'excluded');
+
+    // Run & Bun doubles clones (present only in that mode) are always the doubles version.
+    for (const t of pools.e4Doubles) setType(t.id, isEligible(t) ? 'doubles' : 'singles', 'e4Doubles');
 
     // Champion → the majority type: >50% singles, <50% doubles, exactly 50% a seeded coin-flip.
     for (const t of pools.champion) {
@@ -109,6 +116,13 @@ function assignBattleTypes(trainers, config = {}) {
     for (const key of MULTI_MEMBER_POOLS) {
         const eligible = pools[key].filter(isEligible);
         for (const t of pools[key]) if (!isEligible(t)) setType(t.id, 'singles', key);
+
+        // Run & Bun: the base Elite Four are the singles versions (their doubles clones live in
+        // e4Doubles and were already set above); the player chooses which to fight in-game.
+        if (key === 'e4' && runAndBun) {
+            for (const t of eligible) setType(t.id, 'singles', key);
+            continue;
+        }
 
         let ordered;
         if (key === 'gymBosses') {
@@ -128,5 +142,5 @@ function assignBattleTypes(trainers, config = {}) {
 
 module.exports = {
     assignBattleTypes, poolOf, isEligible,
-    CHAMPION_ID, E4_IDS, GYM_BOSS_IDS, EXCLUDED_IDS, TATE_AND_LIZA_ID, MIN_DOUBLE_TEAM_SIZE,
+    CHAMPION_ID, E4_IDS, E4_DOUBLES_IDS, GYM_BOSS_IDS, EXCLUDED_IDS, TATE_AND_LIZA_ID, MIN_DOUBLE_TEAM_SIZE,
 };

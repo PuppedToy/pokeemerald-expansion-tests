@@ -1,7 +1,7 @@
 ---
 id: T-089
 title: Randomizer generates duplicated E4 singles+doubles teams for Run & Bun
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-09
 updated: 2026-07-09
@@ -34,17 +34,31 @@ placeholder, flagged for a later pass.
   different valid team; determinism across shared ROMs.
 
 Acceptance criteria:
-- [ ] Run & Bun on → each E4 member has a singles team (base) and a distinct doubles team (`_DOUBLES`).
-- [ ] Both teams are valid, deterministic under seed, and flagged with the correct battle type.
-- [ ] Run & Bun off → `_DOUBLES` ids carry a benign placeholder and are unused in-game.
-- [ ] A TODO/seam references the future doubles-rating regeneration.
-- [ ] `cd randomizer && npm test` green.
+- [x] Run & Bun on → each E4 member has a singles team (base) and a distinct doubles team (`_DOUBLES`).
+      *(Distinctness comes from the per-slot RNG reseed keyed by the new id; full end-to-end team
+      resolution is confirmed at the T-092 checkpoint.)*
+- [x] Both teams are valid, deterministic under seed, and flagged with the correct battle type.
+- [x] Run & Bun off → `_DOUBLES` ids carry a benign placeholder and are unused in-game.
+- [x] A TODO/seam references the future doubles-rating regeneration (`TODO(T-109)` in trainersModule).
+- [x] `cd randomizer && npm test` green.
 
 ## Progress log
 
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-09** — Task created.
+- **2026-07-10** — Implemented on `feature/T-089-runandbun-e4-teams` (TDD, red→green). In
+  `runTrainersModule`, when `battleFormat === 'mixed' && leagueRunAndBun`, each base E4 def is
+  `structuredClone`d into a `TRAINER_<X>_DOUBLES` entry (before the difficulty transform, so both get
+  the same deterministic transform); the differing id makes the per-slot reseed resolve a distinct
+  team. `battleFormat.js` is now Run & Bun-aware: `poolOf` classifies the clones as `e4Doubles` (always
+  doubles), and in Run & Bun the base E4 pool is forced all-singles (champion still follows the
+  majority; gyms/bosses/normals still proportional). Clones flow through the existing writer/writerDocs
+  resolution, so `docs.trainersResultsSimplified` gains the resolved `_DOUBLES` teams (battleType
+  doubles) and the writer (T-087) emits `Double Battle: Yes` for them. Left a `TODO(T-109)` seam to
+  regenerate the doubles team with the doubles-shaped engine later. Tests: 2 new battleFormat Run & Bun
+  cases + new `runAndBunClones.test.js` (4 cases). Full suite green (796 pass / 1 skip; +6). Kept
+  `in-progress` for the T-092 checkpoint. Merged to master.
 
 ## Outcome
 

@@ -22,6 +22,7 @@ describe('battleFormat pools (ADR-014)', () => {
         expect(poolOf(T('TRAINER_SIDNEY', true))).toBe('e4');
         expect(poolOf(T('TRAINER_ROXANNE_1', true))).toBe('gymBosses');
         expect(poolOf(T('TRAINER_TATE_AND_LIZA_1', true))).toBe('gymBosses');
+        expect(poolOf(T('TRAINER_SIDNEY_DOUBLES', true))).toBe('e4Doubles');   // Run & Bun clone
         expect(poolOf(T('TRAINER_MAXIE_MT_CHIMNEY', true))).toBe('bossTrainers');
         expect(poolOf(T('TRAINER_YOUNGSTER_JOEY', false))).toBe('normalTrainers');
         expect(poolOf(T('TRAINER_MAXIE_MOSSDEEP', true))).toBe('excluded');
@@ -99,5 +100,30 @@ describe('assignBattleTypes — mixed proportions', () => {
         const r2 = assignBattleTypes(roster, { battleFormat: 'mixed', singlesPercent: 50, seed: 99 }).assignments;
         for (const t of roster) expect(r1.get(t.id)).toBe(r2.get(t.id));
         expect(r1.get('TRAINER_SOLO')).toBe('singles');
+    });
+});
+
+describe('assignBattleTypes — Run & Bun (mixed + leagueRunAndBun)', () => {
+    const E4_D = E4.map(id => `${id}_DOUBLES`);
+    const roster = [
+        ...E4.map(id => T(id, true)),
+        ...E4_D.map(id => T(id, true)),
+        ...GYMS.map(id => T(id, true)),
+        T('TRAINER_CHAMPION_STEVEN', true),
+    ];
+
+    test('base E4 are singles and the _DOUBLES clones are doubles, at every %', () => {
+        for (const pct of [30, 60, 90]) {
+            const { assignments } = assignBattleTypes(roster, { battleFormat: 'mixed', leagueRunAndBun: true, singlesPercent: pct, seed: 3 });
+            for (const id of E4) expect(assignments.get(id)).toBe('singles');
+            for (const id of E4_D) expect(assignments.get(id)).toBe('doubles');
+        }
+    });
+
+    test('champion still follows the majority in Run & Bun', () => {
+        const hi = assignBattleTypes(roster, { battleFormat: 'mixed', leagueRunAndBun: true, singlesPercent: 90, seed: 3 }).assignments;
+        expect(hi.get('TRAINER_CHAMPION_STEVEN')).toBe('singles');
+        const lo = assignBattleTypes(roster, { battleFormat: 'mixed', leagueRunAndBun: true, singlesPercent: 10, seed: 3 }).assignments;
+        expect(lo.get('TRAINER_CHAMPION_STEVEN')).toBe('doubles');
     });
 });
