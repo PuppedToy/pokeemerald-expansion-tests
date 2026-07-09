@@ -1,6 +1,6 @@
 # ADR-014: Battle format is a run-level config echoed into the bundle and stamped per-trainer as `battleType`; Run & Bun uses duplicate committed E4 trainer IDs
 
-- **Status:** proposed
+- **Status:** accepted
 - **Date:** 2026-07-09
 - **Task:** T-084
 
@@ -52,7 +52,8 @@ split closest to the chosen proportion; a pool's assignment is deterministic und
   Run & Bun.
 - `e4` = `TRAINER_SIDNEY`, `TRAINER_PHOEBE`, `TRAINER_GLACIA`, `TRAINER_DRAKE`.
 - `gymBosses` = `TRAINER_ROXANNE_1`, `TRAINER_BRAWLY_1`, `TRAINER_WATTSON_1`, `TRAINER_FLANNERY_1`,
-  `TRAINER_NORMAN_1`, `TRAINER_WINONA_1`, `TRAINER_TATE_AND_LIZA_1`, `TRAINER_JUAN_1`.
+  `TRAINER_NORMAN_1`, `TRAINER_WINONA_1`, `TRAINER_TATE_AND_LIZA_1`, `TRAINER_JUAN_1`. In `mixed`,
+  `TRAINER_TATE_AND_LIZA_1` sorts **first** in this pool (see rule 8).
 - `bossTrainers` = every other `isBoss` trainer (rivals, Maxie/Archie, Tabitha/Matt/Shelly, grunt
   gauntlet bosses, Wally), **excluding** the tag-battle trainers (rule 6).
 - `normalTrainers` = all remaining (non-boss) trainers.
@@ -99,11 +100,15 @@ their existing `multi_2_vs_2` behaviour.
 Note the per-pool proportional count and the Run & Bun clamp are independent: a pool of 4 at 90% is
 4/0, but the Run & Bun *choice* quota clamps to 3/1 so the player always gets at least one of each.
 
-**8. Tate & Liza special case (open point for owner confirmation).** Because Tate & Liza is
-canonically a double battle, the default here is that they **follow the global format** like any other
-gym boss (single in a `singles` run, eligible for doubles in `mixed`/`doubles`). If the owner prefers
-to preserve their canonical always-doubles nature, that becomes a one-line exception in the pool
-assignment. Recorded here so the choice is explicit; default assumed unless the owner says otherwise.
+**8. Tate & Liza (decided).** Tate & Liza is treated as an ordinary battle that follows the global
+format — in a `singles` run they are a normal **single** battle, full stop (their canonical
+double-battle nature is not preserved). As a nod, in a `mixed` run they get **priority for doubles
+within the gym pool**: `TRAINER_TATE_AND_LIZA_1` is ordered first in `gymBosses` and the pool's
+proportional doubles assignment fills from the front, so they take the first doubles slot. If the
+gym pool's doubles budget rounds to 0 (only at near-100% singles) even they stay single; whenever
+the gym pool has ≥1 doubles, it is Tate & Liza. In a pure `doubles` run they are doubles like
+everyone. This is a deliberate ordering rule, not a forced flag, so it composes cleanly with the
+proportional algorithm.
 
 ## Alternatives considered
 
