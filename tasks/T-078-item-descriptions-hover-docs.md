@@ -47,13 +47,13 @@ TDD (randomizer Jest suite):
 5. Rebuild the browser bundle + base data (`node build.js`).
 
 Acceptance criteria:
-- [ ] `parseItemsFile` returns descriptions for known items (e.g. Choice Scarf, Leftovers,
+- [x] `parseItemsFile` returns descriptions for known items (e.g. Choice Scarf, Leftovers,
       Power Herb) — unit-tested.
-- [ ] `itemsData` is injected by both the Node (`out.html`) and browser (`buildDocHtml`) paths.
-- [ ] Held-item spans and reward entries carry `data-tooltip` with the item's description; TM
+- [x] `itemsData` is injected by both the Node (`out.html`) and browser (`buildDocHtml`) paths.
+- [x] Held-item spans and reward entries carry `data-tooltip` with the item's description; TM
       rewards show the move description.
-- [ ] Entries with no known description get no tooltip (no empty bubble).
-- [ ] `cd randomizer && npm test` and `cd frontend && node --test` green.
+- [x] Entries with no known description get no tooltip (no empty bubble).
+- [x] `cd randomizer && npm test` and `cd frontend && node --test` green.
 - [ ] Manual: hover a held item and a reward in the generated docs → description shows.
 
 ## Progress log
@@ -64,6 +64,15 @@ Acceptance criteria:
   the two doc-build runtimes (`writer.js` / `app.js buildDocHtml`) and the item-description
   source (`src/data/items.h`). Confirmed items reach the DOM as display names → description map
   must be name-keyed.
+- **2026-07-09** — Implemented. TDD Red→Green: `parseItemsFile` (parser.js) → name→description map
+  (777 items), unit-tested. Threaded through `parseBaseData`/`runPokedexModule` (+ `items.json`
+  cache) and `build.js` `serializable`; injected as `const itemsData` in both runtimes (writer.js
+  → out.html + output/items.js; app.js `buildDocHtml`; fixture builder). Template: added the
+  `items.js` placeholder, a name-keyed `itemRewardTooltip` helper (item description, or the taught
+  move's description for `TM <Move>` rewards) and wired `data-tooltip` onto `.rm-item` + reward
+  entries (only when a description exists). Rebuilt base-data + bundle. Playwright regression in
+  `visual-tests/interaction.spec.mjs` (held item carries a non-empty tooltip). Randomizer (774) +
+  frontend (50) suites green. Pending: manual hover check in the generated docs.
 
 ## Outcome
 

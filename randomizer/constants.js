@@ -15,6 +15,7 @@ const constants = {
     SPECIES_DIR: path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'species_info'),
     LEVEL_UP_LEARNSETS_DIR: path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'level_up_learnsets'),
     ABILITIES_FILE_PATH: path.resolve(__dirname, '..', 'src', 'data', 'abilities.h'),
+    ITEMS_FILE_PATH: path.resolve(__dirname, '..', 'src', 'data', 'items.h'),
     MEGA_EVOS_PATH: path.resolve(__dirname, '..', 'src', 'data', 'pokemon', 'form_change_tables.h'),
 
     TIER_MAGIKARP: 'MAGIKARP',
@@ -251,6 +252,7 @@ const constants = {
     TEMPLATE_POKEMON_REPLACEMENT: '<script src="pokes.js"></script>',
     TEMPLATE_MOVES_REPLACEMENT: '<script src="moves.js"></script>',
     TEMPLATE_ABILITIES_REPLACEMENT: '<script src="abilities.js"></script>',
+    TEMPLATE_ITEMS_REPLACEMENT: '<script src="items.js"></script>',
     TEMPLATE_TRAINERS_REPLACEMENT: '<script src="trainers.js"></script>',
     TEMPLATE_WILDPOKES_REPALCEMENT: '<script src="wildpokes.js"></script>',
     TEMPLATE_COLORS_REPLACEMENT: '<script src="colors.js"></script>',

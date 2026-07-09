@@ -33,6 +33,7 @@ async function main() {
     // from baseData before writing. runPokedexModule re-creates tmPool from tmList.
     const serializable = {
         abilities:        data.abilities,
+        items:            data.items,
         megaEvoStones:    data.megaEvoStones,
         moves:            data.moves,
         levelUpLearnsets: data.levelUpLearnsets,

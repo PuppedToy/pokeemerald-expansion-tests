@@ -73,6 +73,9 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
             `<script>const movesData = ${JSON.stringify(pokedex.moves)};</script>`)
         .replace('<script src="abilities.js"></script>',
             `<script>const abilitiesData = ${JSON.stringify(pokedex.abilities)};</script>`)
+        // T-078 — item descriptions (name-keyed) for held-item / reward hover tooltips.
+        .replace('<script src="items.js"></script>',
+            `<script>const itemsData = ${JSON.stringify(pokedex.items || {})};</script>`)
         .replace('<script src="wildpokes.js"></script>',
             `<script>const wildPokes = ${JSON.stringify(rom.docs.wildPokes)};</script>`)
         // T-044 — move-chip type colours (SSOT: randomizer/trainerColors.js) via rom.docs.typeColors.

@@ -78,3 +78,32 @@ test.describe('B-023: encounter click opens the evolved species', () => {
     expect(result.matchesBase).toBe(false);
   });
 });
+
+// T-078 regression: held items and trainer rewards must carry an item-description hover tooltip
+// (data-tooltip), sourced from the injected itemsData map. Verifies the whole chain: parseItemsFile →
+// base-data → pokedex.items → buildDocHtml injection → template render.
+test.describe('T-078: item descriptions on hover', () => {
+  test('docs viewer: itemsData is injected and held items carry a description tooltip', async ({ page }) => {
+    test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');
+    await page.goto(DOCS_FIXTURE_URL, { waitUntil: 'domcontentloaded' });
+    await page.dispatchEvent('.nav a[data-target="trainers"]', 'click');
+    await page.waitForSelector('section#trainers.active');
+
+    const info = await page.evaluate(() => {
+      const itemsPresent = typeof itemsData !== 'undefined' && Object.keys(itemsData).length > 0;
+      const heldWithTip = document.querySelector('#trainers .rm-item[data-tooltip]');
+      const rewardWithTip = document.querySelector('#trainers .reward-item[data-tooltip]');
+      return {
+        itemsPresent,
+        heldTip: heldWithTip ? heldWithTip.getAttribute('data-tooltip') : null,
+        heldText: heldWithTip ? heldWithTip.textContent.trim() : null,
+        rewardTip: rewardWithTip ? rewardWithTip.getAttribute('data-tooltip') : null,
+      };
+    });
+
+    expect(info.itemsPresent).toBe(true);
+    // At least one held item in the seed-42 run resolves to a description tooltip.
+    expect(info.heldTip).toBeTruthy();
+    expect(info.heldTip.length).toBeGreaterThan(0);
+  });
+});

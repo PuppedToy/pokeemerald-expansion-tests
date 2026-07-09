@@ -15,6 +15,7 @@ const {
     GENERIC_DEVIATION,
     TEMPLATE_MOVES_REPLACEMENT,
     TEMPLATE_ABILITIES_REPLACEMENT,
+    TEMPLATE_ITEMS_REPLACEMENT,
     TEMPLATE_COLORS_REPLACEMENT,
     MEGA_TRAINERS,
     PALAFIN_ZERO_ID,
@@ -234,7 +235,7 @@ function resolveMailMints(itemAssignments, items) {
 // docs: when provided (bundle mode), trainer teams are taken verbatim from the pre-resolved
 // docs instead of re-resolved via RNG — guaranteeing the ROM matches the bundle's docs.
 async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null, docs = null, runNs = '', starterNaming = null) {
-    let { pokes: pokemonList, moves, abilities } = pokedexArtifact;
+    let { pokes: pokemonList, moves, abilities, items } = pokedexArtifact;
     // Deep-clone trainersData — mega trainer processing splices entries in-place,
     // which would corrupt the shared artifact when the same trainers object is used across ROMs.
     const { trainersData: _rawTrainersData, itemAssignments } = trainersArtifact;
@@ -963,6 +964,11 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'moves.js'), `const movesData = ${JSON.stringify(moves, null, 4)};`, 'utf8');
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_ABILITIES_REPLACEMENT, `<script>const abilitiesData = ${JSON.stringify(abilities)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'abilities.js'), `const abilitiesData = ${JSON.stringify(abilities, null, 4)};`, 'utf8');
+    // T-078 — item descriptions (name-keyed) for held-item / reward hover tooltips. Same injection in
+    // the browser doc-builder (frontend/js/app.js) from pokedex.items.
+    const itemsData = items || {};
+    htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_ITEMS_REPLACEMENT, `<script>const itemsData = ${JSON.stringify(itemsData)};</script>`);
+    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'items.js'), `const itemsData = ${JSON.stringify(itemsData, null, 4)};`, 'utf8');
     const maps = wild.maps.map(({ id, ...keys }) => {
         const result = {
             id,
