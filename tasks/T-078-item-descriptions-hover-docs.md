@@ -74,6 +74,11 @@ Acceptance criteria:
   `visual-tests/interaction.spec.mjs` (held item carries a non-empty tooltip). Randomizer (774) +
   frontend (50) suites green. Pending: manual hover check in the generated docs.
 
+- **2026-07-09** — Follow-up (user feedback): the reward-chip tooltip clipped off the left because
+  reward chips sit in the narrow left rail and the shared tooltip is centred. Added a left-anchored
+  override `.reward-item[data-tooltip]::after { left:0; right:auto; transform:none; }` so it starts at
+  the chip and grows only rightward. Structural guard in `frontend/__tests__/docs-tooltip.test.js`.
+
 ## Outcome
 
 <!-- Filled when closing. -->
