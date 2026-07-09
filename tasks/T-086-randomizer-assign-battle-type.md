@@ -1,7 +1,7 @@
 ---
 id: T-086
 title: Randomizer assigns per-trainer battle type by pool proportions and marks it in the bundle
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-09
 updated: 2026-07-09

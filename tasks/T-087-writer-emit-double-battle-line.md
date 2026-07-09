@@ -1,7 +1,7 @@
 ---
 id: T-087
 title: Writer emits/rewrites the Double Battle header per trainer from the bundle battle type
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-09
 updated: 2026-07-09

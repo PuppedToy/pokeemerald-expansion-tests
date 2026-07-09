@@ -1,7 +1,7 @@
 ---
 id: T-085
 title: Frontend battle-format setting — big-box singles/doubles/mixed + % + Run & Bun
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-09
 updated: 2026-07-09
