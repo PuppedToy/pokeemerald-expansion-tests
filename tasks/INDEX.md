@@ -81,3 +81,7 @@
 | [T-075](T-075-randomizer-diagnostics.md) | Randomizer diagnostics — audit warnings, rich 48h server store, local classification action | done | 0.6.0 | 2026-07-09 |
 | [T-076](T-076-unified-boss-type-pool.md) | Unified fixed/changed type pool for gyms, E4 and champion | done | 0.6.0 | 2026-07-09 |
 | [T-077](T-077-no-wild-held-items.md) | Remove all held items from wild Pokémon | in-progress | 0.6.0 | 2026-07-09 |
+| [T-078](T-078-item-descriptions-hover-docs.md) | Show item descriptions on hover in generated docs (held items + trainer rewards) | in-progress | 0.6.0 | 2026-07-09 |
+| [T-079](T-079-transparent-patch-delivery-feedback.md) | Transparent, patch-first ROM delivery feedback (3-step, singular/plural) | in-progress | 0.6.0 | 2026-07-09 |
+| [T-080](T-080-rom-ownership-frontend-only.md) | ROM ownership is frontend-only (backend stops tracking/gating it) | in-progress | 0.6.0 | 2026-07-09 |
+| [T-081](T-081-settings-number-validation.md) | Number-field validation in randomization settings (gym/E4 min-max + full review) | in-progress | 0.6.0 | 2026-07-09 |

@@ -7,6 +7,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Fixed
+
+- **Docs viewer: clicking an evolved encounter opens the evolved species.** In the Encounters tab,
+  a captured encounter marked as evolved shows the evolved species in green; clicking it now opens
+  that evolved species' detail modal instead of the captured base form (B-023).
+
 ### Changed
 
 - **Gym / E4 / champion type randomization now shares one pool.** The 13 typed bosses (8 gyms,
