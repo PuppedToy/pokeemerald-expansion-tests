@@ -7,7 +7,23 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Changed
+
+- **Gym / E4 / champion type randomization now shares one pool.** The 13 typed bosses (8 gyms,
+  4 Elite Four, 1 champion) are marked *fixed* or *changed*; fixed bosses keep their canonical type
+  and a shared pool is built from every type they do **not** claim; changed bosses draw from that
+  pool (never their own canonical). A type freed by one changed boss is now eligible for any other
+  changed boss — e.g. if Roxanne changes off Rock, another gym or an Elite Four can take Rock (the
+  old algorithm walled Rock off entirely). Gyms, Elite Four and the champion no longer have separate
+  type spaces (T-076).
+
 ### Added
+
+- **Champion type-change chance.** The **Trainers & bosses** settings gained a **Champion
+  type-change chance** knob (`championTypeChangeChance`, default 5%): the probability the champion
+  (Steven) also gets a randomized type instead of Steel. When he changes, his freed Steel joins the
+  shared boss type pool; when he stays Steel, Steel is reserved from gyms/Elite Four. All of Steven's
+  battles (Granite Cave, Mossdeep partner, champion) run the resulting type (T-076).
 
 - **Randomization diagnostics + audit.** Every randomization now records its warnings and errors
   (with rich context) — chiefly when a trainer team comes back short (a slot exhausted all its

@@ -486,6 +486,7 @@ function reviewRowsHtml(cfg) {
     // T-052 — new option summaries (shared by the Review step and the Run-details disclosure).
     const fmtTypes = arr => (arr || []).map(t => t === 'RANDOM' ? 'Random' : t[0] + t.slice(1).toLowerCase()).join(' / ');
     rows.push(['Gym / E4 types changed', `${cfg.gymsTypeChanged ?? 2} / ${cfg.e4TypeChanged ?? 2}`]);
+    rows.push(['Champion type-change chance', `${Math.round((cfg.championTypeChangeChance ?? 0.05) * 100)}%`]);
     if (cfg.aquaTypes) rows.push(['Team Aqua', fmtTypes(cfg.aquaTypes)]);
     if (cfg.magmaTypes) rows.push(['Team Magma', fmtTypes(cfg.magmaTypes)]);
     rows.push(['Evolution levels', cfg.evoLevels && cfg.evoLevels.enabled === false ? 'Base game' : 'Adjusted']);

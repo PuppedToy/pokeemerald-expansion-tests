@@ -45,6 +45,7 @@ const FULL_CONFIG = {
     ],
     gymsTypeChanged: 5,
     e4TypeChanged: 1,
+    championTypeChangeChance: 0.25, // T-076
     aquaTypes: ['GRASS', 'FIRE', 'RANDOM', 'WATER', 'ICE'],
     magmaTypes: ['STEEL', 'DRAGON', 'ROCK', 'GRASS', 'RANDOM'],
     seed: 123456,

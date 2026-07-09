@@ -219,6 +219,7 @@ const DEFAULTS = {
     // T-052 — Trainers & bosses
     gymsTypeChanged: 2,   // 0..8 gym leaders get a randomized type theme
     e4TypeChanged: 2,     // 0..4 Elite Four members get a randomized type theme
+    championTypeChangeChance: 0.05, // T-076 — probability the champion (Steven) gets a randomized type
     aquaTypes: ['WATER', 'DARK', 'POISON', 'ICE', 'RANDOM'],   // main, secondary, other 1..3
     magmaTypes: ['FIRE', 'GROUND', 'ROCK', 'GRASS', 'RANDOM'],
     // T-068/T-070 — nicknames (starters + location-based), default OFF
@@ -289,6 +290,8 @@ export class ConfigForm {
         };
         const gymsTypeChanged = this._intField('#gyms-type-changed', 2, 0, 8);
         const e4TypeChanged = this._intField('#e4-type-changed', 2, 0, 4);
+        // T-076 — champion type-change probability, exposed as a percentage (0–100 → 0..1).
+        const championTypeChangeChance = this._intField('#champion-type-change-pct', 5, 0, 100) / 100;
         const aquaTypes = this._readTeamTypes('aqua');
         const magmaTypes = this._readTeamTypes('magma');
         const extraStarters = (this._starterSpecs || []).map(s => ({ ...s }));
@@ -298,7 +301,7 @@ export class ConfigForm {
         const prices = this._readPrices();
         const base = { runType, difficulty, rebalance, balanceChance,
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs, evoLevels,
-            money, prices, starterQuality, extraStarters, seed, showExactPositions, gymsTypeChanged, e4TypeChanged, aquaTypes, magmaTypes, nicknames };
+            money, prices, starterQuality, extraStarters, seed, showExactPositions, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, nicknames };
 
         if (runType === 'nuzlocke') {
             const numROMs = parseInt(this._q('#nz-numroms').value, 10) || 3;
@@ -363,6 +366,8 @@ export class ConfigForm {
         this._q('#show-exact-positions').checked = cfg.showExactPositions === true;
         this._q('#gyms-type-changed').value = cfg.gymsTypeChanged ?? 2;
         this._q('#e4-type-changed').value = cfg.e4TypeChanged ?? 2;
+        // T-076 — stored as a 0..1 probability; surfaced as a whole-percent input.
+        this._q('#champion-type-change-pct').value = Math.round((cfg.championTypeChangeChance ?? 0.05) * 100);
         this._setTeamTypes('aqua', cfg.aquaTypes ?? DEFAULTS.aquaTypes);
         this._setTeamTypes('magma', cfg.magmaTypes ?? DEFAULTS.magmaTypes);
         this._setNicknames(cfg.nicknames);
@@ -875,12 +880,17 @@ export class ConfigForm {
       <div class="field">
         <label for="gyms-type-changed">Gyms with changed types</label>
         <input type="number" id="gyms-type-changed" class="input" min="0" max="8" value="2" style="width:88px">
-        <span class="field-hint">How many of the 8 gym leaders get a randomized type theme (0–8). The rest keep their canonical type; the champion is unaffected.</span>
+        <span class="field-hint">How many of the 8 gym leaders get a randomized type theme (0–8). The rest keep their canonical type. Gyms, Elite Four and the champion draw from one shared type pool, so a type freed by one boss can be picked up by another.</span>
       </div>
       <div class="field">
         <label for="e4-type-changed">Elite Four with changed types</label>
         <input type="number" id="e4-type-changed" class="input" min="0" max="4" value="2" style="width:88px">
-        <span class="field-hint">How many of the 4 Elite Four members get a randomized type theme (0–4). The champion is always Steel.</span>
+        <span class="field-hint">How many of the 4 Elite Four members get a randomized type theme (0–4). The rest keep their canonical type.</span>
+      </div>
+      <div class="field">
+        <label for="champion-type-change-pct">Champion type-change chance</label>
+        <input type="number" id="champion-type-change-pct" class="input" min="0" max="100" value="5" style="width:88px">
+        <span class="field-hint">Percent chance the champion (Steven) also gets a randomized type instead of Steel (0–100, default 5%). When it changes, its freed Steel joins the shared pool; when it stays Steel, Steel is reserved from gyms/E4. All Steven battles use the resulting type.</span>
       </div>
     </div>
     <div class="card-glass" style="padding:20px;margin-top:16px">
@@ -1244,6 +1254,7 @@ export class ConfigForm {
         this._q('#show-exact-positions').addEventListener('change', onChange);
         this._q('#gyms-type-changed').addEventListener('input', onChange);
         this._q('#e4-type-changed').addEventListener('input', onChange);
+        this._q('#champion-type-change-pct').addEventListener('input', onChange);
         this._q('#reward-normal').addEventListener('input', onChange);
         this._q('#reward-boss').addEventListener('input', onChange);
         this._q('#reward-gym').addEventListener('input', onChange);

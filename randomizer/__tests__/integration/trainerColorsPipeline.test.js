@@ -37,7 +37,9 @@ const TM_LIST = Array.from({ length: 120 }, (_, i) => `MOVE_SLOT_${i + 1}`);
 
 function build() {
     rng.seed(1234567);
-    const { trainersData } = runTrainersModule({ tmList: TM_LIST }, { difficulty: 7 });
+    // T-076 — pin championTypeChangeChance:0 so the champion (Steven) deterministically keeps Steel;
+    // the champion Bernoulli draw is consumed either way, so gym/E4 themeTypes are unchanged vs default.
+    const { trainersData } = runTrainersModule({ tmList: TM_LIST }, { difficulty: 7, championTypeChangeChance: 0 });
     return new Map(trainersData.map(t => [t.id, t]));
 }
 
@@ -68,7 +70,10 @@ describe('themeType attachment (getTrainersData)', () => {
         }
     });
 
-    test('Steven is always Steel', () => {
+    // T-076 — Steven follows the resolved champion type; with championTypeChangeChance:0 (see build())
+    // it deterministically stays Steel across every Steven battle. Full coverage of the change path
+    // lives in bossTypePool.test.js.
+    test('Steven battles carry the champion type (Steel when it does not change)', () => {
         for (const id of ['TRAINER_STEVEN', 'TRAINER_CHAMPION_STEVEN']) {
             expect(byId.get(id).themeType).toBe('STEEL');
         }

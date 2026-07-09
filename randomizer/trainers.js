@@ -40,6 +40,7 @@ const {
     POKEMON_TYPES,
     TRAINER_GYM_LEADERS_KEEP_TYPE_AMOUNT,
     TRAINER_E4_KEEP_TYPE_AMOUNT,
+    TRAINER_CHAMPION_TYPE_CHANGE_CHANCE,
     EVO_TYPE_NFE,
     EVO_TYPE_SOLO,
 } = require("./constants");
@@ -101,6 +102,21 @@ function sampleAndRemove(array) {
     return item;
 }
 
+// T-076 — draw one type from `pool` at random, excluding `exclude` (a changed boss's own canonical
+// type, so "changed" always differs), remove it from the pool and return it. Consumes exactly one
+// rng draw, like sampleAndRemove. With 18 types and at most 13 typed bosses there are always ≥5
+// spare types, so at least one non-excluded entry is guaranteed when a changed boss draws.
+function samplePoolExcluding(pool, exclude) {
+    const candidates = [];
+    for (let i = 0; i < pool.length; i++) {
+        if (pool[i] !== exclude) candidates.push(i);
+    }
+    const chosen = candidates[Math.floor(rng.random() * candidates.length)];
+    const type = pool[chosen];
+    pool.splice(chosen, 1);
+    return type;
+}
+
 /**
  * Resolve a team's 5 type slots from config. Each configured entry is either a valid POKEMON_TYPE
  * or the 'RANDOM' token (also: missing/invalid entries are treated as RANDOM). RANDOM slots draw —
@@ -140,6 +156,8 @@ const originalGymTypes = [
     POKEMON_TYPE_PSYCHIC,
     POKEMON_TYPE_WATER,
 ];
+// T-076 — the champion (Steven) is the 13th typed boss and shares the gym/E4 type pool.
+const originalChampionType = POKEMON_TYPE_STEEL;
 
 // New defs
 
@@ -654,6 +672,20 @@ function getTrainersData(itemAssignments, tmList, config = {}) {
     aquaTeamTypes = resolveTeamTypes(config.aquaTypes, AQUA_DEFAULT_TYPES);
     magmaTeamTypes = resolveTeamTypes(config.magmaTypes, MAGMA_DEFAULT_TYPES);
 
+    // T-076 — probability the champion (Steven) is one of the "changed" bosses. Unlike the gym/E4
+    // count knobs, the champion is a single boss, so it flips changed with this Bernoulli chance
+    // (clamped to [0,1]; absent/invalid falls back to the historical constant, default 0.05).
+    const championChangeChance = (typeof config.championTypeChangeChance === 'number' && Number.isFinite(config.championTypeChangeChance))
+        ? Math.max(0, Math.min(1, config.championTypeChangeChance))
+        : TRAINER_CHAMPION_TYPE_CHANGE_CHANCE;
+
+    // T-076 — Unified fixed/changed type pool over the 13 typed bosses (8 gyms + 4 E4 + champion).
+    // Step 1: mark each boss fixed/changed (gyms/E4 by count, champion by the Bernoulli above).
+    // Step 2: fixed bosses claim their canonical type; the pool is every POKEMON_TYPE not claimed by
+    //         a fixed boss. Step 3: changed bosses draw (and remove) from that shared pool, excluding
+    //         their own canonical. So a type freed by a changed boss in one group (e.g. Roxanne's
+    //         Rock, or the champion's Steel when it changes) is eligible for any other changed boss —
+    //         gyms, E4 and champion share one type space instead of walled-off per-group pools.
     const coinsForE4Types = [0, 1, 2, 3];
     const coinsForGymTypes = [0, 1, 2, 3, 4, 5, 6, 7];
     const whoKeepsE4Type = [];
@@ -665,42 +697,54 @@ function getTrainersData(itemAssignments, tmList, config = {}) {
         const chosenType = sampleAndRemove(coinsForGymTypes);
         whoKeepsGymType.push(chosenType);
     }
-    const e4AllowedTypes = [...POKEMON_TYPES];
-    for (let i = 0; i < originalE4Types.length; i++) {
-        e4AllowedTypes.splice(e4AllowedTypes.indexOf(originalE4Types[i]), 1);
-    }
-    e4AllowedTypes.splice(e4AllowedTypes.indexOf(POKEMON_TYPE_STEEL), 1);
-    const gymAllowedTypes = [...POKEMON_TYPES];
-    for (let i = 0; i < originalGymTypes.length; i++) {
-        gymAllowedTypes.splice(gymAllowedTypes.indexOf(originalGymTypes[i]), 1);
-    }
-    gymAllowedTypes.splice(gymAllowedTypes.indexOf(POKEMON_TYPE_STEEL), 1);
+    const championChanged = rng.random() < championChangeChance;
 
-    let e41MainType;
-    let e42MainType;
-    let e43MainType;
-    let e44MainType;
+    const gymMainTypes = new Array(originalGymTypes.length);
+    const gymIsChangedType = new Array(originalGymTypes.length);
+    const e4MainTypes = new Array(originalE4Types.length);
+    let championMainType;
 
-    if (whoKeepsE4Type.includes(0)) { e41MainType = originalE4Types[0]; }
-    if (whoKeepsE4Type.includes(1)) { e42MainType = originalE4Types[1]; }
-    if (whoKeepsE4Type.includes(2)) { e43MainType = originalE4Types[2]; }
-    if (whoKeepsE4Type.includes(3)) { e44MainType = originalE4Types[3]; }
-    if (!e41MainType) { e41MainType = sampleAndRemove(e4AllowedTypes); }
-    if (!e42MainType) { e42MainType = sampleAndRemove(e4AllowedTypes); }
-    if (!e43MainType) { e43MainType = sampleAndRemove(e4AllowedTypes); }
-    if (!e44MainType) { e44MainType = sampleAndRemove(e4AllowedTypes); }
-
-    const gymIsChangedType = [];
-    const gymMainTypes = [];
+    // Step 2 — fixed bosses claim their canonical type and remove it from the shared pool.
+    const typePool = [...POKEMON_TYPES];
+    const claimType = (t) => {
+        const i = typePool.indexOf(t);
+        if (i !== -1) typePool.splice(i, 1);
+    };
     for (let i = 0; i < originalGymTypes.length; i++) {
         if (whoKeepsGymType.includes(i)) {
-            gymMainTypes.push(originalGymTypes[i]);
-            gymIsChangedType.push(false);
-        } else {
-            gymMainTypes.push(sampleAndRemove(gymAllowedTypes));
-            gymIsChangedType.push(true);
+            gymMainTypes[i] = originalGymTypes[i];
+            gymIsChangedType[i] = false;
+            claimType(originalGymTypes[i]);
         }
     }
+    for (let i = 0; i < originalE4Types.length; i++) {
+        if (whoKeepsE4Type.includes(i)) {
+            e4MainTypes[i] = originalE4Types[i];
+            claimType(originalE4Types[i]);
+        }
+    }
+    if (!championChanged) {
+        championMainType = originalChampionType;
+        claimType(originalChampionType);
+    }
+
+    // Step 3 — changed bosses draw from the shared pool, excluding their own canonical type.
+    for (let i = 0; i < originalGymTypes.length; i++) {
+        if (!whoKeepsGymType.includes(i)) {
+            gymMainTypes[i] = samplePoolExcluding(typePool, originalGymTypes[i]);
+            gymIsChangedType[i] = true;
+        }
+    }
+    for (let i = 0; i < originalE4Types.length; i++) {
+        if (!whoKeepsE4Type.includes(i)) {
+            e4MainTypes[i] = samplePoolExcluding(typePool, originalE4Types[i]);
+        }
+    }
+    if (championChanged) {
+        championMainType = samplePoolExcluding(typePool, originalChampionType);
+    }
+
+    const [e41MainType, e42MainType, e43MainType, e44MainType] = e4MainTypes;
 
     const tateAndLizaUseSolrock = rng.random() < 0.5;
 
@@ -1681,7 +1725,7 @@ const trainersData = [
             {
                 id: 'STEVEN_MEGA',
                 breedTier: 'perfect',
-                type: [POKEMON_TYPE_STEEL],
+                type: [championMainType],
                 specificIfTier: 'SPECIES_METANG',
                 checkValidEvo: true,
                 megaTier: [TIER_UBERS],
@@ -1691,7 +1735,7 @@ const trainersData = [
                     {
                         id: 'STEVEN_MEGA',
                         breedTier: 'perfect',
-                        type: [POKEMON_TYPE_STEEL],
+                        type: [championMainType],
                         specificIfTier: 'SPECIES_METANG',
                         checkValidEvo: true,
                         megaTier: [TIER_OU, TIER_UU],
@@ -1708,7 +1752,7 @@ const trainersData = [
                 tryEvolve: true,
                 checkValidEvo: true,
                 contextualTier: [TIER_RU, TIER_NU, TIER_PU, TIER_ZU],
-                type: [POKEMON_TYPE_STEEL],
+                type: [championMainType],
                 fallback: [
                     {
                         id: 'STEVEN_OU',
@@ -1718,17 +1762,17 @@ const trainersData = [
                         tryEvolve: true,
                         checkValidEvo: true,
                         contextualTier: [TIER_RU, TIER_NU, TIER_PU, TIER_ZU],
-                        type: [POKEMON_TYPE_STEEL],
+                        type: [championMainType],
                     }
                 ]
             },
             {
                 ...getBossPreset('GRANITE_CAVE_STEVEN')[0],
-                type: [POKEMON_TYPE_STEEL],
+                type: [championMainType],
             },
             {
                 ...getBossPreset('GRANITE_CAVE_STEVEN')[1],
-                type: [POKEMON_TYPE_STEEL],
+                type: [championMainType],
             },
             {
                 oneOf: stevenPokemon,
@@ -3670,13 +3714,10 @@ const trainersData = [
             {
                 id: 'STEVEN_LEGEND',
                 ...ABSOLUTE_POKEDEF_LEGEND,
-                type: [POKEMON_TYPE_STEEL],
+                type: [championMainType],
+                // T-076 — champion-typed legend, else any legend. (Was Steel→Rock→any; the hard-coded
+                // Rock tier is dropped so a changed-champion partner never fields an off-theme legend.)
                 fallback: [
-                    {
-                        id: 'STEVEN_LEGEND',
-                        ...ABSOLUTE_POKEDEF_LEGEND,
-                        type: [POKEMON_TYPE_ROCK],
-                    },
                     {
                         id: 'STEVEN_LEGEND',
                         ...ABSOLUTE_POKEDEF_LEGEND,
@@ -4358,11 +4399,12 @@ const trainersData = [
     },
 ];
 
-    // T-044 — tag typed bosses with the type they actually run this seed, so the docs
+    // T-044/T-076 — tag typed bosses with the type they actually run this seed, so the docs
     // viewer can colour their cards. Gym leaders follow gymMainTypes[0..7] (Roxanne→Juan),
-    // E4 follow e4NMainType (Sidney→Drake), Steven is always Steel. Verified against the
-    // team-slot `type: [gymMainTypes[i]]` / `[e4NMainType]` references above. One pass
-    // covers every battle instance (rematches, endgame) by class name.
+    // E4 follow e4NMainType (Sidney→Drake), Steven follows the resolved champion type (Steel unless
+    // it changed this seed). Verified against the team-slot `type: [gymMainTypes[i]]` /
+    // `[e4NMainType]` / `[championMainType]` references above. One pass covers every battle instance
+    // (rematches, endgame) by class name.
     const themeTypeByClass = {
         'Leader Roxanne': gymMainTypes[0],
         'Leader Brawly': gymMainTypes[1],
@@ -4376,7 +4418,7 @@ const trainersData = [
         'Elite Four Phoebe': e42MainType,
         'Elite Four Glacia': e43MainType,
         'Elite Four Drake': e44MainType,
-        'Steven': POKEMON_TYPE_STEEL,
+        'Steven': championMainType,
     };
     for (const trainer of trainersData) {
         const themeType = themeTypeByClass[trainer.class];

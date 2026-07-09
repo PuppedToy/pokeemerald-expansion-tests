@@ -114,6 +114,9 @@ const constants = {
     TRAINER_RESTRICTION_MUST_LEARN_TM_MOVES: 'TRAINER_RESTRICTION_MUST_LEARN_TM_MOVES',
     TRAINER_E4_KEEP_TYPE_AMOUNT: 2,
     TRAINER_GYM_LEADERS_KEEP_TYPE_AMOUNT: 6,
+    // T-076 — probability the champion's (Steven's) type is randomized. Unlike gyms/E4 (count knobs)
+    // the champion is a single boss, so it flips "changed" with this Bernoulli probability.
+    TRAINER_CHAMPION_TYPE_CHANGE_CHANCE: 0.05,
 
     POKEMON_TYPE_WATER: 'WATER',
     POKEMON_TYPE_ICE: 'ICE',
