@@ -1,7 +1,7 @@
 ---
 id: T-075
 title: Randomizer diagnostics — audit warnings, rich 48h server store, local classification action
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
 updated: 2026-07-09
@@ -50,19 +50,19 @@ Three parts:
    per class.
 
 Acceptance criteria:
-- [ ] `randomizer/diagnostics.js` sink with `warn/error/fatal/all/counts`, unit-tested.
-- [ ] Degraded-team integration test: a run that forces a short team produces
+- [x] `randomizer/diagnostics.js` sink with `warn/error/fatal/all/counts`, unit-tested.
+- [x] Degraded-team integration test: a run that forces a short team produces
       `TRAINER_SLOT_DROPPED` + `TRAINER_TEAM_SHORT` with expected context, and the bundle
       shape is unchanged (no `diagnostics` field on it).
-- [ ] `POST /api/diagnostics` stores a row; optional auth (anon + authed) and size caps,
+- [x] `POST /api/diagnostics` stores a row; optional auth (anon + authed) and size caps,
       handler + repo tested against an in-memory DB.
-- [ ] Sweeper purges diagnostics rows older than 48h (tested); account deletion clears a
+- [x] Sweeper purges diagnostics rows older than 48h (tested); account deletion clears a
       user's diagnostics.
-- [ ] Front sends diagnostics on every completed generation (fire-and-forget, never blocks UI).
-- [ ] `scan-diagnostics.mjs` groups live diagnostics by code + signature (`--json`/`--report`,
+- [x] Front sends diagnostics on every completed generation (fire-and-forget, never blocks UI).
+- [x] `scan-diagnostics.mjs` groups live diagnostics by code + signature (`--json`/`--report`,
       `--local` for offline).
-- [ ] `/diagnostics-audit` skill runs the script and proposes a solution per class.
-- [ ] `docs/randomizer-diagnostics.md` (emission inventory + code catalog + transport) linked
+- [x] `/diagnostics-audit` skill runs the script and proposes a solution per class.
+- [x] `docs/randomizer-diagnostics.md` (emission inventory + code catalog + transport) linked
       from `docs/INDEX.md`; `cd randomizer && npm test` and `cd backend && npm test` green.
 
 ## Progress log
@@ -94,7 +94,31 @@ Acceptance criteria:
     mutations. Rebuilt the gitignored worker bundle (`node build.js`). Node-only warning
     points (`rebalancer.js`, `writer.js`, `parser.js`) documented but left as `console` (they
     never reach the browser). Awaiting the owner's manual test before closing.
+- **2026-07-09** — Committed (4 commits) + merged `--no-ff` into `master`; owner pushed and
+  greenlit → deployed live via `deploy/update.sh` (`==> deployed ✓`). Owner exercised the whole
+  loop end-to-end: `/diagnostics-audit` pulled the live `app.db` over SSH and correctly
+  classified a real incident — `TRAINER_MATT` slot 6 (isMega + `SNOW_WARNING`, no `fallback`)
+  dropped → team of 5 (`TRAINER_SLOT_DROPPED` + `TRAINER_TEAM_SHORT` with full context). Owner
+  confirmed OK and asked to close; the Matt slot is intentionally left as-is (future rework).
 
 ## Outcome
+
+Shipped and deployed to production. Randomization warnings/errors are now captured as
+structured, context-rich events, reported to a 48h server store on every run, and auditable
+from local via `scan-diagnostics.mjs` + the `/diagnostics-audit` skill (which proposes a fix
+per problem class). The full loop was validated against live data.
+
+Deviations from the plan: none of substance. Key design choice held — diagnostics travel
+**outside** the bundle (worker returns them as a sibling), so the bundle shape / determinism
+tests / `validateBundle` were untouched. Deep helpers (`utils.js`, `rating.js`,
+`startersModule.js`) route to the sink via an **ambient** context set per run, avoiding
+signature churn; `writerDocs` uses an explicit `options.diag`. Node-pipeline-only warnings
+(`rebalancer.js`, `writer.js`, `parser.js`) were inventoried in the audit doc but deliberately
+left as `console` — they never reach the browser, so there is nothing to transport.
+
+Follow-ups: none opened. The first live audit surfaced `TRAINER_MATT`'s mega-`SNOW_WARNING`
+slot dropping when no snow-mega is discovered (it lacks the `fallback` its sibling slots have,
+`trainers.js:3340-3345`) — left untouched per the owner (a trainer rework is coming). Related
+prior case: [T-058](T-058-brawly-five-pokemon-bundle.md).
 
 <!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->

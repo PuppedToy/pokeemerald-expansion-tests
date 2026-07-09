@@ -78,4 +78,5 @@
 | [T-072](T-072-starter-quality-selector.md) | Starter quality selector for the 3 main starters + extra-starter count & visual separation | in-progress | 0.6.0 | 2026-07-07 |
 | [T-073](T-073-configurable-shop-prices.md) | Configurable shop item prices (mints, ability items, balls, TMs by pool) | in-progress | 0.6.0 | 2026-07-07 |
 | [T-074](T-074-docs-responsive-fixes.md) | Fix documentation responsive rendering issues | in-progress | 0.6.0 | 2026-07-08 |
-| [T-075](T-075-randomizer-diagnostics.md) | Randomizer diagnostics — audit warnings, rich 48h server store, local classification action | in-progress | 0.6.0 | 2026-07-09 |
+| [T-075](T-075-randomizer-diagnostics.md) | Randomizer diagnostics — audit warnings, rich 48h server store, local classification action | done | 0.6.0 | 2026-07-09 |
+| [T-076](T-076-unified-boss-type-pool.md) | Unified fixed/changed type pool for gyms, E4 and champion | done | 0.6.0 | 2026-07-09 |
