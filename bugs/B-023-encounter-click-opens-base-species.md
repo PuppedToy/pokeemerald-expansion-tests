@@ -1,13 +1,13 @@
 ---
 id: B-023
 title: Encounter tile click opens the base species modal instead of the evolved one
-status: open            # open | fixing | fixed | wont-fix
+status: fixing          # open | fixing | fixed | wont-fix
 severity: minor         # critical | major | minor
 created: 2026-07-09
 updated: 2026-07-09
 found-in: 0.6.0
 fixed-in:
-regression-test:
+regression-test: visual-tests/interaction.spec.mjs (B-023)
 links: []
 ---
 
@@ -28,9 +28,24 @@ return to Encounters, click the now-green evolved tile → modal shows the pre-e
 
 ## Root cause
 
-<!-- Filled during the fix. The real cause, not the patch. -->
+The encounter tile's click handler (`frontend/template.html`, encounters render script) captured the
+species from the tile's static `poke-<SPECIES_ID>` CSS class — the **base** wild species baked in at
+render time — into a closure variable and opened its modal. It never consulted the evolution overlay
+(`store.evo`, keyed `"<routeId>|<slot>"`) that the green sprite/name render path (`applyLocVisuals`)
+uses. So the sprite/name showed the evolved species while the click always opened the base form.
+
+The overlay reader (`evoOverlay()`) lives inside the Mail-engine IIFE and was not accessible from the
+(separate) encounters script, so the handler had no in-scope way to resolve the current species.
 
 ## Fix
 
-<!-- What was changed and where (link commits/PR/task). The regression test reproduces the
-     symptom: verified to FAIL before the fix and PASS after. No test, no `fixed` status. -->
+- Expose the overlay reader as `window.nzEvoOverlay = evoOverlay` (single source of truth with
+  `applyLocVisuals`).
+- In the click handler, resolve the current species at click time:
+  `cur = window.nzEvoOverlay()[route.id + '|' + slot] || baseSpecies`, then
+  `showPokemonModal(findPoke(cur))` (falling back to the base form when unresolved).
+
+Both changes in `frontend/template.html` (T-078/B-023 batch). Regression test
+`visual-tests/interaction.spec.mjs` (`B-023: encounter click opens the evolved species`) drives the
+real docs fixture: marks a tile evolved, clicks it, and asserts the modal renders the **evolved**
+species and not the base. Verified FAIL before the fix, PASS after.

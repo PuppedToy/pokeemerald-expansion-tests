@@ -1702,11 +1702,18 @@
       // Find every wild-poke card to add click event
       const wildPokeCards = card.querySelectorAll('.wild-poke');
       wildPokeCards.forEach(wpCard => {
-        const pokeId = wpCard.className.match(/poke-(SPECIES_[A-Z0-9_]+)/)[1];
-        const poke = findPoke(pokeId);
-        if (poke) {
-          wpCard.addEventListener('click', () => showPokemonModal(poke));
-        }
+        const baseId = wpCard.dataset.baseSpecies;
+        const slot = wpCard.dataset.slot;
+        // B-023: resolve the currently displayed (possibly evolved) species at click time, mirroring
+        // applyLocVisuals' evoOverlay lookup — clicking an evolved encounter must open the evolved
+        // species' modal, not the captured base form. The overlay lives in the Mail-engine IIFE and is
+        // exposed as window.nzEvoOverlay; fall back to the base form when it's absent or unresolved.
+        wpCard.addEventListener('click', () => {
+          const overlay = (typeof window.nzEvoOverlay === 'function') ? window.nzEvoOverlay() : {};
+          const cur = overlay[route.id + '|' + slot] || baseId;
+          const poke = findPoke(cur) || findPoke(baseId);
+          if (poke) showPokemonModal(poke);
+        });
       });
     });
   </script>
@@ -2512,6 +2519,9 @@
     // Let the Mail engine refresh the Encounters tab after an evolve / box change so its sprites stay
     // in sync with the overlay (T-009 form coherence).
     window.nzRefreshAll = applyAllLocVisuals;
+    // B-023: expose the evolution overlay so the (out-of-IIFE) encounter click handler can resolve the
+    // currently displayed species — single source of truth with applyLocVisuals' sprite/name swap.
+    window.nzEvoOverlay = evoOverlay;
 
     // Apply cross-location dimming for grouped locations (e.g. Shoal Cave tides).
     // Must be called AFTER applyLocVisuals so it can override per-slot classes.

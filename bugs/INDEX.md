@@ -26,4 +26,4 @@
 | [B-020](B-020-starter-nickname-pointer-array-build.md) | Starter-extra nickname array used _() in a pointer array — breaks the C build | fixed | critical | 0.6.0 | 0.6.0 | randomizer/__tests__/unit/starterNameWriter.test.js |
 | [B-021](B-021-killed-build-wedges-tree.md) | A killed build leaves the tree dirty and wedges every subsequent build | fixed | major | 0.5.0 | 0.6.0 | backend/__tests__/buildRom.test.js |
 | [B-022](B-022-location-nicknames-missing-includes.md) | location_nicknames.c missing includes (EOS / map constants) — breaks the C build | fixing | critical | 0.6.0 |  |  |
-| [B-023](B-023-encounter-click-opens-base-species.md) | Encounter tile click opens the base species modal instead of the evolved one | open | minor | 0.6.0 |  |  |
+| [B-023](B-023-encounter-click-opens-base-species.md) | Encounter tile click opens the base species modal instead of the evolved one | fixing | minor | 0.6.0 |  | visual-tests/interaction.spec.mjs (B-023) |
