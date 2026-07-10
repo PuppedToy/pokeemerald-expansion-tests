@@ -149,6 +149,28 @@ Acceptance criteria:
   pile → no base). Full suite 887 pass. Output-neutral (no pipeline import yet). Next: **107c** — wire
   the weighted fill into the resolver via `context.sophistication` (bias vanishes at soph≈0 → early
   byte-identical; first output-changing increment → determinism + singles-not-worse gate before merge).
+- **2026-07-10 — 107c de-risked plan (not yet executed; risk boundary → fresh focused pass).** 107c is
+  the FIRST output-changing increment and sits on the determinism-critical path, so it is prepped, not
+  rushed at the tail of this session. It has THREE parts that must land together:
+  1. **Thread the real sophistication scale into the pipeline** (deferred from T-105): build
+     `createSophisticationScale(buildBossCaps(caps.c))` once in `writerDocs`/`writer` and pass it as the
+     resolver's `sophistication` dep. Today the dep defaults to `() => 1` (fully sophisticated
+     everywhere) — so wiring the bias WITHOUT this would turn it fully on in early game too. Needs a
+     `src/caps.c` read on the generation path (available in the determinism test; guard if missing →
+     fall back to neutral).
+  2. **Wire the weighted fill** into `trainerSelector`'s pick among tier-valid, family-deduped
+     candidates: blend the current pick (sample/pickBest) with `scoreCandidate(candidate, teamCounts,
+     combinedStructure(...))` (107b), where the crystallized identity comes from `crystallize` (107b)
+     on the partial team. **Bias weight = `context.sophistication`** so at soph≈0 the pick reduces to
+     today's behaviour (early-game byte-identical) and the change concentrates on boss/endgame teams.
+     Must preserve per-slot reseed determinism (bias is a pure function of the reseeded RNG + team
+     state, no new global RNG draws that reorder).
+  3. **Singles-not-worse verification harness** (does not exist yet): a before/after comparison on
+     fixed seeds — assert early-game (low-soph) teams are byte-identical and high-soph teams still pass
+     the tier/legality invariants — plus the `RUN_DETERMINISM=1` gate. Build this FIRST in the 107c
+     pass so the output change is measured, not assumed.
+  Landing order within 107c: harness → thread scale (verify still byte-identical, scale unused) → wire
+  bias (verify early-game byte-identical, determinism green, not-worse). Merge only when all green.
 
 ## Outcome
 
