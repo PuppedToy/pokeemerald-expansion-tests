@@ -1,10 +1,10 @@
 ---
 id: T-098
 title: Research — historic VGC doubles teams (gen 6–7) → cited reference docs
-status: proposed
+status: done
 type: docs
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-10
 target-version: 0.8.0
 links: [T-083]
 blocked-by: []
@@ -33,11 +33,12 @@ in-repo so it is never lost and can be referenced by later tasks.
 - Produce a short "what we may have missed" list of moves/abilities/synergies to feed T-100/T-095/T-096.
 
 Acceptance criteria:
-- [ ] A cited, verified corpus of landmark gen 6–7 doubles teams saved under `docs/research/doubles/`.
-- [ ] Each team has archetype + synergy/anti-synergy analysis with sources.
-- [ ] 4v4-vs-6v6 caveats captured explicitly.
-- [ ] Index added to `docs/INDEX.md`.
-- [ ] A gaps list handed to T-100.
+- [x] A cited, verified corpus of 24 landmark gen 6–7 doubles teams (consolidated into
+      `docs/research/vgc-doubles-teams.md` — one file rather than a `doubles/` subdir).
+- [x] Each team has archetype + synergy/anti-synergy analysis with sources.
+- [x] 4v4-vs-6v6 caveats captured (each team notes bring-6/pick-4 + its 4-mon core).
+- [x] Index added to `docs/INDEX.md` (new "Research" section).
+- [x] A gaps list handed to T-100 (`docs/research/rating-gaps.md`).
 
 ## Progress log
 
@@ -45,7 +46,16 @@ Acceptance criteria:
 
 - **2026-07-09** — Task created. Depth = exhaustive + verified (owner decision) → execute via a
   multi-agent research workflow.
+- **2026-07-10** — Ran the research workflow (run `wf_28696c06-bcd`, 21 agents, 0 errors, adversarially
+  verified — it even caught + corrected an illegal Salamence "Levitate" set). Wrote
+  `docs/research/vgc-doubles-teams.md` — 24 VGC teams, VGC 2014→2019 (Se Jun Park's Follow Me
+  Pachirisu, Ogloza's no-Protect rain HO, Wolfe Glick 2016, the Big 6, Naoto Mizobuchi 2019 …).
+  Generated deterministically by `scratchpad/gen-research-docs.cjs` from the verified corpus
+  (`docs/research/corpus.json`). Deviation: one consolidated file, not a `doubles/` subdir. Closed
+  on green (docs task).
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped a cited, adversarially-verified corpus of 24 landmark Gen 6-7 VGC doubles teams
+(`docs/research/vgc-doubles-teams.md`) + raw `corpus.json`. Feeds the doubles rating refinements
+(via T-100's gap list) and the doubles archetype model (T-102).

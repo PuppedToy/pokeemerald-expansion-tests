@@ -1,10 +1,10 @@
 ---
 id: T-100
 title: Synthesize a synergy / anti-synergy catalog and cross-check the current rating/combo logic
-status: proposed
+status: done
 type: docs
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-10
 target-version: 0.8.0
 links: [T-083, T-098, T-099]
 blocked-by: [T-098, T-099]
@@ -29,16 +29,27 @@ This is the bridge from research to concrete rating/teambuilding changes.
 - Where a gap is clearly a singles rating bug/omission, file a task/bug rather than silently fixing.
 
 Acceptance criteria:
-- [ ] A structured synergy/anti-synergy catalog exists (per format, with sources), indexed in `docs/INDEX.md`.
-- [ ] A gap report vs. the current combo logic is produced and linked to the consuming tasks.
-- [ ] No silent scope creep: gaps become explicit follow-ups.
+- [x] A structured synergy/anti-synergy catalog exists (24 synergies + 21 anti-synergies), indexed in `docs/INDEX.md`.
+- [x] A gap report vs. the current combo logic is produced (`docs/research/rating-gaps.md`, 17 findings) linked to the consuming tasks.
+- [x] No silent scope creep: gaps are explicit follow-ups (see the log), not silent edits.
 
 ## Progress log
 
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-09** — Task created.
+- **2026-07-10** — Synthesised from the verified corpus (workflow `wf_28696c06-bcd`). Wrote
+  `docs/research/synergies-antisynergies.md` (24 synergies + 21 anti-synergies),
+  `docs/research/team-archetypes.md` (5 singles + 8 doubles archetypes → seed for T-101/T-102), and
+  `docs/research/rating-gaps.md` (17 findings, each citing real `rating.js` code). Notable actionable
+  gaps to hand off: **Aurora Veil rated 0 in `statusList` while Light/Reflect are 7.5 — a likely
+  singles bug** → file a bug; **Fake Out** has no doubles floor despite being on nearly every VGC
+  champion team → T-095; spread SpA/Speed drops (Snarl/Icy Wind) penalised not rewarded → T-094/095;
+  hazards over-valued in doubles → T-094; priority/terrain/trap/Regenerator/Unaware/Contrary abilities
+  under-valued → T-096; Trick-Room speed inversion + weather-pairing → T-097. Closed on green (docs).
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped the synergy/anti-synergy catalog, the archetype notes (seed for T-101/T-102), and a 17-item
+rating-gap report that drives concrete refinements in T-094/095/096/097 and at least one singles bug
+(Aurora Veil). Follow-ups are explicit in the log; no silent rating changes made here.

@@ -101,9 +101,9 @@
 | [T-095](T-095-doubles-support-move-revaluation.md) | Doubles re-valuation of support/gimmick moves (Follow Me, Rage Powder, Trick Room…) | in-progress | 0.8.0 | 2026-07-10 |
 | [T-096](T-096-doubles-ability-rating.md) | Doubles ability rating — redirection, Intimidate, Friend Guard, Telepathy… | in-progress | 0.8.0 | 2026-07-10 |
 | [T-097](T-097-doubles-pokemon-tiers.md) | Doubles Pokémon tiers — ratePokemonDoubles + contextualRatingsDoubles | proposed | 0.8.0 | 2026-07-09 |
-| [T-098](T-098-research-vgc-doubles-teams.md) | Research — historic VGC doubles teams (gen 6–7) → cited reference docs | proposed | 0.8.0 | 2026-07-09 |
-| [T-099](T-099-research-smogon-singles-teams.md) | Research — historic Smogon singles teams (gen 6–7) → cited reference docs | proposed | 0.8.0 | 2026-07-09 |
-| [T-100](T-100-synergy-antisynergy-synthesis.md) | Synthesize a synergy / anti-synergy catalog and cross-check the current rating/combo logic | proposed | 0.8.0 | 2026-07-09 |
+| [T-098](T-098-research-vgc-doubles-teams.md) | Research — historic VGC doubles teams (gen 6–7) → cited reference docs | done | 0.8.0 | 2026-07-10 |
+| [T-099](T-099-research-smogon-singles-teams.md) | Research — historic Smogon singles teams (gen 6–7) → cited reference docs | done | 0.8.0 | 2026-07-10 |
+| [T-100](T-100-synergy-antisynergy-synthesis.md) | Synthesize a synergy / anti-synergy catalog and cross-check the current rating/combo logic | done | 0.8.0 | 2026-07-10 |
 | [T-101](T-101-singles-archetype-model.md) | Singles archetype model — JSON of archetypes, entry conditions and team structure | proposed | 0.8.0 | 2026-07-09 |
 | [T-102](T-102-doubles-archetype-model.md) | Doubles archetype model — JSON of archetypes (weather, TR, redirection, ability-swap…) | proposed | 0.8.0 | 2026-07-09 |
 | [T-103](T-103-teambuilding-engine-design-adr.md) | Design the archetype-driven teambuilding engine + ADR-016 (+ teardown plan) | proposed | 0.8.0 | 2026-07-09 |
