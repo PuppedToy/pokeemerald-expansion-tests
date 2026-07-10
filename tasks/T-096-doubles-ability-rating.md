@@ -1,10 +1,10 @@
 ---
 id: T-096
 title: Doubles ability rating — redirection, Intimidate, Friend Guard, Telepathy…
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-10
 target-version: 0.8.0
 links: [T-083, T-093]
 blocked-by: [T-093]
@@ -32,16 +32,27 @@ ADR-015; informed by T-100.
   a doubles-relevant ability meaningfully lifts a mon's doubles rating.
 
 Acceptance criteria:
-- [ ] Redirection + doubles-support abilities are re-valued for doubles (independent), singles untouched.
-- [ ] The doubles ability value flows into the doubles tier pipeline.
-- [ ] Re-valuation justified against the research catalog (T-100) where available.
-- [ ] `cd randomizer && npm test` green.
+- [x] Redirection + doubles-support abilities are re-valued for doubles (independent), singles untouched.
+- [~] The doubles ability value flows into the doubles tier pipeline. *(Persisted as
+      `abilities[id].ratingDoubles`; `ratePokemonDoubles` consumes it in T-097.)*
+- [~] Re-valuation justified against the research catalog (T-100) where available. *(Initial pass;
+      refined by the Group 2B research.)*
+- [x] `cd randomizer && npm test` green.
 
 ## Progress log
 
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-09** — Task created.
+- **2026-07-10** — Implemented on `feature/T-096-doubles-ability-rating` (TDD, red→green). Added
+  `DOUBLES_ABILITY_RATINGS` + `rateAbilityDoubles(abilityKey, ability)` in `rating.js` — a floor
+  (`Math.max` vs the singles aiRating) for redirection draws (Lightning Rod/Storm Drain=8, Volt
+  Absorb=7, Motor Drive=6), Intimidate=9, ally protection (Friend Guard=6, Telepathy=5), ally support
+  (Healer/Symbiosis/Aroma Veil=4), Intimidate-punishers (Defiant/Competitive=6), trigger abilities
+  (Justified=5, Rattled=4) and Overcoat=4. Persisted `abilities[id].ratingDoubles` in `pokedexModule`
+  (new abilities loop) + updated its `../rating` mock. Singles ability scoring untouched. Tests:
+  `rateAbilityDoubles.test.js` (5 cases). Suite 828 pass / 1 skip. `ratePokemonDoubles` (T-097)
+  consumes the value. Kept `in-progress`. Merged to master.
 
 ## Outcome
 
