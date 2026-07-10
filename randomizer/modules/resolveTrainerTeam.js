@@ -75,7 +75,9 @@ function normalizeTrainerBagTms(trainer) {
 // trainers loop and reuse it — exactly as the inlined loops declared these once outside the forEach.
 //
 // deps (per-run data): pokemonList, moves, abilities, starters, staticRewards, replacementLog,
-// megaReplacementLog, baseRngSeed, palafinHero, and an optional diag sink.
+// megaReplacementLog, baseRngSeed, palafinHero, an optional diag sink, and an optional
+// `sophistication(trainer) -> [0,1]` scale (T-105 / ADR-016 §3). The scale defaults to a neutral
+// `() => 1`, so team output is unchanged until the T-107 engine gates on `context.sophistication`.
 function createTeamResolver(deps) {
     const {
         pokemonList,
@@ -88,6 +90,7 @@ function createTeamResolver(deps) {
         baseRngSeed,
         palafinHero,
         diag = noopDiagnostics(),
+        sophistication = () => 1,
     } = deps;
 
     const storedIds = {};
@@ -115,7 +118,9 @@ function createTeamResolver(deps) {
     // build the trainersResults entry — the caller owns those.
     function resolveTrainerTeam(trainer) {
         const team = [];
-        const context = { team, foundMega: false, storedIds };
+        // T-105 — the sophistication weight for this trainer, available to the T-107 stages via
+        // the shared context. Computed here (once per trainer) but not yet applied to selection.
+        const context = { team, foundMega: false, storedIds, sophistication: sophistication(trainer) };
         const choosePokemonFromDefinition = createChooser(pokemonList, trainer, context, {
             starters, staticRewards, replacementLog, megaReplacementLog, isSuperEffective,
         });
@@ -292,7 +297,7 @@ function createTeamResolver(deps) {
         return team;
     }
 
-    return { resolveTrainerTeam, generateIVs, storedIds };
+    return { resolveTrainerTeam, generateIVs, storedIds, sophisticationFor: sophistication };
 }
 
 module.exports = { createTeamResolver, normalizeTrainerBagTms };
