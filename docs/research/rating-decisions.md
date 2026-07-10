@@ -65,10 +65,39 @@ Aurora Veil (not a bug — see Open decisions).
 full multiplier when the ally is immune → **T-097** tiers. Context-aware item rating (AV/WP/Sash/Choice)
 → **2C** (item-selection consumption). Trapping abilities → tied to the Shadow Tag open decision.
 
+## Batch 3 — archetype model (source: `team-archetypes.md`)
+
+**VALIDATED — owner, 2026-07-10.**
+
+- **Taxonomy validated.** The base archetype is exactly one of **Balanced · Offensive · Defensive**.
+  The 13 corpus archetypes map onto these (Bulky/Hyper Offense → Offensive; Balance / Dual-Mode
+  Goodstuffs → Balanced; Full Stall → Defensive). No additions/removals (owner: "todo bien").
+- **Gimmick model (owner-delegated decision, decided from the corpus).** Gimmicks (weather, terrain,
+  Trick Room, redirection, trapping, screens/field-control, ability-swap) are **NOT separate top-level
+  archetypes** — they are a **separate layer of weighted tags** on top of the base archetype:
+  - A team carries **zero, one, or several** gimmick tags. The corpus shows both archetype+gimmick and
+    **multi-gimmick** teams (Dual-Mode Goodstuffs = Tailwind + Trick Room; Gothitelle Rain = weather +
+    trapping; the Aqua grunt = offensive base + a light weather preference).
+  - Each gimmick has a **commitment weight** on a spectrum: **supporting/extra** (a light preference,
+    e.g. a Tailwind bolted onto an offense) ↔ **committed/defining** (the gimmick dictates structure —
+    hard Trick Room wants slow abusers, rain wants Swift Swim + Water spam — and is effectively the
+    team's identity).
+  - So "is a gimmick an extra or a whole archetype?" → **the same mechanism**; "whole archetype" is
+    just high commitment. This is the soft-preference model: the sophistication curve (2C) scales how
+    hard the generator commits to the gimmick; nothing is forced.
+- **Trapping / Perish Trap (Shadow Tag) — ALLOWED** as a valid gimmick (owner). Whether such a team
+  pushes its rating toward Uber is a **move/Pokémon rating** concern (handled when we rate those), not
+  a reason to exclude the strategy.
+
+Implication for T-101/T-102: model each format's archetypes as
+`{ base: balanced|offensive|defensive, gimmicks: [{ tag, commitmentWeight, structure }] }` with **entry
+conditions** (what makes a team eligible for / prefer a gimmick — e.g. "a weather setter is available",
+"the lead can set Trick Room") and a **preferred structure**, expressed as soft preferences, not slots.
+
 ## Open decisions
 
-- **OPEN — Trapping (Shadow Tag / Arena Trap).** A distinctive 6v6 archetype (remove-the-counter →
-  sweep), legal in Smogon DOU. Do we allow/balance it as a trainer archetype, or leave it out of the
-  teambuilding design? To resolve when we design the doubles archetype model (T-102) / engine (2C).
+- **RESOLVED (owner, 2026-07-10) — Trapping (Shadow Tag / Arena Trap): ALLOWED** as a valid gimmick
+  archetype for trainers (see Batch 3). Any Uber-pushing effect is handled by the move/Pokémon rating,
+  not by excluding the strategy.
 - **OPEN — Aurora Veil.** Its `statusList` 0 is **correct** (combo-dependent: needs snow). Model its
   value via a **snow-combo bonus** (like weather abusers), not a base rating — future work, not a bug.
