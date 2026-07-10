@@ -145,4 +145,11 @@ function detectFeatures(mon, ctx = {}) {
     return feats;
 }
 
-module.exports = { DETECTORS, detectFeatures, THRESHOLDS };
+// Move groups exposed so the refinement pass (107d) can map a move-deliverable role → the moves that
+// deliver it (e.g. hazardSetter → HAZARD_MOVES). Sets iterate in insertion order (deterministic).
+const MOVE_SETS = {
+    WEATHER_MOVES, HAZARD_MOVES, HAZARD_REMOVAL_MOVES, SETUP_MOVES, CLERIC_MOVES, PIVOT_MOVES,
+    SCREEN_MOVES, TRICK_ROOM_MOVES, TAILWIND_MOVES, REDIRECT_MOVES, WIDE_GUARD_MOVES,
+};
+
+module.exports = { DETECTORS, detectFeatures, THRESHOLDS, MOVE_SETS };

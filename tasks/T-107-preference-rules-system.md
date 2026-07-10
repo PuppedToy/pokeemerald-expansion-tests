@@ -195,6 +195,21 @@ Acceptance criteria:
     actually deliver the crystallized roles. The qualitative "singles not worse / teams feel coherent"
     is the owner's T-113 batch eval; the automatable guarantees (early byte-identical, determinism,
     all tier/type/legality invariants) hold now.
+- **2026-07-10 — 107d done (the move refinement).** `modules/archetypeRefine.js`:
+  `planMemberRoleMove({species, team, model, ctx, sophistication})` picks the ONE archetype role move
+  a just-chosen member should also carry so the team DELIVERS a still-missing role of its emerged
+  identity (identity from species potential; "delivered" from prior members' RESOLVED movesets/
+  abilities via `resolvedDetectMon`; `ROLE_MOVE_SETS` maps the move-deliverable roles). The resolver
+  injects it as a fixed move right after `tryToHaveMove` — same guard (`canLearnMove` + not-duplicate)
+  — so `chooseMoveset` fits it in and **move quality is preserved** (no crude swapping). Pure +
+  deterministic + gated by sophistication (shares the picker's `BIAS_MIN_SOPH`/`IDENTITY_FLOOR`), so
+  early game is untouched and the change concentrates on boss/endgame. Exported `MOVE_SETS` from
+  featureDetectors for the role→move map. TDD: 8 planner tests (top under-delivered role, soph gate,
+  no-identity, no-deliverable-role, no-double-inject, no-model). Full suite **904 pass**;
+  `RUN_DETERMINISM=1` cross-ROM gate green (refinement is deterministic → shared-trainer ROMs still
+  byte-identical). **Scope:** the MOVE half (the highest-impact "roles get run"); ability is already
+  handled by the 107c pick and items by the existing `rateItemForAPokemon`, so item/ability nudges are
+  a minor optional follow-up, not gating. Next: **107e** — trainer seed (initial-lean) declarations.
 
 ## Outcome
 

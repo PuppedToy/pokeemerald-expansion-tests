@@ -36,6 +36,7 @@ const { pickTrainerMonAbility } = require('./trainerAbility');
 const { selectWithAutoFallback } = require('./trainerFallback');
 const { createChooser } = require('./trainerSelector');
 const { makeArchetypePicker } = require('./archetypePicker');
+const { planMemberRoleMove } = require('./archetypeRefine');
 const { getArchetypeModel } = require('../archetypes');
 const { noopDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
 
@@ -204,6 +205,19 @@ function createTeamResolver(deps) {
                             newTeamMember.moves.push(moveToLearn);
                         }
                     });
+                }
+                // T-107 (107d) — identity-aware refinement: give this mon the one archetype role move
+                // the emerged team identity still needs, as a fixed move so chooseMoveset fits it in
+                // (quality preserved). Pure + gated by sophistication → no-op early game.
+                const roleMove = planMemberRoleMove({
+                    species: chosenTrainerMon,
+                    team,
+                    model: archetypeModel,
+                    ctx: { moves },
+                    sophistication: context.sophistication,
+                });
+                if (roleMove && canLearnMove(chosenTrainerMon, roleMove, trainer.level) && !newTeamMember.moves.includes(roleMove)) {
+                    newTeamMember.moves.push(roleMove);
                 }
 
                 // T-065: single SSOT helper (fallback-aware — uses effectiveDef.abilities, so a
