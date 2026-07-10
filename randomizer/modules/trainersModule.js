@@ -4,7 +4,7 @@ const { randomizeItems } = require('../itemRandomizer');
 const trainers = require('../trainers');
 const { getDifficultyTransform, getBagSizeOffset, applyTransform } = require('../presets');
 const { resolveTrainerColors } = require('../trainerColors');
-const { assignBattleTypes } = require('../battleFormat');
+const { assignBattleTypes, unifyRivalBattleTypes, runAndBunE4Split } = require('../battleFormat');
 
 const EXEMPT_TRAINER_PREFIXES = ['TRAINER_WALLY_', 'TRAINER_MAY_', 'TRAINER_BRENDAN_'];
 const EXEMPT_TRAINER_IDS = new Set(['TRAINER_STEVEN']);
@@ -37,12 +37,21 @@ function runTrainersModule(pokedexArtifact, config) {
     // doubles-shaped engine instead of reusing the singles slot definitions verbatim.
     if (config.battleFormat === 'mixed' && config.leagueRunAndBun === true) {
         const E4_BASE_IDS = ['TRAINER_SIDNEY', 'TRAINER_PHOEBE', 'TRAINER_GLACIA', 'TRAINER_DRAKE'];
+        const split = runAndBunE4Split(config.singlesPercent ?? 60);
         const clones = [];
         for (const baseId of E4_BASE_IDS) {
             const base = trainersData.find(t => t.id === baseId);
             if (!base) continue;
+            const bare = baseId.replace('TRAINER_', '');
+            const name = bare.charAt(0) + bare.slice(1).toLowerCase();   // SIDNEY → Sidney
             const clone = structuredClone(base);
             clone.id = `${baseId}_DOUBLES`;
+            // T-116 — label + choice-battle info so the docs read "Sidney Singles"/"Sidney Doubles"
+            // and show the Choice Battle box (X singles / Y doubles across the E4).
+            base.label = `${name} Singles`;
+            clone.label = `${name} Doubles`;
+            base.choiceBattle = { singles: split.singles, doubles: split.doubles };
+            clone.choiceBattle = { singles: split.singles, doubles: split.doubles };
             clones.push(clone);
         }
         trainersData.push(...clones);
@@ -92,6 +101,9 @@ function runTrainersModule(pokedexArtifact, config) {
     for (const trainer of trainersData) {
         trainer.battleType = battleTypes.get(trainer.id) ?? 'singles';
     }
+    // T-116 — every variant of a rival encounter shares one battle type (May's per-location starter
+    // variants + the Brendan copies), so the docs tags and the ROM .party agree across the family.
+    unifyRivalBattleTypes(trainersData);
 
     return { trainersData, itemAssignments };
 }
