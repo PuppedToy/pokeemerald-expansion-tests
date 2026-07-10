@@ -21,6 +21,7 @@ const { typeMainColors } = require('./trainerColors');
 const { BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone } = require('./modules/wildModule');
 const { displayNameToItemConst } = require('./itemRandomizer');
 const { createTeamResolver, normalizeTrainerBagTms } = require('./modules/resolveTrainerTeam');
+const { createSophisticationScale } = require('./modules/sophistication');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 
 const items = require('./items.js');
@@ -531,9 +532,11 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
         // instead of re-resolving them via RNG. Guarantees the ROM matches the docs.
         Object.assign(trainersResults, buildTrainersResultsFromDocs(docs.trainersResultsSimplified, pokemonList));
     } else {
+    const sophistication = createSophisticationScale(trainersData);
     const { resolveTrainerTeam } = createTeamResolver({
         pokemonList, moves, abilities, starters, staticRewards,
         replacementLog, megaReplacementLog, baseRngSeed, palafinHero,
+        sophistication,
     });
     trainersData.forEach(trainer => {
         normalizeTrainerBagTms(trainer);
