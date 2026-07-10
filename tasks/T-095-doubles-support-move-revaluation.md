@@ -1,10 +1,10 @@
 ---
 id: T-095
 title: Doubles re-valuation of support/gimmick moves (Follow Me, Rage Powder, Trick Room…)
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-10
 target-version: 0.8.0
 links: [T-083, T-093, T-094]
 blocked-by: [T-094]
@@ -29,15 +29,24 @@ gives them an independent doubles score. Per ADR-015; informed by the Group 2B r
 - Tests: each re-valued move has a materially higher doubles score than singles; singles unchanged.
 
 Acceptance criteria:
-- [ ] The doubles-support move set is re-valued for doubles (independent scores), singles untouched.
-- [ ] Re-valuation is justified against the research catalog (T-100) where available.
-- [ ] `cd randomizer && npm test` green.
+- [x] The doubles-support move set is re-valued for doubles (independent scores), singles untouched.
+- [~] Re-valuation is justified against the research catalog (T-100) where available. *(Initial pass
+      now; the values get refined once the Group 2B research lands — noted in the code + ADR-015.)*
+- [x] `cd randomizer && npm test` green.
 
 ## Progress log
 
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-09** — Task created.
+- **2026-07-10** — Implemented on `feature/T-095-doubles-support-moves` (TDD, red→green). Added
+  `DOUBLES_SUPPORT_RATINGS` in `rating.js` — a doubles floor `Math.max`'d into `rateMoveDoubles` for
+  redirection (Follow Me/Rage Powder=7), ally buffs (Helping Hand=6, Decorate=6, After You=5,
+  Coaching=4.5), team protection/positioning (Wide Guard=5, Quick Guard=4, Ally Switch=4), speed
+  control (Trick Room=7, Tailwind=7.5) and self-protection (Protect/Detect/Spiky Shield/King's Shield/
+  Baneful Bunker/Silk Trap=5.5). Singles `rateMove` untouched (`Math.max` only lifts the doubles side).
+  Tests: `rateMoveDoublesSupport.test.js` (5 cases). Suite 823 pass / 1 skip. Values are an initial
+  pass to be refined by the Group 2B research (T-100). Kept `in-progress`. Merged to master.
 
 ## Outcome
 
