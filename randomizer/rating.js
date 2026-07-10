@@ -3480,12 +3480,34 @@ function rateMoveDoubles(move) {
     return rating;
 }
 
+// T-096/ADR-015 — abilities whose value jumps in doubles. Keyed by ABILITY_* (matching the abilities
+// object). A floor: max'd against the singles aiRating, so a doubles-relevant ability is never rated
+// below its singles value. Initial pass — refined against the Group 2B research.
+const DOUBLES_ABILITY_RATINGS = {
+    // Redirection draws (the "draw" half is worthless in singles, decisive in doubles).
+    ABILITY_LIGHTNING_ROD: 8, ABILITY_STORM_DRAIN: 8, ABILITY_VOLT_ABSORB: 7, ABILITY_MOTOR_DRIVE: 6,
+    ABILITY_INTIMIDATE: 9,                                          // lowers BOTH foes' Attack
+    ABILITY_FRIEND_GUARD: 6, ABILITY_TELEPATHY: 5,                  // ally protection (doubles-only)
+    ABILITY_HEALER: 4, ABILITY_SYMBIOSIS: 4, ABILITY_AROMA_VEIL: 4, // ally support
+    ABILITY_DEFIANT: 6, ABILITY_COMPETITIVE: 6,                     // punish the ubiquitous Intimidate
+    ABILITY_JUSTIFIED: 5, ABILITY_RATTLED: 4,                       // trigger more often
+    ABILITY_OVERCOAT: 4,                                            // spread powder / weather immunity
+};
+
+// Doubles value of an ability: the singles aiRating, floored up for doubles-relevant abilities.
+function rateAbilityDoubles(abilityKey, ability) {
+    const base = (ability && ability.rating) || 0;
+    const floor = DOUBLES_ABILITY_RATINGS[abilityKey];
+    return floor !== undefined ? Math.max(base, floor) : base;
+}
+
 module.exports = {
     ratePokemon,
     tierFromRating,
     rateContextual,
     isSpreadMove,
     rateMoveDoubles,
+    rateAbilityDoubles,
     wishiwashiEffectivePoke,
     palafinEffectivePoke,
     chooseMoveset,

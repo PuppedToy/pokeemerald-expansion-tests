@@ -6,7 +6,7 @@ const parser = require('../parser');
 const { randomizeTMs, buildTMList, annotateTmNumbers } = require('../tmRandomizer');
 const { parseTmLocations } = require('../tmLocations');
 const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
-const { ratePokemon, rateContextual, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles } = require('../rating');
+const { ratePokemon, rateContextual, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles } = require('../rating');
 const { balancePokemon } = require('../rebalancer');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
@@ -26,6 +26,10 @@ async function parseBaseData() {
     // 1. Parse abilities
     const abilitiesFileText = await fs.readFile(ABILITIES_FILE_PATH, 'utf-8');
     const abilities = parser.parseAbilitiesFile(abilitiesFileText);
+    // T-096/ADR-015 — doubles ability value beside the singles aiRating.
+    Object.keys(abilities).forEach(abilityKey => {
+        abilities[abilityKey].ratingDoubles = rateAbilityDoubles(abilityKey, abilities[abilityKey]);
+    });
 
     // 2. Parse mega evo stones
     const megaEvosFileText = await fs.readFile(MEGA_EVOS_PATH, 'utf-8');
