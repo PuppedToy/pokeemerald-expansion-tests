@@ -69,6 +69,13 @@ Acceptance criteria:
   forwarding, and the split formula). Full frontend suite green (73 pass / 0 fail). Kept
   `in-progress`: live visual render + the end-to-end flow are confirmed at the T-092 checkpoint
   (batch-test-together). Merged to master.
+- **2026-07-10** — Owner feedback after the PRO test: the % and Run & Bun controls should sit in a
+  dedicated **box shown only for Mixed**, like the nuzlocke/soul-link panels (not two loose rows).
+  Spec change → updated the structural test first (red), then replaced `#singles-percent-row` +
+  `#league-runandbun-row` with a single `#mixed-panel` `run-panel` box containing both controls;
+  `_syncUI` now toggles that one box on `battleFormat !== 'mixed'`. Frontend suite green (73/73).
+  Merged to master (`feature/T-085-mixed-panel-box`). ROM build + double battles confirmed working in
+  PRO by the owner; Run & Bun ingame still pending T-090/T-091.
 
 ## Outcome
 
