@@ -110,7 +110,7 @@
 | [T-104](T-104-collapse-dual-resolver.md) | Collapse the writer.js / writerDocs.js dual resolver into one shared module | in-progress | 0.8.0 | 2026-07-10 |
 | [T-105](T-105-sophistication-scalar.md) | Engine — sophistication scalar driven by boss progression | in-progress | 0.8.0 | 2026-07-10 |
 | [T-106](T-106-backwards-generation.md) | Engine — backwards generation (endgame-first, devolve preserving ID continuity) | proposed | 0.8.0 | 2026-07-10 |
-| [T-107](T-107-preference-rules-system.md) | Engine — preference/rules system replacing fixed slots (archetype-fit scoring) | proposed | 0.8.0 | 2026-07-09 |
+| [T-107](T-107-preference-rules-system.md) | Engine — preference/rules system replacing fixed slots (archetype-fit scoring) | in-progress | 0.8.0 | 2026-07-10 |
 | [T-108](T-108-port-fixed-id-special-cases.md) | Engine — port fixed-ID / continuity / special cases into the new engine | proposed | 0.8.0 | 2026-07-09 |
 | [T-109](T-109-doubles-teambuilding-path.md) | Engine — doubles teambuilding path (spread / redirection / TR-aware) | proposed | 0.8.0 | 2026-07-09 |
 | [T-110](T-110-replace-old-engine-cleanup.md) | Integration — replace the old engine, remove dead slot/preset code, parity & diagnostics | proposed | 0.8.0 | 2026-07-09 |
