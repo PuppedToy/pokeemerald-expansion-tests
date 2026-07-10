@@ -96,7 +96,7 @@
 | [T-090](T-090-rom-e4-battle-style-prompt.md) | ROM E4 scripts — in-game singles/doubles prompt + remaining-choices counter + build-time VAR | in-progress | 0.7.0 | 2026-07-09 |
 | [T-091](T-091-maker-set-battle-format-var.md) | Maker sets the battle-format / Run & Bun VAR at build time and wires new bundle fields | in-progress | 0.7.0 | 2026-07-09 |
 | [T-092](T-092-group1-checkpoint-e2e.md) | Group 1 checkpoint — end-to-end ROM builds + manual test in every battle-format mode | proposed | 0.7.0 | 2026-07-09 |
-| [T-093](T-093-dual-rating-design-adr.md) | Design the dual singles/doubles rating dimension + ADR-015 | proposed | 0.8.0 | 2026-07-09 |
+| [T-093](T-093-dual-rating-design-adr.md) | Design the dual singles/doubles rating dimension + ADR-015 | proposed | 0.8.0 | 2026-07-10 |
 | [T-094](T-094-doubles-move-spread-rating.md) | Doubles move rating — spread detection (move.target) + rateMoveDoubles | proposed | 0.8.0 | 2026-07-09 |
 | [T-095](T-095-doubles-support-move-revaluation.md) | Doubles re-valuation of support/gimmick moves (Follow Me, Rage Powder, Trick Room…) | proposed | 0.8.0 | 2026-07-09 |
 | [T-096](T-096-doubles-ability-rating.md) | Doubles ability rating — redirection, Intimidate, Friend Guard, Telepathy… | proposed | 0.8.0 | 2026-07-09 |
