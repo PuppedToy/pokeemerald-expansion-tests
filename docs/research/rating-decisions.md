@@ -36,6 +36,35 @@ conclusions. Validated take for our game:
   6v6, alongside the VGC Sash/berry/Life Orb.
 - **Attrition & sacking** matter: value recovery, chip, late-game win conditions.
 
+## Batch 2 — the 17 rating gaps (source: `rating-gaps.md`)
+
+**VALIDATED — owner, 2026-07-10.** Verdicts, filtered through the 6v6 lens:
+
+**Implemented now** (doubles-only floors in `DOUBLES_SUPPORT_RATINGS`, i.e. `rateMoveDoubles` only —
+singles untouched): **Taunt** 6.5 (doubles floor; singles base 5 untouched) · **Snarl/Fake Tears** 6,
+**Struggle Bug** 5.5 (spread offensive stat-drop = doubles support, not a penalty) · **Icy Wind** 6 /
+**Electroweb** 5.5 / **Bulldoze** 5 (spread speed control) · **Perish Song** 5.5.
+
+**Verified already-handled (no change needed):**
+- **Fake Out** — `rateMove` already scores it ~8.86 (first-turn bonus); the "under-rated" gap was
+  wrong. No floor added.
+- **Priority / Regenerator / Unaware / Disguise / Triage abilities** — their `aiRating` is already high
+  (Prankster 8, Regenerator 8, Disguise 8, Triage 7, Gale Wings 6, Unaware 6), so an ability-level
+  doubles floor is a no-op. The real gap is how they feed the *Pokémon* tier + combos → T-097
+  (`ratePokemonDoubles`) / `computeComboBonus`, not an ability floor.
+
+**Rejected / already decided:** hazards "dead in doubles" (rejected — Batch 1: meaningful in 6v6);
+Aurora Veil (not a bug — see Open decisions).
+
+**Deferred — singles-affecting (own pass + regression test + separate owner OK on the exact values):**
+- **Taunt base raise + fast/Prankster bonus** (only the doubles floor is done now).
+- **Terrain-surge combos / cap** (`computeComboBonus`/`ratePokemon`; relevant to singles too).
+- **Contrary + self-lowering STAB** (invert the self-drop penalty; resolve the flagged `rating.js` TODO) — inherently shared/singles.
+
+**Deferred to their phase:** Trick-Room speed inversion · weather-pairing (setter+abuser) · spread-move
+full multiplier when the ally is immune → **T-097** tiers. Context-aware item rating (AV/WP/Sash/Choice)
+→ **2C** (item-selection consumption). Trapping abilities → tied to the Shadow Tag open decision.
+
 ## Open decisions
 
 - **OPEN — Trapping (Shadow Tag / Arena Trap).** A distinctive 6v6 archetype (remove-the-counter →

@@ -35,3 +35,28 @@ describe('rateMoveDoubles — doubles support/gimmick re-valuation', () => {
         expect(rateMoveDoubles(moves.MOVE_TACKLE)).toBe(rateMove(moves.MOVE_TACKLE));
     });
 });
+
+describe('rateMoveDoubles — Batch-2 owner-validated gap floors (T-100)', () => {
+    test('Fake Out is already premium in doubles (rateMove first-turn bonus, no floor needed)', () => {
+        // The Batch-2 gap flagged Fake Out as under-rated, but rateMove already scores it ~8.86, so it
+        // is left out of DOUBLES_SUPPORT_RATINGS; it is simply already ≥ the ~7.5 we'd have floored to.
+        expect(rateMoveDoubles(moves.MOVE_FAKE_OUT)).toBeGreaterThanOrEqual(7.5);
+    });
+
+    test('Taunt gets a doubles floor above its singles base (gates setup/speed control)', () => {
+        const taunt = { id: 'MOVE_TAUNT', power: 0 };
+        expect(rateMoveDoubles(taunt)).toBeGreaterThanOrEqual(6.5);
+        expect(rateMoveDoubles(taunt)).toBeGreaterThan(rateMove(taunt)); // singles base (~5) unchanged
+    });
+
+    test('spread speed control (Icy Wind) is floored as doubles support, not scored as weak damage', () => {
+        const icyWind = { ...moves.MOVE_STRENGTH, id: 'MOVE_ICY_WIND', power: 55, target: 'MOVE_TARGET_BOTH' };
+        expect(rateMoveDoubles(icyWind)).toBeGreaterThanOrEqual(6);
+        expect(rateMoveDoubles(icyWind)).toBeGreaterThan(rateMove(icyWind));
+    });
+
+    test('Perish Song gets a modest doubles floor', () => {
+        const perish = { id: 'MOVE_PERISH_SONG', power: 0 };
+        expect(rateMoveDoubles(perish)).toBeGreaterThanOrEqual(5.5);
+    });
+});
