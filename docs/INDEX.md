@@ -12,6 +12,7 @@ Entry point to all project documentation. **A document not listed here does not 
 ## Decisions (ADRs)
 
 <!-- One line per ADR, newest first. -->
+- [ADR-015](adr/ADR-015-dual-singles-doubles-rating.md) — doubles is a second, parallel rating dimension computed alongside singles (`ratingDoubles`/`contextualRatingsDoubles`, sibling `*Doubles` fns reusing `tierFromRating`), never replacing it; computed + surfaced in Group 2A, consumed by the new engine in 2C (T-093, T-083)
 - [ADR-014](adr/ADR-014-battle-format-representation.md) — battle format (singles/doubles/mixed + League Run & Bun) is a run-level config echoed into the bundle and stamped as a per-trainer `battleType`; the randomizer decides, the maker obeys; Run & Bun uses duplicate committed E4 trainer IDs, no battle-engine patch (T-084, T-083)
 - [ADR-013](adr/ADR-013-bps-patch-delivery-client-side.md) — delivery switches to a server-generated BPS patched client-side against a ROM held in the browser's IndexedDB; server never stores/serves a full ROM (supersedes ADR-008)
 - [ADR-012](adr/ADR-012-upstream-bugfix-cherry-pick-sync.md) — upstream is absorbed as bugfixes only, cherry-picked per version (no feature merges, sensitive randomizer files excluded); the ledger is the SSOT for the bugfix frontier
