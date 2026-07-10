@@ -8,6 +8,7 @@ EverGrandeCity_SidneysRoom_MapScripts::
 EverGrandeCity_SidneysRoom_OnTransition:
 	setflag FLAG_MET_SCOTT_IN_EVERGRANDE
 	setflag FLAG_HIDE_EVER_GRANDE_POKEMON_CENTER_1F_SCOTT
+	call_if_unset FLAG_DEFEATED_ELITE_4_SIDNEY, EverGrandeCity_SidneysRoom_EventScript_InitRunAndBun
 	end
 
 EverGrandeCity_SidneysRoom_OnLoad:
@@ -48,9 +49,25 @@ EverGrandeCity_SidneysRoom_EventScript_Sidney::
 	goto_if_set FLAG_DEFEATED_ELITE_4_SIDNEY, EverGrandeCity_SidneysRoom_EventScript_PostBattleSpeech
 	playbgm MUS_ENCOUNTER_ELITE_FOUR, FALSE
 	msgbox EverGrandeCity_SidneysRoom_Text_IntroSpeech, MSGBOX_DEFAULT
+	call PokemonLeague_EliteFour_EventScript_ChooseBattleStyle
+	goto_if_eq VAR_RESULT, 1, EverGrandeCity_SidneysRoom_EventScript_SidneyDoubles
 	trainerbattle_no_intro TRAINER_SIDNEY, EverGrandeCity_SidneysRoom_Text_Defeat
 	goto EverGrandeCity_SidneysRoom_EventScript_Defeated
 	end
+
+EverGrandeCity_SidneysRoom_EventScript_SidneyDoubles::
+	trainerbattle_no_intro TRAINER_SIDNEY_DOUBLES, EverGrandeCity_SidneysRoom_Text_Defeat
+	goto EverGrandeCity_SidneysRoom_EventScript_Defeated
+	end
+
+@ T-090/T-091 — League Run & Bun quotas, initialised once at the start of the gauntlet (Sidney's room
+@ is the entry). Values below are the committed defaults (mode 0 = Run & Bun OFF, so ChooseBattleStyle
+@ never prompts); the ROM maker overwrites them per bundle (T-091).
+EverGrandeCity_SidneysRoom_EventScript_InitRunAndBun::
+	setvar VAR_RUNANDBUN_MODE, 0
+	setvar VAR_RUNANDBUN_SINGLES_LEFT, 4
+	setvar VAR_RUNANDBUN_DOUBLES_LEFT, 0
+	return
 
 EverGrandeCity_SidneysRoom_EventScript_PostBattleSpeech::
 	msgbox EverGrandeCity_SidneysRoom_Text_PostBattleSpeech, MSGBOX_DEFAULT
