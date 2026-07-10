@@ -22,15 +22,30 @@ This replaces the `presets.js` `SPLITS`/slot machinery and the per-slot POKEDEFs
 
 ## Plan
 
-- Define the per-trainer preference format (types, weather/terrain bias, archetype bias, role hints)
-  and a candidate-team scoring function combining archetype-fit + rating + preferences, weighted by
-  sophistication (low soph → near-random fill; high soph → strong archetype pull).
-- Port the existing weather-grunt intent (`trainers.js:177-247` factories) into preferences: the
-  setter+abuser combo is preferred, with a graceful non-weather fallback.
-- Migrate trainer definitions from slot tables to preference declarations.
-- Keep degradation graceful: an impossible preference reduces fit score, never crashes or forces.
-- Tests: high-sophistication teams score high archetype-fit; low-sophistication teams are looser;
-  a trainer whose preferred weather is impossible still builds a legal, reasonable team.
+The per-team generation algorithm (owner-validated 2026-07-10 — see `docs/research/rating-decisions.md`):
+
+1. **Optional seed / initial direction.** A trainer may carry a soft lean (archetype and/or gimmick
+   preference — e.g. Aqua grunt → offensive + light weather) or **none** (pure random). Whether a seed
+   is present, and how strong, scales with the sophistication scalar (T-105): early game often has no
+   direction; endgame usually does.
+2. **Stochastic slot-fill.** Randomize picks (respecting rating/type/legality + the retained fixed
+   points), so a team accretes organically instead of filling fixed positional slots.
+3. **Emergent crystallization.** After picks, read the partial team against the archetype models
+   (T-101/T-102 entry conditions) and detect whether it has "fallen into" an archetype and/or gimmick —
+   the seeded one **or a new emergent one** (e.g. two picks make a weather gimmick viable). Once a
+   candidate crystallizes (confidence gated by sophistication), commit to it and bias later picks.
+4. **Completion.** Fill remaining slots toward the crystallized identity's preferred roles — still
+   soft: an impossible preference lowers fit, never forces (graceful degradation).
+5. **Identity-aware refinement pass.** Knowing the finished team's archetype+gimmick, review it and
+   nudge members/moves/items/abilities toward that "vision." The **strength of this pass is the
+   sophistication scalar** (early = little/none → "a pile of mons"; endgame = strong → coherent
+   competitive team). A residual randomness + a refinement cap keep endgame teams from homogenising.
+
+- Gimmicks are a **weighted layer** that can stack (Batch-3 decision), not fixed slots.
+- Port the weather-grunt intent (`trainers.js:177-247`) into this model: setter+abuser is a preferred
+  (crystallizing) weather gimmick with a graceful non-weather fallback.
+- Migrate trainer definitions from slot tables to (optional) preference declarations.
+- Determinism (per-slot reseed) and cost (<2s test budget, per-ROM build) hold across all phases.
 
 > **Meta-analysis validation (owner-gated).** Every Pokémon-meta conclusion in this task — the
 > competitive value of a move / ability / item / tier / archetype, or a "what trainers prefer" rule —
