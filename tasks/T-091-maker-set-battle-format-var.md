@@ -1,7 +1,7 @@
 ---
 id: T-091
 title: Maker sets the battle-format / Run & Bun VAR at build time and wires new bundle fields
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-09
 updated: 2026-07-09
@@ -32,16 +32,29 @@ The maker reads the bundle and obeys: it must preset the in-game mode + Run & Bu
   singles/doubles/mixed-without-Run&Bun set the gate to "no prompt".
 
 Acceptance criteria:
-- [ ] Build-time VAR presets match the config (mode gate + E4 quotas) for 50/60/90/100% examples.
-- [ ] Plain singles/doubles/mixed set the mode gate so no E4 prompt occurs.
-- [ ] New mutated map files are restored correctly by `analyze.js`.
-- [ ] `cd randomizer && npm test` green.
+- [x] Build-time VAR presets match the config (mode gate + E4 quotas) for 50/60/90/100% examples.
+- [x] Plain singles/doubles/mixed set the mode gate so no E4 prompt occurs.
+- [x] New mutated map file is restored correctly (`restore()` checks out `data/maps/`, which includes
+      Sidney's `scripts.inc`; `analyze.js` restores the same tree).
+- [x] `cd randomizer && npm test` green.
 
 ## Progress log
 
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-09** — Task created.
+- **2026-07-10** — Implemented on `feature/T-091-maker-runandbun-vars` (TDD). New
+  `randomizer/runAndBunWriter.js` (mirrors `moneyWriter`/`itemPriceWriter`): pure
+  `patchRunAndBunInContent(content, config)` substitutes the three `setvar` values in Sidney's
+  `..._EventScript_InitRunAndBun` — `VAR_RUNANDBUN_MODE` = 1 only for `mixed` + `leagueRunAndBun` else
+  0, and the singles/doubles quotas from `runAndBunE4Split` (moved into `battleFormat.js` as the CJS
+  SSOT for the clamp-1–3 formula, mirroring the frontend copy). `writeRunAndBunVars(config)` reads
+  Sidney's `scripts.inc`, patches, writes; `make.js buildOneRom` calls it next to `writeMoney`/
+  `writeItemPrices`. Restore is covered (`restore()` → `git checkout data/maps/`). Tests:
+  `runAndBunWriter.test.js` (5 cases) + a `runAndBunE4Split` case in `battleFormat.test.js`. Full suite
+  green (805 pass / 1 skip; +6). Kept `in-progress` for the T-092 checkpoint (ingame VAR read validated
+  with a Run & Bun ROM on the builder/PRO). Merged to master. **Group 1 is now code-complete
+  (T-084…T-091).**
 
 ## Outcome
 

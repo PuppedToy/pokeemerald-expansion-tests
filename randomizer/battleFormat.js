@@ -52,6 +52,18 @@ function isEligible(trainer) {
     return !EXCLUDED_IDS.has(trainer.id) && (trainer.teamSize ?? 0) >= MIN_DOUBLE_TEAM_SIZE;
 }
 
+/**
+ * ADR-014 — the ingame Run & Bun Elite Four split: round(%singles × 4) clamped to 1–3, so the player
+ * is always offered at least one singles and one doubles E4 fight. Mirrors the frontend's
+ * runAndBunE4Split (config-form.js); both are guarded by tests against the ADR.
+ */
+function runAndBunE4Split(singlesPercent) {
+    const total = 4;
+    const pct = Number.isFinite(Number(singlesPercent)) ? Number(singlesPercent) : 60;
+    const singles = Math.max(1, Math.min(total - 1, Math.round((pct / 100) * total)));
+    return { singles, doubles: total - singles };
+}
+
 /** Deterministic Fisher–Yates shuffle using the injected random fn. Does not mutate the input. */
 function shuffled(arr, rand) {
     const a = arr.slice();
@@ -141,6 +153,6 @@ function assignBattleTypes(trainers, config = {}) {
 }
 
 module.exports = {
-    assignBattleTypes, poolOf, isEligible,
+    assignBattleTypes, poolOf, isEligible, runAndBunE4Split,
     CHAMPION_ID, E4_IDS, E4_DOUBLES_IDS, GYM_BOSS_IDS, EXCLUDED_IDS, TATE_AND_LIZA_ID, MIN_DOUBLE_TEAM_SIZE,
 };

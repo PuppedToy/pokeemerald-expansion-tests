@@ -5,7 +5,7 @@
 // run seed, so it never perturbs the global rng stream.
 
 const {
-    assignBattleTypes, poolOf, isEligible, TATE_AND_LIZA_ID,
+    assignBattleTypes, poolOf, isEligible, TATE_AND_LIZA_ID, runAndBunE4Split,
 } = require('../../battleFormat');
 
 const T = (id, isBoss, teamSize = 6) => ({ id, isBoss, teamSize });
@@ -100,6 +100,17 @@ describe('assignBattleTypes — mixed proportions', () => {
         const r2 = assignBattleTypes(roster, { battleFormat: 'mixed', singlesPercent: 50, seed: 99 }).assignments;
         for (const t of roster) expect(r1.get(t.id)).toBe(r2.get(t.id));
         expect(r1.get('TRAINER_SOLO')).toBe('singles');
+    });
+});
+
+describe('runAndBunE4Split (ADR-014 clamp 1–3)', () => {
+    test('rounds %singles×4 and clamps to 1–3 (always one of each), matching the frontend', () => {
+        expect(runAndBunE4Split(50)).toEqual({ singles: 2, doubles: 2 });
+        expect(runAndBunE4Split(60)).toEqual({ singles: 2, doubles: 2 });
+        expect(runAndBunE4Split(90)).toEqual({ singles: 3, doubles: 1 });
+        expect(runAndBunE4Split(100)).toEqual({ singles: 3, doubles: 1 });
+        expect(runAndBunE4Split(0)).toEqual({ singles: 1, doubles: 3 });
+        expect(runAndBunE4Split(75)).toEqual({ singles: 3, doubles: 1 });
     });
 });
 
