@@ -1,0 +1,115 @@
+{
+  "format": "doubles",
+  "_doc": "Doubles teambuilding archetype model (T-102). Same shape as singles.json: ONE base archetype (balanced|offensive|defensive) + a weighted, STACKABLE gimmick layer (Batch-3 owner decision — multi-gimmick teams are normal, e.g. weather+trapping or Tailwind+Trick Room). Tuned for our 6v6 doubles (Smogon DOU), NOT VGC 4v4 — see docs/research/6v6-vs-4v4-doubles.md + rating-decisions.md. The 2C engine reads `entry` for emergent crystallization and `structure` as soft preferences. PROVISIONAL per the meta-analysis validation clause.",
+  "featureDefinitions": {
+    "intimidateUser": "Intimidate (or Snarl/Fake Tears offensive stat-drop) support that blunts the foes",
+    "fakeOutUser": "Fake Out user (turn-1 flinch, buys a setup/positioning turn)",
+    "spreadAttacker": "carries spread damage (Rock Slide / Heat Wave / Blizzard / Muddy Water / Earthquake)",
+    "redirector": "Follow Me / Rage Powder, or a redirection ability (Lightning Rod / Storm Drain)",
+    "wideGuardUser": "Wide Guard / Quick Guard support vs spread / priority",
+    "tailwindSetter": "sets Tailwind (fast-mode speed control)",
+    "trickRoomSetter": "sets Trick Room (slow-mode speed control)",
+    "trickRoomAbuser": "slow, high-offense mon that benefits from Trick Room",
+    "choiceScarfRevengeKiller": "Choice Scarf revenge-killer / speed control (a DOU staple)",
+    "regeneratorPivot": "bulky Regenerator pivot (premium in 6v6 — heal-on-switch scales with game length)",
+    "pivotUser": "U-turn / Volt Switch / Flip Turn pivot (re-applies Intimidate, builds momentum)",
+    "weatherSetter": "sets weather via ability (Drizzle/Drought/Sand Stream/Snow Warning) or move",
+    "weatherAbuser": "Swift Swim / Chlorophyll / Sand Rush / Slush Rush, or a weather-boosted spread nuke",
+    "trapper": "Shadow Tag / Arena Trap / Magnet Pull (remove-the-counter — allowed gimmick, Batch-3)",
+    "perishSongUser": "Perish Song (pairs with a trapper for Perish Trap)",
+    "screenSetter": "Reflect / Light Screen / Aurora Veil",
+    "setupSweeper": "boosts then sweeps (Belly Drum / Dragon Dance / Geomancy / Swords Dance / Tail Glow)",
+    "winCondition": "the team's late-game closer (setup sweeper or a weather/TR-boosted nuke)",
+    "hazardSetter": "sets Stealth Rock / Spikes (meaningful in 6v6, light — NOT dead as in 4v4 VGC)"
+  },
+  "baseArchetypes": [
+    {
+      "id": "bulky_offense", "name": "Bulky Offense (Intimidate/Fake Out core)", "category": "offensive",
+      "description": "The default doubles framework: an Intimidate + Fake Out support core blunts the opponent to open a safe turn for a setup sweeper or spread attackers, with Tailwind (or a Trick Room backup) as speed control. Offensively slanted but carries real bulk and a clear win condition.",
+      "entry": [{ "feature": "intimidateUser", "min": 1 }, { "feature": "fakeOutUser", "min": 1 }],
+      "structure": [
+        { "role": "intimidateUser", "min": 1, "max": 2, "weight": 1.0 },
+        { "role": "fakeOutUser", "min": 1, "max": 1, "weight": 0.8 },
+        { "role": "spreadAttacker", "min": 1, "max": 2, "weight": 0.9 },
+        { "role": "tailwindSetter", "min": 1, "max": 1, "weight": 0.7 },
+        { "role": "winCondition", "min": 1, "max": 1, "weight": 0.9 }
+      ]
+    },
+    {
+      "id": "balance_dual_mode", "name": "Balance / Dual-Mode Goodstuffs", "category": "balanced",
+      "description": "Flexible matchup-adaptive team of strong mons carrying two win conditions and two speed-control modes (fast Tailwind/terrain + slow Trick Room) over a bulky Intimidate/redirection backbone; the pilot commits to the mode that beats the opponent.",
+      "entry": [{ "feature": "tailwindSetter", "min": 1 }, { "feature": "trickRoomSetter", "min": 1 }],
+      "structure": [
+        { "role": "intimidateUser", "min": 1, "max": 1, "weight": 0.7 },
+        { "role": "tailwindSetter", "min": 1, "max": 1, "weight": 0.8 },
+        { "role": "trickRoomSetter", "min": 1, "max": 1, "weight": 0.8 },
+        { "role": "regeneratorPivot", "min": 0, "max": 1, "weight": 0.6 },
+        { "role": "winCondition", "min": 1, "max": 2, "weight": 1.0 }
+      ]
+    },
+    {
+      "id": "hyper_offense", "name": "Hyper Offense / Goodstuffs", "category": "offensive",
+      "description": "All-out damage race with minimal defense (the 'no Protect' builds): a fast spread lead pair, or Fake Out + Follow Me guaranteeing a setup sweeper's turn, backed by a priority win button and Tailwind so it KOs faster than the opponent can stabilise.",
+      "entry": [{ "feature": "spreadAttacker", "min": 2 }, { "feature": "tailwindSetter", "min": 1 }],
+      "structure": [
+        { "role": "spreadAttacker", "min": 2, "max": 3, "weight": 1.0 },
+        { "role": "fakeOutUser", "min": 0, "max": 1, "weight": 0.6 },
+        { "role": "tailwindSetter", "min": 1, "max": 1, "weight": 0.8 },
+        { "role": "winCondition", "min": 1, "max": 2, "weight": 1.0 }
+      ]
+    }
+  ],
+  "gimmicks": [
+    {
+      "id": "weather", "name": "Weather Offense (Sun/Rain/Sand/Snow)",
+      "description": "A weather setter powers its own side and cripples the opponent's (Swift Swim/Chlorophyll Speed, boosted nukes); support shields the fragile setter, and a weather-independent backup covers weather wars. Duration rocks + weather-Speed matter in 6v6.",
+      "subtypes": ["sun", "rain", "sand", "snow"],
+      "entry": [{ "feature": "weatherSetter", "min": 1 }],
+      "structure": [
+        { "role": "weatherSetter", "min": 1, "max": 1, "weight": 1.0 },
+        { "role": "weatherAbuser", "min": 1, "max": 2, "weight": 1.0 },
+        { "role": "redirector", "min": 0, "max": 1, "weight": 0.5 },
+        { "role": "winCondition", "min": 0, "max": 1, "weight": 0.6 }
+      ]
+    },
+    {
+      "id": "trick_room", "name": "Trick Room",
+      "description": "Inverts the speed order so slow, high-power attackers move first. Runs one or (for reliability) two Trick Room setters + slow abusers, with redirection/protection to survive the setup turn; strong builds keep a Tailwind fallback.",
+      "entry": [{ "feature": "trickRoomSetter", "min": 1 }, { "feature": "trickRoomAbuser", "min": 1 }],
+      "structure": [
+        { "role": "trickRoomSetter", "min": 1, "max": 2, "weight": 1.0 },
+        { "role": "trickRoomAbuser", "min": 2, "max": 3, "weight": 1.0 },
+        { "role": "redirector", "min": 0, "max": 1, "weight": 0.5 }
+      ]
+    },
+    {
+      "id": "redirection", "name": "Redirection Support Offense",
+      "description": "A support mon soaks attacks off a fragile win condition (Follow Me / Rage Powder or Lightning Rod / Storm Drain), buying free turns for a setup sweeper or glass-cannon nuke; chip/paralysis softens targets.",
+      "entry": [{ "feature": "redirector", "min": 1 }, { "feature": "winCondition", "min": 1 }],
+      "structure": [
+        { "role": "redirector", "min": 1, "max": 1, "weight": 1.0 },
+        { "role": "winCondition", "min": 1, "max": 2, "weight": 1.0 }
+      ]
+    },
+    {
+      "id": "trapping", "name": "Perish Trap / Trapping Control",
+      "description": "A control gimmick (ALLOWED per Batch-3): a Shadow Tag trapper locks a key foe in place while double Perish Song — or trapping + Encore/Taunt/Intimidate — grinds it down; Substitute/Protect stall the Perish count.",
+      "entry": [{ "feature": "trapper", "min": 1 }],
+      "structure": [
+        { "role": "trapper", "min": 1, "max": 1, "weight": 1.0 },
+        { "role": "perishSongUser", "min": 0, "max": 1, "weight": 0.7 },
+        { "role": "fakeOutUser", "min": 0, "max": 1, "weight": 0.4 }
+      ]
+    },
+    {
+      "id": "screens_tailwind", "name": "Screens & Tailwind / Field Control",
+      "description": "Temporary field advantage rather than raw damage: Aurora Veil / screens blunt hits so setup sweepers boost safely, while Tailwind flips the speed war; a priority/Taunt disruptor protects the setup turns.",
+      "entry": [{ "feature": "screenSetter", "min": 1 }],
+      "structure": [
+        { "role": "screenSetter", "min": 1, "max": 1, "weight": 1.0 },
+        { "role": "setupSweeper", "min": 1, "max": 3, "weight": 1.0 },
+        { "role": "tailwindSetter", "min": 0, "max": 1, "weight": 0.6 }
+      ]
+    }
+  ]
+}

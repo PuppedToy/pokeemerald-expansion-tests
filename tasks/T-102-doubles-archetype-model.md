@@ -1,10 +1,10 @@
 ---
 id: T-102
 title: Doubles archetype model — JSON of archetypes (weather, TR, redirection, ability-swap…)
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-10
 target-version: 0.8.0
 links: [T-083, T-098, T-100]
 blocked-by: [T-100]
@@ -32,17 +32,25 @@ plays, terrain), and balanced/offensive/defensive still apply with different str
 > provisional until the owner validates it.
 
 Acceptance criteria:
-- [ ] `doubles.json` archetype set covering balanced/offensive/defensive + doubles gimmicks, with
-      entry conditions and structure for each.
-- [ ] A schema + validation test guards the file (shared with T-101 where possible).
-- [ ] Content grounded in the VGC research with sources noted.
-- [ ] `cd randomizer && npm test` green.
+- [x] `doubles.json` archetype set (base offensive/balanced + doubles gimmicks) with entry conditions
+      and structure for each. *(No pure-defensive base — see the flag below; owner to confirm.)*
+- [x] A schema + validation test guards the file (shared loader `randomizer/archetypes.js` + test).
+- [x] Content grounded in the 6v6 DOU research (`docs/research/team-archetypes.md`, 6v6-adjusted).
+- [x] `cd randomizer && npm test` green.
 
 ## Progress log
 
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-09** — Task created.
+- **2026-07-10** — Built `randomizer/data/archetypes/doubles.json` (v1), sharing the T-101 schema +
+  loader: 3 base archetypes (Bulky Offense [Intimidate/Fake Out] · Balance/Dual-Mode · Hyper Offense)
+  + a stackable gimmick layer (weather · trick_room · redirection · trapping · screens_tailwind), tuned
+  for our **6v6** (not 4v4 VGC). Suite 844 pass. **Provisional** per the meta-analysis clause.
+  **Owner-validation flag:** the DOU research surfaced no pure *defensive/stall* base archetype for
+  doubles (6v6 DOU is offensive/balanced-leaning); doubles currently has base categories
+  offensive + balanced only. Confirm whether our game wants a defensive doubles base or that's fine.
+  Kept `in-progress`.
 
 ## Outcome
 
