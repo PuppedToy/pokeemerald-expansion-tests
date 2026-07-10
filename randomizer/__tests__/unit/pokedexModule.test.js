@@ -77,6 +77,7 @@ jest.mock('../../rating', () => ({
     })),
     rateContextual: jest.fn(() => ({ absoluteRating: 4.0, tier: 'PU' })),
     rateMove: jest.fn(() => 3.0),
+    rateMoveDoubles: jest.fn(() => 3.5),   // T-094/ADR-015
 }));
 
 jest.mock('../../rebalancer', () => ({
