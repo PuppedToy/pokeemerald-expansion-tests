@@ -35,11 +35,12 @@ Write **ADR-016** deciding the architecture:
   Sophistication (T-105) modulates seed probability, crystallization confidence, and refinement
   strength (early = loose/random pile; endgame = tight competitive team). Gimmicks are a weighted,
   stackable layer, not fixed slots.
-- **Backwards generation (continuity only):** build the **latest/strongest appearance first and
-  unconstrained** (the Champion has prevalence and owns the ID'd mons); **earlier** appearances reuse
-  those mons **devolved** and bear the continuity restriction (it matters less that an early team is
-  strong — e.g. Champion Steven → devolved Granite Cave `TRAINER_STEVEN`). Applies **only to
-  ID-locked/continuity mons**; non-continuity trainers build forward at their local sophistication.
+- **Reverse-order generation:** generate **all trainers last→first (Champion first, Route 103 last)**
+  so a recurring character's final, well-built teams exist before its earlier appearances are built
+  (today's engine runs first→last and lets an early random pick drive the late team). The per-team
+  build is identical regardless of order. **Recurring characters** (rival, Steven) reuse their final
+  roster at each earlier appearance, each mon at the **most-evolved form its level allows** (Champion
+  Steven → earlier evo stages at Granite Cave); non-recurring trainers are unaffected by the order.
 - **Fixed points retained:** ID-locked mons, at-most-one-mega, family dedup, exemptions, determinism
   (per-slot reseed), and the battle-type stamping from Group 1.
 - **Single resolver:** one shared selection module (kills the writer/writerDocs drift).

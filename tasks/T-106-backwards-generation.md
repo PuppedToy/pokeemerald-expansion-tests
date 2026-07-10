@@ -19,31 +19,34 @@ devolving mons, so a rival's/boss's identity is consistent across the game. The 
 `TRAINER_REPEAT_ID` / `evolutionTier` / `devolveToBase` machinery (`modules/utils.js`,
 `trainerSelector.js`) is the raw material to generalize.
 
-**Why endgame-first (owner, 2026-07-10):** for a character that appears multiple times sharing ID'd
-Pokémon — the clearest case is **Steven**: Champion (endgame) and Granite Cave `TRAINER_STEVEN`
-(early) — we build the **latest/strongest appearance first and unconstrained** (the Champion "owns"
-the ideal team and has **prevalence** in deckbuilding). The **earlier** appearance (Granite Cave) then
-reuses those ID'd mons **devolved** to its level cap. The earlier appearance **bears the continuity
-restriction** precisely because it matters less that an early team is strong — so the constraint falls
-on it, not on the endgame team. Backwards generation + devolution applies **only to ID-locked /
-continuity mons**; every non-continuity trainer is built forward at its own local sophistication (so
-early route teams stay loose/random — that is not a devolved endgame team).
+**Why last→first order (owner, 2026-07-10):** the whole trainer set is generated in **reverse game
+order — the last trainer (Champion) first, the first trainer (Route 103) last**. A team is **not**
+built backwards internally; the per-team build (T-107) is always the same. The reverse *order* exists
+so that a **recurring character's final, well-built teams are already decided before we build their
+earlier appearances.** Today the engine runs the other way (Route 103 → Champion): it drops a random
+mon on the Route 103 rival and evolves it forward, so an early random pick drives the late team. We
+invert that — build the Champion / final rival teams first (well-built), so when we reach the Route
+103 rival the roster is already known and the early appearance simply uses **the most-evolved form
+each of those final mons is allowed at that level** (base forms early, fully evolved late). Example:
+Champion Steven's aces → their earlier evo stages at Granite Cave `TRAINER_STEVEN`. It is better that
+the *early* appearance carries this constraint, since it matters less that an early team is strong.
 
 ## Plan
 
-- Generate in **latest→earliest** order for continuity characters: build the Champion (and any
-  final/strongest appearance) first and unconstrained; it owns the ideal team and the ID'd mons.
-- **Devolution step:** for each earlier appearance of a continuity mon, walk it back down its
-  evolutionary line to fit that appearance's level cap — the earlier appearance carries the
-  restriction (e.g. Champion Steven's ace → its devolved form at Granite Cave `TRAINER_STEVEN`).
-- Backwards/devolution is scoped to **ID-locked / continuity mons only**; non-continuity trainers are
-  built forward via the per-team algorithm (T-107) at their local sophistication (T-105) — early teams
-  stay loose, they are not devolved endgame teams.
+- Generate **all trainers in reverse game order (last → first)**. The per-team build (T-107) is
+  identical regardless of position; only the *order* changes.
+- For **recurring characters** (rival May/Brendan, Steven), the latest/strongest appearance is built
+  first and owns the roster. Each **earlier appearance reuses that same roster**, showing each mon at
+  the **most-evolved form its level cap allows** (earlier evo stages early on) — a coherent earlier
+  snapshot of the final team, not a fresh random team. (Generalizes today's `TRAINER_REPEAT_ID` /
+  `evolutionTier` / `devolveToBase`.)
+- **Non-recurring trainers** are built independently in that same order at their local sophistication
+  (T-105); the order does not change their result — only recurring-character continuity depends on it.
 - Preserve determinism (per-slot reseed) so shared-trainer ROMs and docs still match.
-- Keep at-most-one-mega and family-dedup invariants during backwards derivation.
-- Tests: an ID-locked line devolves consistently across appearances (Champion Steven ↔ Granite Cave
-  Steven); the endgame appearance is the unconstrained/strong one; endgame teams generate at full
-  sophistication; determinism holds across shared ROMs.
+- Keep at-most-one-mega and family-dedup invariants.
+- Tests: a recurring line is consistent across appearances at level-appropriate evo stages (Champion
+  Steven ↔ Granite Cave Steven); the latest appearance is the authoritative/strong one; determinism
+  holds across shared ROMs.
 
 Acceptance criteria:
 - [ ] Generation runs endgame→early; continuity mons devolve consistently per appearance.
