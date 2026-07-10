@@ -39,6 +39,12 @@ Write **ADR-016** deciding the architecture:
 - **Teardown plan:** what of `trainers.js`/`presets.js`/`trainerSelector.js`/`trainerFallback.js`
   survives, what is deleted, and the migration/verification strategy (how we prove singles ≥ baseline).
 
+> **Meta-analysis validation (owner-gated).** Every Pokémon-meta conclusion in this task — the
+> competitive value of a move / ability / item / tier / archetype, or a "what trainers prefer" rule —
+> must be **explicitly validated by the owner before it is implemented**, not merely derived from the
+> research corpus (which is partly 4v4 VGC, whereas our doubles are 6v6). Any such value/mapping is
+> provisional until the owner validates it.
+
 Acceptance criteria:
 - [ ] `docs/adr/ADR-016.md` written (accepted), added to `docs/INDEX.md`.
 - [ ] The preference model, sophistication scalar, backwards generation, and retained fixed points

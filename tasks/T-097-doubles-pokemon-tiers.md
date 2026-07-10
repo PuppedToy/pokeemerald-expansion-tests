@@ -29,6 +29,12 @@ per-level-cap `contextualRatings` pattern (`pokedexModule.js:300-313`) can be mi
 - Tests: mons that gain in doubles (spread abusers, redirectors, TR-friendly slow bulky mons) tier
   up in doubles vs singles; singles tiers unchanged.
 
+> **Meta-analysis validation (owner-gated).** Every Pokémon-meta conclusion in this task — the
+> competitive value of a move / ability / item / tier / archetype, or a "what trainers prefer" rule —
+> must be **explicitly validated by the owner before it is implemented**, not merely derived from the
+> research corpus (which is partly 4v4 VGC, whereas our doubles are 6v6). Any such value/mapping is
+> provisional until the owner validates it.
+
 Acceptance criteria:
 - [ ] Every mon carries a doubles rating + tier + `contextualRatingsDoubles`.
 - [ ] Doubles-favoured mons tier higher in doubles than singles (tested examples).

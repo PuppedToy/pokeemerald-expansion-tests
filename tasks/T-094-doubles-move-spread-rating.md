@@ -31,6 +31,12 @@ few lose it. `move.target` is already present in the parsed data (`MOVE_TARGET_B
 - Tests: spread moves rank above equivalent single-target moves in doubles; single-target and
   status moves unaffected in spread logic; singles ratings unchanged.
 
+> **Meta-analysis validation (owner-gated).** Every Pokémon-meta conclusion in this task — the
+> competitive value of a move / ability / item / tier / archetype, or a "what trainers prefer" rule —
+> must be **explicitly validated by the owner before it is implemented**, not merely derived from the
+> research corpus (which is partly 4v4 VGC, whereas our doubles are 6v6). Any such value/mapping is
+> provisional until the owner validates it.
+
 Acceptance criteria:
 - [x] `rateMoveDoubles` gives spread moves a net bonus (damage-reduction aware); `moves[id].ratingDoubles` persisted.
 - [x] Gen-conditional/`DEPENDS` targets are normalized correctly (via `isSpreadMove` `.includes`).

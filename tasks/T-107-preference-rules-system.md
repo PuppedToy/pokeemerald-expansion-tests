@@ -32,6 +32,12 @@ This replaces the `presets.js` `SPLITS`/slot machinery and the per-slot POKEDEFs
 - Tests: high-sophistication teams score high archetype-fit; low-sophistication teams are looser;
   a trainer whose preferred weather is impossible still builds a legal, reasonable team.
 
+> **Meta-analysis validation (owner-gated).** Every Pokémon-meta conclusion in this task — the
+> competitive value of a move / ability / item / tier / archetype, or a "what trainers prefer" rule —
+> must be **explicitly validated by the owner before it is implemented**, not merely derived from the
+> research corpus (which is partly 4v4 VGC, whereas our doubles are 6v6). Any such value/mapping is
+> provisional until the owner validates it.
+
 Acceptance criteria:
 - [ ] Trainers are defined by preferences, not fixed slots; candidate teams scored by archetype-fit.
 - [ ] Sophistication modulates how strongly archetype fit is pursued (tested at both ends).

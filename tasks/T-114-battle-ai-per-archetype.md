@@ -25,6 +25,12 @@ support should be used sensibly). Placeholder so the idea is tracked, not lost.
   expansion's AI supports the needed behaviours.
 - Scope a concrete task then (this one may be split/superseded).
 
+> **Meta-analysis validation (owner-gated).** Every Pokémon-meta conclusion in this task — the
+> competitive value of a move / ability / item / tier / archetype, or a "what trainers prefer" rule —
+> must be **explicitly validated by the owner before it is implemented**, not merely derived from the
+> research corpus (which is partly 4v4 VGC, whereas our doubles are 6v6). Any such value/mapping is
+> provisional until the owner validates it.
+
 Acceptance criteria:
 - [ ] Decision recorded on whether/how to tune AI per archetype/format.
 - [ ] If pursued, AI flags assigned per team plan and verified in CI/builder battle tests.

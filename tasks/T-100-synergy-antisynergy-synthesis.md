@@ -28,6 +28,12 @@ This is the bridge from research to concrete rating/teambuilding changes.
 - Hand actionable gaps to T-095 (moves), T-096 (abilities), and the archetype models (T-101/T-102).
 - Where a gap is clearly a singles rating bug/omission, file a task/bug rather than silently fixing.
 
+> **Meta-analysis validation (owner-gated).** Every Pokémon-meta conclusion in this task — the
+> competitive value of a move / ability / item / tier / archetype, or a "what trainers prefer" rule —
+> must be **explicitly validated by the owner before it is implemented**, not merely derived from the
+> research corpus (which is partly 4v4 VGC, whereas our doubles are 6v6). Any such value/mapping is
+> provisional until the owner validates it.
+
 Acceptance criteria:
 - [x] A structured synergy/anti-synergy catalog exists (24 synergies + 21 anti-synergies), indexed in `docs/INDEX.md`.
 - [x] A gap report vs. the current combo logic is produced (`docs/research/rating-gaps.md`, 17 findings) linked to the consuming tasks.
