@@ -3454,7 +3454,7 @@ function isSpreadMove(move) {
 }
 
 // T-095/ADR-015 — moves near-worthless in singles but pivotal in doubles: a doubles-specific floor.
-// These initial values are refined against the historic-team research in Group 2B.
+// Refined against the Group 2B research + owner-validated Batch-2 gaps (see docs/research/rating-decisions.md).
 const DOUBLES_SUPPORT_RATINGS = {
     MOVE_FOLLOW_ME: 7, MOVE_RAGE_POWDER: 7,                                        // redirection
     MOVE_HELPING_HAND: 6, MOVE_AFTER_YOU: 5, MOVE_COACHING: 4.5, MOVE_DECORATE: 6, // ally buffs
@@ -3462,6 +3462,13 @@ const DOUBLES_SUPPORT_RATINGS = {
     MOVE_TRICK_ROOM: 7, MOVE_TAILWIND: 7.5,                                        // speed control (archetype-defining)
     MOVE_PROTECT: 5.5, MOVE_DETECT: 5.5, MOVE_SPIKY_SHIELD: 5.5,                    // self-protection (scout + stall for ally)
     MOVE_KINGS_SHIELD: 5.5, MOVE_BANEFUL_BUNKER: 5.5, MOVE_SILK_TRAP: 5.5,
+    // Batch-2 (T-100 rating-gaps, owner-validated 2026-07-10) — doubles-only floors.
+    // (Fake Out was in the gap list but rateMove already scores it ~8.86 via the first-turn bonus, so
+    //  no floor is needed — verified, see docs/research/rating-decisions.md.)
+    MOVE_TAUNT: 6.5,                                                               // gates setup/speed-control/redirection (doubles floor only; singles base unchanged)
+    MOVE_SNARL: 6, MOVE_FAKE_TEARS: 6, MOVE_STRUGGLE_BUG: 5.5,                      // spread offensive stat-drop = doubles support, not a penalty
+    MOVE_ICY_WIND: 6, MOVE_ELECTROWEB: 5.5, MOVE_BULLDOZE: 5,                       // spread speed control
+    MOVE_PERISH_SONG: 5.5,                                                         // wincon vs bulk (trapping combo deferred: Shadow Tag decision open)
 };
 
 // Doubles value of a move: the singles rating plus a spread bonus for damaging moves that hit both

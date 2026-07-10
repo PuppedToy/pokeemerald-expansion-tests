@@ -53,6 +53,12 @@ Acceptance criteria:
   Baneful Bunker/Silk Trap=5.5). Singles `rateMove` untouched (`Math.max` only lifts the doubles side).
   Tests: `rateMoveDoublesSupport.test.js` (5 cases). Suite 823 pass / 1 skip. Values are an initial
   pass to be refined by the Group 2B research (T-100). Kept `in-progress`. Merged to master.
+- **2026-07-10** — Batch-2 refinement (owner-validated gaps, `docs/research/rating-decisions.md`): added
+  doubles-only floors to `DOUBLES_SUPPORT_RATINGS` — Taunt 6.5, Snarl/Fake Tears 6, Struggle Bug 5.5
+  (spread stat-drop = support), Icy Wind 6 / Electroweb 5.5 / Bulldoze 5 (spread speed control), Perish
+  Song 5.5. Verified Fake Out is already ~8.86 in `rateMove` (dropped — the gap was wrong). Singles
+  untouched. Suite 832 pass. Singles-affecting gaps (Taunt base, terrain, Contrary) deferred to their
+  own passes per the decisions log.
 
 ## Outcome
 
