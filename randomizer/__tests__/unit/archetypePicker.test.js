@@ -5,7 +5,7 @@
 // then it biases the pick toward archetype fit with a single RNG draw (determinism-preserving).
 
 const rng = require('../../rng');
-const { makeArchetypePicker, weightedSampleOne, BIAS_MIN_SOPH, IDENTITY_FLOOR } = require('../../modules/archetypePicker');
+const { makeArchetypePicker, resolveIdentity, weightedSampleOne, BIAS_MIN_SOPH, IDENTITY_FLOOR } = require('../../modules/archetypePicker');
 const { sample } = require('../../modules/utils');
 const { getArchetypeModel } = require('../../archetypes');
 
@@ -109,6 +109,50 @@ describe('makeArchetypePicker — biases toward archetype fit at high sophistica
         const context = { team: [regenPivot('R1')], sophistication: 1 }; // balance confidence 0.5
         const picker = makeArchetypePicker({ model: singles, context, ctx: {} });
         const list = [plain('A'), wallbreaker('B')];
+        for (let s = 1; s <= 20; s++) {
+            rng.seed(s); const smp = sample(list);
+            rng.seed(s); const picked = picker(list);
+            expect(picked).toBe(smp);
+        }
+    });
+});
+
+describe('resolveIdentity (T-107 107e) — emergent, else seed, else null', () => {
+    test('emergent identity when a coherent team has crossed the floor', () => {
+        const id = resolveIdentity([regenPivot('R1'), regenPivot('R2')], singles, {}, null);
+        expect(id.source).toBe('emergent');
+        expect(id.baseId).toBe('balance');
+    });
+    test('falls back to the seed when no identity has emerged', () => {
+        const id = resolveIdentity([plain('X')], singles, {}, { base: 'hyper_offense', gimmicks: ['weather'] });
+        expect(id.source).toBe('seed');
+        expect(id.baseId).toBe('hyper_offense');
+        expect(id.gimmickIds).toEqual(['weather']);
+    });
+    test('emergent overrides the seed', () => {
+        const id = resolveIdentity([regenPivot('R1'), regenPivot('R2')], singles, {}, { base: 'full_stall' });
+        expect(id.source).toBe('emergent');
+        expect(id.baseId).toBe('balance');
+    });
+    test('no identity and no seed → null', () => {
+        expect(resolveIdentity([plain('X')], singles, {}, null)).toBeNull();
+    });
+});
+
+describe('makeArchetypePicker — a seed primes biasing before any identity emerges', () => {
+    test('a Balance-seeded trainer biases the first pick toward Balance roles (empty team)', () => {
+        const context = { team: [], sophistication: 1, archetypeSeed: { base: 'balance' } };
+        const picker = makeArchetypePicker({ model: singles, context, ctx: {} });
+        const cands = [plain('PLAIN'), wallbreaker('WB')]; // Balance wants a wallbreaker
+        let wb = 0, pl = 0;
+        for (let s = 1; s <= 300; s++) { rng.seed(s); (picker(cands).id === 'WB' ? wb++ : pl++); }
+        expect(wb).toBeGreaterThan(pl);
+        expect(pl).toBeGreaterThan(0);
+    });
+    test('with no seed and an empty team, the first pick is unbiased (byte-identical)', () => {
+        const context = { team: [], sophistication: 1, archetypeSeed: null };
+        const picker = makeArchetypePicker({ model: singles, context, ctx: {} });
+        const list = [plain('PLAIN'), wallbreaker('WB')];
         for (let s = 1; s <= 20; s++) {
             rng.seed(s); const smp = sample(list);
             rng.seed(s); const picked = picker(list);

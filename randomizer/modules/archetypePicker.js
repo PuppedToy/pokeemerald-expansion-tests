@@ -38,8 +38,30 @@ function weightedSampleOne(items, weights) {
     return items[items.length - 1];
 }
 
-// Build the picker for one trainer. `context` is read by reference (its `team` grows and its
-// `sophistication` is set per trainer). `ctx` carries the detector context (e.g. `{ moves }`).
+// The team's effective identity, shared by the fill (107c) and the refinement (107d):
+//   • the EMERGENT identity once the top base archetype's confidence reaches IDENTITY_FLOOR, else
+//   • the SEED (T-107 107e — an optional { base, gimmicks } lean the trainer declared), else
+//   • null (no identity → callers fall back to unbiased behaviour).
+// `team` is already normalised to poke shape. Returns { baseId, gimmickIds, counts, source } | null.
+function resolveIdentity(team, model, ctx = {}, seed = null) {
+    const cryst = crystallize(team, model, ctx);
+    const base = cryst.base[0];
+    if (base && base.confidence >= IDENTITY_FLOOR) {
+        return {
+            baseId: base.id,
+            gimmickIds: cryst.gimmicks.filter(g => g.confidence >= GIMMICK_CONF).map(g => g.id),
+            counts: cryst.counts,
+            source: 'emergent',
+        };
+    }
+    if (seed && seed.base) {
+        return { baseId: seed.base, gimmickIds: (seed.gimmicks || []).slice(), counts: cryst.counts, source: 'seed' };
+    }
+    return null;
+}
+
+// Build the picker for one trainer. `context` is read by reference (its `team` grows, `sophistication`
+// and optional `archetypeSeed` are set per trainer). `ctx` carries the detector context (e.g. `{ moves }`).
 function makeArchetypePicker({ model, context, ctx = {} }) {
     return function pickCandidate(candidates) {
         if (!Array.isArray(candidates) || candidates.length < 2) return sample(candidates);
@@ -50,13 +72,11 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
         // shape. Normalise to the underlying poke (raw pokes — as in unit tests — pass through), so
         // team detection uses the SAME basis (species potential) as candidate scoring.
         const team = ((context && context.team) || []).map(m => (m && m.pokemon) ? m.pokemon : m);
-        const cryst = crystallize(team, model, ctx);
-        const base = cryst.base[0];
-        if (!base || base.confidence < IDENTITY_FLOOR) return sample(candidates); // no identity yet
+        const identity = resolveIdentity(team, model, ctx, (context && context.archetypeSeed) || null);
+        if (!identity) return sample(candidates); // no identity yet (emergent or seeded)
 
-        const gimmickIds = cryst.gimmicks.filter(g => g.confidence >= GIMMICK_CONF).map(g => g.id);
-        const structure = combinedStructure(model, base.id, gimmickIds);
-        const counts = cryst.counts; // teamFeatureCounts already computed by crystallize
+        const structure = combinedStructure(model, identity.baseId, identity.gimmickIds);
+        const counts = identity.counts;
 
         let biased = false;
         const weights = candidates.map(c => {
@@ -72,6 +92,7 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
 // exported for reuse/inspection
 module.exports = {
     makeArchetypePicker,
+    resolveIdentity,
     weightedSampleOne,
     teamFeatureCounts,
     BIAS_MIN_SOPH,

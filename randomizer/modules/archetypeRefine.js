@@ -13,8 +13,8 @@
 // get no refinement and stay byte-identical.
 
 const { detectFeatures, MOVE_SETS } = require('./featureDetectors');
-const { teamFeatureCounts, crystallize, combinedStructure } = require('./archetypeFit');
-const { BIAS_MIN_SOPH, IDENTITY_FLOOR, GIMMICK_CONF } = require('./archetypePicker');
+const { teamFeatureCounts, combinedStructure } = require('./archetypeFit');
+const { BIAS_MIN_SOPH, resolveIdentity } = require('./archetypePicker');
 
 // Move-deliverable roles → the moves that deliver them. Ability/stat-only roles (intimidateUser,
 // wallbreaker, walls, regeneratorPivot, weatherSetter/abuser) are absent — they can't be fixed by a
@@ -54,17 +54,15 @@ function speciesCanLearn(species, move) {
 // The archetype role move `species` should also carry, or null. `team` is the members chosen so far
 // (newTeamMember wrappers). Deterministic; returns null unless a coherent identity has emerged and
 // sophistication is high enough.
-function planMemberRoleMove({ species, team, model, ctx = {}, sophistication }) {
+function planMemberRoleMove({ species, team, model, ctx = {}, sophistication, seed = null }) {
     if (!model || !species || (sophistication || 0) < BIAS_MIN_SOPH) return null;
 
-    // Identity from species potential (same basis as the 107c fill), over the prior team.
+    // Effective identity (emergent, else the trainer's seed) over the prior team, from species
+    // potential — same basis as the 107c fill.
     const speciesMons = (team || []).map(m => (m && m.pokemon) ? m.pokemon : m);
-    const cryst = crystallize(speciesMons, model, ctx);
-    const base = cryst.base[0];
-    if (!base || base.confidence < IDENTITY_FLOOR) return null;
-
-    const gimmickIds = cryst.gimmicks.filter(g => g.confidence >= GIMMICK_CONF).map(g => g.id);
-    const structure = combinedStructure(model, base.id, gimmickIds);
+    const identity = resolveIdentity(speciesMons, model, ctx, seed);
+    if (!identity) return null;
+    const structure = combinedStructure(model, identity.baseId, identity.gimmickIds);
 
     // Roles the prior team ACTUALLY delivers (resolved movesets/abilities).
     const delivered = teamFeatureCounts((team || []).map(resolvedDetectMon), ctx);

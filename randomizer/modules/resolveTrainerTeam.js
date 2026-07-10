@@ -124,7 +124,11 @@ function createTeamResolver(deps) {
         // T-105/T-107 — the sophistication weight for this trainer lives on the shared context; the
         // archetype picker consumes it to bias the fill toward the emerged identity and degrades to a
         // plain sample at low sophistication / no identity (early-game byte-identical).
-        const context = { team, foundMega: false, storedIds, sophistication: sophistication(trainer) };
+        const context = {
+            team, foundMega: false, storedIds,
+            sophistication: sophistication(trainer),
+            archetypeSeed: trainer.archetypeSeed || null, // T-107 107e — optional { base, gimmicks } lean
+        };
         const archetypeModel = getArchetypeModel(/double/i.test(trainer.battleType || '') ? 'doubles' : 'singles');
         const pickCandidate = makeArchetypePicker({ model: archetypeModel, context, ctx: { moves } });
         const choosePokemonFromDefinition = createChooser(pokemonList, trainer, context, {
@@ -215,6 +219,7 @@ function createTeamResolver(deps) {
                     model: archetypeModel,
                     ctx: { moves },
                     sophistication: context.sophistication,
+                    seed: context.archetypeSeed,
                 });
                 if (roleMove && canLearnMove(chosenTrainerMon, roleMove, trainer.level) && !newTeamMember.moves.includes(roleMove)) {
                     newTeamMember.moves.push(roleMove);
