@@ -29,8 +29,17 @@ Write **ADR-016** deciding the architecture:
   Example: Aqua grunt #1 prefers aqua-type[0] + weather; grunt #2 prefers aqua-type[2] + weather.
 - **Sophistication scalar (0..1):** how hard the generator tries to hit an archetype. Low early-game
   ("a pile of mons put together"), rising per boss defeated to ~1 by the endgame.
-- **Backwards generation:** build endgame teams first at max sophistication, then derive earlier
-  trainers by devolving mons while preserving ID continuity (rivals, Steven, starters keep identity).
+- **Per-team generation flow (owner-validated, see `docs/research/rating-decisions.md` + T-107):**
+  optional seed/direction → stochastic slot-fill → **emergent** archetype/gimmick crystallization
+  (commit to the seeded *or* an emergent identity) → completion → **identity-aware refinement pass**.
+  Sophistication (T-105) modulates seed probability, crystallization confidence, and refinement
+  strength (early = loose/random pile; endgame = tight competitive team). Gimmicks are a weighted,
+  stackable layer, not fixed slots.
+- **Backwards generation (continuity only):** build the **latest/strongest appearance first and
+  unconstrained** (the Champion has prevalence and owns the ID'd mons); **earlier** appearances reuse
+  those mons **devolved** and bear the continuity restriction (it matters less that an early team is
+  strong — e.g. Champion Steven → devolved Granite Cave `TRAINER_STEVEN`). Applies **only to
+  ID-locked/continuity mons**; non-continuity trainers build forward at their local sophistication.
 - **Fixed points retained:** ID-locked mons, at-most-one-mega, family dedup, exemptions, determinism
   (per-slot reseed), and the battle-type stamping from Group 1.
 - **Single resolver:** one shared selection module (kills the writer/writerDocs drift).
