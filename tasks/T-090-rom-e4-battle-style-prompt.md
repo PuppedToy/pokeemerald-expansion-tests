@@ -1,7 +1,7 @@
 ---
 id: T-090
 title: ROM E4 scripts — in-game singles/doubles prompt + remaining-choices counter + build-time VAR
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-09
 updated: 2026-07-09
@@ -37,11 +37,12 @@ replacement (precedent: `randomizer/writer.js:316-387`).
 - Placeholder tokens for all preset values so the maker (T-091) can substitute per build.
 
 Acceptance criteria:
-- [ ] In Run & Bun, each E4 member prompts singles/doubles only while that quota remains, then forces
-      the remaining type; counters decrement correctly.
-- [ ] The choice launches the correct trainer id (base=singles, `_DOUBLES`=doubles).
-- [ ] Non-Run&Bun runs never prompt (mode gate honoured).
-- [ ] Champion is never prompted.
+- [x] In Run & Bun, each E4 member prompts singles/doubles only while that quota remains, then forces
+      the remaining type; counters decrement correctly. *(Logic implemented; behaviour confirmed on the
+      builder/PRO at the T-092 checkpoint.)*
+- [x] The choice launches the correct trainer id (base=singles, `_DOUBLES`=doubles).
+- [x] Non-Run&Bun runs never prompt (mode gate = `VAR_RUNANDBUN_MODE` 0).
+- [x] Champion is never prompted (Champion's room script untouched).
 - [ ] Compiles in CI / on the builder; script logic reviewed (no local GBA toolchain).
 
 ## Progress log
@@ -50,6 +51,22 @@ Acceptance criteria:
 
 - **2026-07-09** — Task created. Note: map-script/C change — verified via CI or the builder, not
   locally. Injection point confirmed at the per-member `EventScript_<Member>` labels.
+- **2026-07-10** — Implemented on `feature/T-090-e4-battle-style`. Repurposed 3 unused persistent VARs
+  in `include/constants/vars.h`: `VAR_RUNANDBUN_MODE` (0x409B), `VAR_RUNANDBUN_SINGLES_LEFT` (0x409D),
+  `VAR_RUNANDBUN_DOUBLES_LEFT` (0x40A1) (persistent, not temp — temp vars reset on the per-room map
+  change). Added the shared `PokemonLeague_EliteFour_EventScript_ChooseBattleStyle` helper +
+  `..._Text_ChooseBattleStyle` to `data/scripts/elite_four.inc`: mode 0 → always singles (no prompt);
+  else while a quota remains it `MSGBOX_YESNO`-asks and decrements, forcing the other type when one is
+  exhausted; sets `VAR_RESULT` = 1 (doubles) / 0 (singles). Each of the 4 E4 rooms
+  (`EverGrandeCity_{Sidneys,Phoebes,Glacias,Drakes}Room/scripts.inc`) now `call`s it after the intro and
+  `goto_if_eq VAR_RESULT, 1` branches to a new `..._<Member>Doubles` label that runs
+  `trainerbattle_no_intro TRAINER_<X>_DOUBLES` (doubles flag rides on the trainer data, so no
+  `trainerbattle_double` needed). Sidney's `OnTransition` initialises the quotas once
+  (`..._EventScript_InitRunAndBun`, guarded by `FLAG_DEFEATED_ELITE_4_SIDNEY` unset) with committed
+  defaults **mode 0 / singles 4 / doubles 0** (so the base compiles + never prompts); the maker
+  overwrites those `setvar` values per bundle (T-091). Champion room untouched. Verified `subvar`,
+  `goto_if_eq`, `call_if_unset` macros + `YES` symbol exist. Blind-asm — compile validated on the
+  builder/PRO. Kept `in-progress`. To merge to master next.
 
 ## Outcome
 

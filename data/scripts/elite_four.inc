@@ -60,3 +60,38 @@ PokemonLeague_EliteFour_EventScript_CloseDoor::
 	setmetatile 6, 13, METATILE_EliteFour_EntryDoor_ClosedBottom, TRUE
 	setmetatile 7, 13, METATILE_EliteFour_EntryDoor_ClosedBottom, TRUE
 	return
+
+@ ── T-090 / ADR-014 — League Run & Bun: per-Elite-Four "singles or doubles?" choice ──────────────
+@ Each E4 room calls this before its battle. It sets VAR_RESULT = 1 (doubles) or 0 (singles); the room
+@ then branches to TRAINER_<X> (singles) or TRAINER_<X>_DOUBLES (doubles). The battle type itself rides
+@ on the trainer's Double Battle flag (see src/battle_main.c). While a quota of the chosen type remains
+@ it prompts and decrements it; once one type is exhausted it forces the other without asking. Mode 0
+@ (the default / any non-Run & Bun run) never prompts and always returns singles.
+PokemonLeague_EliteFour_EventScript_ChooseBattleStyle::
+	goto_if_eq VAR_RUNANDBUN_MODE, 0, PokemonLeague_EliteFour_EventScript_BattleStyleSingles
+	goto_if_eq VAR_RUNANDBUN_DOUBLES_LEFT, 0, PokemonLeague_EliteFour_EventScript_BattleStyleSingles
+	goto_if_eq VAR_RUNANDBUN_SINGLES_LEFT, 0, PokemonLeague_EliteFour_EventScript_BattleStyleDoubles
+	msgbox PokemonLeague_EliteFour_Text_ChooseBattleStyle, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, YES, PokemonLeague_EliteFour_EventScript_BattleStyleDoubles
+	@ NO → fall through to singles
+
+PokemonLeague_EliteFour_EventScript_BattleStyleSingles::
+	setvar VAR_RESULT, 0
+	goto_if_eq VAR_RUNANDBUN_MODE, 0, PokemonLeague_EliteFour_EventScript_BattleStyleDone
+	goto_if_eq VAR_RUNANDBUN_SINGLES_LEFT, 0, PokemonLeague_EliteFour_EventScript_BattleStyleDone
+	subvar VAR_RUNANDBUN_SINGLES_LEFT, 1
+	return
+
+PokemonLeague_EliteFour_EventScript_BattleStyleDoubles::
+	setvar VAR_RESULT, 1
+	goto_if_eq VAR_RUNANDBUN_DOUBLES_LEFT, 0, PokemonLeague_EliteFour_EventScript_BattleStyleDone
+	subvar VAR_RUNANDBUN_DOUBLES_LEFT, 1
+	return
+
+PokemonLeague_EliteFour_EventScript_BattleStyleDone::
+	return
+
+PokemonLeague_EliteFour_Text_ChooseBattleStyle:
+	.string "The League rules let you choose how\n"
+	.string "to face this ELITE FOUR member.\p"
+	.string "Shall we make this a Double Battle?$"
