@@ -45,6 +45,14 @@ describe('Run & Bun E4 cloning', () => {
         expect(td.some(t => t.id.endsWith('_DOUBLES'))).toBe(false);
     });
 
+    test('each _DOUBLES clone sits immediately after its base E4 (adjacent in the docs order)', () => {
+        const ids = run({ difficulty: 7, battleFormat: 'mixed', leagueRunAndBun: true, singlesPercent: 60, seed: 5 }).map(t => t.id);
+        for (const base of BASES) {
+            const i = ids.indexOf(base);
+            expect(ids[i + 1]).toBe(`${base}_DOUBLES`);
+        }
+    });
+
     test('clone is a deep copy — its team array is not shared with the base', () => {
         const td = run({ difficulty: 7, battleFormat: 'mixed', leagueRunAndBun: true, singlesPercent: 60, seed: 5 });
         const base = td.find(t => t.id === 'TRAINER_SIDNEY');

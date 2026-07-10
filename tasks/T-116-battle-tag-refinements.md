@@ -65,6 +65,11 @@ Acceptance criteria:
   Tests updated (spec change): battleFormat pool/format/tag/unify cases + the docs structural guards.
   Randomizer 811 pass / 1 skip; frontend 77 pass. Kept `in-progress` for the T-092 visual confirm.
   Merged to master.
+- **2026-07-10** — Owner follow-up: in the docs the `_DOUBLES` clones appeared *after the champion*
+  (they were appended to the end of `trainersData`). Fixed by `splice`-inserting each clone right after
+  its base E4 so "Sidney Singles" and "Sidney Doubles" (etc.) render adjacent; added an ordering test
+  in `runAndBunClones.test.js`. Order-only change (reseed is id-keyed, `.party` is name-keyed), suite
+  812 pass. Merged to master.
 
 ## Outcome
 
