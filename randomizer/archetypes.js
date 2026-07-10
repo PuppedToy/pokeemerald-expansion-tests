@@ -63,4 +63,20 @@ function loadArchetypeModel(format) {
     return validateArchetypeModel(model, format);
 }
 
-module.exports = { loadArchetypeModel, validateArchetypeModel, DIR, FORMATS, VALID_CATEGORIES };
+// Cross-environment model access for the engine (T-107): loads via a static `require` of the JSON so
+// it works in the browser worker (bundler-inlined) as well as node — unlike `fs.readFileSync`, which
+// is unavailable in the browser. Lazy + memoized + validated once. Returns null for unknown formats.
+const _models = {};
+function getArchetypeModel(format) {
+    if (!FORMATS.includes(format)) return null;
+    if (!_models[format]) {
+        // eslint-disable-next-line global-require, import/no-dynamic-require
+        const raw = format === 'doubles'
+            ? require('./data/archetypes/doubles.json')
+            : require('./data/archetypes/singles.json');
+        _models[format] = validateArchetypeModel(raw, format);
+    }
+    return _models[format];
+}
+
+module.exports = { loadArchetypeModel, getArchetypeModel, validateArchetypeModel, DIR, FORMATS, VALID_CATEGORIES };
