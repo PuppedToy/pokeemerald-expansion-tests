@@ -9,6 +9,7 @@ const {
 } = require('./constants');
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
 const { createTeamResolver, normalizeTrainerBagTms } = require('./modules/resolveTrainerTeam');
+const { createSophisticationScale } = require('./modules/sophistication');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 const { typeMainColors } = require('./trainerColors');
 const { noopDiagnostics } = require('./diagnostics');
@@ -198,9 +199,14 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     // trainersResults meta (label/choiceBattle). The resolver is created ONCE so storedIds
     // (ID-locked continuity) and the IV cache are shared across all trainers, as before.
     const trainersResults = {};
+    // T-107 (107c) — sophistication scale from the run's trainer level span (min→max). Dependency-free
+    // (no caps.c read → works identically in browser + node). The resolver stamps it onto
+    // context.sophistication per trainer; the weighted fill consumes it (bias vanishes at soph≈0).
+    const sophistication = createSophisticationScale(trainersData);
     const { resolveTrainerTeam } = createTeamResolver({
         pokemonList, moves, abilities, starters, staticRewards,
         replacementLog, megaReplacementLog, baseRngSeed, palafinHero, diag,
+        sophistication,
     });
 
     trainersData.forEach(trainer => {

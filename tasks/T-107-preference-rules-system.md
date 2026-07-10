@@ -171,6 +171,30 @@ Acceptance criteria:
      pass so the output change is measured, not assumed.
   Landing order within 107c: harness → thread scale (verify still byte-identical, scale unused) → wire
   bias (verify early-game byte-identical, determinism green, not-worse). Merge only when all green.
+- **2026-07-10 — 107c done (the weighted fill is LIVE).**
+  - **Step 1 (committed separately):** thread the real sophistication scale into `writer`/`writerDocs`,
+    built from the run's trainer level span (min→max) — dependency-free (no caps.c). Output-neutral.
+  - **Step 2:** `modules/archetypePicker.js` — `makeArchetypePicker({model,context,ctx})` returns a
+    `pickCandidate` that biases the pick toward the emerged identity (107b `crystallize` →
+    `combinedStructure` → `scoreCandidate`), weight `= 1 + sophistication·BIAS_STRENGTH·fit`, via a
+    **single RNG draw** (`weightedSampleOne`) so it never shifts the per-slot stream. It **degrades to
+    plain `sample` (byte-identical)** when: <2 candidates, no model, `soph < BIAS_MIN_SOPH` (0.15),
+    top-base confidence `< IDENTITY_FLOOR` (0.6), or no candidate improves fit. Injected into
+    `trainerSelector` as an optional `pickCandidate` (default = today's `sample`, so pickBest slots are
+    untouched) and wired per-trainer in `resolveTrainerTeam` (format-aware model via
+    `getArchetypeModel`, which loads the JSON by static `require` → works in browser + node). Fixed a
+    would-be-inert bug: the resolver's team holds `newTeamMember` wrappers, so the picker normalises
+    `m.pokemon` before detection.
+  - **Verified:** 20 picker tests; full suite **896 pass**; `RUN_DETERMINISM=1` cross-ROM gate green
+    (bias is deterministic → shared-trainer ROMs still byte-identical); an instrumented check confirms
+    the bias **fires** (84% toward the fitting candidate at soph 0.9) and is **inert at low soph**
+    (uniform at 0.05) — so early game is byte-identical and the change concentrates on boss/endgame.
+  - **Honest boundary 107c→107d:** 107c biases the *species pick* toward role-capable mons, but the
+    moveset is still chosen by rating-based `chooseMoveset` — so a mon picked for (say) hazard potential
+    may not yet *run* hazards. **107d (identity-aware refinement)** nudges moves/items/abilities to
+    actually deliver the crystallized roles. The qualitative "singles not worse / teams feel coherent"
+    is the owner's T-113 batch eval; the automatable guarantees (early byte-identical, determinism,
+    all tier/type/legality invariants) hold now.
 
 ## Outcome
 

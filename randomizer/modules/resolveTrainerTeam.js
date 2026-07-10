@@ -35,6 +35,8 @@ const { sample, canLearnMove, usesStrategicNature } = require('./utils');
 const { pickTrainerMonAbility } = require('./trainerAbility');
 const { selectWithAutoFallback } = require('./trainerFallback');
 const { createChooser } = require('./trainerSelector');
+const { makeArchetypePicker } = require('./archetypePicker');
+const { getArchetypeModel } = require('../archetypes');
 const { noopDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
 
 function nameify(text) {
@@ -118,11 +120,14 @@ function createTeamResolver(deps) {
     // build the trainersResults entry — the caller owns those.
     function resolveTrainerTeam(trainer) {
         const team = [];
-        // T-105 — the sophistication weight for this trainer, available to the T-107 stages via
-        // the shared context. Computed here (once per trainer) but not yet applied to selection.
+        // T-105/T-107 — the sophistication weight for this trainer lives on the shared context; the
+        // archetype picker consumes it to bias the fill toward the emerged identity and degrades to a
+        // plain sample at low sophistication / no identity (early-game byte-identical).
         const context = { team, foundMega: false, storedIds, sophistication: sophistication(trainer) };
+        const archetypeModel = getArchetypeModel(/double/i.test(trainer.battleType || '') ? 'doubles' : 'singles');
+        const pickCandidate = makeArchetypePicker({ model: archetypeModel, context, ctx: { moves } });
         const choosePokemonFromDefinition = createChooser(pokemonList, trainer, context, {
-            starters, staticRewards, replacementLog, megaReplacementLog, isSuperEffective,
+            starters, staticRewards, replacementLog, megaReplacementLog, isSuperEffective, pickCandidate,
         });
         trainer.team.forEach((trainerMonDefinition, slotIndex) => {
             if (baseRngSeed !== null) {

@@ -51,6 +51,10 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         replacementLog = {},
         megaReplacementLog = {},
         isSuperEffective = () => false,
+        // T-107 (107c) — how to pick among tier-valid, family-deduped candidates for a NON-pickBest
+        // slot. Defaults to a uniform sample (today's behaviour); the engine injects an archetype-
+        // biased picker that degrades to this same sample at low sophistication / no identity.
+        pickCandidate = (list) => sample(list),
     } = opts;
 
     const canLearnMove = (pokemon, moveToLearn) =>
@@ -284,7 +288,7 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         if (pokemonStrictList.length > 0) {
             chosenTrainerMon = trainerMonDefinition.pickBest
                 ? pokemonStrictList.sort((a, b) => getRatingForSort(b) - getRatingForSort(a))[0]
-                : sample(pokemonStrictList);
+                : pickCandidate(pokemonStrictList);
         } else if (pokemonLooseList.length > 0) {
             // Strict list was empty (all candidates had the same family as someone on the team).
             // Apply family dedup again here; only repeat a family if truly no other option remains.
@@ -300,7 +304,7 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
             if (familyFiltered.length > 0) {
                 chosenTrainerMon = trainerMonDefinition.pickBest
                     ? familyFiltered.sort((a, b) => getRatingForSort(b) - getRatingForSort(a))[0]
-                    : sample(familyFiltered);
+                    : pickCandidate(familyFiltered);
             }
             // else: all candidates excluded by family dedup — return undefined so
             // selectWithAutoFallback tiers down to find variety.
