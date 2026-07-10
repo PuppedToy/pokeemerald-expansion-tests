@@ -648,6 +648,11 @@
     .roster-loc { display:inline-flex; align-items:center; gap:6px; font-size:18px; color:var(--obs-cyan);
       background:var(--obs-well); border:2px solid var(--obs-line); padding:5px 9px; }
     .roster-loc .ico { height:1.05em; }
+    /* T-115 — battle-format badge: flags a trainer fought as a Double Battle (shown mainly in Mixed
+       runs, where singles/doubles vary; absent = single battle). */
+    .roster-battletype { display:inline-flex; align-items:center; gap:6px; font-family:var(--obs-font-display);
+      font-size:9px; letter-spacing:1px; text-transform:uppercase; color:#fff; background:#7c3aed;
+      border:var(--obs-border); box-shadow:var(--obs-shadow-sm); padding:7px 10px; white-space:nowrap; }
     .roster-rail .rewards { display:flex; flex-direction:column; gap:6px; align-self:stretch; margin:0; }
     .roster-rail .reward-item { display:flex; align-items:center; gap:7px; background:var(--obs-well);
       border:2px solid var(--obs-line); padding:5px 9px; font-size:18px; }
@@ -1607,6 +1612,7 @@
             <div class="roster-facts">
               <span class="roster-lv">Lv. ${trainer.level}</span>
               ${trainer.location ? `<span class="roster-loc">${getIcon('location','📍')} ${trainer.location}</span>` : ''}
+              ${trainer.battleType === 'doubles' ? `<span class="roster-battletype">⚔️ Double Battle</span>` : ''}
             </div>
             ${rewards}
             ${!trainer.isPartner ? `<label class="nz-defeat-label">
