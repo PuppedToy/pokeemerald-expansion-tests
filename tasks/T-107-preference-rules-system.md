@@ -126,6 +126,17 @@ Acceptance criteria:
   107e trainer seeds) in the Plan above. Feature-detector thresholds are grounded in existing rating
   signals and provisional/tunable (not a meta claim). Beginning **107a** (pure feature-detector module,
   output-neutral) under TDD.
+- **2026-07-10 — 107a done.** Built `randomizer/modules/featureDetectors.js`: pure
+  `(mon, ctx) -> boolean` detectors for all ~27 role features the archetype JSONs reference, plus
+  `detectFeatures(mon, ctx) -> Set<tag>`. Grounded in existing data — `parsedAbilities`,
+  learnset/teachables (move potential), base stats, and move metadata (`ctx.moves` target/priority/
+  category) for spread/priority. Stat thresholds live in `THRESHOLDS` (provisional/tunable, not a meta
+  claim). TDD: spec test first (22 tests) — ability/move/metadata/stat detectors, the `detectFeatures`
+  aggregator, a purity check, and a **model-integrity test** asserting every `featureDefinitions` key
+  in both archetype JSONs has a detector (locks JSON↔code from drifting). Full suite 876 pass.
+  **Output-neutral by construction** — no pipeline file imports the module yet (it wires in at 107c),
+  so generation output is unchanged and the determinism gate is unaffected. Next: 107b (archetype-fit
+  scoring + crystallization detector).
 
 ## Outcome
 
