@@ -5,30 +5,22 @@ const rng = require('./rng');
 const wild = require('./wild.js');
 const trainers = require('./trainers.js');
 const {
-    EVO_TYPE_SOLO,
     OUTPUT_DIR,
     TEMPLATE_FILE,
     TEMPLATE_TRAINERS_REPLACEMENT,
     TEMPLATE_POKEMON_REPLACEMENT,
     TEMPLATE_WILDPOKES_REPALCEMENT,
-    NATURES,
-    GENERIC_DEVIATION,
     TEMPLATE_MOVES_REPLACEMENT,
     TEMPLATE_ABILITIES_REPLACEMENT,
     TEMPLATE_ITEMS_REPLACEMENT,
     TEMPLATE_COLORS_REPLACEMENT,
     MEGA_TRAINERS,
-    PALAFIN_ZERO_ID,
     PALAFIN_HERO_ID,
 } = require('./constants');
 const { typeMainColors } = require('./trainerColors');
-const { chooseMoveset, adjustMoveset, rateItemForAPokemon, isSuperEffective, chooseNature, palafinEffectivePoke } = require('./rating.js');
 const { BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone } = require('./modules/wildModule');
 const { displayNameToItemConst } = require('./itemRandomizer');
-const { sample, canLearnMove, usesStrategicNature, usesStrategicAbility } = require('./modules/utils');
-const { pickTrainerMonAbility } = require('./modules/trainerAbility');
-const { selectWithAutoFallback } = require('./modules/trainerFallback');
-const { createChooser } = require('./modules/trainerSelector');
+const { createTeamResolver, normalizeTrainerBagTms } = require('./modules/resolveTrainerTeam');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 
 const items = require('./items.js');
@@ -141,12 +133,6 @@ function itemIdToName(itemId) {
 }
 
 // DJB2 hash — used for per-slot RNG reseeding when trainers are shared across ROMs
-function djb2Hash(str) {
-    let h = 5381;
-    for (let i = 0; i < str.length; i++) h = (Math.imul(h, 33) ^ str.charCodeAt(i)) >>> 0;
-    return h;
-}
-
 // Returns a map of speciesId → unique placeholder string for two-pass wild substitution.
 // Uses counter-based IDs (not RNG) so this never advances the shared RNG state.
 function buildWildPlaceholderMap(entries) {
@@ -540,48 +526,17 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     let partnersFileContent = await fs.readFile(trainers.partnersFile, 'utf8');
     const trainersResults = {};
 
-    const storedIds = {};
-    const pokeIdIVCache = {};
-
-    function generateIVs(breedTier, pokeId) {
-        if (pokeId && pokeIdIVCache[pokeId]) return pokeIdIVCache[pokeId];
-        let ivs;
-        if (breedTier === 'perfect') {
-            ivs = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
-        } else if (breedTier === 'good') {
-            const order = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].sort(() => rng.random() - 0.5);
-            ivs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
-            Object.keys(ivs).forEach(s => { ivs[s] = Math.floor(rng.random() * 32); });
-            order.slice(0, 3).forEach(s => { ivs[s] = 31; });
-        } else {
-            ivs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
-            Object.keys(ivs).forEach(s => { ivs[s] = Math.floor(rng.random() * 32); });
-        }
-        if (pokeId) pokeIdIVCache[pokeId] = ivs;
-        return ivs;
-    }
-
     if (docs) {
         // Single source of truth: take the fully-resolved teams from the bundle's docs
         // instead of re-resolving them via RNG. Guarantees the ROM matches the docs.
         Object.assign(trainersResults, buildTrainersResultsFromDocs(docs.trainersResultsSimplified, pokemonList));
     } else {
+    const { resolveTrainerTeam } = createTeamResolver({
+        pokemonList, moves, abilities, starters, staticRewards,
+        replacementLog, megaReplacementLog, baseRngSeed, palafinHero,
+    });
     trainersData.forEach(trainer => {
-        for(let i = 0; i < (trainer.bag || []).length; i++) {
-            const item = trainer.bag[i];
-            // If item starts with TM_, replace it with MOVE_ and put it in tms
-            if (item.startsWith('TM_')) {
-                const moveId = item.replace('TM_', 'MOVE_');
-                // Remove item from bag
-                trainer.bag.splice(i, 1);
-                i--;
-                // Add move to tms
-                if (!trainer.tms) {
-                    trainer.tms = [];
-                }
-                trainer.tms.push(moveId);
-            }
-        }
+        normalizeTrainerBagTms(trainer);
 
         if (trainer.copy) {
             const target = trainersResults[trainer.copy];
@@ -596,207 +551,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             return;
         }
 
-        const team = [];
-        const context = { team, foundMega: false, storedIds };
-        const choosePokemonFromDefinition = createChooser(pokemonList, trainer, context, {
-            starters, staticRewards, replacementLog, megaReplacementLog, isSuperEffective,
-        });
-        trainer.team.forEach((trainerMonDefinition, slotIndex) => {
-            if (baseRngSeed !== null) {
-                // Reseed per slot so tier-based Pokémon choices are identical across shared-trainer ROMs
-                // regardless of how many RNG calls the previous slot consumed (encounter/moveset/IV).
-                const slotSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainer.id + ':' + slotIndex), 0x9E3779B9)) >>> 0;
-                rng.seed(slotSeed);
-            }
-            let { pokemon: chosenTrainerMon, effectiveDef } = selectWithAutoFallback(
-                trainerMonDefinition,
-                choosePokemonFromDefinition,
-            ) ?? {};
-            if (!chosenTrainerMon) {
-                console.error(
-                    `No pokemon found for trainer ${trainer.id} slot ${slotIndex} — check definition: ` +
-                    JSON.stringify(trainerMonDefinition),
-                );
-                return;
-            }
-
-            if (trainerMonDefinition.tryMega) {
-                if (
-                    (chosenTrainerMon.evolutionData.isFinal || chosenTrainerMon.evolutionData.type === EVO_TYPE_SOLO)
-                    && chosenTrainerMon.evolutionData.megaEvos
-                    && chosenTrainerMon.evolutionData.megaEvos.length > 0
-                    && !context.foundMega
-                ) {
-                    const megaPoke = pokemonList.filter(p => p.evolutionData.megaBaseForm === chosenTrainerMon.id);
-                    if (megaPoke.length) {
-                        chosenTrainerMon = sample(megaPoke);
-                    }
-                    else {
-                        console.warn(`WARN: Chosen pokemon ${chosenTrainerMon.id} for mega in trainer ${trainer.id} has no mega evolution data.`);
-                    }
-                }
-                else {
-                    console.warn(`WARN: Chosen pokemon ${chosenTrainerMon.id} for mega in trainer ${trainer.id} has no mega evolutions.`);
-                }
-            }
-
-            if (chosenTrainerMon) {
-                let baseFormMon = chosenTrainerMon;
-                let megaItem;
-                const megaMoves = [];
-                if (chosenTrainerMon.evolutionData.megaBaseForm) {
-                    baseFormMon = pokemonList.find(p => p.id === chosenTrainerMon.evolutionData.megaBaseForm) || chosenTrainerMon;
-                    if (context.foundMega) {
-                        chosenTrainerMon = baseFormMon;
-                    } else {
-                        if (chosenTrainerMon.id === 'SPECIES_RAYQUAZA_MEGA') {
-                            // Rayquaza mega doesn't need an item
-                            megaItem = null;
-                            megaMoves.push('MOVE_DRAGON_ASCENT');
-                        } else if (chosenTrainerMon.evolutionData.megaItem) {
-                            megaItem = itemIdToName(chosenTrainerMon.evolutionData.megaItem);
-                        }
-                        context.foundMega = true;
-                    }
-                }
-                if (trainerMonDefinition.id) {
-                    storedIds[trainerMonDefinition.id] = chosenTrainerMon.id;
-                }
-                if (baseFormMon.id) {
-                    storedIds[baseFormMon.id] = chosenTrainerMon.id;
-                }
-                const effectiveBreedTier = trainerMonDefinition.breedTier || trainer.breedTier || null;
-                const pokeId = trainerMonDefinition.id || null;
-                const newTeamMember = {
-                    pokemon: baseFormMon,
-                    item: megaItem || trainerMonDefinition.item || null,
-                    nature: trainerMonDefinition.nature || null,
-                    moves: megaMoves,
-                    breedTier: effectiveBreedTier,
-                    pokeId,
-                    ivs: generateIVs(effectiveBreedTier, pokeId),
-                };
-                if (effectiveDef?.tryToHaveMove) {
-                    effectiveDef.tryToHaveMove.forEach(moveToLearn => {
-                        if (
-                            canLearnMove(chosenTrainerMon, moveToLearn, trainer.level)
-                            && !newTeamMember.moves.includes(moveToLearn)
-                        ) {
-                            newTeamMember.moves.push(moveToLearn);
-                        }
-                    });
-                }
-                // T-065: shared SSOT helper (same logic previously inlined here). Kept in sync with
-                // writerDocs.js so the two resolvers can't silently diverge again. `ability` (the pick
-                // on the chosen/mega form) stays in scope for the downstream mega/moveset/nature code.
-                const { ability, originalAbility } = pickTrainerMonAbility({
-                    chosenTrainerMon,
-                    baseFormMon,
-                    trainerAbilities: trainer.abilities,
-                    effectiveDef,
-                    level: trainer.level,
-                    abilities,
-                });
-                newTeamMember.ability = originalAbility;
-                // T-013: weather an EARLIER teammate sets (lingering setters only — primals are
-                // own-only, handled in the rater) + whether a Power Herb is available (held or in the
-                // bag). Drives Solar Beam/Blade, Electro Shot, Weather Ball, Growth, Thunder, Blizzard,
-                // Aurora Veil and the Meteor Beam / Geomancy combo.
-                const selCtx = {
-                    sun:  team.some(m => m.ability === 'DROUGHT' || m.ability === 'ORICHALCUM_PULSE' || (m.moves || []).includes('MOVE_SUNNY_DAY')),
-                    rain: team.some(m => m.ability === 'DRIZZLE' || (m.moves || []).includes('MOVE_RAIN_DANCE')),
-                    snow: team.some(m => m.ability === 'SNOW_WARNING' || (m.moves || []).includes('MOVE_HAIL') || (m.moves || []).includes('MOVE_SNOWSCAPE')),
-                    sand: team.some(m => m.ability === 'SAND_STREAM' || (m.moves || []).includes('MOVE_SANDSTORM')),
-                    powerHerb: newTeamMember.item === 'Power Herb' || (trainer.bag || []).includes('Power Herb'),
-                };
-
-                // Palafin Zero is placed but battles as Hero (Zero-to-Hero). Use Hero's stats &
-                // typing for all stat-based decisions (moveset, item, nature) while keeping the
-                // placed species id. The effective poke retains Zero's id/learnset/teachables.
-                const battlePoke = (chosenTrainerMon.id === PALAFIN_ZERO_ID && palafinHero)
-                    ? palafinEffectivePoke(chosenTrainerMon, palafinHero)
-                    : chosenTrainerMon;
-                let { moveset, tmsUsed } = chooseMoveset(
-                    battlePoke,
-                    moves,
-                    trainer.level,
-                    newTeamMember.moves, // We use the already chosen moves (tryToHaveMove)
-                    ability, // We use the real ability for megas
-                    newTeamMember.item, // If we have a pre-selected item, use it
-                    trainer.tms || [],
-                    0.1, // Deviation for trainer bias
-                    selCtx,
-                );
-                // Remove the first appereance of each used TM from trainer's inventory
-                tmsUsed.forEach(tmUsed => {
-                    if (trainer.tms && trainer.tms.includes(tmUsed)) {
-                        trainer.tms.splice(trainer.tms.indexOf(tmUsed), 1);
-                    }
-                });
-                if (!newTeamMember.item && trainer.bag && trainer.bag.length > 0) {
-                    const movesetObjects = moveset.map(m => moves[m]);
-                    const sortedBagItems = trainer.bag
-                        .map(bagItemId => {
-                            const rating = rateItemForAPokemon(
-                                bagItemId,
-                                battlePoke,
-                                ability,
-                                movesetObjects,
-                                trainer.level,
-                                trainer.bag.length,
-                                trainer.bannedItems || [],
-                                GENERIC_DEVIATION,
-                            );
-                            // console.log(`Rating item ${bagItemId} for pokemon LV.${trainer.level} ${chosenTrainerMon.id} resulted in rating ${rating}`);
-                            return {
-                                id: bagItemId,
-                                rating,
-                            };
-                        })
-                        .filter(bi => bi.rating > 0)
-                        .sort((a, b) => b.rating - a.rating)
-                        .map(bi => bi.id);
-
-                    if (sortedBagItems.length > 0) {
-                        newTeamMember.item = sortedBagItems[0];
-                        trainer.bag.splice(trainer.bag.indexOf(newTeamMember.item), 1);
-                    }
-                }
-                if (!newTeamMember.nature) {
-                    if (usesStrategicNature(trainer.level)) {
-                        newTeamMember.nature = chooseNature(
-                            battlePoke,
-                            moveset,
-                            moves,
-                            ability,
-                            newTeamMember.item,
-                            GENERIC_DEVIATION,
-                        );
-                    }
-                    else {
-                        newTeamMember.nature = sample(Object.values(NATURES)).name;
-                    }
-                }
-                if (newTeamMember.item) {
-                    moveset = adjustMoveset(
-                        battlePoke,
-                        trainer.level,
-                        moveset,
-                        newTeamMember.moves, // Fixed important moves
-                        moves,
-                        ability,
-                        newTeamMember.item,
-                        0.1,
-                        selCtx,
-                    );
-                }
-                newTeamMember.moves = moveset;
-                team.push(newTeamMember);
-            }
-            else {
-                console.warn(`No pokemon chosen for trainer ${trainer.id} with definition ${JSON.stringify(trainerMonDefinition)}`);
-            }
-        });
+        const team = resolveTrainerTeam(trainer);
 
         trainersResults[trainer.id] = {
             level: trainer.level,
