@@ -38,10 +38,10 @@ function runTrainersModule(pokedexArtifact, config) {
     if (config.battleFormat === 'mixed' && config.leagueRunAndBun === true) {
         const E4_BASE_IDS = ['TRAINER_SIDNEY', 'TRAINER_PHOEBE', 'TRAINER_GLACIA', 'TRAINER_DRAKE'];
         const split = runAndBunE4Split(config.singlesPercent ?? 60);
-        const clones = [];
         for (const baseId of E4_BASE_IDS) {
-            const base = trainersData.find(t => t.id === baseId);
-            if (!base) continue;
+            const idx = trainersData.findIndex(t => t.id === baseId);
+            if (idx === -1) continue;
+            const base = trainersData[idx];
             const bare = baseId.replace('TRAINER_', '');
             const name = bare.charAt(0) + bare.slice(1).toLowerCase();   // SIDNEY → Sidney
             const clone = structuredClone(base);
@@ -52,9 +52,10 @@ function runTrainersModule(pokedexArtifact, config) {
             clone.label = `${name} Doubles`;
             base.choiceBattle = { singles: split.singles, doubles: split.doubles };
             clone.choiceBattle = { singles: split.singles, doubles: split.doubles };
-            clones.push(clone);
+            // T-116 feedback — keep "<Member> Singles" and "<Member> Doubles" adjacent in the docs by
+            // inserting the clone right after its base (previously appended after the champion).
+            trainersData.splice(idx + 1, 0, clone);
         }
-        trainersData.push(...clones);
     }
 
     const { numShifts, delta, direction } = getDifficultyTransform(level);
