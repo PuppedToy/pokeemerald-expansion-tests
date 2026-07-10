@@ -821,17 +821,18 @@ export class ConfigForm {
     </label>
   </div>
 
-  <div id="singles-percent-row" class="coop-numroms hidden" style="margin-top:14px">
-    <label for="singles-percent">Single battles (%)</label>
-    <input type="number" id="singles-percent" class="input" value="60" min="0" max="100" style="width:72px">
-    <span class="field-hint" style="margin:0">% of single battles (the rest are doubles). Each trainer group is set as close to this as possible; the Champion always takes the majority type.</span>
-  </div>
-
-  <div id="league-runandbun-row" class="checkbox-row hidden" style="margin-top:12px">
-    <input type="checkbox" id="league-runandbun">
-    <div class="checkbox-info">
-      <span class="checkbox-label">League style "Run &amp; Bun"</span>
-      <span class="checkbox-desc" id="league-runandbun-desc"></span>
+  <div id="mixed-panel" class="run-panel hidden">
+    <div class="coop-numroms">
+      <label for="singles-percent">Single battles (%)</label>
+      <input type="number" id="singles-percent" class="input" value="60" min="0" max="100" style="width:72px">
+    </div>
+    <span class="field-hint" style="margin:6px 0 0">% of single battles (the rest are doubles). Each trainer group is set as close to this as possible; the Champion always takes the majority type.</span>
+    <div class="checkbox-row" style="margin-top:12px">
+      <input type="checkbox" id="league-runandbun">
+      <div class="checkbox-info">
+        <span class="checkbox-label">League style "Run &amp; Bun"</span>
+        <span class="checkbox-desc" id="league-runandbun-desc"></span>
+      </div>
     </div>
   </div>
   </div>
@@ -1230,12 +1231,11 @@ export class ConfigForm {
         this._q('#nuzlocke-panel').classList.toggle('hidden', runType !== 'nuzlocke');
         this._q('#soullink-panel').classList.toggle('hidden', runType !== 'soullink');
 
-        // T-085/ADR-014 — the % proportion and Run & Bun controls only apply to 'mixed'; the Run & Bun
-        // description shows the live ingame E4 split derived from the chosen %.
+        // T-085/ADR-014 — the % proportion + Run & Bun controls live in a run-panel box revealed only
+        // for 'mixed' (like the nuzlocke/soul-link panels); the Run & Bun description shows the live
+        // ingame E4 split derived from the chosen %.
         const battleFormat = this._q('input[name="battle-format"]:checked')?.value ?? 'singles';
-        const isMixed = battleFormat === 'mixed';
-        const spRow = this._q('#singles-percent-row'); if (spRow) spRow.classList.toggle('hidden', !isMixed);
-        const rbRow = this._q('#league-runandbun-row'); if (rbRow) rbRow.classList.toggle('hidden', !isMixed);
+        const mixedPanel = this._q('#mixed-panel'); if (mixedPanel) mixedPanel.classList.toggle('hidden', battleFormat !== 'mixed');
         const rbDesc = this._q('#league-runandbun-desc');
         if (rbDesc) {
             const { singles, doubles } = runAndBunE4Split(parseInt(this._q('#singles-percent')?.value ?? '60', 10));

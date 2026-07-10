@@ -245,15 +245,15 @@ test('T-085: Battle format category renders three big boxes (singles default)', 
   assert.match(src, /radio-card-group-3/, 'reuses the 3-up big-box layout');
 });
 
-test('T-085: mixed-only % input + Run & Bun checkbox with a dynamic description', () => {
-  assert.match(src, /id="singles-percent"[^>]*min="0"[^>]*max="100"/, 'singles-percent input 0–100');
-  assert.match(src, /id="singles-percent-row"/, 'a row wrapper to show/hide the % input');
-  assert.match(src, /id="league-runandbun"/, 'Run & Bun checkbox');
-  assert.match(src, /id="league-runandbun-row"/, 'a row wrapper to show/hide the checkbox');
+test('T-085: Mixed reveals a run-panel box (like nuzlocke/soul-link) with % + Run & Bun', () => {
+  // The % and Run & Bun controls live together in a single #mixed-panel box, shown only for the
+  // 'mixed' format and styled like the nuzlocke / soul-link run-panels.
+  assert.match(src, /id="mixed-panel"[^>]*class="run-panel/, '#mixed-panel is a run-panel box');
+  assert.match(src, /id="singles-percent"[^>]*min="0"[^>]*max="100"/, 'singles-percent input 0–100 inside the box');
+  assert.match(src, /id="league-runandbun"/, 'Run & Bun checkbox inside the box');
   assert.match(src, /id="league-runandbun-desc"/, 'a dynamic description span');
-  // Both rows toggle on the 'mixed' format.
-  assert.match(src, /#singles-percent-row'\)[^\n]*classList\.toggle\('hidden'/, 'percent row toggled by battle format');
-  assert.match(src, /#league-runandbun-row'\)[^\n]*classList\.toggle\('hidden'/, 'run & bun row toggled by battle format');
+  // The whole box toggles on the 'mixed' format (not two loose rows).
+  assert.match(src, /#mixed-panel'\)[^\n]*classList\.toggle\('hidden'/, 'the box is shown only for the mixed format');
 });
 
 test('T-085: battle-format keys round-trip through DEFAULTS/getConfig/setConfig and both engines', () => {
