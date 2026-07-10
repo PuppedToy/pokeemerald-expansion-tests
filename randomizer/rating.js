@@ -3453,16 +3453,30 @@ function isSpreadMove(move) {
     return SPREAD_TARGET_TOKENS.some(tok => target.includes(tok));
 }
 
+// T-095/ADR-015 — moves near-worthless in singles but pivotal in doubles: a doubles-specific floor.
+// These initial values are refined against the historic-team research in Group 2B.
+const DOUBLES_SUPPORT_RATINGS = {
+    MOVE_FOLLOW_ME: 7, MOVE_RAGE_POWDER: 7,                                        // redirection
+    MOVE_HELPING_HAND: 6, MOVE_AFTER_YOU: 5, MOVE_COACHING: 4.5, MOVE_DECORATE: 6, // ally buffs
+    MOVE_WIDE_GUARD: 5, MOVE_QUICK_GUARD: 4, MOVE_ALLY_SWITCH: 4,                   // protection / positioning
+    MOVE_TRICK_ROOM: 7, MOVE_TAILWIND: 7.5,                                        // speed control (archetype-defining)
+    MOVE_PROTECT: 5.5, MOVE_DETECT: 5.5, MOVE_SPIKY_SHIELD: 5.5,                    // self-protection (scout + stall for ally)
+    MOVE_KINGS_SHIELD: 5.5, MOVE_BANEFUL_BUNKER: 5.5, MOVE_SILK_TRAP: 5.5,
+};
+
 // Doubles value of a move: the singles rating plus a spread bonus for damaging moves that hit both
 // foes (gen-6+ doubles deal 0.75x per target but hit two → ~1.5x total damage). Foes-only spread
 // (BOTH) gets the full bonus; spread that also hits the ally (FOES_AND_ALLY / ALL_BATTLERS) gets a
-// reduced bonus for the friendly-fire cost. Support/status re-valuation is layered on in T-095.
+// reduced bonus for the friendly-fire cost. Then a doubles-support floor (T-095) lifts the moves that
+// singles rates near zero but doubles relies on.
 function rateMoveDoubles(move) {
     let rating = rateMove(move);
     if (Number(move.power) > 0 && isSpreadMove(move)) {
         const hitsAlly = /MOVE_TARGET_(FOES_AND_ALLY|ALL_BATTLERS)/.test(move.target || '');
         rating *= hitsAlly ? 1.2 : 1.35;
     }
+    const support = DOUBLES_SUPPORT_RATINGS[move.id];
+    if (support !== undefined) rating = Math.max(rating, support);
     return rating;
 }
 
