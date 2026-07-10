@@ -6,7 +6,7 @@ const parser = require('../parser');
 const { randomizeTMs, buildTMList, annotateTmNumbers } = require('../tmRandomizer');
 const { parseTmLocations } = require('../tmLocations');
 const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
-const { ratePokemon, rateContextual, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove } = require('../rating');
+const { ratePokemon, rateContextual, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles } = require('../rating');
 const { balancePokemon } = require('../rebalancer');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
@@ -54,6 +54,7 @@ async function parseBaseData() {
         moves[moveId].priority = parser.parseMoveStat(moves[moveId].priority);
         moves[moveId].type     = moves[moveId].type.replace('TYPE_', '');
         moves[moveId].rating   = rateMove(moves[moveId]);
+        moves[moveId].ratingDoubles = rateMoveDoubles(moves[moveId]);   // T-094/ADR-015
     });
 
     // 4. Parse learnsets

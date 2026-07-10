@@ -3443,10 +3443,35 @@ function rateContextual(poke, moves, abilities, context) {
     return ratePokemon(restrictedPoke, moves, abilities, restrictedTmPool);
 }
 
+// ── T-094 / ADR-015 — doubles move rating ────────────────────────────────────────────────────────
+// Spread targets hit 2+ Pokémon in a double battle. `.includes` also matches the gen-conditional
+// target strings (e.g. Surf/Earthquake's `B_UPDATED_MOVE_DATA >= GEN_4 ? ... : ...`).
+const SPREAD_TARGET_TOKENS = ['MOVE_TARGET_BOTH', 'MOVE_TARGET_FOES_AND_ALLY', 'MOVE_TARGET_ALL_BATTLERS'];
+
+function isSpreadMove(move) {
+    const target = (move && move.target) || '';
+    return SPREAD_TARGET_TOKENS.some(tok => target.includes(tok));
+}
+
+// Doubles value of a move: the singles rating plus a spread bonus for damaging moves that hit both
+// foes (gen-6+ doubles deal 0.75x per target but hit two → ~1.5x total damage). Foes-only spread
+// (BOTH) gets the full bonus; spread that also hits the ally (FOES_AND_ALLY / ALL_BATTLERS) gets a
+// reduced bonus for the friendly-fire cost. Support/status re-valuation is layered on in T-095.
+function rateMoveDoubles(move) {
+    let rating = rateMove(move);
+    if (Number(move.power) > 0 && isSpreadMove(move)) {
+        const hitsAlly = /MOVE_TARGET_(FOES_AND_ALLY|ALL_BATTLERS)/.test(move.target || '');
+        rating *= hitsAlly ? 1.2 : 1.35;
+    }
+    return rating;
+}
+
 module.exports = {
     ratePokemon,
     tierFromRating,
     rateContextual,
+    isSpreadMove,
+    rateMoveDoubles,
     wishiwashiEffectivePoke,
     palafinEffectivePoke,
     chooseMoveset,
