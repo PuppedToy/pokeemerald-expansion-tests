@@ -1,4 +1,4 @@
-# Historic Smogon singles OU teams (Gen 6-7, megas era)
+# Historic Smogon singles OU teams (Gen 6-7, megas era) — 6v6
 
 <!-- GENERATED from docs/research/corpus.json (T-098/099/100 research workflow, adversarially
 verified). Regenerate: node scripts/gen-research-docs.cjs. Competitive references, not game rules —

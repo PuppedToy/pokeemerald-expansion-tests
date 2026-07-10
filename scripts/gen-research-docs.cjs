@@ -11,7 +11,9 @@ const OUT = path.join(ROOT, 'docs', 'research');
 const d = JSON.parse(fs.readFileSync(path.join(OUT, 'corpus.json'), 'utf8'));
 
 const corpus = d.corpus || [];
-const isDoubles = (t) => /vgc|doubles/i.test(t.format || '');
+const isVgc = (t) => /vgc/i.test(t.format || '');
+const isDou = (t) => !isVgc(t) && /doubles/i.test(t.format || '');   // Smogon Doubles OU = 6v6
+const isSingles = (t) => !isVgc(t) && !isDou(t);
 const cell = (s) => String(s == null ? '—' : s).replace(/\|/g, '/').replace(/\n/g, ' ').trim() || '—';
 const list = (a) => (a && a.length ? a.map(x => `- ${cell(x)}`).join('\n') : '- —');
 const links = (a) => (a && a.length ? a.map(u => `[${u.replace(/^https?:\/\//, '').slice(0, 48)}](${u})`).join(' · ') : '—');
@@ -58,11 +60,14 @@ ${teams.map(teamMd).join('\n---\n\n')}
     return teams.length;
 }
 
-const nD = writeCorpus('vgc-doubles-teams.md', 'Historic VGC doubles teams (Gen 6-7, megas era)',
-    corpus.filter(isDoubles),
-    'Landmark VGC (doubles, bring-6/pick-4) teams from the megas era, for reference when tuning the doubles rating and doubles archetypes. Sources: tournament reports / Smogon / Trainer Tower / Nugget Bridge archives.');
-const nS = writeCorpus('singles-ou-teams.md', 'Historic Smogon singles OU teams (Gen 6-7, megas era)',
-    corpus.filter(t => !isDoubles(t)),
+const nV = writeCorpus('vgc-doubles-teams.md', 'Historic VGC doubles teams (Gen 6-7, megas era) — 4v4',
+    corpus.filter(isVgc),
+    '⚠️ **VGC is 4v4** (bring-6 / pick-4, few switches). Landmark tournament teams for reference, but filter 4v4-specific conclusions for our 6v6 game — see `6v6-vs-4v4-doubles.md`. Sources: tournament reports / Smogon / Trainer Tower / Nugget Bridge archives.');
+const nDou = writeCorpus('dou-6v6-teams.md', 'Historic Smogon Doubles OU (DOU) teams (Gen 6-7) — 6v6',
+    corpus.filter(isDou),
+    '**Smogon DOU is 6v6** — the doubles format that matches our game. Prefer these over the VGC 4v4 teams when tuning our doubles rating/archetypes. Sources: Smogon Doubles OU sample teams / RMT / viability threads.');
+const nS = writeCorpus('singles-ou-teams.md', 'Historic Smogon singles OU teams (Gen 6-7, megas era) — 6v6',
+    corpus.filter(isSingles),
     'Landmark Smogon OU (6v6 singles) teams from the megas era, for reference when tuning the singles archetypes. Sources: Smogon strategy dex / sample teams / RMT.');
 
 const syn = d.synergy || { synergies: [], antiSynergies: [] };
@@ -113,4 +118,19 @@ doubles rating refinements (T-094/095/096) and the doubles tier floors (T-097).
 ${gaps.map(g => `| ${cell(g.subject)} | ${cell(g.kind)} | ${cell(g.observation)} | ${cell(g.suggestion)} |`).join('\n')}
 `);
 
-console.log(`Regenerated docs/research/: vgc-doubles-teams.md (${nD}), singles-ou-teams.md (${nS}), synergies-antisynergies.md, team-archetypes.md, rating-gaps.md`);
+// 6v6 DOU vs 4v4 VGC comparison — the lens for filtering 4v4-biased conclusions (our game is 6v6).
+const cmp = d.sixVsFour || [];
+fs.writeFileSync(path.join(OUT, '6v6-vs-4v4-doubles.md'), `# 6v6 (Smogon DOU) vs 4v4 (VGC) doubles — what transfers to our game
+
+${GEN_NOTE}
+
+**Our doubles are 6v6.** The VGC corpus is 4v4 (bring-6/pick-4). This table (from the DOU 6v6 corpus)
+is the lens for deciding which VGC conclusions apply to us. Owner-validated conclusions go in the
+rating-decisions log, not here.
+
+| Aspect | VGC (4v4) | Smogon DOU (6v6) | Implication for our 6v6 game |
+|---|---|---|---|
+${cmp.map(c => `| ${cell(c.aspect)} | ${cell(c.vgc4v4)} | ${cell(c.dou6v6)} | ${cell(c.implicationForOur6v6Game)} |`).join('\n')}
+`);
+
+console.log(`Regenerated docs/research/: vgc-doubles-teams.md (${nV}), dou-6v6-teams.md (${nDou}), singles-ou-teams.md (${nS}), synergies-antisynergies.md, team-archetypes.md, rating-gaps.md, 6v6-vs-4v4-doubles.md`);

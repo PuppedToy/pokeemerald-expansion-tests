@@ -1,10 +1,10 @@
-# Historic VGC doubles teams (Gen 6-7, megas era)
+# Historic VGC doubles teams (Gen 6-7, megas era) — 4v4
 
 <!-- GENERATED from docs/research/corpus.json (T-098/099/100 research workflow, adversarially
 verified). Regenerate: node scripts/gen-research-docs.cjs. Competitive references, not game rules —
 cite these when tuning ratings/archetypes; do not hand-edit (edit corpus.json instead). -->
 
-Landmark VGC (doubles, bring-6/pick-4) teams from the megas era, for reference when tuning the doubles rating and doubles archetypes. Sources: tournament reports / Smogon / Trainer Tower / Nugget Bridge archives.
+⚠️ **VGC is 4v4** (bring-6 / pick-4, few switches). Landmark tournament teams for reference, but filter 4v4-specific conclusions for our 6v6 game — see `6v6-vs-4v4-doubles.md`. Sources: tournament reports / Smogon / Trainer Tower / Nugget Bridge archives.
 
 **24 teams.**
 
