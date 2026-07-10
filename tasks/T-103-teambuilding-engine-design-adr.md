@@ -1,10 +1,10 @@
 ---
 id: T-103
 title: Design the archetype-driven teambuilding engine + ADR-016 (+ teardown plan)
-status: proposed
+status: done
 type: docs
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-10
 target-version: 0.8.0
 links: [T-083, T-101, T-102, docs/adr/ADR-016.md]
 blocked-by: [T-101, T-102]
@@ -56,18 +56,29 @@ Write **ADR-016** deciding the architecture:
 > provisional until the owner validates it.
 
 Acceptance criteria:
-- [ ] `docs/adr/ADR-016.md` written (accepted), added to `docs/INDEX.md`.
-- [ ] The preference model, sophistication scalar, backwards generation, and retained fixed points
-      are specified precisely enough to implement T-104…T-110.
-- [ ] A concrete teardown + verification plan (singles-not-worse) is written.
-- [ ] The data contract with the archetype JSONs (T-101/T-102) and the dual rating (2A) is pinned.
+- [x] `docs/adr/ADR-016.md` written and accepted, added to `docs/INDEX.md`.
+- [x] The preference model, per-team algorithm, sophistication scalar, reverse-order generation and
+      retained fixed points are specified precisely enough to implement T-104…T-110.
+- [x] A concrete teardown + verification plan (singles-not-worse gate) is written (ADR-016 Consequences).
+- [x] The data contract with the archetype JSONs (T-101/T-102) and the dual rating (2A) is pinned.
 
 ## Progress log
 
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-09** — Task created.
+- **2026-07-10** — Wrote and accepted **ADR-016** (indexed in `docs/INDEX.md`), formalising the design
+  already validated across the joint-analysis batches: preferences over slots; the per-team pipeline
+  (optional seed → stochastic fill → emergent archetype/gimmick crystallization → completion →
+  identity-aware refinement) with the sophistication scalar modulating seed probability, crystallization
+  confidence and refinement strength; reverse-order generation (last→first) for recurring-character
+  continuity (devolve the final roster); single shared resolver; dual-rating + archetype-JSON contracts;
+  retained fixed points; and a singles-not-worse teardown/verification gate. Open points recorded
+  (doubles defensive base; item rating → 2C; T-097 tier surgery). Closed on green (design/docs; the
+  design was owner-validated piece by piece).
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped **ADR-016** — the architecture SSOT for the 2C teambuilding rewrite (T-104…T-110 implement it).
+No deviations; the design encodes the owner-validated algorithm, archetype model and generation order.
+Follow-ups are the implementation tasks + the recorded open points.
