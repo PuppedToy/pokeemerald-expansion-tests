@@ -137,6 +137,18 @@ Acceptance criteria:
   **Output-neutral by construction** — no pipeline file imports the module yet (it wires in at 107c),
   so generation output is unchanged and the determinism gate is unaffected. Next: 107b (archetype-fit
   scoring + crystallization detector).
+- **2026-07-10 — 107b done.** Built `randomizer/modules/archetypeFit.js` (pure, reads 107a + the
+  archetype JSONs): `teamFeatureCounts`, `matchesEntry` (AND across entry clauses), `entryConfidence`
+  (fractional progress, for detecting an emerging identity on a partial team), `crystallize` (ranks
+  every base archetype + gimmick by entry confidence, with a `matched` flag), `combinedStructure`
+  (merge base+gimmick `structure` by role, strongest requirement wins), `structureFit` (weighted
+  [0,1] team↔structure fit; `min:0` roles optional), and `scoreCandidate` (marginal bias for a
+  candidate: full weight for an unmet required role, `DEPTH_FACTOR` for depth within range, none above
+  max — the signal 107c's weighted fill consumes). TDD: 11 tests incl. real-model crystallization
+  (2 Regen pivots → Balance; wallbreaker+revenge → Bulky Offense; Drizzle → weather gimmick; a random
+  pile → no base). Full suite 887 pass. Output-neutral (no pipeline import yet). Next: **107c** — wire
+  the weighted fill into the resolver via `context.sophistication` (bias vanishes at soph≈0 → early
+  byte-identical; first output-changing increment → determinism + singles-not-worse gate before merge).
 
 ## Outcome
 
