@@ -88,4 +88,13 @@ describe('planMemberRoleMove', () => {
         const rocker = mon({ ...withLearn('MOVE_STEALTH_ROCK') });
         expect(planMemberRoleMove({ species: rocker, ...opts({ model: null }) })).toBeNull();
     });
+
+    test('a seed primes refinement before an identity emerges (T-107 107e)', () => {
+        // Empty prior team → no emergent identity; a Balance seed makes a rock-capable mon get rocks.
+        const rocker = mon({ ...withLearn('MOVE_STEALTH_ROCK') });
+        const move = planMemberRoleMove({ species: rocker, team: [], model: singles, ctx: {}, sophistication: 1, seed: { base: 'balance' } });
+        expect(move).toBe('MOVE_STEALTH_ROCK');
+        // ...but not without the seed (no identity at all).
+        expect(planMemberRoleMove({ species: rocker, team: [], model: singles, ctx: {}, sophistication: 1 })).toBeNull();
+    });
 });

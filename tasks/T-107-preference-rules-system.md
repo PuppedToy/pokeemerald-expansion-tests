@@ -93,11 +93,16 @@ checked before the layer is allowed to alter high-sophistication teams.
 > research corpus (which is partly 4v4 VGC, whereas our doubles are 6v6). Any such value/mapping is
 > provisional until the owner validates it.
 
-Acceptance criteria:
-- [ ] Trainers are defined by preferences, not fixed slots; candidate teams scored by archetype-fit.
-- [ ] Sophistication modulates how strongly archetype fit is pursued (tested at both ends).
-- [ ] Weather/terrain are soft preferences with graceful fallback (no forced slots).
-- [ ] `cd randomizer && npm test` green.
+Acceptance criteria (met under the owner-validated "layer" model — see Architecture above):
+- [x] Composition is driven by archetype-fit **preferences**, not fixed positional roles: the picker
+      scores candidates by archetype fit (`scoreCandidate`) and biases the pick toward the emerged/
+      seeded identity. Fixed *slots* remain only as the **power/tier budget** (Option A), by design.
+- [x] Sophistication modulates how strongly archetype fit is pursued (verified at both ends: ~84%
+      toward fit at soph 0.9, uniform at 0.05; `BIAS_MIN_SOPH` gate → early game unbiased).
+- [x] Weather/terrain (and every gimmick) are **soft preferences** — they emerge/seed and bias, and
+      degrade gracefully to a plain sample; never a forced slot. (Weather-grunt seed *data* is
+      owner-validated follow-up.)
+- [x] `cd randomizer && npm test` green (911 pass) + `RUN_DETERMINISM=1` cross-ROM gate green.
 
 ## Progress log
 
@@ -210,6 +215,22 @@ Acceptance criteria:
   byte-identical). **Scope:** the MOVE half (the highest-impact "roles get run"); ability is already
   handled by the 107c pick and items by the existing `rateItemForAPokemon`, so item/ability nudges are
   a minor optional follow-up, not gating. Next: **107e** — trainer seed (initial-lean) declarations.
+- **2026-07-10 — 107e done → THE HEART IS FUNCTIONALLY COMPLETE.** Added the optional seed (§2.1):
+  a trainer may carry `archetypeSeed = { base, gimmicks }`. Unified the fill (107c) + refinement
+  (107d) identity logic behind one `resolveIdentity(team, model, ctx, seed)` in archetypePicker:
+  the **emergent** identity once the top base ≥ `IDENTITY_FLOOR`, **else the seed**, else null. So a
+  seeded trainer biases from slot 1 (before an identity emerges organically), and organic emergence
+  overrides the seed once it forms. Wired `context.archetypeSeed = trainer.archetypeSeed || null` +
+  threaded to the refiner. **Output-neutral**: no trainer declares a seed yet (the seed *assignments*
+  — "what trainers prefer" — are owner-validated meta data, deferred per the clause), and the
+  `resolveIdentity` refactor is behaviour-preserving when seed is null. 24 picker+refiner tests
+  (incl. resolveIdentity emergent/seed/override/null + a seed priming an empty-team pick); full suite
+  **911 pass**; determinism gate green.
+  **All 5 ADR-016 phases are now live** (seed → fill → crystallize → complete → refine), modulated by
+  sophistication, layered on the tier budget. Remaining T-107-adjacent follow-ups (non-gating, tracked
+  here): owner-validated **seed assignments** + **doubles** trainers exercising the doubles model
+  (T-109) + optional **item/ability** refinement. Task stays `in-progress` pending the T-113 batch
+  eval (the qualitative "teams feel coherent / singles not worse" is the owner's manual call).
 
 ## Outcome
 
