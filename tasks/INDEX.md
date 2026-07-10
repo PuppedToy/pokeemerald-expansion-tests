@@ -104,8 +104,8 @@
 | [T-098](T-098-research-vgc-doubles-teams.md) | Research — historic VGC doubles teams (gen 6–7) → cited reference docs | done | 0.8.0 | 2026-07-10 |
 | [T-099](T-099-research-smogon-singles-teams.md) | Research — historic Smogon singles teams (gen 6–7) → cited reference docs | done | 0.8.0 | 2026-07-10 |
 | [T-100](T-100-synergy-antisynergy-synthesis.md) | Synthesize a synergy / anti-synergy catalog and cross-check the current rating/combo logic | done | 0.8.0 | 2026-07-10 |
-| [T-101](T-101-singles-archetype-model.md) | Singles archetype model — JSON of archetypes, entry conditions and team structure | proposed | 0.8.0 | 2026-07-09 |
-| [T-102](T-102-doubles-archetype-model.md) | Doubles archetype model — JSON of archetypes (weather, TR, redirection, ability-swap…) | proposed | 0.8.0 | 2026-07-09 |
+| [T-101](T-101-singles-archetype-model.md) | Singles archetype model — JSON of archetypes, entry conditions and team structure | in-progress | 0.8.0 | 2026-07-10 |
+| [T-102](T-102-doubles-archetype-model.md) | Doubles archetype model — JSON of archetypes (weather, TR, redirection, ability-swap…) | in-progress | 0.8.0 | 2026-07-10 |
 | [T-103](T-103-teambuilding-engine-design-adr.md) | Design the archetype-driven teambuilding engine + ADR-016 (+ teardown plan) | proposed | 0.8.0 | 2026-07-09 |
 | [T-104](T-104-collapse-dual-resolver.md) | Collapse the writer.js / writerDocs.js dual resolver into one shared module | proposed | 0.8.0 | 2026-07-09 |
 | [T-105](T-105-sophistication-scalar.md) | Engine — sophistication scalar driven by boss progression | proposed | 0.8.0 | 2026-07-09 |

@@ -1,10 +1,10 @@
 ---
 id: T-101
 title: Singles archetype model — JSON of archetypes, entry conditions and team structure
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-10
 target-version: 0.8.0
 links: [T-083, T-099, T-100]
 blocked-by: [T-100]
@@ -37,17 +37,25 @@ weather, hazard-stack).
 > provisional until the owner validates it.
 
 Acceptance criteria:
-- [ ] `singles.json` archetype set covering balanced/offensive/defensive/gimmick (+ others), with
+- [x] `singles.json` archetype set covering balanced/offensive/defensive + a gimmick layer, with
       entry conditions and structure for each.
-- [ ] A schema + validation test guards the file.
-- [ ] Content is grounded in the research/analysis with sources noted.
-- [ ] `cd randomizer && npm test` green.
+- [x] A schema + validation test guards the file (`randomizer/archetypes.js` + `archetypes.test.js`).
+- [x] Content is grounded in the research/analysis (`docs/research/team-archetypes.md`, cited).
+- [x] `cd randomizer && npm test` green.
 
 ## Progress log
 
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-09** — Task created.
+- **2026-07-10** — Built `randomizer/data/archetypes/singles.json` (v1): 4 base archetypes (Balance
+  balanced · Bulky/Hyper Offense offensive · Full Stall defensive) + a stackable gimmick layer
+  (weather · screens · trick_room), each with `entry` conditions (for emergent crystallization) and a
+  soft `structure` (roles/min/max/weight) over a documented `featureDefinitions` vocabulary. Loader +
+  validator `randomizer/archetypes.js` (referential integrity: every entry/structure feature is
+  defined) + `archetypes.test.js`. Suite 844 pass. **Provisional** per the meta-analysis clause —
+  the specific entry thresholds / structure weights are the encoding of the validated research and
+  await owner review. Kept `in-progress`.
 
 ## Outcome
 

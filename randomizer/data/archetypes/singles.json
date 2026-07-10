@@ -1,0 +1,105 @@
+{
+  "format": "singles",
+  "_doc": "Singles teambuilding archetype model (T-101). Every team has ONE base archetype (balanced|offensive|defensive) plus a weighted, STACKABLE gimmick layer (Batch-3 owner decision). The 2C engine (T-107) reads `entry` to detect emergent crystallization from a partial team, and `structure` as the soft preferred composition to complete/refine toward (never fixed slots). `feature`/`role` keys are team-features the engine detects on candidate mons (see featureDefinitions). Values encode the owner-validated research (docs/research/team-archetypes.md + rating-decisions.md) and are PROVISIONAL per each task's meta-analysis validation clause.",
+  "featureDefinitions": {
+    "regeneratorPivot": "bulky mon with Regenerator (or a bulky pivot with recovery) that switches to reset damage",
+    "hazardSetter": "sets Stealth Rock / Spikes / Toxic Spikes",
+    "hazardRemover": "Defog / Rapid Spin",
+    "wallbreaker": "high-power (often Choice) attacker that breaks walls",
+    "winCondition": "a setup sweeper or late-game closer (Z-move / boosting sweep)",
+    "setupSweeper": "boosts its own stats then sweeps (DD / SD / CM / QD / Shift Gear / Unburden)",
+    "priorityUser": "carries a priority move as revenge / finisher",
+    "physicalWall": "dedicated physical wall",
+    "specialWall": "dedicated special wall",
+    "unawareWall": "Unaware (or Magic Bounce) wall that denies setup / hazards",
+    "cleric": "Wish / Aromatherapy / Heal Bell support",
+    "choiceScarfRevengeKiller": "Choice Scarf mon used to revenge-kill / provide speed control",
+    "pivotUser": "U-turn / Volt Switch / Flip Turn / Teleport pivot",
+    "focusSashLead": "frail Focus Sash suicide lead (hazards + Taunt)",
+    "weatherSetter": "sets weather via ability (Drizzle / Drought / Sand Stream / Snow Warning) or a weather move",
+    "weatherAbuser": "Swift Swim / Chlorophyll / Sand Rush / Slush Rush, or a weather-boosted attacker",
+    "screenSetter": "Reflect / Light Screen / Aurora Veil",
+    "trickRoomSetter": "sets Trick Room",
+    "trickRoomAbuser": "slow, high-offense mon that benefits from Trick Room"
+  },
+  "baseArchetypes": [
+    {
+      "id": "balance", "name": "Balance", "category": "balanced",
+      "description": "Defensive pivot core (Regenerator) that soaks hits and generates momentum for 1-2 Choice wallbreakers, wins the hazard game, and closes with a setup/Z win condition.",
+      "entry": [{ "feature": "regeneratorPivot", "min": 2 }],
+      "structure": [
+        { "role": "regeneratorPivot", "min": 2, "max": 3, "weight": 1.0 },
+        { "role": "hazardSetter", "min": 1, "max": 1, "weight": 0.7 },
+        { "role": "hazardRemover", "min": 1, "max": 1, "weight": 0.7 },
+        { "role": "wallbreaker", "min": 1, "max": 2, "weight": 1.0 },
+        { "role": "winCondition", "min": 1, "max": 1, "weight": 0.9 }
+      ]
+    },
+    {
+      "id": "bulky_offense", "name": "Bulky Offense", "category": "offensive",
+      "description": "Offensively slanted with a small defensive backbone; wallbreakers + a Choice-Scarf revenge killer apply pressure (optionally a Pursuit trapper opens the breaker's path), closing with setup/priority.",
+      "entry": [{ "feature": "wallbreaker", "min": 1 }, { "feature": "choiceScarfRevengeKiller", "min": 1 }],
+      "structure": [
+        { "role": "physicalWall", "min": 0, "max": 1, "weight": 0.5 },
+        { "role": "hazardSetter", "min": 1, "max": 1, "weight": 0.6 },
+        { "role": "choiceScarfRevengeKiller", "min": 1, "max": 1, "weight": 0.8 },
+        { "role": "wallbreaker", "min": 1, "max": 2, "weight": 1.0 },
+        { "role": "winCondition", "min": 1, "max": 1, "weight": 0.9 }
+      ]
+    },
+    {
+      "id": "hyper_offense", "name": "Hyper Offense", "category": "offensive",
+      "description": "Maximum aggression with little defense: a Focus-Sash suicide lead sets hazards and Taunts, then a stack of setup sweepers race to win, backed by priority / VoltTurn.",
+      "entry": [{ "feature": "focusSashLead", "min": 1 }, { "feature": "setupSweeper", "min": 2 }],
+      "structure": [
+        { "role": "focusSashLead", "min": 1, "max": 1, "weight": 0.9 },
+        { "role": "setupSweeper", "min": 3, "max": 4, "weight": 1.0 },
+        { "role": "priorityUser", "min": 1, "max": 2, "weight": 0.7 }
+      ]
+    },
+    {
+      "id": "full_stall", "name": "Full Stall", "category": "defensive",
+      "description": "Passive defensive wall-stack: splits physical/special defense, denies win conditions (Unaware / Magic Bounce), and grinds foes with residual damage + Wish/Recover/Regenerator + clerics.",
+      "entry": [{ "feature": "physicalWall", "min": 1 }, { "feature": "specialWall", "min": 1 }, { "feature": "unawareWall", "min": 1 }],
+      "structure": [
+        { "role": "physicalWall", "min": 1, "max": 2, "weight": 1.0 },
+        { "role": "specialWall", "min": 1, "max": 1, "weight": 1.0 },
+        { "role": "unawareWall", "min": 1, "max": 1, "weight": 0.9 },
+        { "role": "cleric", "min": 1, "max": 1, "weight": 0.7 },
+        { "role": "hazardSetter", "min": 1, "max": 1, "weight": 0.6 },
+        { "role": "hazardRemover", "min": 1, "max": 1, "weight": 0.6 }
+      ]
+    }
+  ],
+  "gimmicks": [
+    {
+      "id": "weather", "name": "Weather (Rain/Sun/Sand/Snow)",
+      "description": "A weather setter powers its own side (Swift Swim/Chlorophyll Speed, boosted attacks); glue keeps the plan alive after weather lapses, with a weather-independent backup win condition.",
+      "subtypes": ["sun", "rain", "sand", "snow"],
+      "entry": [{ "feature": "weatherSetter", "min": 1 }],
+      "structure": [
+        { "role": "weatherSetter", "min": 1, "max": 1, "weight": 1.0 },
+        { "role": "weatherAbuser", "min": 1, "max": 2, "weight": 1.0 },
+        { "role": "winCondition", "min": 0, "max": 1, "weight": 0.6 }
+      ]
+    },
+    {
+      "id": "screens", "name": "Screens",
+      "description": "Dual screens / Aurora Veil blunt incoming hits so setup sweepers can boost safely behind them.",
+      "entry": [{ "feature": "screenSetter", "min": 1 }, { "feature": "setupSweeper", "min": 1 }],
+      "structure": [
+        { "role": "screenSetter", "min": 1, "max": 1, "weight": 1.0 },
+        { "role": "setupSweeper", "min": 1, "max": 2, "weight": 1.0 }
+      ]
+    },
+    {
+      "id": "trick_room", "name": "Trick Room",
+      "description": "Inverts the speed order so slow, high-power abusers move first. Rare in singles OU but a valid gimmick.",
+      "entry": [{ "feature": "trickRoomSetter", "min": 1 }, { "feature": "trickRoomAbuser", "min": 1 }],
+      "structure": [
+        { "role": "trickRoomSetter", "min": 1, "max": 1, "weight": 1.0 },
+        { "role": "trickRoomAbuser", "min": 2, "max": 3, "weight": 1.0 }
+      ]
+    }
+  ]
+}
