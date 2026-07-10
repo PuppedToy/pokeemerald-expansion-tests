@@ -1,13 +1,13 @@
 ---
 id: T-106
 title: Engine — backwards generation (endgame-first, devolve preserving ID continuity)
-status: in-progress
+status: proposed
 type: feature
 created: 2026-07-09
 updated: 2026-07-10
 target-version: 0.8.0
-links: [T-083, T-103, T-104, T-105]
-blocked-by: [T-105]
+links: [T-083, T-103, T-104, T-105, T-107, T-108]
+blocked-by: [T-107]
 ---
 
 # T-106 — Engine — backwards generation (endgame-first, devolve preserving ID continuity)
@@ -83,6 +83,26 @@ Acceptance criteria:
   own focused pass with the determinism gate + new continuity tests (Champion Steven ↔ Granite Cave
   Steven at level-appropriate evo stages) as the guardrails. Design itself is settled (ADR-016 §4,
   owner-validated) — no open fork. Plan de-risked; ready to implement.
+- **2026-07-10 (sequencing decision — owner delegated "elige lo que funcione mejor")** — Deeper
+  analysis showed the continuity inversion is **inseparable from the new engine and cannot be built
+  cleanly before it**:
+  - The devolution of the *stage* is already handled today (store base form + `tryEvolve` forward per
+    level → Route 103 baby, Ever Grande evolved). The owner's real ask is **where the ROSTER
+    COMPOSITION is decided** — at the strongest/latest appearance under **full sophistication** (the
+    T-107 build), not at Route 103 under early constraints — then projected backward.
+  - Making the latest appearance authoritative only has value once T-107's sophistication-weighted
+    build exists to produce a *well-built* endgame roster; doing it on the current fill logic would
+    produce a throwaway roster T-107 reworks anyway.
+  - Reverse iteration order alone **breaks** current continuity (per-slot reseed → a later-processed
+    authoritative slot leaves earlier REPEAT slots reading an empty `storedIds`), and T-107 **migrates
+    trainer definitions from slot tables to preferences**, changing the very model
+    (`TRAINER_REPEAT_ID`/`evolutionTier`) this task would edit — editing it now = editing it twice.
+  **Decision:** re-sequence to **T-107 → (T-106 + T-108)**. T-107 (the heart) lands first and exposes
+  the hooks continuity needs (build-a-trainer-at-a-given-sophistication + a `storedIds` continuity
+  channel on the new engine). T-106 then layers reverse-order generation + authoritative-latest roster
+  + devolution on the *final* engine, alongside T-108 (fixed-ID special cases) — the same continuity
+  concern. `blocked-by` → T-107; status back to `proposed` (the investigation above stands as
+  groundwork). No throwaway, no double-edit of the trainer data model. ADR-016 §4 design unchanged.
 
 ## Outcome
 

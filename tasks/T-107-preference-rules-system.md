@@ -64,6 +64,15 @@ Acceptance criteria:
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-09** — Task created.
+- **2026-07-10 (sequencing)** — Promoted to the **next actionable 2C task**: blockers T-101 and T-105
+  are both done, and the T-106 investigation established that continuity inversion (reverse-order +
+  authoritative-latest roster + devolution) must plug into *this* engine rather than precede it — so
+  **T-107 lands before T-106 + T-108** (see T-106 log). Design implication for this task: the new
+  per-team build must expose the hooks that continuity/fixed-ID work will consume —
+  (a) **build-a-trainer-at-a-given-sophistication** (already seeded: the resolver computes
+  `context.sophistication` from the T-105 scale), and (b) a **`storedIds`-style continuity channel**
+  on the new engine so a recurring character's roster can be decided once (at max sophistication) and
+  reused. Keep those seams explicit so T-106/T-108 layer on without reworking this engine.
 
 ## Outcome
 
