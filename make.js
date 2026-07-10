@@ -124,6 +124,7 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
     const { writeItemFilesFromBundle }  = require('./randomizer/itemRandomizer');
     const { writeMoney }                = require('./randomizer/moneyWriter');
     const { writeItemPrices }           = require('./randomizer/itemPriceWriter');
+    const { writeRunAndBunVars }        = require('./randomizer/runAndBunWriter');
     const { writeLocationNames }        = require('./randomizer/locationNameWriter');
     const { emitArtifact, resolveVanillaPath } = require('./randomizer/romArtifact');
 
@@ -152,6 +153,9 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
         await writeMoney(bundle.config?.money);
         // T-073 — patch configurable shop item prices into src/data/items.h (restored by restore()).
         await writeItemPrices(bundle.config?.prices);
+        // T-091/ADR-014 — preset the League Run & Bun mode gate + E4 quotas from the run config
+        // into Sidney's room init script (restored by restore() after build).
+        await writeRunAndBunVars(bundle.config);
         // T-070 — per-ROM location→nickname table (per-ROM, never shared; restored by restore()).
         await writeLocationNames(rom.artifacts.locationNaming || null);
         run('make', ['-j', String(jobs)]);
