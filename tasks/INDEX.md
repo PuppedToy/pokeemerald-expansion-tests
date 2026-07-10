@@ -119,3 +119,4 @@
 | [T-113](T-113-group2-checkpoint-e2e.md) | Group 2 checkpoint — end-to-end builds + per-format team-quality review | proposed | 0.8.0 | 2026-07-09 |
 | [T-114](T-114-battle-ai-per-archetype.md) | Battle AI tuned per team archetype / format (deferred) | proposed | 0.9.0 | 2026-07-09 |
 | [T-115](T-115-docs-battle-type-badge.md) | Surface each trainer's battle type (Single/Double) in the generated docs viewer | in-progress | 0.7.0 | 2026-07-10 |
+| [T-116](T-116-battle-tag-refinements.md) | Battle-type tag refinements — single/tag tags, Space Center tag battle, Run & Bun E4 labels, rival consistency | in-progress | 0.7.0 | 2026-07-10 |

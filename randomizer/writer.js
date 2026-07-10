@@ -225,8 +225,10 @@ function buildTrainersResultsFromDocs(docsTrainers, pokemonList) {
             reward: td.reward || [],
             isBoss: td.isBoss || false,
             isPartner: td.isPartner || false,
+            label: td.label || null,
             location: td.location || null,
             battleType: td.battleType || 'singles',   // T-087/ADR-014
+            choiceBattle: td.choiceBattle || null,     // T-116 — Run & Bun E4 choice info
             preventShuffle: td.preventShuffle || false,
             team: (td.team || []).map(member => ({
                 ...member,
@@ -589,6 +591,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
                 team: [...target.team],
                 class: trainer.class,
                 colors: trainer.colors,   // T-044 — copied team, but this trainer's own card colours
+                battleType: trainer.battleType || 'singles',   // T-116 — Brendan shares May's battle type
             };
             return;
         }

@@ -442,6 +442,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
             team,
             preventShuffle: trainer.preventShuffle || false,
             battleType: trainer.battleType || 'singles',   // T-087/ADR-014
+            choiceBattle: trainer.choiceBattle || null,    // T-116 — Run & Bun E4 choice info
         };
     });
 

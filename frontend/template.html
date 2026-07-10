@@ -648,11 +648,18 @@
     .roster-loc { display:inline-flex; align-items:center; gap:6px; font-size:18px; color:var(--obs-cyan);
       background:var(--obs-well); border:2px solid var(--obs-line); padding:5px 9px; }
     .roster-loc .ico { height:1.05em; }
-    /* T-115 — battle-format badge: flags a trainer fought as a Double Battle (shown mainly in Mixed
-       runs, where singles/doubles vary; absent = single battle). */
+    /* T-115/T-116 — battle-format tags on a trainer card: Single / Double / Tag battle, each a
+       distinct colour. Every trainer carries a battleType, so exactly one tag shows. */
     .roster-battletype { display:inline-flex; align-items:center; gap:6px; font-family:var(--obs-font-display);
-      font-size:9px; letter-spacing:1px; text-transform:uppercase; color:#fff; background:#7c3aed;
-      border:var(--obs-border); box-shadow:var(--obs-shadow-sm); padding:7px 10px; white-space:nowrap; }
+      font-size:10px; letter-spacing:0.5px; color:#fff; border:var(--obs-border);
+      box-shadow:var(--obs-shadow-sm); padding:7px 10px; white-space:nowrap; }
+    .roster-battletype.bt-single { background:#2563eb; }   /* single battle — blue */
+    .roster-battletype.bt-double { background:#7c3aed; }   /* double battle — violet */
+    .roster-battletype.bt-tag    { background:#0d9488; }   /* Space Center tag battle — teal */
+    /* T-116 — Run & Bun "Choice Battle" info box on the Elite Four cards. */
+    .choice-battle { font-size:12px; line-height:1.35; color:var(--obs-yellow); background:var(--obs-well);
+      border:2px solid var(--obs-line); padding:7px 9px; align-self:stretch; }
+    .choice-battle strong { color:#fff; letter-spacing:0.5px; }
     .roster-rail .rewards { display:flex; flex-direction:column; gap:6px; align-self:stretch; margin:0; }
     .roster-rail .reward-item { display:flex; align-items:center; gap:7px; background:var(--obs-well);
       border:2px solid var(--obs-line); padding:5px 9px; font-size:18px; }
@@ -1612,7 +1619,10 @@
             <div class="roster-facts">
               <span class="roster-lv">Lv. ${trainer.level}</span>
               ${trainer.location ? `<span class="roster-loc">${getIcon('location','📍')} ${trainer.location}</span>` : ''}
-              ${trainer.battleType === 'doubles' ? `<span class="roster-battletype">⚔️ Double Battle</span>` : ''}
+              ${trainer.battleType === 'singles' ? `<span class="roster-battletype bt-single">Single Battle</span>` : ''}
+              ${trainer.battleType === 'doubles' ? `<span class="roster-battletype bt-double">Double Battle</span>` : ''}
+              ${trainer.battleType === 'tag' ? `<span class="roster-battletype bt-tag">Tag Battle</span>` : ''}
+              ${trainer.choiceBattle ? `<div class="choice-battle"><strong>Choice Battle</strong> — across the Elite Four you choose each member's format: ${trainer.choiceBattle.singles} must be fought as ${trainer.choiceBattle.singles === 1 ? 'a Single Battle' : 'Single Battles'} and ${trainer.choiceBattle.doubles} as ${trainer.choiceBattle.doubles === 1 ? 'a Double Battle' : 'Double Battles'}.</div>` : ''}
             </div>
             ${rewards}
             ${!trainer.isPartner ? `<label class="nz-defeat-label">

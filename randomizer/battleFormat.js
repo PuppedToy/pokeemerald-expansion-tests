@@ -17,8 +17,10 @@ const E4_DOUBLES_IDS = new Set(E4_IDS.map(id => `${id}_DOUBLES`));
 const TATE_AND_LIZA_ID = 'TRAINER_TATE_AND_LIZA_1';
 const GYM_BOSS_IDS = ['TRAINER_ROXANNE_1', 'TRAINER_BRAWLY_1', 'TRAINER_WATTSON_1', 'TRAINER_FLANNERY_1',
     'TRAINER_NORMAN_1', 'TRAINER_WINONA_1', TATE_AND_LIZA_ID, 'TRAINER_JUAN_1'];
-// Never converted: the Mossdeep Space Center multi_2_vs_2 tag battle is already a special double.
-const EXCLUDED_IDS = new Set(['TRAINER_MAXIE_MOSSDEEP', 'TRAINER_TABITHA_MOSSDEEP']);
+// The Mossdeep Space Center multi_2_vs_2 tag battle (Maxie + Tabitha vs the player + Steven). Always
+// tagged 'tag' — never single/double-converted — and shown as a Tag Battle in the docs even outside
+// mixed. PARTNER_STEVEN is the ally half of that same fight.
+const TAG_BATTLE_IDS = new Set(['TRAINER_MAXIE_MOSSDEEP', 'TRAINER_TABITHA_MOSSDEEP', 'PARTNER_STEVEN']);
 // A double battle needs a trainer that can field two Pokémon.
 const MIN_DOUBLE_TEAM_SIZE = 2;
 
@@ -38,7 +40,7 @@ function mulberry32(seedValue) {
 /** Which battle-format pool a trainer belongs to (ADR-014 rule 3). */
 function poolOf(trainer) {
     const { id, isBoss } = trainer;
-    if (EXCLUDED_IDS.has(id)) return 'excluded';
+    if (TAG_BATTLE_IDS.has(id)) return 'tag';
     if (id === CHAMPION_ID) return 'champion';
     if (E4_IDS.includes(id)) return 'e4';
     if (E4_DOUBLES_IDS.has(id)) return 'e4Doubles';
@@ -49,7 +51,7 @@ function poolOf(trainer) {
 
 /** A trainer may only be doubles if it can field 2+ mons and is not the excluded tag battle. */
 function isEligible(trainer) {
-    return !EXCLUDED_IDS.has(trainer.id) && (trainer.teamSize ?? 0) >= MIN_DOUBLE_TEAM_SIZE;
+    return !TAG_BATTLE_IDS.has(trainer.id) && (trainer.teamSize ?? 0) >= MIN_DOUBLE_TEAM_SIZE;
 }
 
 /**
@@ -94,8 +96,11 @@ function assignBattleTypes(trainers, config = {}) {
     // singles (default) and doubles need no proportions/RNG.
     if (format !== 'mixed') {
         for (const t of trainers) {
-            const type = (format === 'doubles' && isEligible(t)) ? 'doubles' : 'singles';
-            setType(t.id, type, poolOf(t));
+            const pool = poolOf(t);
+            const type = pool === 'tag'
+                ? 'tag'
+                : (format === 'doubles' && isEligible(t)) ? 'doubles' : 'singles';
+            setType(t.id, type, pool);
         }
         return { assignments, stats };
     }
@@ -105,11 +110,11 @@ function assignBattleTypes(trainers, config = {}) {
     const singlesFraction = Math.min(1, Math.max(0, (config.singlesPercent ?? 60) / 100));
 
     const runAndBun = config.leagueRunAndBun === true;
-    const pools = { champion: [], e4: [], e4Doubles: [], gymBosses: [], bossTrainers: [], normalTrainers: [], excluded: [] };
+    const pools = { champion: [], e4: [], e4Doubles: [], gymBosses: [], bossTrainers: [], normalTrainers: [], tag: [] };
     for (const t of trainers) pools[poolOf(t)].push(t);
 
-    // Excluded → always singles (their .party stays "No"; the multi battle is script-driven).
-    for (const t of pools.excluded) setType(t.id, 'singles', 'excluded');
+    // Tag battle (the Mossdeep trio) → always 'tag', in every format (never single/double-converted).
+    for (const t of pools.tag) setType(t.id, 'tag', 'tag');
 
     // Run & Bun doubles clones (present only in that mode) are always the doubles version.
     for (const t of pools.e4Doubles) setType(t.id, isEligible(t) ? 'doubles' : 'singles', 'e4Doubles');
@@ -152,7 +157,37 @@ function assignBattleTypes(trainers, config = {}) {
     return { assignments, stats };
 }
 
+/**
+ * ADR-014 — rival-family battle-type consistency (T-116). Every variant of a rival encounter must
+ * share one battle type. May's per-location starter variants (TRAINER_MAY_<loc>_<starter>) are
+ * grouped and forced to a single deterministic type; any `copy:`-linked trainer (the Brendan
+ * variants) then inherits its target's type — so the docs and the ROM `.party` all agree. Mutates
+ * each trainer's `battleType` in place; returns the same array.
+ */
+function unifyRivalBattleTypes(trainers) {
+    const byId = new Map(trainers.map(t => [t.id, t]));
+    const STARTER_SUFFIX = /_(TREECKO|TORCHIC|MUDKIP)$/;
+    const groups = new Map();
+    for (const t of trainers) {
+        if (t.id.startsWith('TRAINER_MAY_') && STARTER_SUFFIX.test(t.id)) {
+            const key = t.id.replace(STARTER_SUFFIX, '');
+            if (!groups.has(key)) groups.set(key, []);
+            groups.get(key).push(t);
+        }
+    }
+    for (const members of groups.values()) {
+        members.sort((a, b) => (a.id < b.id ? -1 : 1));
+        const bt = members[0].battleType;
+        for (const m of members) m.battleType = bt;
+    }
+    // copy-linked trainers (Brendan) inherit their (now-grouped) target's battle type.
+    for (const t of trainers) {
+        if (t.copy && byId.has(t.copy)) t.battleType = byId.get(t.copy).battleType;
+    }
+    return trainers;
+}
+
 module.exports = {
-    assignBattleTypes, poolOf, isEligible, runAndBunE4Split,
-    CHAMPION_ID, E4_IDS, E4_DOUBLES_IDS, GYM_BOSS_IDS, EXCLUDED_IDS, TATE_AND_LIZA_ID, MIN_DOUBLE_TEAM_SIZE,
+    assignBattleTypes, poolOf, isEligible, runAndBunE4Split, unifyRivalBattleTypes,
+    CHAMPION_ID, E4_IDS, E4_DOUBLES_IDS, GYM_BOSS_IDS, TAG_BATTLE_IDS, TATE_AND_LIZA_ID, MIN_DOUBLE_TEAM_SIZE,
 };

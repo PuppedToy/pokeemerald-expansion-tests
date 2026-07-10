@@ -5,7 +5,7 @@
 // run seed, so it never perturbs the global rng stream.
 
 const {
-    assignBattleTypes, poolOf, isEligible, TATE_AND_LIZA_ID, runAndBunE4Split,
+    assignBattleTypes, poolOf, isEligible, TATE_AND_LIZA_ID, runAndBunE4Split, unifyRivalBattleTypes,
 } = require('../../battleFormat');
 
 const T = (id, isBoss, teamSize = 6) => ({ id, isBoss, teamSize });
@@ -25,8 +25,9 @@ describe('battleFormat pools (ADR-014)', () => {
         expect(poolOf(T('TRAINER_SIDNEY_DOUBLES', true))).toBe('e4Doubles');   // Run & Bun clone
         expect(poolOf(T('TRAINER_MAXIE_MT_CHIMNEY', true))).toBe('bossTrainers');
         expect(poolOf(T('TRAINER_YOUNGSTER_JOEY', false))).toBe('normalTrainers');
-        expect(poolOf(T('TRAINER_MAXIE_MOSSDEEP', true))).toBe('excluded');
-        expect(poolOf(T('TRAINER_TABITHA_MOSSDEEP', true))).toBe('excluded');
+        expect(poolOf(T('TRAINER_MAXIE_MOSSDEEP', true))).toBe('tag');
+        expect(poolOf(T('TRAINER_TABITHA_MOSSDEEP', true))).toBe('tag');
+        expect(poolOf(T('PARTNER_STEVEN', false))).toBe('tag');   // Space Center ally half
     });
 
     test('isEligible requires teamSize>=2 and not excluded', () => {
@@ -43,18 +44,21 @@ describe('assignBattleTypes — pure formats', () => {
         T('TRAINER_MAXIE_MOSSDEEP', true), T('TRAINER_TABITHA_MOSSDEEP', true),
     ];
 
-    test('singles → everyone singles', () => {
+    test('singles → everyone singles, except the tag-battle trio', () => {
         const { assignments } = assignBattleTypes(roster, { battleFormat: 'singles' });
-        for (const t of roster) expect(assignments.get(t.id)).toBe('singles');
+        for (const t of roster) {
+            const expected = ['TRAINER_MAXIE_MOSSDEEP', 'TRAINER_TABITHA_MOSSDEEP'].includes(t.id) ? 'tag' : 'singles';
+            expect(assignments.get(t.id)).toBe(expected);
+        }
     });
 
-    test('doubles → all eligible doubles; <2-team and excluded stay singles', () => {
+    test('doubles → all eligible doubles; <2-team singles; tag trio stays tag', () => {
         const { assignments } = assignBattleTypes(roster, { battleFormat: 'doubles' });
         expect(assignments.get('TRAINER_CHAMPION_STEVEN')).toBe('doubles');
         expect(assignments.get('TRAINER_GRUNT_A')).toBe('doubles');
-        expect(assignments.get('TRAINER_SOLO')).toBe('singles');           // teamSize 1
-        expect(assignments.get('TRAINER_MAXIE_MOSSDEEP')).toBe('singles'); // excluded tag battle
-        expect(assignments.get('TRAINER_TABITHA_MOSSDEEP')).toBe('singles');
+        expect(assignments.get('TRAINER_SOLO')).toBe('singles');        // teamSize 1
+        expect(assignments.get('TRAINER_MAXIE_MOSSDEEP')).toBe('tag');  // tag battle, never converted
+        expect(assignments.get('TRAINER_TABITHA_MOSSDEEP')).toBe('tag');
     });
 });
 
@@ -136,5 +140,49 @@ describe('assignBattleTypes — Run & Bun (mixed + leagueRunAndBun)', () => {
         expect(hi.get('TRAINER_CHAMPION_STEVEN')).toBe('singles');
         const lo = assignBattleTypes(roster, { battleFormat: 'mixed', leagueRunAndBun: true, singlesPercent: 10, seed: 3 }).assignments;
         expect(lo.get('TRAINER_CHAMPION_STEVEN')).toBe('doubles');
+    });
+});
+
+describe('tag battle — the Mossdeep trio (T-116)', () => {
+    const trio = [T('TRAINER_MAXIE_MOSSDEEP', true), T('TRAINER_TABITHA_MOSSDEEP', true), T('PARTNER_STEVEN', false)];
+    for (const fmt of ['singles', 'doubles']) {
+        test(`the trio is 'tag' in ${fmt} format`, () => {
+            const { assignments } = assignBattleTypes(trio, { battleFormat: fmt });
+            for (const t of trio) expect(assignments.get(t.id)).toBe('tag');
+        });
+    }
+    test("the trio is 'tag' in mixed too", () => {
+        const { assignments } = assignBattleTypes(trio, { battleFormat: 'mixed', singlesPercent: 50, seed: 1 });
+        for (const t of trio) expect(assignments.get(t.id)).toBe('tag');
+    });
+});
+
+describe('unifyRivalBattleTypes — rival family consistency (T-116)', () => {
+    test("May's starter variants at a location share one battle type", () => {
+        const may = [
+            { id: 'TRAINER_MAY_ROUTE_103_TREECKO', battleType: 'doubles' },
+            { id: 'TRAINER_MAY_ROUTE_103_TORCHIC', battleType: 'singles' },
+            { id: 'TRAINER_MAY_ROUTE_103_MUDKIP', battleType: 'singles' },
+        ];
+        unifyRivalBattleTypes(may);
+        expect(new Set(may.map(t => t.battleType)).size).toBe(1);
+    });
+
+    test('a copy-linked Brendan variant inherits its May target battle type', () => {
+        const list = [
+            { id: 'TRAINER_MAY_ROUTE_103_TREECKO', battleType: 'doubles' },
+            { id: 'TRAINER_MAY_ROUTE_103_TORCHIC', battleType: 'doubles' },
+            { id: 'TRAINER_MAY_ROUTE_103_MUDKIP', battleType: 'doubles' },
+            { id: 'TRAINER_BRENDAN_ROUTE_103_TREECKO', battleType: 'singles', copy: 'TRAINER_MAY_ROUTE_103_TREECKO' },
+        ];
+        unifyRivalBattleTypes(list);
+        expect(list.find(t => t.id === 'TRAINER_BRENDAN_ROUTE_103_TREECKO').battleType).toBe('doubles');
+    });
+
+    test('does not touch non-rival trainers', () => {
+        const list = [{ id: 'TRAINER_ROXANNE_1', battleType: 'doubles' }, { id: 'TRAINER_YOUNGSTER_JOEY', battleType: 'singles' }];
+        unifyRivalBattleTypes(list);
+        expect(list[0].battleType).toBe('doubles');
+        expect(list[1].battleType).toBe('singles');
     });
 });

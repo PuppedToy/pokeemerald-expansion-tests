@@ -14,12 +14,26 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const tpl = fs.readFileSync(path.join(__dirname, '..', 'template.html'), 'utf8');
 
-test('doubles trainers render a Double Battle badge from trainer.battleType', () => {
-  assert.match(tpl, /trainer\.battleType === 'doubles'/, 'the card render branches on battleType');
-  assert.match(tpl, /roster-battletype/, 'the badge element/class is emitted');
-  assert.match(tpl, /Double Battle/, 'the badge is labelled');
+test('each trainer renders a battle-format tag (single/double/tag) from battleType', () => {
+  assert.match(tpl, /trainer\.battleType === 'singles'[\s\S]{0,80}?Single Battle/, 'Single Battle tag');
+  assert.match(tpl, /trainer\.battleType === 'doubles'[\s\S]{0,80}?Double Battle/, 'Double Battle tag');
+  assert.match(tpl, /trainer\.battleType === 'tag'[\s\S]{0,80}?Tag Battle/, 'Tag Battle tag');
 });
 
-test('the .roster-battletype badge is styled', () => {
-  assert.match(tpl, /\.roster-battletype\s*\{/, 'template.html styles the battle-type badge');
+test('the Double Battle tag has no emoji and is not force-uppercased', () => {
+  assert.doesNotMatch(tpl, /⚔️\s*Double Battle/, 'no emoji on the tag');
+  const css = tpl.slice(tpl.indexOf('.roster-battletype {'), tpl.indexOf('.roster-battletype {') + 260);
+  assert.doesNotMatch(css, /text-transform:\s*uppercase/, 'the tag is not uppercased');
+});
+
+test('single/double/tag tags each have a distinct colour class', () => {
+  assert.match(tpl, /\.roster-battletype\.bt-single\s*\{[^}]*background/, 'bt-single colour');
+  assert.match(tpl, /\.roster-battletype\.bt-double\s*\{[^}]*background/, 'bt-double colour');
+  assert.match(tpl, /\.roster-battletype\.bt-tag\s*\{[^}]*background/, 'bt-tag colour');
+});
+
+test('Run & Bun E4 cards render a Choice Battle info box from trainer.choiceBattle', () => {
+  assert.match(tpl, /trainer\.choiceBattle/, 'render branches on choiceBattle');
+  assert.match(tpl, /Choice Battle/, 'the box is labelled');
+  assert.match(tpl, /\.choice-battle\s*\{/, 'the box is styled');
 });
