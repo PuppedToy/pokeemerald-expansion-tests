@@ -31,6 +31,12 @@ ADR-015; informed by T-100.
 - Tests: redirection/support abilities score higher in doubles than singles; singles unchanged;
   a doubles-relevant ability meaningfully lifts a mon's doubles rating.
 
+> **Meta-analysis validation (owner-gated).** Every Pokémon-meta conclusion in this task — the
+> competitive value of a move / ability / item / tier / archetype, or a "what trainers prefer" rule —
+> must be **explicitly validated by the owner before it is implemented**, not merely derived from the
+> research corpus (which is partly 4v4 VGC, whereas our doubles are 6v6). Any such value/mapping is
+> provisional until the owner validates it.
+
 Acceptance criteria:
 - [x] Redirection + doubles-support abilities are re-valued for doubles (independent), singles untouched.
 - [~] The doubles ability value flows into the doubles tier pipeline. *(Persisted as

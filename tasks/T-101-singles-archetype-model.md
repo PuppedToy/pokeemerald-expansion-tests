@@ -30,6 +30,12 @@ weather, hazard-stack).
 - Add a validator + tests (schema shape, category coverage, no contradictory conditions).
 - Keep it engine-agnostic: this is data the 2C generator will consume, not code.
 
+> **Meta-analysis validation (owner-gated).** Every Pokémon-meta conclusion in this task — the
+> competitive value of a move / ability / item / tier / archetype, or a "what trainers prefer" rule —
+> must be **explicitly validated by the owner before it is implemented**, not merely derived from the
+> research corpus (which is partly 4v4 VGC, whereas our doubles are 6v6). Any such value/mapping is
+> provisional until the owner validates it.
+
 Acceptance criteria:
 - [ ] `singles.json` archetype set covering balanced/offensive/defensive/gimmick (+ others), with
       entry conditions and structure for each.

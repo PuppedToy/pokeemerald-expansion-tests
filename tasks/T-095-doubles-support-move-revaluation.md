@@ -28,6 +28,12 @@ gives them an independent doubles score. Per ADR-015; informed by the Group 2B r
   (e.g. Fake Out, Follow Me + spread partner, Trick Room + slow abusers).
 - Tests: each re-valued move has a materially higher doubles score than singles; singles unchanged.
 
+> **Meta-analysis validation (owner-gated).** Every Pokémon-meta conclusion in this task — the
+> competitive value of a move / ability / item / tier / archetype, or a "what trainers prefer" rule —
+> must be **explicitly validated by the owner before it is implemented**, not merely derived from the
+> research corpus (which is partly 4v4 VGC, whereas our doubles are 6v6). Any such value/mapping is
+> provisional until the owner validates it.
+
 Acceptance criteria:
 - [x] The doubles-support move set is re-valued for doubles (independent scores), singles untouched.
 - [~] Re-valuation is justified against the research catalog (T-100) where available. *(Initial pass
