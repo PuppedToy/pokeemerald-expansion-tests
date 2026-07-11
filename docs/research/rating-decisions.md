@@ -94,6 +94,33 @@ Implication for T-101/T-102: model each format's archetypes as
 conditions** (what makes a team eligible for / prefer a gimmick — e.g. "a weather setter is available",
 "the lead can set Trick Room") and a **preferred structure**, expressed as soft preferences, not slots.
 
+## Batch 4 — feature-detector role characteristics (source: corpus role/moveset analysis, T-118)
+
+**VALIDATED — owner, 2026-07-11.** The T-117 audit showed the T-107 detectors marked a role from
+"can LEARN the move" (a widely-learnable TM) → almost every strong mon "filled" ~6 roles → everything
+crystallised to `bulky_offense`. Fix: a role is a **tendency from analysed characteristics** (never a
+species). Singles corpus baseline: speed 84, offense 119, bulk 273. Validated rules:
+
+- **We almost never analyse by species.** Mons + their TM movepools are randomised; a hard species rule
+  is allowed ONLY for a specific interaction (Relic Song ↔ Meloetta), never a heuristic. (Audit: the
+  role-detection engine is species-clean.)
+- **weatherSetter → by ABILITY only** (Drought/Drizzle/…), not by learning Rain Dance.
+- **Screens & hazards are common strategies, NOT gimmicks** — don't make them rare; but "can learn the
+  move" is not enough:
+  - **screenSetter** = a screen move + a **non-attacker** profile (offense ≤ 95). Corpus: 1/284 in
+    singles → rightly near-zero.
+  - **cleric** = a Wish/Aromatherapy/Heal Bell + **bulky (bulk ≥ 285) & low-offense (≤ 95)** support.
+    Corpus clerics: bulk ~304, offense 73, all run recovery.
+- **setupSweeper** = a real sweeper boost (weak/common TMs — Work Up/Hone Claws/Curse/Growth/Tidy Up —
+  dropped) + **offense ≥ 115** (corpus median 130; was 90, too loose).
+- **winCondition** = a genuine closer (a setup sweeper), not "any wallbreaker".
+- **One offensive identity per mon** (a mon runs one set): precedence **setupSweeper >
+  choiceScarfRevengeKiller > wallbreaker**, mutually exclusive.
+- **Result (measured via the decision log):** roles/mon 6 → ~1-3; teams begin to differentiate
+  (balance / hyper_offense / bulky_offense / none appear, not universal bulky_offense). Follow-ups to
+  analyse next: archetype **entry conditions** (some strong piles now match no archetype → "none") and
+  per-trainer **seeds** for deliberate variety; watch `regeneratorPivot`'s bulky-recovery-pivot branch.
+
 ## Open decisions
 
 - **RESOLVED (owner, 2026-07-10) — Trapping (Shadow Tag / Arena Trap): ALLOWED** as a valid gimmick

@@ -54,9 +54,11 @@ on everyone.
 Acceptance criteria:
 - [x] Species-hardcoding audit complete; engine role-detection confirmed species-clean.
 - [x] `weatherSetter` detects by ability only (owner-validated).
-- [ ] Corpus-derived characteristics for the remaining move-based roles, owner-validated, implemented.
-- [ ] Decision log (T-117) shows realistic role coverage (no mon filling ~6 roles); determinism green.
-- [ ] `cd randomizer && npm test` green.
+- [x] Corpus-derived characteristics for the remaining move-based roles, owner-validated, implemented
+      (screens/cleric profiles, setupSweeper offense ≥115, winCondition=setupSweeper, one-offensive-
+      identity precedence, weak-setup TMs dropped). Recorded in `docs/research/rating-decisions.md` (Batch 4).
+- [x] Decision log (T-117) shows realistic role coverage (roles/mon 6 → ~1-3); determinism green.
+- [x] `cd randomizer && npm test` green (917).
 
 ## Progress log
 
@@ -64,6 +66,18 @@ Acceptance criteria:
   invalidMegas flagged). Implemented increment 1 (weatherSetter → ability only, owner-validated
   direction). Increment 2+ (screens/hazards/setup/etc. characteristics) needs the corpus analysis and
   owner validation — the next step ("seguimos analizando").
+- **2026-07-11 — increment 2 done (corpus-validated).** Analysed the singles corpus (284 mapped mons)
+  role-by-role vs baseline (speed 84 / offense 119 / bulk 273); owner validated the profiles + the
+  "1-2 primary roles" idea (recorded as Batch 4 in `docs/research/rating-decisions.md`). Implemented:
+  **screenSetter** (screen move + non-attacker offense ≤95); **cleric** (cleric move + bulky ≥285 &
+  low-offense ≤95); **setupSweeper** offense threshold 90→115 + dropped the weak/common setup TMs
+  (Work Up/Hone Claws/Curse/Growth/Tidy Up); **winCondition** = setupSweeper (not any wallbreaker);
+  **one offensive identity per mon** via precedence setupSweeper > choiceScarfRevengeKiller >
+  wallbreaker (mutually exclusive). **Measured (decision log):** roles/mon 6 → ~1-3; teams begin to
+  differentiate (balance / hyper_offense / bulky_offense / **none** now appear). Full suite 917 pass;
+  `RUN_DETERMINISM=1` gate green. New observations for the next analysis: some strong piles now match
+  no archetype ("none") → look at entry conditions; and `regeneratorPivot`'s bulky-recovery-pivot
+  branch may still over-fire.
 
 ## Outcome
 

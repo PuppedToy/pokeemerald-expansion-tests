@@ -83,9 +83,16 @@ describe('move-based detectors (T-107 107a)', () => {
         expect(DETECTORS.hazardRemover(mon(withMoves('MOVE_RAPID_SPIN')), ctx)).toBe(true);
         expect(DETECTORS.hazardSetter(mon(), ctx)).toBe(false);
     });
-    test('screenSetter / cleric / pivotUser (learnset OR teachables)', () => {
-        expect(DETECTORS.screenSetter(mon(withMoves('MOVE_AURORA_VEIL')), ctx)).toBe(true);
-        expect(DETECTORS.cleric(mon(teaches('MOVE_WISH')), ctx)).toBe(true);
+    test('screenSetter — utility profile only (T-118): a screen move + non-attacker', () => {
+        expect(DETECTORS.screenSetter(mon(withMoves('MOVE_AURORA_VEIL')), ctx)).toBe(true);      // 70 off ≤ 95
+        expect(DETECTORS.screenSetter(mon({ baseAttack: 130, ...withMoves('MOVE_REFLECT') }), ctx)).toBe(false); // attacker ≠ screen setter
+    });
+    test('cleric — bulky low-offense support only (T-118), not any Wish learner', () => {
+        expect(DETECTORS.cleric(mon({ baseHP: 110, baseDefense: 110, baseSpDefense: 110, ...teaches('MOVE_WISH') }), ctx)).toBe(true);
+        expect(DETECTORS.cleric(mon(teaches('MOVE_WISH')), ctx)).toBe(false);                    // mediocre bulk → not a cleric
+        expect(DETECTORS.cleric(mon({ baseHP: 110, baseDefense: 110, baseSpDefense: 110, baseAttack: 130, ...teaches('MOVE_WISH') }), ctx)).toBe(false); // attacker
+    });
+    test('pivotUser (learnset OR teachables)', () => {
         expect(DETECTORS.pivotUser(mon(withMoves('MOVE_U_TURN')), ctx)).toBe(true);
         expect(DETECTORS.pivotUser(mon(teaches('MOVE_VOLT_SWITCH')), ctx)).toBe(true);
     });
@@ -136,10 +143,10 @@ describe('stat-threshold detectors (T-107 107a, provisional thresholds)', () => 
             mon({ baseHP: 100, baseDefense: 110, baseSpDefense: 100, ...{ learnset: [{ level: '1', move: 'MOVE_ROOST' }, { level: '1', move: 'MOVE_U_TURN' }] } }), ctx)).toBe(true);
         expect(DETECTORS.regeneratorPivot(mon({ parsedAbilities: ['REGENERATOR'], baseHP: 50, baseDefense: 50, baseSpDefense: 50 }), ctx)).toBe(false); // frail
     });
-    test('winCondition — setup sweeper OR wallbreaker', () => {
-        expect(DETECTORS.winCondition(mon({ baseAttack: 130 }), ctx)).toBe(true); // wallbreaker
-        expect(DETECTORS.winCondition(mon({ baseAttack: 110, ...withMoves('MOVE_SWORDS_DANCE') }), ctx)).toBe(true);
-        expect(DETECTORS.winCondition(mon({ baseAttack: 70, baseSpAttack: 70 }), ctx)).toBe(false);
+    test('winCondition — a genuine closer (setup sweeper), not any wallbreaker (T-118)', () => {
+        expect(DETECTORS.winCondition(mon({ baseAttack: 120, ...withMoves('MOVE_SWORDS_DANCE') }), ctx)).toBe(true);
+        expect(DETECTORS.winCondition(mon({ baseAttack: 130 }), ctx)).toBe(false);   // strong attacker, no setup → not a closer
+        expect(DETECTORS.winCondition(mon({ baseAttack: 110, ...withMoves('MOVE_SWORDS_DANCE') }), ctx)).toBe(false); // 110 < 115
     });
 });
 
