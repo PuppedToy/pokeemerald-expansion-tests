@@ -1,7 +1,7 @@
 ---
 id: T-121
 title: Expand the singles OU corpus for statistically-robust archetype entry conditions
-status: proposed
+status: in-progress
 type: docs
 created: 2026-07-11
 updated: 2026-07-11
