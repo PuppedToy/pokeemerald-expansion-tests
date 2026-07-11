@@ -122,3 +122,6 @@
 | [T-116](T-116-battle-tag-refinements.md) | Battle-type tag refinements — single/tag tags, Space Center tag battle, Run & Bun E4 labels, rival consistency | in-progress | 0.7.0 | 2026-07-10 |
 | [T-117](T-117-team-decision-audit-log.md) | Team-building decision audit log (per-team decision trace, local + 48h server + audit skill) | in-progress | 0.8.0 | 2026-07-11 |
 | [T-118](T-118-feature-detector-realism.md) | Feature-detector realism — roles by analysed characteristics, not can-learn potential | in-progress | 0.8.0 | 2026-07-11 |
+| [T-119](T-119-archetype-tier-downgrade.md) | Archetype-driven tier downgrade within budget (fill a needed role by downgrading, never upgrading) | proposed | 0.8.0 | 2026-07-11 |
+| [T-120](T-120-team-type-coverage.md) | Global type coverage & type selection for unrestricted trainers | proposed | 0.8.0 | 2026-07-11 |
+| [T-121](T-121-expand-singles-corpus.md) | Expand the singles OU corpus for statistically-robust archetype entry conditions | proposed | 0.8.0 | 2026-07-11 |

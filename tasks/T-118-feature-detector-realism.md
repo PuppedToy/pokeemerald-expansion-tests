@@ -78,6 +78,14 @@ Acceptance criteria:
   `RUN_DETERMINISM=1` gate green. New observations for the next analysis: some strong piles now match
   no archetype ("none") → look at entry conditions; and `regeneratorPivot`'s bulky-recovery-pivot
   branch may still over-fire.
+- **2026-07-11 — entry-condition tuning DEFERRED (owner, statistical rigour).** Analysed the archetype
+  entry signatures, but the singles corpus has only **12 teams** (buckets of 2-5) — too thin to commit
+  per-archetype `min` thresholds. Owner: expand the singles corpus first → **blocked-by T-121**. The
+  derived entry proposal (hazards ubiquitous → not an entry feature; bulky_offense as the broad
+  offensive default + a more-specific-wins priority; balance = offense+regen backbone; hyper =
+  setupSweeper≥2; stall = walls+cleric) is recorded for re-validation on the larger sample. Separately,
+  the owner flagged two engine gaps to fine-tune later (not in the current pipeline): role-driven tier
+  **downgrade** within budget (**T-119**) and global **type coverage** for unrestricted trainers (**T-120**).
 
 ## Outcome
 
