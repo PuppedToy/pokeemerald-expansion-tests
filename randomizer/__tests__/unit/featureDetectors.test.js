@@ -40,10 +40,10 @@ describe('ability-based detectors (T-107 107a)', () => {
         expect(DETECTORS.intimidateUser(mon({ parsedAbilities: ['INTIMIDATE'] }), ctx)).toBe(true);
         expect(DETECTORS.intimidateUser(mon({ parsedAbilities: ['GUTS'] }), ctx)).toBe(false);
     });
-    test('weatherSetter — ability OR weather move', () => {
+    test('weatherSetter — by ABILITY only (T-118); a Rain Dance learner is NOT a weather setter', () => {
         expect(DETECTORS.weatherSetter(mon({ parsedAbilities: ['DRIZZLE'] }), ctx)).toBe(true);
         expect(DETECTORS.weatherSetter(mon({ parsedAbilities: ['SNOW_WARNING'] }), ctx)).toBe(true);
-        expect(DETECTORS.weatherSetter(mon(withMoves('MOVE_RAIN_DANCE')), ctx)).toBe(true);
+        expect(DETECTORS.weatherSetter(mon(withMoves('MOVE_RAIN_DANCE')), ctx)).toBe(false); // move ≠ identity
         expect(DETECTORS.weatherSetter(mon(), ctx)).toBe(false);
     });
     test('weatherAbuser — Swift Swim / Chlorophyll / Sand Rush / Slush Rush', () => {
