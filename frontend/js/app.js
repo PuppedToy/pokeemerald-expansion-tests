@@ -66,6 +66,7 @@ document.querySelectorAll('.subtab').forEach(btn => {
 let currentStep = 1;
 let currentConfig = null;
 let currentBundle = null;
+let currentTeamAuditText = ''; // T-117 — the readable team-building decision log for this run
 let currentWorker = null;
 
 const form = new ConfigForm(document.getElementById('config-form-mount'), {
@@ -224,6 +225,20 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
             `<script>const typeColors = ${JSON.stringify(rom.docs.typeColors)};</script>`);
 }
 
+// T-117 — download the team-building decision log (readable text) for this run
+document.getElementById('btn-download-audit')?.addEventListener('click', () => {
+    const text = currentTeamAuditText || '(no decision log for this run)';
+    const seed = currentBundle?.config?.seed ?? 'unknown';
+    const blob = new Blob([text], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `decision-log-${seed}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+});
+
 // Download docs (ZIP: per-ROM docs HTML + the run bundle.json)
 document.getElementById('btn-download-docs').addEventListener('click', async () => {
     if (!currentBundle) return;
@@ -243,6 +258,7 @@ document.getElementById('btn-download-docs').addEventListener('click', async () 
 
         const zip = new JSZip();
         zip.file('bundle.json', JSON.stringify(currentBundle, null, 2));
+        zip.file('decision-log.txt', currentTeamAuditText || '(no decision log for this run)'); // T-117
 
         for (const rom of currentBundle.roms) {
             const pokedex = resolveArtifact(rom.artifacts.pokedex, currentBundle.sharedData, 'pokedex');
@@ -322,6 +338,7 @@ function startWorker(config) {
         } else if (data.type === 'done') {
             stopCrawl();
             currentBundle = data.bundle;
+            currentTeamAuditText = data.teamAuditText || ''; // T-117
             worker.terminate();
             currentWorker = null;
             showGenDone();

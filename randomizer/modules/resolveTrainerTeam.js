@@ -38,6 +38,7 @@ const { createChooser } = require('./trainerSelector');
 const { makeArchetypePicker } = require('./archetypePicker');
 const { planMemberRoleMove } = require('./archetypeRefine');
 const { getArchetypeModel } = require('../archetypes');
+const { noopTeamAudit } = require('../teamAudit');
 const { noopDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
 
 function nameify(text) {
@@ -94,6 +95,7 @@ function createTeamResolver(deps) {
         palafinHero,
         diag = noopDiagnostics(),
         sophistication = () => 1,
+        audit = noopTeamAudit(), // T-117 — decision-trace collector (no-op unless auditing)
     } = deps;
 
     const storedIds = {};
@@ -131,6 +133,11 @@ function createTeamResolver(deps) {
         };
         const archetypeModel = getArchetypeModel(/double/i.test(trainer.battleType || '') ? 'doubles' : 'singles');
         const pickCandidate = makeArchetypePicker({ model: archetypeModel, context, ctx: { moves } });
+        audit.beginTeam({
+            trainerId: trainer.id, label: trainer.label || null, class: trainer.class || null,
+            level: trainer.level, battleType: trainer.battleType || 'singles',
+            sophistication: context.sophistication, seed: context.archetypeSeed,
+        });
         const choosePokemonFromDefinition = createChooser(pokemonList, trainer, context, {
             starters, staticRewards, replacementLog, megaReplacementLog, isSuperEffective, pickCandidate,
         });
@@ -294,6 +301,10 @@ function createTeamResolver(deps) {
                     moveset = adjustMoveset(battlePoke, trainer.level, moveset, newTeamMember.moves, moves, ability, newTeamMember.item, 0.1, selCtx);
                 }
                 newTeamMember.moves = moveset;
+                audit.recordSlot({
+                    priorTeam: team, chosenMon: chosenTrainerMon, roleMove,
+                    model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed,
+                });
                 team.push(newTeamMember);
             }
         });
@@ -318,6 +329,7 @@ function createTeamResolver(deps) {
             );
         }
 
+        audit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed });
         return team;
     }
 

@@ -1,0 +1,63 @@
+'use strict';
+
+// T-117 — team-building decision audit: collector + readable renderer.
+
+const { createTeamAudit, noopTeamAudit, renderTeamAuditText } = require('../../teamAudit');
+const { getArchetypeModel } = require('../../archetypes');
+
+const singles = getArchetypeModel('singles');
+
+const mon = (o) => ({
+    id: 'SPECIES_X', parsedTypes: ['NORMAL'], parsedAbilities: [],
+    baseHP: 70, baseAttack: 70, baseDefense: 70, baseSpeed: 70, baseSpAttack: 70, baseSpDefense: 70,
+    learnset: [], teachables: [], evolutionData: { isMega: false }, ...o,
+});
+const regen = () => mon({ id: 'SPECIES_REGEN', parsedAbilities: ['REGENERATOR'], baseHP: 100, baseDefense: 90, baseSpDefense: 90 });
+const breaker = () => mon({ id: 'SPECIES_BREAKER', baseAttack: 130 });
+
+describe('createTeamAudit + renderTeamAuditText', () => {
+    test('records a team trace (identity, roles, injected move) and renders it', () => {
+        const audit = createTeamAudit();
+        audit.beginTeam({ trainerId: 'TRAINER_TEST', label: 'Tester', level: 60, battleType: 'singles', sophistication: 0.9, seed: null });
+        const prior = [{ pokemon: regen() }, { pokemon: regen() }]; // 2 Regen pivots → Balance emerged
+        audit.recordSlot({ priorTeam: prior, chosenMon: breaker(), roleMove: 'MOVE_STEALTH_ROCK', model: singles, ctx: {}, seed: null });
+        audit.finishTeam({ team: [...prior, { pokemon: breaker() }], model: singles, ctx: {}, seed: null });
+
+        const all = audit.all();
+        expect(all).toHaveLength(1);
+        expect(all[0].trainerId).toBe('TRAINER_TEST');
+        expect(all[0].slots[0].species).toBe('SPECIES_BREAKER');
+        expect(all[0].slots[0].identity.base).toBe('balance');
+        expect(all[0].slots[0].identity.source).toBe('emergent');
+        expect(all[0].slots[0].rolesFilled).toContain('wallbreaker');
+        expect(all[0].slots[0].roleMove).toBe('MOVE_STEALTH_ROCK');
+        expect(all[0].finalIdentity.base).toBe('balance');
+
+        const text = renderTeamAuditText(all);
+        expect(text).toContain('TRAINER_TEST');
+        expect(text).toContain('Tester');
+        expect(text).toContain('Breaker');            // species name in the slot line (nameified)
+        expect(text).toContain('fills');             // role annotation
+        expect(text).toContain('+Stealth Rock');     // injected role move
+    });
+
+    test('a low-sophistication team renders as "no steering"', () => {
+        const audit = createTeamAudit();
+        audit.beginTeam({ trainerId: 'TRAINER_EARLY', level: 8, battleType: 'singles', sophistication: 0.05, seed: null });
+        audit.finishTeam({ team: [{ pokemon: mon() }], model: singles, ctx: {}, seed: null });
+        expect(renderTeamAuditText(audit.all())).toContain('no archetype steering');
+    });
+
+    test('records the seed when present', () => {
+        const audit = createTeamAudit();
+        audit.beginTeam({ trainerId: 'TRAINER_SEED', level: 50, battleType: 'singles', sophistication: 0.8, seed: { base: 'full_stall', gimmicks: ['weather'] } });
+        audit.finishTeam({ team: [{ pokemon: mon() }], model: singles, ctx: {}, seed: { base: 'full_stall' } });
+        expect(renderTeamAuditText(audit.all())).toContain('seed: full_stall+weather');
+    });
+
+    test('noopTeamAudit collects nothing and never throws', () => {
+        const a = noopTeamAudit();
+        expect(() => { a.beginTeam({}); a.recordSlot({}); a.finishTeam({}); }).not.toThrow();
+        expect(a.all()).toEqual([]);
+    });
+});

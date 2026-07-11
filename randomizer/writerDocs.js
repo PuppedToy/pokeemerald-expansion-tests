@@ -10,6 +10,7 @@ const {
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
 const { createTeamResolver, normalizeTrainerBagTms } = require('./modules/resolveTrainerTeam');
 const { createSophisticationScale } = require('./modules/sophistication');
+const { noopTeamAudit } = require('./teamAudit');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 const { typeMainColors } = require('./trainerColors');
 const { noopDiagnostics } = require('./diagnostics');
@@ -104,6 +105,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     // T-075 — structured diagnostics sink. Defaults to a no-op so callers that don't wire
     // one (the ROM-write path, older tests) behave exactly as before.
     const diag = options.diag || noopDiagnostics();
+    const audit = options.audit || noopTeamAudit(); // T-117 — team-decision trace collector
     let { pokes: pokemonList, moves, abilities } = pokedexArtifact;
     const { trainersData: rawTrainersData, itemAssignments } = trainersArtifact;
     const { starters } = startersArtifact;
@@ -206,7 +208,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     const { resolveTrainerTeam } = createTeamResolver({
         pokemonList, moves, abilities, starters, staticRewards,
         replacementLog, megaReplacementLog, baseRngSeed, palafinHero, diag,
-        sophistication,
+        sophistication, audit,
     });
 
     trainersData.forEach(trainer => {

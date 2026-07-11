@@ -46,16 +46,18 @@ function weightedSampleOne(items, weights) {
 function resolveIdentity(team, model, ctx = {}, seed = null) {
     const cryst = crystallize(team, model, ctx);
     const base = cryst.base[0];
+    const emergentConfidence = base ? base.confidence : 0; // for the audit (T-117); callers may ignore
     if (base && base.confidence >= IDENTITY_FLOOR) {
         return {
             baseId: base.id,
             gimmickIds: cryst.gimmicks.filter(g => g.confidence >= GIMMICK_CONF).map(g => g.id),
             counts: cryst.counts,
             source: 'emergent',
+            confidence: emergentConfidence,
         };
     }
     if (seed && seed.base) {
-        return { baseId: seed.base, gimmickIds: (seed.gimmicks || []).slice(), counts: cryst.counts, source: 'seed' };
+        return { baseId: seed.base, gimmickIds: (seed.gimmicks || []).slice(), counts: cryst.counts, source: 'seed', confidence: emergentConfidence };
     }
     return null;
 }
