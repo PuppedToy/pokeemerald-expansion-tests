@@ -24,6 +24,7 @@ const { buildStarterNaming } = require('./modules/starterNames');
 const { buildLocationNaming } = require('./modules/locationNames');
 const { ENCOUNTER_LOCATIONS } = require('./data/encounterLocations');
 const { noopDiagnostics, setActiveDiagnostics, clearActiveDiagnostics } = require('./diagnostics');
+const { noopTeamAudit } = require('./teamAudit');
 
 // Create a pokedex and roll its dynamic evolution levels EXACTLY ONCE, here, when the
 // pokedex is born. applyEvoLevels mutates each evo.param in place, so the levels become a
@@ -97,16 +98,19 @@ function resolveContext(hooks) {
         // T-075 — structured diagnostics sink; the worker injects a real one and reads it back
         // AFTER the run (as a bundle sibling, never inside the bundle). Defaults to no-op.
         diagnostics: hooks.diagnostics || noopDiagnostics(),
+        // T-117 — team-decision audit collector; same sibling pattern as diagnostics. Defaults to no-op.
+        audit: hooks.audit || noopTeamAudit(),
     };
 }
 
 // Resolve one ROM's docs. Seeds the RNG to romSeed (wild placeholders + evo levels),
 // then defers to writerDocs. showExactPositions flows from the module config.
-async function computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, diag) {
+async function computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, diag, audit) {
     rng.seed(romSeed);
     return writerDocs(pokedex, trainers, starters, wild, trainingBaseSeed, {
         showExactPositions: mcfg.showExactPositions,
         diag,
+        audit,
     });
 }
 
@@ -125,7 +129,7 @@ async function generateDefault(cfg, mcfg, sessionId, ctx) {
     // Base seed policy differs per caller (worker: cfg.seed; backend: null). romSeed is
     // cfg.seed for the single ROM; computeRomDocs reseeds it before writerDocs.
     const baseSeed = ctx.defaultBaseSeed !== undefined ? ctx.defaultBaseSeed : cfg.seed;
-    const docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, cfg.seed, baseSeed, ctx.diagnostics);
+    const docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, cfg.seed, baseSeed, ctx.diagnostics, ctx.audit);
     tick('Done'); await flush();
 
     const roms = [{
@@ -218,7 +222,7 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
         const { pokedex, trainers, starters, wild } = romArtifacts[i];
         const romSeed = (cfg.seed ^ (i * 0x9E3779B9)) >>> 0;
         const trainingBaseSeed = shared.trainers ? cfg.seed : unsharedTrainingBaseSeed(romSeed);
-        roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics);
+        roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics, ctx.audit);
         tick(`Viewer ready${label}`); await flush();
     }
 
@@ -381,7 +385,7 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
         } else {
             trainingBaseSeed = unsharedTrainingBaseSeed(romSeed);
         }
-        roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics);
+        roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics, ctx.audit);
         tick(`Viewer ready (${label})`); await flush();
     }
 
