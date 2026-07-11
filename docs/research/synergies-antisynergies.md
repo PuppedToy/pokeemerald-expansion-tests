@@ -4,7 +4,7 @@
 verified). Regenerate: node scripts/gen-research-docs.cjs. Competitive references, not game rules —
 cite these when tuning ratings/archetypes; do not hand-edit (edit corpus.json instead). -->
 
-Distilled from the 50-team corpus. Feeds the rating combo logic and the archetype models.
+Distilled from the 100-team corpus. Feeds the rating combo logic and the archetype models.
 
 ## Synergies (24)
 

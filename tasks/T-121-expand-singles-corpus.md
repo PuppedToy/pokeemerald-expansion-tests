@@ -32,13 +32,25 @@ sound (corpus + established competitive theory), but committing per-archetype `m
   refreshed entry conditions (Batch-4 style), then T-118 implements them.
 
 Acceptance criteria:
-- [ ] ~30-40 verified singles OU teams in the corpus, ~8-10 per base archetype.
-- [ ] Entry-signature analysis re-run + owner-validated on the larger sample.
+- [x] Verified singles OU teams in the corpus (12 → **62**; 50 added), balance 10 · bulky_offense 26 ·
+      hyper_offense 14 · full_stall 12 (weather/screens/TR as gimmick layers on those bases).
+- [x] Entry-signature analysis re-run on the larger sample (owner validation of the refreshed entries
+      pending → unblocks the T-118 entry increment).
 - [ ] Role profiles (T-118) re-checked against the larger sample (adjust only if they shift).
 
 ## Progress log
 
 - **2026-07-11** — Created (owner-requested). Blocks the T-118 entry-condition tuning until the singles
   sample is large enough to be statistically meaningful.
+- **2026-07-11** — Ran the `expand-singles-corpus` **research workflow** (owner opted into "usa un
+  workflow"): 63 agents, 0 errors — discover (8 archetype angles) → adversarial verify (real +
+  legal Gen 6-7 OU) → refill thin archetypes → synthesize. **50 verified teams merged** into
+  `corpus.json` (documented Smogon RMT / sample-team / ladder teams — ABR, Kickasser, fade, Empo, …
+  with sources). Corpus 50→100; **singles-OU 12→62**. Regenerated `docs/research/` (singles-ou-teams
+  now 62). Re-ran the entry-signature analysis on 62 teams — the bigger sample **confirms** the
+  proposal (buckets now 10-26): hazardSetter 100% in ALL (ubiquitous → not an entry feature);
+  hyper_offense distinguished by setupSweeper (86%, avg 1.7); full_stall by walls+unaware+cleric
+  (~90%); balance by wallbreaker+regeneratorPivot; bulky_offense the broad offensive default; weather
+  by weatherSetter (94%). Presenting for the owner's final validation before implementing entries.
 
 ## Outcome
