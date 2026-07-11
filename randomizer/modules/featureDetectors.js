@@ -95,7 +95,10 @@ const DETECTORS = {
     trapper: (mon) => hasAbility(mon, TRAPPER_ABILITIES),
     unawareWall: (mon) => hasAbility(mon, UNAWARE_ABILITIES),
     weatherAbuser: (mon) => hasAbility(mon, WEATHER_ABUSER_ABILITIES),
-    weatherSetter: (mon) => hasAbility(mon, WEATHER_SETTER_ABILITIES) || canLearnAny(mon, WEATHER_MOVES),
+    // T-118 — by ABILITY only (owner-validated): a weather-team identity is defined by a weather
+    // setter ability, not by being able to learn Rain Dance (a widely-learnable, weak TM). Detecting
+    // it by move potential falsely tagged almost every mon a weather setter (T-117 audit).
+    weatherSetter: (mon) => hasAbility(mon, WEATHER_SETTER_ABILITIES),
     redirector: (mon) => hasAbility(mon, REDIRECT_ABILITIES) || canLearnAny(mon, REDIRECT_MOVES),
 
     // move-based (named techniques)
