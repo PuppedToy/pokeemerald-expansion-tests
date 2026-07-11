@@ -4899,6 +4899,4488 @@
         "https://www.smogon.com/forums/threads/doubles-ou-sample-teams-and-team-showcase.3645990/",
         "https://www.smogon.com/forums/threads/gothitelle-trap-remix.3631915/"
       ]
+    },
+    {
+      "name": "Mega Bro + SD Gliscor Balance (ABR)",
+      "format": "Gen 7 SM OU (Smogon Singles, 6v6)",
+      "archetype": "balance",
+      "era": "Gen 7 (Sun/Moon–USUM), 2017–2019",
+      "event": "Smogon SM OU Sample Teams (community resource, thread 3695427)",
+      "author": "ABR",
+      "confidence": "high",
+      "strategy": "A triple-Regenerator core (Mega Slowbro, Tornadus-T, Toxapex) pivots endlessly and wears foes down with Toxic Spikes and Scald burns; Chansey blanket-checks special attackers and sets Stealth Rock, while Swords Dance Poison Heal Gliscor and Flyinium-Z Tornadus-T are the late-game win conditions once their checks are chipped.",
+      "members": [
+        {
+          "species": "Chansey",
+          "ability": "Natural Cure",
+          "item": "Eviolite",
+          "role": "Special wall + Stealth Rock / status spreader",
+          "moves": [
+            "Seismic Toss",
+            "Toxic",
+            "Stealth Rock",
+            "Soft-Boiled"
+          ]
+        },
+        {
+          "species": "Gliscor",
+          "ability": "Poison Heal",
+          "item": "Toxic Orb",
+          "role": "Swords Dance setup win condition / physical pivot",
+          "moves": [
+            "Earthquake",
+            "Facade",
+            "Swords Dance",
+            "Roost"
+          ]
+        },
+        {
+          "species": "Magearna",
+          "ability": "Soul-Heart",
+          "item": "Leftovers",
+          "role": "Steel/Fairy glue + Volt Switch pivot",
+          "moves": [
+            "Ice Beam",
+            "Volt Switch",
+            "Pain Split",
+            "Heart Swap"
+          ]
+        },
+        {
+          "species": "Slowbro (Mega)",
+          "ability": "Regenerator",
+          "item": "Slowbronite",
+          "role": "Physically bulky Regenerator wallbreaker/pivot",
+          "moves": [
+            "Psychic",
+            "Scald",
+            "Ice Beam",
+            "Slack Off"
+          ]
+        },
+        {
+          "species": "Tornadus-Therian",
+          "ability": "Regenerator",
+          "item": "Flyinium Z",
+          "role": "Regenerator VoltTurn pivot + Defog + Z-Hurricane win con",
+          "moves": [
+            "Hurricane",
+            "Knock Off",
+            "U-turn",
+            "Defog"
+          ]
+        },
+        {
+          "species": "Toxapex",
+          "ability": "Regenerator",
+          "item": "Black Sludge",
+          "role": "Regenerator wall + Toxic Spikes + Haze",
+          "moves": [
+            "Scald",
+            "Toxic Spikes",
+            "Recover",
+            "Haze"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sm-ou-sample-teams.3695427/",
+        "https://pokepast.es/2096be6020b3e4b1"
+      ]
+    },
+    {
+      "name": "SpDef Exca + Triple CM fat (Kickasser)",
+      "format": "Gen 7 USM OU (Smogon Singles)",
+      "archetype": "balance",
+      "era": "Gen 7 (Sun/Moon–USUM), 2017–2019",
+      "event": "Smogon SM OU Sample Teams (community resource)",
+      "author": "Kickasser",
+      "confidence": "high",
+      "strategy": "A fat Regenerator/Calm Mind balance: the Slowbro + Toxapex Regenerator core plus CM Mega Latias and CM Clefable grind through the metagame; SpDef Excadrill sets Stealth Rock and Rapid Spins, and Fairium-Z Calm Mind Magearna is the primary breaker/win condition.",
+      "members": [
+        {
+          "species": "Latias (Mega)",
+          "ability": "Levitate",
+          "item": "Latiasite",
+          "role": "Calm Mind + Stored Power setup sweeper / defensive pivot",
+          "moves": [
+            "Calm Mind",
+            "Stored Power",
+            "Roost",
+            "Ice Beam"
+          ]
+        },
+        {
+          "species": "Clefable",
+          "ability": "Magic Guard",
+          "item": "Leftovers",
+          "role": "Calm Mind cleric/breaker + status-immunity glue",
+          "moves": [
+            "Calm Mind",
+            "Moonblast",
+            "Flamethrower",
+            "Soft-Boiled"
+          ]
+        },
+        {
+          "species": "Slowbro",
+          "ability": "Regenerator",
+          "item": "Leftovers",
+          "role": "Physically defensive Regenerator pivot",
+          "moves": [
+            "Scald",
+            "Protect",
+            "Toxic",
+            "Slack Off"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Mold Breaker",
+          "item": "Leftovers",
+          "role": "SpDef Stealth Rock setter + Rapid Spin hazard control",
+          "moves": [
+            "Stealth Rock",
+            "Rapid Spin",
+            "Earthquake",
+            "Iron Head"
+          ]
+        },
+        {
+          "species": "Toxapex",
+          "ability": "Regenerator",
+          "item": "Shed Shell",
+          "role": "Regenerator wall + Knock Off + Toxic",
+          "moves": [
+            "Scald",
+            "Knock Off",
+            "Recover",
+            "Toxic"
+          ]
+        },
+        {
+          "species": "Magearna",
+          "ability": "Soul-Heart",
+          "item": "Fairium Z",
+          "role": "Calm Mind + Fairium-Z breaker / primary win condition",
+          "moves": [
+            "Fleur Cannon",
+            "Thunderbolt",
+            "Calm Mind",
+            "Pain Split"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sm-ou-sample-teams.3695427/",
+        "https://pokepast.es/b725a548243f62d7"
+      ]
+    },
+    {
+      "name": "Groundium-Z Protean Greninja Hazard Stack",
+      "format": "Gen 7 USM OU (Smogon Singles)",
+      "archetype": "balance (hazard stack)",
+      "era": "Gen 7 (Sun/Moon–USUM), 2017–2019",
+      "event": "Smogon SM OU Sample Teams (community resource)",
+      "author": "zinnias",
+      "confidence": "high",
+      "strategy": "Ferrothorn Spikes + Clefable Stealth Rock stack residual damage while mixed Protean Greninja (Groundium Z Tectonic Rage off a bluffed Dig) lures and OHKOes walls like Toxapex, Magearna and Heatran. CM Mega Latias and SD Gliscor clean up once hazards and Greninja open holes, with SpDef Heatran and Magic Guard Clefable holding the backbone.",
+      "members": [
+        {
+          "species": "Greninja",
+          "ability": "Protean",
+          "item": "Groundium Z",
+          "role": "Mixed Protean wallbreaker / lure (Tectonic Rage via Dig)",
+          "moves": [
+            "Ice Beam",
+            "Gunk Shot",
+            "Dig",
+            "Low Kick"
+          ]
+        },
+        {
+          "species": "Heatran",
+          "ability": "Flash Fire",
+          "item": "Leftovers",
+          "role": "SpDef Roar phazer / Toxic status spreader",
+          "moves": [
+            "Protect",
+            "Lava Plume",
+            "Roar",
+            "Toxic"
+          ]
+        },
+        {
+          "species": "Ferrothorn",
+          "ability": "Iron Barbs",
+          "item": "Leftovers",
+          "role": "Spikes setter + Leech Seed defensive glue",
+          "moves": [
+            "Spikes",
+            "Power Whip",
+            "Protect",
+            "Leech Seed"
+          ]
+        },
+        {
+          "species": "Latias (Mega)",
+          "ability": "Levitate",
+          "item": "Latiasite",
+          "role": "Calm Mind + Stored Power late-game win condition",
+          "moves": [
+            "Ice Beam",
+            "Stored Power",
+            "Roost",
+            "Calm Mind"
+          ]
+        },
+        {
+          "species": "Gliscor",
+          "ability": "Poison Heal",
+          "item": "Toxic Orb",
+          "role": "Swords Dance setup sweeper / physical pivot",
+          "moves": [
+            "Swords Dance",
+            "Earthquake",
+            "Facade",
+            "Roost"
+          ]
+        },
+        {
+          "species": "Clefable",
+          "ability": "Magic Guard",
+          "item": "Leftovers",
+          "role": "Stealth Rock + Thunder Wave cleric glue",
+          "moves": [
+            "Stealth Rock",
+            "Moonblast",
+            "Soft-Boiled",
+            "Thunder Wave"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sm-ou-sample-teams.3695427/",
+        "https://pokepast.es/cf119b71814daab2"
+      ]
+    },
+    {
+      "name": "Alakazam Spikestack (by fade)",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "balance (spikestack)",
+      "era": "Gen 6 (ORAS), 2015–2016",
+      "event": "Smogon ORAS OU Sample Teams (community resource)",
+      "author": "fade",
+      "confidence": "high",
+      "strategy": "Heatran sets Stealth Rock while Ferrothorn lays Spikes and drips Leech Seed chip; Rotom-Wash VoltTurns and Gliscor provides Taunt/Knock Off utility. Residual hazard damage sets up the dual Magic Guard Calm Mind sweepers — Life Orb Clefable and Mega Alakazam — as the win conditions.",
+      "members": [
+        {
+          "species": "Clefable",
+          "ability": "Magic Guard",
+          "item": "Life Orb",
+          "role": "Calm Mind win condition / breaker",
+          "moves": [
+            "Calm Mind",
+            "Moonblast",
+            "Ice Beam",
+            "Soft-Boiled"
+          ]
+        },
+        {
+          "species": "Alakazam (Mega)",
+          "ability": "Magic Guard",
+          "item": "Alakazite",
+          "role": "Calm Mind special sweeper / cleaner",
+          "moves": [
+            "Psychic",
+            "Calm Mind",
+            "Focus Blast",
+            "Shadow Ball"
+          ]
+        },
+        {
+          "species": "Gliscor",
+          "ability": "Poison Heal",
+          "item": "Toxic Orb",
+          "role": "Ground pivot + Taunt / Knock Off utility",
+          "moves": [
+            "Earthquake",
+            "Knock Off",
+            "Taunt",
+            "Roost"
+          ]
+        },
+        {
+          "species": "Rotom-Wash",
+          "ability": "Levitate",
+          "item": "Leftovers",
+          "role": "Bulky Volt Switch pivot + Will-O-Wisp",
+          "moves": [
+            "Volt Switch",
+            "Hydro Pump",
+            "Will-O-Wisp",
+            "Pain Split"
+          ]
+        },
+        {
+          "species": "Heatran",
+          "ability": "Flash Fire",
+          "item": "Leftovers",
+          "role": "Stealth Rock setter + Roar phazer",
+          "moves": [
+            "Stealth Rock",
+            "Lava Plume",
+            "Protect",
+            "Roar"
+          ]
+        },
+        {
+          "species": "Ferrothorn",
+          "ability": "Iron Barbs",
+          "item": "Leftovers",
+          "role": "Spikes setter + Leech Seed hazard glue",
+          "moves": [
+            "Power Whip",
+            "Leech Seed",
+            "Spikes",
+            "Protect"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams.3694551/",
+        "https://pokepast.es/4072427b7a0e29b1"
+      ]
+    },
+    {
+      "name": "Mega Scizor Balance (Ruffles)",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "balance",
+      "era": "Gen 6 (ORAS), 2015-2016",
+      "event": "Smogon ORAS OU Sample Teams (community resource)",
+      "author": "Ruffles",
+      "confidence": "high",
+      "strategy": "Slowbro and defensive Gale Wings Talonflame form the bulky backbone, Excadrill supplies Stealth Rock + Rapid Spin, and Choice Band Weavile is the immediate wallbreaker/Pursuit trapper; Serperior spreads Glare and breaks with Contrary Leaf Storm while Swords Dance Mega Scizor with Bullet Punch priority is the win condition.",
+      "members": [
+        {
+          "species": "Scizor (Mega)",
+          "ability": "Technician",
+          "item": "Scizorite",
+          "role": "Swords Dance + Bullet Punch priority win condition",
+          "moves": [
+            "Roost",
+            "Swords Dance",
+            "Knock Off",
+            "Bullet Punch"
+          ]
+        },
+        {
+          "species": "Weavile",
+          "ability": "Pickpocket",
+          "item": "Choice Band",
+          "role": "Choice Band wallbreaker + Pursuit trapper",
+          "moves": [
+            "Ice Shard",
+            "Pursuit",
+            "Icicle Crash",
+            "Knock Off"
+          ]
+        },
+        {
+          "species": "Serperior",
+          "ability": "Contrary",
+          "item": "Rocky Helmet",
+          "role": "Contrary Leaf Storm breaker + Glare speed control",
+          "moves": [
+            "Glare",
+            "Synthesis",
+            "Hidden Power Rock",
+            "Leaf Storm"
+          ]
+        },
+        {
+          "species": "Slowbro",
+          "ability": "Regenerator",
+          "item": "Leftovers",
+          "role": "Regenerator Calm Mind wall / secondary win condition",
+          "moves": [
+            "Slack Off",
+            "Calm Mind",
+            "Psyshock",
+            "Scald"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Mold Breaker",
+          "item": "Leftovers",
+          "role": "Stealth Rock + Rapid Spin hazard control",
+          "moves": [
+            "Stealth Rock",
+            "Rapid Spin",
+            "Iron Head",
+            "Earthquake"
+          ]
+        },
+        {
+          "species": "Talonflame",
+          "ability": "Gale Wings",
+          "item": "Leftovers",
+          "role": "Defensive Gale Wings pivot + Taunt / Will-O-Wisp",
+          "moves": [
+            "Roost",
+            "Taunt",
+            "Will-O-Wisp",
+            "Brave Bird"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams-updated-10-2025.3762173/",
+        "https://pokepast.es/e656cc54b3d4072e"
+      ]
+    },
+    {
+      "name": "Mega Lopunny Hazard Stack (fade)",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "balance (hazard stack)",
+      "era": "Gen 6 (ORAS), 2015-2016",
+      "event": "Smogon ORAS OU Sample Teams (community resource)",
+      "author": "fade",
+      "confidence": "high",
+      "strategy": "Triple entry hazards (Skarmory Spikes, Cofagrigus Toxic Spikes, Heatran Stealth Rock) plus Gastrodon and Clefable defensive glue wear the opponent down until fast Mega Lopunny cleans late-game; Life Orb Magic Guard Calm Mind Clefable acts as a secondary breaker.",
+      "members": [
+        {
+          "species": "Skarmory",
+          "ability": "Sturdy",
+          "item": "Rocky Helmet",
+          "role": "Physical wall + Spikes + Whirlwind phazer",
+          "moves": [
+            "Iron Head",
+            "Roost",
+            "Whirlwind",
+            "Spikes"
+          ]
+        },
+        {
+          "species": "Gastrodon",
+          "ability": "Storm Drain",
+          "item": "Leftovers",
+          "role": "Water-immune special wall + Clear Smog stat-reset",
+          "moves": [
+            "Scald",
+            "Earthquake",
+            "Clear Smog",
+            "Recover"
+          ]
+        },
+        {
+          "species": "Clefable",
+          "ability": "Magic Guard",
+          "item": "Life Orb",
+          "role": "Calm Mind breaker + Knock Off utility",
+          "moves": [
+            "Moonblast",
+            "Knock Off",
+            "Calm Mind",
+            "Soft-Boiled"
+          ]
+        },
+        {
+          "species": "Lopunny (Mega)",
+          "ability": "Scrappy",
+          "item": "Lopunnite",
+          "role": "Fast physical cleaner / late-game win condition",
+          "moves": [
+            "Return",
+            "Fake Out",
+            "High Jump Kick",
+            "Quick Attack"
+          ]
+        },
+        {
+          "species": "Cofagrigus",
+          "ability": "Mummy",
+          "item": "Leftovers",
+          "role": "Bulky Toxic Spikes setter + Will-O-Wisp / Hex",
+          "moves": [
+            "Hex",
+            "Will-O-Wisp",
+            "Toxic Spikes",
+            "Pain Split"
+          ]
+        },
+        {
+          "species": "Heatran",
+          "ability": "Flash Fire",
+          "item": "Leftovers",
+          "role": "Stealth Rock setter + Roar phazer",
+          "moves": [
+            "Lava Plume",
+            "Roar",
+            "Protect",
+            "Stealth Rock"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams.3694551/",
+        "https://pokepast.es/ced6e192ec57bad6"
+      ]
+    },
+    {
+      "name": "Metagross Weavile BO",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (Pursuit trap)",
+      "era": "Gen 6 ORAS (2015-2017)",
+      "event": "Smogon ORAS OU Sample Teams (Bulky Offense category)",
+      "author": "Xray & Ruffles",
+      "confidence": "high",
+      "strategy": "Pursuit-support bulky offense: Choice Band Weavile traps psychics/ghosts so Power-Up Punch Mega Metagross can snowball; a Garchomp + Zapdos + AV Volcanion backbone supplies Stealth Rock, Volt Switch pivoting and special bulk, Excadrill provides Rapid Spin + a SD breaker, and doubled priority substitutes for a Choice Scarfer.",
+      "members": [
+        {
+          "species": "Metagross (Mega)",
+          "ability": "Tough Claws",
+          "item": "Metagrossite",
+          "role": "Power-Up Punch setup wallbreaker / cleaner",
+          "moves": [
+            "Power-Up Punch",
+            "Zen Headbutt",
+            "Thunder Punch",
+            "Bullet Punch"
+          ]
+        },
+        {
+          "species": "Weavile",
+          "ability": "Pickpocket",
+          "item": "Choice Band",
+          "role": "Choice Band Pursuit trapper + Ice Shard priority revenge",
+          "moves": [
+            "Pursuit",
+            "Ice Shard",
+            "Knock Off",
+            "Icicle Crash"
+          ]
+        },
+        {
+          "species": "Volcanion",
+          "ability": "Water Absorb",
+          "item": "Assault Vest",
+          "role": "Special wallbreaker / special-defensive pivot",
+          "moves": [
+            "Steam Eruption",
+            "Flamethrower",
+            "Sludge Bomb",
+            "Hidden Power Grass"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Mold Breaker",
+          "item": "Leftovers",
+          "role": "Swords Dance breaker + Rapid Spin",
+          "moves": [
+            "Swords Dance",
+            "Earthquake",
+            "Rock Slide",
+            "Rapid Spin"
+          ]
+        },
+        {
+          "species": "Garchomp",
+          "ability": "Rough Skin",
+          "item": "Rocky Helmet",
+          "role": "Physically defensive Stealth Rock setter + phazer",
+          "moves": [
+            "Stealth Rock",
+            "Earthquake",
+            "Dragon Tail",
+            "Toxic"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Static",
+          "item": "Leftovers",
+          "role": "Defensive Volt Switch pivot",
+          "moves": [
+            "Volt Switch",
+            "Heat Wave",
+            "Hidden Power Ice",
+            "Roost"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams-updated-10-2025.3762173/",
+        "https://pokepast.es/996873b4d3c2b2f0"
+      ]
+    },
+    {
+      "name": "Alakazam Bisharp BO",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (Pursuit trap)",
+      "era": "Gen 6 ORAS (2015-2017)",
+      "event": "Smogon ORAS OU Sample Teams",
+      "author": "Ruffles & xray",
+      "confidence": "high",
+      "strategy": "Bisharp Pursuit-traps the Latis/Gengar and its Defiant punishes Defog, opening the door for Calm Mind Mega Alakazam to sweep late-game; Rotom-Wash, physically defensive Garchomp and AV Tornadus-T form the bulky pivoting backbone with hazards, hazard control and status.",
+      "members": [
+        {
+          "species": "Alakazam (Mega)",
+          "ability": "Magic Guard",
+          "item": "Alakazite",
+          "role": "Calm Mind special sweeper / breaker",
+          "moves": [
+            "Calm Mind",
+            "Focus Blast",
+            "Shadow Ball",
+            "Psychic"
+          ]
+        },
+        {
+          "species": "Bisharp",
+          "ability": "Defiant",
+          "item": "Black Glasses",
+          "role": "Pursuit trapper + Sucker Punch priority; anti-Defog deterrent",
+          "moves": [
+            "Pursuit",
+            "Sucker Punch",
+            "Iron Head",
+            "Knock Off"
+          ]
+        },
+        {
+          "species": "Rotom-Wash",
+          "ability": "Levitate",
+          "item": "Leftovers",
+          "role": "Defensive Volt Switch pivot + status spreader",
+          "moves": [
+            "Thunder Wave",
+            "Will-O-Wisp",
+            "Hydro Pump",
+            "Volt Switch"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Mold Breaker",
+          "item": "Leftovers",
+          "role": "Rapid Spin hazard control + Toxic",
+          "moves": [
+            "Toxic",
+            "Rapid Spin",
+            "Iron Head",
+            "Earthquake"
+          ]
+        },
+        {
+          "species": "Garchomp",
+          "ability": "Rough Skin",
+          "item": "Rocky Helmet",
+          "role": "Physically defensive Stealth Rock setter",
+          "moves": [
+            "Stealth Rock",
+            "Fire Blast",
+            "Rock Tomb",
+            "Earthquake"
+          ]
+        },
+        {
+          "species": "Tornadus-Therian",
+          "ability": "Regenerator",
+          "item": "Assault Vest",
+          "role": "Bulky U-turn pivot / secondary wallbreaker",
+          "moves": [
+            "Hidden Power Ice",
+            "Hurricane",
+            "Knock Off",
+            "U-turn"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams-updated-10-2025.3762173/",
+        "https://pokepast.es/6e47ad9ebddb6c95"
+      ]
+    },
+    {
+      "name": "Gallade Hydreigon BO",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (Choice Scarf revenge killer)",
+      "era": "Gen 6 ORAS (2015-2017)",
+      "event": "Smogon ORAS OU Sample Teams (Updated 10/2025)",
+      "author": "devin",
+      "confidence": "high",
+      "strategy": "A bulky-offense backbone-plus-breakers build. Choice Scarf Landorus-T is the revenge killer, U-turn pivot and speed control; SD Mega Gallade and Modest Hydreigon are the breakers; defensive Volcanion and Excadrill provide phazing, Stealth Rock and Rapid Spin, and AV Tornadus-T is a bulky Regenerator pivot.",
+      "members": [
+        {
+          "species": "Gallade (Mega)",
+          "ability": "Justified",
+          "item": "Galladite",
+          "role": "Bulky Swords Dance sweeper with Shadow Sneak priority",
+          "moves": [
+            "Swords Dance",
+            "Shadow Sneak",
+            "Psycho Cut",
+            "Drain Punch"
+          ]
+        },
+        {
+          "species": "Hydreigon",
+          "ability": "Levitate",
+          "item": "Black Glasses",
+          "role": "Special breaker / Thunder Wave + Roost utility pivot",
+          "moves": [
+            "Roost",
+            "Thunder Wave",
+            "Flash Cannon",
+            "Dark Pulse"
+          ]
+        },
+        {
+          "species": "Volcanion",
+          "ability": "Water Absorb",
+          "item": "Leftovers",
+          "role": "Defensive Haze wall + status (Toxic)",
+          "moves": [
+            "Toxic",
+            "Haze",
+            "Flamethrower",
+            "Steam Eruption"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Mold Breaker",
+          "item": "Leftovers",
+          "role": "Stealth Rock setter + Rapid Spin hazard removal",
+          "moves": [
+            "Earthquake",
+            "Iron Head",
+            "Stealth Rock",
+            "Rapid Spin"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Choice Scarf",
+          "role": "Choice Scarf revenge killer + U-turn pivot",
+          "moves": [
+            "Earthquake",
+            "Stone Edge",
+            "Knock Off",
+            "U-turn"
+          ]
+        },
+        {
+          "species": "Tornadus-Therian",
+          "ability": "Regenerator",
+          "item": "Assault Vest",
+          "role": "Bulky Assault Vest Regenerator U-turn pivot",
+          "moves": [
+            "Hurricane",
+            "Heat Wave",
+            "Knock Off",
+            "U-turn"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams-updated-10-2025.3762173/",
+        "https://pokepast.es/651ba6f1c7a2f26e"
+      ]
+    },
+    {
+      "name": "Standard Lopunny BO",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (Pursuit trap)",
+      "era": "Gen 6 ORAS (2015-2017)",
+      "event": "Smogon ORAS OU Sample Teams",
+      "author": "erz & Seasons",
+      "confidence": "high",
+      "strategy": "Mega Lopunny cleans late-game behind Choice Band Weavile's Pursuit trapping and Ice Shard priority; Contrary Serperior is a Leaf Storm setup breaker/glue with Glare support, while bulky Excadrill, AV Volcanion and defensive Zapdos hold the backbone.",
+      "members": [
+        {
+          "species": "Lopunny (Mega)",
+          "ability": "Limber",
+          "item": "Lopunnite",
+          "role": "Fast Fake Out cleaner / wallbreaker",
+          "moves": [
+            "Frustration",
+            "High Jump Kick",
+            "Fake Out",
+            "Quick Attack"
+          ]
+        },
+        {
+          "species": "Serperior",
+          "ability": "Contrary",
+          "item": "Chesto Berry",
+          "role": "Contrary Leaf Storm setup breaker + Glare glue",
+          "moves": [
+            "Leaf Storm",
+            "Hidden Power Rock",
+            "Glare",
+            "Rest"
+          ]
+        },
+        {
+          "species": "Weavile",
+          "ability": "Pressure",
+          "item": "Choice Band",
+          "role": "Choice Band Pursuit trapper + Ice Shard priority",
+          "moves": [
+            "Knock Off",
+            "Icicle Crash",
+            "Ice Shard",
+            "Pursuit"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Mold Breaker",
+          "item": "Leftovers",
+          "role": "Bulky Stealth Rock setter + Rapid Spin",
+          "moves": [
+            "Earthquake",
+            "Iron Head",
+            "Rapid Spin",
+            "Stealth Rock"
+          ]
+        },
+        {
+          "species": "Volcanion",
+          "ability": "Water Absorb",
+          "item": "Assault Vest",
+          "role": "Special wallbreaker / special-defensive pivot",
+          "moves": [
+            "Steam Eruption",
+            "Flamethrower",
+            "Earth Power",
+            "Sludge Bomb"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Static",
+          "item": "Rocky Helmet",
+          "role": "Defensive Volt Switch pivot",
+          "moves": [
+            "Volt Switch",
+            "Heat Wave",
+            "Hidden Power Ice",
+            "Roost"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams-updated-10-2025.3762173/",
+        "https://pokepast.es/2025cbab1565de4b"
+      ]
+    },
+    {
+      "name": "Scizor Weavile BO (alex numbers)",
+      "format": "Gen 7 SM OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (Pursuit trap + Choice Scarf revenge killer)",
+      "era": "Gen 7 SM (2016-2017)",
+      "event": "Smogon SM OU Sample Teams",
+      "author": "alex numbers",
+      "confidence": "high",
+      "strategy": "Bulky offense fronted by a Tapu Fini + Heatran defensive backbone. Icium-Z Kyurem-Black and SD Mega Scizor break walls, Choice Band Weavile Pursuit-traps, and Choice Scarf Landorus-T revenge kills and pivots.",
+      "members": [
+        {
+          "species": "Scizor (Mega)",
+          "ability": "Technician",
+          "item": "Scizorite",
+          "role": "Bulky Swords Dance win-con + U-turn pivot",
+          "moves": [
+            "Swords Dance",
+            "U-turn",
+            "Bullet Punch",
+            "Roost"
+          ]
+        },
+        {
+          "species": "Kyurem-Black",
+          "ability": "Teravolt",
+          "item": "Icium Z",
+          "role": "Icium-Z Subzero Slammer wallbreaker, Hone Claws setup",
+          "moves": [
+            "Freeze Shock",
+            "Ice Beam",
+            "Fusion Bolt",
+            "Hone Claws"
+          ]
+        },
+        {
+          "species": "Tapu Fini",
+          "ability": "Misty Surge",
+          "item": "Leftovers",
+          "role": "Defensive Defog/Taunt wall + Misty Terrain",
+          "moves": [
+            "Moonblast",
+            "Surf",
+            "Defog",
+            "Taunt"
+          ]
+        },
+        {
+          "species": "Weavile",
+          "ability": "Pressure",
+          "item": "Choice Band",
+          "role": "Choice Band Pursuit trapper (Beat Up tech)",
+          "moves": [
+            "Knock Off",
+            "Pursuit",
+            "Icicle Crash",
+            "Beat Up"
+          ]
+        },
+        {
+          "species": "Heatran",
+          "ability": "Flash Fire",
+          "item": "Leftovers",
+          "role": "Stealth Rock + Taunt / Fire check",
+          "moves": [
+            "Stealth Rock",
+            "Lava Plume",
+            "Earth Power",
+            "Taunt"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Choice Scarf",
+          "role": "Choice Scarf revenge killer + Explosion / U-turn pivot",
+          "moves": [
+            "Earthquake",
+            "Stone Edge",
+            "Explosion",
+            "U-turn"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sm-ou-sample-teams.3695427/",
+        "https://pokepast.es/b90562e3f3058595"
+      ]
+    },
+    {
+      "name": "Curse Mega Scizor + Steelium-Z Heatran Bulky Offense (You Will Regret)",
+      "format": "Gen 7 USM OU (Smogon Singles)",
+      "archetype": "bulky offense (volt-turn)",
+      "era": "Gen 7 USUM (2018-2019)",
+      "event": "Smogon USM OU Sample Teams v2 (thread 3638845)",
+      "author": "Ske",
+      "confidence": "high",
+      "strategy": "Volt-Turn bulky offense built around Curse Mega Scizor as the bulky win-condition/pivot, backed by Choice Scarf Landorus-T. A triple-breaker core of Choice Band Zygarde, Steelium-Z Heatran and SD Grassy-Terrain Tapu Bulu wears down balance, with Tapu Koko as the fast Electric-Terrain U-turn pivot.",
+      "members": [
+        {
+          "species": "Tapu Bulu",
+          "ability": "Grassy Surge",
+          "item": "Leftovers",
+          "role": "Bulky Swords Dance breaker + Grassy Terrain setter",
+          "moves": [
+            "Swords Dance",
+            "Horn Leech",
+            "Superpower",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Heatran",
+          "ability": "Flash Fire",
+          "item": "Steelium Z",
+          "role": "Z-Corkscrew Crash wallbreaker + Stealth Rock",
+          "moves": [
+            "Stealth Rock",
+            "Magma Storm",
+            "Earth Power",
+            "Flash Cannon"
+          ]
+        },
+        {
+          "species": "Zygarde",
+          "ability": "Aura Break",
+          "item": "Choice Band",
+          "role": "Choice Band breaker: Thousand Arrows + Extreme Speed priority",
+          "moves": [
+            "Thousand Arrows",
+            "Extreme Speed",
+            "Iron Tail",
+            "Toxic"
+          ]
+        },
+        {
+          "species": "Scizor (Mega)",
+          "ability": "Light Metal",
+          "item": "Scizorite",
+          "role": "Curse bulky win-con + U-turn pivot",
+          "moves": [
+            "Curse",
+            "Roost",
+            "U-turn",
+            "Bullet Punch"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Choice Scarf",
+          "role": "Choice Scarf revenge killer + Defog",
+          "moves": [
+            "Defog",
+            "Earthquake",
+            "Hidden Power Ice",
+            "U-turn"
+          ]
+        },
+        {
+          "species": "Tapu Koko",
+          "ability": "Electric Surge",
+          "item": "Shuca Berry",
+          "role": "Fast U-turn pivot / speed control + Electric Terrain",
+          "moves": [
+            "Thunderbolt",
+            "Roost",
+            "U-turn",
+            "Hidden Power Ice"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/",
+        "https://pokepast.es/c3b334386bd9db88"
+      ]
+    },
+    {
+      "name": "Scolipede Shift-Gear Hazard HO (LegitlyIzOP)",
+      "format": "Gen 7 USM OU (Smogon Singles)",
+      "archetype": "hyper offense (screens, hazard stack)",
+      "era": "Gen 7 SM/USUM (2017-2019)",
+      "event": "Smogon SM OU Sample Teams (Hyper Offense category)",
+      "author": "LegitlyIzOP",
+      "confidence": "high",
+      "strategy": "Scolipede leads off a Focus Sash to stack Spikes + Toxic Spikes and Endeavor the lead; Serperior throws up dual screens and spreads paralysis with Glare; Mega Diancie sets Stealth Rock behind Magic Bounce. Behind the chip and screens, QD Volcarona, DD Dragonite and Shift Gear + CM Magearna clean.",
+      "members": [
+        {
+          "species": "Scolipede",
+          "ability": "Speed Boost",
+          "item": "Focus Sash",
+          "role": "Focus-Sash suicide hazard lead (Spikes + Toxic Spikes + Endeavor)",
+          "moves": [
+            "Toxic Spikes",
+            "Spikes",
+            "Megahorn",
+            "Endeavor"
+          ]
+        },
+        {
+          "species": "Volcarona",
+          "ability": "Flame Body",
+          "item": "Psychium Z",
+          "role": "Quiver Dance speed-boost sweeper / Z-Psychic breaker",
+          "moves": [
+            "Quiver Dance",
+            "Psychic",
+            "Flamethrower",
+            "Hidden Power Ground"
+          ]
+        },
+        {
+          "species": "Dragonite",
+          "ability": "Multiscale",
+          "item": "Leftovers",
+          "role": "Dragon Dance speed-boost sweeper",
+          "moves": [
+            "Roost",
+            "Earthquake",
+            "Ice Punch",
+            "Dragon Dance"
+          ]
+        },
+        {
+          "species": "Diancie (Mega)",
+          "ability": "Magic Bounce",
+          "item": "Diancite",
+          "role": "Magic Bounce Stealth Rock setter / hazard deterrent",
+          "moves": [
+            "Endeavor",
+            "Stealth Rock",
+            "Moonblast",
+            "Substitute"
+          ]
+        },
+        {
+          "species": "Serperior",
+          "ability": "Contrary",
+          "item": "Light Clay",
+          "role": "Dual screens + Glare speed-control support",
+          "moves": [
+            "Reflect",
+            "Light Screen",
+            "Glare",
+            "Taunt"
+          ]
+        },
+        {
+          "species": "Magearna",
+          "ability": "Soul-Heart",
+          "item": "Iapapa Berry",
+          "role": "Shift Gear + Calm Mind late-game win condition",
+          "moves": [
+            "Shift Gear",
+            "Ice Beam",
+            "Thunderbolt",
+            "Calm Mind"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sm-ou-sample-teams.3695427/",
+        "https://pokepast.es/e66ef907bae11b22"
+      ]
+    },
+    {
+      "name": "Xtra HO (Medicham VoltTurn Hyper Offense)",
+      "format": "Gen 7 USM OU (Smogon Singles)",
+      "archetype": "hyper offense (volt-turn)",
+      "era": "Gen 7 SM/USUM (2017-2019)",
+      "event": "Smogon SM OU (documented HO team 'Xtra HO')",
+      "author": "Xtra",
+      "confidence": "high",
+      "strategy": "A VoltTurn hyper offense that pivots with Tapu Koko, Landorus-T and AV Magearna to bring Mega Medicham and Icium-Z Kyurem-Black in safely. Electric Terrain powers Volt Switch and enables Electric Seed Unburden Hawlucha as the SD win condition; Medicham's Fake Out and Bullet Punch provide priority.",
+      "members": [
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Rocky Helmet",
+          "role": "Defensive Stealth Rock + U-turn VoltTurn pivot",
+          "moves": [
+            "Stealth Rock",
+            "Earthquake",
+            "Hidden Power Fire",
+            "U-turn"
+          ]
+        },
+        {
+          "species": "Medicham (Mega)",
+          "ability": "Pure Power",
+          "item": "Medichamite",
+          "role": "Pure Power wallbreaker with Fake Out / Bullet Punch priority",
+          "moves": [
+            "Fake Out",
+            "High Jump Kick",
+            "Zen Headbutt",
+            "Bullet Punch"
+          ]
+        },
+        {
+          "species": "Kyurem-Black",
+          "ability": "Teravolt",
+          "item": "Icium Z",
+          "role": "Icium-Z (Subzero Slammer) wallbreaker",
+          "moves": [
+            "Freeze Shock",
+            "Ice Beam",
+            "Fusion Bolt",
+            "Earth Power"
+          ]
+        },
+        {
+          "species": "Magearna",
+          "ability": "Soul-Heart",
+          "item": "Assault Vest",
+          "role": "Assault Vest Volt Switch VoltTurn pivot",
+          "moves": [
+            "Volt Switch",
+            "Fleur Cannon",
+            "Ice Beam",
+            "Iron Head"
+          ]
+        },
+        {
+          "species": "Hawlucha",
+          "ability": "Unburden",
+          "item": "Electric Seed",
+          "role": "Electric Seed Unburden Swords Dance win condition",
+          "moves": [
+            "Swords Dance",
+            "Acrobatics",
+            "High Jump Kick",
+            "Substitute"
+          ]
+        },
+        {
+          "species": "Tapu Koko",
+          "ability": "Electric Surge",
+          "item": "Choice Specs",
+          "role": "Choice Specs Volt Switch breaker + Electric Terrain setter",
+          "moves": [
+            "Thunderbolt",
+            "Volt Switch",
+            "Dazzling Gleam",
+            "Hidden Power Ice"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://pokepast.es/24bd0900c3a4aef4",
+        "https://www.smogon.com/dex/sm/pokemon/kyurem-black/ou/"
+      ]
+    },
+    {
+      "name": "Gyarados Screens HO",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "hyper offense (screens, suicide lead)",
+      "era": "Gen 6 ORAS (2015-2016)",
+      "event": "Smogon ORAS OU Sample Teams (resource)",
+      "author": "Sylvi (edit by mixnite)",
+      "confidence": "high",
+      "strategy": "Mew is a Mental-Herb suicide lead that guarantees Stealth Rock, Taunt or Explosion; Serperior sets dual screens under Light Clay; then DD Mega Gyarados and Focus-Sash Shell Smash Cloyster sweep, with Choice Band Dragonite's Extreme Speed priority and Nasty Plot Thundurus-T cleaning up under screens.",
+      "members": [
+        {
+          "species": "Mew",
+          "ability": "Synchronize",
+          "item": "Mental Herb",
+          "role": "Suicide hazard lead: Stealth Rock + Explosion; Mental Herb blocks Taunt",
+          "moves": [
+            "Thunder Wave",
+            "Stealth Rock",
+            "Explosion",
+            "Taunt"
+          ]
+        },
+        {
+          "species": "Gyarados (Mega)",
+          "ability": "Mold Breaker",
+          "item": "Gyaradosite",
+          "role": "Dragon Dance win condition; Mold Breaker + screens support",
+          "moves": [
+            "Taunt",
+            "Dragon Dance",
+            "Waterfall",
+            "Crunch"
+          ]
+        },
+        {
+          "species": "Serperior",
+          "ability": "Contrary",
+          "item": "Light Clay",
+          "role": "Dual screens + Taunt support; Contrary Leaf Storm pressure",
+          "moves": [
+            "Light Screen",
+            "Reflect",
+            "Leaf Storm",
+            "Taunt"
+          ]
+        },
+        {
+          "species": "Cloyster",
+          "ability": "Skill Link",
+          "item": "Focus Sash",
+          "role": "Focus-Sash Shell Smash sweeper + Rapid Spin hazard control",
+          "moves": [
+            "Shell Smash",
+            "Icicle Spear",
+            "Rapid Spin",
+            "Toxic Spikes"
+          ]
+        },
+        {
+          "species": "Dragonite",
+          "ability": "Multiscale",
+          "item": "Choice Band",
+          "role": "Choice Band Extreme Speed priority wallbreaker/cleaner",
+          "moves": [
+            "Outrage",
+            "Extreme Speed",
+            "Superpower",
+            "Iron Head"
+          ]
+        },
+        {
+          "species": "Thundurus-Therian",
+          "ability": "Volt Absorb",
+          "item": "Leftovers",
+          "role": "Nasty Plot special sweeper under screens",
+          "moves": [
+            "Nasty Plot",
+            "Focus Blast",
+            "Thunderbolt",
+            "Hidden Power Ice"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams-updated-10-2025.3762173/",
+        "https://pokepast.es/bebbb9f320f7bc7a"
+      ]
+    },
+    {
+      "name": "Alakazam Double Taunt HO",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "hyper offense (dual-Taunt setup)",
+      "era": "Gen 6 ORAS (2015-2016)",
+      "event": "Smogon ORAS OU Sample Teams",
+      "author": "Sylvi (co-authored with London Beats)",
+      "confidence": "high",
+      "strategy": "Dual Taunt on Mega Alakazam and Serperior denies opposing hazards, recovery and setup while Landorus-T sets Stealth Rock and pivots sweepers in. Focus-Sash Shell Smash Cloyster, QD Volcarona and Contrary Serperior are the win conditions, cleaned up by Alakazam's speed and Bisharp's Sucker Punch priority.",
+      "members": [
+        {
+          "species": "Alakazam (Mega)",
+          "ability": "Magic Guard",
+          "item": "Alakazite",
+          "role": "Fast Magic Guard cleaner / Taunt",
+          "moves": [
+            "Psychic",
+            "Focus Blast",
+            "Shadow Ball",
+            "Taunt"
+          ]
+        },
+        {
+          "species": "Bisharp",
+          "ability": "Defiant",
+          "item": "Lum Berry",
+          "role": "Swords Dance breaker + Sucker Punch priority",
+          "moves": [
+            "Swords Dance",
+            "Knock Off",
+            "Iron Head",
+            "Sucker Punch"
+          ]
+        },
+        {
+          "species": "Serperior",
+          "ability": "Contrary",
+          "item": "Rocky Helmet",
+          "role": "Contrary Leaf Storm sweeper / Glare + Taunt support",
+          "moves": [
+            "Leaf Storm",
+            "Hidden Power Rock",
+            "Glare",
+            "Taunt"
+          ]
+        },
+        {
+          "species": "Volcarona",
+          "ability": "Flame Body",
+          "item": "Life Orb",
+          "role": "Quiver Dance speed-boost sweeper",
+          "moves": [
+            "Quiver Dance",
+            "Fire Blast",
+            "Giga Drain",
+            "Hidden Power Ground"
+          ]
+        },
+        {
+          "species": "Cloyster",
+          "ability": "Skill Link",
+          "item": "Focus Sash",
+          "role": "Focus-Sash Shell Smash sweeper + Rapid Spin",
+          "moves": [
+            "Shell Smash",
+            "Icicle Spear",
+            "Rock Blast",
+            "Rapid Spin"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Rocky Helmet",
+          "role": "Stealth Rock + U-turn pivot / Imprison tech",
+          "moves": [
+            "Stealth Rock",
+            "Earthquake",
+            "Imprison",
+            "U-turn"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams-updated-10-2025.3762173/",
+        "https://pokepast.es/0b559fc745235e7c"
+      ]
+    },
+    {
+      "name": "Diancie Cresselia HO",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "hyper offense",
+      "era": "Gen 6 ORAS (2015-2016)",
+      "event": "Smogon ORAS OU Sample Teams",
+      "author": "Niko",
+      "confidence": "high",
+      "strategy": "Mega Diancie's Magic Bounce leads and bounces opposing hazards/status while pressuring. Excadrill provides Stealth Rock and Rapid Spin, and the team stacks breakers (SubSteam Volcanion, SD Weavile) alongside priority. Cresselia acts as a bulky pivot that Lunar Dances to bring a weakened sweeper back at full HP.",
+      "members": [
+        {
+          "species": "Diancie (Mega)",
+          "ability": "Magic Bounce",
+          "item": "Diancite",
+          "role": "Magic Bounce offensive lead / hazard bouncer",
+          "moves": [
+            "Protect",
+            "Moonblast",
+            "Earth Power",
+            "Diamond Storm"
+          ]
+        },
+        {
+          "species": "Weavile",
+          "ability": "Pickpocket",
+          "item": "Lum Berry",
+          "role": "Swords Dance breaker + Ice Shard priority",
+          "moves": [
+            "Knock Off",
+            "Swords Dance",
+            "Icicle Crash",
+            "Ice Shard"
+          ]
+        },
+        {
+          "species": "Volcanion",
+          "ability": "Water Absorb",
+          "item": "Leftovers",
+          "role": "SubSteam wallbreaker",
+          "moves": [
+            "Substitute",
+            "Steam Eruption",
+            "Flamethrower",
+            "Hidden Power Grass"
+          ]
+        },
+        {
+          "species": "Cresselia",
+          "ability": "Levitate",
+          "item": "Rocky Helmet",
+          "role": "Bulky pivot + Lunar Dance sac-support",
+          "moves": [
+            "Moonlight",
+            "Ice Beam",
+            "Thunder Wave",
+            "Lunar Dance"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Mold Breaker",
+          "item": "Leftovers",
+          "role": "Stealth Rock setter + Rapid Spin",
+          "moves": [
+            "Stealth Rock",
+            "Rapid Spin",
+            "Earthquake",
+            "Iron Head"
+          ]
+        },
+        {
+          "species": "Dragonite",
+          "ability": "Inner Focus",
+          "item": "Lum Berry",
+          "role": "Dragon Dance sweeper + Extreme Speed priority",
+          "moves": [
+            "Dragon Dance",
+            "Earthquake",
+            "Fire Punch",
+            "Extreme Speed"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams-updated-10-2025.3762173/",
+        "https://pokepast.es/3b6e6b6ba3c0057b"
+      ]
+    },
+    {
+      "name": "Venusaur Magnezone Stall",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "full stall",
+      "era": "Gen 6 ORAS (2014-2016)",
+      "event": "Smogon ORAS OU official Sample Teams resource",
+      "author": "kumiko (TDK), ABR, MANNAT",
+      "confidence": "high",
+      "strategy": "Grind opponents down with Stealth Rock + Spikes + Toxic chip while Magnet Pull Magnezone traps and removes opposing Steels; Unaware Quagsire, Chansey and the Skarmory/Mega Venusaur core wall setup sweepers and attackers.",
+      "members": [
+        {
+          "species": "Venusaur (Mega)",
+          "ability": "Thick Fat",
+          "item": "Venusaurite",
+          "role": "Thick Fat blanket wall / bulky special attacker",
+          "moves": [
+            "Giga Drain",
+            "Sludge Bomb",
+            "Knock Off",
+            "Synthesis"
+          ]
+        },
+        {
+          "species": "Clefable",
+          "ability": "Magic Guard",
+          "item": "Leftovers",
+          "role": "Magic Guard Stealth Rock setter, hazard/status-immune support",
+          "moves": [
+            "Stealth Rock",
+            "Moonblast",
+            "Knock Off",
+            "Soft-Boiled"
+          ]
+        },
+        {
+          "species": "Magnezone",
+          "ability": "Magnet Pull",
+          "item": "Choice Scarf",
+          "role": "Magnet Pull steel-trapper / speed-control pivot",
+          "moves": [
+            "Thunderbolt",
+            "Hidden Power Fire",
+            "Volt Switch",
+            "Thunder Wave"
+          ]
+        },
+        {
+          "species": "Chansey",
+          "ability": "Natural Cure",
+          "item": "Eviolite",
+          "role": "Special wall + Heal Bell cleric",
+          "moves": [
+            "Thunder Wave",
+            "Seismic Toss",
+            "Heal Bell",
+            "Soft-Boiled"
+          ]
+        },
+        {
+          "species": "Quagsire",
+          "ability": "Unaware",
+          "item": "Leftovers",
+          "role": "Unaware physical wall / anti-setup, Haze + Toxic",
+          "moves": [
+            "Scald",
+            "Toxic",
+            "Haze",
+            "Recover"
+          ]
+        },
+        {
+          "species": "Skarmory",
+          "ability": "Sturdy",
+          "item": "Rocky Helmet",
+          "role": "Physical wall, Spikes setter + Defog hazard control",
+          "moves": [
+            "Spikes",
+            "Counter",
+            "Defog",
+            "Roost"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams-updated-10-2025.3762173/",
+        "https://pokepast.es/ba99ef9f8750d50c"
+      ]
+    },
+    {
+      "name": "Scizor Gastrodon Stall",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "full stall (Unaware Calm Mind wincon)",
+      "era": "Gen 6 ORAS (2014-2016)",
+      "event": "Smogon ORAS OU official Sample Teams resource",
+      "author": "Ciele + Italians",
+      "confidence": "high",
+      "strategy": "Double Defog (Mega Scizor + Zapdos) keeps the field clean while Unaware Calm Mind Clefable sets up as the win condition behind the Chansey/Slowbro/Gastrodon walls and Toxic chip.",
+      "members": [
+        {
+          "species": "Scizor (Mega)",
+          "ability": "Technician",
+          "item": "Scizorite",
+          "role": "Defog hazard control + Bullet Punch priority pivot",
+          "moves": [
+            "Defog",
+            "Roost",
+            "Bullet Punch",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Clefable",
+          "ability": "Unaware",
+          "item": "Leftovers",
+          "role": "Unaware Calm Mind win condition + Wish passer",
+          "moves": [
+            "Moonblast",
+            "Wish",
+            "Calm Mind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Slowbro",
+          "ability": "Regenerator",
+          "item": "Rocky Helmet",
+          "role": "Regenerator physical wall",
+          "moves": [
+            "Scald",
+            "Ice Beam",
+            "Toxic",
+            "Slack Off"
+          ]
+        },
+        {
+          "species": "Chansey",
+          "ability": "Natural Cure",
+          "item": "Eviolite",
+          "role": "Special wall, Stealth Rock setter + Heal Bell cleric",
+          "moves": [
+            "Seismic Toss",
+            "Soft-Boiled",
+            "Stealth Rock",
+            "Heal Bell"
+          ]
+        },
+        {
+          "species": "Gastrodon",
+          "ability": "Storm Drain",
+          "item": "Leftovers",
+          "role": "Storm Drain water-immune mixed wall",
+          "moves": [
+            "Earthquake",
+            "Scald",
+            "Toxic",
+            "Recover"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Pressure",
+          "item": "Safety Goggles",
+          "role": "Defog hazard control / special wall (Goggles vs Spore)",
+          "moves": [
+            "Discharge",
+            "Heat Wave",
+            "Defog",
+            "Roost"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams-updated-10-2025.3762173/",
+        "https://pokepast.es/83837eb945fa9487"
+      ]
+    },
+    {
+      "name": "Altaria Magnezone Stall",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "full stall (bulky Dragon Dance wincon)",
+      "era": "Gen 6 ORAS (2014-2016)",
+      "event": "Smogon ORAS OU Sample Teams resource",
+      "author": "Trosky, Santu, ABR",
+      "confidence": "high",
+      "strategy": "Wear opponents down with Stealth Rock + Toxic + Will-O-Wisp behind Unaware Quagsire, Chansey and defensive Zapdos while Magnezone traps Steels so specially-bulky Dragon Dance Mega Altaria can set up and clean late.",
+      "members": [
+        {
+          "species": "Altaria (Mega)",
+          "ability": "Pixilate",
+          "item": "Altarianite",
+          "role": "Bulky Dragon Dance Pixilate win condition",
+          "moves": [
+            "Dragon Dance",
+            "Return",
+            "Earthquake",
+            "Roost"
+          ]
+        },
+        {
+          "species": "Mew",
+          "ability": "Synchronize",
+          "item": "Leftovers",
+          "role": "Stealth Rock setter + Will-O-Wisp/Knock Off physical wall",
+          "moves": [
+            "Stealth Rock",
+            "Knock Off",
+            "Will-O-Wisp",
+            "Soft-Boiled"
+          ]
+        },
+        {
+          "species": "Magnezone",
+          "ability": "Magnet Pull",
+          "item": "Choice Scarf",
+          "role": "Magnet Pull Steel-trapper / revenge killer",
+          "moves": [
+            "Thunderbolt",
+            "Hidden Power Fire",
+            "Volt Switch",
+            "Thunder Wave"
+          ]
+        },
+        {
+          "species": "Chansey",
+          "ability": "Natural Cure",
+          "item": "Eviolite",
+          "role": "Special wall + Heal Bell cleric",
+          "moves": [
+            "Seismic Toss",
+            "Toxic",
+            "Heal Bell",
+            "Soft-Boiled"
+          ]
+        },
+        {
+          "species": "Quagsire",
+          "ability": "Unaware",
+          "item": "Leftovers",
+          "role": "Unaware physical wall / anti-setup with Haze + Toxic",
+          "moves": [
+            "Scald",
+            "Toxic",
+            "Haze",
+            "Recover"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Pressure",
+          "item": "Leftovers",
+          "role": "Defog hazard control + special wall",
+          "moves": [
+            "Discharge",
+            "Hidden Power Ice",
+            "Defog",
+            "Roost"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://pokepast.es/39c3386d441653c5",
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams-updated-10-2025.3762173/"
+      ]
+    },
+    {
+      "name": "Double-Trap SD Gliscor Balance (Weavile + Magnezone)",
+      "format": "Gen 7 SM OU (Smogon Singles, 6v6)",
+      "archetype": "balance (double-trapper)",
+      "era": "Gen 7 SM (2016-2017)",
+      "event": "Documented SM OU standard balance core (Archetypes & Cores resource)",
+      "author": "SM OU community-standard core (Smogon)",
+      "confidence": "high",
+      "strategy": "Trapper balance built around a Swords Dance Gliscor win condition. Choice Band Weavile Pursuit-traps the Lati twins and Psychics/Ghosts, while Electrium-Z Magnezone traps and deletes the Steels Gliscor can't break. With Gliscor's checks removed, it sweeps late-game behind Chansey, Toxapex and defensive Defog Mega Latias.",
+      "members": [
+        {
+          "species": "Latias (Mega)",
+          "ability": "Levitate",
+          "item": "Latiasite",
+          "role": "Defensive Defog hazard control / bulky special pivot",
+          "moves": [
+            "Ice Beam",
+            "Hidden Power Fighting",
+            "Defog",
+            "Roost"
+          ]
+        },
+        {
+          "species": "Chansey",
+          "ability": "Natural Cure",
+          "item": "Eviolite",
+          "role": "Special wall + Stealth Rock, Thunder Wave spreader",
+          "moves": [
+            "Stealth Rock",
+            "Seismic Toss",
+            "Soft-Boiled",
+            "Thunder Wave"
+          ]
+        },
+        {
+          "species": "Weavile",
+          "ability": "Pressure",
+          "item": "Choice Band",
+          "role": "Choice Band Pursuit trapper + Ice Shard priority revenge killer",
+          "moves": [
+            "Knock Off",
+            "Icicle Crash",
+            "Pursuit",
+            "Ice Shard"
+          ]
+        },
+        {
+          "species": "Magnezone",
+          "ability": "Magnet Pull",
+          "item": "Electrium Z",
+          "role": "Magnet Pull Steel-trapper, Gigavolt Havoc nuke",
+          "moves": [
+            "Thunderbolt",
+            "Flash Cannon",
+            "Hidden Power Fire",
+            "Toxic"
+          ]
+        },
+        {
+          "species": "Gliscor",
+          "ability": "Poison Heal",
+          "item": "Toxic Orb",
+          "role": "Poison Heal wall / Swords Dance late-game win condition",
+          "moves": [
+            "Swords Dance",
+            "Earthquake",
+            "Facade",
+            "Roost"
+          ]
+        },
+        {
+          "species": "Toxapex",
+          "ability": "Regenerator",
+          "item": "Black Sludge",
+          "role": "Regenerator physical wall, Toxic spreader + Haze",
+          "moves": [
+            "Scald",
+            "Toxic",
+            "Recover",
+            "Haze"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://pokepast.es/63be60d2b1691fe5",
+        "https://www.smogon.com/forums/threads/sm-ou-teambuilding-strategy-archetypes-and-cores-a-data-driven-approach.3733173/"
+      ]
+    },
+    {
+      "name": "Trosko Mega Sableye + Pyukumuku Full Stall",
+      "format": "Gen 7 USUM OU (Smogon Singles, 6v6)",
+      "archetype": "full stall (Magic Bounce + Unaware)",
+      "era": "Gen 7 USUM (2017-2019)",
+      "event": "Smogon USM OU Sample Teams resource",
+      "author": "Trosko",
+      "confidence": "high",
+      "strategy": "Textbook full stall: Magic Bounce Mega Sableye and Gliscor Defog deny/remove hazards while Unaware Pyukumuku, Celesteela, Tangrowth and Chansey wall the field; Toxic + burn + Leech Seed residual grinds out the win.",
+      "members": [
+        {
+          "species": "Celesteela",
+          "ability": "Beast Boost",
+          "item": "Leftovers",
+          "role": "Special wall / Leech Seed + Protect staller",
+          "moves": [
+            "Leech Seed",
+            "Protect",
+            "Heavy Slam",
+            "Flamethrower"
+          ]
+        },
+        {
+          "species": "Sableye (Mega)",
+          "ability": "Magic Bounce",
+          "item": "Sablenite",
+          "role": "Magic Bounce hazard control + Will-O-Wisp / Knock Off annoyer",
+          "moves": [
+            "Knock Off",
+            "Will-O-Wisp",
+            "Recover",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Chansey",
+          "ability": "Natural Cure",
+          "item": "Eviolite",
+          "role": "Special wall + Stealth Rock setter / Heal Bell cleric",
+          "moves": [
+            "Stealth Rock",
+            "Seismic Toss",
+            "Soft-Boiled",
+            "Heal Bell"
+          ]
+        },
+        {
+          "species": "Pyukumuku",
+          "ability": "Unaware",
+          "item": "Leftovers",
+          "role": "Unaware physical wall / Soak + Toxic + Block staller",
+          "moves": [
+            "Toxic",
+            "Soak",
+            "Recover",
+            "Block"
+          ]
+        },
+        {
+          "species": "Tangrowth",
+          "ability": "Regenerator",
+          "item": "Rocky Helmet",
+          "role": "Regenerator physical wall + Knock Off",
+          "moves": [
+            "Giga Drain",
+            "Knock Off",
+            "Hidden Power Fire",
+            "Grass Knot"
+          ]
+        },
+        {
+          "species": "Gliscor",
+          "ability": "Poison Heal",
+          "item": "Toxic Orb",
+          "role": "Poison Heal ground wall + Defog hazard control",
+          "moves": [
+            "Earthquake",
+            "Roost",
+            "Defog",
+            "Toxic"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/usm-ou-sample-teams.3626219/",
+        "https://www.smogon.com/articles/ou-spotlight-pyukumuku"
+      ]
+    },
+    {
+      "name": "Ardy Calm Mind Mega Sableye Stall",
+      "format": "Gen 7 SM OU (Smogon Singles, 6v6)",
+      "archetype": "full stall (Calm Mind Magic Bounce wincon)",
+      "era": "Gen 7 SM (2016-2017)",
+      "event": "Smogon SM OU RMT thread",
+      "author": "Ardy",
+      "confidence": "high",
+      "strategy": "Stack Stealth Rock + Spikes with Ferrothorn behind Magic Bounce Sableye, then let Unaware Quagsire, Chansey and Mantine wall while Calm Mind Mega Sableye grows into an unbreakable late-game win condition; Alolan Marowak is the offensive glue/wallbreaker.",
+      "members": [
+        {
+          "species": "Sableye (Mega)",
+          "ability": "Magic Bounce",
+          "item": "Sablenite",
+          "role": "Magic Bounce Calm Mind win condition + hazard control",
+          "moves": [
+            "Calm Mind",
+            "Recover",
+            "Dark Pulse",
+            "Will-O-Wisp"
+          ]
+        },
+        {
+          "species": "Marowak-Alola",
+          "ability": "Lightning Rod",
+          "item": "Thick Club",
+          "role": "Lightning Rod electric-immunity, Fire/Ghost wallbreaker glue",
+          "moves": [
+            "Flare Blitz",
+            "Shadow Bone",
+            "Bonemerang",
+            "Knock Off"
+          ]
+        },
+        {
+          "species": "Chansey",
+          "ability": "Natural Cure",
+          "item": "Eviolite",
+          "role": "Special wall, Wish passer + Heal Bell cleric",
+          "moves": [
+            "Wish",
+            "Protect",
+            "Heal Bell",
+            "Seismic Toss"
+          ]
+        },
+        {
+          "species": "Mantine",
+          "ability": "Water Absorb",
+          "item": "Leftovers",
+          "role": "Water Absorb special wall, Defog + Haze",
+          "moves": [
+            "Scald",
+            "Defog",
+            "Roost",
+            "Haze"
+          ]
+        },
+        {
+          "species": "Ferrothorn",
+          "ability": "Iron Barbs",
+          "item": "Leftovers",
+          "role": "Hazard stacker (Stealth Rock + Spikes) + Leech Seed",
+          "moves": [
+            "Stealth Rock",
+            "Leech Seed",
+            "Spikes",
+            "Toxic"
+          ]
+        },
+        {
+          "species": "Quagsire",
+          "ability": "Unaware",
+          "item": "Leftovers",
+          "role": "Unaware physical wall / anti-setup",
+          "moves": [
+            "Earthquake",
+            "Toxic",
+            "Recover",
+            "Ice Punch"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/mega-sableye-stall.3639355/"
+      ]
+    },
+    {
+      "name": "Rob's Rain Offense (ORAS OU Sample Team)",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (rain)",
+      "era": "Gen 6 ORAS OU (2014–2016)",
+      "event": "Smogon ORAS OU Sample Team Thread",
+      "author": "Rob.",
+      "confidence": "high",
+      "strategy": "Politoed sets Drizzle to give Swift Swim Mega Swampert and Choice Specs Kingdra free turns to nuke, while Choice Band Azumarill provides Aqua Jet priority cleanup and Latias offers a fast pivot plus Healing Wish revival. Ferrothorn is the defensive backbone.",
+      "members": [
+        {
+          "species": "Politoed",
+          "ability": "Drizzle",
+          "item": "Damp Rock",
+          "role": "Offensive Drizzle rain setter",
+          "moves": [
+            "Hydro Pump",
+            "Ice Beam",
+            "Focus Blast",
+            "Psychic"
+          ]
+        },
+        {
+          "species": "Swampert (Mega)",
+          "ability": "Swift Swim",
+          "item": "Swampertite",
+          "role": "Swift Swim physical rain sweeper",
+          "moves": [
+            "Waterfall",
+            "Earthquake",
+            "Ice Punch",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Kingdra",
+          "ability": "Swift Swim",
+          "item": "Choice Specs",
+          "role": "Choice Specs Swift Swim special nuke",
+          "moves": [
+            "Hydro Pump",
+            "Draco Meteor",
+            "Scald",
+            "Dragon Pulse"
+          ]
+        },
+        {
+          "species": "Azumarill",
+          "ability": "Huge Power",
+          "item": "Choice Band",
+          "role": "Choice Band Aqua Jet priority cleaner / wallbreaker",
+          "moves": [
+            "Aqua Jet",
+            "Play Rough",
+            "Superpower",
+            "Waterfall"
+          ]
+        },
+        {
+          "species": "Ferrothorn",
+          "ability": "Iron Barbs",
+          "item": "Leftovers",
+          "role": "Stealth Rock + Leech Seed defensive pivot",
+          "moves": [
+            "Stealth Rock",
+            "Leech Seed",
+            "Protect",
+            "Power Whip"
+          ]
+        },
+        {
+          "species": "Latias",
+          "ability": "Levitate",
+          "item": "Life Orb",
+          "role": "Life Orb special attacker + Healing Wish support",
+          "moves": [
+            "Psyshock",
+            "Draco Meteor",
+            "Thunderbolt",
+            "Healing Wish"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-team-thread.3521695/"
+      ]
+    },
+    {
+      "name": "Dancing In The Rain",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (rain)",
+      "era": "Gen 6 ORAS OU (2014–2016)",
+      "event": "Smogon ORAS OU RMT (Rate My Team)",
+      "author": "Cyanide4588",
+      "confidence": "high",
+      "strategy": "Built around Mega Swampert and Choice Specs Kingdra sweeping under Drizzle, with Tornadus-T firing 100%-accurate Hurricanes, Ferrothorn setting Stealth Rock, and Zapdos as a backup Rain Dance setter + Thunder abuser and Defogger.",
+      "members": [
+        {
+          "species": "Politoed",
+          "ability": "Drizzle",
+          "item": "Damp Rock",
+          "role": "Drizzle rain setter / defensive glue",
+          "moves": [
+            "Scald",
+            "Toxic",
+            "Encore",
+            "Rest"
+          ]
+        },
+        {
+          "species": "Swampert (Mega)",
+          "ability": "Swift Swim",
+          "item": "Swampertite",
+          "role": "Swift Swim physical rain sweeper",
+          "moves": [
+            "Waterfall",
+            "Earthquake",
+            "Low Kick",
+            "Ice Punch"
+          ]
+        },
+        {
+          "species": "Kingdra",
+          "ability": "Swift Swim",
+          "item": "Choice Specs",
+          "role": "Choice Specs special rain nuke",
+          "moves": [
+            "Hydro Pump",
+            "Draco Meteor",
+            "Ice Beam",
+            "Surf"
+          ]
+        },
+        {
+          "species": "Ferrothorn",
+          "ability": "Iron Barbs",
+          "item": "Rocky Helmet",
+          "role": "Stealth Rock + Leech Seed defensive pivot",
+          "moves": [
+            "Protect",
+            "Stealth Rock",
+            "Gyro Ball",
+            "Leech Seed"
+          ]
+        },
+        {
+          "species": "Tornadus-Therian",
+          "ability": "Regenerator",
+          "item": "Life Orb",
+          "role": "Rain Hurricane nuke / Taunt lead",
+          "moves": [
+            "Hurricane",
+            "U-turn",
+            "Superpower",
+            "Taunt"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Pressure",
+          "item": "Damp Rock",
+          "role": "Backup Rain Dance setter + Thunder abuser / Defog",
+          "moves": [
+            "Thunder",
+            "Rain Dance",
+            "Defog",
+            "Roost"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/dancing-in-the-rain.3530867/"
+      ]
+    },
+    {
+      "name": "downpour (Peaked #1)",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (rain)",
+      "era": "Gen 6 ORAS OU (2014–2016)",
+      "event": "Smogon ORAS OU RMT — peaked #1 ladder",
+      "author": "doughboy",
+      "confidence": "high",
+      "strategy": "Rain offense off Politoed's Drizzle: Mega Swampert is the primary Swift Swim sweeper (Stealth Rock variant), Life Orb Kingdra a second Swift Swim abuser, Klefki provides Prankster backup Rain Dance + Spikes/Thunder Wave glue, Defiant Life Orb Thundurus-I applies pressure, and Poison Heal Breloom breaks defensive cores.",
+      "members": [
+        {
+          "species": "Politoed",
+          "ability": "Drizzle",
+          "item": "Damp Rock",
+          "role": "Drizzle rain setter / bulky status support",
+          "moves": [
+            "Scald",
+            "Rest",
+            "Toxic",
+            "Encore"
+          ]
+        },
+        {
+          "species": "Swampert (Mega)",
+          "ability": "Swift Swim",
+          "item": "Swampertite",
+          "role": "Primary Swift Swim sweeper + Stealth Rock",
+          "moves": [
+            "Waterfall",
+            "Earthquake",
+            "Ice Punch",
+            "Stealth Rock"
+          ]
+        },
+        {
+          "species": "Kingdra",
+          "ability": "Swift Swim",
+          "item": "Life Orb",
+          "role": "Life Orb mixed Swift Swim sweeper",
+          "moves": [
+            "Draco Meteor",
+            "Outrage",
+            "Hydro Pump",
+            "Waterfall"
+          ]
+        },
+        {
+          "species": "Klefki",
+          "ability": "Prankster",
+          "item": "Damp Rock",
+          "role": "Prankster backup Rain Dance + Spikes / Thunder Wave glue",
+          "moves": [
+            "Foul Play",
+            "Thunder Wave",
+            "Spikes",
+            "Rain Dance"
+          ]
+        },
+        {
+          "species": "Thundurus-Incarnate",
+          "ability": "Defiant",
+          "item": "Life Orb",
+          "role": "Life Orb offensive pivot / Knock Off",
+          "moves": [
+            "Thunderbolt",
+            "Hidden Power Ice",
+            "Knock Off",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Breloom",
+          "ability": "Poison Heal",
+          "item": "Toxic Orb",
+          "role": "Poison Heal Swords Dance breaker vs defensive teams",
+          "moves": [
+            "Swords Dance",
+            "Facade",
+            "Seed Bomb",
+            "Superpower"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/downpour-peaked-1.3524071/"
+      ]
+    },
+    {
+      "name": "SM OU Rain Offense",
+      "format": "Gen 7 USM OU (Smogon Singles)",
+      "archetype": "bulky offense (rain, hazard stack)",
+      "era": "Gen 7 SM/USUM OU (2017–2019)",
+      "event": "Smogon SM OU Sample Teams (Resource)",
+      "author": "Finchinator",
+      "confidence": "high",
+      "strategy": "Pelipper's Drizzle powers a rain offense: Ferrothorn lays Stealth Rock + Spikes, Swift Swim Mega Swampert sweeps under rain, and Choice Specs Ash-Greninja, Tail Glow/Rest Manaphy (healed by Hydration in rain), and Tornadus-T's rain-boosted Hurricane break and clean chip-worn teams.",
+      "members": [
+        {
+          "species": "Swampert (Mega)",
+          "ability": "Swift Swim",
+          "item": "Swampertite",
+          "role": "Swift Swim physical rain sweeper",
+          "moves": [
+            "Waterfall",
+            "Earthquake",
+            "Ice Punch",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Pelipper",
+          "ability": "Drizzle",
+          "item": "Damp Rock",
+          "role": "Drizzle setter / defensive Scald + U-turn pivot",
+          "moves": [
+            "Scald",
+            "Knock Off",
+            "Roost",
+            "U-turn"
+          ]
+        },
+        {
+          "species": "Manaphy",
+          "ability": "Hydration",
+          "item": "Waterium Z",
+          "role": "Tail Glow rain wincon (Rest heals instantly in rain)",
+          "moves": [
+            "Tail Glow",
+            "Surf",
+            "Psychic",
+            "Rest"
+          ]
+        },
+        {
+          "species": "Ferrothorn",
+          "ability": "Iron Barbs",
+          "item": "Figy Berry",
+          "role": "Stealth Rock + Spikes hazard stack",
+          "moves": [
+            "Stealth Rock",
+            "Spikes",
+            "Knock Off",
+            "Power Whip"
+          ]
+        },
+        {
+          "species": "Tornadus-Therian",
+          "ability": "Regenerator",
+          "item": "Rocky Helmet",
+          "role": "Rain Hurricane nuke / Defog / pivot",
+          "moves": [
+            "Hurricane",
+            "Knock Off",
+            "Defog",
+            "U-turn"
+          ]
+        },
+        {
+          "species": "Greninja-Ash",
+          "ability": "Battle Bond",
+          "item": "Choice Specs",
+          "role": "Choice Specs Water breaker",
+          "moves": [
+            "Hydro Pump",
+            "Dark Pulse",
+            "Surf",
+            "Water Shuriken"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sm-ou-sample-teams.3695427/",
+        "https://pokepast.es/938f74ad7bd815ae"
+      ]
+    },
+    {
+      "name": "SM OU Rain Team ft. Kabutops, no mega (1650+ elo)",
+      "format": "Gen 7 USM OU (Smogon Singles)",
+      "archetype": "bulky offense (rain)",
+      "era": "Gen 7 SM/USUM OU (2017–2019)",
+      "event": "Smogon SM OU RMT (~1650 ladder)",
+      "author": "blmckbird",
+      "confidence": "high",
+      "strategy": "Pelipper's Drizzle doubles Kabutops' Speed via Swift Swim so it can Swords Dance and clean, backed by Waterium-Z Tail Glow Manaphy and Choice Scarf Xurkitree as secondary abusers, Alolan Marowak's Lightning Rod absorbing Electric attacks and providing Stealth Rock, and Ferrothorn laying Spikes.",
+      "members": [
+        {
+          "species": "Kabutops",
+          "ability": "Swift Swim",
+          "item": "Life Orb",
+          "role": "Swift Swim Swords Dance physical sweeper",
+          "moves": [
+            "Waterfall",
+            "Stone Edge",
+            "Swords Dance",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Pelipper",
+          "ability": "Drizzle",
+          "item": "Damp Rock",
+          "role": "Drizzle rain setter / Hurricane pivot",
+          "moves": [
+            "Scald",
+            "Hurricane",
+            "U-turn",
+            "Roost"
+          ]
+        },
+        {
+          "species": "Manaphy",
+          "ability": "Hydration",
+          "item": "Waterium Z",
+          "role": "Tail Glow + Waterium-Z rain wincon",
+          "moves": [
+            "Tail Glow",
+            "Rain Dance",
+            "Surf",
+            "Psychic"
+          ]
+        },
+        {
+          "species": "Ferrothorn",
+          "ability": "Iron Barbs",
+          "item": "Leftovers",
+          "role": "Spikes / Leech Seed defensive pivot",
+          "moves": [
+            "Spikes",
+            "Leech Seed",
+            "Gyro Ball",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Marowak-Alola",
+          "ability": "Lightning Rod",
+          "item": "Thick Club",
+          "role": "Lightning Rod Electric immunity + Stealth Rock",
+          "moves": [
+            "Earthquake",
+            "Flare Blitz",
+            "Will-O-Wisp",
+            "Stealth Rock"
+          ]
+        },
+        {
+          "species": "Xurkitree",
+          "ability": "Beast Boost",
+          "item": "Choice Scarf",
+          "role": "Choice Scarf rain Thunder abuser / revenge killer",
+          "moves": [
+            "Dazzling Gleam",
+            "Thunder",
+            "Energy Ball",
+            "Hidden Power Ice"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/rain-team-ft-kabutops-no-mega-1650-elo.3601305/"
+      ]
+    },
+    {
+      "name": "Scarf Volcanion Sand (cbb)",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (sand)",
+      "era": "ORAS (Gen 6), 2015-2017",
+      "event": "Smogon ORAS OU Sample Teams",
+      "author": "cbb (CrashinBoomBang)",
+      "confidence": "high",
+      "strategy": "Mega Tyranitar sets sand and Pursuit-traps psychics/ghosts while Life Orb Excadrill doubles Speed under sand to clean; Choice Scarf Volcanion revenge-kills and wallbreaks, Contrary Serperior breaks bulky cores with Leaf Storm, and Magic Guard Clefable + defensive Zapdos form the backbone.",
+      "members": [
+        {
+          "species": "Tyranitar (Mega)",
+          "ability": "Sand Stream",
+          "item": "Tyranitarite",
+          "role": "Sand Stream setter / bulky Pursuit trapper",
+          "moves": [
+            "Stone Edge",
+            "Crunch",
+            "Pursuit",
+            "Focus Punch"
+          ]
+        },
+        {
+          "species": "Volcanion",
+          "ability": "Water Absorb",
+          "item": "Choice Scarf",
+          "role": "Choice Scarf revenge killer / special wallbreaker",
+          "moves": [
+            "Steam Eruption",
+            "Flamethrower",
+            "Sludge Bomb",
+            "Overheat"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Sand Rush",
+          "item": "Life Orb",
+          "role": "Sand Rush sweeper + hazard removal",
+          "moves": [
+            "Earthquake",
+            "Iron Head",
+            "Rock Slide",
+            "Rapid Spin"
+          ]
+        },
+        {
+          "species": "Serperior",
+          "ability": "Contrary",
+          "item": "Chesto Berry",
+          "role": "Contrary Leaf Storm breaker / Glare + Rest longevity",
+          "moves": [
+            "Leaf Storm",
+            "Hidden Power Rock",
+            "Glare",
+            "Rest"
+          ]
+        },
+        {
+          "species": "Clefable",
+          "ability": "Magic Guard",
+          "item": "Leftovers",
+          "role": "Stealth Rock setter / Fairy pivot",
+          "moves": [
+            "Moonblast",
+            "Knock Off",
+            "Soft-Boiled",
+            "Stealth Rock"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Static",
+          "item": "Rocky Helmet",
+          "role": "Defensive Volt Switch pivot / Ground immunity",
+          "moves": [
+            "Volt Switch",
+            "Heat Wave",
+            "Hidden Power Ice",
+            "Roost"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams.3694551/",
+        "https://pokepast.es/ccb83f4be59402c6"
+      ]
+    },
+    {
+      "name": "Metagross Sand Offense (CrashinBoomBang)",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (sand)",
+      "era": "ORAS (Gen 6), 2015-2017",
+      "event": "Smogon ORAS OU Sample Teams",
+      "author": "CrashinBoomBang",
+      "confidence": "high",
+      "strategy": "Choice Band Tyranitar sets sand and hits hard while Pursuit-trapping; Sand Rush Excadrill cleans at doubled Speed; Mega Metagross is a second win condition that also provides Stealth Rock; Choice Scarf Volcanion revenge-kills, Contrary Serperior breaks with Leaf Storm, and defensive Zapdos pivots.",
+      "members": [
+        {
+          "species": "Metagross (Mega)",
+          "ability": "Tough Claws",
+          "item": "Metagrossite",
+          "role": "Mega sweeper / Stealth Rock setter (second win condition)",
+          "moves": [
+            "Zen Headbutt",
+            "Bullet Punch",
+            "Thunder Punch",
+            "Stealth Rock"
+          ]
+        },
+        {
+          "species": "Tyranitar",
+          "ability": "Sand Stream",
+          "item": "Choice Band",
+          "role": "Sand setter / Choice Band wallbreaker + Pursuit trap",
+          "moves": [
+            "Stone Edge",
+            "Crunch",
+            "Pursuit",
+            "Ice Punch"
+          ]
+        },
+        {
+          "species": "Serperior",
+          "ability": "Contrary",
+          "item": "Chesto Berry",
+          "role": "Contrary Leaf Storm breaker / Taunt + ChestoRest longevity",
+          "moves": [
+            "Leaf Storm",
+            "Hidden Power Fire",
+            "Taunt",
+            "Rest"
+          ]
+        },
+        {
+          "species": "Volcanion",
+          "ability": "Water Absorb",
+          "item": "Choice Scarf",
+          "role": "Choice Scarf revenge killer / special wallbreaker",
+          "moves": [
+            "Steam Eruption",
+            "Flamethrower",
+            "Sludge Bomb",
+            "Hidden Power Grass"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Sand Rush",
+          "item": "Leftovers",
+          "role": "Sand Rush sweeper + Rapid Spin support",
+          "moves": [
+            "Earthquake",
+            "Iron Head",
+            "Rock Slide",
+            "Rapid Spin"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Static",
+          "item": "Leftovers",
+          "role": "Defensive Volt Switch pivot",
+          "moves": [
+            "Volt Switch",
+            "Heat Wave",
+            "Hidden Power Ice",
+            "Roost"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams-updated-10-2025.3762173/",
+        "https://pokepast.es/c6a58f59894dccb5"
+      ]
+    },
+    {
+      "name": "Manectric Sand BO",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (sand)",
+      "era": "ORAS (Gen 6), 2015-2017",
+      "event": "Smogon ORAS OU Sample Teams (built for SPL)",
+      "author": "lighthouses",
+      "confidence": "high",
+      "strategy": "Hippowdon is the defensive Sand Stream setter and Stealth Rock user, freeing Excadrill to sweep at doubled Speed under sand. Mega Manectric and AV Tornadus-T form a fast VoltTurn pivot core, while SubCM Keldeo and CM Clefable act as the win conditions.",
+      "members": [
+        {
+          "species": "Manectric (Mega)",
+          "ability": "Intimidate",
+          "item": "Manectite",
+          "role": "Fast Intimidate VoltTurn pivot / speed control",
+          "moves": [
+            "Volt Switch",
+            "Thunderbolt",
+            "Flamethrower",
+            "Hidden Power Ice"
+          ]
+        },
+        {
+          "species": "Keldeo",
+          "ability": "Justified",
+          "item": "Leftovers",
+          "role": "SubCM special win condition",
+          "moves": [
+            "Substitute",
+            "Calm Mind",
+            "Scald",
+            "Secret Sword"
+          ]
+        },
+        {
+          "species": "Clefable",
+          "ability": "Magic Guard",
+          "item": "Leftovers",
+          "role": "Calm Mind win condition / Fairy check",
+          "moves": [
+            "Calm Mind",
+            "Moonblast",
+            "Knock Off",
+            "Soft-Boiled"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Sand Rush",
+          "item": "Leftovers",
+          "role": "Sand Rush sweeper + Rapid Spin",
+          "moves": [
+            "Toxic",
+            "Rapid Spin",
+            "Iron Head",
+            "Earthquake"
+          ]
+        },
+        {
+          "species": "Hippowdon",
+          "ability": "Sand Stream",
+          "item": "Leftovers",
+          "role": "Sand Stream setter / physical wall + Stealth Rock",
+          "moves": [
+            "Earthquake",
+            "Stealth Rock",
+            "Slack Off",
+            "Rock Slide"
+          ]
+        },
+        {
+          "species": "Tornadus-Therian",
+          "ability": "Regenerator",
+          "item": "Assault Vest",
+          "role": "Assault Vest pivot / special attacker",
+          "moves": [
+            "Hurricane",
+            "Hidden Power Ice",
+            "Knock Off",
+            "U-turn"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams-updated-10-2025.3762173/",
+        "https://pokepast.es/f8ff83e7b41a8c75"
+      ]
+    },
+    {
+      "name": "Z-Drill + Band Kartana Sand (Empo)",
+      "format": "Gen 7 SM OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (sand)",
+      "era": "SM (Gen 7), 2017-2018",
+      "event": "Smogon SM OU Sample Teams",
+      "author": "Empo",
+      "confidence": "high",
+      "strategy": "Mega Tyranitar sets sand, lays Stealth Rock and Pursuit-traps; Sand Rush Excadrill uses SD + Steelium Z to break a wall then cleans at doubled Speed; Choice Band Kartana wallbreaks and revenge-kills; Toxapex, Celesteela and defensive Zapdos form a thick pivot backbone.",
+      "members": [
+        {
+          "species": "Tyranitar (Mega)",
+          "ability": "Sand Stream",
+          "item": "Tyranitarite",
+          "role": "Sand Stream setter + Stealth Rock + Pursuit trapper",
+          "moves": [
+            "Stealth Rock",
+            "Stone Edge",
+            "Earthquake",
+            "Pursuit"
+          ]
+        },
+        {
+          "species": "Kartana",
+          "ability": "Beast Boost",
+          "item": "Choice Band",
+          "role": "Choice Band wallbreaker / revenge killer",
+          "moves": [
+            "Leaf Blade",
+            "Smart Strike",
+            "Sacred Sword",
+            "Knock Off"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Static",
+          "item": "Rocky Helmet",
+          "role": "Defensive Volt Switch pivot",
+          "moves": [
+            "Volt Switch",
+            "Heat Wave",
+            "Hidden Power Ice",
+            "Roost"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Sand Rush",
+          "item": "Steelium Z",
+          "role": "Sand Rush SD Z-sweeper + Rapid Spin",
+          "moves": [
+            "Swords Dance",
+            "Earthquake",
+            "Iron Head",
+            "Rapid Spin"
+          ]
+        },
+        {
+          "species": "Toxapex",
+          "ability": "Regenerator",
+          "item": "Black Sludge",
+          "role": "Defensive wall / Toxic Spikes + Haze",
+          "moves": [
+            "Scald",
+            "Toxic Spikes",
+            "Recover",
+            "Haze"
+          ]
+        },
+        {
+          "species": "Celesteela",
+          "ability": "Beast Boost",
+          "item": "Leftovers",
+          "role": "Defensive pivot / Fairy + Flying check",
+          "moves": [
+            "Heavy Slam",
+            "Flamethrower",
+            "Protect",
+            "Leech Seed"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sm-ou-sample-teams.3695427/",
+        "https://pokepast.es/4e8cf58fcbb27ab9"
+      ]
+    },
+    {
+      "name": "Charizard Y Weavile Offense",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (sun)",
+      "era": "ORAS (Gen 6), 2015-2017",
+      "event": "Smogon ORAS OU Sample Teams",
+      "author": "xray",
+      "confidence": "high",
+      "strategy": "Mega Charizard Y is the Drought setter and sun-boosted special wallbreaker. Choice Band Weavile Pursuit-traps and revenge-kills with Ice Shard priority; SD Excadrill cleans and Rapid Spins. Contrary Serperior breaks with Leaf Storm and spreads Glare, while SpDef Heatran and defensive Slowbro form the defensive glue.",
+      "members": [
+        {
+          "species": "Charizard (Mega Y)",
+          "ability": "Drought",
+          "item": "Charizardite Y",
+          "role": "Drought setter + sun-boosted special wallbreaker",
+          "moves": [
+            "Flamethrower",
+            "Solar Beam",
+            "Focus Blast",
+            "Overheat"
+          ]
+        },
+        {
+          "species": "Weavile",
+          "ability": "Pressure",
+          "item": "Choice Band",
+          "role": "Choice Band revenge killer / Pursuit trapper",
+          "moves": [
+            "Pursuit",
+            "Ice Shard",
+            "Knock Off",
+            "Icicle Crash"
+          ]
+        },
+        {
+          "species": "Serperior",
+          "ability": "Contrary",
+          "item": "Rocky Helmet",
+          "role": "Contrary Leaf Storm breaker / Glare support",
+          "moves": [
+            "Leaf Storm",
+            "Hidden Power Rock",
+            "Glare",
+            "Synthesis"
+          ]
+        },
+        {
+          "species": "Heatran",
+          "ability": "Flash Fire",
+          "item": "Leftovers",
+          "role": "Stealth Rock + specially defensive Fire pivot",
+          "moves": [
+            "Roar",
+            "Stealth Rock",
+            "Earth Power",
+            "Magma Storm"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Mold Breaker",
+          "item": "Leftovers",
+          "role": "Swords Dance sweeper + Rapid Spin hazard removal",
+          "moves": [
+            "Swords Dance",
+            "Earthquake",
+            "Iron Head",
+            "Rapid Spin"
+          ]
+        },
+        {
+          "species": "Slowbro",
+          "ability": "Regenerator",
+          "item": "Colbur Berry",
+          "role": "Defensive physical wall / Future Sight pivot",
+          "moves": [
+            "Future Sight",
+            "Flamethrower",
+            "Thunder Wave",
+            "Slack Off"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams-updated-10-2025.3762173/",
+        "https://pokepast.es/5daac5806193dc9a"
+      ]
+    },
+    {
+      "name": "Torkoal + Venusaur Chlorophyll Sun (indigo467)",
+      "format": "Gen 7 SM OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (sun)",
+      "era": "SM (Gen 7), 2017-2018",
+      "event": "Smogon SM OU RMT thread (3632686)",
+      "author": "indigo467",
+      "confidence": "high",
+      "strategy": "Torkoal is the dedicated Drought setter plus Stealth Rock and Rapid Spin, so Chlorophyll Venusaur doubles its Speed and snowballs with Growth to sweep; Mega Charizard X is a Dragon Dance win condition with sun-boosted Flare Blitz, while Rotom-Wash, Focus Sash Alakazam and Z-Fly SD Landorus-T add pivoting, speed control and coverage.",
+      "members": [
+        {
+          "species": "Torkoal",
+          "ability": "Drought",
+          "item": "Leftovers",
+          "role": "Drought setter + Stealth Rock + Rapid Spin",
+          "moves": [
+            "Lava Plume",
+            "Earth Power",
+            "Rapid Spin",
+            "Stealth Rock"
+          ]
+        },
+        {
+          "species": "Charizard (Mega X)",
+          "ability": "Tough Claws",
+          "item": "Charizardite X",
+          "role": "Dragon Dance win condition (sun-boosted Flare Blitz)",
+          "moves": [
+            "Dragon Dance",
+            "Earthquake",
+            "Flare Blitz",
+            "Roost"
+          ]
+        },
+        {
+          "species": "Venusaur",
+          "ability": "Chlorophyll",
+          "item": "Sitrus Berry",
+          "role": "Chlorophyll sweeper (doubled Speed + Growth in sun)",
+          "moves": [
+            "Growth",
+            "Earthquake",
+            "Giga Drain",
+            "Sludge Bomb"
+          ]
+        },
+        {
+          "species": "Rotom-Wash",
+          "ability": "Levitate",
+          "item": "Leftovers",
+          "role": "Defensive Volt Switch pivot / Water check",
+          "moves": [
+            "Will-O-Wisp",
+            "Hydro Pump",
+            "Volt Switch",
+            "Pain Split"
+          ]
+        },
+        {
+          "species": "Alakazam",
+          "ability": "Magic Guard",
+          "item": "Focus Sash",
+          "role": "Fast special attacker / Focus Sash lead",
+          "moves": [
+            "Psychic",
+            "Dazzling Gleam",
+            "Thunder Wave",
+            "Energy Ball"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Flyinium Z",
+          "role": "Swords Dance Z-Fly sweeper / Ground pivot",
+          "moves": [
+            "Earthquake",
+            "Fly",
+            "Stone Edge",
+            "Swords Dance"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/ou-sun-team.3632686/"
+      ]
+    },
+    {
+      "name": "Sand Screens (Mega Tyranitar Dual Screens HO)",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "hyper offense (screens, sand)",
+      "era": "ORAS (Gen 6)",
+      "event": "Smogon official ORAS OU Sample Teams (Resource thread)",
+      "author": "xray, Garay oak, London Beats",
+      "confidence": "high",
+      "strategy": "Landorus-T suicide-leads Stealth Rock, then Latias and Contrary Serperior stack dual screens with Light Clay so DD Mega Tyranitar, Sand Rush Excadrill and QD Volcarona can each boost behind screens and clean. Mega Tyranitar's Sand Stream also powers Excadrill's Sand Rush.",
+      "members": [
+        {
+          "species": "Tyranitar (Mega)",
+          "ability": "Sand Stream",
+          "item": "Tyranitarite",
+          "role": "Dragon Dance sweeper / sand setter",
+          "moves": [
+            "Dragon Dance",
+            "Stone Edge",
+            "Ice Punch",
+            "Brick Break"
+          ]
+        },
+        {
+          "species": "Latias",
+          "ability": "Levitate",
+          "item": "Light Clay",
+          "role": "Dual screens setter + Healing Wish support",
+          "moves": [
+            "Reflect",
+            "Safeguard",
+            "Light Screen",
+            "Healing Wish"
+          ]
+        },
+        {
+          "species": "Serperior",
+          "ability": "Contrary",
+          "item": "Light Clay",
+          "role": "Secondary screens setter / Contrary Leaf Storm + Glare glue",
+          "moves": [
+            "Leaf Storm",
+            "Reflect",
+            "Light Screen",
+            "Glare"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Sand Rush",
+          "item": "Life Orb",
+          "role": "Sand Rush Swords Dance sweeper",
+          "moves": [
+            "Swords Dance",
+            "Earthquake",
+            "Iron Head",
+            "Return"
+          ]
+        },
+        {
+          "species": "Volcarona",
+          "ability": "Flame Body",
+          "item": "Life Orb",
+          "role": "Quiver Dance special sweeper",
+          "moves": [
+            "Quiver Dance",
+            "Fire Blast",
+            "Hidden Power Ground",
+            "Giga Drain"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Focus Sash",
+          "role": "Suicide lead: Stealth Rock + Explosion",
+          "moves": [
+            "Stealth Rock",
+            "Imprison",
+            "Earthquake",
+            "Explosion"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams.3694551/",
+        "https://pokepast.es/0b28606d89e9c727"
+      ]
+    },
+    {
+      "name": "Altaria Screens HO",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "hyper offense (screens)",
+      "era": "ORAS (Gen 6)",
+      "event": "Smogon official ORAS OU Sample Teams (Resource thread 3694551)",
+      "author": "Sjneider",
+      "confidence": "high",
+      "strategy": "Landorus-T is a Focus Sash suicide lead that sets Stealth Rock and Explodes. Serperior and support Latias stack dual screens so the frail setup sweepers — SubDD Pixilate Mega Altaria, QD Volcarona and Tail Glow Manaphy — can boost safely behind screens.",
+      "members": [
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Focus Sash",
+          "role": "Suicide lead: Stealth Rock + Explosion, Imprison anti-lead tech",
+          "moves": [
+            "Stealth Rock",
+            "Imprison",
+            "Rock Tomb",
+            "Explosion"
+          ]
+        },
+        {
+          "species": "Manaphy",
+          "ability": "Hydration",
+          "item": "Sitrus Berry",
+          "role": "Tail Glow special sweeper / late-game win condition",
+          "moves": [
+            "Tail Glow",
+            "Surf",
+            "Ice Beam",
+            "Energy Ball"
+          ]
+        },
+        {
+          "species": "Serperior",
+          "ability": "Contrary",
+          "item": "Light Clay",
+          "role": "Primary dual-screens setter + Taunt; Contrary Leaf Storm pivot",
+          "moves": [
+            "Reflect",
+            "Light Screen",
+            "Leaf Storm",
+            "Taunt"
+          ]
+        },
+        {
+          "species": "Volcarona",
+          "ability": "Flame Body",
+          "item": "Lum Berry",
+          "role": "Quiver Dance special sweeper",
+          "moves": [
+            "Quiver Dance",
+            "Flamethrower",
+            "Giga Drain",
+            "Hidden Power Ground"
+          ]
+        },
+        {
+          "species": "Altaria (Mega)",
+          "ability": "Pixilate",
+          "item": "Altarianite",
+          "role": "SubDD Pixilate Dragon Dance sweeper",
+          "moves": [
+            "Dragon Dance",
+            "Substitute",
+            "Frustration",
+            "Earthquake"
+          ]
+        },
+        {
+          "species": "Latias",
+          "ability": "Levitate",
+          "item": "Light Clay",
+          "role": "Secondary screens setter + Defog + Healing Wish support",
+          "moves": [
+            "Defog",
+            "Reflect",
+            "Light Screen",
+            "Healing Wish"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-ou-sample-teams.3694551/",
+        "https://pokepast.es/7fef66d93504069b"
+      ]
+    },
+    {
+      "name": "La Familia (Aurora Veil Hyper Offense)",
+      "format": "Gen 7 SM OU (Smogon Singles, 6v6)",
+      "archetype": "hyper offense (aurora veil, hail)",
+      "era": "SM (Gen 7)",
+      "event": "Smogon SM OU RMT — qualified for OLT, peaked #1 / ~2170 ladder",
+      "author": "imsosorrylol",
+      "confidence": "high",
+      "strategy": "Alolan Ninetales sets permanent hail and Aurora Veil under Light Clay, using Hypnosis to buy setup turns. Behind the veil a stack of setup sweepers boost: double-dance Magearna, double-dance Zygarde, SD Mega Mawile, and Tail Glow Manaphy. Landorus-T provides Stealth Rock and Intimidate glue.",
+      "members": [
+        {
+          "species": "Ninetales-Alola",
+          "ability": "Snow Warning",
+          "item": "Light Clay",
+          "role": "Aurora Veil setter + Hypnosis; Hail re-sets weather",
+          "moves": [
+            "Aurora Veil",
+            "Hail",
+            "Freeze-Dry",
+            "Hypnosis"
+          ]
+        },
+        {
+          "species": "Magearna",
+          "ability": "Soul-Heart",
+          "item": "Leftovers",
+          "role": "Double-dance sweeper (Shift Gear + Calm Mind)",
+          "moves": [
+            "Thunderbolt",
+            "Ice Beam",
+            "Shift Gear",
+            "Calm Mind"
+          ]
+        },
+        {
+          "species": "Zygarde",
+          "ability": "Aura Break",
+          "item": "Figy Berry",
+          "role": "Double-dance setup sweeper (Dragon Dance / Coil)",
+          "moves": [
+            "Thousand Arrows",
+            "Extreme Speed",
+            "Dragon Dance",
+            "Coil"
+          ]
+        },
+        {
+          "species": "Mawile (Mega)",
+          "ability": "Huge Power",
+          "item": "Mawilite",
+          "role": "Swords Dance wallbreaker",
+          "moves": [
+            "Play Rough",
+            "Sucker Punch",
+            "Thunder Punch",
+            "Swords Dance"
+          ]
+        },
+        {
+          "species": "Manaphy",
+          "ability": "Hydration",
+          "item": "Waterium Z",
+          "role": "Tail Glow sweeper; Rain Dance + Hydration + Hydro Vortex",
+          "moves": [
+            "Surf",
+            "Psychic",
+            "Tail Glow",
+            "Rain Dance"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Earth Plate",
+          "role": "Stealth Rock + Intimidate glue",
+          "moves": [
+            "Earthquake",
+            "Smack Down",
+            "Knock Off",
+            "Stealth Rock"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/la-familia-aurora-veil-hyper-offense-qualified-for-olt-peaked-1-peaked-2170.3613549/"
+      ]
+    },
+    {
+      "name": "wild grace (Dual Screens Hyper Offense)",
+      "format": "Gen 7 USM OU (Smogon Singles)",
+      "archetype": "hyper offense (screens)",
+      "era": "USUM period of Gen 7 (Smogon 'SM OU'), Sep 2018",
+      "event": "Smogon RMT (top-500 ladder, ~70% win rate)",
+      "author": "Trinitrotoluene",
+      "confidence": "high",
+      "strategy": "Focus Sash Landorus-T leads to set Stealth Rock and fire Explosion; Tapu Koko puts up dual screens with Taunt and U-turn; four setup sweepers snowball behind the screens: SD Mega Mawile, Tail Glow / Z-Rain Dance Manaphy, Electric Seed Unburden SD Hawlucha, and DD / Coil Zygarde.",
+      "members": [
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Focus Sash",
+          "role": "Suicide lead: Stealth Rock + Explosion, SD to break bulky leads",
+          "moves": [
+            "Stealth Rock",
+            "Swords Dance",
+            "Earthquake",
+            "Explosion"
+          ]
+        },
+        {
+          "species": "Tapu Koko",
+          "ability": "Electric Surge",
+          "item": "Light Clay",
+          "role": "Dual screens setter + Taunt / U-turn pivot; Electric Terrain for Hawlucha",
+          "moves": [
+            "Reflect",
+            "Light Screen",
+            "Taunt",
+            "U-turn"
+          ]
+        },
+        {
+          "species": "Mawile (Mega)",
+          "ability": "Intimidate",
+          "item": "Mawilite",
+          "role": "Swords Dance wallbreaker with Sucker Punch priority",
+          "moves": [
+            "Swords Dance",
+            "Play Rough",
+            "Sucker Punch",
+            "Knock Off"
+          ]
+        },
+        {
+          "species": "Manaphy",
+          "ability": "Hydration",
+          "item": "Waterium Z",
+          "role": "Tail Glow special sweeper; Z-Rain Dance for a Speed boost",
+          "moves": [
+            "Tail Glow",
+            "Rain Dance",
+            "Surf",
+            "Psychic"
+          ]
+        },
+        {
+          "species": "Hawlucha",
+          "ability": "Unburden",
+          "item": "Electric Seed",
+          "role": "Electric Seed / Unburden Swords Dance sweeper",
+          "moves": [
+            "Swords Dance",
+            "Acrobatics",
+            "High Jump Kick",
+            "Roost"
+          ]
+        },
+        {
+          "species": "Zygarde",
+          "ability": "Aura Break",
+          "item": "Mago Berry",
+          "role": "Dragon Dance / Coil double-dance sweeper + Extreme Speed priority",
+          "moves": [
+            "Dragon Dance",
+            "Coil",
+            "Thousand Arrows",
+            "Extreme Speed"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/wild-grace-%E2%98%86%E5%BD%A1-dual-screens-hyper-offense.3641700/"
+      ]
+    },
+    {
+      "name": "Screen HO + Volc Iapapa (Tapu Koko Dual Screens)",
+      "format": "Gen 7 USM OU (Smogon Singles)",
+      "archetype": "hyper offense (screens)",
+      "era": "SM/USUM (Gen 7)",
+      "event": "Smogon official SM OU Sample Teams (Resource thread 3695427)",
+      "author": "Grenijo (submitted by BlackU-turn)",
+      "confidence": "high",
+      "strategy": "Excadrill leads off a Focus Sash to guarantee Stealth Rock plus Rapid Spin, while Tapu Koko sets dual screens with fast Taunt. Under screens, four boosters snowball: double-dance Magearna (Gigavolt Havoc via Electrium Z), Electric Seed / Unburden SD Hawlucha, DD Mega Gyarados, and QD Volcarona (Iapapa Berry).",
+      "members": [
+        {
+          "species": "Tapu Koko",
+          "ability": "Electric Surge",
+          "item": "Light Clay",
+          "role": "Dual screens setter + fast Taunt",
+          "moves": [
+            "Reflect",
+            "Light Screen",
+            "Taunt",
+            "Wild Charge"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Mold Breaker",
+          "item": "Focus Sash",
+          "role": "Suicide lead: Stealth Rock + Rapid Spin off Focus Sash",
+          "moves": [
+            "Stealth Rock",
+            "Rapid Spin",
+            "Earthquake",
+            "Rock Tomb"
+          ]
+        },
+        {
+          "species": "Magearna",
+          "ability": "Soul-Heart",
+          "item": "Electrium Z",
+          "role": "Double-dance sweeper (Shift Gear + Calm Mind), Gigavolt Havoc Z-user",
+          "moves": [
+            "Shift Gear",
+            "Calm Mind",
+            "Thunderbolt",
+            "Ice Beam"
+          ]
+        },
+        {
+          "species": "Hawlucha",
+          "ability": "Unburden",
+          "item": "Electric Seed",
+          "role": "Unburden SubSD sweeper (Electric Seed via terrain)",
+          "moves": [
+            "Swords Dance",
+            "Substitute",
+            "High Jump Kick",
+            "Acrobatics"
+          ]
+        },
+        {
+          "species": "Gyarados (Mega)",
+          "ability": "Mold Breaker",
+          "item": "Gyaradosite",
+          "role": "Dragon Dance sweeper + Taunt, Mold Breaker vs Quagsire",
+          "moves": [
+            "Dragon Dance",
+            "Taunt",
+            "Waterfall",
+            "Earthquake"
+          ]
+        },
+        {
+          "species": "Volcarona",
+          "ability": "Flame Body",
+          "item": "Iapapa Berry",
+          "role": "Quiver Dance special sweeper, screen/Iapapa-backed setup",
+          "moves": [
+            "Quiver Dance",
+            "Bug Buzz",
+            "Flamethrower",
+            "Hidden Power Ground"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sm-ou-sample-teams.3695427/",
+        "https://pokepast.es/c871b323ca7531e6"
+      ]
+    },
+    {
+      "name": "Psychic Spam M-Tar Screens HO",
+      "format": "Gen 7 USM OU (Smogon Singles)",
+      "archetype": "hyper offense (screens, sand)",
+      "era": "SM/USUM (Gen 7)",
+      "event": "Smogon official SM OU Sample Teams (Resource thread) — Hyper Offense",
+      "author": "z0mOG",
+      "confidence": "high",
+      "strategy": "Focus Sash Landorus-T leads for Stealth Rock and Explosion, Tapu Koko sets dual screens (and Electric Terrain) with Taunt, and behind the screens DD Mega Tyranitar (Sand Stream chip), Tail Glow Manaphy, Shift Gear Magearna and Contrary Serperior break and sweep. Serperior's Glare provides speed control.",
+      "members": [
+        {
+          "species": "Tyranitar (Mega)",
+          "ability": "Sand Stream",
+          "item": "Tyranitarite",
+          "role": "Dragon Dance sweeper / sand setter",
+          "moves": [
+            "Stone Edge",
+            "Fire Punch",
+            "Ice Punch",
+            "Dragon Dance"
+          ]
+        },
+        {
+          "species": "Manaphy",
+          "ability": "Hydration",
+          "item": "Rindo Berry",
+          "role": "Tail Glow special sweeper",
+          "moves": [
+            "Surf",
+            "Ice Beam",
+            "Psychic",
+            "Tail Glow"
+          ]
+        },
+        {
+          "species": "Serperior",
+          "ability": "Contrary",
+          "item": "Rocky Helmet",
+          "role": "Contrary Leaf Storm breaker / Glare speed control / Taunt glue",
+          "moves": [
+            "Leaf Storm",
+            "Hidden Power Ground",
+            "Glare",
+            "Taunt"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Focus Sash",
+          "role": "Suicide lead: Stealth Rock + Explosion",
+          "moves": [
+            "Earthquake",
+            "Stealth Rock",
+            "Explosion",
+            "Hidden Power Ice"
+          ]
+        },
+        {
+          "species": "Tapu Koko",
+          "ability": "Electric Surge",
+          "item": "Light Clay",
+          "role": "Dual screens setter + Taunt",
+          "moves": [
+            "Reflect",
+            "Light Screen",
+            "Wild Charge",
+            "Taunt"
+          ]
+        },
+        {
+          "species": "Magearna",
+          "ability": "Soul-Heart",
+          "item": "Fairium Z",
+          "role": "Shift Gear setup sweeper",
+          "moves": [
+            "Fleur Cannon",
+            "Focus Blast",
+            "Thunderbolt",
+            "Shift Gear"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sm-ou-sample-teams.3695427/",
+        "https://pokepast.es/6de91bbafda181ad"
+      ]
+    },
+    {
+      "name": "Trick Room God Squad",
+      "format": "Gen 7 USM OU (Smogon Singles)",
+      "archetype": "bulky offense (trick room)",
+      "era": "Gen 7 SM/USUM (megas/Z-moves era)",
+      "event": "Peaked #1 on the SM OU ladder (62W-3L)",
+      "author": "Smogon RMT (SM OU archive)",
+      "confidence": "high",
+      "strategy": "Three redundant Trick Room setters (Bronzong, Audino, Magearna) guarantee the room goes up and stays up, then Marowak-Alola, Choice Band Tapu Bulu and Choice Specs Vikavolt swing as slow high-power abusers; Audino recycles the offense with Wish/Healing Wish.",
+      "members": [
+        {
+          "species": "Bronzong",
+          "ability": "Levitate",
+          "item": "Mental Herb",
+          "role": "Lead Trick Room setter + Stealth Rock; Explosion/Gyro Ball offense",
+          "moves": [
+            "Trick Room",
+            "Stealth Rock",
+            "Explosion",
+            "Gyro Ball"
+          ]
+        },
+        {
+          "species": "Audino",
+          "ability": "Regenerator",
+          "item": "Chople Berry",
+          "role": "Bulky backup TR setter; Wish/Healing Wish support + Knock Off",
+          "moves": [
+            "Wish",
+            "Trick Room",
+            "Healing Wish",
+            "Knock Off"
+          ]
+        },
+        {
+          "species": "Magearna",
+          "ability": "Soul-Heart",
+          "item": "Fairium Z",
+          "role": "TR setter + Twinkle Tackle (Fairium Z off Fleur Cannon) nuke",
+          "moves": [
+            "Trick Room",
+            "Flash Cannon",
+            "Fleur Cannon",
+            "Aura Sphere"
+          ]
+        },
+        {
+          "species": "Marowak-Alola",
+          "ability": "Rock Head",
+          "item": "Thick Club",
+          "role": "Swords Dance TR sweeper; recoil-free Flare Blitz + Shadow Bone",
+          "moves": [
+            "Flare Blitz",
+            "Earthquake",
+            "Shadow Bone",
+            "Swords Dance"
+          ]
+        },
+        {
+          "species": "Vikavolt",
+          "ability": "Levitate",
+          "item": "Choice Specs",
+          "role": "Slow Choice Specs special wallbreaker / Volt Switch pivot",
+          "moves": [
+            "Thunderbolt",
+            "Bug Buzz",
+            "Hidden Power Ice",
+            "Volt Switch"
+          ]
+        },
+        {
+          "species": "Tapu Bulu",
+          "ability": "Grassy Surge",
+          "item": "Choice Band",
+          "role": "Choice Band Grassy-Terrain wallbreaker under Trick Room",
+          "moves": [
+            "Wood Hammer",
+            "Horn Leech",
+            "Megahorn",
+            "Superpower"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/trick-room-god-squad-peaked-1-62w-3l.3590319/"
+      ]
+    },
+    {
+      "name": "Mega Mawile Fairy Trick Room (1600+)",
+      "format": "Gen 7 SM OU (Smogon Singles, 6v6)",
+      "archetype": "balance (trick room)",
+      "era": "Gen 7 SM/USUM (megas era)",
+      "event": "Peaked 1600+ on the SM OU ladder",
+      "author": "Smogon SM OU RMT (forum thread 3605493)",
+      "confidence": "high",
+      "strategy": "A semi-room / balanced Trick Room build: Cresselia, Magearna and Mimikyu set Trick Room while Landorus-T and Rotom-W provide Intimidate/Volt Switch glue and hazards, letting Huge Power Mega Mawile clean. Cresselia's Lunar Dance revives Mega Mawile for a repeat sweep.",
+      "members": [
+        {
+          "species": "Mawile (Mega)",
+          "ability": "Huge Power",
+          "item": "Mawilite",
+          "role": "Swords Dance sweeper / slow abuser under Trick Room",
+          "moves": [
+            "Swords Dance",
+            "Sucker Punch",
+            "Fire Fang",
+            "Iron Head"
+          ]
+        },
+        {
+          "species": "Cresselia",
+          "ability": "Levitate",
+          "item": "Mental Herb",
+          "role": "Bulky primary Trick Room setter + Lunar Dance revival",
+          "moves": [
+            "Trick Room",
+            "Psychic",
+            "Ice Beam",
+            "Lunar Dance"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Rocky Helmet",
+          "role": "Intimidate defensive pivot + Stealth Rock",
+          "moves": [
+            "Stealth Rock",
+            "Earthquake",
+            "Hidden Power Ice",
+            "U-turn"
+          ]
+        },
+        {
+          "species": "Magearna",
+          "ability": "Soul-Heart",
+          "item": "Fairium Z",
+          "role": "Slow Trick Room setter + Twinkle Tackle nuke",
+          "moves": [
+            "Trick Room",
+            "Fleur Cannon",
+            "Flash Cannon",
+            "Focus Blast"
+          ]
+        },
+        {
+          "species": "Mimikyu",
+          "ability": "Disguise",
+          "item": "Life Orb",
+          "role": "Disguise-guaranteed Trick Room setter + Shadow Sneak priority",
+          "moves": [
+            "Shadow Claw",
+            "Shadow Sneak",
+            "Play Rough",
+            "Trick Room"
+          ]
+        },
+        {
+          "species": "Rotom-Wash",
+          "ability": "Levitate",
+          "item": "Leftovers",
+          "role": "Volt Switch pivot / defensive glue with Will-O-Wisp",
+          "moves": [
+            "Volt Switch",
+            "Hydro Pump",
+            "Will-O-Wisp",
+            "Pain Split"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/mega-mawile-fairy-trick-room-1600.3605493/"
+      ]
+    },
+    {
+      "name": "Bulu / Sun Trick Room",
+      "format": "Gen 7 SM OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (sun, trick room)",
+      "era": "Gen 7 SM/USUM (megas era)",
+      "event": "Smogon SM OU RMT",
+      "author": "Smogon SM OU RMT",
+      "confidence": "high",
+      "strategy": "A hybrid sun + Trick Room bulky offense. Torkoal's Drought powers Growth/Solar Beam Mega Camerupt and recoil-free Flare Blitz Marowak-Alola, while Cresselia and Porygon2 set Trick Room so those slow wallbreakers plus SD Tapu Bulu move first and break through.",
+      "members": [
+        {
+          "species": "Cresselia",
+          "ability": "Levitate",
+          "item": "Mental Herb",
+          "role": "Trick Room setter + Sunny Day support + Lunar Dance pivot",
+          "moves": [
+            "Trick Room",
+            "Lunar Dance",
+            "Sunny Day",
+            "Moonlight"
+          ]
+        },
+        {
+          "species": "Tapu Bulu",
+          "ability": "Grassy Surge",
+          "item": "Rockium Z",
+          "role": "Swords Dance Grassy-Terrain wallbreaker; Rockium Z off Stone Edge",
+          "moves": [
+            "Wood Hammer",
+            "Stone Edge",
+            "Swords Dance",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Marowak-Alola",
+          "ability": "Rock Head",
+          "item": "Thick Club",
+          "role": "Thick Club Swords Dance wallbreaker under Trick Room",
+          "moves": [
+            "Swords Dance",
+            "Bonemerang",
+            "Shadow Bone",
+            "Flare Blitz"
+          ]
+        },
+        {
+          "species": "Camerupt (Mega)",
+          "ability": "Solid Rock",
+          "item": "Cameruptite",
+          "role": "Growth + sun-boosted Solar Beam special sweeper under Trick Room",
+          "moves": [
+            "Fire Blast",
+            "Earth Power",
+            "Growth",
+            "Solar Beam"
+          ]
+        },
+        {
+          "species": "Torkoal",
+          "ability": "Drought",
+          "item": "Heat Rock",
+          "role": "Drought sun setter + Stealth Rock / Rapid Spin support",
+          "moves": [
+            "Stealth Rock",
+            "Rapid Spin",
+            "Will-O-Wisp",
+            "Lava Plume"
+          ]
+        },
+        {
+          "species": "Porygon2",
+          "ability": "Trace",
+          "item": "Eviolite",
+          "role": "Trace special wall + secondary Trick Room setter",
+          "moves": [
+            "Thunderbolt",
+            "Ice Beam",
+            "Trick Room",
+            "Recover"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/bulu-sun-trick-room-peaked-redacted-elo-and-also-redacted-on-ladder.3643498/"
+      ]
+    },
+    {
+      "name": "Mega Steelix Trick Room (Peaked #8)",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (trick room)",
+      "era": "Gen 6 ORAS (megas era)",
+      "event": "Peaked #8 on the ORAS OU ladder",
+      "author": "Smogon ORAS OU RMT",
+      "confidence": "high",
+      "strategy": "Bulky Trick Room team: Cresselia and Porygon2 are the primary/secondary TR setters (Cofagrigus a third offensive setter), letting slow wallbreakers swing under reversed speed. Mega Steelix is a Steel tank and Stealth Rock lead, while Adaptability Crawdaunt, Adaptability Dragalge and Nasty Plot Cofagrigus break.",
+      "members": [
+        {
+          "species": "Steelix (Mega)",
+          "ability": "Sturdy",
+          "item": "Steelixite",
+          "role": "Stealth Rock lead + Heavy Slam physical tank",
+          "moves": [
+            "Heavy Slam",
+            "Fire Fang",
+            "Earthquake",
+            "Stealth Rock"
+          ]
+        },
+        {
+          "species": "Cresselia",
+          "ability": "Levitate",
+          "item": "Mental Herb",
+          "role": "Primary Trick Room setter + Lunar Dance revival",
+          "moves": [
+            "Trick Room",
+            "Moonlight",
+            "Lunar Dance",
+            "Moonblast"
+          ]
+        },
+        {
+          "species": "Crawdaunt",
+          "ability": "Adaptability",
+          "item": "Life Orb",
+          "role": "Adaptability Swords Dance wallbreaker + Aqua Jet priority",
+          "moves": [
+            "Crabhammer",
+            "Knock Off",
+            "Aqua Jet",
+            "Swords Dance"
+          ]
+        },
+        {
+          "species": "Porygon2",
+          "ability": "Download",
+          "item": "Eviolite",
+          "role": "Secondary Trick Room setter / special wall",
+          "moves": [
+            "Tri Attack",
+            "Ice Beam",
+            "Recover",
+            "Trick Room"
+          ]
+        },
+        {
+          "species": "Dragalge",
+          "ability": "Adaptability",
+          "item": "Life Orb",
+          "role": "Adaptability special wallbreaker",
+          "moves": [
+            "Draco Meteor",
+            "Sludge Wave",
+            "Hidden Power Fire",
+            "Focus Blast"
+          ]
+        },
+        {
+          "species": "Cofagrigus",
+          "ability": "Mummy",
+          "item": "Leftovers",
+          "role": "Offensive Trick Room setter + Nasty Plot special sweeper",
+          "moves": [
+            "Nasty Plot",
+            "Shadow Ball",
+            "Hidden Power Fighting",
+            "Trick Room"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/mega-steelix-trick-room-peaked-8.3535931/"
+      ]
+    },
+    {
+      "name": "Mega Ampharos Trick Room",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "bulky offense (trick room)",
+      "era": "Gen 6 ORAS (megas era)",
+      "event": "Smogon ORAS OU RMT (thread 3575403)",
+      "author": "PanierGarnis",
+      "confidence": "high",
+      "strategy": "Built around Mega Ampharos as a slow, hard-hitting special wallbreaker/Volt Switch pivot; Bronzong, Cofagrigus and Diancie set Trick Room and hazards so Ampharos and Adaptability Crawdaunt tee off, with Entei providing Extreme Speed/Sacred Fire speed control for when the room is down.",
+      "members": [
+        {
+          "species": "Ampharos (Mega)",
+          "ability": "Mold Breaker",
+          "item": "Ampharosite",
+          "role": "Slow special wallbreaker / Volt Switch pivot",
+          "moves": [
+            "Volt Switch",
+            "Hidden Power Grass",
+            "Dragon Pulse",
+            "Focus Blast"
+          ]
+        },
+        {
+          "species": "Bronzong",
+          "ability": "Levitate",
+          "item": "Focus Sash",
+          "role": "Focus Sash Trick Room setter + Gyro Ball",
+          "moves": [
+            "Gyro Ball",
+            "Earthquake",
+            "Trick Room",
+            "Hidden Power Ice"
+          ]
+        },
+        {
+          "species": "Crawdaunt",
+          "ability": "Adaptability",
+          "item": "Life Orb",
+          "role": "Adaptability wallbreaker + Aqua Jet priority",
+          "moves": [
+            "Superpower",
+            "Crabhammer",
+            "Knock Off",
+            "Aqua Jet"
+          ]
+        },
+        {
+          "species": "Cofagrigus",
+          "ability": "Mummy",
+          "item": "Leftovers",
+          "role": "Nasty Plot Trick Room setter / special sweeper",
+          "moves": [
+            "Trick Room",
+            "Nasty Plot",
+            "Shadow Ball",
+            "Hidden Power Fighting"
+          ]
+        },
+        {
+          "species": "Diancie",
+          "ability": "Clear Body",
+          "item": "Mental Herb",
+          "role": "Trick Room setter + Stealth Rock + Diamond Storm",
+          "moves": [
+            "Diamond Storm",
+            "Stealth Rock",
+            "Moonblast",
+            "Trick Room"
+          ]
+        },
+        {
+          "species": "Entei",
+          "ability": "Pressure",
+          "item": "Leftovers",
+          "role": "Sacred Fire wallbreaker + Extreme Speed priority",
+          "moves": [
+            "Sacred Fire",
+            "Will-O-Wisp",
+            "Extreme Speed",
+            "Iron Head"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/trick-room-mega-ampharos-co.3575403/"
+      ]
+    },
+    {
+      "name": "One More Chance (Wish Stall, Peaked #1 / 94 GXE)",
+      "format": "Gen 6 ORAS OU (Smogon Singles, 6v6)",
+      "archetype": "full stall (Wish stall, Unaware + Magic Bounce)",
+      "era": "Gen 6 ORAS (2015-2016)",
+      "event": "Smogon ORAS OU RMT — laddered to #1 with 94 GXE",
+      "author": "ADF Test",
+      "confidence": "high",
+      "strategy": "Double-Unaware (Clefable + Quagsire) blanket-checks every setup sweeper while a Wish chain (Alomomola + Clefable) keeps Chansey and Quagsire topped off; Mega Sableye bounces hazards, Skarmory phazes and Defogs, and Toxic/Will-O-Wisp residual grinds the opponent down.",
+      "members": [
+        {
+          "species": "Sableye (Mega)",
+          "ability": "Magic Bounce",
+          "item": "Sablenite",
+          "role": "Magic Bounce hazard denier / Will-O-Wisp burn spreader",
+          "moves": [
+            "Will-O-Wisp",
+            "Recover",
+            "Knock Off",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Alomomola",
+          "ability": "Regenerator",
+          "item": "Leftovers",
+          "role": "Wish passer / physical wall / Mirror Coat lure",
+          "moves": [
+            "Wish",
+            "Protect",
+            "Scald",
+            "Mirror Coat"
+          ]
+        },
+        {
+          "species": "Clefable",
+          "ability": "Unaware",
+          "item": "Leftovers",
+          "role": "Unaware Calm Mind win-con / secondary Wish support",
+          "moves": [
+            "Wish",
+            "Protect",
+            "Calm Mind",
+            "Moonblast"
+          ]
+        },
+        {
+          "species": "Chansey",
+          "ability": "Natural Cure",
+          "item": "Eviolite",
+          "role": "Special wall / Stealth Rock / Heal Bell cleric",
+          "moves": [
+            "Soft-Boiled",
+            "Toxic",
+            "Heal Bell",
+            "Stealth Rock"
+          ]
+        },
+        {
+          "species": "Quagsire",
+          "ability": "Unaware",
+          "item": "Leftovers",
+          "role": "Unaware physical wall / setup-sweeper check",
+          "moves": [
+            "Scald",
+            "Earthquake",
+            "Toxic",
+            "Recover"
+          ]
+        },
+        {
+          "species": "Skarmory",
+          "ability": "Sturdy",
+          "item": "Shed Shell",
+          "role": "Physical wall / Defog hazard control / Whirlwind phazer",
+          "moves": [
+            "Whirlwind",
+            "Roost",
+            "Defog",
+            "Brave Bird"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/one-more-chance-wish-stall-team-peaked-number-1-with-94-gxe.3587862/"
+      ]
+    },
+    {
+      "name": "More Cancerous Stall (Toxapex + Gliscor)",
+      "format": "Gen 7 SM OU (Smogon Singles, 6v6)",
+      "archetype": "full stall (double-trapper stall, Unaware + Magic Bounce)",
+      "era": "Gen 7 SM (2017)",
+      "event": "Smogon SM OU RMT",
+      "author": "samwelll",
+      "confidence": "high",
+      "strategy": "Classic SM stall backbone — Mega Sableye bounces hazards, Toxapex spreads Toxic Spikes and Hazes boosts, Gliscor SubToxic-stalls, and Unaware Clefable walls setup sweepers as Wish/Heal Bell cleric. Dugtrio and Magnezone trap and remove the walls' checks, with Dugtrio's Memento opening a late-game window.",
+      "members": [
+        {
+          "species": "Sableye (Mega)",
+          "ability": "Magic Bounce",
+          "item": "Sablenite",
+          "role": "Magic Bounce wall / Will-O-Wisp burn / Knock Off",
+          "moves": [
+            "Knock Off",
+            "Will-O-Wisp",
+            "Recover",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Toxapex",
+          "ability": "Regenerator",
+          "item": "Black Sludge",
+          "role": "Physically defensive wall / Toxic Spikes / Haze anti-setup",
+          "moves": [
+            "Scald",
+            "Haze",
+            "Recover",
+            "Toxic Spikes"
+          ]
+        },
+        {
+          "species": "Gliscor",
+          "ability": "Poison Heal",
+          "item": "Toxic Orb",
+          "role": "SubToxic Poison Heal stall wall / Ground immunity",
+          "moves": [
+            "Substitute",
+            "Protect",
+            "Toxic",
+            "Earthquake"
+          ]
+        },
+        {
+          "species": "Clefable",
+          "ability": "Unaware",
+          "item": "Leftovers",
+          "role": "Unaware special wall / Wish + Heal Bell cleric",
+          "moves": [
+            "Wish",
+            "Heal Bell",
+            "Protect",
+            "Moonblast"
+          ]
+        },
+        {
+          "species": "Dugtrio",
+          "ability": "Arena Trap",
+          "item": "Focus Sash",
+          "role": "Arena Trap trapper / Memento pivot",
+          "moves": [
+            "Earthquake",
+            "Memento",
+            "Stone Edge",
+            "Reversal"
+          ]
+        },
+        {
+          "species": "Magnezone",
+          "ability": "Magnet Pull",
+          "item": "Choice Specs",
+          "role": "Steel trapper (Ferrothorn/Skarmory removal)",
+          "moves": [
+            "Volt Switch",
+            "Thunderbolt",
+            "Hidden Power Fire",
+            "Flash Cannon"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/more-cancerous-stall-toxapex-gliscor.3606137/"
+      ]
+    },
+    {
+      "name": "No Duggy This Time Around — Kyurem Hyper Stall (Peaked #1, 1998+)",
+      "format": "Gen 7 SM OU (Smogon Singles, 6v6)",
+      "archetype": "full stall (hyper stall / PP-stall, Unaware + Magic Bounce)",
+      "era": "Gen 7 SM (2018)",
+      "event": "Smogon SM OU RMT — peaked #1 on ladder (1998+)",
+      "author": "BanDisnDatnMe",
+      "confidence": "high",
+      "strategy": "A trapper-less PP-stall: SubRoost Kyurem abuses Pressure to burn out attacker PP while Mega Sableye reflects hazards and Will-O-Wisp cripples physical attackers. Toxapex and Skarmory stack hazards with Haze/Whirlwind, Chansey blanket-walls specials and sets Stealth Rock, and Unaware Clefable keeps the core healthy indefinitely.",
+      "members": [
+        {
+          "species": "Kyurem",
+          "ability": "Pressure",
+          "item": "Leftovers",
+          "role": "Defensive SubRoost PP-staller / Ice Beam breaker",
+          "moves": [
+            "Ice Beam",
+            "Roost",
+            "Substitute",
+            "Earth Power"
+          ]
+        },
+        {
+          "species": "Sableye (Mega)",
+          "ability": "Magic Bounce",
+          "item": "Sablenite",
+          "role": "Magic Bounce hazard wall / Will-O-Wisp burner",
+          "moves": [
+            "Protect",
+            "Recover",
+            "Will-O-Wisp",
+            "Knock Off"
+          ]
+        },
+        {
+          "species": "Chansey",
+          "ability": "Natural Cure",
+          "item": "Eviolite",
+          "role": "Special wall / Stealth Rock / Seismic Toss",
+          "moves": [
+            "Seismic Toss",
+            "Soft-Boiled",
+            "Toxic",
+            "Stealth Rock"
+          ]
+        },
+        {
+          "species": "Skarmory",
+          "ability": "Sturdy",
+          "item": "Rocky Helmet",
+          "role": "Physical wall / Spikes + Defog / Whirlwind phazer",
+          "moves": [
+            "Whirlwind",
+            "Roost",
+            "Defog",
+            "Spikes"
+          ]
+        },
+        {
+          "species": "Toxapex",
+          "ability": "Regenerator",
+          "item": "Black Sludge",
+          "role": "Bulky Water wall / Toxic Spikes / Haze",
+          "moves": [
+            "Scald",
+            "Recover",
+            "Toxic Spikes",
+            "Haze"
+          ]
+        },
+        {
+          "species": "Clefable",
+          "ability": "Unaware",
+          "item": "Leftovers",
+          "role": "Unaware wall / Wish + Heal Bell cleric",
+          "moves": [
+            "Moonblast",
+            "Wish",
+            "Protect",
+            "Heal Bell"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/no-duggy-this-time-around-kyurem-hyper-stall-peaked-1-1998.3597847/"
+      ]
+    },
+    {
+      "name": "A Mega Venusaur Stall Team",
+      "format": "Gen 7 SM OU (Smogon Singles, 6v6)",
+      "archetype": "full stall (Mega Venusaur trapper stall)",
+      "era": "Gen 7 SM (2017)",
+      "event": "Smogon SM OU RMT",
+      "author": "BrightPowderDealer",
+      "confidence": "high",
+      "strategy": "Non-Sableye stall built on Mega Venusaur's Thick Fat bulk and Chansey to wall the special tiers; Necrozma sets rocks and paralyzes, Zapdos Defogs and pivots, Alomomola Wish-heals the core, and Dugtrio traps the Heatrans/Magearnas that pressure the walls.",
+      "members": [
+        {
+          "species": "Venusaur (Mega)",
+          "ability": "Thick Fat",
+          "item": "Venusaurite",
+          "role": "Special wall / status absorber / Synthesis recovery",
+          "moves": [
+            "Giga Drain",
+            "Sludge Bomb",
+            "Synthesis",
+            "Hidden Power Fire"
+          ]
+        },
+        {
+          "species": "Chansey",
+          "ability": "Natural Cure",
+          "item": "Eviolite",
+          "role": "Special wall / Aromatherapy cleric / Seismic Toss",
+          "moves": [
+            "Soft-Boiled",
+            "Toxic",
+            "Seismic Toss",
+            "Aromatherapy"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Pressure",
+          "item": "Leftovers",
+          "role": "Physical wall / Defog hazard control",
+          "moves": [
+            "Discharge",
+            "Hidden Power Ice",
+            "Roost",
+            "Defog"
+          ]
+        },
+        {
+          "species": "Dugtrio",
+          "ability": "Arena Trap",
+          "item": "Focus Sash",
+          "role": "Arena Trap trapper (Steels / Heatran removal)",
+          "moves": [
+            "Earthquake",
+            "Reversal",
+            "Stone Edge",
+            "Toxic"
+          ]
+        },
+        {
+          "species": "Necrozma",
+          "ability": "Prism Armor",
+          "item": "Leftovers",
+          "role": "Defensive Stealth Rock setter / Thunder Wave support",
+          "moves": [
+            "Stealth Rock",
+            "Moonlight",
+            "Psychic",
+            "Thunder Wave"
+          ]
+        },
+        {
+          "species": "Alomomola",
+          "ability": "Regenerator",
+          "item": "Rocky Helmet",
+          "role": "Wish passer / physical wall",
+          "moves": [
+            "Scald",
+            "Wish",
+            "Protect",
+            "Toxic"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/ou-a-mega-venusaur-stall-team.3594819/"
+      ]
+    },
+    {
+      "name": "Mega Aggron Stall (official USM OU Sample Team)",
+      "format": "Gen 7 USUM OU (Smogon Singles, 6v6)",
+      "archetype": "full stall (Mega Aggron full stall, Unaware)",
+      "era": "Gen 7 USUM (2018)",
+      "event": "Smogon USM OU Sample Teams v2 — official sample team",
+      "author": "Bitchinator",
+      "confidence": "high",
+      "strategy": "Mega Aggron's Filter walls physical attackers and sets Stealth Rock while Chansey covers the special side; double Defog (Mew + Zapdos) guarantees hazard control, Clefable Unaware stops setup sweepers, and stacked Wish plus Rocky Helmet and Toxic residual keeps the fort standing.",
+      "members": [
+        {
+          "species": "Aggron (Mega)",
+          "ability": "Filter",
+          "item": "Aggronite",
+          "role": "Physical wall / Stealth Rock setter",
+          "moves": [
+            "Stealth Rock",
+            "Heavy Slam",
+            "Earthquake",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Chansey",
+          "ability": "Natural Cure",
+          "item": "Eviolite",
+          "role": "Special wall / Heal Bell cleric / Seismic Toss chip",
+          "moves": [
+            "Seismic Toss",
+            "Soft-Boiled",
+            "Toxic",
+            "Heal Bell"
+          ]
+        },
+        {
+          "species": "Clefable",
+          "ability": "Unaware",
+          "item": "Leftovers",
+          "role": "Unaware wall / anti-setup / Wish support",
+          "moves": [
+            "Wish",
+            "Moonblast",
+            "Calm Mind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Alomomola",
+          "ability": "Regenerator",
+          "item": "Rocky Helmet",
+          "role": "Wish passer / physical wall / Knock Off",
+          "moves": [
+            "Wish",
+            "Toxic",
+            "Knock Off",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Mew",
+          "ability": "Synchronize",
+          "item": "Leftovers",
+          "role": "Physical wall / Defog / Will-O-Wisp burn",
+          "moves": [
+            "Earthquake",
+            "Soft-Boiled",
+            "Will-O-Wisp",
+            "Defog"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Pressure",
+          "item": "Leftovers",
+          "role": "Bulky electric / secondary Defog",
+          "moves": [
+            "Thunderbolt",
+            "Roost",
+            "Heat Wave",
+            "Defog"
+          ]
+        }
+      ],
+      "synergies": [],
+      "antiSynergies": [],
+      "sources": [
+        "https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/"
+      ]
     }
   ],
   "synergy": {

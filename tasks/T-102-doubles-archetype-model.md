@@ -31,9 +31,36 @@ plays, terrain), and balanced/offensive/defensive still apply with different str
 > research corpus (which is partly 4v4 VGC, whereas our doubles are 6v6). Any such value/mapping is
 > provisional until the owner validates it.
 
+## Doubles plan — mirror of the singles work (added 2026-07-11)
+
+When we reach doubles, replay exactly the pipeline that worked for singles (T-118 detector realism →
+T-121 corpus expansion → slot-recipe entries → crystallize-by-fit). Step by step:
+
+1. **Expand the DOU 6v6 corpus** (research workflow, running in parallel now). The corpus has only ~14
+   Doubles OU 6v6 teams (the 24 VGC teams are 4v4 → filter per the 6v6 lens); 14 is as thin as singles
+   was (12). Grow to ~30-40 verified DOU 6v6 teams (~8 per base archetype) before committing thresholds.
+2. **Re-validate the doubles DETECTORS against the DOU corpus** (T-118 for doubles): `intimidateUser` +
+   `fakeOutUser`, `spreadAttacker` (move-target metadata), `redirector` (Follow Me/Rage Powder or
+   Lightning Rod/Storm Drain), `tailwindSetter`/`trickRoomSetter`/`trickRoomAbuser`, `weatherSetter`
+   (ability only), `wideGuardUser`, `perishSongUser`, `trapper`, + the one-offensive-identity precedence.
+   The same "can-learn over-fires" trap applies — confirm each fires realistically via the T-117 audit.
+3. **Slot-objective analysis per doubles archetype** — go team-by-team, define each slot's objective,
+   derive the common slot **RECIPE** (roles + min/max/weight): bulky_offense (Intimidate/Fake Out core
+   + spread + speed control + win condition), balance/dual-mode (two speed-control modes), hyper_offense,
+   + gimmick engines (weather setter+abuser, TR setter+abusers, redirection+wincon, trapping, screens/
+   Tailwind).
+4. **Owner-validate the recipes** (analysis-first) — including the open flag below (defensive/stall
+   doubles base in 6v6, or offensive/balanced only?).
+5. **Rewrite `doubles.json` `structure` as the recipes**; the crystallize-by-fit engine built for
+   singles is **format-agnostic** (`getArchetypeModel('doubles')`) → it just consumes the doubles recipes.
+6. **Measure** with the T-117 decision log on doubles trainers (each crystallizes a doubles archetype +
+   delivers its roles). Then the singles-style seed assignments for doubles trainers.
+
 Acceptance criteria:
 - [x] `doubles.json` archetype set (base offensive/balanced + doubles gimmicks) with entry conditions
       and structure for each. *(No pure-defensive base — see the flag below; owner to confirm.)*
+- [ ] (v2, when we reach doubles) recipes re-derived from the expanded DOU 6v6 corpus, owner-validated,
+      structures rewritten as slot recipes; detectors re-validated; audit shows realistic crystallization.
 - [x] A schema + validation test guards the file (shared loader `randomizer/archetypes.js` + test).
 - [x] Content grounded in the 6v6 DOU research (`docs/research/team-archetypes.md`, 6v6-adjusted).
 - [x] `cd randomizer && npm test` green.
