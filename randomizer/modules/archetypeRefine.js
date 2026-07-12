@@ -98,6 +98,11 @@ const WEATHER_ABUSER_BY_SUBTYPE = {
     sand: ['SAND_RUSH', 'SAND_FORCE'],
     snow: ['SLUSH_RUSH', 'ICE_BODY'],
 };
+// T-125 — the rock a weather setter holds to extend its weather 5→8 turns (by the setter ability).
+const WEATHER_ROCK_BY_SETTER = {
+    DROUGHT: 'ITEM_HEAT_ROCK', ORICHALCUM_PULSE: 'ITEM_HEAT_ROCK',
+    DRIZZLE: 'ITEM_DAMP_ROCK', SAND_STREAM: 'ITEM_SMOOTH_ROCK', SNOW_WARNING: 'ITEM_ICY_ROCK',
+};
 
 // The ability `species` should PREFER given the crystallised identity, or [] (no preference). For a
 // weather-gimmick team: if a prior member already set the weather (subtype known) → the matching abuser
@@ -134,5 +139,5 @@ function planMemberAbility({ species, team, model, ctx = {}, sophistication, see
 
 module.exports = {
     resolvedDetectMon, planMemberRoleMove, planMemberAbility, ROLE_MOVE_SETS,
-    WEATHER_SUBTYPE_BY_SETTER, WEATHER_ABUSER_BY_SUBTYPE,
+    WEATHER_SUBTYPE_BY_SETTER, WEATHER_ABUSER_BY_SUBTYPE, WEATHER_ROCK_BY_SETTER,
 };

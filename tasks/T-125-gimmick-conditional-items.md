@@ -1,7 +1,7 @@
 ---
 id: T-125
 title: Gimmick-conditional item selection + bag provisioning
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-11
 updated: 2026-07-11
@@ -43,6 +43,15 @@ Acceptance criteria:
 
 ## Progress log
 
+- **2026-07-11 — weather rock done.** A mon whose chosen ability is a weather setter (Drought/Drizzle/
+  Sand Stream/Snow Warning/Orichalcum) now holds the matching rock (`WEATHER_ROCK_BY_SETTER` →
+  Heat/Damp/Smooth/Icy Rock via `itemIdToName`), filling only an empty item slot and soph-gated so
+  early-game is byte-identical. Verified on the seeded weather trainers: Archie → Drizzle @ Damp Rock,
+  Maxie → Drought @ Heat Rock, Museum grunt → Snow Warning @ Icy Rock. Suite 929; determinism green.
+  Given the seeds place the setters (T-126), the rock is on the right mons from the Museum grunts
+  onward, per the owner ask — no separate bag provisioning needed (the item is set directly on the
+  setter). **Follow-ups:** other gimmick items (Light Clay for screens, Room Service for TR — with the
+  TR completion in T-124).
 - **2026-07-11** — Created from the owner's problem-2 reflections (gimmick-conditional items + weather
   rock from the Museum grunts). Blocked on T-124 (gimmick completion).
 

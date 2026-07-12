@@ -35,8 +35,8 @@ const { sample, canLearnMove, usesStrategicNature } = require('./utils');
 const { pickTrainerMonAbility } = require('./trainerAbility');
 const { selectWithAutoFallback } = require('./trainerFallback');
 const { createChooser } = require('./trainerSelector');
-const { makeArchetypePicker } = require('./archetypePicker');
-const { planMemberRoleMove, planMemberAbility } = require('./archetypeRefine');
+const { makeArchetypePicker, BIAS_MIN_SOPH } = require('./archetypePicker');
+const { planMemberRoleMove, planMemberAbility, WEATHER_ROCK_BY_SETTER } = require('./archetypeRefine');
 const { getTrainerSeed } = require('./trainerSeeds');
 const { getArchetypeModel } = require('../archetypes');
 const { noopTeamAudit } = require('../teamAudit');
@@ -254,6 +254,12 @@ function createTeamResolver(deps) {
                     }),
                 });
                 newTeamMember.ability = originalAbility;
+
+                // T-125 — a weather setter holds the rock that extends its weather (Damp/Heat/Smooth/Icy).
+                // Soph-gated so early-game is byte-identical; only fills an empty item slot.
+                if (!newTeamMember.item && context.sophistication >= BIAS_MIN_SOPH && WEATHER_ROCK_BY_SETTER[ability]) {
+                    newTeamMember.item = itemIdToName(WEATHER_ROCK_BY_SETTER[ability]);
+                }
 
                 // T-013: this mon's own weather/herb is handled in the rater; here we add the weather
                 // EARLIER teammates set (lingering setters only — primals like Desolate Land /
