@@ -278,6 +278,37 @@ describe('createChooser — maxBaseTier filter', () => {
     });
 });
 
+describe('createChooser — TRAINER_REPEAT_ID + devolveToLevel (T-106 reverse continuity)', () => {
+    // Beldum --20--> Metang --45--> Metagross. A later-authoritative appearance stored Metagross;
+    // an earlier appearance repeats it DEVOLVED to the most-evolved form legal at its level.
+    const beldum = makePoke('SPECIES_BELDUM', { tier: 'NU', isLC: true, evolutions: [{ method: 'LEVEL', param: '20', pokemon: 'SPECIES_METANG' }] });
+    const metang = makePoke('SPECIES_METANG', { tier: 'NU', evolutions: [{ method: 'LEVEL', param: '45', pokemon: 'SPECIES_METAGROSS' }] });
+    const metagross = makePoke('SPECIES_METAGROSS', { tier: 'OU', isFinal: true });
+    const list = [beldum, metang, metagross];
+
+    test('repeats the stored mon as-is (no devolveToLevel) at any level', () => {
+        const ctx = makeContext();
+        ctx.storedIds['STEVEN_MEGA'] = 'SPECIES_METAGROSS';
+        const chooser = makeChooser(list, makeTrainer(22), ctx);
+        expect(chooser({ special: 'TRAINER_REPEAT_ID', id: 'STEVEN_MEGA' }).id).toBe('SPECIES_METAGROSS');
+    });
+
+    test('devolveToLevel projects the stored final form back to the level-legal stage', () => {
+        const ctx = makeContext();
+        ctx.storedIds['STEVEN_MEGA'] = 'SPECIES_METAGROSS';
+        const chooser = makeChooser(list, makeTrainer(22), ctx);
+        // level 22: Metagross needs 45 → devolves to Metang (Beldum→Metang at 20 is legal)
+        expect(chooser({ special: 'TRAINER_REPEAT_ID', id: 'STEVEN_MEGA', devolveToLevel: true }).id).toBe('SPECIES_METANG');
+    });
+
+    test('devolveToLevel is a no-op at a high level (keeps the final form)', () => {
+        const ctx = makeContext();
+        ctx.storedIds['STEVEN_MEGA'] = 'SPECIES_METAGROSS';
+        const chooser = makeChooser(list, makeTrainer(78), ctx);
+        expect(chooser({ special: 'TRAINER_REPEAT_ID', id: 'STEVEN_MEGA', devolveToLevel: true }).id).toBe('SPECIES_METAGROSS');
+    });
+});
+
 describe('createChooser — favouriteChain (T-128)', () => {
     // A favourite is an ORDERED list of standard slot-defs (priority high→low). The chain returns the
     // first matcher whose pool is non-empty, and DROPS the favourite (undefined) when none fit —

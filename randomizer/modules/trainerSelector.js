@@ -10,7 +10,7 @@ const {
     TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES,
 } = require('../constants');
 const { TIER_SEQ } = require('../constants');
-const { sample, checkValidEvo, getFamilyGroup, hasValidMega } = require('./utils');
+const { sample, checkValidEvo, getFamilyGroup, hasValidMega, devolveToLevel } = require('./utils');
 
 function tiersUpTo(maxTier) {
     const idx = TIER_SEQ.indexOf(maxTier);
@@ -171,7 +171,13 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         } else if (trainerMonDefinition.special === TRAINER_REPEAT_ID) {
             const repeatedId = storedIds[trainerMonDefinition.id];
             if (repeatedId) {
-                const repeatedPokemon = pokemonList.find(p => p.id === repeatedId);
+                let repeatedPokemon = pokemonList.find(p => p.id === repeatedId);
+                // T-106 — reverse-order continuity: an EARLIER appearance repeats the authoritative
+                // (later) roster DEVOLVED to the most-evolved form legal at this level (Champion
+                // Metagross → Granite-Cave Metang), instead of the forward tryEvolve of the old model.
+                if (repeatedPokemon && trainerMonDefinition.devolveToLevel) {
+                    repeatedPokemon = devolveToLevel(pokemonList, repeatedPokemon, trainer.level);
+                }
                 if (repeatedPokemon) pokemonStrictList = [repeatedPokemon];
             }
         } else if (trainerMonDefinition.special === TRAINER_POKE_MEGA_FROM_STONE) {

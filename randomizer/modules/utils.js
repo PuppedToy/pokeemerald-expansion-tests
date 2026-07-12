@@ -73,6 +73,27 @@ function isValidEvolution(level, { param, method }) {
         || ((method === 'ITEM' || param === '0') && level > 28);
 }
 
+// T-106 — the inverse of tryEvolve: given a (possibly mega, possibly final) mon, return the
+// MOST-EVOLVED form whose incoming evolution is legal at `level`. Used by reverse-order continuity to
+// project a recurring character's authoritative endgame roster back onto an earlier appearance
+// (Champion Metagross/level 78 → Granite-Cave/level 22 Metang). A mega is first reduced to its base
+// form (no mega item early), then we walk DOWN the line while the step INTO the current form is
+// illegal at the level. Base/solo/LC mons (no pre-evolution) are returned unchanged.
+function devolveToLevel(pokemonList, pokemon, level) {
+    let current = pokemon;
+    if (current.evolutionData && current.evolutionData.megaBaseForm) {
+        current = pokemonList.find(p => p.id === current.evolutionData.megaBaseForm) || current;
+    }
+    for (let guard = 0; guard < 12; guard++) {
+        const preEvo = pokemonList.find(p => (p.evolutions || []).some(e => e.pokemon === current.id));
+        if (!preEvo) break; // current is a base form → cannot devolve further
+        const evo = preEvo.evolutions.find(e => e.pokemon === current.id);
+        if (isValidEvolution(level, evo)) break; // legal to field `current` at this level → stop
+        current = preEvo; // the step into `current` needs a higher level → devolve one stage
+    }
+    return current;
+}
+
 function checkValidEvo(pokemonList, evaluatedPokemon, level, trainer) {
     let devolvedForm = evaluatedPokemon;
     if (devolvedForm.evolutionData.megaBaseForm) {
@@ -147,6 +168,7 @@ module.exports = {
     sampleAndRemove,
     hasValidMega,
     devolveToBase,
+    devolveToLevel,
     checkValidEvo,
     canLearnMove,
     usesStrategicNature,
