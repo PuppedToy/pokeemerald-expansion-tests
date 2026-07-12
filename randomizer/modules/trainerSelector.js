@@ -287,7 +287,9 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
             let filteredLooseList = pokemonLooseList.filter(familyDedup);
             (trainer.restrictions || []).forEach(restriction => {
                 if (restriction === TRAINER_RESTRICTION_NO_REPEATED_TYPE) {
-                    const selectedTypes = new Set(team.map(p => p.parsedTypes).flat());
+                    // B-027 — team members are { pokemon, ... } wrappers; read parsedTypes off `.pokemon`
+                    // (was `p.parsedTypes` on the wrapper → always undefined → the restriction never fired).
+                    const selectedTypes = new Set(team.map(p => (p.pokemon || p).parsedTypes || []).flat());
                     filteredLooseList = filteredLooseList.filter(p => !p.parsedTypes.some(t => selectedTypes.has(t)));
                 } else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_TYPES) {
                     if (trainer.types) filteredLooseList = filteredLooseList.filter(p => p.parsedTypes.some(t => trainer.types.includes(t)));

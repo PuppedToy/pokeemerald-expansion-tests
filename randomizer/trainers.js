@@ -336,6 +336,16 @@ function stevenFavourite(gymType) {
     ];
 }
 
+// wallyFavourite() → Wally's chain (owner-validated, least restrictive): Mega Gardevoir / Mega Gallade
+// (Uber or OU) ≫ any other Uber mega. Almost every run keeps his essence (a mega ace).
+function wallyFavourite() {
+    const m = extra => ({ isMega: true, checkValidEvo: true, ...extra });
+    return [
+        m({ oneOf: ['SPECIES_GARDEVOIR_MEGA', 'SPECIES_GALLADE_MEGA'], absoluteTier: [TIER_UBERS, TIER_OU] }),
+        m({ absoluteTier: [TIER_UBERS] }), // any other Uber mega
+    ];
+}
+
 // ── T-106 — reverse-order continuity (authoritative-latest) ──────────────────
 // ADR-016 §4: a recurring character's final, well-built roster must be decided BEFORE its earlier
 // appearances, which then echo it devolved (Champion Metagross → Granite-Cave Metang). Rather than
@@ -360,6 +370,7 @@ function hoistAuthoritativeAppearances(trainersData, groups) {
 // earlier appearances echo it devolved). `auth` = the latest appearance; `members` = the earlier ones.
 const CONTINUITY_GROUPS = [
     { auth: 'TRAINER_CHAMPION_STEVEN', members: ['TRAINER_STEVEN', 'PARTNER_STEVEN'] },
+    { auth: 'TRAINER_WALLY_VR_1', members: ['TRAINER_WALLY_MAUVILLE', 'TRAINER_WALLY_LILYCOVE'] },
 ];
 
 
@@ -2090,51 +2101,15 @@ const trainersData = [
         isBoss: true,
         breedTier: 'good',
         level: 28,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...wallyBag()],
+        // T-106 — Mauville now ECHOES Wally's authoritative Victory Road roster, devolved to lvl 28.
         team: [
-            {
-                id: 'WALLY_1',
-                megaTier: [TIER_OU, TIER_UBERS],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                checkValidEvo: true,
-            },
-            {
-                id: 'WALLY_2',
-                evolutionTier: [TIER_OU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                checkValidEvo: true,
-            },
-            {
-                id: 'WALLY_3',
-                evolutionTier: [TIER_OU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                checkValidEvo: true,
-            },
-            {
-                id: 'WALLY_4',
-                evolutionTier: [TIER_OU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                checkValidEvo: true,
-            },
-            {
-                id: 'WALLY_5',
-                evolutionTier: [TIER_UU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                checkValidEvo: true,
-            },
-            {
-                id: 'WALLY_6',
-                evolutionTier: [TIER_UU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                checkValidEvo: true,
-            },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_1', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_2', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_3', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_4', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_5', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_6', devolveToLevel: true },
         ],
     },
     // Route 117
@@ -3231,43 +3206,14 @@ const trainersData = [
         reward: ['GYM_REWARD_11'],
         level: 49,
         bag: [...wallyBag2()],
+        // T-106 — Lilycove now ECHOES Wally's authoritative Victory Road roster, devolved to lvl 49.
         team: [
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_1',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_2',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_3',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_4',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_5',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_6',
-                tryEvolve: true,
-                tryMega: true,
-            },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_1', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_2', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_3', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_4', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_5', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_6', devolveToLevel: true },
         ],
     },
     // Magma Hideout
@@ -4139,38 +4085,19 @@ const trainersData = [
         isBoss: true,
         breedTier: 'good',
         level: 67,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...juanBag()],
+        // T-106/T-128 — Victory Road is now Wally's AUTHORITATIVE, well-built endgame team (was Juan-preset
+        // filler + 4 repeats): his favourite Mega Gardevoir/Gallade (perfect breed, doubles as the WALLY_1
+        // anchor) + five OU/UU aces, all no-repeated-types. Mauville/Lilycove echo this devolved.
+        favourite: wallyFavourite(),
+        favouriteId: 'WALLY_1',
         team: [
-            {
-                ...getBossPreset('JUAN', true)[0],
-            },
-            {
-                ...getBossPreset('JUAN', true)[1],
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_1',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_2',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_3',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_4',
-                tryEvolve: true,
-                tryMega: true,
-            },
+            { id: 'WALLY_2', evolutionTier: [TIER_OU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
+            { id: 'WALLY_3', evolutionTier: [TIER_OU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
+            { id: 'WALLY_4', evolutionTier: [TIER_OU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
+            { id: 'WALLY_5', evolutionTier: [TIER_UU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
+            { id: 'WALLY_6', evolutionTier: [TIER_UU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
         ],
     },
     {

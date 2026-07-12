@@ -309,6 +309,33 @@ describe('createChooser — TRAINER_REPEAT_ID + devolveToLevel (T-106 reverse co
     });
 });
 
+describe('createChooser — NO_REPEATED_TYPE restriction (B-027)', () => {
+    const NO_REPEAT = 'TRAINER_RESTRICTION_NO_REPEATED_TYPE';
+    test('excludes a candidate that shares a type with an existing team member', () => {
+        const psyFairy = makePoke('SPECIES_PSY_FAIRY', { types: ['PSYCHIC', 'FAIRY'], tier: 'OU', isFinal: true });
+        const waterPsy  = makePoke('SPECIES_WATER_PSY', { types: ['WATER', 'PSYCHIC'], tier: 'OU', isFinal: true });
+        const fire      = makePoke('SPECIES_FIRE_ONLY', { types: ['FIRE'], tier: 'OU', isFinal: true });
+        const ctx = makeContext();
+        ctx.team.push({ pokemon: psyFairy }); // team already fields a Psychic/Fairy mon
+        const trainer = { ...makeTrainer(50), restrictions: [NO_REPEAT] };
+        const chooser = makeChooser([psyFairy, waterPsy, fire], trainer, ctx);
+        // waterPsy shares PSYCHIC → must be excluded; only the pure-Fire mon is eligible.
+        for (let s = 0; s < 25; s++) {
+            const r = chooser({ absoluteTier: ['OU'] });
+            if (r) expect(r.id).toBe('SPECIES_FIRE_ONLY');
+        }
+    });
+    test('allows a candidate whose types are all new', () => {
+        const fire = makePoke('SPECIES_F', { types: ['FIRE'], tier: 'OU', isFinal: true });
+        const water = makePoke('SPECIES_W', { types: ['WATER'], tier: 'OU', isFinal: true });
+        const ctx = makeContext();
+        ctx.team.push({ pokemon: fire });
+        const trainer = { ...makeTrainer(50), restrictions: [NO_REPEAT] };
+        const chooser = makeChooser([fire, water], trainer, ctx);
+        expect(chooser({ absoluteTier: ['OU'] }).id).toBe('SPECIES_W');
+    });
+});
+
 describe('createChooser — favouriteChain (T-128)', () => {
     // A favourite is an ORDERED list of standard slot-defs (priority high→low). The chain returns the
     // first matcher whose pool is non-empty, and DROPS the favourite (undefined) when none fit —

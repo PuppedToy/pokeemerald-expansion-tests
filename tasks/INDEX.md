@@ -109,7 +109,7 @@
 | [T-103](T-103-teambuilding-engine-design-adr.md) | Design the archetype-driven teambuilding engine + ADR-016 (+ teardown plan) | done | 0.8.0 | 2026-07-10 |
 | [T-104](T-104-collapse-dual-resolver.md) | Collapse the writer.js / writerDocs.js dual resolver into one shared module | in-progress | 0.8.0 | 2026-07-10 |
 | [T-105](T-105-sophistication-scalar.md) | Engine — sophistication scalar driven by boss progression | in-progress | 0.8.0 | 2026-07-10 |
-| [T-106](T-106-backwards-generation.md) | Engine — backwards generation (endgame-first, devolve preserving ID continuity) | proposed | 0.8.0 | 2026-07-10 |
+| [T-106](T-106-backwards-generation.md) | Engine — backwards generation (endgame-first, devolve preserving ID continuity) | in-progress | 0.8.0 | 2026-07-11 |
 | [T-107](T-107-preference-rules-system.md) | Engine — preference/rules system replacing fixed slots (archetype-fit scoring) | in-progress | 0.8.0 | 2026-07-10 |
 | [T-108](T-108-port-fixed-id-special-cases.md) | Engine — port fixed-ID / continuity / special cases into the new engine | proposed | 0.8.0 | 2026-07-09 |
 | [T-109](T-109-doubles-teambuilding-path.md) | Engine — doubles teambuilding path (spread / redirection / TR-aware) | proposed | 0.8.0 | 2026-07-09 |
@@ -131,3 +131,4 @@
 | [T-125](T-125-gimmick-conditional-items.md) | Gimmick-conditional item selection + bag provisioning | in-progress | 0.8.0 | 2026-07-11 |
 | [T-126](T-126-trainer-seed-assignments.md) | Trainer archetype/gimmick seed assignments (deliberate variety) | in-progress | 0.8.0 | 2026-07-11 |
 | [T-127](T-127-later-gen-advanced-combo-corpus.md) | Later-gen advanced-combo corpus (Gen 8/9/Champions) — mechanic-filtered | proposed | 0.9.0 | 2026-07-11 |
+| [T-128](T-128-favourite-pokemon.md) | Favourite Pokémon — a generalizable "preferred ace" resolved first, dropped if it doesn't fit | in-progress | 0.8.0 | 2026-07-11 |
