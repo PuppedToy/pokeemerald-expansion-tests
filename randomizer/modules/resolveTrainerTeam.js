@@ -36,11 +36,13 @@ const { pickTrainerMonAbility } = require('./trainerAbility');
 const { selectWithAutoFallback } = require('./trainerFallback');
 const { createChooser } = require('./trainerSelector');
 const { makeArchetypePicker, BIAS_MIN_SOPH } = require('./archetypePicker');
-const { planMemberRoleMove, planMemberAbility, WEATHER_ROCK_BY_SETTER } = require('./archetypeRefine');
+const { planMemberRoleMove, planMemberAbility, WEATHER_ROCK_BY_SETTER, ELECTRIC_MOVES } = require('./archetypeRefine');
 const { getTrainerSeed } = require('./trainerSeeds');
 const { getArchetypeModel } = require('../archetypes');
 const { noopTeamAudit } = require('../teamAudit');
 const { noopDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
+
+const SEED_SOPH_FLOOR = 0.6; // T-126 — min sophistication for a SEEDED trainer, so its identity builds
 
 function nameify(text) {
     return text
@@ -127,12 +129,16 @@ function createTeamResolver(deps) {
         // T-105/T-107 — the sophistication weight for this trainer lives on the shared context; the
         // archetype picker consumes it to bias the fill toward the emerged identity and degrades to a
         // plain sample at low sophistication / no identity (early-game byte-identical).
+        // T-107 107e / T-126 — optional { base, gimmicks, weather, electricTerrain } lean: an explicit
+        // per-trainer seed, else the owner-validated seed map (weather villains / Tate & Liza / Wattson).
+        const archetypeSeed = trainer.archetypeSeed || getTrainerSeed(trainer.id);
+        // T-126 — a SEEDED trainer has a deliberate identity, so the engine must build it regardless of
+        // game position: apply a sophistication FLOOR (an early gym like the weather Museum grunts or
+        // electric Wattson still gets its gimmick). Un-seeded trainers keep the natural soph curve.
         const context = {
             team, foundMega: false, storedIds,
-            sophistication: sophistication(trainer),
-            // T-107 107e / T-126 — optional { base, gimmicks, weather } lean: an explicit per-trainer
-            // seed, else the owner-validated seed map (weather villains / Tate & Liza TR).
-            archetypeSeed: trainer.archetypeSeed || getTrainerSeed(trainer.id),
+            sophistication: archetypeSeed ? Math.max(sophistication(trainer), SEED_SOPH_FLOOR) : sophistication(trainer),
+            archetypeSeed,
         };
         const archetypeModel = getArchetypeModel(/double/i.test(trainer.battleType || '') ? 'doubles' : 'singles');
         const pickCandidate = makeArchetypePicker({ model: archetypeModel, context, ctx: { moves } });
@@ -234,6 +240,11 @@ function createTeamResolver(deps) {
                 if (roleMove && canLearnMove(chosenTrainerMon, roleMove, trainer.level) && !newTeamMember.moves.includes(roleMove)) {
                     newTeamMember.moves.push(roleMove);
                 }
+                // T-124 (Wattson) — electric terrain: every mon prefers an electric attacking move.
+                if (context.archetypeSeed && context.archetypeSeed.electricTerrain) {
+                    const em = ELECTRIC_MOVES.find(mv => canLearnMove(chosenTrainerMon, mv, trainer.level) && !newTeamMember.moves.includes(mv));
+                    if (em) newTeamMember.moves.push(em);
+                }
 
                 // T-065: single SSOT helper (fallback-aware — uses effectiveDef.abilities, so a
                 // weather-abuser fallback keeps its weather ability instead of a generic one).
@@ -259,6 +270,13 @@ function createTeamResolver(deps) {
                 // Soph-gated so early-game is byte-identical; only fills an empty item slot.
                 if (!newTeamMember.item && context.sophistication >= BIAS_MIN_SOPH && WEATHER_ROCK_BY_SETTER[ability]) {
                     newTeamMember.item = itemIdToName(WEATHER_ROCK_BY_SETTER[ability]);
+                }
+                // T-125 (Wattson) — Electric Seed on a defensive mon (Def boost on entry in electric terrain).
+                if (!newTeamMember.item && context.sophistication >= BIAS_MIN_SOPH
+                    && context.archetypeSeed && context.archetypeSeed.electricTerrain
+                    && (chosenTrainerMon.baseHP + chosenTrainerMon.baseDefense + chosenTrainerMon.baseSpDefense) >= 285
+                    && Math.max(chosenTrainerMon.baseAttack || 0, chosenTrainerMon.baseSpAttack || 0) <= 95) {
+                    newTeamMember.item = itemIdToName('ITEM_ELECTRIC_SEED');
                 }
 
                 // T-013: this mon's own weather/herb is handled in the rater; here we add the weather

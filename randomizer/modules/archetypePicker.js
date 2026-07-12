@@ -82,24 +82,35 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
     return function pickCandidate(candidates) {
         if (!Array.isArray(candidates) || candidates.length < 2) return sample(candidates);
         const soph = (context && context.sophistication) || 0;
-        if (!model || soph < BIAS_MIN_SOPH) return sample(candidates);
+        const seed = (context && context.archetypeSeed) || null;
+        const electric = !!(seed && seed.electricTerrain); // T-124 (Wattson) — manual terrain overlay
+        if (!model || (soph < BIAS_MIN_SOPH && !electric)) return sample(candidates);
+
+        // T-124 (Wattson) — electric terrain: HARD-prefer Electric-type mons (a gym theme), so the team
+        // can actually run electric attacks + benefit from the terrain. Falls back if none are available.
+        if (electric) {
+            const elec = candidates.filter(c => (c.parsedTypes || []).includes('ELECTRIC'));
+            if (elec.length === 1) return elec[0];
+            if (elec.length >= 2) candidates = elec;
+        }
 
         // The resolver's team holds newTeamMember wrappers ({ pokemon, ... }); detectors read a poke
         // shape. Normalise to the underlying poke (raw pokes — as in unit tests — pass through), so
         // team detection uses the SAME basis (species potential) as candidate scoring.
         const team = ((context && context.team) || []).map(m => (m && m.pokemon) ? m.pokemon : m);
-        const identity = resolveIdentity(team, model, ctx, (context && context.archetypeSeed) || null);
-        if (!identity) return sample(candidates); // no identity yet (emergent or seeded)
+        const identity = resolveIdentity(team, model, ctx, seed);
 
-        const structure = combinedStructure(model, identity.baseId, identity.gimmickIds);
-        const counts = identity.counts;
-
-        let biased = false;
-        const weights = candidates.map(c => {
-            const s = scoreCandidate(c, counts, structure, ctx);
-            if (s > 0) biased = true;
-            return 1 + soph * BIAS_STRENGTH * s;
-        });
+        let biased = electric; // an electric-terrain filter is itself a bias
+        let weights = candidates.map(() => 1);
+        if (identity) {
+            const structure = combinedStructure(model, identity.baseId, identity.gimmickIds);
+            const counts = identity.counts;
+            weights = candidates.map(c => {
+                const s = scoreCandidate(c, counts, structure, ctx);
+                if (s > 0) biased = true;
+                return 1 + soph * BIAS_STRENGTH * s;
+            });
+        }
         if (!biased) return sample(candidates); // nothing to pull toward → byte-identical
         return weightedSampleOne(candidates, weights);
     };

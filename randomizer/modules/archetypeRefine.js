@@ -104,6 +104,16 @@ const WEATHER_ROCK_BY_SETTER = {
     DRIZZLE: 'ITEM_DAMP_ROCK', SAND_STREAM: 'ITEM_SMOOTH_ROCK', SNOW_WARNING: 'ITEM_ICY_ROCK',
 };
 
+// T-124/T-127 (Wattson) — Electric Terrain is a Gen-8+ gimmick not in the Gen 6-7 corpus, added
+// MANUALLY for Wattson via a seed flag. It only implies: prefer an electric attack, prefer the terrain
+// setter ability, and give a defensive mon the Electric Seed (Def boost in electric terrain). This will
+// be generalised into a proper terrain gimmick family by the later-gen corpus work (T-127).
+const ELECTRIC_TERRAIN_SETTER = 'ELECTRIC_SURGE';
+const ELECTRIC_MOVES = [
+    'MOVE_THUNDERBOLT', 'MOVE_DISCHARGE', 'MOVE_VOLT_SWITCH', 'MOVE_THUNDER', 'MOVE_WILD_CHARGE',
+    'MOVE_THUNDER_PUNCH', 'MOVE_SPARK',
+];
+
 // The ability `species` should PREFER given the crystallised identity, or [] (no preference). For a
 // weather-gimmick team: if a prior member already set the weather (subtype known) → the matching abuser
 // ability the mon can have; else (no setter yet) → a weather-setter ability the mon can have, to
@@ -112,6 +122,10 @@ const WEATHER_ROCK_BY_SETTER = {
 // ability is chosen separately, so without this a weather-crystallised team never actually gets weather.
 function planMemberAbility({ species, team, model, ctx = {}, sophistication, seed = null }) {
     if (!model || !species || (sophistication || 0) < BIAS_MIN_SOPH) return [];
+    // T-124 (Wattson) — electric terrain: prefer the Electric Surge setter ability if the mon has it.
+    if (seed && seed.electricTerrain && (species.parsedAbilities || []).includes(ELECTRIC_TERRAIN_SETTER)) {
+        return [ELECTRIC_TERRAIN_SETTER];
+    }
     const speciesMons = (team || []).map(m => (m && m.pokemon) ? m.pokemon : m);
     const identity = resolveIdentity(speciesMons, model, ctx, seed);
     if (!identity || !(identity.gimmickIds || []).includes('weather')) return [];
@@ -140,4 +154,5 @@ function planMemberAbility({ species, team, model, ctx = {}, sophistication, see
 module.exports = {
     resolvedDetectMon, planMemberRoleMove, planMemberAbility, ROLE_MOVE_SETS,
     WEATHER_SUBTYPE_BY_SETTER, WEATHER_ABUSER_BY_SUBTYPE, WEATHER_ROCK_BY_SETTER,
+    ELECTRIC_MOVES,
 };

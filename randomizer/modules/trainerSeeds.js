@@ -13,6 +13,8 @@
 const WEATHER_SUN = { base: 'bulky_offense', gimmicks: ['weather'], weather: 'sun' };
 const WEATHER_RAIN = { base: 'bulky_offense', gimmicks: ['weather'], weather: 'rain' };
 const TRICK_ROOM = { base: 'balance', gimmicks: ['trick_room'] };
+// T-124/T-127 — Wattson: electric terrain (a Gen-8+ gimmick, added manually; see archetypeRefine).
+const ELECTRIC_TERRAIN = { base: 'bulky_offense', electricTerrain: true };
 
 const TRAINER_SEEDS = {
     // Team Aqua → rain
@@ -31,6 +33,12 @@ const TRAINER_SEEDS = {
     TRAINER_FLANNERY_3: WEATHER_SUN,
     TRAINER_FLANNERY_4: WEATHER_SUN,
     TRAINER_FLANNERY_5: WEATHER_SUN,
+    // Wattson → electric terrain (manual gimmick)
+    TRAINER_WATTSON_1: ELECTRIC_TERRAIN,
+    TRAINER_WATTSON_2: ELECTRIC_TERRAIN,
+    TRAINER_WATTSON_3: ELECTRIC_TERRAIN,
+    TRAINER_WATTSON_4: ELECTRIC_TERRAIN,
+    TRAINER_WATTSON_5: ELECTRIC_TERRAIN,
     // Tate & Liza → Trick Room
     TRAINER_TATE_AND_LIZA_1: TRICK_ROOM,
     TRAINER_TATE_AND_LIZA_2: TRICK_ROOM,
