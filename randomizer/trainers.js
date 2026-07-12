@@ -170,82 +170,9 @@ const CONTEXTUAL_POKEDEF_UU_OU_MEGA = {
 };
 
 
-// Weather/terrain setter pattern:
-// maxTierDownSteps:1 limits ability-setter phase to T and T-1.
-// fallback[0] = move-setter at original T (full auto-tier-down from there).
-
-const pokeDefDrizzleMon = (BASE_POKE_DEF, withItem = true) => ({
-    ...BASE_POKE_DEF,
-    abilities: ['DRIZZLE'],
-    ...(withItem ? { item: 'Damp Rock' } : {}),
-    maxTierDownSteps: 1,
-    fallback: [{
-        ...BASE_POKE_DEF,
-        mustHaveOneOfMoves: ['MOVE_RAIN_DANCE'],
-        tryToHaveMove: ['MOVE_RAIN_DANCE'],
-        abilities: [...rainAbilities],
-        ...(withItem ? { item: 'Damp Rock' } : {}),
-    }],
-});
-
-const pokeDefSnowWarningMon = (BASE_POKE_DEF, withItem = true) => ({
-    ...BASE_POKE_DEF,
-    abilities: ['SNOW_WARNING'],
-    ...(withItem ? { item: 'Icy Rock' } : {}),
-    maxTierDownSteps: 1,
-    fallback: [{
-        ...BASE_POKE_DEF,
-        mustHaveOneOfMoves: ['MOVE_HAIL'],
-        tryToHaveMove: ['MOVE_HAIL'],
-        abilities: [...snowAbilities],
-        ...(withItem ? { item: 'Icy Rock' } : {}),
-    }],
-});
-
-const pokeDefDroughtMon = (BASE_POKE_DEF, withItem = true) => ({
-    ...BASE_POKE_DEF,
-    abilities: ['DROUGHT'],
-    ...(withItem ? { item: 'Heat Rock' } : {}),
-    maxTierDownSteps: 1,
-    fallback: [{
-        ...BASE_POKE_DEF,
-        mustHaveOneOfMoves: ['MOVE_SUNNY_DAY'],
-        tryToHaveMove: ['MOVE_SUNNY_DAY'],
-        abilities: [...sunAbilities],
-        ...(withItem ? { item: 'Heat Rock' } : {}),
-    }],
-});
-
-const pokeDefSandStreamMon = (BASE_POKE_DEF, withItem = true) => ({
-    ...BASE_POKE_DEF,
-    abilities: ['SAND_STREAM'],
-    ...(withItem ? { item: 'Smooth Rock' } : {}),
-    maxTierDownSteps: 1,
-    fallback: [
-        {
-            ...BASE_POKE_DEF,
-            mustHaveOneOfMoves: ['MOVE_SANDSTORM'],
-            tryToHaveMove: ['MOVE_SANDSTORM'],
-            abilities: [...sandAbilities],
-            ...(withItem ? { item: 'Smooth Rock' } : {}),
-        }
-    ],
-});
-
-
-const pokeDefElectricSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => ({
-    ...BASE_POKE_DEF,
-    abilities: ['ELECTRIC_SURGE'],
-    item,
-    maxTierDownSteps: 1,
-    fallback: [{
-        ...BASE_POKE_DEF,
-        mustHaveOneOfMoves: ['MOVE_ELECTRIC_TERRAIN'],
-        tryToHaveMove: ['MOVE_ELECTRIC_TERRAIN'],
-        item,
-    }],
-});
-
+// T-128 — the weather/terrain setter pokeDef* wrappers were removed: the gimmick seed (weather /
+// electric terrain) now produces the setter + abusers + rock via the identity-aware ability logic
+// (T-124) and the weather-rock / Electric-Seed item logic (T-125), materialising or dropping on its own.
 
 const PROMISING_OU_UBERS_MEGA_LC = {
     megaTier: [TIER_OU, TIER_UBERS],
@@ -863,11 +790,6 @@ function getTrainersData(itemAssignments, tmList, config = {}) {
     }
 
     const [e41MainType, e42MainType, e43MainType, e44MainType] = e4MainTypes;
-
-    // T-128 — Tate & Liza now field BOTH sun and moon aces (Solgaleo/Lunala favourites), so the old
-    // random sun-vs-moon toggle is gone; the draw is retained so the per-run RNG stream (and therefore
-    // every other trainer's rolls) stays byte-identical.
-    rng.random();
 
     // Pool-derived item arrays (display names from itemRandomizer)
     const route102BallItems      = itemAssignments.route102Ball;
@@ -1907,23 +1829,19 @@ const trainersData = [
         preventShuffle: true,
         bag: [...slateportGruntsBag()],
         team: [
-            pokeDefDrizzleMon(getBossPreset('MUSEUM_GRUNT_1')[0]),
+            getBossPreset('MUSEUM_GRUNT_1')[0],
             {
                 ...getBossPreset('MUSEUM_GRUNT_1')[1],
-                abilities: [...rainAbilities],
             },
             {
                 ...getBossPreset('MUSEUM_GRUNT_1')[2],
-                abilities: [...rainAbilities],
             },
-            pokeDefDrizzleMon(getBossPreset('MUSEUM_GRUNT_1')[3], false),
+            getBossPreset('MUSEUM_GRUNT_1')[3],
             {
                 ...getBossPreset('MUSEUM_GRUNT_1')[4],
-                abilities: [...rainAbilities],
             },
             {
                 ...getBossPreset('MUSEUM_GRUNT_1')[5],
-                abilities: [...rainAbilities],
             },
         ],
     },
@@ -1937,23 +1855,19 @@ const trainersData = [
         preventShuffle: true,
         bag: [...slateportGruntsBag()],
         team: [
-            pokeDefSnowWarningMon(getBossPreset('MUSEUM_GRUNT_2')[0]),
+            getBossPreset('MUSEUM_GRUNT_2')[0],
             {
                 ...getBossPreset('MUSEUM_GRUNT_2')[1],
-                abilities: [...snowAbilities],
             },
             {
                 ...getBossPreset('MUSEUM_GRUNT_2')[2],
-                abilities: [...snowAbilities],
             },
-            pokeDefSnowWarningMon(getBossPreset('MUSEUM_GRUNT_2')[3], false),
+            getBossPreset('MUSEUM_GRUNT_2')[3],
             {
                 ...getBossPreset('MUSEUM_GRUNT_2')[4],
-                abilities: [...snowAbilities],
             },
             {
                 ...getBossPreset('MUSEUM_GRUNT_2')[5],
-                abilities: [...snowAbilities],
             },
         ],
     },
@@ -2208,22 +2122,18 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_3', tmItem(11)],
         level: 29,
-        preventShuffle: gymIsChangedType[2],
         bag: [...wattsonBag()],
-        bannedItems: ['Electric Seed', 'Psychic Seed', 'Misty Seed', 'Grassy Seed'],
+        // T-128 — no forced electric-terrain setter/Electric-Seed/banned-items: Wattson's electricTerrain
+        // seed produces the terrain (Electric Surge + electric moves + Electric Seed) on its own if it can.
         favourite: gymFavourite('SPECIES_MANECTRIC_MEGA', gymMainTypes[2], CONTEXTUAL_POKEDEF_UU_OU_MEGA, CONTEXTUAL_POKEDEF_UU_OU_MEGA),
         team: [
-            gymIsChangedType[2] ? {
+            {
                 ...getBossPreset('WATTSON')[0],
                 type: [gymMainTypes[2]],
-            } : pokeDefElectricSurgeMon(getBossPreset('WATTSON')[0]),
-            gymIsChangedType[2] ? {
+            },
+            {
                 ...getBossPreset('WATTSON')[1],
                 type: [gymMainTypes[2]],
-            } : {
-                ...getBossPreset('WATTSON')[1],
-                type: [gymMainTypes[2]],
-                item: 'Electric Seed',
             },
             {
                 ...getBossPreset('WATTSON')[2],
@@ -2334,23 +2244,19 @@ const trainersData = [
         preventShuffle: true,
         bag: [...magmaChimneyBag()],
         team: [
-            pokeDefSandStreamMon(getBossPreset('TABITHA_CHIMNEY', true)[0]),
+            getBossPreset('TABITHA_CHIMNEY', true)[0],
             {
                 ...getBossPreset('TABITHA_CHIMNEY', true)[1],
-                abilities: [...sandAbilities],
             },
             {
                 ...getBossPreset('TABITHA_CHIMNEY', true)[2],
-                abilities: [...sandAbilities],
             },
-            pokeDefSandStreamMon(getBossPreset('TABITHA_CHIMNEY', true)[3], false),
+            getBossPreset('TABITHA_CHIMNEY', true)[3],
             {
                 ...getBossPreset('TABITHA_CHIMNEY', true)[4],
-                abilities: [...sandAbilities],
             },
             {
                 ...getBossPreset('TABITHA_CHIMNEY', true)[5],
-                abilities: [...sandAbilities],
             },
         ],
     },
@@ -2364,10 +2270,9 @@ const trainersData = [
         preventShuffle: true,
         bag: [...magmaChimneyBag()],
         team: [
-            pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY', true)[1]),
+            getBossPreset('MAXIE_CHIMNEY', true)[1],
             {
                 ...getBossPreset('MAXIE_CHIMNEY', true)[0],
-                abilities: [...sunAbilities],
                 type: [magmaTeamTypes[0], magmaTeamTypes[1]],
                 fallback: [
                     {
@@ -2377,7 +2282,6 @@ const trainersData = [
                     {
                         ...ABSOLUTE_POKEDEF_RU,
                         type: [...magmaTeamTypes],
-                        abilities: [...sunAbilities],
                     },
                     {
                         ...ABSOLUTE_POKEDEF_RU,
@@ -2385,10 +2289,9 @@ const trainersData = [
                     }
                 ],
             },
-            pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY', true)[2], false),
+            getBossPreset('MAXIE_CHIMNEY', true)[2],
             {
                 ...getBossPreset('MAXIE_CHIMNEY', true)[3],
-                abilities: [...sunAbilities],
                 fallback: [
                     {
                         ...ABSOLUTE_POKEDEF_RU,
@@ -2561,9 +2464,8 @@ const trainersData = [
         reward: ['GYM_REWARD_4', 'Access to Desert Ruins', tmItem(78)],
         isBoss: true,
         bag: flanneryBag(),
-        favourite: gymFavourite('SPECIES_TORKOAL', gymMainTypes[3],
-            { ...getBossPreset('FLANNERY', true)[0], abilities: ['DROUGHT'], item: 'Heat Rock', tryEvolve: true },
-            getBossPreset('FLANNERY', true)[0]),
+        // T-128 — no forced Drought/Heat Rock/sun-abilities: Flannery's weather (sun) seed sets it if it can.
+        favourite: gymFavourite('SPECIES_TORKOAL', gymMainTypes[3], getBossPreset('FLANNERY', true)[0], getBossPreset('FLANNERY', true)[0]),
         team: [
             {
                 ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
@@ -2577,13 +2479,9 @@ const trainersData = [
                 ...getBossPreset('FLANNERY', true)[2],
                 type: [gymMainTypes[3]],
             },
-            gymIsChangedType[3] ? {
+            {
                 ...getBossPreset('FLANNERY', true)[3],
                 type: [gymMainTypes[3]],
-            } : {
-                ...getBossPreset('FLANNERY', true)[3],
-                type: [gymMainTypes[3]],
-                abilities: [...sunAbilities],
             },
             {
                 ...getBossPreset('FLANNERY', true)[4],
@@ -2696,7 +2594,7 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_5', 'Access to Island Cave', 'Access to New Mauville', tmItem(31)],
         bag: normanBag(),
-        bannedItems: gymIsChangedType[4] ? [] : ['Assault Vest', 'Flame Orb', 'Toxic Orb'],
+        // T-128 — no banned items / forced Guts strategy: Norman picks his own items/abilities.
         favourite: gymFavourite('SPECIES_SLAKING', gymMainTypes[4], getBossPreset('NORMAN', true)[1], getBossPreset('NORMAN', true)[1]),
         team: [
             {
@@ -3044,16 +2942,9 @@ const trainersData = [
         ],
         team: [
             {
+                // T-128 — no forced Tailwind lead; Winona runs it herself if she wants.
                 ...getBossPreset('WINONA', true)[0],
                 type: [gymMainTypes[5]],
-                mustHaveOneOfMoves: ['MOVE_TAILWIND'],
-                tryToHaveMove: ['MOVE_TAILWIND'],
-                fallback: [
-                    {
-                        ...getBossPreset('WINONA', true)[0],
-                        type: [gymMainTypes[5]],
-                    },
-                ]
             },
             {
                 ...getBossPreset('WINONA', true)[1],
@@ -3206,22 +3097,19 @@ const trainersData = [
         preventShuffle: true,
         bag: [...wallyBag2()],
         team: [
-            pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA', true)[0]),
+            getBossPreset('MAXIE_MAGMA', true)[0],
             {
                 ...getBossPreset('MAXIE_MAGMA', true)[1],
                 type: [magmaTeamTypes[1]],
-                abilities: [...sunAbilities],
             },
-            pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA', true)[2], false),
+            getBossPreset('MAXIE_MAGMA', true)[2],
             {
                 ...getBossPreset('MAXIE_MAGMA', true)[3],
                 type: [...magmaTeamTypes],
-                abilities: [...sunAbilities],
             },
             {
                 ...getBossPreset('MAXIE_MAGMA', true)[4],
                 type: [...magmaTeamTypes],
-                abilities: [...sunAbilities],
             },
             {
                 special: TRAINER_REPEAT_ID,
@@ -3281,22 +3169,18 @@ const trainersData = [
         preventShuffle: true,
         bag: [...wallyBag2()],
         team: [
-            pokeDefSnowWarningMon(getBossPreset('MATT_AQUA', true)[0]),
+            getBossPreset('MATT_AQUA', true)[0],
             {
                 ...getBossPreset('MATT_AQUA', true)[1],
-                abilities: [...snowAbilities],
             },
             {
                 ...getBossPreset('MATT_AQUA', true)[2],
-                abilities: [...snowAbilities],
             },
             {
                 ...getBossPreset('MATT_AQUA', true)[3],
-                abilities: [...snowAbilities],
             },
             {
                 ...getBossPreset('MATT_AQUA', true)[4],
-                abilities: [...snowAbilities],
             },
             {
                 isMega: true,
@@ -3389,28 +3273,13 @@ const trainersData = [
         ],
         team: [
             {
-                // OU Trick Room lead (Focus Sash)
+                // T-128 — no forced Trick Room / Focus Sash lead; Tate & Liza's trick_room seed sets TR
+                // (and Room Service on fast mons) itself if it can.
                 ...ABSOLUTE_POKEDEF_OU,
-                mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
-                tryToHaveMove: ['MOVE_TRICK_ROOM'],
+                checkValidEvo: true,
                 type: [gymMainTypes[6]],
-                item: 'Focus Sash',
-                pickBest: true,
                 fallback: [
-                    {
-                        ...ABSOLUTE_POKEDEF_UU,
-                        mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
-                        tryToHaveMove: ['MOVE_TRICK_ROOM'],
-                        type: [gymMainTypes[6]],
-                        item: 'Focus Sash',
-                        pickBest: true,
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_OU,
-                        checkValidEvo: true,
-                        type: [gymMainTypes[6]],
-                        item: 'Focus Sash',
-                    },
+                    { ...ABSOLUTE_POKEDEF_UU, checkValidEvo: true, type: [gymMainTypes[6]] },
                 ],
             },
             {
@@ -3591,12 +3460,10 @@ const trainersData = [
         team: [
             {
                 ...getBossPreset('TABITHA_MOSSDEEP', true)[0],
-                abilities: [...sunAbilities],
                 fallback: [
                     {
                         absoluteTier: [TIER_UU],
                         checkValidEvo: true,
-                        abilities: [...sunAbilities],
                     },
                 ],
             },
@@ -3614,7 +3481,7 @@ const trainersData = [
                     },
                 ]
             },
-            pokeDefDroughtMon(getBossPreset('TABITHA_MOSSDEEP', true)[1]),
+            getBossPreset('TABITHA_MOSSDEEP', true)[1],
         ],
     },
     {
@@ -3640,12 +3507,11 @@ const trainersData = [
                         absoluteTier: [TIER_OU],
                         item: 'Heat Rock',
                     },
-                    pokeDefDroughtMon(getBossPreset('MAXIE_MOSSDEEP', true)[0]),
+                    getBossPreset('MAXIE_MOSSDEEP', true)[0],
                 ]
             },
             {
                 ...getBossPreset('MAXIE_MOSSDEEP', true)[1],
-                abilities: [...sunAbilities],
                 pickBest: true,
             },
             // (old generic magma-mega ace is now the `favourite` above — resolved first, perfect breed)
@@ -3772,7 +3638,7 @@ const trainersData = [
                         checkValidEvo: true,
                         item: 'Damp Rock',
                     },
-                    pokeDefDrizzleMon(getBossPreset('ARCHIE', true)[0]),
+                    getBossPreset('ARCHIE', true)[0],
                 ]
             },
             {
@@ -3781,13 +3647,11 @@ const trainersData = [
             },
             {
                 ...getBossPreset('ARCHIE', true)[2],
-                abilities: [...rainAbilities],
                 type: [aquaTeamTypes[1], aquaTeamTypes[2], aquaTeamTypes[3], aquaTeamTypes[4]],
             },
-            pokeDefDrizzleMon(getBossPreset('ARCHIE', true)[3], false),
+            getBossPreset('ARCHIE', true)[3],
             {
                 ...getBossPreset('ARCHIE', true)[4],
-                abilities: [...rainAbilities],
                 type: [...aquaTeamTypes],
             },
             // (old slot-5 Mega Sharpedo ace is now the `favourite` above — resolved first, perfect breed)
