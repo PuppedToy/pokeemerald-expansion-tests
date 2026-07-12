@@ -21,7 +21,7 @@ const { teamFeatureCounts, crystallize, combinedStructure, scoreCandidate } = re
 
 const BIAS_MIN_SOPH = 0.15;   // below this sophistication, no bias (early-game = "a pile of mons")
 const IDENTITY_FIT = 0.5;     // the top base archetype recipe must fit this well before biasing (T-118)
-const GIMMICK_FIT = 0.6;      // a gimmick engine biases structure only once its recipe fits this well
+const GIMMICK_FIT = 0.8;      // a gimmick engine biases structure only once its recipe fits this well (T-118: 0.6→0.7→0.8, gimmicks were too frequent)
 const BIAS_STRENGTH = 2.0;    // how hard fit pulls the pick (multiplied by sophistication)
 
 // Single-draw weighted pick — one rng.random(), matching sample()'s RNG consumption. Falls back to
@@ -48,9 +48,14 @@ function resolveIdentity(team, model, ctx = {}, seed = null) {
     const base = cryst.base[0];
     const fit = base ? base.fit : 0; // best base-recipe fit (also surfaced to the T-117 audit)
     if (base && base.fit >= IDENTITY_FIT) {
+        // T-118 — a team commits to at most ONE emergent gimmick engine (the best-fitting). Incidental
+        // second/third setters must not stack incoherent engines (e.g. screens + Trick Room + weather).
+        // gimmicks is sorted by fit desc, so find() returns the top one over the threshold. (Seeds are
+        // intentional and pass through uncapped below.)
+        const topGimmick = cryst.gimmicks.find(g => g.fit >= GIMMICK_FIT);
         return {
             baseId: base.id,
-            gimmickIds: cryst.gimmicks.filter(g => g.fit >= GIMMICK_FIT).map(g => g.id),
+            gimmickIds: topGimmick ? [topGimmick.id] : [],
             counts: cryst.counts,
             source: 'emergent',
             confidence: fit,

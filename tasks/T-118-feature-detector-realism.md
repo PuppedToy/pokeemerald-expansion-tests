@@ -103,6 +103,20 @@ Acceptance criteria:
   "everything = bulky_offense goodstuffs" collapse is gone. Full suite **921 pass**; `RUN_DETERMINISM=1`
   gate green (per-slot determinism preserved). Recorded as Batch 4 (recipes) in `rating-decisions.md`.
 
+- **2026-07-11 — increment 4: gimmick over-stacking (from the full-game audit distribution).** The
+  A-track sanity-check (audit over a whole 193-team generation) showed the singles engine HEALTHY
+  (variety present; NONE 39%→13%→2%→0% as soph rises; no single-archetype collapse) but flagged
+  gimmicks over-stacking: 73% of endgame teams carried a gimmick, some 2-3 incoherent at once
+  (screens+trick_room+weather). Fix (owner-directed, incremental): (1) **cap emergent gimmicks to the
+  single best-fitting engine** in `resolveIdentity` (seeds pass through uncapped) — killed the
+  incoherent multi-stacks; (2) raised `GIMMICK_FIT` 0.6→0.7 (no effect) →0.8 (mid-tier gimmick rate
+  61%→44%). **Finding:** the threshold cannot reduce the late/endgame rate (stuck ~73%) because those
+  gimmicks fire at fit ~1.0 — almost all `+screens` on hyper teams, since `screenSetter` still detects
+  by can-LEARN potential and every hyper team has 2+ setup sweepers (fully satisfying the screens
+  recipe). That residual is deferred to the joint problem-2 analysis (archetype distribution / screens
+  = a hyper sub-flavor vs a standalone gimmick). Suite 921 pass; the cap is output-affecting at high
+  soph (determinism preserved — pure fn of the reseeded state).
+
 ## Outcome
 
 <!-- Filled when closing. -->
