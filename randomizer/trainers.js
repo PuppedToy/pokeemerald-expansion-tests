@@ -1764,6 +1764,15 @@ const trainersData = [
         isBoss: true,
         bag: brawlyBag(),
         bannedItems: ['Flame Orb', 'Toxic Orb'],
+        // T-128 — Brawly's favourite is Makuhita/Hariyama (GUTS + Flame Orb). Same fallback engine: the
+        // signature ≫ a GUTS Flame-Orb mon of the type ≫ a Poison-Heal Toxic-Orb one ≫ any typed mon
+        // (always fillable, B-019 — Makuhita's base tier can exceed its contextual tier here).
+        favourite: [
+            { oneOf: ['SPECIES_MAKUHITA'], type: [gymMainTypes[1]], ...getBossPreset('BRAWLY')[5], abilities: ['GUTS'], item: 'Flame Orb', nature: NATURES.ADAMANT.name },
+            { ...getBossPreset('BRAWLY')[5], type: [gymMainTypes[1]], abilities: ['GUTS'], item: 'Flame Orb' },
+            { ...getBossPreset('BRAWLY')[5], type: [gymMainTypes[1]], abilities: ['POISON_HEAL'], item: 'Toxic Orb' },
+            { ...getBossPreset('BRAWLY')[5], type: [gymMainTypes[1]] },
+        ],
         team: [
             {
                 ...getBossPreset('BRAWLY')[0],
@@ -1784,47 +1793,6 @@ const trainersData = [
             {
                 ...getBossPreset('BRAWLY')[4],
                 type: [gymMainTypes[1]],
-            },
-            gymIsChangedType[1] ? {
-                ...getBossPreset('BRAWLY')[5],
-                type: [gymMainTypes[1]],
-                abilities: ['GUTS'],
-                breedTier: 'perfect',
-                item: 'Flame Orb',
-                fallback: [
-                    {
-                        ...getBossPreset('BRAWLY')[5],
-                        type: [gymMainTypes[1]],
-                        abilities: ['POISON_HEAL'],
-                        breedTier: 'perfect',
-                        item: 'Toxic Orb',
-                    },
-                    {
-                        ...getBossPreset('BRAWLY')[5],
-                        breedTier: 'perfect',
-                        type: [gymMainTypes[1]],
-                    },
-                ],
-            } : {
-                specificIfTier: 'SPECIES_MAKUHITA',
-                ...getBossPreset('BRAWLY')[5],
-                type: [gymMainTypes[1]],
-                nature: NATURES.ADAMANT.name,
-                breedTier: 'perfect',
-                abilities: ['GUTS'],
-                item: 'Flame Orb',
-                // B-019: Makuhita's base tier (NU) is stronger than its contextual tier (PU) at
-                // this level, so it never qualifies for its own specificIfTier slot, and the
-                // constrained loose pool (Fighting + GUTS + weak tier + family-dedup) can be
-                // empty — dropping the 6th mon. Fall back to a generic typed slot so the slot is
-                // always fillable.
-                fallback: [
-                    {
-                        ...getBossPreset('BRAWLY')[5],
-                        type: [gymMainTypes[1]],
-                        breedTier: 'perfect',
-                    },
-                ],
             },
         ],
     },

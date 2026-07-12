@@ -2,14 +2,15 @@
 
 // B-019 regression — Brawly's team must never resolve to fewer than 6 pokemon.
 //
-// Root cause: when the gym type is KEPT (Fighting), Brawly's 6th slot is the
-// `specificIfTier: SPECIES_MAKUHITA` definition. Makuhita's base tier (NU) is stronger than
-// its contextual tier (PU) at Brawly's level, so it can never satisfy the specificIfTier gate,
-// and the constrained loose pool (Fighting + GUTS + weak tier + family-dedup) is empty. Without
-// a `fallback`, selectWithAutoFallback returns null and the slot is silently dropped → 5 mons.
+// Root cause: Brawly's Makuhita ace could drop silently. Makuhita's base tier (NU) is stronger than
+// its contextual tier (PU) at Brawly's level, so it can never satisfy its own specificIfTier gate, and
+// the constrained loose pool (Fighting + GUTS + weak tier + family-dedup) is empty; without a fallback,
+// selectWithAutoFallback returns null and the slot is silently dropped → 5 mons.
 //
-// This test forces the kept-type branch (gymsTypeChanged: 0 → all gyms keep their type) and
-// asserts the Makuhita slot carries a non-empty fallback so it can always be filled.
+// T-128 — Makuhita is now Brawly's FAVOURITE (same mechanism as every favourite): a priority chain
+// resolved first. The B-019 guarantee is preserved by the chain TERMINATING in a generic typed rung
+// (no species gate) so the favourite is always fillable. This test forces the kept-type branch
+// (gymsTypeChanged: 0) and asserts that structure.
 //
 // itemRandomizer is mocked to stub item assignments (its real randomizeItems() writes game
 // files — see [[project_itemrandomizer_writes_files]]); the trainers module itself is pure.
@@ -48,23 +49,23 @@ function buildKeptType() {
     return trainersData.find(t => t.id === 'TRAINER_BRAWLY_1');
 }
 
-describe('B-019 — Brawly slot 6 fallback (kept gym type)', () => {
-    test('slot 6 is the Makuhita-specific definition when the gym keeps its type', () => {
+describe('B-019 — Brawly Makuhita favourite never drops silently (kept gym type)', () => {
+    test('the favourite leads with the Makuhita-specific rung', () => {
         const brawly = buildKeptType();
         expect(brawly).toBeDefined();
-        expect(brawly.team).toHaveLength(6);
-        expect(brawly.team[5].specificIfTier).toBe('SPECIES_MAKUHITA');
+        expect(Array.isArray(brawly.favourite)).toBe(true);
+        expect(brawly.favourite[0].oneOf).toEqual(['SPECIES_MAKUHITA']);
     });
 
-    test('the Makuhita slot carries a non-empty fallback so it never drops silently', () => {
+    test('the favourite chain terminates in a generic typed rung so it is always fillable', () => {
         const brawly = buildKeptType();
-        const slot6 = brawly.team[5];
-        expect(Array.isArray(slot6.fallback)).toBe(true);
-        expect(slot6.fallback.length).toBeGreaterThan(0);
-        // The fallback must relax the specific constraints so a generic legal mon can fill it:
-        // no fallback entry may re-impose the specificIfTier that caused the original drop.
-        for (const fb of slot6.fallback) {
-            expect(fb.specificIfTier).toBeUndefined();
-        }
+        const chain = brawly.favourite;
+        expect(chain.length).toBeGreaterThan(1);
+        // The terminal rung must NOT re-impose a specific-species gate (the original B-019 drop cause):
+        // it is a plain mon of Brawly's type, which always exists.
+        const last = chain[chain.length - 1];
+        expect(last.oneOf).toBeUndefined();
+        expect(last.specificIfTier).toBeUndefined();
+        expect(last.type).toBeDefined();
     });
 });
