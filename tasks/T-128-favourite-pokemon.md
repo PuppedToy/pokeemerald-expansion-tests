@@ -236,4 +236,29 @@ already exists in the selector). The restrictions:
   below the pool's mega gate (honouring "≥OU or drop")? Both Steven and Wally have this tier-gated-mega
   shape. Everything else is migrated + green (fast 959, determinism + continuity 14/14).
 
+### 2026-07-12 (cont.) — mega gate reworked to story-progression; Steven/Wally migrated; legacy path removed
+- **Mega gate = general story-progression rule (owner-validated).** Found the existing base-form logic
+  (`BASE_TIER_CAPS` + `maxBaseTier`, applied only to non-boss teams). Reworked `presets.js` `bossMega` to
+  take a `megaTier` and emit `{ isMega, absoluteTier: tiersUpTo(megaTier), maxBaseTier: BASE_TIER_CAPS[megaTier] }`
+  — the SAME gate, now on boss mega slots, by story stage: ≤Flannery → UU (mega ≤UU, base ≤RU);
+  post-Flannery…T&L → OU (mega ≤OU, base ≤UU); post-T&L → UBERS (mega ≤UBERS, base uncapped). Megas are
+  NOT difficulty-scaled. `favouriteClaim` extended: a mega favourite CLAIMS the {isMega} slot only if it
+  satisfies that gate (evaluated on its BASE form); else it drops. Verified across a run (Flannery→Camerupt
+  base NU; Norman→Steelix base UU; Drake→Altaria base OU; etc.).
+- **Steven + Wally migrated** (stage-3 `bossMega(TIER_UBERS)` slot added for their favourite to claim;
+  Steven excluded from the type restriction, Wally keeps NO_REPEATED). Forcing the signature mega cascaded
+  Steven's STEVEN_OU into a regional split line (Goodra-Hisui) whose devolved echo (shared-base Goomy) is a
+  different family id — the continuity is semantically correct (Goomy IS Goodra-Hisui's baby), so the
+  reverse-order test now **collapses regional suffixes** for the "same line" check (echoes are ID-locked, so
+  no false match). Rival needs no migration — its starter is a `TRAINER_POKE_STARTER_*` special + T-106
+  continuity id, never the favourite mechanism.
+- **Legacy dual-path removed** + all dead helpers/consts deleted (stevenFavourite, wallyFavourite,
+  tateAndLizaFavourite, FAVOURITE_*_TIERS, TATE_BUDGET_TIERS, the absolute-tier / mega POKEDEF helpers).
+  Only Steven's intentional `type: [championMainType]` signature slots remain hardcoded (his explicit
+  "goes by slots" exception).
+- **Status: implementation complete on `feature/T-118-crystallize-by-fit`. Fast suite 960, determinism +
+  continuity gates 14/14.** Awaiting owner manual test to close. Open tuning notes for the owner: Brawly's
+  Hariyama (UU) never fits the RU-topped BRAWLY pool → widen its top slot if he should field it; T&L's
+  `Room Service` item still assigned despite `bannedItems` (pre-existing item quirk).
+
 ## Outcome
