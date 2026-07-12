@@ -122,6 +122,22 @@ Acceptance criteria:
   - **Re-evaluate hard restrictions** encountered along the way (Steven's tier cap is the first) and
     soften them toward disappearing — prefer devolve-until-legal over hard tier caps.
   - Favourite-Pokémon concept split into its own task **T-128** (resolved FIRST, before budget slots).
+- **2026-07-11 (implementation — primitives landed, reversal mechanics mapped)** —
+  - **Primitives (done, committed):** `utils.devolveToLevel(list, mon, level)` (inverse of tryEvolve —
+    most-evolved form legal at a level, mega→base first) + selector `TRAINER_REPEAT_ID + devolveToLevel`
+    (repeat the stored authoritative mon devolved to the level-legal stage). 10 unit tests; suite green.
+  - **Reversal gotchas found (must be handled atomically):**
+    1. **`copy` trainers (15 of them):** every Brendan-rival appearance is a `copy:` of the matching May
+       appearance, and `copy` reads `trainersResults[target]` which must already exist. A naive global
+       reverse processes the copy before its target → crash. → process non-copy trainers in reverse,
+       then **copy trainers in a 2nd pass**.
+    2. **Rival authority = MAY only** (Brendan copies May), so only May's 5 appearances need the flip.
+    3. **storedIds/IV-cache order:** reversing changes which appearance first populates `storedIds[id]`
+       and `pokeIdIVCache[id]`; that's the intended inversion (latest becomes authoritative) and stays
+       consistent across appearances, so the cross-ROM determinism gate still holds.
+  - **Data flip required (latest appearance becomes authoritative):** Steven (Granite Cave + mid → REPEAT
+    +devolveToLevel; Champion → real picks +store), Wally (3 appearances), May (5 appearances). Blueprint
+    of every appearance's slots being mapped before the edit.
 
 ## Outcome
 

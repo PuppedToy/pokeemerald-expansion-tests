@@ -22,6 +22,7 @@ const {
     NATURES,
     GENERIC_DEVIATION,
     PALAFIN_ZERO_ID,
+    TRAINER_REPEAT_ID,
 } = require('../constants');
 const {
     chooseMoveset,
@@ -154,9 +155,14 @@ function createTeamResolver(deps) {
         // slot 0 with perfect breed. A trainer carrying a `favourite` has its redundant hardcoded ace
         // slot removed from `team`, so the team size is preserved. The chain drops itself (slot picks
         // nothing → "team of 5" degradation, same as any unfillable slot) when nothing fits.
-        const teamDefs = (trainer.favourite && trainer.favourite.length)
-            ? [{ favouriteChain: trainer.favourite, breedTier: 'perfect', __favourite: true }, ...trainer.team]
-            : trainer.team;
+        // T-106 — `favouriteId` lets the favourite double as a continuity anchor: its resolved ace is
+        // stored under that id so earlier appearances (REPEAT_ID + devolveToLevel) echo it devolved.
+        let teamDefs = trainer.team;
+        if (trainer.favourite && trainer.favourite.length) {
+            const favSlot = { favouriteChain: trainer.favourite, breedTier: 'perfect', __favourite: true };
+            if (trainer.favouriteId) favSlot.id = trainer.favouriteId;
+            teamDefs = [favSlot, ...trainer.team];
+        }
         teamDefs.forEach((trainerMonDefinition, slotIndex) => {
             if (baseRngSeed !== null) {
                 const slotSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainer.id + ':' + slotIndex), 0x9E3779B9)) >>> 0;
@@ -211,8 +217,14 @@ function createTeamResolver(deps) {
                         context.foundMega = true;
                     }
                 }
-                if (trainerMonDefinition.id) storedIds[trainerMonDefinition.id] = chosenTrainerMon.id;
-                if (baseFormMon.id) storedIds[baseFormMon.id] = chosenTrainerMon.id;
+                // T-106 — only AUTHORITATIVE slots write the continuity channel; a REPEAT_ID slot is a
+                // pure CONSUMER (it reuses a stored mon, possibly devolved). Re-storing its devolved form
+                // would corrupt the source for a later, higher-level echo (Granite-Cave lvl-22 Metang
+                // overwriting the Champion's Metagross before the lvl-59 partner reads it).
+                if (trainerMonDefinition.special !== TRAINER_REPEAT_ID) {
+                    if (trainerMonDefinition.id) storedIds[trainerMonDefinition.id] = chosenTrainerMon.id;
+                    if (baseFormMon.id) storedIds[baseFormMon.id] = chosenTrainerMon.id;
+                }
 
                 const effectiveBreedTier = trainerMonDefinition.breedTier || trainer.breedTier || null;
                 const pokeId = trainerMonDefinition.id || null;

@@ -322,6 +322,46 @@ function villainFavourite(aceMega, types) {
     ];
 }
 
+// stevenFavourite(championMainType) → Steven's chain (owner-validated): Mega Metagross (Uber) ≫ a mega
+// of his (rolled) type (Uber) ≫ Mega Metagross (OU) ≫ a mega of his type (OU). Drops if his mega isn't
+// at least OU. Each matcher names/filters a MEGA species (isMega), so the resolver mega-evolves it via
+// megaBaseForm. (The "with evolutions, no-solo" nuance on the own-type fallbacks is a future refinement.)
+function stevenFavourite(gymType) {
+    const m = extra => ({ isMega: true, checkValidEvo: true, ...extra });
+    return [
+        m({ oneOf: ['SPECIES_METAGROSS_MEGA'], absoluteTier: [TIER_UBERS] }), // Mega Metagross, Uber
+        m({ type: [gymType], absoluteTier: [TIER_UBERS] }),                   // a mega of his type, Uber
+        m({ oneOf: ['SPECIES_METAGROSS_MEGA'], absoluteTier: [TIER_OU] }),    // Mega Metagross, OU
+        m({ type: [gymType], absoluteTier: [TIER_OU] }),                      // a mega of his type, OU
+    ];
+}
+
+// ── T-106 — reverse-order continuity (authoritative-latest) ──────────────────
+// ADR-016 §4: a recurring character's final, well-built roster must be decided BEFORE its earlier
+// appearances, which then echo it devolved (Champion Metagross → Granite-Cave Metang). Rather than
+// reverse the whole generation loop (which would break the 15 `copy:` rival trainers that must run
+// after their target), we HOIST each character's authoritative (endgame) appearance to just before
+// its earliest appearance. Per-slot reseed makes every non-recurring team order-independent, so this
+// is output-neutral except for the intended recurring-character inversion. Pure; unit-tested.
+function hoistAuthoritativeAppearances(trainersData, groups) {
+    for (const { auth, members } of groups) {
+        const authIdx = trainersData.findIndex(t => t.id === auth);
+        if (authIdx === -1) continue;
+        const idxs = members.map(id => trainersData.findIndex(t => t.id === id)).filter(i => i >= 0);
+        const earliest = Math.min(authIdx, ...idxs);
+        if (authIdx <= earliest) continue; // already generated first
+        const [authTrainer] = trainersData.splice(authIdx, 1); // earliest < authIdx → index stays valid
+        trainersData.splice(earliest, 0, authTrainer);
+    }
+    return trainersData;
+}
+
+// The recurring characters whose latest appearance is authoritative (endgame roster decided first, the
+// earlier appearances echo it devolved). `auth` = the latest appearance; `members` = the earlier ones.
+const CONTINUITY_GROUPS = [
+    { auth: 'TRAINER_CHAMPION_STEVEN', members: ['TRAINER_STEVEN', 'PARTNER_STEVEN'] },
+];
+
 
 const genericTrainerTeamPreRival         = () => getNonBossPreset('PRE_RIVAL');
 const genericTrainerTeamPostRival        = () => getNonBossPreset('POST_RIVAL');
@@ -1745,50 +1785,21 @@ const trainersData = [
         isBoss: true,
         reward: [tmItem(19)],
         bag: stevenBag(),
+        // T-106 — Granite Cave Steven ECHOES the Champion's authoritative aces, DEVOLVED to a level-22-legal
+        // stage (Champion Metagross → Metang). This REPLACES the old hard tier-cap (megaTier/contextualTier
+        // on a fresh pick) with the owner's "remove the max-tier restriction; devolve until legal" rule.
         team: [
             {
+                special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_MEGA',
                 breedTier: 'perfect',
-                type: [championMainType],
-                specificIfTier: 'SPECIES_METANG',
-                checkValidEvo: true,
-                megaTier: [TIER_UBERS],
-                contextualTier: [TIER_RU, TIER_NU],
-                evoType: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
-                fallback: [
-                    {
-                        id: 'STEVEN_MEGA',
-                        breedTier: 'perfect',
-                        type: [championMainType],
-                        specificIfTier: 'SPECIES_METANG',
-                        checkValidEvo: true,
-                        megaTier: [TIER_OU, TIER_UU],
-                        contextualTier: [TIER_RU, TIER_NU],
-                        evoType: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
-                    }
-                ]
+                devolveToLevel: true,
             },
             {
+                special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_OU',
                 breedTier: 'perfect',
-                evolutionTier: [TIER_OU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                checkValidEvo: true,
-                contextualTier: [TIER_RU, TIER_NU, TIER_PU, TIER_ZU],
-                type: [championMainType],
-                fallback: [
-                    {
-                        id: 'STEVEN_OU',
-                        breedTier: 'perfect',
-                        evolutionTier: [TIER_UU],
-                        evoType: [EVO_TYPE_LC],
-                        tryEvolve: true,
-                        checkValidEvo: true,
-                        contextualTier: [TIER_RU, TIER_NU, TIER_PU, TIER_ZU],
-                        type: [championMainType],
-                    }
-                ]
+                devolveToLevel: true,
             },
             {
                 ...getBossPreset('GRANITE_CAVE_STEVEN')[0],
@@ -3734,30 +3745,22 @@ const trainersData = [
         preventShuffle: true,
         level: 59,
         bag: [...spaceCenterBag()],
+        // T-106 — the Mossdeep partner now ECHOES the Champion's authoritative roster, devolved to lvl 59.
         team: [
             {
+                // echoes the Champion's legend (no devolve — legends are solo-evo)
+                special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_LEGEND',
-                ...ABSOLUTE_POKEDEF_LEGEND,
-                type: [championMainType],
-                // T-076 — champion-typed legend, else any legend. (Was Steel→Rock→any; the hard-coded
-                // Rock tier is dropped so a changed-champion partner never fields an off-theme legend.)
-                fallback: [
-                    {
-                        id: 'STEVEN_LEGEND',
-                        ...ABSOLUTE_POKEDEF_LEGEND,
-                    },
-                ],
             },
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_OU',
-                tryEvolve: true,
+                devolveToLevel: true,
             },
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_MEGA',
-                tryEvolve: true,
-                tryMega: true,
+                devolveToLevel: true,
             },
         ],
     },
@@ -4397,28 +4400,44 @@ const trainersData = [
         breedTier: 'perfect',
         level: 78,
         bag: [...leagueBag()],
+        // T-106/T-128 — Champion Steven is now the AUTHORITATIVE appearance: he picks the strong endgame
+        // roster (favourite Mega Metagross + legend + OU ace), and his earlier appearances (Granite Cave,
+        // Mossdeep partner) echo it DEVOLVED. His favourite doubles as the STEVEN_MEGA continuity anchor.
+        favourite: stevenFavourite(championMainType),
+        favouriteId: 'STEVEN_MEGA',
         team: [
             {
                 ...getBossPreset('CHAMPION_STEVEN', true)[0],
                 hasStat: ['baseBST', '<', '851'],
             },
             {
-                special: TRAINER_REPEAT_ID,
+                // authoritative legend (was a repeat of the Mossdeep partner's — now the source of truth)
                 id: 'STEVEN_LEGEND',
+                ...ABSOLUTE_POKEDEF_LEGEND,
+                type: [championMainType],
+                fallback: [{ id: 'STEVEN_LEGEND', ...ABSOLUTE_POKEDEF_LEGEND }],
             },
             getBossPreset('CHAMPION_STEVEN', true)[1],
             {
-                special: TRAINER_REPEAT_ID,
+                // authoritative OU ace at full strength (no early contextual tier cap)
                 id: 'STEVEN_OU',
+                breedTier: 'perfect',
+                evolutionTier: [TIER_OU],
+                evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
+                checkValidEvo: true,
+                type: [championMainType],
+                fallback: [{
+                    id: 'STEVEN_OU',
+                    breedTier: 'perfect',
+                    evolutionTier: [TIER_UU],
+                    evoType: [EVO_TYPE_LC],
+                    tryEvolve: true,
+                    checkValidEvo: true,
+                    type: [championMainType],
+                }],
             },
             getBossPreset('CHAMPION_STEVEN', true)[2],
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'STEVEN_MEGA',
-                tryEvolve: true,
-                tryMega: true,
-            },
         ],
     },
 ];
@@ -4454,6 +4473,10 @@ const trainersData = [
         else if (cls.includes('Magma')) trainer.evilThemeTypes = [magmaTeamTypes[0], magmaTeamTypes[1]];
     }
 
+    // T-106 — hoist each recurring character's authoritative (endgame) appearance ahead of its earlier
+    // ones, so its roster is decided first and the earlier appearances echo it devolved (ADR-016 §4).
+    hoistAuthoritativeAppearances(trainersData, CONTINUITY_GROUPS);
+
     return trainersData;
 }
 
@@ -4465,4 +4488,7 @@ module.exports = {
     resolveTeamTypes,
     AQUA_DEFAULT_TYPES,
     MAGMA_DEFAULT_TYPES,
+    // Exported for unit testing (T-106).
+    hoistAuthoritativeAppearances,
+    villainFavourite,
 };
