@@ -209,4 +209,31 @@ already exists in the selector). The restrictions:
   (keep NO_REPEATED), rival (starter favourite). Then strip hardcoded `type:`, delete the dual path +
   `FAVOURITE_*_TIERS`/`TATE_BUDGET_TIERS`/misused `*_POKEDEF_*_MEGA` helpers.
 
+### 2026-07-12 (cont.) — Winona/Brawly/T&L + all villains migrated; Steven/Wally paused for a decision
+- **Winona**: Flying restriction; favourite `['SPECIES_ALTARIA_MEGA','SPECIES_ALTARIA',{mega}]` — Mega
+  Altaria (Dragon/Fairy) has no Flying so base Altaria claims a slot and a themed ≤OU mega fills the
+  mega slot (verified: base Altaria + Mega Charizard Y).
+- **Brawly**: Fighting restriction; favourite `gymFavourite('SPECIES_HARIYAMA')`. Hariyama is UU at
+  Brawly's cap but the BRAWLY pool tops at RU, so it usually drops (too strong) like Roxanne's Nosepass.
+  *Tuning note for owner:* to make Hariyama actually appear, widen BRAWLY's top slot to UU.
+- **Tate & Liza**: Psychic restriction; dual favourites Solgaleo≫Solrock, Lunala≫Lunatone (legends drop
+  to their base counterparts). TR/screens/Focus-Sash gimmick removed. *Item note:* `Room Service` still
+  shows on some mons despite `bannedItems` — pre-existing item-assignment quirk, orthogonal to this task.
+- **All villains + grunts**: 5 team types (aqua/magma) as a trainer restriction; team = full preset pool.
+  Maxie ×3 keep Camerupt-Mega continuity via naming the same favourite (no more REPEAT_ID plumbing).
+  **Design choice (flag for owner):** Archie/Maxie-Mossdeep keep their box legendary (Kyogre/Groudon) as
+  a SECOND favourite that claims the LEGEND slot — weather now comes from the seed, so the old Damp Rock/
+  Heat Rock/Snow-Warning weather-megas are dropped. Matt/Tabitha/Museum-grunts previously had NO type
+  restriction — the migration closes that gap. Verified: zero type violations on every villain.
+- **Steven + Wally — PAUSED, reverted to the legacy path pending an owner decision.** Migrating them
+  surfaced a conflict: the owner's earlier Steven spec was "Mega Metagross, *drops if his mega isn't at
+  least OU*" (a TIER-GATED mega favourite), but the redesign's favourite is TIER-BLIND for megas (claims
+  the `{isMega}` slot regardless of tier). Forcing Mega Metagross even when it's sub-OU this run (a)
+  contradicts that spec and (b) cascaded STEVEN_OU into a regional split line (Goomy→Goodra-Hisui) whose
+  devolved echo (Goomy, `P_FAMILY_GOOMY`) is a *different* family id from the ace (`P_FAMILY_GOOMY_HISUI`),
+  tripping the continuity family check even though the devolve is semantically correct. **Decision needed:**
+  should a mega favourite always claim the mega slot (tier-blind, current model), or drop when its mega is
+  below the pool's mega gate (honouring "≥OU or drop")? Both Steven and Wally have this tier-gated-mega
+  shape. Everything else is migrated + green (fast 959, determinism + continuity 14/14).
+
 ## Outcome
