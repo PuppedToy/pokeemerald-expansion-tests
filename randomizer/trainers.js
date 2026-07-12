@@ -3106,60 +3106,18 @@ const trainersData = [
         reward: ['GYM_REWARD_7', 'Access to Shoal Cave', tmItem(91)],
         preventShuffle: true,
         bag: [...tateAndLizaBag()],
-        // T-128 — standardised (no gymIsChangedType branching): each slot is `type: [gymMainTypes[6]]`,
-        // so the same structure adapts whether or not the gym rolled a new type. Budget UBERS/UBERS/OU/
-        // OU/UU/RU: two favourites (Solgaleo/Lunala chains, resolved first via the shared favourite
-        // mechanism) + a Trick Room lead + a slow mega + two slow themed mons. Still a TR team.
+        // T-128 — Psychic is a trainer restriction; team is the full preset pool (UBERS/UBERS/OU/UU/RU +
+        // ≤UBERS mega). Two favourites (Solgaleo≫Solrock, Lunala≫Lunatone) claim slots first; being
+        // legendary they normally exceed the UBERS budget and drop to Solrock/Lunatone (their actual
+        // tiers). The old Trick Room / Focus Sash / screens gimmick is removed (owner-validated).
         bannedItems: ['Focus Sash', 'Room Service', 'Light Clay'],
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[6]],
         favourites: [
-            tateAndLizaFavourite('SPECIES_SOLGALEO', 'SPECIES_SOLROCK', 'Brave', 'Relaxed', gymMainTypes[6]),
-            tateAndLizaFavourite('SPECIES_LUNALA', 'SPECIES_LUNATONE', 'Quiet', 'Sassy', gymMainTypes[6]),
+            ['SPECIES_SOLGALEO', 'SPECIES_SOLROCK'],
+            ['SPECIES_LUNALA', 'SPECIES_LUNATONE'],
         ],
-        team: [
-            {
-                // T-128 — no forced Trick Room / Focus Sash lead; Tate & Liza's trick_room seed sets TR
-                // (and Room Service on fast mons) itself if it can.
-                ...ABSOLUTE_POKEDEF_OU,
-                checkValidEvo: true,
-                type: [gymMainTypes[6]],
-                fallback: [
-                    { ...ABSOLUTE_POKEDEF_UU, checkValidEvo: true, type: [gymMainTypes[6]] },
-                ],
-            },
-            {
-                // a slow mega
-                ...ABSOLUTE_POKEDEF_MEGA,
-                hasStat: ['baseSpeed', '<', '50'],
-                type: [gymMainTypes[6]],
-                fallback: [
-                    { ...ABSOLUTE_POKEDEF_MEGA, hasStat: ['baseSpeed', '<', '70'], type: [gymMainTypes[6]] },
-                    { ...ABSOLUTE_POKEDEF_MEGA, type: [gymMainTypes[6]] },
-                    { ...ABSOLUTE_POKEDEF_OU, checkValidEvo: true, type: [gymMainTypes[6]] },
-                ],
-            },
-            {
-                // a slow UU themed mon
-                ...ABSOLUTE_POKEDEF_UU,
-                checkValidEvo: true,
-                type: [gymMainTypes[6]],
-                hasStat: ['baseSpeed', '<', '60'],
-                fallback: [
-                    { ...ABSOLUTE_POKEDEF_RU, checkValidEvo: true, type: [gymMainTypes[6]], hasStat: ['baseSpeed', '<', '70'] },
-                    { ...ABSOLUTE_POKEDEF_UU, checkValidEvo: true, type: [gymMainTypes[6]] },
-                ],
-            },
-            {
-                // a slow RU themed mon
-                ...ABSOLUTE_POKEDEF_RU,
-                checkValidEvo: true,
-                type: [gymMainTypes[6]],
-                hasStat: ['baseSpeed', '<', '60'],
-                fallback: [
-                    { ...ABSOLUTE_POKEDEF_UU, checkValidEvo: true, type: [gymMainTypes[6]], hasStat: ['baseSpeed', '<', '70'] },
-                    { ...ABSOLUTE_POKEDEF_RU, checkValidEvo: true, type: [gymMainTypes[6]] },
-                ],
-            },
-        ],
+        team: getBossPreset('TATE_AND_LIZA', true).map(s => ({ ...s })),
     },
     // Route 125
     {
