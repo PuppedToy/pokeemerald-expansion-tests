@@ -37,10 +37,14 @@ function validateArchetypeModel(model, format = null) {
             seenIds.add(a.id);
             if (!a.name) errs.push(`${tag}: missing 'name'`);
             if (requireCategory && !VALID_CATEGORIES.includes(a.category)) errs.push(`${tag}: invalid/missing category '${a.category}'`);
-            if (!Array.isArray(a.entry) || a.entry.length === 0) errs.push(`${tag}: 'entry' must be a non-empty array`);
-            for (const e of (a.entry || [])) {
-                if (!(e.feature in feats)) errs.push(`${tag}: entry feature '${e.feature}' is not in featureDefinitions`);
-                if (typeof e.min !== 'number') errs.push(`${tag}: entry '${e.feature}' needs a numeric 'min'`);
+            // T-118 — `entry` is OPTIONAL now (crystallisation is by structure-fit, not boolean
+            // entries). Validate it only if a model still provides it.
+            if (a.entry !== undefined) {
+                if (!Array.isArray(a.entry)) errs.push(`${tag}: 'entry' must be an array if present`);
+                for (const e of (a.entry || [])) {
+                    if (!(e.feature in feats)) errs.push(`${tag}: entry feature '${e.feature}' is not in featureDefinitions`);
+                    if (typeof e.min !== 'number') errs.push(`${tag}: entry '${e.feature}' needs a numeric 'min'`);
+                }
             }
             if (!Array.isArray(a.structure) || a.structure.length === 0) errs.push(`${tag}: 'structure' must be a non-empty array`);
             for (const s of (a.structure || [])) {

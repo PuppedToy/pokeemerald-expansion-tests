@@ -23,10 +23,10 @@ describe('archetype models', () => {
                 expect(model.gimmicks.length).toBeGreaterThanOrEqual(3);
             });
 
-            test('every entry feature and structure role is a defined feature', () => {
+            test('every structure role (and optional entry feature) is a defined feature', () => {
                 const feats = model.featureDefinitions;
                 for (const a of [...model.baseArchetypes, ...model.gimmicks]) {
-                    for (const e of a.entry) expect(feats[e.feature]).toBeDefined();
+                    for (const e of (a.entry || [])) expect(feats[e.feature]).toBeDefined(); // entry optional (T-118)
                     for (const s of a.structure) expect(feats[s.role]).toBeDefined();
                 }
             });

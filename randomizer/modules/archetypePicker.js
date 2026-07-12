@@ -20,8 +20,8 @@ const { sample } = require('./utils');
 const { teamFeatureCounts, crystallize, combinedStructure, scoreCandidate } = require('./archetypeFit');
 
 const BIAS_MIN_SOPH = 0.15;   // below this sophistication, no bias (early-game = "a pile of mons")
-const IDENTITY_FLOOR = 0.6;   // the top base archetype must have emerged this strongly before biasing
-const GIMMICK_CONF = 0.99;    // a gimmick biases structure only once (nearly) matched
+const IDENTITY_FIT = 0.5;     // the top base archetype recipe must fit this well before biasing (T-118)
+const GIMMICK_FIT = 0.6;      // a gimmick engine biases structure only once its recipe fits this well
 const BIAS_STRENGTH = 2.0;    // how hard fit pulls the pick (multiplied by sophistication)
 
 // Single-draw weighted pick — one rng.random(), matching sample()'s RNG consumption. Falls back to
@@ -46,18 +46,18 @@ function weightedSampleOne(items, weights) {
 function resolveIdentity(team, model, ctx = {}, seed = null) {
     const cryst = crystallize(team, model, ctx);
     const base = cryst.base[0];
-    const emergentConfidence = base ? base.confidence : 0; // for the audit (T-117); callers may ignore
-    if (base && base.confidence >= IDENTITY_FLOOR) {
+    const fit = base ? base.fit : 0; // best base-recipe fit (also surfaced to the T-117 audit)
+    if (base && base.fit >= IDENTITY_FIT) {
         return {
             baseId: base.id,
-            gimmickIds: cryst.gimmicks.filter(g => g.confidence >= GIMMICK_CONF).map(g => g.id),
+            gimmickIds: cryst.gimmicks.filter(g => g.fit >= GIMMICK_FIT).map(g => g.id),
             counts: cryst.counts,
             source: 'emergent',
-            confidence: emergentConfidence,
+            confidence: fit,
         };
     }
     if (seed && seed.base) {
-        return { baseId: seed.base, gimmickIds: (seed.gimmicks || []).slice(), counts: cryst.counts, source: 'seed', confidence: emergentConfidence };
+        return { baseId: seed.base, gimmickIds: (seed.gimmicks || []).slice(), counts: cryst.counts, source: 'seed', confidence: fit };
     }
     return null;
 }
@@ -98,7 +98,7 @@ module.exports = {
     weightedSampleOne,
     teamFeatureCounts,
     BIAS_MIN_SOPH,
-    IDENTITY_FLOOR,
-    GIMMICK_CONF,
+    IDENTITY_FIT,
+    GIMMICK_FIT,
     BIAS_STRENGTH,
 };

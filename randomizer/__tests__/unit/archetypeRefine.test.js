@@ -24,9 +24,11 @@ const member = (pokemon, ability = null, moves = []) => ({ pokemon, ability, mov
 
 const regenSpecies = () => mon({ parsedAbilities: ['REGENERATOR'], baseHP: 100, baseDefense: 90, baseSpDefense: 90 });
 const regenMember = () => member(regenSpecies(), 'REGENERATOR', []);
-// prior team of two Regenerator pivots → Balance identity (confidence 1); it delivers regeneratorPivot
-// (ability/stat, move-independent) but NOT hazards.
-const balanceTeam = () => [regenMember(), regenMember()];
+const sweeperMember = () => member(mon({ baseAttack: 120, ...withLearn('MOVE_DRAGON_DANCE') }), null, ['MOVE_DRAGON_DANCE']);
+const defoggerMember = () => member(mon({ ...withLearn('MOVE_DEFOG') }), null, ['MOVE_DEFOG']);
+// A prior team that fits Balance (regen backbone + win condition + hazard removal) but is NOT yet
+// delivering a hazard SETTER — so a rock-capable member should be given Stealth Rock.
+const balanceTeam = () => [regenMember(), sweeperMember(), defoggerMember()];
 
 describe('resolvedDetectMon — detection view from a resolved member', () => {
     test('uses the resolved ability + actual moves (not species potential)', () => {
@@ -77,9 +79,9 @@ describe('planMemberRoleMove', () => {
     });
 
     test('does not re-inject a role the team already delivers', () => {
-        // A prior member already runs Stealth Rock → hazardSetter delivered; a new rock-capable mon
-        // that can ONLY set rocks has no remaining role → null.
-        const team = [regenMember(), member(mon({ ...withLearn('MOVE_STEALTH_ROCK') }), 'REGENERATOR', ['MOVE_STEALTH_ROCK'])];
+        // Balance has emerged AND a prior member already runs Stealth Rock (hazardSetter delivered) —
+        // a new rock-capable mon whose only move-role is hazards has nothing left to add → null.
+        const team = [...balanceTeam(), member(mon({ ...withLearn('MOVE_STEALTH_ROCK') }), null, ['MOVE_STEALTH_ROCK'])];
         const rocker = mon({ ...withLearn('MOVE_STEALTH_ROCK') });
         expect(planMemberRoleMove({ species: rocker, team, model: singles, ctx: {}, sophistication: 1 })).toBeNull();
     });
