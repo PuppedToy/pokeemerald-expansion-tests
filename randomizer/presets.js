@@ -372,7 +372,7 @@ const SPLITS = [
             { absoluteTier: [TIER_OU], checkValidEvo: true },
             { absoluteTier: [TIER_UU], checkValidEvo: true },
             { absoluteTier: [TIER_RU], checkValidEvo: true },
-            { isMega: true },
+            bossMega(tiersUpTo(TIER_OU)),
         ],
     },
     {

@@ -7,10 +7,12 @@
 // the constrained loose pool (Fighting + GUTS + weak tier + family-dedup) is empty; without a fallback,
 // selectWithAutoFallback returns null and the slot is silently dropped → 5 mons.
 //
-// T-128 — Makuhita is now Brawly's FAVOURITE (same mechanism as every favourite): a priority chain
-// resolved first. The B-019 guarantee is preserved by the chain TERMINATING in a generic typed rung
-// (no species gate) so the favourite is always fillable. This test forces the kept-type branch
-// (gymsTypeChanged: 0) and asserts that structure.
+// T-128 (redesign) — Hariyama is now Brawly's FAVOURITE, expressed as a SPECIES chain only
+// (`gymFavourite('SPECIES_HARIYAMA')`). The B-019 guarantee is preserved by the new resolver: a favourite
+// CLAIMS a slot from the full 6-slot pool, and its implicit final fallback is "any mon within the
+// trainer's type restriction" (Fighting always exists) — so it can never silently drop the team to 5.
+// This test forces the kept-type branch (gymsTypeChanged: 0 → Brawly stays FIGHTING) and asserts the
+// structure that encodes that guarantee (species-only favourite + type restriction + full pool).
 //
 // itemRandomizer is mocked to stub item assignments (its real randomizeItems() writes game
 // files — see [[project_itemrandomizer_writes_files]]); the trainers module itself is pure.
@@ -34,6 +36,7 @@ jest.mock('../../itemRandomizer', () => ({
 
 const rng = require('../../rng');
 const { runTrainersModule } = require('../../modules/trainersModule');
+const { TRAINER_RESTRICTION_ALLOW_ONLY_TYPES } = require('../../constants');
 
 // tmItem(n) reads tmList[n-1]; getTrainersData reaches high slot numbers. Give it enough.
 const TM_LIST = Array.from({ length: 120 }, (_, i) => `MOVE_SLOT_${i + 1}`);
@@ -49,23 +52,25 @@ function buildKeptType() {
     return trainersData.find(t => t.id === 'TRAINER_BRAWLY_1');
 }
 
-describe('B-019 — Brawly Makuhita favourite never drops silently (kept gym type)', () => {
-    test('the favourite leads with the Makuhita-specific rung', () => {
+describe('B-019 — Brawly Hariyama favourite never drops silently (kept gym type)', () => {
+    test('the favourite is a species-only chain (the signature ace, no tier/item/ability spec)', () => {
         const brawly = buildKeptType();
         expect(brawly).toBeDefined();
         expect(Array.isArray(brawly.favourite)).toBe(true);
-        expect(brawly.favourite[0].oneOf).toEqual(['SPECIES_MAKUHITA']);
+        // T-128 — a gym favourite is EXCLUSIVELY its signature species.
+        expect(brawly.favourite).toEqual(['SPECIES_HARIYAMA']);
+        brawly.favourite.forEach(c => expect(typeof c === 'string' || (c && c.mega)).toBe(true));
     });
 
-    test('the favourite chain terminates in a generic typed rung so it is always fillable', () => {
+    test('the type restriction + full pool guarantee the favourite is always fillable (B-019 stays fixed)', () => {
         const brawly = buildKeptType();
-        const chain = brawly.favourite;
-        expect(chain.length).toBeGreaterThan(1);
-        // The terminal rung must NOT re-impose a specific-species gate (the original B-019 drop cause):
-        // it is a plain mon of Brawly's type, which always exists.
-        const last = chain[chain.length - 1];
-        expect(last.oneOf).toBeUndefined();
-        expect(last.specificIfTier).toBeUndefined();
-        expect(last.type).toBeDefined();
+        // The B-019 guarantee now comes from resolveFavourites' implicit final fallback: any mon within the
+        // trainer's type restriction. So Brawly must carry the ALLOW_ONLY_TYPES restriction + a type (a
+        // Fighting mon always exists), and the favourite CLAIMS a slot from a full 6-slot pool (never adds),
+        // so the resolved team can never fall below 6.
+        expect(brawly.restrictions).toContain(TRAINER_RESTRICTION_ALLOW_ONLY_TYPES);
+        expect(Array.isArray(brawly.types)).toBe(true);
+        expect(brawly.types.length).toBeGreaterThan(0);
+        expect(brawly.team.length).toBe(6);
     });
 });

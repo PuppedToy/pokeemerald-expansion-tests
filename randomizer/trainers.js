@@ -1659,37 +1659,12 @@ const trainersData = [
         isBoss: true,
         bag: brawlyBag(),
         bannedItems: ['Flame Orb', 'Toxic Orb'],
-        // T-128 — Brawly's favourite is Makuhita/Hariyama (GUTS + Flame Orb). Same fallback engine: the
-        // signature ≫ a GUTS Flame-Orb mon of the type ≫ a Poison-Heal Toxic-Orb one ≫ any typed mon
-        // (always fillable, B-019 — Makuhita's base tier can exceed its contextual tier here).
-        favourite: [
-            { oneOf: ['SPECIES_MAKUHITA'], type: [gymMainTypes[1]], ...getBossPreset('BRAWLY')[5], abilities: ['GUTS'], item: 'Flame Orb', nature: NATURES.ADAMANT.name },
-            { ...getBossPreset('BRAWLY')[5], type: [gymMainTypes[1]], abilities: ['GUTS'], item: 'Flame Orb' },
-            { ...getBossPreset('BRAWLY')[5], type: [gymMainTypes[1]], abilities: ['POISON_HEAL'], item: 'Toxic Orb' },
-            { ...getBossPreset('BRAWLY')[5], type: [gymMainTypes[1]] },
-        ],
-        team: [
-            {
-                ...getBossPreset('BRAWLY')[0],
-                type: [gymMainTypes[1]],
-            },
-            {
-                ...getBossPreset('BRAWLY')[1],
-                type: [gymMainTypes[1]],
-            },
-            {
-                ...getBossPreset('BRAWLY')[2],
-                type: [gymMainTypes[1]],
-            },
-            {
-                ...getBossPreset('BRAWLY')[3],
-                type: [gymMainTypes[1]],
-            },
-            {
-                ...getBossPreset('BRAWLY')[4],
-                type: [gymMainTypes[1]],
-            },
-        ],
+        // T-128 — Fighting is a trainer restriction; team is the full preset pool; the favourite
+        // (Hariyama) CLAIMS a pool slot of its actual tier, else the standard Fighting-restricted fallback.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[1]],
+        favourite: gymFavourite('SPECIES_HARIYAMA'),
+        team: getBossPreset('BRAWLY').map(s => ({ ...s })),
     },
     // Granite Cave
     {
@@ -2824,38 +2799,14 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_6', 'Access to Ancient Tomb', tmItem(32)],
         bag: [...winonaBag(), 'Flying Gem'],
-        // T-128 — Mega Altaria (Dragon/Fairy) does NOT fit when Winona keeps her Flying type, so the
-        // favourite falls to BASE Altaria (Dragon/Flying, has Flying) and covers the budget with another
-        // mega: Mega Altaria ≫ Altaria ≫ a mega of the (rolled) type ≫ a mon of the type.
-        favourite: [
-            { oneOf: ['SPECIES_ALTARIA_MEGA'], type: [gymMainTypes[5]], ...ABSOLUTE_POKEDEF_UU_OU_MEGA },
-            { oneOf: ['SPECIES_ALTARIA'], type: [gymMainTypes[5]], absoluteTier: FAVOURITE_MEGA_TIERS, checkValidEvo: true },
-            { ...ABSOLUTE_POKEDEF_UU_OU_MEGA, type: [gymMainTypes[5]] },
-            { absoluteTier: [TIER_RU, TIER_UU, TIER_OU], checkValidEvo: true, type: [gymMainTypes[5]] },
-        ],
-        team: [
-            {
-                // T-128 — no forced Tailwind lead; Winona runs it herself if she wants.
-                ...getBossPreset('WINONA', true)[0],
-                type: [gymMainTypes[5]],
-            },
-            {
-                ...getBossPreset('WINONA', true)[1],
-                type: [gymMainTypes[5]],
-            },
-            {
-                ...getBossPreset('WINONA', true)[2],
-                type: [gymMainTypes[5]],
-            },
-            {
-                ...getBossPreset('WINONA', true)[3],
-                type: [gymMainTypes[5]],
-            },
-            {
-                ...getBossPreset('WINONA', true)[4],
-                type: [gymMainTypes[5]],
-            },
-        ],
+        // T-128 — Flying is a trainer restriction; team is the full preset pool (incl. its ≤OU mega slot).
+        // Favourite chain: Mega Altaria ≫ Altaria ≫ a mega of the (rolled) type; then the standard typed
+        // fallback. Mega Altaria (Dragon/Fairy) has no Flying, so while Winona keeps Flying it drops to
+        // BASE Altaria (Dragon/Flying); if she rolls Dragon/Fairy, Mega Altaria claims the mega slot.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[5]],
+        favourite: ['SPECIES_ALTARIA_MEGA', 'SPECIES_ALTARIA', { mega: true }],
+        team: getBossPreset('WINONA', true).map(s => ({ ...s })),
     },
     // Route 120 After Gym
     {
