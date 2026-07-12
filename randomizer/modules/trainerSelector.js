@@ -107,19 +107,6 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
     };
 
     function choosePokemonFromDefinition(trainerMonDefinition) {
-        // T-128 — Favourite Pokémon: a favourite is an ORDERED list of standard slot-defs (priority
-        // high→low). Walk them and return the first that yields a legal pick within this trainer's
-        // restrictions/budget; if none do, return undefined so the favourite is DROPPED (the ace's
-        // "intent → materialise-or-drop", mirroring seeds/gimmicks). RNG-clean: an empty matcher
-        // returns before any pick draw, so only the winning matcher consumes one draw — as a slot does.
-        if (trainerMonDefinition.favouriteChain) {
-            for (const matcher of trainerMonDefinition.favouriteChain) {
-                const mon = choosePokemonFromDefinition(matcher);
-                if (mon) return mon;
-            }
-            return undefined;
-        }
-
         const { team, foundMega, storedIds } = context;
         let pokemonStrictList = [];
         let pokemonLooseList = [];

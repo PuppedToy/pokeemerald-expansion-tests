@@ -22,7 +22,7 @@ const { TRAINER_REPEAT_ID } = require('./constants');
 function slotProvenance(def, chosenMon, storedSpecies) {
     if (!def) return null;
     const shown = chosenMon ? chosenMon.id : null;
-    if (def.favouriteChain) return { kind: 'favourite' };
+    if (def.__favourite || def.favouriteChain) return { kind: 'favourite' };
     if (def.special === TRAINER_REPEAT_ID) {
         const devolvedFrom = (storedSpecies && shown && storedSpecies !== shown) ? storedSpecies : null;
         return { kind: 'inherited', fromId: def.id || null, devolvedFrom };

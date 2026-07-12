@@ -151,17 +151,27 @@ function createTeamResolver(deps) {
         const choosePokemonFromDefinition = createChooser(pokemonList, trainer, context, {
             starters, staticRewards, replacementLog, megaReplacementLog, isSuperEffective, pickCandidate,
         });
-        // T-128 — the favourite (preferred ace) is built FIRST, before any budget slot: prepend it as
-        // slot 0 with perfect breed. A trainer carrying a `favourite` has its redundant hardcoded ace
-        // slot removed from `team`, so the team size is preserved. The chain drops itself (slot picks
-        // nothing → "team of 5" degradation, same as any unfillable slot) when nothing fits.
-        // T-106 — `favouriteId` lets the favourite double as a continuity anchor: its resolved ace is
-        // stored under that id so earlier appearances (REPEAT_ID + devolveToLevel) echo it devolved.
+        // T-128 — favourites (preferred aces) are built FIRST, before any budget slot, so they set the
+        // crystallisation rhythm and consume the tier they land in. ONE mechanism for every favourite:
+        // a favourite is a priority CHAIN `[ace, ...fallbacks]`, materialised as a slot + `fallback` so
+        // the shared selectWithAutoFallback engine drives it — each rung kept only while it fits the
+        // trainer's restrictions (its actual/rolled type + tier budget), else dropping to the next rung,
+        // and the WHOLE favourite dropping if no rung fits. `maxTierDownSteps: 0` keeps it a pure priority
+        // walk (never a silent tier-down), which also makes it byte-identical to the old favouriteChain.
+        // Per-rung item/nature/ability survive via effectiveDef (T-128 resolver change). Prepended with
+        // perfect breed. `favourite` (+ optional continuity `favouriteId`) is one chain; `favourites` is
+        // several (e.g. Tate & Liza's Solgaleo + Lunala).
         let teamDefs = trainer.team;
-        if (trainer.favourite && trainer.favourite.length) {
-            const favSlot = { favouriteChain: trainer.favourite, breedTier: 'perfect', __favourite: true };
-            if (trainer.favouriteId) favSlot.id = trainer.favouriteId;
-            teamDefs = [favSlot, ...trainer.team];
+        const favChains = trainer.favourites
+            || (trainer.favourite && trainer.favourite.length ? [trainer.favourite] : null);
+        if (favChains && favChains.length) {
+            const favSlots = favChains.map(chain => {
+                const rungs = chain.map(m => ({ ...m, maxTierDownSteps: 0 }));
+                const slot = { ...rungs[0], fallback: rungs.slice(1), breedTier: 'perfect', __favourite: true };
+                if (!trainer.favourites && trainer.favouriteId) slot.id = trainer.favouriteId;
+                return slot;
+            });
+            teamDefs = [...favSlots, ...trainer.team];
         }
         teamDefs.forEach((trainerMonDefinition, slotIndex) => {
             if (baseRngSeed !== null) {

@@ -346,6 +346,16 @@ function wallyFavourite() {
     ];
 }
 
+// T-128 — a gym leader's favourite: its signature ace, kept only while it still fits the gym's ACTUAL
+// (rolled) type + tier (so a signature whose type mutated INTO the rolled type is still preferred, and
+// one that no longer fits is dropped), else a mon of that rolled type at the same tier. `aceDef` carries
+// the ace's tier/items/abilities; `typeFallback` is the generic same-tier type mon (the old changed-type
+// branch). One favourite chain, driven by the same engine as every other favourite.
+const gymFavourite = (signature, gymType, aceDef, typeFallback) => [
+    { ...aceDef, oneOf: [signature], type: [gymType] },
+    { ...typeFallback, type: [gymType] },
+];
+
 // T-128 — Tate & Liza's two favourites (owner-validated): each an ace with a fallback chain, kept only
 // while it fits the gym's (possibly rolled) type + the up-to-Uber budget, else dropping to its themed
 // fallback. Uses a normal slot + `fallback` (not a favouriteChain) so the per-mon items/natures/screens
@@ -353,22 +363,15 @@ function wallyFavourite() {
 // to Solrock/Lunatone. `type: [gymType]` on every rung makes it behave the same whether or not the gym
 // rolled a new type (the "standardise" the owner asked for — no gymIsChangedType branch needed).
 const TATE_BUDGET_TIERS = [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS];
-const tateAndLizaFavourite = (ace, fallbackMon, aceNature, fallbackNature, gymType) => ({
-    oneOf: [ace], type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true,
-    breedTier: 'perfect', item: 'Room Service', nature: aceNature,
-    fallback: [
-        {
-            oneOf: [fallbackMon], type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true,
-            breedTier: 'perfect', item: 'Light Clay', nature: fallbackNature,
-            tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
-        },
-        {
-            oneOf: ['SPECIES_COSMOEM'], type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true,
-            breedTier: 'perfect', item: 'Room Service',
-        },
-        { type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true, breedTier: 'perfect', hasStat: ['baseSpeed', '<', '70'] },
-    ],
-});
+const tateAndLizaFavourite = (ace, fallbackMon, aceNature, fallbackNature, gymType) => [
+    { oneOf: [ace], type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true, item: 'Room Service', nature: aceNature },
+    {
+        oneOf: [fallbackMon], type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true,
+        item: 'Light Clay', nature: fallbackNature, tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
+    },
+    { oneOf: ['SPECIES_COSMOEM'], type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true, item: 'Room Service' },
+    { type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true, hasStat: ['baseSpeed', '<', '70'] },
+];
 
 // ── T-106 — reverse-order continuity (authoritative-latest) ──────────────────
 // ADR-016 §4: a recurring character's final, well-built roster must be decided BEFORE its earlier
@@ -1493,6 +1496,7 @@ const trainersData = [
         reward: ['GYM_REWARD_1', tmItem(1)],
         isBoss: true,
         bag: roxanneBag(),
+        favourite: gymFavourite('SPECIES_NOSEPASS', gymMainTypes[0], getBossPreset('ROXANNE')[2], getBossPreset('ROXANNE')[2]),
         team: [
             {
                 ...getBossPreset('ROXANNE')[0],
@@ -1500,16 +1504,6 @@ const trainersData = [
             },
             {
                 ...getBossPreset('ROXANNE')[1],
-                type: [gymMainTypes[0]],
-            },
-            gymIsChangedType[0] ? {
-                ...getBossPreset('ROXANNE')[2],
-                breedTier: 'perfect',
-                type: [gymMainTypes[0]],
-            } : {
-                specificIfTier: 'SPECIES_NOSEPASS',
-                breedTier: 'perfect',
-                ...getBossPreset('ROXANNE')[2],
                 type: [gymMainTypes[0]],
             },
             {
@@ -2249,21 +2243,12 @@ const trainersData = [
         preventShuffle: gymIsChangedType[2],
         bag: [...wattsonBag()],
         bannedItems: ['Electric Seed', 'Psychic Seed', 'Misty Seed', 'Grassy Seed'],
+        favourite: gymFavourite('SPECIES_MANECTRIC_MEGA', gymMainTypes[2], CONTEXTUAL_POKEDEF_UU_OU_MEGA, CONTEXTUAL_POKEDEF_UU_OU_MEGA),
         team: [
             gymIsChangedType[2] ? {
                 ...getBossPreset('WATTSON')[0],
                 type: [gymMainTypes[2]],
             } : pokeDefElectricSurgeMon(getBossPreset('WATTSON')[0]),
-            gymIsChangedType[2] ? {
-                ...CONTEXTUAL_POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
-                type: [gymMainTypes[2]],
-            } : {
-                specificIfTier: 'SPECIES_MANECTRIC_MEGA',
-                ...CONTEXTUAL_POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
-                type: [gymMainTypes[2]],
-            },
             gymIsChangedType[2] ? {
                 ...getBossPreset('WATTSON')[1],
                 type: [gymMainTypes[2]],
@@ -2608,20 +2593,10 @@ const trainersData = [
         reward: ['GYM_REWARD_4', 'Access to Desert Ruins', tmItem(78)],
         isBoss: true,
         bag: flanneryBag(),
+        favourite: gymFavourite('SPECIES_TORKOAL', gymMainTypes[3],
+            { ...getBossPreset('FLANNERY', true)[0], abilities: ['DROUGHT'], item: 'Heat Rock', tryEvolve: true },
+            getBossPreset('FLANNERY', true)[0]),
         team: [
-            gymIsChangedType[3] ? {
-                ...getBossPreset('FLANNERY', true)[0],
-                breedTier: 'perfect',
-                type: [gymMainTypes[3]],
-            } : {
-                specificIfTier: 'SPECIES_TORKOAL',
-                ...getBossPreset('FLANNERY', true)[0],
-                type: [gymMainTypes[3]],
-                abilities: ['DROUGHT'],
-                breedTier: 'perfect',
-                item: 'Heat Rock',
-                tryEvolve: true,
-            },
             {
                 ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
                 type: [gymMainTypes[3]],
@@ -2754,19 +2729,10 @@ const trainersData = [
         reward: ['GYM_REWARD_5', 'Access to Island Cave', 'Access to New Mauville', tmItem(31)],
         bag: normanBag(),
         bannedItems: gymIsChangedType[4] ? [] : ['Assault Vest', 'Flame Orb', 'Toxic Orb'],
+        favourite: gymFavourite('SPECIES_SLAKING', gymMainTypes[4], getBossPreset('NORMAN', true)[1], getBossPreset('NORMAN', true)[1]),
         team: [
             {
                 ...getBossPreset('NORMAN', true)[0],
-                type: [gymMainTypes[4]],
-            },
-            gymIsChangedType[4] ? {
-                ...getBossPreset('NORMAN', true)[1],
-                breedTier: 'perfect',
-                type: [gymMainTypes[4]],
-            } : {
-                specificIfTier: 'SPECIES_SLAKING',
-                ...getBossPreset('NORMAN', true)[1],
-                breedTier: 'perfect',
                 type: [gymMainTypes[4]],
             },
             {
@@ -3099,6 +3065,15 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_6', 'Access to Ancient Tomb', tmItem(32)],
         bag: [...winonaBag(), 'Flying Gem'],
+        // T-128 — Mega Altaria (Dragon/Fairy) does NOT fit when Winona keeps her Flying type, so the
+        // favourite falls to BASE Altaria (Dragon/Flying, has Flying) and covers the budget with another
+        // mega: Mega Altaria ≫ Altaria ≫ a mega of the (rolled) type ≫ a mon of the type.
+        favourite: [
+            { oneOf: ['SPECIES_ALTARIA_MEGA'], type: [gymMainTypes[5]], ...ABSOLUTE_POKEDEF_UU_OU_MEGA },
+            { oneOf: ['SPECIES_ALTARIA'], type: [gymMainTypes[5]], absoluteTier: FAVOURITE_MEGA_TIERS, checkValidEvo: true },
+            { ...ABSOLUTE_POKEDEF_UU_OU_MEGA, type: [gymMainTypes[5]] },
+            { absoluteTier: [TIER_RU, TIER_UU, TIER_OU], checkValidEvo: true, type: [gymMainTypes[5]] },
+        ],
         team: [
             {
                 ...getBossPreset('WINONA', true)[0],
@@ -3111,16 +3086,6 @@ const trainersData = [
                         type: [gymMainTypes[5]],
                     },
                 ]
-            },
-            gymIsChangedType[5] ? {
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
-                type: [gymMainTypes[5]],
-            } : {
-                specificIfTier: 'SPECIES_ALTARIA_MEGA',
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
-                type: [gymMainTypes[5]],
             },
             {
                 ...getBossPreset('WINONA', true)[1],
@@ -3447,12 +3412,14 @@ const trainersData = [
         bag: [...tateAndLizaBag()],
         // T-128 — standardised (no gymIsChangedType branching): each slot is `type: [gymMainTypes[6]]`,
         // so the same structure adapts whether or not the gym rolled a new type. Budget UBERS/UBERS/OU/
-        // OU/UU/RU: two favourites (Solgaleo/Lunala chains) + a Trick Room lead + a slow mega + two slow
-        // themed mons. Still a Trick Room team (Tate & Liza carry the trick_room seed).
+        // OU/UU/RU: two favourites (Solgaleo/Lunala chains, resolved first via the shared favourite
+        // mechanism) + a Trick Room lead + a slow mega + two slow themed mons. Still a TR team.
         bannedItems: ['Focus Sash', 'Room Service', 'Light Clay'],
-        team: [
+        favourites: [
             tateAndLizaFavourite('SPECIES_SOLGALEO', 'SPECIES_SOLROCK', 'Brave', 'Relaxed', gymMainTypes[6]),
             tateAndLizaFavourite('SPECIES_LUNALA', 'SPECIES_LUNATONE', 'Quiet', 'Sassy', gymMainTypes[6]),
+        ],
+        team: [
             {
                 // OU Trick Room lead (Focus Sash)
                 ...ABSOLUTE_POKEDEF_OU,
@@ -3892,6 +3859,7 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_8', tmItem(51)],
         bag: [...juanBag()],
+        favourite: gymFavourite('SPECIES_KINGDRA', gymMainTypes[7], getBossPreset('JUAN', true)[4], getBossPreset('JUAN', true)[4]),
         team: [
             {
                 ...getBossPreset('JUAN', true)[0],
@@ -3907,16 +3875,6 @@ const trainersData = [
             },
             {
                 ...getBossPreset('JUAN', true)[3],
-                type: [gymMainTypes[7]],
-            },
-            gymIsChangedType[7] ? {
-                ...getBossPreset('JUAN', true)[4],
-                breedTier: 'perfect',
-                type: [gymMainTypes[7]],
-            } : {
-                specificIfTier: 'SPECIES_KINGDRA',
-                ...getBossPreset('JUAN', true)[4],
-                breedTier: 'perfect',
                 type: [gymMainTypes[7]],
             },
             {

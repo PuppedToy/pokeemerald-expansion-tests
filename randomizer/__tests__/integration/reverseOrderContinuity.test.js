@@ -130,4 +130,19 @@ describeSlow('reverse-order continuity (T-106)', () => {
             for (const m of screeners) expect(m.item).toBe('Light Clay');
         });
     });
+
+    describe('Gym leader favourites (T-128) — same mechanism as every favourite', () => {
+        const GYMS = ['TRAINER_ROXANNE_1', 'TRAINER_WATTSON_1', 'TRAINER_FLANNERY_1',
+            'TRAINER_NORMAN_1', 'TRAINER_WINONA_1', 'TRAINER_JUAN_1'];
+        test('each gym fields a perfect-breed favourite ace', () => {
+            for (const id of GYMS) {
+                expect(docs[id].team.length).toBe(6);
+                expect(docs[id].team.some(isPerfect)).toBe(true); // the prepended favourite
+            }
+        });
+        test('Winona falls to BASE Altaria (Mega Altaria = Dragon/Fairy does not fit her Flying type)', () => {
+            // For this seed Winona keeps Flying; Mega Altaria is dropped, base Altaria (Dragon/Flying) kept.
+            expect(docs['TRAINER_WINONA_1'].team.some(m => m.pokemon === 'SPECIES_ALTARIA')).toBe(true);
+        });
+    });
 });

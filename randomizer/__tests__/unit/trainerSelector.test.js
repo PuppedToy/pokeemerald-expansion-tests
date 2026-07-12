@@ -336,10 +336,11 @@ describe('createChooser — NO_REPEATED_TYPE restriction (B-027)', () => {
     });
 });
 
-describe('createChooser — favouriteChain (T-128)', () => {
-    // A favourite is an ORDERED list of standard slot-defs (priority high→low). The chain returns the
-    // first matcher whose pool is non-empty, and DROPS the favourite (undefined) when none fit —
-    // exactly the seed/gimmick "intent → materialise-or-drop" dynamic, applied to the ace.
+describe('favourite as a slot + fallback chain (T-128 unified mechanism)', () => {
+    // The resolver materialises a favourite priority chain [ace, ...fallbacks] as
+    // { ...ace, fallback: [...rest] } with maxTierDownSteps:0, and drives it through the shared
+    // selectWithAutoFallback engine: the first rung that fits wins, else the next, else the whole
+    // favourite drops (null). This block tests that behaviour on the exact shape the resolver builds.
     const sharpedoMega = () => makePoke('SPECIES_SHARPEDO_MEGA', { tier: 'OU', isMega: true, megaBaseForm: 'SPECIES_SHARPEDO', types: ['WATER', 'DARK'] });
     const otherWater   = () => makePoke('SPECIES_WATER_X', { tier: 'OU', isFinal: true, types: ['WATER'] });
     const fireMon      = () => makePoke('SPECIES_FIRE_X', { tier: 'OU', isFinal: true, types: ['FIRE'] });
@@ -347,27 +348,27 @@ describe('createChooser — favouriteChain (T-128)', () => {
         { oneOf: ['SPECIES_SHARPEDO_MEGA'], isMega: true, absoluteTier: ['UU', 'OU'] }, // the ace
         { type: ['WATER'] },                                                            // any aqua mon
     ];
+    const favSlot = (c) => { const r = c.map(m => ({ ...m, maxTierDownSteps: 0 })); return { ...r[0], fallback: r.slice(1) }; };
 
-    test('the highest-priority matcher that fits wins (even when a lower one also fits)', () => {
+    test('the highest-priority rung that fits wins (even when a lower one also fits)', () => {
         const chooser = makeChooser([sharpedoMega(), otherWater()], makeTrainer(60), makeContext());
-        expect(chooser({ favouriteChain: chain }).id).toBe('SPECIES_SHARPEDO_MEGA');
+        expect(selectWithAutoFallback(favSlot(chain), chooser).pokemon.id).toBe('SPECIES_SHARPEDO_MEGA');
     });
 
-    test('falls through to the next matcher when the higher-priority pool is empty', () => {
+    test('falls through to the next rung when the higher-priority pool is empty', () => {
         const chooser = makeChooser([otherWater()], makeTrainer(60), makeContext()); // no Sharpedo mega
-        expect(chooser({ favouriteChain: chain }).id).toBe('SPECIES_WATER_X');
+        expect(selectWithAutoFallback(favSlot(chain), chooser).pokemon.id).toBe('SPECIES_WATER_X');
     });
 
-    test('drops the favourite (undefined) when no matcher fits the restrictions', () => {
+    test('drops the whole favourite (null) when no rung fits the restrictions', () => {
         const chooser = makeChooser([fireMon()], makeTrainer(60), makeContext()); // nothing aqua
-        expect(chooser({ favouriteChain: chain })).toBeUndefined();
+        expect(selectWithAutoFallback(favSlot(chain), chooser)).toBeNull();
     });
 
-    test('respects the tier gate on a species matcher (Sharpedo mega below tier → next matcher)', () => {
+    test('respects the tier gate on a species rung (Sharpedo mega below tier → next rung)', () => {
         const lowMega = makePoke('SPECIES_SHARPEDO_MEGA', { tier: 'PU', isMega: true, megaBaseForm: 'SPECIES_SHARPEDO', types: ['WATER', 'DARK'] });
         const chooser = makeChooser([lowMega, otherWater()], makeTrainer(60), makeContext());
-        // Sharpedo mega is PU (not UU/OU) → the ace matcher is empty → falls to "any aqua"
-        expect(chooser({ favouriteChain: chain }).id).toBe('SPECIES_WATER_X');
+        expect(selectWithAutoFallback(favSlot(chain), chooser).pokemon.id).toBe('SPECIES_WATER_X');
     });
 });
 
