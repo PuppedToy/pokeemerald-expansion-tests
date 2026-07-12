@@ -4,6 +4,7 @@ const {
     TRAINER_POKE_STARTER_TREECKO,
     TRAINER_POKE_ENCOUNTER,
     TRAINER_RESTRICTION_NO_REPEATED_TYPE,
+    TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
     TRAINER_POKE_STARTER_TORCHIC,
     TRAINER_POKE_STARTER_MUDKIP,
     TIER_MAGIKARP,
@@ -273,15 +274,10 @@ function wallyFavourite() {
     ];
 }
 
-// T-128 — a gym leader's favourite: its signature ace, kept only while it still fits the gym's ACTUAL
-// (rolled) type + tier (so a signature whose type mutated INTO the rolled type is still preferred, and
-// one that no longer fits is dropped), else a mon of that rolled type at the same tier. `aceDef` carries
-// the ace's tier/items/abilities; `typeFallback` is the generic same-tier type mon (the old changed-type
-// branch). One favourite chain, driven by the same engine as every other favourite.
-const gymFavourite = (signature, gymType, aceDef, typeFallback) => [
-    { ...aceDef, oneOf: [signature], type: [gymType] },
-    { ...typeFallback, type: [gymType] },
-];
+// T-128 — a gym leader's favourite is EXCLUSIVELY its signature species. It claims a pool slot of that
+// species' actual tier (or the {isMega} slot if it is a mega), else drops to the standard restriction-
+// bounded fallback (implicit). The gym's rolled-type restriction lives at the trainer level.
+const gymFavourite = (signature) => [signature];
 
 // T-128 — Tate & Liza's two favourites (owner-validated): each an ace with a fallback chain, kept only
 // while it fits the gym's (possibly rolled) type + the up-to-Uber budget, else dropping to its themed
@@ -1415,29 +1411,12 @@ const trainersData = [
         reward: ['GYM_REWARD_1', tmItem(1)],
         isBoss: true,
         bag: roxanneBag(),
-        favourite: gymFavourite('SPECIES_NOSEPASS', gymMainTypes[0], getBossPreset('ROXANNE')[2], getBossPreset('ROXANNE')[2]),
-        team: [
-            {
-                ...getBossPreset('ROXANNE')[0],
-                type: [gymMainTypes[0]],
-            },
-            {
-                ...getBossPreset('ROXANNE')[1],
-                type: [gymMainTypes[0]],
-            },
-            {
-                ...getBossPreset('ROXANNE')[3],
-                type: [gymMainTypes[0]],
-            },
-            {
-                ...getBossPreset('ROXANNE')[4],
-                type: [gymMainTypes[0]],
-            },
-            {
-                ...getBossPreset('ROXANNE')[5],
-                type: [gymMainTypes[0]],
-            },
-        ],
+        // T-128 — type is a trainer restriction (not per-slot); team is the full difficulty-scaled preset
+        // pool; the favourite (Nosepass) CLAIMS a pool slot of its tier and is resolved first.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[0]],
+        favourite: gymFavourite('SPECIES_NOSEPASS'),
+        team: getBossPreset('ROXANNE').map(s => ({ ...s })),
     },
     // Route 116
     {
@@ -2114,31 +2093,12 @@ const trainersData = [
         reward: ['GYM_REWARD_3', tmItem(11)],
         level: 29,
         bag: [...wattsonBag()],
-        // T-128 — no forced electric-terrain setter/Electric-Seed/banned-items: Wattson's electricTerrain
-        // seed produces the terrain (Electric Surge + electric moves + Electric Seed) on its own if it can.
-        favourite: gymFavourite('SPECIES_MANECTRIC_MEGA', gymMainTypes[2], CONTEXTUAL_POKEDEF_UU_OU_MEGA, CONTEXTUAL_POKEDEF_UU_OU_MEGA),
-        team: [
-            {
-                ...getBossPreset('WATTSON')[0],
-                type: [gymMainTypes[2]],
-            },
-            {
-                ...getBossPreset('WATTSON')[1],
-                type: [gymMainTypes[2]],
-            },
-            {
-                ...getBossPreset('WATTSON')[2],
-                type: [gymMainTypes[2]],
-            },
-            {
-                ...getBossPreset('WATTSON')[3],
-                type: [gymMainTypes[2]],
-            },
-            {
-                ...getBossPreset('WATTSON')[4],
-                type: [gymMainTypes[2]],
-            },
-        ],
+        // T-128 — Electric type is a trainer restriction; team is the full preset pool; the favourite
+        // (Mega Manectric) claims the {isMega} slot. The electricTerrain seed adds the terrain if it can.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[2]],
+        favourite: gymFavourite('SPECIES_MANECTRIC_MEGA'),
+        team: getBossPreset('WATTSON').map(s => ({ ...s })),
     },
     // Route 111
     {
@@ -2455,30 +2415,12 @@ const trainersData = [
         reward: ['GYM_REWARD_4', 'Access to Desert Ruins', tmItem(78)],
         isBoss: true,
         bag: flanneryBag(),
-        // T-128 — no forced Drought/Heat Rock/sun-abilities: Flannery's weather (sun) seed sets it if it can.
-        favourite: gymFavourite('SPECIES_TORKOAL', gymMainTypes[3], getBossPreset('FLANNERY', true)[0], getBossPreset('FLANNERY', true)[0]),
-        team: [
-            {
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                type: [gymMainTypes[3]],
-            },
-            {
-                ...getBossPreset('FLANNERY', true)[1],
-                type: [gymMainTypes[3]],
-            },
-            {
-                ...getBossPreset('FLANNERY', true)[2],
-                type: [gymMainTypes[3]],
-            },
-            {
-                ...getBossPreset('FLANNERY', true)[3],
-                type: [gymMainTypes[3]],
-            },
-            {
-                ...getBossPreset('FLANNERY', true)[4],
-                type: [gymMainTypes[3]],
-            },
-        ],
+        // T-128 — Fire type is a trainer restriction; team is the full preset pool; the favourite (Torkoal)
+        // claims a pool slot of its tier. The weather (sun) seed sets Drought/Heat Rock if it can.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[3]],
+        favourite: gymFavourite('SPECIES_TORKOAL'),
+        team: getBossPreset('FLANNERY', true).map(s => ({ ...s })),
     },
     // Route 111
     {
@@ -2585,49 +2527,12 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_5', 'Access to Island Cave', 'Access to New Mauville', tmItem(31)],
         bag: normanBag(),
-        // T-128 — no banned items / forced Guts strategy: Norman picks his own items/abilities.
-        favourite: gymFavourite('SPECIES_SLAKING', gymMainTypes[4], getBossPreset('NORMAN', true)[1], getBossPreset('NORMAN', true)[1]),
-        team: [
-            {
-                ...getBossPreset('NORMAN', true)[0],
-                type: [gymMainTypes[4]],
-            },
-            {
-                ...getBossPreset('NORMAN', true)[2],
-                type: [gymMainTypes[4]],
-            },
-            {
-                ...getBossPreset('NORMAN', true)[3],
-                type: [gymMainTypes[4]],
-            },
-            {
-                ...getBossPreset('NORMAN', true)[4],
-                type: [gymMainTypes[4]],
-            },
-            {
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                type: [gymMainTypes[4]],
-                fallback: [
-                   {
-                        isMega: true,
-                        absoluteTier: [TIER_UU, TIER_OU, TIER_UBERS],
-                        type: [gymMainTypes[4]],
-                        checkValidEvo: true,
-                        tryEvolve: true,
-                   },
-                   {
-                        absoluteTier: [TIER_OU],
-                        type: [gymMainTypes[4]],
-                        checkValidEvo: true,
-                   },
-                   {
-                        absoluteTier: [TIER_UU],
-                        type: [gymMainTypes[4]],
-                        checkValidEvo: true,
-                   }
-                ]
-            },
-        ],
+        // T-128 — Normal type is a trainer restriction; team is the full preset pool; the favourite
+        // (Slaking) claims a pool slot of its tier. Norman picks his own items/abilities.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[4]],
+        favourite: gymFavourite('SPECIES_SLAKING'),
+        team: getBossPreset('NORMAN', true).map(s => ({ ...s })),
     },
     // Route 105 (Island Cave)
     {
@@ -3679,29 +3584,12 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_8', tmItem(51)],
         bag: [...juanBag()],
-        favourite: gymFavourite('SPECIES_KINGDRA', gymMainTypes[7], getBossPreset('JUAN', true)[4], getBossPreset('JUAN', true)[4]),
-        team: [
-            {
-                ...getBossPreset('JUAN', true)[0],
-                type: [gymMainTypes[7]],
-            },
-            {
-                ...getBossPreset('JUAN', true)[1],
-                type: [gymMainTypes[7]],
-            },
-            {
-                ...getBossPreset('JUAN', true)[2],
-                type: [gymMainTypes[7]],
-            },
-            {
-                ...getBossPreset('JUAN', true)[3],
-                type: [gymMainTypes[7]],
-            },
-            {
-                ...getBossPreset('JUAN', true)[5],
-                type: [gymMainTypes[7]],
-            },
-        ],
+        // T-128 — Water type is a trainer restriction; team is the full preset pool; the favourite
+        // (Kingdra) claims a pool slot of its tier.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[7]],
+        favourite: gymFavourite('SPECIES_KINGDRA'),
+        team: getBossPreset('JUAN', true).map(s => ({ ...s })),
     },
     // Route 123
     {

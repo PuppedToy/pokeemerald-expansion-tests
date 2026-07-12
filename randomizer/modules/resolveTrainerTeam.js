@@ -39,6 +39,7 @@ const { createChooser } = require('./trainerSelector');
 const { makeArchetypePicker, BIAS_MIN_SOPH } = require('./archetypePicker');
 const { planMemberRoleMove, planMemberAbility, WEATHER_ROCK_BY_SETTER, ELECTRIC_MOVES } = require('./archetypeRefine');
 const { getTrainerSeed } = require('./trainerSeeds');
+const { resolveFavourites } = require('./favouriteClaim');
 const { getArchetypeModel } = require('../archetypes');
 const { noopTeamAudit } = require('../teamAudit');
 const { noopDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
@@ -151,27 +152,31 @@ function createTeamResolver(deps) {
         const choosePokemonFromDefinition = createChooser(pokemonList, trainer, context, {
             starters, staticRewards, replacementLog, megaReplacementLog, isSuperEffective, pickCandidate,
         });
-        // T-128 — favourites (preferred aces) are built FIRST, before any budget slot, so they set the
-        // crystallisation rhythm and consume the tier they land in. ONE mechanism for every favourite:
-        // a favourite is a priority CHAIN `[ace, ...fallbacks]`, materialised as a slot + `fallback` so
-        // the shared selectWithAutoFallback engine drives it — each rung kept only while it fits the
-        // trainer's restrictions (its actual/rolled type + tier budget), else dropping to the next rung,
-        // and the WHOLE favourite dropping if no rung fits. `maxTierDownSteps: 0` keeps it a pure priority
-        // walk (never a silent tier-down), which also makes it byte-identical to the old favouriteChain.
-        // Per-rung item/nature/ability survive via effectiveDef (T-128 resolver change). Prepended with
-        // perfect breed. `favourite` (+ optional continuity `favouriteId`) is one chain; `favourites` is
-        // several (e.g. Tate & Liza's Solgaleo + Lunala).
+        // T-128 — favourites CLAIM a slot from the difficulty-adjusted preset pool (a slot of their EXACT
+        // tier, or the {isMega} slot if they are a mega), are resolved FIRST (so the team crystallises
+        // around them), and drop to the standard restriction-bounded fallback when they don't fit — never
+        // downgrading. A favourite is a chain of SPECIES ids (or { mega: true }); see favouriteClaim.js.
+        // [Migration: a legacy chain of tiered slot-defs is still handled by the prepend path below until
+        // every trainer is converted.]
         let teamDefs = trainer.team;
         const favChains = trainer.favourites
             || (trainer.favourite && trainer.favourite.length ? [trainer.favourite] : null);
         if (favChains && favChains.length) {
-            const favSlots = favChains.map(chain => {
-                const rungs = chain.map(m => ({ ...m, maxTierDownSteps: 0 }));
-                const slot = { ...rungs[0], fallback: rungs.slice(1), breedTier: 'perfect', __favourite: true };
-                if (!trainer.favourites && trainer.favouriteId) slot.id = trainer.favouriteId;
-                return slot;
-            });
-            teamDefs = [...favSlots, ...trainer.team];
+            const isSpeciesChain = favChains.every(ch => ch.every(c => typeof c === 'string' || (c && c.mega)));
+            if (isSpeciesChain) {
+                teamDefs = resolveFavourites(trainer.team, favChains, {
+                    pokemonList, level: trainer.level, types: trainer.types || null,
+                    favouriteIds: trainer.favourites ? (trainer.favouriteIds || []) : (trainer.favouriteId ? [trainer.favouriteId] : []),
+                });
+            } else {
+                const favSlots = favChains.map(chain => {
+                    const rungs = chain.map(m => ({ ...m, maxTierDownSteps: 0 }));
+                    const slot = { ...rungs[0], fallback: rungs.slice(1), breedTier: 'perfect', __favourite: true };
+                    if (!trainer.favourites && trainer.favouriteId) slot.id = trainer.favouriteId;
+                    return slot;
+                });
+                teamDefs = [...favSlots, ...trainer.team];
+            }
         }
         teamDefs.forEach((trainerMonDefinition, slotIndex) => {
             if (baseRngSeed !== null) {
