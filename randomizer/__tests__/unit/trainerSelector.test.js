@@ -278,6 +278,41 @@ describe('createChooser — maxBaseTier filter', () => {
     });
 });
 
+describe('createChooser — favouriteChain (T-128)', () => {
+    // A favourite is an ORDERED list of standard slot-defs (priority high→low). The chain returns the
+    // first matcher whose pool is non-empty, and DROPS the favourite (undefined) when none fit —
+    // exactly the seed/gimmick "intent → materialise-or-drop" dynamic, applied to the ace.
+    const sharpedoMega = () => makePoke('SPECIES_SHARPEDO_MEGA', { tier: 'OU', isMega: true, megaBaseForm: 'SPECIES_SHARPEDO', types: ['WATER', 'DARK'] });
+    const otherWater   = () => makePoke('SPECIES_WATER_X', { tier: 'OU', isFinal: true, types: ['WATER'] });
+    const fireMon      = () => makePoke('SPECIES_FIRE_X', { tier: 'OU', isFinal: true, types: ['FIRE'] });
+    const chain = [
+        { oneOf: ['SPECIES_SHARPEDO_MEGA'], isMega: true, absoluteTier: ['UU', 'OU'] }, // the ace
+        { type: ['WATER'] },                                                            // any aqua mon
+    ];
+
+    test('the highest-priority matcher that fits wins (even when a lower one also fits)', () => {
+        const chooser = makeChooser([sharpedoMega(), otherWater()], makeTrainer(60), makeContext());
+        expect(chooser({ favouriteChain: chain }).id).toBe('SPECIES_SHARPEDO_MEGA');
+    });
+
+    test('falls through to the next matcher when the higher-priority pool is empty', () => {
+        const chooser = makeChooser([otherWater()], makeTrainer(60), makeContext()); // no Sharpedo mega
+        expect(chooser({ favouriteChain: chain }).id).toBe('SPECIES_WATER_X');
+    });
+
+    test('drops the favourite (undefined) when no matcher fits the restrictions', () => {
+        const chooser = makeChooser([fireMon()], makeTrainer(60), makeContext()); // nothing aqua
+        expect(chooser({ favouriteChain: chain })).toBeUndefined();
+    });
+
+    test('respects the tier gate on a species matcher (Sharpedo mega below tier → next matcher)', () => {
+        const lowMega = makePoke('SPECIES_SHARPEDO_MEGA', { tier: 'PU', isMega: true, megaBaseForm: 'SPECIES_SHARPEDO', types: ['WATER', 'DARK'] });
+        const chooser = makeChooser([lowMega, otherWater()], makeTrainer(60), makeContext());
+        // Sharpedo mega is PU (not UU/OU) → the ace matcher is empty → falls to "any aqua"
+        expect(chooser({ favouriteChain: chain }).id).toBe('SPECIES_WATER_X');
+    });
+});
+
 describe('createChooser — TRAINER_POKE_ENCOUNTER + tryMega', () => {
     test('returns the encounter pokemon even when it has no mega (does not filter by hasValidMega)', () => {
         // Froakie has no mega — if hasValidMega were applied, pool would empty → undefined

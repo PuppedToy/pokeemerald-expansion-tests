@@ -1,13 +1,12 @@
 ---
 id: T-106
 title: Engine — backwards generation (endgame-first, devolve preserving ID continuity)
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-09
-updated: 2026-07-10
+updated: 2026-07-11
 target-version: 0.8.0
-links: [T-083, T-103, T-104, T-105, T-107, T-108]
-blocked-by: [T-107]
+links: [T-083, T-103, T-104, T-105, T-107, T-108, T-128]
 ---
 
 # T-106 — Engine — backwards generation (endgame-first, devolve preserving ID continuity)
@@ -103,6 +102,26 @@ Acceptance criteria:
   + devolution on the *final* engine, alongside T-108 (fixed-ID special cases) — the same continuity
   concern. `blocked-by` → T-107; status back to `proposed` (the investigation above stands as
   groundwork). No throwaway, no double-edit of the trainer data model. ADR-016 §4 design unchanged.
+- **2026-07-11 (owner-validated continuity spec — unblocked, T-107 landed)** — Owner detailed the full
+  continuity behaviour; set `in-progress`. Specifics to implement (alongside T-128 favourite + T-108):
+  - **Reverse-order generation (last→first).** Recurring characters (rival, Steven, Wally) build their
+    final, well-built roster first; earlier appearances reuse it **devolved to the most-evolved form the
+    level allows** (`devolveToBase`, generalized to a level cap).
+  - **Rival special case:** the **evolved starter** is a mandatory slot **known from the start** (it is
+    the rival's *favourite*, T-128) + a **mandatory legendary** slot + a small **route pool** + the rest
+    **free slots** filled by the engine. The starter constraint is known up-front (not derived from a
+    late random pick).
+  - **Steven:** **REMOVE** the Granite Cave max-tier restriction — instead take his final (well-built)
+    roster and **devolve each mon until legal** for the Granite Cave level. Favourite = Metagross (T-128).
+  - **Wally:** **fully backwards** — final team well-built (Victory Road / champion-tier), devolved down
+    to his Mauville (catching-tutorial) appearance. Add a **no-repeated-types** restriction to his team.
+    Favourite = Mega Gardevoir / Mega Gallade (T-128).
+  - **Logging (T-117):** the decision log must clearly show, per mon, **what is inherited by ID**, **how
+    it is devolved** (final form → shown form), and **which mons were chosen by restriction** (favourite,
+    legendary, route pool, type lock), because backwards continuity is the riskiest path.
+  - **Re-evaluate hard restrictions** encountered along the way (Steven's tier cap is the first) and
+    soften them toward disappearing — prefer devolve-until-legal over hard tier caps.
+  - Favourite-Pokémon concept split into its own task **T-128** (resolved FIRST, before budget slots).
 
 ## Outcome
 

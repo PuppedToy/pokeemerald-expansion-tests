@@ -150,7 +150,14 @@ function createTeamResolver(deps) {
         const choosePokemonFromDefinition = createChooser(pokemonList, trainer, context, {
             starters, staticRewards, replacementLog, megaReplacementLog, isSuperEffective, pickCandidate,
         });
-        trainer.team.forEach((trainerMonDefinition, slotIndex) => {
+        // T-128 — the favourite (preferred ace) is built FIRST, before any budget slot: prepend it as
+        // slot 0 with perfect breed. A trainer carrying a `favourite` has its redundant hardcoded ace
+        // slot removed from `team`, so the team size is preserved. The chain drops itself (slot picks
+        // nothing → "team of 5" degradation, same as any unfillable slot) when nothing fits.
+        const teamDefs = (trainer.favourite && trainer.favourite.length)
+            ? [{ favouriteChain: trainer.favourite, breedTier: 'perfect', __favourite: true }, ...trainer.team]
+            : trainer.team;
+        teamDefs.forEach((trainerMonDefinition, slotIndex) => {
             if (baseRngSeed !== null) {
                 const slotSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainer.id + ':' + slotIndex), 0x9E3779B9)) >>> 0;
                 rng.seed(slotSeed);
@@ -351,7 +358,7 @@ function createTeamResolver(deps) {
         // T-075 — the flagship "team of 5" diagnostic: after resolving every slot, a team
         // that came back shorter than its definition means one or more slots were dropped.
         // One summary event per trainer (the per-slot detail is in TRAINER_SLOT_DROPPED).
-        const expectedTeamSize = trainer.team.length;
+        const expectedTeamSize = teamDefs.length;
         if (team.length < expectedTeamSize) {
             diag.warn(
                 DIAGNOSTIC_CODES.TRAINER_TEAM_SHORT,
