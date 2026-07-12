@@ -93,11 +93,21 @@ Acceptance criteria:
     every slot type-locked so it adapts to the rolled type). Legends usually drop to Solrock/Lunatone,
     which KEEP their own Light Clay/nature via the new resolver `effectiveDef` item/nature preference.
     Tested (2 gated assertions) + determinism green.
-  - **REMAINING — the other gyms (Roxanne/Wattson/Flannery/Norman/Winona/Juan):** convert their
-    `gymIsChangedType ? typeMon : signature` ace into the same type-aware favourite chain
-    `{ oneOf: [signature], type: [rolledType], <tier/items>, fallback: [typeMon] }`. The current
-    structure already matches the owner's rule for single-type signatures; the improvement is dual-type
-    signatures (e.g. Winona's Altaria kept when the gym rolls Dragon, not just Flying). Brawly has no
-    specific signature (a type-preset ace) so needs no conversion.
+- **2026-07-12 (owner clarification: ONE mechanism for every favourite) — DONE:**
+  - **Unified the mechanism.** A favourite is a priority CHAIN materialised as a slot + `fallback`
+    (maxTierDownSteps:0) driven by the shared selectWithAutoFallback engine — kept only while it fits the
+    ACTUAL (rolled) type + tier budget (so a signature that mutated INTO the rolled type is still
+    preferred), else the next rung, else drop; per-rung item/nature/ability preserved via effectiveDef;
+    resolved first so the team crystallises around it. `favourite` (single) / `favourites` (several).
+    Removed the old selector favouriteChain branch; byte-identical for the existing favourites.
+  - **All 8 gym leaders wired** (Roxanne=Nosepass, Brawly=Makuhita, Wattson=Manectric, Flannery=Torkoal,
+    Norman=Slaking, Winona, Juan=Kingdra) — no gymIsChangedType ace branch remains. **Winona corrected**
+    per owner: Mega Altaria (Dragon/Fairy) doesn't fit her Flying type → Mega Altaria ≫ base Altaria
+    (Dragon/Flying) ≫ a mega of the type ≫ a mon of the type.
+  - Verified end-to-end (13 gated integration assertions + updated B-019 test); determinism green.
+  - **Remaining non-standardised exceptions catalogued for owner review** — see the trainer-exceptions
+    audit (reported to the owner 2026-07-12): gimmick-slot gymIsChangedType branches (Wattson electric
+    terrain, Flannery sun), the pokeDef* hardcoded weather/terrain setters, villain legendary slots, the
+    retired Tate & Liza rng draw, and prescribed lead moves/items.
 
 ## Outcome
