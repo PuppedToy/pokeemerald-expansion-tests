@@ -131,4 +131,4 @@
 | [T-125](T-125-gimmick-conditional-items.md) | Gimmick-conditional item selection + bag provisioning | in-progress | 0.8.0 | 2026-07-11 |
 | [T-126](T-126-trainer-seed-assignments.md) | Trainer archetype/gimmick seed assignments (deliberate variety) | in-progress | 0.8.0 | 2026-07-11 |
 | [T-127](T-127-later-gen-advanced-combo-corpus.md) | Later-gen advanced-combo corpus (Gen 8/9/Champions) — mechanic-filtered | proposed | 0.9.0 | 2026-07-11 |
-| [T-128](T-128-favourite-pokemon.md) | Favourite Pokémon — a generalizable "preferred ace" resolved first, dropped if it doesn't fit | in-progress | 0.8.0 | 2026-07-11 |
+| [T-128](T-128-favourite-pokemon.md) | Favourite Pokémon — a generalizable "preferred ace" resolved first, dropped if it doesn't fit | in-progress | 0.8.0 | 2026-07-12 |
