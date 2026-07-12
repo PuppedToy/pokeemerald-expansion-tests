@@ -80,10 +80,24 @@ Acceptance criteria:
     (`wallyFavourite` Gardevoir/Gallade Uber/OU≫any Uber mega), Rival (evolved starter = the favourite).
   - **Breed:** favourite/ace = perfect; other rival/Wally mons = good (via trainer `breedTier:'good'`).
   - **The 5 aqua/magma types** were already canonical in code (`AQUA_/MAGMA_DEFAULT_TYPES`) — no guessing.
-  - **DEFERRED — gym-leader favourites:** the owner's "assigned mon in assigned tier ≫ a mon of their type"
-    needs the **signature species + tier budget per gym**. Only Wattson (Manectric) and Winona (Altaria)
-    have an in-code mega signature; the other 6 (Roxanne/Brawly/Flannery/Norman/Tate&Liza/Juan) are
-    meta decisions — per the analysis-first rule, hold for owner confirmation rather than guess. Also
-    Wattson's favourite would interact with its electric-terrain seed (needs a combined test).
+  - **Gym-leader favourites (owner clarified 2026-07-12):** the favourite is simply the gym's existing
+    perfect-breed slot's mon (some mega, some not). The rule: keep it if it still meets the trainer's
+    restrictions (rolled type + tier budget), else fall to a same-tier mon, drop if its tier is out of
+    budget — i.e. the standard favourite fallback chain.
+- **2026-07-12 (owner-validated gym spec) — Tate & Liza DONE + fallback algorithm confirmed:**
+  - **Fallback algorithm (point 1)** already holds for every existing favourite: villains / Steven / Wally
+    / rival chains fall down their rungs and DROP when nothing fits the budget (Steven ends at OU, Wally at
+    "any Uber mega", villains at "any themed mon"). Confirmed.
+  - **Tate & Liza (points 2 + 3) DONE:** two favourites (Solgaleo ≫ Solrock ≫ Cosmoem ≫ themed-in-budget;
+    Lunala ≫ Lunatone ≫ …), budget UBERS/UBERS/OU/OU/UU/RU, standardised (no gymIsChangedType branch —
+    every slot type-locked so it adapts to the rolled type). Legends usually drop to Solrock/Lunatone,
+    which KEEP their own Light Clay/nature via the new resolver `effectiveDef` item/nature preference.
+    Tested (2 gated assertions) + determinism green.
+  - **REMAINING — the other gyms (Roxanne/Wattson/Flannery/Norman/Winona/Juan):** convert their
+    `gymIsChangedType ? typeMon : signature` ace into the same type-aware favourite chain
+    `{ oneOf: [signature], type: [rolledType], <tier/items>, fallback: [typeMon] }`. The current
+    structure already matches the owner's rule for single-type signatures; the improvement is dual-type
+    signatures (e.g. Winona's Altaria kept when the gym rolls Dragon, not just Flying). Brawly has no
+    specific signature (a type-preset ace) so needs no conversion.
 
 ## Outcome
