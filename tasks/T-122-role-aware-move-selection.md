@@ -1,45 +1,53 @@
 ---
 id: T-122
-title: Role-aware move selection — deliver the assigned role (fix B-026)
+title: Decision-log accuracy — report DELIVERED roles, not species potential (fix B-026)
 status: proposed
 type: bug
 created: 2026-07-11
 updated: 2026-07-11
 target-version: 0.8.0
-links: [T-107, T-118, B-026]
-priority: critical
+links: [T-107, T-117, T-118, B-026]
+priority: low
 ---
 
-# T-122 — Role-aware move selection
+# T-122 — Decision-log accuracy (report delivered roles)
 
 ## Context
 
-**B-026:** the engine assigns roles but `chooseMoveset`/`adjustMoveset` drop the injected role move
-(35/36 hazard injections never reach the final moveset). Until this is fixed the entire role system is
-**cosmetic** — teams crystallise into archetypes but no mon actually delivers its role. This is the
-prerequisite for every other teambuilding improvement (T-123…T-126).
+Filed originally as "role moves are dropped" (critical). **Disproved:** direct resolver instrumentation
+shows role moves ARE delivered — of 214 planned, 210 pushed, **209 survived** into the final moveset.
+The "35/36 dropped" reading was a measurement artifact (audit build-order vs docs shuffle-order). See
+**B-026**.
+
+The genuine, low-severity defect: the decision log's `rolesFilled` is computed from
+`detectFeatures(chosenMon)` = **species potential** (what the mon *could* do), not what its final
+moveset/ability **delivers**. So a mon shows "fills hazardSetter" whenever it *can* set hazards — 82
+potential tags at high soph vs 36 mons actually running a hazard. This makes the log untrustworthy
+(and is what made role delivery look broken). Since the log is now our main validation instrument for
+the whole teambuilding effort, it must be accurate.
 
 ## Plan
 
-- **Hard-keep injected fixed moves.** A role move (107d) and `tryToHaveMove` pushed into
-  `newTeamMember.moves` must ALWAYS survive into the final 4 (unless the mon can't legally learn it) —
-  `chooseMoveset`/`adjustMoveset` must treat them as fixed slots, not soft preferences.
-- **Role-aware prioritisation.** Feed the mon's assigned role (from the crystallised identity) into
-  move selection so it prioritises role-appropriate move TYPES (hazard setter → a hazard move; pivot →
-  a pivot move; cleric → recovery/Wish; screen setter → a screen; etc.), not just raw rating.
-- Preserve determinism (per-slot reseed) and keep singles byte-identical below the sophistication gate.
-- **Closes B-026** — regression test asserts an injected role/fixed move survives into the final
-  moveset (fails before, passes after).
-- Format-agnostic (singles + doubles).
+- Compute the audit's `rolesFilled` (and any delivered-role reporting) from the **resolved member**
+  (actual moveset + chosen ability) via `resolvedDetectMon`, not the species potential — so "fills X"
+  means the mon really delivers X.
+- Optionally annotate potential-but-not-delivered leanings distinctly (e.g. "could set hazards") so the
+  log still shows why a mon was picked without claiming a role it doesn't fill.
+- **Closes B-026** (regression: an audit role tag ⇒ the member actually delivers that role).
+- Observability only — no change to generated teams (determinism unaffected).
+
+> Note: role-move DELIVERY itself works and needs no fix. The genuine *team* issue exposed here —
+> redundant duplicate role-holders (2+ hazard setters) — is **T-123** (role-max dedup), not this task.
 
 Acceptance criteria:
-- [ ] Injected role/`tryToHaveMove` moves are hard-kept in the final moveset (B-026 regression, red→green).
-- [ ] Decision log: hazard setters actually run hazards; role-tagged mons deliver their role move.
-- [ ] Determinism gate green; singles byte-identical below the soph gate; `cd randomizer && npm test` green.
+- [ ] `rolesFilled` reflects delivered roles (resolved moveset/ability), not species potential.
+- [ ] B-026 regression green; the decision log no longer over-reports roles.
+- [ ] `cd randomizer && npm test` green (no generation-output change).
 
 ## Progress log
 
-- **2026-07-11** — Created from the problem-2 analysis (owner). B-026 confirmed by measurement
-  (35/36 injected hazard moves dropped). Highest priority — roles are cosmetic until this lands.
+- **2026-07-11** — Created as "role-aware move selection (critical)"; **re-scoped** after instrumentation
+  proved role delivery works (209/210). Now the low-severity decision-log accuracy fix (report delivered
+  roles). The real teambuilding fix (duplicate role-holders) moved to T-123.
 
 ## Outcome
