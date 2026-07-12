@@ -139,6 +139,33 @@ Acceptance criteria:
     +devolveToLevel; Champion → real picks +store), Wally (3 appearances), May (5 appearances). Blueprint
     of every appearance's slots being mapped before the edit.
 
+- **2026-07-12 (implemented — all three recurring characters inverted, verified)** — Continuity inversion
+  is DONE via **authoritative-latest hoisting** (`hoistAuthoritativeAppearances`) rather than a literal
+  global loop reversal (cleaner: keeps the 15 `copy:` trainers after their targets; per-slot reseed keeps
+  every non-recurring team byte-identical; can be applied per-character). `CONTINUITY_GROUPS` drives it.
+  - **Steven** — Champion authoritative (favourite Mega Metagross + legend + OU ace); Granite Cave (22) +
+    Mossdeep partner (59) echo via `REPEAT_ID + devolveToLevel`. **Granite Cave tier-cap REMOVED** (the
+    owner's "make the restriction disappear" — devolve-until-legal replaces megaTier/contextualTier).
+  - **Wally** — Victory Road authoritative (favourite Mega Gardevoir/Gallade + 5 OU/UU aces,
+    no-repeated-types); Mauville (28) + Lilycove (49) echo devolved. Was Juan-preset filler at VR.
+  - **Rival (May)** — Ever Grande (70) authoritative (mega + evolved-starter favourite + 2 premiums +
+    legendary + encounter); Route 103/Rustboro/110/119 echo devolved. Starter-special moved to Ever Grande
+    (`RIVAL_STARTER_SPECIAL`). Accretion preserved (each appearance echoes only the ids it carries).
+  - **Primitives:** `utils.devolveToLevel` (inverse of tryEvolve) + selector `REPEAT_ID + devolveToLevel`
+    + `resolveTrainerTeam` storedIds guard (a REPEAT_ID slot is a pure CONSUMER — fixes an early low-level
+    echo overwriting the authoritative source).
+  - **Along the way:** fixed **B-027** (the `NO_REPEATED_TYPE` restriction was a no-op — read types off the
+    wrapper). **Logging (T-117):** per-slot provenance `{favourite}/{legendary}/{route encounter}/{starter}/
+    {inherited by id X ← devolved from Y}`.
+  - **Verification:** `reverseOrderContinuity.test.js` (9 gated assertions across all three characters) +
+    unit tests (devolveToLevel 7, selector devolve 3, hoist 4, no-repeat 2, provenance 1). Suite 951 green;
+    cross-ROM determinism gate green throughout.
+  - **Remaining / owner input:** gym-leader favourites (T-128) — needs the owner-confirmed signature mon +
+    tier for 6/8 gyms (only Wattson=Manectric, Winona=Altaria are in-code); "rival free slots" refinement
+    (the mega/premium slots are currently semi-prescriptive tier-gated LC picks, not fully engine-free).
+
 ## Outcome
 
-<!-- Filled when closing. -->
+Continuity backwards-generation implemented for Steven, Wally and the rival (authoritative-latest +
+devolve-to-level echoes), owner-validated design, tested + determinism-green. **Awaiting the owner's
+manual test before this task can be marked `done`** (per CLAUDE.md — no autonomous close).

@@ -69,5 +69,21 @@ Acceptance criteria:
 ## Progress log
 
 - **2026-07-11** — Created + owner-validated (part of the continuity plan). Sequenced with T-106.
+- **2026-07-12** — Implemented the generalizable concept + wired most favourites:
+  - **Data model + resolver:** a `favourite` is an ordered array of standard slot-defs; the selector's
+    `favouriteChain` branch takes the first that fits (else drops); `resolveTrainerTeam` prepends it as
+    slot 0 (perfect breed). `favouriteId` lets a favourite double as a continuity anchor (Steven/Wally/
+    rival aces). Unit-tested (favouriteChain 4). Determinism: a `favourite` slot is per-ROM (resolves a
+    mega) — the cross-ROM gate's `hasPerRomSlot` recognizes it.
+  - **Wired + verified:** Archie (`villainFavourite` Sharpedo chain over aqua types), Maxie (Camerupt over
+    magma types), Steven (`stevenFavourite` Metagross Uber≫own-type Uber≫Metagross OU≫own-type OU), Wally
+    (`wallyFavourite` Gardevoir/Gallade Uber/OU≫any Uber mega), Rival (evolved starter = the favourite).
+  - **Breed:** favourite/ace = perfect; other rival/Wally mons = good (via trainer `breedTier:'good'`).
+  - **The 5 aqua/magma types** were already canonical in code (`AQUA_/MAGMA_DEFAULT_TYPES`) — no guessing.
+  - **DEFERRED — gym-leader favourites:** the owner's "assigned mon in assigned tier ≫ a mon of their type"
+    needs the **signature species + tier budget per gym**. Only Wattson (Manectric) and Winona (Altaria)
+    have an in-code mega signature; the other 6 (Roxanne/Brawly/Flannery/Norman/Tate&Liza/Juan) are
+    meta decisions — per the analysis-first rule, hold for owner confirmation rather than guess. Also
+    Wattson's favourite would interact with its electric-terrain seed (needs a combined test).
 
 ## Outcome

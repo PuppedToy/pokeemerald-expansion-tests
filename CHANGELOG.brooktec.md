@@ -9,6 +9,18 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Recurring bosses now have consistent teams across the game.** The rival (May/Brendan), Steven and
+  Wally build their strong endgame roster first and their earlier appearances show the SAME Pokémon at a
+  level-appropriate evolutionary stage (Champion Steven's Metagross ↔ Granite Cave Metang; the rival's
+  Ever Grande starter ↔ its Route 103 baby). Steven's Granite Cave hard tier-cap is gone (he devolves his
+  final roster until it's legal). The decision log spells out what is inherited and how it devolves (T-106).
+
+- **"Favourite Pokémon" — character trainers build around a preferred ace.** Archie (Mega Sharpedo),
+  Maxie (Mega Camerupt), Steven (Mega Metagross), Wally (Mega Gardevoir/Gallade) and the rival (its
+  evolved starter) now resolve their signature ace FIRST (perfect breed), dropping down a themed priority
+  chain if it doesn't fit their type/tier restrictions — the same intent→materialise-or-drop dynamic as
+  the weather/terrain gimmicks (T-128).
+
 - **"Next boss" is a shortcut in the docs.** Clicking the top-bar *Next boss* stat jumps to the
   Trainers tab and scrolls that boss's card into view (with a brief highlight). Keyboard-accessible
   (T-082).
@@ -19,6 +31,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   show the taught move's description (T-078).
 
 ### Fixed
+
+- **Wally / rival "no repeated types" now actually holds.** The restriction that keeps these trainers
+  from stacking same-typed Pokémon read the type list off the wrong object and never fired; their teams
+  now genuinely avoid repeated types (B-027).
 
 - **ROM build no longer aborts on form-species held items.** The writer strips wild held items by
   rewriting `.itemCommon`/`.itemRare` lines, but dropped the trailing `\` on the two such fields that
