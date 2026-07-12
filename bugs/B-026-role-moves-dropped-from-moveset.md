@@ -6,7 +6,7 @@ severity: low
 created: 2026-07-11
 updated: 2026-07-11
 found-in: Unreleased
-fixed-in: Unreleased
+fixed-in: 0.8.0
 regression-test: randomizer/__tests__/unit/teamAudit.test.js
 links: [T-107, T-117, T-118, T-122, T-123]
 ---
