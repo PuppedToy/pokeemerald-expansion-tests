@@ -21,6 +21,18 @@ const nameify = (id, prefix) => (id || '')
     .replace(prefix, '').toLowerCase().split('_')
     .map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
+// T-124 — a seeded gimmick is an INTENT: the trainer tries it within its restrictions and DROPS it if
+// it can't gather the support (setter, type, synergy). It "materialised" only if the finished team
+// actually delivers the gimmick's setter role.
+const GIMMICK_SETTER_ROLE = {
+    weather: 'weatherSetter', trick_room: 'trickRoomSetter', screens: 'screenSetter', trapping: 'trapper',
+};
+function gimmickMaterialised(gimmickId, team, ctx) {
+    const role = GIMMICK_SETTER_ROLE[gimmickId];
+    if (!role) return true; // unknown gimmick → don't drop
+    return (team || []).some(m => detectFeatures(resolvedDetectMon(m), ctx).has(role));
+}
+
 function createTeamAudit() {
     const teams = [];
     let cur = null;
@@ -52,7 +64,10 @@ function createTeamAudit() {
         finishTeam({ team, model, ctx, seed }) {
             if (!cur) return;
             const id = model ? resolveIdentity((team || []).map(asPoke), model, ctx, seed) : null;
-            cur.finalIdentity = id ? { base: id.baseId, source: id.source, gimmicks: id.gimmickIds } : null;
+            // T-124 — DROP a seeded gimmick that didn't materialise (its setter isn't actually delivered),
+            // so the log reflects reality: the trainer tried it but its restrictions couldn't support it.
+            const gimmicks = id ? (id.gimmickIds || []).filter(g => gimmickMaterialised(g, team, ctx)) : [];
+            cur.finalIdentity = id ? { base: id.baseId, source: id.source, gimmicks } : null;
             cur.finalTeam = (team || []).map(speciesId);
             teams.push(cur);
             cur = null;
