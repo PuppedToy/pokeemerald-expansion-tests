@@ -9,12 +9,12 @@
 const { resolveFavourites } = require('../../modules/favouriteClaim');
 
 // minimal pokemonList: id → { rating.tier, contextualRatings, evolutionData }
-function poke(id, tier, { mega = false, ctxTier = null, types = ['NORMAL'] } = {}) {
+function poke(id, tier, { mega = false, ctxTier = null, types = ['NORMAL'], megaBaseForm = null } = {}) {
     return {
         id, parsedTypes: types,
         rating: { tier },
         contextualRatings: ctxTier ? { 12: { tier: ctxTier }, 32: { tier: ctxTier } } : {},
-        evolutionData: { isMega: mega },
+        evolutionData: { isMega: mega, ...(megaBaseForm ? { megaBaseForm } : {}) },
     };
 }
 const LIST = [
@@ -24,7 +24,14 @@ const LIST = [
     poke('SPECIES_SOLGALEO', 'LEGEND', { types: ['PSYCHIC', 'STEEL'] }),
     poke('SPECIES_MANECTRIC_MEGA', 'OU', { mega: true, types: ['ELECTRIC'] }),
     poke('SPECIES_TYPE_MON', 'PU', { types: ['ROCK'] }),
+    // A strong-base mega (base OU) and a weak-base mega (base RU), for the base-form gate.
+    poke('SPECIES_HEAVYBASE', 'OU', { types: ['ROCK'] }),
+    poke('SPECIES_HEAVYBASE_MEGA', 'OU', { mega: true, types: ['ROCK'], megaBaseForm: 'SPECIES_HEAVYBASE' }),
+    poke('SPECIES_LIGHTBASE', 'RU', { types: ['ROCK'] }),
+    poke('SPECIES_LIGHTBASE_MEGA', 'OU', { mega: true, types: ['ROCK'], megaBaseForm: 'SPECIES_LIGHTBASE' }),
 ];
+// A progression-gated mega slot (mega ≤OU, base ≤UU) — the shape presets.js `bossMega(TIER_OU)` produces.
+const gatedMega = () => ({ isMega: true, absoluteTier: ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU'], maxBaseTier: 'UU', checkValidEvo: true });
 const absPool = (...tiers) => tiers.map(t => (t === 'MEGA' ? { isMega: true } : { absoluteTier: [t], checkValidEvo: true }));
 const ctx = (level = 32, types = null) => ({ pokemonList: LIST, level, types });
 
@@ -74,6 +81,17 @@ describe('resolveFavourites (T-128 pool consumption)', () => {
         // Manectric mega is Electric; a Rock-restricted trainer cannot field it → drop → fallback
         const out = resolveFavourites(team, [['SPECIES_MANECTRIC_MEGA']], ctx(32, ['ROCK']));
         expect(out.find(s => s.specific === 'SPECIES_MANECTRIC_MEGA')).toBeUndefined();
+    });
+
+    test('a mega favourite claims a gated slot only if its BASE form is within maxBaseTier', () => {
+        // gate: mega ≤OU, base ≤UU. Light-base mega (base RU) passes; heavy-base mega (base OU) fails.
+        const team = [{ absoluteTier: ['OU'], checkValidEvo: true }, gatedMega()];
+        const light = resolveFavourites(team, [['SPECIES_LIGHTBASE_MEGA']], ctx(32, ['ROCK']));
+        expect(light[0].specific).toBe('SPECIES_LIGHTBASE_MEGA'); // base RU ≤ UU → claims the mega slot
+
+        const heavy = resolveFavourites(team, [['SPECIES_HEAVYBASE_MEGA']], ctx(32, ['ROCK']));
+        // base OU > UU → the signature drops; the implicit fallback claims a slot, but NOT as HEAVYBASE_MEGA
+        expect(heavy.find(s => s.specific === 'SPECIES_HEAVYBASE_MEGA')).toBeUndefined();
     });
 
     test('no favourites → team returned unchanged', () => {

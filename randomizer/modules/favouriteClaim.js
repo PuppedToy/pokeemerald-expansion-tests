@@ -25,14 +25,30 @@ function nearestCap(level) {
     return best;
 }
 const tierIdx = t => TIER_SEQ.indexOf(t);
+function tiersUpTo(maxTier) { const i = TIER_SEQ.indexOf(maxTier); return i === -1 ? [maxTier] : TIER_SEQ.slice(0, i + 1); }
 
-// A pool slot's claimable tier "key": the {isMega} slot, a single absolute tier, or a single contextual
-// tier. Untiered slots (special / oneOf / multi-tier) are not claimable by a favourite (return null).
+// A pool slot's claimable tier "key": the {isMega} slot (carrying its progression gate — the mega-form
+// tier window `megaTiers` and the base-form cap `maxBaseTier`), a single absolute tier, or a single
+// contextual tier. Untiered slots (special / oneOf / multi-tier non-mega) are not claimable (return null).
 function slotTierKey(slot) {
-    if (slot.isMega) return { mega: true };
+    if (slot.isMega) return { mega: true, megaTiers: slot.absoluteTier || null, maxBaseTier: slot.maxBaseTier || null };
     if (slot.absoluteTier && slot.absoluteTier.length === 1) return { tier: slot.absoluteTier[0], contextual: false };
     if (slot.contextualTier && slot.contextualTier.length === 1) return { tier: slot.contextualTier[0], contextual: true };
     return null;
+}
+
+// A mega species passes a mega slot's GENERAL progression gate (owner-validated, T-128): its mega-form
+// tier is within the slot's window AND — the base-form rule — its BASE form's tier is within the cap.
+// A bare {isMega} slot (no gate) admits any mega (backward compatible).
+function megaPassesGate(p, key, bySpecies) {
+    if (key.megaTiers && !key.megaTiers.includes(p.rating && p.rating.tier)) return false;
+    if (key.maxBaseTier) {
+        const baseId = p.evolutionData && p.evolutionData.megaBaseForm;
+        const base = baseId ? bySpecies.get(baseId) : null;
+        const baseTier = base && base.rating && base.rating.tier;
+        if (!baseTier || !tiersUpTo(key.maxBaseTier).includes(baseTier)) return false;
+    }
+    return true;
 }
 
 // The species' tier as the slot measures it (absolute rating, or the contextual rating at the level cap).
@@ -61,7 +77,9 @@ function resolveFavourites(team, favourites, ctx = {}) {
                 const isMega = !!(p.evolutionData && p.evolutionData.isMega);
                 const entry = pool.find(e => {
                     if (e.claimed || !e.key) return false;
-                    if (isMega) return !!e.key.mega;         // a mega claims only the {isMega} slot
+                    // a mega claims the {isMega} slot ONLY IF it satisfies the slot's progression gate
+                    // (mega-form window + base-form cap); else it drops to the next fallback.
+                    if (isMega) return !!e.key.mega && megaPassesGate(p, e.key, bySpecies);
                     if (e.key.mega) return false;            // a non-mega never claims the mega slot
                     return speciesTierForKey(p, e.key, cap) === e.key.tier; // EXACT tier, no downgrade
                 });
