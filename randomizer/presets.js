@@ -111,6 +111,16 @@ const BASE_TIER_CAPS = {
 
 const MEGA_BASE_TIER_EXEMPT_SPLITS = new Set(['WATTSON', 'WINONA']);
 
+// T-128 — a boss's mega slot, gated to a tier window (the pool's intended ace strength). Difficulty
+// never shifts it (isMega). A favourite that is a mega claims it (slotTierKey → {mega:true}, tier-blind).
+// The `fallback` (a non-mega of the same window) fires only when the trainer's type has no mega in the
+// window this ROM — the trainer's type restriction applies to both the mega and its fallback. This is
+// the SSOT home of the gate that used to live in the per-trainer absolutePokeDef* helpers (T-128 redesign).
+const bossMega = (tiers) => ({
+    isMega: true, absoluteTier: tiers, checkValidEvo: true, tryEvolve: true,
+    fallback: [{ absoluteTier: tiers, checkValidEvo: true }],
+});
+
 // Non-boss team = 2-shift-down of the fair boss team.
 // megaTier=null: isMega slots replaced with lowest non-mega tier (no tryMega).
 // megaTier=TIER_X: isMega slots become { isMega: true, absoluteTier: tiersUpTo(TIER_X), maxBaseTier? }.
@@ -291,7 +301,7 @@ const SPLITS = [
             { contextualTier: [TIER_RU], checkValidEvo: true },
             { contextualTier: [TIER_RU], checkValidEvo: true },
             { contextualTier: [TIER_RU], checkValidEvo: true },
-            { isMega: true },
+            bossMega(tiersUpTo(TIER_OU)),
         ],
     },
     {
@@ -326,7 +336,7 @@ const SPLITS = [
             { absoluteTier: [TIER_UU], checkValidEvo: true },
             { absoluteTier: [TIER_RU], checkValidEvo: true },
             { absoluteTier: [TIER_RU], checkValidEvo: true },
-            { isMega: true },
+            bossMega(tiersUpTo(TIER_OU)),
         ],
     },
     {
@@ -338,7 +348,7 @@ const SPLITS = [
             { absoluteTier: [TIER_UU], checkValidEvo: true },
             { absoluteTier: [TIER_RU], checkValidEvo: true },
             { absoluteTier: [TIER_RU], checkValidEvo: true },
-            { isMega: true },
+            bossMega(tiersUpTo(TIER_OU)),
         ],
     },
     {
@@ -359,9 +369,9 @@ const SPLITS = [
         fair: [
             { absoluteTier: [TIER_OU], checkValidEvo: true },
             { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
             { absoluteTier: [TIER_UU], checkValidEvo: true },
-            { absoluteTier: [TIER_UU], checkValidEvo: true },
-            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -453,10 +463,10 @@ const SPLITS = [
         // Slot 5: mega (fixed)
         fair: [
             { absoluteTier: [TIER_UBERS], checkValidEvo: true },
-            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_UBERS], checkValidEvo: true },
             { absoluteTier: [TIER_OU], checkValidEvo: true },
             { absoluteTier: [TIER_UU], checkValidEvo: true },
-            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_RU], checkValidEvo: true },
             { isMega: true },
         ],
     },
@@ -481,7 +491,7 @@ const SPLITS = [
             { absoluteTier: [TIER_OU],     checkValidEvo: true },
             { absoluteTier: [TIER_OU],     checkValidEvo: true },
             { absoluteTier: [TIER_UU],     checkValidEvo: true },
-            { isMega: true },
+            bossMega(tiersUpTo(TIER_OU)),
         ],
     },
 
@@ -495,7 +505,7 @@ const SPLITS = [
             { absoluteTier: [TIER_OU],     checkValidEvo: true },
             { absoluteTier: [TIER_OU],     checkValidEvo: true },
             { absoluteTier: [TIER_UU],     checkValidEvo: true },
-            { isMega: true },
+            bossMega([TIER_OU, TIER_UBERS]),
         ],
     },
     {
@@ -507,7 +517,7 @@ const SPLITS = [
             { absoluteTier: [TIER_OU],     checkValidEvo: true },
             { absoluteTier: [TIER_OU],     checkValidEvo: true },
             { absoluteTier: [TIER_UU],     checkValidEvo: true },
-            { isMega: true },
+            bossMega([TIER_OU, TIER_UBERS]),
         ],
     },
     {
@@ -519,7 +529,7 @@ const SPLITS = [
             { absoluteTier: [TIER_OU],     checkValidEvo: true },
             { absoluteTier: [TIER_OU],     checkValidEvo: true },
             { absoluteTier: [TIER_OU],     checkValidEvo: true },
-            { isMega: true },
+            bossMega([TIER_UBERS]),
         ],
     },
     {
@@ -531,7 +541,7 @@ const SPLITS = [
             { absoluteTier: [TIER_UBERS],  checkValidEvo: true },
             { absoluteTier: [TIER_OU],     checkValidEvo: true },
             { absoluteTier: [TIER_OU],     checkValidEvo: true },
-            { isMega: true },
+            bossMega([TIER_UBERS]),
         ],
     },
 

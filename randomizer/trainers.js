@@ -3857,14 +3857,11 @@ const trainersData = [
         breedTier: 'good',
         level: 73,
         bag: [...leagueBag()],
-        team: [
-            { ...getBossPreset('SIDNEY', true)[0], type: [e41MainType] },
-            { ...getBossPreset('SIDNEY', true)[1], type: [e41MainType] },
-            { ...getBossPreset('SIDNEY', true)[2], type: [e41MainType] },
-            { ...getBossPreset('SIDNEY', true)[3], type: [e41MainType] },
-            { ...getBossPreset('SIDNEY', true)[4], type: [e41MainType] },
-            absolutePokeDefMega({ type: [e41MainType] }),
-        ],
+        // T-128 — E4 type is a trainer restriction; the team is the full difficulty-scaled preset pool
+        // (incl. its {isMega} slot). No favourite (E4 have no signature ace in this model).
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [e41MainType],
+        team: getBossPreset('SIDNEY', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_PHOEBE',
@@ -3874,14 +3871,9 @@ const trainersData = [
         breedTier: 'good',
         level: 74,
         bag: [...leagueBag()],
-        team: [
-            { ...getBossPreset('PHOEBE', true)[0], type: [e42MainType] },
-            { ...getBossPreset('PHOEBE', true)[1], type: [e42MainType] },
-            { ...getBossPreset('PHOEBE', true)[2], type: [e42MainType] },
-            { ...getBossPreset('PHOEBE', true)[3], type: [e42MainType] },
-            { ...getBossPreset('PHOEBE', true)[4], type: [e42MainType] },
-            absolutePokeDefMega({ type: [e42MainType] }),
-        ],
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [e42MainType],
+        team: getBossPreset('PHOEBE', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_GLACIA',
@@ -3891,14 +3883,9 @@ const trainersData = [
         breedTier: 'good',
         level: 75,
         bag: [...leagueBag()],
-        team: [
-            { ...getBossPreset('GLACIA', true)[0], type: [e43MainType] },
-            { ...getBossPreset('GLACIA', true)[1], type: [e43MainType] },
-            { ...getBossPreset('GLACIA', true)[2], type: [e43MainType] },
-            { ...getBossPreset('GLACIA', true)[3], type: [e43MainType] },
-            { ...getBossPreset('GLACIA', true)[4], type: [e43MainType] },
-            absolutePokeDefUbersMega({ type: [e43MainType] }),
-        ],
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [e43MainType],
+        team: getBossPreset('GLACIA', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_DRAKE',
@@ -3908,14 +3895,9 @@ const trainersData = [
         breedTier: 'good',
         level: 76,
         bag: [...leagueBag()],
-        team: [
-            { ...getBossPreset('DRAKE', true)[0], type: [e44MainType] },
-            { ...getBossPreset('DRAKE', true)[1], type: [e44MainType] },
-            { ...getBossPreset('DRAKE', true)[2], type: [e44MainType] },
-            { ...getBossPreset('DRAKE', true)[3], type: [e44MainType] },
-            { ...getBossPreset('DRAKE', true)[4], type: [e44MainType] },
-            absolutePokeDefUbersMega({ type: [e44MainType] }),
-        ],
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [e44MainType],
+        team: getBossPreset('DRAKE', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_CHAMPION_STEVEN',
