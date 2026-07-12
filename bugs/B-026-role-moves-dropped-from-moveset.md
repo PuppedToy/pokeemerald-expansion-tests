@@ -3,8 +3,11 @@ id: B-026
 title: Assigned role moves (and tryToHaveMove) are dropped from the final moveset
 status: open
 severity: high
-found-in: 0.8.0
-regression-test: (pending — T-122)
+created: 2026-07-11
+updated: 2026-07-11
+found-in: Unreleased
+fixed-in:
+regression-test:
 links: [T-107, T-118, T-122]
 ---
 
