@@ -12,6 +12,7 @@
 const { detectFeatures } = require('./modules/featureDetectors');
 const { resolveIdentity, BIAS_MIN_SOPH } = require('./modules/archetypePicker');
 const { combinedStructure } = require('./modules/archetypeFit');
+const { resolvedDetectMon } = require('./modules/archetypeRefine');
 
 const asPoke = m => (m && m.pokemon) ? m.pokemon : m;
 const speciesId = m => { const p = asPoke(m); return (p && p.id) || null; };
@@ -27,14 +28,17 @@ function createTeamAudit() {
         // meta: { trainerId, label, class, level, battleType, sophistication, seed }
         beginTeam(meta) { cur = { ...meta, slots: [] }; },
 
-        // Called after a slot's member is chosen. priorTeam = members chosen BEFORE this one.
-        recordSlot({ priorTeam, chosenMon, roleMove, model, ctx, seed }) {
+        // Called after a slot's member is chosen. priorTeam = members chosen BEFORE this one;
+        // member = the fully resolved member ({ pokemon, ability, moves }) for delivered-role detection.
+        recordSlot({ priorTeam, chosenMon, member, roleMove, model, ctx, seed }) {
             if (!cur) return;
             const id = (model && chosenMon) ? resolveIdentity((priorTeam || []).map(asPoke), model, ctx, seed) : null;
             let roles = [];
             if (id && chosenMon) {
                 const structure = combinedStructure(model, id.baseId, id.gimmickIds);
-                const feats = detectFeatures(chosenMon, ctx);
+                // T-122/B-026 — DELIVERED roles: detect on the RESOLVED member (actual moveset + chosen
+                // ability), not the species potential, so "fills X" means the mon really delivers X.
+                const feats = detectFeatures(member ? resolvedDetectMon(member) : chosenMon, ctx);
                 roles = structure.filter(s => feats.has(s.role)).map(s => s.role);
             }
             cur.slots.push({
