@@ -298,6 +298,30 @@ const absolutePokeDefMega = (BASE_POKE_DEF = {}) => ({
     }],
 });
 
+// ── T-128 — Favourite Pokémon chains ─────────────────────────────────────────
+// A favourite is an ORDERED list of standard slot-defs (priority high→low); the resolver builds the
+// first that fits the trainer's restrictions/budget FIRST (slot 0, perfect breed) and drops it if
+// none fit. Tier gates below are the villain aces' budget (tunable data — owner reviews).
+const FAVOURITE_MEGA_TIERS = [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU];
+const FAVOURITE_MON_TIERS  = [TIER_NU, TIER_RU, TIER_UU, TIER_OU];
+
+// villainFavourite('SPECIES_SHARPEDO_MEGA', aquaTeamTypes) → Archie's chain (owner-validated):
+//   signature mega ≫ mega with BOTH themed types ≫ mega with primary + another themed ≫ mega with
+//   secondary + another themed ≫ mega of ANY themed type ≫ any mon of a themed type (last resort).
+// `types` is the configured 5-type theme (aquaTeamTypes / magmaTeamTypes); [0]=primary, [1]=secondary.
+function villainFavourite(aceMega, types) {
+    const [t1, t2] = types;
+    const mega = extra => ({ isMega: true, absoluteTier: FAVOURITE_MEGA_TIERS, checkValidEvo: true, ...extra });
+    return [
+        mega({ oneOf: [aceMega] }),                                       // the signature mega itself
+        mega({ exactTypes: [t1, t2] }),                                   // mega with both themed types
+        mega({ exactTypes: [t1], type: types.filter(t => t !== t1) }),   // mega: primary + another themed
+        mega({ exactTypes: [t2], type: types.filter(t => t !== t2) }),   // mega: secondary + another themed
+        mega({ type: types }),                                            // mega of any themed type
+        { absoluteTier: FAVOURITE_MON_TIERS, checkValidEvo: true, type: types }, // any mon of a themed type
+    ];
+}
+
 
 const genericTrainerTeamPreRival         = () => getNonBossPreset('PRE_RIVAL');
 const genericTrainerTeamPostRival        = () => getNonBossPreset('POST_RIVAL');
@@ -3783,6 +3807,9 @@ const trainersData = [
         level: 59,
         preventShuffle: true,
         bag: [...spaceCenterBag()],
+        // T-128 — Maxie's favourite ace is Mega Camerupt, built first (perfect breed), dropping down
+        // his magma-theme chain if the mega is out of budget. Replaces the old generic magma-mega slot.
+        favourite: villainFavourite('SPECIES_CAMERUPT_MEGA', magmaTeamTypes),
         team: [
             {
                 specificIfTier: 'SPECIES_GROUDON',
@@ -3802,9 +3829,7 @@ const trainersData = [
                 abilities: [...sunAbilities],
                 pickBest: true,
             },
-            absolutePokeDefUbersMega({
-                type: [magmaTeamTypes[0]],
-            }),
+            // (old generic magma-mega ace is now the `favourite` above — resolved first, perfect breed)
         ],
     },
     // Route 127
@@ -3906,6 +3931,9 @@ const trainersData = [
         level: 61,
         bag: [...archieBag()],
         preventShuffle: true,
+        // T-128 — Archie's favourite ace is Mega Sharpedo, built first (perfect breed), dropping down
+        // his aqua-theme chain if the mega is out of budget. Replaces the old hardcoded slot-5 ace.
+        favourite: villainFavourite('SPECIES_SHARPEDO_MEGA', aquaTeamTypes),
         team: [
             {
                 specificIfTier: 'SPECIES_KYOGRE',
@@ -3943,11 +3971,7 @@ const trainersData = [
                 abilities: [...rainAbilities],
                 type: [...aquaTeamTypes],
             },
-            {
-                specificIfTier: 'SPECIES_SHARPEDO_MEGA',
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
-            },
+            // (old slot-5 Mega Sharpedo ace is now the `favourite` above — resolved first, perfect breed)
         ],
     },
     // Route 129
