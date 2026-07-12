@@ -309,6 +309,27 @@ describe('createChooser — TRAINER_REPEAT_ID + devolveToLevel (T-106 reverse co
     });
 });
 
+describe('createChooser — ALLOW_ONLY_TYPES restriction (B-028)', () => {
+    const ALLOW_ONLY_TYPES = 'TRAINER_RESTRICTION_ALLOW_ONLY_TYPES';
+    test('keeps only candidates that have one of the trainer types', () => {
+        const fire  = makePoke('SPECIES_FIRE_A', { types: ['FIRE'], tier: 'NU', isFinal: true });
+        const water = makePoke('SPECIES_WATER_A', { types: ['WATER'], tier: 'NU', isFinal: true });
+        const trainer = { ...makeTrainer(32), restrictions: [ALLOW_ONLY_TYPES], types: ['FIRE'] };
+        const chooser = makeChooser([fire, water], trainer, makeContext());
+        for (let s = 0; s < 25; s++) {
+            const r = chooser({ contextualTier: ['NU'] });
+            if (r) expect(r.id).toBe('SPECIES_FIRE_A');
+        }
+    });
+    test('is NOT bypassed when no candidate matches (no off-type fallback)', () => {
+        // Only a Water mon exists; a Fire-only trainer must field nothing here, not the Water mon.
+        const water = makePoke('SPECIES_WATER_B', { types: ['WATER'], tier: 'NU', isFinal: true });
+        const trainer = { ...makeTrainer(32), restrictions: [ALLOW_ONLY_TYPES], types: ['FIRE'] };
+        const chooser = makeChooser([water], trainer, makeContext());
+        expect(chooser({ contextualTier: ['NU'] })).toBeUndefined();
+    });
+});
+
 describe('createChooser — NO_REPEATED_TYPE restriction (B-027)', () => {
     const NO_REPEAT = 'TRAINER_RESTRICTION_NO_REPEATED_TYPE';
     test('excludes a candidate that shares a type with an existing team member', () => {

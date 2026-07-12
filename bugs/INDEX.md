@@ -31,3 +31,4 @@
 | [B-025](B-025-writer-drops-macro-line-continuation.md) | Writer drops the `\` line-continuation of held-item fields inside | fixing | critical | Unreleased |  | randomizer/__tests__/unit/pokemonWriterHeldItems.test.js |
 | [B-026](B-026-role-moves-dropped-from-moveset.md) | Decision log reports POTENTIAL roles, not DELIVERED — made role delivery look broken | fixed | low | Unreleased | 0.8.0 | randomizer/__tests__/unit/teamAudit.test.js |
 | [B-027](B-027-no-repeated-type-restriction-noop.md) | NO_REPEATED_TYPE restriction was a no-op (read parsedTypes off the team-member wrapper) | fixed | medium | Unreleased | 0.8.0 | randomizer/__tests__/unit/trainerSelector.test.js |
+| [B-028](B-028-allow-only-types-bypassed-in-fallback.md) | ALLOW_ONLY_TYPES (and NO_REPEATED_TYPE) bypassed in the strict-empty fallback path | fixed | medium | Unreleased | 0.8.0 | randomizer/__tests__/unit/trainerSelector.test.js |

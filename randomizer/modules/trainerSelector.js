@@ -260,7 +260,24 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
             pokemonStrictList = pokemonStrictList.map(p => tryEvolve(p, trainerMonDefinition.tryMega && !foundMega));
         }
 
-        // Family-based dedup + trainer restrictions
+        // Trainer restrictions (type / ability / no-repeat) reduce the loose pool FIRST, so they are
+        // enforced by BOTH the main pick below AND the family-relaxation fallback (B-028: they were
+        // previously applied only to the family-deduped list, so an empty type-filtered pool fell through
+        // to the RAW pool and picked an off-type mon — a Rock gym could field a non-Rock mon).
+        (trainer.restrictions || []).forEach(restriction => {
+            if (restriction === TRAINER_RESTRICTION_NO_REPEATED_TYPE) {
+                // B-027 — team members are { pokemon, ... } wrappers; read parsedTypes off `.pokemon`
+                // (was `p.parsedTypes` on the wrapper → always undefined → the restriction never fired).
+                const selectedTypes = new Set(team.map(p => (p.pokemon || p).parsedTypes || []).flat());
+                pokemonLooseList = pokemonLooseList.filter(p => !p.parsedTypes.some(t => selectedTypes.has(t)));
+            } else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_TYPES && trainer.types) {
+                pokemonLooseList = pokemonLooseList.filter(p => p.parsedTypes.some(t => trainer.types.includes(t)));
+            } else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES && trainer.abilities) {
+                pokemonLooseList = pokemonLooseList.filter(p => p.parsedAbilities.some(a => trainer.abilities.includes(a)));
+            }
+        });
+
+        // Family-based dedup
         if (pokemonLooseList.length > 0) {
             const familyDedup = (loosePokemon) => {
                 const candidateFamily = getFamilyGroup(loosePokemon.family);
@@ -271,20 +288,7 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
                     return false;
                 });
             };
-            let filteredLooseList = pokemonLooseList.filter(familyDedup);
-            (trainer.restrictions || []).forEach(restriction => {
-                if (restriction === TRAINER_RESTRICTION_NO_REPEATED_TYPE) {
-                    // B-027 — team members are { pokemon, ... } wrappers; read parsedTypes off `.pokemon`
-                    // (was `p.parsedTypes` on the wrapper → always undefined → the restriction never fired).
-                    const selectedTypes = new Set(team.map(p => (p.pokemon || p).parsedTypes || []).flat());
-                    filteredLooseList = filteredLooseList.filter(p => !p.parsedTypes.some(t => selectedTypes.has(t)));
-                } else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_TYPES) {
-                    if (trainer.types) filteredLooseList = filteredLooseList.filter(p => p.parsedTypes.some(t => trainer.types.includes(t)));
-                } else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES) {
-                    if (trainer.abilities) filteredLooseList = filteredLooseList.filter(p => p.parsedAbilities.some(a => trainer.abilities.includes(a)));
-                }
-            });
-            pokemonStrictList = [...pokemonStrictList, ...filteredLooseList];
+            pokemonStrictList = [...pokemonStrictList, ...pokemonLooseList.filter(familyDedup)];
         }
 
         const getRatingForSort = (poke) => {
