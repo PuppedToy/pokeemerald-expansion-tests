@@ -302,7 +302,7 @@ function createTeamResolver(deps) {
                 }
                 newTeamMember.moves = moveset;
                 audit.recordSlot({
-                    priorTeam: team, chosenMon: chosenTrainerMon, roleMove,
+                    priorTeam: team, chosenMon: chosenTrainerMon, member: newTeamMember, roleMove,
                     model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed,
                 });
                 team.push(newTeamMember);

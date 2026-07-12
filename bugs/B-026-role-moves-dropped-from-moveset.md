@@ -1,14 +1,14 @@
 ---
 id: B-026
 title: Decision log reports POTENTIAL roles, not DELIVERED — made role delivery look broken
-status: open
+status: fixed
 severity: low
 created: 2026-07-11
 updated: 2026-07-11
 found-in: Unreleased
-fixed-in:
-regression-test:
-links: [T-107, T-117, T-118, T-123]
+fixed-in: Unreleased
+regression-test: randomizer/__tests__/unit/teamAudit.test.js
+links: [T-107, T-117, T-118, T-122, T-123]
 ---
 
 # B-026 — Decision log reports potential (can-do) roles, not delivered roles

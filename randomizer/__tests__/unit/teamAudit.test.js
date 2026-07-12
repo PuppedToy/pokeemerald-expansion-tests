@@ -26,7 +26,7 @@ describe('createTeamAudit + renderTeamAuditText', () => {
         const audit = createTeamAudit();
         audit.beginTeam({ trainerId: 'TRAINER_TEST', label: 'Tester', level: 60, battleType: 'singles', sophistication: 0.9, seed: null });
         const prior = balancePrior(); // fits Balance
-        audit.recordSlot({ priorTeam: prior, chosenMon: breaker(), roleMove: 'MOVE_STEALTH_ROCK', model: singles, ctx: {}, seed: null });
+        audit.recordSlot({ priorTeam: prior, chosenMon: breaker(), member: { pokemon: breaker(), ability: null, moves: ['MOVE_STEALTH_ROCK', 'MOVE_EARTHQUAKE'] }, roleMove: 'MOVE_STEALTH_ROCK', model: singles, ctx: {}, seed: null });
         audit.finishTeam({ team: [...prior, { pokemon: breaker() }], model: singles, ctx: {}, seed: null });
 
         const all = audit.all();
@@ -36,6 +36,7 @@ describe('createTeamAudit + renderTeamAuditText', () => {
         expect(all[0].slots[0].identity.base).toBe('balance');
         expect(all[0].slots[0].identity.source).toBe('emergent');
         expect(all[0].slots[0].rolesFilled).toContain('wallbreaker');
+        expect(all[0].slots[0].rolesFilled).toContain('hazardSetter'); // T-122 — delivered (runs Stealth Rock)
         expect(all[0].slots[0].roleMove).toBe('MOVE_STEALTH_ROCK');
         expect(all[0].finalIdentity.base).toBe('balance');
 
@@ -45,6 +46,25 @@ describe('createTeamAudit + renderTeamAuditText', () => {
         expect(text).toContain('Breaker');            // species name in the slot line (nameified)
         expect(text).toContain('fills');             // role annotation
         expect(text).toContain('+Stealth Rock');     // injected role move
+    });
+
+    test('B-026 — rolesFilled reports DELIVERED roles, not species potential', () => {
+        // A mon whose SPECIES can set rocks (potential hazard setter) but whose resolved moveset runs none.
+        const rockCapable = mon({ id: 'SPECIES_RC', ...learn('MOVE_STEALTH_ROCK') });
+        const notDelivering = { pokemon: rockCapable, ability: null, moves: ['MOVE_TACKLE', 'MOVE_EMBER'] };
+        const a1 = createTeamAudit();
+        a1.beginTeam({ trainerId: 'T1', level: 60, battleType: 'singles', sophistication: 0.9, seed: null });
+        a1.recordSlot({ priorTeam: balancePrior(), chosenMon: rockCapable, member: notDelivering, roleMove: null, model: singles, ctx: {}, seed: null });
+        a1.finishTeam({ team: [...balancePrior()], model: singles, ctx: {}, seed: null });
+        expect(a1.all()[0].slots[0].rolesFilled).not.toContain('hazardSetter'); // potential ≠ delivered
+
+        // The same species that DOES run rocks → delivered.
+        const delivering = { pokemon: rockCapable, ability: null, moves: ['MOVE_STEALTH_ROCK', 'MOVE_TACKLE'] };
+        const a2 = createTeamAudit();
+        a2.beginTeam({ trainerId: 'T2', level: 60, battleType: 'singles', sophistication: 0.9, seed: null });
+        a2.recordSlot({ priorTeam: balancePrior(), chosenMon: rockCapable, member: delivering, roleMove: 'MOVE_STEALTH_ROCK', model: singles, ctx: {}, seed: null });
+        a2.finishTeam({ team: [...balancePrior()], model: singles, ctx: {}, seed: null });
+        expect(a2.all()[0].slots[0].rolesFilled).toContain('hazardSetter');
     });
 
     test('a low-sophistication team renders as "no steering"', () => {
