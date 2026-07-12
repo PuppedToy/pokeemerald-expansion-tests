@@ -115,6 +115,15 @@ describe('resolveIdentity (T-107 107e / T-118) — emergent, else seed, else nul
         expect(id.source).toBe('emergent');
         expect(id.baseId).toBe('balance');
     });
+    test('T-123 — hyper_offense is last-resort: a team that also fits another base takes the other', () => {
+        // 2 setup sweepers + a hazard lead → hyper fits; regen + wallbreaker also make Balance fit.
+        const team = [sweeper('S1'), sweeper('S2'), regenPivot('R'), wallbreaker('W'), rocker('K')];
+        expect(resolveIdentity(team, singles, {}, null).baseId).toBe('balance');
+    });
+    test('T-123 — hyper_offense still emerges when nothing else fits', () => {
+        expect(resolveIdentity([sweeper('S1'), sweeper('S2'), rocker('K')], singles, {}, null).baseId).toBe('hyper_offense');
+    });
+
     test('no recipe fit and no seed → null', () => {
         expect(resolveIdentity([plain('X')], singles, {}, null)).toBeNull();
     });
