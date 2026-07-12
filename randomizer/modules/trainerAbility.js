@@ -31,7 +31,20 @@ const { GENERIC_DEVIATION } = require('../constants');
  *   evolved/mega) mon — used downstream for moveset/nature/item/mega rating; `originalAbility` is the
  *   same slot mapped onto the base form and is what gets written to the party.
  */
-function pickTrainerMonAbility({ chosenTrainerMon, baseFormMon, trainerAbilities, effectiveDef, level, abilities }) {
+function pickTrainerMonAbility({ chosenTrainerMon, baseFormMon, trainerAbilities, effectiveDef, level, abilities, preferredAbilities }) {
+    let ability;
+
+    // T-124 — identity-aware preference: a crystallised gimmick's desired ability (weather setter/abuser)
+    // wins if the mon can have it, ahead of the generic best-rated pick. This is what turns a
+    // weather-crystallised team into a REAL weather team (the ability is chosen separately from moves).
+    const preferred = (preferredAbilities && preferredAbilities.length)
+        ? chosenTrainerMon.parsedAbilities.filter(a => preferredAbilities.includes(a))
+        : [];
+    if (preferred.length > 0) {
+        ability = sample(preferred);
+        return mapAbilityToBaseForm(ability, chosenTrainerMon, baseFormMon);
+    }
+
     let validAbilities = [];
     if (trainerAbilities && trainerAbilities.length > 0) {
         validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => trainerAbilities.includes(a))];
@@ -41,7 +54,6 @@ function pickTrainerMonAbility({ chosenTrainerMon, baseFormMon, trainerAbilities
         validAbilities = [...validAbilities, ...chosenTrainerMon.parsedAbilities.filter(a => effectiveDef.abilities.includes(a))];
     }
 
-    let ability;
     if (validAbilities.length > 0) {
         ability = sample(validAbilities);
     } else {
@@ -61,7 +73,11 @@ function pickTrainerMonAbility({ chosenTrainerMon, baseFormMon, trainerAbilities
         ability = validAbilities[0];
     }
 
-    // Map the chosen ability's slot index onto the base form (the party member is the base form).
+    return mapAbilityToBaseForm(ability, chosenTrainerMon, baseFormMon);
+}
+
+// Map the chosen ability's slot index onto the base form (the party member is the base form).
+function mapAbilityToBaseForm(ability, chosenTrainerMon, baseFormMon) {
     let abilityIndex = chosenTrainerMon.parsedAbilities.indexOf(ability);
     let originalAbility = baseFormMon.parsedAbilities[abilityIndex];
     if (originalAbility === 'NONE') {

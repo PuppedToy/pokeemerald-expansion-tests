@@ -36,7 +36,8 @@ const { pickTrainerMonAbility } = require('./trainerAbility');
 const { selectWithAutoFallback } = require('./trainerFallback');
 const { createChooser } = require('./trainerSelector');
 const { makeArchetypePicker } = require('./archetypePicker');
-const { planMemberRoleMove } = require('./archetypeRefine');
+const { planMemberRoleMove, planMemberAbility } = require('./archetypeRefine');
+const { getTrainerSeed } = require('./trainerSeeds');
 const { getArchetypeModel } = require('../archetypes');
 const { noopTeamAudit } = require('../teamAudit');
 const { noopDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
@@ -129,7 +130,9 @@ function createTeamResolver(deps) {
         const context = {
             team, foundMega: false, storedIds,
             sophistication: sophistication(trainer),
-            archetypeSeed: trainer.archetypeSeed || null, // T-107 107e — optional { base, gimmicks } lean
+            // T-107 107e / T-126 — optional { base, gimmicks, weather } lean: an explicit per-trainer
+            // seed, else the owner-validated seed map (weather villains / Tate & Liza TR).
+            archetypeSeed: trainer.archetypeSeed || getTrainerSeed(trainer.id),
         };
         const archetypeModel = getArchetypeModel(/double/i.test(trainer.battleType || '') ? 'doubles' : 'singles');
         const pickCandidate = makeArchetypePicker({ model: archetypeModel, context, ctx: { moves } });
@@ -243,6 +246,12 @@ function createTeamResolver(deps) {
                     effectiveDef,
                     level: trainer.level,
                     abilities,
+                    // T-124 — identity-aware: a weather-crystallised team's setter gets the weather ability
+                    // and its abusers the matching one (rain→Swift Swim, …), so the gimmick is real.
+                    preferredAbilities: planMemberAbility({
+                        species: chosenTrainerMon, team, model: archetypeModel,
+                        ctx: { moves }, sophistication: context.sophistication, seed: context.archetypeSeed,
+                    }),
                 });
                 newTeamMember.ability = originalAbility;
 

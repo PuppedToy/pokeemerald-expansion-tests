@@ -80,4 +80,59 @@ function planMemberRoleMove({ species, team, model, ctx = {}, sophistication, se
     return null;
 }
 
-module.exports = { resolvedDetectMon, planMemberRoleMove, ROLE_MOVE_SETS };
+// T-124 — weather subtype ↔ setter/abuser abilities. Identity-aware ability selection: when a team
+// crystallises the weather gimmick, the setter mon should get the weather-setter ability and the
+// abusers the ability that matches the established weather (rain→Swift Swim, sun→Chlorophyll, …),
+// instead of their best-rated generic ability. Composition confirmed by the corpus (Swift Swim in
+// rain, Chlorophyll/Solar Beam in sun, Sand Rush in sand, Slush Rush in snow).
+const WEATHER_SUBTYPE_BY_SETTER = {
+    DROUGHT: 'sun', ORICHALCUM_PULSE: 'sun', DRIZZLE: 'rain', SAND_STREAM: 'sand', SNOW_WARNING: 'snow',
+};
+const WEATHER_SETTER_ABILITIES = Object.keys(WEATHER_SUBTYPE_BY_SETTER);
+const SETTERS_BY_SUBTYPE = {
+    sun: ['DROUGHT', 'ORICHALCUM_PULSE'], rain: ['DRIZZLE'], sand: ['SAND_STREAM'], snow: ['SNOW_WARNING'],
+};
+const WEATHER_ABUSER_BY_SUBTYPE = {
+    sun: ['CHLOROPHYLL', 'SOLAR_POWER'],
+    rain: ['SWIFT_SWIM', 'HYDRATION', 'RAIN_DISH', 'DRY_SKIN'],
+    sand: ['SAND_RUSH', 'SAND_FORCE'],
+    snow: ['SLUSH_RUSH', 'ICE_BODY'],
+};
+
+// The ability `species` should PREFER given the crystallised identity, or [] (no preference). For a
+// weather-gimmick team: if a prior member already set the weather (subtype known) → the matching abuser
+// ability the mon can have; else (no setter yet) → a weather-setter ability the mon can have, to
+// establish the weather. `team` = prior resolved members ({ pokemon, ability, moves }). Deterministic,
+// soph-gated. Ability-based gimmick roles (unlike move roles) aren't fixed by move injection — the
+// ability is chosen separately, so without this a weather-crystallised team never actually gets weather.
+function planMemberAbility({ species, team, model, ctx = {}, sophistication, seed = null }) {
+    if (!model || !species || (sophistication || 0) < BIAS_MIN_SOPH) return [];
+    const speciesMons = (team || []).map(m => (m && m.pokemon) ? m.pokemon : m);
+    const identity = resolveIdentity(speciesMons, model, ctx, seed);
+    if (!identity || !(identity.gimmickIds || []).includes('weather')) return [];
+
+    const speciesAbil = species.parsedAbilities || [];
+    // Subtype: an established setter in the team, else the seed's declared theme (Aqua→rain, Magma→sun).
+    let subtype = null;
+    for (const m of (team || [])) {
+        const ab = m && m.ability;
+        if (ab && WEATHER_SUBTYPE_BY_SETTER[ab]) { subtype = WEATHER_SUBTYPE_BY_SETTER[ab]; break; }
+    }
+    if (!subtype && seed && seed.weather) subtype = seed.weather;
+
+    if (subtype) {
+        // No setter for this weather yet → this mon establishes it if it can; else prefer the abuser.
+        const hasSetter = (team || []).some(m => m.ability && WEATHER_SUBTYPE_BY_SETTER[m.ability] === subtype);
+        if (!hasSetter) {
+            const canSet = speciesAbil.filter(a => (SETTERS_BY_SUBTYPE[subtype] || []).includes(a));
+            if (canSet.length) return canSet;
+        }
+        return speciesAbil.filter(a => (WEATHER_ABUSER_BY_SUBTYPE[subtype] || []).includes(a));
+    }
+    return speciesAbil.filter(a => WEATHER_SETTER_ABILITIES.includes(a)); // generic → establish any weather
+}
+
+module.exports = {
+    resolvedDetectMon, planMemberRoleMove, planMemberAbility, ROLE_MOVE_SETS,
+    WEATHER_SUBTYPE_BY_SETTER, WEATHER_ABUSER_BY_SUBTYPE,
+};
