@@ -9381,6 +9381,3881 @@
       "sources": [
         "https://www.smogon.com/forums/threads/usm-ou-sample-teams-v2-up.3638845/"
       ]
+    },
+    {
+      "name": "Mega Manectric Tailwind Offense (Zygarde + Mew)",
+      "format": "Smogon Doubles OU (Gen 7 SM/USUM, 6v6)",
+      "archetype": "bulky offense + tailwind (double Intimidate / Fake Out / Snarl spread / Extreme Speed priority)",
+      "author": "stax",
+      "era": "Gen 7 (Sun-Moon / USUM)",
+      "event": "DOU Sample Teams & Team Showcase / RMT (thread 3655259)",
+      "strategy": "Lead Manectric + Mew set Tailwind while pivoting Zygarde in; lay Stealth Rock and spam Thousand Arrows, then Band Zygarde, Sub Kartana or Calm Mind Tapu Fini clean while Incineroar Fake Out + double Intimidate + Manectric Snarl soften the field.",
+      "members": [
+        {
+          "species": "Incineroar",
+          "ability": "Intimidate",
+          "item": "Aguav Berry",
+          "role": "Intimidate + Fake Out support, U-turn pivot",
+          "moves": [
+            "Flare Blitz",
+            "U-turn",
+            "Fake Out",
+            "Knock Off"
+          ]
+        },
+        {
+          "species": "Manectric-Mega",
+          "ability": "Intimidate",
+          "item": "Manectite",
+          "role": "second Intimidate (Lightning Rod pre-Mega redirection), fast Snarl + Volt Switch pivot",
+          "moves": [
+            "Volt Switch",
+            "Overheat",
+            "Snarl",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Tapu Fini",
+          "ability": "Misty Surge",
+          "item": "Wiki Berry",
+          "role": "bulky pivot + Calm Mind win condition",
+          "moves": [
+            "Muddy Water",
+            "Moonblast",
+            "Calm Mind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Kartana",
+          "ability": "Beast Boost",
+          "item": "Grassium Z",
+          "role": "Substitute Beast Boost setup sweeper",
+          "moves": [
+            "Leaf Blade",
+            "Sacred Sword",
+            "Substitute",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Zygarde",
+          "ability": "Aura Break",
+          "item": "Choice Band",
+          "role": "Thousand Arrows spread + Extreme Speed priority finisher",
+          "moves": [
+            "Thousand Arrows",
+            "Thousand Waves",
+            "Extreme Speed",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Mew",
+          "ability": "Synchronize",
+          "item": "Mago Berry",
+          "role": "Tailwind speed control + Stealth Rock, U-turn pivot",
+          "moves": [
+            "U-turn",
+            "Tailwind",
+            "Stealth Rock",
+            "Ice Beam"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-sample-teams-and-team-showcase.3645990/",
+        "https://www.smogon.com/forums/threads/zygarde-mew-offense-by-stax.3655259/"
+      ]
+    },
+    {
+      "name": "Diancie Bulky Offense",
+      "format": "Smogon Doubles OU (Gen 7 SM/USUM, 6v6)",
+      "archetype": "bulky offense + trick room backup (Intimidate / Fake Out / Magic Bounce)",
+      "author": "Amaranth",
+      "era": "Gen 7 (Sun-Moon / USUM)",
+      "event": "DOU Sample Teams & Team Showcase thread",
+      "strategy": "Incineroar Intimidate/Fake Out plus bulky Gastrodon, Celesteela and Cresselia grind while Mega Diancie chips with spread Diamond Storm and lays Stealth Rock behind Magic Bounce; Cresselia's Trick Room is the plan-B speed flip.",
+      "members": [
+        {
+          "species": "Diancie-Mega",
+          "ability": "Magic Bounce",
+          "item": "Diancite",
+          "role": "Stealth Rock + spread Diamond Storm win condition, hazard/redirection bounce",
+          "moves": [
+            "Stealth Rock",
+            "Diamond Storm",
+            "Moonblast",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Tapu Koko",
+          "ability": "Electric Surge",
+          "item": "Assault Vest",
+          "role": "spread Discharge terrain + Volt Switch pivot, Nature's Madness chip",
+          "moves": [
+            "Volt Switch",
+            "Thunderbolt",
+            "Dazzling Gleam",
+            "Nature's Madness"
+          ]
+        },
+        {
+          "species": "Incineroar",
+          "ability": "Intimidate",
+          "item": "Figy Berry",
+          "role": "Intimidate + Fake Out + Taunt, U-turn pivot",
+          "moves": [
+            "Fake Out",
+            "Taunt",
+            "Flare Blitz",
+            "U-turn"
+          ]
+        },
+        {
+          "species": "Celesteela",
+          "ability": "Beast Boost",
+          "item": "Leftovers",
+          "role": "bulky pivot, Leech Seed + Heavy Slam",
+          "moves": [
+            "Heavy Slam",
+            "Flamethrower",
+            "Leech Seed",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Gastrodon",
+          "ability": "Storm Drain",
+          "item": "Groundium Z",
+          "role": "bulky Water-immune pivot, Earth Power + Recover, Tectonic Rage nuke",
+          "moves": [
+            "Earth Power",
+            "Ice Beam",
+            "Recover",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Cresselia",
+          "ability": "Levitate",
+          "item": "Sitrus Berry",
+          "role": "Trick Room backup speed control, bulky setter",
+          "moves": [
+            "Trick Room",
+            "Psychic",
+            "Toxic",
+            "Moonlight"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-sample-teams-and-team-showcase.3645990/"
+      ]
+    },
+    {
+      "name": "Volcarona Tailwind Offense",
+      "format": "Smogon Doubles OU (Gen 7 SM/USUM, 6v6)",
+      "archetype": "bulky offense + tailwind (Intimidate / Fake Out / Quiver Dance sweeper)",
+      "author": "talkingtree & miltankmilk (with MajorBowman)",
+      "era": "Gen 7 (Sun-Moon / USUM)",
+      "event": "Doubles OU Team Bazaar 2.0",
+      "strategy": "Persian-Alola Fake Out + Landorus-T Intimidate + Zapdos Tailwind create the safe turn for Volcarona to Quiver Dance and fire a Buginium Z nuke, or Mega Metagross to break; Tapu Fini is the bulky Calm Mind pivot whose Misty Surge powers Zapdos's Misty Seed.",
+      "members": [
+        {
+          "species": "Volcarona",
+          "ability": "Swarm",
+          "item": "Buginium Z",
+          "role": "Quiver Dance setup sweeper / Z-move nuke",
+          "moves": [
+            "Heat Wave",
+            "Bug Buzz",
+            "Quiver Dance",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Persian-Alola",
+          "ability": "Fur Coat",
+          "item": "Mago Berry",
+          "role": "Fake Out + Parting Shot pivot + Taunt / Foul Play",
+          "moves": [
+            "Fake Out",
+            "Foul Play",
+            "Taunt",
+            "Parting Shot"
+          ]
+        },
+        {
+          "species": "Metagross-Mega",
+          "ability": "Tough Claws",
+          "item": "Metagrossite",
+          "role": "physical win condition / breaker",
+          "moves": [
+            "Iron Head",
+            "Ice Punch",
+            "Stomping Tantrum",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Tapu Fini",
+          "ability": "Misty Surge",
+          "item": "Wiki Berry",
+          "role": "bulky Calm Mind pivot + Misty Terrain setter",
+          "moves": [
+            "Muddy Water",
+            "Moonblast",
+            "Calm Mind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Static",
+          "item": "Misty Seed",
+          "role": "Tailwind speed control + Heat Wave / Roost",
+          "moves": [
+            "Thunderbolt",
+            "Heat Wave",
+            "Tailwind",
+            "Roost"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Aguav Berry",
+          "role": "Intimidate + Stealth Rock, Rock Tomb speed control + U-turn",
+          "moves": [
+            "Earth Power",
+            "Rock Tomb",
+            "U-turn",
+            "Stealth Rock"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-team-bazaar-2-0.3645989/",
+        "https://www.smogon.com/forums/threads/doubles-ou-sample-teams-and-team-showcase.3645990/"
+      ]
+    },
+    {
+      "name": "Memoric's Tailwind Offense (Mega Kangaskhan)",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "bulky offense + tailwind (Intimidate / Fake Out / Gale Wings priority Tailwind)",
+      "author": "Memoric",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU Sample Teams thread",
+      "strategy": "Talonflame's Gale Wings priority Tailwind gives reliable speed control so Mega Kangaskhan (Fake Out + PuP) and SubProtect Kyurem-B break through, backed by Scarf Landorus-T Intimidate/U-turn and an Aegislash + Rotom-W defensive core.",
+      "members": [
+        {
+          "species": "Kangaskhan-Mega",
+          "ability": "Parental Bond",
+          "item": "Kangaskhanite",
+          "role": "Fake Out support + Power-Up Punch setup win condition",
+          "moves": [
+            "Fake Out",
+            "Return",
+            "Power-Up Punch",
+            "Sucker Punch"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Choice Scarf",
+          "role": "Intimidate + fast spread EQ/Rock Slide, U-turn safety net",
+          "moves": [
+            "Earthquake",
+            "Rock Slide",
+            "U-turn",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Talonflame",
+          "ability": "Gale Wings",
+          "item": "Life Orb",
+          "role": "priority Tailwind + Brave Bird / Flare Blitz offense",
+          "moves": [
+            "Brave Bird",
+            "Flare Blitz",
+            "Tailwind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Kyurem-Black",
+          "ability": "Teravolt",
+          "item": "Leftovers",
+          "role": "special SubProtect breaker",
+          "moves": [
+            "Ice Beam",
+            "Earth Power",
+            "Substitute",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Aegislash",
+          "ability": "Stance Change",
+          "item": "Safety Goggles",
+          "role": "Wide Guard support + bulky spread; Goggles beats Amoonguss",
+          "moves": [
+            "Shadow Ball",
+            "Flash Cannon",
+            "Wide Guard",
+            "King's Shield"
+          ]
+        },
+        {
+          "species": "Rotom-Wash",
+          "ability": "Levitate",
+          "item": "Sitrus Berry",
+          "role": "bulky pivot; Will-O-Wisp + Hydro Pump",
+          "moves": [
+            "Hydro Pump",
+            "Thunderbolt",
+            "Will-O-Wisp",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-sample-teams.3571389/"
+      ]
+    },
+    {
+      "name": "Stratos's TR Offense (Scrafty / Mega Camerupt)",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "bulky offense + trick room (Intimidate / Fake Out / Rage Powder redirection)",
+      "author": "Stratos",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU Sample Teams (starting-ORAS-Doubles thread)",
+      "strategy": "Scrafty (Intimidate + Fake Out) and Amoonguss (Spore + Rage Powder) buy turns to set Trick Room; under it Mega Camerupt and Diancie spread-nuke while Weakness Policy Diancie and Calm Mind Cresselia act as win conditions. Rotom-W provides Specs pivoting outside the room.",
+      "members": [
+        {
+          "species": "Scrafty",
+          "ability": "Intimidate",
+          "item": "Life Orb",
+          "role": "Intimidate + Fake Out support core",
+          "moves": [
+            "Fake Out",
+            "Drain Punch",
+            "Knock Off",
+            "Poison Jab"
+          ]
+        },
+        {
+          "species": "Diancie",
+          "ability": "Clear Body",
+          "item": "Weakness Policy",
+          "role": "Trick Room setter + Diamond Storm spread; WP win condition",
+          "moves": [
+            "Trick Room",
+            "Diamond Storm",
+            "Moonblast",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Cresselia",
+          "ability": "Levitate",
+          "item": "Safety Goggles",
+          "role": "Trick Room setter + Calm Mind, bulky pivot",
+          "moves": [
+            "Trick Room",
+            "Psychic",
+            "Calm Mind",
+            "Moonlight"
+          ]
+        },
+        {
+          "species": "Camerupt-Mega",
+          "ability": "Sheer Force",
+          "item": "Cameruptite",
+          "role": "slow spread nuke under TR (Heat Wave / Earth Power)",
+          "moves": [
+            "Earth Power",
+            "Heat Wave",
+            "Ancient Power",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Rotom-Wash",
+          "ability": "Levitate",
+          "item": "Choice Specs",
+          "role": "spread special + Volt Switch pivot, Trick",
+          "moves": [
+            "Thunderbolt",
+            "Volt Switch",
+            "Hydro Pump",
+            "Trick"
+          ]
+        },
+        {
+          "species": "Amoonguss",
+          "ability": "Regenerator",
+          "item": "Rocky Helmet",
+          "role": "Rage Powder redirection + Spore, bulky glue",
+          "moves": [
+            "Spore",
+            "Giga Drain",
+            "Rage Powder",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sample-teams-for-starting-oras-doubles-old-thread.3523938/"
+      ]
+    },
+    {
+      "name": "Demantoid's Stakataka SemiRoom",
+      "format": "Smogon Doubles OU (Gen 7 USUM, 6v6)",
+      "archetype": "dual-mode / semiroom (Trick Room + fast, Intimidate + Shadow Tag trapping)",
+      "author": "Demantoid",
+      "era": "Gen 7 (USUM)",
+      "event": "SM/USUM DOU Teambuilding Frameworks thread (3619759)",
+      "strategy": "Two modes: trap and pick apart with Mega Gengar's Shadow Tag while hitting fast, or set Rockium-Z Stakataka Trick Room and Beast-Boost sweep with slow attackers. Scrafty's Intimidate + Fake Out anchors both modes; the twin Tapus supply terrain utility.",
+      "members": [
+        {
+          "species": "Gengar-Mega",
+          "ability": "Shadow Tag",
+          "item": "Gengarite",
+          "role": "trapper / fast special breaker",
+          "moves": [
+            "Sludge Bomb",
+            "Shadow Ball",
+            "Hidden Power Ice",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Zygarde",
+          "ability": "Aura Break",
+          "item": "Choice Band",
+          "role": "fast physical win condition (50% forme)",
+          "moves": [
+            "Thousand Arrows",
+            "Extreme Speed",
+            "Outrage",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Stakataka",
+          "ability": "Beast Boost",
+          "item": "Rockium Z",
+          "role": "Trick Room setter + slow Beast-Boost win condition",
+          "moves": [
+            "Trick Room",
+            "Gyro Ball",
+            "Stone Edge",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Scrafty",
+          "ability": "Intimidate",
+          "item": "Assault Vest",
+          "role": "Intimidate + Fake Out backbone",
+          "moves": [
+            "Fake Out",
+            "Knock Off",
+            "Low Kick",
+            "Ice Punch"
+          ]
+        },
+        {
+          "species": "Tapu Fini",
+          "ability": "Misty Surge",
+          "item": "Leftovers",
+          "role": "Misty Terrain + bulky Calm Mind win condition",
+          "moves": [
+            "Moonblast",
+            "Calm Mind",
+            "Iron Defense",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Tapu Bulu",
+          "ability": "Grassy Surge",
+          "item": "Meadow Plate",
+          "role": "Grassy Terrain physical attacker / water check",
+          "moves": [
+            "Wood Hammer",
+            "Horn Leech",
+            "Superpower",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-teambuilding-frameworks.3619759/",
+        "https://pokepast.es/ee5a78bb6d639566"
+      ]
+    },
+    {
+      "name": "Hoopa-U TailRoom",
+      "format": "Smogon Doubles OU (Gen 7 SM, 6v6)",
+      "archetype": "dual-mode / tailroom (Tailwind + Trick Room, double Intimidate + double Fake Out)",
+      "author": "Cody323",
+      "era": "Gen 7 (SM)",
+      "event": "SM DOU RMT (thread 3649442)",
+      "strategy": "Pick speed mode by matchup: Mega Salamence Tailwind for a fast game or Hoopa-U Trick Room to fire slow Hyperspace Fury; Incineroar + Salamence give double Intimidate, Incineroar + Zeraora double Fake Out, and Calm Mind Tapu Fini is a second win condition.",
+      "members": [
+        {
+          "species": "Hoopa-Unbound",
+          "ability": "Magician",
+          "item": "Sitrus Berry",
+          "role": "Trick Room setter + slow nuke win condition",
+          "moves": [
+            "Trick Room",
+            "Hyperspace Fury",
+            "Hyperspace Hole",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Salamence-Mega",
+          "ability": "Aerilate",
+          "item": "Salamencite",
+          "role": "Tailwind setter + Intimidate + spread win condition",
+          "moves": [
+            "Tailwind",
+            "Double-Edge",
+            "Hyper Voice",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Incineroar",
+          "ability": "Intimidate",
+          "item": "Figy Berry",
+          "role": "Intimidate + Fake Out pivot",
+          "moves": [
+            "Fake Out",
+            "Flare Blitz",
+            "Knock Off",
+            "U-turn"
+          ]
+        },
+        {
+          "species": "Tapu Fini",
+          "ability": "Misty Surge",
+          "item": "Wiki Berry",
+          "role": "Misty Terrain + Calm Mind win condition",
+          "moves": [
+            "Calm Mind",
+            "Muddy Water",
+            "Moonblast",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Ferrothorn",
+          "ability": "Iron Barbs",
+          "item": "Wiki Berry",
+          "role": "slow bulky Trick Room attacker / Leech Seed",
+          "moves": [
+            "Gyro Ball",
+            "Power Whip",
+            "Leech Seed",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Zeraora",
+          "ability": "Volt Absorb",
+          "item": "Electrium Z",
+          "role": "fast Fake Out lead + Gigavolt Havoc nuke",
+          "moves": [
+            "Fake Out",
+            "Plasma Fists",
+            "Hidden Power Ice",
+            "Close Combat"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/hoopa-u-tailroom.3649442/",
+        "https://pokepast.es/7dcde94c0b2ef7d2"
+      ]
+    },
+    {
+      "name": "leUxie's Makolicious (Goodstuffs Balance)",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "balance + tailwind goodstuffs (Intimidate + Rage Powder redirection)",
+      "author": "leUxie",
+      "era": "Gen 6 (ORAS)",
+      "event": "Doubles OU Sample Teams thread (3571389)",
+      "strategy": "ORAS goodstuffs balance: Amoonguss Rage Powder/Spore + Scarf Lando-T Intimidate shield Mega Kangaskhan's Parental Bond offense and Specs Sylveon Hyper Voice, with Zapdos Tailwind as the speed mode and Heatran/Sylveon two special win conditions.",
+      "members": [
+        {
+          "species": "Kangaskhan-Mega",
+          "ability": "Parental Bond",
+          "item": "Kangaskhanite",
+          "role": "fast win condition / Fake Out support",
+          "moves": [
+            "Fake Out",
+            "Power-Up Punch",
+            "Drain Punch",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Sylveon",
+          "ability": "Pixilate",
+          "item": "Choice Specs",
+          "role": "spread special win condition (Pixilate Hyper Voice)",
+          "moves": [
+            "Hyper Voice",
+            "Dazzling Gleam",
+            "Hidden Power Ice",
+            "Shadow Ball"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Static",
+          "item": "Rocky Helmet",
+          "role": "Tailwind speed control / bulky special attacker",
+          "moves": [
+            "Thunderbolt",
+            "Tailwind",
+            "Roost",
+            "Hidden Power Ice"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Choice Scarf",
+          "role": "Intimidate + fast U-turn pivot / Rock Slide",
+          "moves": [
+            "Earthquake",
+            "Rock Slide",
+            "U-turn",
+            "Knock Off"
+          ]
+        },
+        {
+          "species": "Amoonguss",
+          "ability": "Regenerator",
+          "item": "Leftovers",
+          "role": "Rage Powder redirection + Spore",
+          "moves": [
+            "Spore",
+            "Rage Powder",
+            "Giga Drain",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Heatran",
+          "ability": "Flash Fire",
+          "item": "Air Balloon",
+          "role": "Fire spread win condition / Flash Fire pivot",
+          "moves": [
+            "Heat Wave",
+            "Earth Power",
+            "Ancient Power",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-sample-teams.3571389/"
+      ]
+    },
+    {
+      "name": "SamVGC's Gardevoir Balance",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "balance / goodstuffs (double Intimidate + Rage Powder redirection + Thunder Wave)",
+      "author": "SamVGC",
+      "era": "Gen 6 (XY/ORAS)",
+      "event": "Doubles OU Sample Teams thread (3571389)",
+      "strategy": "Two win conditions — Mega Gardevoir Hyper Voice/Encore and Dragon Dance Gyarados — behind a double-Intimidate core (Gyarados + AV Lando-T) and Amoonguss redirection; Prankster Thundurus Thunder Wave supplies speed control.",
+      "members": [
+        {
+          "species": "Gardevoir-Mega",
+          "ability": "Pixilate",
+          "item": "Gardevoirite",
+          "role": "spread special win condition + Encore",
+          "moves": [
+            "Hyper Voice",
+            "Psychic",
+            "Encore",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Gyarados",
+          "ability": "Intimidate",
+          "item": "Safety Goggles",
+          "role": "Intimidate + Dragon Dance win condition",
+          "moves": [
+            "Waterfall",
+            "Stone Edge",
+            "Dragon Dance",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Amoonguss",
+          "ability": "Regenerator",
+          "item": "Rocky Helmet",
+          "role": "Rage Powder redirection + Spore",
+          "moves": [
+            "Giga Drain",
+            "Spore",
+            "Rage Powder",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Thundurus",
+          "ability": "Prankster",
+          "item": "Life Orb",
+          "role": "Prankster Thunder Wave speed control",
+          "moves": [
+            "Thunderbolt",
+            "Flash Cannon",
+            "Thunder Wave",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Assault Vest",
+          "role": "Intimidate + spread U-turn pivot",
+          "moves": [
+            "Earthquake",
+            "Rock Slide",
+            "Superpower",
+            "U-turn"
+          ]
+        },
+        {
+          "species": "Heatran",
+          "ability": "Flash Fire",
+          "item": "Shuca Berry",
+          "role": "Fire spread / Flash Fire pivot",
+          "moves": [
+            "Heat Wave",
+            "Flash Cannon",
+            "Earth Power",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-sample-teams.3571389/"
+      ]
+    },
+    {
+      "name": "Stratos's Sun Offense",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "bulky offense + sun + tailwind (Intimidate / Chlorophyll sweeper)",
+      "author": "Stratos",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU RMT / Sample Teams",
+      "strategy": "Mega Charizard Y sets Drought and nukes with sun spread Heat Wave while Zapdos provides Tailwind; Chlorophyll Venusaur doubles Sleep Powder disruption and sweeps under sun, Wide Guard Aegislash and Kyurem-B break bulk.",
+      "members": [
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Choice Scarf",
+          "role": "Intimidate + fast spread Rock Slide/EQ + U-turn",
+          "moves": [
+            "Rock Slide",
+            "Superpower",
+            "U-turn",
+            "Earthquake"
+          ]
+        },
+        {
+          "species": "Charizard-Mega-Y",
+          "ability": "Drought",
+          "item": "Charizardite Y",
+          "role": "Sun setter + sun-boosted spread Heat Wave",
+          "moves": [
+            "Heat Wave",
+            "Solar Beam",
+            "Protect",
+            "Hidden Power Ground"
+          ]
+        },
+        {
+          "species": "Aegislash",
+          "ability": "Stance Change",
+          "item": "Weakness Policy",
+          "role": "Wide Guard support + WP sweeper",
+          "moves": [
+            "King's Shield",
+            "Wide Guard",
+            "Shadow Ball",
+            "Flash Cannon"
+          ]
+        },
+        {
+          "species": "Kyurem-Black",
+          "ability": "Teravolt",
+          "item": "Leftovers",
+          "role": "bulky special wallbreaker with Substitute",
+          "moves": [
+            "Protect",
+            "Ice Beam",
+            "Earth Power",
+            "Substitute"
+          ]
+        },
+        {
+          "species": "Venusaur",
+          "ability": "Chlorophyll",
+          "item": "Life Orb",
+          "role": "Chlorophyll sun sweeper + Sleep Powder disruption",
+          "moves": [
+            "Sleep Powder",
+            "Giga Drain",
+            "Sludge Bomb",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Pressure",
+          "item": "Rocky Helmet",
+          "role": "Tailwind setter + bulky spread/pivot",
+          "moves": [
+            "Roost",
+            "Tailwind",
+            "Hidden Power Ice",
+            "Thunderbolt"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sun-offense-by-stratos.3572349/"
+      ]
+    },
+    {
+      "name": "Dawgie's Mega Diancie Offense",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "bulky offense + tailwind + redirection (Magic Bounce / Rage Powder)",
+      "author": "Dawgie",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU Sample Teams",
+      "strategy": "Mega Diancie fires spread Moonblast/Earth Power and gains defense on Diamond Storm; Amoonguss redirects while Hydreigon's Tailwind and Life Orb enable speed control and breaking, with Substitute Heatran and Scarf Lando-T as win conditions.",
+      "members": [
+        {
+          "species": "Diancie-Mega",
+          "ability": "Magic Bounce",
+          "item": "Diancite",
+          "role": "spread nuke + Diamond Storm def boosts; Magic Bounce blocks status",
+          "moves": [
+            "Moonblast",
+            "Earth Power",
+            "Diamond Storm",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Amoonguss",
+          "ability": "Regenerator",
+          "item": "Rocky Helmet",
+          "role": "Rage Powder redirection + Spore",
+          "moves": [
+            "Spore",
+            "Rage Powder",
+            "Giga Drain",
+            "Sunny Day"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Choice Scarf",
+          "role": "Intimidate + fast spread + U-turn / late cleaner",
+          "moves": [
+            "U-turn",
+            "Earthquake",
+            "Rock Slide",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Heatran",
+          "ability": "Flash Fire",
+          "item": "Shuca Berry",
+          "role": "spread Heat Wave + Substitute pressure",
+          "moves": [
+            "Heat Wave",
+            "Substitute",
+            "Earth Power",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Rotom-Wash",
+          "ability": "Levitate",
+          "item": "Sitrus Berry",
+          "role": "bulky pivot / Will-O-Wisp",
+          "moves": [
+            "Hydro Pump",
+            "Thunderbolt",
+            "Will-O-Wisp",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Hydreigon",
+          "ability": "Levitate",
+          "item": "Life Orb",
+          "role": "Tailwind speed control + Life Orb breaker",
+          "moves": [
+            "Tailwind",
+            "Dark Pulse",
+            "Draco Meteor",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-sample-teams.3571389/"
+      ]
+    },
+    {
+      "name": "Mega Charizard Y Offense (emforbes)",
+      "format": "Smogon Doubles OU (Gen 7 SM, 6v6)",
+      "archetype": "bulky offense + sun + tailwind (Intimidate / Beast Boost / Icy Wind speed control)",
+      "author": "emforbes",
+      "era": "Gen 7 (SM)",
+      "event": "SM DOU Sample Teams",
+      "strategy": "Charizard Y sets sun and threatens huge spread Heat Wave; Tapu Koko adds Electric Terrain pressure, Kartana provides fast Tailwind and Beast Boost off Sash, Kommo-o sets up Z-Clangorous Soulblaze, and Porygon2 + Lando-T are bulky pivots with Icy Wind / Ally Switch utility.",
+      "members": [
+        {
+          "species": "Charizard-Mega-Y",
+          "ability": "Drought",
+          "item": "Charizardite Y",
+          "role": "Sun setter / spread nuke",
+          "moves": [
+            "Heat Wave",
+            "Overheat",
+            "Solar Beam",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Kommo-o",
+          "ability": "Soundproof",
+          "item": "Kommonium Z",
+          "role": "Z-Clangorous Soulblaze setup sweeper + Stealth Rock",
+          "moves": [
+            "Clanging Scales",
+            "Stealth Rock",
+            "Flamethrower",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Kartana",
+          "ability": "Beast Boost",
+          "item": "Focus Sash",
+          "role": "fast Tailwind setter + Beast Boost sweeper",
+          "moves": [
+            "Leaf Blade",
+            "Sacred Sword",
+            "Tailwind",
+            "Detect"
+          ]
+        },
+        {
+          "species": "Tapu Koko",
+          "ability": "Electric Surge",
+          "item": "Life Orb",
+          "role": "Electric Terrain spread + Volt Switch pivot",
+          "moves": [
+            "Thunderbolt",
+            "Volt Switch",
+            "Dazzling Gleam",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Porygon2",
+          "ability": "Download",
+          "item": "Eviolite",
+          "role": "bulky pivot: Icy Wind speed control + Ally Switch",
+          "moves": [
+            "Icy Wind",
+            "Thunderbolt",
+            "Recover",
+            "Ally Switch"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Iapapa Berry",
+          "role": "Intimidate pivot / U-turn + Defog",
+          "moves": [
+            "Earthquake",
+            "U-turn",
+            "Defog",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-sample-teams-and-team-showcase.3645990/"
+      ]
+    },
+    {
+      "name": "this is ma swamp (KyleCole)",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "bulky offense + rain (Swift Swim Swampert + Ludicolo core, Prankster speed control)",
+      "author": "KyleCole",
+      "era": "Gen 6 (ORAS)",
+      "event": "Sample Teams for starting ORAS Doubles thread",
+      "strategy": "Politoed sets Drizzle for a Swift Swim Mega Swampert + Ludicolo core; Prankster Thundurus provides Thunder Wave/Taunt speed control plus anti-weather Thunderbolt, Gale Wings Band Talonflame supplies Flying priority and Escavalier answers Grass/Fairy.",
+      "members": [
+        {
+          "species": "Politoed",
+          "ability": "Drizzle",
+          "item": "Damp Rock",
+          "role": "Rain setter + Helping Hand / Scald burn",
+          "moves": [
+            "Scald",
+            "Ice Beam",
+            "Helping Hand",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Swampert-Mega",
+          "ability": "Swift Swim",
+          "item": "Swampertite",
+          "role": "Swift Swim rain sweeper / spread Earthquake",
+          "moves": [
+            "Waterfall",
+            "Earthquake",
+            "Ice Punch",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Talonflame",
+          "ability": "Gale Wings",
+          "item": "Choice Band",
+          "role": "Gale Wings priority Brave Bird, Grass check, U-turn",
+          "moves": [
+            "Brave Bird",
+            "Flare Blitz",
+            "U-turn",
+            "Sleep Talk"
+          ]
+        },
+        {
+          "species": "Escavalier",
+          "ability": "Overcoat",
+          "item": "Lum Berry",
+          "role": "bulky attacker; Overcoat = powder/weather immune",
+          "moves": [
+            "Megahorn",
+            "Iron Head",
+            "Knock Off",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Thundurus",
+          "ability": "Prankster",
+          "item": "Sitrus Berry",
+          "role": "Prankster speed control + anti-weather Thunderbolt",
+          "moves": [
+            "Thunderbolt",
+            "Hidden Power Ice",
+            "Thunder Wave",
+            "Taunt"
+          ]
+        },
+        {
+          "species": "Ludicolo",
+          "ability": "Swift Swim",
+          "item": "Assault Vest",
+          "role": "Swift Swim rain sweeper + Fake Out",
+          "moves": [
+            "Fake Out",
+            "Giga Drain",
+            "Ice Beam",
+            "Hydro Pump"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sample-teams-for-starting-oras-doubles-old-thread.3523938/"
+      ]
+    },
+    {
+      "name": "A Very Unorthodox Rain Team (VainValentine)",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "bulky offense + rain (Surf-spam + Storm Drain redirection)",
+      "author": "VainValentine",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU RMT",
+      "strategy": "Politoed sets Drizzle and the team spams rain-boosted spread Surf while every partner is immune to it — Gastrodon and Cradily redirect Water via Storm Drain, Toxicroak absorbs with Dry Skin — so unresisted Surf blankets the field while Swift Swim Kingdra and Ludicolo clean.",
+      "members": [
+        {
+          "species": "Politoed",
+          "ability": "Drizzle",
+          "item": "Damp Rock",
+          "role": "Rain setter + spread Surf / Icy Wind speed control",
+          "moves": [
+            "Surf",
+            "Rain Dance",
+            "Protect",
+            "Icy Wind"
+          ]
+        },
+        {
+          "species": "Gastrodon",
+          "ability": "Storm Drain",
+          "item": "Leftovers",
+          "role": "Storm Drain redirection + bulky attacker",
+          "moves": [
+            "Surf",
+            "Earth Power",
+            "Recover",
+            "Ice Beam"
+          ]
+        },
+        {
+          "species": "Cradily",
+          "ability": "Storm Drain",
+          "item": "Leftovers",
+          "role": "second Storm Drain redirector / bulky Surf-immune",
+          "moves": [
+            "Giga Drain",
+            "Recover",
+            "Ancient Power",
+            "Sludge Bomb"
+          ]
+        },
+        {
+          "species": "Toxicroak",
+          "ability": "Dry Skin",
+          "item": "Assault Vest",
+          "role": "Dry Skin Water-immune + Fake Out / Sucker Punch",
+          "moves": [
+            "Fake Out",
+            "Poison Jab",
+            "Drain Punch",
+            "Sucker Punch"
+          ]
+        },
+        {
+          "species": "Ludicolo",
+          "ability": "Swift Swim",
+          "item": "Life Orb",
+          "role": "Swift Swim rain sweeper + Fake Out",
+          "moves": [
+            "Giga Drain",
+            "Fake Out",
+            "Ice Beam",
+            "Surf"
+          ]
+        },
+        {
+          "species": "Kingdra",
+          "ability": "Swift Swim",
+          "item": "Assault Vest",
+          "role": "Swift Swim spread-Surf nuke / bulky attacker",
+          "moves": [
+            "Dragon Pulse",
+            "Flash Cannon",
+            "Surf",
+            "Clear Smog"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/a-very-unorthodox-rain-team.3571680/"
+      ]
+    },
+    {
+      "name": "Sunny Day Team: Tapu Bulu / Torkoal core (TheBigKyurem)",
+      "format": "Smogon Doubles OU (Gen 7 SM, 6v6)",
+      "archetype": "bulky offense + sun (Chlorophyll / Solar Power) with non-weather backup (dual-mode)",
+      "author": "TheBigKyurem",
+      "era": "Gen 7 (SM/USUM)",
+      "event": "SM DOU RMT (thread 3649367)",
+      "strategy": "Torkoal sets Drought; Chlorophyll Exeggutor fires instant Solar Beams and Solar Power Heliolisk throws boosted spread Hyper Voice, while Intimidate Salamence (Z-Fly) and Grassy Surge Tapu Bulu give a speed-independent, non-weather backup mode once sun falls.",
+      "members": [
+        {
+          "species": "Torkoal",
+          "ability": "Drought",
+          "item": "Heat Rock",
+          "role": "Sun setter + spread Heat Wave nuke",
+          "moves": [
+            "Heat Wave",
+            "Hidden Power Ice",
+            "Protect",
+            "Earth Power"
+          ]
+        },
+        {
+          "species": "Exeggutor",
+          "ability": "Chlorophyll",
+          "item": "Sitrus Berry",
+          "role": "Chlorophyll sweeper (instant Solar Beam) + Sleep Powder",
+          "moves": [
+            "Psychic",
+            "Solar Beam",
+            "Protect",
+            "Sleep Powder"
+          ]
+        },
+        {
+          "species": "Heliolisk",
+          "ability": "Solar Power",
+          "item": "Life Orb",
+          "role": "Solar Power spread attacker (Hyper Voice) + Volt Switch",
+          "moves": [
+            "Thunderbolt",
+            "Hyper Voice",
+            "Hidden Power Ice",
+            "Volt Switch"
+          ]
+        },
+        {
+          "species": "Tapu Bulu",
+          "ability": "Grassy Surge",
+          "item": "Leftovers",
+          "role": "Grassy Terrain + speed-independent backup attacker",
+          "moves": [
+            "Wood Hammer",
+            "Protect",
+            "Megahorn",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Beedrill-Mega",
+          "ability": "Adaptability",
+          "item": "Beedrillite",
+          "role": "fast Adaptability attacker + Knock Off",
+          "moves": [
+            "Knock Off",
+            "Protect",
+            "Poison Jab",
+            "X-Scissor"
+          ]
+        },
+        {
+          "species": "Salamence",
+          "ability": "Intimidate",
+          "item": "Flyinium Z",
+          "role": "Intimidate support + Z-Fly Dragon Dance sweeper",
+          "moves": [
+            "Fly",
+            "Dragon Claw",
+            "Dragon Dance",
+            "Earthquake"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sunny-day-team-tapu-bulu-torkoal-core.3649367/"
+      ]
+    },
+    {
+      "name": "Doubles Sun Team (brennancaldwell)",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "balance + sun (Chlorophyll / Solar Power)",
+      "author": "brennancaldwell",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU RMT (thread 3549133)",
+      "strategy": "Ninetales sets Drought for instant Solar Beam and to power Solar-Power Charizard's boosted Heat Wave; Leafeon provides Chlorophyll-fast Helping Hand / Heal Bell while Mega Venusaur's Sleep Powder anchors the back; Infernape and Baton-Pass Scolipede add offense and speed control.",
+      "members": [
+        {
+          "species": "Ninetales",
+          "ability": "Drought",
+          "item": "Leftovers",
+          "role": "Sun setter + Will-O-Wisp / Confuse Ray utility",
+          "moves": [
+            "Fire Blast",
+            "Solar Beam",
+            "Will-O-Wisp",
+            "Confuse Ray"
+          ]
+        },
+        {
+          "species": "Charizard",
+          "ability": "Solar Power",
+          "item": "Charcoal",
+          "role": "Solar-Power sun-boosted spread Heat Wave",
+          "moves": [
+            "Heat Wave",
+            "Solar Beam",
+            "Air Slash",
+            "Flamethrower"
+          ]
+        },
+        {
+          "species": "Leafeon",
+          "ability": "Chlorophyll",
+          "item": "Leftovers",
+          "role": "Chlorophyll-fast support: Helping Hand / Heal Bell",
+          "moves": [
+            "Leaf Blade",
+            "Heal Bell",
+            "Helping Hand",
+            "Synthesis"
+          ]
+        },
+        {
+          "species": "Venusaur-Mega",
+          "ability": "Thick Fat",
+          "item": "Venusaurite",
+          "role": "bulky Sleep Powder anchor / Leech Seed",
+          "moves": [
+            "Sludge Bomb",
+            "Giga Drain",
+            "Sleep Powder",
+            "Leech Seed"
+          ]
+        },
+        {
+          "species": "Infernape",
+          "ability": "Iron Fist",
+          "item": "Life Orb",
+          "role": "Iron Fist attacker + Mach Punch priority",
+          "moves": [
+            "Close Combat",
+            "Fire Punch",
+            "Thunder Punch",
+            "Mach Punch"
+          ]
+        },
+        {
+          "species": "Scolipede",
+          "ability": "Speed Boost",
+          "item": "Occa Berry",
+          "role": "Speed Boost Baton Pass speed support",
+          "moves": [
+            "Substitute",
+            "Protect",
+            "Baton Pass",
+            "Steamroller"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-sun-team.3549133/"
+      ]
+    },
+    {
+      "name": "Japan Sand (Redvader8)",
+      "format": "Smogon Doubles OU (Gen 7 SM, 6v6)",
+      "archetype": "balance + sand (Sand Rush sweeper + Rage Powder / Lightning Rod redirection)",
+      "author": "Redvader8",
+      "era": "Gen 7 (SM)",
+      "event": "SM DOU RMT (thread 3589759)",
+      "strategy": "Scarf Tyranitar sets Sand Stream and Sand Rush Excadrill cleans with spread EQ/Rock Slide; Ground-immune Salamence and Rotom-W sit through spread EQ, Amoonguss and Marowak-Alola redirect single-target attacks, and Salamence's Intimidate softens physical threats.",
+      "members": [
+        {
+          "species": "Tyranitar",
+          "ability": "Sand Stream",
+          "item": "Choice Scarf",
+          "role": "Sand setter + Scarf spread Rock Slide",
+          "moves": [
+            "Crunch",
+            "Ice Beam",
+            "Rock Slide",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Sand Rush",
+          "item": "Focus Sash",
+          "role": "Sand Rush sweeper / spread EQ + Rock Slide",
+          "moves": [
+            "Protect",
+            "Iron Head",
+            "Rock Slide",
+            "Earthquake"
+          ]
+        },
+        {
+          "species": "Salamence-Mega",
+          "ability": "Intimidate",
+          "item": "Salamencite",
+          "role": "Intimidate + Aerilate spread (Ground-immune EQ partner)",
+          "moves": [
+            "Protect",
+            "Hyper Voice",
+            "Double-Edge",
+            "Draco Meteor"
+          ]
+        },
+        {
+          "species": "Rotom-Wash",
+          "ability": "Levitate",
+          "item": "Sitrus Berry",
+          "role": "Levitate EQ-immune support — Will-O-Wisp / Discharge",
+          "moves": [
+            "Protect",
+            "Will-O-Wisp",
+            "Discharge",
+            "Hydro Pump"
+          ]
+        },
+        {
+          "species": "Amoonguss",
+          "ability": "Regenerator",
+          "item": "Rocky Helmet",
+          "role": "Rage Powder redirection + Spore",
+          "moves": [
+            "Spore",
+            "Protect",
+            "Giga Drain",
+            "Rage Powder"
+          ]
+        },
+        {
+          "species": "Marowak-Alola",
+          "ability": "Lightning Rod",
+          "item": "Thick Club",
+          "role": "Lightning Rod Electric redirection + Thick Club Fire/Ghost nuke",
+          "moves": [
+            "Flare Blitz",
+            "Shadow Bone",
+            "Bonemerang",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/japan-sand.3589759/"
+      ]
+    },
+    {
+      "name": "TheRoomWreckers (Mega Camerupt Trick Room)",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "bulky offense + trick room (Fake Out enabler / redundant setters)",
+      "author": "OP RMT",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU RMT (thread 3535669)",
+      "strategy": "Lead a TR setter alongside a Fake Out partner to guarantee TR, then swing slow spread nukes — Sheer Force Mega Camerupt and Specs Sylveon — through the window; Cresselia and Porygon2 give two reliable setters.",
+      "members": [
+        {
+          "species": "Camerupt-Mega",
+          "ability": "Sheer Force",
+          "item": "Cameruptite",
+          "role": "main slow spread nuke under TR",
+          "moves": [
+            "Eruption",
+            "Earth Power",
+            "Heat Wave",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Hariyama",
+          "ability": "Guts",
+          "item": "Flame Orb",
+          "role": "Fake Out support + Guts physical attacker",
+          "moves": [
+            "Fake Out",
+            "Close Combat",
+            "Knock Off",
+            "Ice Punch"
+          ]
+        },
+        {
+          "species": "Escavalier",
+          "ability": "Overcoat",
+          "item": "Life Orb",
+          "role": "slow high-power physical abuser under TR",
+          "moves": [
+            "Iron Head",
+            "Megahorn",
+            "Knock Off",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Cresselia",
+          "ability": "Levitate",
+          "item": "Safety Goggles",
+          "role": "primary bulky Trick Room setter",
+          "moves": [
+            "Trick Room",
+            "Psyshock",
+            "Calm Mind",
+            "Moonlight"
+          ]
+        },
+        {
+          "species": "Sylveon",
+          "ability": "Pixilate",
+          "item": "Choice Specs",
+          "role": "Pixilate Hyper Voice spread nuke under TR",
+          "moves": [
+            "Hyper Voice",
+            "Psyshock",
+            "Shadow Ball",
+            "Hyper Beam"
+          ]
+        },
+        {
+          "species": "Porygon2",
+          "ability": "Download",
+          "item": "Eviolite",
+          "role": "secondary bulky Trick Room setter",
+          "moves": [
+            "Trick Room",
+            "Tri Attack",
+            "Ice Beam",
+            "Recover"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/mega-camerupt-trick-room-team-aka-theroomwreckers.3535669/"
+      ]
+    },
+    {
+      "name": "First RMT - OU Doubles Trick Room Team",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "bulky offense + trick room (redundant setters, screens support)",
+      "author": "jakenotawake",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU RMT (thread 3535246)",
+      "strategy": "Overload with TR setters (Aromatisse, Chandelure, Gallade, Diancie) so TR reliably goes up, with Cresselia's screens plus Wide Guard / Heal Pulse keeping abusers alive; Mega Abomasnow's snow Blizzard and Chandelure/Diancie spread finish under reversed speed.",
+      "members": [
+        {
+          "species": "Cresselia",
+          "ability": "Levitate",
+          "item": "Light Clay",
+          "role": "bulky dual-screens support / Calm Mind pivot",
+          "moves": [
+            "Moonblast",
+            "Calm Mind",
+            "Light Screen",
+            "Reflect"
+          ]
+        },
+        {
+          "species": "Aromatisse",
+          "ability": "Aroma Veil",
+          "item": "Leftovers",
+          "role": "TR setter + Aroma Veil anti-Taunt + Heal Pulse",
+          "moves": [
+            "Trick Room",
+            "Moonblast",
+            "Heal Pulse",
+            "Charge Beam"
+          ]
+        },
+        {
+          "species": "Chandelure",
+          "ability": "Infiltrator",
+          "item": "Wise Glasses",
+          "role": "TR setter + Heat Wave spread abuser",
+          "moves": [
+            "Trick Room",
+            "Heat Wave",
+            "Shadow Ball",
+            "Energy Ball"
+          ]
+        },
+        {
+          "species": "Gallade",
+          "ability": "Justified",
+          "item": "Sitrus Berry",
+          "role": "TR setter + Wide Guard / physical breaker",
+          "moves": [
+            "Close Combat",
+            "Knock Off",
+            "Wide Guard",
+            "Trick Room"
+          ]
+        },
+        {
+          "species": "Diancie",
+          "ability": "Clear Body",
+          "item": "Expert Belt",
+          "role": "TR setter + Diamond Storm spread / Heal Bell",
+          "moves": [
+            "Diamond Storm",
+            "Heal Bell",
+            "Moonblast",
+            "Trick Room"
+          ]
+        },
+        {
+          "species": "Abomasnow-Mega",
+          "ability": "Snow Warning",
+          "item": "Abomasite",
+          "role": "snow-boosted Blizzard spread abuser under TR",
+          "moves": [
+            "Blizzard",
+            "Giga Drain",
+            "Earthquake",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/first-rmt-ou-doubles-trick-room-team.3535246/"
+      ]
+    },
+    {
+      "name": "Camerupt Trick Room (DOU Team Bazaar sample)",
+      "format": "Smogon Doubles OU (Gen 7 USUM, 6v6)",
+      "archetype": "bulky offense + trick room (grassy terrain, Intimidate + Fake Out enabler)",
+      "author": "talkingtree / miltankmilk / MajorBowman",
+      "era": "Gen 7 (SM/USUM)",
+      "event": "Doubles OU Team Bazaar / Sample Teams",
+      "strategy": "Full Trick Room team: Scrafty provides Intimidate + Fake Out to buy the setup turn while Stakataka, Diancie or Porygon2 set TR, then Mega Camerupt Heat Wave, Diancie Diamond Storm and Grassy-boosted Tapu Bulu sweep under reversed speed.",
+      "members": [
+        {
+          "species": "Camerupt-Mega",
+          "ability": "Magma Armor",
+          "item": "Cameruptite",
+          "role": "main slow spread nuke under TR",
+          "moves": [
+            "Heat Wave",
+            "Earth Power",
+            "Substitute",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Stakataka",
+          "ability": "Beast Boost",
+          "item": "Shuca Berry",
+          "role": "Trick Room setter + slow Gyro Ball / Rock Slide",
+          "moves": [
+            "Gyro Ball",
+            "Rock Slide",
+            "Trick Room",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Scrafty",
+          "ability": "Intimidate",
+          "item": "Iapapa Berry",
+          "role": "Intimidate + Fake Out enabler",
+          "moves": [
+            "Fake Out",
+            "Knock Off",
+            "Low Kick",
+            "Ice Punch"
+          ]
+        },
+        {
+          "species": "Tapu Bulu",
+          "ability": "Grassy Surge",
+          "item": "Grassium Z",
+          "role": "Grassy Terrain + slow SD sweeper",
+          "moves": [
+            "Wood Hammer",
+            "Superpower",
+            "Swords Dance",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Diancie",
+          "ability": "Clear Body",
+          "item": "Weakness Policy",
+          "role": "TR setter + Diamond Storm spread abuser",
+          "moves": [
+            "Diamond Storm",
+            "Moonblast",
+            "Trick Room",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Porygon2",
+          "ability": "Download",
+          "item": "Eviolite",
+          "role": "bulky backup TR setter + BoltBeam",
+          "moves": [
+            "Thunderbolt",
+            "Ice Beam",
+            "Trick Room",
+            "Recover"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-team-bazaar-sample-teams-here-closed.3590987/"
+      ]
+    },
+    {
+      "name": "I hate trick room (ft. Conkeldurr)",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "bulky offense + trick room (Fake Out enabler / Will-O-Wisp)",
+      "author": "Matame",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU RMT (thread 3571979)",
+      "strategy": "Hoopa-Unbound and Jellicent set TR while Mega Kangaskhan's Fake Out and Jellicent's Will-O-Wisp neutralize threats; under TR, Conkeldurr, Heatran Eruption and Sylveon Hyper Voice pick up KOs. Mach Punch lets Conkeldurr work outside TR.",
+      "members": [
+        {
+          "species": "Conkeldurr",
+          "ability": "Iron Fist",
+          "item": "Life Orb",
+          "role": "slow Iron Fist wallbreaker (Mach Punch outside TR)",
+          "moves": [
+            "Hammer Arm",
+            "Mach Punch",
+            "Knock Off",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Hoopa-Unbound",
+          "ability": "Magician",
+          "item": "Safety Goggles",
+          "role": "TR setter + Hyperspace wallbreaker",
+          "moves": [
+            "Trick Room",
+            "Hyperspace Hole",
+            "Hyperspace Fury",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Kangaskhan-Mega",
+          "ability": "Parental Bond",
+          "item": "Kangaskhanite",
+          "role": "Fake Out support + double-hit attacker",
+          "moves": [
+            "Fake Out",
+            "Double-Edge",
+            "Hammer Arm",
+            "Sucker Punch"
+          ]
+        },
+        {
+          "species": "Heatran",
+          "ability": "Flash Fire",
+          "item": "Safety Goggles",
+          "role": "Eruption spread abuser under TR",
+          "moves": [
+            "Eruption",
+            "Fire Blast",
+            "Earth Power",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Jellicent",
+          "ability": "Water Absorb",
+          "item": "Mental Herb",
+          "role": "secondary bulky TR setter + Will-O-Wisp",
+          "moves": [
+            "Hydro Pump",
+            "Will-O-Wisp",
+            "Recover",
+            "Trick Room"
+          ]
+        },
+        {
+          "species": "Sylveon",
+          "ability": "Pixilate",
+          "item": "Choice Specs",
+          "role": "Pixilate Hyper Voice spread abuser under TR",
+          "moves": [
+            "Hyper Voice",
+            "Psyshock",
+            "Shadow Ball",
+            "Hyper Beam"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/i-hate-trick-room-ft-conkeldurr.3571979/"
+      ]
+    },
+    {
+      "name": "my first ever trick room team",
+      "format": "Smogon Doubles OU (Gen 7 SM, 6v6)",
+      "archetype": "bulky offense + trick room (semi-room, double Intimidate + Fake Out)",
+      "author": "134harambe134",
+      "era": "Gen 7 (SM/USUM)",
+      "event": "SM DOU RMT (thread 3589710)",
+      "strategy": "Cresselia sets TR while Scrafty (Intimidate + Fake Out) and Landorus-T (Intimidate) soften the opposing offense; slow abusers Buzzwole, Wishiwashi-School and Vikavolt clean up, and the team can play semi-room without TR.",
+      "members": [
+        {
+          "species": "Cresselia",
+          "ability": "Levitate",
+          "item": "Lum Berry",
+          "role": "bulky Trick Room setter",
+          "moves": [
+            "Psychic",
+            "Ice Beam",
+            "Shadow Ball",
+            "Trick Room"
+          ]
+        },
+        {
+          "species": "Scrafty",
+          "ability": "Intimidate",
+          "item": "Life Orb",
+          "role": "Intimidate + Fake Out / Rock Slide spread",
+          "moves": [
+            "Fake Out",
+            "Rock Slide",
+            "Drain Punch",
+            "Knock Off"
+          ]
+        },
+        {
+          "species": "Buzzwole",
+          "ability": "Beast Boost",
+          "item": "Expert Belt",
+          "role": "bulky slow physical abuser (spread EQ)",
+          "moves": [
+            "Roost",
+            "Hammer Arm",
+            "Earthquake",
+            "Ice Punch"
+          ]
+        },
+        {
+          "species": "Wishiwashi-School",
+          "ability": "Schooling",
+          "item": "Sitrus Berry",
+          "role": "slow special water breaker under TR",
+          "moves": [
+            "Hydro Pump",
+            "Ice Beam",
+            "Protect",
+            "Hidden Power Electric"
+          ]
+        },
+        {
+          "species": "Vikavolt",
+          "ability": "Levitate",
+          "item": "Electrium Z",
+          "role": "slow special attacker under TR",
+          "moves": [
+            "Bug Buzz",
+            "Thunderbolt",
+            "Air Slash",
+            "Roost"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Assault Vest",
+          "role": "Intimidate support + spread EQ / Rock Slide",
+          "moves": [
+            "Earthquake",
+            "U-turn",
+            "Rock Slide",
+            "Superpower"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/my-first-ever-trick-room-team.3589710/"
+      ]
+    },
+    {
+      "name": "Just a quick team (Oranguru TR)",
+      "format": "Smogon Doubles OU (Gen 7 SM, 6v6)",
+      "archetype": "bulky offense + trick room (Power Trick / Instruct, grassy terrain)",
+      "author": "Windustries13013",
+      "era": "Gen 7 (SM/USUM)",
+      "event": "SM DOU RMT (thread 3599293)",
+      "strategy": "Oranguru and Bronzong set TR while Bronzong's screens buy time, then Oranguru's Instruct doubles a Power Trick-boosted Shuckle EQ/Rock Slide, and Galvanize Golem-Alola adds slow nukes under TR; Tapu Bulu supplies terrain + a Sub/Seed win condition and Lanturn is the cleric.",
+      "members": [
+        {
+          "species": "Oranguru",
+          "ability": "Telepathy",
+          "item": "Mental Herb",
+          "role": "Trick Room setter + Instruct support",
+          "moves": [
+            "Trick Room",
+            "Protect",
+            "Instruct",
+            "Psychic"
+          ]
+        },
+        {
+          "species": "Shuckle",
+          "ability": "Sturdy",
+          "item": "Lum Berry",
+          "role": "Power Trick abuser, Instruct-doubled spread",
+          "moves": [
+            "Power Trick",
+            "Earthquake",
+            "Rock Slide",
+            "Gyro Ball"
+          ]
+        },
+        {
+          "species": "Tapu Bulu",
+          "ability": "Grassy Surge",
+          "item": "Leftovers",
+          "role": "Grassy Terrain + Sub/Leech Seed win condition",
+          "moves": [
+            "Substitute",
+            "Horn Leech",
+            "Leech Seed",
+            "Brick Break"
+          ]
+        },
+        {
+          "species": "Golem-Alola",
+          "ability": "Galvanize",
+          "item": "Assault Vest",
+          "role": "Galvanize nuke under TR",
+          "moves": [
+            "Explosion",
+            "Return",
+            "Earthquake",
+            "Stone Edge"
+          ]
+        },
+        {
+          "species": "Bronzong",
+          "ability": "Levitate",
+          "item": "Light Clay",
+          "role": "secondary TR setter + dual screens",
+          "moves": [
+            "Light Screen",
+            "Reflect",
+            "Trick Room",
+            "Gyro Ball"
+          ]
+        },
+        {
+          "species": "Lanturn",
+          "ability": "Volt Absorb",
+          "item": "Leftovers",
+          "role": "bulky support / Heal Bell cleric",
+          "moves": [
+            "Scald",
+            "Toxic",
+            "Heal Bell",
+            "Thunderbolt"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/just-a-quick-team-i-threw-together.3599293/"
+      ]
+    },
+    {
+      "name": "koolkranny's Togekiss Tailwind Offense",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "bulky offense + tailwind (Follow Me redirection + dual Tailwind, Wide/Quick Guard)",
+      "author": "koolkranny",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU Sample Teams",
+      "strategy": "Togekiss redirects single-target hits with Follow Me while it and Volcarona stack Tailwind, letting Mega Diancie, Life Orb Volcarona and Scarf Excadrill fire at doubled Speed. Rotom-W is a bulky pivot and Hitmontop provides Intimidate plus Wide/Quick Guard.",
+      "members": [
+        {
+          "species": "Diancie-Mega",
+          "ability": "Magic Bounce",
+          "item": "Diancite",
+          "role": "spread attacker / Magic Bounce hazard+status deflection",
+          "moves": [
+            "Diamond Storm",
+            "Moonblast",
+            "Earth Power",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Mold Breaker",
+          "item": "Choice Scarf",
+          "role": "Scarf speed control / spread EQ + Rock Slide",
+          "moves": [
+            "Drill Run",
+            "Iron Head",
+            "Earthquake",
+            "Rock Slide"
+          ]
+        },
+        {
+          "species": "Rotom-Wash",
+          "ability": "Levitate",
+          "item": "Sitrus Berry",
+          "role": "bulky Levitate pivot / Will-O-Wisp",
+          "moves": [
+            "Thunderbolt",
+            "Hydro Pump",
+            "Will-O-Wisp",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Volcarona",
+          "ability": "Flame Body",
+          "item": "Life Orb",
+          "role": "spread special attacker / secondary Tailwind setter",
+          "moves": [
+            "Heat Wave",
+            "Bug Buzz",
+            "Tailwind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Togekiss",
+          "ability": "Serene Grace",
+          "item": "Safety Goggles",
+          "role": "Follow Me redirection + Tailwind + Air Slash flinch",
+          "moves": [
+            "Air Slash",
+            "Follow Me",
+            "Tailwind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Hitmontop",
+          "ability": "Intimidate",
+          "item": "Sitrus Berry",
+          "role": "Intimidate + Wide Guard / Quick Guard",
+          "moves": [
+            "Close Combat",
+            "Quick Guard",
+            "Wide Guard",
+            "Feint"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sample-teams-for-starting-oras-doubles-old-thread.3523938/"
+      ]
+    },
+    {
+      "name": "ZapperredGrixis's Belly Drum Azumarill",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "balance + redirection (Follow Me + Belly Drum setup sweeper)",
+      "author": "ZapperredGrixis",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU Sample Teams",
+      "strategy": "Textbook redirection-off-a-setup-sweeper: Togekiss uses Follow Me so Azumarill gets a free Belly Drum, then sweeps with +6 Aqua Jet; Togekiss Thunder Wave spreads paralysis and Mega Venusaur/Rotom-W provide the defensive backbone.",
+      "members": [
+        {
+          "species": "Azumarill",
+          "ability": "Huge Power",
+          "item": "Sitrus Berry",
+          "role": "Belly Drum setup sweeper / priority Aqua Jet",
+          "moves": [
+            "Aqua Jet",
+            "Belly Drum",
+            "Play Rough",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Togekiss",
+          "ability": "Serene Grace",
+          "item": "Safety Goggles",
+          "role": "Follow Me redirection + Thunder Wave paralysis",
+          "moves": [
+            "Follow Me",
+            "Roost",
+            "Thunder Wave",
+            "Air Slash"
+          ]
+        },
+        {
+          "species": "Venusaur-Mega",
+          "ability": "Thick Fat",
+          "item": "Venusaurite",
+          "role": "bulky pivot / Leech Seed + Synthesis",
+          "moves": [
+            "Giga Drain",
+            "Sludge Bomb",
+            "Synthesis",
+            "Leech Seed"
+          ]
+        },
+        {
+          "species": "Mamoswine",
+          "ability": "Thick Fat",
+          "item": "Focus Sash",
+          "role": "Ice Shard priority / Stealth Rock",
+          "moves": [
+            "Ice Shard",
+            "Earthquake",
+            "Stealth Rock",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Rotom-Wash",
+          "ability": "Levitate",
+          "item": "Leftovers",
+          "role": "bulky Volt Switch pivot / Will-O-Wisp",
+          "moves": [
+            "Hydro Pump",
+            "Will-O-Wisp",
+            "Volt Switch",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Mold Breaker",
+          "item": "Air Balloon",
+          "role": "spread EQ / Rapid Spin hazard control",
+          "moves": [
+            "Rapid Spin",
+            "Earthquake",
+            "Rock Slide",
+            "Poison Jab"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sample-teams-for-starting-oras-doubles-old-thread.3523938/"
+      ]
+    },
+    {
+      "name": "Arcticblast's Bog-Standard Mega Kangaskhan",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "bulky offense + redirection (Rage Powder, Thunder Wave speed control)",
+      "author": "Arcticblast",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU Sample Teams",
+      "strategy": "Canonical ORAS 'bog-standard' core: Amoonguss Rage Powder redirects hits off Mega Kangaskhan as it snowballs Power-Up Punch, Prankster Thundurus provides Thunder Wave + Taunt, and Bisharp/Keldeo/Scarf Lando-T punish Intimidate and switch-ins.",
+      "members": [
+        {
+          "species": "Kangaskhan-Mega",
+          "ability": "Parental Bond",
+          "item": "Kangaskhanite",
+          "role": "Fake Out support + Power-Up Punch setup sweeper",
+          "moves": [
+            "Fake Out",
+            "Return",
+            "Sucker Punch",
+            "Power-Up Punch"
+          ]
+        },
+        {
+          "species": "Bisharp",
+          "ability": "Defiant",
+          "item": "Focus Sash",
+          "role": "Defiant anti-Intimidate / Sucker Punch priority",
+          "moves": [
+            "Protect",
+            "Knock Off",
+            "Iron Head",
+            "Sucker Punch"
+          ]
+        },
+        {
+          "species": "Amoonguss",
+          "ability": "Regenerator",
+          "item": "Sitrus Berry",
+          "role": "Rage Powder redirection + Spore",
+          "moves": [
+            "Protect",
+            "Rage Powder",
+            "Spore",
+            "Giga Drain"
+          ]
+        },
+        {
+          "species": "Thundurus",
+          "ability": "Prankster",
+          "item": "Sitrus Berry",
+          "role": "Prankster Thunder Wave speed control + Taunt",
+          "moves": [
+            "Thunder Wave",
+            "Thunderbolt",
+            "Hidden Power Ice",
+            "Taunt"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Choice Scarf",
+          "role": "Intimidate + Scarf spread EQ / U-turn",
+          "moves": [
+            "Earthquake",
+            "Stone Edge",
+            "U-turn",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Keldeo",
+          "ability": "Justified",
+          "item": "Life Orb",
+          "role": "special attacker + Quick Guard priority protection",
+          "moves": [
+            "Protect",
+            "Hydro Pump",
+            "Secret Sword",
+            "Quick Guard"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sample-teams-for-starting-oras-doubles-old-thread.3523938/"
+      ]
+    },
+    {
+      "name": "MajorBowman's Mega Charizard Y + Heatran Sun",
+      "format": "Smogon Doubles OU (Gen 7 SM, 6v6)",
+      "archetype": "bulky offense + sun + Rage Powder redirection (Intimidate / Calm Mind wincon)",
+      "author": "MajorBowman",
+      "era": "Gen 7 (SM/USUM)",
+      "event": "MajorBowman's SPL X Team Dump (SM DOU)",
+      "strategy": "Amoonguss Rage Powder soaks single-target hits so sun-boosted Mega Charizard Y and Heatran spam spread Heat Wave; Cresselia (Electric Seed under Koko's terrain) is the Calm Mind wincon with Icy Wind, Lando-T Intimidate + U-turn pivots, and Koko punishes Waters and Defogs.",
+      "members": [
+        {
+          "species": "Charizard-Mega-Y",
+          "ability": "Drought",
+          "item": "Charizardite Y",
+          "role": "Sun setter / spread Heat Wave glass cannon",
+          "moves": [
+            "Heat Wave",
+            "Solar Beam",
+            "Overheat",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Amoonguss",
+          "ability": "Regenerator",
+          "item": "Wiki Berry",
+          "role": "Rage Powder redirection + Spore",
+          "moves": [
+            "Sludge Bomb",
+            "Rage Powder",
+            "Spore",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Groundium Z",
+          "role": "Intimidate + Tectonic Rage / Stealth Rock / U-turn",
+          "moves": [
+            "Earthquake",
+            "Stone Edge",
+            "U-turn",
+            "Stealth Rock"
+          ]
+        },
+        {
+          "species": "Cresselia",
+          "ability": "Levitate",
+          "item": "Electric Seed",
+          "role": "Calm Mind bulky wincon + Icy Wind speed control",
+          "moves": [
+            "Psyshock",
+            "Icy Wind",
+            "Calm Mind",
+            "Moonlight"
+          ]
+        },
+        {
+          "species": "Tapu Koko",
+          "ability": "Electric Surge",
+          "item": "Life Orb",
+          "role": "Electric Terrain / Volt Switch pivot / Defog",
+          "moves": [
+            "Thunderbolt",
+            "Volt Switch",
+            "Defog",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Heatran",
+          "ability": "Flash Fire",
+          "item": "Shuca Berry",
+          "role": "sun-boosted Heat Wave / Flash Fire pivot / rogue check",
+          "moves": [
+            "Heat Wave",
+            "Earth Power",
+            "Hidden Power Ice",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sm-doubles-ou.3661293/",
+        "https://pokepast.es/b943bc18bbd91c3c"
+      ]
+    },
+    {
+      "name": "My Perish Trap Team (ORAS DOU)",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "balance + trapping/perish + rain (double Shadow Tag + double Perish Song, Rage Powder redirection)",
+      "author": "OP RMT",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU RMT (thread 3585212, peak #5)",
+      "strategy": "Mega Gengar and Gothitelle double-trap with Shadow Tag while Gengar and Politoed both carry Perish Song; Protect, Heal Pulse, Trick Room, Rage Powder and Spore stall the perish count so trapped foes faint. Politoed's Drizzle supports the core.",
+      "members": [
+        {
+          "species": "Gengar-Mega",
+          "ability": "Shadow Tag",
+          "item": "Gengarite",
+          "role": "primary Shadow Tag trapper + Perish Song + Disable lock",
+          "moves": [
+            "Shadow Ball",
+            "Perish Song",
+            "Disable",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Gothitelle",
+          "ability": "Shadow Tag",
+          "item": "Leftovers",
+          "role": "second Shadow Tag trapper / Trick Room + Heal Pulse",
+          "moves": [
+            "Psychic",
+            "Heal Pulse",
+            "Trick Room",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Hitmontop",
+          "ability": "Intimidate",
+          "item": "Eject Button",
+          "role": "Intimidate + Fake Out, Wide Guard vs spread",
+          "moves": [
+            "Fake Out",
+            "Sucker Punch",
+            "Wide Guard",
+            "Detect"
+          ]
+        },
+        {
+          "species": "Whimsicott",
+          "ability": "Prankster",
+          "item": "Focus Sash",
+          "role": "priority Encore/Leech Seed disruption + Light Screen",
+          "moves": [
+            "Encore",
+            "Light Screen",
+            "Leech Seed",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Politoed",
+          "ability": "Drizzle",
+          "item": "Leftovers",
+          "role": "Rain setter + second Perish Song + Hypnosis",
+          "moves": [
+            "Scald",
+            "Perish Song",
+            "Hypnosis",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Amoonguss",
+          "ability": "Regenerator",
+          "item": "Eject Button",
+          "role": "Rage Powder redirection + Spore to buy perish turns",
+          "moves": [
+            "Rage Powder",
+            "Spore",
+            "Giga Drain",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/my-perish-trap-team.3585212/"
+      ]
+    },
+    {
+      "name": "What Is This Team (triple Shadow Tag Perish Trap)",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "balance + trapping/perish (triple Shadow Tag + triple Perish Song, screens + Follow Me redirection)",
+      "author": "iliketrains11",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU RMT (thread 3546113, gimmick/fun)",
+      "strategy": "Trap both foes with Shadow Tag (Gengar, Gothitelle, Gothorita) then spam Perish Song from three ghosts; dual screens, Clefable's Follow Me + Encore, Disable, and heavy recovery/stall keep the trappers alive until the count expires.",
+      "members": [
+        {
+          "species": "Gengar-Mega",
+          "ability": "Shadow Tag",
+          "item": "Gengarite",
+          "role": "primary trapper + Perish Song + Disable/Shadow Ball",
+          "moves": [
+            "Shadow Ball",
+            "Perish Song",
+            "Disable",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Murkrow",
+          "ability": "Prankster",
+          "item": "Eviolite",
+          "role": "priority Perish Song + Foul Play, Roost sustain",
+          "moves": [
+            "Perish Song",
+            "Foul Play",
+            "Roost",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Gothitelle",
+          "ability": "Shadow Tag",
+          "item": "Sitrus Berry",
+          "role": "Shadow Tag trapper + dual screens",
+          "moves": [
+            "Light Screen",
+            "Reflect",
+            "Flash",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Gothorita",
+          "ability": "Shadow Tag",
+          "item": "Eviolite",
+          "role": "second Shadow Tag trapper + screens + Heal Pulse",
+          "moves": [
+            "Light Screen",
+            "Reflect",
+            "Heal Pulse",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Misdreavus",
+          "ability": "Levitate",
+          "item": "Eviolite",
+          "role": "third Perish Song user + Will-O-Wisp / Pain Split",
+          "moves": [
+            "Perish Song",
+            "Will-O-Wisp",
+            "Pain Split",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Clefable",
+          "ability": "Magic Guard",
+          "item": "Flame Orb",
+          "role": "Follow Me redirection + Encore, Soft-Boiled recovery",
+          "moves": [
+            "Follow Me",
+            "Encore",
+            "Soft-Boiled",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/what-is-this-team.3546113/"
+      ]
+    },
+    {
+      "name": "Whimsical Tricks (Perish Trap)",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "balance + trapping/perish + trick room (double Shadow Tag + Perish Song, Prankster + Rage Powder)",
+      "author": "OP RMT",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU RMT (thread 3569149)",
+      "strategy": "Lead Amoonguss + Mega Gengar: Rage Powder redirects while Gengar's Shadow Tag traps a foe for Perish Song, Gothitelle's second Shadow Tag guarantees the KOs, Whimsicott's Prankster Encore/Taunt stalls; Whimsicott and Gothitelle set Trick Room so slow Conkeldurr and Reuniclus clean up.",
+      "members": [
+        {
+          "species": "Gengar-Mega",
+          "ability": "Shadow Tag",
+          "item": "Gengarite",
+          "role": "primary Shadow Tag trapper + Perish Song + Disable",
+          "moves": [
+            "Perish Song",
+            "Protect",
+            "Disable",
+            "Shadow Ball"
+          ]
+        },
+        {
+          "species": "Amoonguss",
+          "ability": "Regenerator",
+          "item": "Eject Button",
+          "role": "Rage Powder redirection + Spore/Stun Spore",
+          "moves": [
+            "Rage Powder",
+            "Spore",
+            "Stun Spore",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Whimsicott",
+          "ability": "Prankster",
+          "item": "Leftovers",
+          "role": "Prankster Taunt/Encore disruption + Trick Room",
+          "moves": [
+            "Taunt",
+            "Moonblast",
+            "Encore",
+            "Trick Room"
+          ]
+        },
+        {
+          "species": "Conkeldurr",
+          "ability": "Guts",
+          "item": "Flame Orb",
+          "role": "Guts Trick Room wincon / Mach Punch priority",
+          "moves": [
+            "Knock Off",
+            "Power-Up Punch",
+            "Poison Jab",
+            "Mach Punch"
+          ]
+        },
+        {
+          "species": "Reuniclus",
+          "ability": "Magic Guard",
+          "item": "Life Orb",
+          "role": "Magic Guard special sweeper under TR",
+          "moves": [
+            "Signal Beam",
+            "Energy Ball",
+            "Flash Cannon",
+            "Psychic"
+          ]
+        },
+        {
+          "species": "Gothitelle",
+          "ability": "Shadow Tag",
+          "item": "Sitrus Berry",
+          "role": "second Shadow Tag trapper + Trick Room + Helping Hand",
+          "moves": [
+            "Trick Room",
+            "Psychic",
+            "Helping Hand",
+            "Heal Pulse"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/whimsical-tricks.3569149/"
+      ]
+    },
+    {
+      "name": "Trapping Fun Mk2 (Gothitelle trap control)",
+      "format": "Smogon Doubles OU (Gen 7 SM, 6v6)",
+      "archetype": "bulky offense + trapping control (Shadow Tag + setup sweepers, Aurora Veil screens / trick room)",
+      "author": "OP RMT",
+      "era": "Gen 7 (SM)",
+      "event": "SM DOU RMT (thread 3630695)",
+      "strategy": "Gothitelle's Shadow Tag traps a foe into a bad matchup so Zygarde (Dragon Dance) or Tapu Fini (Calm Mind) can set up safely; Aurora Veil from Alolan Ninetales, Intimidate/Fake Out from Incineroar and Trick Room/Heal Pulse buy the setup turns.",
+      "members": [
+        {
+          "species": "Ninetales-Alola",
+          "ability": "Snow Warning",
+          "item": "Light Clay",
+          "role": "Aurora Veil screens + snow + Freeze-Dry spread",
+          "moves": [
+            "Freeze-Dry",
+            "Moonblast",
+            "Aurora Veil",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Gothitelle",
+          "ability": "Shadow Tag",
+          "item": "Wiki Berry",
+          "role": "Shadow Tag trapper + Trick Room + Helping Hand/Heal Pulse",
+          "moves": [
+            "Heal Pulse",
+            "Helping Hand",
+            "Trick Room",
+            "Recycle"
+          ]
+        },
+        {
+          "species": "Incineroar",
+          "ability": "Intimidate",
+          "item": "Assault Vest",
+          "role": "Intimidate + Fake Out + U-turn pivot",
+          "moves": [
+            "Fake Out",
+            "Flare Blitz",
+            "Knock Off",
+            "U-turn"
+          ]
+        },
+        {
+          "species": "Tapu Fini",
+          "ability": "Misty Surge",
+          "item": "Mago Berry",
+          "role": "Calm Mind sweeper set up behind the trap",
+          "moves": [
+            "Calm Mind",
+            "Muddy Water",
+            "Moonblast",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Zygarde",
+          "ability": "Aura Break",
+          "item": "Groundium Z",
+          "role": "Dragon Dance + Thousand Arrows sweeper behind the trap",
+          "moves": [
+            "Thousand Arrows",
+            "Extreme Speed",
+            "Dragon Dance",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Genesect",
+          "ability": "Download",
+          "item": "Expert Belt",
+          "role": "spread special attacker / secondary breaker",
+          "moves": [
+            "Flash Cannon",
+            "Flamethrower",
+            "Blizzard",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/trapping-fun-mk2.3630695/"
+      ]
+    },
+    {
+      "name": "GenOne's Skill Swap Perish Trap",
+      "format": "Smogon Doubles OU (Gen 7 SM/USUM, 6v6)",
+      "archetype": "balance + trapping/perish + rain + trick room (Skill Swap Shadow Tag & Perish Song)",
+      "author": "GenOne",
+      "era": "Gen 7 (SM/USUM)",
+      "event": "DOU Team Bazaar 2.0 sample",
+      "strategy": "Gothitelle and Politoed fire Perish Song on trapped foes, then Gothitelle Skill Swaps Shadow Tag onto a bulky partner so it can cycle out; doubles as a semi-Trick-Room / rain team (Drizzle + Swift Swim Kingdra) that can win without perishing.",
+      "members": [
+        {
+          "species": "Scizor-Mega",
+          "ability": "Technician",
+          "item": "Scizorite",
+          "role": "Swords Dance + Bullet Punch priority cleaner",
+          "moves": [
+            "Bullet Punch",
+            "Bug Bite",
+            "Swords Dance",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Incineroar",
+          "ability": "Intimidate",
+          "item": "Figy Berry",
+          "role": "Intimidate + Fake Out + U-turn / Skill Swap host",
+          "moves": [
+            "Fake Out",
+            "Flare Blitz",
+            "Knock Off",
+            "U-turn"
+          ]
+        },
+        {
+          "species": "Kingdra",
+          "ability": "Swift Swim",
+          "item": "Waterium Z",
+          "role": "rain wincon / spread attacker",
+          "moves": [
+            "Muddy Water",
+            "Hydro Pump",
+            "Draco Meteor",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Politoed",
+          "ability": "Drizzle",
+          "item": "Wiki Berry",
+          "role": "Rain setter + Perish Song, bulky Skill Swap host",
+          "moves": [
+            "Scald",
+            "Ice Beam",
+            "Perish Song",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Tapu Bulu",
+          "ability": "Grassy Surge",
+          "item": "Figy Berry",
+          "role": "SD Grassy-Terrain breaker / Skill Swap host",
+          "moves": [
+            "Wood Hammer",
+            "Superpower",
+            "Swords Dance",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Gothitelle",
+          "ability": "Shadow Tag",
+          "item": "Wiki Berry",
+          "role": "Shadow Tag trapper + Skill Swaps trap onto partner + Trick Room",
+          "moves": [
+            "Psychic",
+            "Skill Swap",
+            "Trick Room",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-team-bazaar-2-0.3645989/"
+      ]
+    },
+    {
+      "name": "Perish Trap in SM Doubles OU",
+      "format": "Smogon Doubles OU (Gen 7 SM, 6v6)",
+      "archetype": "balance + trapping/perish (double Shadow Tag + Perish Song, Soundproof partner)",
+      "author": "OP RMT",
+      "era": "Gen 7 (SM/USUM pre-Gengarite ban)",
+      "event": "PokemonDB Rate My Team — SM Doubles OU",
+      "strategy": "Mega Gengar traps a foe with Shadow Tag and fires Perish Song while Gothitelle pins the second; Kommo-o's Soundproof makes it immune to the team's own Perish Song, so it pressures (Dragon Dance) while traps resolve. Gastrodon and Rotom-Heat/Eelektross give immunity pivots.",
+      "members": [
+        {
+          "species": "Kommo-o",
+          "ability": "Soundproof",
+          "item": "Roseli Berry",
+          "role": "Perish-immune Dragon Dance sweeper",
+          "moves": [
+            "Brick Break",
+            "Dragon Claw",
+            "Poison Jab",
+            "Dragon Dance"
+          ]
+        },
+        {
+          "species": "Gengar-Mega",
+          "ability": "Shadow Tag",
+          "item": "Gengarite",
+          "role": "primary Shadow Tag trapper + Perish Song",
+          "moves": [
+            "Perish Song",
+            "Dazzling Gleam",
+            "Giga Drain",
+            "Shadow Ball"
+          ]
+        },
+        {
+          "species": "Gothitelle",
+          "ability": "Shadow Tag",
+          "item": "Assault Vest",
+          "role": "second Shadow Tag trapper + bulky AV attacker",
+          "moves": [
+            "Hidden Power Rock",
+            "Psychic",
+            "Shadow Ball",
+            "Energy Ball"
+          ]
+        },
+        {
+          "species": "Eelektross",
+          "ability": "Levitate",
+          "item": "Leftovers",
+          "role": "bulky special attacker / Ground-immune pivot",
+          "moves": [
+            "Dragon Pulse",
+            "Giga Drain",
+            "Discharge",
+            "Flamethrower"
+          ]
+        },
+        {
+          "species": "Gastrodon",
+          "ability": "Storm Drain",
+          "item": "Rindo Berry",
+          "role": "Storm Drain Water-immune wall + Clear Smog/Recover",
+          "moves": [
+            "Earthquake",
+            "Clear Smog",
+            "Recover",
+            "Scald"
+          ]
+        },
+        {
+          "species": "Rotom-Heat",
+          "ability": "Levitate",
+          "item": "Sitrus Berry",
+          "role": "Volt Switch pivot + Will-O-Wisp",
+          "moves": [
+            "Discharge",
+            "Volt Switch",
+            "Will-O-Wisp",
+            "Overheat"
+          ]
+        }
+      ],
+      "sources": [
+        "https://pokemondb.net/pokebase/rmt/45929/perish-trap-in-sm-doubles-ou"
+      ]
+    },
+    {
+      "name": "Memoric's Tailwind Balance",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "balance + tailwind (dual Tailwind speed control, Fake Out + priority disruptors)",
+      "author": "Memoric",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU Sample Teams thread (3523938)",
+      "strategy": "Two Tailwind setters (Suicune, Latios) guarantee the speed window; Mega Kangaskhan, Breloom's Mach Punch and Heatran's Heat Wave clean under it while Intimidate + Fake Out + priority soften the field. Field-control balance built to keep resetting Tailwind.",
+      "members": [
+        {
+          "species": "Kangaskhan-Mega",
+          "ability": "Parental Bond",
+          "item": "Kangaskhanite",
+          "role": "Fake Out support + Power-Up Punch setup + Sucker Punch",
+          "moves": [
+            "Fake Out",
+            "Return",
+            "Power-Up Punch",
+            "Sucker Punch"
+          ]
+        },
+        {
+          "species": "Breloom",
+          "ability": "Technician",
+          "item": "Focus Sash",
+          "role": "Spore disruptor + Mach Punch priority breaker",
+          "moves": [
+            "Mach Punch",
+            "Bullet Seed",
+            "Spore",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Suicune",
+          "ability": "Pressure",
+          "item": "Sitrus Berry",
+          "role": "bulky Tailwind setter #1 / spread pivot",
+          "moves": [
+            "Hydro Pump",
+            "Ice Beam",
+            "Tailwind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Heatran",
+          "ability": "Flash Fire",
+          "item": "Leftovers",
+          "role": "spread Heat Wave / Substitute pivot",
+          "moves": [
+            "Heat Wave",
+            "Earth Power",
+            "Substitute",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Latios",
+          "ability": "Levitate",
+          "item": "Life Orb",
+          "role": "offensive Tailwind setter #2 + special breaker",
+          "moves": [
+            "Draco Meteor",
+            "Psyshock",
+            "Tailwind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Choice Scarf",
+          "role": "Intimidate + Scarf spread EQ / U-turn",
+          "moves": [
+            "Earthquake",
+            "Stone Edge",
+            "U-turn",
+            "Superpower"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sample-teams-for-starting-oras-doubles-old-thread.3523938/"
+      ]
+    },
+    {
+      "name": "qsns' Talonflame Squad",
+      "format": "Smogon Doubles OU (Gen 7 SM, 6v6)",
+      "archetype": "balance + tailwind + redirection (Gale Wings Tailwind, Follow Me, Fake Out, Icy Wind, Intimidate)",
+      "author": "qsns",
+      "era": "Gen 7 (SM/USUM)",
+      "event": "Doubles OU Team Bazaar Sample Teams",
+      "strategy": "Talonflame sets Tailwind with priority at full HP (Flyinium Z avoids recoil to keep Gale Wings online), backed by layered speed control (Icy Wind, Intimidate); Jirachi's Follow Me redirects off the setup turn, then Hoopa-U, Mega Kangaskhan and Talonflame priority break under Tailwind. Fini Misty Terrain + Calm Mind is the late wincon.",
+      "members": [
+        {
+          "species": "Kangaskhan-Mega",
+          "ability": "Parental Bond",
+          "item": "Kangaskhanite",
+          "role": "Fake Out + Icy Wind speed control + Seismic Toss chip",
+          "moves": [
+            "Fake Out",
+            "Seismic Toss",
+            "Icy Wind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Choice Scarf",
+          "role": "Intimidate + Scarf spread + U-turn",
+          "moves": [
+            "Earthquake",
+            "U-turn",
+            "Rock Slide",
+            "Stone Edge"
+          ]
+        },
+        {
+          "species": "Tapu Fini",
+          "ability": "Misty Surge",
+          "item": "Leftovers",
+          "role": "Misty Terrain + Calm Mind bulky wincon",
+          "moves": [
+            "Calm Mind",
+            "Muddy Water",
+            "Moonblast",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Talonflame",
+          "ability": "Gale Wings",
+          "item": "Flyinium Z",
+          "role": "priority Tailwind setter; Flyinium Z preserves HP for Gale Wings",
+          "moves": [
+            "Brave Bird",
+            "Flare Blitz",
+            "Tailwind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Hoopa-Unbound",
+          "ability": "Magician",
+          "item": "Life Orb",
+          "role": "mixed wallbreaker under Tailwind",
+          "moves": [
+            "Hyperspace Fury",
+            "Hyperspace Hole",
+            "Hidden Power Ice",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Jirachi",
+          "ability": "Serene Grace",
+          "item": "Sitrus Berry",
+          "role": "Follow Me redirection + Icy Wind + Stealth Rock",
+          "moves": [
+            "Follow Me",
+            "Iron Head",
+            "Icy Wind",
+            "Stealth Rock"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-team-bazaar-sample-teams-here-closed.3590987/"
+      ]
+    },
+    {
+      "name": "Ray Majore's Double-Tailwind Offense",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "bulky offense + tailwind (double Tailwind speed control, priority + Intimidate + Fake Out)",
+      "author": "Ray Majore",
+      "era": "Gen 6 (ORAS)",
+      "event": "Sample Teams for starting ORAS Doubles thread",
+      "strategy": "Two bulky Tailwind setters (Suicune and Zapdos) keep the speed window near-permanent; Mega Kangaskhan, Sash Breloom and Scarf Lando-T overwhelm under it, with Fake Out, Intimidate, Spore and Mach Punch/Sucker Punch priority as the disruptive backbone and SubKing Aegislash as a breaker.",
+      "members": [
+        {
+          "species": "Suicune",
+          "ability": "Pressure",
+          "item": "Sitrus Berry",
+          "role": "bulky Tailwind setter #1 / spread pivot",
+          "moves": [
+            "Hydro Pump",
+            "Ice Beam",
+            "Tailwind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Pressure",
+          "item": "Sitrus Berry",
+          "role": "bulky Tailwind setter #2 + spread Heat Wave/Thunderbolt",
+          "moves": [
+            "Thunderbolt",
+            "Hidden Power Ice",
+            "Heat Wave",
+            "Tailwind"
+          ]
+        },
+        {
+          "species": "Kangaskhan-Mega",
+          "ability": "Parental Bond",
+          "item": "Kangaskhanite",
+          "role": "Fake Out + Power-Up Punch + Sucker Punch priority",
+          "moves": [
+            "Fake Out",
+            "Return",
+            "Power-Up Punch",
+            "Sucker Punch"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Choice Scarf",
+          "role": "Intimidate + Scarf spread + U-turn",
+          "moves": [
+            "Rock Slide",
+            "Earthquake",
+            "U-turn",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Breloom",
+          "ability": "Technician",
+          "item": "Focus Sash",
+          "role": "Spore disruptor + Mach Punch priority breaker",
+          "moves": [
+            "Mach Punch",
+            "Bullet Seed",
+            "Spore",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Aegislash",
+          "ability": "Stance Change",
+          "item": "Leftovers",
+          "role": "bulky SubKing breaker / defensive pivot",
+          "moves": [
+            "Shadow Ball",
+            "Flash Cannon",
+            "Substitute",
+            "King's Shield"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sample-teams-for-starting-oras-doubles-old-thread.3523938/page-2"
+      ]
+    },
+    {
+      "name": "Sea of Fire (Absollite's Doubles Hyper Offense)",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "hyper offense + sun (Pledge combo / weather offense, Wide Guard support)",
+      "author": "Absollite",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU RMT (thread 3544066)",
+      "strategy": "Fire Pledge (Charizard-Y) + Grass Pledge (Chlorophyll Venusaur) create a 'sea of fire' that chips the field each turn while Drought doubles Venusaur's Speed; Sleep Powder + Aegislash Wide Guard open turns, Azumarill Aqua Jet and Scarf Excadrill Rock Slide close.",
+      "members": [
+        {
+          "species": "Charizard-Mega-Y",
+          "ability": "Drought",
+          "item": "Charizardite Y",
+          "role": "Sun setter + Fire Pledge spread / special attacker",
+          "moves": [
+            "Protect",
+            "Fire Pledge",
+            "Solar Beam",
+            "Dragon Pulse"
+          ]
+        },
+        {
+          "species": "Venusaur",
+          "ability": "Chlorophyll",
+          "item": "Life Orb",
+          "role": "Chlorophyll sun sweeper + Grass Pledge + Sleep Powder",
+          "moves": [
+            "Protect",
+            "Grass Pledge",
+            "Sludge Bomb",
+            "Sleep Powder"
+          ]
+        },
+        {
+          "species": "Azumarill",
+          "ability": "Huge Power",
+          "item": "Assault Vest",
+          "role": "Aqua Jet priority win button / bulky attacker",
+          "moves": [
+            "Waterfall",
+            "Play Rough",
+            "Aqua Jet",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Thundurus",
+          "ability": "Prankster",
+          "item": "Life Orb",
+          "role": "Prankster Thunder Wave / Taunt disruptor",
+          "moves": [
+            "Thunder Wave",
+            "Taunt",
+            "Thunderbolt",
+            "Hidden Power Ice"
+          ]
+        },
+        {
+          "species": "Aegislash",
+          "ability": "Stance Change",
+          "item": "Weakness Policy",
+          "role": "Wide Guard support + WP sweep mode",
+          "moves": [
+            "King's Shield",
+            "Shadow Ball",
+            "Flash Cannon",
+            "Wide Guard"
+          ]
+        },
+        {
+          "species": "Excadrill",
+          "ability": "Mold Breaker",
+          "item": "Choice Scarf",
+          "role": "Scarf speed control + spread Rock Slide",
+          "moves": [
+            "Earthquake",
+            "Iron Head",
+            "Rock Slide",
+            "Drill Run"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sea-of-fire-a-doubles-hyper-offense-team.3544066/"
+      ]
+    },
+    {
+      "name": "Gardevoir Tailwind Offense (RebornFX)",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "bulky offense + tailwind + redirection (Gale Wings Tailwind, Rage Powder, double priority)",
+      "author": "RebornFX",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU RMT (thread 3572280)",
+      "strategy": "Talonflame's Gale Wings priority Tailwind flips the speed war so Mega Gardevoir's Pixilate Hyper Voice spreads damage; Amoonguss Rage Powder redirects off the frail Mega, Bisharp Sucker Punch + Talonflame Brave Bird supply priority, and Scarf Lando-T adds Intimidate + backup speed.",
+      "members": [
+        {
+          "species": "Gardevoir-Mega",
+          "ability": "Pixilate",
+          "item": "Gardevoirite",
+          "role": "primary spread attacker (Pixilate Hyper Voice)",
+          "moves": [
+            "Hyper Voice",
+            "Psychic",
+            "Focus Blast",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Rotom-Wash",
+          "ability": "Levitate",
+          "item": "Sitrus Berry",
+          "role": "bulky pivot + Thunder Wave speed control",
+          "moves": [
+            "Hydro Pump",
+            "Thunderbolt",
+            "Thunder Wave",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Bisharp",
+          "ability": "Defiant",
+          "item": "Life Orb",
+          "role": "priority Sucker Punch / anti-Intimidate Defiant",
+          "moves": [
+            "Knock Off",
+            "Sucker Punch",
+            "Iron Head",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Talonflame",
+          "ability": "Gale Wings",
+          "item": "Life Orb",
+          "role": "priority Tailwind setter + priority Brave Bird",
+          "moves": [
+            "Overheat",
+            "Brave Bird",
+            "Tailwind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Choice Scarf",
+          "role": "Scarf speed control + Intimidate + spread Rock Slide",
+          "moves": [
+            "Earthquake",
+            "Rock Slide",
+            "U-turn",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Amoonguss",
+          "ability": "Regenerator",
+          "item": "Rocky Helmet",
+          "role": "Rage Powder redirection + Spore",
+          "moves": [
+            "Rage Powder",
+            "Spore",
+            "Giga Drain",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/gardevoir-tailwind-offense-first-rmt.3572280/"
+      ]
+    },
+    {
+      "name": "KyleCole's Mega Mence + Azu",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "hyper offense (goodstuffs / dual setup sweep + Rage Powder redirection, Scarf speed control)",
+      "author": "KyleCole",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU sample team (starting ORAS Doubles thread)",
+      "strategy": "Two independent setup win conditions — Dragon Dance Mega Salamence and Belly Drum Azumarill — are shielded into their boost by Amoonguss Rage Powder and Thundurus Prankster Thunder Wave/Taunt, while Intimidate and Scarf Genesect U-turn provide the pivot/speed backbone; Heatran spreads Heat Wave.",
+      "members": [
+        {
+          "species": "Salamence-Mega",
+          "ability": "Aerilate",
+          "item": "Salamencite",
+          "role": "Dragon Dance setup sweeper + Intimidate on entry",
+          "moves": [
+            "Dragon Claw",
+            "Frustration",
+            "Dragon Dance",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Azumarill",
+          "ability": "Huge Power",
+          "item": "Sitrus Berry",
+          "role": "Belly Drum setup sweeper + Aqua Jet priority",
+          "moves": [
+            "Belly Drum",
+            "Play Rough",
+            "Aqua Jet",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Heatran",
+          "ability": "Flash Fire",
+          "item": "Shuca Berry",
+          "role": "spread Heat Wave + Will-O-Wisp",
+          "moves": [
+            "Heat Wave",
+            "Earth Power",
+            "Will-O-Wisp",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Amoonguss",
+          "ability": "Regenerator",
+          "item": "Sitrus Berry",
+          "role": "Rage Powder redirection + Spore (buys setup turn)",
+          "moves": [
+            "Spore",
+            "Rage Powder",
+            "Giga Drain",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Thundurus",
+          "ability": "Prankster",
+          "item": "Sitrus Berry",
+          "role": "Prankster Thunder Wave / Taunt disruptor",
+          "moves": [
+            "Thunderbolt",
+            "Hidden Power Ice",
+            "Thunder Wave",
+            "Taunt"
+          ]
+        },
+        {
+          "species": "Genesect",
+          "ability": "Download",
+          "item": "Choice Scarf",
+          "role": "Scarf speed control / U-turn pivot",
+          "moves": [
+            "U-turn",
+            "Iron Head",
+            "Flamethrower",
+            "Ice Beam"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sample-teams-for-starting-oras-doubles-old-thread.3523938/"
+      ]
+    },
+    {
+      "name": "darzy7's Tailwind HO",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "hyper offense + tailwind (double Tailwind, Fake Out + priority)",
+      "author": "darzy7",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU RMT (thread 3573712)",
+      "strategy": "Author-stated Tailwind HO: two Tailwind setters (Gale Wings Talonflame + Zapdos) guarantee the speed lead so Mega Kangaskhan Fake Out, Sylveon Hyper Voice and Bisharp Sucker Punch overwhelm before the opponent stabilizes; Ferrothorn is the lone bulky glue.",
+      "members": [
+        {
+          "species": "Kangaskhan-Mega",
+          "ability": "Parental Bond",
+          "item": "Kangaskhanite",
+          "role": "Fake Out lead + Parental Bond attacker",
+          "moves": [
+            "Fake Out",
+            "Frustration",
+            "Low Kick",
+            "Sucker Punch"
+          ]
+        },
+        {
+          "species": "Ferrothorn",
+          "ability": "Iron Barbs",
+          "item": "Rocky Helmet",
+          "role": "bulky support (Leech Seed / Power Whip)",
+          "moves": [
+            "Gyro Ball",
+            "Leech Seed",
+            "Protect",
+            "Power Whip"
+          ]
+        },
+        {
+          "species": "Talonflame",
+          "ability": "Gale Wings",
+          "item": "Life Orb",
+          "role": "priority Tailwind setter #1 + Brave Bird",
+          "moves": [
+            "Brave Bird",
+            "Flare Blitz",
+            "Protect",
+            "Tailwind"
+          ]
+        },
+        {
+          "species": "Zapdos",
+          "ability": "Static",
+          "item": "Safety Goggles",
+          "role": "Tailwind setter #2 + Thunderbolt",
+          "moves": [
+            "Thunderbolt",
+            "Hidden Power Ground",
+            "Tailwind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Sylveon",
+          "ability": "Pixilate",
+          "item": "Life Orb",
+          "role": "Pixilate Hyper Voice spread attacker",
+          "moves": [
+            "Hyper Voice",
+            "Psyshock",
+            "Hidden Power Ground",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Bisharp",
+          "ability": "Defiant",
+          "item": "Focus Sash",
+          "role": "priority Sucker Punch + anti-Intimidate",
+          "moves": [
+            "Knock Off",
+            "Sucker Punch",
+            "Iron Head",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/oras-doubles-ou-team-first-rmt.3573712/"
+      ]
+    },
+    {
+      "name": "xzern's double penetration",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "hyper offense (goodstuffs, double priority + Shadow Tag trapping + Scarf speed control)",
+      "author": "xzern",
+      "era": "Gen 6 (ORAS, pre-Shaymin-Sky ban)",
+      "event": "ORAS DOU sample team (starting ORAS Doubles thread)",
+      "strategy": "Early-ORAS goodstuffs hyper offense of six offensive threats around a Keldeo + Skymin core: Bisharp Sucker Punch is the priority win button, Serene Grace Shaymin-Sky spreads Air Slash flinches, Mega Gengar traps with Shadow Tag, Keldeo breaks bulk, Scarf Lando-T provides speed control + Intimidate, Ferrothorn glues.",
+      "members": [
+        {
+          "species": "Bisharp",
+          "ability": "Defiant",
+          "item": "Life Orb",
+          "role": "priority win button (Sucker Punch) + anti-Intimidate",
+          "moves": [
+            "Sucker Punch",
+            "Knock Off",
+            "Iron Head",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Ferrothorn",
+          "ability": "Iron Barbs",
+          "item": "Rocky Helmet",
+          "role": "bulky glue (Leech Seed / Thunder Wave)",
+          "moves": [
+            "Leech Seed",
+            "Thunder Wave",
+            "Protect",
+            "Gyro Ball"
+          ]
+        },
+        {
+          "species": "Gengar-Mega",
+          "ability": "Shadow Tag",
+          "item": "Gengarite",
+          "role": "fast trapping attacker + Will-O-Wisp",
+          "moves": [
+            "Sludge Bomb",
+            "Shadow Ball",
+            "Protect",
+            "Will-O-Wisp"
+          ]
+        },
+        {
+          "species": "Keldeo-Resolute",
+          "ability": "Justified",
+          "item": "Life Orb",
+          "role": "offensive breaker + Quick Guard vs priority",
+          "moves": [
+            "Hydro Pump",
+            "Secret Sword",
+            "Quick Guard",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Choice Scarf",
+          "role": "Scarf speed control + Intimidate + spread Rock Slide",
+          "moves": [
+            "Earthquake",
+            "Rock Slide",
+            "U-turn",
+            "Superpower"
+          ]
+        },
+        {
+          "species": "Shaymin-Sky",
+          "ability": "Serene Grace",
+          "item": "Life Orb",
+          "role": "Air Slash spread attacker (flinch pressure)",
+          "moves": [
+            "Air Slash",
+            "Seed Flare",
+            "Protect",
+            "Earth Power"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sample-teams-for-starting-oras-doubles-old-thread.3523938/"
+      ]
+    },
+    {
+      "name": "SingleThunder's Rain (SplatSplish)",
+      "format": "Gen 6 ORAS Doubles OU (6v6)",
+      "archetype": "bulky offense + rain (Swift Swim race, Prankster Rain Dance + Quick Guard)",
+      "author": "SingleThunder",
+      "era": "Gen 6 (ORAS)",
+      "event": "ORAS DOU sample team (sample-teams thread)",
+      "strategy": "Politoed's Drizzle powers Swift Swim Mega Swampert and Kingdra to doubled Speed for a rain race, while Prankster Thundurus keeps rain up with priority Rain Dance and disrupts via Taunt/Thunder Wave; AV Goodra spreads Muddy Water and Mienshao adds Fake Out + Quick Guard.",
+      "members": [
+        {
+          "species": "Politoed",
+          "ability": "Drizzle",
+          "item": "Damp Rock",
+          "role": "Rain setter + Helping Hand support",
+          "moves": [
+            "Scald",
+            "Protect",
+            "Helping Hand",
+            "Attract"
+          ]
+        },
+        {
+          "species": "Swampert-Mega",
+          "ability": "Swift Swim",
+          "item": "Swampertite",
+          "role": "Swift Swim physical rain sweeper",
+          "moves": [
+            "Earthquake",
+            "Waterfall",
+            "Ice Punch",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Thundurus",
+          "ability": "Prankster",
+          "item": "Focus Sash",
+          "role": "Prankster Rain Dance backup + Taunt / Thunder Wave",
+          "moves": [
+            "Thunder Wave",
+            "Taunt",
+            "Rain Dance",
+            "Thunderbolt"
+          ]
+        },
+        {
+          "species": "Kingdra",
+          "ability": "Swift Swim",
+          "item": "Life Orb",
+          "role": "Swift Swim special rain sweeper",
+          "moves": [
+            "Dragon Pulse",
+            "Hydro Pump",
+            "Ice Beam",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Goodra",
+          "ability": "Sap Sipper",
+          "item": "Assault Vest",
+          "role": "bulky special attacker + Muddy Water spread",
+          "moves": [
+            "Ice Beam",
+            "Sludge Bomb",
+            "Muddy Water",
+            "Thunder"
+          ]
+        },
+        {
+          "species": "Mienshao",
+          "ability": "Inner Focus",
+          "item": "Lum Berry",
+          "role": "Fake Out support + Quick Guard",
+          "moves": [
+            "Fake Out",
+            "Drain Punch",
+            "Knock Off",
+            "Quick Guard"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/sample-teams-for-starting-oras-doubles-old-thread.3523938/"
+      ]
+    },
+    {
+      "name": "Psyshroom Rain (Ryan5374)",
+      "format": "Gen 7 USUM Doubles OU (6v6)",
+      "archetype": "hyper offense + rain + double Tailwind (Psychic Terrain priority block + Rage Powder redirection)",
+      "author": "Ryan5374",
+      "era": "Gen 7 (SM/USUM)",
+      "event": "DOU RMT (thread 3713353, peaked #5)",
+      "strategy": "Pelipper Drizzle sets rain; Pelipper and Kartana both carry Tailwind so non-Swift-Swim members also outspeed while Mega Swampert and Kingdra dominate in rain. Tapu Lele's Psychic Terrain blocks priority and rain makes Thunder never miss; Amoonguss redirects and Spores; Kingdra's Waterium Z is the nuke.",
+      "members": [
+        {
+          "species": "Swampert-Mega",
+          "ability": "Swift Swim",
+          "item": "Swampertite",
+          "role": "Swift Swim rain physical sweeper",
+          "moves": [
+            "Earthquake",
+            "Waterfall",
+            "Ice Punch",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Pelipper",
+          "ability": "Drizzle",
+          "item": "Eject Button",
+          "role": "Rain setter + Tailwind + Eject pivot",
+          "moves": [
+            "Hurricane",
+            "Scald",
+            "Tailwind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Kingdra",
+          "ability": "Swift Swim",
+          "item": "Waterium Z",
+          "role": "Swift Swim rain special sweeper (Hydro Vortex nuke)",
+          "moves": [
+            "Muddy Water",
+            "Draco Meteor",
+            "Ice Beam",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Tapu Lele",
+          "ability": "Psychic Surge",
+          "item": "Life Orb",
+          "role": "spread coverage + Psychic Terrain priority block + rain Thunder",
+          "moves": [
+            "Psyshock",
+            "Moonblast",
+            "Focus Blast",
+            "Thunder"
+          ]
+        },
+        {
+          "species": "Amoonguss",
+          "ability": "Regenerator",
+          "item": "Wiki Berry",
+          "role": "Rage Powder redirection + Spore",
+          "moves": [
+            "Rage Powder",
+            "Spore",
+            "Sludge Bomb",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Kartana",
+          "ability": "Beast Boost",
+          "item": "Focus Sash",
+          "role": "second Tailwind setter + Beast Boost attacker",
+          "moves": [
+            "Leaf Blade",
+            "Sacred Sword",
+            "Tailwind",
+            "Protect"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-peaked-5-on-ladder-psyshroom-rain.3713353/"
+      ]
+    },
+    {
+      "name": "Platinum God n1n1's Charizard-Y Sun",
+      "format": "Gen 7 USUM Doubles OU (6v6)",
+      "archetype": "hyper offense + sun (Tailwind + Trick Room backup, Intimidate support)",
+      "author": "Platinum God n1n1",
+      "era": "Gen 7 (USUM)",
+      "event": "DOU Team Bazaar 2.0",
+      "strategy": "Mega Charizard-Y brings its own sun, a boosted spread Heat Wave and rare Tailwind speed control; Kartana Substitute and Specs Tapu Koko punch holes, Intimidate Lando-T supports with hazards, and Diancie + Cresselia give a Trick Room / Icy Wind backup mode to flip slow matchups.",
+      "members": [
+        {
+          "species": "Charizard-Mega-Y",
+          "ability": "Drought",
+          "item": "Charizardite Y",
+          "role": "Sun setter + Tailwind + spread Heat Wave",
+          "moves": [
+            "Heat Wave",
+            "Solar Beam",
+            "Tailwind",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Landorus-Therian",
+          "ability": "Intimidate",
+          "item": "Wiki Berry",
+          "role": "Intimidate support + Stealth Rock / Defog",
+          "moves": [
+            "Earth Power",
+            "Hidden Power Ice",
+            "Defog",
+            "Stealth Rock"
+          ]
+        },
+        {
+          "species": "Kartana",
+          "ability": "Beast Boost",
+          "item": "Figy Berry",
+          "role": "Substitute setup attacker / Beast Boost",
+          "moves": [
+            "Leaf Blade",
+            "Sacred Sword",
+            "Substitute",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Diancie",
+          "ability": "Clear Body",
+          "item": "Rockium Z",
+          "role": "spread Diamond Storm nuke + Trick Room backup setter",
+          "moves": [
+            "Diamond Storm",
+            "Moonblast",
+            "Trick Room",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Cresselia",
+          "ability": "Levitate",
+          "item": "Electric Seed",
+          "role": "bulky Calm Mind + Icy Wind speed control",
+          "moves": [
+            "Psyshock",
+            "Icy Wind",
+            "Calm Mind",
+            "Moonlight"
+          ]
+        },
+        {
+          "species": "Tapu Koko",
+          "ability": "Electric Surge",
+          "item": "Choice Specs",
+          "role": "Specs Electric spam + Electric Terrain",
+          "moves": [
+            "Thunderbolt",
+            "Volt Switch",
+            "Dazzling Gleam",
+            "Hidden Power Ice"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-team-bazaar-2-0.3645989/"
+      ]
+    },
+    {
+      "name": "n10siT's Dragon Dance Offense",
+      "format": "Gen 7 USUM Doubles OU (6v6)",
+      "archetype": "hyper offense + tailwind (double Dragon Dance setup, Intimidate + Fake Out enabler)",
+      "author": "n10siT",
+      "era": "Gen 7 (USUM)",
+      "event": "DOU Team Bazaar 2.0",
+      "strategy": "Two Dragon Dance setup sweepers — Sub Zygarde (Thousand Arrows) and Mega Salamence (Aerilate Return) — are enabled by Mew's Tailwind + Fake Out and Incineroar's Intimidate/Fake Out, with Tapu Fini and Tapu Koko as the terrain/coverage backbone; once +1 behind support, a dancer snowballs.",
+      "members": [
+        {
+          "species": "Zygarde",
+          "ability": "Aura Break",
+          "item": "Figy Berry",
+          "role": "Dragon Dance sweeper (Thousand Arrows behind Substitute)",
+          "moves": [
+            "Thousand Arrows",
+            "Dragon Dance",
+            "Substitute",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Salamence-Mega",
+          "ability": "Aerilate",
+          "item": "Salamencite",
+          "role": "Dragon Dance sweeper (Aerilate Return) + Intimidate on switch-in",
+          "moves": [
+            "Return",
+            "Dragon Dance",
+            "Roost",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Incineroar",
+          "ability": "Intimidate",
+          "item": "Figy Berry",
+          "role": "Intimidate + Fake Out + U-turn pivot",
+          "moves": [
+            "Fake Out",
+            "Knock Off",
+            "Flare Blitz",
+            "U-turn"
+          ]
+        },
+        {
+          "species": "Tapu Fini",
+          "ability": "Misty Surge",
+          "item": "Wiki Berry",
+          "role": "bulky support (Heal Pulse / Nature's Madness) + Misty Terrain",
+          "moves": [
+            "Moonblast",
+            "Nature's Madness",
+            "Heal Pulse",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Tapu Koko",
+          "ability": "Electric Surge",
+          "item": "Normalium Z",
+          "role": "Z-Nature Power + Taunt + Volt Switch pivot",
+          "moves": [
+            "Nature Power",
+            "Volt Switch",
+            "Taunt",
+            "Protect"
+          ]
+        },
+        {
+          "species": "Mew",
+          "ability": "Synchronize",
+          "item": "Aguav Berry",
+          "role": "Tailwind setter + Fake Out + Stealth Rock support",
+          "moves": [
+            "Fake Out",
+            "Stealth Rock",
+            "Transform",
+            "Tailwind"
+          ]
+        }
+      ],
+      "sources": [
+        "https://www.smogon.com/forums/threads/doubles-ou-team-bazaar-2-0.3645989/"
+      ]
     }
   ],
   "synergy": {

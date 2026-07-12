@@ -79,6 +79,16 @@ Acceptance criteria:
   offensive + balanced only. Confirm whether our game wants a defensive doubles base or that's fine.
   Kept `in-progress`.
 
+- **2026-07-11 — DOU 6v6 corpus expanded (step 1 of the doubles plan; ran in parallel with the singles
+  implementation).** `expand-doubles-corpus` research workflow (67 agents, 0 errors): discover 8
+  archetype angles → adversarial verify (real + legal Gen 6-7 Smogon **Doubles OU 6v6**, NOT VGC 4v4) →
+  refill → synthesise. **45 verified DOU 6v6 teams merged** into `corpus.json` (bulky_offense 25 /
+  balance_dual_mode 15 / hyper_offense 8; documented Smogon DOU sample/RMT/tournament teams with
+  sources). **DOU-6v6 corpus 14 → 59** (VGC-4v4 24 untouched); docs regenerated (`dou-6v6-teams.md`
+  now 59). This unblocks steps 2-6 (re-validate doubles detectors → slot-recipe analysis → owner
+  validation → rewrite `doubles.json` structures) — to run when we reach the doubles task, same method
+  as singles. Recipes themselves are NOT derived here (deferred + owner-gated).
+
 ## Outcome
 
 <!-- Filled when closing. -->
