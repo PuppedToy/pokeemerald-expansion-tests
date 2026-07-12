@@ -86,6 +86,16 @@ describe('makeArchetypePicker — biases toward archetype fit at high sophistica
         expect(wb).toBeGreaterThan(pl);
         expect(pl).toBeGreaterThan(0);
     });
+    test('T-124 (Wattson) — an electricTerrain seed HARD-prefers Electric-type candidates', () => {
+        const context = { team: [], sophistication: 0.6, archetypeSeed: { base: 'bulky_offense', electricTerrain: true } };
+        const picker = makeArchetypePicker({ model: singles, context, ctx: {} });
+        const electricMon = mon({ id: 'ELEC', parsedTypes: ['ELECTRIC'] });
+        // one Electric among non-Electric → always chosen (it can actually run the terrain)
+        for (let s = 1; s <= 10; s++) { rng.seed(s); expect(picker([plain('A'), electricMon, plain('B')]).id).toBe('ELEC'); }
+        // no Electric available (Wattson rolled another type) → falls back gracefully, no crash
+        rng.seed(1); expect(['A', 'B']).toContain(picker([plain('A'), plain('B')]).id);
+    });
+
     test('IDENTITY_FIT gates biasing — a partial team below the fit stays unbiased', () => {
         expect(IDENTITY_FIT).toBeGreaterThan(0.3);
         const context = { team: [regenPivot('R1')], sophistication: 1 }; // lone regen pivot → balance fit ~0.24 < 0.5
