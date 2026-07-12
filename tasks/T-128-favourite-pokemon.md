@@ -119,4 +119,71 @@ Acceptance criteria:
   non-legendary weather trainers (museum grunts) can drop the gimmick (no setter source). Recommended
   follow-up: a weather-seed picker bias toward weather-ability mons + a setter guarantee.
 
+## REDESIGN (owner-validated 2026-07-12) — pool-consumption favourites + trainer-level restrictions
+
+The earlier favourite implementation was WRONG on two counts: it baked tier gates into the favourite
+(hardcoded `FAVOURITE_*_TIERS` / `TATE_BUDGET_TIERS` / `ABSOLUTE_POKEDEF_*`) and it lived in a separate
+`trainer.favourite`/`favourites` field that the difficulty transform (`applyTransform`, applied only to
+`trainer.team` in `trainersModule.js`) never touches — so favourites ignored the difficulty slider.
+**Everything must come from the presets** (`getBossPreset`), because the difficulty slider only shifts
+preset tiers. The correct model:
+
+### A favourite is EXCLUSIVELY a poke (never poke+tier)
+Roxanne's favourite spec is just `Nosepass`, not `Nosepass+NU`. It does not predict a tier.
+
+### The pool
+A boss's tier pool = its preset slots (`getBossPreset`), already difficulty-scaled by `applyTransform`.
+Difficulty touches ONLY the pool. Favourites do NOT scale directly — they CONSUME from the (already
+scaled) pool.
+
+### Favourite resolution — 2 dynamic steps, per favourite, BEFORE filling the rest
+1. Can I field the favourite (passes the trainer's restrictions) AND does its ACTUAL tier (this run,
+   from `pokemonList`) match an AVAILABLE budget slot? → place it, **consume that slot**. Tier match is
+   by the pool slot's tier (a mega favourite consumes the `{isMega}` slot). A favourite BELOW the whole
+   budget is NOT accepted (favourites never downgrade — unlike teambuilding, where archetype > individual
+   quality lets a role downgrade a tier). Above budget (too strong for any slot) also rejects.
+2. Else → next fallback, repeat step 1. If NO more fallbacks → the **standard final fallback**: place any
+   eligible mon within the trainer's restrictions, consuming a slot. This standard fallback is implicit
+   for EVERY favourite of EVERY trainer (do not write it per-trainer).
+The remaining pool slots fill the rest of the team normally.
+
+Examples: Roxanne (NU×2 PU×4) + Nosepass(NU) → consumes NU (→ NU×1 PU×4 left). Difficulty −2 (PU×6):
+Nosepass(NU) too strong → fallback → a legal Rock mon consumes a PU slot. Tate & Liza (UBERS×2 OU UU RU
+Mega): Solgaleo(Legend) rejected → Solrock(RU) consumes RU; Lunala(Legend) rejected → Lunatone(RU) no RU
+left → Cosmoem(UU) consumes UU; remaining UBERS×2/OU/Mega fill with normal mons.
+
+### Favourite spec shape
+`gymFavourite('SPECIES_NOSEPASS')` — JUST the species chain (+ the implicit standard final fallback). NO
+type, NO preset, NO tier passed in. (The current `gymFavourite('SPECIES_NOSEPASS', gymMainTypes[0],
+getBossPreset('ROXANNE')[2], getBossPreset('ROXANNE')[2])` is WRONG.)
+
+### Trainer-level restrictions (NOT hardcoded per slot)
+Remove the hardcoded `type: [...]` from every slot; type becomes a trainer restriction used in
+teambuilding to reduce the pool (the `TRAINER_RESTRICTION_ALLOW_ONLY_TYPES` + `trainer.types` mechanism
+already exists in the selector). The restrictions:
+- **Wally:** no two mons share a type (`TRAINER_RESTRICTION_NO_REPEATED_TYPE`). Make it **Wally-exclusive**
+  — REMOVE it from the rival appearances; it is now correctly implemented (B-027).
+- **Villains** (aqua grunts, Shelly, Matt, Archie, magma grunts, Tabitha, Maxie): every mon has ≥1 of the
+  villain team's types (`ALLOW_ONLY_TYPES` + `trainer.types = <team types>`).
+- **Gym leaders + E4:** every mon has the gym/E4 (rolled) type (`ALLOW_ONLY_TYPES` + `trainer.types`).
+  **Champion (Steven) is EXCLUDED** — he goes by slots.
+
+### Code-scan alarms (other restrictions / hardcoded found)
+- Restriction infra already exists: `ALLOW_ONLY_TYPES` (+ `trainer.types`), `ALLOW_ONLY_ABILITIES`
+  (+ `trainer.abilities`), `MUST_LEARN_TM_MOVES`. Reuse `ALLOW_ONLY_TYPES` for the type restrictions above.
+- Hardcoded slot `type:` counts to strip: gymMainTypes ×60, aquaTeamTypes ×22, magmaTeamTypes ×42,
+  championMainType ×12, E4 main types ×31.
+- `NO_REPEATED_TYPE` currently on the rival appearances (to be removed) + Wally (to keep, exclusive).
+
+### Implementation (supersedes the earlier favourite mechanism)
+1. `trainer.team` = the FULL preset pool (restore the ace slots — the favourite CLAIMS a slot, does not
+   add one). Difficulty-scaled by the existing `applyTransform`.
+2. `trainer.favourite` / `favourites` = ordered species chains only.
+3. New resolver step (before the slot loop): resolve each favourite by consuming a pool slot of its actual
+   tier (from `pokemonList`), or the mega slot; else next fallback; else the standard restriction-bounded
+   fallback. Then fill the remaining pool.
+4. Trainer restrictions at the trainer level; strip hardcoded slot types.
+5. Delete `FAVOURITE_MEGA_TIERS`, `FAVOURITE_MON_TIERS`, `TATE_BUDGET_TIERS`, and the misuse of
+   `ABSOLUTE/CONTEXTUAL_POKEDEF_*` I introduced.
+
 ## Outcome
