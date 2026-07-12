@@ -46,7 +46,7 @@ const {
     EVO_TYPE_SOLO,
 } = require("./constants");
 const { maps: wildMaps } = require('./wild');
-const { getBossPreset, getNonBossPreset } = require('./presets');
+const { getBossPreset, getNonBossPreset, bossMega } = require('./presets');
 const rng = require('./rng');
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
@@ -3334,10 +3334,10 @@ const trainersData = [
         level: 67,
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...juanBag()],
-        // T-106/T-128 — Victory Road is now Wally's AUTHORITATIVE, well-built endgame team (was Juan-preset
-        // filler + 4 repeats): his favourite Mega Gardevoir/Gallade (perfect breed, doubles as the WALLY_1
-        // anchor) + five OU/UU aces, all no-repeated-types. Mauville/Lilycove echo this devolved.
-        favourite: wallyFavourite(),
+        // T-106/T-128 — Victory Road is Wally's AUTHORITATIVE endgame team: his favourite Mega Gardevoir
+        // (≫ Mega Gallade ≫ any mega) CLAIMS the stage-3 mega slot (tagged WALLY_1, the continuity anchor)
+        // + five OU/UU aces, all no-repeated-types (Wally-exclusive). Mauville/Lilycove echo it devolved.
+        favourite: ['SPECIES_GARDEVOIR_MEGA', 'SPECIES_GALLADE_MEGA', { mega: true }],
         favouriteId: 'WALLY_1',
         team: [
             { id: 'WALLY_2', evolutionTier: [TIER_OU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
@@ -3345,6 +3345,7 @@ const trainersData = [
             { id: 'WALLY_4', evolutionTier: [TIER_OU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
             { id: 'WALLY_5', evolutionTier: [TIER_UU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
             { id: 'WALLY_6', evolutionTier: [TIER_UU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
+            bossMega(TIER_UBERS),
         ],
     },
     {
@@ -3553,10 +3554,11 @@ const trainersData = [
         breedTier: 'perfect',
         level: 78,
         bag: [...leagueBag()],
-        // T-106/T-128 — Champion Steven is now the AUTHORITATIVE appearance: he picks the strong endgame
-        // roster (favourite Mega Metagross + legend + OU ace), and his earlier appearances (Granite Cave,
-        // Mossdeep partner) echo it DEVOLVED. His favourite doubles as the STEVEN_MEGA continuity anchor.
-        favourite: stevenFavourite(championMainType),
+        // T-106/T-128 — Champion Steven is the AUTHORITATIVE appearance: favourite Mega Metagross (≫ any
+        // mega) claims the stage-3 mega slot (tagged STEVEN_MEGA), + legend + OU ace; his earlier
+        // appearances (Granite Cave, Mossdeep partner) echo them DEVOLVED. Steven is EXCLUDED from the type
+        // restriction — he goes by slots (his signature legend/OU aces stay championMainType-typed).
+        favourite: ['SPECIES_METAGROSS_MEGA', { mega: true }],
         favouriteId: 'STEVEN_MEGA',
         team: [
             {
@@ -3572,7 +3574,9 @@ const trainersData = [
             },
             getBossPreset('CHAMPION_STEVEN', true)[1],
             {
-                // authoritative OU ace at full strength (no early contextual tier cap)
+                // authoritative OU ace at full strength (no early contextual tier cap). Its Granite-Cave
+                // echo is the LC base of this line (may cross a regional-form family boundary, e.g.
+                // Goodra-Hisui → shared Goomy — the same line, which the continuity test collapses).
                 id: 'STEVEN_OU',
                 breedTier: 'perfect',
                 evolutionTier: [TIER_OU],
@@ -3591,6 +3595,9 @@ const trainersData = [
                 }],
             },
             getBossPreset('CHAMPION_STEVEN', true)[2],
+            // T-128 — CHAMPION_STEVEN has no mega slot in its preset; add the stage-3 gated mega slot for
+            // the Mega Metagross favourite to CLAIM (no type — Steven is unrestricted).
+            bossMega(TIER_UBERS),
         ],
     },
 ];

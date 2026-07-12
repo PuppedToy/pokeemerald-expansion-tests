@@ -599,4 +599,5 @@ module.exports = {
     getDifficultyTransform,
     getBagSizeOffset,
     applyTransform,
+    bossMega,
 };

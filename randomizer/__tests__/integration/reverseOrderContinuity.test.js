@@ -40,7 +40,17 @@ describeSlow('reverse-order continuity (T-106)', () => {
         const bundle = await runGeneration(cfg, mcfg, 'continuity-test', { baseData });
         docs = bundle.roms[0].docs.trainersResultsSimplified;
         const bySpecies = Object.fromEntries(baseData.allPokes.map(p => [p.id, p]));
-        familyOf = id => getFamilyGroup((bySpecies[id] || {}).family || id);
+        // T-128 — the continuity check is about the same evolutionary LINE, not the dedup family group.
+        // A devolved echo can legitimately cross a regional-form boundary when the regional final-evo
+        // shares its LC base with the regular line (Goodra-Hisui → shared Goomy, `P_FAMILY_GOOMY` vs
+        // `P_FAMILY_GOOMY_HISUI`). Collapse the regional suffix so "same line" is recognised. Echoes are
+        // ID-locked to the ace's line, so this can never produce a false match.
+        const REGIONAL_SUFFIXES = ['ALOLA', 'GALAR', 'HISUI', 'PALDEA'];
+        const collapseRegional = fam => {
+            for (const s of REGIONAL_SUFFIXES) if (fam.endsWith('_' + s)) return fam.slice(0, -(s.length + 1));
+            return fam;
+        };
+        familyOf = id => collapseRegional(getFamilyGroup((bySpecies[id] || {}).family || id));
     }, 120000);
 
     const isPerfect = m => m.ivs && Object.values(m.ivs).every(v => v === 31);
