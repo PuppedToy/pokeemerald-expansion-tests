@@ -81,6 +81,32 @@ describe('createTeamAudit + renderTeamAuditText', () => {
         expect(renderTeamAuditText(audit.all())).toContain('seed: full_stall+weather');
     });
 
+    test('T-106 — records + renders continuity provenance (inherited / devolved / favourite)', () => {
+        const audit = createTeamAudit();
+        audit.beginTeam({ trainerId: 'TRAINER_ECHO', level: 22, battleType: 'singles', sophistication: 0.05, seed: null });
+        // an inherited + devolved echo: shown Metang, authoritative stored Metagross
+        audit.recordSlot({
+            priorTeam: [], chosenMon: { id: 'SPECIES_METANG' }, member: { pokemon: { id: 'SPECIES_METANG' } },
+            roleMove: null, model: singles, ctx: {}, seed: null,
+            def: { special: 'TRAINER_REPEAT_ID', id: 'STEVEN_MEGA', devolveToLevel: true }, storedSpecies: 'SPECIES_METAGROSS',
+        });
+        // the favourite ace
+        audit.recordSlot({
+            priorTeam: [], chosenMon: { id: 'SPECIES_GARDEVOIR' }, member: { pokemon: { id: 'SPECIES_GARDEVOIR' } },
+            roleMove: null, model: singles, ctx: {}, seed: null,
+            def: { favouriteChain: [{}], id: 'WALLY_1' }, storedSpecies: 'SPECIES_GARDEVOIR',
+        });
+        audit.finishTeam({ team: [{ pokemon: { id: 'SPECIES_METANG' } }], model: singles, ctx: {}, seed: null });
+
+        const slots = audit.all()[0].slots;
+        expect(slots[0].provenance).toEqual({ kind: 'inherited', fromId: 'STEVEN_MEGA', devolvedFrom: 'SPECIES_METAGROSS' });
+        expect(slots[1].provenance).toEqual({ kind: 'favourite' });
+        const text = renderTeamAuditText(audit.all());
+        expect(text).toContain('inherited by id STEVEN_MEGA');
+        expect(text).toContain('devolved from Metagross');
+        expect(text).toContain('favourite ace');
+    });
+
     test('noopTeamAudit collects nothing and never throws', () => {
         const a = noopTeamAudit();
         expect(() => { a.beginTeam({}); a.recordSlot({}); a.finishTeam({}); }).not.toThrow();

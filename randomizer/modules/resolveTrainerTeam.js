@@ -362,6 +362,11 @@ function createTeamResolver(deps) {
                 audit.recordSlot({
                     priorTeam: team, chosenMon: chosenTrainerMon, member: newTeamMember, roleMove,
                     model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed,
+                    // T-106/T-117 — provenance for the backwards-continuity audit: the slot def + the
+                    // authoritative species stored under its id (so the log can show inherited-by-ID and
+                    // devolved-from when this slot echoes a later appearance).
+                    def: trainerMonDefinition,
+                    storedSpecies: trainerMonDefinition.id ? storedIds[trainerMonDefinition.id] : null,
                 });
                 team.push(newTeamMember);
             }

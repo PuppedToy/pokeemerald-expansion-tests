@@ -13,6 +13,25 @@ const { detectFeatures } = require('./modules/featureDetectors');
 const { resolveIdentity, BIAS_MIN_SOPH } = require('./modules/archetypePicker');
 const { combinedStructure } = require('./modules/archetypeFit');
 const { resolvedDetectMon } = require('./modules/archetypeRefine');
+const { TRAINER_REPEAT_ID } = require('./constants');
+
+// T-106/T-117 — where a slot's mon came from, for the backwards-continuity audit. Backwards generation
+// is the riskiest path, so the log must make explicit what is INHERITED by continuity id, how it is
+// DEVOLVED (authoritative endgame form → the stage shown here), and which mons are chosen by a hard
+// restriction (the favourite ace, a mandatory legendary).
+function slotProvenance(def, chosenMon, storedSpecies) {
+    if (!def) return null;
+    const shown = chosenMon ? chosenMon.id : null;
+    if (def.favouriteChain) return { kind: 'favourite' };
+    if (def.special === TRAINER_REPEAT_ID) {
+        const devolvedFrom = (storedSpecies && shown && storedSpecies !== shown) ? storedSpecies : null;
+        return { kind: 'inherited', fromId: def.id || null, devolvedFrom };
+    }
+    if (typeof def.special === 'string' && def.special.startsWith('PLAYER_LEGEND')) return { kind: 'legendary' };
+    if (def.special === 'TRAINER_POKE_ENCOUNTER' || def.encounterIds) return { kind: 'encounter' };
+    if (typeof def.special === 'string' && def.special.startsWith('TRAINER_POKE_STARTER')) return { kind: 'starter' };
+    return null;
+}
 
 const asPoke = m => (m && m.pokemon) ? m.pokemon : m;
 const speciesId = m => { const p = asPoke(m); return (p && p.id) || null; };
@@ -42,7 +61,7 @@ function createTeamAudit() {
 
         // Called after a slot's member is chosen. priorTeam = members chosen BEFORE this one;
         // member = the fully resolved member ({ pokemon, ability, moves }) for delivered-role detection.
-        recordSlot({ priorTeam, chosenMon, member, roleMove, model, ctx, seed }) {
+        recordSlot({ priorTeam, chosenMon, member, roleMove, model, ctx, seed, def, storedSpecies }) {
             if (!cur) return;
             const id = (model && chosenMon) ? resolveIdentity((priorTeam || []).map(asPoke), model, ctx, seed) : null;
             let roles = [];
@@ -58,6 +77,7 @@ function createTeamAudit() {
                 identity: id ? { base: id.baseId, source: id.source, confidence: r2(id.confidence) } : null,
                 rolesFilled: roles,
                 roleMove: roleMove || null,
+                provenance: slotProvenance(def, chosenMon, storedSpecies),
             });
         },
 
@@ -87,6 +107,20 @@ function seedStr(seed) {
     return seed.base + (seed.gimmicks && seed.gimmicks.length ? '+' + seed.gimmicks.join('+') : '');
 }
 
+// T-106/T-117 — render a slot's continuity/restriction provenance for the backwards-generation audit.
+function provStr(p) {
+    if (!p) return '';
+    if (p.kind === 'favourite') return '  {favourite ace}';
+    if (p.kind === 'legendary') return '  {mandatory legendary}';
+    if (p.kind === 'encounter') return '  {route encounter}';
+    if (p.kind === 'starter') return '  {starter}';
+    if (p.kind === 'inherited') {
+        const from = p.devolvedFrom ? ` ← devolved from ${nameify(p.devolvedFrom, 'SPECIES_')}` : '';
+        return `  {inherited by id ${p.fromId || '?'}${from}}`;
+    }
+    return '';
+}
+
 // Render the collected traces as a concise, readable text log.
 function renderTeamAuditText(teams, { engineThreshold = BIAS_MIN_SOPH } = {}) {
     const lines = [
@@ -103,19 +137,26 @@ function renderTeamAuditText(teams, { engineThreshold = BIAS_MIN_SOPH } = {}) {
             : 'none';
         lines.push(`=== ${t.trainerId}${t.label ? ' — ' + t.label : ''} (lvl ${t.level ?? '?'}, ${fmt}) ===`);
         lines.push(`sophistication: ${soph} | seed: ${seedStr(t.seed)} | final identity: ${fid}`);
-        if (t.sophistication != null && t.sophistication < engineThreshold) {
+        const belowThreshold = t.sophistication != null && t.sophistication < engineThreshold;
+        if (belowThreshold) {
             lines.push(`  → below engine threshold (${r2(engineThreshold)}) — tier-random pile, no archetype steering.`);
-        } else {
-            (t.slots || []).forEach((s, i) => {
-                const sp = (s.species ? nameify(s.species, 'SPECIES_') : '(dropped)').padEnd(18);
-                const id = s.identity
-                    ? `${s.identity.base} (${s.identity.source} ${s.identity.confidence})`
-                    : 'no identity yet → random within tier';
-                const roles = s.rolesFilled && s.rolesFilled.length ? ` → fills ${s.rolesFilled.join(', ')}` : '';
-                const rm = s.roleMove ? `  [+${nameify(s.roleMove, 'MOVE_')}]` : '';
-                lines.push(`  slot ${i + 1}: ${sp} — ${id}${roles}${rm}`);
-            });
         }
+        // Slots are listed regardless of the archetype threshold: continuity provenance (inherited /
+        // devolved) matters most at the low-level EARLY appearances of a recurring character (T-106).
+        (t.slots || []).forEach((s, i) => {
+            const sp = (s.species ? nameify(s.species, 'SPECIES_') : '(dropped)').padEnd(18);
+            const prov = provStr(s.provenance);
+            if (belowThreshold) {
+                lines.push(`  slot ${i + 1}: ${sp}${prov}`);
+                return;
+            }
+            const id = s.identity
+                ? `${s.identity.base} (${s.identity.source} ${s.identity.confidence})`
+                : 'no identity yet → random within tier';
+            const roles = s.rolesFilled && s.rolesFilled.length ? ` → fills ${s.rolesFilled.join(', ')}` : '';
+            const rm = s.roleMove ? `  [+${nameify(s.roleMove, 'MOVE_')}]` : '';
+            lines.push(`  slot ${i + 1}: ${sp} — ${id}${roles}${rm}${prov}`);
+        });
         lines.push('');
     }
     return lines.join('\n');
