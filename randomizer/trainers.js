@@ -371,6 +371,12 @@ function hoistAuthoritativeAppearances(trainersData, groups) {
 const CONTINUITY_GROUPS = [
     { auth: 'TRAINER_CHAMPION_STEVEN', members: ['TRAINER_STEVEN', 'PARTNER_STEVEN'] },
     { auth: 'TRAINER_WALLY_VR_1', members: ['TRAINER_WALLY_MAUVILLE', 'TRAINER_WALLY_LILYCOVE'] },
+    // The rival: Ever Grande (lvl 70) is authoritative; its four earlier appearances echo it devolved.
+    // One group per starter variant (only the player's runs, but all three are generated).
+    ...['TREECKO', 'TORCHIC', 'MUDKIP'].map(s => ({
+        auth: `TRAINER_MAY_EVERGRANDE_CITY_${s}`,
+        members: [`TRAINER_MAY_ROUTE_103_${s}`, `TRAINER_MAY_RUSTBORO_${s}`, `TRAINER_MAY_ROUTE_110_${s}`, `TRAINER_MAY_ROUTE_119_${s}`],
+    })),
 ];
 
 
@@ -523,6 +529,15 @@ const rivalEvergrandeCityEncounters = [
     ...getWildEncountersFromMap('MAP_VICTORY_ROAD_B1F', ['land', 'old', 'good', 'super', 'underwater']),
 ];
 
+// T-106 — reverse-order rival continuity. The rival's roster is now decided at EVER GRANDE (lvl 70,
+// authoritative) and echoed DEVOLVED at the earlier appearances. The starter is the rival's favourite
+// (the type-counter to the player's choice); this maps each May object's starter suffix to that special.
+const RIVAL_STARTER_SPECIAL = {
+    TREECKO: TRAINER_POKE_STARTER_TORCHIC, // player Treecko → rival Torchic-line
+    TORCHIC: TRAINER_POKE_STARTER_MUDKIP,  // player Torchic → rival Mudkip-line
+    MUDKIP:  TRAINER_POKE_STARTER_TREECKO, // player Mudkip  → rival Treecko-line
+};
+
 const rival103Template = (id) => [
     {
         special: TRAINER_POKE_ENCOUNTER,
@@ -549,9 +564,11 @@ const rival103Template = (id) => [
         pickBest: true,
     },
     {
+        // T-106 — echoes Ever Grande's authoritative mega, devolved to lvl 7 (its LC base).
+        special: TRAINER_REPEAT_ID,
         id: 'RIVAL_MEGA_103_KEEP_' + id,
         breedTier: 'good',
-        ...PROMISING_OU_UBERS_MEGA_LC,
+        devolveToLevel: true,
     },
 ];
 
@@ -560,7 +577,7 @@ const rivalRustboroTemplate = (id) => [
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_STARTER_' + id,
         breedTier: 'perfect',
-        tryEvolve: true,
+        devolveToLevel: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
@@ -580,25 +597,17 @@ const rivalRustboroTemplate = (id) => [
         tryEvolve: true,
     },
     {
+        // T-106 — echoes Ever Grande's authoritative premium ace, devolved to lvl 17.
+        special: TRAINER_REPEAT_ID,
         id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
         breedTier: 'good',
-        evolutionTier: [TIER_OU],
-        evoType: [EVO_TYPE_LC],
-        tryEvolve: true,
-        fallback: [
-            {
-                id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
-                breedTier: 'good',
-                evolutionTier: [TIER_UU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            }
-        ],
+        devolveToLevel: true,
     },
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_MEGA_103_KEEP_' + id,
-        tryEvolve: true,
+        breedTier: 'good',
+        devolveToLevel: true,
     },
 ];
 
@@ -606,7 +615,8 @@ const rivalRoute110Template = (id) => [
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_STARTER_' + id,
-        tryEvolve: true,
+        breedTier: 'perfect',
+        devolveToLevel: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
@@ -623,44 +633,38 @@ const rivalRoute110Template = (id) => [
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
-        tryEvolve: true,
+        breedTier: 'good',
+        devolveToLevel: true,
     },
     {
+        // T-106 — echoes Ever Grande's authoritative premium ace, devolved to lvl 26.
+        special: TRAINER_REPEAT_ID,
         id: 'RIVAL_PREMIUM_110_KEEP_' + id,
         breedTier: 'good',
-        evolutionTier: [TIER_OU],
-        evoType: [EVO_TYPE_LC],
-        tryEvolve: true,
-        fallback: [
-            {
-                id: 'RIVAL_PREMIUM_110_KEEP_' + id,
-                breedTier: 'good',
-                evolutionTier: [TIER_UU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            }
-        ],
+        devolveToLevel: true,
     },
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_MEGA_103_KEEP_' + id,
-        tryEvolve: true,
+        breedTier: 'good',
+        devolveToLevel: true,
     },
 ];
 
 
+// All four continuity aces echo Ever Grande devolved to lvl 44; the two encounters stay route flavour.
 const rivalRoute119Template = (id) => [
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_MEGA_103_KEEP_' + id,
-        tryEvolve: true,
-        tryMega: true,
+        breedTier: 'good',
+        devolveToLevel: true,
     },
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_STARTER_' + id,
-        tryEvolve: true,
-        tryMega: true,
+        breedTier: 'perfect',
+        devolveToLevel: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
@@ -679,21 +683,26 @@ const rivalRoute119Template = (id) => [
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
-        tryEvolve: true,
-        tryMega: true,
+        breedTier: 'good',
+        devolveToLevel: true,
     },
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_PREMIUM_110_KEEP_' + id,
-        tryEvolve: true,
-        tryMega: true,
+        breedTier: 'good',
+        devolveToLevel: true,
     },
 ];
 
+// T-106 — Ever Grande is now the rival's AUTHORITATIVE appearance: it picks the strong endgame roster
+// (mega + evolved starter favourite + two premium aces + legendary + route encounter); the earlier
+// appearances echo it devolved. `id` is the starter suffix.
 const rivalEvergrandeCityTemplate = (id) => [
     {
-        special: TRAINER_REPEAT_ID,
+        // authoritative mega (was a repeat of Route 103's)
         id: 'RIVAL_MEGA_103_KEEP_' + id,
+        breedTier: 'good',
+        ...PROMISING_OU_UBERS_MEGA_LC,
         tryEvolve: true,
         tryMega: true,
     },
@@ -702,10 +711,11 @@ const rivalEvergrandeCityTemplate = (id) => [
         breedTier: 'good',
     },
     {
-        special: TRAINER_REPEAT_ID,
+        // authoritative starter — the rival's favourite (type-counter to the player's), fully evolved
         id: 'RIVAL_STARTER_' + id,
+        breedTier: 'perfect',
+        special: RIVAL_STARTER_SPECIAL[id],
         tryEvolve: true,
-        tryMega: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
@@ -715,16 +725,22 @@ const rivalEvergrandeCityTemplate = (id) => [
         tryMega: true,
     },
     {
-        special: TRAINER_REPEAT_ID,
+        // authoritative premium ace (was a repeat)
         id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
+        breedTier: 'good',
+        evolutionTier: [TIER_OU],
+        evoType: [EVO_TYPE_LC],
         tryEvolve: true,
-        tryMega: true,
+        fallback: [{ id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id, breedTier: 'good', evolutionTier: [TIER_UU], evoType: [EVO_TYPE_LC], tryEvolve: true }],
     },
     {
-        special: TRAINER_REPEAT_ID,
+        // authoritative premium ace (was a repeat)
         id: 'RIVAL_PREMIUM_110_KEEP_' + id,
+        breedTier: 'good',
+        evolutionTier: [TIER_OU],
+        evoType: [EVO_TYPE_LC],
         tryEvolve: true,
-        tryMega: true,
+        fallback: [{ id: 'RIVAL_PREMIUM_110_KEEP_' + id, breedTier: 'good', evolutionTier: [TIER_UU], evoType: [EVO_TYPE_LC], tryEvolve: true }],
     },
 ];
 
@@ -1199,9 +1215,11 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
+                // T-106 — echoes Ever Grande's authoritative starter, devolved to lvl 7 (its baby form).
+                special: TRAINER_REPEAT_ID,
                 id: 'RIVAL_STARTER_TREECKO',
                 breedTier: 'perfect',
-                special: TRAINER_POKE_STARTER_TORCHIC,
+                devolveToLevel: true,
             },
             ...rival103Template('TREECKO'),
         ]
@@ -1217,9 +1235,10 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
+                special: TRAINER_REPEAT_ID,
                 id: 'RIVAL_STARTER_TORCHIC',
                 breedTier: 'perfect',
-                special: TRAINER_POKE_STARTER_MUDKIP,
+                devolveToLevel: true,
             },
             ...rival103Template('TORCHIC'),
         ]
@@ -1235,9 +1254,10 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
+                special: TRAINER_REPEAT_ID,
                 id: 'RIVAL_STARTER_MUDKIP',
                 breedTier: 'perfect',
-                special: TRAINER_POKE_STARTER_TREECKO,
+                devolveToLevel: true,
             },
             ...rival103Template('MUDKIP'),
         ]

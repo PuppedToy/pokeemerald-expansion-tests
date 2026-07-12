@@ -89,4 +89,26 @@ describeSlow('reverse-order continuity (T-106)', () => {
             }
         });
     });
+
+    describe('Rival May (Ever Grande authoritative → Route 103 / Rustboro / 110 / 119 echo)', () => {
+        // Test the TREECKO variant (all three are generated regardless of the run's actual starter).
+        const CHAIN = ['TRAINER_MAY_ROUTE_103_TREECKO', 'TRAINER_MAY_RUSTBORO_TREECKO',
+            'TRAINER_MAY_ROUTE_110_TREECKO', 'TRAINER_MAY_ROUTE_119_TREECKO', 'TRAINER_MAY_EVERGRANDE_CITY_TREECKO'];
+        const starterOf = id => (docs[id].team.find(isPerfect) || {}).pokemon; // the perfect-breed starter slot
+
+        test('every appearance resolved a full team', () => {
+            for (const id of CHAIN) expect(docs[id].team.length).toBe(6);
+        });
+
+        test('the perfect-breed starter is the SAME family (devolved) across all five appearances', () => {
+            const fams = CHAIN.map(starterOf).filter(Boolean).map(familyOf);
+            expect(fams.length).toBe(5);
+            expect(new Set(fams).size).toBe(1); // one continuous starter line, shown at level-appropriate stages
+        });
+
+        test("Route 103's starter (earliest echo) traces to an Ever Grande family", () => {
+            const eg = familiesOf('TRAINER_MAY_EVERGRANDE_CITY_TREECKO');
+            expect(eg.has(familyOf(starterOf('TRAINER_MAY_ROUTE_103_TREECKO')))).toBe(true);
+        });
+    });
 });
