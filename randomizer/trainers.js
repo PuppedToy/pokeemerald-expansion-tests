@@ -346,6 +346,30 @@ function wallyFavourite() {
     ];
 }
 
+// T-128 — Tate & Liza's two favourites (owner-validated): each an ace with a fallback chain, kept only
+// while it fits the gym's (possibly rolled) type + the up-to-Uber budget, else dropping to its themed
+// fallback. Uses a normal slot + `fallback` (not a favouriteChain) so the per-mon items/natures/screens
+// survive. Since usually Solgaleo/Lunala are legendaries (above the Uber budget), they typically resolve
+// to Solrock/Lunatone. `type: [gymType]` on every rung makes it behave the same whether or not the gym
+// rolled a new type (the "standardise" the owner asked for — no gymIsChangedType branch needed).
+const TATE_BUDGET_TIERS = [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS];
+const tateAndLizaFavourite = (ace, fallbackMon, aceNature, fallbackNature, gymType) => ({
+    oneOf: [ace], type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true,
+    breedTier: 'perfect', item: 'Room Service', nature: aceNature,
+    fallback: [
+        {
+            oneOf: [fallbackMon], type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true,
+            breedTier: 'perfect', item: 'Light Clay', nature: fallbackNature,
+            tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
+        },
+        {
+            oneOf: ['SPECIES_COSMOEM'], type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true,
+            breedTier: 'perfect', item: 'Room Service',
+        },
+        { type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true, breedTier: 'perfect', hasStat: ['baseSpeed', '<', '70'] },
+    ],
+});
+
 // ── T-106 — reverse-order continuity (authoritative-latest) ──────────────────
 // ADR-016 §4: a recurring character's final, well-built roster must be decided BEFORE its earlier
 // appearances, which then echo it devolved (Champion Metagross → Granite-Cave Metang). Rather than
@@ -837,7 +861,10 @@ function getTrainersData(itemAssignments, tmList, config = {}) {
 
     const [e41MainType, e42MainType, e43MainType, e44MainType] = e4MainTypes;
 
-    const tateAndLizaUseSolrock = rng.random() < 0.5;
+    // T-128 — Tate & Liza now field BOTH sun and moon aces (Solgaleo/Lunala favourites), so the old
+    // random sun-vs-moon toggle is gone; the draw is retained so the per-run RNG stream (and therefore
+    // every other trainer's rolls) stays byte-identical.
+    rng.random();
 
     // Pool-derived item arrays (display names from itemRandomizer)
     const route102BallItems      = itemAssignments.route102Ball;
@@ -3418,12 +3445,16 @@ const trainersData = [
         reward: ['GYM_REWARD_7', 'Access to Shoal Cave', tmItem(91)],
         preventShuffle: true,
         bag: [...tateAndLizaBag()],
-        bannedItems: gymIsChangedType[6] ? [] : ['Focus Sash', 'Room Service', 'Light Clay'],
+        // T-128 — standardised (no gymIsChangedType branching): each slot is `type: [gymMainTypes[6]]`,
+        // so the same structure adapts whether or not the gym rolled a new type. Budget UBERS/UBERS/OU/
+        // OU/UU/RU: two favourites (Solgaleo/Lunala chains) + a Trick Room lead + a slow mega + two slow
+        // themed mons. Still a Trick Room team (Tate & Liza carry the trick_room seed).
+        bannedItems: ['Focus Sash', 'Room Service', 'Light Clay'],
         team: [
-            gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA', true)[0],
-                type: [gymMainTypes[6]],
-            } : {
+            tateAndLizaFavourite('SPECIES_SOLGALEO', 'SPECIES_SOLROCK', 'Brave', 'Relaxed', gymMainTypes[6]),
+            tateAndLizaFavourite('SPECIES_LUNALA', 'SPECIES_LUNATONE', 'Quiet', 'Sassy', gymMainTypes[6]),
+            {
+                // OU Trick Room lead (Focus Sash)
                 ...ABSOLUTE_POKEDEF_OU,
                 mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
                 tryToHaveMove: ['MOVE_TRICK_ROOM'],
@@ -3445,155 +3476,39 @@ const trainersData = [
                         type: [gymMainTypes[6]],
                         item: 'Focus Sash',
                     },
-                ]
-            },
-            gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA', true)[1],
-                breedTier: 'perfect',
-                type: [gymMainTypes[6]],
-            } : (tateAndLizaUseSolrock ?
-            {
-                specific: 'SPECIES_SOLROCK',
-                tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
-                breedTier: 'perfect',
-                item: 'Light Clay',
-                nature: 'Relaxed',
-            }
-            : {
-                specific: 'SPECIES_LUNATONE',
-                tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
-                breedTier: 'perfect',
-                item: 'Light Clay',
-                nature: 'Sassy',
-            }),
-            gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA', true)[2],
-                type: [gymMainTypes[6]],
-            } : (tateAndLizaUseSolrock ?
-            {
-                specificIfTier: 'SPECIES_LUNALA',
-                ...ABSOLUTE_POKEDEF_LEGEND,
-                item: 'Room Service',
-                nature: 'Quiet',
-                fallback: [
-                    {
-                        specificIfTier: 'SPECIES_LUNALA',
-                        ...ABSOLUTE_POKEDEF_UBERS,
-                        item: 'Room Service',
-                        nature: 'Quiet',
-                    },
-                    {
-                        specificIfTier: 'SPECIES_LUNALA',
-                        ...ABSOLUTE_POKEDEF_OU,
-                        item: 'Room Service',
-                        nature: 'Quiet',
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_OU,
-                        type: [gymMainTypes[6]],
-                    }
-                ]
-            } : {
-                specificIfTier: 'SPECIES_SOLGALEO',
-                ...ABSOLUTE_POKEDEF_LEGEND,
-                item: 'Room Service',
-                nature: 'Brave',
-                fallback: [
-                    {
-                        specificIfTier: 'SPECIES_SOLGALEO',
-                        ...ABSOLUTE_POKEDEF_UBERS,
-                        item: 'Room Service',
-                        nature: 'Quiet',
-                    },
-                    {
-                        specificIfTier: 'SPECIES_SOLGALEO',
-                        ...ABSOLUTE_POKEDEF_OU,
-                        item: 'Room Service',
-                        nature: 'Quiet',
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_OU,
-                        type: [gymMainTypes[6]],
-                    }
-                ]
-            }),
-            gymIsChangedType[6] ? {
-                ...ABSOLUTE_POKEDEF_MEGA,
-                type: [gymMainTypes[6]],
-            } : {
-                ...ABSOLUTE_POKEDEF_MEGA,
-                hasStat: ['baseSpeed', '<', '50'],
-                type: [gymMainTypes[6]],
-                fallback: [
-                    {
-                        ...ABSOLUTE_POKEDEF_MEGA,
-                        hasStat: ['baseSpeed', '<', '70'],
-                        type: [gymMainTypes[6]],
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_MEGA,
-                        type: [gymMainTypes[6]],
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_OU,
-                        type: [gymMainTypes[6]],
-                    },
-                ]
-            },
-            gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA', true)[3],
-                type: [gymMainTypes[6]],
-            } : {
-                ...getBossPreset('TATE_AND_LIZA', true)[3],
-                type: [gymMainTypes[6]],
-                hasStat: ['baseSpeed', '<', '50'],
-                fallback: [
-                    {
-                        absoluteTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[6]],
-                        hasStat: ['baseSpeed', '<', '70'],
-                    },
-                    {
-                        absoluteTier: [TIER_RU],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[6]],
-                        hasStat: ['baseSpeed', '<', '50'],
-                        pickBest: true,
-                    },
-                    {
-                        absoluteTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[6]],
-                    },
                 ],
             },
-            gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA', true)[4],
-                type: [gymMainTypes[6]],
-            } : {
-                ...getBossPreset('TATE_AND_LIZA', true)[4],
-                type: [gymMainTypes[6]],
+            {
+                // a slow mega
+                ...ABSOLUTE_POKEDEF_MEGA,
                 hasStat: ['baseSpeed', '<', '50'],
+                type: [gymMainTypes[6]],
                 fallback: [
-                    {
-                        absoluteTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[6]],
-                        hasStat: ['baseSpeed', '<', '70'],
-                    },
-                    {
-                        absoluteTier: [TIER_RU],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[6]],
-                        hasStat: ['baseSpeed', '<', '50'],
-                        pickBest: true,
-                    },
-                    {
-                        absoluteTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[6]],
-                    },
+                    { ...ABSOLUTE_POKEDEF_MEGA, hasStat: ['baseSpeed', '<', '70'], type: [gymMainTypes[6]] },
+                    { ...ABSOLUTE_POKEDEF_MEGA, type: [gymMainTypes[6]] },
+                    { ...ABSOLUTE_POKEDEF_OU, checkValidEvo: true, type: [gymMainTypes[6]] },
+                ],
+            },
+            {
+                // a slow UU themed mon
+                ...ABSOLUTE_POKEDEF_UU,
+                checkValidEvo: true,
+                type: [gymMainTypes[6]],
+                hasStat: ['baseSpeed', '<', '60'],
+                fallback: [
+                    { ...ABSOLUTE_POKEDEF_RU, checkValidEvo: true, type: [gymMainTypes[6]], hasStat: ['baseSpeed', '<', '70'] },
+                    { ...ABSOLUTE_POKEDEF_UU, checkValidEvo: true, type: [gymMainTypes[6]] },
+                ],
+            },
+            {
+                // a slow RU themed mon
+                ...ABSOLUTE_POKEDEF_RU,
+                checkValidEvo: true,
+                type: [gymMainTypes[6]],
+                hasStat: ['baseSpeed', '<', '60'],
+                fallback: [
+                    { ...ABSOLUTE_POKEDEF_UU, checkValidEvo: true, type: [gymMainTypes[6]], hasStat: ['baseSpeed', '<', '70'] },
+                    { ...ABSOLUTE_POKEDEF_RU, checkValidEvo: true, type: [gymMainTypes[6]] },
                 ],
             },
         ],

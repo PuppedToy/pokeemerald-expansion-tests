@@ -111,4 +111,23 @@ describeSlow('reverse-order continuity (T-106)', () => {
             expect(eg.has(familyOf(starterOf('TRAINER_MAY_ROUTE_103_TREECKO')))).toBe(true);
         });
     });
+
+    describe('Tate & Liza dual favourite (T-128)', () => {
+        // For this seed the gym keeps its Psychic type, so both favourites (Solgaleo/Lunala) drop to their
+        // Solrock/Lunatone fallbacks (the aces are legends, above the up-to-Uber budget), each KEEPING its
+        // own Light Clay item — the effectiveDef per-rung item/nature preservation.
+        test('fields six mons including a Solrock-line and a Lunatone-line ace', () => {
+            const team = docs['TRAINER_TATE_AND_LIZA_1'].team;
+            expect(team.length).toBe(6);
+            const has = fams => team.some(m => fams.includes(m.pokemon));
+            expect(has(['SPECIES_SOLROCK', 'SPECIES_SOLGALEO', 'SPECIES_COSMOEM'])).toBe(true);
+            expect(has(['SPECIES_LUNATONE', 'SPECIES_LUNALA', 'SPECIES_COSMOEM'])).toBe(true);
+        });
+        test('the favourite fallbacks keep their own item (Light Clay), not the ace item (Room Service)', () => {
+            const team = docs['TRAINER_TATE_AND_LIZA_1'].team;
+            const screeners = team.filter(m => ['SPECIES_SOLROCK', 'SPECIES_LUNATONE'].includes(m.pokemon));
+            expect(screeners.length).toBeGreaterThanOrEqual(1);
+            for (const m of screeners) expect(m.item).toBe('Light Clay');
+        });
+    });
 });

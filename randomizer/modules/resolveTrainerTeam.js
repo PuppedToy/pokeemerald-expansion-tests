@@ -230,8 +230,13 @@ function createTeamResolver(deps) {
                 const pokeId = trainerMonDefinition.id || null;
                 const newTeamMember = {
                     pokemon: baseFormMon,
-                    item: megaItem || trainerMonDefinition.item || null,
-                    nature: trainerMonDefinition.nature || null,
+                    // Prefer the WINNING def's item/nature (effectiveDef) over the top-level slot's, so a
+                    // fallback rung that carries its own item/nature keeps them (T-128 — a favourite chain
+                    // built as a slot + fallback: Solgaleo→Room Service, its Solrock fallback→Light Clay).
+                    // Identical to before whenever no fallback fired (effectiveDef === the slot) or the
+                    // winning rung sets neither field.
+                    item: megaItem || (effectiveDef && effectiveDef.item) || trainerMonDefinition.item || null,
+                    nature: (effectiveDef && effectiveDef.nature) || trainerMonDefinition.nature || null,
                     moves: megaMoves,
                     breedTier: effectiveBreedTier,
                     pokeId,
