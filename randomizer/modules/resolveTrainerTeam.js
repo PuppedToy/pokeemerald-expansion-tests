@@ -278,6 +278,12 @@ function createTeamResolver(deps) {
                     && Math.max(chosenTrainerMon.baseAttack || 0, chosenTrainerMon.baseSpAttack || 0) <= 95) {
                     newTeamMember.item = itemIdToName('ITEM_ELECTRIC_SEED');
                 }
+                // T-124 — Room Service on a fast mon in a Trick Room team (its Speed drops when TR is set).
+                if (!newTeamMember.item && context.sophistication >= BIAS_MIN_SOPH
+                    && context.archetypeSeed && (context.archetypeSeed.gimmicks || []).includes('trick_room')
+                    && (chosenTrainerMon.baseSpeed || 0) > 60) {
+                    newTeamMember.item = itemIdToName('ITEM_ROOM_SERVICE');
+                }
 
                 // T-013: this mon's own weather/herb is handled in the rater; here we add the weather
                 // EARLIER teammates set (lingering setters only — primals like Desolate Land /

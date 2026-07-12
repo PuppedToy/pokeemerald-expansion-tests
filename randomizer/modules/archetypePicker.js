@@ -45,6 +45,8 @@ function weightedSampleOne(items, weights) {
 // `team` is already normalised to poke shape. Returns { baseId, gimmickIds, counts, source } | null.
 const LAST_RESORT_BASE = 'hyper_offense'; // T-123 — hyper's recipe is easy to satisfy → it over-attracts
 const HYPER_YIELD_MARGIN = 0.25;          // hyper yields only to a base fitting within this of its fit
+const TR_SLOW_SPEED = 60;                 // T-124 — base Speed at/below which a mon is a Trick Room abuser
+const TR_SLOW_FACTOR = 4;                 // how hard Trick Room pulls the pick toward slow mons
 
 function resolveIdentity(team, model, ctx = {}, seed = null) {
     const cryst = crystallize(team, model, ctx);
@@ -110,6 +112,10 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
                 if (s > 0) biased = true;
                 return 1 + soph * BIAS_STRENGTH * s;
             });
+        }
+        // T-124 — Trick Room: strongly prefer SLOW mons, which move FIRST under Trick Room.
+        if (identity && (identity.gimmickIds || []).includes('trick_room')) {
+            candidates.forEach((c, i) => { if ((c.baseSpeed || 999) <= TR_SLOW_SPEED) { weights[i] *= TR_SLOW_FACTOR; biased = true; } });
         }
         if (!biased) return sample(candidates); // nothing to pull toward → byte-identical
         return weightedSampleOne(candidates, weights);
