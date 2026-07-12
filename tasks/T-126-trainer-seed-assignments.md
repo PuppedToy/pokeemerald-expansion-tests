@@ -1,7 +1,7 @@
 ---
 id: T-126
 title: Trainer archetype/gimmick seed assignments (deliberate variety)
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-11
 updated: 2026-07-11
@@ -44,6 +44,14 @@ Acceptance criteria:
 
 ## Progress log
 
+- **2026-07-11 — core seeds wired.** `modules/trainerSeeds.js` maps the owner-validated trainers to
+  seeds (with themed weather subtype): Team Aqua (Museum grunts, Archie) → `weather:rain`; Team Magma
+  (Tabitha, Maxie — all forms) + Flannery → `weather:sun`; Tate & Liza → `trick_room`. The resolver
+  uses `trainer.archetypeSeed || getTrainerSeed(trainer.id)`. With T-124's identity-aware ability
+  selection, the weather-seeded trainers now build REAL weather teams (Archie=rain, Maxie=sun, verified).
+  **Pending:** TR completion for Tate & Liza (T-124 follow-up: slow mons / Room Service) so its seed is
+  realised, not phantom; trim/verify seed IDs (some rematch variants like FLANNERY_5 are no-ops);
+  doubles seeds; more archetype personalities as validated.
 - **2026-07-11** — Created from the owner's problem-2 reflections (weather-seeded villain/gym trainers;
   Tate & Liza → TR, replacing the old force). Sequenced after T-124/T-122 so a seed actually builds.
 

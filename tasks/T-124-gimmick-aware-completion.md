@@ -1,7 +1,7 @@
 ---
 id: T-124
 title: Gimmick-aware team completion — build the team to BE the gimmick
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-11
 updated: 2026-07-11
@@ -52,6 +52,18 @@ Acceptance criteria:
 
 ## Progress log
 
+- **2026-07-11 — weather completion done (the core; the Juan fix).** Diagnosed: 20/22 emergent weather
+  teams delivered ZERO abusers — because ability-based gimmick roles (weather setter/abuser) are chosen
+  by `pickTrainerMonAbility` INDEPENDENTLY of the crystallised identity (unlike move roles, which 107d
+  injects). Fix: `planMemberAbility` (archetypeRefine) returns the ability the mon should PREFER given
+  the identity — for a weather team, the setter ability (matching the established/themed subtype) if no
+  setter yet, else the matching abuser (rain→Swift Swim, sun→Chlorophyll, sand→Sand Rush, snow→Slush
+  Rush; corpus-confirmed). `pickTrainerMonAbility` gained a `preferredAbilities` hint (wins if the mon
+  can have it). `resolveIdentity` now PERSISTS a seeded gimmick through crystallisation. Measured with
+  the T-126 weather seeds: **Archie → real rain** (Drizzle + Swift Swim/Hydration), **Maxie → real sun**
+  (Drought + Solar Power); mismatched pools self-correct (ice museum grunt → snow). 5 unit tests; suite
+  929; determinism green. **Follow-ups:** TR completion (slow mons / Room Service) so Tate & Liza's TR
+  seed is realised; gimmick items (T-125); emergent (non-seeded) weather stays weak by design.
 - **2026-07-11** — Created from the owner's problem-2 analysis (Juan's non-weather weather team;
   un-forcing Tate & Liza TR). Blocked on T-122 (roles must deliver) + T-123 (correct crystallisation).
 

@@ -58,24 +58,22 @@ function resolveIdentity(team, model, ctx = {}, seed = null) {
         if (alt) base = alt;
     }
     const fit = base ? base.fit : 0; // chosen base-recipe fit (also surfaced to the T-117 audit)
-    if (base && base.fit >= IDENTITY_FIT) {
-        // T-118 — a team commits to at most ONE emergent gimmick engine (the best-fitting). Incidental
-        // second/third setters must not stack incoherent engines (e.g. screens + Trick Room + weather).
-        // gimmicks is sorted by fit desc, so find() returns the top one over the threshold. (Seeds are
-        // intentional and pass through uncapped below.)
+    let baseId, source;
+    if (base && base.fit >= IDENTITY_FIT) { baseId = base.id; source = 'emergent'; }
+    else if (seed && seed.base) { baseId = seed.base; source = 'seed'; }
+    else return null;
+
+    // Gimmicks: a SEEDED gimmick is the trainer's INTENTIONAL identity and persists throughout (T-124/
+    // T-126 — so a weather-seeded trainer keeps building weather even after its base crystallises).
+    // Otherwise take the single best-fitting emergent gimmick engine (T-118 cap — no incoherent stacks).
+    let gimmickIds;
+    if (seed && seed.gimmicks && seed.gimmicks.length) {
+        gimmickIds = seed.gimmicks.slice(0, 1);
+    } else {
         const topGimmick = cryst.gimmicks.find(g => g.fit >= GIMMICK_FIT);
-        return {
-            baseId: base.id,
-            gimmickIds: topGimmick ? [topGimmick.id] : [],
-            counts: cryst.counts,
-            source: 'emergent',
-            confidence: fit,
-        };
+        gimmickIds = topGimmick ? [topGimmick.id] : [];
     }
-    if (seed && seed.base) {
-        return { baseId: seed.base, gimmickIds: (seed.gimmicks || []).slice(), counts: cryst.counts, source: 'seed', confidence: fit };
-    }
-    return null;
+    return { baseId, gimmickIds, counts: cryst.counts, source, confidence: fit };
 }
 
 // Build the picker for one trainer. `context` is read by reference (its `team` grows, `sophistication`
