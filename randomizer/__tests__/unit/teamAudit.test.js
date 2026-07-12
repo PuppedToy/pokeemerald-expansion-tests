@@ -12,14 +12,20 @@ const mon = (o) => ({
     baseHP: 70, baseAttack: 70, baseDefense: 70, baseSpeed: 70, baseSpAttack: 70, baseSpDefense: 70,
     learnset: [], teachables: [], evolutionData: { isMega: false }, ...o,
 });
+const learn = (...mv) => ({ learnset: mv.map(m => ({ level: '1', move: m })) });
 const regen = () => mon({ id: 'SPECIES_REGEN', parsedAbilities: ['REGENERATOR'], baseHP: 100, baseDefense: 90, baseSpDefense: 90 });
 const breaker = () => mon({ id: 'SPECIES_BREAKER', baseAttack: 130 });
+const sweeper = () => mon({ id: 'SPECIES_SW', baseAttack: 120, ...learn('MOVE_DRAGON_DANCE') });
+const rocker = () => mon({ id: 'SPECIES_RK', ...learn('MOVE_STEALTH_ROCK') });
+const defogger = () => mon({ id: 'SPECIES_DF', ...learn('MOVE_DEFOG') });
+// A prior team that fits Balance (regen backbone + win condition + hazard game).
+const balancePrior = () => [{ pokemon: regen() }, { pokemon: sweeper() }, { pokemon: rocker() }, { pokemon: defogger() }];
 
 describe('createTeamAudit + renderTeamAuditText', () => {
     test('records a team trace (identity, roles, injected move) and renders it', () => {
         const audit = createTeamAudit();
         audit.beginTeam({ trainerId: 'TRAINER_TEST', label: 'Tester', level: 60, battleType: 'singles', sophistication: 0.9, seed: null });
-        const prior = [{ pokemon: regen() }, { pokemon: regen() }]; // 2 Regen pivots → Balance emerged
+        const prior = balancePrior(); // fits Balance
         audit.recordSlot({ priorTeam: prior, chosenMon: breaker(), roleMove: 'MOVE_STEALTH_ROCK', model: singles, ctx: {}, seed: null });
         audit.finishTeam({ team: [...prior, { pokemon: breaker() }], model: singles, ctx: {}, seed: null });
 

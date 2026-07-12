@@ -1,103 +1,99 @@
 {
   "format": "singles",
-  "_doc": "Singles teambuilding archetype model (T-101). Every team has ONE base archetype (balanced|offensive|defensive) plus a weighted, STACKABLE gimmick layer (Batch-3 owner decision). The 2C engine (T-107) reads `entry` to detect emergent crystallization from a partial team, and `structure` as the soft preferred composition to complete/refine toward (never fixed slots). `feature`/`role` keys are team-features the engine detects on candidate mons (see featureDefinitions). Values encode the owner-validated research (docs/research/team-archetypes.md + rating-decisions.md) and are PROVISIONAL per each task's meta-analysis validation clause.",
+  "_doc": "Singles teambuilding archetype model (T-101, recipes re-derived T-118/T-121 from 62 Smogon OU teams, owner-validated). Each team has ONE base archetype (a slot RECIPE on a defensive↔offensive spectrum) plus a weighted, STACKABLE gimmick layer (a defining engine). The 2C engine crystallises by STRUCTURAL FIT: it scores a team's role counts against each base's `structure` recipe and takes the best fit (above a threshold); gimmicks are detected the same way and stacked. `structure` = the owner-validated slot recipe (role min/max/weight); `role` keys are the team-features the detectors tag (see featureDefinitions). `entry` is retired — crystallisation is by recipe fit, not boolean entry conditions. Values are owner-validated (docs/research/rating-decisions.md Batch 4) — hazards are ubiquitous so they are low-weight recipe slots, never a gate.",
   "featureDefinitions": {
     "regeneratorPivot": "bulky mon with Regenerator (or a bulky pivot with recovery) that switches to reset damage",
-    "hazardSetter": "sets Stealth Rock / Spikes / Toxic Spikes",
+    "hazardSetter": "sets Stealth Rock / Spikes / Toxic Spikes (ubiquitous — a common slot, not archetype-defining)",
     "hazardRemover": "Defog / Rapid Spin",
-    "wallbreaker": "high-power (often Choice) attacker that breaks walls",
-    "winCondition": "a setup sweeper or late-game closer (Z-move / boosting sweep)",
-    "setupSweeper": "boosts its own stats then sweeps (DD / SD / CM / QD / Shift Gear / Unburden)",
+    "wallbreaker": "high-power (often Choice) attacker that breaks walls (one offensive identity per mon)",
+    "winCondition": "a genuine closer — a setup sweeper",
+    "setupSweeper": "boosts its own stats then sweeps (DD / SD / CM / QD / Shift Gear); high offense",
     "priorityUser": "carries a priority move as revenge / finisher",
     "physicalWall": "dedicated physical wall",
     "specialWall": "dedicated special wall",
     "unawareWall": "Unaware (or Magic Bounce) wall that denies setup / hazards",
-    "cleric": "Wish / Aromatherapy / Heal Bell support",
+    "cleric": "Wish / Aromatherapy / Heal Bell support on a bulky, low-offense mon",
     "choiceScarfRevengeKiller": "Choice Scarf mon used to revenge-kill / provide speed control",
     "pivotUser": "U-turn / Volt Switch / Flip Turn / Teleport pivot",
-    "focusSashLead": "frail Focus Sash suicide lead (hazards + Taunt)",
-    "weatherSetter": "sets weather via ability (Drizzle / Drought / Sand Stream / Snow Warning) or a weather move",
+    "focusSashLead": "frail Focus Sash suicide lead (retired from recipes; the hyper-offense lead is the hazard setter)",
+    "weatherSetter": "sets weather via ability (Drizzle / Drought / Sand Stream / Snow Warning)",
     "weatherAbuser": "Swift Swim / Chlorophyll / Sand Rush / Slush Rush, or a weather-boosted attacker",
-    "screenSetter": "Reflect / Light Screen / Aurora Veil",
+    "screenSetter": "Reflect / Light Screen / Aurora Veil on a non-attacker support",
     "trickRoomSetter": "sets Trick Room",
     "trickRoomAbuser": "slow, high-offense mon that benefits from Trick Room"
   },
   "baseArchetypes": [
     {
       "id": "balance", "name": "Balance", "category": "balanced",
-      "description": "Defensive pivot core (Regenerator) that soaks hits and generates momentum for 1-2 Choice wallbreakers, wins the hazard game, and closes with a setup/Z win condition.",
-      "entry": [{ "feature": "regeneratorPivot", "min": 2 }],
+      "description": "A Regenerator/pivot backbone + a wall soaks hits and wins the one-sided hazard game (sets its own, Defogs the foe's), feeding 1-2 wallbreakers and a setup win condition.",
       "structure": [
-        { "role": "regeneratorPivot", "min": 2, "max": 3, "weight": 1.0 },
-        { "role": "hazardSetter", "min": 1, "max": 1, "weight": 0.7 },
-        { "role": "hazardRemover", "min": 1, "max": 1, "weight": 0.7 },
-        { "role": "wallbreaker", "min": 1, "max": 2, "weight": 1.0 },
-        { "role": "winCondition", "min": 1, "max": 1, "weight": 0.9 }
+        { "role": "regeneratorPivot", "min": 1, "max": 2, "weight": 0.9 },
+        { "role": "wallbreaker", "min": 1, "max": 2, "weight": 0.8 },
+        { "role": "winCondition", "min": 1, "max": 1, "weight": 0.8 },
+        { "role": "hazardSetter", "min": 1, "max": 1, "weight": 0.6 },
+        { "role": "hazardRemover", "min": 1, "max": 1, "weight": 0.6 },
+        { "role": "specialWall", "min": 0, "max": 1, "weight": 0.5 }
       ]
     },
     {
       "id": "bulky_offense", "name": "Bulky Offense", "category": "offensive",
-      "description": "Offensively slanted with a small defensive backbone; wallbreakers + a Choice-Scarf revenge killer apply pressure (optionally a Pursuit trapper opens the breaker's path), closing with setup/priority.",
-      "entry": [{ "feature": "wallbreaker", "min": 1 }, { "feature": "choiceScarfRevengeKiller", "min": 1 }],
+      "description": "The broad offensive default: 2-3 wallbreakers + a Choice-Scarf revenge killer + VoltTurn pivots apply relentless pressure over a thin defensive glue, closing with a setup win condition.",
       "structure": [
-        { "role": "physicalWall", "min": 0, "max": 1, "weight": 0.5 },
-        { "role": "hazardSetter", "min": 1, "max": 1, "weight": 0.6 },
+        { "role": "wallbreaker", "min": 1, "max": 3, "weight": 1.0 },
         { "role": "choiceScarfRevengeKiller", "min": 1, "max": 1, "weight": 0.8 },
-        { "role": "wallbreaker", "min": 1, "max": 2, "weight": 1.0 },
-        { "role": "winCondition", "min": 1, "max": 1, "weight": 0.9 }
+        { "role": "pivotUser", "min": 1, "max": 2, "weight": 0.7 },
+        { "role": "hazardSetter", "min": 1, "max": 1, "weight": 0.6 },
+        { "role": "winCondition", "min": 0, "max": 1, "weight": 0.6 },
+        { "role": "specialWall", "min": 0, "max": 1, "weight": 0.4 }
       ]
     },
     {
       "id": "hyper_offense", "name": "Hyper Offense", "category": "offensive",
-      "description": "Maximum aggression with little defense: a Focus-Sash suicide lead sets hazards and Taunts, then a stack of setup sweepers race to win, backed by priority / VoltTurn.",
-      "entry": [{ "feature": "focusSashLead", "min": 1 }, { "feature": "setupSweeper", "min": 2 }],
+      "description": "All-out: a hazard lead + a stack of 2-3 speed-boosting setup sweepers race to win, backed by priority (optionally behind screens).",
       "structure": [
-        { "role": "focusSashLead", "min": 1, "max": 1, "weight": 0.9 },
-        { "role": "setupSweeper", "min": 3, "max": 4, "weight": 1.0 },
-        { "role": "priorityUser", "min": 1, "max": 2, "weight": 0.7 }
+        { "role": "setupSweeper", "min": 2, "max": 4, "weight": 1.0 },
+        { "role": "hazardSetter", "min": 1, "max": 1, "weight": 0.7 },
+        { "role": "priorityUser", "min": 0, "max": 2, "weight": 0.5 },
+        { "role": "screenSetter", "min": 0, "max": 1, "weight": 0.4 }
       ]
     },
     {
       "id": "full_stall", "name": "Full Stall", "category": "defensive",
-      "description": "Passive defensive wall-stack: splits physical/special defense, denies win conditions (Unaware / Magic Bounce), and grinds foes with residual damage + Wish/Recover/Regenerator + clerics.",
-      "entry": [{ "feature": "physicalWall", "min": 1 }, { "feature": "specialWall", "min": 1 }, { "feature": "unawareWall", "min": 1 }],
+      "description": "A near-passive wall stack: physical + special walls split the load, an Unaware/Magic Bounce wall denies setup/hazards, clerics + Wish sustain, and hazard control keeps it healthy.",
       "structure": [
         { "role": "physicalWall", "min": 1, "max": 2, "weight": 1.0 },
-        { "role": "specialWall", "min": 1, "max": 1, "weight": 1.0 },
+        { "role": "specialWall", "min": 1, "max": 2, "weight": 1.0 },
         { "role": "unawareWall", "min": 1, "max": 1, "weight": 0.9 },
-        { "role": "cleric", "min": 1, "max": 1, "weight": 0.7 },
-        { "role": "hazardSetter", "min": 1, "max": 1, "weight": 0.6 },
-        { "role": "hazardRemover", "min": 1, "max": 1, "weight": 0.6 }
+        { "role": "cleric", "min": 1, "max": 2, "weight": 0.8 },
+        { "role": "hazardRemover", "min": 0, "max": 1, "weight": 0.5 }
       ]
     }
   ],
   "gimmicks": [
     {
       "id": "weather", "name": "Weather (Rain/Sun/Sand/Snow)",
-      "description": "A weather setter powers its own side (Swift Swim/Chlorophyll Speed, boosted attacks); glue keeps the plan alive after weather lapses, with a weather-independent backup win condition.",
+      "description": "A weather setter (by ability) powers 1-2 abusers (Swift Swim/Chlorophyll Speed, boosted attacks), with a weather-independent backup win condition.",
       "subtypes": ["sun", "rain", "sand", "snow"],
-      "entry": [{ "feature": "weatherSetter", "min": 1 }],
       "structure": [
         { "role": "weatherSetter", "min": 1, "max": 1, "weight": 1.0 },
-        { "role": "weatherAbuser", "min": 1, "max": 2, "weight": 1.0 },
-        { "role": "winCondition", "min": 0, "max": 1, "weight": 0.6 }
+        { "role": "weatherAbuser", "min": 1, "max": 2, "weight": 0.9 },
+        { "role": "winCondition", "min": 0, "max": 1, "weight": 0.5 }
       ]
     },
     {
       "id": "screens", "name": "Screens",
-      "description": "Dual screens / Aurora Veil blunt incoming hits so setup sweepers can boost safely behind them.",
-      "entry": [{ "feature": "screenSetter", "min": 1 }, { "feature": "setupSweeper", "min": 1 }],
+      "description": "A screen setter blunts incoming hits so a stack of 2-3 setup sweepers boosts safely behind them (a screens hyper offense).",
       "structure": [
         { "role": "screenSetter", "min": 1, "max": 1, "weight": 1.0 },
-        { "role": "setupSweeper", "min": 1, "max": 2, "weight": 1.0 }
+        { "role": "setupSweeper", "min": 2, "max": 3, "weight": 1.0 },
+        { "role": "hazardSetter", "min": 0, "max": 1, "weight": 0.5 }
       ]
     },
     {
       "id": "trick_room", "name": "Trick Room",
-      "description": "Inverts the speed order so slow, high-power abusers move first. Rare in singles OU but a valid gimmick.",
-      "entry": [{ "feature": "trickRoomSetter", "min": 1 }, { "feature": "trickRoomAbuser", "min": 1 }],
+      "description": "Inverts the speed order so slow, high-power abusers move first — 1-2 TR setters + 2-3 slow abusers.",
       "structure": [
-        { "role": "trickRoomSetter", "min": 1, "max": 1, "weight": 1.0 },
+        { "role": "trickRoomSetter", "min": 1, "max": 2, "weight": 1.0 },
         { "role": "trickRoomAbuser", "min": 2, "max": 3, "weight": 1.0 }
       ]
     }

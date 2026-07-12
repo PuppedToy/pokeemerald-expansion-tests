@@ -121,6 +121,28 @@ species). Singles corpus baseline: speed 84, offense 119, bulk 273. Validated ru
   analyse next: archetype **entry conditions** (some strong piles now match no archetype → "none") and
   per-trainer **seeds** for deliberate variety; watch `regeneratorPivot`'s bulky-recovery-pivot branch.
 
+## Batch 5 — archetype slot recipes + crystallise-by-fit (source: 62-team singles corpus, T-121/T-118)
+
+**VALIDATED — owner, 2026-07-11.** Team-by-team slot-objective analysis over the expanded corpus (62
+singles teams). An **archetype = a slot RECIPE** on a defensive↔offensive spectrum; a **gimmick = a
+defining engine** layered on a base. Crystallisation is by **structural fit** (score the team's role
+counts against each base's recipe, take the best above a threshold; detect gimmick engines the same way
+and stack), NOT boolean entry conditions. Owner-validated singles recipes (role · min/max/weight),
+encoded in `randomizer/data/archetypes/singles.json`:
+
+- **balance** — regeneratorPivot 1/2/.9 · wallbreaker 1/2/.8 · winCondition 1/1/.8 · hazardSetter 1/1/.6
+  · hazardRemover 1/1/.6 · specialWall 0/1/.5  (defensive backbone + one-sided hazard game + wincon).
+- **bulky_offense** — wallbreaker 1/3/1 · choiceScarfRevengeKiller 1/1/.8 · pivotUser 1/2/.7 ·
+  hazardSetter 1/1/.6 · winCondition 0/1/.6 · specialWall 0/1/.4  (broad offensive default).
+- **hyper_offense** — setupSweeper **2**/4/1 · hazardSetter 1/1/.7 · priorityUser 0/2/.5 · screenSetter 0/1/.4.
+- **full_stall** — physicalWall 1/2/1 · specialWall 1/2/1 · unawareWall 1/1/.9 · cleric 1/2/.8 · hazardRemover 0/1/.5.
+- **gimmicks** — weather (setter 1/1/1 · abuser 1/2/.9 · wincon 0/1/.5) · screens (setter 1/1/1 ·
+  setupSweeper 2/3/1 · hazardSetter 0/1/.5) · trick_room (setter 1/2/1 · abuser 2/3/1).
+
+Notes: `hazardSetter` is ubiquitous → a low-weight recipe slot, never a gate. `entry` conditions and
+`focusSashLead` are retired. Thresholds `IDENTITY_FIT` 0.5 / `GIMMICK_FIT` 0.6 (provisional, tunable).
+**Doubles recipes are pending** the DOU 6v6 corpus expansion (T-102 v2), same method.
+
 ## Open decisions
 
 - **RESOLVED (owner, 2026-07-10) — Trapping (Shadow Tag / Arena Trap): ALLOWED** as a valid gimmick

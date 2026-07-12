@@ -87,6 +87,22 @@ Acceptance criteria:
   the owner flagged two engine gaps to fine-tune later (not in the current pipeline): role-driven tier
   **downgrade** within budget (**T-119**) and global **type coverage** for unrestricted trainers (**T-120**).
 
+- **2026-07-11 — increment 3: crystallize-by-fit + slot RECIPES (owner-validated on the 62-team corpus).**
+  With T-121's corpus (62 singles teams), went team-by-team defining each slot's objective and derived
+  the per-archetype **slot recipes** (role · min/max/weight); owner validated the recipes + the model
+  ("archetype = slot recipe on a defensive↔offensive spectrum + a gimmick engine, crystallise by
+  structural fit"). Implemented: rewrote `data/archetypes/singles.json` `structure` as the recipes
+  (balance = regen backbone + hazard game + wincon; bulky_offense = broad offensive default; hyper =
+  2+ setup sweepers + hazard lead; stall = walls + unaware + cleric; gimmicks weather/screens/trick_room
+  by engine); retired `focusSashLead` and the boolean `entry` fields (now OPTIONAL in the loader). Added
+  `recipeFit` (weighted satisfaction of a recipe's REQUIRED roles; optional roles a small bonus) and
+  switched `crystallize` to rank bases/gimmicks by fit; `resolveIdentity` now emerges on best fit ≥
+  `IDENTITY_FIT` (0.5) and stacks gimmicks ≥ `GIMMICK_FIT` (0.6). Updated the fit/picker/refine/audit
+  unit tests to recipe-satisfying teams. **Measured (decision log):** endgame teams now crystallise into
+  DISTINCT, correct archetypes (balance / hyper_offense / bulky_offense / hyper_offense+trick_room) — the
+  "everything = bulky_offense goodstuffs" collapse is gone. Full suite **921 pass**; `RUN_DETERMINISM=1`
+  gate green (per-slot determinism preserved). Recorded as Batch 4 (recipes) in `rating-decisions.md`.
+
 ## Outcome
 
 <!-- Filled when closing. -->

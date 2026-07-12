@@ -37,18 +37,28 @@ function entryConfidence(counts, entry) {
     return sum / entry.length;
 }
 
-// Rank every base archetype and gimmick by how strongly `team` fits its entry.
-// Returns { counts, base: [{id,name,confidence,matched}], gimmicks: [...] } sorted by confidence desc.
+// T-118 — how well a team's role counts fit an archetype's slot RECIPE, in [0,1]. The score is the
+// weighted satisfaction of the recipe's REQUIRED roles (min ≥ 1); optional roles (min 0) add only a
+// small bonus if present, so they don't dilute or falsely inflate the fit. This is what makes the
+// bases discriminate (a stall team scores ~0 on the hyper-offense recipe, etc.).
+const OPTIONAL_BONUS = 0.1;
+function recipeFit(counts, structure) {
+    let num = 0, den = 0, bonus = 0;
+    for (const s of (structure || [])) {
+        if (s.min > 0) { den += s.weight; num += s.weight * Math.min(1, (counts[s.role] || 0) / s.min); }
+        else if ((counts[s.role] || 0) > 0) { bonus += OPTIONAL_BONUS * s.weight; }
+    }
+    const core = den ? num / den : 0;
+    return Math.min(1, core + bonus);
+}
+
+// Rank every base archetype and gimmick by how well `team` fits its slot recipe (structure).
+// Returns { counts, base: [{id,name,fit}], gimmicks: [...] } sorted by fit desc.
 function crystallize(team, model, ctx = {}) {
     const counts = teamFeatureCounts(team, ctx);
     const rank = (arr) => (arr || [])
-        .map(a => ({
-            id: a.id,
-            name: a.name,
-            confidence: entryConfidence(counts, a.entry),
-            matched: matchesEntry(counts, a.entry),
-        }))
-        .sort((x, y) => y.confidence - x.confidence);
+        .map(a => ({ id: a.id, name: a.name, fit: recipeFit(counts, a.structure) }))
+        .sort((x, y) => y.fit - x.fit);
     return { counts, base: rank(model.baseArchetypes), gimmicks: rank(model.gimmicks) };
 }
 
@@ -110,6 +120,7 @@ module.exports = {
     teamFeatureCounts,
     matchesEntry,
     entryConfidence,
+    recipeFit,
     crystallize,
     mergeStructure,
     combinedStructure,
