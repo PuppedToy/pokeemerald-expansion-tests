@@ -4,7 +4,7 @@ title: Favourite Pokémon — a generalizable "preferred ace" resolved first, dr
 status: in-progress
 type: feature
 created: 2026-07-11
-updated: 2026-07-11
+updated: 2026-07-12
 target-version: 0.8.0
 links: [T-107, T-106, T-126]
 priority: high
@@ -185,5 +185,28 @@ already exists in the selector). The restrictions:
 4. Trainer restrictions at the trainer level; strip hardcoded slot types.
 5. Delete `FAVOURITE_MEGA_TIERS`, `FAVOURITE_MON_TIERS`, `TATE_BUDGET_TIERS`, and the misuse of
    `ABSOLUTE/CONTEXTUAL_POKEDEF_*` I introduced.
+
+## Progress Log
+
+### 2026-07-12 — favourite-claim mechanism + gym/E4 migration + mega-gate decision
+- Built `modules/favouriteClaim.js` (`resolveFavourites`): a favourite is a species chain; it CLAIMS a
+  pool slot of its EXACT tier (or the `{isMega}` slot if a mega), else the standard restriction-bounded
+  fallback; never downgrades. Unit-tested (`__tests__/unit/favouriteClaim.test.js`, 6 cases).
+- Wired into the resolver via a **dual path** (species-chain favourites → `resolveFavourites`; legacy
+  tiered-slot chains → the old prepend). The legacy branch is removed once every trainer is migrated.
+- Migrated to the clean pattern (type = trainer restriction `ALLOW_ONLY_TYPES` + `types`; team = full
+  preset pool; favourite = signature species only): **gyms** Roxanne/Wattson/Flannery/Norman/Juan, **E4**
+  Sidney/Phoebe/Glacia/Drake (E4 have no favourite).
+- **Owner decision — boss mega tier-gate lives in the PRESET.** The bare `{isMega}` preset slot (any mega
+  of the type) regressed endgame aces (Sidney → Mega Heracross, RU base). Owner chose "gate en el preset
+  (preservar)". New `presets.js` `bossMega(tiers)` = gated `{isMega}` + non-mega fallback of the same
+  window (trainer type restriction applies to both; difficulty never shifts it). Applied: gyms
+  Wattson/Flannery/Norman/Juan → ≤OU; E4 Sidney/Phoebe → [OU, UBERS]; Glacia/Drake → [UBERS]. Verified:
+  Sidney now Mega Pinsir (UBERS). Villain/T&L/Winona preset mega slots stay bare pending their migration.
+- Gates green (14/14 determinism + continuity); fast suite 959.
+- **Still on the legacy path (pending):** Winona, Brawly, Tate&Liza, all villains (Maxie ×3/Archie/Matt/
+  Shelly/Tabitha ×2/grunts), Steven (needs a mega slot added to CHAMPION_STEVEN + continuity), Wally
+  (keep NO_REPEATED), rival (starter favourite). Then strip hardcoded `type:`, delete the dual path +
+  `FAVOURITE_*_TIERS`/`TATE_BUDGET_TIERS`/misused `*_POKEDEF_*_MEGA` helpers.
 
 ## Outcome
