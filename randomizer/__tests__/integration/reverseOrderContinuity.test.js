@@ -113,9 +113,10 @@ describeSlow('reverse-order continuity (T-106)', () => {
     });
 
     describe('Tate & Liza dual favourite (T-128)', () => {
-        // For this seed the gym keeps its Psychic type, so both favourites (Solgaleo/Lunala) drop to their
-        // Solrock/Lunatone fallbacks (the aces are legends, above the up-to-Uber budget), each KEEPING its
-        // own Light Clay item — the effectiveDef per-rung item/nature preservation.
+        // T-128 (redesign) — Tate & Liza have TWO species-only favourites (['SPECIES_SOLGALEO',
+        // 'SPECIES_SOLROCK'] and ['SPECIES_LUNALA','SPECIES_LUNATONE']). The legends are above the
+        // up-to-Uber pool, so each drops to its base counterpart, which CLAIMS a pool slot. The old
+        // Trick Room / Light Clay / Room Service item gimmick was removed (owner-validated).
         test('fields six mons including a Solrock-line and a Lunatone-line ace', () => {
             const team = docs['TRAINER_TATE_AND_LIZA_1'].team;
             expect(team.length).toBe(6);
@@ -123,11 +124,13 @@ describeSlow('reverse-order continuity (T-106)', () => {
             expect(has(['SPECIES_SOLROCK', 'SPECIES_SOLGALEO', 'SPECIES_COSMOEM'])).toBe(true);
             expect(has(['SPECIES_LUNATONE', 'SPECIES_LUNALA', 'SPECIES_COSMOEM'])).toBe(true);
         });
-        test('the favourite fallbacks keep their own item (Light Clay), not the ace item (Room Service)', () => {
-            const team = docs['TRAINER_TATE_AND_LIZA_1'].team;
-            const screeners = team.filter(m => ['SPECIES_SOLROCK', 'SPECIES_LUNATONE'].includes(m.pokemon));
-            expect(screeners.length).toBeGreaterThanOrEqual(1);
-            for (const m of screeners) expect(m.item).toBe('Light Clay');
+        test('both favourites drop to their base counterparts (Solrock + Lunatone), the legends being over budget', () => {
+            const team = docs['TRAINER_TATE_AND_LIZA_1'].team.map(m => m.pokemon);
+            expect(team).toContain('SPECIES_SOLROCK');
+            expect(team).toContain('SPECIES_LUNATONE');
+            // Solgaleo/Lunala are legends, above the up-to-Uber budget → they never claim a slot.
+            expect(team).not.toContain('SPECIES_SOLGALEO');
+            expect(team).not.toContain('SPECIES_LUNALA');
         });
     });
 

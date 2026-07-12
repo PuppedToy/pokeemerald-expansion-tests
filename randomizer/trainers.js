@@ -233,22 +233,11 @@ const absolutePokeDefMega = (BASE_POKE_DEF = {}) => ({
 const FAVOURITE_MEGA_TIERS = [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU];
 const FAVOURITE_MON_TIERS  = [TIER_NU, TIER_RU, TIER_UU, TIER_OU];
 
-// villainFavourite('SPECIES_SHARPEDO_MEGA', aquaTeamTypes) → Archie's chain (owner-validated):
-//   signature mega ≫ mega with BOTH themed types ≫ mega with primary + another themed ≫ mega with
-//   secondary + another themed ≫ mega of ANY themed type ≫ any mon of a themed type (last resort).
-// `types` is the configured 5-type theme (aquaTeamTypes / magmaTeamTypes); [0]=primary, [1]=secondary.
-function villainFavourite(aceMega, types) {
-    const [t1, t2] = types;
-    const mega = extra => ({ isMega: true, absoluteTier: FAVOURITE_MEGA_TIERS, checkValidEvo: true, ...extra });
-    return [
-        mega({ oneOf: [aceMega] }),                                       // the signature mega itself
-        mega({ exactTypes: [t1, t2] }),                                   // mega with both themed types
-        mega({ exactTypes: [t1], type: types.filter(t => t !== t1) }),   // mega: primary + another themed
-        mega({ exactTypes: [t2], type: types.filter(t => t !== t2) }),   // mega: secondary + another themed
-        mega({ type: types }),                                            // mega of any themed type
-        { absoluteTier: FAVOURITE_MON_TIERS, checkValidEvo: true, type: types }, // any mon of a themed type
-    ];
-}
+// villainFavourite('SPECIES_SHARPEDO_MEGA') → a villain leader's signature-mega chain: the signature
+// mega ≫ any mega of the team's types (the { mega } rung) ≫ the implicit "any team-typed mon" fallback.
+// The 5-type team theme is a TRAINER restriction (ALLOW_ONLY_TYPES + trainer.types), so it is applied to
+// the signature, the { mega } rung and the final fallback alike — no per-rung type lists needed.
+const villainFavourite = (aceMega) => [aceMega, { mega: true }];
 
 // stevenFavourite(championMainType) → Steven's chain (owner-validated): Mega Metagross (Uber) ≫ a mega
 // of his (rolled) type (Uber) ≫ Mega Metagross (OU) ≫ a mega of his type (OU). Drops if his mega isn't
@@ -1284,38 +1273,10 @@ const trainersData = [
         reward: ['Ability Capsule'],
         isBoss: true,
         bag: [...petalwoodGruntBag()],
-        team: [
-            {
-                ...getBossPreset('PETALBURG_WOODS_GRUNT')[0],
-                type: [aquaTeamTypes[0]],
-            },
-            {
-                ...getBossPreset('PETALBURG_WOODS_GRUNT')[1],
-                exactTypes: [aquaTeamTypes[0], aquaTeamTypes[1]],
-                fallback: [
-                    {
-                        ...getBossPreset('PETALBURG_WOODS_GRUNT')[1],
-                        type: [aquaTeamTypes[0], aquaTeamTypes[1]],
-                    }
-                ]
-            },
-            {
-                ...getBossPreset('PETALBURG_WOODS_GRUNT')[2],
-                type: [aquaTeamTypes[1]],
-            },
-            {
-                ...getBossPreset('PETALBURG_WOODS_GRUNT')[3],
-                type: [aquaTeamTypes[2]],
-            },
-            {
-                ...getBossPreset('PETALBURG_WOODS_GRUNT')[4],
-                type: [aquaTeamTypes[3]],
-            },
-            {
-                ...getBossPreset('PETALBURG_WOODS_GRUNT')[5],
-                type: [aquaTeamTypes[4]],
-            },
-        ],
+        // T-128 — aqua types are a trainer restriction; team is the full preset pool.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...aquaTeamTypes],
+        team: getBossPreset('PETALBURG_WOODS_GRUNT').map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_JAMES_1',
@@ -1475,38 +1436,10 @@ const trainersData = [
         class: 'Magma Grunt F',
         isBoss: true,
         bag: [...rusturfGruntBag()],
-        team: [
-            {
-                ...getBossPreset('RUSTURF_GRUNT')[0],
-                type: [magmaTeamTypes[0]],
-            },
-            {
-                ...getBossPreset('RUSTURF_GRUNT')[1],
-                type: [magmaTeamTypes[1]],
-            },
-            {
-                ...getBossPreset('RUSTURF_GRUNT')[2],
-                type: [magmaTeamTypes[2]],
-            },
-            {
-                ...getBossPreset('RUSTURF_GRUNT')[3],
-                type: [magmaTeamTypes[3]],
-            },
-            {
-                ...getBossPreset('RUSTURF_GRUNT')[4],
-                exactTypes: [magmaTeamTypes[0], magmaTeamTypes[1]],
-                fallback: [
-                    {
-                        ...getBossPreset('RUSTURF_GRUNT')[4],
-                        type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-                    }
-                ]
-            },
-            {
-                ...getBossPreset('RUSTURF_GRUNT')[5],
-                type: [magmaTeamTypes[4]],
-            },
-        ],
+        // T-128 — magma types are a trainer restriction; team is the full preset pool.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        team: getBossPreset('RUSTURF_GRUNT').map(s => ({ ...s })),
     },
     // Route 116 again
     {
@@ -1776,22 +1709,10 @@ const trainersData = [
         level: 24,
         preventShuffle: true,
         bag: [...slateportGruntsBag()],
-        team: [
-            getBossPreset('MUSEUM_GRUNT_1')[0],
-            {
-                ...getBossPreset('MUSEUM_GRUNT_1')[1],
-            },
-            {
-                ...getBossPreset('MUSEUM_GRUNT_1')[2],
-            },
-            getBossPreset('MUSEUM_GRUNT_1')[3],
-            {
-                ...getBossPreset('MUSEUM_GRUNT_1')[4],
-            },
-            {
-                ...getBossPreset('MUSEUM_GRUNT_1')[5],
-            },
-        ],
+        // T-128 — aqua types are a trainer restriction; team is the full preset pool.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...aquaTeamTypes],
+        team: getBossPreset('MUSEUM_GRUNT_1').map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_GRUNT_MUSEUM_2',
@@ -1802,22 +1723,10 @@ const trainersData = [
         level: 24,
         preventShuffle: true,
         bag: [...slateportGruntsBag()],
-        team: [
-            getBossPreset('MUSEUM_GRUNT_2')[0],
-            {
-                ...getBossPreset('MUSEUM_GRUNT_2')[1],
-            },
-            {
-                ...getBossPreset('MUSEUM_GRUNT_2')[2],
-            },
-            getBossPreset('MUSEUM_GRUNT_2')[3],
-            {
-                ...getBossPreset('MUSEUM_GRUNT_2')[4],
-            },
-            {
-                ...getBossPreset('MUSEUM_GRUNT_2')[5],
-            },
-        ],
+        // T-128 — aqua types are a trainer restriction; team is the full preset pool.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...aquaTeamTypes],
+        team: getBossPreset('MUSEUM_GRUNT_2').map(s => ({ ...s })),
     },
     // Route 110
     {
@@ -2169,22 +2078,10 @@ const trainersData = [
         level: 32,
         preventShuffle: true,
         bag: [...magmaChimneyBag()],
-        team: [
-            getBossPreset('TABITHA_CHIMNEY', true)[0],
-            {
-                ...getBossPreset('TABITHA_CHIMNEY', true)[1],
-            },
-            {
-                ...getBossPreset('TABITHA_CHIMNEY', true)[2],
-            },
-            getBossPreset('TABITHA_CHIMNEY', true)[3],
-            {
-                ...getBossPreset('TABITHA_CHIMNEY', true)[4],
-            },
-            {
-                ...getBossPreset('TABITHA_CHIMNEY', true)[5],
-            },
-        ],
+        // T-128 — magma types are a trainer restriction; team is the full preset pool (no mega).
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        team: getBossPreset('TABITHA_CHIMNEY', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_MAXIE_MT_CHIMNEY',
@@ -2195,47 +2092,14 @@ const trainersData = [
         level: 33,
         preventShuffle: true,
         bag: [...magmaChimneyBag()],
-        team: [
-            getBossPreset('MAXIE_CHIMNEY', true)[1],
-            {
-                ...getBossPreset('MAXIE_CHIMNEY', true)[0],
-                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-                fallback: [
-                    {
-                        ...ABSOLUTE_POKEDEF_RU,
-                        type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_RU,
-                        type: [...magmaTeamTypes],
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_RU,
-                        type: [...magmaTeamTypes],
-                    }
-                ],
-            },
-            getBossPreset('MAXIE_CHIMNEY', true)[2],
-            {
-                ...getBossPreset('MAXIE_CHIMNEY', true)[3],
-                fallback: [
-                    {
-                        ...ABSOLUTE_POKEDEF_RU,
-                        type: [...magmaTeamTypes],
-                    }
-                ],
-            },
-            {
-                ...getBossPreset('MAXIE_CHIMNEY', true)[4],
-                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-            },
-            {
-                id: 'MAXIE_MEGA',
-                specificIfTier: 'SPECIES_CAMERUPT_MEGA',
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
-            },
-        ],
+        // T-128 — the magma team types are a trainer restriction; team is the full preset pool. Maxie's
+        // favourite is Mega Camerupt (claims the ≤OU mega slot, tagged MAXIE_MEGA for cross-appearance
+        // continuity), else a themed mega, else the standard magma-typed fallback.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        favourite: villainFavourite('SPECIES_CAMERUPT_MEGA'),
+        favouriteId: 'MAXIE_MEGA',
+        team: getBossPreset('MAXIE_CHIMNEY', true).map(s => ({ ...s })),
     },
     // Jagged Pass
     {
@@ -2643,35 +2507,11 @@ const trainersData = [
         reward: ['GYM_REWARD_10'],
         isBoss: true,
         bag: [...shellyBag()],
-        team: [
-            {
-                ...getBossPreset('SHELLY_WEATHER', true)[0],
-                type: [aquaTeamTypes[0]],
-            },
-            {
-                ...getBossPreset('SHELLY_WEATHER', true)[1],
-                type: [aquaTeamTypes[1]],
-            },
-            {
-                ...getBossPreset('SHELLY_WEATHER', true)[2],
-                type: [aquaTeamTypes[2]],
-            },
-            {
-                ...getBossPreset('SHELLY_WEATHER', true)[3],
-                type: [aquaTeamTypes[3]],
-            },
-            {
-                ...getBossPreset('SHELLY_WEATHER', true)[4],
-                type: [aquaTeamTypes[4]],
-            },
-            {
-                isMega: true,
-                absoluteTier: [TIER_UU, TIER_OU],
-                checkValidEvo: true,
-                tryEvolve: true,
-                type: [...aquaTeamTypes],
-            },
-        ],
+        // T-128 — aqua types are a trainer restriction; team is the full preset pool (incl. its ≤OU mega
+        // slot). No signature ace.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...aquaTeamTypes],
+        team: getBossPreset('SHELLY_WEATHER', true).map(s => ({ ...s })),
     },
     // Route 119 Rival Battles
     {
@@ -2940,28 +2780,14 @@ const trainersData = [
         level: 51,
         preventShuffle: true,
         bag: [...wallyBag2()],
-        team: [
-            getBossPreset('MAXIE_MAGMA', true)[0],
-            {
-                ...getBossPreset('MAXIE_MAGMA', true)[1],
-                type: [magmaTeamTypes[1]],
-            },
-            getBossPreset('MAXIE_MAGMA', true)[2],
-            {
-                ...getBossPreset('MAXIE_MAGMA', true)[3],
-                type: [...magmaTeamTypes],
-            },
-            {
-                ...getBossPreset('MAXIE_MAGMA', true)[4],
-                type: [...magmaTeamTypes],
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'MAXIE_MEGA',
-                tryEvolve: true,
-                tryMega: true,
-            },
-        ],
+        // T-128 — magma types are a trainer restriction; team is the full preset pool. Maxie's favourite
+        // Mega Camerupt (tagged MAXIE_MEGA) claims the ≤OU mega slot — the same signature as his other
+        // appearances, so the continuity holds without an explicit REPEAT_ID.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        favourite: villainFavourite('SPECIES_CAMERUPT_MEGA'),
+        favouriteId: 'MAXIE_MEGA',
+        team: getBossPreset('MAXIE_MAGMA', true).map(s => ({ ...s })),
     },
     // Mt. Pyre
     {
@@ -3012,27 +2838,12 @@ const trainersData = [
         level: 54,
         preventShuffle: true,
         bag: [...wallyBag2()],
-        team: [
-            getBossPreset('MATT_AQUA', true)[0],
-            {
-                ...getBossPreset('MATT_AQUA', true)[1],
-            },
-            {
-                ...getBossPreset('MATT_AQUA', true)[2],
-            },
-            {
-                ...getBossPreset('MATT_AQUA', true)[3],
-            },
-            {
-                ...getBossPreset('MATT_AQUA', true)[4],
-            },
-            {
-                isMega: true,
-                checkValidEvo: true,
-                pickBest: true,
-                abilities: ['SNOW_WARNING'],
-            },
-        ],
+        // T-128 — aqua types are a trainer restriction; team is the full preset pool (incl. its ≤OU mega
+        // slot). No signature ace; the old forced Snow Warning weather-mega is dropped (weather comes from
+        // the seed now, not a hardcoded ability slot).
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...aquaTeamTypes],
+        team: getBossPreset('MATT_AQUA', true).map(s => ({ ...s })),
     },
     // Route 124
     {
@@ -3183,14 +2994,10 @@ const trainersData = [
         isBoss: true,
         level: 59,
         bag: [...spaceCenterBag()],
-        team: [
-            { ...getBossPreset('SPACE_CENTER_GRUNT_5')[0], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_5')[1], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_5')[2], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_5')[3], type: [...magmaTeamTypes] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_5')[4], type: [...magmaTeamTypes] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_5')[5], type: [...magmaTeamTypes] },
-        ],
+        // T-128 — magma types are a trainer restriction; team is the full preset pool.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        team: getBossPreset('SPACE_CENTER_GRUNT_5', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_GRUNT_SPACE_CENTER_6',
@@ -3199,14 +3006,10 @@ const trainersData = [
         isBoss: true,
         level: 59,
         bag: [...spaceCenterBag()],
-        team: [
-            { ...getBossPreset('SPACE_CENTER_GRUNT_6')[0], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_6')[1], type: [...magmaTeamTypes] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_6')[2], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_6')[3], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_6')[4], type: [...magmaTeamTypes] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_6')[5], type: [...magmaTeamTypes] },
-        ],
+        // T-128 — magma types are a trainer restriction; team is the full preset pool.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        team: getBossPreset('SPACE_CENTER_GRUNT_6', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_GRUNT_SPACE_CENTER_7',
@@ -3215,14 +3018,10 @@ const trainersData = [
         isBoss: true,
         level: 59,
         bag: [...spaceCenterBag()],
-        team: [
-            { ...getBossPreset('SPACE_CENTER_GRUNT_7')[0], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_7')[1], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_7')[2], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_7')[3], type: [...magmaTeamTypes] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_7')[4], type: [...magmaTeamTypes] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_7')[5], type: [...magmaTeamTypes] },
-        ],
+        // T-128 — magma types are a trainer restriction; team is the full preset pool (incl. its ≤OU mega).
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        team: getBossPreset('SPACE_CENTER_GRUNT_7', true).map(s => ({ ...s })),
     },
     {
         id: 'PARTNER_STEVEN',
@@ -3259,32 +3058,10 @@ const trainersData = [
         level: 59,
         preventShuffle: true,
         bag: [...spaceCenterBag()],
-        team: [
-            {
-                ...getBossPreset('TABITHA_MOSSDEEP', true)[0],
-                fallback: [
-                    {
-                        absoluteTier: [TIER_UU],
-                        checkValidEvo: true,
-                    },
-                ],
-            },
-            {
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                type: [magmaTeamTypes[0]],
-                fallback: [
-                    {
-                        ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                        type: [magmaTeamTypes[0]],
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                        type: [...magmaTeamTypes],
-                    },
-                ]
-            },
-            getBossPreset('TABITHA_MOSSDEEP', true)[1],
-        ],
+        // T-128 — magma types are a trainer restriction; team is the full preset pool (OU/UU + ≤OU mega).
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        team: getBossPreset('TABITHA_MOSSDEEP', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_MAXIE_MOSSDEEP',
@@ -3295,29 +3072,17 @@ const trainersData = [
         level: 59,
         preventShuffle: true,
         bag: [...spaceCenterBag()],
-        // T-128 — Maxie's favourite ace is Mega Camerupt, built first (perfect breed), dropping down
-        // his magma-theme chain if the mega is out of budget. Replaces the old generic magma-mega slot.
-        favourite: villainFavourite('SPECIES_CAMERUPT_MEGA', magmaTeamTypes),
-        team: [
-            {
-                specificIfTier: 'SPECIES_GROUDON',
-                ...getBossPreset('MAXIE_MOSSDEEP', true)[0],
-                item: 'Heat Rock',
-                fallback: [
-                    {
-                        specificIfTier: 'SPECIES_GROUDON',
-                        absoluteTier: [TIER_OU],
-                        item: 'Heat Rock',
-                    },
-                    getBossPreset('MAXIE_MOSSDEEP', true)[0],
-                ]
-            },
-            {
-                ...getBossPreset('MAXIE_MOSSDEEP', true)[1],
-                pickBest: true,
-            },
-            // (old generic magma-mega ace is now the `favourite` above — resolved first, perfect breed)
+        // T-128 — magma types are a trainer restriction; team is the full preset pool (LEGEND/OU/UBERS-
+        // mega). Two favourites: Groudon (claims the LEGEND slot — weather now comes from the seed, not a
+        // hardcoded Heat Rock) and Mega Camerupt (claims the mega slot, tagged MAXIE_MEGA for continuity).
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        favourites: [
+            ['SPECIES_GROUDON'],
+            villainFavourite('SPECIES_CAMERUPT_MEGA'),
         ],
+        favouriteIds: ['MAXIE_GROUDON', 'MAXIE_MEGA'],
+        team: getBossPreset('MAXIE_MOSSDEEP', true).map(s => ({ ...s })),
     },
     // Route 127
     {
@@ -3418,46 +3183,18 @@ const trainersData = [
         level: 61,
         bag: [...archieBag()],
         preventShuffle: true,
-        // T-128 — Archie's favourite ace is Mega Sharpedo, built first (perfect breed), dropping down
-        // his aqua-theme chain if the mega is out of budget. Replaces the old hardcoded slot-5 ace.
-        favourite: villainFavourite('SPECIES_SHARPEDO_MEGA', aquaTeamTypes),
-        team: [
-            {
-                specificIfTier: 'SPECIES_KYOGRE',
-                absoluteTier: [TIER_LEGEND],
-                ...getBossPreset('ARCHIE', true)[0],
-                item: 'Damp Rock',
-                fallback: [
-                    {
-                        specificIfTier: 'SPECIES_KYOGRE',
-                        absoluteTier: [TIER_UBERS],
-                        checkValidEvo: true,
-                        item: 'Damp Rock',
-                    },
-                    {
-                        specificIfTier: 'SPECIES_KYOGRE',
-                        absoluteTier: [TIER_OU],
-                        checkValidEvo: true,
-                        item: 'Damp Rock',
-                    },
-                    getBossPreset('ARCHIE', true)[0],
-                ]
-            },
-            {
-                ...getBossPreset('ARCHIE', true)[1],
-                type: [...aquaTeamTypes],
-            },
-            {
-                ...getBossPreset('ARCHIE', true)[2],
-                type: [aquaTeamTypes[1], aquaTeamTypes[2], aquaTeamTypes[3], aquaTeamTypes[4]],
-            },
-            getBossPreset('ARCHIE', true)[3],
-            {
-                ...getBossPreset('ARCHIE', true)[4],
-                type: [...aquaTeamTypes],
-            },
-            // (old slot-5 Mega Sharpedo ace is now the `favourite` above — resolved first, perfect breed)
+        // T-128 — aqua types are a trainer restriction; team is the full preset pool (LEGEND/OU/OU/UU/UU +
+        // ≤OU mega). Two favourites: Kyogre (claims the LEGEND slot — weather now comes from the seed, not
+        // a hardcoded Damp Rock) and Mega Sharpedo (claims the mega slot), else a themed mega, else the
+        // standard aqua-typed fallback.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...aquaTeamTypes],
+        favourites: [
+            ['SPECIES_KYOGRE'],
+            villainFavourite('SPECIES_SHARPEDO_MEGA'),
         ],
+        favouriteIds: ['ARCHIE_KYOGRE', 'ARCHIE_MEGA'],
+        team: getBossPreset('ARCHIE', true).map(s => ({ ...s })),
     },
     // Route 129
     {
