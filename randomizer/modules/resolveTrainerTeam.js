@@ -153,30 +153,18 @@ function createTeamResolver(deps) {
             starters, staticRewards, replacementLog, megaReplacementLog, isSuperEffective, pickCandidate,
         });
         // T-128 — favourites CLAIM a slot from the difficulty-adjusted preset pool (a slot of their EXACT
-        // tier, or the {isMega} slot if they are a mega), are resolved FIRST (so the team crystallises
-        // around them), and drop to the standard restriction-bounded fallback when they don't fit — never
-        // downgrading. A favourite is a chain of SPECIES ids (or { mega: true }); see favouriteClaim.js.
-        // [Migration: a legacy chain of tiered slot-defs is still handled by the prepend path below until
-        // every trainer is converted.]
+        // tier, or the {isMega} slot — gated by the story-progression mega rule — if they are a mega), are
+        // resolved FIRST (so the team crystallises around them), and drop to the standard restriction-
+        // bounded fallback when they don't fit — never downgrading. A favourite is an ordered chain of
+        // SPECIES ids (or { mega: true }); see modules/favouriteClaim.js.
         let teamDefs = trainer.team;
         const favChains = trainer.favourites
             || (trainer.favourite && trainer.favourite.length ? [trainer.favourite] : null);
         if (favChains && favChains.length) {
-            const isSpeciesChain = favChains.every(ch => ch.every(c => typeof c === 'string' || (c && c.mega)));
-            if (isSpeciesChain) {
-                teamDefs = resolveFavourites(trainer.team, favChains, {
-                    pokemonList, level: trainer.level, types: trainer.types || null,
-                    favouriteIds: trainer.favourites ? (trainer.favouriteIds || []) : (trainer.favouriteId ? [trainer.favouriteId] : []),
-                });
-            } else {
-                const favSlots = favChains.map(chain => {
-                    const rungs = chain.map(m => ({ ...m, maxTierDownSteps: 0 }));
-                    const slot = { ...rungs[0], fallback: rungs.slice(1), breedTier: 'perfect', __favourite: true };
-                    if (!trainer.favourites && trainer.favouriteId) slot.id = trainer.favouriteId;
-                    return slot;
-                });
-                teamDefs = [...favSlots, ...trainer.team];
-            }
+            teamDefs = resolveFavourites(trainer.team, favChains, {
+                pokemonList, level: trainer.level, types: trainer.types || null,
+                favouriteIds: trainer.favourites ? (trainer.favouriteIds || []) : (trainer.favouriteId ? [trainer.favouriteId] : []),
+            });
         }
         teamDefs.forEach((trainerMonDefinition, slotIndex) => {
             if (baseRngSeed !== null) {

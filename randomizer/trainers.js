@@ -162,15 +162,6 @@ const originalChampionType = POKEMON_TYPE_STEEL;
 
 // New defs
 
-
-const CONTEXTUAL_POKEDEF_UU_OU_MEGA = {
-    isMega: true,
-    contextualTier: [TIER_RU, TIER_NU, TIER_UU, TIER_OU],
-    checkValidEvo: true,
-    tryEvolve: true,
-};
-
-
 // T-128 — the weather/terrain setter pokeDef* wrappers were removed: the gimmick seed (weather /
 // electric terrain) now produces the setter + abusers + rock via the identity-aware ability logic
 // (T-124) and the weather-rock / Electric-Seed item logic (T-125), materialising or dropping on its own.
@@ -181,57 +172,15 @@ const PROMISING_OU_UBERS_MEGA_LC = {
     evoType: [EVO_TYPE_LC],
 };
 
-// ── Absolute-tier POKEDEF variants (post-Wattson boss trainers) ───────────────
-const ABSOLUTE_POKEDEF_RU     = { absoluteTier: [TIER_RU],     checkValidEvo: true };
-const ABSOLUTE_POKEDEF_UU     = { absoluteTier: [TIER_UU],     checkValidEvo: true };
-const ABSOLUTE_POKEDEF_OU     = { absoluteTier: [TIER_OU],     checkValidEvo: true };
-const ABSOLUTE_POKEDEF_UBERS  = { absoluteTier: [TIER_UBERS],  checkValidEvo: true };
+// T-128 — Steven's authoritative legend slot (STEVEN_LEGEND). The other absolute-tier and mega POKEDEF
+// helpers were removed once every boss moved to preset pools + the bossMega story-progression mega gate.
 const ABSOLUTE_POKEDEF_LEGEND = { absoluteTier: [TIER_LEGEND], checkValidEvo: true };
 
-const ABSOLUTE_POKEDEF_UU_OU_MEGA = {
-    isMega: true,
-    absoluteTier: [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU],
-    checkValidEvo: true,
-    tryEvolve: true,
-};
-const ABSOLUTE_POKEDEF_MEGA = {
-    isMega: true,
-    absoluteTier: [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS],
-    checkValidEvo: true,
-    tryEvolve: true,
-};
-
-const absolutePokeDefUbersMega = (BASE_POKE_DEF = {}) => ({
-    isMega: true,
-    absoluteTier: [TIER_UBERS],
-    checkValidEvo: true,
-    ...BASE_POKE_DEF,
-    fallback: [{
-        absoluteTier: [TIER_UBERS],
-        checkValidEvo: true,
-        ...BASE_POKE_DEF,
-    }],
-});
-
-const absolutePokeDefMega = (BASE_POKE_DEF = {}) => ({
-    isMega: true,
-    absoluteTier: [TIER_OU, TIER_UBERS],
-    checkValidEvo: true,
-    tryEvolve: true,
-    ...BASE_POKE_DEF,
-    fallback: [{
-        absoluteTier: [TIER_OU, TIER_UBERS],
-        checkValidEvo: true,
-        ...BASE_POKE_DEF,
-    }],
-});
-
 // ── T-128 — Favourite Pokémon chains ─────────────────────────────────────────
-// A favourite is an ORDERED list of standard slot-defs (priority high→low); the resolver builds the
-// first that fits the trainer's restrictions/budget FIRST (slot 0, perfect breed) and drops it if
-// none fit. Tier gates below are the villain aces' budget (tunable data — owner reviews).
-const FAVOURITE_MEGA_TIERS = [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU];
-const FAVOURITE_MON_TIERS  = [TIER_NU, TIER_RU, TIER_UU, TIER_OU];
+// A favourite is an ordered SPECIES chain (priority high→low). resolveFavourites (modules/favouriteClaim)
+// claims the pool slot of the species' exact tier — or the {isMega} slot, gated by the story-progression
+// mega rule, if it is a mega — resolved FIRST; else it drops to the next rung, else the implicit
+// restriction-bounded fallback. Every favourite (gym / villain / Steven / Wally / rival-starter) is one.
 
 // villainFavourite('SPECIES_SHARPEDO_MEGA') → a villain leader's signature-mega chain: the signature
 // mega ≫ any mega of the team's types (the { mega } rung) ≫ the implicit "any team-typed mon" fallback.
@@ -239,51 +188,11 @@ const FAVOURITE_MON_TIERS  = [TIER_NU, TIER_RU, TIER_UU, TIER_OU];
 // the signature, the { mega } rung and the final fallback alike — no per-rung type lists needed.
 const villainFavourite = (aceMega) => [aceMega, { mega: true }];
 
-// stevenFavourite(championMainType) → Steven's chain (owner-validated): Mega Metagross (Uber) ≫ a mega
-// of his (rolled) type (Uber) ≫ Mega Metagross (OU) ≫ a mega of his type (OU). Drops if his mega isn't
-// at least OU. Each matcher names/filters a MEGA species (isMega), so the resolver mega-evolves it via
-// megaBaseForm. (The "with evolutions, no-solo" nuance on the own-type fallbacks is a future refinement.)
-function stevenFavourite(gymType) {
-    const m = extra => ({ isMega: true, checkValidEvo: true, ...extra });
-    return [
-        m({ oneOf: ['SPECIES_METAGROSS_MEGA'], absoluteTier: [TIER_UBERS] }), // Mega Metagross, Uber
-        m({ type: [gymType], absoluteTier: [TIER_UBERS] }),                   // a mega of his type, Uber
-        m({ oneOf: ['SPECIES_METAGROSS_MEGA'], absoluteTier: [TIER_OU] }),    // Mega Metagross, OU
-        m({ type: [gymType], absoluteTier: [TIER_OU] }),                      // a mega of his type, OU
-    ];
-}
-
-// wallyFavourite() → Wally's chain (owner-validated, least restrictive): Mega Gardevoir / Mega Gallade
-// (Uber or OU) ≫ any other Uber mega. Almost every run keeps his essence (a mega ace).
-function wallyFavourite() {
-    const m = extra => ({ isMega: true, checkValidEvo: true, ...extra });
-    return [
-        m({ oneOf: ['SPECIES_GARDEVOIR_MEGA', 'SPECIES_GALLADE_MEGA'], absoluteTier: [TIER_UBERS, TIER_OU] }),
-        m({ absoluteTier: [TIER_UBERS] }), // any other Uber mega
-    ];
-}
-
 // T-128 — a gym leader's favourite is EXCLUSIVELY its signature species. It claims a pool slot of that
 // species' actual tier (or the {isMega} slot if it is a mega), else drops to the standard restriction-
 // bounded fallback (implicit). The gym's rolled-type restriction lives at the trainer level.
+// (Steven, Wally and Tate & Liza now express their favourites inline as species chains too.)
 const gymFavourite = (signature) => [signature];
-
-// T-128 — Tate & Liza's two favourites (owner-validated): each an ace with a fallback chain, kept only
-// while it fits the gym's (possibly rolled) type + the up-to-Uber budget, else dropping to its themed
-// fallback. Uses a normal slot + `fallback` (not a favouriteChain) so the per-mon items/natures/screens
-// survive. Since usually Solgaleo/Lunala are legendaries (above the Uber budget), they typically resolve
-// to Solrock/Lunatone. `type: [gymType]` on every rung makes it behave the same whether or not the gym
-// rolled a new type (the "standardise" the owner asked for — no gymIsChangedType branch needed).
-const TATE_BUDGET_TIERS = [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS];
-const tateAndLizaFavourite = (ace, fallbackMon, aceNature, fallbackNature, gymType) => [
-    { oneOf: [ace], type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true, item: 'Room Service', nature: aceNature },
-    {
-        oneOf: [fallbackMon], type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true,
-        item: 'Light Clay', nature: fallbackNature, tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
-    },
-    { oneOf: ['SPECIES_COSMOEM'], type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true, item: 'Room Service' },
-    { type: [gymType], absoluteTier: TATE_BUDGET_TIERS, checkValidEvo: true, hasStat: ['baseSpeed', '<', '70'] },
-];
 
 // ── T-106 — reverse-order continuity (authoritative-latest) ──────────────────
 // ADR-016 §4: a recurring character's final, well-built roster must be decided BEFORE its earlier
