@@ -43,10 +43,21 @@ function weightedSampleOne(items, weights) {
 //   • the SEED (T-107 107e — an optional { base, gimmicks } lean the trainer declared), else
 //   • null (no identity → callers fall back to unbiased behaviour).
 // `team` is already normalised to poke shape. Returns { baseId, gimmickIds, counts, source } | null.
+const LAST_RESORT_BASE = 'hyper_offense'; // T-123 — hyper's recipe is easy to satisfy → it over-attracts
+const HYPER_YIELD_MARGIN = 0.25;          // hyper yields only to a base fitting within this of its fit
+
 function resolveIdentity(team, model, ctx = {}, seed = null) {
     const cryst = crystallize(team, model, ctx);
-    const base = cryst.base[0];
-    const fit = base ? base.fit : 0; // best base-recipe fit (also surfaced to the T-117 audit)
+    // T-123 — hyper_offense is the LAST-RESORT base: if it tops the fit but another base also clears
+    // IDENTITY_FIT, prefer that other base; only fall into hyper when nothing else fits.
+    let base = cryst.base[0];
+    if (base && base.id === LAST_RESORT_BASE) {
+        // Yield to another base only if it fits reasonably CLOSE to hyper's fit — a team that is
+        // genuinely all-out (hyper fits far better than anything else) stays hyper.
+        const alt = cryst.base.find(b => b.id !== LAST_RESORT_BASE && b.fit >= IDENTITY_FIT && b.fit >= base.fit - HYPER_YIELD_MARGIN);
+        if (alt) base = alt;
+    }
+    const fit = base ? base.fit : 0; // chosen base-recipe fit (also surfaced to the T-117 audit)
     if (base && base.fit >= IDENTITY_FIT) {
         // T-118 — a team commits to at most ONE emergent gimmick engine (the best-fitting). Incidental
         // second/third setters must not stack incoherent engines (e.g. screens + Trick Room + weather).

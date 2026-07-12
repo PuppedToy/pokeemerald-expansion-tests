@@ -147,7 +147,10 @@ const DETECTORS = {
         const bulky = bulkTotal(mon) >= THRESHOLDS.BULKY_TOTAL;
         if (!bulky) return false;
         if (hasAbility(mon, new Set(['REGENERATOR']))) return true;
-        return canLearnAny(mon, RECOVERY_MOVES) && canLearnAny(mon, PIVOT_MOVES);
+        // T-123 — a non-Regenerator "regen-style" pivot must be genuinely DEFENSIVE (not an attacker
+        // that merely happens to be bulky and learn Rest + U-turn), else balance's backbone over-fires.
+        return offense(mon) <= THRESHOLDS.WALL_MAX_OFFENSE
+            && canLearnAny(mon, RECOVERY_MOVES) && canLearnAny(mon, PIVOT_MOVES);
     },
     focusSashLead: (mon) => (mon.baseSpeed || 0) >= THRESHOLDS.FAST_MIN_SPEED
         && bulkTotal(mon) <= THRESHOLDS.FRAIL_MAX_TOTAL

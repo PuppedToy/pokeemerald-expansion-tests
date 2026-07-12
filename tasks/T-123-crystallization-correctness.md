@@ -1,7 +1,7 @@
 ---
 id: T-123
 title: Crystallization correctness — last-resort hyper, gimmick evidence, role-max dedup
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-11
 updated: 2026-07-11
@@ -45,13 +45,25 @@ crystallization defects, all singles + doubles:
 > last-resort ordering, role caps) are meta conclusions — validate with the owner before shipping.
 
 Acceptance criteria:
-- [ ] Hyper offense stops being the default attractor (distribution flattens across bases).
-- [ ] Gimmicks require real evidence (no "weather" from a lone setter); measured via the decision log.
-- [ ] No team delivers more of a role than its archetype recipe allows.
-- [ ] Determinism gate green; `cd randomizer && npm test` green.
+- [x] Hyper offense stops being the default attractor (distribution flattens across bases).
+- [ ] Gimmicks require real evidence (no "weather" from a lone setter) — moved to **T-124** (a gimmick
+      that crystallises must then be BUILT; the evidence bar is tuned there with the corpus).
+- [ ] No team delivers more of a role than its archetype recipe allows — deferred (minor: the T-122
+      audit fix showed only ~2 teams carry a duplicate delivered role, down from an apparent 26).
+- [x] Determinism gate green; `cd randomizer && npm test` green.
 
 ## Progress log
 
+- **2026-07-11 — distribution iteration (owner: "iterate until mid/late/end are reasonable, then I
+  review").** Two changes, measured with the decision-log distribution over a full 193-team generation:
+  (1) **hyper_offense = last-resort base** in `resolveIdentity` — it yields to another base only when
+  that base fits within `HYPER_YIELD_MARGIN` (0.25) of hyper's fit (so a genuinely all-out team stays
+  hyper); (2) **tightened `regeneratorPivot`** — its non-Regenerator branch now requires a genuinely
+  DEFENSIVE profile (offense ≤ 95), so balance's backbone stops over-firing on any bulky attacker.
+  Result: the balance/hyper monoculture is gone — **mid 32h/29ba/26bu/13none · late 54bu/39ba/3h ·
+  endgame 36h/36bu/27ba** (robust across a 2nd seed: endgame 36/36/27). bulky_offense is the broad
+  offensive default (~50-55%); stall stays rare emergently (→ seeds, T-126). Suite 924 pass;
+  determinism green. Awaiting owner review of the numbers.
 - **2026-07-11** — Created from the owner's problem-2 analysis (hyper-attractor, weather-thinness,
   Phoebe's double hazard setters).
 
