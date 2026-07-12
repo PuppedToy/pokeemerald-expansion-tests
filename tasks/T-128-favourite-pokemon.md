@@ -105,9 +105,18 @@ Acceptance criteria:
     per owner: Mega Altaria (Dragon/Fairy) doesn't fit her Flying type → Mega Altaria ≫ base Altaria
     (Dragon/Flying) ≫ a mega of the type ≫ a mon of the type.
   - Verified end-to-end (13 gated integration assertions + updated B-019 test); determinism green.
-  - **Remaining non-standardised exceptions catalogued for owner review** — see the trainer-exceptions
-    audit (reported to the owner 2026-07-12): gimmick-slot gymIsChangedType branches (Wattson electric
-    terrain, Flannery sun), the pokeDef* hardcoded weather/terrain setters, villain legendary slots, the
-    retired Tate & Liza rng draw, and prescribed lead moves/items.
+  - **Trainer-exceptions audit reported to owner (2026-07-12)** — catalogued the non-standardised
+    exceptions (gimmick-slot gymIsChangedType branches, pokeDef* weather/terrain setters, villain
+    legendary slots, retired rng draw, prescribed lead moves/items).
+- **2026-07-12 (owner-validated cleanup A/B/D/E) — DONE:** removed the forced weather/terrain scaffolding
+  so the gimmick seed drives it: all pokeDef* setters + the 27 forced abuser-ability filters (B); Wattson
+  fixed-terrain/Electric-Seed/preventShuffle/bannedItems, Flannery forced Drought/sun-abilities, Norman
+  bannedItems (A); Winona Tailwind lead, Tate & Liza Trick-Room/Focus-Sash lead (D); the orphaned rng draw
+  (E). Verified the SETTERS still materialise (Archie/Maxie legendaries, Flannery Torkoal→Drought, Tate &
+  Liza→Trick Room; Wattson terrain drops on a non-electric roll). **KNOWN GAP:** the weather seed's PICKER
+  doesn't bias toward weather-ability mons, so rain/sand/snow SPEED-abusers (Swift Swim/Sand Rush/Slush
+  Rush) — previously guaranteed by the removed filters — now emerge only opportunistically, and
+  non-legendary weather trainers (museum grunts) can drop the gimmick (no setter source). Recommended
+  follow-up: a weather-seed picker bias toward weather-ability mons + a setter guarantee.
 
 ## Outcome
