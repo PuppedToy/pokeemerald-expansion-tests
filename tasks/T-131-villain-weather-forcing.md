@@ -1,7 +1,7 @@
 ---
 id: T-131
 title: Villain weather-forcing (per-team weather → general-weather fallback) + auditability
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-13
 updated: 2026-07-13
