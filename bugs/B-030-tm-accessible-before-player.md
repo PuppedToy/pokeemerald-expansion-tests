@@ -38,6 +38,21 @@ Switch should be reachable only from the Space Center grunts (inclusive) / Auron
     composition disagree; (c) whether the teachable EXPANSION (newTeachables) widened the mon's pool;
     (d) reproduce on master with the same seed to confirm regression vs pre-existing. -->
 
+## Investigation log
+
+### 2026-07-13 — mechanism traced
+- `normalizeTrainerBagTms` turns any `TM_<MOVE>` bag entry into `trainer.tms` (`MOVE_<MOVE>`);
+  `tmItem(n) = 'TM_' + tmList[n - 1]` resolves TM SLOT n to the move the TM randomizer put there.
+- Wattson's bag references slots via `tmItem(11)` (gym TM) + `choiceHectorTMs = [tmItem(77), tmItem(76)]`
+  + the nested `wallyBag()`/`rivalRoute110Bag()` slots. So Volt Switch reached Wattson because its
+  randomized slot this seed is one of the slots those EARLY bags reference — i.e. the "which slots are
+  available by Wattson" bag composition and the "which move lives in each slot / where that slot is
+  placed in the world" assignment disagree.
+- NEXT: from the bundle, read `tmList` → find Volt Switch's slot number; check that slot's world
+  location (randomizer/docs/tms.md) vs the slots Wattson's bag references; and reproduce the SAME
+  seed on `master` to confirm whether this is a branch regression or pre-existing (the TM/bag/teachable
+  engine is unchanged on this branch, so pre-existing is likely — cf. the evo-level config false alarm).
+
 ## Fix
 
 <!-- Filled during the fix. -->
