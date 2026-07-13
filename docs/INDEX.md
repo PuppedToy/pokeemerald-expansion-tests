@@ -52,4 +52,5 @@ Entry point to all project documentation. **A document not listed here does not 
 - [research/synergies-antisynergies.md](research/synergies-antisynergies.md) — synergy & anti-synergy catalog distilled from the corpus (T-100)
 - [research/team-archetypes.md](research/team-archetypes.md) — singles & doubles archetype notes; seed for the archetype JSONs (T-100 → T-101/T-102)
 - [research/rating-gaps.md](research/rating-gaps.md) — competitive value our rater misses; drives the doubles rating + tier refinements (T-100 → T-094/095/096/097)
+- [research/weather.md](research/weather.md) — **SSOT for the weather build design**: corpus analysis (setters/abusers/composition) + the owner-validated setter+2-abusers algorithm & weather-tag mechanics (T-131 → T-132)
 - `research/corpus.json` — the raw verified corpus (50 teams) + synergy/archetype/gap/6v6-vs-4v4 data (source for the docs above; read by T-101/T-102)

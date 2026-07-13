@@ -6,7 +6,7 @@ type: feature
 created: 2026-07-13
 updated: 2026-07-13
 target-version: 0.8.0
-links: [T-124, T-125, T-130]
+links: [T-124, T-125, T-130, T-132]
 blocked-by: [T-130]
 ---
 
