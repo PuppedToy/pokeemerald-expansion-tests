@@ -201,7 +201,13 @@ const gymFavourite = (signature) => [signature];
 // after their target), we HOIST each character's authoritative (endgame) appearance to just before
 // its earliest appearance. Per-slot reseed makes every non-recurring team order-independent, so this
 // is output-neutral except for the intended recurring-character inversion. Pure; unit-tested.
+//
+// This reorders only the BUILD/resolution order. Each trainer records its ORIGINAL index in
+// `displayOrder` first, so the docs can be re-sorted back to the canonical story order — the owner's
+// rule: build back-to-front, but SHOW the trainers in the original order (Route 103 → … → Ever Grande;
+// Granite Cave → … → Champion; Mauville → Lilycove → Victory Road).
 function hoistAuthoritativeAppearances(trainersData, groups) {
+    trainersData.forEach((t, i) => { t.displayOrder = i; });
     for (const { auth, members } of groups) {
         const authIdx = trainersData.findIndex(t => t.id === auth);
         if (authIdx === -1) continue;

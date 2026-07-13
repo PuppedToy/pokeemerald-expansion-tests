@@ -251,9 +251,18 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
         };
     });
 
+    // T-106 — resolution ran in the hoisted BUILD order (each recurring character's authoritative
+    // appearance + every `copy:` target resolve before their dependents), but the docs must list
+    // trainers in the ORIGINAL story order (owner: build back-to-front, SHOW canonically). Re-key
+    // trainersResults by the displayOrder stamped in hoistAuthoritativeAppearances.
+    const displayOrdered = {};
+    for (const t of [...trainersData].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))) {
+        if (Object.prototype.hasOwnProperty.call(trainersResults, t.id)) displayOrdered[t.id] = trainersResults[t.id];
+    }
+
     // Build trainersResultsSimplified (pokemon object → pokemon.id). The in-game ordering
     // layer is always applied here; showExactPositions only controls the docs display.
-    const trainersResultsSimplified = buildTrainersResultsSimplified(trainersResults, {
+    const trainersResultsSimplified = buildTrainersResultsSimplified(displayOrdered, {
         showExactPositions,
         baseRngSeed,
     });

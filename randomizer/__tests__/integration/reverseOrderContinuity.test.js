@@ -100,6 +100,27 @@ describeSlow('reverse-order continuity (T-106)', () => {
         });
     });
 
+    // T-106 — the authoritative-first HOIST changes only the BUILD order; the docs must still list
+    // trainers in the ORIGINAL story order (owner requirement: build back-to-front, SHOW canonically).
+    describe('docs display order stays canonical, not the hoisted build order', () => {
+        const idx = id => Object.keys(docs).indexOf(id);
+        test('rival May: Route 103 → Rustboro → Route 119 → Ever Grande (each starter)', () => {
+            for (const s of ['TREECKO', 'TORCHIC', 'MUDKIP']) {
+                expect(idx(`TRAINER_MAY_ROUTE_103_${s}`)).toBeLessThan(idx(`TRAINER_MAY_RUSTBORO_${s}`));
+                expect(idx(`TRAINER_MAY_RUSTBORO_${s}`)).toBeLessThan(idx(`TRAINER_MAY_ROUTE_119_${s}`));
+                expect(idx(`TRAINER_MAY_ROUTE_119_${s}`)).toBeLessThan(idx(`TRAINER_MAY_EVERGRANDE_CITY_${s}`));
+            }
+        });
+        test('Steven: Granite Cave + Mossdeep partner BEFORE the Champion', () => {
+            expect(idx('TRAINER_STEVEN')).toBeLessThan(idx('TRAINER_CHAMPION_STEVEN'));
+            expect(idx('PARTNER_STEVEN')).toBeLessThan(idx('TRAINER_CHAMPION_STEVEN'));
+        });
+        test('Wally: Mauville → Lilycove → Victory Road', () => {
+            expect(idx('TRAINER_WALLY_MAUVILLE')).toBeLessThan(idx('TRAINER_WALLY_LILYCOVE'));
+            expect(idx('TRAINER_WALLY_LILYCOVE')).toBeLessThan(idx('TRAINER_WALLY_VR_1'));
+        });
+    });
+
     describe('Rival May (Ever Grande authoritative → Route 103 / Rustboro / 110 / 119 echo)', () => {
         // Test the TREECKO variant (all three are generated regardless of the run's actual starter).
         const CHAIN = ['TRAINER_MAY_ROUTE_103_TREECKO', 'TRAINER_MAY_RUSTBORO_TREECKO',
