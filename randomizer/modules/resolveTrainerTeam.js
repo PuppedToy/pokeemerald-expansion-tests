@@ -246,25 +246,35 @@ function createTeamResolver(deps) {
                     ivs: generateIVs(effectiveBreedTier, pokeId),
                 };
 
+                // B-030 — a move INJECTED beyond chooseMoveset's own (already TM-gated) selection must
+                // still respect the incremental bag: a teachable-only move is allowed only if the trainer
+                // currently holds that TM (trainer.tms). Level-up moves reachable at the trainer's level are
+                // always fine. Without this, a def's tryToHaveMove or an archetype role move (e.g.
+                // pivotUser → Volt Switch) could teach a TM the player hasn't had access to yet.
+                const injectableMove = move =>
+                    (chosenTrainerMon.learnset || []).some(lu => lu.move === move && lu.level <= trainer.level)
+                    || ((chosenTrainerMon.teachables || []).includes(move) && (trainer.tms || []).includes(move));
+
                 if (effectiveDef?.tryToHaveMove) {
                     effectiveDef.tryToHaveMove.forEach(moveToLearn => {
-                        if (canLearnMove(chosenTrainerMon, moveToLearn, trainer.level) && !newTeamMember.moves.includes(moveToLearn)) {
+                        if (injectableMove(moveToLearn) && !newTeamMember.moves.includes(moveToLearn)) {
                             newTeamMember.moves.push(moveToLearn);
                         }
                     });
                 }
                 // T-107 (107d) — identity-aware refinement: give this mon the one archetype role move
                 // the emerged team identity still needs, as a fixed move so chooseMoveset fits it in
-                // (quality preserved). Pure + gated by sophistication → no-op early game.
+                // (quality preserved). Pure + gated by sophistication → no-op early game. The role planner
+                // is passed the trainer's accessible TMs + level so it only offers reachable moves (B-030).
                 const roleMove = planMemberRoleMove({
                     species: chosenTrainerMon,
                     team,
                     model: archetypeModel,
-                    ctx: { moves },
+                    ctx: { moves, tms: trainer.tms || [], level: trainer.level },
                     sophistication: context.sophistication,
                     seed: context.archetypeSeed,
                 });
-                if (roleMove && canLearnMove(chosenTrainerMon, roleMove, trainer.level) && !newTeamMember.moves.includes(roleMove)) {
+                if (roleMove && injectableMove(roleMove) && !newTeamMember.moves.includes(roleMove)) {
                     newTeamMember.moves.push(roleMove);
                 }
                 // T-124 (Wattson) — electric terrain: every mon prefers an electric attacking move.

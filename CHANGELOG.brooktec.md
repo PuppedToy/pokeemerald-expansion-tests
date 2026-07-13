@@ -34,6 +34,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Trainers can no longer teach a TM the player hasn't reached yet.** An archetype role move (or a
+  team's `tryToHaveMove`) could inject a teachable move regardless of TM access — e.g. Wattson's Oricorio
+  running Volt Switch, whose TM only appears much later (Auron / Mossdeep Space Center). Injected moves now
+  respect the incremental TM bag, exactly like the normal moveset selection (B-030).
+
 - **Recurring bosses show in the right order in the docs again.** Building each recurring character's
   team back-to-front no longer reorders how they're LISTED: the docs show them in story order (May Route
   103 → … → Ever Grande; Granite Cave Steven → Champion; Wally Mauville → Victory Road) (B-029).

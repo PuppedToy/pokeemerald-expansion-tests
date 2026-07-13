@@ -47,8 +47,13 @@ function resolvedDetectMon(member) {
     };
 }
 
-function speciesCanLearn(species, move) {
-    return (species.learnset || []).some(l => l.move === move) || (species.teachables || []).includes(move);
+// B-030 — a role move must respect the incremental TM bag. A level-up move is fine if reachable at the
+// trainer's level; a teachable is fine only if the trainer currently holds that TM. When `tms`/`level`
+// are not supplied (pure unit tests), the gate is permissive (unchanged behaviour).
+function speciesCanLearn(species, move, { tms = null, level = null } = {}) {
+    const byLevel = (species.learnset || []).some(l => l.move === move && (level == null || l.level <= level));
+    if (byLevel) return true;
+    return (species.teachables || []).includes(move) && (tms == null || tms.includes(move));
 }
 
 // The archetype role move `species` should also carry, or null. `team` is the members chosen so far
@@ -72,9 +77,12 @@ function planMemberRoleMove({ species, team, model, ctx = {}, sophistication, se
         .filter(s => ROLE_MOVE_SETS[s.role] && speciesFeats.has(s.role) && (delivered[s.role] || 0) < s.min)
         .sort((a, b) => b.weight - a.weight);
 
+    // Return the first role move the species can ACTUALLY have here — trying alternatives (U-turn before
+    // Volt Switch, etc.) so an inaccessible TM doesn't block the role and doesn't leak in (B-030).
+    const gate = { tms: ctx.tms || null, level: ctx.level ?? null };
     for (const s of candidates) {
         for (const move of ROLE_MOVE_SETS[s.role]) {
-            if (speciesCanLearn(species, move)) return move;
+            if (speciesCanLearn(species, move, gate)) return move;
         }
     }
     return null;

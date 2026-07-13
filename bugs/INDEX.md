@@ -33,4 +33,4 @@
 | [B-027](B-027-no-repeated-type-restriction-noop.md) | NO_REPEATED_TYPE restriction was a no-op (read parsedTypes off the team-member wrapper) | fixed | medium | Unreleased | 0.8.0 | randomizer/__tests__/unit/trainerSelector.test.js |
 | [B-028](B-028-allow-only-types-bypassed-in-fallback.md) | ALLOW_ONLY_TYPES (and NO_REPEATED_TYPE) bypassed in the strict-empty fallback path | fixed | medium | Unreleased | 0.8.0 | randomizer/__tests__/unit/trainerSelector.test.js |
 | [B-029](B-029-hoist-reorders-docs-display.md) | Reverse-order continuity hoist also reordered the docs trainer display order | fixed | major | Unreleased | 0.8.0 | randomizer/__tests__/integration/reverseOrderContinuity.test.js |
-| [B-030](B-030-tm-accessible-before-player.md) | A trainer can teach a TM the player cannot have accessed yet (incremental TM bag leak) | open | critical | Unreleased |  |  |
+| [B-030](B-030-tm-accessible-before-player.md) | A trainer can teach a TM the player cannot have accessed yet (incremental TM bag leak) | fixed | critical | Unreleased | 0.8.0 | randomizer/__tests__/unit/archetypeRefine.test.js |

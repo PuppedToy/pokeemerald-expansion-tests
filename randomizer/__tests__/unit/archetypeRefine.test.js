@@ -100,3 +100,25 @@ describe('planMemberRoleMove', () => {
         expect(planMemberRoleMove({ species: rocker, team: [], model: singles, ctx: {}, sophistication: 1 })).toBeNull();
     });
 });
+
+describe('planMemberRoleMove — B-030: role moves respect the incremental TM bag', () => {
+    const base = (over) => ({ team: balanceTeam(), model: singles, sophistication: 1, ...over });
+
+    test('a teachable-only role move is offered only when the trainer holds that TM', () => {
+        // Sets rocks ONLY via the TM (teachable), not by level-up — like Wattson's Oricorio + Volt Switch.
+        const teachRocker = mon({ teachables: ['MOVE_STEALTH_ROCK'] });
+        // Trainer lacks the TM → the role move must NOT be offered (no leak of an inaccessible TM).
+        expect(planMemberRoleMove({ species: teachRocker, ...base({ ctx: { tms: [] } }) })).toBeNull();
+        // Trainer holds the TM → offered.
+        expect(planMemberRoleMove({ species: teachRocker, ...base({ ctx: { tms: ['MOVE_STEALTH_ROCK'] } }) }))
+            .toBe('MOVE_STEALTH_ROCK');
+        // Pure planner call (no tms in ctx) → permissive, unchanged behaviour.
+        expect(planMemberRoleMove({ species: teachRocker, ...base({ ctx: {} }) })).toBe('MOVE_STEALTH_ROCK');
+    });
+
+    test('a level-up role move above the trainer level is not offered', () => {
+        const lateRocker = mon({ learnset: [{ level: '50', move: 'MOVE_STEALTH_ROCK' }] });
+        expect(planMemberRoleMove({ species: lateRocker, ...base({ ctx: { level: 20 } }) })).toBeNull();
+        expect(planMemberRoleMove({ species: lateRocker, ...base({ ctx: { level: 60 } }) })).toBe('MOVE_STEALTH_ROCK');
+    });
+});

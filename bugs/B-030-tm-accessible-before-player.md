@@ -1,14 +1,14 @@
 ---
 id: B-030
 title: A trainer can teach a TM the player cannot have accessed yet (incremental TM bag leak)
-status: open
+status: fixed
 severity: critical
 created: 2026-07-13
 updated: 2026-07-13
 found-in: Unreleased
-fixed-in:
-regression-test:
-links: [T-128]
+fixed-in: 0.8.0
+regression-test: randomizer/__tests__/unit/archetypeRefine.test.js
+links: [T-128, T-117]
 ---
 
 # B-030 — TM accessible to a trainer before the player could obtain it
@@ -53,11 +53,39 @@ Switch should be reachable only from the Space Center grunts (inclusive) / Auron
   seed on `master` to confirm whether this is a branch regression or pre-existing (the TM/bag/teachable
   engine is unchanged on this branch, so pre-existing is likely — cf. the evo-level config false alarm).
 
+### 2026-07-13 — root cause found (from the owner's decision log)
+
+`run-2585940843/decision-log.txt` shows it directly:
+`slot 2: Oricorio Pom Pom — bulky_offense (emergent 0.68) → fills pivotUser  [+Volt Switch]`.
+
+The move did NOT come from the bag: the ARCHETYPE role-move injection forced it. `chooseMoveset` gates
+its own teachable selection by `trainer.tms` (correct), but two INJECTION paths in
+`modules/resolveTrainerTeam.js` bypassed that gate because they used `utils.canLearnMove`, which treats
+ANY teachable as learnable regardless of TM access:
+  - the archetype role move (`planMemberRoleMove` → `pivotUser` = Volt Switch), and
+  - a def's `tryToHaveMove`.
+So a seeded trainer (Wattson, sophistication floored to 0.6) got Volt Switch as its `pivotUser` role move
+even though Volt Switch's TM (slot 54 = Auron / Route 125) isn't in `wattsonBag()`. Pre-existing in the
+T-117 archetype code (untouched on this branch); not a favourite/T-128 regression.
+
 ## Fix
 
-<!-- Filled during the fix. -->
+Injected moves now respect the incremental bag, mirroring `chooseMoveset`:
+- `modules/archetypeRefine.js` — `speciesCanLearn(species, move, { tms, level })` gates a teachable role
+  move by the trainer's accessible TMs and a level-up move by the trainer's level; `planMemberRoleMove`
+  now tries the next accessible role move (so an inaccessible TM neither blocks the role nor leaks in).
+  Permissive when `tms`/`level` are absent (pure-planner unit calls unchanged).
+- `modules/resolveTrainerTeam.js` — passes `ctx.tms`/`ctx.level` into `planMemberRoleMove`, and gates BOTH
+  injection sites (`tryToHaveMove` and the role move) with an `injectableMove` check (level-up ≤ level, or
+  teachable held in `trainer.tms`).
 
 ## Regression test
 
-<!-- REQUIRED to mark fixed: a test that fails before and passes after — e.g. assert no trainer's
-     resolved teachable moves reference a TM slot outside that trainer's accessible bag. -->
+`randomizer/__tests__/unit/archetypeRefine.test.js` → `describe('planMemberRoleMove — B-030: role moves
+respect the incremental TM bag')`: a teachable-only role move (Stealth Rock) is offered only when the
+trainer holds that TM (`ctx.tms`), and a level-up role move above the trainer's level is not offered. RED
+before the fix (the ungated `speciesCanLearn` returned the move), GREEN after.
+
+Note: the exact frontend bundle couldn't be byte-reproduced via node `runGeneration` (different RNG
+stream), so the guard is a deterministic UNIT test on the gate rather than a full-pipeline repro — the
+bug and mechanism were confirmed from the owner's actual decision log + the code paths above.
