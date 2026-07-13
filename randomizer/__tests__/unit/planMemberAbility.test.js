@@ -46,4 +46,24 @@ describe('planMemberAbility', () => {
         const drizzleMon = species(['DRIZZLE']);
         expect(planMemberAbility({ species: drizzleMon, team: [], seed: weatherSeed, model: singles, ctx: {}, sophistication: 0 })).toEqual([]);
     });
+
+    // T-131 — a themed weather is a LEAN with a general-weather fallback.
+    const snowSeed = { base: 'bulky_offense', gimmicks: ['weather'], weather: 'snow' };
+
+    test('T-131 — themed setter unavailable + no weather up → falls back to any weather this mon can set', () => {
+        // Snow-seeded, but this mon can only set RAIN (e.g. an aqua team with no Snow Warning mon).
+        const rainOnly = species(['DRIZZLE', 'SWIFT_SWIM']);
+        expect(planMemberAbility({ species: rainOnly, team: [], seed: snowSeed, ...opts })).toContain('DRIZZLE');
+    });
+
+    test('T-131 — the themed setter is still preferred when this mon CAN set it', () => {
+        const canSnow = species(['SNOW_WARNING', 'DRIZZLE']);
+        expect(planMemberAbility({ species: canSnow, team: [], seed: snowSeed, ...opts })).toEqual(['SNOW_WARNING']);
+    });
+
+    test('T-131 — no new setter once a weather is already up; abuse the established one', () => {
+        const rainUp = member(species(['DRIZZLE']), 'DRIZZLE'); // rain already established
+        const mon = species(['SWIFT_SWIM', 'DRIZZLE']);
+        expect(planMemberAbility({ species: mon, team: [rainUp], seed: snowSeed, ...opts })).toEqual(['SWIFT_SWIM']);
+    });
 });

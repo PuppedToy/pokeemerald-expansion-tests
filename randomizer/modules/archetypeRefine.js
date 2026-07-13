@@ -153,6 +153,15 @@ function planMemberAbility({ species, team, model, ctx = {}, sophistication, see
         if (!hasSetter) {
             const canSet = speciesAbil.filter(a => (SETTERS_BY_SUBTYPE[subtype] || []).includes(a));
             if (canSet.length) return canSet;
+            // T-131 — general-weather FALLBACK: this mon can't field the themed setter and NO weather is up
+            // yet → establish ANY weather it can set (better some weather than none when the trainer's type
+            // restriction has no themed setter, e.g. an aqua team seeded snow with no Snow Warning mon). The
+            // subtype resolution above then adopts whatever weather actually got set, so later mons abuse it.
+            const anyWeatherUp = (team || []).some(m => m.ability && WEATHER_SETTER_ABILITIES.includes(m.ability));
+            if (!anyWeatherUp) {
+                const canSetAny = speciesAbil.filter(a => WEATHER_SETTER_ABILITIES.includes(a));
+                if (canSetAny.length) return canSetAny;
+            }
         }
         return speciesAbil.filter(a => (WEATHER_ABUSER_BY_SUBTYPE[subtype] || []).includes(a));
     }

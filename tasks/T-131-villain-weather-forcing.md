@@ -44,6 +44,23 @@ Acceptance criteria:
 
 ## Progress log
 
-<!-- Append-only. -->
+### 2026-07-13 — subtypes corrected + ability-level fallback; picker bottleneck found
+- Fixed the weather subtypes in `trainerSeeds.js` to the owner's spec: Museum grunt 1 → rain, Museum
+  grunt 2 → snow, Archie → rain, **Matt → snow (added; wasn't seeded)**, Maxie (all) → sun, Tabitha (all)
+  → **sandstorm** (was sun). Added `WEATHER_SNOW`/`WEATHER_SAND` (subtypes already map to SNOW_WARNING /
+  SAND_STREAM setters + Slush Rush / Sand Rush abusers in archetypeRefine).
+- Added the **general-weather fallback** in `planMemberAbility` (T-131): when a themed setter can't be
+  fielded by a mon and no weather is up yet, it establishes ANY weather the mon can set (better some
+  weather than none). Tests added (`planMemberAbility.test.js`). Suite 968.
+- **But the audit (T-130) shows most villains still DROP weather** (Museum 1/2, Matt, Tabitha) —
+  Archie/Maxie get it only because a setter arrives as their favourite/ace. Root cause CONFIRMED: the
+  archetype PICKER selects **zero weather-setter-capable mons** for the type-restricted villains, so there
+  is no setter for the ability step (or the fallback) to work with.
+- **Remaining work (picker-level):** make the archetype picker PREFER a weather-setter-capable mon (within
+  the trainer's type restriction) for weather-seeded trainers, so the `weatherSetter` role is actually
+  filled. This is an archetype-fit change → per the analysis-first rule, validate the approach with the
+  owner before coding. Options to weigh: (a) boost the weatherSetter role's fit weight when weather is
+  seeded; (b) hard-require one setter slot for weather-seeded trainers; (c) accept the themed drop when the
+  type pool has no setter and only guarantee weather when a setter type is in-theme.
 
 ## Outcome
