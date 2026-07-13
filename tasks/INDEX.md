@@ -131,4 +131,7 @@
 | [T-125](T-125-gimmick-conditional-items.md) | Gimmick-conditional item selection + bag provisioning | in-progress | 0.8.0 | 2026-07-11 |
 | [T-126](T-126-trainer-seed-assignments.md) | Trainer archetype/gimmick seed assignments (deliberate variety) | in-progress | 0.8.0 | 2026-07-11 |
 | [T-127](T-127-later-gen-advanced-combo-corpus.md) | Later-gen advanced-combo corpus (Gen 8/9/Champions) — mechanic-filtered | proposed | 0.9.0 | 2026-07-11 |
-| [T-128](T-128-favourite-pokemon.md) | Favourite Pokémon — a generalizable "preferred ace" resolved first, dropped if it doesn't fit | in-progress | 0.8.0 | 2026-07-12 |
+| [T-128](T-128-favourite-pokemon.md) | Favourite Pokémon — a generalizable "preferred ace" resolved first, dropped if it doesn't fit | done | 0.8.0 | 2026-07-13 |
+| [T-129](T-129-coherent-item-move-assignment.md) | Coherent item + move co-assignment for trainer mons | proposed | 0.8.0 | 2026-07-13 |
+| [T-130](T-130-decision-log-auditability.md) | Decision-log auditability — surface sophistication, dropped modifiers, and unmet gimmicks | proposed | 0.8.0 | 2026-07-13 |
+| [T-131](T-131-villain-weather-forcing.md) | Villain weather-forcing (per-team weather → general-weather fallback) + auditability | proposed | 0.8.0 | 2026-07-13 |

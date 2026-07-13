@@ -57,8 +57,8 @@ describe('B-019 — Brawly Hariyama favourite never drops silently (kept gym typ
         const brawly = buildKeptType();
         expect(brawly).toBeDefined();
         expect(Array.isArray(brawly.favourite)).toBe(true);
-        // T-128 — a gym favourite is EXCLUSIVELY its signature species.
-        expect(brawly.favourite).toEqual(['SPECIES_HARIYAMA']);
+        // T-128 — Brawly's signature ace Hariyama, with its pre-evo Makuhita as the in-budget fallback.
+        expect(brawly.favourite).toEqual(['SPECIES_HARIYAMA', 'SPECIES_MAKUHITA']);
         brawly.favourite.forEach(c => expect(typeof c === 'string' || (c && c.mega)).toBe(true));
     });
 

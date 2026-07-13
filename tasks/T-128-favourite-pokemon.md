@@ -1,12 +1,12 @@
 ---
 id: T-128
 title: Favourite Pokémon — a generalizable "preferred ace" resolved first, dropped if it doesn't fit
-status: in-progress
+status: done
 type: feature
 created: 2026-07-11
-updated: 2026-07-12
+updated: 2026-07-13
 target-version: 0.8.0
-links: [T-107, T-106, T-126]
+links: [T-107, T-106, T-126, B-029, T-129, T-130, T-131]
 priority: high
 ---
 
@@ -262,3 +262,25 @@ already exists in the selector). The restrictions:
   `Room Service` item still assigned despite `bannedItems` (pre-existing item quirk).
 
 ## Outcome
+
+**Done — owner-reviewed and accepted (2026-07-13).** One unified favourite mechanism
+(`modules/favouriteClaim.js`) across every character trainer: a favourite is an ordered SPECIES chain
+that CLAIMS a slot from the difficulty-scaled preset pool (its exact tier, or the `{isMega}` slot gated
+by the general story-progression mega rule — evaluated on the base form — if it is a mega), resolved
+first, dropping to the trainer's type-restricted fallback when it doesn't fit; never downgrading.
+Migrated: all 8 gyms, the 4 E4, Tate & Liza (dual favourite), every villain + grunt (villain-type
+restriction; Archie/Maxie keep their box legendary as a second favourite), Steven and Wally. Trainer
+types became a single trainer-level restriction (per-slot `type:` hardcoding removed except Steven's
+deliberate signature slots). The mega tier-gate moved into the presets (`bossMega`, reusing
+`megaTier` + `maxBaseTier`). Legacy dual-path and all dead helpers/constants removed. Brawly's favourite
+is Hariyama ≫ Makuhita (pre-evo fallback).
+
+Verified: fast suite 960, continuity + determinism gates green; owner manually reviewed two bundles.
+
+**Follow-ups spun off from the owner's review (T-128 closed, work delegated):**
+- **B-029** (fixed) — the reverse-order build hoist had leaked into the docs display order.
+- **B-030** (open, critical) — a trainer can teach a TM the player couldn't have accessed yet
+  (Wattson's Oricorio had Volt Switch); incremental-bag investigation.
+- **T-129** — coherent item+move co-assignment (Steven's Solgaleo: Choice Specs + Stealth Rock).
+- **T-130** — decision-log auditability (sophistication effect, dropped modifiers, unmet gimmicks).
+- **T-131** — villain weather-forcing (rain/snow/sun/sand + general fallback) + audit.

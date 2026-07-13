@@ -15,11 +15,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   Ever Grande starter ↔ its Route 103 baby). Steven's Granite Cave hard tier-cap is gone (he devolves his
   final roster until it's legal). The decision log spells out what is inherited and how it devolves (T-106).
 
-- **"Favourite Pokémon" — character trainers build around a preferred ace.** Archie (Mega Sharpedo),
-  Maxie (Mega Camerupt), Steven (Mega Metagross), Wally (Mega Gardevoir/Gallade) and the rival (its
-  evolved starter) now resolve their signature ace FIRST (perfect breed), dropping down a themed priority
-  chain if it doesn't fit their type/tier restrictions — the same intent→materialise-or-drop dynamic as
-  the weather/terrain gimmicks (T-128).
+- **"Favourite Pokémon" — every character trainer builds around a preferred ace.** Each gym leader
+  (its signature, e.g. Roxanne→Nosepass, Brawly→Hariyama), the villains (Archie→Kyogre + Mega Sharpedo,
+  Maxie→Groudon + Mega Camerupt, …), the Elite Four, Steven (Mega Metagross) and Wally (Mega Gardevoir/
+  Gallade) resolve their favourite FIRST: it CLAIMS a slot from the difficulty-scaled preset pool of its
+  exact tier — or the mega slot (gated by a game-wide story-progression rule that evaluates the base form)
+  if it is a mega — and DROPS to the trainer's type-restricted fallback when it doesn't fit, never
+  downgrading. Trainer types are now a single trainer-level restriction, not per-slot hardcoding (T-128).
 
 - **"Next boss" is a shortcut in the docs.** Clicking the top-bar *Next boss* stat jumps to the
   Trainers tab and scrolls that boss's card into view (with a brief highlight). Keyboard-accessible
@@ -31,6 +33,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   show the taught move's description (T-078).
 
 ### Fixed
+
+- **Recurring bosses show in the right order in the docs again.** Building each recurring character's
+  team back-to-front no longer reorders how they're LISTED: the docs show them in story order (May Route
+  103 → … → Ever Grande; Granite Cave Steven → Champion; Wally Mauville → Victory Road) (B-029).
 
 - **Wally / rival "no repeated types" now actually holds.** The restriction that keeps these trainers
   from stacking same-typed Pokémon read the type list off the wrong object and never fired; their teams

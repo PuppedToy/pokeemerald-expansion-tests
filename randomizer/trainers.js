@@ -1511,7 +1511,9 @@ const trainersData = [
         // (Hariyama) CLAIMS a pool slot of its actual tier, else the standard Fighting-restricted fallback.
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
         types: [gymMainTypes[1]],
-        favourite: gymFavourite('SPECIES_HARIYAMA'),
+        // T-128 — Hariyama (the evolved ace) first; if its tier is above Brawly's budget this run, fall to
+        // its pre-evo Makuhita (lower tier, likelier to fit) before the generic Fighting-restricted fallback.
+        favourite: ['SPECIES_HARIYAMA', 'SPECIES_MAKUHITA'],
         team: getBossPreset('BRAWLY').map(s => ({ ...s })),
     },
     // Granite Cave
