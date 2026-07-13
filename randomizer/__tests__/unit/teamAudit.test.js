@@ -107,6 +107,38 @@ describe('createTeamAudit + renderTeamAuditText', () => {
         expect(text).toContain('favourite ace');
     });
 
+    test('T-130 — above threshold shows steering ON with the sophistication bias', () => {
+        const audit = createTeamAudit();
+        audit.beginTeam({ trainerId: 'T_HI', level: 60, battleType: 'singles', sophistication: 0.6, seed: null });
+        audit.finishTeam({ team: balancePrior(), model: singles, ctx: {}, seed: null });
+        const text = renderTeamAuditText(audit.all());
+        expect(text).toContain('steering ON');
+        expect(text).toContain('sophistication 0.6');
+        expect(text).toContain('+1.2');   // 0.6 × BIAS_STRENGTH (2.0)
+    });
+
+    test('T-130 — below threshold: identity is descriptive; a surfaced gimmick is flagged not-pursued', () => {
+        const audit = createTeamAudit();
+        audit.beginTeam({ trainerId: 'T_LO', level: 12, battleType: 'singles', sophistication: 0.07, seed: null });
+        // a gimmick surfaced (via the seed channel here; emergent reads populate the same candidate list)
+        audit.finishTeam({ team: [{ pokemon: mon() }], model: singles, ctx: {}, seed: { base: 'hyper_offense', gimmicks: ['weather'] } });
+        const text = renderTeamAuditText(audit.all());
+        expect(text).toContain('no archetype steering');
+        expect(text).toContain('surfaced but NOT pursued');
+        expect(text).toContain('weather');
+        // must NOT dress up the below-threshold identity line with +weather
+        expect(text).not.toMatch(/final identity:[^\n]*\+weather/);
+    });
+
+    test('T-130 — above threshold: a wanted gimmick with no setter is logged as dropped', () => {
+        const audit = createTeamAudit();
+        audit.beginTeam({ trainerId: 'T_DROP', level: 60, battleType: 'singles', sophistication: 0.8, seed: { base: 'hyper_offense', gimmicks: ['weather'] } });
+        audit.finishTeam({ team: [{ pokemon: mon() }], model: singles, ctx: {}, seed: { base: 'hyper_offense', gimmicks: ['weather'] } });
+        const text = renderTeamAuditText(audit.all());
+        expect(text).toContain('gimmick dropped');
+        expect(text).toContain('weather');
+    });
+
     test('noopTeamAudit collects nothing and never throws', () => {
         const a = noopTeamAudit();
         expect(() => { a.beginTeam({}); a.recordSlot({}); a.finishTeam({}); }).not.toThrow();

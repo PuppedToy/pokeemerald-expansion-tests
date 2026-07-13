@@ -10,7 +10,7 @@
 // on generation. Travels OUTSIDE the bundle (sibling of the worker's message), like T-075 diagnostics.
 
 const { detectFeatures } = require('./modules/featureDetectors');
-const { resolveIdentity, BIAS_MIN_SOPH } = require('./modules/archetypePicker');
+const { resolveIdentity, BIAS_MIN_SOPH, BIAS_STRENGTH } = require('./modules/archetypePicker');
 const { combinedStructure } = require('./modules/archetypeFit');
 const { resolvedDetectMon } = require('./modules/archetypeRefine');
 const { TRAINER_REPEAT_ID } = require('./constants');
@@ -84,10 +84,18 @@ function createTeamAudit() {
         finishTeam({ team, model, ctx, seed }) {
             if (!cur) return;
             const id = model ? resolveIdentity((team || []).map(asPoke), model, ctx, seed) : null;
-            // T-124 — DROP a seeded gimmick that didn't materialise (its setter isn't actually delivered),
-            // so the log reflects reality: the trainer tried it but its restrictions couldn't support it.
-            const gimmicks = id ? (id.gimmickIds || []).filter(g => gimmickMaterialised(g, team, ctx)) : [];
+            // Every gimmick the identity/seed WANTED (emergent + seeded), before checking support.
+            const candidateGimmicks = Array.from(new Set([
+                ...(id && id.gimmickIds ? id.gimmickIds : []),
+                ...((seed && seed.gimmicks) ? seed.gimmicks : []),
+            ]));
+            // T-124 — DROP a gimmick that didn't materialise (its setter isn't actually delivered), so the
+            // log reflects reality: the trainer tried it but its restrictions couldn't support it.
+            const gimmicks = candidateGimmicks.filter(g => gimmickMaterialised(g, team, ctx));
+            // T-130 — record what was DROPPED so the renderer can explain why (auditability).
             cur.finalIdentity = id ? { base: id.baseId, source: id.source, gimmicks } : null;
+            cur.candidateGimmicks = candidateGimmicks;
+            cur.droppedGimmicks = candidateGimmicks.filter(g => !gimmicks.includes(g));
             cur.finalTeam = (team || []).map(speciesId);
             teams.push(cur);
             cur = null;
@@ -132,14 +140,28 @@ function renderTeamAuditText(teams, { engineThreshold = BIAS_MIN_SOPH } = {}) {
     for (const t of teams || []) {
         const soph = t.sophistication != null ? r2(t.sophistication) : '?';
         const fmt = t.battleType || 'singles';
+        const belowThreshold = t.sophistication != null && t.sophistication < engineThreshold;
+        const gims = (t.finalIdentity && t.finalIdentity.gimmicks) || [];
+        // T-130 — below the steering threshold the identity is a DESCRIPTIVE reading of a tier-random
+        // pile, so don't dress it up with gimmicks it never pursued; those are reported as "not pursued".
         const fid = t.finalIdentity
-            ? `${t.finalIdentity.base} (${t.finalIdentity.source}${t.finalIdentity.gimmicks && t.finalIdentity.gimmicks.length ? ', +' + t.finalIdentity.gimmicks.join('+') : ''})`
+            ? `${t.finalIdentity.base} (${t.finalIdentity.source}${(!belowThreshold && gims.length) ? ', +' + gims.join('+') : ''})`
             : 'none';
         lines.push(`=== ${t.trainerId}${t.label ? ' — ' + t.label : ''} (lvl ${t.level ?? '?'}, ${fmt}) ===`);
         lines.push(`sophistication: ${soph} | seed: ${seedStr(t.seed)} | final identity: ${fid}`);
-        const belowThreshold = t.sophistication != null && t.sophistication < engineThreshold;
         if (belowThreshold) {
-            lines.push(`  → below engine threshold (${r2(engineThreshold)}) — tier-random pile, no archetype steering.`);
+            lines.push(`  → below engine threshold (${r2(engineThreshold)}) — tier-random pile, no archetype steering; the identity above is a descriptive reading of the picked mons, not a steered choice.`);
+            // Roxanne's Amaura case: a gimmick the emergent reading noticed but the engine never pursued.
+            if (t.candidateGimmicks && t.candidateGimmicks.length) {
+                lines.push(`  → gimmick surfaced but NOT pursued (below threshold): ${t.candidateGimmicks.join(', ')}.`);
+            }
+        } else if (t.sophistication != null) {
+            // How sophistication steered: the fit bias multiplies each candidate's pick weight by
+            // (1 + soph × BIAS_STRENGTH × fit), so a higher soph pulls picks harder toward the identity.
+            lines.push(`  → steering ON — sophistication ${soph} (fit bias up to +${r2(t.sophistication * BIAS_STRENGTH)}× on each pick).`);
+            if (t.droppedGimmicks && t.droppedGimmicks.length) {
+                lines.push(`  → gimmick dropped — setter not delivered within restrictions: ${t.droppedGimmicks.join(', ')}.`);
+            }
         }
         // Slots are listed regardless of the archetype threshold: continuity provenance (inherited /
         // devolved) matters most at the low-level EARLY appearances of a recurring character (T-106).

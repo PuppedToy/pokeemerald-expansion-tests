@@ -1,7 +1,7 @@
 ---
 id: T-130
 title: Decision-log auditability — surface sophistication, dropped modifiers, and unmet gimmicks
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-13
 updated: 2026-07-13
@@ -43,6 +43,19 @@ Acceptance criteria:
 
 ## Progress log
 
-<!-- Append-only. -->
+### 2026-07-13 — sophistication effect + dropped/not-pursued gimmicks surfaced
+- `teamAudit.finishTeam` now records `candidateGimmicks` (emergent ∪ seeded) and `droppedGimmicks`
+  (candidates whose setter wasn't delivered). `renderTeamAuditText`:
+  - **above threshold** → `steering ON — sophistication X (fit bias up to +Y× on each pick)` where
+    Y = soph × BIAS_STRENGTH, plus `gimmick dropped — setter not delivered: <g>` for each dropped one;
+  - **below threshold** → keeps `no archetype steering`, adds that the identity is a *descriptive reading*
+    (not steered), and reports `gimmick surfaced but NOT pursued (below threshold): <g>`. The identity
+    line no longer dresses a below-threshold team with `+gimmick` it never pursued.
+- Verified on run-2585940843: Roxanne (0.07) → `+weather` moved to "surfaced but NOT pursued" (the Amaura
+  case the owner flagged); Wattson (0.6) → steering ON +1.2×, `trick_room` dropped; Brawly (0.17) →
+  steering ON +0.34× (answers the sophistication question), `screens` dropped.
+- Tests added in `teamAudit.test.js` (steering line, below-threshold not-pursued, above-threshold drop).
+  Suite 965; pure/observational — no generation change.
+- Feeds T-131: villain weather now shows as dropped-with-reason when its setter isn't delivered.
 
 ## Outcome
