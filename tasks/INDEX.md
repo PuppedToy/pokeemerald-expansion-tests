@@ -135,4 +135,4 @@
 | [T-129](T-129-coherent-item-move-assignment.md) | Coherent item + move co-assignment for trainer mons | proposed | 0.8.0 | 2026-07-13 |
 | [T-130](T-130-decision-log-auditability.md) | Decision-log auditability — surface sophistication, dropped modifiers, and unmet gimmicks | in-progress | 0.8.0 | 2026-07-13 |
 | [T-131](T-131-villain-weather-forcing.md) | Villain weather-forcing (per-team weather → general-weather fallback) + auditability | in-progress | 0.8.0 | 2026-07-13 |
-| [T-132](T-132-weather-teambuilding.md) | Weather team-building — setter + 2 abusers, rollback-on-fail, and weather-tag mechanics | proposed | 0.8.0 | 2026-07-13 |
+| [T-132](T-132-weather-teambuilding.md) | Weather team-building — setter + 2 abusers, rollback-on-fail, and weather-tag mechanics | in-progress | 0.8.0 | 2026-07-13 |

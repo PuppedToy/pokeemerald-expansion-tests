@@ -170,6 +170,6 @@ function planMemberAbility({ species, team, model, ctx = {}, sophistication, see
 
 module.exports = {
     resolvedDetectMon, planMemberRoleMove, planMemberAbility, ROLE_MOVE_SETS,
-    WEATHER_SUBTYPE_BY_SETTER, WEATHER_ABUSER_BY_SUBTYPE, WEATHER_ROCK_BY_SETTER,
+    WEATHER_SUBTYPE_BY_SETTER, SETTERS_BY_SUBTYPE, WEATHER_ABUSER_BY_SUBTYPE, WEATHER_ROCK_BY_SETTER,
     ELECTRIC_MOVES,
 };

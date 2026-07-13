@@ -1,12 +1,12 @@
 ---
 id: T-132
 title: Weather team-building — setter + 2 abusers, rollback-on-fail, and weather-tag mechanics
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-13
 updated: 2026-07-13
 target-version: 0.8.0
-links: [T-131, T-124, T-130, docs/research/weather.md]
+links: [T-131, T-124, T-130, docs/adr/ADR-017-gimmick-attempt-rollback.md, docs/research/weather.md]
 blocked-by: []
 ---
 
@@ -48,6 +48,20 @@ Acceptance criteria:
 
 ## Progress log
 
-<!-- Append-only. -->
+### 2026-07-13 — design (ADR-017) + gimmick success-condition module
+- **ADR-017** (accepted) — the general rollback: gimmick team-building is ATTEMPT-based. Resolve into
+  isolated state (local team + a `storedIds` overlay + buffered audit) under a candidate tag; validate the
+  gimmick's success condition; commit the first attempt that holds, trying the fallback chain (themed
+  weather → other weathers random → drop). Determinism survives because each slot reseeds independently, so
+  re-running an attempt is byte-identical; failed attempts never touch shared `storedIds`.
+- **`modules/gimmickPlan.js`** (new, pure, tested — the SSOT for "did the gimmick materialise"):
+  `gimmickHolds(gimmickId, team, ctx, subtype)`. Weather = setter + ≥2 abusers with the BROAD abuser
+  definition (abuser ability | synergy move | boosted-STAB attacker; the setter may count; subtype inferred
+  from the actual setter if not given). trick_room/screens = setter-move presence for now. 10 unit tests.
+  Exported `SETTERS_BY_SUBTYPE` from archetypeRefine for reuse. Suite 978.
+- **Remaining (the substantive refactor):** extract the slot loop into an `attempt(seed)` with isolated
+  `storedIds`/audit; add the orchestrator (fallback chain + commit); wire the fallback tag variants (weather
+  subtypes random order → drop); apply the weather-tag mechanics (STAB/accuracy/Def-SpDef/Weather Ball) in
+  move/ability/item scoring. Verify determinism + continuity gates stay green.
 
 ## Outcome
