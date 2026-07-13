@@ -90,7 +90,39 @@ function gimmickHolds(gimmickId, team, ctx = {}, subtype = null) {
     return true; // unknown gimmick → no condition
 }
 
+const ALL_WEATHERS = ['sun', 'rain', 'sand', 'snow'];
+
+// djb2 — a tiny deterministic string hash, so the "other weathers" fallback order is stable per trainer
+// (no RNG consumption, which would disturb the per-slot reseed the resolver relies on).
+function hashStr(s) {
+    let h = 5381;
+    for (let i = 0; i < s.length; i++) h = (Math.imul(h, 33) ^ s.charCodeAt(i)) >>> 0;
+    return h >>> 0;
+}
+
+// The ordered list of SEED VARIANTS the resolver should ATTEMPT for a trainer (ADR-017). Each attempt is
+// validated by gimmickHolds; the first that holds is committed. Non-gimmick seeds → a single attempt
+// (unchanged behaviour). A weather gimmick → [themed weather, the other weathers in a stable per-trainer
+// order, then the tag dropped]. Any other gimmick → [gimmick, dropped]. "Dropped" keeps the base identity
+// but removes the gimmick so the final attempt always commits a normal team.
+function gimmickFallbackChain(seed, trainerId = '') {
+    if (!seed) return [null];
+    const gimmicks = seed.gimmicks || [];
+    if (!gimmicks.length) return [seed];
+    const dropped = { ...seed, gimmicks: gimmicks.filter(g => g !== 'weather' && g !== gimmicks[0]) };
+    delete dropped.weather;
+    if (gimmicks.includes('weather')) {
+        const themed = seed.weather || null;
+        const others = ALL_WEATHERS.filter(w => w !== themed)
+            .sort((a, b) => hashStr(trainerId + a) - hashStr(trainerId + b));
+        const order = themed ? [themed, ...others] : ALL_WEATHERS.slice();
+        const variants = order.map(w => ({ ...seed, weather: w }));
+        return [...variants, dropped];
+    }
+    return [seed, dropped];
+}
+
 module.exports = {
-    gimmickHolds, weatherHolds, isWeatherSetter, isWeatherAbuser, setterSubtype,
+    gimmickHolds, weatherHolds, isWeatherSetter, isWeatherAbuser, setterSubtype, gimmickFallbackChain,
     SETTER_MOVE_BY_SUBTYPE, SYNERGY_MOVE_BY_SUBTYPE, BOOSTED_STAB_TYPE, REQUIRED_ABUSERS,
 };

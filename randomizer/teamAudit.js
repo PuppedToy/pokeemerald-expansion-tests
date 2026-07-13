@@ -102,12 +102,14 @@ function createTeamAudit() {
         },
 
         all() { return teams; },
+        // T-132 — merge a committed attempt's trace (from a throwaway per-attempt collector) into this one.
+        absorb(other) { for (const t of (other && other.all ? other.all() : [])) teams.push(t); },
     };
 }
 
 // A no-op collector (default when auditing is off) so the resolver can call unconditionally.
 function noopTeamAudit() {
-    return { beginTeam() {}, recordSlot() {}, finishTeam() {}, all() { return []; } };
+    return { beginTeam() {}, recordSlot() {}, finishTeam() {}, all() { return []; }, absorb() {} };
 }
 
 function seedStr(seed) {
@@ -143,9 +145,11 @@ function renderTeamAuditText(teams, { engineThreshold = BIAS_MIN_SOPH } = {}) {
         const belowThreshold = t.sophistication != null && t.sophistication < engineThreshold;
         const gims = (t.finalIdentity && t.finalIdentity.gimmicks) || [];
         // T-130 — below the steering threshold the identity is a DESCRIPTIVE reading of a tier-random
-        // pile, so don't dress it up with gimmicks it never pursued; those are reported as "not pursued".
+        // pile, so don't dress it up with gimmicks it never pursued (reported as "not pursued"). T-132 — a
+        // ROLLED-BACK gimmick is likewise not shown as an identity trait (any emergent setter is incidental).
+        const showGims = !belowThreshold && !t.rolledBack && gims.length;
         const fid = t.finalIdentity
-            ? `${t.finalIdentity.base} (${t.finalIdentity.source}${(!belowThreshold && gims.length) ? ', +' + gims.join('+') : ''})`
+            ? `${t.finalIdentity.base} (${t.finalIdentity.source}${showGims ? ', +' + gims.join('+') : ''})`
             : 'none';
         lines.push(`=== ${t.trainerId}${t.label ? ' — ' + t.label : ''} (lvl ${t.level ?? '?'}, ${fmt}) ===`);
         lines.push(`sophistication: ${soph} | seed: ${seedStr(t.seed)} | final identity: ${fid}`);
@@ -162,6 +166,12 @@ function renderTeamAuditText(teams, { engineThreshold = BIAS_MIN_SOPH } = {}) {
             if (t.droppedGimmicks && t.droppedGimmicks.length) {
                 lines.push(`  → gimmick dropped — setter not delivered within restrictions: ${t.droppedGimmicks.join(', ')}.`);
             }
+        }
+        // T-132/ADR-017 — the intended gimmick couldn't assemble its setter + abusers within the
+        // restrictions, so the attempt-based resolver rolled it back to a normal team.
+        if (t.rolledBack) {
+            const tried = t.rolledBack.attempts > 0 ? ` (after ${t.rolledBack.attempts} attempt(s))` : '';
+            lines.push(`  → ${t.rolledBack.gimmick} intended but ROLLED BACK${tried}: couldn't build its setter + 2 abusers within the trainer's restrictions.`);
         }
         // Slots are listed regardless of the archetype threshold: continuity provenance (inherited /
         // devolved) matters most at the low-level EARLY appearances of a recurring character (T-106).

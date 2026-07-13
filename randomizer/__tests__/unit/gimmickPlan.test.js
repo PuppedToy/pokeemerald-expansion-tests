@@ -3,7 +3,7 @@
 // T-132 / ADR-017 — gimmick success conditions (the SSOT for "did the gimmick materialise"). Weather =
 // setter + >= 2 abusers, with the BROAD abuser definition from docs/research/weather.md.
 
-const { gimmickHolds, weatherHolds } = require('../../modules/gimmickPlan');
+const { gimmickHolds, weatherHolds, gimmickFallbackChain } = require('../../modules/gimmickPlan');
 
 // A resolved member: { pokemon: { parsedTypes }, ability, moves }.
 const mem = (ability, moves = [], types = ['NORMAL']) => ({ pokemon: { parsedTypes: types }, ability, moves });
@@ -63,5 +63,29 @@ describe('gimmickPlan — other gimmicks', () => {
     });
     test('an unknown gimmick holds (no condition to fail)', () => {
         expect(gimmickHolds('mystery', [mem('X')])).toBe(true);
+    });
+});
+
+describe('gimmickPlan — fallback chain (ADR-017)', () => {
+    test('themed weather → [themed, ...other 3 weathers, dropped]', () => {
+        const chain = gimmickFallbackChain({ base: 'bulky_offense', gimmicks: ['weather'], weather: 'snow' }, 'T_X');
+        expect(chain).toHaveLength(5);
+        expect(chain[0].weather).toBe('snow');
+        expect(chain.slice(1, 4).map(v => v.weather).sort()).toEqual(['rain', 'sand', 'sun']);
+        expect((chain[4].gimmicks || []).includes('weather')).toBe(false); // final = dropped
+    });
+    test('non-gimmick seed → single attempt', () => {
+        expect(gimmickFallbackChain({ base: 'balance' }, 'T')).toHaveLength(1);
+    });
+    test('non-weather gimmick → [gimmick, dropped]', () => {
+        const chain = gimmickFallbackChain({ base: 'balance', gimmicks: ['trick_room'] }, 'T');
+        expect(chain).toHaveLength(2);
+        expect((chain[1].gimmicks || []).includes('trick_room')).toBe(false);
+    });
+    test('the fallback order is stable per trainer (no RNG)', () => {
+        const seed = { base: 'x', gimmicks: ['weather'], weather: 'rain' };
+        const a = gimmickFallbackChain(seed, 'T_A').map(v => v.weather);
+        const b = gimmickFallbackChain(seed, 'T_A').map(v => v.weather);
+        expect(a).toEqual(b);
     });
 });

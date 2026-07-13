@@ -139,6 +139,22 @@ describe('createTeamAudit + renderTeamAuditText', () => {
         expect(text).toContain('weather');
     });
 
+    test('T-132 — a rolled-back gimmick is reported, not shown as an identity trait, and absorb() merges traces', () => {
+        const src = createTeamAudit();
+        src.beginTeam({ trainerId: 'T_RB', level: 40, battleType: 'singles', sophistication: 0.6, seed: null });
+        src.finishTeam({ team: [{ pokemon: mon() }], model: singles, ctx: {}, seed: null });
+        const trace = src.all()[0];
+        trace.rolledBack = { gimmick: 'weather', attempts: 4 };
+        trace.finalIdentity = { base: 'bulky_offense', source: 'emergent', gimmicks: ['weather'] }; // incidental setter
+        // absorb into a shared collector (the resolver commits the winning attempt this way)
+        const shared = createTeamAudit();
+        shared.absorb(src);
+        expect(shared.all()).toHaveLength(1);
+        const text = renderTeamAuditText(shared.all());
+        expect(text).toContain('ROLLED BACK');
+        expect(text).not.toMatch(/final identity:[^\n]*\+weather/); // incidental gimmick not claimed
+    });
+
     test('noopTeamAudit collects nothing and never throws', () => {
         const a = noopTeamAudit();
         expect(() => { a.beginTeam({}); a.recordSlot({}); a.finishTeam({}); }).not.toThrow();

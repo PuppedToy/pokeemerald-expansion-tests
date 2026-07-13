@@ -40,8 +40,9 @@ const { makeArchetypePicker, BIAS_MIN_SOPH } = require('./archetypePicker');
 const { planMemberRoleMove, planMemberAbility, WEATHER_ROCK_BY_SETTER, ELECTRIC_MOVES } = require('./archetypeRefine');
 const { getTrainerSeed } = require('./trainerSeeds');
 const { resolveFavourites } = require('./favouriteClaim');
+const { gimmickHolds, gimmickFallbackChain } = require('./gimmickPlan');
 const { getArchetypeModel } = require('../archetypes');
-const { noopTeamAudit } = require('../teamAudit');
+const { noopTeamAudit, createTeamAudit } = require('../teamAudit');
 const { noopDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
 
 const SEED_SOPH_FLOOR = 0.6; // T-126 — min sophistication for a SEEDED trainer, so its identity builds
@@ -106,8 +107,8 @@ function createTeamResolver(deps) {
     const storedIds = {};
     const pokeIdIVCache = {};
 
-    function generateIVs(breedTier, pokeId) {
-        if (pokeId && pokeIdIVCache[pokeId]) return pokeIdIVCache[pokeId];
+    function generateIVs(breedTier, pokeId, cache = pokeIdIVCache) {
+        if (pokeId && cache[pokeId]) return cache[pokeId];
         let ivs;
         if (breedTier === 'perfect') {
             ivs = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
@@ -120,23 +121,21 @@ function createTeamResolver(deps) {
             ivs = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
             Object.keys(ivs).forEach(s => { ivs[s] = Math.floor(rng.random() * 32); });
         }
-        if (pokeId) pokeIdIVCache[pokeId] = ivs;
+        if (pokeId) cache[pokeId] = ivs;
         return ivs;
     }
 
-    // Resolves one trainer's full team (array of team members). Does NOT handle `trainer.copy` or
-    // build the trainersResults entry — the caller owns those.
-    function resolveTrainerTeam(trainer) {
+    // T-132 / ADR-017 — resolve ONE attempt at a gimmick: build the team under `archetypeSeed`, writing
+    // ONLY to the passed-in isolated state (`attemptStoredIds`, `attemptIVCache`, `attemptAudit`, and the
+    // caller's cloned `trainer` for its mutable `tms`/`bag`). The orchestrator (resolveTrainerTeam) decides
+    // whether to COMMIT this attempt or discard it and try the next fallback. `teamDefs` (favourite-claimed
+    // pool) is seed-independent and resolved once by the orchestrator.
+    function runAttempt(trainer, teamDefs, archetypeSeed, attemptStoredIds, attemptIVCache, attemptAudit) {
         const team = [];
-        // T-105/T-107 — the sophistication weight for this trainer lives on the shared context; the
-        // archetype picker consumes it to bias the fill toward the emerged identity and degrades to a
-        // plain sample at low sophistication / no identity (early-game byte-identical).
-        // T-107 107e / T-126 — optional { base, gimmicks, weather, electricTerrain } lean: an explicit
-        // per-trainer seed, else the owner-validated seed map (weather villains / Tate & Liza / Wattson).
-        const archetypeSeed = trainer.archetypeSeed || getTrainerSeed(trainer.id);
-        // T-126 — a SEEDED trainer has a deliberate identity, so the engine must build it regardless of
-        // game position: apply a sophistication FLOOR (an early gym like the weather Museum grunts or
-        // electric Wattson still gets its gimmick). Un-seeded trainers keep the natural soph curve.
+        const storedIds = attemptStoredIds;
+        // T-105/T-107 — the sophistication weight lives on the context; the archetype picker biases the fill
+        // toward the emerged identity, degrading to a plain sample at low soph / no identity. T-126 — a
+        // SEEDED trainer floors soph so it builds its identity regardless of game position.
         const context = {
             team, foundMega: false, storedIds,
             sophistication: archetypeSeed ? Math.max(sophistication(trainer), SEED_SOPH_FLOOR) : sophistication(trainer),
@@ -144,7 +143,7 @@ function createTeamResolver(deps) {
         };
         const archetypeModel = getArchetypeModel(/double/i.test(trainer.battleType || '') ? 'doubles' : 'singles');
         const pickCandidate = makeArchetypePicker({ model: archetypeModel, context, ctx: { moves } });
-        audit.beginTeam({
+        attemptAudit.beginTeam({
             trainerId: trainer.id, label: trainer.label || null, class: trainer.class || null,
             level: trainer.level, battleType: trainer.battleType || 'singles',
             sophistication: context.sophistication, seed: context.archetypeSeed,
@@ -152,20 +151,6 @@ function createTeamResolver(deps) {
         const choosePokemonFromDefinition = createChooser(pokemonList, trainer, context, {
             starters, staticRewards, replacementLog, megaReplacementLog, isSuperEffective, pickCandidate,
         });
-        // T-128 — favourites CLAIM a slot from the difficulty-adjusted preset pool (a slot of their EXACT
-        // tier, or the {isMega} slot — gated by the story-progression mega rule — if they are a mega), are
-        // resolved FIRST (so the team crystallises around them), and drop to the standard restriction-
-        // bounded fallback when they don't fit — never downgrading. A favourite is an ordered chain of
-        // SPECIES ids (or { mega: true }); see modules/favouriteClaim.js.
-        let teamDefs = trainer.team;
-        const favChains = trainer.favourites
-            || (trainer.favourite && trainer.favourite.length ? [trainer.favourite] : null);
-        if (favChains && favChains.length) {
-            teamDefs = resolveFavourites(trainer.team, favChains, {
-                pokemonList, level: trainer.level, types: trainer.types || null,
-                favouriteIds: trainer.favourites ? (trainer.favouriteIds || []) : (trainer.favouriteId ? [trainer.favouriteId] : []),
-            });
-        }
         teamDefs.forEach((trainerMonDefinition, slotIndex) => {
             if (baseRngSeed !== null) {
                 const slotSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainer.id + ':' + slotIndex), 0x9E3779B9)) >>> 0;
@@ -243,7 +228,7 @@ function createTeamResolver(deps) {
                     moves: megaMoves,
                     breedTier: effectiveBreedTier,
                     pokeId,
-                    ivs: generateIVs(effectiveBreedTier, pokeId),
+                    ivs: generateIVs(effectiveBreedTier, pokeId, attemptIVCache),
                 };
 
                 // B-030 — a move INJECTED beyond chooseMoveset's own (already TM-gated) selection must
@@ -377,7 +362,7 @@ function createTeamResolver(deps) {
                     moveset = adjustMoveset(battlePoke, trainer.level, moveset, newTeamMember.moves, moves, ability, newTeamMember.item, 0.1, selCtx);
                 }
                 newTeamMember.moves = moveset;
-                audit.recordSlot({
+                attemptAudit.recordSlot({
                     priorTeam: team, chosenMon: chosenTrainerMon, member: newTeamMember, roleMove,
                     model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed,
                     // T-106/T-117 — provenance for the backwards-continuity audit: the slot def + the
@@ -410,8 +395,72 @@ function createTeamResolver(deps) {
             );
         }
 
-        audit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed });
+        attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed });
         return team;
+    }
+
+    // Resolves one trainer's full team (array of team members). Does NOT handle `trainer.copy` or build
+    // the trainersResults entry — the caller owns those.
+    //
+    // T-132 / ADR-017 — attempt-based: a gimmicked trainer TRIES its gimmick (and, for weather, the other
+    // weathers) and DROPS it if the success condition can't be met, committing the first attempt that holds.
+    // Each attempt runs on ISOLATED state (a storedIds/IV-cache overlay + a throwaway audit + a cloned
+    // trainer for its mutable tms/bag); only the committed attempt's side effects reach the shared state, so
+    // failed attempts never corrupt continuity. Non-gimmick trainers take exactly one attempt — byte-
+    // identical to before.
+    function resolveTrainerTeam(trainer) {
+        // Favourites are seed-independent, so claim the pool slots ONCE, up front (see favouriteClaim.js).
+        let teamDefs = trainer.team;
+        const favChains = trainer.favourites
+            || (trainer.favourite && trainer.favourite.length ? [trainer.favourite] : null);
+        if (favChains && favChains.length) {
+            teamDefs = resolveFavourites(trainer.team, favChains, {
+                pokemonList, level: trainer.level, types: trainer.types || null,
+                favouriteIds: trainer.favourites ? (trainer.favouriteIds || []) : (trainer.favouriteId ? [trainer.favouriteId] : []),
+            });
+        }
+
+        const baseSeed = trainer.archetypeSeed || getTrainerSeed(trainer.id);
+        const variants = gimmickFallbackChain(baseSeed, trainer.id);
+
+        let chosen = null;
+        let chosenIdx = 0;
+        for (let i = 0; i < variants.length; i++) {
+            const variantSeed = variants[i];
+            const attemptStoredIds = { ...storedIds };
+            const attemptIVCache = { ...pokeIdIVCache };
+            const attemptAudit = createTeamAudit();
+            const attemptTrainer = {
+                ...trainer,
+                tms: [...(trainer.tms || [])],
+                bag: trainer.bag ? [...trainer.bag] : trainer.bag,
+            };
+            const team = runAttempt(attemptTrainer, teamDefs, variantSeed, attemptStoredIds, attemptIVCache, attemptAudit);
+            chosen = { team, attemptStoredIds, attemptIVCache, attemptTrainer, attemptAudit };
+            chosenIdx = i;
+            const gimmick = variantSeed && variantSeed.gimmicks && variantSeed.gimmicks[0];
+            const isLast = i === variants.length - 1;
+            // commit the first attempt that satisfies its gimmick (or the final fallback, which has none).
+            if (isLast || !gimmick || gimmickHolds(gimmick, team, { moves }, (variantSeed && variantSeed.weather) || null)) break;
+        }
+
+        // T-132/T-130 — if the trainer's intended gimmick was ROLLED BACK (the committed attempt no longer
+        // carries it), record that on the committed audit trace so the log still shows it was tried + dropped.
+        const baseGimmick = baseSeed && baseSeed.gimmicks && baseSeed.gimmicks[0];
+        const committedSeed = variants[chosenIdx];
+        const committedHasGimmick = committedSeed && (committedSeed.gimmicks || []).length > 0;
+        if (baseGimmick && !committedHasGimmick) {
+            const trace = chosen.attemptAudit.all()[0];
+            if (trace) trace.rolledBack = { gimmick: baseGimmick, attempts: chosenIdx };
+        }
+
+        // Commit the chosen attempt's side effects to the shared, cross-trainer state.
+        Object.assign(storedIds, chosen.attemptStoredIds);
+        Object.assign(pokeIdIVCache, chosen.attemptIVCache);
+        trainer.tms = chosen.attemptTrainer.tms;
+        trainer.bag = chosen.attemptTrainer.bag;
+        audit.absorb(chosen.attemptAudit);
+        return chosen.team;
     }
 
     return { resolveTrainerTeam, generateIVs, storedIds, sophisticationFor: sophistication };

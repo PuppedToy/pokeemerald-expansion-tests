@@ -48,6 +48,24 @@ Acceptance criteria:
 
 ## Progress log
 
+### 2026-07-13 (cont.) — attempt/rollback engine wired into the resolver
+- Refactored `resolveTrainerTeam` into `runAttempt(...)` (the slot loop, writing only to passed-in
+  isolated state) + an ORCHESTRATOR that tries the `gimmickFallbackChain` variants, validates each with
+  `gimmickHolds`, and commits the first that holds (else the final no-gimmick fallback). Each attempt runs
+  on a `storedIds`/IV-cache overlay + a throwaway audit + a cloned trainer (its `tms`/`bag` are mutated in
+  place), so failed attempts never touch shared state. `generateIVs` takes an optional cache; `teamAudit`
+  gained `absorb()` to merge a committed attempt's trace.
+- Determinism + continuity gates GREEN (17/17) — byte-identical for single-attempt (non-gimmick) trainers.
+- Auditability: a rolled-back gimmick is recorded on the committed trace (`rolledBack`) and rendered
+  ("weather intended but ROLLED BACK (after N attempts): couldn't build its setter + 2 abusers…"); an
+  incidental emergent setter is no longer claimed as an identity trait. Suite 983.
+- **Observed:** the weather villains now cleanly ROLL BACK (Museum/Matt/Tabitha) because the picker still
+  doesn't seek a setter — Archie/Maxie only get a setter incidentally. So the ROLLBACK works, but weather
+  doesn't yet BUILD.
+- **Next increment:** setter-first picking — bias the attempt to actually PICK a setter (+ abusers) within
+  the restriction (owner algo step 2/3), so the weather condition can pass; then the weather-tag mechanics
+  (STAB/accuracy/Def-SpDef/Weather Ball) in scoring.
+
 ### 2026-07-13 — design (ADR-017) + gimmick success-condition module
 - **ADR-017** (accepted) — the general rollback: gimmick team-building is ATTEMPT-based. Resolve into
   isolated state (local team + a `storedIds` overlay + buffered audit) under a candidate tag; validate the
