@@ -99,4 +99,20 @@ describe('trick room — holds', () => {
         expect(ensureTrickRoomSetter(team)).toBe(true);
         expect(trickRoomHolds(team)).toBe(true);
     });
+
+    // T-138 — a FULL room needs 2 setters + 4 slow abusers.
+    test('roomStyle full requires 2 setters + 4 abusers; ensureTrickRoomSetter injects 2 setters', () => {
+        const learnerSlow = () => mem('X', [], ['PSYCHIC'], { baseSpeed: 25, baseAttack: 110, baseSpAttack: 60, ...learns('MOVE_TRICK_ROOM') });
+        // 4 slow abusers, 2 of which can learn TR → after injecting 2 setters, full room holds.
+        const team = [learnerSlow(), learnerSlow(), slowStrong(), slowStrong()];
+        expect(trickRoomHolds(team, { roomStyle: 'full' })).toBe(false); // no setters yet
+        expect(ensureTrickRoomSetter(team, 2)).toBe(true);
+        expect(team.filter(m => (m.moves || []).includes('MOVE_TRICK_ROOM')).length).toBe(2);
+        expect(trickRoomHolds(team, { roomStyle: 'full' })).toBe(true);
+        // one setter + 3 abusers is NOT a full room
+        const half = [learnerSlow(), slowStrong(), slowStrong()];
+        ensureTrickRoomSetter(half, 1);
+        expect(trickRoomHolds(half, { roomStyle: 'full' })).toBe(false); // only 1 setter, 3 abusers
+        expect(trickRoomHolds(half)).toBe(true);                          // but a normal/half room holds
+    });
 });

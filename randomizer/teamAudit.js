@@ -141,7 +141,7 @@ function createTeamAudit() {
             // T-135 — a tag partner abusing an ALLY's weather (abuseOnly) needs no setter of its own, so pass
             // the flag through: it materialised as an abuser, not "dropped — setter not delivered".
             const wxSub = weatherSubtypeOf(seed, team);
-            const wxCtx = { ...ctx, abuseOnly: !!(seed && seed.abuseOnly) };
+            const wxCtx = { ...ctx, abuseOnly: !!(seed && seed.abuseOnly), roomStyle: (seed && seed.roomStyle) || null };
             const gimmicks = candidateGimmicks.filter(g => gimmickMaterialised(g, team, wxCtx, wxSub));
             // T-130 — record what was DROPPED so the renderer can explain why (auditability).
             cur.finalIdentity = id ? { base: id.baseId, source: id.source, gimmicks } : null;

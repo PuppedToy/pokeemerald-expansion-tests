@@ -332,22 +332,34 @@ function trickRoomBreakdown(mon) {
     if ((mon && mon.item) === ROOM_SERVICE_ITEM) add('room-service', W.synergy);
     return { total: Math.round(parts.reduce((s, p) => s + p.v, 0) * 100) / 100, parts };
 }
+// T-138 — a FULL room (ctx.roomStyle==='full', e.g. Tate & Liza) requires 2 setters (6v6 redundancy) + 4
+// slow abusers; a HALF / default room is 1 setter + 2 abusers.
+const TR_FULL_SETTERS = 2;
+const TR_FULL_ABUSERS = 4;
 function trickRoomHolds(team, ctx = {}) {
     const members = (team || []).map(asMember);
-    if (!ctx.abuseOnly && !members.some(isTrickRoomSetter)) return false;
-    return members.filter(m => trickRoomAbuseScore(m) >= WEATHER_ABUSE_THRESHOLD).length >= REQUIRED_ABUSERS;
+    const setters = members.filter(isTrickRoomSetter).length;
+    const abusers = members.filter(m => trickRoomAbuseScore(m) >= WEATHER_ABUSE_THRESHOLD).length;
+    if (ctx.roomStyle === 'full') return setters >= TR_FULL_SETTERS && abusers >= TR_FULL_ABUSERS;
+    if (!ctx.abuseOnly && setters < 1) return false;
+    return abusers >= REQUIRED_ABUSERS;
 }
-function ensureTrickRoomSetter(team) {
+// Inject the Trick Room move until the team has `count` setters (retrofit; no ability sets TR). Prefers
+// non-abuser (bulky) learners for the first setter, then any learner. Returns true if it injected any.
+function ensureTrickRoomSetter(team, count = 1) {
     const members = (team || []).map(asMember);
-    if (members.some(isTrickRoomSetter)) return false;
-    const canLearn = m => monCanLearn(m, [TR_SETTER_MOVE]);
-    // Prefer a non-abuser bulky carrier; else any learner.
-    const target = members.find(m => canLearn(m) && trickRoomAbuseScore(m) < WEATHER_ABUSE_THRESHOLD)
-        || members.find(canLearn);
-    if (!target) return false;
-    const moves = target.moves || (target.moves = []);
-    if (!moves.includes(TR_SETTER_MOVE)) { if (moves.length >= 4) moves[moves.length - 1] = TR_SETTER_MOVE; else moves.push(TR_SETTER_MOVE); }
-    return true;
+    let have = members.filter(isTrickRoomSetter).length;
+    let injected = false;
+    while (have < count) {
+        const canLearn = m => !isTrickRoomSetter(m) && monCanLearn(m, [TR_SETTER_MOVE]);
+        const target = members.find(m => canLearn(m) && trickRoomAbuseScore(m) < WEATHER_ABUSE_THRESHOLD)
+            || members.find(canLearn);
+        if (!target) break;
+        const moves = target.moves || (target.moves = []);
+        if (moves.length >= 4) moves[moves.length - 1] = TR_SETTER_MOVE; else moves.push(TR_SETTER_MOVE);
+        have++; injected = true;
+    }
+    return injected;
 }
 
 // A tiny per-gimmick spec so the picker + audit can treat weather / electric_terrain / trick_room uniformly.

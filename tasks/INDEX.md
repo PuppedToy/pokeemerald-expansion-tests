@@ -141,3 +141,5 @@
 | [T-135](T-135-weather-abuser-quality.md) | Weather abuser QUALITY — prefer real ability-abusers at high sophistication | done | 0.8.0 | 2026-07-14 |
 | [T-136](T-136-emergent-weather-nondedicated.md) | Emergent weather on non-dedicated teams + un-force Flannery's sun | done | 0.8.0 | 2026-07-14 |
 | [T-137](T-137-emergent-electric-terrain.md) | Electric terrain + Trick Room as corpus-grounded gimmicks (rating + emergent), migrate Wattson | done | 0.8.0 | 2026-07-14 |
+| [T-138](T-138-trickroom-fullroom-and-weather-room.md) | Trick Room full-room enforcement (2 setters + 4 abusers) | done | 0.8.0 | 2026-07-14 |
+| [T-139](T-139-weather-room-coexistence.md) | Weather + Trick Room (half) coexistence on one team | proposed | 0.9.0 | 2026-07-14 |

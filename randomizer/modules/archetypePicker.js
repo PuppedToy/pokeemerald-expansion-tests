@@ -201,11 +201,12 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
                 if (setterIdx.length) return weightedSampleOne(setterIdx.map(i => candidates[i]), setterIdx.map(i => weights[i]));
             }
             // Count DEDICATED abusers (exclude the favourite ace + the setter), then rank the free slots —
-            // same "pick 2 good ranked abusers" budget as weather (T-135).
+            // same "pick N good ranked abusers" budget as weather (T-135). T-138 — a FULL room targets 4.
+            const abuserTarget = (gid === 'trick_room' && seed && seed.roomStyle === 'full') ? 4 : WEATHER_REQUIRED_ABUSERS;
             const teamAbusers = teamMembers.filter(m => !m.__favourite && !spec.isSetter(m) && spec.score(m) >= WEATHER_ABUSE_THRESHOLD).length;
             const reliableIdx = [], softIdx = [];
             candidates.forEach((c, i) => { const s = spec.score(c); if (s >= WEATHER_ABUSE_THRESHOLD) reliableIdx.push(i); if (s > 0) softIdx.push(i); });
-            if (teamAbusers < WEATHER_REQUIRED_ABUSERS && reliableIdx.length) {
+            if (teamAbusers < abuserTarget && reliableIdx.length) {
                 const cands = reliableIdx.map(i => candidates[i]);
                 const breakdowns = cands.map(c => spec.breakdown(c));
                 const maxR = Math.max(...breakdowns.map(b => b.total), 1e-6);

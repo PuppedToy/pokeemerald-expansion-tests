@@ -481,7 +481,11 @@ function createTeamResolver(deps) {
         // T-137 — same move-setter retrofit for electric terrain / trick room (no ability-setter in the pool
         // → inject the terrain / Trick Room move on a non-abuser learner so the setter + 2-abusers holds).
         const seedGid = context.archetypeSeed && (context.archetypeSeed.gimmicks || []).find(g => GIMMICK_SPEC[g]);
-        if (seedGid && !context.archetypeSeed.abuseOnly) GIMMICK_SPEC[seedGid].ensureSetter(team);
+        if (seedGid && !context.archetypeSeed.abuseOnly) {
+            // T-138 — a FULL room retrofits 2 setters (redundancy); everything else 1.
+            const setterCount = (seedGid === 'trick_room' && context.archetypeSeed.roomStyle === 'full') ? 2 : 1;
+            GIMMICK_SPEC[seedGid].ensureSetter(team, setterCount);
+        }
 
         attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed, weatherPicks: context.weatherPicks, itemLinkActivations: context.itemLinkActivations });
         return team;
@@ -553,7 +557,8 @@ function createTeamResolver(deps) {
             // The move-setter retrofit already ran inside runAttempt (before its audit), so `chosen.team` here
             // is the real committed team — commit the first attempt that satisfies its gimmick (or the final).
             const abuseOnly = !!(variantSeed && variantSeed.abuseOnly);
-            if (isLast || !gimmick || gimmickHolds(gimmick, chosen.team, { moves, abuseOnly }, (variantSeed && variantSeed.weather) || null)) break;
+            const holdCtx = { moves, abuseOnly, roomStyle: (variantSeed && variantSeed.roomStyle) || null };
+            if (isLast || !gimmick || gimmickHolds(gimmick, chosen.team, holdCtx, (variantSeed && variantSeed.weather) || null)) break;
         }
         let committedSeed = variants[chosenIdx];
 
@@ -575,7 +580,7 @@ function createTeamResolver(deps) {
                 ...(emergent.roomStyle ? { roomStyle: emergent.roomStyle } : {}),
             };
             const wx = tryVariant(emergentSeed);
-            if (gimmickHolds(emergent.gimmick, wx.team, { moves }, emergent.weather || null)) {
+            if (gimmickHolds(emergent.gimmick, wx.team, { moves, roomStyle: emergent.roomStyle || null }, emergent.weather || null)) {
                 chosen = wx;
                 committedSeed = emergentSeed;
             } else {
