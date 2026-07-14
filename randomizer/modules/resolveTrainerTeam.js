@@ -40,7 +40,7 @@ const { makeArchetypePicker, BIAS_MIN_SOPH } = require('./archetypePicker');
 const { planMemberRoleMove, planMemberAbility, planForwardChoiceItem, WEATHER_ROCK_BY_SETTER, ELECTRIC_MOVES } = require('./archetypeRefine');
 const { getTrainerSeed } = require('./trainerSeeds');
 const { resolveFavourites } = require('./favouriteClaim');
-const { gimmickHolds, gimmickFallbackChain, ensureMoveSetter, teamWeather, emergentWeatherSubtype, weatherHolds, isWeatherAbuser } = require('./gimmickPlan');
+const { gimmickHolds, gimmickFallbackChain, ensureMoveSetter, teamWeather, emergentGimmick, weatherHolds, isWeatherAbuser, GIMMICK_SPEC } = require('./gimmickPlan');
 const { WEATHER_REQUIRED_ABUSERS } = require('./weatherConstants');
 const { consumeLinkedUnit, expandLinkedPacks } = require('./itemLinks');
 const { getArchetypeModel } = require('../archetypes');
@@ -287,8 +287,8 @@ function createTeamResolver(deps) {
                 if (roleMove && injectableMove(roleMove) && !newTeamMember.moves.includes(roleMove)) {
                     newTeamMember.moves.push(roleMove);
                 }
-                // T-124 (Wattson) — electric terrain: every mon prefers an electric attacking move.
-                if (context.archetypeSeed && context.archetypeSeed.electricTerrain) {
+                // T-137 — electric-terrain gimmick: every mon prefers an electric attacking move (STAB/synergy).
+                if (context.archetypeSeed && (context.archetypeSeed.gimmicks || []).includes('electric_terrain')) {
                     const em = ELECTRIC_MOVES.find(mv => canLearnMove(chosenTrainerMon, mv, trainer.level) && !newTeamMember.moves.includes(mv));
                     if (em) newTeamMember.moves.push(em);
                 }
@@ -343,11 +343,13 @@ function createTeamResolver(deps) {
                 if (!newTeamMember.item && context.sophistication >= BIAS_MIN_SOPH && WEATHER_ROCK_BY_SETTER[ability]) {
                     newTeamMember.item = itemIdToName(WEATHER_ROCK_BY_SETTER[ability]);
                 }
-                // T-125 (Wattson) — Electric Seed on a defensive mon (Def boost on entry in electric terrain).
+                // T-137 — Electric Seed in an electric-terrain team: an UNBURDEN abuser (its speed engine) or a
+                // bulky mon (Def boost on entry). Gated on the electric_terrain gimmick.
                 if (!newTeamMember.item && context.sophistication >= BIAS_MIN_SOPH
-                    && context.archetypeSeed && context.archetypeSeed.electricTerrain
-                    && (chosenTrainerMon.baseHP + chosenTrainerMon.baseDefense + chosenTrainerMon.baseSpDefense) >= 285
-                    && Math.max(chosenTrainerMon.baseAttack || 0, chosenTrainerMon.baseSpAttack || 0) <= 95) {
+                    && context.archetypeSeed && (context.archetypeSeed.gimmicks || []).includes('electric_terrain')
+                    && (ability === 'UNBURDEN'
+                        || ((chosenTrainerMon.baseHP + chosenTrainerMon.baseDefense + chosenTrainerMon.baseSpDefense) >= 285
+                            && Math.max(chosenTrainerMon.baseAttack || 0, chosenTrainerMon.baseSpAttack || 0) <= 95))) {
                     newTeamMember.item = itemIdToName('ITEM_ELECTRIC_SEED');
                 }
                 // T-124 — Room Service on a fast mon in a Trick Room team (its Speed drops when TR is set).
@@ -476,6 +478,10 @@ function createTeamResolver(deps) {
         const wxSubtype = context.archetypeSeed && (context.archetypeSeed.gimmicks || []).includes('weather')
             && !context.archetypeSeed.abuseOnly && context.archetypeSeed.weather;
         if (wxSubtype && ensureMoveSetter(team, wxSubtype)) attemptAudit.relabelWeather(team, wxSubtype);
+        // T-137 — same move-setter retrofit for electric terrain / trick room (no ability-setter in the pool
+        // → inject the terrain / Trick Room move on a non-abuser learner so the setter + 2-abusers holds).
+        const seedGid = context.archetypeSeed && (context.archetypeSeed.gimmicks || []).find(g => GIMMICK_SPEC[g]);
+        if (seedGid && !context.archetypeSeed.abuseOnly) GIMMICK_SPEC[seedGid].ensureSetter(team);
 
         attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed, weatherPicks: context.weatherPicks, itemLinkActivations: context.itemLinkActivations });
         return team;
@@ -551,30 +557,35 @@ function createTeamResolver(deps) {
         }
         let committedSeed = variants[chosenIdx];
 
-        // T-136 — EMERGENT weather on a NON-DEDICATED team. If this trainer had no weather intent of its own
-        // yet its committed plain build FIELDED a natural setter (mutated abilities scatter Drizzle/Drought/…,
-        // or a move-setter emerged) — and it's sophisticated enough — opportunistically try to build THAT
-        // weather properly (setter + 2 hard-ranked abusers), reusing the seeded machinery via a synthetic
-        // `emergent` seed. Commit the weather build only if it HOLDS; otherwise keep the plain team and note
-        // on its trace that weather was considered + dropped (so the decision log reports it — the owner's ask).
-        const emergentSub = emergentWeatherSubtype({
+        // T-136/T-137 — EMERGENT gimmick on a NON-DEDICATED team. If this trainer had no gimmick intent of its
+        // own yet its committed plain build FIELDED a natural setter (weather / electric terrain — mutated
+        // abilities scatter Drizzle/Drought/Electric-Surge…) or a slow-strong CORE (trick room) — and it's
+        // sophisticated enough — opportunistically try to build THAT gimmick properly (setter + 2 hard-ranked
+        // abusers), reusing the seeded machinery via a synthetic `emergent` seed. Commit only if it HOLDS;
+        // else keep the plain team and note on its trace that it was considered + dropped (owner's ask).
+        const emergent = emergentGimmick({
             committedSeed, abusePartner: !!trainer.abusePartnerWeather,
             soph: sophistication(trainer), team: chosen.team,
         });
-        if (emergentSub) {
+        if (emergent) {
             const emergentSeed = {
                 base: (committedSeed && committedSeed.base) || 'bulky_offense',
-                gimmicks: ['weather'], weather: emergentSub, emergent: true,
+                gimmicks: [emergent.gimmick], emergent: true,
+                ...(emergent.weather ? { weather: emergent.weather } : {}),
+                ...(emergent.roomStyle ? { roomStyle: emergent.roomStyle } : {}),
             };
             const wx = tryVariant(emergentSeed);
-            if (weatherHolds(wx.team, { moves }, emergentSub)) {
+            if (gimmickHolds(emergent.gimmick, wx.team, { moves }, emergent.weather || null)) {
                 chosen = wx;
                 committedSeed = emergentSeed;
             } else {
                 const trace = chosen.attemptAudit.all()[0];
                 if (trace) {
-                    const abusers = wx.team.filter(m => isWeatherAbuser(m, emergentSub)).length;
-                    trace.emergentWeatherDropped = { subtype: emergentSub, abusers, required: WEATHER_REQUIRED_ABUSERS };
+                    const sub = emergent.weather || emergent.gimmick.replace('_', ' ');
+                    const abusers = emergent.gimmick === 'weather'
+                        ? wx.team.filter(m => isWeatherAbuser(m, emergent.weather)).length
+                        : wx.team.filter(m => GIMMICK_SPEC[emergent.gimmick].score(m) >= 2).length;
+                    trace.emergentWeatherDropped = { subtype: sub, abusers, required: WEATHER_REQUIRED_ABUSERS };
                 }
             }
         }

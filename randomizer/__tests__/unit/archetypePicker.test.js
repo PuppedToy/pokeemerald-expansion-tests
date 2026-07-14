@@ -86,13 +86,13 @@ describe('makeArchetypePicker — biases toward archetype fit at high sophistica
         expect(wb).toBeGreaterThan(pl);
         expect(pl).toBeGreaterThan(0);
     });
-    test('T-124 (Wattson) — an electricTerrain seed HARD-prefers Electric-type candidates', () => {
-        const context = { team: [], sophistication: 0.6, archetypeSeed: { base: 'bulky_offense', electricTerrain: true } };
+    test('T-137 (Wattson) — an electric_terrain gimmick seed HARD-picks an ability-setter', () => {
+        const context = { team: [], sophistication: 0.9, archetypeSeed: { base: 'bulky_offense', gimmicks: ['electric_terrain'] }, weatherPicks: [] };
         const picker = makeArchetypePicker({ model: singles, context, ctx: {} });
-        const electricMon = mon({ id: 'ELEC', parsedTypes: ['ELECTRIC'] });
-        // one Electric among non-Electric → always chosen (it can actually run the terrain)
-        for (let s = 1; s <= 10; s++) { rng.seed(s); expect(picker([plain('A'), electricMon, plain('B')]).id).toBe('ELEC'); }
-        // no Electric available (Wattson rolled another type) → falls back gracefully, no crash
+        const surge = mon({ id: 'KOKO', parsedTypes: ['ELECTRIC'], parsedAbilities: ['ELECTRIC_SURGE'], baseAttack: 115 });
+        // a setter (Electric Surge) present + the team has none → always hard-picked to establish terrain
+        for (let s = 1; s <= 10; s++) { rng.seed(s); expect(picker([plain('A'), surge, plain('B')]).id).toBe('KOKO'); }
+        // no setter available → falls through gracefully (ranks abusers / no crash)
         rng.seed(1); expect(['A', 'B']).toContain(picker([plain('A'), plain('B')]).id);
     });
 

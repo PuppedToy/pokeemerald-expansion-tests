@@ -16,9 +16,12 @@ const WEATHER_SUN = { base: 'bulky_offense', gimmicks: ['weather'], weather: 'su
 const WEATHER_RAIN = { base: 'bulky_offense', gimmicks: ['weather'], weather: 'rain' };
 const WEATHER_SNOW = { base: 'bulky_offense', gimmicks: ['weather'], weather: 'snow' };
 const WEATHER_SAND = { base: 'bulky_offense', gimmicks: ['weather'], weather: 'sand' };
-const TRICK_ROOM = { base: 'balance', gimmicks: ['trick_room'] };
-// T-124/T-127 — Wattson: electric terrain (a Gen-8+ gimmick, added manually; see archetypeRefine).
-const ELECTRIC_TERRAIN = { base: 'bulky_offense', electricTerrain: true };
+// T-137 — Trick Room is now a full gimmick (setter + 2 abusers). Tate & Liza force a FULL room (2 setters +
+// 4 abusers) via `roomStyle: 'full'`; other trainers that emerge into TR pick full/half dynamically.
+const TRICK_ROOM = { base: 'balance', gimmicks: ['trick_room'], roomStyle: 'full' };
+// T-137 — Wattson: electric terrain as a real gimmick (setter + 2 abusers), no fallback to other gimmicks
+// (his monotype pool tries electric terrain, else a normal Electric team).
+const ELECTRIC_TERRAIN = { base: 'bulky_offense', gimmicks: ['electric_terrain'] };
 
 const TRAINER_SEEDS = {
     // Team Aqua museum grunts → rain / snow; Archie → rain; Matt → snow

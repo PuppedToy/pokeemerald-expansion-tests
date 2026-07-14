@@ -53,4 +53,6 @@ Entry point to all project documentation. **A document not listed here does not 
 - [research/team-archetypes.md](research/team-archetypes.md) — singles & doubles archetype notes; seed for the archetype JSONs (T-100 → T-101/T-102)
 - [research/rating-gaps.md](research/rating-gaps.md) — competitive value our rater misses; drives the doubles rating + tier refinements (T-100 → T-094/095/096/097)
 - [research/weather.md](research/weather.md) — **SSOT for the weather build design**: corpus analysis (setters/abusers/composition) + the owner-validated setter+2-abusers algorithm & weather-tag mechanics (T-131 → T-132)
+- [research/electric-terrain.md](research/electric-terrain.md) — **SSOT for the electric-terrain gimmick**: corpus analysis (Tapu Koko/Surge, support-vs-HO modes) + abuser score incl. modern pieces (Surge Surfer/Quark Drive/Hadron Engine) (T-137)
+- [research/trick-room.md](research/trick-room.md) — **SSOT for the Trick Room gimmick**: 6v6 full-room vs half-room archetypes + slow-and-strong abuser score; Tate & Liza forced full room; weather+room coexistence (T-137)
 - `research/corpus.json` — the raw verified corpus (50 teams) + synergy/archetype/gap/6v6-vs-4v4 data (source for the docs above; read by T-101/T-102)

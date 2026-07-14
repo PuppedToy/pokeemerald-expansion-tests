@@ -140,3 +140,4 @@
 | [T-134](T-134-villain-mascot-favourite-and-grunt-devolved-lead.md) | Villain mascot favourite + paired grunt leads a devolved copy of it | done | 0.8.0 | 2026-07-14 |
 | [T-135](T-135-weather-abuser-quality.md) | Weather abuser QUALITY — prefer real ability-abusers at high sophistication | in-progress | 0.8.0 | 2026-07-14 |
 | [T-136](T-136-emergent-weather-nondedicated.md) | Emergent weather on non-dedicated teams + un-force Flannery's sun | done | 0.8.0 | 2026-07-14 |
+| [T-137](T-137-emergent-electric-terrain.md) | Electric terrain + Trick Room as corpus-grounded gimmicks (rating + emergent), migrate Wattson | done | 0.8.0 | 2026-07-14 |

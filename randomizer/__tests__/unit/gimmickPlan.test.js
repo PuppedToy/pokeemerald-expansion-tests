@@ -282,9 +282,13 @@ describe('gimmickPlan — emergent weather trigger (T-136, non-dedicated teams)'
 });
 
 describe('gimmickPlan — other gimmicks', () => {
-    test("trick_room needs a Trick Room setter move", () => {
-        expect(gimmickHolds('trick_room', [mem('X', ['MOVE_TRICK_ROOM'])])).toBe(true);
-        expect(gimmickHolds('trick_room', [mem('X', ['MOVE_TACKLE'])])).toBe(false);
+    // T-137 spec change: trick_room is now a full gimmick — setter MOVE + 2 slow-strong abusers (was
+    // setter-move presence only). Detail in terrainRoomGimmicks.test.js.
+    test("trick_room needs a Trick Room setter move + 2 slow-strong abusers", () => {
+        const slow = extra => mem('X', [], ['NORMAL'], { baseSpeed: 20, baseAttack: 130, baseSpAttack: 60, ...extra });
+        expect(gimmickHolds('trick_room', [mem('X', ['MOVE_TRICK_ROOM'], ['PSYCHIC'], { baseSpeed: 20 }), slow(), slow()])).toBe(true);
+        expect(gimmickHolds('trick_room', [mem('X', ['MOVE_TACKLE'])])).toBe(false);          // no setter
+        expect(gimmickHolds('trick_room', [mem('X', ['MOVE_TRICK_ROOM'])])).toBe(false);       // setter, no abusers
     });
     test('an unknown gimmick holds (no condition to fail)', () => {
         expect(gimmickHolds('mystery', [mem('X')])).toBe(true);

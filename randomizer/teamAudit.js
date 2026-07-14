@@ -13,7 +13,7 @@ const { detectFeatures } = require('./modules/featureDetectors');
 const { resolveIdentity, BIAS_MIN_SOPH, BIAS_STRENGTH } = require('./modules/archetypePicker');
 const { combinedStructure } = require('./modules/archetypeFit');
 const { resolvedDetectMon } = require('./modules/archetypeRefine');
-const { isWeatherSetter, isWeatherAbuser, weatherHolds } = require('./modules/gimmickPlan');
+const { isWeatherSetter, isWeatherAbuser, weatherHolds, gimmickHolds } = require('./modules/gimmickPlan');
 const { TRAINER_REPEAT_ID } = require('./constants');
 
 // T-132 — the weather subtype a trace's team actually runs: the committed seed's theme, else inferred
@@ -59,9 +59,11 @@ const GIMMICK_SETTER_ROLE = {
     weather: 'weatherSetter', trick_room: 'trickRoomSetter', screens: 'screenSetter', trapping: 'trapper',
 };
 function gimmickMaterialised(gimmickId, team, ctx, subtype = null) {
-    // Weather uses the SAME success condition as the builder (setter + 2 abusers, subtype-aware) so the
-    // log's "materialised / dropped" verdict never disagrees with what the resolver actually committed.
-    if (gimmickId === 'weather') return weatherHolds(team, ctx, subtype);
+    // Weather / electric terrain / trick room use the SAME success condition as the builder (setter + 2
+    // abusers) so the log's "materialised / dropped" verdict never disagrees with the resolver's commit.
+    if (gimmickId === 'weather' || gimmickId === 'electric_terrain' || gimmickId === 'trick_room') {
+        return gimmickHolds(gimmickId, team, ctx, subtype);
+    }
     const role = GIMMICK_SETTER_ROLE[gimmickId];
     if (!role) return true; // unknown gimmick → don't drop
     return (team || []).some(m => detectFeatures(resolvedDetectMon(m), ctx).has(role));

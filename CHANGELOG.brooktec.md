@@ -9,6 +9,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Electric Terrain and Trick Room are real team archetypes now, like weather.** A trainer commits to the
+  gimmick by building it — an Electric Terrain team gets a setter (Tapu Koko-style Electric Surge / Hadron
+  Engine) plus abusers (Surge Surfer, Quark Drive, Unburden + Electric Seed, hard-hitting Electric-types),
+  and a Trick Room team gets the Trick Room setter plus slow, hard-hitting abusers that move first under it.
+  Wattson now builds Electric Terrain and Tate & Liza a full Trick Room. And, like weather, any sufficiently
+  skilled trainer that happens to roll the pieces (a terrain setter, or a slow-strong core) builds the gimmick
+  emergently or cleanly drops it — grounded in the competitive corpus (T-137).
+
 - **Trainer items are meaningful picks now, not random noise.** At every world point where the player picks
   one item from a group (Choice Band/Specs/Scarf, the type plates, the type gems, the resist berries, the
   pick-3 TM lists…), trainers mirror it: a trainer holds the whole group and only "spends" the pick when one

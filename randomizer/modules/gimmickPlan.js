@@ -189,6 +189,26 @@ function emergentWeatherSubtype({ committedSeed = null, abusePartner = false, so
     return teamWeather(team);
 }
 
+// T-137 — generalization of T-136 to ALL setter+abusers gimmicks. Returns { gimmick, weather?, roomStyle? }
+// the non-dedicated team should opportunistically build, or null. Priority: weather → electric terrain →
+// trick room. Weather/electric fire when a natural SETTER was rolled (an ability the pool happened to hand
+// out); trick room fires when a slow-strong CORE emerged (≥2 abusers) and a member can set the room (TR's
+// "setter" is a move, not a rolled ability) — it goes HALF room (splashed onto an otherwise normal team).
+function emergentGimmick({ committedSeed = null, abusePartner = false, soph = 0, team = [] } = {}) {
+    if (committedSeed && (committedSeed.gimmicks || []).length) return null;
+    if (abusePartner) return null;
+    if (!(soph >= EMERGENT_WEATHER_MIN_SOPH)) return null;
+    const members = (team || []).map(asMember);
+    const w = teamWeather(team);
+    if (w) return { gimmick: 'weather', weather: w };
+    if (members.some(isElectricTerrainSetter)) return { gimmick: 'electric_terrain' };
+    const slowCore = members.filter(m => trickRoomAbuseScore(m) >= WEATHER_ABUSE_THRESHOLD).length;
+    if (slowCore >= REQUIRED_ABUSERS && members.some(m => monCanLearn(m, [TR_SETTER_MOVE]))) {
+        return { gimmick: 'trick_room', roomStyle: 'half' };
+    }
+    return null;
+}
+
 // Does the weather gimmick hold for this resolved team? subtype = the intended weather (from the seed) or,
 // if omitted, inferred from whatever setter the team actually fields. ctx.moves = the moves DB (optional).
 // ctx.abuseOnly (T-132) = a tag partner abusing an ALLY's weather (Tabitha under Maxie's sun): it needs no
@@ -202,15 +222,152 @@ function weatherHolds(team, ctx = {}, subtype = null) {
     return abusers >= REQUIRED_ABUSERS;
 }
 
+// ── T-137: ELECTRIC TERRAIN gimmick (docs/research/electric-terrain.md) ───────────────────────────────
+// Same shape as weather (setter + 2 abusers). Modern pieces (Surge Surfer / Quark Drive / Hadron Engine)
+// are included though absent from the Gen 6-7 corpus — this game has them (owner-validated).
+const ELEC_SETTER_ABILITIES = ['ELECTRIC_SURGE', 'HADRON_ENGINE'];
+const ELEC_SETTER_MOVE = 'MOVE_ELECTRIC_TERRAIN';
+const ELEC_ABUSER_ABILITIES = ['SURGE_SURFER', 'QUARK_DRIVE', 'UNBURDEN'];
+const ELEC_SYNERGY_MOVES = ['MOVE_RISING_VOLTAGE', 'MOVE_TERRAIN_PULSE'];
+
+function isElectricTerrainSetter(m) {
+    const mm = asMember(m);
+    return ELEC_SETTER_ABILITIES.includes(memberAbility(mm)) || memberMoves(mm).includes(ELEC_SETTER_MOVE);
+}
+const monPoke = mon => (mon && mon.pokemon) || mon || {};
+const monAbilities = mon => (mon && mon.ability)
+    ? [String(mon.ability).toUpperCase()]
+    : (monPoke(mon).parsedAbilities || []).map(a => String(a).toUpperCase());
+const monCanLearn = (mon, list) => {
+    const poke = monPoke(mon);
+    return (poke.learnset || []).some(l => list.includes(l.move))
+        || (poke.teachables || []).some(t => list.includes(t))
+        || ((mon && mon.moves) || []).some(mv => list.includes(mv));
+};
+// Score (potential-based, threshold ≥2): +3 abuser ability, +2 Electric-type with a decent attacking stat
+// (grounded STAB ×1.3 / Rising Voltage), +1 synergy move.
+function electricTerrainAbuseScore(mon) {
+    const poke = monPoke(mon);
+    const atk = Math.max(poke.baseAttack || 0, poke.baseSpAttack || 0);
+    let s = 0;
+    if (monAbilities(mon).some(a => ELEC_ABUSER_ABILITIES.includes(a))) s += WEATHER_ABUSE_ABILITY_PTS;
+    if ((poke.parsedTypes || []).includes('ELECTRIC') && atk >= WEATHER_STAB_ATK_MIN) s += WEATHER_ABUSE_STAB_PTS;
+    if (monCanLearn(mon, ELEC_SYNERGY_MOVES)) s += WEATHER_ABUSE_SYNERGY_PTS;
+    return s;
+}
+function electricTerrainBreakdown(mon) {
+    const poke = monPoke(mon);
+    const abil = monAbilities(mon);
+    const off = Math.max(poke.baseAttack || 0, poke.baseSpAttack || 0) / 100;
+    const bestStat = Math.max(poke.baseAttack || 0, poke.baseSpAttack || 0, poke.baseSpeed || 0,
+        poke.baseDefense || 0, poke.baseSpDefense || 0, poke.baseHP || 0) / 100;
+    const W = WX_ABUSE_RATING;
+    const parts = [];
+    const add = (k, v) => { if (v) parts.push({ k, v: Math.round(v * 100) / 100 }); };
+    add('base', W.base * ((poke.rating && poke.rating.absoluteRating) || 0));
+    let hasAbil = false;
+    if (abil.includes('SURGE_SURFER')) { add('SURGE_SURFER', W.speedMult * off); hasAbil = true; }
+    if (abil.includes('QUARK_DRIVE')) { add('QUARK_DRIVE', W.proto * bestStat); hasAbil = true; }
+    if (abil.includes('UNBURDEN')) { add('UNBURDEN', W.speedMult * off); hasAbil = true; }
+    if (hasAbil) add('ability-floor', W.abilityFloor);
+    if ((poke.parsedTypes || []).includes('ELECTRIC')) add('ELECTRIC-STAB', W.stab * off);
+    if (monCanLearn(mon, ELEC_SYNERGY_MOVES)) add('synergy-move', W.synergy);
+    return { total: Math.round(parts.reduce((s, p) => s + p.v, 0) * 100) / 100, parts };
+}
+function electricTerrainHolds(team, ctx = {}) {
+    const members = (team || []).map(asMember);
+    if (!ctx.abuseOnly && !members.some(isElectricTerrainSetter)) return false;
+    return members.filter(m => electricTerrainAbuseScore(m) >= WEATHER_ABUSE_THRESHOLD).length >= REQUIRED_ABUSERS;
+}
+// Move-setter retrofit (like weather's): if no ability-setter, inject the Electric Terrain move on a
+// non-abuser learner so the setter+abusers condition can hold.
+function ensureElectricTerrainSetter(team) {
+    const members = (team || []).map(asMember);
+    if (members.some(isElectricTerrainSetter)) return false;
+    const canLearn = m => monCanLearn(m, [ELEC_SETTER_MOVE]);
+    const target = members.find(m => canLearn(m) && electricTerrainAbuseScore(m) < WEATHER_ABUSE_THRESHOLD)
+        || members.find(canLearn);
+    if (!target) return false;
+    const moves = target.moves || (target.moves = []);
+    if (!moves.includes(ELEC_SETTER_MOVE)) { if (moves.length >= 4) moves[moves.length - 1] = ELEC_SETTER_MOVE; else moves.push(ELEC_SETTER_MOVE); }
+    return true;
+}
+
+// ── T-137: TRICK ROOM gimmick (docs/research/trick-room.md) ───────────────────────────────────────────
+// Setter = the MOVE Trick Room on a survival body (no ability sets TR). Abuser = slow + strong.
+const TR_SETTER_MOVE = 'MOVE_TRICK_ROOM';
+const TR_ABUSE_SPEED_MAX = 55;   // base Speed at/below which a mon moves first under TR = a TR abuser
+const TR_STRONG_OFFENSE = 100;   // offence at which a slow mon is an IDEAL abuser (ranking, not eligibility)
+const TR_GYRO_BALL = 'MOVE_GYRO_BALL';
+const ROOM_SERVICE_ITEM = 'Room Service';
+
+function isTrickRoomSetter(m) { return memberMoves(asMember(m)).includes(TR_SETTER_MOVE); }
+// Score (threshold ≥2): +3 SLOW (any slow mon moves first under TR — owner-validated: offence is a RANKING
+// factor, not an eligibility gate, so slow-bulky Psychics count and a Psychic room can actually assemble),
+// +1 Gyro Ball, +1 Room Service.
+function trickRoomAbuseScore(mon) {
+    const poke = monPoke(mon);
+    const spe = poke.baseSpeed == null ? 999 : poke.baseSpeed;
+    let s = 0;
+    if (spe <= TR_ABUSE_SPEED_MAX) s += WEATHER_ABUSE_ABILITY_PTS;
+    if (monCanLearn(mon, [TR_GYRO_BALL])) s += WEATHER_ABUSE_SYNERGY_PTS;
+    if ((mon && mon.item) === ROOM_SERVICE_ITEM) s += WEATHER_ABUSE_SYNERGY_PTS;
+    return s;
+}
+function trickRoomBreakdown(mon) {
+    const poke = monPoke(mon);
+    const spe = poke.baseSpeed == null ? 999 : poke.baseSpeed;
+    const off = Math.max(poke.baseAttack || 0, poke.baseSpAttack || 0) / 100;
+    const W = WX_ABUSE_RATING;
+    const parts = [];
+    const add = (k, v) => { if (v) parts.push({ k, v: Math.round(v * 100) / 100 }); };
+    add('base', W.base * ((poke.rating && poke.rating.absoluteRating) || 0));
+    // Any slow mon abuses TR; offence + slowness scale the payoff so a slow WALLBREAKER ranks above a
+    // slow wall (the ranking prefers slow-STRONG, but slow-weak is still eligible).
+    if (spe <= TR_ABUSE_SPEED_MAX) {
+        add('slow', W.speedMult * (0.5 + off) * (1 + (TR_ABUSE_SPEED_MAX - spe) / 100));
+        add('ability-floor', W.abilityFloor);
+    }
+    if (monCanLearn(mon, [TR_GYRO_BALL])) add('gyro-ball', W.synergy);
+    if ((mon && mon.item) === ROOM_SERVICE_ITEM) add('room-service', W.synergy);
+    return { total: Math.round(parts.reduce((s, p) => s + p.v, 0) * 100) / 100, parts };
+}
+function trickRoomHolds(team, ctx = {}) {
+    const members = (team || []).map(asMember);
+    if (!ctx.abuseOnly && !members.some(isTrickRoomSetter)) return false;
+    return members.filter(m => trickRoomAbuseScore(m) >= WEATHER_ABUSE_THRESHOLD).length >= REQUIRED_ABUSERS;
+}
+function ensureTrickRoomSetter(team) {
+    const members = (team || []).map(asMember);
+    if (members.some(isTrickRoomSetter)) return false;
+    const canLearn = m => monCanLearn(m, [TR_SETTER_MOVE]);
+    // Prefer a non-abuser bulky carrier; else any learner.
+    const target = members.find(m => canLearn(m) && trickRoomAbuseScore(m) < WEATHER_ABUSE_THRESHOLD)
+        || members.find(canLearn);
+    if (!target) return false;
+    const moves = target.moves || (target.moves = []);
+    if (!moves.includes(TR_SETTER_MOVE)) { if (moves.length >= 4) moves[moves.length - 1] = TR_SETTER_MOVE; else moves.push(TR_SETTER_MOVE); }
+    return true;
+}
+
+// A tiny per-gimmick spec so the picker + audit can treat weather / electric_terrain / trick_room uniformly.
+// weather is subtype-driven (handled by its own block); these two are single-subtype.
+const GIMMICK_SPEC = {
+    electric_terrain: { isSetter: isElectricTerrainSetter, setterAbilities: ELEC_SETTER_ABILITIES, score: electricTerrainAbuseScore, breakdown: electricTerrainBreakdown, ensureSetter: ensureElectricTerrainSetter, label: 'electric-terrain' },
+    // Trick Room has NO ability-setter (the setter is the MOVE) → setterAbilities empty; the picker ranks
+    // slow-strong abusers and `ensureTrickRoomSetter` retrofits the move afterwards.
+    trick_room: { isSetter: isTrickRoomSetter, setterAbilities: [], score: trickRoomAbuseScore, breakdown: trickRoomBreakdown, ensureSetter: ensureTrickRoomSetter, label: 'trick-room' },
+};
+
 // Generic entry: does `gimmickId` hold for the resolved team? Unknown gimmicks are treated as holding
-// (no condition to fail). trick_room / screens / trapping get a setter-presence condition for now
-// (their fuller abuser conditions can tighten later, mirroring weather).
+// (no condition to fail). screens/trapping keep the setter-presence condition for now.
 const GIMMICK_SETTER_ROLE_MOVE = {
-    trick_room: 'MOVE_TRICK_ROOM',
     screens: ['MOVE_LIGHT_SCREEN', 'MOVE_REFLECT', 'MOVE_AURORA_VEIL'],
 };
 function gimmickHolds(gimmickId, team, ctx = {}, subtype = null) {
     if (gimmickId === 'weather') return weatherHolds(team, ctx, subtype);
+    if (gimmickId === 'electric_terrain') return electricTerrainHolds(team, ctx);
+    if (gimmickId === 'trick_room') return trickRoomHolds(team, ctx);
     const setterMoves = GIMMICK_SETTER_ROLE_MOVE[gimmickId];
     if (setterMoves) {
         const want = Array.isArray(setterMoves) ? setterMoves : [setterMoves];
@@ -257,6 +414,10 @@ function gimmickFallbackChain(seed, trainerId = '') {
 
 module.exports = {
     gimmickHolds, weatherHolds, isWeatherSetter, isWeatherAbuser, weatherAbuseScore, weatherAbuseRating,
-    weatherAbuseBreakdown, ensureMoveSetter, setterSubtype, teamWeather, emergentWeatherSubtype, gimmickFallbackChain,
+    weatherAbuseBreakdown, ensureMoveSetter, setterSubtype, teamWeather, emergentWeatherSubtype, emergentGimmick, gimmickFallbackChain,
     SETTER_MOVE_BY_SUBTYPE, SYNERGY_MOVE_BY_SUBTYPE, BOOSTED_STAB_TYPE, REQUIRED_ABUSERS,
+    // T-137 — electric terrain + trick room gimmicks
+    isElectricTerrainSetter, electricTerrainAbuseScore, electricTerrainBreakdown, electricTerrainHolds, ensureElectricTerrainSetter,
+    isTrickRoomSetter, trickRoomAbuseScore, trickRoomBreakdown, trickRoomHolds, ensureTrickRoomSetter,
+    GIMMICK_SPEC,
 };

@@ -130,14 +130,13 @@ const WEATHER_ROCK_BY_SETTER = {
     DRIZZLE: 'ITEM_DAMP_ROCK', SAND_STREAM: 'ITEM_SMOOTH_ROCK', SNOW_WARNING: 'ITEM_ICY_ROCK',
 };
 
-// T-124/T-127 (Wattson) — Electric Terrain is a Gen-8+ gimmick not in the Gen 6-7 corpus, added
-// MANUALLY for Wattson via a seed flag. It only implies: prefer an electric attack, prefer the terrain
-// setter ability, and give a defensive mon the Electric Seed (Def boost in electric terrain). This will
-// be generalised into a proper terrain gimmick family by the later-gen corpus work (T-127).
-const ELECTRIC_TERRAIN_SETTER = 'ELECTRIC_SURGE';
+// T-137 — Electric Terrain is now the `electric_terrain` GIMMICK (setter + abusers; docs/research/
+// electric-terrain.md). Ability preference: a member on an electric-terrain team prefers a setter
+// (Electric Surge / Hadron Engine) or an abuser ability (Surge Surfer / Quark Drive / Unburden) it can have.
+const ELECTRIC_TERRAIN_ABILITIES = ['ELECTRIC_SURGE', 'HADRON_ENGINE', 'SURGE_SURFER', 'QUARK_DRIVE', 'UNBURDEN'];
 const ELECTRIC_MOVES = [
     'MOVE_THUNDERBOLT', 'MOVE_DISCHARGE', 'MOVE_VOLT_SWITCH', 'MOVE_THUNDER', 'MOVE_WILD_CHARGE',
-    'MOVE_THUNDER_PUNCH', 'MOVE_SPARK',
+    'MOVE_THUNDER_PUNCH', 'MOVE_SPARK', 'MOVE_RISING_VOLTAGE',
 ];
 
 // The ability `species` should PREFER given the crystallised identity, or [] (no preference). For a
@@ -148,9 +147,11 @@ const ELECTRIC_MOVES = [
 // ability is chosen separately, so without this a weather-crystallised team never actually gets weather.
 function planMemberAbility({ species, team, model, ctx = {}, sophistication, seed = null }) {
     if (!model || !species || (sophistication || 0) < BIAS_MIN_SOPH) return [];
-    // T-124 (Wattson) — electric terrain: prefer the Electric Surge setter ability if the mon has it.
-    if (seed && seed.electricTerrain && (species.parsedAbilities || []).includes(ELECTRIC_TERRAIN_SETTER)) {
-        return [ELECTRIC_TERRAIN_SETTER];
+    // T-137 — electric-terrain gimmick: prefer a setter (Electric Surge/Hadron Engine) or abuser ability
+    // (Surge Surfer/Quark Drive/Unburden) the mon can have, so the terrain + its abusers are real.
+    if (seed && (seed.gimmicks || []).includes('electric_terrain')) {
+        const want = (species.parsedAbilities || []).filter(a => ELECTRIC_TERRAIN_ABILITIES.includes(a));
+        if (want.length) return want;
     }
     const speciesMons = (team || []).map(m => (m && m.pokemon) ? m.pokemon : m);
     const identity = resolveIdentity(speciesMons, model, ctx, seed);

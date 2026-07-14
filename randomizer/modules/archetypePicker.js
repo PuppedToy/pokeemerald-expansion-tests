@@ -21,7 +21,7 @@ const { teamFeatureCounts, crystallize, combinedStructure, scoreCandidate } = re
 const {
     WEATHER_SUBTYPE_BY_SETTER, SETTERS_BY_SUBTYPE, WEATHER_REQUIRED_ABUSERS, WEATHER_ABUSE_THRESHOLD, WX_ABUSE_RATING,
 } = require('./weatherConstants');
-const { weatherAbuseScore, weatherAbuseRating, weatherAbuseBreakdown } = require('./gimmickPlan');
+const { weatherAbuseScore, weatherAbuseRating, weatherAbuseBreakdown, GIMMICK_SPEC } = require('./gimmickPlan');
 
 const BIAS_MIN_SOPH = 0.15;   // below this sophistication, no bias (early-game = "a pile of mons")
 const IDENTITY_FIT = 0.5;     // the top base archetype recipe must fit this well before biasing (T-118)
@@ -90,16 +90,11 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
         if (!Array.isArray(candidates) || candidates.length < 2) return sample(candidates);
         const soph = (context && context.sophistication) || 0;
         const seed = (context && context.archetypeSeed) || null;
-        const electric = !!(seed && seed.electricTerrain); // T-124 (Wattson) — manual terrain overlay
-        if (!model || (soph < BIAS_MIN_SOPH && !electric)) return sample(candidates);
+        if (!model || soph < BIAS_MIN_SOPH) return sample(candidates);
 
-        // T-124 (Wattson) — electric terrain: HARD-prefer Electric-type mons (a gym theme), so the team
-        // can actually run electric attacks + benefit from the terrain. Falls back if none are available.
-        if (electric) {
-            const elec = candidates.filter(c => (c.parsedTypes || []).includes('ELECTRIC'));
-            if (elec.length === 1) return elec[0];
-            if (elec.length >= 2) candidates = elec;
-        }
+        // T-137 — Wattson's electric terrain is now the `electric_terrain` GIMMICK (setter + abusers, handled
+        // in the gimmick block below), not a manual "prefer Electric-types" overlay: as a gym leader his pool
+        // is already Electric-monotype-restricted, so the overlay was redundant.
 
         // The resolver's team holds newTeamMember wrappers ({ pokemon, ... }); detectors read a poke
         // shape. Normalise to the underlying poke (raw pokes — as in unit tests — pass through), so
@@ -107,7 +102,7 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
         const team = ((context && context.team) || []).map(m => (m && m.pokemon) ? m.pokemon : m);
         const identity = resolveIdentity(team, model, ctx, seed);
 
-        let biased = electric; // an electric-terrain filter is itself a bias
+        let biased = false;
         let weights = candidates.map(() => 1);
         if (identity) {
             const structure = combinedStructure(model, identity.baseId, identity.gimmickIds);
@@ -117,10 +112,6 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
                 if (s > 0) biased = true;
                 return 1 + soph * BIAS_STRENGTH * s;
             });
-        }
-        // T-124 — Trick Room: strongly prefer SLOW mons, which move FIRST under Trick Room.
-        if (identity && (identity.gimmickIds || []).includes('trick_room')) {
-            candidates.forEach((c, i) => { if ((c.baseSpeed || 999) <= TR_SLOW_SPEED) { weights[i] *= TR_SLOW_FACTOR; biased = true; } });
         }
         // T-132 — weather. The gimmick has TWO make-or-break components — a setter and 2 abusers — that a
         // soft weight can't secure (a ×N weight is diluted to ~nothing across a 60-120-mon tier pool), so
@@ -192,6 +183,49 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
                     return picked;
                 }
                 softIdx.forEach(i => { weights[i] *= WEATHER_ABUSER_FACTOR; biased = true; });
+            }
+        }
+        // T-137 — electric terrain / trick room: the SAME "setter + 2 abusers" build as weather, but
+        // single-subtype. Driven by GIMMICK_SPEC (per-gimmick setter detection / abuse score / rating).
+        // Electric terrain hard-picks an ability-setter (Electric Surge / Hadron Engine); Trick Room has no
+        // ability-setter (the move is retrofit by the resolver), so it only ranks slow-strong abusers.
+        const gid = identity && (identity.gimmickIds || []).find(g => GIMMICK_SPEC[g]);
+        if (gid) {
+            const spec = GIMMICK_SPEC[gid];
+            const teamMembers = (context && context.team) || [];
+            const abuseOnly = !!(seed && seed.abuseOnly);
+            const teamHasSetter = teamMembers.some(m => spec.isSetter(m));
+            if (!teamHasSetter && !abuseOnly && spec.setterAbilities.length) {
+                const setterIdx = [];
+                candidates.forEach((c, i) => { if ((c.parsedAbilities || []).some(a => spec.setterAbilities.includes(a))) setterIdx.push(i); });
+                if (setterIdx.length) return weightedSampleOne(setterIdx.map(i => candidates[i]), setterIdx.map(i => weights[i]));
+            }
+            // Count DEDICATED abusers (exclude the favourite ace + the setter), then rank the free slots —
+            // same "pick 2 good ranked abusers" budget as weather (T-135).
+            const teamAbusers = teamMembers.filter(m => !m.__favourite && !spec.isSetter(m) && spec.score(m) >= WEATHER_ABUSE_THRESHOLD).length;
+            const reliableIdx = [], softIdx = [];
+            candidates.forEach((c, i) => { const s = spec.score(c); if (s >= WEATHER_ABUSE_THRESHOLD) reliableIdx.push(i); if (s > 0) softIdx.push(i); });
+            if (teamAbusers < WEATHER_REQUIRED_ABUSERS && reliableIdx.length) {
+                const cands = reliableIdx.map(i => candidates[i]);
+                const breakdowns = cands.map(c => spec.breakdown(c));
+                const maxR = Math.max(...breakdowns.map(b => b.total), 1e-6);
+                const exp = soph * WX_ABUSE_RATING.rankSharpness;
+                const rankWeights = breakdowns.map(b => Math.pow(Math.max(b.total, 0) / maxR, exp));
+                const picked = weightedSampleOne(cands, rankWeights);
+                if (context && context.weatherPicks) {
+                    const sorted = cands.map((c, k) => ({ id: c.id, total: breakdowns[k].total, parts: breakdowns[k].parts })).sort((a, b) => b.total - a.total);
+                    const shown = sorted.slice(0, 6);
+                    const pickedRank = sorted.findIndex(e => e.id === picked.id);
+                    if (pickedRank >= shown.length) shown.push({ ...sorted[pickedRank], rank: pickedRank + 1 });
+                    context.weatherPicks.push({ subtype: spec.label, pickedId: picked.id, nEligible: sorted.length, pullExp: Math.round(exp * 100) / 100, ranked: shown });
+                }
+                return picked;
+            }
+            softIdx.forEach(i => { weights[i] *= WEATHER_ABUSER_FACTOR; biased = true; });
+            // Trick Room additionally prefers SLOW mons generally (they move first under TR), not just the
+            // slow-strong abusers — mirrors the old T-124 slow-mon bias.
+            if (gid === 'trick_room') {
+                candidates.forEach((c, i) => { if ((c.baseSpeed || 999) <= TR_SLOW_SPEED) { weights[i] *= TR_SLOW_FACTOR; biased = true; } });
             }
         }
         if (!biased) return sample(candidates); // nothing to pull toward → byte-identical
