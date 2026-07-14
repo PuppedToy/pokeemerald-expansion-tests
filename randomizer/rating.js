@@ -3537,9 +3537,120 @@ function rateAbilityDoubles(abilityKey, ability) {
     return floor !== undefined ? Math.max(base, floor) : base;
 }
 
+// ── T-097 — DOUBLES pokemon rating ────────────────────────────────────────────────────────────────────
+// Mirrors the singles composition (bstRating·0.8 + movesRating·0.1 + abilityRating·0.1 + comboBonus) with
+// doubles-adjusted pieces (owner-validated design). Singles rating is untouched.
+
+// bstRating RE-WEIGHTED for doubles (owner ✔ bulk↑ / raw Speed↓): in 6v6 speed control (TR / Tailwind /
+// Icy Wind + redundancy) makes raw Speed less binary and bulk is premium (surviving spread damage).
+function bstRatingDoubles({ offensePower, defensePower, speedPower }, role) {
+    switch (role) {
+        case 'BALANCED':  return (offensePower + defensePower * 1.2 + speedPower * 0.8) / 2.9;
+        case 'OFFENSIVE': return offensePower * 0.50 + defensePower * 0.25 + speedPower * 0.25;
+        case 'BULKY':     return offensePower * 0.40 + defensePower * 0.55 + speedPower * 0.05;
+        case 'TANK':      return defensePower * 0.80 + offensePower * 0.15 + speedPower * 0.05;
+        default:          return (offensePower + defensePower + speedPower) / 3;
+    }
+}
+
+// The doubles value the tier must reflect (rating-decisions.md → T-097): Trick Room inversion, spread
+// attacker, support (redirection / Intimidate / Fake Out / speed control), pivots/Regenerator. POTENTIAL-
+// based (ability pool + learnable moves), like the weather abuser score — not the chosen singles moveset.
+// Additive, capped (like computeComboBonus). Weights tunable.
+const DOUBLES_COMBO = {
+    trickRoom: 0.5, spread: 0.4, redirection: 0.5, intimidate: 0.5, fakeOut: 0.35, speedControl: 0.4,
+    pivot: 0.3, terrain: 0.45, weather: 0.45, friendGuard: 0.35, cap: 1.0,   // T-097 tuning: cap lowered 1.5→1.0 (temper stacking)
+};
+const DOUBLES_SURGE_ABILITIES = ['ELECTRIC_SURGE', 'GRASSY_SURGE', 'PSYCHIC_SURGE', 'MISTY_SURGE'];
+// Weather is a doubles archetype (corpus) — a setter is premium support, like a terrain setter.
+const DOUBLES_WEATHER_ABILITIES = ['DROUGHT', 'DRIZZLE', 'SAND_STREAM', 'SNOW_WARNING', 'ORICHALCUM_PULSE'];
+function computeComboBonusDoubles(poke, moves, { offensePower }) {
+    const abils = poke.parsedAbilities || [];
+    const learnable = new Set([...(poke.learnset || []).map(l => l.move), ...(poke.teachables || [])]);
+    const canLearn = list => list.some(m => learnable.has(m));
+    let bonus = 0;
+    // Trick Room: a slow + strong mon moves first under TR (premium abuser).
+    if ((poke.baseSpeed == null ? 999 : poke.baseSpeed) <= 55 && offensePower >= 6) bonus += DOUBLES_COMBO.trickRoom;
+    // Spread attacker: can field a damaging spread move (Earthquake / Rock Slide / Heat Wave / Dazzling Gleam…).
+    if (offensePower >= 5 && [...learnable].some(m => moves[m] && Number(moves[m].power) > 0 && isSpreadMove(moves[m]))) bonus += DOUBLES_COMBO.spread;
+    // Redirection (ability draw or Follow Me / Rage Powder).
+    if (abils.some(a => a === 'LIGHTNING_ROD' || a === 'STORM_DRAIN') || canLearn(['MOVE_FOLLOW_ME', 'MOVE_RAGE_POWDER'])) bonus += DOUBLES_COMBO.redirection;
+    if (abils.includes('INTIMIDATE')) bonus += DOUBLES_COMBO.intimidate;                                   // -Atk both foes
+    if (canLearn(['MOVE_FAKE_OUT'])) bonus += DOUBLES_COMBO.fakeOut;                                        // free turn / flinch
+    if (canLearn(['MOVE_TAILWIND', 'MOVE_TRICK_ROOM', 'MOVE_ICY_WIND', 'MOVE_ELECTROWEB'])) bonus += DOUBLES_COMBO.speedControl;
+    if (abils.includes('REGENERATOR') || canLearn(['MOVE_U_TURN', 'MOVE_VOLT_SWITCH', 'MOVE_FLIP_TURN'])) bonus += DOUBLES_COMBO.pivot; // 6v6 momentum
+    // T-097 tuning — terrain setters (Tapu-style), weather setters (Drought/Drizzle/…), + Friend Guard:
+    // bulky field/ally support (owner ✔; weather is a doubles archetype in the corpus).
+    if (abils.some(a => DOUBLES_SURGE_ABILITIES.includes(a))) bonus += DOUBLES_COMBO.terrain;
+    if (abils.some(a => DOUBLES_WEATHER_ABILITIES.includes(a))) bonus += DOUBLES_COMBO.weather;
+    if (abils.includes('FRIEND_GUARD')) bonus += DOUBLES_COMBO.friendGuard;
+    return Math.min(bonus, DOUBLES_COMBO.cap);
+}
+
+// T-097 tuning (owner ✔): doubles punishes FRAILTY harder (a frail mon is folded by spread damage) and does
+// not reward a PASSIVE wall (bulk with no offence and no support role isn't a doubles threat).
+const DBL_FRAILTY_DEF = 5.5, DBL_FRAILTY_FACTOR = 0.5;      // ratingDoubles -= (5.5 - defensePower)·0.5 when frail
+const DBL_PASSIVE_OFF = 4.0, DBL_PASSIVE_COMBO = 0.3, DBL_PASSIVE_PENALTY = 0.8;
+
+// The doubles rating of a mon (parallel to ratePokemon's absoluteRating). Uses the doubles move/ability
+// values (move.ratingDoubles / ability.ratingDoubles) + the re-weighted bstRating + the doubles combo.
+// T-097 — the doubles tier scale has its OWN thresholds (owner ✔), calibrated so the doubles-rating
+// distribution populates tiers ~like singles (base pokedex, matched proportions). Tunable.
+const DOUBLES_TIER_THRESHOLDS = { AG: 9.4, LEGEND: 9.0, UBERS: 8.3, OU: 7.65, UU: 7.0, RU: 6.05, NU: 4.75, PU: 3.05, ZU: 1.4 };
+function tierFromRatingDoubles(ratingDoubles) {
+    const T = DOUBLES_TIER_THRESHOLDS;
+    if (ratingDoubles >= T.AG)     return TIER_AG;
+    if (ratingDoubles >= T.LEGEND) return TIER_LEGEND;
+    if (ratingDoubles >= T.UBERS)  return TIER_UBERS;
+    if (ratingDoubles >= T.OU)     return TIER_OU;
+    if (ratingDoubles >= T.UU)     return TIER_UU;
+    if (ratingDoubles >= T.RU)     return TIER_RU;
+    if (ratingDoubles >= T.NU)     return TIER_NU;
+    if (ratingDoubles >= T.PU)     return TIER_PU;
+    if (ratingDoubles >= T.ZU)     return TIER_ZU;
+    return TIER_MAGIKARP;
+}
+
+// `moveset` MUST be passed (the singles rater's chosen bestMoveset) so this consumes NO rng — calling
+// chooseMoveset again would perturb the shared rng stream and silently shift the SINGLES ratings + the
+// downstream pipeline. Doubles-aware move selection is deferred to T-109; here we rate the singles set with
+// the doubles move values. Falls back to chooseMoveset only for standalone/unit use.
+function ratePokemonDoubles(poke, moves, abilities, tmPool, moveset = null) {
+    let bestAbilityRating = 0;
+    poke.parsedAbilities.forEach(abilityId => {
+        if (abilityId === 'NONE') return;
+        const ab = abilities[`ABILITY_${abilityId}`];
+        const r = ab ? (ab.ratingDoubles != null ? ab.ratingDoubles : (ab.rating || 0)) : 0;
+        if (r > bestAbilityRating) bestAbilityRating = r;
+    });
+    const { offensePower, speedPower, defensePower, role, hugePowerRating } = computePowerAndRole(poke);
+    if (hugePowerRating != null) bestAbilityRating = Math.max(bestAbilityRating, hugePowerRating);
+    const bstRating = bstRatingDoubles({ offensePower, defensePower, speedPower }, role);
+    if (!moveset) moveset = chooseMoveset(poke, moves).moveset;
+    let movesRating = 0;
+    moveset.forEach(moveId => {
+        const m = moves[moveId];
+        if (m) movesRating += (m.ratingDoubles != null ? m.ratingDoubles : (m.rating || 0));
+    });
+    movesRating *= 0.25;
+    const coverageMetrics = computeCoverageMetrics(moveset, moves);
+    movesRating = movesRating * 0.7 + coverageMetrics.coverageScore * 0.3;
+    const combo = computeComboBonusDoubles(poke, moves, { offensePower });
+    let ratingDoubles = (bstRating * 0.8) + (movesRating * 0.1) + (bestAbilityRating * 0.1) + combo;
+    // T-097 tuning — frailty penalty (spread damage folds frail mons) + passive-wall penalty (bulk with no
+    // offence and no support role isn't a doubles threat).
+    if (defensePower < DBL_FRAILTY_DEF) ratingDoubles -= (DBL_FRAILTY_DEF - defensePower) * DBL_FRAILTY_FACTOR;
+    if (offensePower < DBL_PASSIVE_OFF && combo < DBL_PASSIVE_COMBO) ratingDoubles -= DBL_PASSIVE_PENALTY;
+    return { ratingDoubles, tierDoubles: tierFromRatingDoubles(ratingDoubles), role };
+}
+
 module.exports = {
     ratePokemon,
+    ratePokemonDoubles,
+    bstRatingDoubles,
+    computeComboBonusDoubles,
     tierFromRating,
+    tierFromRatingDoubles,
     rateContextual,
     isSpreadMove,
     rateMoveDoubles,

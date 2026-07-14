@@ -6,7 +6,7 @@ const parser = require('../parser');
 const { randomizeTMs, buildTMList, annotateTmNumbers } = require('../tmRandomizer');
 const { parseTmLocations } = require('../tmLocations');
 const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
-const { ratePokemon, rateContextual, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles } = require('../rating');
+const { ratePokemon, ratePokemonDoubles, rateContextual, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles } = require('../rating');
 const { balancePokemon } = require('../rebalancer');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
@@ -177,9 +177,10 @@ async function runPokedexModule(config, baseData = null) {
     // 7. Expand teachables with randomized pool
     expandAllTeachables(allPokes, tmPool, moves);
 
-    // 8. Rate all pokemon
+    // 8. Rate all pokemon (singles + T-097 doubles)
     for (const poke of allPokes) {
         poke.rating = ratePokemon(poke, moves, abilities, tmPool);
+        { const _rd = ratePokemonDoubles(poke, moves, abilities, tmPool, poke.rating.bestMoveset); poke.ratingDoubles = _rd.ratingDoubles; poke.tierDoubles = _rd.tierDoubles; }
     }
 
     // 9. Optional rebalance
@@ -198,6 +199,7 @@ async function runPokedexModule(config, baseData = null) {
             if (allPokes[i].log && allPokes[i].log.length) {
                 allPokes[i].baseBST = allPokes[i].baseHP + allPokes[i].baseAttack + allPokes[i].baseDefense + allPokes[i].baseSpAttack + allPokes[i].baseSpDefense + allPokes[i].baseSpeed;
                 allPokes[i].rating = ratePokemon(allPokes[i], moves, abilities, tmPool);
+                { const _rd = ratePokemonDoubles(allPokes[i], moves, abilities, tmPool, allPokes[i].rating.bestMoveset); allPokes[i].ratingDoubles = _rd.ratingDoubles; allPokes[i].tierDoubles = _rd.tierDoubles; }
             }
         }
     }

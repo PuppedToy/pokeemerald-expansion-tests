@@ -75,6 +75,7 @@ jest.mock('../../rating', () => ({
         bestEvoTier: 'NU',
         bestMoveset: [],
     })),
+    ratePokemonDoubles: jest.fn(() => ({ ratingDoubles: 5.0, role: 'BALANCED' })),   // T-097
     rateContextual: jest.fn(() => ({ absoluteRating: 4.0, tier: 'PU' })),
     rateMove: jest.fn(() => 3.0),
     rateMoveDoubles: jest.fn(() => 3.5),   // T-094/ADR-015
