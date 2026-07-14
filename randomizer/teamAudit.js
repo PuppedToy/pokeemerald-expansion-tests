@@ -123,9 +123,10 @@ function createTeamAudit() {
             });
         },
 
-        finishTeam({ team, model, ctx, seed, weatherPicks }) {
+        finishTeam({ team, model, ctx, seed, weatherPicks, itemLinkActivations }) {
             if (!cur) return;
             if (weatherPicks && weatherPicks.length) cur.weatherPicks = weatherPicks; // T-135 — abuser rankings
+            if (itemLinkActivations && itemLinkActivations.length) cur.itemLinkActivations = itemLinkActivations; // T-133
             const id = model ? resolveIdentity((team || []).map(asPoke), model, ctx, seed) : null;
             // Every gimmick the identity/seed WANTED (emergent + seeded), before checking support.
             const candidateGimmicks = Array.from(new Set([
@@ -266,6 +267,13 @@ function renderTeamAuditText(teams, { engineThreshold = BIAS_MIN_SOPH } = {}) {
                 const mark = c.id === wp.pickedId ? ' ‹picked›' : '';
                 lines.push(`      ${rank}${nameify(c.id, 'SPECIES_').padEnd(18)} ${String(c.total).padStart(5)}  [${parts}]${mark}`);
             });
+        });
+        // T-133 — linked pick-pack activations: when a mon USED an item/TM from a pick-group, one unit of each
+        // sibling was forgone from this trainer's bag (the trainer "made the pick" like the player). Auditable.
+        (t.itemLinkActivations || []).forEach(a => {
+            const label = id => a.kind === 'tm' ? nameify(id, 'MOVE_') : id;
+            const forwent = (a.removed || []).map(label).join(', ');
+            lines.push(`  → linked ${a.kind === 'tm' ? 'TM' : 'item'}-pack: ${nameify(a.species, 'SPECIES_')} took ${label(a.used)} → forwent ${forwent || '(none)'}.`);
         });
         lines.push('');
     }

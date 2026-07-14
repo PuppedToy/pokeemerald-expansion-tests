@@ -88,6 +88,35 @@ function planMemberRoleMove({ species, team, model, ctx = {}, sophistication, se
     return null;
 }
 
+// T-133 — the FORWARD (dependent) Choice-item claim. A Choice role EXISTS only if its item exists: if
+// `species` fills an offensive role the team wants (a revenge-killer or a wallbreaker — both detectors
+// already exclude setup sweepers, so the set can commit to attacking) AND a Choice item is AVAILABLE in the
+// bag, return the best-fitting one to claim NOW (so `chooseMoveset`, seeing the Choice item, builds an
+// all-attacking set). Returns null when no Choice is available (never forced) or the mon isn't a clean
+// attacker. The item is matched to the mon's stats: a revenge killer wants Scarf; a breaker wants Band
+// (physical) / Specs (special) — falling back to whatever Choice the bag actually holds. Deterministic,
+// soph-gated. (Enhanced items — weather rock, Room Service, Electric Seed — are handled forward by T-125.)
+const CHOICE_ITEMS = ['Choice Scarf', 'Choice Band', 'Choice Specs'];
+function planForwardChoiceItem({ species, team, model, ctx = {}, sophistication, seed = null, available = [] }) {
+    if (!model || !species || (sophistication || 0) < BIAS_MIN_SOPH) return null;
+    const inBag = CHOICE_ITEMS.filter(ci => available.includes(ci));
+    if (!inBag.length) return null;
+    const speciesMons = (team || []).map(m => (m && m.pokemon) ? m.pokemon : m);
+    const identity = resolveIdentity(speciesMons, model, ctx, seed);
+    if (!identity) return null;
+    const structure = combinedStructure(model, identity.baseId, identity.gimmickIds);
+    const wants = role => structure.some(s => s.role === role);
+    const feats = detectFeatures(species, ctx);
+    const scarfer = feats.has('choiceScarfRevengeKiller') && wants('choiceScarfRevengeKiller');
+    const breaker = feats.has('wallbreaker') && wants('wallbreaker');
+    if (!scarfer && !breaker) return null;
+    const physical = (species.baseAttack || 0) >= (species.baseSpAttack || 0);
+    const pref = scarfer
+        ? ['Choice Scarf', ...(physical ? ['Choice Band', 'Choice Specs'] : ['Choice Specs', 'Choice Band'])]
+        : (physical ? ['Choice Band', 'Choice Specs', 'Choice Scarf'] : ['Choice Specs', 'Choice Band', 'Choice Scarf']);
+    return pref.find(ci => inBag.includes(ci)) || null;
+}
+
 // T-124 — weather subtype ↔ setter/abuser abilities (SSOT: modules/weatherConstants.js, a leaf module so
 // the picker/refine/gimmick-plan share them without a require cycle). Identity-aware ability selection:
 // when a team crystallises the weather gimmick, the setter mon gets the setter ability and the abusers the
@@ -152,7 +181,7 @@ function planMemberAbility({ species, team, model, ctx = {}, sophistication, see
 }
 
 module.exports = {
-    resolvedDetectMon, planMemberRoleMove, planMemberAbility, ROLE_MOVE_SETS,
+    resolvedDetectMon, planMemberRoleMove, planMemberAbility, planForwardChoiceItem, ROLE_MOVE_SETS,
     WEATHER_SUBTYPE_BY_SETTER, SETTERS_BY_SUBTYPE, WEATHER_ABUSER_BY_SUBTYPE, WEATHER_ROCK_BY_SETTER,
     ELECTRIC_MOVES,
 };

@@ -1410,10 +1410,7 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     return rating;
 }
 
-function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, bannedItems = [], deviation = 0) {
-    if (bannedItems.includes(item)) {
-        return 0;
-    }
+function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, deviation = 0) {
     const itemId = 'ITEM_' + item.replace(/ /, '_').toUpperCase();
     const bestOffensePowerWithSpeed = (Math.max(poke.baseAttack, poke.baseSpAttack) + poke.baseSpeed)/200;
     const bestOffensePower = Math.max(poke.baseAttack, poke.baseSpAttack)/100;

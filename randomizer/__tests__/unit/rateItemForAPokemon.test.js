@@ -12,7 +12,7 @@ const { STARMIE, MACHAMP } = require('../fixtures/miniPokes');
 const rated = mv => ({ ...mv, rating: rateMove(mv) });
 const set = (...ids) => ids.map(id => rated(moves[id]));
 // deviation=0 → the rater's random deviation term collapses to 1, so results are deterministic.
-const rate = (item, poke, moveset) => rateItemForAPokemon(item, poke, null, moveset, 50, 5, [], 0);
+const rate = (item, poke, moveset) => rateItemForAPokemon(item, poke, null, moveset, 50, 5, 0);
 
 describe('rateItemForAPokemon — Choice items respect roles (T-129)', () => {
     test('Choice Specs rates > 0 for a pure special-attacking set', () => {

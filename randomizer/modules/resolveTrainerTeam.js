@@ -37,11 +37,12 @@ const { pickTrainerMonAbility } = require('./trainerAbility');
 const { selectWithAutoFallback } = require('./trainerFallback');
 const { createChooser } = require('./trainerSelector');
 const { makeArchetypePicker, BIAS_MIN_SOPH } = require('./archetypePicker');
-const { planMemberRoleMove, planMemberAbility, WEATHER_ROCK_BY_SETTER, ELECTRIC_MOVES } = require('./archetypeRefine');
+const { planMemberRoleMove, planMemberAbility, planForwardChoiceItem, WEATHER_ROCK_BY_SETTER, ELECTRIC_MOVES } = require('./archetypeRefine');
 const { getTrainerSeed } = require('./trainerSeeds');
 const { resolveFavourites } = require('./favouriteClaim');
 const { gimmickHolds, gimmickFallbackChain, ensureMoveSetter, teamWeather, emergentWeatherSubtype, weatherHolds, isWeatherAbuser } = require('./gimmickPlan');
 const { WEATHER_REQUIRED_ABUSERS } = require('./weatherConstants');
+const { consumeLinkedUnit, expandLinkedPacks } = require('./itemLinks');
 const { getArchetypeModel } = require('../archetypes');
 const { noopTeamAudit, createTeamAudit } = require('../teamAudit');
 const { noopDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
@@ -66,19 +67,33 @@ function djb2Hash(str) {
     return h;
 }
 
-// Moves any `TM_*` entries out of a trainer's bag and into `trainer.tms` (as `MOVE_*`). Mutates the
-// trainer in place. Runs for every trainer (including `copy` trainers) exactly as before.
+// Finalizes a trainer's raw bag into the shape the resolver consumes. Mutates the trainer in place; runs for
+// every trainer (including `copy` trainers) before resolution. Two jobs:
+//   1. T-133 — expand any `linkedChoiceSample` PACK markers into flat units + link groups (each pick-group the
+//      trainer holds becomes a bag-local pack; consuming one option later forgoes its siblings).
+//   2. Move `TM_*` entries out of the bag into `trainer.tms` (as `MOVE_*`), routing TM packs to `tmLinks` and
+//      item packs to `bagLinks` (a pack is homogeneous). Order-preserving → byte-identical when no packs.
 function normalizeTrainerBagTms(trainer) {
-    for (let i = 0; i < (trainer.bag || []).length; i++) {
-        const item = trainer.bag[i];
-        if (item.startsWith('TM_')) {
-            const moveId = item.replace('TM_', 'MOVE_');
-            trainer.bag.splice(i, 1);
-            i--;
-            if (!trainer.tms) trainer.tms = [];
-            trainer.tms.push(moveId);
+    const { units, groups } = expandLinkedPacks(trainer.bag);
+    const bag = [];
+    const tms = trainer.tms ? [...trainer.tms] : [];
+    for (const u of units) {
+        if (typeof u === 'string' && u.startsWith('TM_')) tms.push(u.replace('TM_', 'MOVE_'));
+        else bag.push(u);
+    }
+    const bagLinks = [];
+    const tmLinks = [];
+    for (const g of groups) {
+        if (g.members.every(m => typeof m === 'string' && m.startsWith('TM_'))) {
+            tmLinks.push({ members: g.members.map(m => m.replace('TM_', 'MOVE_')) });
+        } else {
+            bagLinks.push({ members: [...g.members] });
         }
     }
+    trainer.bag = bag;
+    trainer.tms = tms;
+    trainer.bagLinks = bagLinks;
+    trainer.tmLinks = tmLinks;
 }
 
 // Builds a resolver bound to one generation run's data. `storedIds` (ID-locked continuity) and the
@@ -146,6 +161,7 @@ function createTeamResolver(deps) {
             sophistication: archetypeSeed ? Math.max(sophistication(trainer), SEED_SOPH_FLOOR) : sophistication(trainer),
             archetypeSeed,
             weatherPicks: [], // T-135 — the picker records each abuser slot's ranking here, for the audit log
+            itemLinkActivations: [], // T-133 — records when a linked pick-pack activated (siblings forgone)
         };
         const archetypeModel = getArchetypeModel(/double/i.test(trainer.battleType || '') ? 'doubles' : 'singles');
         const pickCandidate = makeArchetypePicker({ model: archetypeModel, context, ctx: { moves } });
@@ -303,6 +319,25 @@ function createTeamResolver(deps) {
                 });
                 newTeamMember.ability = originalAbility;
 
+                // T-133 — FORWARD (dependent) Choice claim: if this mon fills an offensive role the team wants
+                // AND a Choice item is available in the bag, claim it NOW (link-aware) so chooseMoveset builds
+                // an all-attacking set (the forward path T-129 couldn't do). Only when a Choice is actually in
+                // the bag — the Choice role depends on the item existing. Enhanced items (rock/seed/room
+                // service) are handled just below (T-125). Soph-gated inside the planner.
+                if (!newTeamMember.item && trainer.bag && trainer.bag.length) {
+                    const forwardChoice = planForwardChoiceItem({
+                        species: chosenTrainerMon, team, model: archetypeModel, ctx: { moves },
+                        sophistication: context.sophistication, seed: context.archetypeSeed, available: trainer.bag,
+                    });
+                    if (forwardChoice) {
+                        newTeamMember.item = forwardChoice;
+                        const act = consumeLinkedUnit(trainer.bag, trainer.bagLinks || [], forwardChoice);
+                        if (act.activated && context.itemLinkActivations) {
+                            context.itemLinkActivations.push({ species: chosenTrainerMon.id, used: forwardChoice, removed: act.removedSiblings, kind: 'item' });
+                        }
+                    }
+                }
+
                 // T-125 — a weather setter holds the rock that extends its weather (Damp/Heat/Smooth/Icy).
                 // Soph-gated so early-game is byte-identical; only fills an empty item slot.
                 if (!newTeamMember.item && context.sophistication >= BIAS_MIN_SOPH && WEATHER_ROCK_BY_SETTER[ability]) {
@@ -356,8 +391,15 @@ function createTeamResolver(deps) {
                     newTeamMember.moves, ability, newTeamMember.item, trainer.tms || [], 0.1,
                     selCtx,
                 );
+                // T-133 — teaching a TM CONSUMES it from the bag respecting links: if the TM belongs to a
+                // pick-pack (and has no loose/buyable copy), one unit of each pack sibling is forgone from THIS
+                // trainer's tms. The mon's full moveset is already chosen here, so a mon that legitimately uses
+                // two moves from one pack is never self-blocked (its moves are locked in before consumption).
                 tmsUsed.forEach(tmUsed => {
-                    if (trainer.tms && trainer.tms.includes(tmUsed)) trainer.tms.splice(trainer.tms.indexOf(tmUsed), 1);
+                    const act = consumeLinkedUnit(trainer.tms || [], trainer.tmLinks || [], tmUsed);
+                    if (act.activated && context.itemLinkActivations) {
+                        context.itemLinkActivations.push({ species: chosenTrainerMon.id, used: tmUsed, removed: act.removedSiblings, kind: 'tm' });
+                    }
                 });
 
                 if (!newTeamMember.item && trainer.bag && trainer.bag.length > 0) {
@@ -365,14 +407,19 @@ function createTeamResolver(deps) {
                     const sortedBagItems = trainer.bag
                         .map(bagItemId => ({
                             id: bagItemId,
-                            rating: rateItemForAPokemon(bagItemId, battlePoke, ability, movesetObjects, trainer.level, trainer.bag.length, trainer.bannedItems || [], GENERIC_DEVIATION),
+                            rating: rateItemForAPokemon(bagItemId, battlePoke, ability, movesetObjects, trainer.level, trainer.bag.length, GENERIC_DEVIATION),
                         }))
                         .filter(bi => bi.rating > 0)
                         .sort((a, b) => b.rating - a.rating)
                         .map(bi => bi.id);
                     if (sortedBagItems.length > 0) {
                         newTeamMember.item = sortedBagItems[0];
-                        trainer.bag.splice(trainer.bag.indexOf(newTeamMember.item), 1);
+                        // T-133 — same link-aware consumption as TMs: equipping one item from a pick-pack forgoes
+                        // its siblings from this trainer's bag (a loose/buyable copy is spent first, no link).
+                        const act = consumeLinkedUnit(trainer.bag, trainer.bagLinks || [], newTeamMember.item);
+                        if (act.activated && context.itemLinkActivations) {
+                            context.itemLinkActivations.push({ species: chosenTrainerMon.id, used: newTeamMember.item, removed: act.removedSiblings, kind: 'item' });
+                        }
                     }
                 }
 
@@ -430,7 +477,7 @@ function createTeamResolver(deps) {
             && !context.archetypeSeed.abuseOnly && context.archetypeSeed.weather;
         if (wxSubtype && ensureMoveSetter(team, wxSubtype)) attemptAudit.relabelWeather(team, wxSubtype);
 
-        attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed, weatherPicks: context.weatherPicks });
+        attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed, weatherPicks: context.weatherPicks, itemLinkActivations: context.itemLinkActivations });
         return team;
     }
 
@@ -480,6 +527,10 @@ function createTeamResolver(deps) {
                 ...trainer,
                 tms: [...(trainer.tms || [])],
                 bag: trainer.bag ? [...trainer.bag] : trainer.bag,
+                // T-133 — clone the link groups too, so a rolled-back attempt's pack consumption never leaks
+                // into the shared trainer (only a COMMITTED attempt writes them back below).
+                bagLinks: (trainer.bagLinks || []).map(g => ({ members: [...g.members] })),
+                tmLinks: (trainer.tmLinks || []).map(g => ({ members: [...g.members] })),
             };
             const team = runAttempt(attemptTrainer, teamDefs, variantSeed, attemptStoredIds, attemptIVCache, attemptAudit);
             return { team, attemptStoredIds, attemptIVCache, attemptTrainer, attemptAudit };
@@ -542,6 +593,8 @@ function createTeamResolver(deps) {
         Object.assign(pokeIdIVCache, chosen.attemptIVCache);
         trainer.tms = chosen.attemptTrainer.tms;
         trainer.bag = chosen.attemptTrainer.bag;
+        trainer.bagLinks = chosen.attemptTrainer.bagLinks; // T-133 — commit the reduced pack state too
+        trainer.tmLinks = chosen.attemptTrainer.tmLinks;
         audit.absorb(chosen.attemptAudit);
         // T-132 — record the weather this trainer actually established, so a tag partner (Tabitha) resolved
         // AFTER it can abuse it. Based on the committed team's real setter (ability or move), else null.

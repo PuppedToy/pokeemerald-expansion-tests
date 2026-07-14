@@ -9,6 +9,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Trainer items are meaningful picks now, not random noise.** At every world point where the player picks
+  one item from a group (Choice Band/Specs/Scarf, the type plates, the type gems, the resist berries, the
+  pick-3 TM lists…), trainers mirror it: a trainer holds the whole group and only "spends" the pick when one
+  of its Pokémon actually equips/teaches an option — the alternatives are then dropped from that trainer's
+  own bag, exactly as the player would forgo them at that spot. A strong attacker that can reach a Choice
+  item now gets it up front and builds an all-attacking set (Choice Band for physical, Specs for special,
+  Scarf for a fast revenge killer). Loose/buyable copies are spent before touching a pick-group (T-129, T-133).
+
 - **Recurring bosses now have consistent teams across the game.** The rival (May/Brendan), Steven and
   Wally build their strong endgame roster first and their earlier appearances show the SAME Pokémon at a
   level-appropriate evolutionary stage (Champion Steven's Metagross ↔ Granite Cave Metang; the rival's

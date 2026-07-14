@@ -48,6 +48,7 @@ const {
 const { maps: wildMaps } = require('./wild');
 const { getBossPreset, getNonBossPreset, bossMega } = require('./presets');
 const rng = require('./rng');
+const { linkedChoiceSample } = require('./modules/itemLinks');
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
 const partnersFile = path.resolve(__dirname, '..', 'src', 'data', 'battle_partners.party');
@@ -784,42 +785,42 @@ function getTrainersData(itemAssignments, tmList, config = {}) {
 const rival103Bag = () => [
     'Oran Berry',
     rival103TM,
-    sample([...route102BallItems]),
+    linkedChoiceSample([...route102BallItems]),
 ];
 
 const petalwoodGruntBag = () => [
     ...rival103Bag(),
     'Eviolite',
-    sample([...petalburgPlateItems]),
+    linkedChoiceSample([...petalburgPlateItems]),
 ];
 
 const roxanneBag = () => [
     ...petalwoodGruntBag(),
-    sample([...choice104Gem]),
-    sample([...choice104Berry]),
-    sample([...choice104TMs]),
+    linkedChoiceSample([...choice104Gem]),
+    linkedChoiceSample([...choice104Berry]),
+    linkedChoiceSample([...choice104TMs]),
     tmItem(1),
 ];
 
 const rusturfGruntBag = () => [
     ...roxanneBag(),
-    sample([...route116BallItems]),
-    sample([...choice116PickTMs]),
+    linkedChoiceSample([...route116BallItems]),
+    linkedChoiceSample([...choice116PickTMs]),
     route116XSpecialItem,
 ];
 
 const rivalRustboroBag = () => [
     ...rusturfGruntBag(),
     sample(['Toxic Orb', 'Flame Orb']),
-    sample([...choice116Gem]),
-    sample([...choice116Berry]),
+    linkedChoiceSample([...choice116Gem]),
+    linkedChoiceSample([...choice116Berry]),
 ];
 
 const brawlyBag = () => [
     ...rivalRustboroBag(),
     route106GoodItem,
-    sample([...choicesDewfordTMs]),
-    sample([...route106BallItems]),
+    linkedChoiceSample([...choicesDewfordTMs]),
+    linkedChoiceSample([...route106BallItems]),
     tmItem(61),
 ];
 
@@ -831,8 +832,8 @@ const stevenBag = () => [
 const slateportGruntsBag = () => [
     ...stevenBag(),
     route109GoodItem,
-    sample([...choiceRickyTMs]),
-    sample([...choiceHueyTMs]),
+    linkedChoiceSample([...choiceRickyTMs]),
+    linkedChoiceSample([...choiceHueyTMs]),
     // 'Damp Rock',
     // 'Heat Rock',
     // 'Smooth Rock',
@@ -841,10 +842,10 @@ const slateportGruntsBag = () => [
 
 const rivalRoute110Bag = () => [
     ...slateportGruntsBag(),
-    sample([...choice110TMs]),
+    linkedChoiceSample([...choice110TMs]),
     route110GoodItem,
     'Lum Berry', // T-056: opponents start carrying Lum Berry from the Route 110 rival, not Rustboro
-    sample([...route110ExtenderBallItems]),
+    linkedChoiceSample([...route110ExtenderBallItems]),
     tmItem(2),
     tmItem(5),
     tmItem(8),
@@ -856,14 +857,14 @@ const rivalRoute110Bag = () => [
 const wallyBag = () => [
     ...rivalRoute110Bag(),
     route110LumGoodItem,
-    sample([...choiceJosephSeeds]),
-    sample([...choiceDeandreTMs]),
+    linkedChoiceSample([...choiceJosephSeeds]),
+    linkedChoiceSample([...choiceDeandreTMs]),
 ];
 
 const wattsonBag = () => [
     ...wallyBag(),
-    sample([...choiceHectorTMs]),
-    sample([...choiceMelinaBerries]),
+    linkedChoiceSample([...choiceHectorTMs]),
+    linkedChoiceSample([...choiceMelinaBerries]),
     sample(choiceAishaGems),
     route117GoodItem,
     'Light Clay',
@@ -874,19 +875,19 @@ const wattsonBag = () => [
 const magmaChimneyBag = () => [
     ...wattsonBag(),
     route111HpUpGoodItem,
-    sample([...route111BallAItems]),
-    sample([...choiceCarolTMs]),
-    sample([...choiceBriceTMs]),
+    linkedChoiceSample([...route111BallAItems]),
+    linkedChoiceSample([...choiceCarolTMs]),
+    linkedChoiceSample([...choiceBriceTMs]),
 ];
 
 const flanneryBag = () => [
     ...magmaChimneyBag(),
     route114WyattGoodItem,
     sample(choiceNobTMs),
-    sample([...choiceWiltonTMs]),
-    sample([...choiceCharlotteTMs]),
-    sample([...choiceNolanTMs]),
-    sample([...choiceAngelinaTMs]),
+    linkedChoiceSample([...choiceWiltonTMs]),
+    linkedChoiceSample([...choiceCharlotteTMs]),
+    linkedChoiceSample([...choiceNolanTMs]),
+    linkedChoiceSample([...choiceAngelinaTMs]),
     'Nugget',
     tmItem(78),   // Flannery's gym TM
     'TM_STRENGTH',  // HM, not randomized
@@ -894,11 +895,11 @@ const flanneryBag = () => [
 
 const normanBag = () => [
     ...flanneryBag(),
-    sample([...route111BerryItems]),
-    sample([...route111BallCItems]),
-    sample([...choiceNobTMs]),
-    sample([...choiceBryanTMs]),
-    sample([...choiceHeidiItems]),
+    linkedChoiceSample([...route111BerryItems]),
+    linkedChoiceSample([...route111BallCItems]),
+    linkedChoiceSample([...choiceNobTMs]),
+    linkedChoiceSample([...choiceBryanTMs]),
+    linkedChoiceSample([...choiceHeidiItems]),
     tmItem(31),   // Norman's gym TM
     'TM_SURF',    // HM, not randomized
 ];
@@ -906,9 +907,9 @@ const normanBag = () => [
 const shellyBag = () => [
     ...normanBag(),
     route118BarnyGoodItem,
-    sample([...choiceWadeBerries]),
-    sample([...choiceRoseTMs]),
-    sample([...choiceChesterTMs]),
+    linkedChoiceSample([...choiceWadeBerries]),
+    linkedChoiceSample([...choiceRoseTMs]),
+    linkedChoiceSample([...choiceChesterTMs]),
     'Lum Berry',
 ];
 
@@ -920,7 +921,7 @@ const rival119Bag = () => [
 const winonaBag = () => [
     ...rival119Bag(),
     route120AngelicaGoodItem,
-    sample([...choiceClarissaTMs]),
+    linkedChoiceSample([...choiceClarissaTMs]),
     tmItem(32),   // Winona's gym TM
     tmItem(12),
     tmItem(13),
@@ -933,9 +934,9 @@ const winonaBag = () => [
 const wallyBag2 = () => [
     ...winonaBag(),
     'Focus Sash',
-    sample([...choiceTammyTMs]),
-    sample([...choiceCristinBerries]),
-    sample([...choiceWalterTMs]),
+    linkedChoiceSample([...choiceTammyTMs]),
+    linkedChoiceSample([...choiceCristinBerries]),
+    linkedChoiceSample([...choiceWalterTMs]),
     jessicaTM,
 ];
 
@@ -943,8 +944,8 @@ const choiceIsabellaItem = ['Choice Band', 'Choice Scarf', 'Choice Specs'];
 
 const tateAndLizaBag = () => [
     ...wallyBag2(),
-    sample([...choiceIsabellaItem]),
-    sample([...choiceGraceTMs]),
+    linkedChoiceSample([...choiceIsabellaItem]),
+    linkedChoiceSample([...choiceGraceTMs]),
     spencerTM,   // Spencer's route 124 TM
     rolandTM,   // Roland's route 124 TM
     tmItem(91),   // Tate & Liza's gym TM
@@ -952,7 +953,7 @@ const tateAndLizaBag = () => [
 
 const spaceCenterBag = () => [
     ...tateAndLizaBag(),
-    sample([...choicePresleyTMs]),
+    linkedChoiceSample([...choicePresleyTMs]),
     auronTM,   // Auron's route 125 TM
 ];
 
@@ -1338,7 +1339,7 @@ const trainersData = [
         class: 'Rich Boy',
         reward: [...route116BallItems],
         level: 15,
-        bag: [...getSampleItemsFromArray(roxanneBag(), 3), sample([...route116BallItems])],
+        bag: [...getSampleItemsFromArray(roxanneBag(), 3), linkedChoiceSample([...route116BallItems])],
         team: genericTrainerTeamPostRoxanne(),
     },
     {
@@ -1527,7 +1528,6 @@ const trainersData = [
         reward: ['GYM_REWARD_2', tmItem(61)],
         isBoss: true,
         bag: brawlyBag(),
-        bannedItems: ['Flame Orb', 'Toxic Orb'],
         // T-128 — Fighting is a trainer restriction; team is the full preset pool; the favourite
         // (Hariyama) CLAIMS a pool slot of its actual tier, else the standard Fighting-restricted fallback.
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
@@ -2851,7 +2851,6 @@ const trainersData = [
         // ≤UBERS mega). Two favourites (Solgaleo≫Solrock, Lunala≫Lunatone) claim slots first; being
         // legendary they normally exceed the UBERS budget and drop to Solrock/Lunatone (their actual
         // tiers). The old Trick Room / Focus Sash / screens gimmick is removed (owner-validated).
-        bannedItems: ['Focus Sash', 'Room Service', 'Light Clay'],
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
         types: [gymMainTypes[6]],
         favourites: [
