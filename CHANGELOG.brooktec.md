@@ -9,6 +9,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Weather teams now field their BEST abusers, ranked by how well each exploits the weather.** Instead of
+  any boosted-type mon, a sophisticated weather trainer prefers real ability-abusers (Chlorophyll / Solar
+  Power / Protosynthesis in sun, Swift Swim in rain, Sand Rush in sand, …), each scored by the stat it
+  scales, with sophistication pulling the pick toward the top of the ranking. The decision log shows the full
+  eligible ranking + why each scored what it did (T-135).
+
 - **Electric Terrain and Trick Room are real team archetypes now, like weather.** A trainer commits to the
   gimmick by building it — an Electric Terrain team gets a setter (Tapu Koko-style Electric Surge / Hadron
   Engine) plus abusers (Surge Surfer, Quark Drive, Unburden + Electric Seed, hard-hitting Electric-types),

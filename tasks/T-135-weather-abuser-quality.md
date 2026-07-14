@@ -1,7 +1,7 @@
 ---
 id: T-135
 title: Weather abuser QUALITY — prefer real ability-abusers at high sophistication
-status: in-progress
+status: done
 type: feature
 created: 2026-07-14
 updated: 2026-07-14
@@ -37,11 +37,11 @@ Root causes (verified in code):
    ally-following partner reads as "abusing <ally>'s weather", not dropped.
 
 Acceptance criteria:
-- [ ] At high soph, weather abuser slots prefer real ability-abusers (Chlorophyll/Solar Power/Protosynthesis)
+- [x] At high soph, weather abuser slots prefer real ability-abusers (Chlorophyll/Solar Power/Protosynthesis)
       over plain boosted-type mons when available in the pool.
-- [ ] A Protosynthesis mon counts as a strong sun abuser.
-- [ ] Tabitha Mossdeep's log shows it abusing Maxie's weather (not "dropped").
-- [ ] Deterministic; `cd randomizer && npm test` + determinism/continuity gates green.
+- [x] A Protosynthesis mon counts as a strong sun abuser.
+- [x] Tabitha Mossdeep's log shows it abusing Maxie's weather (not "dropped").
+- [x] Deterministic; `cd randomizer && npm test` + determinism/continuity gates green.
 
 ## Progress log
 
@@ -85,3 +85,17 @@ Acceptance criteria:
   determinism + continuity gates 17/17.
 
 ## Outcome
+
+Shipped the detailed weather-abuse rating (Path 1): each abuser ability modelled by the stat it scales
+(Chlorophyll ∝ offence, Solar Power ∝ speed×SpA, Protosynthesis/Quark-Drive ∝ best stat, speed-mult ∝
+offence) + a flat ability-floor so a real ability-abuser outranks a plain boosted-STAB attacker, plus
+boosted-STAB/DEF-type, synergy-move, and a slice of base rating (weights in `WX_ABUSE_RATING`). The picker
+ranks eligible abusers with a sophistication-sharpened curve `(rating/max)^(soph×rankSharpness)`, and the
+decision log surfaces the full ranking + itemised breakdown + soph-pull + the picked rank. Protosynthesis
+added to the sun abusers; the abuse-only tag-partner log fix (Tabitha reads "+weather"). The ranked-abuser
+budget counts only DEDICATED abusers (excludes the favourite ace + setter) so every weather trainer ranks its
+free slots. Owner green-lit the close 2026-07-14 (the mid-ranked-pick soph-pull is acceptable as-is; the
+knobs `WX_ABUSE_RATING.rankSharpness` / a top-K restriction remain available if ever wanted).
+
+The rating/ranking + audit machinery this task built was the reusable base that T-137 generalized to electric
+terrain and Trick Room. `npm test` green; determinism + continuity gates 17/17.
