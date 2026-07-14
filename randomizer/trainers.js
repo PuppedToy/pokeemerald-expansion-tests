@@ -1917,7 +1917,9 @@ const trainersData = [
         // (Mega Manectric) claims the {isMega} slot. The electricTerrain seed adds the terrain if it can.
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
         types: [gymMainTypes[2]],
-        favourite: gymFavourite('SPECIES_MANECTRIC_MEGA'),
+        // B-031 — a MEGA signature needs the full devolution chain (gymFavourite alone = single entry, which
+        // skips to any-eligible when the mega can't be placed). Mega Manectric → Manectric → Electrike → (any).
+        favourite: ['SPECIES_MANECTRIC_MEGA', 'SPECIES_MANECTRIC', 'SPECIES_ELECTRIKE'],
         team: getBossPreset('WATTSON').map(s => ({ ...s })),
     },
     // Route 111

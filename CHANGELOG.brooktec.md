@@ -71,6 +71,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Wattson's Mega Manectric ace now devolves properly.** When Mega Manectric can't be placed (its
+  progression gate isn't met that run), Wattson keeps his signature line — Mega Manectric → Manectric →
+  Electrike → any eligible Electric mon — instead of jumping straight to a random Electric Pokémon (B-031).
 - **No more Choice items on the wrong Pokémon.** A Choice item (Band/Specs/Scarf) locks its holder into
   one move, so it is no longer assigned to a Pokémon whose set carries a move it must not be locked into —
   any status/hazard/setup move, or a reactive move (Counter/Mirror Coat/Metal Burst). Champion Steven's
