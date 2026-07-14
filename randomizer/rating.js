@@ -2910,93 +2910,19 @@ function tierFromRating(absoluteRating, { isStoneMega = false } = {}) {
 }
 
 // @TODO Maybe add a level-based rating too for the right context
-function ratePokemon(poke, moves, abilities, tmPool) {
-    let bestAbilityRating = 0;
-    poke.parsedAbilities.forEach(abilityId => {
-        if (abilityId === 'NONE') return;
-        const abilityRating = abilities[`ABILITY_${abilityId}`]?.rating || 0;
-        if (abilityRating > bestAbilityRating) {
-            bestAbilityRating = abilityRating;
-        }
-    });
-
-    // S1: Terrain surge abilities are rated very high in abilities.h (9–10), but the combo
-    // system in computeComboBonus already captures their terrain-specific value (+0.4–0.75).
-    // Letting bestAbilityRating contribute its full value to absoluteRating×0.10 on top of
-    // the combo bonus causes terrain setters (Tapu Koko, Tapu Lele, etc.) to rate 0.5–1.0
-    // points above their Smogon tier. Cap at 7.5 to prevent double-counting.
-    const surgeAbilities = new Set(['ELECTRIC_SURGE', 'GRASSY_SURGE', 'PSYCHIC_SURGE', 'MISTY_SURGE']);
-    if (poke.parsedAbilities.some(a => surgeAbilities.has(a))) {
-        bestAbilityRating = Math.min(bestAbilityRating, 7.5);
-    }
-    // MAGIC_GUARD: has an explicit +0.25 combo bonus, so ability rating (9) would double-count.
-    // Cap at 7.5 to prevent the combined contribution from being too large.
-    // SHADOW_TAG: no direct combo, but rated 10 in abilities.h — contributes 1.0 to the final
-    // score which pushes Shadow Tag megas (Gengar) to GOD. Cap at 7.5.
-    // SPEED_BOOST: SPEED_BOOST+PROTECT combo already models it (+0.5). Cap more aggressively at
-    // 6.5 to prevent double-counting on top of the combo bonus.
-    const capAt75Abilities = new Set(['MAGIC_GUARD', 'SHADOW_TAG',
-        // Weather abilities rated 9 in abilities.h — cap same as terrain surges (7.5).
-        // Combo system captures their weather-specific value; letting the ability rating
-        // contribute its full 0.9 double-counts alongside the weather combo bonuses.
-        'DRIZZLE', 'DROUGHT', 'SAND_STREAM', 'SNOW_WARNING',
-    ]);
-    if (poke.parsedAbilities.some(a => capAt75Abilities.has(a))) {
-        bestAbilityRating = Math.min(bestAbilityRating, 7.5);
-    }
-    if (poke.parsedAbilities.some(a => a === 'SPEED_BOOST')) {
-        bestAbilityRating = Math.min(bestAbilityRating, 6.5);
-    }
-    // DROUGHT / DRIZZLE on mega: megas can't hold Heat Rock / Damp Rock (the item that extends
-    // weather to 8 turns). Their weather sets for only 5 turns and is purely self-serving —
-    // the main value is the mon's own offense in sun/rain, not team-wide weather support.
-    // Cap more aggressively than non-mega setters.
-    if (poke.evolutionData && poke.evolutionData.isMega &&
-        (poke.parsedAbilities.includes('DROUGHT') || poke.parsedAbilities.includes('DRIZZLE'))) {
-        bestAbilityRating = Math.min(bestAbilityRating, 4.0);
-    }
-    // -ATE abilities (PIXILATE, AERILATE, REFRIGERATE, GALVANIZE): the combo system in
-    // computeComboBonus already captures their STAB-conversion value via -ATE+sound (+0.4).
-    // Letting them contribute their full ability.h rating (8) double-counts. Cap at 7.0.
-    const ateAbilities = new Set(['PIXILATE', 'AERILATE', 'REFRIGERATE', 'GALVANIZE']);
-    if (poke.parsedAbilities.some(a => ateAbilities.has(a))) {
-        bestAbilityRating = Math.min(bestAbilityRating, 7.0);
-    }
-    // LIGHTNING_ROD / VOLT_ABSORB / MOTOR_DRIVE: draws or absorbs Electric moves.
-    // In singles the "draw" mechanic is irrelevant; only the immunity matters.
-    // Value scales with how much the Electric immunity helps: removing a 2x weakness is
-    // excellent, but if the holder already resists/is immune to Electric, the ability
-    // adds little. Sceptile Mega (Grass/Dragon) typifies the near-worthless case.
-    // Ground types are already immune to Electric — ability is fully redundant.
-    const elecAbsorbAbilities = new Set(['LIGHTNING_ROD', 'VOLT_ABSORB', 'MOTOR_DRIVE']);
-    if (poke.parsedAbilities.some(a => elecAbsorbAbilities.has(a))) {
-        const isElecWeak   = poke.parsedTypes.some(t => t === 'WATER' || t === 'FLYING');
-        const isElecImmune = poke.parsedTypes.some(t => t === 'GROUND');
-        if (isElecImmune) {
-            // Ground is already immune — ability is completely redundant
-            bestAbilityRating = Math.min(bestAbilityRating, 3.0);
-        } else if (!isElecWeak) {
-            // Neutral or resists Electric: immunity gives some value but far less than removing a weakness
-            bestAbilityRating = Math.min(bestAbilityRating, 4.5);
-        }
-    }
-    // SNOW_WARNING on mega pokemon: mega holders can't equip Light Clay, which is the primary
-    // item that makes Snow Warning / Aurora Veil teams viable (8 turns instead of 5).
-    // Without Light Clay, the snow support value is significantly diminished compared to a
-    // non-mega (Alolan Ninetales) that can hold the item.
-    if (poke.parsedAbilities.includes('SNOW_WARNING') && poke.evolutionData && poke.evolutionData.isMega) {
-        bestAbilityRating = Math.min(bestAbilityRating, 5.0);
-    }
-
-    // To properly analyze a pokemon, we must understand its role
-
-    let bstRating;
+// T-097 — the shared offense/defense/speed POWER + ROLE classification, extracted from ratePokemon so BOTH
+// the singles rater and the doubles rater (ratePokemonDoubles) compute a mon's power profile identically
+// (SSOT — no drift). Behaviour-preserving vs the previous inline block. `hugePowerRating` is the HUGE_POWER/
+// PURE_POWER ability-rating override (baseAttack/12); returned rather than set so each rater applies it to
+// bestAbilityRating in its own way. The three power components are capped at 10.
+function computePowerAndRole(poke) {
     let abilitiesAttackPowerMultiplier = 1;
     let abilitiesSpaPowerMultiplier = 1;
     let abilitiesSpeedPowerMultiplier = 1;
+    let hugePowerRating = null;
     if (poke.parsedAbilities.includes('HUGE_POWER') || poke.parsedAbilities.includes('PURE_POWER')) {
         abilitiesAttackPowerMultiplier = 2;
-        bestAbilityRating = poke.baseAttack / 12;
+        hugePowerRating = poke.baseAttack / 12;
     }
     if (poke.parsedAbilities.includes('PARENTAL_BOND')) {
         abilitiesAttackPowerMultiplier *= 1.25;
@@ -3114,6 +3040,100 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     offensePower = Math.min(offensePower, 10);
     speedPower   = Math.min(speedPower,   10);
     defensePower = Math.min(defensePower, 10);
+    return {
+        offensePower, speedPower, defensePower, rawOffensePower, rawDefensePower, role, hugePowerRating,
+        abilitiesAttackPowerMultiplier, abilitiesSpaPowerMultiplier, abilitiesSpeedPowerMultiplier,
+    };
+}
+
+function ratePokemon(poke, moves, abilities, tmPool) {
+    let bestAbilityRating = 0;
+    poke.parsedAbilities.forEach(abilityId => {
+        if (abilityId === 'NONE') return;
+        const abilityRating = abilities[`ABILITY_${abilityId}`]?.rating || 0;
+        if (abilityRating > bestAbilityRating) {
+            bestAbilityRating = abilityRating;
+        }
+    });
+
+    // S1: Terrain surge abilities are rated very high in abilities.h (9–10), but the combo
+    // system in computeComboBonus already captures their terrain-specific value (+0.4–0.75).
+    // Letting bestAbilityRating contribute its full value to absoluteRating×0.10 on top of
+    // the combo bonus causes terrain setters (Tapu Koko, Tapu Lele, etc.) to rate 0.5–1.0
+    // points above their Smogon tier. Cap at 7.5 to prevent double-counting.
+    const surgeAbilities = new Set(['ELECTRIC_SURGE', 'GRASSY_SURGE', 'PSYCHIC_SURGE', 'MISTY_SURGE']);
+    if (poke.parsedAbilities.some(a => surgeAbilities.has(a))) {
+        bestAbilityRating = Math.min(bestAbilityRating, 7.5);
+    }
+    // MAGIC_GUARD: has an explicit +0.25 combo bonus, so ability rating (9) would double-count.
+    // Cap at 7.5 to prevent the combined contribution from being too large.
+    // SHADOW_TAG: no direct combo, but rated 10 in abilities.h — contributes 1.0 to the final
+    // score which pushes Shadow Tag megas (Gengar) to GOD. Cap at 7.5.
+    // SPEED_BOOST: SPEED_BOOST+PROTECT combo already models it (+0.5). Cap more aggressively at
+    // 6.5 to prevent double-counting on top of the combo bonus.
+    const capAt75Abilities = new Set(['MAGIC_GUARD', 'SHADOW_TAG',
+        // Weather abilities rated 9 in abilities.h — cap same as terrain surges (7.5).
+        // Combo system captures their weather-specific value; letting the ability rating
+        // contribute its full 0.9 double-counts alongside the weather combo bonuses.
+        'DRIZZLE', 'DROUGHT', 'SAND_STREAM', 'SNOW_WARNING',
+    ]);
+    if (poke.parsedAbilities.some(a => capAt75Abilities.has(a))) {
+        bestAbilityRating = Math.min(bestAbilityRating, 7.5);
+    }
+    if (poke.parsedAbilities.some(a => a === 'SPEED_BOOST')) {
+        bestAbilityRating = Math.min(bestAbilityRating, 6.5);
+    }
+    // DROUGHT / DRIZZLE on mega: megas can't hold Heat Rock / Damp Rock (the item that extends
+    // weather to 8 turns). Their weather sets for only 5 turns and is purely self-serving —
+    // the main value is the mon's own offense in sun/rain, not team-wide weather support.
+    // Cap more aggressively than non-mega setters.
+    if (poke.evolutionData && poke.evolutionData.isMega &&
+        (poke.parsedAbilities.includes('DROUGHT') || poke.parsedAbilities.includes('DRIZZLE'))) {
+        bestAbilityRating = Math.min(bestAbilityRating, 4.0);
+    }
+    // -ATE abilities (PIXILATE, AERILATE, REFRIGERATE, GALVANIZE): the combo system in
+    // computeComboBonus already captures their STAB-conversion value via -ATE+sound (+0.4).
+    // Letting them contribute their full ability.h rating (8) double-counts. Cap at 7.0.
+    const ateAbilities = new Set(['PIXILATE', 'AERILATE', 'REFRIGERATE', 'GALVANIZE']);
+    if (poke.parsedAbilities.some(a => ateAbilities.has(a))) {
+        bestAbilityRating = Math.min(bestAbilityRating, 7.0);
+    }
+    // LIGHTNING_ROD / VOLT_ABSORB / MOTOR_DRIVE: draws or absorbs Electric moves.
+    // In singles the "draw" mechanic is irrelevant; only the immunity matters.
+    // Value scales with how much the Electric immunity helps: removing a 2x weakness is
+    // excellent, but if the holder already resists/is immune to Electric, the ability
+    // adds little. Sceptile Mega (Grass/Dragon) typifies the near-worthless case.
+    // Ground types are already immune to Electric — ability is fully redundant.
+    const elecAbsorbAbilities = new Set(['LIGHTNING_ROD', 'VOLT_ABSORB', 'MOTOR_DRIVE']);
+    if (poke.parsedAbilities.some(a => elecAbsorbAbilities.has(a))) {
+        const isElecWeak   = poke.parsedTypes.some(t => t === 'WATER' || t === 'FLYING');
+        const isElecImmune = poke.parsedTypes.some(t => t === 'GROUND');
+        if (isElecImmune) {
+            // Ground is already immune — ability is completely redundant
+            bestAbilityRating = Math.min(bestAbilityRating, 3.0);
+        } else if (!isElecWeak) {
+            // Neutral or resists Electric: immunity gives some value but far less than removing a weakness
+            bestAbilityRating = Math.min(bestAbilityRating, 4.5);
+        }
+    }
+    // SNOW_WARNING on mega pokemon: mega holders can't equip Light Clay, which is the primary
+    // item that makes Snow Warning / Aurora Veil teams viable (8 turns instead of 5).
+    // Without Light Clay, the snow support value is significantly diminished compared to a
+    // non-mega (Alolan Ninetales) that can hold the item.
+    if (poke.parsedAbilities.includes('SNOW_WARNING') && poke.evolutionData && poke.evolutionData.isMega) {
+        bestAbilityRating = Math.min(bestAbilityRating, 5.0);
+    }
+
+    // To properly analyze a pokemon, we must understand its role
+
+    let bstRating;
+    // T-097 — power + role now come from the shared helper (SSOT with the doubles rater). HUGE_POWER's
+    // ability-rating override is returned rather than set, so re-apply it here (singles behaviour).
+    const {
+        offensePower, speedPower, defensePower, rawDefensePower, role, hugePowerRating,
+        abilitiesAttackPowerMultiplier, abilitiesSpaPowerMultiplier, abilitiesSpeedPowerMultiplier,
+    } = computePowerAndRole(poke);
+    if (hugePowerRating != null) bestAbilityRating = hugePowerRating;
 
     switch (role) {
         case 'BALANCED':
