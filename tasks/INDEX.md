@@ -100,7 +100,7 @@
 | [T-094](T-094-doubles-move-spread-rating.md) | Doubles move rating — spread detection (move.target) + rateMoveDoubles | in-progress | 0.8.0 | 2026-07-10 |
 | [T-095](T-095-doubles-support-move-revaluation.md) | Doubles re-valuation of support/gimmick moves (Follow Me, Rage Powder, Trick Room…) | in-progress | 0.8.0 | 2026-07-10 |
 | [T-096](T-096-doubles-ability-rating.md) | Doubles ability rating — redirection, Intimidate, Friend Guard, Telepathy… | in-progress | 0.8.0 | 2026-07-10 |
-| [T-097](T-097-doubles-pokemon-tiers.md) | Doubles Pokémon tiers — ratePokemonDoubles + contextualRatingsDoubles | proposed | 0.8.0 | 2026-07-09 |
+| [T-097](T-097-doubles-pokemon-tiers.md) | Doubles Pokémon tiers — ratePokemonDoubles + contextualRatingsDoubles | in-progress | 0.8.0 | 2026-07-14 |
 | [T-098](T-098-research-vgc-doubles-teams.md) | Research — historic VGC doubles teams (gen 6–7) → cited reference docs | done | 0.8.0 | 2026-07-10 |
 | [T-099](T-099-research-smogon-singles-teams.md) | Research — historic Smogon singles teams (gen 6–7) → cited reference docs | done | 0.8.0 | 2026-07-10 |
 | [T-100](T-100-synergy-antisynergy-synthesis.md) | Synthesize a synergy / anti-synergy catalog and cross-check the current rating/combo logic | done | 0.8.0 | 2026-07-10 |
