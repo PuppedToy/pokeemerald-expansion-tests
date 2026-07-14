@@ -47,13 +47,17 @@ describe('planMemberAbility', () => {
         expect(planMemberAbility({ species: drizzleMon, team: [], seed: weatherSeed, model: singles, ctx: {}, sophistication: 0 })).toEqual([]);
     });
 
-    // T-131 — a themed weather is a LEAN with a general-weather fallback.
     const snowSeed = { base: 'bulky_offense', gimmicks: ['weather'], weather: 'snow' };
 
-    test('T-131 — themed setter unavailable + no weather up → falls back to any weather this mon can set', () => {
-        // Snow-seeded, but this mon can only set RAIN (e.g. an aqua team with no Snow Warning mon).
+    // T-132 (RC4) — supersedes the old T-131 general-weather fallback: a themed team NEVER establishes a
+    // FOREIGN weather. A snow-seeded mon that can only set RAIN gets NO setter preference here (and the
+    // resolver additionally bans the foreign Drizzle ability). The themed weather is set via a MOVE-setter
+    // (gimmickPlan.ensureMoveSetter) when no themed ability-setter exists — never by mixing in another weather.
+    test('T-132 — themed setter unavailable → NO foreign-weather setter preference', () => {
         const rainOnly = species(['DRIZZLE', 'SWIFT_SWIM']);
-        expect(planMemberAbility({ species: rainOnly, team: [], seed: snowSeed, ...opts })).toContain('DRIZZLE');
+        const pref = planMemberAbility({ species: rainOnly, team: [], seed: snowSeed, ...opts });
+        expect(pref).not.toContain('DRIZZLE');   // never lean toward a foreign weather's setter
+        expect(pref).toEqual([]);                // not a snow setter, not a snow abuser → no preference
     });
 
     test('T-131 — the themed setter is still preferred when this mon CAN set it', () => {

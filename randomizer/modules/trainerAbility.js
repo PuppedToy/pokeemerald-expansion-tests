@@ -15,6 +15,7 @@
 const rng = require('../rng');
 const { sample, usesStrategicAbility } = require('./utils');
 const { GENERIC_DEVIATION } = require('../constants');
+const { WEATHER_ABILITY_SUBTYPE } = require('./weatherConstants');
 
 /**
  * Pick the ability a trainer's Pokémon should run, and map it back to the base form's ability slot.
@@ -31,7 +32,7 @@ const { GENERIC_DEVIATION } = require('../constants');
  *   evolved/mega) mon — used downstream for moveset/nature/item/mega rating; `originalAbility` is the
  *   same slot mapped onto the base form and is what gets written to the party.
  */
-function pickTrainerMonAbility({ chosenTrainerMon, baseFormMon, trainerAbilities, effectiveDef, level, abilities, preferredAbilities }) {
+function pickTrainerMonAbility({ chosenTrainerMon, baseFormMon, trainerAbilities, effectiveDef, level, abilities, preferredAbilities, weatherSubtype = null }) {
     let ability;
 
     // T-124 — identity-aware preference: a crystallised gimmick's desired ability (weather setter/abuser)
@@ -61,6 +62,17 @@ function pickTrainerMonAbility({ chosenTrainerMon, baseFormMon, trainerAbilities
         validAbilities = [...chosenTrainerMon.parsedAbilities];
         if (!usesStrategicAbility(level)) {
             validAbilities = validAbilities.slice(0, 2); // no hidden ability below the strategic level
+        }
+        // T-132 (owner, 2026-07-13) — WEATHER-AWARE ability value: a weather ability is only worth having
+        // when ITS weather is the active one. Within the level-eligible pool: (1) if the mon has an ability
+        // of the ACTIVE weather (Sand Rush in sand, Leaf Guard in sun, …) prefer it over any generic
+        // ability; (2) otherwise DROP the foreign-weather abilities (a wrong-weather ability does nothing →
+        // "puntúa 0"), unless that would empty the pool. Only when a weather is actually being built.
+        if (weatherSubtype) {
+            const active = validAbilities.filter(a => WEATHER_ABILITY_SUBTYPE[a] === weatherSubtype);
+            if (active.length) return mapAbilityToBaseForm(sample(active), chosenTrainerMon, baseFormMon);
+            const nonForeign = validAbilities.filter(a => !WEATHER_ABILITY_SUBTYPE[a] || WEATHER_ABILITY_SUBTYPE[a] === weatherSubtype);
+            if (nonForeign.length) validAbilities = nonForeign;
         }
         validAbilities = validAbilities.filter(a => Boolean(a) && a !== 'NONE').sort((a, b) => {
             if (!usesStrategicAbility(level)) return rng.random() - 0.5;

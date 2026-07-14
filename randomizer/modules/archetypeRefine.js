@@ -88,24 +88,13 @@ function planMemberRoleMove({ species, team, model, ctx = {}, sophistication, se
     return null;
 }
 
-// T-124 — weather subtype ↔ setter/abuser abilities. Identity-aware ability selection: when a team
-// crystallises the weather gimmick, the setter mon should get the weather-setter ability and the
-// abusers the ability that matches the established weather (rain→Swift Swim, sun→Chlorophyll, …),
-// instead of their best-rated generic ability. Composition confirmed by the corpus (Swift Swim in
-// rain, Chlorophyll/Solar Beam in sun, Sand Rush in sand, Slush Rush in snow).
-const WEATHER_SUBTYPE_BY_SETTER = {
-    DROUGHT: 'sun', ORICHALCUM_PULSE: 'sun', DRIZZLE: 'rain', SAND_STREAM: 'sand', SNOW_WARNING: 'snow',
-};
-const WEATHER_SETTER_ABILITIES = Object.keys(WEATHER_SUBTYPE_BY_SETTER);
-const SETTERS_BY_SUBTYPE = {
-    sun: ['DROUGHT', 'ORICHALCUM_PULSE'], rain: ['DRIZZLE'], sand: ['SAND_STREAM'], snow: ['SNOW_WARNING'],
-};
-const WEATHER_ABUSER_BY_SUBTYPE = {
-    sun: ['CHLOROPHYLL', 'SOLAR_POWER'],
-    rain: ['SWIFT_SWIM', 'HYDRATION', 'RAIN_DISH', 'DRY_SKIN'],
-    sand: ['SAND_RUSH', 'SAND_FORCE'],
-    snow: ['SLUSH_RUSH', 'ICE_BODY'],
-};
+// T-124 — weather subtype ↔ setter/abuser abilities (SSOT: modules/weatherConstants.js, a leaf module so
+// the picker/refine/gimmick-plan share them without a require cycle). Identity-aware ability selection:
+// when a team crystallises the weather gimmick, the setter mon gets the setter ability and the abusers the
+// ability matching the established weather (rain→Swift Swim, sun→Chlorophyll, …).
+const {
+    WEATHER_SUBTYPE_BY_SETTER, WEATHER_SETTER_ABILITIES, SETTERS_BY_SUBTYPE, WEATHER_ABUSER_BY_SUBTYPE,
+} = require('./weatherConstants');
 // T-125 — the rock a weather setter holds to extend its weather 5→8 turns (by the setter ability).
 const WEATHER_ROCK_BY_SETTER = {
     DROUGHT: 'ITEM_HEAT_ROCK', ORICHALCUM_PULSE: 'ITEM_HEAT_ROCK',
@@ -151,17 +140,11 @@ function planMemberAbility({ species, team, model, ctx = {}, sophistication, see
         // No setter for this weather yet → this mon establishes it if it can; else prefer the abuser.
         const hasSetter = (team || []).some(m => m.ability && WEATHER_SUBTYPE_BY_SETTER[m.ability] === subtype);
         if (!hasSetter) {
+            // Only the THEMED setter — never a foreign weather's (RC4, T-132). When no themed ABILITY-setter
+            // exists in the trainer's pool, the resolver retrofits a themed MOVE-setter instead
+            // (gimmickPlan.ensureMoveSetter); it must NOT establish a different weather here.
             const canSet = speciesAbil.filter(a => (SETTERS_BY_SUBTYPE[subtype] || []).includes(a));
             if (canSet.length) return canSet;
-            // T-131 — general-weather FALLBACK: this mon can't field the themed setter and NO weather is up
-            // yet → establish ANY weather it can set (better some weather than none when the trainer's type
-            // restriction has no themed setter, e.g. an aqua team seeded snow with no Snow Warning mon). The
-            // subtype resolution above then adopts whatever weather actually got set, so later mons abuse it.
-            const anyWeatherUp = (team || []).some(m => m.ability && WEATHER_SETTER_ABILITIES.includes(m.ability));
-            if (!anyWeatherUp) {
-                const canSetAny = speciesAbil.filter(a => WEATHER_SETTER_ABILITIES.includes(a));
-                if (canSetAny.length) return canSetAny;
-            }
         }
         return speciesAbil.filter(a => (WEATHER_ABUSER_BY_SUBTYPE[subtype] || []).includes(a));
     }

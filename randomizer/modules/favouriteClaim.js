@@ -67,8 +67,13 @@ function resolveFavourites(team, favourites, ctx = {}) {
     const pool = team.map(slot => ({ slot, key: slotTierKey(slot), claimed: false }));
     const claimed = [];
 
-    favourites.forEach((chain, favIdx) => {
-        const mark = extra => ({ breedTier: 'perfect', __favourite: true, ...(favouriteIds[favIdx] ? { id: favouriteIds[favIdx] } : {}), ...extra });
+    favourites.forEach((fav, favIdx) => {
+        // T-132 — a favourite is a bare chain (array) OR a "liked" wrapper { chain, goodBreed }. A liked
+        // favourite claims its slot exactly the same way but breeds GOOD instead of PERFECT (the mascot
+        // Groudon/Kyogre shouldn't get perfect IVs). Object wrapper → clone-safe (survives a JSON deep-clone).
+        const chain = Array.isArray(fav) ? fav : (fav && fav.chain) || [];
+        const goodBreed = !Array.isArray(fav) && !!(fav && fav.goodBreed);
+        const mark = extra => ({ breedTier: goodBreed ? 'good' : 'perfect', __favourite: true, ...(favouriteIds[favIdx] ? { id: favouriteIds[favIdx] } : {}), ...extra });
         let done = false;
         for (const cand of chain) {
             if (typeof cand === 'string') {

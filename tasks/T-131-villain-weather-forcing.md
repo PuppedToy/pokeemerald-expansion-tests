@@ -1,10 +1,10 @@
 ---
 id: T-131
 title: Villain weather-forcing (per-team weather → general-weather fallback) + auditability
-status: in-progress
+status: done
 type: feature
 created: 2026-07-13
-updated: 2026-07-13
+updated: 2026-07-14
 target-version: 0.8.0
 links: [T-124, T-125, T-130, T-132]
 blocked-by: [T-130]
@@ -64,3 +64,9 @@ Acceptance criteria:
   type pool has no setter and only guarantee weather when a setter type is in-theme.
 
 ## Outcome
+
+Shipped: per-team weather seeds (Aqua rain/snow, Magma sun/sand, Flannery sun) with per-trainer subtypes and
+auditability. The "general-weather fallback" this task introduced was later SUPERSEDED by T-132 (no
+cross-weather: an off-weather ability scores 0; the themed weather is set via a move-setter when no ability
+setter exists). Net result — villains reliably build their THEMED weather or drop cleanly (3-seed sweep, 0
+half-gimmicks). Closed 2026-07-14 with the weather batch.

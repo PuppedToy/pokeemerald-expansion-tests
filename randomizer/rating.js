@@ -1433,6 +1433,18 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, banne
         }
     });
 
+    // T-129 — items respect roles. A Choice item locks the holder into the first move it uses, so it must
+    // NEVER go on a mon whose set carries a move it can't be locked into: any STATUS move (hazards / setup /
+    // status / recovery) or a REACTIVE damaging move (Counter / Mirror Coat / Metal Burst). Mirrors the
+    // Assault Vest rule below (0 with any status move). Damaging pivots (U-turn / Volt Switch / Flip Turn)
+    // are fine — they switch the holder out, which unlocks it. Without this, a strong attacker was scored
+    // Choice-first even with Stealth Rock / Metal Burst in its set (Champion Steven's Solgaleo).
+    if (item === 'Choice Band' || item === 'Choice Specs' || item === 'Choice Scarf') {
+        const reactiveEffects = ['EFFECT_COUNTER', 'EFFECT_MIRROR_COAT', 'EFFECT_METAL_BURST'];
+        const cannotBeLockedInto = moveset.some(m =>
+            m.category === 'DAMAGE_CATEGORY_STATUS' || reactiveEffects.includes(m.effect));
+        if (cannotBeLockedInto) return 0;
+    }
     if (item === 'Choice Band') {
         return 9 * Math.max(1, physicalOffensePower) * speedPower / specialOffensePower * calculatedDeviation;
     }

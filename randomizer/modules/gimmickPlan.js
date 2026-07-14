@@ -7,25 +7,16 @@
 // (owner-validated): setter + >= 2 abusers, where an abuser is BROAD — an abuser ability, a weather-synergy
 // move, OR a strong attacker of the boosted STAB type. The setter itself may count as an abuser.
 
-const { WEATHER_SUBTYPE_BY_SETTER, SETTERS_BY_SUBTYPE, WEATHER_ABUSER_BY_SUBTYPE } = require('./archetypeRefine');
+const {
+    WEATHER_SUBTYPE_BY_SETTER, SETTERS_BY_SUBTYPE, WEATHER_ABUSER_BY_SUBTYPE, BOOSTED_STAB_TYPE, BOOSTED_DEF_TYPE,
+    SETTER_MOVE_BY_SUBTYPE, SYNERGY_MOVE_BY_SUBTYPE, WEATHER_REQUIRED_ABUSERS: REQUIRED_ABUSERS,
+    EMERGENT_WEATHER_MIN_SOPH, WEATHER_ABUSE_THRESHOLD, WEATHER_STAB_ATK_MIN,
+    WEATHER_ABUSE_ABILITY_PTS, WEATHER_ABUSE_STAB_PTS, WEATHER_ABUSE_DEF_PTS, WEATHER_ABUSE_SYNERGY_PTS,
+    SPEED_MULT_ABILITY, WX_ABUSE_RATING,
+} = require('./weatherConstants');
 
-// Move-based setters, per subtype (the suboptimal "force" path — an ability setter is preferred).
-const SETTER_MOVE_BY_SUBTYPE = {
-    sun: ['MOVE_SUNNY_DAY'], rain: ['MOVE_RAIN_DANCE'], sand: ['MOVE_SANDSTORM'],
-    snow: ['MOVE_SNOWSCAPE', 'MOVE_CHILLY_RECEPTION', 'MOVE_HAIL'],
-};
-// Weather-synergy moves (pseudo-STAB / perfect-accuracy / veil), per subtype — corpus-derived.
-const SYNERGY_MOVE_BY_SUBTYPE = {
-    rain: ['MOVE_THUNDER', 'MOVE_HURRICANE', 'MOVE_WEATHER_BALL', 'MOVE_ELECTRO_SHOT'],
-    sun: ['MOVE_SOLAR_BEAM', 'MOVE_SOLAR_BLADE', 'MOVE_GROWTH', 'MOVE_WEATHER_BALL'],
-    sand: ['MOVE_WEATHER_BALL'],
-    snow: ['MOVE_BLIZZARD', 'MOVE_AURORA_VEIL', 'MOVE_WEATHER_BALL'],
-};
-// The offensive STAB type each weather boosts x1.5 (rain/sun only). A strong attacker of this type is an
-// abuser even without a weather ability/move (the ~30% support-weather teams in the corpus work this way).
-const BOOSTED_STAB_TYPE = { rain: 'WATER', sun: 'FIRE' };
-
-const REQUIRED_ABUSERS = 2;
+// Longevity/utility weather abilities per subtype (valued modestly — staying power, not raw offence).
+const WEATHER_DEFUTIL_ABILITY = { rain: ['HYDRATION', 'RAIN_DISH', 'DRY_SKIN'], snow: ['ICE_BODY'], sun: [], sand: [] };
 
 const asMember = m => (m && m.pokemon) ? m : { pokemon: m, ability: null, moves: [] };
 const memberAbility = m => (m.ability || '').toUpperCase();
@@ -43,32 +34,170 @@ function isWeatherSetter(m, subtype) {
     return memberMoves(m).some(mv => (SETTER_MOVE_BY_SUBTYPE[subtype] || []).includes(mv));
 }
 
-// Is this member an abuser of `subtype` (broad: ability | synergy move | boosted-STAB attacker)?
-// `moves` is the moves DB (id → { type, category, power }) for the boosted-STAB check; optional.
-function isWeatherAbuser(m, subtype, moves = null) {
-    if ((WEATHER_ABUSER_BY_SUBTYPE[subtype] || []).includes(memberAbility(m))) return true;
-    if (memberMoves(m).some(mv => (SYNERGY_MOVE_BY_SUBTYPE[subtype] || []).includes(mv))) return true;
-    const boosted = BOOSTED_STAB_TYPE[subtype];
-    if (boosted) {
-        // a strong attacking move of the boosted type — via the moves DB if given, else the mon's typing.
-        if (moves) {
-            return memberMoves(m).some(id => {
-                const mv = moves[id];
-                return mv && mv.type === boosted && mv.category !== 'DAMAGE_CATEGORY_STATUS' && (mv.power || 0) >= 60;
-            });
-        }
-        return memberTypes(m).includes(boosted);
+// weatherAbuseScore(mon, subtype) — the SINGLE, subtype-specific weather-abuse score (owner-designed,
+// T-132; components + thresholds in weatherConstants). Used identically by the picker, the success
+// condition and the decision-log labels. POTENTIAL-based: it reads the mon's typing / ability / attacking
+// stats / movepool, NOT its exact chosen moveset, so a Water-type on rain counts by nature even if its 4
+// moves didn't happen to include a Water STAB (that was the old fragility). `mon` may be a RESOLVED member
+// ({ pokemon, ability, moves }) — then the ASSIGNED ability is what's scored — or a raw candidate species
+// (parsedAbilities pool). A mon scores 0 for a weather it doesn't fit (a Swift Swimmer scores 0 in sun).
+function weatherAbuseScore(mon, subtype) {
+    const poke = (mon && mon.pokemon) || mon || {};
+    const types = poke.parsedTypes || [];
+    // Relevant abilities: a resolved member's ASSIGNED ability, else the candidate species' ability pool.
+    const abilities = (mon && mon.ability)
+        ? [String(mon.ability).toUpperCase()]
+        : (poke.parsedAbilities || []).map(a => String(a).toUpperCase());
+    const atk = Math.max(poke.baseAttack || 0, poke.baseSpAttack || 0);
+    const synergy = SYNERGY_MOVE_BY_SUBTYPE[subtype] || [];
+    const canSynergy = (poke.learnset || []).some(l => synergy.includes(l.move))
+        || (poke.teachables || []).some(t => synergy.includes(t))
+        || ((mon && mon.moves) || []).some(mv => synergy.includes(mv));
+
+    let score = 0;
+    if (abilities.some(a => (WEATHER_ABUSER_BY_SUBTYPE[subtype] || []).includes(a))) score += WEATHER_ABUSE_ABILITY_PTS;
+    const boostedStab = BOOSTED_STAB_TYPE[subtype];      // rain→Water, sun→Fire (offensive)
+    if (boostedStab && types.includes(boostedStab) && atk >= WEATHER_STAB_ATK_MIN) score += WEATHER_ABUSE_STAB_PTS;
+    const boostedDef = BOOSTED_DEF_TYPE[subtype];         // sand→Rock, snow→Ice (defensive)
+    if (boostedDef && types.includes(boostedDef)) score += WEATHER_ABUSE_DEF_PTS;
+    if (canSynergy) score += WEATHER_ABUSE_SYNERGY_PTS;
+    return score;
+}
+
+// A member is an ABUSER of `subtype` when its weather-abuse score reaches the threshold. (`moves` is kept
+// for signature compatibility with older callers but is no longer needed — the score is potential-based.)
+function isWeatherAbuser(m, subtype, moves = null) { // eslint-disable-line no-unused-vars
+    return weatherAbuseScore(m, subtype) >= WEATHER_ABUSE_THRESHOLD;
+}
+
+// weatherAbuseRating(mon, subtype) — the DETAILED, weather-conditional rating used to RANK eligible abusers
+// for picking (owner "Path 1", T-135). Unlike the coarse eligibility SCORE, this models HOW WELL a mon
+// exploits the active weather, each ability weighted by the stat it actually scales:
+//   • speed-doubling ability (Chlorophyll/Swift Swim/Sand Rush/Slush Rush) → scales with OFFENSIVE power
+//     (a speed multiplier is scariest on a strong attacker);
+//   • Solar Power → scales with SPEED (hit before the HP chip bites) × SpA;
+//   • Protosynthesis → scales with the mon's BEST stat (it boosts the highest one);
+//   • Sand Force → move-power boost, scales with offence;
+//   • boosted-STAB type (rain Water / sun Fire) → STAB'd, weather-boosted attacks, scales with offence;
+//   • boosted-DEF type (sand Rock / snow Ice) → tanks the weather (defensive bulk);
+//   • a synergy move it can field (Solar Beam/Blade, Blizzard, Weather Ball…), + extra when that move is
+//     also STAB (a Grass mon's Solar Beam in sun);
+//   • plus a weighted slice of the mon's base offensive rating (a good abuser is still a good mon).
+// Weights live in weatherConstants.WX_ABUSE_RATING (all tunable). A mon that doesn't fit the weather rates
+// only on its base (a Swift Swimmer in sun == a plain mon).
+// weatherAbuseBreakdown(mon, subtype) → { total, parts:[{k,v}] } — the ITEMISED rating, for auditability
+// (T-135, owner): the decision log shows what each thing contributes, so we can see WHY an abuser ranked
+// where it did. `weatherAbuseRating` is just its `.total`.
+function weatherAbuseBreakdown(mon, subtype) {
+    const poke = (mon && mon.pokemon) || mon || {};
+    const types = poke.parsedTypes || [];
+    const abilities = (mon && mon.ability)
+        ? [String(mon.ability).toUpperCase()]
+        : (poke.parsedAbilities || []).map(a => String(a).toUpperCase());
+    const has = a => a && abilities.includes(a);
+    const atk = poke.baseAttack || 0, spa = poke.baseSpAttack || 0, spe = poke.baseSpeed || 0;
+    const off = Math.max(atk, spa) / 100;
+    const bestStat = Math.max(atk, spa, spe, poke.baseDefense || 0, poke.baseSpDefense || 0, poke.baseHP || 0) / 100;
+    const W = WX_ABUSE_RATING;
+
+    const parts = [];
+    const add = (k, v) => { if (v) parts.push({ k, v: Math.round(v * 100) / 100 }); };
+
+    add('base', W.base * ((poke.rating && poke.rating.absoluteRating) || 0));
+    // Offensive weather ability, scaled by the stat it exploits + a flat floor so a real ability-abuser
+    // outranks a plain boosted-STAB type attacker of similar power (owner: prefer the ability).
+    let hasOffensiveAbility = false;
+    if (has(SPEED_MULT_ABILITY[subtype])) { add(SPEED_MULT_ABILITY[subtype], W.speedMult * off); hasOffensiveAbility = true; }
+    if (subtype === 'sun') {
+        if (has('SOLAR_POWER')) { add('SOLAR_POWER', W.solarPower * (spe / 100) * (spa / 100)); hasOffensiveAbility = true; }
+        if (has('PROTOSYNTHESIS')) { add('PROTOSYNTHESIS', W.proto * bestStat); hasOffensiveAbility = true; }
     }
-    return false;
+    if (subtype === 'sand' && has('SAND_FORCE')) { add('SAND_FORCE', W.powerAbility * off); hasOffensiveAbility = true; }
+    if (hasOffensiveAbility) add('ability-floor', W.abilityFloor);
+    if ((WEATHER_DEFUTIL_ABILITY[subtype] || []).some(has)) add('longevity', W.defUtil);
+    const stabType = BOOSTED_STAB_TYPE[subtype];
+    if (stabType && types.includes(stabType)) add(`${stabType}-STAB`, W.stab * off);
+    const defType = BOOSTED_DEF_TYPE[subtype];
+    if (defType && types.includes(defType)) add(`${defType}-bulk`, W.def * ((poke.baseDefense || 0) + (poke.baseSpDefense || 0) + (poke.baseHP || 0)) / 300);
+    const synergy = SYNERGY_MOVE_BY_SUBTYPE[subtype] || [];
+    const canSyn = (poke.learnset || []).some(l => synergy.includes(l.move))
+        || (poke.teachables || []).some(t => synergy.includes(t))
+        || ((mon && mon.moves) || []).some(mv => synergy.includes(mv));
+    if (canSyn) {
+        add('synergy-move', W.synergy);
+        if (subtype === 'sun' && types.includes('GRASS')) add('solar-STAB', W.synergyStab);
+    }
+    const total = parts.reduce((s, p) => s + p.v, 0);
+    return { total: Math.round(total * 100) / 100, parts };
+}
+
+function weatherAbuseRating(mon, subtype) { return weatherAbuseBreakdown(mon, subtype).total; }
+
+// RC1 (T-132, owner-approved) — MOVE-SETTER retrofit for villains. A weather team FAILS without a setter,
+// but with `mutateAbilities` the setter ABILITIES (Sand Stream, Drizzle, …) are scattered randomly across
+// the dex, so a type-restricted villain often has none in its pool — even when it has plenty of abusers.
+// The owner explicitly allows a SUBOPTIMAL move-setter here: if the built team has no setter, give one of
+// its members the subtype's setter MOVE (Sandstorm / Rain Dance / Sunny Day / Hail-Snowscape). Prefer a
+// NON-abuser carrier so the abuser count is preserved. Mutates `team` in place; returns true if it injected
+// (or a setter was already present is handled by the no-op guard → returns false). The weather-setting
+// moves are among the earliest TMs, so this stays within the spirit of B-030 (no late-TM leakage).
+function ensureMoveSetter(team, subtype) {
+    const members = (team || []).map(asMember);
+    if (members.some(m => isWeatherSetter(m, subtype))) return false; // already has a setter (ability or move)
+    const setterMoves = SETTER_MOVE_BY_SUBTYPE[subtype] || [];
+    if (!setterMoves.length) return false;
+    const learnableMove = m => {
+        const poke = m.pokemon || {};
+        const ls = (poke.learnset || []).map(l => l.move);
+        const tc = poke.teachables || [];
+        return setterMoves.find(mv => ls.includes(mv) || tc.includes(mv)) || null;
+    };
+    // Prefer a NON-abuser carrier (so we don't spend an abuser's slot on the setter move); else any learner.
+    const target = members.find(m => learnableMove(m) && weatherAbuseScore(m, subtype) < WEATHER_ABUSE_THRESHOLD)
+        || members.find(m => learnableMove(m));
+    if (!target) return false;
+    const move = learnableMove(target);
+    const moves = target.moves || (target.moves = []);
+    if (!moves.includes(move)) {
+        if (moves.length >= 4) moves[moves.length - 1] = move; else moves.push(move);
+    }
+    return true;
+}
+
+// The weather subtype a RESOLVED team actually establishes (its setter's ability, else a setter move), or
+// null. Used to tell a tag partner (Tabitha) what weather its ally (Maxie) put up, so it can abuse it.
+function teamWeather(team) {
+    for (const m of (team || []).map(asMember)) {
+        const ab = setterSubtype(m);
+        if (ab) return ab;
+        for (const sub of Object.keys(SETTER_MOVE_BY_SUBTYPE)) {
+            if (memberMoves(m).some(mv => SETTER_MOVE_BY_SUBTYPE[sub].includes(mv))) return sub;
+        }
+    }
+    return null;
+}
+
+// T-136 — should a NON-DEDICATED team opportunistically build weather? Returns the subtype to ATTEMPT
+// (setter + 2 abusers) or null. Fires only when the trainer has NO weather intent of its own (not weather-
+// seeded/committed, not a tag abuse-partner), is sophisticated enough (≥ EMERGENT_WEATHER_MIN_SOPH), and its
+// committed plain build actually FIELDED a natural setter (ability or move). Pure — the resolver runs the
+// build + hold/drop from the returned subtype.
+function emergentWeatherSubtype({ committedSeed = null, abusePartner = false, soph = 0, team = [] } = {}) {
+    if (committedSeed && (committedSeed.gimmicks || []).includes('weather')) return null;
+    if (abusePartner) return null;
+    if (!(soph >= EMERGENT_WEATHER_MIN_SOPH)) return null;
+    return teamWeather(team);
 }
 
 // Does the weather gimmick hold for this resolved team? subtype = the intended weather (from the seed) or,
 // if omitted, inferred from whatever setter the team actually fields. ctx.moves = the moves DB (optional).
+// ctx.abuseOnly (T-132) = a tag partner abusing an ALLY's weather (Tabitha under Maxie's sun): it needs no
+// setter of its own — just ≥2 abusers of the given subtype.
 function weatherHolds(team, ctx = {}, subtype = null) {
     const members = (team || []).map(asMember);
     const sub = subtype || members.map(setterSubtype).find(Boolean);
     if (!sub) return false;
-    if (!members.some(m => isWeatherSetter(m, sub))) return false;
+    if (!ctx.abuseOnly && !members.some(m => isWeatherSetter(m, sub))) return false;
     const abusers = members.filter(m => isWeatherAbuser(m, sub, ctx.moves || null)).length;
     return abusers >= REQUIRED_ABUSERS;
 }
@@ -111,7 +240,11 @@ function gimmickFallbackChain(seed, trainerId = '') {
     if (!gimmicks.length) return [seed];
     const dropped = { ...seed, gimmicks: gimmicks.filter(g => g !== 'weather' && g !== gimmicks[0]) };
     delete dropped.weather;
+    delete dropped.abuseOnly;
     if (gimmicks.includes('weather')) {
+        // T-132 — abuse-only (a tag partner following its ally's weather): don't try OTHER weathers, only
+        // the ally's — [abuse that weather, else a normal team]. It has no setter to swap.
+        if (seed.abuseOnly) return [seed, dropped];
         const themed = seed.weather || null;
         const others = ALL_WEATHERS.filter(w => w !== themed)
             .sort((a, b) => hashStr(trainerId + a) - hashStr(trainerId + b));
@@ -123,6 +256,7 @@ function gimmickFallbackChain(seed, trainerId = '') {
 }
 
 module.exports = {
-    gimmickHolds, weatherHolds, isWeatherSetter, isWeatherAbuser, setterSubtype, gimmickFallbackChain,
+    gimmickHolds, weatherHolds, isWeatherSetter, isWeatherAbuser, weatherAbuseScore, weatherAbuseRating,
+    weatherAbuseBreakdown, ensureMoveSetter, setterSubtype, teamWeather, emergentWeatherSubtype, gimmickFallbackChain,
     SETTER_MOVE_BY_SUBTYPE, SYNERGY_MOVE_BY_SUBTYPE, BOOSTED_STAB_TYPE, REQUIRED_ABUSERS,
 };

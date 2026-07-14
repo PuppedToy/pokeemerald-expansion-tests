@@ -13,7 +13,19 @@ const { detectFeatures } = require('./modules/featureDetectors');
 const { resolveIdentity, BIAS_MIN_SOPH, BIAS_STRENGTH } = require('./modules/archetypePicker');
 const { combinedStructure } = require('./modules/archetypeFit');
 const { resolvedDetectMon } = require('./modules/archetypeRefine');
+const { isWeatherSetter, isWeatherAbuser, weatherHolds } = require('./modules/gimmickPlan');
 const { TRAINER_REPEAT_ID } = require('./constants');
+
+// T-132 — the weather subtype a trace's team actually runs: the committed seed's theme, else inferred
+// from whatever setter the team fields. Used to make the log's setter/abuser labels SUBTYPE-AWARE (the
+// generic featureDetectors are weather-agnostic + ability-only, so they mislabel a Swift Swimmer on a sun
+// team as an abuser and miss the boosted-STAB/DEF type abusers — the same weatherAbuseScore the builder
+// uses now drives the labels).
+function weatherSubtypeOf(seed, team) {
+    if (seed && (seed.gimmicks || []).includes('weather') && seed.weather) return seed.weather;
+    for (const m of (team || [])) { const s = m && m.ability && require('./modules/gimmickPlan').setterSubtype(m); if (s) return s; }
+    return null;
+}
 
 // T-106/T-117 — where a slot's mon came from, for the backwards-continuity audit. Backwards generation
 // is the riskiest path, so the log must make explicit what is INHERITED by continuity id, how it is
@@ -46,7 +58,10 @@ const nameify = (id, prefix) => (id || '')
 const GIMMICK_SETTER_ROLE = {
     weather: 'weatherSetter', trick_room: 'trickRoomSetter', screens: 'screenSetter', trapping: 'trapper',
 };
-function gimmickMaterialised(gimmickId, team, ctx) {
+function gimmickMaterialised(gimmickId, team, ctx, subtype = null) {
+    // Weather uses the SAME success condition as the builder (setter + 2 abusers, subtype-aware) so the
+    // log's "materialised / dropped" verdict never disagrees with what the resolver actually committed.
+    if (gimmickId === 'weather') return weatherHolds(team, ctx, subtype);
     const role = GIMMICK_SETTER_ROLE[gimmickId];
     if (!role) return true; // unknown gimmick → don't drop
     return (team || []).some(m => detectFeatures(resolvedDetectMon(m), ctx).has(role));
@@ -71,6 +86,16 @@ function createTeamAudit() {
                 // ability), not the species potential, so "fills X" means the mon really delivers X.
                 const feats = detectFeatures(member ? resolvedDetectMon(member) : chosenMon, ctx);
                 roles = structure.filter(s => feats.has(s.role)).map(s => s.role);
+                // T-132 — SUBTYPE-AWARE weather labels: replace the generic (agnostic, ability-only)
+                // weatherSetter/weatherAbuser with the builder's own definition (isWeatherSetter includes
+                // move-setters; isWeatherAbuser = weatherAbuseScore ≥ threshold, subtype-specific). So the
+                // log stops mislabeling a foreign-weather ability as an abuser and stops missing type abusers.
+                const wxSub = weatherSubtypeOf(seed, [...(priorTeam || []), member].filter(Boolean));
+                if (wxSub && member) {
+                    roles = roles.filter(r => r !== 'weatherSetter' && r !== 'weatherAbuser');
+                    if (isWeatherSetter(member, wxSub)) roles.push('weatherSetter');
+                    if (isWeatherAbuser(member, wxSub)) roles.push('weatherAbuser');
+                }
             }
             cur.slots.push({
                 species: chosenMon ? chosenMon.id : null,
@@ -81,8 +106,26 @@ function createTeamAudit() {
             });
         },
 
-        finishTeam({ team, model, ctx, seed }) {
+        // T-132 — after a weather attempt retrofits a MOVE-setter (gimmickPlan.ensureMoveSetter), the
+        // injected move landed AFTER recordSlot ran, so re-derive the weather labels for the final team so
+        // the setter mon actually shows "weatherSetter". Matched by species (slot order can diverge from
+        // team order when a slot is dropped).
+        relabelWeather(team, subtype) {
+            if (!cur || !subtype) return;
+            const bySpecies = new Map();
+            (team || []).forEach(m => { const id = m && m.pokemon && m.pokemon.id; if (id && !bySpecies.has(id)) bySpecies.set(id, m); });
+            (cur.slots || []).forEach(slot => {
+                const m = bySpecies.get(slot.species);
+                if (!m) return;
+                slot.rolesFilled = (slot.rolesFilled || []).filter(r => r !== 'weatherSetter' && r !== 'weatherAbuser');
+                if (isWeatherSetter(m, subtype)) slot.rolesFilled.push('weatherSetter');
+                if (isWeatherAbuser(m, subtype)) slot.rolesFilled.push('weatherAbuser');
+            });
+        },
+
+        finishTeam({ team, model, ctx, seed, weatherPicks }) {
             if (!cur) return;
+            if (weatherPicks && weatherPicks.length) cur.weatherPicks = weatherPicks; // T-135 — abuser rankings
             const id = model ? resolveIdentity((team || []).map(asPoke), model, ctx, seed) : null;
             // Every gimmick the identity/seed WANTED (emergent + seeded), before checking support.
             const candidateGimmicks = Array.from(new Set([
@@ -90,8 +133,13 @@ function createTeamAudit() {
                 ...((seed && seed.gimmicks) ? seed.gimmicks : []),
             ]));
             // T-124 — DROP a gimmick that didn't materialise (its setter isn't actually delivered), so the
-            // log reflects reality: the trainer tried it but its restrictions couldn't support it.
-            const gimmicks = candidateGimmicks.filter(g => gimmickMaterialised(g, team, ctx));
+            // log reflects reality: the trainer tried it but its restrictions couldn't support it. Weather
+            // is judged by the subtype-aware success condition (T-132), matching the resolver's own commit.
+            // T-135 — a tag partner abusing an ALLY's weather (abuseOnly) needs no setter of its own, so pass
+            // the flag through: it materialised as an abuser, not "dropped — setter not delivered".
+            const wxSub = weatherSubtypeOf(seed, team);
+            const wxCtx = { ...ctx, abuseOnly: !!(seed && seed.abuseOnly) };
+            const gimmicks = candidateGimmicks.filter(g => gimmickMaterialised(g, team, wxCtx, wxSub));
             // T-130 — record what was DROPPED so the renderer can explain why (auditability).
             cur.finalIdentity = id ? { base: id.baseId, source: id.source, gimmicks } : null;
             cur.candidateGimmicks = candidateGimmicks;
@@ -109,11 +157,14 @@ function createTeamAudit() {
 
 // A no-op collector (default when auditing is off) so the resolver can call unconditionally.
 function noopTeamAudit() {
-    return { beginTeam() {}, recordSlot() {}, finishTeam() {}, all() { return []; }, absorb() {} };
+    return { beginTeam() {}, recordSlot() {}, relabelWeather() {}, finishTeam() {}, all() { return []; }, absorb() {} };
 }
 
 function seedStr(seed) {
     if (!seed || !seed.base) return 'none';
+    // T-136 — an EMERGENT weather build had no pre-seed of its own; it discovered the weather from a rolled
+    // setter. Render honestly as "none → emergent <subtype>", not as if it were a themed seed.
+    if (seed.emergent) return `none → emergent ${seed.weather || (seed.gimmicks || []).join('+')}`;
     return seed.base + (seed.gimmicks && seed.gimmicks.length ? '+' + seed.gimmicks.join('+') : '');
 }
 
@@ -173,6 +224,12 @@ function renderTeamAuditText(teams, { engineThreshold = BIAS_MIN_SOPH } = {}) {
             const tried = t.rolledBack.attempts > 0 ? ` (after ${t.rolledBack.attempts} attempt(s))` : '';
             lines.push(`  → ${t.rolledBack.gimmick} intended but ROLLED BACK${tried}: couldn't build its setter + 2 abusers within the trainer's restrictions.`);
         }
+        // T-136 — a NON-DEDICATED team rolled a weather setter, so the engine tried to build that weather but
+        // couldn't gather enough abusers → kept the plain team. Reported so the "why no weather" is auditable.
+        if (t.emergentWeatherDropped) {
+            const d = t.emergentWeatherDropped;
+            lines.push(`  → ${d.subtype} weather EMERGED (a setter was rolled) but was DROPPED: only ${d.abusers} abuser(s) buildable within the team, needs ${d.required}. Kept as a normal team.`);
+        }
         // Slots are listed regardless of the archetype threshold: continuity provenance (inherited /
         // devolved) matters most at the low-level EARLY appearances of a recurring character (T-106).
         (t.slots || []).forEach((s, i) => {
@@ -188,6 +245,27 @@ function renderTeamAuditText(teams, { engineThreshold = BIAS_MIN_SOPH } = {}) {
             const roles = s.rolesFilled && s.rolesFilled.length ? ` → fills ${s.rolesFilled.join(', ')}` : '';
             const rm = s.roleMove ? `  [+${nameify(s.roleMove, 'MOVE_')}]` : '';
             lines.push(`  slot ${i + 1}: ${sp} — ${id}${roles}${rm}${prov}`);
+        });
+        // T-135 — weather-abuser RANKING: for each abuser actually placed, the eligible abusers ranked by
+        // the weather-abuse rating, with the itemised score breakdown, and which one was picked. Makes the
+        // "why this abuser" decision auditable (sophistication pulls the pick toward the top of this list).
+        // The picker records a ranking on every abuser hard-restrict; keep only the ones whose pick landed
+        // on the final team (a slot's earlier attempts get discarded by tier/family fallback), de-duped.
+        const placed = new Set(t.finalTeam || []);
+        const seenPick = new Set();
+        const shownPicks = (t.weatherPicks || []).filter(wp => {
+            if (!placed.has(wp.pickedId) || seenPick.has(wp.pickedId)) return false;
+            seenPick.add(wp.pickedId); return true;
+        });
+        shownPicks.forEach((wp, k) => {
+            const pull = wp.pullExp != null ? ` (soph-pull ^${wp.pullExp} → higher = top dominates)` : '';
+            lines.push(`  → ${wp.subtype} abuser pick #${k + 1} — ${wp.nEligible || wp.ranked.length} eligible, ranked by weather-abuse rating${pull}:`);
+            wp.ranked.forEach(c => {
+                const parts = (c.parts || []).map(p => `${p.k} ${p.v >= 0 ? '+' : ''}${p.v}`).join(', ');
+                const rank = c.rank ? `#${c.rank} ` : '';
+                const mark = c.id === wp.pickedId ? ' ‹picked›' : '';
+                lines.push(`      ${rank}${nameify(c.id, 'SPECIES_').padEnd(18)} ${String(c.total).padStart(5)}  [${parts}]${mark}`);
+            });
         });
         lines.push('');
     }

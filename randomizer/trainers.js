@@ -188,6 +188,11 @@ const ABSOLUTE_POKEDEF_LEGEND = { absoluteTier: [TIER_LEGEND], checkValidEvo: tr
 // the signature, the { mega } rung and the final fallback alike — no per-rung type lists needed.
 const villainFavourite = (aceMega) => [aceMega, { mega: true }];
 
+// likedFavourite('SPECIES_GROUDON') → a "liked" mascot (owner, T-132): claims its slot exactly like a
+// favourite, but breeds GOOD instead of PERFECT — the box legendary shouldn't get perfect IVs. The
+// { chain, goodBreed } object is read by favouriteClaim (bare arrays stay perfect-breed favourites).
+const likedFavourite = (species) => ({ chain: [species], goodBreed: true });
+
 // T-128 — a gym leader's favourite is EXCLUSIVELY its signature species. It claims a pool slot of that
 // species' actual tier (or the {isMega} slot if it is a mega), else drops to the standard restriction-
 // bounded fallback (implicit). The gym's rolled-type restriction lives at the trainer level.
@@ -231,6 +236,12 @@ const CONTINUITY_GROUPS = [
         auth: `TRAINER_MAY_EVERGRANDE_CITY_${s}`,
         members: [`TRAINER_MAY_ROUTE_103_${s}`, `TRAINER_MAY_RUSTBORO_${s}`, `TRAINER_MAY_ROUTE_110_${s}`, `TRAINER_MAY_ROUTE_119_${s}`],
     })),
+    // T-134 — CROSS-character mascot foreshadow (owner): a faction's early grunt LEADS a devolved copy of
+    // its leader's signature mega (the "mascot"), so it must be built AFTER the leader (whose mega is stored
+    // under ARCHIE_MEGA / MAXIE_MEGA) but SHOWN in its own early position (displayOrder). Reuses the exact
+    // hoist + REPEAT_ID + devolveToLevel mechanism as the same-character continuity above.
+    { auth: 'TRAINER_ARCHIE', members: ['TRAINER_GRUNT_PETALBURG_WOODS'] },
+    { auth: 'TRAINER_MAXIE_MAGMA_HIDEOUT', members: ['TRAINER_GRUNT_RUSTURF_TUNNEL'] },
 ];
 
 
@@ -1191,7 +1202,12 @@ const trainersData = [
         // T-128 — aqua types are a trainer restriction; team is the full preset pool.
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
         types: [...aquaTeamTypes],
-        team: getBossPreset('PETALBURG_WOODS_GRUNT').map(s => ({ ...s })),
+        // T-134 — slot 1 foreshadows Archie's signature mascot (Mega Sharpedo, stored ARCHIE_MEGA), devolved
+        // to this grunt's level (→ baby Carvanha). REPEAT_ID reads whatever mega Archie actually committed.
+        team: [
+            { special: TRAINER_REPEAT_ID, id: 'ARCHIE_MEGA', devolveToLevel: true },
+            ...getBossPreset('PETALBURG_WOODS_GRUNT').map(s => ({ ...s })).slice(1),
+        ],
     },
     {
         id: 'TRAINER_JAMES_1',
@@ -1354,7 +1370,12 @@ const trainersData = [
         // T-128 — magma types are a trainer restriction; team is the full preset pool.
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
         types: [...magmaTeamTypes],
-        team: getBossPreset('RUSTURF_GRUNT').map(s => ({ ...s })),
+        // T-134 — slot 1 foreshadows Maxie's signature mascot (Mega Camerupt, stored MAXIE_MEGA by Magma
+        // Hideout), devolved to this grunt's level (→ baby Numel). REPEAT_ID reads Maxie's committed mega.
+        team: [
+            { special: TRAINER_REPEAT_ID, id: 'MAXIE_MEGA', devolveToLevel: true },
+            ...getBossPreset('RUSTURF_GRUNT').map(s => ({ ...s })).slice(1),
+        ],
     },
     // Route 116 again
     {
@@ -1624,7 +1645,6 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_9'],
         level: 24,
-        preventShuffle: true,
         bag: [...slateportGruntsBag()],
         // T-128 — aqua types are a trainer restriction; team is the full preset pool.
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
@@ -1638,7 +1658,6 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_9'],
         level: 24,
-        preventShuffle: true,
         bag: [...slateportGruntsBag()],
         // T-128 — aqua types are a trainer restriction; team is the full preset pool.
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
@@ -1993,7 +2012,6 @@ const trainersData = [
         class: 'Magma Admin',
         isBoss: true,
         level: 32,
-        preventShuffle: true,
         bag: [...magmaChimneyBag()],
         // T-128 — magma types are a trainer restriction; team is the full preset pool (no mega).
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
@@ -2007,7 +2025,6 @@ const trainersData = [
         isBoss: true,
         reward: ['Good Rod'],
         level: 33,
-        preventShuffle: true,
         bag: [...magmaChimneyBag()],
         // T-128 — the magma team types are a trainer restriction; team is the full preset pool. Maxie's
         // favourite is Mega Camerupt (claims the ≤OU mega slot, tagged MAXIE_MEGA for cross-appearance
@@ -2695,7 +2712,6 @@ const trainersData = [
         class: 'Magma Leader Maxie',
         isBoss: true,
         level: 51,
-        preventShuffle: true,
         bag: [...wallyBag2()],
         // T-128 — magma types are a trainer restriction; team is the full preset pool. Maxie's favourite
         // Mega Camerupt (tagged MAXIE_MEGA) claims the ≤OU mega slot — the same signature as his other
@@ -2753,7 +2769,6 @@ const trainersData = [
         class: 'Aqua Admin M',
         isBoss: true,
         level: 54,
-        preventShuffle: true,
         bag: [...wallyBag2()],
         // T-128 — aqua types are a trainer restriction; team is the full preset pool (incl. its ≤OU mega
         // slot). No signature ace; the old forced Snow Warning weather-mega is dropped (weather comes from
@@ -2831,9 +2846,7 @@ const trainersData = [
         class: 'Leader Tate And Liza',
         level: 56,
         isBoss: true,
-        reward: ['GYM_REWARD_7', 'Access to Shoal Cave', tmItem(91)],
-        preventShuffle: true,
-        bag: [...tateAndLizaBag()],
+        reward: ['GYM_REWARD_7', 'Access to Shoal Cave', tmItem(91)],        bag: [...tateAndLizaBag()],
         // T-128 — Psychic is a trainer restriction; team is the full preset pool (UBERS/UBERS/OU/UU/RU +
         // ≤UBERS mega). Two favourites (Solgaleo≫Solrock, Lunala≫Lunatone) claim slots first; being
         // legendary they normally exceed the UBERS budget and drop to Solrock/Lunatone (their actual
@@ -2944,9 +2957,7 @@ const trainersData = [
         id: 'PARTNER_STEVEN',
         class: 'Steven',
         isPartner: true,
-        breedTier: 'perfect',
-        preventShuffle: true,
-        level: 59,
+        breedTier: 'perfect',        level: 59,
         bag: [...spaceCenterBag()],
         // T-106 — the Mossdeep partner now ECHOES the Champion's authoritative roster, devolved to lvl 59.
         team: [
@@ -2973,8 +2984,11 @@ const trainersData = [
         class: 'Magma Admin',
         isBoss: true,
         level: 59,
-        preventShuffle: true,
         bag: [...spaceCenterBag()],
+        // T-132 — Mossdeep is a TAG battle alongside Maxie: Tabitha has NO weather of her own; she abuses
+        // whatever weather Maxie actually establishes (usually sun via Groudon), or builds a normal team if
+        // Maxie sets none. Resolved AFTER Maxie (writerDocs defers her); overrides her own sand seed.
+        abusePartnerWeather: 'TRAINER_MAXIE_MOSSDEEP',
         // T-128 — magma types are a trainer restriction; team is the full preset pool (OU/UU + ≤OU mega).
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
         types: [...magmaTeamTypes],
@@ -2987,7 +3001,6 @@ const trainersData = [
         isBoss: true,
         breedTier: 'perfect',
         level: 59,
-        preventShuffle: true,
         bag: [...spaceCenterBag()],
         // T-128 — magma types are a trainer restriction; team is the full preset pool (LEGEND/OU/UBERS-
         // mega). Two favourites: Groudon (claims the LEGEND slot — weather now comes from the seed, not a
@@ -2995,7 +3008,7 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
         types: [...magmaTeamTypes],
         favourites: [
-            ['SPECIES_GROUDON'],
+            likedFavourite('SPECIES_GROUDON'),
             villainFavourite('SPECIES_CAMERUPT_MEGA'),
         ],
         favouriteIds: ['MAXIE_GROUDON', 'MAXIE_MEGA'],
@@ -3098,16 +3111,14 @@ const trainersData = [
         reward: ['Access to Sky Pillar'],
         isBoss: true,
         level: 61,
-        bag: [...archieBag()],
-        preventShuffle: true,
-        // T-128 — aqua types are a trainer restriction; team is the full preset pool (LEGEND/OU/OU/UU/UU +
+        bag: [...archieBag()],        // T-128 — aqua types are a trainer restriction; team is the full preset pool (LEGEND/OU/OU/UU/UU +
         // ≤OU mega). Two favourites: Kyogre (claims the LEGEND slot — weather now comes from the seed, not
         // a hardcoded Damp Rock) and Mega Sharpedo (claims the mega slot), else a themed mega, else the
         // standard aqua-typed fallback.
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
         types: [...aquaTeamTypes],
         favourites: [
-            ['SPECIES_KYOGRE'],
+            likedFavourite('SPECIES_KYOGRE'),
             villainFavourite('SPECIES_SHARPEDO_MEGA'),
         ],
         favouriteIds: ['ARCHIE_KYOGRE', 'ARCHIE_MEGA'],

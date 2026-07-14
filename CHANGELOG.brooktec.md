@@ -23,6 +23,27 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   if it is a mega — and DROPS to the trainer's type-restricted fallback when it doesn't fit, never
   downgrading. Trainer types are now a single trainer-level restriction, not per-slot hardcoding (T-128).
 
+- **Weather leads go first, and tag partners share weather.** A weather team sends its setter out first
+  (95%, ahead of a Stealth Rock lead) so the weather is up turn 1. In the Mossdeep tag battle, Tabitha
+  no longer runs her own sandstorm — she abuses whatever weather Maxie sets (his Groudon's sun), or builds
+  a normal team if he sets none. Team Aqua/Magma leaders' signature legendaries (Kyogre, Groudon) are
+  now "liked" mascots — strong but not perfect-IV (T-132).
+
+- **Weather villains now actually build their weather.** The themed weather teams field a real
+  setter + 2 abusers of their weather: Team Aqua rain (Museum grunt, Archie) and snow/hail (Museum grunt,
+  Matt); Team Magma sun (Maxie) and sandstorm (Tabitha). The team is built under a tentative weather tag
+  (the setter picked first, then abusers, with weather-synergy moves surfaced across the team) and, if the
+  restricted roster can't support the setter + 2 abusers, it cleanly rolls back to another weather or a
+  normal team — never a half-built gimmick. Sand and hail count Rock / Ice cores as abusers (their ×1.5
+  SpDef / Def is the payoff), matching how rain/sun teams lean on boosted-STAB attackers (T-131, T-132).
+
+- **Skilled trainers now build weather they stumble into — no longer just the themed villains.** A
+  non-dedicated trainer that happens to roll a weather setter (a Kyogre, Politoed, Torkoal…) now builds
+  that weather properly around it — setter + 2 abusers, chosen by the same ranking the villains use —
+  instead of leaving the setter idle; if it can't gather two abusers it keeps a normal team. This only
+  kicks in from mid-game skill upward. Flannery is no longer forced into sun: she runs it only when her
+  Fire roster naturally rolls a setter, and stays a normal Fire team otherwise (T-136).
+
 - **"Next boss" is a shortcut in the docs.** Clicking the top-bar *Next boss* stat jumps to the
   Trainers tab and scrolls that boss's card into view (with a brief highlight). Keyboard-accessible
   (T-082).
@@ -33,6 +54,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   show the taught move's description (T-078).
 
 ### Fixed
+
+- **No more Choice items on the wrong Pokémon.** A Choice item (Band/Specs/Scarf) locks its holder into
+  one move, so it is no longer assigned to a Pokémon whose set carries a move it must not be locked into —
+  any status/hazard/setup move, or a reactive move (Counter/Mirror Coat/Metal Burst). Champion Steven's
+  Solgaleo no longer runs Choice Specs alongside Stealth Rock / Metal Burst; it gets a non-locking item
+  instead. Damaging pivots (U-turn/Volt Switch) still pair with Choice, as they should (T-129).
 
 - **Trainers can no longer teach a TM the player hasn't reached yet.** An archetype role move (or a
   team's `tryToHaveMove`) could inject a teachable move regardless of TM access — e.g. Wattson's Oricorio

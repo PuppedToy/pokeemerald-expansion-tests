@@ -87,11 +87,11 @@ describe('buildTrainersResultsSimplified', () => {
         expect(res.TRAINER_A.displayTeam).toBeUndefined();
     });
 
-    test('preventShuffle → team stays default order and no displayTeam, even when OFF', () => {
-        const trainers = makeTrainers({ preventShuffle: true });
-        const defaultIds = trainers.TRAINER_A.team.map(m => m.pokemon.id);
+    // T-132 — preventShuffle was REMOVED (its purpose, keeping a designed order, is now served by
+    // applyLeadLogic). The flag is ignored: every trainer shuffles + gets a displayTeam when OFF.
+    test('preventShuffle is IGNORED (removed) — the team still shuffles + gets a displayTeam when OFF', () => {
+        const trainers = makeTrainers({ preventShuffle: true }); // flag no longer has any effect
         const res = buildTrainersResultsSimplified(trainers, { showExactPositions: false, baseRngSeed: 7 });
-        expect(ids(res.TRAINER_A.team)).toEqual(defaultIds);
-        expect(res.TRAINER_A.displayTeam).toBeUndefined();
+        expect(res.TRAINER_A.displayTeam).toBeDefined();
     });
 });

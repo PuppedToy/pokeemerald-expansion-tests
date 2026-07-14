@@ -98,4 +98,20 @@ describe('resolveFavourites (T-128 pool consumption)', () => {
         const team = absPool('OU', 'UU');
         expect(resolveFavourites(team, null, ctx())).toEqual(team);
     });
+
+    // T-132 (owner) — a "liked" favourite: same claim, but goodBreed instead of perfectBreed (the mascot
+    // Groudon/Kyogre shouldn't get perfect IVs). Expressed as { chain, goodBreed:true } (clone-safe object).
+    test('a { chain, goodBreed } favourite claims with breedTier "good", not "perfect"', () => {
+        const team = absPool('LEGEND', 'PU');
+        const out = resolveFavourites(team, [{ chain: ['SPECIES_SOLGALEO'], goodBreed: true }], ctx());
+        expect(out[0].specific).toBe('SPECIES_SOLGALEO');
+        expect(out[0].__favourite).toBe(true);
+        expect(out[0].breedTier).toBe('good');
+    });
+
+    test('a bare-array favourite still defaults to breedTier "perfect"', () => {
+        const team = absPool('LEGEND', 'PU');
+        const out = resolveFavourites(team, [['SPECIES_SOLGALEO']], ctx());
+        expect(out[0].breedTier).toBe('perfect');
+    });
 });

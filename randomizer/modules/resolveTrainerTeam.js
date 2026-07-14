@@ -40,7 +40,8 @@ const { makeArchetypePicker, BIAS_MIN_SOPH } = require('./archetypePicker');
 const { planMemberRoleMove, planMemberAbility, WEATHER_ROCK_BY_SETTER, ELECTRIC_MOVES } = require('./archetypeRefine');
 const { getTrainerSeed } = require('./trainerSeeds');
 const { resolveFavourites } = require('./favouriteClaim');
-const { gimmickHolds, gimmickFallbackChain } = require('./gimmickPlan');
+const { gimmickHolds, gimmickFallbackChain, ensureMoveSetter, teamWeather, emergentWeatherSubtype, weatherHolds, isWeatherAbuser } = require('./gimmickPlan');
+const { WEATHER_REQUIRED_ABUSERS } = require('./weatherConstants');
 const { getArchetypeModel } = require('../archetypes');
 const { noopTeamAudit, createTeamAudit } = require('../teamAudit');
 const { noopDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
@@ -106,6 +107,10 @@ function createTeamResolver(deps) {
 
     const storedIds = {};
     const pokeIdIVCache = {};
+    // T-132 — the weather each resolved trainer actually established (subtype | null), keyed by id. A tag
+    // partner with `abusePartnerWeather` reads its ally's entry to decide what weather to ABUSE (Tabitha
+    // Mossdeep follows Maxie's sun). The caller must resolve the ally BEFORE the dependent (see writerDocs).
+    const committedWeather = {};
 
     function generateIVs(breedTier, pokeId, cache = pokeIdIVCache) {
         if (pokeId && cache[pokeId]) return cache[pokeId];
@@ -140,6 +145,7 @@ function createTeamResolver(deps) {
             team, foundMega: false, storedIds,
             sophistication: archetypeSeed ? Math.max(sophistication(trainer), SEED_SOPH_FLOOR) : sophistication(trainer),
             archetypeSeed,
+            weatherPicks: [], // T-135 — the picker records each abuser slot's ranking here, for the audit log
         };
         const archetypeModel = getArchetypeModel(/double/i.test(trainer.battleType || '') ? 'doubles' : 'singles');
         const pickCandidate = makeArchetypePicker({ model: archetypeModel, context, ctx: { moves } });
@@ -229,6 +235,9 @@ function createTeamResolver(deps) {
                     breedTier: effectiveBreedTier,
                     pokeId,
                     ivs: generateIVs(effectiveBreedTier, pokeId, attemptIVCache),
+                    // T-135 — a FORCED pick (the favourite ace) shouldn't consume the "pick 2 good ranked
+                    // abusers" budget; the picker excludes it from the abuser-slot count.
+                    __favourite: !!(trainerMonDefinition && trainerMonDefinition.__favourite),
                 };
 
                 // B-030 — a move INJECTED beyond chooseMoveset's own (already TM-gated) selection must
@@ -272,6 +281,11 @@ function createTeamResolver(deps) {
                 // weather-abuser fallback keeps its weather ability instead of a generic one).
                 // `ability` (the pick on the chosen/mega form) stays in scope for the downstream
                 // moveset/nature/item code below.
+                // T-132 (owner) — on a weather attempt, the ability picker is WEATHER-AWARE: an off-weather
+                // ability scores 0 (a Drizzle mon never sets rain on a snow team; a Swift Swimmer isn't
+                // "used" on a sand team) and the ACTIVE weather's ability is preferred (Leaf Guard in sun).
+                const wxAbilitySubtype = context.archetypeSeed && (context.archetypeSeed.gimmicks || []).includes('weather')
+                    ? context.archetypeSeed.weather || null : null;
                 const { ability, originalAbility } = pickTrainerMonAbility({
                     chosenTrainerMon,
                     baseFormMon,
@@ -285,6 +299,7 @@ function createTeamResolver(deps) {
                         species: chosenTrainerMon, team, model: archetypeModel,
                         ctx: { moves }, sophistication: context.sophistication, seed: context.archetypeSeed,
                     }),
+                    weatherSubtype: wxAbilitySubtype,
                 });
                 newTeamMember.ability = originalAbility;
 
@@ -319,6 +334,17 @@ function createTeamResolver(deps) {
                     sand: team.some(m => m.ability === 'SAND_STREAM' || (m.moves || []).includes('MOVE_SANDSTORM')),
                     powerHerb: newTeamMember.item === 'Power Herb' || (trainer.bag || []).includes('Power Herb'),
                 };
+                // T-132 — under a tentative weather tag (a weather-seeded/crystallised attempt), build every
+                // member AS IF the weather is already up, even before the setter lands. The setter is often
+                // picked LATER than its abusers (setters live in the high-tier slots), so without this the
+                // early abusers see no weather and the rater never surfaces their synergy moves (Blizzard/
+                // Aurora Veil/Weather Ball/Solar Beam/Thunder) — which is the ONLY abuser path snow & sand
+                // have (no boosted-STAB, per docs/research/weather.md). The attempt is discarded anyway if no
+                // setter ultimately materialises, so assuming the tag is safe. Soph-gated → early game intact.
+                const taggedWeather = context.sophistication >= BIAS_MIN_SOPH
+                    && context.archetypeSeed && (context.archetypeSeed.gimmicks || []).includes('weather')
+                    && context.archetypeSeed.weather;
+                if (taggedWeather) selCtx[taggedWeather] = true;
 
                 // Palafin Zero is placed but battles as Hero — use Hero stats/typing for the
                 // stat-based decisions (moveset, item, nature) while keeping the placed species id.
@@ -395,7 +421,16 @@ function createTeamResolver(deps) {
             );
         }
 
-        attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed });
+        // RC1 (T-132) — if this weather attempt built its abusers but has NO setter (common when
+        // `mutateAbilities` scattered the setter ABILITY out of this trainer's pool), retrofit a suboptimal
+        // themed MOVE-setter so the setter + 2-abusers condition can hold. Done BEFORE finishTeam (and the
+        // returned team) so BOTH the audit and the orchestrator's gimmickHolds see the real committed team.
+        // SKIPPED for abuse-only (a tag partner needs no setter — its ally sets the weather).
+        const wxSubtype = context.archetypeSeed && (context.archetypeSeed.gimmicks || []).includes('weather')
+            && !context.archetypeSeed.abuseOnly && context.archetypeSeed.weather;
+        if (wxSubtype && ensureMoveSetter(team, wxSubtype)) attemptAudit.relabelWeather(team, wxSubtype);
+
+        attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed, weatherPicks: context.weatherPicks });
         return team;
     }
 
@@ -420,13 +455,24 @@ function createTeamResolver(deps) {
             });
         }
 
-        const baseSeed = trainer.archetypeSeed || getTrainerSeed(trainer.id);
+        let baseSeed = trainer.archetypeSeed || getTrainerSeed(trainer.id);
+        // T-132 — a TAG partner abuses its ALLY's actual weather (Tabitha Mossdeep follows Maxie). Overrides
+        // the trainer's own seed: if the ally established a weather W → abuse it (abuseOnly: no setter of its
+        // own); if the ally set no weather → a normal team (no forced sand). The ally MUST be resolved first
+        // (writerDocs defers the dependent), so committedWeather[ally] is populated by now.
+        if (trainer.abusePartnerWeather) {
+            const w = committedWeather[trainer.abusePartnerWeather];
+            baseSeed = w
+                ? { base: (baseSeed && baseSeed.base) || 'bulky_offense', gimmicks: ['weather'], weather: w, abuseOnly: true }
+                : null;
+        }
         const variants = gimmickFallbackChain(baseSeed, trainer.id);
 
-        let chosen = null;
-        let chosenIdx = 0;
-        for (let i = 0; i < variants.length; i++) {
-            const variantSeed = variants[i];
+        // One isolated attempt: build the team under `variantSeed` on a private storedIds/IV overlay + a
+        // throwaway audit + a cloned trainer (its mutable tms/bag). Only a COMMITTED attempt's side effects
+        // reach the shared state (the orchestrator decides which). Reused by the fallback chain and the
+        // emergent-weather probe below.
+        function tryVariant(variantSeed) {
             const attemptStoredIds = { ...storedIds };
             const attemptIVCache = { ...pokeIdIVCache };
             const attemptAudit = createTeamAudit();
@@ -436,18 +482,55 @@ function createTeamResolver(deps) {
                 bag: trainer.bag ? [...trainer.bag] : trainer.bag,
             };
             const team = runAttempt(attemptTrainer, teamDefs, variantSeed, attemptStoredIds, attemptIVCache, attemptAudit);
-            chosen = { team, attemptStoredIds, attemptIVCache, attemptTrainer, attemptAudit };
+            return { team, attemptStoredIds, attemptIVCache, attemptTrainer, attemptAudit };
+        }
+
+        let chosen = null;
+        let chosenIdx = 0;
+        for (let i = 0; i < variants.length; i++) {
+            const variantSeed = variants[i];
+            chosen = tryVariant(variantSeed);
             chosenIdx = i;
             const gimmick = variantSeed && variantSeed.gimmicks && variantSeed.gimmicks[0];
             const isLast = i === variants.length - 1;
-            // commit the first attempt that satisfies its gimmick (or the final fallback, which has none).
-            if (isLast || !gimmick || gimmickHolds(gimmick, team, { moves }, (variantSeed && variantSeed.weather) || null)) break;
+            // The move-setter retrofit already ran inside runAttempt (before its audit), so `chosen.team` here
+            // is the real committed team — commit the first attempt that satisfies its gimmick (or the final).
+            const abuseOnly = !!(variantSeed && variantSeed.abuseOnly);
+            if (isLast || !gimmick || gimmickHolds(gimmick, chosen.team, { moves, abuseOnly }, (variantSeed && variantSeed.weather) || null)) break;
+        }
+        let committedSeed = variants[chosenIdx];
+
+        // T-136 — EMERGENT weather on a NON-DEDICATED team. If this trainer had no weather intent of its own
+        // yet its committed plain build FIELDED a natural setter (mutated abilities scatter Drizzle/Drought/…,
+        // or a move-setter emerged) — and it's sophisticated enough — opportunistically try to build THAT
+        // weather properly (setter + 2 hard-ranked abusers), reusing the seeded machinery via a synthetic
+        // `emergent` seed. Commit the weather build only if it HOLDS; otherwise keep the plain team and note
+        // on its trace that weather was considered + dropped (so the decision log reports it — the owner's ask).
+        const emergentSub = emergentWeatherSubtype({
+            committedSeed, abusePartner: !!trainer.abusePartnerWeather,
+            soph: sophistication(trainer), team: chosen.team,
+        });
+        if (emergentSub) {
+            const emergentSeed = {
+                base: (committedSeed && committedSeed.base) || 'bulky_offense',
+                gimmicks: ['weather'], weather: emergentSub, emergent: true,
+            };
+            const wx = tryVariant(emergentSeed);
+            if (weatherHolds(wx.team, { moves }, emergentSub)) {
+                chosen = wx;
+                committedSeed = emergentSeed;
+            } else {
+                const trace = chosen.attemptAudit.all()[0];
+                if (trace) {
+                    const abusers = wx.team.filter(m => isWeatherAbuser(m, emergentSub)).length;
+                    trace.emergentWeatherDropped = { subtype: emergentSub, abusers, required: WEATHER_REQUIRED_ABUSERS };
+                }
+            }
         }
 
         // T-132/T-130 — if the trainer's intended gimmick was ROLLED BACK (the committed attempt no longer
         // carries it), record that on the committed audit trace so the log still shows it was tried + dropped.
         const baseGimmick = baseSeed && baseSeed.gimmicks && baseSeed.gimmicks[0];
-        const committedSeed = variants[chosenIdx];
         const committedHasGimmick = committedSeed && (committedSeed.gimmicks || []).length > 0;
         if (baseGimmick && !committedHasGimmick) {
             const trace = chosen.attemptAudit.all()[0];
@@ -460,6 +543,9 @@ function createTeamResolver(deps) {
         trainer.tms = chosen.attemptTrainer.tms;
         trainer.bag = chosen.attemptTrainer.bag;
         audit.absorb(chosen.attemptAudit);
+        // T-132 — record the weather this trainer actually established, so a tag partner (Tabitha) resolved
+        // AFTER it can abuse it. Based on the committed team's real setter (ability or move), else null.
+        committedWeather[trainer.id] = teamWeather(chosen.team);
         return chosen.team;
     }
 

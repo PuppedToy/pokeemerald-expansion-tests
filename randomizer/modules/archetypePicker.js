@@ -18,6 +18,10 @@
 const rng = require('../rng');
 const { sample } = require('./utils');
 const { teamFeatureCounts, crystallize, combinedStructure, scoreCandidate } = require('./archetypeFit');
+const {
+    WEATHER_SUBTYPE_BY_SETTER, SETTERS_BY_SUBTYPE, WEATHER_REQUIRED_ABUSERS, WEATHER_ABUSE_THRESHOLD, WX_ABUSE_RATING,
+} = require('./weatherConstants');
+const { weatherAbuseScore, weatherAbuseRating, weatherAbuseBreakdown } = require('./gimmickPlan');
 
 const BIAS_MIN_SOPH = 0.15;   // below this sophistication, no bias (early-game = "a pile of mons")
 const IDENTITY_FIT = 0.5;     // the top base archetype recipe must fit this well before biasing (T-118)
@@ -47,6 +51,7 @@ const LAST_RESORT_BASE = 'hyper_offense'; // T-123 — hyper's recipe is easy to
 const HYPER_YIELD_MARGIN = 0.25;          // hyper yields only to a base fitting within this of its fit
 const TR_SLOW_SPEED = 60;                 // T-124 — base Speed at/below which a mon is a Trick Room abuser
 const TR_SLOW_FACTOR = 4;                 // how hard Trick Room pulls the pick toward slow mons
+const WEATHER_ABUSER_FACTOR = 4;          // T-132 — how hard weather pulls the pick toward abusers (once a setter is down)
 
 function resolveIdentity(team, model, ctx = {}, seed = null) {
     const cryst = crystallize(team, model, ctx);
@@ -116,6 +121,78 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
         // T-124 — Trick Room: strongly prefer SLOW mons, which move FIRST under Trick Room.
         if (identity && (identity.gimmickIds || []).includes('trick_room')) {
             candidates.forEach((c, i) => { if ((c.baseSpeed || 999) <= TR_SLOW_SPEED) { weights[i] *= TR_SLOW_FACTOR; biased = true; } });
+        }
+        // T-132 — weather. The gimmick has TWO make-or-break components — a setter and 2 abusers — that a
+        // soft weight can't secure (a ×N weight is diluted to ~nothing across a 60-120-mon tier pool), so
+        // BOTH are HARD preferences (mirroring the electric-terrain filter), applied greedily as the slots
+        // that offer them come up:
+        //   1. SETTER first — as soon as a slot's pool offers a setter of the subtype and the team has none,
+        //      restrict the pick to setters (weighted by archetype fit among them, so it stays coherent).
+        //   2. Then ABUSERS — until the team holds WEATHER_REQUIRED_ABUSERS reliable abusers, restrict the
+        //      pick to reliable-abuser candidates (also applied on the slots BEFORE the setter lands, since
+        //      setters live in the high-tier slots and the early slots would otherwise build no abusers).
+        // Abuser membership is the SHARED weatherAbuseScore (same definition the success condition and the
+        // decision-log use — one source of truth). A "reliable" abuser scores ≥ WEATHER_ABUSE_THRESHOLD
+        // (an abuser ability, or a boosted TYPE — offensive Water/Fire attacker, or defensive Rock/Ice);
+        // a synergy-move-only mon scores below it, so it's a SOFT bias only. Every branch makes exactly one
+        // rng draw → the per-slot RNG stream is undisturbed.
+        if (identity && (identity.gimmickIds || []).includes('weather')) {
+            const teamMembers = (context && context.team) || [];
+            const subtype = (seed && seed.weather)
+                || teamMembers.map(m => WEATHER_SUBTYPE_BY_SETTER[(m.ability || '').toUpperCase()]).find(Boolean);
+            if (subtype) {
+                const setterAbils = SETTERS_BY_SUBTYPE[subtype] || [];
+                const teamHasSetter = teamMembers.some(m => WEATHER_SUBTYPE_BY_SETTER[(m.ability || '').toUpperCase()] === subtype);
+                // T-132 — abuse-only (a tag partner abusing an ALLY's weather): NO setter of its own, so
+                // skip the setter hard-pick entirely and go straight to stacking abusers.
+                if (!teamHasSetter && !(seed && seed.abuseOnly)) {
+                    const setterIdx = [];
+                    candidates.forEach((c, i) => { if ((c.parsedAbilities || []).some(a => setterAbils.includes(a))) setterIdx.push(i); });
+                    if (setterIdx.length) return weightedSampleOne(setterIdx.map(i => candidates[i]), setterIdx.map(i => weights[i]));
+                }
+                // DEDICATED abusers already picked — the "pick 2 good ranked abusers" budget counts only
+                // freely-chosen abusers, NOT the forced picks (the favourite ace, or the setter, which is
+                // hard-picked to establish the weather). So a trainer whose favourite/setter happen to be
+                // abusers (Maxie: Camerupt + Torkoal) STILL ranks 2 real abusers for its free slots (T-135).
+                const teamAbusers = teamMembers.filter(m =>
+                    !m.__favourite
+                    && !WEATHER_SUBTYPE_BY_SETTER[(m.ability || '').toUpperCase()]
+                    && weatherAbuseScore(m, subtype) >= WEATHER_ABUSE_THRESHOLD).length;
+                const reliableIdx = [], softIdx = [];
+                candidates.forEach((c, i) => {
+                    const s = weatherAbuseScore(c, subtype);
+                    if (s >= WEATHER_ABUSE_THRESHOLD) reliableIdx.push(i);
+                    if (s > 0) softIdx.push(i);
+                });
+                if (teamAbusers < WEATHER_REQUIRED_ABUSERS && reliableIdx.length) {
+                    // T-135 — rank the eligible abusers by the DETAILED weather-abuse rating (which ability
+                    // exploits this weather best, given the mon's stats), and let sophistication pull the pick
+                    // toward the TOP (endgame → real ability-abusers; early game ≈ uniform among eligibles).
+                    const cands = reliableIdx.map(i => candidates[i]);
+                    const breakdowns = cands.map(c => weatherAbuseBreakdown(c, subtype));
+                    const maxR = Math.max(...breakdowns.map(b => b.total), 1e-6);
+                    // weight = (rating/max)^(soph × sharpness): endgame → top-rated abusers dominate; early
+                    // game (soph→0) → exponent→0 → all weights→1 (near-uniform, byte-identical-ish).
+                    const exp = soph * WX_ABUSE_RATING.rankSharpness;
+                    const rankWeights = breakdowns.map(b => Math.pow(Math.max(b.total, 0) / maxR, exp));
+                    const picked = weightedSampleOne(cands, rankWeights);
+                    // T-135 audit — record this abuser slot's ranking (top few + score breakdown + the pick)
+                    // for the decision log, so the choice is visible/auditable.
+                    if (context && context.weatherPicks) {
+                        const sorted = cands
+                            .map((c, k) => ({ id: c.id, total: breakdowns[k].total, parts: breakdowns[k].parts }))
+                            .sort((a, b) => b.total - a.total);
+                        const shown = sorted.slice(0, 6);
+                        // Always surface the PICKED mon + its rank, even when the weighted draw landed it
+                        // below the shown top-N (so the log exposes a pick that skipped higher-rated abusers).
+                        const pickedRank = sorted.findIndex(e => e.id === picked.id);
+                        if (pickedRank >= shown.length) shown.push({ ...sorted[pickedRank], rank: pickedRank + 1 });
+                        context.weatherPicks.push({ subtype, pickedId: picked.id, nEligible: sorted.length, pullExp: Math.round(exp * 100) / 100, ranked: shown });
+                    }
+                    return picked;
+                }
+                softIdx.forEach(i => { weights[i] *= WEATHER_ABUSER_FACTOR; biased = true; });
+            }
         }
         if (!biased) return sample(candidates); // nothing to pull toward → byte-identical
         return weightedSampleOne(candidates, weights);

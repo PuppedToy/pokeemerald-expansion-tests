@@ -33,12 +33,10 @@ const TRAINER_SEEDS = {
     TRAINER_MAXIE_MT_CHIMNEY: WEATHER_SUN,
     TRAINER_MAXIE_MAGMA_HIDEOUT: WEATHER_SUN,
     TRAINER_MAXIE_MOSSDEEP: WEATHER_SUN,
-    // Flannery (fire) → sun
-    TRAINER_FLANNERY_1: WEATHER_SUN,
-    TRAINER_FLANNERY_2: WEATHER_SUN,
-    TRAINER_FLANNERY_3: WEATHER_SUN,
-    TRAINER_FLANNERY_4: WEATHER_SUN,
-    TRAINER_FLANNERY_5: WEATHER_SUN,
+    // T-136 (owner) — Flannery is NO LONGER force-seeded to sun. She's a Fire gym leader, but with type
+    // mutation her pool often can't field a sun setter + 2 abusers, so the old seed forced a fallback to a
+    // different weather anyway. She's now fully EMERGENT: if her rolls hand her a Torkoal (Drought), the
+    // emergent-weather assembly (T-136) builds sun around it; otherwise she stays a normal Fire team.
     // Wattson → electric terrain (manual gimmick)
     TRAINER_WATTSON_1: ELECTRIC_TERRAIN,
     TRAINER_WATTSON_2: ELECTRIC_TERRAIN,

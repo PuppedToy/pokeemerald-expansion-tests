@@ -216,7 +216,6 @@ function buildTrainersResultsFromDocs(docsTrainers, pokemonList) {
             location: td.location || null,
             battleType: td.battleType || 'singles',   // T-087/ADR-014
             choiceBattle: td.choiceBattle || null,     // T-116 — Run & Bun E4 choice info
-            preventShuffle: td.preventShuffle || false,
             team: (td.team || []).map(member => ({
                 ...member,
                 pokemon: byId.get(member.pokemon)
@@ -581,7 +580,6 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             location: trainer.location || null,
             colors: trainer.colors,   // T-044 — docs-viewer card colours (SSOT: trainerColors.js)
             team,
-            preventShuffle: trainer.preventShuffle || false,
             battleType: trainer.battleType || 'singles',   // T-087/ADR-014
         };
     });
@@ -593,7 +591,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             trainerData.level = 5;
             shuffledTeam = [shuffledTeam[0]];
         }
-        else if (!docs && !trainerData.preventShuffle) {
+        else if (!docs) {
             shuffledTeam = shuffledTeam.sort(() => rng.random() - 0.5);
             shuffledTeam = applyLeadLogic(shuffledTeam, () => rng.random());
         }

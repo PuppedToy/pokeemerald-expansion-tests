@@ -1,10 +1,10 @@
 ---
 id: T-130
 title: Decision-log auditability — surface sophistication, dropped modifiers, and unmet gimmicks
-status: in-progress
+status: done
 type: feature
 created: 2026-07-13
-updated: 2026-07-13
+updated: 2026-07-14
 target-version: 0.8.0
 links: [T-117, T-131]
 blocked-by: []
@@ -59,3 +59,8 @@ Acceptance criteria:
 - Feeds T-131: villain weather now shows as dropped-with-reason when its setter isn't delivered.
 
 ## Outcome
+
+Shipped: the decision log surfaces sophistication + steering, dropped modifiers, and unmet/rolled-back
+gimmicks; extended under T-132 so weather setter/abuser labels are SUBTYPE-AWARE (via the shared score) and
+the "materialised/dropped" verdict uses `weatherHolds` — the log matches what the resolver actually
+committed. Verified alongside the weather batch (npm test green, 17/17 gates). Closed 2026-07-14.

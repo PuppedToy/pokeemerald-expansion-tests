@@ -60,4 +60,51 @@ describe('pickTrainerMonAbility — weather fallback (T-065)', () => {
         });
         expect(ability).toBe('INTIMIDATE'); // highest-rated when no weather constraint applies
     });
+
+    // T-132 (owner, 2026-07-13) — WEATHER-AWARE ability value: a weather ability is only worth having when
+    // ITS weather is active. Off-weather it "puntúa 0" (isn't picked); on-weather it's preferred.
+    test('a FOREIGN weather ability is not picked (Swift Swim on a sand team)', () => {
+        rng.seed(1);
+        // Omanyte-like: Swift Swim (rain) is high-rated, but on sand it does nothing → pick a neutral one.
+        const omanyte = { id: 'SPECIES_OMANYTE', parsedAbilities: ['SWIFT_SWIM', 'SHELL_ARMOR', 'WEAK_ARMOR'] };
+        const { ability } = pickTrainerMonAbility({
+            chosenTrainerMon: omanyte, baseFormMon: omanyte,
+            trainerAbilities: [], effectiveDef: { abilities: undefined },
+            level: 40, abilities, weatherSubtype: 'sand',
+        });
+        expect(ability).not.toBe('SWIFT_SWIM');
+    });
+
+    test('a foreign weather SETTER is not picked either (Drizzle on a snow team) — subsumes the old RC4 ban', () => {
+        rng.seed(1);
+        const delibird = { id: 'SPECIES_DELIBIRD', parsedAbilities: ['DRIZZLE', 'HUSTLE'] };
+        const { ability } = pickTrainerMonAbility({
+            chosenTrainerMon: delibird, baseFormMon: delibird,
+            trainerAbilities: [], effectiveDef: { abilities: undefined },
+            level: 40, abilities, weatherSubtype: 'snow',
+        });
+        expect(ability).toBe('HUSTLE');
+    });
+
+    test('the ACTIVE weather ability is preferred over a generic one (Leaf Guard in sun beats Overgrow)', () => {
+        rng.seed(1);
+        const meganium = { id: 'SPECIES_MEGANIUM', parsedAbilities: ['OVERGROW', 'LEAF_GUARD'] };
+        const { ability } = pickTrainerMonAbility({
+            chosenTrainerMon: meganium, baseFormMon: meganium,
+            trainerAbilities: [], effectiveDef: { abilities: undefined },
+            level: 33, abilities, weatherSubtype: 'sun',
+        });
+        expect(ability).toBe('LEAF_GUARD');
+    });
+
+    test('no weather context → generic pick unchanged (byte-identical for non-weather trainers)', () => {
+        rng.seed(1);
+        const mon = qwilfishHisui();
+        const { ability } = pickTrainerMonAbility({
+            chosenTrainerMon: mon, baseFormMon: mon,
+            trainerAbilities: [], effectiveDef: { abilities: undefined },
+            level: 24, abilities, // no weatherSubtype
+        });
+        expect(ability).toBe('INTIMIDATE');
+    });
 });

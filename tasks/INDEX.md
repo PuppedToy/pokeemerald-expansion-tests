@@ -132,7 +132,11 @@
 | [T-126](T-126-trainer-seed-assignments.md) | Trainer archetype/gimmick seed assignments (deliberate variety) | in-progress | 0.8.0 | 2026-07-11 |
 | [T-127](T-127-later-gen-advanced-combo-corpus.md) | Later-gen advanced-combo corpus (Gen 8/9/Champions) — mechanic-filtered | proposed | 0.9.0 | 2026-07-11 |
 | [T-128](T-128-favourite-pokemon.md) | Favourite Pokémon — a generalizable "preferred ace" resolved first, dropped if it doesn't fit | done | 0.8.0 | 2026-07-13 |
-| [T-129](T-129-coherent-item-move-assignment.md) | Coherent item + move co-assignment for trainer mons | proposed | 0.8.0 | 2026-07-13 |
-| [T-130](T-130-decision-log-auditability.md) | Decision-log auditability — surface sophistication, dropped modifiers, and unmet gimmicks | in-progress | 0.8.0 | 2026-07-13 |
-| [T-131](T-131-villain-weather-forcing.md) | Villain weather-forcing (per-team weather → general-weather fallback) + auditability | in-progress | 0.8.0 | 2026-07-13 |
-| [T-132](T-132-weather-teambuilding.md) | Weather team-building — setter + 2 abusers, rollback-on-fail, and weather-tag mechanics | in-progress | 0.8.0 | 2026-07-13 |
+| [T-129](T-129-coherent-item-move-assignment.md) | Coherent item + move co-assignment for trainer mons | done | 0.8.0 | 2026-07-14 |
+| [T-130](T-130-decision-log-auditability.md) | Decision-log auditability — surface sophistication, dropped modifiers, and unmet gimmicks | done | 0.8.0 | 2026-07-14 |
+| [T-131](T-131-villain-weather-forcing.md) | Villain weather-forcing (per-team weather → general-weather fallback) + auditability | done | 0.8.0 | 2026-07-14 |
+| [T-132](T-132-weather-teambuilding.md) | Weather team-building — setter + 2 abusers, rollback-on-fail, and weather-tag mechanics | done | 0.8.0 | 2026-07-14 |
+| [T-133](T-133-item-pick-groups-and-planner-assignment.md) | Bound item pick-groups + planner-assigned items (fairness-aware item economy) | proposed | 0.8.0 | 2026-07-13 |
+| [T-134](T-134-villain-mascot-favourite-and-grunt-devolved-lead.md) | Villain mascot favourite + paired grunt leads a devolved copy of it | done | 0.8.0 | 2026-07-14 |
+| [T-135](T-135-weather-abuser-quality.md) | Weather abuser QUALITY — prefer real ability-abusers at high sophistication | in-progress | 0.8.0 | 2026-07-14 |
+| [T-136](T-136-emergent-weather-nondedicated.md) | Emergent weather on non-dedicated teams + un-force Flannery's sun | done | 0.8.0 | 2026-07-14 |

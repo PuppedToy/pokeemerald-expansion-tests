@@ -27,6 +27,31 @@ const TSP = makeEntry('TSP', ['MOVE_TOXIC_SPIKES']);
 const WEB = makeEntry('WEB', ['MOVE_STICKY_WEB']);
 const ILL = makeEntry('ILL', [],                   'ILLUSION');
 const ILL2 = makeEntry('ILL2', [],                 'ILLUSION');
+const DROUGHT = makeEntry('DROUGHT', [],           'DROUGHT');          // sun setter (ability)
+const SANDMOVE = makeEntry('SANDMOVE', ['MOVE_SANDSTORM']);             // sand setter (move)
+
+// ── Phase 0 — weather setter leads (T-132): 95%, and rolls BEFORE Stealth Rock ──
+
+test('weather setter (ability) leads at 95% (roll < 0.95)', () => {
+    expect(applyLeadLogic([A, DROUGHT, B], makeRng(0.5))).toEqual([DROUGHT, A, B]);
+});
+
+test('weather setter misses the lead at 5% (roll >= 0.95) — order otherwise unchanged', () => {
+    expect(applyLeadLogic([A, DROUGHT, B], makeRng(0.96))).toEqual([A, DROUGHT, B]);
+});
+
+test('a move-based setter (Sandstorm) also leads', () => {
+    expect(applyLeadLogic([A, SANDMOVE, B], makeRng(0.5))).toEqual([SANDMOVE, A, B]);
+});
+
+test('the weather setter rolls BEFORE Stealth Rock — it wins the lead over an SR setter', () => {
+    // one roll only (Phase 0); the SR setter never gets to Phase 1.
+    expect(applyLeadLogic([SR, DROUGHT, A], makeRng(0.5))).toEqual([DROUGHT, SR, A]);
+});
+
+test('no weather setter → Phase 0 consumes no roll (SR lead still works with a single roll)', () => {
+    expect(applyLeadLogic([A, SR, B], makeRng(0.5))).toEqual([SR, A, B]);
+});
 
 // ── Edge cases ────────────────────────────────────────────────────────────────
 
