@@ -1,7 +1,7 @@
 ---
 id: T-111
 title: Viewer — surface singles/doubles tiers per Pokémon (mixed shows both)
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
 updated: 2026-07-15
@@ -101,4 +101,7 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Dual tier component shipped: every generated doc surface (pokédex card + modal) shows both the singles and
+doubles tier side-by-side, permanently, with a shared type tag and a subtle role subscript — plus the T-141
+"Support" tag on the doubles side. Responsive. The old per-run `RUN_BATTLE_FORMAT` single-format token was
+removed. Owner-validated on 2026-07-15 (batch with T-102/T-109/T-140/T-141/T-142). Closed.

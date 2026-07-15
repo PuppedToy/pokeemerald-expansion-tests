@@ -1,7 +1,7 @@
 ---
 id: T-141
 title: Doubles support depth — corpus re-analysis + refinement plan
-status: in-progress
+status: done
 type: research
 created: 2026-07-15
 updated: 2026-07-15
@@ -203,6 +203,8 @@ Acceptance criteria:
 ## Outcome
 
 <!-- Filled when closing. -->
-Doubles support is now a full rating + tier dimension (corpus-weighted, offensive-tier-penalised, BST-
-viable), tagged in the viewer, delivered on teams via the up-front roll + hard-pick + 1-tier flex.
-Awaiting owner manual test.
+Doubles support is now a full rating + tier dimension (QUALITY-tier tools — elite/good/filler —
+offensive-tier-penalised, BST-viable; round 4), tagged in the viewer, delivered on teams via the up-front
+roll + hard-pick + 1-tier flex, with a support moveset + a status-locking-item ban and an itemised support
+ranking in the decision log. Owner-validated on 2026-07-15 (batch with T-102/T-109/T-111/T-140/T-142) —
+Calyrex reads UU, supports carry real support moves, none holds Assault Vest/Choice. Closed.

@@ -1,7 +1,7 @@
 ---
 id: T-140
 title: Doubles tier — apply the BST floor (parity with singles)
-status: in-progress
+status: done
 type: fix
 created: 2026-07-15
 updated: 2026-07-15
@@ -62,5 +62,5 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
-Awaiting the owner's manual test (the drops now floor at OU — owner to confirm that pacing is acceptable).
+The doubles tier now applies the same BST floor as singles (nuzlocke pacing parity). Owner-validated on
+2026-07-15 (batch with T-102/T-109/T-111/T-141/T-142) — the OU-floored drops read acceptable. Closed.

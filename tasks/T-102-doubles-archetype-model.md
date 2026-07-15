@@ -1,10 +1,10 @@
 ---
 id: T-102
 title: Doubles archetype model — JSON of archetypes (weather, TR, redirection, ability-swap…)
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-10
+updated: 2026-07-15
 target-version: 0.8.0
 links: [T-083, T-098, T-100]
 blocked-by: [T-100]
@@ -107,5 +107,6 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
-Recipes corpus-grounded (v1 bases + T-141 support role/base). Awaiting owner confirmation to close.
+Doubles archetype model complete: corpus-grounded bases + gimmicks, with the T-141 `dedicatedSupport`
+slot wired into `bulky_offense` / `balance_dual_mode` / `hyper_offense` and the new `redirection_support`
+base. Owner-validated on 2026-07-15 (batch with T-109/T-111/T-140/T-141/T-142). Closed.

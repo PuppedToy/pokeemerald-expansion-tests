@@ -1,7 +1,7 @@
 ---
 id: T-142
 title: Doubles support delivery — hard-pick a support-capable mon (like gimmick setters)
-status: in-progress
+status: done
 type: fix
 created: 2026-07-15
 updated: 2026-07-15
@@ -97,6 +97,9 @@ Acceptance criteria:
   - Fast suite 1115 green; determinism gates re-running; browser bundle rebuilt.
 
 ## Outcome
-Doubles teams now FIELD dedicated support: intent rolled up front (hyper minority skips it), support
-classified by signal count (≥2 dedicated), hard-picked in-tier or flexed one tier down, dropped-with-log
-only when truly none fits. Verified on Drake. Awaiting owner manual test.
+Doubles teams now FIELD dedicated support: intent rolled up front (a hyper minority skips it), the support
+hard-picked in-tier or flexed one tier down, dropped-with-log only when truly none fits — and (T-141 r4) the
+fielded support is built with real support moves, denied status-locking items, and its selection ranking is
+printed in the decision log. Classification is the T-141 quality-tier rating (the signal-count model this
+task first shipped was superseded). Owner-validated on 2026-07-15 (batch with T-102/T-109/T-111/T-140/T-141)
+— Drake fields Amoonguss/Toedscruel/Rillaboom with support kits. Closed.

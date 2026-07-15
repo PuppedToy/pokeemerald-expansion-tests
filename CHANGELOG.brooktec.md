@@ -36,7 +36,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   marked — so *why this support, and why OU/UU* is auditable. Support moves and abilities are valued for
   doubles (Encore, Prankster, Defiant/Competitive punishing the ubiquitous Intimidate). And ally-only
   abilities that do nothing in a 1v1 — Commander, Hospitality, Costar, Power Spot — no longer inflate a
-  Pokémon's SINGLES rating (T-141).
+  Pokémon's SINGLES rating (T-102, T-141, T-142).
 
 - **Weather teams now field their BEST abusers, ranked by how well each exploits the weather.** Instead of
   any boosted-type mon, a sophisticated weather trainer prefers real ability-abusers (Chlorophyll / Solar

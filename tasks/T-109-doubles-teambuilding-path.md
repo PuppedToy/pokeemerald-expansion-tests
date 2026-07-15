@@ -1,7 +1,7 @@
 ---
 id: T-109
 title: Engine — doubles teambuilding path (spread / redirection / TR-aware)
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
 updated: 2026-07-15
@@ -112,6 +112,5 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
-Doubles power-budget routing + abuser ranking + contextual doubles tiers all firing; singles untouched.
-Awaiting owner manual test (batch with T-102/T-111/T-140/T-141).
+Doubles power-budget routing + abuser ranking (doubles-tier sort) + contextual doubles tiers all firing;
+singles untouched. Owner-validated on 2026-07-15 (batch with T-102/T-111/T-140/T-141/T-142). Closed.
