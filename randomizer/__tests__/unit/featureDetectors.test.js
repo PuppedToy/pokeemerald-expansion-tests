@@ -6,6 +6,7 @@
 
 const { DETECTORS, detectFeatures, THRESHOLDS } = require('../../modules/featureDetectors');
 const { loadArchetypeModel, FORMATS } = require('../../archetypes');
+const { supportTierDoubles } = require('../../rating');
 
 // Minimal move map (only the metadata the detectors read: category/target/priority).
 const SPREAD = 'MOVE_TARGET_BOTH';
@@ -174,21 +175,27 @@ describe('detectFeatures aggregator', () => {
     });
 });
 
-describe('dedicatedSupport detector (T-141, count-based ≥2 signals)', () => {
-    // Owner's rule: a dedicated support = a COMBINATION of ≥2 distinct top-tier support signals; a mon
-    // with only ONE support tool is a half-support ATTACKER and never gets the role. Offense is irrelevant.
-    test('ONE support tool is NOT dedicated support, regardless of offense (half-support attacker)', () => {
-        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 65, ...withMoves('MOVE_RAGE_POWDER') }), ctx)).toBe(false); // redirection only
-        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 130, baseSpAttack: 60, ...withMoves('MOVE_TAILWIND') }), ctx)).toBe(false);  // tailwind only, offensive
-        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 60, parsedAbilities: ['INTIMIDATE'] }), ctx)).toBe(false); // Intimidate only
+describe('dedicatedSupport detector (T-141 r4, quality-tier rating)', () => {
+    // Owner's rule (r4): support quality, not breadth. Tools are scored elite 8 / good 5 / filler 2, and the
+    // RU support bar is 11 — so one elite tool (8) is a half-support ATTACKER, TWO elite (16) clear it, and a
+    // pile of merely-GOOD/filler tools does NOT (Calyrex). Offense enters via the mon's ratingDoubles tier.
+    test('ONE elite tool is NOT dedicated support, regardless of offense (half-support attacker)', () => {
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 65, ...withMoves('MOVE_RAGE_POWDER') }), ctx)).toBe(false); // redirection only (8)
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 130, baseSpAttack: 60, ...withMoves('MOVE_TAILWIND') }), ctx)).toBe(false);  // tailwind only (8)
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 60, parsedAbilities: ['INTIMIDATE'] }), ctx)).toBe(false); // Intimidate only (8)
     });
-    test('TWO distinct support signals = dedicated support (offense irrelevant)', () => {
-        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 60, parsedAbilities: ['INTIMIDATE'], ...withMoves('MOVE_FAKE_OUT') }), ctx)).toBe(true);   // Intimidate + Fake Out
-        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 120, baseSpAttack: 120, parsedAbilities: ['LIGHTNING_ROD'], ...withMoves('MOVE_HELPING_HAND') }), ctx)).toBe(true); // redirection + Helping Hand, high offense
-        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 121, parsedAbilities: ['HOSPITALITY'], ...withMoves('MOVE_RAGE_POWDER') }), ctx)).toBe(true);  // Sinistcha: ally + redirection
+    test('TWO ELITE tools = dedicated support; but two merely-GOOD tools fall short of the RU bar', () => {
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 60, parsedAbilities: ['INTIMIDATE'], ...withMoves('MOVE_FAKE_OUT') }), ctx)).toBe(true);   // Intimidate 8 + Fake Out 8 = 16
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 121, parsedAbilities: ['HOSPITALITY'], ...withMoves('MOVE_RAGE_POWDER') }), ctx)).toBe(true);  // Sinistcha: Hospitality 8 + Rage Powder 8 = 16
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 120, baseSpAttack: 120, parsedAbilities: ['LIGHTNING_ROD'], ...withMoves('MOVE_HELPING_HAND') }), ctx)).toBe(false); // Lightning Rod 5 + Helping Hand 5 = 10 < 11
     });
-    test('THREE signals (Whimsicott: Prankster + Tailwind + Encore) is dedicated support', () => {
-        expect(DETECTORS.dedicatedSupport(mon({ parsedAbilities: ['PRANKSTER'], ...withMoves('MOVE_TAILWIND', 'MOVE_ENCORE') }), ctx)).toBe(true);
+    test('a pile of GOOD/filler tools (no elite) is NOT a dedicated support (breadth ≠ support — Calyrex)', () => {
+        // Helping Hand 5 + Heal Pulse 2 + Light Screen 2 + Life Dew 2 + Reflect 2 = 13 → RU at most, never OU.
+        const calyrexLike = mon({ baseAttack: 80, baseSpAttack: 80, ...withMoves('MOVE_HELPING_HAND', 'MOVE_HEAL_PULSE', 'MOVE_LIGHT_SCREEN', 'MOVE_LIFE_DEW', 'MOVE_REFLECT') });
+        expect(supportTierDoubles(calyrexLike)).not.toBe('OU');
+    });
+    test('THREE elite/good tools (Whimsicott: Prankster + Tailwind + Encore) is dedicated support', () => {
+        expect(DETECTORS.dedicatedSupport(mon({ parsedAbilities: ['PRANKSTER'], ...withMoves('MOVE_TAILWIND', 'MOVE_ENCORE') }), ctx)).toBe(true); // 8 + 8 + 5 = 21
     });
 });
 

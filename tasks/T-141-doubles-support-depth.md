@@ -174,6 +174,32 @@ Acceptance criteria:
   - Replaces `supportSignals`; the detector/hard-pick/flex/tag all read `isDedicatedSupport` =
     `supportTierDoubles != null`. Fast suite 1114 green; determinism gates re-running; bundle rebuilt.
 
+- **2026-07-15 — round 4 (owner: Calyrex OU is wrong; supports need support movesets + no AV; add a support
+  audit log).** Regenerated run 2709645655 myself and reproduced everything the owner flagged.
+  - **Calyrex was OU support (should be UU).** Root cause: the round-3 CAP flattened every tool to ≈8, so
+    BREADTH won — Calyrex's six FILLER tools (Helping Hand + Heal Pulse + Light Screen + Life Dew + Reflect
+    + Skill Swap; zero elite) summed to 31 and beat Amoonguss's three ELITE tools (Spore + Rage Powder +
+    Regenerator). Owner: only a real support COMBINATION counts.
+  - **Fix — QUALITY tiers replace the cap.** `SUPPORT_MOVE_POINTS`/`SUPPORT_ABILITY_POINTS` now score each
+    tool elite 8 / good 5 / filler 2 (frequency-informed + doubles-expert-corrected: redirection is elite).
+    This encodes the owner's own rule: 1 elite (8) < RU → half-support; 2 elite (16) → UU; 3+ (24) → OU;
+    filler breadth can't reach a tier. Thresholds/penalty/BST-floor unchanged. **Calyrex → UU** (15),
+    Whimsicott 34 OU, Amoonguss 24 OU, Farigiraf 21 UU — all owner anchors land.
+  - **Support MOVESET** (`resolveTrainerTeam`): when the team wants support and the mon is `isSupportDoubles`,
+    inject its best support moves (`topSupportMoves`, quality-ranked, ≤3, reachable-gated) as fixed moves
+    before `chooseMoveset`, so it plays support instead of an all-attacking set.
+  - **Item ban:** a dedicated support never gets Assault Vest / Choice (status-locking) — forward-Choice
+    skipped, bag pick filtered, pre-set cleared.
+  - **Support audit log** (`archetypePicker` records `context.supportPicks`; `teamAudit` renders): the full
+    ranked support pool per hard-pick, itemised (each tool + quality value + offensive penalty), pick marked
+    ‹picked›. New helpers `supportToolBreakdown` / `topSupportMoves`; stored `poke.supportRatingDoubles`.
+  - **Verified on run 2709645655:** Drake now fields Amoonguss (Rage Powder + Spore), Toedscruel (Spore +
+    Thunder Wave + Pollen Puff), Rillaboom (Taunt + Electroweb) — all with real support moves, none holding
+    AV/Choice (Black Sludge / Leftovers / Shell Bell). The pick ranking prints 8 eligible supports.
+  - Fast suite 1121 green (updated `featureDetectors`/`ratePokemonDoubles`/`archetypePicker` tests for the
+    quality model — count model superseded per owner; added quality-tier + breadth + moveset-helper tests).
+    Determinism gates re-running; bundle rebuilt.
+
 ## Outcome
 
 <!-- Filled when closing. -->

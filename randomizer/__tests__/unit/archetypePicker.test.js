@@ -164,6 +164,17 @@ describe('T-142 — dedicated-support hard-pick (doubles teams that rolled "want
         const cands = [wallbreaker('ATK1'), wallbreaker('ATK2')];
         rng.seed(1); expect(['ATK1', 'ATK2']).toContain(picker(cands).id);
     });
+    test('the hard-pick RECORDS an itemised support ranking for the decision log (owner: auditable)', () => {
+        const context = { team: [wallbreaker('W')], sophistication: 1, doublesWantsSupport: true, supportPicks: [] };
+        const picker = makeArchetypePicker({ model: doubles, context, ctx: { moves: {} } });
+        rng.seed(1); picker([wallbreaker('ATK1'), support()]);
+        expect(context.supportPicks).toHaveLength(1);
+        const rec = context.supportPicks[0];
+        expect(rec.pickedId).toBe('AMOON');
+        const amoon = rec.ranked.find(r => r.id === 'AMOON');
+        expect(amoon.rating).toBeGreaterThanOrEqual(11); // cleared the RU bar
+        expect(amoon.tools.map(t => t.id)).toEqual(expect.arrayContaining(['MOVE_RAGE_POWDER', 'MOVE_HELPING_HAND']));
+    });
     test('a doubles team rolled HYPER (no support) does NOT force a support', () => {
         const context = { team: [wallbreaker('W')], sophistication: 1, doublesWantsSupport: false };
         const picker = makeArchetypePicker({ model: doubles, context, ctx: { moves: {} } });

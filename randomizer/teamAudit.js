@@ -125,9 +125,10 @@ function createTeamAudit() {
             });
         },
 
-        finishTeam({ team, model, ctx, seed, weatherPicks, itemLinkActivations, supportFlexed, doublesWantsSupport }) {
+        finishTeam({ team, model, ctx, seed, weatherPicks, supportPicks, itemLinkActivations, supportFlexed, doublesWantsSupport }) {
             if (!cur) return;
             if (weatherPicks && weatherPicks.length) cur.weatherPicks = weatherPicks; // T-135 — abuser rankings
+            if (supportPicks && supportPicks.length) cur.supportPicks = supportPicks; // T-141 r4 — support ranking
             if (itemLinkActivations && itemLinkActivations.length) cur.itemLinkActivations = itemLinkActivations; // T-133
             const id = model ? resolveIdentity((team || []).map(asPoke), model, ctx, seed) : null;
             // T-142 r3 — the team's up-front doubles plan WANTED a dedicated support (context.doublesWants-
@@ -284,6 +285,24 @@ function renderTeamAuditText(teams, { engineThreshold = BIAS_MIN_SOPH } = {}) {
                 const rank = c.rank ? `#${c.rank} ` : '';
                 const mark = c.id === wp.pickedId ? ' ‹picked›' : '';
                 lines.push(`      ${rank}${nameify(c.id, 'SPECIES_').padEnd(18)} ${String(c.total).padStart(5)}  [${parts}]${mark}`);
+            });
+        });
+        // T-141 r4 — dedicated-support RANKING: for each support hard-picked onto the team, the eligible
+        // support-capable mons ranked by support rating, itemised (each tool + its quality-tier value), with
+        // the pick marked. Makes "why THIS support was chosen, and why it's OU/UU" auditable (owner). Kept
+        // only for picks that landed on the final team, de-duped (mirrors the weather ranking).
+        const placedSup = new Set(t.finalTeam || []);
+        const seenSup = new Set();
+        (t.supportPicks || []).filter(sp => {
+            if (!placedSup.has(sp.pickedId) || seenSup.has(sp.pickedId)) return false;
+            seenSup.add(sp.pickedId); return true;
+        }).forEach((sp, k) => {
+            lines.push(`  → dedicated-support pick #${k + 1} — ${sp.nEligible} eligible, ranked by support rating (elite 8 / good 5 / filler 2 per tool):`);
+            sp.ranked.forEach((c, i) => {
+                const tools = (c.tools || []).map(tl => `${nameify(tl.id, tl.kind === 'move' ? 'MOVE_' : '')} ${tl.value}`).join(', ');
+                const pen = c.penalty ? ` −${c.penalty} (off ${c.offTier})` : '';
+                const mark = c.id === sp.pickedId ? ' ‹picked›' : '';
+                lines.push(`      #${i + 1} ${nameify(c.id, 'SPECIES_').padEnd(18)} ${String(c.rating).padStart(3)} ${(c.tier || '—').padEnd(3)}${pen}  [${tools}]${mark}`);
             });
         });
         // T-133 — linked pick-pack activations: when a mon USED an item/TM from a pick-group, one unit of each

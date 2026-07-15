@@ -4,7 +4,7 @@
 // redirection / Intimidate / Fake Out / speed control / terrain / weather / pivot), frailty + passive-wall
 // penalties, and the own doubles tier scale. Owner-validated design + calibration.
 
-const { bstRatingDoubles, computeComboBonusDoubles, tierFromRatingDoubles, ratePokemonDoubles, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, supportRating, supportTierDoubles, isDedicatedSupport } = require('../../rating');
+const { bstRatingDoubles, computeComboBonusDoubles, tierFromRatingDoubles, ratePokemonDoubles, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, supportRating, supportTierDoubles, supportToolBreakdown, topSupportMoves, isDedicatedSupport } = require('../../rating');
 const { TIER_SEQ: _TIER_SEQ } = require('../../constants');
 
 describe('bstRatingDoubles — bulk↑ / speed↓ re-weighting', () => {
@@ -126,11 +126,30 @@ describe('T-141 Phase 2 — singles clear-error corrections (ally-only abilities
     });
 });
 
-describe('T-141 Phase 3 — support = corpus-weighted RATING with an offensive-tier penalty; its own tier + tag', () => {
+describe('T-141 Phase 3 (r4) — support = QUALITY-TIER RATING with an offensive-tier penalty; its own tier + tag', () => {
     const learns = (...mv) => mv.map(m => ({ level: 1, move: m }));
 
-    test('tool points are CAPPED so a ubiquitous tool (Intimidate 43) cannot dominate', () => {
-        expect(supportRating({ parsedAbilities: ['INTIMIDATE'], learnset: [], teachables: [] }, 'RU')).toBeLessThanOrEqual(8);
+    test('each tool is worth its quality tier — elite 8, and a single elite tool never exceeds it', () => {
+        expect(supportRating({ parsedAbilities: ['INTIMIDATE'], learnset: [], teachables: [] }, 'RU')).toBe(8); // elite ability
+        expect(supportRating({ parsedAbilities: [], learnset: learns('MOVE_TAILWIND'), teachables: [] }, 'RU')).toBe(8); // elite move
+        expect(supportRating({ parsedAbilities: [], learnset: learns('MOVE_HEAL_PULSE'), teachables: [] }, 'RU')).toBe(2); // filler move
+    });
+    test('QUALITY beats BREADTH: three elite tools out-rate six filler tools (owner: Calyrex must NOT be OU)', () => {
+        const threeElite = supportRating({ parsedAbilities: ['REGENERATOR'], learnset: learns('MOVE_SPORE', 'MOVE_RAGE_POWDER'), teachables: [] }, 'RU'); // 8+8+8 = 24
+        // Calyrex's actual mutated kit: one GOOD + five FILLER, zero elite → must not reach OU.
+        const sixFiller = supportRating({ parsedAbilities: [], learnset: learns('MOVE_HELPING_HAND', 'MOVE_HEAL_PULSE', 'MOVE_LIGHT_SCREEN', 'MOVE_LIFE_DEW', 'MOVE_REFLECT', 'MOVE_SKILL_SWAP'), teachables: [] }, 'RU'); // 5+2*5 = 15
+        expect(threeElite).toBeGreaterThan(sixFiller);
+        expect(threeElite).toBeGreaterThanOrEqual(22); // 3 elite → OU
+        expect(sixFiller).toBeLessThan(22);            // filler breadth → below OU
+    });
+    test("owner's rule holds on viable BST: 2 elite → UU, 3 elite → OU, 1 elite → not a support", () => {
+        const bst = { baseHP: 90, baseAttack: 70, baseDefense: 90, baseSpAttack: 80, baseSpDefense: 90, baseSpeed: 60 }; // 480
+        const oneElite = { ...bst, parsedAbilities: ['INTIMIDATE'], learnset: [], teachables: [] };
+        const twoElite = { ...bst, parsedAbilities: ['INTIMIDATE'], learnset: learns('MOVE_FAKE_OUT'), teachables: [] };
+        const threeElite = { ...bst, parsedAbilities: ['INTIMIDATE'], learnset: learns('MOVE_FAKE_OUT', 'MOVE_TAILWIND'), teachables: [] };
+        expect(supportTierDoubles(oneElite, 'RU')).toBeNull();   // 8  → below RU bar
+        expect(supportTierDoubles(twoElite, 'RU')).toBe('UU');   // 16 → UU
+        expect(supportTierDoubles(threeElite, 'RU')).toBe('OU'); // 24 → OU
     });
     test('offensive-tier penalty: high UNUSED offence keeps support value; a real OU+ attacker is discounted', () => {
         const kit = { parsedAbilities: ['HOSPITALITY'], learnset: learns('MOVE_RAGE_POWDER', 'MOVE_HELPING_HAND', 'MOVE_TRICK_ROOM'), teachables: [] };
@@ -151,7 +170,7 @@ describe('T-141 Phase 3 — support = corpus-weighted RATING with an offensive-t
     });
     test('a good OU attacker with a couple of support tools is NOT a dedicated support (owner rule)', () => {
         const ouAttacker = { ...viable, parsedAbilities: ['NONE'], ratingDoubles: 7.8, learnset: learns('MOVE_FAKE_OUT', 'MOVE_WIDE_GUARD', 'MOVE_EARTHQUAKE'), teachables: [] };
-        expect(isDedicatedSupport(ouAttacker)).toBe(false); // OU penalty (10) cancels its 2 capped tools (16) → below RU bar
+        expect(isDedicatedSupport(ouAttacker)).toBe(false); // Fake Out 8 + Wide Guard 5 = 13, − OU penalty 10 = 3 → below RU bar
     });
 
     // End-to-end: support as its own doubles tier + the "support" tag.
@@ -165,6 +184,31 @@ describe('T-141 Phase 3 — support = corpus-weighted RATING with an offensive-t
         expect(r.supportTierDoubles).toBe('OU');
         expect(r.isSupportDoubles).toBe(true);  // support strictly beats its offensive tier → tagged
         expect(r.tierDoubles).toBe('OU');        // worth its support tier
+    });
+    test('ratePokemonDoubles returns the numeric supportRatingDoubles (for the audit ranking)', () => {
+        const r = ratePokemonDoubles(sinistcha, moves, abilities, [], ['MOVE_RAGE_POWDER', 'MOVE_TRICK_ROOM', 'MOVE_HELPING_HAND']);
+        expect(typeof r.supportRatingDoubles).toBe('number');
+        expect(r.supportRatingDoubles).toBeGreaterThan(0);
+    });
+});
+
+describe('T-141 r4 — support audit + moveset helpers', () => {
+    const learns = (...mv) => mv.map(m => ({ level: 1, move: m }));
+
+    test('supportToolBreakdown itemises the tools best-first with the penalty and rating', () => {
+        const kit = { parsedAbilities: ['REGENERATOR'], ratingDoubles: 7.8, learnset: learns('MOVE_SPORE', 'MOVE_HELPING_HAND', 'MOVE_HEAL_PULSE'), teachables: [] };
+        const b = supportToolBreakdown(kit, 'OU');
+        expect(b.tools.map(t => t.id)).toEqual(['MOVE_SPORE', 'REGENERATOR', 'MOVE_HELPING_HAND', 'MOVE_HEAL_PULSE']); // 8,8,5,2 — sorted desc
+        expect(b.pts).toBe(23);
+        expect(b.penalty).toBe(10);      // OU offensive penalty
+        expect(b.rating).toBe(13);       // 23 − 10
+        expect(b.offTier).toBe('OU');
+    });
+    test('topSupportMoves ranks a mon\'s learnable support MOVES best-first, honouring filter + limit', () => {
+        const kit = { learnset: learns('MOVE_HEAL_PULSE', 'MOVE_TAILWIND', 'MOVE_HELPING_HAND', 'MOVE_TACKLE'), teachables: [] };
+        expect(topSupportMoves(kit)).toEqual(['MOVE_TAILWIND', 'MOVE_HELPING_HAND', 'MOVE_HEAL_PULSE']); // elite→good→filler, non-support dropped
+        expect(topSupportMoves(kit, { limit: 2 })).toEqual(['MOVE_TAILWIND', 'MOVE_HELPING_HAND']);
+        expect(topSupportMoves(kit, { filter: mv => mv !== 'MOVE_TAILWIND' })).toEqual(['MOVE_HELPING_HAND', 'MOVE_HEAL_PULSE']);
     });
 });
 

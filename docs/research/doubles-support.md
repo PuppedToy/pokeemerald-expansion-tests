@@ -18,44 +18,60 @@ mis-favoured in singles. The corpus disagrees sharply with the current output: d
 Out 57% (8%), Rage Powder/Follow Me/Wide Guard/Helping Hand/Icy Wind ≈0% in singles. Support is a
 **defining role** in nearly every corpus doubles archetype.
 
-## 2. Support RATING — corpus-weighted, offensive-tier-penalised (owner round 3)
+## 2. Support RATING — QUALITY-tier, offensive-tier-penalised (owner round 4)
 
-Support is its OWN doubles axis. `supportRating(mon)` = **Σ (each support tool's value) − an
+Support is its OWN doubles axis. `supportRating(mon)` = **Σ (each support tool's QUALITY-tier value) − an
 offensive-tier penalty**, where:
-- **Tool value = corpus repetition, CAPPED.** Each support move/ability is worth ≈ how often it recurs in
-  the 59 DOU 6v6 teams (repetition = meta value — owner), but **capped at 8** so a ubiquitous ability
-  (Intimidate, 43 raw) can't dominate the sum. `SUPPORT_MOVE_POINTS` / `SUPPORT_ABILITY_POINTS` in
-  rating.js hold the corpus counts. **Protect is EXCLUDED** — it's on 56% of ALL mons (attackers too),
-  so it's universal utility, not a support discriminator.
+- **Tool value = quality tier: elite 8 / good 5 / filler 2.** `SUPPORT_MOVE_POINTS` /
+  `SUPPORT_ABILITY_POINTS` in rating.js assign each support move/ability one of three tiers, frequency-
+  informed (the elite tools are the ones that recur across the 59 DOU 6v6 teams) then doubles-expert-
+  corrected (redirection — Rage Powder / Follow Me — is elite though the Gen 6-7 corpus under-counts Follow
+  Me). **Elite (8):** Fake Out, Trick Room, Tailwind, Rage Powder, Follow Me, Taunt, Spore, Will-o-Wisp,
+  Thunder Wave, Perish Song; Intimidate, Prankster, Regenerator, the terrain surges, Friend Guard,
+  Hospitality. **Good (5):** Helping Hand, the Guards, Icy Wind/Electroweb, Snarl, Encore, Parting Shot,
+  cleric moves; redirection abilities, priority-block, ally healers. **Filler (2):** heals, screens,
+  one-target utility, RNG sleep; incidental absorb typings. **Protect is EXCLUDED** — on 56% of ALL mons
+  (attackers too), universal utility not a support discriminator.
 - **Penalty by OFFENSIVE TIER, not raw stats.** A support with high UNUSED offence (Sinistcha — 121 SpA
   but offensively RU) keeps its full value; a genuine OU+ attacker is heavily discounted
-  (`SUPPORT_PENALTY_BY_TIER`: UU 3, OU 10, Ubers 16, …). This is the key to the owner's rule: *a good OU
-  attacker is NOT a support just because it can learn a couple of support moves* — its offensive tier
-  eats the points. (Raw-stat penalty was the first try and it wrongly killed Sinistcha.)
+  (`SUPPORT_PENALTY_BY_TIER`: UU 3, OU 10, Ubers 16, …). This is the owner's rule: *a good OU attacker is
+  NOT a support just because it can learn a couple of support moves* — its offensive tier eats the points.
 
-`isDedicatedSupport(mon)` = `supportRating ≥ RU bar`. A lone support tool (one 8-point move) is below the
-bar → a half-support attacker, never gets the role. Backs the detector + the hard-pick + the flex.
+**Why quality tiers replaced the cap (round 4).** Round 3 valued tools by raw corpus frequency but CAPPED
+each at 8; that flattened *every* tool to ≈8, so BREADTH won — Calyrex's six *filler* tools (Helping Hand,
+Heal Pulse, Light Screen, Life Dew, Reflect, Skill Swap; zero elite) summed to 31 and out-scored
+Amoonguss's three *elite* tools (Spore + Rage Powder + Regenerator, each capped down to 8). Owner:
+*"el hecho de que pueda aprender ≥2 no lo hace support dedicado"* — only a real support COMBINATION counts.
+The three quality tiers make the rating encode the owner's own rule exactly: **1 elite tool (8) < RU → a
+half-support attacker; 2 elite (16) → UU; 3+ elite (24) → OU**; filler breadth (2 each) can't manufacture a
+support (six filler ≈ 12).
+
+`isDedicatedSupport(mon)` = earns a support tier (rating ≥ RU bar **and** clears the BST floor). Backs the
+detector + the hard-pick + the flex.
 
 ## 3. Support tier + tag
 
-`supportRating` maps to its OWN doubles tiers: **`SUPPORT_TIER_THRESHOLDS` = { OU 22, UU 15, RU 11 }**
-(RU > one capped tool, so ~2 tools = RU/UU, a full 3+ kit = OU). Plus a **BST viability floor**
-(`SUPPORT_TIER_MIN_BST` = { OU 440, UU 380, RU 320 }): a support must survive to support, so a frail
-pre-evo (Smoliv) with a big kit is capped down or dropped — real OU supports clear it (Whimsicott 480 /
-Amoonguss 464 / Sinistcha 508 / Cresselia 600). Support is a **new tier dimension**
+`supportRating` maps to its OWN doubles tiers: **`SUPPORT_TIER_THRESHOLDS` = { OU 22, UU 15, RU 11 }**.
+Plus a **BST viability floor** (`SUPPORT_TIER_MIN_BST` = { OU 440, UU 380, RU 320 }): a support must survive
+to support, so a frail pre-evo (Smoliv) with a big kit is capped down or dropped — real OU supports clear
+it (Whimsicott 480 / Amoonguss 464 / Sinistcha 508 / Cresselia 600). Support is a **new tier dimension**
 (owner): a mon's effective `tierDoubles = max(offensive tier, support tier)`, and when the **support tier
 strictly beats its offensive tier** the mon is flagged **`isSupportDoubles`** — the viewer shows a
 **"Support" tag** on the doubles side (on top of the shared role + tier). So a Whimsicott reads
 *Doubles: OU · Support*, while a Pheromosa (OU offense, only RU support) stays *Doubles: OU* untagged.
 
-**Calibration on the base pokedex (seed 777):** Sinistcha 25→OU +tag, Whimsicott 32→OU +tag, Amoonguss
-33→OU +tag, Farigiraf 36→OU +tag, Clefable 40→OU +tag, Cresselia 27→OU (offensively OU too, untagged);
-Pheromosa 8 / Landorus-T 1 / Kartana 5 → not support. Corpus: ~29% of DOU teams field NO dedicated support
-→ the up-front hyper roll (§8) stays at 0.25.
+**Calibration (mutated run 2709645655).** Owner anchors all land: **Calyrex 15 → UU** (Helping Hand 5 +
+five filler; ZERO elite — was wrongly OU under the cap), Whimsicott 34 → OU, Amoonguss 24 → OU, Farigiraf
+21 → UU, Sinistcha OU +tag. Attackers fall out (offensive penalty): Tapu Bulu 23−3, Celebi 19−10,
+Brute Bonnet 15−10. Corpus: ~29% of DOU teams field NO dedicated support → the up-front hyper roll (§8)
+stays at 0.25.
 
-**Earlier (superseded) models:** an additive weighted score with a strong-kit escape hatch, then a
-signal-COUNT (≥2 dedicated / ≥3 OU). Both are replaced by this rating (the count over-fired on attackers
-that merely *learn* 2 tools; the offensive-tier penalty is what the count lacked).
+**Audit.** `supportToolBreakdown(mon)` itemises the tools + their tier values + the penalty; the decision
+log prints the full **support ranking** for each hard-pick (every eligible support scored, the pick marked
+‹picked›), so *why THIS support and why OU/UU* is auditable (owner request, round 4).
+
+**Earlier (superseded) models:** a signal-COUNT (≥2 dedicated), then a frequency-weighted **capped** sum.
+Both are replaced by the quality-tier rating (the count/cap both let breadth of mediocre tools reach OU).
 
 **Phase-6 calibration on the base pokedex (seed 777) — result:**
 - Owner anchor hit: **Sinistcha RU→OU** (rD 7.77). Also Hitmontop RU→OU, Cresselia UU→OU, Amoonguss/
@@ -147,6 +163,16 @@ Drake fielded six attackers). The fix:
   Owner-validated: 1 tier only, then drop.
 - **Drop + log**: if no support fits even one tier down, the support role is dropped and the decision log
   says so (and notes when a support WAS flexed in) — mirroring the weather-drop transparency.
+- **Support MOVESET (round 4)**: a fielded support must PLAY support. When the team wants support and the
+  fielded mon is `isSupportDoubles` (its support tier beats its offense — the tagged supports), the resolver
+  injects its best support moves — `topSupportMoves(mon)`, quality-ranked, up to 3 — as fixed moves before
+  `chooseMoveset`, so the set is built AROUND them (a coverage move fills the last slot) rather than
+  all-attacking. Reachable-move gated (B-030) like the role move. (Owner: Calyrex had been fielded with
+  Leaf Storm / Psychic / Gyro Ball / Close Combat — a pure attacker labelled "support".)
+- **Item ban (round 4)**: a dedicated support can't hold a STATUS-LOCKING item — **Assault Vest** (blocks
+  all status moves) or a **Choice** item (locks into one move). The resolver skips the forward-Choice claim
+  for a support, filters those items out of its bag-item pick, and clears any pre-set one. (Owner: the
+  Calyrex "support" was holding Assault Vest.)
 - These are doubles-only (the `dedicatedSupport` slot exists only in `doubles.json`), so singles stay
   byte-identical. `resolveIdentity`/`crystallize` are rng-free, so the selector's flex check doesn't
   perturb the per-slot RNG stream.

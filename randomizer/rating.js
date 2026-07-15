@@ -3609,41 +3609,59 @@ function computeComboBonusDoubles(poke, moves, { offensePower }) {
     return Math.min(bonus, DOUBLES_COMBO.cap);
 }
 
-// ── T-141 (owner round 3) — DOUBLES support RATING + its own tier dimension ─────────────────────────
+// ── T-141 (owner round 4) — DOUBLES support RATING + its own tier dimension ─────────────────────────
 // Support is its OWN doubles axis (like the offensive tier). A mon's support value = the sum of its
-// support tools each valued by how often it RECURS in the DOU 6v6 corpus (repetition = meta value, owner),
-// each tool CAPPED so no single ubiquitous ability (Intimidate) dominates, MINUS a penalty for the mon's
-// own offense (a strong attacker that carries a support tool isn't a dedicated support). The summed rating
-// maps to its own support RU/UU/OU thresholds. When a mon's support tier beats its offensive tier, support
-// is its identity → it's tagged. Protect is EXCLUDED (universal utility, on 56% of ALL mons incl.
-// attackers — not a support discriminator). Points ≈ corpus occurrences (docs/research/doubles-support.md §3).
+// support tools, each scored by a QUALITY TIER — elite 8 / good 5 / filler 2 — MINUS a penalty for the
+// mon's own offense (a strong attacker that carries a support tool isn't a dedicated support). The summed
+// rating maps to its own support RU/UU/OU thresholds.
+//
+// Why quality tiers (owner round 4): the earlier model valued each tool by raw corpus frequency but CAPPED
+// it (Intimidate's 43 → 8), which FLATTENED every tool to ≈8 and let BREADTH win — Calyrex's six *filler*
+// tools (Helping Hand, Heal Pulse, Light Screen, Life Dew, Reflect, Skill Swap; zero elite) summed to 31
+// and out-scored Amoonguss's three *elite* tools (Spore + Rage Powder + Regenerator). Owner: "el hecho de
+// que pueda aprender ≥2 no lo hace support dedicado" — only a real support COMBINATION counts, and a good
+// OU attacker isn't a support just because it can learn a couple. The three quality tiers (frequency-
+// informed, then doubles-expert-corrected — redirection Rage Powder/Follow Me are elite though the Gen 6-7
+// corpus under-counts Follow Me) make the rating encode the owner's own rule exactly: 2 elite tools → 16
+// (UU), 3 elite → 24 (OU), while filler breadth barely moves (six filler ≈ 12). Protect is EXCLUDED
+// (universal utility, on 56% of ALL mons incl. attackers — not a support discriminator).
+// docs/research/doubles-support.md §2-3.
+const SUPPORT_ELITE = 8, SUPPORT_GOOD = 5, SUPPORT_FILLER = 2;
 const SUPPORT_MOVE_POINTS = {
-    MOVE_FAKE_OUT: 37, MOVE_TRICK_ROOM: 32, MOVE_TAILWIND: 30, MOVE_SPORE: 17, MOVE_TAUNT: 16,
-    MOVE_RAGE_POWDER: 14, MOVE_WILL_O_WISP: 11, MOVE_THUNDER_WAVE: 11, MOVE_HELPING_HAND: 9,
-    MOVE_WIDE_GUARD: 8, MOVE_ICY_WIND: 8, MOVE_PERISH_SONG: 8, MOVE_HEAL_PULSE: 7, MOVE_ELECTROWEB: 6,
-    MOVE_FOLLOW_ME: 5, MOVE_QUICK_GUARD: 5, MOVE_LIGHT_SCREEN: 5, MOVE_PARTING_SHOT: 5, MOVE_WISH: 5,
-    MOVE_ENCORE: 4, MOVE_SLEEP_POWDER: 4, MOVE_REFLECT: 4, MOVE_AURORA_VEIL: 4, MOVE_DECORATE: 4,
-    MOVE_SNARL: 4, MOVE_COACHING: 3, MOVE_INSTRUCT: 3, MOVE_DISABLE: 3, MOVE_HYPNOSIS: 3, MOVE_YAWN: 3,
-    MOVE_POLLEN_PUFF: 3, MOVE_NUZZLE: 3, MOVE_FAKE_TEARS: 3, MOVE_STRUGGLE_BUG: 3, MOVE_AROMATHERAPY: 3,
-    MOVE_HEAL_BELL: 3, MOVE_ALLY_SWITCH: 2, MOVE_AFTER_YOU: 2, MOVE_SKILL_SWAP: 2, MOVE_FEINT: 2,
-    MOVE_LIFE_DEW: 5, MOVE_LOVELY_KISS: 3, MOVE_GRASS_WHISTLE: 2, MOVE_SING: 2,
+    // ELITE (8) — build-defining doubles support: speed control, redirection, reliable disruption/sleep.
+    MOVE_FAKE_OUT: 8, MOVE_TRICK_ROOM: 8, MOVE_TAILWIND: 8, MOVE_RAGE_POWDER: 8, MOVE_FOLLOW_ME: 8,
+    MOVE_TAUNT: 8, MOVE_SPORE: 8, MOVE_WILL_O_WISP: 8, MOVE_THUNDER_WAVE: 8, MOVE_PERISH_SONG: 8,
+    // GOOD (5) — real support, but not alone build-defining: guards, single-target speed drops, cleric, pivot.
+    MOVE_HELPING_HAND: 5, MOVE_WIDE_GUARD: 5, MOVE_QUICK_GUARD: 5, MOVE_ICY_WIND: 5, MOVE_ELECTROWEB: 5,
+    MOVE_SNARL: 5, MOVE_ENCORE: 5, MOVE_PARTING_SHOT: 5, MOVE_SLEEP_POWDER: 5, MOVE_DECORATE: 5,
+    MOVE_POLLEN_PUFF: 5, MOVE_COACHING: 5, MOVE_NUZZLE: 5, MOVE_AROMATHERAPY: 5, MOVE_HEAL_BELL: 5,
+    // FILLER (2) — situational / unreliable: heals, screens, one-target utility, RNG sleep.
+    MOVE_HEAL_PULSE: 2, MOVE_LIFE_DEW: 2, MOVE_WISH: 2, MOVE_LIGHT_SCREEN: 2, MOVE_REFLECT: 2,
+    MOVE_AURORA_VEIL: 2, MOVE_INSTRUCT: 2, MOVE_DISABLE: 2, MOVE_YAWN: 2, MOVE_AFTER_YOU: 2,
+    MOVE_ALLY_SWITCH: 2, MOVE_SKILL_SWAP: 2, MOVE_FEINT: 2, MOVE_FAKE_TEARS: 2, MOVE_STRUGGLE_BUG: 2,
+    MOVE_HYPNOSIS: 2, MOVE_LOVELY_KISS: 2, MOVE_GRASS_WHISTLE: 2, MOVE_SING: 2,
 };
 const SUPPORT_ABILITY_POINTS = {
-    INTIMIDATE: 43, REGENERATOR: 14, PRANKSTER: 11, ELECTRIC_SURGE: 10, MISTY_SURGE: 8, FRIEND_GUARD: 8,
-    HOSPITALITY: 8, GRASSY_SURGE: 7, PSYCHIC_SURGE: 6, ARMOR_TAIL: 6, STORM_DRAIN: 5, LIGHTNING_ROD: 4,
-    WATER_ABSORB: 4, HEALER: 4, DAZZLING: 4, QUEENLY_MAJESTY: 4, TELEPATHY: 3, AROMA_VEIL: 3,
-    SWEET_VEIL: 3, VOLT_ABSORB: 2, SAP_SIPPER: 2,
+    // ELITE (8) — the build-defining doubles support abilities (Intimidate is on 69% of corpus teams).
+    INTIMIDATE: 8, PRANKSTER: 8, REGENERATOR: 8, ELECTRIC_SURGE: 8, MISTY_SURGE: 8, GRASSY_SURGE: 8,
+    PSYCHIC_SURGE: 8, FRIEND_GUARD: 8, HOSPITALITY: 8,
+    // GOOD (5) — redirection abilities, priority-block, ally healers/guards.
+    ARMOR_TAIL: 5, STORM_DRAIN: 5, LIGHTNING_ROD: 5, QUEENLY_MAJESTY: 5, DAZZLING: 5, HEALER: 5,
+    AROMA_VEIL: 5, SWEET_VEIL: 5, TELEPATHY: 5,
+    // FILLER (2) — absorb typings that only incidentally help an ally.
+    WATER_ABSORB: 2, VOLT_ABSORB: 2, SAP_SIPPER: 2,
 };
-const SUPPORT_TOOL_CAP = 8;              // per-tool cap — a ubiquitous tool (Intimidate 43) can't dominate the sum
+const SUPPORT_TOOL_CAP = 8;              // == SUPPORT_ELITE; the ceiling a single tool can contribute
 // Penalty by the mon's OFFENSIVE doubles tier (its real threat level), NOT raw stats: a support with high
 // UNUSED offence (Sinistcha — 121 SpA but offensively RU) keeps its full support value, while a genuine
 // OU+ attacker's support value is heavily discounted (owner: a good OU attacker is NOT a support just
 // because it can learn a couple of support moves). RU-or-weaker offence → no penalty.
 const SUPPORT_PENALTY_BY_TIER = { [TIER_UU]: 3, [TIER_OU]: 10, [TIER_UBERS]: 16, [TIER_LEGEND]: 22, [TIER_AG]: 28 };
-// The DOUBLES support tiers — thresholds on the (capped-points − offensive-tier-penalty) scale, calibrated
-// so the corpus support exemplars land OU and pure attackers fall out (docs/research/doubles-support.md §3).
-// RU bar > one capped tool (8), so a lone support move on an attacker (half-support) is NOT a support;
-// ~2 tools → RU/UU, a full 3+ kit → OU (owner: only a real support COMBINATION counts).
+// The DOUBLES support tiers — thresholds on the (quality-tier points − offensive-tier-penalty) scale,
+// calibrated so the corpus support exemplars land OU and pure attackers fall out. With elite tools worth 8,
+// this encodes the owner's own rule directly: 1 elite tool (8) < RU → a half-support attacker, NOT a
+// support; 2 elite (16) → UU; 3+ elite (24) → OU. Filler (2 each) barely moves the needle, so breadth of
+// mediocre moves can't manufacture a support (Calyrex's six filler tools ≈ 12 → below UU alone).
 const SUPPORT_TIER_THRESHOLDS = { OU: 22, UU: 15, RU: 11 };
 // A support must also be VIABLE — a frail pre-evo (Smoliv) dies before it supports, no matter its kit. So
 // each support tier has a minimum BST (real OU supports: Whimsicott 480 / Amoonguss 464 / Sinistcha 508 /
@@ -3675,6 +3693,34 @@ function supportTierDoubles(poke, offensiveTier) {
 // A mon is a dedicated support iff it earns a support tier (clears both the rating AND the BST viability
 // bar for at least RU) — owner: only a real, viable support kit qualifies.
 function isDedicatedSupport(poke) { return supportTierDoubles(poke) != null; }
+
+// ITEMISED support breakdown — the exact tools + their quality-tier points, the offensive-tier penalty and
+// the resulting rating/tier. Powers the decision-log's support ranking (owner: "me gustaría poder auditar
+// eso"): so the log can show WHY a mon is OU/UU support, not just the number. Tools sorted best-first.
+function supportToolBreakdown(poke, offensiveTier) {
+    const abils = poke.parsedAbilities || [];
+    const learnable = new Set([...(poke.learnset || []).map(l => l.move), ...(poke.teachables || [])]);
+    const tools = [];
+    for (const mv in SUPPORT_MOVE_POINTS) if (learnable.has(mv)) tools.push({ id: mv, kind: 'move', value: SUPPORT_MOVE_POINTS[mv] });
+    for (const a of abils) if (SUPPORT_ABILITY_POINTS[a]) tools.push({ id: a, kind: 'ability', value: SUPPORT_ABILITY_POINTS[a] });
+    tools.sort((x, y) => y.value - x.value);
+    const pts = tools.reduce((s, t) => s + t.value, 0);
+    const offT = offensiveTier || (typeof poke.ratingDoubles === 'number' ? tierFromRatingDoubles(poke.ratingDoubles) : null);
+    const penalty = SUPPORT_PENALTY_BY_TIER[offT] || 0;
+    return { tools, pts, offTier: offT, penalty, rating: Math.max(0, pts - penalty), tier: supportTierDoubles(poke, offT) };
+}
+
+// The doubles SUPPORT moves this species can learn, ranked best-first (quality-tier value). Used to build a
+// dedicated support's moveset — its role IS support, so it should carry its best support moves rather than
+// an all-attacking set (owner: "el moveset debería saber que su rol es support"). Moves only (abilities are
+// chosen separately). `filter(move)` optionally gates on the trainer's reachable moves (TM bag / level).
+function topSupportMoves(poke, { filter = null, limit = Infinity } = {}) {
+    const learnable = new Set([...(poke.learnset || []).map(l => l.move), ...(poke.teachables || [])]);
+    const ranked = Object.keys(SUPPORT_MOVE_POINTS)
+        .filter(mv => learnable.has(mv) && (!filter || filter(mv)))
+        .sort((a, b) => SUPPORT_MOVE_POINTS[b] - SUPPORT_MOVE_POINTS[a]);
+    return Number.isFinite(limit) ? ranked.slice(0, limit) : ranked;
+}
 
 // T-097 tuning (owner ✔): doubles punishes FRAILTY harder (a frail mon is folded by spread damage) and does
 // not reward a PASSIVE wall (bulk with no offence and no support role isn't a doubles threat).
@@ -3767,6 +3813,7 @@ function ratePokemonDoubles(poke, moves, abilities, tmPool, moveset = null) {
         tierDoubles: supportDominant ? supTier : offensiveTier,
         role,
         supportTierDoubles: supTier,
+        supportRatingDoubles: supportRating(poke, offensiveTier), // numeric — stored for the audit ranking
         isSupportDoubles: supportDominant,
     };
 }
@@ -3787,6 +3834,8 @@ module.exports = {
     rateAbilitySingles,
     supportRating,
     supportTierDoubles,
+    supportToolBreakdown,
+    topSupportMoves,
     isDedicatedSupport,
     bstRatingDoubles,
     computeComboBonusDoubles,

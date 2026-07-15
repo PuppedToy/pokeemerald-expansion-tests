@@ -23,6 +23,7 @@ const {
 } = require('./weatherConstants');
 const { weatherAbuseScore, weatherAbuseRating, weatherAbuseBreakdown, GIMMICK_SPEC } = require('./gimmickPlan');
 const { DETECTORS } = require('./featureDetectors'); // T-142 — hard-pick a dedicated-support-capable mon
+const { supportToolBreakdown } = require('../rating'); // T-141 r4 — itemised support ranking for the log
 
 const BIAS_MIN_SOPH = 0.15;   // below this sophistication, no bias (early-game = "a pile of mons")
 const IDENTITY_FIT = 0.5;     // the top base archetype recipe must fit this well before biasing (T-118)
@@ -255,7 +256,24 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
             if (have < 1) {
                 const idx = [];
                 candidates.forEach((c, i) => { if (DETECTORS.dedicatedSupport(c)) idx.push(i); });
-                if (idx.length) return weightedSampleOne(idx.map(i => candidates[i]), idx.map(i => weights[i]));
+                if (idx.length) {
+                    const pool = idx.map(i => candidates[i]);
+                    const picked = weightedSampleOne(pool, idx.map(i => weights[i]));
+                    // T-141 r4 — record the support RANKING for the decision log (owner: audit "why THIS support
+                    // was chosen, and why it's OU/UU"). No extra rng — the pick above is the real one, reused.
+                    if (context.supportPicks) {
+                        const ranked = pool.map(c => {
+                            const b = supportToolBreakdown(c);
+                            return {
+                                id: c.id, rating: b.rating, tier: c.supportTierDoubles || b.tier,
+                                offTier: c.tierDoubles || b.offTier, penalty: b.penalty,
+                                tools: b.tools.map(t => ({ id: t.id, kind: t.kind, value: t.value })),
+                            };
+                        }).sort((a, b) => b.rating - a.rating);
+                        context.supportPicks.push({ pickedId: picked.id, nEligible: pool.length, ranked });
+                    }
+                    return picked;
+                }
             }
         }
         if (!biased) return sample(candidates); // nothing to pull toward → byte-identical

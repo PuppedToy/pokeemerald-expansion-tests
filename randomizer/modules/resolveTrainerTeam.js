@@ -31,6 +31,7 @@ const {
     isSuperEffective,
     chooseNature,
     palafinEffectivePoke,
+    topSupportMoves,
 } = require('../rating.js');
 const { sample, canLearnMove, usesStrategicNature } = require('./utils');
 const { pickTrainerMonAbility } = require('./trainerAbility');
@@ -51,6 +52,14 @@ const SEED_SOPH_FLOOR = 0.6; // T-126 — min sophistication for a SEEDED traine
 // T-142 r3 — fraction of STEERED doubles teams that are hyper-aggressive (NO dedicated support). Rolled
 // up front per trainer (see below) because the emergent identity resolves too late to secure a support.
 const DOUBLES_HYPER_CHANCE = 0.25;
+// T-141 r4 — a dedicated support's moveset should BE support: inject up to this many of its best support
+// moves (quality-ranked) as fixed moves so chooseMoveset builds the set around them (owner: "el moveset
+// debería saber que su rol es support"), leaving one slot for a coverage/attacking move.
+const SUPPORT_MOVES_TO_INJECT = 3;
+// Items that LOCK a mon out of status moves (Assault Vest blocks all status; Choice locks into one move) —
+// forbidden for a dedicated support, whose whole job is spamming support moves (owner: AV on a support is
+// wrong). Matched by display name (the item-name form used throughout the resolver).
+const SUPPORT_FORBIDDEN_ITEMS = new Set(['Assault Vest', 'Choice Band', 'Choice Specs', 'Choice Scarf']);
 
 function nameify(text) {
     return text
@@ -164,6 +173,7 @@ function createTeamResolver(deps) {
             sophistication: archetypeSeed ? Math.max(sophistication(trainer), SEED_SOPH_FLOOR) : sophistication(trainer),
             archetypeSeed,
             weatherPicks: [], // T-135 — the picker records each abuser slot's ranking here, for the audit log
+            supportPicks: [], // T-141 r4 — the picker records the dedicated-support ranking here, for the log
             itemLinkActivations: [], // T-133 — records when a linked pick-pack activated (siblings forgone)
         };
         // T-142 r3 — decide UP FRONT whether this doubles team is hyper-aggressive (no dedicated support)
@@ -270,6 +280,15 @@ function createTeamResolver(deps) {
                     __favourite: !!(trainerMonDefinition && trainerMonDefinition.__favourite),
                 };
 
+                // T-141 r4 — is this mon (one of) the team's DEDICATED support? True when the up-front plan
+                // wants support (steered doubles) AND this mon's support tier beats its offense (the tagged
+                // supports). Drives its support moveset + the status-locking-item ban below. A pre-set
+                // status-locking item (from a def/mega) is cleared so a legal item fills the slot instead.
+                const isSupportMon = !!context.doublesWantsSupport && !!chosenTrainerMon.isSupportDoubles;
+                if (isSupportMon && newTeamMember.item && SUPPORT_FORBIDDEN_ITEMS.has(newTeamMember.item)) {
+                    newTeamMember.item = null;
+                }
+
                 // B-030 — a move INJECTED beyond chooseMoveset's own (already TM-gated) selection must
                 // still respect the incremental bag: a teachable-only move is allowed only if the trainer
                 // currently holds that TM (trainer.tms). Level-up moves reachable at the trainer's level are
@@ -300,6 +319,19 @@ function createTeamResolver(deps) {
                 });
                 if (roleMove && injectableMove(roleMove) && !newTeamMember.moves.includes(roleMove)) {
                     newTeamMember.moves.push(roleMove);
+                }
+                // T-141 r4 — a DEDICATED support plays support. When this mon's support tier beats its offense
+                // (isSupportDoubles — the tagged supports) on a steered doubles team, inject its best support
+                // moves (quality-ranked) as fixed moves so chooseMoveset builds a real support set around them
+                // instead of an all-attacking one (owner: Calyrex was fielded with Leaf Storm/Psychic/Gyro
+                // Ball/Close Combat + Assault Vest). Soph-gated (context.doublesWantsSupport is only set for
+                // steered teams) → early game + singles untouched. Reachable-move gated (B-030) like roleMove.
+                if (isSupportMon) {
+                    const supMoves = topSupportMoves(chosenTrainerMon, {
+                        filter: mv => injectableMove(mv) && !newTeamMember.moves.includes(mv),
+                        limit: SUPPORT_MOVES_TO_INJECT,
+                    });
+                    supMoves.forEach(mv => { if (!newTeamMember.moves.includes(mv)) newTeamMember.moves.push(mv); });
                 }
                 // T-137 — electric-terrain gimmick: every mon prefers an electric attacking move (STAB/synergy).
                 if (context.archetypeSeed && (context.archetypeSeed.gimmicks || []).includes('electric_terrain')) {
@@ -338,7 +370,9 @@ function createTeamResolver(deps) {
                 // an all-attacking set (the forward path T-129 couldn't do). Only when a Choice is actually in
                 // the bag — the Choice role depends on the item existing. Enhanced items (rock/seed/room
                 // service) are handled just below (T-125). Soph-gated inside the planner.
-                if (!newTeamMember.item && trainer.bag && trainer.bag.length) {
+                // T-141 r4 — never claim a Choice item for a dedicated support (it would lock it into one move
+                // and build an all-attacking set — the opposite of its role).
+                if (!newTeamMember.item && !isSupportMon && trainer.bag && trainer.bag.length) {
                     const forwardChoice = planForwardChoiceItem({
                         species: chosenTrainerMon, team, model: archetypeModel, ctx: { moves },
                         sophistication: context.sophistication, seed: context.archetypeSeed, available: trainer.bag,
@@ -421,6 +455,8 @@ function createTeamResolver(deps) {
                 if (!newTeamMember.item && trainer.bag && trainer.bag.length > 0) {
                     const movesetObjects = moveset.map(m => moves[m]);
                     const sortedBagItems = trainer.bag
+                        // T-141 r4 — a dedicated support can't hold a status-locking item (Assault Vest / Choice).
+                        .filter(bagItemId => !(isSupportMon && SUPPORT_FORBIDDEN_ITEMS.has(bagItemId)))
                         .map(bagItemId => ({
                             id: bagItemId,
                             rating: rateItemForAPokemon(bagItemId, battlePoke, ability, movesetObjects, trainer.level, trainer.bag.length, GENERIC_DEVIATION),
@@ -501,7 +537,7 @@ function createTeamResolver(deps) {
             GIMMICK_SPEC[seedGid].ensureSetter(team, setterCount);
         }
 
-        attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed, weatherPicks: context.weatherPicks, itemLinkActivations: context.itemLinkActivations, supportFlexed: context.supportFlexed, doublesWantsSupport: context.doublesWantsSupport });
+        attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed, weatherPicks: context.weatherPicks, supportPicks: context.supportPicks, itemLinkActivations: context.itemLinkActivations, supportFlexed: context.supportFlexed, doublesWantsSupport: context.doublesWantsSupport });
         return team;
     }
 

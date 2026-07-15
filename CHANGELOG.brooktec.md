@@ -27,9 +27,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   Hand users, Intimidate pillars, Friend Guard / Hospitality allies — are recognised as a distinct role,
   rated up for doubles (a support Sinistcha climbs from RU to OU off its Hospitality + Rage Powder kit),
   and most doubles archetypes now reserve a slot for one (plus a new redirection-support archetype).
-  Support moves and abilities are valued for doubles (Encore, Prankster, Defiant/Competitive punishing the
-  ubiquitous Intimidate). And ally-only abilities that do nothing in a 1v1 — Commander, Hospitality,
-  Costar, Power Spot — no longer inflate a Pokémon's SINGLES rating (T-141).
+  Support is scored by tool QUALITY, not breadth: each support move/ability is worth elite / good / filler
+  points, so a real support COMBINATION (2 elite tools → UU, 3+ → OU) is rewarded while a pile of mediocre
+  moves is not — and a strong offensive tier discounts the score, so a good attacker isn't mislabelled a
+  support. A fielded support now also PLAYS support: it's built with its best support moves (not an
+  all-attacking set) and is never handed a status-locking item (Assault Vest / Choice). The decision log
+  prints the full support ranking behind each pick — every eligible support scored and itemised, the pick
+  marked — so *why this support, and why OU/UU* is auditable. Support moves and abilities are valued for
+  doubles (Encore, Prankster, Defiant/Competitive punishing the ubiquitous Intimidate). And ally-only
+  abilities that do nothing in a 1v1 — Commander, Hospitality, Costar, Power Spot — no longer inflate a
+  Pokémon's SINGLES rating (T-141).
 
 - **Weather teams now field their BEST abusers, ranked by how well each exploits the weather.** Instead of
   any boosted-type mon, a sophisticated weather trainer prefers real ability-abusers (Chlorophyll / Solar
