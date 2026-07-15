@@ -1,10 +1,10 @@
 ---
 id: T-056
 title: Rebalance — swap rival rewards (stones earlier) + move Lum Berry bag entry
-status: in-progress
+status: done
 type: feature
 created: 2026-07-04
-updated: 2026-07-04
+updated: 2026-07-15
 target-version: 0.6.0
 links: []
 blocked-by: []
@@ -74,4 +74,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Rival rewards swapped (evolution stones earlier) + Lum Berry bag entry moved; deploy path now snapshot-commits data/src/include so ROM-side data changes deploy cleanly (deploy-env test). Suite green; ROM-side verified via builder/CI. Owner-validated 2026-07-15. Closed.

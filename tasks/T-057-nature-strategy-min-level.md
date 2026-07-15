@@ -1,10 +1,10 @@
 ---
 id: T-057
 title: Lower the level at which trainers pick strategic natures and abilities to 12 (Roxanne)
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done
 type: feature
 created: 2026-07-04
-updated: 2026-07-04
+updated: 2026-07-15
 target-version: 0.6.0
 links: []
 blocked-by: []
@@ -66,4 +66,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+ABILITY_STRATEGY_MIN_LEVEL=12 + usesStrategicAbility wired into both writer.js and writerDocs.js (no <28 left) so trainers pick strategic natures+abilities from Roxanne. Full suite green. Owner-validated 2026-07-15. Closed.

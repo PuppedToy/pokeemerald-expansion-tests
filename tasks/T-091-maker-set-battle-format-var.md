@@ -1,10 +1,10 @@
 ---
 id: T-091
 title: Maker sets the battle-format / Run & Bun VAR at build time and wires new bundle fields
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-15
 target-version: 0.7.0
 links: [T-083, T-087, T-090]
 blocked-by: [T-087, T-090]
@@ -58,4 +58,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Maker sets the battle-format / Run & Bun VAR at build time + wires the new bundle fields. runAndBunWriter.test.js (5). Suite green; ingame VAR read validated on builder/PRO. Group 1 (T-084…T-091) code-complete. Owner-validated 2026-07-15. Closed.

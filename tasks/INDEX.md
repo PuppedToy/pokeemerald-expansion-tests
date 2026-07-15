@@ -58,11 +58,11 @@
 | [T-052](T-052-configurable-randomization-options.md) | Configurable randomization options — batch 1 (categorized settings) | done | 0.6.0 | 2026-07-03 |
 | [T-053](T-053-bps-patch-delivery.md) | BPS patch delivery + client-side patching (IndexedDB) | in-progress | 0.6.0 | 2026-07-03 |
 | [T-054](T-054-binary-injection-randomizer-viability.md) | Viability analysis — randomize a prebuilt ROM by binary injection (vs. compiling from scratch) | proposed | 0.7.0 | 2026-07-03 |
-| [T-055](T-055-frontend-ux-tweaks.md) | Frontend UX tweaks — docs "Defeated" placement + reset-options button | in-progress | 0.6.0 | 2026-07-03 |
-| [T-056](T-056-rival-rewards-rebalance.md) | Rebalance — swap rival rewards (stones earlier) + move Lum Berry bag entry | in-progress | 0.6.0 | 2026-07-04 |
-| [T-057](T-057-nature-strategy-min-level.md) | Lower the level at which trainers pick strategic natures and abilities to 12 (Roxanne) | in-progress | 0.6.0 | 2026-07-04 |
+| [T-055](T-055-frontend-ux-tweaks.md) | Frontend UX tweaks — docs "Defeated" placement + reset-options button | done | 0.6.0 | 2026-07-15 |
+| [T-056](T-056-rival-rewards-rebalance.md) | Rebalance — swap rival rewards (stones earlier) + move Lum Berry bag entry | done | 0.6.0 | 2026-07-15 |
+| [T-057](T-057-nature-strategy-min-level.md) | Lower the level at which trainers pick strategic natures and abilities to 12 (Roxanne) | done | 0.6.0 | 2026-07-15 |
 | [T-058](T-058-brawly-five-pokemon-bundle.md) | Analyze why Brawly has 5 pokemon instead of 6 in a bundle | done | 0.5.1 | 2026-07-05 |
-| [T-059](T-059-wattson-ability-patch-reward.md) | Wattson gives an Ability Patch after New Mauville instead of two scrolls | in-progress | 0.6.0 | 2026-07-05 |
+| [T-059](T-059-wattson-ability-patch-reward.md) | Wattson gives an Ability Patch after New Mauville instead of two scrolls | done | 0.6.0 | 2026-07-15 |
 | [T-060](T-060-standardize-branching-evolutions.md) | Standardize branching evolutions (rare-candy default + stones) | done | 0.6.0 | 2026-07-06 |
 | [T-061](T-061-bundle-json-analysis.md) | Analyze bundle.json and spawn per-issue tasks | done | 0.6.0 | 2026-07-06 |
 | [T-062](T-062-mega-base-form-stab-moves.md) | Guarantee base form learns STAB of a mega's added/mutated type | done | 0.6.0 | 2026-07-06 |
@@ -76,8 +76,8 @@
 | [T-070](T-070-location-based-nicknames.md) | Location-based automatic nicknames for all wild / gift / static Pokémon | in-progress | 0.6.0 | 2026-07-07 |
 | [T-071](T-071-ci-game-compile-gate.md) | Gate deploys/CI on a real game compile (catch box-only C errors before PRO) | proposed | 0.6.0 | 2026-07-07 |
 | [T-072](T-072-starter-quality-selector.md) | Starter quality selector for the 3 main starters + extra-starter count & visual separation | in-progress | 0.6.0 | 2026-07-07 |
-| [T-073](T-073-configurable-shop-prices.md) | Configurable shop item prices (mints, ability items, balls, TMs by pool) | in-progress | 0.6.0 | 2026-07-07 |
-| [T-074](T-074-docs-responsive-fixes.md) | Fix documentation responsive rendering issues | in-progress | 0.6.0 | 2026-07-08 |
+| [T-073](T-073-configurable-shop-prices.md) | Configurable shop item prices (mints, ability items, balls, TMs by pool) | done | 0.6.0 | 2026-07-15 |
+| [T-074](T-074-docs-responsive-fixes.md) | Fix documentation responsive rendering issues | done | 0.6.0 | 2026-07-15 |
 | [T-075](T-075-randomizer-diagnostics.md) | Randomizer diagnostics — audit warnings, rich 48h server store, local classification action | done | 0.6.0 | 2026-07-09 |
 | [T-076](T-076-unified-boss-type-pool.md) | Unified fixed/changed type pool for gyms, E4 and champion | done | 0.6.0 | 2026-07-09 |
 | [T-077](T-077-no-wild-held-items.md) | Remove all held items from wild Pokémon | in-progress | 0.6.0 | 2026-07-09 |
@@ -88,13 +88,13 @@
 | [T-082](T-082-next-boss-jump-to-trainer.md) | Clicking the "Next boss" top-bar stat jumps to that boss on the Trainers tab | done | 0.6.0 | 2026-07-09 |
 | [T-083](T-083-epic-battle-formats-and-teambuilding.md) | EPIC — Battle formats (singles/doubles/mixed) + doubles-aware rating & teambuilding redesign | proposed | 0.7.0 | 2026-07-09 |
 | [T-084](T-084-battle-format-architecture-adr.md) | Design the battle-format architecture (bundle representation, pools, Run & Bun) + ADR-014 | done | 0.7.0 | 2026-07-09 |
-| [T-085](T-085-frontend-battle-format-setting.md) | Frontend battle-format setting — big-box singles/doubles/mixed + % + Run & Bun | in-progress | 0.7.0 | 2026-07-09 |
-| [T-086](T-086-randomizer-assign-battle-type.md) | Randomizer assigns per-trainer battle type by pool proportions and marks it in the bundle | in-progress | 0.7.0 | 2026-07-09 |
-| [T-087](T-087-writer-emit-double-battle-line.md) | Writer emits/rewrites the Double Battle header per trainer from the bundle battle type | in-progress | 0.7.0 | 2026-07-09 |
-| [T-088](T-088-decomp-e4-doubles-trainers.md) | Add committed E4 doubles trainer constants + base .party entries (Run & Bun) | in-progress | 0.7.0 | 2026-07-09 |
-| [T-089](T-089-randomizer-runandbun-duplicate-e4-teams.md) | Randomizer generates duplicated E4 singles+doubles teams for Run & Bun | in-progress | 0.7.0 | 2026-07-09 |
-| [T-090](T-090-rom-e4-battle-style-prompt.md) | ROM E4 scripts — in-game singles/doubles prompt + remaining-choices counter + build-time VAR | in-progress | 0.7.0 | 2026-07-09 |
-| [T-091](T-091-maker-set-battle-format-var.md) | Maker sets the battle-format / Run & Bun VAR at build time and wires new bundle fields | in-progress | 0.7.0 | 2026-07-09 |
+| [T-085](T-085-frontend-battle-format-setting.md) | Frontend battle-format setting — big-box singles/doubles/mixed + % + Run & Bun | done | 0.7.0 | 2026-07-15 |
+| [T-086](T-086-randomizer-assign-battle-type.md) | Randomizer assigns per-trainer battle type by pool proportions and marks it in the bundle | done | 0.7.0 | 2026-07-15 |
+| [T-087](T-087-writer-emit-double-battle-line.md) | Writer emits/rewrites the Double Battle header per trainer from the bundle battle type | done | 0.7.0 | 2026-07-15 |
+| [T-088](T-088-decomp-e4-doubles-trainers.md) | Add committed E4 doubles trainer constants + base .party entries (Run & Bun) | done | 0.7.0 | 2026-07-15 |
+| [T-089](T-089-randomizer-runandbun-duplicate-e4-teams.md) | Randomizer generates duplicated E4 singles+doubles teams for Run & Bun | done | 0.7.0 | 2026-07-15 |
+| [T-090](T-090-rom-e4-battle-style-prompt.md) | ROM E4 scripts — in-game singles/doubles prompt + remaining-choices counter + build-time VAR | done | 0.7.0 | 2026-07-15 |
+| [T-091](T-091-maker-set-battle-format-var.md) | Maker sets the battle-format / Run & Bun VAR at build time and wires new bundle fields | done | 0.7.0 | 2026-07-15 |
 | [T-092](T-092-group1-checkpoint-e2e.md) | Group 1 checkpoint — end-to-end ROM builds + manual test in every battle-format mode | proposed | 0.7.0 | 2026-07-09 |
 | [T-093](T-093-dual-rating-design-adr.md) | Design the dual singles/doubles rating dimension + ADR-015 | proposed | 0.8.0 | 2026-07-10 |
 | [T-094](T-094-doubles-move-spread-rating.md) | Doubles move rating — spread detection (move.target) + rateMoveDoubles | in-progress | 0.8.0 | 2026-07-10 |
@@ -118,8 +118,8 @@
 | [T-112](T-112-docs-format-tiers-and-behavior.md) | Docs — reflect format-based tiers + battle-format behaviour | proposed | 0.8.0 | 2026-07-09 |
 | [T-113](T-113-group2-checkpoint-e2e.md) | Group 2 checkpoint — end-to-end builds + per-format team-quality review | proposed | 0.8.0 | 2026-07-09 |
 | [T-114](T-114-battle-ai-per-archetype.md) | Battle AI tuned per team archetype / format (deferred) | proposed | 0.9.0 | 2026-07-09 |
-| [T-115](T-115-docs-battle-type-badge.md) | Surface each trainer's battle type (Single/Double) in the generated docs viewer | in-progress | 0.7.0 | 2026-07-10 |
-| [T-116](T-116-battle-tag-refinements.md) | Battle-type tag refinements — single/tag tags, Space Center tag battle, Run & Bun E4 labels, rival consistency | in-progress | 0.7.0 | 2026-07-10 |
+| [T-115](T-115-docs-battle-type-badge.md) | Surface each trainer's battle type (Single/Double) in the generated docs viewer | done | 0.7.0 | 2026-07-15 |
+| [T-116](T-116-battle-tag-refinements.md) | Battle-type tag refinements — single/tag tags, Space Center tag battle, Run & Bun E4 labels, rival consistency | done | 0.7.0 | 2026-07-15 |
 | [T-117](T-117-team-decision-audit-log.md) | Team-building decision audit log (per-team decision trace, local + 48h server + audit skill) | in-progress | 0.8.0 | 2026-07-11 |
 | [T-118](T-118-feature-detector-realism.md) | Feature-detector realism — roles by analysed characteristics, not can-learn potential | in-progress | 0.8.0 | 2026-07-11 |
 | [T-119](T-119-archetype-tier-downgrade.md) | Archetype-driven tier downgrade within budget (fill a needed role by downgrading, never upgrading) | proposed | 0.8.0 | 2026-07-11 |

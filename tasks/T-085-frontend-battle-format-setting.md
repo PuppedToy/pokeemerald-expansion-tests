@@ -1,10 +1,10 @@
 ---
 id: T-085
 title: Frontend battle-format setting — big-box singles/doubles/mixed + % + Run & Bun
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-15
 target-version: 0.7.0
 links: [T-083, T-084]
 blocked-by: [T-084]
@@ -79,4 +79,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Frontend battle-format setting (singles/doubles/mixed big-box + % + Run & Bun) with a unified mixed-panel box. Frontend 73/73; ROM build + double battles confirmed in PRO. Owner-validated 2026-07-15. Closed.

@@ -1,10 +1,10 @@
 ---
 id: T-116
 title: Battle-type tag refinements — single/tag tags, Space Center tag battle, Run & Bun E4 labels, rival consistency
-status: in-progress
+status: done
 type: feature
 created: 2026-07-10
-updated: 2026-07-10
+updated: 2026-07-15
 target-version: 0.7.0
 links: [T-083, T-087, T-115, docs/adr/ADR-014.md]
 blocked-by: []
@@ -73,4 +73,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Battle-type tag refinements: single/tag tags, Space Center tag battle, Run & Bun E4 labels rendered adjacent (splice-insert), rival consistency. Suite 812 pass. Owner-validated 2026-07-15. Closed.

@@ -1,10 +1,10 @@
 ---
 id: T-059
 title: Wattson gives an Ability Patch after New Mauville instead of two scrolls
-status: in-progress
+status: done
 type: feature
 created: 2026-07-05
-updated: 2026-07-05
+updated: 2026-07-15
 target-version: 0.6.0
 links: [data/maps/MauvilleCity/scripts.inc]
 blocked-by: []
@@ -48,4 +48,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Wattson's New Mauville reward is now a single Ability Patch (was two scrolls) in MauvilleCity scripts. ROM-side verified via builder/CI. Owner-validated 2026-07-15. Closed.

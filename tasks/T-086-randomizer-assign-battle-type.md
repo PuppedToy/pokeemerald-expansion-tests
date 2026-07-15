@@ -1,10 +1,10 @@
 ---
 id: T-086
 title: Randomizer assigns per-trainer battle type by pool proportions and marks it in the bundle
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-15
 target-version: 0.7.0
 links: [T-083, T-084]
 blocked-by: [T-084]
@@ -67,4 +67,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Randomizer assigns per-trainer battle type by pool proportions (champion rule, Tate & Liza priority, deterministic) and marks it in the bundle. battleFormat.test.js (9 cases). Suite green. Owner-validated 2026-07-15. Closed.
