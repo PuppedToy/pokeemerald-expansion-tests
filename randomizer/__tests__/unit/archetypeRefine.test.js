@@ -5,7 +5,7 @@
 // role-capable species). Pure planner; the resolver injects the returned move as a fixed move before
 // chooseMoveset (reusing the tryToHaveMove machinery → move quality preserved). Gated by sophistication.
 
-const { resolvedDetectMon, planMemberRoleMove, planTerrainSynergyMove, ROLE_MOVE_SETS } = require('../../modules/archetypeRefine');
+const { resolvedDetectMon, planMemberRoleMove, planTerrainSynergyMove, planPerishComboMove, ROLE_MOVE_SETS } = require('../../modules/archetypeRefine');
 const { getArchetypeModel } = require('../../archetypes');
 const { BIAS_MIN_SOPH } = require('../../modules/archetypePicker');
 
@@ -148,5 +148,36 @@ describe('planTerrainSynergyMove — light payoff-move preference when the team 
     test('soph-gated: below the bias threshold it is a no-op (early game / singles byte-identical)', () => {
         const team = [member(mon({ parsedAbilities: ['GRASSY_SURGE'] }), 'GRASSY_SURGE', [])];
         expect(planTerrainSynergyMove({ species: glideMon(), ...opts(team, { sophistication: BIAS_MIN_SOPH - 0.01 }) })).toBeNull();
+    });
+});
+
+// ── T-124 — PERISH-TRAP as a moveset TEAM-COMBO (not a gimmick/archetype) ──────────────────────────────
+describe('planPerishComboMove — Perish Song pairs with a Shadow Tag / Arena Trap trapper', () => {
+    const perisher = (o = {}) => mon({ ...withLearn('MOVE_PERISH_SONG'), ...o });
+    const opts = (over) => ({ ctx: {}, sophistication: 1, ...over });
+
+    test('SELF: a Shadow Tag / Arena Trap mon that can learn Perish Song prefers it', () => {
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'SHADOW_TAG', team: [], ...opts() })).toBe('MOVE_PERISH_SONG');
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'ARENA_TRAP', team: [], ...opts() })).toBe('MOVE_PERISH_SONG');
+    });
+    test('SELF fires even for an offensive trapper (Mega Gengar carries the Perish Song itself)', () => {
+        expect(planPerishComboMove({ species: perisher({ baseSpAttack: 170 }), memberAbility: 'SHADOW_TAG', team: [], ...opts() })).toBe('MOVE_PERISH_SONG');
+    });
+    test('a non-trapper with no trapping teammate → no Perish Song', () => {
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'LEVITATE', team: [], ...opts() })).toBeNull();
+    });
+    test('TEAMMATE: a support-leaning partner of a trapper prefers Perish Song (the split perish-trap)', () => {
+        const team = [member(mon({ parsedAbilities: ['SHADOW_TAG'] }), 'SHADOW_TAG', [])];
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'LEVITATE', team, ...opts() })).toBe('MOVE_PERISH_SONG');
+    });
+    test('TEAMMATE case does NOT fire on a sweeper (especially-dedicated-supports gate)', () => {
+        const team = [member(mon({ parsedAbilities: ['SHADOW_TAG'] }), 'SHADOW_TAG', [])];
+        expect(planPerishComboMove({ species: perisher({ baseAttack: 140 }), memberAbility: 'LEVITATE', team, ...opts() })).toBeNull();
+    });
+    test('a mon that cannot learn Perish Song → null even as a trapper', () => {
+        expect(planPerishComboMove({ species: mon(), memberAbility: 'SHADOW_TAG', team: [], ...opts() })).toBeNull();
+    });
+    test('soph-gated: below the bias threshold → null (early game / singles gated by the caller)', () => {
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'SHADOW_TAG', team: [], ...opts({ sophistication: BIAS_MIN_SOPH - 0.01 }) })).toBeNull();
     });
 });

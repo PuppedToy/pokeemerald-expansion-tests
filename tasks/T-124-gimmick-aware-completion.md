@@ -46,9 +46,10 @@ remaining picks + refinement build the team to really be that gimmick.
 
 Acceptance criteria:
 - [x] A crystallised/seeded weather team is actually built as a weather team (setter + abusers + synergy),
-      not just a lone setter; likewise TR (slow/Room Service) and trapping (Shadow Tag + Perish Song core).
-      Verified via crystallize/combinedStructure + the gimmick `holds` checks. (Terrains reframed to soft
-      surger-awareness + screens to a light role — corpus-validated, not build-around gimmicks.)
+      not just a lone setter; likewise TR (slow/Room Service). Verified via crystallize/combinedStructure +
+      the gimmick `holds` checks. (Perish-trap reframed by the owner to a moveset team-combo — a trapper /
+      its support partner carries Perish Song, `planPerishComboMove`, doubles-only — NOT a gimmick. Terrains
+      reframed to soft surger-awareness + screens to a light role — corpus-validated, not gimmicks.)
 - [x] Legacy forced gimmicks (Tate & Liza TR, …) are produced by the engine, not hardcoded — T&L are TR-
       seeded (`trainerSeeds.js`) and built via the gimmick; no legacy force remains.
 - [x] Determinism gate green (17/17); `cd randomizer && npm test` green (1133).
@@ -128,11 +129,27 @@ Acceptance criteria:
     Fast suite **1133 green**; determinism gates **17/17**; docs/research/trapping.md (SSOT) + INDEX +
     CHANGELOG. Singles untouched (all new paths doubles-gated).
 
+- **2026-07-15 — round 2 (owner reframe): perish-trap is a TEAM-COMBO, not a gimmick.** Owner: *"Perish
+  Song + Shadow Tag/Arena Trap va por move… si un pokemon tiene Shadow Tag/Arena Trap prioriza mucho Perish
+  Song en su moveset. El combo solo tiene sentido en dobles… no es un gimmick entero ni un arquetipo, es un
+  team combo."* So the whole `trapping` GIMMICK built above was TORN DOWN and replaced with moveset
+  prioritisation:
+  - Removed: the `trapping` GIMMICK_SPEC entry, `gimmickHolds` routing, the DOUBLES emergent branch, all the
+    perish-trap gimmick functions in gimmickPlan.js, the `abuserTarget` picker generalisation, and the
+    `trapping` gimmick entry from `doubles.json` (the `trapper`/`perishSongUser` detectors stay).
+  - Added: `planPerishComboMove` (`archetypeRefine.js`) — (1) SELF: a mon whose resolved ability is Shadow
+    Tag / Arena Trap and that can learn Perish Song prefers it (Gothitelle / Mega Gengar carry it); (2)
+    TEAMMATE: a support-leaning mon (offense ≤ 100) whose teammate traps prefers Perish Song (split combo).
+    Wired in `resolveTrainerTeam` after ability selection, DOUBLES-only (singles byte-identical), fixed-move
+    injection (reachable-gated). Tests rewritten (gimmick tests removed; `planPerishComboMove` +
+    `archetypes.test.js` "no trapping gimmick" added). Fast suite **1133 green**; docs/CHANGELOG reframed.
+
 ## Outcome
 
-Gimmick-aware completion finished. Weather (prior) + Trick Room (T-137/138) build themselves; T-124 adds the
-**Perish-trap** doubles gimmick (Shadow Tag trapper + Perish Song core, corpus-grounded, emergent/crystallise/
-seed paths, doubles-only) and a **soft surger-aware** layer for the non-gimmick terrains (misty/grassy/
-psychic), while keeping electric a gimmick and screens a light role — all per owner-validated corpus research.
-Tate & Liza's Trick Room was already engine-built (seeded), not hardcoded. Fast suite 1133 green, determinism
-17/17, singles byte-identical (new paths doubles-gated). Awaiting owner manual test before closing.
+Gimmick-aware completion finished. Weather (prior) + Trick Room (T-137/138) build themselves; T-124 adds a
+**perish-trap moveset team-combo** (owner-reframed from a gimmick: a Shadow Tag / Arena Trap trapper — or its
+support partner — carries Perish Song, `planPerishComboMove`, doubles-only) and a **soft surger-aware** layer
+for the non-gimmick terrains (misty/grassy/psychic), while keeping electric a gimmick and screens a light role
+— all per owner-validated corpus research. Tate & Liza's Trick Room was already engine-built (seeded), not
+hardcoded. Fast suite 1133 green, determinism 17/17, singles byte-identical (new paths doubles-gated).
+Awaiting owner manual test before closing.

@@ -1,10 +1,11 @@
 # Perish-trap / trapping — corpus analysis & build model (T-124)
 
 Source: `research/corpus.json`. Conclusions **owner-validated 2026-07-15**; the design SSOT for the
-`trapping` gimmick (T-124), mirroring `weather.md` / `trick-room.md` / `electric-terrain.md`.
+perish-trap **team-combo** (T-124). Unlike weather / Trick Room / electric-terrain (build-around gimmicks),
+perish-trap is a lightweight moveset combo — see §2.
 
 This doc also records the **terrain** and **screens** decisions from the same T-124 research pass (both
-concluded NOT to be build-around gimmicks).
+also concluded NOT to be build-around gimmicks).
 
 ## 1. Corpus findings — trapping is a real DOUBLES control gimmick
 
@@ -24,26 +25,27 @@ Trap-team scan (a member with Shadow Tag / Arena Trap / Magnet Pull), by format:
 - In singles it's a *support* element (trap-and-remove a specific counter), not a build-around gimmick —
   covered by the `trapper` detector role, not this gimmick.
 
-## 2. Build model — `trapping` gimmick (doubles-only)
+## 2. Build model — a moveset TEAM-COMBO, not a gimmick (owner, round 2)
 
-Mirrors the weather/room framework (`GIMMICK_SPEC.trapping`), with two differences the corpus dictates:
+**Owner decision (2026-07-15):** perish-trap is NOT a build-around gimmick or archetype — it's a **moveset
+team-combo** (a 1-2 mon pairing), handled purely by prioritising the Perish Song MOVE. It does not reserve
+team slots the way weather/Trick Room do. Implemented as `planPerishComboMove` (`archetypeRefine.js`), a
+sibling of the terrain-synergy nudge, applied by the resolver in **DOUBLES only** (in singles you don't
+split the combo across mons — owner; and doubles-gating keeps singles byte-identical). Two cases:
 
-- **Setter = a Shadow Tag TRAPPER (ability).** Purely an ability — no move sets Shadow Tag — so the picker
-  HARD-PICKS a Shadow Tag mon (`setterAbilities: ['SHADOW_TAG']`); there is no move-setter retrofit.
-- **Core/abuser = a Perish Song user** (`perishTrapAbuseScore`, threshold ≥2): **+3** learns Perish Song
-  (the win condition), **+1** a stall move (Protect/Detect), **+1** Substitute. A mon that can't learn
-  Perish Song scores 0 — it is not the core.
-- **`abuserTarget: 1`** — a SINGLE Perish Song core wins (unlike weather/room, which need 2 abusers).
-- **HOLDS** (`trappingHolds`) = a Shadow Tag trapper AND an **actually-equipped** Perish Song move (like
-  TR's holds checks the real move, not just potential). `ensureTrapCore` retrofits Perish Song onto the
-  trapper (or a learner) if it's missing.
-- **Entry** (`doubles.json` `trapping.entry`) requires BOTH `trapper` **and** `perishSongUser` (min 1) — a
-  lone Shadow Tag mon is a support trapper, not a perish-trap TEAM, so trapping only crystallises on the
-  real combo. Since Gothitelle/Gengar learn both, one pick satisfies both features.
-- **Emergent** (`emergentGimmick`, DOUBLES-ONLY): a Shadow Tag mon + a Perish Song learner already on a
-  non-dedicated team opportunistically builds the trap. Gated to doubles so it never touches singles
-  (the gimmick lives only in `doubles.json`; letting it emerge in singles would hard-pick a trapper into a
-  singles team and break byte-identical singles).
+- **(1) SELF — the trapper carries it.** A mon whose OWN ability is Shadow Tag / Arena Trap (the resolved
+  battle ability, so a Mega Gengar counts) and that can learn Perish Song strongly prefers it in its own
+  set. This is the all-in-one perish-trapper (Gothitelle, Mega Gengar). Fires regardless of offense.
+- **(2) TEAMMATE — a support partner carries it.** A **support-leaning** mon (offense ≤ 100) whose TEAMMATE
+  has Shadow Tag / Arena Trap prefers Perish Song — the split perish-trap (a Wobbuffet-style trapper can't
+  learn Perish Song, so a partner sings it). The offense gate keeps it off sweepers ("especially dedicated
+  supports" — owner).
+
+The move is injected as a fixed move (reachable-gated, B-030) so `chooseMoveset` builds around it. There is
+NO `trapping` gimmick in `doubles.json`, no `GIMMICK_SPEC` entry, no crystallise/emergent path — it was
+tried that way first (round 1) and the owner reframed it: *"no es un gimmick entero ni un arquetipo, es un
+team combo."* The `trapper` / `perishSongUser` detectors remain (they identify the pieces) but drive no
+archetype.
 
 ## 3. Terrains (misty / grassy / psychic) — NOT gimmicks (soft surger-awareness)
 

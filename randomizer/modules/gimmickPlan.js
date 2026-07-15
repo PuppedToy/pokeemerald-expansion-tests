@@ -201,7 +201,7 @@ function emergentWeatherSubtype({ committedSeed = null, abusePartner = false, so
 // trick room. Weather/electric fire when a natural SETTER was rolled (an ability the pool happened to hand
 // out); trick room fires when a slow-strong CORE emerged (≥2 abusers) and a member can set the room (TR's
 // "setter" is a move, not a rolled ability) — it goes HALF room (splashed onto an otherwise normal team).
-function emergentGimmick({ committedSeed = null, abusePartner = false, soph = 0, team = [], doubles = false } = {}) {
+function emergentGimmick({ committedSeed = null, abusePartner = false, soph = 0, team = [] } = {}) {
     if (committedSeed && (committedSeed.gimmicks || []).length) return null;
     if (abusePartner) return null;
     if (!(soph >= EMERGENT_WEATHER_MIN_SOPH)) return null;
@@ -212,12 +212,6 @@ function emergentGimmick({ committedSeed = null, abusePartner = false, soph = 0,
     const slowCore = members.filter(m => trickRoomAbuseScore(m) >= WEATHER_ABUSE_THRESHOLD).length;
     if (slowCore >= REQUIRED_ABUSERS && members.some(m => monCanLearn(m, [TR_SETTER_MOVE]))) {
         return { gimmick: 'trick_room', roomStyle: 'half' };
-    }
-    // T-124 — perish-trap: a Shadow Tag trapper + a Perish Song core already emerged. DOUBLES-only (the
-    // `trapping` gimmick lives only in doubles.json; letting it emerge in singles would hard-pick a trapper
-    // into a singles team and break byte-identical singles).
-    if (doubles && members.some(isTrapSetter) && members.some(m => perishTrapAbuseScore(m) >= WEATHER_ABUSE_THRESHOLD)) {
-        return { gimmick: 'trapping' };
     }
     return null;
 }
@@ -375,70 +369,16 @@ function ensureTrickRoomSetter(team, count = 1) {
     return injected;
 }
 
-// ── T-124: PERISH-TRAP gimmick (docs/research/trapping.md) — DOUBLES control ──────────────────────────
-// Setter = a Shadow Tag TRAPPER (ability — locks a foe in, can't switch). Core/abuser = a PERISH SONG user
-// (the 3-turn count KOs the trapped foe; Protect/Detect + Substitute stall the count). Corpus: 12/12 DOU
-// trap teams run Shadow Tag, 5/12 pair it with Perish Song — the true perish-trap (owner: invest in this).
-// Unlike weather/electric it needs only ONE core (a single Perish Song wins), and unlike them the setter is
-// PURELY an ability (no move retrofits Shadow Tag) → the picker hard-picks the trapper; `ensureTrapCore`
-// retrofits the injectable half (the Perish Song move). Doubles-only (the gimmick lives only in doubles.json).
-const TRAP_SETTER_ABILITIES = ['SHADOW_TAG'];
-const PERISH_MOVE = 'MOVE_PERISH_SONG';
-const PERISH_STALL_MOVES = ['MOVE_PROTECT', 'MOVE_DETECT'];
-const SUBSTITUTE_MOVE = 'MOVE_SUBSTITUTE';
-function isTrapSetter(m) { return TRAP_SETTER_ABILITIES.includes(memberAbility(asMember(m))); }
-// The abuser IS the Perish Song user (threshold ≥2): +3 learns Perish Song (the win condition), +1 a stall
-// move (Protect/Detect), +1 Substitute. A mon that can't learn Perish Song scores 0 — it is not the core.
-function perishTrapAbuseScore(mon) {
-    if (!monCanLearn(mon, [PERISH_MOVE])) return 0;
-    let s = WEATHER_ABUSE_ABILITY_PTS;
-    if (monCanLearn(mon, PERISH_STALL_MOVES)) s += WEATHER_ABUSE_SYNERGY_PTS;
-    if (monCanLearn(mon, [SUBSTITUTE_MOVE])) s += WEATHER_ABUSE_SYNERGY_PTS;
-    return s;
-}
-function perishTrapBreakdown(mon, doubles = false) {
-    const poke = monPoke(mon);
-    const W = WX_ABUSE_RATING;
-    const parts = [];
-    const add = (k, v) => { if (v) parts.push({ k, v: Math.round(v * 100) / 100 }); };
-    add('base', W.base * monBaseRating(poke, doubles));
-    if (monCanLearn(mon, [PERISH_MOVE])) { add('perish-song', W.abilityFloor + W.synergy); }
-    if (monCanLearn(mon, PERISH_STALL_MOVES)) add('protect', W.synergy);
-    if (monCanLearn(mon, [SUBSTITUTE_MOVE])) add('substitute', W.synergy);
-    return { total: Math.round(parts.reduce((s, p) => s + p.v, 0) * 100) / 100, parts };
-}
-function hasPerishMove(m) { return memberMoves(asMember(m)).includes(PERISH_MOVE); }
-// Holds when a Shadow Tag trapper AND an ACTUALLY-equipped Perish Song core are both present (the owner's
-// perish-trap combo). Like Trick Room, `score` is potential (ranking) but `holds` checks the real move — a
-// team only IS a perish-trap if it actually runs Perish Song (`ensureTrapCore` retrofits it if missing).
-function trappingHolds(team, ctx = {}) {
-    const members = (team || []).map(asMember);
-    if (!members.some(isTrapSetter)) return false;
-    return members.some(hasPerishMove);
-}
-// Retrofit the Perish Song move onto the trapper (or another learner) when a trapper is present but no
-// perisher — Shadow Tag is an ability (can't be injected), so the completable half is the core move.
-function ensureTrapCore(team) {
-    const members = (team || []).map(asMember);
-    if (!members.some(isTrapSetter)) return false;            // no trapper → needs the hard-pick, not a retrofit
-    if (members.some(hasPerishMove)) return false;            // already runs Perish Song → holds
-    const target = members.find(m => isTrapSetter(m) && monCanLearn(m, [PERISH_MOVE]))
-        || members.find(m => monCanLearn(m, [PERISH_MOVE]));
-    if (!target) return false;
-    const moves = target.moves || (target.moves = []);
-    if (moves.length >= 4) moves[moves.length - 1] = PERISH_MOVE; else moves.push(PERISH_MOVE);
-    return true;
-}
-
-// A tiny per-gimmick spec so the picker + audit can treat weather / electric_terrain / trick_room / trapping
-// uniformly. weather is subtype-driven (handled by its own block); the rest are single-subtype.
+// A tiny per-gimmick spec so the picker + audit can treat weather / electric_terrain / trick_room uniformly.
+// weather is subtype-driven (handled by its own block); these two are single-subtype.
+// NOTE (T-124): perish-trap is deliberately NOT here — it's a moveset TEAM-COMBO (a trapper prefers Perish
+// Song; in doubles a teammate of a trapper prefers it too), not a build-around gimmick/archetype. See
+// planPerishComboMove in archetypeRefine.js + docs/research/trapping.md.
 const GIMMICK_SPEC = {
     electric_terrain: { isSetter: isElectricTerrainSetter, setterAbilities: ELEC_SETTER_ABILITIES, score: electricTerrainAbuseScore, breakdown: electricTerrainBreakdown, ensureSetter: ensureElectricTerrainSetter, label: 'electric-terrain' },
     // Trick Room has NO ability-setter (the setter is the MOVE) → setterAbilities empty; the picker ranks
     // slow-strong abusers and `ensureTrickRoomSetter` retrofits the move afterwards.
     trick_room: { isSetter: isTrickRoomSetter, setterAbilities: [], score: trickRoomAbuseScore, breakdown: trickRoomBreakdown, ensureSetter: ensureTrickRoomSetter, label: 'trick-room' },
-    // Perish-trap: ability-setter (Shadow Tag, hard-picked) + a single Perish Song core (abuserTarget 1).
-    trapping: { isSetter: isTrapSetter, setterAbilities: TRAP_SETTER_ABILITIES, score: perishTrapAbuseScore, breakdown: perishTrapBreakdown, ensureSetter: ensureTrapCore, label: 'perish-trap', abuserTarget: 1 },
 };
 
 // Generic entry: does `gimmickId` hold for the resolved team? Unknown gimmicks are treated as holding
@@ -450,7 +390,6 @@ function gimmickHolds(gimmickId, team, ctx = {}, subtype = null) {
     if (gimmickId === 'weather') return weatherHolds(team, ctx, subtype);
     if (gimmickId === 'electric_terrain') return electricTerrainHolds(team, ctx);
     if (gimmickId === 'trick_room') return trickRoomHolds(team, ctx);
-    if (gimmickId === 'trapping') return trappingHolds(team, ctx);
     const setterMoves = GIMMICK_SETTER_ROLE_MOVE[gimmickId];
     if (setterMoves) {
         const want = Array.isArray(setterMoves) ? setterMoves : [setterMoves];
@@ -502,7 +441,5 @@ module.exports = {
     // T-137 — electric terrain + trick room gimmicks
     isElectricTerrainSetter, electricTerrainAbuseScore, electricTerrainBreakdown, electricTerrainHolds, ensureElectricTerrainSetter,
     isTrickRoomSetter, trickRoomAbuseScore, trickRoomBreakdown, trickRoomHolds, ensureTrickRoomSetter,
-    // T-124 — perish-trap (doubles control)
-    isTrapSetter, perishTrapAbuseScore, perishTrapBreakdown, trappingHolds, ensureTrapCore,
     GIMMICK_SPEC,
 };

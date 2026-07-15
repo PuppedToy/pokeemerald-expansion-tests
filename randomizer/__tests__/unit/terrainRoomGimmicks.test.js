@@ -7,7 +7,6 @@ const {
     isElectricTerrainSetter, electricTerrainAbuseScore, electricTerrainHolds, ensureElectricTerrainSetter,
     isTrickRoomSetter, trickRoomAbuseScore, trickRoomHolds, ensureTrickRoomSetter,
     trickRoomBreakdown, electricTerrainBreakdown, weatherAbuseBreakdown,
-    isTrapSetter, perishTrapAbuseScore, trappingHolds, ensureTrapCore, gimmickHolds, emergentGimmick, GIMMICK_SPEC,
 } = require('../../modules/gimmickPlan');
 
 // A resolved member: { pokemon: { parsedTypes, baseAttack, baseSpAttack, baseSpeed, learnset, teachables }, ability, moves, item }.
@@ -137,47 +136,3 @@ describe('T-109 — gimmick abuser ranking uses the doubles rating for doubles t
     });
 });
 
-// ── T-124 — PERISH-TRAP gimmick (Shadow Tag trapper + Perish Song core; docs/research/trapping.md) ──────
-describe('perish-trap — setter, core score, holds, retrofit, emergence', () => {
-    test('the SETTER is a Shadow Tag trapper (ability); nothing else counts', () => {
-        expect(isTrapSetter(mem('SHADOW_TAG'))).toBe(true);
-        expect(isTrapSetter(mem('ARENA_TRAP'))).toBe(false);  // singles trapper, not the doubles perish-trap setter
-        expect(isTrapSetter(mem('LEVITATE'))).toBe(false);
-    });
-    test('the CORE score is the Perish Song user: 0 without it, +3 with, +1 each for Protect/Detect and Substitute', () => {
-        expect(perishTrapAbuseScore(mem('PRESSURE', [], ['GHOST']))).toBe(0);                                  // can't learn Perish Song
-        expect(perishTrapAbuseScore(mem('PRESSURE', [], ['GHOST'], learns('MOVE_PERISH_SONG')))).toBe(3);
-        expect(perishTrapAbuseScore(mem('PRESSURE', [], ['GHOST'], learns('MOVE_PERISH_SONG', 'MOVE_PROTECT', 'MOVE_SUBSTITUTE')))).toBe(5);
-    });
-    test('HOLDS needs a Shadow Tag trapper AND an actually-equipped Perish Song (not just the potential)', () => {
-        const gothi = mem('SHADOW_TAG', ['MOVE_PERISH_SONG'], ['PSYCHIC'], learns('MOVE_PERISH_SONG', 'MOVE_PROTECT'));
-        const plain = mem('LEVITATE', ['MOVE_SHADOW_BALL'], ['GHOST']);
-        const perisherNoTag = mem('LEVITATE', ['MOVE_PERISH_SONG'], ['GHOST'], learns('MOVE_PERISH_SONG'));
-        const tagCanLearnButUnequipped = mem('SHADOW_TAG', ['MOVE_FAKE_OUT'], ['PSYCHIC'], learns('MOVE_PERISH_SONG'));
-        expect(trappingHolds([gothi, plain])).toBe(true);
-        expect(trappingHolds([perisherNoTag, plain])).toBe(false);            // no trapper
-        expect(trappingHolds([tagCanLearnButUnequipped, plain])).toBe(false); // trapper, but Perish Song not equipped
-        expect(gimmickHolds('trapping', [gothi, plain])).toBe(true);          // routed through the generic entry
-    });
-    test('ensureTrapCore retrofits Perish Song onto the trapper when it is missing (makes it hold)', () => {
-        const team = [mem('SHADOW_TAG', ['MOVE_FAKE_OUT'], ['PSYCHIC'], learns('MOVE_PERISH_SONG')), mem('LEVITATE', ['MOVE_SHADOW_BALL'], ['GHOST'])];
-        expect(trappingHolds(team)).toBe(false);
-        expect(ensureTrapCore(team)).toBe(true);
-        expect(team[0].moves).toContain('MOVE_PERISH_SONG');
-        expect(trappingHolds(team)).toBe(true);
-        expect(ensureTrapCore(team)).toBe(false); // idempotent — already holds
-    });
-    test('ensureTrapCore does nothing without a trapper (Shadow Tag is an ability, cannot be injected)', () => {
-        const team = [mem('LEVITATE', [], ['GHOST'], learns('MOVE_PERISH_SONG'))];
-        expect(ensureTrapCore(team)).toBe(false);
-    });
-    test('emergent perish-trap fires in DOUBLES only (never contaminates singles)', () => {
-        const team = [mem('SHADOW_TAG', ['MOVE_PERISH_SONG'], ['PSYCHIC'], learns('MOVE_PERISH_SONG')), mem('LEVITATE', ['MOVE_SHADOW_BALL'], ['GHOST'])];
-        expect(emergentGimmick({ soph: 1, team, doubles: true })).toEqual({ gimmick: 'trapping' });
-        expect(emergentGimmick({ soph: 1, team, doubles: false })).toBeNull();
-    });
-    test('GIMMICK_SPEC.trapping targets a single core (abuserTarget 1), unlike weather/room', () => {
-        expect(GIMMICK_SPEC.trapping.abuserTarget).toBe(1);
-        expect(GIMMICK_SPEC.trapping.setterAbilities).toEqual(['SHADOW_TAG']);
-    });
-});

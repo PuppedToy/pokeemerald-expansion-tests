@@ -38,7 +38,7 @@ const { pickTrainerMonAbility } = require('./trainerAbility');
 const { selectWithAutoFallback } = require('./trainerFallback');
 const { createChooser } = require('./trainerSelector');
 const { makeArchetypePicker, BIAS_MIN_SOPH } = require('./archetypePicker');
-const { planMemberRoleMove, planMemberAbility, planForwardChoiceItem, planTerrainSynergyMove, WEATHER_ROCK_BY_SETTER, ELECTRIC_MOVES } = require('./archetypeRefine');
+const { planMemberRoleMove, planMemberAbility, planForwardChoiceItem, planTerrainSynergyMove, planPerishComboMove, WEATHER_ROCK_BY_SETTER, ELECTRIC_MOVES } = require('./archetypeRefine');
 const { getTrainerSeed } = require('./trainerSeeds');
 const { resolveFavourites } = require('./favouriteClaim');
 const { gimmickHolds, gimmickFallbackChain, ensureMoveSetter, teamWeather, emergentGimmick, weatherHolds, isWeatherAbuser, GIMMICK_SPEC } = require('./gimmickPlan');
@@ -378,6 +378,22 @@ function createTeamResolver(deps) {
                 });
                 newTeamMember.ability = originalAbility;
 
+                // T-124 — PERISH-TRAP team-combo (DOUBLES only, so singles stays byte-identical): a mon that
+                // itself traps (Shadow Tag / Arena Trap — `ability` is the resolved battle ability, so a
+                // Mega Gengar counts) strongly prefers Perish Song; and a support-leaning teammate of a
+                // trapper does too (the split perish-trap). Injected as a fixed move → chooseMoveset builds
+                // around it. NOT a gimmick — just moveset prioritisation. Reachable-gated (B-030).
+                if (/double/i.test(trainer.battleType || '')) {
+                    const perishMove = planPerishComboMove({
+                        species: chosenTrainerMon, memberAbility: ability, team,
+                        ctx: { tms: trainer.tms || [], level: trainer.level },
+                        sophistication: context.sophistication,
+                    });
+                    if (perishMove && injectableMove(perishMove) && !newTeamMember.moves.includes(perishMove)) {
+                        newTeamMember.moves.push(perishMove);
+                    }
+                }
+
                 // T-133 — FORWARD (dependent) Choice claim: if this mon fills an offensive role the team wants
                 // AND a Choice item is available in the bag, claim it NOW (link-aware) so chooseMoveset builds
                 // an all-attacking set (the forward path T-129 couldn't do). Only when a Choice is actually in
@@ -635,7 +651,6 @@ function createTeamResolver(deps) {
         const emergent = emergentGimmick({
             committedSeed, abusePartner: !!trainer.abusePartnerWeather,
             soph: sophistication(trainer), team: chosen.team,
-            doubles: /double/i.test(trainer.battleType || ''), // T-124 — perish-trap emerges in doubles only
         });
         if (emergent) {
             const emergentSeed = {
@@ -655,8 +670,7 @@ function createTeamResolver(deps) {
                     const abusers = emergent.gimmick === 'weather'
                         ? wx.team.filter(m => isWeatherAbuser(m, emergent.weather)).length
                         : wx.team.filter(m => GIMMICK_SPEC[emergent.gimmick].score(m) >= 2).length;
-                    const required = (GIMMICK_SPEC[emergent.gimmick] && GIMMICK_SPEC[emergent.gimmick].abuserTarget) || WEATHER_REQUIRED_ABUSERS;
-                    trace.emergentWeatherDropped = { subtype: sub, abusers, required };
+                    trace.emergentWeatherDropped = { subtype: sub, abusers, required: WEATHER_REQUIRED_ABUSERS };
                 }
             }
         }

@@ -108,16 +108,6 @@
       ]
     },
     {
-      "id": "trapping", "name": "Perish Trap / Trapping Control",
-      "description": "A control gimmick (ALLOWED per Batch-3): a Shadow Tag trapper locks a key foe in place while Perish Song's 3-turn count grinds it down (it cannot switch out); Substitute/Protect stall the count. Entry requires BOTH the trapper AND a Perish Song core — a lone Shadow Tag mon is a support trapper, not a perish-trap TEAM (T-124; corpus: 5/12 DOU trap teams run the full combo, Gothitelle/Gengar learn both themselves).",
-      "entry": [{ "feature": "trapper", "min": 1 }, { "feature": "perishSongUser", "min": 1 }],
-      "structure": [
-        { "role": "trapper", "min": 1, "max": 1, "weight": 1.0 },
-        { "role": "perishSongUser", "min": 1, "max": 1, "weight": 0.9 },
-        { "role": "fakeOutUser", "min": 0, "max": 1, "weight": 0.4 }
-      ]
-    },
-    {
       "id": "screens_tailwind", "name": "Screens & Tailwind / Field Control",
       "description": "Temporary field advantage rather than raw damage: Aurora Veil / screens blunt hits so setup sweepers boost safely, while Tailwind flips the speed war; a priority/Taunt disruptor protects the setup turns.",
       "entry": [{ "feature": "screenSetter", "min": 1 }],
