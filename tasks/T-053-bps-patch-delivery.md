@@ -1,10 +1,10 @@
 ---
 id: T-053
 title: BPS patch delivery + client-side patching (IndexedDB)
-status: in-progress
+status: done
 type: feature
 created: 2026-07-03
-updated: 2026-07-03
+updated: 2026-07-15
 target-version: 0.6.0
 links: [docs/adr/ADR-013-bps-patch-delivery-client-side.md, docs/adr/ADR-008-rom-delivery-full-rom-ownership-gate.md, T-054]
 blocked-by: []
@@ -130,4 +130,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+BPS patch delivery + client-side patching (IndexedDB): the green Download ROM button is playable-ROM-only and disabled until a ROM is added, with the raw .bps behind a ghost link; deliverPatch() refactor; stuck-ready→expired state fix. Frontend 44 green; manual-test feedback addressed. Owner-validated 2026-07-15. Closed.

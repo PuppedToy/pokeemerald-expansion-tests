@@ -52,11 +52,11 @@
 | [T-046](T-046-pokemon-modal-mobile.md) | Make the Pokémon detail modal mobile-responsive (learnset/teachables + no horizontal scroll) | done | 0.6.0 | 2026-07-02 |
 | [T-047](T-047-merge-palafin-zero-to-hero.md) | Merge the orphaned Palafin Zero-to-Hero rating branch into master | done | 0.6.0 | 2026-07-02 |
 | [T-048](T-048-frontend-feedback.md) | Frontend feedback section — submit form + placeholder lists | done | 0.6.0 | 2026-07-02 |
-| [T-049](T-049-upstream-expansion-sync-strategy.md) | Research a controlled, reproducible upstream sync with pokeemerald-expansion | in-progress | 0.6.0 | 2026-07-03 |
-| [T-050](T-050-sync-1.13.3-bugfixes.md) | Absorb expansion 1.13.3 bugfixes (incl. Endure) | in-progress | 0.6.0 | 2026-07-03 |
+| [T-049](T-049-upstream-expansion-sync-strategy.md) | Research a controlled, reproducible upstream sync with pokeemerald-expansion | abandoned | 0.6.0 | 2026-07-15 |
+| [T-050](T-050-sync-1.13.3-bugfixes.md) | Absorb expansion 1.13.3 bugfixes (incl. Endure) | abandoned | 0.6.0 | 2026-07-15 |
 | [T-051](T-051-sync-1.13.4-bugfixes.md) | Absorb expansion 1.13.4 bugfixes | proposed | 0.6.0 | 2026-07-03 |
 | [T-052](T-052-configurable-randomization-options.md) | Configurable randomization options — batch 1 (categorized settings) | done | 0.6.0 | 2026-07-03 |
-| [T-053](T-053-bps-patch-delivery.md) | BPS patch delivery + client-side patching (IndexedDB) | in-progress | 0.6.0 | 2026-07-03 |
+| [T-053](T-053-bps-patch-delivery.md) | BPS patch delivery + client-side patching (IndexedDB) | done | 0.6.0 | 2026-07-15 |
 | [T-054](T-054-binary-injection-randomizer-viability.md) | Viability analysis — randomize a prebuilt ROM by binary injection (vs. compiling from scratch) | proposed | 0.7.0 | 2026-07-03 |
 | [T-055](T-055-frontend-ux-tweaks.md) | Frontend UX tweaks — docs "Defeated" placement + reset-options button | done | 0.6.0 | 2026-07-15 |
 | [T-056](T-056-rival-rewards-rebalance.md) | Rebalance — swap rival rewards (stones earlier) + move Lum Berry bag entry | done | 0.6.0 | 2026-07-15 |
@@ -73,14 +73,14 @@
 | [T-067](T-067-remaining-battle-only-forms-exclusion.md) | Exclude remaining battle-only forms from placement | abandoned | 0.6.0 | 2026-07-06 |
 | [T-068](T-068-starter-nicknames.md) | Starter-extra nickname & gender assignment system | done | 0.6.0 | 2026-07-07 |
 | [T-069](T-069-starter-nickname-viewer-docs.md) | Surface starter nicknames & genders in the generated viewer docs | proposed | 0.6.0 | 2026-07-07 |
-| [T-070](T-070-location-based-nicknames.md) | Location-based automatic nicknames for all wild / gift / static Pokémon | in-progress | 0.6.0 | 2026-07-07 |
+| [T-070](T-070-location-based-nicknames.md) | Location-based automatic nicknames for all wild / gift / static Pokémon | done | 0.6.0 | 2026-07-15 |
 | [T-071](T-071-ci-game-compile-gate.md) | Gate deploys/CI on a real game compile (catch box-only C errors before PRO) | proposed | 0.6.0 | 2026-07-07 |
-| [T-072](T-072-starter-quality-selector.md) | Starter quality selector for the 3 main starters + extra-starter count & visual separation | in-progress | 0.6.0 | 2026-07-07 |
+| [T-072](T-072-starter-quality-selector.md) | Starter quality selector for the 3 main starters + extra-starter count & visual separation | done | 0.6.0 | 2026-07-15 |
 | [T-073](T-073-configurable-shop-prices.md) | Configurable shop item prices (mints, ability items, balls, TMs by pool) | done | 0.6.0 | 2026-07-15 |
 | [T-074](T-074-docs-responsive-fixes.md) | Fix documentation responsive rendering issues | done | 0.6.0 | 2026-07-15 |
 | [T-075](T-075-randomizer-diagnostics.md) | Randomizer diagnostics — audit warnings, rich 48h server store, local classification action | done | 0.6.0 | 2026-07-09 |
 | [T-076](T-076-unified-boss-type-pool.md) | Unified fixed/changed type pool for gyms, E4 and champion | done | 0.6.0 | 2026-07-09 |
-| [T-077](T-077-no-wild-held-items.md) | Remove all held items from wild Pokémon | in-progress | 0.6.0 | 2026-07-09 |
+| [T-077](T-077-no-wild-held-items.md) | Remove all held items from wild Pokémon | done | 0.6.0 | 2026-07-15 |
 | [T-078](T-078-item-descriptions-hover-docs.md) | Show item descriptions on hover in generated docs (held items + trainer rewards) | done | 0.6.0 | 2026-07-09 |
 | [T-079](T-079-transparent-patch-delivery-feedback.md) | Transparent, patch-first ROM delivery feedback (3-step, singular/plural) | done | 0.6.0 | 2026-07-09 |
 | [T-080](T-080-rom-ownership-frontend-only.md) | ROM ownership is frontend-only (backend stops tracking/gating it) | done | 0.6.0 | 2026-07-09 |
