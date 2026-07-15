@@ -1,10 +1,10 @@
 ---
 id: T-104
 title: Collapse the writer.js / writerDocs.js dual resolver into one shared module
-status: in-progress
+status: done
 type: refactor
 created: 2026-07-09
-updated: 2026-07-10
+updated: 2026-07-15
 target-version: 0.8.0
 links: [T-083, T-103]
 blocked-by: [T-103]
@@ -80,4 +80,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Collapsed the writer.js / writerDocs.js team resolution into the shared modules/resolveTrainerTeam.js; both callers delegate. Byte-identical refactor; suite 844 + RUN_DETERMINISM cross-ROM gate PASS. Owner-validated 2026-07-15. Closed.

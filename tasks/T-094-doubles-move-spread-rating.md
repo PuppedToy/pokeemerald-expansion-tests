@@ -1,10 +1,10 @@
 ---
 id: T-094
 title: Doubles move rating — spread detection (move.target) + rateMoveDoubles
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-10
+updated: 2026-07-15
 target-version: 0.8.0
 links: [T-083, T-093]
 blocked-by: [T-093]
@@ -62,4 +62,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Doubles move spread rating: rateMoveDoubles + spread detection (move.target) + persisted moves[id].ratingDoubles; DOUBLES_SUPPORT_RATINGS floors. Suite green (818), merged to master. Doubles-aware rateMoveForAPokemon deliberately handed to the 2C consumer. Owner-validated 2026-07-15. Closed.

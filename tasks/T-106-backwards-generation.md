@@ -1,10 +1,10 @@
 ---
 id: T-106
 title: Engine — backwards generation (endgame-first, devolve preserving ID continuity)
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-11
+updated: 2026-07-15
 target-version: 0.8.0
 links: [T-083, T-103, T-104, T-105, T-107, T-108, T-128]
 ---
@@ -166,6 +166,4 @@ Acceptance criteria:
 
 ## Outcome
 
-Continuity backwards-generation implemented for Steven, Wally and the rival (authoritative-latest +
-devolve-to-level echoes), owner-validated design, tested + determinism-green. **Awaiting the owner's
-manual test before this task can be marked `done`** (per CLAUDE.md — no autonomous close).
+Backwards generation (endgame-first, devolve preserving ID continuity) implemented for Steven, Wally and the rival; tested + determinism-green (suite 951). Owner declared the objective met on 2026-07-15; the residual rival free-slot refinement + gym-leader favourites are carried by T-128, non-gating. Closed.

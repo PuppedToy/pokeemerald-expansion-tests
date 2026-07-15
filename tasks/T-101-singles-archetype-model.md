@@ -1,10 +1,10 @@
 ---
 id: T-101
 title: Singles archetype model — JSON of archetypes, entry conditions and team structure
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-10
+updated: 2026-07-15
 target-version: 0.8.0
 links: [T-083, T-099, T-100]
 blocked-by: [T-100]
@@ -59,4 +59,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Singles archetype model: data/archetypes/singles.json + validator (archetypes.js) + tests; provisional thresholds later owner-validated and rebuilt in T-118/T-121. Suite green (844). Owner-validated 2026-07-15. Closed.

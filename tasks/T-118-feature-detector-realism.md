@@ -1,10 +1,10 @@
 ---
 id: T-118
 title: Feature-detector realism — roles by analysed characteristics, not can-learn potential
-status: in-progress
+status: done
 type: feature
 created: 2026-07-11
-updated: 2026-07-11
+updated: 2026-07-15
 target-version: 0.8.0
 links: [T-083, T-107, T-117]
 priority: high
@@ -119,4 +119,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Feature-detector realism: roles inferred from analysed characteristics, not can-learn potential (weatherSetter→ability, corpus-derived role profiles, recipe-based crystallization, gimmick-stack cap); roles/mon dropped 6→~1-3. Suite 921 + determinism green. Residuals deferred to T-121. Owner-validated 2026-07-15. Closed.

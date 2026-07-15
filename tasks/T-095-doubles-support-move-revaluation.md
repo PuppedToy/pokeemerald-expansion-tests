@@ -1,10 +1,10 @@
 ---
 id: T-095
 title: Doubles re-valuation of support/gimmick moves (Follow Me, Rage Powder, Trick Room…)
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-10
+updated: 2026-07-15
 target-version: 0.8.0
 links: [T-083, T-093, T-094]
 blocked-by: [T-094]
@@ -62,4 +62,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Doubles re-valuation of support/gimmick moves: DOUBLES_SUPPORT_RATINGS floors for redirection / buffs / protection / speed-control across two batches; singles untouched. Suite green (832). Owner-validated 2026-07-15. Closed.

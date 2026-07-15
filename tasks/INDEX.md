@@ -97,20 +97,20 @@
 | [T-091](T-091-maker-set-battle-format-var.md) | Maker sets the battle-format / Run & Bun VAR at build time and wires new bundle fields | done | 0.7.0 | 2026-07-15 |
 | [T-092](T-092-group1-checkpoint-e2e.md) | Group 1 checkpoint — end-to-end ROM builds + manual test in every battle-format mode | proposed | 0.7.0 | 2026-07-09 |
 | [T-093](T-093-dual-rating-design-adr.md) | Design the dual singles/doubles rating dimension + ADR-015 | proposed | 0.8.0 | 2026-07-10 |
-| [T-094](T-094-doubles-move-spread-rating.md) | Doubles move rating — spread detection (move.target) + rateMoveDoubles | in-progress | 0.8.0 | 2026-07-10 |
-| [T-095](T-095-doubles-support-move-revaluation.md) | Doubles re-valuation of support/gimmick moves (Follow Me, Rage Powder, Trick Room…) | in-progress | 0.8.0 | 2026-07-10 |
-| [T-096](T-096-doubles-ability-rating.md) | Doubles ability rating — redirection, Intimidate, Friend Guard, Telepathy… | in-progress | 0.8.0 | 2026-07-10 |
+| [T-094](T-094-doubles-move-spread-rating.md) | Doubles move rating — spread detection (move.target) + rateMoveDoubles | done | 0.8.0 | 2026-07-15 |
+| [T-095](T-095-doubles-support-move-revaluation.md) | Doubles re-valuation of support/gimmick moves (Follow Me, Rage Powder, Trick Room…) | done | 0.8.0 | 2026-07-15 |
+| [T-096](T-096-doubles-ability-rating.md) | Doubles ability rating — redirection, Intimidate, Friend Guard, Telepathy… | done | 0.8.0 | 2026-07-15 |
 | [T-097](T-097-doubles-pokemon-tiers.md) | Doubles Pokémon tiers — ratePokemonDoubles + contextualRatingsDoubles | done | 0.8.0 | 2026-07-15 |
 | [T-098](T-098-research-vgc-doubles-teams.md) | Research — historic VGC doubles teams (gen 6–7) → cited reference docs | done | 0.8.0 | 2026-07-10 |
 | [T-099](T-099-research-smogon-singles-teams.md) | Research — historic Smogon singles teams (gen 6–7) → cited reference docs | done | 0.8.0 | 2026-07-10 |
 | [T-100](T-100-synergy-antisynergy-synthesis.md) | Synthesize a synergy / anti-synergy catalog and cross-check the current rating/combo logic | done | 0.8.0 | 2026-07-10 |
-| [T-101](T-101-singles-archetype-model.md) | Singles archetype model — JSON of archetypes, entry conditions and team structure | in-progress | 0.8.0 | 2026-07-10 |
+| [T-101](T-101-singles-archetype-model.md) | Singles archetype model — JSON of archetypes, entry conditions and team structure | done | 0.8.0 | 2026-07-15 |
 | [T-102](T-102-doubles-archetype-model.md) | Doubles archetype model — JSON of archetypes (weather, TR, redirection, ability-swap…) | done | 0.8.0 | 2026-07-15 |
 | [T-103](T-103-teambuilding-engine-design-adr.md) | Design the archetype-driven teambuilding engine + ADR-016 (+ teardown plan) | done | 0.8.0 | 2026-07-10 |
-| [T-104](T-104-collapse-dual-resolver.md) | Collapse the writer.js / writerDocs.js dual resolver into one shared module | in-progress | 0.8.0 | 2026-07-10 |
-| [T-105](T-105-sophistication-scalar.md) | Engine — sophistication scalar driven by boss progression | in-progress | 0.8.0 | 2026-07-10 |
-| [T-106](T-106-backwards-generation.md) | Engine — backwards generation (endgame-first, devolve preserving ID continuity) | in-progress | 0.8.0 | 2026-07-11 |
-| [T-107](T-107-preference-rules-system.md) | Engine — preference/rules system replacing fixed slots (archetype-fit scoring) | in-progress | 0.8.0 | 2026-07-10 |
+| [T-104](T-104-collapse-dual-resolver.md) | Collapse the writer.js / writerDocs.js dual resolver into one shared module | done | 0.8.0 | 2026-07-15 |
+| [T-105](T-105-sophistication-scalar.md) | Engine — sophistication scalar driven by boss progression | done | 0.8.0 | 2026-07-15 |
+| [T-106](T-106-backwards-generation.md) | Engine — backwards generation (endgame-first, devolve preserving ID continuity) | done | 0.8.0 | 2026-07-15 |
+| [T-107](T-107-preference-rules-system.md) | Engine — preference/rules system replacing fixed slots (archetype-fit scoring) | done | 0.8.0 | 2026-07-15 |
 | [T-108](T-108-port-fixed-id-special-cases.md) | Engine — port fixed-ID / continuity / special cases into the new engine | proposed | 0.8.0 | 2026-07-09 |
 | [T-109](T-109-doubles-teambuilding-path.md) | Engine — doubles teambuilding path (spread / redirection / TR-aware) | done | 0.8.0 | 2026-07-15 |
 | [T-110](T-110-replace-old-engine-cleanup.md) | Integration — replace the old engine, remove dead slot/preset code, parity & diagnostics | proposed | 0.8.0 | 2026-07-09 |
@@ -121,10 +121,10 @@
 | [T-115](T-115-docs-battle-type-badge.md) | Surface each trainer's battle type (Single/Double) in the generated docs viewer | done | 0.7.0 | 2026-07-15 |
 | [T-116](T-116-battle-tag-refinements.md) | Battle-type tag refinements — single/tag tags, Space Center tag battle, Run & Bun E4 labels, rival consistency | done | 0.7.0 | 2026-07-15 |
 | [T-117](T-117-team-decision-audit-log.md) | Team-building decision audit log (per-team decision trace, local + 48h server + audit skill) | in-progress | 0.8.0 | 2026-07-11 |
-| [T-118](T-118-feature-detector-realism.md) | Feature-detector realism — roles by analysed characteristics, not can-learn potential | in-progress | 0.8.0 | 2026-07-11 |
+| [T-118](T-118-feature-detector-realism.md) | Feature-detector realism — roles by analysed characteristics, not can-learn potential | done | 0.8.0 | 2026-07-15 |
 | [T-119](T-119-archetype-tier-downgrade.md) | Archetype-driven tier downgrade within budget (fill a needed role by downgrading, never upgrading) | proposed | 0.8.0 | 2026-07-11 |
 | [T-120](T-120-team-type-coverage.md) | Global type coverage & type selection for unrestricted trainers | proposed | 0.8.0 | 2026-07-11 |
-| [T-121](T-121-expand-singles-corpus.md) | Expand the singles OU corpus for statistically-robust archetype entry conditions | in-progress | 0.8.0 | 2026-07-11 |
+| [T-121](T-121-expand-singles-corpus.md) | Expand the singles OU corpus for statistically-robust archetype entry conditions | done | 0.8.0 | 2026-07-15 |
 | [T-122](T-122-role-aware-move-selection.md) | Decision-log accuracy — report DELIVERED roles, not species potential (fix B-026) | done | 0.8.0 | 2026-07-11 |
 | [T-123](T-123-crystallization-correctness.md) | Crystallization correctness — last-resort hyper, gimmick evidence, role-max dedup | in-progress | 0.8.0 | 2026-07-11 |
 | [T-124](T-124-gimmick-aware-completion.md) | Gimmick-aware team completion — build the team to BE the gimmick | in-progress | 0.8.0 | 2026-07-11 |
