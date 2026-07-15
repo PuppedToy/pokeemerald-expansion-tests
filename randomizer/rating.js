@@ -3608,63 +3608,45 @@ function computeComboBonusDoubles(poke, moves, { offensePower }) {
     return Math.min(bonus, DOUBLES_COMBO.cap);
 }
 
-// ── T-141 — DEDICATED support signature ─────────────────────────────────────────────────────────────
-// A dedicated support (Sinistcha, Amoonguss, Cresselia, Pachirisu-class) is a LOW-OFFENSE mon whose kit
-// enables allies — as opposed to a bulky attacker that merely carries a support tool (Landorus-T, Incin-
-// eroar: offense too high → excluded; they're already well-rated by the T-097 combo). supportScore sums
-// the support kit the species can actually field; for a low-offense mon it lifts the combo (see
-// ratePokemonDoubles) up to SUPPORT_BONUS_CAP, well past the generic 1.0 combo cap — a ~2-tier quality
-// lift (owner: Sinistcha RU→OU). See docs/research/doubles-support.md §2-§3.
-const SUPPORT_OFFENSE_MAX = 95;      // raw max(Atk,SpA) ceiling — matches featureDetectors SUPPORT_MAX_OFFENSE
-const SUPPORT_SIGNATURE_MIN = 0.8;   // a MODERATE kit qualifies only together with a low-offense profile
-const SUPPORT_STRONG_MIN = 1.4;      // a STRONG kit qualifies regardless of offense (a support mon with high
-                                     // unused offence — e.g. Sinistcha, 121 SpA, played as Hospitality support)
-const SUPPORT_BONUS_CAP = 1.8;       // headroom for a full-kit dedicated support (calibrated Phase 6 vs anchors)
-const SUPPORT_REDIRECT_MOVES = ['MOVE_FOLLOW_ME', 'MOVE_RAGE_POWDER'];
-const SUPPORT_REDIRECT_ABILITIES = ['LIGHTNING_ROD', 'STORM_DRAIN'];
-const SUPPORT_ALLY_ABILITIES = ['FRIEND_GUARD', 'HOSPITALITY', 'HEALER'];
-const SUPPORT_GUARD_MOVES = ['MOVE_WIDE_GUARD', 'MOVE_QUICK_GUARD'];
-const SUPPORT_SPEEDCTRL_MOVES = ['MOVE_ICY_WIND', 'MOVE_ELECTROWEB', 'MOVE_SNARL', 'MOVE_TAILWIND'];
-const SUPPORT_DISRUPT_MOVES = ['MOVE_TAUNT', 'MOVE_ENCORE', 'MOVE_PARTING_SHOT', 'MOVE_PERISH_SONG'];
-const SUPPORT_RECOVERY_MOVES = ['MOVE_RECOVER', 'MOVE_ROOST', 'MOVE_MOONLIGHT', 'MOVE_MORNING_SUN', 'MOVE_SYNTHESIS', 'MOVE_SLACK_OFF', 'MOVE_SOFT_BOILED', 'MOVE_STRENGTH_SAP', 'MOVE_WISH', 'MOVE_LIFE_DEW', 'MOVE_JUNGLE_HEALING'];
-const SUPPORT_PROTECT_MOVES = ['MOVE_PROTECT', 'MOVE_DETECT', 'MOVE_SPIKY_SHIELD', 'MOVE_KINGS_SHIELD', 'MOVE_BANEFUL_BUNKER', 'MOVE_SILK_TRAP'];
-// T-141 (owner round 2) — the support tools our classification under-valued: Regenerator (a bulky
-// support pivots in/out repeatedly, its defining longevity ability) and sleep control (Spore & co. take
-// a foe out of the fight — premium doubles disruption). Adding these lifts complete supports like
-// Amoonguss (Rage Powder + Regenerator + Spore) into OU, per owner.
-const SUPPORT_LONGEVITY_ABILITIES = ['REGENERATOR'];
+// ── T-141 — DEDICATED support (owner round 2: count-based) ──────────────────────────────────────────
+// A dedicated support is defined by its KIT, not its stats: a COMBINATION of top-tier support tools
+// (moves and/or abilities), each a distinct "signal". Owner rule: **≥2 distinct signals = a dedicated
+// support** (UU-worthy); **≥3 = OU-worthy**. A mon with only ONE support tool (Tailwind + 3 attacks, or
+// Wide Guard + 3 attacks) is a half-support ATTACKER — it never gets the dedicated-support role. Offense
+// is irrelevant: Whimsicott (Prankster + Tailwind + Encore), Farigiraf (Armor Tail + Trick Room + Helping
+// Hand), Amoonguss (Rage Powder + Regenerator + Spore) are all dedicated support despite real stats.
 const SUPPORT_SLEEP_MOVES = ['MOVE_SPORE', 'MOVE_SLEEP_POWDER', 'MOVE_HYPNOSIS', 'MOVE_LOVELY_KISS', 'MOVE_DARK_VOID', 'MOVE_YAWN', 'MOVE_GRASS_WHISTLE', 'MOVE_SING'];
-// The support "signature" of a species: additive credits for each support tool it can field (ability +
-// learnable moves). Weights mirror docs/research/doubles-support.md §3 (calibrated in Phase 6).
-function supportScore(poke, moves) {
+// Each entry is ONE support signal. Redundant tools WITHIN a category (Follow Me vs Rage Powder) count
+// once; distinct-purpose tools (Tailwind vs Trick Room vs Encore) are separate signals.
+const SUPPORT_SIGNAL_CATEGORIES = [
+    { moves: ['MOVE_FOLLOW_ME', 'MOVE_RAGE_POWDER'], abils: ['LIGHTNING_ROD', 'STORM_DRAIN'] }, // redirection
+    { moves: ['MOVE_FAKE_OUT'] },                                                                // Fake Out
+    { moves: ['MOVE_WIDE_GUARD', 'MOVE_QUICK_GUARD'] },                                          // spread / priority guard
+    { moves: ['MOVE_TAILWIND'] },                                                                // Tailwind
+    { moves: ['MOVE_TRICK_ROOM'] },                                                              // Trick Room
+    { moves: ['MOVE_HELPING_HAND'] },                                                            // Helping Hand
+    { moves: ['MOVE_ENCORE', 'MOVE_TAUNT', 'MOVE_PARTING_SHOT', 'MOVE_PERISH_SONG'] },           // disruption
+    { moves: ['MOVE_ICY_WIND', 'MOVE_ELECTROWEB', 'MOVE_SNARL'] },                               // spread speed / atk debuff
+    { moves: SUPPORT_SLEEP_MOVES },                                                              // sleep control
+    { abils: ['INTIMIDATE'] },                                                                   // Intimidate
+    { abils: ['PRANKSTER'] },                                                                    // Prankster
+    { abils: ['FRIEND_GUARD', 'HOSPITALITY', 'HEALER'] },                                        // ally-support ability
+    { abils: ['REGENERATOR'] },                                                                  // repeatable-pivot longevity
+    { abils: ['ARMOR_TAIL', 'DAZZLING', 'QUEENLY_MAJESTY'] },                                    // priority block
+];
+// The count of DISTINCT top-tier support signals the species can field — its "support depth".
+function supportSignals(poke) {
     const abils = poke.parsedAbilities || [];
     const learnable = new Set([...(poke.learnset || []).map(l => l.move), ...(poke.teachables || [])]);
-    const hasMove = list => list.some(m => learnable.has(m));
-    const hasAbil = list => abils.some(a => list.includes(a));
-    let s = 0;
-    if (hasMove(SUPPORT_REDIRECT_MOVES) || hasAbil(SUPPORT_REDIRECT_ABILITIES)) s += 1.0; // redirection — THE defining support tool
-    if (learnable.has('MOVE_FAKE_OUT')) s += 0.5;
-    if (hasMove(SUPPORT_GUARD_MOVES)) s += 0.5;
-    if (hasAbil(SUPPORT_ALLY_ABILITIES)) s += 0.8;                                         // Friend Guard / Hospitality / Healer — dedicated ally support
-    if (abils.includes('INTIMIDATE')) s += 0.5;
-    if (learnable.has('MOVE_HELPING_HAND')) s += 0.35;
-    if (hasMove(SUPPORT_SPEEDCTRL_MOVES)) s += 0.4;
-    if (hasMove(SUPPORT_DISRUPT_MOVES)) s += 0.35;
-    if (hasMove(SUPPORT_RECOVERY_MOVES) && hasMove(SUPPORT_PROTECT_MOVES)) s += 0.3;       // durable repeatable support
-    if (abils.includes('PRANKSTER')) s += 0.4;
-    if (hasAbil(SUPPORT_LONGEVITY_ABILITIES)) s += 0.4;                                    // Regenerator — repeatable pivot support (T-141 r2)
-    if (hasMove(SUPPORT_SLEEP_MOVES)) s += 0.4;                                            // Spore & co. — removes a foe (premium doubles control)
-    return s;
+    let n = 0;
+    for (const c of SUPPORT_SIGNAL_CATEGORIES) {
+        if ((c.moves && c.moves.some(m => learnable.has(m))) || (c.abils && c.abils.some(a => abils.includes(a)))) n++;
+    }
+    return n;
 }
-// A DEDICATED support (gets the doubles quality lift): a STRONG support kit regardless of offence (a
-// support mon with high unused offence — Sinistcha), OR a MODERATE kit on a genuinely low-offense mon
-// (so an ATTACKER carrying one support tool — Landorus-T Intimidate — is NOT lifted). See §2 of
-// docs/research/doubles-support.md.
-function isDedicatedSupport(poke) {
-    const s = supportScore(poke);
-    if (s >= SUPPORT_STRONG_MIN) return true;
-    return Math.max(poke.baseAttack || 0, poke.baseSpAttack || 0) <= SUPPORT_OFFENSE_MAX && s >= SUPPORT_SIGNATURE_MIN;
-}
+const SUPPORT_MIN_SIGNALS = 2;   // owner: ≥2 signals = dedicated support; a 1-signal attacker is half-support
+const SUPPORT_OU_SIGNALS = 3;    // owner: ≥3 signals = OU-worthy
+function isDedicatedSupport(poke) { return supportSignals(poke) >= SUPPORT_MIN_SIGNALS; }
 
 // T-097 tuning (owner ✔): doubles punishes FRAILTY harder (a frail mon is folded by spread damage) and does
 // not reward a PASSIVE wall (bulk with no offence and no support role isn't a doubles threat).
@@ -3717,22 +3699,21 @@ function ratePokemonDoubles(poke, moves, abilities, tmPool, moveset = null) {
     movesRating *= 0.25;
     const coverageMetrics = computeCoverageMetrics(moveset, moves);
     movesRating = movesRating * 0.7 + coverageMetrics.coverageScore * 0.3;
-    let combo = computeComboBonusDoubles(poke, moves, { offensePower });
-    // T-141 — dedicated-support depth: a dedicated support gets extra combo headroom (up to
-    // SUPPORT_BONUS_CAP), lifting its doubles tier ~2 steps (owner: Sinistcha RU→OU). max() → never
-    // double-counts the support the combo already credited; attackers (Landorus-T) don't qualify.
-    // Applied before the T-140 BST floor.
-    const dedicatedSupport = isDedicatedSupport(poke);
-    if (dedicatedSupport) combo = Math.min(Math.max(combo, supportScore(poke)), SUPPORT_BONUS_CAP);
+    const combo = computeComboBonusDoubles(poke, moves, { offensePower });
     let ratingDoubles = (bstRating * 0.8) + (movesRating * 0.1) + (bestAbilityRating * 0.1) + combo;
     // T-097 tuning — frailty penalty (spread damage folds frail mons) + passive-wall penalty (bulk with no
     // offence and no support role isn't a doubles threat).
     if (defensePower < DBL_FRAILTY_DEF) ratingDoubles -= (DBL_FRAILTY_DEF - defensePower) * DBL_FRAILTY_FACTOR;
     if (offensePower < DBL_PASSIVE_OFF && combo < DBL_PASSIVE_COMBO) ratingDoubles -= DBL_PASSIVE_PENALTY;
-    // T-141 (owner r2) — a dedicated support ENABLES the team; it isn't a raw Ubers threat. Cap the
-    // support lift at the top of OU so a super-bulky support (Alomomola) doesn't reach Ubers off support
-    // alone. The T-140 BST floor below still overrides for a genuinely huge-BST mon (BST paces the run).
-    if (dedicatedSupport) ratingDoubles = Math.min(ratingDoubles, DOUBLES_TIER_THRESHOLDS.UBERS - 0.05);
+    // T-141 (owner r2) — DEDICATED support tier by signal COUNT: ≥3 top-tier support signals → OU floor,
+    // 2 → UU floor (owner: "2 = UU automatically, 3+ = OU"). Capped at the top of OU — a support ENABLES
+    // the team, it isn't a raw Ubers threat (so a super-bulky support doesn't reach Ubers off support
+    // alone). The T-140 BST floor below still overrides for a genuinely huge-BST mon (BST paces the run).
+    const supSig = supportSignals(poke);
+    if (supSig >= SUPPORT_MIN_SIGNALS) {
+        const floor = supSig >= SUPPORT_OU_SIGNALS ? DOUBLES_TIER_THRESHOLDS.OU : DOUBLES_TIER_THRESHOLDS.UU;
+        ratingDoubles = Math.min(Math.max(ratingDoubles, floor), DOUBLES_TIER_THRESHOLDS.UBERS - 0.05);
+    }
 
     // T-140 — BST floor (parity with the singles rater): raw BST guarantees a minimum tier, so BST keeps
     // pacing the run in doubles too. Same format-independent BST cutoffs as singles; the DOUBLES tier
@@ -3773,7 +3754,7 @@ module.exports = {
     ratePokemon,
     ratePokemonDoubles,
     rateAbilitySingles,
-    supportScore,
+    supportSignals,
     isDedicatedSupport,
     bstRatingDoubles,
     computeComboBonusDoubles,

@@ -11,11 +11,8 @@ const {
 } = require('../constants');
 const { TIER_SEQ } = require('../constants');
 const { sample, checkValidEvo, getFamilyGroup, hasValidMega, devolveToLevel } = require('./utils');
-// T-142 r2 — the doubles support tier-flex needs the emerged identity (does the team still want a
-// dedicated support?) and the support detector. resolveIdentity/crystallize are pure (no rng), so
-// calling them here doesn't perturb the per-slot RNG stream.
-const { resolveIdentity } = require('./archetypePicker');
-const { combinedStructure } = require('./archetypeFit');
+// T-142 — the doubles support tier-flex + hard-pick use the support detector (the "wants support" signal
+// is the up-front roll in resolveTrainerTeam → context.doublesWantsSupport, read here).
 const { DETECTORS } = require('./featureDetectors');
 
 function tiersUpTo(maxTier) {
@@ -121,18 +118,13 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         return current;
     };
 
-    // T-142 r2 — how many more dedicated supports the team's emerged doubles identity still wants
-    // (its dedicatedSupport slot `min` minus the supports already on the team). 0 when no identity, no
-    // support slot, or the min is already met. Favourite-ace slots don't count toward the support quota.
-    function dedicatedSupportNeed(team, mdl) {
-        const members = team || [];
-        const identity = resolveIdentity(members.map(m => (m && m.pokemon) ? m.pokemon : m), mdl, { moves }, context.archetypeSeed || null);
-        if (!identity) return 0;
-        const structure = combinedStructure(mdl, identity.baseId, identity.gimmickIds);
-        const slot = structure.find(s => s.role === 'dedicatedSupport');
-        if (!slot || slot.min < 1) return 0;
-        const have = members.filter(m => !m.__favourite && DETECTORS.dedicatedSupport((m && m.pokemon) || m)).length;
-        return slot.min - have;
+    // T-142 r3 — does the team still want a dedicated support? Driven by the up-front doubles plan
+    // (context.doublesWantsSupport, rolled in resolveTrainerTeam) — NOT the late-emerging identity. Secure
+    // exactly ONE; a favourite ace doesn't count toward the quota. Returns 1 (wants one, has none) or 0.
+    function dedicatedSupportNeed(team) {
+        if (!context.doublesWantsSupport) return 0;
+        const have = (team || []).filter(m => !m.__favourite && DETECTORS.dedicatedSupport((m && m.pokemon) || m)).length;
+        return have >= 1 ? 0 : 1;
     }
 
     function choosePokemonFromDefinition(trainerMonDefinition) {
@@ -226,13 +218,10 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
             // dedicatedSupport mons from exactly ONE tier down — they still pass the later type/restriction
             // filters. Only the FIRST support is flexed in (min, not max); a 2nd out-of-budget support is
             // left to drop. Singles unaffected (doublesFmt=false).
-            if (doublesFmt && model && !inTier.some(p => DETECTORS.dedicatedSupport(p))) {
-                const need = dedicatedSupportNeed(team, model);
-                if (need > 0) {
-                    const oneDown = tiersOneBelow(trainerMonDefinition.absoluteTier);
-                    const flexed = before.filter(p => oneDown.includes(pokeTier(p)) && DETECTORS.dedicatedSupport(p));
-                    if (flexed.length) { inTier = inTier.concat(flexed); context.supportFlexed = true; }
-                }
+            if (doublesFmt && dedicatedSupportNeed(team) > 0 && !inTier.some(p => DETECTORS.dedicatedSupport(p))) {
+                const oneDown = tiersOneBelow(trainerMonDefinition.absoluteTier);
+                const flexed = before.filter(p => oneDown.includes(pokeTier(p)) && DETECTORS.dedicatedSupport(p));
+                if (flexed.length) { inTier = inTier.concat(flexed); context.supportFlexed = true; }
             }
             pokemonLooseList = inTier;
         }

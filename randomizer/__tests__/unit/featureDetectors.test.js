@@ -174,23 +174,21 @@ describe('detectFeatures aggregator', () => {
     });
 });
 
-describe('dedicatedSupport detector (T-141)', () => {
-    test('a low-offense redirector is dedicated support (redirection alone qualifies)', () => {
-        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 65, ...withMoves('MOVE_RAGE_POWDER') }), ctx)).toBe(true);
-        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 50, baseSpAttack: 60, parsedAbilities: ['LIGHTNING_ROD'] }), ctx)).toBe(true);
+describe('dedicatedSupport detector (T-141, count-based ≥2 signals)', () => {
+    // Owner's rule: a dedicated support = a COMBINATION of ≥2 distinct top-tier support signals; a mon
+    // with only ONE support tool is a half-support ATTACKER and never gets the role. Offense is irrelevant.
+    test('ONE support tool is NOT dedicated support, regardless of offense (half-support attacker)', () => {
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 65, ...withMoves('MOVE_RAGE_POWDER') }), ctx)).toBe(false); // redirection only
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 130, baseSpAttack: 60, ...withMoves('MOVE_TAILWIND') }), ctx)).toBe(false);  // tailwind only, offensive
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 60, parsedAbilities: ['INTIMIDATE'] }), ctx)).toBe(false); // Intimidate only
     });
-    test('a low-offense mon with two lesser support signals qualifies', () => {
-        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 60, parsedAbilities: ['INTIMIDATE'], ...withMoves('MOVE_FAKE_OUT') }), ctx)).toBe(true);
+    test('TWO distinct support signals = dedicated support (offense irrelevant)', () => {
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 60, parsedAbilities: ['INTIMIDATE'], ...withMoves('MOVE_FAKE_OUT') }), ctx)).toBe(true);   // Intimidate + Fake Out
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 120, baseSpAttack: 120, parsedAbilities: ['LIGHTNING_ROD'], ...withMoves('MOVE_HELPING_HAND') }), ctx)).toBe(true); // redirection + Helping Hand, high offense
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 121, parsedAbilities: ['HOSPITALITY'], ...withMoves('MOVE_RAGE_POWDER') }), ctx)).toBe(true);  // Sinistcha: ally + redirection
     });
-    test('a HIGH-offense mon carrying ONE support tool is NOT dedicated support (partial-support attacker)', () => {
-        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 130, baseSpAttack: 60, parsedAbilities: ['INTIMIDATE'], ...withMoves('MOVE_FAKE_OUT') }), ctx)).toBe(false);
-        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 120, baseSpAttack: 120, ...withMoves('MOVE_RAGE_POWDER') }), ctx)).toBe(false);
-    });
-    test('a HIGH-offense mon with a STRONG support kit IS dedicated support (Sinistcha: 121 SpA, played as Hospitality support)', () => {
-        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 121, parsedAbilities: ['HOSPITALITY'], ...withMoves('MOVE_RAGE_POWDER') }), ctx)).toBe(true);
-    });
-    test('a low-offense mon with only ONE lesser signal is not dedicated support', () => {
-        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 60, parsedAbilities: ['INTIMIDATE'] }), ctx)).toBe(false);
+    test('THREE signals (Whimsicott: Prankster + Tailwind + Encore) is dedicated support', () => {
+        expect(DETECTORS.dedicatedSupport(mon({ parsedAbilities: ['PRANKSTER'], ...withMoves('MOVE_TAILWIND', 'MOVE_ENCORE') }), ctx)).toBe(true);
     });
 });
 

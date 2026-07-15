@@ -77,7 +77,26 @@ Acceptance criteria:
   - +4 tier-flex tests (selector) + the classification tests. Fast suite 1115 green; determinism gates
     re-running.
 
+- **2026-07-15 (owner round 3) — the fix that actually lands.** Owner regenerated 3× → no change.
+  Reproduced Drake IN NODE with the exact bundle config + `runGeneration` (the browser path) and traced it
+  with debug logging. Two real bugs (not the stale bundle, though that also bit us — see
+  [[project_browser_bundle_must_rebuild]]):
+  1. **Identity timing**: during the picks the partial team crystallised `hyper_offense` (dedicatedSupport
+     min0) → `need=0` every slot → the hard-pick/flex never fired. `redirection_support` was only the
+     post-hoc audit label. Fix: **roll support intent UP FRONT** (`context.doublesWantsSupport`, hash-based
+     per trainer, no rng consumed) — a `DOUBLES_HYPER_CHANCE`=0.25 minority go hyper (no support), the rest
+     secure one. The hard-pick + tier-flex + drop-log now key off this roll, NOT the late identity.
+  2. **Detector false-positive**: an attacker (Brute Bonnet + Spore) was flagged support, masking the
+     shortfall. Fix (owner's count model): **`supportSignals` = distinct top-tier support categories; ≥2 =
+     dedicated support, ≥3 = OU, 2 = UU, capped OU** — a 1-signal attacker (Spore-only) is NOT dedicated.
+     Replaced the weighted supportScore. Offence irrelevant (Farigiraf/Sinistcha are support despite stats).
+  - **Reproduced fix (seed 2709645655):** Drake now fields **Whimsicott** (Prankster+Tailwind+Encore) +
+    **Poltchageist** (Hospitality) — decision log: "dedicated support admitted 1 tier below the budget".
+  - pickBest audit (owner ask): only rivals (rival103Template encounter slots) + TRAINER_COLIN use
+    pickBest — NO serious boss (gym/E4/champion), so the archetype picker always steers them. Clean.
+  - Fast suite 1115 green; determinism gates re-running; browser bundle rebuilt.
+
 ## Outcome
-Doubles support archetypes now FIELD a dedicated support: correctly classified (Amoonguss→OU), hard-picked
-when in-tier, flexed one tier down when the boss out-tiers it, and cleanly dropped-with-log otherwise.
-Awaiting owner manual test.
+Doubles teams now FIELD dedicated support: intent rolled up front (hyper minority skips it), support
+classified by signal count (≥2 dedicated), hard-picked in-tier or flexed one tier down, dropped-with-log
+only when truly none fits. Verified on Drake. Awaiting owner manual test.

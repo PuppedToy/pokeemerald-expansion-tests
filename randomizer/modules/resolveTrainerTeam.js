@@ -48,6 +48,9 @@ const { noopTeamAudit, createTeamAudit } = require('../teamAudit');
 const { noopDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
 
 const SEED_SOPH_FLOOR = 0.6; // T-126 — min sophistication for a SEEDED trainer, so its identity builds
+// T-142 r3 — fraction of STEERED doubles teams that are hyper-aggressive (NO dedicated support). Rolled
+// up front per trainer (see below) because the emergent identity resolves too late to secure a support.
+const DOUBLES_HYPER_CHANCE = 0.25;
 
 function nameify(text) {
     return text
@@ -163,6 +166,16 @@ function createTeamResolver(deps) {
             weatherPicks: [], // T-135 — the picker records each abuser slot's ranking here, for the audit log
             itemLinkActivations: [], // T-133 — records when a linked pick-pack activated (siblings forgone)
         };
+        // T-142 r3 — decide UP FRONT whether this doubles team is hyper-aggressive (no dedicated support)
+        // or support-using. The emergent identity resolves too late to secure a support (an all-attacker
+        // partial team crystallises hyper_offense first, min0), so we roll it here. Deterministic per
+        // trainer (a hash of the id + base seed — NO rng consumed, so the per-slot RNG streams and every
+        // other trainer are undisturbed). Only steered doubles teams get a plan; a DOUBLES_HYPER_CHANCE
+        // minority go hyper-offense (no support). The hard-pick (picker) + tier-flex (selector) read it.
+        if (/double/i.test(trainer.battleType || '') && context.sophistication >= BIAS_MIN_SOPH && baseRngSeed !== null) {
+            const r = (djb2Hash(trainer.id + ':dbl-support-plan') ^ baseRngSeed) >>> 0;
+            context.doublesWantsSupport = (r % 1000) / 1000 >= DOUBLES_HYPER_CHANCE;
+        }
         const archetypeModel = getArchetypeModel(/double/i.test(trainer.battleType || '') ? 'doubles' : 'singles');
         const pickCandidate = makeArchetypePicker({ model: archetypeModel, context, ctx: { moves } });
         attemptAudit.beginTeam({
@@ -488,7 +501,7 @@ function createTeamResolver(deps) {
             GIMMICK_SPEC[seedGid].ensureSetter(team, setterCount);
         }
 
-        attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed, weatherPicks: context.weatherPicks, itemLinkActivations: context.itemLinkActivations, supportFlexed: context.supportFlexed });
+        attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed, weatherPicks: context.weatherPicks, itemLinkActivations: context.itemLinkActivations, supportFlexed: context.supportFlexed, doublesWantsSupport: context.doublesWantsSupport });
         return team;
     }
 

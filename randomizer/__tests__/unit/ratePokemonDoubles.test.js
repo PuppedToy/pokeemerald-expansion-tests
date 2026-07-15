@@ -4,7 +4,8 @@
 // redirection / Intimidate / Fake Out / speed control / terrain / weather / pivot), frailty + passive-wall
 // penalties, and the own doubles tier scale. Owner-validated design + calibration.
 
-const { bstRatingDoubles, computeComboBonusDoubles, tierFromRatingDoubles, ratePokemonDoubles, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, supportScore, isDedicatedSupport } = require('../../rating');
+const { bstRatingDoubles, computeComboBonusDoubles, tierFromRatingDoubles, ratePokemonDoubles, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, supportSignals, isDedicatedSupport } = require('../../rating');
+const { TIER_SEQ: _TIER_SEQ } = require('../../constants');
 
 describe('bstRatingDoubles — bulk↑ / speed↓ re-weighting', () => {
     test('OFFENSIVE weights offence 0.5 / def 0.25 / speed 0.25', () => {
@@ -125,50 +126,50 @@ describe('T-141 Phase 2 — singles clear-error corrections (ally-only abilities
     });
 });
 
-describe('T-141 Phase 3 — dedicated-support signature bonus (doubles quality lift)', () => {
+describe('T-141 Phase 3 — dedicated support = a COMBINATION of top-tier support signals (count-based)', () => {
     const learns = (...mv) => mv.map(m => ({ level: 1, move: m }));
 
-    test('supportScore sums the support kit (redirection + ally ability)', () => {
-        const mon = { parsedAbilities: ['HOSPITALITY'], learnset: learns('MOVE_RAGE_POWDER'), teachables: [] };
-        expect(supportScore(mon, {})).toBeGreaterThanOrEqual(0.9 + 0.6);
+    test('supportSignals counts DISTINCT support categories (Whimsicott: Prankster + Tailwind + Encore = 3)', () => {
+        const whimsicott = { parsedAbilities: ['PRANKSTER'], learnset: learns('MOVE_TAILWIND', 'MOVE_ENCORE'), teachables: [] };
+        expect(supportSignals(whimsicott)).toBe(3);
     });
-    test('a mon with no support kit scores 0', () => {
-        expect(supportScore({ parsedAbilities: ['BLAZE'], learnset: learns('MOVE_FLAMETHROWER'), teachables: [] }, {})).toBe(0);
+    test('Amoonguss (Rage Powder + Regenerator + Spore) = 3 signals; Farigiraf (Armor Tail + TR + Helping Hand) = 3', () => {
+        expect(supportSignals({ parsedAbilities: ['REGENERATOR'], learnset: learns('MOVE_RAGE_POWDER', 'MOVE_SPORE'), teachables: [] })).toBe(3);
+        expect(supportSignals({ parsedAbilities: ['ARMOR_TAIL'], learnset: learns('MOVE_TRICK_ROOM', 'MOVE_HELPING_HAND'), teachables: [] })).toBe(3);
+    });
+    test('redundant tools within a category count ONCE (Follow Me + Rage Powder = 1 redirection signal)', () => {
+        expect(supportSignals({ parsedAbilities: [], learnset: learns('MOVE_FOLLOW_ME', 'MOVE_RAGE_POWDER'), teachables: [] })).toBe(1);
+    });
+    test('a no-support mon = 0 signals', () => {
+        expect(supportSignals({ parsedAbilities: ['BLAZE'], learnset: learns('MOVE_FLAMETHROWER'), teachables: [] })).toBe(0);
     });
 
-    // Two identical low-offense stat lines; only the support kit differs → the support mon rates higher.
-    const abilities = { ABILITY_NONE: { rating: 0, ratingDoubles: 0 }, ABILITY_HOSPITALITY: { rating: 0, ratingDoubles: 6 } };
-    const moves = {
-        MOVE_SLASH: { id: 'MOVE_SLASH', power: 70, target: 'MOVE_TARGET_SELECTED', type: 'NORMAL', category: 'DAMAGE_CATEGORY_PHYSICAL', rating: 5, ratingDoubles: 5 },
-        MOVE_RAGE_POWDER: { id: 'MOVE_RAGE_POWDER', power: 0, target: 'MOVE_TARGET_USER', type: 'BUG', category: 'DAMAGE_CATEGORY_STATUS', rating: 1, ratingDoubles: 7 },
-        MOVE_PROTECT: { id: 'MOVE_PROTECT', power: 0, target: 'MOVE_TARGET_USER', type: 'NORMAL', category: 'DAMAGE_CATEGORY_STATUS', rating: 4.5, ratingDoubles: 5.5 },
-        MOVE_RECOVER: { id: 'MOVE_RECOVER', power: 0, target: 'MOVE_TARGET_USER', type: 'NORMAL', category: 'DAMAGE_CATEGORY_STATUS', rating: 5, ratingDoubles: 5 },
-    };
-    const stat = { baseHP: 80, baseAttack: 60, baseDefense: 100, baseSpAttack: 60, baseSpDefense: 100, baseSpeed: 70, teachables: [], evolutionData: {} };
-    const plain = { ...stat, id: 'P', parsedAbilities: ['NONE'], learnset: learns('MOVE_SLASH') };
-    const supp = { ...stat, id: 'S', parsedAbilities: ['HOSPITALITY'], learnset: learns('MOVE_RAGE_POWDER', 'MOVE_PROTECT', 'MOVE_RECOVER') };
-
-    test('a low-offense dedicated support out-rates an identical-stat non-support mon in doubles', () => {
-        const rPlain = ratePokemonDoubles(plain, moves, abilities, [], ['MOVE_SLASH']).ratingDoubles;
-        const rSupp = ratePokemonDoubles(supp, moves, abilities, [], ['MOVE_RAGE_POWDER', 'MOVE_PROTECT', 'MOVE_RECOVER']).ratingDoubles;
-        expect(rSupp).toBeGreaterThan(rPlain);
-    });
-    test('a full support kit scores above the generic combo cap (1.0) — the headroom the dedicated-support lift unlocks', () => {
-        // Sinistcha-like full kit: Hospitality + Rage Powder + Protect + Recover → well past the 1.0 combo cap.
-        expect(supportScore(supp, moves)).toBeGreaterThan(1.0);
-    });
-    test('supportScore credits Regenerator (longevity) + sleep moves — an Amoonguss-like kit is a STRONG support', () => {
-        // Amoonguss: Rage Powder (redirection) + Regenerator + Spore → must clear the strong-support bar
-        // (owner: a full support kit like this belongs in OU, not UU).
-        const amoon = { parsedAbilities: ['REGENERATOR'], baseAttack: 85, baseSpAttack: 85, learnset: learns('MOVE_RAGE_POWDER', 'MOVE_SPORE'), teachables: [] };
-        expect(supportScore(amoon)).toBeGreaterThanOrEqual(1.4);
-        expect(isDedicatedSupport(amoon)).toBe(true);
-    });
-    test('isDedicatedSupport: a STRONG kit qualifies regardless of offense (Sinistcha, 121 SpA); an attacker with one tool does not (Landorus-T)', () => {
-        const sinistcha = { parsedAbilities: ['HOSPITALITY'], baseAttack: 60, baseSpAttack: 121, learnset: learns('MOVE_RAGE_POWDER'), teachables: [] };
-        const landoT = { parsedAbilities: ['INTIMIDATE'], baseAttack: 145, baseSpAttack: 105, learnset: [], teachables: [] };
+    test('≥2 signals = dedicated support (offense IRRELEVANT — Sinistcha 121 SpA IS support); a 1-signal attacker is NOT', () => {
+        const sinistcha = { parsedAbilities: ['HOSPITALITY'], baseAttack: 60, baseSpAttack: 121, learnset: learns('MOVE_RAGE_POWDER'), teachables: [] }; // ally + redirection = 2
+        const landoT = { parsedAbilities: ['INTIMIDATE'], baseAttack: 145, baseSpAttack: 105, learnset: learns('MOVE_EARTHQUAKE'), teachables: [] };    // Intimidate only = 1
+        const tailwindAtk = { parsedAbilities: ['NONE'], baseAttack: 130, baseSpAttack: 60, learnset: learns('MOVE_TAILWIND', 'MOVE_BRAVE_BIRD'), teachables: [] }; // Tailwind only = 1 (half-support)
         expect(isDedicatedSupport(sinistcha)).toBe(true);
         expect(isDedicatedSupport(landoT)).toBe(false);
+        expect(isDedicatedSupport(tailwindAtk)).toBe(false);
+    });
+    test('a Spore-only attacker (Brute Bonnet case) is NOT dedicated support — 1 signal', () => {
+        expect(isDedicatedSupport({ parsedAbilities: ['PROTOSYNTHESIS'], baseAttack: 127, baseSpAttack: 60, learnset: learns('MOVE_SPORE', 'MOVE_SUCKER_PUNCH'), teachables: [] })).toBe(false);
+    });
+
+    // Tier by count: ≥3 → OU floor, 2 → UU floor, capped at OU. (Uses low move/ability ratings so the base
+    // rating is well below the floor — proving the FLOOR sets the tier.)
+    const abilities = { ABILITY_NONE: { rating: 0, ratingDoubles: 0 }, ABILITY_PRANKSTER: { rating: 8, ratingDoubles: 8 } };
+    const mv = (id) => ({ id, power: 0, target: 'MOVE_TARGET_USER', type: 'NORMAL', category: 'DAMAGE_CATEGORY_STATUS', rating: 1, ratingDoubles: 1 });
+    const moves = { MOVE_TAILWIND: mv('MOVE_TAILWIND'), MOVE_ENCORE: mv('MOVE_ENCORE'), MOVE_HELPING_HAND: mv('MOVE_HELPING_HAND') };
+    const frailStat = { baseHP: 60, baseAttack: 50, baseDefense: 55, baseSpAttack: 67, baseSpDefense: 85, baseSpeed: 116, teachables: [], evolutionData: {} };
+    test('3-signal support floors to OU; 2-signal to at least UU', () => {
+        const three = { ...frailStat, id: 'W', parsedAbilities: ['PRANKSTER'], learnset: learns('MOVE_TAILWIND', 'MOVE_ENCORE') }; // prankster+tailwind+encore
+        const two = { ...frailStat, id: 'T', parsedAbilities: ['NONE'], learnset: learns('MOVE_TAILWIND', 'MOVE_HELPING_HAND') };  // tailwind+helping hand
+        const rThree = ratePokemonDoubles(three, moves, abilities, [], ['MOVE_TAILWIND', 'MOVE_ENCORE']);
+        const rTwo = ratePokemonDoubles(two, moves, abilities, [], ['MOVE_TAILWIND', 'MOVE_HELPING_HAND']);
+        expect(rThree.tierDoubles).toBe('OU');
+        expect(_TIER_SEQ.indexOf(rTwo.tierDoubles)).toBeGreaterThanOrEqual(_TIER_SEQ.indexOf('UU')); // UU or better
+        expect(_TIER_SEQ.indexOf(rThree.tierDoubles)).toBeLessThanOrEqual(_TIER_SEQ.indexOf('UBERS') - 1); // capped at OU (not Ubers)
     });
 });
 

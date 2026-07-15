@@ -24,42 +24,27 @@ A **dedicated support** = a low-offense mon whose kit is built to enable allies,
 **partial-support attacker** (an attacker that happens to carry Intimidate/a spread debuff — e.g.
 Landorus-T, Tapu Koko, M-Kangaskhan: 29/13/11 corpus appearances, always attacker-first).
 
-`isDedicatedSupport(mon)` (a *tendency from stats + kit*, per the T-118 role philosophy) — a mon is
-dedicated support if EITHER:
-- its **supportScore ≥ SUPPORT_STRONG_MIN (1.4)** — a strong support kit marks it a support **regardless
-  of offence** (the flagship case: Sinistcha has 121 SpA it never uses — it's a Hospitality support); OR
-- **offense ≤ SUPPORT_OFFENSE_MAX (95)** AND **supportScore ≥ SUPPORT_SIGNATURE_MIN (0.8)** — a moderate
-  kit qualifies only on a genuinely low-offense mon.
+`isDedicatedSupport(mon)` — **count-based** (owner round 2): a dedicated support is defined by its KIT,
+not its stats. `supportSignals(mon)` counts the DISTINCT top-tier support categories the species can field
+(redundant tools within a category — Follow Me vs Rage Powder — count once). A mon with **≥2 signals** is
+a dedicated support; a mon with only ONE support tool (Tailwind + 3 attacks) is a half-support ATTACKER
+and NEVER gets the role. **Offence is irrelevant** — Whimsicott (Prankster + Tailwind + Encore), Farigiraf
+(Armor Tail + Trick Room + Helping Hand) and Amoonguss (Rage Powder + Regenerator + Spore) are all
+dedicated support (3 signals) despite real stats. The same `isDedicatedSupport` backs both the rating and
+the `dedicatedSupport` role detector (one definition, no drift).
 
-An offence-only gate was the first design and it MISSED Sinistcha (Phase 6 calibration) — hence the
-strong-kit escape hatch. The **same** `isDedicatedSupport` predicate backs both the rating lift AND the
-`dedicatedSupport` role detector (one definition, no drift).
+Signal categories: redirection · Fake Out · Wide/Quick Guard · Tailwind · Trick Room · Helping Hand ·
+disruption (Encore/Taunt/Parting Shot/Perish Song) · spread debuff (Icy Wind/Electroweb/Snarl) · sleep ·
+Intimidate · Prankster · ally ability (Friend Guard/Hospitality/Healer) · Regenerator · priority-block
+(Armor Tail/Dazzling/Queenly Majesty).
 
-## 3. supportScore — the scalable signature bonus (doubles rating)
+## 3. Support tier by signal count
 
-A per-mon score summing the support tools the species can actually field (ability + learnable moves),
-converted into a **doubles-only** additive rating bonus. Gradual, per owner: a full kit ≈ +2 tiers, a
-partial kit less. Modelled like a combo bonus (additive, capped), applied in `ratePokemonDoubles`
-**before** the BST floor (T-140) so a real support mon's floor rises with it.
-
-Credits (weights provisional — calibrated in implementation against corpus exemplars):
-
-| Support element | Detected by | weight |
-|---|---|---|
-| Redirection | Follow Me / Rage Powder move, OR Lightning Rod / Storm Drain ability | 1.0 |
-| Ally heal / protect ability | Friend Guard / Hospitality / Healer | 0.8 |
-| Fake Out | learnable Fake Out | 0.5 |
-| Wide Guard / Quick Guard | learnable | 0.5 |
-| Intimidate | ability | 0.5 |
-| Speed-control debuff | Icy Wind / Electroweb / Snarl / Tailwind | 0.4 |
-| Prankster (priority support) | ability | 0.4 |
-| Helping Hand | learnable | 0.35 |
-| Disruption | Taunt / Encore / Parting Shot / Perish Song | 0.35 |
-| Recovery + Protect (durable support) | recovery move + Protect | 0.3 |
-
-Lift: `combo = min(max(combo, supportScore), SUPPORT_BONUS_CAP=1.8)` — replaces (never sums on top of)
-the T-097 combo, so support is never double-counted; the cap keeps the strongest kits (Maushold 2.9) at
-OU rather than Ubers. Applied before the T-140 BST floor. Weights provisional pending owner sign-off.
+Owner rule: **≥3 signals → OU floor; 2 → UU floor**, capped at the top of OU (a support ENABLES the team,
+it isn't a raw Ubers threat — so a super-bulky support doesn't reach Ubers off support alone). Applied in
+`ratePokemonDoubles` after the frailty/passive penalties, before the T-140 BST floor — which still
+overrides for a genuinely huge-BST mon (BST paces the run). Result: Amoonguss/Whimsicott/Farigiraf/
+Sinistcha → OU; a clean 2-signal support → at least UU.
 
 **Phase-6 calibration on the base pokedex (seed 777) — result:**
 - Owner anchor hit: **Sinistcha RU→OU** (rD 7.77). Also Hitmontop RU→OU, Cresselia UU→OU, Amoonguss/
@@ -133,10 +118,17 @@ trick_room) already pull a redirector/protector via their gimmick layer.
 
 ## 8. Delivery (T-142) — how a support actually reaches the team
 
-Classifying a support correctly (§3) isn't enough; the engine must FIELD it, like the gimmick setters:
-- **Hard-pick** (`archetypePicker`): when the emerged identity carries a `dedicatedSupport` slot (min≥1)
-  and the team lacks one, restrict the pick to `DETECTORS.dedicatedSupport` candidates (mirrors the
-  gimmick setter hard-pick). The move-refine then injects the support move (Rage Powder / Follow Me / …).
+Classifying a support correctly (§3) isn't enough; the engine must FIELD it, like the gimmick setters.
+And the emergent identity resolves too LATE to secure one — an all-attacker partial team crystallises
+`hyper_offense` (min0) before a support archetype can form, so the support is never forced (this is why
+Drake fielded six attackers). The fix:
+- **Up-front roll** (`resolveTrainerTeam` → `context.doublesWantsSupport`): each steered doubles team
+  rolls, deterministically per trainer (a hash of the id + base seed — NO rng consumed, so per-slot RNG
+  streams and other trainers are undisturbed), whether it's hyper-aggressive (a `DOUBLES_HYPER_CHANCE`
+  minority — NO support) or support-using. This decides support intent BEFORE the attacker slots fill.
+- **Hard-pick** (`archetypePicker`): when the roll wants support and the team lacks one, restrict the pick
+  to `DETECTORS.dedicatedSupport` candidates (mirrors the gimmick setter hard-pick). The move-refine then
+  injects the support move (Rage Powder / Follow Me / …).
 - **Tier-flex — one tier down** (`trainerSelector`): doubles support is intentionally a tier below the
   attackers it enables (a UU/OU support on an Ubers team — the VGC norm). So when the team still wants a
   support and none sits in the boss's slot tier, the `absoluteTier` filter admits `dedicatedSupport` mons

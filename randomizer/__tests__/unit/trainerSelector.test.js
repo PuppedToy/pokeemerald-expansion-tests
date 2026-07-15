@@ -428,7 +428,8 @@ describe('createChooser — T-142 doubles support tier-flex', () => {
     const singles = getArchetypeModel('singles');
     const supportMon = (id, tierD) => ({
         ...makePoke(id, { tier: tierD, types: ['GRASS'] }), tierDoubles: tierD,
-        learnset: [{ level: 1, move: 'MOVE_RAGE_POWDER' }], teachables: [], baseAttack: 80, baseSpAttack: 80,
+        learnset: [{ level: 1, move: 'MOVE_RAGE_POWDER' }, { level: 1, move: 'MOVE_HELPING_HAND' }], // 2 signals → dedicated
+        teachables: [], baseAttack: 80, baseSpAttack: 80,
     });
     const attackerMon = (id, tierD) => ({ ...makePoke(id, { tier: tierD }), tierDoubles: tierD, baseAttack: 150, baseSpAttack: 60 });
 
@@ -437,7 +438,7 @@ describe('createChooser — T-142 doubles support tier-flex', () => {
         const attacker = attackerMon('UBATK', 'UBERS');
         let captured = null;
         const chooser = makeChooser([support, attacker], { ...makeTrainer(76), battleType: 'doubles' },
-            { team: [], foundMega: false, storedIds: {}, archetypeSeed: { base: 'redirection_support' } },
+            { team: [], foundMega: false, storedIds: {}, doublesWantsSupport: true },
             { model: doubles, moves: {}, pickCandidate: (list) => { captured = list; return list.find(p => p.id === 'OUSUPP') || list[0]; } });
         const res = chooser({ absoluteTier: ['UBERS'] });
         expect(captured.map(p => p.id)).toContain('OUSUPP'); // flexed into the pool from 1 tier down
@@ -449,7 +450,7 @@ describe('createChooser — T-142 doubles support tier-flex', () => {
         const attacker = attackerMon('UBATK', 'UBERS');
         let captured = null;
         const chooser = makeChooser([support, attacker], { ...makeTrainer(76), battleType: 'doubles' },
-            { team: [], foundMega: false, storedIds: {}, archetypeSeed: { base: 'redirection_support' } },
+            { team: [], foundMega: false, storedIds: {}, doublesWantsSupport: true },
             { model: doubles, moves: {}, pickCandidate: (list) => { captured = list; return list[0]; } });
         chooser({ absoluteTier: ['UBERS'] });
         expect(captured.map(p => p.id)).not.toContain('UUSUPP');
@@ -461,7 +462,7 @@ describe('createChooser — T-142 doubles support tier-flex', () => {
         const attacker = attackerMon('UBATK', 'UBERS');
         let captured = null;
         const chooser = makeChooser([support, attacker], { ...makeTrainer(76), battleType: 'doubles' },
-            { team: [{ pokemon: onTeam }], foundMega: false, storedIds: {}, archetypeSeed: { base: 'redirection_support' } },
+            { team: [{ pokemon: onTeam }], foundMega: false, storedIds: {}, doublesWantsSupport: true },
             { model: doubles, moves: {}, pickCandidate: (list) => { captured = list; return list[0]; } });
         chooser({ absoluteTier: ['UBERS'] });
         expect(captured.map(p => p.id)).not.toContain('OUSUPP'); // need already met → no flex

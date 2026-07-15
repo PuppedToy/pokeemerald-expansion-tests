@@ -243,24 +243,19 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
                 candidates.forEach((c, i) => { if ((c.baseSpeed || 999) <= TR_SLOW_SPEED) { weights[i] *= TR_SLOW_FACTOR; biased = true; } });
             }
         }
-        // T-142 — DEDICATED SUPPORT is make-or-break for doubles support archetypes (redirection_support,
-        // or any base carrying a dedicatedSupport slot). A soft weight can't secure a rare redirector/
-        // support mon across a big tier pool (Drake crystallised redirection_support yet fielded zero
-        // redirectors). So — exactly like a gimmick setter — HARD-pick a support-CAPABLE mon when the
-        // identity wants one and the team lacks it; the move-refine (archetypeRefine) then injects its
-        // support move. Runs after the gimmick hard-picks (they return earlier when they fire). Doubles-only
-        // (the slot exists only in doubles.json) so singles stay byte-identical.
-        if (doubles && identity) {
-            const supStructure = combinedStructure(model, identity.baseId, identity.gimmickIds);
-            const supSlot = supStructure.find(s => s.role === 'dedicatedSupport');
-            if (supSlot && supSlot.min >= 1) {
-                const teamMembers = (context && context.team) || [];
-                const have = teamMembers.filter(m => !m.__favourite && DETECTORS.dedicatedSupport((m && m.pokemon) || m)).length;
-                if (have < supSlot.min) {
-                    const idx = [];
-                    candidates.forEach((c, i) => { if (DETECTORS.dedicatedSupport(c)) idx.push(i); });
-                    if (idx.length) return weightedSampleOne(idx.map(i => candidates[i]), idx.map(i => weights[i]));
-                }
+        // T-142 — DEDICATED SUPPORT is make-or-break for doubles teams. A soft weight can't secure a rare
+        // support mon across a big tier pool, and the emergent identity resolves too late (an all-attacker
+        // partial team crystallises hyper_offense before a support archetype can form — Drake fielded zero
+        // support). So the team's support intent is rolled UP FRONT (resolveTrainerTeam → context.doubles-
+        // WantsSupport): when it wants one and none is on the team, HARD-pick a support-capable mon (like a
+        // gimmick setter); the move-refine then injects its support move. Doubles-only → singles byte-identical.
+        if (doubles && context && context.doublesWantsSupport) {
+            const teamMembers = (context.team || []);
+            const have = teamMembers.filter(m => !m.__favourite && DETECTORS.dedicatedSupport((m && m.pokemon) || m)).length;
+            if (have < 1) {
+                const idx = [];
+                candidates.forEach((c, i) => { if (DETECTORS.dedicatedSupport(c)) idx.push(i); });
+                if (idx.length) return weightedSampleOne(idx.map(i => candidates[i]), idx.map(i => weights[i]));
             }
         }
         if (!biased) return sample(candidates); // nothing to pull toward → byte-identical

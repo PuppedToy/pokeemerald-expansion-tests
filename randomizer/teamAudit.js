@@ -125,21 +125,18 @@ function createTeamAudit() {
             });
         },
 
-        finishTeam({ team, model, ctx, seed, weatherPicks, itemLinkActivations, supportFlexed }) {
+        finishTeam({ team, model, ctx, seed, weatherPicks, itemLinkActivations, supportFlexed, doublesWantsSupport }) {
             if (!cur) return;
             if (weatherPicks && weatherPicks.length) cur.weatherPicks = weatherPicks; // T-135 — abuser rankings
             if (itemLinkActivations && itemLinkActivations.length) cur.itemLinkActivations = itemLinkActivations; // T-133
             const id = model ? resolveIdentity((team || []).map(asPoke), model, ctx, seed) : null;
-            // T-142 r2 — if the emerged identity WANTED a dedicated support (min≥1) but the team fielded
-            // fewer, record the shortfall so the log shows support was wanted-but-DROPPED (no fit even 1
-            // tier down), and whether the budget was flexed 1 tier down to fit one. Mirrors the weather drop.
-            if (id) {
-                const supSlot = combinedStructure(model, id.baseId, id.gimmickIds).find(s => s.role === 'dedicatedSupport');
-                if (supSlot && supSlot.min >= 1) {
-                    const have = (team || []).map(asPoke).filter(p => detectFeatures(p, ctx).has('dedicatedSupport')).length;
-                    if (have < supSlot.min) cur.supportShortfall = { min: supSlot.min, have };
-                    else if (supportFlexed) cur.supportFlexed = true;
-                }
+            // T-142 r3 — the team's up-front doubles plan WANTED a dedicated support (context.doublesWants-
+            // Support) but fielded none → record the shortfall (support DROPPED: no fit even 1 tier down);
+            // or note when it was flexed in 1 tier down. Mirrors the weather-drop transparency.
+            if (doublesWantsSupport) {
+                const have = (team || []).map(asPoke).filter(p => detectFeatures(p, ctx).has('dedicatedSupport')).length;
+                if (have < 1) cur.supportShortfall = { min: 1, have };
+                else if (supportFlexed) cur.supportFlexed = true;
             }
             // Every gimmick the identity/seed WANTED (emergent + seeded), before checking support.
             const candidateGimmicks = Array.from(new Set([
