@@ -155,6 +155,28 @@ Acceptance criteria:
   suite 1111 green. This also unblocks the Drake case: Amoonguss (now OU, Grass) fits his OU slots, so
   the T-142 hard-pick grabs it — no tier-flex needed for the common case.
 
+- **2026-07-15 (owner round 3) — support becomes its own tier dimension (corpus-weighted rating).** Owner:
+  the count model (≥2/≥3 signals) is crude — a good OU attacker that merely LEARNS 2 tools shouldn't be a
+  support. Redesigned per the owner's spec:
+  - **`supportRating`** = Σ (each support tool's corpus-repetition value, CAPPED at 8 so a ubiquitous tool
+    like Intimidate can't dominate) − an **offensive-TIER penalty** (UU 3 / OU 10 / Ubers 16 / …). Penalty
+    keys off the mon's OFFENSIVE tier, not raw stats — so a support with high UNUSED offence (Sinistcha,
+    121 SpA but offensively RU) keeps its value, while a real OU+ attacker is discounted (owner's rule).
+    Points ≈ corpus counts (`SUPPORT_MOVE_POINTS` / `SUPPORT_ABILITY_POINTS`); Protect excluded (universal).
+  - **Support tiers** `{ OU 22, UU 15, RU 11 }` + a **BST viability floor** `{ OU 440, UU 380, RU 320 }` —
+    a frail pre-evo (Smoliv) with a big kit can't be OU support (it dies first); real supports clear it
+    (Whimsicott 480 / Amoonguss 464 / Sinistcha 508 / Cresselia 600).
+  - **New tier DIMENSION + tag:** `tierDoubles = max(offensive, support)`; when support strictly beats the
+    offensive tier, `isSupportDoubles` is set and the viewer shows a **"Support" tag** on the doubles side.
+  - **Calibration (base pokedex):** Sinistcha/Whimsicott/Amoonguss/Farigiraf/Clefable → OU +tag; Cresselia
+    → OU (offensively OU too, untagged); Pheromosa/Landorus-T/Kartana → not support. Corpus: ~29% of DOU
+    teams field NO dedicated support → hyper roll stays 0.25.
+  - Replaces `supportSignals`; the detector/hard-pick/flex/tag all read `isDedicatedSupport` =
+    `supportTierDoubles != null`. Fast suite 1114 green; determinism gates re-running; bundle rebuilt.
+
 ## Outcome
 
 <!-- Filled when closing. -->
+Doubles support is now a full rating + tier dimension (corpus-weighted, offensive-tier-penalised, BST-
+viable), tagged in the viewer, delivered on teams via the up-front roll + hard-pick + 1-tier flex.
+Awaiting owner manual test.

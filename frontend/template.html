@@ -631,6 +631,10 @@
     .tier-duo-role { font-family:var(--obs-font-display); font-size:8px; letter-spacing:var(--obs-tracking);
       text-transform:uppercase; opacity:0.5; }
     .tier-badge-empty { opacity:0.4; }
+    /* T-141 — "Support" tag on the doubles side when support is the mon's dominant doubles identity. */
+    .tier-duo-tag { font-family:var(--obs-font-display); font-size:7px; letter-spacing:var(--obs-tracking);
+      text-transform:uppercase; margin-top:3px; padding:2px 6px; border-radius:3px;
+      background:#2563eb; color:#fff; }
     @media (max-width: 420px) { .tier-duo-side { padding:0 9px; } }
 
     /* ============================================================
@@ -1241,18 +1245,21 @@
     // and a doubles tier (poke.tierDoubles); this ALWAYS shows both, side by side, so the tier choices can
     // be compared at a glance. The role (bulky/…) is shared — it's derived from base stats, so it's the
     // same in both formats — and sits subtly below. Used everywhere a Pokémon's tier is rendered.
-    function tierDuoSide(title, tier) {
+    // T-141 (owner r3) — `tag` is an optional extra badge under the tier (e.g. "Support" on the doubles
+    // side when a Pokémon's support tier is its dominant doubles identity — poke.isSupportDoubles).
+    function tierDuoSide(title, tier, tag) {
       const badge = tier
         ? `<div class="tier-badge" style="background-color: ${tierColorBgs[tier]}; color: ${tierColorFonts[tier]};">${tierNames[tier] || tier}</div>`
         : `<div class="tier-badge tier-badge-empty">—</div>`;
-      return `<div class="tier-duo-side"><div class="tier-duo-title">${title}</div>${badge}</div>`;
+      const tagHtml = tag ? `<div class="tier-duo-tag">${tag}</div>` : '';
+      return `<div class="tier-duo-side"><div class="tier-duo-title">${title}</div>${badge}${tagHtml}</div>`;
     }
     function tierDuoHtml(poke) {
       const s = poke.rating && poke.rating.tier;
       const d = poke.tierDoubles;
       const role = poke.rating && poke.rating.role;
       return `<div class="tier-duo">`
-        + `<div class="tier-duo-sides">${tierDuoSide('Singles', s)}${tierDuoSide('Doubles', d)}</div>`
+        + `<div class="tier-duo-sides">${tierDuoSide('Singles', s)}${tierDuoSide('Doubles', d, poke.isSupportDoubles ? 'Support' : null)}</div>`
         + (role ? `<div class="tier-duo-role">${role}</div>` : '')
         + `</div>`;
     }

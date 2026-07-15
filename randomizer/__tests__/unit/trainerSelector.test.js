@@ -428,8 +428,8 @@ describe('createChooser — T-142 doubles support tier-flex', () => {
     const singles = getArchetypeModel('singles');
     const supportMon = (id, tierD) => ({
         ...makePoke(id, { tier: tierD, types: ['GRASS'] }), tierDoubles: tierD,
-        learnset: [{ level: 1, move: 'MOVE_RAGE_POWDER' }, { level: 1, move: 'MOVE_HELPING_HAND' }], // 2 signals → dedicated
-        teachables: [], baseAttack: 80, baseSpAttack: 80,
+        learnset: [{ level: 1, move: 'MOVE_RAGE_POWDER' }, { level: 1, move: 'MOVE_HELPING_HAND' }, { level: 1, move: 'MOVE_TRICK_ROOM' }], // 3 support tools
+        teachables: [], baseHP: 90, baseAttack: 80, baseDefense: 100, baseSpAttack: 80, baseSpDefense: 100, baseSpeed: 60, // BST 510 — viable support
     });
     const attackerMon = (id, tierD) => ({ ...makePoke(id, { tier: tierD }), tierDoubles: tierD, baseAttack: 150, baseSpAttack: 60 });
 

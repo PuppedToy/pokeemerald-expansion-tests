@@ -18,33 +18,44 @@ mis-favoured in singles. The corpus disagrees sharply with the current output: d
 Out 57% (8%), Rage Powder/Follow Me/Wide Guard/Helping Hand/Icy Wind ≈0% in singles. Support is a
 **defining role** in nearly every corpus doubles archetype.
 
-## 2. The dedicated-support SIGNATURE
+## 2. Support RATING — corpus-weighted, offensive-tier-penalised (owner round 3)
 
-A **dedicated support** = a low-offense mon whose kit is built to enable allies, as opposed to a
-**partial-support attacker** (an attacker that happens to carry Intimidate/a spread debuff — e.g.
-Landorus-T, Tapu Koko, M-Kangaskhan: 29/13/11 corpus appearances, always attacker-first).
+Support is its OWN doubles axis. `supportRating(mon)` = **Σ (each support tool's value) − an
+offensive-tier penalty**, where:
+- **Tool value = corpus repetition, CAPPED.** Each support move/ability is worth ≈ how often it recurs in
+  the 59 DOU 6v6 teams (repetition = meta value — owner), but **capped at 8** so a ubiquitous ability
+  (Intimidate, 43 raw) can't dominate the sum. `SUPPORT_MOVE_POINTS` / `SUPPORT_ABILITY_POINTS` in
+  rating.js hold the corpus counts. **Protect is EXCLUDED** — it's on 56% of ALL mons (attackers too),
+  so it's universal utility, not a support discriminator.
+- **Penalty by OFFENSIVE TIER, not raw stats.** A support with high UNUSED offence (Sinistcha — 121 SpA
+  but offensively RU) keeps its full value; a genuine OU+ attacker is heavily discounted
+  (`SUPPORT_PENALTY_BY_TIER`: UU 3, OU 10, Ubers 16, …). This is the key to the owner's rule: *a good OU
+  attacker is NOT a support just because it can learn a couple of support moves* — its offensive tier
+  eats the points. (Raw-stat penalty was the first try and it wrongly killed Sinistcha.)
 
-`isDedicatedSupport(mon)` — **count-based** (owner round 2): a dedicated support is defined by its KIT,
-not its stats. `supportSignals(mon)` counts the DISTINCT top-tier support categories the species can field
-(redundant tools within a category — Follow Me vs Rage Powder — count once). A mon with **≥2 signals** is
-a dedicated support; a mon with only ONE support tool (Tailwind + 3 attacks) is a half-support ATTACKER
-and NEVER gets the role. **Offence is irrelevant** — Whimsicott (Prankster + Tailwind + Encore), Farigiraf
-(Armor Tail + Trick Room + Helping Hand) and Amoonguss (Rage Powder + Regenerator + Spore) are all
-dedicated support (3 signals) despite real stats. The same `isDedicatedSupport` backs both the rating and
-the `dedicatedSupport` role detector (one definition, no drift).
+`isDedicatedSupport(mon)` = `supportRating ≥ RU bar`. A lone support tool (one 8-point move) is below the
+bar → a half-support attacker, never gets the role. Backs the detector + the hard-pick + the flex.
 
-Signal categories: redirection · Fake Out · Wide/Quick Guard · Tailwind · Trick Room · Helping Hand ·
-disruption (Encore/Taunt/Parting Shot/Perish Song) · spread debuff (Icy Wind/Electroweb/Snarl) · sleep ·
-Intimidate · Prankster · ally ability (Friend Guard/Hospitality/Healer) · Regenerator · priority-block
-(Armor Tail/Dazzling/Queenly Majesty).
+## 3. Support tier + tag
 
-## 3. Support tier by signal count
+`supportRating` maps to its OWN doubles tiers: **`SUPPORT_TIER_THRESHOLDS` = { OU 22, UU 15, RU 11 }**
+(RU > one capped tool, so ~2 tools = RU/UU, a full 3+ kit = OU). Plus a **BST viability floor**
+(`SUPPORT_TIER_MIN_BST` = { OU 440, UU 380, RU 320 }): a support must survive to support, so a frail
+pre-evo (Smoliv) with a big kit is capped down or dropped — real OU supports clear it (Whimsicott 480 /
+Amoonguss 464 / Sinistcha 508 / Cresselia 600). Support is a **new tier dimension**
+(owner): a mon's effective `tierDoubles = max(offensive tier, support tier)`, and when the **support tier
+strictly beats its offensive tier** the mon is flagged **`isSupportDoubles`** — the viewer shows a
+**"Support" tag** on the doubles side (on top of the shared role + tier). So a Whimsicott reads
+*Doubles: OU · Support*, while a Pheromosa (OU offense, only RU support) stays *Doubles: OU* untagged.
 
-Owner rule: **≥3 signals → OU floor; 2 → UU floor**, capped at the top of OU (a support ENABLES the team,
-it isn't a raw Ubers threat — so a super-bulky support doesn't reach Ubers off support alone). Applied in
-`ratePokemonDoubles` after the frailty/passive penalties, before the T-140 BST floor — which still
-overrides for a genuinely huge-BST mon (BST paces the run). Result: Amoonguss/Whimsicott/Farigiraf/
-Sinistcha → OU; a clean 2-signal support → at least UU.
+**Calibration on the base pokedex (seed 777):** Sinistcha 25→OU +tag, Whimsicott 32→OU +tag, Amoonguss
+33→OU +tag, Farigiraf 36→OU +tag, Clefable 40→OU +tag, Cresselia 27→OU (offensively OU too, untagged);
+Pheromosa 8 / Landorus-T 1 / Kartana 5 → not support. Corpus: ~29% of DOU teams field NO dedicated support
+→ the up-front hyper roll (§8) stays at 0.25.
+
+**Earlier (superseded) models:** an additive weighted score with a strong-kit escape hatch, then a
+signal-COUNT (≥2 dedicated / ≥3 OU). Both are replaced by this rating (the count over-fired on attackers
+that merely *learn* 2 tools; the offensive-tier penalty is what the count lacked).
 
 **Phase-6 calibration on the base pokedex (seed 777) — result:**
 - Owner anchor hit: **Sinistcha RU→OU** (rD 7.77). Also Hitmontop RU→OU, Cresselia UU→OU, Amoonguss/

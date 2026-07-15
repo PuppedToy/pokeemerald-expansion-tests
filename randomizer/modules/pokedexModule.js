@@ -181,7 +181,7 @@ async function runPokedexModule(config, baseData = null) {
     // 8. Rate all pokemon (singles + T-097 doubles)
     for (const poke of allPokes) {
         poke.rating = ratePokemon(poke, moves, abilities, tmPool);
-        { const _rd = ratePokemonDoubles(poke, moves, abilities, tmPool, poke.rating.bestMoveset); poke.ratingDoubles = _rd.ratingDoubles; poke.tierDoubles = _rd.tierDoubles; }
+        { const _rd = ratePokemonDoubles(poke, moves, abilities, tmPool, poke.rating.bestMoveset); poke.ratingDoubles = _rd.ratingDoubles; poke.tierDoubles = _rd.tierDoubles; poke.supportTierDoubles = _rd.supportTierDoubles; poke.isSupportDoubles = _rd.isSupportDoubles; }
     }
 
     // 9. Optional rebalance
@@ -200,7 +200,7 @@ async function runPokedexModule(config, baseData = null) {
             if (allPokes[i].log && allPokes[i].log.length) {
                 allPokes[i].baseBST = allPokes[i].baseHP + allPokes[i].baseAttack + allPokes[i].baseDefense + allPokes[i].baseSpAttack + allPokes[i].baseSpDefense + allPokes[i].baseSpeed;
                 allPokes[i].rating = ratePokemon(allPokes[i], moves, abilities, tmPool);
-                { const _rd = ratePokemonDoubles(allPokes[i], moves, abilities, tmPool, allPokes[i].rating.bestMoveset); allPokes[i].ratingDoubles = _rd.ratingDoubles; allPokes[i].tierDoubles = _rd.tierDoubles; }
+                { const _rd = ratePokemonDoubles(allPokes[i], moves, abilities, tmPool, allPokes[i].rating.bestMoveset); allPokes[i].ratingDoubles = _rd.ratingDoubles; allPokes[i].tierDoubles = _rd.tierDoubles; allPokes[i].supportTierDoubles = _rd.supportTierDoubles; allPokes[i].isSupportDoubles = _rd.isSupportDoubles; }
             }
         }
     }

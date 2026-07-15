@@ -10,6 +10,7 @@ const {
     TIER_UBERS,
     TIER_LEGEND,
     TIER_AG,
+    TIER_SEQ,
     TIER_AG_THRESHOLD,
     TIER_LEGEND_THRESHOLD,
     TIER_UBERS_THRESHOLD,
@@ -3608,45 +3609,72 @@ function computeComboBonusDoubles(poke, moves, { offensePower }) {
     return Math.min(bonus, DOUBLES_COMBO.cap);
 }
 
-// ── T-141 — DEDICATED support (owner round 2: count-based) ──────────────────────────────────────────
-// A dedicated support is defined by its KIT, not its stats: a COMBINATION of top-tier support tools
-// (moves and/or abilities), each a distinct "signal". Owner rule: **≥2 distinct signals = a dedicated
-// support** (UU-worthy); **≥3 = OU-worthy**. A mon with only ONE support tool (Tailwind + 3 attacks, or
-// Wide Guard + 3 attacks) is a half-support ATTACKER — it never gets the dedicated-support role. Offense
-// is irrelevant: Whimsicott (Prankster + Tailwind + Encore), Farigiraf (Armor Tail + Trick Room + Helping
-// Hand), Amoonguss (Rage Powder + Regenerator + Spore) are all dedicated support despite real stats.
-const SUPPORT_SLEEP_MOVES = ['MOVE_SPORE', 'MOVE_SLEEP_POWDER', 'MOVE_HYPNOSIS', 'MOVE_LOVELY_KISS', 'MOVE_DARK_VOID', 'MOVE_YAWN', 'MOVE_GRASS_WHISTLE', 'MOVE_SING'];
-// Each entry is ONE support signal. Redundant tools WITHIN a category (Follow Me vs Rage Powder) count
-// once; distinct-purpose tools (Tailwind vs Trick Room vs Encore) are separate signals.
-const SUPPORT_SIGNAL_CATEGORIES = [
-    { moves: ['MOVE_FOLLOW_ME', 'MOVE_RAGE_POWDER'], abils: ['LIGHTNING_ROD', 'STORM_DRAIN'] }, // redirection
-    { moves: ['MOVE_FAKE_OUT'] },                                                                // Fake Out
-    { moves: ['MOVE_WIDE_GUARD', 'MOVE_QUICK_GUARD'] },                                          // spread / priority guard
-    { moves: ['MOVE_TAILWIND'] },                                                                // Tailwind
-    { moves: ['MOVE_TRICK_ROOM'] },                                                              // Trick Room
-    { moves: ['MOVE_HELPING_HAND'] },                                                            // Helping Hand
-    { moves: ['MOVE_ENCORE', 'MOVE_TAUNT', 'MOVE_PARTING_SHOT', 'MOVE_PERISH_SONG'] },           // disruption
-    { moves: ['MOVE_ICY_WIND', 'MOVE_ELECTROWEB', 'MOVE_SNARL'] },                               // spread speed / atk debuff
-    { moves: SUPPORT_SLEEP_MOVES },                                                              // sleep control
-    { abils: ['INTIMIDATE'] },                                                                   // Intimidate
-    { abils: ['PRANKSTER'] },                                                                    // Prankster
-    { abils: ['FRIEND_GUARD', 'HOSPITALITY', 'HEALER'] },                                        // ally-support ability
-    { abils: ['REGENERATOR'] },                                                                  // repeatable-pivot longevity
-    { abils: ['ARMOR_TAIL', 'DAZZLING', 'QUEENLY_MAJESTY'] },                                    // priority block
-];
-// The count of DISTINCT top-tier support signals the species can field — its "support depth".
-function supportSignals(poke) {
+// ── T-141 (owner round 3) — DOUBLES support RATING + its own tier dimension ─────────────────────────
+// Support is its OWN doubles axis (like the offensive tier). A mon's support value = the sum of its
+// support tools each valued by how often it RECURS in the DOU 6v6 corpus (repetition = meta value, owner),
+// each tool CAPPED so no single ubiquitous ability (Intimidate) dominates, MINUS a penalty for the mon's
+// own offense (a strong attacker that carries a support tool isn't a dedicated support). The summed rating
+// maps to its own support RU/UU/OU thresholds. When a mon's support tier beats its offensive tier, support
+// is its identity → it's tagged. Protect is EXCLUDED (universal utility, on 56% of ALL mons incl.
+// attackers — not a support discriminator). Points ≈ corpus occurrences (docs/research/doubles-support.md §3).
+const SUPPORT_MOVE_POINTS = {
+    MOVE_FAKE_OUT: 37, MOVE_TRICK_ROOM: 32, MOVE_TAILWIND: 30, MOVE_SPORE: 17, MOVE_TAUNT: 16,
+    MOVE_RAGE_POWDER: 14, MOVE_WILL_O_WISP: 11, MOVE_THUNDER_WAVE: 11, MOVE_HELPING_HAND: 9,
+    MOVE_WIDE_GUARD: 8, MOVE_ICY_WIND: 8, MOVE_PERISH_SONG: 8, MOVE_HEAL_PULSE: 7, MOVE_ELECTROWEB: 6,
+    MOVE_FOLLOW_ME: 5, MOVE_QUICK_GUARD: 5, MOVE_LIGHT_SCREEN: 5, MOVE_PARTING_SHOT: 5, MOVE_WISH: 5,
+    MOVE_ENCORE: 4, MOVE_SLEEP_POWDER: 4, MOVE_REFLECT: 4, MOVE_AURORA_VEIL: 4, MOVE_DECORATE: 4,
+    MOVE_SNARL: 4, MOVE_COACHING: 3, MOVE_INSTRUCT: 3, MOVE_DISABLE: 3, MOVE_HYPNOSIS: 3, MOVE_YAWN: 3,
+    MOVE_POLLEN_PUFF: 3, MOVE_NUZZLE: 3, MOVE_FAKE_TEARS: 3, MOVE_STRUGGLE_BUG: 3, MOVE_AROMATHERAPY: 3,
+    MOVE_HEAL_BELL: 3, MOVE_ALLY_SWITCH: 2, MOVE_AFTER_YOU: 2, MOVE_SKILL_SWAP: 2, MOVE_FEINT: 2,
+    MOVE_LIFE_DEW: 5, MOVE_LOVELY_KISS: 3, MOVE_GRASS_WHISTLE: 2, MOVE_SING: 2,
+};
+const SUPPORT_ABILITY_POINTS = {
+    INTIMIDATE: 43, REGENERATOR: 14, PRANKSTER: 11, ELECTRIC_SURGE: 10, MISTY_SURGE: 8, FRIEND_GUARD: 8,
+    HOSPITALITY: 8, GRASSY_SURGE: 7, PSYCHIC_SURGE: 6, ARMOR_TAIL: 6, STORM_DRAIN: 5, LIGHTNING_ROD: 4,
+    WATER_ABSORB: 4, HEALER: 4, DAZZLING: 4, QUEENLY_MAJESTY: 4, TELEPATHY: 3, AROMA_VEIL: 3,
+    SWEET_VEIL: 3, VOLT_ABSORB: 2, SAP_SIPPER: 2,
+};
+const SUPPORT_TOOL_CAP = 8;              // per-tool cap — a ubiquitous tool (Intimidate 43) can't dominate the sum
+// Penalty by the mon's OFFENSIVE doubles tier (its real threat level), NOT raw stats: a support with high
+// UNUSED offence (Sinistcha — 121 SpA but offensively RU) keeps its full support value, while a genuine
+// OU+ attacker's support value is heavily discounted (owner: a good OU attacker is NOT a support just
+// because it can learn a couple of support moves). RU-or-weaker offence → no penalty.
+const SUPPORT_PENALTY_BY_TIER = { [TIER_UU]: 3, [TIER_OU]: 10, [TIER_UBERS]: 16, [TIER_LEGEND]: 22, [TIER_AG]: 28 };
+// The DOUBLES support tiers — thresholds on the (capped-points − offensive-tier-penalty) scale, calibrated
+// so the corpus support exemplars land OU and pure attackers fall out (docs/research/doubles-support.md §3).
+// RU bar > one capped tool (8), so a lone support move on an attacker (half-support) is NOT a support;
+// ~2 tools → RU/UU, a full 3+ kit → OU (owner: only a real support COMBINATION counts).
+const SUPPORT_TIER_THRESHOLDS = { OU: 22, UU: 15, RU: 11 };
+// A support must also be VIABLE — a frail pre-evo (Smoliv) dies before it supports, no matter its kit. So
+// each support tier has a minimum BST (real OU supports: Whimsicott 480 / Amoonguss 464 / Sinistcha 508 /
+// Cresselia 600); a low-BST mon caps out at the tier its BST allows, or drops out entirely.
+const SUPPORT_TIER_MIN_BST = { OU: 440, UU: 380, RU: 320 };
+
+// The species' doubles SUPPORT rating: Σ capped tool points − offensive-tier penalty (never below 0).
+// `offensiveTier` is the mon's pure offensive doubles tier; falls back to tierFromRatingDoubles(poke.
+// ratingDoubles) (set at rating time) so detectors/selectors can call it with just the poke.
+function supportRating(poke, offensiveTier) {
     const abils = poke.parsedAbilities || [];
     const learnable = new Set([...(poke.learnset || []).map(l => l.move), ...(poke.teachables || [])]);
-    let n = 0;
-    for (const c of SUPPORT_SIGNAL_CATEGORIES) {
-        if ((c.moves && c.moves.some(m => learnable.has(m))) || (c.abils && c.abils.some(a => abils.includes(a)))) n++;
-    }
-    return n;
+    let pts = 0;
+    for (const mv in SUPPORT_MOVE_POINTS) if (learnable.has(mv)) pts += Math.min(SUPPORT_MOVE_POINTS[mv], SUPPORT_TOOL_CAP);
+    for (const a of abils) if (SUPPORT_ABILITY_POINTS[a]) pts += Math.min(SUPPORT_ABILITY_POINTS[a], SUPPORT_TOOL_CAP);
+    const offT = offensiveTier || (typeof poke.ratingDoubles === 'number' ? tierFromRatingDoubles(poke.ratingDoubles) : null);
+    return Math.max(0, pts - (SUPPORT_PENALTY_BY_TIER[offT] || 0));
 }
-const SUPPORT_MIN_SIGNALS = 2;   // owner: ≥2 signals = dedicated support; a 1-signal attacker is half-support
-const SUPPORT_OU_SIGNALS = 3;    // owner: ≥3 signals = OU-worthy
-function isDedicatedSupport(poke) { return supportSignals(poke) >= SUPPORT_MIN_SIGNALS; }
+// The support TIER (OU/UU/RU) or null — the highest tier where BOTH the rating clears the threshold AND
+// the BST clears the viability minimum (so a frail pre-evo with a big kit is capped down, or dropped).
+function supportTierDoubles(poke, offensiveTier) {
+    const r = supportRating(poke, offensiveTier);
+    const bst = (poke.baseHP || 0) + (poke.baseAttack || 0) + (poke.baseDefense || 0) + (poke.baseSpAttack || 0) + (poke.baseSpDefense || 0) + (poke.baseSpeed || 0);
+    if (r >= SUPPORT_TIER_THRESHOLDS.OU && bst >= SUPPORT_TIER_MIN_BST.OU) return TIER_OU;
+    if (r >= SUPPORT_TIER_THRESHOLDS.UU && bst >= SUPPORT_TIER_MIN_BST.UU) return TIER_UU;
+    if (r >= SUPPORT_TIER_THRESHOLDS.RU && bst >= SUPPORT_TIER_MIN_BST.RU) return TIER_RU;
+    return null;
+}
+// A mon is a dedicated support iff it earns a support tier (clears both the rating AND the BST viability
+// bar for at least RU) — owner: only a real, viable support kit qualifies.
+function isDedicatedSupport(poke) { return supportTierDoubles(poke) != null; }
 
 // T-097 tuning (owner ✔): doubles punishes FRAILTY harder (a frail mon is folded by spread damage) and does
 // not reward a PASSIVE wall (bulk with no offence and no support role isn't a doubles threat).
@@ -3705,15 +3733,6 @@ function ratePokemonDoubles(poke, moves, abilities, tmPool, moveset = null) {
     // offence and no support role isn't a doubles threat).
     if (defensePower < DBL_FRAILTY_DEF) ratingDoubles -= (DBL_FRAILTY_DEF - defensePower) * DBL_FRAILTY_FACTOR;
     if (offensePower < DBL_PASSIVE_OFF && combo < DBL_PASSIVE_COMBO) ratingDoubles -= DBL_PASSIVE_PENALTY;
-    // T-141 (owner r2) — DEDICATED support tier by signal COUNT: ≥3 top-tier support signals → OU floor,
-    // 2 → UU floor (owner: "2 = UU automatically, 3+ = OU"). Capped at the top of OU — a support ENABLES
-    // the team, it isn't a raw Ubers threat (so a super-bulky support doesn't reach Ubers off support
-    // alone). The T-140 BST floor below still overrides for a genuinely huge-BST mon (BST paces the run).
-    const supSig = supportSignals(poke);
-    if (supSig >= SUPPORT_MIN_SIGNALS) {
-        const floor = supSig >= SUPPORT_OU_SIGNALS ? DOUBLES_TIER_THRESHOLDS.OU : DOUBLES_TIER_THRESHOLDS.UU;
-        ratingDoubles = Math.min(Math.max(ratingDoubles, floor), DOUBLES_TIER_THRESHOLDS.UBERS - 0.05);
-    }
 
     // T-140 — BST floor (parity with the singles rater): raw BST guarantees a minimum tier, so BST keeps
     // pacing the run in doubles too. Same format-independent BST cutoffs as singles; the DOUBLES tier
@@ -3737,7 +3756,19 @@ function ratePokemonDoubles(poke, moves, abilities, tmPool, moveset = null) {
     if (isStoneMega && rawBST >= MEGA_UBERS_BST_THRESHOLD) floorTo(DT.UBERS);
     if (rawBST >= (isStoneMega ? MEGA_AG_BST_THRESHOLD : AG_BST_THRESHOLD) || poke.parsedAbilities.includes('POWER_CONSTRUCT')) floorTo(DT.AG);
 
-    return { ratingDoubles, tierDoubles: tierFromRatingDoubles(ratingDoubles), role };
+    // T-141 (owner r3) — SUPPORT is its own doubles axis. The mon is worth the HIGHER of its offensive and
+    // support tiers; when support strictly beats offense, support is its identity → tagged (the viewer shows
+    // a "support" tag on top of the role/tier). teambuilding uses the effective tierDoubles.
+    const offensiveTier = tierFromRatingDoubles(ratingDoubles);
+    const supTier = supportTierDoubles(poke, offensiveTier);
+    const supportDominant = supTier != null && TIER_SEQ.indexOf(supTier) > TIER_SEQ.indexOf(offensiveTier);
+    return {
+        ratingDoubles,
+        tierDoubles: supportDominant ? supTier : offensiveTier,
+        role,
+        supportTierDoubles: supTier,
+        isSupportDoubles: supportDominant,
+    };
 }
 
 // T-111 — the per-level DOUBLES rating (mirror of rateContextual). `singlesMoveset` is the singles
@@ -3754,7 +3785,8 @@ module.exports = {
     ratePokemon,
     ratePokemonDoubles,
     rateAbilitySingles,
-    supportSignals,
+    supportRating,
+    supportTierDoubles,
     isDedicatedSupport,
     bstRatingDoubles,
     computeComboBonusDoubles,
