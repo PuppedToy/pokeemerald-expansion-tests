@@ -61,6 +61,23 @@ Acceptance criteria:
     redirector — correctly no redirection move.)
   - **Verified:** fast suite 1110 green; determinism gates re-running (singles byte-identical expected).
 
+- **2026-07-15 (owner round 2) — classification fix + tier-flex + drop-log.** Owner ran run-2709645655
+  (2): Drake unchanged. Root cause: Drake's slots are all OU/UBERS but the best Grass support (Amoonguss)
+  was UU — below the gate — so the hard-pick had no eligible candidate. Two fixes:
+  1. **Classification (T-141 r2):** Amoonguss & co. now reach OU (Regenerator + sleep credits + support
+     tier cap) — so a correctly-rated support fits the boss's OU slots and the hard-pick grabs it.
+  2. **Tier-flex + drop-log (this task):** doubles support is intentionally a tier below its attackers, so
+     when the team still WANTS a dedicated support (identity min unmet) and none is in-tier, the
+     `absoluteTier` filter (`trainerSelector`) now admits `dedicatedSupport` mons from **exactly one tier
+     down** (owner-validated: 1 down only, then drop). Only the first (min) support flexes; a 2nd
+     out-of-budget support is left to drop. The audit logs it: "support admitted 1 tier down" when it
+     fits, or "support WANTED but DROPPED: no fit even one tier down" otherwise. Singles byte-identical
+     (doubles-only). `resolveIdentity`/`crystallize` are rng-free so calling them in the selector doesn't
+     perturb the per-slot stream.
+  - +4 tier-flex tests (selector) + the classification tests. Fast suite 1115 green; determinism gates
+    re-running.
+
 ## Outcome
-Doubles support archetypes now FIELD a dedicated support (hard-pick) that actually carries its support
-move (refine). Awaiting owner manual test.
+Doubles support archetypes now FIELD a dedicated support: correctly classified (Amoonguss→OU), hard-picked
+when in-tier, flexed one tier down when the boss out-tiers it, and cleanly dropped-with-log otherwise.
+Awaiting owner manual test.

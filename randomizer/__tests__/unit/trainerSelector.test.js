@@ -421,3 +421,60 @@ describe('createChooser — TRAINER_POKE_ENCOUNTER + tryMega', () => {
         expect(result).toBeUndefined();
     });
 });
+
+describe('createChooser — T-142 doubles support tier-flex', () => {
+    const { getArchetypeModel } = require('../../archetypes');
+    const doubles = getArchetypeModel('doubles');
+    const singles = getArchetypeModel('singles');
+    const supportMon = (id, tierD) => ({
+        ...makePoke(id, { tier: tierD, types: ['GRASS'] }), tierDoubles: tierD,
+        learnset: [{ level: 1, move: 'MOVE_RAGE_POWDER' }], teachables: [], baseAttack: 80, baseSpAttack: 80,
+    });
+    const attackerMon = (id, tierD) => ({ ...makePoke(id, { tier: tierD }), tierDoubles: tierD, baseAttack: 150, baseSpAttack: 60 });
+
+    test('a doubles team that still wants a support admits an OU support onto an UBERS slot (1 tier down)', () => {
+        const support = supportMon('OUSUPP', 'OU');
+        const attacker = attackerMon('UBATK', 'UBERS');
+        let captured = null;
+        const chooser = makeChooser([support, attacker], { ...makeTrainer(76), battleType: 'doubles' },
+            { team: [], foundMega: false, storedIds: {}, archetypeSeed: { base: 'redirection_support' } },
+            { model: doubles, moves: {}, pickCandidate: (list) => { captured = list; return list.find(p => p.id === 'OUSUPP') || list[0]; } });
+        const res = chooser({ absoluteTier: ['UBERS'] });
+        expect(captured.map(p => p.id)).toContain('OUSUPP'); // flexed into the pool from 1 tier down
+        expect(res.id).toBe('OUSUPP');
+    });
+
+    test('the flex is 1 tier only — a UU support is NOT admitted to an UBERS slot (2 down → dropped)', () => {
+        const support = supportMon('UUSUPP', 'UU');
+        const attacker = attackerMon('UBATK', 'UBERS');
+        let captured = null;
+        const chooser = makeChooser([support, attacker], { ...makeTrainer(76), battleType: 'doubles' },
+            { team: [], foundMega: false, storedIds: {}, archetypeSeed: { base: 'redirection_support' } },
+            { model: doubles, moves: {}, pickCandidate: (list) => { captured = list; return list[0]; } });
+        chooser({ absoluteTier: ['UBERS'] });
+        expect(captured.map(p => p.id)).not.toContain('UUSUPP');
+    });
+
+    test('no flex once the team already has a dedicated support (min satisfied)', () => {
+        const onTeam = supportMon('TEAMSUPP', 'OU');
+        const support = supportMon('OUSUPP', 'OU');
+        const attacker = attackerMon('UBATK', 'UBERS');
+        let captured = null;
+        const chooser = makeChooser([support, attacker], { ...makeTrainer(76), battleType: 'doubles' },
+            { team: [{ pokemon: onTeam }], foundMega: false, storedIds: {}, archetypeSeed: { base: 'redirection_support' } },
+            { model: doubles, moves: {}, pickCandidate: (list) => { captured = list; return list[0]; } });
+        chooser({ absoluteTier: ['UBERS'] });
+        expect(captured.map(p => p.id)).not.toContain('OUSUPP'); // need already met → no flex
+    });
+
+    test('SINGLES is unaffected — no tier-flex (an OU support stays out of an UBERS singles slot)', () => {
+        const support = supportMon('OUSUPP', 'OU');
+        const attacker = attackerMon('UBATK', 'UBERS');
+        let captured = null;
+        const chooser = makeChooser([support, attacker], makeTrainer(76),
+            { team: [], foundMega: false, storedIds: {}, archetypeSeed: { base: 'balance' } },
+            { model: singles, moves: {}, pickCandidate: (list) => { captured = list; return list[0]; } });
+        chooser({ absoluteTier: ['UBERS'] });
+        expect(captured.map(p => p.id)).not.toContain('OUSUPP');
+    });
+});

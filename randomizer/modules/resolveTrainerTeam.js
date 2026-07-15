@@ -172,6 +172,7 @@ function createTeamResolver(deps) {
         });
         const choosePokemonFromDefinition = createChooser(pokemonList, trainer, context, {
             starters, staticRewards, replacementLog, megaReplacementLog, isSuperEffective, pickCandidate,
+            model: archetypeModel, moves, // T-142 r2 — doubles support tier-flex
         });
         teamDefs.forEach((trainerMonDefinition, slotIndex) => {
             if (baseRngSeed !== null) {
@@ -487,7 +488,7 @@ function createTeamResolver(deps) {
             GIMMICK_SPEC[seedGid].ensureSetter(team, setterCount);
         }
 
-        attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed, weatherPicks: context.weatherPicks, itemLinkActivations: context.itemLinkActivations });
+        attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed, weatherPicks: context.weatherPicks, itemLinkActivations: context.itemLinkActivations, supportFlexed: context.supportFlexed });
         return team;
     }
 

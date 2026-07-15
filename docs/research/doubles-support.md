@@ -130,3 +130,20 @@ trick_room) already pull a redirector/protector via their gimmick layer.
 4. `dedicatedSupport` detector + archetype slots + `redirection_support` base (§5, §6).
 5. Engine bug fixes + partial-support move layer wiring (§6).
 6. Calibration pass against §3 anchors; regenerate a mixed run; owner review.
+
+## 8. Delivery (T-142) — how a support actually reaches the team
+
+Classifying a support correctly (§3) isn't enough; the engine must FIELD it, like the gimmick setters:
+- **Hard-pick** (`archetypePicker`): when the emerged identity carries a `dedicatedSupport` slot (min≥1)
+  and the team lacks one, restrict the pick to `DETECTORS.dedicatedSupport` candidates (mirrors the
+  gimmick setter hard-pick). The move-refine then injects the support move (Rage Powder / Follow Me / …).
+- **Tier-flex — one tier down** (`trainerSelector`): doubles support is intentionally a tier below the
+  attackers it enables (a UU/OU support on an Ubers team — the VGC norm). So when the team still wants a
+  support and none sits in the boss's slot tier, the `absoluteTier` filter admits `dedicatedSupport` mons
+  from **exactly one tier down**. Only the first (min) support flexes; a 2nd out-of-budget support drops.
+  Owner-validated: 1 tier only, then drop.
+- **Drop + log**: if no support fits even one tier down, the support role is dropped and the decision log
+  says so (and notes when a support WAS flexed in) — mirroring the weather-drop transparency.
+- These are doubles-only (the `dedicatedSupport` slot exists only in `doubles.json`), so singles stay
+  byte-identical. `resolveIdentity`/`crystallize` are rng-free, so the selector's flex check doesn't
+  perturb the per-slot RNG stream.

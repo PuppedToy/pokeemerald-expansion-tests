@@ -11,10 +11,23 @@ const {
 } = require('../constants');
 const { TIER_SEQ } = require('../constants');
 const { sample, checkValidEvo, getFamilyGroup, hasValidMega, devolveToLevel } = require('./utils');
+// T-142 r2 — the doubles support tier-flex needs the emerged identity (does the team still want a
+// dedicated support?) and the support detector. resolveIdentity/crystallize are pure (no rng), so
+// calling them here doesn't perturb the per-slot RNG stream.
+const { resolveIdentity } = require('./archetypePicker');
+const { combinedStructure } = require('./archetypeFit');
+const { DETECTORS } = require('./featureDetectors');
 
 function tiersUpTo(maxTier) {
     const idx = TIER_SEQ.indexOf(maxTier);
     return idx === -1 ? [maxTier] : TIER_SEQ.slice(0, idx + 1);
+}
+// The tiers exactly ONE step below each tier in `tiers` (TIER_SEQ is weakest→strongest, so one-below =
+// index-1). Used to admit a slightly-weaker dedicated support onto a high-tier doubles team (T-142 r2).
+function tiersOneBelow(tiers) {
+    const out = [];
+    for (const t of tiers) { const i = TIER_SEQ.indexOf(t); if (i > 0) out.push(TIER_SEQ[i - 1]); }
+    return out;
 }
 
 const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
@@ -55,6 +68,8 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         // slot. Defaults to a uniform sample (today's behaviour); the engine injects an archetype-
         // biased picker that degrades to this same sample at low sophistication / no identity.
         pickCandidate = (list) => sample(list),
+        model = null,          // T-142 r2 — the archetype model, for the doubles support tier-flex
+        moves = {},            // detector ctx (support detection reads move metadata via ctx.moves)
     } = opts;
 
     const canLearnMove = (pokemon, moveToLearn) =>
@@ -105,6 +120,20 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         } while (possibleEvolutions.length > 0);
         return current;
     };
+
+    // T-142 r2 — how many more dedicated supports the team's emerged doubles identity still wants
+    // (its dedicatedSupport slot `min` minus the supports already on the team). 0 when no identity, no
+    // support slot, or the min is already met. Favourite-ace slots don't count toward the support quota.
+    function dedicatedSupportNeed(team, mdl) {
+        const members = team || [];
+        const identity = resolveIdentity(members.map(m => (m && m.pokemon) ? m.pokemon : m), mdl, { moves }, context.archetypeSeed || null);
+        if (!identity) return 0;
+        const structure = combinedStructure(mdl, identity.baseId, identity.gimmickIds);
+        const slot = structure.find(s => s.role === 'dedicatedSupport');
+        if (!slot || slot.min < 1) return 0;
+        const have = members.filter(m => !m.__favourite && DETECTORS.dedicatedSupport((m && m.pokemon) || m)).length;
+        return slot.min - have;
+    }
 
     function choosePokemonFromDefinition(trainerMonDefinition) {
         const { team, foundMega, storedIds } = context;
@@ -189,7 +218,23 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
             pokemonLooseList = pokemonLooseList.filter(p => !p.evolutionData.isMega);
         }
         if (trainerMonDefinition.absoluteTier) {
-            pokemonLooseList = pokemonLooseList.filter(p => trainerMonDefinition.absoluteTier.includes(pokeTier(p)));
+            const before = pokemonLooseList;
+            let inTier = before.filter(p => trainerMonDefinition.absoluteTier.includes(pokeTier(p)));
+            // T-142 r2 — doubles support tier-flex (owner-validated): doubles support mons are intentionally
+            // a tier below the attackers they enable (a UU/OU support on an Ubers team). If the team STILL
+            // wants a dedicated support (identity's dedicatedSupport min unmet) and none is in-tier, admit
+            // dedicatedSupport mons from exactly ONE tier down — they still pass the later type/restriction
+            // filters. Only the FIRST support is flexed in (min, not max); a 2nd out-of-budget support is
+            // left to drop. Singles unaffected (doublesFmt=false).
+            if (doublesFmt && model && !inTier.some(p => DETECTORS.dedicatedSupport(p))) {
+                const need = dedicatedSupportNeed(team, model);
+                if (need > 0) {
+                    const oneDown = tiersOneBelow(trainerMonDefinition.absoluteTier);
+                    const flexed = before.filter(p => oneDown.includes(pokeTier(p)) && DETECTORS.dedicatedSupport(p));
+                    if (flexed.length) { inTier = inTier.concat(flexed); context.supportFlexed = true; }
+                }
+            }
+            pokemonLooseList = inTier;
         }
         if (trainerMonDefinition.maxBaseTier) {
             const allowedBaseTiers = tiersUpTo(trainerMonDefinition.maxBaseTier);

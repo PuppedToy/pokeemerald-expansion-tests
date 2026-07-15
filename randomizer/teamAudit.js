@@ -125,11 +125,22 @@ function createTeamAudit() {
             });
         },
 
-        finishTeam({ team, model, ctx, seed, weatherPicks, itemLinkActivations }) {
+        finishTeam({ team, model, ctx, seed, weatherPicks, itemLinkActivations, supportFlexed }) {
             if (!cur) return;
             if (weatherPicks && weatherPicks.length) cur.weatherPicks = weatherPicks; // T-135 — abuser rankings
             if (itemLinkActivations && itemLinkActivations.length) cur.itemLinkActivations = itemLinkActivations; // T-133
             const id = model ? resolveIdentity((team || []).map(asPoke), model, ctx, seed) : null;
+            // T-142 r2 — if the emerged identity WANTED a dedicated support (min≥1) but the team fielded
+            // fewer, record the shortfall so the log shows support was wanted-but-DROPPED (no fit even 1
+            // tier down), and whether the budget was flexed 1 tier down to fit one. Mirrors the weather drop.
+            if (id) {
+                const supSlot = combinedStructure(model, id.baseId, id.gimmickIds).find(s => s.role === 'dedicatedSupport');
+                if (supSlot && supSlot.min >= 1) {
+                    const have = (team || []).map(asPoke).filter(p => detectFeatures(p, ctx).has('dedicatedSupport')).length;
+                    if (have < supSlot.min) cur.supportShortfall = { min: supSlot.min, have };
+                    else if (supportFlexed) cur.supportFlexed = true;
+                }
+            }
             // Every gimmick the identity/seed WANTED (emergent + seeded), before checking support.
             const candidateGimmicks = Array.from(new Set([
                 ...(id && id.gimmickIds ? id.gimmickIds : []),
@@ -232,6 +243,14 @@ function renderTeamAuditText(teams, { engineThreshold = BIAS_MIN_SOPH } = {}) {
         if (t.emergentWeatherDropped) {
             const d = t.emergentWeatherDropped;
             lines.push(`  → ${d.subtype} weather EMERGED (a setter was rolled) but was DROPPED: only ${d.abusers} abuser(s) buildable within the team, needs ${d.required}. Kept as a normal team.`);
+        }
+        // T-142 r2 — dedicated-support delivery (doubles): flexed in one tier down, or wanted-but-dropped.
+        if (t.supportFlexed) {
+            lines.push(`  → dedicated support admitted 1 tier below the team's budget (doubles support is intentionally lower-tier than its attackers).`);
+        }
+        if (t.supportShortfall) {
+            const d = t.supportShortfall;
+            lines.push(`  → dedicated support WANTED (min ${d.min}) but only ${d.have} fielded: no support fit the tier budget, even one tier down. Support role DROPPED.`);
         }
         // Slots are listed regardless of the archetype threshold: continuity provenance (inherited /
         // devolved) matters most at the low-level EARLY appearances of a recurring character (T-106).
