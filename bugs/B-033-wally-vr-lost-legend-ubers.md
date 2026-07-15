@@ -1,12 +1,12 @@
 ---
 id: B-033
 title: Wally Victory Road lost its legend + ubers aces (backwards-generation regression)
-status: open
+status: fixed
 severity: major
 created: 2026-07-16
 updated: 2026-07-16
 found-in: 0.8.0
-fixed-in:
+fixed-in: 0.8.0
 regression-test: randomizer/__tests__/unit/wallyContinuity.test.js
 links: [T-106, T-124]
 ---
