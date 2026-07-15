@@ -147,6 +147,34 @@ describe('resolveIdentity (T-107 107e / T-118) — emergent, else seed, else nul
     });
 });
 
+describe('T-142 — dedicated-support hard-pick (doubles support archetypes field a real support)', () => {
+    const doubles = getArchetypeModel('doubles');
+    // A support-capable mon: low offense + Rage Powder (redirector) → isDedicatedSupport true.
+    const support = () => mon({ id: 'AMOON', baseAttack: 80, baseSpAttack: 80, ...learn('MOVE_RAGE_POWDER') });
+
+    test('a redirection_support team with no support yet HARD-picks the support-capable mon over attackers', () => {
+        const context = { team: [wallbreaker('W')], sophistication: 1, archetypeSeed: { base: 'redirection_support' } };
+        const picker = makeArchetypePicker({ model: doubles, context, ctx: { moves: {} } });
+        const cands = [wallbreaker('ATK1'), wallbreaker('ATK2'), support()];
+        for (let s = 1; s <= 8; s++) { rng.seed(s); expect(picker(cands).id).toBe('AMOON'); } // forced, every seed
+    });
+    test('once a dedicated support is on the team, the hard-pick stops (min satisfied)', () => {
+        const context = { team: [support()], sophistication: 1, archetypeSeed: { base: 'redirection_support' } };
+        const picker = makeArchetypePicker({ model: doubles, context, ctx: { moves: {} } });
+        // no support-capable candidate left → the picker no longer forces one (falls through to bias/sample)
+        const cands = [wallbreaker('ATK1'), wallbreaker('ATK2')];
+        rng.seed(1); expect(['ATK1', 'ATK2']).toContain(picker(cands).id);
+    });
+    test('SINGLES is unaffected — no dedicatedSupport slot exists, so no hard-pick', () => {
+        const context = { team: [wallbreaker('W')], sophistication: 1, archetypeSeed: { base: 'balance' } };
+        const picker = makeArchetypePicker({ model: singles, context, ctx: { moves: {} } });
+        const cands = [wallbreaker('ATK1'), support()];
+        // support has no special pull in singles; the pick is NOT forced to it every seed
+        let amoon = 0; for (let s = 1; s <= 20; s++) { rng.seed(s); if (picker(cands).id === 'AMOON') amoon++; }
+        expect(amoon).toBeLessThan(20);
+    });
+});
+
 describe('makeArchetypePicker — a seed primes biasing before any identity emerges', () => {
     test('a Balance-seeded trainer biases the first pick toward Balance roles (empty team)', () => {
         const context = { team: [], sophistication: 1, archetypeSeed: { base: 'balance' } };

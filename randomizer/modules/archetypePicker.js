@@ -22,6 +22,7 @@ const {
     WEATHER_SUBTYPE_BY_SETTER, SETTERS_BY_SUBTYPE, WEATHER_REQUIRED_ABUSERS, WEATHER_ABUSE_THRESHOLD, WX_ABUSE_RATING,
 } = require('./weatherConstants');
 const { weatherAbuseScore, weatherAbuseRating, weatherAbuseBreakdown, GIMMICK_SPEC } = require('./gimmickPlan');
+const { DETECTORS } = require('./featureDetectors'); // T-142 — hard-pick a dedicated-support-capable mon
 
 const BIAS_MIN_SOPH = 0.15;   // below this sophistication, no bias (early-game = "a pile of mons")
 const IDENTITY_FIT = 0.5;     // the top base archetype recipe must fit this well before biasing (T-118)
@@ -240,6 +241,26 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
             // slow-strong abusers — mirrors the old T-124 slow-mon bias.
             if (gid === 'trick_room') {
                 candidates.forEach((c, i) => { if ((c.baseSpeed || 999) <= TR_SLOW_SPEED) { weights[i] *= TR_SLOW_FACTOR; biased = true; } });
+            }
+        }
+        // T-142 — DEDICATED SUPPORT is make-or-break for doubles support archetypes (redirection_support,
+        // or any base carrying a dedicatedSupport slot). A soft weight can't secure a rare redirector/
+        // support mon across a big tier pool (Drake crystallised redirection_support yet fielded zero
+        // redirectors). So — exactly like a gimmick setter — HARD-pick a support-CAPABLE mon when the
+        // identity wants one and the team lacks it; the move-refine (archetypeRefine) then injects its
+        // support move. Runs after the gimmick hard-picks (they return earlier when they fire). Doubles-only
+        // (the slot exists only in doubles.json) so singles stay byte-identical.
+        if (doubles && identity) {
+            const supStructure = combinedStructure(model, identity.baseId, identity.gimmickIds);
+            const supSlot = supStructure.find(s => s.role === 'dedicatedSupport');
+            if (supSlot && supSlot.min >= 1) {
+                const teamMembers = (context && context.team) || [];
+                const have = teamMembers.filter(m => !m.__favourite && DETECTORS.dedicatedSupport((m && m.pokemon) || m)).length;
+                if (have < supSlot.min) {
+                    const idx = [];
+                    candidates.forEach((c, i) => { if (DETECTORS.dedicatedSupport(c)) idx.push(i); });
+                    if (idx.length) return weightedSampleOne(idx.map(i => candidates[i]), idx.map(i => weights[i]));
+                }
             }
         }
         if (!biased) return sample(candidates); // nothing to pull toward → byte-identical

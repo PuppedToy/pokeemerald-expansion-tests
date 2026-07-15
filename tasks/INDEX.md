@@ -145,3 +145,4 @@
 | [T-139](T-139-weather-room-coexistence.md) | Weather + Trick Room (half) coexistence on one team | proposed | 0.9.0 | 2026-07-14 |
 | [T-140](T-140-doubles-bst-floor-parity.md) | Doubles tier — apply the BST floor (parity with singles) | in-progress | 0.8.0 | 2026-07-15 |
 | [T-141](T-141-doubles-support-depth.md) | Doubles support depth — corpus re-analysis + refinement plan | in-progress | 0.8.0 | 2026-07-15 |
+| [T-142](T-142-doubles-support-delivery.md) | Doubles support delivery — hard-pick a support-capable mon (like gimmick setters) | in-progress | 0.8.0 | 2026-07-15 |
