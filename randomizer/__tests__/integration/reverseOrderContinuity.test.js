@@ -80,11 +80,18 @@ describeSlow('reverse-order continuity (T-106)', () => {
             expect(docs['TRAINER_WALLY_LILYCOVE'].team.length).toBe(6);
             expect(docs['TRAINER_WALLY_MAUVILLE'].team.length).toBe(6);
         });
-        test('every earlier-appearance mon shares a family with a Victory Road mon', () => {
+        // B-033 — Wally's continuity is two-tiered: the four signature IDs (WALLY_1-4) are born at Victory
+        // Road and echo devolved at Lilycove + Mauville, while the two UU IDs (WALLY_5-6) are born at
+        // Lilycove and echo at Mauville. Victory Road ALSO fields two VR-only aces (a legend + an ubers)
+        // that do NOT propagate. So NOT every earlier mon traces to VR (the two UU IDs trace to Lilycove).
+        test('the four VR signatures echo at Lilycove + Mauville; the two UU IDs are born at Lilycove', () => {
             const vr = familiesOf('TRAINER_WALLY_VR_1');
-            for (const id of ['TRAINER_WALLY_LILYCOVE', 'TRAINER_WALLY_MAUVILLE']) {
-                for (const m of docs[id].team) expect(vr.has(familyOf(m.pokemon))).toBe(true);
-            }
+            const lily = familiesOf('TRAINER_WALLY_LILYCOVE');
+            // Lilycove carries all six of Wally's IDs, so every Mauville mon shares a family with a Lilycove one.
+            for (const m of docs['TRAINER_WALLY_MAUVILLE'].team) expect(lily.has(familyOf(m.pokemon))).toBe(true);
+            // Lilycove shares its four VR signatures with Victory Road (the 2 UU IDs are new to Lilycove).
+            const shared = [...lily].filter(f => vr.has(f)).length;
+            expect(shared).toBeGreaterThanOrEqual(4);
         });
         test('the Victory Road (authoritative) team has no repeated type (B-027 restriction)', () => {
             const bySpecies = Object.fromEntries(

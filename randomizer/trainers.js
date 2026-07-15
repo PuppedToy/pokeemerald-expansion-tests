@@ -231,6 +231,10 @@ function hoistAuthoritativeAppearances(trainersData, groups) {
 const CONTINUITY_GROUPS = [
     { auth: 'TRAINER_CHAMPION_STEVEN', members: ['TRAINER_STEVEN', 'PARTNER_STEVEN'] },
     { auth: 'TRAINER_WALLY_VR_1', members: ['TRAINER_WALLY_MAUVILLE', 'TRAINER_WALLY_LILYCOVE'] },
+    // B-033 — Lilycove is ALSO authoritative for the two UU IDs (WALLY_5-6) it introduces: it must build
+    // before Mauville (which echoes them). Ordered after the VR group so the final build order is
+    // Victory Road → Lilycove → Mauville (VR stores WALLY_1-4, Lilycove stores WALLY_5-6, Mauville echoes all).
+    { auth: 'TRAINER_WALLY_LILYCOVE', members: ['TRAINER_WALLY_MAUVILLE'] },
     // The rival: Ever Grande (lvl 70) is authoritative; its four earlier appearances echo it devolved.
     // One group per starter variant (only the player's runs, but all three are generated).
     ...['TREECKO', 'TORCHIC', 'MUDKIP'].map(s => ({
@@ -2697,14 +2701,17 @@ const trainersData = [
         reward: ['GYM_REWARD_11'],
         level: 49,
         bag: [...wallyBag2()],
-        // T-106 — Lilycove now ECHOES Wally's authoritative Victory Road roster, devolved to lvl 49.
+        // T-106 / B-033 — Lilycove ECHOES Wally's four Victory Road IDs (WALLY_1-4) devolved to lvl 49, AND
+        // is the birthplace of his two UU IDs (WALLY_5-6) — Victory Road doesn't run them (it runs the
+        // ubers/legend aces there instead), so they originate here and Mauville echoes them. A second
+        // continuity group (below) builds Lilycove before Mauville so these are stored in time.
         team: [
             { special: TRAINER_REPEAT_ID, id: 'WALLY_1', devolveToLevel: true },
             { special: TRAINER_REPEAT_ID, id: 'WALLY_2', devolveToLevel: true },
             { special: TRAINER_REPEAT_ID, id: 'WALLY_3', devolveToLevel: true },
             { special: TRAINER_REPEAT_ID, id: 'WALLY_4', devolveToLevel: true },
-            { special: TRAINER_REPEAT_ID, id: 'WALLY_5', devolveToLevel: true },
-            { special: TRAINER_REPEAT_ID, id: 'WALLY_6', devolveToLevel: true },
+            { id: 'WALLY_5', evolutionTier: [TIER_UU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
+            { id: 'WALLY_6', evolutionTier: [TIER_UU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
         ],
     },
     // Magma Hideout
@@ -3264,17 +3271,20 @@ const trainersData = [
         restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...juanBag()],
         // T-106/T-128 — Victory Road is Wally's AUTHORITATIVE endgame team: his favourite Mega Gardevoir
-        // (≫ Mega Gallade ≫ any mega) CLAIMS the stage-3 mega slot (tagged WALLY_1, the continuity anchor)
-        // + five OU/UU aces, all no-repeated-types (Wally-exclusive). Mauville/Lilycove echo it devolved.
+        // (≫ Mega Gallade ≫ any mega) CLAIMS the boss-mega slot (tagged WALLY_1, the continuity anchor)
+        // + three OU aces (WALLY_2-4) + his two ultimate aces for the final battle — an UBERS and a LEGEND.
+        // The four WALLY_1-4 IDs echo devolved at Mauville/Lilycove; the ubers/legend are VR-only (no id, so
+        // they don't propagate). B-033 — the ubers + legend were dropped in the T-106 inversion; restored.
+        // (The two UU IDs are now born at Lilycove, not here — see TRAINER_WALLY_LILYCOVE.) No repeated types.
         favourite: ['SPECIES_GARDEVOIR_MEGA', 'SPECIES_GALLADE_MEGA', { mega: true }],
         favouriteId: 'WALLY_1',
         team: [
             { id: 'WALLY_2', evolutionTier: [TIER_OU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
             { id: 'WALLY_3', evolutionTier: [TIER_OU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
             { id: 'WALLY_4', evolutionTier: [TIER_OU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
-            { id: 'WALLY_5', evolutionTier: [TIER_UU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
-            { id: 'WALLY_6', evolutionTier: [TIER_UU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
-            bossMega(TIER_UBERS),
+            { absoluteTier: [TIER_UBERS],  checkValidEvo: true }, // B-033 — VR-only ubers ace
+            { absoluteTier: [TIER_LEGEND], checkValidEvo: true }, // B-033 — VR-only legend ace
+            bossMega(TIER_UBERS),                                 // claimed by the favourite Mega Gardevoir (WALLY_1)
         ],
     },
     {
@@ -3580,4 +3590,6 @@ module.exports = {
     // Exported for unit testing (T-106).
     hoistAuthoritativeAppearances,
     villainFavourite,
+    // Exported for unit testing (B-033) — the continuity groups, so tests can assert the Wally build order.
+    CONTINUITY_GROUPS,
 };

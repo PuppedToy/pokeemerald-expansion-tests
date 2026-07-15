@@ -115,6 +115,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Wally's Victory Road team regains its legendary + ubers ace.** His endgame roster had silently lost its
+  two ultimate aces (a legend + an ubers) in the backwards-generation rework — Victory Road was fielding six
+  ordinary continuity mons instead. It now correctly fields his four signature Pokémon (which follow him,
+  devolved, all the way back to Mauville) plus a legendary and an ubers ace brought out only for the final
+  battle. Lilycove keeps the four VR signatures + two of its own UU mons (which also appear devolved at
+  Mauville), so the three encounters tell one continuous story (B-033).
+
 - **Doubles Trick Room trainers keep their full team recipe.** Tate & Liza (and any Trick-Room-seeded
   doubles trainer) referenced a base-archetype id that exists only in the singles model, so in a doubles
   run their base recipe was silently dropped and only the Trick Room gimmick steered the team. The seed

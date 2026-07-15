@@ -36,3 +36,4 @@
 | [B-030](B-030-tm-accessible-before-player.md) | A trainer can teach a TM the player cannot have accessed yet (incremental TM bag leak) | fixed | critical | Unreleased | 0.8.0 | randomizer/__tests__/unit/archetypeRefine.test.js |
 | [B-031](B-031-wattson-mega-favourite-no-devolution.md) | Wattson's Mega Manectric favourite has no devolution fallback (skips to any-eligible) | fixed | minor | 0.8.0 | 0.8.0 | randomizer/__tests__/unit/wattsonFavouriteChain.test.js |
 | [B-032](B-032-tr-seed-base-dropped-in-doubles.md) | Trick Room seed base 'balance' silently dropped for doubles trainers | fixed | minor | 0.7.0 | 0.8.0 | randomizer/__tests__/unit/archetypePicker.test.js |
+| [B-033](B-033-wally-vr-lost-legend-ubers.md) | Wally Victory Road lost its legend + ubers aces (backwards-generation regression) | open | major | 0.8.0 |  | randomizer/__tests__/unit/wallyContinuity.test.js |
