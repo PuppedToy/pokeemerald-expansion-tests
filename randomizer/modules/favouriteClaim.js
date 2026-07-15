@@ -40,26 +40,32 @@ function slotTierKey(slot) {
 // A mega species passes a mega slot's GENERAL progression gate (owner-validated, T-128): its mega-form
 // tier is within the slot's window AND — the base-form rule — its BASE form's tier is within the cap.
 // A bare {isMega} slot (no gate) admits any mega (backward compatible).
-function megaPassesGate(p, key, bySpecies) {
-    if (key.megaTiers && !key.megaTiers.includes(p.rating && p.rating.tier)) return false;
+// T-109 — for a DOUBLES trainer, a favourite claims its slot by the DOUBLES tier (poke.tierDoubles); the
+// contextual branch stays singles until T-111 (contextualRatingsDoubles). `doubles` threads from the ctx.
+const absTierOf = (p, doubles) => (doubles && p && p.tierDoubles) ? p.tierDoubles : (p && p.rating && p.rating.tier);
+function megaPassesGate(p, key, bySpecies, doubles = false) {
+    if (key.megaTiers && !key.megaTiers.includes(absTierOf(p, doubles))) return false;
     if (key.maxBaseTier) {
         const baseId = p.evolutionData && p.evolutionData.megaBaseForm;
         const base = baseId ? bySpecies.get(baseId) : null;
-        const baseTier = base && base.rating && base.rating.tier;
+        const baseTier = absTierOf(base, doubles);
         if (!baseTier || !tiersUpTo(key.maxBaseTier).includes(baseTier)) return false;
     }
     return true;
 }
 
 // The species' tier as the slot measures it (absolute rating, or the contextual rating at the level cap).
-function speciesTierForKey(p, key, cap) {
+function speciesTierForKey(p, key, cap, doubles = false) {
     if (key.mega) return null;
-    return key.contextual ? (p.contextualRatings && p.contextualRatings[cap] && p.contextualRatings[cap].tier) : (p.rating && p.rating.tier);
+    if (!key.contextual) return absTierOf(p, doubles);
+    const ctxMap = (doubles && p.contextualRatingsDoubles) ? p.contextualRatingsDoubles : p.contextualRatings; // T-111
+    return ctxMap && ctxMap[cap] && ctxMap[cap].tier;
 }
 
 function resolveFavourites(team, favourites, ctx = {}) {
     if (!favourites || !favourites.length) return team;
-    const { pokemonList = [], level = 50, types = null, favouriteIds = [] } = ctx;
+    const { pokemonList = [], level = 50, types = null, favouriteIds = [], battleType = null } = ctx;
+    const doubles = /double/i.test(battleType || ''); // T-109 — claim by the doubles tier for a doubles trainer
     const cap = nearestCap(level);
     const bySpecies = new Map(pokemonList.map(p => [p.id, p]));
     const passesRestriction = p => !types || (p.parsedTypes || []).some(t => types.includes(t));
@@ -84,9 +90,9 @@ function resolveFavourites(team, favourites, ctx = {}) {
                     if (e.claimed || !e.key) return false;
                     // a mega claims the {isMega} slot ONLY IF it satisfies the slot's progression gate
                     // (mega-form window + base-form cap); else it drops to the next fallback.
-                    if (isMega) return !!e.key.mega && megaPassesGate(p, e.key, bySpecies);
+                    if (isMega) return !!e.key.mega && megaPassesGate(p, e.key, bySpecies, doubles);
                     if (e.key.mega) return false;            // a non-mega never claims the mega slot
-                    return speciesTierForKey(p, e.key, cap) === e.key.tier; // EXACT tier, no downgrade
+                    return speciesTierForKey(p, e.key, cap, doubles) === e.key.tier; // EXACT tier, no downgrade
                 });
                 if (entry) { entry.claimed = true; claimed.push(mark({ specific: cand })); done = true; break; }
             } else if (cand && cand.mega) {

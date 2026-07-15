@@ -6,7 +6,7 @@ const parser = require('../parser');
 const { randomizeTMs, buildTMList, annotateTmNumbers } = require('../tmRandomizer');
 const { parseTmLocations } = require('../tmLocations');
 const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
-const { ratePokemon, ratePokemonDoubles, rateContextual, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles } = require('../rating');
+const { ratePokemon, ratePokemonDoubles, rateContextual, rateContextualDoubles, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles } = require('../rating');
 const { balancePokemon } = require('../rebalancer');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
@@ -28,6 +28,7 @@ async function parseBaseData() {
     const abilities = parser.parseAbilitiesFile(abilitiesFileText);
     // T-096/ADR-015 — doubles ability value beside the singles aiRating.
     Object.keys(abilities).forEach(abilityKey => {
+        abilities[abilityKey].rating = rateAbilitySingles(abilityKey, abilities[abilityKey]);   // T-141 §4c — ally-only abilities are dead in singles
         abilities[abilityKey].ratingDoubles = rateAbilityDoubles(abilityKey, abilities[abilityKey]);
     });
 
@@ -306,6 +307,7 @@ async function runPokedexModule(config, baseData = null) {
     // 11. Contextual ratings
     for (const poke of allPokes) {
         poke.contextualRatings = {};
+        poke.contextualRatingsDoubles = {}; // T-111
         for (const cap of LEVEL_CAPS) {
             // Wishiwashi Solo: below lvl 20 it's the weak Solo form; at 20+ it schools.
             // Palafin Zero: rated as Hero at every level (no level gate — the transform is free).
@@ -316,6 +318,8 @@ async function runPokedexModule(config, baseData = null) {
                 ctxPoke = palafinEffectivePoke(poke, palafinHero);
             }
             poke.contextualRatings[cap] = rateContextual(ctxPoke, moves, abilities, { level: cap, tms: [] });
+            // T-111 — per-level doubles rating, reusing the singles contextual bestMoveset (rng-free).
+            poke.contextualRatingsDoubles[cap] = rateContextualDoubles(ctxPoke, moves, abilities, { level: cap, tms: [] }, poke.contextualRatings[cap].bestMoveset);
         }
     }
 

@@ -509,6 +509,7 @@ function createTeamResolver(deps) {
             teamDefs = resolveFavourites(trainer.team, favChains, {
                 pokemonList, level: trainer.level, types: trainer.types || null,
                 favouriteIds: trainer.favourites ? (trainer.favouriteIds || []) : (trainer.favouriteId ? [trainer.favouriteId] : []),
+                battleType: trainer.battleType || null, // T-109 — doubles trainers claim favourites by doubles tier
             });
         }
 

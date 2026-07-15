@@ -133,6 +133,14 @@ describe('resolveIdentity (T-107 107e / T-118) — emergent, else seed, else nul
     test('T-123 — hyper_offense still emerges when nothing else fits', () => {
         expect(resolveIdentity([sweeper('S1'), sweeper('S2'), rocker('K')], singles, {}, null).baseId).toBe('hyper_offense');
     });
+    test("B-032 — a seed base 'balance' resolves to the doubles balanced base (not dropped)", () => {
+        // Tate & Liza's Trick Room seed carries the singles-id base 'balance'; in a doubles run the model
+        // has 'balance_dual_mode' instead, so the seed base must be mapped, not silently dropped.
+        const doubles = getArchetypeModel('doubles');
+        const id = resolveIdentity([plain('X'), plain('Y')], doubles, {}, { base: 'balance', gimmicks: ['trick_room'] });
+        expect(id.source).toBe('seed');
+        expect(id.baseId).toBe('balance_dual_mode');
+    });
 
     test('no recipe fit and no seed → null', () => {
         expect(resolveIdentity([plain('X')], singles, {}, null)).toBeNull();

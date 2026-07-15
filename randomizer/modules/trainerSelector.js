@@ -108,6 +108,13 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
 
     function choosePokemonFromDefinition(trainerMonDefinition) {
         const { team, foundMega, storedIds } = context;
+        // T-109 — a DOUBLES trainer's power budget is measured on the doubles tier scale (poke.tierDoubles /
+        // poke.ratingDoubles, T-097). CONTEXTUAL-tier slots stay on singles until T-111 adds
+        // contextualRatingsDoubles. Singles trainers are byte-identical (doublesFmt=false → the singles reads).
+        const doublesFmt = /double/i.test(trainer.battleType || '');
+        const pokeTier = p => (doublesFmt && p.tierDoubles) ? p.tierDoubles : p.rating.tier;
+        const pokeAbs  = p => (doublesFmt && typeof p.ratingDoubles === 'number') ? p.ratingDoubles : p.rating.absoluteRating;
+        const pokeCtx  = (p, cap) => (doublesFmt && p.contextualRatingsDoubles) ? p.contextualRatingsDoubles[cap] : p.contextualRatings?.[cap]; // T-111
         let pokemonStrictList = [];
         let pokemonLooseList = [];
         let chosenTrainerMon;
@@ -125,10 +132,10 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
             let qualifies = false;
             if (specificPokemon && trainerMonDefinition.contextualTier) {
                 const cap = nearestCap(trainer.level);
-                const contextual = specificPokemon.contextualRatings?.[cap];
+                const contextual = pokeCtx(specificPokemon, cap);
                 qualifies = !!(contextual
                     && trainerMonDefinition.contextualTier.includes(contextual.tier)
-                    && TIER_SEQ.indexOf(specificPokemon.rating.tier) <= TIER_SEQ.indexOf(contextual.tier));
+                    && TIER_SEQ.indexOf(pokeTier(specificPokemon)) <= TIER_SEQ.indexOf(contextual.tier));
             } else if (specificPokemon) {
                 qualifies = true;
             }
@@ -182,7 +189,7 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
             pokemonLooseList = pokemonLooseList.filter(p => !p.evolutionData.isMega);
         }
         if (trainerMonDefinition.absoluteTier) {
-            pokemonLooseList = pokemonLooseList.filter(p => trainerMonDefinition.absoluteTier.includes(p.rating.tier));
+            pokemonLooseList = pokemonLooseList.filter(p => trainerMonDefinition.absoluteTier.includes(pokeTier(p)));
         }
         if (trainerMonDefinition.maxBaseTier) {
             const allowedBaseTiers = tiersUpTo(trainerMonDefinition.maxBaseTier);
@@ -190,16 +197,16 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
                 const baseFormId = p.evolutionData?.megaBaseForm;
                 if (!baseFormId) return false;
                 const baseForm = pokemonList.find(b => b.id === baseFormId);
-                return baseForm && allowedBaseTiers.includes(baseForm.rating.tier);
+                return baseForm && allowedBaseTiers.includes(pokeTier(baseForm));
             });
         }
         if (trainerMonDefinition.contextualTier) {
             const cap = nearestCap(trainer.level);
             pokemonLooseList = pokemonLooseList.filter(p => {
-                const contextual = p.contextualRatings?.[cap];
+                const contextual = pokeCtx(p, cap);
                 return contextual
                     && trainerMonDefinition.contextualTier.includes(contextual.tier)
-                    && TIER_SEQ.indexOf(p.rating.tier) <= TIER_SEQ.indexOf(contextual.tier);
+                    && TIER_SEQ.indexOf(pokeTier(p)) <= TIER_SEQ.indexOf(contextual.tier);
             });
         }
         if (trainerMonDefinition.evoType) {
@@ -294,9 +301,9 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         const getRatingForSort = (poke) => {
             if (trainerMonDefinition.contextualTier) {
                 const cap = nearestCap(trainer.level);
-                return poke.contextualRatings?.[cap]?.absoluteRating ?? poke.rating.absoluteRating;
+                return pokeCtx(poke, cap)?.absoluteRating ?? pokeAbs(poke); // T-109/T-111 — doubles: contextual doubles
             }
-            return poke.rating.absoluteRating;
+            return pokeAbs(poke); // T-109 — doubles trainers sort their absoluteTier picks by ratingDoubles
         };
 
         if (pokemonStrictList.length > 0) {

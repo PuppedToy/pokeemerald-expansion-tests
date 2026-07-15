@@ -1,13 +1,13 @@
 ---
 id: T-109
 title: Engine — doubles teambuilding path (spread / redirection / TR-aware)
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-15
 target-version: 0.8.0
-links: [T-083, T-097, T-102, T-107]
-blocked-by: [T-107, T-097, T-102]
+links: [T-083, T-097, T-102, T-107, T-111]
+blocked-by: []
 ---
 
 # T-109 — Engine — doubles teambuilding path (spread / redirection / TR-aware)
@@ -66,6 +66,32 @@ Acceptance criteria:
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-09** — Task created.
+- **2026-07-15 — wiring map (code-verified).** The engine is already format-agnostic: `resolveTrainerTeam.js:166`
+  selects `getArchetypeModel('doubles')` by `battleType`, and `scoreCandidate`/detectors are role-only (no
+  rating read) — so doubles SHAPE (roles) already works. The gap is the tier "power budget": which mons a
+  slot admits. T-097's fields are FLAT (`poke.tierDoubles` / `poke.ratingDoubles`), so `p.rating.tier` →
+  `p.tierDoubles`, `p.rating.absoluteRating` → `p.ratingDoubles`. Routes (battleType-gated):
+  - `trainerSelector.js:185` absoluteTier gate → `tierDoubles`; `:299` sort → `ratingDoubles`. **Unblocked.**
+  - `favouriteClaim.js:57/44/48` absolute claim + mega gate → `tierDoubles` (thread battleType into the
+    resolveFavourites ctx at `resolveTrainerTeam.js:509`). **Unblocked.**
+  - `gimmickPlan.js:106/267/324` gimmick abuser-rank base → `ratingDoubles` (secondary).
+  - `trainerSelector.js:196-204/126-131/297` CONTEXTUAL-tier slots → **BLOCKED** (no `contextualRatingsDoubles`;
+    deferred to T-111). Affects early gyms/grunts/rivals only.
+  - Calibration was proportion-matched, so a (singles-labelled) "UU slot" admitting a `tierDoubles==UU` mon is
+    coherent (same top-fraction in each format).
+  - E4 `_DOUBLES` clones (`trainersModule.js:38-59`) are 100% absoluteTier → the cleanest UNBLOCKED target;
+    "regenerate with the doubles engine" = route their tier reads to the doubles scalars (no new slot defs).
+- **2026-07-15 — IMPLEMENTED (absoluteTier path).** Routed the power budget to the doubles scale, battleType-
+  gated, singles byte-identical: `trainerSelector.js` gained `pokeTier`/`pokeAbs` helpers (doubles →
+  `tierDoubles`/`ratingDoubles`) used by the absoluteTier gate + the pickBest sort + the mega maxBaseTier gate;
+  `favouriteClaim.js` claims by `tierDoubles` for a doubles trainer (battleType threaded into the ctx via
+  `resolveTrainerTeam.js:509`); contextual-tier reads left on singles (T-111). +2 favouriteClaim doubles tests.
+  **Verified (seed 2920625670, mixed + Run&Bun):** Sidney Doubles → hyper_offense +redirection w/ a Tailwind
+  setter (vs singles fast-priority); Drake Doubles → balance_dual_mode +redirection w/ spreadAttacker +
+  Tailwind + redirector (Excadrill/Gastrodon) (vs singles emergent-sun) — doubles archetypes + roles + tiers
+  all firing, distinct from the singles teams. `npm test` 1082; determinism + continuity gates 17/17 (singles
+  unchanged). Deferred: contextual-tier doubles slots (T-111), the gimmick abuser-rank base → ratingDoubles
+  (secondary), and doubles seed assignments (step 6). `doubles.json` recipes remain v1 (T-102 refinement).
 
 ## Outcome
 

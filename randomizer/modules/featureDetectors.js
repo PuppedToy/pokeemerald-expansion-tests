@@ -12,6 +12,11 @@
 // The stat THRESHOLDS below are provisional and tunable (see THRESHOLDS); they encode "what counts as
 // a wallbreaker / wall / sweeper", not a competitive-meta claim, so they carry no owner-validation gate.
 
+// T-141 — the dedicatedSupport detector delegates to the rater's predicate so role membership and the
+// doubles quality lift share ONE definition (no drift). One-way dependency (rating.js → constants/items/
+// rng only, never featureDetectors), so no cycle.
+const { isDedicatedSupport } = require('../rating');
+
 // ── Provisional, tunable thresholds ─────────────────────────────────────────
 // Corpus-derived, owner-validated (2026-07-11, docs/research/rating-decisions.md). Singles corpus
 // baseline: speed 84, offense 119, bulk 273.
@@ -123,6 +128,11 @@ const DETECTORS = {
         && offense(mon) <= THRESHOLDS.SUPPORT_MAX_OFFENSE,
     pivotUser: (mon) => canLearnAny(mon, PIVOT_MOVES),
     wideGuardUser: (mon) => canLearnAny(mon, WIDE_GUARD_MOVES),
+    // T-141 — a DEDICATED support (NOT an attacker that merely carries a support tool). Delegates to the
+    // SAME predicate the doubles rater uses for the quality lift (rating.js isDedicatedSupport), so the
+    // archetype slot and the tier bonus never drift — a strong support kit qualifies regardless of offence
+    // (Sinistcha, high SpA), a moderate kit only on a low-offense mon. See docs/research/doubles-support.md §2.
+    dedicatedSupport: (mon) => isDedicatedSupport(mon),
 
     // move-metadata-based (need ctx.moves)
     spreadAttacker: (mon, ctx) => hasMoveWhere(mon, ctx, mv => isDamaging(mv) && SPREAD_TARGETS.has(mv.target)),

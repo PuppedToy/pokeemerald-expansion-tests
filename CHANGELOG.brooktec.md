@@ -9,6 +9,28 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Doubles now has its own tier list, shown next to singles in the docs.** Every Pokémon is rated
+  twice — once for singles, once for doubles — with the doubles rating re-weighted for the 6v6 meta
+  (bulk over raw speed, a premium on spread damage and support) on its own tier scale. Raw BST still
+  paces both formats — a high-BST Pokémon can't drop below its BST-implied tier in doubles either, so
+  the nuzlocke difficulty ramp holds — and the viewer now shows both tiers side by side on every
+  Pokémon, *Singles │ Doubles*, with the shared role below (T-097, T-140, T-111).
+
+- **Double-battle trainers now build doubles-shaped teams.** A double-battle trainer's power budget is
+  measured on the doubles tier list, and its team is assembled from the doubles archetypes — so a doubles
+  boss fields a genuinely different, format-appropriate team from the same trainer run as singles
+  (Sidney's doubles team leans on redirection + Tailwind, Drake's on a dual-mode balance core). Singles
+  trainers are completely unaffected (T-109).
+
+- **Doubles teams now field dedicated support, like real competitive doubles.** The support Pokémon that
+  define the meta — redirectors (Follow Me / Rage Powder / Lightning Rod), Fake Out / Wide Guard / Helping
+  Hand users, Intimidate pillars, Friend Guard / Hospitality allies — are recognised as a distinct role,
+  rated up for doubles (a support Sinistcha climbs from RU to OU off its Hospitality + Rage Powder kit),
+  and most doubles archetypes now reserve a slot for one (plus a new redirection-support archetype).
+  Support moves and abilities are valued for doubles (Encore, Prankster, Defiant/Competitive punishing the
+  ubiquitous Intimidate). And ally-only abilities that do nothing in a 1v1 — Commander, Hospitality,
+  Costar, Power Spot — no longer inflate a Pokémon's SINGLES rating (T-141).
+
 - **Weather teams now field their BEST abusers, ranked by how well each exploits the weather.** Instead of
   any boosted-type mon, a sophisticated weather trainer prefers real ability-abusers (Chlorophyll / Solar
   Power / Protosynthesis in sun, Swift Swim in rain, Sand Rush in sand, …), each scored by the stat it
@@ -76,6 +98,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   show the taught move's description (T-078).
 
 ### Fixed
+
+- **Doubles Trick Room trainers keep their full team recipe.** Tate & Liza (and any Trick-Room-seeded
+  doubles trainer) referenced a base-archetype id that exists only in the singles model, so in a doubles
+  run their base recipe was silently dropped and only the Trick Room gimmick steered the team. The seed
+  base now resolves to the doubles model, restoring the full recipe (B-032).
 
 - **Wattson's Mega Manectric ace now devolves properly.** When Mega Manectric can't be placed (its
   progression gate isn't met that run), Wattson keeps his signature line — Mega Manectric → Manectric →

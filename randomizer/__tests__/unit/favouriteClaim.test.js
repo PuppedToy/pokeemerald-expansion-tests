@@ -115,3 +115,22 @@ describe('resolveFavourites (T-128 pool consumption)', () => {
         expect(out[0].breedTier).toBe('perfect');
     });
 });
+
+// T-109 — a DOUBLES trainer claims its favourite by the DOUBLES tier (poke.tierDoubles), not the singles tier.
+describe('resolveFavourites — doubles claims by tierDoubles (T-109)', () => {
+    const DBL_LIST = [
+        { id: 'SPECIES_INCIN', parsedTypes: ['FIRE', 'DARK'], rating: { tier: 'RU' }, tierDoubles: 'OU', contextualRatings: {}, evolutionData: { isMega: false } },
+    ];
+    const twoSlot = () => [{ absoluteTier: ['OU'], checkValidEvo: true }, { absoluteTier: ['RU'], checkValidEvo: true }];
+
+    test('doubles: the favourite (doubles OU / singles RU) claims the OU slot', () => {
+        const out = resolveFavourites(twoSlot(), [['SPECIES_INCIN']], { pokemonList: DBL_LIST, level: 50, battleType: 'doubles' });
+        expect(out[0].specific).toBe('SPECIES_INCIN');
+        expect(out[1].absoluteTier).toEqual(['RU']); // OU slot was consumed → RU remains
+    });
+    test('singles: the SAME favourite (RU) claims the RU slot instead', () => {
+        const out = resolveFavourites(twoSlot(), [['SPECIES_INCIN']], { pokemonList: DBL_LIST, level: 50 });
+        expect(out[0].specific).toBe('SPECIES_INCIN');
+        expect(out[1].absoluteTier).toEqual(['OU']); // RU slot consumed → OU remains (singles tier)
+    });
+});

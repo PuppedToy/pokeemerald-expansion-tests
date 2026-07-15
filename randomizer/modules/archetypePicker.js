@@ -53,6 +53,18 @@ const TR_SLOW_SPEED = 60;                 // T-124 — base Speed at/below which
 const TR_SLOW_FACTOR = 4;                 // how hard Trick Room pulls the pick toward slow mons
 const WEATHER_ABUSER_FACTOR = 4;          // T-132 — how hard weather pulls the pick toward abusers (once a setter is down)
 
+// B-032 — a seed base id is format-agnostic, but base ids differ across formats: the balanced base is
+// 'balance' in singles and 'balance_dual_mode' in doubles. If the seed's base isn't in the active model,
+// map it to the format-equivalent so the base recipe isn't silently dropped (leaving only the gimmick
+// structure). bulky_offense / hyper_offense exist in both models, so only the balanced base needs aliasing.
+const SEED_BASE_ALIAS = { balance: 'balance_dual_mode', balance_dual_mode: 'balance' };
+function resolveSeedBase(baseId, model) {
+    const bases = (model && model.baseArchetypes) || [];
+    if (bases.some(a => a.id === baseId)) return baseId;
+    const alias = SEED_BASE_ALIAS[baseId];
+    return (alias && bases.some(a => a.id === alias)) ? alias : baseId;
+}
+
 function resolveIdentity(team, model, ctx = {}, seed = null) {
     const cryst = crystallize(team, model, ctx);
     // T-123 — hyper_offense is the LAST-RESORT base: if it tops the fit but another base also clears
@@ -67,7 +79,7 @@ function resolveIdentity(team, model, ctx = {}, seed = null) {
     const fit = base ? base.fit : 0; // chosen base-recipe fit (also surfaced to the T-117 audit)
     let baseId, source;
     if (base && base.fit >= IDENTITY_FIT) { baseId = base.id; source = 'emergent'; }
-    else if (seed && seed.base) { baseId = seed.base; source = 'seed'; }
+    else if (seed && seed.base) { baseId = resolveSeedBase(seed.base, model); source = 'seed'; }
     else return null;
 
     // Gimmicks: a SEEDED gimmick is the trainer's INTENTIONAL identity and persists throughout (T-124/

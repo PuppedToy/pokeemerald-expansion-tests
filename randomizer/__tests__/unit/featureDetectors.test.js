@@ -174,6 +174,26 @@ describe('detectFeatures aggregator', () => {
     });
 });
 
+describe('dedicatedSupport detector (T-141)', () => {
+    test('a low-offense redirector is dedicated support (redirection alone qualifies)', () => {
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 65, ...withMoves('MOVE_RAGE_POWDER') }), ctx)).toBe(true);
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 50, baseSpAttack: 60, parsedAbilities: ['LIGHTNING_ROD'] }), ctx)).toBe(true);
+    });
+    test('a low-offense mon with two lesser support signals qualifies', () => {
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 60, parsedAbilities: ['INTIMIDATE'], ...withMoves('MOVE_FAKE_OUT') }), ctx)).toBe(true);
+    });
+    test('a HIGH-offense mon carrying ONE support tool is NOT dedicated support (partial-support attacker)', () => {
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 130, baseSpAttack: 60, parsedAbilities: ['INTIMIDATE'], ...withMoves('MOVE_FAKE_OUT') }), ctx)).toBe(false);
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 120, baseSpAttack: 120, ...withMoves('MOVE_RAGE_POWDER') }), ctx)).toBe(false);
+    });
+    test('a HIGH-offense mon with a STRONG support kit IS dedicated support (Sinistcha: 121 SpA, played as Hospitality support)', () => {
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 121, parsedAbilities: ['HOSPITALITY'], ...withMoves('MOVE_RAGE_POWDER') }), ctx)).toBe(true);
+    });
+    test('a low-offense mon with only ONE lesser signal is not dedicated support', () => {
+        expect(DETECTORS.dedicatedSupport(mon({ baseAttack: 60, baseSpAttack: 60, parsedAbilities: ['INTIMIDATE'] }), ctx)).toBe(false);
+    });
+});
+
 describe('archetype-model integrity — every referenced feature has a detector', () => {
     // The engine (107b+) reads entry/structure roles by feature tag; a feature in the JSON with no
     // detector would silently never fire. Lock the invariant so JSON edits can't drift from the code.

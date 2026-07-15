@@ -112,9 +112,9 @@
 | [T-106](T-106-backwards-generation.md) | Engine — backwards generation (endgame-first, devolve preserving ID continuity) | in-progress | 0.8.0 | 2026-07-11 |
 | [T-107](T-107-preference-rules-system.md) | Engine — preference/rules system replacing fixed slots (archetype-fit scoring) | in-progress | 0.8.0 | 2026-07-10 |
 | [T-108](T-108-port-fixed-id-special-cases.md) | Engine — port fixed-ID / continuity / special cases into the new engine | proposed | 0.8.0 | 2026-07-09 |
-| [T-109](T-109-doubles-teambuilding-path.md) | Engine — doubles teambuilding path (spread / redirection / TR-aware) | proposed | 0.8.0 | 2026-07-09 |
+| [T-109](T-109-doubles-teambuilding-path.md) | Engine — doubles teambuilding path (spread / redirection / TR-aware) | in-progress | 0.8.0 | 2026-07-15 |
 | [T-110](T-110-replace-old-engine-cleanup.md) | Integration — replace the old engine, remove dead slot/preset code, parity & diagnostics | proposed | 0.8.0 | 2026-07-09 |
-| [T-111](T-111-viewer-per-format-tiers.md) | Viewer — surface singles/doubles tiers per Pokémon (mixed shows both) | proposed | 0.8.0 | 2026-07-09 |
+| [T-111](T-111-viewer-per-format-tiers.md) | Viewer — surface singles/doubles tiers per Pokémon (mixed shows both) | in-progress | 0.8.0 | 2026-07-15 |
 | [T-112](T-112-docs-format-tiers-and-behavior.md) | Docs — reflect format-based tiers + battle-format behaviour | proposed | 0.8.0 | 2026-07-09 |
 | [T-113](T-113-group2-checkpoint-e2e.md) | Group 2 checkpoint — end-to-end builds + per-format team-quality review | proposed | 0.8.0 | 2026-07-09 |
 | [T-114](T-114-battle-ai-per-archetype.md) | Battle AI tuned per team archetype / format (deferred) | proposed | 0.9.0 | 2026-07-09 |
@@ -143,3 +143,5 @@
 | [T-137](T-137-emergent-electric-terrain.md) | Electric terrain + Trick Room as corpus-grounded gimmicks (rating + emergent), migrate Wattson | done | 0.8.0 | 2026-07-14 |
 | [T-138](T-138-trickroom-fullroom-and-weather-room.md) | Trick Room full-room enforcement (2 setters + 4 abusers) | done | 0.8.0 | 2026-07-14 |
 | [T-139](T-139-weather-room-coexistence.md) | Weather + Trick Room (half) coexistence on one team | proposed | 0.9.0 | 2026-07-14 |
+| [T-140](T-140-doubles-bst-floor-parity.md) | Doubles tier — apply the BST floor (parity with singles) | in-progress | 0.8.0 | 2026-07-15 |
+| [T-141](T-141-doubles-support-depth.md) | Doubles support depth — corpus re-analysis + refinement plan | in-progress | 0.8.0 | 2026-07-15 |

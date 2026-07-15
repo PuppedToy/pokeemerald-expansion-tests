@@ -76,10 +76,12 @@ jest.mock('../../rating', () => ({
         bestMoveset: [],
     })),
     ratePokemonDoubles: jest.fn(() => ({ ratingDoubles: 5.0, role: 'BALANCED' })),   // T-097
-    rateContextual: jest.fn(() => ({ absoluteRating: 4.0, tier: 'PU' })),
+    rateContextual: jest.fn(() => ({ absoluteRating: 4.0, tier: 'PU', bestMoveset: [] })),
+    rateContextualDoubles: jest.fn(() => ({ absoluteRating: 4.0, tier: 'PU' })),   // T-111
     rateMove: jest.fn(() => 3.0),
     rateMoveDoubles: jest.fn(() => 3.5),   // T-094/ADR-015
     rateAbilityDoubles: jest.fn((k, a) => (a && a.rating) || 0),   // T-096/ADR-015
+    rateAbilitySingles: jest.fn((k, a) => (a && a.rating) || 0),   // T-141 §4c
 }));
 
 jest.mock('../../rebalancer', () => ({

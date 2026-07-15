@@ -4,7 +4,7 @@
 // redirection / Intimidate / Fake Out / speed control / terrain / weather / pivot), frailty + passive-wall
 // penalties, and the own doubles tier scale. Owner-validated design + calibration.
 
-const { bstRatingDoubles, computeComboBonusDoubles, tierFromRatingDoubles, ratePokemonDoubles } = require('../../rating');
+const { bstRatingDoubles, computeComboBonusDoubles, tierFromRatingDoubles, ratePokemonDoubles, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, supportScore, isDedicatedSupport } = require('../../rating');
 
 describe('bstRatingDoubles — bulk↑ / speed↓ re-weighting', () => {
     test('OFFENSIVE weights offence 0.5 / def 0.25 / speed 0.25', () => {
@@ -80,5 +80,119 @@ describe('ratePokemonDoubles — end to end (frailty penalty + support premium)'
         const r = ratePokemonDoubles(bulkyIntim, moves, abilities, [], ['MOVE_EARTHQUAKE', 'MOVE_ROCK_SLIDE']);
         expect(typeof r.ratingDoubles).toBe('number');
         expect(typeof r.tierDoubles).toBe('string');
+    });
+});
+
+describe('T-141 Phase 1 — doubles ability & move rating fixes', () => {
+    test('Hospitality is floored in doubles (dedicated ally support), unlike its neutral singles value', () => {
+        expect(rateAbilityDoubles('ABILITY_HOSPITALITY', { rating: 5 })).toBeGreaterThanOrEqual(6);
+    });
+    test('Defiant / Competitive rise in doubles (punish the ubiquitous Intimidate)', () => {
+        expect(rateAbilityDoubles('ABILITY_DEFIANT', { rating: 5 })).toBeGreaterThanOrEqual(7);
+        expect(rateAbilityDoubles('ABILITY_COMPETITIVE', { rating: 5 })).toBeGreaterThanOrEqual(7);
+    });
+    test('Encore gets a doubles disruption floor', () => {
+        const encore = { id: 'MOVE_ENCORE', power: 0, effect: 'EFFECT_ENCORE', target: 'MOVE_TARGET_SELECTED', category: 'DAMAGE_CATEGORY_STATUS', type: 'NORMAL', accuracy: 100, pp: 5 };
+        expect(rateMoveDoubles(encore)).toBeGreaterThanOrEqual(6.5);
+    });
+    test('Hospitality earns a doubles combo credit (ally-support ability, like Friend Guard)', () => {
+        const mon = { parsedAbilities: ['HOSPITALITY'], baseSpeed: 70, learnset: [], teachables: [] };
+        expect(computeComboBonusDoubles(mon, {}, { offensePower: 4 })).toBeGreaterThan(0);
+    });
+    test('Prankster + a support move earns a combo credit; Prankster alone or the move alone does not', () => {
+        const prankSupport = { parsedAbilities: ['PRANKSTER'], baseSpeed: 70, learnset: [{ level: 1, move: 'MOVE_THUNDER_WAVE' }], teachables: [] };
+        const prankAlone = { parsedAbilities: ['PRANKSTER'], baseSpeed: 70, learnset: [], teachables: [] };
+        const twaveAlone = { parsedAbilities: ['NONE'], baseSpeed: 70, learnset: [{ level: 1, move: 'MOVE_THUNDER_WAVE' }], teachables: [] };
+        expect(computeComboBonusDoubles(prankSupport, {}, { offensePower: 3 })).toBeGreaterThan(0);
+        expect(computeComboBonusDoubles(prankAlone, {}, { offensePower: 3 })).toBe(0);
+        expect(computeComboBonusDoubles(twaveAlone, {}, { offensePower: 3 })).toBe(0);
+    });
+});
+
+describe('T-141 Phase 2 — singles clear-error corrections (ally-only abilities are dead in singles)', () => {
+    test('Commander / Hospitality / Costar / Power Spot are corrected to 0 in singles', () => {
+        expect(rateAbilitySingles('ABILITY_COMMANDER', { rating: 10 })).toBe(0);
+        expect(rateAbilitySingles('ABILITY_HOSPITALITY', { rating: 5 })).toBe(0);
+        expect(rateAbilitySingles('ABILITY_COSTAR', { rating: 5 })).toBe(0);
+        expect(rateAbilitySingles('ABILITY_POWER_SPOT', { rating: 2 })).toBe(0);
+    });
+    test('a normal (self-affecting) ability keeps its singles rating', () => {
+        expect(rateAbilitySingles('ABILITY_INTIMIDATE', { rating: 7 })).toBe(7);
+    });
+    test('the singles correction does not sink the doubles value (Hospitality still floors to 6)', () => {
+        const corrected = { rating: rateAbilitySingles('ABILITY_HOSPITALITY', { rating: 5 }) };
+        expect(rateAbilityDoubles('ABILITY_HOSPITALITY', corrected)).toBeGreaterThanOrEqual(6);
+    });
+});
+
+describe('T-141 Phase 3 — dedicated-support signature bonus (doubles quality lift)', () => {
+    const learns = (...mv) => mv.map(m => ({ level: 1, move: m }));
+
+    test('supportScore sums the support kit (redirection + ally ability)', () => {
+        const mon = { parsedAbilities: ['HOSPITALITY'], learnset: learns('MOVE_RAGE_POWDER'), teachables: [] };
+        expect(supportScore(mon, {})).toBeGreaterThanOrEqual(0.9 + 0.6);
+    });
+    test('a mon with no support kit scores 0', () => {
+        expect(supportScore({ parsedAbilities: ['BLAZE'], learnset: learns('MOVE_FLAMETHROWER'), teachables: [] }, {})).toBe(0);
+    });
+
+    // Two identical low-offense stat lines; only the support kit differs → the support mon rates higher.
+    const abilities = { ABILITY_NONE: { rating: 0, ratingDoubles: 0 }, ABILITY_HOSPITALITY: { rating: 0, ratingDoubles: 6 } };
+    const moves = {
+        MOVE_SLASH: { id: 'MOVE_SLASH', power: 70, target: 'MOVE_TARGET_SELECTED', type: 'NORMAL', category: 'DAMAGE_CATEGORY_PHYSICAL', rating: 5, ratingDoubles: 5 },
+        MOVE_RAGE_POWDER: { id: 'MOVE_RAGE_POWDER', power: 0, target: 'MOVE_TARGET_USER', type: 'BUG', category: 'DAMAGE_CATEGORY_STATUS', rating: 1, ratingDoubles: 7 },
+        MOVE_PROTECT: { id: 'MOVE_PROTECT', power: 0, target: 'MOVE_TARGET_USER', type: 'NORMAL', category: 'DAMAGE_CATEGORY_STATUS', rating: 4.5, ratingDoubles: 5.5 },
+        MOVE_RECOVER: { id: 'MOVE_RECOVER', power: 0, target: 'MOVE_TARGET_USER', type: 'NORMAL', category: 'DAMAGE_CATEGORY_STATUS', rating: 5, ratingDoubles: 5 },
+    };
+    const stat = { baseHP: 80, baseAttack: 60, baseDefense: 100, baseSpAttack: 60, baseSpDefense: 100, baseSpeed: 70, teachables: [], evolutionData: {} };
+    const plain = { ...stat, id: 'P', parsedAbilities: ['NONE'], learnset: learns('MOVE_SLASH') };
+    const supp = { ...stat, id: 'S', parsedAbilities: ['HOSPITALITY'], learnset: learns('MOVE_RAGE_POWDER', 'MOVE_PROTECT', 'MOVE_RECOVER') };
+
+    test('a low-offense dedicated support out-rates an identical-stat non-support mon in doubles', () => {
+        const rPlain = ratePokemonDoubles(plain, moves, abilities, [], ['MOVE_SLASH']).ratingDoubles;
+        const rSupp = ratePokemonDoubles(supp, moves, abilities, [], ['MOVE_RAGE_POWDER', 'MOVE_PROTECT', 'MOVE_RECOVER']).ratingDoubles;
+        expect(rSupp).toBeGreaterThan(rPlain);
+    });
+    test('a full support kit scores above the generic combo cap (1.0) — the headroom the dedicated-support lift unlocks', () => {
+        // Sinistcha-like full kit: Hospitality + Rage Powder + Protect + Recover → well past the 1.0 combo cap.
+        expect(supportScore(supp, moves)).toBeGreaterThan(1.0);
+    });
+    test('isDedicatedSupport: a STRONG kit qualifies regardless of offense (Sinistcha, 121 SpA); an attacker with one tool does not (Landorus-T)', () => {
+        const sinistcha = { parsedAbilities: ['HOSPITALITY'], baseAttack: 60, baseSpAttack: 121, learnset: learns('MOVE_RAGE_POWDER'), teachables: [] };
+        const landoT = { parsedAbilities: ['INTIMIDATE'], baseAttack: 145, baseSpAttack: 105, learnset: [], teachables: [] };
+        expect(isDedicatedSupport(sinistcha)).toBe(true);
+        expect(isDedicatedSupport(landoT)).toBe(false);
+    });
+});
+
+describe('ratePokemonDoubles — BST floor (T-140, nuzlocke pacing parity with singles)', () => {
+    // A neutral ability (no offensive multiplier, no doubles-combo credit) so rawBST == the true BST.
+    // (A ['NONE']-only mon would trip the TRUANT/DEFEATIST/SLOW_START `every()` penalties and get a
+    // deflated effective BST — an artifact of using NONE, not how real mons behave.)
+    const abilities = { ABILITY_PRESSURE: { rating: 3, ratingDoubles: 3 }, ABILITY_NONE: { rating: 0, ratingDoubles: 0 } };
+    const moves = { MOVE_SLASH: { id: 'MOVE_SLASH', power: 70, target: 'MOVE_TARGET_SELECTED', type: 'NORMAL', category: 'DAMAGE_CATEGORY_PHYSICAL', rating: 5, ratingDoubles: 5 } };
+    const base = { parsedAbilities: ['PRESSURE'], teachables: [], evolutionData: {}, learnset: [{ level: 1, move: 'MOVE_SLASH' }] };
+    const { TIER_SEQ } = require('../../constants');
+    const set = ['MOVE_SLASH'];
+
+    // A 660-BST frail glass cannon: heavy frailty penalty, no support/combo. Its computed doubles rating
+    // lands far below LEGEND — but the BST floor must still guarantee LEGEND, exactly as singles does.
+    const frailGod = { ...base, id: 'G', baseHP: 70, baseAttack: 170, baseDefense: 40, baseSpAttack: 170, baseSpDefense: 40, baseSpeed: 170 }; // BST 660
+    test('a high-BST (660) frail glass cannon is floored to LEGEND in doubles', () => {
+        expect(ratePokemonDoubles(frailGod, moves, abilities, [], set).tierDoubles).toBe('LEGEND');
+    });
+
+    // A 600-BST frail attacker → at least OU (the OU BST floor).
+    const ouBudget = { ...base, id: 'O', baseHP: 80, baseAttack: 150, baseDefense: 55, baseSpAttack: 150, baseSpDefense: 55, baseSpeed: 110 }; // BST 600
+    test('a 600-BST frail attacker is floored to at least OU', () => {
+        const t = ratePokemonDoubles(ouBudget, moves, abilities, [], set).tierDoubles;
+        expect(TIER_SEQ.indexOf(t)).toBeGreaterThanOrEqual(TIER_SEQ.indexOf('OU')); // OU or better (TIER_SEQ: weakest→strongest)
+    });
+
+    // A genuinely weak, low-BST mon (240) is NOT floored up.
+    const weakling = { ...base, id: 'W', baseHP: 40, baseAttack: 40, baseDefense: 40, baseSpAttack: 40, baseSpDefense: 40, baseSpeed: 40 };
+    test('a low-BST mon gets no spurious BST floor', () => {
+        const t = ratePokemonDoubles(weakling, moves, abilities, [], set).tierDoubles;
+        expect(TIER_SEQ.indexOf(t)).toBeLessThanOrEqual(TIER_SEQ.indexOf('NU')); // stays NU-or-worse, not floored up
     });
 });

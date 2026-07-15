@@ -20,7 +20,8 @@
     "screenSetter": "Reflect / Light Screen / Aurora Veil",
     "setupSweeper": "boosts then sweeps (Belly Drum / Dragon Dance / Geomancy / Swords Dance / Tail Glow)",
     "winCondition": "the team's late-game closer (setup sweeper or a weather/TR-boosted nuke)",
-    "hazardSetter": "sets Stealth Rock / Spikes (meaningful in 6v6, light — NOT dead as in 4v4 VGC)"
+    "hazardSetter": "sets Stealth Rock / Spikes (meaningful in 6v6, light — NOT dead as in 4v4 VGC)",
+    "dedicatedSupport": "a LOW-OFFENSE mon built to enable allies (redirection / Fake Out / Wide Guard / ally ability / Intimidate / speed-control), NOT an attacker that merely carries a support tool (T-141)"
   },
   "baseArchetypes": [
     {
@@ -28,6 +29,7 @@
       "description": "The default doubles framework: an Intimidate + Fake Out support core blunts the opponent to open a safe turn for a setup sweeper or spread attackers, with Tailwind (or a Trick Room backup) as speed control. Offensively slanted but carries real bulk and a clear win condition.",
       "entry": [{ "feature": "intimidateUser", "min": 1 }, { "feature": "fakeOutUser", "min": 1 }],
       "structure": [
+        { "role": "dedicatedSupport", "min": 1, "max": 2, "weight": 0.8 },
         { "role": "intimidateUser", "min": 1, "max": 2, "weight": 1.0 },
         { "role": "fakeOutUser", "min": 1, "max": 1, "weight": 0.8 },
         { "role": "spreadAttacker", "min": 1, "max": 2, "weight": 0.9 },
@@ -40,6 +42,7 @@
       "description": "Flexible matchup-adaptive team of strong mons carrying two win conditions and two speed-control modes (fast Tailwind/terrain + slow Trick Room) over a bulky Intimidate/redirection backbone; the pilot commits to the mode that beats the opponent.",
       "entry": [{ "feature": "tailwindSetter", "min": 1 }, { "feature": "trickRoomSetter", "min": 1 }],
       "structure": [
+        { "role": "dedicatedSupport", "min": 1, "max": 1, "weight": 0.7 },
         { "role": "intimidateUser", "min": 1, "max": 1, "weight": 0.7 },
         { "role": "tailwindSetter", "min": 1, "max": 1, "weight": 0.8 },
         { "role": "trickRoomSetter", "min": 1, "max": 1, "weight": 0.8 },
@@ -53,9 +56,22 @@
       "entry": [{ "feature": "spreadAttacker", "min": 2 }, { "feature": "tailwindSetter", "min": 1 }],
       "structure": [
         { "role": "spreadAttacker", "min": 2, "max": 3, "weight": 1.0 },
+        { "role": "dedicatedSupport", "min": 0, "max": 1, "weight": 0.5 },
         { "role": "fakeOutUser", "min": 0, "max": 1, "weight": 0.6 },
         { "role": "tailwindSetter", "min": 1, "max": 1, "weight": 0.8 },
         { "role": "winCondition", "min": 1, "max": 2, "weight": 1.0 }
+      ]
+    },
+    {
+      "id": "redirection_support", "name": "Redirection Support Offense", "category": "offensive",
+      "description": "Support is the IDENTITY, not a side dish (corpus: 'Redirection Support Offense'): a dedicated support soaks attacks off a fragile win condition (Follow Me / Rage Powder or Lightning Rod / Storm Drain), buying free turns for a setup sweeper or glass-cannon nuke; chip / speed-control softens targets. The with-support counterpart to hyper_offense's 'no Protect' builds (T-141).",
+      "entry": [{ "feature": "dedicatedSupport", "min": 1 }, { "feature": "winCondition", "min": 1 }],
+      "structure": [
+        { "role": "dedicatedSupport", "min": 1, "max": 2, "weight": 1.0 },
+        { "role": "redirector", "min": 1, "max": 1, "weight": 0.9 },
+        { "role": "winCondition", "min": 1, "max": 2, "weight": 1.0 },
+        { "role": "spreadAttacker", "min": 0, "max": 1, "weight": 0.6 },
+        { "role": "tailwindSetter", "min": 0, "max": 1, "weight": 0.5 }
       ]
     }
   ],

@@ -3498,6 +3498,9 @@ const DOUBLES_SUPPORT_RATINGS = {
     MOVE_SNARL: 6, MOVE_FAKE_TEARS: 6, MOVE_STRUGGLE_BUG: 5.5,                      // spread offensive stat-drop = doubles support, not a penalty
     MOVE_ICY_WIND: 6, MOVE_ELECTROWEB: 5.5, MOVE_BULLDOZE: 5,                       // spread speed control
     MOVE_PERISH_SONG: 5.5,                                                         // wincon vs bulk (trapping combo deferred: Shadow Tag decision open)
+    // T-141 — Encore is premium doubles disruption (locks a foe into a bad move; devastating off Prankster).
+    // (Parting Shot needs no floor — rateMove already scores it ~8 in singles.)
+    MOVE_ENCORE: 6.5,
 };
 
 // Doubles value of a move: the singles rating plus a spread bonus for damaging moves that hit both
@@ -3523,9 +3526,9 @@ const DOUBLES_ABILITY_RATINGS = {
     // Redirection draws (the "draw" half is worthless in singles, decisive in doubles).
     ABILITY_LIGHTNING_ROD: 8, ABILITY_STORM_DRAIN: 8, ABILITY_VOLT_ABSORB: 7, ABILITY_MOTOR_DRIVE: 6,
     ABILITY_INTIMIDATE: 9,                                          // lowers BOTH foes' Attack
-    ABILITY_FRIEND_GUARD: 6, ABILITY_TELEPATHY: 5,                  // ally protection (doubles-only)
+    ABILITY_FRIEND_GUARD: 6, ABILITY_HOSPITALITY: 6, ABILITY_TELEPATHY: 5, // ally protection / heal (doubles-only; T-141)
     ABILITY_HEALER: 4, ABILITY_SYMBIOSIS: 4, ABILITY_AROMA_VEIL: 4, // ally support
-    ABILITY_DEFIANT: 6, ABILITY_COMPETITIVE: 6,                     // punish the ubiquitous Intimidate
+    ABILITY_DEFIANT: 7, ABILITY_COMPETITIVE: 7,                     // punish the ubiquitous Intimidate (T-141: 6→7, on 69% of doubles teams)
     ABILITY_JUSTIFIED: 5, ABILITY_RATTLED: 4,                       // trigger more often
     ABILITY_OVERCOAT: 4,                                            // spread powder / weather immunity
 };
@@ -3535,6 +3538,19 @@ function rateAbilityDoubles(abilityKey, ability) {
     const base = (ability && ability.rating) || 0;
     const floor = DOUBLES_ABILITY_RATINGS[abilityKey];
     return floor !== undefined ? Math.max(base, floor) : base;
+}
+
+// T-141 — ally-only abilities do NOTHING in singles (they act solely on an ally, which is absent in a
+// 1v1), yet the C aiRating scores them as if useful — inflating the singles tier of Tatsugiri (Commander
+// 10!), Sinistcha (Hospitality 5), Flamigo (Costar 5), Stonjourner (Power Spot 2). Corrected to 0 for the
+// SINGLES rating; their DOUBLES value is restored by DOUBLES_ABILITY_RATINGS / the combo. Owner-authorised
+// clear-error fix (docs/research/doubles-support.md §4c) — the only sanctioned singles rating change.
+const SINGLES_ABILITY_CORRECTIONS = {
+    ABILITY_COMMANDER: 0, ABILITY_HOSPITALITY: 0, ABILITY_COSTAR: 0, ABILITY_POWER_SPOT: 0,
+};
+function rateAbilitySingles(abilityKey, ability) {
+    const corrected = SINGLES_ABILITY_CORRECTIONS[abilityKey];
+    return corrected !== undefined ? corrected : ((ability && ability.rating) || 0);
 }
 
 // ── T-097 — DOUBLES pokemon rating ────────────────────────────────────────────────────────────────────
@@ -3559,8 +3575,10 @@ function bstRatingDoubles({ offensePower, defensePower, speedPower }, role) {
 // Additive, capped (like computeComboBonus). Weights tunable.
 const DOUBLES_COMBO = {
     trickRoom: 0.5, spread: 0.4, redirection: 0.5, intimidate: 0.5, fakeOut: 0.35, speedControl: 0.4,
-    pivot: 0.3, terrain: 0.45, weather: 0.45, friendGuard: 0.35, cap: 1.0,   // T-097 tuning: cap lowered 1.5→1.0 (temper stacking)
+    pivot: 0.3, terrain: 0.45, weather: 0.45, friendGuard: 0.35, prankster: 0.4, cap: 1.0,   // T-097 tuning: cap lowered 1.5→1.0 (temper stacking); prankster T-141
 };
+// T-141 — support moves that Prankster upgrades to priority (the reason Prankster is a doubles-skewed ability).
+const PRANKSTER_SUPPORT_MOVES = ['MOVE_TAILWIND', 'MOVE_TAUNT', 'MOVE_THUNDER_WAVE', 'MOVE_ENCORE', 'MOVE_FOLLOW_ME', 'MOVE_RAGE_POWDER', 'MOVE_WILL_O_WISP'];
 const DOUBLES_SURGE_ABILITIES = ['ELECTRIC_SURGE', 'GRASSY_SURGE', 'PSYCHIC_SURGE', 'MISTY_SURGE'];
 // Weather is a doubles archetype (corpus) — a setter is premium support, like a terrain setter.
 const DOUBLES_WEATHER_ABILITIES = ['DROUGHT', 'DRIZZLE', 'SAND_STREAM', 'SNOW_WARNING', 'ORICHALCUM_PULSE'];
@@ -3583,8 +3601,61 @@ function computeComboBonusDoubles(poke, moves, { offensePower }) {
     // bulky field/ally support (owner ✔; weather is a doubles archetype in the corpus).
     if (abils.some(a => DOUBLES_SURGE_ABILITIES.includes(a))) bonus += DOUBLES_COMBO.terrain;
     if (abils.some(a => DOUBLES_WEATHER_ABILITIES.includes(a))) bonus += DOUBLES_COMBO.weather;
-    if (abils.includes('FRIEND_GUARD')) bonus += DOUBLES_COMBO.friendGuard;
+    // Ally-support abilities (Friend Guard / Hospitality): dedicated doubles support (T-141: + Hospitality).
+    if (abils.includes('FRIEND_GUARD') || abils.includes('HOSPITALITY')) bonus += DOUBLES_COMBO.friendGuard;
+    // Prankster on a support kit gives +1 priority to Tailwind / Taunt / T-Wave / Encore / redirection (T-141).
+    if (abils.includes('PRANKSTER') && canLearn(PRANKSTER_SUPPORT_MOVES)) bonus += DOUBLES_COMBO.prankster;
     return Math.min(bonus, DOUBLES_COMBO.cap);
+}
+
+// ── T-141 — DEDICATED support signature ─────────────────────────────────────────────────────────────
+// A dedicated support (Sinistcha, Amoonguss, Cresselia, Pachirisu-class) is a LOW-OFFENSE mon whose kit
+// enables allies — as opposed to a bulky attacker that merely carries a support tool (Landorus-T, Incin-
+// eroar: offense too high → excluded; they're already well-rated by the T-097 combo). supportScore sums
+// the support kit the species can actually field; for a low-offense mon it lifts the combo (see
+// ratePokemonDoubles) up to SUPPORT_BONUS_CAP, well past the generic 1.0 combo cap — a ~2-tier quality
+// lift (owner: Sinistcha RU→OU). See docs/research/doubles-support.md §2-§3.
+const SUPPORT_OFFENSE_MAX = 95;      // raw max(Atk,SpA) ceiling — matches featureDetectors SUPPORT_MAX_OFFENSE
+const SUPPORT_SIGNATURE_MIN = 0.8;   // a MODERATE kit qualifies only together with a low-offense profile
+const SUPPORT_STRONG_MIN = 1.4;      // a STRONG kit qualifies regardless of offense (a support mon with high
+                                     // unused offence — e.g. Sinistcha, 121 SpA, played as Hospitality support)
+const SUPPORT_BONUS_CAP = 1.8;       // headroom for a full-kit dedicated support (calibrated Phase 6 vs anchors)
+const SUPPORT_REDIRECT_MOVES = ['MOVE_FOLLOW_ME', 'MOVE_RAGE_POWDER'];
+const SUPPORT_REDIRECT_ABILITIES = ['LIGHTNING_ROD', 'STORM_DRAIN'];
+const SUPPORT_ALLY_ABILITIES = ['FRIEND_GUARD', 'HOSPITALITY', 'HEALER'];
+const SUPPORT_GUARD_MOVES = ['MOVE_WIDE_GUARD', 'MOVE_QUICK_GUARD'];
+const SUPPORT_SPEEDCTRL_MOVES = ['MOVE_ICY_WIND', 'MOVE_ELECTROWEB', 'MOVE_SNARL', 'MOVE_TAILWIND'];
+const SUPPORT_DISRUPT_MOVES = ['MOVE_TAUNT', 'MOVE_ENCORE', 'MOVE_PARTING_SHOT', 'MOVE_PERISH_SONG'];
+const SUPPORT_RECOVERY_MOVES = ['MOVE_RECOVER', 'MOVE_ROOST', 'MOVE_MOONLIGHT', 'MOVE_MORNING_SUN', 'MOVE_SYNTHESIS', 'MOVE_SLACK_OFF', 'MOVE_SOFT_BOILED', 'MOVE_STRENGTH_SAP', 'MOVE_WISH', 'MOVE_LIFE_DEW', 'MOVE_JUNGLE_HEALING'];
+const SUPPORT_PROTECT_MOVES = ['MOVE_PROTECT', 'MOVE_DETECT', 'MOVE_SPIKY_SHIELD', 'MOVE_KINGS_SHIELD', 'MOVE_BANEFUL_BUNKER', 'MOVE_SILK_TRAP'];
+// The support "signature" of a species: additive credits for each support tool it can field (ability +
+// learnable moves). Weights mirror docs/research/doubles-support.md §3 (calibrated in Phase 6).
+function supportScore(poke, moves) {
+    const abils = poke.parsedAbilities || [];
+    const learnable = new Set([...(poke.learnset || []).map(l => l.move), ...(poke.teachables || [])]);
+    const hasMove = list => list.some(m => learnable.has(m));
+    const hasAbil = list => abils.some(a => list.includes(a));
+    let s = 0;
+    if (hasMove(SUPPORT_REDIRECT_MOVES) || hasAbil(SUPPORT_REDIRECT_ABILITIES)) s += 1.0; // redirection — THE defining support tool
+    if (learnable.has('MOVE_FAKE_OUT')) s += 0.5;
+    if (hasMove(SUPPORT_GUARD_MOVES)) s += 0.5;
+    if (hasAbil(SUPPORT_ALLY_ABILITIES)) s += 0.8;                                         // Friend Guard / Hospitality / Healer — dedicated ally support
+    if (abils.includes('INTIMIDATE')) s += 0.5;
+    if (learnable.has('MOVE_HELPING_HAND')) s += 0.35;
+    if (hasMove(SUPPORT_SPEEDCTRL_MOVES)) s += 0.4;
+    if (hasMove(SUPPORT_DISRUPT_MOVES)) s += 0.35;
+    if (hasMove(SUPPORT_RECOVERY_MOVES) && hasMove(SUPPORT_PROTECT_MOVES)) s += 0.3;       // durable repeatable support
+    if (abils.includes('PRANKSTER')) s += 0.4;
+    return s;
+}
+// A DEDICATED support (gets the doubles quality lift): a STRONG support kit regardless of offence (a
+// support mon with high unused offence — Sinistcha), OR a MODERATE kit on a genuinely low-offense mon
+// (so an ATTACKER carrying one support tool — Landorus-T Intimidate — is NOT lifted). See §2 of
+// docs/research/doubles-support.md.
+function isDedicatedSupport(poke) {
+    const s = supportScore(poke);
+    if (s >= SUPPORT_STRONG_MIN) return true;
+    return Math.max(poke.baseAttack || 0, poke.baseSpAttack || 0) <= SUPPORT_OFFENSE_MAX && s >= SUPPORT_SIGNATURE_MIN;
 }
 
 // T-097 tuning (owner ✔): doubles punishes FRAILTY harder (a frail mon is folded by spread damage) and does
@@ -3623,7 +3694,10 @@ function ratePokemonDoubles(poke, moves, abilities, tmPool, moveset = null) {
         const r = ab ? (ab.ratingDoubles != null ? ab.ratingDoubles : (ab.rating || 0)) : 0;
         if (r > bestAbilityRating) bestAbilityRating = r;
     });
-    const { offensePower, speedPower, defensePower, role, hugePowerRating } = computePowerAndRole(poke);
+    const {
+        offensePower, speedPower, defensePower, role, hugePowerRating,
+        abilitiesAttackPowerMultiplier, abilitiesSpaPowerMultiplier, abilitiesSpeedPowerMultiplier,
+    } = computePowerAndRole(poke);
     if (hugePowerRating != null) bestAbilityRating = Math.max(bestAbilityRating, hugePowerRating);
     const bstRating = bstRatingDoubles({ offensePower, defensePower, speedPower }, role);
     if (!moveset) moveset = chooseMoveset(poke, moves).moveset;
@@ -3635,23 +3709,65 @@ function ratePokemonDoubles(poke, moves, abilities, tmPool, moveset = null) {
     movesRating *= 0.25;
     const coverageMetrics = computeCoverageMetrics(moveset, moves);
     movesRating = movesRating * 0.7 + coverageMetrics.coverageScore * 0.3;
-    const combo = computeComboBonusDoubles(poke, moves, { offensePower });
+    let combo = computeComboBonusDoubles(poke, moves, { offensePower });
+    // T-141 — dedicated-support depth: a dedicated support gets extra combo headroom (up to
+    // SUPPORT_BONUS_CAP), lifting its doubles tier ~2 steps (owner: Sinistcha RU→OU). max() → never
+    // double-counts the support the combo already credited; attackers (Landorus-T) don't qualify.
+    // Applied before the T-140 BST floor.
+    if (isDedicatedSupport(poke)) combo = Math.min(Math.max(combo, supportScore(poke)), SUPPORT_BONUS_CAP);
     let ratingDoubles = (bstRating * 0.8) + (movesRating * 0.1) + (bestAbilityRating * 0.1) + combo;
     // T-097 tuning — frailty penalty (spread damage folds frail mons) + passive-wall penalty (bulk with no
     // offence and no support role isn't a doubles threat).
     if (defensePower < DBL_FRAILTY_DEF) ratingDoubles -= (DBL_FRAILTY_DEF - defensePower) * DBL_FRAILTY_FACTOR;
     if (offensePower < DBL_PASSIVE_OFF && combo < DBL_PASSIVE_COMBO) ratingDoubles -= DBL_PASSIVE_PENALTY;
+
+    // T-140 — BST floor (parity with the singles rater): raw BST guarantees a minimum tier, so BST keeps
+    // pacing the run in doubles too. Same format-independent BST cutoffs as singles; the DOUBLES tier
+    // thresholds are the floor targets. Applied AFTER the penalties, so BST has the final word — a
+    // high-BST frail mon is never rated below its BST tier just because spread damage folds it.
+    const rawBST = poke.baseHP
+        + poke.baseAttack * abilitiesAttackPowerMultiplier
+        + poke.baseDefense
+        + poke.baseSpAttack * abilitiesSpaPowerMultiplier
+        + poke.baseSpDefense
+        + poke.baseSpeed * abilitiesSpeedPowerMultiplier;
+    const DT = DOUBLES_TIER_THRESHOLDS;
+    const floorTo = (threshold) => { if (ratingDoubles < threshold) ratingDoubles = threshold + ratingDoubles / 100; };
+    // Stone megas follow the mega BST rules (UBERS/AG); non-megas the LEGEND rule — mirrors singles.
+    const isStoneMega = !!(poke.evolutionData && poke.evolutionData.isMega && poke.evolutionData.megaItem);
+    if (rawBST >= NU_BST_THRESHOLD) floorTo(DT.NU);
+    if (rawBST >= RU_BST_THRESHOLD) floorTo(DT.RU);
+    if (rawBST >= UU_BST_THRESHOLD) floorTo(DT.UU);
+    if (rawBST >= OU_BST_THRESHOLD) floorTo(DT.OU);
+    if (!isStoneMega && rawBST >= LEGEND_BST_THRESHOLD) floorTo(DT.LEGEND);
+    if (isStoneMega && rawBST >= MEGA_UBERS_BST_THRESHOLD) floorTo(DT.UBERS);
+    if (rawBST >= (isStoneMega ? MEGA_AG_BST_THRESHOLD : AG_BST_THRESHOLD) || poke.parsedAbilities.includes('POWER_CONSTRUCT')) floorTo(DT.AG);
+
     return { ratingDoubles, tierDoubles: tierFromRatingDoubles(ratingDoubles), role };
+}
+
+// T-111 — the per-level DOUBLES rating (mirror of rateContextual). `singlesMoveset` is the singles
+// contextual bestMoveset at this cap — passed so this consumes NO rng (see ratePokemonDoubles). Returns
+// { absoluteRating, tier } to match the singles contextualRatings[cap] shape the selectors read.
+function rateContextualDoubles(poke, moves, abilities, context, singlesMoveset = null) {
+    const { level = 100, tms = [] } = context;
+    const restrictedPoke = { ...poke, learnset: poke.learnset.filter(entry => entry.level <= level) };
+    const rd = ratePokemonDoubles(restrictedPoke, moves, abilities, new Set(tms), singlesMoveset);
+    return { absoluteRating: rd.ratingDoubles, tier: rd.tierDoubles };
 }
 
 module.exports = {
     ratePokemon,
     ratePokemonDoubles,
+    rateAbilitySingles,
+    supportScore,
+    isDedicatedSupport,
     bstRatingDoubles,
     computeComboBonusDoubles,
     tierFromRating,
     tierFromRatingDoubles,
     rateContextual,
+    rateContextualDoubles,
     isSpreadMove,
     rateMoveDoubles,
     rateAbilityDoubles,
