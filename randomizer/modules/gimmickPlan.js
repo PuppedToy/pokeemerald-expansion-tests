@@ -88,7 +88,14 @@ function isWeatherAbuser(m, subtype, moves = null) { // eslint-disable-line no-u
 // weatherAbuseBreakdown(mon, subtype) → { total, parts:[{k,v}] } — the ITEMISED rating, for auditability
 // (T-135, owner): the decision log shows what each thing contributes, so we can see WHY an abuser ranked
 // where it did. `weatherAbuseRating` is just its `.total`.
-function weatherAbuseBreakdown(mon, subtype) {
+// T-109 — a gimmick abuser's base-quality contribution to its ranking: the DOUBLES rating for a doubles
+// trainer, the singles rating otherwise. So a doubles weather/TR/terrain team ranks its abusers by how
+// good they are IN DOUBLES (default false → singles ranking unchanged, byte-identical).
+const monBaseRating = (poke, doubles) => (doubles && typeof poke.ratingDoubles === 'number')
+    ? poke.ratingDoubles
+    : ((poke.rating && poke.rating.absoluteRating) || 0);
+
+function weatherAbuseBreakdown(mon, subtype, doubles = false) {
     const poke = (mon && mon.pokemon) || mon || {};
     const types = poke.parsedTypes || [];
     const abilities = (mon && mon.ability)
@@ -103,7 +110,7 @@ function weatherAbuseBreakdown(mon, subtype) {
     const parts = [];
     const add = (k, v) => { if (v) parts.push({ k, v: Math.round(v * 100) / 100 }); };
 
-    add('base', W.base * ((poke.rating && poke.rating.absoluteRating) || 0));
+    add('base', W.base * monBaseRating(poke, doubles));
     // Offensive weather ability, scaled by the stat it exploits + a flat floor so a real ability-abuser
     // outranks a plain boosted-STAB type attacker of similar power (owner: prefer the ability).
     let hasOffensiveAbility = false;
@@ -131,7 +138,7 @@ function weatherAbuseBreakdown(mon, subtype) {
     return { total: Math.round(total * 100) / 100, parts };
 }
 
-function weatherAbuseRating(mon, subtype) { return weatherAbuseBreakdown(mon, subtype).total; }
+function weatherAbuseRating(mon, subtype, doubles = false) { return weatherAbuseBreakdown(mon, subtype, doubles).total; }
 
 // RC1 (T-132, owner-approved) — MOVE-SETTER retrofit for villains. A weather team FAILS without a setter,
 // but with `mutateAbilities` the setter ABILITIES (Sand Stream, Drizzle, …) are scattered randomly across
@@ -255,7 +262,7 @@ function electricTerrainAbuseScore(mon) {
     if (monCanLearn(mon, ELEC_SYNERGY_MOVES)) s += WEATHER_ABUSE_SYNERGY_PTS;
     return s;
 }
-function electricTerrainBreakdown(mon) {
+function electricTerrainBreakdown(mon, doubles = false) {
     const poke = monPoke(mon);
     const abil = monAbilities(mon);
     const off = Math.max(poke.baseAttack || 0, poke.baseSpAttack || 0) / 100;
@@ -264,7 +271,7 @@ function electricTerrainBreakdown(mon) {
     const W = WX_ABUSE_RATING;
     const parts = [];
     const add = (k, v) => { if (v) parts.push({ k, v: Math.round(v * 100) / 100 }); };
-    add('base', W.base * ((poke.rating && poke.rating.absoluteRating) || 0));
+    add('base', W.base * monBaseRating(poke, doubles));
     let hasAbil = false;
     if (abil.includes('SURGE_SURFER')) { add('SURGE_SURFER', W.speedMult * off); hasAbil = true; }
     if (abil.includes('QUARK_DRIVE')) { add('QUARK_DRIVE', W.proto * bestStat); hasAbil = true; }
@@ -314,14 +321,14 @@ function trickRoomAbuseScore(mon) {
     if ((mon && mon.item) === ROOM_SERVICE_ITEM) s += WEATHER_ABUSE_SYNERGY_PTS;
     return s;
 }
-function trickRoomBreakdown(mon) {
+function trickRoomBreakdown(mon, doubles = false) {
     const poke = monPoke(mon);
     const spe = poke.baseSpeed == null ? 999 : poke.baseSpeed;
     const off = Math.max(poke.baseAttack || 0, poke.baseSpAttack || 0) / 100;
     const W = WX_ABUSE_RATING;
     const parts = [];
     const add = (k, v) => { if (v) parts.push({ k, v: Math.round(v * 100) / 100 }); };
-    add('base', W.base * ((poke.rating && poke.rating.absoluteRating) || 0));
+    add('base', W.base * monBaseRating(poke, doubles));
     // Any slow mon abuses TR; offence + slowness scale the payoff so a slow WALLBREAKER ranks above a
     // slow wall (the ranking prefers slow-STRONG, but slow-weak is still eligible).
     if (spe <= TR_ABUSE_SPEED_MAX) {

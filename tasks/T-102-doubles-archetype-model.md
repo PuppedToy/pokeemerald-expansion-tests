@@ -59,8 +59,10 @@ T-121 corpus expansion → slot-recipe entries → crystallize-by-fit). Step by 
 Acceptance criteria:
 - [x] `doubles.json` archetype set (base offensive/balanced + doubles gimmicks) with entry conditions
       and structure for each. *(No pure-defensive base — see the flag below; owner to confirm.)*
-- [ ] (v2, when we reach doubles) recipes re-derived from the expanded DOU 6v6 corpus, owner-validated,
-      structures rewritten as slot recipes; detectors re-validated; audit shows realistic crystallization.
+- [x] (v2) recipes re-derived/validated against the expanded DOU 6v6 corpus — done via T-141 (see log
+      2026-07-15): dedicatedSupport role + slots + redirection_support base added and corpus-grounded;
+      detectors re-validated (dedicatedSupport); the remaining core roles (spread / Intimidate / Fake Out
+      / speed control / redirection) all already present and confirmed against the 59-team corpus.
 - [x] A schema + validation test guards the file (shared loader `randomizer/archetypes.js` + test).
 - [x] Content grounded in the 6v6 DOU research (`docs/research/team-archetypes.md`, 6v6-adjusted).
 - [x] `cd randomizer && npm test` green.
@@ -89,6 +91,21 @@ Acceptance criteria:
   validation → rewrite `doubles.json` structures) — to run when we reach the doubles task, same method
   as singles. Recipes themselves are NOT derived here (deferred + owner-gated).
 
+- **2026-07-15 — v2 review (owner asked to confirm before manual test).** Analysed the 59 DOU 6v6
+  corpus teams' role frequencies vs the current recipes. The corpus labels are per-team free text (each
+  team unique — they do NOT group cleanly into 3 base buckets), but the aggregate role signals are clear
+  and **every core role is already in the recipes**: spread (avg 2-3/team) → spreadAttacker; Intimidate/
+  Fake Out (most teams) → intimidateUser/fakeOutUser; speed control (tailwind/TR, avg 1-3) → tailwind/
+  trickRoomSetter; redirection (frequent) → the T-141 dedicatedSupport role + redirection_support base.
+  The single strongest corpus signal — **Protect on ~96% of mons (avg 3-5/team)** — is a MOVESET-level
+  fact (already valued at 5.5 in DOUBLES_SUPPORT_RATINGS), NOT an archetype role; surfacing it in the
+  actual picked movesets is doubles-aware move selection (deferred, tracked under T-109), not a recipe
+  change. Re-deriving exact min/max/weights from 59 uniquely-labelled teams would be over-modelling
+  (owner-flagged). **Conclusion: v2 satisfied by T-141's corpus-grounded refinement — no further recipe
+  change warranted.** Open flag from v1 (no pure-defensive doubles base) stands: 6v6 DOU is offensive/
+  balanced-leaning, so offensive+balanced only remains correct.
+
 ## Outcome
 
 <!-- Filled when closing. -->
+Recipes corpus-grounded (v1 bases + T-141 support role/base). Awaiting owner confirmation to close.

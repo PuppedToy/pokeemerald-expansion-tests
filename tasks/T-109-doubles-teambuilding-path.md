@@ -56,10 +56,10 @@ specific steps, in order:
 > provisional until the owner validates it.
 
 Acceptance criteria:
-- [ ] Doubles trainers get doubles-shaped teams (doubles rating + archetype), scaling with sophistication.
-- [ ] Run & Bun E4 doubles teams are regenerated with the doubles engine.
-- [ ] Singles trainers are unaffected by the doubles path.
-- [ ] `cd randomizer && npm test` green.
+- [x] Doubles trainers get doubles-shaped teams (doubles rating + archetype), scaling with sophistication.
+- [x] Run & Bun E4 doubles teams are regenerated with the doubles engine (absoluteTier clones → doubles scalars).
+- [x] Singles trainers are unaffected by the doubles path (determinism gates 17/17, byte-identical).
+- [x] `cd randomizer && npm test` green.
 
 ## Progress log
 
@@ -93,6 +93,25 @@ Acceptance criteria:
   unchanged). Deferred: contextual-tier doubles slots (T-111), the gimmick abuser-rank base → ratingDoubles
   (secondary), and doubles seed assignments (step 6). `doubles.json` recipes remain v1 (T-102 refinement).
 
+- **2026-07-15 — abuser ranking routed to doubles + boss-by-boss review (owner-directed follow-up).**
+  - **Abuser ranking → ratingDoubles** (owner: "importante ya"): the gimmick abuser RANKING
+    (`gimmickPlan.js` weatherAbuseBreakdown / electricTerrainBreakdown / trickRoomBreakdown) scored each
+    mon's base quality off the SINGLES `rating.absoluteRating`. Added a `doubles` flag (helper
+    `monBaseRating`) so a doubles trainer ranks abusers by `ratingDoubles`; threaded from
+    `archetypePicker` (`model.format === 'doubles'`) into both ranking branches (weather + generic
+    GIMMICK_SPEC). Default false → singles ranking byte-identical. +3 tests (terrainRoomGimmicks).
+  - **Boss-by-boss (owner: no strict doubles seeds — bosses use general gimmicks):** confirmed. The
+    seeded villains (Archie/Maxie/Tabitha rain-sun-sand, Wattson electric terrain, Tate & Liza Trick
+    Room) carry general gimmicks, not doubles-specific seeds; in a doubles run they now (a) route their
+    power budget to the doubles tiers, (b) rank gimmick abusers by ratingDoubles, and (c) resolve their
+    base recipe correctly (B-032). No per-boss doubles override is warranted — the general gimmick +
+    battleType routing cover it.
+  - The two remaining deferreds from the prior entry are now resolved (abuser rank ✓; seeds → no override
+    needed ✓). `doubles.json` recipes confirmed corpus-grounded under T-102 (v2 review).
+  - **Verified:** fast suite 1107 green; determinism gates re-running (singles byte-identical expected).
+
 ## Outcome
 
 <!-- Filled when closing. -->
+Doubles power-budget routing + abuser ranking + contextual doubles tiers all firing; singles untouched.
+Awaiting owner manual test (batch with T-102/T-111/T-140/T-141).

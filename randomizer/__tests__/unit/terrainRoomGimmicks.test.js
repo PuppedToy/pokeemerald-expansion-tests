@@ -6,6 +6,7 @@
 const {
     isElectricTerrainSetter, electricTerrainAbuseScore, electricTerrainHolds, ensureElectricTerrainSetter,
     isTrickRoomSetter, trickRoomAbuseScore, trickRoomHolds, ensureTrickRoomSetter,
+    trickRoomBreakdown, electricTerrainBreakdown, weatherAbuseBreakdown,
 } = require('../../modules/gimmickPlan');
 
 // A resolved member: { pokemon: { parsedTypes, baseAttack, baseSpAttack, baseSpeed, learnset, teachables }, ability, moves, item }.
@@ -114,5 +115,23 @@ describe('trick room — holds', () => {
         ensureTrickRoomSetter(half, 1);
         expect(trickRoomHolds(half, { roomStyle: 'full' })).toBe(false); // only 1 setter, 3 abusers
         expect(trickRoomHolds(half)).toBe(true);                          // but a normal/half room holds
+    });
+});
+
+// T-109 — for a DOUBLES trainer, the abuser RANKING scores each mon's base quality off its doubles
+// rating (ratingDoubles), not its singles rating; the doubles flag defaults false → singles unchanged.
+describe('T-109 — gimmick abuser ranking uses the doubles rating for doubles trainers', () => {
+    const withRatings = (extra) => ({ parsedTypes: ['PSYCHIC'], baseAttack: 60, baseSpAttack: 130, baseSpeed: 30, learnset: [], teachables: [], parsedAbilities: [], rating: { absoluteRating: 5.0 }, ratingDoubles: 8.0, ...extra });
+    test('trickRoomBreakdown: doubles=true ranks off ratingDoubles (higher here), false off singles', () => {
+        const mon = withRatings();
+        expect(trickRoomBreakdown(mon, true).total).toBeGreaterThan(trickRoomBreakdown(mon, false).total);
+    });
+    test('electricTerrainBreakdown routes the base to ratingDoubles for doubles', () => {
+        const mon = withRatings({ parsedTypes: ['ELECTRIC'], baseAttack: 120, baseSpeed: 100, parsedAbilities: ['SURGE_SURFER'] });
+        expect(electricTerrainBreakdown(mon, true).total).toBeGreaterThan(electricTerrainBreakdown(mon, false).total);
+    });
+    test('weatherAbuseBreakdown routes the base to ratingDoubles for doubles', () => {
+        const mon = withRatings({ parsedTypes: ['FIRE'], baseAttack: 120, baseSpeed: 100 });
+        expect(weatherAbuseBreakdown(mon, 'sun', true).total).toBeGreaterThan(weatherAbuseBreakdown(mon, 'sun', false).total);
     });
 });

@@ -103,6 +103,7 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
         const soph = (context && context.sophistication) || 0;
         const seed = (context && context.archetypeSeed) || null;
         if (!model || soph < BIAS_MIN_SOPH) return sample(candidates);
+        const doubles = model.format === 'doubles'; // T-109 — rank gimmick abusers by their DOUBLES rating for a doubles trainer
 
         // T-137 — Wattson's electric terrain is now the `electric_terrain` GIMMICK (setter + abusers, handled
         // in the gimmick block below), not a manual "prefer Electric-types" overlay: as a gym leader his pool
@@ -172,7 +173,7 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
                     // exploits this weather best, given the mon's stats), and let sophistication pull the pick
                     // toward the TOP (endgame → real ability-abusers; early game ≈ uniform among eligibles).
                     const cands = reliableIdx.map(i => candidates[i]);
-                    const breakdowns = cands.map(c => weatherAbuseBreakdown(c, subtype));
+                    const breakdowns = cands.map(c => weatherAbuseBreakdown(c, subtype, doubles));
                     const maxR = Math.max(...breakdowns.map(b => b.total), 1e-6);
                     // weight = (rating/max)^(soph × sharpness): endgame → top-rated abusers dominate; early
                     // game (soph→0) → exponent→0 → all weights→1 (near-uniform, byte-identical-ish).
@@ -220,7 +221,7 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
             candidates.forEach((c, i) => { const s = spec.score(c); if (s >= WEATHER_ABUSE_THRESHOLD) reliableIdx.push(i); if (s > 0) softIdx.push(i); });
             if (teamAbusers < abuserTarget && reliableIdx.length) {
                 const cands = reliableIdx.map(i => candidates[i]);
-                const breakdowns = cands.map(c => spec.breakdown(c));
+                const breakdowns = cands.map(c => spec.breakdown(c, doubles));
                 const maxR = Math.max(...breakdowns.map(b => b.total), 1e-6);
                 const exp = soph * WX_ABUSE_RATING.rankSharpness;
                 const rankWeights = breakdowns.map(b => Math.pow(Math.max(b.total, 0) / maxR, exp));
