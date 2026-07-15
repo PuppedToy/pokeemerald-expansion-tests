@@ -156,23 +156,27 @@ describe('planPerishComboMove — Perish Song pairs with a Shadow Tag / Arena Tr
     const perisher = (o = {}) => mon({ ...withLearn('MOVE_PERISH_SONG'), ...o });
     const opts = (over) => ({ ctx: {}, sophistication: 1, ...over });
 
-    test('SELF: a Shadow Tag / Arena Trap mon that can learn Perish Song prefers it', () => {
+    test('SELF: a Shadow Tag / Arena Trap mon that can learn Perish Song prefers it — in BOTH formats', () => {
+        // singles (doubles defaults false) AND doubles both fire the self-combo (owner round 3).
         expect(planPerishComboMove({ species: perisher(), memberAbility: 'SHADOW_TAG', team: [], ...opts() })).toBe('MOVE_PERISH_SONG');
         expect(planPerishComboMove({ species: perisher(), memberAbility: 'ARENA_TRAP', team: [], ...opts() })).toBe('MOVE_PERISH_SONG');
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'SHADOW_TAG', team: [], ...opts({ doubles: true }) })).toBe('MOVE_PERISH_SONG');
     });
     test('SELF fires even for an offensive trapper (Mega Gengar carries the Perish Song itself)', () => {
         expect(planPerishComboMove({ species: perisher({ baseSpAttack: 170 }), memberAbility: 'SHADOW_TAG', team: [], ...opts() })).toBe('MOVE_PERISH_SONG');
     });
     test('a non-trapper with no trapping teammate → no Perish Song', () => {
-        expect(planPerishComboMove({ species: perisher(), memberAbility: 'LEVITATE', team: [], ...opts() })).toBeNull();
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'LEVITATE', team: [], ...opts({ doubles: true }) })).toBeNull();
     });
-    test('TEAMMATE: a support-leaning partner of a trapper prefers Perish Song (the split perish-trap)', () => {
+    test('TEAMMATE: a support-leaning partner of a trapper prefers Perish Song IN DOUBLES (the split combo)', () => {
         const team = [member(mon({ parsedAbilities: ['SHADOW_TAG'] }), 'SHADOW_TAG', [])];
-        expect(planPerishComboMove({ species: perisher(), memberAbility: 'LEVITATE', team, ...opts() })).toBe('MOVE_PERISH_SONG');
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'LEVITATE', team, ...opts({ doubles: true }) })).toBe('MOVE_PERISH_SONG');
+        // ...but NOT in singles — you don't split the combo across mons there (owner).
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'LEVITATE', team, ...opts() })).toBeNull();
     });
     test('TEAMMATE case does NOT fire on a sweeper (especially-dedicated-supports gate)', () => {
         const team = [member(mon({ parsedAbilities: ['SHADOW_TAG'] }), 'SHADOW_TAG', [])];
-        expect(planPerishComboMove({ species: perisher({ baseAttack: 140 }), memberAbility: 'LEVITATE', team, ...opts() })).toBeNull();
+        expect(planPerishComboMove({ species: perisher({ baseAttack: 140 }), memberAbility: 'LEVITATE', team, ...opts({ doubles: true }) })).toBeNull();
     });
     test('a mon that cannot learn Perish Song → null even as a trapper', () => {
         expect(planPerishComboMove({ species: mon(), memberAbility: 'SHADOW_TAG', team: [], ...opts() })).toBeNull();

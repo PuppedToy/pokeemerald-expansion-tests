@@ -52,14 +52,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   skilled trainer that happens to roll the pieces (a terrain setter, or a slow-strong core) builds the gimmick
   emergently or cleanly drops it — grounded in the competitive corpus (T-137).
 
-- **Doubles teams recognise the perish-trap combo.** A Shadow Tag / Arena Trap trapper that can learn
-  Perish Song (Gothitelle, Mega Gengar) now carries it — the trapped foe can't switch out of the 3-turn
-  count — and a support-leaning teammate of a trapper sings it too (the split version, e.g. a Wobbuffet
-  partner). It's a lightweight move-combo, not a forced archetype. Likewise the non-electric terrains
-  (Misty/Grassy/Psychic) aren't forced as team gimmicks — the corpus shows they're a lone mon's tool, so a
-  team just leans into one it happens to have (a Grassy Surge team prefers Grassy Glide, a Psychic Surge
-  team Expanding Force). Both are doubles-only, so singles play is unchanged. Screens stay a light utility
-  role (T-124).
+- **Trainers recognise the perish-trap combo.** A Shadow Tag / Arena Trap trapper that can learn Perish
+  Song (Gothitelle, Mega Gengar) now carries it — the trapped foe can't switch out of the 3-turn count —
+  in both singles and doubles. In doubles, a support-leaning teammate of a trapper sings it too (the split
+  version, e.g. a Wobbuffet partner). It's a lightweight move-combo, not a forced archetype. The
+  non-electric terrains (Misty/Grassy/Psychic), by contrast, aren't forced as team gimmicks — the corpus
+  shows they're a lone mon's tool, so a doubles team just leans into one it happens to have (a Grassy Surge
+  team prefers Grassy Glide, a Psychic Surge team Expanding Force). Screens stay a light utility role
+  (T-124).
 
 - **Trainer items are meaningful picks now, not random noise.** At every world point where the player picks
   one item from a group (Choice Band/Specs/Scarf, the type plates, the type gems, the resist berries, the

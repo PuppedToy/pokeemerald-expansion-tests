@@ -115,20 +115,22 @@ function planTerrainSynergyMove({ species, team, ctx = {}, sophistication }) {
 // T-124 — PERISH-TRAP is a moveset TEAM-COMBO, not a gimmick/archetype (owner). Perish Song pairs with a
 // Shadow Tag / Arena Trap trapper (the trapped foe can't switch out of the 3-turn count). Two cases:
 //   (1) SELF — a mon that ITSELF traps (Shadow Tag / Arena Trap) strongly prefers Perish Song in its own
-//       set (it carries the win condition: Gothitelle, Mega Gengar).
+//       set (it carries the win condition: Gothitelle, Mega Gengar). BOTH formats (owner round 3: the
+//       self-combo applies to singles too — a singles Perish-Trap Gothitelle is a real set).
 //   (2) TEAMMATE — a mon whose TEAMMATE traps prefers Perish Song too, if it's support-leaning (the classic
-//       split: a Wobbuffet-style trapper can't learn Perish Song, so a support partner carries it).
-// The caller applies this in DOUBLES only (in singles you don't split it across mons — owner), so singles
-// stays byte-identical. Returns MOVE_PERISH_SONG or null. Soph-gated; move reachability gated by the caller.
+//       split: a Wobbuffet-style trapper can't learn Perish Song, so a support partner carries it). DOUBLES
+//       ONLY — in singles you don't split it across mons (owner) → gated by `doubles`.
+// Returns MOVE_PERISH_SONG or null. Soph-gated; move reachability gated by the caller.
 const TRAPPER_ABILITIES_COMBO = ['SHADOW_TAG', 'ARENA_TRAP'];
 const PERISH_SONG_MOVE = 'MOVE_PERISH_SONG';
 const PERISH_COMBO_SUPPORT_MAX_OFFENSE = 100; // teammate case only fires on support-leaning mons (not sweepers)
-function planPerishComboMove({ species, memberAbility = null, team = [], ctx = {}, sophistication }) {
+function planPerishComboMove({ species, memberAbility = null, team = [], ctx = {}, sophistication, doubles = false }) {
     if (!species || (sophistication || 0) < BIAS_MIN_SOPH) return null;
     if (!speciesCanLearn(species, PERISH_SONG_MOVE, { tms: ctx.tms || null, level: ctx.level ?? null })) return null;
-    // (1) this mon is itself the trapper → always wants Perish Song.
+    // (1) this mon is itself the trapper → always wants Perish Song (both formats).
     if (memberAbility && TRAPPER_ABILITIES_COMBO.includes(memberAbility)) return PERISH_SONG_MOVE;
-    // (2) a teammate traps → a support-leaning partner carries the Perish Song.
+    // (2) a teammate traps → a support-leaning partner carries the Perish Song. Doubles only.
+    if (!doubles) return null;
     const teammateTraps = (team || []).some(m => m && m.ability && TRAPPER_ABILITIES_COMBO.includes(m.ability));
     const offense = Math.max(species.baseAttack || 0, species.baseSpAttack || 0);
     if (teammateTraps && offense <= PERISH_COMBO_SUPPORT_MAX_OFFENSE) return PERISH_SONG_MOVE;

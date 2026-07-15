@@ -144,6 +144,13 @@ Acceptance criteria:
     injection (reachable-gated). Tests rewritten (gimmick tests removed; `planPerishComboMove` +
     `archetypes.test.js` "no trapping gimmick" added). Fast suite **1133 green**; docs/CHANGELOG reframed.
 
+- **2026-07-16 — round 3 (owner): the SELF-combo also applies to singles.** `planPerishComboMove` gained a
+  `doubles` flag: the SELF case (a Shadow Tag / Arena Trap mon carries Perish Song) now fires in BOTH
+  formats — the caller no longer wraps it in a doubles guard — while the TEAMMATE split stays doubles-only
+  (`if (!doubles) return null`). This is a deliberate, owner-authorised **singles-output change** for the
+  handful of Shadow-Tag/Arena-Trap mons that learn Perish Song (Gothitelle line, Mega Gengar); the
+  determinism gates (cross-ROM consistency) still hold. Tests + docs/CHANGELOG updated. Fast suite 1133.
+
 ## Outcome
 
 Gimmick-aware completion finished. Weather (prior) + Trick Room (T-137/138) build themselves; T-124 adds a

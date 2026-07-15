@@ -30,16 +30,19 @@ Trap-team scan (a member with Shadow Tag / Arena Trap / Magnet Pull), by format:
 **Owner decision (2026-07-15):** perish-trap is NOT a build-around gimmick or archetype — it's a **moveset
 team-combo** (a 1-2 mon pairing), handled purely by prioritising the Perish Song MOVE. It does not reserve
 team slots the way weather/Trick Room do. Implemented as `planPerishComboMove` (`archetypeRefine.js`), a
-sibling of the terrain-synergy nudge, applied by the resolver in **DOUBLES only** (in singles you don't
-split the combo across mons — owner; and doubles-gating keeps singles byte-identical). Two cases:
+sibling of the terrain-synergy nudge. Two cases, with different format scope:
 
-- **(1) SELF — the trapper carries it.** A mon whose OWN ability is Shadow Tag / Arena Trap (the resolved
-  battle ability, so a Mega Gengar counts) and that can learn Perish Song strongly prefers it in its own
-  set. This is the all-in-one perish-trapper (Gothitelle, Mega Gengar). Fires regardless of offense.
-- **(2) TEAMMATE — a support partner carries it.** A **support-leaning** mon (offense ≤ 100) whose TEAMMATE
-  has Shadow Tag / Arena Trap prefers Perish Song — the split perish-trap (a Wobbuffet-style trapper can't
-  learn Perish Song, so a partner sings it). The offense gate keeps it off sweepers ("especially dedicated
-  supports" — owner).
+- **(1) SELF — the trapper carries it. BOTH formats.** A mon whose OWN ability is Shadow Tag / Arena Trap
+  (the resolved battle ability, so a Mega Gengar counts) and that can learn Perish Song strongly prefers it
+  in its own set. This is the all-in-one perish-trapper (Gothitelle, Mega Gengar). Fires regardless of
+  offense. Applies in **singles too** (owner round 3: a singles Perish-Trap Gothitelle is a real set) — so
+  this is a deliberate, authorised singles-output change for the handful of Shadow-Tag/Arena-Trap mons that
+  learn Perish Song.
+- **(2) TEAMMATE — a support partner carries it. DOUBLES only.** A **support-leaning** mon (offense ≤ 100)
+  whose TEAMMATE has Shadow Tag / Arena Trap prefers Perish Song — the split perish-trap (a Wobbuffet-style
+  trapper can't learn Perish Song, so a partner sings it). The offense gate keeps it off sweepers
+  ("especially dedicated supports" — owner). In singles you don't split the combo across mons (owner), so
+  this half is gated to doubles.
 
 The move is injected as a fixed move (reachable-gated, B-030) so `chooseMoveset` builds around it. There is
 NO `trapping` gimmick in `doubles.json`, no `GIMMICK_SPEC` entry, no crystallise/emergent path — it was

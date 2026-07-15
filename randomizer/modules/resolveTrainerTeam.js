@@ -378,16 +378,17 @@ function createTeamResolver(deps) {
                 });
                 newTeamMember.ability = originalAbility;
 
-                // T-124 — PERISH-TRAP team-combo (DOUBLES only, so singles stays byte-identical): a mon that
-                // itself traps (Shadow Tag / Arena Trap — `ability` is the resolved battle ability, so a
-                // Mega Gengar counts) strongly prefers Perish Song; and a support-leaning teammate of a
-                // trapper does too (the split perish-trap). Injected as a fixed move → chooseMoveset builds
-                // around it. NOT a gimmick — just moveset prioritisation. Reachable-gated (B-030).
-                if (/double/i.test(trainer.battleType || '')) {
+                // T-124 — PERISH-TRAP team-combo. SELF (a mon that itself traps — Shadow Tag / Arena Trap;
+                // `ability` is the resolved battle ability, so a Mega Gengar counts) strongly prefers Perish
+                // Song in BOTH formats (owner: singles Perish-Trap Gothitelle is a real set); the TEAMMATE
+                // split (a support partner of a trapper) is DOUBLES-only. Injected as a fixed move →
+                // chooseMoveset builds around it. NOT a gimmick — just moveset prioritisation. B-030-gated.
+                {
                     const perishMove = planPerishComboMove({
                         species: chosenTrainerMon, memberAbility: ability, team,
                         ctx: { tms: trainer.tms || [], level: trainer.level },
                         sophistication: context.sophistication,
+                        doubles: /double/i.test(trainer.battleType || ''),
                     });
                     if (perishMove && injectableMove(perishMove) && !newTeamMember.moves.includes(perishMove)) {
                         newTeamMember.moves.push(perishMove);
