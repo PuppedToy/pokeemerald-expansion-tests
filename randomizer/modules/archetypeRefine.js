@@ -88,6 +88,30 @@ function planMemberRoleMove({ species, team, model, ctx = {}, sophistication, se
     return null;
 }
 
+// T-124 — SOFT surger-awareness for the NON-gimmick terrains (misty / grassy / psychic; electric stays a
+// full gimmick per owner). NOT a gimmick and NOT a forced build — the corpus shows terrains aren't built
+// around (0-1 payoff pieces/team). Just: if the team ALREADY fields a matching Surge setter, a teammate
+// that can run the terrain's signature payoff move gets it as a light preference (grassy → Grassy Glide
+// priority, psychic → Expanding Force spread, misty → Misty Explosion). Deterministic, soph-gated, and the
+// caller applies it in DOUBLES only (so singles stays byte-identical). Returns the move or null.
+const TERRAIN_SYNERGY = [
+    { setterAbility: 'GRASSY_SURGE',  setterMove: 'MOVE_GRASSY_TERRAIN',  payoff: ['MOVE_GRASSY_GLIDE'] },
+    { setterAbility: 'PSYCHIC_SURGE', setterMove: 'MOVE_PSYCHIC_TERRAIN', payoff: ['MOVE_EXPANDING_FORCE'] },
+    { setterAbility: 'MISTY_SURGE',   setterMove: 'MOVE_MISTY_TERRAIN',   payoff: ['MOVE_MISTY_EXPLOSION'] },
+];
+function planTerrainSynergyMove({ species, team, ctx = {}, sophistication }) {
+    if (!species || (sophistication || 0) < BIAS_MIN_SOPH) return null;
+    const teamAbil = new Set((team || []).flatMap(m => (m && m.ability) ? [m.ability] : ((m && m.pokemon && m.pokemon.parsedAbilities) || [])));
+    const teamMoves = new Set((team || []).flatMap(m => (m && m.moves) || []));
+    const gate = { tms: ctx.tms || null, level: ctx.level ?? null };
+    for (const t of TERRAIN_SYNERGY) {
+        if (!(teamAbil.has(t.setterAbility) || teamMoves.has(t.setterMove))) continue;
+        const mv = t.payoff.find(p => speciesCanLearn(species, p, gate));
+        if (mv) return mv;
+    }
+    return null;
+}
+
 // T-133 — the FORWARD (dependent) Choice-item claim. A Choice role EXISTS only if its item exists: if
 // `species` fills an offensive role the team wants (a revenge-killer or a wallbreaker — both detectors
 // already exclude setup sweepers, so the set can commit to attacking) AND a Choice item is AVAILABLE in the
@@ -182,7 +206,7 @@ function planMemberAbility({ species, team, model, ctx = {}, sophistication, see
 }
 
 module.exports = {
-    resolvedDetectMon, planMemberRoleMove, planMemberAbility, planForwardChoiceItem, ROLE_MOVE_SETS,
+    resolvedDetectMon, planMemberRoleMove, planMemberAbility, planForwardChoiceItem, planTerrainSynergyMove, ROLE_MOVE_SETS,
     WEATHER_SUBTYPE_BY_SETTER, SETTERS_BY_SUBTYPE, WEATHER_ABUSER_BY_SUBTYPE, WEATHER_ROCK_BY_SETTER,
     ELECTRIC_MOVES,
 };

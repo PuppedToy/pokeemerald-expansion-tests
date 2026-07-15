@@ -5,7 +5,7 @@
 // role-capable species). Pure planner; the resolver injects the returned move as a fixed move before
 // chooseMoveset (reusing the tryToHaveMove machinery → move quality preserved). Gated by sophistication.
 
-const { resolvedDetectMon, planMemberRoleMove, ROLE_MOVE_SETS } = require('../../modules/archetypeRefine');
+const { resolvedDetectMon, planMemberRoleMove, planTerrainSynergyMove, ROLE_MOVE_SETS } = require('../../modules/archetypeRefine');
 const { getArchetypeModel } = require('../../archetypes');
 const { BIAS_MIN_SOPH } = require('../../modules/archetypePicker');
 
@@ -120,5 +120,33 @@ describe('planMemberRoleMove — B-030: role moves respect the incremental TM ba
         const lateRocker = mon({ learnset: [{ level: '50', move: 'MOVE_STEALTH_ROCK' }] });
         expect(planMemberRoleMove({ species: lateRocker, ...base({ ctx: { level: 20 } }) })).toBeNull();
         expect(planMemberRoleMove({ species: lateRocker, ...base({ ctx: { level: 60 } }) })).toBe('MOVE_STEALTH_ROCK');
+    });
+});
+
+// ── T-124 — SOFT surger-awareness (misty/grassy/psychic; NOT a gimmick, electric stays a gimmick) ───────
+describe('planTerrainSynergyMove — light payoff-move preference when the team fields a matching surger', () => {
+    const glideMon = () => mon({ ...withLearn('MOVE_GRASSY_GLIDE') });
+    const forceMon = () => mon({ ...withLearn('MOVE_EXPANDING_FORCE') });
+    const opts = (team, extra = {}) => ({ team, ctx: {}, sophistication: 1, ...extra });
+
+    test('grassy: a Grassy Surge teammate makes a Grassy-Glide learner prefer Grassy Glide', () => {
+        const team = [member(mon({ parsedAbilities: ['GRASSY_SURGE'] }), 'GRASSY_SURGE', [])];
+        expect(planTerrainSynergyMove({ species: glideMon(), ...opts(team) })).toBe('MOVE_GRASSY_GLIDE');
+    });
+    test('psychic: a Psychic Surge teammate → Expanding Force', () => {
+        const team = [member(mon({ parsedAbilities: ['PSYCHIC_SURGE'] }), 'PSYCHIC_SURGE', [])];
+        expect(planTerrainSynergyMove({ species: forceMon(), ...opts(team) })).toBe('MOVE_EXPANDING_FORCE');
+    });
+    test('no surger on the team → no preference (terrains are not built around — corpus)', () => {
+        const team = [member(mon({ parsedAbilities: ['LEVITATE'] }), 'LEVITATE', [])];
+        expect(planTerrainSynergyMove({ species: glideMon(), ...opts(team) })).toBeNull();
+    });
+    test('a surger present but this mon cannot learn the payoff move → null', () => {
+        const team = [member(mon({ parsedAbilities: ['GRASSY_SURGE'] }), 'GRASSY_SURGE', [])];
+        expect(planTerrainSynergyMove({ species: mon(), ...opts(team) })).toBeNull();
+    });
+    test('soph-gated: below the bias threshold it is a no-op (early game / singles byte-identical)', () => {
+        const team = [member(mon({ parsedAbilities: ['GRASSY_SURGE'] }), 'GRASSY_SURGE', [])];
+        expect(planTerrainSynergyMove({ species: glideMon(), ...opts(team, { sophistication: BIAS_MIN_SOPH - 0.01 }) })).toBeNull();
     });
 });

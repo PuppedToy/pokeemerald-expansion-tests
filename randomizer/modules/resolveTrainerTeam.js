@@ -38,7 +38,7 @@ const { pickTrainerMonAbility } = require('./trainerAbility');
 const { selectWithAutoFallback } = require('./trainerFallback');
 const { createChooser } = require('./trainerSelector');
 const { makeArchetypePicker, BIAS_MIN_SOPH } = require('./archetypePicker');
-const { planMemberRoleMove, planMemberAbility, planForwardChoiceItem, WEATHER_ROCK_BY_SETTER, ELECTRIC_MOVES } = require('./archetypeRefine');
+const { planMemberRoleMove, planMemberAbility, planForwardChoiceItem, planTerrainSynergyMove, WEATHER_ROCK_BY_SETTER, ELECTRIC_MOVES } = require('./archetypeRefine');
 const { getTrainerSeed } = require('./trainerSeeds');
 const { resolveFavourites } = require('./favouriteClaim');
 const { gimmickHolds, gimmickFallbackChain, ensureMoveSetter, teamWeather, emergentGimmick, weatherHolds, isWeatherAbuser, GIMMICK_SPEC } = require('./gimmickPlan');
@@ -319,6 +319,19 @@ function createTeamResolver(deps) {
                 });
                 if (roleMove && injectableMove(roleMove) && !newTeamMember.moves.includes(roleMove)) {
                     newTeamMember.moves.push(roleMove);
+                }
+                // T-124 — SOFT surger-awareness (doubles only, so singles stays byte-identical): if the team
+                // already fields a misty/grassy/psychic Surge setter, this mon prefers the terrain's signature
+                // payoff move (Grassy Glide / Expanding Force / Misty Explosion). A light nudge, not a gimmick.
+                if (/double/i.test(trainer.battleType || '')) {
+                    const terrainMove = planTerrainSynergyMove({
+                        species: chosenTrainerMon, team,
+                        ctx: { tms: trainer.tms || [], level: trainer.level },
+                        sophistication: context.sophistication,
+                    });
+                    if (terrainMove && injectableMove(terrainMove) && !newTeamMember.moves.includes(terrainMove)) {
+                        newTeamMember.moves.push(terrainMove);
+                    }
                 }
                 // T-141 r4 — a DEDICATED support plays support. When this mon's support tier beats its offense
                 // (isSupportDoubles — the tagged supports) on a steered doubles team, inject its best support
@@ -622,6 +635,7 @@ function createTeamResolver(deps) {
         const emergent = emergentGimmick({
             committedSeed, abusePartner: !!trainer.abusePartnerWeather,
             soph: sophistication(trainer), team: chosen.team,
+            doubles: /double/i.test(trainer.battleType || ''), // T-124 — perish-trap emerges in doubles only
         });
         if (emergent) {
             const emergentSeed = {
@@ -641,7 +655,8 @@ function createTeamResolver(deps) {
                     const abusers = emergent.gimmick === 'weather'
                         ? wx.team.filter(m => isWeatherAbuser(m, emergent.weather)).length
                         : wx.team.filter(m => GIMMICK_SPEC[emergent.gimmick].score(m) >= 2).length;
-                    trace.emergentWeatherDropped = { subtype: sub, abusers, required: WEATHER_REQUIRED_ABUSERS };
+                    const required = (GIMMICK_SPEC[emergent.gimmick] && GIMMICK_SPEC[emergent.gimmick].abuserTarget) || WEATHER_REQUIRED_ABUSERS;
+                    trace.emergentWeatherDropped = { subtype: sub, abusers, required };
                 }
             }
         }
