@@ -157,6 +157,13 @@ describe('T-141 Phase 3 — dedicated-support signature bonus (doubles quality l
         // Sinistcha-like full kit: Hospitality + Rage Powder + Protect + Recover → well past the 1.0 combo cap.
         expect(supportScore(supp, moves)).toBeGreaterThan(1.0);
     });
+    test('supportScore credits Regenerator (longevity) + sleep moves — an Amoonguss-like kit is a STRONG support', () => {
+        // Amoonguss: Rage Powder (redirection) + Regenerator + Spore → must clear the strong-support bar
+        // (owner: a full support kit like this belongs in OU, not UU).
+        const amoon = { parsedAbilities: ['REGENERATOR'], baseAttack: 85, baseSpAttack: 85, learnset: learns('MOVE_RAGE_POWDER', 'MOVE_SPORE'), teachables: [] };
+        expect(supportScore(amoon)).toBeGreaterThanOrEqual(1.4);
+        expect(isDedicatedSupport(amoon)).toBe(true);
+    });
     test('isDedicatedSupport: a STRONG kit qualifies regardless of offense (Sinistcha, 121 SpA); an attacker with one tool does not (Landorus-T)', () => {
         const sinistcha = { parsedAbilities: ['HOSPITALITY'], baseAttack: 60, baseSpAttack: 121, learnset: learns('MOVE_RAGE_POWDER'), teachables: [] };
         const landoT = { parsedAbilities: ['INTIMIDATE'], baseAttack: 145, baseSpAttack: 105, learnset: [], teachables: [] };

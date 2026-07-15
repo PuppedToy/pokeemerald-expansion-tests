@@ -144,6 +144,16 @@ Acceptance criteria:
   - **Verified**: fast suite 1104 green (+T-141/B-032 tests); no circular dep (featureDetectors → rating,
     one-way). Determinism gates re-running.
   - Weights/thresholds provisional — awaiting owner validation of the meta calls before final calibration.
+- **2026-07-15 (owner round 2) — classification fix.** Owner (from run-2709645655): a complete support
+  like Amoonguss (Rage Powder + Regenerator + Spore + bulk) must be **OU, not UU** — the supportScore
+  under-valued it (only credited redirection). Added two credits: **Regenerator** (support-pivot
+  longevity, +0.4) and **sleep control** (Spore/Sleep Powder/… +0.4 — removes a foe, premium doubles
+  disruption). Result: Amoonguss RU→**OU** (rD 7.92), Sinistcha/Clefable/Hitmontop/Tangrowth/Toxapex all
+  OU; T-097 anchors hold (Landorus-T/Tyranitar UBERS, Incineroar OU). Added a **support tier cap**: a
+  dedicated support tops out at OU (UBERS−0.05) so a super-bulky support (Alomomola) doesn't reach Ubers
+  off support alone — the T-140 BST floor still overrides for a genuinely huge-BST mon. +1 test; fast
+  suite 1111 green. This also unblocks the Drake case: Amoonguss (now OU, Grass) fits his OU slots, so
+  the T-142 hard-pick grabs it — no tier-flex needed for the common case.
 
 ## Outcome
 

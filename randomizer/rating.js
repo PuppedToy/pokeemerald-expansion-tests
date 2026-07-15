@@ -3628,6 +3628,12 @@ const SUPPORT_SPEEDCTRL_MOVES = ['MOVE_ICY_WIND', 'MOVE_ELECTROWEB', 'MOVE_SNARL
 const SUPPORT_DISRUPT_MOVES = ['MOVE_TAUNT', 'MOVE_ENCORE', 'MOVE_PARTING_SHOT', 'MOVE_PERISH_SONG'];
 const SUPPORT_RECOVERY_MOVES = ['MOVE_RECOVER', 'MOVE_ROOST', 'MOVE_MOONLIGHT', 'MOVE_MORNING_SUN', 'MOVE_SYNTHESIS', 'MOVE_SLACK_OFF', 'MOVE_SOFT_BOILED', 'MOVE_STRENGTH_SAP', 'MOVE_WISH', 'MOVE_LIFE_DEW', 'MOVE_JUNGLE_HEALING'];
 const SUPPORT_PROTECT_MOVES = ['MOVE_PROTECT', 'MOVE_DETECT', 'MOVE_SPIKY_SHIELD', 'MOVE_KINGS_SHIELD', 'MOVE_BANEFUL_BUNKER', 'MOVE_SILK_TRAP'];
+// T-141 (owner round 2) — the support tools our classification under-valued: Regenerator (a bulky
+// support pivots in/out repeatedly, its defining longevity ability) and sleep control (Spore & co. take
+// a foe out of the fight — premium doubles disruption). Adding these lifts complete supports like
+// Amoonguss (Rage Powder + Regenerator + Spore) into OU, per owner.
+const SUPPORT_LONGEVITY_ABILITIES = ['REGENERATOR'];
+const SUPPORT_SLEEP_MOVES = ['MOVE_SPORE', 'MOVE_SLEEP_POWDER', 'MOVE_HYPNOSIS', 'MOVE_LOVELY_KISS', 'MOVE_DARK_VOID', 'MOVE_YAWN', 'MOVE_GRASS_WHISTLE', 'MOVE_SING'];
 // The support "signature" of a species: additive credits for each support tool it can field (ability +
 // learnable moves). Weights mirror docs/research/doubles-support.md §3 (calibrated in Phase 6).
 function supportScore(poke, moves) {
@@ -3646,6 +3652,8 @@ function supportScore(poke, moves) {
     if (hasMove(SUPPORT_DISRUPT_MOVES)) s += 0.35;
     if (hasMove(SUPPORT_RECOVERY_MOVES) && hasMove(SUPPORT_PROTECT_MOVES)) s += 0.3;       // durable repeatable support
     if (abils.includes('PRANKSTER')) s += 0.4;
+    if (hasAbil(SUPPORT_LONGEVITY_ABILITIES)) s += 0.4;                                    // Regenerator — repeatable pivot support (T-141 r2)
+    if (hasMove(SUPPORT_SLEEP_MOVES)) s += 0.4;                                            // Spore & co. — removes a foe (premium doubles control)
     return s;
 }
 // A DEDICATED support (gets the doubles quality lift): a STRONG support kit regardless of offence (a
@@ -3714,12 +3722,17 @@ function ratePokemonDoubles(poke, moves, abilities, tmPool, moveset = null) {
     // SUPPORT_BONUS_CAP), lifting its doubles tier ~2 steps (owner: Sinistcha RU→OU). max() → never
     // double-counts the support the combo already credited; attackers (Landorus-T) don't qualify.
     // Applied before the T-140 BST floor.
-    if (isDedicatedSupport(poke)) combo = Math.min(Math.max(combo, supportScore(poke)), SUPPORT_BONUS_CAP);
+    const dedicatedSupport = isDedicatedSupport(poke);
+    if (dedicatedSupport) combo = Math.min(Math.max(combo, supportScore(poke)), SUPPORT_BONUS_CAP);
     let ratingDoubles = (bstRating * 0.8) + (movesRating * 0.1) + (bestAbilityRating * 0.1) + combo;
     // T-097 tuning — frailty penalty (spread damage folds frail mons) + passive-wall penalty (bulk with no
     // offence and no support role isn't a doubles threat).
     if (defensePower < DBL_FRAILTY_DEF) ratingDoubles -= (DBL_FRAILTY_DEF - defensePower) * DBL_FRAILTY_FACTOR;
     if (offensePower < DBL_PASSIVE_OFF && combo < DBL_PASSIVE_COMBO) ratingDoubles -= DBL_PASSIVE_PENALTY;
+    // T-141 (owner r2) — a dedicated support ENABLES the team; it isn't a raw Ubers threat. Cap the
+    // support lift at the top of OU so a super-bulky support (Alomomola) doesn't reach Ubers off support
+    // alone. The T-140 BST floor below still overrides for a genuinely huge-BST mon (BST paces the run).
+    if (dedicatedSupport) ratingDoubles = Math.min(ratingDoubles, DOUBLES_TIER_THRESHOLDS.UBERS - 0.05);
 
     // T-140 — BST floor (parity with the singles rater): raw BST guarantees a minimum tier, so BST keeps
     // pacing the run in doubles too. Same format-independent BST cutoffs as singles; the DOUBLES tier
