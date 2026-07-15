@@ -746,8 +746,12 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     const typeColorsData = typeMainColors();
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_COLORS_REPLACEMENT, `<script>const typeColors = ${JSON.stringify(typeColorsData)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'colors.js'), `const typeColors = ${JSON.stringify(typeColorsData, null, 4)};`, 'utf8');
-    htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_POKEMON_REPLACEMENT, `<script>const pokes = ${JSON.stringify(pokemonList)};</script>`);
-    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'pokes.js'), `const pokes = ${JSON.stringify(pokemonList, null, 4)};`, 'utf8');
+    // T-111 — the viewer never reads the per-cap contextual maps (it uses poke.rating.tier /
+    // poke.tierDoubles); ship a slimmed copy so out.html doesn't carry ~10 MB × 2 of dead data.
+    // Copy (don't mutate pokemonList — savePokemonData above already ran off the full objects).
+    const docPokes = pokemonList.map(p => { const o = { ...p }; delete o.contextualRatings; delete o.contextualRatingsDoubles; return o; });
+    htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_POKEMON_REPLACEMENT, `<script>const pokes = ${JSON.stringify(docPokes)};</script>`);
+    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'pokes.js'), `const pokes = ${JSON.stringify(docPokes, null, 4)};`, 'utf8');
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_MOVES_REPLACEMENT, `<script>const movesData = ${JSON.stringify(moves)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'moves.js'), `const movesData = ${JSON.stringify(moves, null, 4)};`, 'utf8');
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_ABILITIES_REPLACEMENT, `<script>const abilitiesData = ${JSON.stringify(abilities)};</script>`);

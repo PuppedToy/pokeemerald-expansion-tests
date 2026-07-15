@@ -35,7 +35,7 @@ const { writerDocs } = require(R('randomizer/writerDocs.js'));
 
 // ── buildDocHtml + helpers: kept in lock-step with frontend/js/app.js ───────────
 const DOC_OMIT_POKE_FIELDS = new Set([
-    'contextualRatings', 'teachableLearnset', 'levelUpLearnset',
+    'contextualRatings', 'contextualRatingsDoubles', 'teachableLearnset', 'levelUpLearnset',
     'natDexNum', 'speciesName', 'catchRate', 'expYield',
 ]);
 function slimPokes(pokes) {
@@ -57,6 +57,7 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
     const runNs = docRunNamespace(seed, rom.playerIndex, rom.romIndex);
     return template
         .split('%%DOC_RUN_NS%%').join(runNs)
+
         .replace('<script src="sprites.js"></script>',
             `<script>const EMBEDDED_SPRITES = ${spritesText};</script>`)
         .replace('<script src="assets.js"></script>',
