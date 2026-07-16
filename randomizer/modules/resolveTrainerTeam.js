@@ -567,7 +567,7 @@ function createTeamResolver(deps) {
         // SKIPPED for abuse-only (a tag partner needs no setter — its ally sets the weather).
         const wxSubtype = context.archetypeSeed && (context.archetypeSeed.gimmicks || []).includes('weather')
             && !context.archetypeSeed.abuseOnly && context.archetypeSeed.weather;
-        if (wxSubtype && ensureMoveSetter(team, wxSubtype)) attemptAudit.relabelWeather(team, wxSubtype);
+        if (wxSubtype && ensureMoveSetter(team, wxSubtype, { tms: trainer.tms || [], level: trainer.level })) attemptAudit.relabelWeather(team, wxSubtype);
         // T-137 — same move-setter retrofit for electric terrain / trick room (no ability-setter in the pool
         // → inject the terrain / Trick Room move on a non-abuser learner so the setter + 2-abusers holds).
         const seedGid = context.archetypeSeed && (context.archetypeSeed.gimmicks || []).find(g => GIMMICK_SPEC[g]);

@@ -118,4 +118,11 @@ Acceptance criteria:
   hold ≥2 rocks**. Unit test `gimmickItemBag.test.js` (provisioning + consume-once), fast suite 1145,
   determinism 17/17. **Next:** increment 2 (weather TMs from the aqua grunts).
 
+- **2026-07-16 — Increment 2 DONE: weather-setting TMs born from the bag + retrofit gated on them.**
+  Provisioned the 4 weather TMs (`TM_RAIN_DANCE/SUNNY_DAY/SANDSTORM/HAIL`) as one linked group in
+  `slateportGruntsBag`. Gated the move-setter retrofit `ensureMoveSetter(team, subtype, {tms, level})`:
+  it injects a setter MOVE only if reachable by level-up OR the trainer HOLDS its TM (B-030), so it is
+  bag-born and fires ONLY for weather-gimmick teams with no ability-setter. E2e: weather teams intact —
+  36 ability-setter + 7 move-setter retrofit. Fast suite 1145. **Next:** increment 3 (terrain seeds).
+
 ## Outcome

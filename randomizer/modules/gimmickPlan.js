@@ -148,16 +148,23 @@ function weatherAbuseRating(mon, subtype, doubles = false) { return weatherAbuse
 // NON-abuser carrier so the abuser count is preserved. Mutates `team` in place; returns true if it injected
 // (or a setter was already present is handled by the no-op guard → returns false). The weather-setting
 // moves are among the earliest TMs, so this stays within the spirit of B-030 (no late-TM leakage).
-function ensureMoveSetter(team, subtype) {
+function ensureMoveSetter(team, subtype, gate = {}) {
     const members = (team || []).map(asMember);
     if (members.some(m => isWeatherSetter(m, subtype))) return false; // already has a setter (ability or move)
     const setterMoves = SETTER_MOVE_BY_SUBTYPE[subtype] || [];
     if (!setterMoves.length) return false;
+    // B-030 / T-125 — a setter MOVE is usable only if it's a level-up move the mon reaches OR a teachable the
+    // trainer actually HOLDS as a TM (the 4 weather-setting TMs are provisioned into the bag from the Slateport
+    // aqua grunts). Permissive when no gate is supplied (unit tests). Mirrors archetypeRefine.speciesCanLearn.
+    const { tms = null, level = null } = gate;
+    const reachable = (poke, mv) => {
+        const byLevel = (poke.learnset || []).some(l => l.move === mv && (level == null || l.level <= level));
+        if (byLevel) return true;
+        return (poke.teachables || []).includes(mv) && (tms == null || tms.includes(mv));
+    };
     const learnableMove = m => {
         const poke = m.pokemon || {};
-        const ls = (poke.learnset || []).map(l => l.move);
-        const tc = poke.teachables || [];
-        return setterMoves.find(mv => ls.includes(mv) || tc.includes(mv)) || null;
+        return setterMoves.find(mv => reachable(poke, mv)) || null;
     };
     // Prefer a NON-abuser carrier (so we don't spend an abuser's slot on the setter move); else any learner.
     const target = members.find(m => learnableMove(m) && weatherAbuseScore(m, subtype) < WEATHER_ABUSE_THRESHOLD)

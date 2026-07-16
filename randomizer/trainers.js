@@ -842,6 +842,10 @@ const slateportGruntsBag = () => [
     // forward. ONE linked pick-group: a team claims AT MOST ONE rock (the teambuilder claims the rock that
     // matches its weather setter; claiming it forgoes the other three, so 2 setters still place only 1).
     linkedChoiceSample(['Damp Rock', 'Heat Rock', 'Smooth Rock', 'Icy Rock']),
+    // T-125 — the 4 weather-SETTING TMs enter here too (one linked pick-group). Used ONLY by a weather-gimmick
+    // team with no ability-setter: the move-setter retrofit (`ensureMoveSetter`) may inject a setter move only
+    // if the trainer HOLDS its TM (B-030). Cascades forward from the aqua grunts.
+    linkedChoiceSample(['TM_RAIN_DANCE', 'TM_SUNNY_DAY', 'TM_SANDSTORM', 'TM_HAIL']),
 ];
 
 const rivalRoute110Bag = () => [
