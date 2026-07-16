@@ -112,6 +112,39 @@ function planTerrainSynergyMove({ species, team, ctx = {}, sophistication }) {
     return null;
 }
 
+// T-125 — a TERRAIN SEED (Electric/Grassy/Misty/Psychic Seed) is a defensive boost-on-entry item for a team
+// that ESTABLISHES a terrain. If a teammate sets one (a Surge ability or a terrain move) — or the team is the
+// electric_terrain gimmick — a suitable holder claims the MATCHING seed: an Unburden abuser (its speed
+// engine) or a bulky low-offense mon (the seed is a DEFENSIVE item, rated AV < seed < Eviolite). Claimed only
+// if the bag holds it (provisioned as `choiceJosephSeeds` from Wally Mauville onward). Returns the seed
+// display name or null. Pure, soph-gated; the caller claims + consumes it link-aware.
+const TERRAIN_SEED_BY_ABILITY = {
+    ELECTRIC_SURGE: 'Electric Seed', HADRON_ENGINE: 'Electric Seed',
+    GRASSY_SURGE: 'Grassy Seed', MISTY_SURGE: 'Misty Seed', PSYCHIC_SURGE: 'Psychic Seed',
+};
+const TERRAIN_SEED_BY_MOVE = {
+    MOVE_ELECTRIC_TERRAIN: 'Electric Seed', MOVE_GRASSY_TERRAIN: 'Grassy Seed',
+    MOVE_MISTY_TERRAIN: 'Misty Seed', MOVE_PSYCHIC_TERRAIN: 'Psychic Seed',
+};
+function teamTerrainSeed(team, archetypeSeed) {
+    for (const m of (team || [])) {
+        const ab = (m && m.ability) || null;
+        if (ab && TERRAIN_SEED_BY_ABILITY[ab]) return TERRAIN_SEED_BY_ABILITY[ab];
+        for (const mv of ((m && m.moves) || [])) if (TERRAIN_SEED_BY_MOVE[mv]) return TERRAIN_SEED_BY_MOVE[mv];
+    }
+    if (archetypeSeed && (archetypeSeed.gimmicks || []).includes('electric_terrain')) return 'Electric Seed';
+    return null;
+}
+function planTerrainSeedClaim({ species, memberAbility = null, team = [], archetypeSeed = null, available = [], sophistication }) {
+    if (!species || (sophistication || 0) < BIAS_MIN_SOPH) return null;
+    const seed = teamTerrainSeed(team, archetypeSeed);
+    if (!seed || !available.includes(seed)) return null;
+    const bulky = (species.baseHP || 0) + (species.baseDefense || 0) + (species.baseSpDefense || 0) >= 285
+        && Math.max(species.baseAttack || 0, species.baseSpAttack || 0) <= 95;
+    const unburden = memberAbility === 'UNBURDEN';
+    return (bulky || unburden) ? seed : null;
+}
+
 // T-124 — PERISH-TRAP is a moveset TEAM-COMBO, not a gimmick/archetype (owner). Perish Song pairs with a
 // Shadow Tag / Arena Trap trapper (the trapped foe can't switch out of the 3-turn count). Two cases:
 //   (1) SELF — a mon that ITSELF traps (Shadow Tag / Arena Trap) strongly prefers Perish Song in its own
@@ -231,7 +264,7 @@ function planMemberAbility({ species, team, model, ctx = {}, sophistication, see
 }
 
 module.exports = {
-    resolvedDetectMon, planMemberRoleMove, planMemberAbility, planForwardChoiceItem, planTerrainSynergyMove, planPerishComboMove, ROLE_MOVE_SETS,
+    resolvedDetectMon, planMemberRoleMove, planMemberAbility, planForwardChoiceItem, planTerrainSynergyMove, planTerrainSeedClaim, planPerishComboMove, ROLE_MOVE_SETS,
     WEATHER_SUBTYPE_BY_SETTER, SETTERS_BY_SUBTYPE, WEATHER_ABUSER_BY_SUBTYPE, WEATHER_ROCK_BY_SETTER,
     ELECTRIC_MOVES,
 };

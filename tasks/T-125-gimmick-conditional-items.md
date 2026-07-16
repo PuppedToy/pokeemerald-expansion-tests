@@ -125,4 +125,13 @@ Acceptance criteria:
   bag-born and fires ONLY for weather-gimmick teams with no ability-setter. E2e: weather teams intact —
   36 ability-setter + 7 move-setter retrofit. Fast suite 1145. **Next:** increment 3 (terrain seeds).
 
+- **2026-07-16 — Increment 3 DONE: terrain seeds — generalized, surger-aware, bag-born claim.** The 4
+  seeds were already in the bag (`choiceJosephSeeds` in `wallyBag`, from Wally Mauville — the cascade
+  flows steven ⊂ slateport ⊂ rivalRoute110 ⊂ wally ⊂ wattson). New `planTerrainSeedClaim` (archetypeRefine)
+  replaces the old electric-only direct-set: a team that establishes ANY terrain (a teammate's Surge
+  ability / terrain move, or the electric_terrain gimmick) gives a bulky low-offense mon (or an Unburden
+  abuser) the MATCHING seed, claimed from the bag + `consumeLinkedUnit`. E2e: Shelly→Misty, Kindra/Phoebe→
+  Psychic, Wendy→Misty (all four terrains, not just electric). Tests added; fast suite 1150. **Next:**
+  increment 4 (Terrain Extender for the electric_terrain setter).
+
 ## Outcome

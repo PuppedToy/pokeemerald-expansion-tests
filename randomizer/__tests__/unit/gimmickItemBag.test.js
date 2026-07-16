@@ -10,6 +10,7 @@ const rng = require('../../rng');
 const { getTrainersData } = require('../../trainers.js');
 const { expandLinkedPacks, consumeLinkedUnit } = require('../../modules/itemLinks');
 const { ensureMoveSetter } = require('../../modules/gimmickPlan');
+const { planTerrainSeedClaim } = require('../../modules/archetypeRefine');
 
 rng.seed(1);
 const stubItems = new Proxy({}, { get: () => Array(12).fill('ITEM_POTION') });
@@ -78,5 +79,27 @@ describe('T-125 inc.2 — the move-setter retrofit is gated on the trainer holdi
         const injected = ensureMoveSetter(team, 'rain', { tms: ['MOVE_RAIN_DANCE'], level: 50 });
         expect(injected).toBe(true);
         expect(team[0].moves).toContain('MOVE_RAIN_DANCE');
+    });
+});
+
+describe('T-125 inc.3 — terrain seed claimed when the team sets a terrain (born from the bag)', () => {
+    const SEEDS = ['Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed'];
+    const bulky = { baseHP: 90, baseAttack: 60, baseDefense: 110, baseSpAttack: 60, baseSpDefense: 110, baseSpeed: 40 };
+    const fastAtk = { baseHP: 60, baseAttack: 130, baseDefense: 60, baseSpAttack: 60, baseSpDefense: 60, baseSpeed: 120 };
+
+    test('a bulky teammate of a Grassy Surge setter claims Grassy Seed (if in bag)', () => {
+        expect(planTerrainSeedClaim({ species: bulky, team: [{ ability: 'GRASSY_SURGE' }], available: SEEDS, sophistication: 1 })).toBe('Grassy Seed');
+    });
+    test('not claimed if the matching seed is not in the bag', () => {
+        expect(planTerrainSeedClaim({ species: bulky, team: [{ ability: 'GRASSY_SURGE' }], available: [], sophistication: 1 })).toBeNull();
+    });
+    test('not claimed when no teammate establishes a terrain', () => {
+        expect(planTerrainSeedClaim({ species: bulky, team: [{ ability: 'BLAZE' }], available: SEEDS, sophistication: 1 })).toBeNull();
+    });
+    test('electric_terrain gimmick + an Unburden abuser claims Electric Seed', () => {
+        expect(planTerrainSeedClaim({ species: fastAtk, memberAbility: 'UNBURDEN', team: [], archetypeSeed: { gimmicks: ['electric_terrain'] }, available: SEEDS, sophistication: 1 })).toBe('Electric Seed');
+    });
+    test('a fast attacker (not bulky, not Unburden) does not claim a seed', () => {
+        expect(planTerrainSeedClaim({ species: fastAtk, team: [{ ability: 'GRASSY_SURGE' }], available: SEEDS, sophistication: 1 })).toBeNull();
     });
 });

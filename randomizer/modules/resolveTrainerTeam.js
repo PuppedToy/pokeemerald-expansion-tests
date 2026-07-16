@@ -38,7 +38,7 @@ const { pickTrainerMonAbility } = require('./trainerAbility');
 const { selectWithAutoFallback } = require('./trainerFallback');
 const { createChooser } = require('./trainerSelector');
 const { makeArchetypePicker, BIAS_MIN_SOPH } = require('./archetypePicker');
-const { planMemberRoleMove, planMemberAbility, planForwardChoiceItem, planTerrainSynergyMove, planPerishComboMove, WEATHER_ROCK_BY_SETTER, ELECTRIC_MOVES } = require('./archetypeRefine');
+const { planMemberRoleMove, planMemberAbility, planForwardChoiceItem, planTerrainSynergyMove, planTerrainSeedClaim, planPerishComboMove, WEATHER_ROCK_BY_SETTER, ELECTRIC_MOVES } = require('./archetypeRefine');
 const { getTrainerSeed } = require('./trainerSeeds');
 const { resolveFavourites } = require('./favouriteClaim');
 const { gimmickHolds, gimmickFallbackChain, ensureMoveSetter, teamWeather, emergentGimmick, weatherHolds, isWeatherAbuser, GIMMICK_SPEC } = require('./gimmickPlan');
@@ -431,14 +431,23 @@ function createTeamResolver(deps) {
                         }
                     }
                 }
-                // T-137 — Electric Seed in an electric-terrain team: an UNBURDEN abuser (its speed engine) or a
-                // bulky mon (Def boost on entry). Gated on the electric_terrain gimmick.
-                if (!newTeamMember.item && context.sophistication >= BIAS_MIN_SOPH
-                    && context.archetypeSeed && (context.archetypeSeed.gimmicks || []).includes('electric_terrain')
-                    && (ability === 'UNBURDEN'
-                        || ((chosenTrainerMon.baseHP + chosenTrainerMon.baseDefense + chosenTrainerMon.baseSpDefense) >= 285
-                            && Math.max(chosenTrainerMon.baseAttack || 0, chosenTrainerMon.baseSpAttack || 0) <= 95))) {
-                    newTeamMember.item = itemIdToName('ITEM_ELECTRIC_SEED');
+                // T-125 — a TERRAIN SEED (Electric/Grassy/Misty/Psychic) for a team that establishes a terrain
+                // (any teammate's Surge ability / terrain move, or the electric_terrain gimmick). CLAIMED FROM
+                // THE BAG (`choiceJosephSeeds`, from Wally Mauville onward), link-aware — generalises the old
+                // electric-only direct-set to all four terrains + makes it team-surger-aware + bag-born. The
+                // seed goes to a bulky low-offense mon or an Unburden abuser (a defensive on-entry boost).
+                if (!newTeamMember.item && context.sophistication >= BIAS_MIN_SOPH) {
+                    const seedName = planTerrainSeedClaim({
+                        species: chosenTrainerMon, memberAbility: ability, team, archetypeSeed: context.archetypeSeed,
+                        available: trainer.bag || [], sophistication: context.sophistication,
+                    });
+                    if (seedName) {
+                        newTeamMember.item = seedName;
+                        const act = consumeLinkedUnit(trainer.bag, trainer.bagLinks || [], seedName);
+                        if (act.activated && context.itemLinkActivations) {
+                            context.itemLinkActivations.push({ species: chosenTrainerMon.id, used: seedName, removed: act.removedSiblings, kind: 'item' });
+                        }
+                    }
                 }
                 // T-124 — Room Service on a fast mon in a Trick Room team (its Speed drops when TR is set).
                 if (!newTeamMember.item && context.sophistication >= BIAS_MIN_SOPH
