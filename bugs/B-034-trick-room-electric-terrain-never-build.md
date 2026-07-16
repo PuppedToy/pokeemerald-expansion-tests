@@ -1,13 +1,13 @@
 ---
 id: B-034
 title: Trick Room and electric-terrain gimmicks roll back and never build (Tate & Liza / Wattson)
-status: open
+status: fixed
 severity: major
 created: 2026-07-16
 updated: 2026-07-16
 found-in: 0.8.0
-fixed-in:
-regression-test:
+fixed-in: 0.8.0
+regression-test: randomizer/__tests__/integration/reverseOrderContinuity.test.js
 links: [T-124, T-126, T-125]
 ---
 
@@ -38,9 +38,22 @@ teachable expansion adds the TR TM to its learners). The failure is in the attem
 
 ## Fix
 
-<!-- Owner-directed (2026-07-16): investigate now. Root cause confirmed above. Fix direction (needs an owner
-     design call in T-124): loosen the full-room hold (fall back to a half-room: 1 setter + 2 abusers when 4
-     abusers aren't buildable), and/or strengthen the slow-mon bias so a TR-seeded team is actually built
-     slow, and/or a move-setter guarantee for the seeded setter. For electric terrain: a move-setter retrofit
-     (Electric Terrain move) when no ability-setter is buildable, mirroring the weather move-setter path.
-     Regression test must reproduce: a TR-seeded trainer fields Trick Room. No test, no `fixed`. -->
+Two structural fixes to the Trick Room gimmick (`gimmickPlan.js`):
+1. **Half-room fallback** — `gimmickFallbackChain` now returns `[full, half, dropped]` for a `roomStyle:'full'`
+   TR seed (was `[full, dropped]`). A full room that can't field 4 abusers falls back to a **half room
+   (1 setter + 2 abusers)** before dropping TR entirely.
+2. **Abuser Speed threshold aligned** — `TR_ABUSE_SPEED_MAX` 55 → **60**, matching the picker's
+   `TR_SLOW_SPEED`, so a slow mon the picker biased in actually counts as a TR abuser.
+
+Result (e2e): **Tate & Liza field Trick Room in 5/5 sampled seeds** (was 0), and **34–45 teams/seed** now
+build TR (comparable to weather's ~43 — a healthy level, not an explosion). `ensureTrickRoomSetter` already
+guarantees the setter move; no separate move-setter change was needed.
+
+**Electric terrain — corrected finding:** it was NOT actually broken. The original "never forms" report was a
+detection error (scanning only the Surge *ability*, missing the Electric-Terrain *move*-setter). Electric
+terrain builds **3–9 teams/seed** via the move-setter retrofit, and Wattson builds it in **2/3** sampled
+seeds (the occasional miss is normal attempt-variance). No electric-terrain code change.
+
+Regression test: `randomizer/__tests__/integration/reverseOrderContinuity.test.js` — the Tate & Liza block
+now asserts a Trick Room setter is fielded (gated with `RUN_DETERMINISM=1`; failed before the fix — the team
+rolled back to a non-gimmick roster — and passes after).

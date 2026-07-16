@@ -310,7 +310,8 @@ function ensureElectricTerrainSetter(team) {
 // ── T-137: TRICK ROOM gimmick (docs/research/trick-room.md) ───────────────────────────────────────────
 // Setter = the MOVE Trick Room on a survival body (no ability sets TR). Abuser = slow + strong.
 const TR_SETTER_MOVE = 'MOVE_TRICK_ROOM';
-const TR_ABUSE_SPEED_MAX = 55;   // base Speed at/below which a mon moves first under TR = a TR abuser
+const TR_ABUSE_SPEED_MAX = 60;   // B-034 — base Speed at/below which a mon is a TR abuser; aligned with the
+                                 // picker's TR_SLOW_SPEED (was 55) so a slow mon the picker biased in counts.
 const TR_STRONG_OFFENSE = 100;   // offence at which a slow mon is an IDEAL abuser (ranking, not eligibility)
 const TR_GYRO_BALL = 'MOVE_GYRO_BALL';
 const ROOM_SERVICE_ITEM = 'Room Service';
@@ -437,6 +438,12 @@ function gimmickFallbackChain(seed, trainerId = '') {
         const order = themed ? [themed, ...others] : ALL_WEATHERS.slice();
         const variants = order.map(w => ({ ...seed, weather: w }));
         return [...variants, dropped];
+    }
+    // B-034 — a FULL Trick Room that can't field 4 abusers falls back to a HALF room (1 setter + 2 abusers)
+    // BEFORE dropping TR entirely, so a TR-seeded trainer (Tate & Liza) still builds a room instead of
+    // rolling back to a non-gimmick team.
+    if (gimmicks.includes('trick_room') && seed.roomStyle === 'full') {
+        return [seed, { ...seed, roomStyle: 'half' }, dropped];
     }
     return [seed, dropped];
 }

@@ -170,6 +170,14 @@ describeSlow('reverse-order continuity (T-106)', () => {
             expect(team).not.toContain('SPECIES_SOLGALEO');
             expect(team).not.toContain('SPECIES_LUNALA');
         });
+        // B-034 — Tate & Liza are seeded to a (full) Trick Room; the gimmick must actually BUILD (a TR
+        // setter is fielded), not roll back to a non-gimmick team. Regressed when the full-room hold
+        // (2 setters + 4 abusers) could not be met and there was no half-room fallback; fixed by the
+        // half-room fallback + aligning the abuser Speed threshold with the picker.
+        test('B-034 — builds Trick Room (fields a TR setter), not a rolled-back non-gimmick team', () => {
+            const team = docs['TRAINER_TATE_AND_LIZA_1'].team;
+            expect(team.some(m => (m.moves || []).includes('MOVE_TRICK_ROOM'))).toBe(true);
+        });
     });
 
     describe('Gym leader favourites (T-128) — same mechanism as every favourite', () => {
