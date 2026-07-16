@@ -616,7 +616,9 @@ function createTeamResolver(deps) {
         if (seedGid && !context.archetypeSeed.abuseOnly) {
             // T-138 — a FULL room retrofits 2 setters (redundancy); everything else 1.
             const setterCount = (seedGid === 'trick_room' && context.archetypeSeed.roomStyle === 'full') ? 2 : 1;
-            GIMMICK_SPEC[seedGid].ensureSetter(team, setterCount);
+            // B-036 — pass the trainer's TMs + level so the setter-move retrofit is B-030-gated (it may only
+            // inject Trick Room / Electric Terrain if the mon reaches it by level-up or the trainer HOLDS the TM).
+            GIMMICK_SPEC[seedGid].ensureSetter(team, setterCount, { tms: trainer.tms || [], level: trainer.level });
         }
 
         attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed, weatherPicks: context.weatherPicks, supportPicks: context.supportPicks, itemLinkActivations: context.itemLinkActivations, supportFlexed: context.supportFlexed, doublesWantsSupport: context.doublesWantsSupport });

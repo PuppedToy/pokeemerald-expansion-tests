@@ -39,3 +39,4 @@
 | [B-033](B-033-wally-vr-lost-legend-ubers.md) | Wally Victory Road lost its legend + ubers aces (backwards-generation regression) | fixed | major | 0.8.0 | 0.8.0 | randomizer/__tests__/unit/wallyContinuity.test.js |
 | [B-034](B-034-trick-room-electric-terrain-never-build.md) | Trick Room and electric-terrain gimmicks roll back and never build (Tate & Liza / Wattson) | fixed | major | 0.8.0 | 0.8.0 | randomizer/__tests__/integration/reverseOrderContinuity.test.js |
 | [B-035](B-035-emergent-trick-room-overfires.md) | Emergent Trick Room over-fires — too many trainers build TR just because a mon can learn the TM | fixed | major | 0.8.0 | 0.8.0 | randomizer/__tests__/unit/emergentGimmick.test.js |
+| [B-036](B-036-gimmick-setter-moves-bypass-tm-bag.md) | Trick Room / Electric Terrain gimmick setter moves are injected without the TM (B-030 violation) | fixed | major | 0.8.0 | 0.8.0 | randomizer/__tests__/unit/gimmickSetterTmGate.test.js |

@@ -267,6 +267,15 @@ const monCanLearn = (mon, list) => {
         || (poke.teachables || []).some(t => list.includes(t))
         || ((mon && mon.moves) || []).some(mv => list.includes(mv));
 };
+// B-036 / B-030 — a gimmick setter MOVE is usable only if it's reachable by LEVEL-UP or the trainer actually
+// HOLDS its TM (never fabricate a move the trainer can't teach — the setter moves Trick Room / Electric
+// Terrain / weather are all TMs). Permissive when no gate is supplied (unit tests / non-resolver callers).
+const setterMoveReachable = (mon, move, { tms = null, level = null } = {}) => {
+    const poke = monPoke(mon);
+    if ((poke.learnset || []).some(l => l.move === move && (level == null || l.level <= level))) return true;
+    if ((poke.teachables || []).includes(move)) return tms == null || tms.includes(move);
+    return ((mon && mon.moves) || []).includes(move);
+};
 // Score (potential-based, threshold ≥2): +3 abuser ability, +2 Electric-type with a decent attacking stat
 // (grounded STAB ×1.3 / Rising Voltage), +1 synergy move.
 function electricTerrainAbuseScore(mon) {
@@ -304,10 +313,10 @@ function electricTerrainHolds(team, ctx = {}) {
 }
 // Move-setter retrofit (like weather's): if no ability-setter, inject the Electric Terrain move on a
 // non-abuser learner so the setter+abusers condition can hold.
-function ensureElectricTerrainSetter(team) {
+function ensureElectricTerrainSetter(team, count = 1, gate = {}) {
     const members = (team || []).map(asMember);
     if (members.some(isElectricTerrainSetter)) return false;
-    const canLearn = m => monCanLearn(m, [ELEC_SETTER_MOVE]);
+    const canLearn = m => setterMoveReachable(m, ELEC_SETTER_MOVE, gate); // B-036 — TM-gated (no free TM)
     const target = members.find(m => canLearn(m) && electricTerrainAbuseScore(m) < WEATHER_ABUSE_THRESHOLD)
         || members.find(canLearn);
     if (!target) return false;
@@ -372,12 +381,14 @@ function trickRoomHolds(team, ctx = {}) {
 }
 // Inject the Trick Room move until the team has `count` setters (retrofit; no ability sets TR). Prefers
 // non-abuser (bulky) learners for the first setter, then any learner. Returns true if it injected any.
-function ensureTrickRoomSetter(team, count = 1) {
+function ensureTrickRoomSetter(team, count = 1, gate = {}) {
     const members = (team || []).map(asMember);
     let have = members.filter(isTrickRoomSetter).length;
     let injected = false;
     while (have < count) {
-        const canLearn = m => !isTrickRoomSetter(m) && monCanLearn(m, [TR_SETTER_MOVE]);
+        // B-036 — TM-gated: only inject Trick Room on a mon that reaches it by level-up or whose trainer HOLDS
+        // the TR TM (the TR TM is a goodStatus TM, ~Nolan/lvl 36 — trainers before that can't teach it).
+        const canLearn = m => !isTrickRoomSetter(m) && setterMoveReachable(m, TR_SETTER_MOVE, gate);
         const target = members.find(m => canLearn(m) && trickRoomAbuseScore(m) < WEATHER_ABUSE_THRESHOLD)
             || members.find(canLearn);
         if (!target) break;
