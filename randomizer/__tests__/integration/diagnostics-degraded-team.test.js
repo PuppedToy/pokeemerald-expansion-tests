@@ -102,5 +102,7 @@ describe('degraded-team diagnostics (T-075)', () => {
         const docs = await writerDocs(pokedex, trainers, starters, wild, null, { diag });
 
         expect(Object.keys(docs).sort()).toEqual(['trainersResultsSimplified', 'typeColors', 'wildPokes']);
+        expect(docs).not.toHaveProperty('diag');
+        expect(docs).not.toHaveProperty('diagnostics');
     });
 });

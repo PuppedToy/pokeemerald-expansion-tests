@@ -1,10 +1,10 @@
 ---
 id: T-107
 title: Engine — preference/rules system replacing fixed slots (archetype-fit scoring)
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-10
+updated: 2026-07-15
 target-version: 0.8.0
 links: [T-083, T-101, T-103, T-105]
 blocked-by: [T-105, T-101]
@@ -234,4 +234,4 @@ Acceptance criteria (met under the owner-validated "layer" model — see Archite
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Preference/rules system replacing fixed slots (archetype-fit scoring) — all five ADR-016 phases live (107a featureDetectors / 107b archetypeFit / 107c weighted picker / 107d archetypeRefine / 107e). Early-game byte-identical; suite 911 + determinism green. Owner-validated 2026-07-15. Closed.

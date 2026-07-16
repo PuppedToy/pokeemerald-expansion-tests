@@ -10,6 +10,7 @@ const {
     TIER_UBERS,
     TIER_LEGEND,
     TIER_AG,
+    TIER_SEQ,
     TIER_AG_THRESHOLD,
     TIER_LEGEND_THRESHOLD,
     TIER_UBERS_THRESHOLD,
@@ -1106,6 +1107,21 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     const inSand = hasAbility('SAND_STREAM')
         || currentMoves.some(m => m.id === 'MOVE_SANDSTORM') || ctx.sand === true;
 
+    // T-125 — TERRAIN context, same shape as weather above: active if THIS mon sets it (own Surge ability /
+    // Hadron Engine / terrain move) OR an EARLIER teammate does (ctx.* from the build loop). Drives the
+    // terrain-scaling attacking moves below (Rising Voltage / Psyblade under electric, Expanding Force under
+    // psychic, Misty Explosion under misty, Grassy Glide under grassy, Terrain Pulse + Steel Roller under any).
+    // Format-agnostic (singles + doubles) — a surger anywhere on the team switches these on.
+    const inElectricTerrain = hasAbility('ELECTRIC_SURGE') || hasAbility('HADRON_ENGINE')
+        || currentMoves.some(m => m.id === 'MOVE_ELECTRIC_TERRAIN') || ctx.electricTerrain === true;
+    const inGrassyTerrain = hasAbility('GRASSY_SURGE')
+        || currentMoves.some(m => m.id === 'MOVE_GRASSY_TERRAIN') || ctx.grassyTerrain === true;
+    const inPsychicTerrain = hasAbility('PSYCHIC_SURGE')
+        || currentMoves.some(m => m.id === 'MOVE_PSYCHIC_TERRAIN') || ctx.psychicTerrain === true;
+    const inMistyTerrain = hasAbility('MISTY_SURGE')
+        || currentMoves.some(m => m.id === 'MOVE_MISTY_TERRAIN') || ctx.mistyTerrain === true;
+    const inAnyTerrain = inElectricTerrain || inGrassyTerrain || inPsychicTerrain || inMistyTerrain;
+
     const maxOff = Math.max(poke.baseAttack, poke.baseSpAttack);
     const avgBulk = (poke.baseHP + poke.baseDefense + poke.baseSpDefense) / 3;
     const offRatio = maxOff / avgBulk;
@@ -1180,6 +1196,16 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     if (move.id === 'MOVE_BLIZZARD' && inSnow) {
         rating += (100 - (move.accuracy || 100)) / 10;   // 100% accurate in snow
     }
+    // T-125 — terrain-scaling attacking moves (magnitudes provisional, mirroring the weather moves above).
+    // Each is boosted ONLY under its terrain (a teammate's Surge counts via ctx.*). Steel Roller FAILS with
+    // no terrain up, so it's worthless off-terrain.
+    if (move.id === 'MOVE_RISING_VOLTAGE' && inElectricTerrain) rating *= 1.8;   // 70→140 vs a grounded target
+    if (move.id === 'MOVE_PSYBLADE' && inElectricTerrain) rating *= 1.5;         // 80→120 in electric terrain
+    if (move.id === 'MOVE_EXPANDING_FORCE' && inPsychicTerrain) rating *= 1.6;   // 80→120 + hits both foes (doubles)
+    if (move.id === 'MOVE_MISTY_EXPLOSION' && inMistyTerrain) rating *= 1.5;     // 100→150 in misty terrain
+    if (move.id === 'MOVE_GRASSY_GLIDE' && inGrassyTerrain) rating *= 1.4;       // gains +1 priority in grassy terrain
+    if (move.id === 'MOVE_TERRAIN_PULSE' && inAnyTerrain) rating *= 1.9;         // 50→100 + becomes the terrain's type
+    if (move.id === 'MOVE_STEEL_ROLLER' && !inAnyTerrain) rating = 0;            // fails when no terrain is up
     if (move.id === 'MOVE_MAGNETIC_FLUX' && (hasAbility('PLUS') || hasAbility('MINUS'))) {
         rating = 8;
     }
@@ -1410,10 +1436,7 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     return rating;
 }
 
-function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, bannedItems = [], deviation = 0) {
-    if (bannedItems.includes(item)) {
-        return 0;
-    }
+function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, deviation = 0) {
     const itemId = 'ITEM_' + item.replace(/ /, '_').toUpperCase();
     const bestOffensePowerWithSpeed = (Math.max(poke.baseAttack, poke.baseSpAttack) + poke.baseSpeed)/200;
     const bestOffensePower = Math.max(poke.baseAttack, poke.baseSpAttack)/100;
@@ -1433,6 +1456,18 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, banne
         }
     });
 
+    // T-129 — items respect roles. A Choice item locks the holder into the first move it uses, so it must
+    // NEVER go on a mon whose set carries a move it can't be locked into: any STATUS move (hazards / setup /
+    // status / recovery) or a REACTIVE damaging move (Counter / Mirror Coat / Metal Burst). Mirrors the
+    // Assault Vest rule below (0 with any status move). Damaging pivots (U-turn / Volt Switch / Flip Turn)
+    // are fine — they switch the holder out, which unlocks it. Without this, a strong attacker was scored
+    // Choice-first even with Stealth Rock / Metal Burst in its set (Champion Steven's Solgaleo).
+    if (item === 'Choice Band' || item === 'Choice Specs' || item === 'Choice Scarf') {
+        const reactiveEffects = ['EFFECT_COUNTER', 'EFFECT_MIRROR_COAT', 'EFFECT_METAL_BURST'];
+        const cannotBeLockedInto = moveset.some(m =>
+            m.category === 'DAMAGE_CATEGORY_STATUS' || reactiveEffects.includes(m.effect));
+        if (cannotBeLockedInto) return 0;
+    }
     if (item === 'Choice Band') {
         return 9 * Math.max(1, physicalOffensePower) * speedPower / specialOffensePower * calculatedDeviation;
     }
@@ -2901,93 +2936,19 @@ function tierFromRating(absoluteRating, { isStoneMega = false } = {}) {
 }
 
 // @TODO Maybe add a level-based rating too for the right context
-function ratePokemon(poke, moves, abilities, tmPool) {
-    let bestAbilityRating = 0;
-    poke.parsedAbilities.forEach(abilityId => {
-        if (abilityId === 'NONE') return;
-        const abilityRating = abilities[`ABILITY_${abilityId}`]?.rating || 0;
-        if (abilityRating > bestAbilityRating) {
-            bestAbilityRating = abilityRating;
-        }
-    });
-
-    // S1: Terrain surge abilities are rated very high in abilities.h (9–10), but the combo
-    // system in computeComboBonus already captures their terrain-specific value (+0.4–0.75).
-    // Letting bestAbilityRating contribute its full value to absoluteRating×0.10 on top of
-    // the combo bonus causes terrain setters (Tapu Koko, Tapu Lele, etc.) to rate 0.5–1.0
-    // points above their Smogon tier. Cap at 7.5 to prevent double-counting.
-    const surgeAbilities = new Set(['ELECTRIC_SURGE', 'GRASSY_SURGE', 'PSYCHIC_SURGE', 'MISTY_SURGE']);
-    if (poke.parsedAbilities.some(a => surgeAbilities.has(a))) {
-        bestAbilityRating = Math.min(bestAbilityRating, 7.5);
-    }
-    // MAGIC_GUARD: has an explicit +0.25 combo bonus, so ability rating (9) would double-count.
-    // Cap at 7.5 to prevent the combined contribution from being too large.
-    // SHADOW_TAG: no direct combo, but rated 10 in abilities.h — contributes 1.0 to the final
-    // score which pushes Shadow Tag megas (Gengar) to GOD. Cap at 7.5.
-    // SPEED_BOOST: SPEED_BOOST+PROTECT combo already models it (+0.5). Cap more aggressively at
-    // 6.5 to prevent double-counting on top of the combo bonus.
-    const capAt75Abilities = new Set(['MAGIC_GUARD', 'SHADOW_TAG',
-        // Weather abilities rated 9 in abilities.h — cap same as terrain surges (7.5).
-        // Combo system captures their weather-specific value; letting the ability rating
-        // contribute its full 0.9 double-counts alongside the weather combo bonuses.
-        'DRIZZLE', 'DROUGHT', 'SAND_STREAM', 'SNOW_WARNING',
-    ]);
-    if (poke.parsedAbilities.some(a => capAt75Abilities.has(a))) {
-        bestAbilityRating = Math.min(bestAbilityRating, 7.5);
-    }
-    if (poke.parsedAbilities.some(a => a === 'SPEED_BOOST')) {
-        bestAbilityRating = Math.min(bestAbilityRating, 6.5);
-    }
-    // DROUGHT / DRIZZLE on mega: megas can't hold Heat Rock / Damp Rock (the item that extends
-    // weather to 8 turns). Their weather sets for only 5 turns and is purely self-serving —
-    // the main value is the mon's own offense in sun/rain, not team-wide weather support.
-    // Cap more aggressively than non-mega setters.
-    if (poke.evolutionData && poke.evolutionData.isMega &&
-        (poke.parsedAbilities.includes('DROUGHT') || poke.parsedAbilities.includes('DRIZZLE'))) {
-        bestAbilityRating = Math.min(bestAbilityRating, 4.0);
-    }
-    // -ATE abilities (PIXILATE, AERILATE, REFRIGERATE, GALVANIZE): the combo system in
-    // computeComboBonus already captures their STAB-conversion value via -ATE+sound (+0.4).
-    // Letting them contribute their full ability.h rating (8) double-counts. Cap at 7.0.
-    const ateAbilities = new Set(['PIXILATE', 'AERILATE', 'REFRIGERATE', 'GALVANIZE']);
-    if (poke.parsedAbilities.some(a => ateAbilities.has(a))) {
-        bestAbilityRating = Math.min(bestAbilityRating, 7.0);
-    }
-    // LIGHTNING_ROD / VOLT_ABSORB / MOTOR_DRIVE: draws or absorbs Electric moves.
-    // In singles the "draw" mechanic is irrelevant; only the immunity matters.
-    // Value scales with how much the Electric immunity helps: removing a 2x weakness is
-    // excellent, but if the holder already resists/is immune to Electric, the ability
-    // adds little. Sceptile Mega (Grass/Dragon) typifies the near-worthless case.
-    // Ground types are already immune to Electric — ability is fully redundant.
-    const elecAbsorbAbilities = new Set(['LIGHTNING_ROD', 'VOLT_ABSORB', 'MOTOR_DRIVE']);
-    if (poke.parsedAbilities.some(a => elecAbsorbAbilities.has(a))) {
-        const isElecWeak   = poke.parsedTypes.some(t => t === 'WATER' || t === 'FLYING');
-        const isElecImmune = poke.parsedTypes.some(t => t === 'GROUND');
-        if (isElecImmune) {
-            // Ground is already immune — ability is completely redundant
-            bestAbilityRating = Math.min(bestAbilityRating, 3.0);
-        } else if (!isElecWeak) {
-            // Neutral or resists Electric: immunity gives some value but far less than removing a weakness
-            bestAbilityRating = Math.min(bestAbilityRating, 4.5);
-        }
-    }
-    // SNOW_WARNING on mega pokemon: mega holders can't equip Light Clay, which is the primary
-    // item that makes Snow Warning / Aurora Veil teams viable (8 turns instead of 5).
-    // Without Light Clay, the snow support value is significantly diminished compared to a
-    // non-mega (Alolan Ninetales) that can hold the item.
-    if (poke.parsedAbilities.includes('SNOW_WARNING') && poke.evolutionData && poke.evolutionData.isMega) {
-        bestAbilityRating = Math.min(bestAbilityRating, 5.0);
-    }
-
-    // To properly analyze a pokemon, we must understand its role
-
-    let bstRating;
+// T-097 — the shared offense/defense/speed POWER + ROLE classification, extracted from ratePokemon so BOTH
+// the singles rater and the doubles rater (ratePokemonDoubles) compute a mon's power profile identically
+// (SSOT — no drift). Behaviour-preserving vs the previous inline block. `hugePowerRating` is the HUGE_POWER/
+// PURE_POWER ability-rating override (baseAttack/12); returned rather than set so each rater applies it to
+// bestAbilityRating in its own way. The three power components are capped at 10.
+function computePowerAndRole(poke) {
     let abilitiesAttackPowerMultiplier = 1;
     let abilitiesSpaPowerMultiplier = 1;
     let abilitiesSpeedPowerMultiplier = 1;
+    let hugePowerRating = null;
     if (poke.parsedAbilities.includes('HUGE_POWER') || poke.parsedAbilities.includes('PURE_POWER')) {
         abilitiesAttackPowerMultiplier = 2;
-        bestAbilityRating = poke.baseAttack / 12;
+        hugePowerRating = poke.baseAttack / 12;
     }
     if (poke.parsedAbilities.includes('PARENTAL_BOND')) {
         abilitiesAttackPowerMultiplier *= 1.25;
@@ -3105,6 +3066,100 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     offensePower = Math.min(offensePower, 10);
     speedPower   = Math.min(speedPower,   10);
     defensePower = Math.min(defensePower, 10);
+    return {
+        offensePower, speedPower, defensePower, rawOffensePower, rawDefensePower, role, hugePowerRating,
+        abilitiesAttackPowerMultiplier, abilitiesSpaPowerMultiplier, abilitiesSpeedPowerMultiplier,
+    };
+}
+
+function ratePokemon(poke, moves, abilities, tmPool) {
+    let bestAbilityRating = 0;
+    poke.parsedAbilities.forEach(abilityId => {
+        if (abilityId === 'NONE') return;
+        const abilityRating = abilities[`ABILITY_${abilityId}`]?.rating || 0;
+        if (abilityRating > bestAbilityRating) {
+            bestAbilityRating = abilityRating;
+        }
+    });
+
+    // S1: Terrain surge abilities are rated very high in abilities.h (9–10), but the combo
+    // system in computeComboBonus already captures their terrain-specific value (+0.4–0.75).
+    // Letting bestAbilityRating contribute its full value to absoluteRating×0.10 on top of
+    // the combo bonus causes terrain setters (Tapu Koko, Tapu Lele, etc.) to rate 0.5–1.0
+    // points above their Smogon tier. Cap at 7.5 to prevent double-counting.
+    const surgeAbilities = new Set(['ELECTRIC_SURGE', 'GRASSY_SURGE', 'PSYCHIC_SURGE', 'MISTY_SURGE']);
+    if (poke.parsedAbilities.some(a => surgeAbilities.has(a))) {
+        bestAbilityRating = Math.min(bestAbilityRating, 7.5);
+    }
+    // MAGIC_GUARD: has an explicit +0.25 combo bonus, so ability rating (9) would double-count.
+    // Cap at 7.5 to prevent the combined contribution from being too large.
+    // SHADOW_TAG: no direct combo, but rated 10 in abilities.h — contributes 1.0 to the final
+    // score which pushes Shadow Tag megas (Gengar) to GOD. Cap at 7.5.
+    // SPEED_BOOST: SPEED_BOOST+PROTECT combo already models it (+0.5). Cap more aggressively at
+    // 6.5 to prevent double-counting on top of the combo bonus.
+    const capAt75Abilities = new Set(['MAGIC_GUARD', 'SHADOW_TAG',
+        // Weather abilities rated 9 in abilities.h — cap same as terrain surges (7.5).
+        // Combo system captures their weather-specific value; letting the ability rating
+        // contribute its full 0.9 double-counts alongside the weather combo bonuses.
+        'DRIZZLE', 'DROUGHT', 'SAND_STREAM', 'SNOW_WARNING',
+    ]);
+    if (poke.parsedAbilities.some(a => capAt75Abilities.has(a))) {
+        bestAbilityRating = Math.min(bestAbilityRating, 7.5);
+    }
+    if (poke.parsedAbilities.some(a => a === 'SPEED_BOOST')) {
+        bestAbilityRating = Math.min(bestAbilityRating, 6.5);
+    }
+    // DROUGHT / DRIZZLE on mega: megas can't hold Heat Rock / Damp Rock (the item that extends
+    // weather to 8 turns). Their weather sets for only 5 turns and is purely self-serving —
+    // the main value is the mon's own offense in sun/rain, not team-wide weather support.
+    // Cap more aggressively than non-mega setters.
+    if (poke.evolutionData && poke.evolutionData.isMega &&
+        (poke.parsedAbilities.includes('DROUGHT') || poke.parsedAbilities.includes('DRIZZLE'))) {
+        bestAbilityRating = Math.min(bestAbilityRating, 4.0);
+    }
+    // -ATE abilities (PIXILATE, AERILATE, REFRIGERATE, GALVANIZE): the combo system in
+    // computeComboBonus already captures their STAB-conversion value via -ATE+sound (+0.4).
+    // Letting them contribute their full ability.h rating (8) double-counts. Cap at 7.0.
+    const ateAbilities = new Set(['PIXILATE', 'AERILATE', 'REFRIGERATE', 'GALVANIZE']);
+    if (poke.parsedAbilities.some(a => ateAbilities.has(a))) {
+        bestAbilityRating = Math.min(bestAbilityRating, 7.0);
+    }
+    // LIGHTNING_ROD / VOLT_ABSORB / MOTOR_DRIVE: draws or absorbs Electric moves.
+    // In singles the "draw" mechanic is irrelevant; only the immunity matters.
+    // Value scales with how much the Electric immunity helps: removing a 2x weakness is
+    // excellent, but if the holder already resists/is immune to Electric, the ability
+    // adds little. Sceptile Mega (Grass/Dragon) typifies the near-worthless case.
+    // Ground types are already immune to Electric — ability is fully redundant.
+    const elecAbsorbAbilities = new Set(['LIGHTNING_ROD', 'VOLT_ABSORB', 'MOTOR_DRIVE']);
+    if (poke.parsedAbilities.some(a => elecAbsorbAbilities.has(a))) {
+        const isElecWeak   = poke.parsedTypes.some(t => t === 'WATER' || t === 'FLYING');
+        const isElecImmune = poke.parsedTypes.some(t => t === 'GROUND');
+        if (isElecImmune) {
+            // Ground is already immune — ability is completely redundant
+            bestAbilityRating = Math.min(bestAbilityRating, 3.0);
+        } else if (!isElecWeak) {
+            // Neutral or resists Electric: immunity gives some value but far less than removing a weakness
+            bestAbilityRating = Math.min(bestAbilityRating, 4.5);
+        }
+    }
+    // SNOW_WARNING on mega pokemon: mega holders can't equip Light Clay, which is the primary
+    // item that makes Snow Warning / Aurora Veil teams viable (8 turns instead of 5).
+    // Without Light Clay, the snow support value is significantly diminished compared to a
+    // non-mega (Alolan Ninetales) that can hold the item.
+    if (poke.parsedAbilities.includes('SNOW_WARNING') && poke.evolutionData && poke.evolutionData.isMega) {
+        bestAbilityRating = Math.min(bestAbilityRating, 5.0);
+    }
+
+    // To properly analyze a pokemon, we must understand its role
+
+    let bstRating;
+    // T-097 — power + role now come from the shared helper (SSOT with the doubles rater). HUGE_POWER's
+    // ability-rating override is returned rather than set, so re-apply it here (singles behaviour).
+    const {
+        offensePower, speedPower, defensePower, rawDefensePower, role, hugePowerRating,
+        abilitiesAttackPowerMultiplier, abilitiesSpaPowerMultiplier, abilitiesSpeedPowerMultiplier,
+    } = computePowerAndRole(poke);
+    if (hugePowerRating != null) bestAbilityRating = hugePowerRating;
 
     switch (role) {
         case 'BALANCED':
@@ -3469,6 +3524,9 @@ const DOUBLES_SUPPORT_RATINGS = {
     MOVE_SNARL: 6, MOVE_FAKE_TEARS: 6, MOVE_STRUGGLE_BUG: 5.5,                      // spread offensive stat-drop = doubles support, not a penalty
     MOVE_ICY_WIND: 6, MOVE_ELECTROWEB: 5.5, MOVE_BULLDOZE: 5,                       // spread speed control
     MOVE_PERISH_SONG: 5.5,                                                         // wincon vs bulk (trapping combo deferred: Shadow Tag decision open)
+    // T-141 — Encore is premium doubles disruption (locks a foe into a bad move; devastating off Prankster).
+    // (Parting Shot needs no floor — rateMove already scores it ~8 in singles.)
+    MOVE_ENCORE: 6.5,
 };
 
 // Doubles value of a move: the singles rating plus a spread bonus for damaging moves that hit both
@@ -3494,9 +3552,9 @@ const DOUBLES_ABILITY_RATINGS = {
     // Redirection draws (the "draw" half is worthless in singles, decisive in doubles).
     ABILITY_LIGHTNING_ROD: 8, ABILITY_STORM_DRAIN: 8, ABILITY_VOLT_ABSORB: 7, ABILITY_MOTOR_DRIVE: 6,
     ABILITY_INTIMIDATE: 9,                                          // lowers BOTH foes' Attack
-    ABILITY_FRIEND_GUARD: 6, ABILITY_TELEPATHY: 5,                  // ally protection (doubles-only)
+    ABILITY_FRIEND_GUARD: 6, ABILITY_HOSPITALITY: 6, ABILITY_TELEPATHY: 5, // ally protection / heal (doubles-only; T-141)
     ABILITY_HEALER: 4, ABILITY_SYMBIOSIS: 4, ABILITY_AROMA_VEIL: 4, // ally support
-    ABILITY_DEFIANT: 6, ABILITY_COMPETITIVE: 6,                     // punish the ubiquitous Intimidate
+    ABILITY_DEFIANT: 7, ABILITY_COMPETITIVE: 7,                     // punish the ubiquitous Intimidate (T-141: 6→7, on 69% of doubles teams)
     ABILITY_JUSTIFIED: 5, ABILITY_RATTLED: 4,                       // trigger more often
     ABILITY_OVERCOAT: 4,                                            // spread powder / weather immunity
 };
@@ -3508,10 +3566,308 @@ function rateAbilityDoubles(abilityKey, ability) {
     return floor !== undefined ? Math.max(base, floor) : base;
 }
 
+// T-141 — ally-only abilities do NOTHING in singles (they act solely on an ally, which is absent in a
+// 1v1), yet the C aiRating scores them as if useful — inflating the singles tier of Tatsugiri (Commander
+// 10!), Sinistcha (Hospitality 5), Flamigo (Costar 5), Stonjourner (Power Spot 2). Corrected to 0 for the
+// SINGLES rating; their DOUBLES value is restored by DOUBLES_ABILITY_RATINGS / the combo. Owner-authorised
+// clear-error fix (docs/research/doubles-support.md §4c) — the only sanctioned singles rating change.
+const SINGLES_ABILITY_CORRECTIONS = {
+    ABILITY_COMMANDER: 0, ABILITY_HOSPITALITY: 0, ABILITY_COSTAR: 0, ABILITY_POWER_SPOT: 0,
+};
+function rateAbilitySingles(abilityKey, ability) {
+    const corrected = SINGLES_ABILITY_CORRECTIONS[abilityKey];
+    return corrected !== undefined ? corrected : ((ability && ability.rating) || 0);
+}
+
+// ── T-097 — DOUBLES pokemon rating ────────────────────────────────────────────────────────────────────
+// Mirrors the singles composition (bstRating·0.8 + movesRating·0.1 + abilityRating·0.1 + comboBonus) with
+// doubles-adjusted pieces (owner-validated design). Singles rating is untouched.
+
+// bstRating RE-WEIGHTED for doubles (owner ✔ bulk↑ / raw Speed↓): in 6v6 speed control (TR / Tailwind /
+// Icy Wind + redundancy) makes raw Speed less binary and bulk is premium (surviving spread damage).
+function bstRatingDoubles({ offensePower, defensePower, speedPower }, role) {
+    switch (role) {
+        case 'BALANCED':  return (offensePower + defensePower * 1.2 + speedPower * 0.8) / 2.9;
+        case 'OFFENSIVE': return offensePower * 0.50 + defensePower * 0.25 + speedPower * 0.25;
+        case 'BULKY':     return offensePower * 0.40 + defensePower * 0.55 + speedPower * 0.05;
+        case 'TANK':      return defensePower * 0.80 + offensePower * 0.15 + speedPower * 0.05;
+        default:          return (offensePower + defensePower + speedPower) / 3;
+    }
+}
+
+// The doubles value the tier must reflect (rating-decisions.md → T-097): Trick Room inversion, spread
+// attacker, support (redirection / Intimidate / Fake Out / speed control), pivots/Regenerator. POTENTIAL-
+// based (ability pool + learnable moves), like the weather abuser score — not the chosen singles moveset.
+// Additive, capped (like computeComboBonus). Weights tunable.
+const DOUBLES_COMBO = {
+    trickRoom: 0.5, spread: 0.4, redirection: 0.5, intimidate: 0.5, fakeOut: 0.35, speedControl: 0.4,
+    pivot: 0.3, terrain: 0.45, weather: 0.45, friendGuard: 0.35, prankster: 0.4, cap: 1.0,   // T-097 tuning: cap lowered 1.5→1.0 (temper stacking); prankster T-141
+};
+// T-141 — support moves that Prankster upgrades to priority (the reason Prankster is a doubles-skewed ability).
+const PRANKSTER_SUPPORT_MOVES = ['MOVE_TAILWIND', 'MOVE_TAUNT', 'MOVE_THUNDER_WAVE', 'MOVE_ENCORE', 'MOVE_FOLLOW_ME', 'MOVE_RAGE_POWDER', 'MOVE_WILL_O_WISP'];
+const DOUBLES_SURGE_ABILITIES = ['ELECTRIC_SURGE', 'GRASSY_SURGE', 'PSYCHIC_SURGE', 'MISTY_SURGE'];
+// Weather is a doubles archetype (corpus) — a setter is premium support, like a terrain setter.
+const DOUBLES_WEATHER_ABILITIES = ['DROUGHT', 'DRIZZLE', 'SAND_STREAM', 'SNOW_WARNING', 'ORICHALCUM_PULSE'];
+function computeComboBonusDoubles(poke, moves, { offensePower }) {
+    const abils = poke.parsedAbilities || [];
+    const learnable = new Set([...(poke.learnset || []).map(l => l.move), ...(poke.teachables || [])]);
+    const canLearn = list => list.some(m => learnable.has(m));
+    let bonus = 0;
+    // Trick Room: a slow + strong mon moves first under TR (premium abuser).
+    if ((poke.baseSpeed == null ? 999 : poke.baseSpeed) <= 55 && offensePower >= 6) bonus += DOUBLES_COMBO.trickRoom;
+    // Spread attacker: can field a damaging spread move (Earthquake / Rock Slide / Heat Wave / Dazzling Gleam…).
+    if (offensePower >= 5 && [...learnable].some(m => moves[m] && Number(moves[m].power) > 0 && isSpreadMove(moves[m]))) bonus += DOUBLES_COMBO.spread;
+    // Redirection (ability draw or Follow Me / Rage Powder).
+    if (abils.some(a => a === 'LIGHTNING_ROD' || a === 'STORM_DRAIN') || canLearn(['MOVE_FOLLOW_ME', 'MOVE_RAGE_POWDER'])) bonus += DOUBLES_COMBO.redirection;
+    if (abils.includes('INTIMIDATE')) bonus += DOUBLES_COMBO.intimidate;                                   // -Atk both foes
+    if (canLearn(['MOVE_FAKE_OUT'])) bonus += DOUBLES_COMBO.fakeOut;                                        // free turn / flinch
+    if (canLearn(['MOVE_TAILWIND', 'MOVE_TRICK_ROOM', 'MOVE_ICY_WIND', 'MOVE_ELECTROWEB'])) bonus += DOUBLES_COMBO.speedControl;
+    if (abils.includes('REGENERATOR') || canLearn(['MOVE_U_TURN', 'MOVE_VOLT_SWITCH', 'MOVE_FLIP_TURN'])) bonus += DOUBLES_COMBO.pivot; // 6v6 momentum
+    // T-097 tuning — terrain setters (Tapu-style), weather setters (Drought/Drizzle/…), + Friend Guard:
+    // bulky field/ally support (owner ✔; weather is a doubles archetype in the corpus).
+    if (abils.some(a => DOUBLES_SURGE_ABILITIES.includes(a))) bonus += DOUBLES_COMBO.terrain;
+    if (abils.some(a => DOUBLES_WEATHER_ABILITIES.includes(a))) bonus += DOUBLES_COMBO.weather;
+    // Ally-support abilities (Friend Guard / Hospitality): dedicated doubles support (T-141: + Hospitality).
+    if (abils.includes('FRIEND_GUARD') || abils.includes('HOSPITALITY')) bonus += DOUBLES_COMBO.friendGuard;
+    // Prankster on a support kit gives +1 priority to Tailwind / Taunt / T-Wave / Encore / redirection (T-141).
+    if (abils.includes('PRANKSTER') && canLearn(PRANKSTER_SUPPORT_MOVES)) bonus += DOUBLES_COMBO.prankster;
+    return Math.min(bonus, DOUBLES_COMBO.cap);
+}
+
+// ── T-141 (owner round 4) — DOUBLES support RATING + its own tier dimension ─────────────────────────
+// Support is its OWN doubles axis (like the offensive tier). A mon's support value = the sum of its
+// support tools, each scored by a QUALITY TIER — elite 8 / good 5 / filler 2 — MINUS a penalty for the
+// mon's own offense (a strong attacker that carries a support tool isn't a dedicated support). The summed
+// rating maps to its own support RU/UU/OU thresholds.
+//
+// Why quality tiers (owner round 4): the earlier model valued each tool by raw corpus frequency but CAPPED
+// it (Intimidate's 43 → 8), which FLATTENED every tool to ≈8 and let BREADTH win — Calyrex's six *filler*
+// tools (Helping Hand, Heal Pulse, Light Screen, Life Dew, Reflect, Skill Swap; zero elite) summed to 31
+// and out-scored Amoonguss's three *elite* tools (Spore + Rage Powder + Regenerator). Owner: "el hecho de
+// que pueda aprender ≥2 no lo hace support dedicado" — only a real support COMBINATION counts, and a good
+// OU attacker isn't a support just because it can learn a couple. The three quality tiers (frequency-
+// informed, then doubles-expert-corrected — redirection Rage Powder/Follow Me are elite though the Gen 6-7
+// corpus under-counts Follow Me) make the rating encode the owner's own rule exactly: 2 elite tools → 16
+// (UU), 3 elite → 24 (OU), while filler breadth barely moves (six filler ≈ 12). Protect is EXCLUDED
+// (universal utility, on 56% of ALL mons incl. attackers — not a support discriminator).
+// docs/research/doubles-support.md §2-3.
+const SUPPORT_ELITE = 8, SUPPORT_GOOD = 5, SUPPORT_FILLER = 2;
+const SUPPORT_MOVE_POINTS = {
+    // ELITE (8) — build-defining doubles support: speed control, redirection, reliable disruption/sleep.
+    MOVE_FAKE_OUT: 8, MOVE_TRICK_ROOM: 8, MOVE_TAILWIND: 8, MOVE_RAGE_POWDER: 8, MOVE_FOLLOW_ME: 8,
+    MOVE_TAUNT: 8, MOVE_SPORE: 8, MOVE_WILL_O_WISP: 8, MOVE_THUNDER_WAVE: 8, MOVE_PERISH_SONG: 8,
+    // GOOD (5) — real support, but not alone build-defining: guards, single-target speed drops, cleric, pivot.
+    MOVE_HELPING_HAND: 5, MOVE_WIDE_GUARD: 5, MOVE_QUICK_GUARD: 5, MOVE_ICY_WIND: 5, MOVE_ELECTROWEB: 5,
+    MOVE_SNARL: 5, MOVE_ENCORE: 5, MOVE_PARTING_SHOT: 5, MOVE_SLEEP_POWDER: 5, MOVE_DECORATE: 5,
+    MOVE_POLLEN_PUFF: 5, MOVE_COACHING: 5, MOVE_NUZZLE: 5, MOVE_AROMATHERAPY: 5, MOVE_HEAL_BELL: 5,
+    // FILLER (2) — situational / unreliable: heals, screens, one-target utility, RNG sleep.
+    MOVE_HEAL_PULSE: 2, MOVE_LIFE_DEW: 2, MOVE_WISH: 2, MOVE_LIGHT_SCREEN: 2, MOVE_REFLECT: 2,
+    MOVE_AURORA_VEIL: 2, MOVE_INSTRUCT: 2, MOVE_DISABLE: 2, MOVE_YAWN: 2, MOVE_AFTER_YOU: 2,
+    MOVE_ALLY_SWITCH: 2, MOVE_SKILL_SWAP: 2, MOVE_FEINT: 2, MOVE_FAKE_TEARS: 2, MOVE_STRUGGLE_BUG: 2,
+    MOVE_HYPNOSIS: 2, MOVE_LOVELY_KISS: 2, MOVE_GRASS_WHISTLE: 2, MOVE_SING: 2,
+};
+const SUPPORT_ABILITY_POINTS = {
+    // ELITE (8) — the build-defining doubles support abilities (Intimidate is on 69% of corpus teams).
+    INTIMIDATE: 8, PRANKSTER: 8, REGENERATOR: 8, ELECTRIC_SURGE: 8, MISTY_SURGE: 8, GRASSY_SURGE: 8,
+    PSYCHIC_SURGE: 8, FRIEND_GUARD: 8, HOSPITALITY: 8,
+    // GOOD (5) — redirection abilities, priority-block, ally healers/guards.
+    ARMOR_TAIL: 5, STORM_DRAIN: 5, LIGHTNING_ROD: 5, QUEENLY_MAJESTY: 5, DAZZLING: 5, HEALER: 5,
+    AROMA_VEIL: 5, SWEET_VEIL: 5, TELEPATHY: 5,
+    // FILLER (2) — absorb typings that only incidentally help an ally.
+    WATER_ABSORB: 2, VOLT_ABSORB: 2, SAP_SIPPER: 2,
+};
+const SUPPORT_TOOL_CAP = 8;              // == SUPPORT_ELITE; the ceiling a single tool can contribute
+// Penalty by the mon's OFFENSIVE doubles tier (its real threat level), NOT raw stats: a support with high
+// UNUSED offence (Sinistcha — 121 SpA but offensively RU) keeps its full support value, while a genuine
+// OU+ attacker's support value is heavily discounted (owner: a good OU attacker is NOT a support just
+// because it can learn a couple of support moves). RU-or-weaker offence → no penalty.
+const SUPPORT_PENALTY_BY_TIER = { [TIER_UU]: 3, [TIER_OU]: 10, [TIER_UBERS]: 16, [TIER_LEGEND]: 22, [TIER_AG]: 28 };
+// The DOUBLES support tiers — thresholds on the (quality-tier points − offensive-tier-penalty) scale,
+// calibrated so the corpus support exemplars land OU and pure attackers fall out. With elite tools worth 8,
+// this encodes the owner's own rule directly: 1 elite tool (8) < RU → a half-support attacker, NOT a
+// support; 2 elite (16) → UU; 3+ elite (24) → OU. Filler (2 each) barely moves the needle, so breadth of
+// mediocre moves can't manufacture a support (Calyrex's six filler tools ≈ 12 → below UU alone).
+const SUPPORT_TIER_THRESHOLDS = { OU: 22, UU: 15, RU: 11 };
+// A support must also be VIABLE — a frail pre-evo (Smoliv) dies before it supports, no matter its kit. So
+// each support tier has a minimum BST (real OU supports: Whimsicott 480 / Amoonguss 464 / Sinistcha 508 /
+// Cresselia 600); a low-BST mon caps out at the tier its BST allows, or drops out entirely.
+const SUPPORT_TIER_MIN_BST = { OU: 440, UU: 380, RU: 320 };
+
+// The species' doubles SUPPORT rating: Σ capped tool points − offensive-tier penalty (never below 0).
+// `offensiveTier` is the mon's pure offensive doubles tier; falls back to tierFromRatingDoubles(poke.
+// ratingDoubles) (set at rating time) so detectors/selectors can call it with just the poke.
+function supportRating(poke, offensiveTier) {
+    const abils = poke.parsedAbilities || [];
+    const learnable = new Set([...(poke.learnset || []).map(l => l.move), ...(poke.teachables || [])]);
+    let pts = 0;
+    for (const mv in SUPPORT_MOVE_POINTS) if (learnable.has(mv)) pts += Math.min(SUPPORT_MOVE_POINTS[mv], SUPPORT_TOOL_CAP);
+    for (const a of abils) if (SUPPORT_ABILITY_POINTS[a]) pts += Math.min(SUPPORT_ABILITY_POINTS[a], SUPPORT_TOOL_CAP);
+    const offT = offensiveTier || (typeof poke.ratingDoubles === 'number' ? tierFromRatingDoubles(poke.ratingDoubles) : null);
+    return Math.max(0, pts - (SUPPORT_PENALTY_BY_TIER[offT] || 0));
+}
+// The support TIER (OU/UU/RU) or null — the highest tier where BOTH the rating clears the threshold AND
+// the BST clears the viability minimum (so a frail pre-evo with a big kit is capped down, or dropped).
+function supportTierDoubles(poke, offensiveTier) {
+    const r = supportRating(poke, offensiveTier);
+    const bst = (poke.baseHP || 0) + (poke.baseAttack || 0) + (poke.baseDefense || 0) + (poke.baseSpAttack || 0) + (poke.baseSpDefense || 0) + (poke.baseSpeed || 0);
+    if (r >= SUPPORT_TIER_THRESHOLDS.OU && bst >= SUPPORT_TIER_MIN_BST.OU) return TIER_OU;
+    if (r >= SUPPORT_TIER_THRESHOLDS.UU && bst >= SUPPORT_TIER_MIN_BST.UU) return TIER_UU;
+    if (r >= SUPPORT_TIER_THRESHOLDS.RU && bst >= SUPPORT_TIER_MIN_BST.RU) return TIER_RU;
+    return null;
+}
+// A mon is a dedicated support iff it earns a support tier (clears both the rating AND the BST viability
+// bar for at least RU) — owner: only a real, viable support kit qualifies.
+function isDedicatedSupport(poke) { return supportTierDoubles(poke) != null; }
+
+// ITEMISED support breakdown — the exact tools + their quality-tier points, the offensive-tier penalty and
+// the resulting rating/tier. Powers the decision-log's support ranking (owner: "me gustaría poder auditar
+// eso"): so the log can show WHY a mon is OU/UU support, not just the number. Tools sorted best-first.
+function supportToolBreakdown(poke, offensiveTier) {
+    const abils = poke.parsedAbilities || [];
+    const learnable = new Set([...(poke.learnset || []).map(l => l.move), ...(poke.teachables || [])]);
+    const tools = [];
+    for (const mv in SUPPORT_MOVE_POINTS) if (learnable.has(mv)) tools.push({ id: mv, kind: 'move', value: SUPPORT_MOVE_POINTS[mv] });
+    for (const a of abils) if (SUPPORT_ABILITY_POINTS[a]) tools.push({ id: a, kind: 'ability', value: SUPPORT_ABILITY_POINTS[a] });
+    tools.sort((x, y) => y.value - x.value);
+    const pts = tools.reduce((s, t) => s + t.value, 0);
+    const offT = offensiveTier || (typeof poke.ratingDoubles === 'number' ? tierFromRatingDoubles(poke.ratingDoubles) : null);
+    const penalty = SUPPORT_PENALTY_BY_TIER[offT] || 0;
+    return { tools, pts, offTier: offT, penalty, rating: Math.max(0, pts - penalty), tier: supportTierDoubles(poke, offT) };
+}
+
+// The doubles SUPPORT moves this species can learn, ranked best-first (quality-tier value). Used to build a
+// dedicated support's moveset — its role IS support, so it should carry its best support moves rather than
+// an all-attacking set (owner: "el moveset debería saber que su rol es support"). Moves only (abilities are
+// chosen separately). `filter(move)` optionally gates on the trainer's reachable moves (TM bag / level).
+function topSupportMoves(poke, { filter = null, limit = Infinity } = {}) {
+    const learnable = new Set([...(poke.learnset || []).map(l => l.move), ...(poke.teachables || [])]);
+    const ranked = Object.keys(SUPPORT_MOVE_POINTS)
+        .filter(mv => learnable.has(mv) && (!filter || filter(mv)))
+        .sort((a, b) => SUPPORT_MOVE_POINTS[b] - SUPPORT_MOVE_POINTS[a]);
+    return Number.isFinite(limit) ? ranked.slice(0, limit) : ranked;
+}
+
+// T-097 tuning (owner ✔): doubles punishes FRAILTY harder (a frail mon is folded by spread damage) and does
+// not reward a PASSIVE wall (bulk with no offence and no support role isn't a doubles threat).
+const DBL_FRAILTY_DEF = 5.5, DBL_FRAILTY_FACTOR = 0.5;      // ratingDoubles -= (5.5 - defensePower)·0.5 when frail
+const DBL_PASSIVE_OFF = 4.0, DBL_PASSIVE_COMBO = 0.3, DBL_PASSIVE_PENALTY = 0.8;
+
+// The doubles rating of a mon (parallel to ratePokemon's absoluteRating). Uses the doubles move/ability
+// values (move.ratingDoubles / ability.ratingDoubles) + the re-weighted bstRating + the doubles combo.
+// T-097 — the doubles tier scale has its OWN thresholds (owner ✔), calibrated so the doubles-rating
+// distribution populates tiers ~like singles (base pokedex, matched proportions). Tunable.
+const DOUBLES_TIER_THRESHOLDS = { AG: 9.4, LEGEND: 9.0, UBERS: 8.3, OU: 7.65, UU: 7.0, RU: 6.05, NU: 4.75, PU: 3.05, ZU: 1.4 };
+function tierFromRatingDoubles(ratingDoubles) {
+    const T = DOUBLES_TIER_THRESHOLDS;
+    if (ratingDoubles >= T.AG)     return TIER_AG;
+    if (ratingDoubles >= T.LEGEND) return TIER_LEGEND;
+    if (ratingDoubles >= T.UBERS)  return TIER_UBERS;
+    if (ratingDoubles >= T.OU)     return TIER_OU;
+    if (ratingDoubles >= T.UU)     return TIER_UU;
+    if (ratingDoubles >= T.RU)     return TIER_RU;
+    if (ratingDoubles >= T.NU)     return TIER_NU;
+    if (ratingDoubles >= T.PU)     return TIER_PU;
+    if (ratingDoubles >= T.ZU)     return TIER_ZU;
+    return TIER_MAGIKARP;
+}
+
+// `moveset` MUST be passed (the singles rater's chosen bestMoveset) so this consumes NO rng — calling
+// chooseMoveset again would perturb the shared rng stream and silently shift the SINGLES ratings + the
+// downstream pipeline. Doubles-aware move selection is deferred to T-109; here we rate the singles set with
+// the doubles move values. Falls back to chooseMoveset only for standalone/unit use.
+function ratePokemonDoubles(poke, moves, abilities, tmPool, moveset = null) {
+    let bestAbilityRating = 0;
+    poke.parsedAbilities.forEach(abilityId => {
+        if (abilityId === 'NONE') return;
+        const ab = abilities[`ABILITY_${abilityId}`];
+        const r = ab ? (ab.ratingDoubles != null ? ab.ratingDoubles : (ab.rating || 0)) : 0;
+        if (r > bestAbilityRating) bestAbilityRating = r;
+    });
+    const {
+        offensePower, speedPower, defensePower, role, hugePowerRating,
+        abilitiesAttackPowerMultiplier, abilitiesSpaPowerMultiplier, abilitiesSpeedPowerMultiplier,
+    } = computePowerAndRole(poke);
+    if (hugePowerRating != null) bestAbilityRating = Math.max(bestAbilityRating, hugePowerRating);
+    const bstRating = bstRatingDoubles({ offensePower, defensePower, speedPower }, role);
+    if (!moveset) moveset = chooseMoveset(poke, moves).moveset;
+    let movesRating = 0;
+    moveset.forEach(moveId => {
+        const m = moves[moveId];
+        if (m) movesRating += (m.ratingDoubles != null ? m.ratingDoubles : (m.rating || 0));
+    });
+    movesRating *= 0.25;
+    const coverageMetrics = computeCoverageMetrics(moveset, moves);
+    movesRating = movesRating * 0.7 + coverageMetrics.coverageScore * 0.3;
+    const combo = computeComboBonusDoubles(poke, moves, { offensePower });
+    let ratingDoubles = (bstRating * 0.8) + (movesRating * 0.1) + (bestAbilityRating * 0.1) + combo;
+    // T-097 tuning — frailty penalty (spread damage folds frail mons) + passive-wall penalty (bulk with no
+    // offence and no support role isn't a doubles threat).
+    if (defensePower < DBL_FRAILTY_DEF) ratingDoubles -= (DBL_FRAILTY_DEF - defensePower) * DBL_FRAILTY_FACTOR;
+    if (offensePower < DBL_PASSIVE_OFF && combo < DBL_PASSIVE_COMBO) ratingDoubles -= DBL_PASSIVE_PENALTY;
+
+    // T-140 — BST floor (parity with the singles rater): raw BST guarantees a minimum tier, so BST keeps
+    // pacing the run in doubles too. Same format-independent BST cutoffs as singles; the DOUBLES tier
+    // thresholds are the floor targets. Applied AFTER the penalties, so BST has the final word — a
+    // high-BST frail mon is never rated below its BST tier just because spread damage folds it.
+    const rawBST = poke.baseHP
+        + poke.baseAttack * abilitiesAttackPowerMultiplier
+        + poke.baseDefense
+        + poke.baseSpAttack * abilitiesSpaPowerMultiplier
+        + poke.baseSpDefense
+        + poke.baseSpeed * abilitiesSpeedPowerMultiplier;
+    const DT = DOUBLES_TIER_THRESHOLDS;
+    const floorTo = (threshold) => { if (ratingDoubles < threshold) ratingDoubles = threshold + ratingDoubles / 100; };
+    // Stone megas follow the mega BST rules (UBERS/AG); non-megas the LEGEND rule — mirrors singles.
+    const isStoneMega = !!(poke.evolutionData && poke.evolutionData.isMega && poke.evolutionData.megaItem);
+    if (rawBST >= NU_BST_THRESHOLD) floorTo(DT.NU);
+    if (rawBST >= RU_BST_THRESHOLD) floorTo(DT.RU);
+    if (rawBST >= UU_BST_THRESHOLD) floorTo(DT.UU);
+    if (rawBST >= OU_BST_THRESHOLD) floorTo(DT.OU);
+    if (!isStoneMega && rawBST >= LEGEND_BST_THRESHOLD) floorTo(DT.LEGEND);
+    if (isStoneMega && rawBST >= MEGA_UBERS_BST_THRESHOLD) floorTo(DT.UBERS);
+    if (rawBST >= (isStoneMega ? MEGA_AG_BST_THRESHOLD : AG_BST_THRESHOLD) || poke.parsedAbilities.includes('POWER_CONSTRUCT')) floorTo(DT.AG);
+
+    // T-141 (owner r3) — SUPPORT is its own doubles axis. The mon is worth the HIGHER of its offensive and
+    // support tiers; when support strictly beats offense, support is its identity → tagged (the viewer shows
+    // a "support" tag on top of the role/tier). teambuilding uses the effective tierDoubles.
+    const offensiveTier = tierFromRatingDoubles(ratingDoubles);
+    const supTier = supportTierDoubles(poke, offensiveTier);
+    const supportDominant = supTier != null && TIER_SEQ.indexOf(supTier) > TIER_SEQ.indexOf(offensiveTier);
+    return {
+        ratingDoubles,
+        tierDoubles: supportDominant ? supTier : offensiveTier,
+        role,
+        supportTierDoubles: supTier,
+        supportRatingDoubles: supportRating(poke, offensiveTier), // numeric — stored for the audit ranking
+        isSupportDoubles: supportDominant,
+    };
+}
+
+// T-111 — the per-level DOUBLES rating (mirror of rateContextual). `singlesMoveset` is the singles
+// contextual bestMoveset at this cap — passed so this consumes NO rng (see ratePokemonDoubles). Returns
+// { absoluteRating, tier } to match the singles contextualRatings[cap] shape the selectors read.
+function rateContextualDoubles(poke, moves, abilities, context, singlesMoveset = null) {
+    const { level = 100, tms = [] } = context;
+    const restrictedPoke = { ...poke, learnset: poke.learnset.filter(entry => entry.level <= level) };
+    const rd = ratePokemonDoubles(restrictedPoke, moves, abilities, new Set(tms), singlesMoveset);
+    return { absoluteRating: rd.ratingDoubles, tier: rd.tierDoubles };
+}
+
 module.exports = {
     ratePokemon,
+    ratePokemonDoubles,
+    rateAbilitySingles,
+    supportRating,
+    supportTierDoubles,
+    supportToolBreakdown,
+    topSupportMoves,
+    isDedicatedSupport,
+    bstRatingDoubles,
+    computeComboBonusDoubles,
     tierFromRating,
+    tierFromRatingDoubles,
     rateContextual,
+    rateContextualDoubles,
     isSpreadMove,
     rateMoveDoubles,
     rateAbilityDoubles,

@@ -1,10 +1,10 @@
 ---
 id: T-126
 title: Trainer archetype/gimmick seed assignments (deliberate variety)
-status: in-progress
+status: abandoned
 type: feature
 created: 2026-07-11
-updated: 2026-07-11
+updated: 2026-07-16
 target-version: 0.8.0
 links: [T-107, T-123, T-124]
 blocked-by: [T-124]
@@ -56,3 +56,5 @@ Acceptance criteria:
   Tate & Liza → TR, replacing the old force). Sequenced after T-124/T-122 so a seed actually builds.
 
 ## Outcome
+
+Abandoned by owner (2026-07-16). The core seed assignments shipped and stay in the code (trainerSeeds.js — Tate & Liza full Trick Room, weather-seeded villains/gyms). The remaining scope — deliberate doubles-seed personalities + more archetype variety — was judged optional polish (doubles trainers already build coherent archetypes emergently + the up-front support roll), not worth pursuing. No further work.

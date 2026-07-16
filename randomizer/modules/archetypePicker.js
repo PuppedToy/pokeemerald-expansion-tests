@@ -18,6 +18,12 @@
 const rng = require('../rng');
 const { sample } = require('./utils');
 const { teamFeatureCounts, crystallize, combinedStructure, scoreCandidate } = require('./archetypeFit');
+const {
+    WEATHER_SUBTYPE_BY_SETTER, SETTERS_BY_SUBTYPE, WEATHER_REQUIRED_ABUSERS, WEATHER_ABUSE_THRESHOLD, WX_ABUSE_RATING,
+} = require('./weatherConstants');
+const { weatherAbuseScore, weatherAbuseRating, weatherAbuseBreakdown, GIMMICK_SPEC } = require('./gimmickPlan');
+const { DETECTORS } = require('./featureDetectors'); // T-142 — hard-pick a dedicated-support-capable mon
+const { supportToolBreakdown } = require('../rating'); // T-141 r4 — itemised support ranking for the log
 
 const BIAS_MIN_SOPH = 0.15;   // below this sophistication, no bias (early-game = "a pile of mons")
 const IDENTITY_FIT = 0.5;     // the top base archetype recipe must fit this well before biasing (T-118)
@@ -47,6 +53,19 @@ const LAST_RESORT_BASE = 'hyper_offense'; // T-123 — hyper's recipe is easy to
 const HYPER_YIELD_MARGIN = 0.25;          // hyper yields only to a base fitting within this of its fit
 const TR_SLOW_SPEED = 60;                 // T-124 — base Speed at/below which a mon is a Trick Room abuser
 const TR_SLOW_FACTOR = 4;                 // how hard Trick Room pulls the pick toward slow mons
+const WEATHER_ABUSER_FACTOR = 4;          // T-132 — how hard weather pulls the pick toward abusers (once a setter is down)
+
+// B-032 — a seed base id is format-agnostic, but base ids differ across formats: the balanced base is
+// 'balance' in singles and 'balance_dual_mode' in doubles. If the seed's base isn't in the active model,
+// map it to the format-equivalent so the base recipe isn't silently dropped (leaving only the gimmick
+// structure). bulky_offense / hyper_offense exist in both models, so only the balanced base needs aliasing.
+const SEED_BASE_ALIAS = { balance: 'balance_dual_mode', balance_dual_mode: 'balance' };
+function resolveSeedBase(baseId, model) {
+    const bases = (model && model.baseArchetypes) || [];
+    if (bases.some(a => a.id === baseId)) return baseId;
+    const alias = SEED_BASE_ALIAS[baseId];
+    return (alias && bases.some(a => a.id === alias)) ? alias : baseId;
+}
 
 function resolveIdentity(team, model, ctx = {}, seed = null) {
     const cryst = crystallize(team, model, ctx);
@@ -62,7 +81,7 @@ function resolveIdentity(team, model, ctx = {}, seed = null) {
     const fit = base ? base.fit : 0; // chosen base-recipe fit (also surfaced to the T-117 audit)
     let baseId, source;
     if (base && base.fit >= IDENTITY_FIT) { baseId = base.id; source = 'emergent'; }
-    else if (seed && seed.base) { baseId = seed.base; source = 'seed'; }
+    else if (seed && seed.base) { baseId = resolveSeedBase(seed.base, model); source = 'seed'; }
     else return null;
 
     // Gimmicks: a SEEDED gimmick is the trainer's INTENTIONAL identity and persists throughout (T-124/
@@ -85,16 +104,12 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
         if (!Array.isArray(candidates) || candidates.length < 2) return sample(candidates);
         const soph = (context && context.sophistication) || 0;
         const seed = (context && context.archetypeSeed) || null;
-        const electric = !!(seed && seed.electricTerrain); // T-124 (Wattson) — manual terrain overlay
-        if (!model || (soph < BIAS_MIN_SOPH && !electric)) return sample(candidates);
+        if (!model || soph < BIAS_MIN_SOPH) return sample(candidates);
+        const doubles = model.format === 'doubles'; // T-109 — rank gimmick abusers by their DOUBLES rating for a doubles trainer
 
-        // T-124 (Wattson) — electric terrain: HARD-prefer Electric-type mons (a gym theme), so the team
-        // can actually run electric attacks + benefit from the terrain. Falls back if none are available.
-        if (electric) {
-            const elec = candidates.filter(c => (c.parsedTypes || []).includes('ELECTRIC'));
-            if (elec.length === 1) return elec[0];
-            if (elec.length >= 2) candidates = elec;
-        }
+        // T-137 — Wattson's electric terrain is now the `electric_terrain` GIMMICK (setter + abusers, handled
+        // in the gimmick block below), not a manual "prefer Electric-types" overlay: as a gym leader his pool
+        // is already Electric-monotype-restricted, so the overlay was redundant.
 
         // The resolver's team holds newTeamMember wrappers ({ pokemon, ... }); detectors read a poke
         // shape. Normalise to the underlying poke (raw pokes — as in unit tests — pass through), so
@@ -102,7 +117,7 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
         const team = ((context && context.team) || []).map(m => (m && m.pokemon) ? m.pokemon : m);
         const identity = resolveIdentity(team, model, ctx, seed);
 
-        let biased = electric; // an electric-terrain filter is itself a bias
+        let biased = false;
         let weights = candidates.map(() => 1);
         if (identity) {
             const structure = combinedStructure(model, identity.baseId, identity.gimmickIds);
@@ -113,9 +128,153 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
                 return 1 + soph * BIAS_STRENGTH * s;
             });
         }
-        // T-124 — Trick Room: strongly prefer SLOW mons, which move FIRST under Trick Room.
-        if (identity && (identity.gimmickIds || []).includes('trick_room')) {
-            candidates.forEach((c, i) => { if ((c.baseSpeed || 999) <= TR_SLOW_SPEED) { weights[i] *= TR_SLOW_FACTOR; biased = true; } });
+        // T-132 — weather. The gimmick has TWO make-or-break components — a setter and 2 abusers — that a
+        // soft weight can't secure (a ×N weight is diluted to ~nothing across a 60-120-mon tier pool), so
+        // BOTH are HARD preferences (mirroring the electric-terrain filter), applied greedily as the slots
+        // that offer them come up:
+        //   1. SETTER first — as soon as a slot's pool offers a setter of the subtype and the team has none,
+        //      restrict the pick to setters (weighted by archetype fit among them, so it stays coherent).
+        //   2. Then ABUSERS — until the team holds WEATHER_REQUIRED_ABUSERS reliable abusers, restrict the
+        //      pick to reliable-abuser candidates (also applied on the slots BEFORE the setter lands, since
+        //      setters live in the high-tier slots and the early slots would otherwise build no abusers).
+        // Abuser membership is the SHARED weatherAbuseScore (same definition the success condition and the
+        // decision-log use — one source of truth). A "reliable" abuser scores ≥ WEATHER_ABUSE_THRESHOLD
+        // (an abuser ability, or a boosted TYPE — offensive Water/Fire attacker, or defensive Rock/Ice);
+        // a synergy-move-only mon scores below it, so it's a SOFT bias only. Every branch makes exactly one
+        // rng draw → the per-slot RNG stream is undisturbed.
+        if (identity && (identity.gimmickIds || []).includes('weather')) {
+            const teamMembers = (context && context.team) || [];
+            const subtype = (seed && seed.weather)
+                || teamMembers.map(m => WEATHER_SUBTYPE_BY_SETTER[(m.ability || '').toUpperCase()]).find(Boolean);
+            if (subtype) {
+                const setterAbils = SETTERS_BY_SUBTYPE[subtype] || [];
+                const teamHasSetter = teamMembers.some(m => WEATHER_SUBTYPE_BY_SETTER[(m.ability || '').toUpperCase()] === subtype);
+                // T-132 — abuse-only (a tag partner abusing an ALLY's weather): NO setter of its own, so
+                // skip the setter hard-pick entirely and go straight to stacking abusers.
+                if (!teamHasSetter && !(seed && seed.abuseOnly)) {
+                    const setterIdx = [];
+                    candidates.forEach((c, i) => { if ((c.parsedAbilities || []).some(a => setterAbils.includes(a))) setterIdx.push(i); });
+                    if (setterIdx.length) return weightedSampleOne(setterIdx.map(i => candidates[i]), setterIdx.map(i => weights[i]));
+                }
+                // DEDICATED abusers already picked — the "pick 2 good ranked abusers" budget counts only
+                // freely-chosen abusers, NOT the forced picks (the favourite ace, or the setter, which is
+                // hard-picked to establish the weather). So a trainer whose favourite/setter happen to be
+                // abusers (Maxie: Camerupt + Torkoal) STILL ranks 2 real abusers for its free slots (T-135).
+                const teamAbusers = teamMembers.filter(m =>
+                    !m.__favourite
+                    && !WEATHER_SUBTYPE_BY_SETTER[(m.ability || '').toUpperCase()]
+                    && weatherAbuseScore(m, subtype) >= WEATHER_ABUSE_THRESHOLD).length;
+                const reliableIdx = [], softIdx = [];
+                candidates.forEach((c, i) => {
+                    const s = weatherAbuseScore(c, subtype);
+                    if (s >= WEATHER_ABUSE_THRESHOLD) reliableIdx.push(i);
+                    if (s > 0) softIdx.push(i);
+                });
+                if (teamAbusers < WEATHER_REQUIRED_ABUSERS && reliableIdx.length) {
+                    // T-135 — rank the eligible abusers by the DETAILED weather-abuse rating (which ability
+                    // exploits this weather best, given the mon's stats), and let sophistication pull the pick
+                    // toward the TOP (endgame → real ability-abusers; early game ≈ uniform among eligibles).
+                    const cands = reliableIdx.map(i => candidates[i]);
+                    const breakdowns = cands.map(c => weatherAbuseBreakdown(c, subtype, doubles));
+                    const maxR = Math.max(...breakdowns.map(b => b.total), 1e-6);
+                    // weight = (rating/max)^(soph × sharpness): endgame → top-rated abusers dominate; early
+                    // game (soph→0) → exponent→0 → all weights→1 (near-uniform, byte-identical-ish).
+                    const exp = soph * WX_ABUSE_RATING.rankSharpness;
+                    const rankWeights = breakdowns.map(b => Math.pow(Math.max(b.total, 0) / maxR, exp));
+                    const picked = weightedSampleOne(cands, rankWeights);
+                    // T-135 audit — record this abuser slot's ranking (top few + score breakdown + the pick)
+                    // for the decision log, so the choice is visible/auditable.
+                    if (context && context.weatherPicks) {
+                        const sorted = cands
+                            .map((c, k) => ({ id: c.id, total: breakdowns[k].total, parts: breakdowns[k].parts }))
+                            .sort((a, b) => b.total - a.total);
+                        const shown = sorted.slice(0, 6);
+                        // Always surface the PICKED mon + its rank, even when the weighted draw landed it
+                        // below the shown top-N (so the log exposes a pick that skipped higher-rated abusers).
+                        const pickedRank = sorted.findIndex(e => e.id === picked.id);
+                        if (pickedRank >= shown.length) shown.push({ ...sorted[pickedRank], rank: pickedRank + 1 });
+                        context.weatherPicks.push({ subtype, pickedId: picked.id, nEligible: sorted.length, pullExp: Math.round(exp * 100) / 100, ranked: shown });
+                    }
+                    return picked;
+                }
+                softIdx.forEach(i => { weights[i] *= WEATHER_ABUSER_FACTOR; biased = true; });
+            }
+        }
+        // T-137 — electric terrain / trick room: the SAME "setter + 2 abusers" build as weather, but
+        // single-subtype. Driven by GIMMICK_SPEC (per-gimmick setter detection / abuse score / rating).
+        // Electric terrain hard-picks an ability-setter (Electric Surge / Hadron Engine); Trick Room has no
+        // ability-setter (the move is retrofit by the resolver), so it only ranks slow-strong abusers.
+        const gid = identity && (identity.gimmickIds || []).find(g => GIMMICK_SPEC[g]);
+        if (gid) {
+            const spec = GIMMICK_SPEC[gid];
+            const teamMembers = (context && context.team) || [];
+            const abuseOnly = !!(seed && seed.abuseOnly);
+            const teamHasSetter = teamMembers.some(m => spec.isSetter(m));
+            if (!teamHasSetter && !abuseOnly && spec.setterAbilities.length) {
+                const setterIdx = [];
+                candidates.forEach((c, i) => { if ((c.parsedAbilities || []).some(a => spec.setterAbilities.includes(a))) setterIdx.push(i); });
+                if (setterIdx.length) return weightedSampleOne(setterIdx.map(i => candidates[i]), setterIdx.map(i => weights[i]));
+            }
+            // Count DEDICATED abusers (exclude the favourite ace + the setter), then rank the free slots —
+            // same "pick N good ranked abusers" budget as weather (T-135). T-138 — a FULL room targets 4.
+            const abuserTarget = (gid === 'trick_room' && seed && seed.roomStyle === 'full') ? 4 : WEATHER_REQUIRED_ABUSERS;
+            const teamAbusers = teamMembers.filter(m => !m.__favourite && !spec.isSetter(m) && spec.score(m) >= WEATHER_ABUSE_THRESHOLD).length;
+            const reliableIdx = [], softIdx = [];
+            candidates.forEach((c, i) => { const s = spec.score(c); if (s >= WEATHER_ABUSE_THRESHOLD) reliableIdx.push(i); if (s > 0) softIdx.push(i); });
+            if (teamAbusers < abuserTarget && reliableIdx.length) {
+                const cands = reliableIdx.map(i => candidates[i]);
+                const breakdowns = cands.map(c => spec.breakdown(c, doubles));
+                const maxR = Math.max(...breakdowns.map(b => b.total), 1e-6);
+                const exp = soph * WX_ABUSE_RATING.rankSharpness;
+                const rankWeights = breakdowns.map(b => Math.pow(Math.max(b.total, 0) / maxR, exp));
+                const picked = weightedSampleOne(cands, rankWeights);
+                if (context && context.weatherPicks) {
+                    const sorted = cands.map((c, k) => ({ id: c.id, total: breakdowns[k].total, parts: breakdowns[k].parts })).sort((a, b) => b.total - a.total);
+                    const shown = sorted.slice(0, 6);
+                    const pickedRank = sorted.findIndex(e => e.id === picked.id);
+                    if (pickedRank >= shown.length) shown.push({ ...sorted[pickedRank], rank: pickedRank + 1 });
+                    context.weatherPicks.push({ subtype: spec.label, pickedId: picked.id, nEligible: sorted.length, pullExp: Math.round(exp * 100) / 100, ranked: shown });
+                }
+                return picked;
+            }
+            softIdx.forEach(i => { weights[i] *= WEATHER_ABUSER_FACTOR; biased = true; });
+            // Trick Room additionally prefers SLOW mons generally (they move first under TR), not just the
+            // slow-strong abusers — mirrors the old T-124 slow-mon bias.
+            if (gid === 'trick_room') {
+                candidates.forEach((c, i) => { if ((c.baseSpeed || 999) <= TR_SLOW_SPEED) { weights[i] *= TR_SLOW_FACTOR; biased = true; } });
+            }
+        }
+        // T-142 — DEDICATED SUPPORT is make-or-break for doubles teams. A soft weight can't secure a rare
+        // support mon across a big tier pool, and the emergent identity resolves too late (an all-attacker
+        // partial team crystallises hyper_offense before a support archetype can form — Drake fielded zero
+        // support). So the team's support intent is rolled UP FRONT (resolveTrainerTeam → context.doubles-
+        // WantsSupport): when it wants one and none is on the team, HARD-pick a support-capable mon (like a
+        // gimmick setter); the move-refine then injects its support move. Doubles-only → singles byte-identical.
+        if (doubles && context && context.doublesWantsSupport) {
+            const teamMembers = (context.team || []);
+            const have = teamMembers.filter(m => !m.__favourite && DETECTORS.dedicatedSupport((m && m.pokemon) || m)).length;
+            if (have < 1) {
+                const idx = [];
+                candidates.forEach((c, i) => { if (DETECTORS.dedicatedSupport(c)) idx.push(i); });
+                if (idx.length) {
+                    const pool = idx.map(i => candidates[i]);
+                    const picked = weightedSampleOne(pool, idx.map(i => weights[i]));
+                    // T-141 r4 — record the support RANKING for the decision log (owner: audit "why THIS support
+                    // was chosen, and why it's OU/UU"). No extra rng — the pick above is the real one, reused.
+                    if (context.supportPicks) {
+                        const ranked = pool.map(c => {
+                            const b = supportToolBreakdown(c);
+                            return {
+                                id: c.id, rating: b.rating, tier: c.supportTierDoubles || b.tier,
+                                offTier: c.tierDoubles || b.offTier, penalty: b.penalty,
+                                tools: b.tools.map(t => ({ id: t.id, kind: t.kind, value: t.value })),
+                            };
+                        }).sort((a, b) => b.rating - a.rating);
+                        context.supportPicks.push({ pickedId: picked.id, nEligible: pool.length, ranked });
+                    }
+                    return picked;
+                }
+            }
         }
         if (!biased) return sample(candidates); // nothing to pull toward → byte-identical
         return weightedSampleOne(candidates, weights);

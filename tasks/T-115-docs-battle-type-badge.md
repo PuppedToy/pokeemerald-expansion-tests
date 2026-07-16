@@ -1,10 +1,10 @@
 ---
 id: T-115
 title: Surface each trainer's battle type (Single/Double) in the generated docs viewer
-status: in-progress
+status: done
 type: feature
 created: 2026-07-10
-updated: 2026-07-10
+updated: 2026-07-15
 target-version: 0.7.0
 links: [T-083, T-087, docs/adr/ADR-014.md]
 blocked-by: []
@@ -47,4 +47,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Each trainer's battle type (Single/Double) surfaced in the docs viewer via the trainerData spread (out.html + browser); docs-battle-type.test.js guard. Frontend green. Owner-validated 2026-07-15. Closed.

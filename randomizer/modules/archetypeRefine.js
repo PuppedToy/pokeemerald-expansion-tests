@@ -47,8 +47,13 @@ function resolvedDetectMon(member) {
     };
 }
 
-function speciesCanLearn(species, move) {
-    return (species.learnset || []).some(l => l.move === move) || (species.teachables || []).includes(move);
+// B-030 — a role move must respect the incremental TM bag. A level-up move is fine if reachable at the
+// trainer's level; a teachable is fine only if the trainer currently holds that TM. When `tms`/`level`
+// are not supplied (pure unit tests), the gate is permissive (unchanged behaviour).
+function speciesCanLearn(species, move, { tms = null, level = null } = {}) {
+    const byLevel = (species.learnset || []).some(l => l.move === move && (level == null || l.level <= level));
+    if (byLevel) return true;
+    return (species.teachables || []).includes(move) && (tms == null || tms.includes(move));
 }
 
 // The archetype role move `species` should also carry, or null. `team` is the members chosen so far
@@ -72,46 +77,148 @@ function planMemberRoleMove({ species, team, model, ctx = {}, sophistication, se
         .filter(s => ROLE_MOVE_SETS[s.role] && speciesFeats.has(s.role) && (delivered[s.role] || 0) < s.min)
         .sort((a, b) => b.weight - a.weight);
 
+    // Return the first role move the species can ACTUALLY have here — trying alternatives (U-turn before
+    // Volt Switch, etc.) so an inaccessible TM doesn't block the role and doesn't leak in (B-030).
+    const gate = { tms: ctx.tms || null, level: ctx.level ?? null };
     for (const s of candidates) {
         for (const move of ROLE_MOVE_SETS[s.role]) {
-            if (speciesCanLearn(species, move)) return move;
+            if (speciesCanLearn(species, move, gate)) return move;
         }
     }
     return null;
 }
 
-// T-124 — weather subtype ↔ setter/abuser abilities. Identity-aware ability selection: when a team
-// crystallises the weather gimmick, the setter mon should get the weather-setter ability and the
-// abusers the ability that matches the established weather (rain→Swift Swim, sun→Chlorophyll, …),
-// instead of their best-rated generic ability. Composition confirmed by the corpus (Swift Swim in
-// rain, Chlorophyll/Solar Beam in sun, Sand Rush in sand, Slush Rush in snow).
-const WEATHER_SUBTYPE_BY_SETTER = {
-    DROUGHT: 'sun', ORICHALCUM_PULSE: 'sun', DRIZZLE: 'rain', SAND_STREAM: 'sand', SNOW_WARNING: 'snow',
+// T-124 — SOFT surger-awareness for the NON-gimmick terrains (misty / grassy / psychic; electric stays a
+// full gimmick per owner). NOT a gimmick and NOT a forced build — the corpus shows terrains aren't built
+// around (0-1 payoff pieces/team). Just: if the team ALREADY fields a matching Surge setter, a teammate
+// that can run the terrain's signature payoff move gets it as a light preference (grassy → Grassy Glide
+// priority, psychic → Expanding Force spread, misty → Misty Explosion). Deterministic, soph-gated, and the
+// caller applies it in DOUBLES only (so singles stays byte-identical). Returns the move or null.
+const TERRAIN_SYNERGY = [
+    { setterAbility: 'GRASSY_SURGE',  setterMove: 'MOVE_GRASSY_TERRAIN',  payoff: ['MOVE_GRASSY_GLIDE'] },
+    { setterAbility: 'PSYCHIC_SURGE', setterMove: 'MOVE_PSYCHIC_TERRAIN', payoff: ['MOVE_EXPANDING_FORCE'] },
+    { setterAbility: 'MISTY_SURGE',   setterMove: 'MOVE_MISTY_TERRAIN',   payoff: ['MOVE_MISTY_EXPLOSION'] },
+];
+function planTerrainSynergyMove({ species, team, ctx = {}, sophistication }) {
+    if (!species || (sophistication || 0) < BIAS_MIN_SOPH) return null;
+    const teamAbil = new Set((team || []).flatMap(m => (m && m.ability) ? [m.ability] : ((m && m.pokemon && m.pokemon.parsedAbilities) || [])));
+    const teamMoves = new Set((team || []).flatMap(m => (m && m.moves) || []));
+    const gate = { tms: ctx.tms || null, level: ctx.level ?? null };
+    for (const t of TERRAIN_SYNERGY) {
+        if (!(teamAbil.has(t.setterAbility) || teamMoves.has(t.setterMove))) continue;
+        const mv = t.payoff.find(p => speciesCanLearn(species, p, gate));
+        if (mv) return mv;
+    }
+    return null;
+}
+
+// T-125 — a TERRAIN SEED (Electric/Grassy/Misty/Psychic Seed) is a defensive boost-on-entry item for a team
+// that ESTABLISHES a terrain. If a teammate sets one (a Surge ability or a terrain move) — or the team is the
+// electric_terrain gimmick — a suitable holder claims the MATCHING seed: an Unburden abuser (its speed
+// engine) or a bulky low-offense mon (the seed is a DEFENSIVE item, rated AV < seed < Eviolite). Claimed only
+// if the bag holds it (provisioned as `choiceJosephSeeds` from Wally Mauville onward). Returns the seed
+// display name or null. Pure, soph-gated; the caller claims + consumes it link-aware.
+const TERRAIN_SEED_BY_ABILITY = {
+    ELECTRIC_SURGE: 'Electric Seed', HADRON_ENGINE: 'Electric Seed',
+    GRASSY_SURGE: 'Grassy Seed', MISTY_SURGE: 'Misty Seed', PSYCHIC_SURGE: 'Psychic Seed',
 };
-const WEATHER_SETTER_ABILITIES = Object.keys(WEATHER_SUBTYPE_BY_SETTER);
-const SETTERS_BY_SUBTYPE = {
-    sun: ['DROUGHT', 'ORICHALCUM_PULSE'], rain: ['DRIZZLE'], sand: ['SAND_STREAM'], snow: ['SNOW_WARNING'],
+const TERRAIN_SEED_BY_MOVE = {
+    MOVE_ELECTRIC_TERRAIN: 'Electric Seed', MOVE_GRASSY_TERRAIN: 'Grassy Seed',
+    MOVE_MISTY_TERRAIN: 'Misty Seed', MOVE_PSYCHIC_TERRAIN: 'Psychic Seed',
 };
-const WEATHER_ABUSER_BY_SUBTYPE = {
-    sun: ['CHLOROPHYLL', 'SOLAR_POWER'],
-    rain: ['SWIFT_SWIM', 'HYDRATION', 'RAIN_DISH', 'DRY_SKIN'],
-    sand: ['SAND_RUSH', 'SAND_FORCE'],
-    snow: ['SLUSH_RUSH', 'ICE_BODY'],
-};
+function teamTerrainSeed(team, archetypeSeed) {
+    for (const m of (team || [])) {
+        const ab = (m && m.ability) || null;
+        if (ab && TERRAIN_SEED_BY_ABILITY[ab]) return TERRAIN_SEED_BY_ABILITY[ab];
+        for (const mv of ((m && m.moves) || [])) if (TERRAIN_SEED_BY_MOVE[mv]) return TERRAIN_SEED_BY_MOVE[mv];
+    }
+    if (archetypeSeed && (archetypeSeed.gimmicks || []).includes('electric_terrain')) return 'Electric Seed';
+    return null;
+}
+function planTerrainSeedClaim({ species, memberAbility = null, team = [], archetypeSeed = null, available = [], sophistication }) {
+    if (!species || (sophistication || 0) < BIAS_MIN_SOPH) return null;
+    const seed = teamTerrainSeed(team, archetypeSeed);
+    if (!seed || !available.includes(seed)) return null;
+    const bulky = (species.baseHP || 0) + (species.baseDefense || 0) + (species.baseSpDefense || 0) >= 285
+        && Math.max(species.baseAttack || 0, species.baseSpAttack || 0) <= 95;
+    const unburden = memberAbility === 'UNBURDEN';
+    return (bulky || unburden) ? seed : null;
+}
+
+// T-124 — PERISH-TRAP is a moveset TEAM-COMBO, not a gimmick/archetype (owner). Perish Song pairs with a
+// Shadow Tag / Arena Trap trapper (the trapped foe can't switch out of the 3-turn count). Two cases:
+//   (1) SELF — a mon that ITSELF traps (Shadow Tag / Arena Trap) strongly prefers Perish Song in its own
+//       set (it carries the win condition: Gothitelle, Mega Gengar). BOTH formats (owner round 3: the
+//       self-combo applies to singles too — a singles Perish-Trap Gothitelle is a real set).
+//   (2) TEAMMATE — a mon whose TEAMMATE traps prefers Perish Song too, if it's support-leaning (the classic
+//       split: a Wobbuffet-style trapper can't learn Perish Song, so a support partner carries it). DOUBLES
+//       ONLY — in singles you don't split it across mons (owner) → gated by `doubles`.
+// Returns MOVE_PERISH_SONG or null. Soph-gated; move reachability gated by the caller.
+const TRAPPER_ABILITIES_COMBO = ['SHADOW_TAG', 'ARENA_TRAP'];
+const PERISH_SONG_MOVE = 'MOVE_PERISH_SONG';
+const PERISH_COMBO_SUPPORT_MAX_OFFENSE = 100; // teammate case only fires on support-leaning mons (not sweepers)
+function planPerishComboMove({ species, memberAbility = null, team = [], ctx = {}, sophistication, doubles = false }) {
+    if (!species || (sophistication || 0) < BIAS_MIN_SOPH) return null;
+    if (!speciesCanLearn(species, PERISH_SONG_MOVE, { tms: ctx.tms || null, level: ctx.level ?? null })) return null;
+    // (1) this mon is itself the trapper → always wants Perish Song (both formats).
+    if (memberAbility && TRAPPER_ABILITIES_COMBO.includes(memberAbility)) return PERISH_SONG_MOVE;
+    // (2) a teammate traps → a support-leaning partner carries the Perish Song. Doubles only.
+    if (!doubles) return null;
+    const teammateTraps = (team || []).some(m => m && m.ability && TRAPPER_ABILITIES_COMBO.includes(m.ability));
+    const offense = Math.max(species.baseAttack || 0, species.baseSpAttack || 0);
+    if (teammateTraps && offense <= PERISH_COMBO_SUPPORT_MAX_OFFENSE) return PERISH_SONG_MOVE;
+    return null;
+}
+
+// T-133 — the FORWARD (dependent) Choice-item claim. A Choice role EXISTS only if its item exists: if
+// `species` fills an offensive role the team wants (a revenge-killer or a wallbreaker — both detectors
+// already exclude setup sweepers, so the set can commit to attacking) AND a Choice item is AVAILABLE in the
+// bag, return the best-fitting one to claim NOW (so `chooseMoveset`, seeing the Choice item, builds an
+// all-attacking set). Returns null when no Choice is available (never forced) or the mon isn't a clean
+// attacker. The item is matched to the mon's stats: a revenge killer wants Scarf; a breaker wants Band
+// (physical) / Specs (special) — falling back to whatever Choice the bag actually holds. Deterministic,
+// soph-gated. (Enhanced items — weather rock, Room Service, Electric Seed — are handled forward by T-125.)
+const CHOICE_ITEMS = ['Choice Scarf', 'Choice Band', 'Choice Specs'];
+function planForwardChoiceItem({ species, team, model, ctx = {}, sophistication, seed = null, available = [] }) {
+    if (!model || !species || (sophistication || 0) < BIAS_MIN_SOPH) return null;
+    const inBag = CHOICE_ITEMS.filter(ci => available.includes(ci));
+    if (!inBag.length) return null;
+    const speciesMons = (team || []).map(m => (m && m.pokemon) ? m.pokemon : m);
+    const identity = resolveIdentity(speciesMons, model, ctx, seed);
+    if (!identity) return null;
+    const structure = combinedStructure(model, identity.baseId, identity.gimmickIds);
+    const wants = role => structure.some(s => s.role === role);
+    const feats = detectFeatures(species, ctx);
+    const scarfer = feats.has('choiceScarfRevengeKiller') && wants('choiceScarfRevengeKiller');
+    const breaker = feats.has('wallbreaker') && wants('wallbreaker');
+    if (!scarfer && !breaker) return null;
+    const physical = (species.baseAttack || 0) >= (species.baseSpAttack || 0);
+    const pref = scarfer
+        ? ['Choice Scarf', ...(physical ? ['Choice Band', 'Choice Specs'] : ['Choice Specs', 'Choice Band'])]
+        : (physical ? ['Choice Band', 'Choice Specs', 'Choice Scarf'] : ['Choice Specs', 'Choice Band', 'Choice Scarf']);
+    return pref.find(ci => inBag.includes(ci)) || null;
+}
+
+// T-124 — weather subtype ↔ setter/abuser abilities (SSOT: modules/weatherConstants.js, a leaf module so
+// the picker/refine/gimmick-plan share them without a require cycle). Identity-aware ability selection:
+// when a team crystallises the weather gimmick, the setter mon gets the setter ability and the abusers the
+// ability matching the established weather (rain→Swift Swim, sun→Chlorophyll, …).
+const {
+    WEATHER_SUBTYPE_BY_SETTER, WEATHER_SETTER_ABILITIES, SETTERS_BY_SUBTYPE, WEATHER_ABUSER_BY_SUBTYPE,
+} = require('./weatherConstants');
 // T-125 — the rock a weather setter holds to extend its weather 5→8 turns (by the setter ability).
 const WEATHER_ROCK_BY_SETTER = {
     DROUGHT: 'ITEM_HEAT_ROCK', ORICHALCUM_PULSE: 'ITEM_HEAT_ROCK',
     DRIZZLE: 'ITEM_DAMP_ROCK', SAND_STREAM: 'ITEM_SMOOTH_ROCK', SNOW_WARNING: 'ITEM_ICY_ROCK',
 };
 
-// T-124/T-127 (Wattson) — Electric Terrain is a Gen-8+ gimmick not in the Gen 6-7 corpus, added
-// MANUALLY for Wattson via a seed flag. It only implies: prefer an electric attack, prefer the terrain
-// setter ability, and give a defensive mon the Electric Seed (Def boost in electric terrain). This will
-// be generalised into a proper terrain gimmick family by the later-gen corpus work (T-127).
-const ELECTRIC_TERRAIN_SETTER = 'ELECTRIC_SURGE';
+// T-137 — Electric Terrain is now the `electric_terrain` GIMMICK (setter + abusers; docs/research/
+// electric-terrain.md). Ability preference: a member on an electric-terrain team prefers a setter
+// (Electric Surge / Hadron Engine) or an abuser ability (Surge Surfer / Quark Drive / Unburden) it can have.
+const ELECTRIC_TERRAIN_ABILITIES = ['ELECTRIC_SURGE', 'HADRON_ENGINE', 'SURGE_SURFER', 'QUARK_DRIVE', 'UNBURDEN'];
 const ELECTRIC_MOVES = [
     'MOVE_THUNDERBOLT', 'MOVE_DISCHARGE', 'MOVE_VOLT_SWITCH', 'MOVE_THUNDER', 'MOVE_WILD_CHARGE',
-    'MOVE_THUNDER_PUNCH', 'MOVE_SPARK',
+    'MOVE_THUNDER_PUNCH', 'MOVE_SPARK', 'MOVE_RISING_VOLTAGE',
 ];
 
 // The ability `species` should PREFER given the crystallised identity, or [] (no preference). For a
@@ -122,9 +229,11 @@ const ELECTRIC_MOVES = [
 // ability is chosen separately, so without this a weather-crystallised team never actually gets weather.
 function planMemberAbility({ species, team, model, ctx = {}, sophistication, seed = null }) {
     if (!model || !species || (sophistication || 0) < BIAS_MIN_SOPH) return [];
-    // T-124 (Wattson) — electric terrain: prefer the Electric Surge setter ability if the mon has it.
-    if (seed && seed.electricTerrain && (species.parsedAbilities || []).includes(ELECTRIC_TERRAIN_SETTER)) {
-        return [ELECTRIC_TERRAIN_SETTER];
+    // T-137 — electric-terrain gimmick: prefer a setter (Electric Surge/Hadron Engine) or abuser ability
+    // (Surge Surfer/Quark Drive/Unburden) the mon can have, so the terrain + its abusers are real.
+    if (seed && (seed.gimmicks || []).includes('electric_terrain')) {
+        const want = (species.parsedAbilities || []).filter(a => ELECTRIC_TERRAIN_ABILITIES.includes(a));
+        if (want.length) return want;
     }
     const speciesMons = (team || []).map(m => (m && m.pokemon) ? m.pokemon : m);
     const identity = resolveIdentity(speciesMons, model, ctx, seed);
@@ -143,6 +252,9 @@ function planMemberAbility({ species, team, model, ctx = {}, sophistication, see
         // No setter for this weather yet → this mon establishes it if it can; else prefer the abuser.
         const hasSetter = (team || []).some(m => m.ability && WEATHER_SUBTYPE_BY_SETTER[m.ability] === subtype);
         if (!hasSetter) {
+            // Only the THEMED setter — never a foreign weather's (RC4, T-132). When no themed ABILITY-setter
+            // exists in the trainer's pool, the resolver retrofits a themed MOVE-setter instead
+            // (gimmickPlan.ensureMoveSetter); it must NOT establish a different weather here.
             const canSet = speciesAbil.filter(a => (SETTERS_BY_SUBTYPE[subtype] || []).includes(a));
             if (canSet.length) return canSet;
         }
@@ -152,7 +264,7 @@ function planMemberAbility({ species, team, model, ctx = {}, sophistication, see
 }
 
 module.exports = {
-    resolvedDetectMon, planMemberRoleMove, planMemberAbility, ROLE_MOVE_SETS,
-    WEATHER_SUBTYPE_BY_SETTER, WEATHER_ABUSER_BY_SUBTYPE, WEATHER_ROCK_BY_SETTER,
+    resolvedDetectMon, planMemberRoleMove, planMemberAbility, planForwardChoiceItem, planTerrainSynergyMove, planTerrainSeedClaim, planPerishComboMove, ROLE_MOVE_SETS,
+    WEATHER_SUBTYPE_BY_SETTER, SETTERS_BY_SUBTYPE, WEATHER_ABUSER_BY_SUBTYPE, WEATHER_ROCK_BY_SETTER,
     ELECTRIC_MOVES,
 };

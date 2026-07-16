@@ -4,6 +4,7 @@ const {
     TRAINER_POKE_STARTER_TREECKO,
     TRAINER_POKE_ENCOUNTER,
     TRAINER_RESTRICTION_NO_REPEATED_TYPE,
+    TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
     TRAINER_POKE_STARTER_TORCHIC,
     TRAINER_POKE_STARTER_MUDKIP,
     TIER_MAGIKARP,
@@ -45,8 +46,9 @@ const {
     EVO_TYPE_SOLO,
 } = require("./constants");
 const { maps: wildMaps } = require('./wild');
-const { getBossPreset, getNonBossPreset } = require('./presets');
+const { getBossPreset, getNonBossPreset, bossMega } = require('./presets');
 const rng = require('./rng');
+const { linkedChoiceSample } = require('./modules/itemLinks');
 
 const trainersFile = path.resolve(__dirname, '..', 'src', 'data', 'trainers.party');
 const partnersFile = path.resolve(__dirname, '..', 'src', 'data', 'battle_partners.party');
@@ -161,91 +163,9 @@ const originalChampionType = POKEMON_TYPE_STEEL;
 
 // New defs
 
-
-const CONTEXTUAL_POKEDEF_UU_OU_MEGA = {
-    isMega: true,
-    contextualTier: [TIER_RU, TIER_NU, TIER_UU, TIER_OU],
-    checkValidEvo: true,
-    tryEvolve: true,
-};
-
-
-// Weather/terrain setter pattern:
-// maxTierDownSteps:1 limits ability-setter phase to T and T-1.
-// fallback[0] = move-setter at original T (full auto-tier-down from there).
-
-const pokeDefDrizzleMon = (BASE_POKE_DEF, withItem = true) => ({
-    ...BASE_POKE_DEF,
-    abilities: ['DRIZZLE'],
-    ...(withItem ? { item: 'Damp Rock' } : {}),
-    maxTierDownSteps: 1,
-    fallback: [{
-        ...BASE_POKE_DEF,
-        mustHaveOneOfMoves: ['MOVE_RAIN_DANCE'],
-        tryToHaveMove: ['MOVE_RAIN_DANCE'],
-        abilities: [...rainAbilities],
-        ...(withItem ? { item: 'Damp Rock' } : {}),
-    }],
-});
-
-const pokeDefSnowWarningMon = (BASE_POKE_DEF, withItem = true) => ({
-    ...BASE_POKE_DEF,
-    abilities: ['SNOW_WARNING'],
-    ...(withItem ? { item: 'Icy Rock' } : {}),
-    maxTierDownSteps: 1,
-    fallback: [{
-        ...BASE_POKE_DEF,
-        mustHaveOneOfMoves: ['MOVE_HAIL'],
-        tryToHaveMove: ['MOVE_HAIL'],
-        abilities: [...snowAbilities],
-        ...(withItem ? { item: 'Icy Rock' } : {}),
-    }],
-});
-
-const pokeDefDroughtMon = (BASE_POKE_DEF, withItem = true) => ({
-    ...BASE_POKE_DEF,
-    abilities: ['DROUGHT'],
-    ...(withItem ? { item: 'Heat Rock' } : {}),
-    maxTierDownSteps: 1,
-    fallback: [{
-        ...BASE_POKE_DEF,
-        mustHaveOneOfMoves: ['MOVE_SUNNY_DAY'],
-        tryToHaveMove: ['MOVE_SUNNY_DAY'],
-        abilities: [...sunAbilities],
-        ...(withItem ? { item: 'Heat Rock' } : {}),
-    }],
-});
-
-const pokeDefSandStreamMon = (BASE_POKE_DEF, withItem = true) => ({
-    ...BASE_POKE_DEF,
-    abilities: ['SAND_STREAM'],
-    ...(withItem ? { item: 'Smooth Rock' } : {}),
-    maxTierDownSteps: 1,
-    fallback: [
-        {
-            ...BASE_POKE_DEF,
-            mustHaveOneOfMoves: ['MOVE_SANDSTORM'],
-            tryToHaveMove: ['MOVE_SANDSTORM'],
-            abilities: [...sandAbilities],
-            ...(withItem ? { item: 'Smooth Rock' } : {}),
-        }
-    ],
-});
-
-
-const pokeDefElectricSurgeMon = (BASE_POKE_DEF, item = 'Terrain Extender') => ({
-    ...BASE_POKE_DEF,
-    abilities: ['ELECTRIC_SURGE'],
-    item,
-    maxTierDownSteps: 1,
-    fallback: [{
-        ...BASE_POKE_DEF,
-        mustHaveOneOfMoves: ['MOVE_ELECTRIC_TERRAIN'],
-        tryToHaveMove: ['MOVE_ELECTRIC_TERRAIN'],
-        item,
-    }],
-});
-
+// T-128 — the weather/terrain setter pokeDef* wrappers were removed: the gimmick seed (weather /
+// electric terrain) now produces the setter + abusers + rock via the identity-aware ability logic
+// (T-124) and the weather-rock / Electric-Seed item logic (T-125), materialising or dropping on its own.
 
 const PROMISING_OU_UBERS_MEGA_LC = {
     megaTier: [TIER_OU, TIER_UBERS],
@@ -253,50 +173,81 @@ const PROMISING_OU_UBERS_MEGA_LC = {
     evoType: [EVO_TYPE_LC],
 };
 
-// ── Absolute-tier POKEDEF variants (post-Wattson boss trainers) ───────────────
-const ABSOLUTE_POKEDEF_RU     = { absoluteTier: [TIER_RU],     checkValidEvo: true };
-const ABSOLUTE_POKEDEF_UU     = { absoluteTier: [TIER_UU],     checkValidEvo: true };
-const ABSOLUTE_POKEDEF_OU     = { absoluteTier: [TIER_OU],     checkValidEvo: true };
-const ABSOLUTE_POKEDEF_UBERS  = { absoluteTier: [TIER_UBERS],  checkValidEvo: true };
+// T-128 — Steven's authoritative legend slot (STEVEN_LEGEND). The other absolute-tier and mega POKEDEF
+// helpers were removed once every boss moved to preset pools + the bossMega story-progression mega gate.
 const ABSOLUTE_POKEDEF_LEGEND = { absoluteTier: [TIER_LEGEND], checkValidEvo: true };
 
-const ABSOLUTE_POKEDEF_UU_OU_MEGA = {
-    isMega: true,
-    absoluteTier: [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU],
-    checkValidEvo: true,
-    tryEvolve: true,
-};
-const ABSOLUTE_POKEDEF_MEGA = {
-    isMega: true,
-    absoluteTier: [TIER_MAGIKARP, TIER_ZU, TIER_PU, TIER_NU, TIER_RU, TIER_UU, TIER_OU, TIER_UBERS],
-    checkValidEvo: true,
-    tryEvolve: true,
-};
+// ── T-128 — Favourite Pokémon chains ─────────────────────────────────────────
+// A favourite is an ordered SPECIES chain (priority high→low). resolveFavourites (modules/favouriteClaim)
+// claims the pool slot of the species' exact tier — or the {isMega} slot, gated by the story-progression
+// mega rule, if it is a mega — resolved FIRST; else it drops to the next rung, else the implicit
+// restriction-bounded fallback. Every favourite (gym / villain / Steven / Wally / rival-starter) is one.
 
-const absolutePokeDefUbersMega = (BASE_POKE_DEF = {}) => ({
-    isMega: true,
-    absoluteTier: [TIER_UBERS],
-    checkValidEvo: true,
-    ...BASE_POKE_DEF,
-    fallback: [{
-        absoluteTier: [TIER_UBERS],
-        checkValidEvo: true,
-        ...BASE_POKE_DEF,
-    }],
-});
+// villainFavourite('SPECIES_SHARPEDO_MEGA') → a villain leader's signature-mega chain: the signature
+// mega ≫ any mega of the team's types (the { mega } rung) ≫ the implicit "any team-typed mon" fallback.
+// The 5-type team theme is a TRAINER restriction (ALLOW_ONLY_TYPES + trainer.types), so it is applied to
+// the signature, the { mega } rung and the final fallback alike — no per-rung type lists needed.
+const villainFavourite = (aceMega) => [aceMega, { mega: true }];
 
-const absolutePokeDefMega = (BASE_POKE_DEF = {}) => ({
-    isMega: true,
-    absoluteTier: [TIER_OU, TIER_UBERS],
-    checkValidEvo: true,
-    tryEvolve: true,
-    ...BASE_POKE_DEF,
-    fallback: [{
-        absoluteTier: [TIER_OU, TIER_UBERS],
-        checkValidEvo: true,
-        ...BASE_POKE_DEF,
-    }],
-});
+// likedFavourite('SPECIES_GROUDON') → a "liked" mascot (owner, T-132): claims its slot exactly like a
+// favourite, but breeds GOOD instead of PERFECT — the box legendary shouldn't get perfect IVs. The
+// { chain, goodBreed } object is read by favouriteClaim (bare arrays stay perfect-breed favourites).
+const likedFavourite = (species) => ({ chain: [species], goodBreed: true });
+
+// T-128 — a gym leader's favourite is EXCLUSIVELY its signature species. It claims a pool slot of that
+// species' actual tier (or the {isMega} slot if it is a mega), else drops to the standard restriction-
+// bounded fallback (implicit). The gym's rolled-type restriction lives at the trainer level.
+// (Steven, Wally and Tate & Liza now express their favourites inline as species chains too.)
+const gymFavourite = (signature) => [signature];
+
+// ── T-106 — reverse-order continuity (authoritative-latest) ──────────────────
+// ADR-016 §4: a recurring character's final, well-built roster must be decided BEFORE its earlier
+// appearances, which then echo it devolved (Champion Metagross → Granite-Cave Metang). Rather than
+// reverse the whole generation loop (which would break the 15 `copy:` rival trainers that must run
+// after their target), we HOIST each character's authoritative (endgame) appearance to just before
+// its earliest appearance. Per-slot reseed makes every non-recurring team order-independent, so this
+// is output-neutral except for the intended recurring-character inversion. Pure; unit-tested.
+//
+// This reorders only the BUILD/resolution order. Each trainer records its ORIGINAL index in
+// `displayOrder` first, so the docs can be re-sorted back to the canonical story order — the owner's
+// rule: build back-to-front, but SHOW the trainers in the original order (Route 103 → … → Ever Grande;
+// Granite Cave → … → Champion; Mauville → Lilycove → Victory Road).
+function hoistAuthoritativeAppearances(trainersData, groups) {
+    trainersData.forEach((t, i) => { t.displayOrder = i; });
+    for (const { auth, members } of groups) {
+        const authIdx = trainersData.findIndex(t => t.id === auth);
+        if (authIdx === -1) continue;
+        const idxs = members.map(id => trainersData.findIndex(t => t.id === id)).filter(i => i >= 0);
+        const earliest = Math.min(authIdx, ...idxs);
+        if (authIdx <= earliest) continue; // already generated first
+        const [authTrainer] = trainersData.splice(authIdx, 1); // earliest < authIdx → index stays valid
+        trainersData.splice(earliest, 0, authTrainer);
+    }
+    return trainersData;
+}
+
+// The recurring characters whose latest appearance is authoritative (endgame roster decided first, the
+// earlier appearances echo it devolved). `auth` = the latest appearance; `members` = the earlier ones.
+const CONTINUITY_GROUPS = [
+    { auth: 'TRAINER_CHAMPION_STEVEN', members: ['TRAINER_STEVEN', 'PARTNER_STEVEN'] },
+    { auth: 'TRAINER_WALLY_VR_1', members: ['TRAINER_WALLY_MAUVILLE', 'TRAINER_WALLY_LILYCOVE'] },
+    // B-033 — Lilycove is ALSO authoritative for the two UU IDs (WALLY_5-6) it introduces: it must build
+    // before Mauville (which echoes them). Ordered after the VR group so the final build order is
+    // Victory Road → Lilycove → Mauville (VR stores WALLY_1-4, Lilycove stores WALLY_5-6, Mauville echoes all).
+    { auth: 'TRAINER_WALLY_LILYCOVE', members: ['TRAINER_WALLY_MAUVILLE'] },
+    // The rival: Ever Grande (lvl 70) is authoritative; its four earlier appearances echo it devolved.
+    // One group per starter variant (only the player's runs, but all three are generated).
+    ...['TREECKO', 'TORCHIC', 'MUDKIP'].map(s => ({
+        auth: `TRAINER_MAY_EVERGRANDE_CITY_${s}`,
+        members: [`TRAINER_MAY_ROUTE_103_${s}`, `TRAINER_MAY_RUSTBORO_${s}`, `TRAINER_MAY_ROUTE_110_${s}`, `TRAINER_MAY_ROUTE_119_${s}`],
+    })),
+    // T-134 — CROSS-character mascot foreshadow (owner): a faction's early grunt LEADS a devolved copy of
+    // its leader's signature mega (the "mascot"), so it must be built AFTER the leader (whose mega is stored
+    // under ARCHIE_MEGA / MAXIE_MEGA) but SHOWN in its own early position (displayOrder). Reuses the exact
+    // hoist + REPEAT_ID + devolveToLevel mechanism as the same-character continuity above.
+    { auth: 'TRAINER_ARCHIE', members: ['TRAINER_GRUNT_PETALBURG_WOODS'] },
+    { auth: 'TRAINER_MAXIE_MAGMA_HIDEOUT', members: ['TRAINER_GRUNT_RUSTURF_TUNNEL'] },
+];
 
 
 const genericTrainerTeamPreRival         = () => getNonBossPreset('PRE_RIVAL');
@@ -448,6 +399,15 @@ const rivalEvergrandeCityEncounters = [
     ...getWildEncountersFromMap('MAP_VICTORY_ROAD_B1F', ['land', 'old', 'good', 'super', 'underwater']),
 ];
 
+// T-106 — reverse-order rival continuity. The rival's roster is now decided at EVER GRANDE (lvl 70,
+// authoritative) and echoed DEVOLVED at the earlier appearances. The starter is the rival's favourite
+// (the type-counter to the player's choice); this maps each May object's starter suffix to that special.
+const RIVAL_STARTER_SPECIAL = {
+    TREECKO: TRAINER_POKE_STARTER_TORCHIC, // player Treecko → rival Torchic-line
+    TORCHIC: TRAINER_POKE_STARTER_MUDKIP,  // player Torchic → rival Mudkip-line
+    MUDKIP:  TRAINER_POKE_STARTER_TREECKO, // player Mudkip  → rival Treecko-line
+};
+
 const rival103Template = (id) => [
     {
         special: TRAINER_POKE_ENCOUNTER,
@@ -474,9 +434,11 @@ const rival103Template = (id) => [
         pickBest: true,
     },
     {
+        // T-106 — echoes Ever Grande's authoritative mega, devolved to lvl 7 (its LC base).
+        special: TRAINER_REPEAT_ID,
         id: 'RIVAL_MEGA_103_KEEP_' + id,
         breedTier: 'good',
-        ...PROMISING_OU_UBERS_MEGA_LC,
+        devolveToLevel: true,
     },
 ];
 
@@ -485,7 +447,7 @@ const rivalRustboroTemplate = (id) => [
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_STARTER_' + id,
         breedTier: 'perfect',
-        tryEvolve: true,
+        devolveToLevel: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
@@ -505,25 +467,17 @@ const rivalRustboroTemplate = (id) => [
         tryEvolve: true,
     },
     {
+        // T-106 — echoes Ever Grande's authoritative premium ace, devolved to lvl 17.
+        special: TRAINER_REPEAT_ID,
         id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
         breedTier: 'good',
-        evolutionTier: [TIER_OU],
-        evoType: [EVO_TYPE_LC],
-        tryEvolve: true,
-        fallback: [
-            {
-                id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
-                breedTier: 'good',
-                evolutionTier: [TIER_UU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            }
-        ],
+        devolveToLevel: true,
     },
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_MEGA_103_KEEP_' + id,
-        tryEvolve: true,
+        breedTier: 'good',
+        devolveToLevel: true,
     },
 ];
 
@@ -531,7 +485,8 @@ const rivalRoute110Template = (id) => [
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_STARTER_' + id,
-        tryEvolve: true,
+        breedTier: 'perfect',
+        devolveToLevel: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
@@ -548,44 +503,38 @@ const rivalRoute110Template = (id) => [
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
-        tryEvolve: true,
+        breedTier: 'good',
+        devolveToLevel: true,
     },
     {
+        // T-106 — echoes Ever Grande's authoritative premium ace, devolved to lvl 26.
+        special: TRAINER_REPEAT_ID,
         id: 'RIVAL_PREMIUM_110_KEEP_' + id,
         breedTier: 'good',
-        evolutionTier: [TIER_OU],
-        evoType: [EVO_TYPE_LC],
-        tryEvolve: true,
-        fallback: [
-            {
-                id: 'RIVAL_PREMIUM_110_KEEP_' + id,
-                breedTier: 'good',
-                evolutionTier: [TIER_UU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-            }
-        ],
+        devolveToLevel: true,
     },
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_MEGA_103_KEEP_' + id,
-        tryEvolve: true,
+        breedTier: 'good',
+        devolveToLevel: true,
     },
 ];
 
 
+// All four continuity aces echo Ever Grande devolved to lvl 44; the two encounters stay route flavour.
 const rivalRoute119Template = (id) => [
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_MEGA_103_KEEP_' + id,
-        tryEvolve: true,
-        tryMega: true,
+        breedTier: 'good',
+        devolveToLevel: true,
     },
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_STARTER_' + id,
-        tryEvolve: true,
-        tryMega: true,
+        breedTier: 'perfect',
+        devolveToLevel: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
@@ -604,21 +553,26 @@ const rivalRoute119Template = (id) => [
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
-        tryEvolve: true,
-        tryMega: true,
+        breedTier: 'good',
+        devolveToLevel: true,
     },
     {
         special: TRAINER_REPEAT_ID,
         id: 'RIVAL_PREMIUM_110_KEEP_' + id,
-        tryEvolve: true,
-        tryMega: true,
+        breedTier: 'good',
+        devolveToLevel: true,
     },
 ];
 
+// T-106 — Ever Grande is now the rival's AUTHORITATIVE appearance: it picks the strong endgame roster
+// (mega + evolved starter favourite + two premium aces + legendary + route encounter); the earlier
+// appearances echo it devolved. `id` is the starter suffix.
 const rivalEvergrandeCityTemplate = (id) => [
     {
-        special: TRAINER_REPEAT_ID,
+        // authoritative mega (was a repeat of Route 103's)
         id: 'RIVAL_MEGA_103_KEEP_' + id,
+        breedTier: 'good',
+        ...PROMISING_OU_UBERS_MEGA_LC,
         tryEvolve: true,
         tryMega: true,
     },
@@ -627,10 +581,11 @@ const rivalEvergrandeCityTemplate = (id) => [
         breedTier: 'good',
     },
     {
-        special: TRAINER_REPEAT_ID,
+        // authoritative starter — the rival's favourite (type-counter to the player's), fully evolved
         id: 'RIVAL_STARTER_' + id,
+        breedTier: 'perfect',
+        special: RIVAL_STARTER_SPECIAL[id],
         tryEvolve: true,
-        tryMega: true,
     },
     {
         special: TRAINER_POKE_ENCOUNTER,
@@ -640,16 +595,22 @@ const rivalEvergrandeCityTemplate = (id) => [
         tryMega: true,
     },
     {
-        special: TRAINER_REPEAT_ID,
+        // authoritative premium ace (was a repeat)
         id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id,
+        breedTier: 'good',
+        evolutionTier: [TIER_OU],
+        evoType: [EVO_TYPE_LC],
         tryEvolve: true,
-        tryMega: true,
+        fallback: [{ id: 'RIVAL_PREMIUM_RUSTBORO_KEEP_' + id, breedTier: 'good', evolutionTier: [TIER_UU], evoType: [EVO_TYPE_LC], tryEvolve: true }],
     },
     {
-        special: TRAINER_REPEAT_ID,
+        // authoritative premium ace (was a repeat)
         id: 'RIVAL_PREMIUM_110_KEEP_' + id,
+        breedTier: 'good',
+        evolutionTier: [TIER_OU],
+        evoType: [EVO_TYPE_LC],
         tryEvolve: true,
-        tryMega: true,
+        fallback: [{ id: 'RIVAL_PREMIUM_110_KEEP_' + id, breedTier: 'good', evolutionTier: [TIER_UU], evoType: [EVO_TYPE_LC], tryEvolve: true }],
     },
 ];
 
@@ -746,8 +707,6 @@ function getTrainersData(itemAssignments, tmList, config = {}) {
 
     const [e41MainType, e42MainType, e43MainType, e44MainType] = e4MainTypes;
 
-    const tateAndLizaUseSolrock = rng.random() < 0.5;
-
     // Pool-derived item arrays (display names from itemRandomizer)
     const route102BallItems      = itemAssignments.route102Ball;
     const petalburgPlateItems    = itemAssignments.petalburgPlates;
@@ -830,42 +789,42 @@ function getTrainersData(itemAssignments, tmList, config = {}) {
 const rival103Bag = () => [
     'Oran Berry',
     rival103TM,
-    sample([...route102BallItems]),
+    linkedChoiceSample([...route102BallItems]),
 ];
 
 const petalwoodGruntBag = () => [
     ...rival103Bag(),
     'Eviolite',
-    sample([...petalburgPlateItems]),
+    linkedChoiceSample([...petalburgPlateItems]),
 ];
 
 const roxanneBag = () => [
     ...petalwoodGruntBag(),
-    sample([...choice104Gem]),
-    sample([...choice104Berry]),
-    sample([...choice104TMs]),
+    linkedChoiceSample([...choice104Gem]),
+    linkedChoiceSample([...choice104Berry]),
+    linkedChoiceSample([...choice104TMs]),
     tmItem(1),
 ];
 
 const rusturfGruntBag = () => [
     ...roxanneBag(),
-    sample([...route116BallItems]),
-    sample([...choice116PickTMs]),
+    linkedChoiceSample([...route116BallItems]),
+    linkedChoiceSample([...choice116PickTMs]),
     route116XSpecialItem,
 ];
 
 const rivalRustboroBag = () => [
     ...rusturfGruntBag(),
     sample(['Toxic Orb', 'Flame Orb']),
-    sample([...choice116Gem]),
-    sample([...choice116Berry]),
+    linkedChoiceSample([...choice116Gem]),
+    linkedChoiceSample([...choice116Berry]),
 ];
 
 const brawlyBag = () => [
     ...rivalRustboroBag(),
     route106GoodItem,
-    sample([...choicesDewfordTMs]),
-    sample([...route106BallItems]),
+    linkedChoiceSample([...choicesDewfordTMs]),
+    linkedChoiceSample([...route106BallItems]),
     tmItem(61),
 ];
 
@@ -877,20 +836,24 @@ const stevenBag = () => [
 const slateportGruntsBag = () => [
     ...stevenBag(),
     route109GoodItem,
-    sample([...choiceRickyTMs]),
-    sample([...choiceHueyTMs]),
-    // 'Damp Rock',
-    // 'Heat Rock',
-    // 'Smooth Rock',
-    // 'Icy Rock',
+    linkedChoiceSample([...choiceRickyTMs]),
+    linkedChoiceSample([...choiceHueyTMs]),
+    // T-125 — the 4 weather-extending rocks enter the bag here (the Slateport aqua grunts) and cascade
+    // forward. ONE linked pick-group: a team claims AT MOST ONE rock (the teambuilder claims the rock that
+    // matches its weather setter; claiming it forgoes the other three, so 2 setters still place only 1).
+    linkedChoiceSample(['Damp Rock', 'Heat Rock', 'Smooth Rock', 'Icy Rock']),
+    // T-125 — the 4 weather-SETTING TMs enter here too (one linked pick-group). Used ONLY by a weather-gimmick
+    // team with no ability-setter: the move-setter retrofit (`ensureMoveSetter`) may inject a setter move only
+    // if the trainer HOLDS its TM (B-030). Cascades forward from the aqua grunts.
+    linkedChoiceSample(['TM_RAIN_DANCE', 'TM_SUNNY_DAY', 'TM_SANDSTORM', 'TM_HAIL']),
 ];
 
 const rivalRoute110Bag = () => [
     ...slateportGruntsBag(),
-    sample([...choice110TMs]),
+    linkedChoiceSample([...choice110TMs]),
     route110GoodItem,
     'Lum Berry', // T-056: opponents start carrying Lum Berry from the Route 110 rival, not Rustboro
-    sample([...route110ExtenderBallItems]),
+    linkedChoiceSample([...route110ExtenderBallItems]),
     tmItem(2),
     tmItem(5),
     tmItem(8),
@@ -902,17 +865,24 @@ const rivalRoute110Bag = () => [
 const wallyBag = () => [
     ...rivalRoute110Bag(),
     route110LumGoodItem,
-    sample([...choiceJosephSeeds]),
-    sample([...choiceDeandreTMs]),
+    linkedChoiceSample([...choiceJosephSeeds]),
+    linkedChoiceSample([...choiceDeandreTMs]),
 ];
 
 const wattsonBag = () => [
     ...wallyBag(),
-    sample([...choiceHectorTMs]),
-    sample([...choiceMelinaBerries]),
+    linkedChoiceSample([...choiceHectorTMs]),
+    linkedChoiceSample([...choiceMelinaBerries]),
     sample(choiceAishaGems),
     route117GoodItem,
     'Light Clay',
+    // T-125 — Terrain Extender enters here (Wattson = the electric-terrain gimmick). The electric-terrain
+    // gimmick setter (Electric Surge / Hadron Engine) claims it from the bag — the terrain analogue of the
+    // weather rock (5→8 turns). Cascades forward from Wattson.
+    'Terrain Extender',
+    // T-125 — the 2 screens TMs (Reflect / Light Screen) enter here (Wattson), one linked pick-group. A
+    // screen setter teaches one to set screens; Light Clay (above) extends them 5→8 turns. Cascades forward.
+    linkedChoiceSample(['TM_REFLECT', 'TM_LIGHT_SCREEN']),
     tmItem(11),   // Wattson's gym TM
     'TM_ROCK_SMASH',  // HM, not randomized
 ];
@@ -920,19 +890,19 @@ const wattsonBag = () => [
 const magmaChimneyBag = () => [
     ...wattsonBag(),
     route111HpUpGoodItem,
-    sample([...route111BallAItems]),
-    sample([...choiceCarolTMs]),
-    sample([...choiceBriceTMs]),
+    linkedChoiceSample([...route111BallAItems]),
+    linkedChoiceSample([...choiceCarolTMs]),
+    linkedChoiceSample([...choiceBriceTMs]),
 ];
 
 const flanneryBag = () => [
     ...magmaChimneyBag(),
     route114WyattGoodItem,
     sample(choiceNobTMs),
-    sample([...choiceWiltonTMs]),
-    sample([...choiceCharlotteTMs]),
-    sample([...choiceNolanTMs]),
-    sample([...choiceAngelinaTMs]),
+    linkedChoiceSample([...choiceWiltonTMs]),
+    linkedChoiceSample([...choiceCharlotteTMs]),
+    linkedChoiceSample([...choiceNolanTMs]),
+    linkedChoiceSample([...choiceAngelinaTMs]),
     'Nugget',
     tmItem(78),   // Flannery's gym TM
     'TM_STRENGTH',  // HM, not randomized
@@ -940,11 +910,11 @@ const flanneryBag = () => [
 
 const normanBag = () => [
     ...flanneryBag(),
-    sample([...route111BerryItems]),
-    sample([...route111BallCItems]),
-    sample([...choiceNobTMs]),
-    sample([...choiceBryanTMs]),
-    sample([...choiceHeidiItems]),
+    linkedChoiceSample([...route111BerryItems]),
+    linkedChoiceSample([...route111BallCItems]),
+    linkedChoiceSample([...choiceNobTMs]),
+    linkedChoiceSample([...choiceBryanTMs]),
+    linkedChoiceSample([...choiceHeidiItems]),
     tmItem(31),   // Norman's gym TM
     'TM_SURF',    // HM, not randomized
 ];
@@ -952,9 +922,9 @@ const normanBag = () => [
 const shellyBag = () => [
     ...normanBag(),
     route118BarnyGoodItem,
-    sample([...choiceWadeBerries]),
-    sample([...choiceRoseTMs]),
-    sample([...choiceChesterTMs]),
+    linkedChoiceSample([...choiceWadeBerries]),
+    linkedChoiceSample([...choiceRoseTMs]),
+    linkedChoiceSample([...choiceChesterTMs]),
     'Lum Berry',
 ];
 
@@ -966,7 +936,7 @@ const rival119Bag = () => [
 const winonaBag = () => [
     ...rival119Bag(),
     route120AngelicaGoodItem,
-    sample([...choiceClarissaTMs]),
+    linkedChoiceSample([...choiceClarissaTMs]),
     tmItem(32),   // Winona's gym TM
     tmItem(12),
     tmItem(13),
@@ -979,9 +949,9 @@ const winonaBag = () => [
 const wallyBag2 = () => [
     ...winonaBag(),
     'Focus Sash',
-    sample([...choiceTammyTMs]),
-    sample([...choiceCristinBerries]),
-    sample([...choiceWalterTMs]),
+    linkedChoiceSample([...choiceTammyTMs]),
+    linkedChoiceSample([...choiceCristinBerries]),
+    linkedChoiceSample([...choiceWalterTMs]),
     jessicaTM,
 ];
 
@@ -989,16 +959,19 @@ const choiceIsabellaItem = ['Choice Band', 'Choice Scarf', 'Choice Specs'];
 
 const tateAndLizaBag = () => [
     ...wallyBag2(),
-    sample([...choiceIsabellaItem]),
-    sample([...choiceGraceTMs]),
+    linkedChoiceSample([...choiceIsabellaItem]),
+    linkedChoiceSample([...choiceGraceTMs]),
     spencerTM,   // Spencer's route 124 TM
     rolandTM,   // Roland's route 124 TM
     tmItem(91),   // Tate & Liza's gym TM
+    // B-037 — NO explicit Room Service here: it lives in averageItemPool (a single world item), so adding a
+    // copy here double-provisioned it → a team could field TWO Room Service (owner: "only 1 in the bag").
+    // The TR item claim (resolveTrainerTeam) draws Room Service / Iron Ball from the pool copy in the bag.
 ];
 
 const spaceCenterBag = () => [
     ...tateAndLizaBag(),
-    sample([...choicePresleyTMs]),
+    linkedChoiceSample([...choicePresleyTMs]),
     auronTM,   // Auron's route 125 TM
 ];
 
@@ -1121,12 +1094,13 @@ const trainersData = [
         bag: [...rival103Bag()],
         level: 7,
         isBoss: true,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
+                // T-106 — echoes Ever Grande's authoritative starter, devolved to lvl 7 (its baby form).
+                special: TRAINER_REPEAT_ID,
                 id: 'RIVAL_STARTER_TREECKO',
                 breedTier: 'perfect',
-                special: TRAINER_POKE_STARTER_TORCHIC,
+                devolveToLevel: true,
             },
             ...rival103Template('TREECKO'),
         ]
@@ -1139,12 +1113,12 @@ const trainersData = [
         bag: [...rival103Bag()],
         level: 7,
         isBoss: true,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
+                special: TRAINER_REPEAT_ID,
                 id: 'RIVAL_STARTER_TORCHIC',
                 breedTier: 'perfect',
-                special: TRAINER_POKE_STARTER_MUDKIP,
+                devolveToLevel: true,
             },
             ...rival103Template('TORCHIC'),
         ]
@@ -1157,12 +1131,12 @@ const trainersData = [
         bag: [...rival103Bag()],
         level: 7,
         isBoss: true,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         team: [
             {
+                special: TRAINER_REPEAT_ID,
                 id: 'RIVAL_STARTER_MUDKIP',
                 breedTier: 'perfect',
-                special: TRAINER_POKE_STARTER_TREECKO,
+                devolveToLevel: true,
             },
             ...rival103Template('MUDKIP'),
         ]
@@ -1244,37 +1218,14 @@ const trainersData = [
         reward: ['Ability Capsule'],
         isBoss: true,
         bag: [...petalwoodGruntBag()],
+        // T-128 — aqua types are a trainer restriction; team is the full preset pool.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...aquaTeamTypes],
+        // T-134 — slot 1 foreshadows Archie's signature mascot (Mega Sharpedo, stored ARCHIE_MEGA), devolved
+        // to this grunt's level (→ baby Carvanha). REPEAT_ID reads whatever mega Archie actually committed.
         team: [
-            {
-                ...getBossPreset('PETALBURG_WOODS_GRUNT')[0],
-                type: [aquaTeamTypes[0]],
-            },
-            {
-                ...getBossPreset('PETALBURG_WOODS_GRUNT')[1],
-                exactTypes: [aquaTeamTypes[0], aquaTeamTypes[1]],
-                fallback: [
-                    {
-                        ...getBossPreset('PETALBURG_WOODS_GRUNT')[1],
-                        type: [aquaTeamTypes[0], aquaTeamTypes[1]],
-                    }
-                ]
-            },
-            {
-                ...getBossPreset('PETALBURG_WOODS_GRUNT')[2],
-                type: [aquaTeamTypes[1]],
-            },
-            {
-                ...getBossPreset('PETALBURG_WOODS_GRUNT')[3],
-                type: [aquaTeamTypes[2]],
-            },
-            {
-                ...getBossPreset('PETALBURG_WOODS_GRUNT')[4],
-                type: [aquaTeamTypes[3]],
-            },
-            {
-                ...getBossPreset('PETALBURG_WOODS_GRUNT')[5],
-                type: [aquaTeamTypes[4]],
-            },
+            { special: TRAINER_REPEAT_ID, id: 'ARCHIE_MEGA', devolveToLevel: true },
+            ...getBossPreset('PETALBURG_WOODS_GRUNT').map(s => ({ ...s })).slice(1),
         ],
     },
     {
@@ -1371,38 +1322,12 @@ const trainersData = [
         reward: ['GYM_REWARD_1', tmItem(1)],
         isBoss: true,
         bag: roxanneBag(),
-        team: [
-            {
-                ...getBossPreset('ROXANNE')[0],
-                type: [gymMainTypes[0]],
-            },
-            {
-                ...getBossPreset('ROXANNE')[1],
-                type: [gymMainTypes[0]],
-            },
-            gymIsChangedType[0] ? {
-                ...getBossPreset('ROXANNE')[2],
-                breedTier: 'perfect',
-                type: [gymMainTypes[0]],
-            } : {
-                specificIfTier: 'SPECIES_NOSEPASS',
-                breedTier: 'perfect',
-                ...getBossPreset('ROXANNE')[2],
-                type: [gymMainTypes[0]],
-            },
-            {
-                ...getBossPreset('ROXANNE')[3],
-                type: [gymMainTypes[0]],
-            },
-            {
-                ...getBossPreset('ROXANNE')[4],
-                type: [gymMainTypes[0]],
-            },
-            {
-                ...getBossPreset('ROXANNE')[5],
-                type: [gymMainTypes[0]],
-            },
-        ],
+        // T-128 — type is a trainer restriction (not per-slot); team is the full difficulty-scaled preset
+        // pool; the favourite (Nosepass) CLAIMS a pool slot of its tier and is resolved first.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[0]],
+        favourite: gymFavourite('SPECIES_NOSEPASS'),
+        team: getBossPreset('ROXANNE').map(s => ({ ...s })),
     },
     // Route 116
     {
@@ -1432,7 +1357,7 @@ const trainersData = [
         class: 'Rich Boy',
         reward: [...route116BallItems],
         level: 15,
-        bag: [...getSampleItemsFromArray(roxanneBag(), 3), sample([...route116BallItems])],
+        bag: [...getSampleItemsFromArray(roxanneBag(), 3), linkedChoiceSample([...route116BallItems])],
         team: genericTrainerTeamPostRoxanne(),
     },
     {
@@ -1461,37 +1386,14 @@ const trainersData = [
         class: 'Magma Grunt F',
         isBoss: true,
         bag: [...rusturfGruntBag()],
+        // T-128 — magma types are a trainer restriction; team is the full preset pool.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        // T-134 — slot 1 foreshadows Maxie's signature mascot (Mega Camerupt, stored MAXIE_MEGA by Magma
+        // Hideout), devolved to this grunt's level (→ baby Numel). REPEAT_ID reads Maxie's committed mega.
         team: [
-            {
-                ...getBossPreset('RUSTURF_GRUNT')[0],
-                type: [magmaTeamTypes[0]],
-            },
-            {
-                ...getBossPreset('RUSTURF_GRUNT')[1],
-                type: [magmaTeamTypes[1]],
-            },
-            {
-                ...getBossPreset('RUSTURF_GRUNT')[2],
-                type: [magmaTeamTypes[2]],
-            },
-            {
-                ...getBossPreset('RUSTURF_GRUNT')[3],
-                type: [magmaTeamTypes[3]],
-            },
-            {
-                ...getBossPreset('RUSTURF_GRUNT')[4],
-                exactTypes: [magmaTeamTypes[0], magmaTeamTypes[1]],
-                fallback: [
-                    {
-                        ...getBossPreset('RUSTURF_GRUNT')[4],
-                        type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-                    }
-                ]
-            },
-            {
-                ...getBossPreset('RUSTURF_GRUNT')[5],
-                type: [magmaTeamTypes[4]],
-            },
+            { special: TRAINER_REPEAT_ID, id: 'MAXIE_MEGA', devolveToLevel: true },
+            ...getBossPreset('RUSTURF_GRUNT').map(s => ({ ...s })).slice(1),
         ],
     },
     // Route 116 again
@@ -1542,7 +1444,6 @@ const trainersData = [
         isBoss: true,
         level: 17,
         reward: ['Evolution Stones'],
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag()],
         team: [...rivalRustboroTemplate('TREECKO')],
     },
@@ -1553,7 +1454,6 @@ const trainersData = [
         isBoss: true,
         level: 17,
         reward: ['Evolution Stones'],
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag()],
         team: [...rivalRustboroTemplate('TORCHIC')],
     },
@@ -1564,7 +1464,6 @@ const trainersData = [
         isBoss: true,
         level: 17,
         reward: ['Evolution Stones'],
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRustboroBag()],
         team: [...rivalRustboroTemplate('MUDKIP')],
     },
@@ -1647,70 +1546,14 @@ const trainersData = [
         reward: ['GYM_REWARD_2', tmItem(61)],
         isBoss: true,
         bag: brawlyBag(),
-        bannedItems: ['Flame Orb', 'Toxic Orb'],
-        team: [
-            {
-                ...getBossPreset('BRAWLY')[0],
-                type: [gymMainTypes[1]],
-            },
-            {
-                ...getBossPreset('BRAWLY')[1],
-                type: [gymMainTypes[1]],
-            },
-            {
-                ...getBossPreset('BRAWLY')[2],
-                type: [gymMainTypes[1]],
-            },
-            {
-                ...getBossPreset('BRAWLY')[3],
-                type: [gymMainTypes[1]],
-            },
-            {
-                ...getBossPreset('BRAWLY')[4],
-                type: [gymMainTypes[1]],
-            },
-            gymIsChangedType[1] ? {
-                ...getBossPreset('BRAWLY')[5],
-                type: [gymMainTypes[1]],
-                abilities: ['GUTS'],
-                breedTier: 'perfect',
-                item: 'Flame Orb',
-                fallback: [
-                    {
-                        ...getBossPreset('BRAWLY')[5],
-                        type: [gymMainTypes[1]],
-                        abilities: ['POISON_HEAL'],
-                        breedTier: 'perfect',
-                        item: 'Toxic Orb',
-                    },
-                    {
-                        ...getBossPreset('BRAWLY')[5],
-                        breedTier: 'perfect',
-                        type: [gymMainTypes[1]],
-                    },
-                ],
-            } : {
-                specificIfTier: 'SPECIES_MAKUHITA',
-                ...getBossPreset('BRAWLY')[5],
-                type: [gymMainTypes[1]],
-                nature: NATURES.ADAMANT.name,
-                breedTier: 'perfect',
-                abilities: ['GUTS'],
-                item: 'Flame Orb',
-                // B-019: Makuhita's base tier (NU) is stronger than its contextual tier (PU) at
-                // this level, so it never qualifies for its own specificIfTier slot, and the
-                // constrained loose pool (Fighting + GUTS + weak tier + family-dedup) can be
-                // empty — dropping the 6th mon. Fall back to a generic typed slot so the slot is
-                // always fillable.
-                fallback: [
-                    {
-                        ...getBossPreset('BRAWLY')[5],
-                        type: [gymMainTypes[1]],
-                        breedTier: 'perfect',
-                    },
-                ],
-            },
-        ],
+        // T-128 — Fighting is a trainer restriction; team is the full preset pool; the favourite
+        // (Hariyama) CLAIMS a pool slot of its actual tier, else the standard Fighting-restricted fallback.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[1]],
+        // T-128 — Hariyama (the evolved ace) first; if its tier is above Brawly's budget this run, fall to
+        // its pre-evo Makuhita (lower tier, likelier to fit) before the generic Fighting-restricted fallback.
+        favourite: ['SPECIES_HARIYAMA', 'SPECIES_MAKUHITA'],
+        team: getBossPreset('BRAWLY').map(s => ({ ...s })),
     },
     // Granite Cave
     {
@@ -1721,50 +1564,21 @@ const trainersData = [
         isBoss: true,
         reward: [tmItem(19)],
         bag: stevenBag(),
+        // T-106 — Granite Cave Steven ECHOES the Champion's authoritative aces, DEVOLVED to a level-22-legal
+        // stage (Champion Metagross → Metang). This REPLACES the old hard tier-cap (megaTier/contextualTier
+        // on a fresh pick) with the owner's "remove the max-tier restriction; devolve until legal" rule.
         team: [
             {
+                special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_MEGA',
                 breedTier: 'perfect',
-                type: [championMainType],
-                specificIfTier: 'SPECIES_METANG',
-                checkValidEvo: true,
-                megaTier: [TIER_UBERS],
-                contextualTier: [TIER_RU, TIER_NU],
-                evoType: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
-                fallback: [
-                    {
-                        id: 'STEVEN_MEGA',
-                        breedTier: 'perfect',
-                        type: [championMainType],
-                        specificIfTier: 'SPECIES_METANG',
-                        checkValidEvo: true,
-                        megaTier: [TIER_OU, TIER_UU],
-                        contextualTier: [TIER_RU, TIER_NU],
-                        evoType: [EVO_TYPE_LC, EVO_TYPE_NFE, EVO_TYPE_SOLO],
-                    }
-                ]
+                devolveToLevel: true,
             },
             {
+                special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_OU',
                 breedTier: 'perfect',
-                evolutionTier: [TIER_OU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                checkValidEvo: true,
-                contextualTier: [TIER_RU, TIER_NU, TIER_PU, TIER_ZU],
-                type: [championMainType],
-                fallback: [
-                    {
-                        id: 'STEVEN_OU',
-                        breedTier: 'perfect',
-                        evolutionTier: [TIER_UU],
-                        evoType: [EVO_TYPE_LC],
-                        tryEvolve: true,
-                        checkValidEvo: true,
-                        contextualTier: [TIER_RU, TIER_NU, TIER_PU, TIER_ZU],
-                        type: [championMainType],
-                    }
-                ]
+                devolveToLevel: true,
             },
             {
                 ...getBossPreset('GRANITE_CAVE_STEVEN')[0],
@@ -1849,28 +1663,11 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_9'],
         level: 24,
-        preventShuffle: true,
         bag: [...slateportGruntsBag()],
-        team: [
-            pokeDefDrizzleMon(getBossPreset('MUSEUM_GRUNT_1')[0]),
-            {
-                ...getBossPreset('MUSEUM_GRUNT_1')[1],
-                abilities: [...rainAbilities],
-            },
-            {
-                ...getBossPreset('MUSEUM_GRUNT_1')[2],
-                abilities: [...rainAbilities],
-            },
-            pokeDefDrizzleMon(getBossPreset('MUSEUM_GRUNT_1')[3], false),
-            {
-                ...getBossPreset('MUSEUM_GRUNT_1')[4],
-                abilities: [...rainAbilities],
-            },
-            {
-                ...getBossPreset('MUSEUM_GRUNT_1')[5],
-                abilities: [...rainAbilities],
-            },
-        ],
+        // T-128 — aqua types are a trainer restriction; team is the full preset pool.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...aquaTeamTypes],
+        team: getBossPreset('MUSEUM_GRUNT_1').map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_GRUNT_MUSEUM_2',
@@ -1879,28 +1676,11 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_9'],
         level: 24,
-        preventShuffle: true,
         bag: [...slateportGruntsBag()],
-        team: [
-            pokeDefSnowWarningMon(getBossPreset('MUSEUM_GRUNT_2')[0]),
-            {
-                ...getBossPreset('MUSEUM_GRUNT_2')[1],
-                abilities: [...snowAbilities],
-            },
-            {
-                ...getBossPreset('MUSEUM_GRUNT_2')[2],
-                abilities: [...snowAbilities],
-            },
-            pokeDefSnowWarningMon(getBossPreset('MUSEUM_GRUNT_2')[3], false),
-            {
-                ...getBossPreset('MUSEUM_GRUNT_2')[4],
-                abilities: [...snowAbilities],
-            },
-            {
-                ...getBossPreset('MUSEUM_GRUNT_2')[5],
-                abilities: [...snowAbilities],
-            },
-        ],
+        // T-128 — aqua types are a trainer restriction; team is the full preset pool.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...aquaTeamTypes],
+        team: getBossPreset('MUSEUM_GRUNT_2').map(s => ({ ...s })),
     },
     // Route 110
     {
@@ -1961,7 +1741,6 @@ const trainersData = [
         class: 'May',
         isBoss: true,
         level: 26,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag()],
         reward: ['Lum Berry'],
         team: [...rivalRoute110Template('TREECKO')],
@@ -1972,7 +1751,6 @@ const trainersData = [
         class: 'May',
         isBoss: true,
         level: 26,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag()],
         reward: ['Lum Berry'],
         team: [...rivalRoute110Template('TORCHIC')],
@@ -1983,7 +1761,6 @@ const trainersData = [
         class: 'May',
         isBoss: true,
         level: 26,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rivalRoute110Bag()],
         reward: ['Lum Berry'],
         team: [...rivalRoute110Template('MUDKIP')],
@@ -2055,51 +1832,15 @@ const trainersData = [
         isBoss: true,
         breedTier: 'good',
         level: 28,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...wallyBag()],
+        // T-106 — Mauville now ECHOES Wally's authoritative Victory Road roster, devolved to lvl 28.
         team: [
-            {
-                id: 'WALLY_1',
-                megaTier: [TIER_OU, TIER_UBERS],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                checkValidEvo: true,
-            },
-            {
-                id: 'WALLY_2',
-                evolutionTier: [TIER_OU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                checkValidEvo: true,
-            },
-            {
-                id: 'WALLY_3',
-                evolutionTier: [TIER_OU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                checkValidEvo: true,
-            },
-            {
-                id: 'WALLY_4',
-                evolutionTier: [TIER_OU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                checkValidEvo: true,
-            },
-            {
-                id: 'WALLY_5',
-                evolutionTier: [TIER_UU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                checkValidEvo: true,
-            },
-            {
-                id: 'WALLY_6',
-                evolutionTier: [TIER_UU],
-                evoType: [EVO_TYPE_LC],
-                tryEvolve: true,
-                checkValidEvo: true,
-            },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_1', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_2', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_3', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_4', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_5', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_6', devolveToLevel: true },
         ],
     },
     // Route 117
@@ -2189,45 +1930,15 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_3', tmItem(11)],
         level: 29,
-        preventShuffle: gymIsChangedType[2],
         bag: [...wattsonBag()],
-        bannedItems: ['Electric Seed', 'Psychic Seed', 'Misty Seed', 'Grassy Seed'],
-        team: [
-            gymIsChangedType[2] ? {
-                ...getBossPreset('WATTSON')[0],
-                type: [gymMainTypes[2]],
-            } : pokeDefElectricSurgeMon(getBossPreset('WATTSON')[0]),
-            gymIsChangedType[2] ? {
-                ...CONTEXTUAL_POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
-                type: [gymMainTypes[2]],
-            } : {
-                specificIfTier: 'SPECIES_MANECTRIC_MEGA',
-                ...CONTEXTUAL_POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
-                type: [gymMainTypes[2]],
-            },
-            gymIsChangedType[2] ? {
-                ...getBossPreset('WATTSON')[1],
-                type: [gymMainTypes[2]],
-            } : {
-                ...getBossPreset('WATTSON')[1],
-                type: [gymMainTypes[2]],
-                item: 'Electric Seed',
-            },
-            {
-                ...getBossPreset('WATTSON')[2],
-                type: [gymMainTypes[2]],
-            },
-            {
-                ...getBossPreset('WATTSON')[3],
-                type: [gymMainTypes[2]],
-            },
-            {
-                ...getBossPreset('WATTSON')[4],
-                type: [gymMainTypes[2]],
-            },
-        ],
+        // T-128 — Electric type is a trainer restriction; team is the full preset pool; the favourite
+        // (Mega Manectric) claims the {isMega} slot. The electricTerrain seed adds the terrain if it can.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[2]],
+        // B-031 — a MEGA signature needs the full devolution chain (gymFavourite alone = single entry, which
+        // skips to any-eligible when the mega can't be placed). Mega Manectric → Manectric → Electrike → (any).
+        favourite: ['SPECIES_MANECTRIC_MEGA', 'SPECIES_MANECTRIC', 'SPECIES_ELECTRIKE'],
+        team: getBossPreset('WATTSON').map(s => ({ ...s })),
     },
     // Route 111
     {
@@ -2321,28 +2032,11 @@ const trainersData = [
         class: 'Magma Admin',
         isBoss: true,
         level: 32,
-        preventShuffle: true,
         bag: [...magmaChimneyBag()],
-        team: [
-            pokeDefSandStreamMon(getBossPreset('TABITHA_CHIMNEY', true)[0]),
-            {
-                ...getBossPreset('TABITHA_CHIMNEY', true)[1],
-                abilities: [...sandAbilities],
-            },
-            {
-                ...getBossPreset('TABITHA_CHIMNEY', true)[2],
-                abilities: [...sandAbilities],
-            },
-            pokeDefSandStreamMon(getBossPreset('TABITHA_CHIMNEY', true)[3], false),
-            {
-                ...getBossPreset('TABITHA_CHIMNEY', true)[4],
-                abilities: [...sandAbilities],
-            },
-            {
-                ...getBossPreset('TABITHA_CHIMNEY', true)[5],
-                abilities: [...sandAbilities],
-            },
-        ],
+        // T-128 — magma types are a trainer restriction; team is the full preset pool (no mega).
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        team: getBossPreset('TABITHA_CHIMNEY', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_MAXIE_MT_CHIMNEY',
@@ -2351,52 +2045,15 @@ const trainersData = [
         isBoss: true,
         reward: ['Good Rod'],
         level: 33,
-        preventShuffle: true,
         bag: [...magmaChimneyBag()],
-        team: [
-            pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY', true)[1]),
-            {
-                ...getBossPreset('MAXIE_CHIMNEY', true)[0],
-                abilities: [...sunAbilities],
-                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-                fallback: [
-                    {
-                        ...ABSOLUTE_POKEDEF_RU,
-                        type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_RU,
-                        type: [...magmaTeamTypes],
-                        abilities: [...sunAbilities],
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_RU,
-                        type: [...magmaTeamTypes],
-                    }
-                ],
-            },
-            pokeDefDroughtMon(getBossPreset('MAXIE_CHIMNEY', true)[2], false),
-            {
-                ...getBossPreset('MAXIE_CHIMNEY', true)[3],
-                abilities: [...sunAbilities],
-                fallback: [
-                    {
-                        ...ABSOLUTE_POKEDEF_RU,
-                        type: [...magmaTeamTypes],
-                    }
-                ],
-            },
-            {
-                ...getBossPreset('MAXIE_CHIMNEY', true)[4],
-                type: [magmaTeamTypes[0], magmaTeamTypes[1]],
-            },
-            {
-                id: 'MAXIE_MEGA',
-                specificIfTier: 'SPECIES_CAMERUPT_MEGA',
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
-            },
-        ],
+        // T-128 — the magma team types are a trainer restriction; team is the full preset pool. Maxie's
+        // favourite is Mega Camerupt (claims the ≤OU mega slot, tagged MAXIE_MEGA for cross-appearance
+        // continuity), else a themed mega, else the standard magma-typed fallback.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        favourite: villainFavourite('SPECIES_CAMERUPT_MEGA'),
+        favouriteId: 'MAXIE_MEGA',
+        team: getBossPreset('MAXIE_CHIMNEY', true).map(s => ({ ...s })),
     },
     // Jagged Pass
     {
@@ -2551,45 +2208,12 @@ const trainersData = [
         reward: ['GYM_REWARD_4', 'Access to Desert Ruins', tmItem(78)],
         isBoss: true,
         bag: flanneryBag(),
-        team: [
-            gymIsChangedType[3] ? {
-                ...getBossPreset('FLANNERY', true)[0],
-                breedTier: 'perfect',
-                type: [gymMainTypes[3]],
-            } : {
-                specificIfTier: 'SPECIES_TORKOAL',
-                ...getBossPreset('FLANNERY', true)[0],
-                type: [gymMainTypes[3]],
-                abilities: ['DROUGHT'],
-                breedTier: 'perfect',
-                item: 'Heat Rock',
-                tryEvolve: true,
-            },
-            {
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                type: [gymMainTypes[3]],
-            },
-            {
-                ...getBossPreset('FLANNERY', true)[1],
-                type: [gymMainTypes[3]],
-            },
-            {
-                ...getBossPreset('FLANNERY', true)[2],
-                type: [gymMainTypes[3]],
-            },
-            gymIsChangedType[3] ? {
-                ...getBossPreset('FLANNERY', true)[3],
-                type: [gymMainTypes[3]],
-            } : {
-                ...getBossPreset('FLANNERY', true)[3],
-                type: [gymMainTypes[3]],
-                abilities: [...sunAbilities],
-            },
-            {
-                ...getBossPreset('FLANNERY', true)[4],
-                type: [gymMainTypes[3]],
-            },
-        ],
+        // T-128 — Fire type is a trainer restriction; team is the full preset pool; the favourite (Torkoal)
+        // claims a pool slot of its tier. The weather (sun) seed sets Drought/Heat Rock if it can.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[3]],
+        favourite: gymFavourite('SPECIES_TORKOAL'),
+        team: getBossPreset('FLANNERY', true).map(s => ({ ...s })),
     },
     // Route 111
     {
@@ -2696,58 +2320,12 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_5', 'Access to Island Cave', 'Access to New Mauville', tmItem(31)],
         bag: normanBag(),
-        bannedItems: gymIsChangedType[4] ? [] : ['Assault Vest', 'Flame Orb', 'Toxic Orb'],
-        team: [
-            {
-                ...getBossPreset('NORMAN', true)[0],
-                type: [gymMainTypes[4]],
-            },
-            gymIsChangedType[4] ? {
-                ...getBossPreset('NORMAN', true)[1],
-                breedTier: 'perfect',
-                type: [gymMainTypes[4]],
-            } : {
-                specificIfTier: 'SPECIES_SLAKING',
-                ...getBossPreset('NORMAN', true)[1],
-                breedTier: 'perfect',
-                type: [gymMainTypes[4]],
-            },
-            {
-                ...getBossPreset('NORMAN', true)[2],
-                type: [gymMainTypes[4]],
-            },
-            {
-                ...getBossPreset('NORMAN', true)[3],
-                type: [gymMainTypes[4]],
-            },
-            {
-                ...getBossPreset('NORMAN', true)[4],
-                type: [gymMainTypes[4]],
-            },
-            {
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                type: [gymMainTypes[4]],
-                fallback: [
-                   {
-                        isMega: true,
-                        absoluteTier: [TIER_UU, TIER_OU, TIER_UBERS],
-                        type: [gymMainTypes[4]],
-                        checkValidEvo: true,
-                        tryEvolve: true,
-                   },
-                   {
-                        absoluteTier: [TIER_OU],
-                        type: [gymMainTypes[4]],
-                        checkValidEvo: true,
-                   },
-                   {
-                        absoluteTier: [TIER_UU],
-                        type: [gymMainTypes[4]],
-                        checkValidEvo: true,
-                   }
-                ]
-            },
-        ],
+        // T-128 — Normal type is a trainer restriction; team is the full preset pool; the favourite
+        // (Slaking) claims a pool slot of its tier. Norman picks his own items/abilities.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[4]],
+        favourite: gymFavourite('SPECIES_SLAKING'),
+        team: getBossPreset('NORMAN', true).map(s => ({ ...s })),
     },
     // Route 105 (Island Cave)
     {
@@ -2883,35 +2461,11 @@ const trainersData = [
         reward: ['GYM_REWARD_10'],
         isBoss: true,
         bag: [...shellyBag()],
-        team: [
-            {
-                ...getBossPreset('SHELLY_WEATHER', true)[0],
-                type: [aquaTeamTypes[0]],
-            },
-            {
-                ...getBossPreset('SHELLY_WEATHER', true)[1],
-                type: [aquaTeamTypes[1]],
-            },
-            {
-                ...getBossPreset('SHELLY_WEATHER', true)[2],
-                type: [aquaTeamTypes[2]],
-            },
-            {
-                ...getBossPreset('SHELLY_WEATHER', true)[3],
-                type: [aquaTeamTypes[3]],
-            },
-            {
-                ...getBossPreset('SHELLY_WEATHER', true)[4],
-                type: [aquaTeamTypes[4]],
-            },
-            {
-                isMega: true,
-                absoluteTier: [TIER_UU, TIER_OU],
-                checkValidEvo: true,
-                tryEvolve: true,
-                type: [...aquaTeamTypes],
-            },
-        ],
+        // T-128 — aqua types are a trainer restriction; team is the full preset pool (incl. its ≤OU mega
+        // slot). No signature ace.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...aquaTeamTypes],
+        team: getBossPreset('SHELLY_WEATHER', true).map(s => ({ ...s })),
     },
     // Route 119 Rival Battles
     {
@@ -2921,7 +2475,6 @@ const trainersData = [
         isBoss: true,
         level: 44,
         reward: ['Leftovers'],
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rival119Bag()],
         team: [...rivalRoute119Template('TREECKO')],
     },
@@ -2932,7 +2485,6 @@ const trainersData = [
         isBoss: true,
         level: 44,
         reward: ['Leftovers'],
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rival119Bag()],
         team: [...rivalRoute119Template('TORCHIC')],
     },
@@ -2943,7 +2495,6 @@ const trainersData = [
         isBoss: true,
         level: 44,
         reward: ['Leftovers'],
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...rival119Bag()],
         team: [...rivalRoute119Template('MUDKIP')],
     },
@@ -3042,46 +2593,14 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_6', 'Access to Ancient Tomb', tmItem(32)],
         bag: [...winonaBag(), 'Flying Gem'],
-        team: [
-            {
-                ...getBossPreset('WINONA', true)[0],
-                type: [gymMainTypes[5]],
-                mustHaveOneOfMoves: ['MOVE_TAILWIND'],
-                tryToHaveMove: ['MOVE_TAILWIND'],
-                fallback: [
-                    {
-                        ...getBossPreset('WINONA', true)[0],
-                        type: [gymMainTypes[5]],
-                    },
-                ]
-            },
-            gymIsChangedType[5] ? {
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
-                type: [gymMainTypes[5]],
-            } : {
-                specificIfTier: 'SPECIES_ALTARIA_MEGA',
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
-                type: [gymMainTypes[5]],
-            },
-            {
-                ...getBossPreset('WINONA', true)[1],
-                type: [gymMainTypes[5]],
-            },
-            {
-                ...getBossPreset('WINONA', true)[2],
-                type: [gymMainTypes[5]],
-            },
-            {
-                ...getBossPreset('WINONA', true)[3],
-                type: [gymMainTypes[5]],
-            },
-            {
-                ...getBossPreset('WINONA', true)[4],
-                type: [gymMainTypes[5]],
-            },
-        ],
+        // T-128 — Flying is a trainer restriction; team is the full preset pool (incl. its ≤OU mega slot).
+        // Favourite chain: Mega Altaria ≫ Altaria ≫ a mega of the (rolled) type; then the standard typed
+        // fallback. Mega Altaria (Dragon/Fairy) has no Flying, so while Winona keeps Flying it drops to
+        // BASE Altaria (Dragon/Flying); if she rolls Dragon/Fairy, Mega Altaria claims the mega slot.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[5]],
+        favourite: ['SPECIES_ALTARIA_MEGA', 'SPECIES_ALTARIA', { mega: true }],
+        team: getBossPreset('WINONA', true).map(s => ({ ...s })),
     },
     // Route 120 After Gym
     {
@@ -3196,43 +2715,17 @@ const trainersData = [
         reward: ['GYM_REWARD_11'],
         level: 49,
         bag: [...wallyBag2()],
+        // T-106 / B-033 — Lilycove ECHOES Wally's four Victory Road IDs (WALLY_1-4) devolved to lvl 49, AND
+        // is the birthplace of his two UU IDs (WALLY_5-6) — Victory Road doesn't run them (it runs the
+        // ubers/legend aces there instead), so they originate here and Mauville echoes them. A second
+        // continuity group (below) builds Lilycove before Mauville so these are stored in time.
         team: [
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_1',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_2',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_3',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_4',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_5',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_6',
-                tryEvolve: true,
-                tryMega: true,
-            },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_1', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_2', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_3', devolveToLevel: true },
+            { special: TRAINER_REPEAT_ID, id: 'WALLY_4', devolveToLevel: true },
+            { id: 'WALLY_5', evolutionTier: [TIER_UU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
+            { id: 'WALLY_6', evolutionTier: [TIER_UU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
         ],
     },
     // Magma Hideout
@@ -3242,33 +2735,15 @@ const trainersData = [
         class: 'Magma Leader Maxie',
         isBoss: true,
         level: 51,
-        preventShuffle: true,
         bag: [...wallyBag2()],
-        team: [
-            pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA', true)[0]),
-            {
-                ...getBossPreset('MAXIE_MAGMA', true)[1],
-                type: [magmaTeamTypes[1]],
-                abilities: [...sunAbilities],
-            },
-            pokeDefDroughtMon(getBossPreset('MAXIE_MAGMA', true)[2], false),
-            {
-                ...getBossPreset('MAXIE_MAGMA', true)[3],
-                type: [...magmaTeamTypes],
-                abilities: [...sunAbilities],
-            },
-            {
-                ...getBossPreset('MAXIE_MAGMA', true)[4],
-                type: [...magmaTeamTypes],
-                abilities: [...sunAbilities],
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'MAXIE_MEGA',
-                tryEvolve: true,
-                tryMega: true,
-            },
-        ],
+        // T-128 — magma types are a trainer restriction; team is the full preset pool. Maxie's favourite
+        // Mega Camerupt (tagged MAXIE_MEGA) claims the ≤OU mega slot — the same signature as his other
+        // appearances, so the continuity holds without an explicit REPEAT_ID.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        favourite: villainFavourite('SPECIES_CAMERUPT_MEGA'),
+        favouriteId: 'MAXIE_MEGA',
+        team: getBossPreset('MAXIE_MAGMA', true).map(s => ({ ...s })),
     },
     // Mt. Pyre
     {
@@ -3317,33 +2792,13 @@ const trainersData = [
         class: 'Aqua Admin M',
         isBoss: true,
         level: 54,
-        preventShuffle: true,
         bag: [...wallyBag2()],
-        team: [
-            pokeDefSnowWarningMon(getBossPreset('MATT_AQUA', true)[0]),
-            {
-                ...getBossPreset('MATT_AQUA', true)[1],
-                abilities: [...snowAbilities],
-            },
-            {
-                ...getBossPreset('MATT_AQUA', true)[2],
-                abilities: [...snowAbilities],
-            },
-            {
-                ...getBossPreset('MATT_AQUA', true)[3],
-                abilities: [...snowAbilities],
-            },
-            {
-                ...getBossPreset('MATT_AQUA', true)[4],
-                abilities: [...snowAbilities],
-            },
-            {
-                isMega: true,
-                checkValidEvo: true,
-                pickBest: true,
-                abilities: ['SNOW_WARNING'],
-            },
-        ],
+        // T-128 — aqua types are a trainer restriction; team is the full preset pool (incl. its ≤OU mega
+        // slot). No signature ace; the old forced Snow Warning weather-mega is dropped (weather comes from
+        // the seed now, not a hardcoded ability slot).
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...aquaTeamTypes],
+        team: getBossPreset('MATT_AQUA', true).map(s => ({ ...s })),
     },
     // Route 124
     {
@@ -3414,188 +2869,18 @@ const trainersData = [
         class: 'Leader Tate And Liza',
         level: 56,
         isBoss: true,
-        reward: ['GYM_REWARD_7', 'Access to Shoal Cave', tmItem(91)],
-        preventShuffle: true,
-        bag: [...tateAndLizaBag()],
-        bannedItems: gymIsChangedType[6] ? [] : ['Focus Sash', 'Room Service', 'Light Clay'],
-        team: [
-            gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA', true)[0],
-                type: [gymMainTypes[6]],
-            } : {
-                ...ABSOLUTE_POKEDEF_OU,
-                mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
-                tryToHaveMove: ['MOVE_TRICK_ROOM'],
-                type: [gymMainTypes[6]],
-                item: 'Focus Sash',
-                pickBest: true,
-                fallback: [
-                    {
-                        ...ABSOLUTE_POKEDEF_UU,
-                        mustHaveOneOfMoves: ['MOVE_TRICK_ROOM'],
-                        tryToHaveMove: ['MOVE_TRICK_ROOM'],
-                        type: [gymMainTypes[6]],
-                        item: 'Focus Sash',
-                        pickBest: true,
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_OU,
-                        checkValidEvo: true,
-                        type: [gymMainTypes[6]],
-                        item: 'Focus Sash',
-                    },
-                ]
-            },
-            gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA', true)[1],
-                breedTier: 'perfect',
-                type: [gymMainTypes[6]],
-            } : (tateAndLizaUseSolrock ?
-            {
-                specific: 'SPECIES_SOLROCK',
-                tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
-                breedTier: 'perfect',
-                item: 'Light Clay',
-                nature: 'Relaxed',
-            }
-            : {
-                specific: 'SPECIES_LUNATONE',
-                tryToHaveMove: ['MOVE_EXPLOSION', 'MOVE_LIGHT_SCREEN', 'MOVE_REFLECT'],
-                breedTier: 'perfect',
-                item: 'Light Clay',
-                nature: 'Sassy',
-            }),
-            gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA', true)[2],
-                type: [gymMainTypes[6]],
-            } : (tateAndLizaUseSolrock ?
-            {
-                specificIfTier: 'SPECIES_LUNALA',
-                ...ABSOLUTE_POKEDEF_LEGEND,
-                item: 'Room Service',
-                nature: 'Quiet',
-                fallback: [
-                    {
-                        specificIfTier: 'SPECIES_LUNALA',
-                        ...ABSOLUTE_POKEDEF_UBERS,
-                        item: 'Room Service',
-                        nature: 'Quiet',
-                    },
-                    {
-                        specificIfTier: 'SPECIES_LUNALA',
-                        ...ABSOLUTE_POKEDEF_OU,
-                        item: 'Room Service',
-                        nature: 'Quiet',
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_OU,
-                        type: [gymMainTypes[6]],
-                    }
-                ]
-            } : {
-                specificIfTier: 'SPECIES_SOLGALEO',
-                ...ABSOLUTE_POKEDEF_LEGEND,
-                item: 'Room Service',
-                nature: 'Brave',
-                fallback: [
-                    {
-                        specificIfTier: 'SPECIES_SOLGALEO',
-                        ...ABSOLUTE_POKEDEF_UBERS,
-                        item: 'Room Service',
-                        nature: 'Quiet',
-                    },
-                    {
-                        specificIfTier: 'SPECIES_SOLGALEO',
-                        ...ABSOLUTE_POKEDEF_OU,
-                        item: 'Room Service',
-                        nature: 'Quiet',
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_OU,
-                        type: [gymMainTypes[6]],
-                    }
-                ]
-            }),
-            gymIsChangedType[6] ? {
-                ...ABSOLUTE_POKEDEF_MEGA,
-                type: [gymMainTypes[6]],
-            } : {
-                ...ABSOLUTE_POKEDEF_MEGA,
-                hasStat: ['baseSpeed', '<', '50'],
-                type: [gymMainTypes[6]],
-                fallback: [
-                    {
-                        ...ABSOLUTE_POKEDEF_MEGA,
-                        hasStat: ['baseSpeed', '<', '70'],
-                        type: [gymMainTypes[6]],
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_MEGA,
-                        type: [gymMainTypes[6]],
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_OU,
-                        type: [gymMainTypes[6]],
-                    },
-                ]
-            },
-            gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA', true)[3],
-                type: [gymMainTypes[6]],
-            } : {
-                ...getBossPreset('TATE_AND_LIZA', true)[3],
-                type: [gymMainTypes[6]],
-                hasStat: ['baseSpeed', '<', '50'],
-                fallback: [
-                    {
-                        absoluteTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[6]],
-                        hasStat: ['baseSpeed', '<', '70'],
-                    },
-                    {
-                        absoluteTier: [TIER_RU],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[6]],
-                        hasStat: ['baseSpeed', '<', '50'],
-                        pickBest: true,
-                    },
-                    {
-                        absoluteTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[6]],
-                    },
-                ],
-            },
-            gymIsChangedType[6] ? {
-                ...getBossPreset('TATE_AND_LIZA', true)[4],
-                type: [gymMainTypes[6]],
-            } : {
-                ...getBossPreset('TATE_AND_LIZA', true)[4],
-                type: [gymMainTypes[6]],
-                hasStat: ['baseSpeed', '<', '50'],
-                fallback: [
-                    {
-                        absoluteTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[6]],
-                        hasStat: ['baseSpeed', '<', '70'],
-                    },
-                    {
-                        absoluteTier: [TIER_RU],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[6]],
-                        hasStat: ['baseSpeed', '<', '50'],
-                        pickBest: true,
-                    },
-                    {
-                        absoluteTier: [TIER_UU],
-                        checkValidEvo: true,
-                        type: [gymMainTypes[6]],
-                    },
-                ],
-            },
+        reward: ['GYM_REWARD_7', 'Access to Shoal Cave', tmItem(91)],        bag: [...tateAndLizaBag()],
+        // T-128 — Psychic is a trainer restriction; team is the full preset pool (UBERS/UBERS/OU/UU/RU +
+        // ≤UBERS mega). Two favourites (Solgaleo≫Solrock, Lunala≫Lunatone) claim slots first; being
+        // legendary they normally exceed the UBERS budget and drop to Solrock/Lunatone (their actual
+        // tiers). The old Trick Room / Focus Sash / screens gimmick is removed (owner-validated).
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[6]],
+        favourites: [
+            ['SPECIES_SOLGALEO', 'SPECIES_SOLROCK'],
+            ['SPECIES_LUNALA', 'SPECIES_LUNATONE'],
         ],
+        team: getBossPreset('TATE_AND_LIZA', true).map(s => ({ ...s })),
     },
     // Route 125
     {
@@ -3661,14 +2946,10 @@ const trainersData = [
         isBoss: true,
         level: 59,
         bag: [...spaceCenterBag()],
-        team: [
-            { ...getBossPreset('SPACE_CENTER_GRUNT_5')[0], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_5')[1], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_5')[2], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_5')[3], type: [...magmaTeamTypes] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_5')[4], type: [...magmaTeamTypes] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_5')[5], type: [...magmaTeamTypes] },
-        ],
+        // T-128 — magma types are a trainer restriction; team is the full preset pool.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        team: getBossPreset('SPACE_CENTER_GRUNT_5', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_GRUNT_SPACE_CENTER_6',
@@ -3677,14 +2958,10 @@ const trainersData = [
         isBoss: true,
         level: 59,
         bag: [...spaceCenterBag()],
-        team: [
-            { ...getBossPreset('SPACE_CENTER_GRUNT_6')[0], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_6')[1], type: [...magmaTeamTypes] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_6')[2], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_6')[3], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_6')[4], type: [...magmaTeamTypes] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_6')[5], type: [...magmaTeamTypes] },
-        ],
+        // T-128 — magma types are a trainer restriction; team is the full preset pool.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        team: getBossPreset('SPACE_CENTER_GRUNT_6', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_GRUNT_SPACE_CENTER_7',
@@ -3693,47 +2970,33 @@ const trainersData = [
         isBoss: true,
         level: 59,
         bag: [...spaceCenterBag()],
-        team: [
-            { ...getBossPreset('SPACE_CENTER_GRUNT_7')[0], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_7')[1], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_7')[2], type: [magmaTeamTypes[0], magmaTeamTypes[1]] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_7')[3], type: [...magmaTeamTypes] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_7')[4], type: [...magmaTeamTypes] },
-            { ...getBossPreset('SPACE_CENTER_GRUNT_7')[5], type: [...magmaTeamTypes] },
-        ],
+        // T-128 — magma types are a trainer restriction; team is the full preset pool (incl. its ≤OU mega).
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        team: getBossPreset('SPACE_CENTER_GRUNT_7', true).map(s => ({ ...s })),
     },
     {
         id: 'PARTNER_STEVEN',
         class: 'Steven',
         isPartner: true,
-        breedTier: 'perfect',
-        preventShuffle: true,
-        level: 59,
+        breedTier: 'perfect',        level: 59,
         bag: [...spaceCenterBag()],
+        // T-106 — the Mossdeep partner now ECHOES the Champion's authoritative roster, devolved to lvl 59.
         team: [
             {
+                // echoes the Champion's legend (no devolve — legends are solo-evo)
+                special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_LEGEND',
-                ...ABSOLUTE_POKEDEF_LEGEND,
-                type: [championMainType],
-                // T-076 — champion-typed legend, else any legend. (Was Steel→Rock→any; the hard-coded
-                // Rock tier is dropped so a changed-champion partner never fields an off-theme legend.)
-                fallback: [
-                    {
-                        id: 'STEVEN_LEGEND',
-                        ...ABSOLUTE_POKEDEF_LEGEND,
-                    },
-                ],
             },
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_OU',
-                tryEvolve: true,
+                devolveToLevel: true,
             },
             {
                 special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_MEGA',
-                tryEvolve: true,
-                tryMega: true,
+                devolveToLevel: true,
             },
         ],
     },
@@ -3743,36 +3006,15 @@ const trainersData = [
         class: 'Magma Admin',
         isBoss: true,
         level: 59,
-        preventShuffle: true,
         bag: [...spaceCenterBag()],
-        team: [
-            {
-                ...getBossPreset('TABITHA_MOSSDEEP', true)[0],
-                abilities: [...sunAbilities],
-                fallback: [
-                    {
-                        absoluteTier: [TIER_UU],
-                        checkValidEvo: true,
-                        abilities: [...sunAbilities],
-                    },
-                ],
-            },
-            {
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                type: [magmaTeamTypes[0]],
-                fallback: [
-                    {
-                        ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                        type: [magmaTeamTypes[0]],
-                    },
-                    {
-                        ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                        type: [...magmaTeamTypes],
-                    },
-                ]
-            },
-            pokeDefDroughtMon(getBossPreset('TABITHA_MOSSDEEP', true)[1]),
-        ],
+        // T-132 — Mossdeep is a TAG battle alongside Maxie: Tabitha has NO weather of her own; she abuses
+        // whatever weather Maxie actually establishes (usually sun via Groudon), or builds a normal team if
+        // Maxie sets none. Resolved AFTER Maxie (writerDocs defers her); overrides her own sand seed.
+        abusePartnerWeather: 'TRAINER_MAXIE_MOSSDEEP',
+        // T-128 — magma types are a trainer restriction; team is the full preset pool (OU/UU + ≤OU mega).
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        team: getBossPreset('TABITHA_MOSSDEEP', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_MAXIE_MOSSDEEP',
@@ -3781,31 +3023,18 @@ const trainersData = [
         isBoss: true,
         breedTier: 'perfect',
         level: 59,
-        preventShuffle: true,
         bag: [...spaceCenterBag()],
-        team: [
-            {
-                specificIfTier: 'SPECIES_GROUDON',
-                ...getBossPreset('MAXIE_MOSSDEEP', true)[0],
-                item: 'Heat Rock',
-                fallback: [
-                    {
-                        specificIfTier: 'SPECIES_GROUDON',
-                        absoluteTier: [TIER_OU],
-                        item: 'Heat Rock',
-                    },
-                    pokeDefDroughtMon(getBossPreset('MAXIE_MOSSDEEP', true)[0]),
-                ]
-            },
-            {
-                ...getBossPreset('MAXIE_MOSSDEEP', true)[1],
-                abilities: [...sunAbilities],
-                pickBest: true,
-            },
-            absolutePokeDefUbersMega({
-                type: [magmaTeamTypes[0]],
-            }),
+        // T-128 — magma types are a trainer restriction; team is the full preset pool (LEGEND/OU/UBERS-
+        // mega). Two favourites: Groudon (claims the LEGEND slot — weather now comes from the seed, not a
+        // hardcoded Heat Rock) and Mega Camerupt (claims the mega slot, tagged MAXIE_MEGA for continuity).
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        favourites: [
+            likedFavourite('SPECIES_GROUDON'),
+            villainFavourite('SPECIES_CAMERUPT_MEGA'),
         ],
+        favouriteIds: ['MAXIE_GROUDON', 'MAXIE_MEGA'],
+        team: getBossPreset('MAXIE_MOSSDEEP', true).map(s => ({ ...s })),
     },
     // Route 127
     {
@@ -3904,51 +3133,18 @@ const trainersData = [
         reward: ['Access to Sky Pillar'],
         isBoss: true,
         level: 61,
-        bag: [...archieBag()],
-        preventShuffle: true,
-        team: [
-            {
-                specificIfTier: 'SPECIES_KYOGRE',
-                absoluteTier: [TIER_LEGEND],
-                ...getBossPreset('ARCHIE', true)[0],
-                item: 'Damp Rock',
-                fallback: [
-                    {
-                        specificIfTier: 'SPECIES_KYOGRE',
-                        absoluteTier: [TIER_UBERS],
-                        checkValidEvo: true,
-                        item: 'Damp Rock',
-                    },
-                    {
-                        specificIfTier: 'SPECIES_KYOGRE',
-                        absoluteTier: [TIER_OU],
-                        checkValidEvo: true,
-                        item: 'Damp Rock',
-                    },
-                    pokeDefDrizzleMon(getBossPreset('ARCHIE', true)[0]),
-                ]
-            },
-            {
-                ...getBossPreset('ARCHIE', true)[1],
-                type: [...aquaTeamTypes],
-            },
-            {
-                ...getBossPreset('ARCHIE', true)[2],
-                abilities: [...rainAbilities],
-                type: [aquaTeamTypes[1], aquaTeamTypes[2], aquaTeamTypes[3], aquaTeamTypes[4]],
-            },
-            pokeDefDrizzleMon(getBossPreset('ARCHIE', true)[3], false),
-            {
-                ...getBossPreset('ARCHIE', true)[4],
-                abilities: [...rainAbilities],
-                type: [...aquaTeamTypes],
-            },
-            {
-                specificIfTier: 'SPECIES_SHARPEDO_MEGA',
-                ...ABSOLUTE_POKEDEF_UU_OU_MEGA,
-                breedTier: 'perfect',
-            },
+        bag: [...archieBag()],        // T-128 — aqua types are a trainer restriction; team is the full preset pool (LEGEND/OU/OU/UU/UU +
+        // ≤OU mega). Two favourites: Kyogre (claims the LEGEND slot — weather now comes from the seed, not
+        // a hardcoded Damp Rock) and Mega Sharpedo (claims the mega slot), else a themed mega, else the
+        // standard aqua-typed fallback.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...aquaTeamTypes],
+        favourites: [
+            likedFavourite('SPECIES_KYOGRE'),
+            villainFavourite('SPECIES_SHARPEDO_MEGA'),
         ],
+        favouriteIds: ['ARCHIE_KYOGRE', 'ARCHIE_MEGA'],
+        team: getBossPreset('ARCHIE', true).map(s => ({ ...s })),
     },
     // Route 129
     {
@@ -3984,38 +3180,12 @@ const trainersData = [
         isBoss: true,
         reward: ['GYM_REWARD_8', tmItem(51)],
         bag: [...juanBag()],
-        team: [
-            {
-                ...getBossPreset('JUAN', true)[0],
-                type: [gymMainTypes[7]],
-            },
-            {
-                ...getBossPreset('JUAN', true)[1],
-                type: [gymMainTypes[7]],
-            },
-            {
-                ...getBossPreset('JUAN', true)[2],
-                type: [gymMainTypes[7]],
-            },
-            {
-                ...getBossPreset('JUAN', true)[3],
-                type: [gymMainTypes[7]],
-            },
-            gymIsChangedType[7] ? {
-                ...getBossPreset('JUAN', true)[4],
-                breedTier: 'perfect',
-                type: [gymMainTypes[7]],
-            } : {
-                specificIfTier: 'SPECIES_KINGDRA',
-                ...getBossPreset('JUAN', true)[4],
-                breedTier: 'perfect',
-                type: [gymMainTypes[7]],
-            },
-            {
-                ...getBossPreset('JUAN', true)[5],
-                type: [gymMainTypes[7]],
-            },
-        ],
+        // T-128 — Water type is a trainer restriction; team is the full preset pool; the favourite
+        // (Kingdra) claims a pool slot of its tier.
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [gymMainTypes[7]],
+        favourite: gymFavourite('SPECIES_KINGDRA'),
+        team: getBossPreset('JUAN', true).map(s => ({ ...s })),
     },
     // Route 123
     {
@@ -4112,38 +3282,23 @@ const trainersData = [
         isBoss: true,
         breedTier: 'good',
         level: 67,
+        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         bag: [...juanBag()],
+        // T-106/T-128 — Victory Road is Wally's AUTHORITATIVE endgame team: his favourite Mega Gardevoir
+        // (≫ Mega Gallade ≫ any mega) CLAIMS the boss-mega slot (tagged WALLY_1, the continuity anchor)
+        // + three OU aces (WALLY_2-4) + his two ultimate aces for the final battle — an UBERS and a LEGEND.
+        // The four WALLY_1-4 IDs echo devolved at Mauville/Lilycove; the ubers/legend are VR-only (no id, so
+        // they don't propagate). B-033 — the ubers + legend were dropped in the T-106 inversion; restored.
+        // (The two UU IDs are now born at Lilycove, not here — see TRAINER_WALLY_LILYCOVE.) No repeated types.
+        favourite: ['SPECIES_GARDEVOIR_MEGA', 'SPECIES_GALLADE_MEGA', { mega: true }],
+        favouriteId: 'WALLY_1',
         team: [
-            {
-                ...getBossPreset('JUAN', true)[0],
-            },
-            {
-                ...getBossPreset('JUAN', true)[1],
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_1',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_2',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_3',
-                tryEvolve: true,
-                tryMega: true,
-            },
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'WALLY_4',
-                tryEvolve: true,
-                tryMega: true,
-            },
+            { id: 'WALLY_2', evolutionTier: [TIER_OU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
+            { id: 'WALLY_3', evolutionTier: [TIER_OU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
+            { id: 'WALLY_4', evolutionTier: [TIER_OU], evoType: [EVO_TYPE_LC], tryEvolve: true, checkValidEvo: true },
+            { absoluteTier: [TIER_UBERS],  checkValidEvo: true }, // B-033 — VR-only ubers ace
+            { absoluteTier: [TIER_LEGEND], checkValidEvo: true }, // B-033 — VR-only legend ace
+            bossMega(TIER_UBERS),                                 // claimed by the favourite Mega Gardevoir (WALLY_1)
         ],
     },
     {
@@ -4190,7 +3345,6 @@ const trainersData = [
         class: 'May',
         isBoss: true,
         level: 70,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         reward: [tmItem(95)],
         bag: [...endgameBag()],
         team: [...rivalEvergrandeCityTemplate('TREECKO')],
@@ -4201,7 +3355,6 @@ const trainersData = [
         class: 'May',
         isBoss: true,
         level: 70,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         reward: [tmItem(95)],
         bag: [...endgameBag()],
         team: [...rivalEvergrandeCityTemplate('TORCHIC')],
@@ -4212,7 +3365,6 @@ const trainersData = [
         class: 'May',
         isBoss: true,
         level: 70,
-        restrictions: [TRAINER_RESTRICTION_NO_REPEATED_TYPE],
         reward: [tmItem(95)],
         bag: [...endgameBag()],
         team: [...rivalEvergrandeCityTemplate('MUDKIP')],
@@ -4305,14 +3457,11 @@ const trainersData = [
         breedTier: 'good',
         level: 73,
         bag: [...leagueBag()],
-        team: [
-            { ...getBossPreset('SIDNEY', true)[0], type: [e41MainType] },
-            { ...getBossPreset('SIDNEY', true)[1], type: [e41MainType] },
-            { ...getBossPreset('SIDNEY', true)[2], type: [e41MainType] },
-            { ...getBossPreset('SIDNEY', true)[3], type: [e41MainType] },
-            { ...getBossPreset('SIDNEY', true)[4], type: [e41MainType] },
-            absolutePokeDefMega({ type: [e41MainType] }),
-        ],
+        // T-128 — E4 type is a trainer restriction; the team is the full difficulty-scaled preset pool
+        // (incl. its {isMega} slot). No favourite (E4 have no signature ace in this model).
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [e41MainType],
+        team: getBossPreset('SIDNEY', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_PHOEBE',
@@ -4322,14 +3471,9 @@ const trainersData = [
         breedTier: 'good',
         level: 74,
         bag: [...leagueBag()],
-        team: [
-            { ...getBossPreset('PHOEBE', true)[0], type: [e42MainType] },
-            { ...getBossPreset('PHOEBE', true)[1], type: [e42MainType] },
-            { ...getBossPreset('PHOEBE', true)[2], type: [e42MainType] },
-            { ...getBossPreset('PHOEBE', true)[3], type: [e42MainType] },
-            { ...getBossPreset('PHOEBE', true)[4], type: [e42MainType] },
-            absolutePokeDefMega({ type: [e42MainType] }),
-        ],
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [e42MainType],
+        team: getBossPreset('PHOEBE', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_GLACIA',
@@ -4339,14 +3483,9 @@ const trainersData = [
         breedTier: 'good',
         level: 75,
         bag: [...leagueBag()],
-        team: [
-            { ...getBossPreset('GLACIA', true)[0], type: [e43MainType] },
-            { ...getBossPreset('GLACIA', true)[1], type: [e43MainType] },
-            { ...getBossPreset('GLACIA', true)[2], type: [e43MainType] },
-            { ...getBossPreset('GLACIA', true)[3], type: [e43MainType] },
-            { ...getBossPreset('GLACIA', true)[4], type: [e43MainType] },
-            absolutePokeDefUbersMega({ type: [e43MainType] }),
-        ],
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [e43MainType],
+        team: getBossPreset('GLACIA', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_DRAKE',
@@ -4356,14 +3495,9 @@ const trainersData = [
         breedTier: 'good',
         level: 76,
         bag: [...leagueBag()],
-        team: [
-            { ...getBossPreset('DRAKE', true)[0], type: [e44MainType] },
-            { ...getBossPreset('DRAKE', true)[1], type: [e44MainType] },
-            { ...getBossPreset('DRAKE', true)[2], type: [e44MainType] },
-            { ...getBossPreset('DRAKE', true)[3], type: [e44MainType] },
-            { ...getBossPreset('DRAKE', true)[4], type: [e44MainType] },
-            absolutePokeDefUbersMega({ type: [e44MainType] }),
-        ],
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [e44MainType],
+        team: getBossPreset('DRAKE', true).map(s => ({ ...s })),
     },
     {
         id: 'TRAINER_CHAMPION_STEVEN',
@@ -4373,28 +3507,50 @@ const trainersData = [
         breedTier: 'perfect',
         level: 78,
         bag: [...leagueBag()],
+        // T-106/T-128 — Champion Steven is the AUTHORITATIVE appearance: favourite Mega Metagross (≫ any
+        // mega) claims the stage-3 mega slot (tagged STEVEN_MEGA), + legend + OU ace; his earlier
+        // appearances (Granite Cave, Mossdeep partner) echo them DEVOLVED. Steven is EXCLUDED from the type
+        // restriction — he goes by slots (his signature legend/OU aces stay championMainType-typed).
+        favourite: ['SPECIES_METAGROSS_MEGA', { mega: true }],
+        favouriteId: 'STEVEN_MEGA',
         team: [
             {
                 ...getBossPreset('CHAMPION_STEVEN', true)[0],
                 hasStat: ['baseBST', '<', '851'],
             },
             {
-                special: TRAINER_REPEAT_ID,
+                // authoritative legend (was a repeat of the Mossdeep partner's — now the source of truth)
                 id: 'STEVEN_LEGEND',
+                ...ABSOLUTE_POKEDEF_LEGEND,
+                type: [championMainType],
+                fallback: [{ id: 'STEVEN_LEGEND', ...ABSOLUTE_POKEDEF_LEGEND }],
             },
             getBossPreset('CHAMPION_STEVEN', true)[1],
             {
-                special: TRAINER_REPEAT_ID,
+                // authoritative OU ace at full strength (no early contextual tier cap). Its Granite-Cave
+                // echo is the LC base of this line (may cross a regional-form family boundary, e.g.
+                // Goodra-Hisui → shared Goomy — the same line, which the continuity test collapses).
                 id: 'STEVEN_OU',
+                breedTier: 'perfect',
+                evolutionTier: [TIER_OU],
+                evoType: [EVO_TYPE_LC],
                 tryEvolve: true,
+                checkValidEvo: true,
+                type: [championMainType],
+                fallback: [{
+                    id: 'STEVEN_OU',
+                    breedTier: 'perfect',
+                    evolutionTier: [TIER_UU],
+                    evoType: [EVO_TYPE_LC],
+                    tryEvolve: true,
+                    checkValidEvo: true,
+                    type: [championMainType],
+                }],
             },
             getBossPreset('CHAMPION_STEVEN', true)[2],
-            {
-                special: TRAINER_REPEAT_ID,
-                id: 'STEVEN_MEGA',
-                tryEvolve: true,
-                tryMega: true,
-            },
+            // T-128 — CHAMPION_STEVEN has no mega slot in its preset; add the stage-3 gated mega slot for
+            // the Mega Metagross favourite to CLAIM (no type — Steven is unrestricted).
+            bossMega(TIER_UBERS),
         ],
     },
 ];
@@ -4430,6 +3586,10 @@ const trainersData = [
         else if (cls.includes('Magma')) trainer.evilThemeTypes = [magmaTeamTypes[0], magmaTeamTypes[1]];
     }
 
+    // T-106 — hoist each recurring character's authoritative (endgame) appearance ahead of its earlier
+    // ones, so its roster is decided first and the earlier appearances echo it devolved (ADR-016 §4).
+    hoistAuthoritativeAppearances(trainersData, CONTINUITY_GROUPS);
+
     return trainersData;
 }
 
@@ -4441,4 +3601,9 @@ module.exports = {
     resolveTeamTypes,
     AQUA_DEFAULT_TYPES,
     MAGMA_DEFAULT_TYPES,
+    // Exported for unit testing (T-106).
+    hoistAuthoritativeAppearances,
+    villainFavourite,
+    // Exported for unit testing (B-033) — the continuity groups, so tests can assert the Wally build order.
+    CONTINUITY_GROUPS,
 };

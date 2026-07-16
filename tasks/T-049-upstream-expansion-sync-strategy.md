@@ -1,10 +1,10 @@
 ---
 id: T-049
 title: Research a controlled, reproducible upstream sync with pokeemerald-expansion
-status: in-progress      # proposed | in-progress | done | abandoned
+status: abandoned
 type: chore              # feature | fix | refactor | docs | chore
 created: 2026-07-03
-updated: 2026-07-03
+updated: 2026-07-15
 target-version: 0.6.0
 links: []                # will link ADR-012 (sync strategy) + B-018 (Endure) once created
 blocked-by: []
@@ -315,4 +315,4 @@ a clean git merge will not flag them, but the pipeline breaks until adapted.
 
 ## Outcome
 
-<!-- Filled when closing. Expected: ADR-012 + docs runbook + B-018 + per-hop execution tasks. -->
+Abandoned 2026-07-15 (owner: the controlled upstream-sync research path will not be pursued). No git state was changed; the intended read-only fetch step lived in T-050 (also abandoned). Revisit via a fresh task if an upstream sync is ever scheduled.

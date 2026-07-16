@@ -66,9 +66,8 @@ function djb2Hash(str) {
 // Builds the simplified (pokemon → pokemon.id) trainer map that becomes the bundle's
 // single source of truth.
 //
-// The in-game ordering layer (random shuffle + applyLeadLogic) is ALWAYS applied here
-// (unless the trainer is preventShuffle), because the ROM consumes this team verbatim.
-// `showExactPositions` only affects the DOCS DISPLAY, not the in-game order:
+// The in-game ordering layer (random shuffle + applyLeadLogic) is ALWAYS applied here, because the ROM
+// consumes this team verbatim. `showExactPositions` only affects the DOCS DISPLAY, not the in-game order:
 //   - ON  → docs show the in-game order (no separate displayTeam; viewer uses `team`).
 //   - OFF → docs show the pre-shuffle (default) order, carried in `displayTeam`.
 function buildTrainersResultsSimplified(trainersResults, { showExactPositions, baseRngSeed }) {
@@ -80,17 +79,16 @@ function buildTrainersResultsSimplified(trainersResults, { showExactPositions, b
     const result = {};
     Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
         const preShuffleTeam = trainerData.team;
-        let ingameTeam = preShuffleTeam;
 
-        if (!trainerData.preventShuffle) {
-            const shuffleSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainerId + ':shuffle'), 0x9E3779B9)) >>> 0;
-            rng.seed(shuffleSeed);
-            ingameTeam = [...preShuffleTeam].sort(() => rng.random() - 0.5);
-            ingameTeam = applyLeadLogic(ingameTeam, () => rng.random());
-        }
+        // Every trainer's in-game party order is a per-trainer-seeded shuffle + the lead-order resolution
+        // (weather setter → Stealth Rock → Spikes → Illusion). Deterministic per trainer.
+        const shuffleSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainerId + ':shuffle'), 0x9E3779B9)) >>> 0;
+        rng.seed(shuffleSeed);
+        let ingameTeam = [...preShuffleTeam].sort(() => rng.random() - 0.5);
+        ingameTeam = applyLeadLogic(ingameTeam, () => rng.random());
 
         const entry = { ...trainerData, team: simplify(ingameTeam) };
-        if (!showExactPositions && !trainerData.preventShuffle) {
+        if (!showExactPositions) {
             entry.displayTeam = simplify(preShuffleTeam);
         }
         result[trainerId] = entry;
@@ -211,7 +209,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
         sophistication, audit,
     });
 
-    trainersData.forEach(trainer => {
+    const processTrainer = trainer => {
         normalizeTrainerBagTms(trainer);
 
         if (trainer.copy) {
@@ -245,15 +243,33 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
             location: trainer.location || null,
             colors: trainer.colors,   // T-044 — docs-viewer card colours (SSOT: trainerColors.js)
             team,
-            preventShuffle: trainer.preventShuffle || false,
             battleType: trainer.battleType || 'singles',   // T-087/ADR-014
             choiceBattle: trainer.choiceBattle || null,    // T-116 — Run & Bun E4 choice info
         };
+    };
+
+    // T-132 — a TAG partner (abusePartnerWeather) must resolve AFTER its ally, so it can read the ally's
+    // committed weather and abuse it. Defer such trainers to a second pass (villains aren't continuity
+    // groups, so their build order is unconstrained). One level of dependency is enough here.
+    const deferredPartners = [];
+    trainersData.forEach(trainer => {
+        if (trainer.abusePartnerWeather && !trainersResults[trainer.abusePartnerWeather]) { deferredPartners.push(trainer); return; }
+        processTrainer(trainer);
     });
+    deferredPartners.forEach(processTrainer);
+
+    // T-106 — resolution ran in the hoisted BUILD order (each recurring character's authoritative
+    // appearance + every `copy:` target resolve before their dependents), but the docs must list
+    // trainers in the ORIGINAL story order (owner: build back-to-front, SHOW canonically). Re-key
+    // trainersResults by the displayOrder stamped in hoistAuthoritativeAppearances.
+    const displayOrdered = {};
+    for (const t of [...trainersData].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))) {
+        if (Object.prototype.hasOwnProperty.call(trainersResults, t.id)) displayOrdered[t.id] = trainersResults[t.id];
+    }
 
     // Build trainersResultsSimplified (pokemon object → pokemon.id). The in-game ordering
     // layer is always applied here; showExactPositions only controls the docs display.
-    const trainersResultsSimplified = buildTrainersResultsSimplified(trainersResults, {
+    const trainersResultsSimplified = buildTrainersResultsSimplified(displayOrdered, {
         showExactPositions,
         baseRngSeed,
     });

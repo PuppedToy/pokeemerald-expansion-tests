@@ -1,10 +1,10 @@
 ---
 id: T-105
 title: Engine — sophistication scalar driven by boss progression
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-10
+updated: 2026-07-15
 target-version: 0.8.0
 links: [T-083, T-103, T-104]
 blocked-by: [T-104]
@@ -61,4 +61,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Sophistication scalar (modules/sophistication.js, pure, boss-progression-driven) wired into the resolver as an output-neutral weight. 10 tests; suite 854 + determinism green. Default curve params provisional (tuning, not a meta claim). Owner-validated 2026-07-15. Closed.

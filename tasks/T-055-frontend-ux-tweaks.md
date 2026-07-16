@@ -1,10 +1,10 @@
 ---
 id: T-055
 title: Frontend UX tweaks — docs "Defeated" placement + reset-options button
-status: in-progress
+status: done
 type: feature
 created: 2026-07-03
-updated: 2026-07-03
+updated: 2026-07-15
 target-version: 0.6.0
 links: []
 blocked-by: []
@@ -46,4 +46,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Docs 'Defeated' label repositioned (removed the margin-top:auto push) + a 'Reset to defaults' button wired into the config actions bar (ConfigForm.resetToDefaults + confirm; structural test). Frontend suite green. Owner-validated 2026-07-15. Closed.

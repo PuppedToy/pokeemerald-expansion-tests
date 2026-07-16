@@ -1,10 +1,10 @@
 ---
 id: T-121
 title: Expand the singles OU corpus for statistically-robust archetype entry conditions
-status: in-progress
+status: done
 type: docs
 created: 2026-07-11
-updated: 2026-07-11
+updated: 2026-07-15
 target-version: 0.8.0
 links: [T-083, T-099, T-118, T-107]
 priority: high
@@ -54,3 +54,5 @@ Acceptance criteria:
   by weatherSetter (94%). Presenting for the owner's final validation before implementing entries.
 
 ## Outcome
+
+Singles OU corpus expanded 12→62 teams (docs/research) for more statistically-robust archetype entry conditions. Owner elected to close on 2026-07-15; further role-profile re-tuning folds into the ongoing engine work (T-118 line), non-gating. Closed.

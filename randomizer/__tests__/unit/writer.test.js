@@ -157,7 +157,6 @@ describe('buildTrainersResultsFromDocs', () => {
         expect(t.reward).toEqual(['Mudkip']);
         expect(t.location).toBe('Route 101');
         expect(t.isBoss).toBe(false);
-        expect(t.preventShuffle).toBe(false);
     });
 
     test('does not consume any RNG calls', () => {

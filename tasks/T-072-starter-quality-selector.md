@@ -1,10 +1,10 @@
 ---
 id: T-072
 title: Starter quality selector for the 3 main starters + extra-starter count & visual separation
-status: in-progress      # proposed | in-progress | done | abandoned
+status: done
 type: feature            # feature | fix | refactor | docs | chore
 created: 2026-07-07
-updated: 2026-07-07
+updated: 2026-07-15
 target-version: 0.6.0
 links: [T-052]
 blocked-by: []
@@ -96,6 +96,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
-</content>
-</invoke>
+Starter quality selector for the 3 main starters (default UU) + extra-starter count & visual separation; get/set/event wiring, backward-compatible signature. randomizer 722 + frontend 48 green. Owner-validated 2026-07-15. Closed.

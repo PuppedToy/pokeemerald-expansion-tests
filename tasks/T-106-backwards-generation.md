@@ -1,13 +1,12 @@
 ---
 id: T-106
 title: Engine — backwards generation (endgame-first, devolve preserving ID continuity)
-status: proposed
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-10
+updated: 2026-07-15
 target-version: 0.8.0
-links: [T-083, T-103, T-104, T-105, T-107, T-108]
-blocked-by: [T-107]
+links: [T-083, T-103, T-104, T-105, T-107, T-108, T-128]
 ---
 
 # T-106 — Engine — backwards generation (endgame-first, devolve preserving ID continuity)
@@ -103,7 +102,68 @@ Acceptance criteria:
   + devolution on the *final* engine, alongside T-108 (fixed-ID special cases) — the same continuity
   concern. `blocked-by` → T-107; status back to `proposed` (the investigation above stands as
   groundwork). No throwaway, no double-edit of the trainer data model. ADR-016 §4 design unchanged.
+- **2026-07-11 (owner-validated continuity spec — unblocked, T-107 landed)** — Owner detailed the full
+  continuity behaviour; set `in-progress`. Specifics to implement (alongside T-128 favourite + T-108):
+  - **Reverse-order generation (last→first).** Recurring characters (rival, Steven, Wally) build their
+    final, well-built roster first; earlier appearances reuse it **devolved to the most-evolved form the
+    level allows** (`devolveToBase`, generalized to a level cap).
+  - **Rival special case:** the **evolved starter** is a mandatory slot **known from the start** (it is
+    the rival's *favourite*, T-128) + a **mandatory legendary** slot + a small **route pool** + the rest
+    **free slots** filled by the engine. The starter constraint is known up-front (not derived from a
+    late random pick).
+  - **Steven:** **REMOVE** the Granite Cave max-tier restriction — instead take his final (well-built)
+    roster and **devolve each mon until legal** for the Granite Cave level. Favourite = Metagross (T-128).
+  - **Wally:** **fully backwards** — final team well-built (Victory Road / champion-tier), devolved down
+    to his Mauville (catching-tutorial) appearance. Add a **no-repeated-types** restriction to his team.
+    Favourite = Mega Gardevoir / Mega Gallade (T-128).
+  - **Logging (T-117):** the decision log must clearly show, per mon, **what is inherited by ID**, **how
+    it is devolved** (final form → shown form), and **which mons were chosen by restriction** (favourite,
+    legendary, route pool, type lock), because backwards continuity is the riskiest path.
+  - **Re-evaluate hard restrictions** encountered along the way (Steven's tier cap is the first) and
+    soften them toward disappearing — prefer devolve-until-legal over hard tier caps.
+  - Favourite-Pokémon concept split into its own task **T-128** (resolved FIRST, before budget slots).
+- **2026-07-11 (implementation — primitives landed, reversal mechanics mapped)** —
+  - **Primitives (done, committed):** `utils.devolveToLevel(list, mon, level)` (inverse of tryEvolve —
+    most-evolved form legal at a level, mega→base first) + selector `TRAINER_REPEAT_ID + devolveToLevel`
+    (repeat the stored authoritative mon devolved to the level-legal stage). 10 unit tests; suite green.
+  - **Reversal gotchas found (must be handled atomically):**
+    1. **`copy` trainers (15 of them):** every Brendan-rival appearance is a `copy:` of the matching May
+       appearance, and `copy` reads `trainersResults[target]` which must already exist. A naive global
+       reverse processes the copy before its target → crash. → process non-copy trainers in reverse,
+       then **copy trainers in a 2nd pass**.
+    2. **Rival authority = MAY only** (Brendan copies May), so only May's 5 appearances need the flip.
+    3. **storedIds/IV-cache order:** reversing changes which appearance first populates `storedIds[id]`
+       and `pokeIdIVCache[id]`; that's the intended inversion (latest becomes authoritative) and stays
+       consistent across appearances, so the cross-ROM determinism gate still holds.
+  - **Data flip required (latest appearance becomes authoritative):** Steven (Granite Cave + mid → REPEAT
+    +devolveToLevel; Champion → real picks +store), Wally (3 appearances), May (5 appearances). Blueprint
+    of every appearance's slots being mapped before the edit.
+
+- **2026-07-12 (implemented — all three recurring characters inverted, verified)** — Continuity inversion
+  is DONE via **authoritative-latest hoisting** (`hoistAuthoritativeAppearances`) rather than a literal
+  global loop reversal (cleaner: keeps the 15 `copy:` trainers after their targets; per-slot reseed keeps
+  every non-recurring team byte-identical; can be applied per-character). `CONTINUITY_GROUPS` drives it.
+  - **Steven** — Champion authoritative (favourite Mega Metagross + legend + OU ace); Granite Cave (22) +
+    Mossdeep partner (59) echo via `REPEAT_ID + devolveToLevel`. **Granite Cave tier-cap REMOVED** (the
+    owner's "make the restriction disappear" — devolve-until-legal replaces megaTier/contextualTier).
+  - **Wally** — Victory Road authoritative (favourite Mega Gardevoir/Gallade + 5 OU/UU aces,
+    no-repeated-types); Mauville (28) + Lilycove (49) echo devolved. Was Juan-preset filler at VR.
+  - **Rival (May)** — Ever Grande (70) authoritative (mega + evolved-starter favourite + 2 premiums +
+    legendary + encounter); Route 103/Rustboro/110/119 echo devolved. Starter-special moved to Ever Grande
+    (`RIVAL_STARTER_SPECIAL`). Accretion preserved (each appearance echoes only the ids it carries).
+  - **Primitives:** `utils.devolveToLevel` (inverse of tryEvolve) + selector `REPEAT_ID + devolveToLevel`
+    + `resolveTrainerTeam` storedIds guard (a REPEAT_ID slot is a pure CONSUMER — fixes an early low-level
+    echo overwriting the authoritative source).
+  - **Along the way:** fixed **B-027** (the `NO_REPEATED_TYPE` restriction was a no-op — read types off the
+    wrapper). **Logging (T-117):** per-slot provenance `{favourite}/{legendary}/{route encounter}/{starter}/
+    {inherited by id X ← devolved from Y}`.
+  - **Verification:** `reverseOrderContinuity.test.js` (9 gated assertions across all three characters) +
+    unit tests (devolveToLevel 7, selector devolve 3, hoist 4, no-repeat 2, provenance 1). Suite 951 green;
+    cross-ROM determinism gate green throughout.
+  - **Remaining / owner input:** gym-leader favourites (T-128) — needs the owner-confirmed signature mon +
+    tier for 6/8 gyms (only Wattson=Manectric, Winona=Altaria are in-code); "rival free slots" refinement
+    (the mega/premium slots are currently semi-prescriptive tier-gated LC picks, not fully engine-free).
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Backwards generation (endgame-first, devolve preserving ID continuity) implemented for Steven, Wally and the rival; tested + determinism-green (suite 951). Owner declared the objective met on 2026-07-15; the residual rival free-slot refinement + gym-leader favourites are carried by T-128, non-gating. Closed.

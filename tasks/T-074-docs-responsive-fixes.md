@@ -1,10 +1,10 @@
 ---
 id: T-074
 title: Fix documentation responsive rendering issues
-status: in-progress
+status: done
 type: fix
 created: 2026-07-08
-updated: 2026-07-08
+updated: 2026-07-15
 target-version: 0.6.0
 links: []
 blocked-by: []
@@ -70,4 +70,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Trainers + heavy-grid responsive redesign in frontend/template.html: roster grid → auto-fill minmax, roster-row → flex-wrap, sprite a real flex item; content-visibility:auto on the big grids dropped forced reflow ~400ms→~18ms. Zero horizontal overflow 375–1920px (visual harness), owner-iterated over 3 rounds. randomizer suite green. Owner-validated 2026-07-15. Closed.

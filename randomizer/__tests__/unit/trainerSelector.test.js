@@ -278,6 +278,121 @@ describe('createChooser — maxBaseTier filter', () => {
     });
 });
 
+describe('createChooser — TRAINER_REPEAT_ID + devolveToLevel (T-106 reverse continuity)', () => {
+    // Beldum --20--> Metang --45--> Metagross. A later-authoritative appearance stored Metagross;
+    // an earlier appearance repeats it DEVOLVED to the most-evolved form legal at its level.
+    const beldum = makePoke('SPECIES_BELDUM', { tier: 'NU', isLC: true, evolutions: [{ method: 'LEVEL', param: '20', pokemon: 'SPECIES_METANG' }] });
+    const metang = makePoke('SPECIES_METANG', { tier: 'NU', evolutions: [{ method: 'LEVEL', param: '45', pokemon: 'SPECIES_METAGROSS' }] });
+    const metagross = makePoke('SPECIES_METAGROSS', { tier: 'OU', isFinal: true });
+    const list = [beldum, metang, metagross];
+
+    test('repeats the stored mon as-is (no devolveToLevel) at any level', () => {
+        const ctx = makeContext();
+        ctx.storedIds['STEVEN_MEGA'] = 'SPECIES_METAGROSS';
+        const chooser = makeChooser(list, makeTrainer(22), ctx);
+        expect(chooser({ special: 'TRAINER_REPEAT_ID', id: 'STEVEN_MEGA' }).id).toBe('SPECIES_METAGROSS');
+    });
+
+    test('devolveToLevel projects the stored final form back to the level-legal stage', () => {
+        const ctx = makeContext();
+        ctx.storedIds['STEVEN_MEGA'] = 'SPECIES_METAGROSS';
+        const chooser = makeChooser(list, makeTrainer(22), ctx);
+        // level 22: Metagross needs 45 → devolves to Metang (Beldum→Metang at 20 is legal)
+        expect(chooser({ special: 'TRAINER_REPEAT_ID', id: 'STEVEN_MEGA', devolveToLevel: true }).id).toBe('SPECIES_METANG');
+    });
+
+    test('devolveToLevel is a no-op at a high level (keeps the final form)', () => {
+        const ctx = makeContext();
+        ctx.storedIds['STEVEN_MEGA'] = 'SPECIES_METAGROSS';
+        const chooser = makeChooser(list, makeTrainer(78), ctx);
+        expect(chooser({ special: 'TRAINER_REPEAT_ID', id: 'STEVEN_MEGA', devolveToLevel: true }).id).toBe('SPECIES_METAGROSS');
+    });
+});
+
+describe('createChooser — ALLOW_ONLY_TYPES restriction (B-028)', () => {
+    const ALLOW_ONLY_TYPES = 'TRAINER_RESTRICTION_ALLOW_ONLY_TYPES';
+    test('keeps only candidates that have one of the trainer types', () => {
+        const fire  = makePoke('SPECIES_FIRE_A', { types: ['FIRE'], tier: 'NU', isFinal: true });
+        const water = makePoke('SPECIES_WATER_A', { types: ['WATER'], tier: 'NU', isFinal: true });
+        const trainer = { ...makeTrainer(32), restrictions: [ALLOW_ONLY_TYPES], types: ['FIRE'] };
+        const chooser = makeChooser([fire, water], trainer, makeContext());
+        for (let s = 0; s < 25; s++) {
+            const r = chooser({ contextualTier: ['NU'] });
+            if (r) expect(r.id).toBe('SPECIES_FIRE_A');
+        }
+    });
+    test('is NOT bypassed when no candidate matches (no off-type fallback)', () => {
+        // Only a Water mon exists; a Fire-only trainer must field nothing here, not the Water mon.
+        const water = makePoke('SPECIES_WATER_B', { types: ['WATER'], tier: 'NU', isFinal: true });
+        const trainer = { ...makeTrainer(32), restrictions: [ALLOW_ONLY_TYPES], types: ['FIRE'] };
+        const chooser = makeChooser([water], trainer, makeContext());
+        expect(chooser({ contextualTier: ['NU'] })).toBeUndefined();
+    });
+});
+
+describe('createChooser — NO_REPEATED_TYPE restriction (B-027)', () => {
+    const NO_REPEAT = 'TRAINER_RESTRICTION_NO_REPEATED_TYPE';
+    test('excludes a candidate that shares a type with an existing team member', () => {
+        const psyFairy = makePoke('SPECIES_PSY_FAIRY', { types: ['PSYCHIC', 'FAIRY'], tier: 'OU', isFinal: true });
+        const waterPsy  = makePoke('SPECIES_WATER_PSY', { types: ['WATER', 'PSYCHIC'], tier: 'OU', isFinal: true });
+        const fire      = makePoke('SPECIES_FIRE_ONLY', { types: ['FIRE'], tier: 'OU', isFinal: true });
+        const ctx = makeContext();
+        ctx.team.push({ pokemon: psyFairy }); // team already fields a Psychic/Fairy mon
+        const trainer = { ...makeTrainer(50), restrictions: [NO_REPEAT] };
+        const chooser = makeChooser([psyFairy, waterPsy, fire], trainer, ctx);
+        // waterPsy shares PSYCHIC → must be excluded; only the pure-Fire mon is eligible.
+        for (let s = 0; s < 25; s++) {
+            const r = chooser({ absoluteTier: ['OU'] });
+            if (r) expect(r.id).toBe('SPECIES_FIRE_ONLY');
+        }
+    });
+    test('allows a candidate whose types are all new', () => {
+        const fire = makePoke('SPECIES_F', { types: ['FIRE'], tier: 'OU', isFinal: true });
+        const water = makePoke('SPECIES_W', { types: ['WATER'], tier: 'OU', isFinal: true });
+        const ctx = makeContext();
+        ctx.team.push({ pokemon: fire });
+        const trainer = { ...makeTrainer(50), restrictions: [NO_REPEAT] };
+        const chooser = makeChooser([fire, water], trainer, ctx);
+        expect(chooser({ absoluteTier: ['OU'] }).id).toBe('SPECIES_W');
+    });
+});
+
+describe('favourite as a slot + fallback chain (T-128 unified mechanism)', () => {
+    // The resolver materialises a favourite priority chain [ace, ...fallbacks] as
+    // { ...ace, fallback: [...rest] } with maxTierDownSteps:0, and drives it through the shared
+    // selectWithAutoFallback engine: the first rung that fits wins, else the next, else the whole
+    // favourite drops (null). This block tests that behaviour on the exact shape the resolver builds.
+    const sharpedoMega = () => makePoke('SPECIES_SHARPEDO_MEGA', { tier: 'OU', isMega: true, megaBaseForm: 'SPECIES_SHARPEDO', types: ['WATER', 'DARK'] });
+    const otherWater   = () => makePoke('SPECIES_WATER_X', { tier: 'OU', isFinal: true, types: ['WATER'] });
+    const fireMon      = () => makePoke('SPECIES_FIRE_X', { tier: 'OU', isFinal: true, types: ['FIRE'] });
+    const chain = [
+        { oneOf: ['SPECIES_SHARPEDO_MEGA'], isMega: true, absoluteTier: ['UU', 'OU'] }, // the ace
+        { type: ['WATER'] },                                                            // any aqua mon
+    ];
+    const favSlot = (c) => { const r = c.map(m => ({ ...m, maxTierDownSteps: 0 })); return { ...r[0], fallback: r.slice(1) }; };
+
+    test('the highest-priority rung that fits wins (even when a lower one also fits)', () => {
+        const chooser = makeChooser([sharpedoMega(), otherWater()], makeTrainer(60), makeContext());
+        expect(selectWithAutoFallback(favSlot(chain), chooser).pokemon.id).toBe('SPECIES_SHARPEDO_MEGA');
+    });
+
+    test('falls through to the next rung when the higher-priority pool is empty', () => {
+        const chooser = makeChooser([otherWater()], makeTrainer(60), makeContext()); // no Sharpedo mega
+        expect(selectWithAutoFallback(favSlot(chain), chooser).pokemon.id).toBe('SPECIES_WATER_X');
+    });
+
+    test('drops the whole favourite (null) when no rung fits the restrictions', () => {
+        const chooser = makeChooser([fireMon()], makeTrainer(60), makeContext()); // nothing aqua
+        expect(selectWithAutoFallback(favSlot(chain), chooser)).toBeNull();
+    });
+
+    test('respects the tier gate on a species rung (Sharpedo mega below tier → next rung)', () => {
+        const lowMega = makePoke('SPECIES_SHARPEDO_MEGA', { tier: 'PU', isMega: true, megaBaseForm: 'SPECIES_SHARPEDO', types: ['WATER', 'DARK'] });
+        const chooser = makeChooser([lowMega, otherWater()], makeTrainer(60), makeContext());
+        expect(selectWithAutoFallback(favSlot(chain), chooser).pokemon.id).toBe('SPECIES_WATER_X');
+    });
+});
+
 describe('createChooser — TRAINER_POKE_ENCOUNTER + tryMega', () => {
     test('returns the encounter pokemon even when it has no mega (does not filter by hasValidMega)', () => {
         // Froakie has no mega — if hasValidMega were applied, pool would empty → undefined
@@ -304,5 +419,63 @@ describe('createChooser — TRAINER_POKE_ENCOUNTER + tryMega', () => {
 
         const result = chooser({ contextualTier: ['NU'], tryMega: true });
         expect(result).toBeUndefined();
+    });
+});
+
+describe('createChooser — T-142 doubles support tier-flex', () => {
+    const { getArchetypeModel } = require('../../archetypes');
+    const doubles = getArchetypeModel('doubles');
+    const singles = getArchetypeModel('singles');
+    const supportMon = (id, tierD) => ({
+        ...makePoke(id, { tier: tierD, types: ['GRASS'] }), tierDoubles: tierD,
+        learnset: [{ level: 1, move: 'MOVE_RAGE_POWDER' }, { level: 1, move: 'MOVE_HELPING_HAND' }, { level: 1, move: 'MOVE_TRICK_ROOM' }], // 3 support tools
+        teachables: [], baseHP: 90, baseAttack: 80, baseDefense: 100, baseSpAttack: 80, baseSpDefense: 100, baseSpeed: 60, // BST 510 — viable support
+    });
+    const attackerMon = (id, tierD) => ({ ...makePoke(id, { tier: tierD }), tierDoubles: tierD, baseAttack: 150, baseSpAttack: 60 });
+
+    test('a doubles team that still wants a support admits an OU support onto an UBERS slot (1 tier down)', () => {
+        const support = supportMon('OUSUPP', 'OU');
+        const attacker = attackerMon('UBATK', 'UBERS');
+        let captured = null;
+        const chooser = makeChooser([support, attacker], { ...makeTrainer(76), battleType: 'doubles' },
+            { team: [], foundMega: false, storedIds: {}, doublesWantsSupport: true },
+            { model: doubles, moves: {}, pickCandidate: (list) => { captured = list; return list.find(p => p.id === 'OUSUPP') || list[0]; } });
+        const res = chooser({ absoluteTier: ['UBERS'] });
+        expect(captured.map(p => p.id)).toContain('OUSUPP'); // flexed into the pool from 1 tier down
+        expect(res.id).toBe('OUSUPP');
+    });
+
+    test('the flex is 1 tier only — a UU support is NOT admitted to an UBERS slot (2 down → dropped)', () => {
+        const support = supportMon('UUSUPP', 'UU');
+        const attacker = attackerMon('UBATK', 'UBERS');
+        let captured = null;
+        const chooser = makeChooser([support, attacker], { ...makeTrainer(76), battleType: 'doubles' },
+            { team: [], foundMega: false, storedIds: {}, doublesWantsSupport: true },
+            { model: doubles, moves: {}, pickCandidate: (list) => { captured = list; return list[0]; } });
+        chooser({ absoluteTier: ['UBERS'] });
+        expect(captured.map(p => p.id)).not.toContain('UUSUPP');
+    });
+
+    test('no flex once the team already has a dedicated support (min satisfied)', () => {
+        const onTeam = supportMon('TEAMSUPP', 'OU');
+        const support = supportMon('OUSUPP', 'OU');
+        const attacker = attackerMon('UBATK', 'UBERS');
+        let captured = null;
+        const chooser = makeChooser([support, attacker], { ...makeTrainer(76), battleType: 'doubles' },
+            { team: [{ pokemon: onTeam }], foundMega: false, storedIds: {}, doublesWantsSupport: true },
+            { model: doubles, moves: {}, pickCandidate: (list) => { captured = list; return list[0]; } });
+        chooser({ absoluteTier: ['UBERS'] });
+        expect(captured.map(p => p.id)).not.toContain('OUSUPP'); // need already met → no flex
+    });
+
+    test('SINGLES is unaffected — no tier-flex (an OU support stays out of an UBERS singles slot)', () => {
+        const support = supportMon('OUSUPP', 'OU');
+        const attacker = attackerMon('UBATK', 'UBERS');
+        let captured = null;
+        const chooser = makeChooser([support, attacker], makeTrainer(76),
+            { team: [], foundMega: false, storedIds: {}, archetypeSeed: { base: 'balance' } },
+            { model: singles, moves: {}, pickCandidate: (list) => { captured = list; return list[0]; } });
+        chooser({ absoluteTier: ['UBERS'] });
+        expect(captured.map(p => p.id)).not.toContain('OUSUPP');
     });
 });

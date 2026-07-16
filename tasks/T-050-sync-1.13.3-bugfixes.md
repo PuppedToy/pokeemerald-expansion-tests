@@ -1,10 +1,10 @@
 ---
 id: T-050
 title: Absorb expansion 1.13.3 bugfixes (incl. Endure)
-status: in-progress     # proposed | in-progress | done | abandoned
+status: abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-07-03
-updated: 2026-07-03
+updated: 2026-07-15
 target-version: 0.6.0
 links: [T-049, B-018, docs/adr/ADR-012-upstream-bugfix-cherry-pick-sync.md, docs/upstream-bugfix-sync.md]
 blocked-by: []
@@ -89,4 +89,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing: commits taken, B-018 closed, frontier advanced. -->
+Abandoned 2026-07-15 (owner: not continuing the wholesale 1.13.3 bugfix-absorption effort). The standalone Endure fix was implemented on its own branch (2 commits over master) but is not being carried forward under this task; the broader sync is dropped.

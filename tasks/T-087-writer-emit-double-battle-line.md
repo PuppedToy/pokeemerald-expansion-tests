@@ -1,10 +1,10 @@
 ---
 id: T-087
 title: Writer emits/rewrites the Double Battle header per trainer from the bundle battle type
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-15
 target-version: 0.7.0
 links: [T-083, T-086]
 blocked-by: [T-086]
@@ -64,4 +64,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Writer emits/rewrites the `Double Battle:` header per trainer from the bundle battle type (docs-driven production path). battleTypeWriter.test.js (7). Suite green. Owner-validated 2026-07-15. Closed.

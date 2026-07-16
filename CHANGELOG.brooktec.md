@@ -9,6 +9,101 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Doubles now has its own tier list, shown next to singles in the docs.** Every Pokémon is rated
+  twice — once for singles, once for doubles — with the doubles rating re-weighted for the 6v6 meta
+  (bulk over raw speed, a premium on spread damage and support) on its own tier scale. Raw BST still
+  paces both formats — a high-BST Pokémon can't drop below its BST-implied tier in doubles either, so
+  the nuzlocke difficulty ramp holds — and the viewer now shows both tiers side by side on every
+  Pokémon, *Singles │ Doubles*, with the shared role below (T-097, T-140, T-111).
+
+- **Double-battle trainers now build doubles-shaped teams.** A double-battle trainer's power budget is
+  measured on the doubles tier list, and its team is assembled from the doubles archetypes — so a doubles
+  boss fields a genuinely different, format-appropriate team from the same trainer run as singles
+  (Sidney's doubles team leans on redirection + Tailwind, Drake's on a dual-mode balance core). Singles
+  trainers are completely unaffected (T-109).
+
+- **Doubles teams now field dedicated support, like real competitive doubles.** The support Pokémon that
+  define the meta — redirectors (Follow Me / Rage Powder / Lightning Rod), Fake Out / Wide Guard / Helping
+  Hand users, Intimidate pillars, Friend Guard / Hospitality allies — are recognised as a distinct role,
+  rated up for doubles (a support Sinistcha climbs from RU to OU off its Hospitality + Rage Powder kit),
+  and most doubles archetypes now reserve a slot for one (plus a new redirection-support archetype).
+  Support is scored by tool QUALITY, not breadth: each support move/ability is worth elite / good / filler
+  points, so a real support COMBINATION (2 elite tools → UU, 3+ → OU) is rewarded while a pile of mediocre
+  moves is not — and a strong offensive tier discounts the score, so a good attacker isn't mislabelled a
+  support. A fielded support now also PLAYS support: it's built with its best support moves (not an
+  all-attacking set) and is never handed a status-locking item (Assault Vest / Choice). The decision log
+  prints the full support ranking behind each pick — every eligible support scored and itemised, the pick
+  marked — so *why this support, and why OU/UU* is auditable. Support moves and abilities are valued for
+  doubles (Encore, Prankster, Defiant/Competitive punishing the ubiquitous Intimidate). And ally-only
+  abilities that do nothing in a 1v1 — Commander, Hospitality, Costar, Power Spot — no longer inflate a
+  Pokémon's SINGLES rating (T-102, T-141, T-142).
+
+- **Weather teams now field their BEST abusers, ranked by how well each exploits the weather.** Instead of
+  any boosted-type mon, a sophisticated weather trainer prefers real ability-abusers (Chlorophyll / Solar
+  Power / Protosynthesis in sun, Swift Swim in rain, Sand Rush in sand, …), each scored by the stat it
+  scales, with sophistication pulling the pick toward the top of the ranking. The decision log shows the full
+  eligible ranking + why each scored what it did (T-135).
+
+- **Electric Terrain and Trick Room are real team archetypes now, like weather.** A trainer commits to the
+  gimmick by building it — an Electric Terrain team gets a setter (Tapu Koko-style Electric Surge / Hadron
+  Engine) plus abusers (Surge Surfer, Quark Drive, Unburden + Electric Seed, hard-hitting Electric-types),
+  and a Trick Room team gets the Trick Room setter plus slow, hard-hitting abusers that move first under it.
+  Wattson now builds Electric Terrain and Tate & Liza a full Trick Room. And, like weather, any sufficiently
+  skilled trainer that happens to roll the pieces (a terrain setter, or a slow-strong core) builds the gimmick
+  emergently or cleanly drops it — grounded in the competitive corpus (T-137).
+
+- **Trainers recognise the perish-trap combo.** A Shadow Tag / Arena Trap trapper that can learn Perish
+  Song (Gothitelle, Mega Gengar) now carries it — the trapped foe can't switch out of the 3-turn count —
+  in both singles and doubles. In doubles, a support-leaning teammate of a trapper sings it too (the split
+  version, e.g. a Wobbuffet partner). It's a lightweight move-combo, not a forced archetype. The
+  non-electric terrains (Misty/Grassy/Psychic), by contrast, aren't forced as team gimmicks — the corpus
+  shows they're a lone mon's tool, so a doubles team just leans into one it happens to have (a Grassy Surge
+  team prefers Grassy Glide, a Psychic Surge team Expanding Force). Screens stay a light utility role
+  (T-124).
+
+- **Trainer items are meaningful picks now, not random noise.** At every world point where the player picks
+  one item from a group (Choice Band/Specs/Scarf, the type plates, the type gems, the resist berries, the
+  pick-3 TM lists…), trainers mirror it: a trainer holds the whole group and only "spends" the pick when one
+  of its Pokémon actually equips/teaches an option — the alternatives are then dropped from that trainer's
+  own bag, exactly as the player would forgo them at that spot. A strong attacker that can reach a Choice
+  item now gets it up front and builds an all-attacking set (Choice Band for physical, Specs for special,
+  Scarf for a fast revenge killer). Loose/buyable copies are spent before touching a pick-group (T-129, T-133).
+
+- **Recurring bosses now have consistent teams across the game.** The rival (May/Brendan), Steven and
+  Wally build their strong endgame roster first and their earlier appearances show the SAME Pokémon at a
+  level-appropriate evolutionary stage (Champion Steven's Metagross ↔ Granite Cave Metang; the rival's
+  Ever Grande starter ↔ its Route 103 baby). Steven's Granite Cave hard tier-cap is gone (he devolves his
+  final roster until it's legal). The decision log spells out what is inherited and how it devolves (T-106).
+
+- **"Favourite Pokémon" — every character trainer builds around a preferred ace.** Each gym leader
+  (its signature, e.g. Roxanne→Nosepass, Brawly→Hariyama), the villains (Archie→Kyogre + Mega Sharpedo,
+  Maxie→Groudon + Mega Camerupt, …), the Elite Four, Steven (Mega Metagross) and Wally (Mega Gardevoir/
+  Gallade) resolve their favourite FIRST: it CLAIMS a slot from the difficulty-scaled preset pool of its
+  exact tier — or the mega slot (gated by a game-wide story-progression rule that evaluates the base form)
+  if it is a mega — and DROPS to the trainer's type-restricted fallback when it doesn't fit, never
+  downgrading. Trainer types are now a single trainer-level restriction, not per-slot hardcoding (T-128).
+
+- **Weather leads go first, and tag partners share weather.** A weather team sends its setter out first
+  (95%, ahead of a Stealth Rock lead) so the weather is up turn 1. In the Mossdeep tag battle, Tabitha
+  no longer runs her own sandstorm — she abuses whatever weather Maxie sets (his Groudon's sun), or builds
+  a normal team if he sets none. Team Aqua/Magma leaders' signature legendaries (Kyogre, Groudon) are
+  now "liked" mascots — strong but not perfect-IV (T-132).
+
+- **Weather villains now actually build their weather.** The themed weather teams field a real
+  setter + 2 abusers of their weather: Team Aqua rain (Museum grunt, Archie) and snow/hail (Museum grunt,
+  Matt); Team Magma sun (Maxie) and sandstorm (Tabitha). The team is built under a tentative weather tag
+  (the setter picked first, then abusers, with weather-synergy moves surfaced across the team) and, if the
+  restricted roster can't support the setter + 2 abusers, it cleanly rolls back to another weather or a
+  normal team — never a half-built gimmick. Sand and hail count Rock / Ice cores as abusers (their ×1.5
+  SpDef / Def is the payoff), matching how rain/sun teams lean on boosted-STAB attackers (T-131, T-132).
+
+- **Skilled trainers now build weather they stumble into — no longer just the themed villains.** A
+  non-dedicated trainer that happens to roll a weather setter (a Kyogre, Politoed, Torkoal…) now builds
+  that weather properly around it — setter + 2 abusers, chosen by the same ranking the villains use —
+  instead of leaving the setter idle; if it can't gather two abusers it keeps a normal team. This only
+  kicks in from mid-game skill upward. Flannery is no longer forced into sun: she runs it only when her
+  Fire roster naturally rolls a setter, and stays a normal Fire team otherwise (T-136).
+
 - **"Next boss" is a shortcut in the docs.** Clicking the top-bar *Next boss* stat jumps to the
   Trainers tab and scrolls that boss's card into view (with a brief highlight). Keyboard-accessible
   (T-082).
@@ -19,6 +114,40 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   show the taught move's description (T-078).
 
 ### Fixed
+
+- **Wally's Victory Road team regains its legendary + ubers ace.** His endgame roster had silently lost its
+  two ultimate aces (a legend + an ubers) in the backwards-generation rework — Victory Road was fielding six
+  ordinary continuity mons instead. It now correctly fields his four signature Pokémon (which follow him,
+  devolved, all the way back to Mauville) plus a legendary and an ubers ace brought out only for the final
+  battle. Lilycove keeps the four VR signatures + two of its own UU mons (which also appear devolved at
+  Mauville), so the three encounters tell one continuous story (B-033).
+
+- **Doubles Trick Room trainers keep their full team recipe.** Tate & Liza (and any Trick-Room-seeded
+  doubles trainer) referenced a base-archetype id that exists only in the singles model, so in a doubles
+  run their base recipe was silently dropped and only the Trick Room gimmick steered the team. The seed
+  base now resolves to the doubles model, restoring the full recipe (B-032).
+
+- **Wattson's Mega Manectric ace now devolves properly.** When Mega Manectric can't be placed (its
+  progression gate isn't met that run), Wattson keeps his signature line — Mega Manectric → Manectric →
+  Electrike → any eligible Electric mon — instead of jumping straight to a random Electric Pokémon (B-031).
+- **No more Choice items on the wrong Pokémon.** A Choice item (Band/Specs/Scarf) locks its holder into
+  one move, so it is no longer assigned to a Pokémon whose set carries a move it must not be locked into —
+  any status/hazard/setup move, or a reactive move (Counter/Mirror Coat/Metal Burst). Champion Steven's
+  Solgaleo no longer runs Choice Specs alongside Stealth Rock / Metal Burst; it gets a non-locking item
+  instead. Damaging pivots (U-turn/Volt Switch) still pair with Choice, as they should (T-129).
+
+- **Trainers can no longer teach a TM the player hasn't reached yet.** An archetype role move (or a
+  team's `tryToHaveMove`) could inject a teachable move regardless of TM access — e.g. Wattson's Oricorio
+  running Volt Switch, whose TM only appears much later (Auron / Mossdeep Space Center). Injected moves now
+  respect the incremental TM bag, exactly like the normal moveset selection (B-030).
+
+- **Recurring bosses show in the right order in the docs again.** Building each recurring character's
+  team back-to-front no longer reorders how they're LISTED: the docs show them in story order (May Route
+  103 → … → Ever Grande; Granite Cave Steven → Champion; Wally Mauville → Victory Road) (B-029).
+
+- **Wally / rival "no repeated types" now actually holds.** The restriction that keeps these trainers
+  from stacking same-typed Pokémon read the type list off the wrong object and never fired; their teams
+  now genuinely avoid repeated types (B-027).
 
 - **ROM build no longer aborts on form-species held items.** The writer strips wild held items by
   rewriting `.itemCommon`/`.itemRare` lines, but dropped the trailing `\` on the two such fields that

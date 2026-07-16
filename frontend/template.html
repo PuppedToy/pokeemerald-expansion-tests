@@ -618,6 +618,24 @@
     .tier-badge { display:inline-block; margin-top:6px; padding:8px 14px;
       border: var(--obs-border); box-shadow: var(--obs-shadow-md);
       font-family: var(--obs-font-display); font-size: 9px; letter-spacing: var(--obs-tracking); line-height: 1.5; }
+    /* T-111 — singles│doubles tier comparison component. Always shows BOTH tiers (left singles, right
+       doubles) so tier choices can be compared at a glance; the role (shared — it's derived from base
+       stats, format-independent) sits subtly below. Used everywhere a Pokémon's tier is shown. */
+    .tier-duo { display:inline-flex; flex-direction:column; align-items:center; gap:5px; margin-top:6px; }
+    .tier-duo-sides { display:flex; align-items:flex-end; }
+    .tier-duo-side { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:5px; padding:0 14px; }
+    .tier-duo-side + .tier-duo-side { border-left:1px solid rgba(255,255,255,0.15); }
+    .tier-duo .tier-badge { margin-top:0; }
+    .tier-duo-title { font-family:var(--obs-font-display); font-size:8px; letter-spacing:var(--obs-tracking);
+      text-transform:uppercase; opacity:0.5; }
+    .tier-duo-role { font-family:var(--obs-font-display); font-size:8px; letter-spacing:var(--obs-tracking);
+      text-transform:uppercase; opacity:0.5; }
+    .tier-badge-empty { opacity:0.4; }
+    /* T-141 — "Support" tag on the doubles side when support is the mon's dominant doubles identity. */
+    .tier-duo-tag { font-family:var(--obs-font-display); font-size:7px; letter-spacing:var(--obs-tracking);
+      text-transform:uppercase; margin-top:3px; padding:2px 6px; border-radius:3px;
+      background:#2563eb; color:#fff; }
+    @media (max-width: 420px) { .tier-duo-side { padding:0 9px; } }
 
     /* ============================================================
        T-038 — Trainers "Roster Sheet" layout.
@@ -1223,6 +1241,38 @@
       return types.map(type => `<span class="type" style="background-color:${typeColors[type]}">${type}</span>`).join(' ');
     }
 
+    // T-111 — the singles│doubles tier component. Every Pokémon carries a singles tier (poke.rating.tier)
+    // and a doubles tier (poke.tierDoubles); this ALWAYS shows both, side by side, so the tier choices can
+    // be compared at a glance. The role (bulky/…) is shared — it's derived from base stats, so it's the
+    // same in both formats — and sits subtly below. Used everywhere a Pokémon's tier is rendered.
+    // T-141 (owner r3) — `tag` is an optional extra badge under the tier (e.g. "Support" on the doubles
+    // side when a Pokémon's support tier is its dominant doubles identity — poke.isSupportDoubles).
+    function tierDuoSide(title, tier, tag) {
+      const badge = tier
+        ? `<div class="tier-badge" style="background-color: ${tierColorBgs[tier]}; color: ${tierColorFonts[tier]};">${tierNames[tier] || tier}</div>`
+        : `<div class="tier-badge tier-badge-empty">—</div>`;
+      const tagHtml = tag ? `<div class="tier-duo-tag">${tag}</div>` : '';
+      return `<div class="tier-duo-side"><div class="tier-duo-title">${title}</div>${badge}${tagHtml}</div>`;
+    }
+    function tierDuoHtml(poke) {
+      const s = poke.rating && poke.rating.tier;
+      const d = poke.tierDoubles;
+      const role = poke.rating && poke.rating.role;
+      return `<div class="tier-duo">`
+        + `<div class="tier-duo-sides">${tierDuoSide('Singles', s)}${tierDuoSide('Doubles', d, poke.isSupportDoubles ? 'Support' : null)}</div>`
+        + (role ? `<div class="tier-duo-role">${role}</div>` : '')
+        + `</div>`;
+    }
+    // Sort by the singles tier (the primary/left side). Filter matches on EITHER format's tier, so
+    // selecting e.g. "OU" surfaces any Pokémon that is OU in singles OR doubles.
+    function pokeSortTier(poke) { return poke.rating && poke.rating.tier; }
+    function pokeFilterTiers(poke) {
+      const out = [];
+      if (poke.rating && poke.rating.tier) out.push(poke.rating.tier);
+      if (poke.tierDoubles && poke.tierDoubles !== (poke.rating && poke.rating.tier)) out.push(poke.tierDoubles);
+      return out;
+    }
+
     function generatePokeCardContent(poke) {
       const pokeImg = getPokeImg(poke.id);
       const hpLogEntry = (poke.log || []).find(entry => entry.target === 'baseHP');
@@ -1272,7 +1322,7 @@
                 <div style="margin-top: 10px; text-align: center; width: 100%;">${abilities}</div>
                 <div>
                     <div style="text-align: center; font-weight: 700; margin-top: 6px; color: #FFDDC9">BST: ${adjustedBST}${bstIcon}</div>
-                    <div style="text-align: center"><div class="tier-badge" style="background-color: ${tierColorBgs[poke.rating.tier]}; color: ${tierColorFonts[poke.rating.tier]};">${tierNames[poke.rating.tier]} (${poke.rating.role})</div></div>
+                    <div style="text-align: center">${tierDuoHtml(poke)}</div>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, auto); gap: 6px; margin-top: 10px;">
                         <div style="font-weight: 700; color: #BDF8FF">HP</div>
                         <div style="font-weight: 700; color: #BDF8FF">ATK</div>
@@ -2253,7 +2303,7 @@
         s.sort(function(a,b){ return a.name.localeCompare(b.name); });
       } else if (fState.sort === 'tier') {
         s.sort(function(a,b){
-          var ai=TIER_ORDER.indexOf(a.rating.tier), bi=TIER_ORDER.indexOf(b.rating.tier);
+          var ai=TIER_ORDER.indexOf(pokeSortTier(a)), bi=TIER_ORDER.indexOf(pokeSortTier(b));
           return ai-bi || a.name.localeCompare(b.name);
         });
       } else if (fState.sort === 'type') {
@@ -2312,8 +2362,8 @@
         // Type (OR — at least one of pokemon's types must be checked)
         if (!poke.parsedTypes.some(function(t){ return types.has(t); })) return false;
 
-        // Tier
-        if (!tiers.has(poke.rating.tier)) return false;
+        // Tier (T-111 — per-format; mixed matches on either singles or doubles tier)
+        if (!pokeFilterTiers(poke).some(function(t){ return tiers.has(t); })) return false;
 
         // Search (applied last, not stored)
         if (searchLower) {

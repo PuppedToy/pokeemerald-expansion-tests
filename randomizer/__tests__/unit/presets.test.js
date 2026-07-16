@@ -267,12 +267,16 @@ describe('getBossPreset — useAbsoluteTier', () => {
         });
     });
 
-    test('useAbsoluteTier=true: bare isMega slot is unchanged (no contextualTier to convert)', () => {
+    // T-128 — a boss's mega slot now carries the pool's mega tier gate (bossMega); it must survive
+    // convertSlotToAbsolute intact (isMega short-circuits — no contextual→absolute mangling of the gate).
+    test('useAbsoluteTier=true: gated isMega slot keeps its absoluteTier window, no contextualTier', () => {
         const slots = getBossPreset('NORMAN', true);
         const megaSlot = slots.find(s => s.isMega);
         expect(megaSlot).toBeDefined();
         expect(megaSlot.contextualTier).toBeUndefined();
-        expect(megaSlot.absoluteTier).toBeUndefined();
+        expect(Array.isArray(megaSlot.absoluteTier)).toBe(true);
+        expect(megaSlot.absoluteTier).toContain(TIER_OU);   // gym mega ceiling
+        expect(megaSlot.absoluteTier).not.toContain(TIER_UBERS); // gyms cap at OU, no Uber megas
     });
 });
 

@@ -10,11 +10,21 @@ const {
     TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES,
 } = require('../constants');
 const { TIER_SEQ } = require('../constants');
-const { sample, checkValidEvo, getFamilyGroup, hasValidMega } = require('./utils');
+const { sample, checkValidEvo, getFamilyGroup, hasValidMega, devolveToLevel } = require('./utils');
+// T-142 — the doubles support tier-flex + hard-pick use the support detector (the "wants support" signal
+// is the up-front roll in resolveTrainerTeam → context.doublesWantsSupport, read here).
+const { DETECTORS } = require('./featureDetectors');
 
 function tiersUpTo(maxTier) {
     const idx = TIER_SEQ.indexOf(maxTier);
     return idx === -1 ? [maxTier] : TIER_SEQ.slice(0, idx + 1);
+}
+// The tiers exactly ONE step below each tier in `tiers` (TIER_SEQ is weakest→strongest, so one-below =
+// index-1). Used to admit a slightly-weaker dedicated support onto a high-tier doubles team (T-142 r2).
+function tiersOneBelow(tiers) {
+    const out = [];
+    for (const t of tiers) { const i = TIER_SEQ.indexOf(t); if (i > 0) out.push(TIER_SEQ[i - 1]); }
+    return out;
 }
 
 const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
@@ -55,6 +65,8 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         // slot. Defaults to a uniform sample (today's behaviour); the engine injects an archetype-
         // biased picker that degrades to this same sample at low sophistication / no identity.
         pickCandidate = (list) => sample(list),
+        model = null,          // T-142 r2 — the archetype model, for the doubles support tier-flex
+        moves = {},            // detector ctx (support detection reads move metadata via ctx.moves)
     } = opts;
 
     const canLearnMove = (pokemon, moveToLearn) =>
@@ -106,15 +118,33 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         return current;
     };
 
+    // T-142 r3 — does the team still want a dedicated support? Driven by the up-front doubles plan
+    // (context.doublesWantsSupport, rolled in resolveTrainerTeam) — NOT the late-emerging identity. Secure
+    // exactly ONE; a favourite ace doesn't count toward the quota. Returns 1 (wants one, has none) or 0.
+    function dedicatedSupportNeed(team) {
+        if (!context.doublesWantsSupport) return 0;
+        const have = (team || []).filter(m => !m.__favourite && DETECTORS.dedicatedSupport((m && m.pokemon) || m)).length;
+        return have >= 1 ? 0 : 1;
+    }
+
     function choosePokemonFromDefinition(trainerMonDefinition) {
         const { team, foundMega, storedIds } = context;
+        // T-109 — a DOUBLES trainer's power budget is measured on the doubles tier scale (poke.tierDoubles /
+        // poke.ratingDoubles, T-097). CONTEXTUAL-tier slots stay on singles until T-111 adds
+        // contextualRatingsDoubles. Singles trainers are byte-identical (doublesFmt=false → the singles reads).
+        const doublesFmt = /double/i.test(trainer.battleType || '');
+        const pokeTier = p => (doublesFmt && p.tierDoubles) ? p.tierDoubles : p.rating.tier;
+        const pokeAbs  = p => (doublesFmt && typeof p.ratingDoubles === 'number') ? p.ratingDoubles : p.rating.absoluteRating;
+        const pokeCtx  = (p, cap) => (doublesFmt && p.contextualRatingsDoubles) ? p.contextualRatingsDoubles[cap] : p.contextualRatings?.[cap]; // T-111
         let pokemonStrictList = [];
         let pokemonLooseList = [];
         let chosenTrainerMon;
         let isEncounterPool = false;
 
         if (trainerMonDefinition.oneOf) {
-            pokemonLooseList = trainerMonDefinition.oneOf.map(p => pokemonList.find(pl => pl.id === p));
+            // filter(Boolean): a named species absent from this run's pool (e.g. a mega gated out of a
+            // favourite matcher) drops out instead of leaving an undefined that the filters would crash on.
+            pokemonLooseList = trainerMonDefinition.oneOf.map(p => pokemonList.find(pl => pl.id === p)).filter(Boolean);
         } else if (trainerMonDefinition.specific) {
             const specificPokemon = pokemonList.find(p => p.id === trainerMonDefinition.specific);
             if (specificPokemon) pokemonStrictList = [specificPokemon];
@@ -123,10 +153,10 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
             let qualifies = false;
             if (specificPokemon && trainerMonDefinition.contextualTier) {
                 const cap = nearestCap(trainer.level);
-                const contextual = specificPokemon.contextualRatings?.[cap];
+                const contextual = pokeCtx(specificPokemon, cap);
                 qualifies = !!(contextual
                     && trainerMonDefinition.contextualTier.includes(contextual.tier)
-                    && TIER_SEQ.indexOf(specificPokemon.rating.tier) <= TIER_SEQ.indexOf(contextual.tier));
+                    && TIER_SEQ.indexOf(pokeTier(specificPokemon)) <= TIER_SEQ.indexOf(contextual.tier));
             } else if (specificPokemon) {
                 qualifies = true;
             }
@@ -156,7 +186,13 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         } else if (trainerMonDefinition.special === TRAINER_REPEAT_ID) {
             const repeatedId = storedIds[trainerMonDefinition.id];
             if (repeatedId) {
-                const repeatedPokemon = pokemonList.find(p => p.id === repeatedId);
+                let repeatedPokemon = pokemonList.find(p => p.id === repeatedId);
+                // T-106 — reverse-order continuity: an EARLIER appearance repeats the authoritative
+                // (later) roster DEVOLVED to the most-evolved form legal at this level (Champion
+                // Metagross → Granite-Cave Metang), instead of the forward tryEvolve of the old model.
+                if (repeatedPokemon && trainerMonDefinition.devolveToLevel) {
+                    repeatedPokemon = devolveToLevel(pokemonList, repeatedPokemon, trainer.level);
+                }
                 if (repeatedPokemon) pokemonStrictList = [repeatedPokemon];
             }
         } else if (trainerMonDefinition.special === TRAINER_POKE_MEGA_FROM_STONE) {
@@ -174,7 +210,20 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
             pokemonLooseList = pokemonLooseList.filter(p => !p.evolutionData.isMega);
         }
         if (trainerMonDefinition.absoluteTier) {
-            pokemonLooseList = pokemonLooseList.filter(p => trainerMonDefinition.absoluteTier.includes(p.rating.tier));
+            const before = pokemonLooseList;
+            let inTier = before.filter(p => trainerMonDefinition.absoluteTier.includes(pokeTier(p)));
+            // T-142 r2 — doubles support tier-flex (owner-validated): doubles support mons are intentionally
+            // a tier below the attackers they enable (a UU/OU support on an Ubers team). If the team STILL
+            // wants a dedicated support (identity's dedicatedSupport min unmet) and none is in-tier, admit
+            // dedicatedSupport mons from exactly ONE tier down — they still pass the later type/restriction
+            // filters. Only the FIRST support is flexed in (min, not max); a 2nd out-of-budget support is
+            // left to drop. Singles unaffected (doublesFmt=false).
+            if (doublesFmt && dedicatedSupportNeed(team) > 0 && !inTier.some(p => DETECTORS.dedicatedSupport(p))) {
+                const oneDown = tiersOneBelow(trainerMonDefinition.absoluteTier);
+                const flexed = before.filter(p => oneDown.includes(pokeTier(p)) && DETECTORS.dedicatedSupport(p));
+                if (flexed.length) { inTier = inTier.concat(flexed); context.supportFlexed = true; }
+            }
+            pokemonLooseList = inTier;
         }
         if (trainerMonDefinition.maxBaseTier) {
             const allowedBaseTiers = tiersUpTo(trainerMonDefinition.maxBaseTier);
@@ -182,16 +231,16 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
                 const baseFormId = p.evolutionData?.megaBaseForm;
                 if (!baseFormId) return false;
                 const baseForm = pokemonList.find(b => b.id === baseFormId);
-                return baseForm && allowedBaseTiers.includes(baseForm.rating.tier);
+                return baseForm && allowedBaseTiers.includes(pokeTier(baseForm));
             });
         }
         if (trainerMonDefinition.contextualTier) {
             const cap = nearestCap(trainer.level);
             pokemonLooseList = pokemonLooseList.filter(p => {
-                const contextual = p.contextualRatings?.[cap];
+                const contextual = pokeCtx(p, cap);
                 return contextual
                     && trainerMonDefinition.contextualTier.includes(contextual.tier)
-                    && TIER_SEQ.indexOf(p.rating.tier) <= TIER_SEQ.indexOf(contextual.tier);
+                    && TIER_SEQ.indexOf(pokeTier(p)) <= TIER_SEQ.indexOf(contextual.tier);
             });
         }
         if (trainerMonDefinition.evoType) {
@@ -252,7 +301,24 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
             pokemonStrictList = pokemonStrictList.map(p => tryEvolve(p, trainerMonDefinition.tryMega && !foundMega));
         }
 
-        // Family-based dedup + trainer restrictions
+        // Trainer restrictions (type / ability / no-repeat) reduce the loose pool FIRST, so they are
+        // enforced by BOTH the main pick below AND the family-relaxation fallback (B-028: they were
+        // previously applied only to the family-deduped list, so an empty type-filtered pool fell through
+        // to the RAW pool and picked an off-type mon — a Rock gym could field a non-Rock mon).
+        (trainer.restrictions || []).forEach(restriction => {
+            if (restriction === TRAINER_RESTRICTION_NO_REPEATED_TYPE) {
+                // B-027 — team members are { pokemon, ... } wrappers; read parsedTypes off `.pokemon`
+                // (was `p.parsedTypes` on the wrapper → always undefined → the restriction never fired).
+                const selectedTypes = new Set(team.map(p => (p.pokemon || p).parsedTypes || []).flat());
+                pokemonLooseList = pokemonLooseList.filter(p => !p.parsedTypes.some(t => selectedTypes.has(t)));
+            } else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_TYPES && trainer.types) {
+                pokemonLooseList = pokemonLooseList.filter(p => p.parsedTypes.some(t => trainer.types.includes(t)));
+            } else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES && trainer.abilities) {
+                pokemonLooseList = pokemonLooseList.filter(p => p.parsedAbilities.some(a => trainer.abilities.includes(a)));
+            }
+        });
+
+        // Family-based dedup
         if (pokemonLooseList.length > 0) {
             const familyDedup = (loosePokemon) => {
                 const candidateFamily = getFamilyGroup(loosePokemon.family);
@@ -263,26 +329,15 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
                     return false;
                 });
             };
-            let filteredLooseList = pokemonLooseList.filter(familyDedup);
-            (trainer.restrictions || []).forEach(restriction => {
-                if (restriction === TRAINER_RESTRICTION_NO_REPEATED_TYPE) {
-                    const selectedTypes = new Set(team.map(p => p.parsedTypes).flat());
-                    filteredLooseList = filteredLooseList.filter(p => !p.parsedTypes.some(t => selectedTypes.has(t)));
-                } else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_TYPES) {
-                    if (trainer.types) filteredLooseList = filteredLooseList.filter(p => p.parsedTypes.some(t => trainer.types.includes(t)));
-                } else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES) {
-                    if (trainer.abilities) filteredLooseList = filteredLooseList.filter(p => p.parsedAbilities.some(a => trainer.abilities.includes(a)));
-                }
-            });
-            pokemonStrictList = [...pokemonStrictList, ...filteredLooseList];
+            pokemonStrictList = [...pokemonStrictList, ...pokemonLooseList.filter(familyDedup)];
         }
 
         const getRatingForSort = (poke) => {
             if (trainerMonDefinition.contextualTier) {
                 const cap = nearestCap(trainer.level);
-                return poke.contextualRatings?.[cap]?.absoluteRating ?? poke.rating.absoluteRating;
+                return pokeCtx(poke, cap)?.absoluteRating ?? pokeAbs(poke); // T-109/T-111 — doubles: contextual doubles
             }
-            return poke.rating.absoluteRating;
+            return pokeAbs(poke); // T-109 — doubles trainers sort their absoluteTier picks by ratingDoubles
         };
 
         if (pokemonStrictList.length > 0) {

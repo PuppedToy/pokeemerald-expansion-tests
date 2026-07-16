@@ -61,7 +61,10 @@ function hasPerRomSlot(trainer) {
         || slot.tryMega === true         // mega availability is per-ROM (wild mega discovery)
         || slot.isMega === true
         || slot.megaTier != null,
-    );
+    )
+    // T-128 — a favourite (preferred ace) resolves a signature mega whose availability is per-ROM
+    // (wild mega discovery), exactly like an isMega/megaTier slot, so it is legitimately ROM-variable.
+    || (trainer.favourite != null && trainer.favourite.length > 0);
 }
 
 function bossTrainerIds() {

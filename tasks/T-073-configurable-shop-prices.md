@@ -1,10 +1,10 @@
 ---
 id: T-073
 title: Configurable shop item prices (mints, ability items, balls, TMs by pool)
-status: in-progress      # proposed | in-progress | done | abandoned
+status: done
 type: feature            # feature | fix | refactor | docs | chore
 created: 2026-07-07
-updated: 2026-07-07
+updated: 2026-07-15
 target-version: 0.6.0
 links: [T-052]
 blocked-by: []
@@ -116,5 +116,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
-</content>
+Configurable shop prices (mints, ability items, balls, TMs by pool) as a build-time items.h patch flowing via bundle.config like money. randomizer + frontend suites green. Owner-validated 2026-07-15. Closed.

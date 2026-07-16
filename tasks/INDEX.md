@@ -52,17 +52,17 @@
 | [T-046](T-046-pokemon-modal-mobile.md) | Make the Pokémon detail modal mobile-responsive (learnset/teachables + no horizontal scroll) | done | 0.6.0 | 2026-07-02 |
 | [T-047](T-047-merge-palafin-zero-to-hero.md) | Merge the orphaned Palafin Zero-to-Hero rating branch into master | done | 0.6.0 | 2026-07-02 |
 | [T-048](T-048-frontend-feedback.md) | Frontend feedback section — submit form + placeholder lists | done | 0.6.0 | 2026-07-02 |
-| [T-049](T-049-upstream-expansion-sync-strategy.md) | Research a controlled, reproducible upstream sync with pokeemerald-expansion | in-progress | 0.6.0 | 2026-07-03 |
-| [T-050](T-050-sync-1.13.3-bugfixes.md) | Absorb expansion 1.13.3 bugfixes (incl. Endure) | in-progress | 0.6.0 | 2026-07-03 |
+| [T-049](T-049-upstream-expansion-sync-strategy.md) | Research a controlled, reproducible upstream sync with pokeemerald-expansion | abandoned | 0.6.0 | 2026-07-15 |
+| [T-050](T-050-sync-1.13.3-bugfixes.md) | Absorb expansion 1.13.3 bugfixes (incl. Endure) | abandoned | 0.6.0 | 2026-07-15 |
 | [T-051](T-051-sync-1.13.4-bugfixes.md) | Absorb expansion 1.13.4 bugfixes | proposed | 0.6.0 | 2026-07-03 |
 | [T-052](T-052-configurable-randomization-options.md) | Configurable randomization options — batch 1 (categorized settings) | done | 0.6.0 | 2026-07-03 |
-| [T-053](T-053-bps-patch-delivery.md) | BPS patch delivery + client-side patching (IndexedDB) | in-progress | 0.6.0 | 2026-07-03 |
+| [T-053](T-053-bps-patch-delivery.md) | BPS patch delivery + client-side patching (IndexedDB) | done | 0.6.0 | 2026-07-15 |
 | [T-054](T-054-binary-injection-randomizer-viability.md) | Viability analysis — randomize a prebuilt ROM by binary injection (vs. compiling from scratch) | proposed | 0.7.0 | 2026-07-03 |
-| [T-055](T-055-frontend-ux-tweaks.md) | Frontend UX tweaks — docs "Defeated" placement + reset-options button | in-progress | 0.6.0 | 2026-07-03 |
-| [T-056](T-056-rival-rewards-rebalance.md) | Rebalance — swap rival rewards (stones earlier) + move Lum Berry bag entry | in-progress | 0.6.0 | 2026-07-04 |
-| [T-057](T-057-nature-strategy-min-level.md) | Lower the level at which trainers pick strategic natures and abilities to 12 (Roxanne) | in-progress | 0.6.0 | 2026-07-04 |
+| [T-055](T-055-frontend-ux-tweaks.md) | Frontend UX tweaks — docs "Defeated" placement + reset-options button | done | 0.6.0 | 2026-07-15 |
+| [T-056](T-056-rival-rewards-rebalance.md) | Rebalance — swap rival rewards (stones earlier) + move Lum Berry bag entry | done | 0.6.0 | 2026-07-15 |
+| [T-057](T-057-nature-strategy-min-level.md) | Lower the level at which trainers pick strategic natures and abilities to 12 (Roxanne) | done | 0.6.0 | 2026-07-15 |
 | [T-058](T-058-brawly-five-pokemon-bundle.md) | Analyze why Brawly has 5 pokemon instead of 6 in a bundle | done | 0.5.1 | 2026-07-05 |
-| [T-059](T-059-wattson-ability-patch-reward.md) | Wattson gives an Ability Patch after New Mauville instead of two scrolls | in-progress | 0.6.0 | 2026-07-05 |
+| [T-059](T-059-wattson-ability-patch-reward.md) | Wattson gives an Ability Patch after New Mauville instead of two scrolls | done | 0.6.0 | 2026-07-15 |
 | [T-060](T-060-standardize-branching-evolutions.md) | Standardize branching evolutions (rare-candy default + stones) | done | 0.6.0 | 2026-07-06 |
 | [T-061](T-061-bundle-json-analysis.md) | Analyze bundle.json and spawn per-issue tasks | done | 0.6.0 | 2026-07-06 |
 | [T-062](T-062-mega-base-form-stab-moves.md) | Guarantee base form learns STAB of a mega's added/mutated type | done | 0.6.0 | 2026-07-06 |
@@ -73,14 +73,14 @@
 | [T-067](T-067-remaining-battle-only-forms-exclusion.md) | Exclude remaining battle-only forms from placement | abandoned | 0.6.0 | 2026-07-06 |
 | [T-068](T-068-starter-nicknames.md) | Starter-extra nickname & gender assignment system | done | 0.6.0 | 2026-07-07 |
 | [T-069](T-069-starter-nickname-viewer-docs.md) | Surface starter nicknames & genders in the generated viewer docs | proposed | 0.6.0 | 2026-07-07 |
-| [T-070](T-070-location-based-nicknames.md) | Location-based automatic nicknames for all wild / gift / static Pokémon | in-progress | 0.6.0 | 2026-07-07 |
+| [T-070](T-070-location-based-nicknames.md) | Location-based automatic nicknames for all wild / gift / static Pokémon | done | 0.6.0 | 2026-07-15 |
 | [T-071](T-071-ci-game-compile-gate.md) | Gate deploys/CI on a real game compile (catch box-only C errors before PRO) | proposed | 0.6.0 | 2026-07-07 |
-| [T-072](T-072-starter-quality-selector.md) | Starter quality selector for the 3 main starters + extra-starter count & visual separation | in-progress | 0.6.0 | 2026-07-07 |
-| [T-073](T-073-configurable-shop-prices.md) | Configurable shop item prices (mints, ability items, balls, TMs by pool) | in-progress | 0.6.0 | 2026-07-07 |
-| [T-074](T-074-docs-responsive-fixes.md) | Fix documentation responsive rendering issues | in-progress | 0.6.0 | 2026-07-08 |
+| [T-072](T-072-starter-quality-selector.md) | Starter quality selector for the 3 main starters + extra-starter count & visual separation | done | 0.6.0 | 2026-07-15 |
+| [T-073](T-073-configurable-shop-prices.md) | Configurable shop item prices (mints, ability items, balls, TMs by pool) | done | 0.6.0 | 2026-07-15 |
+| [T-074](T-074-docs-responsive-fixes.md) | Fix documentation responsive rendering issues | done | 0.6.0 | 2026-07-15 |
 | [T-075](T-075-randomizer-diagnostics.md) | Randomizer diagnostics — audit warnings, rich 48h server store, local classification action | done | 0.6.0 | 2026-07-09 |
 | [T-076](T-076-unified-boss-type-pool.md) | Unified fixed/changed type pool for gyms, E4 and champion | done | 0.6.0 | 2026-07-09 |
-| [T-077](T-077-no-wild-held-items.md) | Remove all held items from wild Pokémon | in-progress | 0.6.0 | 2026-07-09 |
+| [T-077](T-077-no-wild-held-items.md) | Remove all held items from wild Pokémon | done | 0.6.0 | 2026-07-15 |
 | [T-078](T-078-item-descriptions-hover-docs.md) | Show item descriptions on hover in generated docs (held items + trainer rewards) | done | 0.6.0 | 2026-07-09 |
 | [T-079](T-079-transparent-patch-delivery-feedback.md) | Transparent, patch-first ROM delivery feedback (3-step, singular/plural) | done | 0.6.0 | 2026-07-09 |
 | [T-080](T-080-rom-ownership-frontend-only.md) | ROM ownership is frontend-only (backend stops tracking/gating it) | done | 0.6.0 | 2026-07-09 |
@@ -88,46 +88,62 @@
 | [T-082](T-082-next-boss-jump-to-trainer.md) | Clicking the "Next boss" top-bar stat jumps to that boss on the Trainers tab | done | 0.6.0 | 2026-07-09 |
 | [T-083](T-083-epic-battle-formats-and-teambuilding.md) | EPIC — Battle formats (singles/doubles/mixed) + doubles-aware rating & teambuilding redesign | proposed | 0.7.0 | 2026-07-09 |
 | [T-084](T-084-battle-format-architecture-adr.md) | Design the battle-format architecture (bundle representation, pools, Run & Bun) + ADR-014 | done | 0.7.0 | 2026-07-09 |
-| [T-085](T-085-frontend-battle-format-setting.md) | Frontend battle-format setting — big-box singles/doubles/mixed + % + Run & Bun | in-progress | 0.7.0 | 2026-07-09 |
-| [T-086](T-086-randomizer-assign-battle-type.md) | Randomizer assigns per-trainer battle type by pool proportions and marks it in the bundle | in-progress | 0.7.0 | 2026-07-09 |
-| [T-087](T-087-writer-emit-double-battle-line.md) | Writer emits/rewrites the Double Battle header per trainer from the bundle battle type | in-progress | 0.7.0 | 2026-07-09 |
-| [T-088](T-088-decomp-e4-doubles-trainers.md) | Add committed E4 doubles trainer constants + base .party entries (Run & Bun) | in-progress | 0.7.0 | 2026-07-09 |
-| [T-089](T-089-randomizer-runandbun-duplicate-e4-teams.md) | Randomizer generates duplicated E4 singles+doubles teams for Run & Bun | in-progress | 0.7.0 | 2026-07-09 |
-| [T-090](T-090-rom-e4-battle-style-prompt.md) | ROM E4 scripts — in-game singles/doubles prompt + remaining-choices counter + build-time VAR | in-progress | 0.7.0 | 2026-07-09 |
-| [T-091](T-091-maker-set-battle-format-var.md) | Maker sets the battle-format / Run & Bun VAR at build time and wires new bundle fields | in-progress | 0.7.0 | 2026-07-09 |
+| [T-085](T-085-frontend-battle-format-setting.md) | Frontend battle-format setting — big-box singles/doubles/mixed + % + Run & Bun | done | 0.7.0 | 2026-07-15 |
+| [T-086](T-086-randomizer-assign-battle-type.md) | Randomizer assigns per-trainer battle type by pool proportions and marks it in the bundle | done | 0.7.0 | 2026-07-15 |
+| [T-087](T-087-writer-emit-double-battle-line.md) | Writer emits/rewrites the Double Battle header per trainer from the bundle battle type | done | 0.7.0 | 2026-07-15 |
+| [T-088](T-088-decomp-e4-doubles-trainers.md) | Add committed E4 doubles trainer constants + base .party entries (Run & Bun) | done | 0.7.0 | 2026-07-15 |
+| [T-089](T-089-randomizer-runandbun-duplicate-e4-teams.md) | Randomizer generates duplicated E4 singles+doubles teams for Run & Bun | done | 0.7.0 | 2026-07-15 |
+| [T-090](T-090-rom-e4-battle-style-prompt.md) | ROM E4 scripts — in-game singles/doubles prompt + remaining-choices counter + build-time VAR | done | 0.7.0 | 2026-07-15 |
+| [T-091](T-091-maker-set-battle-format-var.md) | Maker sets the battle-format / Run & Bun VAR at build time and wires new bundle fields | done | 0.7.0 | 2026-07-15 |
 | [T-092](T-092-group1-checkpoint-e2e.md) | Group 1 checkpoint — end-to-end ROM builds + manual test in every battle-format mode | proposed | 0.7.0 | 2026-07-09 |
 | [T-093](T-093-dual-rating-design-adr.md) | Design the dual singles/doubles rating dimension + ADR-015 | proposed | 0.8.0 | 2026-07-10 |
-| [T-094](T-094-doubles-move-spread-rating.md) | Doubles move rating — spread detection (move.target) + rateMoveDoubles | in-progress | 0.8.0 | 2026-07-10 |
-| [T-095](T-095-doubles-support-move-revaluation.md) | Doubles re-valuation of support/gimmick moves (Follow Me, Rage Powder, Trick Room…) | in-progress | 0.8.0 | 2026-07-10 |
-| [T-096](T-096-doubles-ability-rating.md) | Doubles ability rating — redirection, Intimidate, Friend Guard, Telepathy… | in-progress | 0.8.0 | 2026-07-10 |
-| [T-097](T-097-doubles-pokemon-tiers.md) | Doubles Pokémon tiers — ratePokemonDoubles + contextualRatingsDoubles | proposed | 0.8.0 | 2026-07-09 |
+| [T-094](T-094-doubles-move-spread-rating.md) | Doubles move rating — spread detection (move.target) + rateMoveDoubles | done | 0.8.0 | 2026-07-15 |
+| [T-095](T-095-doubles-support-move-revaluation.md) | Doubles re-valuation of support/gimmick moves (Follow Me, Rage Powder, Trick Room…) | done | 0.8.0 | 2026-07-15 |
+| [T-096](T-096-doubles-ability-rating.md) | Doubles ability rating — redirection, Intimidate, Friend Guard, Telepathy… | done | 0.8.0 | 2026-07-15 |
+| [T-097](T-097-doubles-pokemon-tiers.md) | Doubles Pokémon tiers — ratePokemonDoubles + contextualRatingsDoubles | done | 0.8.0 | 2026-07-15 |
 | [T-098](T-098-research-vgc-doubles-teams.md) | Research — historic VGC doubles teams (gen 6–7) → cited reference docs | done | 0.8.0 | 2026-07-10 |
 | [T-099](T-099-research-smogon-singles-teams.md) | Research — historic Smogon singles teams (gen 6–7) → cited reference docs | done | 0.8.0 | 2026-07-10 |
 | [T-100](T-100-synergy-antisynergy-synthesis.md) | Synthesize a synergy / anti-synergy catalog and cross-check the current rating/combo logic | done | 0.8.0 | 2026-07-10 |
-| [T-101](T-101-singles-archetype-model.md) | Singles archetype model — JSON of archetypes, entry conditions and team structure | in-progress | 0.8.0 | 2026-07-10 |
-| [T-102](T-102-doubles-archetype-model.md) | Doubles archetype model — JSON of archetypes (weather, TR, redirection, ability-swap…) | in-progress | 0.8.0 | 2026-07-10 |
+| [T-101](T-101-singles-archetype-model.md) | Singles archetype model — JSON of archetypes, entry conditions and team structure | done | 0.8.0 | 2026-07-15 |
+| [T-102](T-102-doubles-archetype-model.md) | Doubles archetype model — JSON of archetypes (weather, TR, redirection, ability-swap…) | done | 0.8.0 | 2026-07-15 |
 | [T-103](T-103-teambuilding-engine-design-adr.md) | Design the archetype-driven teambuilding engine + ADR-016 (+ teardown plan) | done | 0.8.0 | 2026-07-10 |
-| [T-104](T-104-collapse-dual-resolver.md) | Collapse the writer.js / writerDocs.js dual resolver into one shared module | in-progress | 0.8.0 | 2026-07-10 |
-| [T-105](T-105-sophistication-scalar.md) | Engine — sophistication scalar driven by boss progression | in-progress | 0.8.0 | 2026-07-10 |
-| [T-106](T-106-backwards-generation.md) | Engine — backwards generation (endgame-first, devolve preserving ID continuity) | proposed | 0.8.0 | 2026-07-10 |
-| [T-107](T-107-preference-rules-system.md) | Engine — preference/rules system replacing fixed slots (archetype-fit scoring) | in-progress | 0.8.0 | 2026-07-10 |
+| [T-104](T-104-collapse-dual-resolver.md) | Collapse the writer.js / writerDocs.js dual resolver into one shared module | done | 0.8.0 | 2026-07-15 |
+| [T-105](T-105-sophistication-scalar.md) | Engine — sophistication scalar driven by boss progression | done | 0.8.0 | 2026-07-15 |
+| [T-106](T-106-backwards-generation.md) | Engine — backwards generation (endgame-first, devolve preserving ID continuity) | done | 0.8.0 | 2026-07-15 |
+| [T-107](T-107-preference-rules-system.md) | Engine — preference/rules system replacing fixed slots (archetype-fit scoring) | done | 0.8.0 | 2026-07-15 |
 | [T-108](T-108-port-fixed-id-special-cases.md) | Engine — port fixed-ID / continuity / special cases into the new engine | proposed | 0.8.0 | 2026-07-09 |
-| [T-109](T-109-doubles-teambuilding-path.md) | Engine — doubles teambuilding path (spread / redirection / TR-aware) | proposed | 0.8.0 | 2026-07-09 |
+| [T-109](T-109-doubles-teambuilding-path.md) | Engine — doubles teambuilding path (spread / redirection / TR-aware) | done | 0.8.0 | 2026-07-15 |
 | [T-110](T-110-replace-old-engine-cleanup.md) | Integration — replace the old engine, remove dead slot/preset code, parity & diagnostics | proposed | 0.8.0 | 2026-07-09 |
-| [T-111](T-111-viewer-per-format-tiers.md) | Viewer — surface singles/doubles tiers per Pokémon (mixed shows both) | proposed | 0.8.0 | 2026-07-09 |
+| [T-111](T-111-viewer-per-format-tiers.md) | Viewer — surface singles/doubles tiers per Pokémon (mixed shows both) | done | 0.8.0 | 2026-07-15 |
 | [T-112](T-112-docs-format-tiers-and-behavior.md) | Docs — reflect format-based tiers + battle-format behaviour | proposed | 0.8.0 | 2026-07-09 |
 | [T-113](T-113-group2-checkpoint-e2e.md) | Group 2 checkpoint — end-to-end builds + per-format team-quality review | proposed | 0.8.0 | 2026-07-09 |
 | [T-114](T-114-battle-ai-per-archetype.md) | Battle AI tuned per team archetype / format (deferred) | proposed | 0.9.0 | 2026-07-09 |
-| [T-115](T-115-docs-battle-type-badge.md) | Surface each trainer's battle type (Single/Double) in the generated docs viewer | in-progress | 0.7.0 | 2026-07-10 |
-| [T-116](T-116-battle-tag-refinements.md) | Battle-type tag refinements — single/tag tags, Space Center tag battle, Run & Bun E4 labels, rival consistency | in-progress | 0.7.0 | 2026-07-10 |
-| [T-117](T-117-team-decision-audit-log.md) | Team-building decision audit log (per-team decision trace, local + 48h server + audit skill) | in-progress | 0.8.0 | 2026-07-11 |
-| [T-118](T-118-feature-detector-realism.md) | Feature-detector realism — roles by analysed characteristics, not can-learn potential | in-progress | 0.8.0 | 2026-07-11 |
+| [T-115](T-115-docs-battle-type-badge.md) | Surface each trainer's battle type (Single/Double) in the generated docs viewer | done | 0.7.0 | 2026-07-15 |
+| [T-116](T-116-battle-tag-refinements.md) | Battle-type tag refinements — single/tag tags, Space Center tag battle, Run & Bun E4 labels, rival consistency | done | 0.7.0 | 2026-07-15 |
+| [T-117](T-117-team-decision-audit-log.md) | Team-building decision audit log (per-team decision trace, local + 48h server + audit skill) | done | 0.8.0 | 2026-07-16 |
+| [T-118](T-118-feature-detector-realism.md) | Feature-detector realism — roles by analysed characteristics, not can-learn potential | done | 0.8.0 | 2026-07-15 |
 | [T-119](T-119-archetype-tier-downgrade.md) | Archetype-driven tier downgrade within budget (fill a needed role by downgrading, never upgrading) | proposed | 0.8.0 | 2026-07-11 |
 | [T-120](T-120-team-type-coverage.md) | Global type coverage & type selection for unrestricted trainers | proposed | 0.8.0 | 2026-07-11 |
-| [T-121](T-121-expand-singles-corpus.md) | Expand the singles OU corpus for statistically-robust archetype entry conditions | in-progress | 0.8.0 | 2026-07-11 |
+| [T-121](T-121-expand-singles-corpus.md) | Expand the singles OU corpus for statistically-robust archetype entry conditions | done | 0.8.0 | 2026-07-15 |
 | [T-122](T-122-role-aware-move-selection.md) | Decision-log accuracy — report DELIVERED roles, not species potential (fix B-026) | done | 0.8.0 | 2026-07-11 |
-| [T-123](T-123-crystallization-correctness.md) | Crystallization correctness — last-resort hyper, gimmick evidence, role-max dedup | in-progress | 0.8.0 | 2026-07-11 |
-| [T-124](T-124-gimmick-aware-completion.md) | Gimmick-aware team completion — build the team to BE the gimmick | in-progress | 0.8.0 | 2026-07-11 |
+| [T-123](T-123-crystallization-correctness.md) | Crystallization correctness — last-resort hyper, gimmick evidence, role-max dedup | done | 0.8.0 | 2026-07-16 |
+| [T-124](T-124-gimmick-aware-completion.md) | Gimmick-aware team completion — build the team to BE the gimmick | done | 0.8.0 | 2026-07-16 |
 | [T-125](T-125-gimmick-conditional-items.md) | Gimmick-conditional item selection + bag provisioning | in-progress | 0.8.0 | 2026-07-11 |
-| [T-126](T-126-trainer-seed-assignments.md) | Trainer archetype/gimmick seed assignments (deliberate variety) | in-progress | 0.8.0 | 2026-07-11 |
+| [T-126](T-126-trainer-seed-assignments.md) | Trainer archetype/gimmick seed assignments (deliberate variety) | abandoned | 0.8.0 | 2026-07-16 |
 | [T-127](T-127-later-gen-advanced-combo-corpus.md) | Later-gen advanced-combo corpus (Gen 8/9/Champions) — mechanic-filtered | proposed | 0.9.0 | 2026-07-11 |
+| [T-128](T-128-favourite-pokemon.md) | Favourite Pokémon — a generalizable "preferred ace" resolved first, dropped if it doesn't fit | done | 0.8.0 | 2026-07-13 |
+| [T-129](T-129-coherent-item-move-assignment.md) | Coherent item + move co-assignment for trainer mons | done | 0.8.0 | 2026-07-14 |
+| [T-130](T-130-decision-log-auditability.md) | Decision-log auditability — surface sophistication, dropped modifiers, and unmet gimmicks | done | 0.8.0 | 2026-07-14 |
+| [T-131](T-131-villain-weather-forcing.md) | Villain weather-forcing (per-team weather → general-weather fallback) + auditability | done | 0.8.0 | 2026-07-14 |
+| [T-132](T-132-weather-teambuilding.md) | Weather team-building — setter + 2 abusers, rollback-on-fail, and weather-tag mechanics | done | 0.8.0 | 2026-07-14 |
+| [T-133](T-133-item-pick-groups-and-planner-assignment.md) | Bound item pick-groups + planner-assigned items (fairness-aware item economy) | done | 0.8.0 | 2026-07-14 |
+| [T-134](T-134-villain-mascot-favourite-and-grunt-devolved-lead.md) | Villain mascot favourite + paired grunt leads a devolved copy of it | done | 0.8.0 | 2026-07-14 |
+| [T-135](T-135-weather-abuser-quality.md) | Weather abuser QUALITY — prefer real ability-abusers at high sophistication | done | 0.8.0 | 2026-07-14 |
+| [T-136](T-136-emergent-weather-nondedicated.md) | Emergent weather on non-dedicated teams + un-force Flannery's sun | done | 0.8.0 | 2026-07-14 |
+| [T-137](T-137-emergent-electric-terrain.md) | Electric terrain + Trick Room as corpus-grounded gimmicks (rating + emergent), migrate Wattson | done | 0.8.0 | 2026-07-14 |
+| [T-138](T-138-trickroom-fullroom-and-weather-room.md) | Trick Room full-room enforcement (2 setters + 4 abusers) | done | 0.8.0 | 2026-07-14 |
+| [T-139](T-139-weather-room-coexistence.md) | Weather + Trick Room (half) coexistence on one team | proposed | 0.9.0 | 2026-07-14 |
+| [T-140](T-140-doubles-bst-floor-parity.md) | Doubles tier — apply the BST floor (parity with singles) | done | 0.8.0 | 2026-07-15 |
+| [T-141](T-141-doubles-support-depth.md) | Doubles support depth — corpus re-analysis + refinement plan | done | 0.8.0 | 2026-07-15 |
+| [T-142](T-142-doubles-support-delivery.md) | Doubles support delivery — hard-pick a support-capable mon (like gimmick setters) | done | 0.8.0 | 2026-07-15 |
+| [T-143](T-143-trick-room-emergent-only.md) | Trick Room is emergent-only — never force-seeded (Tate & Liza de-seeded) | done | 0.8.0 | 2026-07-16 |

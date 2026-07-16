@@ -1,10 +1,10 @@
 ---
 id: T-117
 title: Team-building decision audit log (per-team decision trace, local + 48h server + audit skill)
-status: in-progress
+status: done
 type: feature
 created: 2026-07-11
-updated: 2026-07-11
+updated: 2026-07-16
 target-version: 0.8.0
 links: [T-083, T-107, T-075]
 priority: high
@@ -91,4 +91,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Team-building decision audit log (Phase 1): per-team decision trace collected output-neutrally (determinism green), readable locally after npm start (download button), trace unit-tested, worker bundles cleanly — all 4 criteria met. Phase 2 (server 48h store + /audit-teams skill) is a deferred, non-blocking follow-up. Owner-validated 2026-07-16. Closed.

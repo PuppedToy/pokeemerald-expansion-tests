@@ -1,10 +1,10 @@
 ---
 id: T-096
 title: Doubles ability rating — redirection, Intimidate, Friend Guard, Telepathy…
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-10
+updated: 2026-07-15
 target-version: 0.8.0
 links: [T-083, T-093]
 blocked-by: [T-093]
@@ -62,4 +62,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Doubles ability rating: rateAbilityDoubles + DOUBLES_ABILITY_RATINGS (redirection, Intimidate, Friend Guard, Telepathy…), persisted as abilities[id].ratingDoubles and consumed by ratePokemonDoubles (T-097). Suite green (828). Owner-validated 2026-07-15. Closed.

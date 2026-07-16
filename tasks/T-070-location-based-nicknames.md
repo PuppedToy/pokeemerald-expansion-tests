@@ -1,10 +1,10 @@
 ---
 id: T-070
 title: Location-based automatic nicknames for all wild / gift / static Pokémon
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-07
-updated: 2026-07-07
+updated: 2026-07-15
 target-version: 0.6.0
 links: [T-068]
 blocked-by: []
@@ -121,4 +121,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Location-based automatic nicknames for wild / gift / static Pokémon (roamers, eggs and in-game trades deliberately excluded); gender-lock forces gender for wild+gift, genderless legendaries left unforced. Owner-validated 2026-07-15 (in-game). Closed.

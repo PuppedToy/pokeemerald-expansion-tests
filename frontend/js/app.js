@@ -167,8 +167,10 @@ function loadBossCapsText() {
 // Poke fields the docs never render — dropped at injection time to keep the generated
 // HTML small. `contextualRatings` alone is ~10 MB (~70% of the doc); the rest are
 // internal pipeline data with zero references in template.html (T-004 analysis).
+// T-111 — `contextualRatingsDoubles` is the same per-cap map for doubles: teambuilding
+// input only, never rendered (the viewer uses poke.tierDoubles), so drop it too.
 const DOC_OMIT_POKE_FIELDS = new Set([
-    'contextualRatings', 'teachableLearnset', 'levelUpLearnset',
+    'contextualRatings', 'contextualRatingsDoubles', 'teachableLearnset', 'levelUpLearnset',
     'natDexNum', 'speciesName', 'catchRate', 'expYield',
 ]);
 
@@ -198,6 +200,7 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
     const runNs = docRunNamespace(seed, rom.playerIndex, rom.romIndex);
     return template
         .split('%%DOC_RUN_NS%%').join(runNs)
+
         .replace('<script src="sprites.js"></script>',
             `<script>const EMBEDDED_SPRITES = ${spritesText};</script>`)
         .replace('<script src="assets.js"></script>',

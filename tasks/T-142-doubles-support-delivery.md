@@ -1,0 +1,105 @@
+---
+id: T-142
+title: Doubles support delivery — hard-pick a support-capable mon (like gimmick setters)
+status: done
+type: fix
+created: 2026-07-15
+updated: 2026-07-15
+target-version: 0.8.0
+links: [T-141, T-109]
+---
+
+# T-142 — Doubles support delivery — hard-pick a support-capable mon
+
+## Context
+
+Owner found (run-2709645655, Drake lvl 76 doubles): the team crystallised `redirection_support` but
+fielded **zero** redirectors (Kartana/Abomasnow labelled redirection_support deliver weather, not
+redirection). Redirection moves are near-absent across the whole bundle (Follow Me 17, Rage Powder 14).
+And `dedicatedSupport` doesn't turn a picked mon into a real support with support moves.
+
+Root cause — two-level failure:
+1. **No hard-pick for support roles.** Only weather/TR/electric GIMMICKS hard-pick a capable mon;
+   `dedicatedSupport`/`redirector` are SOFT bias only, so across a 60-120-mon tier pool the rare
+   support mon is out-weighted by high-rated attackers and never forced in.
+2. **`planMemberRoleMove` can only add a role move to a mon that already CAN learn it**
+   (`speciesFeats.has(role)`). None of Drake's picked mons learn Follow Me/Rage Powder → redirection is
+   never injected. Drake is Grass-themed this run and **Amoonguss (Grass + Rage Powder) was in his pool**
+   but lost to the soft bias.
+
+## Plan
+
+Do what the gimmicks do (owner: "hacer como con los gimmicks… buscar pokemon capaces de aportar eso"):
+- **Hard-pick a dedicated-support-capable mon** in `archetypePicker` when the emerged identity has a
+  `dedicatedSupport` slot (min ≥ 1) and the team lacks one — mirroring the gimmick setter hard-pick
+  (filter candidates to `DETECTORS.dedicatedSupport`, weighted by fit). Fires after the gimmick
+  hard-picks; doubles-only (the slot only exists in doubles.json) → singles byte-identical.
+- The existing `planMemberRoleMove` then injects the support MOVE (Rage Powder / Follow Me / Wide Guard)
+  onto the now-capable mon (it has the feature, so the refine fires).
+
+Acceptance criteria:
+- [ ] A doubles support archetype that emerges with a support-capable mon in the pool actually FIELDS a
+      dedicated support (regression/unit test on the picker hard-pick).
+- [ ] The support mon carries a real support move (redirection etc.) via the refine.
+- [ ] Singles byte-identical (determinism gates); fast suite green.
+- [ ] Verified on a regen: Drake-like doubles bosses field a redirector when the pool allows.
+
+## Progress log
+
+- **2026-07-15** — Task created from owner review of run-2709645655. Root cause traced to the missing
+  support hard-pick + the capability-gated move refine.
+- **2026-07-15 — implemented (TDD).** Added the dedicated-support HARD-PICK to `archetypePicker` (mirrors
+  the gimmick setter hard-pick): when a doubles identity carries a `dedicatedSupport` slot (min ≥ 1) and
+  the team lacks one, restrict the pick to `DETECTORS.dedicatedSupport` candidates (weighted by fit).
+  Runs after the gimmick hard-picks; doubles-only via the slot's existence → singles byte-identical.
+  +3 picker tests (forces the support mon; stops once satisfied; singles unaffected).
+  - **End-to-end verification on the REAL rated pokedex (seed 2709645655):** Amoonguss →
+    `dedicatedSupport=Y`, and `planMemberRoleMove` (redirection_support identity) returns
+    **MOVE_RAGE_POWDER**; Clefable → Y → Follow Me. So a Grass-themed Drake now hard-picks Amoonguss AND
+    gives it Rage Powder — the exact redirector that was missing. (Togekiss stays a partial-support
+    attacker by the offense rule, but still receives Follow Me if picked; Cresselia is a TR pivot, not a
+    redirector — correctly no redirection move.)
+  - **Verified:** fast suite 1110 green; determinism gates re-running (singles byte-identical expected).
+
+- **2026-07-15 (owner round 2) — classification fix + tier-flex + drop-log.** Owner ran run-2709645655
+  (2): Drake unchanged. Root cause: Drake's slots are all OU/UBERS but the best Grass support (Amoonguss)
+  was UU — below the gate — so the hard-pick had no eligible candidate. Two fixes:
+  1. **Classification (T-141 r2):** Amoonguss & co. now reach OU (Regenerator + sleep credits + support
+     tier cap) — so a correctly-rated support fits the boss's OU slots and the hard-pick grabs it.
+  2. **Tier-flex + drop-log (this task):** doubles support is intentionally a tier below its attackers, so
+     when the team still WANTS a dedicated support (identity min unmet) and none is in-tier, the
+     `absoluteTier` filter (`trainerSelector`) now admits `dedicatedSupport` mons from **exactly one tier
+     down** (owner-validated: 1 down only, then drop). Only the first (min) support flexes; a 2nd
+     out-of-budget support is left to drop. The audit logs it: "support admitted 1 tier down" when it
+     fits, or "support WANTED but DROPPED: no fit even one tier down" otherwise. Singles byte-identical
+     (doubles-only). `resolveIdentity`/`crystallize` are rng-free so calling them in the selector doesn't
+     perturb the per-slot stream.
+  - +4 tier-flex tests (selector) + the classification tests. Fast suite 1115 green; determinism gates
+    re-running.
+
+- **2026-07-15 (owner round 3) — the fix that actually lands.** Owner regenerated 3× → no change.
+  Reproduced Drake IN NODE with the exact bundle config + `runGeneration` (the browser path) and traced it
+  with debug logging. Two real bugs (not the stale bundle, though that also bit us — see
+  [[project_browser_bundle_must_rebuild]]):
+  1. **Identity timing**: during the picks the partial team crystallised `hyper_offense` (dedicatedSupport
+     min0) → `need=0` every slot → the hard-pick/flex never fired. `redirection_support` was only the
+     post-hoc audit label. Fix: **roll support intent UP FRONT** (`context.doublesWantsSupport`, hash-based
+     per trainer, no rng consumed) — a `DOUBLES_HYPER_CHANCE`=0.25 minority go hyper (no support), the rest
+     secure one. The hard-pick + tier-flex + drop-log now key off this roll, NOT the late identity.
+  2. **Detector false-positive**: an attacker (Brute Bonnet + Spore) was flagged support, masking the
+     shortfall. Fix (owner's count model): **`supportSignals` = distinct top-tier support categories; ≥2 =
+     dedicated support, ≥3 = OU, 2 = UU, capped OU** — a 1-signal attacker (Spore-only) is NOT dedicated.
+     Replaced the weighted supportScore. Offence irrelevant (Farigiraf/Sinistcha are support despite stats).
+  - **Reproduced fix (seed 2709645655):** Drake now fields **Whimsicott** (Prankster+Tailwind+Encore) +
+    **Poltchageist** (Hospitality) — decision log: "dedicated support admitted 1 tier below the budget".
+  - pickBest audit (owner ask): only rivals (rival103Template encounter slots) + TRAINER_COLIN use
+    pickBest — NO serious boss (gym/E4/champion), so the archetype picker always steers them. Clean.
+  - Fast suite 1115 green; determinism gates re-running; browser bundle rebuilt.
+
+## Outcome
+Doubles teams now FIELD dedicated support: intent rolled up front (a hyper minority skips it), the support
+hard-picked in-tier or flexed one tier down, dropped-with-log only when truly none fits — and (T-141 r4) the
+fielded support is built with real support moves, denied status-locking items, and its selection ranking is
+printed in the decision log. Classification is the T-141 quality-tier rating (the signal-count model this
+task first shipped was superseded). Owner-validated on 2026-07-15 (batch with T-102/T-109/T-111/T-140/T-141)
+— Drake fields Amoonguss/Toedscruel/Rillaboom with support kits. Closed.

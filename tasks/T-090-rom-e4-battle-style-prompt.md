@@ -1,10 +1,10 @@
 ---
 id: T-090
 title: ROM E4 scripts — in-game singles/doubles prompt + remaining-choices counter + build-time VAR
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-15
 target-version: 0.7.0
 links: [T-083, T-084, T-088]
 blocked-by: [T-088]
@@ -70,4 +70,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+E4 ROM scripts: in-game singles/doubles prompt + remaining-choices counter + build-time VAR (defaults compile silently, never prompt). Compile validated on builder/PRO. Owner-validated 2026-07-15. Closed.

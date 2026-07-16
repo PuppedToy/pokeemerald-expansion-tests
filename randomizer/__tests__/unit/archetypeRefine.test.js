@@ -5,7 +5,7 @@
 // role-capable species). Pure planner; the resolver injects the returned move as a fixed move before
 // chooseMoveset (reusing the tryToHaveMove machinery → move quality preserved). Gated by sophistication.
 
-const { resolvedDetectMon, planMemberRoleMove, ROLE_MOVE_SETS } = require('../../modules/archetypeRefine');
+const { resolvedDetectMon, planMemberRoleMove, planTerrainSynergyMove, planPerishComboMove, ROLE_MOVE_SETS } = require('../../modules/archetypeRefine');
 const { getArchetypeModel } = require('../../archetypes');
 const { BIAS_MIN_SOPH } = require('../../modules/archetypePicker');
 
@@ -98,5 +98,90 @@ describe('planMemberRoleMove', () => {
         expect(move).toBe('MOVE_STEALTH_ROCK');
         // ...but not without the seed (no identity at all).
         expect(planMemberRoleMove({ species: rocker, team: [], model: singles, ctx: {}, sophistication: 1 })).toBeNull();
+    });
+});
+
+describe('planMemberRoleMove — B-030: role moves respect the incremental TM bag', () => {
+    const base = (over) => ({ team: balanceTeam(), model: singles, sophistication: 1, ...over });
+
+    test('a teachable-only role move is offered only when the trainer holds that TM', () => {
+        // Sets rocks ONLY via the TM (teachable), not by level-up — like Wattson's Oricorio + Volt Switch.
+        const teachRocker = mon({ teachables: ['MOVE_STEALTH_ROCK'] });
+        // Trainer lacks the TM → the role move must NOT be offered (no leak of an inaccessible TM).
+        expect(planMemberRoleMove({ species: teachRocker, ...base({ ctx: { tms: [] } }) })).toBeNull();
+        // Trainer holds the TM → offered.
+        expect(planMemberRoleMove({ species: teachRocker, ...base({ ctx: { tms: ['MOVE_STEALTH_ROCK'] } }) }))
+            .toBe('MOVE_STEALTH_ROCK');
+        // Pure planner call (no tms in ctx) → permissive, unchanged behaviour.
+        expect(planMemberRoleMove({ species: teachRocker, ...base({ ctx: {} }) })).toBe('MOVE_STEALTH_ROCK');
+    });
+
+    test('a level-up role move above the trainer level is not offered', () => {
+        const lateRocker = mon({ learnset: [{ level: '50', move: 'MOVE_STEALTH_ROCK' }] });
+        expect(planMemberRoleMove({ species: lateRocker, ...base({ ctx: { level: 20 } }) })).toBeNull();
+        expect(planMemberRoleMove({ species: lateRocker, ...base({ ctx: { level: 60 } }) })).toBe('MOVE_STEALTH_ROCK');
+    });
+});
+
+// ── T-124 — SOFT surger-awareness (misty/grassy/psychic; NOT a gimmick, electric stays a gimmick) ───────
+describe('planTerrainSynergyMove — light payoff-move preference when the team fields a matching surger', () => {
+    const glideMon = () => mon({ ...withLearn('MOVE_GRASSY_GLIDE') });
+    const forceMon = () => mon({ ...withLearn('MOVE_EXPANDING_FORCE') });
+    const opts = (team, extra = {}) => ({ team, ctx: {}, sophistication: 1, ...extra });
+
+    test('grassy: a Grassy Surge teammate makes a Grassy-Glide learner prefer Grassy Glide', () => {
+        const team = [member(mon({ parsedAbilities: ['GRASSY_SURGE'] }), 'GRASSY_SURGE', [])];
+        expect(planTerrainSynergyMove({ species: glideMon(), ...opts(team) })).toBe('MOVE_GRASSY_GLIDE');
+    });
+    test('psychic: a Psychic Surge teammate → Expanding Force', () => {
+        const team = [member(mon({ parsedAbilities: ['PSYCHIC_SURGE'] }), 'PSYCHIC_SURGE', [])];
+        expect(planTerrainSynergyMove({ species: forceMon(), ...opts(team) })).toBe('MOVE_EXPANDING_FORCE');
+    });
+    test('no surger on the team → no preference (terrains are not built around — corpus)', () => {
+        const team = [member(mon({ parsedAbilities: ['LEVITATE'] }), 'LEVITATE', [])];
+        expect(planTerrainSynergyMove({ species: glideMon(), ...opts(team) })).toBeNull();
+    });
+    test('a surger present but this mon cannot learn the payoff move → null', () => {
+        const team = [member(mon({ parsedAbilities: ['GRASSY_SURGE'] }), 'GRASSY_SURGE', [])];
+        expect(planTerrainSynergyMove({ species: mon(), ...opts(team) })).toBeNull();
+    });
+    test('soph-gated: below the bias threshold it is a no-op (early game / singles byte-identical)', () => {
+        const team = [member(mon({ parsedAbilities: ['GRASSY_SURGE'] }), 'GRASSY_SURGE', [])];
+        expect(planTerrainSynergyMove({ species: glideMon(), ...opts(team, { sophistication: BIAS_MIN_SOPH - 0.01 }) })).toBeNull();
+    });
+});
+
+// ── T-124 — PERISH-TRAP as a moveset TEAM-COMBO (not a gimmick/archetype) ──────────────────────────────
+describe('planPerishComboMove — Perish Song pairs with a Shadow Tag / Arena Trap trapper', () => {
+    const perisher = (o = {}) => mon({ ...withLearn('MOVE_PERISH_SONG'), ...o });
+    const opts = (over) => ({ ctx: {}, sophistication: 1, ...over });
+
+    test('SELF: a Shadow Tag / Arena Trap mon that can learn Perish Song prefers it — in BOTH formats', () => {
+        // singles (doubles defaults false) AND doubles both fire the self-combo (owner round 3).
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'SHADOW_TAG', team: [], ...opts() })).toBe('MOVE_PERISH_SONG');
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'ARENA_TRAP', team: [], ...opts() })).toBe('MOVE_PERISH_SONG');
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'SHADOW_TAG', team: [], ...opts({ doubles: true }) })).toBe('MOVE_PERISH_SONG');
+    });
+    test('SELF fires even for an offensive trapper (Mega Gengar carries the Perish Song itself)', () => {
+        expect(planPerishComboMove({ species: perisher({ baseSpAttack: 170 }), memberAbility: 'SHADOW_TAG', team: [], ...opts() })).toBe('MOVE_PERISH_SONG');
+    });
+    test('a non-trapper with no trapping teammate → no Perish Song', () => {
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'LEVITATE', team: [], ...opts({ doubles: true }) })).toBeNull();
+    });
+    test('TEAMMATE: a support-leaning partner of a trapper prefers Perish Song IN DOUBLES (the split combo)', () => {
+        const team = [member(mon({ parsedAbilities: ['SHADOW_TAG'] }), 'SHADOW_TAG', [])];
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'LEVITATE', team, ...opts({ doubles: true }) })).toBe('MOVE_PERISH_SONG');
+        // ...but NOT in singles — you don't split the combo across mons there (owner).
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'LEVITATE', team, ...opts() })).toBeNull();
+    });
+    test('TEAMMATE case does NOT fire on a sweeper (especially-dedicated-supports gate)', () => {
+        const team = [member(mon({ parsedAbilities: ['SHADOW_TAG'] }), 'SHADOW_TAG', [])];
+        expect(planPerishComboMove({ species: perisher({ baseAttack: 140 }), memberAbility: 'LEVITATE', team, ...opts({ doubles: true }) })).toBeNull();
+    });
+    test('a mon that cannot learn Perish Song → null even as a trapper', () => {
+        expect(planPerishComboMove({ species: mon(), memberAbility: 'SHADOW_TAG', team: [], ...opts() })).toBeNull();
+    });
+    test('soph-gated: below the bias threshold → null (early game / singles gated by the caller)', () => {
+        expect(planPerishComboMove({ species: perisher(), memberAbility: 'SHADOW_TAG', team: [], ...opts({ sophistication: BIAS_MIN_SOPH - 0.01 }) })).toBeNull();
     });
 });

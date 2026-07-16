@@ -6,7 +6,7 @@ const parser = require('../parser');
 const { randomizeTMs, buildTMList, annotateTmNumbers } = require('../tmRandomizer');
 const { parseTmLocations } = require('../tmLocations');
 const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
-const { ratePokemon, rateContextual, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles } = require('../rating');
+const { ratePokemon, ratePokemonDoubles, rateContextual, rateContextualDoubles, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles } = require('../rating');
 const { balancePokemon } = require('../rebalancer');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
@@ -28,6 +28,7 @@ async function parseBaseData() {
     const abilities = parser.parseAbilitiesFile(abilitiesFileText);
     // T-096/ADR-015 — doubles ability value beside the singles aiRating.
     Object.keys(abilities).forEach(abilityKey => {
+        abilities[abilityKey].rating = rateAbilitySingles(abilityKey, abilities[abilityKey]);   // T-141 §4c — ally-only abilities are dead in singles
         abilities[abilityKey].ratingDoubles = rateAbilityDoubles(abilityKey, abilities[abilityKey]);
     });
 
@@ -177,9 +178,10 @@ async function runPokedexModule(config, baseData = null) {
     // 7. Expand teachables with randomized pool
     expandAllTeachables(allPokes, tmPool, moves);
 
-    // 8. Rate all pokemon
+    // 8. Rate all pokemon (singles + T-097 doubles)
     for (const poke of allPokes) {
         poke.rating = ratePokemon(poke, moves, abilities, tmPool);
+        { const _rd = ratePokemonDoubles(poke, moves, abilities, tmPool, poke.rating.bestMoveset); poke.ratingDoubles = _rd.ratingDoubles; poke.tierDoubles = _rd.tierDoubles; poke.supportTierDoubles = _rd.supportTierDoubles; poke.supportRatingDoubles = _rd.supportRatingDoubles; poke.isSupportDoubles = _rd.isSupportDoubles; }
     }
 
     // 9. Optional rebalance
@@ -198,6 +200,7 @@ async function runPokedexModule(config, baseData = null) {
             if (allPokes[i].log && allPokes[i].log.length) {
                 allPokes[i].baseBST = allPokes[i].baseHP + allPokes[i].baseAttack + allPokes[i].baseDefense + allPokes[i].baseSpAttack + allPokes[i].baseSpDefense + allPokes[i].baseSpeed;
                 allPokes[i].rating = ratePokemon(allPokes[i], moves, abilities, tmPool);
+                { const _rd = ratePokemonDoubles(allPokes[i], moves, abilities, tmPool, allPokes[i].rating.bestMoveset); allPokes[i].ratingDoubles = _rd.ratingDoubles; allPokes[i].tierDoubles = _rd.tierDoubles; allPokes[i].supportTierDoubles = _rd.supportTierDoubles; allPokes[i].supportRatingDoubles = _rd.supportRatingDoubles; allPokes[i].isSupportDoubles = _rd.isSupportDoubles; }
             }
         }
     }
@@ -304,6 +307,7 @@ async function runPokedexModule(config, baseData = null) {
     // 11. Contextual ratings
     for (const poke of allPokes) {
         poke.contextualRatings = {};
+        poke.contextualRatingsDoubles = {}; // T-111
         for (const cap of LEVEL_CAPS) {
             // Wishiwashi Solo: below lvl 20 it's the weak Solo form; at 20+ it schools.
             // Palafin Zero: rated as Hero at every level (no level gate — the transform is free).
@@ -314,6 +318,8 @@ async function runPokedexModule(config, baseData = null) {
                 ctxPoke = palafinEffectivePoke(poke, palafinHero);
             }
             poke.contextualRatings[cap] = rateContextual(ctxPoke, moves, abilities, { level: cap, tms: [] });
+            // T-111 — per-level doubles rating, reusing the singles contextual bestMoveset (rng-free).
+            poke.contextualRatingsDoubles[cap] = rateContextualDoubles(ctxPoke, moves, abilities, { level: cap, tms: [] }, poke.contextualRatings[cap].bestMoveset);
         }
     }
 

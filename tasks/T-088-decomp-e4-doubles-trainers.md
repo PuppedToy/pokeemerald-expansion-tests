@@ -1,10 +1,10 @@
 ---
 id: T-088
 title: Add committed E4 doubles trainer constants + base .party entries (Run & Bun)
-status: in-progress
+status: done
 type: feature
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-15
 target-version: 0.7.0
 links: [T-083, T-084]
 blocked-by: [T-084]
@@ -60,4 +60,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Committed E4 doubles trainer constants + append-only base .party entries (Run & Bun) — a hand-authored base addition, compile verified in CI/builder. Owner-validated 2026-07-15. Closed.

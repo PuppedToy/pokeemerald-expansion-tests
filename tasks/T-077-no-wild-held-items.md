@@ -1,10 +1,10 @@
 ---
 id: T-077
 title: Remove all held items from wild Pokémon
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-15
 target-version: 0.6.0
 links: []
 blocked-by: []
@@ -62,4 +62,4 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+All held items removed from wild Pokémon via the pokemon-writer transform (441→0 on the real 9 gen files); pokemonWriterHeldItems.test.js, suite 767 green. ROM-side verified via builder. Owner-validated 2026-07-15. Closed.

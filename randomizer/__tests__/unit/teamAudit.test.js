@@ -81,6 +81,80 @@ describe('createTeamAudit + renderTeamAuditText', () => {
         expect(renderTeamAuditText(audit.all())).toContain('seed: full_stall+weather');
     });
 
+    test('T-106 — records + renders continuity provenance (inherited / devolved / favourite)', () => {
+        const audit = createTeamAudit();
+        audit.beginTeam({ trainerId: 'TRAINER_ECHO', level: 22, battleType: 'singles', sophistication: 0.05, seed: null });
+        // an inherited + devolved echo: shown Metang, authoritative stored Metagross
+        audit.recordSlot({
+            priorTeam: [], chosenMon: { id: 'SPECIES_METANG' }, member: { pokemon: { id: 'SPECIES_METANG' } },
+            roleMove: null, model: singles, ctx: {}, seed: null,
+            def: { special: 'TRAINER_REPEAT_ID', id: 'STEVEN_MEGA', devolveToLevel: true }, storedSpecies: 'SPECIES_METAGROSS',
+        });
+        // the favourite ace
+        audit.recordSlot({
+            priorTeam: [], chosenMon: { id: 'SPECIES_GARDEVOIR' }, member: { pokemon: { id: 'SPECIES_GARDEVOIR' } },
+            roleMove: null, model: singles, ctx: {}, seed: null,
+            def: { favouriteChain: [{}], id: 'WALLY_1' }, storedSpecies: 'SPECIES_GARDEVOIR',
+        });
+        audit.finishTeam({ team: [{ pokemon: { id: 'SPECIES_METANG' } }], model: singles, ctx: {}, seed: null });
+
+        const slots = audit.all()[0].slots;
+        expect(slots[0].provenance).toEqual({ kind: 'inherited', fromId: 'STEVEN_MEGA', devolvedFrom: 'SPECIES_METAGROSS' });
+        expect(slots[1].provenance).toEqual({ kind: 'favourite' });
+        const text = renderTeamAuditText(audit.all());
+        expect(text).toContain('inherited by id STEVEN_MEGA');
+        expect(text).toContain('devolved from Metagross');
+        expect(text).toContain('favourite ace');
+    });
+
+    test('T-130 — above threshold shows steering ON with the sophistication bias', () => {
+        const audit = createTeamAudit();
+        audit.beginTeam({ trainerId: 'T_HI', level: 60, battleType: 'singles', sophistication: 0.6, seed: null });
+        audit.finishTeam({ team: balancePrior(), model: singles, ctx: {}, seed: null });
+        const text = renderTeamAuditText(audit.all());
+        expect(text).toContain('steering ON');
+        expect(text).toContain('sophistication 0.6');
+        expect(text).toContain('+1.2');   // 0.6 × BIAS_STRENGTH (2.0)
+    });
+
+    test('T-130 — below threshold: identity is descriptive; a surfaced gimmick is flagged not-pursued', () => {
+        const audit = createTeamAudit();
+        audit.beginTeam({ trainerId: 'T_LO', level: 12, battleType: 'singles', sophistication: 0.07, seed: null });
+        // a gimmick surfaced (via the seed channel here; emergent reads populate the same candidate list)
+        audit.finishTeam({ team: [{ pokemon: mon() }], model: singles, ctx: {}, seed: { base: 'hyper_offense', gimmicks: ['weather'] } });
+        const text = renderTeamAuditText(audit.all());
+        expect(text).toContain('no archetype steering');
+        expect(text).toContain('surfaced but NOT pursued');
+        expect(text).toContain('weather');
+        // must NOT dress up the below-threshold identity line with +weather
+        expect(text).not.toMatch(/final identity:[^\n]*\+weather/);
+    });
+
+    test('T-130 — above threshold: a wanted gimmick with no setter is logged as dropped', () => {
+        const audit = createTeamAudit();
+        audit.beginTeam({ trainerId: 'T_DROP', level: 60, battleType: 'singles', sophistication: 0.8, seed: { base: 'hyper_offense', gimmicks: ['weather'] } });
+        audit.finishTeam({ team: [{ pokemon: mon() }], model: singles, ctx: {}, seed: { base: 'hyper_offense', gimmicks: ['weather'] } });
+        const text = renderTeamAuditText(audit.all());
+        expect(text).toContain('gimmick dropped');
+        expect(text).toContain('weather');
+    });
+
+    test('T-132 — a rolled-back gimmick is reported, not shown as an identity trait, and absorb() merges traces', () => {
+        const src = createTeamAudit();
+        src.beginTeam({ trainerId: 'T_RB', level: 40, battleType: 'singles', sophistication: 0.6, seed: null });
+        src.finishTeam({ team: [{ pokemon: mon() }], model: singles, ctx: {}, seed: null });
+        const trace = src.all()[0];
+        trace.rolledBack = { gimmick: 'weather', attempts: 4 };
+        trace.finalIdentity = { base: 'bulky_offense', source: 'emergent', gimmicks: ['weather'] }; // incidental setter
+        // absorb into a shared collector (the resolver commits the winning attempt this way)
+        const shared = createTeamAudit();
+        shared.absorb(src);
+        expect(shared.all()).toHaveLength(1);
+        const text = renderTeamAuditText(shared.all());
+        expect(text).toContain('ROLLED BACK');
+        expect(text).not.toMatch(/final identity:[^\n]*\+weather/); // incidental gimmick not claimed
+    });
+
     test('noopTeamAudit collects nothing and never throws', () => {
         const a = noopTeamAudit();
         expect(() => { a.beginTeam({}); a.recordSlot({}); a.finishTeam({}); }).not.toThrow();

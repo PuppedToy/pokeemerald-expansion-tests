@@ -43,9 +43,11 @@ describe('archetype models', () => {
         expect(ids).toEqual(expect.arrayContaining(['balance', 'bulky_offense', 'hyper_offense', 'full_stall']));
     });
 
-    test('doubles has the weather / trick_room / redirection / trapping gimmicks', () => {
+    test('doubles has the weather / trick_room / redirection gimmicks', () => {
         const ids = loadArchetypeModel('doubles').gimmicks.map(g => g.id);
-        expect(ids).toEqual(expect.arrayContaining(['weather', 'trick_room', 'redirection', 'trapping']));
+        expect(ids).toEqual(expect.arrayContaining(['weather', 'trick_room', 'redirection']));
+        // T-124 — perish-trap is NOT a gimmick/archetype; it's a moveset team-combo (planPerishComboMove).
+        expect(ids).not.toContain('trapping');
     });
 
     test('validateArchetypeModel rejects an undefined feature reference', () => {

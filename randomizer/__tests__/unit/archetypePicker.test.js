@@ -86,13 +86,13 @@ describe('makeArchetypePicker — biases toward archetype fit at high sophistica
         expect(wb).toBeGreaterThan(pl);
         expect(pl).toBeGreaterThan(0);
     });
-    test('T-124 (Wattson) — an electricTerrain seed HARD-prefers Electric-type candidates', () => {
-        const context = { team: [], sophistication: 0.6, archetypeSeed: { base: 'bulky_offense', electricTerrain: true } };
+    test('T-137 (Wattson) — an electric_terrain gimmick seed HARD-picks an ability-setter', () => {
+        const context = { team: [], sophistication: 0.9, archetypeSeed: { base: 'bulky_offense', gimmicks: ['electric_terrain'] }, weatherPicks: [] };
         const picker = makeArchetypePicker({ model: singles, context, ctx: {} });
-        const electricMon = mon({ id: 'ELEC', parsedTypes: ['ELECTRIC'] });
-        // one Electric among non-Electric → always chosen (it can actually run the terrain)
-        for (let s = 1; s <= 10; s++) { rng.seed(s); expect(picker([plain('A'), electricMon, plain('B')]).id).toBe('ELEC'); }
-        // no Electric available (Wattson rolled another type) → falls back gracefully, no crash
+        const surge = mon({ id: 'KOKO', parsedTypes: ['ELECTRIC'], parsedAbilities: ['ELECTRIC_SURGE'], baseAttack: 115 });
+        // a setter (Electric Surge) present + the team has none → always hard-picked to establish terrain
+        for (let s = 1; s <= 10; s++) { rng.seed(s); expect(picker([plain('A'), surge, plain('B')]).id).toBe('KOKO'); }
+        // no setter available → falls through gracefully (ranks abusers / no crash)
         rng.seed(1); expect(['A', 'B']).toContain(picker([plain('A'), plain('B')]).id);
     });
 
@@ -133,9 +133,61 @@ describe('resolveIdentity (T-107 107e / T-118) — emergent, else seed, else nul
     test('T-123 — hyper_offense still emerges when nothing else fits', () => {
         expect(resolveIdentity([sweeper('S1'), sweeper('S2'), rocker('K')], singles, {}, null).baseId).toBe('hyper_offense');
     });
+    test("B-032 — a seed base 'balance' resolves to the doubles balanced base (not dropped)", () => {
+        // Tate & Liza's Trick Room seed carries the singles-id base 'balance'; in a doubles run the model
+        // has 'balance_dual_mode' instead, so the seed base must be mapped, not silently dropped.
+        const doubles = getArchetypeModel('doubles');
+        const id = resolveIdentity([plain('X'), plain('Y')], doubles, {}, { base: 'balance', gimmicks: ['trick_room'] });
+        expect(id.source).toBe('seed');
+        expect(id.baseId).toBe('balance_dual_mode');
+    });
 
     test('no recipe fit and no seed → null', () => {
         expect(resolveIdentity([plain('X')], singles, {}, null)).toBeNull();
+    });
+});
+
+describe('T-142 — dedicated-support hard-pick (doubles teams that rolled "wants support" field one)', () => {
+    const doubles = getArchetypeModel('doubles');
+    // A dedicated support: ≥2 top-tier support signals (redirection + Helping Hand) → isDedicatedSupport true.
+    const support = () => mon({ id: 'AMOON', baseAttack: 80, baseSpAttack: 80, ...learn('MOVE_RAGE_POWDER', 'MOVE_HELPING_HAND') });
+
+    test('a doubles team that wants support (rolled) HARD-picks the support-capable mon over attackers', () => {
+        const context = { team: [wallbreaker('W')], sophistication: 1, doublesWantsSupport: true };
+        const picker = makeArchetypePicker({ model: doubles, context, ctx: { moves: {} } });
+        const cands = [wallbreaker('ATK1'), wallbreaker('ATK2'), support()];
+        for (let s = 1; s <= 8; s++) { rng.seed(s); expect(picker(cands).id).toBe('AMOON'); } // forced, every seed
+    });
+    test('once a dedicated support is on the team, the hard-pick stops (1 secured)', () => {
+        const context = { team: [support()], sophistication: 1, doublesWantsSupport: true };
+        const picker = makeArchetypePicker({ model: doubles, context, ctx: { moves: {} } });
+        const cands = [wallbreaker('ATK1'), wallbreaker('ATK2')];
+        rng.seed(1); expect(['ATK1', 'ATK2']).toContain(picker(cands).id);
+    });
+    test('the hard-pick RECORDS an itemised support ranking for the decision log (owner: auditable)', () => {
+        const context = { team: [wallbreaker('W')], sophistication: 1, doublesWantsSupport: true, supportPicks: [] };
+        const picker = makeArchetypePicker({ model: doubles, context, ctx: { moves: {} } });
+        rng.seed(1); picker([wallbreaker('ATK1'), support()]);
+        expect(context.supportPicks).toHaveLength(1);
+        const rec = context.supportPicks[0];
+        expect(rec.pickedId).toBe('AMOON');
+        const amoon = rec.ranked.find(r => r.id === 'AMOON');
+        expect(amoon.rating).toBeGreaterThanOrEqual(11); // cleared the RU bar
+        expect(amoon.tools.map(t => t.id)).toEqual(expect.arrayContaining(['MOVE_RAGE_POWDER', 'MOVE_HELPING_HAND']));
+    });
+    test('a doubles team rolled HYPER (no support) does NOT force a support', () => {
+        const context = { team: [wallbreaker('W')], sophistication: 1, doublesWantsSupport: false };
+        const picker = makeArchetypePicker({ model: doubles, context, ctx: { moves: {} } });
+        const cands = [wallbreaker('ATK1'), support()];
+        let amoon = 0; for (let s = 1; s <= 20; s++) { rng.seed(s); if (picker(cands).id === 'AMOON') amoon++; }
+        expect(amoon).toBeLessThan(20); // not forced
+    });
+    test('SINGLES is unaffected — the doubles support plan never applies', () => {
+        const context = { team: [wallbreaker('W')], sophistication: 1, doublesWantsSupport: true };
+        const picker = makeArchetypePicker({ model: singles, context, ctx: { moves: {} } });
+        const cands = [wallbreaker('ATK1'), support()];
+        let amoon = 0; for (let s = 1; s <= 20; s++) { rng.seed(s); if (picker(cands).id === 'AMOON') amoon++; }
+        expect(amoon).toBeLessThan(20);
     });
 });
 
