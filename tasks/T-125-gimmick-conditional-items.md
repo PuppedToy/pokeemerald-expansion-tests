@@ -144,4 +144,10 @@ Acceptance criteria:
   to the verified weather-rock claim) but seldom exercised — flagged for the owner. **Next:** increment 5
   (screens TMs from Wattson + Light Clay claim).
 
+- **2026-07-16 — Increment 5 DONE: screens provisioning (2 TMs + Light Clay from Wattson).** Light Clay was
+  already in `wattsonBag`; added the 2 screens TMs `linkedChoiceSample(['TM_REFLECT','TM_LIGHT_SCREEN'])`
+  (one pick-group). A screen setter can now teach a screen (B-030) and the rater can equip Light Clay to
+  extend it. (Aurora Veil is a snow move → its rating + who abuses it is increment 7, not the general
+  screens.) Provisioning tested; fast suite 1153. **Next:** increment 6 (TR items: Room Service → bag).
+
 ## Outcome

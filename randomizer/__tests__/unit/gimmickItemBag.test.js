@@ -119,3 +119,14 @@ describe('T-125 inc.4 — Terrain Extender is provisioned from Wattson (electric
         expect(units).not.toContain('Terrain Extender');
     });
 });
+
+describe('T-125 inc.5 — screens: 2 TMs + Light Clay provisioned from Wattson', () => {
+    test('Wattson carries the Reflect + Light Screen TMs and Light Clay', () => {
+        const wattson = trainers.find(t => t.id === 'TRAINER_WATTSON_1');
+        const { units } = expandLinkedPacks(wattson.bag);
+        const tms = units.filter(u => typeof u === 'string' && u.startsWith('TM_')).map(u => u.replace('TM_', 'MOVE_'));
+        expect(tms).toContain('MOVE_REFLECT');
+        expect(tms).toContain('MOVE_LIGHT_SCREEN');
+        expect(units).toContain('Light Clay');
+    });
+});

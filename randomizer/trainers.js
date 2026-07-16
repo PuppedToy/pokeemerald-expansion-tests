@@ -880,6 +880,9 @@ const wattsonBag = () => [
     // gimmick setter (Electric Surge / Hadron Engine) claims it from the bag — the terrain analogue of the
     // weather rock (5→8 turns). Cascades forward from Wattson.
     'Terrain Extender',
+    // T-125 — the 2 screens TMs (Reflect / Light Screen) enter here (Wattson), one linked pick-group. A
+    // screen setter teaches one to set screens; Light Clay (above) extends them 5→8 turns. Cascades forward.
+    linkedChoiceSample(['TM_REFLECT', 'TM_LIGHT_SCREEN']),
     tmItem(11),   // Wattson's gym TM
     'TM_ROCK_SMASH',  // HM, not randomized
 ];
