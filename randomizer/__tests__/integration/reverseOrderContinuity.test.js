@@ -170,13 +170,13 @@ describeSlow('reverse-order continuity (T-106)', () => {
             expect(team).not.toContain('SPECIES_SOLGALEO');
             expect(team).not.toContain('SPECIES_LUNALA');
         });
-        // B-034 — Tate & Liza are seeded to a (full) Trick Room; the gimmick must actually BUILD (a TR
-        // setter is fielded), not roll back to a non-gimmick team. Regressed when the full-room hold
-        // (2 setters + 4 abusers) could not be met and there was no half-room fallback; fixed by the
-        // half-room fallback + aligning the abuser Speed threshold with the picker.
-        test('B-034 — builds Trick Room (fields a TR setter), not a rolled-back non-gimmick team', () => {
-            const team = docs['TRAINER_TATE_AND_LIZA_1'].team;
-            expect(team.some(m => (m.moves || []).includes('MOVE_TRICK_ROOM'))).toBe(true);
+        // B-034 / T-143 — Trick Room is NO LONGER force-seeded (Tate & Liza force nothing). A Psychic-
+        // restricted boss can't field a genuinely slow team (almost no slow Psychic mons/megas at the boss
+        // tiers), so forced TR produced fast "TR" teams; TR is now EMERGENT-only. The B-034 fix must still
+        // let TR build when a team genuinely rolls a slow-offensive core → assert it builds SOMEWHERE.
+        test('B-034/T-143 — Trick Room still builds emergently somewhere (never force-seeded)', () => {
+            const anyTR = Object.values(docs).some(t => (t.team || []).some(m => (m.moves || []).includes('MOVE_TRICK_ROOM')));
+            expect(anyTR).toBe(true);
         });
     });
 

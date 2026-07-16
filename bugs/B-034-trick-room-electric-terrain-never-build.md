@@ -36,6 +36,11 @@ teachable expansion adds the TR TM to its learners). The failure is in the attem
 - **Electric terrain:** Electric Surge / Hadron Engine are scarce after `mutateAbilities` (none appeared
   across the sampled seeds), so the setter+2-abusers condition can't be met and the gimmick can't form.
 
+> **Follow-up (T-143):** the *forced* full room was later removed entirely — Tate & Liza (Psychic-restricted,
+> no slow Psychic mons/megas at the boss tiers) can't build a genuinely slow team, so forcing TR produced
+> *fast* "TR" teams. TR is now **emergent-only**. This B-034 fix still stands: it's what lets emergent TR
+> build a room. The determinism assertion moved from "T&L builds TR" to "TR builds emergently somewhere".
+
 ## Fix
 
 Two structural fixes to the Trick Room gimmick (`gimmickPlan.js`):

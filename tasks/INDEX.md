@@ -146,3 +146,4 @@
 | [T-140](T-140-doubles-bst-floor-parity.md) | Doubles tier — apply the BST floor (parity with singles) | done | 0.8.0 | 2026-07-15 |
 | [T-141](T-141-doubles-support-depth.md) | Doubles support depth — corpus re-analysis + refinement plan | done | 0.8.0 | 2026-07-15 |
 | [T-142](T-142-doubles-support-delivery.md) | Doubles support delivery — hard-pick a support-capable mon (like gimmick setters) | done | 0.8.0 | 2026-07-15 |
+| [T-143](T-143-trick-room-emergent-only.md) | Trick Room is emergent-only — never force-seeded (Tate & Liza de-seeded) | done | 0.8.0 | 2026-07-16 |

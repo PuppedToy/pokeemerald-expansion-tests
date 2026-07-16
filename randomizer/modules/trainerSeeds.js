@@ -16,9 +16,10 @@ const WEATHER_SUN = { base: 'bulky_offense', gimmicks: ['weather'], weather: 'su
 const WEATHER_RAIN = { base: 'bulky_offense', gimmicks: ['weather'], weather: 'rain' };
 const WEATHER_SNOW = { base: 'bulky_offense', gimmicks: ['weather'], weather: 'snow' };
 const WEATHER_SAND = { base: 'bulky_offense', gimmicks: ['weather'], weather: 'sand' };
-// T-137 — Trick Room is now a full gimmick (setter + 2 abusers). Tate & Liza force a FULL room (2 setters +
-// 4 abusers) via `roomStyle: 'full'`; other trainers that emerge into TR pick full/half dynamically.
-const TRICK_ROOM = { base: 'balance', gimmicks: ['trick_room'], roomStyle: 'full' };
+// T-143 (owner) — Trick Room is NEVER force-seeded. A forced TR was fundamentally unbuildable for a
+// type-restricted boss (Tate & Liza is Psychic-restricted: almost no slow Psychic mons / megas at the boss
+// tiers), so it produced fast "TR" teams. TR now ONLY happens EMERGENTLY — when a team genuinely rolls a
+// slow-offensive core (emergentGimmick, B-035) it builds a (half) room around it, TM-gated (B-036).
 // T-137 — Wattson: electric terrain as a real gimmick (setter + 2 abusers), no fallback to other gimmicks
 // (his monotype pool tries electric terrain, else a normal Electric team).
 const ELECTRIC_TERRAIN = { base: 'bulky_offense', gimmicks: ['electric_terrain'] };
@@ -46,12 +47,8 @@ const TRAINER_SEEDS = {
     TRAINER_WATTSON_3: ELECTRIC_TERRAIN,
     TRAINER_WATTSON_4: ELECTRIC_TERRAIN,
     TRAINER_WATTSON_5: ELECTRIC_TERRAIN,
-    // Tate & Liza → Trick Room
-    TRAINER_TATE_AND_LIZA_1: TRICK_ROOM,
-    TRAINER_TATE_AND_LIZA_2: TRICK_ROOM,
-    TRAINER_TATE_AND_LIZA_3: TRICK_ROOM,
-    TRAINER_TATE_AND_LIZA_4: TRICK_ROOM,
-    TRAINER_TATE_AND_LIZA_5: TRICK_ROOM,
+    // T-143 (owner) — Tate & Liza force NOTHING (no Trick Room, no gimmick). They're a normal Psychic boss;
+    // if their roll happens to produce a slow-offensive core, TR emerges on its own — otherwise a plain team.
 };
 
 function getTrainerSeed(trainerId) {
