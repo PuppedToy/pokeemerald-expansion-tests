@@ -466,12 +466,14 @@ function createTeamResolver(deps) {
                     }
                 }
                 // T-125 — a Trick Room ABUSER (a fast mon whose Speed should DROP under TR so it moves first)
-                // claims a speed-control item FROM THE BAG: Room Service (best — lowers Speed when TR is set;
-                // provisioned from Tate & Liza) preferred, else Iron Ball (halves Speed; via averageItemPool).
-                // Lagging Tail was reviewed + dropped (marginal + unpooled). Born from the bag, consume-aware.
+                // claims a speed-control item FROM THE BAG: Room Service (best — lowers Speed when TR is set)
+                // preferred, else Iron Ball (halves Speed). Both are single world items (averageItemPool).
+                // B-037 — AT MOST ONE TR speed item per team (a team never fields 2): skip if a teammate
+                // already holds one. Born from the bag, consume-aware. Lagging Tail was reviewed + dropped.
                 if (!newTeamMember.item && context.sophistication >= BIAS_MIN_SOPH
                     && context.archetypeSeed && (context.archetypeSeed.gimmicks || []).includes('trick_room')
-                    && (chosenTrainerMon.baseSpeed || 0) > 60) {
+                    && (chosenTrainerMon.baseSpeed || 0) > 60
+                    && !team.some(m => m.item === 'Room Service' || m.item === 'Iron Ball')) {
                     const trItem = ['Room Service', 'Iron Ball'].find(i => (trainer.bag || []).includes(i));
                     if (trItem) {
                         newTeamMember.item = trItem;
