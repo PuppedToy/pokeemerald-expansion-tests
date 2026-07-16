@@ -416,10 +416,20 @@ function createTeamResolver(deps) {
                     }
                 }
 
-                // T-125 — a weather setter holds the rock that extends its weather (Damp/Heat/Smooth/Icy).
-                // Soph-gated so early-game is byte-identical; only fills an empty item slot.
+                // T-125 — a weather setter holds the rock that extends its weather (Damp/Heat/Smooth/Icy),
+                // CLAIMED FROM THE BAG via the common link-aware path (the 4 rocks are one pick-group,
+                // provisioned from the Slateport aqua grunts onward). A team with 2 setters places only ONE
+                // rock: claiming it forgoes the pack's siblings, so the 2nd setter finds none. No rock in the
+                // bag → no rock (born from the bag). Soph-gated; fills only an empty item slot.
                 if (!newTeamMember.item && context.sophistication >= BIAS_MIN_SOPH && WEATHER_ROCK_BY_SETTER[ability]) {
-                    newTeamMember.item = itemIdToName(WEATHER_ROCK_BY_SETTER[ability]);
+                    const rockName = itemIdToName(WEATHER_ROCK_BY_SETTER[ability]);
+                    if ((trainer.bag || []).includes(rockName)) {
+                        newTeamMember.item = rockName;
+                        const act = consumeLinkedUnit(trainer.bag, trainer.bagLinks || [], rockName);
+                        if (act.activated && context.itemLinkActivations) {
+                            context.itemLinkActivations.push({ species: chosenTrainerMon.id, used: rockName, removed: act.removedSiblings, kind: 'item' });
+                        }
+                    }
                 }
                 // T-137 — Electric Seed in an electric-terrain team: an UNBURDEN abuser (its speed engine) or a
                 // bulky mon (Def boost on entry). Gated on the electric_terrain gimmick.

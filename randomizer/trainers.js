@@ -838,10 +838,10 @@ const slateportGruntsBag = () => [
     route109GoodItem,
     linkedChoiceSample([...choiceRickyTMs]),
     linkedChoiceSample([...choiceHueyTMs]),
-    // 'Damp Rock',
-    // 'Heat Rock',
-    // 'Smooth Rock',
-    // 'Icy Rock',
+    // T-125 — the 4 weather-extending rocks enter the bag here (the Slateport aqua grunts) and cascade
+    // forward. ONE linked pick-group: a team claims AT MOST ONE rock (the teambuilder claims the rock that
+    // matches its weather setter; claiming it forgoes the other three, so 2 setters still place only 1).
+    linkedChoiceSample(['Damp Rock', 'Heat Rock', 'Smooth Rock', 'Icy Rock']),
 ];
 
 const rivalRoute110Bag = () => [

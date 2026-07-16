@@ -108,4 +108,14 @@ Acceptance criteria:
   Aurora Veil preferring Light Clay (< rock) + strong under snow + its non-setter abusers, and TR items
   (Room Service ≫ Lagging Tail / Iron Ball). Not yet implemented — spec captured for the next work session.
 
+- **2026-07-16 — Increment 1 DONE: weather rocks born from the bag + link-aware claim.** The 4 rocks
+  were commented-out in `slateportGruntsBag`; wired them as ONE `linkedChoiceSample(['Damp Rock','Heat
+  Rock','Smooth Rock','Icy Rock'])` (Slateport aqua grunts → cascades forward). Replaced the resolver's
+  direct-set (`WEATHER_ROCK_BY_SETTER` → item) with a **bag-gated claim**: a weather setter takes its
+  matching rock ONLY if the bag holds it, then `consumeLinkedUnit` spends the pick-group so the other
+  three rocks are forgone — a 2nd setter finds none (the owner's "2 setters ⇒ 1 rock"). Verified e2e
+  (seed 1830319788): Archie→Damp, Maxie→Heat, Museum-2/Matt→Icy (snow), all matching subtype; **0 teams
+  hold ≥2 rocks**. Unit test `gimmickItemBag.test.js` (provisioning + consume-once), fast suite 1145,
+  determinism 17/17. **Next:** increment 2 (weather TMs from the aqua grunts).
+
 ## Outcome
