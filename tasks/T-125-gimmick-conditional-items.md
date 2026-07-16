@@ -134,4 +134,14 @@ Acceptance criteria:
   Psychic, Wendy→Misty (all four terrains, not just electric). Tests added; fast suite 1150. **Next:**
   increment 4 (Terrain Extender for the electric_terrain setter).
 
+- **2026-07-16 — Increment 4 DONE: Terrain Extender for the electric-terrain gimmick setter.** Provisioned
+  `'Terrain Extender'` into `wattsonBag` (the electric-terrain gimmick point → cascades forward). Resolver
+  claim (right before the seed claim, so the setter takes the Extender first): on an `electric_terrain`
+  gimmick, a setter with ELECTRIC_SURGE / HADRON_ENGINE claims Terrain Extender from the bag +
+  `consumeLinkedUnit` — the terrain analogue of the weather rock. Provisioning unit-tested; fast suite 1152.
+  NOTE: electric-terrain teams are RARE in practice (Electric Surge/Hadron Engine are scarce after
+  `mutateAbilities`; none formed across 5 sampled seeds), so the claim is correct-by-inspection (identical
+  to the verified weather-rock claim) but seldom exercised — flagged for the owner. **Next:** increment 5
+  (screens TMs from Wattson + Light Clay claim).
+
 ## Outcome

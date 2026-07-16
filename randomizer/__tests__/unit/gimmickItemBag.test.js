@@ -103,3 +103,19 @@ describe('T-125 inc.3 — terrain seed claimed when the team sets a terrain (bor
         expect(planTerrainSeedClaim({ species: fastAtk, team: [{ ability: 'GRASSY_SURGE' }], available: SEEDS, sophistication: 1 })).toBeNull();
     });
 });
+
+describe('T-125 inc.4 — Terrain Extender is provisioned from Wattson (electric-terrain gimmick)', () => {
+    test('Wattson (and trainers after) carry Terrain Extender in the bag', () => {
+        const wattson = trainers.find(t => t.id === 'TRAINER_WATTSON_1');
+        expect(wattson).toBeTruthy();
+        const { units } = expandLinkedPacks(wattson.bag);
+        expect(units).toContain('Terrain Extender');
+    });
+
+    test('a pre-Wattson trainer (Roxanne) does NOT carry Terrain Extender', () => {
+        const early = trainers.find(t => t.id === 'TRAINER_ROXANNE_1');
+        if (!early) return;
+        const { units } = expandLinkedPacks(early.bag);
+        expect(units).not.toContain('Terrain Extender');
+    });
+});

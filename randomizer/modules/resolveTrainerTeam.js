@@ -431,6 +431,22 @@ function createTeamResolver(deps) {
                         }
                     }
                 }
+                // T-125 — the ELECTRIC-TERRAIN gimmick SETTER holds Terrain Extender (extends the terrain
+                // 5→8 turns — the terrain analogue of the weather rock), claimed from the bag (provisioned
+                // from Wattson). Only the gimmick setter, only if the bag holds it. Runs BEFORE the seed
+                // claim so the setter takes the Extender and a bulky teammate takes the seed.
+                if (!newTeamMember.item && context.sophistication >= BIAS_MIN_SOPH
+                    && context.archetypeSeed && (context.archetypeSeed.gimmicks || []).includes('electric_terrain')
+                    && (ability === 'ELECTRIC_SURGE' || ability === 'HADRON_ENGINE')) {
+                    const ext = itemIdToName('ITEM_TERRAIN_EXTENDER');
+                    if ((trainer.bag || []).includes(ext)) {
+                        newTeamMember.item = ext;
+                        const act = consumeLinkedUnit(trainer.bag, trainer.bagLinks || [], ext);
+                        if (act.activated && context.itemLinkActivations) {
+                            context.itemLinkActivations.push({ species: chosenTrainerMon.id, used: ext, removed: act.removedSiblings, kind: 'item' });
+                        }
+                    }
+                }
                 // T-125 — a TERRAIN SEED (Electric/Grassy/Misty/Psychic) for a team that establishes a terrain
                 // (any teammate's Surge ability / terrain move, or the electric_terrain gimmick). CLAIMED FROM
                 // THE BAG (`choiceJosephSeeds`, from Wally Mauville onward), link-aware — generalises the old

@@ -876,6 +876,10 @@ const wattsonBag = () => [
     sample(choiceAishaGems),
     route117GoodItem,
     'Light Clay',
+    // T-125 — Terrain Extender enters here (Wattson = the electric-terrain gimmick). The electric-terrain
+    // gimmick setter (Electric Surge / Hadron Engine) claims it from the bag — the terrain analogue of the
+    // weather rock (5→8 turns). Cascades forward from Wattson.
+    'Terrain Extender',
     tmItem(11),   // Wattson's gym TM
     'TM_ROCK_SMASH',  // HM, not randomized
 ];
