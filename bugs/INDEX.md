@@ -38,3 +38,4 @@
 | [B-032](B-032-tr-seed-base-dropped-in-doubles.md) | Trick Room seed base 'balance' silently dropped for doubles trainers | fixed | minor | 0.7.0 | 0.8.0 | randomizer/__tests__/unit/archetypePicker.test.js |
 | [B-033](B-033-wally-vr-lost-legend-ubers.md) | Wally Victory Road lost its legend + ubers aces (backwards-generation regression) | fixed | major | 0.8.0 | 0.8.0 | randomizer/__tests__/unit/wallyContinuity.test.js |
 | [B-034](B-034-trick-room-electric-terrain-never-build.md) | Trick Room and electric-terrain gimmicks roll back and never build (Tate & Liza / Wattson) | fixed | major | 0.8.0 | 0.8.0 | randomizer/__tests__/integration/reverseOrderContinuity.test.js |
+| [B-035](B-035-emergent-trick-room-overfires.md) | Emergent Trick Room over-fires — too many trainers build TR just because a mon can learn the TM | fixed | major | 0.8.0 | 0.8.0 | randomizer/__tests__/unit/emergentGimmick.test.js |

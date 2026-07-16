@@ -216,8 +216,17 @@ function emergentGimmick({ committedSeed = null, abusePartner = false, soph = 0,
     const w = teamWeather(team);
     if (w) return { gimmick: 'weather', weather: w };
     if (members.some(isElectricTerrainSetter)) return { gimmick: 'electric_terrain' };
-    const slowCore = members.filter(m => trickRoomAbuseScore(m) >= WEATHER_ABUSE_THRESHOLD).length;
-    if (slowCore >= REQUIRED_ABUSERS && members.some(m => monCanLearn(m, [TR_SETTER_MOVE]))) {
+    // B-035 — emergent TR fires only for a genuinely slow-OFFENSIVE team: ≥3 SLOW HARD-HITTERS (the real TR
+    // beneficiaries — slow AND high offence), a much stricter bar than "≥2 slow bodies + someone learns the
+    // TM" (which fired on half the dex, since the TR TM is near-universal). Being able to set TR is necessary
+    // but not sufficient. The SEEDED path (Tate & Liza) is separate (gimmickFallbackChain + trickRoomHolds)
+    // and stays lenient, so it still builds.
+    const strongSlowCore = members.filter(m => {
+        const p = monPoke(m);
+        const spe = p.baseSpeed == null ? 999 : p.baseSpeed;
+        return spe <= TR_ABUSE_SPEED_MAX && Math.max(p.baseAttack || 0, p.baseSpAttack || 0) >= TR_STRONG_OFFENSE;
+    }).length;
+    if (strongSlowCore >= TR_EMERGENT_MIN_CORE && members.some(m => monCanLearn(m, [TR_SETTER_MOVE]))) {
         return { gimmick: 'trick_room', roomStyle: 'half' };
     }
     return null;
@@ -313,6 +322,8 @@ const TR_SETTER_MOVE = 'MOVE_TRICK_ROOM';
 const TR_ABUSE_SPEED_MAX = 60;   // B-034 — base Speed at/below which a mon is a TR abuser; aligned with the
                                  // picker's TR_SLOW_SPEED (was 55) so a slow mon the picker biased in counts.
 const TR_STRONG_OFFENSE = 100;   // offence at which a slow mon is an IDEAL abuser (ranking, not eligibility)
+const TR_EMERGENT_MIN_CORE = 3;  // B-035 — emergent TR needs ≥3 slow HARD-HITTERS (a genuine TR core), not
+                                 // just ≥2 slow bodies + someone who can learn the TM.
 const TR_GYRO_BALL = 'MOVE_GYRO_BALL';
 const ROOM_SERVICE_ITEM = 'Room Service';
 
