@@ -162,4 +162,20 @@ Acceptance criteria:
     items. So inc.4 + inc.6 item claims are correct-by-inspection but currently dead until TR/electric-terrain
     actually build. Recommend a separate bug/T-124 follow-up.
 
+- **2026-07-16 — Increment 7 ANALYSIS (rating reviews) — awaiting owner input.**
+  - **Aurora Veil + Light Clay — ALREADY CORRECT (verified, no change).** Aurora Veil rates `inSnow ? 10 : 0`
+    (strong under snow, dead otherwise); Light Clay rates 10 with Aurora Veil / dual screens, 9.5 with one
+    screen, 0 without. The weather rock is claimed (inc.1) BEFORE the generic rater item pick, so a snow
+    SETTER takes its Icy Rock and Light Clay falls to a different screen mon → "rock > Light Clay" holds via
+    ordering. Abusers besides the setter can run Aurora Veil (the move rating is team-snow-aware via `selCtx`).
+  - **Seed value (AV < seed < Eviolite) + Grassy-Glide priority — blocked on a design call.** Both values are
+    TEAM-CONDITIONAL (only worth it with the matching surger on the team), but `rateItemForAPokemon` is
+    team-BLIND and the move rater's terrain context is limited. The engine already handles ASSIGNMENT (the
+    inc.3 seed claim; the T-124 `planTerrainSynergyMove` injects Grassy Glide onto a teammate of a Grassy
+    Surge setter; the self-Grassy-Surge + Grassy Glide combo bonus is +0.45). What's missing is the per-mon
+    RATING expressing the team-conditional value. Clean fix: extend the rater's `selCtx` with terrain flags
+    (grassy/electric/misty/psychic, from the team's surgers) — then Grassy Glide's priority + the seed's
+    defensive value can be rated conditionally. This is a value-judgment layer the owner wanted to weigh in
+    on → paused for confirmation before implementing.
+
 ## Outcome
