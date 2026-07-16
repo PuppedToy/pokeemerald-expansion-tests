@@ -130,3 +130,19 @@ describe('T-125 inc.5 — screens: 2 TMs + Light Clay provisioned from Wattson',
         expect(units).toContain('Light Clay');
     });
 });
+
+describe('T-125 inc.6 — Room Service provisioned from Tate & Liza (Trick Room)', () => {
+    test('Tate & Liza carry Room Service in the bag', () => {
+        const tl = trainers.find(t => t.id === 'TRAINER_TATE_AND_LIZA_1');
+        expect(tl).toBeTruthy();
+        const { units } = expandLinkedPacks(tl.bag);
+        expect(units).toContain('Room Service');
+    });
+
+    test('a pre-Mossdeep trainer (Wattson) does NOT carry Room Service by default', () => {
+        const wattson = trainers.find(t => t.id === 'TRAINER_WATTSON_1');
+        const { units } = expandLinkedPacks(wattson.bag);
+        // Room Service can still ride in via a random averageItemPool pick-3, but is not reliably provisioned pre-TR.
+        expect(units.filter(u => u === 'Room Service').length).toBe(0);
+    });
+});

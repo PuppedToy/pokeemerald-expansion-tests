@@ -465,11 +465,21 @@ function createTeamResolver(deps) {
                         }
                     }
                 }
-                // T-124 — Room Service on a fast mon in a Trick Room team (its Speed drops when TR is set).
+                // T-125 — a Trick Room ABUSER (a fast mon whose Speed should DROP under TR so it moves first)
+                // claims a speed-control item FROM THE BAG: Room Service (best — lowers Speed when TR is set;
+                // provisioned from Tate & Liza) preferred, else Iron Ball (halves Speed; via averageItemPool).
+                // Lagging Tail was reviewed + dropped (marginal + unpooled). Born from the bag, consume-aware.
                 if (!newTeamMember.item && context.sophistication >= BIAS_MIN_SOPH
                     && context.archetypeSeed && (context.archetypeSeed.gimmicks || []).includes('trick_room')
                     && (chosenTrainerMon.baseSpeed || 0) > 60) {
-                    newTeamMember.item = itemIdToName('ITEM_ROOM_SERVICE');
+                    const trItem = ['Room Service', 'Iron Ball'].find(i => (trainer.bag || []).includes(i));
+                    if (trItem) {
+                        newTeamMember.item = trItem;
+                        const act = consumeLinkedUnit(trainer.bag, trainer.bagLinks || [], trItem);
+                        if (act.activated && context.itemLinkActivations) {
+                            context.itemLinkActivations.push({ species: chosenTrainerMon.id, used: trItem, removed: act.removedSiblings, kind: 'item' });
+                        }
+                    }
                 }
 
                 // T-013: this mon's own weather/herb is handled in the rater; here we add the weather

@@ -150,4 +150,16 @@ Acceptance criteria:
   extend it. (Aurora Veil is a snow move → its rating + who abuses it is increment 7, not the general
   screens.) Provisioning tested; fast suite 1153. **Next:** increment 6 (TR items: Room Service → bag).
 
+- **2026-07-16 — Increment 6 DONE: Trick Room items born from the bag.** Provisioned `'Room Service'` into
+  `tateAndLizaBag` (the TR gimmick point → cascades). Replaced the Room Service direct-set with a bag claim:
+  a TR abuser (fast mon, baseSpeed > 60, on a `trick_room` gimmick) claims the best TR speed-control item
+  in the bag — **Room Service** preferred, else **Iron Ball** (averageItemPool). **Lagging Tail reviewed +
+  dropped** (marginal utility + not in any pool — owner: "cuestionable"). Provisioning tested; fast suite 1155.
+  - ⚠️ **FINDING (out of T-125 scope, for owner):** across 7 sampled seeds NO team fielded a Trick Room
+    move — even the TR-seeded Tate & Liza (they field Solrock/Lunatone but no TR move), and likewise
+    electric-terrain never formed (inc.4). `monCanLearn` is NOT TM-gated, so the cause is upstream (the TR
+    setters lack Trick Room at runtime / the gimmick attempt fails), a **T-124 gimmick-building** matter, not
+    items. So inc.4 + inc.6 item claims are correct-by-inspection but currently dead until TR/electric-terrain
+    actually build. Recommend a separate bug/T-124 follow-up.
+
 ## Outcome

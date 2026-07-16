@@ -964,6 +964,10 @@ const tateAndLizaBag = () => [
     spencerTM,   // Spencer's route 124 TM
     rolandTM,   // Roland's route 124 TM
     tmItem(91),   // Tate & Liza's gym TM
+    // T-125 — Room Service enters here (Tate & Liza = the Trick Room gimmick). A TR abuser (a fast mon whose
+    // Speed should DROP under Trick Room) claims it from the bag — the best TR speed-control item (owner).
+    // Iron Ball (a weaker fallback) rides in via averageItemPool; Lagging Tail was reviewed + dropped.
+    'Room Service',
 ];
 
 const spaceCenterBag = () => [
