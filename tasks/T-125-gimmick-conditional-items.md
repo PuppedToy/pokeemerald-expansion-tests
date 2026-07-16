@@ -7,7 +7,7 @@ created: 2026-07-11
 updated: 2026-07-11
 target-version: 0.8.0
 links: [T-107, T-124]
-blocked-by: [T-124]
+blocked-by: []
 priority: medium
 ---
 
@@ -22,23 +22,64 @@ a partir de los museum grunts)."*
 
 ## Plan
 
-- **Gimmick-aware item selection.** When the team's identity is a gimmick, prefer the item that enables
-  it; when a gimmick piece is present but the team is NOT that gimmick (T-123 evidence bar), do NOT add
-  the gimmick item:
-  - **weather** → the weather-extending rock (Damp / Heat / Smooth / Icy Rock) on the setter.
-  - **trick_room** → Room Service (ties to T-124); **screens** → Light Clay; etc.
-- **Bag provisioning by progression.** Make the gimmick items available in the trainer's bag from the
-  right point — the **weather rock from the Museum grunts onward** (the first weather-seeded trainers,
-  T-126) — reusing the existing item/bag pipeline (`randomizer/itemRandomizer.js` + docs `items.md`).
-- Item selection already runs after moves in the resolver; this layer reads the crystallised identity.
-- Format-agnostic (singles + doubles).
+> **Re-scoped by the owner (2026-07-16)** into the full gimmick-item + bag pass, for **both formats**.
+> The core defect: gimmick items are chosen the WRONG way. The weather rock is currently SET DIRECTLY on
+> the setter (`WEATHER_ROCK_BY_SETTER` in the resolver) — it never touches the bag and bypasses the common
+> link-aware claim system every other item uses. **All gimmick items must be born from the bag** and
+> claimed by the teambuilder through the shared consume-once/linked path (like Choice items + TMs).
 
-> **Meta-analysis validation (owner-gated).** Which item per gimmick and from which progression point
-> are owner-gated decisions (weather rock from the Museum grunts is validated; others to confirm).
+### 1. Bag provisioning (bound/linked, gated by story progression)
+
+Provision each gimmick item into the trainer bag from the right point (inclusive), as linked pick-groups
+(`randomizer/itemRandomizer.js` + `tmRandomizer.js`; docs `items.md` / `tms.md`):
+
+| Item(s) | In bag from (inclusive) | Notes |
+|---|---|---|
+| 4 weather rocks — Heat / Damp / Smooth / Icy | **Aqua grunts** | linked (bound) |
+| 4 weather-setting TMs (Sunny Day / Rain Dance / Sandstorm / Snowscape) | **Aqua grunts** | linked; used ONLY by gimmick teams with NO ability-setter |
+| **Light Clay** | **Wattson** | |
+| 2 screens TMs (Reflect / Light Screen) | **Wattson** | linked |
+| 4 terrain seeds — Electric / Grassy / Misty / Psychic | **Wally Mauville** | linked |
+| **Terrain Extender** | investigate (owner: likely random) — identify/add its world source | weather-rock logic for electric-terrain setters (see §2) |
+| Room Service / Lagging Tail / Iron Ball | TR progression | TR abuser items (see §3) |
+
+### 2. Common consumption mechanics (teambuilder-driven, like everything else)
+
+- The weather stone is **claimed from the bag by the teambuilder** via the link-aware path (mirrors the
+  forward-Choice claim): a team with **2 setters places only 1 rock** — once a rock is claimed, no second
+  rock can be. Remove the direct-set `WEATHER_ROCK_BY_SETTER` path.
+- **Weather TMs:** used ONLY in gimmick teams that lack an ability-setter (the move-setter retrofit path,
+  ex-gimmick baggage) — verify they still fire correctly and only there.
+- **Terrain Extender:** apply the weather-rock claim logic to the **electric_terrain** gimmick — the terrain
+  SETTER (Electric Surge / Hadron Engine) claims Terrain Extender from the bag when it's the gimmick setter.
+
+### 3. Rating reviews (both formats — "todas las revisiones pendientes")
+
+- **Terrain seeds:** a team that has a terrain SETTER values the matching seed on teammates. Its rating =
+  a good **defensive** item — **worse than Eviolite, better than Assault Vest**. Applies to all four terrains.
+- **Grassy Glide:** verify it is treated as **priority** (and rated up) when a teammate has Grassy Surge.
+- **Aurora Veil:** verify it strongly prefers **Light Clay** (but LESS than the weather rock itself);
+  verify which **abusers besides the setter** can run it; confirm it is rated a **very strong move under snow**.
+- **Trick Room items:** Room Service / Lagging Tail / Iron Ball let a **slower** mon abuse TR. **Room Service
+  is clearly the best**; Lagging Tail + Iron Ball are questionable utility — evaluate, keep minimal.
+
+Format-agnostic (singles + doubles). Item selection already runs after moves in the resolver; this layer
+reads the crystallised identity + the bag.
+
+> **Meta-analysis validation (owner-gated).** Progression points + the seed's defensive value band
+> (AV < seed < Eviolite) are owner-set (above). Terrain Extender's world source is TBD (research).
 
 Acceptance criteria:
-- [ ] A weather-gimmick trainer gets the weather-extending rock; a non-gimmick weather-setter does not.
-- [ ] The weather rock (and other gimmick items) is provisioned into bags from the right progression point.
+- [ ] **All** gimmick items are claimed FROM the bag via the common link-aware system — the direct-set
+      weather-rock path is gone; a team with 2 setters places only 1 rock (consume-once).
+- [ ] Weather rocks + weather TMs bound in the bag from the **Aqua grunts** (incl.); Light Clay + 2 screens
+      TMs from **Wattson** (incl.); 4 terrain seeds from **Wally Mauville** (incl.).
+- [ ] Weather TMs fire only in gimmick teams that lack an ability-setter.
+- [ ] The electric_terrain gimmick setter claims **Terrain Extender**; its world source is identified/added.
+- [ ] Terrain seeds are rated as a defensive item **between Assault Vest and Eviolite** when the team has the
+      matching surger; **Grassy Glide** is treated as priority under Grassy Surge.
+- [ ] **Aurora Veil** prefers Light Clay (< the weather rock) and is a strong snow move; the abusers that can
+      run it are surfaced; **TR items** (Room Service ≫ Lagging Tail / Iron Ball) let slow mons abuse TR.
 - [ ] Determinism gate green; `cd randomizer && npm test` green.
 
 ## Progress log
@@ -54,5 +95,17 @@ Acceptance criteria:
   TR completion in T-124).
 - **2026-07-11** — Created from the owner's problem-2 reflections (gimmick-conditional items + weather
   rock from the Museum grunts). Blocked on T-124 (gimmick completion).
+
+- **2026-07-16 — owner RE-SCOPED to the full item/bag pass (both formats); T-124 done → unblocked.**
+  Root problem the owner flagged: the weather rock is set DIRECTLY on the setter and never uses the bag /
+  common consume-once system — so items don't behave like everything else. New scope (Plan rewritten above):
+  (1) provision every gimmick item into the bag as linked groups from a progression point — weather rocks
+  + 4 weather TMs from the **Aqua grunts**, Light Clay + 2 screens TMs from **Wattson**, 4 terrain seeds
+  from **Wally Mauville**, Terrain Extender for electric-terrain setters (source TBD — likely random);
+  (2) claim them via the shared link-aware path so 2 setters ⇒ only 1 rock, consume-once; weather TMs only
+  in ability-setter-less gimmick teams; (3) rating reviews — terrain seeds as a defensive item valued
+  **AV < seed < Eviolite** for a team with the matching surger, Grassy Glide as priority under Grassy Surge,
+  Aurora Veil preferring Light Clay (< rock) + strong under snow + its non-setter abusers, and TR items
+  (Room Service ≫ Lagging Tail / Iron Ball). Not yet implemented — spec captured for the next work session.
 
 ## Outcome

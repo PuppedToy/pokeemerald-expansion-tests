@@ -1,10 +1,10 @@
 ---
 id: T-124
 title: Gimmick-aware team completion — build the team to BE the gimmick
-status: in-progress
+status: done
 type: feature
 created: 2026-07-11
-updated: 2026-07-11
+updated: 2026-07-16
 target-version: 0.8.0
 links: [T-107, T-122, T-123, T-121, T-102]
 blocked-by: [T-122, T-123]
@@ -153,10 +153,4 @@ Acceptance criteria:
 
 ## Outcome
 
-Gimmick-aware completion finished. Weather (prior) + Trick Room (T-137/138) build themselves; T-124 adds a
-**perish-trap moveset team-combo** (owner-reframed from a gimmick: a Shadow Tag / Arena Trap trapper — or its
-support partner — carries Perish Song, `planPerishComboMove`, doubles-only) and a **soft surger-aware** layer
-for the non-gimmick terrains (misty/grassy/psychic), while keeping electric a gimmick and screens a light role
-— all per owner-validated corpus research. Tate & Liza's Trick Room was already engine-built (seeded), not
-hardcoded. Fast suite 1133 green, determinism 17/17, singles byte-identical (new paths doubles-gated).
-Awaiting owner manual test before closing.
+Gimmick-aware team completion — all 3 criteria met. Weather teams build setter+abusers+synergy (identity-aware planMemberAbility); Trick Room is a full engine gimmick (slow bias + Room Service + full-room for Tate & Liza, seeded not hardcoded); redirection + PERISH-TRAP (Shadow Tag/Arena Trap + Perish Song modelled as a moveset team-combo, self-combo also applied to singles) delivered; non-electric terrains are soft surger-awareness (no gimmick), electric_terrain kept. Determinism 17/17; fast suite 1139. Owner-validated 2026-07-16. Closed.

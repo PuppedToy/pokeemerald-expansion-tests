@@ -120,16 +120,16 @@
 | [T-114](T-114-battle-ai-per-archetype.md) | Battle AI tuned per team archetype / format (deferred) | proposed | 0.9.0 | 2026-07-09 |
 | [T-115](T-115-docs-battle-type-badge.md) | Surface each trainer's battle type (Single/Double) in the generated docs viewer | done | 0.7.0 | 2026-07-15 |
 | [T-116](T-116-battle-tag-refinements.md) | Battle-type tag refinements — single/tag tags, Space Center tag battle, Run & Bun E4 labels, rival consistency | done | 0.7.0 | 2026-07-15 |
-| [T-117](T-117-team-decision-audit-log.md) | Team-building decision audit log (per-team decision trace, local + 48h server + audit skill) | in-progress | 0.8.0 | 2026-07-11 |
+| [T-117](T-117-team-decision-audit-log.md) | Team-building decision audit log (per-team decision trace, local + 48h server + audit skill) | done | 0.8.0 | 2026-07-16 |
 | [T-118](T-118-feature-detector-realism.md) | Feature-detector realism — roles by analysed characteristics, not can-learn potential | done | 0.8.0 | 2026-07-15 |
 | [T-119](T-119-archetype-tier-downgrade.md) | Archetype-driven tier downgrade within budget (fill a needed role by downgrading, never upgrading) | proposed | 0.8.0 | 2026-07-11 |
 | [T-120](T-120-team-type-coverage.md) | Global type coverage & type selection for unrestricted trainers | proposed | 0.8.0 | 2026-07-11 |
 | [T-121](T-121-expand-singles-corpus.md) | Expand the singles OU corpus for statistically-robust archetype entry conditions | done | 0.8.0 | 2026-07-15 |
 | [T-122](T-122-role-aware-move-selection.md) | Decision-log accuracy — report DELIVERED roles, not species potential (fix B-026) | done | 0.8.0 | 2026-07-11 |
-| [T-123](T-123-crystallization-correctness.md) | Crystallization correctness — last-resort hyper, gimmick evidence, role-max dedup | in-progress | 0.8.0 | 2026-07-11 |
-| [T-124](T-124-gimmick-aware-completion.md) | Gimmick-aware team completion — build the team to BE the gimmick | in-progress | 0.8.0 | 2026-07-11 |
+| [T-123](T-123-crystallization-correctness.md) | Crystallization correctness — last-resort hyper, gimmick evidence, role-max dedup | done | 0.8.0 | 2026-07-16 |
+| [T-124](T-124-gimmick-aware-completion.md) | Gimmick-aware team completion — build the team to BE the gimmick | done | 0.8.0 | 2026-07-16 |
 | [T-125](T-125-gimmick-conditional-items.md) | Gimmick-conditional item selection + bag provisioning | in-progress | 0.8.0 | 2026-07-11 |
-| [T-126](T-126-trainer-seed-assignments.md) | Trainer archetype/gimmick seed assignments (deliberate variety) | in-progress | 0.8.0 | 2026-07-11 |
+| [T-126](T-126-trainer-seed-assignments.md) | Trainer archetype/gimmick seed assignments (deliberate variety) | abandoned | 0.8.0 | 2026-07-16 |
 | [T-127](T-127-later-gen-advanced-combo-corpus.md) | Later-gen advanced-combo corpus (Gen 8/9/Champions) — mechanic-filtered | proposed | 0.9.0 | 2026-07-11 |
 | [T-128](T-128-favourite-pokemon.md) | Favourite Pokémon — a generalizable "preferred ace" resolved first, dropped if it doesn't fit | done | 0.8.0 | 2026-07-13 |
 | [T-129](T-129-coherent-item-move-assignment.md) | Coherent item + move co-assignment for trainer mons | done | 0.8.0 | 2026-07-14 |

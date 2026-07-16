@@ -1,10 +1,10 @@
 ---
 id: T-123
 title: Crystallization correctness — last-resort hyper, gimmick evidence, role-max dedup
-status: in-progress
+status: done
 type: feature
 created: 2026-07-11
-updated: 2026-07-11
+updated: 2026-07-16
 target-version: 0.8.0
 links: [T-107, T-118, T-121]
 priority: high
@@ -68,3 +68,5 @@ Acceptance criteria:
   Phoebe's double hazard setters).
 
 ## Outcome
+
+Crystallization correctness: hyper-offense de-attractored (distribution flattened), determinism green. The gimmick-evidence bar was delegated to and delivered by T-124; role-max dedup deferred as a minor follow-up. Owner reviewed the distribution and gave the OK 2026-07-16. Closed.
