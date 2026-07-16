@@ -493,6 +493,13 @@ function createTeamResolver(deps) {
                     snow: team.some(m => m.ability === 'SNOW_WARNING' || (m.moves || []).includes('MOVE_HAIL') || (m.moves || []).includes('MOVE_SNOWSCAPE')),
                     sand: team.some(m => m.ability === 'SAND_STREAM' || (m.moves || []).includes('MOVE_SANDSTORM')),
                     powerHerb: newTeamMember.item === 'Power Herb' || (trainer.bag || []).includes('Power Herb'),
+                    // T-125 — terrain context from earlier teammates' surgers (mirrors the weather flags), so a
+                    // mon built after a Surge setter rates its terrain-scaling moves (Rising Voltage / Expanding
+                    // Force / Terrain Pulse / …) up. Format-agnostic.
+                    electricTerrain: team.some(m => m.ability === 'ELECTRIC_SURGE' || m.ability === 'HADRON_ENGINE' || (m.moves || []).includes('MOVE_ELECTRIC_TERRAIN')),
+                    grassyTerrain: team.some(m => m.ability === 'GRASSY_SURGE' || (m.moves || []).includes('MOVE_GRASSY_TERRAIN')),
+                    psychicTerrain: team.some(m => m.ability === 'PSYCHIC_SURGE' || (m.moves || []).includes('MOVE_PSYCHIC_TERRAIN')),
+                    mistyTerrain: team.some(m => m.ability === 'MISTY_SURGE' || (m.moves || []).includes('MOVE_MISTY_TERRAIN')),
                 };
                 // T-132 — under a tentative weather tag (a weather-seeded/crystallised attempt), build every
                 // member AS IF the weather is already up, even before the setter lands. The setter is often

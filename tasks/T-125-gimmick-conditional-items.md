@@ -178,4 +178,20 @@ Acceptance criteria:
     defensive value can be rated conditionally. This is a value-judgment layer the owner wanted to weigh in
     on → paused for confirmation before implementing.
 
+- **2026-07-16 — Increment 7 DONE: terrain-conditional MOVE rating layer (owner-directed).** Mirrored the
+  weather-move pattern exactly. Added terrain flags to `rateMoveForAPokemon` (`inElectricTerrain` /
+  `inGrassyTerrain` / `inPsychicTerrain` / `inMistyTerrain` / `inAnyTerrain`), active if THIS mon has the
+  Surge/Hadron Engine/terrain move OR an earlier teammate does (`ctx.*`); extended the resolver's `selCtx`
+  with those flags (from teammate surgers). Boosted the terrain-scaling moves (magnitudes provisional):
+  Rising Voltage ×1.8 + Psyblade ×1.5 (electric), Expanding Force ×1.6 (psychic), Misty Explosion ×1.5
+  (misty), Grassy Glide ×1.4 (grassy — the team-level priority the owner asked for), Terrain Pulse ×1.9
+  (any terrain), and Steel Roller → 0 off-terrain (it fails). Singles + doubles (owner). Tests:
+  `terrainMoveRating.test.js` (8, real base-data moves); fast suite 1163.
+  - **Aurora Veil + Light Clay:** verified already correct (no change) — see the prior entry.
+  - **Seed value (AV < seed < Eviolite) — DECISION: skipped in the rater.** `rateItemForAPokemon` is
+    team-blind, and the inc.3 seed CLAIM already assigns the matching seed to a bulky mon on a terrain team
+    BEFORE the generic rater pick — so a rater value would be largely redundant and would need a broad
+    team-context signature change through a core rater for marginal benefit. Surfaced to the owner; easy to
+    add later if wanted (e.g. for the docs display). **T-125 increments 1-7 complete — awaiting owner manual test.**
+
 ## Outcome

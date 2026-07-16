@@ -1107,6 +1107,21 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     const inSand = hasAbility('SAND_STREAM')
         || currentMoves.some(m => m.id === 'MOVE_SANDSTORM') || ctx.sand === true;
 
+    // T-125 — TERRAIN context, same shape as weather above: active if THIS mon sets it (own Surge ability /
+    // Hadron Engine / terrain move) OR an EARLIER teammate does (ctx.* from the build loop). Drives the
+    // terrain-scaling attacking moves below (Rising Voltage / Psyblade under electric, Expanding Force under
+    // psychic, Misty Explosion under misty, Grassy Glide under grassy, Terrain Pulse + Steel Roller under any).
+    // Format-agnostic (singles + doubles) — a surger anywhere on the team switches these on.
+    const inElectricTerrain = hasAbility('ELECTRIC_SURGE') || hasAbility('HADRON_ENGINE')
+        || currentMoves.some(m => m.id === 'MOVE_ELECTRIC_TERRAIN') || ctx.electricTerrain === true;
+    const inGrassyTerrain = hasAbility('GRASSY_SURGE')
+        || currentMoves.some(m => m.id === 'MOVE_GRASSY_TERRAIN') || ctx.grassyTerrain === true;
+    const inPsychicTerrain = hasAbility('PSYCHIC_SURGE')
+        || currentMoves.some(m => m.id === 'MOVE_PSYCHIC_TERRAIN') || ctx.psychicTerrain === true;
+    const inMistyTerrain = hasAbility('MISTY_SURGE')
+        || currentMoves.some(m => m.id === 'MOVE_MISTY_TERRAIN') || ctx.mistyTerrain === true;
+    const inAnyTerrain = inElectricTerrain || inGrassyTerrain || inPsychicTerrain || inMistyTerrain;
+
     const maxOff = Math.max(poke.baseAttack, poke.baseSpAttack);
     const avgBulk = (poke.baseHP + poke.baseDefense + poke.baseSpDefense) / 3;
     const offRatio = maxOff / avgBulk;
@@ -1181,6 +1196,16 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     if (move.id === 'MOVE_BLIZZARD' && inSnow) {
         rating += (100 - (move.accuracy || 100)) / 10;   // 100% accurate in snow
     }
+    // T-125 — terrain-scaling attacking moves (magnitudes provisional, mirroring the weather moves above).
+    // Each is boosted ONLY under its terrain (a teammate's Surge counts via ctx.*). Steel Roller FAILS with
+    // no terrain up, so it's worthless off-terrain.
+    if (move.id === 'MOVE_RISING_VOLTAGE' && inElectricTerrain) rating *= 1.8;   // 70→140 vs a grounded target
+    if (move.id === 'MOVE_PSYBLADE' && inElectricTerrain) rating *= 1.5;         // 80→120 in electric terrain
+    if (move.id === 'MOVE_EXPANDING_FORCE' && inPsychicTerrain) rating *= 1.6;   // 80→120 + hits both foes (doubles)
+    if (move.id === 'MOVE_MISTY_EXPLOSION' && inMistyTerrain) rating *= 1.5;     // 100→150 in misty terrain
+    if (move.id === 'MOVE_GRASSY_GLIDE' && inGrassyTerrain) rating *= 1.4;       // gains +1 priority in grassy terrain
+    if (move.id === 'MOVE_TERRAIN_PULSE' && inAnyTerrain) rating *= 1.9;         // 50→100 + becomes the terrain's type
+    if (move.id === 'MOVE_STEEL_ROLLER' && !inAnyTerrain) rating = 0;            // fails when no terrain is up
     if (move.id === 'MOVE_MAGNETIC_FLUX' && (hasAbility('PLUS') || hasAbility('MINUS'))) {
         rating = 8;
     }
