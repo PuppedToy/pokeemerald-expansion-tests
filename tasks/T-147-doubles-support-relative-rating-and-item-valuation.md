@@ -124,6 +124,14 @@ Offensive doubles mons should value defensive/anti-support items much more (they
     Meowstic, Mr Mime, Volbeat…). Owner's "máximo no coja un Zangoose" satisfied.
   - REMAINING: Part 3 (Safety Goggles / Covert Cloak item valuation on offensive doubles mons); a
     calibration pass + owner review of a regenerated mixed run (task plan step 6); browser-bundle rebuild.
+- **2026-07-17** — Owner refinement: **exclude the Prankster ×1.5 from the scale's MAX** (a Prankster
+  outlier was compressing the OU band to the floor). `computeSupportScale` now takes `baseMax` =
+  highest rating with `applyPranksterMult:false` (Prankster mons still clear OU via their mult-on rating);
+  the ≥10 floor uses actual ratings. Re-checked (seed 42): OU 11, UU 65 (band no longer floor-bound).
+- **2026-07-17** — Implemented Part 3 (items): `rateItemForAPokemon` gained a `doubles` param; **Safety
+  Goggles** 5 → 8.5 and **Covert Cloak** 2.5 → 7.5 on an offensive doubles mon (a dedicated support gets no
+  bump); threaded `battleType` from `resolveTrainerTeam`. Tests added (rateItemForAPokemon, 3). Full suite
+  1199 pass. Bundle rebuilt. Awaiting owner review of a regenerated mixed run (calibration step).
 
 ## Outcome
 

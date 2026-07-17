@@ -543,7 +543,7 @@ function createTeamResolver(deps) {
                         .filter(bagItemId => !(isSupportMon && SUPPORT_FORBIDDEN_ITEMS.has(bagItemId)))
                         .map(bagItemId => ({
                             id: bagItemId,
-                            rating: rateItemForAPokemon(bagItemId, battlePoke, ability, movesetObjects, trainer.level, trainer.bag.length, GENERIC_DEVIATION),
+                            rating: rateItemForAPokemon(bagItemId, battlePoke, ability, movesetObjects, trainer.level, trainer.bag.length, GENERIC_DEVIATION, /double/i.test(trainer.battleType || '')),
                         }))
                         .filter(bi => bi.rating > 0)
                         .sort((a, b) => b.rating - a.rating)

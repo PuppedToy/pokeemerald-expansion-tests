@@ -1436,7 +1436,11 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     return rating;
 }
 
-function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, deviation = 0) {
+function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, deviation = 0, doubles = false) {
+    // T-147 — an offensive DOUBLES mon values anti-support tech much more (Safety Goggles vs Rage Powder
+    // redirection + Spore/powder; Covert Cloak vs Fake Out + secondary effects). A dedicated support doesn't
+    // get this bump. `doubles` threads from the trainer's battleType at the call site.
+    const doublesOffense = doubles && !(poke && poke.isSupportDoubles);
     const itemId = 'ITEM_' + item.replace(/ /, '_').toUpperCase();
     const bestOffensePowerWithSpeed = (Math.max(poke.baseAttack, poke.baseSpAttack) + poke.baseSpeed)/200;
     const bestOffensePower = Math.max(poke.baseAttack, poke.baseSpAttack)/100;
@@ -1766,7 +1770,13 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         if (hasInsomniaAndSuch || isGrassType) {
             return 0;
         }
-        return 5 * calculatedDeviation;
+        // T-147 — a big pick for an offensive doubles mon: immunity to Rage Powder redirection + Spore/powder.
+        return (doublesOffense ? 8.5 : 5) * calculatedDeviation;
+    }
+    if (item === 'Covert Cloak') {
+        // T-147 — blocks Fake Out (flinch) + added-effect disruption; premium anti-support tech in doubles,
+        // marginal in singles.
+        return (doublesOffense ? 7.5 : 2.5) * calculatedDeviation;
     }
     if (item === 'Jaboca Berry') {
         if (hasHarvest || hasCudChew || hasRipen || hasCheekPouch)
@@ -3718,7 +3728,10 @@ const SUPPORT_TIER_MIN_BST = { OU: 440, UU: 380, RU: 320 };
 // The species' doubles SUPPORT rating: Σ capped tool points − offensive-tier penalty (never below 0).
 // `offensiveTier` is the mon's pure offensive doubles tier; falls back to tierFromRatingDoubles(poke.
 // ratingDoubles) (set at rating time) so detectors/selectors can call it with just the poke.
-function supportRating(poke, offensiveTier) {
+// `applyPranksterMult` (T-147): the dex-wide scale (computeSupportScale) computes its MAX with this OFF, so
+// a Prankster ×1.5 outlier doesn't compress the percentile band — Prankster mons still rise above the max
+// via the multiplier when their OWN (mult-on) rating is compared to the scale, they just don't define it.
+function supportRating(poke, offensiveTier, { applyPranksterMult = true } = {}) {
     const abils = poke.parsedAbilities || [];
     const learnable = new Set([...(poke.learnset || []).map(l => l.move), ...(poke.teachables || [])]);
     let pts = 0;
@@ -3731,7 +3744,7 @@ function supportRating(poke, offensiveTier) {
     }
     // T-147 — Prankster gives every status move +1 priority → it MULTIPLIES the support kit's value (its
     // worth is conditional on carrying status moves), rather than adding a flat amount.
-    if (abils.includes('PRANKSTER')) pts *= PRANKSTER_SUPPORT_MULT;
+    if (applyPranksterMult && abils.includes('PRANKSTER')) pts *= PRANKSTER_SUPPORT_MULT;
     const offT = offensiveTier || (typeof poke.ratingDoubles === 'number' ? tierFromRatingDoubles(poke.ratingDoubles) : null);
     return Math.max(0, pts - (SUPPORT_PENALTY_BY_TIER[offT] || 0));
 }
@@ -3744,13 +3757,15 @@ function supportRating(poke, offensiveTier) {
 const SUPPORT_OU_MIN_COUNT = 10;
 const bstOf = p => (p.baseHP || 0) + (p.baseAttack || 0) + (p.baseDefense || 0) + (p.baseSpAttack || 0) + (p.baseSpDefense || 0) + (p.baseSpeed || 0);
 function computeSupportScale(pokes) {
-    const rOf = p => supportRating(p, tierFromRatingDoubles(p.ratingDoubles));
-    const all = pokes.map(rOf).filter(r => r > 0).sort((a, b) => b - a);
-    const max = all[0] || 0;
-    // 10th-best among BST-OU-viable mons (so the floor guarantees a real OU pool, not frail high-scorers).
-    const viable = pokes.filter(p => bstOf(p) >= SUPPORT_TIER_MIN_BST.OU).map(rOf).filter(r => r > 0).sort((a, b) => b - a);
-    const tenth = viable.length ? viable[Math.min(SUPPORT_OU_MIN_COUNT, viable.length) - 1] : 0;
-    return { OU: Math.min(0.75 * max, tenth), UU: 0.5 * max, RU: 0.25 * max };
+    const offT = p => tierFromRatingDoubles(p.ratingDoubles);
+    // The percentile band's MAX excludes the Prankster ×1.5 (owner T-147) so one Prankster outlier can't
+    // compress OU down to the floor for everyone else.
+    const baseMax = Math.max(0, ...pokes.map(p => supportRating(p, offT(p), { applyPranksterMult: false })));
+    // The ≥10-OU floor uses the ACTUAL (mult-on) ratings among BST-OU-viable mons, so ≥10 real mons always
+    // clear the OU bar (and frail high-scorers don't count).
+    const viableActual = pokes.filter(p => bstOf(p) >= SUPPORT_TIER_MIN_BST.OU).map(p => supportRating(p, offT(p))).filter(r => r > 0).sort((a, b) => b - a);
+    const tenth = viableActual.length ? viableActual[Math.min(SUPPORT_OU_MIN_COUNT, viableActual.length) - 1] : 0;
+    return { OU: Math.min(0.75 * baseMax, tenth), UU: 0.5 * baseMax, RU: 0.25 * baseMax };
 }
 // The support TIER (OU/UU/RU) or null — the highest tier where BOTH the rating clears the (relative or, by
 // default, absolute) threshold AND the BST clears the viability minimum (a frail pre-evo with a big kit is
