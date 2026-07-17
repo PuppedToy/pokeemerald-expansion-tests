@@ -9,6 +9,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **The Museum and Space Center grunt "gauntlets" now read as one back-to-back fight.** The 2 Slateport
+  Museum grunts and the 3 Mossdeep Space Center grunts each count as a single unit when balancing the
+  singles/doubles mix (so a gauntlet is all-singles or all-doubles, never split), and every one carries a
+  "Gauntlet Battle N" badge (its number within the run — Museum 1-2, Space Center 1-3) in every format (T-145).
+
 - **Mixed battles can now run "first half singles, second half doubles".** A new opt-in checkbox in the
   Mixed panel makes the early game single battles and the later game double battles, switching at a boss
   chosen by the singles % (a higher % pushes the switch later). Left off (the default), single and double
