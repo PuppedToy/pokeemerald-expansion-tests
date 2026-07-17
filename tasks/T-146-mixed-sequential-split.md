@@ -1,7 +1,7 @@
 ---
 id: T-146
 title: Mixed sub-mode — first half of the game singles, second half doubles (breakpoint boss by singles %)
-status: in-progress
+status: done
 type: feature
 created: 2026-07-17
 updated: 2026-07-17
@@ -36,18 +36,33 @@ rest doubles, switching at a boss whose position comes from the singles %. See A
 
 ## Acceptance criteria
 
-- [ ] Frontend checkbox present (unchecked default) + help text; round-trip through worker + backend config.
-- [ ] Sequential split: all battles before the breakpoint boss are singles, breakpoint boss + after are
+- [x] Frontend checkbox present (unchecked default) + help text; round-trip through worker + backend config.
+- [x] Sequential split: all battles before the breakpoint boss are singles, breakpoint boss + after are
       doubles; breakpoint is a boss derived from `round(% × numBosses)`; unit-tested at several %.
-- [ ] Tate & Liza not forced to doubles in this mode; champion follows sequential position.
-- [ ] Run & Bun on: E4 excluded from the split (RB clones/choice intact), rest split sequentially; tested.
-- [ ] `cd randomizer && npm test` + frontend tests green; determinism gates intact.
+- [x] Tate & Liza not forced to doubles in this mode; champion follows sequential position.
+- [x] Run & Bun on: E4 excluded from the split (RB clones/choice intact), rest split sequentially; tested.
+- [x] `cd randomizer && npm test` + frontend tests green; determinism gates intact.
 
 ## Progress log
 
 - **2026-07-17** — Task created; design in ADR-018 §2 (owner-validated: % over bosses, champion follows
   position). Batched with T-145. Starting after T-145.
+- **2026-07-17** — Implemented (Red→Green): sequential branch in `battleFormat.js` (bossCaps milestone
+  spine by displayOrder; `singlesCount = round(fraction × numBosses)`; before→singles, breakpoint+after→
+  doubles; champion/T&L by position; RB excludes the E4 from the split + count); `displayOrder` threaded via
+  `trainersModule.js`; frontend checkbox + config plumbing (worker + backend) + round-trip test. Unit: 6 new
+  sequential tests. E2E on the real generator (mixed 60% singles): 156 singles → 50 doubles → 3 tag,
+  breakpoint = Maxie Magma Hideout (a boss), 0 singles after the first double. npm test 1190; frontend 78;
+  backend 132; RUN_DETERMINISM gates 18/18. **Owner manually tested the half-doubles setting and confirmed
+  it is correct (2026-07-17) → close.**
 
 ## Outcome
 
-_(pending)_
+Shipped (owner-confirmed 2026-07-17). New opt-in mixed sub-mode `mixedSequentialSplit`: the game's first
+part is single battles and the rest double battles, switching at the boss milestone at
+`round(singlesPercent × numBosses)` (bossCaps spine ordered by displayOrder; before → singles, breakpoint
+boss + after → doubles, ≥2-mon eligibility gate). Champion and Tate & Liza follow their sequential position
+(no forcing — the ADR-014 rule-8 T&L-first ordering and the champion majority rule are proportional-only).
+Run & Bun coexists: the four E4 keep their base-singles + `_DOUBLES`-clone treatment and are excluded from
+the split and the boss count. Off by default (unchecked) → the ADR-014 interleaved proportional assignment
+is unchanged. Design: ADR-018 §2. Follow-up ideas for the doubles support/item rating captured in T-147.

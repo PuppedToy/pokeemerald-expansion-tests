@@ -9,6 +9,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Mixed battles can now run "first half singles, second half doubles".** A new opt-in checkbox in the
+  Mixed panel makes the early game single battles and the later game double battles, switching at a boss
+  chosen by the singles % (a higher % pushes the switch later). Left off (the default), single and double
+  battles stay interleaved across the whole game as before. Works alongside League Run & Bun (the Elite Four
+  keep their in-game singles-or-doubles choice) (T-146).
+
 - **Doubles now has its own tier list, shown next to singles in the docs.** Every Pokémon is rated
   twice — once for singles, once for doubles — with the doubles rating re-weighted for the 6v6 meta
   (bulk over raw speed, a premium on spread damage and support) on its own tier scale. Raw BST still
