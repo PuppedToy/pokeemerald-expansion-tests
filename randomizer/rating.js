@@ -3793,11 +3793,16 @@ function assignSupportTiersDoubles(pokes) {
     }
     return scale;
 }
-// A mon is a dedicated support iff it earns a support tier. Prefers the STORED (relative) tier stamped by
-// assignSupportTiersDoubles; falls back to an absolute compute for isolated callers (tests).
+// A mon is a dedicated support iff its SUPPORT tier is at least as high as its OFFENSIVE tier (owner T-147:
+// "si tier normal > tier support NO ES SUPPORT"). An OU attacker that merely learns a couple of support
+// moves (support tier RU, offence OU) is NOT a dedicated support — so the support role/hard-pick never
+// fields it. Prefers the STORED relative tiers stamped by assignSupportTiersDoubles; falls back to an
+// isolated compute for tests.
 function isDedicatedSupport(poke) {
-    if (poke && poke.supportTierDoubles !== undefined) return poke.supportTierDoubles != null;
-    return supportTierDoubles(poke) != null;
+    if (!poke) return false;
+    const offT = tierFromRatingDoubles(poke.ratingDoubles);
+    const supT = (poke.supportTierDoubles !== undefined) ? poke.supportTierDoubles : supportTierDoubles(poke, offT);
+    return !!supT && TIER_SEQ.indexOf(supT) >= TIER_SEQ.indexOf(offT);
 }
 
 // ITEMISED support breakdown — the exact tools + their quality-tier points, the offensive-tier penalty and

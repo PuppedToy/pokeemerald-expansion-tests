@@ -232,6 +232,13 @@ describe('T-147 — Prankster ×1.5, god combos, Ruin, and relative-to-max suppo
         expect(s.OU).toBeLessThanOrEqual(24); // floored to the 10th-best so the 24-raters stay OU-eligible
     });
 
+    test('isDedicatedSupport requires support-dominance — offence tier > support tier is NOT a support (owner rule)', () => {
+        expect(isDedicatedSupport({ ratingDoubles: 7.8, supportTierDoubles: 'RU' })).toBe(false); // Spectrier-like: OU offence, RU support
+        expect(isDedicatedSupport({ ratingDoubles: 3.0, supportTierDoubles: 'OU' })).toBe(true);   // real support: low offence, OU support
+        expect(isDedicatedSupport({ ratingDoubles: 7.8, supportTierDoubles: 'OU' })).toBe(true);   // tie (support == offence) counts as support
+        expect(isDedicatedSupport({ ratingDoubles: 3.0, supportTierDoubles: null })).toBe(false);  // no support tier
+    });
+
     test('assignSupportTiersDoubles: top support OU+tagged; a Taunt/T-Wave filler is NOT OU; a pure attacker untagged', () => {
         const dex = [
             mon('TOPSUP', 3.0, ['PRANKSTER'], ['MOVE_FAKE_OUT', 'MOVE_TAILWIND', 'MOVE_FOLLOW_ME', 'MOVE_ENCORE']),

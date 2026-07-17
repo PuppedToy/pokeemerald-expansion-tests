@@ -133,6 +133,15 @@ Offensive doubles mons should value defensive/anti-support items much more (they
   bump); threaded `battleType` from `resolveTrainerTeam`. Tests added (rateItemForAPokemon, 3). Full suite
   1199 pass. Bundle rebuilt. Awaiting owner review of a regenerated mixed run (calibration step).
 
+- **2026-07-17** — Owner review of a regenerated run (Champion Steven, doubles): the `dedicatedSupport`
+  role was being filled by **offence-dominant** mons (Deoxys Attack, Spectrier — OU offence, only an RU
+  support tier), so a "redirection_support" team fielded no real support. Root cause: `isDedicatedSupport`
+  meant "has a support tier ≥ RU" (T-141), which admits attackers. Owner rule: "si tier normal > tier
+  support NO ES SUPPORT". Fixed: `isDedicatedSupport` now requires **support tier ≥ offensive tier**
+  (support-dominant, ties allowed) — the hard-pick/detector never fields an offence-dominant mon. Verified:
+  Deoxys Attack / Spectrier → dedicated=false; Hitmontop / Amoonguss / (UU) Zangoose stay supports. Test
+  added; npm test 1200 pass.
+
 ## Outcome
 
 _(pending)_
