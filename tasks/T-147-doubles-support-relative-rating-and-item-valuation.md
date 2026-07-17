@@ -1,7 +1,7 @@
 ---
 id: T-147
 title: Doubles support rating — relative-to-max scaling + tool tuning; offensive doubles item valuation
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-17
 updated: 2026-07-17
@@ -82,6 +82,48 @@ Offensive doubles mons should value defensive/anti-support items much more (they
 
 - **2026-07-17** — Task created from owner feedback + the Zangoose audit. Preliminary corpus/bundle check
   done (97 → 22 OU under the relative model; Zangoose 27 → UU). Not started (extra session).
+- **2026-07-17** — Started (owner: "empiézala"). Step 1 = corpus validation (analysis-first). Counted the
+  145-team / 870-member doubles corpus (docs/research/corpus.json) for every tool the owner proposed to
+  re-weight (% of teams fielding ≥1):
+  - **Moves:** Protect 70% (excluded — universal), **Fake Out 36%**, **Taunt 30%**, Will-O-Wisp 24%,
+    **Tailwind 22%**, Thunder Wave 21%, **Spore 14%**, **Rage Powder 11%**, Helping Hand 9%,
+    **Wide Guard 8%**, Icy Wind 8%, Quick Guard 6%, **Follow Me 5%** (corpus under-counts it — the doc's
+    note), Encore 5%, Perish Song 4%.
+  - **Abilities:** **Intimidate 52%**, Regenerator 29%, **Prankster 12%**, Storm Drain 5%, Lightning Rod 4%.
+    **Friend Guard / Hospitality / the Ruin abilities = 0%** (all Gen 8/9 — absent from the Gen 6-7 corpus;
+    their value is a mechanics/meta call, not frequency, per doubles-support.md §Corpus-caveat).
+  - **Items:** Choice 47%, Assault Vest 23%, **Safety Goggles 8%** (real corpus presence on offensive mons
+    — validates Part 3), **Covert Cloak 0%** (Gen 9 item — mechanics call).
+  - Verdict per proposal (see the owner message): Fake Out→12 (36% — strong), Tailwind→12 (22% — strong),
+    Rage Powder/Follow Me→12 (archetype-defining redirection, doc-flagged under-count — ok), Spore→12 (14%
+    hard-disable — ok), Wide Guard→12 (only 8% — FLAG: maybe 8-10, not 12). Friend Guard/Hospitality 16 &
+    Ruin +4 & Covert Cloak: no corpus data → mechanics calls (accept on owner's judgement). Prankster ×1.5
+    (12%): synergy-correct (its value is conditional on carrying status moves). Awaiting owner sign-off on
+    the final value table before coding.
+- **2026-07-17** — Owner sign-off on the two open points: **Wide Guard → 10** (not 12 — its 8% corpus
+  presence); **keep the BST-total viability gate** (the percentile alone drops Zangoose to UU). FINAL SPEC:
+  - Move points: Follow Me 12, Rage Powder 12, Fake Out 12, Tailwind 12, Spore 12; Wide Guard 10;
+    Taunt/Thunder Wave/Will-O-Wisp/Trick Room/Perish Song stay 8; Quick Guard stays 5. Raise
+    `SUPPORT_TOOL_CAP` 8 → 16 so >8 values take effect.
+  - Ability points: Friend Guard 16, Hospitality 16; Ruin abilities (Beads/Sword/Tablets/Vessel of Ruin)
+    +4 each; Intimidate/Regenerator/surges stay 8. **Prankster** becomes a **×1.5 multiplier on the whole
+    support total** (no longer a flat +8). Combo: Encore+Prankster / Encore+Tailwind → small extra.
+  - Relative tiers (two-pass): OU ≥ 0.75·max, UU ≥ 0.50·max, RU ≥ 0.25·max (max = dex-wide highest support
+    rating); OU floored so ≥10 mons reach OU (`min(0.75·max, 10th-best)`); keep the BST viability floor.
+  - Items: Safety Goggles + Covert Cloak valued up on offensive doubles mons.
+- **2026-07-17** — Implemented Part 1 + Part 2 (TDD, `rating.js` + `pokedexModule.js`):
+  - New tool values (premium 12 / elite 8 / Wide Guard 10 / good 5 / filler 2; Friend Guard & Hospitality
+    16; Ruin +4), `SUPPORT_TOOL_CAP` 8→16, Prankster ×1.5 multiplier, Encore+{Prankster,Tailwind} +4 combos.
+  - `computeSupportScale(pokes)` (OU 0.75·max / UU 0.5·max / RU 0.25·max, ≥10-OU floor) +
+    `assignSupportTiersDoubles(pokes)` (second pass, wired into `pokedexModule` after rebalance);
+    `supportTierDoubles` gained a `scale` param (absolute recalibrated to {30,20,13} as the isolated
+    fallback); `isDedicatedSupport` reads the stored relative tier. New unit tests (T-147 block, 6) +
+    updated the T-141 value/breakdown assertions for the new spec. Full suite 1196 pass.
+  - **E2E (fresh gen, seed 42, rebalance 0.4):** OU support **97 → 10** (≥10 floor bound; max 61.5), UU 46,
+    RU 328; **Zangoose OU → UU** (rating 32); OU pool = genuine supports (Maushold, Hitmontop, Gallade,
+    Meowstic, Mr Mime, Volbeat…). Owner's "máximo no coja un Zangoose" satisfied.
+  - REMAINING: Part 3 (Safety Goggles / Covert Cloak item valuation on offensive doubles mons); a
+    calibration pass + owner review of a regenerated mixed run (task plan step 6); browser-bundle rebuild.
 
 ## Outcome
 

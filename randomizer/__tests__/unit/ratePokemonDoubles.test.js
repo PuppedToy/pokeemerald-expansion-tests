@@ -4,7 +4,7 @@
 // redirection / Intimidate / Fake Out / speed control / terrain / weather / pivot), frailty + passive-wall
 // penalties, and the own doubles tier scale. Owner-validated design + calibration.
 
-const { bstRatingDoubles, computeComboBonusDoubles, tierFromRatingDoubles, ratePokemonDoubles, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, supportRating, supportTierDoubles, supportToolBreakdown, topSupportMoves, isDedicatedSupport } = require('../../rating');
+const { bstRatingDoubles, computeComboBonusDoubles, tierFromRatingDoubles, ratePokemonDoubles, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, supportRating, supportTierDoubles, supportToolBreakdown, topSupportMoves, isDedicatedSupport, computeSupportScale, assignSupportTiersDoubles } = require('../../rating');
 const { TIER_SEQ: _TIER_SEQ } = require('../../constants');
 
 describe('bstRatingDoubles — bulk↑ / speed↓ re-weighting', () => {
@@ -131,7 +131,7 @@ describe('T-141 Phase 3 (r4) — support = QUALITY-TIER RATING with an offensive
 
     test('each tool is worth its quality tier — elite 8, and a single elite tool never exceeds it', () => {
         expect(supportRating({ parsedAbilities: ['INTIMIDATE'], learnset: [], teachables: [] }, 'RU')).toBe(8); // elite ability
-        expect(supportRating({ parsedAbilities: [], learnset: learns('MOVE_TAILWIND'), teachables: [] }, 'RU')).toBe(8); // elite move
+        expect(supportRating({ parsedAbilities: [], learnset: learns('MOVE_TAILWIND'), teachables: [] }, 'RU')).toBe(12); // T-147 premium move
         expect(supportRating({ parsedAbilities: [], learnset: learns('MOVE_HEAL_PULSE'), teachables: [] }, 'RU')).toBe(2); // filler move
     });
     test('QUALITY beats BREADTH: three elite tools out-rate six filler tools (owner: Calyrex must NOT be OU)', () => {
@@ -192,16 +192,74 @@ describe('T-141 Phase 3 (r4) — support = QUALITY-TIER RATING with an offensive
     });
 });
 
+describe('T-147 — Prankster ×1.5, god combos, Ruin, and relative-to-max support tiers', () => {
+    const learns = (...mv) => mv.map(m => ({ level: 1, move: m }));
+    const VBST = { baseHP: 80, baseAttack: 70, baseDefense: 90, baseSpAttack: 80, baseSpDefense: 90, baseSpeed: 80 }; // 490, BST-viable OU
+    const mon = (id, ratingDoubles, abils, mv) => ({ id, ratingDoubles, parsedAbilities: abils, learnset: learns(...mv), teachables: [], ...VBST });
+
+    test('premium/max tool values (Fake Out/Tailwind/Rage Powder/Follow Me/Spore 12, Wide Guard 10, Friend Guard/Hospitality 16, Ruin 4)', () => {
+        const r = (abils, ...mv) => supportRating({ parsedAbilities: abils, learnset: learns(...mv), teachables: [] }, 'RU');
+        expect(r([], 'MOVE_FAKE_OUT')).toBe(12);
+        expect(r([], 'MOVE_RAGE_POWDER')).toBe(12);
+        expect(r([], 'MOVE_SPORE')).toBe(12);
+        expect(r([], 'MOVE_WIDE_GUARD')).toBe(10);
+        expect(r(['FRIEND_GUARD'])).toBe(16);
+        expect(r(['HOSPITALITY'])).toBe(16);
+        expect(r(['BEADS_OF_RUIN'])).toBe(4);
+    });
+
+    test('Prankster ×1.5 multiplies the whole support total (not a flat add)', () => {
+        const kit = ['MOVE_TAILWIND', 'MOVE_TAUNT']; // 12 + 8 = 20
+        expect(supportRating({ parsedAbilities: [], learnset: learns(...kit), teachables: [] }, 'RU')).toBe(20);
+        expect(supportRating({ parsedAbilities: ['PRANKSTER'], learnset: learns(...kit), teachables: [] }, 'RU')).toBe(30); // 20 × 1.5
+    });
+
+    test('god combos: Encore+Tailwind (+4) and Encore+Prankster (+4, then ×1.5)', () => {
+        expect(supportRating({ parsedAbilities: [], learnset: learns('MOVE_ENCORE', 'MOVE_TAILWIND'), teachables: [] }, 'RU')).toBe(21); // 5+12+4
+        expect(supportRating({ parsedAbilities: ['PRANKSTER'], learnset: learns('MOVE_ENCORE'), teachables: [] }, 'RU')).toBeCloseTo(13.5); // (5+4)×1.5
+    });
+
+    test('computeSupportScale: OU=0.75·max / UU=0.5·max / RU=0.25·max when there are ≥10 top scorers', () => {
+        const dex = Array.from({ length: 12 }, (_, i) => mon('S' + i, 3.0, [], ['MOVE_FAKE_OUT', 'MOVE_TAILWIND', 'MOVE_RAGE_POWDER'])); // 36 each
+        const s = computeSupportScale(dex);
+        expect(s.OU).toBeCloseTo(27); expect(s.UU).toBeCloseTo(18); expect(s.RU).toBeCloseTo(9);
+    });
+
+    test('≥10-OU floor: a lone huge max does not shut everyone else out of OU', () => {
+        const dex = [mon('MAX', 3.0, ['PRANKSTER'], ['MOVE_FAKE_OUT', 'MOVE_TAILWIND', 'MOVE_FOLLOW_ME', 'MOVE_ENCORE'])];
+        for (let i = 0; i < 11; i++) dex.push(mon('M' + i, 3.0, [], ['MOVE_FAKE_OUT', 'MOVE_TAILWIND'])); // 24 each
+        const s = computeSupportScale(dex);
+        expect(s.OU).toBeLessThanOrEqual(24); // floored to the 10th-best so the 24-raters stay OU-eligible
+    });
+
+    test('assignSupportTiersDoubles: top support OU+tagged; a Taunt/T-Wave filler is NOT OU; a pure attacker untagged', () => {
+        const dex = [
+            mon('TOPSUP', 3.0, ['PRANKSTER'], ['MOVE_FAKE_OUT', 'MOVE_TAILWIND', 'MOVE_FOLLOW_ME', 'MOVE_ENCORE']),
+            ...Array.from({ length: 10 }, (_, i) => mon('F' + i, 3.0, [], ['MOVE_FAKE_OUT', 'MOVE_TAILWIND', 'MOVE_RAGE_POWDER'])),
+            mon('ZANGOOSE', 3.0, [], ['MOVE_TAUNT', 'MOVE_THUNDER_WAVE', 'MOVE_QUICK_GUARD']), // 8+8+5 = 21
+            mon('ATTACKER', 9.0, [], ['MOVE_EARTHQUAKE']),
+        ];
+        assignSupportTiersDoubles(dex);
+        const by = id => dex.find(p => p.id === id);
+        expect(by('TOPSUP').supportTierDoubles).toBe('OU');
+        expect(by('TOPSUP').isSupportDoubles).toBe(true);          // support tier beats its (low) offensive tier
+        expect(by('TOPSUP').tierDoubles).toBe('OU');
+        expect(by('ATTACKER').supportTierDoubles).toBeNull();       // no support tools
+        expect(by('ATTACKER').isSupportDoubles).toBe(false);
+        expect(by('ZANGOOSE').supportTierDoubles).not.toBe('OU');   // filler disruption, relatively low → drops out of OU
+    });
+});
+
 describe('T-141 r4 — support audit + moveset helpers', () => {
     const learns = (...mv) => mv.map(m => ({ level: 1, move: m }));
 
     test('supportToolBreakdown itemises the tools best-first with the penalty and rating', () => {
         const kit = { parsedAbilities: ['REGENERATOR'], ratingDoubles: 7.8, learnset: learns('MOVE_SPORE', 'MOVE_HELPING_HAND', 'MOVE_HEAL_PULSE'), teachables: [] };
         const b = supportToolBreakdown(kit, 'OU');
-        expect(b.tools.map(t => t.id)).toEqual(['MOVE_SPORE', 'REGENERATOR', 'MOVE_HELPING_HAND', 'MOVE_HEAL_PULSE']); // 8,8,5,2 — sorted desc
-        expect(b.pts).toBe(23);
+        expect(b.tools.map(t => t.id)).toEqual(['MOVE_SPORE', 'REGENERATOR', 'MOVE_HELPING_HAND', 'MOVE_HEAL_PULSE']); // 12,8,5,2 — sorted desc
+        expect(b.pts).toBe(27);          // T-147 — Spore premium 12 + Regen 8 + Helping Hand 5 + Heal Pulse 2
         expect(b.penalty).toBe(10);      // OU offensive penalty
-        expect(b.rating).toBe(13);       // 23 − 10
+        expect(b.rating).toBe(17);       // 27 − 10
         expect(b.offTier).toBe('OU');
     });
     test('topSupportMoves ranks a mon\'s learnable support MOVES best-first, honouring filter + limit', () => {

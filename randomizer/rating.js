@@ -3651,13 +3651,21 @@ function computeComboBonusDoubles(poke, moves, { offensePower }) {
 // (UU), 3 elite → 24 (OU), while filler breadth barely moves (six filler ≈ 12). Protect is EXCLUDED
 // (universal utility, on 56% of ALL mons incl. attackers — not a support discriminator).
 // docs/research/doubles-support.md §2-3.
-const SUPPORT_ELITE = 8, SUPPORT_GOOD = 5, SUPPORT_FILLER = 2;
+// T-147 (owner, corpus-validated) — a PREMIUM tier (12) above elite (8): the genuinely build-defining
+// doubles tools that must set the top of the (now relative) scale — redirection (Follow Me 5% but corpus-
+// under-counted / archetype-defining; Rage Powder 11%), Fake Out (36% — 2nd only to Protect), Tailwind
+// (22% speed control), Spore (14% hard-disable). Taunt/Thunder Wave stay ELITE (common but universal TMs,
+// so the relative scale — not their raw value — stops them from manufacturing a support). Wide Guard 10 (an
+// owner call — only 8% corpus, so between good and premium). See tasks/T-147 + docs/research/doubles-support.md.
+const SUPPORT_PREMIUM = 12, SUPPORT_ELITE = 8, SUPPORT_GOOD = 5, SUPPORT_FILLER = 2;
 const SUPPORT_MOVE_POINTS = {
-    // ELITE (8) — build-defining doubles support: speed control, redirection, reliable disruption/sleep.
-    MOVE_FAKE_OUT: 8, MOVE_TRICK_ROOM: 8, MOVE_TAILWIND: 8, MOVE_RAGE_POWDER: 8, MOVE_FOLLOW_ME: 8,
-    MOVE_TAUNT: 8, MOVE_SPORE: 8, MOVE_WILL_O_WISP: 8, MOVE_THUNDER_WAVE: 8, MOVE_PERISH_SONG: 8,
+    // PREMIUM (12) — build-defining: redirection, Fake Out, speed control, hard-disable.
+    MOVE_FAKE_OUT: 12, MOVE_TAILWIND: 12, MOVE_RAGE_POWDER: 12, MOVE_FOLLOW_ME: 12, MOVE_SPORE: 12,
+    // ELITE (8) — strong but common/universal disruption + Trick Room / Perish Song.
+    MOVE_TRICK_ROOM: 8, MOVE_TAUNT: 8, MOVE_WILL_O_WISP: 8, MOVE_THUNDER_WAVE: 8, MOVE_PERISH_SONG: 8,
+    MOVE_WIDE_GUARD: 10,
     // GOOD (5) — real support, but not alone build-defining: guards, single-target speed drops, cleric, pivot.
-    MOVE_HELPING_HAND: 5, MOVE_WIDE_GUARD: 5, MOVE_QUICK_GUARD: 5, MOVE_ICY_WIND: 5, MOVE_ELECTROWEB: 5,
+    MOVE_HELPING_HAND: 5, MOVE_QUICK_GUARD: 5, MOVE_ICY_WIND: 5, MOVE_ELECTROWEB: 5,
     MOVE_SNARL: 5, MOVE_ENCORE: 5, MOVE_PARTING_SHOT: 5, MOVE_SLEEP_POWDER: 5, MOVE_DECORATE: 5,
     MOVE_POLLEN_PUFF: 5, MOVE_COACHING: 5, MOVE_NUZZLE: 5, MOVE_AROMATHERAPY: 5, MOVE_HEAL_BELL: 5,
     // FILLER (2) — situational / unreliable: heals, screens, one-target utility, RNG sleep.
@@ -3667,16 +3675,27 @@ const SUPPORT_MOVE_POINTS = {
     MOVE_HYPNOSIS: 2, MOVE_LOVELY_KISS: 2, MOVE_GRASS_WHISTLE: 2, MOVE_SING: 2,
 };
 const SUPPORT_ABILITY_POINTS = {
-    // ELITE (8) — the build-defining doubles support abilities (Intimidate is on 69% of corpus teams).
-    INTIMIDATE: 8, PRANKSTER: 8, REGENERATOR: 8, ELECTRIC_SURGE: 8, MISTY_SURGE: 8, GRASSY_SURGE: 8,
-    PSYCHIC_SURGE: 8, FRIEND_GUARD: 8, HOSPITALITY: 8,
+    // MAX (16) — dedicated-support signature abilities (Gen 8/9; absent from the Gen 6-7 corpus, so this is
+    // a mechanics call, owner T-147): Friend Guard (25% ally damage cut) / Hospitality (heal ally on entry).
+    FRIEND_GUARD: 16, HOSPITALITY: 16,
+    // ELITE (8) — the build-defining doubles support abilities (Intimidate is on 52% of corpus teams).
+    // PRANKSTER is NOT here — it is a ×1.5 MULTIPLIER on the whole support total (its value is conditional
+    // on carrying status moves; see supportRating).
+    INTIMIDATE: 8, REGENERATOR: 8, ELECTRIC_SURGE: 8, MISTY_SURGE: 8, GRASSY_SURGE: 8,
+    PSYCHIC_SURGE: 8,
     // GOOD (5) — redirection abilities, priority-block, ally healers/guards.
     ARMOR_TAIL: 5, STORM_DRAIN: 5, LIGHTNING_ROD: 5, QUEENLY_MAJESTY: 5, DAZZLING: 5, HEALER: 5,
     AROMA_VEIL: 5, SWEET_VEIL: 5, TELEPATHY: 5,
+    // RUIN (4, owner T-147) — the Ruin abilities drop a stat of every other mon (incl. the ally); a small
+    // team-wide utility credit. No corpus data (Gen 9).
+    BEADS_OF_RUIN: 4, SWORD_OF_RUIN: 4, TABLETS_OF_RUIN: 4, VESSEL_OF_RUIN: 4,
     // FILLER (2) — absorb typings that only incidentally help an ally.
     WATER_ABSORB: 2, VOLT_ABSORB: 2, SAP_SIPPER: 2,
 };
-const SUPPORT_TOOL_CAP = 8;              // == SUPPORT_ELITE; the ceiling a single tool can contribute
+const SUPPORT_TOOL_CAP = 16;             // T-147 — raised 8 → 16 so the premium/max tools take full effect
+const PRANKSTER_SUPPORT_MULT = 1.5;      // T-147 — Prankster multiplies the support total (conditional value)
+// T-147 — "god combo" bonuses: Encore is far stronger with priority (Prankster) or paired with Tailwind.
+const ENCORE_COMBO_BONUS = 4;
 // Penalty by the mon's OFFENSIVE doubles tier (its real threat level), NOT raw stats: a support with high
 // UNUSED offence (Sinistcha — 121 SpA but offensively RU) keeps its full support value, while a genuine
 // OU+ attacker's support value is heavily discounted (owner: a good OU attacker is NOT a support just
@@ -3687,7 +3706,10 @@ const SUPPORT_PENALTY_BY_TIER = { [TIER_UU]: 3, [TIER_OU]: 10, [TIER_UBERS]: 16,
 // this encodes the owner's own rule directly: 1 elite tool (8) < RU → a half-support attacker, NOT a
 // support; 2 elite (16) → UU; 3+ elite (24) → OU. Filler (2 each) barely moves the needle, so breadth of
 // mediocre moves can't manufacture a support (Calyrex's six filler tools ≈ 12 → below UU alone).
-const SUPPORT_TIER_THRESHOLDS = { OU: 22, UU: 15, RU: 11 };
+// T-147 — ABSOLUTE fallback thresholds only (isolated callers / tests). The PIPELINE uses the RELATIVE
+// scale (computeSupportScale). Recalibrated up for the premium (12) values so a lone premium tool doesn't
+// clear RU: 1 premium (12) < RU; 2 tools (~20-24) → UU; 3 tools (~30+) → OU.
+const SUPPORT_TIER_THRESHOLDS = { OU: 30, UU: 20, RU: 13 };
 // A support must also be VIABLE — a frail pre-evo (Smoliv) dies before it supports, no matter its kit. So
 // each support tier has a minimum BST (real OU supports: Whimsicott 480 / Amoonguss 464 / Sinistcha 508 /
 // Cresselia 600); a low-BST mon caps out at the tier its BST allows, or drops out entirely.
@@ -3702,22 +3724,66 @@ function supportRating(poke, offensiveTier) {
     let pts = 0;
     for (const mv in SUPPORT_MOVE_POINTS) if (learnable.has(mv)) pts += Math.min(SUPPORT_MOVE_POINTS[mv], SUPPORT_TOOL_CAP);
     for (const a of abils) if (SUPPORT_ABILITY_POINTS[a]) pts += Math.min(SUPPORT_ABILITY_POINTS[a], SUPPORT_TOOL_CAP);
+    // T-147 — god combos: Encore is far stronger with priority (Prankster) or paired with Tailwind.
+    if (learnable.has('MOVE_ENCORE')) {
+        if (abils.includes('PRANKSTER')) pts += ENCORE_COMBO_BONUS;
+        if (learnable.has('MOVE_TAILWIND')) pts += ENCORE_COMBO_BONUS;
+    }
+    // T-147 — Prankster gives every status move +1 priority → it MULTIPLIES the support kit's value (its
+    // worth is conditional on carrying status moves), rather than adding a flat amount.
+    if (abils.includes('PRANKSTER')) pts *= PRANKSTER_SUPPORT_MULT;
     const offT = offensiveTier || (typeof poke.ratingDoubles === 'number' ? tierFromRatingDoubles(poke.ratingDoubles) : null);
     return Math.max(0, pts - (SUPPORT_PENALTY_BY_TIER[offT] || 0));
 }
-// The support TIER (OU/UU/RU) or null — the highest tier where BOTH the rating clears the threshold AND
-// the BST clears the viability minimum (so a frail pre-evo with a big kit is capped down, or dropped).
-function supportTierDoubles(poke, offensiveTier) {
+// T-147 — relative-to-max support tiers. The universal TMs (Taunt/Thunder Wave = +16 to almost everyone)
+// lift every raw score equally, so ABSOLUTE thresholds mislabel filler-attackers OU. Scale the tiers to the
+// run's MAX support rating: OU ≥ 0.75·max, UU ≥ 0.50·max, RU ≥ 0.25·max — with a floor so ≥10 BST-viable
+// mons always reach OU (matters when the support pool is small). Owner-validated (T-147); on the live bundle
+// this drops OU support from ~97 to ~22 and Zangoose 27 → UU. `SUPPORT_TIER_THRESHOLDS` remains the absolute
+// fallback for isolated callers (no dex scale available).
+const SUPPORT_OU_MIN_COUNT = 10;
+const bstOf = p => (p.baseHP || 0) + (p.baseAttack || 0) + (p.baseDefense || 0) + (p.baseSpAttack || 0) + (p.baseSpDefense || 0) + (p.baseSpeed || 0);
+function computeSupportScale(pokes) {
+    const rOf = p => supportRating(p, tierFromRatingDoubles(p.ratingDoubles));
+    const all = pokes.map(rOf).filter(r => r > 0).sort((a, b) => b - a);
+    const max = all[0] || 0;
+    // 10th-best among BST-OU-viable mons (so the floor guarantees a real OU pool, not frail high-scorers).
+    const viable = pokes.filter(p => bstOf(p) >= SUPPORT_TIER_MIN_BST.OU).map(rOf).filter(r => r > 0).sort((a, b) => b - a);
+    const tenth = viable.length ? viable[Math.min(SUPPORT_OU_MIN_COUNT, viable.length) - 1] : 0;
+    return { OU: Math.min(0.75 * max, tenth), UU: 0.5 * max, RU: 0.25 * max };
+}
+// The support TIER (OU/UU/RU) or null — the highest tier where BOTH the rating clears the (relative or, by
+// default, absolute) threshold AND the BST clears the viability minimum (a frail pre-evo with a big kit is
+// capped down or dropped).
+function supportTierDoubles(poke, offensiveTier, scale = SUPPORT_TIER_THRESHOLDS) {
     const r = supportRating(poke, offensiveTier);
-    const bst = (poke.baseHP || 0) + (poke.baseAttack || 0) + (poke.baseDefense || 0) + (poke.baseSpAttack || 0) + (poke.baseSpDefense || 0) + (poke.baseSpeed || 0);
-    if (r >= SUPPORT_TIER_THRESHOLDS.OU && bst >= SUPPORT_TIER_MIN_BST.OU) return TIER_OU;
-    if (r >= SUPPORT_TIER_THRESHOLDS.UU && bst >= SUPPORT_TIER_MIN_BST.UU) return TIER_UU;
-    if (r >= SUPPORT_TIER_THRESHOLDS.RU && bst >= SUPPORT_TIER_MIN_BST.RU) return TIER_RU;
+    const bst = bstOf(poke);
+    if (r >= scale.OU && bst >= SUPPORT_TIER_MIN_BST.OU) return TIER_OU;
+    if (r >= scale.UU && bst >= SUPPORT_TIER_MIN_BST.UU) return TIER_UU;
+    if (r >= scale.RU && bst >= SUPPORT_TIER_MIN_BST.RU) return TIER_RU;
     return null;
 }
-// A mon is a dedicated support iff it earns a support tier (clears both the rating AND the BST viability
-// bar for at least RU) — owner: only a real, viable support kit qualifies.
-function isDedicatedSupport(poke) { return supportTierDoubles(poke) != null; }
+// T-147 — second pass over the whole dex: compute the relative scale and (re)stamp each mon's support tier,
+// numeric rating, support-dominant flag and effective tierDoubles (= max of offensive & support tiers).
+// Called by pokedexModule after the per-poke doubles rating. Returns the scale (for logging/audit).
+function assignSupportTiersDoubles(pokes) {
+    const scale = computeSupportScale(pokes);
+    for (const p of pokes) {
+        const offT = tierFromRatingDoubles(p.ratingDoubles);
+        const supT = supportTierDoubles(p, offT, scale);
+        p.supportRatingDoubles = supportRating(p, offT);
+        p.supportTierDoubles = supT;
+        p.isSupportDoubles = !!supT && TIER_SEQ.indexOf(supT) > TIER_SEQ.indexOf(offT);
+        p.tierDoubles = p.isSupportDoubles ? supT : offT;
+    }
+    return scale;
+}
+// A mon is a dedicated support iff it earns a support tier. Prefers the STORED (relative) tier stamped by
+// assignSupportTiersDoubles; falls back to an absolute compute for isolated callers (tests).
+function isDedicatedSupport(poke) {
+    if (poke && poke.supportTierDoubles !== undefined) return poke.supportTierDoubles != null;
+    return supportTierDoubles(poke) != null;
+}
 
 // ITEMISED support breakdown — the exact tools + their quality-tier points, the offensive-tier penalty and
 // the resulting rating/tier. Powers the decision-log's support ranking (owner: "me gustaría poder auditar
@@ -3859,6 +3925,8 @@ module.exports = {
     rateAbilitySingles,
     supportRating,
     supportTierDoubles,
+    computeSupportScale,          // T-147 — relative support scale (dex-wide)
+    assignSupportTiersDoubles,    // T-147 — second-pass relative tier assignment
     supportToolBreakdown,
     topSupportMoves,
     isDedicatedSupport,
