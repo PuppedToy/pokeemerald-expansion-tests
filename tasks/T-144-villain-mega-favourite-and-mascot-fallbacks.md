@@ -1,7 +1,7 @@
 ---
 id: T-144
 title: Villain mega favourite — type/prevo-aware selection ladder + mascot fallback ladder
-status: in-progress
+status: done
 type: fix
 created: 2026-07-17
 updated: 2026-07-17
@@ -75,13 +75,13 @@ existing `fallback` + auto-tier-down engine (`trainerFallback.js`) — no new re
 
 ## Acceptance criteria
 
-- [ ] `resolveVillainMega` picks the mega by rules 1,2,3,5,6,7 in order, each gated by budget + restriction;
-      unit-tested per rung + ordering + tie-break determinism.
-- [ ] Default Aqua/Magma types → Sharpedo Mega / Camerupt Mega chosen (rule 1); no regression.
-- [ ] No eligible mega → slot dropped + `VILLAIN_MEGA_DROPPED` warning; unit-tested.
-- [ ] Mascot grunt fields the devolved committed favourite when present, else the type-preference fallback
+- [x] `resolveVillainMega` picks the mega by rules 1,2,3,5,6,7 in order, each gated by budget + restriction;
+      unit-tested per rung + ordering + tie-break determinism. (villainMega.test.js, 9 tests)
+- [x] Default Aqua/Magma types → Sharpedo Mega / Camerupt Mega chosen (rule 1); no regression.
+- [x] No eligible mega → slot dropped + `VILLAIN_MEGA_DROPPED` warning; unit-tested.
+- [x] Mascot grunt fields the devolved committed favourite when present, else the type-preference fallback
       ladder; the grunt never crashes / never over-levels.
-- [ ] `cd randomizer && npm test` green; determinism + continuity gates intact.
+- [x] `cd randomizer && npm test` green; determinism + continuity gates intact.
 
 ## Progress log
 
@@ -114,5 +114,26 @@ existing `fallback` + auto-tier-down engine (`trainerFallback.js`) — no new re
       **Electrike** (on-theme!).
     Anti-regression: the grunt fallback only fires when the REPEAT primary returns null (which previously
     DROPPED the slot → team of 5); RECONFIG proves the REPEAT+devolve primary is intact → strict improvement.
-  - Rebuilt the browser bundle (`node build.js`) so the change reaches the client Worker. Awaiting owner
-    manual test before close.
+  - Rebuilt the browser bundle (`node build.js`) so the change reaches the client Worker.
+- **2026-07-17** — Committed (`ec64ae473a`) and merged `--no-ff` into `master` (`451ace2bd2`; repo has no
+  `develop`, owner-chosen). Owner pushed to origin and greenlit the deploy → `deploy/update.sh` ran green
+  (preflight all-suites + tracker, bundle rebuild, rsync, container recreate, health-check `/api/me` 401 =
+  live) → **deployed ✓ https://pokemon-emerald-cut.com**. Owner asked to close (explicit close instruction).
+
+## Outcome
+
+Shipped + deployed (owner-instructed close, 2026-07-17). `villainFavourite` is now a `{ villainMega }`
+marker resolved by `favouriteClaim.resolveVillainMega` — a type/prevo-aware ladder (rules 1,2,3,5,6,7) over
+megas that pass the boss-mega budget gate + the team-type restriction: signature-if-{t0,t1} ≫ any {t0,t1}
+mega with an on-team pre-evolution ≫ any monotype-t0 mega with one ≫ signature-if-has-t0 ≫ any t0 mega ≫ any
+mega with an on-team pre-evolution; deterministic pick (tier→rating→id). No eligible mega → the slot is
+dropped with a `VILLAIN_MEGA_DROPPED` warning (owner-chosen over an off-theme filler). Each mascot grunt
+(Petalburg/Rusturf) gained a fallback ladder — a mon of both team types ≫ the primary type ≫ any — over its
+own slot budget, reusing `selectWithAutoFallback` (no new resolution code); it fires only when the leader
+commits no mega (previously that DROPPED the grunt slot → strict improvement).
+
+Default themes are unchanged (Sharpedo/Camerupt via rule 1). The fix shows on reconfigured themes (T-052):
+Grass/Fairy Aqua → Mega Venusaur + Bulbasaur mascot; Electric/Steel Magma → Mega Manectric + Electrike
+mascot — both on-theme, which the old "any-of-5-types" chain could never do. Verified end-to-end on the real
+generator (default + reconfigured). No follow-ups spawned. `npm test` 1179 pass; `RUN_DETERMINISM` gates
+(cross-ROM determinism + reverse-order continuity) 18/18.
