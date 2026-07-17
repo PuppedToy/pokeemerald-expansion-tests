@@ -115,6 +115,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Villain leaders now pick a signature mega that fits their team's actual types, and their grunts
+  foreshadow it faithfully.** Archie/Maxie used to force Mega Sharpedo / Mega Camerupt as long as the mega
+  shared *any* one of the faction's five types — so a reconfigured Aqua/Magma theme fielded an off-theme
+  mega, and the grunt's baby "mascot" (the leader's mega devolved) inherited the mismatch. The signature is
+  now used only when it genuinely fits (its types are the faction's primary + secondary, or at least the
+  primary); otherwise the leader picks the best on-theme mega — preferring one whose pre-evolution stays
+  on-type so the grunt's devolved mascot reads correctly — and, in the rare case nothing fits, drops the
+  mega slot with a warning instead of forcing a bad pick. Each grunt now also has its own fallback (a mon of
+  both faction types, then the primary, then any) when the leader commits no mega. With the default themes
+  Archie still leads Mega Sharpedo → Carvanha and Maxie Mega Camerupt → Numel, exactly as before (T-144).
+
 - **Wally's Victory Road team regains its legendary + ubers ace.** His endgame roster had silently lost its
   two ultimate aces (a legend + an ubers) in the backwards-generation rework — Victory Road was fielding six
   ordinary continuity mons instead. It now correctly fields his four signature Pokémon (which follow him,
