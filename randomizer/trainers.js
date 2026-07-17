@@ -183,11 +183,28 @@ const ABSOLUTE_POKEDEF_LEGEND = { absoluteTier: [TIER_LEGEND], checkValidEvo: tr
 // mega rule, if it is a mega — resolved FIRST; else it drops to the next rung, else the implicit
 // restriction-bounded fallback. Every favourite (gym / villain / Steven / Wally / rival-starter) is one.
 
-// villainFavourite('SPECIES_SHARPEDO_MEGA') → a villain leader's signature-mega chain: the signature
-// mega ≫ any mega of the team's types (the { mega } rung) ≫ the implicit "any team-typed mon" fallback.
-// The 5-type team theme is a TRAINER restriction (ALLOW_ONLY_TYPES + trainer.types), so it is applied to
-// the signature, the { mega } rung and the final fallback alike — no per-rung type lists needed.
-const villainFavourite = (aceMega) => [aceMega, { mega: true }];
+// villainFavourite('SPECIES_SHARPEDO_MEGA') → a villain leader's signature-mega favourite (T-144). The
+// concrete mega is resolved by favouriteClaim's `{ villainMega }` ladder against the run's pool + the
+// (possibly reconfigured, T-052) team types: signature-if-perfect ≫ another exact {t0,t1} mega with an
+// on-team pre-evolution ≫ a monotype-t0 mega with one ≫ signature-if-has-t0 ≫ any t0 mega ≫ any mega with
+// an on-team pre-evolution ≫ (none → drop the slot + warning). The "on-team pre-evolution" rungs keep the
+// grunt's DEVOLVED mascot (T-134) on-theme. The 5-type theme is a TRAINER restriction (ALLOW_ONLY_TYPES +
+// trainer.types); the ladder additionally prioritises the primary/secondary types. See tasks/T-144.
+const villainFavourite = (aceMega) => [{ villainMega: aceMega }];
+
+// T-144 — a villain GRUNT's mascot slot: the leader's committed mega DEVOLVED (TRAINER_REPEAT_ID +
+// devolveToLevel, T-134), else a type-preference fallback ladder using the grunt's own slot budget
+// (`baseSlot`) — a mon of BOTH team types ≫ a mon with the primary type ≫ any mon (the grunt's
+// ALLOW_ONLY_TYPES restriction + level-legality apply throughout). Pure wiring over the existing
+// selectWithAutoFallback engine — no new resolution code.
+const mascotSlot = (id, baseSlot, teamTypes) => ({
+    special: TRAINER_REPEAT_ID, id, devolveToLevel: true,
+    fallback: [
+        { ...baseSlot, exactTypes: [teamTypes[0], teamTypes[1]] },
+        { ...baseSlot, type: [teamTypes[0]] },
+        { ...baseSlot },
+    ],
+});
 
 // likedFavourite('SPECIES_GROUDON') → a "liked" mascot (owner, T-132): claims its slot exactly like a
 // favourite, but breeds GOOD instead of PERFECT — the box legendary shouldn't get perfect IVs. The
@@ -1221,12 +1238,13 @@ const trainersData = [
         // T-128 — aqua types are a trainer restriction; team is the full preset pool.
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
         types: [...aquaTeamTypes],
-        // T-134 — slot 1 foreshadows Archie's signature mascot (Mega Sharpedo, stored ARCHIE_MEGA), devolved
-        // to this grunt's level (→ baby Carvanha). REPEAT_ID reads whatever mega Archie actually committed.
-        team: [
-            { special: TRAINER_REPEAT_ID, id: 'ARCHIE_MEGA', devolveToLevel: true },
-            ...getBossPreset('PETALBURG_WOODS_GRUNT').map(s => ({ ...s })).slice(1),
-        ],
+        // T-134/T-144 — slot 1 foreshadows Archie's signature mascot (Mega Sharpedo, stored ARCHIE_MEGA),
+        // devolved to this grunt's level (→ baby Carvanha). REPEAT_ID reads whatever mega Archie committed;
+        // if none (Archie dropped its mega, T-144), the type-preference fallback ladder fills the slot.
+        team: (() => {
+            const g = getBossPreset('PETALBURG_WOODS_GRUNT').map(s => ({ ...s }));
+            return [mascotSlot('ARCHIE_MEGA', g[0], aquaTeamTypes), ...g.slice(1)];
+        })(),
     },
     {
         id: 'TRAINER_JAMES_1',
@@ -1389,12 +1407,13 @@ const trainersData = [
         // T-128 — magma types are a trainer restriction; team is the full preset pool.
         restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
         types: [...magmaTeamTypes],
-        // T-134 — slot 1 foreshadows Maxie's signature mascot (Mega Camerupt, stored MAXIE_MEGA by Magma
-        // Hideout), devolved to this grunt's level (→ baby Numel). REPEAT_ID reads Maxie's committed mega.
-        team: [
-            { special: TRAINER_REPEAT_ID, id: 'MAXIE_MEGA', devolveToLevel: true },
-            ...getBossPreset('RUSTURF_GRUNT').map(s => ({ ...s })).slice(1),
-        ],
+        // T-134/T-144 — slot 1 foreshadows Maxie's signature mascot (Mega Camerupt, stored MAXIE_MEGA by
+        // Magma Hideout), devolved to this grunt's level (→ baby Numel). REPEAT_ID reads Maxie's committed
+        // mega; if none (Maxie dropped its mega, T-144), the type-preference fallback ladder fills the slot.
+        team: (() => {
+            const g = getBossPreset('RUSTURF_GRUNT').map(s => ({ ...s }));
+            return [mascotSlot('MAXIE_MEGA', g[0], magmaTeamTypes), ...g.slice(1)];
+        })(),
     },
     // Route 116 again
     {

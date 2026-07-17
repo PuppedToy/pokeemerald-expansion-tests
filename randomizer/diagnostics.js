@@ -20,6 +20,7 @@ const DIAGNOSTIC_CODES = {
     // Trainer team building (writerDocs.js) — the accepted "team of 5" degradation.
     TRAINER_SLOT_DROPPED: 'TRAINER_SLOT_DROPPED',   // a single slot found no pokemon (all fallbacks exhausted)
     TRAINER_TEAM_SHORT: 'TRAINER_TEAM_SHORT',       // the finished team has fewer mons than its definition
+    VILLAIN_MEGA_DROPPED: 'VILLAIN_MEGA_DROPPED',   // T-144 — no mega satisfied the villain favourite ladder; slot dropped
     // Starters (startersModule.js).
     STARTER_FALLBACK: 'STARTER_FALLBACK',           // no valid starter type-triangle; unconstrained fallback used
     // Evolution / mega resolution (modules/utils.js).
