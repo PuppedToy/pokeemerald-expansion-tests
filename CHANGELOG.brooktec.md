@@ -188,6 +188,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Doubles support Pokémon are rated far more selectively.** With Taunt and Thunder Wave teachable to
+  almost everything, the old fixed thresholds labelled ~97 Pokémon as "OU support" — including frail
+  attackers that happen to learn a disruption move (e.g. Zangoose). Support tiers are now graded *relative*
+  to the best support in the run (top quarter = OU, etc., with a floor so there are always at least ten OU
+  options), the genuinely build-defining tools are worth more (redirection, Fake Out, Tailwind, Spore,
+  Friend Guard/Hospitality; Prankster now multiplies a Pokémon's whole support kit), and a Pokémon only
+  counts as a *dedicated* support if it's at least as good at supporting as it is at attacking — so a
+  double-battle trainer's support slot always fields a real support (never an attacker with a spare
+  disruption move). Offensive doubles Pokémon also value Safety Goggles and Covert Cloak much more (T-147).
+
 - **Transparent, patch-first ROM delivery.** The green action button now reads "Download patch &
   apply to my ROM" (plural for nuzlocke / soul-link runs) and never speaks of downloading a ROM.
   Pressing it shows a live checklist of what actually happens — *downloading patch → applying patch

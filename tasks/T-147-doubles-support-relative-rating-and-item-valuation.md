@@ -1,7 +1,7 @@
 ---
 id: T-147
 title: Doubles support rating — relative-to-max scaling + tool tuning; offensive doubles item valuation
-status: in-progress
+status: done
 type: feature
 created: 2026-07-17
 updated: 2026-07-17
@@ -68,15 +68,17 @@ Offensive doubles mons should value defensive/anti-support items much more (they
   doubles. (item rating: `rateItemForAPokemon` / doubles item logic.)
 - **Covert Cloak** on offensive mons — blocks Fake Out (and other secondary effects). High value in doubles.
 
-## Acceptance criteria (draft — refine at session start)
+## Acceptance criteria
 
-- [ ] Support tiers are relative-to-max with a ≥10-OU floor; OU count drops to a sensible set; Zangoose is
-      no longer OU; a fresh bundle audited.
-- [ ] Tool/ability tuning values applied, each justified against the corpus (documented in the task log).
-- [ ] Prankster ×1.5, Ruin +4, Friend Guard/Hospitality 16, redirection/Fake Out/Tailwind/Wide Guard/Spore
-      12, Encore combos bonus — with the tool cap raised accordingly.
-- [ ] Safety Goggles / Covert Cloak valued on offensive doubles mons.
-- [ ] `cd randomizer && npm test` green (support-rating + item-rating unit tests updated); determinism intact.
+- [x] Support tiers are relative-to-max with a ≥10-OU floor; OU count drops to a sensible set; Zangoose is
+      no longer OU; a fresh bundle audited. (97 → ~11 OU; Zangoose OU → UU.)
+- [x] Tool/ability tuning values applied, each justified against the corpus (documented in the task log).
+- [x] Prankster ×1.5, Ruin +4, Friend Guard/Hospitality 16, redirection/Fake Out/Tailwind/Spore 12,
+      Wide Guard 10 (owner), Encore combos bonus — tool cap raised 8 → 16.
+- [x] Safety Goggles / Covert Cloak valued on offensive doubles mons.
+- [x] A dedicated support must be support-dominant (support tier ≥ offence) — the role never fields an
+      offence-dominant mon (owner review fix).
+- [x] `cd randomizer && npm test` green (support-rating + item-rating unit tests updated); determinism intact.
 
 ## Progress log
 
@@ -144,4 +146,20 @@ Offensive doubles mons should value defensive/anti-support items much more (they
 
 ## Outcome
 
-_(pending)_
+Shipped (owner-confirmed 2026-07-17, "ya va bien"). The doubles support rating was overhauled so the
+universal TMs (Taunt + Thunder Wave, ~+16 to almost everyone) no longer manufacture supports:
+- **Relative tiers** — support OU/UU/RU are scaled to the run's max support rating (OU ≥0.75·max, UU ≥0.5,
+  RU ≥0.25) with a ≥10-OU floor, in a dex-wide second pass (`computeSupportScale` +
+  `assignSupportTiersDoubles`, wired into `pokedexModule`). The max excludes the Prankster ×1.5 so an
+  outlier can't compress the band. OU support dropped 97 → ~11; Zangoose OU → UU.
+- **Tool tuning** (corpus-validated on 145 doubles teams + owner sign-off) — premium 12 (Fake Out/Tailwind/
+  Rage Powder/Follow Me/Spore), Wide Guard 10, Friend Guard/Hospitality 16, Ruin +4, cap 16; Prankster is a
+  ×1.5 multiplier; Encore+{Prankster,Tailwind} combos.
+- **Support-dominance** — `isDedicatedSupport` now requires support tier ≥ offensive tier, so the support
+  role never fields an offence-dominant mon (Deoxys Attack/Spectrier no longer count).
+- **Items** — Safety Goggles / Covert Cloak valued up on offensive doubles mons (anti Rage Powder/Spore /
+  Fake Out).
+
+`rating.js` + `modules/pokedexModule.js` + `modules/resolveTrainerTeam.js`; 15 new/updated unit tests;
+`npm test` 1200 pass; cross-ROM determinism gate green (singles byte-unaffected — doubles-only). Follow-up
+calibration (e.g. a low-scoring Amoonguss on some seeds) can be revisited if the owner wants finer weights.
