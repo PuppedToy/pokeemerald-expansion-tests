@@ -4,7 +4,7 @@ const { randomizeItems } = require('../itemRandomizer');
 const trainers = require('../trainers');
 const { getDifficultyTransform, getBagSizeOffset, applyTransform } = require('../presets');
 const { resolveTrainerColors } = require('../trainerColors');
-const { assignBattleTypes, unifyRivalBattleTypes, runAndBunE4Split } = require('../battleFormat');
+const { assignBattleTypes, unifyRivalBattleTypes, runAndBunE4Split, gauntletTagOf } = require('../battleFormat');
 
 const EXEMPT_TRAINER_PREFIXES = ['TRAINER_WALLY_', 'TRAINER_MAY_', 'TRAINER_BRENDAN_'];
 const EXEMPT_TRAINER_IDS = new Set(['TRAINER_STEVEN']);
@@ -96,11 +96,17 @@ function runTrainersModule(pokedexArtifact, config) {
     // team as a safety net. Uses an isolated PRNG, so the global rng stream (and existing seeded
     // team/starter/wild output) is untouched.
     const { assignments: battleTypes } = assignBattleTypes(
-        trainersData.map(t => ({ id: t.id, isBoss: t.isBoss, teamSize: Array.isArray(t.team) ? t.team.length : 0 })),
+        // T-146 — displayOrder (the canonical story order, stamped by hoistAuthoritativeAppearances) drives
+        // the mixed sequential split's game-progression ordering.
+        trainersData.map(t => ({ id: t.id, isBoss: t.isBoss, teamSize: Array.isArray(t.team) ? t.team.length : 0, displayOrder: t.displayOrder })),
         config,
     );
     for (const trainer of trainersData) {
         trainer.battleType = battleTypes.get(trainer.id) ?? 'singles';
+        // T-145 — a grunt gauntlet member carries its "Gauntlet Battle N" display tag in EVERY format
+        // (orthogonal to battleType; the viewer shows it as an additional badge).
+        const gauntletTag = gauntletTagOf(trainer.id);
+        if (gauntletTag) trainer.gauntletTag = gauntletTag;
     }
     // T-116 — every variant of a rival encounter shares one battle type (May's per-location starter
     // variants + the Brendan copies), so the docs tags and the ROM .party agree across the family.

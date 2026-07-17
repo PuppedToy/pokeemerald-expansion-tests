@@ -105,6 +105,7 @@ function toModuleConfig(cfg, seed) {
         battleFormat: cfg.battleFormat ?? 'singles',
         singlesPercent: cfg.singlesPercent ?? 60,
         leagueRunAndBun: cfg.leagueRunAndBun === true,
+        mixedSequentialSplit: cfg.mixedSequentialSplit === true,   // T-146/ADR-018
         // T-052 — trainer-facing knobs (mirrors the browser worker's toModuleConfig).
         gymsTypeChanged: cfg.gymsTypeChanged ?? 2,
         e4TypeChanged: cfg.e4TypeChanged ?? 2,

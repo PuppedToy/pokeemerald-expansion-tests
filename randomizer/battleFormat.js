@@ -10,6 +10,8 @@
  * format it consumes no randomness at all, so existing seeded output is byte-identical).
  */
 
+const { BOSS_CAP_TRAINERS } = require('./bossCaps'); // T-146 — progression boss milestones for the sequential split
+
 const CHAMPION_ID = 'TRAINER_CHAMPION_STEVEN';
 const E4_IDS = ['TRAINER_SIDNEY', 'TRAINER_PHOEBE', 'TRAINER_GLACIA', 'TRAINER_DRAKE'];
 // T-089 — the committed Run & Bun doubles clones of the E4 (see include/constants/opponents.h).
@@ -23,6 +25,21 @@ const GYM_BOSS_IDS = ['TRAINER_ROXANNE_1', 'TRAINER_BRAWLY_1', 'TRAINER_WATTSON_
 const TAG_BATTLE_IDS = new Set(['TRAINER_MAXIE_MOSSDEEP', 'TRAINER_TABITHA_MOSSDEEP', 'PARTNER_STEVEN']);
 // A double battle needs a trainer that can field two Pokémon.
 const MIN_DOUBLE_TEAM_SIZE = 2;
+
+// T-145 (ADR-018 §1) — grunt "gauntlets": back-to-back multi-grunt fights that count as ONE unit for the
+// mixed singles/doubles proportion, share one battle type, and carry a "Gauntlet Battle N" display tag (in
+// every format) where N is the member's POSITION within its gauntlet — Museum → 1,2 and Space Center →
+// 1,2,3. Members stay in the `bossTrainers` pool (all are isBoss). Ordered by game progression.
+const GAUNTLET_GROUPS = [
+    ['TRAINER_GRUNT_MUSEUM_1', 'TRAINER_GRUNT_MUSEUM_2'],
+    ['TRAINER_GRUNT_SPACE_CENTER_5', 'TRAINER_GRUNT_SPACE_CENTER_6', 'TRAINER_GRUNT_SPACE_CENTER_7'],
+];
+// id → { group: <gauntlet index, for accounting grouping>, pos: <1-based battle number in the gauntlet> }
+const GAUNTLET_POS_BY_ID = new Map(GAUNTLET_GROUPS.flatMap((ids, group) => ids.map((id, i) => [id, { group, pos: i + 1 }])));
+/** The "Gauntlet Battle N" display tag (N = battle number within the gauntlet), or null. */
+function gauntletTagOf(id) { const p = GAUNTLET_POS_BY_ID.get(id); return p ? `Gauntlet Battle ${p.pos}` : null; }
+/** The gauntlet GROUP key for accounting (all members of one gauntlet share it), or null. */
+function gauntletGroupOf(id) { const p = GAUNTLET_POS_BY_ID.get(id); return p ? p.group : null; }
 
 const MULTI_MEMBER_POOLS = ['e4', 'gymBosses', 'bossTrainers', 'normalTrainers'];
 
@@ -64,6 +81,23 @@ function runAndBunE4Split(singlesPercent) {
     const pct = Number.isFinite(Number(singlesPercent)) ? Number(singlesPercent) : 60;
     const singles = Math.max(1, Math.min(total - 1, Math.round((pct / 100) * total)));
     return { singles, doubles: total - singles };
+}
+
+/**
+ * Group a pool's trainers into UNITS (T-145): a grunt gauntlet's members collapse to ONE unit (so it
+ * consumes a single proportion slot and shares one type); every other trainer is its own unit. Units keep
+ * the pool's first-appearance order; a gauntlet unit sits at its earliest member's position.
+ */
+function poolUnits(poolTrainers) {
+    const byGauntlet = new Map();
+    const units = [];
+    for (const t of poolTrainers) {
+        const group = gauntletGroupOf(t.id);
+        if (group == null) { units.push({ members: [t] }); continue; }
+        if (!byGauntlet.has(group)) { const u = { members: [] }; byGauntlet.set(group, u); units.push(u); }
+        byGauntlet.get(group).members.push(t);
+    }
+    return units;
 }
 
 /** Deterministic Fisher–Yates shuffle using the injected random fn. Does not mutate the input. */
@@ -113,6 +147,42 @@ function assignBattleTypes(trainers, config = {}) {
     const pools = { champion: [], e4: [], e4Doubles: [], gymBosses: [], bossTrainers: [], normalTrainers: [], tag: [] };
     for (const t of trainers) pools[poolOf(t)].push(t);
 
+    // T-146 (ADR-018 §2) — sequential split: the first part of the game is singles and the rest doubles,
+    // switching at a boss. The breakpoint is the progression boss milestone at round(fraction × numBosses):
+    // trainers before it are singles, that boss and everything after are doubles. No RNG (a pure function of
+    // singlesPercent + displayOrder). Run & Bun still governs the E4 (excluded from the split + the count).
+    if (config.mixedSequentialSplit === true) {
+        for (const t of pools.tag) setType(t.id, 'tag', 'tag');
+        for (const t of pools.e4Doubles) setType(t.id, isEligible(t) ? 'doubles' : 'singles', 'e4Doubles');
+
+        const byId = new Map(trainers.map(t => [t.id, t]));
+        const orderOf = t => (t && Number.isFinite(t.displayOrder) ? t.displayOrder : 0);
+        // Boss spine = the bossCaps progression milestones present in this run (rival gender×starter variants
+        // and multi-grunt gauntlets already collapse to one milestone each), ordered by displayOrder.
+        const milestones = [];
+        for (const flag of Object.keys(BOSS_CAP_TRAINERS)) {
+            const ids = BOSS_CAP_TRAINERS[flag].trainers.filter(id => byId.has(id));
+            if (!ids.length) continue;                                     // milestone not in this run
+            if (runAndBun && ids.some(id => E4_IDS.includes(id))) continue; // E4 governed by Run & Bun
+            milestones.push(Math.min(...ids.map(id => orderOf(byId.get(id)))));
+        }
+        milestones.sort((a, b) => a - b);
+        const numBosses = milestones.length;
+        const singlesCount = Math.round(singlesFraction * numBosses);
+        const breakpointOrder = singlesCount <= 0 ? -Infinity
+            : singlesCount >= numBosses ? Infinity
+                : milestones[singlesCount];
+
+        for (const t of trainers) {
+            const pool = poolOf(t);
+            if (pool === 'tag' || pool === 'e4Doubles') continue;       // already set above
+            if (runAndBun && pool === 'e4') { setType(t.id, 'singles', 'e4'); continue; } // RB base E4 = singles
+            const wantsDouble = orderOf(t) >= breakpointOrder;         // champion/T&L follow position, no forcing
+            setType(t.id, (wantsDouble && isEligible(t)) ? 'doubles' : 'singles', pool);
+        }
+        return { assignments, stats };
+    }
+
     // Tag battle (the Mossdeep trio) → always 'tag', in every format (never single/double-converted).
     for (const t of pools.tag) setType(t.id, 'tag', 'tag');
 
@@ -128,30 +198,35 @@ function assignBattleTypes(trainers, config = {}) {
         setType(t.id, type, 'champion');
     }
 
-    // Multi-member pools → mark round(fraction × eligibleCount) singles, the rest doubles. Doubles
-    // fill from the front of a deterministic order; the gym pool pins Tate & Liza first (rule 8).
+    // Multi-member pools → mark round(fraction × eligibleUnits) singles, the rest doubles. Doubles fill
+    // from the front of a deterministic order; the gym pool pins Tate & Liza first (rule 8). T-145 — a pool
+    // is proportioned over UNITS, where a grunt gauntlet is ONE unit (its members share the unit's type).
+    const setUnit = (unit, type, key) => { for (const m of unit.members) setType(m.id, type, key); };
+    const unitEligible = unit => unit.members.every(isEligible);
     for (const key of MULTI_MEMBER_POOLS) {
-        const eligible = pools[key].filter(isEligible);
-        for (const t of pools[key]) if (!isEligible(t)) setType(t.id, 'singles', key);
+        const units = poolUnits(pools[key]);
+        const eligible = units.filter(unitEligible);
+        for (const unit of units) if (!unitEligible(unit)) setUnit(unit, 'singles', key);
 
         // Run & Bun: the base Elite Four are the singles versions (their doubles clones live in
         // e4Doubles and were already set above); the player chooses which to fight in-game.
         if (key === 'e4' && runAndBun) {
-            for (const t of eligible) setType(t.id, 'singles', key);
+            for (const unit of eligible) setUnit(unit, 'singles', key);
             continue;
         }
 
         let ordered;
         if (key === 'gymBosses') {
-            const tl = eligible.filter(t => t.id === TATE_AND_LIZA_ID);
-            const rest = shuffled(eligible.filter(t => t.id !== TATE_AND_LIZA_ID), rand);
+            const isTL = unit => unit.members.some(t => t.id === TATE_AND_LIZA_ID);
+            const tl = eligible.filter(isTL);
+            const rest = shuffled(eligible.filter(u => !isTL(u)), rand);
             ordered = [...tl, ...rest];
         } else {
             ordered = shuffled(eligible, rand);
         }
         const singlesCount = Math.round(singlesFraction * eligible.length);
         const doublesCount = eligible.length - singlesCount;
-        ordered.forEach((t, i) => setType(t.id, i < doublesCount ? 'doubles' : 'singles', key));
+        ordered.forEach((unit, i) => setUnit(unit, i < doublesCount ? 'doubles' : 'singles', key));
     }
 
     return { assignments, stats };
@@ -188,6 +263,7 @@ function unifyRivalBattleTypes(trainers) {
 }
 
 module.exports = {
-    assignBattleTypes, poolOf, isEligible, runAndBunE4Split, unifyRivalBattleTypes,
+    assignBattleTypes, poolOf, isEligible, runAndBunE4Split, unifyRivalBattleTypes, gauntletTagOf,
     CHAMPION_ID, E4_IDS, E4_DOUBLES_IDS, GYM_BOSS_IDS, TAG_BATTLE_IDS, TATE_AND_LIZA_ID, MIN_DOUBLE_TEAM_SIZE,
+    GAUNTLET_GROUPS,
 };

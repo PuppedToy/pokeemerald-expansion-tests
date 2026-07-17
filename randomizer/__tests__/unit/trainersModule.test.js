@@ -40,6 +40,22 @@ beforeEach(() => {
     jest.clearAllMocks();
 });
 
+describe('runTrainersModule — gauntlet tag (T-145)', () => {
+    test('stamps gauntletTag on gauntlet members (any format), leaves other trainers untagged', () => {
+        trainers.getTrainersData.mockReturnValueOnce([
+            { id: 'TRAINER_GRUNT_MUSEUM_1', level: 24, isBoss: true, bag: [], team: [{ contextualTier: ['NU'], checkValidEvo: true }, { contextualTier: ['NU'], checkValidEvo: true }] },
+            { id: 'TRAINER_GRUNT_SPACE_CENTER_5', level: 59, isBoss: true, bag: [], team: [{ contextualTier: ['NU'], checkValidEvo: true }] },
+            { id: 'TRAINER_ROXANNE', level: 14, isBoss: true, bag: [], team: [{ contextualTier: ['NU'], checkValidEvo: true }] },
+        ]);
+        const { runTrainersModule } = freshModule();
+        const { trainersData } = runTrainersModule(mockPokedexArtifact, { difficulty: 7, battleFormat: 'singles' });
+        const byId = Object.fromEntries(trainersData.map(t => [t.id, t]));
+        expect(byId['TRAINER_GRUNT_MUSEUM_1'].gauntletTag).toBe('Gauntlet Battle 1');
+        expect(byId['TRAINER_GRUNT_SPACE_CENTER_5'].gauntletTag).toBe('Gauntlet Battle 1');
+        expect(byId['TRAINER_ROXANNE'].gauntletTag).toBeUndefined();
+    });
+});
+
 describe('runTrainersModule — output shape', () => {
     test('returns { trainersData, itemAssignments }', () => {
         const { runTrainersModule } = freshModule();

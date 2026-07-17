@@ -6,6 +6,7 @@
 
 const {
     assignBattleTypes, poolOf, isEligible, TATE_AND_LIZA_ID, runAndBunE4Split, unifyRivalBattleTypes,
+    gauntletTagOf,
 } = require('../../battleFormat');
 
 const T = (id, isBoss, teamSize = 6) => ({ id, isBoss, teamSize });
@@ -104,6 +105,120 @@ describe('assignBattleTypes — mixed proportions', () => {
         const r2 = assignBattleTypes(roster, { battleFormat: 'mixed', singlesPercent: 50, seed: 99 }).assignments;
         for (const t of roster) expect(r1.get(t.id)).toBe(r2.get(t.id));
         expect(r1.get('TRAINER_SOLO')).toBe('singles');
+    });
+});
+
+// T-145 (ADR-018 §1) — grunt gauntlets: the 2 Museum grunts + the 3 Space Center grunts each count as ONE
+// unit in the bossTrainers proportion and share one singles/doubles type; all carry a "Gauntlet Battle N" tag.
+describe('assignBattleTypes — grunt gauntlets (T-145)', () => {
+    const MUSEUM = ['TRAINER_GRUNT_MUSEUM_1', 'TRAINER_GRUNT_MUSEUM_2'];
+    const SPACE = ['TRAINER_GRUNT_SPACE_CENTER_5', 'TRAINER_GRUNT_SPACE_CENTER_6', 'TRAINER_GRUNT_SPACE_CENTER_7'];
+
+    test('gauntletTagOf tags each member by its POSITION within the gauntlet (null otherwise)', () => {
+        expect(gauntletTagOf('TRAINER_GRUNT_MUSEUM_1')).toBe('Gauntlet Battle 1');
+        expect(gauntletTagOf('TRAINER_GRUNT_MUSEUM_2')).toBe('Gauntlet Battle 2');
+        expect(gauntletTagOf('TRAINER_GRUNT_SPACE_CENTER_5')).toBe('Gauntlet Battle 1');
+        expect(gauntletTagOf('TRAINER_GRUNT_SPACE_CENTER_6')).toBe('Gauntlet Battle 2');
+        expect(gauntletTagOf('TRAINER_GRUNT_SPACE_CENTER_7')).toBe('Gauntlet Battle 3');
+        expect(gauntletTagOf('TRAINER_ROXANNE_1')).toBe(null);
+    });
+
+    test('gauntlet members share one type in mixed (grunt 1 singles ⟹ grunt 2 singles), at every %', () => {
+        const roster = [...MUSEUM, ...SPACE, 'TRAINER_BOSS_A', 'TRAINER_BOSS_B'].map(id => T(id, true));
+        for (const pct of [0, 30, 50, 60, 100]) {
+            const { assignments } = assignBattleTypes(roster, { battleFormat: 'mixed', singlesPercent: pct, seed: 5 });
+            expect(assignments.get(MUSEUM[0])).toBe(assignments.get(MUSEUM[1]));
+            expect(assignments.get(SPACE[0])).toBe(assignments.get(SPACE[1]));
+            expect(assignments.get(SPACE[1])).toBe(assignments.get(SPACE[2]));
+        }
+    });
+
+    test('each gauntlet counts as ONE unit in the bossTrainers proportion', () => {
+        // 4 boss units: {Museum}, {Space}, BOSS_A, BOSS_B. 50% → round(0.5×4)=2 singles units, 2 doubles units.
+        const roster = [...MUSEUM, ...SPACE, 'TRAINER_BOSS_A', 'TRAINER_BOSS_B'].map(id => T(id, true));
+        const { assignments } = assignBattleTypes(roster, { battleFormat: 'mixed', singlesPercent: 50, seed: 5 });
+        const unitDoubles = [MUSEUM[0], SPACE[0], 'TRAINER_BOSS_A', 'TRAINER_BOSS_B']
+            .filter(id => assignments.get(id) === 'doubles').length;
+        expect(unitDoubles).toBe(2);
+    });
+
+    test('gauntlets at 0% singles → all members doubles; at 100% → all members singles', () => {
+        const roster = [...MUSEUM, ...SPACE].map(id => T(id, true));
+        const d = assignBattleTypes(roster, { battleFormat: 'mixed', singlesPercent: 0, seed: 5 }).assignments;
+        for (const id of [...MUSEUM, ...SPACE]) expect(d.get(id)).toBe('doubles');
+        const s = assignBattleTypes(roster, { battleFormat: 'mixed', singlesPercent: 100, seed: 5 }).assignments;
+        for (const id of [...MUSEUM, ...SPACE]) expect(s.get(id)).toBe('singles');
+    });
+});
+
+// T-146 (ADR-018 §2) — mixed SEQUENTIAL split: first part of the game singles, the rest doubles. The
+// breakpoint is the boss milestone at round(%×numBosses); before it → singles, it + after → doubles.
+describe('assignBattleTypes — mixed sequential split (T-146)', () => {
+    const TO = (id, isBoss, displayOrder, teamSize = 6) => ({ id, isBoss, teamSize, displayOrder });
+    const seq = (roster, pct, extra = {}) => assignBattleTypes(roster,
+        { battleFormat: 'mixed', mixedSequentialSplit: true, singlesPercent: pct, seed: 1, ...extra }).assignments;
+
+    test('splits at the boss at round(%×numBosses); before→singles, breakpoint boss + after→doubles', () => {
+        // 5 boss milestones (4 gyms + champion) + 3 normals. 60% → singlesCount=round(3)=3 → breakpoint =
+        // milestones[3] = Flannery (order 40). Champion (order 100) is doubles → proves it follows POSITION,
+        // not the ADR-014 majority rule (which at 60% singles would make the champion singles).
+        const roster = [
+            TO('TRAINER_ROXANNE_1', true, 10), TO('TRAINER_N1', false, 15),
+            TO('TRAINER_BRAWLY_1', true, 20), TO('TRAINER_WATTSON_1', true, 30),
+            TO('TRAINER_N2', false, 35), TO('TRAINER_FLANNERY_1', true, 40),
+            TO('TRAINER_N3', false, 90), TO('TRAINER_CHAMPION_STEVEN', true, 100),
+        ];
+        const a = seq(roster, 60);
+        for (const id of ['TRAINER_ROXANNE_1', 'TRAINER_N1', 'TRAINER_BRAWLY_1', 'TRAINER_WATTSON_1', 'TRAINER_N2']) {
+            expect(a.get(id)).toBe('singles');
+        }
+        for (const id of ['TRAINER_FLANNERY_1', 'TRAINER_N3', 'TRAINER_CHAMPION_STEVEN']) {
+            expect(a.get(id)).toBe('doubles');
+        }
+    });
+
+    test('100% singles → everyone singles; 0% singles → everyone doubles', () => {
+        const roster = [TO('TRAINER_ROXANNE_1', true, 10), TO('TRAINER_N1', false, 15), TO('TRAINER_CHAMPION_STEVEN', true, 100)];
+        const all1 = seq(roster, 100); for (const t of roster) expect(all1.get(t.id)).toBe('singles');
+        const all0 = seq(roster, 0); for (const t of roster) expect(all0.get(t.id)).toBe('doubles');
+    });
+
+    test('Tate & Liza is NOT forced to doubles — it follows its position', () => {
+        // 5 milestones; 80% → singlesCount=round(4.0)=4 → breakpoint = milestones[4] = Champion (100).
+        // T&L (order 20) < 100 → singles. The proportional mode would instead force T&L into the first doubles slot.
+        const roster = [
+            TO('TRAINER_ROXANNE_1', true, 10), TO('TRAINER_TATE_AND_LIZA_1', true, 20),
+            TO('TRAINER_WINONA_1', true, 30), TO('TRAINER_JUAN_1', true, 40), TO('TRAINER_CHAMPION_STEVEN', true, 100),
+        ];
+        expect(seq(roster, 80).get('TRAINER_TATE_AND_LIZA_1')).toBe('singles');
+    });
+
+    test('Run & Bun: base E4 singles + _DOUBLES clones doubles; E4 excluded from the boss count', () => {
+        const E4o = E4.map((id, i) => TO(id, true, 50 + i));
+        const E4d = E4.map((id, i) => TO(`${id}_DOUBLES`, true, 50 + i));
+        const roster = [
+            TO('TRAINER_ROXANNE_1', true, 10), TO('TRAINER_BRAWLY_1', true, 20),
+            ...E4o, ...E4d, TO('TRAINER_CHAMPION_STEVEN', true, 100),
+        ];
+        const a = seq(roster, 50, { leagueRunAndBun: true });
+        for (const id of E4) expect(a.get(id)).toBe('singles');
+        for (const id of E4.map(x => `${x}_DOUBLES`)) expect(a.get(id)).toBe('doubles');
+        // numBosses excl. E4 = Roxanne, Brawly, Champion = 3. singlesCount=round(1.5)=2 → breakpoint = Champion(100).
+        expect(a.get('TRAINER_ROXANNE_1')).toBe('singles');
+        expect(a.get('TRAINER_BRAWLY_1')).toBe('singles');
+        expect(a.get('TRAINER_CHAMPION_STEVEN')).toBe('doubles');
+    });
+
+    test('a <2-mon trainer past the breakpoint is still forced singles (eligibility gate)', () => {
+        const roster = [TO('TRAINER_ROXANNE_1', true, 10), TO('TRAINER_SOLO', false, 90, 1), TO('TRAINER_CHAMPION_STEVEN', true, 100)];
+        const a = seq(roster, 0); // 0% → everyone doubles-eligible goes doubles
+        expect(a.get('TRAINER_SOLO')).toBe('singles'); // teamSize 1 → never doubles
+        expect(a.get('TRAINER_CHAMPION_STEVEN')).toBe('doubles');
+    });
+
+    test('the Mossdeep tag trio stays tag in sequential mode', () => {
+        const roster = [TO('TRAINER_ROXANNE_1', true, 10), TO('TRAINER_MAXIE_MOSSDEEP', true, 80), TO('TRAINER_CHAMPION_STEVEN', true, 100)];
+        expect(seq(roster, 50).get('TRAINER_MAXIE_MOSSDEEP')).toBe('tag');
     });
 });
 

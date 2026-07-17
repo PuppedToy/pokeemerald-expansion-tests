@@ -256,10 +256,17 @@ test('T-085: Mixed reveals a run-panel box (like nuzlocke/soul-link) with % + Ru
   assert.match(src, /#mixed-panel'\)[^\n]*classList\.toggle\('hidden'/, 'the box is shown only for the mixed format');
 });
 
+test('T-146: Mixed has a "first half singles / second half doubles" checkbox (off by default) with help text', () => {
+  assert.match(src, /id="mixed-sequential-split"/, 'the sequential-split checkbox is inside the mixed box');
+  assert.match(src, /First half singles, second half doubles/, 'a clear label');
+  assert.match(src, /single and double battles are mixed throughout/i, 'help text explains the off (default) behaviour');
+  assert.match(src, /mixedSequentialSplit:\s*false/, 'default OFF');
+});
+
 test('T-085: battle-format keys round-trip through DEFAULTS/getConfig/setConfig and both engines', () => {
   const workerSrc = fs.readFileSync(path.join(FE, 'js', 'randomizer-worker.cjs'), 'utf8');
   const backendSrc = fs.readFileSync(path.join(FE, '..', 'backend', 'generator.js'), 'utf8');
-  for (const key of ['battleFormat', 'singlesPercent', 'leagueRunAndBun']) {
+  for (const key of ['battleFormat', 'singlesPercent', 'leagueRunAndBun', 'mixedSequentialSplit']) {
     const occurrences = (src.match(new RegExp(key, 'g')) || []).length;
     assert.ok(occurrences >= 3, `${key} must appear in DEFAULTS, getConfig and setConfig (found ${occurrences})`);
     assert.match(workerSrc, new RegExp(key), `browser worker toModuleConfig must forward ${key}`);

@@ -203,6 +203,7 @@ const DEFAULTS = {
     battleFormat: 'singles',
     singlesPercent: 60,
     leagueRunAndBun: false,
+    mixedSequentialSplit: false,   // T-146/ADR-018 — first half singles / second half doubles (mixed only)
     difficulty: 7,
     rebalance: true,
     balanceChance: 0.2,
@@ -300,6 +301,7 @@ export class ConfigForm {
         const battleFormat = this._q('input[name="battle-format"]:checked')?.value ?? 'singles';
         const singlesPercent = this._intField('#singles-percent', 60, 0, 100);
         const leagueRunAndBun = this._q('#league-runandbun')?.checked === true;
+        const mixedSequentialSplit = this._q('#mixed-sequential-split')?.checked === true;   // T-146/ADR-018
         const difficulty = parseInt(this._q('#difficultySlider')?.value ?? '7', 10);
         const rebalance = this._q('#rebalance').checked;
         const balanceChance = rebalance
@@ -333,7 +335,7 @@ export class ConfigForm {
         const starterQuality = EXTRA_STARTER_TIER_OPTIONS.includes(starterQualityRaw) ? starterQualityRaw : 'UU';
         const nicknames = this._readNicknames();
         const prices = this._readPrices();
-        const base = { runType, battleFormat, singlesPercent, leagueRunAndBun, difficulty, rebalance, balanceChance,
+        const base = { runType, battleFormat, singlesPercent, leagueRunAndBun, mixedSequentialSplit, difficulty, rebalance, balanceChance,
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs, evoLevels,
             money, prices, starterQuality, extraStarters, seed, showExactPositions, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, nicknames };
 
@@ -384,6 +386,7 @@ export class ConfigForm {
         if (bf) bf.checked = true;
         const sp = this._q('#singles-percent'); if (sp) sp.value = cfg.singlesPercent ?? 60;
         const rb = this._q('#league-runandbun'); if (rb) rb.checked = cfg.leagueRunAndBun === true;
+        const ms = this._q('#mixed-sequential-split'); if (ms) ms.checked = cfg.mixedSequentialSplit === true;   // T-146
 
         const slider = this._q('#difficultySlider');
         if (slider) slider.value = cfg.difficulty ?? 7;
@@ -827,6 +830,13 @@ export class ConfigForm {
       <input type="number" id="singles-percent" class="input" value="60" min="0" max="100" style="width:72px">
     </div>
     <span class="field-hint" style="margin:6px 0 0">% of single battles (the rest are doubles). Each trainer group is set as close to this as possible; the Champion always takes the majority type.</span>
+    <div class="checkbox-row" style="margin-top:12px">
+      <input type="checkbox" id="mixed-sequential-split">
+      <div class="checkbox-info">
+        <span class="checkbox-label">First half singles, second half doubles</span>
+        <span class="checkbox-desc">On: the early game is single battles and the later game is double battles, switching at a boss chosen by the % above (higher % = the switch happens later). Off (default): single and double battles are mixed throughout the whole game.</span>
+      </div>
+    </div>
     <div class="checkbox-row" style="margin-top:12px">
       <input type="checkbox" id="league-runandbun">
       <div class="checkbox-info">
@@ -1349,6 +1359,7 @@ export class ConfigForm {
         this.container.querySelectorAll('input[name="battle-format"]').forEach(el => el.addEventListener('change', onChange));
         this._q('#singles-percent')?.addEventListener('input', onChange);
         this._q('#league-runandbun')?.addEventListener('change', onChange);
+        this._q('#mixed-sequential-split')?.addEventListener('change', onChange);   // T-146
         this._q('#nz-numroms').addEventListener('input', onChange);
         this._q('#nz-share-pokedex').addEventListener('change', onChange);
         this._q('#nz-share-trainers').addEventListener('change', onChange);

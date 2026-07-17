@@ -9,6 +9,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **The Museum and Space Center grunt "gauntlets" now read as one back-to-back fight.** The 2 Slateport
+  Museum grunts and the 3 Mossdeep Space Center grunts each count as a single unit when balancing the
+  singles/doubles mix (so a gauntlet is all-singles or all-doubles, never split), and every one carries a
+  "Gauntlet Battle N" badge (its number within the run — Museum 1-2, Space Center 1-3) in every format (T-145).
+
+- **Mixed battles can now run "first half singles, second half doubles".** A new opt-in checkbox in the
+  Mixed panel makes the early game single battles and the later game double battles, switching at a boss
+  chosen by the singles % (a higher % pushes the switch later). Left off (the default), single and double
+  battles stay interleaved across the whole game as before. Works alongside League Run & Bun (the Elite Four
+  keep their in-game singles-or-doubles choice) (T-146).
+
 - **Doubles now has its own tier list, shown next to singles in the docs.** Every Pokémon is rated
   twice — once for singles, once for doubles — with the doubles rating re-weighted for the 6v6 meta
   (bulk over raw speed, a premium on spread damage and support) on its own tier scale. Raw BST still
@@ -176,6 +187,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   that evolved species' detail modal instead of the captured base form (B-023).
 
 ### Changed
+
+- **Doubles support Pokémon are rated far more selectively.** With Taunt and Thunder Wave teachable to
+  almost everything, the old fixed thresholds labelled ~97 Pokémon as "OU support" — including frail
+  attackers that happen to learn a disruption move (e.g. Zangoose). Support tiers are now graded *relative*
+  to the best support in the run (top quarter = OU, etc., with a floor so there are always at least ten OU
+  options), the genuinely build-defining tools are worth more (redirection, Fake Out, Tailwind, Spore,
+  Friend Guard/Hospitality; Prankster now multiplies a Pokémon's whole support kit), and a Pokémon only
+  counts as a *dedicated* support if it's at least as good at supporting as it is at attacking — so a
+  double-battle trainer's support slot always fields a real support (never an attacker with a spare
+  disruption move). Offensive doubles Pokémon also value Safety Goggles and Covert Cloak much more (T-147).
 
 - **Transparent, patch-first ROM delivery.** The green action button now reads "Download patch &
   apply to my ROM" (plural for nuzlocke / soul-link runs) and never speaks of downloading a ROM.

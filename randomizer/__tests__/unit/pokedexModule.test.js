@@ -82,6 +82,7 @@ jest.mock('../../rating', () => ({
     rateMoveDoubles: jest.fn(() => 3.5),   // T-094/ADR-015
     rateAbilityDoubles: jest.fn((k, a) => (a && a.rating) || 0),   // T-096/ADR-015
     rateAbilitySingles: jest.fn((k, a) => (a && a.rating) || 0),   // T-141 §4c
+    assignSupportTiersDoubles: jest.fn(() => ({ OU: 0, UU: 0, RU: 0 })),   // T-147 — relative support pass
 }));
 
 jest.mock('../../rebalancer', () => ({

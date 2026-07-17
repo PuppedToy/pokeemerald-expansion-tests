@@ -670,10 +670,14 @@
        distinct colour. Every trainer carries a battleType, so exactly one tag shows. */
     .roster-battletype { display:inline-flex; align-items:center; gap:6px; font-family:var(--obs-font-display);
       font-size:10px; letter-spacing:0.5px; color:#fff; border:var(--obs-border);
-      box-shadow:var(--obs-shadow-sm); padding:7px 10px; white-space:nowrap; }
+      box-shadow:var(--obs-shadow-sm); padding:7px 10px;
+      /* T-145 — the narrow 204px rail: cap the badge to the rail width and let a long tag ("Gauntlet
+         Battle N") wrap instead of bleeding out of the card to the right. */
+      max-width:100%; white-space:normal; overflow-wrap:anywhere; text-align:left; }
     .roster-battletype.bt-single { background:#2563eb; }   /* single battle — blue */
     .roster-battletype.bt-double { background:#7c3aed; }   /* double battle — violet */
     .roster-battletype.bt-tag    { background:#0d9488; }   /* Space Center tag battle — teal */
+    .roster-battletype.bt-gauntlet { background:#b45309; } /* T-145 — grunt gauntlet — amber */
     /* T-116 — Run & Bun "Choice Battle" info box on the Elite Four cards. */
     .choice-battle { font-size:12px; line-height:1.35; color:var(--obs-yellow); background:var(--obs-well);
       border:2px solid var(--obs-line); padding:7px 9px; align-self:stretch; }
@@ -1672,6 +1676,7 @@
               ${trainer.battleType === 'singles' ? `<span class="roster-battletype bt-single">Single Battle</span>` : ''}
               ${trainer.battleType === 'doubles' ? `<span class="roster-battletype bt-double">Double Battle</span>` : ''}
               ${trainer.battleType === 'tag' ? `<span class="roster-battletype bt-tag">Tag Battle</span>` : ''}
+              ${trainer.gauntletTag ? `<span class="roster-battletype bt-gauntlet">${trainer.gauntletTag}</span>` : ''}
               ${trainer.choiceBattle ? `<div class="choice-battle"><strong>Choice Battle</strong> — across the Elite Four you choose each member's format: ${trainer.choiceBattle.singles} must be fought as ${trainer.choiceBattle.singles === 1 ? 'a Single Battle' : 'Single Battles'} and ${trainer.choiceBattle.doubles} as ${trainer.choiceBattle.doubles === 1 ? 'a Double Battle' : 'Double Battles'}.</div>` : ''}
             </div>
             ${rewards}

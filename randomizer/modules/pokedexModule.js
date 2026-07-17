@@ -6,7 +6,7 @@ const parser = require('../parser');
 const { randomizeTMs, buildTMList, annotateTmNumbers } = require('../tmRandomizer');
 const { parseTmLocations } = require('../tmLocations');
 const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
-const { ratePokemon, ratePokemonDoubles, rateContextual, rateContextualDoubles, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles } = require('../rating');
+const { ratePokemon, ratePokemonDoubles, rateContextual, rateContextualDoubles, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, assignSupportTiersDoubles } = require('../rating');
 const { balancePokemon } = require('../rebalancer');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
@@ -204,6 +204,12 @@ async function runPokedexModule(config, baseData = null) {
             }
         }
     }
+
+    // T-147 — second pass: now that every mon's offensive ratingDoubles is final (post-rebalance), assign
+    // the RELATIVE support tiers (OU/UU/RU scaled to the run's max support rating, ≥10-OU floor) — the
+    // per-poke ratePokemonDoubles above stamped only provisional ABSOLUTE tiers. Overwrites
+    // supportTierDoubles / supportRatingDoubles / isSupportDoubles / tierDoubles on each mon.
+    assignSupportTiersDoubles(allPokes);
 
     // 9b. Wishiwashi special case — the placed Solo form schools into the School form at
     // lvl 20+. Rate Solo using the live School entry's stats + typing (post-rebalance),

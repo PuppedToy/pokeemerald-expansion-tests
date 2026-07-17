@@ -45,3 +45,25 @@ describe('rateItemForAPokemon — Choice items respect roles (T-129)', () => {
         expect(rate('Choice Band', MACHAMP, pivot)).toBeGreaterThan(0);
     });
 });
+
+// T-147 — anti-support tech (Safety Goggles vs Rage Powder/Spore; Covert Cloak vs Fake Out/secondaries) is
+// worth much more on an OFFENSIVE doubles mon; a dedicated support does not get the bump.
+describe('rateItemForAPokemon — anti-support items scale up on offensive doubles mons (T-147)', () => {
+    const dbl = (item, poke, moveset, doubles) => rateItemForAPokemon(item, poke, null, moveset, 50, 5, 0, doubles);
+    const atkSet = set('MOVE_SURF', 'MOVE_THUNDERBOLT', 'MOVE_FLAMETHROWER', 'MOVE_BLIZZARD');
+
+    test('Safety Goggles: worth more on an offensive doubles mon than in singles', () => {
+        expect(dbl('Safety Goggles', STARMIE, atkSet, true)).toBeGreaterThan(dbl('Safety Goggles', STARMIE, atkSet, false));
+        expect(dbl('Safety Goggles', STARMIE, atkSet, false)).toBeGreaterThan(0);
+    });
+
+    test('Covert Cloak: marginal in singles, a real pick on an offensive doubles mon', () => {
+        expect(dbl('Covert Cloak', STARMIE, atkSet, true)).toBeGreaterThan(dbl('Covert Cloak', STARMIE, atkSet, false));
+        expect(dbl('Covert Cloak', STARMIE, atkSet, true)).toBeGreaterThan(0);
+    });
+
+    test('a dedicated support does NOT get the offensive-doubles bump', () => {
+        const support = { ...STARMIE, isSupportDoubles: true };
+        expect(dbl('Safety Goggles', support, atkSet, true)).toBe(dbl('Safety Goggles', STARMIE, atkSet, false));
+    });
+});
