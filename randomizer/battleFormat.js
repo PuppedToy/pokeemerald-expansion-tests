@@ -28,14 +28,18 @@ const MIN_DOUBLE_TEAM_SIZE = 2;
 
 // T-145 (ADR-018 §1) — grunt "gauntlets": back-to-back multi-grunt fights that count as ONE unit for the
 // mixed singles/doubles proportion, share one battle type, and carry a "Gauntlet Battle N" display tag (in
-// every format). Ordered by game progression. Members stay in the `bossTrainers` pool (all are isBoss).
+// every format) where N is the member's POSITION within its gauntlet — Museum → 1,2 and Space Center →
+// 1,2,3. Members stay in the `bossTrainers` pool (all are isBoss). Ordered by game progression.
 const GAUNTLET_GROUPS = [
-    { tag: 'Gauntlet Battle 1', ids: ['TRAINER_GRUNT_MUSEUM_1', 'TRAINER_GRUNT_MUSEUM_2'] },
-    { tag: 'Gauntlet Battle 2', ids: ['TRAINER_GRUNT_SPACE_CENTER_5', 'TRAINER_GRUNT_SPACE_CENTER_6', 'TRAINER_GRUNT_SPACE_CENTER_7'] },
+    ['TRAINER_GRUNT_MUSEUM_1', 'TRAINER_GRUNT_MUSEUM_2'],
+    ['TRAINER_GRUNT_SPACE_CENTER_5', 'TRAINER_GRUNT_SPACE_CENTER_6', 'TRAINER_GRUNT_SPACE_CENTER_7'],
 ];
-const GAUNTLET_TAG_BY_ID = new Map(GAUNTLET_GROUPS.flatMap(g => g.ids.map(id => [id, g.tag])));
-/** The "Gauntlet Battle N" tag for a trainer id, or null if it isn't a gauntlet member. */
-function gauntletTagOf(id) { return GAUNTLET_TAG_BY_ID.get(id) ?? null; }
+// id → { group: <gauntlet index, for accounting grouping>, pos: <1-based battle number in the gauntlet> }
+const GAUNTLET_POS_BY_ID = new Map(GAUNTLET_GROUPS.flatMap((ids, group) => ids.map((id, i) => [id, { group, pos: i + 1 }])));
+/** The "Gauntlet Battle N" display tag (N = battle number within the gauntlet), or null. */
+function gauntletTagOf(id) { const p = GAUNTLET_POS_BY_ID.get(id); return p ? `Gauntlet Battle ${p.pos}` : null; }
+/** The gauntlet GROUP key for accounting (all members of one gauntlet share it), or null. */
+function gauntletGroupOf(id) { const p = GAUNTLET_POS_BY_ID.get(id); return p ? p.group : null; }
 
 const MULTI_MEMBER_POOLS = ['e4', 'gymBosses', 'bossTrainers', 'normalTrainers'];
 
@@ -88,10 +92,10 @@ function poolUnits(poolTrainers) {
     const byGauntlet = new Map();
     const units = [];
     for (const t of poolTrainers) {
-        const tag = gauntletTagOf(t.id);
-        if (!tag) { units.push({ members: [t] }); continue; }
-        if (!byGauntlet.has(tag)) { const u = { members: [] }; byGauntlet.set(tag, u); units.push(u); }
-        byGauntlet.get(tag).members.push(t);
+        const group = gauntletGroupOf(t.id);
+        if (group == null) { units.push({ members: [t] }); continue; }
+        if (!byGauntlet.has(group)) { const u = { members: [] }; byGauntlet.set(group, u); units.push(u); }
+        byGauntlet.get(group).members.push(t);
     }
     return units;
 }

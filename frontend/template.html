@@ -670,7 +670,10 @@
        distinct colour. Every trainer carries a battleType, so exactly one tag shows. */
     .roster-battletype { display:inline-flex; align-items:center; gap:6px; font-family:var(--obs-font-display);
       font-size:10px; letter-spacing:0.5px; color:#fff; border:var(--obs-border);
-      box-shadow:var(--obs-shadow-sm); padding:7px 10px; white-space:nowrap; }
+      box-shadow:var(--obs-shadow-sm); padding:7px 10px;
+      /* T-145 — the narrow 204px rail: cap the badge to the rail width and let a long tag ("Gauntlet
+         Battle N") wrap instead of bleeding out of the card to the right. */
+      max-width:100%; white-space:normal; overflow-wrap:anywhere; text-align:left; }
     .roster-battletype.bt-single { background:#2563eb; }   /* single battle — blue */
     .roster-battletype.bt-double { background:#7c3aed; }   /* double battle — violet */
     .roster-battletype.bt-tag    { background:#0d9488; }   /* Space Center tag battle — teal */

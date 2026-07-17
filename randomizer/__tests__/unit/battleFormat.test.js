@@ -114,11 +114,12 @@ describe('assignBattleTypes — grunt gauntlets (T-145)', () => {
     const MUSEUM = ['TRAINER_GRUNT_MUSEUM_1', 'TRAINER_GRUNT_MUSEUM_2'];
     const SPACE = ['TRAINER_GRUNT_SPACE_CENTER_5', 'TRAINER_GRUNT_SPACE_CENTER_6', 'TRAINER_GRUNT_SPACE_CENTER_7'];
 
-    test('gauntletTagOf maps every member to its gauntlet tag (null otherwise)', () => {
+    test('gauntletTagOf tags each member by its POSITION within the gauntlet (null otherwise)', () => {
         expect(gauntletTagOf('TRAINER_GRUNT_MUSEUM_1')).toBe('Gauntlet Battle 1');
-        expect(gauntletTagOf('TRAINER_GRUNT_MUSEUM_2')).toBe('Gauntlet Battle 1');
-        expect(gauntletTagOf('TRAINER_GRUNT_SPACE_CENTER_5')).toBe('Gauntlet Battle 2');
-        expect(gauntletTagOf('TRAINER_GRUNT_SPACE_CENTER_7')).toBe('Gauntlet Battle 2');
+        expect(gauntletTagOf('TRAINER_GRUNT_MUSEUM_2')).toBe('Gauntlet Battle 2');
+        expect(gauntletTagOf('TRAINER_GRUNT_SPACE_CENTER_5')).toBe('Gauntlet Battle 1');
+        expect(gauntletTagOf('TRAINER_GRUNT_SPACE_CENTER_6')).toBe('Gauntlet Battle 2');
+        expect(gauntletTagOf('TRAINER_GRUNT_SPACE_CENTER_7')).toBe('Gauntlet Battle 3');
         expect(gauntletTagOf('TRAINER_ROXANNE_1')).toBe(null);
     });
 

@@ -51,7 +51,7 @@ describe('runTrainersModule — gauntlet tag (T-145)', () => {
         const { trainersData } = runTrainersModule(mockPokedexArtifact, { difficulty: 7, battleFormat: 'singles' });
         const byId = Object.fromEntries(trainersData.map(t => [t.id, t]));
         expect(byId['TRAINER_GRUNT_MUSEUM_1'].gauntletTag).toBe('Gauntlet Battle 1');
-        expect(byId['TRAINER_GRUNT_SPACE_CENTER_5'].gauntletTag).toBe('Gauntlet Battle 2');
+        expect(byId['TRAINER_GRUNT_SPACE_CENTER_5'].gauntletTag).toBe('Gauntlet Battle 1');
         expect(byId['TRAINER_ROXANNE'].gauntletTag).toBeUndefined();
     });
 });
