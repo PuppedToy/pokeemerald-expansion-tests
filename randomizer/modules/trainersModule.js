@@ -96,7 +96,9 @@ function runTrainersModule(pokedexArtifact, config) {
     // team as a safety net. Uses an isolated PRNG, so the global rng stream (and existing seeded
     // team/starter/wild output) is untouched.
     const { assignments: battleTypes } = assignBattleTypes(
-        trainersData.map(t => ({ id: t.id, isBoss: t.isBoss, teamSize: Array.isArray(t.team) ? t.team.length : 0 })),
+        // T-146 — displayOrder (the canonical story order, stamped by hoistAuthoritativeAppearances) drives
+        // the mixed sequential split's game-progression ordering.
+        trainersData.map(t => ({ id: t.id, isBoss: t.isBoss, teamSize: Array.isArray(t.team) ? t.team.length : 0, displayOrder: t.displayOrder })),
         config,
     );
     for (const trainer of trainersData) {

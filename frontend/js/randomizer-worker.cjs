@@ -89,6 +89,7 @@ function toModuleConfig(cfg) {
         battleFormat: cfg.battleFormat ?? 'singles',
         singlesPercent: cfg.singlesPercent ?? 60,
         leagueRunAndBun: cfg.leagueRunAndBun === true,
+        mixedSequentialSplit: cfg.mixedSequentialSplit === true,   // T-146/ADR-018
         // T-052 — Trainers & bosses
         gymsTypeChanged: cfg.gymsTypeChanged ?? 2,
         e4TypeChanged: cfg.e4TypeChanged ?? 2,

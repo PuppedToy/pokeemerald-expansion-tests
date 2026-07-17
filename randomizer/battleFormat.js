@@ -10,6 +10,8 @@
  * format it consumes no randomness at all, so existing seeded output is byte-identical).
  */
 
+const { BOSS_CAP_TRAINERS } = require('./bossCaps'); // T-146 — progression boss milestones for the sequential split
+
 const CHAMPION_ID = 'TRAINER_CHAMPION_STEVEN';
 const E4_IDS = ['TRAINER_SIDNEY', 'TRAINER_PHOEBE', 'TRAINER_GLACIA', 'TRAINER_DRAKE'];
 // T-089 — the committed Run & Bun doubles clones of the E4 (see include/constants/opponents.h).
@@ -140,6 +142,42 @@ function assignBattleTypes(trainers, config = {}) {
     const runAndBun = config.leagueRunAndBun === true;
     const pools = { champion: [], e4: [], e4Doubles: [], gymBosses: [], bossTrainers: [], normalTrainers: [], tag: [] };
     for (const t of trainers) pools[poolOf(t)].push(t);
+
+    // T-146 (ADR-018 §2) — sequential split: the first part of the game is singles and the rest doubles,
+    // switching at a boss. The breakpoint is the progression boss milestone at round(fraction × numBosses):
+    // trainers before it are singles, that boss and everything after are doubles. No RNG (a pure function of
+    // singlesPercent + displayOrder). Run & Bun still governs the E4 (excluded from the split + the count).
+    if (config.mixedSequentialSplit === true) {
+        for (const t of pools.tag) setType(t.id, 'tag', 'tag');
+        for (const t of pools.e4Doubles) setType(t.id, isEligible(t) ? 'doubles' : 'singles', 'e4Doubles');
+
+        const byId = new Map(trainers.map(t => [t.id, t]));
+        const orderOf = t => (t && Number.isFinite(t.displayOrder) ? t.displayOrder : 0);
+        // Boss spine = the bossCaps progression milestones present in this run (rival gender×starter variants
+        // and multi-grunt gauntlets already collapse to one milestone each), ordered by displayOrder.
+        const milestones = [];
+        for (const flag of Object.keys(BOSS_CAP_TRAINERS)) {
+            const ids = BOSS_CAP_TRAINERS[flag].trainers.filter(id => byId.has(id));
+            if (!ids.length) continue;                                     // milestone not in this run
+            if (runAndBun && ids.some(id => E4_IDS.includes(id))) continue; // E4 governed by Run & Bun
+            milestones.push(Math.min(...ids.map(id => orderOf(byId.get(id)))));
+        }
+        milestones.sort((a, b) => a - b);
+        const numBosses = milestones.length;
+        const singlesCount = Math.round(singlesFraction * numBosses);
+        const breakpointOrder = singlesCount <= 0 ? -Infinity
+            : singlesCount >= numBosses ? Infinity
+                : milestones[singlesCount];
+
+        for (const t of trainers) {
+            const pool = poolOf(t);
+            if (pool === 'tag' || pool === 'e4Doubles') continue;       // already set above
+            if (runAndBun && pool === 'e4') { setType(t.id, 'singles', 'e4'); continue; } // RB base E4 = singles
+            const wantsDouble = orderOf(t) >= breakpointOrder;         // champion/T&L follow position, no forcing
+            setType(t.id, (wantsDouble && isEligible(t)) ? 'doubles' : 'singles', pool);
+        }
+        return { assignments, stats };
+    }
 
     // Tag battle (the Mossdeep trio) → always 'tag', in every format (never single/double-converted).
     for (const t of pools.tag) setType(t.id, 'tag', 'tag');
