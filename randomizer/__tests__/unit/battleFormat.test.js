@@ -6,6 +6,7 @@
 
 const {
     assignBattleTypes, poolOf, isEligible, TATE_AND_LIZA_ID, runAndBunE4Split, unifyRivalBattleTypes,
+    gauntletTagOf,
 } = require('../../battleFormat');
 
 const T = (id, isBoss, teamSize = 6) => ({ id, isBoss, teamSize });
@@ -104,6 +105,48 @@ describe('assignBattleTypes — mixed proportions', () => {
         const r2 = assignBattleTypes(roster, { battleFormat: 'mixed', singlesPercent: 50, seed: 99 }).assignments;
         for (const t of roster) expect(r1.get(t.id)).toBe(r2.get(t.id));
         expect(r1.get('TRAINER_SOLO')).toBe('singles');
+    });
+});
+
+// T-145 (ADR-018 §1) — grunt gauntlets: the 2 Museum grunts + the 3 Space Center grunts each count as ONE
+// unit in the bossTrainers proportion and share one singles/doubles type; all carry a "Gauntlet Battle N" tag.
+describe('assignBattleTypes — grunt gauntlets (T-145)', () => {
+    const MUSEUM = ['TRAINER_GRUNT_MUSEUM_1', 'TRAINER_GRUNT_MUSEUM_2'];
+    const SPACE = ['TRAINER_GRUNT_SPACE_CENTER_5', 'TRAINER_GRUNT_SPACE_CENTER_6', 'TRAINER_GRUNT_SPACE_CENTER_7'];
+
+    test('gauntletTagOf maps every member to its gauntlet tag (null otherwise)', () => {
+        expect(gauntletTagOf('TRAINER_GRUNT_MUSEUM_1')).toBe('Gauntlet Battle 1');
+        expect(gauntletTagOf('TRAINER_GRUNT_MUSEUM_2')).toBe('Gauntlet Battle 1');
+        expect(gauntletTagOf('TRAINER_GRUNT_SPACE_CENTER_5')).toBe('Gauntlet Battle 2');
+        expect(gauntletTagOf('TRAINER_GRUNT_SPACE_CENTER_7')).toBe('Gauntlet Battle 2');
+        expect(gauntletTagOf('TRAINER_ROXANNE_1')).toBe(null);
+    });
+
+    test('gauntlet members share one type in mixed (grunt 1 singles ⟹ grunt 2 singles), at every %', () => {
+        const roster = [...MUSEUM, ...SPACE, 'TRAINER_BOSS_A', 'TRAINER_BOSS_B'].map(id => T(id, true));
+        for (const pct of [0, 30, 50, 60, 100]) {
+            const { assignments } = assignBattleTypes(roster, { battleFormat: 'mixed', singlesPercent: pct, seed: 5 });
+            expect(assignments.get(MUSEUM[0])).toBe(assignments.get(MUSEUM[1]));
+            expect(assignments.get(SPACE[0])).toBe(assignments.get(SPACE[1]));
+            expect(assignments.get(SPACE[1])).toBe(assignments.get(SPACE[2]));
+        }
+    });
+
+    test('each gauntlet counts as ONE unit in the bossTrainers proportion', () => {
+        // 4 boss units: {Museum}, {Space}, BOSS_A, BOSS_B. 50% → round(0.5×4)=2 singles units, 2 doubles units.
+        const roster = [...MUSEUM, ...SPACE, 'TRAINER_BOSS_A', 'TRAINER_BOSS_B'].map(id => T(id, true));
+        const { assignments } = assignBattleTypes(roster, { battleFormat: 'mixed', singlesPercent: 50, seed: 5 });
+        const unitDoubles = [MUSEUM[0], SPACE[0], 'TRAINER_BOSS_A', 'TRAINER_BOSS_B']
+            .filter(id => assignments.get(id) === 'doubles').length;
+        expect(unitDoubles).toBe(2);
+    });
+
+    test('gauntlets at 0% singles → all members doubles; at 100% → all members singles', () => {
+        const roster = [...MUSEUM, ...SPACE].map(id => T(id, true));
+        const d = assignBattleTypes(roster, { battleFormat: 'mixed', singlesPercent: 0, seed: 5 }).assignments;
+        for (const id of [...MUSEUM, ...SPACE]) expect(d.get(id)).toBe('doubles');
+        const s = assignBattleTypes(roster, { battleFormat: 'mixed', singlesPercent: 100, seed: 5 }).assignments;
+        for (const id of [...MUSEUM, ...SPACE]) expect(s.get(id)).toBe('singles');
     });
 });
 

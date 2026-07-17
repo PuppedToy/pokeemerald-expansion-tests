@@ -221,6 +221,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
                 class: trainer.class,
                 colors: trainer.colors,   // T-044 — copied team, but this trainer's own card colours
                 battleType: trainer.battleType || 'singles',   // T-087/ADR-014
+                gauntletTag: trainer.gauntletTag || null,       // T-145/ADR-018 — "Gauntlet Battle N" display tag
             };
             return;
         }
@@ -245,6 +246,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
             team,
             battleType: trainer.battleType || 'singles',   // T-087/ADR-014
             choiceBattle: trainer.choiceBattle || null,    // T-116 — Run & Bun E4 choice info
+            gauntletTag: trainer.gauntletTag || null,      // T-145/ADR-018 — "Gauntlet Battle N" display tag
         };
     };
 

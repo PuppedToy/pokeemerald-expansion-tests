@@ -24,6 +24,17 @@ const TAG_BATTLE_IDS = new Set(['TRAINER_MAXIE_MOSSDEEP', 'TRAINER_TABITHA_MOSSD
 // A double battle needs a trainer that can field two Pokémon.
 const MIN_DOUBLE_TEAM_SIZE = 2;
 
+// T-145 (ADR-018 §1) — grunt "gauntlets": back-to-back multi-grunt fights that count as ONE unit for the
+// mixed singles/doubles proportion, share one battle type, and carry a "Gauntlet Battle N" display tag (in
+// every format). Ordered by game progression. Members stay in the `bossTrainers` pool (all are isBoss).
+const GAUNTLET_GROUPS = [
+    { tag: 'Gauntlet Battle 1', ids: ['TRAINER_GRUNT_MUSEUM_1', 'TRAINER_GRUNT_MUSEUM_2'] },
+    { tag: 'Gauntlet Battle 2', ids: ['TRAINER_GRUNT_SPACE_CENTER_5', 'TRAINER_GRUNT_SPACE_CENTER_6', 'TRAINER_GRUNT_SPACE_CENTER_7'] },
+];
+const GAUNTLET_TAG_BY_ID = new Map(GAUNTLET_GROUPS.flatMap(g => g.ids.map(id => [id, g.tag])));
+/** The "Gauntlet Battle N" tag for a trainer id, or null if it isn't a gauntlet member. */
+function gauntletTagOf(id) { return GAUNTLET_TAG_BY_ID.get(id) ?? null; }
+
 const MULTI_MEMBER_POOLS = ['e4', 'gymBosses', 'bossTrainers', 'normalTrainers'];
 
 /** Isolated mulberry32 (same algorithm as rng.js, but a private instance — no shared state). */
@@ -64,6 +75,23 @@ function runAndBunE4Split(singlesPercent) {
     const pct = Number.isFinite(Number(singlesPercent)) ? Number(singlesPercent) : 60;
     const singles = Math.max(1, Math.min(total - 1, Math.round((pct / 100) * total)));
     return { singles, doubles: total - singles };
+}
+
+/**
+ * Group a pool's trainers into UNITS (T-145): a grunt gauntlet's members collapse to ONE unit (so it
+ * consumes a single proportion slot and shares one type); every other trainer is its own unit. Units keep
+ * the pool's first-appearance order; a gauntlet unit sits at its earliest member's position.
+ */
+function poolUnits(poolTrainers) {
+    const byGauntlet = new Map();
+    const units = [];
+    for (const t of poolTrainers) {
+        const tag = gauntletTagOf(t.id);
+        if (!tag) { units.push({ members: [t] }); continue; }
+        if (!byGauntlet.has(tag)) { const u = { members: [] }; byGauntlet.set(tag, u); units.push(u); }
+        byGauntlet.get(tag).members.push(t);
+    }
+    return units;
 }
 
 /** Deterministic Fisher–Yates shuffle using the injected random fn. Does not mutate the input. */
@@ -128,30 +156,35 @@ function assignBattleTypes(trainers, config = {}) {
         setType(t.id, type, 'champion');
     }
 
-    // Multi-member pools → mark round(fraction × eligibleCount) singles, the rest doubles. Doubles
-    // fill from the front of a deterministic order; the gym pool pins Tate & Liza first (rule 8).
+    // Multi-member pools → mark round(fraction × eligibleUnits) singles, the rest doubles. Doubles fill
+    // from the front of a deterministic order; the gym pool pins Tate & Liza first (rule 8). T-145 — a pool
+    // is proportioned over UNITS, where a grunt gauntlet is ONE unit (its members share the unit's type).
+    const setUnit = (unit, type, key) => { for (const m of unit.members) setType(m.id, type, key); };
+    const unitEligible = unit => unit.members.every(isEligible);
     for (const key of MULTI_MEMBER_POOLS) {
-        const eligible = pools[key].filter(isEligible);
-        for (const t of pools[key]) if (!isEligible(t)) setType(t.id, 'singles', key);
+        const units = poolUnits(pools[key]);
+        const eligible = units.filter(unitEligible);
+        for (const unit of units) if (!unitEligible(unit)) setUnit(unit, 'singles', key);
 
         // Run & Bun: the base Elite Four are the singles versions (their doubles clones live in
         // e4Doubles and were already set above); the player chooses which to fight in-game.
         if (key === 'e4' && runAndBun) {
-            for (const t of eligible) setType(t.id, 'singles', key);
+            for (const unit of eligible) setUnit(unit, 'singles', key);
             continue;
         }
 
         let ordered;
         if (key === 'gymBosses') {
-            const tl = eligible.filter(t => t.id === TATE_AND_LIZA_ID);
-            const rest = shuffled(eligible.filter(t => t.id !== TATE_AND_LIZA_ID), rand);
+            const isTL = unit => unit.members.some(t => t.id === TATE_AND_LIZA_ID);
+            const tl = eligible.filter(isTL);
+            const rest = shuffled(eligible.filter(u => !isTL(u)), rand);
             ordered = [...tl, ...rest];
         } else {
             ordered = shuffled(eligible, rand);
         }
         const singlesCount = Math.round(singlesFraction * eligible.length);
         const doublesCount = eligible.length - singlesCount;
-        ordered.forEach((t, i) => setType(t.id, i < doublesCount ? 'doubles' : 'singles', key));
+        ordered.forEach((unit, i) => setUnit(unit, i < doublesCount ? 'doubles' : 'singles', key));
     }
 
     return { assignments, stats };
@@ -188,6 +221,7 @@ function unifyRivalBattleTypes(trainers) {
 }
 
 module.exports = {
-    assignBattleTypes, poolOf, isEligible, runAndBunE4Split, unifyRivalBattleTypes,
+    assignBattleTypes, poolOf, isEligible, runAndBunE4Split, unifyRivalBattleTypes, gauntletTagOf,
     CHAMPION_ID, E4_IDS, E4_DOUBLES_IDS, GYM_BOSS_IDS, TAG_BATTLE_IDS, TATE_AND_LIZA_ID, MIN_DOUBLE_TEAM_SIZE,
+    GAUNTLET_GROUPS,
 };
