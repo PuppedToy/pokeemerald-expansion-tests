@@ -21,6 +21,7 @@ DewfordTown_Gym_EventScript_Brawly::
 
 DewfordTown_Gym_EventScript_BrawlyDefeated::
 	setflag FLAG_BADGE02_GET
+	special BufferLevelCap
 	message DewfordTown_Gym_Text_ReceivedKnuckleBadge
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -283,7 +284,7 @@ DewfordTown_Gym_Text_BrawlyDefeat:
 
 DewfordTown_Gym_Text_ReceivedKnuckleBadge:
 	.string "{PLAYER} received the KNUCKLE BADGE\n"
-	.string "and your Pokémon have leveled up to 22!$"
+	.string "and your Pokémon have leveled up to {STR_VAR_1}!$"
 
 DewfordTown_Gym_Text_ExplainBulkUp:
 	.string "That TM08 contains BULK UP.\p"

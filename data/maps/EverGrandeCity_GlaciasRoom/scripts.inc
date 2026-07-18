@@ -68,6 +68,7 @@ EverGrandeCity_GlaciasRoom_EventScript_Defeated::
 
 EverGrandeCity_GlaciasRoom_Trigger_LevelCap::
 	setflag FLAG_FIRST_DEFEATED_ELITE_4_GLACIA
+	special BufferLevelCap
 	message EverGrandeCity_GlaciasRoom_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -97,4 +98,4 @@ EverGrandeCity_GlaciasRoom_Text_PostBattleSpeech:
 	.string "side of the POKéMON LEAGUE.$"
 
 EverGrandeCity_GlaciasRoom_LevelCap:
-	.string "Your Pokémon have leveled up to 76!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

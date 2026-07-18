@@ -863,6 +863,7 @@ RustboroCity_EventScript_BattleMay::
 	end
 
 RustboroCity_EventScript_MayBrineyHint::
+	special BufferLevelCap
 	message RustboroCity_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare

@@ -4,26 +4,26 @@
 #include "caps.h"
 #include "pokemon.h"
 #include "pokemon_storage_system.h"
+#include "string_util.h"
 
 
 u32 GetCurrentLevelCap(void)
 {
     static const u32 sLevelCapFlagMap[][2] =
     {
-        {FLAG_DEFEATED_RIVAL_ROUTE103, 7}, // Boss
-        {FLAG_DEFEATED_AQUA_WOODS, 10}, // Minor boss
-        {FLAG_BADGE01_GET, 12}, // Gym boss Roxanne
-        {FLAG_RECOVERED_DEVON_GOODS, 15}, // Minor boss
-        {FLAG_DEFEATED_RIVAL_RUSTBORO, 17}, // Boss
-        {FLAG_BADGE02_GET, 19}, // Gym boss Brawly
-        {FLAG_DELIVERED_STEVEN_LETTER, 22}, // Boss Steven
-        {FLAG_DELIVERED_DEVON_GOODS, 24}, // Boss gauntlet
-        {FLAG_ROUTE110_RIVAL_DEFEATED, 26}, // Boss
-        {FLAG_DEFEATED_WALLY_MAUVILLE, 28}, // Minor boss
-        {FLAG_BADGE03_GET, 29}, // Gym boss Wattson - gives Megabracelet
+        {FLAG_DEFEATED_RIVAL_ROUTE103, 8}, // Boss
+        {FLAG_DEFEATED_AQUA_WOODS, 11}, // Minor boss
+        {FLAG_BADGE01_GET, 13}, // Gym boss Roxanne
+        {FLAG_RECOVERED_DEVON_GOODS, 16}, // Minor boss
+        {FLAG_DEFEATED_RIVAL_RUSTBORO, 18}, // Boss
+        {FLAG_BADGE02_GET, 20}, // Gym boss Brawly
+        {FLAG_DELIVERED_STEVEN_LETTER, 23}, // Boss Steven
+        {FLAG_DELIVERED_DEVON_GOODS, 25}, // Boss gauntlet
+        {FLAG_ROUTE110_RIVAL_DEFEATED, 27}, // Boss
+        {FLAG_DEFEATED_WALLY_MAUVILLE, 29}, // Minor boss
+        {FLAG_BADGE03_GET, 30}, // Gym boss Wattson - gives Megabracelet
         // Get good rod
-        {FLAG_DEFEATED_TABITHA_MT_CHIMNEY, 32}, // Minor boss
-        {FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, 33}, // Major boss
+        {FLAG_DEFEATED_TABITHA_MT_CHIMNEY, 33}, // Minor boss
         {FLAG_BADGE04_GET, 36}, // Gym boss Flannery - gives Regirock
         {FLAG_BADGE05_GET, 39}, // Gym boss Norman - gives Regice
         // Get surf here
@@ -63,6 +63,15 @@ u32 GetCurrentLevelCap(void)
     }
 
     return MAX_LEVEL;
+}
+
+// T-151 — buffer the current level cap into gStringVar1 for the "leveled up to {STR_VAR_1}!" fanfare
+// messages. This is exactly the level LevelUpAllPokemonToCap raises the party to (both read
+// GetCurrentLevelCap), so the on-screen number is always correct — sourced from the caps.c SSOT, never
+// hard-coded. Scripts call this right before showing the message (after the milestone's setflag).
+void BufferLevelCap(void)
+{
+    ConvertIntToDecimalStringN(gStringVar1, GetCurrentLevelCap(), STR_CONV_MODE_LEFT_ALIGN, 3);
 }
 
 u32 GetSoftLevelCapExpValue(u32 level, u32 expValue)

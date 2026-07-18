@@ -312,7 +312,7 @@ const SPLITS = [
             { contextualTier: [TIER_RU], checkValidEvo: true },
             { contextualTier: [TIER_RU], checkValidEvo: true },
             { contextualTier: [TIER_RU], checkValidEvo: true },
-            bossMega(TIER_UU),
+            bossMega(TIER_OU),
         ],
     },
     {
@@ -335,7 +335,7 @@ const SPLITS = [
             { absoluteTier: [TIER_RU], checkValidEvo: true },
             { absoluteTier: [TIER_RU], checkValidEvo: true },
             { absoluteTier: [TIER_RU], checkValidEvo: true },
-            bossMega(TIER_UU),
+            bossMega(TIER_OU),
         ],
     },
     {
@@ -347,7 +347,7 @@ const SPLITS = [
             { absoluteTier: [TIER_UU], checkValidEvo: true },
             { absoluteTier: [TIER_RU], checkValidEvo: true },
             { absoluteTier: [TIER_RU], checkValidEvo: true },
-            bossMega(TIER_UU),
+            bossMega(TIER_OU),
         ],
     },
     {

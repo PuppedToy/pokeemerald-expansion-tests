@@ -288,6 +288,7 @@ MossdeepCity_SpaceCenter_2F_EventScript_DefeatedMaxieTabitha::
 	call MossdeepCity_SpaceCenter_2F_EventScript_StevenFacePlayer
 	fadescreen FADE_FROM_BLACK
 	setflag FLAG_DEFEATED_MAGMA_SPACE_CENTER
+	special BufferLevelCap
 	message MossdeepCity_SpaceCenter_2F_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -475,4 +476,4 @@ MossdeepCity_SpaceCenter_2F_Text_StevenThankYouComeSeeMeAtHome:
 	.string "{PLAYER}{KUN}, thank you.$"
 
 MossdeepCity_SpaceCenter_2F_LevelCap:
-	.string "Your Pokémon have leveled up to 61!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

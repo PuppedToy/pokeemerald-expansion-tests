@@ -22,5 +22,6 @@ u32 GetCurrentLevelCap(void);
 u32 GetSoftLevelCapExpValue(u32 level, u32 expValue);
 u32 GetCurrentEVCap(void);
 void LevelUpAllPokemonToCap(void);
+void BufferLevelCap(void);
 
 #endif /* GUARD_CAPS_H */

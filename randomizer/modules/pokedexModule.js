@@ -10,6 +10,7 @@ const { ratePokemon, ratePokemonDoubles, rateContextual, rateContextualDoubles, 
 const { balancePokemon } = require('../rebalancer');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
+const { capLevelMap } = require('../bossCaps');
 const {
     TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR, ABILITIES_FILE_PATH, ITEMS_FILE_PATH, MEGA_EVOS_PATH,
     EVO_TYPE_MEGA,
@@ -132,7 +133,13 @@ async function parseBaseData() {
         });
     }
 
-    return { abilities, items, megaEvoStones, moves, levelUpLearnsets, TMTeachables, evoTree, megaEvoTree, allPokes, tmLocations };
+    // T-149 — boss cap levels (flag → level) parsed from caps.c, the SSOT. Trainer levels are derived
+    // from these (a trainer's level tracks its segment's boss cap). Baked into base-data.json by build.js
+    // so the browser worker gets them without reading caps.c (which it can't).
+    const capsCText = await fs.readFile(path.resolve(__dirname, '..', '..', 'src', 'caps.c'), 'utf-8');
+    const capLevels = capLevelMap(capsCText);
+
+    return { abilities, items, megaEvoStones, moves, levelUpLearnsets, TMTeachables, evoTree, megaEvoTree, allPokes, tmLocations, capLevels };
 }
 
 // Run the full pokedex pipeline.
@@ -348,6 +355,7 @@ async function runPokedexModule(config, baseData = null) {
         evoTree,
         tmList,
         tmPool,
+        capLevels: baseData.capLevels,   // T-149 — passed through to the trainer module for level resolution
     };
 }
 

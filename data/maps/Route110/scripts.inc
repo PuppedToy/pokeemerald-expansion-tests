@@ -525,6 +525,7 @@ Route110_EventScript_RivalExit::
 	setflag FLAG_ROUTE110_RIVAL_DEFEATED
 	savebgm MUS_DUMMY
 	fadedefaultbgm
+	special BufferLevelCap
 	message Route110_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -1040,7 +1041,7 @@ Route110_Text_KeepAnEyeOutForRival:
 	.string "See you again, {PLAYER}{KUN}!$"
 
 Route110_LevelCap:
-	.string "Your Pokémon have leveled up to 28!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"
 
 @ === RAND_ROUTE110_BALL_START ===
 Route110_EventScript_GoodItem::

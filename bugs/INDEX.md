@@ -41,3 +41,4 @@
 | [B-035](B-035-emergent-trick-room-overfires.md) | Emergent Trick Room over-fires — too many trainers build TR just because a mon can learn the TM | fixed | major | 0.8.0 | 0.8.0 | randomizer/__tests__/unit/emergentGimmick.test.js |
 | [B-036](B-036-gimmick-setter-moves-bypass-tm-bag.md) | Trick Room / Electric Terrain gimmick setter moves are injected without the TM (B-030 violation) | fixed | major | 0.8.0 | 0.8.0 | randomizer/__tests__/unit/gimmickSetterTmGate.test.js |
 | [B-037](B-037-room-service-double-provisioned.md) | Room Service double-provisioned — a Trick Room team could field two | fixed | minor | 0.8.0 | 0.8.0 | randomizer/__tests__/unit/gimmickItemBag.test.js |
+| [B-038](B-038-duplicate-fanfare-wally-lilycove.md) | Duplicate level-cap fanfare after the Wally Lilycove battle | fixed | minor | 0.9.0 | 0.9.0 | randomizer/__tests__/unit/levelCapMessagesSSOT.test.js |

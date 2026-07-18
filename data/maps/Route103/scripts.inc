@@ -148,6 +148,7 @@ Route103_EventScript_RivalEnd::
 	removeobject LOCALID_ROUTE103_RIVAL
 	setflag FLAG_RECEIVED_OLD_ROD
 	setflag FLAG_DEFEATED_RIVAL_ROUTE103
+	special BufferLevelCap
 	message Route103_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -390,4 +391,4 @@ Route103_Text_SawyerDefeated:
 	.string "Bye!$"
 
 Route103_LevelCap:
-	.string "Your Pokémon have leveled up to 10!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

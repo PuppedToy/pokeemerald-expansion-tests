@@ -63,6 +63,7 @@ MossdeepCity_Gym_EventScript_TateAndLiza::
 
 MossdeepCity_Gym_EventScript_TateAndLizaDefeated::
 	setflag FLAG_BADGE07_GET
+	special BufferLevelCap
 	message MossdeepCity_Gym_Text_ReceivedMindBadge
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -580,7 +581,7 @@ MossdeepCity_Gym_Text_TateAndLizaDefeat:
 
 MossdeepCity_Gym_Text_ReceivedMindBadge:
 	.string "{PLAYER} received the MIND BADGE\n"
-	.string "and your Pokémon have leveled up to 59!$"
+	.string "and your Pokémon have leveled up to {STR_VAR_1}!$"
 
 MossdeepCity_Gym_Text_ExplainMindBadgeTakeThis:
 	.string "TATE: The MIND BADGE enhances the\n"

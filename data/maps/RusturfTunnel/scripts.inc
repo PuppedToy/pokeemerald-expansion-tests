@@ -312,6 +312,7 @@ RusturfTunnel_EventScript_Grunt::
 	waitmovement 0
 	removeobject LOCALID_RUSTURF_TUNNEL_GRUNT
 	setflag FLAG_RECOVERED_DEVON_GOODS
+	special BufferLevelCap
 	message RusturfTunnel_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -533,4 +534,4 @@ RusturfTunnel_Text_MikePostBattle:
 	.string "There's a feel-good story!$"
 
 RusturfTunnel_LevelCap:
-	.string "Your Pokémon have leveled up to 17!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

@@ -126,6 +126,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **The Wally Lilycove battle no longer plays the level-up fanfare twice.** Beating Wally at Lilycove
+  fired a stray, message-less level-cap fanfare right after the battle, then the real one with the
+  "leveled up to N" message moments later. The redundant jingle is gone; the encounter now plays a
+  single, message-paired fanfare like every other milestone (B-038).
+
+- **The "Your Pokémon have leveled up to N!" messages now always show the real cap.** Every level-cap
+  fanfare message used to hard-code its number, so it drifted whenever a cap changed (and was already
+  wrong at Mt Chimney after Maxie's fight was removed). Each message now reads the level straight from
+  the caps SSOT (`src/caps.c`) — it prints exactly the level your party was raised to — so it can never
+  desync again, for any cap configuration (T-151).
+
 - **Villain leaders now pick a signature mega that fits their team's actual types, and their grunts
   foreshadow it faithfully.** Archie/Maxie used to force Mega Sharpedo / Mega Camerupt as long as the mega
   shared *any* one of the faction's five types — so a reconfigured Aqua/Magma theme fielded an off-theme
@@ -187,6 +198,28 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   that evolved species' detail modal instead of the captured base form (B-023).
 
 ### Changed
+
+- **Early-game level caps raised by one, and trainer levels now track the caps automatically.** Every
+  level cap from the first rival through Tabitha at Mt Chimney went up by 1 (rival 7→8, Aqua Grunt 10→11,
+  Roxanne 12→13, … Tabitha 32→33); Flannery (36) and everything after are unchanged. Under the hood every
+  trainer's level is now **derived from the caps** (`src/caps.c` is the single source) instead of being
+  hard-coded, so a cap change flows to all the trainers tuned to it — no more silent desync. Team Maxie's
+  Mt Chimney fight, already removed in the previous change, is now fully gone from the trainer data too
+  (T-149).
+
+- **Bosses can field Mega OU from the very first mega, for more variety.** The story-progression
+  mega gate now differs by trainer kind: **bosses** (Wattson onward) may pick any mega up to OU from
+  the start instead of being held to UU early, so early gym leaders and villains have a wider, more
+  interesting mega pool. **Mega Ubers stays 100% restricted** until its existing (post-Tate & Liza)
+  breakpoint — a boss can grab an OU mega early, never an Ubers one. **Normal trainers are unchanged**
+  (UU early → OU mid → Ubers late) (T-150).
+
+- **Mt Chimney's Maxie no longer battles or raises the level cap.** Reaching Maxie now skips straight
+  into the existing Archie cutscene — Team Magma clears out, Archie steps in, thanks you, hands over the
+  Good Rod and sets the story flags exactly as before — but there is no Maxie fight and no level-cap jump
+  at Mt Chimney (the cap now runs Tabitha 32 → Flannery/Badge 4 36). The Maxie–Mt Chimney checkpoint is
+  gone from both level-cap sources and from the in-app boss documentation; the underlying story flag is
+  kept, so every later event it gates still unlocks (T-148).
 
 - **Doubles support Pokémon are rated far more selectively.** With Taunt and Thunder Wave teachable to
   almost everything, the old fixed thresholds labelled ~97 Pokémon as "OU support" — including frail

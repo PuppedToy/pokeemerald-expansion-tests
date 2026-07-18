@@ -12,6 +12,7 @@ RustboroCity_Gym_EventScript_Roxanne::
 
 RustboroCity_Gym_EventScript_RoxanneDefeated::
 	setflag FLAG_BADGE01_GET
+	special BufferLevelCap
 	message RustboroCity_Gym_Text_ReceivedStoneBadge
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -212,7 +213,7 @@ RustboroCity_Gym_Text_RoxanneDefeat:
 
 RustboroCity_Gym_Text_ReceivedStoneBadge:
 	.string "{PLAYER} received the STONE BADGE\n"
-	.string "and your Pokémon have leveled up to 15!$"
+	.string "and your Pokémon have leveled up to {STR_VAR_1}!$"
 
 RustboroCity_Gym_Text_StoneBadgeInfoTakeThis:
 	.string "The STONE BADGE heightens the ATTACK\n"

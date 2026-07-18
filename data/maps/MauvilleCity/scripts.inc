@@ -190,6 +190,7 @@ MauvilleCity_EventScript_BattleWally::
 	msgbox MauvilleCity_Text_WallyHereICome, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_WALLY_MAUVILLE, MauvilleCity_Text_WallyDefeat
 	setflag FLAG_DEFEATED_WALLY_MAUVILLE
+	special BufferLevelCap
 	message MauvilleCity_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -640,4 +641,4 @@ MauvilleCity_Text_BeenCheckingOutTV:
 	.string "Hi, have you been checking out TVs?$"
 
 MauvilleCity_LevelCap:
-	.string "Your Pokémon have leveled up to 29!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

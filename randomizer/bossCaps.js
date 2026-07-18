@@ -34,7 +34,9 @@ const BOSS_CAP_TRAINERS = {
     FLAG_DEFEATED_WALLY_MAUVILLE:        { trainers: ['TRAINER_WALLY_MAUVILLE'],         label: 'Wally – Mauville' },
     FLAG_BADGE03_GET:                    { trainers: ['TRAINER_WATTSON_1'],              label: 'Wattson – Badge 3' },
     FLAG_DEFEATED_TABITHA_MT_CHIMNEY:    { trainers: ['TRAINER_TABITHA_MT_CHIMNEY'],     label: 'Tabitha – Mt Chimney' },
-    FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY:  { trainers: ['TRAINER_MAXIE_MT_CHIMNEY'],       label: 'Maxie – Mt Chimney' },
+    // NOTE: FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY (Maxie – Mt Chimney) was removed as a level-cap
+    // boss (T-148). The flag lives on as a story-only flag (still set by the Mt Chimney script),
+    // so it is intentionally NOT in caps.c nor here — keep them in lock-step (1-to-1 assertion).
     FLAG_BADGE04_GET:                    { trainers: ['TRAINER_FLANNERY_1'],             label: 'Flannery – Badge 4' },
     FLAG_BADGE05_GET:                    { trainers: ['TRAINER_NORMAN_1'],               label: 'Norman – Badge 5' },
     FLAG_DEFEATED_SHELLY_WEATHER_INST:   { trainers: ['TRAINER_SHELLY_WEATHER_INSTITUTE'], label: 'Shelly – Weather Institute' },
@@ -81,6 +83,15 @@ function parseLevelCaps(capsCText) {
     return out;
 }
 
+// T-149 — flag → level map parsed from caps.c, so the randomizer can derive trainer levels from the
+// caps SSOT (a trainer's level tracks its segment's boss cap). Node builds it live; the browser gets it
+// baked into base-data.json (via parseBaseData). Keyed by cap flag, e.g. { FLAG_BADGE01_GET: 12, … }.
+function capLevelMap(capsCText) {
+    const out = {};
+    for (const { flag, level } of parseLevelCaps(capsCText)) out[flag] = level;
+    return out;
+}
+
 // Join caps.c levels/order with the trainer/label map; assert the relation is exactly 1-to-1.
 function buildBossCaps(capsCText, map = BOSS_CAP_TRAINERS) {
     const caps = parseLevelCaps(capsCText);
@@ -92,4 +103,4 @@ function buildBossCaps(capsCText, map = BOSS_CAP_TRAINERS) {
     return caps.map((c, i) => ({ order: i, flag: c.flag, level: c.level, trainers: map[c.flag].trainers, label: map[c.flag].label }));
 }
 
-module.exports = { parseLevelCaps, buildBossCaps, BOSS_CAP_TRAINERS, STATIC_UNLOCKS };
+module.exports = { parseLevelCaps, capLevelMap, buildBossCaps, BOSS_CAP_TRAINERS, STATIC_UNLOCKS };

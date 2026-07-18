@@ -47,6 +47,7 @@ AquaHideout_B2F_EventScript_SubmarineEscape::
 	waitmovement 0
 	msgbox AquaHideout_B2F_Text_MattPostBattle, MSGBOX_DEFAULT
 	setflag FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE
+	special BufferLevelCap
 	message AquaHideout_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -162,4 +163,4 @@ AquaHideout_B2F_Text_Grunt8PostBattle:
 	.string "battle more effectively…$"
 
 AquaHideout_LevelCap:
-	.string "Your Pokémon have leveled up to 56!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

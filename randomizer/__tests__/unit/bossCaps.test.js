@@ -5,7 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { parseLevelCaps, buildBossCaps, BOSS_CAP_TRAINERS } = require('../../bossCaps');
+const { parseLevelCaps, capLevelMap, buildBossCaps, BOSS_CAP_TRAINERS } = require('../../bossCaps');
 
 const FIXTURE = `
 u32 GetCurrentLevelCap(void)
@@ -35,6 +35,19 @@ describe('parseLevelCaps', () => {
         const out = parseLevelCaps(FIXTURE);
         expect(out).toHaveLength(3);
         expect(out.some((e) => e.level === 999)).toBe(false);
+    });
+});
+
+describe('capLevelMap (T-149 — flag → level from caps.c)', () => {
+    test('maps each cap flag to its level', () => {
+        expect(capLevelMap(FIXTURE)).toEqual({
+            FLAG_DEFEATED_RIVAL_ROUTE103: 7,
+            FLAG_DEFEATED_AQUA_WOODS: 10,
+            FLAG_BADGE01_GET: 12,
+        });
+    });
+    test('ignores the sEvCapFlagMap array (only sLevelCapFlagMap)', () => {
+        expect(capLevelMap(FIXTURE).FLAG_BADGE01_GET).toBe(12); // 12, not 999
     });
 });
 
@@ -73,7 +86,7 @@ describe('SSOT integrity against the real src/caps.c', () => {
         // spot-check known anchors
         const byFlag = Object.fromEntries(out.map((e) => [e.flag, e]));
         expect(byFlag['FLAG_BADGE01_GET'].trainers).toContain('TRAINER_ROXANNE_1');
-        expect(byFlag['FLAG_BADGE01_GET'].level).toBe(12);
+        expect(byFlag['FLAG_BADGE01_GET'].level).toBe(13); // T-149 — +1 shift (was 12)
         expect(byFlag['FLAG_DEFEATED_AQUA_WOODS'].trainers).toContain('TRAINER_GRUNT_PETALBURG_WOODS');
         expect(byFlag['FLAG_IS_CHAMPION'].trainers).toContain('TRAINER_CHAMPION_STEVEN');
     });
@@ -82,5 +95,23 @@ describe('SSOT integrity against the real src/caps.c', () => {
             expect(Array.isArray(v.trainers) && v.trainers.length > 0).toBe(true);
             expect(typeof v.label === 'string' && v.label.length > 0).toBe(true);
         }
+    });
+});
+
+describe('T-148: Maxie – Mt Chimney is no longer a level-cap boss', () => {
+    const capsC = fs.readFileSync(path.resolve(__dirname, '../../../src/caps.c'), 'utf8');
+
+    // The Mt Chimney Maxie fight was dropped as a cap checkpoint. The flag itself lives on
+    // as a story-only flag (still setflag'd by the map script), so it must NOT reappear in
+    // either cap SSOT — caps.c's sLevelCapFlagMap or bossCaps' BOSS_CAP_TRAINERS.
+    test('FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY is absent from caps.c sLevelCapFlagMap', () => {
+        const flags = parseLevelCaps(capsC).map((c) => c.flag);
+        expect(flags).not.toContain('FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY');
+    });
+
+    test('BOSS_CAP_TRAINERS has no Maxie – Mt Chimney entry', () => {
+        expect(BOSS_CAP_TRAINERS.FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY).toBeUndefined();
+        const allTrainers = Object.values(BOSS_CAP_TRAINERS).flatMap((v) => v.trainers);
+        expect(allTrainers).not.toContain('TRAINER_MAXIE_MT_CHIMNEY');
     });
 });

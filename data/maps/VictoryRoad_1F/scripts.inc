@@ -42,6 +42,7 @@ VictoryRoad_1F_EventScript_WallyEntranceBattle::
 	trainerbattle_no_intro TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat
 	msgbox VictoryRoad_1F_Text_WallyPostEntranceBattle, MSGBOX_DEFAULT
 	setflag FLAG_DEFEATED_WALLY_VICTORY_ROAD
+	special BufferLevelCap
 	message VictoryRoad_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -231,4 +232,4 @@ VictoryRoad_1F_Text_KatelynnPostBattle:
 	.string "See if I care.$"
 
 VictoryRoad_LevelCap:
-	.string "Your Pokémon have leveled up to 70!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

@@ -26,7 +26,7 @@ function runTrainersModule(pokedexArtifact, config) {
     const level = config.difficulty ?? 7;
     // T-052: config carries the trainer-facing knobs (gym/E4 type-change counts, Aqua/Magma
     // types, …) that getTrainersData reads; absent keys fall back to historical defaults.
-    const trainersData = trainers.getTrainersData(itemAssignments, pokedexArtifact.tmList, config);
+    const trainersData = trainers.getTrainersData(itemAssignments, pokedexArtifact.tmList, config, pokedexArtifact.capLevels);
 
     // T-089/ADR-014 — League Run & Bun: give each Elite Four member a doubles-flavoured clone
     // (TRAINER_<X>_DOUBLES, committed in opponents.h). Same slot definitions → the per-slot RNG
