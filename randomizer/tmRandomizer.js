@@ -11,6 +11,8 @@ const {
     barrierMoves,
     goodStatusMoves,
     godlikeStatusMoves,
+    goodStatusMovesDoubles,
+    godlikeStatusMovesDoubles,
 } = require('./tms.js');
 
 // Moves that are HMs — must never appear in FOREACH_TM or the enum redeclares.
@@ -21,18 +23,28 @@ const HM_MOVES = new Set([
 
 // TM number ranges and their source pools.
 // Ranges are inclusive. Pools with fewer moves than slots use all of them.
-const TM_RANGES = [
-    { start:  1, end: 10, pool: averageDamagePool },
-    { start: 11, end: 30, pool: goodDamagePool },
-    { start: 31, end: 50, pool: strongDamagePool },
-    { start: 51, end: 56, pool: godlikeDamagePool },
-    { start: 57, end: 60, pool: nichePool },
-    { start: 61, end: 71, pool: averageStatusMoves },
-    // TM72-75 are fixed weather TMs (see FIXED_TMS below)
-    { start: 76, end: 77, pool: barrierMoves },
-    { start: 78, end: 90, pool: goodStatusMoves },
-    { start: 91, end: 95, pool: godlikeStatusMoves },
-];
+// T-152 — `includeDoubles` folds the doubles-only status TMs into their tier's pool. It is set for
+// doubles/mixed runs; the pool TIER of each slot never changes (so TM_RANGES, exported for pricing,
+// is the singles/base view — a pricing tier is format-independent).
+function tmRanges(includeDoubles = false) {
+    return [
+        { start:  1, end: 10, pool: averageDamagePool },
+        { start: 11, end: 30, pool: goodDamagePool },
+        { start: 31, end: 50, pool: strongDamagePool },
+        { start: 51, end: 56, pool: godlikeDamagePool },
+        { start: 57, end: 60, pool: nichePool },
+        { start: 61, end: 71, pool: averageStatusMoves },
+        // TM72-75 are fixed weather TMs (see FIXED_TMS below)
+        { start: 76, end: 77, pool: barrierMoves },
+        { start: 78, end: 90, pool: includeDoubles ? [...goodStatusMoves, ...goodStatusMovesDoubles] : goodStatusMoves },
+        { start: 91, end: 95, pool: includeDoubles ? [...godlikeStatusMoves, ...godlikeStatusMovesDoubles] : godlikeStatusMoves },
+    ];
+}
+
+const TM_RANGES = tmRanges(false);
+
+// T-152 — a run is "doubles" for TM purposes if its format sends out two Pokémon at once.
+const usesDoublesTms = (battleFormat) => battleFormat === 'doubles' || battleFormat === 'mixed';
 
 // TM slots that are hardcoded (not randomized from pools).
 const FIXED_TMS = {
@@ -64,12 +76,12 @@ function toDisplayName(moveName) {
 }
 
 // Returns 0-indexed array: tmList[0] = move for TM01, tmList[4] = move for TM05, etc.
-function buildTMList() {
+function buildTMList(battleFormat = 'singles') {
     const tmList = new Array(95).fill(null);
     for (const [slot, move] of Object.entries(FIXED_TMS)) {
         tmList[parseInt(slot) - 1] = move;
     }
-    for (const { start, end, pool } of TM_RANGES) {
+    for (const { start, end, pool } of tmRanges(usesDoublesTms(battleFormat))) {
         const count = end - start + 1;
         const picks = shuffle(pool.filter(m => !HM_MOVES.has(m))).slice(0, count);
         for (let i = 0; i < count; i++) {
@@ -181,9 +193,9 @@ ${foreachTMBody}
     await patchScriptMenu(tmList);
 }
 
-async function randomizeTMs() {
+async function randomizeTMs(battleFormat = 'singles') {
     // tmList[n-1] = move name (without MOVE_ prefix) for TM slot n (1-based)
-    const tmList = buildTMList();
+    const tmList = buildTMList(battleFormat);
     await writeTMsFromList(tmList);
     return tmList;
 }
@@ -204,4 +216,4 @@ function annotateTmNumbers(moves, tmList) {
 // writeTMsFromList exported for bundle mode compilation in make.js.
 // TM_RANGES / FIXED_TMS exported so the item-price writer (T-073) maps TM# → pool from the same
 // SSOT (a cross-check test guards drift). Ranges are the pool boundaries; FIXED_TMS are the weather slots.
-module.exports = { randomizeTMs, buildTMList, writeTMsFromList, annotateTmNumbers, TM_RANGES, FIXED_TMS };
+module.exports = { randomizeTMs, buildTMList, writeTMsFromList, annotateTmNumbers, TM_RANGES, tmRanges, FIXED_TMS };

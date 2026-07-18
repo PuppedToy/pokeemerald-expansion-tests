@@ -17,6 +17,14 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | goodStatus | TM78–TM90 | High-utility status moves |
 | godlikeStatus | TM91–TM95 | Top-tier status moves |
 
+### Doubles-only status TMs (T-152)
+
+A few status moves are **doubles-relevant support** (Ally Switch, Coaching, Detect, Dragon Cheer →
+goodStatus; Helping Hand → godlikeStatus). They live in `goodStatusMovesDoubles` /
+`godlikeStatusMovesDoubles` in `tms.js` and are folded into their tier's pool **only when the run's
+battle format is `doubles` or `mixed`** (`tmRandomizer.tmRanges(includeDoubles)`). A `singles` run never
+assigns them. The pool *tier* of each slot is unchanged, so TM pricing (T-073) is format-independent.
+
 ---
 
 ## TM Table

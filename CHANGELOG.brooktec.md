@@ -9,6 +9,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **More moves can roll onto TMs, including doubles-only support TMs.** 39 more real Pokémon TM moves
+  are now in the randomized TM pools — extra average/good/strong damage (Fire Spin, Dynamic Punch, Sky
+  Attack, …), average status (Confuse Ray, Gravity, Imprison, Teleport, …), niche (Bide, Counter, Natural
+  Gift, Nature Power) and more — so each run's TM set has more variety. Five doubles-support moves (Ally
+  Switch, Coaching, Detect, Dragon Cheer, Helping Hand) are **doubles-only**: they only join the TM pool
+  when the run's format is doubles or mixed, never in singles (T-152).
+
 - **The Museum and Space Center grunt "gauntlets" now read as one back-to-back fight.** The 2 Slateport
   Museum grunts and the 3 Mossdeep Space Center grunts each count as a single unit when balancing the
   singles/doubles mix (so a gauntlet is all-singles or all-doubles, never split), and every one carries a

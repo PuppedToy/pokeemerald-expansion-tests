@@ -155,3 +155,4 @@
 | [T-149](T-149-trainer-levels-from-bosscaps.md) | Derive trainer levels from bosscaps (caps.c single source) + shift caps rival→Tabitha +1 | in-progress | 0.9.0 | 2026-07-18 |
 | [T-150](T-150-boss-mega-ou-from-start.md) | Bosses use Mega OU from the start (UU merges into OU for bosses) | in-progress | 0.9.0 | 2026-07-18 |
 | [T-151](T-151-ssot-level-cap-messages.md) | Level-cap fanfare messages read the cap from the SSOT (caps.c) instead of hard-coded numbers | in-progress | 0.9.0 | 2026-07-18 |
+| [T-152](T-152-expand-tm-pools-and-doubles-tms.md) | Add owner-classified TM moves to the pools + doubles-only status TMs | in-progress | 0.9.0 | 2026-07-18 |
