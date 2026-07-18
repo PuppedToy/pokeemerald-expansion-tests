@@ -34,7 +34,9 @@ const BOSS_CAP_TRAINERS = {
     FLAG_DEFEATED_WALLY_MAUVILLE:        { trainers: ['TRAINER_WALLY_MAUVILLE'],         label: 'Wally – Mauville' },
     FLAG_BADGE03_GET:                    { trainers: ['TRAINER_WATTSON_1'],              label: 'Wattson – Badge 3' },
     FLAG_DEFEATED_TABITHA_MT_CHIMNEY:    { trainers: ['TRAINER_TABITHA_MT_CHIMNEY'],     label: 'Tabitha – Mt Chimney' },
-    FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY:  { trainers: ['TRAINER_MAXIE_MT_CHIMNEY'],       label: 'Maxie – Mt Chimney' },
+    // NOTE: FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY (Maxie – Mt Chimney) was removed as a level-cap
+    // boss (T-148). The flag lives on as a story-only flag (still set by the Mt Chimney script),
+    // so it is intentionally NOT in caps.c nor here — keep them in lock-step (1-to-1 assertion).
     FLAG_BADGE04_GET:                    { trainers: ['TRAINER_FLANNERY_1'],             label: 'Flannery – Badge 4' },
     FLAG_BADGE05_GET:                    { trainers: ['TRAINER_NORMAN_1'],               label: 'Norman – Badge 5' },
     FLAG_DEFEATED_SHELLY_WEATHER_INST:   { trainers: ['TRAINER_SHELLY_WEATHER_INSTITUTE'], label: 'Shelly – Weather Institute' },

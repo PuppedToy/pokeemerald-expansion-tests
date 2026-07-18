@@ -188,6 +188,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Mt Chimney's Maxie no longer battles or raises the level cap.** Reaching Maxie now skips straight
+  into the existing Archie cutscene — Team Magma clears out, Archie steps in, thanks you, hands over the
+  Good Rod and sets the story flags exactly as before — but there is no Maxie fight and no level-cap jump
+  at Mt Chimney (the cap now runs Tabitha 32 → Flannery/Badge 4 36). The Maxie–Mt Chimney checkpoint is
+  gone from both level-cap sources and from the in-app boss documentation; the underlying story flag is
+  kept, so every later event it gates still unlocks (T-148).
+
 - **Doubles support Pokémon are rated far more selectively.** With Taunt and Thunder Wave teachable to
   almost everything, the old fixed thresholds labelled ~97 Pokémon as "OU support" — including frail
   attackers that happen to learn a disruption move (e.g. Zangoose). Support tiers are now graded *relative*

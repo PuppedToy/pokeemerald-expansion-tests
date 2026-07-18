@@ -23,7 +23,6 @@ u32 GetCurrentLevelCap(void)
         {FLAG_BADGE03_GET, 29}, // Gym boss Wattson - gives Megabracelet
         // Get good rod
         {FLAG_DEFEATED_TABITHA_MT_CHIMNEY, 32}, // Minor boss
-        {FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, 33}, // Major boss
         {FLAG_BADGE04_GET, 36}, // Gym boss Flannery - gives Regirock
         {FLAG_BADGE05_GET, 39}, // Gym boss Norman - gives Regice
         // Get surf here

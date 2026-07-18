@@ -42,11 +42,9 @@ MtChimney_EventScript_Maxie::
 	applymovement LOCALID_MT_CHIMNEY_MAXIE, Common_Movement_Delay48
 	waitmovement 0
 	msgbox MtChimney_Text_MaxieIntro, MSGBOX_DEFAULT
-	trainerbattle_no_intro TRAINER_MAXIE_MT_CHIMNEY, MtChimney_Text_MaxieDefeat
+	@ T-148: no Maxie battle and no level-cap upgrade here. The flag is kept as a
+	@ story-only flag (it gates ~15 later events); it just no longer bumps the cap.
 	setflag FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY
-	message MtChimney_LevelCap_Major
-	waitmessage
-	call Common_EventScript_PlayLevelCapFanfare
 	msgbox MtChimney_Text_MaxieYouHaventSeenLastOfMagma, MSGBOX_DEFAULT
 	closemessage
 	delay 30
@@ -776,6 +774,3 @@ MtChimney_Text_ShirleyPostBattle:
 
 MtChimney_LevelCap_Minor:
 	.string "Your Pokémon have leveled up to 33!$"
-
-MtChimney_LevelCap_Major:
-	.string "Your Pokémon have leveled up to 36!$"

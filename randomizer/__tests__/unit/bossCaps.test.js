@@ -84,3 +84,21 @@ describe('SSOT integrity against the real src/caps.c', () => {
         }
     });
 });
+
+describe('T-148: Maxie – Mt Chimney is no longer a level-cap boss', () => {
+    const capsC = fs.readFileSync(path.resolve(__dirname, '../../../src/caps.c'), 'utf8');
+
+    // The Mt Chimney Maxie fight was dropped as a cap checkpoint. The flag itself lives on
+    // as a story-only flag (still setflag'd by the map script), so it must NOT reappear in
+    // either cap SSOT — caps.c's sLevelCapFlagMap or bossCaps' BOSS_CAP_TRAINERS.
+    test('FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY is absent from caps.c sLevelCapFlagMap', () => {
+        const flags = parseLevelCaps(capsC).map((c) => c.flag);
+        expect(flags).not.toContain('FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY');
+    });
+
+    test('BOSS_CAP_TRAINERS has no Maxie – Mt Chimney entry', () => {
+        expect(BOSS_CAP_TRAINERS.FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY).toBeUndefined();
+        const allTrainers = Object.values(BOSS_CAP_TRAINERS).flatMap((v) => v.trainers);
+        expect(allTrainers).not.toContain('TRAINER_MAXIE_MT_CHIMNEY');
+    });
+});

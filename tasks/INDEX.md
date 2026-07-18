@@ -151,3 +151,4 @@
 | [T-145](T-145-gauntlet-battle-accounting-and-tag.md) | Grunt gauntlets count as one battle for the mixed proportion, share a type, and carry a "Gauntlet Battle N" tag | done | 0.8.0 | 2026-07-17 |
 | [T-146](T-146-mixed-sequential-split.md) | Mixed sub-mode — first half of the game singles, second half doubles (breakpoint boss by singles %) | done | 0.8.0 | 2026-07-17 |
 | [T-147](T-147-doubles-support-relative-rating-and-item-valuation.md) | Doubles support rating — relative-to-max scaling + tool tuning; offensive doubles item valuation | done | 0.9.0 | 2026-07-17 |
+| [T-148](T-148-remove-maxie-mt-chimney-level-cap.md) | Remove Maxie Mt Chimney as a level-cap boss (keep story flag) | in-progress | 0.9.0 | 2026-07-18 |
