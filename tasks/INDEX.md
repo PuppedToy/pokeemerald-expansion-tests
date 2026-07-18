@@ -156,3 +156,8 @@
 | [T-150](T-150-boss-mega-ou-from-start.md) | Bosses use Mega OU from the start (UU merges into OU for bosses) | in-progress | 0.9.0 | 2026-07-18 |
 | [T-151](T-151-ssot-level-cap-messages.md) | Level-cap fanfare messages read the cap from the SSOT (caps.c) instead of hard-coded numbers | in-progress | 0.9.0 | 2026-07-18 |
 | [T-152](T-152-expand-tm-pools-and-doubles-tms.md) | Add owner-classified TM moves to the pools + doubles-only status TMs | in-progress | 0.9.0 | 2026-07-18 |
+| [T-153](T-153-parser-expand-species-macros.md) | Parser expands multi-line species-info C macros | in-progress | 0.9.0 | 2026-07-18 |
+| [T-154](T-154-cosmetic-strip-to-one-families.md) | Re-enable cosmetic families, stripped to one form each | proposed | 0.9.0 | 2026-07-18 |
+| [T-155](T-155-genesect-minior-base-only.md) | Re-enable Genesect and Minior as base-form only | proposed | 0.9.0 | 2026-07-18 |
+| [T-156](T-156-arceus-normal-and-multitype-logic.md) | Re-enable Arceus (Normal only) with Multitype/Plate/Judgment trainer logic | proposed | 0.9.0 | 2026-07-18 |
+| [T-157](T-157-burmy-ogerpon-deerling-model.md) | Re-enable Burmy and Ogerpon on the Deerling multi-form model | proposed | 0.9.0 | 2026-07-18 |
