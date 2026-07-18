@@ -60,6 +60,22 @@ Acceptance criteria:
   browser-safe injection channel; `build.js` already bakes `base-data.json` + `bosscaps.json`
   from caps.c. Owner confirmed generate-via-baseData + full Maxie removal.
 
+- **2026-07-18** — Implemented on `feature/T-149-trainer-levels-from-bosscaps`. `bossCaps.capLevelMap`
+  added; `parseBaseData` reads caps.c → `baseData.capLevels`; `build.js` bakes it into `base-data.json`;
+  `runPokedexModule` stamps `pokedex.capLevels`; `trainersModule` forwards it; `getTrainersData` gained a
+  4th `capLevels` param + a node-only caps.c fallback (never hit in-browser) and resolves each trainer's
+  `CAP.<name>` reference to a number. 201 numeric `level:` literals → `CAP.<name>`; `TRAINER_MAXIE_MT_CHIMNEY`
+  + its `trainerSeeds.js` entry removed. caps.c: rival→Tabitha +1 (8,11,13,16,18,20,23,25,27,29,30,33),
+  Flannery+ unchanged. Verified end-to-end in BOTH paths: node (fallback) and browser (injected via
+  base-data.json → esbuild bundle rebuilt cleanly, Roxanne resolves to 13 without touching fs). Full
+  randomizer suite green (1228). Regression test `trainerLevelsFromCaps.test.js` added.
+- **2026-07-18** — FLAGGED for owner (out of scope, needs a decision): the +1 shift desyncs ~11
+  hand-authored on-screen "Your Pokémon have leveled up to N" fanfare messages in `data/maps/**/scripts.inc`
+  (they show 7,10,12,15,17,22,24,26,28,29,32 — the old caps). These are NOT pipeline-generated, their
+  message→cap mapping looks offset from the file's own boss, and they were already imperfect (no Brawly/
+  Flannery message; Tabitha's "33" becomes *correct* after the shift). Left untouched to avoid wrong edits
+  to un-build-testable story text — candidate follow-up once the owner confirms the intended mapping.
+
 ## Outcome
 
 <!-- Filled when closing. -->

@@ -188,6 +188,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Early-game level caps raised by one, and trainer levels now track the caps automatically.** Every
+  level cap from the first rival through Tabitha at Mt Chimney went up by 1 (rival 7→8, Aqua Grunt 10→11,
+  Roxanne 12→13, … Tabitha 32→33); Flannery (36) and everything after are unchanged. Under the hood every
+  trainer's level is now **derived from the caps** (`src/caps.c` is the single source) instead of being
+  hard-coded, so a cap change flows to all the trainers tuned to it — no more silent desync. Team Maxie's
+  Mt Chimney fight, already removed in the previous change, is now fully gone from the trainer data too
+  (T-149).
+
 - **Bosses can field Mega OU from the very first mega, for more variety.** The story-progression
   mega gate now differs by trainer kind: **bosses** (Wattson onward) may pick any mega up to OU from
   the start instead of being held to UU early, so early gym leaders and villains have a wider, more

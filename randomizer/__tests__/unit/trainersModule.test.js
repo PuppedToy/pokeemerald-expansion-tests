@@ -30,6 +30,9 @@ function freshModule() {
 
 const mockPokedexArtifact = {
     tmList: ['MOVE_FLAMETHROWER', 'MOVE_THUNDERBOLT', 'MOVE_ICE_BEAM'],
+    // T-149 — the pokédex artifact carries the caps SSOT level map; trainersModule forwards it to
+    // getTrainersData as the 4th arg so trainer levels resolve from caps.c.
+    capLevels: { FLAG_DEFEATED_RIVAL_ROUTE103: 8, FLAG_BADGE01_GET: 13 },
 };
 
 const fairConfig = { difficulty: 7 };
@@ -94,23 +97,25 @@ describe('runTrainersModule — calls dependencies correctly', () => {
         expect(randomizeItems).toHaveBeenCalledTimes(1);
     });
 
-    // T-052 spec change: getTrainersData now also receives the module config as a 3rd arg so the
-    // trainer-facing knobs (gym/E4 type-change counts, Aqua/Magma types) can reach it.
-    test('calls getTrainersData with itemAssignments, tmList and the config', () => {
+    // T-052: getTrainersData receives the module config as a 3rd arg (trainer-facing knobs).
+    // T-149: and the caps SSOT level map as a 4th arg (pokedexArtifact.capLevels) so trainer levels resolve.
+    test('calls getTrainersData with itemAssignments, tmList, config and capLevels', () => {
         const { runTrainersModule } = freshModule();
         runTrainersModule(mockPokedexArtifact, fairConfig);
         expect(trainers.getTrainersData).toHaveBeenCalledWith(
             { pick1: 'ITEM_WATER_STONE', pick2: 'ITEM_FIRE_STONE' },
             mockPokedexArtifact.tmList,
-            fairConfig
+            fairConfig,
+            mockPokedexArtifact.capLevels
         );
     });
 
-    test('getTrainersData receives the config object as its 3rd argument', () => {
+    test('getTrainersData receives the config (3rd) and capLevels (4th) arguments', () => {
         const { runTrainersModule } = freshModule();
         runTrainersModule(mockPokedexArtifact, hardConfig);
-        expect(trainers.getTrainersData.mock.calls[0].length).toBe(3);
+        expect(trainers.getTrainersData.mock.calls[0].length).toBe(4);
         expect(trainers.getTrainersData.mock.calls[0][2]).toBe(hardConfig);
+        expect(trainers.getTrainersData.mock.calls[0][3]).toBe(mockPokedexArtifact.capLevels);
     });
 });
 

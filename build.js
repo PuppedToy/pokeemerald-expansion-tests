@@ -42,6 +42,7 @@ async function main() {
         megaEvoTree:      data.megaEvoTree,
         allPokes:         data.allPokes,
         tmLocations:      data.tmLocations,
+        capLevels:        data.capLevels,   // T-149 — caps SSOT levels for browser-safe trainer-level derivation
     };
 
     fs.mkdirSync(FRONT_DATA, { recursive: true });

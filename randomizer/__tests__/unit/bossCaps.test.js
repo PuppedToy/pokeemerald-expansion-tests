@@ -5,7 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { parseLevelCaps, buildBossCaps, BOSS_CAP_TRAINERS } = require('../../bossCaps');
+const { parseLevelCaps, capLevelMap, buildBossCaps, BOSS_CAP_TRAINERS } = require('../../bossCaps');
 
 const FIXTURE = `
 u32 GetCurrentLevelCap(void)
@@ -35,6 +35,19 @@ describe('parseLevelCaps', () => {
         const out = parseLevelCaps(FIXTURE);
         expect(out).toHaveLength(3);
         expect(out.some((e) => e.level === 999)).toBe(false);
+    });
+});
+
+describe('capLevelMap (T-149 — flag → level from caps.c)', () => {
+    test('maps each cap flag to its level', () => {
+        expect(capLevelMap(FIXTURE)).toEqual({
+            FLAG_DEFEATED_RIVAL_ROUTE103: 7,
+            FLAG_DEFEATED_AQUA_WOODS: 10,
+            FLAG_BADGE01_GET: 12,
+        });
+    });
+    test('ignores the sEvCapFlagMap array (only sLevelCapFlagMap)', () => {
+        expect(capLevelMap(FIXTURE).FLAG_BADGE01_GET).toBe(12); // 12, not 999
     });
 });
 
@@ -73,7 +86,7 @@ describe('SSOT integrity against the real src/caps.c', () => {
         // spot-check known anchors
         const byFlag = Object.fromEntries(out.map((e) => [e.flag, e]));
         expect(byFlag['FLAG_BADGE01_GET'].trainers).toContain('TRAINER_ROXANNE_1');
-        expect(byFlag['FLAG_BADGE01_GET'].level).toBe(12);
+        expect(byFlag['FLAG_BADGE01_GET'].level).toBe(13); // T-149 — +1 shift (was 12)
         expect(byFlag['FLAG_DEFEATED_AQUA_WOODS'].trainers).toContain('TRAINER_GRUNT_PETALBURG_WOODS');
         expect(byFlag['FLAG_IS_CHAMPION'].trainers).toContain('TRAINER_CHAMPION_STEVEN');
     });
