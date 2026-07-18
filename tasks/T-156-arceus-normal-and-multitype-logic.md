@@ -1,7 +1,7 @@
 ---
 id: T-156
 title: Re-enable Arceus (Normal only) with Multitype/Plate/Judgment trainer logic
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-18
 updated: 2026-07-18
@@ -52,15 +52,34 @@ Scope is genuinely open-ended; if the trainer/item plumbing needed to route a sp
 type-restricted trainer's bag is larger than expected, **pause and report to the owner** with options
 before expanding scope.
 
+Owner decision (2026-07-18): **rater logic only, no new Plate distribution.** Implement the three
+rater/trainer behaviours, but do NOT add plate-to-bag distribution (that would change existing boss
+item picks — the risky part). Consequence: a type-restricted trainer fields Arceus for its type only
+where a matching Plate is *already* in that trainer's bag; elsewhere Arceus is a Normal legendary.
+
 Acceptance criteria:
-- [ ] Arceus surfaces `NORMAL` only; no other type forms in teams/docs.
-- [ ] A type-restricted trainer holding the matching Plate can select Multitype Arceus for that type.
-- [ ] Multitype + Plate is boosted in valuation (more so when the Plate adds team coverage).
-- [ ] Judgment is prioritized on a Plate-holding Multitype mon.
-- [ ] New unit tests for each of the three behaviors; `cd randomizer && npm test` green.
+- [x] Arceus surfaces `NORMAL` only; no other type forms in teams/docs (verified in `pokes.js`).
+- [x] A type-restricted trainer counts Multitype Arceus for a type when its bag holds a matching Plate
+      (`multitypeSatisfiesTypes` wired into both type filters in `trainerSelector.js`; unit-tested).
+- [x] A Plate is boosted in valuation for a Multitype mon (STAB via Judgment), with a new-coverage
+      bonus (unit-tested; a non-Multitype mon lacking a move of the plate's type still rates it 0).
+- [x] Judgment is force-picked on a Multitype mon (verified: Arceus's `bestMoveset` includes Judgment).
+- [x] New unit tests for all three behaviors; `cd randomizer && npm test` green (1274). Pipeline exits 0.
+- [ ] (Out of scope by owner decision) universal / type-themed Plate distribution to trainer bags.
 
 ## Progress log
 
 - **2026-07-18** — Task created. Flagged as highest-risk; owner check-in likely mid-task.
+- **2026-07-18** — Parser: added `P_FAMILY_ARCEUS` to `COSMETIC_FAMILIES` (keeps Normal, drops 17 type
+  forms). Investigation (agent) mapped the four injection points; the only deep-plumbing piece is
+  distributing Plates into type-themed trainer bags. Presented the scope choice to the owner, who chose
+  **rater logic only** (no new Plate distribution).
+- **2026-07-18** — Implemented (TDD, `randomizer/__tests__/unit/arceus.test.js`): constants
+  `MULTITYPE_ABILITY`/`JUDGMENT_MOVE_ID`; `chooseMoveset` force-picks Judgment for a Multitype mon
+  (mirrors Meloetta Relic Song, protected from the same-type dedup); `rateItemForAPokemon` values any
+  Plate for a Multitype holder as STAB-via-Judgment + new-coverage bonus; `trainerSelector`
+  `trainerBagPlateTypes`/`multitypeSatisfiesTypes` let a Multitype candidate satisfy a type restriction
+  when a matching Plate is in the trainer's bag (both type filters). Verified via `analyze.js`: Arceus
+  Normal-only, tier AG, `bestMoveset` includes Judgment. Full suite green (1274).
 
 ## Outcome

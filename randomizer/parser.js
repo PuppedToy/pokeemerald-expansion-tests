@@ -51,7 +51,6 @@ const FIXED_PROPERTIES = {
 // (T-154). Genesect/Arceus moved to COSMETIC_FAMILIES; Minior/Burmy/Ogerpon re-enabled by T-155/T-157.
 // P_FAMILY_TYPE_NULL (Type: Null / Silvally) stays removed — out of scope.
 const REMOVED_FAMILIES = [
-    'P_FAMILY_ARCEUS',
     'P_FAMILY_TYPE_NULL',
 ];
 
@@ -70,6 +69,10 @@ const COSMETIC_FAMILIES = [
     'P_FAMILY_FURFROU',
     'P_FAMILY_MILCERY',
     'P_FAMILY_GENESECT',
+    // T-156 — Arceus: only the Normal form spawns/exists; the 17 other type forms are banned. The
+    // "becomes type X with a Plate" behaviour is modelled virtually at the trainer/rater level via the
+    // held Plate + Multitype ability, not by placing 18 species. Normal is the first-declared form (kept).
+    'P_FAMILY_ARCEUS',
 ];
 
 const REMOVED_SPECIES = [

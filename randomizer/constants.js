@@ -79,6 +79,13 @@ const constants = {
     MINIOR_METEOR_WEIGHT:        0.45,
     MINIOR_CORE_WEIGHT:          0.55,
 
+    // Arceus / Multitype (T-156) — Arceus is placed as its Normal form. Holding a Plate turns it (and
+    // its signature move Judgment) into that plate's type. Modelled virtually at the rater/trainer level:
+    // Judgment is force-picked on any Multitype mon; a Plate is valued as STAB coverage for a Multitype
+    // holder; and a type-restricted trainer counts a Multitype mon when its bag holds a matching Plate.
+    MULTITYPE_ABILITY:           'MULTITYPE',
+    JUDGMENT_MOVE_ID:            'MOVE_JUDGMENT',
+
     AG_BST_THRESHOLD: 720,
     LEGEND_BST_THRESHOLD: 660,
     OU_BST_THRESHOLD: 600,

@@ -9,6 +9,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Arceus is back in the randomizer** as its Normal form (its 17 type forms stay unavailable). Trainers
+  understand its Multitype gimmick: a Multitype Arceus always carries Judgment, values any Plate it can
+  hold (the Plate turns Judgment into that type, with a bonus for new coverage), and a type-restricted
+  trainer counts Arceus toward its type theme when a matching Plate is already in that trainer's bag
+  (T-156).
+
 - **Burmy and Ogerpon are back in the randomizer.** Like Deerling, each of their forms (Burmy's three
   cloaks, Ogerpon's four masks) is treated as a distinct Pokémon that can randomize on its own, but only
   one form of each appears in the wild per run while trainers may field any. Burmy still evolves into

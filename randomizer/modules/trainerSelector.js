@@ -8,9 +8,27 @@ const {
     TRAINER_RESTRICTION_NO_REPEATED_TYPE,
     TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
     TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES,
+    MULTITYPE_ABILITY,
 } = require('../constants');
 const { TIER_SEQ } = require('../constants');
+const { plates } = require('../items');
 const { sample, checkValidEvo, getFamilyGroup, hasValidMega, devolveToLevel } = require('./utils');
+
+// T-156 — the Plate types a trainer can grant, read from Plates in its (normalized) bag of item display
+// names (e.g. "Dread Plate" → DARK). A Multitype mon (Arceus) equipping one becomes that type.
+function trainerBagPlateTypes(trainer) {
+    if (!trainer || !Array.isArray(trainer.bag)) return [];
+    return trainer.bag
+        .map(name => plates['ITEM_' + String(name).replace(/ /g, '_').toUpperCase()])
+        .filter(Boolean);
+}
+
+// T-156 — does a Multitype candidate satisfy a type restriction by equipping a bagged Plate? True when
+// the mon is Multitype AND one of the trainer's bagged Plate types is among the allowed types.
+function multitypeSatisfiesTypes(poke, allowedTypes, bagPlateTypes) {
+    return (poke.parsedAbilities || []).includes(MULTITYPE_ABILITY)
+        && bagPlateTypes.some(pt => allowedTypes.includes(pt));
+}
 // T-142 — the doubles support tier-flex + hard-pick use the support detector (the "wants support" signal
 // is the up-front roll in resolveTrainerTeam → context.doublesWantsSupport, read here).
 const { DETECTORS } = require('./featureDetectors');
@@ -68,6 +86,9 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         model = null,          // T-142 r2 — the archetype model, for the doubles support tier-flex
         moves = {},            // detector ctx (support detection reads move metadata via ctx.moves)
     } = opts;
+
+    // T-156 — Plate types available in this trainer's bag (for the Multitype-counts-as-type rule below).
+    const bagPlateTypes = trainerBagPlateTypes(trainer);
 
     const canLearnMove = (pokemon, moveToLearn) =>
         (pokemon.teachables && pokemon.teachables.includes(moveToLearn)) ||
@@ -268,7 +289,9 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
             pokemonLooseList = pokemonLooseList.filter(p => trainerMonDefinition.exactTypes.every(t => p.parsedTypes.includes(t)));
         }
         if (trainerMonDefinition.type) {
-            pokemonLooseList = pokemonLooseList.filter(p => p.parsedTypes.some(t => trainerMonDefinition.type.includes(t)));
+            pokemonLooseList = pokemonLooseList.filter(p =>
+                p.parsedTypes.some(t => trainerMonDefinition.type.includes(t))
+                || multitypeSatisfiesTypes(p, trainerMonDefinition.type, bagPlateTypes)); // T-156
         } else if (trainerMonDefinition.weakToTypes) {
             pokemonLooseList = pokemonLooseList.filter(p =>
                 trainerMonDefinition.weakToTypes.some(t => isSuperEffective(t, p.parsedTypes))
@@ -312,7 +335,9 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
                 const selectedTypes = new Set(team.map(p => (p.pokemon || p).parsedTypes || []).flat());
                 pokemonLooseList = pokemonLooseList.filter(p => !p.parsedTypes.some(t => selectedTypes.has(t)));
             } else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_TYPES && trainer.types) {
-                pokemonLooseList = pokemonLooseList.filter(p => p.parsedTypes.some(t => trainer.types.includes(t)));
+                pokemonLooseList = pokemonLooseList.filter(p =>
+                    p.parsedTypes.some(t => trainer.types.includes(t))
+                    || multitypeSatisfiesTypes(p, trainer.types, bagPlateTypes)); // T-156 — Multitype + bagged Plate
             } else if (restriction === TRAINER_RESTRICTION_ALLOW_ONLY_ABILITIES && trainer.abilities) {
                 pokemonLooseList = pokemonLooseList.filter(p => p.parsedAbilities.some(a => trainer.abilities.includes(a)));
             }
@@ -371,4 +396,4 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
     return choosePokemonFromDefinition;
 }
 
-module.exports = { createChooser };
+module.exports = { createChooser, trainerBagPlateTypes, multitypeSatisfiesTypes };

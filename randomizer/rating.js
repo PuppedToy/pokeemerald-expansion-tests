@@ -39,6 +39,8 @@ const {
     WISHIWASHI_SCHOOL_HP_FACTOR,
     MELOETTA_FAMILY,
     MELOETTA_RELIC_SONG_ID,
+    MULTITYPE_ABILITY,
+    JUDGMENT_MOVE_ID,
 } = require('./constants');
 const { plates, protectionBerries } = require('./items');
 const rng = require('./rng');
@@ -1865,6 +1867,15 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
     if (item.includes(' Plate')) {
         const plateType = plates[itemId];
         const stabExtra = poke.parsedTypes.includes(plateType) ? 0.5 : 0;
+        // T-156 — a Multitype holder (Arceus) becomes the Plate's type and its Judgment becomes that
+        // type too, so ANY Plate is effectively STAB coverage of plateType. Value it like a STAB
+        // attacker (always the +0.5 STAB), plus a new-coverage bonus when the mon has no existing
+        // damaging move of that type — so trainers favour a Plate that widens Arceus's coverage.
+        if ((poke.parsedAbilities || []).includes(MULTITYPE_ABILITY) || (poke.id || '').startsWith('SPECIES_ARCEUS')) {
+            const alreadyCovers = moveset.some(m => m.category !== 'DAMAGE_CATEGORY_STATUS' && m.type === plateType);
+            const newCoverageBonus = alreadyCovers ? 0 : 1;
+            return 5.5 * bestOffensePower * calculatedDeviation + 0.5 + newCoverageBonus;
+        }
         for (const move of moveset) {
             if (move.category !== 'DAMAGE_CATEGORY_STATUS' && move.type === plateType) {
                 return 5.5 * bestOffensePower * calculatedDeviation + stabExtra;
@@ -1939,6 +1950,22 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
         }
     }
 
+    // Arceus / Multitype (T-156): a Multitype mon always carries Judgment. Holding a Plate turns
+    // Judgment into that plate's type (its type-flex payoff), and it is at worst Normal STAB, so force
+    // it in like Relic Song and protect it from the A3 same-type dedup below. Gated on the mon's
+    // abilities/id (not `ability`, which is null on the rating-internal chooseMoveset call).
+    let forcedJudgmentMoveId = null;
+    const isMultitype = (poke.parsedAbilities || []).includes(MULTITYPE_ABILITY)
+        || (poke.id || '').startsWith('SPECIES_ARCEUS');
+    if (isMultitype && moveset.length < 4 && !moveset.some(m => m.id === JUDGMENT_MOVE_ID)) {
+        const judgment = uniqueMoves.find(m => m.id === JUDGMENT_MOVE_ID);
+        if (judgment) {
+            moveset.push(judgment);
+            forcedJudgmentMoveId = judgment.id;
+            uniqueMoves = uniqueMoves.filter(move => move.id !== judgment.id);
+        }
+    }
+
     while (uniqueMoves.length > 0 && moveset.length < 4) {
         const ratedMoves = uniqueMoves.map(move => {
             const rating = rateMoveForAPokemon(move, poke, ability, item, uniqueMoves, moveset, ctx) * (1 + ((rng.random() ? 1 : -1) * rng.random() * deviation));
@@ -1978,6 +2005,8 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
             if (forcedPivotId && weaker.id === forcedPivotId) continue;
             // Exception: the forced Meloetta Relic Song is always kept (guaranteed transform move).
             if (forcedMeloettaMoveId && weaker.id === forcedMeloettaMoveId) continue;
+            // Exception: the forced Arceus/Multitype Judgment is always kept (guaranteed signature move).
+            if (forcedJudgmentMoveId && weaker.id === forcedJudgmentMoveId) continue;
             // Exception: different priority tiers
             if ((weaker.priority || 0) !== (stronger.priority || 0)) continue;
             // Exception: Iron Fist with two punching moves of the same type
