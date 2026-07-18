@@ -160,4 +160,4 @@
 | [T-154](T-154-cosmetic-strip-to-one-families.md) | Re-enable cosmetic families, stripped to one form each | in-progress | 0.9.0 | 2026-07-18 |
 | [T-155](T-155-genesect-minior-base-only.md) | Re-enable Genesect and Minior as base-form only | in-progress | 0.9.0 | 2026-07-18 |
 | [T-156](T-156-arceus-normal-and-multitype-logic.md) | Re-enable Arceus (Normal only) with Multitype/Plate/Judgment trainer logic | proposed | 0.9.0 | 2026-07-18 |
-| [T-157](T-157-burmy-ogerpon-deerling-model.md) | Re-enable Burmy and Ogerpon on the Deerling multi-form model | proposed | 0.9.0 | 2026-07-18 |
+| [T-157](T-157-burmy-ogerpon-deerling-model.md) | Re-enable Burmy and Ogerpon on the Deerling multi-form model | in-progress | 0.9.0 | 2026-07-18 |

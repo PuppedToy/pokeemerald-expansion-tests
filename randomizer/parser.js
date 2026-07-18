@@ -48,13 +48,11 @@ const FIXED_PROPERTIES = {
 };
 
 // Families still fully skipped. UNOWN/SCATTERBUG/FLABEBE/FURFROU/MILCERY moved to COSMETIC_FAMILIES
-// (T-154). BURMY/ARCEUS/GENESECT/MINIOR/OGERPON are re-enabled by their own tasks (T-155..T-157).
+// (T-154). Genesect/Arceus moved to COSMETIC_FAMILIES; Minior/Burmy/Ogerpon re-enabled by T-155/T-157.
 // P_FAMILY_TYPE_NULL (Type: Null / Silvally) stays removed — out of scope.
 const REMOVED_FAMILIES = [
-    'P_FAMILY_BURMY',
     'P_FAMILY_ARCEUS',
     'P_FAMILY_TYPE_NULL',
-    'P_FAMILY_OGERPON',
 ];
 
 // Families reduced to a SINGLE form: only the FIRST species per natDexNum is kept, later same-dex forms
@@ -459,6 +457,7 @@ function parseSpeciesFile(genSpeciesFileText, definitions, evoTree) {
                 REMOVED_SPECIES.includes(currentPokemon.id)
                 || currentPokemon.id.includes('_GMAX')
                 || currentPokemon.id.includes('_TOTEM')
+                || currentPokemon.id.endsWith('_TERA') // T-157 — Ogerpon battle-only Terastal forms
                 || cosmeticDropIds.has(currentPokemon.id) // T-154 — non-first cosmetic form
             ) {
                 console.log(`Skipping species ${currentPokemon.id}`);

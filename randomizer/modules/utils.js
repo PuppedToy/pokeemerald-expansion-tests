@@ -16,7 +16,13 @@ const { activeDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
 // so the "one obtainable per family per run" dedup treats all its forms as one. Deliberately a
 // curated SUBSET of POKE_FORMS: regional forms (ALOLA/GALAR/HISUI/PALDEA) and functional forms
 // (OWN_TEMPO/ROAMING/ARTISAN) are genuinely distinct Pokémon and stay their own families.
-const COSMETIC_FORM_SUFFIXES = ['EAST', 'SUMMER', 'AUTUMN', 'WINTER', 'SMALL', 'LARGE', 'SUPER', 'ANTIQUE'];
+const COSMETIC_FORM_SUFFIXES = [
+    'EAST', 'SUMMER', 'AUTUMN', 'WINTER', 'SMALL', 'LARGE', 'SUPER', 'ANTIQUE',
+    // T-157 — Burmy cloaks and Ogerpon masks: separate families that randomize independently (in
+    // POKE_FORMS) but collapse here so the "one obtainable per family per run" dedup treats all
+    // cloaks/masks as one (one in the wild; a trainer holds at most one, though it may be any form).
+    'SANDY', 'TRASH', 'WELLSPRING', 'HEARTHFLAME', 'CORNERSTONE',
+];
 
 // Explicit overrides (win over the suffix strip) for any family that can't be derived by stripping.
 const groupedFamilies = {};

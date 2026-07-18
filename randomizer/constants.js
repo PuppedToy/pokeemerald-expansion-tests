@@ -287,6 +287,14 @@ const constants = {
     POKE_FORM_ANTIQUE: 'ANTIQUE',
     POKE_FORM_ROAMING: 'ROAMING',
     POKE_FORM_ARTISAN: 'ARTISAN',
+    // T-157 — Burmy cloaks (Plant is the base family) and Ogerpon masks (Teal is the base family).
+    // Each becomes its own family that randomizes independently (Deerling model); they collapse back
+    // to the base for wild/trainer dedup via COSMETIC_FORM_SUFFIXES in modules/utils.js.
+    POKE_FORM_SANDY: 'SANDY',
+    POKE_FORM_TRASH: 'TRASH',
+    POKE_FORM_WELLSPRING: 'WELLSPRING',
+    POKE_FORM_HEARTHFLAME: 'HEARTHFLAME',
+    POKE_FORM_CORNERSTONE: 'CORNERSTONE',
 
     // Dynamic evo level algorithm constants
     // Base level ranges per evo-target tier (the pokemon being evolved INTO)
@@ -521,6 +529,11 @@ constants.POKE_FORMS = [
     constants.POKE_FORM_ANTIQUE,
     constants.POKE_FORM_ROAMING,
     constants.POKE_FORM_ARTISAN,
+    constants.POKE_FORM_SANDY,
+    constants.POKE_FORM_TRASH,
+    constants.POKE_FORM_WELLSPRING,
+    constants.POKE_FORM_HEARTHFLAME,
+    constants.POKE_FORM_CORNERSTONE,
 ];
 
 // Tier order lowest → highest; index used for tier arithmetic in presets and fallback logic.

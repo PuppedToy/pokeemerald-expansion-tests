@@ -9,6 +9,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Burmy and Ogerpon are back in the randomizer.** Like Deerling, each of their forms (Burmy's three
+  cloaks, Ogerpon's four masks) is treated as a distinct Pokémon that can randomize on its own, but only
+  one form of each appears in the wild per run while trainers may field any. Burmy still evolves into
+  Wormadam by level and into Mothim with a Dawn Stone. Ogerpon's battle-only Terastal forms are excluded
+  (T-157).
+
 - **Genesect and Minior are back in the randomizer.** Genesect appears as its base form (its Drive
   forms stay unavailable). Minior appears as its Meteor form; because Shields Down flips it to the
   offensive Core form at low HP, its rating is a weighted blend of both forms, so trainers value it as

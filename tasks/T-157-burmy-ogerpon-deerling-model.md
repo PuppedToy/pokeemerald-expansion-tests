@@ -1,7 +1,7 @@
 ---
 id: T-157
 title: Re-enable Burmy and Ogerpon on the Deerling multi-form model
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-18
 updated: 2026-07-18
@@ -46,16 +46,26 @@ Deerling's SUMMER/AUTUMN/WINTER are in both lists; regional forms (ALOLA/…) ar
   obtainable in this game; if the evo-level/stone pass needs adjustment for the branch, handle it.
 
 Acceptance criteria:
-- [ ] Each Burmy cloak (3) and Ogerpon mask (4) parses as its own family and can randomize independently.
-- [ ] Wild dedup places only one Burmy-family form and one Ogerpon-family form per run; a single
-      trainer holds at most one of each family (existing `getFamilyGroup` dedup).
-- [ ] Ogerpon `_TERA` forms are absent from teams/docs.
-- [ ] Burmy → Wormadam (level) and Burmy → Mothim (Dawn Stone) evolutions are present and sane.
-- [ ] New unit tests (family split + `getFamilyGroup` collapse for the new suffixes; TERA removed);
-      `cd randomizer && npm test` green.
+- [x] Each Burmy cloak (3) and Ogerpon mask (4) parses as its own family and can randomize independently
+      (P_FAMILY_BURMY / _SANDY / _TRASH; P_FAMILY_OGERPON / _WELLSPRING / _HEARTHFLAME / _CORNERSTONE).
+- [x] Wild dedup places only one Burmy-family form per run (verified: a `--seed=7` run placed exactly
+      one, `SPECIES_MOTHIM_TRASH`); a single trainer holds at most one of each family via `getFamilyGroup`.
+- [x] Ogerpon `_TERA` forms are absent from teams/docs (general `endsWith('_TERA')` header filter).
+- [x] Burmy → Wormadam (Level 20) and Burmy → Mothim (Dawn Stone, min level 25) evolutions parse for
+      every cloak (branched evoTree confirmed).
+- [x] New unit tests (POKE_FORMS membership, `getFamilyGroup` collapse, family split + TERA drop);
+      `cd randomizer && npm test` green (1266). Pipeline `node analyze.js` exits 0.
 
 ## Progress log
 
 - **2026-07-18** — Task created. Confirmed base data already has Burmy's level/stone branched evo.
+- **2026-07-18** — Implemented (TDD, `randomizer/__tests__/unit/burmyOgerponForms.test.js`). Added
+  SANDY/TRASH/WELLSPRING/HEARTHFLAME/CORNERSTONE to `POKE_FORMS` (constants.js) and
+  `COSMETIC_FORM_SUFFIXES` (utils.js); removed BURMY/OGERPON from `REMOVED_FAMILIES`; added a general
+  `endsWith('_TERA')` header filter (only the 4 Ogerpon Terastal forms end in `_TERA`; Terapagos ends
+  in `_TERASTAL`, so it's safe). Verified against real data: Burmy → 3 cloak families each with
+  Burmy/Wormadam/Mothim and the branched Level→Wormadam / Dawn-Stone→Mothim evo; Ogerpon → 4 mask
+  families, no TERA; wild dedup places one Burmy-family form. Dawn Stone / stone evolutions use the same
+  generic mechanism as every other stone evo (no Burmy-specific handling needed). Full suite green (1266).
 
 ## Outcome
