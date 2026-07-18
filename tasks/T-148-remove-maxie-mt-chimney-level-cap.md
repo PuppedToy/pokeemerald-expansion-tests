@@ -68,6 +68,22 @@ Acceptance criteria:
   gitignored in-app trainer doc. Owner confirmed: keep the `setflag` (story-only flag),
   remove only from cap files, keep the cutscene minus battle/cap fanfare.
 
+- **2026-07-18** — Implemented on `feature/T-148-remove-maxie-mt-chimney-level-cap`
+  (commit `fedb59c`). Red→Green: added a regression test (`bossCaps.test.js`) asserting
+  Maxie/Mt Chimney is absent from parsed caps.c and from `BOSS_CAP_TRAINERS` — watched it
+  fail, then made the edits. Changes: removed the cap line from `src/caps.c`; removed the
+  `BOSS_CAP_TRAINERS` entry from `randomizer/bossCaps.js` (left a NOTE, kept the 1-to-1
+  assertion green); stripped `trainerbattle_no_intro` + the cap `message`/`waitmessage`/
+  `PlayLevelCapFanfare` from `MtChimney_EventScript_Maxie`, kept `setflag` + the Archie
+  cutscene, deleted the orphaned `MtChimney_LevelCap_Major` string. Verified derived
+  bossCaps drops Maxie (31 bosses; progression L32 Tabitha → L36 Flannery). Full randomizer
+  suite green (1202 passed). C side (caps.c + scripts.inc) can't be built locally — verified
+  by CI `make` + owner playtest.
+- **2026-07-18** — Noted, out of scope: the hardcoded Mt Chimney cap messages predate this
+  and don't match caps.c — `MtChimney_LevelCap_Minor` still says "leveled up to 33" while
+  Tabitha's cap in caps.c is 32 (and after this change the next bump is Flannery at 36).
+  Candidate for a follow-up bug if the owner wants the on-screen number corrected.
+
 ## Outcome
 
 <!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned. -->
