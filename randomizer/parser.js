@@ -255,8 +255,106 @@ function parseEvo(familyId, pokeId, line, evoTree) {
     return null;
 }
 
+// T-153 — Capture multi-line `#define NAME(params) { ... }` (and paramless `#define NAME { ... }`)
+// species-info macros so `[SPECIES_X] = NAME(args)` invocations can be expanded inline. Many families
+// (Arceus, Minior, Mothim, Alcremie, Unown, Furfrou, Scatterbug/Spewpa, Ogerpon, Genesect) define
+// their species this way; without expansion those species have no `.field` lines and no closing
+// `},`, so parseSpeciesFile silently drops them. Returns { NAME: { params, body } } where body is the
+// macro lines with trailing `\` stripped. Only struct-shaped macros (open `{`, set at least one
+// `.field`) are kept, so unrelated function-like macros are ignored.
+function parseSpeciesInfoMacros(text) {
+    const lines = text.split('\n');
+    const macros = {};
+    for (let i = 0; i < lines.length; i++) {
+        const header = lines[i].match(/^#define\s+([A-Za-z_][A-Za-z0-9_]*)\s*(?:\(([^)]*)\))?\s*\\\s*$/);
+        if (!header) continue;
+        const name = header[1];
+        const params = header[2] ? header[2].split(',').map(s => s.trim()).filter(Boolean) : [];
+        const body = [];
+        let j = i + 1;
+        while (j < lines.length) {
+            const cont = /\\\s*$/.test(lines[j]);
+            body.push(lines[j].replace(/\\\s*$/, ''));
+            if (!cont) break;
+            j++;
+        }
+        i = j;
+        // Keep any macro whose body sets at least one `.field`. This covers both full-struct macros
+        // (open `{`) and brace-less field fragments nested inside them (e.g. MINIOR_MISC_INFO,
+        // ALCREMIE_MISC_INFO, ARCEUS_ICON). Utility macros (SHADOW/FOOTPRINT/OVERWORLD) set no
+        // `.field` and are skipped.
+        if (body.some(l => /^\s*\.\w+\s*=/.test(l))) {
+            macros[name] = { params, body };
+        }
+    }
+    return macros;
+}
+
+// Is `trimmed` (a body line with any trailing comma removed) a bare invocation of a captured macro?
+// Returns the regex match [full, name, argString] or null.
+function matchMacroInvocation(trimmed, macros) {
+    const m = trimmed.replace(/,\s*$/, '').trim().match(/^([A-Za-z_][A-Za-z0-9_]*)\s*(?:\((.*)\))?$/);
+    return m && macros[m[1]] ? m : null;
+}
+
+// Recursively expand a species-info macro into its field lines, substituting params->args and
+// expanding any nested fragment macros (e.g. MINIOR_CORE_SPECIES_INFO nests MINIOR_MISC_INFO;
+// ALCREMIE_REGULAR_SPECIES_INFO nests ALCREMIE_MISC_INFO). `depth` guards against cycles.
+function expandMacroBody(name, args, macros, depth = 0) {
+    const macro = macros[name];
+    if (!macro || depth > 12) return null;
+    const subst = {};
+    macro.params.forEach((p, idx) => { subst[p] = args[idx] !== undefined ? args[idx] : ''; });
+    // Longest param name first so a shorter name that is a prefix of another can't shadow it.
+    const alts = [...macro.params].sort((a, b) => b.length - a.length);
+    const re = alts.length ? new RegExp('\\b(' + alts.join('|') + ')\\b', 'g') : null;
+    const out = [];
+    for (const bodyLine of macro.body) {
+        let l = re ? bodyLine.replace(re, (_, p) => subst[p]) : bodyLine;
+        l = l.replace(/\s*##\s*/g, ''); // resolve C token-paste (e.g. SPECIES_SPEWPA_##pattern)
+        const nested = matchMacroInvocation(l.trim(), macros);
+        if (nested) {
+            const nestedArgs = nested[2] !== undefined ? splitTopLevelArgs(nested[2]) : [];
+            const nestedLines = expandMacroBody(nested[1], nestedArgs, macros, depth + 1);
+            if (nestedLines) { out.push(...nestedLines); continue; }
+        }
+        out.push(l);
+    }
+    return out;
+}
+
+// Split a macro argument list on top-level commas only (so nested `MON_TYPES(a, b)` etc. stay intact).
+function splitTopLevelArgs(argString) {
+    const args = [];
+    let depth = 0, cur = '';
+    for (const ch of argString) {
+        if (ch === '(' || ch === '{' || ch === '[') { depth++; cur += ch; }
+        else if (ch === ')' || ch === '}' || ch === ']') { depth--; cur += ch; }
+        else if (ch === ',' && depth === 0) { args.push(cur.trim()); cur = ''; }
+        else cur += ch;
+    }
+    if (cur.trim() !== '') args.push(cur.trim());
+    return args;
+}
+
+// T-153 — Given a species header line `[SPECIES_X] = NAME(args),`, return the captured macro body with
+// params substituted by args (and the trailing `}` turned into `},` so the species commits when the
+// main loop reaches it). Returns null if the RHS is not a known species-info macro invocation (e.g. an
+// inline `[SPECIES_X] =` header, whose struct body is on the following lines).
+function expandSpeciesMacro(line, macros) {
+    const rhs = line.slice(line.indexOf('=') + 1).trim().replace(/,\s*$/, '');
+    const m = rhs.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*(?:\((.*)\))?$/);
+    if (!m || !macros[m[1]]) return null;
+    const args = m[2] !== undefined ? splitTopLevelArgs(m[2]) : [];
+    const expanded = expandMacroBody(m[1], args, macros, 0);
+    if (!expanded) return null;
+    // Turn the struct's closing `}` into `},` so the main loop commits the species.
+    return expanded.map(l => (l.trim() === '}' ? '    },' : l));
+}
+
 function parseSpeciesFile(genSpeciesFileText, definitions, evoTree) {
     const lines = genSpeciesFileText.split('\n');
+    const speciesMacros = parseSpeciesInfoMacros(genSpeciesFileText);
     const pokemonList = [];
     let currentPokemon;
     let currentFamily;
@@ -299,8 +397,25 @@ function parseSpeciesFile(genSpeciesFileText, definitions, evoTree) {
                 currentPokemon = null;
                 continue;
             }
+            // T-153 — if the species is defined via a species-info macro (`= FOO_SPECIES_INFO(args)`),
+            // expand the captured macro body inline so its `.field` lines parse like an inline struct.
+            const expanded = expandSpeciesMacro(lines[i], speciesMacros);
+            if (expanded) {
+                lines.splice(i + 1, 0, ...expanded);
+            }
         }
         if (!currentPokemon) continue;
+        // T-153 — a fragment/species macro invoked on its own line inside an inline struct body
+        // (e.g. inline Vivillon uses `VIVILLON_MISC_INFO(...)`); expand it in place so its fields parse.
+        const bodyMacro = matchMacroInvocation(lines[i].trim(), speciesMacros);
+        if (bodyMacro) {
+            const bmArgs = bodyMacro[2] !== undefined ? splitTopLevelArgs(bodyMacro[2]) : [];
+            const bmLines = expandMacroBody(bodyMacro[1], bmArgs, speciesMacros, 0);
+            if (bmLines) {
+                lines.splice(i + 1, 0, ...bmLines);
+                continue;
+            }
+        }
         if (lines[i].includes('.evolutions = EVOLUTION(')) {
             currentEvos = [
                 parseEvo(currentPokemon.family, currentPokemon.id, lines[i], evoTree),
