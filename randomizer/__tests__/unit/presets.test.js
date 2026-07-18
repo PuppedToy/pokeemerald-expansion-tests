@@ -295,3 +295,31 @@ describe('getBossPreset – GRANITE_CAVE_STEVEN', () => {
         });
     });
 });
+
+describe('T-150: bosses get Mega OU from the start; normal trainers keep UU→OU→Ubers', () => {
+    const megaSlot = (team) => team.find((s) => s.isMega);
+
+    // The 3 splits that used bossMega(TIER_UU) (WATTSON, FLANNERY, MAXIE_CHIMNEY) now use OU:
+    // their boss mega window reaches OU and the base-form cap widens to UU (BASE_TIER_CAPS[OU]).
+    test.each(['WATTSON', 'FLANNERY', 'MAXIE_CHIMNEY'])('%s boss mega window reaches OU', (id) => {
+        const mega = megaSlot(getBossPreset(id, true));
+        expect(mega.absoluteTier).toContain(TIER_OU);
+        expect(mega.absoluteTier).not.toContain(TIER_UBERS); // Ubers still gated for these bosses
+    });
+
+    test('WATTSON/FLANNERY boss mega base cap is UU (a genuine OU upgrade)', () => {
+        for (const id of ['WATTSON', 'FLANNERY']) {
+            expect(megaSlot(getBossPreset(id, true)).maxBaseTier).toBe(TIER_UU);
+        }
+    });
+
+    test('Ubers bosses unchanged — Ubers stays gated to its own breakpoint', () => {
+        expect(megaSlot(getBossPreset('JUAN', true)).absoluteTier).toContain(TIER_UBERS);
+    });
+
+    test('normal (non-boss) early-era trainers keep the UU mega cap (unchanged)', () => {
+        const mega = megaSlot(getNonBossPreset('WATTSON', TIER_UU, true));
+        expect(mega.absoluteTier).toContain(TIER_UU);
+        expect(mega.absoluteTier).not.toContain(TIER_OU);
+    });
+});

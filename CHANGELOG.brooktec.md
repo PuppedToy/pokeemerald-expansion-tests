@@ -188,6 +188,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Bosses can field Mega OU from the very first mega, for more variety.** The story-progression
+  mega gate now differs by trainer kind: **bosses** (Wattson onward) may pick any mega up to OU from
+  the start instead of being held to UU early, so early gym leaders and villains have a wider, more
+  interesting mega pool. **Mega Ubers stays 100% restricted** until its existing (post-Tate & Liza)
+  breakpoint — a boss can grab an OU mega early, never an Ubers one. **Normal trainers are unchanged**
+  (UU early → OU mid → Ubers late) (T-150).
+
 - **Mt Chimney's Maxie no longer battles or raises the level cap.** Reaching Maxie now skips straight
   into the existing Archie cutscene — Team Magma clears out, Archie steps in, thanks you, hands over the
   Good Rod and sets the story flags exactly as before — but there is no Maxie fight and no level-cap jump
