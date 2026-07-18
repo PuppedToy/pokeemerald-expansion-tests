@@ -116,6 +116,12 @@ const REMOVED_SPECIES = [
     'SPECIES_MINIOR_CORE_BLUE',
     'SPECIES_MINIOR_CORE_INDIGO',
     'SPECIES_MINIOR_CORE_VIOLET',
+    // B-040 — Mothim has no cloak forms. MOTHIM_PLANT/SANDY/TRASH are byte-identical dupes and
+    // SPECIES_MOTHIM aliases MOTHIM_PLANT, so only Plant (the base Mothim) is kept; all three Burmy
+    // cloaks evolve into it (Sandy/Trash stone-evo targets are remapped via EVOLUTION_TARGET_ALIASES).
+    // (Wormadam's three cloak forms are genuinely different types and are NOT collapsed.)
+    'SPECIES_MOTHIM_SANDY',
+    'SPECIES_MOTHIM_TRASH',
 ];
 
 const CUSTOM_FAMILIES = {
@@ -238,11 +244,19 @@ function processLineForDefinitions(line, definitions) {
     }
 }
 
+// B-040 — canonicalize evolution targets that are removed cosmetic dupes onto the kept base species,
+// so an evolution pointing at a dropped form (e.g. Burmy Sandy → Mothim Sandy) resolves to the real one.
+const EVOLUTION_TARGET_ALIASES = {
+    SPECIES_MOTHIM_SANDY: 'SPECIES_MOTHIM_PLANT',
+    SPECIES_MOTHIM_TRASH: 'SPECIES_MOTHIM_PLANT',
+};
+
 const evoRegex = /{EVO_(.*?), (.*?), (.*?)(?:}|,)/;
 function parseEvo(familyId, pokeId, line, evoTree) {
     const match = line.match(evoRegex);
     if (match) {
-        const [, method, param, pokemon] = match;
+        const [, method, param, rawPokemon] = match;
+        const pokemon = EVOLUTION_TARGET_ALIASES[rawPokemon.trim()] || rawPokemon.trim();
         // Frist time, create the family
         if (!evoTree[familyId]) {
             evoTree[familyId] = [pokeId, [pokemon]];
@@ -780,7 +794,15 @@ function parseMegaEvoStonesFile(megaEvosFileText) {
     return megaEvoStones;
 }
 
+// B-040 — display-name overrides for species whose id-derived name would mislead. Mothim has no cloak
+// forms (Sandy/Trash are removed dupes; only MOTHIM_PLANT / SPECIES_MOTHIM survives), so it renders as
+// plain "Mothim" instead of "Mothim Plant".
+const DISPLAY_NAME_OVERRIDES = {
+    SPECIES_MOTHIM_PLANT: 'Mothim',
+};
+
 function nameizyPokemonId(pokeId) {
+    if (DISPLAY_NAME_OVERRIDES[pokeId]) return DISPLAY_NAME_OVERRIDES[pokeId];
     let result = pokeId
         .replace('SPECIES_', '')
         .replace(/_/g, ' ')
