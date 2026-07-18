@@ -9,6 +9,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Type: Null and Silvally are back**, with Silvally unified onto the same mechanic as Arceus: it now
+  has Multitype and changes type with a held **Plate** (instead of RKS System + Memories), and its
+  signature move Multi-Attack becomes the Plate's type. It gets the same trainer/rating treatment as
+  Arceus; Type: Null is a plain Normal Pokémon. (The old Memory items are no longer needed.) (T-158)
+
 - **Arceus is back in the randomizer** as its Normal form (its 17 type forms stay unavailable). Trainers
   understand its Multitype gimmick: a Multitype Arceus always carries Judgment, values any Plate it can
   hold (the Plate turns Judgment into that type, with a bonus for new coverage), and a type-restricted

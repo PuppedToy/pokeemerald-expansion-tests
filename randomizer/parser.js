@@ -48,11 +48,9 @@ const FIXED_PROPERTIES = {
 };
 
 // Families still fully skipped. UNOWN/SCATTERBUG/FLABEBE/FURFROU/MILCERY moved to COSMETIC_FAMILIES
-// (T-154). Genesect/Arceus moved to COSMETIC_FAMILIES; Minior/Burmy/Ogerpon re-enabled by T-155/T-157.
-// P_FAMILY_TYPE_NULL (Type: Null / Silvally) stays removed — out of scope.
-const REMOVED_FAMILIES = [
-    'P_FAMILY_TYPE_NULL',
-];
+// (T-154). Genesect/Arceus/Type:Null moved to COSMETIC_FAMILIES; Minior/Burmy/Ogerpon re-enabled by
+// T-155/T-157. Nothing is fully removed any more.
+const REMOVED_FAMILIES = [];
 
 // Families reduced to a SINGLE form: only the FIRST species per natDexNum is kept, later same-dex forms
 // are dropped (so they neither randomize independently nor emit one docs entry each — the docs path has
@@ -73,6 +71,10 @@ const COSMETIC_FAMILIES = [
     // "becomes type X with a Plate" behaviour is modelled virtually at the trainer/rater level via the
     // held Plate + Multitype ability, not by placing 18 species. Normal is the first-declared form (kept).
     'P_FAMILY_ARCEUS',
+    // T-158 — Type: Null / Silvally: keep Type: Null (Normal) + Silvally-Normal (first form); the 17
+    // Silvally type forms are banned. Silvally shares Arceus's Multitype+Plate treatment (its ability is
+    // changed RKS System→Multitype in the C data), so the rater handles it like Arceus.
+    'P_FAMILY_TYPE_NULL',
 ];
 
 const REMOVED_SPECIES = [

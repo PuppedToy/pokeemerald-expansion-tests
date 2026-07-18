@@ -85,6 +85,10 @@ const constants = {
     // holder; and a type-restricted trainer counts a Multitype mon when its bag holds a matching Plate.
     MULTITYPE_ABILITY:           'MULTITYPE',
     JUDGMENT_MOVE_ID:            'MOVE_JUDGMENT',
+    // T-158 — Silvally shares the Multitype+Plate mechanic (its ability is changed RKS System→Multitype
+    // and Multi-Attack is flipped to Plates in the C engine). Its signature move is Multi-Attack, so the
+    // Multitype signature-move forcing must consider both. A Multitype mon force-picks whichever it learns.
+    MULTI_ATTACK_MOVE_ID:        'MOVE_MULTI_ATTACK',
 
     AG_BST_THRESHOLD: 720,
     LEGEND_BST_THRESHOLD: 660,

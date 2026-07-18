@@ -118,7 +118,7 @@ SINGLE_BATTLE_TEST("Galvanize doesn't affect Judgment / Techno Blast / Multi-Att
     u16 move, item;
     PARAMETRIZE { move = MOVE_JUDGMENT; item = ITEM_SPLASH_PLATE; }
     PARAMETRIZE { move = MOVE_TECHNO_BLAST; item = ITEM_DOUSE_DRIVE; }
-    PARAMETRIZE { move = MOVE_MULTI_ATTACK; item = ITEM_WATER_MEMORY; }
+    PARAMETRIZE { move = MOVE_MULTI_ATTACK; item = ITEM_SPLASH_PLATE; }
     GIVEN {
         ASSUME(GetMoveEffect(MOVE_JUDGMENT) == EFFECT_CHANGE_TYPE_ON_ITEM);
         ASSUME(GetMoveEffect(MOVE_TECHNO_BLAST) == EFFECT_CHANGE_TYPE_ON_ITEM);
@@ -127,8 +127,8 @@ SINGLE_BATTLE_TEST("Galvanize doesn't affect Judgment / Techno Blast / Multi-Att
         ASSUME(gItemsInfo[ITEM_SPLASH_PLATE].secondaryId == TYPE_WATER);
         ASSUME(gItemsInfo[ITEM_DOUSE_DRIVE].holdEffect == HOLD_EFFECT_DRIVE);
         ASSUME(gItemsInfo[ITEM_DOUSE_DRIVE].secondaryId == TYPE_WATER);
-        ASSUME(gItemsInfo[ITEM_WATER_MEMORY].holdEffect == HOLD_EFFECT_MEMORY);
-        ASSUME(gItemsInfo[ITEM_WATER_MEMORY].secondaryId == TYPE_WATER);
+        ASSUME(gItemsInfo[ITEM_SPLASH_PLATE].holdEffect == HOLD_EFFECT_PLATE);
+        ASSUME(gItemsInfo[ITEM_SPLASH_PLATE].secondaryId == TYPE_WATER);
         ASSUME(GetSpeciesType(SPECIES_VAPOREON, 0) == TYPE_WATER);
         PLAYER(SPECIES_GEODUDE_ALOLA) { Ability(ABILITY_GALVANIZE); Item(item); }
         OPPONENT(SPECIES_VAPOREON) { Ability(ABILITY_WATER_ABSORB); }
