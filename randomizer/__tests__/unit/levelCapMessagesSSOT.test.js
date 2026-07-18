@@ -29,6 +29,22 @@ describe('T-151 — level-cap fanfare messages are SSOT (from caps.c, not hard-c
         expect(offenders).toEqual([]);
     });
 
+    // B-038 — a level-cap fanfare must always accompany a level-cap message, i.e. be immediately
+    // preceded by `waitmessage`. The stray duplicate fanfare after the Wally Lilycove battle violated
+    // this (it fired with no message). Any future stray/duplicate fanfare trips this too.
+    test('B-038: every `call …PlayLevelCapFanfare` is immediately preceded by `waitmessage`', () => {
+        const offenders = [];
+        for (const [rel, t] of texts) {
+            const lines = t.split('\n');
+            lines.forEach((line, i) => {
+                if (/^\tcall Common_EventScript_PlayLevelCapFanfare\b/.test(line)) {
+                    if (!/^\twaitmessage\b/.test(lines[i - 1] || '')) offenders.push(`${rel}:${i + 1}`);
+                }
+            });
+        }
+        expect(offenders).toEqual([]);
+    });
+
     test('every message → waitmessage → PlayLevelCapFanfare block is preceded by `special BufferLevelCap`', () => {
         const offenders = [];
         for (const [rel, t] of texts) {

@@ -126,6 +126,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **The Wally Lilycove battle no longer plays the level-up fanfare twice.** Beating Wally at Lilycove
+  fired a stray, message-less level-cap fanfare right after the battle, then the real one with the
+  "leveled up to N" message moments later. The redundant jingle is gone; the encounter now plays a
+  single, message-paired fanfare like every other milestone (B-038).
+
 - **The "Your Pokémon have leveled up to N!" messages now always show the real cap.** Every level-cap
   fanfare message used to hard-code its number, so it drifted whenever a cap changed (and was already
   wrong at Mt Chimney after Maxie's fight was removed). Each message now reads the level straight from

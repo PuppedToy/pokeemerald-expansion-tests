@@ -50,6 +50,12 @@ Acceptance criteria:
   GetCurrentLevelCap equals the party's new level. 31 files carry a cap fanfare; pattern uniform except
   LilycoveCity's post-Wally silent level-up (msgbox, excluded by design).
 
+- **2026-07-18** — Owner review flagged the Lilycove Wally fanfare I'd earlier dismissed as an
+  intentional silent level-up. It was a bug: a stray `call PlayLevelCapFanfare` after the Wally battle
+  (the only fanfare in the game not preceded by `waitmessage`), absent from the equivalent
+  `RivalFlyAway` path. Registered [[B-038]] and fixed (removed the stray call); regression test asserts
+  every fanfare is `waitmessage`-preceded (failed before, passes after).
+
 ## Outcome
 
 <!-- Filled when closing. -->

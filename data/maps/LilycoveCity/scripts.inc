@@ -223,7 +223,6 @@ LilycoveCity_EventScript_Rival::
 	faceplayer
 	msgbox LilycoveCity_Text_WallyHereICome, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_WALLY_LILYCOVE, LilycoveCity_Text_WallyDefeat
-	call Common_EventScript_PlayLevelCapFanfare
 	msgbox LilycoveCity_Text_WallyHaveSuperRod, MSGBOX_DEFAULT
 	closemessage
 	giveitem ITEM_SUPER_ROD
