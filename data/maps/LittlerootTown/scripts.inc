@@ -18,6 +18,8 @@ LittlerootTown_MapScripts::
 	@ 5: Entered 2F to set clock
 	@ 6: Set clock
 	@ 7: Told to go meet rival
+	@ 8: (transient, B-039) just stepped off the truck heading straight to save Birch — plays the
+	@    step-off-truck hop on frame, then advances to 7 (the go-meet-rival / "met Prof Birch?" state)
 
 	@ State descriptions for VAR_LITTLEROOT_HOUSES_STATE_MAY
 	@                    and VAR_LITTLEROOT_HOUSES_STATE_BRENDAN
@@ -104,8 +106,23 @@ LittlerootTown_EventScript_SetMomInFrontOfDoorFemale::
 LittlerootTown_OnFrame:
 	map_script_2 VAR_LITTLEROOT_INTRO_STATE, 1, LittlerootTown_EventScript_StepOffTruckMale
 	map_script_2 VAR_LITTLEROOT_INTRO_STATE, 2, LittlerootTown_EventScript_StepOffTruckFemale
+	map_script_2 VAR_LITTLEROOT_INTRO_STATE, 8, LittlerootTown_EventScript_StepOffTruckToBirch
 	map_script_2 VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 1, LittlerootTown_EventScript_BeginDexUpgradeScene
 	.2byte 0
+
+@ B-039 — the intro skips going home (the truck exit sets INTRO_STATE 8 instead of the vanilla 1/2),
+@ so the player can head straight to save Birch. Replay ONLY the little hop off the truck here — no
+@ mom, no house — then advance to state 7 (the terminal "go meet rival" / "met Prof Birch?" state) so
+@ the hop fires exactly once and the rest of the go-straight-to-Birch flow is unchanged.
+LittlerootTown_EventScript_StepOffTruckToBirch::
+	lockall
+	delay 15
+	playse SE_LEDGE
+	applymovement LOCALID_PLAYER, LittlerootTown_Movement_PlayerStepOffTruck
+	waitmovement 0
+	setvar VAR_LITTLEROOT_INTRO_STATE, 7
+	releaseall
+	end
 
 LittlerootTown_EventScript_StepOffTruckMale::
 	lockall
