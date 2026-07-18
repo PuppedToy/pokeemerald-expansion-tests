@@ -126,6 +126,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **The player does the little hop again when stepping out of the truck.** The intro change that skips
+  going home (so you head straight to save Birch) had also skipped the hop off the truck. The hop is
+  back — and only the hop; the go-straight-to-Birch flow is unchanged (B-039).
+
 - **The Wally Lilycove battle no longer plays the level-up fanfare twice.** Beating Wally at Lilycove
   fired a stray, message-less level-cap fanfare right after the battle, then the real one with the
   "leveled up to N" message moments later. The redundant jingle is gone; the encounter now plays a
