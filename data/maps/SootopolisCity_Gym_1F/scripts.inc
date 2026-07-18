@@ -90,6 +90,7 @@ SootopolisCity_Gym_1F_EventScript_Juan::
 
 SootopolisCity_Gym_1F_EventScript_JuanDefeated::
 	setflag FLAG_BADGE08_GET
+	special BufferLevelCap
 	message SootopolisCity_Gym_1F_Text_ReceivedRainBadge
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -246,7 +247,7 @@ SootopolisCity_Gym_1F_Text_JuanDefeat:
 
 SootopolisCity_Gym_1F_Text_ReceivedRainBadge:
 	.string "{PLAYER} received the RAIN BADGE\n"
-	.string "and your Pokémon have leveled up to 67!$"
+	.string "and your Pokémon have leveled up to {STR_VAR_1}!$"
 
 SootopolisCity_Gym_1F_Text_ExplainRainBadgeTakeThis:
 	.string "Having the RAIN BADGE shall assure you\n"

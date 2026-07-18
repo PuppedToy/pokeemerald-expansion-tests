@@ -28,6 +28,7 @@ FortreeCity_Gym_EventScript_Winona::
 
 FortreeCity_Gym_EventScript_WinonaDefeated::
 	setflag FLAG_BADGE06_GET
+	special BufferLevelCap
 	message FortreeCity_Gym_Text_ReceivedFeatherBadge
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -264,7 +265,7 @@ FortreeCity_Gym_Text_WinonaDefeat:
 
 FortreeCity_Gym_Text_ReceivedFeatherBadge:
 	.string "{PLAYER} received the FEATHER BADGE\n"
-	.string "and your Pokémon have leveled up to 49!$"
+	.string "and your Pokémon have leveled up to {STR_VAR_1}!$"
 
 FortreeCity_Gym_Text_ExplainFeatherBadgeTakeThis:
 	.string "With the FEATHER BADGE, all POKéMON up\n"

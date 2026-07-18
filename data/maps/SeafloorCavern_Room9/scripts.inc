@@ -131,6 +131,7 @@ SeafloorCavern_Room9_EventScript_ArchieAwakenKyogre::
 	setflag FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN
 	setflag FLAG_HIDE_MOSSDEEP_CITY_STEVENS_HOUSE_STEVEN
 	setflag FLAG_WALLACE_GOES_TO_SKY_PILLAR
+	special BufferLevelCap
 	message SeafloorCavern_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -323,4 +324,4 @@ SeafloorCavern_Room9_Text_MaxieComeOnPlayer:
 	.string "to get out of here, too!$"
 
 SeafloorCavern_LevelCap:
-	.string "Your Pokémon have leveled up to 64!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

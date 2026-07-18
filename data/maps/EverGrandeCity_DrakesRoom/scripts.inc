@@ -71,6 +71,7 @@ EverGrandeCity_DrakesRoom_EventScript_Defeated::
 
 EverGrandeCity_DrakesRoom_Trigger_LevelCap::
 	setflag FLAG_FIRST_DEFEATED_ELITE_4_DRAKE
+	special BufferLevelCap
 	message EverGrandeCity_DrakesRoom_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -106,4 +107,4 @@ EverGrandeCity_DrakesRoom_Text_PostBattleSpeech:
 	.string "The CHAMPION is waiting!$"
 
 EverGrandeCity_DrakesRoom_LevelCap:
-	.string "Your Pokémon have leveled up to 78!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

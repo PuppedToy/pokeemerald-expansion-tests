@@ -236,6 +236,7 @@ Route101_EventScript_BirchsBag::
 	waitstate
 	applymovement LOCALID_ROUTE101_BIRCH, Route101_Movement_BirchApproachPlayer
 	waitmovement 0
+	special BufferLevelCap
 	message Route101_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -338,4 +339,4 @@ Route101_Text_OranBerries:
 	.string "You found lots of oran berries!$"
 
 Route101_LevelCap:
-	.string "Your Pokémon have leveled up to 7!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

@@ -84,6 +84,7 @@ EverGrandeCity_SidneysRoom_EventScript_Defeated::
 
 EverGrandeCity_SidneysRoom_Trigger_LevelCap::
 	setflag FLAG_FIRST_DEFEATED_ELITE_4_SIDNEY
+	special BufferLevelCap
 	message EverGrandeCity_SidneysRoom_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -111,4 +112,4 @@ EverGrandeCity_SidneysRoom_Text_PostBattleSpeech:
 	.string "your next battle!$"
 
 EverGrandeCity_SidneysRoom_LevelCap:
-	.string "Your Pokémon have leveled up to 74!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

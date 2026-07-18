@@ -82,6 +82,7 @@ PetalburgWoods_EventScript_DevonResearcherPostBattle::
 	waitmovement 0
 	removeobject LOCALID_PETALBURG_WOODS_GRUNT
 	setflag FLAG_DEFEATED_AQUA_WOODS
+	special BufferLevelCap
 	message PetalburgWoods_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -497,4 +498,4 @@ PetalburgWoods_Text_TrainerTipsPP:
 	.string "taken to a POKéMON CENTER.$"
 
 PetalburgWoods_LevelCap:
-	.string "Your Pokémon have leveled up to 12!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

@@ -241,6 +241,7 @@ LilycoveCity_EventScript_Rival::
 	savebgm MUS_DUMMY
 	fadedefaultbgm
 	setflag FLAG_MET_RIVAL_LILYCOVE
+	special BufferLevelCap
 	message LilycoveCity_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -413,6 +414,7 @@ LilycoveCity_EventScript_RivalFlyAway::
 	savebgm MUS_DUMMY
 	fadedefaultbgm
 	setflag FLAG_MET_RIVAL_LILYCOVE
+	special BufferLevelCap
 	message LilycoveCity_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -788,7 +790,7 @@ LilycoveCity_Text_HoneymoonVowToSeeRarePokemon:
 	.string "I mean, we are totally happy!$"
 
 LilycoveCity_LevelCap:
-	.string "Your Pokémon have leveled up to 51!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"
 
 LilycoveCity_Text_WallyHereICome:
 	.string "WALLY: {PLAYER}, I've grown\n"

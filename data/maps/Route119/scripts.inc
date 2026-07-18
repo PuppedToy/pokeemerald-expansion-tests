@@ -141,6 +141,7 @@ Route119_EventScript_RivalExitScottArrive::
 	setvar VAR_ROUTE119_STATE, 1
 	addvar VAR_SCOTT_STATE, 1
 	setflag FLAG_ROUTE119_RIVAL_DEFEATED
+	special BufferLevelCap
 	message Route119_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -564,4 +565,4 @@ Route119_Text_TrainerTipsDecoration:
 	.string "way you want.$"
 
 Route119_LevelCap:
-	.string "Your Pokémon have leveled up to 46!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

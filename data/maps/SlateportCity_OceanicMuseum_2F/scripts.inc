@@ -62,6 +62,7 @@ SlateportCity_OceanicMuseum_2F_EventScript_CaptStern::
 	removeobject LOCALID_OCEANIC_MUSEUM_2F_GRUNT_2
 	fadescreen FADE_FROM_BLACK
 	setflag FLAG_DELIVERED_DEVON_GOODS
+	special BufferLevelCap
 	message SlateportCity_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -432,4 +433,4 @@ SlateportCity_OceanicMuseum_2F_Text_SSAnneReplica:
 	.string "circles the globe.”$"
 
 SlateportCity_LevelCap:
-	.string "Your Pokémon have leveled up to 26!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

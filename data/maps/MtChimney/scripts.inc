@@ -415,6 +415,7 @@ MtChimney_EventScript_Tabitha::
 
 MtChimney_EventScript_Tabitha_Defeat::
 	setflag FLAG_DEFEATED_TABITHA_MT_CHIMNEY
+	special BufferLevelCap
 	message MtChimney_LevelCap_Minor
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -773,4 +774,4 @@ MtChimney_Text_ShirleyPostBattle:
 	.string "Just joking!$"
 
 MtChimney_LevelCap_Minor:
-	.string "Your Pokémon have leveled up to 33!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

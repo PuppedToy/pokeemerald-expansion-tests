@@ -126,6 +126,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **The "Your Pokémon have leveled up to N!" messages now always show the real cap.** Every level-cap
+  fanfare message used to hard-code its number, so it drifted whenever a cap changed (and was already
+  wrong at Mt Chimney after Maxie's fight was removed). Each message now reads the level straight from
+  the caps SSOT (`src/caps.c`) — it prints exactly the level your party was raised to — so it can never
+  desync again, for any cap configuration (T-151).
+
 - **Villain leaders now pick a signature mega that fits their team's actual types, and their grunts
   foreshadow it faithfully.** Archie/Maxie used to force Mega Sharpedo / Mega Camerupt as long as the mega
   shared *any* one of the faction's five types — so a reconfigured Aqua/Magma theme fielded an off-theme

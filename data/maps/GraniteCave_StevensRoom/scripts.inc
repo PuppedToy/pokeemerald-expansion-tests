@@ -7,6 +7,7 @@ GraniteCave_StevensRoom_EventScript_Steven::
 	msgbox GraniteCave_StevensRoom_Text_ImStevenLetterForMe, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_STEVEN, GraniteCave_StevenRoom_Text_Defeat
 	setflag FLAG_DELIVERED_STEVEN_LETTER
+	special BufferLevelCap
 	message GraniteCave_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -119,4 +120,4 @@ GraniteCave_StevensRoom_Text_OhBagIsFull:
 	.string "That's too bad, then.$"
 
 GraniteCave_LevelCap:
-	.string "Your Pokémon have leveled up to 24!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

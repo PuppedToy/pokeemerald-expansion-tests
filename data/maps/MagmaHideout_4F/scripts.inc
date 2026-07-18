@@ -64,6 +64,7 @@ MagmaHideout_4F_EventScript_Maxie::
 	setflag FLAG_MET_TEAM_AQUA_HARBOR
 	setflag FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_1_BLOCKING_ENTRANCE
 	setflag FLAG_HIDE_AQUA_HIDEOUT_1F_GRUNT_2_BLOCKING_ENTRANCE
+	special BufferLevelCap
 	message MagmaHideout_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -229,4 +230,4 @@ MagmaHideout_4F_Text_MaxieImGoingAfterGroudon:
 	.string "is where we part!$"
 
 MagmaHideout_LevelCap:
-	.string "Your Pokémon have leveled up to 54!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

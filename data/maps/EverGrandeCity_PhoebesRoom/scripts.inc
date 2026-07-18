@@ -68,6 +68,7 @@ EverGrandeCity_PhoebesRoom_EventScript_Defeated::
 
 EverGrandeCity_PhoebesRoom_Trigger_LevelCap::
 	setflag FLAG_FIRST_DEFEATED_ELITE_4_PHOEBE
+	special BufferLevelCap
 	message EverGrandeCity_PhoebesRoom_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -98,4 +99,4 @@ EverGrandeCity_PhoebesRoom_Text_PostBattleSpeech:
 	.string "Go ahead, move on to the next room.$"
 
 EverGrandeCity_PhoebesRoom_LevelCap:
-	.string "Your Pokémon have leveled up to 75!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

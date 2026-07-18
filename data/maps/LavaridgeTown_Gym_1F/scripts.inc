@@ -38,6 +38,7 @@ LavaridgeTown_Gym_1F_EventScript_Flannery::
 
 LavaridgeTown_Gym_1F_EventScript_FlanneryDefeated::
 	setflag FLAG_BADGE04_GET
+	special BufferLevelCap
 	message LavaridgeTown_Gym_1F_Text_ReceivedHeatBadge
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -286,7 +287,7 @@ LavaridgeTown_Gym_1F_Text_FlanneryDefeat:
 
 LavaridgeTown_Gym_1F_Text_ReceivedHeatBadge:
 	.string "{PLAYER} received the HEAT BADGE\n"
-	.string "and your Pokémon have leveled up to 39!$"
+	.string "and your Pokémon have leveled up to {STR_VAR_1}!$"
 
 LavaridgeTown_Gym_1F_Text_ExplainHeatBadgeTakeThis:
 	.string "If you have a HEAT BADGE, all POKéMON\n"

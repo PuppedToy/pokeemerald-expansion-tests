@@ -4,6 +4,7 @@
 #include "caps.h"
 #include "pokemon.h"
 #include "pokemon_storage_system.h"
+#include "string_util.h"
 
 
 u32 GetCurrentLevelCap(void)
@@ -62,6 +63,15 @@ u32 GetCurrentLevelCap(void)
     }
 
     return MAX_LEVEL;
+}
+
+// T-151 — buffer the current level cap into gStringVar1 for the "leveled up to {STR_VAR_1}!" fanfare
+// messages. This is exactly the level LevelUpAllPokemonToCap raises the party to (both read
+// GetCurrentLevelCap), so the on-screen number is always correct — sourced from the caps.c SSOT, never
+// hard-coded. Scripts call this right before showing the message (after the milestone's setflag).
+void BufferLevelCap(void)
+{
+    ConvertIntToDecimalStringN(gStringVar1, GetCurrentLevelCap(), STR_CONV_MODE_LEFT_ALIGN, 3);
 }
 
 u32 GetSoftLevelCapExpValue(u32 level, u32 expValue)

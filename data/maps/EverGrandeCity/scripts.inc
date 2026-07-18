@@ -94,6 +94,7 @@ EverGrandeCity_EventScript_RivalExit::
 	removeobject LOCALID_EVERGRANDE_CITY_RIVAL
 	finditem ITEM_TM95
 	setflag FLAG_DEFEATED_EVERGRANDE_RIVAL
+	special BufferLevelCap
 	message EverGrandeCity_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -173,4 +174,4 @@ EverGrandeCity_Text_BrendanTimeToHeadBack:
 	.string "I will… Go home. I guess.$"
 
 EverGrandeCity_LevelCap:
-	.string "Your Pokémon have leveled up to 73!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"

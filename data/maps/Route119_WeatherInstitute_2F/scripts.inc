@@ -45,6 +45,7 @@ Route119_WeatherInstitute_2F_EventScript_Shelly::
 
 Route119_WeatherInstitute_2F_EventScript_ShellyDefeated::
 	setflag FLAG_DEFEATED_SHELLY_WEATHER_INST
+	special BufferLevelCap
 	message Route119_WeatherInstitute_LevelCap
 	waitmessage
 	call Common_EventScript_PlayLevelCapFanfare
@@ -324,4 +325,4 @@ Route119_WeatherInstitute_2F_Text_NoAbnormalWeather:
 	.string "really.$"
 
 Route119_WeatherInstitute_LevelCap:
-	.string "Your Pokémon have leveled up to 44!$"
+	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"
