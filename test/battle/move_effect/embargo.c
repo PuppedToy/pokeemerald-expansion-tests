@@ -295,12 +295,12 @@ SINGLE_BATTLE_TEST("Embargo disables the effect of the Drive items on the move T
     }
 }
 
-SINGLE_BATTLE_TEST("Embargo disables the effect of the Memory items on the move Multi Attack", s16 damage)
+SINGLE_BATTLE_TEST("Embargo disables the effect of the held Plate on the move Multi Attack", s16 damage)
 {
     u32 heldItem;
 
     PARAMETRIZE { heldItem = ITEM_NONE; }
-    PARAMETRIZE { heldItem = ITEM_FIRE_MEMORY; }
+    PARAMETRIZE { heldItem = ITEM_FLAME_PLATE; }
     GIVEN {
         PLAYER(SPECIES_SILVALLY) { Item(heldItem); };
         OPPONENT(SPECIES_VENUSAUR);

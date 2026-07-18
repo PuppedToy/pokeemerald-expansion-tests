@@ -41,7 +41,11 @@ const {
     MELOETTA_RELIC_SONG_ID,
     MULTITYPE_ABILITY,
     JUDGMENT_MOVE_ID,
+    MULTI_ATTACK_MOVE_ID,
 } = require('./constants');
+// T-156/T-158 — the signature moves a Multitype mon (Arceus/Silvally) always carries. Each becomes the
+// held Plate's type in battle; force-pick whichever the mon can learn.
+const MULTITYPE_SIGNATURE_MOVES = [JUDGMENT_MOVE_ID, MULTI_ATTACK_MOVE_ID];
 const { plates, protectionBerries } = require('./items');
 const rng = require('./rng');
 
@@ -1950,19 +1954,23 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
         }
     }
 
-    // Arceus / Multitype (T-156): a Multitype mon always carries Judgment. Holding a Plate turns
-    // Judgment into that plate's type (its type-flex payoff), and it is at worst Normal STAB, so force
-    // it in like Relic Song and protect it from the A3 same-type dedup below. Gated on the mon's
-    // abilities/id (not `ability`, which is null on the rating-internal chooseMoveset call).
-    let forcedJudgmentMoveId = null;
+    // Arceus / Silvally / Multitype (T-156, T-158): a Multitype mon always carries its signature move
+    // (Judgment for Arceus, Multi-Attack for Silvally). Holding a Plate turns that move into the plate's
+    // type (its type-flex payoff), and it is at worst Normal STAB, so force in whichever the mon can learn
+    // like Relic Song and protect it from the A3 same-type dedup below. Gated on the mon's abilities/id
+    // (not `ability`, which is null on the rating-internal chooseMoveset call).
+    let forcedSignatureMoveId = null;
     const isMultitype = (poke.parsedAbilities || []).includes(MULTITYPE_ABILITY)
         || (poke.id || '').startsWith('SPECIES_ARCEUS');
-    if (isMultitype && moveset.length < 4 && !moveset.some(m => m.id === JUDGMENT_MOVE_ID)) {
-        const judgment = uniqueMoves.find(m => m.id === JUDGMENT_MOVE_ID);
-        if (judgment) {
-            moveset.push(judgment);
-            forcedJudgmentMoveId = judgment.id;
-            uniqueMoves = uniqueMoves.filter(move => move.id !== judgment.id);
+    if (isMultitype && moveset.length < 4 && !moveset.some(m => MULTITYPE_SIGNATURE_MOVES.includes(m.id))) {
+        for (const sigId of MULTITYPE_SIGNATURE_MOVES) {
+            const sig = uniqueMoves.find(m => m.id === sigId);
+            if (sig) {
+                moveset.push(sig);
+                forcedSignatureMoveId = sig.id;
+                uniqueMoves = uniqueMoves.filter(move => move.id !== sig.id);
+                break;
+            }
         }
     }
 
@@ -2005,8 +2013,8 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
             if (forcedPivotId && weaker.id === forcedPivotId) continue;
             // Exception: the forced Meloetta Relic Song is always kept (guaranteed transform move).
             if (forcedMeloettaMoveId && weaker.id === forcedMeloettaMoveId) continue;
-            // Exception: the forced Arceus/Multitype Judgment is always kept (guaranteed signature move).
-            if (forcedJudgmentMoveId && weaker.id === forcedJudgmentMoveId) continue;
+            // Exception: the forced Multitype signature move (Judgment/Multi-Attack) is always kept.
+            if (forcedSignatureMoveId && weaker.id === forcedSignatureMoveId) continue;
             // Exception: different priority tiers
             if ((weaker.priority || 0) !== (stronger.priority || 0)) continue;
             // Exception: Iron Fist with two punching moves of the same type
