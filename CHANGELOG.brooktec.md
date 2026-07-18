@@ -9,6 +9,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Unown, Vivillon, Flabébé, Furfrou and Alcremie are back in the randomizer.** These families were
+  previously dropped because their many purely-cosmetic forms (28 Unown letters, 20 Vivillon patterns,
+  63 Alcremie decorations, …) could not be handled. They now appear as a single representative form
+  each, so they can roll into wild encounters and trainer teams without cluttering the Pokédex with
+  thousands of identical entries (T-153, T-154).
+
 - **More moves can roll onto TMs, including doubles-only support TMs.** 39 more real Pokémon TM moves
   are now in the randomized TM pools — extra average/good/strong damage (Fire Spin, Dynamic Punch, Sky
   Attack, …), average status (Confuse Ray, Gravity, Imprison, Teleport, …), niche (Bide, Counter, Natural

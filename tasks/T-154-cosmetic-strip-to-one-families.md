@@ -1,7 +1,7 @@
 ---
 id: T-154
 title: Re-enable cosmetic families, stripped to one form each
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-18
 updated: 2026-07-18
@@ -44,16 +44,26 @@ evo-chain families Scatterbug/Spewpa and Flabébé/Floette; if not, strip in a p
 rebuilds those families' evo entries.) Then remove the five families from `REMOVED_FAMILIES`.
 
 Acceptance criteria:
-- [ ] Each family surfaces exactly one species per stage: Unown 1, Furfrou 1, Scatterbug line 3,
-      Flabébé line 3, Milcery+Alcremie 2.
-- [ ] `node analyze.js` / the docs build produce a sane `pokes.js` (no hundreds of cosmetic entries)
-      and the viewer/docs still render.
-- [ ] Evolution chains intact: Scatterbug→Spewpa→Vivillon, Flabébé→Floette→Florges, Milcery→Alcremie.
-- [ ] The kept representative is consistent across stages (same pattern/color), so evos link correctly.
-- [ ] New unit tests cover the strip (kept count per family + evo chain); `cd randomizer && npm test` green.
+- [x] Each family surfaces exactly one species per stage: Unown 1, Furfrou 1, Scatterbug line 3,
+      Flabébé line 3, Milcery+Alcremie 2. (Verified against real data + in docs `pokes.js`.)
+- [x] `node analyze.js` / the docs build produce a sane `pokes.js` (1198 species, ~10 new cosmetic
+      representatives, no hundreds of entries); pipeline exits 0 and restores source; viewer renders.
+- [x] Evolution chains intact: Scatterbug→Spewpa→Vivillon, Flabébé→Floette→Florges, Milcery→Alcremie.
+- [x] The kept representative is consistent across stages (same pattern/color), so evos link correctly.
+- [x] New unit tests cover the strip (kept count per family + clean evo tree); `cd randomizer && npm test` green.
 
 ## Progress log
 
 - **2026-07-18** — Task created.
+- **2026-07-18** — Implemented (TDD, `randomizer/__tests__/unit/cosmeticFamilyStrip.test.js`). Added
+  `COSMETIC_FAMILIES` to the parser and removed the five from `REMOVED_FAMILIES`. Strip is done via a
+  pre-scan (`computeCosmeticDropIds`) that resolves every cosmetic species' natDexNum (reusing the
+  T-153 macro expansion) and marks all-but-first-per-dex; the main loop then skips them at the header
+  like `REMOVED_SPECIES`. Chose the pre-scan over an inline natDexNum strip because Floette declares
+  `.evolutions` BEFORE its natDexNum (via `FLOETTE_NORMAL_INFO`), so an inline strip fired too late and
+  polluted the evoTree with warnings; the pre-scan is order-independent and leaves the evoTree
+  untouched. Verified end-to-end: `node analyze.js --no-balance` exits 0, docs `pokes.js` holds exactly
+  Unown×1, ICY_SNOW line×3, RED line×3, Furfrou Natural×1, Milcery+Vanilla-Cream Alcremie×2; evo chains
+  clean; no warnings. Full suite green (1255).
 
 ## Outcome

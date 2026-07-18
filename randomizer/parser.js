@@ -47,19 +47,29 @@ const FIXED_PROPERTIES = {
     expYield: '0',
 };
 
-// I have to figure out how to handle each exceptions
+// Families still fully skipped. UNOWN/SCATTERBUG/FLABEBE/FURFROU/MILCERY moved to COSMETIC_FAMILIES
+// (T-154). BURMY/ARCEUS/GENESECT/MINIOR/OGERPON are re-enabled by their own tasks (T-155..T-157).
+// P_FAMILY_TYPE_NULL (Type: Null / Silvally) stays removed — out of scope.
 const REMOVED_FAMILIES = [
-    'P_FAMILY_UNOWN',
     'P_FAMILY_BURMY',
     'P_FAMILY_ARCEUS',
     'P_FAMILY_GENESECT',
+    'P_FAMILY_TYPE_NULL',
+    'P_FAMILY_MINIOR',
+    'P_FAMILY_OGERPON',
+];
+
+// T-154 — families whose alternate forms are purely cosmetic (identical stats/type/ability). Within
+// each, only the FIRST species per natDexNum is kept; later same-dex forms are dropped so they neither
+// randomize independently nor emit one docs entry each (the docs path has no natDexNum collapse). The
+// kept representative is the first-declared form of every stage (Unown; the ICY_SNOW / RED lines;
+// Furfrou Natural; Milcery + Strawberry-Vanilla-Cream Alcremie), which keeps evo chains consistent.
+const COSMETIC_FAMILIES = [
+    'P_FAMILY_UNOWN',
     'P_FAMILY_SCATTERBUG',
     'P_FAMILY_FLABEBE',
     'P_FAMILY_FURFROU',
-    'P_FAMILY_TYPE_NULL',
-    'P_FAMILY_MINIOR',
     'P_FAMILY_MILCERY',
-    'P_FAMILY_OGERPON',
 ];
 
 const REMOVED_SPECIES = [
@@ -352,9 +362,49 @@ function expandSpeciesMacro(line, macros) {
     return expanded.map(l => (l.trim() === '}' ? '    },' : l));
 }
 
+// T-154 — pre-scan for the cosmetic-strip drop-set: within each COSMETIC_FAMILIES block, resolve every
+// species' natDexNum (expanding macros/fragments exactly as the main pass does) and mark all but the
+// first species of each natDexNum for dropping. Returning the drop-set lets the main loop skip those
+// species at the header — like REMOVED_SPECIES — before any evolution is parsed, so it is independent
+// of whether `.natDexNum` precedes or follows `.evolutions` (Floette declares evolutions first) and
+// leaves the evoTree completely untouched by dropped forms.
+function computeCosmeticDropIds(lines, macros) {
+    const drop = new Set();
+    const seenDex = new Set();
+    let family = null;
+    let curId = null;
+    const stream = lines.slice(); // macro splicing mutates a private copy
+    for (let i = 0; i < stream.length; i++) {
+        const line = stream[i];
+        if (line.startsWith('#if P_FAMILY_')) { family = line.split(' ')[1]; curId = null; continue; }
+        if (!family || !COSMETIC_FAMILIES.includes(family)) continue;
+        if (line.startsWith('    [')) {
+            curId = line.split('[')[1].split(']')[0];
+            const expanded = expandSpeciesMacro(line, macros);
+            if (expanded) stream.splice(i + 1, 0, ...expanded);
+            continue;
+        }
+        if (!curId) continue;
+        const bm = matchMacroInvocation(line.trim(), macros);
+        if (bm) {
+            const bmArgs = bm[2] !== undefined ? splitTopLevelArgs(bm[2]) : [];
+            const bmLines = expandMacroBody(bm[1], bmArgs, macros, 0);
+            if (bmLines) { stream.splice(i + 1, 0, ...bmLines); continue; }
+        }
+        if (line.startsWith('        .natDexNum')) {
+            const dex = line.trim().replace(/.*?=/, '').replace(/,$/, '').trim();
+            const key = `${family}|${dex}`;
+            if (seenDex.has(key)) drop.add(curId); else seenDex.add(key);
+            curId = null;
+        }
+    }
+    return drop;
+}
+
 function parseSpeciesFile(genSpeciesFileText, definitions, evoTree) {
     const lines = genSpeciesFileText.split('\n');
     const speciesMacros = parseSpeciesInfoMacros(genSpeciesFileText);
+    const cosmeticDropIds = computeCosmeticDropIds(lines, speciesMacros); // T-154
     const pokemonList = [];
     let currentPokemon;
     let currentFamily;
@@ -392,6 +442,7 @@ function parseSpeciesFile(genSpeciesFileText, definitions, evoTree) {
                 REMOVED_SPECIES.includes(currentPokemon.id)
                 || currentPokemon.id.includes('_GMAX')
                 || currentPokemon.id.includes('_TOTEM')
+                || cosmeticDropIds.has(currentPokemon.id) // T-154 — non-first cosmetic form
             ) {
                 console.log(`Skipping species ${currentPokemon.id}`);
                 currentPokemon = null;
@@ -799,4 +850,5 @@ module.exports = {
     getEvolutionType,
     processLineForDefinitions,
     FIXED_PROPERTIES,
+    COSMETIC_FAMILIES,
 };
