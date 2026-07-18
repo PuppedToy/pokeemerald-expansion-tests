@@ -1,7 +1,7 @@
 ---
 id: T-155
 title: Re-enable Genesect and Minior as base-form only
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-18
 updated: 2026-07-18
@@ -49,15 +49,33 @@ Core, vs a blend that credits the Meteor setup turn / status immunity, vs a smal
 50%-HP flip cost) and get the owner's choice. Per the project's research-first rule, do not code the
 Minior rating until confirmed.
 
+Owner decision (2026-07-18): rate Minior as a **weighted blend of Meteor + Core** (Meloetta-style),
+crediting the bulky status-immune setup turn AND the Core sweeper payoff. Weights: Meteor 0.45 / Core
+0.55 (Core-favoured — it is the real battler). Applied to both the absolute rating/tier and the
+per-level contextual ratings (so the teambuilder, which scores on contextualRatings, actually fields it).
+
 Acceptance criteria:
-- [ ] Genesect surfaces base only; no Drive forms parsed/placed; Drives never given as held items.
-- [ ] Minior surfaces `METEOR_RED` only as placeable; other colors + all Cores absent from teams/docs.
-- [ ] Minior rated via the owner-approved special-case (Meteor rated for Core).
-- [ ] New unit tests (Genesect base-only, Minior effective-poke rating, Core banned-but-rated);
-      `cd randomizer && npm test` green.
+- [x] Genesect surfaces base only; no Drive forms parsed/placed; Drives never given as held items
+      (`items.drives` has no consumer).
+- [x] Minior surfaces `METEOR_RED` only as placeable; other colors + all Cores absent from teams/docs
+      (`CORE_RED` banned from picking; other 12 colors in `REMOVED_SPECIES`).
+- [x] Minior rated via the owner-approved blend — verified: Core UU 7.61, placed Meteor RU 6.83 (blend),
+      contextual blended too.
+- [x] New unit tests (Genesect base-only, Minior absolute + contextual blend, Core banned);
+      `cd randomizer && npm test` green (1263). Pipeline `node analyze.js --no-balance` exits 0.
 
 ## Progress log
 
 - **2026-07-18** — Task created. Minior rating approach flagged for owner validation before coding.
+- **2026-07-18** — Genesect: added `P_FAMILY_GENESECT` to `COSMETIC_FAMILIES` (keeps base, drops the
+  4 Drive forms); confirmed `items.drives` is never consumed, so Drives are already unavailable.
+  Minior: removed `P_FAMILY_MINIOR` from `REMOVED_FAMILIES`; kept the Red pair (`METEOR_RED` placeable,
+  `CORE_RED` parsed-but-banned) and dropped the other 12 colors via `REMOVED_SPECIES`.
+- **2026-07-18** — Owner chose the blend approach. Implemented `randomizer/minior.js`
+  (`applyMiniorTierBlend` = absolute+tier, `applyMiniorContextualBlend` = per-cap singles+doubles),
+  wired into `pokedexModule` (9c-ter after Meloetta; 11-bis after the contextual pass), banned
+  `SPECIES_MINIOR_CORE_RED` from picking. TDD `randomizer/__tests__/unit/minior.test.js`. Verified via
+  `analyze.js`: Meteor placed & rated RU (blend of Core UU 7.61 and a low pure-Meteor), Core absent
+  from docs/teams, Genesect base only. Full suite green (1263).
 
 ## Outcome

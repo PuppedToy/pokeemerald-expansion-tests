@@ -68,6 +68,17 @@ const constants = {
     MELOETTA_RELIC_SONG_ID:      'MOVE_RELIC_SONG',
     MELOETTA_FAMILY:             'P_FAMILY_MELOETTA',
 
+    // Minior special case (T-155) — only the Meteor form is placed. Shields Down keeps it in the bulky,
+    // status-immune Meteor shell (Def/SpD 100, no offense) while HP ≥ 50%, then flips it to the Core
+    // glass-cannon (Atk/SpA 100, Speed 120) below 50%. The Core (Red) form is parsed but banned from
+    // picking; the placed Meteor's rating (absolute + per-level contextual) is a weighted blend of both
+    // forms, crediting the defensive/status-immune setup turn AND the offensive payoff (owner choice,
+    // Meloetta-style). Only the Red color pair is kept (see REMOVED_SPECIES in parser.js).
+    MINIOR_METEOR_ID:            'SPECIES_MINIOR_METEOR_RED',
+    MINIOR_CORE_ID:              'SPECIES_MINIOR_CORE_RED',
+    MINIOR_METEOR_WEIGHT:        0.45,
+    MINIOR_CORE_WEIGHT:          0.55,
+
     AG_BST_THRESHOLD: 720,
     LEGEND_BST_THRESHOLD: 660,
     OU_BST_THRESHOLD: 600,

@@ -52,6 +52,9 @@ const BANNED_SPECIES_FOR_PICKING = [
     // Meloetta: Pirouette is a battle-only form reached via Relic Song. Only base Aria is placeable;
     // Aria's tier accounts for Pirouette via a weighted blend (see meloetta.js / T-064).
     'SPECIES_MELOETTA_PIROUETTE',
+    // Minior: Core is a battle-only form reached via Shields Down (<50% HP). Only the Meteor form is
+    // placeable; Meteor's rating accounts for Core via a weighted blend (see minior.js / T-155).
+    'SPECIES_MINIOR_CORE_RED',
 ];
 
 // T-052 — extra-starter categories. Each slot is { tier, kind: 'line'|'solo', lineLength }.

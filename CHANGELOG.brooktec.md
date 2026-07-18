@@ -9,6 +9,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Genesect and Minior are back in the randomizer.** Genesect appears as its base form (its Drive
+  forms stay unavailable). Minior appears as its Meteor form; because Shields Down flips it to the
+  offensive Core form at low HP, its rating is a weighted blend of both forms, so trainers value it as
+  the fast sweeper it becomes (T-155).
+
 - **Unown, Vivillon, Flabébé, Furfrou and Alcremie are back in the randomizer.** These families were
   previously dropped because their many purely-cosmetic forms (28 Unown letters, 20 Vivillon patterns,
   63 Alcremie decorations, …) could not be handled. They now appear as a single representative form

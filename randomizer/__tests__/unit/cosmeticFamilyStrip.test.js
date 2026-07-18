@@ -70,6 +70,34 @@ describe('parseSpeciesFile — cosmetic family strip (T-154)', () => {
         expect(unowns.map(p => p.id)).toEqual(['SPECIES_UNOWN']);
     });
 
+    test('base-only families (Genesect) keep the base and drop the alternate forms', () => {
+        const GENESECT = `
+#if P_FAMILY_GENESECT
+    [SPECIES_GENESECT] =
+    {
+        .baseHP = 71, .baseAttack = 120, .baseDefense = 95,
+        .baseSpeed = 99, .baseSpAttack = 120, .baseSpDefense = 95,
+        .types = MON_TYPES(TYPE_BUG, TYPE_STEEL),
+        .abilities = { ABILITY_DOWNLOAD, ABILITY_NONE },
+        .speciesName = _("Genesect"),
+        .natDexNum = NATIONAL_DEX_GENESECT,
+    },
+    [SPECIES_GENESECT_DOUSE] =
+    {
+        .baseHP = 71, .baseAttack = 120, .baseDefense = 95,
+        .baseSpeed = 99, .baseSpAttack = 120, .baseSpDefense = 95,
+        .types = MON_TYPES(TYPE_BUG, TYPE_STEEL),
+        .abilities = { ABILITY_DOWNLOAD, ABILITY_NONE },
+        .speciesName = _("Genesect"),
+        .natDexNum = NATIONAL_DEX_GENESECT,
+    },
+#endif //P_FAMILY_GENESECT
+`;
+        const list = parseSpeciesFile(GENESECT, {}, {});
+        expect(list.map(p => p.id)).toEqual(['SPECIES_GENESECT']);
+        expect(COSMETIC_FAMILIES).toContain('P_FAMILY_GENESECT');
+    });
+
     test('keeps one per stage and leaves the evo tree clean (no dropped-pattern pollution)', () => {
         const evoTree = {};
         const list = parseSpeciesFile(SCATTERBUG_LIKE, {}, evoTree);

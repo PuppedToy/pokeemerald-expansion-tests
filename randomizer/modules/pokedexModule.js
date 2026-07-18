@@ -10,6 +10,7 @@ const { ratePokemon, ratePokemonDoubles, rateContextual, rateContextualDoubles, 
 const { balancePokemon } = require('../rebalancer');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
+const { applyMiniorTierBlend, applyMiniorContextualBlend } = require('../minior');
 const { capLevelMap } = require('../bossCaps');
 const {
     TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR, ABILITIES_FILE_PATH, ITEMS_FILE_PATH, MEGA_EVOS_PATH,
@@ -243,6 +244,11 @@ async function runPokedexModule(config, baseData = null) {
     // and before best-evo so the blended rating propagates. Unconditional (a classification fix).
     applyMeloettaTierBlend(allPokes);
 
+    // 9c-ter. Minior (T-155) — Meteor (placeable) flips to Core (battle-only, banned) via Shields Down
+    // below 50% HP, so Meteor's absolute rating/tier is a weighted blend of both forms. Same timing as
+    // Meloetta (both forms rated, before best-evo). The per-level contextual blend runs after step 11.
+    applyMiniorTierBlend(allPokes);
+
     // 9d. Mega base-form STAB (T-062) — when a mega's type was MUTATED this run to a type its base
     // lacks (e.g. Mega Aggron gaining Fighting), the base form gains a damaging move of that type.
     // A mega fights with the base's known moves and its own learnset is discarded at write, so the
@@ -335,6 +341,11 @@ async function runPokedexModule(config, baseData = null) {
             poke.contextualRatingsDoubles[cap] = rateContextualDoubles(ctxPoke, moves, abilities, { level: cap, tms: [] }, poke.contextualRatings[cap].bestMoveset);
         }
     }
+
+    // 11-bis. Minior (T-155) — blend Meteor's per-cap contextual ratings (singles + doubles) with
+    // Core's, so the teambuilder (which scores on contextualRatings[cap].absoluteRating) values the
+    // Core sweeper payoff at each level. Runs after the contextual pass rated both forms at every cap.
+    applyMiniorContextualBlend(allPokes, LEVEL_CAPS);
 
     // Write final JSON caches (Node-only)
     if (nodeMode) {

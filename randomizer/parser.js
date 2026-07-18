@@ -53,23 +53,25 @@ const FIXED_PROPERTIES = {
 const REMOVED_FAMILIES = [
     'P_FAMILY_BURMY',
     'P_FAMILY_ARCEUS',
-    'P_FAMILY_GENESECT',
     'P_FAMILY_TYPE_NULL',
-    'P_FAMILY_MINIOR',
     'P_FAMILY_OGERPON',
 ];
 
-// T-154 — families whose alternate forms are purely cosmetic (identical stats/type/ability). Within
-// each, only the FIRST species per natDexNum is kept; later same-dex forms are dropped so they neither
-// randomize independently nor emit one docs entry each (the docs path has no natDexNum collapse). The
-// kept representative is the first-declared form of every stage (Unown; the ICY_SNOW / RED lines;
-// Furfrou Natural; Milcery + Strawberry-Vanilla-Cream Alcremie), which keeps evo chains consistent.
+// Families reduced to a SINGLE form: only the FIRST species per natDexNum is kept, later same-dex forms
+// are dropped (so they neither randomize independently nor emit one docs entry each — the docs path has
+// no natDexNum collapse). Covers two cases with the same mechanism:
+//   • T-154 cosmetic strips — Unown, Scatterbug/Spewpa/Vivillon, Flabébé/Floette/Florges, Furfrou,
+//     Milcery/Alcremie. The kept form is the first-declared of each stage (Unown; the ICY_SNOW / RED
+//     lines; Furfrou Natural; Milcery + Strawberry-Vanilla-Cream Alcremie), keeping evo chains consistent.
+//   • T-155 base-only families — Genesect (base kept; its Drive forms are banned and Drives are not
+//     placed as items).
 const COSMETIC_FAMILIES = [
     'P_FAMILY_UNOWN',
     'P_FAMILY_SCATTERBUG',
     'P_FAMILY_FLABEBE',
     'P_FAMILY_FURFROU',
     'P_FAMILY_MILCERY',
+    'P_FAMILY_GENESECT',
 ];
 
 const REMOVED_SPECIES = [
@@ -96,6 +98,21 @@ const REMOVED_SPECIES = [
     'SPECIES_EISCUE_NOICE',
     'SPECIES_MIMIKYU_BUSTED',
     'SPECIES_ZYGARDE_10_POWER_CONSTRUCT',
+    // T-155 — Minior: keep only the Red color pair (Meteor placeable, Core rated-but-banned); the
+    // other six colors are cosmetic. Both forms of the kept pair must parse (the rater reads Core's
+    // stats via the effective-poke special-case), so Minior can't use the COSMETIC_FAMILIES strip.
+    'SPECIES_MINIOR_METEOR_ORANGE',
+    'SPECIES_MINIOR_METEOR_YELLOW',
+    'SPECIES_MINIOR_METEOR_GREEN',
+    'SPECIES_MINIOR_METEOR_BLUE',
+    'SPECIES_MINIOR_METEOR_INDIGO',
+    'SPECIES_MINIOR_METEOR_VIOLET',
+    'SPECIES_MINIOR_CORE_ORANGE',
+    'SPECIES_MINIOR_CORE_YELLOW',
+    'SPECIES_MINIOR_CORE_GREEN',
+    'SPECIES_MINIOR_CORE_BLUE',
+    'SPECIES_MINIOR_CORE_INDIGO',
+    'SPECIES_MINIOR_CORE_VIOLET',
 ];
 
 const CUSTOM_FAMILIES = {
