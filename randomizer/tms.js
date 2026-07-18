@@ -46,6 +46,17 @@ const averageDamagePool = [
     "MOVE_BREAKING_SWIPE",  // 60, -1 Atk all targets
     "MOVE_SNARL",           // 55, -1 SpAtk
     "MOVE_STRUGGLE_BUG",    // 50/30, -1 SpAtk
+    // T-152 — owner-classified additions
+    "MOVE_FIRE_SPIN",       // trap
+    "MOVE_INCINERATE",      // burns held berry
+    "MOVE_SAND_TOMB",       // trap
+    "MOVE_SNORE",           // 50, only while asleep
+    "MOVE_WHIRLPOOL",       // trap (not an HM here)
+    "MOVE_FURY_CUTTER",     // 40, stacking
+    "MOVE_DRAGON_BREATH",   // 60, 30% paralysis
+    "MOVE_SILVER_WIND",     // 60, 10% all stats +1
+    "MOVE_BUBBLE_BEAM",     // 65, 10% -Speed
+    "MOVE_SUBMISSION",      // 80, 80 acc, recoil
 ];
 
 const goodDamagePool = [
@@ -136,6 +147,11 @@ const goodDamagePool = [
     "MOVE_FRENZY_PLANT",    // 150, recharge
     "MOVE_HYDRO_CANNON",    // 150, recharge
     "MOVE_HYPER_BEAM",      // 150, recharge
+    // T-152 — owner-classified additions
+    "MOVE_POWER_UP_PUNCH",  // 40, +1 Atk on hit
+    "MOVE_ROCK_CLIMB",      // 90, 85 acc, 20% confuse (not an HM here)
+    "MOVE_EGG_BOMB",        // 100, 75 acc
+    "MOVE_SKY_ATTACK",      // 140, 90 acc, 2-turn, 30% flinch
 ];
 
 const strongDamagePool = [
@@ -190,6 +206,9 @@ const strongDamagePool = [
     "MOVE_EARTHQUAKE",      // 100, 100 acc — universal coverage staple
     "MOVE_GUNK_SHOT",       // 120, 80/70 acc, 30% poison — poison nuke
     "MOVE_WILD_CHARGE",     // 90, recoil
+    // T-152 — owner-classified additions
+    "MOVE_DYNAMIC_PUNCH",   // 100, 50 acc, 100% confuse
+    "MOVE_ZAP_CANNON",      // 120, 50 acc, 100% paralysis
 ];
 
 const godlikeDamagePool = [
@@ -217,6 +236,11 @@ const nichePool = [
     "MOVE_MISTY_EXPLOSION", // 100, user faints, 1.5× in Misty Terrain
     "MOVE_SELF_DESTRUCT",   // 200, user faints
     "MOVE_SUPER_FANG",      // halves target HP
+    // T-152 — owner-classified additions
+    "MOVE_BIDE",            // stores then returns 2× damage
+    "MOVE_COUNTER",         // returns 2× physical damage taken
+    "MOVE_NATURAL_GIFT",    // power/type from held berry
+    "MOVE_NATURE_POWER",    // becomes a move based on terrain
 ];
 
 // ─── STATUS MOVES ─────────────────────────────────────────────────────────────
@@ -255,6 +279,19 @@ const averageStatusMoves = [
     "MOVE_VENOM_DRENCH",
     "MOVE_WONDER_ROOM",
     "MOVE_WORK_UP",
+    // T-152 — owner-classified additions
+    "MOVE_CONFUSE_RAY",
+    "MOVE_CAPTIVATE",
+    "MOVE_DEFENSE_CURL",
+    "MOVE_GRAVITY",
+    "MOVE_IMPRISON",
+    "MOVE_METAL_SOUND",
+    "MOVE_MIMIC",
+    "MOVE_QUASH",
+    "MOVE_SNATCH",
+    "MOVE_TELEKINESIS",
+    "MOVE_TELEPORT",
+    "MOVE_WHIRLWIND",
 ];
 
 const weatherMoves = [
@@ -288,6 +325,7 @@ const goodStatusMoves = [
     "MOVE_TRICK_ROOM",
     "MOVE_TRICK",
     "MOVE_TAUNT",
+    "MOVE_HONE_CLAWS",      // T-152 — owner-classified
 ];
 
 const godlikeStatusMoves = [
@@ -303,6 +341,21 @@ const godlikeStatusMoves = [
     "MOVE_TAILWIND",
     "MOVE_TOXIC",
     "MOVE_WILL_O_WISP",
+    "MOVE_SOFT_BOILED",     // T-152 — owner-classified (reliable 50% heal)
+];
+
+// T-152 — doubles-only status TMs. These join their pool (goodStatus / godlikeStatus) ONLY when the
+// run's battle format is doubles or mixed (they are doubles-relevant support moves). tmRandomizer folds
+// them in based on the format; in singles they never appear as TMs.
+const goodStatusMovesDoubles = [
+    "MOVE_ALLY_SWITCH",
+    "MOVE_COACHING",
+    "MOVE_DETECT",
+    "MOVE_DRAGON_CHEER",
+];
+
+const godlikeStatusMovesDoubles = [
+    "MOVE_HELPING_HAND",
 ];
 
 const damageMoves = [
@@ -334,6 +387,8 @@ module.exports = {
     barrierMoves,
     goodStatusMoves,
     godlikeStatusMoves,
+    goodStatusMovesDoubles,
+    godlikeStatusMovesDoubles,
     damageMoves,
     statusMoves,
     tmPool,

@@ -169,10 +169,10 @@ async function runPokedexModule(config, baseData = null) {
     // 6. Randomize TMs — Node: writes tms_hms.h + script_menu.h; Browser: RNG only
     let tmList, tmPool;
     if (nodeMode) {
-        tmList = await randomizeTMs();
+        tmList = await randomizeTMs(config.battleFormat);   // T-152 — doubles/mixed folds in the doubles-only status TMs
         tmPool = allTms ? null : await buildTmPoolFromFile();
     } else {
-        tmList = buildTMList();
+        tmList = buildTMList(config.battleFormat);
         tmPool = allTms ? null : new Set(tmList.map(m => 'MOVE_' + m));
     }
 
