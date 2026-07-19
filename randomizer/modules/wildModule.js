@@ -138,6 +138,156 @@ function pickExtraStartersFromSpecs(specs, ctx) {
     return chosen;
 }
 
+// ── Wild encounter sweep ("batidas") — T-162 ────────────────────────────────
+// Physical slot capacity of each method in wild_encounters.json. Super rod is handled
+// separately (it stays a single species shared across every map using the same template).
+const WILD_METHOD_SLOTS = { land: 12, surf: 5, underwater: 5, old: 2, good: 3 };
+// Methods filled round-by-round by the sweep (super excluded — it's shared, statics ignored).
+const WILD_SWEEP_METHODS = ['land', 'surf', 'underwater', 'old', 'good'];
+
+// Level a wild replacement counts as "found" at, for mega-evo gating. Mirrors the legacy
+// findReplacementLevel heuristic but keyed off the concrete map + method.
+function wildFoundLevel(map, method) {
+    if (method === 'good') return map.level || 33;
+    if (method === 'super') return 48;
+    return map.level || 29; // land / surf / underwater / old
+}
+
+/**
+ * Sweep generator ("batidas"). Fills every wild zone/method with `pokemonPerZone` distinct
+ * species (capped to each method's physical slot count), drawn round-by-round across all zones
+ * so any forced duplication is spread. One pool per replacementType (family-keyed). While a pool
+ * still has unused families it dedups globally (no family placed twice as a wild); once its unique
+ * supply is exhausted it flips to "overflow" and cycles its full base again, allowing spread
+ * duplicates — matching the design where a single-tier pool regenerates while a multi-tier one
+ * leans on its other tiers first (its base is simply larger, so it overflows later).
+ *
+ * Super rod stays a single shared species per template. Static/special slots are ignored (handled
+ * as staticRewards elsewhere).
+ *
+ * @param {Object[]} pokemonList  - rated, ban-filtered pokémon.
+ * @param {Object}   wildConfig   - { replacements, replacementTypes, maps }.
+ * @param {Object}   opts         - { reservedFamilies:Set (never wild), pokemonPerZone:int,
+ *                                    onPick?(poke, level) }.
+ * @returns {{ wildPlan: Object, replacementLog: Object }}
+ *   wildPlan[templateSpecies] = [pickedIds] — the species that replace that template's slots (super
+ *     templates carry a single shared id). The writer places them wherever the template appears.
+ *   replacementLog[templateSpecies] = representative (first) pick — for docs + back-compat.
+ */
+function buildWildPlan(pokemonList, wildConfig, opts = {}) {
+    const { replacements = {}, replacementTypes = {}, maps = [] } = wildConfig || {};
+    const reservedFamilies = opts.reservedFamilies || new Set(); // starters/gyms/statics — never wild
+    const perZone = Math.max(1, Number(opts.pokemonPerZone) || 1);
+    const onPick = opts.onPick || (() => {});
+
+    // Immutable base pool per replacementType — same eligibility filter the module has always used.
+    const baseByType = {};
+    Object.entries(replacementTypes).forEach(([key, value]) => {
+        const { replace: tiers, type: types, hasMega, megaTiers } = value;
+        baseByType[key] = pokemonList.filter(poke => {
+            if (poke.evolutionData.isMega) return false;
+            if (reservedFamilies.has(getFamilyGroup(poke.family))) return false;
+            if (tiers && !tiers.includes(poke.rating.bestEvoTier)) return false;
+            if (megaTiers && !megaTiers.includes(poke.rating.megaEvoTier)) return false;
+            if (hasMega && !poke.evolutionData.megaEvos?.length) return false;
+            let ok = false;
+            (types || []).forEach(t => {
+                if (t === EVO_TYPE_LC) ok = ok || poke.evolutionData.isLC;
+                else if (t === EVO_TYPE_NFE) ok = ok || poke.evolutionData.isNFE;
+                else if (t === EVO_TYPE_SOLO) ok = ok || poke.evolutionData.type === EVO_TYPE_SOLO;
+                else if (t === EVO_TYPE_FINAL) ok = ok || poke.evolutionData.isFinal;
+            });
+            return ok;
+        });
+    });
+
+    const live = {};      // typeKey → working copy (consumed as we pick)
+    const overflow = {};   // typeKey → true once unique supply is exhausted
+    Object.keys(baseByType).forEach(k => { live[k] = [...baseByType[k]]; overflow[k] = false; });
+    const wildUsed = new Set(); // family groups placed as wild (cross-type dedup, pre-overflow only)
+
+    const spliceFamily = (arr, fam) => {
+        for (let i = arr.length - 1; i >= 0; i--) {
+            if (getFamilyGroup(arr[i].family) === fam) arr.splice(i, 1);
+        }
+    };
+
+    // Draw one species for `typeKey`, avoiding families already used in this same zone/method.
+    const draw = (typeKey, methodUsed) => {
+        const base = baseByType[typeKey];
+        if (!base || base.length === 0) return null;
+        if (!overflow[typeKey]) {
+            const cand = live[typeKey].filter(p =>
+                !wildUsed.has(getFamilyGroup(p.family)) && !methodUsed.has(getFamilyGroup(p.family)));
+            if (cand.length > 0) {
+                const pick = sample(cand);
+                const fam = getFamilyGroup(pick.family);
+                wildUsed.add(fam);
+                spliceFamily(live[typeKey], fam);
+                return pick;
+            }
+            // unique supply exhausted → overflow: from here this pool cycles its base (spread dups).
+            overflow[typeKey] = true;
+            live[typeKey] = [...base];
+        }
+        let cand = live[typeKey].filter(p => !methodUsed.has(getFamilyGroup(p.family)));
+        if (cand.length === 0) {
+            live[typeKey] = [...base];
+            cand = live[typeKey].filter(p => !methodUsed.has(getFamilyGroup(p.family)));
+            if (cand.length === 0) return null;
+        }
+        const pick = sample(cand);
+        spliceFamily(live[typeKey], getFamilyGroup(pick.family));
+        return pick;
+    };
+
+    // The plan is keyed by TEMPLATE species (the base species authored into wild_encounters.json),
+    // each → the list of picks for its slots. The writer places these wherever the template appears
+    // in the JSON (like the legacy substitution, but distributing N species), so it doesn't depend on
+    // wild.js map ids matching the JSON (they don't, for split maps like Granite Cave / Victory Road).
+    const wildPlan = {};       // templateSpecies → [picked ids]
+    const replacementLog = {};
+    const usedByTemplate = {}; // templateSpecies → Set(familyGroup)
+
+    // Super rod: one shared species per unique template (the writer broadcasts it to every super slot
+    // holding that template, so all its maps share the same species — the intended rod behaviour).
+    maps.forEach(map => {
+        const tmpl = map.super;
+        if (!tmpl || wildPlan[tmpl]) return;
+        const typeKey = replacements[tmpl];
+        if (!typeKey) return;
+        const pick = draw(typeKey, new Set());
+        if (!pick) return;
+        wildPlan[tmpl] = [pick.id];
+        replacementLog[tmpl] = pick.id;
+        onPick(pick, wildFoundLevel(map, 'super'));
+    });
+
+    // Round-by-round sweep for land / surf / underwater / old / good. Each template species is unique
+    // to one zone/method, so its `used` set is that zone/method's intra-dedup.
+    const maxRounds = Math.min(perZone, WILD_METHOD_SLOTS.land);
+    for (let round = 0; round < maxRounds; round++) {
+        for (const map of maps) {
+            for (const method of WILD_SWEEP_METHODS) {
+                const tmpl = map[method];
+                if (!tmpl) continue;
+                if (round >= Math.min(perZone, WILD_METHOD_SLOTS[method])) continue;
+                const typeKey = replacements[tmpl];
+                if (!typeKey) continue;
+                const used = usedByTemplate[tmpl] || (usedByTemplate[tmpl] = new Set());
+                const pick = draw(typeKey, used);
+                if (!pick) continue;
+                used.add(getFamilyGroup(pick.family));
+                (wildPlan[tmpl] = wildPlan[tmpl] || []).push(pick.id);
+                if (replacementLog[tmpl] === undefined) replacementLog[tmpl] = pick.id;
+                onPick(pick, wildFoundLevel(map, method));
+            }
+        }
+    }
+
+    return { wildPlan, replacementLog };
+}
+
 /**
  * Selects extra starters, gym/static pokemon rewards, and wild encounter replacements.
  *
@@ -529,55 +679,21 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig, moduleConfi
 
     // ── Wild encounter replacements ────────────────────────────────────────────
 
-    const replacementLog = {};
-    const { replacements = {}, replacementTypes = {} } = wildConfig;
-
-    const replacementLists = {};
-    Object.entries(replacementTypes).forEach(([key, value]) => {
-        const { replace: tiers, type: types, hasMega, megaTiers } = value;
-        replacementLists[key] = pokemonList.filter(poke => {
-            if (poke.evolutionData.isMega) return false;
-            if (alreadyChosenFamilySet.has(getFamilyGroup(poke.family))) return false;
-            if (tiers && !tiers.includes(poke.rating.bestEvoTier)) return false;
-            if (megaTiers && !megaTiers.includes(poke.rating.megaEvoTier)) return false;
-            if (hasMega && !poke.evolutionData.megaEvos?.length) return false;
-            let hasAnyType = false;
-            (types || []).forEach(replacementType => {
-                if (replacementType === EVO_TYPE_LC)    hasAnyType = hasAnyType || poke.evolutionData.isLC;
-                else if (replacementType === EVO_TYPE_NFE)  hasAnyType = hasAnyType || poke.evolutionData.isNFE;
-                else if (replacementType === EVO_TYPE_SOLO) hasAnyType = hasAnyType || poke.evolutionData.type === EVO_TYPE_SOLO;
-                else if (replacementType === EVO_TYPE_FINAL)hasAnyType = hasAnyType || poke.evolutionData.isFinal;
-            });
-            return hasAnyType;
-        });
-    });
-
-    const { maps: wildMaps = [] } = wildConfig;
-    const findReplacementLevel = (speciesId) => {
-        let foundMap = wildMaps.find(m =>
-            m.land === speciesId || m.old === speciesId || m.surf === speciesId || m.underwater === speciesId
-        );
-        if (foundMap) return foundMap.level || 29;
-        foundMap = wildMaps.find(m => m.good === speciesId);
-        if (foundMap) return foundMap.level || 33;
-        return 48;
-    };
-
-    const newlyAddedFamilies = new Set();
-
-    Object.entries(replacements).forEach(([speciesId, replacementTypeKey]) => {
-        const list = replacementLists[replacementTypeKey];
-        if (!list || list.length === 0) return;
-        for (let i = list.length - 1; i >= 0; i--) {
-            if (newlyAddedFamilies.has(getFamilyGroup(list[i].family))) list.splice(i, 1);
-        }
-        if (list.length === 0) return;
-        const replacement = sampleAndRemove(list);
-        if (!replacement) return;
-        alreadyChosenFamilySet.add(getFamilyGroup(replacement.family));
-        newlyAddedFamilies.add(getFamilyGroup(replacement.family));
-        addToFoundMegaEvosIfHasMegaEvo(replacement, findReplacementLevel(speciesId));
-        replacementLog[speciesId] = replacement.id;
+    // Snapshot the reserved families (starters/gyms/statics) BEFORE the sweep: those never become
+    // wild. wildEncounterType 'classic' fills each zone with `pokemonPerZone` distinct species
+    // (capped per method); 'deterministic' (default) = 1 per zone/method.
+    const reservedFamilies = new Set(alreadyChosenFamilySet);
+    const isClassic = moduleConfig && moduleConfig.wildEncounterType === 'classic';
+    const pokemonPerZone = isClassic
+        ? Math.max(1, Math.min(WILD_METHOD_SLOTS.land, Number(moduleConfig.pokemonPerZone) || 5))
+        : 1;
+    const { wildPlan, replacementLog } = buildWildPlan(pokemonList, wildConfig, {
+        reservedFamilies,
+        pokemonPerZone,
+        onPick: (poke, level) => {
+            alreadyChosenFamilySet.add(getFamilyGroup(poke.family));
+            addToFoundMegaEvosIfHasMegaEvo(poke, level);
+        },
     });
 
     return {
@@ -585,6 +701,7 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig, moduleConfi
         gymRewards,
         staticRewards,
         replacementLog,
+        wildPlan,
         foundMegaEvos,
         alreadyChosenFamilies: [...alreadyChosenFamilySet],
     };
@@ -611,7 +728,7 @@ function resolveRewardMegaStone(rewardPoke, pokemonList) {
 }
 
 module.exports = {
-    runWildModule, BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone, rewardMegaStones,
+    runWildModule, buildWildPlan, WILD_METHOD_SLOTS, BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone, rewardMegaStones,
     // Exported for the frontend default + unit testing (T-052).
     DEFAULT_EXTRA_STARTER_PRESET, isDefaultStarterPreset, EXTRA_STARTER_TIERS, pickExtraStartersFromSpecs,
 };

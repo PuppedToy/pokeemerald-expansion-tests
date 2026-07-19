@@ -173,6 +173,64 @@ function substituteWildSpecies(content, wildReplacementLog) {
     return result;
 }
 
+// T-162 — structural wild-encounter writer. Distributes `speciesList` (length ≤ #slots) across the
+// given slot indices so each species' summed per-slot encounter rate is as equal as possible
+// (greedy: assign each slot, heaviest first, to the currently-lightest species). Only the `species`
+// string is overwritten — each slot keeps its authored min_level/max_level. RNG-free.
+function distributeSpeciesAcrossSlots(mons, slotIdx, rates, speciesList) {
+    const valid = slotIdx.filter(i => i >= 0 && i < mons.length);
+    const L = speciesList.length;
+    if (L === 0 || valid.length === 0) return;
+    const groups = Array.from({ length: L }, () => ({ total: 0, slots: [] }));
+    const order = [...valid].sort((a, b) => (rates[b] || 0) - (rates[a] || 0));
+    for (const s of order) {
+        let g = 0;
+        for (let i = 1; i < L; i++) if (groups[i].total < groups[g].total) g = i;
+        groups[g].total += (rates[s] || 0);
+        groups[g].slots.push(s);
+    }
+    groups.forEach((grp, i) => grp.slots.forEach(s => { mons[s].species = speciesList[i]; }));
+}
+
+// T-162 — apply a sweep plan to a parsed wild_encounter group (mutates & returns it). The plan is
+// keyed by TEMPLATE species: wildPlan[templateSpecies] = [pickedIds]. For every slot in the JSON
+// that currently holds a template species, that method's slots are re-filled with the template's
+// picks (distributed to equalise probability), preserving each slot's level. This mirrors the legacy
+// species substitution — placement follows where the template sits in the JSON, not wild.js map ids
+// (which don't match for split maps) — but writes N species per zone instead of one. Rock-smash and
+// any species not in the plan are left untouched; a shared super template fills every slot holding it.
+function applyWildPlanToEncounters(group, wildPlan) {
+    if (!group || !Array.isArray(group.encounters)) return group;
+    const fields = group.fields || [];
+    const tableRates = {
+        land_mons: (fields.find(f => f.type === 'land_mons') || {}).encounter_rates || [],
+        water_mons: (fields.find(f => f.type === 'water_mons') || {}).encounter_rates || [],
+        rock_smash_mons: (fields.find(f => f.type === 'rock_smash_mons') || {}).encounter_rates || [],
+        fishing_mons: (fields.find(f => f.type === 'fishing_mons') || {}).encounter_rates || [],
+    };
+    const plan = wildPlan || {};
+
+    for (const enc of group.encounters) {
+        for (const table of Object.keys(tableRates)) {
+            const block = enc[table];
+            if (!block || !Array.isArray(block.mons)) continue;
+            // Group this table's slots by the species currently in them (captured before mutating).
+            const slotsBySpecies = new Map();
+            block.mons.forEach((m, i) => {
+                if (!slotsBySpecies.has(m.species)) slotsBySpecies.set(m.species, []);
+                slotsBySpecies.get(m.species).push(i);
+            });
+            for (const [species, slotIdx] of slotsBySpecies) {
+                const picks = plan[species];
+                if (picks && picks.length > 0) {
+                    distributeSpeciesAcrossSlots(block.mons, slotIdx, tableRates[table], picks);
+                }
+            }
+        }
+    }
+    return group;
+}
+
 // Build the trainersResults structure from the pre-resolved docs teams stored in the bundle
 // (rom.docs.trainersResultsSimplified). The docs already hold every fully-resolved member
 // (species, item, nature, moves, IVs, ability) so the ROM is guaranteed to match the docs —
@@ -253,7 +311,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     const { trainersData: _rawTrainersData, itemAssignments } = trainersArtifact;
     const trainersData = JSON.parse(JSON.stringify(_rawTrainersData));
     const { starters } = startersArtifact;
-    const { extraStarters, gymRewards, staticRewards, replacementLog: wildReplacementLog, foundMegaEvos: wildFoundMegaEvos } = wildArtifact;
+    const { extraStarters, gymRewards, staticRewards, replacementLog: wildReplacementLog, wildPlan, foundMegaEvos: wildFoundMegaEvos } = wildArtifact;
 
     // Palafin Hero is banned from picking (battle-only) but is the stat/type source for the
     // placed Zero form. Capture it before the ban filter strips it from pokemonList.
@@ -398,14 +456,24 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     await fs.writeFile(skyPillarTopReplacementFile, skyPillarTopFileData, 'utf8');
     await fs.writeFile(scriptMenuReplacementFile, scriptMenuFileData, 'utf8');
 
-    // Routes replacements — selection was done in wildModule; apply the two-pass substitution here
-
+    // Routes replacements — selection was done in wildModule.
+    // T-162: when the wild artifact carries a per-zone sweep plan, build the JSON structurally
+    // (variable species per zone). Older bundles (no wildPlan) fall back to the legacy whole-file
+    // species substitution so they still build identically.
     let wildEncountersFileContent = await fs.readFile((wild.file), 'utf8');
 
-    // Two-pass placeholder substitution (see substituteWildSpecies for why).
-    wildEncountersFileContent = substituteWildSpecies(wildEncountersFileContent, wildReplacementLog);
+    if (wildPlan && Object.keys(wildPlan).length > 0) {
+        const parsedWild = JSON.parse(wildEncountersFileContent);
+        const group = (parsedWild.wild_encounter_groups || []).find(g => g.label === 'gWildMonHeaders')
+            || (parsedWild.wild_encounter_groups || [])[0];
+        if (group) applyWildPlanToEncounters(group, wildPlan);
+        wildEncountersFileContent = JSON.stringify(parsedWild, null, 2) + '\n';
+    } else {
+        // Two-pass placeholder substitution (see substituteWildSpecies for why).
+        wildEncountersFileContent = substituteWildSpecies(wildEncountersFileContent, wildReplacementLog);
+    }
 
-    // Record the applied replacements for the documentation log.
+    // Record the applied replacements for the documentation log (representative pick per template).
     Object.entries(wildReplacementLog).forEach(([speciesId, replacementId]) => {
         replacementLog[speciesId] = replacementId;
     });
@@ -534,7 +602,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     const sophistication = createSophisticationScale(trainersData);
     const { resolveTrainerTeam } = createTeamResolver({
         pokemonList, moves, abilities, starters, staticRewards,
-        replacementLog, megaReplacementLog, baseRngSeed, palafinHero,
+        replacementLog, wildPlan, megaReplacementLog, baseRngSeed, palafinHero,
         sophistication,
     });
     trainersData.forEach(trainer => {
@@ -877,6 +945,8 @@ module.exports = writer;
 module.exports.docRunNamespace = docRunNamespace;
 module.exports.buildWildPlaceholderMap = buildWildPlaceholderMap;
 module.exports.substituteWildSpecies = substituteWildSpecies;
+module.exports.applyWildPlanToEncounters = applyWildPlanToEncounters;   // T-162
+module.exports.distributeSpeciesAcrossSlots = distributeSpeciesAcrossSlots; // T-162
 module.exports.buildTrainersResultsFromDocs = buildTrainersResultsFromDocs;
 module.exports.resolveMailMints = resolveMailMints;
 module.exports.applyDoubleBattleHeader = applyDoubleBattleHeader;   // T-087/ADR-014

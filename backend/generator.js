@@ -104,6 +104,9 @@ function toModuleConfig(cfg, seed) {
         // T-085/ADR-014 — battle format (singles | doubles | mixed) + mixed-only proportion / Run & Bun.
         battleFormat: cfg.battleFormat ?? 'singles',
         singlesPercent: cfg.singlesPercent ?? 60,
+        // T-162 — wild encounters: 'deterministic' (1 predictable species/zone) | 'classic' (several).
+        wildEncounterType: cfg.wildEncounterType ?? 'deterministic',
+        pokemonPerZone: cfg.pokemonPerZone ?? 5,
         leagueRunAndBun: cfg.leagueRunAndBun === true,
         mixedSequentialSplit: cfg.mixedSequentialSplit === true,   // T-146/ADR-018
         // T-052 — trainer-facing knobs (mirrors the browser worker's toModuleConfig).

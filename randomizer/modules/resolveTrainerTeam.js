@@ -124,6 +124,7 @@ function createTeamResolver(deps) {
         starters,
         staticRewards,
         replacementLog,
+        wildPlan = {},   // T-162 — templateSpecies → [all picks]; expands encounter-pool slots
         megaReplacementLog,
         baseRngSeed,
         palafinHero,
@@ -194,7 +195,7 @@ function createTeamResolver(deps) {
             sophistication: context.sophistication, seed: context.archetypeSeed,
         });
         const choosePokemonFromDefinition = createChooser(pokemonList, trainer, context, {
-            starters, staticRewards, replacementLog, megaReplacementLog, isSuperEffective, pickCandidate,
+            starters, staticRewards, replacementLog, wildPlan, megaReplacementLog, isSuperEffective, pickCandidate,
             model: archetypeModel, moves, // T-142 r2 — doubles support tier-flex
         });
         teamDefs.forEach((trainerMonDefinition, slotIndex) => {

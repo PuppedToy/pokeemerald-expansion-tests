@@ -43,6 +43,8 @@ const FULL_CONFIG = {
         { tier: 'RU', kind: 'line', lineLength: 'any' },
         { tier: 'NU', kind: 'solo', lineLength: 'any' },
     ],
+    wildEncounterType: 'classic',   // T-162
+    pokemonPerZone: 8,               // T-162
     gymsTypeChanged: 5,
     e4TypeChanged: 1,
     championTypeChangeChance: 0.25, // T-076
@@ -78,6 +80,8 @@ test('nested option objects round-trip deeply (no shallow loss)', () => {
     assert.deepEqual(round.evoLevels.baseRanges.OU, [40, 50]);
     assert.equal(round.extraStarters.length, 3);
     assert.equal(round.starterQuality, 'OU');
+    assert.equal(round.wildEncounterType, 'classic');   // T-162
+    assert.equal(round.pokemonPerZone, 8);               // T-162
     assert.deepEqual(round.aquaTypes, ['GRASS', 'FIRE', 'RANDOM', 'WATER', 'ICE']);
     assert.deepEqual(round.money, { normal: 500, boss: 4000, gym: 7500 });
     assert.equal(round.prices.tms.godlikeStatus, 20000);

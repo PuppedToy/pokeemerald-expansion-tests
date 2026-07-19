@@ -77,6 +77,9 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         starters = [null, null, null],
         staticRewards = {},
         replacementLog = {},
+        // T-162 — templateSpecies → [all picks for its slots]. Lets a TRAINER_POKE_ENCOUNTER slot draw
+        // from EVERY species that fills its zone/method (classic mode), not just the representative.
+        wildPlan = {},
         megaReplacementLog = {},
         isSuperEffective = () => false,
         // T-107 (107c) — how to pick among tier-valid, family-deduped candidates for a NON-pickBest
@@ -187,10 +190,20 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
                 pokemonLooseList = [...pokemonList];
             }
         } else if (trainerMonDefinition.special === TRAINER_POKE_ENCOUNTER) {
-            pokemonLooseList = trainerMonDefinition.encounterIds.map((encounterId) => {
+            // T-162 — expand each template to ALL the species that fill its zone/method (wildPlan). In
+            // deterministic mode that is one id (== replacementLog), so behaviour is unchanged; in
+            // classic mode a route slot samples one of the zone's N and the rival's pickBest pool sees
+            // every obtainable encounter. Fall back to the representative / raw id for templates with no
+            // plan entry (old bundles, unplaced entries).
+            const resolvedIds = trainerMonDefinition.encounterIds.flatMap((encounterId) => {
+                const picks = wildPlan[encounterId];
+                if (picks && picks.length) return picks;
                 const replacedId = replacementLog[encounterId];
-                return pokemonList.find(p => p.id === (replacedId || encounterId));
+                return [replacedId || encounterId];
             });
+            pokemonLooseList = resolvedIds
+                .map(id => pokemonList.find(p => p.id === id))
+                .filter(Boolean);
             isEncounterPool = true;
         } else if (trainerMonDefinition.special === TRAINER_POKE_STARTER_TREECKO) {
             pokemonStrictList = [pokemonList.find(p => p.id === starters[1])];
