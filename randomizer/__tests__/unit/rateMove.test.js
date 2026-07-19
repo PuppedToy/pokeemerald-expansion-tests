@@ -194,3 +194,30 @@ describe('rateMove — entry-hazard ordering (T-159)', () => {
         expect(SR - WEB).toBeLessThanOrEqual(1);
     });
 });
+
+// T-160 — always-crit moves (Wicked Blow, Surging Strikes, Storm Throw, Frost Breath, Zippy Zap,
+// Flower Trick) land a guaranteed critical hit = ×1.5 damage in this build, so their effective power
+// (and rating) is 1.5× a same-power non-crit move.
+describe('rateMove — always-crit moves get the guaranteed ×1.5 (T-160)', () => {
+    const B = { additionalEffects: [], accuracy: 100, priority: 0, makesContact: 'TRUE', strikeCount: '1' };
+    const wickedBlow  = { ...B, id: 'MOVE_WICKED_BLOW', power: 75, type: 'DARK', category: 'DAMAGE_CATEGORY_PHYSICAL', effect: 'EFFECT_HIT', alwaysCriticalHit: 'TRUE' };
+    const nonCritTwin = { ...B, id: 'MOVE_TWIN',        power: 75, type: 'DARK', category: 'DAMAGE_CATEGORY_PHYSICAL', effect: 'EFFECT_HIT' };
+
+    test('Wicked Blow rates 1.5× a same-power non-crit move plus a small bypass bonus', () => {
+        // ×1.5 = guaranteed crit damage; +0.5 = ignores the target's Def/SpDef boosts and screens.
+        expect(rateMove(wickedBlow)).toBeCloseTo(rateMove(nonCritTwin) * 1.5 + 0.5, 5);
+    });
+
+    test('the bypass bonus is exactly the +0.5 on top of the ×1.5 damage', () => {
+        expect(rateMove(wickedBlow) - rateMove(nonCritTwin) * 1.5).toBeCloseTo(0.5, 5);
+    });
+
+    test('a non-crit move is unaffected', () => {
+        expect(rateMove(nonCritTwin)).toBeCloseTo(10 * 75 / 140, 5);
+    });
+
+    test('Surging Strikes (3 hits + always crit) rates near the cap', () => {
+        const surging = { ...B, id: 'MOVE_SURGING_STRIKES', power: 25, type: 'WATER', category: 'DAMAGE_CATEGORY_PHYSICAL', effect: 'EFFECT_HIT', alwaysCriticalHit: 'TRUE', strikeCount: '3' };
+        expect(rateMove(surging)).toBeGreaterThan(10);
+    });
+});

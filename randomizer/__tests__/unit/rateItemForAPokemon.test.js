@@ -69,6 +69,20 @@ describe('rateItemForAPokemon — anti-support items scale up on offensive doubl
     });
 });
 
+// T-160 — a crit item (Razor Claw) is useless on a mon that already carries an always-crit move; the
+// zeroing must cover ALL six always-crit moves, incl. Flower Trick / Zippy Zap (previously missed).
+describe('rateItemForAPokemon — crit items are 0 on an always-crit set (T-160)', () => {
+    const flowerTrick = { ...rated(moves.MOVE_MEGA_PUNCH), id: 'MOVE_FLOWER_TRICK', alwaysCriticalHit: 'TRUE' };
+    // A high-crit move (Stone Edge id) pushes razorClawRating above its 6 floor, so Razor Claw would
+    // otherwise score > 0 — isolating the always-crit zeroing.
+    const highCrit = { ...rated(moves.MOVE_EARTHQUAKE), id: 'MOVE_STONE_EDGE' };
+    const withAlwaysCrit = [flowerTrick, highCrit, rated(moves.MOVE_CLOSE_COMBAT), rated(moves.MOVE_KNOCK_OFF)];
+
+    test('Razor Claw = 0 when the set has Flower Trick (always crit)', () => {
+        expect(rate('Razor Claw', MACHAMP, withAlwaysCrit)).toBe(0);
+    });
+});
+
 // T-159 — Weakness Policy raises Atk AND SpAtk after a super-effective hit, so it is dead weight on a
 // mon with no move that scales with those stats (a pure doubles/singles support, or a mon whose only
 // "damage" is fixed / reactive / target-stat based). It must score 0 there instead of on bulk alone.

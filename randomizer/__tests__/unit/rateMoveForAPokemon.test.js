@@ -566,6 +566,19 @@ describe('T-159 — at most one status-infliction move per set', () => {
     });
 });
 
+// T-160 — an always-crit move should out-rate a same-power non-crit move on the same attacker (this is
+// the Urshifu / Wicked Blow case), because the ×1.5 crit is baked into rateMove and flows through here.
+describe('T-160 — always-crit moves out-rate their non-crit twin', () => {
+    const B = { additionalEffects: [], accuracy: 100, priority: 0, makesContact: 'TRUE', strikeCount: '1' };
+    const wickedBlow  = { ...B, id: 'MOVE_WICKED_BLOW', power: 75, type: 'DARK', category: 'DAMAGE_CATEGORY_PHYSICAL', effect: 'EFFECT_HIT', alwaysCriticalHit: 'TRUE' };
+    const nonCritTwin = { ...B, id: 'MOVE_TWIN',        power: 75, type: 'DARK', category: 'DAMAGE_CATEGORY_PHYSICAL', effect: 'EFFECT_HIT' };
+
+    test('Wicked Blow beats a same-power non-crit Dark move on a physical attacker', () => {
+        const cm = { currentMoves: [], otherMoves: [] };
+        expect(rate(wickedBlow, MACHAMP, cm)).toBeGreaterThan(rate(nonCritTwin, MACHAMP, cm));
+    });
+});
+
 describe('T-013 — Belch needs a Berry', () => {
     const cm = { currentMoves: [r.MOVE_TACKLE], otherMoves: [] };
 
