@@ -424,8 +424,7 @@ MtChimney_EventScript_Tabitha_Defeat::
 	end
 
 MtChimney_EventScript_Grunt2::
-	trainerbattle_single TRAINER_GRUNT_MT_CHIMNEY_2, MtChimney_Text_Grunt2Intro, MtChimney_Text_Grunt2Defeat
-	msgbox MtChimney_Text_Grunt2PostBattle, MSGBOX_AUTOCLOSE
+	msgbox MtChimney_Text_Grunt2Intro, MSGBOX_NPC
 	end
 
 MtChimney_EventScript_BusyMagmaGrunt1::
@@ -529,8 +528,7 @@ MtChimney_EventScript_Shirley::
 	end
 
 MtChimney_EventScript_Grunt1::
-	trainerbattle_single TRAINER_GRUNT_MT_CHIMNEY_1, MtChimney_Text_Grunt1Intro, MtChimney_Text_Grunt1Defeat
-	msgbox MtChimney_Text_Grunt1PostBattle, MSGBOX_AUTOCLOSE
+	msgbox MtChimney_Text_Grunt1Intro, MSGBOX_NPC
 	end
 
 MtChimney_Text_MaxieIntro:

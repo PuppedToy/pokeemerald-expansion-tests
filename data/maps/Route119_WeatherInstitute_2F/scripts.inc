@@ -24,18 +24,15 @@ Route119_WeatherInstitute_2F_EventScript_SetScientistPosGameClear::
 	return
 
 Route119_WeatherInstitute_2F_EventScript_Grunt5::
-	trainerbattle_single TRAINER_GRUNT_WEATHER_INST_5, Route119_WeatherInstitute_2F_Text_Grunt5Intro, Route119_WeatherInstitute_2F_Text_Grunt5Defeat
-	msgbox Route119_WeatherInstitute_2F_Text_Grunt5PostBattle, MSGBOX_AUTOCLOSE
+	msgbox Route119_WeatherInstitute_2F_Text_Grunt5Intro, MSGBOX_NPC
 	end
 
 Route119_WeatherInstitute_2F_EventScript_Grunt2::
-	trainerbattle_single TRAINER_GRUNT_WEATHER_INST_2, Route119_WeatherInstitute_2F_Text_Grunt2Intro, Route119_WeatherInstitute_2F_Text_Grunt2Defeat
-	msgbox Route119_WeatherInstitute_2F_Text_Grunt2PostBattle, MSGBOX_AUTOCLOSE
+	msgbox Route119_WeatherInstitute_2F_Text_Grunt2Intro, MSGBOX_NPC
 	end
 
 Route119_WeatherInstitute_2F_EventScript_Grunt3::
-	trainerbattle_single TRAINER_GRUNT_WEATHER_INST_3, Route119_WeatherInstitute_2F_Text_Grunt3Intro, Route119_WeatherInstitute_2F_Text_Grunt3Defeat
-	msgbox Route119_WeatherInstitute_2F_Text_Grunt3PostBattle, MSGBOX_AUTOCLOSE
+	msgbox Route119_WeatherInstitute_2F_Text_Grunt3Intro, MSGBOX_NPC
 	end
 
 Route119_WeatherInstitute_2F_EventScript_Shelly::
@@ -188,7 +185,6 @@ Route119_WeatherInstitute_2F_Movement_ShovePlayerOutOfWay:
 	step_end
 
 Route119_WeatherInstitute_2F_Movement_PlayerReturnToPosition:
-	slide_down
 	walk_in_place_faster_left
 	step_end
 

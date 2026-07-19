@@ -20,14 +20,10 @@ Route128_EventScript_KyogreAwakenedScene::
 	closemessage
 	applymovement LOCALID_ROUTE128_ARCHIE, Route128_Movement_ArchieBackUp
 	waitmovement 0
-	msgbox Route128_Text_ArchieIOnlyWanted, MSGBOX_DEFAULT
-	closemessage
 	applymovement LOCALID_ROUTE128_MAXIE, Route128_Movement_MaxieApproachArchie
 	waitmovement 0
 	applymovement LOCALID_ROUTE128_ARCHIE, Common_Movement_WalkInPlaceFasterUp
 	waitmovement 0
-	msgbox Route128_Text_MaxieDoYouUnderstandNow, MSGBOX_DEFAULT
-	closemessage
 	applymovement LOCALID_ROUTE128_MAXIE, Route128_Movement_MaxieApproachPlayer
 	waitmovement 0
 	applymovement LOCALID_PLAYER, Common_Movement_WalkInPlaceFasterUp
@@ -38,8 +34,6 @@ Route128_EventScript_KyogreAwakenedScene::
 	applymovement LOCALID_PLAYER, Common_Movement_WalkInPlaceFasterLeft
 	applymovement LOCALID_ROUTE128_MAXIE, Route128_Movement_MaxieWalkLeft
 	waitmovement 0
-	msgbox Route128_Text_MaxieThisDefiesBelief, MSGBOX_DEFAULT
-	closemessage
 	delay 40
 	applymovement LOCALID_ROUTE128_MAXIE, Route128_Movement_MaxieExit
 	applymovement LOCALID_ROUTE128_ARCHIE, Route128_Movement_ArchieExit
@@ -55,12 +49,9 @@ Route128_EventScript_KyogreAwakenedScene::
 	waitmovement 0
 	applymovement LOCALID_PLAYER, Common_Movement_WalkInPlaceFasterRight
 	waitmovement 0
-	msgbox Route128_Text_StevenWhatIsHappening, MSGBOX_DEFAULT
-	closemessage
 	applymovement LOCALID_ROUTE128_STEVEN, Route128_Movement_StevenWalkUp
 	applymovement LOCALID_PLAYER, Common_Movement_WalkInPlaceFasterUp
 	waitmovement 0
-	msgbox Route128_Text_StevenWholeWorldWillDrown, MSGBOX_DEFAULT
 	applymovement LOCALID_ROUTE128_STEVEN, Common_Movement_WalkInPlaceFasterDown
 	waitmovement 0
 	msgbox Route128_Text_StevenImGoingToSootopolis, MSGBOX_DEFAULT
@@ -257,9 +248,8 @@ Route128_Text_MaxieDoYouUnderstandNow:
 	.string "ARCHIE?$"
 
 Route128_Text_MaxieResposibilityFallsToArchieAndMe:
-	.string "MAXIE: {PLAYER}, don't say anything.\p"
-	.string "I know that I have no right to be\n"
-	.string "critical of ARCHIE…$"
+	.string "MAXIE: {PLAYER}, say nothing.\n"
+	.string "The fault is ours to bear.$"
 
 Route128_Text_MaxieThisDefiesBelief:
 	.string "MAXIE: This defies belief…\p"

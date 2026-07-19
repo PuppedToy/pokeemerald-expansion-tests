@@ -79,7 +79,6 @@ FortreeCity_Gym_EventScript_GiveAerialAce2::
 FortreeCity_Gym_EventScript_GiveAerialAce::
 	giveitem ITEM_TM32
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
-	msgbox FortreeCity_Gym_Text_ExplainAerialAce, MSGBOX_DEFAULT
 	setflag FLAG_RECEIVED_TM_AERIAL_ACE
 	return
 

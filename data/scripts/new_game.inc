@@ -272,5 +272,15 @@ EventScript_ResetAllMapFlags::
 	setflag FLAG_HIDE_EVER_GRANDE_POKEMON_CENTER_1F_SCOTT
 	setflag FLAG_HIDE_SKY_PILLAR_WALLACE
 	setflag FLAG_HIDE_SKY_PILLAR_TOP_RAYQUAZA_STILL
+	@ T-164 emerald-cut: pre-complete/skip trimmed content from the start
+	setflag FLAG_RECEIVED_POTION_OLDALE                          @ item 3: skip Poké Mart shopping tutorial
+	setflag FLAG_HIDE_SLATEPORT_CITY_OCEANIC_MUSEUM_FAMILIAR_AQUA_GRUNT  @ item 9: remove museum item-giving grunt
+	setvar VAR_TRICK_HOUSE_LEVEL, 8                              @ item 10: Trick House already finished
+	settrainerflag TRAINER_VICKY                                @ item 13: Winstrate gauntlet already beaten
+	setflag FLAG_HIDE_ROUTE_111_VICTOR_WINSTRATE                @ item 13: hide the gauntlet's entry NPC
+	setvar VAR_MIRAGE_TOWER_STATE, 2                            @ item 15: Mirage Tower resolved (gone)
+	setflag FLAG_CHOSE_ROOT_FOSSIL                              @ item 15: fossil assumed obtained (no item given)
+	setflag FLAG_HIDE_MIRAGE_TOWER_ROOT_FOSSIL                  @ item 15: keep tower fossil state consistent
+	setflag FLAG_HIDE_MIRAGE_TOWER_CLAW_FOSSIL                  @ item 15
 	call EventScript_ResetAllBerries
 	end

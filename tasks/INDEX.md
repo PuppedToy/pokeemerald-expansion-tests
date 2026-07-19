@@ -167,3 +167,4 @@
 | [T-161](T-161-lavaridge-egg-woman-no-duplicate.md) | Stop the Lavaridge egg woman gifting a duplicate egg | done | 0.0.1 | 2026-07-19 |
 | [T-162](T-162-variable-wild-encounters.md) | Variable wild encounters per zone (deterministic vs classic) via sweep generation | in-progress | 0.6.0 | 2026-07-19 |
 | [T-163](T-163-docs-visibility-section.md) | Docs-visibility config section (per-element redaction of the generated docs) | in-progress | 0.6.0 | 2026-07-19 |
+| [T-164](T-164-emerald-cut-story-trims.md) | Emerald-cut story/text trims and content removals | in-progress | 0.6.0 | 2026-07-19 |
