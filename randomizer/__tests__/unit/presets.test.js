@@ -299,9 +299,9 @@ describe('getBossPreset – GRANITE_CAVE_STEVEN', () => {
 describe('T-150: bosses get Mega OU from the start; normal trainers keep UU→OU→Ubers', () => {
     const megaSlot = (team) => team.find((s) => s.isMega);
 
-    // The 3 splits that used bossMega(TIER_UU) (WATTSON, FLANNERY, MAXIE_CHIMNEY) now use OU:
+    // The 3 splits that used bossMega(TIER_UU) (WATTSON, FLANNERY, TABITHA_CHIMNEY) now use OU:
     // their boss mega window reaches OU and the base-form cap widens to UU (BASE_TIER_CAPS[OU]).
-    test.each(['WATTSON', 'FLANNERY', 'MAXIE_CHIMNEY'])('%s boss mega window reaches OU', (id) => {
+    test.each(['WATTSON', 'FLANNERY', 'TABITHA_CHIMNEY'])('%s boss mega window reaches OU', (id) => {
         const mega = megaSlot(getBossPreset(id, true));
         expect(mega.absoluteTier).toContain(TIER_OU);
         expect(mega.absoluteTier).not.toContain(TIER_UBERS); // Ubers still gated for these bosses
