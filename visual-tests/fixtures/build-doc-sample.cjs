@@ -66,8 +66,9 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
             `<script>const bossCaps = ${bossCapsText || '[]'};</script>`)
         .split('__FONT_PRESS_START_2P__').join(assets['fonts/PressStart2P.woff2'] || '')
         .split('__FONT_VT323__').join(assets['fonts/VT323.woff2'] || '')
+        // T-163 — inject the docs-visibility-redacted viewer copy (lock-step with app.js buildDocHtml).
         .replace('<script src="trainers.js"></script>',
-            `<script>const trainersData = ${JSON.stringify(rom.docs.trainersResultsSimplified)};</script>`)
+            `<script>const trainersData = ${JSON.stringify(rom.docs.viewerTrainers || rom.docs.trainersResultsSimplified)};</script>`)
         .replace('<script src="pokes.js"></script>',
             `<script>const pokes = ${JSON.stringify(slimPokes(pokedex.pokes))};</script>`)
         .replace('<script src="moves.js"></script>',
@@ -94,7 +95,10 @@ async function main() {
     const bossCapsText = fs.readFileSync(R('frontend/data/bosscaps.json'), 'utf8');
     const template = fs.readFileSync(R('frontend/template.html'), 'utf8');
 
-    const mcfg = { seed, difficulty: 7, rebalance: true, balanceChance: 0.2, allTms: false, showExactPositions: false };
+    // T-163 — optional docs-visibility config via env (JSON) so a redacted fixture can be built to
+    // verify the viewer redaction, e.g. DV_JSON='{"showBosses":false,"showIVs":true}'. Default: none.
+    const dv = process.env.DV_JSON ? JSON.parse(process.env.DV_JSON) : null;
+    const mcfg = { seed, difficulty: 7, rebalance: true, balanceChance: 0.2, allTms: false, showExactPositions: false, docsVisibility: dv || undefined };
 
     const t0 = Date.now();
     try {
@@ -104,7 +108,7 @@ async function main() {
         const starters = runStartersModule(pokedex.pokes);
         const wild = runWildModule(pokedex.pokes, starters, wildData);
         rng.seed(seed);
-        const docs = await writerDocs(pokedex, trainers, starters, wild, seed, { showExactPositions: false });
+        const docs = await writerDocs(pokedex, trainers, starters, wild, seed, { showExactPositions: dv?.showExactPositions === true, docsVisibility: dv || undefined });
         const rom = { romIndex: 0, artifacts: { pokedex, trainers, starters, wild }, docs };
 
         const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText);

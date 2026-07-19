@@ -39,6 +39,12 @@ describeSlow('reverse-order continuity (T-106)', () => {
         const baseData = JSON.parse(fs.readFileSync(BASE_DATA_PATH, 'utf-8'));
         const bundle = await runGeneration(cfg, mcfg, 'continuity-test', { baseData });
         docs = bundle.roms[0].docs.trainersResultsSimplified;
+        // T-163 regression guard: trainersResultsSimplified is ROM-authoritative (writer.js builds the
+        // ROM's parties from it verbatim), so it must stay FULL even when a viewer copy is redacted —
+        // e.g. IVs must survive here (the viewer's showIVs defaults off). A redacted viewerTrainers
+        // exists alongside it. If these ever merge, the ROM would lose Pokémon/moves/items.
+        expect(Object.values(docs).some(t => (t.team || []).some(m => m.ivs))).toBe(true);
+        expect(bundle.roms[0].docs.viewerTrainers).toBeDefined();
         const bySpecies = Object.fromEntries(baseData.allPokes.map(p => [p.id, p]));
         // T-128 — the continuity check is about the same evolutionary LINE, not the dedup family group.
         // A devolved echo can legitimately cross a regional-form boundary when the regional final-evo

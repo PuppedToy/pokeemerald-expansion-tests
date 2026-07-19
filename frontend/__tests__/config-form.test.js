@@ -45,12 +45,16 @@ test('T-055: a "reset to defaults" control exists and resets from the canonical 
   assert.match(src, /#btn-reset-config'\)\?\.addEventListener/, 'the reset button is wired');
 });
 
-test('seed + show-exact-positions moved into the General category', () => {
+test('seed stays in General; show-exact-positions moved to Docs visibility (T-163)', () => {
   const generalIdx = src.indexOf('data-cat="general"');
+  const dvIdx = src.indexOf('data-cat="docs-visibility"');
   assert.ok(generalIdx > 0, 'General category must exist');
-  const tail = src.slice(generalIdx);
-  assert.match(tail, /id="seed"/, 'seed input must live in the General category');
-  assert.match(tail, /id="show-exact-positions"/, 'show-exact-positions must live in the General category');
+  assert.ok(dvIdx > 0 && dvIdx < generalIdx, 'Docs visibility category must exist before General');
+  const generalTail = src.slice(generalIdx);
+  assert.match(generalTail, /id="seed"/, 'seed input must live in the General category');
+  assert.ok(!generalTail.includes('id="show-exact-positions"'), 'show-exact-positions must no longer be in General');
+  const dvBlock = src.slice(dvIdx, generalIdx);
+  assert.match(dvBlock, /id="show-exact-positions"/, 'show-exact-positions now lives in Docs visibility');
 });
 
 test('ordered insertion anchors exist for the categories added in later steps', () => {
@@ -316,4 +320,54 @@ test('T-162: wild-encounter keys round-trip through DEFAULTS/getConfig/setConfig
   }
   assert.match(src, /wildEncounterType:\s*'deterministic'/, 'default deterministic');
   assert.match(src, /pokemonPerZone:\s*5/, 'default 5');
+});
+
+// ── T-163 — Docs visibility (per-element redaction of the generated docs) ─────────
+
+test('T-163: Docs visibility category exists', () => {
+  assert.match(src, /data-cat="docs-visibility"/, 'Docs visibility category must exist');
+});
+
+test('T-163: all trainer-visibility toggles present (incl. a 1–5 hide-count input)', () => {
+  for (const id of ['show-trainers', 'show-bosses', 'show-non-bosses', 'show-held-items',
+    'show-natures', 'show-moves', 'show-ability', 'show-rewards', 'show-ivs',
+    'show-exact-positions', 'hide-pokemon', 'hide-pokemon-count']) {
+    assert.match(src, new RegExp(`id="${id}"`), `missing toggle #${id}`);
+  }
+  assert.match(src, /id="hide-pokemon-count"[^>]*min="1"[^>]*max="5"/, 'hide-pokemon-count input 1–5');
+});
+
+test('T-163: all wild-visibility toggles present', () => {
+  for (const id of ['show-wild-encounters', 'show-legendary-static', 'show-non-legendary-static',
+    'show-super-rod', 'show-dive', 'show-surf', 'show-good-rod', 'show-old-rod', 'show-grass']) {
+    assert.match(src, new RegExp(`id="${id}"`), `missing toggle #${id}`);
+  }
+});
+
+test('T-163: DEFAULTS carry a DOCS_VISIBILITY_DEFAULT with the documented defaults', () => {
+  assert.match(src, /docsVisibility:\s*DOCS_VISIBILITY_DEFAULT/, 'DEFAULTS references DOCS_VISIBILITY_DEFAULT');
+  const i = src.indexOf('DOCS_VISIBILITY_DEFAULT =');
+  assert.ok(i > 0, 'the defaults constant must exist');
+  const dvDef = src.slice(i, i + 900);
+  for (const on of ['showTrainers', 'showBosses', 'showNonBosses', 'showHeldItems', 'showNatures',
+    'showMoves', 'showAbility', 'showRewards', 'showWildEncounters', 'showLegendaryStatic',
+    'showNonLegendaryStatic', 'showSuperRod', 'showDive', 'showSurf', 'showGoodRod', 'showOldRod', 'showGrass']) {
+    assert.match(dvDef, new RegExp(`${on}:\\s*true`), `${on} must default true`);
+  }
+  assert.match(dvDef, /showIVs:\s*false/, 'showIVs defaults false');
+  assert.match(dvDef, /showExactPositions:\s*false/, 'showExactPositions defaults false');
+  assert.match(dvDef, /hidePokemon:\s*false/, 'hidePokemon defaults false');
+  assert.match(dvDef, /hidePokemonCount:\s*1/, 'hidePokemonCount defaults 1');
+});
+
+test('T-163: docsVisibility round-trips via _read/_setDocsVisibility, migrates the legacy key, and forwards to both engines', () => {
+  const workerSrc = fs.readFileSync(path.join(FE, 'js', 'randomizer-worker.cjs'), 'utf8');
+  const backendSrc = fs.readFileSync(path.join(FE, '..', 'backend', 'generator.js'), 'utf8');
+  assert.match(src, /_readDocsVisibility\s*\(\)\s*\{/, 'getConfig reads via _readDocsVisibility');
+  assert.match(src, /_setDocsVisibility\s*\(/, 'setConfig restores via _setDocsVisibility');
+  assert.match(src, /docsVisibility\s*=\s*this\._readDocsVisibility\(\)/, 'docsVisibility is read into the config');
+  // Legacy top-level showExactPositions still honoured when a saved config predates the section.
+  assert.match(src, /docsVisibility\?\.showExactPositions\s*\?\?\s*cfg\.showExactPositions/, 'legacy showExactPositions migrates');
+  assert.match(workerSrc, /docsVisibility/, 'browser worker toModuleConfig must forward docsVisibility');
+  assert.match(backendSrc, /docsVisibility/, 'backend generator toModuleConfig must forward docsVisibility');
 });

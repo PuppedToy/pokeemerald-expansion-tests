@@ -209,8 +209,10 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
             `<script>const bossCaps = ${bossCapsText || '[]'};</script>`)
         .split('__FONT_PRESS_START_2P__').join(assets['fonts/PressStart2P.woff2'] || '')
         .split('__FONT_VT323__').join(assets['fonts/VT323.woff2'] || '')
+        // T-163 — inject the docs-visibility-redacted viewer copy (falls back to the full teams for
+        // older bundles that predate viewerTrainers). The ROM keeps the full trainersResultsSimplified.
         .replace('<script src="trainers.js"></script>',
-            `<script>const trainersData = ${JSON.stringify(rom.docs.trainersResultsSimplified)};</script>`)
+            `<script>const trainersData = ${JSON.stringify(rom.docs.viewerTrainers || rom.docs.trainersResultsSimplified)};</script>`)
         .replace('<script src="pokes.js"></script>',
             `<script>const pokes = ${JSON.stringify(slimPokes(pokedex.pokes))};</script>`)
         .replace('<script src="moves.js"></script>',

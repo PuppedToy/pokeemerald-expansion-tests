@@ -108,7 +108,9 @@ function resolveContext(hooks) {
 async function computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, diag, audit) {
     rng.seed(romSeed);
     return writerDocs(pokedex, trainers, starters, wild, trainingBaseSeed, {
-        showExactPositions: mcfg.showExactPositions,
+        // T-163 — full docs-visibility object (writerDocs normalizes + derives showExactPositions).
+        docsVisibility: mcfg.docsVisibility,
+        showExactPositions: mcfg.showExactPositions,   // back-compat shim for callers that still set it
         diag,
         audit,
     });

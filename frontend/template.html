@@ -424,6 +424,10 @@
       font-size:19px; line-height:1.1; margin-bottom:6px; }
     .enc-type-label .ico { height:0.9em; }
     .nz-poke-name { font-size:22px; }
+    /* T-163 — placeholder tile for an encounter method whose species the docs config hides. */
+    .wild-hidden-slot { text-align:center; padding:6px; border-radius:10px;
+      background:rgba(255,255,255,0.02); display:flex; flex-direction:column; justify-content:center; }
+    .nz-hidden-note { margin-top:8px; font-size:16px; font-weight:600; color:var(--obs-text-dim); font-style:italic; }
 
     /* T-038/T-039: encounter slots are a fixed-size grid — columns = ceil(N/3) (set inline per
        location) so the matrix stays ≤3 rows, filled left-to-right, top-to-bottom (reading order).
@@ -712,9 +716,14 @@
     .roster-meta { font-size:16px; color:var(--obs-text-dim); line-height:1.4; margin-top:4px; }
     /* Ability / nature / item each on its own line (T-045). */
     .roster-meta .rm-ability, .roster-meta .rm-nature, .roster-meta .rm-item { display:block; }
+    .roster-meta .rm-ability, .roster-meta .rm-nature, .roster-meta .rm-item, .roster-meta .rm-ivs { display:block; }
     .roster-meta .rm-ability { color:#D1F2FF; }
     .roster-meta .rm-nature  { color:#A5D9B8; }
     .roster-meta .rm-item    { color:#FFD580; }
+    .roster-meta .rm-ivs     { color:#C9B8FF; letter-spacing:0.3px; }   /* T-163 — IVs (opt-in) */
+    /* T-163 — "(and X other Pokémon)" box shown when the team is partially hidden. */
+    .roster-hidden-box { border:2px dashed var(--obs-line); box-shadow:var(--obs-shadow-sm);
+      padding:12px; text-align:center; font-weight:600; color:var(--obs-text-dim); align-self:center; }
     /* 2×2 grid; chips stretch to a uniform height. As a flex child (T-074) it sits beside the
        info on wide cards and wraps to its own full-width line below on narrow cards. */
     .roster-moves { flex:1 1 240px; min-width:0;
@@ -1619,8 +1628,13 @@
         const itemHTML = member.item
           ? `<span class="rm-item"${itemTip ? ` data-tooltip="${itemAttrEsc(itemTip)}" style="cursor:help"` : ''}>${getIcon('pokeball','🎒')} ${member.item}</span>`
           : '';
-        // Ability / nature / item stack on their own lines (the spans are display:block). T-045.
-        const metaLine = [abilityHTML, natureHTML, itemHTML].filter(Boolean).join('');
+        // T-163 — IVs render only when "Show IVs" was on (the pipeline strips them otherwise).
+        // ivs is an object { hp, atk, def, spa, spd, spe } (randomizer/modules/resolveTrainerTeam.js).
+        const ivsHTML = (member.ivs && typeof member.ivs === 'object')
+          ? `<span class="rm-ivs" data-tooltip="Individual Values — HP / Atk / Def / SpA / SpD / Spe">IVs ${['hp','atk','def','spa','spd','spe'].map(k => member.ivs[k]).join('/')}</span>`
+          : '';
+        // Ability / nature / item / IVs stack on their own lines (the spans are display:block). T-045.
+        const metaLine = [abilityHTML, natureHTML, itemHTML, ivsHTML].filter(Boolean).join('');
         const hasMoves = member.moves && member.moves.length > 0;
         const movesHTML = hasMoves
           ? `<div class="move-list roster-moves">
@@ -1647,6 +1661,11 @@
           </div>
         `;
       }).join('');
+
+      // T-163 — "Hide some Pokémon": the pipeline truncated the team and left a count; show a box.
+      const hiddenBoxHTML = (trainer.hiddenCount > 0)
+        ? `<div class="roster-hidden-box">${getIcon('pokeball','❔')} (and ${trainer.hiddenCount} other Pokémon)</div>`
+        : '';
 
       let rewards = '';
       if (trainer.reward && trainer.reward.length > 0) {
@@ -1687,6 +1706,7 @@
           </div>
           <div class="roster-team">
             ${teamHTML}
+            ${hiddenBoxHTML}
           </div>
         </div>
       `;
@@ -1702,6 +1722,13 @@
         }
       });
     });
+
+    // T-163 — "Show trainers" off leaves trainersData empty; remove the tab + section entirely.
+    if (!trainersData || Object.keys(trainersData).length === 0) {
+      document.querySelectorAll('[data-target="trainers"]').forEach(el => { el.style.display = 'none'; });
+      const section = document.getElementById('trainers');
+      if (section) section.style.display = 'none';
+    }
   </script>
   <!-- script to handle routes -->
   <script>
@@ -1779,7 +1806,30 @@
       // Reading order (T-039): fill left-to-right then top-to-bottom. Fix the column count to
       // ceil(N/3) so the matrix stays ≤3 rows, and let the default row-major grid flow do the rest.
       const presentTypes = encounterTypes.filter(type => route[type]);
-      const encCols = Math.max(1, Math.ceil(presentTypes.length / 3));
+
+      // T-163 — placeholder tiles for methods whose species the docs config hides. The species key
+      // was deleted by the pipeline (redactWildPokes), so it never appears above; the descriptor lives
+      // in route.hiddenMethods ({ [method]: { kind, count } }). 'count' → one "N encounters" tile;
+      // 'superNumbered' → one numbered tile per shared super-rod slot. These carry no species, so they
+      // are not clickable and not tracked by the Nuzlocke/Mail engines (distinct class).
+      const hiddenTiles = [];
+      if (route.hiddenMethods) {
+        Object.entries(route.hiddenMethods).forEach(([method, info]) => {
+          const encIcon = getEncounterIcon(method, {});
+          const labelColor = getRouteTypeColor(method);
+          const typeLabel = `<div class="enc-type-label" style="color:${labelColor}">${encIcon}<span>${getRouteTypeName(method)}</span></div>`;
+          const notes = info.kind === 'superNumbered'
+            ? Array.from({ length: Math.max(1, info.count) }, (_, i) => `Encounter ${i + 1}`)
+            : [`${info.count} encounter${info.count === 1 ? '' : 's'}`];
+          notes.forEach(note => hiddenTiles.push(`
+            <div class="wild-hidden-slot">
+              ${typeLabel}
+              <div class="nz-hidden-note">${note}</div>
+            </div>`));
+        });
+      }
+
+      const encCols = Math.max(1, Math.ceil((presentTypes.length + hiddenTiles.length) / 3));
 
       const encountersHTML = presentTypes
         .map(type => {
@@ -1826,7 +1876,7 @@
             </div>
           `;
         })
-        .join('');
+        .join('') + hiddenTiles.join('');
 
       card.innerHTML = `
         <div class="meta" style="justify-content:center;">

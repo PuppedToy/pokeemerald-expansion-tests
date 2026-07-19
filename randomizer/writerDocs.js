@@ -14,6 +14,7 @@ const { noopTeamAudit } = require('./teamAudit');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 const { typeMainColors } = require('./trainerColors');
 const { noopDiagnostics } = require('./diagnostics');
+const { normalizeDocsVisibility, redactWildPokes } = require('./docsVisibility');
 
 const CONTEXTUAL_TIER_SEQ = ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU', 'UBERS', 'LEGEND', 'AG'];
 
@@ -70,14 +71,31 @@ function djb2Hash(str) {
 // consumes this team verbatim. `showExactPositions` only affects the DOCS DISPLAY, not the in-game order:
 //   - ON  → docs show the in-game order (no separate displayTeam; viewer uses `team`).
 //   - OFF → docs show the pre-shuffle (default) order, carried in `displayTeam`.
-function buildTrainersResultsSimplified(trainersResults, { showExactPositions, baseRngSeed }) {
-    const simplify = (team) => team.map(teamEntry => ({
-        ...teamEntry,
-        pokemon: teamEntry.pokemon.id,
-    }));
+function buildTrainersResultsSimplified(trainersResults, { showExactPositions, baseRngSeed, docsVisibility } = {}) {
+    // T-163 — docs-visibility redaction (baked into the docs bundle). When no docsVisibility is given
+    // (older callers / order-only tests) nothing is stripped — back-compat.
+    const dv = docsVisibility || null;
+    const simplify = (team) => team.map(teamEntry => {
+        const out = { ...teamEntry, pokemon: teamEntry.pokemon.id };
+        if (dv) {
+            if (!dv.showHeldItems) delete out.item;
+            if (!dv.showNatures) delete out.nature;
+            if (!dv.showMoves) delete out.moves;
+            if (!dv.showAbility) delete out.ability;
+            if (!dv.showIVs) delete out.ivs;
+        }
+        return out;
+    });
 
     const result = {};
     Object.entries(trainersResults).forEach(([trainerId, trainerData]) => {
+        // Trainer-level filtering: master switch + boss / non-boss visibility.
+        if (dv) {
+            if (!dv.showTrainers) return;
+            if (trainerData.isBoss && !dv.showBosses) return;
+            if (!trainerData.isBoss && !dv.showNonBosses) return;
+        }
+
         const preShuffleTeam = trainerData.team;
 
         // Every trainer's in-game party order is a per-trainer-seeded shuffle + the lead-order resolution
@@ -87,10 +105,29 @@ function buildTrainersResultsSimplified(trainersResults, { showExactPositions, b
         let ingameTeam = [...preShuffleTeam].sort(() => rng.random() - 0.5);
         ingameTeam = applyLeadLogic(ingameTeam, () => rng.random());
 
-        const entry = { ...trainerData, team: simplify(ingameTeam) };
-        if (!showExactPositions) {
-            entry.displayTeam = simplify(preShuffleTeam);
+        // T-163 — "hide some Pokémon": collapse the last N of the DISPLAYED order into a box. Remove the
+        // same member objects (by reference) from BOTH team copies so the hidden set never leaks via the
+        // other array; capped at size-1 so at least one Pokémon always shows.
+        let displayPre = preShuffleTeam;
+        let displayIn = ingameTeam;
+        let hiddenCount = 0;
+        if (dv && dv.hidePokemon) {
+            const source = showExactPositions ? ingameTeam : preShuffleTeam;
+            const n = Math.min(dv.hidePokemonCount || 0, Math.max(0, source.length - 1));
+            if (n > 0) {
+                const hidden = new Set(source.slice(source.length - n));
+                displayPre = preShuffleTeam.filter(m => !hidden.has(m));
+                displayIn = ingameTeam.filter(m => !hidden.has(m));
+                hiddenCount = n;
+            }
         }
+
+        const entry = { ...trainerData, team: simplify(displayIn) };
+        if (!showExactPositions) {
+            entry.displayTeam = simplify(displayPre);
+        }
+        if (dv && !dv.showRewards) entry.reward = [];
+        if (hiddenCount > 0) entry.hiddenCount = hiddenCount;
         result[trainerId] = entry;
     });
     return result;
@@ -99,7 +136,10 @@ function buildTrainersResultsSimplified(trainersResults, { showExactPositions, b
 // Pure docs computation — same trainer resolution as writer.js but no file I/O.
 // baseRngSeed: when non-null, per-slot RNG reseeding is applied (shared trainer determinism).
 async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, baseRngSeed = null, options = {}) {
-    const showExactPositions = options.showExactPositions === true;
+    // T-163 — normalize the docs-visibility config once (fills defaults, migrates the legacy bare
+    // showExactPositions option). Every redaction below derives from this object.
+    const docsVisibility = normalizeDocsVisibility(options.docsVisibility, options.showExactPositions);
+    const showExactPositions = docsVisibility.showExactPositions;
     // T-075 — structured diagnostics sink. Defaults to a no-op so callers that don't wire
     // one (the ROM-write path, older tests) behave exactly as before.
     const diag = options.diag || noopDiagnostics();
@@ -271,17 +311,32 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
 
     // Build trainersResultsSimplified (pokemon object → pokemon.id). The in-game ordering
     // layer is always applied here; showExactPositions only controls the docs display.
+    // ROM-authoritative teams: writer.js (bundle/ROM mode) builds the ROM's trainer parties VERBATIM
+    // from this object (buildTrainersResultsFromDocs), so it must NEVER be redacted — doing so would
+    // strip Pokémon/items/moves from the actual game. Redaction lives only in the viewer copy below.
     const trainersResultsSimplified = buildTrainersResultsSimplified(displayOrdered, {
         showExactPositions,
         baseRngSeed,
     });
+    // T-163 — viewer copy: same deterministic order, with the docs-visibility redaction applied
+    // (member-field stripping, boss/non-boss filter, reward clearing, "hide some Pokémon"). The
+    // browser doc-builder and out.html inject THIS; the ROM keeps trainersResultsSimplified.
+    const viewerTrainers = buildTrainersResultsSimplified(displayOrdered, {
+        showExactPositions,
+        baseRngSeed,
+        docsVisibility,
+    });
 
-    // Build wildPokes map (same as writer.js lines 1285-1361)
+    // Build wildPokes map (same as writer.js lines 1285-1361). __methodTemplates keeps each method's
+    // authored template species so the T-163 redactor can count the sweep picks (deterministic ⇒ 1)
+    // when a method is hidden; it is stripped from the shipped output by redactWildPokes.
     const maps = wild.maps.map(({ id, ...keys }) => {
         const result = { id };
+        const templates = {};
         Object.entries(keys).forEach(([key, value]) => {
-            if (value !== undefined) result[key] = replacementLog[value];
+            if (value !== undefined) { result[key] = replacementLog[value]; templates[key] = value; }
         });
+        result.__methodTemplates = templates;
         return result;
     });
 
@@ -335,9 +390,16 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
         else maps.push(entry);
     }
 
+    // T-163 — redact the assembled encounter maps per the docs-visibility config (drops hidden
+    // statics/rewards/zones, replaces hidden per-method species with count markers) and strip the
+    // internal __methodTemplates aid. Default config = every entry kept (only markers/omissions change).
+    const wildPokes = redactWildPokes(maps, docsVisibility, { wildPlan });
+
     // T-044 — type main colours (move chips) for the browser doc-builder to inject.
     // SSOT is trainerColors.js; both runtimes derive the same values.
-    return { trainersResultsSimplified, wildPokes: maps, typeColors: typeMainColors() };
+    // T-163 — `wildPokes` is docs-only (the ROM's wild data comes from applyWildPlanToEncounters), so it
+    // is returned already-redacted; `viewerTrainers` is the redacted trainer copy the viewer injects.
+    return { trainersResultsSimplified, viewerTrainers, wildPokes, typeColors: typeMainColors() };
 }
 
 module.exports = { writerDocs, filterByNearestContextualTier, buildTrainersResultsSimplified };

@@ -85,7 +85,9 @@ Super rod and static/legendary encounters are unchanged in both modes.
 
 - **Docs viewer shows the representative pick.** `replacementLog[template]` = the *first* pick, so the
   analysis viewer (`rom-*.html`) shows one species per zone even in classic. The ROM itself carries all
-  N. Surfacing the full list in the viewer is a follow-up.
+  N. Surfacing the full list in the viewer is a follow-up. (T-163's docs-visibility "hide method"
+  placeholders do compute the zone's *distinct-pick count* from `wildPlan` — e.g. "3 encounters" — so
+  that count is already available should a future task surface the full list.)
 - **5 dead wild.js entries.** `Route104 surf` (POOCHYENA) and `Victory Road B1F` old/good/surf/super
   (MOLTRES/ZAPDOS/ARTICUNO/LUGIA) reference template species that don't appear anywhere in
   `wild_encounters.json`, so they are never placed — the same as the legacy substitution (it found no

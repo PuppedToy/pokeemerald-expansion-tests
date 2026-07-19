@@ -51,7 +51,15 @@ const FULL_CONFIG = {
     aquaTypes: ['GRASS', 'FIRE', 'RANDOM', 'WATER', 'ICE'],
     magmaTypes: ['STEEL', 'DRAGON', 'ROCK', 'GRASS', 'RANDOM'],
     seed: 123456,
-    showExactPositions: true,
+    docsVisibility: {   // T-163
+        showTrainers: false, showBosses: false, showNonBosses: true,
+        showHeldItems: false, showNatures: false, showMoves: false, showAbility: false,
+        showRewards: false, showIVs: true, showExactPositions: true,
+        hidePokemon: true, hidePokemonCount: 3,
+        showWildEncounters: false, showLegendaryStatic: false, showNonLegendaryStatic: false,
+        showSuperRod: false, showDive: false, showSurf: false,
+        showGoodRod: false, showOldRod: false, showGrass: false,
+    },
     nicknames: {
         enabled: true, includeStarter: true, autoLocation: true, lockGenderPerRoute: true,
         sameNamesAcrossRuns: true, shareAcrossSoullink: false, differentPerGender: true,
@@ -87,4 +95,9 @@ test('nested option objects round-trip deeply (no shallow loss)', () => {
     assert.equal(round.prices.tms.godlikeStatus, 20000);
     assert.deepEqual(round.prices.balls, { ultra: 50, quick: 60, timer: 70 });
     assert.equal(round.prices.mints.ADAMANT, 333);
+    // T-163 — docs-visibility nested object survives deeply.
+    assert.equal(round.docsVisibility.showTrainers, false);
+    assert.equal(round.docsVisibility.showIVs, true);
+    assert.equal(round.docsVisibility.hidePokemonCount, 3);
+    assert.equal(round.docsVisibility.showSuperRod, false);
 });

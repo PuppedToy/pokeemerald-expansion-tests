@@ -101,8 +101,28 @@ describe('degraded-team diagnostics (T-075)', () => {
 
         const docs = await writerDocs(pokedex, trainers, starters, wild, null, { diag });
 
-        expect(Object.keys(docs).sort()).toEqual(['trainersResultsSimplified', 'typeColors', 'wildPokes']);
+        expect(Object.keys(docs).sort()).toEqual(['trainersResultsSimplified', 'typeColors', 'viewerTrainers', 'wildPokes']);
         expect(docs).not.toHaveProperty('diag');
         expect(docs).not.toHaveProperty('diagnostics');
+    });
+
+    // T-163 — trainersResultsSimplified is ROM-authoritative (writer.js builds the ROM's parties from
+    // it verbatim), so it must NEVER be redacted; the docs-visibility redaction lives only in the
+    // separate viewerTrainers copy. Guards against ever merging the two (which would corrupt the ROM).
+    test('T-163 — redaction hits viewerTrainers only; trainersResultsSimplified stays full (ROM-safe)', async () => {
+        const boss  = { id: 'TRAINER_BOSS',  label: 'Boss',  class: 'Leader', level: 30, isBoss: true,  team: [], reward: [], bag: [], colors: {} };
+        const grunt = { id: 'TRAINER_GRUNT', label: 'Grunt', class: 'X',      level: 10, isBoss: false, team: [], reward: [], bag: [], colors: {} };
+        const base = artifacts(boss);
+        base.trainers.trainersData = [boss, grunt];
+        const diag = createDiagnostics({ mirror: false });
+
+        const docs = await writerDocs(base.pokedex, base.trainers, base.starters, base.wild, null, {
+            diag, docsVisibility: { showBosses: false },
+        });
+
+        // ROM-authoritative object keeps every trainer regardless of docs visibility.
+        expect(Object.keys(docs.trainersResultsSimplified).sort()).toEqual(['TRAINER_BOSS', 'TRAINER_GRUNT']);
+        // Viewer copy drops the boss per showBosses:false.
+        expect(Object.keys(docs.viewerTrainers)).toEqual(['TRAINER_GRUNT']);
     });
 });
