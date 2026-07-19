@@ -39,13 +39,21 @@ const WILD_METHOD_TOGGLE = {
     old: 'showOldRod', good: 'showGoodRod', super: 'showSuperRod',
 };
 
-// Distinct-species count for a zone's method, from the sweep plan (deterministic ⇒ 1). Used to label
-// a hidden method ("N encounters" / "Super-Rod encounter 1…N") without revealing the species.
-function methodDistinctCount(entry, method, wildPlan) {
+// The distinct species a zone's method can yield, from the sweep plan (deterministic ⇒ 1 element).
+// Order-preserving with the representative (route[method] = replacementLog[template] = first pick)
+// first, so methodSpecies[0] always equals the plain method slot. Falls back to the single resolved
+// species when there is no plan entry (older bundles / statics).
+function methodDistinctList(entry, method, wildPlan) {
     const template = entry.__methodTemplates && entry.__methodTemplates[method];
     const picks = template && wildPlan ? wildPlan[template] : null;
-    if (Array.isArray(picks) && picks.length) return new Set(picks).size;
-    return 1;
+    if (Array.isArray(picks) && picks.length) return [...new Set(picks)];
+    return entry[method] !== undefined ? [entry[method]] : [];
+}
+
+// Distinct count for labelling a hidden method ("N encounters" / "Super-Rod encounter 1…N").
+function methodDistinctCount(entry, method, wildPlan) {
+    const list = methodDistinctList(entry, method, wildPlan);
+    return list.length || 1;
 }
 
 // Redact the assembled wildPokes maps array (see writerDocs.js) per the docs-visibility config.
@@ -71,19 +79,31 @@ function redactWildPokes(maps, dv, { wildPlan } = {}) {
         // Statics: omit when their toggle is off (drops the card AND the Mail entry).
         if (entry.legendaryEncounter) { if (dv.showLegendaryStatic) out.push(stripTemplates(entry)); continue; }
         if (entry.staticEncounter) { if (dv.showNonLegendaryStatic) out.push(stripTemplates(entry)); continue; }
-        // Regular wild zone: drop each hidden method's species, recording a placeholder descriptor.
+        // Regular wild zone: hide-off methods become placeholder descriptors; visible methods that
+        // hold several species (Classic mode, B-041) surface the FULL distinct list under
+        // `methodSpecies` so the viewer can show every one (route[method] stays the representative).
         const redacted = { ...entry };
         let hiddenMethods = null;
+        let methodSpecies = null;
         for (const [method, toggle] of Object.entries(WILD_METHOD_TOGGLE)) {
-            if (redacted[method] === undefined || dv[toggle]) continue;
-            hiddenMethods = hiddenMethods || {};
-            hiddenMethods[method] = {
-                kind: method === 'super' ? 'superNumbered' : 'count',
-                count: methodDistinctCount(entry, method, wildPlan),
-            };
-            delete redacted[method];
+            if (redacted[method] === undefined) continue;
+            if (!dv[toggle]) {
+                hiddenMethods = hiddenMethods || {};
+                hiddenMethods[method] = {
+                    kind: method === 'super' ? 'superNumbered' : 'count',
+                    count: methodDistinctCount(entry, method, wildPlan),
+                };
+                delete redacted[method];
+                continue;
+            }
+            const list = methodDistinctList(entry, method, wildPlan);
+            if (list.length > 1) {
+                methodSpecies = methodSpecies || {};
+                methodSpecies[method] = list;
+            }
         }
         if (hiddenMethods) redacted.hiddenMethods = hiddenMethods;
+        if (methodSpecies) redacted.methodSpecies = methodSpecies;
         out.push(stripTemplates(redacted));
     }
     return out;

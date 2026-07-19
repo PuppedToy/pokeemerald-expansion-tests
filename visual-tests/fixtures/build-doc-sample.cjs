@@ -98,6 +98,8 @@ async function main() {
     // T-163 — optional docs-visibility config via env (JSON) so a redacted fixture can be built to
     // verify the viewer redaction, e.g. DV_JSON='{"showBosses":false,"showIVs":true}'. Default: none.
     const dv = process.env.DV_JSON ? JSON.parse(process.env.DV_JSON) : null;
+    // B-041 — optional wild-encounter module config via env, e.g. WILD_JSON='{"wildEncounterType":"classic","pokemonPerZone":5}'.
+    const wildCfg = process.env.WILD_JSON ? JSON.parse(process.env.WILD_JSON) : {};
     const mcfg = { seed, difficulty: 7, rebalance: true, balanceChance: 0.2, allTms: false, showExactPositions: false, docsVisibility: dv || undefined };
 
     const t0 = Date.now();
@@ -106,7 +108,7 @@ async function main() {
         const pokedex = await runPokedexModule(mcfg, baseData);
         const trainers = runTrainersModule(pokedex, mcfg);
         const starters = runStartersModule(pokedex.pokes);
-        const wild = runWildModule(pokedex.pokes, starters, wildData);
+        const wild = runWildModule(pokedex.pokes, starters, wildData, wildCfg);
         rng.seed(seed);
         const docs = await writerDocs(pokedex, trainers, starters, wild, seed, { showExactPositions: dv?.showExactPositions === true, docsVisibility: dv || undefined });
         const rom = { romIndex: 0, artifacts: { pokedex, trainers, starters, wild }, docs };
