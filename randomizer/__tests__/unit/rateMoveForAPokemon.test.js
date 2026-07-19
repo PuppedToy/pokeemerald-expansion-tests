@@ -2,7 +2,7 @@
 
 const { rateMoveForAPokemon } = require('../../rating');
 const moves = require('../fixtures/miniMoves');
-const { RIOLU, BLISSEY, MACHOP } = require('../fixtures/miniPokes');
+const { RIOLU, BLISSEY, MACHOP, MACHAMP } = require('../fixtures/miniPokes');
 
 // Helper: pre-populate move.rating from rateMove (rating.js stores it on the object at
 // chooseMoveset time; tests must mirror that so rateMoveForAPokemon receives a correct base).
@@ -462,11 +462,116 @@ describe('T-013 — weather-conditional moves (self / earlier teammate)', () => 
     });
 });
 
+// T-159 — fixed-damage moves (Seismic Toss / Night Shade) deal a flat amount independent of the
+// user's Attack/SpAtk. They must NOT be scaled down by a weak offensive stat, so they stay viable on
+// low-offense stallers (corpus: Chansey runs Seismic Toss as its only attack on every stall team).
+describe('T-159 — fixed-damage moves are attack-independent', () => {
+    const FD_BASE = { additionalEffects: [], pp: 20, priority: 0, makesContact: 'TRUE', strikeCount: '1', accuracy: 100 };
+    const SEISMIC_TOSS = { ...FD_BASE, id: 'MOVE_SEISMIC_TOSS', name: 'Seismic Toss', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'FIGHTING', power: 1, effect: 'EFFECT_LEVEL_DAMAGE' };
+    const NIGHT_SHADE  = { ...FD_BASE, id: 'MOVE_NIGHT_SHADE', name: 'Night Shade', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'GHOST', power: 1, effect: 'EFFECT_LEVEL_DAMAGE' };
+    const cm = { currentMoves: [], otherMoves: [] };
+
+    test('Seismic Toss on Blissey (Atk 10) beats a real physical move scaled by her tiny Attack', () => {
+        expect(rate(SEISMIC_TOSS, BLISSEY, cm)).toBeGreaterThan(rate(moves.MOVE_MEGA_PUNCH, BLISSEY, cm));
+    });
+
+    test('Seismic Toss is a viable pick on a low-offense staller (rating > 3)', () => {
+        expect(rate(SEISMIC_TOSS, BLISSEY, cm)).toBeGreaterThan(3);
+    });
+
+    test('Seismic Toss rating is attack-independent (Blissey Atk 10 ≈ Machamp Atk 130)', () => {
+        expect(rate(SEISMIC_TOSS, BLISSEY, cm)).toBeCloseTo(rate(SEISMIC_TOSS, MACHAMP, cm), 5);
+    });
+
+    test('Night Shade (special fixed damage) is also attack-independent and viable on Blissey', () => {
+        expect(rate(NIGHT_SHADE, BLISSEY, cm)).toBeGreaterThan(3);
+        expect(rate(NIGHT_SHADE, BLISSEY, cm)).toBeCloseTo(rate(NIGHT_SHADE, MACHAMP, cm), 5);
+    });
+
+    test('a real STAB attack still beats Seismic Toss on a strong attacker (Machamp)', () => {
+        expect(rate(r.MOVE_CLOSE_COMBAT, MACHAMP, cm)).toBeGreaterThan(rate(SEISMIC_TOSS, MACHAMP, cm));
+    });
+});
+
+// T-159 — a charge / two-turn move WITHOUT its enabler (no Power Herb, no weather) should land at
+// ~40% of the value it would have as a 1-turn move of the same power — punishing but not a near-0
+// (owner: at the old ~10-20% floor the penalty "no se refleja en la experiencia"). The actual removal
+// of an unusable charge move happens in the consolidation pass once the held item is final.
+describe('T-159 — charge moves without an enabler sit at ~40% of full', () => {
+    const B = { additionalEffects: [], pp: 10, priority: 0, makesContact: 'FALSE', strikeCount: '1', accuracy: 100 };
+    // Empty currentMoves so no additive coverage bonus distorts the ratio — this isolates exactly the
+    // charge penalty (base × no-enabler factor) shared by the charge move and its 1-turn twin.
+    const cm = { currentMoves: [], otherMoves: [] };
+    const ratio = (charge, oneTurn) => rate(charge, RIOLU, cm) / rate(oneTurn, RIOLU, cm);
+    const near40 = (charge, oneTurn) => {
+        const r40 = ratio(charge, oneTurn);
+        expect(r40).toBeGreaterThan(0.35);
+        expect(r40).toBeLessThan(0.45);
+    };
+
+    test('Solar Beam (no sun, no herb) ≈ 40% of a 1-turn Grass move', () => {
+        near40(
+            { ...B, id: 'MOVE_SOLAR_BEAM', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'GRASS', power: 120, effect: 'EFFECT_SOLAR_BEAM' },
+            { ...B, id: 'MOVE_ENERGY_BALL', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'GRASS', power: 120, effect: 'EFFECT_HIT' },
+        );
+    });
+    test('Meteor Beam (no herb) ≈ 40% of a 1-turn Rock move', () => {
+        near40(
+            { ...B, id: 'MOVE_METEOR_BEAM', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'ROCK', power: 120, effect: 'EFFECT_TWO_TURNS_ATTACK' },
+            { ...B, id: 'MOVE_POWER_GEM', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'ROCK', power: 120, effect: 'EFFECT_HIT' },
+        );
+    });
+    test('generic two-turn (Sky Attack, no herb) ≈ 40% of a 1-turn Flying move', () => {
+        near40(
+            { ...B, id: 'MOVE_SKY_ATTACK', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'FLYING', power: 140, effect: 'EFFECT_TWO_TURNS_ATTACK' },
+            { ...B, id: 'MOVE_BRAVE_BIRD', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'FLYING', power: 140, effect: 'EFFECT_HIT' },
+        );
+    });
+    test('semi-invulnerable (Fly, no herb) ≈ 40% of a 1-turn Flying move', () => {
+        near40(
+            { ...B, id: 'MOVE_FLY', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'FLYING', power: 90, effect: 'EFFECT_SEMI_INVULNERABLE' },
+            { ...B, id: 'MOVE_DRILL_PECK', category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'FLYING', power: 90, effect: 'EFFECT_HIT' },
+        );
+    });
+
+    test('a bag Power Herb rescues Solar Beam too (herb-source consistency)', () => {
+        const solar = { ...B, id: 'MOVE_SOLAR_BEAM', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'GRASS', power: 120, effect: 'EFFECT_SOLAR_BEAM' };
+        const none = rate(solar, RIOLU, cm);
+        const bag  = rate(solar, RIOLU, { ...cm, powerHerbAvailable: true });
+        const held = rate(solar, RIOLU, { ...cm, item: 'Power Herb' });
+        expect(bag).toBeGreaterThan(none);
+        expect(bag).toBeCloseTo(held, 5);
+    });
+});
+
+// T-159 — a Pokémon can only ever inflict ONE non-volatile status, so it never runs two status-infliction
+// moves (Toxic + Will-O-Wisp, Thunder Wave + Spore, …). The second one is rejected outright.
+describe('T-159 — at most one status-infliction move per set', () => {
+    const twoAtk = [r.MOVE_SURF, r.MOVE_EARTHQUAKE]; // 2 attacks so the status gate itself doesn't interfere
+
+    test('the first status move (Toxic) is allowed', () => {
+        expect(rate(moves.MOVE_TOXIC, BLISSEY, { currentMoves: twoAtk })).toBeGreaterThan(0);
+    });
+
+    test('a second status move (Will-O-Wisp) is rejected when Toxic is already present', () => {
+        expect(rate(moves.MOVE_WILL_O_WISP, BLISSEY, { currentMoves: [...twoAtk, r.MOVE_TOXIC] })).toBe(0);
+    });
+
+    test('Thunder Wave is likewise blocked by an existing status move', () => {
+        expect(rate(moves.MOVE_THUNDER_WAVE, BLISSEY, { currentMoves: [...twoAtk, r.MOVE_TOXIC] })).toBe(0);
+    });
+
+    test('the rule holds under stallMode too (Toxapex never gets Toxic + Will-O-Wisp)', () => {
+        expect(rate(moves.MOVE_WILL_O_WISP, BLISSEY, { currentMoves: [r.MOVE_TOXIC], ctx: { stallMode: true } })).toBe(0);
+    });
+});
+
 describe('T-013 — Belch needs a Berry', () => {
     const cm = { currentMoves: [r.MOVE_TACKLE], otherMoves: [] };
 
-    test('Belch rates near-zero (last resort) without a Berry', () => {
-        expect(rate(BELCH, RIOLU, cm)).toBeLessThanOrEqual(0.05);
+    // T-159 — berryless Belch is a hard 0 (never works without a consumed berry), not a 0.05 last resort.
+    test('Belch rates exactly 0 without a Berry', () => {
+        expect(rate(BELCH, RIOLU, cm)).toBe(0);
     });
 
     test('Belch rates much higher with a Berry held', () => {
