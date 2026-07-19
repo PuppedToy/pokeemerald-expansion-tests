@@ -107,7 +107,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     let { pokes: pokemonList, moves, abilities } = pokedexArtifact;
     const { trainersData: rawTrainersData, itemAssignments } = trainersArtifact;
     const { starters } = startersArtifact;
-    const { extraStarters, gymRewards, staticRewards, replacementLog: wildReplacementLog, foundMegaEvos: wildFoundMegaEvos } = wildArtifact;
+    const { extraStarters, gymRewards, staticRewards, replacementLog: wildReplacementLog, wildPlan, foundMegaEvos: wildFoundMegaEvos } = wildArtifact;
 
     // Palafin Hero (battle-only, banned) is the stat/type source for the placed Zero form —
     // capture it before the ban filter strips it from pokemonList.
@@ -205,7 +205,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     const sophistication = createSophisticationScale(trainersData);
     const { resolveTrainerTeam } = createTeamResolver({
         pokemonList, moves, abilities, starters, staticRewards,
-        replacementLog, megaReplacementLog, baseRngSeed, palafinHero, diag,
+        replacementLog, wildPlan, megaReplacementLog, baseRngSeed, palafinHero, diag,
         sophistication, audit,
     });
 

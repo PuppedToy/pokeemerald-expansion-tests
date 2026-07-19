@@ -479,3 +479,58 @@ describe('createChooser — T-142 doubles support tier-flex', () => {
         expect(captured.map(p => p.id)).not.toContain('OUSUPP');
     });
 });
+
+// ─── T-162 — TRAINER_POKE_ENCOUNTER expands templates to their wildPlan picks ──────────
+const rng = require('../../rng');
+const { TRAINER_POKE_ENCOUNTER } = require('../../constants');
+
+describe('createChooser — TRAINER_POKE_ENCOUNTER (T-162 wildPlan expansion)', () => {
+    const A = makePoke('SPECIES_A', { tier: 'RU' });
+    const B = makePoke('SPECIES_B', { tier: 'RU' });
+    const C = makePoke('SPECIES_C', { tier: 'RU' });
+
+    test('route slot draws from ALL the template\'s wildPlan picks (random of N), not just the representative', () => {
+        rng.seed(1);
+        // The representative (A) is NOT in the list; only the other N picks are → proves wildPlan is used.
+        const chooser = makeChooser([B, C], makeTrainer(32), makeContext(), {
+            replacementLog: { SPECIES_TEMPLATE: 'SPECIES_A' },
+            wildPlan: { SPECIES_TEMPLATE: ['SPECIES_A', 'SPECIES_B', 'SPECIES_C'] },
+        });
+        const result = chooser({ special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_TEMPLATE'] });
+        expect(['SPECIES_B', 'SPECIES_C']).toContain(result.id);
+    });
+
+    test('deterministic mode (1 pick) resolves to the representative (back-compat)', () => {
+        rng.seed(1);
+        const chooser = makeChooser([A], makeTrainer(32), makeContext(), {
+            replacementLog: { SPECIES_TEMPLATE: 'SPECIES_A' },
+            wildPlan: { SPECIES_TEMPLATE: ['SPECIES_A'] },
+        });
+        const result = chooser({ special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_TEMPLATE'] });
+        expect(result.id).toBe('SPECIES_A');
+    });
+
+    test('no wildPlan entry falls back to replacementLog (old bundles / unplaced templates)', () => {
+        rng.seed(1);
+        const chooser = makeChooser([A], makeTrainer(32), makeContext(), {
+            replacementLog: { SPECIES_TEMPLATE: 'SPECIES_A' },
+            wildPlan: {},
+        });
+        const result = chooser({ special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_TEMPLATE'] });
+        expect(result.id).toBe('SPECIES_A');
+    });
+
+    test('rival pool: pickBest sees EVERY obtainable pick across all templates and takes the best', () => {
+        rng.seed(1);
+        const weak1  = makePoke('SPECIES_WEAK1',  { tier: 'NU' }); weak1.rating.absoluteRating = 40;
+        const weak2  = makePoke('SPECIES_WEAK2',  { tier: 'NU' }); weak2.rating.absoluteRating = 42;
+        const strong = makePoke('SPECIES_STRONG', { tier: 'RU' }); strong.rating.absoluteRating = 90;
+        const chooser = makeChooser([weak1, weak2, strong], makeTrainer(32), makeContext(), {
+            // representatives are the weak ones; the strong pick exists only in wildPlan (a classic-mode N).
+            replacementLog: { SPECIES_T1: 'SPECIES_WEAK1', SPECIES_T2: 'SPECIES_WEAK2' },
+            wildPlan: { SPECIES_T1: ['SPECIES_WEAK1', 'SPECIES_STRONG'], SPECIES_T2: ['SPECIES_WEAK2'] },
+        });
+        const result = chooser({ special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_T1', 'SPECIES_T2'], pickBest: true });
+        expect(result.id).toBe('SPECIES_STRONG');
+    });
+});

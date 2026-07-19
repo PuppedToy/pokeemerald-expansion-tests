@@ -149,6 +149,24 @@ Acceptance criteria:
   - Docs: `randomizer/docs/wild-encounters.md` (new) + `randomization-options.md` + CLAUDE.md table +
     `CHANGELOG.brooktec.md [Unreleased]`. Awaiting user manual ROM test to close.
 
+- **2026-07-19** — Trainer-side follow-up (raised by the owner: how do encounter-fill trainers behave
+  now?). Found the coupling: `TRAINER_POKE_ENCOUNTER` slots (95 of them — ~82 route trainers with a
+  single template, ~13 rival slots with accumulated pools) resolved each template via
+  `replacementLog[template]` = ONLY the representative pick, so classic mode fed them just 1 of the N.
+  - **Fix (TDD):** threaded `wildPlan` to the resolver (`writer.js`/`writerDocs.js` → `resolveTrainerTeam`
+    → `createChooser`) and `trainerSelector.js` now expands each `encounterId` to ALL its `wildPlan`
+    picks (fallback to `replacementLog`/raw id). Route slots sample one of the zone's N; the rival's
+    `pickBest` pool sees every obtainable encounter. Deterministic mode is byte-identical (wildPlan[t] =
+    [1] = replacementLog[t]). New tests in `trainerSelector.test.js` (random-of-N, back-compat, fallback,
+    rival pickBest over the full pool).
+  - **Audit of the rival pools** (owner asked to review for omissions). Diagnostic cross-checked every
+    map's available methods (wild.js) vs what the rival pools request. Two real gaps, both fixed in
+    `trainers.js`: (1) **surf was never in any pool** — added `rivalSurfEncounters` (prior zones' surf)
+    to `rival119Encounters` (gated to the 4th encounter, after Norman, same as the Good Rod) and 'surf'
+    to the Ever Grande late-map lists; (2) **MAP_JAGGED_PASS was entirely absent** — added across its
+    methods (land/old/good/surf at stage 4, super at Ever Grande). Re-audit: no missing methods, no
+    unreferenced maps. randomizer 1336 / frontend 81 / backend 132 green; bundle rebuilt; analyze exit 0.
+
 ## Outcome
 
 <!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->

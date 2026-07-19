@@ -17,6 +17,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   regenerate only when exhausted. The super rod (shared across zones) and static/legendary encounters
   are unaffected. (T-162)
 
+- **Trainers that draw from wild encounters follow the new pools.** Route trainers whose team pulls
+  "the Pokémon of this route" now get a random one of that zone's encounters (in Classic, one of the
+  several); the rival, who fields the wild Pokémon obtainable so far, now considers **all** of them.
+  As part of this, the rival's obtainable pool gained the **Surf** encounters (available once you beat
+  Norman, like the Good Rod) and **Jagged Pass**, which were missing from earlier versions. (T-162)
+
 - **Type: Null and Silvally are back**, with Silvally unified onto the same mechanic as Arceus: it now
   has Multitype and changes type with a held **Plate** (instead of RKS System + Memories), and its
   signature move Multi-Attack becomes the Plate's type. It gets the same trainer/rating treatment as

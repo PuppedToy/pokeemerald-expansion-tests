@@ -602,7 +602,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     const sophistication = createSophisticationScale(trainersData);
     const { resolveTrainerTeam } = createTeamResolver({
         pokemonList, moves, abilities, starters, staticRewards,
-        replacementLog, megaReplacementLog, baseRngSeed, palafinHero,
+        replacementLog, wildPlan, megaReplacementLog, baseRngSeed, palafinHero,
         sophistication,
     });
     trainersData.forEach(trainer => {
