@@ -131,19 +131,6 @@
       "flag": "FLAG_ITEM_ROUTE_103_JABOCA"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 55,
-      "y": 0,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_WAVE_MAIL",
-      "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_103_DEFMINT"
-    },
-    {
       "graphics_id": "OBJ_EVENT_GFX_MAN_5",
       "x": 56,
       "y": 0,
@@ -155,19 +142,6 @@
       "trainer_sight_or_berry_tree_id": "1",
       "script": "Route103_EventScript_Marcos",
       "flag": "FLAG_BADGE03_GET"
-    },
-    {
-      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 54,
-      "y": 0,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "ITEM_MECH_MAIL",
-      "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_ROUTE_103_GUARD_SPEC"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",

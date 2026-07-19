@@ -193,6 +193,9 @@ void NewGameInitData(void)
     AddBagItem(ITEM_OLD_ROD, 1);
     AddBagItem(ITEM_MACH_BIKE, 1);
     AddBagItem(ITEM_ACRO_BIKE, 1);
+    AddBagItem(ITEM_ULTRA_BALL, 99);
+    AddBagItem(ITEM_QUICK_BALL, 99);
+    AddBagItem(ITEM_TIMER_BALL, 99);
     AddBagItem(ITEM_CHERI_BERRY, 1);
     AddBagItem(ITEM_CHESTO_BERRY, 1);
     AddBagItem(ITEM_PECHA_BERRY, 1);

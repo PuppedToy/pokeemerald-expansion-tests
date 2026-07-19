@@ -53,8 +53,6 @@ Route116_EventScript_DevonEmployee::
 
 Route116_EventScript_GiveRepeatBall::
 	setflag FLAG_MET_DEVON_EMPLOYEE
-	giveitem ITEM_POKE_BALL
-	goto_if_eq VAR_RESULT, FALSE, Route116_EventScript_NoRoomForRepeatBall
 	msgbox Route116_Text_NewBallAvailableAtMart, MSGBOX_DEFAULT
 	closemessage
 	call_if_eq VAR_FACING, DIR_NORTH, Route116_EventScript_DevonEmployeeExit

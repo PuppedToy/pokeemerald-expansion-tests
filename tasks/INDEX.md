@@ -169,3 +169,4 @@
 | [T-163](T-163-docs-visibility-section.md) | Docs-visibility config section (per-element redaction of the generated docs) | in-progress | 0.6.0 | 2026-07-19 |
 | [T-164](T-164-emerald-cut-story-trims.md) | Emerald-cut story/text trims and content removals | in-progress | 0.6.0 | 2026-07-19 |
 | [T-165](T-165-disable-steven-tag-battle.md) | Disable Steven tag battle → solo Tabitha boss (Mossdeep Space Center) | in-progress | 0.6.0 | 2026-07-19 |
+| [T-166](T-166-starting-catch-balls.md) | Stock starting bag with catch balls; strip non-Master balls and floor mints from the world | in-progress | 0.6.0 | 2026-07-19 |

@@ -75,8 +75,6 @@ Route123_BerryMastersHouse_EventScript_GiveNormalBerry::
 Route123_BerryMastersHouse_EventScript_GiveSpelonBerry::
 	goto_if_set FLAG_RECEIVED_SPELON_BERRY, Route123_BerryMastersHouse_EventScript_GiveNormalBerry
 	msgbox Route123_BerryMastersHouse_Text_InspirationalTakeThis, MSGBOX_DEFAULT
-	giveitem ITEM_POKE_BALL
-	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	setflag FLAG_RECEIVED_SPELON_BERRY
 	goto Route123_BerryMastersHouse_EventScript_GaveBerry
 	end
@@ -84,8 +82,6 @@ Route123_BerryMastersHouse_EventScript_GiveSpelonBerry::
 Route123_BerryMastersHouse_EventScript_GivePamtreBerry::
 	goto_if_set FLAG_RECEIVED_PAMTRE_BERRY, Route123_BerryMastersHouse_EventScript_GiveNormalBerry
 	msgbox Route123_BerryMastersHouse_Text_InspirationalTakeThis, MSGBOX_DEFAULT
-	giveitem ITEM_POKE_BALL
-	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	setflag FLAG_RECEIVED_PAMTRE_BERRY
 	goto Route123_BerryMastersHouse_EventScript_GaveBerry
 	end
@@ -93,8 +89,6 @@ Route123_BerryMastersHouse_EventScript_GivePamtreBerry::
 Route123_BerryMastersHouse_EventScript_GiveWatmelBerry::
 	goto_if_set FLAG_RECEIVED_WATMEL_BERRY, Route123_BerryMastersHouse_EventScript_GiveNormalBerry
 	msgbox Route123_BerryMastersHouse_Text_InspirationalTakeThis, MSGBOX_DEFAULT
-	giveitem ITEM_POKE_BALL
-	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	setflag FLAG_RECEIVED_WATMEL_BERRY
 	goto Route123_BerryMastersHouse_EventScript_GaveBerry
 	end
@@ -102,8 +96,6 @@ Route123_BerryMastersHouse_EventScript_GiveWatmelBerry::
 Route123_BerryMastersHouse_EventScript_GiveDurinBerry::
 	goto_if_set FLAG_RECEIVED_DURIN_BERRY, Route123_BerryMastersHouse_EventScript_GiveNormalBerry
 	msgbox Route123_BerryMastersHouse_Text_InspirationalTakeThis, MSGBOX_DEFAULT
-	giveitem ITEM_POKE_BALL
-	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	setflag FLAG_RECEIVED_DURIN_BERRY
 	goto Route123_BerryMastersHouse_EventScript_GaveBerry
 	end
@@ -111,8 +103,6 @@ Route123_BerryMastersHouse_EventScript_GiveDurinBerry::
 Route123_BerryMastersHouse_EventScript_GiveBelueBerry::
 	goto_if_set FLAG_RECEIVED_BELUE_BERRY, Route123_BerryMastersHouse_EventScript_GiveNormalBerry
 	msgbox Route123_BerryMastersHouse_Text_InspirationalTakeThis, MSGBOX_DEFAULT
-	giveitem ITEM_POKE_BALL
-	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	setflag FLAG_RECEIVED_BELUE_BERRY
 	goto Route123_BerryMastersHouse_EventScript_GaveBerry
 	end

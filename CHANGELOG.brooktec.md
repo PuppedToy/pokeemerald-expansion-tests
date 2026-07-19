@@ -16,6 +16,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Start with a full stock of catch balls; balls removed from the world.** New games now begin with
+  99 each of Ultra, Quick, and Timer Balls in the bag. Since those are no longer scarce, every
+  non-Master Poké Ball has been removed as a world pickup (22 floor item balls + 5 hidden balls) and
+  every free NPC ball gift now gives nothing (dialogue and progression flags — e.g. Wallace's
+  Waterfall — are unchanged). Master Balls (hand-placed) are untouched, and paid/traded ball
+  exchanges (Lava Cookie, Soda Pop, Shell Bell, Stern's Scanner, Cozmo's Meteorite) are preserved so
+  the player never loses money or an item for nothing. Nature Mints have also been removed as floor
+  pickups (24 slots across 18 maps); mints remain available to buy in Marts. (T-166)
+
 - **Disable Steven tag battle (Trainers & bosses).** A new option, off by default, turns the Mossdeep
   Space Center tag battle (you + Steven vs Maxie + Tabitha) into a normal battle against Tabitha alone:
   Steven takes on Maxie while you face Tabitha as a regular boss (single or double, per your battle-format
