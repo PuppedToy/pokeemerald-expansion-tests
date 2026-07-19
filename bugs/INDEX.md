@@ -44,3 +44,4 @@
 | [B-038](B-038-duplicate-fanfare-wally-lilycove.md) | Duplicate level-cap fanfare after the Wally Lilycove battle | fixed | minor | 0.9.0 | 0.9.0 | randomizer/__tests__/unit/levelCapMessagesSSOT.test.js |
 | [B-039](B-039-truck-exit-hop-missing.md) | Player no longer does the little hop when getting out of the truck | fixed | minor | 0.9.0 | 0.9.0 | randomizer/__tests__/unit/truckExitHop.test.js |
 | [B-040](B-040-mothim-cloak-form-dupes.md) | Mothim appears as three cloak forms (Plant/Sandy/Trash) — only one Mothim exists | fixed | major | 0.9.0 | 0.9.0 | randomizer/__tests__/unit/burmyOgerponForms.test.js |
+| [B-041](B-041-classic-wild-docs-incomplete.md) | Classic wild encounters show only one species per zone in the docs | fixed | major | 0.6.0 | 0.6.0 | randomizer/__tests__/unit/docsVisibility.test.js |

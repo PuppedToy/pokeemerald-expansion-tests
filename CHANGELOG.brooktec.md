@@ -7,6 +7,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Fixed
+
+- **Classic wild encounters now show every species in the docs.** In Classic mode each zone holds
+  several species per method, but the docs (Encounters tab + Pokédex "obtainable" filter) previously
+  showed only one per zone. They now list all of them; each is independently trackable, and the
+  Nuzlocke "one per route" capture picks which one you caught. Deterministic mode is unchanged. (B-041)
+
 ### Added
 
 - **Docs visibility settings.** A new config section controls what the generated documentation reveals

@@ -112,4 +112,24 @@ describe('redactWildPokes', () => {
         redactWildPokes(maps, { ...on(), showGrass: false }, { wildPlan: {} });
         expect(maps.find(m => m.id === 'MAP_ROUTE101').land).toBe('SPECIES_L');
     });
+
+    // B-041 — Classic mode: a visible method holding several species must surface the FULL distinct
+    // list under `methodSpecies` (representative first), so the viewer can show every one. A hidden
+    // method never gets a list (it is a placeholder). Deterministic (1 species) → no methodSpecies.
+    test('B-041 — visible multi-species methods surface the full distinct list; single ones do not', () => {
+        const wildPlan = { T_LAND: ['SPECIES_L', 'SPECIES_L2', 'SPECIES_L2', 'SPECIES_L3'] }; // distinct: L, L2, L3
+        const route = redactWildPokes(makeMaps(), on(), { wildPlan }).find(m => m.id === 'MAP_ROUTE101');
+        expect(route.land).toBe('SPECIES_L');                                  // representative unchanged
+        expect(route.methodSpecies.land).toEqual(['SPECIES_L', 'SPECIES_L2', 'SPECIES_L3']);
+        expect(route.methodSpecies.land[0]).toBe(route.land);                  // repr first
+        expect(route.methodSpecies.surf).toBeUndefined();                     // single species → no list
+    });
+
+    test('B-041 — a hidden method never gets a methodSpecies list (placeholder wins)', () => {
+        const wildPlan = { T_LAND: ['SPECIES_L', 'SPECIES_L2', 'SPECIES_L3'] };
+        const route = redactWildPokes(makeMaps(), { ...on(), showGrass: false }, { wildPlan }).find(m => m.id === 'MAP_ROUTE101');
+        expect(route.land).toBeUndefined();
+        expect(route.methodSpecies && route.methodSpecies.land).toBeUndefined();
+        expect(route.hiddenMethods.land).toEqual({ kind: 'count', count: 3 });
+    });
 });

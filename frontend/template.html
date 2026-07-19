@@ -1786,6 +1786,36 @@
       }
     }
 
+    // B-041 — Classic mode: a method can hold several species. redactWildPokes surfaces the full
+    // distinct list as route.methodSpecies[method] = [id0…idN] (id0 === route[method]). Expand each
+    // method into one capturable slot per species: the representative keeps the plain method slot key
+    // (back-compat with saved Nuzlocke state), extras get "method#i". These two helpers are the single
+    // source of truth for the slot→species mapping, shared (as globals) by the render loop below AND the
+    // Nuzlocke/PC/Mail engine's obtainable/captured lookups.
+    var WILD_SLOT_ORDER = ['land', 'old', 'good', 'surf', 'underwater', 'super', 'special', 'special1', 'special2', 'special3', 'special4', 'special5', 'special6', 'special7', 'special8', 'special9'];
+    function encounterSlots(route) {
+      var out = [];
+      WILD_SLOT_ORDER.forEach(function (method) {
+        var list = route.methodSpecies && route.methodSpecies[method];
+        if (list && list.length > 1) {
+          list.forEach(function (sp, i) { out.push({ slot: i === 0 ? method : method + '#' + i, species: sp, method: method }); });
+        } else if (route[method] !== undefined) {
+          out.push({ slot: method, species: route[method], method: method });
+        }
+      });
+      return out;
+    }
+    function slotSpecies(route, slot) {
+      if (route[slot] !== undefined) return route[slot];
+      var h = String(slot).indexOf('#');
+      if (h > 0) {
+        var method = slot.slice(0, h), idx = parseInt(slot.slice(h + 1), 10);
+        var list = route.methodSpecies && route.methodSpecies[method];
+        if (list && list[idx] !== undefined) return list[idx];
+      }
+      return null;
+    }
+
     const routesGrid = document.getElementById('wildpokes-cards');
 
     wildPokes.forEach(route => {
@@ -1801,11 +1831,8 @@
       const isStarterExtra = route.id === 'STARTER_EXTRA';
       const autoSelected = isStarterExtra; // only STARTER_EXTRA is pre-selected; boss rewards etc. are capturable
 
-      const encounterTypes = ['land', 'old', 'good', 'surf', 'underwater', 'super', 'special', 'special1', 'special2', 'special3', 'special4', 'special5', 'special6', 'special7', 'special8', 'special9'];
-
-      // Reading order (T-039): fill left-to-right then top-to-bottom. Fix the column count to
-      // ceil(N/3) so the matrix stays ≤3 rows, and let the default row-major grid flow do the rest.
-      const presentTypes = encounterTypes.filter(type => route[type]);
+      // B-041 — one slot per species (Classic surfaces several per method); deterministic = one each.
+      const encSlots = encounterSlots(route);
 
       // T-163 — placeholder tiles for methods whose species the docs config hides. The species key
       // was deleted by the pipeline (redactWildPokes), so it never appears above; the descriptor lives
@@ -1829,27 +1856,27 @@
         });
       }
 
-      const encCols = Math.max(1, Math.ceil((presentTypes.length + hiddenTiles.length) / 3));
+      const encCols = Math.max(1, Math.ceil((encSlots.length + hiddenTiles.length) / 3));
 
-      const encountersHTML = presentTypes
-        .map(type => {
-          const pokeId = route[type];
+      const encountersHTML = encSlots
+        .map(({ slot, species, method }) => {
+          const pokeId = species;
           const pokeName = nameify(pokeId.replace('SPECIES_', ''));
           const img = getPokeImg(pokeId);
           const poke = findPoke(pokeId);
           const adjustmentIcon = getFullPokeLogIcon(poke);
           const nameColor = getFullPokeLogColor(poke);
           const coloredName = nameColor ? `<span style="color:${nameColor}">${pokeName}</span>` : pokeName;
-          const encIcon = getEncounterIcon(type, { isBossReward, isStaticEncounter, isLegendaryEncounter });
+          const encIcon = getEncounterIcon(method, { isBossReward, isStaticEncounter, isLegendaryEncounter });
           let labelText, labelColor;
           if (isBossReward)              { labelText = 'Reward';    labelColor = '#c084fc'; }
           else if (isStaticEncounter)    { labelText = 'Static';    labelColor = '#f87171'; }
           else if (isLegendaryEncounter) { labelText = 'Legendary'; labelColor = '#fbbf24'; }
-          else                           { labelText = getRouteTypeName(type); labelColor = getRouteTypeColor(type); }
+          else                           { labelText = getRouteTypeName(method); labelColor = getRouteTypeColor(method); }
           const typeLabel = `<div class="enc-type-label" style="color:${labelColor}">${encIcon}<span>${labelText}</span></div>`;
           const slotExtraClass = autoSelected ? ' nz-auto-selected' : '';
           const faintLabel = `<label class="nz-cb-label nz-faint-label" data-tooltip="Mark as fainted">
-                <input type="checkbox" class="nz-faint-cb" data-route="${route.id}" data-slot="${type}">
+                <input type="checkbox" class="nz-faint-cb" data-route="${route.id}" data-slot="${slot}">
                 ${getIcon('fainted','💀')}
               </label>`;
           const checkboxHTML = autoSelected ? `
@@ -1857,18 +1884,18 @@
           ` : `
             <div class="nuzlocke-controls">
               <label class="nz-cb-label nz-delay-label" data-tooltip="Mark as delayed">
-                <input type="checkbox" class="nz-delay-cb" data-route="${route.id}" data-slot="${type}">
+                <input type="checkbox" class="nz-delay-cb" data-route="${route.id}" data-slot="${slot}">
                 ${getIcon('stopwatch','⏱')}
               </label>
               <label class="nz-cb-label nz-select-label" data-tooltip="Mark as captured">
-                <input type="checkbox" class="nz-select-cb" data-route="${route.id}" data-slot="${type}">
+                <input type="checkbox" class="nz-select-cb" data-route="${route.id}" data-slot="${slot}">
                 ${getIcon('pokeball','✓')}
               </label>
               ${faintLabel}
             </div>
           `;
           return `
-            <div class="clicker wild-poke poke-${pokeId}${slotExtraClass}" data-slot="${type}" data-base-species="${pokeId}" style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
+            <div class="clicker wild-poke poke-${pokeId}${slotExtraClass}" data-slot="${slot}" data-base-species="${pokeId}" style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
               ${typeLabel}
               <img class="nz-poke-img" src="${img}" style="width:64px;height:64px;object-fit:contain" alt="${pokeName}">
               <div class="nz-poke-name" style="font-weight:700;margin-top:4px">${coloredName}${adjustmentIcon}</div>
@@ -2291,18 +2318,17 @@
       var nz = getNzState(), locs = nz.locations || {}, ids = new Set();
       wildPokes.forEach(function(route) {
         var loc = locs[route.id];
-        if (loc && loc.selected && route[loc.selected]) {
+        if (loc && loc.selected) {
+          var cap = slotSpecies(route, loc.selected); // B-041 — resolves method or "method#i" slots
           var fainted = loc.fainted || [];
-          if (!fainted.includes(loc.selected)) ids.add(route[loc.selected]); // exclude fainted
+          if (cap && !fainted.includes(loc.selected)) ids.add(cap); // exclude fainted
         }
       });
       // STARTER_EXTRA: auto-captured, but exclude fainted ones
       var extra = wildPokes.find(function(r){ return r.id === 'STARTER_EXTRA'; });
       if (extra) {
         var extraFainted = (locs['STARTER_EXTRA'] || {}).fainted || [];
-        ENCOUNTER_TYPES.filter(function(t){ return extra[t]; }).forEach(function(t){
-          if (!extraFainted.includes(t)) ids.add(extra[t]);
-        });
+        encounterSlots(extra).forEach(function(e){ if (!extraFainted.includes(e.slot)) ids.add(e.species); });
       }
       return ids;
     }
@@ -2313,7 +2339,8 @@
         var loc = locs[route.id];
         if (!loc) return;
         (loc.fainted || []).forEach(function(slot) {
-          if (route[slot]) ids.add(route[slot]);
+          var sp = slotSpecies(route, slot); // B-041
+          if (sp) ids.add(sp);
         });
       });
       return ids;
@@ -2327,7 +2354,7 @@
         if (loc.selected) return;
         var gid = routeGroup[route.id];
         if (gid && LOC_GROUPS[gid].some(function(s){ return s !== route.id && (locs[s]||{}).selected; })) return;
-        ENCOUNTER_TYPES.filter(function(t){ return route[t]; }).forEach(function(t){ ids.add(route[t]); });
+        encounterSlots(route).forEach(function(e){ ids.add(e.species); }); // B-041 — every species per method
       });
       return ids;
     }
@@ -2980,10 +3007,11 @@
         var loc = locs[route.id];
         if (route.id === 'STARTER_EXTRA') {
           var f = (loc&&loc.fainted)||[];
-          ENCOUNTER_TYPES.forEach(function(slot){ if (route[slot]) out.push(mk(route.id,slot,route[slot], f.indexOf(slot)>=0)); });
-        } else if (loc && loc.selected && route[loc.selected]) {
+          encounterSlots(route).forEach(function(e){ out.push(mk(route.id, e.slot, e.species, f.indexOf(e.slot)>=0)); }); // B-041
+        } else if (loc && loc.selected) {
+          var cap = slotSpecies(route, loc.selected); // B-041
           var ff = loc.fainted||[];
-          out.push(mk(route.id, loc.selected, route[loc.selected], ff.indexOf(loc.selected)>=0));
+          if (cap) out.push(mk(route.id, loc.selected, cap, ff.indexOf(loc.selected)>=0));
         }
       });
       return out;
@@ -3254,7 +3282,7 @@
     var famComponent = {};
     (typeof pokes!=='undefined'?pokes:[]).forEach(function(p){ if (!p) return; var r=ufFind(p.id); (famComponent[r]=famComponent[r]||[]).push(p.id); });
     function familySet(speciesId){ var s={}; s[speciesId]=1; (famComponent[ufFind(speciesId)]||[]).forEach(function(id){ s[id]=1; }); return s; }
-    function findObtainable(famSet){ var found=null; (typeof wildPokes!=='undefined'?wildPokes:[]).forEach(function(route){ if (found || route.id==='STARTER_EXTRA') return; ENCOUNTER_TYPES.forEach(function(slot){ if (found) return; if (route[slot] && famSet[route[slot]]) found={ label: route.label || nm(route.id), species: route[slot] }; }); }); return found; }
+    function findObtainable(famSet){ var found=null; (typeof wildPokes!=='undefined'?wildPokes:[]).forEach(function(route){ if (found || route.id==='STARTER_EXTRA') return; encounterSlots(route).forEach(function(e){ if (found) return; if (famSet[e.species]) found={ label: route.label || nm(route.id), species: e.species }; }); }); return found; } // B-041
 
     function nextBossLabel(st){ for (var i=0;i<bossCaps.length;i++){ if (!isBossDefeated(bossCaps[i],st)) return bossCaps[i].label; } return 'All cleared'; }
     // Refreshes the whole top bar (level cap / box / deaths / next boss). Name kept for its
