@@ -262,6 +262,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **The Lavaridge Town egg woman no longer gifts a Wynaut egg.** Because the town's gym leader already
+  hands out a gym-reward Pokémon, the egg was a duplicate encounter. She now keeps an egg-themed line
+  (reminiscing about hatching eggs in the hot sand) but gives nothing (T-161).
+
 - **Very defensive Pokémon can now be built as pure stall.** When a Pokémon's offence is far below what
   its tier is built on and it can assemble a real stall kit (reliable recovery + status/chip/trap +
   Protect + attack-independent damage like Seismic Toss), trainers now build it as a dedicated staller —
