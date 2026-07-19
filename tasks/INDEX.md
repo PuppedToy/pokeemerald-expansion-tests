@@ -164,4 +164,4 @@
 | [T-158](T-158-silvally-multitype-plates.md) | Add Silvally, unified onto Multitype + Plates (drop Memories) | in-progress | 0.9.0 | 2026-07-18 |
 | [T-159](T-159-item-move-consolidation-and-stall-archetype.md) | Item↔move consolidation pass + stall-archetype breakpoint | done | 0.6.0 | 2026-07-19 |
 | [T-160](T-160-always-crit-move-rating.md) | Rate always-crit moves for their guaranteed critical hit | done | 0.6.0 | 2026-07-19 |
-| [T-161](T-161-lavaridge-egg-woman-no-duplicate.md) | Stop the Lavaridge egg woman gifting a duplicate egg | in-progress | 0.0.1 | 2026-07-19 |
+| [T-161](T-161-lavaridge-egg-woman-no-duplicate.md) | Stop the Lavaridge egg woman gifting a duplicate egg | done | 0.0.1 | 2026-07-19 |

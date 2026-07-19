@@ -1,7 +1,7 @@
 ---
 id: T-161
 title: Stop the Lavaridge egg woman gifting a duplicate egg
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-07-19
 updated: 2026-07-19
@@ -30,11 +30,12 @@ line, no `giveegg`, no yes/no prompt, no party-size check, no
 text labels. The object event in `map.json` keeps pointing at the same label.
 
 Acceptance criteria:
-- [ ] The Lavaridge egg woman gives no egg and shows only dialogue.
-- [ ] Her line still references eggs (flavour preserved).
-- [ ] No dangling references to the removed egg sub-scripts/texts.
-- [ ] `data/maps/LavaridgeTown_Gym_1F` (Flannery's reward) is untouched.
-- [ ] Owner manually verifies in-game (no local GBA toolchain; build is CI-only).
+- [x] The Lavaridge egg woman gives no egg and shows only dialogue.
+- [x] Her line still references eggs (flavour preserved).
+- [x] No dangling references to the removed egg sub-scripts/texts.
+- [x] `data/maps/LavaridgeTown_Gym_1F` (Flannery's reward) is untouched.
+- [ ] Owner manually verifies in-game — delegated to owner/CI; no local GBA
+  toolchain here. Closed on the owner's explicit go-ahead (see Outcome).
 
 ## Progress log
 
@@ -54,7 +55,27 @@ Acceptance criteria:
   object event still resolves to the same label. Changelog line added under
   `[Unreleased] → Changed`. Can't compile locally (no GBA toolchain) — awaiting
   owner in-game test.
+- **2026-07-19** — Owner trimmed the dialogue to a single sentence
+  (`"In my younger days, I'd hatch POKéMON EGGS by burying them in the hot sand
+  here by the hot springs."`); amended the fix commit. Merged into `master`
+  (`--no-ff`). Owner then gave the explicit go-ahead to close.
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Shipped: `LavaridgeTown_EventScript_EggWoman` is now a plain `MSGBOX_NPC` talker.
+It no longer gifts a `SPECIES_WYNAUT` egg (the town gym leader already hands out
+a gym-reward Pokémon, so the egg was a duplicate encounter). Removed the yes/no
+prompt, party-size check, fanfare, `giveegg`, the `FLAG_RECEIVED_LAVARIDGE_EGG`
+set, three dead sub-scripts and six now-unused text blocks; added one egg-themed
+line (`LavaridgeTown_Text_UsedToHatchEggsInHotSand`).
+
+Deviation from plan: dialogue trimmed to a single sentence at the owner's
+request (originally three sentences).
+
+Verification: randomizer Jest suite green (map-script change, not covered by it);
+grep confirms no dangling references; `LavaridgeTown_Gym_1F` untouched. No local
+GBA build available, so in-game verification is delegated to the owner/CI —
+this task was closed on the owner's explicit instruction, not on a local in-game
+check.
+
+Follow-ups: none.
