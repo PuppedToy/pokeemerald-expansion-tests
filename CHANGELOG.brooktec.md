@@ -9,6 +9,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Cosmetic-family representatives now show their base name in the docs.** After the cosmetic strip
+  kept one form per family, the docs still displayed the surviving form's suffix — e.g. "Spewpa Icy
+  Snow" (a Vivillon-only wing pattern that Spewpa never shows), "Furfrou Natural", "Alcremie Strawberry
+  Vanilla Cream". They now render as plain "Spewpa", "Furfrou", "Alcremie", etc. (Scatterbug/Spewpa/
+  Vivillon, Flabébé/Floette/Florges, Furfrou, Alcremie). (B-043)
+
 - **Classic wild encounters now show every species in the docs.** In Classic mode each zone holds
   several species per method, but the docs (Encounters tab + Pokédex "obtainable" filter) previously
   showed only one per zone. They now list all of them; each is independently trackable, and the

@@ -65,5 +65,11 @@ Acceptance criteria:
   untouched. Verified end-to-end: `node analyze.js --no-balance` exits 0, docs `pokes.js` holds exactly
   Unown×1, ICY_SNOW line×3, RED line×3, Furfrou Natural×1, Milcery+Vanilla-Cream Alcremie×2; evo chains
   clean; no warnings. Full suite green (1255).
+- **2026-07-20** — Follow-up defect found & fixed under [B-043](../bugs/B-043-cosmetic-rep-display-name-keeps-form-suffix.md):
+  the kept representative's docs display name still carried the id form suffix ("Spewpa Icy Snow" etc.)
+  because the name is id-derived via `nameizyPokemonId`, not from `.speciesName`. Added the eight
+  representatives to `DISPLAY_NAME_OVERRIDES` (the B-040 mechanism) so they render as their base name.
+  Regression test in `cosmeticFamilyStrip.test.js`; docs regenerated and verified. Arceus/Silvally
+  Normal (T-156/T-158, type forms) left as-is per owner decision.
 
 ## Outcome

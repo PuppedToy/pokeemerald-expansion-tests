@@ -797,8 +797,23 @@ function parseMegaEvoStonesFile(megaEvosFileText) {
 // B-040 — display-name overrides for species whose id-derived name would mislead. Mothim has no cloak
 // forms (Sandy/Trash are removed dupes; only MOTHIM_PLANT / SPECIES_MOTHIM survives), so it renders as
 // plain "Mothim" instead of "Mothim Plant".
+//
+// B-043 — the T-154 cosmetic strip keeps the FIRST-declared form per stage, whose id carries a form
+// suffix (e.g. SPECIES_SPEWPA_ICY_SNOW). The strip's intent is that cosmetic forms vanish leaving only
+// the base, and "Icy Snow" is a Vivillon-only wing pattern that Scatterbug/Spewpa never show — so the
+// docs must render the plain base name. Override each kept representative to its base name. (Unown and
+// Milcery keep the base id already, so they need no entry. Arceus Normal / Silvally Normal are type
+// forms, not cosmetic, and are deliberately left id-derived per owner decision.)
 const DISPLAY_NAME_OVERRIDES = {
     SPECIES_MOTHIM_PLANT: 'Mothim',
+    SPECIES_SCATTERBUG_ICY_SNOW: 'Scatterbug',
+    SPECIES_SPEWPA_ICY_SNOW: 'Spewpa',
+    SPECIES_VIVILLON_ICY_SNOW: 'Vivillon',
+    SPECIES_FLABEBE_RED: 'Flabebe',
+    SPECIES_FLOETTE_RED: 'Floette',
+    SPECIES_FLORGES_RED: 'Florges',
+    SPECIES_FURFROU_NATURAL: 'Furfrou',
+    SPECIES_ALCREMIE_STRAWBERRY_VANILLA_CREAM: 'Alcremie',
 };
 
 function nameizyPokemonId(pokeId) {
