@@ -162,3 +162,4 @@
 | [T-156](T-156-arceus-normal-and-multitype-logic.md) | Re-enable Arceus (Normal only) with Multitype/Plate/Judgment trainer logic | in-progress | 0.9.0 | 2026-07-18 |
 | [T-157](T-157-burmy-ogerpon-deerling-model.md) | Re-enable Burmy and Ogerpon on the Deerling multi-form model | in-progress | 0.9.0 | 2026-07-18 |
 | [T-158](T-158-silvally-multitype-plates.md) | Add Silvally, unified onto Multitype + Plates (drop Memories) | in-progress | 0.9.0 | 2026-07-18 |
+| [T-159](T-159-item-move-consolidation-and-stall-archetype.md) | Item↔move consolidation pass + stall-archetype breakpoint | done | 0.6.0 | 2026-07-19 |

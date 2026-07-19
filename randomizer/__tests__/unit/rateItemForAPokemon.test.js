@@ -6,8 +6,9 @@
 // Burst). Regression for Champion Steven's Solgaleo = Choice Specs + Stealth Rock (and + Metal Burst).
 
 const { rateItemForAPokemon, rateMove } = require('../../rating');
+const rng = require('../../rng');
 const moves = require('../fixtures/miniMoves');
-const { STARMIE, MACHAMP } = require('../fixtures/miniPokes');
+const { STARMIE, MACHAMP, BLISSEY } = require('../fixtures/miniPokes');
 
 const rated = mv => ({ ...mv, rating: rateMove(mv) });
 const set = (...ids) => ids.map(id => rated(moves[id]));
@@ -65,5 +66,27 @@ describe('rateItemForAPokemon — anti-support items scale up on offensive doubl
     test('a dedicated support does NOT get the offensive-doubles bump', () => {
         const support = { ...STARMIE, isSupportDoubles: true };
         expect(dbl('Safety Goggles', support, atkSet, true)).toBe(dbl('Safety Goggles', STARMIE, atkSet, false));
+    });
+});
+
+// T-159 — Weakness Policy raises Atk AND SpAtk after a super-effective hit, so it is dead weight on a
+// mon with no move that scales with those stats (a pure doubles/singles support, or a mon whose only
+// "damage" is fixed / reactive / target-stat based). It must score 0 there instead of on bulk alone.
+describe('rateItemForAPokemon — Weakness Policy needs an offense-boosted move (T-159)', () => {
+    beforeEach(() => rng.seed(42));
+
+    test('Weakness Policy = 0 on a pure-support set (no damaging move)', () => {
+        const pureStatus = set('MOVE_TOXIC', 'MOVE_PROTECT', 'MOVE_WILL_O_WISP', 'MOVE_ROOST');
+        expect(rate('Weakness Policy', BLISSEY, pureStatus)).toBe(0);
+    });
+
+    test('Weakness Policy > 0 once the set carries a real attacking move', () => {
+        const withAttack = set('MOVE_FLAMETHROWER', 'MOVE_PROTECT', 'MOVE_WILL_O_WISP', 'MOVE_ROOST');
+        expect(rate('Weakness Policy', BLISSEY, withAttack)).toBeGreaterThan(0);
+    });
+
+    test('Weakness Policy = 0 when the only damage is offense-independent (Counter)', () => {
+        const reactiveOnly = set('MOVE_COUNTER', 'MOVE_PROTECT', 'MOVE_TOXIC', 'MOVE_ROOST');
+        expect(rate('Weakness Policy', MACHAMP, reactiveOnly)).toBe(0);
     });
 });

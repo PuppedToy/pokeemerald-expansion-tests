@@ -520,6 +520,13 @@ const hazardSetMoves = new Set([
     'MOVE_STEALTH_ROCK', 'MOVE_SPIKES', 'MOVE_TOXIC_SPIKES', 'MOVE_STICKY_WEB',
 ]);
 
+// T-159 — dedicated moves that inflict a non-volatile status (Toxic, Will-O-Wisp, Thunder Wave, the
+// sleep/poison/paralysis powders, Yawn, Dark Void, Toxic Thread). A target can only ever carry ONE such
+// status, so no Pokémon runs two of these moves — the second is rejected in rateMoveForAPokemon.
+const STATUS_INFLICTION_EFFECTS = new Set([
+    'EFFECT_NON_VOLATILE_STATUS', 'EFFECT_DARK_VOID', 'EFFECT_YAWN', 'EFFECT_TOXIC_THREAD',
+]);
+
 const pivotingMoves = new Set([
     'MOVE_U_TURN', 'MOVE_VOLT_SWITCH', 'MOVE_FLIP_TURN', 'MOVE_PARTING_SHOT',
     'MOVE_TELEPORT',
@@ -732,7 +739,8 @@ const statusList = {
     MOVE_SPIKES: 6,
     MOVE_TOXIC_SPIKES: 6.5,
     MOVE_STEALTH_ROCK: 8,
-    MOVE_STICKY_WEB: 8,
+    MOVE_STICKY_WEB: 7.5, // T-159: almost Stealth Rock quality — above Spikes/Toxic Spikes, below SR
+
 
     MOVE_PARTING_SHOT: 8,
     MOVE_KINGS_SHIELD: 8,
@@ -866,6 +874,17 @@ function rateMove(move) {
     }
     
     const moveEffect = move.effect || '';
+    // T-159 — fixed-damage moves deal a flat/derived amount independent of the user's Attack/SpAtk, so
+    // their stored power (1) is meaningless. Rate them on reliability instead: Seismic Toss / Night
+    // Shade (level HP) are the staller's attack-independent chip; Super Fang / Ruination (½ HP) a bit
+    // less; the small flat amounts (Dragon Rage 40, Sonic Boom 20, Psywave) are weak. rateMoveForAPokemon
+    // skips offense-scaling and STAB for these, so the value below is what reaches move selection.
+    if (FIXED_DAMAGE_EFFECTS.includes(moveEffect)) {
+        if (moveEffect === 'EFFECT_LEVEL_DAMAGE') return 4.5;
+        if (moveEffect === 'EFFECT_FIXED_PERCENT_DAMAGE') return 3.5;
+        if (moveEffect === 'EFFECT_ENDEAVOR') return 3;
+        return 1.5;
+    }
     let power = move.power || 50;
     // Variable HP-scaled moves store power as 1 (truthy, so || 50 doesn't fire).
     // Treat as 50 — conservative realistic average without Endure.
@@ -1012,6 +1031,35 @@ const specialScalingMoves = {
     // scale with Attack/SpAtk normally — let them fall through to standard scaling.
 };
 
+// T-159 — damage moves whose output does NOT scale with the user's Attack/SpAtk. Fixed-damage moves
+// (Seismic Toss, Night Shade, Sonic Boom, Super Fang, …) deal a flat/derived amount; they are the
+// staller's attack-independent chip (corpus: Chansey runs Seismic Toss as its only attack on every
+// stall team). They must be rated on that flat value, not scaled by the user's (often terrible) offense.
+const FIXED_DAMAGE_EFFECTS = [
+    'EFFECT_LEVEL_DAMAGE',         // Seismic Toss, Night Shade
+    'EFFECT_FIXED_HP_DAMAGE',      // Dragon Rage, Sonic Boom
+    'EFFECT_FIXED_PERCENT_DAMAGE', // Super Fang, Nature's Madness, Ruination
+    'EFFECT_PSYWAVE',              // Psywave
+    'EFFECT_ENDEAVOR',            // Endeavor
+];
+// Damaging moves that gain nothing from a +Atk/+SpAtk boost: fixed damage, reactive (Counter-like),
+// or scaled off a stat the boost doesn't touch (Foul Play → target's Atk; Body Press → user's Def).
+const OFFENSE_INDEPENDENT_EFFECTS = [
+    ...FIXED_DAMAGE_EFFECTS,
+    'EFFECT_COUNTER', 'EFFECT_MIRROR_COAT', 'EFFECT_METAL_BURST', 'EFFECT_COMEUPPANCE',
+    'EFFECT_FOUL_PLAY',
+    'EFFECT_BODY_PRESS',
+];
+// Does this move actually benefit from an offensive boost (used to gate Weakness Policy)?
+function benefitsFromOffenseBoost(m) {
+    return !!m && m.category !== 'DAMAGE_CATEGORY_STATUS' && !OFFENSE_INDEPENDENT_EFFECTS.includes(m.effect);
+}
+
+// T-159 — charge / two-turn attacks whose value hinges on an enabler (a Power Herb, or the right
+// weather for Solar Beam / Electro Shot). The consolidation pass (adjustMoveset) drops one when the
+// finalised held item can't provide the enabler and no weather does.
+const CHARGE_MOVE_EFFECTS = ['EFFECT_SOLAR_BEAM', 'EFFECT_TWO_TURNS_ATTACK', 'EFFECT_SEMI_INVULNERABLE'];
+
 const atkBoostinEffects = [
     'EFFECT_ATTACK_UP_1',
     'EFFECT_ATTACK_UP_2',
@@ -1055,9 +1103,15 @@ const OPPONENT_STAT_DROP_EFFECTS = new Set([
 //   { sun, rain, snow, sand, powerHerb } — sun/rain/snow/sand = an EARLIER teammate sets that weather;
 //   powerHerb = a Power Herb is available (held or in the trainer's bag). All default false.
 function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves, ctx = {}) {
+    // Status moves are normally gated until the set has ≥2 attacks (don't over-stack utility on an
+    // attacker). T-159: a pure staller is the opposite — it WANTS a status-heavy set, so a genuine STALL
+    // TOOL (recovery / Toxic / hazard / phazing / cleric / Protect / trap) bypasses the attack floor for
+    // it. Non-stall status (Light Screen, Calm Mind, Thunder Wave …) is still gated so it can't flood a
+    // stall set, and the Choice / Assault-Vest lock still forbids all status regardless.
+    const stallToolException = ctx.stallMode && isStallTool(move, ctx.doubles);
     if (
         (
-            currentMoves.filter(m => m.category !== 'DAMAGE_CATEGORY_STATUS').length < 2
+            (currentMoves.filter(m => m.category !== 'DAMAGE_CATEGORY_STATUS').length < 2 && !stallToolException)
             || item === 'Choice Band'
             || item === 'Choice Specs'
             || item === 'Assault Vest'
@@ -1066,6 +1120,14 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
         && move.category === 'DAMAGE_CATEGORY_STATUS'
     ) {
         return 0;
+    }
+
+    // T-159 — a staller never wants two of the same disruption: cap protect-variants and phazing at one
+    // each (recovery is already mutually-exclusive via antiComboList). Only under stallMode, where the
+    // relaxed status gate above would otherwise let a redundant second copy through.
+    if (ctx.stallMode) {
+        if (SELF_PROTECT_MOVES.has(move.id) && currentMoves.some(m => SELF_PROTECT_MOVES.has(m.id))) return 0;
+        if (isPhazingMove(move) && currentMoves.some(m => isPhazingMove(m))) return 0;
     }
 
     // Don't pick boosting moves of unused stats
@@ -1084,6 +1146,14 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     const antiComboIndex = antiComboList.findIndex(antiCombo => antiCombo.includes(move.id));
     if (antiComboIndex >= 0
         && currentMoves.some(m => antiComboList[antiComboIndex].includes(m.id))
+    ) {
+        return 0;
+    }
+
+    // T-159 — a target can only ever carry ONE non-volatile status, so a set never runs two status-
+    // infliction moves (Toxic + Will-O-Wisp, Thunder Wave + Spore, …). Keep only the first.
+    if (STATUS_INFLICTION_EFFECTS.has(move.effect)
+        && currentMoves.some(m => STATUS_INFLICTION_EFFECTS.has(m.effect))
     ) {
         return 0;
     }
@@ -1151,6 +1221,10 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     if (isSetupMove && hasStatDrop && offRatio > 1.2) return 0;
 
     let rating = move.rating;
+
+    // T-159 — fixed-damage moves ignore the user's offensive stats and type (no STAB, no offense
+    // scaling); keep their flat rating so they stay viable on low-offense stallers.
+    const isFixedDamage = FIXED_DAMAGE_EFFECTS.includes(move.effect);
 
     // Fix 7: second status move on an offensive Pokémon is penalised
     if (move.category === 'DAMAGE_CATEGORY_STATUS') {
@@ -1276,6 +1350,9 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
             rating = (poke.baseHP + poke.baseSpDefense) / 60;
         }
     }
+    else if (isFixedDamage) {
+        // T-159 — attack-independent: keep the flat rating from rateMove (no offense scaling).
+    }
     else if (move.category === 'DAMAGE_CATEGORY_PHYSICAL') {
         rating *= poke.baseAttack / 100;
     }
@@ -1292,7 +1369,7 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
         rating *= Math.max(0.1, 1 - (offRatio - 1.2) / 0.8);
     }
 
-    if (move.category !== 'DAMAGE_CATEGORY_STATUS') {
+    if (move.category !== 'DAMAGE_CATEGORY_STATUS' && !isFixedDamage) {
         let stab = poke.parsedTypes.includes(move.type) ? 1.5 : 1.0;
         if (hasAbility('ADAPTABILITY')) {
             stab = 2.0;
@@ -1403,39 +1480,80 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     // unless the holder can skip it. Heavily devalue them UNLESS holding a Power Herb; Solar Beam /
     // T-013: charge & weather-conditional damage-move heuristics (magnitudes provisional — see task).
     // The base rating already halved two-turn moves (rateMove ×0.5); the ×2.x factors below restore
-    // ~full power when the enabler is present, while ×0.2 keeps the charge liability when it isn't.
+    // ~full power when the enabler is present. T-159: when the enabler is ABSENT the move should land at
+    // ~40% of its 1-turn value, not the old ~10-20% — punishing but still on the table (owner: at the
+    // old floor the penalty "no se refleja en la experiencia"). The base rating already carries the
+    // charge penalty (rateMove: two-turn ×0.5, Solar Beam ×0.8, semi-invulnerable ×0.7), so the
+    // no-enabler factors below are chosen to make base×factor ≈ 0.40 of full: 0.5 (Solar, 0.8 base),
+    // 0.8 (two-turn, 0.5 base), 0.57 (semi-invuln, 0.7 base). The unusable-move removal itself happens
+    // in the consolidation pass (adjustMoveset) once the held item is known — see resolveTrainerTeam.
     // - Solar Beam / Blade: good in sun (own or earlier-teammate Drought/Orichalcum/Sunny Day, own
-    //   Desolate Land) or with a held Power Herb.
+    //   Desolate Land) or with a Power Herb (held or in the bag).
     // - Meteor Beam: premium with a Power Herb available (held or in the bag).
     // - Electro Shot: in rain it's instant — MUY PREMIUM; otherwise treat like Meteor Beam (Power Herb).
     // - Geomancy: instant +2/+2/+2 with a Power Herb, special-only (Ubers+); else a weak slow setup.
     // - Weather Ball: in any weather it's a 100-power move of that weather's type (+STAB if shared).
-    // - Every other two-turn / semi-invulnerable move (Dig, Fly, Sky Attack, …) needs a HELD Power Herb.
+    // - Every other two-turn / semi-invulnerable move (Dig, Fly, Sky Attack, …) wants a Power Herb.
+    // herbReady honours both a held Power Herb and one sitting in the bag, uniformly across every charge
+    // move (T-159 fixes the old inconsistency where Solar Beam / generic two-turn ignored the bag herb).
     const herbReady = item === 'Power Herb' || ctx.powerHerb === true;
     if (move.id === 'MOVE_SOLAR_BEAM' || move.id === 'MOVE_SOLAR_BLADE') {
-        rating *= (item === 'Power Herb' || inSun) ? 2.4 : 0.2;
+        rating *= (herbReady || inSun) ? 2.4 : 0.5;
     } else if (move.id === 'MOVE_METEOR_BEAM') {
-        rating *= herbReady ? 2.6 : 0.2;
+        rating *= herbReady ? 2.6 : 0.8;
     } else if (move.id === 'MOVE_ELECTRO_SHOT') {
-        rating *= inRain ? 3.0 : (herbReady ? 2.6 : 0.2);
+        rating *= inRain ? 3.0 : (herbReady ? 2.6 : 0.8);
     } else if (move.id === 'MOVE_GEOMANCY') {
         const special = [TIER_UBERS, TIER_AG, TIER_LEGEND].includes(poke.rating && poke.rating.tier);
         rating = (herbReady && special) ? 9 : rating * 0.2;
     } else if (move.id === 'MOVE_WEATHER_BALL') {
         const wType = inSun ? 'FIRE' : inRain ? 'WATER' : inSnow ? 'ICE' : inSand ? 'ROCK' : null;
         if (wType) rating = poke.parsedTypes.includes(wType) ? 10.5 : 7;
-    } else if (move.effect === 'EFFECT_TWO_TURNS_ATTACK' || move.effect === 'EFFECT_SEMI_INVULNERABLE') {
-        rating *= (item === 'Power Herb') ? 2.0 : 0.2;
+    } else if (move.effect === 'EFFECT_TWO_TURNS_ATTACK') {
+        rating *= herbReady ? 2.0 : 0.8;
+    } else if (move.effect === 'EFFECT_SEMI_INVULNERABLE') {
+        rating *= herbReady ? 2.0 : 0.57;
     }
 
     // T-013: Aurora Veil — finalised here (after any downstream bonuses) so it's exactly 0 without
     // snow on the team and 10 with it.
     if (move.id === 'MOVE_AURORA_VEIL') rating = inSnow ? 10 : 0;
 
-    // T-013: Belch can only fire after the holder eats a Berry. On a berryless mon it never works, so
-    // make it a true last resort (tiny positive) — only ever picked when nothing else is available.
+    // T-013 / T-159: Belch can only fire after the holder eats a Berry. On a berryless mon it never
+    // works, so it is a hard 0 — never taught to a mon without a berry. The consolidation pass
+    // (adjustMoveset, run once the held item is final) drops it if the mon ends up berryless.
     if (move.effect === 'EFFECT_BELCH' && !(typeof item === 'string' && / Berry$/.test(item))) {
-        rating = Math.min(rating, 0.05);
+        rating = 0;
+    }
+
+    // T-159(A) — partial-trap / chip moves (Whirlpool, Sand Tomb, Infestation, Salt Cure) get no credit
+    // from raw power for their real job: pinning the foe in while residual damage ticks. That "cover the
+    // stall role" value is worth much more to a defensive mon prolonging the game, and more still when
+    // the set already carries residual chip (Toxic / Leech Seed / Will-O-Wisp / hazards / another trap).
+    // Salt Cure (2×/turn vs Water & Steel) earns the larger base. This is role-specific, not global.
+    if (isTrappingMove(move)) {
+        const defensiveness = Math.max(0, Math.min(1.5, 1.8 - offRatio));
+        const isSaltCure = move.additionalEffects.includes('MOVE_EFFECT_SALT_CURE');
+        const hasResidual = [...currentMoves, ...otherMoves].some(m =>
+            STALL_STATUS_MOVES.has(m.id) || hazardSetMoves.has(m.id) || isTrappingMove(m));
+        let trapBonus = (isSaltCure ? 2.5 : 1.5) * defensiveness;
+        if (hasResidual) trapBonus += 1.0 * defensiveness;
+        if (ctx.stallMode) trapBonus += 1.0;
+        rating += trapBonus;
+    }
+
+    // T-159(B) — a committed pure staller builds around the stall kit, not its weak (tier-deficient)
+    // attacks. Boost the kit so it fills the set over token offence, and demote every attack after the
+    // first so the staller keeps at most one damage move (its chip) and fills the rest with utility.
+    // ctx.stallMode is set once per mon by chooseMoveset / adjustMoveset.
+    if (ctx.stallMode) {
+        if (isStallTool(move, ctx.doubles)) {
+            rating *= STALL_TOOL_BOOST;
+        }
+        if (move.category !== 'DAMAGE_CATEGORY_STATUS'
+            && currentMoves.some(m => m.category !== 'DAMAGE_CATEGORY_STATUS')) {
+            rating *= STALL_EXTRA_ATTACK_CUT;
+        }
     }
 
     // @TODO move base rating + stab + ability synergy + other moves synergy, coverage
@@ -1795,6 +1913,9 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         return 5 * calculatedDeviation;
     }
     if (item === 'Weakness Policy') {
+        // T-159 — WP boosts Atk & SpAtk after a super-effective hit; it is dead weight on a mon with
+        // no move that scales with those stats (a pure support, or fixed/reactive-only damage).
+        if (!moveset.some(benefitsFromOffenseBoost)) return 0;
         return 10 * genericDefensePower * rng.random() * calculatedDeviation;
     }
     if (item === 'Eject Button') {
@@ -1895,6 +2016,12 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
 // trainer may have their own bias towards certain moves
 // Recommanded value: 0.1
 function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability = null, item = null, tmsInBag = null, deviation = 0, ctx = {}) {
+    // T-159 — decide the stall archetype once per mon and thread it through ctx to every move rating.
+    // (Left as-is if the caller already resolved it. Never fires during the tiering pass — poke.rating
+    // isn't stamped yet there, so isPureStaller returns false and the neutral moveset is unaffected.)
+    if (ctx.stallMode === undefined) {
+        ctx = { ...ctx, stallMode: isPureStaller(poke, moves, level, ctx.doubles === true) };
+    }
     const moveset = [...startingMoveset].map(move => moves[move] ? moves[move] : null).filter(m => m !== null);
     const tmsUsed = [];
     const tms = tmsInBag && Array.isArray(tmsInBag) ? poke.teachables.filter(tm => tmsInBag.includes(tm)) : poke.teachables;
@@ -2071,53 +2198,51 @@ function adjustMoveset(poke, level = 100, moveset, importantMoves, moves, abilit
         ...poke.learnset.filter(ls => ls.level <= level).map(ls => ls.move),
     ].map(moveId => moves[moveId]).filter(m => m !== undefined && !moveset.includes(m.id));
 
-    const ratings = [];
-    for (let i = 0; i < moveset.length; i++) {
-        const movesWithoutThisMove = moveset.filter((m, index) => index !== i).map(m => moves[m]);
-        ratings.push(rateMoveForAPokemon(
-            moves[moveset[i]],
-            poke,
-            ability,
-            item,
-            learnableMoves,
-            movesWithoutThisMove,
-            ctx
-        ));
-    }
+    // T-159 — this pass runs once the held item is FINAL, so a Power Herb is available to THIS mon iff
+    // it actually holds one. Drop the bag-availability signal that assignment used to keep the option
+    // open (ctx.powerHerb), and re-rate everything under that honest ctx. Also carry the stall archetype
+    // so the consolidation keeps building the stall kit (resolve it here if the caller didn't).
+    const stallMode = ctx.stallMode !== undefined ? ctx.stallMode : isPureStaller(poke, moves, level, ctx.doubles === true);
+    const cCtx = { ...ctx, powerHerb: item === 'Power Herb', stallMode };
+    const movesWithout = i => moveset.filter((m, index) => index !== i).map(m => moves[m]);
+    const rateInSet = (mv, i, useCtx = cCtx, useItem = item) =>
+        rateMoveForAPokemon(mv, poke, ability, useItem, learnableMoves, movesWithout(i), useCtx);
 
+    const ratings = moveset.map((mid, i) => rateInSet(moves[mid], i));
     const bestRating = Math.max(...ratings);
 
     // Reverse loop so we try to replace the worst moves first
     for (let i = moveset.length - 1; i >= 0; i--) {
-        // If the rating is < 1 or is < bestRating / 2, we reconsider it
-        if (!importantMoves.includes(moveset[i]) && (ratings[i] < 1 || ratings[i] < bestRating / 2)) {
-            const movesWithoutThisMove = moveset.filter((m, index) => index !== i).map(m => moves[m]);
-            const ratedMoves = learnableMoves.map(move => {
-                const rating = rateMoveForAPokemon(
-                    move,
-                    poke,
-                    ability,
-                    item,
-                    learnableMoves,
-                    movesWithoutThisMove,
-                    ctx
-                );
-                return {
-                    ...move,
-                    rating: rating * (1 + ((rng.random() ? 1 : -1) * rng.random() * deviation)),
-                };
-            });
-            if (ratedMoves.length === 0) {
-                continue;
-            }
-            const sortedMoves = ratedMoves.sort((a, b) => b.rating - a.rating);
-            const bestReplacement = sortedMoves[0];
-            if (bestReplacement.rating > ratings[i] + 1) {
-                const oldMoveset = [...moveset];
-                moveset[i] = bestReplacement.id;
-                console.log(`Adjusted moves from ${poke.id} @ ${item}: replaced old ${oldMoveset} -> ${moveset}.
+        if (importantMoves.includes(moveset[i])) continue;
+        const mv = moves[moveset[i]];
+
+        // T-159 — a charge move is "item-orphaned" when it would rate far higher WITH an enabler this mon
+        // now lacks (no held Power Herb, no relevant weather). Detect it via the rater itself — re-rate
+        // with every enabler forced on and compare — so the weather/own-ability logic is never duplicated
+        // here. (Belch without a berry is already a hard 0, caught by the generic threshold below.)
+        let orphaned = false;
+        if (mv && CHARGE_MOVE_EFFECTS.includes(mv.effect)) {
+            const enabled = rateInSet(mv, i, { ...cCtx, powerHerb: true, sun: true, rain: true }, 'Power Herb');
+            orphaned = enabled > 0 && ratings[i] < enabled * 0.6;
+        }
+
+        if (!(orphaned || ratings[i] < 1 || ratings[i] < bestRating / 2)) continue;
+
+        const ratedMoves = learnableMoves.map(move => ({
+            ...move,
+            rating: rateInSet(move, i) * (1 + ((rng.random() ? 1 : -1) * rng.random() * deviation)),
+        }));
+        if (ratedMoves.length === 0) continue;
+        const bestReplacement = ratedMoves.sort((a, b) => b.rating - a.rating)[0];
+
+        // Orphaned item-moves are swapped for any strictly-better option; other weak moves keep the
+        // original +1 hysteresis so a set doesn't churn over marginal differences.
+        const bar = orphaned ? ratings[i] : ratings[i] + 1;
+        if (bestReplacement.rating > bar) {
+            const oldMoveset = [...moveset];
+            moveset[i] = bestReplacement.id;
+            console.log(`Adjusted moves from ${poke.id} @ ${item}: replaced old ${oldMoveset} -> ${moveset}.
         - Old move had a rating of ${ratings[i].toFixed(2)}, new move ${bestReplacement.id} has a rating of ${bestReplacement.rating.toFixed(2)}`);
-            }
         }
     }
 
@@ -3119,6 +3244,81 @@ function computePowerAndRole(poke) {
     };
 }
 
+// ── T-159: stall archetype ────────────────────────────────────────────────────────────────────────
+// A pure staller wins by residual chip + recovery, not by attacking. A mon is flipped to this archetype
+// ONLY when its offence is far below what its tier is built on AND it can actually assemble the kit —
+// conservative by design so teams aren't flooded with stall (owner T-159). Applies to singles and
+// doubles; in doubles the "utility" slot may be a support move (redirection / Fake Out / Helping Hand).
+const TRAP_CHIP_EFFECTS = ['MOVE_EFFECT_WRAP', 'MOVE_EFFECT_TRAP_BOTH', 'MOVE_EFFECT_SALT_CURE'];
+const PHAZING_MOVES = new Set(['MOVE_WHIRLWIND', 'MOVE_ROAR', 'MOVE_DRAGON_TAIL', 'MOVE_CIRCLE_THROW']);
+const STALL_STATUS_MOVES = new Set(['MOVE_TOXIC', 'MOVE_WILL_O_WISP', 'MOVE_LEECH_SEED']);
+// Single-target protect variants (a staller wants at most ONE). Team-protects (Wide/Quick/Crafty Guard)
+// are doubles support, handled separately — they must NOT count as a singles staller's Protect.
+const SELF_PROTECT_MOVES = new Set([
+    'MOVE_PROTECT', 'MOVE_DETECT', 'MOVE_SPIKY_SHIELD', 'MOVE_BANEFUL_BUNKER', 'MOVE_KINGS_SHIELD',
+    'MOVE_OBSTRUCT', 'MOVE_SILK_TRAP', 'MOVE_BURNING_BULWARK',
+]);
+const isPhazingMove = m => !!m && (m.effect === 'EFFECT_ROAR' || m.effect === 'EFFECT_HIT_SWITCH_TARGET' || PHAZING_MOVES.has(m.id));
+// Doubles-only support tools that can fill a staller's utility slot (owner T-159).
+const DOUBLES_SUPPORT_TOOLS = new Set([
+    'MOVE_FOLLOW_ME', 'MOVE_RAGE_POWDER', 'MOVE_HELPING_HAND', 'MOVE_FAKE_OUT',
+    'MOVE_ALLY_SWITCH', 'MOVE_POLLEN_PUFF', 'MOVE_DECORATE',
+]);
+// Thresholds (computePowerAndRole units: 10 = an "excellent" stat). offensePower ≤ 6.0 ≈ base offence
+// ≤ ~96, matching the corpus support/wall band (offence ≤95). The defence gap ensures bulk dominates.
+const STALL_MAX_OFFENSE_POWER = 6.0;
+const STALL_MIN_DEF_GAP = 2.0;
+const STALL_MIN_TOOLS = 3;
+const STALL_TOOL_BOOST = 1.5;       // stall-kit moves win the slots over a staller's weak attacks
+const STALL_EXTRA_ATTACK_CUT = 0.4; // a pure staller wants at most ONE attack; demote the rest
+
+function isTrappingMove(m) {
+    return !!m && Array.isArray(m.additionalEffects)
+        && m.additionalEffects.some(e => TRAP_CHIP_EFFECTS.includes(e));
+}
+
+// Is this move part of the stall kit? recovery / status chip / trap / phazing / cleric / hazards /
+// Protect / attack-independent damage / disruption; plus doubles support tools when `doubles`.
+function isStallTool(m, doubles = false) {
+    if (!m) return false;
+    if (comboRecoveryMoves.has(m.id)) return true;
+    if (STALL_STATUS_MOVES.has(m.id)) return true;
+    if (hazardSetMoves.has(m.id)) return true;
+    if (onePerTeamMoves.includes(m.id)) return true;                       // Heal Bell / Aromatherapy (cleric)
+    if (SELF_PROTECT_MOVES.has(m.id)) return true;
+    if (m.effect === 'EFFECT_HAZE') return true;
+    if (isPhazingMove(m)) return true;
+    if (FIXED_DAMAGE_EFFECTS.includes(m.effect)) return true;             // Seismic Toss / Night Shade
+    if (m.effect === 'EFFECT_FOUL_PLAY' || m.id === 'MOVE_KNOCK_OFF') return true;
+    if (isTrappingMove(m)) return true;
+    if (doubles && DOUBLES_SUPPORT_TOOLS.has(m.id)) return true;
+    return false;
+}
+
+// Full movepool (level-up up to `level` + teachables) as move objects.
+function movepoolObjects(poke, moves, level = 100) {
+    const ids = new Set([
+        ...(poke.learnset || []).filter(ls => ls.level <= level).map(ls => ls.move),
+        ...(poke.teachables || []),
+    ]);
+    return [...ids].map(id => moves[id]).filter(Boolean);
+}
+
+// A mon is a PURE STALLER when its offence is far below its tier baseline (defensive role, low absolute
+// offence, bulk clearly dominating) AND it can complete a stall kit (reliable recovery plus enough stall
+// tools). Conservative: if the kit can't be satisfied, stall is NOT forced. Gated on the STAMPED role so
+// the tiering pass (which runs before poke.rating exists) never triggers a stall build.
+function isPureStaller(poke, moves, level = 100, doubles = false) {
+    const role = poke && poke.rating && poke.rating.role;
+    if (role !== 'TANK' && role !== 'BULKY') return false;
+    const { offensePower, defensePower } = computePowerAndRole(poke);
+    if (offensePower > STALL_MAX_OFFENSE_POWER) return false;
+    if (defensePower - offensePower < STALL_MIN_DEF_GAP) return false;
+    const pool = movepoolObjects(poke, moves, level);
+    if (!pool.some(m => comboRecoveryMoves.has(m.id))) return false;       // no heal engine → not stall
+    return pool.filter(m => isStallTool(m, doubles)).length >= STALL_MIN_TOOLS;
+}
+
 function ratePokemon(poke, moves, abilities, tmPool) {
     let bestAbilityRating = 0;
     poke.parsedAbilities.forEach(abilityId => {
@@ -4008,4 +4208,7 @@ module.exports = {
     isSuperEffective,
     computeCoverageMetrics,
     computeComboBonus,
+    isPureStaller,      // T-159 — stall-archetype breakpoint
+    isStallTool,        // T-159 — stall-kit membership
+    computePowerAndRole,
 }

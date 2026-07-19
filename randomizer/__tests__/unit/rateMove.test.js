@@ -172,3 +172,25 @@ describe('rateMove — EFFECT_REVENGE conditional-power moves', () => {
         expect(rateMove(moves.MOVE_REVENGE)).toBeGreaterThan(rateMove(moves.MOVE_LOW_SWEEP));
     });
 });
+
+// T-159 — Sticky Web is "almost Stealth Rock quality": ranked strictly between Stealth Rock and the
+// other hazards (better than Spikes / Toxic Spikes, worse than Stealth Rock) so a Web setter is a
+// meaningful, but not top, hazard pick.
+describe('rateMove — entry-hazard ordering (T-159)', () => {
+    const hazard = id => ({ id });
+    const SR   = rateMove(hazard('MOVE_STEALTH_ROCK'));
+    const WEB  = rateMove(hazard('MOVE_STICKY_WEB'));
+    const TSPK = rateMove(hazard('MOVE_TOXIC_SPIKES'));
+    const SPK  = rateMove(hazard('MOVE_SPIKES'));
+
+    test('Stealth Rock > Sticky Web', () => {
+        expect(SR).toBeGreaterThan(WEB);
+    });
+    test('Sticky Web > Toxic Spikes and > Spikes', () => {
+        expect(WEB).toBeGreaterThan(TSPK);
+        expect(WEB).toBeGreaterThan(SPK);
+    });
+    test('Sticky Web stays close to Stealth Rock (within 1 point)', () => {
+        expect(SR - WEB).toBeLessThanOrEqual(1);
+    });
+});

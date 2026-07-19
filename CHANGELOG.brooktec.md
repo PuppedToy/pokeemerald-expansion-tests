@@ -161,6 +161,24 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **A Pokémon never runs two status-condition moves.** A target can only ever hold one non-volatile
+  status, so combos like Toxic + Will-O-Wisp or Thunder Wave + Spore were pointless. A set now keeps at
+  most one status-infliction move and fills the freed slot with something useful (T-159).
+
+- **Trainers no longer keep a charge move they can't actually use.** A two-turn move (Solar Beam, Fly,
+  Sky Attack, Meteor Beam, …) could stay on a team member that never ended up holding the Power Herb it
+  needs, because the pick was made on "a Herb is somewhere in the bag" rather than "this Pokémon holds
+  one." The set is now re-checked once the held item is final and the orphaned charge move is swapped for
+  a real one (T-159).
+
+- **Weakness Policy is no longer handed to Pokémon that can't use it.** It only goes on a Pokémon whose
+  set has a move that actually benefits from its Attack/Sp. Atk boost — never on a pure support/wall whose
+  only moves are status (or fixed/reactive damage) (T-159).
+
+- **Belch is no longer taught to a Pokémon without a Berry.** It needs a consumed Berry to work at all,
+  so a berryless Pokémon never receives it, and it is dropped in the final move-check if the held item
+  turns out not to be a Berry (T-159).
+
 - **The player does the little hop again when stepping out of the truck.** The intro change that skips
   going home (so you head straight to save Birch) had also skipped the hop off the truck. The hop is
   back — and only the hop; the go-straight-to-Birch flow is unchanged (B-039).
@@ -237,6 +255,26 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   that evolved species' detail modal instead of the captured base form (B-023).
 
 ### Changed
+
+- **Very defensive Pokémon can now be built as pure stall.** When a Pokémon's offence is far below what
+  its tier is built on and it can assemble a real stall kit (reliable recovery + status/chip/trap +
+  Protect + attack-independent damage like Seismic Toss), trainers now build it as a dedicated staller —
+  a recovery engine plus disruption, keeping at most one attack — instead of forcing a token attacking
+  move it can't use well (think Blissey, Chansey, Toxapex). This is deliberately conservative: it only
+  triggers for Pokémon whose offence really doesn't pay off and that can actually complete the kit, so
+  teams aren't flooded with stall. Applies to singles and doubles (T-159).
+
+- **Better move values for the stall toolkit.** Fixed-damage moves (Seismic Toss, Night Shade) are now
+  rated on their reliable, Attack-independent chip rather than as near-useless 1-power moves, so a weak
+  attacker can lean on them; partial-trap moves (Whirlpool, Sand Tomb, Infestation, Salt Cure) are worth
+  more to defensive Pokémon that want to pin a foe while residual damage ticks; and Sticky Web is now
+  valued just below Stealth Rock (above Spikes / Toxic Spikes) both as a move and for lead ordering (T-159).
+
+- **Two-turn / charge moves are judged more realistically.** Without their enabler (Power Herb, or the
+  right weather for Solar Beam / Electro Shot) they now sit at ~40% of a normal move's value instead of
+  being written off almost entirely, and all of them consistently recognise a Power Herb whether it's
+  held or still in the bag. Meteor Beam (Power-Herb-only), Electro Shot (rain or Herb) and Solar Beam
+  (sun or Herb) keep their distinct conditions (T-159).
 
 - **Early-game level caps raised by one, and trainer levels now track the caps automatically.** Every
   level cap from the first rival through Tabitha at Mt Chimney went up by 1 (rival 7→8, Aqua Grunt 10→11,
