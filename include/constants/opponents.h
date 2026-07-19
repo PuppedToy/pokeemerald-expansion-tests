@@ -866,11 +866,15 @@
 #define TRAINER_GLACIA_DOUBLES              857
 #define TRAINER_DRAKE_DOUBLES               858
 
+// T-165 — solo Mossdeep Space Center boss used when the "Disable Steven tag battle" option is on
+// (Steven fights Maxie off-screen; the player faces Tabitha alone). Team filled per run by the randomizer.
+#define TRAINER_TABITHA_MOSSDEEP_NO_TAG     859
+
 // NOTE: Because each Trainer uses a flag to determine when they are defeated, there is only space for 9 additional trainers before trainer flag space overflows
 //       More space can be made by shifting flags around in constants/flags.h or changing how trainer flags are handled
 //       MAX_TRAINERS_COUNT can be increased but will take up additional saveblock space
 
-#define TRAINERS_COUNT                      859
+#define TRAINERS_COUNT                      860
 #define MAX_TRAINERS_COUNT                  864
 #define TRAINER_PARTNER(partner)           (MAX_TRAINERS_COUNT + partner)
 

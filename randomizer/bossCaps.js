@@ -49,7 +49,11 @@ const BOSS_CAP_TRAINERS = {
     FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT: { trainers: ['TRAINER_MAXIE_MAGMA_HIDEOUT'],    label: 'Maxie – Magma Hideout' },
     FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE: { trainers: ['TRAINER_MATT'],                   label: 'Matt – Aqua Hideout' },
     FLAG_BADGE07_GET:                    { trainers: ['TRAINER_TATE_AND_LIZA_1'],        label: 'Tate & Liza – Badge 7' },
-    FLAG_DEFEATED_MAGMA_SPACE_CENTER:    { trainers: ['TRAINER_MAXIE_MOSSDEEP', 'TRAINER_TABITHA_MOSSDEEP'], label: 'Maxie – Space Center' },
+    // T-165 — TRAINER_TABITHA_MOSSDEEP_NO_TAG is the solo boss when the "Disable Steven tag battle" option
+    // is on; it sets the same flag, so it belongs to this same milestone (defeating ANY listed trainer
+    // counts). Only trainers actually present in a run are considered (byId filtering), so the milestone
+    // stays a single Space Center checkpoint in both modes.
+    FLAG_DEFEATED_MAGMA_SPACE_CENTER:    { trainers: ['TRAINER_MAXIE_MOSSDEEP', 'TRAINER_TABITHA_MOSSDEEP', 'TRAINER_TABITHA_MOSSDEEP_NO_TAG'], label: 'Maxie – Space Center' },
     FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN: { trainers: ['TRAINER_ARCHIE'],                 label: 'Archie – Seafloor Cavern' },
     FLAG_BADGE08_GET:                    { trainers: ['TRAINER_JUAN_1'],                 label: 'Juan – Badge 8' },
     FLAG_DEFEATED_WALLY_VICTORY_ROAD:    { trainers: ['TRAINER_WALLY_VR_1'],             label: 'Wally – Victory Road' },

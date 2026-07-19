@@ -3119,6 +3119,22 @@ const trainersData = [
         favouriteIds: ['MAXIE_GROUDON', 'MAXIE_MEGA'],
         team: getBossPreset('MAXIE_MOSSDEEP', true).map(s => ({ ...s })),
     },
+    {
+        // T-165 — the SOLO Space Center Tabitha, active only when config.disableStevenTagBattle is on (the
+        // tag trio above is dropped in that case; see the gating right after this array). She's a normal
+        // 6-mon villain boss (NOT in TAG_BATTLE_IDS → gets singles/doubles like any boss) and, unlike the
+        // tag TABITHA_MOSSDEEP, owns her weather: no `abusePartnerWeather`, sandstorm via the WEATHER_SAND
+        // seed in modules/trainerSeeds.js.
+        id: 'TRAINER_TABITHA_MOSSDEEP_NO_TAG',
+        location: 'Mossdeep Space Center',
+        class: 'Magma Admin',
+        isBoss: true,
+        level: CAP.MAGMA_SPACE_CENTER,
+        bag: [...spaceCenterBag()],
+        restrictions: [TRAINER_RESTRICTION_ALLOW_ONLY_TYPES],
+        types: [...magmaTeamTypes],
+        team: getBossPreset('TABITHA_MOSSDEEP_NO_TAG', true).map(s => ({ ...s })),
+    },
     // Route 127
     {
         id: 'TRAINER_DONNY',
@@ -3637,6 +3653,22 @@ const trainersData = [
         ],
     },
 ];
+
+    // T-165 — "Disable Steven tag battle": pick which Mossdeep Space Center encounter this run uses. The
+    // no-tag boss and the tag trio are mutually exclusive, so exactly one is kept. Default OFF keeps the
+    // tag trio and DROPS the no-tag boss before anything resolves it, so output stays byte-identical (no
+    // extra rng draws). ON drops the tag trio (both enemies + the Steven ally) and keeps the solo boss, so
+    // the docs show only Tabitha and the level-cap milestone still resolves (via bossCaps' byId filter).
+    // Done before displayOrder/level resolution and the continuity hoist so the kept trainer is ordered and
+    // resolved correctly; the map script itself is VAR-gated per-ROM by stevenTagWriter.
+    {
+        const drop = config.disableStevenTagBattle === true
+            ? new Set(['TRAINER_MAXIE_MOSSDEEP', 'TRAINER_TABITHA_MOSSDEEP', 'PARTNER_STEVEN'])
+            : new Set(['TRAINER_TABITHA_MOSSDEEP_NO_TAG']);
+        for (let i = trainersData.length - 1; i >= 0; i--) {
+            if (drop.has(trainersData[i].id)) trainersData.splice(i, 1);
+        }
+    }
 
     // T-044/T-076 — tag typed bosses with the type they actually run this seed, so the docs
     // viewer can colour their cards. Gym leaders follow gymMainTypes[0..7] (Roxanne→Juan),

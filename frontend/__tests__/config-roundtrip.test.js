@@ -50,6 +50,7 @@ const FULL_CONFIG = {
     championTypeChangeChance: 0.25, // T-076
     aquaTypes: ['GRASS', 'FIRE', 'RANDOM', 'WATER', 'ICE'],
     magmaTypes: ['STEEL', 'DRAGON', 'ROCK', 'GRASS', 'RANDOM'],
+    disableStevenTagBattle: true,   // T-165
     seed: 123456,
     docsVisibility: {   // T-163
         showTrainers: false, showBosses: false, showNonBosses: true,
@@ -91,6 +92,7 @@ test('nested option objects round-trip deeply (no shallow loss)', () => {
     assert.equal(round.wildEncounterType, 'classic');   // T-162
     assert.equal(round.pokemonPerZone, 8);               // T-162
     assert.deepEqual(round.aquaTypes, ['GRASS', 'FIRE', 'RANDOM', 'WATER', 'ICE']);
+    assert.equal(round.disableStevenTagBattle, true);   // T-165
     assert.deepEqual(round.money, { normal: 500, boss: 4000, gym: 7500 });
     assert.equal(round.prices.tms.godlikeStatus, 20000);
     assert.deepEqual(round.prices.balls, { ultra: 50, quick: 60, timer: 70 });

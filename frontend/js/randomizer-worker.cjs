@@ -102,6 +102,7 @@ function toModuleConfig(cfg) {
         championTypeChangeChance: cfg.championTypeChangeChance ?? 0.05,
         aquaTypes: cfg.aquaTypes,
         magmaTypes: cfg.magmaTypes,
+        disableStevenTagBattle: cfg.disableStevenTagBattle === true, // T-165 — Mossdeep tag → solo Tabitha
         // T-068/T-070 — nicknames (starters + location-based). Location naming reuses this same object
         // (autoLocation / lockGenderPerRoute), so there is only one name list.
         nicknames: cfg.nicknames,

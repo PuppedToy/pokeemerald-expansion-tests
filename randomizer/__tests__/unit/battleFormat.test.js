@@ -29,6 +29,17 @@ describe('battleFormat pools (ADR-014)', () => {
         expect(poolOf(T('TRAINER_MAXIE_MOSSDEEP', true))).toBe('tag');
         expect(poolOf(T('TRAINER_TABITHA_MOSSDEEP', true))).toBe('tag');
         expect(poolOf(T('PARTNER_STEVEN', false))).toBe('tag');   // Space Center ally half
+        // T-165 — the solo no-tag Tabitha is a NORMAL boss, never in the tag pool.
+        expect(poolOf(T('TRAINER_TABITHA_MOSSDEEP_NO_TAG', true))).toBe('bossTrainers');
+    });
+
+    test('T-165: solo no-tag Tabitha is doubles-eligible and gets a real battle type (never tag)', () => {
+        const noTag = T('TRAINER_TABITHA_MOSSDEEP_NO_TAG', true, 6);
+        expect(isEligible(noTag)).toBe(true);
+        for (const fmt of ['singles', 'doubles']) {
+            const { assignments } = assignBattleTypes([noTag], { battleFormat: fmt });
+            expect(assignments.get('TRAINER_TABITHA_MOSSDEEP_NO_TAG')).toBe(fmt);
+        }
     });
 
     test('isEligible requires teamSize>=2 and not excluded', () => {

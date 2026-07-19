@@ -16,6 +16,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Disable Steven tag battle (Trainers & bosses).** A new option, off by default, turns the Mossdeep
+  Space Center tag battle (you + Steven vs Maxie + Tabitha) into a normal battle against Tabitha alone:
+  Steven takes on Maxie while you face Tabitha as a regular boss (single or double, per your battle-format
+  settings) that prefers a sandstorm team. The number of bosses and the story after the fight are
+  unchanged, and the docs show it as a normal, non-tag boss. Off reproduces the vanilla tag battle
+  exactly. (T-165)
+
 - **Docs visibility settings.** A new config section controls what the generated documentation reveals
   — never the ROM itself, only the docs. For trainers: hide the whole Trainers tab, hide bosses or
   ordinary trainers, hide held items / natures / moves / ability / rewards, show IVs (off by default),

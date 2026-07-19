@@ -3,6 +3,31 @@
 const { applyTransform, getBossPreset, getNonBossPreset } = require('../../presets');
 const { TIER_OU, TIER_UBERS, TIER_UU, TIER_RU } = require('../../constants');
 
+// T-165 — the no-tag Tabitha boss (used when the "Disable Steven tag battle" option is on) is a full
+// 6-slot villain boss, unlike the 3-slot tag Tabitha. Owner-specified team: UBERS / OU / OU / UU / UU
+// + bossMega(OU).
+describe('getBossPreset — TABITHA_MOSSDEEP_NO_TAG (T-165)', () => {
+    test('returns 6 slots', () => {
+        expect(getBossPreset('TABITHA_MOSSDEEP_NO_TAG', true)).toHaveLength(6);
+    });
+
+    test('non-mega slots are UBERS / OU / OU / UU / UU, all checkValidEvo', () => {
+        const slots = getBossPreset('TABITHA_MOSSDEEP_NO_TAG', true);
+        const nonMega = slots.filter(s => !s.isMega);
+        expect(nonMega.map(s => s.absoluteTier)).toEqual([
+            [TIER_UBERS], [TIER_OU], [TIER_OU], [TIER_UU], [TIER_UU],
+        ]);
+        nonMega.forEach(s => expect(s.checkValidEvo).toBe(true));
+    });
+
+    test('slot 5 is a bossMega with an OU window (no Ubers mega)', () => {
+        const mega = getBossPreset('TABITHA_MOSSDEEP_NO_TAG', true).find(s => s.isMega);
+        expect(mega).toBeDefined();
+        expect(mega.absoluteTier).toContain(TIER_OU);
+        expect(mega.absoluteTier).not.toContain(TIER_UBERS);
+    });
+});
+
 describe('applyTransform', () => {
     test('shifts primary contextualTier for the eligible bottom-N slots (up)', () => {
         const team = [{ contextualTier: ['NU'] }, { contextualTier: ['RU'] }];
