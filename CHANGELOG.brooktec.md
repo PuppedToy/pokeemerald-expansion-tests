@@ -161,6 +161,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Always-crit moves are valued for their guaranteed critical hit.** Wicked Blow, Surging Strikes,
+  Storm Throw, Frost Breath, Zippy Zap and Flower Trick always land a critical hit, but the rater scored
+  them on raw power only — so Urshifu would pass over Wicked Blow. They now carry the ×1.5 crit damage
+  plus a small bonus for a crit ignoring the target's defensive boosts and screens (Reflect / Light
+  Screen / Aurora Veil), so trainers pick these signature moves as the strong options they are (T-160).
+
 - **A Pokémon never runs two status-condition moves.** A target can only ever hold one non-volatile
   status, so combos like Toxic + Will-O-Wisp or Thunder Wave + Spore were pointless. A set now keeps at
   most one status-infliction move and fills the freed slot with something useful (T-159).

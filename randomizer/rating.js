@@ -140,11 +140,16 @@ const highCritMoves = [
     'MOVE_RAZOR_SHELL',
 ];
 
+// T-160 — moves that ALWAYS land a critical hit (alwaysCriticalHit flag). Used to decline crit items
+// (Razor Claw / Scope Lens) on a mon that already crits for free; the guaranteed ×1.5 is credited to the
+// move itself in rateMove.
 const superCritMoves = [
     'MOVE_STORM_THROW',
     'MOVE_FROST_BREATH',
     'MOVE_SURGING_STRIKES',
     'MOVE_WICKED_BLOW',
+    'MOVE_FLOWER_TRICK',
+    'MOVE_ZIPPY_ZAP',
 ];
 
 const punchingMoves = [
@@ -918,7 +923,19 @@ function rateMove(move) {
     if (move.additionalEffects.includes('MOVE_EFFECT_RECHARGE')) {
         power *= 0.6;
     }
+    // T-160 — always-crit moves (Wicked Blow, Surging Strikes, Storm Throw, Frost Breath, Zippy Zap,
+    // Flower Trick) land a guaranteed critical hit: ×1.5 damage in this build (B_CRIT_MULTIPLIER = Gen 6+).
+    // Fold the guaranteed ×1.5 into effective power here; the flat reliability bonus is added after the cap.
+    const alwaysCrit = move.alwaysCriticalHit === 'TRUE';
+    if (alwaysCrit) {
+        power *= 1.5;
+    }
     let rating = Math.min(10 * power / 140, 12);
+    // T-160 — a crit also IGNORES the target's Def/SpDef boosts and screens (Reflect / Light Screen /
+    // Aurora Veil), so an always-crit move keeps working against defensive setup and screen teams. Credit
+    // that reliability with a small flat bonus on top of the ×1.5 (applied after the cap so the strongest
+    // always-crit moves, e.g. Surging Strikes, still get it).
+    if (alwaysCrit) rating += 0.5;
     const isOhko = moveEffect.includes('EFFECT_OHKO');
     if (isOhko) rating = 12;
     let accuracy = move.accuracy || 110;
