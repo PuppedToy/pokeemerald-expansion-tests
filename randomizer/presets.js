@@ -318,18 +318,6 @@ const SPLITS = [
     {
         id: 'TABITHA_CHIMNEY',
         fair: [
-            { absoluteTier: [TIER_RU], checkValidEvo: true },
-            { absoluteTier: [TIER_RU], checkValidEvo: true },
-            { absoluteTier: [TIER_RU], checkValidEvo: true },
-            { absoluteTier: [TIER_RU], checkValidEvo: true },
-            { absoluteTier: [TIER_RU], checkValidEvo: true },
-            { absoluteTier: [TIER_RU], checkValidEvo: true },
-        ],
-    },
-    {
-        id: 'MAXIE_CHIMNEY',
-        // Slot 5: Cameruptite mega (fixed)
-        fair: [
             { absoluteTier: [TIER_UU], checkValidEvo: true },
             { absoluteTier: [TIER_RU], checkValidEvo: true },
             { absoluteTier: [TIER_RU], checkValidEvo: true },

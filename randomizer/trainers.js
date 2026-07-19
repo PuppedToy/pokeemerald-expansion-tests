@@ -330,8 +330,8 @@ const genericTrainerTeamPostRusturfGrunt = () => getNonBossPreset('RUSTURF_GRUNT
 const genericTrainerTeamPostBrawly       = () => getNonBossPreset('BRAWLY');
 
 // ── PostWattson/PreFlannery (absolute tier, UU mega) ──────────────────────────
-const genericTrainerTeamPostWattson      = () => getNonBossPreset('WATTSON',        TIER_UU, true);
-const genericTrainerTeamPostMaxieChimney = () => getNonBossPreset('MAXIE_CHIMNEY',  TIER_UU, true);
+const genericTrainerTeamPostWattson        = () => getNonBossPreset('WATTSON',         TIER_UU, true);
+const genericTrainerTeamPostTabithaChimney = () => getNonBossPreset('TABITHA_CHIMNEY', TIER_UU, true);
 
 // ── Post-Flannery era (absolute tier, OU mega) ────────────────────────────────
 const genericTrainerTeamPostFlannery      = () => getNonBossPreset('FLANNERY',       TIER_OU, true);
@@ -2122,7 +2122,7 @@ const trainersData = [
         bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
         team: [
             { special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_NOIBAT'], tryEvolve: true },
-            ...genericTrainerTeamPostMaxieChimney().slice(1),
+            ...genericTrainerTeamPostTabithaChimney().slice(1),
         ],
     },
     {
@@ -2135,7 +2135,7 @@ const trainersData = [
         team: [
             { special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_NOIVERN'], tryEvolve: true },
             { special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_WOOBAT'], tryEvolve: true },
-            ...genericTrainerTeamPostMaxieChimney().slice(2),
+            ...genericTrainerTeamPostTabithaChimney().slice(2),
         ],
     },
     {
@@ -2146,7 +2146,7 @@ const trainersData = [
         level: CAP.FLANNERY,
         bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
         team: [
-            ...genericTrainerTeamPostMaxieChimney().slice(0, 5),
+            ...genericTrainerTeamPostTabithaChimney().slice(0, 5),
             { special: TRAINER_POKE_MEGA_FROM_STONE, megaStone: 'ITEM_MEGA_02' },
         ],
     },
@@ -2160,7 +2160,7 @@ const trainersData = [
         bag: getSampleItemsFromArray(magmaChimneyBag(), 10),
         team: [
             { special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_SPINDA'], tryEvolve: true },
-            ...genericTrainerTeamPostMaxieChimney().slice(1),
+            ...genericTrainerTeamPostTabithaChimney().slice(1),
         ],
     },
     {
@@ -2173,7 +2173,7 @@ const trainersData = [
         team: [
             { special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_BIDOOF'], tryEvolve: true },
             { special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_BIBAREL'], tryEvolve: true },
-            ...genericTrainerTeamPostMaxieChimney().slice(2),
+            ...genericTrainerTeamPostTabithaChimney().slice(2),
         ],
     },
     // Route 114
@@ -2186,7 +2186,7 @@ const trainersData = [
         bag: getSampleItemsFromArray(magmaChimneyBag(), 11),
         team: [
             { special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_SWABLU'], tryEvolve: true },
-            ...genericTrainerTeamPostMaxieChimney().slice(1),
+            ...genericTrainerTeamPostTabithaChimney().slice(1),
         ],
     },
     {
@@ -2199,7 +2199,7 @@ const trainersData = [
         team: [
             { special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_ALTARIA'], tryEvolve: true },
             { special: TRAINER_POKE_ENCOUNTER, encounterIds: ['SPECIES_SPOINK'], tryEvolve: true },
-            ...genericTrainerTeamPostMaxieChimney().slice(2),
+            ...genericTrainerTeamPostTabithaChimney().slice(2),
         ],
     },
     {
@@ -2209,7 +2209,7 @@ const trainersData = [
         reward: [...choiceWiltonTMs],
         level: CAP.FLANNERY,
         bag: [...choiceWiltonTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 9)],
-        team: genericTrainerTeamPostMaxieChimney(),
+        team: genericTrainerTeamPostTabithaChimney(),
     },
     {
         id: 'TRAINER_SHAYLA',
@@ -2218,7 +2218,7 @@ const trainersData = [
         reward: ['Nugget'],
         level: CAP.FLANNERY,
         bag: ['Nugget', ...getSampleItemsFromArray(magmaChimneyBag(), 10)],
-        team: genericTrainerTeamPostMaxieChimney(),
+        team: genericTrainerTeamPostTabithaChimney(),
     },
     {
         id: 'TRAINER_CHARLOTTE',
@@ -2227,7 +2227,7 @@ const trainersData = [
         reward: [...choiceCharlotteTMs],
         level: CAP.FLANNERY,
         bag: [...choiceCharlotteTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 9)],
-        team: genericTrainerTeamPostMaxieChimney(),
+        team: genericTrainerTeamPostTabithaChimney(),
     },
     {
         id: 'TRAINER_NOLAN',
@@ -2236,7 +2236,7 @@ const trainersData = [
         reward: [...choiceNolanTMs],
         level: CAP.FLANNERY,
         bag: [...choiceNolanTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 9)],
-        team: genericTrainerTeamPostMaxieChimney(),
+        team: genericTrainerTeamPostTabithaChimney(),
     },
     {
         id: 'TRAINER_ANGELINA',
@@ -2245,7 +2245,7 @@ const trainersData = [
         reward: [...choiceAngelinaTMs],
         level: CAP.FLANNERY,
         bag: [...choiceAngelinaTMs, ...getSampleItemsFromArray(magmaChimneyBag(), 9)],
-        team: genericTrainerTeamPostMaxieChimney(),
+        team: genericTrainerTeamPostTabithaChimney(),
     },
     {
         id: 'TRAINER_WYATT',
@@ -2254,7 +2254,7 @@ const trainersData = [
         reward: [route114WyattGoodItem],
         level: CAP.FLANNERY,
         bag: [route114WyattGoodItem, ...getSampleItemsFromArray(magmaChimneyBag(), 10)],
-        team: genericTrainerTeamPostMaxieChimney(),
+        team: genericTrainerTeamPostTabithaChimney(),
     },
     // Flannery Gym
     {
