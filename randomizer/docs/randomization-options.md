@@ -57,6 +57,17 @@ SoT: `randomizer/trainers.js` `getTrainersData` (threaded via `runTrainersModule
 | `championTypeChangeChance` | 0.05 | probability (0‑1) the champion (Steven) also gets a randomized type; otherwise he keeps Steel. All Steven battles (Granite Cave, partner, champion) run the resulting type. |
 | `aquaTypes` | Water, Dark, Poison, Ice, **Random** | Team Aqua's 5 type slots (main, secondary, other 1‑3); each a type or `RANDOM`. |
 | `magmaTypes` | Fire, Ground, Rock, Grass, **Random** | Team Magma's 5 type slots. |
+| `disableStevenTagBattle` | `false` | on ⇒ the Mossdeep Space Center tag battle (player + Steven vs Maxie + Tabitha) becomes a solo boss vs `TRAINER_TABITHA_MOSSDEEP_NO_TAG` (T-165). See below. |
+
+**Disable Steven tag battle (T-165).** Default off. When on, `getTrainersData` drops the tag trio
+(`TRAINER_MAXIE_MOSSDEEP`, `TRAINER_TABITHA_MOSSDEEP`, `PARTNER_STEVEN`) and adds a normal 6‑mon boss
+`TRAINER_TABITHA_MOSSDEEP_NO_TAG` (own sandstorm seed, no partner-weather abuse; UBERS/OU/OU/UU/UU +
+`bossMega(OU)`). It is a regular boss, so the battle-format settings give it singles or doubles like any
+other; the docs show it as a normal (non-tag) boss and omit the tag battle. The Space Center milestone is
+unchanged (`bossCaps` maps the flag to the no-tag trainer too). In-game the map script is VAR-gated
+(`VAR_DISABLE_STEVEN_TAG_BATTLE`), flipped per-ROM by `stevenTagWriter.js`; Steven takes Maxie off-screen
+while the player fights Tabitha, and the story after the win is identical. **Off ⇒ byte-identical** (the
+no-tag boss never enters the run, so no extra RNG draws).
 
 **Unified boss type pool (T-076).** The 13 typed bosses (8 gyms + 4 E4 + champion) share one pool.
 Fixed bosses keep their canonical type; the pool is every type *not* claimed by a fixed boss; each

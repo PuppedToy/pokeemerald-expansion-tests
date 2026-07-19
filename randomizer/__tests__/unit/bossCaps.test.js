@@ -98,6 +98,22 @@ describe('SSOT integrity against the real src/caps.c', () => {
     });
 });
 
+describe('T-165: solo no-tag Tabitha shares the Space Center milestone', () => {
+    const capsC = fs.readFileSync(path.resolve(__dirname, '../../../src/caps.c'), 'utf8');
+
+    test('TRAINER_TABITHA_MOSSDEEP_NO_TAG is listed under FLAG_DEFEATED_MAGMA_SPACE_CENTER', () => {
+        const entry = BOSS_CAP_TRAINERS.FLAG_DEFEATED_MAGMA_SPACE_CENTER;
+        expect(entry.trainers).toContain('TRAINER_TABITHA_MOSSDEEP_NO_TAG');
+        // the tag pair stays, so the OFF path is unchanged
+        expect(entry.trainers).toContain('TRAINER_MAXIE_MOSSDEEP');
+        expect(entry.trainers).toContain('TRAINER_TABITHA_MOSSDEEP');
+    });
+
+    test('adding the no-tag trainer does NOT add a milestone — the 1-to-1 flag join still holds', () => {
+        expect(() => buildBossCaps(capsC, BOSS_CAP_TRAINERS)).not.toThrow();
+    });
+});
+
 describe('T-148: Maxie – Mt Chimney is no longer a level-cap boss', () => {
     const capsC = fs.readFileSync(path.resolve(__dirname, '../../../src/caps.c'), 'utf8');
 

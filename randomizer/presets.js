@@ -454,6 +454,21 @@ const SPLITS = [
             bossMega(TIER_OU),
         ],
     },
+    {
+        // T-165 — Tabitha's SOLO Space Center boss, used when the "Disable Steven tag battle" option is on
+        // (Steven takes Maxie off-screen; the player fights Tabitha alone). A full 6-slot villain boss (the
+        // tag TABITHA_MOSSDEEP above is only 3), with its OWN sandstorm seed (no partner weather to abuse).
+        // Slot 5: mega (fixed).
+        id: 'TABITHA_MOSSDEEP_NO_TAG',
+        fair: [
+            { absoluteTier: [TIER_UBERS], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_OU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            { absoluteTier: [TIER_UU], checkValidEvo: true },
+            bossMega(TIER_OU),
+        ],
+    },
 
     // ── Late gym leaders & villain bosses ────────────────────────────────────
     {

@@ -125,6 +125,7 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
     const { writeMoney }                = require('./randomizer/moneyWriter');
     const { writeItemPrices }           = require('./randomizer/itemPriceWriter');
     const { writeRunAndBunVars }        = require('./randomizer/runAndBunWriter');
+    const { writeStevenTagVar }         = require('./randomizer/stevenTagWriter');
     const { writeLocationNames }        = require('./randomizer/locationNameWriter');
     const { emitArtifact, resolveVanillaPath } = require('./randomizer/romArtifact');
 
@@ -156,6 +157,9 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
         // T-091/ADR-014 — preset the League Run & Bun mode gate + E4 quotas from the run config
         // into Sidney's room init script (restored by restore() after build).
         await writeRunAndBunVars(bundle.config);
+        // T-165 — flip the Mossdeep Space Center tag-battle gate (solo Tabitha boss when the option is on;
+        // restored by restore() after build).
+        await writeStevenTagVar(bundle.config);
         // T-070 — per-ROM location→nickname table (per-ROM, never shared; restored by restore()).
         await writeLocationNames(rom.artifacts.locationNaming || null);
         run('make', ['-j', String(jobs)]);

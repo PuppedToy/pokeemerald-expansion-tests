@@ -34,6 +34,9 @@ const TRAINER_SEEDS = {
     TRAINER_TABITHA_MT_CHIMNEY: WEATHER_SAND,
     TRAINER_TABITHA_MAGMA_HIDEOUT: WEATHER_SAND,
     TRAINER_TABITHA_MOSSDEEP: WEATHER_SAND,
+    // T-165 — the SOLO Space Center Tabitha (no-tag option). Unlike the tag TABITHA_MOSSDEEP, she has no
+    // partner weather to abuse, so she builds her OWN sandstorm.
+    TRAINER_TABITHA_MOSSDEEP_NO_TAG: WEATHER_SAND,
     // TRAINER_MAXIE_MT_CHIMNEY removed (T-149 — he's gone; battle dropped in T-148).
     TRAINER_MAXIE_MAGMA_HIDEOUT: WEATHER_SUN,
     TRAINER_MAXIE_MOSSDEEP: WEATHER_SUN,

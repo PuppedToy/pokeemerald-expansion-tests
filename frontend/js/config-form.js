@@ -278,6 +278,7 @@ const DEFAULTS = {
     championTypeChangeChance: 0.05, // T-076 — probability the champion (Steven) gets a randomized type
     aquaTypes: ['WATER', 'DARK', 'POISON', 'ICE', 'RANDOM'],   // main, secondary, other 1..3
     magmaTypes: ['FIRE', 'GROUND', 'ROCK', 'GRASS', 'RANDOM'],
+    disableStevenTagBattle: false, // T-165 — Mossdeep tag battle → solo Tabitha boss when on
     // T-068/T-070 — nicknames (starters + location-based), default OFF
     nicknames: NICKNAMES_DEFAULT,
 };
@@ -380,6 +381,7 @@ export class ConfigForm {
         const championTypeChangeChance = this._intField('#champion-type-change-pct', 5, 0, 100) / 100;
         const aquaTypes = this._readTeamTypes('aqua');
         const magmaTypes = this._readTeamTypes('magma');
+        const disableStevenTagBattle = this._q('#disable-steven-tag-battle')?.checked === true; // T-165
         const extraStarters = (this._starterSpecs || []).map(s => ({ ...s }));
         const starterQualityRaw = (this._q('#starter-quality') || {}).value;
         const starterQuality = EXTRA_STARTER_TIER_OPTIONS.includes(starterQualityRaw) ? starterQualityRaw : 'UU';
@@ -387,7 +389,7 @@ export class ConfigForm {
         const prices = this._readPrices();
         const base = { runType, battleFormat, singlesPercent, leagueRunAndBun, mixedSequentialSplit, wildEncounterType, pokemonPerZone, difficulty, rebalance, balanceChance,
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs, evoLevels,
-            money, prices, starterQuality, extraStarters, seed, docsVisibility, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, nicknames };
+            money, prices, starterQuality, extraStarters, seed, docsVisibility, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, disableStevenTagBattle, nicknames };
 
         if (runType === 'nuzlocke') {
             // T-081 — clamp to the field's documented range (matches the input's min/max) so a
@@ -471,6 +473,7 @@ export class ConfigForm {
         this._q('#champion-type-change-pct').value = Math.round((cfg.championTypeChangeChance ?? 0.05) * 100);
         this._setTeamTypes('aqua', cfg.aquaTypes ?? DEFAULTS.aquaTypes);
         this._setTeamTypes('magma', cfg.magmaTypes ?? DEFAULTS.magmaTypes);
+        const dstb = this._q('#disable-steven-tag-battle'); if (dstb) dstb.checked = cfg.disableStevenTagBattle === true; // T-165
         this._setNicknames(cfg.nicknames);
 
         if (runType === 'nuzlocke') {
@@ -1122,6 +1125,15 @@ export class ConfigForm {
       </div>
     </div>
     <div class="card-glass" style="padding:20px;margin-top:16px">
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Disable Steven tag battle</div>
+          <div class="toggle-desc">Turns the Mossdeep Space Center tag battle (you + Steven vs Maxie + Tabitha) into a normal battle against Tabitha alone. Steven takes on Maxie while you face Tabitha as a regular boss (single or double, per your battle-format settings); the number of bosses and the story after the fight are unchanged.</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="disable-steven-tag-battle"><span class="toggle-track"></span></label>
+      </div>
+    </div>
+    <div class="card-glass" style="padding:20px;margin-top:16px">
       <div class="section-title">Team Aqua types</div>
       <div class="type-slot-grid">${teamTypeSelectors('aqua', DEFAULTS.aquaTypes)}</div>
       <span class="field-hint">Each slot is a fixed type or Random (rolled per run). Team Aqua trainers field Pokémon of these types; the main + secondary drive their card colour.</span>
@@ -1639,6 +1651,7 @@ export class ConfigForm {
         this._q('#gyms-type-changed').addEventListener('input', onChange);
         this._q('#e4-type-changed').addEventListener('input', onChange);
         this._q('#champion-type-change-pct').addEventListener('input', onChange);
+        this._q('#disable-steven-tag-battle')?.addEventListener('change', onChange); // T-165
         this._q('#reward-normal').addEventListener('input', onChange);
         this._q('#reward-boss').addEventListener('input', onChange);
         this._q('#reward-gym').addEventListener('input', onChange);

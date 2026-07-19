@@ -4,6 +4,9 @@ MossdeepCity_SpaceCenter_2F_MapScripts::
 	.byte 0
 
 MossdeepCity_SpaceCenter_2F_OnTransition:
+@ T-165 — randomizer gate for the "Disable Steven tag battle" option. Default 0 (the vanilla tag battle);
+@ the maker (randomizer/stevenTagWriter.js) flips this literal to 1 per-ROM to run the solo Tabitha boss.
+	setvar VAR_DISABLE_STEVEN_TAG_BATTLE, 0
 	call_if_eq VAR_MOSSDEEP_CITY_STATE, 2, MossdeepCity_SpaceCenter_2F_EventScript_MoveCivilians
 	call_if_eq VAR_MOSSDEEP_SPACE_CENTER_STATE, 2, MossdeepCity_SpaceCenter_2F_EventScript_MoveDefeatedGrunts
 	end
@@ -225,6 +228,9 @@ MossdeepCity_SpaceCenter_2F_Movement_StevenFightSouth:
 MossdeepCity_SpaceCenter_2F_EventScript_ReadyForBattlePrompt::
 	applymovement VAR_LAST_TALKED, Common_Movement_FacePlayer
 	waitmovement 0
+@ T-165 — with the "Disable Steven tag battle" option on, Steven takes Maxie and the player fights Tabitha
+@ alone (a normal boss). Otherwise the vanilla multi_2_vs_2 tag battle runs.
+	goto_if_eq VAR_DISABLE_STEVEN_TAG_BATTLE, 1, MossdeepCity_SpaceCenter_2F_EventScript_ReadyForSoloTabithaPrompt
 	msgbox MossdeepCity_SpaceCenter_2F_Text_StevenAreYouReadyToBattle, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, YES, MossdeepCity_SpaceCenter_2F_EventScript_ChoosePartyForMultiBattle
 	msgbox MossdeepCity_SpaceCenter_2F_Text_StevenHurryGetReadyQuickly, MSGBOX_DEFAULT
@@ -232,6 +238,24 @@ MossdeepCity_SpaceCenter_2F_EventScript_ReadyForBattlePrompt::
 	applymovement VAR_LAST_TALKED, Common_Movement_WalkInPlaceFasterDown
 	waitmovement 0
 	releaseall
+	end
+
+@ T-165 — solo path: Steven splits the villains (he takes Maxie), the player faces Tabitha alone. Battle
+@ format (single/double) follows the trainer's .party header, set by the maker from the battle-format
+@ settings. On victory it joins the exact same aftermath as the tag battle (DefeatedMaxieTabitha).
+MossdeepCity_SpaceCenter_2F_EventScript_ReadyForSoloTabithaPrompt::
+	msgbox MossdeepCity_SpaceCenter_2F_Text_StevenSplitTargets, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, YES, MossdeepCity_SpaceCenter_2F_EventScript_DoSoloTabithaBattle
+	msgbox MossdeepCity_SpaceCenter_2F_Text_StevenHurryGetReadyQuickly, MSGBOX_DEFAULT
+	closemessage
+	applymovement VAR_LAST_TALKED, Common_Movement_WalkInPlaceFasterDown
+	waitmovement 0
+	releaseall
+	end
+
+MossdeepCity_SpaceCenter_2F_EventScript_DoSoloTabithaBattle::
+	trainerbattle_no_intro TRAINER_TABITHA_MOSSDEEP_NO_TAG, MossdeepCity_SpaceCenter_Text_TabithaDefeat
+	goto MossdeepCity_SpaceCenter_2F_EventScript_DefeatedMaxieTabitha
 	end
 
 MossdeepCity_SpaceCenter_2F_EventScript_ChoosePartyForMultiBattle::
@@ -454,6 +478,13 @@ MossdeepCity_SpaceCenter_2F_Text_StevenAreYouReadyToBattle:
 MossdeepCity_SpaceCenter_2F_Text_StevenHurryGetReadyQuickly:
 	.string "STEVEN: Then, hurry!\n"
 	.string "Get ready quickly!$"
+
+@ T-165 — solo-battle prompt (Steven splits the villains: he takes MAXIE, you take TABITHA).
+MossdeepCity_SpaceCenter_2F_Text_StevenSplitTargets:
+	.string "STEVEN: {PLAYER}{KUN}!\n"
+	.string "Leave MAXIE to me.\p"
+	.string "You take on TABITHA!\n"
+	.string "Are you ready?$"
 
 MossdeepCity_SpaceCenter_2F_Text_JustWantToExpandLand:
 	.string "All I want…\n"

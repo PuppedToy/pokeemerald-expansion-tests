@@ -225,7 +225,7 @@ test('Mutations Advanced panel exposes every probability knob (Step 6)', () => {
 test('new option keys round-trip through DEFAULTS, getConfig and setConfig', () => {
   const workerSrc = fs.readFileSync(path.join(FE, 'js', 'randomizer-worker.cjs'), 'utf8');
   for (const key of ['gymsTypeChanged', 'e4TypeChanged', 'championTypeChangeChance', 'mutateStats', 'mutateAbilities', 'mutateTypes',
-    'mutateLearnsets', 'mutationProbs', 'evoLevels', 'extraStarters', 'starterQuality', 'aquaTypes', 'magmaTypes', 'nicknames']) {
+    'mutateLearnsets', 'mutationProbs', 'evoLevels', 'extraStarters', 'starterQuality', 'aquaTypes', 'magmaTypes', 'disableStevenTagBattle', 'nicknames']) {
     // defaults block + read (getConfig base) + restore (setConfig) + worker forwarding
     const occurrences = (src.match(new RegExp(key, 'g')) || []).length;
     assert.ok(occurrences >= 3, `${key} must appear in DEFAULTS, getConfig and setConfig (found ${occurrences})`);
