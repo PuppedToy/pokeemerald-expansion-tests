@@ -512,6 +512,10 @@ function reviewRowsHtml(cfg) {
     rows.push(['Champion type-change chance', `${Math.round((cfg.championTypeChangeChance ?? 0.05) * 100)}%`]);
     if (cfg.aquaTypes) rows.push(['Team Aqua', fmtTypes(cfg.aquaTypes)]);
     if (cfg.magmaTypes) rows.push(['Team Magma', fmtTypes(cfg.magmaTypes)]);
+    // T-162 — wild encounters.
+    rows.push(['Wild encounters', cfg.wildEncounterType === 'classic'
+        ? `Classic (${cfg.pokemonPerZone ?? 5} per zone)`
+        : 'Deterministic (1 per zone)']);
     rows.push(['Evolution levels', cfg.evoLevels && cfg.evoLevels.enabled === false ? 'Base game' : 'Adjusted']);
     const money = cfg.money || {};
     rows.push(['Reward money', `$${money.normal ?? 250} / $${money.boss ?? 3000} / $${money.gym ?? 5000}`]);

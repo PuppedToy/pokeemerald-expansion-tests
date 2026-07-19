@@ -122,6 +122,8 @@ These are regenerated from source on every run; committing them pollutes history
 | `items.md` | All item categories/pools (fixed, `goodItemPool`, `averageItemPool`, `plates`, `gems`, `protectionBerries`, `fullItemPool`) and every world location with flag, pool, trainer bag cascade. |
 | `teachables.md` | Per-run TM teachable expansion: algorithm, constants, data fields (`newTeachables`/`oldTeachables`), viewer surfacing. |
 | `trainer-determinism.md` | How shared-trainer teams stay consistent across a bundle's ROMs (per-slot reseeding) and the known, deliberately-unfixed family-dedup limitation. |
+| `wild-encounters.md` | Wild-encounter generation: the sweep ("batidas") algorithm, `deterministic` vs `classic` (variable species per zone), the template-keyed plan and structural JSON writer. |
+| `randomization-options.md` | Every frontend config option and how it threads to the pipeline (categories, defaults, RNG caveat). |
 
 ## Documentation
 

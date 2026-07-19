@@ -286,3 +286,33 @@ test('T-085: runAndBunE4Split rounds %singles×4 and clamps to 1–3 (always one
   assert.deepEqual(runAndBunE4Split(75),  { singles: 3, doubles: 1 });   // round(3.0)=3
   assert.deepEqual(runAndBunE4Split(40),  { singles: 2, doubles: 2 });   // round(1.6)=2
 });
+
+// ── T-162 — Wild encounters (deterministic / classic) ───────────────────────────
+
+test('T-162: Wild encounters category renders two boxes (deterministic default)', () => {
+  assert.match(src, /data-cat="wild-encounters"/, 'Wild encounters category must exist');
+  assert.match(src, /name="wild-encounter-type"[^>]*value="deterministic"[^>]*checked/, 'deterministic box, checked by default');
+  assert.match(src, /name="wild-encounter-type"[^>]*value="classic"/, 'classic box');
+  // Two-up layout: the base radio-card-group (not the -3 modifier) is a left/right pair.
+  const idx = src.indexOf('data-cat="wild-encounters"');
+  assert.match(src.slice(idx, idx + 900), /class="radio-card-group"/, 'two-box (2-up) layout for wild type');
+});
+
+test('T-162: Classic reveals a run-panel with the "Pokémon per zone" input (default 5, 1–12)', () => {
+  assert.match(src, /id="wild-classic-panel"[^>]*class="run-panel/, '#wild-classic-panel is a run-panel box');
+  assert.match(src, /id="pokemon-per-zone"[^>]*value="5"[^>]*min="1"[^>]*max="12"/, 'pokemon-per-zone input default 5, range 1–12');
+  assert.match(src, /#wild-classic-panel'\)[^\n]*classList\.toggle\('hidden'/, 'the box is shown only for the classic type');
+});
+
+test('T-162: wild-encounter keys round-trip through DEFAULTS/getConfig/setConfig and both engines', () => {
+  const workerSrc = fs.readFileSync(path.join(FE, 'js', 'randomizer-worker.cjs'), 'utf8');
+  const backendSrc = fs.readFileSync(path.join(FE, '..', 'backend', 'generator.js'), 'utf8');
+  for (const key of ['wildEncounterType', 'pokemonPerZone']) {
+    const occurrences = (src.match(new RegExp(key, 'g')) || []).length;
+    assert.ok(occurrences >= 3, `${key} must appear in DEFAULTS, getConfig and setConfig (found ${occurrences})`);
+    assert.match(workerSrc, new RegExp(key), `browser worker toModuleConfig must forward ${key}`);
+    assert.match(backendSrc, new RegExp(key), `backend generator toModuleConfig must forward ${key}`);
+  }
+  assert.match(src, /wildEncounterType:\s*'deterministic'/, 'default deterministic');
+  assert.match(src, /pokemonPerZone:\s*5/, 'default 5');
+});

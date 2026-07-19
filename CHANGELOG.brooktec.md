@@ -9,6 +9,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Wild encounter type: Deterministic or Classic.** A new option lets each zone hold either a single
+  predictable Pokémon per method (**Deterministic**, the default — you can tell exactly what every
+  route, cave and rod gives you) or several (**Classic**, with a "Pokémon per zone" count, default 5 —
+  you never know which you'll meet, like the original games). Encounters are now generated in sweeps
+  across all zones to keep duplication minimal and spread out, drawing from tier/evo pools that
+  regenerate only when exhausted. The super rod (shared across zones) and static/legendary encounters
+  are unaffected. (T-162)
+
 - **Type: Null and Silvally are back**, with Silvally unified onto the same mechanic as Arceus: it now
   has Multitype and changes type with a held **Plate** (instead of RKS System + Memories), and its
   signature move Multi-Attack becomes the Plate's type. It gets the same trainer/rating treatment as

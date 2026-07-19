@@ -204,6 +204,10 @@ const DEFAULTS = {
     singlesPercent: 60,
     leagueRunAndBun: false,
     mixedSequentialSplit: false,   // T-146/ADR-018 — first half singles / second half doubles (mixed only)
+    // T-162 — wild encounters. 'deterministic' = 1 predictable species per zone; 'classic' = several
+    // per zone (random which you meet). pokemonPerZone only applies to 'classic'.
+    wildEncounterType: 'deterministic',
+    pokemonPerZone: 5,
     difficulty: 7,
     rebalance: true,
     balanceChance: 0.2,
@@ -302,6 +306,9 @@ export class ConfigForm {
         const singlesPercent = this._intField('#singles-percent', 60, 0, 100);
         const leagueRunAndBun = this._q('#league-runandbun')?.checked === true;
         const mixedSequentialSplit = this._q('#mixed-sequential-split')?.checked === true;   // T-146/ADR-018
+        // T-162 — wild encounters.
+        const wildEncounterType = this._q('input[name="wild-encounter-type"]:checked')?.value ?? 'deterministic';
+        const pokemonPerZone = this._intField('#pokemon-per-zone', 5, 1, 12);
         const difficulty = parseInt(this._q('#difficultySlider')?.value ?? '7', 10);
         const rebalance = this._q('#rebalance').checked;
         const balanceChance = rebalance
@@ -335,7 +342,7 @@ export class ConfigForm {
         const starterQuality = EXTRA_STARTER_TIER_OPTIONS.includes(starterQualityRaw) ? starterQualityRaw : 'UU';
         const nicknames = this._readNicknames();
         const prices = this._readPrices();
-        const base = { runType, battleFormat, singlesPercent, leagueRunAndBun, mixedSequentialSplit, difficulty, rebalance, balanceChance,
+        const base = { runType, battleFormat, singlesPercent, leagueRunAndBun, mixedSequentialSplit, wildEncounterType, pokemonPerZone, difficulty, rebalance, balanceChance,
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs, evoLevels,
             money, prices, starterQuality, extraStarters, seed, showExactPositions, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, nicknames };
 
@@ -387,6 +394,11 @@ export class ConfigForm {
         const sp = this._q('#singles-percent'); if (sp) sp.value = cfg.singlesPercent ?? 60;
         const rb = this._q('#league-runandbun'); if (rb) rb.checked = cfg.leagueRunAndBun === true;
         const ms = this._q('#mixed-sequential-split'); if (ms) ms.checked = cfg.mixedSequentialSplit === true;   // T-146
+
+        // T-162 — wild encounters.
+        const wet = this._q(`input[name="wild-encounter-type"][value="${cfg.wildEncounterType ?? 'deterministic'}"]`);
+        if (wet) wet.checked = true;
+        const ppz = this._q('#pokemon-per-zone'); if (ppz) ppz.value = cfg.pokemonPerZone ?? 5;
 
         const slider = this._q('#difficultySlider');
         if (slider) slider.value = cfg.difficulty ?? 7;
@@ -848,6 +860,38 @@ export class ConfigForm {
   </div>
 </section>
 
+<section class="config-category" data-cat="wild-encounters">
+  <button type="button" class="config-cat-header" aria-expanded="true" aria-controls="cat-body-wild-encounters">
+    <span class="config-cat-title">Wild encounters</span><span class="config-cat-arrow">▶</span>
+  </button>
+  <div class="config-cat-body" id="cat-body-wild-encounters">
+  <div class="radio-card-group">
+    <label class="radio-card">
+      <input type="radio" name="wild-encounter-type" id="wild-deterministic" value="deterministic" checked>
+      <div class="radio-card-body">
+        <div class="radio-card-title">Deterministic</div>
+        <div class="radio-card-desc">One Pokémon per zone and method. Each run you can predict exactly which encounter every route, cave and rod gives you.</div>
+      </div>
+    </label>
+    <label class="radio-card">
+      <input type="radio" name="wild-encounter-type" id="wild-classic" value="classic">
+      <div class="radio-card-body">
+        <div class="radio-card-title">Classic</div>
+        <div class="radio-card-desc">Several Pokémon per zone, like the original games — you never know which of them you'll meet.</div>
+      </div>
+    </label>
+  </div>
+
+  <div id="wild-classic-panel" class="run-panel hidden">
+    <div class="coop-numroms">
+      <label for="pokemon-per-zone">Pokémon per zone</label>
+      <input type="number" id="pokemon-per-zone" class="input" value="5" min="1" max="12" style="width:72px">
+    </div>
+    <span class="field-hint" style="margin:6px 0 0">How many different species fill each zone (capped per method: grass up to 12, surf up to 5, old rod up to 2, good rod up to 3). Species are spread to be roughly equally likely. The super rod and static/legendary encounters are unaffected.</span>
+  </div>
+  </div>
+</section>
+
 <section class="config-category" data-cat="difficulty">
   <button type="button" class="config-cat-header" aria-expanded="true" aria-controls="cat-body-difficulty">
     <span class="config-cat-title">Difficulty</span><span class="config-cat-arrow">▶</span>
@@ -1246,6 +1290,10 @@ export class ConfigForm {
         // ingame E4 split derived from the chosen %.
         const battleFormat = this._q('input[name="battle-format"]:checked')?.value ?? 'singles';
         const mixedPanel = this._q('#mixed-panel'); if (mixedPanel) mixedPanel.classList.toggle('hidden', battleFormat !== 'mixed');
+
+        // T-162 — reveal the "Pokémon per zone" input only for the classic wild-encounter type.
+        const wildType = this._q('input[name="wild-encounter-type"]:checked')?.value ?? 'deterministic';
+        const wildPanel = this._q('#wild-classic-panel'); if (wildPanel) wildPanel.classList.toggle('hidden', wildType !== 'classic');
         const rbDesc = this._q('#league-runandbun-desc');
         if (rbDesc) {
             const { singles, doubles } = runAndBunE4Split(parseInt(this._q('#singles-percent')?.value ?? '60', 10));
@@ -1360,6 +1408,9 @@ export class ConfigForm {
         this._q('#singles-percent')?.addEventListener('input', onChange);
         this._q('#league-runandbun')?.addEventListener('change', onChange);
         this._q('#mixed-sequential-split')?.addEventListener('change', onChange);   // T-146
+        // T-162 — wild encounter type + per-zone count.
+        this.container.querySelectorAll('input[name="wild-encounter-type"]').forEach(el => el.addEventListener('change', onChange));
+        this._q('#pokemon-per-zone')?.addEventListener('input', onChange);
         this._q('#nz-numroms').addEventListener('input', onChange);
         this._q('#nz-share-pokedex').addEventListener('change', onChange);
         this._q('#nz-share-trainers').addEventListener('change', onChange);

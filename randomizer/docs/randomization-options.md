@@ -97,6 +97,18 @@ Each slot = `{ tier, kind, lineLength }`:
 Default: `UBERS·line·3`, `OU·line·3`, `UU·line·any`, `NU·solo`, then `RU·line·any` ×5.
 Unsatisfiable slots are skipped; the written C count (`STARTER_EXTRA_COUNT`) auto-sizes.
 
+### Wild encounters (T-162)
+SoT: `randomizer/modules/wildModule.js` `buildWildPlan` + `randomizer/writer.js`
+`applyWildPlanToEncounters` (see `wild-encounters.md`). Threaded via `runWildModule(..., mcfg)`.
+
+| Config key | Default | Effect |
+|---|---|---|
+| `wildEncounterType` | `deterministic` | `deterministic` = 1 predictable species per zone/method; `classic` = several per zone (random which you meet). |
+| `pokemonPerZone` | 5 | classic only — species per zone, capped per method (land ≤12, surf ≤5, old ≤2, good ≤3). Revealed by the classic box. |
+
+Super rod and static/legendary encounters are unchanged in both modes. Changes the number/order of RNG
+draws, so a given seed's whole ROM differs from the pre-T-162 output (expected).
+
 ### General
 `seed` (blank = random) and `showExactPositions` (docs display). The old generic "Advanced" block was
 removed; Advanced sub-panels now live only under **Pokémon mutations** and **Evolution levels**.

@@ -311,11 +311,14 @@ describe('runWildModule — wild replacements', () => {
         expect(wildRouteKeys).toHaveLength(0);
     });
 
+    // T-162 — wild generation is now maps-driven (per-zone sweep), not replacements-driven: a
+    // template only gets a pick when it sits in a map slot. The pick must still come from the
+    // template's tier/evo pool, and now also lands in wildPlan.
     test('replacement picks from the matching tier pool', () => {
         const { runWildModule } = require('../../modules/wildModule');
         const wildConfig = {
             file: null,
-            maps: [],
+            maps: [{ id: 'MAP_TEST', land: 'SPECIES_OLD_PLACEHOLDER' }],
             replacementTypes: {
                 LC_WEAK: { replace: ['NU'], type: ['EVO_TYPE_LC'], hasMega: false, megaTiers: null },
             },
@@ -332,9 +335,10 @@ describe('runWildModule — wild replacements', () => {
 
         rng.seed(1);
         const pool = [...extendedPokemonList, NU_LC];
-        const { replacementLog } = runWildModule(pool, startersArtifact, wildConfig);
+        const { replacementLog, wildPlan } = runWildModule(pool, startersArtifact, wildConfig);
         expect(replacementLog).toHaveProperty('SPECIES_OLD_PLACEHOLDER');
         const replacementId = replacementLog['SPECIES_OLD_PLACEHOLDER'];
+        expect(wildPlan['SPECIES_OLD_PLACEHOLDER']).toEqual([replacementId]);
         const replacementPoke = pool.find(p => p.id === replacementId);
         expect(replacementPoke).toBeDefined();
         expect(replacementPoke.rating.bestEvoTier).toBe('NU');
