@@ -300,7 +300,8 @@ test('T-162: Wild encounters category renders two boxes (deterministic default)'
 
 test('T-162: Classic reveals a run-panel with the "Pokémon per zone" input (default 5, 1–12)', () => {
   assert.match(src, /id="wild-classic-panel"[^>]*class="run-panel/, '#wild-classic-panel is a run-panel box');
-  assert.match(src, /id="pokemon-per-zone"[^>]*value="5"[^>]*min="1"[^>]*max="12"/, 'pokemon-per-zone input default 5, range 1–12');
+  // min 2: classic with 1 species/zone would just be Deterministic; max 12 = the land encounter-slot count.
+  assert.match(src, /id="pokemon-per-zone"[^>]*value="5"[^>]*min="2"[^>]*max="12"/, 'pokemon-per-zone input default 5, range 2-12');
   assert.match(src, /#wild-classic-panel'\)[^\n]*classList\.toggle\('hidden'/, 'the box is shown only for the classic type');
 });
 

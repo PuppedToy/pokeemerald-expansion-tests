@@ -618,3 +618,32 @@ describe('runWildModule — cosmetic multi-form dedup (T-063)', () => {
         expect(pumpkaboo.length).toBeLessThanOrEqual(1);
     });
 });
+
+// ── T-162 — deterministic ≡ classic with 1 Pokémon per zone ────────────────────
+// The ONLY effect of wildEncounterType is to set pokemonPerZone (deterministic → 1). Both modes
+// reduce to buildWildPlan(..., pokemonPerZone: 1), so for a given seed they are byte-identical.
+describe('runWildModule — deterministic equals classic N=1 (T-162)', () => {
+    test('deterministic and classic pokemonPerZone=1 give the identical wild plan (same seed)', () => {
+        const { runWildModule } = require('../../modules/wildModule');
+        const wildConfig = {
+            file: null,
+            maps: [{ id: 'MAP_TEST', land: 'SPECIES_T1', surf: 'SPECIES_T2' }],
+            replacementTypes: { LC_WEAK: { replace: ['NU'], type: ['EVO_TYPE_LC'] } },
+            replacements: { SPECIES_T1: 'LC_WEAK', SPECIES_T2: 'LC_WEAK' },
+        };
+        const cands = ['A', 'B', 'C', 'D', 'E'].map(x => makePoke(`SPECIES_NULC_${x}`, `P_FAMILY_NULC_${x}`, ['BUG'], {
+            evolutionData: { type: 'EVO_TYPE_LC', isLC: true, isMega: false, isFinal: false, isNFE: false, megaEvos: [] },
+            rating: { bestEvoTier: 'NU', tier: 'PU', bestEvoRating: 5 },
+        }));
+        const pool = [...extendedPokemonList, ...cands];
+
+        rng.seed(4242);
+        const det = runWildModule([...pool], startersArtifact, wildConfig, { wildEncounterType: 'deterministic' });
+        rng.seed(4242);
+        const cls1 = runWildModule([...pool], startersArtifact, wildConfig, { wildEncounterType: 'classic', pokemonPerZone: 1 });
+
+        expect(det.wildPlan).toEqual(cls1.wildPlan);
+        expect(det.replacementLog).toEqual(cls1.replacementLog);
+        expect(det.wildPlan['SPECIES_T1']).toHaveLength(1); // and it really is one per zone/method
+    });
+});

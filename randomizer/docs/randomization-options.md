@@ -104,7 +104,7 @@ SoT: `randomizer/modules/wildModule.js` `buildWildPlan` + `randomizer/writer.js`
 | Config key | Default | Effect |
 |---|---|---|
 | `wildEncounterType` | `deterministic` | `deterministic` = 1 predictable species per zone/method; `classic` = several per zone (random which you meet). |
-| `pokemonPerZone` | 5 | classic only — species per zone, capped per method (land ≤12, surf ≤5, old ≤2, good ≤3). Revealed by the classic box. |
+| `pokemonPerZone` | 5 | classic only — species per zone (**input 2–12**), capped per method (land ≤12, surf ≤5, old ≤2, good ≤3). Revealed by the classic box. `deterministic` ≡ classic with `pokemonPerZone` = 1 (both reduce to `buildWildPlan(perZone)`). |
 
 Super rod and static/legendary encounters are unchanged in both modes. Changes the number/order of RNG
 draws, so a given seed's whole ROM differs from the pre-T-162 output (expected).

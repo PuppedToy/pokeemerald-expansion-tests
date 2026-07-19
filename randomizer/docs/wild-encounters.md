@@ -70,6 +70,14 @@ share that zone's authored level.
 
 - **deterministic** (default) — 1 species per zone/method; predictable each run.
 - **classic** — `pokemonPerZone` species per zone (capped per method), spread to be ≈ equally likely.
+  The input is **2–12** (12 = the land encounter-slot count; above it nothing changes).
+
+**Guarantee — deterministic ≡ classic with `pokemonPerZone` = 1.** `wildEncounterType` has exactly one
+effect in the pipeline (`runWildModule`): it sets `pokemonPerZone` (deterministic → 1). Both modes then
+call `buildWildPlan(..., pokemonPerZone: 1|N)`, a pure function of the seed — nothing else branches on
+the mode. So for a given seed the deterministic plan is byte-identical to classic-with-N=1 (locked by a
+test in `wildModule.test.js`). The UI floors the classic input at 2 only because N=1 there would just be
+Deterministic.
 
 Super rod and static/legendary encounters are unchanged in both modes.
 

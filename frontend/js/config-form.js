@@ -308,7 +308,7 @@ export class ConfigForm {
         const mixedSequentialSplit = this._q('#mixed-sequential-split')?.checked === true;   // T-146/ADR-018
         // T-162 — wild encounters.
         const wildEncounterType = this._q('input[name="wild-encounter-type"]:checked')?.value ?? 'deterministic';
-        const pokemonPerZone = this._intField('#pokemon-per-zone', 5, 1, 12);
+        const pokemonPerZone = this._intField('#pokemon-per-zone', 5, 2, 12);
         const difficulty = parseInt(this._q('#difficultySlider')?.value ?? '7', 10);
         const rebalance = this._q('#rebalance').checked;
         const balanceChance = rebalance
@@ -885,7 +885,7 @@ export class ConfigForm {
   <div id="wild-classic-panel" class="run-panel hidden">
     <div class="coop-numroms">
       <label for="pokemon-per-zone">Pokémon per zone</label>
-      <input type="number" id="pokemon-per-zone" class="input" value="5" min="1" max="12" style="width:72px">
+      <input type="number" id="pokemon-per-zone" class="input" value="5" min="2" max="12" style="width:72px">
     </div>
     <span class="field-hint" style="margin:6px 0 0">How many different species fill each zone (capped per method: grass up to 12, surf up to 5, old rod up to 2, good rod up to 3). Species are spread to be roughly equally likely. The super rod and static/legendary encounters are unaffected.</span>
   </div>
