@@ -102,9 +102,7 @@ MauvilleCity_GameCorner_EventScript_NoRoomForCoins::
 MauvilleCity_GameCorner_EventScript_PrizeCornerDolls::
 	lock
 	faceplayer
-	msgbox MauvilleCity_GameCorner_Text_ExchangeCoinsForPrizes, MSGBOX_DEFAULT
-	checkitem ITEM_COIN_CASE
-	goto_if_eq VAR_RESULT, TRUE, MauvilleCity_GameCorner_EventScript_ChooseDollPrizeMessage
+	msgbox MauvilleCity_GameCorner_Text_PrizeCornerClosed, MSGBOX_DEFAULT
 	release
 	end
 
@@ -377,13 +375,8 @@ MauvilleCity_GameCorner_EventScript_Gentleman::
 MauvilleCity_GameCorner_EventScript_Girl::
 	lock
 	faceplayer
-	goto_if_set FLAG_RECEIVED_STARTER_DOLL, MauvilleCity_GameCorner_EventScript_ReceivedStarterDoll
-	msgbox MauvilleCity_GameCorner_Text_GotTwoOfSameDollWantOne, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, NO, MauvilleCity_GameCorner_EventScript_DeclineStarterDoll
-	switch VAR_STARTER_MON
-	case 0, MauvilleCity_GameCorner_EventScript_GiveTreeckoDoll
-	case 1, MauvilleCity_GameCorner_EventScript_GiveTorchicDoll
-	case 2, MauvilleCity_GameCorner_EventScript_GiveMudkipDoll
+	msgbox MauvilleCity_GameCorner_Text_CantWinJackpot, MSGBOX_DEFAULT
+	release
 	end
 
 MauvilleCity_GameCorner_EventScript_GiveTreeckoDoll::

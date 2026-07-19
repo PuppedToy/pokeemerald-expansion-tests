@@ -1,6 +1,6 @@
 Route101_Text_CalvinIntro:
 	.string "To get new encounters you will\n"
-	.string "have to battle trainers in this game.$"
+	.string "have to battle trainers.$"
 
 Route101_Text_CalvinDefeated:
 	.string "Now that you have defeated me\n"

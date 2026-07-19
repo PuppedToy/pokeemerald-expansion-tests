@@ -114,17 +114,12 @@ AquaHideout_B1F_Text_Grunt2Defeat:
 	.string "I can't win at all…$"
 
 AquaHideout_B1F_Text_Grunt2PostBattle:
-	.string "Our HIDEOUT's secret?\p"
-	.string "Well, let's just say…\n"
-	.string "There's a submarine at the far end!\p"
-	.string "But, by now…\n"
-	.string "Kekekeke…$"
+	.string "There's a submarine at the far end…\n"
+	.string "But by now… Kekekeke…$"
 
 AquaHideout_B1F_Text_Grunt3Intro:
-	.string "Fuel supply loaded A-OK!\n"
-	.string "In-cruise snacks loaded A-OK!\p"
-	.string "Nothing left to do but KO a pesky\n"
-	.string "meddler!$"
+	.string "All loaded up! Just gotta KO\n"
+	.string "a meddler like you!$"
 
 AquaHideout_B1F_Text_Grunt3Defeat:
 	.string "I took a serious licking!$"
@@ -147,10 +142,8 @@ AquaHideout_B1F_Text_Grunt5PostBattle:
 	.string "AQUA members might get you.$"
 
 AquaHideout_B1F_Text_Grunt7Intro:
-	.string "Hey!\n"
-	.string "You there!\p"
-	.string "Which do you think is cooler?\n"
-	.string "TEAM AQUA's uniform or TEAM MAGMA's?$"
+	.string "Which uniform's cooler, AQUA's or\n"
+	.string "MAGMA's?$"
 
 AquaHideout_B1F_Text_Grunt7Defeat:
 	.string "I lost in a cool way…$"

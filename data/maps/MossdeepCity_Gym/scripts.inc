@@ -106,7 +106,6 @@ MossdeepCity_Gym_EventScript_ReceivedRewardPokeFanfare::
 MossdeepCity_Gym_EventScript_GiveCalmMind2::
 	giveitem ITEM_TM91
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
-	msgbox MossdeepCity_Gym_Text_ExplainCalmMind, MSGBOX_DEFAULT
 	setflag FLAG_RECEIVED_TM_CALM_MIND
 	release
 	end
@@ -114,7 +113,6 @@ MossdeepCity_Gym_EventScript_GiveCalmMind2::
 MossdeepCity_Gym_EventScript_GiveCalmMind::
 	giveitem ITEM_TM91
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
-	msgbox MossdeepCity_Gym_Text_ExplainCalmMind, MSGBOX_DEFAULT
 	setflag FLAG_RECEIVED_TM_CALM_MIND
 	return
 
