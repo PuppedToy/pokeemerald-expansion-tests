@@ -84,7 +84,9 @@ function toModuleConfig(cfg) {
         // T-072 — quality tier for the 3 main starters (defaults to UU)
         starterQuality: cfg.starterQuality,
         allTms: false,
-        showExactPositions: cfg.showExactPositions === true,
+        // T-163 — docs-visibility toggles (per-element redaction of the generated docs). Forwarded raw;
+        // writerDocs normalizes + fills defaults. showExactPositions now lives inside this object.
+        docsVisibility: cfg.docsVisibility,
         // T-085/ADR-014 — battle format (singles | doubles | mixed) + mixed-only proportion / Run & Bun.
         battleFormat: cfg.battleFormat ?? 'singles',
         singlesPercent: cfg.singlesPercent ?? 60,

@@ -110,8 +110,39 @@ Super rod and static/legendary encounters are unchanged in both modes. Changes t
 draws, so a given seed's whole ROM differs from the pre-T-162 output (expected).
 
 ### General
-`seed` (blank = random) and `showExactPositions` (docs display). The old generic "Advanced" block was
-removed; Advanced sub-panels now live only under **Pokémon mutations** and **Evolution levels**.
+`seed` (blank = random). The old generic "Advanced" block was removed; Advanced sub-panels now live
+only under **Pokémon mutations** and **Evolution levels**. `showExactPositions` moved to **Docs
+visibility** (T-163).
+
+### Docs visibility (T-163)
+SoT: `randomizer/docsVisibility.js` (`normalizeDocsVisibility` + `redactWildPokes`) and the trainer
+redaction in `writerDocs.js` `buildTrainersResultsSimplified`. A nested `docsVisibility` object of
+toggles that redact **only what the generated docs reveal** — never the ROM. Redaction is baked at
+generation time (the hidden data is absent from the produced HTML, like the `showExactPositions`
+precedent), so it is applied to a **separate viewer copy** (`rom.docs.viewerTrainers` +
+redacted `rom.docs.wildPokes`); the ROM-authoritative `trainersResultsSimplified` is never touched
+(`writer.js` builds the ROM's parties from it verbatim). Threads `config-form.js` → both
+`toModuleConfig`s → `generate.js` → `writerDocs`; `writerDocs` normalizes (fills defaults, migrates the
+legacy top-level `showExactPositions`).
+
+| Config key (`docsVisibility.*`) | Default | Effect on the docs |
+|---|---|---|
+| `showTrainers` | true | off = remove the Trainers tab + section; also hides encounter reward cards (gate). |
+| `showBosses` / `showNonBosses` | true | off = drop boss / non-boss trainer cards. |
+| `showHeldItems` / `showNatures` / `showMoves` / `showAbility` | true | off = strip that field from every team member. |
+| `showRewards` | true | off = hide rewards everywhere (trainer cards + Encounters reward cards). |
+| `showIVs` | **false** | on = render a compact IV line per member (net-new; off strips IVs from the docs entirely). |
+| `showExactPositions` | false | off = docs show the pre-shuffle order (moved here from General). |
+| `hidePokemon` + `hidePokemonCount` (1–5) | false / 1 | on = collapse the last N of every team into an "(and N other Pokémon)" box (capped at size−1). |
+| `showWildEncounters` | true | off = Encounters tab keeps only starters, extra starters and gated rewards. |
+| `showLegendaryStatic` / `showNonLegendaryStatic` | true | off = omit that static entry (removes its card **and** its Mail inbox entry). |
+| `showSuperRod` | true | off = card shows "Super-Rod encounter 1…N" instead of the species. |
+| `showGrass` / `showSurf` / `showDive` / `showGoodRod` / `showOldRod` | true | off = card shows only the count of distinct encounters for that method. |
+
+Reward encounter cards are shown ⟺ `showTrainers && showBosses && showRewards`. Per-method placeholders
+apply only when `showWildEncounters` is on; when it is off the wild zones are dropped wholesale (so
+their species, and any static, are absent from the Mail too). All defaults reproduce today's docs (the
+one tightening: `showIVs` now strips the IVs that were previously carried-but-never-rendered).
 
 ## Testing
 Randomizer logic is Jest (`randomizer/__tests__/`): `mutationToggles`, `mutationProbs`,

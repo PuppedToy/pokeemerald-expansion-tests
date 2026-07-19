@@ -804,11 +804,15 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             team: trainerData.team.map(teamEntry => ({
                 ...teamEntry,
                 pokemon: teamEntry.pokemon.id,
-            })), 
+            })),
         };
     });
-    htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_TRAINERS_REPLACEMENT, `<script>const trainersData = ${JSON.stringify(trainersResultsSimplified)};</script>`);
-    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'trainers.js'), `const trainersData = ${JSON.stringify(trainersResultsSimplified, null, 4)};`, 'utf8');
+    // T-163 — the out.html viewer shows the docs-visibility-redacted teams (viewerTrainers) when a
+    // bundle's docs are present; the analyze.js path (docs=null) has no config, so it shows the full
+    // teams built above (default visibility). The ROM itself always uses the FULL trainersResults.
+    const docsTrainers = (docs && docs.viewerTrainers) ? docs.viewerTrainers : trainersResultsSimplified;
+    htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_TRAINERS_REPLACEMENT, `<script>const trainersData = ${JSON.stringify(docsTrainers)};</script>`);
+    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'trainers.js'), `const trainersData = ${JSON.stringify(docsTrainers, null, 4)};`, 'utf8');
     // T-044 — move-chip type colours (SSOT: trainerColors.js). Injected here for out.html;
     // the browser doc-builder (frontend/js/app.js) injects the same from rom.docs.typeColors.
     const typeColorsData = typeMainColors();
@@ -906,8 +910,12 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             maps.push(entry);
         }
     }
-    htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_WILDPOKES_REPALCEMENT, `<script>const wildPokes = ${JSON.stringify(maps)};</script>`);
-    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'wildpokes.js'), `const wildPokes = ${JSON.stringify(maps, null, 4)};`, 'utf8');
+    // T-163 — use the docs-visibility-redacted encounter maps from the bundle's docs when present
+    // (hidden statics/rewards/zones removed, per-method species behind placeholders); the analyze.js
+    // path (docs=null) falls back to the full inline maps built above (default visibility).
+    const docsWild = (docs && docs.wildPokes) ? docs.wildPokes : maps;
+    htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_WILDPOKES_REPALCEMENT, `<script>const wildPokes = ${JSON.stringify(docsWild)};</script>`);
+    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'wildpokes.js'), `const wildPokes = ${JSON.stringify(docsWild, null, 4)};`, 'utf8');
 
     // T-005 — bake the per-run localStorage namespace into the doc so runs don't collide.
     // Left intact (token still present) when runNs is empty → template falls back to shared keys.

@@ -101,6 +101,9 @@ function toModuleConfig(cfg, seed) {
         // T-072 — quality tier for the 3 main starters (family best-evo tier; defaults to UU)
         starterQuality: cfg.starterQuality,
         allTms: false,
+        // T-163 — docs-visibility toggles (per-element redaction of the generated docs). Forwarded raw;
+        // writerDocs normalizes + fills defaults. (Also carries showExactPositions, previously absent here.)
+        docsVisibility: cfg.docsVisibility,
         // T-085/ADR-014 — battle format (singles | doubles | mixed) + mixed-only proportion / Run & Bun.
         battleFormat: cfg.battleFormat ?? 'singles',
         singlesPercent: cfg.singlesPercent ?? 60,

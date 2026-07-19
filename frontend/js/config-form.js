@@ -196,6 +196,48 @@ function shopPricesBlock() {
     </div>`;
 }
 
+// T-163 — Docs visibility. Each toggle redacts what the generated docs reveal; redaction is baked at
+// generation time (randomizer/writerDocs.js), following the showExactPositions precedent. All-true
+// with showIVs / hidePokemon / showExactPositions false reproduces today's docs exactly.
+const DOCS_VISIBILITY_DEFAULT = {
+    // Trainers tab
+    showTrainers: true,
+    showBosses: true,
+    showNonBosses: true,
+    showHeldItems: true,
+    showNatures: true,
+    showMoves: true,
+    showAbility: true,
+    showRewards: true,
+    showIVs: false,
+    showExactPositions: false,   // migrated out of the old "General" category
+    hidePokemon: false,
+    hidePokemonCount: 1,         // 1..5, only meaningful when hidePokemon is on
+    // Encounters tab (+ Mail inbox, for the static toggles)
+    showWildEncounters: true,
+    showLegendaryStatic: true,
+    showNonLegendaryStatic: true,
+    showSuperRod: true,
+    showDive: true,
+    showSurf: true,
+    showGoodRod: true,
+    showOldRod: true,
+    showGrass: true,
+};
+
+// [checkbox id, config key] for every docs-visibility boolean toggle (drives _read/_setDocsVisibility
+// and the event wiring). hidePokemonCount (a number input) is handled separately.
+const DOCS_VISIBILITY_TOGGLES = [
+    ['show-trainers', 'showTrainers'], ['show-bosses', 'showBosses'], ['show-non-bosses', 'showNonBosses'],
+    ['show-held-items', 'showHeldItems'], ['show-natures', 'showNatures'], ['show-moves', 'showMoves'],
+    ['show-ability', 'showAbility'], ['show-rewards', 'showRewards'], ['show-ivs', 'showIVs'],
+    ['show-exact-positions', 'showExactPositions'], ['hide-pokemon', 'hidePokemon'],
+    ['show-wild-encounters', 'showWildEncounters'], ['show-legendary-static', 'showLegendaryStatic'],
+    ['show-non-legendary-static', 'showNonLegendaryStatic'], ['show-super-rod', 'showSuperRod'],
+    ['show-dive', 'showDive'], ['show-surf', 'showSurf'], ['show-good-rod', 'showGoodRod'],
+    ['show-old-rod', 'showOldRod'], ['show-grass', 'showGrass'],
+];
+
 const DEFAULTS = {
     runType: 'default',
     // T-085/ADR-014 — global battle format (singles | doubles | mixed). singlesPercent (% of single
@@ -228,7 +270,8 @@ const DEFAULTS = {
     // T-052 — extra-starter category list (unlimited; default = today's 9)
     extraStarters: EXTRA_STARTER_DEFAULT_PRESET,
     seed: '',
-    showExactPositions: false,
+    // T-163 — docs-visibility toggles (see DOCS_VISIBILITY_DEFAULT).
+    docsVisibility: DOCS_VISIBILITY_DEFAULT,
     // T-052 — Trainers & bosses
     gymsTypeChanged: 2,   // 0..8 gym leaders get a randomized type theme
     e4TypeChanged: 2,     // 0..4 Elite Four members get a randomized type theme
@@ -319,7 +362,7 @@ export class ConfigForm {
 
         if (seed !== null && (isNaN(seed) || !Number.isInteger(seed))) return null;
 
-        const showExactPositions = this._q('#show-exact-positions').checked;
+        const docsVisibility = this._readDocsVisibility();   // T-163
         const mutateStats = this._q('#mutate-stats').checked;
         const mutateAbilities = this._q('#mutate-abilities').checked;
         const mutateTypes = this._q('#mutate-types').checked;
@@ -344,7 +387,7 @@ export class ConfigForm {
         const prices = this._readPrices();
         const base = { runType, battleFormat, singlesPercent, leagueRunAndBun, mixedSequentialSplit, wildEncounterType, pokemonPerZone, difficulty, rebalance, balanceChance,
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs, evoLevels,
-            money, prices, starterQuality, extraStarters, seed, showExactPositions, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, nicknames };
+            money, prices, starterQuality, extraStarters, seed, docsVisibility, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, nicknames };
 
         if (runType === 'nuzlocke') {
             // T-081 — clamp to the field's documented range (matches the input's min/max) so a
@@ -421,7 +464,7 @@ export class ConfigForm {
         this._starterSpecs = (cfg.extraStarters || EXTRA_STARTER_DEFAULT_PRESET).map(normalizeStarterSpec);
         this._renderStarterList();
         this._q('#seed').value = cfg.seed != null ? String(cfg.seed) : '';
-        this._q('#show-exact-positions').checked = cfg.showExactPositions === true;
+        this._setDocsVisibility(cfg);   // T-163
         this._q('#gyms-type-changed').value = cfg.gymsTypeChanged ?? 2;
         this._q('#e4-type-changed').value = cfg.e4TypeChanged ?? 2;
         // T-076 — stored as a 0..1 probability; surfaced as a whole-percent input.
@@ -457,6 +500,30 @@ export class ConfigForm {
     // ── Private ──────────────────────────────────────────────────────────────
 
     _q(sel) { return this.container.querySelector(sel); }
+
+    // T-163 — read every docs-visibility toggle into the nested config object.
+    _readDocsVisibility() {
+        const dv = {};
+        for (const [id, key] of DOCS_VISIBILITY_TOGGLES) {
+            dv[key] = this._q('#' + id)?.checked === true;
+        }
+        dv.hidePokemonCount = this._intField('#hide-pokemon-count', 1, 1, 5);
+        return dv;
+    }
+
+    // T-163 — restore the docs-visibility toggles. A pre-T-163 saved config carried
+    // showExactPositions at the top level, so migrate that legacy key when the nested one is absent.
+    _setDocsVisibility(cfg) {
+        const dv = { ...DOCS_VISIBILITY_DEFAULT, ...(cfg.docsVisibility || {}) };
+        dv.showExactPositions = (cfg.docsVisibility?.showExactPositions ?? cfg.showExactPositions
+            ?? DOCS_VISIBILITY_DEFAULT.showExactPositions) === true;
+        for (const [id, key] of DOCS_VISIBILITY_TOGGLES) {
+            const el = this._q('#' + id);
+            if (el) el.checked = dv[key] === true;
+        }
+        const cnt = this._q('#hide-pokemon-count');
+        if (cnt) cnt.value = dv.hidePokemonCount ?? 1;
+    }
 
     /** Read an integer input, clamped to [min,max], falling back to `def` when blank/invalid. */
     _intField(sel, def, min, max) {
@@ -1209,6 +1276,118 @@ export class ConfigForm {
   </div>
 </section>
 
+<section class="config-category" data-cat="docs-visibility">
+  <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-docs-visibility">
+    <span class="config-cat-title">Docs visibility</span><span class="config-cat-arrow">▶</span>
+  </button>
+  <div class="config-cat-body hidden" id="cat-body-docs-visibility">
+    <div class="card-glass" style="padding:20px">
+      <span class="field-hint" style="margin:0 0 4px">Controls only what the generated documentation reveals — never what the ROM actually contains. Hidden information is stripped from the docs, not just hidden on screen.</span>
+
+      <div class="section-title" style="margin-top:14px">Trainers</div>
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Show trainers</div>
+          <div class="toggle-desc">Master switch for the Trainers tab. Off removes the tab entirely and hides trainer rewards from the Encounters tab.</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="show-trainers" checked><span class="toggle-track"></span></label>
+      </div>
+      <div id="dv-trainer-children" class="dv-children">
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show bosses</div><div class="toggle-desc">Off hides boss / rival / gym cards (and their encounter rewards).</div></div>
+          <label class="toggle"><input type="checkbox" id="show-bosses" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show non-bosses</div><div class="toggle-desc">Off hides ordinary route / trainer cards.</div></div>
+          <label class="toggle"><input type="checkbox" id="show-non-bosses" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show held items</div></div>
+          <label class="toggle"><input type="checkbox" id="show-held-items" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show natures</div></div>
+          <label class="toggle"><input type="checkbox" id="show-natures" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show moves</div></div>
+          <label class="toggle"><input type="checkbox" id="show-moves" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show ability</div></div>
+          <label class="toggle"><input type="checkbox" id="show-ability" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show rewards</div><div class="toggle-desc">Off hides rewards everywhere — on trainer cards and in the Encounters tab.</div></div>
+          <label class="toggle"><input type="checkbox" id="show-rewards" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show IVs</div><div class="toggle-desc">Off (default) omits IVs from the docs entirely.</div></div>
+          <label class="toggle"><input type="checkbox" id="show-ivs"><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show exact positions in teams</div><div class="toggle-desc" title="When enabled, the docs show each Pokémon in the exact slot it occupies in-game, including lead and Illusion placement. Disabled by default to preserve in-game surprise.">Show each Pokémon's exact in-game position in the documentation.</div></div>
+          <label class="toggle"><input type="checkbox" id="show-exact-positions"><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Hide some Pokémon of the team</div><div class="toggle-desc">Collapse the last few Pokémon of every team into an "(and X other Pokémon)" box.</div></div>
+          <label class="toggle"><input type="checkbox" id="hide-pokemon"><span class="toggle-track"></span></label>
+        </div>
+        <div id="hide-pokemon-count-row" class="run-panel hidden">
+          <div class="coop-numroms">
+            <label for="hide-pokemon-count">How many to hide</label>
+            <input type="number" id="hide-pokemon-count" class="input" value="1" min="1" max="5" style="width:72px">
+          </div>
+          <span class="field-hint" style="margin:6px 0 0">Hidden per team — never the whole team (at least one always shows). The box shows the real number hidden.</span>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:14px">Wild encounters</div>
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Show wild encounters</div>
+          <div class="toggle-desc">Off keeps the Encounters tab but shows only starters, extra starters and (if enabled) trainer rewards.</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="show-wild-encounters" checked><span class="toggle-track"></span></label>
+      </div>
+      <div class="toggle-wrap">
+        <div><div class="toggle-label">Show legendary static encounters</div><div class="toggle-desc">Off hides legendary statics from the Encounters tab and the Mail inbox.</div></div>
+        <label class="toggle"><input type="checkbox" id="show-legendary-static" checked><span class="toggle-track"></span></label>
+      </div>
+      <div class="toggle-wrap">
+        <div><div class="toggle-label">Show non-legendary static encounters</div><div class="toggle-desc">Off hides non-legendary statics from the Encounters tab and the Mail inbox.</div></div>
+        <label class="toggle"><input type="checkbox" id="show-non-legendary-static" checked><span class="toggle-track"></span></label>
+      </div>
+      <div id="dv-wild-methods" class="dv-children">
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show super-rod encounters</div><div class="toggle-desc">Off labels them "Super-Rod encounter 1, 2, …" instead of the species.</div></div>
+          <label class="toggle"><input type="checkbox" id="show-super-rod" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show dive encounters</div><div class="toggle-desc">Off shows only how many different encounters the zone has.</div></div>
+          <label class="toggle"><input type="checkbox" id="show-dive" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show surf encounters</div></div>
+          <label class="toggle"><input type="checkbox" id="show-surf" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show good-rod encounters</div></div>
+          <label class="toggle"><input type="checkbox" id="show-good-rod" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show old-rod encounters</div></div>
+          <label class="toggle"><input type="checkbox" id="show-old-rod" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show grass encounters</div></div>
+          <label class="toggle"><input type="checkbox" id="show-grass" checked><span class="toggle-track"></span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="config-category" data-cat="general">
   <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-general">
     <span class="config-cat-title">General</span><span class="config-cat-arrow">▶</span>
@@ -1222,20 +1401,6 @@ export class ConfigForm {
           <button type="button" class="btn btn-ghost" id="btn-randomize-seed">Roll</button>
         </div>
         <span class="field-hint">Same seed + same config = identical run every time.</span>
-      </div>
-      <hr class="divider" style="margin:16px 0">
-      <div class="toggle-wrap">
-        <div>
-          <div class="toggle-label">Show exact positions in teams</div>
-          <div class="toggle-desc"
-               title="When enabled, the docs show each Pokémon in the exact slot it occupies in-game, including lead and Illusion placement. Disabled by default to preserve in-game surprise.">
-            Show each Pokémon's exact in-game position in the documentation.
-          </div>
-        </div>
-        <label class="toggle">
-          <input type="checkbox" id="show-exact-positions">
-          <span class="toggle-track"></span>
-        </label>
       </div>
     </div>
   </div>
@@ -1335,6 +1500,27 @@ export class ConfigForm {
         const lockAllowed = !!(autoLoc && diffGender);
         if (lockGenderEl) lockGenderEl.disabled = !lockAllowed;
         if (lockGenderRow) lockGenderRow.classList.toggle('control-disabled', !lockAllowed);
+
+        // T-163 — docs visibility: grey out a master's children when it is off, and reveal the
+        // hide-count input only when "Hide some Pokémon" is on. The static toggles live OUTSIDE
+        // #dv-wild-methods because they also drive the Mail tab, which "Show wild encounters" does
+        // not gate — so they stay active regardless.
+        const showTrainers = this._q('#show-trainers')?.checked;
+        const trChildren = this._q('#dv-trainer-children');
+        if (trChildren) {
+            trChildren.classList.toggle('control-disabled', !showTrainers);
+            trChildren.querySelectorAll('input').forEach(el => { el.disabled = !showTrainers; });
+        }
+        const hidePk = this._q('#hide-pokemon')?.checked && showTrainers;
+        const hpRow = this._q('#hide-pokemon-count-row');
+        if (hpRow) hpRow.classList.toggle('hidden', !hidePk);
+
+        const showWild = this._q('#show-wild-encounters')?.checked;
+        const wildMethods = this._q('#dv-wild-methods');
+        if (wildMethods) {
+            wildMethods.classList.toggle('control-disabled', !showWild);
+            wildMethods.querySelectorAll('input').forEach(el => { el.disabled = !showWild; });
+        }
 
         if (runType === 'nuzlocke') this._syncNuzlocke();
         if (runType === 'soullink') this._syncSoullink();
@@ -1445,7 +1631,11 @@ export class ConfigForm {
             }
         }
         this._q('#seed').addEventListener('input', onChange);
-        this._q('#show-exact-positions').addEventListener('change', onChange);
+        // T-163 — docs-visibility toggles (masters resync the grey-out; count input saves on input).
+        for (const [id] of DOCS_VISIBILITY_TOGGLES) {
+            this._q('#' + id)?.addEventListener('change', onChange);
+        }
+        this._q('#hide-pokemon-count')?.addEventListener('input', onChange);
         this._q('#gyms-type-changed').addEventListener('input', onChange);
         this._q('#e4-type-changed').addEventListener('input', onChange);
         this._q('#champion-type-change-pct').addEventListener('input', onChange);

@@ -9,6 +9,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Docs visibility settings.** A new config section controls what the generated documentation reveals
+  — never the ROM itself, only the docs. For trainers: hide the whole Trainers tab, hide bosses or
+  ordinary trainers, hide held items / natures / moves / ability / rewards, show IVs (off by default),
+  show exact team positions (moved here), and "hide some Pokémon" (collapse the last 1–5 of every team
+  into an "(and X other Pokémon)" box). For encounters: hide wild encounters (leaving only starters and
+  rewards), hide legendary / non-legendary static encounters (also from the Mail inbox), and hide
+  super-rod (shown as "Super-Rod encounter 1, 2, …") or grass / surf / dive / good-rod / old-rod
+  encounters (shown as just a count). Hidden information is stripped from the docs, not merely hidden on
+  screen. Every default reproduces today's docs. (T-163)
+
 - **Wild encounter type: Deterministic or Classic.** A new option lets each zone hold either a single
   predictable Pokémon per method (**Deterministic**, the default — you can tell exactly what every
   route, cave and rod gives you) or several (**Classic**, with a "Pokémon per zone" count, default 5 —
