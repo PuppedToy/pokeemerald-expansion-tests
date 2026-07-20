@@ -264,6 +264,8 @@ const DEFAULTS = {
     money: { normal: 250, boss: 3000, gym: 5000 },
     // T-073 — Shop item prices. Applied at ROM-build time (patches src/data/items.h).
     prices: PRICE_DEFAULTS,
+    // T-167 — Move relearn price. Applied at ROM-build time (patches src/move_relearner.c). 0 = always free.
+    moveRelearnPrice: 250,
     // T-072 — quality tier for the 3 main starters (same vocabulary as extra starters).
     // Default UU reproduces the historical hardcoded behaviour (3-stage LC line peaking at UU).
     starterQuality: 'UU',
@@ -375,6 +377,7 @@ export class ConfigForm {
             boss: this._intField('#reward-boss', 3000, 0, 999999),
             gym: this._intField('#reward-gym', 5000, 0, 999999),
         };
+        const moveRelearnPrice = this._intField('#reward-relearn', 250, 0, 999999); // T-167
         const gymsTypeChanged = this._intField('#gyms-type-changed', 2, 0, 8);
         const e4TypeChanged = this._intField('#e4-type-changed', 2, 0, 4);
         // T-076 — champion type-change probability, exposed as a percentage (0–100 → 0..1).
@@ -389,7 +392,7 @@ export class ConfigForm {
         const prices = this._readPrices();
         const base = { runType, battleFormat, singlesPercent, leagueRunAndBun, mixedSequentialSplit, wildEncounterType, pokemonPerZone, difficulty, rebalance, balanceChance,
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs, evoLevels,
-            money, prices, starterQuality, extraStarters, seed, docsVisibility, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, disableStevenTagBattle, nicknames };
+            money, prices, moveRelearnPrice, starterQuality, extraStarters, seed, docsVisibility, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, disableStevenTagBattle, nicknames };
 
         if (runType === 'nuzlocke') {
             // T-081 — clamp to the field's documented range (matches the input's min/max) so a
@@ -460,6 +463,7 @@ export class ConfigForm {
         this._q('#reward-normal').value = money.normal ?? 250;
         this._q('#reward-boss').value = money.boss ?? 3000;
         this._q('#reward-gym').value = money.gym ?? 5000;
+        this._q('#reward-relearn').value = cfg.moveRelearnPrice ?? 250; // T-167
         this._setPrices(cfg.prices);
         const sq = this._q('#starter-quality');
         if (sq) sq.value = EXTRA_STARTER_TIER_OPTIONS.includes(cfg.starterQuality) ? cfg.starterQuality : 'UU';
@@ -1148,7 +1152,7 @@ export class ConfigForm {
 
 <section class="config-category" data-cat="rewards">
   <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-rewards">
-    <span class="config-cat-title">Rewards</span><span class="config-cat-arrow">▶</span>
+    <span class="config-cat-title">Economy</span><span class="config-cat-arrow">▶</span>
   </button>
   <div class="config-cat-body hidden" id="cat-body-rewards">
     <div class="card-glass" style="display:flex;flex-direction:column;gap:20px;padding:20px">
@@ -1166,6 +1170,11 @@ export class ConfigForm {
         <label for="reward-gym">Gym leader money ($)</label>
         <input type="number" id="reward-gym" class="input" min="0" step="100" value="5000" style="width:120px">
         <span class="field-hint">Prize money for gym leaders. Game default: 5000. Elite Four ($10k) and the Champion ($50k) are fixed.</span>
+      </div>
+      <div class="field">
+        <label for="reward-relearn">Move relearn price ($)</label>
+        <input type="number" id="reward-relearn" class="input" min="0" step="50" value="250" style="width:120px">
+        <span class="field-hint">Cost to relearn a move a Pokémon has had before (from its initial moveset or a level-up). Relearning a move it never actually had is always free. Game default: 250. Set to 0 to make every relearn free.</span>
       </div>
       ${shopPricesBlock()}
     </div>
