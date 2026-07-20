@@ -173,3 +173,4 @@
 | [T-167](T-167-relearner-move-history-pricing.md) | Move relearner charges money for previously-learned moves, free for never-learned | in-progress | 0.6.0 | 2026-07-20 |
 | [T-168](T-168-shiny-iv-badge-in-docs.md) | Show a "Shiny" star badge in the docs for 150+ IV Pokémon | in-progress | 0.6.0 | 2026-07-20 |
 | [T-169](T-169-tate-liza-dual-favourite-test-correction.md) | Correct the Tate & Liza dual-favourite test to the confirmed spec | done | 0.6.0 | 2026-07-20 |
+| [T-170](T-170-macro-frontpic-sprite-resolution.md) | Resolve macro-body .frontPic so cosmetic/macro forms render in the docs | in-progress | 0.6.0 | 2026-07-20 |

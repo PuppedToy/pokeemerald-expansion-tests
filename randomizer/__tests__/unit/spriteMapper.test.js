@@ -9,6 +9,7 @@ const {
     incbinPathToPng,
     parseFrontPicSymbols,
     parseSpeciesFrontPic,
+    parseFrontPicMacros,
     buildSpeciesSpriteMap,
     speciesKey,
     trainerClassToFile,
@@ -115,6 +116,119 @@ describe('buildSpeciesSpriteMap', () => {
     test('does not put unresolved species in the map', () => {
         const { map } = buildSpeciesSpriteMap([GEN], POKEMON_H);
         expect(map.has('SPECIES_MISSINGNO')).toBe(false);
+    });
+});
+
+// B-045 (T-170): many forms declare `.frontPic` inside a C `#define … _INFO(…)` macro body, not in
+// the `[SPECIES_X]` slice. The mapper must expand those macros — otherwise the species is silently
+// dropped and the docs show a black box. Mirrors the real Vivillon/Scatterbug/Mothim/Flabebe/Ogerpon C.
+describe('parseFrontPicMacros (B-045)', () => {
+    const GEN = `
+#define SCATTERBUG_SPECIES_INFO(evolution)                     \\
+    {                                                          \\
+        .baseHP = 38,                                          \\
+        .frontPic = gMonFrontPic_Scatterbug,                   \\
+    }
+#define VIVILLON_MISC_INFO(form, color, iconPal)               \\
+    {                                                          \\
+        .baseHP = 80,                                          \\
+        .frontPic = gMonFrontPic_Vivillon ##form,              \\
+    }
+#define MOTHIM_SPECIES_INFO                                    \\
+    {                                                          \\
+        .baseHP = 70,                                          \\
+        .frontPic = gMonFrontPic_Mothim,                       \\
+    }
+#define OGERPON_SPECIES_INFO(Form1, Form2, type, ability, color)  \\
+    {                                                             \\
+        .frontPic = gMonFrontPic_Ogerpon##Form2,                  \\
+    }
+`;
+    test('captures a fixed-symbol macro (no token paste)', () => {
+        const macros = parseFrontPicMacros(GEN);
+        expect(macros.get('SCATTERBUG_SPECIES_INFO')).toMatchObject({
+            symbol: 'gMonFrontPic_Scatterbug', pasteParam: null,
+        });
+    });
+    test('captures a bare (param-less) macro', () => {
+        const macros = parseFrontPicMacros(GEN);
+        expect(macros.get('MOTHIM_SPECIES_INFO')).toMatchObject({
+            symbol: 'gMonFrontPic_Mothim', pasteParam: null, params: [],
+        });
+    });
+    test('captures a token-paste macro and its paste parameter (with spacing)', () => {
+        const macros = parseFrontPicMacros(GEN);
+        expect(macros.get('VIVILLON_MISC_INFO')).toMatchObject({
+            symbol: 'gMonFrontPic_Vivillon', pasteParam: 'form', params: ['form', 'color', 'iconPal'],
+        });
+    });
+    test('captures a token-paste on a later positional parameter', () => {
+        const macros = parseFrontPicMacros(GEN);
+        const m = macros.get('OGERPON_SPECIES_INFO');
+        expect(m.symbol).toBe('gMonFrontPic_Ogerpon');
+        expect(m.pasteParam).toBe('Form2');
+        expect(m.params.indexOf(m.pasteParam)).toBe(1);
+    });
+});
+
+describe('parseSpeciesFrontPic — macro-body .frontPic (B-045)', () => {
+    const GEN = `
+#define SCATTERBUG_SPECIES_INFO(evolution)  { .frontPic = gMonFrontPic_Scatterbug, }
+#define VIVILLON_MISC_INFO(form, color, iconPal)  { .frontPic = gMonFrontPic_Vivillon ##form, }
+#define MOTHIM_SPECIES_INFO  { .frontPic = gMonFrontPic_Mothim, }
+#define FLABEBE_MISC_INFO(Form, FORM, iconPal)  { .frontPic = gMonFrontPic_Flabebe, }
+#define OGERPON_SPECIES_INFO(Form1, Form2, type)  { .frontPic = gMonFrontPic_Ogerpon##Form2, }
+
+    [SPECIES_SCATTERBUG_ICY_SNOW] = SCATTERBUG_SPECIES_INFO(ICY_SNOW),
+    [SPECIES_VIVILLON_ICY_SNOW] = VIVILLON_MISC_INFO(IcySnow, BODY_COLOR_WHITE, 0),
+    [SPECIES_MOTHIM_PLANT] = MOTHIM_SPECIES_INFO,
+    [SPECIES_FLABEBE_RED] =
+    {
+        FLABEBE_MISC_INFO(Red, RED, 1),
+        .levelUpLearnset = sFlabebeLevelUpLearnset,
+    },
+    [SPECIES_OGERPON_TEAL] = OGERPON_SPECIES_INFO(Teal, Teal, TYPE_GRASS),
+`;
+    const link = (species) => parseSpeciesFrontPic(GEN).find((e) => e.species === species);
+
+    test('resolves a fixed-symbol macro invocation', () => {
+        expect(link('SPECIES_SCATTERBUG_ICY_SNOW')).toEqual({
+            species: 'SPECIES_SCATTERBUG_ICY_SNOW', symbol: 'gMonFrontPic_Scatterbug',
+        });
+    });
+    test('resolves a token-paste macro invocation (base art via first-declared form)', () => {
+        expect(link('SPECIES_VIVILLON_ICY_SNOW')).toEqual({
+            species: 'SPECIES_VIVILLON_ICY_SNOW', symbol: 'gMonFrontPic_VivillonIcySnow',
+        });
+    });
+    test('resolves a bare (param-less) macro invocation', () => {
+        expect(link('SPECIES_MOTHIM_PLANT')).toEqual({
+            species: 'SPECIES_MOTHIM_PLANT', symbol: 'gMonFrontPic_Mothim',
+        });
+    });
+    test('resolves a macro invoked inside a brace block alongside other fields', () => {
+        expect(link('SPECIES_FLABEBE_RED')).toEqual({
+            species: 'SPECIES_FLABEBE_RED', symbol: 'gMonFrontPic_Flabebe',
+        });
+    });
+    test('resolves a token-paste on a later positional parameter', () => {
+        expect(link('SPECIES_OGERPON_TEAL')).toEqual({
+            species: 'SPECIES_OGERPON_TEAL', symbol: 'gMonFrontPic_OgerponTeal',
+        });
+    });
+});
+
+describe('buildSpeciesSpriteMap — macro forms end-to-end (B-045)', () => {
+    const GEN = `
+#define VIVILLON_MISC_INFO(form, color, iconPal)  { .frontPic = gMonFrontPic_Vivillon ##form, }
+    [SPECIES_VIVILLON_ICY_SNOW] = VIVILLON_MISC_INFO(IcySnow, BODY_COLOR_WHITE, 0),
+`;
+    const POKEMON_H = `
+    const u32 gMonFrontPic_VivillonIcySnow[] = INCBIN_U32("graphics/pokemon/vivillon/anim_front.4bpp.smol");
+`;
+    test('a macro-based cosmetic representative resolves to its base source PNG', () => {
+        const { map } = buildSpeciesSpriteMap([GEN], POKEMON_H);
+        expect(map.get('SPECIES_VIVILLON_ICY_SNOW')).toBe('graphics/pokemon/vivillon/anim_front.png');
     });
 });
 
