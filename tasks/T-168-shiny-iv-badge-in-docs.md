@@ -52,6 +52,11 @@ Acceptance criteria:
   horizontal overflow. Sub-150 mons show no badge. Added structural guard
   `frontend/__tests__/shiny-iv-badge.test.js` (threshold + markup + gold colour); full frontend suite
   green (89/89). Temp fixture/screenshots cleaned up; default fixture rebuilt.
+- **2026-07-20** — Design revision (owner): dropped the "★ Shiny" badge + word. Now the shiny state
+  simply tints the whole IV line gold (`.rm-ivs--shiny`) with a small ★ appended at the end — no label.
+  Re-verified with the visual harness (desktop + mobile 375px): shiny lines read "IVs 31/31/31/31/31/31 ★"
+  in gold `rgb(255,212,59)`, sub-150 lines keep the normal purple, no overflow. Updated the structural
+  guard and changelog; frontend suite green (89/89).
 
 ## Outcome
 

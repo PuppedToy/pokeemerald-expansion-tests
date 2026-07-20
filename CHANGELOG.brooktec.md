@@ -10,8 +10,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 ### Added
 
 - **The docs flag shiny Pokémon.** When "Show IVs" is on, any trainer Pokémon whose IV total is 150 or
-  more now shows a gold **★ Shiny** badge next to its IVs — mirroring the game rule that a 150+ IV total
-  makes a Pokémon shiny. The badge rides on the IV line and wraps cleanly on narrow screens. (T-168)
+  more now has its IVs tinted gold with a small ★ at the end — mirroring the game rule that a 150+ IV
+  total makes a Pokémon shiny. (T-168)
 
 - **The move relearner now charges money based on each Pokémon's move history.** Relearning a move
   the Pokémon has never actually had is free (`¥0`, shown in green); relearning a move it has had
