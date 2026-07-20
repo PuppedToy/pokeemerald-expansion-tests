@@ -77,6 +77,14 @@ Acceptance criteria:
   - `CHANGELOG.brooktec.md`: [Unreleased] Added entry.
   - Cannot compile locally (no GBA toolchain — builds on CI/builder). Randomizer Jest suite not run (no `randomizer/` changes). Storage/UI decisions verified by reading engine internals; visual placement of the price label (title-row, right-aligned) is the one thing that needs an on-device look.
   - Known/accepted edge: pre-existing save mons have an all-zero mask, so their first relearn of any move reads as free until they re-learn/relevel it; gift/scripted mons created with a custom moveset also mark their auto initial moveset. Awaiting owner manual test on the builder before closing.
+- **2026-07-20** — Web app redeployed via `deploy/update.sh` (owner-greenlit, code pushed to origin). Decomp tools recompiled cleanly on the box; health check OK. Note: `update.sh` does not compile the ROM — this only refreshed the web box + its source copy.
+- **2026-07-20** — ROM **compiles** on the builder (owner-confirmed). Resolves the "not compile-verified" risk (no local GBA toolchain). Functionality NOT yet manually tested — task stays `in-progress` pending the owner's in-game verification.
+- **2026-07-20** — Owner confirmed in-game behaviour works. Four follow-up refinements (branch `feature/T-167-followup-economy-config-ui`):
+  1. Frontend randomizer section renamed **"Rewards" → "Economy"** (visible label only; internal `data-cat="rewards"` id kept so the existing test + body-id wiring stay intact). `frontend/js/config-form.js`, doc heading in `randomizer/docs/randomization-options.md`.
+  2. New **"Move relearn price"** option (default 250) added to the Economy section, before "Shop prices": field HTML + `DEFAULTS.moveRelearnPrice` + collector + loader in `config-form.js`. Label kept English per repo convention.
+  3. Hooked to the ROM: new `randomizer/moveRelearnerPriceWriter.js` (mirrors `moneyWriter.js`) patches `#define MOVE_RELEARNER_MOVE_COST` in `src/move_relearner.c` from `bundle.config.moveRelearnPrice`; wired into `make.js buildOneRom` (reverted by `restore()`). Unit test `randomizer/__tests__/unit/moveRelearnerPriceWriter.test.js` (red→green). `0` = every relearn free.
+  4. UI overlap fix: relearner titles shortened to **"BATTLE"/"CONTEST"** (`src/strings.c`), mode-arrow cluster shifted left (`sDisplayModeArrowsTemplate` firstX 27→14, secondX 117→82) and titles left-aligned at x=18 (`src/menu_specialized.c`) so the ¥ price no longer collides with the right arrow.
+  - `cd randomizer && npm test` green (1401); `cd frontend && npm test` green (89). C UI coordinates (task 4) are estimates — need an on-device look; may need a small nudge.
 
 ## Outcome
 

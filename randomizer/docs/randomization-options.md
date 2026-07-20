@@ -79,7 +79,8 @@ joins the pool (and is otherwise reserved from gyms/E4).
 *Behaviour change:* the Aqua/Magma **5th slot default is now `RANDOM`** (was a fixed
 Flying/Fighting). The main+secondary also drive the docs card colours (`trainerColors.js`).
 
-### Rewards (money) — ROM-build; CI/builder-verified
+### Economy — trainer money — ROM-build; CI/builder-verified
+(Frontend section "Economy" — internal `data-cat="rewards"`.)
 SoT: `src/battle_script_commands.c` `GetTrainerMoneyToGive` (committed `#define`s), patched at build
 time by `randomizer/moneyWriter.js` (called from `make.js buildOneRom`; reverted by the post-build
 `git checkout -- src/`). Carried in `bundle.config.money` (not a module knob).
@@ -93,6 +94,18 @@ time by `randomizer/moneyWriter.js` (called from `make.js buildOneRom`; reverted
 Museum grunts and Space-Center grunts **derive** from `boss`: `round(boss × 2/3)`, and the 2nd museum
 grunt adds $50 — so at the defaults they stay $2000 / $2050. Elite Four ($10k) and Champion ($50k)
 are fixed. **Not buildable locally** (no GBA toolchain); the C compile runs in CI / on the builder.
+
+### Economy — move relearn price — ROM-build; CI/builder-verified
+SoT: `src/move_relearner.c` `#define MOVE_RELEARNER_MOVE_COST` (read by `GetMoveRelearnerMoveCost`),
+patched at build time by `randomizer/moveRelearnerPriceWriter.js` (called from `make.js buildOneRom`;
+reverted by the post-build `git checkout -- src/`). Carried in `bundle.config.moveRelearnPrice`
+(a plain integer, not a module knob).
+
+The move relearner (reached from the Pokémon summary screen, START on the moves page) charges this
+price to relearn a move the Pokémon has had before — its initial moveset on capture or a level-up
+auto-learn; relearning a move it never actually had is always free. Default `250`; set to `0` to make
+every relearn free. See task T-167. **Not buildable locally** (no GBA toolchain); the C compile runs
+in CI / on the builder.
 
 ### Starters (extra starters)
 An unlimited, ordered list; each slot picks by category (SoT: `randomizer/modules/wildModule.js`

@@ -267,11 +267,13 @@ static const struct SpritePalette sMoveRelearnerPalette =
 
 static const struct ScrollArrowsTemplate sDisplayModeArrowsTemplate =
 {
+    // T-167: cluster shifted left (left arrow ~aligned with the "N" of "Normal") and the title
+    // shortened to "BATTLE"/"CONTEST" so the relearn price has clear space on the right.
     .firstArrowType = SCROLL_ARROW_LEFT,
-    .firstX = 27,
+    .firstX = 14,
     .firstY = 16,
     .secondArrowType = SCROLL_ARROW_RIGHT,
-    .secondX = 117,
+    .secondX = 82,
     .secondY = 16,
     .fullyUpThreshold = -1,
     .fullyDownThreshold = -1,

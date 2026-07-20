@@ -124,6 +124,7 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
     const { writeItemFilesFromBundle }  = require('./randomizer/itemRandomizer');
     const { writeMoney }                = require('./randomizer/moneyWriter');
     const { writeItemPrices }           = require('./randomizer/itemPriceWriter');
+    const { writeMoveRelearnerPrice }   = require('./randomizer/moveRelearnerPriceWriter');
     const { writeRunAndBunVars }        = require('./randomizer/runAndBunWriter');
     const { writeStevenTagVar }         = require('./randomizer/stevenTagWriter');
     const { writeLocationNames }        = require('./randomizer/locationNameWriter');
@@ -154,6 +155,8 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
         await writeMoney(bundle.config?.money);
         // T-073 — patch configurable shop item prices into src/data/items.h (restored by restore()).
         await writeItemPrices(bundle.config?.prices);
+        // T-167 — patch the configurable move-relearn price #define in src/move_relearner.c (restored by restore()).
+        await writeMoveRelearnerPrice(bundle.config?.moveRelearnPrice);
         // T-091/ADR-014 — preset the League Run & Bun mode gate + E4 quotas from the run config
         // into Sidney's room init script (restored by restore() after build).
         await writeRunAndBunVars(bundle.config);
