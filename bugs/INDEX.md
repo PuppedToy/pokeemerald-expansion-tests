@@ -47,3 +47,4 @@
 | [B-041](B-041-classic-wild-docs-incomplete.md) | Classic wild encounters show only one species per zone in the docs | fixed | major | 0.6.0 | 0.6.0 | randomizer/__tests__/unit/docsVisibility.test.js |
 | [B-042](B-042-shelly-weather-institute-tile-offset.md) | Player ends 1 tile too low after beating Shelly at the Weather Institute | open | minor | 0.5.0 |  |  |
 | [B-043](B-043-cosmetic-rep-display-name-keeps-form-suffix.md) | Cosmetic-family kept representative still shows its form suffix in the docs | fixed | minor | 0.9.0 | 0.9.0 | randomizer/__tests__/unit/cosmeticFamilyStrip.test.js |
+| [B-044](B-044-grunt-mascot-inherits-perfect-breed.md) | Villain-grunt mascot inherits the leader's perfect IVs | fixing | major | 0.6.0 |  | randomizer/__tests__/integration/reverseOrderContinuity.test.js (B-044 block) + randomizer/__tests__/unit/ivCacheKey.test.js |

@@ -9,6 +9,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **The docs flag shiny Pokémon.** When "Show IVs" is on, any trainer Pokémon whose IV total is 150 or
+  more now shows a gold **★ Shiny** badge next to its IVs — mirroring the game rule that a 150+ IV total
+  makes a Pokémon shiny. The badge rides on the IV line and wraps cleanly on narrow screens. (T-168)
+
 - **The move relearner now charges money based on each Pokémon's move history.** Relearning a move
   the Pokémon has never actually had is free (`¥0`, shown in green); relearning a move it has had
   before — from its initial moveset when caught or from a level-up — costs `¥250` (shown in
@@ -18,6 +22,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   (START on the moves page); the Fallarbor move-tutor NPC no longer teaches moves. (T-167)
 
 ### Fixed
+
+- **Villain-grunt mascots no longer inherit their leader's perfect IVs.** The early Aqua/Magma grunts
+  lead a devolved copy of their leader's signature mega (Archie's Mega Sharpedo → Carvanha, Maxie's Mega
+  Camerupt → Numel). That mascot was silently getting the leader's perfect (all-31) IVs because it shared
+  the leader's internal IV slot; it is now bred independently — same family, ordinary IVs. The leaders
+  themselves keep their perfect favourites. (B-044)
 
 - **Cosmetic-family representatives now show their base name in the docs.** After the cosmetic strip
   kept one form per family, the docs still displayed the surviving form's suffix — e.g. "Spewpa Icy

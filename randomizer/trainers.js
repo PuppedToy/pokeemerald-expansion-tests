@@ -250,7 +250,9 @@ const villainFavourite = (aceMega) => [{ villainMega: aceMega }];
 // ALLOW_ONLY_TYPES restriction + level-legality apply throughout). Pure wiring over the existing
 // selectWithAutoFallback engine — no new resolution code.
 const mascotSlot = (id, baseSlot, teamTypes) => ({
-    special: TRAINER_REPEAT_ID, id, devolveToLevel: true,
+    // B-044 — `independentIvs`: reuse the leader's stored SPECIES (via `id`) but NOT its IVs. The mascot is a
+    // separately bred grunt mon of the same family, so it must not inherit the leader's perfect breed.
+    special: TRAINER_REPEAT_ID, id, devolveToLevel: true, independentIvs: true,
     fallback: [
         { ...baseSlot, exactTypes: [teamTypes[0], teamTypes[1]] },
         { ...baseSlot, type: [teamTypes[0]] },

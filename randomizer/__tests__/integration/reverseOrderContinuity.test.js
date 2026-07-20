@@ -156,25 +156,25 @@ describeSlow('reverse-order continuity (T-106)', () => {
         });
     });
 
-    describe('Tate & Liza dual favourite (T-128)', () => {
-        // T-128 (redesign) — Tate & Liza have TWO species-only favourites (['SPECIES_SOLGALEO',
+    describe('Tate & Liza dual favourite (T-128) — one twin fielded when both share a tier (T-169)', () => {
+        // T-128 (redesign) — Tate & Liza have TWO species-only favourite chains (['SPECIES_SOLGALEO',
         // 'SPECIES_SOLROCK'] and ['SPECIES_LUNALA','SPECIES_LUNATONE']). The legends are above the
-        // up-to-Uber pool, so each drops to its base counterpart, which CLAIMS a pool slot. The old
-        // Trick Room / Light Clay / Room Service item gimmick was removed (owner-validated).
-        test('fields six mons including a Solrock-line and a Lunatone-line ace', () => {
-            const team = docs['TRAINER_TATE_AND_LIZA_1'].team;
-            expect(team.length).toBe(6);
-            const has = fams => team.some(m => fams.includes(m.pokemon));
-            expect(has(['SPECIES_SOLROCK', 'SPECIES_SOLGALEO', 'SPECIES_COSMOEM'])).toBe(true);
-            expect(has(['SPECIES_LUNATONE', 'SPECIES_LUNALA', 'SPECIES_COSMOEM'])).toBe(true);
-        });
-        test('both favourites drop to their base counterparts (Solrock + Lunatone), the legends being over budget', () => {
+        // up-to-Uber pool, so each drops to its thematic base counterpart. But Solrock and Lunatone are
+        // mirror-stat twins → they rate the SAME tier (RU for this seed), and the pool has only ONE RU
+        // slot ([UBERS,UBERS,OU,UU,RU,mega]). The first chain (Solrock) claims it; the second twin
+        // (Lunatone) finds no free exact-tier slot and is correctly DROPPED to the generic fallback.
+        // Only ONE twin is guaranteed whenever they share a tier — owner-confirmed intended (T-169), not
+        // a bug. (The old Trick Room / Light Clay / Room Service item gimmick was removed, owner-validated.)
+        test('fields six mons and never a legendary (Solgaleo/Lunala are over the up-to-Uber budget)', () => {
             const team = docs['TRAINER_TATE_AND_LIZA_1'].team.map(m => m.pokemon);
-            expect(team).toContain('SPECIES_SOLROCK');
-            expect(team).toContain('SPECIES_LUNATONE');
-            // Solgaleo/Lunala are legends, above the up-to-Uber budget → they never claim a slot.
+            expect(team.length).toBe(6);
             expect(team).not.toContain('SPECIES_SOLGALEO');
             expect(team).not.toContain('SPECIES_LUNALA');
+        });
+        test('Solrock (chain 0) claims the sole RU slot; Lunatone (same tier) is correctly dropped', () => {
+            const team = docs['TRAINER_TATE_AND_LIZA_1'].team.map(m => m.pokemon);
+            expect(team).toContain('SPECIES_SOLROCK');
+            expect(team).not.toContain('SPECIES_LUNATONE');
         });
         // B-034 / T-143 — Trick Room is NO LONGER force-seeded (Tate & Liza force nothing). A Psychic-
         // restricted boss can't field a genuinely slow team (almost no slow Psychic mons/megas at the boss
@@ -183,6 +183,25 @@ describeSlow('reverse-order continuity (T-106)', () => {
         test('B-034/T-143 — Trick Room still builds emergently somewhere (never force-seeded)', () => {
             const anyTR = Object.values(docs).some(t => (t.team || []).some(m => (m.moves || []).includes('MOVE_TRICK_ROOM')));
             expect(anyTR).toBe(true);
+        });
+    });
+
+    // B-044 — a villain grunt fields a MASCOT: its leader's signature mega DEVOLVED (Archie's Mega Sharpedo
+    // → Carvanha, Maxie's Mega Camerupt → Numel). The mascot must be the SAME FAMILY as the leader's ace
+    // but INDEPENDENTLY bred — it must NOT inherit the leader's perfect IVs (the leader shares its `pokeId`
+    // IV-cache slot). Before the fix the mascot came out all-31 (186) like the leader; after, it rolls its own.
+    describe('villain-grunt mascot is same family but not perfect breed (B-044)', () => {
+        const PAIRS = [
+            { grunt: 'TRAINER_GRUNT_PETALBURG_WOODS', leader: 'TRAINER_ARCHIE' },
+            { grunt: 'TRAINER_GRUNT_RUSTURF_TUNNEL', leader: 'TRAINER_MAXIE_MAGMA_HIDEOUT' },
+        ];
+        test.each(PAIRS)('$grunt mascot shares $leader\'s ace family but has its own (non-perfect) IVs', ({ grunt, leader }) => {
+            const aces = (docs[leader].team || []).filter(isPerfect);
+            expect(aces.length).toBeGreaterThanOrEqual(1); // the leader keeps its perfect-breed mega favourite
+            const aceFamilies = new Set(aces.map(m => familyOf(m.pokemon)));
+            const mascot = (docs[grunt].team || []).find(m => aceFamilies.has(familyOf(m.pokemon)));
+            expect(mascot).toBeDefined();          // the mascot IS a member of the leader's ace family
+            expect(isPerfect(mascot)).toBe(false); // …but independently bred — no inherited perfect IVs
         });
     });
 
