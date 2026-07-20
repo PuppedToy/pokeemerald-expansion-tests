@@ -1,7 +1,7 @@
 ---
 id: T-167
 title: Move relearner charges money for previously-learned moves, free for never-learned
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-20
 updated: 2026-07-20
@@ -54,13 +54,14 @@ Relearner UI (move_relearner.c + menu_specialized.c):
 Fallarbor NPC script gutted to a flavour message.
 
 Acceptance criteria:
-- [ ] Relearning a move the mon never actually had is free (¥0, green).
-- [ ] Relearning a move the mon had before (initial moveset or level-up) costs ¥250.
-- [ ] Once a move is relearned, relearning it again later costs ¥250.
-- [ ] ¥250 shows red and cannot be selected when the player lacks the money.
-- [ ] History is preserved across box deposit/withdraw and remapped correctly on evolution.
-- [ ] Fallarbor Move Relearner NPC no longer teaches; shows a flavour line only.
-- [ ] Builds on CI/builder (`make`); C battle tests unaffected.
+- [x] Relearning a move the mon never actually had is free (¥0, green).
+- [x] Relearning a move the mon had before (initial moveset or level-up) costs ¥250.
+- [x] Once a move is relearned, relearning it again later costs ¥250.
+- [x] ¥250 shows red and cannot be selected when the player lacks the money.
+- [x] History is preserved across box deposit/withdraw and remapped correctly on evolution.
+- [x] Fallarbor Move Relearner NPC no longer teaches; shows a flavour line only.
+- [x] Builds on CI/builder (`make`); C battle tests unaffected.
+- [x] Move-relearn price configurable from the frontend "Economy" section (default 250), threaded to the ROM. (follow-up)
 
 ## Progress log
 
@@ -85,7 +86,33 @@ Acceptance criteria:
   3. Hooked to the ROM: new `randomizer/moveRelearnerPriceWriter.js` (mirrors `moneyWriter.js`) patches `#define MOVE_RELEARNER_MOVE_COST` in `src/move_relearner.c` from `bundle.config.moveRelearnPrice`; wired into `make.js buildOneRom` (reverted by `restore()`). Unit test `randomizer/__tests__/unit/moveRelearnerPriceWriter.test.js` (red→green). `0` = every relearn free.
   4. UI overlap fix: relearner titles shortened to **"BATTLE"/"CONTEST"** (`src/strings.c`), mode-arrow cluster shifted left (`sDisplayModeArrowsTemplate` firstX 27→14, secondX 117→82) and titles left-aligned at x=18 (`src/menu_specialized.c`) so the ¥ price no longer collides with the right arrow.
   - `cd randomizer && npm test` green (1401); `cd frontend && npm test` green (89). C UI coordinates (task 4) are estimates — need an on-device look; may need a small nudge.
+- **2026-07-20** — Owner confirmed the follow-up in-game ("Está perfecto!"): Economy section + Move relearn price option, the price applied in a freshly-built ROM, and the fixed title/arrow/price layout. Closing the task.
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped. The move relearner now prices each relearn from a per-Pokémon "moves ever learned" history:
+free (`¥0`, green) the first time a move is learned, `¥250` (dark-gray, or red + unselectable when
+unaffordable) for any move the Pokémon has had before (initial moveset on capture, level-up auto-learn,
+or a prior relearn). Charged from the player's money on confirm.
+
+Storage: a 20-bit mask indexed by level-up-learnset slot, packed into the box-mon's former `unused_*`
+spare bits (`MON_DATA_LEARNED_MOVES_MASK`), set on every real learn path, remapped on evolution, and
+persisted through the PC. Relearning is reached from the Pokémon summary screen (START); the Fallarbor
+move-tutor NPC is now flavour-only (a debug-menu entry still opens the priced relearner).
+
+The price is configurable from the frontend **Economy** section (renamed from "Rewards"), option
+**"Move relearn price"** (default 250, `0` = always free), threaded to the ROM by
+`randomizer/moveRelearnerPriceWriter.js` patching the `MOVE_RELEARNER_MOVE_COST` `#define` at build time.
+
+Deviations / notes:
+- Pure C engine + pipeline change (outside the usual randomizer analysis path); compiled on the
+  builder/CI, not locally. Owner confirmed it compiles and works in-game.
+- Consumed the box-mon's last free secure bits — see memory note; a future per-mon field needs a
+  different storage strategy.
+- Accepted edges: pre-existing save mons start with an empty history (first relearn of anything reads
+  as free until re-learned/releveled); gift/scripted mons with a custom moveset also mark their auto
+  initial moveset.
+- UI price-label coordinates were authored without a local renderer and fine-tuned after the owner's
+  screenshot; confirmed good on device.
+
+No follow-up tasks spawned.

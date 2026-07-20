@@ -170,7 +170,7 @@
 | [T-164](T-164-emerald-cut-story-trims.md) | Emerald-cut story/text trims and content removals | in-progress | 0.6.0 | 2026-07-19 |
 | [T-165](T-165-disable-steven-tag-battle.md) | Disable Steven tag battle → solo Tabitha boss (Mossdeep Space Center) | in-progress | 0.6.0 | 2026-07-19 |
 | [T-166](T-166-starting-catch-balls.md) | Stock starting bag with catch balls; strip non-Master balls and floor mints from the world | in-progress | 0.6.0 | 2026-07-19 |
-| [T-167](T-167-relearner-move-history-pricing.md) | Move relearner charges money for previously-learned moves, free for never-learned | in-progress | 0.6.0 | 2026-07-20 |
+| [T-167](T-167-relearner-move-history-pricing.md) | Move relearner charges money for previously-learned moves, free for never-learned | done | 0.6.0 | 2026-07-20 |
 | [T-168](T-168-shiny-iv-badge-in-docs.md) | Show a "Shiny" star badge in the docs for 150+ IV Pokémon | in-progress | 0.6.0 | 2026-07-20 |
 | [T-169](T-169-tate-liza-dual-favourite-test-correction.md) | Correct the Tate & Liza dual-favourite test to the confirmed spec | done | 0.6.0 | 2026-07-20 |
 | [T-170](T-170-macro-frontpic-sprite-resolution.md) | Resolve macro-body .frontPic so cosmetic/macro forms render in the docs | in-progress | 0.6.0 | 2026-07-20 |
