@@ -171,3 +171,4 @@
 | [T-165](T-165-disable-steven-tag-battle.md) | Disable Steven tag battle → solo Tabitha boss (Mossdeep Space Center) | in-progress | 0.6.0 | 2026-07-19 |
 | [T-166](T-166-starting-catch-balls.md) | Stock starting bag with catch balls; strip non-Master balls and floor mints from the world | in-progress | 0.6.0 | 2026-07-19 |
 | [T-167](T-167-relearner-move-history-pricing.md) | Move relearner charges money for previously-learned moves, free for never-learned | in-progress | 0.6.0 | 2026-07-20 |
+| [T-168](T-168-shiny-iv-badge-in-docs.md) | Show a "Shiny" star badge in the docs for 150+ IV Pokémon | in-progress | 0.6.0 | 2026-07-20 |

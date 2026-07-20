@@ -721,6 +721,10 @@
     .roster-meta .rm-nature  { color:#A5D9B8; }
     .roster-meta .rm-item    { color:#FFD580; }
     .roster-meta .rm-ivs     { color:#C9B8FF; letter-spacing:0.3px; }   /* T-163 — IVs (opt-in) */
+    /* T-168 — "Shiny" badge for a 150+ IV total. Rides inline on the IV line (wraps with it on narrow
+       cards); kept as one unit so "★ Shiny" never breaks mid-phrase. Gold, to read as shiny at a glance. */
+    .roster-meta .rm-ivs .rm-shiny { color:#FFD43B; font-weight:700; white-space:nowrap; margin-left:6px; }
+    .roster-meta .rm-ivs .rm-shiny .rm-shiny-star { color:#FFD43B; }
     /* T-163 — "(and X other Pokémon)" box shown when the team is partially hidden. */
     .roster-hidden-box { border:2px dashed var(--obs-line); box-shadow:var(--obs-shadow-sm);
       padding:12px; text-align:center; font-weight:600; color:var(--obs-text-dim); align-self:center; }
@@ -1630,9 +1634,17 @@
           : '';
         // T-163 — IVs render only when "Show IVs" was on (the pipeline strips them otherwise).
         // ivs is an object { hp, atk, def, spa, spd, spe } (randomizer/modules/resolveTrainerTeam.js).
-        const ivsHTML = (member.ivs && typeof member.ivs === 'object')
-          ? `<span class="rm-ivs" data-tooltip="Individual Values — HP / Atk / Def / SpA / SpD / Spe">IVs ${['hp','atk','def','spa','spd','spe'].map(k => member.ivs[k]).join('/')}</span>`
-          : '';
+        // T-168 — this game ties shininess to the IV total: a total of 150+ is guaranteed shiny in-game
+        // (see the rules in index.html). When shown, flag such a mon with a gold ★ Shiny badge on the IV line.
+        let ivsHTML = '';
+        if (member.ivs && typeof member.ivs === 'object') {
+          const ivVals = ['hp','atk','def','spa','spd','spe'].map(k => member.ivs[k]);
+          const ivTotal = ivVals.reduce((sum, v) => sum + (Number(v) || 0), 0);
+          const shinyBadge = ivTotal >= 150
+            ? ` <span class="rm-shiny" data-tooltip="Shiny — IV total ${ivTotal} is 150 or more, so this Pokémon is shiny in-game"><span class="rm-shiny-star">★</span> Shiny</span>`
+            : '';
+          ivsHTML = `<span class="rm-ivs" data-tooltip="Individual Values — HP / Atk / Def / SpA / SpD / Spe">IVs ${ivVals.join('/')}${shinyBadge}</span>`;
+        }
         // Ability / nature / item / IVs stack on their own lines (the spans are display:block). T-045.
         const metaLine = [abilityHTML, natureHTML, itemHTML, ivsHTML].filter(Boolean).join('');
         const hasMoves = member.moves && member.moves.length > 0;
