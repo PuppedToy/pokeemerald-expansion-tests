@@ -115,8 +115,16 @@ describe('parseSpeciesFile — cosmetic family strip (T-154)', () => {
         // Unown / Milcery keep the base id already, so they are unaffected
         expect(nameizyPokemonId('SPECIES_UNOWN')).toBe('Unown');
         expect(nameizyPokemonId('SPECIES_MILCERY')).toBe('Milcery');
-        // out of scope: type forms still derive from the id (owner decision)
-        expect(nameizyPokemonId('SPECIES_ARCEUS_NORMAL').replace(/\s+/g, ' ')).toBe('Arceus Normal');
+        // type forms still derive from the id (owner decision) — but with a single space (B-046).
+        expect(nameizyPokemonId('SPECIES_ARCEUS_NORMAL')).toBe('Arceus Normal');
+    });
+
+    // B-046 — the id→display-name transform must not double the space between words.
+    test('B-046 — multi-word species names use a single space', () => {
+        expect(nameizyPokemonId('SPECIES_ARCEUS_NORMAL')).toBe('Arceus Normal');
+        expect(nameizyPokemonId('SPECIES_DEERLING_SPRING')).toBe('Deerling Spring');
+        expect(nameizyPokemonId('SPECIES_NIDORAN_F')).toBe('Nidoran F');
+        expect(nameizyPokemonId('SPECIES_TYPE_NULL')).toBe('Type Null');
     });
 
     test('keeps one per stage and leaves the evo tree clean (no dropped-pattern pollution)', () => {

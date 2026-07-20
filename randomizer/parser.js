@@ -822,9 +822,10 @@ function nameizyPokemonId(pokeId) {
         .replace('SPECIES_', '')
         .replace(/_/g, ' ')
         .toLowerCase();
-    // Capitalize first letter and every letter after a space
+    // Capitalize first letter and every letter after a space. Use the captured letter (not the whole
+    // match, which includes the leading space) so multi-word names keep a single space (B-046).
     result = result.charAt(0).toUpperCase() + result.slice(1);
-    result = result.replace(/ (\w)/g, function(m) { return ' ' + m.toUpperCase(); });
+    result = result.replace(/ (\w)/g, function(_, c) { return ' ' + c.toUpperCase(); });
     return result;
 }
 
