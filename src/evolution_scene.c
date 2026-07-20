@@ -563,6 +563,7 @@ static void CreateShedinja(u32 preEvoSpecies, u32 postEvoSpecies, struct Pokemon
 
             CopyMon(&gPlayerParty[gPlayerPartyCount], mon, sizeof(struct Pokemon));
             SetMonData(&gPlayerParty[gPlayerPartyCount], MON_DATA_SPECIES, &evolutions[i].targetSpecies);
+            RemapLearnedMovesMaskForEvolution(shedinja, GetMonData(mon, MON_DATA_SPECIES, NULL), evolutions[i].targetSpecies); // T-167
             SetMonData(&gPlayerParty[gPlayerPartyCount], MON_DATA_NICKNAME, GetSpeciesName(evolutions[i].targetSpecies));
             SetMonData(&gPlayerParty[gPlayerPartyCount], MON_DATA_HELD_ITEM, &data);
             SetMonData(&gPlayerParty[gPlayerPartyCount], MON_DATA_MARKINGS, &data);
@@ -777,6 +778,7 @@ static void Task_EvolutionScene(u8 taskId)
             PlayBGM(MUS_EVOLVED);
             gTasks[taskId].tState++;
             SetMonData(mon, MON_DATA_SPECIES, (void *)(&gTasks[taskId].tPostEvoSpecies));
+            RemapLearnedMovesMaskForEvolution(mon, gTasks[taskId].tPreEvoSpecies, gTasks[taskId].tPostEvoSpecies); // T-167
             SetMonData(mon, MON_DATA_EVOLUTION_TRACKER, &zero);
             CalculateMonStats(mon);
             EvolutionRenameMon(mon, gTasks[taskId].tPreEvoSpecies, gTasks[taskId].tPostEvoSpecies);
@@ -1200,6 +1202,7 @@ static void Task_TradeEvolutionScene(u8 taskId)
             PlayFanfare(MUS_EVOLVED);
             gTasks[taskId].tState++;
             SetMonData(mon, MON_DATA_SPECIES, (&gTasks[taskId].tPostEvoSpecies));
+            RemapLearnedMovesMaskForEvolution(mon, gTasks[taskId].tPreEvoSpecies, gTasks[taskId].tPostEvoSpecies); // T-167
             SetMonData(mon, MON_DATA_EVOLUTION_TRACKER, &zero);
             CalculateMonStats(mon);
             EvolutionRenameMon(mon, gTasks[taskId].tPreEvoSpecies, gTasks[taskId].tPostEvoSpecies);

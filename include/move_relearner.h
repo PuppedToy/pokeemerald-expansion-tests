@@ -5,6 +5,8 @@ void TeachMoveRelearnerMove(void);
 void MoveRelearnerShowHideHearts(s32 move);
 void MoveRelearnerShowHideCategoryIcon(s32);
 void CB2_InitLearnMove(void);
+u32 GetMoveRelearnerMoveCost(u16 move); // T-167
+bool8 MoveRelearnerCanAfford(u16 move); // T-167
 
 extern u8 gOriginSummaryScreenPage;
 extern bool8 gBoxMonRelearnerActive;

@@ -7,6 +7,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Added
+
+- **The move relearner now charges money based on each Pokémon's move history.** Relearning a move
+  the Pokémon has never actually had is free (`¥0`, shown in green); relearning a move it has had
+  before — from its initial moveset when caught or from a level-up — costs `¥250` (shown in
+  dark gray, or red and unselectable when you can't afford it). Each Pokémon remembers which
+  level-up moves it has ever learned (preserved through the PC and remapped on evolution). The
+  price is shown in the relearn screen, which is now reached from the Pokémon summary screen
+  (START on the moves page); the Fallarbor move-tutor NPC no longer teaches moves. (T-167)
+
 ### Fixed
 
 - **Cosmetic-family representatives now show their base name in the docs.** After the cosmetic strip

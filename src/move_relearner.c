@@ -15,6 +15,7 @@
 #include "menu.h"
 #include "menu_helpers.h"
 #include "menu_specialized.h"
+#include "money.h"
 #include "overworld.h"
 #include "palette.h"
 #include "party_menu.h"
@@ -159,6 +160,9 @@ enum {
 #define TAG_LIST_ARROWS 5425
 #define GFXTAG_UI       5525
 #define PALTAG_UI       5526
+
+// T-167: cost to relearn a move the mon has already had before (0 = free, first time).
+#define MOVE_RELEARNER_MOVE_COST 250
 
 static EWRAM_DATA struct
 {
@@ -534,8 +538,12 @@ static void DoMoveRelearnerMain(void)
 
             if (selection == 0)
             {
+                // T-167: capture the cost before learning — the learn hook flips the "ever learned" bit.
+                u32 cost = GetMoveRelearnerMoveCost(GetCurrentSelectedMove());
                 if (GiveMoveToMon(&gPlayerParty[sMoveRelearnerStruct->partyMon], GetCurrentSelectedMove()) != MON_HAS_MAX_MOVES)
                 {
+                    if (cost > 0)
+                        RemoveMoney(&gSaveBlock1Ptr->money, cost);
                     PrintMessageWithPlaceholders(gText_MoveRelearnerPkmnLearnedMove);
                     gSpecialVar_0x8004 = TRUE;
                     sMoveRelearnerStruct->state = MENU_STATE_PRINT_TEXT_THEN_FANFARE;
@@ -710,6 +718,7 @@ static void DoMoveRelearnerMain(void)
             {
                 // Write the modified moves/PP back to the box mon in storage
                 u8 i;
+                u32 learnedMask;
                 for (i = 0; i < MAX_MON_MOVES; i++)
                 {
                     u16 move = GetMonData(&gPlayerParty[0], MON_DATA_MOVE1 + i, NULL);
@@ -717,6 +726,9 @@ static void DoMoveRelearnerMain(void)
                     SetBoxMonData(gBoxMonRelearnerBoxMonPtr, MON_DATA_MOVE1 + i, &move);
                     SetBoxMonData(gBoxMonRelearnerBoxMonPtr, MON_DATA_PP1 + i, &pp);
                 }
+                // T-167: persist the updated "moves ever learned" history to the box mon.
+                learnedMask = GetMonData(&gPlayerParty[0], MON_DATA_LEARNED_MOVES_MASK, NULL);
+                SetBoxMonData(gBoxMonRelearnerBoxMonPtr, MON_DATA_LEARNED_MOVES_MASK, &learnedMask);
                 // Restore the party slot we borrowed
                 gPlayerParty[0] = gBoxMonRelearnerPartyBackup;
                 gPlayerPartyCount = gBoxMonRelearnerPartyCountBackup;
@@ -778,10 +790,13 @@ static void DoMoveRelearnerMain(void)
             {
                 u16 move = GetMonData(&gPlayerParty[sMoveRelearnerStruct->partyMon], MON_DATA_MOVE1 + sMoveRelearnerStruct->moveSlot);
                 u8 originalPP = GetMonData(&gPlayerParty[sMoveRelearnerStruct->partyMon], MON_DATA_PP1 + sMoveRelearnerStruct->moveSlot);
+                u32 cost = GetMoveRelearnerMoveCost(GetCurrentSelectedMove()); // T-167: before SetMonMoveSlot flips the bit.
 
                 StringCopy(gStringVar3, GetMoveName(move));
                 RemoveMonPPBonus(&gPlayerParty[sMoveRelearnerStruct->partyMon], sMoveRelearnerStruct->moveSlot);
                 SetMonMoveSlot(&gPlayerParty[sMoveRelearnerStruct->partyMon], GetCurrentSelectedMove(), sMoveRelearnerStruct->moveSlot);
+                if (cost > 0)
+                    RemoveMoney(&gSaveBlock1Ptr->money, cost); // T-167
                 u8 newPP = GetMonData(&gPlayerParty[sMoveRelearnerStruct->partyMon], MON_DATA_PP1 + sMoveRelearnerStruct->moveSlot);
                 if (!P_SUMMARY_MOVE_RELEARNER_FULL_PP && gOriginSummaryScreenPage != 0 && originalPP < newPP)
                     SetMonData(&gPlayerParty[sMoveRelearnerStruct->partyMon], MON_DATA_PP1 + sMoveRelearnerStruct->moveSlot, &originalPP);
@@ -890,6 +905,12 @@ static void HandleInput(bool8 showContest)
         MoveRelearnerPrintMessage(gStringVar4);
         break;
     default:
+        // T-167: can't select a move you can't afford to relearn (its price shows red).
+        if (GetMoveRelearnerMoveCost(itemId) > 0 && !MoveRelearnerCanAfford(itemId))
+        {
+            PlaySE(SE_FAILURE);
+            break;
+        }
         PlaySE(SE_SELECT);
         RemoveScrollArrows();
         sMoveRelearnerStruct->state = MENU_STATE_PRINT_TEACH_MOVE_PROMPT;
@@ -903,6 +924,22 @@ static void HandleInput(bool8 showContest)
 static s32 GetCurrentSelectedMove(void)
 {
     return sMoveRelearnerStruct->menuItems[sMoveRelearnerMenuState.listRow + sMoveRelearnerMenuState.listOffset].id;
+}
+
+// T-167: relearning a move the mon has already had costs money; a move it never had is free.
+u32 GetMoveRelearnerMoveCost(u16 move)
+{
+    if (sMoveRelearnerStruct == NULL || move == LIST_CANCEL || move == MOVE_NONE)
+        return 0;
+    if (WasMonMoveEverLearned(&gPlayerParty[sMoveRelearnerStruct->partyMon], move))
+        return MOVE_RELEARNER_MOVE_COST;
+    return 0;
+}
+
+bool8 MoveRelearnerCanAfford(u16 move)
+{
+    u32 cost = GetMoveRelearnerMoveCost(move);
+    return IsEnoughMoney(&gSaveBlock1Ptr->money, cost);
 }
 
 // Theory: This used to make the heart sprites visible again (i.e.

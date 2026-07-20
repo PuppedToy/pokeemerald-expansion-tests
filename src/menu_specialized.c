@@ -26,6 +26,7 @@
 #include "window.h"
 #include "constants/songs.h"
 #include "constants/battle_move_effects.h"
+#include "constants/characters.h"
 #include "gba/io_reg.h"
 
 EWRAM_DATA static u8 sMailboxWindowIds[MAILBOXWIN_COUNT] = {0};
@@ -750,6 +751,32 @@ u8 LoadMoveRelearnerMovesList(const struct ListMenuItem *items, u16 numChoices)
     return gMultiuseListMenuTemplate.maxShowed;
 }
 
+// T-167: draw the colored relearn price for the highlighted move into the given desc window.
+// Green ¥0 = free (never learned), dark-gray ¥250 = affordable, red ¥250 = can't afford.
+static void MoveRelearnerDrawMovePrice(u8 windowId, u32 chosenMove)
+{
+    static const u8 sPriceColorFree[]         = {TEXT_COLOR_WHITE, TEXT_COLOR_GREEN,     TEXT_COLOR_LIGHT_GREEN};
+    static const u8 sPriceColorAffordable[]   = {TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_LIGHT_GRAY};
+    static const u8 sPriceColorUnaffordable[] = {TEXT_COLOR_WHITE, TEXT_COLOR_RED,       TEXT_COLOR_LIGHT_RED};
+    const u8 *color;
+    u8 priceText[12];
+    u32 cost = GetMoveRelearnerMoveCost(chosenMove);
+    s32 x;
+
+    priceText[0] = CHAR_CURRENCY;
+    ConvertIntToDecimalStringN(&priceText[1], cost, STR_CONV_MODE_LEFT_ALIGN, 4);
+
+    if (cost == 0)
+        color = sPriceColorFree;
+    else if (MoveRelearnerCanAfford(chosenMove))
+        color = sPriceColorAffordable;
+    else
+        color = sPriceColorUnaffordable;
+
+    x = GetStringRightAlignXOffset(FONT_NORMAL, priceText, 124);
+    AddTextPrinterParameterized3(windowId, FONT_NORMAL, x, 1, color, TEXT_SKIP_DRAW, priceText);
+}
+
 static void MoveRelearnerLoadBattleMoveDescription(u32 chosenMove)
 {
     s32 x;
@@ -808,6 +835,7 @@ static void MoveRelearnerLoadBattleMoveDescription(u32 chosenMove)
         str = buffer;
     }
     AddTextPrinterParameterized(RELEARNERWIN_DESC_BATTLE, FONT_NORMAL, str, 106, 41, TEXT_SKIP_DRAW, NULL);
+    MoveRelearnerDrawMovePrice(RELEARNERWIN_DESC_BATTLE, chosenMove); // T-167
     AddTextPrinterParameterized(RELEARNERWIN_DESC_BATTLE, FONT_NARROW, GetMoveDescription(chosenMove), 0, 65, 0, NULL);
 }
 
@@ -842,6 +870,7 @@ static void MoveRelearnerMenuLoadContestMoveDescription(u32 chosenMove)
     str = gContestEffectDescriptionPointers[GetMoveContestEffect(chosenMove)];
     AddTextPrinterParameterized(RELEARNERWIN_DESC_CONTEST, FONT_NARROW, str, 0, 65, TEXT_SKIP_DRAW, NULL);
 
+    MoveRelearnerDrawMovePrice(RELEARNERWIN_DESC_CONTEST, chosenMove); // T-167
     CopyWindowToVram(RELEARNERWIN_DESC_CONTEST, COPYWIN_GFX);
 }
 
