@@ -1,7 +1,7 @@
 ---
 id: T-168
 title: Show a "Shiny" star badge in the docs for 150+ IV Pokémon
-status: in-progress
+status: done
 type: feature
 created: 2026-07-20
 updated: 2026-07-20
@@ -57,7 +57,16 @@ Acceptance criteria:
   Re-verified with the visual harness (desktop + mobile 375px): shiny lines read "IVs 31/31/31/31/31/31 ★"
   in gold `rgb(255,212,59)`, sub-150 lines keep the normal purple, no overflow. Updated the structural
   guard and changelog; frontend suite green (89/89).
+- **2026-07-20** — Owner approved; closing.
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped in `frontend/template.html`: when "Show IVs" is on, a trainer Pokémon whose IV total is ≥ 150
+has its IV line tinted gold (`.rm-ivs--shiny`, `#FFD43B`) with a small ★ appended at the end; sub-150
+mons keep the normal purple IVs. Mirrors the game's shiny rule (150+ IV total → shiny, per index.html).
+
+Deviation from the original plan: the first implementation used a separate gold "★ Shiny" badge; on owner
+review this was replaced by tinting the IV line gold + a trailing star and **dropping the "Shiny" word**
+(the task title still says "Shiny star badge" for historical continuity). Verified on desktop and mobile
+via the visual harness; guarded by `frontend/__tests__/shiny-iv-badge.test.js`. No bundle rebuild needed
+(the template is served/read directly). No follow-ups spawned.

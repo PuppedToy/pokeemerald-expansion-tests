@@ -1,13 +1,13 @@
 ---
 id: B-044
 title: Villain-grunt mascot inherits the leader's perfect IVs
-status: fixing
+status: fixed
 severity: major
 created: 2026-07-20
 updated: 2026-07-20
 found-in: 0.6.0
-fixed-in:
-regression-test: randomizer/__tests__/integration/reverseOrderContinuity.test.js (B-044 block) + randomizer/__tests__/unit/ivCacheKey.test.js
+fixed-in: 0.6.0
+regression-test: randomizer/__tests__/integration/reverseOrderContinuity.test.js  # "villain-grunt mascot is same family but not perfect breed (B-044)" + fast guard randomizer/__tests__/unit/ivCacheKey.test.js
 links: [T-144, T-168]
 ---
 
