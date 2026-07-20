@@ -21,6 +21,7 @@ const { typeMainColors } = require('./trainerColors');
 const { BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone } = require('./modules/wildModule');
 const { displayNameToItemConst } = require('./itemRandomizer');
 const { createTeamResolver, normalizeTrainerBagTms } = require('./modules/resolveTrainerTeam');
+const { nameizyPokemonId } = require('./parser');
 const { createSophisticationScale } = require('./modules/sophistication');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 
@@ -276,8 +277,10 @@ function buildTrainersResultsFromDocs(docsTrainers, pokemonList) {
             choiceBattle: td.choiceBattle || null,     // T-116 — Run & Bun E4 choice info
             team: (td.team || []).map(member => ({
                 ...member,
+                // B-045 — use the override-aware name so a fallback keeps a collapsed cosmetic form's
+                // base name ("Vivillon", not "Vivillon Icy Snow") if it is missing from the pokedex.
                 pokemon: byId.get(member.pokemon)
-                    || { id: member.pokemon, name: nameify(member.pokemon.replace('SPECIES_', '')) },
+                    || { id: member.pokemon, name: nameizyPokemonId(member.pokemon) },
             })),
         };
     });

@@ -175,6 +175,16 @@ describe('buildTrainersResultsFromDocs', () => {
         const result = buildTrainersResultsFromDocs(docs, pokemonList);
         expect(result.T1.team[0].pokemon).toEqual({ id: 'SPECIES_GHOST_MON', name: 'Ghost Mon' });
     });
+
+    // B-045 — a fallback for a collapsed cosmetic form must use its overridden base name, never the
+    // form suffix ("Vivillon", not "Vivillon Icy Snow").
+    test('fallback uses the override-aware base name for a collapsed cosmetic form', () => {
+        const docs = {
+            T1: { level: 5, class: 'X', team: [{ pokemon: 'SPECIES_VIVILLON_ICY_SNOW', moves: [], ivs: {} }] },
+        };
+        const result = buildTrainersResultsFromDocs(docs, pokemonList);
+        expect(result.T1.team[0].pokemon).toEqual({ id: 'SPECIES_VIVILLON_ICY_SNOW', name: 'Vivillon' });
+    });
 });
 
 describe('resolveMailMints', () => {

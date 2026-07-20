@@ -1610,7 +1610,9 @@
         const pokeId = member.pokemon || '';
         const _trainerPoke = findPoke(pokeId);
         const _trainerPokeColor = getFullPokeLogColor(_trainerPoke);
-        const pokeNamePlain = pokeId.replace('SPECIES_', '').replace(/_/g, ' ');
+        // B-045 — use the parsed (override-aware) display name so collapsed cosmetic forms show their
+        // base name ("Vivillon", not "Vivillon Icy Snow"); fall back to the id only if unknown.
+        const pokeNamePlain = (_trainerPoke && _trainerPoke.name) || pokeId.replace('SPECIES_', '').replace(/_/g, ' ');
         const pokeName = (_trainerPokeColor ? `<span style="color:${_trainerPokeColor}">` : '') + pokeNamePlain + (_trainerPokeColor ? '</span>' : '') + getFullPokeLogIcon(_trainerPoke);
         const imgSrc = getPokeImg(pokeId);
         // Ability · Nature · Item on a single line. Full details live in hover tooltips:
@@ -1873,9 +1875,10 @@
       const encountersHTML = encSlots
         .map(({ slot, species, method }) => {
           const pokeId = species;
-          const pokeName = nameify(pokeId.replace('SPECIES_', ''));
-          const img = getPokeImg(pokeId);
           const poke = findPoke(pokeId);
+          // B-045 — override-aware base name for collapsed cosmetic forms ("Vivillon", not "Vivillon Icy Snow").
+          const pokeName = (poke && poke.name) || nameify(pokeId.replace('SPECIES_', ''));
+          const img = getPokeImg(pokeId);
           const adjustmentIcon = getFullPokeLogIcon(poke);
           const nameColor = getFullPokeLogColor(poke);
           const coloredName = nameColor ? `<span style="color:${nameColor}">${pokeName}</span>` : pokeName;
@@ -2106,7 +2109,9 @@
           nameColor = allBuffs ? '#CFFFD3' : allNerfs ? '#D49494' : '#F5C97A';
         }
         const nameStyle = nameColor ? ` style="color:${nameColor}"` : '';
-        return `<span class="poke-miniature evo-link" data-id="${id}"><img src="${pokeImg}" height="32" width="32" alt="${id}" /><span${nameStyle}>${id.replace('SPECIES_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}${mutationIcon}</span></span>`;
+        // B-045 — override-aware base name for collapsed cosmetic forms ("Vivillon", not "Vivillon Icy Snow").
+        const evoName = (evoPoke && evoPoke.name) || id.replace('SPECIES_', '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+        return `<span class="poke-miniature evo-link" data-id="${id}"><img src="${pokeImg}" height="32" width="32" alt="${evoName}" /><span${nameStyle}>${evoName}${mutationIcon}</span></span>`;
       }
       function formatItem(itemId) {
         if (!itemId) return 'Unknown Item';
