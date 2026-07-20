@@ -186,6 +186,25 @@ describeSlow('reverse-order continuity (T-106)', () => {
         });
     });
 
+    // B-044 — a villain grunt fields a MASCOT: its leader's signature mega DEVOLVED (Archie's Mega Sharpedo
+    // → Carvanha, Maxie's Mega Camerupt → Numel). The mascot must be the SAME FAMILY as the leader's ace
+    // but INDEPENDENTLY bred — it must NOT inherit the leader's perfect IVs (the leader shares its `pokeId`
+    // IV-cache slot). Before the fix the mascot came out all-31 (186) like the leader; after, it rolls its own.
+    describe('villain-grunt mascot is same family but not perfect breed (B-044)', () => {
+        const PAIRS = [
+            { grunt: 'TRAINER_GRUNT_PETALBURG_WOODS', leader: 'TRAINER_ARCHIE' },
+            { grunt: 'TRAINER_GRUNT_RUSTURF_TUNNEL', leader: 'TRAINER_MAXIE_MAGMA_HIDEOUT' },
+        ];
+        test.each(PAIRS)('$grunt mascot shares $leader\'s ace family but has its own (non-perfect) IVs', ({ grunt, leader }) => {
+            const aces = (docs[leader].team || []).filter(isPerfect);
+            expect(aces.length).toBeGreaterThanOrEqual(1); // the leader keeps its perfect-breed mega favourite
+            const aceFamilies = new Set(aces.map(m => familyOf(m.pokemon)));
+            const mascot = (docs[grunt].team || []).find(m => aceFamilies.has(familyOf(m.pokemon)));
+            expect(mascot).toBeDefined();          // the mascot IS a member of the leader's ace family
+            expect(isPerfect(mascot)).toBe(false); // …but independently bred — no inherited perfect IVs
+        });
+    });
+
     describe('Gym leader favourites (T-128) — same mechanism as every favourite', () => {
         const GYMS = ['TRAINER_ROXANNE_1', 'TRAINER_WATTSON_1', 'TRAINER_FLANNERY_1',
             'TRAINER_NORMAN_1', 'TRAINER_WINONA_1', 'TRAINER_JUAN_1'];

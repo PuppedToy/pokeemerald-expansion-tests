@@ -79,6 +79,16 @@ function djb2Hash(str) {
     return h;
 }
 
+// B-044 — the per-`pokeId` IV cache key for a slot. A slot's `id` normally doubles as its IV identity so
+// a recurring character's SAME Pokémon keeps consistent IVs across appearances (rival Metang echoing the
+// Champion Metagross). A CROSS-character mascot (T-134/T-144: a grunt leading its leader's mega DEVOLVED)
+// reuses the leader's `id` ONLY to look up the stored species — it must NOT share the leader's IV entry,
+// or it silently inherits the leader's perfect breed. Such a slot carries `independentIvs`, which detaches
+// it from the cache (key `null` → its own freshly rolled IVs).
+function ivCacheKeyForDefinition(def) {
+    return (def && def.independentIvs) ? null : ((def && def.id) || null);
+}
+
 // Finalizes a trainer's raw bag into the shape the resolver consumes. Mutates the trainer in place; runs for
 // every trainer (including `copy` trainers) before resolution. Two jobs:
 //   1. T-133 — expand any `linkedChoiceSample` PACK markers into flat units + link groups (each pick-group the
@@ -262,7 +272,7 @@ function createTeamResolver(deps) {
                 }
 
                 const effectiveBreedTier = trainerMonDefinition.breedTier || trainer.breedTier || null;
-                const pokeId = trainerMonDefinition.id || null;
+                const pokeId = ivCacheKeyForDefinition(trainerMonDefinition); // B-044 — mascots get their own IVs
                 const newTeamMember = {
                     pokemon: baseFormMon,
                     // Prefer the WINNING def's item/nature (effectiveDef) over the top-level slot's, so a
@@ -760,4 +770,4 @@ function createTeamResolver(deps) {
     return { resolveTrainerTeam, generateIVs, storedIds, sophisticationFor: sophistication };
 }
 
-module.exports = { createTeamResolver, normalizeTrainerBagTms };
+module.exports = { createTeamResolver, normalizeTrainerBagTms, ivCacheKeyForDefinition };

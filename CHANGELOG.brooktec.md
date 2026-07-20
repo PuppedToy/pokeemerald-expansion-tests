@@ -19,6 +19,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Villain-grunt mascots no longer inherit their leader's perfect IVs.** The early Aqua/Magma grunts
+  lead a devolved copy of their leader's signature mega (Archie's Mega Sharpedo → Carvanha, Maxie's Mega
+  Camerupt → Numel). That mascot was silently getting the leader's perfect (all-31) IVs because it shared
+  the leader's internal IV slot; it is now bred independently — same family, ordinary IVs. The leaders
+  themselves keep their perfect favourites. (B-044)
+
 - **Cosmetic-family representatives now show their base name in the docs.** After the cosmetic strip
   kept one form per family, the docs still displayed the surviving form's suffix — e.g. "Spewpa Icy
   Snow" (a Vivillon-only wing pattern that Spewpa never shows), "Furfrou Natural", "Alcremie Strawberry
