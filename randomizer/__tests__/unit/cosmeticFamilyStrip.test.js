@@ -1,4 +1,4 @@
-const { parseSpeciesFile, COSMETIC_FAMILIES } = require('../../parser');
+const { parseSpeciesFile, COSMETIC_FAMILIES, nameizyPokemonId } = require('../../parser');
 
 // T-154 — families whose alternate forms are purely cosmetic keep only the FIRST species per
 // natDexNum; later same-dex duplicates are dropped (so they neither randomize independently nor emit
@@ -96,6 +96,27 @@ describe('parseSpeciesFile — cosmetic family strip (T-154)', () => {
         const list = parseSpeciesFile(GENESECT, {}, {});
         expect(list.map(p => p.id)).toEqual(['SPECIES_GENESECT']);
         expect(COSMETIC_FAMILIES).toContain('P_FAMILY_GENESECT');
+    });
+
+    // B-043 — the kept representative is the FIRST-declared form (a suffixed id like
+    // SPECIES_SPEWPA_ICY_SNOW), so its id-derived display name would carry the form suffix. But T-154's
+    // intent is that cosmetic forms vanish leaving only the base — and "Icy Snow" is a Vivillon-only
+    // wing pattern, so "Spewpa Icy Snow" names a form that does not exist. The docs must show the base
+    // name. Arceus Normal / Silvally Normal (T-156/T-158) are deliberately NOT overridden here.
+    test('B-043 — kept cosmetic representatives display as their base name (no form suffix)', () => {
+        expect(nameizyPokemonId('SPECIES_SCATTERBUG_ICY_SNOW')).toBe('Scatterbug');
+        expect(nameizyPokemonId('SPECIES_SPEWPA_ICY_SNOW')).toBe('Spewpa');
+        expect(nameizyPokemonId('SPECIES_VIVILLON_ICY_SNOW')).toBe('Vivillon');
+        expect(nameizyPokemonId('SPECIES_FLABEBE_RED')).toBe('Flabebe');
+        expect(nameizyPokemonId('SPECIES_FLOETTE_RED')).toBe('Floette');
+        expect(nameizyPokemonId('SPECIES_FLORGES_RED')).toBe('Florges');
+        expect(nameizyPokemonId('SPECIES_FURFROU_NATURAL')).toBe('Furfrou');
+        expect(nameizyPokemonId('SPECIES_ALCREMIE_STRAWBERRY_VANILLA_CREAM')).toBe('Alcremie');
+        // Unown / Milcery keep the base id already, so they are unaffected
+        expect(nameizyPokemonId('SPECIES_UNOWN')).toBe('Unown');
+        expect(nameizyPokemonId('SPECIES_MILCERY')).toBe('Milcery');
+        // out of scope: type forms still derive from the id (owner decision)
+        expect(nameizyPokemonId('SPECIES_ARCEUS_NORMAL').replace(/\s+/g, ' ')).toBe('Arceus Normal');
     });
 
     test('keeps one per stage and leaves the evo tree clean (no dropped-pattern pollution)', () => {
