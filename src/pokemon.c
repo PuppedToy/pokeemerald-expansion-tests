@@ -1792,6 +1792,85 @@ u8 GetLevelFromBoxMonExp(struct BoxPokemon *boxMon)
     return level - 1;
 }
 
+// T-167: Move-learning history --------------------------------------------------
+// The move relearner offers the mon's level-up learnset moves indexed by learnset
+// slot (see GetMoveRelearnerMoves, which iterates 0..MAX_LEVEL_UP_MOVES-1). We
+// remember which of those slots the mon has ever actually had in a per-mon 20-bit
+// mask (MON_DATA_LEARNED_MOVES_MASK), so the relearner is free the first time and
+// charges money for every later relearn of the same move.
+
+// First level-up-learnset slot (0..MAX_LEVEL_UP_MOVES-1) at which `move` appears for
+// `species`, or -1 if it is not a trackable level-up move.
+static s32 GetLevelUpMoveLearnsetSlot(u16 species, u16 move)
+{
+    const struct LevelUpMove *learnset = GetSpeciesLevelUpLearnset(species);
+    s32 i;
+
+    if (move == MOVE_NONE)
+        return -1;
+    for (i = 0; i < MAX_LEVEL_UP_MOVES; i++)
+    {
+        if (learnset[i].move == LEVEL_UP_MOVE_END)
+            break;
+        if (learnset[i].move == move)
+            return i;
+    }
+    return -1;
+}
+
+void MarkBoxMonMoveAsLearned(struct BoxPokemon *boxMon, u16 move)
+{
+    u16 species = GetBoxMonData(boxMon, MON_DATA_SPECIES, NULL);
+    s32 slot = GetLevelUpMoveLearnsetSlot(species, move);
+
+    if (slot >= 0)
+    {
+        u32 mask = GetBoxMonData(boxMon, MON_DATA_LEARNED_MOVES_MASK, NULL);
+        mask |= (1u << slot);
+        SetBoxMonData(boxMon, MON_DATA_LEARNED_MOVES_MASK, &mask);
+    }
+}
+
+void MarkMonMoveAsLearned(struct Pokemon *mon, u16 move)
+{
+    MarkBoxMonMoveAsLearned(&mon->box, move);
+}
+
+bool32 WasMonMoveEverLearned(struct Pokemon *mon, u16 move)
+{
+    u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
+    s32 slot = GetLevelUpMoveLearnsetSlot(species, move);
+    u32 mask;
+
+    if (slot < 0)
+        return FALSE;
+    mask = GetMonData(mon, MON_DATA_LEARNED_MOVES_MASK, NULL);
+    return (mask >> slot) & 1;
+}
+
+// On evolution the level-up learnset (and thus slot indexing) changes, so rebuild
+// the mask by matching the moves it currently marks against the new species' slots.
+void RemapLearnedMovesMaskForEvolution(struct Pokemon *mon, u16 fromSpecies, u16 toSpecies)
+{
+    const struct LevelUpMove *oldLearnset = GetSpeciesLevelUpLearnset(fromSpecies);
+    u32 oldMask = GetMonData(mon, MON_DATA_LEARNED_MOVES_MASK, NULL);
+    u32 newMask = 0;
+    s32 i;
+
+    for (i = 0; i < MAX_LEVEL_UP_MOVES; i++)
+    {
+        if (oldLearnset[i].move == LEVEL_UP_MOVE_END)
+            break;
+        if (oldMask & (1u << i))
+        {
+            s32 slot = GetLevelUpMoveLearnsetSlot(toSpecies, oldLearnset[i].move);
+            if (slot >= 0)
+                newMask |= (1u << slot);
+        }
+    }
+    SetMonData(mon, MON_DATA_LEARNED_MOVES_MASK, &newMask);
+}
+
 u16 GiveMoveToMon(struct Pokemon *mon, u16 move)
 {
     return GiveMoveToBoxMon(&mon->box, move);
@@ -1808,6 +1887,7 @@ u16 GiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move)
             u32 pp = GetMovePP(move);
             SetBoxMonData(boxMon, MON_DATA_MOVE1 + i, &move);
             SetBoxMonData(boxMon, MON_DATA_PP1 + i, &pp);
+            MarkBoxMonMoveAsLearned(boxMon, move); // T-167
             return move;
         }
         if (existingMove == move)
@@ -1838,6 +1918,7 @@ void SetMonMoveSlot(struct Pokemon *mon, u16 move, u8 slot)
     SetMonData(mon, MON_DATA_MOVE1 + slot, &move);
     u32 pp = GetMovePP(move);
     SetMonData(mon, MON_DATA_PP1 + slot, &pp);
+    MarkMonMoveAsLearned(mon, move); // T-167
 }
 
 static void SetMonMoveSlot_KeepPP(struct Pokemon *mon, u16 move, u8 slot)
@@ -1910,6 +1991,7 @@ void GiveBoxMonInitialMoveset(struct BoxPokemon *boxMon) //Credit: AsparagusEdua
         SetBoxMonData(boxMon, MON_DATA_MOVE1 + i, &moves[i]);
         u32 pp = GetMovePP(moves[i]);
         SetBoxMonData(boxMon, MON_DATA_PP1 + i, &pp);
+        MarkBoxMonMoveAsLearned(boxMon, moves[i]); // T-167: initial moveset counts as learned.
     }
 }
 
@@ -1994,6 +2076,7 @@ void DeleteFirstMoveAndGiveMoveToMon(struct Pokemon *mon, u16 move)
     }
 
     SetMonData(mon, MON_DATA_PP_BONUSES, &ppBonuses);
+    MarkMonMoveAsLearned(mon, move); // T-167
 }
 
 void DeleteFirstMoveAndGiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move)
@@ -2021,6 +2104,7 @@ void DeleteFirstMoveAndGiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move)
     }
 
     SetBoxMonData(boxMon, MON_DATA_PP_BONUSES, &ppBonuses);
+    MarkBoxMonMoveAsLearned(boxMon, move); // T-167
 }
 
 u8 CountAliveMonsInBattle(u8 caseId, u32 battler)
@@ -2750,6 +2834,19 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
                 }.combinedValue;
             }
             break;
+        case MON_DATA_LEARNED_MOVES_MASK: // T-167: 20-bit mask spread across the box-mon spare bits.
+            {
+                struct PokemonSubstruct0 *substruct0 = GetSubstruct0(boxMon);
+                struct PokemonSubstruct1 *substruct1 = GetSubstruct1(boxMon);
+                struct PokemonSubstruct3 *substruct3 = GetSubstruct3(boxMon);
+                retVal = substruct0->learnedMovesMaskA
+                       | (substruct0->learnedMovesMaskB << 6)
+                       | (substruct0->learnedMovesMaskC << 9)
+                       | (substruct1->learnedMovesMaskD << 11)
+                       | (substruct1->learnedMovesMaskE << 16)
+                       | (substruct3->learnedMovesMaskF << 19);
+            }
+            break;
         default:
             break;
         }
@@ -3158,6 +3255,21 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
             SET32(evoTracker.combinedValue);
             substruct1->evolutionTracker1 = evoTracker.tracker1;
             substruct1->evolutionTracker2 = evoTracker.tracker2;
+            break;
+        }
+        case MON_DATA_LEARNED_MOVES_MASK: // T-167: 20-bit mask spread across the box-mon spare bits.
+        {
+            u32 mask;
+            struct PokemonSubstruct0 *substruct0 = GetSubstruct0(boxMon);
+            struct PokemonSubstruct1 *substruct1 = GetSubstruct1(boxMon);
+            struct PokemonSubstruct3 *substruct3 = GetSubstruct3(boxMon);
+            SET32(mask);
+            substruct0->learnedMovesMaskA = mask & 0x3F;
+            substruct0->learnedMovesMaskB = (mask >> 6) & 0x7;
+            substruct0->learnedMovesMaskC = (mask >> 9) & 0x3;
+            substruct1->learnedMovesMaskD = (mask >> 11) & 0x1F;
+            substruct1->learnedMovesMaskE = (mask >> 16) & 0x7;
+            substruct3->learnedMovesMaskF = (mask >> 19) & 0x1;
             break;
         }
         default:

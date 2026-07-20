@@ -121,6 +121,7 @@ enum MonData {
     MON_DATA_GIGANTAMAX_FACTOR,
     MON_DATA_TERA_TYPE,
     MON_DATA_EVOLUTION_TRACKER,
+    MON_DATA_LEARNED_MOVES_MASK, // T-167: bitmask of level-up-learnset moves the mon has ever actually had.
 };
 
 struct PokemonSubstruct0
@@ -128,15 +129,15 @@ struct PokemonSubstruct0
     u16 species:11; // 2047 species.
     u16 teraType:5; // 30 types.
     u16 heldItem:10; // 1023 items.
-    u16 unused_02:6;
+    u16 learnedMovesMaskA:6; // T-167: moves-ever-learned bitmask, bits 0-5 (see MON_DATA_LEARNED_MOVES_MASK).
     u32 experience:21;
     u32 nickname11:8; // 11th character of nickname.
-    u32 unused_04:3;
+    u32 learnedMovesMaskB:3; // T-167: moves-ever-learned bitmask, bits 6-8.
     u8 ppBonuses;
     u8 friendship;
     u16 pokeball:6; // 63 balls.
     u16 nickname12:8; // 12th character of nickname.
-    u16 unused_0A:2;
+    u16 learnedMovesMaskC:2; // T-167: moves-ever-learned bitmask, bits 9-10.
 };
 
 struct PokemonSubstruct1
@@ -146,9 +147,9 @@ struct PokemonSubstruct1
     u16 move2:11; // 2047 moves.
     u16 evolutionTracker2:5;
     u16 move3:11; // 2047 moves.
-    u16 unused_04:5;
+    u16 learnedMovesMaskD:5; // T-167: moves-ever-learned bitmask, bits 11-15.
     u16 move4:11; // 2047 moves.
-    u16 unused_06:3;
+    u16 learnedMovesMaskE:3; // T-167: moves-ever-learned bitmask, bits 16-18.
     u16 hyperTrainedHP:1;
     u16 hyperTrainedAttack:1;
     u8 pp1:7; // 127 PP.
@@ -211,7 +212,7 @@ struct PokemonSubstruct3
     u32 earthRibbon:1;    // Given to teams that have beaten Mt. Battle's 100-battle challenge in Colosseum/XD.
     u32 worldRibbon:1;    // Distributed during Pokémon Festa '04 and '05 to tournament winners.
     u32 isShadow:1;
-    u32 unused_0B:1;
+    u32 learnedMovesMaskF:1; // T-167: moves-ever-learned bitmask, bit 19.
     u32 abilityNum:2;
 
     // The functionality of this bit changed in FRLG:
@@ -718,6 +719,11 @@ u16 MonTryLearningNewMoveAtLevel(struct Pokemon *mon, bool32 firstMove, u32 leve
 u16 MonTryLearningNewMove(struct Pokemon *mon, bool8 firstMove);
 void DeleteFirstMoveAndGiveMoveToMon(struct Pokemon *mon, u16 move);
 void DeleteFirstMoveAndGiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move);
+// T-167: per-mon "moves ever learned" history, used by the move relearner to price relearns.
+void MarkBoxMonMoveAsLearned(struct BoxPokemon *boxMon, u16 move);
+void MarkMonMoveAsLearned(struct Pokemon *mon, u16 move);
+bool32 WasMonMoveEverLearned(struct Pokemon *mon, u16 move);
+void RemapLearnedMovesMaskForEvolution(struct Pokemon *mon, u16 fromSpecies, u16 toSpecies);
 u8 CountAliveMonsInBattle(u8 caseId, u32 battler);
 u8 GetDefaultMoveTarget(u8 battler);
 u8 GetMonGender(struct Pokemon *mon);
