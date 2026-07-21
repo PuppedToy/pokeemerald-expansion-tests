@@ -50,3 +50,4 @@
 | [B-044](B-044-grunt-mascot-inherits-perfect-breed.md) | Villain-grunt mascot inherits the leader's perfect IVs | fixed | major | 0.6.0 | 0.6.0 | randomizer/__tests__/integration/reverseOrderContinuity.test.js |
 | [B-045](B-045-macro-frontpic-forms-render-black-sprite.md) | Docs render a black sprite for every form whose .frontPic lives in a C macro body | fixing | major | 0.5.0 |  | randomizer/__tests__/unit/spriteMapper.test.js |
 | [B-046](B-046-nameizy-double-space-multiword.md) | nameizyPokemonId emits a double space in every multi-word species name | fixing | minor | 0.5.0 |  | randomizer/__tests__/unit/cosmeticFamilyStrip.test.js |
+| [B-047](B-047-heavy-duty-boots-name-mismatch.md) | Heavy-Duty Boots is never rated — handler string mismatch (hyphen vs space) | fixed | minor | 1.1.0 | 1.1.0 | randomizer/__tests__/unit/rateItemForAPokemon.test.js |
