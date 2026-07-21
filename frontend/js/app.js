@@ -1,4 +1,4 @@
-import { ConfigForm } from './config-form.js';
+import { ConfigForm, totalRoms } from './config-form.js';
 import { resolveArtifact } from './session.js';
 import { initAccount, onBundleReady, getStoredBundle, getAuthState, onAuthChange, api } from './account.js';
 import { initFeedback } from './feedback.js';
@@ -445,9 +445,7 @@ function showGenDone() {
     document.getElementById('gen-done').style.display    = '';
 
     const cfg = currentConfig ?? {};
-    const numROMs = cfg.runType === 'default' ? 1
-        : cfg.runType === 'nuzlocke' ? cfg.numROMs
-        : (cfg.numPlayers ?? 1) * (cfg.romsPerPlayer ?? 1);
+    const numROMs = totalRoms(cfg); // single home for the ROM-count computation (config-form.js)
 
     document.getElementById('gen-done-meta').textContent =
         `Seed ${cfg.seed} · ${numROMs} ROM${numROMs !== 1 ? 's' : ''}`;
@@ -491,7 +489,7 @@ function reviewRowsHtml(cfg) {
         rows.push(['Run type', 'Soul-Link']);
         rows.push(['Players', cfg.numPlayers]);
         rows.push(['ROMs per player', cfg.romsPerPlayer]);
-        rows.push(['Total ROMs', cfg.numPlayers * cfg.romsPerPlayer]);
+        rows.push(['Total ROMs', totalRoms(cfg)]);
         rows.push(['Players share', fmtShared(cfg.playerShared)]);
         rows.push(['ROM sharing', fmtShared(cfg.romShared)]);
     }

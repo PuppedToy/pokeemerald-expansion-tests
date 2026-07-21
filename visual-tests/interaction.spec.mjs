@@ -249,3 +249,54 @@ test.describe('T-078: item descriptions on hover', () => {
     expect(info.heldTip.length).toBeGreaterThan(0);
   });
 });
+
+// T-172 regression: the config UI warns inline, next to the ROM-count inputs, when the chosen number
+// of ROMs would land the build in the SLOW queue (romsTotal > FAST_MAX_ROMS = 2), naming the fast-queue
+// limit; it hides again at or below the limit. The unit tests use a DOM stub that can't parse innerHTML,
+// so this is the only place the actual show/hide + text wiring runs in a real browser.
+test.describe('T-172: slow-queue ROM-count warning', () => {
+  test('app: ROM counts over the fast-queue limit warn inline (Nuzlocke + Soul-Link)', async ({ page }) => {
+    test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.dispatchEvent('[data-tab="randomizer"]', 'click');
+    await page.waitForSelector('#config-form-mount .config-accordion');
+
+    // Select a run type by driving the (visually-hidden) radio directly and firing its change handler.
+    const pickRunType = (id) => page.evaluate((rid) => {
+      const r = document.getElementById(rid);
+      r.checked = true;
+      r.dispatchEvent(new Event('change', { bubbles: true }));
+    }, id);
+    const setNum = (id, val) => page.evaluate(({ i, v }) => {
+      const el = document.getElementById(i);
+      el.value = String(v);
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    }, { i: id, v: val });
+
+    // Nuzlocke: the default 3 ROMs is over the limit → warning shows and names the fast-queue limit.
+    await pickRunType('run-nuzlocke');
+    const nz = page.locator('#nz-slow-queue-warning');
+    await expect(nz).toBeVisible();
+    await expect(nz).toContainText('fast-queue limit of 2');
+    await expect(nz).toContainText(/slow queue/i);
+
+    // Exactly at the limit (2 ROMs) → warning hides.
+    await setNum('nz-numroms', 2);
+    await expect(nz).toBeHidden();
+
+    // Back above the limit → shows again, naming the new total.
+    await setNum('nz-numroms', 5);
+    await expect(nz).toBeVisible();
+    await expect(nz).toContainText('5 ROMs');
+
+    // Soul-Link: default 2 players × 2 ROMs-per-player = 4 → over the limit.
+    await pickRunType('run-soullink');
+    const sl = page.locator('#sl-slow-queue-warning');
+    await expect(sl).toBeVisible();
+    await expect(sl).toContainText('fast-queue limit of 2');
+
+    // Drop to 2 players × 1 ROM = 2 (the limit) → hides.
+    await setNum('sl-roms-per-player', 1);
+    await expect(sl).toBeHidden();
+  });
+});

@@ -17,11 +17,14 @@
 
 import { finishBuild } from '../lifecycle/complete.js';
 
-const DEFAULT_FAST_MAX_ROMS = 2;
+// The fast-queue limit: a request that builds at most this many ROMs takes the priority (fast) lane.
+// Exported as the single source of truth so the frontend can mirror it (drift-guarded) to warn users
+// before they queue a slow build (T-172).
+export const FAST_MAX_ROMS = 2;
 const DEFAULT_AGING_MS = 5 * 60 * 1000;
 
 /** A request is fast (priority) if it builds few ROMs, else slow. */
-export function classify(romsTotal, { fastMaxRoms = DEFAULT_FAST_MAX_ROMS } = {}) {
+export function classify(romsTotal, { fastMaxRoms = FAST_MAX_ROMS } = {}) {
   return romsTotal <= fastMaxRoms ? 'fast' : 'slow';
 }
 

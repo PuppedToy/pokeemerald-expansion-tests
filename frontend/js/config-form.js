@@ -335,6 +335,36 @@ export function runAndBunE4Split(singlesPercent) {
     return { singles, doubles: total - singles };
 }
 
+// T-172 — the fast-queue limit, mirrored from the backend SSOT (`FAST_MAX_ROMS` in
+// backend/queue/scheduler.js). The browser can't import backend ESM, so this is a copy kept honest by a
+// drift-guard test (__tests__/slow-queue-warning.test.js) that fails if the two ever diverge. Used only
+// for the config-time UX hint below; the backend `classify` remains the authority on queue placement.
+export const FAST_QUEUE_MAX_ROMS = 2;
+
+// Total ROMs a config would build — the single home of this computation (default = 1, nuzlocke = the
+// chosen count, soul-link = players × ROMs-per-player). Undefined fields fall back to 1 so a
+// partially-built config never yields NaN. Pure + exported for tests (and reused by app.js's summary).
+export function totalRoms(cfg = {}) {
+    if (!cfg) return 1;
+    if (cfg.runType === 'nuzlocke') return Number(cfg.numROMs) || 1;
+    if (cfg.runType === 'soullink') return (Number(cfg.numPlayers) || 1) * (Number(cfg.romsPerPlayer) || 1);
+    return 1; // default (or unknown) run type is always a single ROM
+}
+
+// Whether a config's ROM count would land the build in the slow queue, and the numbers behind it.
+// `show` is true only strictly above the fast-queue limit (matching backend `classify`: <= limit → fast).
+export function slowQueueWarning(cfg, fastMax = FAST_QUEUE_MAX_ROMS) {
+    const total = totalRoms(cfg);
+    return { show: total > fastMax, total, fastMax };
+}
+
+// The user-facing warning copy. Names the chosen total and the fast-queue limit, and states the build
+// goes to the slow queue. Centralised (one wording) and pure/exported for tests.
+export function slowQueueMessage(total, fastMax) {
+    return `This run builds ${total} ROMs, over the fast-queue limit of ${fastMax}. `
+        + `It will go to the slow queue behind smaller builds, so it may take noticeably longer to finish.`;
+}
+
 export class ConfigForm {
     constructor(containerEl, { onConfigChange } = {}) {
         this.container = containerEl;
@@ -784,6 +814,8 @@ export class ConfigForm {
       <label for="nz-numroms">Number of ROMs</label>
       <input type="number" id="nz-numroms" class="input" value="3" min="2" max="10" style="width:72px">
     </div>
+    <!-- T-172 — slow-queue heads-up; text + visibility set live in _syncNuzlocke. -->
+    <div id="nz-slow-queue-warning" class="warning-banner hidden"></div>
     <div class="section-title" style="margin-bottom:10px">What's shared across all ROMs?</div>
     <div class="checkbox-row">
       <input type="checkbox" id="nz-share-pokedex" checked>
@@ -851,6 +883,8 @@ export class ConfigForm {
         <label for="sl-roms-per-player">ROMs per player</label>
         <input type="number" id="sl-roms-per-player" class="input" value="2" min="1" max="10" style="width:72px">
       </div>
+      <!-- T-172 — slow-queue heads-up for the players × ROMs-per-player total; set live in _syncSoullink. -->
+      <div id="sl-slow-queue-warning" class="warning-banner hidden"></div>
       <div class="section-title" style="font-size:10px;margin-bottom:8px;margin-top:4px">What's shared across a player's ROMs?</div>
       <div class="checkbox-row">
         <input type="checkbox" id="sl-rom-share-pokedex" checked>
@@ -1547,6 +1581,16 @@ export class ConfigForm {
         if (runType === 'soullink') this._syncSoullink();
     }
 
+    // T-172 — show/hide + fill an inline slow-queue warning banner from a config's ROM count. `cfg` is
+    // built from the live inputs (clamped via _intField, so it matches what getConfig sends to produce).
+    _syncSlowQueueWarning(sel, cfg) {
+        const el = this._q(sel);
+        if (!el) return;
+        const { show, total, fastMax } = slowQueueWarning(cfg);
+        if (show) el.textContent = slowQueueMessage(total, fastMax);
+        el.classList.toggle('hidden', !show);
+    }
+
     _syncNuzlocke() {
         const pdxOn = this._q('#nz-share-pokedex').checked;
         if (!pdxOn) {
@@ -1556,6 +1600,10 @@ export class ConfigForm {
         this._q('#nz-share-trainers').disabled = !pdxOn;
         this._q('#nz-share-starters').disabled = !pdxOn;
         this._q('#nz-pokedex-warning').classList.toggle('hidden', pdxOn);
+
+        this._syncSlowQueueWarning('#nz-slow-queue-warning', {
+            runType: 'nuzlocke', numROMs: this._intField('#nz-numroms', 3, 2, 10),
+        });
     }
 
     _syncSoullink() {
@@ -1594,6 +1642,12 @@ export class ConfigForm {
             if (!ps) { rstEl.checked = false; rstEl.disabled = true; }
         }
         this._q('#sl-rom-pokedex-warning').classList.toggle('hidden', romPdxOn);
+
+        this._syncSlowQueueWarning('#sl-slow-queue-warning', {
+            runType: 'soullink',
+            numPlayers: this._intField('#sl-numplayers', 2, 2, 8),
+            romsPerPlayer: this._intField('#sl-roms-per-player', 2, 1, 10),
+        });
     }
 
     _wireEvents() {

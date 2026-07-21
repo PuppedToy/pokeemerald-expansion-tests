@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { openDatabase } from '../db/index.js';
 import { createRequestsRepo } from '../db/requests.js';
 import { createRunsRepo } from '../db/runs.js';
-import { classify, selectNext, createWorker } from '../queue/scheduler.js';
+import { classify, selectNext, createWorker, FAST_MAX_ROMS } from '../queue/scheduler.js';
 
 function recordingBuild() {
   const calls = [];
@@ -46,6 +46,14 @@ test('classify splits fast vs slow by ROM count', () => {
   assert.equal(classify(1), 'fast');
   assert.equal(classify(2), 'fast');
   assert.equal(classify(3), 'slow');
+});
+
+// T-172 — the fast-queue limit is exported so the frontend can mirror it (drift-guarded there) to warn
+// the user before they queue a slow build. It must stay the exact cut-off classify() uses.
+test('FAST_MAX_ROMS is exported and is the classify cut-off', () => {
+  assert.equal(FAST_MAX_ROMS, 2);
+  assert.equal(classify(FAST_MAX_ROMS), 'fast');
+  assert.equal(classify(FAST_MAX_ROMS + 1), 'slow');
 });
 
 test('a request cancelled mid-build is dropped cleanly; the worker keeps going (T-035)', async () => {
