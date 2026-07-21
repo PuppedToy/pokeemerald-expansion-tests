@@ -182,3 +182,4 @@
 | [T-177](T-177-remove-secret-base-battle-money.md) | Secret Base battles give no money | in-progress | 0.6.0 | 2026-07-21 |
 | [T-178](T-178-heal-caught-mon.md) | Caught Pokemon are fully healed (HP, PP, status) into party or PC | in-progress | 0.6.0 | 2026-07-21 |
 | [T-179](T-179-trainer-item-selector-coverage.md) | Cover untreated & poorly-reasoned items in the trainer item selector | in-progress | 1.1.0 | 2026-07-21 |
+| [T-180](T-180-global-item-assignment.md) | Order-independent (global) held-item assignment across a trainer's team | in-progress | 1.1.0 | 2026-07-21 |

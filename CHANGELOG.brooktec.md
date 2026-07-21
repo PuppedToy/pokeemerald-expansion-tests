@@ -28,6 +28,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Trainers place held items across the whole team optimally, not first-come-first-served.** Items used to
+  be handed out one Pokémon at a time in team order, so an early Pokémon could grab an item a later teammate
+  needed more. The selector now assigns items across the entire team at once to maximise the team's total
+  item fit (respecting single copies and 3-choice packs), so the result no longer depends on the order the
+  Pokémon are built in. (T-180)
+
 - **Trainers use their held items much more sensibly.** The item selector now reasons about ~40 more items
   instead of equipping them almost at random: pinch berries land on attackers with a way to trigger them
   (Endure/Sturdy/Unburden), Cell Battery/Absorb Bulb/Snowball go to the right attacker and never to a mon
@@ -62,6 +68,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   it now pays ¥0, closing another repeatable money source. (T-177)
 
 ### Fixed
+
+- **Heavy-Duty Boots are now actually valued when a trainer holds them.** A name mismatch (the bag delivers
+  "Heavy Duty Boots" but the rater only matched "Heavy-Duty Boots") meant the item was never scored and was
+  handed out essentially at random; it now gets its intended Rock-immunity-aware rating. (B-047)
 
 - **Caught Pokémon are fully healed on capture.** A wild Pokémon caught with a status condition (e.g.
   paralysis) no longer keeps it — most visibly when the party is full and it is sent to the PC, where it
