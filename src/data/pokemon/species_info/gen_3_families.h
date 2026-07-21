@@ -3713,12 +3713,10 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         .levelUpLearnset = sNincadaLevelUpLearnset,
         .teachableLearnset = sNincadaTeachableLearnset,
         .eggMoveLearnset = sNincadaEggMoveLearnset,
+        // T-183 — Shedinja is a normal branched stone evolution (Dusk Stone), replacing the upstream
+        // Poké-Ball byproduct mechanic. The IF_MIN_LEVEL gate is rolled per run by the randomizer.
         .evolutions = EVOLUTION({EVO_LEVEL, 20, SPECIES_NINJASK},
-                            #if P_SHEDINJA_BALL >= GEN_4
-                                {EVO_SPLIT_FROM_EVO, SPECIES_NINJASK, SPECIES_SHEDINJA, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_POKE_BALL, 1})}),
-                            #else
-                                {EVO_SPLIT_FROM_EVO, SPECIES_NINJASK, SPECIES_SHEDINJA}),
-                            #endif
+                                {EVO_ITEM, ITEM_DUSK_STONE, SPECIES_SHEDINJA, CONDITIONS({IF_MIN_LEVEL, 25})}),
     },
 
     [SPECIES_NINJASK] =
