@@ -513,6 +513,9 @@ function createTeamResolver(deps) {
                     grassyTerrain: team.some(m => m.ability === 'GRASSY_SURGE' || (m.moves || []).includes('MOVE_GRASSY_TERRAIN')),
                     psychicTerrain: team.some(m => m.ability === 'PSYCHIC_SURGE' || (m.moves || []).includes('MOVE_PSYCHIC_TERRAIN')),
                     mistyTerrain: team.some(m => m.ability === 'MISTY_SURGE' || (m.moves || []).includes('MOVE_MISTY_TERRAIN')),
+                    // T-179 — Trick Room context (mirrors the weather/terrain flags) so a slow mon rates its
+                    // TR-only items (Room Service / Iron Ball) up when a teammate sets Trick Room.
+                    trickRoom: team.some(m => (m.moves || []).includes('MOVE_TRICK_ROOM')),
                 };
                 // T-132 — under a tentative weather tag (a weather-seeded/crystallised attempt), build every
                 // member AS IF the weather is already up, even before the setter lands. The setter is often
@@ -554,7 +557,7 @@ function createTeamResolver(deps) {
                         .filter(bagItemId => !(isSupportMon && SUPPORT_FORBIDDEN_ITEMS.has(bagItemId)))
                         .map(bagItemId => ({
                             id: bagItemId,
-                            rating: rateItemForAPokemon(bagItemId, battlePoke, ability, movesetObjects, trainer.level, trainer.bag.length, GENERIC_DEVIATION, /double/i.test(trainer.battleType || '')),
+                            rating: rateItemForAPokemon(bagItemId, battlePoke, ability, movesetObjects, trainer.level, trainer.bag.length, GENERIC_DEVIATION, /double/i.test(trainer.battleType || ''), selCtx),
                         }))
                         .filter(bi => bi.rating > 0)
                         .sort((a, b) => b.rating - a.rating)

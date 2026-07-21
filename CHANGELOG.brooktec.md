@@ -28,6 +28,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Trainers use their held items much more sensibly.** The item selector now reasons about ~40 more items
+  instead of equipping them almost at random: pinch berries land on attackers with a way to trigger them
+  (Endure/Sturdy/Unburden), Cell Battery/Absorb Bulb/Snowball go to the right attacker and never to a mon
+  immune to their trigger type, Wide/Zoom Lens go to mons with an imprecise move (Zoom Lens only on slow
+  ones), Muscle Band/Wise Glasses respect the attacking stat, trapping items (Grip Claw/Binding Band) need a
+  binding move, Trick-Room items (Room Service/Iron Ball) need a Trick Room team, Mental Herb goes to
+  setup/hazard leads, and the flat/random handlers (Custap, Eject Button/Pack, Red Card, Mirror Herb,
+  Adrenaline Orb, Kee/Maranga/Jaboca/Rowap berries) are re-derived to their actual archetype. (T-179)
+
 - **Pickup no longer hands out free items after battles.** The ability keeps its in-battle effect —
   after a turn, a holder with no item may pick up an item a foe used up — but its out-of-battle item
   find (the random per-battle item faucet, including the Battle Pyramid variant) has been removed, so

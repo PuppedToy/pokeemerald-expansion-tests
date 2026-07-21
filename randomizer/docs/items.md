@@ -156,3 +156,49 @@ Bag functions in `trainers.js` are cumulative — each gym adds its items on top
 | `spaceCenterBag` | + Presley strongDmg TM pick, TM54 (Auron) |
 | `juanBag` | + TM55 (Aidan), TM93 (Athena), Eject Button (route 127), TM51, Waterfall HM |
 | `victoryRoadBag` | + TM56 (Quincy VR), TM94 (Katelynn VR), TM95 (EverGrande rival) |
+
+## Held-Item Rating (trainer selector)
+
+Which held item a trainer's Pokémon equips is decided by `rateItemForAPokemon(item, poke, ability, moveset,
+level, bagSize, deviation, doubles, ctx)` in `rating.js`: every bag item is scored, the `rating <= 0` ones are
+dropped, and the highest wins (`modules/resolveTrainerTeam.js`). Some items are instead **preset during
+teambuilding before the rater runs** (weather rocks + Terrain Extender → the setter, T-125; weather/terrain
+seeds, Choice items on scarfers, etc.) — the rater returns `0` for those on any non-preset holder.
+
+The exact coefficients live in `rating.js` (the SSOT); the full corpus signal + derivation per item is in
+`tasks/T-179`. The table below is the design **criterion** (who wants it / what hard-zeroes it):
+
+| Item | Wants (rating scales with) | Hard 0 when |
+|---|---|---|
+| Liechi / Petaya / Salac Berry | physical / special / any strong attacker, big bump with Endure·Sturdy·Unburden | — (low without a trigger) |
+| Ganlon / Apicot Berry | bulky mon (weak: pinch on a wall) | — |
+| Lansat Berry | crit-ecosystem attacker (Sniper/Super Luck/high-crit/Focus Energy) | — |
+| Starf Berry | attacker (random-stat gimmick, low) | — |
+| Figy Berry | **bulky** mon (Sitrus-tier recovery; corpus-backed) | — |
+| Enigma Berry | bulky mon (one-time SE-hit heal) | — |
+| Cell Battery | physical attacker | Electric-immune (Ground / Volt Absorb / Lightning Rod / Motor Drive) |
+| Absorb Bulb | special attacker | Water-immune (Water Absorb / Storm Drain / Dry Skin) |
+| Snowball | physical attacker | — |
+| Luminous Moss | bulky (special side) | Water-immune |
+| Wide Lens | attacker with an imprecise (<100%) quality move, or Hustle | no imprecise move & not Hustle |
+| Zoom Lens | **slow** attacker with an imprecise move | mon is fast (`speed/100 > 0.8`) |
+| Muscle Band | physical attacker | special-leaning mon |
+| Wise Glasses | special attacker | physical-leaning mon |
+| Quick Claw | slow attacker | fast mon (`speed/100 > 0.9`) |
+| Room Service / Iron Ball | slow attacker on a **Trick Room** team | no Trick Room (own set or `ctx.trickRoom`) |
+| Blunder Policy | attacker with a shaky (≤85%) move | no shaky move |
+| Bright Powder / Focus Band | low RNG survival (bulky / frail resp.) | — |
+| Grip Claw / Binding Band | mon with a **binding** move | no binding move |
+| Protective Pads | physical/contact attacker | special-leaning mon |
+| Utility Umbrella | anti-weather counter (low) | weather abuser ability, or a weather team (`ctx`) |
+| Clear Amulet | physical attacker, **doubles-aware** (Intimidate) | — |
+| Mental Herb | mon with a **status/setup** move (TR / hazards / screens; corpus-backed) | — (low on a pure attacker) |
+| Float Stone / Sticky Barb / Metronome | junk / Magic-Guard-only / move-to-spam (low) | Metronome: pure support |
+| Eject Button | pivot utility (flat, corpus-backed) | — (low on a setup sweeper) |
+| Custap Berry | attacker with Endure·Sturdy (+suicide-lead bump) | — (low without a trigger) |
+| Kee / Maranga Berry | physical / special **wall** + berry synergy | — |
+| Jaboca / Rowap Berry | physical / special bulk (passive punish, mirror pair) | — |
+| Mirror Herb | attacker, **doubles**-oriented | — |
+| Adrenaline Orb | physical attacker in **doubles** | — (near-0 in singles) |
+| Red Card | bulky phazer | — |
+| Eject Pack | attacker with a **self-lowering** nuke (Overheat/Draco Meteor/…) | — (low without the combo) |
