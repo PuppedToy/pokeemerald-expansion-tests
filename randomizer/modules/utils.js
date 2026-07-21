@@ -25,7 +25,13 @@ const COSMETIC_FORM_SUFFIXES = [
 ];
 
 // Explicit overrides (win over the suffix strip) for any family that can't be derived by stripping.
-const groupedFamilies = {};
+const groupedFamilies = {
+    // T-185 — Greninja Battle Bond is a SOLO in its own parser family (P_FAMILY_GRENINJA_BATTLE_BOND),
+    // deliberately NOT part of the normal Froakie evolution line. Collapsing its dedup group to
+    // P_FAMILY_FROAKIE makes the existing "one obtainable per family per run" dedup enforce the owner
+    // rule: if a Froakie-line member (or Battle Bond) is placed, the other can never be placed too.
+    P_FAMILY_GRENINJA_BATTLE_BOND: 'P_FAMILY_FROAKIE',
+};
 
 function getFamilyGroup(familyId) {
     if (groupedFamilies[familyId]) return groupedFamilies[familyId];
