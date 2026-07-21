@@ -189,19 +189,9 @@ void NewGameInitData(void)
     DeactivateAllRoamers();
     gSaveBlock1Ptr->registeredItem = ITEM_NONE;
     ClearBag();
-    AddBagItem(ITEM_RARE_CANDY, 1);   // Evolve Candy — first key item the player receives
-    AddBagItem(ITEM_OLD_ROD, 1);
-    AddBagItem(ITEM_MACH_BIKE, 1);
-    AddBagItem(ITEM_ACRO_BIKE, 1);
-    AddBagItem(ITEM_ULTRA_BALL, 99);
-    AddBagItem(ITEM_QUICK_BALL, 99);
-    AddBagItem(ITEM_TIMER_BALL, 99);
-    AddBagItem(ITEM_CHERI_BERRY, 1);
-    AddBagItem(ITEM_CHESTO_BERRY, 1);
-    AddBagItem(ITEM_PECHA_BERRY, 1);
-    AddBagItem(ITEM_RAWST_BERRY, 1);
-    AddBagItem(ITEM_ASPEAR_BERRY, 1);
-    AddBagItem(ITEM_PERSIM_BERRY, 1);
+    // T-182 — the intro bag items (Evolve Candy, rods, bikes, balls, status berries) are no longer
+    // granted here. Professor Birch hands them all over on Route 101 right after the starter, once the
+    // Zigzagoon is beaten (see Route101_EventScript_BirchsBag). The bag starts empty.
     NewGameInitPCItems();
     ClearPokeblocks();
     ClearDecorationInventories();
