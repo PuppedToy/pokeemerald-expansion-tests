@@ -1,7 +1,7 @@
 ---
 id: T-181
 title: Rework move-accuracy rating — expected-value model, attenuated never-miss, imprecise-stacking penalty
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-21
 updated: 2026-07-21
@@ -158,7 +158,7 @@ Acceptance criteria:
       full-set assertion was not used.)
 - [x] Full suite green (`cd randomizer && npm test`).
 - [x] No regression in existing rating/integration snapshots that isn't a deliberate, logged spec change.
-- [ ] Owner manual test OK (config run / corpus spot-check) before closing.
+- [x] Owner manual test OK (config run / corpus spot-check) before closing.
 
 ## Progress log
 
@@ -197,4 +197,23 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Shipped the three-part accuracy rework in `randomizer/rating.js`, exactly as planned:
+
+1. **Expected-value accuracy** — `rateMove` scales the power component by hit chance (`× min(acc,100)/100`)
+   instead of the flat `-(100-acc)/10`. Applied uniformly, including OHKO (12 × 0.30 ≈ 3.6, deviation from
+   the drafted "keep OHKO bespoke" — cleaner and less attractive, so kept).
+2. **Never-miss attenuated** — `NEVER_MISS_BONUS = 0.2` (was an effective +1).
+3. **Ability/weather-aware imprecise-stacking penalty** — new `effectiveAccuracy()` helper (No Guard,
+   Compound Eyes, Victory Star, Hustle, rain/snow) drives both a per-mon accuracy correction
+   (`rating *= accEff/rawAcc`, which also replaced the ad-hoc Thunder/Blizzard weather-undo) and a
+   per-set stacking tax (1st shaky move free, each extra one ×(1−0.2·n), floor 0.4).
+
+Result on real data: Fire Blast 13.02 > Flamethrower 12.54; Focus Blast 11.70 ≈ Aura Sphere 11.53
+(gap 0.17); Close Combat 15.88 stays dominant. 15 new tests + fixtures; full suite 1452 passing.
+
+Deviation from plan: the end-to-end `chooseMoveset` "≤N imprecise moves" assertion was dropped — with EV
+active, imprecise moves no longer dominate base ratings, so the stacking rule's effect on final set
+composition is small and pool-sensitive. The selection principle is covered at the `rateMoveForAPokemon`
+layer instead. Magnitudes remain tunable if corpus feedback warrants.
+
+No follow-ups spawned. Owner confirmed the result is OK (2026-07-21).
