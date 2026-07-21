@@ -16,12 +16,6 @@ struct StatFractions
     u8 divisor;
 };
 
-struct PickupItem
-{
-    u16 itemId;
-    u8 percentage[10];
-};
-
 union TRANSPARENT StatChangeFlags
 {
     int raw;
