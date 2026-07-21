@@ -10852,9 +10852,15 @@ static void Cmd_givepaydaymoney(void)
 {
     CMD_ARGS();
 
-    if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK)) && gPaydayMoney != 0)
+    // T-175: Pay Day / Make It Rain / Gold Rush no longer scale with the user's level or with the
+    // number of times used, and give nothing in the wild. A coin-scattering move pays a flat amount
+    // in trainer battles only, so it can't be farmed for infinite money.
+    u32 bonusMoney = (gBattleTypeFlags & BATTLE_TYPE_TRAINER) ? 125 : 0;
+
+    if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
+        && gPaydayMoney != 0   // a coin-scattering move was used this battle
+        && bonusMoney != 0)
     {
-        u32 bonusMoney = gPaydayMoney * gBattleStruct->moneyMultiplier;
         AddMoney(&gSaveBlock1Ptr->money, bonusMoney);
 
         PREPARE_HWORD_NUMBER_BUFFER(gBattleTextBuff1, 5, bonusMoney)
