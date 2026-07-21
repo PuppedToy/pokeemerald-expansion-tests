@@ -31,6 +31,16 @@ const moves = {
     MOVE_FLAMETHROWER: { ...base, id: 'MOVE_FLAMETHROWER', name: 'Flamethrower', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'FIRE', power: 90, accuracy: 100, effect: 'EFFECT_HIT' },
     MOVE_SOLAR_BEAM: { ...base, id: 'MOVE_SOLAR_BEAM', name: 'Solar Beam', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'GRASS', power: 120, accuracy: 100, effect: 'EFFECT_SOLAR_BEAM' },
     MOVE_BLIZZARD: { ...base, id: 'MOVE_BLIZZARD', name: 'Blizzard', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'ICE', power: 110, accuracy: 70, effect: 'EFFECT_HIT' },
+    // T-181 — accuracy-model fixtures. Fire Blast/Flamethrower share the burn secondary so it cancels in
+    // any comparison isolating accuracy; Aura Sphere uses accuracy 0 = never-miss (parser sentinel).
+    MOVE_FIRE_BLAST: { ...base, id: 'MOVE_FIRE_BLAST', name: 'Fire Blast', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'FIRE', power: 110, accuracy: 85, effect: 'EFFECT_HIT', additionalEffects: ['MOVE_EFFECT_BURN'] },
+    MOVE_HYDRO_PUMP: { ...base, id: 'MOVE_HYDRO_PUMP', name: 'Hydro Pump', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'WATER', power: 110, accuracy: 80, effect: 'EFFECT_HIT' },
+    MOVE_THUNDER: { ...base, id: 'MOVE_THUNDER', name: 'Thunder', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'ELECTRIC', power: 110, accuracy: 70, effect: 'EFFECT_HIT', additionalEffects: ['MOVE_EFFECT_PARALYSIS'] },
+    MOVE_HURRICANE: { ...base, id: 'MOVE_HURRICANE', name: 'Hurricane', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'FLYING', power: 110, accuracy: 70, effect: 'EFFECT_HIT', additionalEffects: ['MOVE_EFFECT_CONFUSION'] },
+    MOVE_AURA_SPHERE: { ...base, id: 'MOVE_AURA_SPHERE', name: 'Aura Sphere', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'FIGHTING', power: 80, accuracy: 0, effect: 'EFFECT_HIT' },
+    MOVE_FOCUS_BLAST: { ...base, id: 'MOVE_FOCUS_BLAST', name: 'Focus Blast', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'FIGHTING', power: 120, accuracy: 70, effect: 'EFFECT_HIT', additionalEffects: ['MOVE_EFFECT_SP_DEF_MINUS_1'] },
+    MOVE_ICE_BEAM: { ...base, id: 'MOVE_ICE_BEAM', name: 'Ice Beam', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'ICE', power: 90, accuracy: 100, effect: 'EFFECT_HIT' },
+    MOVE_PSYCHIC: { ...base, id: 'MOVE_PSYCHIC', name: 'Psychic', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'PSYCHIC', power: 90, accuracy: 100, effect: 'EFFECT_HIT' },
     // Meloetta's signature (T-064) — a modest-power Normal special move that toggles Aria<->Pirouette.
     MOVE_RELIC_SONG: { ...base, id: 'MOVE_RELIC_SONG', name: 'Relic Song', category: 'DAMAGE_CATEGORY_SPECIAL', type: 'NORMAL', power: 75, accuracy: 100, effect: 'EFFECT_RELIC_SONG' },
 

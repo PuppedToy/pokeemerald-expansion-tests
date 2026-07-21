@@ -799,6 +799,34 @@ const statusList = {
     // Drops for contrary
 };
 
+// T-181 — accuracy model.
+//   - Accuracy is scored as expected value (base × acc/100) rather than a flat -(100-acc)/10 penalty, so a
+//     high-power imprecise move (Fire Blast) can out-rate a weaker precise one (Flamethrower) when the maths
+//     favours it, while a same-power precise move is always at least as good.
+//   - Never-miss moves keep their full value (×1.0) plus a small reliability nod — attenuated from the old
+//     effective +1 because a guaranteed hit rarely swings a general-level battle.
+//   - A set shouldn't pile up imprecise moves: the 1st is free, each extra one is taxed. Evaluated on
+//     EFFECTIVE accuracy so accuracy-fixing abilities (No Guard, Compound Eyes, Victory Star) and weather
+//     switch the rule off / soften it.
+const NEVER_MISS_BONUS = 0.2;          // reliability nod for guaranteed-hit moves (was effectively +1)
+const IMPRECISE_ACC = 90;              // effective accuracy below this counts as "imprecise"
+const IMPRECISE_STACK_PENALTY = 0.2;   // ×(1 - n·this) once n imprecise moves are already in the set
+const IMPRECISE_MIN_FACTOR = 0.4;      // floor for the stacking multiplier
+
+// Effective accuracy of a move for a given mon: raw accuracy adjusted by accuracy-affecting abilities and
+// weather. never-miss (stored acc 0) → 110 → clamped to 100. Never rewards accuracy above 100.
+function effectiveAccuracy(move, hasAbilityFn, ctx = {}) {
+    let acc = move.accuracy || 110;
+    if (acc === 0) acc = 110;
+    if (hasAbilityFn('NO_GUARD')) return 100;                                               // never misses
+    if (ctx.rain && (move.id === 'MOVE_THUNDER' || move.id === 'MOVE_HURRICANE')) return 100;
+    if (ctx.snow && move.id === 'MOVE_BLIZZARD') return 100;
+    if (hasAbilityFn('COMPOUND_EYES')) acc *= 1.3;
+    if (hasAbilityFn('VICTORY_STAR')) acc *= 1.1;
+    if (hasAbilityFn('HUSTLE') && move.category === 'DAMAGE_CATEGORY_PHYSICAL') acc *= 0.8;
+    return Math.min(acc, 100);
+}
+
 function rateMove(move) {
     if (move.id in statusList) {
         return statusList[move.id];
@@ -945,9 +973,12 @@ function rateMove(move) {
     if (alwaysCrit) rating += 0.5;
     const isOhko = moveEffect.includes('EFFECT_OHKO');
     if (isOhko) rating = 12;
+    // T-181 — expected-value accuracy: scale the power component by the hit chance instead of a flat
+    // subtraction. never-miss (stored acc 0 → 110) → ×1.0 plus a small reliability bonus.
     let accuracy = move.accuracy || 110;
     if (accuracy == 0) accuracy = 110;
-    rating -= (100 - accuracy) / 10;
+    rating *= Math.min(accuracy, 100) / 100;
+    if (accuracy > 100) rating += NEVER_MISS_BONUS;
     const priority = move.priority || 0;
     // EFFECT_HIT_SWITCH_TARGET: -6 is a phazing mechanics tag, not a "goes last" penalty.
     // EFFECT_REVENGE (Revenge + Avalanche): -4 means "you get hit first → power doubles".
@@ -1294,12 +1325,8 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     if (move.id === 'MOVE_GROWTH' && inSun) {
         rating = 8;                          // +2 Atk / +2 SpA in sun ≈ Swords Dance / Nasty Plot
     }
-    if (move.id === 'MOVE_THUNDER' && inRain) {
-        rating += (100 - (move.accuracy || 100)) / 10;   // 100% accurate in rain (undo the acc penalty)
-    }
-    if (move.id === 'MOVE_BLIZZARD' && inSnow) {
-        rating += (100 - (move.accuracy || 100)) / 10;   // 100% accurate in snow
-    }
+    // T-181 — Thunder/Hurricane in rain and Blizzard in snow become 100% accurate; this is now folded into
+    // the expected-value accuracy correction below (via effectiveAccuracy), not a flat undo here.
     // T-125 — terrain-scaling attacking moves (magnitudes provisional, mirroring the weather moves above).
     // Each is boosted ONLY under its terrain (a teammate's Surge counts via ctx.*). Steel Roller FAILS with
     // no terrain up, so it's worthless off-terrain.
@@ -1394,6 +1421,14 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     }
 
     if (move.category !== 'DAMAGE_CATEGORY_STATUS' && !isFixedDamage) {
+        // T-181 — accuracy correction. rateMove baked in the RAW expected-value factor; rescale it to this
+        // mon's EFFECTIVE accuracy (No Guard, Compound Eyes, Victory Star, Hustle, rain/snow). Applied
+        // before STAB/coverage so only the damage component is accuracy-scaled. Valid because the chain is
+        // multiplicative: base × (raw/100) × (eff/raw) = base × (eff/100).
+        const rawAcc = Math.min(move.accuracy === 0 ? 110 : (move.accuracy || 110), 100);
+        const accEff = effectiveAccuracy(move, hasAbility, { rain: inRain, snow: inSnow });
+        if (rawAcc > 0) rating *= accEff / rawAcc;
+
         let stab = poke.parsedTypes.includes(move.type) ? 1.5 : 1.0;
         if (hasAbility('ADAPTABILITY')) {
             stab = 2.0;
@@ -1497,6 +1532,20 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
         // power) so they receive a lighter 0.6× penalty instead of the standard 0.3×.
         if (currentMoves.some(m => m.category !== 'DAMAGE_CATEGORY_STATUS' && m.type === move.type)) {
             rating *= sameTypeLowerPenaltyMoves.includes(move.id) ? 0.6 : 0.3;
+        }
+
+        // T-181 — imprecise-move stacking penalty. The 1st imprecise damage move is free; each additional
+        // one is taxed, so a set favours variety (one gamble, the rest reliable). Counted on EFFECTIVE
+        // accuracy, so under No Guard nothing is imprecise and the rule self-disables.
+        const accEffForStack = effectiveAccuracy(move, hasAbility, { rain: inRain, snow: inSnow });
+        if (accEffForStack < IMPRECISE_ACC) {
+            const impreciseInSet = currentMoves.filter(m =>
+                m.category !== 'DAMAGE_CATEGORY_STATUS'
+                && effectiveAccuracy(m, hasAbility, { rain: inRain, snow: inSnow }) < IMPRECISE_ACC
+            ).length;
+            if (impreciseInSet >= 1) {
+                rating *= Math.max(IMPRECISE_MIN_FACTOR, 1 - IMPRECISE_STACK_PENALTY * impreciseInSet);
+            }
         }
     }
 
