@@ -174,3 +174,4 @@
 | [T-168](T-168-shiny-iv-badge-in-docs.md) | Show a "Shiny" star badge in the docs for 150+ IV Pokémon | done | 0.6.0 | 2026-07-20 |
 | [T-169](T-169-tate-liza-dual-favourite-test-correction.md) | Correct the Tate & Liza dual-favourite test to the confirmed spec | done | 0.6.0 | 2026-07-20 |
 | [T-170](T-170-macro-frontpic-sprite-resolution.md) | Resolve macro-body .frontPic so cosmetic/macro forms render in the docs | in-progress | 0.6.0 | 2026-07-20 |
+| [T-172](T-172-slow-queue-rom-warning.md) | Warn in the config UI when the ROM count would land the build in the slow queue | in-progress | 0.6.0 | 2026-07-21 |

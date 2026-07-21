@@ -9,6 +9,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **The config screen warns before a big run goes to the slow build queue.** When your chosen number of
+  ROMs (Nuzlocke count, or Soul-Link players × ROMs-per-player) exceeds the fast-queue limit of 2, an
+  inline warning appears next to the ROM-count field telling you the build will be de-prioritised into
+  the slow queue and may take longer. It updates live and hides again at or below the limit. (T-172)
+
 - **The docs flag shiny Pokémon.** When "Show IVs" is on, any trainer Pokémon whose IV total is 150 or
   more now has its IVs tinted gold with a small ★ at the end — mirroring the game rule that a 150+ IV
   total makes a Pokémon shiny. (T-168)
