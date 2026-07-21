@@ -1821,7 +1821,9 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
     if (item === 'Expert Belt') {
         return coverageRating * 0.75 * bestOffensePower * calculatedDeviation;
     }
-    if (item === 'Heavy-Duty Boots') {
+    // B-047 — the bag delivers the title-cased "Heavy Duty Boots" (itemDisplayName/nameify strip the hyphen);
+    // match that AND the hyphenated items.json form so the handler actually fires in real runs.
+    if (item === 'Heavy-Duty Boots' || item === 'Heavy Duty Boots') {
         const rockDamageMultiplier = damageMultiplier('ROCK', poke.parsedTypes);
         return 5 * calculatedDeviation + (1 - rockDamageMultiplier) * 2;
     }

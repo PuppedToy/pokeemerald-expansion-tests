@@ -283,4 +283,14 @@ describe('rateItemForAPokemon — T-179 item coverage', () => {
         expect(r('Adrenaline Orb', physAttacker, [phys('MOVE_X')], null, true))
             .toBeGreaterThan(r('Adrenaline Orb', physAttacker, [phys('MOVE_X')], null, false));
     });
+
+    // B-047 — the bag delivers "Heavy Duty Boots" (space; itemDisplayName/nameify title-case the constant),
+    // but the handler only matched the hyphenated items.json form, so the boots were never rated in real runs.
+    test('Heavy Duty Boots (bag/space form) is rated identically to the hyphen form, not the fallback', () => {
+        const neutral = mon({ parsedTypes: ['NORMAL'] });
+        const spaceForm = r('Heavy Duty Boots', neutral, [phys('MOVE_X')]);
+        const hyphenForm = r('Heavy-Duty Boots', neutral, [phys('MOVE_X')]);
+        expect(spaceForm).toBe(hyphenForm);
+        expect(spaceForm).toBeGreaterThan(1); // above the `not rated` fallback (≈ calculatedDeviation)
+    });
 });

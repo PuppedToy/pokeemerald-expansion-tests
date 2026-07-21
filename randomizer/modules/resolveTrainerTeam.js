@@ -44,6 +44,8 @@ const { resolveFavourites } = require('./favouriteClaim');
 const { gimmickHolds, gimmickFallbackChain, ensureMoveSetter, teamWeather, emergentGimmick, weatherHolds, isWeatherAbuser, GIMMICK_SPEC } = require('./gimmickPlan');
 const { WEATHER_REQUIRED_ABUSERS } = require('./weatherConstants');
 const { consumeLinkedUnit, expandLinkedPacks } = require('./itemLinks');
+// T-180 — order-independent global held-item assignment (max-weight matching over the team + bag).
+const { assignItemsGlobally } = require('./itemAssignment');
 const { getArchetypeModel } = require('../archetypes');
 const { noopTeamAudit, createTeamAudit } = require('../teamAudit');
 const { noopDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
@@ -175,6 +177,9 @@ function createTeamResolver(deps) {
     // pool) is seed-independent and resolved once by the orchestrator.
     function runAttempt(trainer, teamDefs, archetypeSeed, attemptStoredIds, attemptIVCache, attemptAudit) {
         const team = [];
+        // T-180 — mons that draw a generic item from the bag are deferred here (with their per-item ratings)
+        // and resolved together in a single order-independent global assignment after the slot loop.
+        const pendingItemMons = [];
         const storedIds = attemptStoredIds;
         // T-105/T-107 — the sophistication weight lives on the context; the archetype picker biases the fill
         // toward the emerged identity, degrading to a plain sample at low soph / no identity. T-126 — a
@@ -550,27 +555,38 @@ function createTeamResolver(deps) {
                     }
                 });
 
+                // T-180 — a mon drawing a GENERIC item from the bag is deferred to a single global,
+                // order-independent assignment after the slot loop (so team order can't make one mon grab an
+                // item another needed more). A mon with a preset item (Choice/mega item, gimmick rock/seed) or
+                // no bag keeps the in-loop path below unchanged. Preset items were already claimed above, so
+                // they take priority over generic picks (a weather setter keeps its rock).
                 if (!newTeamMember.item && trainer.bag && trainer.bag.length > 0) {
                     const movesetObjects = moveset.map(m => moves[m]);
-                    const sortedBagItems = trainer.bag
-                        // T-141 r4 — a dedicated support can't hold a status-locking item (Assault Vest / Choice).
-                        .filter(bagItemId => !(isSupportMon && SUPPORT_FORBIDDEN_ITEMS.has(bagItemId)))
-                        .map(bagItemId => ({
-                            id: bagItemId,
-                            rating: rateItemForAPokemon(bagItemId, battlePoke, ability, movesetObjects, trainer.level, trainer.bag.length, GENERIC_DEVIATION, /double/i.test(trainer.battleType || ''), selCtx),
-                        }))
-                        .filter(bi => bi.rating > 0)
-                        .sort((a, b) => b.rating - a.rating)
-                        .map(bi => bi.id);
-                    if (sortedBagItems.length > 0) {
-                        newTeamMember.item = sortedBagItems[0];
-                        // T-133 — same link-aware consumption as TMs: equipping one item from a pick-pack forgoes
-                        // its siblings from this trainer's bag (a loose/buyable copy is spent first, no link).
-                        const act = consumeLinkedUnit(trainer.bag, trainer.bagLinks || [], newTeamMember.item);
-                        if (act.activated && context.itemLinkActivations) {
-                            context.itemLinkActivations.push({ species: chosenTrainerMon.id, used: newTeamMember.item, removed: act.removedSiblings, kind: 'item' });
-                        }
+                    // Rate each DISTINCT bag item once (copies share a value); apply the support ban (T-141 r4).
+                    const ratings = {};
+                    const seen = new Set();
+                    for (const bagItemId of trainer.bag) {
+                        if (seen.has(bagItemId)) continue;
+                        seen.add(bagItemId);
+                        if (isSupportMon && SUPPORT_FORBIDDEN_ITEMS.has(bagItemId)) continue;
+                        const rating = rateItemForAPokemon(bagItemId, battlePoke, ability, movesetObjects, trainer.level, trainer.bag.length, GENERIC_DEVIATION, /double/i.test(trainer.battleType || ''), selCtx);
+                        if (rating > 0) ratings[bagItemId] = rating;
                     }
+                    // Push now (item filled in the global pass) so later slots' selCtx sees this mon. Its
+                    // item-dependent finalisation (item/nature/adjustMoveset/recordSlot) is deferred to phase 2.
+                    const importantMoves = [...newTeamMember.moves];
+                    newTeamMember.moves = moveset; // pre-adjust set — role-relevant moves intact for selCtx
+                    pendingItemMons.push({
+                        member: newTeamMember, ratings, chosenMon: chosenTrainerMon,
+                        battlePoke, ability, moveset, importantMoves, selCtx, roleMove,
+                        slotSeed: baseRngSeed !== null
+                            ? (baseRngSeed ^ Math.imul(djb2Hash(trainer.id + ':' + slotIndex), 0x9E3779B9)) >>> 0
+                            : null,
+                        priorTeam: [...team], def: trainerMonDefinition,
+                        storedSpecies: trainerMonDefinition.id ? storedIds[trainerMonDefinition.id] : null,
+                    });
+                    team.push(newTeamMember);
+                    return;
                 }
 
                 if (!newTeamMember.nature) {
@@ -597,6 +613,48 @@ function createTeamResolver(deps) {
                 team.push(newTeamMember);
             }
         });
+
+        // T-180 — GLOBAL held-item assignment. Each mon that draws a generic item was deferred above with its
+        // per-item ratings; assign items across the WHOLE team at once (max-weight matching that respects copy
+        // counts + capacity-1 pick-groups) so the total held-item rating is maximised and team order is
+        // irrelevant. Then finalise each mon's item/nature/moveset/audit under its own slot seed, preserving
+        // the per-slot determinism that keeps shared trainers consistent across a bundle's ROMs
+        // (docs/trainer-determinism.md). Consumption order among the winners doesn't affect the result — the
+        // matching already respected every capacity — so link-aware consumeLinkedUnit stays correct.
+        if (pendingItemMons.length > 0) {
+            const assigned = assignItemsGlobally(
+                pendingItemMons.map(p => ({ ratings: p.ratings })),
+                { units: trainer.bag, groups: trainer.bagLinks || [] },
+            );
+            pendingItemMons.forEach((p, i) => {
+                if (p.slotSeed !== null) rng.seed(p.slotSeed);
+                const item = assigned[i];
+                if (item) {
+                    p.member.item = item;
+                    const act = consumeLinkedUnit(trainer.bag, trainer.bagLinks || [], item);
+                    if (act.activated && context.itemLinkActivations) {
+                        context.itemLinkActivations.push({ species: p.chosenMon.id, used: item, removed: act.removedSiblings, kind: 'item' });
+                    }
+                }
+                if (!p.member.nature) {
+                    if (usesStrategicNature(trainer.level)) {
+                        p.member.nature = chooseNature(p.battlePoke, p.moveset, moves, p.ability, p.member.item, GENERIC_DEVIATION);
+                    } else {
+                        p.member.nature = sample(Object.values(NATURES)).name;
+                    }
+                }
+                let finalMoveset = p.moveset;
+                if (p.member.item) {
+                    finalMoveset = adjustMoveset(p.battlePoke, trainer.level, p.moveset, p.importantMoves, moves, p.ability, p.member.item, 0.1, p.selCtx);
+                }
+                p.member.moves = finalMoveset;
+                attemptAudit.recordSlot({
+                    priorTeam: p.priorTeam, chosenMon: p.chosenMon, member: p.member, roleMove: p.roleMove,
+                    model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed,
+                    def: p.def, storedSpecies: p.storedSpecies,
+                });
+            });
+        }
 
         // T-075 — the flagship "team of 5" diagnostic: after resolving every slot, a team
         // that came back shorter than its definition means one or more slots were dropped.
