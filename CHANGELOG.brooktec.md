@@ -45,6 +45,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   trainer battles only** and **¥0 in the wild**, regardless of level or how many times it is used. The
   in-battle "coins scattered" effect is unchanged. (T-175)
 
+- **Trainer rematches are gone.** No trainer becomes available for a rematch anymore — not regular
+  trainers (whether triggered by walking around or by a Match Call phone request) and not gym leaders
+  after the Elite Four. This removes the last repeatable-prize-money source. (T-176)
+
 ### Fixed
 
 - **Villain-grunt mascots no longer inherit their leader's perfect IVs.** The early Aqua/Magma grunts

@@ -1612,19 +1612,10 @@ static inline bool32 IsRematchForbidden(s32 rematchTableId)
 static void SetRematchIdForTrainer(const struct RematchTrainer *table, u32 tableId)
 {
 #if FREE_MATCH_CALL == FALSE
-    s32 i;
-
-    for (i = 1; i < REMATCHES_COUNT; i++)
-    {
-        u16 trainerId = table[tableId].trainerIds[i];
-
-        if (trainerId == 0)
-            break;
-        if (!HasTrainerBeenFought(trainerId))
-            break;
-    }
-
-    gSaveBlock1Ptr->trainerRematches[tableId] = i;
+    // T-176: rematches are disabled in this hack. This is the single choke point that both the
+    // step-counter (walking) and Match Call (phone) paths use to flag a regular trainer as ready
+    // for a rematch, so forcing it to 0 means no regular trainer ever becomes rematchable.
+    gSaveBlock1Ptr->trainerRematches[tableId] = 0;
 #endif //FREE_MATCH_CALL
 }
 
