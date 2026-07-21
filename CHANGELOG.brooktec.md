@@ -28,6 +28,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **The intro is cleaner: no bogus "leveled up" message, and Professor Birch hands you your starting
+  gear himself.** After you save Birch from the Zigzagoon, the game no longer flashes a "Your Pokémon
+  have leveled up to 8!" fanfare — the intro was never a level-cap milestone (the cap is 8 from the
+  very start), so your starter and its 9 companions now simply begin *at* the cap. And instead of the
+  starting items silently appearing in your bag before the game even begins, Birch now gives them all
+  to you on Route 101 right after your Pokémon — the Evolve Candy, the Balls, the rods, bikes and
+  status berries — with a single "received …" message. Your bag starts empty until then. (T-182)
+
 - **Trainers value move accuracy more aggressively.** A move's worth now scales with its hit chance
   (expected value) instead of losing a flat penalty per missing accuracy point, so a strong shaky move
   can beat a weaker reliable one: Fire Blast is now preferred over Flamethrower, and Focus Blast sits

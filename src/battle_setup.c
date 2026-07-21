@@ -1,5 +1,6 @@
 #include "global.h"
 #include "battle.h"
+#include "caps.h"
 #include "load_save.h"
 #include "battle_setup.h"
 #include "battle_tower.h"
@@ -874,12 +875,16 @@ void ChooseStarter(void)
 static void CB2_GiveStarter(void)
 {
     u16 starterMon;
+    // T-182 — spawn the starter (and the extras below) directly at the current level cap. The intro is
+    // not a cap milestone, so there is no level-up fanfare here; with the hard exp cap the party must be
+    // at the cap from the start. Reads the cap from the caps.c SSOT, so it tracks any cap change.
+    u8 introLevel = GetCurrentLevelCap();
 
     *GetVarPointer(VAR_STARTER_MON) = gSpecialVar_Result;
     starterMon = GetStarterPokemon(gSpecialVar_Result);
     // T-068 — apply the bundle-decided gender + nickname for the chosen starter (defaults: MON_GENDERLESS
     // + empty name → random gender + species name, i.e. unchanged when the feature is off).
-    ScriptGiveMonWithGenderAndNickname(starterMon, 7, ITEM_NONE, GetStarterGender(), GetStarterNickname());
+    ScriptGiveMonWithGenderAndNickname(starterMon, introLevel, ITEM_NONE, GetStarterGender(), GetStarterNickname());
     // Force 3 randomly chosen IVs to 31, then top up remaining IVs until shiny threshold
     {
         u8 iv31 = MAX_PER_STAT_IVS;
@@ -916,7 +921,7 @@ static void CB2_GiveStarter(void)
         u16 nextMon = GetExtraPokemon(i);
         // T-068 — nickname is set on the mon before placement, so it applies even to extras that
         // overflow the 6-slot party into the PC.
-        ScriptGiveMonWithGenderAndNickname(nextMon, 7, ITEM_NONE, GetExtraStarterGender(i), GetExtraStarterNickname(i));
+        ScriptGiveMonWithGenderAndNickname(nextMon, introLevel, ITEM_NONE, GetExtraStarterGender(i), GetExtraStarterNickname(i));
     }
     ResetTasks();
     PlayBattleBGM();

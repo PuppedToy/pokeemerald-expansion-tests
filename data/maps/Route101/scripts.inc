@@ -236,10 +236,8 @@ Route101_EventScript_BirchsBag::
 	waitstate
 	applymovement LOCALID_ROUTE101_BIRCH, Route101_Movement_BirchApproachPlayer
 	waitmovement 0
-	special BufferLevelCap
-	message Route101_LevelCap
-	waitmessage
-	call Common_EventScript_PlayLevelCapFanfare
+	@ T-182 — no level-cap fanfare here: the intro is not a cap milestone (the cap is already 8 from
+	@ the start) and the party spawns directly at the cap in CB2_GiveStarter.
 	msgbox Route101_Text_YouSavedMe, MSGBOX_DEFAULT
 	special HealPlayerParty
 	setflag FLAG_HIDE_ROUTE_101_BIRCH_ZIGZAGOON_BATTLE
@@ -252,6 +250,26 @@ Route101_EventScript_BirchsBag::
 	call_if_eq VAR_RESULT, FEMALE, Route101_EventScript_HideBrendanInBedroom
 	bufferleadmonspeciesname STR_VAR_1
 	message Route101_Text_LikeYouToHavePokemon
+	waitmessage
+	playfanfare MUS_OBTAIN_ITEM
+	waitfanfare
+	@ T-182 — Birch hands over all the starting gear here, before he leaves (moved out of new-game init
+	@ so the player receives it only after saving Birch). One dialogue line + one consolidated message.
+	msgbox Route101_Text_BirchGivesGear, MSGBOX_DEFAULT
+	additem ITEM_RARE_CANDY, 1
+	additem ITEM_OLD_ROD, 1
+	additem ITEM_MACH_BIKE, 1
+	additem ITEM_ACRO_BIKE, 1
+	additem ITEM_ULTRA_BALL, 99
+	additem ITEM_QUICK_BALL, 99
+	additem ITEM_TIMER_BALL, 99
+	additem ITEM_CHERI_BERRY, 1
+	additem ITEM_CHESTO_BERRY, 1
+	additem ITEM_PECHA_BERRY, 1
+	additem ITEM_RAWST_BERRY, 1
+	additem ITEM_ASPEAR_BERRY, 1
+	additem ITEM_PERSIM_BERRY, 1
+	message Route101_Text_ReceivedGear
 	waitmessage
 	playfanfare MUS_OBTAIN_ITEM
 	waitfanfare
@@ -268,6 +286,15 @@ Route101_EventScript_BirchsBag::
 Route101_Text_LikeYouToHavePokemon:
 	.string "{PLAYER} received {STR_VAR_1} and\n"
 	.string "9 other Pokémon!$"
+
+Route101_Text_BirchGivesGear:
+	.string "PROF. BIRCH: Oh, before I forget…\p"
+	.string "Take these supplies for your\n"
+	.string "journey. You'll need every one!$"
+
+Route101_Text_ReceivedGear:
+	.string "{PLAYER} received an Evolve Candy,\n"
+	.string "Poké Balls and 9 other items!$"
 
 Route101_EventScript_HideMayInBedroom::
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_BEDROOM
@@ -337,6 +364,3 @@ Route101_Text_ElijahDefeated:
 
 Route101_Text_OranBerries:
 	.string "You found lots of oran berries!$"
-
-Route101_LevelCap:
-	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"
