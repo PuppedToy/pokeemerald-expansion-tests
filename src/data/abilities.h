@@ -880,8 +880,8 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
     [ABILITY_HONEY_GATHER] =
     {
         .name = _("Honey Gather"),
-        .description = COMPOUND_STRING("May gather Honey."),
-        .aiRating = 0,
+        .description = COMPOUND_STRING("Picks up items foes have used."),
+        .aiRating = 1,
     },
 
     [ABILITY_FRISK] =

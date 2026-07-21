@@ -34,6 +34,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   it can no longer be farmed for infinite money. Its in-game description now reads "Picks up items foes
   have used." (T-173)
 
+- **Honey Gather now works in battle instead of handing out free Honey.** Previously it did nothing in
+  combat and simply gave the holder a Honey after battles (a second money faucet). It now does exactly
+  what Pickup does — at the end of a turn, a holder with no item picks up an item a foe used up — and
+  shares Pickup's description ("Picks up items foes have used."). Its out-of-battle Honey find is
+  removed. (T-174)
+
 ### Fixed
 
 - **Villain-grunt mascots no longer inherit their leader's perfect IVs.** The early Aqua/Magma grunts

@@ -13375,8 +13375,7 @@ static void Cmd_pickup(void)
     CMD_ARGS();
 
     u32 i;
-    u16 species, heldItem, ability;
-    u8 lvlDivBy10;
+    u16 species, heldItem;
 
     if (!InBattlePike()) // No items in Battle Pike.
     {
@@ -13384,26 +13383,10 @@ static void Cmd_pickup(void)
         {
             species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
             heldItem = GetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM);
-            lvlDivBy10 = (GetMonData(&gPlayerParty[i], MON_DATA_LEVEL)-1) / 10; //Moving this here makes it easier to add in abilities like Honey Gather.
-            if (lvlDivBy10 > 9)
-                lvlDivBy10 = 9;
 
-            ability = GetSpeciesAbility(species, GetMonData(&gPlayerParty[i], MON_DATA_ABILITY_NUM));
-
-            // Pickup's out-of-battle item find is intentionally removed (T-173): Pickup only picks up
-            // items foes have used up in battle now. Honey Gather / Shuckle Berry Juice are unaffected.
-            if (ability == ABILITY_HONEY_GATHER
-                && species != 0
-                && species != SPECIES_EGG
-                && heldItem == ITEM_NONE)
-            {
-                if ((lvlDivBy10 + 1 ) * 5 > Random() % 100)
-                {
-                    heldItem = ITEM_HONEY;
-                    SetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM, &heldItem);
-                }
-            }
-            else if (P_SHUCKLE_BERRY_JUICE == GEN_2
+            // Pickup (T-173) and Honey Gather (T-174) no longer find items out of battle — both are
+            // battle-only now. Only Shuckle's Berry Juice quirk remains as a post-battle item grant.
+            if (P_SHUCKLE_BERRY_JUICE == GEN_2
                 && species == SPECIES_SHUCKLE
                 && heldItem == ITEM_ORAN_BERRY
                 && (Random() % 16) == 0)
@@ -13523,7 +13506,10 @@ static void Cmd_tryrecycleitem(void)
 
     u16 *usedHeldItem;
 
-    if (gCurrentMove == MOVE_NONE && GetBattlerAbility(gBattlerAttacker) == ABILITY_PICKUP)
+    // T-174: Honey Gather shares Pickup's in-battle effect, so it picks up the target's used item too.
+    if (gCurrentMove == MOVE_NONE
+        && (GetBattlerAbility(gBattlerAttacker) == ABILITY_PICKUP
+         || GetBattlerAbility(gBattlerAttacker) == ABILITY_HONEY_GATHER))
         usedHeldItem = &gBattleStruct->usedHeldItems[gBattlerPartyIndexes[gBattlerTarget]][GetBattlerSide(gBattlerTarget)];
     else
         usedHeldItem = &gBattleStruct->usedHeldItems[gBattlerPartyIndexes[gBattlerAttacker]][GetBattlerSide(gBattlerAttacker)];
