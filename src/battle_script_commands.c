@@ -8230,7 +8230,7 @@ static void Cmd_hitanimation(void)
 static u32 GetTrainerMoneyToGive(u16 trainerId)
 {
     if (trainerId == TRAINER_SECRET_BASE)
-        return 20 * gBattleResources->secretBase->party.levels[0] * gBattleStruct->moneyMultiplier;
+        return 0; // T-177: Secret Base battles give no money (removed a repeatable money source).
 
     if (GetTrainerPartyFromId(trainerId) == NULL)
         return 20;
