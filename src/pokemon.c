@@ -3372,10 +3372,9 @@ u8 GiveMonToPlayer(struct Pokemon *mon)
             SetMonData(mon, MON_DATA_LEVEL, &level);
         }
         CalculateMonStats(mon);
-        {
-            u32 maxHp = GetMonData(mon, MON_DATA_MAX_HP);
-            SetMonData(mon, MON_DATA_HP, &maxHp);
-        }
+        // Full heal (HP, PP, status) so a caught mon never arrives statused, whether it
+        // lands in the party or the PC (SetMonData mirrors HP/status into mon->box). See T-178.
+        HealPokemon(mon);
     }
 
     for (i = 0; i < PARTY_SIZE; i++)
