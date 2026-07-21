@@ -14,6 +14,7 @@ const abilities = {
     ABILITY_THICK_FAT:  { name: 'Thick Fat', rating: 5, breakable: true },
     ABILITY_STURDY:     { name: 'Sturdy', rating: 5, breakable: true },
     ABILITY_INNER_FOCUS:{ name: 'Inner Focus', rating: 2, breakable: false },
+    ABILITY_WONDER_GUARD:{ name: 'Wonder Guard', rating: 10, breakable: true },
     ABILITY_TRANSISTOR:  { name: 'Transistor', rating: 6, breakable: false },
     ABILITY_HUGE_POWER:  { name: 'Huge Power', rating: 10, breakable: true },
     ABILITY_SHED_SKIN:   { name: 'Shed Skin', rating: 7, breakable: false },

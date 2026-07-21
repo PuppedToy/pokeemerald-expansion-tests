@@ -34,7 +34,8 @@ const BANNED_ABILITIES = [
     'ZERO_TO_HERO',
 
     // These are a hell to rebalance, but I'd like to do so. For now they are banned.
-    'WONDER_GUARD',
+    // T-184 — WONDER_GUARD released: the engine ties the 1-HP rule to the ability and the rater is now
+    // Wonder-Guard-aware (typing-based defensive rating + hard UU floor), so any mon may receive it.
     'TRUANT',
     'SLOW_START',
     'DEFEATIST',
@@ -490,4 +491,5 @@ module.exports = {
     balancePokemon,
     insertMoveIntoLearnset,
     getLearnLevelBasedOnRating,
+    BANNED_ABILITIES,   // T-184 — exported so the unban of Wonder Guard is regression-tested.
 };

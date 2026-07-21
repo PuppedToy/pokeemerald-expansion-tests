@@ -186,3 +186,4 @@
 | [T-181](T-181-move-accuracy-expected-value.md) | Rework move-accuracy rating — expected-value model, attenuated never-miss, imprecise-stacking penalty | done | 1.1.0 | 2026-07-21 |
 | [T-182](T-182-intro-birch-item-gift-no-cap-fanfare.md) | Intro — Birch gifts all starting items after the Zigzagoon, starter spawns at cap, no bogus level-cap fanfare | in-progress | 1.1.0 | 2026-07-21 |
 | [T-183](T-183-shedinja-stone-evolution.md) | Shedinja becomes a Dusk Stone evolution of Nincada | in-progress | 1.1.0 | 2026-07-21 |
+| [T-184](T-184-wonder-guard-ability-rework.md) | Tie the 1-HP rule to Wonder Guard, make the rater Wonder-Guard-aware, and unban the ability | in-progress | 1.1.0 | 2026-07-21 |
