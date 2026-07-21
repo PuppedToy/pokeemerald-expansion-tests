@@ -1714,7 +1714,9 @@ void CalculateMonStats(struct Pokemon *mon)
 
     SetMonData(mon, MON_DATA_LEVEL, &level);
 
-    if (species == SPECIES_SHEDINJA)
+    // T-184 — the "always 1 HP" rule is tied to the Wonder Guard ability, not to Shedinja the species.
+    // Any mon with Wonder Guard has 1 HP; a Shedinja that loses Wonder Guard gets its real HP.
+    if (GetMonAbility(mon) == ABILITY_WONDER_GUARD)
     {
         newMaxHP = 1;
     }

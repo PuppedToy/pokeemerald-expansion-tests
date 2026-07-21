@@ -3804,7 +3804,9 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
 
     [SPECIES_SHEDINJA] =
     {
-        .baseHP        = 1,
+        // T-184 — baseHP 221 gives Shedinja the same BST as base Ninjask (456). It is inert while Shedinja
+        // has Wonder Guard (the ability pins max HP to 1); it becomes its real HP only if it loses Wonder Guard.
+        .baseHP        = 221,
         .baseAttack    = 90,
         .baseDefense   = 45,
         .baseSpeed     = 40,

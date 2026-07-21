@@ -28,6 +28,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Wonder Guard is now a real, earnable ability instead of a Shedinja-only quirk.** The "always 1 HP" rule
+  is tied to the ability, not the species: any Pokémon that has Wonder Guard has 1 HP, and a Shedinja that
+  ends up without it gets its real HP. Shedinja's base HP was raised to 221 so its stat total matches base
+  Ninjask (relevant only if it loses Wonder Guard). The randomizer can now hand Wonder Guard to other
+  Pokémon, and the rater understands it: a Wonder Guard Pokémon is graded on its typing (how few weaknesses
+  it has and whether it dodges poison/burn/sandstorm chip), not its defenses, and is always rated at least
+  UU. The ability's in-game description now reads "1 HP. Only supereffective hits." (T-184)
+
 - **Shedinja is now caught the normal way — with a Dusk Stone.** Nincada is a branched evolution:
   level it up for Ninjask, or use a Dusk Stone (once it's high enough level) for Shedinja. This
   replaces the old hidden trick of needing a spare party slot and a spare Poké Ball. The Dusk Stone's

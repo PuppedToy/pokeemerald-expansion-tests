@@ -270,6 +270,30 @@ function isSuperEffective(attackingType, defendingTypes) {
     return damageMultiplier(attackingType, defendingTypes) > 1;
 }
 
+// T-184 — Wonder Guard's defensive value is its TYPING, not its stats. The bearer has 1 HP and takes 0
+// damage from anything that isn't super-effective, so HP/Def/SpD are irrelevant: it either shrugs a hit
+// off entirely or dies to it. What actually keeps it alive is (a) how few types can hit it super-
+// effectively and (b) whether its typing dodges the common residual/DoT sources that bypass Wonder Guard
+// (they deal direct damage, and 1 HP dies to any of it). Stealth Rock kills any 1-HP mon regardless of
+// typing, so every Wonder Guard mon pays a flat dampener (assumes our hazard-heavy 6v6). Constants are
+// tunable; the rating tests assert relative ordering + the UU floor, not these magic numbers.
+const WG_DEF_BASE = 9;                    // a no-weakness typing starts near the top of the 0-10 scale
+const WG_DEF_WEAKNESS_PENALTY = 1.5;      // each exploitable weakness is a way the mon dies
+const WG_DEF_DOT_IMMUNITY_BONUS = 0.75;   // per residual source its typing is immune to
+const WG_DEF_STEALTH_ROCK_DAMPENER = 2;   // flat: SR is up in most games and OHKOs a 1-HP mon
+function wonderGuardDefensiveRating(poke) {
+    const types = poke.parsedTypes || [];
+    const weaknessCount = Object.keys(typeChart).filter(t => damageMultiplier(t, types) > 1).length;
+    let rating = WG_DEF_BASE - weaknessCount * WG_DEF_WEAKNESS_PENALTY;
+    // Residual/DoT immunities granted by typing — each closes a way it dies through Wonder Guard.
+    if (types.includes('POISON') || types.includes('STEEL')) rating += WG_DEF_DOT_IMMUNITY_BONUS; // poison / toxic
+    if (types.includes('FIRE')) rating += WG_DEF_DOT_IMMUNITY_BONUS;                               // burn
+    if (types.includes('ROCK') || types.includes('GROUND') || types.includes('STEEL')) rating += WG_DEF_DOT_IMMUNITY_BONUS; // sandstorm
+    if (types.includes('FLYING')) rating += WG_DEF_DOT_IMMUNITY_BONUS;                             // Spikes / Toxic Spikes (grounded-only)
+    rating -= WG_DEF_STEALTH_ROCK_DAMPENER;
+    return Math.max(0, Math.min(10, rating));
+}
+
 // A4: Coverage metrics — how many types the moveset hits SE and how many can wall the entire set.
 // superEffectiveCount: types (of 18) that at least one damage move hits for >= 2x
 // wallCount: types that resist or are immune to ALL damage moves in the set (<= 0.5x)
@@ -3440,9 +3464,14 @@ function computePowerAndRole(poke) {
         abilitiesAttackPowerMultiplier = 0.5;
         abilitiesSpeedPowerMultiplier = 0.5;
     }
+    // T-184 — for a Wonder Guard mon, HP/Def/SpD are irrelevant (1 HP; takes 0 or dies), so its defensive
+    // component is its typing-based survivability rather than the stat bulk formula.
+    const hasWonderGuard = poke.parsedAbilities.includes('WONDER_GUARD');
     let offensePower = Math.max(poke.baseAttack * abilitiesAttackPowerMultiplier, poke.baseSpAttack * abilitiesSpaPowerMultiplier) / EXCELLENT_STAT_VALUE * 10;
     let speedPower = poke.baseSpeed * abilitiesSpeedPowerMultiplier / EXCELLENT_STAT_VALUE * 10;
-    let defensePower = (poke.baseHP + Math.max(poke.baseDefense, poke.baseSpDefense)* 0.6 + Math.min(poke.baseDefense, poke.baseSpDefense) * 0.4) / (EXCELLENT_STAT_VALUE * 2) * 10;
+    let defensePower = hasWonderGuard
+        ? wonderGuardDefensiveRating(poke)
+        : (poke.baseHP + Math.max(poke.baseDefense, poke.baseSpDefense)* 0.6 + Math.min(poke.baseDefense, poke.baseSpDefense) * 0.4) / (EXCELLENT_STAT_VALUE * 2) * 10;
     // rawDefensePower captures pre-flexibility bulk for the glass cannon checks below.
     // Pheromosa's equal 37/37 defenses trigger a flexibility bonus that inflates defensePower
     // past the 3.5 threshold, so we use rawDefensePower to reliably detect the archetype.
@@ -3481,7 +3510,7 @@ function computePowerAndRole(poke) {
     if (Math.abs(poke.baseAttack - poke.baseSpAttack) < FLEXIBILITY_THRESHOLD) {
         offensePower += 0.1 * (Math.min(poke.baseAttack, poke.baseSpAttack) / EXCELLENT_STAT_VALUE * 10);
     }
-    if (Math.abs(poke.baseDefense - poke.baseSpDefense) < FLEXIBILITY_THRESHOLD) {
+    if (!hasWonderGuard && Math.abs(poke.baseDefense - poke.baseSpDefense) < FLEXIBILITY_THRESHOLD) {
         defensePower += 0.1 * (Math.min(poke.baseDefense, poke.baseSpDefense) / EXCELLENT_STAT_VALUE * 10);
     }
 
@@ -3512,7 +3541,7 @@ function computePowerAndRole(poke) {
     // item that late-game trainers can give them. Only applied when max(Def, SpDef) >= 50
     // so glass cannons don't get an undeserved defensive boost.
     // Role is already determined above (based on raw stats), so this only affects the rating value.
-    if (Math.max(poke.baseDefense, poke.baseSpDefense) >= 50 && poke.evolutionData) {
+    if (!hasWonderGuard && Math.max(poke.baseDefense, poke.baseSpDefense) >= 50 && poke.evolutionData) {
         const evoType = poke.evolutionData.type;
         if (evoType === EVO_TYPE_NFE_OF_3) {
             defensePower *= 1.35;
@@ -3610,6 +3639,9 @@ function isPureStaller(poke, moves, level = 100, doubles = false) {
 }
 
 function ratePokemon(poke, moves, abilities, tmPool) {
+    // T-184 — Wonder Guard is a game-changing ability; the mon's bulk/BST is fake (1 HP), so it is rated
+    // by typing + offense (see computePowerAndRole) and gets a hard UU tier floor further down.
+    const hasWonderGuard = poke.parsedAbilities.includes('WONDER_GUARD');
     let bestAbilityRating = 0;
     poke.parsedAbilities.forEach(abilityId => {
         if (abilityId === 'NONE') return;
@@ -3770,7 +3802,12 @@ function ratePokemon(poke, moves, abilities, tmPool) {
         + poke.baseSpAttack * abilitiesSpaPowerMultiplier
         + poke.baseSpDefense
         + poke.baseSpeed * abilitiesSpeedPowerMultiplier;
-    
+
+    // T-184 — a Wonder Guard mon's raw BST is inflated by fake HP/Def/SpD (its real HP is 1), so the
+    // stat-BST tier floors below would over-rate it. Neutralise them; its tier comes from offense +
+    // typing + the hard UU floor. (rawBST is only consumed by the floors that follow.)
+    if (hasWonderGuard) rawBST = 0;
+
     if (rawBST >= NU_BST_THRESHOLD && absoluteRating < TIER_NU_THRESHOLD) {
         absoluteRating = TIER_NU_THRESHOLD + absoluteRating / 100;
     }
@@ -3924,6 +3961,14 @@ function ratePokemon(poke, moves, abilities, tmPool) {
     // Stone megas need MEGA_AG_RATING_THRESHOLD (10.0) to reach AG; non-megas and stoneless megas
     // (Rayquaza) need only TIER_AG_THRESHOLD (9.75). Stone megas have inflated stats the model rewards
     // generously; stoneless megas like Rayquaza are effectively the same pokemon as their base form.
+    // T-184 — Wonder Guard hard floor: at minimum UU purely for having the ability (only super-effective
+    // hits connect — a base-level game-changer). Applied last so no earlier ceiling can undo it; strong
+    // typing/offense still climb above UU on their own. A WG mon with no usable damage move is still
+    // forced to MAGIKARP by the override below (it cannot win by walling alone with 1 HP).
+    if (hasWonderGuard) {
+        absoluteRating = Math.max(absoluteRating, TIER_UU_THRESHOLD + 0.1);
+    }
+
     let tier = tierFromRating(absoluteRating, { isStoneMega });
 
     // If no damage moves are reachable in this context (learnset + tmPool-filtered teachables),
@@ -4389,6 +4434,9 @@ function tierFromRatingDoubles(ratingDoubles) {
 // downstream pipeline. Doubles-aware move selection is deferred to T-109; here we rate the singles set with
 // the doubles move values. Falls back to chooseMoveset only for standalone/unit use.
 function ratePokemonDoubles(poke, moves, abilities, tmPool, moveset = null) {
+    // T-184 — same Wonder Guard treatment as singles: typing-based defense (via computePowerAndRole),
+    // no raw-BST floor from fake bulk, and a hard UU floor.
+    const hasWonderGuard = poke.parsedAbilities.includes('WONDER_GUARD');
     let bestAbilityRating = 0;
     poke.parsedAbilities.forEach(abilityId => {
         if (abilityId === 'NONE') return;
@@ -4429,16 +4477,22 @@ function ratePokemonDoubles(poke, moves, abilities, tmPool, moveset = null) {
         + poke.baseSpDefense
         + poke.baseSpeed * abilitiesSpeedPowerMultiplier;
     const DT = DOUBLES_TIER_THRESHOLDS;
+    // T-184 — Wonder Guard's raw BST is inflated by fake HP/Def/SpD; skip the stat-BST floors (parity
+    // with singles). Its tier comes from offense + typing + the hard UU floor below.
+    const bstForFloor = hasWonderGuard ? 0 : rawBST;
     const floorTo = (threshold) => { if (ratingDoubles < threshold) ratingDoubles = threshold + ratingDoubles / 100; };
     // Stone megas follow the mega BST rules (UBERS/AG); non-megas the LEGEND rule — mirrors singles.
     const isStoneMega = !!(poke.evolutionData && poke.evolutionData.isMega && poke.evolutionData.megaItem);
-    if (rawBST >= NU_BST_THRESHOLD) floorTo(DT.NU);
-    if (rawBST >= RU_BST_THRESHOLD) floorTo(DT.RU);
-    if (rawBST >= UU_BST_THRESHOLD) floorTo(DT.UU);
-    if (rawBST >= OU_BST_THRESHOLD) floorTo(DT.OU);
-    if (!isStoneMega && rawBST >= LEGEND_BST_THRESHOLD) floorTo(DT.LEGEND);
-    if (isStoneMega && rawBST >= MEGA_UBERS_BST_THRESHOLD) floorTo(DT.UBERS);
-    if (rawBST >= (isStoneMega ? MEGA_AG_BST_THRESHOLD : AG_BST_THRESHOLD) || poke.parsedAbilities.includes('POWER_CONSTRUCT')) floorTo(DT.AG);
+    if (bstForFloor >= NU_BST_THRESHOLD) floorTo(DT.NU);
+    if (bstForFloor >= RU_BST_THRESHOLD) floorTo(DT.RU);
+    if (bstForFloor >= UU_BST_THRESHOLD) floorTo(DT.UU);
+    if (bstForFloor >= OU_BST_THRESHOLD) floorTo(DT.OU);
+    if (!isStoneMega && bstForFloor >= LEGEND_BST_THRESHOLD) floorTo(DT.LEGEND);
+    if (isStoneMega && bstForFloor >= MEGA_UBERS_BST_THRESHOLD) floorTo(DT.UBERS);
+    if (bstForFloor >= (isStoneMega ? MEGA_AG_BST_THRESHOLD : AG_BST_THRESHOLD) || poke.parsedAbilities.includes('POWER_CONSTRUCT')) floorTo(DT.AG);
+
+    // T-184 — Wonder Guard hard floor (doubles parity): at minimum UU purely for having the ability.
+    if (hasWonderGuard) ratingDoubles = Math.max(ratingDoubles, DT.UU + 0.1);
 
     // T-141 (owner r3) — SUPPORT is its own doubles axis. The mon is worth the HIGHER of its offensive and
     // support tiers; when support strictly beats offense, support is its identity → tagged (the viewer shows
@@ -4496,6 +4550,7 @@ module.exports = {
     rateItemForAPokemon,
     damageMultiplier,
     isSuperEffective,
+    wonderGuardDefensiveRating,   // T-184
     computeCoverageMetrics,
     computeComboBonus,
     isPureStaller,      // T-159 — stall-archetype breakpoint

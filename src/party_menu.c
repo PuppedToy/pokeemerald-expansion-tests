@@ -4688,7 +4688,7 @@ static void GetMedicineItemEffectMessage(u16 item, u32 statusCured)
 
 static bool8 NotUsingHPEVItemOnShedinja(struct Pokemon *mon, u16 item)
 {
-    if (GetItemEffectType(item) == ITEM_EFFECT_HP_EV && GetMonData(mon, MON_DATA_SPECIES) == SPECIES_SHEDINJA)
+    if (GetItemEffectType(item) == ITEM_EFFECT_HP_EV && GetMonAbility(mon) == ABILITY_WONDER_GUARD) // T-184 — HP EVs are inert on 1-HP Wonder Guard mons.
         return FALSE;
     return TRUE;
 }
@@ -5191,7 +5191,7 @@ static u16 ItemEffectToMonEv(struct Pokemon *mon, u8 effectType)
     switch (effectType)
     {
     case ITEM_EFFECT_HP_EV:
-        if (GetMonData(mon, MON_DATA_SPECIES) != SPECIES_SHEDINJA)
+        if (GetMonAbility(mon) != ABILITY_WONDER_GUARD) // T-184 — Wonder Guard mons report no HP EV (HP is pinned to 1).
             return GetMonData(mon, MON_DATA_HP_EV);
         break;
     case ITEM_EFFECT_ATK_EV:
