@@ -49,6 +49,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   trainers (whether triggered by walking around or by a Match Call phone request) and not gym leaders
   after the Elite Four. This removes the last repeatable-prize-money source. (T-176)
 
+- **Secret Base battles give no money.** Winning a Secret Base battle used to pay a level-scaled reward;
+  it now pays ¥0, closing another repeatable money source. (T-177)
+
 ### Fixed
 
 - **Villain-grunt mascots no longer inherit their leader's perfect IVs.** The early Aqua/Magma grunts
