@@ -40,6 +40,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   shares Pickup's description ("Picks up items foes have used."). Its out-of-battle Honey find is
   removed. (T-174)
 
+- **Pay Day (and Make It Rain / Gold Rush) no longer scale into a money printer.** Instead of scaling
+  with the user's level and stacking every use, a coin-scattering move now pays a flat **¥125 in
+  trainer battles only** and **¥0 in the wild**, regardless of level or how many times it is used. The
+  in-battle "coins scattered" effect is unchanged. (T-175)
+
 ### Fixed
 
 - **Villain-grunt mascots no longer inherit their leader's perfect IVs.** The early Aqua/Magma grunts
