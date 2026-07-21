@@ -28,6 +28,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Shedinja is now caught the normal way — with a Dusk Stone.** Nincada is a branched evolution:
+  level it up for Ninjask, or use a Dusk Stone (once it's high enough level) for Shedinja. This
+  replaces the old hidden trick of needing a spare party slot and a spare Poké Ball. The Dusk Stone's
+  required level, like every other stone evolution, is rolled per randomization. (T-183)
+
 - **The intro is cleaner: no bogus "leveled up" message, and Professor Birch hands you your starting
   gear himself.** After you save Birch from the Zigzagoon, the game no longer flashes a "Your Pokémon
   have leveled up to 8!" fanfare — the intro was never a level-cap milestone (the cap is 8 from the
