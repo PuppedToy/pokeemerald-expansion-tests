@@ -515,6 +515,13 @@ const selfLoweringMoves = new Set([
     'MOVE_V_CREATE', 'MOVE_CLANGING_SCALES',
 ]);
 
+// T-179 — partial-trapping damage moves. Grip Claw (max duration) and Binding Band (bigger chip) are only
+// worth holding when the set carries one of these (see randomizer/docs/trapping.md).
+const bindingMoves = new Set([
+    'MOVE_BIND', 'MOVE_WRAP', 'MOVE_FIRE_SPIN', 'MOVE_WHIRLPOOL', 'MOVE_SAND_TOMB',
+    'MOVE_CLAMP', 'MOVE_INFESTATION', 'MOVE_MAGMA_STORM', 'MOVE_SNAP_TRAP', 'MOVE_THUNDER_CAGE',
+]);
+
 const highFlinchMoves = new Set([
     'MOVE_AIR_SLASH', 'MOVE_IRON_HEAD', 'MOVE_ROCK_SLIDE', 'MOVE_HEADBUTT',
     'MOVE_ZEN_HEADBUTT', 'MOVE_BITE', 'MOVE_DARK_PULSE', 'MOVE_ASTONISH',
@@ -1577,7 +1584,7 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     return rating;
 }
 
-function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, deviation = 0, doubles = false) {
+function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, deviation = 0, doubles = false, ctx = {}) {
     // T-147 — an offensive DOUBLES mon values anti-support tech much more (Safety Goggles vs Rage Powder
     // redirection + Spore/powder; Covert Cloak vs Fake Out + secondary effects). A dedicated support doesn't
     // get this bump. `doubles` threads from the trainer's battleType at the call site.
@@ -1674,7 +1681,10 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         return 0;
     }
     if (item === 'Damp Rock' || item === 'Heat Rock' || item === 'Icy Rock' || item === 'Smooth Rock' || item === 'Terrain Extender') {
-        // @TODO For now these won't be used
+        // T-179 — NOT untreated: these are preset during teambuilding, not chosen by the bag-rater. A weather
+        // setter claims its matching rock (WEATHER_ROCK_BY_SETTER) and the electric-terrain setter claims the
+        // Terrain Extender — both BEFORE this rater runs (modules/resolveTrainerTeam.js:435 & :445, T-125). A
+        // bag-rated rock/extender would only ever land on a NON-setter, where it does nothing, so 0 is correct.
         return 0;
     }
     const isElectricSurge = ability === 'ELECTRIC_SURGE';
@@ -1920,14 +1930,11 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         return (doublesOffense ? 7.5 : 2.5) * calculatedDeviation;
     }
     if (item === 'Jaboca Berry') {
-        if (hasHarvest || hasCudChew || hasRipen || hasCheekPouch)
-        {
-            return 5 * calculatedDeviation;
-        }
-        if (hasBelch || hasNaturalGift) {
-            return 7.5 * calculatedDeviation;
-        }
-        return 5 * calculatedDeviation;
+        // T-179 — chips the attacker when hit by a PHYSICAL move; a passive defensive punish scaled by
+        // physical bulk. Mirror pair with Rowap (special side). Ripen/Harvest re-trigger or amplify it.
+        let jabocaRating = 4.5;
+        if (hasRipen || hasHarvest) jabocaRating += 1;
+        return jabocaRating * physicalDefensePower * calculatedDeviation;
     }
     if (item === 'Weakness Policy') {
         // T-159 — WP boosts Atk & SpAtk after a super-effective hit; it is dead weight on a mon with
@@ -1936,12 +1943,20 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
         return 10 * genericDefensePower * rng.random() * calculatedDeviation;
     }
     if (item === 'Eject Button') {
-        return 10 * rng.random() * calculatedDeviation;
+        // T-179 — a pivot/escape utility (corpus-backed), NOT offense-scaled; dead weight on a setup sweeper
+        // (ejecting when hit throws away the boost).
+        if (moveset.some(m => setupMoves.has(m.id))) return 2 * calculatedDeviation;
+        return 5 * calculatedDeviation;
     }
     if (item === 'Red Card') {
-        return 7 * rng.random() * calculatedDeviation;
+        // T-179 — forces the attacker out (phazing / anti-setup) on a mon bulky enough to survive the hit;
+        // not offense-scaled.
+        return 4.5 * Math.min(1.5, genericDefensePower * 1.2) * calculatedDeviation;
     }
     if (item === 'Eject Pack') {
+        // T-179 — pairs with a self-lowering nuke (Overheat / Draco Meteor / Close Combat / …): fire the big
+        // move, then auto-pivot out of the stat drop.
+        if (moveset.some(m => selfLoweringMoves.has(m.id))) return 6 * bestOffensePower * calculatedDeviation;
         return 2.5 * calculatedDeviation;
     }
     if (item === 'Shed Shell') {
@@ -1953,29 +1968,236 @@ function rateItemForAPokemon(item, poke, ability, moveset, level, bagSize, devia
     const isSturdy = ability === 'STURDY';
     const hasEndure = moveset.some(m => m.id === 'MOVE_ENDURE');
     if (item === 'Custap Berry') {
-        if (isSturdy || hasEndure) {
-            return 7.5 * bestOffensePowerWithSpeed * calculatedDeviation;
+        // T-179 — a reliable trigger (Sturdy/Endure) unlocks the priority; without it the AI can't reach ≤25%
+        // HP, so the no-trigger base is low (was 4). A suicide-lead pattern (hazard/Explosion + trigger) bumps.
+        let custapRating = (isSturdy || hasEndure) ? 7.5 : 2;
+        if ((isSturdy || hasEndure)
+            && moveset.some(m => hazardSetMoves.has(m.id) || (m.effect && m.effect.includes('EFFECT_EXPLOSION')))) {
+            custapRating += 0.5;
         }
-        return 4 * bestOffensePowerWithSpeed * calculatedDeviation;
+        return custapRating * bestOffensePowerWithSpeed * calculatedDeviation;
     }
     if (item === 'Kee Berry') {
-        return 6 * physicalDefensePower * calculatedDeviation;
+        // T-179 — +1 Def when hit physically; wants a defensive mon (wasted on a frail attacker) + berry synergy.
+        let keeRating = 5;
+        if (hasRipen || hasHarvest || hasCheekPouch) keeRating += 1;
+        if (poke.baseAttack > poke.baseDefense + 20) keeRating -= 2;
+        return keeRating * physicalDefensePower * calculatedDeviation;
     }
     if (item === 'Maranga Berry') {
-        return 6 * specialDefensePower * calculatedDeviation;
-    }
-    if (item === 'Jaboca Berry') {
-        return 6 * rng.random() * calculatedDeviation;
+        // T-179 — +1 SpDef when hit specially; mirror of Kee on the special side.
+        let marangaRating = 5;
+        if (hasRipen || hasHarvest || hasCheekPouch) marangaRating += 1;
+        if (poke.baseSpAttack > poke.baseSpDefense + 20) marangaRating -= 2;
+        return marangaRating * specialDefensePower * calculatedDeviation;
     }
     if (item === 'Rowap Berry') {
-        return 6 * rng.random() * calculatedDeviation;
+        // T-179 — chips the attacker when hit by a SPECIAL move; mirror pair with Jaboca (physical side).
+        // (The dead, unreachable duplicate Jaboca handler that used to sit here was removed — the live Jaboca
+        // handler is above, next to Weakness Policy.)
+        let rowapRating = 4.5;
+        if (hasRipen || hasHarvest) rowapRating += 1;
+        return rowapRating * specialDefensePower * calculatedDeviation;
     }
     if (item === 'Mirror Herb') {
-        return 7 * rng.random() * calculatedDeviation;
+        // T-179 — copies the opponent's stat boosts; shines in doubles (copy a partner's/foe's setup),
+        // reactive/situational in singles.
+        return (doubles ? 6 * bestOffensePower : 3) * calculatedDeviation;
     }
     if (item === 'Adrenaline Orb') {
-        return 5 * rng.random() * calculatedDeviation;
+        // T-179 — +1 Speed when Intimidated: an Intimidate-meta / doubles pick on a physical attacker.
+        if (doubles && poke.baseAttack >= poke.baseSpAttack) return 4.5 * calculatedDeviation;
+        return 1.5 * calculatedDeviation;
     }
+    // ── T-179 — previously-untreated items (all from averageItemPool). Each is reasoned to the archetype that
+    // benefits and hard-zeroed on the mons it is useless on. See tasks/T-179 for the corpus/derivation.
+
+    // Group 1 — pinch berries (activate at ≤25% HP). The AI can't reliably reach that, so the no-trigger base
+    // is low; a reliable trigger (Endure/Sturdy) or Unburden (berry → ×2 Speed) unlocks the value.
+    const reliablePinch = isSturdy || hasEndure;
+    const hasUnburden = ability === 'UNBURDEN';
+    if (item === 'Liechi Berry') { // +1 Atk — physical attacker
+        let b = reliablePinch ? 6 : 2;
+        if (hasUnburden) b += 2;
+        if (poke.baseSpAttack > poke.baseAttack) b *= 0.5;
+        return b * physicalOffensePower * calculatedDeviation;
+    }
+    if (item === 'Petaya Berry') { // +1 SpAtk — special attacker
+        let b = reliablePinch ? 6 : 2;
+        if (hasUnburden) b += 2;
+        if (poke.baseAttack > poke.baseSpAttack) b *= 0.5;
+        return b * specialOffensePower * calculatedDeviation;
+    }
+    if (item === 'Salac Berry') { // +1 Speed — strong attacker lacking the speed tier
+        let b = reliablePinch ? 6 : 2;
+        if (hasUnburden) b += 2;
+        const speedFactor = speedPower < 1 ? 1 : 0.6; // already-fast mons want it less
+        return b * bestOffensePower * speedFactor * calculatedDeviation;
+    }
+    if (item === 'Ganlon Berry') { // +1 Def — weak (reaching 25% HP on a wall is a losing position)
+        let b = reliablePinch ? 3.5 : 1.5;
+        if (hasRipen || hasHarvest || hasCheekPouch) b += 1;
+        return b * physicalDefensePower * calculatedDeviation;
+    }
+    if (item === 'Apicot Berry') { // +1 SpDef — mirror of Ganlon
+        let b = reliablePinch ? 3.5 : 1.5;
+        if (hasRipen || hasHarvest || hasCheekPouch) b += 1;
+        return b * specialDefensePower * calculatedDeviation;
+    }
+    if (item === 'Lansat Berry') { // +2 crit ratio — only meaningful inside the crit ecosystem
+        let b = 1.5;
+        if (hasSniper || hasSuperLuck || hasHighCritMove || hasFocusEnergy) b += 2.5;
+        if (reliablePinch) b += 1;
+        return b * bestOffensePower * calculatedDeviation;
+    }
+    if (item === 'Starf Berry') { // +2 to a RANDOM stat — unreliable gimmick
+        return (reliablePinch ? 2.5 : 1.5) * bestOffensePower * calculatedDeviation;
+    }
+
+    // Group 2 — HP / heal berries
+    if (item === 'Figy Berry') {
+        // T-179 — corpus-backed (16 uses; Incineroar/Ferrothorn): a Sitrus-tier recovery berry on bulky mons.
+        // Confusion risk is neutralised because chooseNature runs AFTER the item and avoids an Atk-lowering nature.
+        let b = 7;
+        if (hasHarvest || hasRipen || hasCheekPouch) b += 1.5;
+        return b * genericDefensePower * calculatedDeviation;
+    }
+    if (item === 'Enigma Berry') { // one-time 25% heal on a super-effective hit — bulky cushion
+        let b = 4;
+        if (hasHarvest || hasRipen || hasCheekPouch) b += 1;
+        return b * genericDefensePower * calculatedDeviation;
+    }
+
+    // Group 3 — single-use "+1 stat when hit by TYPE" items. An immune holder can never trigger it → 0.
+    if (item === 'Cell Battery') { // +1 Atk when hit by Electric
+        const em = damageMultiplier('ELECTRIC', poke.parsedTypes);
+        if (em === 0 || ability === 'VOLT_ABSORB' || ability === 'LIGHTNING_ROD' || ability === 'MOTOR_DRIVE') return 0;
+        let b = 4;
+        if (em > 1) b *= (genericDefensePower > 0.9 ? 0.8 : 0.4); // Electric-weak: only worth it if bulky
+        return b * physicalOffensePower * calculatedDeviation;
+    }
+    if (item === 'Absorb Bulb') { // +1 SpAtk when hit by Water
+        const wm = damageMultiplier('WATER', poke.parsedTypes);
+        if (wm === 0 || ability === 'WATER_ABSORB' || ability === 'STORM_DRAIN' || ability === 'DRY_SKIN') return 0;
+        let b = 4;
+        if (wm > 1) b *= (genericDefensePower > 0.9 ? 0.8 : 0.4);
+        return b * specialOffensePower * calculatedDeviation;
+    }
+    if (item === 'Snowball') { // +1 Atk when hit by Ice (nothing is Ice-immune by type)
+        let b = 4;
+        if (damageMultiplier('ICE', poke.parsedTypes) > 1 && genericDefensePower > 0.8) b += 1; // natural Ice target
+        return b * physicalOffensePower * calculatedDeviation;
+    }
+    if (item === 'Luminous Moss') { // +1 SpDef when hit by Water — defensive
+        if (ability === 'WATER_ABSORB' || ability === 'STORM_DRAIN' || ability === 'DRY_SKIN'
+            || damageMultiplier('WATER', poke.parsedTypes) === 0) return 0;
+        return 3 * specialDefensePower * calculatedDeviation;
+    }
+
+    // Group 4 — accuracy lenses
+    if (item === 'Wide Lens') { // ×1.1 accuracy — wants a quality imprecise move, or Hustle. None → 0.
+        const imp = moveset.filter(m => m.category !== 'DAMAGE_CATEGORY_STATUS' && m.accuracy && m.accuracy < 100);
+        if (imp.length === 0 && ability !== 'HUSTLE') return 0;
+        const best = imp.reduce((mx, m) => Math.max(mx, ((100 - m.accuracy) / 100) * m.rating), 0);
+        let b = 3 + best;
+        if (ability === 'HUSTLE') b += 2;
+        return Math.min(7, b) * bestOffensePower * calculatedDeviation;
+    }
+    if (item === 'Zoom Lens') { // ×1.2 accuracy but only when moving after the target → SLOW mon + imprecise move
+        if (speedPower > 0.8) return 0;
+        const imp = moveset.filter(m => m.category !== 'DAMAGE_CATEGORY_STATUS' && m.accuracy && m.accuracy < 100);
+        if (imp.length === 0) return 0;
+        const best = imp.reduce((mx, m) => Math.max(mx, ((100 - m.accuracy) / 100) * m.rating), 0);
+        return Math.min(7, 3 + best * 1.3) * bestOffensePower * (1 - speedPower) * calculatedDeviation;
+    }
+
+    // Group 5 — flat power boosters (a "safe Life Orb"), gated to the attacking stat
+    if (item === 'Muscle Band') {
+        if (poke.baseSpAttack > poke.baseAttack) return 0;
+        return 5.5 * physicalOffensePower * calculatedDeviation;
+    }
+    if (item === 'Wise Glasses') {
+        if (poke.baseAttack > poke.baseSpAttack) return 0;
+        return 5.5 * specialOffensePower * calculatedDeviation;
+    }
+
+    // Group 6 — turn-order / priority
+    if (item === 'Quick Claw') { // 20% pseudo-priority — only marginal on a slow attacker
+        if (speedPower > 0.9) return 0;
+        return 3 * bestOffensePower * (1 - speedPower) * calculatedDeviation;
+    }
+    const trickRoom = moveset.some(m => m.id === 'MOVE_TRICK_ROOM') || ctx.trickRoom === true;
+    if (item === 'Room Service') { // −1 Speed under Trick Room → move earlier. Only with TR.
+        if (!trickRoom) return 0;
+        return 5 * bestOffensePower * calculatedDeviation;
+    }
+    if (item === 'Iron Ball') { // halve own Speed → move first under Trick Room. Only with TR.
+        if (!trickRoom) return 0;
+        return 3.5 * bestOffensePower * calculatedDeviation;
+    }
+    if (item === 'Blunder Policy') { // +2 Speed after the holder's own move misses — needs a shaky (≤85%) move
+        const shaky = moveset.some(m => m.category !== 'DAMAGE_CATEGORY_STATUS' && m.accuracy && m.accuracy <= 85);
+        if (!shaky) return 0;
+        return 4.5 * bestOffensePowerWithSpeed * calculatedDeviation;
+    }
+
+    // Group 7 — evasion / survival (RNG-based → kept low)
+    if (item === 'Bright Powder') { // −10% foe accuracy — small dodge chance, best on bulky/stall
+        return 2.5 * genericDefensePower * calculatedDeviation;
+    }
+    if (item === 'Focus Band') { // 10% survive a KO — an unreliable Focus Sash; favours frail glass cannons
+        return 2.5 * bestOffensePowerWithSpeed / genericDefensePower * calculatedDeviation;
+    }
+
+    // Group 8 — trapping support (gated on a binding move → else 0)
+    const hasBindingMove = moveset.some(m => bindingMoves.has(m.id));
+    if (item === 'Grip Claw') { // binding lasts the full 7 turns (the stronger trap item)
+        if (!hasBindingMove) return 0;
+        return 5.5 * genericDefensePower * calculatedDeviation;
+    }
+    if (item === 'Binding Band') { // bigger binding chip; competes with and loses to Grip Claw
+        if (!hasBindingMove) return 0;
+        return 4.5 * genericDefensePower * calculatedDeviation;
+    }
+
+    // Group 9 — protection / utility
+    if (item === 'Protective Pads') { // ignore contact punishment — a physical/contact attacker, no stat gain
+        if (poke.baseSpAttack > poke.baseAttack) return 0;
+        return 3.5 * physicalOffensePower * calculatedDeviation;
+    }
+    if (item === 'Utility Umbrella') { // ignore weather — dead on a weather abuser or a weather team
+        const weatherAbuser = ability === 'SWIFT_SWIM' || ability === 'CHLOROPHYLL' || ability === 'SOLAR_POWER'
+            || ability === 'DRY_SKIN' || ability === 'SAND_RUSH' || ability === 'SLUSH_RUSH'
+            || ability === 'RAIN_DISH' || ability === 'HYDRATION';
+        const weatherActive = ctx.sun || ctx.rain || ctx.sand || ctx.snow;
+        if (weatherAbuser || weatherActive) return 0;
+        return 2 * calculatedDeviation;
+    }
+    if (item === 'Clear Amulet') { // prevent opponent-forced stat drops (Intimidate) — doubles-aware
+        if (poke.baseSpAttack > poke.baseAttack) return (doubles ? 3 : 1) * calculatedDeviation;
+        return (doubles ? 5.5 : 2.5) * calculatedDeviation;
+    }
+    if (item === 'Mental Herb') {
+        // T-179 — corpus-backed (8; all on Trick-Room setters / suicide hazard leads): cures Taunt/Encore/… so
+        // a critical status/setup move fires. Worth it iff the set carries a status move; a pure attacker → low.
+        const hasStatusMove = moveset.some(m => m.category === 'DAMAGE_CATEGORY_STATUS');
+        if (!hasStatusMove) return 2 * calculatedDeviation;
+        return (doubles ? 6.5 : 5.5) * calculatedDeviation;
+    }
+
+    // Group 10 — misc / low value
+    if (item === 'Float Stone') { // halve weight — almost never worth it (junk filler)
+        return 1.5 * calculatedDeviation;
+    }
+    if (item === 'Sticky Barb') { // self-chip + transfer on contact — only sane with Magic Guard (no self-chip)
+        if (ability === 'MAGIC_GUARD') return 3 * calculatedDeviation;
+        return 1 * calculatedDeviation;
+    }
+    if (item === 'Metronome') { // ramps a repeated move — wants an attacker with a move to spam
+        if (!moveset.some(m => m.category !== 'DAMAGE_CATEGORY_STATUS')) return 0; // pure support can't spam
+        return 4.5 * bestOffensePower * calculatedDeviation;
+    }
+
     if (item.includes(' Berry')) {
         const protectionBerriesEntries = Object.entries(protectionBerries);
         for (const [berryType, berryId] of protectionBerriesEntries) {
