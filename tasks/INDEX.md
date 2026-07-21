@@ -176,3 +176,4 @@
 | [T-170](T-170-macro-frontpic-sprite-resolution.md) | Resolve macro-body .frontPic so cosmetic/macro forms render in the docs | in-progress | 0.6.0 | 2026-07-20 |
 | [T-172](T-172-slow-queue-rom-warning.md) | Warn in the config UI when the ROM count would land the build in the slow queue | in-progress | 0.6.0 | 2026-07-21 |
 | [T-173](T-173-remove-overworld-pickup.md) | Remove the overworld version of Pickup; rescope its description to the battle effect | in-progress | 0.6.0 | 2026-07-21 |
+| [T-174](T-174-honey-gather-battle-clone.md) | Make Honey Gather a battle-only clone of Pickup; drop its overworld item find | in-progress | 0.6.0 | 2026-07-21 |
