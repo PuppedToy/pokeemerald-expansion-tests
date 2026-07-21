@@ -178,3 +178,4 @@
 | [T-173](T-173-remove-overworld-pickup.md) | Remove the overworld version of Pickup; rescope its description to the battle effect | in-progress | 0.6.0 | 2026-07-21 |
 | [T-174](T-174-honey-gather-battle-clone.md) | Make Honey Gather a battle-only clone of Pickup; drop its overworld item find | in-progress | 0.6.0 | 2026-07-21 |
 | [T-175](T-175-payday-flat-trainer-money.md) | Pay Day / Make It Rain / Gold Rush pay a flat trainer-only reward (no scaling) | in-progress | 0.6.0 | 2026-07-21 |
+| [T-176](T-176-disable-rematches.md) | Disable all trainer rematches (regular + gym leaders) at the source | in-progress | 0.6.0 | 2026-07-21 |
