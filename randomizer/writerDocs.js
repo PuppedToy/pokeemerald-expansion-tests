@@ -6,6 +6,7 @@ const trainers = require('./trainers.js');
 const {
     MEGA_TRAINERS,
     PALAFIN_HERO_ID,
+    GRENINJA_ASH_ID,
 } = require('./constants');
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
 const { createTeamResolver, normalizeTrainerBagTms } = require('./modules/resolveTrainerTeam');
@@ -152,6 +153,8 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     // Palafin Hero (battle-only, banned) is the stat/type source for the placed Zero form —
     // capture it before the ban filter strips it from pokemonList.
     const palafinHero = pokemonList.find(poke => poke.id === PALAFIN_HERO_ID);
+    // T-185 — Ash-Greninja is likewise banned but is the stat/type source for a placed Battle Bond.
+    const greninjaAsh = pokemonList.find(poke => poke.id === GRENINJA_ASH_ID);
 
     pokemonList = pokemonList.filter(poke => !BANNED_SPECIES_FOR_PICKING.includes(poke.id));
 
@@ -245,7 +248,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     const sophistication = createSophisticationScale(trainersData);
     const { resolveTrainerTeam } = createTeamResolver({
         pokemonList, moves, abilities, starters, staticRewards,
-        replacementLog, wildPlan, megaReplacementLog, baseRngSeed, palafinHero, diag,
+        replacementLog, wildPlan, megaReplacementLog, baseRngSeed, palafinHero, greninjaAsh, diag,
         sophistication, audit,
     });
 

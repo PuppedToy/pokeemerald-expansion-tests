@@ -4060,6 +4060,36 @@ function palafinEffectivePoke(zeroPoke, heroPoke) {
 }
 
 /**
+ * greninjaEffectivePoke — Battle Bond → Ash special case (T-185).
+ *
+ * Greninja Battle Bond KO-transforms into the battle-only Ash-Greninja the first time it knocks a
+ * foe out. Once transformed the change is permanent for the battle and its stats jump substantially,
+ * so a trainer's Battle Bond is built (moveset / item / nature) as if it were Ash. We keep Battle
+ * Bond's identity (id / learnset / teachables / abilities — the forms share learnsets) but adopt
+ * Ash's full stats and typing. No level gate and no HP nerf (identical shape to palafinEffectivePoke).
+ *
+ * Note: this is the TEAM-BUILDING swap. The tier/rating uses a weighted 0.70/0.30 blend instead (see
+ * greninja.js), because the discount for the pre-transform turns matters for placement but not for
+ * how the already-placed mon should be equipped.
+ */
+function greninjaEffectivePoke(bondPoke, ashPoke) {
+    const eff = {
+        ...bondPoke, // keep id / abilities / learnset / teachables (forms share learnsets)
+        baseHP:        ashPoke.baseHP,
+        baseAttack:    ashPoke.baseAttack,
+        baseDefense:   ashPoke.baseDefense,
+        baseSpeed:     ashPoke.baseSpeed,
+        baseSpAttack:  ashPoke.baseSpAttack,
+        baseSpDefense: ashPoke.baseSpDefense,
+        parsedTypes:   ashPoke.parsedTypes, // Ash keeps Water/Dark, but honour any run-time retype
+        types:         ashPoke.types,
+    };
+    eff.baseBST = eff.baseHP + eff.baseAttack + eff.baseDefense
+                + eff.baseSpeed + eff.baseSpAttack + eff.baseSpDefense;
+    return eff;
+}
+
+/**
  * rateContextual — same algorithm as ratePokemon, but restricted to a trainer's universe.
  *
  * context = { level: number, tms: string[] }
@@ -4542,6 +4572,7 @@ module.exports = {
     rateAbilityDoubles,
     wishiwashiEffectivePoke,
     palafinEffectivePoke,
+    greninjaEffectivePoke,
     chooseMoveset,
     adjustMoveset,
     chooseNature,

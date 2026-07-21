@@ -11,6 +11,7 @@ const { balancePokemon } = require('../rebalancer');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
 const { applyMiniorTierBlend, applyMiniorContextualBlend } = require('../minior');
+const { applyGreninjaTierBlend, applyGreninjaContextualBlend } = require('../greninja');
 const { capLevelMap } = require('../bossCaps');
 const {
     TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR, ABILITIES_FILE_PATH, ITEMS_FILE_PATH, MEGA_EVOS_PATH,
@@ -249,6 +250,13 @@ async function runPokedexModule(config, baseData = null) {
     // Meloetta (both forms rated, before best-evo). The per-level contextual blend runs after step 11.
     applyMiniorTierBlend(allPokes);
 
+    // 9c-quater. Greninja Battle Bond (T-185) — the placed Battle Bond form KO-transforms into the
+    // battle-only, banned Ash-Greninja, so its absolute rating/tier is a weighted blend (0.70 Ash /
+    // 0.30 Bond). Same timing as Minior (both forms rated, before best-evo). Battle Bond is a SOLO in
+    // its own family, so this only re-tiers Battle Bond — the normal Froakie line is unaffected. The
+    // per-level contextual blend runs after step 11.
+    applyGreninjaTierBlend(allPokes);
+
     // 9d. Mega base-form STAB (T-062) — when a mega's type was MUTATED this run to a type its base
     // lacks (e.g. Mega Aggron gaining Fighting), the base form gains a damaging move of that type.
     // A mega fights with the base's known moves and its own learnset is discarded at write, so the
@@ -346,6 +354,11 @@ async function runPokedexModule(config, baseData = null) {
     // Core's, so the teambuilder (which scores on contextualRatings[cap].absoluteRating) values the
     // Core sweeper payoff at each level. Runs after the contextual pass rated both forms at every cap.
     applyMiniorContextualBlend(allPokes, LEVEL_CAPS);
+
+    // 11-ter. Greninja Battle Bond (T-185) — blend Battle Bond's per-cap contextual ratings (singles +
+    // doubles) with Ash's (0.70 Ash / 0.30 Bond), so the teambuilder values the Ash payoff at each
+    // level. Same timing/shape as the Minior contextual blend.
+    applyGreninjaContextualBlend(allPokes, LEVEL_CAPS);
 
     // Write final JSON caches (Node-only)
     if (nodeMode) {

@@ -9,6 +9,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Greninja Battle Bond is now a proper standalone threat.** The Battle Bond form is treated as a
+  solo Pokémon that can show up in the wild or on a trainer — but never alongside the normal Froakie
+  line (if one appears, the other stays out of that run). It is rated as the powerful Ash-Greninja it
+  transforms into (a 70% Ash / 30% Battle Bond blend), and a trainer that fields it builds its moves,
+  item and nature around Ash's stats. Ash-Greninja itself is never handed out directly — it only
+  exists as the form Battle Bond becomes in battle. (T-185)
+
 - **The config screen warns before a big run goes to the slow build queue.** When your chosen number of
   ROMs (Nuzlocke count, or Soul-Link players × ROMs-per-player) exceeds the fast-queue limit of 2, an
   inline warning appears next to the ROM-count field telling you the build will be de-prioritised into

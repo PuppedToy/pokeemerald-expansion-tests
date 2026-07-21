@@ -58,6 +58,18 @@ const constants = {
     PALAFIN_ZERO_ID:             'SPECIES_PALAFIN_ZERO',
     PALAFIN_HERO_ID:             'SPECIES_PALAFIN_HERO',
 
+    // Greninja Battle Bond (T-185) — a placeable SOLO whose Battle Bond ability KO-transforms it into
+    // the battle-only, non-obtainable Ash-Greninja. Rating is a weighted blend of both forms (owner:
+    // 0.70 Ash / 0.30 Bond) on both the absolute rating/tier and the per-level contextual ratings
+    // (Minior-style). When a trainer fields it, its moveset/item/nature are built from Ash's stats via
+    // greninjaEffectivePoke (Palafin-style). Ash stays banned from picking. Battle Bond has nothing to
+    // do with normal SPECIES_GRENINJA except a shared dedup family group (P_FAMILY_GRENINJA_BATTLE_BOND
+    // → P_FAMILY_FROAKIE in groupedFamilies) so the two can never be placed together.
+    GRENINJA_BOND_ID:            'SPECIES_GRENINJA_BATTLE_BOND',
+    GRENINJA_ASH_ID:             'SPECIES_GRENINJA_ASH',
+    GRENINJA_ASH_WEIGHT:         0.70,
+    GRENINJA_BOND_WEIGHT:        0.30,
+
     // Meloetta special case (T-064) — Meloetta can switch Aria<->Pirouette in battle via Relic Song.
     // Only base Aria is ever placed (Pirouette is battle-only, banned from picking). Aria's tier is
     // a weighted blend of both forms' ratings, reflecting its in-battle access to Pirouette.

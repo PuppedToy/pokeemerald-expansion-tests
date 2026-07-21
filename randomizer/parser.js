@@ -141,6 +141,13 @@ const CUSTOM_FAMILIES = {
     SPECIES_BRAVIARY_HISUI:  'P_FAMILY_RUFFLET',
     SPECIES_AVALUGG_HISUI:   'P_FAMILY_BERGMITE',
     SPECIES_DECIDUEYE_HISUI: 'P_FAMILY_ROWLET',
+    // T-185 — Greninja Battle Bond and Ash are pulled out of P_FAMILY_FROAKIE into their own family.
+    // Neither has an .evolutions macro, so no evoTree entry is ever built for this family →
+    // getEvolutionType returns EVO_TYPE_SOLO and their evoTree is empty (bestEvo = self). The normal
+    // Froakie line (Froakie→Frogadier→SPECIES_GRENINJA) is left completely untouched. The mutual
+    // exclusion with the Froakie line is restored at the dedup level via groupedFamilies (utils.js).
+    SPECIES_GRENINJA_BATTLE_BOND: 'P_FAMILY_GRENINJA_BATTLE_BOND',
+    SPECIES_GRENINJA_ASH:         'P_FAMILY_GRENINJA_BATTLE_BOND',
 };
 
 const REMOVED_MOVES = [

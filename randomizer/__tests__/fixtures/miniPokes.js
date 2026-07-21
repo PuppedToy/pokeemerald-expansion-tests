@@ -294,4 +294,65 @@ const PALAFIN_HERO = {
     oldTeachables: [],
 };
 
-module.exports = { MACHOP, MACHOKE, MACHAMP, STARMIE, SLOWBRO_MEGA, RIOLU, BLISSEY, WISHIWASHI_SOLO, WISHIWASHI_SCHOOL, PALAFIN_ZERO, PALAFIN_HERO };
+// Greninja Battle Bond (T-185) — the placed SOLO form. Battle Bond KO-transforms it into the
+// battle-only Ash form. Own stats match normal Greninja (BST 530); its rating is a 0.70/0.30 blend
+// with Ash, and a trainer builds its set from Ash's stats via greninjaEffectivePoke.
+const GRENINJA_BOND = {
+    id: 'SPECIES_GRENINJA_BATTLE_BOND',
+    family: 'P_FAMILY_GRENINJA_BATTLE_BOND',
+    form: null,
+    parsedTypes: ['WATER', 'DARK'],
+    parsedAbilities: ['BATTLE_BOND', 'NONE', 'NONE'],
+    baseHP: 72,
+    baseAttack: 95,
+    baseDefense: 67,
+    baseSpeed: 122,
+    baseSpAttack: 103,
+    baseSpDefense: 71,
+    baseBST: 530,
+    evolutions: [],
+    evolutionData: { type: 'EVO_TYPE_SOLO', isMega: false, isLC: false, isNFE: false, isFinal: true, megaEvos: [] },
+    learnset: [
+        { level: '1', move: 'MOVE_WATER_SHURIKEN' },
+        { level: '1', move: 'MOVE_HYDRO_PUMP' },
+        { level: '1', move: 'MOVE_DARK_PULSE' },
+        { level: '1', move: 'MOVE_U_TURN' },
+    ],
+    teachables: ['MOVE_ICE_BEAM', 'MOVE_GUNK_SHOT', 'MOVE_U_TURN'],
+    levelUpLearnset: 'sGreninjaLevelUpLearnset',
+    teachableLearnset: 'sGreninjaTeachableLearnset',
+    newTeachables: [],
+    oldTeachables: [],
+};
+
+// Ash-Greninja (T-185) — battle-only, banned from picking. The stat/type source for the placed
+// Battle Bond form's effective set (BST 640, huge mixed offense) and one half of its rating blend.
+const GRENINJA_ASH = {
+    id: 'SPECIES_GRENINJA_ASH',
+    family: 'P_FAMILY_GRENINJA_BATTLE_BOND',
+    form: null,
+    parsedTypes: ['WATER', 'DARK'],
+    parsedAbilities: ['BATTLE_BOND', 'NONE', 'NONE'],
+    baseHP: 72,
+    baseAttack: 145,
+    baseDefense: 67,
+    baseSpeed: 132,
+    baseSpAttack: 153,
+    baseSpDefense: 71,
+    baseBST: 640,
+    evolutions: [],
+    evolutionData: { type: 'EVO_TYPE_SOLO', isMega: false, isLC: false, isNFE: false, isFinal: true, megaEvos: [] },
+    learnset: [
+        { level: '1', move: 'MOVE_WATER_SHURIKEN' },
+        { level: '1', move: 'MOVE_HYDRO_PUMP' },
+        { level: '1', move: 'MOVE_DARK_PULSE' },
+        { level: '1', move: 'MOVE_U_TURN' },
+    ],
+    teachables: ['MOVE_ICE_BEAM', 'MOVE_GUNK_SHOT', 'MOVE_U_TURN'],
+    levelUpLearnset: 'sGreninjaLevelUpLearnset',
+    teachableLearnset: 'sGreninjaTeachableLearnset',
+    newTeachables: [],
+    oldTeachables: [],
+};
+
+module.exports = { MACHOP, MACHOKE, MACHAMP, STARMIE, SLOWBRO_MEGA, RIOLU, BLISSEY, WISHIWASHI_SOLO, WISHIWASHI_SCHOOL, PALAFIN_ZERO, PALAFIN_HERO, GRENINJA_BOND, GRENINJA_ASH };

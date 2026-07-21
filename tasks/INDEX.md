@@ -187,3 +187,4 @@
 | [T-182](T-182-intro-birch-item-gift-no-cap-fanfare.md) | Intro — Birch gifts all starting items after the Zigzagoon, starter spawns at cap, no bogus level-cap fanfare | in-progress | 1.1.0 | 2026-07-21 |
 | [T-183](T-183-shedinja-stone-evolution.md) | Shedinja becomes a Dusk Stone evolution of Nincada | in-progress | 1.1.0 | 2026-07-21 |
 | [T-184](T-184-wonder-guard-ability-rework.md) | Tie the 1-HP rule to Wonder Guard, make the rater Wonder-Guard-aware, and unban the ability | in-progress | 1.1.0 | 2026-07-21 |
+| [T-185](T-185-greninja-battle-bond.md) | Greninja Battle Bond as a Palafin-style placeable SOLO with Ash-rating blend | in-progress | 1.1.0 | 2026-07-21 |

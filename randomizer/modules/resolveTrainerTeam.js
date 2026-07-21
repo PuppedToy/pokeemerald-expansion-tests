@@ -22,6 +22,7 @@ const {
     NATURES,
     GENERIC_DEVIATION,
     PALAFIN_ZERO_ID,
+    GRENINJA_BOND_ID,
     TRAINER_REPEAT_ID,
 } = require('../constants');
 const {
@@ -31,6 +32,7 @@ const {
     isSuperEffective,
     chooseNature,
     palafinEffectivePoke,
+    greninjaEffectivePoke,
     topSupportMoves,
 } = require('../rating.js');
 const { sample, canLearnMove, usesStrategicNature } = require('./utils');
@@ -140,6 +142,7 @@ function createTeamResolver(deps) {
         megaReplacementLog,
         baseRngSeed,
         palafinHero,
+        greninjaAsh,
         diag = noopDiagnostics(),
         sophistication = () => 1,
         audit = noopTeamAudit(), // T-117 — decision-trace collector (no-op unless auditing)
@@ -534,11 +537,15 @@ function createTeamResolver(deps) {
                     && context.archetypeSeed.weather;
                 if (taggedWeather) selCtx[taggedWeather] = true;
 
-                // Palafin Zero is placed but battles as Hero — use Hero stats/typing for the
-                // stat-based decisions (moveset, item, nature) while keeping the placed species id.
-                const battlePoke = (chosenTrainerMon.id === PALAFIN_ZERO_ID && palafinHero)
-                    ? palafinEffectivePoke(chosenTrainerMon, palafinHero)
-                    : chosenTrainerMon;
+                // Palafin Zero is placed but battles as Hero, and Greninja Battle Bond KO-transforms
+                // into Ash — use the enhanced form's stats/typing for the stat-based decisions
+                // (moveset, item, nature) while keeping the placed species id.
+                let battlePoke = chosenTrainerMon;
+                if (chosenTrainerMon.id === PALAFIN_ZERO_ID && palafinHero) {
+                    battlePoke = palafinEffectivePoke(chosenTrainerMon, palafinHero);
+                } else if (chosenTrainerMon.id === GRENINJA_BOND_ID && greninjaAsh) {
+                    battlePoke = greninjaEffectivePoke(chosenTrainerMon, greninjaAsh);
+                }
                 let { moveset, tmsUsed } = chooseMoveset(
                     battlePoke, moves, trainer.level,
                     newTeamMember.moves, ability, newTeamMember.item, trainer.tms || [], 0.1,
