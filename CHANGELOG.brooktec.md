@@ -26,6 +26,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   price is shown in the relearn screen, which is now reached from the Pokémon summary screen
   (START on the moves page); the Fallarbor move-tutor NPC no longer teaches moves. (T-167)
 
+### Changed
+
+- **Pickup no longer hands out free items after battles.** The ability keeps its in-battle effect —
+  after a turn, a holder with no item may pick up an item a foe used up — but its out-of-battle item
+  find (the random per-battle item faucet, including the Battle Pyramid variant) has been removed, so
+  it can no longer be farmed for infinite money. Its in-game description now reads "Picks up items foes
+  have used." (T-173)
+
 ### Fixed
 
 - **Villain-grunt mascots no longer inherit their leader's perfect IVs.** The early Aqua/Magma grunts
