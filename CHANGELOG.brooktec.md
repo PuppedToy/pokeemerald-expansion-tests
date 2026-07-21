@@ -54,6 +54,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Caught Pokémon are fully healed on capture.** A wild Pokémon caught with a status condition (e.g.
+  paralysis) no longer keeps it — most visibly when the party is full and it is sent to the PC, where it
+  previously stayed statused. On capture the Pokémon is now fully restored (HP, PP and status),
+  regardless of whether it joins the party or goes to the box. (T-178)
+
 - **Villain-grunt mascots no longer inherit their leader's perfect IVs.** The early Aqua/Magma grunts
   lead a devolved copy of their leader's signature mega (Archie's Mega Sharpedo → Carvanha, Maxie's Mega
   Camerupt → Numel). That mascot was silently getting the leader's perfect (all-31) IVs because it shared
