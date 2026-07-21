@@ -28,6 +28,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Trainers value move accuracy more aggressively.** A move's worth now scales with its hit chance
+  (expected value) instead of losing a flat penalty per missing accuracy point, so a strong shaky move
+  can beat a weaker reliable one: Fire Blast is now preferred over Flamethrower, and Focus Blast sits
+  about level with Aura Sphere — while reliable high-power moves (e.g. Close Combat) still rank at the
+  top. The old "never misses" bonus is much smaller now (it rarely mattered in practice). Trainers also
+  avoid stacking shaky moves: the first inaccurate move is fine, but a second one is discouraged, so
+  teams keep a mix of reliable and high-risk attacks. Accuracy-fixing abilities (No Guard, Compound
+  Eyes, Victory Star) and rain/snow are taken into account, so those mons treat their shaky moves as
+  reliable. (T-181)
+
 - **Trainers place held items across the whole team optimally, not first-come-first-served.** Items used to
   be handed out one Pokémon at a time in team order, so an early Pokémon could grab an item a later teammate
   needed more. The selector now assigns items across the entire team at once to maximise the team's total
