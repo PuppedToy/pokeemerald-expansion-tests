@@ -81,6 +81,13 @@ Acceptance criteria:
   items added in `new_game.c:192-204`. Owner decisions: spawn at cap directly; move all 13 items to a
   Birch gift after the starter.
 
+- **2026-07-21** — Implemented (TDD, structural regression test red→green): removed the intro cap
+  fanfare + orphan `Route101_LevelCap` string; `CB2_GiveStarter` now spawns starter + 9 extras at
+  `GetCurrentLevelCap()` (`#include "caps.h"`); moved all 13 items out of `new_game.c` into a Birch gift
+  on Route 101 (dialogue `Route101_Text_BirchGivesGear` + consolidated `Route101_Text_ReceivedGear` +
+  `MUS_OBTAIN_ITEM`). Shared fanfare + 30 other milestone sites untouched. `cd randomizer && npm test`
+  green (1460 pass). Merged to `master`. Pending owner playtest of a build before close.
+
 ## Outcome
 
 <!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
