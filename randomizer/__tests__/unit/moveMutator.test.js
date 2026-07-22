@@ -231,3 +231,31 @@ describe('mutateAllMoves', () => {
         expect(a).toEqual(b);
     });
 });
+
+describe('mutateMove — per-field toggles (default on)', () => {
+    const cases = [
+        ['mutatePower', 'power', 'MOVE_TACKLE', mv => expect(mv.power).toBe(40)],
+        ['mutateAccuracy', 'accuracy', 'MOVE_HYDRO_PUMP', mv => expect(mv.accuracy).toBe(80)],
+        ['mutateType', 'type', 'MOVE_TACKLE', mv => expect(mv.type).toBe('NORMAL')],
+        ['mutateCategory', 'category', 'MOVE_TACKLE', mv => expect(mv.category).toBe(PHYS)],
+    ];
+    for (const [toggle, target, moveId, assertUnchanged] of cases) {
+        test(`${toggle}:false suppresses ${target} even with its chance forced`, () => {
+            for (let s = 0; s < 40; s++) {
+                rng.seed(s);
+                const move = m(moveId);
+                const log = mutateMove(move, { ...ALWAYS, [toggle]: false });
+                assertUnchanged(move);
+                expect(log.find(e => e.target === target)).toBeUndefined();
+            }
+        });
+    }
+
+    test('a field left off does not stop the other fields from mutating', () => {
+        rng.seed(7);
+        const move = m('MOVE_TACKLE');
+        const log = mutateMove(move, { ...ALWAYS, mutateType: false });
+        expect(log.find(e => e.target === 'type')).toBeUndefined();
+        expect(log.length).toBeGreaterThan(0);
+    });
+});

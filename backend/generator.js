@@ -111,6 +111,10 @@ function toModuleConfig(cfg, seed) {
         moveAccuracyChance: cfg.moveAccuracyChance,
         moveTypeChance: cfg.moveTypeChance,
         moveCategoryChance: cfg.moveCategoryChance,
+        mutatePower: cfg.mutatePower !== false,
+        mutateAccuracy: cfg.mutateAccuracy !== false,
+        mutateType: cfg.mutateType !== false,
+        mutateCategory: cfg.mutateCategory !== false,
         evoLevels: cfg.evoLevels,
         extraStarters: cfg.extraStarters,
         // T-072 — quality tier for the 3 main starters (family best-evo tier; defaults to UU)
