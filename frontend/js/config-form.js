@@ -884,6 +884,7 @@ export class ConfigForm {
   <span id="config-saved-note" style="font-size:12px;color:var(--muted);display:none">Saved ✓</span>
 </div>
 <div class="config-actions-hint field-hint">Save downloads your settings as a <code>.json</code>. Load accepts a saved config <strong>or</strong> a full <code>bundle.json</code> — only its configuration is applied; the rest of the bundle is ignored.</div>
+<div class="config-actions-hint field-hint">Or skip randomization and regenerate ROMs by <a href="#" id="regen-from-bundle-link" class="regen-link">uploading your bundle here</a>.<input type="file" accept=".json" id="upload-bundle" style="display:none"></div>
 
 <div class="config-accordion">
 
@@ -1724,14 +1725,6 @@ export class ConfigForm {
 </section>
 
 </div>
-
-<div class="regen-actions">
-  <label class="btn btn-ghost" style="cursor:pointer">
-    Regenerate ROMs from a bundle
-    <input type="file" accept=".json" id="upload-bundle" style="display:none">
-  </label>
-  <span class="field-hint regen-actions-hint">Upload a <code>bundle.json</code> to rebuild those exact ROMs as they were — <strong>no re-randomization</strong>. (Use <em>Load</em> at the top instead if you only want to read its configuration.)</span>
-</div>
 `;
     }
 
@@ -2156,6 +2149,12 @@ export class ConfigForm {
                 alert('Could not regenerate from bundle: ' + err.message);
             }
             e.target.value = '';
+        });
+
+        // T-190 — the inline link just opens the (hidden) bundle file picker.
+        this._q('#regen-from-bundle-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            this._q('#upload-bundle').click();
         });
     }
 }

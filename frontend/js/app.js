@@ -66,6 +66,7 @@ document.querySelectorAll('.subtab').forEach(btn => {
 let currentStep = 1;
 let currentConfig = null;
 let currentBundle = null;
+let regenerateMode = false;   // T-190 — true while reviewing/building an uploaded bundle (no randomization)
 let currentTeamAuditText = ''; // T-117 — the readable team-building decision log for this run
 let currentWorker = null;
 
@@ -75,12 +76,13 @@ const form = new ConfigForm(document.getElementById('config-form-mount'), {
     // (bypassing the randomizer Worker); showGenDone() → onBundleReady() persists it and POSTs
     // /api/produce, so the exact ROMs are rebuilt as-is with no re-randomization.
     onRegenerateBundle(bundle) {
+        // T-190 — an uploaded bundle skips config + randomization: show its details on Review,
+        // then the "Regenerate from bundle" button builds it as-is.
         currentBundle = bundle;
         currentConfig = bundle.config || currentConfig;
-        const err = document.getElementById('gen-error');
-        if (err) err.style.display = 'none';
-        showStep(3);
-        showGenDone();
+        regenerateMode = true;
+        renderReview(currentConfig, true);
+        showStep(2);
     },
 });
 currentConfig = form.getConfig();
@@ -101,7 +103,8 @@ function showStep(n) {
 document.getElementById('btn-to-review').addEventListener('click', () => {
     currentConfig = form.getConfig();
     if (!currentConfig) { alert('Please check your settings.'); return; }
-    renderReview(currentConfig);
+    regenerateMode = false;   // normal path: randomize from the current config
+    renderReview(currentConfig, false);
     showStep(2);
 });
 
@@ -110,6 +113,14 @@ document.getElementById('btn-back-to-config').addEventListener('click', () => sh
 
 // Step 2 → 3: Generate — runs the randomizer in a Web Worker (no API call)
 document.getElementById('btn-generate').addEventListener('click', () => {
+    // T-190 — in regenerate mode, rebuild the uploaded bundle as-is: no config read, no Worker.
+    if (regenerateMode) {
+        showStep(3);
+        resetGenerateUI();
+        showGenDone();   // → onBundleReady(currentBundle) persists it + POSTs /api/produce
+        return;
+    }
+
     currentConfig = form.getConfig();
     if (!currentConfig) { alert('Please check your settings.'); return; }
 
@@ -558,8 +569,29 @@ function reviewRowsHtml(cfg) {
     `).join('');
 }
 
-function renderReview(cfg) {
-    document.getElementById('review-rows').innerHTML = reviewRowsHtml(cfg);
+function renderReview(cfg, regenerate = false) {
+    let html = '';
+    if (regenerate && currentBundle) {
+        const b = currentBundle;
+        const when = b.generatedAt ? new Date(b.generatedAt).toLocaleString() : 'unknown';
+        html += '<div class="regen-review-note">Regenerate from bundle — these ROMs will be rebuilt '
+            + 'exactly as generated, with <strong>no re-randomization</strong>.</div>';
+        const prov = [
+            ['Bundle generated', when],
+            ['Made with app version', b.appVersion || 'unknown'],
+            ['ROMs in bundle', (b.roms || []).length],
+        ];
+        html += prov.map(([k, v]) => `
+        <div class="summary-row">
+            <span class="summary-key">${k}</span>
+            <span class="summary-val">${v}</span>
+        </div>`).join('');
+    }
+    html += reviewRowsHtml(cfg);
+    document.getElementById('review-rows').innerHTML = html;
+    // T-190 — the Generate button doubles as the regenerate trigger; relabel it per mode.
+    const gen = document.getElementById('btn-generate');
+    if (gen) gen.textContent = regenerate ? 'Regenerate from bundle' : 'Generate';
 }
 
 // Mirror the same summary into the step-3 "Run details" disclosure (shared render, no duplication).

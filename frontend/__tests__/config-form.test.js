@@ -522,16 +522,17 @@ test('T-189: universeSeed round-trips through DEFAULTS, getConfig (base) and set
 
 // ── T-190 — Regenerate ROMs from a bundle (distinct from Load-config) ─────────────
 
-test('T-190: a "Regenerate ROMs from a bundle" upload control exists, separate from Load', () => {
-  assert.match(src, /id="upload-bundle"/, 'a separate bundle upload input (not #upload-config)');
-  assert.match(src, /Regenerate ROMs from a bundle/, 'a labelled regenerate control');
-  const i = src.indexOf('id="upload-bundle"');
-  const near = src.slice(Math.max(0, i - 500), i + 500);
-  assert.match(near, /no re-randomization/i, 'the hint clarifies it rebuilds the bundle as-is');
+test('T-190: a regenerate-from-bundle inline link + hidden uploader exist, separate from Load', () => {
+  assert.match(src, /id="upload-bundle"/, 'a separate hidden bundle uploader (not #upload-config)');
+  assert.match(src, /id="regen-from-bundle-link"[^>]*class="regen-link"/, 'an inline (orange) link that opens the uploader');
+  const i = src.indexOf('id="regen-from-bundle-link"');
+  const near = src.slice(Math.max(0, i - 220), i + 200);
+  assert.match(near, /skip randomization/i, 'the copy frames it as skipping randomization');
 });
 
-test('T-190: the regenerate handler guards with isFullBundle and invokes onRegenerateBundle', () => {
-  assert.match(src, /isFullBundle/, 'the handler guards uploads with isFullBundle');
+test('T-190: the link opens the uploader; the change handler guards with isFullBundle and calls onRegenerateBundle', () => {
+  assert.match(src, /#regen-from-bundle-link'\)[\s\S]{0,180}#upload-bundle'\)\.click\(\)/, 'the link click triggers the hidden file input');
+  assert.match(src, /isFullBundle/, 'the change handler guards uploads with isFullBundle');
   assert.match(src, /this\.onRegenerateBundle\(/, 'it invokes the onRegenerateBundle callback with the bundle');
   const n = (src.match(/onRegenerateBundle/g) || []).length;
   assert.ok(n >= 3, `onRegenerateBundle must be a constructor option, stored and invoked (found ${n})`);

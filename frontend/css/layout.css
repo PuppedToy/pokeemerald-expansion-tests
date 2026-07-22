@@ -521,20 +521,19 @@
   border-bottom: 3px dashed var(--obs-line);
 }
 
-/* Regenerate-from-bundle — footer block below all config categories (T-190).
-   Mirrors the .config-actions header divider so the form is bookended. */
-.regen-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 24px;
-  padding-top: 20px;
-  border-top: 3px dashed var(--obs-line);
+/* Regenerate-from-bundle — an inline link in the config hint area (T-190). */
+.regen-link {
+  color: var(--obs-orange);
+  cursor: pointer;
+  text-decoration: underline;
 }
 
-.regen-actions-hint {
-  flex: 1 1 260px;
+/* Regenerate-mode banner on the Review step. */
+.regen-review-note {
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--obs-orange);
+  font-size: 13px;
 }
 
 .config-actions-label {
