@@ -407,11 +407,14 @@ test('T-186: difficulty-settings keys round-trip through DEFAULTS/getConfig/setC
 test('T-187: move-mutation keys round-trip through DEFAULTS/getConfig/setConfig and both engines', () => {
   const workerSrc = fs.readFileSync(path.join(FE, 'js', 'randomizer-worker.cjs'), 'utf8');
   const backendSrc = fs.readFileSync(path.join(FE, '..', 'backend', 'generator.js'), 'utf8');
-  for (const key of ['mutateMoves', 'moveMutationChance', 'movePowerChance', 'moveAccuracyChance', 'moveTypeChance', 'moveCategoryChance']) {
-    const occurrences = (src.match(new RegExp(key, 'g')) || []).length;
+  for (const key of ['mutateMoves', 'moveMutationChance', 'mutatePower', 'mutateAccuracy', 'mutateType', 'mutateCategory',
+      'movePowerChance', 'moveAccuracyChance', 'moveTypeChance', 'moveCategoryChance']) {
+    // Word boundaries so `mutateType` does not falsely match the pokemon `mutateTypes` key.
+    const b = new RegExp('\\b' + key + '\\b', 'g');
+    const occurrences = (src.match(b) || []).length;
     assert.ok(occurrences >= 3, `${key} must appear in DEFAULTS, getConfig and setConfig (found ${occurrences})`);
-    assert.match(workerSrc, new RegExp(key), `browser worker toModuleConfig must forward ${key}`);
-    assert.match(backendSrc, new RegExp(key), `backend generator toModuleConfig must forward ${key}`);
+    assert.match(workerSrc, new RegExp('\\b' + key + '\\b'), `browser worker toModuleConfig must forward ${key}`);
+    assert.match(backendSrc, new RegExp('\\b' + key + '\\b'), `backend generator toModuleConfig must forward ${key}`);
   }
   assert.match(src, /mutateMoves:\s*false/, 'move mutation defaults OFF (opt-in)');
   assert.match(src, /moveMutationChance:\s*0\.10?/, 'default move gate 0.10');
@@ -419,4 +422,37 @@ test('T-187: move-mutation keys round-trip through DEFAULTS/getConfig/setConfig 
   assert.match(src, /moveAccuracyChance:\s*0\.50?/, 'default accuracy chance 0.50');
   assert.match(src, /moveTypeChance:\s*0\.10?/, 'default type chance 0.10');
   assert.match(src, /moveCategoryChance:\s*0\.10?/, 'default category chance 0.10');
+});
+
+test('T-187: move mutation is its own config section between Pokémon mutations and Evolution', () => {
+  const mutIdx = src.indexOf('data-cat="mutations"');
+  const moveIdx = src.indexOf('data-cat="move-mutation"');
+  const evoIdx = src.indexOf('data-cat="evolution"');
+  const toggleIdx = src.indexOf('id="mutate-moves"');
+  assert.ok(moveIdx > -1, 'a move-mutation category section exists');
+  assert.ok(mutIdx > -1 && mutIdx < moveIdx && moveIdx < evoIdx, 'sits between Pokémon mutations and Evolution');
+  assert.match(src, /id="cat-body-move-mutation"/, 'move-mutation has its own collapsible body');
+  assert.ok(moveIdx < toggleIdx && toggleIdx < evoIdx, 'the Mutate moves toggle lives inside the move-mutation section');
+  // Mirrors Pokémon mutations: per-field toggles in the basic body + chances in an Advanced sub-panel.
+  for (const id of ['mutate-power', 'mutate-accuracy', 'mutate-type', 'mutate-category']) {
+    const idx = src.indexOf(`id="${id}"`);
+    assert.ok(idx > moveIdx && idx < evoIdx, `${id} toggle lives in the move-mutation section`);
+  }
+  assert.match(src, /<input type="range" id="move-mutation-chance"/, 'the move change chance is a slider');
+  assert.match(src, /id="move-mutation-advanced-toggle"/, 'move mutation has an Advanced sub-panel');
+});
+
+test('T-187: Pokémon mutation advanced probabilities are shown as whole percents (except the spread factor)', () => {
+  // Percent fields render 0–100 with step 1; the config value stays a 0..1 fraction (engine contract).
+  assert.match(src, /const isPercent = f\.percent !== false/, 'mutationProbInputs distinguishes percent fields');
+  assert.match(src, /percent: false/, 'the non-percent spread factor is flagged');
+  assert.match(src, /raw \/ 100/, '_readMutationProbs divides percent inputs back to a fraction');
+  assert.match(src, /Math\.round\(v \* 100\)/, '_setMutationProbs shows fractions as percents');
+});
+
+test('T-186: Difficulty content is wrapped in a card-glass box and its sliders use the shared .slider style', () => {
+  assert.match(src, /id="cat-body-difficulty">\s*<div class="card-glass"/, 'difficulty body opens with a card-glass box');
+  assert.match(src, /id="nonBossQualitySlider" class="slider"/, 'non-boss quality slider uses .slider');
+  assert.match(src, /id="boss-team-size" class="slider"/, 'boss team size slider uses .slider');
+  assert.match(src, /id="non-boss-team-size" class="slider"/, 'non-boss team size slider uses .slider');
 });

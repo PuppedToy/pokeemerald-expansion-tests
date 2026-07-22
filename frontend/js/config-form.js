@@ -39,7 +39,7 @@ const MUTATION_PROB_FIELDS = [
     { key: 'changeTypeMoveFromOldChance',  label: 'Replace old-type move',     def: 0.9,  group: 'Learnsets', hint: 'After a type change, chance each old-type move is swapped to the new type.' },
     { key: 'changeTypeMoveFromOtherChance',label: 'Swap other move',           def: 0.05, group: 'Learnsets', hint: 'Per-move swap chance (type-add case and the random pass).' },
     { key: 'moveInsertChance',             label: 'Move insertion decay',      def: 0.5,  group: 'Learnsets', hint: 'Controls how many extra moves get inserted (chance = 1 − N×this).' },
-    { key: 'moveRatingDeviation',          label: 'Insert level spread',       def: 0.2,  group: 'Learnsets', max: 2, hint: 'Randomness of the level at which inserted moves are learned.' },
+    { key: 'moveRatingDeviation',          label: 'Insert level spread',       def: 0.2,  group: 'Learnsets', max: 2, percent: false, hint: 'Randomness of the level at which inserted moves are learned (a spread factor, not a %).' },
 ];
 const MUTATION_PROB_DEFAULTS = Object.fromEntries(MUTATION_PROB_FIELDS.map(f => [f.key, f.def]));
 
@@ -48,11 +48,19 @@ function mutationProbInputs() {
     let lastGroup = null;
     for (const f of MUTATION_PROB_FIELDS) {
         if (f.group !== lastGroup) { html += `<div class="section-title" style="margin-top:8px">${f.group}</div>`; lastGroup = f.group; }
+        // T-187 — probabilities are shown as whole percents (0–100) for consistency with the rest of the
+        // form; the stored config value stays a 0..1 fraction (see _read/_setMutationProbs). Non-percent
+        // fields (e.g. the spread factor) keep their raw 0..max scale.
+        const isPercent = f.percent !== false;
+        const max = isPercent ? 100 : (f.max || 1);
+        const step = isPercent ? 1 : 0.05;
+        const value = isPercent ? Math.round(f.def * 100) : f.def;
+        const defLabel = isPercent ? `${Math.round(f.def * 100)}%` : f.def;
         html += `
       <div class="field">
         <label for="mutprob-${f.key}">${f.label}</label>
-        <input type="number" id="mutprob-${f.key}" class="input" min="0" max="${f.max || 1}" step="0.05" value="${f.def}" style="width:100px">
-        <span class="field-hint">${f.hint} Default ${f.def}.</span>
+        <input type="number" id="mutprob-${f.key}" class="input" min="0" max="${max}" step="${step}" value="${value}" style="width:100px">
+        <span class="field-hint">${f.hint} Default ${defLabel}.</span>
       </div>`;
     }
     return html;
@@ -272,6 +280,11 @@ const DEFAULTS = {
     // percents. When off, no move RNG is drawn and the run is identical to before.
     mutateMoves: false,
     moveMutationChance: 0.10,
+    // Per-field toggles (basic) — which fields may change; the per-field chances (advanced) are below.
+    mutatePower: true,
+    mutateAccuracy: true,
+    mutateType: true,
+    mutateCategory: true,
     movePowerChance: 0.70,
     moveAccuracyChance: 0.50,
     moveTypeChance: 0.10,
@@ -436,7 +449,13 @@ export class ConfigForm {
         // T-187 — move mutation. Percentages (0–100) in the UI, stored as 0..1. Read unconditionally
         // (harmless when off); the pipeline ignores them unless mutateMoves is true.
         const mutateMoves = this._q('#mutate-moves').checked;
-        const moveMutationChance = this._intField('#move-mutation-chance', 10, 0, 100) / 100;
+        const moveMutationChance = mutateMoves
+            ? Math.round(parseInt(this._q('#move-mutation-chance').value, 10)) / 100
+            : 0.10;
+        const mutatePower = this._q('#mutate-power').checked;
+        const mutateAccuracy = this._q('#mutate-accuracy').checked;
+        const mutateType = this._q('#mutate-type').checked;
+        const mutateCategory = this._q('#mutate-category').checked;
         const movePowerChance = this._intField('#move-power-chance', 70, 0, 100) / 100;
         const moveAccuracyChance = this._intField('#move-accuracy-chance', 50, 0, 100) / 100;
         const moveTypeChance = this._intField('#move-type-chance', 10, 0, 100) / 100;
@@ -463,7 +482,8 @@ export class ConfigForm {
         const base = { runType, battleFormat, singlesPercent, leagueRunAndBun, mixedSequentialSplit, wildEncounterType, pokemonPerZone, difficulty,
             nonBossQuality, bossTeamSize, nonBossTeamSize, bossLevelModifier, nonBossLevelModifier, rebalance, balanceChance,
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs,
-            mutateMoves, moveMutationChance, movePowerChance, moveAccuracyChance, moveTypeChance, moveCategoryChance, evoLevels,
+            mutateMoves, moveMutationChance, mutatePower, mutateAccuracy, mutateType, mutateCategory,
+            movePowerChance, moveAccuracyChance, moveTypeChance, moveCategoryChance, evoLevels,
             money, prices, moveRelearnPrice, starterQuality, extraStarters, seed, docsVisibility, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, disableStevenTagBattle, nicknames };
 
         if (runType === 'nuzlocke') {
@@ -539,6 +559,10 @@ export class ConfigForm {
         // T-187 — move mutation
         this._q('#mutate-moves').checked = cfg.mutateMoves === true;
         this._q('#move-mutation-chance').value = Math.round((cfg.moveMutationChance ?? 0.10) * 100);
+        this._q('#mutate-power').checked = cfg.mutatePower !== false;
+        this._q('#mutate-accuracy').checked = cfg.mutateAccuracy !== false;
+        this._q('#mutate-type').checked = cfg.mutateType !== false;
+        this._q('#mutate-category').checked = cfg.mutateCategory !== false;
         this._q('#move-power-chance').value = Math.round((cfg.movePowerChance ?? 0.70) * 100);
         this._q('#move-accuracy-chance').value = Math.round((cfg.moveAccuracyChance ?? 0.50) * 100);
         this._q('#move-type-chance').value = Math.round((cfg.moveTypeChance ?? 0.10) * 100);
@@ -797,23 +821,29 @@ export class ConfigForm {
         setTable('evo-mod', EVO_PREEVO_MOD_TIERS, evo.preEvoModifiers);
     }
 
-    /** Read the Advanced mutation probability inputs, clamped to each field's [0,max]. */
+    /** Read the Advanced mutation probability inputs → stored as 0..1 fractions (percent fields are
+     *  divided back by 100), clamped to each field's [0,max]. */
     _readMutationProbs() {
         const out = {};
         for (const f of MUTATION_PROB_FIELDS) {
             const el = this._q(`#mutprob-${f.key}`);
-            const n = el ? parseFloat(el.value) : NaN;
-            out[f.key] = isNaN(n) ? f.def : Math.max(0, Math.min(f.max || 1, n));
+            const raw = el ? parseFloat(el.value) : NaN;
+            if (isNaN(raw)) { out[f.key] = f.def; continue; }
+            const val = f.percent !== false ? raw / 100 : raw;
+            out[f.key] = Math.max(0, Math.min(f.max || 1, val));
         }
         return out;
     }
 
-    /** Populate the Advanced mutation probability inputs. */
+    /** Populate the Advanced mutation probability inputs from stored 0..1 fractions (percent fields are
+     *  shown ×100 as whole percents). */
     _setMutationProbs(probs) {
         probs = probs || {};
         for (const f of MUTATION_PROB_FIELDS) {
             const el = this._q(`#mutprob-${f.key}`);
-            if (el) el.value = typeof probs[f.key] === 'number' ? probs[f.key] : f.def;
+            if (!el) continue;
+            const v = typeof probs[f.key] === 'number' ? probs[f.key] : f.def;
+            el.value = f.percent !== false ? Math.round(v * 100) : v;
         }
     }
 
@@ -1061,16 +1091,18 @@ export class ConfigForm {
   </button>
   <div class="config-cat-body" id="cat-body-difficulty">
 
+  <div class="card-glass" style="padding:20px">
+
   <!-- 1. General Pokémon quality (affects every trainer at once). -->
   <label style="font-weight:600;display:block;margin-bottom:8px">General Pokémon quality</label>
   <div class="difficulty-slider-wrap">
     <input type="range" name="difficulty" id="difficultySlider" min="1" max="13" value="7" step="1">
     <div class="difficulty-ticks">
-      <span>1<br><small>Easiest</small></span>
-      <span>4<br><small>Easy</small></span>
-      <span>7<br><small>Fair</small></span>
-      <span>10<br><small>Hard</small></span>
-      <span>13<br><small>Hardest</small></span>
+      <span style="left:9px">1<br><small>Easiest</small></span>
+      <span style="left:calc(9px + (100% - 18px) * 0.25)">4<br><small>Easy</small></span>
+      <span style="left:calc(9px + (100% - 18px) * 0.5)">7<br><small>Fair</small></span>
+      <span style="left:calc(9px + (100% - 18px) * 0.75)">10<br><small>Hard</small></span>
+      <span style="left:calc(100% - 9px)">13<br><small>Hardest</small></span>
     </div>
     <p id="difficultyDesc" class="difficulty-desc"></p>
   </div>
@@ -1078,14 +1110,16 @@ export class ConfigForm {
   <!-- 2. Non-boss quality modifier (extra quality gap for ordinary trainers vs their area's boss). -->
   <label style="font-weight:600;display:block;margin:18px 0 8px">Non-boss quality modifier</label>
   <div class="difficulty-slider-wrap">
-    <input type="range" name="nonBossQuality" id="nonBossQualitySlider" min="-6" max="0" value="-2" step="1">
+    <input type="range" name="nonBossQuality" id="nonBossQualitySlider" class="slider" min="-6" max="0" value="-2" step="1">
     <div class="difficulty-ticks">
-      <span>-6<br><small>Much weaker</small></span>
-      <span>-4</span>
-      <span>-2<br><small>Default</small></span>
-      <span>0<br><small>Same as boss</small></span>
+      <span style="left:9px">-6<br><small>Much weaker</small></span>
+      <span style="left:calc(9px + (100% - 18px) * 0.3333)">-4</span>
+      <span style="left:calc(9px + (100% - 18px) * 0.6667)">-2<br><small>Default</small></span>
+      <span style="left:calc(100% - 9px)">0<br><small>Same as boss</small></span>
     </div>
     <p id="nonBossQualityDesc" class="difficulty-desc"></p>
+  </div>
+
   </div>
 
   <!-- Advanced: per-team size caps and level offsets for bosses vs. ordinary trainers. -->
@@ -1098,11 +1132,11 @@ export class ConfigForm {
       <div class="card-glass" style="margin-top:12px;padding:20px;display:flex;flex-direction:column;gap:18px">
         <div>
           <label for="boss-team-size">Boss team size: <span id="boss-team-size-val">6</span></label>
-          <input type="range" id="boss-team-size" min="1" max="6" value="6" step="1" style="width:100%">
+          <input type="range" id="boss-team-size" class="slider" min="1" max="6" value="6" step="1" style="width:100%">
         </div>
         <div>
           <label for="non-boss-team-size">Non-boss team size: <span id="non-boss-team-size-val">6</span></label>
-          <input type="range" id="non-boss-team-size" min="1" max="6" value="6" step="1" style="width:100%">
+          <input type="range" id="non-boss-team-size" class="slider" min="1" max="6" value="6" step="1" style="width:100%">
         </div>
         <span class="field-hint">Teams with a smaller cap keep their strongest Pokémon and drop the weakest of their budget.</span>
 
@@ -1195,11 +1229,20 @@ export class ConfigForm {
     </div>
   </div>
 
-  <div class="card-glass" style="display:flex;flex-direction:column;gap:20px;padding:20px;margin-top:16px">
+  </div>
+</section>
+
+<section class="config-category" data-cat="move-mutation">
+  <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-move-mutation">
+    <span class="config-cat-title">Move mutation</span><span class="config-cat-arrow">▶</span>
+  </button>
+  <div class="config-cat-body hidden" id="cat-body-move-mutation">
+
+  <div class="card-glass" style="display:flex;flex-direction:column;gap:20px;padding:20px">
     <div class="toggle-wrap">
       <div>
         <div class="toggle-label">Mutate moves</div>
-        <div class="toggle-desc">Randomly mutate move power, accuracy, type and category. Runs before Pokémon are randomized, so they get built around the changed moves.</div>
+        <div class="toggle-desc">Randomly mutate move power, accuracy, type and category before Pokémon are randomized, so they get built around the changed moves.</div>
       </div>
       <label class="toggle">
         <input type="checkbox" id="mutate-moves">
@@ -1207,31 +1250,74 @@ export class ConfigForm {
       </label>
     </div>
 
-    <div id="move-mutation-controls" style="display:flex;flex-direction:column;gap:14px">
-      <div class="field">
-        <label for="move-mutation-chance">Move change chance</label>
-        <input type="number" id="move-mutation-chance" class="input" min="0" max="100" step="1" value="10" style="width:100px">
-        <span class="field-hint">Chance each move is eligible to mutate at all. The field chances below then roll independently — a move may combine several changes or none. Default 10%.</span>
+    <div id="move-mutation-chance-row" class="field">
+      <label for="move-mutation-chance">Move change chance <span id="move-mutation-chance-val" style="color:var(--accent);font-weight:700">10%</span></label>
+      <div class="slider-row">
+        <input type="range" id="move-mutation-chance" class="slider" min="0" max="100" step="5" value="10">
       </div>
-      <div class="field">
-        <label for="move-power-chance">Power change chance</label>
-        <input type="number" id="move-power-chance" class="input" min="0" max="100" step="1" value="70" style="width:100px">
-        <span class="field-hint">Non-status moves only: chance to shift power in ±5 steps (may stack). Default 70%.</span>
+      <span class="field-hint">Chance each move is eligible to mutate at all. The category toggles below (and their Advanced chances) then decide what changes.</span>
+    </div>
+
+    <div id="move-mutation-categories" style="display:flex;flex-direction:column;gap:20px">
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Mutate power</div>
+          <div class="toggle-desc">Shift power up or down in ±5 steps (non-status moves).</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="mutate-power" checked><span class="toggle-track"></span></label>
       </div>
-      <div class="field">
-        <label for="move-accuracy-chance">Accuracy change chance</label>
-        <input type="number" id="move-accuracy-chance" class="input" min="0" max="100" step="1" value="50" style="width:100px">
-        <span class="field-hint">Moves with an accuracy check only (never-miss moves are left alone): chance to shift accuracy in ±5 steps (may stack). Default 50%.</span>
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Mutate accuracy</div>
+          <div class="toggle-desc">Shift accuracy in ±5 steps (moves with an accuracy check; never-miss moves are left alone).</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="mutate-accuracy" checked><span class="toggle-track"></span></label>
       </div>
-      <div class="field">
-        <label for="move-type-chance">Type change chance</label>
-        <input type="number" id="move-type-chance" class="input" min="0" max="100" step="1" value="10" style="width:100px">
-        <span class="field-hint">Chance to change the move's type. Default 10%.</span>
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Mutate type</div>
+          <div class="toggle-desc">Change the move's type to another type.</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="mutate-type" checked><span class="toggle-track"></span></label>
       </div>
-      <div class="field">
-        <label for="move-category-chance">Category change chance</label>
-        <input type="number" id="move-category-chance" class="input" min="0" max="100" step="1" value="10" style="width:100px">
-        <span class="field-hint">Non-status moves only: chance to flip Physical ↔ Special. Default 10%.</span>
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Mutate category</div>
+          <div class="toggle-desc">Flip Physical ↔ Special (non-status moves).</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="mutate-category" checked><span class="toggle-track"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section" style="margin-top:16px">
+    <button type="button" class="collapsible-toggle" id="move-mutation-advanced-toggle" aria-expanded="false">
+      <span class="arrow">▶</span>
+      Advanced
+    </button>
+    <div class="collapsible-body hidden" id="move-mutation-advanced-body">
+      <div class="card-glass" style="margin-top:12px;padding:20px;display:flex;flex-direction:column;gap:14px">
+        <span class="field-hint">Per-field chance that a change happens once a move is eligible. Each falls back to its default, so leaving these unchanged reproduces the standard run.</span>
+        <div class="field">
+          <label for="move-power-chance">Power change chance</label>
+          <input type="number" id="move-power-chance" class="input" min="0" max="100" step="1" value="70" style="width:100px">
+          <span class="field-hint">Non-status moves only. Default 70%.</span>
+        </div>
+        <div class="field">
+          <label for="move-accuracy-chance">Accuracy change chance</label>
+          <input type="number" id="move-accuracy-chance" class="input" min="0" max="100" step="1" value="50" style="width:100px">
+          <span class="field-hint">Moves with an accuracy check only. Default 50%.</span>
+        </div>
+        <div class="field">
+          <label for="move-type-chance">Type change chance</label>
+          <input type="number" id="move-type-chance" class="input" min="0" max="100" step="1" value="10" style="width:100px">
+          <span class="field-hint">Default 10%.</span>
+        </div>
+        <div class="field">
+          <label for="move-category-chance">Category change chance</label>
+          <input type="number" id="move-category-chance" class="input" min="0" max="100" step="1" value="10" style="width:100px">
+          <span class="field-hint">Non-status moves only. Default 10%.</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1671,10 +1757,15 @@ export class ConfigForm {
         this._q('#mutation-categories').style.display = rebalanceOn ? '' : 'none';
         this._q('#balance-chance-val').textContent = this._q('#balance-chance').value + '%';
 
-        // T-187 — reveal the move-mutation controls only when the master toggle is on.
+        // T-187 — reveal the move-mutation gate + category toggles only when the master toggle is on
+        // (mirrors the rebalance reveal), and keep the gate % readout live.
         const mutateMovesOn = this._q('#mutate-moves')?.checked;
-        const moveControls = this._q('#move-mutation-controls');
-        if (moveControls) moveControls.style.display = mutateMovesOn ? '' : 'none';
+        const mmChanceRow = this._q('#move-mutation-chance-row');
+        const mmCategories = this._q('#move-mutation-categories');
+        if (mmChanceRow) mmChanceRow.style.display = mutateMovesOn ? '' : 'none';
+        if (mmCategories) mmCategories.style.display = mutateMovesOn ? '' : 'none';
+        const mmVal = this._q('#move-mutation-chance-val');
+        if (mmVal) mmVal.textContent = (this._q('#move-mutation-chance')?.value ?? '10') + '%';
 
         const evoOn = this._q('#evo-enabled')?.checked;
         const evoTuning = this._q('#evo-tuning');
@@ -1738,6 +1829,20 @@ export class ConfigForm {
 
         if (runType === 'nuzlocke') this._syncNuzlocke();
         if (runType === 'soullink') this._syncSoullink();
+
+        this._paintSliders();
+    }
+
+    // T-186/T-187 — paint the filled (left) portion of every range slider orange via the `--fill`
+    // custom property the `.slider` CSS reads. Called from _syncUI (covers Save/Load + reset) and, for
+    // live dragging, from the per-slider input listener wired in _wireEvents.
+    _paintSliders() {
+        this.container.querySelectorAll('input[type="range"]').forEach(el => {
+            const min = parseFloat(el.min || '0');
+            const max = parseFloat(el.max || '100');
+            const pct = max > min ? ((parseFloat(el.value) - min) / (max - min)) * 100 : 0;
+            el.style.setProperty('--fill', pct + '%');
+        });
     }
 
     // T-172 — show/hide + fill an inline slow-queue warning banner from a config's ROM count. `cfg` is
@@ -1812,6 +1917,12 @@ export class ConfigForm {
     _wireEvents() {
         const onChange = () => { this._syncUI(); this._save(); };
 
+        // T-186/T-187 — repaint each range slider's orange fill live as it is dragged (independent of
+        // whether the slider is individually wired to onChange), plus an initial paint.
+        this.container.querySelectorAll('input[type="range"]').forEach(el =>
+            el.addEventListener('input', () => this._paintSliders()));
+        this._paintSliders();
+
         // T-081 — validate every number field against its own min/max on blur/commit, so typed
         // out-of-range values (negatives, absurd counts) are clamped in the UI, not silently later.
         this.container.addEventListener('change', (e) => {
@@ -1859,8 +1970,10 @@ export class ConfigForm {
         for (const f of MUTATION_PROB_FIELDS) {
             this._q(`#mutprob-${f.key}`)?.addEventListener('input', onChange);
         }
-        // T-187 — move mutation master toggle + the five probability inputs.
-        this._q('#mutate-moves')?.addEventListener('change', onChange);
+        // T-187 — move mutation: master + per-field toggles (change); gate slider + Advanced chances (input).
+        for (const sel of ['#mutate-moves', '#mutate-power', '#mutate-accuracy', '#mutate-type', '#mutate-category']) {
+            this._q(sel)?.addEventListener('change', onChange);
+        }
         for (const sel of ['#move-mutation-chance', '#move-power-chance', '#move-accuracy-chance', '#move-type-chance', '#move-category-chance']) {
             this._q(sel)?.addEventListener('input', onChange);
         }
@@ -1959,7 +2072,7 @@ export class ConfigForm {
 
         // Scoped "Advanced" sub-panel inside Pokémon mutations (T-052). Evolution levels gets its
         // own in a later step; both reuse the .collapsible-toggle / .collapsible-body pattern.
-        for (const id of ['mutations-advanced', 'evolution-advanced', 'difficulty-advanced']) {
+        for (const id of ['mutations-advanced', 'evolution-advanced', 'difficulty-advanced', 'move-mutation-advanced']) {
             const toggle = this._q(`#${id}-toggle`);
             const body = this._q(`#${id}-body`);
             if (!toggle || !body) continue;
