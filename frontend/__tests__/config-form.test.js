@@ -456,3 +456,41 @@ test('T-186: Difficulty content is wrapped in a card-glass box and its sliders u
   assert.match(src, /id="boss-team-size" class="slider"/, 'boss team size slider uses .slider');
   assert.match(src, /id="non-boss-team-size" class="slider"/, 'non-boss team size slider uses .slider');
 });
+
+// ── T-188 — Save/Load/Reset relocated above Run type, styled as a header ──────────
+
+test('T-188: config actions (Save/Load/Reset) render above the Run type section', () => {
+  const actionsIdx = src.indexOf('class="config-actions"');
+  const runTypeIdx = src.indexOf('data-cat="run-type"');
+  assert.ok(actionsIdx > -1, 'the .config-actions block must exist');
+  assert.ok(runTypeIdx > -1, 'the run-type section must exist');
+  assert.ok(actionsIdx < runTypeIdx, 'Save/Load/Reset must render before (above) Run type');
+});
+
+test('T-188: config actions sit at the top of the form, before the accordion opens', () => {
+  const actionsIdx = src.indexOf('class="config-actions"');
+  const accordionIdx = src.indexOf('class="config-accordion"');
+  assert.ok(actionsIdx > -1 && accordionIdx > -1, 'both blocks exist');
+  assert.ok(actionsIdx < accordionIdx, 'the actions bar renders before the accordion wrapper (below the step indicator)');
+});
+
+test('T-188: the buttons keep their ids so _bind() wiring is unaffected', () => {
+  for (const id of ['btn-save-config', 'upload-config', 'btn-reset-config']) {
+    assert.match(src, new RegExp(`id="${id}"`), `#${id} must survive the move (wired by id)`);
+  }
+});
+
+test('T-188: a hint near the actions explains a bundle.json can also be loaded (config only)', () => {
+  const actionsIdx = src.indexOf('class="config-actions"');
+  const block = src.slice(actionsIdx, actionsIdx + 700);
+  assert.match(block, /bundle\.json/i, 'a hint near Load mentions a bundle.json is accepted for its config');
+});
+
+test('T-188: .config-actions is styled as a header (not a bottom footer)', () => {
+  const layoutCss = read('css', 'layout.css');
+  const i = layoutCss.indexOf('.config-actions {');
+  assert.ok(i > -1, '.config-actions rule must exist');
+  const rule = layoutCss.slice(i, i + 240);
+  assert.ok(!/border-top:\s*3px dashed/.test(rule), 'the old footer border-top divider must be gone');
+  assert.ok(!/margin-top:\s*28px/.test(rule), 'the old footer margin-top must be gone');
+});

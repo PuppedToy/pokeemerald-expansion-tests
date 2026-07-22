@@ -504,15 +504,21 @@
   flex-shrink: 0;
 }
 
-/* Config actions bar */
+/* Config actions bar — header block above Run type (T-188) */
 .config-actions {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  padding: 20px 0 0;
-  border-top: 3px dashed var(--obs-line);
-  margin-top: 28px;
+  padding: 0;
+  margin: 0 0 10px;
+}
+
+.config-actions-hint {
+  display: block;
+  margin: 0 0 20px;
+  padding-bottom: 20px;
+  border-bottom: 3px dashed var(--obs-line);
 }
 
 .config-actions-label {

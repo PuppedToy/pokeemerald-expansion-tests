@@ -863,6 +863,18 @@ export class ConfigForm {
 
     _build() {
         this.container.innerHTML = `
+<div class="config-actions">
+  <span class="config-actions-label">Config:</span>
+  <button type="button" class="btn btn-ghost" id="btn-save-config">Save</button>
+  <label class="btn btn-ghost" style="cursor:pointer">
+    Load
+    <input type="file" accept=".json" id="upload-config" style="display:none">
+  </label>
+  <button type="button" class="btn btn-ghost" id="btn-reset-config">Reset to defaults</button>
+  <span id="config-saved-note" style="font-size:12px;color:var(--muted);display:none">Saved ✓</span>
+</div>
+<div class="config-actions-hint field-hint">Save downloads your settings as a <code>.json</code>. Load accepts a saved config <strong>or</strong> a full <code>bundle.json</code> — only its configuration is applied; the rest of the bundle is ignored.</div>
+
 <div class="config-accordion">
 
 <section class="config-category" data-cat="run-type">
@@ -1693,17 +1705,6 @@ export class ConfigForm {
   </div>
 </section>
 
-</div>
-
-<div class="config-actions">
-  <span class="config-actions-label">Config:</span>
-  <button type="button" class="btn btn-ghost" id="btn-save-config">Save</button>
-  <label class="btn btn-ghost" style="cursor:pointer">
-    Load
-    <input type="file" accept=".json" id="upload-config" style="display:none">
-  </label>
-  <button type="button" class="btn btn-ghost" id="btn-reset-config">Reset to defaults</button>
-  <span id="config-saved-note" style="font-size:12px;color:var(--muted);display:none">Saved ✓</span>
 </div>
 `;
     }
