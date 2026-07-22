@@ -135,6 +135,14 @@ test('generatedAt, if present, must be a bounded string (T-190)', () => {
   assert.equal(validateBundle(validBundle({ generatedAt: 'x'.repeat(100) })).ok, false);
 });
 
+test('an unsupported formatVersion is rejected with a clear message (T-191 compat gate)', () => {
+  const r = validateBundle(validBundle({ formatVersion: 3 }));
+  assert.equal(r.ok, false);
+  assert.match(r.errors.join(' '), /unsupported bundle formatVersion/i);
+  assert.equal(validateBundle(validBundle({ formatVersion: 0 })).ok, false, 'version 0 is not a supported contract');
+  assert.equal(validateBundle(validBundle({ formatVersion: 2 })).ok, true, 'current contract version 2 is supported');
+});
+
 test('appVersion, if present, must be a bounded string or null (T-190)', () => {
   assert.equal(validateBundle(validBundle({ appVersion: '0.5.0' })).ok, true);
   assert.equal(validateBundle(validBundle({ appVersion: null })).ok, true);

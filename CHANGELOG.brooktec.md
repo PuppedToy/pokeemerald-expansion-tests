@@ -71,6 +71,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Uploading an incompatible bundle now fails with a clear message** instead of a confusing build
+  error: the app checks a bundle's format version and, if it's from a too-old or too-new app, tells
+  you to regenerate it with a compatible version. (T-191)
+
 - **Save / Load / Reset moved to the top of the config screen**, just under the step indicator and
   above Run type, so they're reachable without scrolling the whole form. Load now also accepts a
   full `bundle.json` and applies only its configuration (the rest of the bundle is ignored). (T-188)
