@@ -521,6 +521,22 @@
   border-bottom: 3px dashed var(--obs-line);
 }
 
+/* Regenerate-from-bundle — footer block below all config categories (T-190).
+   Mirrors the .config-actions header divider so the form is bookended. */
+.regen-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 3px dashed var(--obs-line);
+}
+
+.regen-actions-hint {
+  flex: 1 1 260px;
+}
+
 .config-actions-label {
   font-family: var(--obs-font-display);
   font-size: 9px;
