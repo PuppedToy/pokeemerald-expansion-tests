@@ -124,6 +124,82 @@ Acceptance criteria:
   mutation-on fixture — no JS errors, 847 move cards, 562 struck values, 562 change-log rows, 353 mutated
   moves, modal builders run on real pokes. Docs (`randomization-options.md`) + `CHANGELOG.brooktec.md`
   updated. Pending owner manual test before close.
+- **2026-07-22** — Owner review feedback (config UI) addressed: (1) **Move mutation** was nested inside
+  the *Pokémon mutations* category — extracted into its **own** `config-category` (`data-cat="move-mutation"`,
+  collapsed by default) between *Pokémon mutations* and *Evolution levels*. (2) *Difficulty* laid its
+  sliders bare in the category body — now wrapped in a `card-glass` box like the other categories (T-186
+  polish). (3) The T-186 difficulty sliders (`nonBossQualitySlider`, boss/non-boss team size) rendered as
+  native ranges — gave them the shared `.slider` class so they match *General Pokémon quality*; and the
+  `.slider` style now paints its **filled (left) portion orange** via a `--fill` custom property set by a
+  new `_paintSliders()` (on `_syncUI` + a per-slider `input` listener). Verified: frontend suite 101 green
+  + new structural tests (T-187 section placement, T-186 box + `.slider`); headless desktop screenshot of
+  the config screen confirms the section placement, the difficulty box, and the orange slider fill. No
+  bundle rebuild needed (config-form.js + CSS are served directly, not in the worker bundle).
+- **2026-07-22** — Owner review feedback (structure/consistency): restructured *Move mutation* to mirror
+  *Pokémon mutations* — **basic** = master toggle + per-move gate **slider** (`moveMutationChance`) + four
+  on/off field toggles (`mutatePower/mutateAccuracy/mutateType/mutateCategory`, default on); **Advanced**
+  = the four per-field chances. `moveMutator.mutateMove` now honours the toggles (a field that is off is
+  skipped without drawing RNG, like `rebalancer`'s category blocks); toggles threaded via pokedexModule +
+  both `toModuleConfig`s + DEFAULTS. **Standardised all mutation probabilities to whole percent (0–100)**:
+  the pokemon Advanced `mutationProbs` inputs were 0..1 — now shown ×100 as percents while the stored
+  config stays a 0..1 fraction (engine contract preserved; `moveRatingDeviation` kept as a raw 0–2 spread
+  factor via a `percent:false` flag). Verified: randomizer 1557 green (+5 toggle tests), frontend 104 green
+  (+ round-trip now covers the toggles with word-boundary matching, + structure/percent tests); headless
+  desktop screenshot with the section expanded confirms the basic/advanced split, the gate slider, and the
+  pokemon Advanced showing 70/60/10/… percents (spread stays 0.2). Docs updated.
+- **2026-07-22** — Bugfix (T-186 slider polish, owner-reported): the difficulty tick labels used
+  `justify-content: space-between`, which drifts asymmetric ticks because tick boxes have unequal widths —
+  the "-2 Default" label sat left of the thumb. Replaced with absolute positioning at each tick's exact
+  value % (anchored to the native thumb travel: 9px … calc(100% − 9px), thumb width 18px; first/last
+  edge-anchored to avoid clipping). Headless measurement: the "-2" tick centre is now 2px from the thumb
+  centre at value −2 (was visibly off); clip screenshot confirms both sliders' ticks line up.
+- **2026-07-22** — Move cards grid (owner-reported): move cards inherited the shared `.grid`
+  `minmax(220px,1fr)` and got squeezed very narrow. Gave `#moves-cards` its own
+  `repeat(auto-fill, minmax(min(400px,100%), 1fr))` (mirrors the roster-list pattern) — a ~400px column
+  floor, packs as many as fit, the single column stretches to full width when only one fits, and
+  collapses to full width on mobile via `min(400px,100%)`. Shared `.grid` (pokedex etc.) untouched.
+  Verified with a rebuilt docs fixture + `shoot.mjs` across all five viewports: desktop shows the wider
+  multi-column layout, phone-sm is a single full-width card, no horizontal overflow anywhere.
+- **2026-07-22** — Category icons (owner request): replaced the Physical/Special/Status text chips with
+  the **real in-game category icon**. `generateAssets.js` now also embeds `graphics/interface/category_icons.png`
+  (the game's 16×48 sheet, three 16×16 frames physical/special/status — order confirmed from the summary
+  screen's `StartSpriteAnim(sprite, category)`) into `assets.json`. Template: a `catIcon(category)` helper
+  renders a `.cat-icon` span sliced from the sheet via `background-position` (the sheet URI is set once on
+  `:root --cat-sheet`), with a `data-tooltip` of the category name. Used in the moves-card category cell
+  (mutated → dimmed old icon + new) and added to the left of the type on every learnset/teachable line in
+  the pokemon modal (same tooltip). Verified: DOM check (847 icons on the Moves screen, 59 in a modal,
+  `--cat-sheet` resolved, correct background-position per category, tooltips present) + screenshots of the
+  Moves screen and a modal learnset line show the real icons rendering crisply.
+- **2026-07-22** — Category-icon + card polish (owner feedback): (1) move-card grid floor 400px → 350px
+  (more columns, less wasted width). (2) move-card content now fills the card (`#moves-cards .meta`
+  justify-center + inner block `width:100%`) so `text-align:center` truly centres instead of hugging
+  the left. (3) The "green box" around the icon was the game PNG's palette index 0 (a light-green the
+  game treats as transparent but which ships without a tRNS chunk) — `generateAssets` now injects a
+  tRNS marking index 0 transparent (pure-buffer, own CRC32, no deps), so the icon renders on a
+  transparent background. Icon enlarged to 22px and `vertical-align:middle` to line up with the type
+  chip (modal lines centre it via the list-item flex). Verified on both the Moves screen and the
+  pokemon modal: 3 columns, centred content, no green box, icons aligned with the type chips.
+- **2026-07-22** — Category icon sizing (owner feedback: icon looked tiny vs the type chip): decoding the
+  sheet showed the art fills only the middle **12×11** of each 16×16 frame (transparent padding), so a
+  frame-sized icon rendered a much smaller circle. Reworked `.cat-icon` to CROP to the 12×11 art
+  (background-position offset by the 2px/3px art origin) and scale it to the `.type` chip height via a
+  single `--cat-scale` knob, keeping the art's 12:11 ratio (no distortion). Measured: the icon box is now
+  24.8px tall — exactly the type chip — width 27px. Verified on the Moves screen and modal.
+- **2026-07-22** — Modal move-name colour (owner feedback): the learnset/teachable move names in the
+  pokemon modal now take the move's own buffed/nerfed/adjusted colour (`getFullPokeLogColor(m)` on the
+  `<b>`), matching the move cards — white when unchanged, green/red/amber when mutated. The learnset
+  replacement decoration dropped its own colour wrapper (kept the dashed old + strong new) so the new
+  name inherits the move-mutation colour; the replacement itself stays flagged by the left ⭐️/🔧 icon.
+  Verified on a mutation-on fixture: e.g. Tackle/Vine Whip (type-changed → adjusted amber), Seed Bomb
+  (nerf red), Sweet Scent/Power Whip (amber), unchanged moves white.
+- **2026-07-22** — Category icon a touch too tall at chip height; dropped `--cat-scale` 2.25 → 2.0 so the
+  icon is ~22px (a hair under the 24.8px type chip), which reads better next to it.
+- **2026-07-22** — Modal line vertical alignment (owner feedback): measuring showed the icon/name/Lv all
+  centred, but the **type chip** sat ~3px high — its card-only `margin-bottom:6px` shifts it up inside the
+  `align-items:center` flex list-item. Fixed with `.list-item .type{ margin-top:0; margin-bottom:0; }`;
+  now icon, chip, name and Lv share one centre line (measured centreY identical for all four).
+- **2026-07-22** — Moves screen: moved the category icon to the LEFT of the type chip (was right), to
+  match the pokemon modal's order (category → type). One-line swap in the move-card markup; verified.
 
 ## Outcome
 

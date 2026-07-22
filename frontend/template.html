@@ -182,6 +182,17 @@
       grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
       gap:16px;
     }
+    /* T-187 — move cards read poorly squeezed to the shared .grid 220px floor. Give them a ~400px
+       column (the width they sit well at) that packs as many as fit, and collapses to full-width on
+       mobile via min(400px,100%) once fewer than one 400px column fits. */
+    #moves-cards{
+      grid-template-columns:repeat(auto-fill,minmax(min(350px,100%),1fr));
+    }
+    /* T-187 — move cards are a single centred column of content; make the inner block fill the card so
+       text-align:center actually centres across the whole card (the shared .meta is justify-between +
+       shrink-to-fit, which otherwise leaves the content hugging the left and wastes the width). */
+    #moves-cards .meta{ justify-content:center; }
+    #moves-cards .meta > div{ width:100%; }
     .poke-grid {
       display:grid;
       grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
@@ -336,6 +347,30 @@
     /* T-078/T-079: reward chips live in the narrow left rail, so a centred tooltip clips off the left
        edge. Anchor these to the chip's own left edge and let them grow only rightward. */
     .reward-item[data-tooltip]::after { left: 0; right: auto; transform: none; }
+
+    /* T-187 — move-category icons: the real in-game 16×48 sheet (physical/special/status stacked),
+       embedded once into the --cat-sheet CSS var and sliced per frame by background-position. */
+    /* The icon art fills only the middle 12×11 of each 16×16 frame (the rest is transparent padding),
+       so we CROP to that content and scale it to the ~24.8px .type chip height, keeping the art's own
+       12:11 ratio (no distortion). --cat-scale is the single knob: 11px art-height × scale ≈ chip height. */
+    .cat-icon {
+      --cat-scale: 2.0;
+      display: inline-block;
+      width: calc(12px * var(--cat-scale));
+      height: calc(11px * var(--cat-scale));
+      background-image: var(--cat-sheet);
+      background-repeat: no-repeat;
+      background-size: calc(16px * var(--cat-scale)) calc(48px * var(--cat-scale));
+      background-position-x: calc(-2px * var(--cat-scale));   /* art starts at x=2 in every frame */
+      background-position-y: var(--cat-y, calc(-3px * var(--cat-scale)));
+      image-rendering: pixelated;
+      vertical-align: middle;       /* line up with the type chip box */
+      cursor: help;
+    }
+    .cat-phys { --cat-y: calc(-3px  * var(--cat-scale)); }   /* frame 0, art top y=3  */
+    .cat-spec { --cat-y: calc(-19px * var(--cat-scale)); }   /* frame 1, art top y=16+3 */
+    .cat-stat { --cat-y: calc(-35px * var(--cat-scale)); }   /* frame 2, art top y=32+3 */
+    .cat-old { opacity: 0.4; margin-right: 2px; }   /* the pre-mutation category, dimmed */
 
     /* Right column */
     .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
@@ -562,6 +597,9 @@
     /* Type badges + tags + abilities + moves */
     .type{ border-radius:0; border:2px solid var(--obs-shadow); font-family:var(--obs-font-display);
       font-size:8px; letter-spacing:var(--obs-tracking); padding:5px 7px; color:var(--obs-on-orange); }
+    /* T-187 — the chip's card-only bottom margin (for wrapping) pushes it ~3px above centre inside a
+       flex list-item (modal move lines), so it sat higher than the category icon / name. Zero it there. */
+    .list-item .type{ margin-top:0; margin-bottom:0; }
     .tag,.list-item{ background:var(--obs-well); border:2px solid var(--obs-line); border-radius:0;
       font-family:var(--obs-font-body); font-size:16px; color:var(--obs-text); }
     .ability-tag{ background:var(--obs-well); border:var(--obs-border); box-shadow:var(--obs-shadow-sm);
@@ -1469,11 +1507,20 @@
       return e ? `<span class="dashed">${e.oldValue}</span> ${chip}` : chip;
     }
 
-    // The category chip: struck old-category text + the new-category chip when changed.
+    // The move category as the real in-game icon (physical/special/status) with a hover tooltip.
+    function catIcon(category) {
+      const map = {
+        'DAMAGE_CATEGORY_PHYSICAL': ['Physical', 'cat-phys'],
+        'DAMAGE_CATEGORY_SPECIAL':  ['Special',  'cat-spec'],
+        'DAMAGE_CATEGORY_STATUS':   ['Status',   'cat-stat'],
+      };
+      const [label, cls] = map[category] || ['Status', 'cat-stat'];
+      return `<span class="cat-icon ${cls}" role="img" aria-label="${label}" data-tooltip="${label}"></span>`;
+    }
+    // The category cell for a move card: the icon; when mutated, the old category's icon (dimmed) then the new.
     function moveCatCell(move) {
-      const chip = `<span class="type" style="background-color:${categoryColor(move.category)};">${formatCategory(move.category)}</span>`;
       const e = findMoveLog(move, 'category');
-      return e ? `<span class="dashed">${formatCategory(e.oldValue)}</span> ${chip}` : chip;
+      return e ? `<span class="cat-old">${catIcon(e.oldValue)}</span>${catIcon(move.category)}` : catIcon(move.category);
     }
 
     // Inline change log for a mutated move — mirrors the pokemon Change Log (buildLog).
@@ -1498,6 +1545,10 @@
           ${rows}
         </div>`;
     }
+
+    // T-187 — expose the embedded in-game category-icon sheet to the .cat-icon CSS (sliced per frame
+    // by background-position). Set once on :root so every .cat-icon (cards + modal) resolves it.
+    (function () { const u = getAsset('category_icons.png'); if (u) document.documentElement.style.setProperty('--cat-sheet', 'url("' + u + '")'); })();
 
     // Move "Changes" filter state (buffed/nerfed/adjusted/unmutated) — all shown by default.
     const moveChangeFilter = new Set(['adjusted', 'buffed', 'nerfed', 'unmutated']);
@@ -1546,8 +1597,8 @@
             ${locHTML}
 
             <div style="text-align:center; margin-bottom:10px;">
-              ${moveTypeCell(move)}
               ${moveCatCell(move)}
+              ${moveTypeCell(move)}
             </div>
 
             ${descHTML}
@@ -2135,15 +2186,21 @@
         }
         let move = moveName(l.move);
         if (logEntry && logEntry.oldValue) {
-          move = `<span style="color:${getLogColor(logEntry)}"><span class="dashed">${moveName(logEntry.oldValue)}</span> <strong>${move}</strong></span>`;
+          // Learnset replacement: keep the dashed old name (its .dashed colour) + the new name, which
+          // inherits the move-mutation colour applied to the <b> below.
+          move = `<span class="dashed">${moveName(logEntry.oldValue)}</span> <strong>${move}</strong>`;
         }
+        // T-187 — colour the move name by the move's own mutation (buffed/nerfed/adjusted), like the
+        // move cards; unchanged → default (white). The learnset add/replace stays flagged by the left icon.
+        const nameColor = getFullPokeLogColor(m);
         // T-187 — the move's own mutation icon sits to the RIGHT of the learnset add/replace marker
         // (or leftmost when there is none); changed type/power/accuracy are struck with their new value.
         return `
           <div class="list-item"${moveDescAttr(m)}>
             ${balanceIcon}${getFullPokeLogIcon(m)}<span style="min-width:60px;color:#8cf;">Lv ${l.level}</span>
+            ${catIcon(m.category)}
             ${moveTypeCell(m)}
-            <b>${move}</b>
+            <b${nameColor ? ` style="color:${nameColor}"` : ''}>${move}</b>
             <span class="small">Pwr: ${moveNumCell(m, 'power', m.power)}</span>
             <span class="small">Acc: ${moveNumCell(m, 'accuracy', m.accuracy)}</span>
             <span class="small">PP: ${m.pp}</span>
@@ -2157,12 +2214,14 @@
         const m = movesData[moveId];
         if (!m) return '';
         const prefix = newSet.has(moveId) ? getIcon('star', '⭐️') + ' ' : '';
+        // T-187 — name coloured by the move's own mutation (like the move cards); unchanged → white.
+        const nameColor = getFullPokeLogColor(m);
         // T-187 — for a newly-learned TM the move-mutation icon sits to the RIGHT of the star;
         // changed type/power/accuracy are struck with their new value.
         return `
           <div class="list-item"${moveDescAttr(m)}>
-            ${prefix}${getFullPokeLogIcon(m)}${moveTypeCell(m)}
-            <b>${moveName(moveId)}</b>
+            ${prefix}${getFullPokeLogIcon(m)}${catIcon(m.category)}${moveTypeCell(m)}
+            <b${nameColor ? ` style="color:${nameColor}"` : ''}>${moveName(moveId)}</b>
             <span class="small">Pwr: ${moveNumCell(m, 'power', m.power)}</span>
             <span class="small">Acc: ${moveNumCell(m, 'accuracy', m.accuracy)}</span>
             <span class="small">PP: ${m.pp}</span>
@@ -2175,7 +2234,7 @@
           if (!m) return '';
           return `
             <div class="list-item" style="opacity:0.45;"${m && m.description ? ` data-tooltip="${escAttr(m.description)}"` : ''}>
-              <span class="type" style="background:${typeColors[m.type]};">${m.type}</span>
+              ${catIcon(m.category)}<span class="type" style="background:${typeColors[m.type]};">${m.type}</span>
               <b style="color:#888;">${moveName(moveId)}</b>
               <span class="small">Pwr: ${m.power ?? '-'}</span>
               <span class="small">Acc: ${m.accuracy ?? '-'}</span>
