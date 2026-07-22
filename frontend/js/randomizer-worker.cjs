@@ -69,6 +69,14 @@ function toModuleConfig(cfg) {
     return {
         seed: cfg.seed,
         difficulty: cfg.difficulty ?? 7,
+        // T-186 — difficulty settings. nonBossQuality: quality steps a non-boss sits below its split boss
+        // (default −2). boss/nonBossTeamSize: trim teams to 1–6 (default 6, no trim). boss/nonBossLevelModifier:
+        // add to boss / non-boss trainer levels (default 0). All defaults reproduce the previous ROM.
+        nonBossQuality: cfg.nonBossQuality ?? -2,
+        bossTeamSize: cfg.bossTeamSize ?? 6,
+        nonBossTeamSize: cfg.nonBossTeamSize ?? 6,
+        bossLevelModifier: cfg.bossLevelModifier ?? 0,
+        nonBossLevelModifier: cfg.nonBossLevelModifier ?? 0,
         rebalance: cfg.rebalance !== false,
         balanceChance: cfg.balanceChance ?? 0.2,
         // T-052 — per-category mutation toggles

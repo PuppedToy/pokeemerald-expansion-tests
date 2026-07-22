@@ -88,6 +88,13 @@ function toModuleConfig(cfg, seed) {
     return {
         seed: seed ?? cfg.seed,
         difficulty: cfg.difficulty ?? 'fair',
+        // T-186 — difficulty settings (mirrors the browser worker's toModuleConfig). All defaults reproduce
+        // the previous ROM. See randomizer/docs/randomization-options.md § Difficulty.
+        nonBossQuality: cfg.nonBossQuality ?? -2,
+        bossTeamSize: cfg.bossTeamSize ?? 6,
+        nonBossTeamSize: cfg.nonBossTeamSize ?? 6,
+        bossLevelModifier: cfg.bossLevelModifier ?? 0,
+        nonBossLevelModifier: cfg.nonBossLevelModifier ?? 0,
         rebalance: cfg.rebalance !== false,
         balanceChance: cfg.balanceChance ?? 0.2,
         // T-052 — per-category mutation toggles

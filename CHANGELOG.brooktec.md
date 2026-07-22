@@ -9,6 +9,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **The Difficulty screen now has six knobs for tuning enemy strength.** Beyond the existing general
+  quality slider (which shifts every trainer's Pokémon quality at once), you can now set a **non-boss
+  quality modifier** — how many quality steps ordinary trainers sit below their area's boss (default −2).
+  An **Advanced** panel adds a **boss team size** and **non-boss team size** (1–6, default 6 — smaller
+  teams keep their strongest Pokémon and drop the weakest), plus a **boss level modifier** and
+  **non-boss level modifier** (default 0, may be negative — e.g. +3 puts bosses three levels above the
+  cap when you reach them). Every default reproduces the previous game exactly. (T-186)
+
 - **Greninja Battle Bond is now a proper standalone threat.** The Battle Bond form is treated as a
   solo Pokémon that can show up in the wild or on a trainer — but never alongside the normal Froakie
   line (if one appears, the other stays out of that run). It is rated as the powerful Ash-Greninja it

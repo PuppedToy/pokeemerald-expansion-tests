@@ -188,3 +188,4 @@
 | [T-183](T-183-shedinja-stone-evolution.md) | Shedinja becomes a Dusk Stone evolution of Nincada | in-progress | 1.1.0 | 2026-07-21 |
 | [T-184](T-184-wonder-guard-ability-rework.md) | Tie the 1-HP rule to Wonder Guard, make the rater Wonder-Guard-aware, and unban the ability | in-progress | 1.1.0 | 2026-07-21 |
 | [T-185](T-185-greninja-battle-bond.md) | Greninja Battle Bond as a Palafin-style placeable SOLO with Ash-rating blend | in-progress | 1.1.0 | 2026-07-21 |
+| [T-186](T-186-difficulty-settings.md) | Difficulty settings — non-boss quality, boss/non-boss team size and level modifiers | in-progress | 1.1.0 | 2026-07-22 |
