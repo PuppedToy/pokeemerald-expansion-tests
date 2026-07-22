@@ -687,7 +687,7 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
   border-radius: 0;
   color: var(--obs-yellow);
   font-size: 18px;
-  margin: 8px 0 4px;
+  margin: 8px 0 16px;
 }
 
 .warning-banner.hidden {
