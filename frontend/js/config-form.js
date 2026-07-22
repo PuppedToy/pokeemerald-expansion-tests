@@ -268,6 +268,14 @@ const DEFAULTS = {
     mutateTypes: true,
     mutateLearnsets: true,
     mutationProbs: MUTATION_PROB_DEFAULTS,
+    // T-187 — move mutation (opt-in; off by default). Stored as 0..1 probabilities; the UI shows whole
+    // percents. When off, no move RNG is drawn and the run is identical to before.
+    mutateMoves: false,
+    moveMutationChance: 0.10,
+    movePowerChance: 0.70,
+    moveAccuracyChance: 0.50,
+    moveTypeChance: 0.10,
+    moveCategoryChance: 0.10,
     evoLevels: EVO_LEVELS_DEFAULT,
     // T-052 — Rewards (money). Applied at ROM-build time (patches src/battle_script_commands.c).
     money: { normal: 250, boss: 3000, gym: 5000 },
@@ -425,6 +433,14 @@ export class ConfigForm {
         const mutateTypes = this._q('#mutate-types').checked;
         const mutateLearnsets = this._q('#mutate-learnsets').checked;
         const mutationProbs = this._readMutationProbs();
+        // T-187 — move mutation. Percentages (0–100) in the UI, stored as 0..1. Read unconditionally
+        // (harmless when off); the pipeline ignores them unless mutateMoves is true.
+        const mutateMoves = this._q('#mutate-moves').checked;
+        const moveMutationChance = this._intField('#move-mutation-chance', 10, 0, 100) / 100;
+        const movePowerChance = this._intField('#move-power-chance', 70, 0, 100) / 100;
+        const moveAccuracyChance = this._intField('#move-accuracy-chance', 50, 0, 100) / 100;
+        const moveTypeChance = this._intField('#move-type-chance', 10, 0, 100) / 100;
+        const moveCategoryChance = this._intField('#move-category-chance', 10, 0, 100) / 100;
         const evoLevels = this._readEvoLevels();
         const money = {
             normal: this._intField('#reward-normal', 250, 0, 999999),
@@ -446,7 +462,8 @@ export class ConfigForm {
         const prices = this._readPrices();
         const base = { runType, battleFormat, singlesPercent, leagueRunAndBun, mixedSequentialSplit, wildEncounterType, pokemonPerZone, difficulty,
             nonBossQuality, bossTeamSize, nonBossTeamSize, bossLevelModifier, nonBossLevelModifier, rebalance, balanceChance,
-            mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs, evoLevels,
+            mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs,
+            mutateMoves, moveMutationChance, movePowerChance, moveAccuracyChance, moveTypeChance, moveCategoryChance, evoLevels,
             money, prices, moveRelearnPrice, starterQuality, extraStarters, seed, docsVisibility, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, disableStevenTagBattle, nicknames };
 
         if (runType === 'nuzlocke') {
@@ -519,6 +536,13 @@ export class ConfigForm {
         this._q('#mutate-types').checked = cfg.mutateTypes !== false;
         this._q('#mutate-learnsets').checked = cfg.mutateLearnsets !== false;
         this._setMutationProbs(cfg.mutationProbs);
+        // T-187 — move mutation
+        this._q('#mutate-moves').checked = cfg.mutateMoves === true;
+        this._q('#move-mutation-chance').value = Math.round((cfg.moveMutationChance ?? 0.10) * 100);
+        this._q('#move-power-chance').value = Math.round((cfg.movePowerChance ?? 0.70) * 100);
+        this._q('#move-accuracy-chance').value = Math.round((cfg.moveAccuracyChance ?? 0.50) * 100);
+        this._q('#move-type-chance').value = Math.round((cfg.moveTypeChance ?? 0.10) * 100);
+        this._q('#move-category-chance').value = Math.round((cfg.moveCategoryChance ?? 0.10) * 100);
         this._setEvoLevels(cfg.evoLevels);
         const money = cfg.money || {};
         this._q('#reward-normal').value = money.normal ?? 250;
@@ -1171,6 +1195,47 @@ export class ConfigForm {
     </div>
   </div>
 
+  <div class="card-glass" style="display:flex;flex-direction:column;gap:20px;padding:20px;margin-top:16px">
+    <div class="toggle-wrap">
+      <div>
+        <div class="toggle-label">Mutate moves</div>
+        <div class="toggle-desc">Randomly mutate move power, accuracy, type and category. Runs before Pokémon are randomized, so they get built around the changed moves.</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="mutate-moves">
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+
+    <div id="move-mutation-controls" style="display:flex;flex-direction:column;gap:14px">
+      <div class="field">
+        <label for="move-mutation-chance">Move change chance</label>
+        <input type="number" id="move-mutation-chance" class="input" min="0" max="100" step="1" value="10" style="width:100px">
+        <span class="field-hint">Chance each move is eligible to mutate at all. The field chances below then roll independently — a move may combine several changes or none. Default 10%.</span>
+      </div>
+      <div class="field">
+        <label for="move-power-chance">Power change chance</label>
+        <input type="number" id="move-power-chance" class="input" min="0" max="100" step="1" value="70" style="width:100px">
+        <span class="field-hint">Non-status moves only: chance to shift power in ±5 steps (may stack). Default 70%.</span>
+      </div>
+      <div class="field">
+        <label for="move-accuracy-chance">Accuracy change chance</label>
+        <input type="number" id="move-accuracy-chance" class="input" min="0" max="100" step="1" value="50" style="width:100px">
+        <span class="field-hint">Moves with an accuracy check only (never-miss moves are left alone): chance to shift accuracy in ±5 steps (may stack). Default 50%.</span>
+      </div>
+      <div class="field">
+        <label for="move-type-chance">Type change chance</label>
+        <input type="number" id="move-type-chance" class="input" min="0" max="100" step="1" value="10" style="width:100px">
+        <span class="field-hint">Chance to change the move's type. Default 10%.</span>
+      </div>
+      <div class="field">
+        <label for="move-category-chance">Category change chance</label>
+        <input type="number" id="move-category-chance" class="input" min="0" max="100" step="1" value="10" style="width:100px">
+        <span class="field-hint">Non-status moves only: chance to flip Physical ↔ Special. Default 10%.</span>
+      </div>
+    </div>
+  </div>
+
   </div>
 </section>
 
@@ -1606,6 +1671,11 @@ export class ConfigForm {
         this._q('#mutation-categories').style.display = rebalanceOn ? '' : 'none';
         this._q('#balance-chance-val').textContent = this._q('#balance-chance').value + '%';
 
+        // T-187 — reveal the move-mutation controls only when the master toggle is on.
+        const mutateMovesOn = this._q('#mutate-moves')?.checked;
+        const moveControls = this._q('#move-mutation-controls');
+        if (moveControls) moveControls.style.display = mutateMovesOn ? '' : 'none';
+
         const evoOn = this._q('#evo-enabled')?.checked;
         const evoTuning = this._q('#evo-tuning');
         if (evoTuning) evoTuning.style.display = evoOn ? '' : 'none';
@@ -1788,6 +1858,11 @@ export class ConfigForm {
         this._q('#mutate-learnsets').addEventListener('change', onChange);
         for (const f of MUTATION_PROB_FIELDS) {
             this._q(`#mutprob-${f.key}`)?.addEventListener('input', onChange);
+        }
+        // T-187 — move mutation master toggle + the five probability inputs.
+        this._q('#mutate-moves')?.addEventListener('change', onChange);
+        for (const sel of ['#move-mutation-chance', '#move-power-chance', '#move-accuracy-chance', '#move-type-chance', '#move-category-chance']) {
+            this._q(sel)?.addEventListener('input', onChange);
         }
         // Evolution levels: scalars, stage spacing, and every per-tier table input.
         for (const sel of ['#evo-enabled', '#evo-min', '#evo-max', '#evo-deviation',

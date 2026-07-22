@@ -100,7 +100,10 @@ async function main() {
     const dv = process.env.DV_JSON ? JSON.parse(process.env.DV_JSON) : null;
     // B-041 — optional wild-encounter module config via env, e.g. WILD_JSON='{"wildEncounterType":"classic","pokemonPerZone":5}'.
     const wildCfg = process.env.WILD_JSON ? JSON.parse(process.env.WILD_JSON) : {};
-    const mcfg = { seed, difficulty: 7, rebalance: true, balanceChance: 0.2, allTms: false, showExactPositions: false, docsVisibility: dv || undefined };
+    // T-187 — optional move-mutation config via env so a mutation-on fixture can be built to verify the
+    // Moves screen + modal treatment, e.g. MOVE_JSON='{"mutateMoves":true,"moveMutationChance":0.5}'.
+    const moveCfg = process.env.MOVE_JSON ? JSON.parse(process.env.MOVE_JSON) : {};
+    const mcfg = { seed, difficulty: 7, rebalance: true, balanceChance: 0.2, allTms: false, showExactPositions: false, docsVisibility: dv || undefined, ...moveCfg };
 
     const t0 = Date.now();
     try {

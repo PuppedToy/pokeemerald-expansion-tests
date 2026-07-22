@@ -955,6 +955,15 @@
               <div class="filter-chip" id="moves-tm-only" role="button" tabindex="0">TMs only</div>
             </div>
           </div>
+          <div class="filter-row">
+            <span class="filter-row-label">Changes</span>
+            <div class="filter-chips" id="moves-change-chips">
+              <div class="filter-chip active" data-change="adjusted" role="button" tabindex="0">Adjusted</div>
+              <div class="filter-chip active" data-change="buffed" role="button" tabindex="0">Buffed</div>
+              <div class="filter-chip active" data-change="nerfed" role="button" tabindex="0">Nerfed</div>
+              <div class="filter-chip active" data-change="unmutated" role="button" tabindex="0">Unmutated</div>
+            </div>
+          </div>
           <div class="grid" id="moves-cards"></div>
         </section>
   
@@ -1431,6 +1440,68 @@
     // block so the initial renderMoves() call doesn't depend on helpers defined in later scripts.
     function escMoveText(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
+    // ── T-187 — move-mutation display helpers ────────────────────────────────────────────────────
+    // Mutated moves carry the SAME `log` shape as pokemon ({type,target,oldValue,value}), so the
+    // pokemon helpers (getLogIcon / getLogColor / getFullPokeLogIcon / getFullPokeLogColor) apply to a
+    // move object unchanged. These add the move-specific per-field rendering.
+    function findMoveLog(move, target) { return ((move && move.log) || []).find(e => e.target === target); }
+
+    // buffed / nerfed / adjusted / unmutated — the same .every() rule the pokedex uses.
+    function moveChangeClass(move) {
+      const log = (move && move.log) || [];
+      if (log.length === 0) return 'unmutated';
+      if (log.every(e => e.type === 'BUFF')) return 'buffed';
+      if (log.every(e => e.type === 'NERF')) return 'nerfed';
+      return 'adjusted';
+    }
+
+    // A numeric field (power/accuracy): dashed old + strong new, coloured by buff/nerf, when changed.
+    function moveNumCell(move, target, current) {
+      const e = findMoveLog(move, target);
+      if (!e) return `<b>${current ?? '-'}</b>`;
+      return `<span style="color:${getLogColor(e) || ''}"><span class="dashed">${e.oldValue}</span> <strong>${current ?? '-'}</strong></span>`;
+    }
+
+    // The type chip: struck old-type text + the new-type chip when changed.
+    function moveTypeCell(move) {
+      const chip = `<span class="type" style="background-color:${typeColors[move.type]};">${move.type}</span>`;
+      const e = findMoveLog(move, 'type');
+      return e ? `<span class="dashed">${e.oldValue}</span> ${chip}` : chip;
+    }
+
+    // The category chip: struck old-category text + the new-category chip when changed.
+    function moveCatCell(move) {
+      const chip = `<span class="type" style="background-color:${categoryColor(move.category)};">${formatCategory(move.category)}</span>`;
+      const e = findMoveLog(move, 'category');
+      return e ? `<span class="dashed">${formatCategory(e.oldValue)}</span> ${chip}` : chip;
+    }
+
+    // Inline change log for a mutated move — mirrors the pokemon Change Log (buildLog).
+    function buildMoveLog(move) {
+      if (!move.log || move.log.length === 0) return '';
+      const dict = { power: 'Power', accuracy: 'Accuracy', type: 'Type', category: 'Category' };
+      const rows = move.log.map(l => {
+        const icon = getLogIcon(l);
+        let content;
+        if (l.target === 'type') {
+          content = `<span class="type" style="background-color:${typeColors[l.oldValue]};">${l.oldValue}</span> → <span class="type" style="background-color:${typeColors[l.value]};">${l.value}</span>`;
+        } else if (l.target === 'category') {
+          content = `${formatCategory(l.oldValue)} → ${formatCategory(l.value)}`;
+        } else {
+          // power / accuracy — `value` is the signed delta, so the new value is oldValue + value.
+          content = `${l.oldValue} → ${l.oldValue + l.value}`;
+        }
+        return `<div class="small card-log-item">${icon} <strong>${dict[l.target] || l.target}</strong> — ${content}</div>`;
+      }).join('');
+      return `<div style="margin-top:8px;text-align:left;">
+          <div class="small" style="font-weight:700;margin-bottom:4px;">Change Log</div>
+          ${rows}
+        </div>`;
+    }
+
+    // Move "Changes" filter state (buffed/nerfed/adjusted/unmutated) — all shown by default.
+    const moveChangeFilter = new Set(['adjusted', 'buffed', 'nerfed', 'unmutated']);
+
     function renderMoves() {
       const q = (document.getElementById('move-search')?.value || '').toLowerCase().trim();
       const tmOnly = document.getElementById('moves-tm-only')?.classList.contains('active');
@@ -1445,11 +1516,12 @@
               .some(s => s.toLowerCase().includes(q))) return;
         }
 
+        // T-187 — "Changes" filter (buffed/nerfed/adjusted/unmutated).
+        if (!moveChangeFilter.has(moveChangeClass(move))) return;
+
         const card = document.createElement('div');
         card.className = 'card';
 
-        const catName = formatCategory(move.category);
-        const catColor = categoryColor(move.category);
         const tm = tmLabel(move);
         const tmBadge = tm
           ? `<div style="text-align:center; margin-bottom:6px;"><span class="type" style="background-color:var(--obs-cyan); color:var(--obs-on-cyan);">${tm}</span></div>`
@@ -1462,22 +1534,27 @@
           ? `<div class="small" style="text-align:center; margin:8px 0 4px; color:var(--obs-text-dim); font-style:italic;">${move.description}</div>`
           : '';
 
+        // T-187 — name badge (buffed/nerfed/adjusted) mirrors the pokedex; per-field cells strike the
+        // old value and show the new one; a mutated move also gets an inline Change Log.
+        const nameColor = getFullPokeLogColor(move);
+        const nameBadge = getFullPokeLogIcon(move);
+
         card.innerHTML = `<div class="meta">
           <div>
-            <div class="title">${move.name}</div>
+            <div class="title"><span${nameColor ? ` style="color:${nameColor}"` : ''}>${move.name}</span>${nameBadge}</div>
             ${tmBadge}
             ${locHTML}
 
             <div style="text-align:center; margin-bottom:10px;">
-              <span class="type" style="background-color:${typeColors[move.type]};">${move.type}</span>
-              <span class="type" style="background-color:${catColor};">${catName}</span>
+              ${moveTypeCell(move)}
+              ${moveCatCell(move)}
             </div>
 
             ${descHTML}
 
             <div class="small" style="text-align:center; margin-bottom:6px;">
-              Power: <b>${move.power ?? '-'}</b> &nbsp;•&nbsp;
-              Accuracy: <b>${move.accuracy ?? '-'}</b>% &nbsp;•&nbsp;
+              Power: ${moveNumCell(move, 'power', move.power)} &nbsp;•&nbsp;
+              Accuracy: ${moveNumCell(move, 'accuracy', move.accuracy)}% &nbsp;•&nbsp;
               PP: <b>${move.pp}</b>
             </div>
 
@@ -1488,6 +1565,8 @@
             <div class="small" style="text-align:center;">
               Target: ${cleanTarget(move.target)}
             </div>
+
+            ${buildMoveLog(move)}
           </div></div>`;
 
         movesGrid.appendChild(card);
@@ -1503,6 +1582,18 @@
       tmOnlyChip.addEventListener('click', toggleTmOnly);
       tmOnlyChip.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTmOnly(); } });
     }
+    // T-187 — "Changes" filter chips (buffed/nerfed/adjusted/unmutated). All active by default; a chip
+    // toggles its category in/out of moveChangeFilter and re-renders.
+    document.querySelectorAll('#moves-change-chips .filter-chip').forEach(chip => {
+      const key = chip.getAttribute('data-change');
+      const toggle = () => {
+        if (moveChangeFilter.has(key)) { moveChangeFilter.delete(key); chip.classList.remove('active'); }
+        else { moveChangeFilter.add(key); chip.classList.add('active'); }
+        renderMoves();
+      };
+      chip.addEventListener('click', toggle);
+      chip.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+    });
   </script>
   <!-- script to handle trainers -->
   <script>
@@ -2046,13 +2137,15 @@
         if (logEntry && logEntry.oldValue) {
           move = `<span style="color:${getLogColor(logEntry)}"><span class="dashed">${moveName(logEntry.oldValue)}</span> <strong>${move}</strong></span>`;
         }
+        // T-187 — the move's own mutation icon sits to the RIGHT of the learnset add/replace marker
+        // (or leftmost when there is none); changed type/power/accuracy are struck with their new value.
         return `
           <div class="list-item"${moveDescAttr(m)}>
-            ${balanceIcon}<span style="min-width:60px;color:#8cf;">Lv ${l.level}</span>
-            <span class="type" style="background:${typeColors[m.type]};">${m.type}</span>
+            ${balanceIcon}${getFullPokeLogIcon(m)}<span style="min-width:60px;color:#8cf;">Lv ${l.level}</span>
+            ${moveTypeCell(m)}
             <b>${move}</b>
-            <span class="small">Pwr: ${m.power ?? '-'}</span>
-            <span class="small">Acc: ${m.accuracy ?? '-'}</span>
+            <span class="small">Pwr: ${moveNumCell(m, 'power', m.power)}</span>
+            <span class="small">Acc: ${moveNumCell(m, 'accuracy', m.accuracy)}</span>
             <span class="small">PP: ${m.pp}</span>
           </div>`;
       }).join('');
@@ -2064,12 +2157,14 @@
         const m = movesData[moveId];
         if (!m) return '';
         const prefix = newSet.has(moveId) ? getIcon('star', '⭐️') + ' ' : '';
+        // T-187 — for a newly-learned TM the move-mutation icon sits to the RIGHT of the star;
+        // changed type/power/accuracy are struck with their new value.
         return `
           <div class="list-item"${moveDescAttr(m)}>
-            ${prefix}<span class="type" style="background:${typeColors[m.type]};">${m.type}</span>
+            ${prefix}${getFullPokeLogIcon(m)}${moveTypeCell(m)}
             <b>${moveName(moveId)}</b>
-            <span class="small">Pwr: ${m.power ?? '-'}</span>
-            <span class="small">Acc: ${m.accuracy ?? '-'}</span>
+            <span class="small">Pwr: ${moveNumCell(m, 'power', m.power)}</span>
+            <span class="small">Acc: ${moveNumCell(m, 'accuracy', m.accuracy)}</span>
             <span class="small">PP: ${m.pp}</span>
           </div>`;
       }).join('');

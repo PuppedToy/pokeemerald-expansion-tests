@@ -85,6 +85,14 @@ function toModuleConfig(cfg) {
         mutateTypes: cfg.mutateTypes !== false,
         mutateLearnsets: cfg.mutateLearnsets !== false,
         mutationProbs: cfg.mutationProbs,
+        // T-187 — move mutation. Off by default (opt-in). The five per-field probabilities are
+        // forwarded raw; moveMutator.js supplies its defaults when a value is undefined.
+        mutateMoves: cfg.mutateMoves === true,
+        moveMutationChance: cfg.moveMutationChance,
+        movePowerChance: cfg.movePowerChance,
+        moveAccuracyChance: cfg.moveAccuracyChance,
+        moveTypeChance: cfg.moveTypeChance,
+        moveCategoryChance: cfg.moveCategoryChance,
         // T-052 — evolution-level tuning
         evoLevels: cfg.evoLevels,
         // T-052 — extra-starter category list
