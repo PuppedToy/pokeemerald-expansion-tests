@@ -83,29 +83,27 @@ function resolveArtifact(value, sharedData, key) {
     return value;
 }
 
-// Derive the RNG seed for a ROM based on its trainer-sharing level.
-// Shared trainers use the same base seed so tier-based slots are identical
-// across ROMs. Per-ROM trainers use a unique derived seed.
-function resolveRomSeed(rom, seed) {
+// T-189 — seed derivations come from the shared randomizer/seeds.js module so the compile
+// side can never drift from generate.js. `seed` is the run seed; `universeSeed` (defaulting
+// to the run seed for bundles that predate the two-tier model) seeds the shared block.
+const { deriveSeed, romSeed: deriveRomSeed, trainerBaseSeed } = require('./randomizer/seeds');
+
+// Derive the RNG seed for a ROM based on its trainer-sharing level. Shared/player trainers
+// key off universeSeed (identical across the ROMs that share them); per-ROM trainers use a
+// run-seed-derived per-ROM seed.
+function resolveRomSeed(rom, seed, universeSeed = seed) {
     const t = rom.artifacts.trainers;
-    if (t === 'shared' || t === 'global') return seed;
+    if (t === 'shared' || t === 'global') return universeSeed;
     if (typeof t === 'string' && t.startsWith('player-')) {
-        const p = parseInt(t.split('-')[1], 10);
-        return (seed ^ (p * 0x9E3779B9)) >>> 0;
+        return deriveSeed(universeSeed, parseInt(t.split('-')[1], 10));
     }
-    return (seed ^ (rom.romIndex * 0x9E3779B9)) >>> 0;
+    return deriveRomSeed(seed, rom.romIndex);
 }
 
 // Returns the baseRngSeed to pass to writer() for per-slot trainer reseeding.
-// Must match the trainingBaseSeed logic in randomizer-worker.js so docs == ROM.
-function resolveTrainingBaseSeed(rom, seed) {
-    const t = rom.artifacts.trainers;
-    if (t === 'shared' || t === 'global') return seed;
-    if (typeof t === 'string' && t.startsWith('player-')) {
-        const p = parseInt(t.split('-')[1], 10);
-        return (seed ^ (p * 0x9E3779B9)) >>> 0;
-    }
-    return null; // per-ROM trainers: sequential RNG, no reseeding
+// Must match the trainingBaseSeed logic in generate.js so docs == ROM.
+function resolveTrainingBaseSeed(rom, seed, universeSeed = seed) {
+    return trainerBaseSeed(rom.artifacts.trainers, { universeSeed, unshared: null });
 }
 
 function romFileName(rom) {
@@ -117,7 +115,7 @@ function romFileName(rom) {
 
 // ── Single-ROM build — the unit the backend queue drives (T-030) ──────────────
 
-async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = resolveJobs(), fullRom = false }) {
+async function buildOneRom({ rom, bundle, seed, universeSeed = seed, outDir, isDebug = false, jobs = resolveJobs(), fullRom = false }) {
     const rng                          = require('./randomizer/rng');
     const writer                       = require('./randomizer/writer');
     const { writeTMsFromList }          = require('./randomizer/tmRandomizer');
@@ -143,12 +141,12 @@ async function buildOneRom({ rom, bundle, seed, outDir, isDebug = false, jobs = 
 
     // Seed RNG: shared-trainer ROMs use baseSeed so tier-based slots are identical
     // across ROMs; per-ROM trainer ROMs use a unique derived seed.
-    rng.seed(resolveRomSeed(rom, seed));
+    rng.seed(resolveRomSeed(rom, seed, universeSeed));
 
     try {
         const runNs = writer.docRunNamespace({ seed, playerIndex: rom.playerIndex, romIndex: rom.romIndex });
         // starterNaming is per-ROM (never shared) — read it straight off the rom, no resolveArtifact (T-068).
-        await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed), rom.docs, runNs, rom.artifacts.starterNaming || null);
+        await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed, universeSeed), rom.docs, runNs, rom.artifacts.starterNaming || null);
         await writeTMsFromList(pokedex.tmList);
         writeItemFilesFromBundle(trainers.itemAssignments);
         // T-052 — patch configurable prize money into the C source (restored by restore() after build).
@@ -194,7 +192,8 @@ async function bundleMode(bundlePath, isDebug, doClean, opts = {}) {
         throw new Error('Invalid bundle: missing or empty roms array');
     }
 
-    const seed      = bundle.config?.seed ?? 0;
+    const seed        = bundle.config?.seed ?? 0;
+    const universeSeed = bundle.config?.universeSeed ?? seed;   // T-189 — pre-two-tier bundles have none
     const sessionId = bundle.sessionId ?? `session-${Date.now()}`;
     const outDir    = outDirOverride || path.join(root, 'roms', sessionId);
     fs.mkdirSync(outDir, { recursive: true });
@@ -207,6 +206,7 @@ async function bundleMode(bundlePath, isDebug, doClean, opts = {}) {
     console.log(`Session:   ${sessionId}`);
     console.log(`ROMs:      ${roms.length}${romIndex != null ? ` (index ${romIndex})` : ''}`);
     console.log(`Seed:      ${seed}`);
+    if (universeSeed !== seed) console.log(`Universe:  ${universeSeed}`);
     console.log(`Output:    ${outDir}`);
     console.log(`Jobs:      make -j${jobs}`);
     console.log(`Artifact:  ${fullRom ? 'full ROM (.gba)' : 'BPS patch (.bps, vanilla→built)'}`);
@@ -217,7 +217,7 @@ async function bundleMode(bundlePath, isDebug, doClean, opts = {}) {
         console.log(`\n${'─'.repeat(64)}`);
         console.log(`ROM ${rom.romIndex + 1} / ${bundle.roms.length}  →  ${romFileName(rom)}`);
         console.log('─'.repeat(64));
-        await buildOneRom({ rom, bundle, seed, outDir, isDebug, jobs, fullRom });
+        await buildOneRom({ rom, bundle, seed, universeSeed, outDir, isDebug, jobs, fullRom });
     }
 
     console.log(`\n${'='.repeat(64)}`);

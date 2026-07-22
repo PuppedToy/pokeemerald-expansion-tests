@@ -494,3 +494,28 @@ test('T-188: .config-actions is styled as a header (not a bottom footer)', () =>
   assert.ok(!/border-top:\s*3px dashed/.test(rule), 'the old footer border-top divider must be gone');
   assert.ok(!/margin-top:\s*28px/.test(rule), 'the old footer margin-top must be gone');
 });
+
+// ── T-189 — Universe seed (two-tier seed model) ──────────────────────────────────
+
+test('T-189: DEFAULTS carry a blank universeSeed', () => {
+  assert.match(src, /universeSeed:\s*''/, 'DEFAULTS must include a blank universeSeed');
+});
+
+test('T-189: a Universe seed field + Roll button exist, hidden by default (gated to nuzlocke/soul-link)', () => {
+  assert.match(src, /id="universe-seed-field"[^>]*style="display:none"/, 'universe-seed field starts hidden');
+  assert.match(src, /id="universe-seed"/, 'the universe seed input exists');
+  assert.match(src, /id="btn-randomize-universe-seed"/, 'the universe seed Roll button exists');
+});
+
+test('T-189: _syncUI reveals the Universe seed field only for nuzlocke / soul-link', () => {
+  const i = src.indexOf("#universe-seed-field')");
+  assert.ok(i > -1, 'the field visibility is wired in _syncUI');
+  const near = src.slice(i, i + 220);
+  assert.match(near, /nuzlocke/, 'gated on nuzlocke');
+  assert.match(near, /soullink/, 'gated on soul-link');
+});
+
+test('T-189: universeSeed round-trips through DEFAULTS, getConfig (base) and setConfig', () => {
+  const occurrences = (src.match(/universeSeed/g) || []).length;
+  assert.ok(occurrences >= 3, `universeSeed must appear in DEFAULTS, getConfig and setConfig (found ${occurrences})`);
+});

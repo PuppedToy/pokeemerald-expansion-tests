@@ -302,6 +302,8 @@ const DEFAULTS = {
     // T-052 — extra-starter category list (unlimited; default = today's 9)
     extraStarters: EXTRA_STARTER_DEFAULT_PRESET,
     seed: '',
+    universeSeed: '',   // T-189 — shared-world seed (nuzlocke/soul-link); blank derives from seed
+
     // T-163 — docs-visibility toggles (see DOCS_VISIBILITY_DEFAULT).
     docsVisibility: DOCS_VISIBILITY_DEFAULT,
     // T-052 — Trainers & bosses
@@ -440,6 +442,11 @@ export class ConfigForm {
 
         if (seed !== null && (isNaN(seed) || !Number.isInteger(seed))) return null;
 
+        // T-189 — optional universe (shared-world) seed; blank ⇒ null ⇒ engine derives it from seed.
+        const universeSeedRaw = this._q('#universe-seed').value.trim();
+        const universeSeed = universeSeedRaw === '' ? null : parseInt(universeSeedRaw, 10);
+        if (universeSeed !== null && (isNaN(universeSeed) || !Number.isInteger(universeSeed))) return null;
+
         const docsVisibility = this._readDocsVisibility();   // T-163
         const mutateStats = this._q('#mutate-stats').checked;
         const mutateAbilities = this._q('#mutate-abilities').checked;
@@ -484,7 +491,7 @@ export class ConfigForm {
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs,
             mutateMoves, moveMutationChance, mutatePower, mutateAccuracy, mutateType, mutateCategory,
             movePowerChance, moveAccuracyChance, moveTypeChance, moveCategoryChance, evoLevels,
-            money, prices, moveRelearnPrice, starterQuality, extraStarters, seed, docsVisibility, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, disableStevenTagBattle, nicknames };
+            money, prices, moveRelearnPrice, starterQuality, extraStarters, seed, universeSeed, docsVisibility, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, disableStevenTagBattle, nicknames };
 
         if (runType === 'nuzlocke') {
             // T-081 — clamp to the field's documented range (matches the input's min/max) so a
@@ -579,6 +586,7 @@ export class ConfigForm {
         this._starterSpecs = (cfg.extraStarters || EXTRA_STARTER_DEFAULT_PRESET).map(normalizeStarterSpec);
         this._renderStarterList();
         this._q('#seed').value = cfg.seed != null ? String(cfg.seed) : '';
+        this._q('#universe-seed').value = cfg.universeSeed != null ? String(cfg.universeSeed) : '';
         this._setDocsVisibility(cfg);   // T-163
         this._q('#gyms-type-changed').value = cfg.gymsTypeChanged ?? 2;
         this._q('#e4-type-changed').value = cfg.e4TypeChanged ?? 2;
@@ -1701,6 +1709,14 @@ export class ConfigForm {
         </div>
         <span class="field-hint">Same seed + same config = identical run every time.</span>
       </div>
+      <div class="field" id="universe-seed-field" style="display:none">
+        <label for="universe-seed">Universe seed</label>
+        <div style="display:flex;gap:10px">
+          <input type="number" id="universe-seed" class="input" min="0" step="1" placeholder="Blank = new world (from Seed)" style="flex:1">
+          <button type="button" class="btn btn-ghost" id="btn-randomize-universe-seed">Roll</button>
+        </div>
+        <span class="field-hint">Shared across this run's ROMs (Pokédex, trainers, starters). Reuse it another day to generate more ROMs in the same world; blank derives it from Seed.</span>
+      </div>
     </div>
   </div>
 </section>
@@ -1737,6 +1753,10 @@ export class ConfigForm {
 
         this._q('#nuzlocke-panel').classList.toggle('hidden', runType !== 'nuzlocke');
         this._q('#soullink-panel').classList.toggle('hidden', runType !== 'soullink');
+
+        // T-189 — the Universe seed field only applies to multi-ROM shared worlds.
+        const uniField = this._q('#universe-seed-field');
+        if (uniField) uniField.style.display = (runType === 'nuzlocke' || runType === 'soullink') ? '' : 'none';
 
         // T-085/ADR-014 — the % proportion + Run & Bun controls live in a run-panel box revealed only
         // for 'mixed' (like the nuzlocke/soul-link panels); the Run & Bun description shows the live
@@ -1990,6 +2010,7 @@ export class ConfigForm {
             }
         }
         this._q('#seed').addEventListener('input', onChange);
+        this._q('#universe-seed').addEventListener('input', onChange);
         // T-163 — docs-visibility toggles (masters resync the grey-out; count input saves on input).
         for (const [id] of DOCS_VISIBILITY_TOGGLES) {
             this._q('#' + id)?.addEventListener('change', onChange);
@@ -2058,6 +2079,10 @@ export class ConfigForm {
 
         this._q('#btn-randomize-seed').addEventListener('click', () => {
             this._q('#seed').value = Math.floor(Math.random() * 0xFFFFFFFF);
+            onChange();
+        });
+        this._q('#btn-randomize-universe-seed').addEventListener('click', () => {
+            this._q('#universe-seed').value = Math.floor(Math.random() * 0xFFFFFFFF);
             onChange();
         });
 

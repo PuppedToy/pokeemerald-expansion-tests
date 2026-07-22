@@ -6,7 +6,7 @@ type: feature
 created: 2026-07-22
 updated: 2026-07-22
 target-version: 0.6.0
-links: []
+links: [docs/adr/ADR-019-two-tier-seed-model.md]
 blocked-by: []
 ---
 
@@ -72,6 +72,18 @@ Acceptance criteria:
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-22** — Task created; design locked. Owner approved the per-ROM reseed behavioral change (seed→ROM mapping changes; saved bundles unaffected).
+- **2026-07-22** — In-progress. Confirmed the seed flow end-to-end: single `cfg.seed` → `rng.seed(cfg.seed)` in `runGeneration` (generate.js:406) feeds the shared block; per-ROM wild plans (`runWildModule`, generate.js:207/341) + unshared templates ride the sequential stream; docs phase reseeds `romSeed = cfg.seed ^ (i·GOLDEN)` and `trainingBaseSeed` (shared→cfg.seed, player→cfg.seed^pi, unshared→policy). `make.js` mirrors via `resolveRomSeed`/`resolveTrainingBaseSeed` (make.js:89-109), fed by `bundle.config.seed` (make.js:197). Key safety finding: bundle-mode builds are **verbatim** (docs/artifacts reused, no re-randomization), and existing bundles carry no `universeSeed` ⇒ `universeSeed = seed` ⇒ byte-identical rebuilds. Design: `universeSeed` seeds the shared block + shared/player trainingBaseSeed; `runSeed` (= existing `seed` field) drives per-ROM reseeds (`runSeed ^ i`) for wild + unshared. `universeSeed = cfg.universeSeed ?? cfg.seed`. Resolved `universeSeed` persisted in `bundle.config` (nuzlocke/soul-link only) and surfaced in the UI.
+- **2026-07-22** — Implemented (Red→Green):
+    - New `randomizer/seeds.js` — single source of truth for `resolveSeeds`/`deriveSeed`/`romSeed`/`trainerBaseSeed`, imported by both `generate.js` and `make.js` (kills the duplicated-derivation drift risk). Unit-tested in `__tests__/unit/seeds.test.js` (16 cases: byte-compat with the legacy `base ^ (i·GOLDEN)`, fallback, invariants).
+    - `generate.js` — `runGeneration` resolves the two seeds, seeds the shared block from `universeSeed`, threads `ctx.runSeed`/`ctx.universeSeed`, and persists resolved `universeSeed` in `bundle.config` (null for `default`). Nuzlocke + soul-link: explicit per-ROM reseed `rng.seed(deriveRomSeed(runSeed, i))` before wild/unshared; docs `trainingBaseSeed` via `trainerBaseSeed(...)`; per-player block reseeds `deriveSeed(universeSeed, p)`.
+    - `make.js` — `resolveRomSeed`/`resolveTrainingBaseSeed` route through `seeds.js` with a 3rd optional `universeSeed = seed` param (back-compat); `bundleMode` reads `bundle.config.universeSeed ?? seed`; `buildOneRom` threads it. Existing bundles (no `universeSeed`) ⇒ identical values.
+    - `config.js` DEFAULTS + validate + `--universe-seed` CLI. `config-form.js`: `universeSeed` in DEFAULTS/getConfig(base)/setConfig, a gated **Universe seed** field + Roll button (shown only for nuzlocke/soul-link) in General, `_syncUI` visibility. Adapters (`randomizer-worker.cjs`, `backend/generator.js`) already preserve it via spread — no change.
+    - Browser bundle rebuilt (`node build.js`).
+    - Tests: randomizer `npm test` 1570 passed; frontend `node --test` 113/0. ADR-019 written; `trainer-determinism.md` stale ref fixed (`writerDocs.js:241-244` → `resolveTrainerTeam.js:221`).
+- **2026-07-22** — Gated `universeSeedInvariance` first FAILED (`sharedFp(gen(999)) !== sharedFp(gen(999))`). Investigated with a separate-process diagnostic (scratchpad/detgen.js, hashing sub-fields across independent `node` runs — the production shape, one gen per process):
+    - **False positive, not a bug.** `sharedData.pokedex.generatedAt` is a wall-clock timestamp ⇒ two runs differ on it; hashing the whole pokedex flagged that.
+    - Deeper: with a fixed `universeSeed` but different `runSeed`, `sharedData.trainers` + `starters` are **byte-identical** (531d/a1fe) and `wild` differs — exactly the guarantee. But `pokedex.pokes` also differed by runSeed. Instrumented `generateNuzlocke`: pokes `@after-shared-block` is identical across runSeeds (`8d3220a6`), and only diverges `@before-bundle` — the per-ROM wild pass writes **mega-evolution availability gating onto the shared pokemon objects**, which is **legitimately per-ROM** (mega discovery is per-ROM by design, cf. `trainer-determinism.md`), not part of the shared world. Pre-existing; unchanged by this task.
+    - Fix was in the TEST: fingerprint the universeSeed-pure shared world (`trainers` + `starters` + `pokedex.moves`/`abilities`), excluding `pokes` (per-run mega-gating side-effect) and `generatedAt`. Added a "different universeSeed ⇒ different world" case. Debug instrumentation removed. Re-running gated to confirm green.
 
 ## Outcome
 

@@ -5,6 +5,7 @@ const path = require('path');
 
 const DEFAULTS = {
     seed: null,
+    universeSeed: null,   // T-189 — shared-world seed (nuzlocke/soul-link); null ⇒ falls back to `seed`
     difficulty: 7,
     rebalance: true,
     balanceChance: 0.2,
@@ -40,6 +41,8 @@ function parseCLIArgs(argv) {
             result.rebalance = false;
         } else if (arg.startsWith('--seed=')) {
             result.seed = parseInt(arg.slice('--seed='.length), 10);
+        } else if (arg.startsWith('--universe-seed=')) {
+            result.universeSeed = parseInt(arg.slice('--universe-seed='.length), 10);
         } else if (arg.startsWith('--balance-chance=')) {
             result.balanceChance = parseFloat(arg.slice('--balance-chance='.length));
         } else if (arg.startsWith('--mode=')) {
@@ -63,6 +66,9 @@ function validate(config) {
     }
     if (config.seed !== null && !Number.isInteger(config.seed)) {
         throw new Error(`seed must be null or an integer, got: ${config.seed}`);
+    }
+    if (config.universeSeed !== null && config.universeSeed !== undefined && !Number.isInteger(config.universeSeed)) {
+        throw new Error(`universeSeed must be null or an integer, got: ${config.universeSeed}`);
     }
     if (!Number.isInteger(config.numROMs) || config.numROMs < 1) {
         throw new Error(`numROMs must be an integer >= 1, got: ${config.numROMs}`);
