@@ -185,6 +185,11 @@ async function runPokedexModule(config, baseData = null) {
             moveAccuracyChance: config.moveAccuracyChance,
             moveTypeChance:     config.moveTypeChance,
             moveCategoryChance: config.moveCategoryChance,
+            // Per-field toggles (default on), mirroring the pokemon mutateStats/… category toggles.
+            mutatePower:    config.mutatePower    !== false,
+            mutateAccuracy: config.mutateAccuracy !== false,
+            mutateType:     config.mutateType     !== false,
+            mutateCategory: config.mutateCategory !== false,
         });
         // Re-rate the moves that actually changed so every downstream rating pass reads their true
         // new value (move.rating / ratingDoubles were pre-computed off the vanilla stats).

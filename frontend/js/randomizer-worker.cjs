@@ -93,6 +93,10 @@ function toModuleConfig(cfg) {
         moveAccuracyChance: cfg.moveAccuracyChance,
         moveTypeChance: cfg.moveTypeChance,
         moveCategoryChance: cfg.moveCategoryChance,
+        mutatePower: cfg.mutatePower !== false,
+        mutateAccuracy: cfg.mutateAccuracy !== false,
+        mutateType: cfg.mutateType !== false,
+        mutateCategory: cfg.mutateCategory !== false,
         // T-052 — evolution-level tuning
         evoLevels: cfg.evoLevels,
         // T-052 — extra-starter category list

@@ -208,7 +208,10 @@ input[type="range"][name="difficulty"] {
   width: 100%;
   height: 14px;
   border-radius: 0;
-  background: var(--obs-well);
+  /* Filled (left) portion is orange up to --fill (set per-slider by config-form._paintSliders). */
+  background: linear-gradient(to right,
+    var(--obs-orange) 0, var(--obs-orange) var(--fill, 0%),
+    var(--obs-well) var(--fill, 0%), var(--obs-well) 100%);
   border: var(--obs-border);
   box-shadow: var(--obs-inset);
   outline: none;
@@ -308,14 +311,26 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
 }
 
 .difficulty-ticks {
-  display: flex;
-  justify-content: space-between;
+  /* T-186 fix: ticks are absolutely positioned at their exact value % rather than distributed with
+     space-between (which drifted asymmetric ticks like "-2" because tick boxes have unequal widths).
+     The native thumb travel is inset by the 18px thumb, so anchors run 9px … calc(100% - 9px). */
+  position: relative;
+  height: 3em;
   font-family: var(--obs-font-display);
   font-size: 8px;
   letter-spacing: var(--obs-tracking);
   color: var(--obs-text-mute);
-  text-align: center;
 }
+.difficulty-ticks > span {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1.5;
+}
+.difficulty-ticks > span:first-child { transform: none; text-align: left; }
+.difficulty-ticks > span:last-child { transform: translateX(-100%); text-align: right; }
 
 .difficulty-desc {
   font-size: 18px;

@@ -64,6 +64,13 @@ function mutateMove(move, opts = {}) {
     const typeChance  = num(opts.moveTypeChance, MOVE_TYPE_CHANCE);
     const catChance   = num(opts.moveCategoryChance, MOVE_CATEGORY_CHANCE);
 
+    // Per-field category toggles (default on), mirroring rebalancer's mutateStats/Types/… A field that
+    // is off is skipped entirely — its roll is never drawn — so it cannot shift the RNG stream.
+    const doPower    = opts.mutatePower    !== false;
+    const doAccuracy = opts.mutateAccuracy !== false;
+    const doType     = opts.mutateType     !== false;
+    const doCategory = opts.mutateCategory !== false;
+
     const log = [];
 
     // Per-move eligibility gate (same shape as rebalancer: skip when the roll exceeds the threshold).
@@ -74,7 +81,7 @@ function mutateMove(move, opts = {}) {
     const status = isStatus(move);
 
     // Power — non-status only. ±5 stacking, clamped. No-op after clamp emits no entry.
-    if (!status && rng.random() < powerChance) {
+    if (doPower && !status && rng.random() < powerChance) {
         const oldValue = move.power;
         const change = rollDelta();
         const newValue = Math.min(POWER_MAX, Math.max(POWER_MIN, oldValue + change));
@@ -90,7 +97,7 @@ function mutateMove(move, opts = {}) {
     }
 
     // Accuracy — only if it has an accuracy check (accuracy !== 0). ±5 stacking, clamped, never 0.
-    if (move.accuracy !== 0 && rng.random() < accChance) {
+    if (doAccuracy && move.accuracy !== 0 && rng.random() < accChance) {
         const oldValue = move.accuracy;
         const change = rollDelta();
         const newValue = Math.min(ACC_MAX, Math.max(ACC_MIN, oldValue + change));
@@ -105,8 +112,8 @@ function mutateMove(move, opts = {}) {
         }
     }
 
-    // Type — always eligible. Uniform over real battle types excluding the current one. Neutral.
-    if (rng.random() < typeChance) {
+    // Type — uniform over real battle types excluding the current one. Neutral.
+    if (doType && rng.random() < typeChance) {
         const oldValue = move.type;
         const pool = POKEMON_TYPES.filter(t => t !== oldValue);
         if (pool.length) {
@@ -122,7 +129,7 @@ function mutateMove(move, opts = {}) {
     }
 
     // Category — non-status only. Flip Physical<->Special (never Status). Neutral.
-    if (!status && rng.random() < catChance) {
+    if (doCategory && !status && rng.random() < catChance) {
         const oldValue = move.category;
         const newCategory = oldValue === CATEGORY_PHYSICAL ? CATEGORY_SPECIAL : CATEGORY_PHYSICAL;
         move.category = newCategory;

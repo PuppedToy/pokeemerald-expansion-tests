@@ -53,7 +53,10 @@ all default **on** (SoT: `randomizer/rebalancer.js`, invoked `modules/pokedexMod
 **Advanced** (`mutationProbs`, each falls back to its `rebalancer.js` constant): `statBalanceChance`
 0.7, `buffStatChance` 0.6, `repeatStatChance` 0.5, `typeBalanceChance` 0.1, `monotypeBalanceChance`
 0.1, `abilityBalanceChance` 0.1, `learnsetBalanceChance` 0.2, `changeTypeMoveFromOldChance` 0.9,
-`changeTypeMoveFromOtherChance` 0.05, `moveInsertChance` 0.5, `moveRatingDeviation` 0.2.
+`changeTypeMoveFromOtherChance` 0.05, `moveInsertChance` 0.5, `moveRatingDeviation` 0.2. **T-187 — the
+UI now shows every probability as a whole percent (0–100)** for consistency with the rest of the form;
+the stored `mutationProbs` values stay 0..1 fractions (engine contract). `moveRatingDeviation` is a raw
+spread factor (0–2), not a percent, so it keeps its decimal input.
 
 ### Move mutation (T-187)
 Master toggle = `mutateMoves` (**default off** — opt-in, unlike `rebalance`). SoT:
@@ -68,14 +71,27 @@ only the changed fields in `src/data/moves_info.h` at build time (called from `w
 lives inside `makePokedex`, a nuzlocke/soul-link that shares the pokédex ("Same Pokémon universe") runs
 it once and every ROM sees the same mutated moves; per-ROM pokédex ⇒ each ROM mutates independently.
 
+Structured exactly like *Pokémon mutations*: **basic** = master toggle + a per-move gate slider + one
+on/off toggle per field; **Advanced** = the per-field probabilities. A field whose toggle is off is
+skipped entirely (its roll is never drawn). All chances are surfaced as whole percents (0–100) and stored
+as 0..1 fractions — consistent with the Pokémon mutation probabilities, which are now percent-displayed too.
+
+Basic:
+
 | Config key | Default | Effect |
 |---|---|---|
-| `mutateMoves` | **off** | master toggle; reveals the five controls below. |
-| `moveMutationChance` | 0.10 | per-move gate: chance a move is eligible to mutate at all. |
-| `movePowerChance` | 0.70 | non-status moves only: ±5 power shift with a stacking repeat-gate, clamped [5,250]. ↑ = BUFF, ↓ = NERF. |
-| `moveAccuracyChance` | 0.50 | moves with an accuracy check only (never-miss/acc-0 left alone): ±5 accuracy shift (stacking), clamped [10,100] (never 0). |
-| `moveTypeChance` | 0.10 | change the move's type — uniform over the 18 battle types excluding the current one. Neutral (ADJUSTMENT). |
-| `moveCategoryChance` | 0.10 | non-status moves only: flip Physical↔Special. Neutral (ADJUSTMENT). |
+| `mutateMoves` | **off** | master toggle; reveals the gate + toggles below. |
+| `moveMutationChance` | 0.10 (10%) | per-move gate **slider**: chance a move is eligible to mutate at all. |
+| `mutatePower` / `mutateAccuracy` / `mutateType` / `mutateCategory` | on | per-field on/off toggles — which fields may change (mirror the pokemon `mutateStats/…` toggles). |
+
+Advanced (per-field chance once a move is eligible):
+
+| Config key | Default | Effect |
+|---|---|---|
+| `movePowerChance` | 0.70 (70%) | non-status moves only: ±5 power shift with a stacking repeat-gate, clamped [5,250]. ↑ = BUFF, ↓ = NERF. |
+| `moveAccuracyChance` | 0.50 (50%) | moves with an accuracy check only (never-miss/acc-0 left alone): ±5 accuracy shift (stacking), clamped [10,100] (never 0). |
+| `moveTypeChance` | 0.10 (10%) | change the move's type — uniform over the 18 battle types excluding the current one. Neutral (ADJUSTMENT). |
+| `moveCategoryChance` | 0.10 (10%) | non-status moves only: flip Physical↔Special. Neutral (ADJUSTMENT). |
 
 Log/viewer: each mutated move carries a `log` (same `{type,target,oldValue,value}` shape as pokemon), so
 the Moves screen gets the name buffed/nerfed/adjusted badge, per-field strikethrough, an inline change
