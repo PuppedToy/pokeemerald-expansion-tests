@@ -12,16 +12,22 @@ When trainers are shared across ROMs (`rom.artifacts.trainers === 'shared' | 'gl
 teams are resolved once into the bundle docs and the ROM consumes them verbatim
 (`writer.js` → `buildTrainersResultsFromDocs`, no RNG). During that resolution
 (`writerDocs.js`), every team slot is **reseeded deterministically**
-(`writerDocs.js:241-244`):
+(`resolveTrainerTeam.js:221`):
 
 ```
-slotSeed = baseRngSeed ^ djb2Hash(trainer.id + ':' + slotIndex)
+slotSeed = baseRngSeed ^ Math.imul(djb2Hash(trainer.id + ':' + slotIndex), 0x9E3779B9)
 ```
 
 Effect: the RNG **value** consumed for a given `(trainer, slotIndex)` is **identical across all
 ROMs in the bundle**, regardless of how much RNG the wild-encounter module consumed earlier (the
 wild encounters differ per ROM). This is what keeps the vast majority of trainer slots identical
 across ROMs even though each ROM has different wild data.
+
+**T-189 / ADR-019.** `baseRngSeed` for shared/global trainers is now the run's **`universeSeed`**
+(for `player-N` trainers, `deriveSeed(universeSeed, playerIndex)`); per-ROM trainers use the
+caller's unshared policy. All seed derivations live in `randomizer/seeds.js`, imported by both
+`generate.js` and `make.js`. When no universe seed is pinned, `universeSeed === runSeed === seed`,
+so the model above is unchanged.
 
 A wild-guardian slot (`TRAINER_POKE_ENCOUNTER`) is the intended exception: its species mirrors
 the ROM's wild encounter for that area, so it varies per ROM **by design**.

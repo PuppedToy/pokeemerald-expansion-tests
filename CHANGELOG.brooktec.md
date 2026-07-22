@@ -9,6 +9,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Nuzlocke and Soul-Link now have a "Universe seed" you can reuse to grow the same world.**
+  Randomization now uses two seeds: the **Universe seed** fixes the shared world (Pokédex, trainer
+  teams and starters), while the ordinary **Seed** drives each ROM's wild encounters. Generate a
+  few ROMs today, then another day paste the same Universe seed and generate more ROMs of the exact
+  same world — with fresh wild encounters each time. Leave it blank and everything behaves exactly
+  as before (the universe simply follows your Seed). The field appears only for Nuzlocke and
+  Soul-Link, and the Universe seed used is saved into the bundle so you can copy it later. (T-189)
+
 - **Moves can now be mutated too, just like Pokémon.** A new opt-in "Mutate moves" toggle (off by
   default) randomly tweaks move **power**, **accuracy**, **type** and **category** before the Pokémon are
   randomized — so Pokémon, trainers and wild encounters are all built around the changed moves. A general
@@ -55,6 +63,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   (START on the moves page); the Fallarbor move-tutor NPC no longer teaches moves. (T-167)
 
 ### Changed
+
+- **Save / Load / Reset moved to the top of the config screen**, just under the step indicator and
+  above Run type, so they're reachable without scrolling the whole form. Load now also accepts a
+  full `bundle.json` and applies only its configuration (the rest of the bundle is ignored). (T-188)
 
 - **Wonder Guard is now a real, earnable ability instead of a Shedinja-only quirk.** The "always 1 HP" rule
   is tied to the ability, not the species: any Pokémon that has Wonder Guard has 1 HP, and a Shedinja that

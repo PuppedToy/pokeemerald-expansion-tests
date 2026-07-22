@@ -13,6 +13,7 @@
 // config policy (difficulty default, showExactPositions, …) stays in the adapter.
 
 const rng = require('./rng');
+const { resolveSeeds, deriveSeed, romSeed: deriveRomSeed, trainerBaseSeed } = require('./seeds');
 const { runPokedexModule } = require('./modules/pokedexModule');
 const { runTrainersModule } = require('./modules/trainersModule');
 const { runStartersModule } = require('./modules/startersModule');
@@ -145,7 +146,7 @@ async function generateDefault(cfg, mcfg, sessionId, ctx) {
 }
 
 async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
-    const { progress, flush, baseData, unsharedTrainingBaseSeed } = ctx;
+    const { progress, flush, baseData, unsharedTrainingBaseSeed, runSeed, universeSeed } = ctx;
     const { numROMs, shared } = cfg;
     const sharedSteps = (shared.pokedex ? 1 : 0) + (shared.trainers ? 1 : 0) + (shared.starters ? 1 : 0);
     const perRomSteps = 1 + (shared.pokedex ? 0 : 1) + (shared.trainers ? 0 : 1) + (shared.starters ? 0 : 1);
@@ -159,6 +160,8 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
     let sharedTrainers = null;
     let sharedStarters = null;
 
+    // T-189 — the shared block is a pure function of universeSeed.
+    rng.seed(universeSeed);
     if (shared.pokedex) {
         progress(Math.round((done / totalSteps) * 100), 'Generating shared Pokédex...');
         sharedPokedex = await makePokedex(mcfg, baseData); tick('Pokédex ready'); await flush();
@@ -184,6 +187,11 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
     for (let i = 0; i < numROMs; i++) {
         const label = numROMs > 1 ? ` (ROM ${i + 1}/${numROMs})` : '';
         romDescriptors.push({ player: 0, run: i });
+
+        // T-189 — per-ROM subsystems (any unshared template + wild) are a pure function of
+        // runSeed, so reusing a universe with a fresh runSeed rerolls them without touching
+        // the shared world.
+        rng.seed(deriveRomSeed(runSeed, i));
 
         let pokedex = sharedPokedex;
         if (!pokedex) {
@@ -222,8 +230,8 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
         const label = numROMs > 1 ? ` (ROM ${i + 1}/${numROMs})` : '';
         progress(Math.round((done / totalSteps) * 100), `Building viewer${label}...`);
         const { pokedex, trainers, starters, wild } = romArtifacts[i];
-        const romSeed = (cfg.seed ^ (i * 0x9E3779B9)) >>> 0;
-        const trainingBaseSeed = shared.trainers ? cfg.seed : unsharedTrainingBaseSeed(romSeed);
+        const romSeed = deriveRomSeed(runSeed, i);
+        const trainingBaseSeed = shared.trainers ? universeSeed : unsharedTrainingBaseSeed(romSeed);
         roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics, ctx.audit);
         tick(`Viewer ready${label}`); await flush();
     }
@@ -234,7 +242,7 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
 }
 
 async function generateSoullink(cfg, mcfg, sessionId, ctx) {
-    const { progress, flush, baseData, unsharedTrainingBaseSeed } = ctx;
+    const { progress, flush, baseData, unsharedTrainingBaseSeed, runSeed, universeSeed } = ctx;
     const { numPlayers, romsPerPlayer, playerShared, romShared } = cfg;
     const totalROMs = numPlayers * romsPerPlayer;
 
@@ -266,6 +274,8 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
     let globalTrainers = null;
     let globalStarters = null;
 
+    // T-189 — the global shared block (across all players) is a pure function of universeSeed.
+    rng.seed(universeSeed);
     if (playerShared.pokedex) {
         progress(Math.round((done / totalSteps) * 100), 'Generating shared Pokédex (all players)...');
         globalPokedex = await makePokedex(mcfg, baseData); tick('Shared Pokédex ready'); await flush();
@@ -299,6 +309,9 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
         let playerTrainers = globalTrainers;
         let playerStarters = globalStarters;
 
+        // T-189 — a player's shared block is part of the universe (reproducible with it),
+        // scoped per player.
+        rng.seed(deriveSeed(universeSeed, p));
         if (!playerShared.pokedex && romShared.pokedex) {
             progress(Math.round((done / totalSteps) * 100), `Generating Pokédex for ${pl}...`);
             playerPokedex = await makePokedex(mcfg, baseData); tick(`Pokédex for ${pl} ready`); await flush();
@@ -319,6 +332,10 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
 
         for (let r = 0; r < romsPerPlayer; r++) {
             const rl = `ROM ${r + 1}/${romsPerPlayer}`;
+
+            // T-189 — per-ROM subsystems (unshared templates + wild) are a pure function of
+            // runSeed and the global ROM index.
+            rng.seed(deriveRomSeed(runSeed, romIndex));
 
             let pokedex  = playerPokedex;
             let trainers = playerTrainers;
@@ -366,27 +383,21 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
     }
 
     // Phase 2: compute docs for each ROM.
-    //   romSeed is always unique per ROM (wild placeholder RNG must differ).
-    //   trainingBaseSeed drives per-slot trainer reseeding:
-    //     global trainers  → cfg.seed  (same for all ROMs/players)
-    //     player trainers  → player-derived seed (same within a player's ROMs)
+    //   romSeed = deriveRomSeed(runSeed, i) — per-ROM (wild placeholder RNG + evo reads).
+    //   trainingBaseSeed (per-slot trainer reseeding) via seeds.trainerBaseSeed:
+    //     global trainers  → universeSeed               (same for all ROMs/players)
+    //     player trainers  → deriveSeed(universeSeed, p) (same within a player's ROMs)
     //     per-ROM trainers → caller policy (worker: romSeed; backend: null)
     for (let i = 0; i < roms.length; i++) {
         const rom = roms[i];
         const label = `player ${(rom.playerIndex ?? 0) + 1} ROM ${rom.romIndex + 1}`;
         progress(Math.round((done / totalSteps) * 100), `Building viewer for ${label}...`);
         const { pokedex, trainers, starters, wild } = romArtifacts[i];
-        const romSeed = (cfg.seed ^ (i * 0x9E3779B9)) >>> 0;
-        const t = rom.artifacts.trainers;
-        let trainingBaseSeed;
-        if (t === 'global') {
-            trainingBaseSeed = cfg.seed;
-        } else if (typeof t === 'string' && t.startsWith('player-')) {
-            const pi = parseInt(t.split('-')[1], 10);
-            trainingBaseSeed = (cfg.seed ^ (pi * 0x9E3779B9)) >>> 0;
-        } else {
-            trainingBaseSeed = unsharedTrainingBaseSeed(romSeed);
-        }
+        const romSeed = deriveRomSeed(runSeed, i);
+        const trainingBaseSeed = trainerBaseSeed(rom.artifacts.trainers, {
+            universeSeed,
+            unshared: unsharedTrainingBaseSeed(romSeed),
+        });
         roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics, ctx.audit);
         tick(`Viewer ready (${label})`); await flush();
     }
@@ -403,15 +414,26 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
 // hooks:     { progress, flush, baseData, defaultBaseSeed, unsharedTrainingBaseSeed, generatedAt }
 async function runGeneration(cfg, mcfg, sessionId, hooks = {}) {
     const ctx = resolveContext(hooks);
-    rng.seed(cfg.seed);
+    // T-189 — resolve the two-tier seeds. runSeed is the existing `seed` field (drives
+    // per-ROM content); universeSeed seeds the shared block and falls back to runSeed when
+    // the user did not pin a universe. Seed the RNG from universeSeed so the shared block
+    // (built first) is a pure function of universeSeed.
+    const { runSeed, universeSeed } = resolveSeeds(cfg);
+    ctx.runSeed = runSeed;
+    ctx.universeSeed = universeSeed;
+    rng.seed(universeSeed);
+
+    // Persist the resolved universe seed in the bundle config so it can be reused to extend
+    // the same world; `default` runs have no shared universe.
+    const cfgOut = { ...cfg, universeSeed: cfg.runType === 'default' ? null : universeSeed };
 
     // T-075 — make the sink ambient for the whole run so deep helpers (utils.js, rating.js)
     // can record without threading it through every signature. Cleared in finally.
     setActiveDiagnostics(ctx.diagnostics);
     try {
-        if (cfg.runType === 'default')  return await generateDefault(cfg, mcfg, sessionId, ctx);
-        if (cfg.runType === 'nuzlocke') return await generateNuzlocke(cfg, mcfg, sessionId, ctx);
-        if (cfg.runType === 'soullink') return await generateSoullink(cfg, mcfg, sessionId, ctx);
+        if (cfg.runType === 'default')  return await generateDefault(cfgOut, mcfg, sessionId, ctx);
+        if (cfg.runType === 'nuzlocke') return await generateNuzlocke(cfgOut, mcfg, sessionId, ctx);
+        if (cfg.runType === 'soullink') return await generateSoullink(cfgOut, mcfg, sessionId, ctx);
         throw new Error(`Unknown runType: ${cfg.runType}`);
     } finally {
         clearActiveDiagnostics();
