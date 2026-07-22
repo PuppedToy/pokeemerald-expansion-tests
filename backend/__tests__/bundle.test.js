@@ -121,6 +121,27 @@ test('locationNaming: non-object is rejected', () => {
   assert.equal(okLoc('nope').ok, false);
 });
 
+// ── T-190: tighten the previously-unvalidated top-level contract fields ──────
+test('formatVersion, if present, must be a non-negative integer (T-190)', () => {
+  assert.equal(validateBundle(validBundle({ formatVersion: 2 })).ok, true);
+  assert.equal(validateBundle(validBundle({ formatVersion: -1 })).ok, false);
+  assert.equal(validateBundle(validBundle({ formatVersion: 1.5 })).ok, false);
+  assert.equal(validateBundle(validBundle({ formatVersion: 'two' })).ok, false);
+});
+
+test('generatedAt, if present, must be a bounded string (T-190)', () => {
+  assert.equal(validateBundle(validBundle({ generatedAt: '2026-06-28T00:00:00.000Z' })).ok, true);
+  assert.equal(validateBundle(validBundle({ generatedAt: 123 })).ok, false);
+  assert.equal(validateBundle(validBundle({ generatedAt: 'x'.repeat(100) })).ok, false);
+});
+
+test('appVersion, if present, must be a bounded string or null (T-190)', () => {
+  assert.equal(validateBundle(validBundle({ appVersion: '0.5.0' })).ok, true);
+  assert.equal(validateBundle(validBundle({ appVersion: null })).ok, true);
+  assert.equal(validateBundle(validBundle({ appVersion: 5 })).ok, false);
+  assert.equal(validateBundle(validBundle({ appVersion: 'x'.repeat(40) })).ok, false);
+});
+
 test('isSafeRelPath blocks absolute, traversal and odd chars', () => {
   assert.equal(isSafeRelPath('data/wild.json'), true);
   assert.equal(isSafeRelPath('/etc/passwd'), false);

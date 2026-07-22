@@ -51,3 +51,16 @@ export function extractConfig(parsed) {
     }
     return parsed;
 }
+
+/**
+ * True when `parsed` is a full session bundle (not just a raw config): it carries the
+ * contract version, a non-empty roms array and its config. Used by the "regenerate ROMs
+ * from a bundle" flow (T-190), which needs the WHOLE bundle, unlike Load-config which only
+ * reads `.config`.
+ */
+export function isFullBundle(parsed) {
+    return !!parsed && typeof parsed === 'object'
+        && parsed.formatVersion !== undefined
+        && Array.isArray(parsed.roms) && parsed.roms.length > 0
+        && !!parsed.config && typeof parsed.config === 'object';
+}

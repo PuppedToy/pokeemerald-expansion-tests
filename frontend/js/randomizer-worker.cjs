@@ -28,6 +28,8 @@ self.onmessage = async ({ data: { type, config } }) => {
         if (config.seed == null) {
             config = { ...config, seed: (Math.random() * 0xFFFFFFFF) >>> 0 };
         }
+        // T-190 — stamp app-version provenance (build.js injects it into base-data.json).
+        config = { ...config, appVersion: baseData.appVersion ?? null };
 
         // T-075 — collect this run's warnings/errors (still mirrored to devtools). Returned
         // as a SIBLING of the bundle (never inside it), so the bundle shape is unchanged.

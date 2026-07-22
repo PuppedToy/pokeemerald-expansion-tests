@@ -71,11 +71,15 @@ function attachLocationNaming(cfg, mcfg, roms, romDescriptors) {
 }
 
 function bundle(sessionId, cfg, sharedData, roms, generatedAt) {
+    // T-190 — appVersion is provenance (derived from CHANGELOG upstream), not a user config
+    // option; lift it out of the stored config into a top-level field.
+    const { appVersion = null, ...config } = cfg;
     return {
         formatVersion: 2,
+        appVersion,
         generatedAt,
         sessionId,
-        config: { ...cfg },
+        config,
         sharedData,
         roms,
     };

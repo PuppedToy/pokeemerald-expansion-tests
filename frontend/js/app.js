@@ -71,6 +71,17 @@ let currentWorker = null;
 
 const form = new ConfigForm(document.getElementById('config-form-mount'), {
     onConfigChange(cfg) { currentConfig = cfg; },
+    // T-190 — a full bundle uploaded from the config screen jumps straight to the build step
+    // (bypassing the randomizer Worker); showGenDone() → onBundleReady() persists it and POSTs
+    // /api/produce, so the exact ROMs are rebuilt as-is with no re-randomization.
+    onRegenerateBundle(bundle) {
+        currentBundle = bundle;
+        currentConfig = bundle.config || currentConfig;
+        const err = document.getElementById('gen-error');
+        if (err) err.style.display = 'none';
+        showStep(3);
+        showGenDone();
+    },
 });
 currentConfig = form.getConfig();
 
@@ -388,6 +399,7 @@ function reportDiagnostics(data) {
                 seed: cfg.seed != null ? String(cfg.seed) : null,
                 runType: cfg.runType || null,
                 formatVersion: bundle.formatVersion ?? null,
+                appVersion: bundle.appVersion ?? null,   // T-190 — provenance (was never sent)
                 counts: data.diagnosticsCounts || null,
                 diagnostics: data.diagnostics || [],
             },

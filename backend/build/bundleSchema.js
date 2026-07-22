@@ -18,7 +18,7 @@ const SAFE_PATH = /^[A-Za-z0-9_./-]+$/;
 // (letters/digits/space) and the length (POKEMON_NAME_LENGTH = 12) before the writer ever sees them.
 const SAFE_NICKNAME = /^[A-Za-z0-9 ]{0,12}$/;
 // The frontend's bundle (frontend/js/randomizer-worker.js) emits these top-level keys.
-const TOP_KEYS = new Set(['roms', 'config', 'sharedData', 'sessionId', 'formatVersion', 'generatedAt']);
+const TOP_KEYS = new Set(['roms', 'config', 'sharedData', 'sessionId', 'formatVersion', 'generatedAt', 'appVersion']);
 const REQUIRED_ARTIFACTS = ['pokedex', 'trainers', 'starters', 'wild'];
 
 const isPlainObject = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -108,6 +108,19 @@ export function validateBundle(bundle) {
   }
   if (bundle.sessionId !== undefined && !SAFE_SLUG.test(bundle.sessionId)) {
     errors.push('sessionId must be a safe slug ([A-Za-z0-9_-], max 64 chars)');
+  }
+  // T-190 — the bundle contract fields drive migration/compat (formatVersion) and telemetry
+  // (generatedAt). Previously accepted-but-unvalidated; tighten them now that arbitrary bundles
+  // can be uploaded for regeneration.
+  if (bundle.formatVersion !== undefined && (!Number.isInteger(bundle.formatVersion) || bundle.formatVersion < 0)) {
+    errors.push('formatVersion must be a non-negative integer');
+  }
+  if (bundle.generatedAt !== undefined && (typeof bundle.generatedAt !== 'string' || bundle.generatedAt.length > 40)) {
+    errors.push('generatedAt must be a string (max 40 chars)');
+  }
+  if (bundle.appVersion !== undefined && bundle.appVersion !== null
+      && (typeof bundle.appVersion !== 'string' || bundle.appVersion.length > 32)) {
+    errors.push('appVersion must be a string (max 32 chars) or null');
   }
   if (!Array.isArray(bundle.roms) || bundle.roms.length === 0) {
     errors.push('roms must be a non-empty array');

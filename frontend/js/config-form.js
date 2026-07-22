@@ -1,5 +1,5 @@
 import { storageGet, storageSet } from './storage.js';
-import { downloadConfig, readJsonFile, extractConfig } from './session.js';
+import { downloadConfig, readJsonFile, extractConfig, isFullBundle } from './session.js';
 import { STARTER_NAME_POOLS } from './data/starterNames.js';
 
 const STORAGE_KEY = 'lastConfig';
@@ -407,9 +407,11 @@ export function slowQueueMessage(total, fastMax) {
 }
 
 export class ConfigForm {
-    constructor(containerEl, { onConfigChange } = {}) {
+    constructor(containerEl, { onConfigChange, onRegenerateBundle } = {}) {
         this.container = containerEl;
         this.onConfigChange = onConfigChange ?? (() => {});
+        // T-190 — invoked with a full uploaded bundle to rebuild it as-is (bypasses the randomizer).
+        this.onRegenerateBundle = onRegenerateBundle ?? (() => {});
         this._build();
         this._restore();
         this._wireEvents();
@@ -882,6 +884,13 @@ export class ConfigForm {
   <span id="config-saved-note" style="font-size:12px;color:var(--muted);display:none">Saved ✓</span>
 </div>
 <div class="config-actions-hint field-hint">Save downloads your settings as a <code>.json</code>. Load accepts a saved config <strong>or</strong> a full <code>bundle.json</code> — only its configuration is applied; the rest of the bundle is ignored.</div>
+<div class="regen-actions">
+  <label class="btn btn-ghost" style="cursor:pointer">
+    Regenerate ROMs from a bundle
+    <input type="file" accept=".json" id="upload-bundle" style="display:none">
+  </label>
+  <span class="field-hint regen-actions-hint">Upload a <code>bundle.json</code> to rebuild those exact ROMs as they were — <strong>no re-randomization</strong>. (Use <em>Load</em> above instead if you only want to read its configuration.)</span>
+</div>
 
 <div class="config-accordion">
 
@@ -2128,6 +2137,22 @@ export class ConfigForm {
                 this._save();
             } catch (err) {
                 alert('Could not load config: ' + err.message);
+            }
+            e.target.value = '';
+        });
+
+        // T-190 — regenerate ROMs from a full uploaded bundle (rebuild as-is, no re-randomization).
+        this._q('#upload-bundle').addEventListener('change', async e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            try {
+                const parsed = await readJsonFile(file);
+                if (!isFullBundle(parsed)) {
+                    throw new Error('That is not a bundle.json (missing formatVersion / roms / config). To load only its settings, use Load instead.');
+                }
+                this.onRegenerateBundle(parsed);
+            } catch (err) {
+                alert('Could not regenerate from bundle: ' + err.message);
             }
             e.target.value = '';
         });

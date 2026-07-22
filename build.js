@@ -27,6 +27,7 @@ async function main() {
     // ── Step 1: Parse base data ────────────────────────────────────────────────
     console.log('[build] Parsing base game data...');
     const { parseBaseData } = require('./randomizer/modules/pokedexModule.js');
+    const { readAppVersion } = require('./randomizer/appVersion');
     const data = await parseBaseData();
 
     // Strip tmPool (it's a Set — not JSON-serializable) and any other non-JSON values
@@ -43,6 +44,7 @@ async function main() {
         allPokes:         data.allPokes,
         tmLocations:      data.tmLocations,
         capLevels:        data.capLevels,   // T-149 — caps SSOT levels for browser-safe trainer-level derivation
+        appVersion:       readAppVersion(),  // T-190 — provenance stamp; the worker copies it onto the bundle
     };
 
     fs.mkdirSync(FRONT_DATA, { recursive: true });

@@ -519,3 +519,20 @@ test('T-189: universeSeed round-trips through DEFAULTS, getConfig (base) and set
   const occurrences = (src.match(/universeSeed/g) || []).length;
   assert.ok(occurrences >= 3, `universeSeed must appear in DEFAULTS, getConfig and setConfig (found ${occurrences})`);
 });
+
+// ── T-190 — Regenerate ROMs from a bundle (distinct from Load-config) ─────────────
+
+test('T-190: a "Regenerate ROMs from a bundle" upload control exists, separate from Load', () => {
+  assert.match(src, /id="upload-bundle"/, 'a separate bundle upload input (not #upload-config)');
+  assert.match(src, /Regenerate ROMs from a bundle/, 'a labelled regenerate control');
+  const i = src.indexOf('id="upload-bundle"');
+  const near = src.slice(Math.max(0, i - 500), i + 500);
+  assert.match(near, /no re-randomization/i, 'the hint clarifies it rebuilds the bundle as-is');
+});
+
+test('T-190: the regenerate handler guards with isFullBundle and invokes onRegenerateBundle', () => {
+  assert.match(src, /isFullBundle/, 'the handler guards uploads with isFullBundle');
+  assert.match(src, /this\.onRegenerateBundle\(/, 'it invokes the onRegenerateBundle callback with the bundle');
+  const n = (src.match(/onRegenerateBundle/g) || []).length;
+  assert.ok(n >= 3, `onRegenerateBundle must be a constructor option, stored and invoked (found ${n})`);
+});
