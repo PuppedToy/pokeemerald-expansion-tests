@@ -9,6 +9,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **You can now rebuild the exact same ROMs from a bundle, without re-randomizing.** A new
+  "Regenerate ROMs from a bundle" button on the config screen accepts a `bundle.json` (the same file
+  the app already puts in your docs download) and rebuilds those exact ROMs as they were — same
+  Pokémon, trainers, encounters, everything. It is different from **Load**, which only reads a
+  bundle's settings and ignores the rest. Each generated bundle now also records the app version it
+  was made with. (T-190)
+
 - **Nuzlocke and Soul-Link now have a "Universe seed" you can reuse to grow the same world.**
   Randomization now uses two seeds: the **Universe seed** fixes the shared world (Pokédex, trainer
   teams and starters), while the ordinary **Seed** drives each ROM's wild encounters. Generate a

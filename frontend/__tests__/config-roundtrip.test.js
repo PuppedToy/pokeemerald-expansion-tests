@@ -7,7 +7,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { extractConfig } from '../js/session.js';
+import { extractConfig, isFullBundle } from '../js/session.js';
 
 const FULL_CONFIG = {
     runType: 'default',
@@ -85,6 +85,16 @@ test('extractConfig passes through a raw config object', () => {
 test('extractConfig pulls the config out of a full session bundle', () => {
     const bundle = { formatVersion: 2, generatedAt: 'x', sessionId: 's', config: FULL_CONFIG, roms: [] };
     assert.deepEqual(extractConfig(bundle), FULL_CONFIG);
+});
+
+// ── T-190 — isFullBundle gates the "regenerate from bundle" flow ──────────────
+test('T-190: isFullBundle accepts a full bundle and rejects a bare config / empty roms', () => {
+    const bundle = { formatVersion: 2, sessionId: 's', config: FULL_CONFIG, roms: [{ romIndex: 0, artifacts: {} }] };
+    assert.equal(isFullBundle(bundle), true);
+    assert.equal(isFullBundle(FULL_CONFIG), false, 'a raw config is not a bundle');
+    assert.equal(isFullBundle({ formatVersion: 2, config: FULL_CONFIG, roms: [] }), false, 'empty roms is not buildable');
+    assert.equal(isFullBundle({ config: FULL_CONFIG, roms: [{}] }), false, 'missing formatVersion');
+    assert.equal(isFullBundle(null), false);
 });
 
 test('nested option objects round-trip deeply (no shallow loss)', () => {

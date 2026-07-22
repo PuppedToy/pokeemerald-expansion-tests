@@ -173,8 +173,9 @@ export async function runGeneration(jobId, frontendConfig) {
 // backend's historical seed choices — default and per-ROM trainers use a null base
 // seed here, whereas the browser worker uses cfg.seed / romSeed.
 async function orchestrate(job, cfg) {
+    const { readAppVersion } = require('../randomizer/appVersion');
     const baseSeed = cfg.seed ?? Math.floor(Math.random() * 0xFFFFFFFF);
-    cfg = { ...cfg, seed: baseSeed };
+    cfg = { ...cfg, seed: baseSeed, appVersion: readAppVersion() };   // T-190 — provenance stamp
 
     const moduleConfig = toModuleConfig(cfg, baseSeed);
     const sessionId = crypto.randomUUID();

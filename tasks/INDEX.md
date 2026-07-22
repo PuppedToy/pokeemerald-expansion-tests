@@ -192,5 +192,5 @@
 | [T-187](T-187-move-mutation.md) | Move mutation — mutate move power/accuracy/type/category before pokemon, surfaced in docs and written to ROM | in-progress | 0.6.0 | 2026-07-22 |
 | [T-188](T-188-config-actions-above-run-type.md) | Move Save/Load/Reset above Run type + bundle-aware config messages | in-progress | 0.6.0 | 2026-07-22 |
 | [T-189](T-189-two-tier-seed-model.md) | Two-tier seed model (universe seed + run seed) | proposed | 0.6.0 | 2026-07-22 |
-| [T-190](T-190-regenerate-from-bundle-version-stamping.md) | Regenerate ROMs from an uploaded bundle + version stamping | proposed | 0.6.0 | 2026-07-22 |
+| [T-190](T-190-regenerate-from-bundle-version-stamping.md) | Regenerate ROMs from an uploaded bundle + version stamping | in-progress | 0.6.0 | 2026-07-22 |
 | [T-191](T-191-bundle-migration-version-drift-check.md) | Bundle/config migration framework + deterministic version-drift check | proposed | 0.6.0 | 2026-07-22 |
