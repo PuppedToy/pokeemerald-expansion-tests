@@ -48,6 +48,7 @@ Acceptance criteria:
 <!-- Append-only. Never rewrite past entries. Record decisions, findings AND dead ends. -->
 
 - **2026-07-22** — Task created; design locked in the standardization design discussion. Starting first (isolated, low risk).
+- **2026-07-22** — Implemented: `.config-actions` moved to the top of `ConfigForm._build()` (before the accordion, below the step indicator) + a `bundle.json` hint line; `.config-actions` restyled from footer to header in `layout.css`. Added T-188 structural tests (order/top/ids/hint/CSS) — Red first, then Green. Frontend `node --test` 109/0, `randomizer npm test` 1557 passed. Merged to master (`merge: T-188`). Awaiting the batch manual-test before closing.
 
 ## Outcome
 
