@@ -2,7 +2,7 @@
 
 const { randomizeItems } = require('../itemRandomizer');
 const trainers = require('../trainers');
-const { getDifficultyTransform, getBagSizeOffset, applyTransform } = require('../presets');
+const { getDifficultyTransform, getBagSizeOffset, applyTransform, getNonBossQualityShift, trimTeamToSize } = require('../presets');
 const { resolveTrainerColors } = require('../trainerColors');
 const { assignBattleTypes, unifyRivalBattleTypes, runAndBunE4Split, gauntletTagOf } = require('../battleFormat');
 
@@ -65,6 +65,49 @@ function runTrainersModule(pokedexArtifact, config) {
             // applyTransform shifts both contextualTier and single-tier absoluteTier slots (B-001),
             // so difficulty scales every non-exempt trainer; evolutionTier slots and megas stay fixed.
             trainer.team = applyTransform(trainer.team, delta, direction, numShifts);
+        }
+    }
+
+    // T-186 — difficulty settings applied to every real trainer. Copy trainers (no own team/level —
+    // they inherit their resolved target) and battle partners/allies (not enemies) are always skipped.
+    // These operate on the slot-spec team BEFORE species resolution (resolveTrainerTeam.js) and before
+    // battle-type assignment below, so a team shrunk to 1 shows singles everywhere and the modified level
+    // flows straight into the ROM .party and the docs. All defaults are byte-identical no-ops.
+    const isAlly = (t) => t.isPartner === true;
+
+    // (2) Non-boss QUALITY modifier — non-bosses sit `nonBossQuality` quality steps below their split's
+    // fair boss (default −2, already baked into the non-boss presets). Re-apply only the difference from
+    // −2 on non-boss teams, composing on top of the difficulty transform above. Bosses are untouched.
+    const nonBossShift = getNonBossQualityShift(config.nonBossQuality);
+    if (nonBossShift.numShifts > 0) {
+        for (const trainer of trainersData) {
+            if (trainer.isBoss || isAlly(trainer) || !Array.isArray(trainer.team)) continue;
+            trainer.team = applyTransform(trainer.team, nonBossShift.delta, nonBossShift.direction, nonBossShift.numShifts);
+        }
+    }
+
+    // (3/4) Team SIZE — trim each team to the boss / non-boss cap (1–6, default 6) by dropping the
+    // weakest slots (the mega ace and curated slots outrank ordinary tiers, so they survive). Runs
+    // before battle-type assignment so doubles eligibility (needs ≥2 mons) reflects the trimmed size.
+    const bossTeamSize = config.bossTeamSize ?? 6;
+    const nonBossTeamSize = config.nonBossTeamSize ?? 6;
+    if (bossTeamSize < 6 || nonBossTeamSize < 6) {
+        for (const trainer of trainersData) {
+            if (isAlly(trainer) || !Array.isArray(trainer.team)) continue;
+            trainer.team = trimTeamToSize(trainer.team, trainer.isBoss ? bossTeamSize : nonBossTeamSize);
+        }
+    }
+
+    // (5/6) LEVEL modifier — shift boss / non-boss trainer levels relative to their segment cap (default
+    // 0; may be negative). Owner spec: applies to the exempt story trainers too (rival/Wally/Granite
+    // Steven), never to allies. Final level clamped to [1, 100].
+    const bossLevelModifier = config.bossLevelModifier ?? 0;
+    const nonBossLevelModifier = config.nonBossLevelModifier ?? 0;
+    if (bossLevelModifier !== 0 || nonBossLevelModifier !== 0) {
+        for (const trainer of trainersData) {
+            if (isAlly(trainer) || typeof trainer.level !== 'number') continue;
+            const mod = trainer.isBoss ? bossLevelModifier : nonBossLevelModifier;
+            trainer.level = Math.max(1, Math.min(100, trainer.level + mod));
         }
     }
 

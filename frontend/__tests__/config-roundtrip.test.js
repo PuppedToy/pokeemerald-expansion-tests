@@ -12,6 +12,11 @@ import { extractConfig } from '../js/session.js';
 const FULL_CONFIG = {
     runType: 'default',
     difficulty: 10,
+    nonBossQuality: -4,       // T-186
+    bossTeamSize: 5,          // T-186
+    nonBossTeamSize: 3,       // T-186
+    bossLevelModifier: 4,     // T-186
+    nonBossLevelModifier: -2, // T-186
     rebalance: true,
     balanceChance: 0.35,
     mutateStats: true,
@@ -91,6 +96,11 @@ test('nested option objects round-trip deeply (no shallow loss)', () => {
     assert.equal(round.starterQuality, 'OU');
     assert.equal(round.wildEncounterType, 'classic');   // T-162
     assert.equal(round.pokemonPerZone, 8);               // T-162
+    assert.equal(round.nonBossQuality, -4);              // T-186
+    assert.equal(round.bossTeamSize, 5);                 // T-186
+    assert.equal(round.nonBossTeamSize, 3);              // T-186
+    assert.equal(round.bossLevelModifier, 4);            // T-186
+    assert.equal(round.nonBossLevelModifier, -2);        // T-186
     assert.deepEqual(round.aquaTypes, ['GRASS', 'FIRE', 'RANDOM', 'WATER', 'ICE']);
     assert.equal(round.disableStevenTagBattle, true);   // T-165
     assert.deepEqual(round.money, { normal: 500, boss: 4000, gym: 7500 });

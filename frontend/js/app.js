@@ -495,6 +495,21 @@ function reviewRowsHtml(cfg) {
     }
 
     rows.push(['Difficulty',      String(cfg.difficulty)]);
+    // T-186 — difficulty settings. Non-boss quality shows always (a headline knob, like Difficulty);
+    // team size / level modifiers surface only when set away from their defaults, to keep the summary tidy.
+    const nonBossQuality = cfg.nonBossQuality ?? -2;
+    rows.push(['Non-boss quality', nonBossQuality === 0 ? 'Same as boss' : `${nonBossQuality} steps`]);
+    const bossTeamSize = cfg.bossTeamSize ?? 6;
+    const nonBossTeamSize = cfg.nonBossTeamSize ?? 6;
+    if (bossTeamSize !== 6 || nonBossTeamSize !== 6) {
+        rows.push(['Team size (boss / non-boss)', `${bossTeamSize} / ${nonBossTeamSize}`]);
+    }
+    const bossLevelModifier = cfg.bossLevelModifier ?? 0;
+    const nonBossLevelModifier = cfg.nonBossLevelModifier ?? 0;
+    if (bossLevelModifier !== 0 || nonBossLevelModifier !== 0) {
+        const fmtMod = n => (n > 0 ? `+${n}` : String(n));
+        rows.push(['Level modifier (boss / non-boss)', `${fmtMod(bossLevelModifier)} / ${fmtMod(nonBossLevelModifier)}`]);
+    }
     rows.push(['Rebalance stats', cfg.rebalance ? 'Yes' : 'No']);
     if (cfg.rebalance) {
         rows.push(['Balance chance', Math.round(cfg.balanceChance * 100) + '%']);

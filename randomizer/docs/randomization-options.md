@@ -18,6 +18,27 @@ at build time.
 
 ## Categories & options
 
+### Difficulty (T-186)
+SoT: `randomizer/modules/trainersModule.js` `runTrainersModule` (the single seam where the difficulty
+transform already runs), with pure helpers in `randomizer/presets.js`. All six knobs mutate the trainer
+slot-specs / `trainer.level` *before* species resolution (`resolveTrainerTeam.js`), so they flow into both
+the ROM `.party` and the docs with no writer/docs changes. **Copy trainers** (they inherit their resolved
+target) and **battle partners/allies** (`isPartner`) are never touched. **Every default reproduces the
+previous ROM byte-for-byte** (no extra RNG draws).
+
+| Config key | Default | Effect |
+|---|---|---|
+| `difficulty` | 7 (fair) | **General quality** (1–13). `getDifficultyTransform(level)` shifts `|level−7|` slots by one tier (down below 7, up above 7) on every non-exempt trainer, and offsets item bags (`getBagSizeOffset`). Pre-existing. |
+| `nonBossQuality` | **−2** | **Non-boss quality** (−6..0). Quality steps an ordinary trainer sits below its split's fair boss. −2 is the offset `easyTransform` already bakes into the non-boss presets, so only the *difference* `modifier − (−2)` is re-applied on non-boss teams via `applyTransform` (same slot-shift mechanism as `difficulty`); −2 ⇒ 0 shifts ⇒ no-op. Bosses untouched. |
+| `bossTeamSize` / `nonBossTeamSize` | 6 / 6 | **Team size** (1–6). `trimTeamToSize` drops the weakest slots of boss / non-boss teams, keeping the strongest in original order. The mega ace and curated slots (evolutionTier / oneOf / specific / special) outrank every ordinary tier, so an ace is never trimmed before an ordinary mon; never below 1. Runs before battle-type assignment, so a team shrunk to 1 shows singles everywhere. 6 ⇒ no trim. |
+| `bossLevelModifier` / `nonBossLevelModifier` | 0 / 0 | **Level modifier** (integer, may be negative). Added to boss / non-boss `trainer.level` (which tracks its segment's cap), clamped to [1, 100]. `+3` puts a boss three levels above the player's cap at that point — intended; the docs' level-cap readout is the *player's* cap and is unchanged. **Owner decision (T-186): applies to the exempt story trainers too** (rival / Wally / Granite-Cave Steven); Champion Steven is a normal boss. |
+
+Threads `config-form.js` (Difficulty panel: general + non-boss quality sliders in the main body, team
+size + level modifiers in a scoped **Advanced** sub-panel) → both `toModuleConfig`s (browser worker +
+backend) → `runTrainersModule`. Round-trips via Save/Load + `lastConfig`; surfaced in the run summary
+(`app.js`). Non-default values change the number/order of RNG draws (fewer team slots resolve, modified
+levels change move/evo legality), so a given seed's ROM differs from the default — expected.
+
 ### Pokémon mutations
 Master toggle = `rebalance`; `balanceChance` (0.2) is the per-Pokémon gate. Four category toggles,
 all default **on** (SoT: `randomizer/rebalancer.js`, invoked `modules/pokedexModule.js`):

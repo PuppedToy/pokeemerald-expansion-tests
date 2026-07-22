@@ -251,6 +251,15 @@ const DEFAULTS = {
     wildEncounterType: 'deterministic',
     pokemonPerZone: 5,
     difficulty: 7,
+    // T-186 — difficulty settings. nonBossQuality: quality steps a non-boss sits below its split's fair
+    // boss (default −2 = today's behaviour, range −6..0). boss/nonBossTeamSize: cap each team to 1–6,
+    // dropping the weakest (default 6 = no trim). boss/nonBossLevelModifier: shift boss / non-boss trainer
+    // levels vs the cap (default 0, may be negative). All defaults reproduce the previous ROM.
+    nonBossQuality: -2,
+    bossTeamSize: 6,
+    nonBossTeamSize: 6,
+    bossLevelModifier: 0,
+    nonBossLevelModifier: 0,
     rebalance: true,
     balanceChance: 0.2,
     // T-052 — Pokémon mutation category toggles (only apply when rebalance is on)
@@ -311,6 +320,15 @@ function getDifficultyDesc(level) {
     if (level === 7) return 'In fair difficulty, trainers are expected to have access to the same quality of Pokémon the player has access to.';
     const dir = level < 7 ? 'below' : 'above';
     return `Each trainer will have ${n} Pokémon ${dir} the player's expected team quality.`;
+}
+
+// T-186 — non-boss quality modifier: how many quality steps an ordinary trainer sits below its area's
+// boss (0 = same quality as the boss; −2 is the historical default).
+function getNonBossQualityDesc(modifier) {
+    const m = Number(modifier);
+    if (m === 0) return 'Ordinary trainers use the same Pokémon quality as their area’s boss.';
+    const n = Math.abs(m);
+    return `Ordinary trainers use Pokémon ${n} quality step${n === 1 ? '' : 's'} below their area’s boss.`;
 }
 
 // T-081 — clamp a raw numeric field value into [min,max]. Returns the clamped Number, or null when
@@ -386,6 +404,12 @@ export class ConfigForm {
         const wildEncounterType = this._q('input[name="wild-encounter-type"]:checked')?.value ?? 'deterministic';
         const pokemonPerZone = this._intField('#pokemon-per-zone', 5, 2, 12);
         const difficulty = parseInt(this._q('#difficultySlider')?.value ?? '7', 10);
+        // T-186 — difficulty settings.
+        const nonBossQuality = this._intField('#nonBossQualitySlider', -2, -6, 0);
+        const bossTeamSize = this._intField('#boss-team-size', 6, 1, 6);
+        const nonBossTeamSize = this._intField('#non-boss-team-size', 6, 1, 6);
+        const bossLevelModifier = this._intField('#boss-level-modifier', 0, -30, 30);
+        const nonBossLevelModifier = this._intField('#non-boss-level-modifier', 0, -30, 30);
         const rebalance = this._q('#rebalance').checked;
         const balanceChance = rebalance
             ? Math.round(parseInt(this._q('#balance-chance').value, 10)) / 100
@@ -420,7 +444,8 @@ export class ConfigForm {
         const starterQuality = EXTRA_STARTER_TIER_OPTIONS.includes(starterQualityRaw) ? starterQualityRaw : 'UU';
         const nicknames = this._readNicknames();
         const prices = this._readPrices();
-        const base = { runType, battleFormat, singlesPercent, leagueRunAndBun, mixedSequentialSplit, wildEncounterType, pokemonPerZone, difficulty, rebalance, balanceChance,
+        const base = { runType, battleFormat, singlesPercent, leagueRunAndBun, mixedSequentialSplit, wildEncounterType, pokemonPerZone, difficulty,
+            nonBossQuality, bossTeamSize, nonBossTeamSize, bossLevelModifier, nonBossLevelModifier, rebalance, balanceChance,
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs, evoLevels,
             money, prices, moveRelearnPrice, starterQuality, extraStarters, seed, docsVisibility, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, disableStevenTagBattle, nicknames };
 
@@ -480,6 +505,12 @@ export class ConfigForm {
 
         const slider = this._q('#difficultySlider');
         if (slider) slider.value = cfg.difficulty ?? 7;
+        // T-186 — difficulty settings.
+        const nbq = this._q('#nonBossQualitySlider'); if (nbq) nbq.value = cfg.nonBossQuality ?? -2;
+        const bts = this._q('#boss-team-size'); if (bts) bts.value = cfg.bossTeamSize ?? 6;
+        const nbts = this._q('#non-boss-team-size'); if (nbts) nbts.value = cfg.nonBossTeamSize ?? 6;
+        const blm = this._q('#boss-level-modifier'); if (blm) blm.value = cfg.bossLevelModifier ?? 0;
+        const nblm = this._q('#non-boss-level-modifier'); if (nblm) nblm.value = cfg.nonBossLevelModifier ?? 0;
 
         this._q('#rebalance').checked = cfg.rebalance !== false;
         this._q('#balance-chance').value = Math.round((cfg.balanceChance ?? 0.2) * 100);
@@ -1005,6 +1036,9 @@ export class ConfigForm {
     <span class="config-cat-title">Difficulty</span><span class="config-cat-arrow">▶</span>
   </button>
   <div class="config-cat-body" id="cat-body-difficulty">
+
+  <!-- 1. General Pokémon quality (affects every trainer at once). -->
+  <label style="font-weight:600;display:block;margin-bottom:8px">General Pokémon quality</label>
   <div class="difficulty-slider-wrap">
     <input type="range" name="difficulty" id="difficultySlider" min="1" max="13" value="7" step="1">
     <div class="difficulty-ticks">
@@ -1016,6 +1050,53 @@ export class ConfigForm {
     </div>
     <p id="difficultyDesc" class="difficulty-desc"></p>
   </div>
+
+  <!-- 2. Non-boss quality modifier (extra quality gap for ordinary trainers vs their area's boss). -->
+  <label style="font-weight:600;display:block;margin:18px 0 8px">Non-boss quality modifier</label>
+  <div class="difficulty-slider-wrap">
+    <input type="range" name="nonBossQuality" id="nonBossQualitySlider" min="-6" max="0" value="-2" step="1">
+    <div class="difficulty-ticks">
+      <span>-6<br><small>Much weaker</small></span>
+      <span>-4</span>
+      <span>-2<br><small>Default</small></span>
+      <span>0<br><small>Same as boss</small></span>
+    </div>
+    <p id="nonBossQualityDesc" class="difficulty-desc"></p>
+  </div>
+
+  <!-- Advanced: per-team size caps and level offsets for bosses vs. ordinary trainers. -->
+  <div class="form-section" style="margin-top:16px">
+    <button type="button" class="collapsible-toggle" id="difficulty-advanced-toggle" aria-expanded="false">
+      <span class="arrow">▶</span>
+      Advanced
+    </button>
+    <div class="collapsible-body hidden" id="difficulty-advanced-body">
+      <div class="card-glass" style="margin-top:12px;padding:20px;display:flex;flex-direction:column;gap:18px">
+        <div>
+          <label for="boss-team-size">Boss team size: <span id="boss-team-size-val">6</span></label>
+          <input type="range" id="boss-team-size" min="1" max="6" value="6" step="1" style="width:100%">
+        </div>
+        <div>
+          <label for="non-boss-team-size">Non-boss team size: <span id="non-boss-team-size-val">6</span></label>
+          <input type="range" id="non-boss-team-size" min="1" max="6" value="6" step="1" style="width:100%">
+        </div>
+        <span class="field-hint">Teams with a smaller cap keep their strongest Pokémon and drop the weakest of their budget.</span>
+
+        <div style="display:flex;gap:20px;flex-wrap:wrap">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label for="boss-level-modifier">Boss level modifier</label>
+            <input type="number" id="boss-level-modifier" class="input" min="-30" max="30" step="1" value="0" style="width:110px">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label for="non-boss-level-modifier">Non-boss level modifier</label>
+            <input type="number" id="non-boss-level-modifier" class="input" min="-30" max="30" step="1" value="0" style="width:110px">
+          </div>
+        </div>
+        <span class="field-hint">Levels relative to the cap in force when the player reaches each trainer (may be negative). +3 puts a boss three levels above the cap.</span>
+      </div>
+    </div>
+  </div>
+
   </div>
 </section>
 
@@ -1533,6 +1614,14 @@ export class ConfigForm {
         const descEl = this._q('#difficultyDesc');
         if (descEl) descEl.textContent = getDifficultyDesc(diffLevel);
 
+        // T-186 — non-boss quality description + advanced team-size value readouts.
+        const nbqEl = this._q('#nonBossQualityDesc');
+        if (nbqEl) nbqEl.textContent = getNonBossQualityDesc(parseInt(this._q('#nonBossQualitySlider')?.value ?? '-2', 10));
+        const btsVal = this._q('#boss-team-size-val');
+        if (btsVal) btsVal.textContent = this._q('#boss-team-size')?.value ?? '6';
+        const nbtsVal = this._q('#non-boss-team-size-val');
+        if (nbtsVal) nbtsVal.textContent = this._q('#non-boss-team-size')?.value ?? '6';
+
         // T-068/T-070 — nicknames: master toggle shows the box; run-type gates the sharing switches;
         // "different per gender" swaps the tabbed pools ↔ the single pool. Location naming (autoLocation)
         // lives in the same box; "lock gender per route" is only usable with autoLocation + differentPerGender.
@@ -1685,6 +1774,12 @@ export class ConfigForm {
         this._q('#sl-rom-share-trainers').addEventListener('change', onChange);
         this._q('#sl-rom-share-starters').addEventListener('change', onChange);
         this._q('#difficultySlider').addEventListener('input', onChange);
+        // T-186 — difficulty settings.
+        this._q('#nonBossQualitySlider')?.addEventListener('input', onChange);
+        this._q('#boss-team-size')?.addEventListener('input', onChange);
+        this._q('#non-boss-team-size')?.addEventListener('input', onChange);
+        this._q('#boss-level-modifier')?.addEventListener('input', onChange);
+        this._q('#non-boss-level-modifier')?.addEventListener('input', onChange);
         this._q('#rebalance').addEventListener('change', onChange);
         this._q('#balance-chance').addEventListener('input', onChange);
         this._q('#mutate-stats').addEventListener('change', onChange);
@@ -1789,7 +1884,7 @@ export class ConfigForm {
 
         // Scoped "Advanced" sub-panel inside Pokémon mutations (T-052). Evolution levels gets its
         // own in a later step; both reuse the .collapsible-toggle / .collapsible-body pattern.
-        for (const id of ['mutations-advanced', 'evolution-advanced']) {
+        for (const id of ['mutations-advanced', 'evolution-advanced', 'difficulty-advanced']) {
             const toggle = this._q(`#${id}-toggle`);
             const body = this._q(`#${id}-body`);
             if (!toggle || !body) continue;

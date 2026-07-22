@@ -371,3 +371,35 @@ test('T-163: docsVisibility round-trips via _read/_setDocsVisibility, migrates t
   assert.match(workerSrc, /docsVisibility/, 'browser worker toModuleConfig must forward docsVisibility');
   assert.match(backendSrc, /docsVisibility/, 'backend generator toModuleConfig must forward docsVisibility');
 });
+
+// ── T-186 — Difficulty settings (non-boss quality, boss/non-boss team size & level modifiers) ──
+
+test('T-186: Difficulty category exposes the non-boss quality slider + Advanced size/level controls', () => {
+  const idx = src.indexOf('data-cat="difficulty"');
+  assert.ok(idx > 0, 'Difficulty category must exist');
+  const block = src.slice(idx, idx + 5000);
+  assert.match(block, /id="difficultySlider"/, 'the general quality slider stays');
+  assert.match(block, /id="nonBossQualitySlider"[^>]*min="-6"[^>]*max="0"[^>]*value="-2"/, 'non-boss quality slider -6..0 default -2');
+  assert.match(block, /id="difficulty-advanced-toggle"/, 'Difficulty has a scoped Advanced toggle');
+  assert.match(block, /id="difficulty-advanced-body"/, 'Difficulty has a scoped Advanced body');
+  assert.match(block, /id="boss-team-size"[^>]*min="1"[^>]*max="6"/, 'boss team-size slider 1-6');
+  assert.match(block, /id="non-boss-team-size"[^>]*min="1"[^>]*max="6"/, 'non-boss team-size slider 1-6');
+  assert.match(block, /id="boss-level-modifier"/, 'boss level modifier input');
+  assert.match(block, /id="non-boss-level-modifier"/, 'non-boss level modifier input');
+});
+
+test('T-186: difficulty-settings keys round-trip through DEFAULTS/getConfig/setConfig and both engines', () => {
+  const workerSrc = fs.readFileSync(path.join(FE, 'js', 'randomizer-worker.cjs'), 'utf8');
+  const backendSrc = fs.readFileSync(path.join(FE, '..', 'backend', 'generator.js'), 'utf8');
+  for (const key of ['nonBossQuality', 'bossTeamSize', 'nonBossTeamSize', 'bossLevelModifier', 'nonBossLevelModifier']) {
+    const occurrences = (src.match(new RegExp(key, 'g')) || []).length;
+    assert.ok(occurrences >= 3, `${key} must appear in DEFAULTS, getConfig and setConfig (found ${occurrences})`);
+    assert.match(workerSrc, new RegExp(key), `browser worker toModuleConfig must forward ${key}`);
+    assert.match(backendSrc, new RegExp(key), `backend generator toModuleConfig must forward ${key}`);
+  }
+  assert.match(src, /nonBossQuality:\s*-2/, 'default non-boss quality -2');
+  assert.match(src, /bossTeamSize:\s*6/, 'default boss team size 6');
+  assert.match(src, /nonBossTeamSize:\s*6/, 'default non-boss team size 6');
+  assert.match(src, /bossLevelModifier:\s*0/, 'default boss level modifier 0');
+  assert.match(src, /nonBossLevelModifier:\s*0/, 'default non-boss level modifier 0');
+});

@@ -348,3 +348,104 @@ describe('T-150: bosses get Mega OU from the start; normal trainers keep UU→OU
         expect(mega.absoluteTier).not.toContain(TIER_OU);
     });
 });
+
+// ─── T-186 — difficulty settings: non-boss quality shift + team-size trim ─────────────────
+const {
+    getNonBossQualityShift,
+    slotTrimStrength,
+    trimTeamToSize,
+} = require('../../presets');
+const { TIER_SEQ, TIER_NU, TIER_PU, TIER_LEGEND, TIER_AG } = require('../../constants');
+
+describe('getNonBossQualityShift (T-186)', () => {
+    // extraShift = modifier − (−2): default −2 is a no-op; the mechanism composes on top of the
+    // already-baked easyTransform(−2) in the non-boss presets.
+    test('default −2 → no shift (byte-identical)', () => {
+        expect(getNonBossQualityShift(-2)).toEqual({ numShifts: 0, delta: 0, direction: null });
+    });
+
+    test('undefined → treated as −2 (no shift)', () => {
+        expect(getNonBossQualityShift(undefined)).toEqual({ numShifts: 0, delta: 0, direction: null });
+    });
+
+    test('weaker than baseline (−4) shifts DOWN by 2 (top slots)', () => {
+        expect(getNonBossQualityShift(-4)).toEqual({ numShifts: 2, delta: -1, direction: 'top' });
+    });
+
+    test('weakest (−6) shifts DOWN by 4', () => {
+        expect(getNonBossQualityShift(-6)).toEqual({ numShifts: 4, delta: -1, direction: 'top' });
+    });
+
+    test('stronger than baseline (−1) shifts UP by 1 (bottom slots)', () => {
+        expect(getNonBossQualityShift(-1)).toEqual({ numShifts: 1, delta: +1, direction: 'bottom' });
+    });
+
+    test('same quality as boss (0) shifts UP by 2', () => {
+        expect(getNonBossQualityShift(0)).toEqual({ numShifts: 2, delta: +1, direction: 'bottom' });
+    });
+});
+
+describe('slotTrimStrength (T-186)', () => {
+    test('ordinary tier slots rank by TIER_SEQ index', () => {
+        expect(slotTrimStrength({ contextualTier: [TIER_PU] })).toBe(TIER_SEQ.indexOf(TIER_PU));
+        expect(slotTrimStrength({ absoluteTier: [TIER_NU] })).toBe(TIER_SEQ.indexOf(TIER_NU));
+        expect(slotTrimStrength({ absoluteTier: [TIER_LEGEND] })).toBe(TIER_SEQ.indexOf(TIER_LEGEND));
+    });
+
+    test('a higher tier is stronger than a lower tier', () => {
+        expect(slotTrimStrength({ contextualTier: [TIER_LEGEND] }))
+            .toBeGreaterThan(slotTrimStrength({ contextualTier: [TIER_PU] }));
+    });
+
+    test('mega, evolutionTier, oneOf, specific and special slots outrank every ordinary tier (never trimmed first)', () => {
+        const topOrdinary = slotTrimStrength({ absoluteTier: [TIER_AG] });
+        expect(slotTrimStrength({ isMega: true })).toBeGreaterThan(topOrdinary);
+        expect(slotTrimStrength({ evolutionTier: 3 })).toBeGreaterThan(topOrdinary);
+        expect(slotTrimStrength({ oneOf: ['SPECIES_X'] })).toBeGreaterThan(topOrdinary);
+        expect(slotTrimStrength({ specific: 'SPECIES_Y' })).toBeGreaterThan(topOrdinary);
+        expect(slotTrimStrength({ special: 'REPEAT' })).toBeGreaterThan(topOrdinary);
+    });
+
+    test('mega is the single strongest (kept even against an AG ace slot)', () => {
+        expect(slotTrimStrength({ isMega: true }))
+            .toBeGreaterThanOrEqual(slotTrimStrength({ evolutionTier: 3 }));
+    });
+});
+
+describe('trimTeamToSize (T-186)', () => {
+    const NU = { contextualTier: [TIER_NU] };
+    const PU = { contextualTier: [TIER_PU] };
+    const AG = { absoluteTier: [TIER_AG] };
+
+    test('size ≥ team length → same array reference (no trim, byte-identical)', () => {
+        const team = [NU, PU];
+        expect(trimTeamToSize(team, 6)).toBe(team);
+        expect(trimTeamToSize(team, 2)).toBe(team);
+    });
+
+    test('drops the weakest slots, keeps the strongest, preserving original order', () => {
+        // NU(3) PU(2) AG(9) NU(3) → strongest two are AG(idx2) and the first NU(idx0); kept in
+        // ORIGINAL order → [NU, AG] (PU and the second NU are dropped).
+        const team = [NU, PU, AG, NU];
+        expect(trimTeamToSize(team, 2)).toEqual([NU, AG]);
+    });
+
+    test('never trims below 1 and clamps size into [1,6]', () => {
+        const team = [PU, NU, AG];
+        expect(trimTeamToSize(team, 0)).toEqual([AG]);      // clamped to 1 → strongest kept
+        expect(trimTeamToSize(team, -3)).toEqual([AG]);
+    });
+
+    test('keeps the mega ace when shrinking a boss team to 1', () => {
+        const mega = { isMega: true };
+        const team = [{ absoluteTier: [TIER_NU] }, { absoluteTier: [TIER_PU] }, mega];
+        expect(trimTeamToSize(team, 1)).toEqual([mega]);
+    });
+
+    test('does not mutate the input array', () => {
+        const team = [NU, PU, AG];
+        const copy = [...team];
+        trimTeamToSize(team, 1);
+        expect(team).toEqual(copy);
+    });
+});

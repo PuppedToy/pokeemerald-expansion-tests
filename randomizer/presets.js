@@ -87,6 +87,60 @@ function getBagSizeOffset(level) {
 // Non-boss baseline = 2 tiers below the fair boss baseline.
 const easyTransform = team => applyTransform(team, -1, 'top', 2);
 
+// ─── T-186 — difficulty settings ─────────────────────────────────────────────
+// The non-boss QUALITY modifier is the number of quality steps a non-boss trainer sits below its
+// split's fair boss (default −2 — the exact offset easyTransform already bakes into every non-boss
+// preset). Because that −2 is already applied at preset time, only the DIFFERENCE from −2 needs to
+// be re-applied on the assembled team: extraShift = modifier − (−2). Returns the same
+// { numShifts, delta, direction } shape as getDifficultyTransform so trainersModule can reuse
+// applyTransform. Default (−2) ⇒ 0 shifts ⇒ byte-identical.
+function getNonBossQualityShift(modifier) {
+    const m = (modifier === undefined || modifier === null) ? -2 : modifier;
+    const extraShift = m - (-2);
+    if (extraShift > 0) return { numShifts: extraShift, delta: +1, direction: 'bottom' };
+    if (extraShift < 0) return { numShifts: -extraShift, delta: -1, direction: 'top' };
+    return { numShifts: 0, delta: 0, direction: null };
+}
+
+// Trim-ranking strength of a slot: higher = stronger = kept when shrinking a team. Ordinary tier
+// slots rank by their TIER_SEQ index (weakest = lowest); the ace-type slots that primaryTierIdx
+// refuses to move (mega/evolutionTier) and every non-tier curated slot (oneOf/specific/special/…)
+// rank ABOVE all ordinary tiers so an ace is never trimmed before an ordinary mon. The mega ace is
+// the single strongest.
+const TRIM_KEEP = TIER_SEQ.length + 1; // strictly above every ordinary tier index
+function slotTrimStrength(slot) {
+    if (!slot || typeof slot !== 'object') return TRIM_KEEP;
+    if (slot.isMega) return TRIM_KEEP + 1;
+    if (slot.evolutionTier) return TRIM_KEEP;
+    const single = slot.contextualTier?.[0]
+        ?? ((Array.isArray(slot.absoluteTier) && slot.absoluteTier.length === 1) ? slot.absoluteTier[0] : undefined);
+    if (single !== undefined) {
+        const idx = TIER_SEQ.indexOf(single);
+        return idx === -1 ? TRIM_KEEP : idx;
+    }
+    // Multi-tier absoluteTier (non-mega range) → rank by its strongest tier.
+    if (Array.isArray(slot.absoluteTier) && slot.absoluteTier.length > 1) {
+        const idxs = slot.absoluteTier.map(t => TIER_SEQ.indexOf(t)).filter(i => i !== -1);
+        return idxs.length ? Math.max(...idxs) : TRIM_KEEP;
+    }
+    return TRIM_KEEP; // oneOf / specific / special / unknown — curated, protect from trimming
+}
+
+// Shrink a team's slot array to `size` (clamped to 1..6) by dropping the WEAKEST slots, keeping the
+// strongest `size` in their ORIGINAL order (so lead/ace ordering is preserved; ties keep the earlier
+// slot). Never pads: when the team is already ≤ size the SAME array reference is returned unchanged
+// (byte-identical at the default size 6). Pure — does not mutate the input.
+function trimTeamToSize(team, size) {
+    if (!Array.isArray(team)) return team;
+    const target = Math.max(1, Math.min(6, Math.floor(Number(size))));
+    if (!(team.length > target)) return team;
+    const ranked = team
+        .map((slot, i) => ({ i, s: slotTrimStrength(slot) }))
+        .sort((a, b) => (b.s - a.s) || (a.i - b.i));
+    const keep = new Set(ranked.slice(0, target).map(x => x.i));
+    return team.filter((_, i) => keep.has(i));
+}
+
 function getBossTeam(split) {
     return split.fair;
 }
@@ -603,4 +657,8 @@ module.exports = {
     getBagSizeOffset,
     applyTransform,
     bossMega,
+    // T-186 — difficulty settings
+    getNonBossQualityShift,
+    slotTrimStrength,
+    trimTeamToSize,
 };
