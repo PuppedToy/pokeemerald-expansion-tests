@@ -55,6 +55,35 @@ all default **on** (SoT: `randomizer/rebalancer.js`, invoked `modules/pokedexMod
 0.1, `abilityBalanceChance` 0.1, `learnsetBalanceChance` 0.2, `changeTypeMoveFromOldChance` 0.9,
 `changeTypeMoveFromOtherChance` 0.05, `moveInsertChance` 0.5, `moveRatingDeviation` 0.2.
 
+### Move mutation (T-187)
+Master toggle = `mutateMoves` (**default off** — opt-in, unlike `rebalance`). SoT:
+`randomizer/moveMutator.js`, invoked in `modules/pokedexModule.js` `runPokedexModule` **after** the
+`moves` clone and **before** TM annotation / pokemon rating / rebalance — so pokemon, trainers and wild
+all build around the mutated moves. Mutated moves are re-rated (`rateMove`/`rateMoveDoubles`) so
+downstream ratings see their true new value. `moveMutationChance` is the per-move eligibility gate; the
+four field chances then roll independently (a move may combine several changes or none). **Off ⇒ no move
+RNG is drawn ⇒ byte-identical to before.** ROM impact: `randomizer/moveWriter.js` `saveMoveData` rewrites
+only the changed fields in `src/data/moves_info.h` at build time (called from `writer.js`, before
+`savePokemonData`; reverted by the post-build `git checkout -- src/`). Shared-universe: because mutation
+lives inside `makePokedex`, a nuzlocke/soul-link that shares the pokédex ("Same Pokémon universe") runs
+it once and every ROM sees the same mutated moves; per-ROM pokédex ⇒ each ROM mutates independently.
+
+| Config key | Default | Effect |
+|---|---|---|
+| `mutateMoves` | **off** | master toggle; reveals the five controls below. |
+| `moveMutationChance` | 0.10 | per-move gate: chance a move is eligible to mutate at all. |
+| `movePowerChance` | 0.70 | non-status moves only: ±5 power shift with a stacking repeat-gate, clamped [5,250]. ↑ = BUFF, ↓ = NERF. |
+| `moveAccuracyChance` | 0.50 | moves with an accuracy check only (never-miss/acc-0 left alone): ±5 accuracy shift (stacking), clamped [10,100] (never 0). |
+| `moveTypeChance` | 0.10 | change the move's type — uniform over the 18 battle types excluding the current one. Neutral (ADJUSTMENT). |
+| `moveCategoryChance` | 0.10 | non-status moves only: flip Physical↔Special. Neutral (ADJUSTMENT). |
+
+Log/viewer: each mutated move carries a `log` (same `{type,target,oldValue,value}` shape as pokemon), so
+the Moves screen gets the name buffed/nerfed/adjusted badge, per-field strikethrough, an inline change
+log and a buffed/nerfed/adjusted/unmutated filter; the pokemon detail modal's move lines get a single
+mutation icon (right of any add/replace star) plus struck type/power/accuracy. Buffed = all log entries
+BUFF, nerfed = all NERF, else adjusted (so any type/category change ⇒ adjusted) — same `.every()` rule as
+the pokedex. Threads `config-form.js` → both `toModuleConfig`s → `runPokedexModule`; CLI `--mutate-moves`.
+
 ### Evolution levels
 Enable + tuning (SoT: `randomizer/evoLevelWriter.js` + `constants.js` `EVO_LEVEL_*`; gated in
 `generate.js makePokedex`).

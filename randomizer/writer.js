@@ -28,6 +28,7 @@ const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 
 const items = require('./items.js');
 const { savePokemonData } = require('./pokemonWriter.js');
+const { saveMoveData } = require('./moveWriter.js');   // T-187 — persists move mutation to moves_info.h
 const { writeEvoLevels } = require('./evoLevelWriter.js');
 const { applyStarterNames } = require('./starterNameWriter.js');
 
@@ -737,6 +738,11 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     // all data/**/*.inc files. The Makefile's TEACHABLE_DEPS includes those .inc files —
     // if any .inc is newer than teachable_learnsets.h, make_teachables.py regenerates it,
     // wiping the expanded teachables. Writing it last prevents that.
+    // T-187 — persist move mutation to src/data/moves_info.h (no-op when no move changed). Written
+    // before savePokemonData so teachable_learnsets.h remains the last src/ write (timestamp invariant
+    // above). Restored afterwards by make.js restore() (git checkout -- src/).
+    await saveMoveData(moves);
+
     console.log('Writing expanded teachable learnsets to file...');
     await savePokemonData(pokemonList);
 

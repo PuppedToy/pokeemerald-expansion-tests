@@ -8,6 +8,9 @@ const DEFAULTS = {
     difficulty: 7,
     rebalance: true,
     balanceChance: 0.2,
+    // T-187 — move mutation. Off by default; when off no move RNG is drawn (output unchanged). The
+    // per-field probabilities are left undefined here so moveMutator.js supplies its own defaults.
+    mutateMoves: false,
     allTms: false,
     numROMs: 1,
     sharedModules: 4,
@@ -43,6 +46,8 @@ function parseCLIArgs(argv) {
             result.mode = arg.slice('--mode='.length).toLowerCase();
         } else if (arg === '--all-tms') {
             result.allTms = true;
+        } else if (arg === '--mutate-moves') {
+            result.mutateMoves = true;   // T-187 — enable move mutation for an analyze.js run
         }
     }
     return result;

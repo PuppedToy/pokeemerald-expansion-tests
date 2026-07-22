@@ -103,6 +103,14 @@ function toModuleConfig(cfg, seed) {
         mutateTypes: cfg.mutateTypes !== false,
         mutateLearnsets: cfg.mutateLearnsets !== false,
         mutationProbs: cfg.mutationProbs,
+        // T-187 — move mutation (mirrors the browser worker's toModuleConfig). Off by default; the five
+        // per-field probabilities are forwarded raw and default in moveMutator.js when undefined.
+        mutateMoves: cfg.mutateMoves === true,
+        moveMutationChance: cfg.moveMutationChance,
+        movePowerChance: cfg.movePowerChance,
+        moveAccuracyChance: cfg.moveAccuracyChance,
+        moveTypeChance: cfg.moveTypeChance,
+        moveCategoryChance: cfg.moveCategoryChance,
         evoLevels: cfg.evoLevels,
         extraStarters: cfg.extraStarters,
         // T-072 — quality tier for the 3 main starters (family best-evo tier; defaults to UU)

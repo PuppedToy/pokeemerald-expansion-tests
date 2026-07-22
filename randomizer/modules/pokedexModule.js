@@ -8,6 +8,7 @@ const { parseTmLocations } = require('../tmLocations');
 const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
 const { ratePokemon, ratePokemonDoubles, rateContextual, rateContextualDoubles, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, assignSupportTiersDoubles } = require('../rating');
 const { balancePokemon } = require('../rebalancer');
+const { mutateAllMoves } = require('../moveMutator');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
 const { applyMiniorTierBlend, applyMiniorContextualBlend } = require('../minior');
@@ -163,10 +164,37 @@ async function runPokedexModule(config, baseData = null) {
         await fs.writeFile(path.resolve(__dirname, '..', 'teachable_learnsets.json'),   JSON.stringify(baseData.TMTeachables,      null, 2), 'utf-8');
     }
 
-    const { abilities, items, moves, evoTree, megaEvoTree, allPokes: basePokes } = baseData;
+    const { abilities, items, evoTree, megaEvoTree, allPokes: basePokes } = baseData;
 
     // Deep-clone allPokes so we never mutate the shared pre-cooked base data.
     const allPokes = JSON.parse(JSON.stringify(basePokes));
+
+    // T-187 — clone moves too. annotateTmNumbers/tmLocation stamping and the optional move mutation
+    // below all write to this object, and in browser mode the SAME baseData.moves reference is reused
+    // across every ROM of a bundle; cloning per pokedex keeps each ROM's moves independent (and, for a
+    // shared-pokédex nuzlocke/soul-link, makePokedex runs once so every ROM shares one mutated universe).
+    const moves = JSON.parse(JSON.stringify(baseData.moves));
+
+    // 5b. Optional move mutation (T-187) — BEFORE TM annotation, rating and rebalance so pokemon,
+    // trainers and wild encounters all see the mutated power/accuracy/type/category. Off by default;
+    // when off this block is skipped entirely, so no RNG is drawn and output stays byte-identical.
+    if (config.mutateMoves) {
+        mutateAllMoves(moves, {
+            moveMutationChance: config.moveMutationChance,
+            movePowerChance:    config.movePowerChance,
+            moveAccuracyChance: config.moveAccuracyChance,
+            moveTypeChance:     config.moveTypeChance,
+            moveCategoryChance: config.moveCategoryChance,
+        });
+        // Re-rate the moves that actually changed so every downstream rating pass reads their true
+        // new value (move.rating / ratingDoubles were pre-computed off the vanilla stats).
+        Object.keys(moves).forEach(id => {
+            if (moves[id].log) {
+                moves[id].rating = rateMove(moves[id]);
+                moves[id].ratingDoubles = rateMoveDoubles(moves[id]);
+            }
+        });
+    }
 
     // 6. Randomize TMs — Node: writes tms_hms.h + script_menu.h; Browser: RNG only
     let tmList, tmPool;

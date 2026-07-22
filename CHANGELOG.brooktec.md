@@ -9,6 +9,19 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Moves can now be mutated too, just like Pokémon.** A new opt-in "Mutate moves" toggle (off by
+  default) randomly tweaks move **power**, **accuracy**, **type** and **category** before the Pokémon are
+  randomized — so Pokémon, trainers and wild encounters are all built around the changed moves. A general
+  "move change chance" (default 10%) gates whether each move is touched at all; then power (default 70%,
+  non-status only, ±5 steps), accuracy (default 50%, ±5 steps, never turning a move into a never-miss),
+  type (default 10%) and category (default 10%, Physical↔Special on non-status moves) roll independently.
+  Every change is surfaced in the docs exactly like Pokémon mutations: the Moves screen shows a
+  buffed/nerfed/adjusted badge on the name, strikes through each changed field with its new value and
+  colour, lists an inline change log, and adds buffed/nerfed/adjusted/unmutated filters; each move line in
+  a Pokémon's detail modal shows a mutation icon and its struck fields. In a Nuzlocke or Soul-Link, the
+  mutated moves are shared across ROMs whenever "Same Pokémon universe" is on. Off by default reproduces
+  the previous game exactly. (T-187)
+
 - **The Difficulty screen now has six knobs for tuning enemy strength.** Beyond the existing general
   quality slider (which shifts every trainer's Pokémon quality at once), you can now set a **non-boss
   quality modifier** — how many quality steps ordinary trainers sit below their area's boss (default −2).

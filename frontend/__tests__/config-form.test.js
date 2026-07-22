@@ -403,3 +403,20 @@ test('T-186: difficulty-settings keys round-trip through DEFAULTS/getConfig/setC
   assert.match(src, /bossLevelModifier:\s*0/, 'default boss level modifier 0');
   assert.match(src, /nonBossLevelModifier:\s*0/, 'default non-boss level modifier 0');
 });
+
+test('T-187: move-mutation keys round-trip through DEFAULTS/getConfig/setConfig and both engines', () => {
+  const workerSrc = fs.readFileSync(path.join(FE, 'js', 'randomizer-worker.cjs'), 'utf8');
+  const backendSrc = fs.readFileSync(path.join(FE, '..', 'backend', 'generator.js'), 'utf8');
+  for (const key of ['mutateMoves', 'moveMutationChance', 'movePowerChance', 'moveAccuracyChance', 'moveTypeChance', 'moveCategoryChance']) {
+    const occurrences = (src.match(new RegExp(key, 'g')) || []).length;
+    assert.ok(occurrences >= 3, `${key} must appear in DEFAULTS, getConfig and setConfig (found ${occurrences})`);
+    assert.match(workerSrc, new RegExp(key), `browser worker toModuleConfig must forward ${key}`);
+    assert.match(backendSrc, new RegExp(key), `backend generator toModuleConfig must forward ${key}`);
+  }
+  assert.match(src, /mutateMoves:\s*false/, 'move mutation defaults OFF (opt-in)');
+  assert.match(src, /moveMutationChance:\s*0\.10?/, 'default move gate 0.10');
+  assert.match(src, /movePowerChance:\s*0\.70?/, 'default power chance 0.70');
+  assert.match(src, /moveAccuracyChance:\s*0\.50?/, 'default accuracy chance 0.50');
+  assert.match(src, /moveTypeChance:\s*0\.10?/, 'default type chance 0.10');
+  assert.match(src, /moveCategoryChance:\s*0\.10?/, 'default category chance 0.10');
+});
