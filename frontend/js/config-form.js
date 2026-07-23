@@ -231,6 +231,7 @@ const DOCS_VISIBILITY_DEFAULT = {
     showGoodRod: true,
     showOldRod: true,
     showGrass: true,
+    showTrades: true,   // T-194 — town-trade sub-cards on the route/pokemon docs
 };
 
 // [checkbox id, config key] for every docs-visibility boolean toggle (drives _read/_setDocsVisibility
@@ -243,7 +244,7 @@ const DOCS_VISIBILITY_TOGGLES = [
     ['show-wild-encounters', 'showWildEncounters'], ['show-legendary-static', 'showLegendaryStatic'],
     ['show-non-legendary-static', 'showNonLegendaryStatic'], ['show-super-rod', 'showSuperRod'],
     ['show-dive', 'showDive'], ['show-surf', 'showSurf'], ['show-good-rod', 'showGoodRod'],
-    ['show-old-rod', 'showOldRod'], ['show-grass', 'showGrass'],
+    ['show-old-rod', 'showOldRod'], ['show-grass', 'showGrass'], ['show-trades', 'showTrades'],
 ];
 
 export const DEFAULTS = {
@@ -1693,6 +1694,10 @@ export class ConfigForm {
         <div class="toggle-wrap">
           <div><div class="toggle-label">Show grass encounters</div></div>
           <label class="toggle"><input type="checkbox" id="show-grass" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-wrap">
+          <div><div class="toggle-label">Show trades</div><div class="toggle-desc">Off hides the town-trade sub-card from the route cards and the Pokémon modal.</div></div>
+          <label class="toggle"><input type="checkbox" id="show-trades" checked><span class="toggle-track"></span></label>
         </div>
       </div>
     </div>

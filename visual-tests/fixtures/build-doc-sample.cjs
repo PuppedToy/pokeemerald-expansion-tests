@@ -32,6 +32,7 @@ const { runStartersModule } = require(R('randomizer/modules/startersModule.js'))
 const { runWildModule } = require(R('randomizer/modules/wildModule.js'));
 const wildData = require(R('randomizer/wild.js'));
 const { writerDocs } = require(R('randomizer/writerDocs.js'));
+const { selectTrades } = require(R('randomizer/trades.js'));
 
 // ── buildDocHtml + helpers: kept in lock-step with frontend/js/app.js ───────────
 const DOC_OMIT_POKE_FIELDS = new Set([
@@ -112,8 +113,10 @@ async function main() {
         const trainers = runTrainersModule(pokedex, mcfg);
         const starters = runStartersModule(pokedex.pokes);
         const wild = runWildModule(pokedex.pokes, starters, wildData, wildCfg);
+        // T-194 — town trades (mirrors generate.js computeTrades) so the fixture surfaces trade sub-cards.
+        const trades = selectTrades({ pokemonList: pokedex.pokes, wildArtifact: wild, wildMaps: wildData.maps, capLevels: pokedex.capLevels, seed: (seed >>> 0), diagnostics: null });
         rng.seed(seed);
-        const docs = await writerDocs(pokedex, trainers, starters, wild, seed, { showExactPositions: dv?.showExactPositions === true, docsVisibility: dv || undefined });
+        const docs = await writerDocs(pokedex, trainers, starters, wild, seed, { showExactPositions: dv?.showExactPositions === true, docsVisibility: dv || undefined, trades });
         const rom = { romIndex: 0, artifacts: { pokedex, trainers, starters, wild }, docs };
 
         const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText);
