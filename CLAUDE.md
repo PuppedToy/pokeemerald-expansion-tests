@@ -105,7 +105,7 @@ Commit any changes to `src/`, `include/`, or `data/maps/` before running.
 
 These are regenerated from source on every run; committing them pollutes history and corrupts base data.
 
-- **Source mutated by the randomizer/rebalancer:** `src/data/pokemon/species_info/gen_*.h`, `src/data/pokemon/level_up_learnsets/gen_9.h`, `src/data/pokemon/teachable_learnsets.h`, `src/data/trainers.party`, `src/data/wild_encounters.json`, `src/starter_choose.c`, `src/data/script_menu.h`, `include/constants/tms_hms.h`, `data/maps/**/scripts.inc`, `data/maps/**/map.json`.
+- **Source mutated by the randomizer/rebalancer:** `src/data/pokemon/species_info/gen_*.h`, `src/data/pokemon/level_up_learnsets/gen_9.h`, `src/data/pokemon/teachable_learnsets.h`, `src/data/trainers.party`, `src/data/wild_encounters.json`, `src/starter_choose.c`, `src/data/script_menu.h`, `src/data/trade.h` (its `sIngameTrades[]` block — T-194), `include/constants/tms_hms.h`, `data/maps/**/scripts.inc`, `data/maps/**/map.json`.
 - **Randomizer caches:** `randomizer/pokes.json`, `randomizer/level_up_learnsets.json`, `randomizer/teachable_learnsets.json`.
 - **Viewer output (keep locally, not in history):** `randomizer/output/out.html`, `randomizer/output/{pokes,trainers,moves,abilities,wildpokes}.js`.
 

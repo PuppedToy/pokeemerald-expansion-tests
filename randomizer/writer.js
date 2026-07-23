@@ -30,6 +30,7 @@ const items = require('./items.js');
 const { savePokemonData } = require('./pokemonWriter.js');
 const { saveMoveData } = require('./moveWriter.js');   // T-187 — persists move mutation to moves_info.h
 const { writeEvoLevels } = require('./evoLevelWriter.js');
+const { writeTrades } = require('./tradeWriter.js');   // T-194 — per-ROM town-trade data → src/data/trade.h
 const { applyStarterNames } = require('./starterNameWriter.js');
 
 const startersFile = path.resolve(__dirname, '..', 'src', 'starter_choose.c');
@@ -331,6 +332,13 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     // In randomize/analyze mode (no docs) roll them fresh.
     console.log(docs ? 'Writing evolution levels from bundle...' : 'Randomizing evolution levels...');
     await writeEvoLevels(pokemonList, { recompute: !docs });
+
+    // T-194 — write the per-ROM town-trade data into src/data/trade.h (offered species, gym-cap level,
+    // accepted set, message base forms). Restored with the rest of src/ after the run.
+    if (trades && trades.length) {
+        console.log('Writing town trades...');
+        await writeTrades(trades);
+    }
 
     console.log('Updating starter pokemon...');
 
