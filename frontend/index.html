@@ -71,6 +71,22 @@
   </div>
 </div>
 
+<!-- ── Presets modal (T-192) ───────────────────────────────────────────────── -->
+<div class="modal-overlay" id="presets-modal" hidden>
+  <div class="modal modal-lg card">
+    <button class="modal-close" id="presets-close" aria-label="Close">×</button>
+    <div class="presets-header">
+      <div class="section-title" id="presets-title">Presets</div>
+    </div>
+    <div class="auth-tabs presets-tabs" id="presets-tabs">
+      <button class="auth-tab active" data-presets-tab="mine">My Presets</button>
+      <button class="auth-tab" data-presets-tab="official">Recommended</button>
+      <button class="auth-tab" data-presets-tab="community">Community</button>
+    </div>
+    <div class="presets-body" id="presets-body"></div>
+  </div>
+</div>
+
 <div class="page-wrap">
 
   <!-- ── Landing ─────────────────────────────────────────────────────────── -->
@@ -156,6 +172,7 @@
         <div class="wizard-nav">
           <div></div>
           <div class="wizard-nav-right">
+            <button class="btn btn-ghost" id="btn-save-preset">Save Preset</button>
             <button class="btn btn-primary" id="btn-to-review">Review →</button>
           </div>
         </div>

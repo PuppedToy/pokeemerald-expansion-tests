@@ -1,7 +1,8 @@
-import { ConfigForm, totalRoms } from './config-form.js';
+import { ConfigForm, totalRoms, DEFAULTS } from './config-form.js';
 import { resolveArtifact } from './session.js';
 import { initAccount, onBundleReady, getStoredBundle, getAuthState, onAuthChange, api } from './account.js';
 import { initFeedback } from './feedback.js';
+import { initPresets } from './presets.js';
 
 // ── Tab routing ───────────────────────────────────────────────────────────────
 
@@ -70,8 +71,11 @@ let regenerateMode = false;   // T-190 — true while reviewing/building an uplo
 let currentTeamAuditText = ''; // T-117 — the readable team-building decision log for this run
 let currentWorker = null;
 
+let presetsCtl = null; // T-192 — set below once account.js's auth helpers are available
 const form = new ConfigForm(document.getElementById('config-form-mount'), {
     onConfigChange(cfg) { currentConfig = cfg; },
+    // T-192 — the green "Load Preset" button opens the presets modal (My / Official / Community).
+    onLoadPreset() { presetsCtl?.openBrowse(); },
     // T-190 — a full bundle uploaded from the config screen jumps straight to the build step
     // (bypassing the randomizer Worker); showGenDone() → onBundleReady() persists it and POSTs
     // /api/produce, so the exact ROMs are rebuilt as-is with no re-randomization.
@@ -346,6 +350,27 @@ initFeedback({
     onAuthChange,
     api,
     onRequestLogin: () => document.getElementById('nav-login')?.click(),
+});
+
+// T-192: Presets modal (My / Official / Community). Reuses account.js's auth state + API helper and
+// the config form's get/apply so a chosen preset is applied exactly like Load. The synthetic Official
+// "Balanced" card is derived live from DEFAULTS (the config SSOT), never stored server-side.
+presetsCtl = initPresets({
+    api,
+    getAuthState,
+    onAuthChange,
+    getCurrentConfig: () => form.getConfig(),
+    applyConfig: (cfg) => form.applyExternalConfig(cfg),
+    onRequestLogin: () => document.getElementById('nav-login')?.click(),
+    defaults: DEFAULTS,
+    renderConfigDetail: (cfg) => reviewRowsHtml(cfg),
+});
+
+// "Save Preset" (next to Review) captures the current config and opens the modal in save mode.
+document.getElementById('btn-save-preset')?.addEventListener('click', () => {
+    const cfg = form.getConfig();
+    if (!cfg) { alert('Please check your settings.'); return; }
+    presetsCtl.openSave(cfg);
 });
 
 // ── Web Worker helpers ────────────────────────────────────────────────────────

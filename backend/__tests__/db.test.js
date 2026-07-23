@@ -24,7 +24,11 @@ test('migration is idempotent (safe to run on every boot)', () => {
   const tables = db.prepare(
     "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
   ).all().map((r) => r.name);
-  assert.deepEqual(tables, ['auth_tokens', 'diagnostics', 'feedback', 'requests', 'runs', 'users']);
+  assert.deepEqual(tables, [
+    'auth_tokens', 'diagnostics', 'feedback',
+    'preset_likes', 'preset_views', 'presets',
+    'requests', 'runs', 'users',
+  ]);
 });
 
 test('foreign keys are enforced', () => {

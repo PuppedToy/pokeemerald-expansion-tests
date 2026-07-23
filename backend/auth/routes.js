@@ -6,8 +6,9 @@
 import express from 'express';
 import { requireAuth, ipRateLimit } from './middleware.js';
 import { createRateLimiter } from '../email/rateLimiter.js';
+import { isAdminEmail } from './admin.js';
 
-export function createAuthRouter({ service, users, requests, runs, tokens, feedback, diagnostics, jwtSecret, removeFile, db, killActiveBuild }) {
+export function createAuthRouter({ service, users, requests, runs, tokens, feedback, diagnostics, presets, presetLikes, presetViews, adminEmails = [], jwtSecret, removeFile, db, killActiveBuild }) {
   const router = express.Router();
 
   // Parse JSON per-route (NOT router.use): this router is mounted at /api, so a
@@ -67,6 +68,11 @@ export function createAuthRouter({ service, users, requests, runs, tokens, feedb
       tokens?.deleteForUser?.(uid);
       feedback?.deleteForUser?.(uid); // FK is not ON DELETE CASCADE — clear feedback before the user (T-048)
       diagnostics?.deleteForUser?.(uid); // same FK guard for diagnostics (T-075)
+      // Presets (T-192): drop this user's likes/views on OTHERS' presets first (decrementing their
+      // counters), then this user's own presets and any join rows pointing at them.
+      presetLikes?.deleteForUser?.(uid);
+      presetViews?.deleteForUser?.(uid);
+      presets?.deleteForUser?.(uid);
       users.delete(uid);
     };
     if (db) {
@@ -85,6 +91,7 @@ export function createAuthRouter({ service, users, requests, runs, tokens, feedb
     res.json({
       email: user.email,
       verified: !!user.verified,
+      isAdmin: isAdminEmail(user.email, adminEmails), // T-192: gates admin affordances in the UI
       // T-080: ROM ownership is a frontend-only fact (the ROM lives in the browser and is validated
       // client-side). The backend no longer tracks or gates on it, so `/api/me` omits it.
       activeRequest: active

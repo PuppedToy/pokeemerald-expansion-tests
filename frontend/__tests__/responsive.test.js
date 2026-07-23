@@ -72,3 +72,13 @@ test('docs viewer: the dead @media(max-width:1000px) block is gone', () => {
   assert.doesNotMatch(templateHtml, /\.sidebar\s*\{\s*order\s*:\s*2/,
     'the old broken 1000px media query (bad selectors) must not return');
 });
+
+test('presets modal (T-192) has a ≤600px mobile layer that widens the card and stacks filters', () => {
+  const mobile = componentsCss.slice(componentsCss.search(MOBILE_MQ));
+  assert.match(mobile, /\.modal\.modal-lg\s*\{\s*max-width:\s*100%/,
+    'the wide presets modal must go full-width on mobile');
+  assert.match(mobile, /\.preset-filter-row\s*\{\s*grid-template-columns/,
+    'the community filter row must re-flow on mobile');
+  assert.match(mobile, /\.preset-card-actions\s*\.btn\s*\{\s*min-height:\s*44px/,
+    'preset action buttons must be finger-sized on mobile');
+});

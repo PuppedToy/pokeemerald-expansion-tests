@@ -8,13 +8,18 @@ import { createRequestsRepo } from './db/requests.js';
 import { createRunsRepo } from './db/runs.js';
 import { createFeedbackRepo } from './db/feedback.js';
 import { createDiagnosticsRepo } from './db/diagnostics.js';
+import { createPresetsRepo } from './db/presets.js';
+import { createPresetLikesRepo } from './db/presetLikes.js';
+import { createPresetViewsRepo } from './db/presetViews.js';
 import { createUsersRepo } from './auth/users.js';
 import { createTokensRepo } from './auth/tokens.js';
 import { createAuthService } from './auth/service.js';
+import { parseAdminEmails } from './auth/admin.js';
 import { createAuthRouter } from './auth/routes.js';
 import { createProduceRouter } from './produce/routes.js';
 import { createFeedbackRouter } from './feedback/routes.js';
 import { createDiagnosticsRouter } from './diagnostics/routes.js';
+import { createPresetsRouter } from './presets/routes.js';
 import { createMailer, brevoTransport } from './email/index.js';
 import { createStorage } from './build/storage.js';
 import { createBuildRom, killActiveBuild } from './build/buildRom.js';
@@ -27,6 +32,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-insecure-secret-change-me';
+// Admins (T-192, ADR-021): comma-separated emails allowed to curate Official presets and moderate
+// Community (unpublish/delete any preset). Empty by default → no admins.
+const ADMIN_EMAILS = parseAdminEmails(process.env.ADMIN_EMAILS);
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
 // Fake build by default off production, so the flow is runnable without devkitARM (T-019 wires the real build).
 const FAKE_BUILD = process.env.FAKE_BUILD === '1' || process.env.NODE_ENV !== 'production';
@@ -39,6 +47,9 @@ const requests = createRequestsRepo(db);
 const runs = createRunsRepo(db);
 const feedback = createFeedbackRepo(db);
 const diagnostics = createDiagnosticsRepo(db);
+const presets = createPresetsRepo(db);
+const presetLikes = createPresetLikesRepo(db);
+const presetViews = createPresetViewsRepo(db);
 
 // ── email (ADR-007): real provider if configured, else a dev console transport ──
 const transport = process.env.BREVO_API_KEY
@@ -71,11 +82,16 @@ startSweeper({ requests, diagnostics, removeFile: storage.removeFile });
 const app = express();
 
 app.use('/api', createAuthRouter({
-  service: authService, users, requests, runs, tokens, feedback, diagnostics, jwtSecret: JWT_SECRET,
+  service: authService, users, requests, runs, tokens, feedback, diagnostics,
+  presets, presetLikes, presetViews, adminEmails: ADMIN_EMAILS, jwtSecret: JWT_SECRET,
   removeFile: (p) => storage.removeFile(p), db, killActiveBuild,
 }));
 app.use('/api', createFeedbackRouter({ feedback, jwtSecret: JWT_SECRET }));
 app.use('/api', createDiagnosticsRouter({ diagnostics, jwtSecret: JWT_SECRET }));
+app.use('/api', createPresetsRouter({
+  presets, presetLikes, presetViews, users, jwtSecret: JWT_SECRET,
+  adminEmails: ADMIN_EMAILS, idGen: () => randomUUID(),
+}));
 app.use('/api', createProduceRouter({
   requests, users, jwtSecret: JWT_SECRET,
   persistBundle: (id, b) => storage.persistBundle(id, b),
