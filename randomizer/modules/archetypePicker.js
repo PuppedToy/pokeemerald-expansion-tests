@@ -24,6 +24,7 @@ const {
 const { weatherAbuseScore, weatherAbuseRating, weatherAbuseBreakdown, GIMMICK_SPEC } = require('./gimmickPlan');
 const { DETECTORS } = require('./featureDetectors'); // T-142 — hard-pick a dedicated-support-capable mon
 const { supportToolBreakdown } = require('../rating'); // T-141 r4 — itemised support ranking for the log
+const { evaluateCoverage } = require('./typeCoverage'); // T-193 — monotype defensive coverage
 
 const BIAS_MIN_SOPH = 0.15;   // below this sophistication, no bias (early-game = "a pile of mons")
 const IDENTITY_FIT = 0.5;     // the top base archetype recipe must fit this well before biasing (T-118)
@@ -99,12 +100,51 @@ function resolveIdentity(team, model, ctx = {}, seed = null) {
 
 // Build the picker for one trainer. `context` is read by reference (its `team` grows, `sophistication`
 // and optional `archetypeSeed` are set per trainer). `ctx` carries the detector context (e.g. `{ moves }`).
-function makeArchetypePicker({ model, context, ctx = {} }) {
+function makeArchetypePicker({ model, context, ctx = {}, damageMultiplier = null }) {
+    // T-193 — one place that runs the monotype coverage evaluation, pushes its EXHAUSTIVE trace to the
+    // decision log, and returns the winning poke (or null → caller does the normal pick). Used in BOTH
+    // the low-soph path (no archetype yet → no fit filter) and the steered path (after the hard-picks,
+    // with the archetype fit filter). Coverage is NOT gated by BIAS_MIN_SOPH — sophistication is already
+    // applied through the auto-include probability (150%/90%×soph), so it just fires rarely early.
+    const runCoverage = (candidates, soph, fitOk) => {
+        const trace = evaluateCoverage({
+            candidates, monoType: context.monoType, team: context.team || [],
+            dmg: damageMultiplier, level: context.trainerLevel, soph, fitOk,
+            rngRandom: () => rng.random(),
+        });
+        if (context.coveragePicks) {
+            context.coveragePicks.push({
+                slot: (context.currentSlotIndex != null) ? context.currentSlotIndex : null,
+                monoType: context.monoType,
+                soph: Math.round(soph * 100) / 100,
+                rounds: trace.rounds.map(r => ({
+                    kind: r.kind, uncovered: r.uncovered, prob: Math.round(r.prob * 100) / 100,
+                    reached: r.reached, pool: r.pool, picked: r.picked,
+                })),
+                outcome: trace.result ? `${trace.result.kind}:${trace.result.poke.id}` : 'none',
+            });
+        }
+        if (trace.result) {
+            if (trace.result.ability) context.coveragePick = { pokeId: trace.result.poke.id, ability: trace.result.ability };
+            return trace.result.poke;
+        }
+        return null;
+    };
+
     return function pickCandidate(candidates) {
         if (!Array.isArray(candidates) || candidates.length < 2) return sample(candidates);
         const soph = (context && context.sophistication) || 0;
         const seed = (context && context.archetypeSeed) || null;
-        if (!model || soph < BIAS_MIN_SOPH) return sample(candidates);
+        const monoCoverage = !!(context && context.monoType && damageMultiplier);
+        if (!model || soph < BIAS_MIN_SOPH) {
+            // No archetype steering here (early game / no model). Monotype coverage STILL applies — with no
+            // archetype filter, since no identity has emerged — and is logged every slot regardless.
+            if (monoCoverage) {
+                const cov = runCoverage(candidates, soph, () => true);
+                if (cov) return cov;
+            }
+            return sample(candidates);
+        }
         const doubles = model.format === 'doubles'; // T-109 — rank gimmick abusers by their DOUBLES rating for a doubles trainer
 
         // T-137 — Wattson's electric terrain is now the `electric_terrain` GIMMICK (setter + abusers, handled
@@ -275,6 +315,20 @@ function makeArchetypePicker({ model, context, ctx = {} }) {
                     return picked;
                 }
             }
+        }
+        // T-193 — monotype defensive coverage. On a strict-monotype team (gyms/E4; context.monoType set),
+        // AFTER any committed weather/gimmick/support hard-pick has returned (we yield to those), try to
+        // grab a member whose SECONDARY TYPE or ability patches an uncovered weakness of the mono type:
+        // immunities first (150%×soph), then resistances/neutralities (90%×soph). "Fits the archetype" =
+        // positive scoreCandidate once an identity has emerged (no identity → no archetype filter). Falls
+        // through to the normal weighted pick when nothing is uncovered, no candidate fits, or the seeded
+        // rolls miss. Non-monotype teams have context.monoType null → this whole block is skipped
+        // (byte-identical); soph < BIAS_MIN_SOPH already returned above.
+        if (monoCoverage) {
+            const covStructure = identity ? combinedStructure(model, identity.baseId, identity.gimmickIds) : null;
+            const fitOk = c => !identity || scoreCandidate(c, identity.counts, covStructure, ctx) > 0;
+            const cov = runCoverage(candidates, soph, fitOk);
+            if (cov) return cov;
         }
         if (!biased) return sample(candidates); // nothing to pull toward → byte-identical
         return weightedSampleOne(candidates, weights);

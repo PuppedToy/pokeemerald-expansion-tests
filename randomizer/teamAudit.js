@@ -125,10 +125,11 @@ function createTeamAudit() {
             });
         },
 
-        finishTeam({ team, model, ctx, seed, weatherPicks, supportPicks, itemLinkActivations, supportFlexed, doublesWantsSupport }) {
+        finishTeam({ team, model, ctx, seed, weatherPicks, supportPicks, coveragePicks, itemLinkActivations, supportFlexed, doublesWantsSupport }) {
             if (!cur) return;
             if (weatherPicks && weatherPicks.length) cur.weatherPicks = weatherPicks; // T-135 — abuser rankings
             if (supportPicks && supportPicks.length) cur.supportPicks = supportPicks; // T-141 r4 — support ranking
+            if (coveragePicks && coveragePicks.length) cur.coveragePicks = coveragePicks; // T-193 — monotype coverage
             if (itemLinkActivations && itemLinkActivations.length) cur.itemLinkActivations = itemLinkActivations; // T-133
             const id = model ? resolveIdentity((team || []).map(asPoke), model, ctx, seed) : null;
             // T-142 r3 — the team's up-front doubles plan WANTED a dedicated support (context.doublesWants-
@@ -303,6 +304,31 @@ function renderTeamAuditText(teams, { engineThreshold = BIAS_MIN_SOPH } = {}) {
                 const pen = c.penalty ? ` −${c.penalty} (off ${c.offTier})` : '';
                 const mark = c.id === sp.pickedId ? ' ‹picked›' : '';
                 lines.push(`      #${i + 1} ${nameify(c.id, 'SPECIES_').padEnd(18)} ${String(c.rating).padStart(3)} ${(c.tier || '—').padEnd(3)}${pen}  [${tools}]${mark}`);
+            });
+        });
+        // T-193 — monotype defensive coverage: EXHAUSTIVE per-slot trace. For every slot of a strict-monotype
+        // team (gyms/E4), both rounds are shown — the immunity round (150%×soph) then the resist/neutral round
+        // (90%×soph) — each with its still-uncovered weakness set, the full pool found (which mon patches which
+        // threat, via typing or a forced ability), the auto-include %, and whether that round actually rolled
+        // (the resist round only rolls if the immunity round didn't pick). The chosen mon is marked ‹picked›.
+        (t.coveragePicks || []).forEach(cp => {
+            const slotTag = cp.slot != null ? `slot ${cp.slot + 1}` : 'slot ?';
+            lines.push(`  → monotype coverage ${slotTag} [${cp.monoType}, soph ${cp.soph}] — outcome: ${cp.outcome}`);
+            (cp.rounds || []).forEach(r => {
+                const pct = Math.round((r.prob || 0) * 100);
+                const reach = r.reached ? '' : ' — not reached (immunity already picked)';
+                lines.push(`      ${r.kind}: uncovered [${(r.uncovered || []).join(', ') || 'none'}], auto-include ${pct}%${reach}`);
+                if (!r.pool || !r.pool.length) {
+                    lines.push(`        pool (0): none`);
+                    return;
+                }
+                lines.push(`        pool (${r.pool.length}):`);
+                r.pool.forEach(p => {
+                    const via = p.via === 'ability' ? `${nameify(p.ability, 'ABILITY_')} (ability)`
+                        : (p.via === 'mixed' ? `typing + ${nameify(p.ability, 'ABILITY_')}` : 'typing');
+                    const mark = p.id === r.picked ? ' ‹picked›' : '';
+                    lines.push(`          ${nameify(p.id, 'SPECIES_').padEnd(18)} vs ${(p.threats || []).join('/')} via ${via}${mark}`);
+                });
             });
         });
         // T-133 — linked pick-pack activations: when a mon USED an item/TM from a pick-group, one unit of each

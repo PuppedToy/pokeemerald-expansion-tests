@@ -24,12 +24,14 @@ const {
     PALAFIN_ZERO_ID,
     GRENINJA_BOND_ID,
     TRAINER_REPEAT_ID,
+    TRAINER_RESTRICTION_ALLOW_ONLY_TYPES,
 } = require('../constants');
 const {
     chooseMoveset,
     adjustMoveset,
     rateItemForAPokemon,
     isSuperEffective,
+    damageMultiplier,
     chooseNature,
     palafinEffectivePoke,
     greninjaEffectivePoke,
@@ -187,6 +189,11 @@ function createTeamResolver(deps) {
         // T-105/T-107 — the sophistication weight lives on the context; the archetype picker biases the fill
         // toward the emerged identity, degrading to a plain sample at low soph / no identity. T-126 — a
         // SEEDED trainer floors soph so it builds its identity regardless of game position.
+        // T-193 — strict-monotype detection (gyms + E4): ALLOW_ONLY_TYPES restriction with a single type.
+        // Aqua/Magma (5 types) and Steven (per-slot type, no trainer restriction) are excluded → null.
+        const monoType = (trainer.restrictions || []).includes(TRAINER_RESTRICTION_ALLOW_ONLY_TYPES)
+            && Array.isArray(trainer.types) && trainer.types.length === 1
+            ? trainer.types[0] : null;
         const context = {
             team, foundMega: false, storedIds,
             sophistication: archetypeSeed ? Math.max(sophistication(trainer), SEED_SOPH_FLOOR) : sophistication(trainer),
@@ -194,6 +201,12 @@ function createTeamResolver(deps) {
             weatherPicks: [], // T-135 — the picker records each abuser slot's ranking here, for the audit log
             supportPicks: [], // T-141 r4 — the picker records the dedicated-support ranking here, for the log
             itemLinkActivations: [], // T-133 — records when a linked pick-pack activated (siblings forgone)
+            // T-193 — monotype defensive-coverage: the mono type + level drive the per-slot coverage pool;
+            // coveragePick is a per-slot forced ability (consumed after selection); coveragePicks is the log.
+            monoType,
+            trainerLevel: trainer.level,
+            coveragePick: null,
+            coveragePicks: [],
         };
         // T-142 r3 — decide UP FRONT whether this doubles team is hyper-aggressive (no dedicated support)
         // or support-using. The emergent identity resolves too late to secure a support (an all-attacker
@@ -206,7 +219,7 @@ function createTeamResolver(deps) {
             context.doublesWantsSupport = (r % 1000) / 1000 >= DOUBLES_HYPER_CHANCE;
         }
         const archetypeModel = getArchetypeModel(/double/i.test(trainer.battleType || '') ? 'doubles' : 'singles');
-        const pickCandidate = makeArchetypePicker({ model: archetypeModel, context, ctx: { moves } });
+        const pickCandidate = makeArchetypePicker({ model: archetypeModel, context, ctx: { moves }, damageMultiplier });
         attemptAudit.beginTeam({
             trainerId: trainer.id, label: trainer.label || null, class: trainer.class || null,
             level: trainer.level, battleType: trainer.battleType || 'singles',
@@ -217,11 +230,18 @@ function createTeamResolver(deps) {
             model: archetypeModel, moves, // T-142 r2 — doubles support tier-flex
         });
         teamDefs.forEach((trainerMonDefinition, slotIndex) => {
+            context.currentSlotIndex = slotIndex; // T-193 — tags the coverage decision-log entries by slot
             if (baseRngSeed !== null) {
                 const slotSeed = (baseRngSeed ^ Math.imul(djb2Hash(trainer.id + ':' + slotIndex), 0x9E3779B9)) >>> 0;
                 rng.seed(slotSeed);
             }
             let { pokemon: chosenTrainerMon, effectiveDef } = selectWithAutoFallback(trainerMonDefinition, choosePokemonFromDefinition) ?? {};
+            // T-193 — if the picker chose this mon FOR an ability-granted immunity/resist, force that
+            // ability below (via preferredAbilities). Guarded by id so a coveragePick left by a LOSING
+            // fallback pick can't leak onto the wrong mon. Consumed once per slot.
+            const coverageAbility = (context.coveragePick && chosenTrainerMon
+                && context.coveragePick.pokeId === chosenTrainerMon.id) ? context.coveragePick.ability : null;
+            context.coveragePick = null;
             if (!chosenTrainerMon) {
                 // T-075 — the slot found no pokemon after every fallback was exhausted. The slot
                 // is dropped (accepted "team of 5" degradation); record it richly so it's auditable.
@@ -389,10 +409,15 @@ function createTeamResolver(deps) {
                     abilities,
                     // T-124 — identity-aware: a weather-crystallised team's setter gets the weather ability
                     // and its abusers the matching one (rain→Swift Swim, …), so the gimmick is real.
-                    preferredAbilities: planMemberAbility({
-                        species: chosenTrainerMon, team, model: archetypeModel,
-                        ctx: { moves }, sophistication: context.sophistication, seed: context.archetypeSeed,
-                    }),
+                    // T-193 — a monotype coverage pick forces its immunity/resist ability FIRST (it's why the
+                    // mon was chosen), ahead of the archetype-preferred ones.
+                    preferredAbilities: [
+                        ...(coverageAbility ? [coverageAbility] : []),
+                        ...planMemberAbility({
+                            species: chosenTrainerMon, team, model: archetypeModel,
+                            ctx: { moves }, sophistication: context.sophistication, seed: context.archetypeSeed,
+                        }),
+                    ],
                     weatherSubtype: wxAbilitySubtype,
                 });
                 newTeamMember.ability = originalAbility;
@@ -702,7 +727,7 @@ function createTeamResolver(deps) {
             GIMMICK_SPEC[seedGid].ensureSetter(team, setterCount, { tms: trainer.tms || [], level: trainer.level });
         }
 
-        attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed, weatherPicks: context.weatherPicks, supportPicks: context.supportPicks, itemLinkActivations: context.itemLinkActivations, supportFlexed: context.supportFlexed, doublesWantsSupport: context.doublesWantsSupport });
+        attemptAudit.finishTeam({ team, model: archetypeModel, ctx: { moves }, seed: context.archetypeSeed, weatherPicks: context.weatherPicks, supportPicks: context.supportPicks, coveragePicks: context.coveragePicks, itemLinkActivations: context.itemLinkActivations, supportFlexed: context.supportFlexed, doublesWantsSupport: context.doublesWantsSupport });
         return team;
     }
 
