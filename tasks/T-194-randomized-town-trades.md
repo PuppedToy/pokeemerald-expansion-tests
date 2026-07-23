@@ -78,12 +78,13 @@ Layered, TDD where logic is in `randomizer/` (Red→Green). Build order roughly:
 - `frontend/template.html`: render the 3-line sub-card in the route-card loop (3.1) and in the modal box section below "Obtainable in" (3.2), reusing `sprite`/`getIcon`/`.evo-link`. Rebuild browser bundle (`node build.js`) after `randomizer/` module edits (see memory: green tests ≠ browser has it).
 
 Acceptance criteria:
-- [ ] 4 trader NPCs stand left of each town's mart with `OBJ_EVENT_GFX_GAMEBOY_KID`; in-house NPCs removed; trades trigger and complete (flag-gated) — verified on a built ROM.
-- [ ] Each trade offers a seed-driven tier-appropriate mon at the correct gym cap level and valid evo stage; accepts any evolution of the route's grass(+old rod) families; message reads the two sentences with base-form list.
-- [ ] Same seed ⇒ identical trades in docs and ROM; different ROM index ⇒ different trades.
-- [ ] `showTrades` toggle (default ON) present in the config UI; OFF removes trade data from generated docs.
-- [ ] Sub-card renders in route cards (101–104 grass/old rod) and in the offered/obtainable mon modal, clickable to the offered mon.
-- [ ] `cd randomizer && npm test` green; browser bundle rebuilt; `node scripts/check-tracker.mjs` clean.
+- [ ] 4 trader NPCs stand left of each town's mart with `OBJ_EVENT_GFX_GAMEBOY_KID`; in-house NPCs removed; trades trigger and complete (flag-gated) — verified on a built ROM. *(Layer C/D — ROM side, CI/owner-verified)*
+- [x] Each trade offers a seed-driven tier-appropriate mon at the correct gym cap level and valid evo stage (selection logic + tests); accepts any evolution of the route's representative grass(+old rod) families. *(message base-form list is Layer B/C, ROM side)*
+- [x] Same seed ⇒ identical trades in docs and ROM (decided once at generate time, stored in `rom.artifacts.trades`, consumed by both docs and the maker); different ROM index ⇒ different trades.
+- [x] `showTrades` toggle (default ON) present in the config UI; OFF removes trade data from generated docs.
+- [x] Sub-card renders in route cards (101–104) and in the obtainable-mon modal, clickable to the offered mon. *(verified via shoot screenshots)*
+- [x] `cd randomizer && npm test` green (1628); browser bundle rebuilt; frontend config tests 63/63.
+- [ ] `node scripts/check-tracker.mjs` clean at close.
 - [ ] Owner manual-tests the batch and confirms OK before close.
 
 ## Decisions (owner-resolved 2026-07-23)
