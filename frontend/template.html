@@ -1977,20 +1977,20 @@
     const routesGrid = document.getElementById('wildpokes-cards');
 
     // T-194 — the town-trade sub-card (3 lines: TRADE caption / location + town / gift + clickable
-    // offered mon + level). Full width of its container with large text. Shared by the route cards
-    // (spans the encounter grid via grid-column) and the pokemon modal; uses only global helpers
-    // (getPokeImg/getIcon/pokes) and the delegated `.evo-link` handler so it works in both scopes.
+    // offered mon + level). Sized to its container's width (the small encounter box on the route cards;
+    // the box-section in the modal). Uses only global helpers (getPokeImg/getIcon/pokes) and the
+    // delegated `.evo-link` handler so it works in both scopes.
     window.buildTradeCardHTML = function (trade) {
       if (!trade || !trade.offeredSpecies) return '';
       const id = trade.offeredSpecies;
       const prettify = s => String(s || '').split('_').map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ');
       const p = (typeof pokes !== 'undefined') ? pokes.find(x => x && x.id === id) : null;
       const offName = (p && p.name) || prettify(id.replace('SPECIES_', ''));
-      return '<div style="grid-column:1/-1;width:100%;box-sizing:border-box;margin:10px 0 2px;padding:14px 16px;background:rgba(96,165,250,0.10);border:1px solid rgba(96,165,250,0.40);border-radius:12px;text-align:center">'
-        + '<div style="font-weight:800;letter-spacing:2px;font-size:16px;color:#60a5fa">TRADE</div>'
-        + '<div style="font-size:15px;opacity:.9;margin-top:6px">' + getIcon('location', '📍') + ' ' + prettify(trade.town) + '</div>'
-        + '<div style="margin-top:8px"><span class="evo-link" data-id="' + id + '" style="cursor:pointer;display:inline-flex;align-items:center;gap:8px;justify-content:center;font-size:17px">'
-        + getIcon('reward', '🎁') + '<img src="' + getPokeImg(id) + '" width="40" height="40" style="object-fit:contain" alt=""><span style="font-weight:700">' + offName + ' Lv. ' + trade.level + '</span></span></div>'
+      return '<div style="width:100%;box-sizing:border-box;margin-top:6px;padding:7px 6px;background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.40);border-radius:8px;text-align:center">'
+        + '<div style="font-weight:800;letter-spacing:1px;font-size:11px;color:#60a5fa">TRADE</div>'
+        + '<div style="font-size:11px;opacity:.9;margin-top:2px">' + getIcon('location', '📍') + ' ' + prettify(trade.town) + '</div>'
+        + '<div style="margin-top:4px"><span class="evo-link" data-id="' + id + '" style="cursor:pointer;display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px;justify-content:center;font-size:11px">'
+        + getIcon('reward', '🎁') + '<img src="' + getPokeImg(id) + '" width="28" height="28" style="object-fit:contain" alt=""><span style="font-weight:700">' + offName + ' Lv. ' + trade.level + '</span></span></div>'
         + '</div>';
     };
 
@@ -2080,14 +2080,15 @@
               ${checkboxHTML}
             </div>
           `;
-          // T-194 — attach the full-width trade sub-card right after the wanted grass/old-rod encounter.
-          let tradeHTML = '';
+          // T-194 — the trade sub-card sits in the wanted grass/old-rod pokemon's own encounter box
+          // (its width, not the route's). It is a SIBLING of the clickable `.wild-poke` tile (wrapped
+          // in a one-cell column) so tapping the offered sprite opens the offered mon, not the tile's.
           if (!tradeRendered && route.trade && route.trade.wantedSpecies === pokeId
               && (method === 'land' || method === 'old') && typeof window.buildTradeCardHTML === 'function') {
-            tradeHTML = window.buildTradeCardHTML(route.trade);
             tradeRendered = true;
+            return `<div class="wild-poke-cell" style="display:flex;flex-direction:column">${tileHTML}${window.buildTradeCardHTML(route.trade)}</div>`;
           }
-          return tileHTML + tradeHTML;
+          return tileHTML;
         })
         .join('') + hiddenTiles.join('');
 
