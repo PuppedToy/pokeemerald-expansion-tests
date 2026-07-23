@@ -1976,6 +1976,23 @@
 
     const routesGrid = document.getElementById('wildpokes-cards');
 
+    // T-194 — the town-trade sub-card (3 lines: TRADE caption / location + town / gift + clickable
+    // offered mon + level). Shared by the route cards and the pokemon modal; uses only global helpers
+    // (getPokeImg/getIcon/pokes) and the delegated `.evo-link` handler so it works in both scopes.
+    window.buildTradeCardHTML = function (trade) {
+      if (!trade || !trade.offeredSpecies) return '';
+      const id = trade.offeredSpecies;
+      const prettify = s => String(s || '').split('_').map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ');
+      const p = (typeof pokes !== 'undefined') ? pokes.find(x => x && x.id === id) : null;
+      const offName = (p && p.name) || prettify(id.replace('SPECIES_', ''));
+      return '<div style="margin:10px auto 0;max-width:220px;padding:8px 10px;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.35);border-radius:10px;text-align:center;font-size:12px">'
+        + '<div style="font-weight:800;letter-spacing:1px;font-size:11px;color:#60a5fa">TRADE</div>'
+        + '<div style="opacity:.85;margin-top:2px">' + getIcon('location', '📍') + ' ' + prettify(trade.town) + '</div>'
+        + '<div style="margin-top:4px"><span class="evo-link" data-id="' + id + '" style="cursor:pointer;display:inline-flex;align-items:center;gap:5px;justify-content:center">'
+        + getIcon('reward', '🎁') + '<img src="' + getPokeImg(id) + '" width="26" height="26" style="object-fit:contain" alt=""><span style="font-weight:700">' + offName + ' Lv. ' + trade.level + '</span></span></div>'
+        + '</div>';
+    };
+
     wildPokes.forEach(route => {
       const card = document.createElement('div');
       card.className = 'card location-card';
@@ -2071,6 +2088,7 @@
         <div class="enc-slots" style="grid-template-columns:repeat(${encCols}, 168px)">
           ${encountersHTML}
         </div>
+        ${route.trade ? window.buildTradeCardHTML(route.trade) : ''}
       `;
 
       routesGrid.appendChild(card);
@@ -3455,7 +3473,7 @@
     var famComponent = {};
     (typeof pokes!=='undefined'?pokes:[]).forEach(function(p){ if (!p) return; var r=ufFind(p.id); (famComponent[r]=famComponent[r]||[]).push(p.id); });
     function familySet(speciesId){ var s={}; s[speciesId]=1; (famComponent[ufFind(speciesId)]||[]).forEach(function(id){ s[id]=1; }); return s; }
-    function findObtainable(famSet){ var found=null; (typeof wildPokes!=='undefined'?wildPokes:[]).forEach(function(route){ if (found || route.id==='STARTER_EXTRA') return; encounterSlots(route).forEach(function(e){ if (found) return; if (famSet[e.species]) found={ label: route.label || nm(route.id), species: e.species }; }); }); return found; } // B-041
+    function findObtainable(famSet){ var found=null; (typeof wildPokes!=='undefined'?wildPokes:[]).forEach(function(route){ if (found || route.id==='STARTER_EXTRA') return; encounterSlots(route).forEach(function(e){ if (found) return; if (famSet[e.species]) found={ label: route.label || nm(route.id), species: e.species, trade: route.trade }; }); }); return found; } // B-041 (+T-194 trade)
 
     function nextBossLabel(st){ for (var i=0;i<bossCaps.length;i++){ if (!isBossDefeated(bossCaps[i],st)) return bossCaps[i].label; } return 'All cleared'; }
     // Refreshes the whole top bar (level cap / box / deaths / next boss). Name kept for its
@@ -3518,7 +3536,11 @@
       var fainted = caps.find(function(e){ return e.fainted && famSet[e.currentSpecies]; });
       if (fainted) return wrap('<div class="box-tag-row"><span class="box-fainted">'+icon('fainted','💀')+' <span class="evo-link" data-id="'+fainted.currentSpecies+'">'+sprite(fainted.currentSpecies,32)+'</span> '+nm(fainted.currentSpecies)+' is fainted</span><button class="box-faintbtn box-undo" data-box-faint="'+fainted.routeId+'|'+fainted.slot+'|0|'+speciesId+'">Undo</button></div>');
       var obt = findObtainable(famSet);
-      if (obt) return wrap('<span class="box-obtainable">'+icon('location','📍')+' Obtainable in '+obt.label+' <span class="evo-link" data-id="'+obt.species+'">'+sprite(obt.species,32)+'</span></span>');
+      if (obt){
+        // T-194 — below "Obtainable in …", in the same box, the town-trade sub-card when that route has one.
+        var tradeHTML = (obt.trade && typeof window.buildTradeCardHTML === 'function') ? window.buildTradeCardHTML(obt.trade) : '';
+        return wrap('<span class="box-obtainable">'+icon('location','📍')+' Obtainable in '+obt.label+' <span class="evo-link" data-id="'+obt.species+'">'+sprite(obt.species,32)+'</span></span>'+tradeHTML);
+      }
       return '';
     };
 

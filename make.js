@@ -146,7 +146,7 @@ async function buildOneRom({ rom, bundle, seed, universeSeed = seed, outDir, isD
     try {
         const runNs = writer.docRunNamespace({ seed, playerIndex: rom.playerIndex, romIndex: rom.romIndex });
         // starterNaming is per-ROM (never shared) — read it straight off the rom, no resolveArtifact (T-068).
-        await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed, universeSeed), rom.docs, runNs, rom.artifacts.starterNaming || null);
+        await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed, universeSeed), rom.docs, runNs, rom.artifacts.starterNaming || null, rom.artifacts.trades || null);
         await writeTMsFromList(pokedex.tmList);
         writeItemFilesFromBundle(trainers.itemAssignments);
         // T-052 — patch configurable prize money into the C source (restored by restore() after build).
@@ -237,6 +237,7 @@ async function randomizeMode(opts, doClean) {
     const wildData = require('./randomizer/wild');
     const rng      = require('./randomizer/rng');
     const writer   = require('./randomizer/writer');
+    const { selectTrades } = require('./randomizer/trades');
     const { emitArtifact, resolveVanillaPath } = require('./randomizer/romArtifact');
 
     const config = loadConfig({
@@ -260,9 +261,18 @@ async function randomizeMode(opts, doClean) {
         const trainers = runTrainersModule(pokedex, config);
         const starters = runStartersModule(pokedex.pokes, { quality: config.starterQuality });
         const wild     = runWildModule(pokedex.pokes, starters, wildData);
+        // T-194 — town trades (deterministic per ROM seed) for the docs sub-cards + trade-data write.
+        const trades = selectTrades({
+            pokemonList: pokedex.pokes,
+            wildArtifact: wild,
+            wildMaps: wildData.maps,
+            capLevels: pokedex.capLevels,
+            seed: deriveRomSeed((config.seed >>> 0), 0),
+            diagnostics: null,
+        });
 
         await writer(pokedex, trainers, starters, wild, opts.debug, null, null,
-            writer.docRunNamespace({ seed: config.seed }));
+            writer.docRunNamespace({ seed: config.seed }), null, trades);
         run('make', ['-j', String(resolveJobs())]);
 
         // Default delivery is a BPS delta; --full-rom copies the .gba verbatim (ADR-013).

@@ -30,6 +30,7 @@ const items = require('./items.js');
 const { savePokemonData } = require('./pokemonWriter.js');
 const { saveMoveData } = require('./moveWriter.js');   // T-187 — persists move mutation to moves_info.h
 const { writeEvoLevels } = require('./evoLevelWriter.js');
+const { writeTrades } = require('./tradeWriter.js');   // T-194 — per-ROM town-trade data → src/data/trade.h
 const { applyStarterNames } = require('./starterNameWriter.js');
 
 const startersFile = path.resolve(__dirname, '..', 'src', 'starter_choose.c');
@@ -309,7 +310,7 @@ function resolveMailMints(itemAssignments, items) {
 // deterministic across ROMs that share a trainer artifact but differ in wild data.
 // docs: when provided (bundle mode), trainer teams are taken verbatim from the pre-resolved
 // docs instead of re-resolved via RNG — guaranteeing the ROM matches the bundle's docs.
-async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null, docs = null, runNs = '', starterNaming = null) {
+async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null, docs = null, runNs = '', starterNaming = null, trades = null) {
     let { pokes: pokemonList, moves, abilities, items } = pokedexArtifact;
     // Deep-clone trainersData — mega trainer processing splices entries in-place,
     // which would corrupt the shared artifact when the same trainers object is used across ROMs.
@@ -331,6 +332,13 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     // In randomize/analyze mode (no docs) roll them fresh.
     console.log(docs ? 'Writing evolution levels from bundle...' : 'Randomizing evolution levels...');
     await writeEvoLevels(pokemonList, { recompute: !docs });
+
+    // T-194 — write the per-ROM town-trade data into src/data/trade.h (offered species, gym-cap level,
+    // accepted set, message base forms). Restored with the rest of src/ after the run.
+    if (trades && trades.length) {
+        console.log('Writing town trades...');
+        await writeTrades(trades);
+    }
 
     console.log('Updating starter pokemon...');
 
@@ -922,6 +930,14 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             maps.push(entry);
         }
     }
+    // T-194 — attach each town trade to its route entry for the analyze path (docs=null → inline maps).
+    // The maker path reuses the bundle's docs.wildPokes, which already carries `.trade` from writerDocs.
+    for (const t of (trades || [])) {
+        if (!t || !t.offeredSpecies) continue;
+        const entry = maps.find(m => m.id === t.routeMapId);
+        if (entry) entry.trade = { town: t.town, tier: t.tier, level: t.level, offeredSpecies: t.offeredSpecies };
+    }
+
     // T-163 — use the docs-visibility-redacted encounter maps from the bundle's docs when present
     // (hidden statics/rewards/zones removed, per-method species behind placeholders); the analyze.js
     // path (docs=null) falls back to the full inline maps built above (default visibility).

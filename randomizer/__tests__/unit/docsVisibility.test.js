@@ -43,6 +43,7 @@ function makeMaps() {
         { id: 'STARTERS', special1: 'SPECIES_A', special2: 'SPECIES_B', special3: 'SPECIES_C' },
         { id: 'STARTER_EXTRA', special1: 'SPECIES_D' },
         { id: 'MAP_ROUTE101', land: 'SPECIES_L', surf: 'SPECIES_S', old: 'SPECIES_O', good: 'SPECIES_G', super: 'SPECIES_SU',
+          trade: { town: 'RUSTBORO', offeredSpecies: 'SPECIES_OFFER', level: 13, tier: 'RU' },
           __methodTemplates: { land: 'T_LAND', surf: 'T_SURF', old: 'T_OLD', good: 'T_GOOD', super: 'T_SUPER' } },
         { id: 'BOSS_ROXANNE_REWARD', label: 'Roxanne Reward', boss: true, special1: 'SPECIES_R' },
         { id: 'MAP_DESERT_RUINS', label: 'Desert Ruins', staticEncounter: true, special1: 'SPECIES_REGIROCK' },
@@ -73,6 +74,15 @@ describe('redactWildPokes', () => {
             const out = redactWildPokes(makeMaps(), { ...on(), ...off }, { wildPlan: {} });
             expect(byId(out).has('BOSS_ROXANNE_REWARD')).toBe(false);
         }
+    });
+
+    test('T-194 — showTrades default keeps the route trade sub-card; OFF strips it but keeps the zone', () => {
+        const kept = redactWildPokes(makeMaps(), on(), { wildPlan: {} });
+        expect(kept.find(m => m.id === 'MAP_ROUTE101').trade).toEqual({ town: 'RUSTBORO', offeredSpecies: 'SPECIES_OFFER', level: 13, tier: 'RU' });
+        const off = redactWildPokes(makeMaps(), { ...on(), showTrades: false }, { wildPlan: {} });
+        const route = off.find(m => m.id === 'MAP_ROUTE101');
+        expect(route.trade).toBeUndefined();
+        expect(route.land).toBe('SPECIES_L'); // the encounter data itself is untouched
     });
 
     test('static toggles omit the matching entry entirely', () => {

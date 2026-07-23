@@ -162,6 +162,13 @@ struct InGameTrade {
     u8 otGender;
     u8 sheen;
     u16 requestedSpecies;
+    // T-194 — randomized town trades. Fields default to 0/NULL for the vanilla trades (omitted from
+    // their designated initializers), preserving vanilla behavior; the randomizer's tradeWriter fills them.
+    u8 level;                        // 0 → create the received mon at the player's traded-mon level (vanilla)
+    const u16 *requestedSpeciesList; // full accepted set (all evolutions); NULL → accept only requestedSpecies
+    u8 requestedSpeciesCount;
+    const u16 *requestedBaseForms;   // base forms listed in the "want" message; NULL → name requestedSpecies
+    u8 requestedBaseFormCount;
 };
 
 static EWRAM_DATA u8 *sMenuTextTileBuffer = NULL;
@@ -4552,7 +4559,9 @@ static void BufferInGameTradeMonName(void)
 static void CreateInGameTradePokemonInternal(u8 whichPlayerMon, u8 whichInGameTrade)
 {
     const struct InGameTrade *inGameTrade = &sIngameTrades[whichInGameTrade];
-    u8 level = GetMonData(&gPlayerParty[whichPlayerMon], MON_DATA_LEVEL);
+    // T-194 — a nonzero preset level (randomized town trades) overrides the vanilla "same level as the
+    // mon you gave" behavior so the gift arrives at its town's gym level cap.
+    u8 level = inGameTrade->level ? inGameTrade->level : GetMonData(&gPlayerParty[whichPlayerMon], MON_DATA_LEVEL);
 
     struct Mail mail;
     u8 metLocation = METLOC_IN_GAME_TRADE;
@@ -4567,7 +4576,10 @@ static void CreateInGameTradePokemonInternal(u8 whichPlayerMon, u8 whichInGameTr
     SetMonData(pokemon, MON_DATA_SPEED_IV, &inGameTrade->ivs[3]);
     SetMonData(pokemon, MON_DATA_SPATK_IV, &inGameTrade->ivs[4]);
     SetMonData(pokemon, MON_DATA_SPDEF_IV, &inGameTrade->ivs[5]);
-    SetMonData(pokemon, MON_DATA_NICKNAME, inGameTrade->nickname);
+    // T-194 — an empty preset nickname (randomized town trades) leaves the mon with its species name
+    // rather than a blank nickname; the vanilla trades keep their fixed nicknames.
+    if (inGameTrade->nickname[0] != EOS)
+        SetMonData(pokemon, MON_DATA_NICKNAME, inGameTrade->nickname);
     SetMonData(pokemon, MON_DATA_OT_NAME, inGameTrade->otName);
     SetMonData(pokemon, MON_DATA_OT_GENDER, &inGameTrade->otGender);
     SetMonData(pokemon, MON_DATA_ABILITY_NUM, &inGameTrade->abilityNum);
@@ -4625,6 +4637,62 @@ u16 GetTradeSpecies(void)
 void CreateInGameTradePokemon(void)
 {
     CreateInGameTradePokemonInternal(gSpecialVar_0x8005, gSpecialVar_0x8004);
+}
+
+// T-194 — randomized town trades. Separators for the "In return I want …" base-form list.
+static const u8 sText_TradeListOr[] = _(" or ");
+static const u8 sText_TradeListComma[] = _(", ");
+
+// Buffer the trade message strings for the generic town-trader script:
+//   gStringVar2 = the offered species' name; gStringVar1 = the requested base forms joined
+//   ("Rattata", "Rattata or Wurmple", "A, B or C"). Reads sIngameTrades[gSpecialVar_0x8004].
+//   Falls back to the single requestedSpecies for vanilla trades (no list set).
+void BufferInGameTradeOffer(void)
+{
+    const struct InGameTrade *inGameTrade = &sIngameTrades[gSpecialVar_0x8004];
+    const u16 *list = inGameTrade->requestedBaseForms;
+    u32 count = inGameTrade->requestedBaseFormCount;
+    u32 i;
+
+    StringCopy(gStringVar2, GetSpeciesName(inGameTrade->species));
+
+    if (list == NULL || count == 0)
+    {
+        StringCopy(gStringVar1, GetSpeciesName(inGameTrade->requestedSpecies));
+        return;
+    }
+
+    StringCopy(gStringVar1, GetSpeciesName(list[0]));
+    for (i = 1; i < count; i++)
+    {
+        StringAppend(gStringVar1, (i == count - 1) ? sText_TradeListOr : sText_TradeListComma);
+        StringAppend(gStringVar1, GetSpeciesName(list[i]));
+    }
+}
+
+// Return TRUE when the player's chosen mon (gSpecialVar_0x8005) is accepted by the trade
+// (gSpecialVar_0x8004): its species is in the accepted set (all evolutions of the requested families).
+// Falls back to the single requestedSpecies for vanilla trades. Eggs are never accepted.
+bool8 IsRequestedTradeMon(void)
+{
+    const struct InGameTrade *inGameTrade = &sIngameTrades[gSpecialVar_0x8004];
+    u16 species;
+    u32 i;
+
+    if (GetMonData(&gPlayerParty[gSpecialVar_0x8005], MON_DATA_IS_EGG))
+        return FALSE;
+
+    species = GetMonData(&gPlayerParty[gSpecialVar_0x8005], MON_DATA_SPECIES);
+
+    if (inGameTrade->requestedSpeciesList == NULL)
+        return species == inGameTrade->requestedSpecies;
+
+    for (i = 0; i < inGameTrade->requestedSpeciesCount; i++)
+    {
+        if (inGameTrade->requestedSpeciesList[i] == species)
+            return TRUE;
+    }
+    return FALSE;
 }
 
 static void CB2_UpdateLinkTrade(void)
