@@ -1075,4 +1075,31 @@
 // Enigma Berry dummy constant
 #define EFFECT_ITEM_ENIGMA_BERRY_EREADER    1
 
+// T-195 — randomizer maker placeholders (see GYM_REWARD_MON in constants/species.h). Fallbacks so the
+// vanilla tree assembles/links for CI / `make check` when the maker has not substituted the real
+// values. GYM_REWARD_ITEM = a gym reward's held item; ITEM_MEGA_NN = the mega stones the mega-trainer
+// system places in the world (randomizer/writer.js replaces `ITEM_MEGA_<id>` per ROM).
+#define GYM_REWARD_ITEM ITEM_NONE
+#define ITEM_MEGA_01 ITEM_NONE
+#define ITEM_MEGA_02 ITEM_NONE
+#define ITEM_MEGA_03 ITEM_NONE
+#define ITEM_MEGA_04 ITEM_NONE
+#define ITEM_MEGA_05 ITEM_NONE
+#define ITEM_MEGA_06 ITEM_NONE
+#define ITEM_MEGA_07 ITEM_NONE
+#define ITEM_MEGA_08 ITEM_NONE
+#define ITEM_MEGA_09 ITEM_NONE
+#define ITEM_MEGA_10 ITEM_NONE
+#define ITEM_MEGA_11 ITEM_NONE
+#define ITEM_MEGA_12 ITEM_NONE
+#define ITEM_MEGA_13 ITEM_NONE
+#define ITEM_MEGA_14 ITEM_NONE
+#define ITEM_MEGA_15 ITEM_NONE
+#define ITEM_MEGA_16 ITEM_NONE
+#define ITEM_MEGA_17 ITEM_NONE
+#define ITEM_MEGA_18 ITEM_NONE
+#define ITEM_MEGA_19 ITEM_NONE
+#define ITEM_MEGA_20 ITEM_NONE
+#define ITEM_MEGA_21 ITEM_NONE
+
 #endif  // GUARD_CONSTANTS_ITEMS_H

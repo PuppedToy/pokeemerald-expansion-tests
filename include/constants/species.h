@@ -1644,4 +1644,13 @@
 
 #define SPECIES_SHINY_TAG 5000
 
+// T-195 — randomizer maker placeholders. randomizer/writer.js string-replaces these tokens in the
+// gym-reward and Sky Pillar map scripts with the real species per ROM. Defined here as SPECIES_NONE
+// so the vanilla tree still assembles when the maker has NOT run (CI build.yml / `make check`); the
+// maker's substitution happens in the .inc files before `make`, so real ROMs are unaffected.
+#define GYM_REWARD_MON  SPECIES_NONE
+#define SPECIES_LEGEND1 SPECIES_NONE
+#define SPECIES_LEGEND2 SPECIES_NONE
+#define SPECIES_LEGEND3 SPECIES_NONE
+
 #endif  // GUARD_CONSTANTS_SPECIES_H
