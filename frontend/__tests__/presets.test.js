@@ -118,6 +118,23 @@ test('presetCardHtml (Recommended/official, owner) shows CRUD and no Like button
   assert.match(html, /👁 7/, 'owner still sees stats on a recommended preset');
 });
 
+test('presetCardHtml shows the admin Recommend toggle only to admins, reflecting current kind', () => {
+  const userPreset = { id: 'p1', name: 'Mine', kind: 'user', isOwner: true, published: false, tags: deriveTags(cfg()), updatedAt: 0 };
+  const official = { ...userPreset, kind: 'official' };
+  // Non-admin never sees it.
+  assert.ok(!/data-action="recommend"/.test(presetCardHtml(userPreset, { mode: 'mine' })));
+  // Admin on a user preset → "Make Recommended".
+  const asAdmin = presetCardHtml(userPreset, { mode: 'mine', viewerIsAdmin: true });
+  assert.match(asAdmin, /data-action="recommend"/);
+  assert.match(asAdmin, /Make Recommended/);
+  // Admin on an official preset → "Remove from Recommended".
+  const officialAsAdmin = presetCardHtml(official, { mode: 'official', viewerIsAdmin: true });
+  assert.match(officialAsAdmin, /data-action="unrecommend"/);
+  assert.match(officialAsAdmin, /Remove from Recommended/);
+  // Never in save mode.
+  assert.ok(!/data-action="(un)?recommend"/.test(presetCardHtml(userPreset, { mode: 'save', viewerIsAdmin: true })));
+});
+
 test('paginationHtml hides for a single page and disables Prev on page 1', () => {
   assert.equal(paginationHtml(1, 1), '');
   const html = paginationHtml(1, 3);

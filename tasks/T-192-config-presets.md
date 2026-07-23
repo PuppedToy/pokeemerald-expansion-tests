@@ -61,6 +61,8 @@ Acceptance criteria:
 
 - **2026-07-23** — Committed (`feat` + `merge` into master, owner-pushed) and **deployed to production** via `deploy/update.sh` (preflight all-green → rsync → tools rebuild → container recreate → health `/api/me` 401). Set `ADMIN_EMAILS=aalcazar@brooktec.com` (the sole admin) in the box's `deploy/.env` and documented it in `deploy/.env.example` (chore commit `db1c8f9`, still to be pushed by the owner). Verified live: `GET /api/presets?scope=community` → 200 `{items:[],…}` (presets tables migrated on the prod SQLite; idempotent), running container `printenv ADMIN_EMAILS` = the single admin, public HTTPS `GET /` → 200. Balanced seeds itself when the admin next loads the app. Task stays in-progress pending the owner's manual-test confirmation.
 
+- **2026-07-23** — Admin curation follow-up: **promote/demote any preset to/from Recommended in place** (no recreate). Backend `presets.setKind` + admin-only `POST /presets/:id/recommend|/unrecommend` (ownership unchanged); frontend adds an admin-only **★ Make Recommended / Remove from Recommended** button on every card (hidden in save mode). Tests added (backend promote/demote + 403/404; frontend card toggle). Committed to master; needs a deploy to go live.
+
 ## Outcome
 
 <!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->

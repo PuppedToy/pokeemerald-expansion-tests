@@ -42,7 +42,9 @@ indexable column. Community list pagination is `LIMIT 5 OFFSET` with a stable ti
 (`<sortkey> DESC, updated_at DESC, id DESC`).
 
 **Admin is an env var**: `ADMIN_EMAILS` (comma-separated, like `JWT_SECRET`). It gates creating
-`kind='official'` presets and moderating Community (an admin may unpublish/delete any preset).
+`kind='official'` presets and moderating Community (an admin may unpublish/delete any preset). An
+admin can also **promote/demote any preset to/from Recommended** in place (`POST /presets/:id/recommend`
+| `/unrecommend` → `setKind`, ownership unchanged) — curation without recreating the preset.
 `GET /api/me` returns an `isAdmin` flag so the frontend can show admin affordances.
 
 **"Balanced" is a real seeded `kind='official'` row (not synthetic), so it has real likes/views like

@@ -13,6 +13,7 @@ import { parseAdminEmails, isAdminEmail } from '../auth/admin.js';
 import {
   handleList, handleGet, handleCreate, handleUpdate,
   handlePublish, handleUnpublish, handleDelete, handleLike, handleSeedBalanced, BALANCED_ID,
+  handleRecommend, handleUnrecommend,
 } from '../presets/handlers.js';
 import { createPresetsRouter } from '../presets/routes.js';
 import { createAuthRouter } from '../auth/routes.js';
@@ -364,6 +365,39 @@ test('seed-balanced refreshes the config when DEFAULTS change, and is admin-only
   const res = fakeRes();
   handleSeedBalanced(d)({ userId: s.bob.id, body: { config: cfg() } }, res);
   assert.equal(res.statusCode, 403);
+});
+
+test('recommend/unrecommend promote and demote a preset (admin only)', () => {
+  const { s, d } = deps({ adminEmails: ['alice@x.test'] });
+  const p = mk(s.presets, s.bob.id); // bob's ordinary preset
+  assert.equal(s.presets.get(p.id).kind, 'user');
+
+  // Non-admin cannot promote.
+  let res = fakeRes();
+  handleRecommend(d)({ userId: s.bob.id, params: { id: p.id } }, res);
+  assert.equal(res.statusCode, 403);
+  assert.equal(s.presets.get(p.id).kind, 'user');
+
+  // Admin promotes it → appears in the official (Recommended) list, ownership unchanged.
+  res = fakeRes();
+  handleRecommend(d)({ userId: s.alice.id, params: { id: p.id } }, res);
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.body.item.kind, 'official');
+  assert.equal(s.presets.get(p.id).user_id, s.bob.id, 'ownership unchanged');
+  assert.equal(s.presets.listOfficial(1).total, 1);
+
+  // Admin demotes it back.
+  res = fakeRes();
+  handleUnrecommend(d)({ userId: s.alice.id, params: { id: p.id } }, res);
+  assert.equal(res.body.item.kind, 'user');
+  assert.equal(s.presets.listOfficial(1).total, 0);
+});
+
+test('recommend returns 404 for a missing preset', () => {
+  const { s, d } = deps({ adminEmails: ['alice@x.test'] });
+  const res = fakeRes();
+  handleRecommend(d)({ userId: s.alice.id, params: { id: 'nope' } }, res);
+  assert.equal(res.statusCode, 404);
 });
 
 test('list handler requires auth for scope=mine but not for community', () => {

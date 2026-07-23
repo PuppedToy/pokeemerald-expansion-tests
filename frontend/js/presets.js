@@ -85,6 +85,13 @@ export function presetCardHtml(item, { mode = 'community', viewerIsAdmin = false
     }
   }
 
+  // Admin curation (T-192): promote/demote any preset to/from Recommended without recreating it.
+  if (viewerIsAdmin && mode !== 'save') {
+    btns.push(item.kind === 'official'
+      ? `<button class="btn btn-sm btn-ghost preset-recommend" data-action="unrecommend" data-id="${item.id}">Remove from Recommended</button>`
+      : `<button class="btn btn-sm btn-ghost preset-recommend" data-action="recommend" data-id="${item.id}">★ Make Recommended</button>`);
+  }
+
   const badge = item.kind === 'official' ? '<span class="preset-badge">Recommended</span>' : '';
   const desc = item.description ? `<div class="preset-card-desc">${escapeHtml(item.description)}</div>` : '';
   return `
@@ -319,6 +326,10 @@ export function initPresets(deps = {}) {
 
     if (action === 'publish' || action === 'unpublish') {
       if (action === 'publish' && !verified()) { alert('Please verify your email before publishing a preset.'); return; }
+      await api(`/api/presets/${encodeURIComponent(id)}/${action}`, { method: 'POST', auth: true });
+      return render();
+    }
+    if (action === 'recommend' || action === 'unrecommend') { // admin: promote/demote to Recommended
       await api(`/api/presets/${encodeURIComponent(id)}/${action}`, { method: 'POST', auth: true });
       return render();
     }

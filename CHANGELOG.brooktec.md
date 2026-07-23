@@ -15,8 +15,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   **Balanced**, the default settings) and **Community**. Publish a preset to make it discoverable;
   others can like any Recommended or published preset and see its views. Community has search, filters (Singles/Doubles/Mixed ·
   Normal/Nuzlocke/Soul-Link · Deterministic/Classic), sort (relevance / most liked / most viewed) and
-  a date window, paginated 5 per page. The old **Save** (download JSON) and **Reset to defaults**
-  buttons are gone — presets replace them — and **Load** is now **Load from bundle**. (T-192)
+  a date window, paginated 5 per page. As an admin you curate the Recommended presets — one click on
+  any preset card promotes it to (or removes it from) Recommended. The old **Save** (download JSON)
+  and **Reset to defaults** buttons are gone — presets replace them — and **Load** is now
+  **Load from bundle**. (T-192)
 
 - **You can now rebuild the exact same ROMs from a bundle, without re-randomizing.** A new
   "Regenerate ROMs from a bundle" button on the config screen accepts a `bundle.json` (the same file

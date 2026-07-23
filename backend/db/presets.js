@@ -34,6 +34,7 @@ export function createPresetsRepo(db) {
     `UPDATE presets SET name=?, description=?, config_json=?, tag_format=?, tag_mode=?, tag_wild=?, updated_at=? WHERE id=?`
   );
   const setPublishedStmt = db.prepare('UPDATE presets SET published=?, updated_at=? WHERE id=?');
+  const setKindStmt = db.prepare('UPDATE presets SET kind=?, updated_at=? WHERE id=?');
   const delLikesForPreset = db.prepare('DELETE FROM preset_likes WHERE preset_id = ?');
   const delViewsForPreset = db.prepare('DELETE FROM preset_views WHERE preset_id = ?');
   const delPreset = db.prepare('DELETE FROM presets WHERE id = ?');
@@ -79,6 +80,15 @@ export function createPresetsRepo(db) {
       const row = this.get(id);
       if (!row) return null;
       setPublishedStmt.run(published ? 1 : 0, now, id);
+      return this.get(id);
+    },
+
+    /** Promote/demote a preset between 'official' (Recommended) and 'user' — admin curation (T-192).
+     *  Bumps updated_at. Returns the updated row, or null if it doesn't exist. */
+    setKind(id, kind, now = Date.now()) {
+      const row = this.get(id);
+      if (!row) return null;
+      setKindStmt.run(kind === 'official' ? 'official' : 'user', now, id);
       return this.get(id);
     },
 

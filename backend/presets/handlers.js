@@ -229,6 +229,21 @@ export function handleLike({ presets, presetLikes, now = () => Date.now() }) {
   };
 }
 
+// ── POST /api/presets/:id/recommend | /unrecommend (requireAuth + admin) ─────────
+// Admin curation: promote/demote ANY preset between Recommended (kind='official') and a normal user
+// preset, without recreating it. Ownership is unchanged.
+function setKindHandler(kind, { presets, users, adminEmails, now = () => Date.now() }) {
+  return (req, res) => {
+    if (!reqIsAdmin(req, users, adminEmails)) return res.status(403).json({ error: 'admin only' });
+    const row = presets.get(req.params.id);
+    if (!row) return res.status(404).json({ error: 'not found' });
+    const updated = presets.setKind(row.id, kind, now());
+    res.json({ item: toPublic(updated, { viewerId: req.userId }) });
+  };
+}
+export const handleRecommend = (deps) => setKindHandler('official', deps);
+export const handleUnrecommend = (deps) => setKindHandler('user', deps);
+
 // ── POST /api/presets/official/balanced (requireAuth + admin) ────────────────────
 // Idempotent seed of the built-in "Balanced" recommended preset. Creates it (owned by the admin) on
 // first call; on later calls only refreshes its config/tags when DEFAULTS actually changed (so admin

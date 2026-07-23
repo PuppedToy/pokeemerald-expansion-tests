@@ -12,6 +12,7 @@ import { createRateLimiter } from '../email/rateLimiter.js';
 import {
   handleList, handleGet, handleCreate, handleUpdate,
   handlePublish, handleUnpublish, handleDelete, handleLike, handleSeedBalanced,
+  handleRecommend, handleUnrecommend,
 } from './handlers.js';
 
 export function createPresetsRouter({ presets, presetLikes, presetViews, users, jwtSecret, adminEmails = [], idGen }) {
@@ -32,6 +33,8 @@ export function createPresetsRouter({ presets, presetLikes, presetViews, users, 
   router.put('/presets/:id', requireAuth(jwtSecret), throttle, json, handleUpdate(deps));
   router.post('/presets/:id/publish', requireAuth(jwtSecret), requireVerified(users), throttle, handlePublish(deps));
   router.post('/presets/:id/unpublish', requireAuth(jwtSecret), throttle, handleUnpublish(deps));
+  router.post('/presets/:id/recommend', requireAuth(jwtSecret), throttle, handleRecommend(deps));
+  router.post('/presets/:id/unrecommend', requireAuth(jwtSecret), throttle, handleUnrecommend(deps));
   router.delete('/presets/:id', requireAuth(jwtSecret), throttle, handleDelete(deps));
   router.post('/presets/:id/like', requireAuth(jwtSecret), throttle, handleLike(deps));
 
