@@ -9,6 +9,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Type-themed trainers (gyms & Elite Four) now shore up their weaknesses.** A monotype team — say a
+  Rock leader — now leans toward members whose SECONDARY type or ability patches a weakness the pure
+  type has: immunities first (a Ghost to wall Fighting, Flying/Levitate vs Ground, Water Absorb vs
+  Water, Sap Sipper vs Grass…), then resistances/neutralities (a Rock/Water to neutralise Steel…). It
+  only ever changes which legal, in-tier, on-archetype mon fills a slot; how eagerly it reaches for
+  coverage scales with the trainer's difficulty progression, so early trainers stay a loose pile and
+  late gyms/E4 build real defensive backbones. Every coverage decision — each slot's candidate pools
+  and the roll outcome — is recorded exhaustively in the team-building decision log. (T-193)
+
 - **Config presets — save, reuse and share your randomizer settings.** The config screen now has a
   green **Load Preset** button and a **Save Preset** button (next to Review). Presets live in your
   account across devices, in three tabs: **My Presets**, **Recommended** (curated — currently

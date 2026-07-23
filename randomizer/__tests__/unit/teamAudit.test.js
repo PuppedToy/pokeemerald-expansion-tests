@@ -74,6 +74,36 @@ describe('createTeamAudit + renderTeamAuditText', () => {
         expect(renderTeamAuditText(audit.all())).toContain('no archetype steering');
     });
 
+    test('T-193 — renders the exhaustive monotype coverage trace (both rounds, pool, picked)', () => {
+        const audit = createTeamAudit();
+        audit.beginTeam({ trainerId: 'TRAINER_ROXANNE', label: 'Roxanne', level: 60, battleType: 'singles', sophistication: 0.9, seed: null });
+        audit.finishTeam({
+            team: [{ pokemon: mon() }], model: singles, ctx: {}, seed: null,
+            coveragePicks: [{
+                slot: 2, monoType: 'ROCK', soph: 0.9, outcome: 'immunity:SPECIES_AERODACTYL',
+                rounds: [
+                    {
+                        kind: 'immunity', uncovered: ['WATER', 'GRASS', 'FIGHTING', 'GROUND'], prob: 1, reached: true,
+                        pool: [
+                            { id: 'SPECIES_AERODACTYL', threats: ['GROUND'], via: 'typing', ability: null },
+                            { id: 'SPECIES_SHUCKLE', threats: ['WATER'], via: 'ability', ability: 'WATER_ABSORB' },
+                        ],
+                        picked: 'SPECIES_AERODACTYL',
+                    },
+                    { kind: 'resist', uncovered: ['STEEL'], prob: 0.81, reached: false, pool: [], picked: null },
+                ],
+            }],
+        });
+        const text = renderTeamAuditText(audit.all());
+        expect(text).toContain('monotype coverage slot 3 [ROCK, soph 0.9]');
+        expect(text).toContain('outcome: immunity:SPECIES_AERODACTYL');
+        expect(text).toContain('immunity: uncovered [WATER, GRASS, FIGHTING, GROUND], auto-include 100%');
+        expect(text).toContain('Aerodactyl');
+        expect(text).toContain('Water Absorb (ability)');
+        expect(text).toContain('‹picked›');
+        expect(text).toContain('resist: uncovered [STEEL], auto-include 81% — not reached');
+    });
+
     test('records the seed when present', () => {
         const audit = createTeamAudit();
         audit.beginTeam({ trainerId: 'TRAINER_SEED', level: 50, battleType: 'singles', sophistication: 0.8, seed: { base: 'full_stall', gimmicks: ['weather'] } });
