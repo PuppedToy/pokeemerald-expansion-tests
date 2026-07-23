@@ -31,10 +31,11 @@ function nearestCap(level) {
 }
 
 // The 4 town trades (owner spec, T-194). ingameTradeId keeps the sIngameTrades slot each town's map
-// script selects via `setvar VAR_0x8008, INGAME_TRADE_*`: Rustboro→SEEDOT, Lavaridge→HORSEA (was
-// Pacifidlog), Fortree→PLUSLE, Mossdeep→MEOWTH (was Battle Frontier).
+// script selects via `setvar VAR_0x8008, INGAME_TRADE_*`: Dewford→SEEDOT (was Rustboro), Lavaridge→
+// HORSEA (was Pacifidlog), Fortree→PLUSLE, Mossdeep→MEOWTH (was Battle Frontier). The offered mon's
+// tier + gym-cap level and the wanted route are independent of where the trader stands.
 const TOWN_TRADES = [
-    { town: 'RUSTBORO',  ingameTradeId: 'INGAME_TRADE_SEEDOT', tier: 'RU',    capFlag: 'FLAG_BADGE01_GET', routeMapId: 'MAP_ROUTE101', methods: ['land'] },
+    { town: 'DEWFORD',   ingameTradeId: 'INGAME_TRADE_SEEDOT', tier: 'RU',    capFlag: 'FLAG_BADGE01_GET', routeMapId: 'MAP_ROUTE101', methods: ['land'] },
     { town: 'LAVARIDGE', ingameTradeId: 'INGAME_TRADE_HORSEA', tier: 'UU',    capFlag: 'FLAG_BADGE04_GET', routeMapId: 'MAP_ROUTE102', methods: ['land', 'old'] },
     { town: 'FORTREE',   ingameTradeId: 'INGAME_TRADE_PLUSLE', tier: 'OU',    capFlag: 'FLAG_BADGE06_GET', routeMapId: 'MAP_ROUTE103', methods: ['land', 'old'] },
     { town: 'MOSSDEEP',  ingameTradeId: 'INGAME_TRADE_MEOWTH', tier: 'UBERS', capFlag: 'FLAG_BADGE07_GET', routeMapId: 'MAP_ROUTE104', methods: ['land', 'old'] },
@@ -83,30 +84,39 @@ function offeredCandidates(pokemonList, tier, capLevel, { relax = false } = {}) 
     return out;
 }
 
-// Accepted set for a town: representative encounter species of each route method → full family.
-function acceptedFor(pokemonList, town, replacementLog, wildMaps) {
+// Every species that can appear in the route's grass/old-rod slots. Uses the randomized wildPlan
+// arrays (classic mode may hold several per method); falls back to the representative / template.
+function routeEncounterPool(town, wildArtifact, wildMaps) {
     const route = wildMaps.find(m => m.id === town.routeMapId) || {};
-    const reps = [];
+    const wildPlan = (wildArtifact && wildArtifact.wildPlan) || {};
+    const replacementLog = (wildArtifact && wildArtifact.replacementLog) || {};
+    const pool = [];
     for (const method of town.methods) {
         const template = route[method];
         if (!template) continue;
-        reps.push((replacementLog && replacementLog[template]) || template);
+        const picks = wildPlan[template];
+        if (Array.isArray(picks) && picks.length) pool.push(...picks);
+        else if (replacementLog[template]) pool.push(replacementLog[template]);
+        else pool.push(template);
     }
-    const acceptedSpecies = new Set();
-    const baseForms = [];
-    for (const repId of [...new Set(reps)]) {
-        const repPoke = pokemonList.find(p => p.id === repId);
-        if (!repPoke) continue;
-        const fam = flattenEvoTree(repPoke.evoTree && repPoke.evoTree.length ? repPoke.evoTree : [repId]);
-        fam.forEach(s => acceptedSpecies.add(s));
-        baseForms.push(devolveToBase(pokemonList, repPoke).id);
-    }
-    return { acceptedSpecies: [...acceptedSpecies], acceptedBaseForms: [...new Set(baseForms)] };
+    return [...new Set(pool)];
+}
+
+// Pick ONE wanted species at random from the route's grass/old-rod pool and accept its whole family.
+// The docs surface the trade on THIS species' encounter tile / modal (T-194 owner refinement).
+function chooseWanted(pokemonList, town, wildArtifact, wildMaps, rand) {
+    const pool = routeEncounterPool(town, wildArtifact, wildMaps);
+    if (pool.length === 0) return { wantedSpecies: null, acceptedSpecies: [], acceptedBaseForms: [] };
+    const wantedSpecies = pick(pool, rand);
+    const wantedPoke = pokemonList.find(p => p.id === wantedSpecies);
+    if (!wantedPoke) return { wantedSpecies, acceptedSpecies: [wantedSpecies], acceptedBaseForms: [wantedSpecies] };
+    const acceptedSpecies = flattenEvoTree(wantedPoke.evoTree && wantedPoke.evoTree.length ? wantedPoke.evoTree : [wantedSpecies]);
+    const acceptedBaseForms = [devolveToBase(pokemonList, wantedPoke).id];
+    return { wantedSpecies, acceptedSpecies, acceptedBaseForms };
 }
 
 // Decide the 4 trades. Pure given (pokemonList, wildArtifact, wildMaps, capLevels, seed).
 function selectTrades({ pokemonList, wildArtifact, wildMaps, capLevels, seed, diagnostics } = {}) {
-    const replacementLog = (wildArtifact && wildArtifact.replacementLog) || {};
     return TOWN_TRADES.map((town, idx) => {
         const level = capLevels[town.capFlag];
         let candidates = offeredCandidates(pokemonList, town.tier, level);
@@ -120,7 +130,7 @@ function selectTrades({ pokemonList, wildArtifact, wildMaps, capLevels, seed, di
         }
         const rand = makeRng(deriveSeed(seed >>> 0, idx));
         const offered = candidates.length ? pick(candidates, rand) : null;
-        const { acceptedSpecies, acceptedBaseForms } = acceptedFor(pokemonList, town, replacementLog, wildMaps);
+        const { wantedSpecies, acceptedSpecies, acceptedBaseForms } = chooseWanted(pokemonList, town, wildArtifact, wildMaps, rand);
         return {
             town: town.town,
             ingameTradeId: town.ingameTradeId,
@@ -128,6 +138,7 @@ function selectTrades({ pokemonList, wildArtifact, wildMaps, capLevels, seed, di
             level,
             routeMapId: town.routeMapId,
             offeredSpecies: offered ? offered.id : null,
+            wantedSpecies,
             acceptedSpecies,
             acceptedBaseForms,
         };
@@ -137,5 +148,5 @@ function selectTrades({ pokemonList, wildArtifact, wildMaps, capLevels, seed, di
 module.exports = {
     selectTrades,
     TOWN_TRADES,
-    __test: { nearestCap, offeredCandidates, acceptedFor, flattenEvoTree, makeRng },
+    __test: { nearestCap, offeredCandidates, chooseWanted, routeEncounterPool, flattenEvoTree, makeRng },
 };

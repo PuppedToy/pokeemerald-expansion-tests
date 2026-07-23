@@ -93,7 +93,7 @@ const baseArgs = () => ({
 describe('selectTrades — structure', () => {
     test('returns the 4 towns with the correct tier / cap level / route', () => {
         const trades = selectTrades(baseArgs());
-        expect(trades.map(t => t.town)).toEqual(['RUSTBORO', 'LAVARIDGE', 'FORTREE', 'MOSSDEEP']);
+        expect(trades.map(t => t.town)).toEqual(['DEWFORD', 'LAVARIDGE', 'FORTREE', 'MOSSDEEP']);
         expect(trades.map(t => t.tier)).toEqual(['RU', 'UU', 'OU', 'UBERS']);
         expect(trades.map(t => t.level)).toEqual([13, 36, 46, 56]);
         expect(trades.map(t => t.routeMapId)).toEqual(['MAP_ROUTE101', 'MAP_ROUTE102', 'MAP_ROUTE103', 'MAP_ROUTE104']);
@@ -125,19 +125,26 @@ describe('selectTrades — offered mon (strict tier rule)', () => {
     });
 });
 
-describe('selectTrades — accepted families (representative encounters)', () => {
-    test('accepts the full evolution family of each route representative, listing base forms in the message', () => {
+describe('selectTrades — wanted family (one random grass/old-rod species)', () => {
+    test('picks a single wanted species from the route pool and accepts its full family', () => {
         const trades = selectTrades(baseArgs());
-        // Route 101 grass rep → RATTATA family.
+        // Route 101 pool (grass only) = { RATTATA } → wanted RATTATA; whole family accepted.
+        expect(trades[0].wantedSpecies).toBe('SPECIES_RATTATA');
         expect(new Set(trades[0].acceptedSpecies)).toEqual(new Set(['SPECIES_RATTATA', 'SPECIES_RATICATE']));
         expect(trades[0].acceptedBaseForms).toEqual(['SPECIES_RATTATA']);
     });
 
-    test('grass ∪ old rod both feed the accepted set (deduped) for routes with a rod', () => {
+    test('the wanted species is drawn from grass ∪ old rod of the route', () => {
+        // Route 102 pool = { RATTATA (grass rep), RATICATE (old-rod rep) } — one is chosen.
         const trades = selectTrades(baseArgs());
-        // Route 102 land+old both resolve into the RATTATA family → deduped.
-        expect(new Set(trades[1].acceptedSpecies)).toEqual(new Set(['SPECIES_RATTATA', 'SPECIES_RATICATE']));
-        expect(trades[1].acceptedBaseForms).toEqual(['SPECIES_RATTATA']);
+        expect(['SPECIES_RATTATA', 'SPECIES_RATICATE']).toContain(trades[1].wantedSpecies);
+    });
+
+    test('routeEncounterPool unions all wildPlan species across grass + old rod (classic mode)', () => {
+        const town = { routeMapId: 'MAP_ROUTE102', methods: ['land', 'old'] };
+        const wildArtifact = { wildPlan: { SPECIES_WURMPLE: ['SPECIES_RATTATA', 'SPECIES_RATICATE'], SPECIES_WINGULL: ['SPECIES_PIDGEY'] } };
+        const pool = __test.routeEncounterPool(town, wildArtifact, WILD_MAPS);
+        expect(new Set(pool)).toEqual(new Set(['SPECIES_RATTATA', 'SPECIES_RATICATE', 'SPECIES_PIDGEY']));
     });
 });
 

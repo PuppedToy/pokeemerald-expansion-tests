@@ -935,7 +935,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     for (const t of (trades || [])) {
         if (!t || !t.offeredSpecies) continue;
         const entry = maps.find(m => m.id === t.routeMapId);
-        if (entry) entry.trade = { town: t.town, tier: t.tier, level: t.level, offeredSpecies: t.offeredSpecies };
+        if (entry) entry.trade = { town: t.town, tier: t.tier, level: t.level, offeredSpecies: t.offeredSpecies, wantedSpecies: t.wantedSpecies };
     }
 
     // T-163 — use the docs-visibility-redacted encounter maps from the bundle's docs when present

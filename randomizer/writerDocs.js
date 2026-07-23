@@ -399,7 +399,7 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     for (const t of (options.trades || [])) {
         if (!t || !t.offeredSpecies) continue;
         const entry = maps.find(m => m.id === t.routeMapId);
-        if (entry) entry.trade = { town: t.town, tier: t.tier, level: t.level, offeredSpecies: t.offeredSpecies };
+        if (entry) entry.trade = { town: t.town, tier: t.tier, level: t.level, offeredSpecies: t.offeredSpecies, wantedSpecies: t.wantedSpecies };
     }
 
     // T-163 — redact the assembled encounter maps per the docs-visibility config (drops hidden

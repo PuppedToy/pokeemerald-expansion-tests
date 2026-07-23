@@ -1977,7 +1977,8 @@
     const routesGrid = document.getElementById('wildpokes-cards');
 
     // T-194 — the town-trade sub-card (3 lines: TRADE caption / location + town / gift + clickable
-    // offered mon + level). Shared by the route cards and the pokemon modal; uses only global helpers
+    // offered mon + level). Full width of its container with large text. Shared by the route cards
+    // (spans the encounter grid via grid-column) and the pokemon modal; uses only global helpers
     // (getPokeImg/getIcon/pokes) and the delegated `.evo-link` handler so it works in both scopes.
     window.buildTradeCardHTML = function (trade) {
       if (!trade || !trade.offeredSpecies) return '';
@@ -1985,11 +1986,11 @@
       const prettify = s => String(s || '').split('_').map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ');
       const p = (typeof pokes !== 'undefined') ? pokes.find(x => x && x.id === id) : null;
       const offName = (p && p.name) || prettify(id.replace('SPECIES_', ''));
-      return '<div style="margin:10px auto 0;max-width:220px;padding:8px 10px;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.35);border-radius:10px;text-align:center;font-size:12px">'
-        + '<div style="font-weight:800;letter-spacing:1px;font-size:11px;color:#60a5fa">TRADE</div>'
-        + '<div style="opacity:.85;margin-top:2px">' + getIcon('location', '📍') + ' ' + prettify(trade.town) + '</div>'
-        + '<div style="margin-top:4px"><span class="evo-link" data-id="' + id + '" style="cursor:pointer;display:inline-flex;align-items:center;gap:5px;justify-content:center">'
-        + getIcon('reward', '🎁') + '<img src="' + getPokeImg(id) + '" width="26" height="26" style="object-fit:contain" alt=""><span style="font-weight:700">' + offName + ' Lv. ' + trade.level + '</span></span></div>'
+      return '<div style="grid-column:1/-1;width:100%;box-sizing:border-box;margin:10px 0 2px;padding:14px 16px;background:rgba(96,165,250,0.10);border:1px solid rgba(96,165,250,0.40);border-radius:12px;text-align:center">'
+        + '<div style="font-weight:800;letter-spacing:2px;font-size:16px;color:#60a5fa">TRADE</div>'
+        + '<div style="font-size:15px;opacity:.9;margin-top:6px">' + getIcon('location', '📍') + ' ' + prettify(trade.town) + '</div>'
+        + '<div style="margin-top:8px"><span class="evo-link" data-id="' + id + '" style="cursor:pointer;display:inline-flex;align-items:center;gap:8px;justify-content:center;font-size:17px">'
+        + getIcon('reward', '🎁') + '<img src="' + getPokeImg(id) + '" width="40" height="40" style="object-fit:contain" alt=""><span style="font-weight:700">' + offName + ' Lv. ' + trade.level + '</span></span></div>'
         + '</div>';
     };
 
@@ -2033,6 +2034,7 @@
 
       const encCols = Math.max(1, Math.ceil((encSlots.length + hiddenTiles.length) / 3));
 
+      let tradeRendered = false; // T-194 — the trade sub-card renders once, on its wanted encounter tile.
       const encountersHTML = encSlots
         .map(({ slot, species, method }) => {
           const pokeId = species;
@@ -2070,7 +2072,7 @@
               ${faintLabel}
             </div>
           `;
-          return `
+          const tileHTML = `
             <div class="clicker wild-poke poke-${pokeId}${slotExtraClass}" data-slot="${slot}" data-base-species="${pokeId}" style="text-align:center; background:rgba(255,255,255,0.02); padding:6px; border-radius:10px;">
               ${typeLabel}
               <img class="nz-poke-img" src="${img}" style="width:64px;height:64px;object-fit:contain" alt="${pokeName}">
@@ -2078,6 +2080,14 @@
               ${checkboxHTML}
             </div>
           `;
+          // T-194 — attach the full-width trade sub-card right after the wanted grass/old-rod encounter.
+          let tradeHTML = '';
+          if (!tradeRendered && route.trade && route.trade.wantedSpecies === pokeId
+              && (method === 'land' || method === 'old') && typeof window.buildTradeCardHTML === 'function') {
+            tradeHTML = window.buildTradeCardHTML(route.trade);
+            tradeRendered = true;
+          }
+          return tileHTML + tradeHTML;
         })
         .join('') + hiddenTiles.join('');
 
@@ -2088,7 +2098,6 @@
         <div class="enc-slots" style="grid-template-columns:repeat(${encCols}, 168px)">
           ${encountersHTML}
         </div>
-        ${route.trade ? window.buildTradeCardHTML(route.trade) : ''}
       `;
 
       routesGrid.appendChild(card);
@@ -3537,8 +3546,16 @@
       if (fainted) return wrap('<div class="box-tag-row"><span class="box-fainted">'+icon('fainted','💀')+' <span class="evo-link" data-id="'+fainted.currentSpecies+'">'+sprite(fainted.currentSpecies,32)+'</span> '+nm(fainted.currentSpecies)+' is fainted</span><button class="box-faintbtn box-undo" data-box-faint="'+fainted.routeId+'|'+fainted.slot+'|0|'+speciesId+'">Undo</button></div>');
       var obt = findObtainable(famSet);
       if (obt){
-        // T-194 — below "Obtainable in …", in the same box, the town-trade sub-card when that route has one.
-        var tradeHTML = (obt.trade && typeof window.buildTradeCardHTML === 'function') ? window.buildTradeCardHTML(obt.trade) : '';
+        // T-194 — below "Obtainable in …", in the same box, the town-trade sub-card — but ONLY on the
+        // exact grass/old-rod species the trade wants (one pokemon per route), not every family member.
+        var tr = null;
+        if (typeof wildPokes !== 'undefined') {
+          for (var ri = 0; ri < wildPokes.length; ri++) {
+            var rt = wildPokes[ri];
+            if (rt && rt.trade && rt.trade.wantedSpecies === speciesId) { tr = rt.trade; break; }
+          }
+        }
+        var tradeHTML = (tr && typeof window.buildTradeCardHTML === 'function') ? window.buildTradeCardHTML(tr) : '';
         return wrap('<span class="box-obtainable">'+icon('location','📍')+' Obtainable in '+obt.label+' <span class="evo-link" data-id="'+obt.species+'">'+sprite(obt.species,32)+'</span></span>'+tradeHTML);
       }
       return '';
