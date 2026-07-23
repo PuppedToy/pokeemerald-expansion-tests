@@ -39,6 +39,20 @@ export const APP_SCREENS = [
     name: 'nav-drawer', path: '/',
     setup: async (p) => { await p.dispatchEvent('#nav-burger', 'click'); await p.waitForTimeout(300); },
   },
+  {
+    // Presets modal on the Community tab (T-192). Content-independent to screenshot: the search +
+    // filter bar always renders (no login/seed needed), so this previews the modal chrome + the
+    // filter/sort/date controls responsively.
+    name: 'presets-modal', path: '/',
+    setup: async (p) => {
+      await p.dispatchEvent('[data-tab="randomizer"]', 'click');
+      await p.dispatchEvent('#btn-load-preset', 'click');
+      await p.waitForSelector('#presets-modal:not([hidden])');
+      await p.dispatchEvent('[data-presets-tab="community"]', 'click');
+      await p.waitForSelector('.preset-filters');
+      await p.waitForTimeout(200);
+    },
+  },
   { name: 'reset',  path: '/reset.html' },
   { name: 'verify', path: '/verify.html' },
 ];

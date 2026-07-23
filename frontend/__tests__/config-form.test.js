@@ -37,12 +37,16 @@ test('the generic "Advanced" block is removed (only a scoped Mutations Advanced 
   assert.match(src, /id="mutations-advanced-body"/, 'Mutations must keep a scoped Advanced body');
 });
 
-test('T-055: a "reset to defaults" control exists and resets from the canonical DEFAULTS', () => {
-  assert.match(src, /id="btn-reset-config"/, 'the config actions must include a reset button');
-  assert.match(src, /resetToDefaults\s*\(\)\s*\{/, 'ConfigForm exposes a resetToDefaults() method');
-  const body = src.slice(src.indexOf('resetToDefaults'), src.indexOf('resetToDefaults') + 200);
-  assert.match(body, /setConfig\(DEFAULTS\)/, 'resetToDefaults applies the DEFAULTS object (not ad-hoc values)');
-  assert.match(src, /#btn-reset-config'\)\?\.addEventListener/, 'the reset button is wired');
+test('T-192: Save + Reset were removed; Load Preset (green) + Load from bundle remain', () => {
+  // Spec change (T-192): "Save" (download JSON) and "Reset to defaults" are gone; presets replace them.
+  assert.ok(!src.includes('id="btn-save-config"'), 'the old Save button must be gone');
+  assert.ok(!src.includes('id="btn-reset-config"'), 'the old Reset button must be gone');
+  assert.ok(!/resetToDefaults\s*\(\)/.test(src), 'the now-unused resetToDefaults() method must be gone');
+  assert.match(src, /id="btn-load-preset"[\s\S]*btn-emerald|btn-emerald[\s\S]*id="btn-load-preset"/, 'a green "Load Preset" button exists');
+  assert.match(src, />\s*Load from bundle/, 'the Load control is renamed "Load from bundle"');
+  // Applying a preset reuses the canonical DEFAULTS-style config via applyExternalConfig.
+  assert.match(src, /applyExternalConfig\s*\(cfg\)\s*\{/, 'ConfigForm exposes applyExternalConfig()');
+  assert.match(src, /#btn-load-preset'\)\?\.addEventListener/, 'the Load Preset button is wired to onLoadPreset');
 });
 
 test('seed stays in General; show-exact-positions moved to Docs visibility (T-163)', () => {
@@ -474,9 +478,10 @@ test('T-188: config actions sit at the top of the form, before the accordion ope
   assert.ok(actionsIdx < accordionIdx, 'the actions bar renders before the accordion wrapper (below the step indicator)');
 });
 
-test('T-188: the buttons keep their ids so _bind() wiring is unaffected', () => {
-  for (const id of ['btn-save-config', 'upload-config', 'btn-reset-config']) {
-    assert.match(src, new RegExp(`id="${id}"`), `#${id} must survive the move (wired by id)`);
+test('T-188/T-192: the config-action controls keep their ids so _bind() wiring is unaffected', () => {
+  // After T-192, Save/Reset are gone and Load Preset is added; the surviving/added ids stay stable.
+  for (const id of ['btn-load-preset', 'upload-config']) {
+    assert.match(src, new RegExp(`id="${id}"`), `#${id} must exist (wired by id)`);
   }
 });
 

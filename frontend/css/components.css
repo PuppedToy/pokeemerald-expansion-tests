@@ -997,6 +997,66 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
    (spinner inside), not the dead grey of a normal disabled button. Higher specificity than .btn:disabled. */
 .btn.is-working { opacity: 0.92; cursor: progress; }
 
+/* ── Presets modal (T-192) ─────────────────────────────────────────────────────
+   A wider modal listing preset cards (My / Official / Community). Reuses .modal / .auth-tabs. */
+.modal.modal-lg { max-width: 760px; }
+.presets-header { padding-right: 28px; }
+.presets-tabs { margin-bottom: 4px; }
+.presets-body { display: flex; flex-direction: column; gap: 12px; }
+
+.preset-list { display: flex; flex-direction: column; gap: 12px; }
+.preset-card {
+  background: var(--obs-well); border: var(--obs-border); box-shadow: var(--obs-shadow-sm);
+  padding: 14px; display: flex; flex-direction: column; gap: 8px;
+}
+.preset-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.preset-card-title {
+  font-family: var(--obs-font-display); font-size: 11px; letter-spacing: var(--obs-tracking);
+  color: var(--obs-text); display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.preset-badge {
+  font-family: var(--obs-font-display); font-size: 7px; letter-spacing: var(--obs-tracking);
+  color: var(--obs-bg-deep); background: var(--obs-yellow); padding: 3px 6px;
+}
+.preset-card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.preset-chip {
+  font-family: var(--obs-font-body); font-size: 15px; line-height: 1; padding: 4px 8px;
+  border: 2px solid var(--obs-shadow); color: var(--obs-text);
+}
+.preset-chip-format { background: color-mix(in srgb, var(--obs-cyan) 22%, transparent); }
+.preset-chip-mode   { background: color-mix(in srgb, var(--obs-yellow) 22%, transparent); }
+.preset-chip-wild   { background: color-mix(in srgb, var(--obs-green) 22%, transparent); }
+.preset-card-desc { font-family: var(--obs-font-body); font-size: 17px; color: var(--obs-text-dim); }
+.preset-card-meta {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  font-family: var(--obs-font-body); font-size: 15px; color: var(--obs-text-mute);
+}
+.preset-stats { white-space: nowrap; }
+.preset-card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.preset-like.liked { background: var(--obs-red); color: #fff; border-color: var(--obs-shadow); }
+
+.preset-pager { display: flex; align-items: center; justify-content: center; gap: 12px; padding-top: 4px; }
+.preset-page-label { font-family: var(--obs-font-body); font-size: 16px; color: var(--obs-text-dim); }
+
+.preset-filters { display: flex; flex-direction: column; gap: 8px; }
+.preset-filter-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.preset-filter, .preset-search { font-size: 16px; padding: 8px 10px; }
+
+.preset-empty, .preset-loading, .preset-login-cta {
+  font-family: var(--obs-font-body); font-size: 18px; color: var(--obs-text-dim);
+  text-align: center; padding: 18px;
+}
+
+.preset-save-form { display: flex; flex-direction: column; gap: 8px; padding-bottom: 8px; border-bottom: var(--obs-border); }
+.preset-save-desc { resize: vertical; }
+.preset-save-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.preset-official-toggle { font-family: var(--obs-font-body); font-size: 16px; color: var(--obs-text-dim); display: flex; gap: 8px; align-items: center; }
+.preset-msg { font-family: var(--obs-font-body); font-size: 16px; color: var(--obs-red); min-height: 1em; }
+
+.preset-detail { display: flex; flex-direction: column; gap: 12px; }
+.preset-detail-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.preset-detail-config { max-height: 46vh; overflow-y: auto; }
+
 /* ── Mobile component overrides (T-040) ──
    Additive only — every rule is scoped to ≤600px, so desktop rendering is untouched. */
 @media (max-width: 600px) {
@@ -1021,4 +1081,11 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
 
   /* Auth/ROM modal: less dead space at the top on short screens; the card already caps at 440px. */
   .modal-overlay { padding: 24px 12px; }
+
+  /* Presets modal (T-192): full-width card, single-column filters + cards, finger-sized controls. */
+  .modal.modal-lg { max-width: 100%; }
+  .preset-filter-row { grid-template-columns: 1fr 1fr; }
+  .preset-search, .preset-filter { min-height: 44px; }
+  .preset-card-actions .btn { min-height: 44px; }
+  .preset-card-head { flex-direction: column; gap: 6px; }
 }

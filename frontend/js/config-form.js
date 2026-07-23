@@ -1,5 +1,5 @@
 import { storageGet, storageSet } from './storage.js';
-import { downloadConfig, readJsonFile, extractConfig, isFullBundle } from './session.js';
+import { readJsonFile, extractConfig, isFullBundle } from './session.js';
 import { STARTER_NAME_POOLS } from './data/starterNames.js';
 
 const STORAGE_KEY = 'lastConfig';
@@ -246,7 +246,7 @@ const DOCS_VISIBILITY_TOGGLES = [
     ['show-old-rod', 'showOldRod'], ['show-grass', 'showGrass'],
 ];
 
-const DEFAULTS = {
+export const DEFAULTS = {
     runType: 'default',
     // T-085/ADR-014 — global battle format (singles | doubles | mixed). singlesPercent (% of single
     // battles) and leagueRunAndBun only apply to 'mixed'.
@@ -407,11 +407,13 @@ export function slowQueueMessage(total, fastMax) {
 }
 
 export class ConfigForm {
-    constructor(containerEl, { onConfigChange, onRegenerateBundle } = {}) {
+    constructor(containerEl, { onConfigChange, onRegenerateBundle, onLoadPreset } = {}) {
         this.container = containerEl;
         this.onConfigChange = onConfigChange ?? (() => {});
         // T-190 — invoked with a full uploaded bundle to rebuild it as-is (bypasses the randomizer).
         this.onRegenerateBundle = onRegenerateBundle ?? (() => {});
+        // T-192 — invoked when the user clicks "Load Preset" (opens the presets modal in browse mode).
+        this.onLoadPreset = onLoadPreset ?? (() => {});
         this._build();
         this._restore();
         this._wireEvents();
@@ -875,15 +877,14 @@ export class ConfigForm {
         this.container.innerHTML = `
 <div class="config-actions">
   <span class="config-actions-label">Config:</span>
-  <button type="button" class="btn btn-ghost" id="btn-save-config">Save</button>
-  <label class="btn btn-ghost" style="cursor:pointer">
-    Load
+  <button type="button" class="btn btn-emerald" id="btn-load-preset">Load Preset</button>
+  <label class="btn" style="cursor:pointer">
+    Load from bundle
     <input type="file" accept=".json" id="upload-config" style="display:none">
   </label>
-  <button type="button" class="btn btn-ghost" id="btn-reset-config">Reset to defaults</button>
   <span id="config-saved-note" style="font-size:12px;color:var(--muted);display:none">Saved ✓</span>
 </div>
-<div class="config-actions-hint field-hint">Save downloads your settings as a <code>.json</code>. Load accepts a saved config <strong>or</strong> a full <code>bundle.json</code> — only its configuration is applied; the rest of the bundle is ignored.</div>
+<div class="config-actions-hint field-hint"><strong>Load Preset</strong> opens your saved presets — and the community's — to apply in one click. <strong>Load from bundle</strong> reads only the settings from a saved config <strong>or</strong> a full <code>bundle.json</code> (the rest of the bundle is ignored).</div>
 <div class="config-actions-hint field-hint">Or skip randomization and regenerate ROMs by <a href="#" id="regen-from-bundle-link" class="regen-link">uploading your bundle here</a>.<input type="file" accept=".json" id="upload-bundle" style="display:none"></div>
 
 <div class="config-accordion">
@@ -1733,9 +1734,10 @@ export class ConfigForm {
         this.setConfig(saved);
     }
 
-    /** Reset every randomizer option back to its default (T-055). */
-    resetToDefaults() {
-        this.setConfig(DEFAULTS);
+    /** T-192 — apply an external config (from a chosen preset) and persist it, exactly like Load. */
+    applyExternalConfig(cfg) {
+        if (!cfg) return;
+        this.setConfig(cfg);
         this._syncUI();
         this._save();
     }
@@ -2112,14 +2114,8 @@ export class ConfigForm {
             });
         }
 
-        this._q('#btn-save-config').addEventListener('click', () => {
-            const cfg = this.getConfig();
-            if (cfg) downloadConfig(cfg);
-        });
-
-        this._q('#btn-reset-config')?.addEventListener('click', () => {
-            if (confirm('Reset all randomizer options to their defaults?')) this.resetToDefaults();
-        });
+        // T-192 — open the presets modal (My / Official / Community) to apply a saved preset.
+        this._q('#btn-load-preset')?.addEventListener('click', () => this.onLoadPreset());
 
         this._q('#upload-config').addEventListener('change', async e => {
             const file = e.target.files[0];

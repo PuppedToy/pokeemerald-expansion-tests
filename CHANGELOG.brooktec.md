@@ -9,6 +9,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Config presets — save, reuse and share your randomizer settings.** The config screen now has a
+  green **Load Preset** button and a **Save Preset** button (next to Review). Presets live in your
+  account across devices, in three tabs: **My Presets**, **Recommended** (curated — currently
+  **Balanced**, the default settings) and **Community**. Publish a preset to make it discoverable;
+  others can like any Recommended or published preset and see its views. Community has search, filters (Singles/Doubles/Mixed ·
+  Normal/Nuzlocke/Soul-Link · Deterministic/Classic), sort (relevance / most liked / most viewed) and
+  a date window, paginated 5 per page. The old **Save** (download JSON) and **Reset to defaults**
+  buttons are gone — presets replace them — and **Load** is now **Load from bundle**. (T-192)
+
 - **You can now rebuild the exact same ROMs from a bundle, without re-randomizing.** A new
   "Regenerate ROMs from a bundle" button on the config screen accepts a `bundle.json` (the same file
   the app already puts in your docs download) and rebuilds those exact ROMs as they were — same
