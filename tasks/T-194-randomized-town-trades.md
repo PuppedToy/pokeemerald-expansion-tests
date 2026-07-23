@@ -109,6 +109,8 @@ Acceptance criteria:
 
 - **2026-07-23** — Dewford trade now uses **Brawly's** cap (`FLAG_BADGE02_GET` = 20), not Roxanne's — the offered mon's level follows the town's own gym. Only `trades.js` (capFlag) + its test fixture changed; the level flows through to the docs card and `trade.h` automatically. Real-data check: Dewford offers RU mons at Lv.20 (e.g. Cramorant/Phione/Spiritomb). Suite green (1637).
 
+- **2026-07-23** — Trader NPCs repositioned to each town's **Pokémon Center** (not the mart), one tile down-and-left of the PC door warp `(x-1, y+1)`: Dewford PC(2,10)→(1,11); Lavaridge PC(9,6, the signed front door — a 2nd unsigned warp at 9,2 ignored)→(8,7); Fortree PC(5,6)→(4,7); Mossdeep PC(28,16)→(27,17). Coord-only map.json edits. (Collision still to confirm in Porymap/build.)
+
 ## Outcome
 
 <!-- Filled when closing. -->
