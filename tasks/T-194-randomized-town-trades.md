@@ -111,6 +111,8 @@ Acceptance criteria:
 
 - **2026-07-23** — Trader NPCs repositioned to each town's **Pokémon Center** (not the mart), one tile down-and-left of the PC door warp `(x-1, y+1)`: Dewford PC(2,10)→(1,11); Lavaridge PC(9,6, the signed front door — a 2nd unsigned warp at 9,2 ignored)→(8,7); Fortree PC(5,6)→(4,7); Mossdeep PC(28,16)→(27,17). Coord-only map.json edits. (Collision still to confirm in Porymap/build.)
 
+- **2026-07-23** — Deployed (owner go-ahead; origin/master == local `eccd1b2`). `deploy/update.sh`: preflight green (randomizer/backend/frontend tests + tracker), bundle rebuilt, working tree rsynced to the box, Linux decomp tools recompiled, app recreated, health-check OK → live at https://pokemon-emerald-cut.com. This ships the web/docs side (trade sub-cards + `showTrades` toggle). The ROM side (engine C + maps + trade scripts) is on the box too but still needs an actual ROM build + in-game manual test before the task closes.
+
 ## Outcome
 
 <!-- Filled when closing. -->
