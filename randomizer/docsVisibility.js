@@ -19,6 +19,8 @@ const DOCS_VISIBILITY_DEFAULT = {
     showWildEncounters: true, showLegendaryStatic: true, showNonLegendaryStatic: true,
     showSuperRod: true, showDive: true, showSurf: true,
     showGoodRod: true, showOldRod: true, showGrass: true,
+    // T-194 — town trades surfaced on the route encounter cards / pokemon modal.
+    showTrades: true,
 };
 
 // Fill defaults + honour the legacy bare `showExactPositions` option and clamp the hide count (1..5).
@@ -83,6 +85,8 @@ function redactWildPokes(maps, dv, { wildPlan } = {}) {
         // hold several species (Classic mode, B-041) surface the FULL distinct list under
         // `methodSpecies` so the viewer can show every one (route[method] stays the representative).
         const redacted = { ...entry };
+        // T-194 — the town-trade sub-card is baked onto the route entry (writerDocs); drop it when off.
+        if (!dv.showTrades && redacted.trade) delete redacted.trade;
         let hiddenMethods = null;
         let methodSpecies = null;
         for (const [method, toggle] of Object.entries(WILD_METHOD_TOGGLE)) {

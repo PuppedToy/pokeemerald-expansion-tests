@@ -196,3 +196,4 @@
 | [T-191](T-191-bundle-migration-version-drift-check.md) | Bundle/config migration framework + deterministic version-drift check | in-progress | 0.6.0 | 2026-07-22 |
 | [T-192](T-192-config-presets.md) | Config presets (My / Official / Community) with publish, likes, views, search | in-progress | 0.6.0 | 2026-07-22 |
 | [T-193](T-193-monotype-defensive-coverage.md) | Monotype teams prefer secondary types/abilities that patch their weaknesses | in-progress | 0.6.0 | 2026-07-23 |
+| [T-194](T-194-randomized-town-trades.md) | Randomized town trades — relocate 4 trade NPCs, seed-driven trades, docs surfacing | proposed | 0.6.0 | 2026-07-23 |

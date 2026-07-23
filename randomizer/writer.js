@@ -309,7 +309,7 @@ function resolveMailMints(itemAssignments, items) {
 // deterministic across ROMs that share a trainer artifact but differ in wild data.
 // docs: when provided (bundle mode), trainer teams are taken verbatim from the pre-resolved
 // docs instead of re-resolved via RNG — guaranteeing the ROM matches the bundle's docs.
-async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null, docs = null, runNs = '', starterNaming = null) {
+async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null, docs = null, runNs = '', starterNaming = null, trades = null) {
     let { pokes: pokemonList, moves, abilities, items } = pokedexArtifact;
     // Deep-clone trainersData — mega trainer processing splices entries in-place,
     // which would corrupt the shared artifact when the same trainers object is used across ROMs.
@@ -922,6 +922,14 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             maps.push(entry);
         }
     }
+    // T-194 — attach each town trade to its route entry for the analyze path (docs=null → inline maps).
+    // The maker path reuses the bundle's docs.wildPokes, which already carries `.trade` from writerDocs.
+    for (const t of (trades || [])) {
+        if (!t || !t.offeredSpecies) continue;
+        const entry = maps.find(m => m.id === t.routeMapId);
+        if (entry) entry.trade = { town: t.town, tier: t.tier, level: t.level, offeredSpecies: t.offeredSpecies };
+    }
+
     // T-163 — use the docs-visibility-redacted encounter maps from the bundle's docs when present
     // (hidden statics/rewards/zones removed, per-method species behind placeholders); the analyze.js
     // path (docs=null) falls back to the full inline maps built above (default visibility).

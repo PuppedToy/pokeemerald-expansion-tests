@@ -19,6 +19,7 @@ const { runTrainersModule } = require('./modules/trainersModule');
 const { runStartersModule } = require('./modules/startersModule');
 const { runWildModule } = require('./modules/wildModule');
 const wildData = require('./wild');
+const { selectTrades } = require('./trades');
 const { writerDocs } = require('./writerDocs');
 const { applyEvoLevels } = require('./evoLevelWriter');
 const { buildStarterNaming } = require('./modules/starterNames');
@@ -110,7 +111,7 @@ function resolveContext(hooks) {
 
 // Resolve one ROM's docs. Seeds the RNG to romSeed (wild placeholders + evo levels),
 // then defers to writerDocs. showExactPositions flows from the module config.
-async function computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, diag, audit) {
+async function computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, diag, audit, trades) {
     rng.seed(romSeed);
     return writerDocs(pokedex, trainers, starters, wild, trainingBaseSeed, {
         // T-163 — full docs-visibility object (writerDocs normalizes + derives showExactPositions).
@@ -118,6 +119,20 @@ async function computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, 
         showExactPositions: mcfg.showExactPositions,   // back-compat shim for callers that still set it
         diag,
         audit,
+        trades,   // T-194 — town trades, attached to the route encounter cards.
+    });
+}
+
+// T-194 — decide the 4 town trades for one ROM. Deterministic per ROM (its own local RNG seeded from
+// romSeed), stored in the bundle artifact and fed to the docs, so docs and the built ROM always agree.
+function computeTrades(pokedex, wild, romSeed, diag) {
+    return selectTrades({
+        pokemonList: pokedex.pokes,
+        wildArtifact: wild,
+        wildMaps: wildData.maps,
+        capLevels: pokedex.capLevels,
+        seed: (romSeed >>> 0),
+        diagnostics: diag,
     });
 }
 
@@ -136,12 +151,13 @@ async function generateDefault(cfg, mcfg, sessionId, ctx) {
     // Base seed policy differs per caller (worker: cfg.seed; backend: null). romSeed is
     // cfg.seed for the single ROM; computeRomDocs reseeds it before writerDocs.
     const baseSeed = ctx.defaultBaseSeed !== undefined ? ctx.defaultBaseSeed : cfg.seed;
-    const docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, cfg.seed, baseSeed, ctx.diagnostics, ctx.audit);
+    const trades = computeTrades(pokedex, wild, cfg.seed, ctx.diagnostics);
+    const docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, cfg.seed, baseSeed, ctx.diagnostics, ctx.audit, trades);
     tick('Done'); await flush();
 
     const roms = [{
         romIndex: 0,
-        artifacts: { pokedex, trainers, starters, wild },
+        artifacts: { pokedex, trainers, starters, wild, trades },
         docs,
     }];
     attachStarterNaming(cfg, mcfg, roms, [{ player: 0, run: 0 }]);
@@ -236,7 +252,9 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
         const { pokedex, trainers, starters, wild } = romArtifacts[i];
         const romSeed = deriveRomSeed(runSeed, i);
         const trainingBaseSeed = shared.trainers ? universeSeed : unsharedTrainingBaseSeed(romSeed);
-        roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics, ctx.audit);
+        const trades = computeTrades(pokedex, wild, romSeed, ctx.diagnostics);
+        roms[i].artifacts.trades = trades;
+        roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics, ctx.audit, trades);
         tick(`Viewer ready${label}`); await flush();
     }
 
@@ -402,7 +420,9 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
             universeSeed,
             unshared: unsharedTrainingBaseSeed(romSeed),
         });
-        roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics, ctx.audit);
+        const trades = computeTrades(pokedex, wild, romSeed, ctx.diagnostics);
+        roms[i].artifacts.trades = trades;
+        roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics, ctx.audit, trades);
         tick(`Viewer ready (${label})`); await flush();
     }
 

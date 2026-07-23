@@ -393,6 +393,15 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
         else maps.push(entry);
     }
 
+    // T-194 — attach each town trade to its route's encounter entry (routes 101/102/103/104). The
+    // viewer renders the trade sub-card from `entry.trade` (in the grass/old-rod cards and in the
+    // pokemon modal); redactWildPokes strips it when `showTrades` is off.
+    for (const t of (options.trades || [])) {
+        if (!t || !t.offeredSpecies) continue;
+        const entry = maps.find(m => m.id === t.routeMapId);
+        if (entry) entry.trade = { town: t.town, tier: t.tier, level: t.level, offeredSpecies: t.offeredSpecies };
+    }
+
     // T-163 — redact the assembled encounter maps per the docs-visibility config (drops hidden
     // statics/rewards/zones, replaces hidden per-method species with count markers) and strip the
     // internal __methodTemplates aid. Default config = every entry kept (only markers/omissions change).
