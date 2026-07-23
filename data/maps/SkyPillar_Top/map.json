@@ -47,8 +47,8 @@
       "x": 16,
       "y": 14,
       "elevation": 3,
-      "dest_map": "MAP_SKY_PILLAR_5F",
-      "dest_warp_id": "1"
+      "dest_map": "MAP_ROUTE131",
+      "dest_warp_id": "0"
     }
   ],
   "coord_events": [
