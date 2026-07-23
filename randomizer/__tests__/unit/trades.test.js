@@ -21,10 +21,11 @@ function mkPoke(id, { family, bestEvoTier, bestEvo, contextual = {}, evoTree, ev
     };
 }
 
-// A single-stage mon that qualifies for (tier) at every relevant bucket.
+// A single-stage mon that qualifies for (tier) at every relevant bucket (Dewford/Brawly 20, Flannery
+// 35, Winona 46, Tate&Liza 55).
 const soloAt = (id, tier) => mkPoke(id, {
     bestEvoTier: tier,
-    contextual: { 12: tier, 35: tier, 46: tier, 55: tier },
+    contextual: { 20: tier, 35: tier, 46: tier, 55: tier },
 });
 
 // Two-stage family BASE --lvl20--> FINAL (family peaks at `tier`).
@@ -50,7 +51,7 @@ const [rattata, raticate] = twoStage('SPECIES_RATTATA', 'SPECIES_RATICATE', 'NU'
 
 function buildList() {
     return [
-        // RU-qualifying solo mon for Rustboro (cap 13, bucket 12).
+        // RU-qualifying solo mon for Dewford (Brawly cap 20, bucket 20).
         soloAt('SPECIES_RU_SOLO', 'RU'),
         // UU final that is UU at bucket 35 (Flannery cap 36); its base is not UU at 35.
         ...twoStage('SPECIES_UU_BASE', 'SPECIES_UU_FINAL', 'UU', { finalTierAtBucket: { 35: 'UU' }, baseTierAtBucket: { 35: 'PU' } }),
@@ -58,8 +59,8 @@ function buildList() {
         soloAt('SPECIES_OU_SOLO', 'OU'),
         // UBERS solo for Mossdeep (cap 56, bucket 55).
         soloAt('SPECIES_UBERS_SOLO', 'UBERS'),
-        // A distractor RU family whose cap-valid form is NOT RU at bucket 12 (must be excluded by strict rule).
-        ...twoStage('SPECIES_RU_TRAP_BASE', 'SPECIES_RU_TRAP_FINAL', 'RU', { baseTierAtBucket: { 12: 'PU' }, finalTierAtBucket: { 12: 'RU' } }),
+        // A distractor RU family whose cap-valid form is NOT RU at bucket 20 (must be excluded by strict rule).
+        ...twoStage('SPECIES_RU_TRAP_BASE', 'SPECIES_RU_TRAP_FINAL', 'RU', { baseTierAtBucket: { 20: 'PU' }, finalTierAtBucket: { 20: 'UU' } }),
         // Accepted-family reps.
         rattata, raticate,
     ];
@@ -80,7 +81,7 @@ const REPLACEMENT_LOG = {
     SPECIES_GEODUDE: 'SPECIES_RATTATA', SPECIES_WEEDLE: 'SPECIES_RATTATA',
 };
 
-const CAP_LEVELS = { FLAG_BADGE01_GET: 13, FLAG_BADGE04_GET: 36, FLAG_BADGE06_GET: 46, FLAG_BADGE07_GET: 56 };
+const CAP_LEVELS = { FLAG_BADGE02_GET: 20, FLAG_BADGE04_GET: 36, FLAG_BADGE06_GET: 46, FLAG_BADGE07_GET: 56 };
 
 const baseArgs = () => ({
     pokemonList: buildList(),
@@ -95,7 +96,7 @@ describe('selectTrades — structure', () => {
         const trades = selectTrades(baseArgs());
         expect(trades.map(t => t.town)).toEqual(['DEWFORD', 'LAVARIDGE', 'FORTREE', 'MOSSDEEP']);
         expect(trades.map(t => t.tier)).toEqual(['RU', 'UU', 'OU', 'UBERS']);
-        expect(trades.map(t => t.level)).toEqual([13, 36, 46, 56]);
+        expect(trades.map(t => t.level)).toEqual([20, 36, 46, 56]); // Dewford uses Brawly's cap (20)
         expect(trades.map(t => t.routeMapId)).toEqual(['MAP_ROUTE101', 'MAP_ROUTE102', 'MAP_ROUTE103', 'MAP_ROUTE104']);
         // Each keeps the sIngameTrades slot its town map script selects.
         expect(trades.map(t => t.ingameTradeId)).toEqual([
@@ -166,9 +167,9 @@ describe('selectTrades — determinism', () => {
 
 describe('selectTrades — fallback when strict pool empty', () => {
     test('falls back to family-peak-tier candidates (dropping the contextual-at-cap check) and warns', () => {
-        // A family that peaks at RU but is never RU at bucket 12 → strict pool empty.
+        // A family that peaks at RU but is never RU at bucket 20 → strict pool empty.
         const list = [
-            ...twoStage('SPECIES_ONLYFAM_BASE', 'SPECIES_ONLYFAM_FINAL', 'RU', { baseTierAtBucket: { 12: 'PU' }, finalTierAtBucket: { 12: 'NU' } }),
+            ...twoStage('SPECIES_ONLYFAM_BASE', 'SPECIES_ONLYFAM_FINAL', 'RU', { baseTierAtBucket: { 20: 'PU' }, finalTierAtBucket: { 20: 'NU' } }),
             soloAt('SPECIES_UU_ONLY', 'UU'), soloAt('SPECIES_OU_ONLY', 'OU'), soloAt('SPECIES_UBERS_ONLY', 'UBERS'),
             rattata, raticate,
         ];

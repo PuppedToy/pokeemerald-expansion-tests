@@ -107,6 +107,8 @@ Acceptance criteria:
 
 - **2026-07-23** — Merged to master (`merge: T-194`). **Owner refinements (post-merge):** (1) trade sub-card now renders at ENCOUNTER level — attached to the wanted species' grass/old-rod tile (full-width row spanning the encounter grid), not route level; (2) modal shows the card ONLY on the exact wanted grass/old-rod species (not every family member); (3) card is full-width + larger text; (4) the Rustboro trade moved to **Dewford** (town label + NPC relocated; Dewford has no mart, so placed left of the Pokémon Center door at 1,10 — collision to verify in Porymap; keeps RU/Roxanne-cap/Route-101/INGAME_TRADE_SEEDOT/FLAG_RUSTBORO_NPC_TRADE_COMPLETED); (5) accepted set is now ONE random species from the route's grass∪old-rod pool (all wildPlan species, not the per-method representatives) → its whole family; `trades.js` gains `wantedSpecies` + `routeEncounterPool`/`chooseWanted`. Tests updated (10). Verified via shoot: Route101 card sits under the Tentacool (wanted) tile, full-width, "📍 Dewford / 🎁 Pincurchin Lv.13". CAVEAT LEARNED: `visual-tests/fixtures/build-doc-sample.cjs` runs `git checkout -- data/maps` after building — commit map edits before running `npm run fixture` or they revert.
 
+- **2026-07-23** — Dewford trade now uses **Brawly's** cap (`FLAG_BADGE02_GET` = 20), not Roxanne's — the offered mon's level follows the town's own gym. Only `trades.js` (capFlag) + its test fixture changed; the level flows through to the docs card and `trade.h` automatically. Real-data check: Dewford offers RU mons at Lv.20 (e.g. Cramorant/Phione/Spiritomb). Suite green (1637).
+
 ## Outcome
 
 <!-- Filled when closing. -->

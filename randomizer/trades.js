@@ -33,9 +33,10 @@ function nearestCap(level) {
 // The 4 town trades (owner spec, T-194). ingameTradeId keeps the sIngameTrades slot each town's map
 // script selects via `setvar VAR_0x8008, INGAME_TRADE_*`: Dewford→SEEDOT (was Rustboro), Lavaridge→
 // HORSEA (was Pacifidlog), Fortree→PLUSLE, Mossdeep→MEOWTH (was Battle Frontier). The offered mon's
-// tier + gym-cap level and the wanted route are independent of where the trader stands.
+// level is that TOWN's own gym cap (Dewford→Brawly, Lavaridge→Flannery, Fortree→Winona, Mossdeep→
+// Tate&Liza); the wanted route stays as authored.
 const TOWN_TRADES = [
-    { town: 'DEWFORD',   ingameTradeId: 'INGAME_TRADE_SEEDOT', tier: 'RU',    capFlag: 'FLAG_BADGE01_GET', routeMapId: 'MAP_ROUTE101', methods: ['land'] },
+    { town: 'DEWFORD',   ingameTradeId: 'INGAME_TRADE_SEEDOT', tier: 'RU',    capFlag: 'FLAG_BADGE02_GET', routeMapId: 'MAP_ROUTE101', methods: ['land'] },
     { town: 'LAVARIDGE', ingameTradeId: 'INGAME_TRADE_HORSEA', tier: 'UU',    capFlag: 'FLAG_BADGE04_GET', routeMapId: 'MAP_ROUTE102', methods: ['land', 'old'] },
     { town: 'FORTREE',   ingameTradeId: 'INGAME_TRADE_PLUSLE', tier: 'OU',    capFlag: 'FLAG_BADGE06_GET', routeMapId: 'MAP_ROUTE103', methods: ['land', 'old'] },
     { town: 'MOSSDEEP',  ingameTradeId: 'INGAME_TRADE_MEOWTH', tier: 'UBERS', capFlag: 'FLAG_BADGE07_GET', routeMapId: 'MAP_ROUTE104', methods: ['land', 'old'] },
