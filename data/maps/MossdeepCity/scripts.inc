@@ -424,3 +424,64 @@ MossdeepCity_Text_SootopolisNewGymLeader:
 	.string "People tell me the new LEADER once\n"
 	.string "mentored WALLACE.$"
 
+@ T-194 — randomized town trade. Reuses FLAG_BATTLE_FRONTIER_TRADE_DONE (its old Battle Frontier trade
+@ moved here) and the INGAME_TRADE_MEOWTH slot. See RustboroCity_EventScript_Trader for the pattern.
+MossdeepCity_EventScript_Trader::
+	lock
+	faceplayer
+	goto_if_set FLAG_BATTLE_FRONTIER_TRADE_DONE, MossdeepCity_EventScript_TradeDone
+	setvar VAR_0x8008, INGAME_TRADE_MEOWTH
+	copyvar VAR_0x8004, VAR_0x8008
+	special BufferInGameTradeOffer
+	msgbox MossdeepCity_Text_TradeOffer, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, MossdeepCity_EventScript_TradeDecline
+	special ChoosePartyMon
+	waitstate
+	copyvar VAR_0x800A, VAR_0x8004
+	goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, MossdeepCity_EventScript_TradeDecline
+	copyvar VAR_0x8004, VAR_0x8008
+	copyvar VAR_0x8005, VAR_0x800A
+	specialvar VAR_RESULT, IsRequestedTradeMon
+	goto_if_eq VAR_RESULT, FALSE, MossdeepCity_EventScript_TradeWrongMon
+	special CreateInGameTradePokemon
+	special DoInGameTradeScene
+	waitstate
+	msgbox MossdeepCity_Text_TradeThanks, MSGBOX_DEFAULT
+	setflag FLAG_BATTLE_FRONTIER_TRADE_DONE
+	release
+	end
+
+MossdeepCity_EventScript_TradeDecline::
+	msgbox MossdeepCity_Text_TradeDecline, MSGBOX_DEFAULT
+	release
+	end
+
+MossdeepCity_EventScript_TradeWrongMon::
+	msgbox MossdeepCity_Text_TradeWrongMon, MSGBOX_DEFAULT
+	release
+	end
+
+MossdeepCity_EventScript_TradeDone::
+	msgbox MossdeepCity_Text_TradeDone, MSGBOX_DEFAULT
+	release
+	end
+
+MossdeepCity_Text_TradeOffer:
+	.string "Hi! Want to trade?\n"
+	.string "I'll give you my {STR_VAR_2}.\p"
+	.string "In return I want {STR_VAR_1}.$"
+
+MossdeepCity_Text_TradeThanks:
+	.string "Thanks! Take good care of it!$"
+
+MossdeepCity_Text_TradeDecline:
+	.string "Aw, okay. Come back if you\n"
+	.string "change your mind!$"
+
+MossdeepCity_Text_TradeWrongMon:
+	.string "Hmm, that's not what I asked for.\n"
+	.string "I want {STR_VAR_1}.$"
+
+MossdeepCity_Text_TradeDone:
+	.string "Thanks again for the trade!$"
+
