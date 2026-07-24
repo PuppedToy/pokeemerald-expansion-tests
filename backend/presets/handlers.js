@@ -84,7 +84,11 @@ export function handleList({ presets, presetLikes, users, adminEmails, now = () 
 
     if (scope === 'official') {
       const r = presets.listOfficial(page);
-      return res.json({ ...r, items: r.items.map((row) => toPublic(row, { viewerId })) });
+      const likedSet = viewerId ? presetLikes.likedSet(r.items.map((i) => i.id), viewerId) : new Set();
+      return res.json({
+        ...r,
+        items: r.items.map((row) => toPublic(row, { viewerId, likedByMe: likedSet.has(row.id) })),
+      });
     }
 
     if (scope === 'community') {

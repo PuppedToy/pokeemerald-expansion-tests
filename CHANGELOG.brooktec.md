@@ -171,6 +171,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Liking a Recommended preset now sticks.** Clicking Like on a Recommended preset (e.g. Balanced) filled
+  the heart only for an instant and then reverted, and a reload showed it un-liked — even though the like
+  was saved. The Recommended list wasn't reporting the viewer's own likes back (only the Community list
+  did), so the button never reflected them. It now marks liked presets correctly, like the Community tab. (B-050)
+
 - **Heavy-Duty Boots are now actually valued when a trainer holds them.** A name mismatch (the bag delivers
   "Heavy Duty Boots" but the rater only matched "Heavy-Duty Boots") meant the item was never scored and was
   handed out essentially at random; it now gets its intended Rock-immunity-aware rating. (B-047)
