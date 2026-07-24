@@ -8,9 +8,9 @@
  *     that returns a stable element per id is enough — we never need real innerHTML→child parsing.
  *   - querySelector/querySelectorAll → null / [] (consumers guard with `?.` / forEach).
  *   - localStorage, a tiny in-memory IndexedDB (open/transaction/get/put), fetch (test-supplied), alert,
- *     URL.createObjectURL, and setInterval/clearInterval neutralised so polling never fires/hangs.
+ *     confirm, URL.createObjectURL, and setInterval/clearInterval neutralised so polling never fires/hangs.
  *
- * install() returns an `env` handle: { els, idb, setFetch, alerts, restore }.
+ * install() returns an `env` handle: { els, idb, setFetch, alerts, confirms, setConfirm, restore }.
  */
 
 function makeEl(id) {
@@ -67,11 +67,13 @@ export function installDomEnv() {
   const els = new Map();
   const idb = new Map();
   const alerts = [];
+  const confirms = [];
+  let confirmReturn = true; // window.confirm() default; override per-test with env.setConfirm(false)
   let fetchHandler = async () => { throw new Error('no fetch handler set — call env.setFetch()'); };
 
   const saved = {
     document: global.document, localStorage: global.localStorage, indexedDB: global.indexedDB,
-    fetch: global.fetch, alert: global.alert, URL: global.URL,
+    fetch: global.fetch, alert: global.alert, confirm: global.confirm, URL: global.URL,
     setInterval: global.setInterval, clearInterval: global.clearInterval,
   };
 
@@ -94,14 +96,16 @@ export function installDomEnv() {
   global.indexedDB = makeIndexedDB(idb);
   global.fetch = (path, opts) => fetchHandler(path, opts);
   global.alert = (m) => alerts.push(m);
+  global.confirm = (m) => { confirms.push(m); return confirmReturn; };
   global.URL = { createObjectURL: () => 'blob:test', revokeObjectURL: () => {} };
   global.setInterval = () => 0;        // neutralise polling: capture nothing, never fire, never hang
   global.clearInterval = () => {};
 
   return {
-    els, idb, alerts,
+    els, idb, alerts, confirms,
     getEl,
     setFetch(fn) { fetchHandler = fn; },
+    setConfirm(v) { confirmReturn = v; },
     restore() { Object.assign(global, saved); },
   };
 }

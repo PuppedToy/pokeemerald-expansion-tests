@@ -91,6 +91,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Overwriting one of your saved presets now warns before it replaces anything.** In the Save-preset
+  flow the **Overwrite** button is orange (a caution colour) instead of green, and clicking it asks
+  you to confirm before it replaces that preset's saved configuration with your current settings — so
+  a stray click can no longer silently wipe a preset. (T-196)
+
 - **Uploading an incompatible bundle now fails with a clear message** instead of a confusing build
   error: the app checks a bundle's format version and, if it's from a too-old or too-new app, tells
   you to regenerate it with a compatible version. (T-191)
