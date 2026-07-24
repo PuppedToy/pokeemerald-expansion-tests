@@ -457,6 +457,9 @@ MossdeepCity_EventScript_TradeDecline::
 	end
 
 MossdeepCity_EventScript_TradeWrongMon::
+	@ B-051 — ChoosePartyMon clobbered gStringVar1 (party-menu HP "/<maxHP>"); re-buffer the offer so
+	@ {STR_VAR_1} is the requested species name again, not the leftover "/314"-style string.
+	special BufferInGameTradeOffer
 	msgbox MossdeepCity_Text_TradeWrongMon, MSGBOX_DEFAULT
 	release
 	end
