@@ -959,6 +959,10 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
 .btn-emerald:hover:not(:disabled) { background: var(--obs-green); filter: brightness(1.08); }
 .btn-danger { background: var(--obs-red); color: #fff; border-color: var(--obs-shadow); }
 .btn-danger:hover:not(:disabled) { filter: brightness(1.08); }
+/* T-196: caution action (e.g. overwriting a saved preset) — orange, NOT the reassuring emerald,
+   because it lossily replaces saved data. Pairs with a confirm() guard in the handler. */
+.btn-warn { background: var(--obs-orange); color: var(--obs-on-orange); border-color: var(--obs-shadow); }
+.btn-warn:hover:not(:disabled) { filter: brightness(1.08); }
 
 /* Single-use warning, emphasised (P7) — a real callout. Amber (caution), not red: red reads as
    error/danger, yellow reads as "heads-up" which is what a single-use download is (T-035 feedback). */

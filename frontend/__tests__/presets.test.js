@@ -94,6 +94,16 @@ test('presetCardHtml (save mode, owner) shows Overwrite instead of Apply', () =>
   assert.ok(!/data-action="apply"/.test(html));
 });
 
+test('T-196: save-mode Overwrite reads as a caution action (orange), not the safe green', () => {
+  const html = presetCardHtml(
+    { id: 'p1', name: 'Mine', isOwner: true, published: false, tags: deriveTags(cfg()), updatedAt: 0 },
+    { mode: 'save' },
+  );
+  const overwriteBtn = html.match(/<button[^>]*data-action="overwrite"[^>]*>/)[0];
+  assert.match(overwriteBtn, /\bbtn-warn\b/, 'Overwrite uses the caution/orange style');
+  assert.ok(!/\bbtn-emerald\b/.test(overwriteBtn), 'Overwrite is no longer the safe/green emerald button');
+});
+
 test('presetCardHtml (Recommended/official, non-owner) shows stats + Like + a Recommended badge', () => {
   const html = presetCardHtml(
     { id: 'official-balanced', name: 'Balanced', kind: 'official', isOwner: false, published: false, likes: 4, views: 7, likedByMe: false, tags: deriveTags(cfg()), updatedAt: 0 },
@@ -205,5 +215,46 @@ test('openBrowse opens the modal and renders My presets from the API', async () 
     assert.equal(env.getEl('presets-modal').hidden, false, 'modal opened');
     assert.ok(calls.some((p) => p.includes('scope=mine')), 'fetched My presets');
     assert.match(env.getEl('presets-body').innerHTML, /Solo run/, 'rendered the preset card');
+  } finally { env.restore(); }
+});
+
+test('T-196: overwrite asks to confirm — cancel makes no PUT, confirm saves', async () => {
+  const env = installDomEnv();
+  try {
+    const calls = [];
+    const ctl = initPresets({
+      api: async (path, opts) => {
+        calls.push({ path, method: opts?.method || 'GET' });
+        return { ok: true, data: { items: [{ id: 'p1', name: 'Mine', isOwner: true, published: false, tags: deriveTags(cfg()), updatedAt: 0 }], page: 1, totalPages: 1 } };
+      },
+      getAuthState: () => ({ email: 'a@x.test', verified: true, isAdmin: false }),
+      onAuthChange: () => {},
+      getCurrentConfig: () => cfg(),
+      applyConfig: () => {},
+      onRequestLogin: () => {},
+      defaults: cfg(),
+      renderConfigDetail: () => '',
+    });
+    ctl.openSave(cfg());
+    await flush(); await flush();
+
+    const clickOverwrite = () => {
+      const btn = { dataset: { action: 'overwrite', id: 'p1' } };
+      env.getEl('presets-body')._emit('click', { target: { closest: () => btn }, preventDefault() {} });
+    };
+
+    // Cancel → confirmation requested, nothing written.
+    env.setConfirm(false);
+    clickOverwrite();
+    await flush(); await flush();
+    assert.equal(env.confirms.length, 1, 'a confirmation was requested before overwriting');
+    assert.ok(!calls.some((c) => c.method === 'PUT'), 'cancelling the confirm overwrites nothing');
+
+    // Confirm → PUT to the preset.
+    env.setConfirm(true);
+    clickOverwrite();
+    await flush(); await flush();
+    assert.equal(env.confirms.length, 2, 'a second overwrite prompts again');
+    assert.ok(calls.some((c) => c.method === 'PUT' && c.path.includes('/api/presets/p1')), 'confirming saves via PUT');
   } finally { env.restore(); }
 });

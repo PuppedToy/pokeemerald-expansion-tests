@@ -64,7 +64,7 @@ export function presetCardHtml(item, { mode = 'community', viewerIsAdmin = false
 
   const btns = [];
   if (mode === 'save' && isOwner) {
-    btns.push(`<button class="btn btn-sm btn-emerald" data-action="overwrite" data-id="${item.id}">Overwrite</button>`);
+    btns.push(`<button class="btn btn-sm btn-warn" data-action="overwrite" data-id="${item.id}">Overwrite</button>`);
   } else {
     btns.push(`<button class="btn btn-sm btn-emerald" data-action="apply" data-id="${item.id}">Apply</button>`);
   }
@@ -321,7 +321,10 @@ export function initPresets(deps = {}) {
       return;
     }
 
-    if (action === 'overwrite') return doSave(id);
+    if (action === 'overwrite') {
+      if (!confirm('Overwrite this preset with your current settings? This replaces its saved configuration.')) return;
+      return doSave(id);
+    }
     if (action === 'edit') return editPreset(id);
 
     if (action === 'publish' || action === 'unpublish') {
