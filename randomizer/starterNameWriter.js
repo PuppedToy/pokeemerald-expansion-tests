@@ -72,7 +72,23 @@ function applyStarterNames(fileContent, naming, extraCount) {
         .replace(defaultExtraGenders(DEFAULT_EXTRA_COUNT), code.extraGenders);
 }
 
+// B-049 — apply ALL per-ROM starter_choose.c edits at once: the extra-mon species array, the
+// STARTER_EXTRA_COUNT #define, and the nickname/gender arrays. The count and every array MUST stay in
+// lock-step or the C fails with "excess elements in array initializer". The nickname/gender arrays are
+// ALWAYS resized to `extraStarters.length` (even when `starterNaming` is null → default-filled), which
+// fixes the build break when a ROM's extra-starter count differs from the committed default (9) and no
+// naming was attached. Pure string transform; `make.js` restores the file afterward.
+function applyStarterChoose(fileContent, extraStarters, starterNaming) {
+    const count = extraStarters.length;
+    const monBlock = `static const u16 sStarterExtraMon[STARTER_EXTRA_COUNT] =\n{\n    ${extraStarters.join(',\n    ')},\n};`;
+    let out = fileContent
+        .replace(/static const u16 sStarterExtraMon\[STARTER_EXTRA_COUNT\] =\s*\{[\s\S]*?\n\};/, monBlock)
+        .replace(/#define STARTER_EXTRA_COUNT \d+/, `#define STARTER_EXTRA_COUNT ${count}`);
+    return applyStarterNames(out, starterNaming, count);
+}
+
 module.exports = {
+    applyStarterChoose,
     sanitizeNickname,
     genderConst,
     buildStarterNameCode,

@@ -31,7 +31,7 @@ const { savePokemonData } = require('./pokemonWriter.js');
 const { saveMoveData } = require('./moveWriter.js');   // T-187 — persists move mutation to moves_info.h
 const { writeEvoLevels } = require('./evoLevelWriter.js');
 const { writeTrades } = require('./tradeWriter.js');   // T-194 — per-ROM town-trade data → src/data/trade.h
-const { applyStarterNames } = require('./starterNameWriter.js');
+const { applyStarterChoose } = require('./starterNameWriter.js');
 
 const startersFile = path.resolve(__dirname, '..', 'src', 'starter_choose.c');
 
@@ -42,20 +42,6 @@ const starterMonText = `static const u16 sStarterMon[STARTER_MON_COUNT] =
     SPECIES_MUDKIP,
 };`;
 
-const starterExtraMonText = `static const u16 sStarterExtraMon[STARTER_EXTRA_COUNT] =
-{
-    SPECIES_BAGON,
-    SPECIES_KABUTOPS,
-    SPECIES_LARVITAR,
-    SPECIES_BELDUM,
-    SPECIES_SCYTHER,
-    SPECIES_RALTS,
-    SPECIES_SHROOMISH,
-    SPECIES_NOIBAT,
-    SPECIES_SNORUNT,
-};`;
-
-const starterExtraCountText = '#define STARTER_EXTRA_COUNT 9';
 
 // Static replacements
 
@@ -355,27 +341,12 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
 };`
     );
 
-    // Edit starterMonText with extra starters
-    newStartersFile = newStartersFile.replace(
-        starterExtraMonText,
-        `static const u16 sStarterExtraMon[STARTER_EXTRA_COUNT] =
-{
-    ${extraStarters.join(',\n    ')},
-};`
-    );
-
-    // Edit starterExtraCountText with actual count of extra starters
-    newStartersFile = newStartersFile.replace(
-        starterExtraCountText,
-        `#define STARTER_EXTRA_COUNT ${extraStarters.length}`
-    );
-
-    // T-068 — in bundle mode with the nickname feature on, rewrite the nickname/gender arrays from the
-    // bundle's per-ROM naming. When starterNaming is null (analyze/randomize mode, or feature off) the
-    // committed vanilla defaults stay (empty names, MON_GENDERLESS) → unchanged behavior.
-    if (starterNaming) {
-        newStartersFile = applyStarterNames(newStartersFile, starterNaming, extraStarters.length);
-    }
+    // B-049 — apply the extra-mon array, the STARTER_EXTRA_COUNT #define AND the nickname/gender arrays
+    // together, always in lock-step. The nickname/gender arrays are resized to extraStarters.length even
+    // when starterNaming is null (default-filled), so they can never mismatch the #define and trip
+    // "excess elements in array initializer" (which broke the build when a ROM had ≠9 extra starters and
+    // no naming was attached). T-068 per-ROM naming still applies when present.
+    newStartersFile = applyStarterChoose(newStartersFile, extraStarters, starterNaming);
 
     await fs.writeFile(startersFile, newStartersFile, 'utf8');
     console.log('Starter pokemon updated successfully.');

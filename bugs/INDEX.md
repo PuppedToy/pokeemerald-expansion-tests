@@ -52,3 +52,4 @@
 | [B-046](B-046-nameizy-double-space-multiword.md) | nameizyPokemonId emits a double space in every multi-word species name | fixing | minor | 0.5.0 |  | randomizer/__tests__/unit/cosmeticFamilyStrip.test.js |
 | [B-047](B-047-heavy-duty-boots-name-mismatch.md) | Heavy-Duty Boots is never rated — handler string mismatch (hyphen vs space) | fixed | minor | 1.1.0 | 1.1.0 | randomizer/__tests__/unit/rateItemForAPokemon.test.js |
 | [B-048](B-048-bundle-artifact-content-not-validated.md) | Bundle artifact contents (species/item/move ids) are not validated before the native build | open | major | 0.5.0 |  |  |
+| [B-049](B-049-starter-extra-count-array-mismatch.md) | ROM build fails "excess elements" when a ROM has ≠9 extra starters and no starter naming | fixed | critical | 0.6.0 | 0.6.0 | randomizer/__tests__/unit/starterNameWriter.test.js |

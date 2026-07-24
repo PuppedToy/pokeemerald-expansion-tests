@@ -117,3 +117,51 @@ describe('applyStarterNames', () => {
         expect(out).not.toContain('SPECIES_MEW');
     });
 });
+
+// B-049 — the extra-starter arrays (species/nicknames/genders) must stay in lock-step with the
+// STARTER_EXTRA_COUNT #define. The old writer rewrote the #define + species array to the ROM's count
+// but only rewrote the nickname/gender arrays when starterNaming was present, so a ROM with ≠9 extra
+// starters and no naming left 9-element name arrays under an [8] #define → C "excess elements".
+const { applyStarterChoose, defaultExtraNicknames, defaultExtraGenders, DEFAULT_STARTER_NICKNAME, DEFAULT_STARTER_GENDER } = require('../../starterNameWriter');
+
+function committedStarterChoose() {
+    const monDefault = Array.from({ length: DEFAULT_EXTRA_COUNT }, (_, i) => `    SPECIES_DEFAULT_${i}`).join(',\n');
+    return [
+        `#define STARTER_EXTRA_COUNT ${DEFAULT_EXTRA_COUNT}`,
+        '',
+        DEFAULT_STARTER_NICKNAME,
+        DEFAULT_STARTER_GENDER,
+        '',
+        `static const u16 sStarterExtraMon[STARTER_EXTRA_COUNT] =\n{\n${monDefault},\n};`,
+        '',
+        defaultExtraNicknames(DEFAULT_EXTRA_COUNT),
+        '',
+        defaultExtraGenders(DEFAULT_EXTRA_COUNT),
+        '',
+    ].join('\n');
+}
+
+function arrayLen(content, name, itemToken) {
+    const m = content.match(new RegExp(name + '\\[[^\\]]*\\] =\\s*\\{([\\s\\S]*?)\\n\\};'));
+    return m ? (m[1].match(new RegExp(itemToken, 'g')) || []).length : -1;
+}
+
+describe('applyStarterChoose (B-049)', () => {
+    const EIGHT = ['SPECIES_A', 'SPECIES_B', 'SPECIES_C', 'SPECIES_E', 'SPECIES_F', 'SPECIES_G', 'SPECIES_H', 'SPECIES_I'];
+
+    test('null naming + count ≠ 9 resizes EVERY array to the count (no excess elements)', () => {
+        const out = applyStarterChoose(committedStarterChoose(), EIGHT, null);
+        expect(out).toContain('#define STARTER_EXTRA_COUNT 8');
+        expect(arrayLen(out, 'sStarterExtraMon', 'SPECIES_')).toBe(8);
+        expect(arrayLen(out, 'sStarterExtraNicknames', 'COMPOUND_STRING\\(')).toBe(8);
+        expect(arrayLen(out, 'sStarterExtraGenders', 'MON_')).toBe(8);
+    });
+
+    test('naming present still fills nicknames from the bundle, count in lock-step', () => {
+        const naming = { starter: { nickname: 'Yuki', gender: 'F' }, extras: [{ nickname: 'Rex', gender: 'M' }] };
+        const out = applyStarterChoose(committedStarterChoose(), EIGHT, naming);
+        expect(out).toContain('#define STARTER_EXTRA_COUNT 8');
+        expect(arrayLen(out, 'sStarterExtraNicknames', 'COMPOUND_STRING\\(')).toBe(8);
+        expect(out).toContain('COMPOUND_STRING("Rex")');
+    });
+});
