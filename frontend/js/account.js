@@ -74,6 +74,7 @@ function isDelivered(b) { try { return localStorage.getItem(deliveredKey(b)) ===
 let state = null;        // /api/me
 let lastBundle = null;
 let pollTimer = null;
+let onStartOverCb = null; // T-198 — set in initAccount; called after a cancel to reset the wizard
 
 // Auth-state subscription (T-048): other modules (e.g. feedback.js) react to login/logout without
 // importing account internals. Listeners fire from updateNavAccount(), which runs on every transition.
@@ -328,13 +329,30 @@ function setStartOverBtn(cat) {
   if (!btn) return;
   btn.disabled = false; // T-053: never blocked — you can start over even with a downloadable patch
   btn.title = '';
+  // T-198 — while building/queued the Cancel lives inside the status row (where the user is looking),
+  // so hide the bottom control there to keep exactly one Cancel affordance on screen.
+  btn.hidden = (cat === 'building' || cat === 'queued');
   if (cat === 'ready' || cat === 'downloaded') {
     // A generated patch exists (re-downloadable server-side). Start over discards it — always allowed,
     // always confirmed. Downloading is no longer a precondition for starting over.
     btn.textContent = 'Start over'; btn.dataset.mode = 'discard';
-  } else { // queued / building / gating / failed / starting — the run isn't finished
+  } else { // gating / failed / starting — the run isn't finished
     btn.textContent = 'Cancel'; btn.dataset.mode = 'cancel';
   }
+}
+
+// T-198 — cancel the active run: stop the server build (T-035), forget it locally and reset the wizard.
+// Shared by the bottom Start-over/Cancel control and the in-row "Cancel build" button; `mode` only
+// changes the confirmation copy ('discard' = a finished patch exists, 'cancel' = an in-flight run).
+async function cancelActiveRun(mode = 'cancel') {
+  const msg = mode === 'discard'
+    ? "Start over?\n\nThe randomized ROM you generated will be permanently deleted and you'll build a new one. (Your own Emerald stays saved in this browser.)"
+    : 'Cancel this run?\n\nIt will be permanently deleted.';
+  if (!confirm(msg)) return false;
+  await api('/api/cancel', { method: 'POST', auth: true }).catch(() => {});
+  await clearRun();
+  onStartOverCb?.();
+  return true;
 }
 
 // Forget the current run client-side: drop the stored bundle + delivered flag + delivery state.
@@ -464,8 +482,10 @@ function renderRom(req, info = {}) {
          ${total > 1 ? `<div class="status-sub" id="rom-counter">ROM ${current} of ${total}</div>` : ''}
          <div class="gen-progress-wrap compact"><div class="gen-progress-bar"><div class="gen-progress-fill" id="rom-progress-fill"></div></div></div>
          <div class="status-sub" id="rom-eta">Estimating…</div>
-         <div class="status-sub muted">You can leave this page open — it updates automatically.</div>`,
+         <div class="status-sub muted">You can leave this page open — it updates automatically.</div>
+         <button class="btn btn-ghost btn-sm rom-cancel-btn" id="rom-cancel">Cancel build</button>`,
         GEAR_ICO);
+      $('rom-cancel')?.addEventListener('click', () => cancelActiveRun('cancel')); // T-198
     }
     // Server-authoritative bar + ETA (B-013): identical whether or not the page was reloaded, refreshed
     // every poll. The CSS width transition eases the 3-second steps. No client clock.
@@ -499,7 +519,9 @@ function renderRom(req, info = {}) {
     `<div class="status-title">ROM queued</div>
      <div class="status-sub">${line}</div>
      <div class="status-sub muted">Download your docs meanwhile — this page updates automatically.</div>
-     ${emailBit}`, '🕒');
+     ${emailBit}
+     <button class="btn btn-ghost btn-sm rom-cancel-btn" id="rom-cancel">Cancel build</button>`, '🕒');
+  $('rom-cancel')?.addEventListener('click', () => cancelActiveRun('cancel')); // T-198
   if (!emailOptedIn) {
     $('notify-email')?.addEventListener('change', async (e) => {
       if (!e.target.checked) return;
@@ -706,23 +728,12 @@ export async function initAccount(opts = {}) {
   // the unified actions-row "Download ROM" button; renderRom enables it once the ROM is ready
   $('btn-download-rom')?.addEventListener('click', downloadRom);
 
-  // the gen-done "Start over / Cancel" button (T-035). Mode is set by setStartOverBtn:
-  //  - cancel:    confirm, then cancel the server build + forget the run + reset the wizard
-  //  - startover: forget the (already-downloaded) run + reset the wizard
-  //  - ready:     disabled (download first) — no-op
-  $('btn-start-over')?.addEventListener('click', async () => {
-    const mode = $('btn-start-over').dataset.mode;
-    // Both discard the run permanently → always confirm (T-053). "discard" = a generated patch exists;
-    // "cancel" = an in-progress run. Either way the server-side request is removed so it can't be
-    // resurrected on reload. The user's own Emerald ROM (IndexedDB) is NOT touched.
-    const msg = mode === 'discard'
-      ? "Start over?\n\nThe randomized ROM you generated will be permanently deleted and you'll build a new one. (Your own Emerald stays saved in this browser.)"
-      : 'Cancel this run?\n\nIt will be permanently deleted.';
-    if (!confirm(msg)) return;
-    await api('/api/cancel', { method: 'POST', auth: true }).catch(() => {});
-    await clearRun();
-    opts.onStartOver?.();
-  });
+  // the gen-done "Start over / Cancel" button (T-035) + the in-row "Cancel build" button (T-198) share
+  // one flow (cancelActiveRun): confirm, cancel the server build, forget the run and reset the wizard.
+  // Both modes ('discard' = a generated patch exists, 'cancel' = an in-progress run) remove the
+  // server-side request so it can't be resurrected on reload. The user's own Emerald ROM is NOT touched.
+  onStartOverCb = opts.onStartOver || null;
+  $('btn-start-over')?.addEventListener('click', () => cancelActiveRun($('btn-start-over').dataset.mode));
 
   await refreshMe();
   updateNavAccount();

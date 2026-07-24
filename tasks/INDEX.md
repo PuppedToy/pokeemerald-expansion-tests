@@ -200,3 +200,4 @@
 | [T-195](T-195-buildable-vanilla-tree-maker-placeholders.md) | Make the vanilla tree assemble/link — define fallbacks for maker placeholder tokens | in-progress | 0.6.0 | 2026-07-23 |
 | [T-196](T-196-preset-overwrite-safety.md) | Make the preset "Overwrite" button read as unsafe (orange + confirm) | in-progress | 0.6.0 | 2026-07-24 |
 | [T-197](T-197-docs-rival-gender-toggle.md) | Docs viewer — let the player pick their rival (May / Brendan) | in-progress | 0.6.0 | 2026-07-24 |
+| [T-198](T-198-cancelable-build-steps.md) | Cancel button for the randomization and ROM-build steps | done | 0.6.0 | 2026-07-24 |

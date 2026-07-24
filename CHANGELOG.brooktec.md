@@ -9,6 +9,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Cancel a run while it's still working.** The randomizer's *Generating your run…* screen now has a
+  **Cancel** button — clicking it stops the in-browser randomization and takes you back to Review, so a
+  long or mistaken run no longer has to run to completion. And while your ROM is building or queued, a
+  **Cancel build** button now sits right in the status row (the tiny bottom control moved there), so
+  stopping a server build is obvious from where you're watching it. (T-198)
+
 - **Docs viewer — pick your rival (May or Brendan).** The Starters card in the Wild encounters tab now
   has a **Rival: May / Brendan** toggle just below the starters. Your rival is the opposite-gender
   character, so this decides which rival's teams the Trainers tab shows once you pick a starter — it
