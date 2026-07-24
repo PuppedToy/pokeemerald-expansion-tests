@@ -471,6 +471,13 @@
     #wildpokes-cards { display:flex; flex-wrap:wrap; gap:16px; align-items:flex-start; }
     .location-card { flex:0 0 auto; width:max-content; }
     .enc-slots { display:grid; gap:8px; }
+    /* T-197 — rival (May / Brendan) picker in the Starters card. */
+    .rival-select { display:flex; align-items:center; justify-content:center; flex-wrap:wrap;
+      gap:14px; margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08);
+      font-size:13px; }
+    .rival-select-label { color:var(--obs-text-dim); font-weight:700; letter-spacing:1px; }
+    .rival-opt { display:inline-flex; align-items:center; gap:6px; cursor:pointer; }
+    .rival-opt input { cursor:pointer; }
 
     /* T-038: the buff/nerf/adjusted indicator next to a Pokémon name inherits the name's
        font-size, so it's oversized on the big card names and undersized in the small modal
@@ -1721,11 +1728,15 @@
       if (trainer.isPartner) {
         card.classList.add('partnerCard');
       }
-      // Tag rival trainer variants for starter-based filtering
-      if (/TRAINER_BRENDAN_/.test(trainerId)) card.classList.add('rival-brendan');
+      // Tag rival trainer variants for starter + rival-gender filtering (T-197). Both genders now get
+      // per-starter classes so applyStarterRivals can show only the chosen rival's matching variant.
+      if (/TRAINER_BRENDAN_.*_TREECKO$/.test(trainerId)) card.classList.add('rival-brendan', 'rival-brendan-treecko');
+      else if (/TRAINER_BRENDAN_.*_TORCHIC$/.test(trainerId)) card.classList.add('rival-brendan', 'rival-brendan-torchic');
+      else if (/TRAINER_BRENDAN_.*_MUDKIP$/.test(trainerId)) card.classList.add('rival-brendan', 'rival-brendan-mudkip');
+      else if (/TRAINER_BRENDAN_/.test(trainerId)) card.classList.add('rival-brendan');
       if (/TRAINER_MAY_.*_TREECKO$/.test(trainerId)) card.classList.add('rival-may-treecko');
-      if (/TRAINER_MAY_.*_TORCHIC$/.test(trainerId)) card.classList.add('rival-may-torchic');
-      if (/TRAINER_MAY_.*_MUDKIP$/.test(trainerId)) card.classList.add('rival-may-mudkip');
+      else if (/TRAINER_MAY_.*_TORCHIC$/.test(trainerId)) card.classList.add('rival-may-torchic');
+      else if (/TRAINER_MAY_.*_MUDKIP$/.test(trainerId)) card.classList.add('rival-may-mudkip');
 
       // T-044 — per-trainer card colours (SSOT: randomizer/trainerColors.js), resolved in the
       // pipeline onto trainer.colors. Applied inline: bosses use their type/identity palette
@@ -2092,6 +2103,17 @@
         })
         .join('') + hiddenTiles.join('');
 
+      // T-197 — the Starters card carries a "Rival" toggle (May / Brendan). The rival's gender is the
+      // opposite of the player's character, so which trainer variants apply depends on that choice.
+      // Picking it swaps which rival cards stay visible (see applyStarterRivals). Default May keeps the
+      // historical behaviour. Rendered only on the STARTERS card.
+      const rivalSelectorHTML = route.id === 'STARTERS' ? `
+        <div class="rival-select" role="radiogroup" aria-label="Your rival">
+          <span class="rival-select-label">Rival:</span>
+          <label class="rival-opt"><input type="radio" class="rival-gender-radio" name="rival-gender" value="may" checked> May</label>
+          <label class="rival-opt"><input type="radio" class="rival-gender-radio" name="rival-gender" value="brendan"> Brendan</label>
+        </div>` : '';
+
       card.innerHTML = `
         <div class="meta" style="justify-content:center;">
           <div class="title">${routeName}<span class="nz-stopwatch-badge">${getIcon('stopwatch','⏱')}</span></div>
@@ -2099,6 +2121,7 @@
         <div class="enc-slots" style="grid-template-columns:repeat(${encCols}, 168px)">
           ${encountersHTML}
         </div>
+        ${rivalSelectorHTML}
       `;
 
       routesGrid.appendChild(card);
@@ -2852,6 +2875,7 @@
       } catch (e) { /* ignore */ }
       if (!nzState.locations) nzState.locations = {};
       if (!nzState.trainers)  nzState.trainers  = {};
+      if (nzState.rivalGender !== 'brendan') nzState.rivalGender = 'may'; // T-197 — default rival is May
     }
 
     function saveState() {
@@ -2863,6 +2887,12 @@
       if (!Array.isArray(nzState.locations[routeId].delayed)) nzState.locations[routeId].delayed = [];
       if (!Array.isArray(nzState.locations[routeId].fainted)) nzState.locations[routeId].fainted = [];
       return nzState.locations[routeId];
+    }
+
+    // T-197 — the player's rival is the opposite-gender character; this selects which rival-trainer
+    // variants applyStarterRivals keeps visible. Defaults to May.
+    function getRivalGender() {
+      return nzState.rivalGender === 'brendan' ? 'brendan' : 'may';
     }
 
     // ---------- Visual: locations ----------
@@ -2995,16 +3025,16 @@
     function applyStarterRivals() {
       const sel    = locState('STARTERS').selected; // e.g. 'special1' or null
       const suffix = sel ? starterToSuffix[sel] : null;
+      const rival  = getRivalGender();              // 'may' | 'brendan' — T-197
 
-      // Always hide Brendan trainers once a starter is picked; show all when none selected
-      document.querySelectorAll('.trainer-card.rival-brendan').forEach(function (c) {
-        c.style.display = sel ? 'none' : '';
-      });
-
-      // Show only the May variant matching the chosen starter
-      ['treecko', 'torchic', 'mudkip'].forEach(function (s) {
-        document.querySelectorAll('.trainer-card.rival-may-' + s).forEach(function (c) {
-          c.style.display = (sel && suffix !== s) ? 'none' : '';
+      // Once a starter is picked, show only the chosen rival's variant that counters that starter and
+      // hide every other rival card (the other gender entirely, and this gender's other starters).
+      // With no starter selected, all rival cards are shown.
+      ['may', 'brendan'].forEach(function (g) {
+        ['treecko', 'torchic', 'mudkip'].forEach(function (s) {
+          document.querySelectorAll('.trainer-card.rival-' + g + '-' + s).forEach(function (c) {
+            c.style.display = (sel && (g !== rival || suffix !== s)) ? 'none' : '';
+          });
         });
       });
     }
@@ -3097,6 +3127,13 @@
       if (window.onBossDefeatChange) window.onBossDefeatChange(trainerId, checked);   // T-007 mail hook
     }
 
+    // T-197 — switch which rival (May / Brendan) the Trainers tab shows and persist it.
+    function handleRivalGenderChange(gender) {
+      nzState.rivalGender = (gender === 'brendan') ? 'brendan' : 'may';
+      saveState();
+      applyStarterRivals();
+    }
+
     // ---------- Event delegation ----------
     function setupEvents() {
       // Stop click propagation on nuzlocke controls in capture phase
@@ -3117,12 +3154,19 @@
           handleFaintChange(t.dataset.route, t.dataset.slot, t.checked);
         } else if (t.classList.contains('nz-defeat-cb')) {
           handleDefeatChange(t.dataset.trainerId, t.checked);
+        } else if (t.classList.contains('rival-gender-radio')) {
+          if (t.checked) handleRivalGenderChange(t.value);   // T-197
         }
       });
     }
 
     // ---------- Init ----------
     loadState();
+    // T-197 — reflect the persisted rival choice on the radio before the first filter pass.
+    (function () {
+      var r = document.querySelector('.rival-gender-radio[value="' + getRivalGender() + '"]');
+      if (r) r.checked = true;
+    })();
     applyAllLocVisuals();
     applyAllGroupEffects(); // must run after all per-location visuals are set
     applyAllTrainerVisuals();

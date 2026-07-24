@@ -9,6 +9,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Docs viewer — pick your rival (May or Brendan).** The Starters card in the Wild encounters tab now
+  has a **Rival: May / Brendan** toggle just below the starters. Your rival is the opposite-gender
+  character, so this decides which rival's teams the Trainers tab shows once you pick a starter — it
+  was previously fixed to May. Defaults to May and remembers your choice. (T-197)
+
 - **Type-themed trainers (gyms & Elite Four) now shore up their weaknesses.** A monotype team — say a
   Rock leader — now leans toward members whose SECONDARY type or ability patches a weakness the pure
   type has: immunities first (a Ghost to wall Fighting, Flying/Levitate vs Ground, Water Absorb vs
