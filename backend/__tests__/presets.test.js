@@ -411,6 +411,22 @@ test('list handler requires auth for scope=mine but not for community', () => {
   assert.ok(Array.isArray(res.body.items));
 });
 
+test('B-050: scope=official list reports likedByMe for the viewer’s likes', () => {
+  const { s, d } = deps();
+  // A recommended/official preset (as Balanced is) — likeable without being published.
+  const official = s.presets.create({ id: idGen(), userId: s.alice.id, name: 'Balanced', config: cfg(), kind: 'official' });
+  const other = s.presets.create({ id: idGen(), userId: s.alice.id, name: 'Other rec', config: cfg(), kind: 'official' });
+  s.presetLikes.toggle(official.id, s.bob.id); // bob likes Balanced
+
+  const res = fakeRes();
+  handleList(d)({ query: { scope: 'official' }, userId: s.bob.id }, res);
+  assert.equal(res.statusCode, 200);
+  const liked = res.body.items.find((i) => i.id === official.id);
+  const notLiked = res.body.items.find((i) => i.id === other.id);
+  assert.equal(liked.likedByMe, true, 'B-050: the Recommended list must reflect the viewer’s like');
+  assert.equal(notLiked.likedByMe, false, 'a preset the viewer has not liked stays false');
+});
+
 test('get handler records a view for a non-owner and hides private presets', () => {
   const { s, d } = deps();
   const p = mk(s.presets, s.alice.id);
