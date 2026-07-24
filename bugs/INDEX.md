@@ -54,3 +54,4 @@
 | [B-048](B-048-bundle-artifact-content-not-validated.md) | Bundle artifact contents (species/item/move ids) are not validated before the native build | open | major | 0.5.0 |  |  |
 | [B-049](B-049-starter-extra-count-array-mismatch.md) | ROM build fails "excess elements" when a ROM has ≠9 extra starters and no starter naming | fixed | critical | 0.6.0 | 0.6.0 | randomizer/__tests__/unit/starterNameWriter.test.js |
 | [B-050](B-050-official-list-missing-likedbyme.md) | Liking a Recommended preset never fills the heart — official list omits likedByMe | fixing | major | 0.6.0 |  | backend/__tests__/presets.test.js |
+| [B-051](B-051-town-trade-wrong-mon-stale-stringvar.md) | Town trader "wrong mon" message shows "/<HP>" (e.g. "/314") instead of the requested species name | fixing | minor | 0.6.0 |  | randomizer/__tests__/unit/townTradeWrongMonBuffer.test.js |
