@@ -945,6 +945,10 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
 /* compact ROM build bar reuses .gen-progress-bar/.gen-progress-fill */
 .gen-progress-wrap.compact { margin: 4px 0; }
 
+/* T-198 — in-row "Cancel build" button: sits just under the building/queued status, spaced off the
+   text above it so it reads as its own control. */
+.rom-cancel-btn { margin-top: 10px; }
+
 /* spinning gear, anywhere (reuses the gen-gear-spin keyframe defined in layout.css) */
 .px-icon.spin { animation: gen-gear-spin 1.2s steps(12) infinite; transform-origin: 50% 50%; }
 
