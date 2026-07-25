@@ -80,6 +80,11 @@ Acceptance criteria:
   phase-2 round-tripping. Output `boss-dialogue.txt` (2255 lines, 31 bosses, 0 unresolved). Verified Wattson
   (single+event_script), Norman (no_intro + reward text), Archie (multi-stage), Space Center (3-trainer tag).
   **Awaiting the owner's review/edits of `boss-dialogue.txt` before phase 2 (write-back).**
+- **2026-07-25** — Owner review feedback: the Mt Chimney boss (Tabitha) co-stars Maxie, whose lines live in a
+  separate object-event script (`MtChimney_EventScript_Maxie`) unreachable from Tabitha's defeat chain, so they
+  were missing. Added a `COMPANION_TOKENS` hook (boss flag → extra character tokens) folded into the
+  "OTHER TEXT" net; `FLAG_DEFEATED_TABITHA_MT_CHIMNEY → ['Maxie']`. Regenerated — Maxie's Mt Chimney cutscene
+  text now shows under boss 11.
 
 ## Outcome
 
