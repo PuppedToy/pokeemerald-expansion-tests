@@ -257,6 +257,16 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
         // T-078 — item descriptions (name-keyed) for held-item / reward hover tooltips.
         .replace('<script src="items.js"></script>',
             `<script>const itemsData = ${JSON.stringify(pokedex.items || {})};</script>`)
+        // T-201 — auto-nickname assignments so the viewer can show a captured mon's name (starters /
+        // locations / trades) + the trade info (offered/wanted species) for the trade action. Naming is on
+        // rom.artifacts by HTML-build time, so no generation reorder is needed.
+        .replace('<script src="nicknames.js"></script>',
+            `<script>const nicknamesData = ${JSON.stringify({
+                starters: rom.artifacts.starterNaming || null,
+                locations: rom.artifacts.locationNaming || null,
+                trades: rom.artifacts.tradeNaming || null,
+                tradesInfo: rom.artifacts.trades || null,
+            })};</script>`)
         .replace('<script src="wildpokes.js"></script>',
             `<script>const wildPokes = ${JSON.stringify(rom.docs.wildPokes)};</script>`)
         // T-044 — move-chip type colours (SSOT: randomizer/trainerColors.js), derived by

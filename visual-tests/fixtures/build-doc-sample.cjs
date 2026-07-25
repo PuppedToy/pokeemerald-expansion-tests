@@ -79,6 +79,14 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
         // T-078 — item descriptions (name-keyed) for held-item / reward hover tooltips.
         .replace('<script src="items.js"></script>',
             `<script>const itemsData = ${JSON.stringify(pokedex.items || {})};</script>`)
+        // T-201 — auto-nickname assignments (lock-step with app.js buildDocHtml).
+        .replace('<script src="nicknames.js"></script>',
+            `<script>const nicknamesData = ${JSON.stringify({
+                starters: rom.artifacts.starterNaming || null,
+                locations: rom.artifacts.locationNaming || null,
+                trades: rom.artifacts.tradeNaming || null,
+                tradesInfo: rom.artifacts.trades || null,
+            })};</script>`)
         .replace('<script src="wildpokes.js"></script>',
             `<script>const wildPokes = ${JSON.stringify(rom.docs.wildPokes)};</script>`)
         // T-044 — move-chip type colours (SSOT: randomizer/trainerColors.js) via rom.docs.typeColors.
@@ -117,7 +125,15 @@ async function main() {
         const trades = selectTrades({ pokemonList: pokedex.pokes, wildArtifact: wild, wildMaps: wildData.maps, capLevels: pokedex.capLevels, seed: (seed >>> 0), diagnostics: null });
         rng.seed(seed);
         const docs = await writerDocs(pokedex, trainers, starters, wild, seed, { showExactPositions: dv?.showExactPositions === true, docsVisibility: dv || undefined, trades });
-        const rom = { romIndex: 0, artifacts: { pokedex, trainers, starters, wild }, docs };
+        const rom = { romIndex: 0, playerIndex: 0, artifacts: { pokedex, trainers, starters, wild, trades }, docs };
+
+        // T-201 — optional nicknames config via env so a nickname-enabled fixture can be built to verify the
+        // viewer nickname display, e.g. NICK_JSON='{"enabled":true,"autoLocation":true,"differentPerGender":false,"pools":{"single":["Percy","John",...]}}'.
+        const nickCfg = process.env.NICK_JSON ? JSON.parse(process.env.NICK_JSON) : null;
+        if (nickCfg) {
+            const { attachAutoNaming } = require(R('randomizer/generate.js'));
+            attachAutoNaming({ seed }, { nicknames: nickCfg }, [rom], [{ player: 0, run: 0 }]);
+        }
 
         const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText);
         fs.writeFileSync(outPath, html);

@@ -9,6 +9,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Your Pokémon's nicknames now show throughout the docs viewer.** Once you mark a Pokémon caught, its
+  auto-nickname appears under its species everywhere it's listed — the Encounters tile, the PC box, and the
+  Pokédex modal ("*John is in box*", the family line as "*John (Kubfu)*", and "*John is fainted*"). You can
+  **Edit nickname** from the modal (kept even if you un-catch and re-catch it), and un-catching hides the name
+  again. On a town-trade route, a **trade** button turns the caught wanted Pokémon into the one you'd receive
+  — with its own trade nickname — and **undo trade** reverts it. Extra starters come pre-named; your main
+  starter shows its name once you pick it. (T-201)
+
 - **Auto-nicknames: a new trades & gifts option, and names that never repeat.** The Nicknames settings
   gained a **Random name for trades and gifts** switch (on by default) that names the Pokémon you get
   from gift NPCs (gym rewards, fossils) and town trades — separately from the "by location" switch, so

@@ -1,13 +1,13 @@
 ---
 id: T-201
 title: Docs viewer — show auto-nicknames everywhere + tie the nickname to the capture state
-status: proposed        # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-25
 updated: 2026-07-25
 target-version: 0.6.0
 links: [T-068, T-069, T-070, T-194, T-200]
-blocked-by: [T-200]
+blocked-by: []
 ---
 
 # T-201 — Docs viewer: show auto-nicknames everywhere + tie the nickname to the capture state
@@ -60,13 +60,31 @@ auto-nickname** (the T-200 `tradeNaming` for that trade, distinct from the wante
   interacts with the capture/fainted + edited-nickname rules above.
 - This is docs/viewer-only; the in-ROM application of the trade nickname is [T-202](T-202-in-rom-town-trade-nickname-hook.md).
 
-### Acceptance criteria (to be finalised after T-200)
-- [ ] All five display surfaces show nickname vs species per the rules above (with/without nickname).
-- [ ] `[Edit nickname]` persists a user override; `[Mark fainted]` toggles fainted; both survive reload.
-- [ ] Auto-nickname is present only while captured; un-capture clears it; re-capture restores auto (or the
+### Implementation increments (finalised after T-200)
+1. **Pipeline → viewer data.** Inject a `nicknamesData` blob into the docs template — `{ starters:
+   rom.artifacts.starterNaming, locations: rom.artifacts.locationNaming, trades: rom.artifacts.tradeNaming,
+   tradesInfo: rom.artifacts.trades }`. `buildDocHtml(template, rom, …)` (app.js ~233) and `writer.js`
+   (~805-916) both have the full `rom`, so **no generation reorder is needed** (naming is already on
+   `rom.artifacts` by HTML-build time). New `<script src="nicknames.js">` placeholder in `template.html`.
+2. **Viewer nickname resolver + store.** A per-`routeId|slot` (and starter-slot / trade-id) resolver that maps
+   a captured entry → its auto-nickname from `nicknamesData`; a new namespaced localStorage `nicknames_v1`
+   holding `{ nickname, userEdited }` written on capture (see capture-bound rules), cleared on Reset (:3752).
+3. **Display surfaces** (1-5 above) read the resolver: PC cell, modal IN BOX / family / fainted, encounters tile.
+4. **Edit / capture binding**: `[Edit nickname]` override; auto applied on capture, removed on un-capture,
+   user override remembered; starters (extra on load, main after selection).
+5. **Trade action**: `trade` / `undo trade` text buttons (no icons) in the trade box (modal + encounters) that
+   swap the mon to the offered species + its trade nickname, reversible.
+6. Playwright/interaction coverage; no horizontal overflow; suites green.
+
+### Acceptance criteria
+- [x] All five display surfaces show nickname vs species per the rules above (with/without nickname).
+- [x] `[Edit nickname]` persists a user override; `[Mark fainted]` toggles fainted; both survive reload.
+- [x] Auto-nickname is present only while captured; un-capture clears it; re-capture restores auto (or the
       user override if one was set).
-- [ ] Auto-named extra starters show a name on load; auto-named main starter shows one only after selection.
-- [ ] Visual/interaction tests (Playwright) cover the surfaces; no horizontal overflow; suites green.
+- [x] Auto-named extra starters show a name on load; auto-named main starter shows one only after selection.
+- [x] Trade / undo-trade buttons (no icons) in the trade box (modal + encounters) swap species + nickname and revert.
+- [x] Visual/interaction tests (Playwright) cover the surfaces; no horizontal overflow; suites green.
+- [x] **Owner manually validated** the viewer (2026-07-25).
 
 ## Viewer hook-point map (investigation 2026-07-25)
 
@@ -111,9 +129,71 @@ Reference for implementation (subject to revision after T-200). All refs in `fro
 - **2026-07-25** — Definition revised in light of T-200 (as flagged): added the **Trade action in the viewer**
   section (`trade` / `undo trade` text buttons in the trade box, modal + encounters, no icons) — trading swaps
   the mon to the trade's offered species and applies its distinct T-200 `tradeNaming`. Owner chose "docs first":
-  the in-ROM trade nickname hook is split out as [T-202](T-202-in-rom-town-trade-nickname-hook.md). Acceptance
-  criteria to be finalised with the owner before this task starts.
+  the in-ROM trade nickname hook is split out as [T-202](T-202-in-rom-town-trade-nickname-hook.md).
+- **2026-07-25** — T-200 landed → set **in-progress** (branch `feature/T-201-docs-nickname-display-and-capture-state`
+  off master), finalised the plan into 6 increments + acceptance criteria.
+- **2026-07-25** — **Increment 1 done (pipeline → viewer data).** The auto-nickname assignments now reach the
+  viewer as a `nicknamesData` blob `{ starters, locations, trades, tradesInfo }`. No generation reorder was
+  needed — `buildDocHtml(template, rom, …)` (`frontend/js/app.js`) and `writer(...)` (`randomizer/writer.js`,
+  new `locationNaming`/`tradeNaming` params threaded from `make.js`) both have the full `rom` at HTML-build
+  time. New `nicknames.js` placeholder in `frontend/template.html` + `TEMPLATE_NICKNAMES_REPLACEMENT` in
+  `constants.js`. Structural test `frontend/__tests__/nicknames-viewer-data.test.js`. Suites green (frontend
+  162, randomizer 1670).
+- **2026-07-25** — **Increments 2-4 done (resolver/store + PC & modal display + edit).** In
+  `frontend/template.html`: (2) a nickname resolver — `autoNickname(entry)` maps a captured entry to its baked
+  name (STARTER_EXTRA by position, wild/static/gift by MAP id, traded → trade name), `resolveNickname` lets a
+  USER edit win and be remembered across un-capture; overrides + trade state live in the existing `store`
+  (MAIL_KEY, so Reset clears them). Because only CAPTURED entries reach the resolver, a name shows only while
+  captured (un-capture drops it, re-capture restores). (3) Display: PC cell shows the name under the species
+  (`.pc-nick`); modal IN BOX line → "`<name|species> is in box`" + **Edit nickname** + Mark fainted; family →
+  "`John (Kubfu)`"; fainted → "`<name|species> is fainted`". (4) `docEditNickname` prompt (sanitised to 12
+  chars / [A-Za-z0-9 ]; blank clears back to auto). Fixture builder (`visual-tests/fixtures/build-doc-sample.cjs`)
+  mirrors the injection + gained a `NICK_JSON` env to build a nickname-enabled fixture; verified `nicknamesData`
+  populates end-to-end. Interaction spec: 11/11 relevant pass (modal/encounters/PC/faint) — the 1 failure is the
+  pre-existing B-052 seed-drift (B-024 evolution-mail precondition), not this work.
+  **Remaining:** encounters-tile name (inc. 3b), trade / undo-trade buttons (inc. 5), main-starter-after-select
+  (spec 5), and nickname-specific Playwright tests (inc. 6). Uncommitted on the branch.
+- **2026-07-25** — **Increments 3b + 5 + 6 done — T-201 functionally complete.**
+  • **Encounters tile (3b):** a `.nz-poke-nick` under each tile's species name, populated by `applyLocVisuals`
+    for captured (green/blue) slots via the window-exposed `docResolveNickname`.
+  • **Trade action (5):** `store.trades[encounterKey]` marks a traded encounter; `capturedEntries` then shows
+    the OFFERED species and `autoNickname` returns the trade's name. `trade` / `undo trade` text buttons (no
+    icon) in both the modal IN BOX row and the encounters trade card (updated live by `applyLocVisuals`);
+    `docTrade`/`docUndoTrade`/`docTradeState`/`docTileSpecies` bridge the separate script blocks; a de-captured
+    encounter drops its trade (reconcileEvo). Encounters tile shows the offered species after trading.
+  • **Main starter (spec 5):** `autoNickname` maps the `STARTERS` route → `nicknamesData.starters.starter`; its
+    box entry only exists once a starter is picked, so the name appears only after selection.
+  • **Bug found + fixed:** `renderPC` (a separate script block) called the bare `resolveNickname` (out of scope)
+    → it must go through `window.docResolveNickname`; without the fix the PC grid broke whenever a mon was boxed.
+  • **Tests (6):** `visual-tests/nicknames.spec.mjs` (4 desktop tests: capture→tile+PC name; un/re-capture;
+    modal IN BOX + Edit; trade→offered+trade-name→undo) over a `NICK_JSON` fixture (`npm run fixture:nick`).
+  All green: randomizer 1670, backend 177, frontend 162, interaction 7/7 relevant (the 1 fail is B-052 drift),
+  nicknames 4/4, `npm run shoot` no overflow. Awaiting owner manual validation, then close + merge.
+- **2026-07-25** — Owner validated the viewer and approved closing. Status → done, Outcome filled, changelog
+  line added. Committed and merged to master.
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped the full auto-nickname display + capture/edit/trade behaviour in the generated docs viewer.
+Owner-validated 2026-07-25. Closed.
+
+- **Pipeline:** a `nicknamesData` blob (`{ starters, locations, trades, tradesInfo }`) is injected per ROM by
+  both the browser path (`app.js` `buildDocHtml`) and the node/maker path (`writer.js`, new
+  `locationNaming`/`tradeNaming` params from `make.js`); new `nicknames.js` template placeholder +
+  `TEMPLATE_NICKNAMES_REPLACEMENT`. No generation reorder needed (naming is on `rom.artifacts` at HTML-build).
+- **Viewer (`frontend/template.html`):** a resolver (`autoNickname`/`resolveNickname`, exposed as
+  `window.docResolveNickname`) mapping a captured entry → its baked name (STARTER_EXTRA by position, main
+  starter via the `STARTERS` route, wild/static/gift by MAP id, traded → trade name); user overrides + trade
+  state persist in the existing `store` (so Reset clears them). Names show only while captured. Surfaces: PC
+  cell, modal IN BOX ("`<name> is in box`") + Edit nickname, family ("`John (Kubfu)`"), fainted, encounters
+  tile. Trade / undo-trade text buttons (modal + encounters) swap the mon to the offered species + its trade
+  name and back.
+- **Tests:** `visual-tests/nicknames.spec.mjs` (4 desktop interaction tests over a `NICK_JSON` fixture,
+  `npm run fixture:nick`) + structural `frontend/__tests__/nicknames-viewer-data.test.js`. All suites green;
+  no horizontal overflow.
+
+Deviations / notes:
+- Fixed a viewer bug found during the work: `renderPC` (a separate script block) called the bare
+  `resolveNickname` — must route through `window.docResolveNickname`, else the PC grid broke with a boxed mon.
+- In-ROM town-trade nickname application remains **T-202** (docs-only here, per the owner's "docs first").
+- The pre-existing B-052 seed-drift (interaction B-024 evolution-mail precondition) is unrelated and still open.

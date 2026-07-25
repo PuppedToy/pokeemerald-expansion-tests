@@ -1429,6 +1429,8 @@
   <script src="wildpokes.js"></script>
   <script src="abilities.js"></script>
   <script src="items.js"></script>
+  <!-- T-201 — auto-nickname assignments (starters / locations / trades) + trade info; injected per ROM. -->
+  <script src="nicknames.js"></script>
   <script src="sprites.js"></script>
   <script src="bosscaps.js"></script>
   <!-- T-005 — per-run localStorage namespace. The run-namespace token below is replaced
@@ -2000,7 +2002,7 @@
     // offered mon + level). Sized to its container's width (the small encounter box on the route cards;
     // the box-section in the modal). Uses only global helpers (getPokeImg/getIcon/pokes) and the
     // delegated `.evo-link` handler so it works in both scopes.
-    window.buildTradeCardHTML = function (trade) {
+    window.buildTradeCardHTML = function (trade, routeId) {
       if (!trade || !trade.offeredSpecies) return '';
       const id = trade.offeredSpecies;
       const prettify = s => String(s || '').split('_').map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ');
@@ -2011,6 +2013,8 @@
         + '<div style="font-size:11px;opacity:.9;margin-top:2px">' + getIcon('location', '📍') + ' ' + prettify(trade.town) + '</div>'
         + '<div style="margin-top:4px"><span class="evo-link" data-id="' + id + '" style="cursor:pointer;display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px;justify-content:center;font-size:11px">'
         + getIcon('reward', '🎁') + '<img src="' + getPokeImg(id) + '" width="28" height="28" style="object-fit:contain" alt=""><span style="font-weight:700">' + offName + ' Lv. ' + trade.level + '</span></span></div>'
+        // T-201 — trade / undo-trade button (no icon); shown + labelled live by applyLocVisuals from the capture state.
+        + '<button class="nz-trade-btn" data-trade-route="' + (routeId || '') + '" style="display:none;margin-top:6px;font-family:var(--obs-font-display);font-size:9px;letter-spacing:1px;background:var(--obs-well);color:var(--obs-text-dim);border:2px solid rgba(96,165,250,0.4);box-shadow:var(--obs-shadow-sm);padding:6px 12px;cursor:pointer"></button>'
         + '</div>';
     };
 
@@ -2097,6 +2101,7 @@
               ${typeLabel}
               <img class="nz-poke-img" src="${img}" style="width:64px;height:64px;object-fit:contain" alt="${pokeName}">
               <div class="nz-poke-name" style="font-weight:700;margin-top:4px">${coloredName}${adjustmentIcon}</div>
+              <div class="nz-poke-nick" style="font-size:12px;color:var(--obs-text-dim);line-height:1.1;margin-top:2px;display:none"></div>
               ${checkboxHTML}
             </div>
           `;
@@ -2106,7 +2111,7 @@
           if (!tradeRendered && route.trade && route.trade.wantedSpecies === pokeId
               && (method === 'land' || method === 'old') && typeof window.buildTradeCardHTML === 'function') {
             tradeRendered = true;
-            return `<div class="wild-poke-cell" style="display:flex;flex-direction:column">${tileHTML}${window.buildTradeCardHTML(route.trade)}</div>`;
+            return `<div class="wild-poke-cell" style="display:flex;flex-direction:column">${tileHTML}${window.buildTradeCardHTML(route.trade, route.id)}</div>`;
           }
           return tileHTML;
         })
@@ -2955,7 +2960,8 @@
         // form when there's no overlay — e.g. after deselecting, which rolls it back).
         const base = slot.dataset.baseSpecies;
         if (base) {
-          const cur = overlay[routeId + '|' + s] || base;
+          // T-201 — a traded slot shows the offered species; else the evolution overlay, else the base.
+          const cur = (typeof window.docTileSpecies === 'function') ? window.docTileSpecies(routeId, s, base) : (overlay[routeId + '|' + s] || base);
           const imgEl = slot.querySelector('.nz-poke-img');
           const nameEl = slot.querySelector('.nz-poke-name');
           if (imgEl) { const src = getPokeImg(cur); if (imgEl.getAttribute('src') !== src) imgEl.setAttribute('src', src); }
@@ -2963,8 +2969,27 @@
             const p = findPoke(cur), col = getFullPokeLogColor(p), txt = nameify(cur.replace('SPECIES_', ''));
             nameEl.innerHTML = (col ? '<span style="color:' + col + '">' + txt + '</span>' : txt) + getFullPokeLogIcon(p);
           }
+          // T-201 — once captured (green/blue), show the Pokémon's nickname under its name, as in the PC.
+          const nickEl = slot.querySelector('.nz-poke-nick');
+          if (nickEl) {
+            const captured = (sel && s === sel) || isAutoSel;
+            const nk = (captured && typeof window.docResolveNickname === 'function')
+              ? window.docResolveNickname({ encounterKey: routeId + '|' + s, routeId: routeId, slot: s }) : null;
+            nickEl.textContent = nk || '';
+            nickEl.style.display = nk ? '' : 'none';
+          }
         }
       });
+
+      // T-201 — reflect the trade state on this card's trade button: hidden until the wanted mon is captured,
+      // then "trade" (→ receive the offered mon), then "undo trade".
+      const tBtn = card.querySelector('.nz-trade-btn');
+      if (tBtn && typeof window.docTradeState === 'function') {
+        const ts = window.docTradeState(routeId);
+        if (ts.traded)        { tBtn.textContent = 'undo trade'; tBtn.setAttribute('data-trade-act', 'undo'); tBtn.style.display = ''; }
+        else if (ts.captured) { tBtn.textContent = 'trade';      tBtn.removeAttribute('data-trade-act');       tBtn.style.display = ''; }
+        else                  { tBtn.style.display = 'none'; }
+      }
     }
 
     function applyAllLocVisuals() {
@@ -3232,7 +3257,10 @@
     var pokeById = {}; (typeof pokes!=='undefined'?pokes:[]).forEach(function(p){ pokeById[p.id]=p; });
 
     // ---------- store ----------
-    function freshStore(){ return { version:1, settings:{ muted:{static:false,evolution:false,level:false,tm:false} }, evo:{}, mails:[], _gen:[], _lastTs:0 }; }
+    // T-201 — `nicknames` holds per-encounter USER overrides (kept even across un-capture, so a re-caught
+    // Pokémon keeps the name the player typed); `trades` holds which encounters have been traded (species +
+    // trade id). Both live in this store so Reset (which clears mail_v1) clears them too.
+    function freshStore(){ return { version:1, settings:{ muted:{static:false,evolution:false,level:false,tm:false} }, evo:{}, mails:[], nicknames:{}, trades:{}, _gen:[], _lastTs:0 }; }
     var store = freshStore();
     try { var raw = localStorage.getItem(MAIL_KEY); if (raw) {
       var p = JSON.parse(raw); store = Object.assign(freshStore(), p);
@@ -3240,6 +3268,8 @@
       if (!Array.isArray(store.mails)) store.mails = [];
       if (!Array.isArray(store._gen)) store._gen = [];
       if (!store.evo) store.evo = {};
+      if (!store.nicknames) store.nicknames = {};
+      if (!store.trades) store.trades = {};
     } } catch(e){}
     function save(){ try { localStorage.setItem(MAIL_KEY, JSON.stringify(store)); } catch(e){} }
     function nextTs(){ store._lastTs = Math.max(Date.now(), (store._lastTs||0)+1); return store._lastTs; }
@@ -3287,11 +3317,97 @@
         }
       });
       return out;
-      function mk(routeId, slot, base, fainted){ var key=routeId+'|'+slot; return { encounterKey:key, routeId:routeId, slot:slot, baseSpecies:base, currentSpecies: store.evo[key]||base, fainted:fainted }; }
+      // T-201 — a traded encounter shows the OFFERED species (its own name comes from the trade); otherwise
+      // the evolution overlay (or the base wild species).
+      function mk(routeId, slot, base, fainted){ var key=routeId+'|'+slot;
+        var td=store.trades&&store.trades[key];
+        var species=td?td.offered:(store.evo[key]||base);
+        return { encounterKey:key, routeId:routeId, slot:slot, baseSpecies:base, currentSpecies: species, fainted:fainted, traded:!!td }; }
     }
     function boxMembers(){ return capturedEntries().filter(function(e){ return !e.fainted; }); }
     function liveKeys(){ var s={}; boxMembers().forEach(function(e){ s[e.encounterKey]=e; }); return s; }
     function curSpeciesOf(key, fallback){ var e = liveKeys()[key]; return (e&&e.currentSpecies) || fallback; }
+
+    // ---------- T-201: auto-nickname resolver + user overrides ----------
+    // Only CAPTURED entries reach here (capturedEntries), so an auto-nickname shows only while captured;
+    // un-capturing drops the entry (name gone), re-capturing brings it back. A USER edit is stored per
+    // encounter key and wins over the auto name — and is kept across un-capture, so it returns on re-capture.
+    function nickData(){ return (typeof nicknamesData!=='undefined' && nicknamesData) ? nicknamesData : null; }
+    function sanitizeNick(s){ return String(s==null?'':s).replace(/[^A-Za-z0-9 ]/g,'').replace(/\s+/g,' ').trim().slice(0,12); }
+    function starterExtraIndex(slot){
+      var route=(typeof wildPokes!=='undefined'?wildPokes:[]).find(function(r){return r.id==='STARTER_EXTRA';});
+      if(!route) return -1; var slots=encounterSlots(route);
+      for(var i=0;i<slots.length;i++) if(slots[i].slot===slot) return i; return -1;
+    }
+    // The baked-in auto nickname for an entry (null if none/feature off).
+    function autoNickname(entry){
+      var nn=nickData(); if(!entry||!nn) return null;
+      // A traded encounter carries the offered mon → the trade's own name (set by the trade action).
+      var td=store.trades&&store.trades[entry.encounterKey];
+      if(td&&td.tradeId&&nn.trades&&nn.trades[td.tradeId]) return nn.trades[td.tradeId].nickname||null;
+      if(entry.routeId==='STARTER_EXTRA'){
+        if(!nn.starters||!nn.starters.extras) return null;
+        var idx=starterExtraIndex(entry.slot); var ex=idx>=0?nn.starters.extras[idx]:null;
+        return (ex&&ex.nickname)||null;
+      }
+      // The chosen main starter — its box entry only exists once the starter is picked, so the name (when
+      // "include the main starter" was on) appears only after selection, per spec.
+      if(entry.routeId==='STARTERS') return (nn.starters&&nn.starters.starter&&nn.starters.starter.nickname)||null;
+      if(nn.locations&&nn.locations[entry.routeId]) return nn.locations[entry.routeId].nickname||null;
+      return null;
+    }
+    // The name to SHOW for an entry: the user override if set, else the auto nickname, else null (species).
+    function resolveNickname(entry){
+      if(!entry) return null;
+      var ov=store.nicknames&&store.nicknames[entry.encounterKey];
+      if(ov!=null&&ov!=='') return ov;
+      return autoNickname(entry);
+    }
+    // Exposed so the Encounters render (a separate script block) can label captured tiles.
+    window.docResolveNickname = resolveNickname;
+
+    // ---------- T-201: town-trade action (docs-only; in-ROM naming is T-202) ----------
+    // Trading turns the captured WANTED mon into the trade's OFFERED mon (which carries the trade's own
+    // nickname); Undo reverts. State lives in store.trades[encounterKey] and is purged on un-capture.
+    function tradeInfoForRoute(routeId){
+      var ti=(nickData()&&nickData().tradesInfo)||[];
+      for(var i=0;i<ti.length;i++) if(ti[i]&&ti[i].routeMapId===routeId) return ti[i];
+      return null;
+    }
+    // The captured encounter on a route that is (or, once traded, was) the trade's wanted species.
+    function tradeSourceEntry(routeId){
+      var ti=tradeInfoForRoute(routeId); if(!ti) return null;
+      return capturedEntries().find(function(e){
+        return e.routeId===routeId && (e.traded || e.baseSpecies===ti.wantedSpecies || e.currentSpecies===ti.wantedSpecies);
+      }) || null;
+    }
+    function docRefreshNicks(){
+      if(typeof window.renderPC==='function') window.renderPC();
+      if(typeof window.nzRefreshAll==='function') window.nzRefreshAll();
+    }
+    window.docTradeState=function(routeId){ var e=tradeSourceEntry(routeId); return { captured:!!e, traded:!!(e&&e.traded) }; };
+    window.docTrade=function(routeId){
+      var ti=tradeInfoForRoute(routeId), e=tradeSourceEntry(routeId); if(!ti||!e||e.traded) return;
+      store.trades[e.encounterKey]={ tradeId: ti.ingameTradeId, offered: ti.offeredSpecies }; save(); docRefreshNicks();
+    };
+    window.docUndoTrade=function(routeId){
+      var e=tradeSourceEntry(routeId); if(!e||!e.traded) return;
+      delete store.trades[e.encounterKey]; save(); docRefreshNicks();
+    };
+    // Species shown for an Encounters tile: traded offered → evolution overlay → base wild species.
+    window.docTileSpecies=function(routeId, slot, base){
+      var key=routeId+'|'+slot, td=store.trades&&store.trades[key];
+      return (td&&td.offered) || (store.evo&&store.evo[key]) || base;
+    };
+    // Click delegation for the trade / undo-trade buttons (Encounters + modal share these classes).
+    document.addEventListener('click', function(e){
+      var b=e.target.closest('[data-trade-route]'); if(!b) return; e.stopPropagation();
+      var routeId=b.getAttribute('data-trade-route');
+      if(b.getAttribute('data-trade-act')==='undo') window.docUndoTrade(routeId); else window.docTrade(routeId);
+      // If the click came from the modal, re-open it so its trade box reflects the new state.
+      var sid=b.getAttribute('data-trade-species'); var p=sid&&pokeById[sid];
+      if(p&&typeof showPokemonModal==='function') showPokemonModal(p);
+    });
     function reconcileEvo(){
       var live = liveKeys(), changed=false;
       // The overlay = the obtained Pokémon's current evolution stage. Keep it for ANY still-captured
@@ -3299,6 +3415,8 @@
       // Purge only when the encounter is no longer captured (deselected → rollback to the base form).
       var capt={}; capturedEntries().forEach(function(e){ capt[e.encounterKey]=1; });
       Object.keys(store.evo).forEach(function(k){ if (!capt[k]){ delete store.evo[k]; changed=true; } });
+      // T-201 — drop a trade when its source encounter is no longer captured (you can't have traded it).
+      Object.keys(store.trades||{}).forEach(function(k){ if (!capt[k]){ delete store.trades[k]; changed=true; } });
       // Mails are actionable only for non-fainted box members; drop them when the encounter leaves the box.
       var before = store.mails.length;
       store.mails = store.mails.filter(function(m){ return m.type==='static' || m.type==='champion' || (m.payload && live[m.payload.encounterKey]); });
@@ -3530,6 +3648,9 @@
       + '.box-evo-row{display:flex;align-items:center;gap:8px;margin:6px 0;font-family:var(--obs-font-body);font-size:18px;}'
       + '.box-tag-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px;}'
       + '.box-faintbtn{font-family:var(--obs-font-display);font-size:9px;letter-spacing:1px;background:var(--obs-well);color:var(--obs-text-dim);border:2px solid var(--obs-line);box-shadow:var(--obs-shadow-sm);padding:7px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;} .box-faintbtn:hover{color:var(--obs-text);} .box-faintbtn img{height:14px;width:14px;image-rendering:pixelated;}'
+      // T-201 — Edit-nickname + trade/undo-trade buttons (same chrome as the faint button; no icon).
+      + '.box-editnick{font-family:var(--obs-font-display);font-size:9px;letter-spacing:1px;background:var(--obs-well);color:var(--obs-text-dim);border:2px solid var(--obs-line);box-shadow:var(--obs-shadow-sm);padding:7px 10px;cursor:pointer;display:inline-flex;align-items:center;} .box-editnick:hover{color:var(--obs-text);}'
+      + '.box-tradebtn{font-family:var(--obs-font-display);font-size:9px;letter-spacing:1px;background:var(--obs-well);color:var(--obs-text-dim);border:2px solid rgba(96,165,250,0.4);box-shadow:var(--obs-shadow-sm);padding:7px 10px;cursor:pointer;display:inline-flex;align-items:center;} .box-tradebtn:hover{color:var(--obs-text);}'
       + '.box-section img{image-rendering:pixelated;vertical-align:middle;} .box-section .evo-link{cursor:pointer;}';
     document.head.appendChild(css);
 
@@ -3609,25 +3730,35 @@
         var inner=''; if (evos.length){ inner = '<div class="box-evo-block"><div class="box-evo-title small">This Pokémon can evolve:</div>' + evos.map(function(ev){
           return '<div class="box-evo-row"><span class="evo-link" data-id="'+ev.pokemon+'">'+sprite(ev.pokemon,32)+'</span> '+icon('evolution','🧬')+' <span class="evo-link" data-id="'+ev.pokemon+'">'+nm(ev.pokemon)+'</span> <button class="mail-evolve box-evolve" data-box-evolve="'+speciesId+'|'+ev.pokemon+'">Evolve</button></div>';
         }).join('') + '</div>'; }
+        // T-201 — "<nickname|species> is in box" + Edit nickname + Mark fainted (+ trade / undo trade).
+        var boxNick = resolveNickname(exact), boxWho = boxNick || nm(speciesId);
+        var editBtn = '<button class="box-editnick" data-edit-nick="'+exact.routeId+'|'+exact.slot+'|'+speciesId+'">Edit nickname</button>';
         var faintBtn = '<button class="box-faintbtn" data-tooltip="Mark as fainted" data-box-faint="'+exact.routeId+'|'+exact.slot+'|1|'+speciesId+'">'+icon('fainted','💀')+' Mark fainted</button>';
-        return wrap('<div class="box-tag-row"><span class="box-tag">'+icon('pc','📦')+' IN BOX</span>'+faintBtn+'</div>'+inner);
+        var tradeBtn='', tiEx=tradeInfoForRoute(exact.routeId);
+        if (exact.traded && tiEx) tradeBtn = '<button class="box-tradebtn" data-trade-route="'+exact.routeId+'" data-trade-act="undo" data-trade-species="'+tiEx.wantedSpecies+'">undo trade</button>';
+        else if (tiEx && tiEx.wantedSpecies===speciesId) tradeBtn = '<button class="box-tradebtn" data-trade-route="'+exact.routeId+'" data-trade-species="'+tiEx.offeredSpecies+'">trade</button>';
+        return wrap('<div class="box-tag-row"><span class="box-tag">'+icon('pc','📦')+' '+boxWho+' is in box</span>'+editBtn+tradeBtn+faintBtn+'</div>'+inner);
       }
       var alive = caps.find(function(e){ return !e.fainted && famSet[e.currentSpecies]; });
-      if (alive) return wrap('<span class="box-label">Family Pokémon in box:</span> <span class="evo-link" data-id="'+alive.currentSpecies+'">'+sprite(alive.currentSpecies,32)+' '+nm(alive.currentSpecies)+'</span>');
+      // T-201 — "Family Pokémon in box: John (Kubfu)" (nickname before the species; species only if no name).
+      if (alive){ var aNick = resolveNickname(alive), aLabel = aNick ? aNick+' ('+nm(alive.currentSpecies)+')' : nm(alive.currentSpecies);
+        return wrap('<span class="box-label">Family Pokémon in box:</span> <span class="evo-link" data-id="'+alive.currentSpecies+'">'+sprite(alive.currentSpecies,32)+' '+aLabel+'</span>'); }
       var fainted = caps.find(function(e){ return e.fainted && famSet[e.currentSpecies]; });
-      if (fainted) return wrap('<div class="box-tag-row"><span class="box-fainted">'+icon('fainted','💀')+' <span class="evo-link" data-id="'+fainted.currentSpecies+'">'+sprite(fainted.currentSpecies,32)+'</span> '+nm(fainted.currentSpecies)+' is fainted</span><button class="box-faintbtn box-undo" data-box-faint="'+fainted.routeId+'|'+fainted.slot+'|0|'+speciesId+'">Undo</button></div>');
+      // T-201 — "<nickname|species> is fainted".
+      if (fainted){ var fWho = resolveNickname(fainted) || nm(fainted.currentSpecies);
+        return wrap('<div class="box-tag-row"><span class="box-fainted">'+icon('fainted','💀')+' <span class="evo-link" data-id="'+fainted.currentSpecies+'">'+sprite(fainted.currentSpecies,32)+'</span> '+fWho+' is fainted</span><button class="box-faintbtn box-undo" data-box-faint="'+fainted.routeId+'|'+fainted.slot+'|0|'+speciesId+'">Undo</button></div>'); }
       var obt = findObtainable(famSet);
       if (obt){
         // T-194 — below "Obtainable in …", in the same box, the town-trade sub-card — but ONLY on the
         // exact grass/old-rod species the trade wants (one pokemon per route), not every family member.
-        var tr = null;
+        var tr = null, trRoute = null;
         if (typeof wildPokes !== 'undefined') {
           for (var ri = 0; ri < wildPokes.length; ri++) {
             var rt = wildPokes[ri];
-            if (rt && rt.trade && rt.trade.wantedSpecies === speciesId) { tr = rt.trade; break; }
+            if (rt && rt.trade && rt.trade.wantedSpecies === speciesId) { tr = rt.trade; trRoute = rt.id; break; }
           }
         }
-        var tradeHTML = (tr && typeof window.buildTradeCardHTML === 'function') ? window.buildTradeCardHTML(tr) : '';
+        var tradeHTML = (tr && typeof window.buildTradeCardHTML === 'function') ? window.buildTradeCardHTML(tr, trRoute) : '';
         return wrap('<span class="box-obtainable">'+icon('location','📍')+' Obtainable in '+obt.label+' <span class="evo-link" data-id="'+obt.species+'">'+sprite(obt.species,32)+'</span></span>'+tradeHTML);
       }
       return '';
@@ -3651,6 +3782,24 @@
       var p = pokeById[speciesId]; if (typeof showPokemonModal==='function' && p) showPokemonModal(p);
     };
     document.addEventListener('click', function(e){ var b=e.target.closest('[data-box-faint]'); if (b){ e.stopPropagation(); var p=b.getAttribute('data-box-faint').split('|'); window.docSetFainted(p[0], p[1], p[2]==='1', p[3]); } });
+
+    // T-201 — edit a captured Pokémon's nickname (a USER override that beats the auto name and is kept even
+    // if you later un-capture it). Blank clears the override → back to the automatic name. Sanitised to the
+    // in-game 12-char [A-Za-z0-9 ] limit. Re-renders the PC grid and re-opens the modal to reflect the change.
+    window.docEditNickname = function(routeId, slot, speciesId){
+      var key = routeId+'|'+slot;
+      var entry = capturedEntries().find(function(e){ return e.encounterKey===key; });
+      var current = entry ? (resolveNickname(entry)||'') : (store.nicknames[key]||'');
+      var input = window.prompt('Nickname (letters, numbers, spaces — max 12; leave blank for the automatic name):', current);
+      if (input===null) return; // cancelled
+      var clean = sanitizeNick(input);
+      if (clean) store.nicknames[key] = clean; else delete store.nicknames[key];
+      save();
+      if (typeof window.renderPC==='function') window.renderPC();
+      if (typeof window.nzRefreshAll==='function') window.nzRefreshAll();
+      var p = pokeById[speciesId]; if (typeof showPokemonModal==='function' && p) showPokemonModal(p);
+    };
+    document.addEventListener('click', function(e){ var b=e.target.closest('[data-edit-nick]'); if (b){ e.stopPropagation(); var p=b.getAttribute('data-edit-nick').split('|'); window.docEditNickname(p[0], p[1], p[2]); } });
 
     // ---------- init ----------
     var mailNav = document.querySelector('.nav a[data-target="mail"]');
@@ -3686,9 +3835,12 @@
       + '.pc-cell:hover{transform:translate(-2px,-2px);box-shadow:var(--obs-shadow-md);}'
       + '.pc-cell img{image-rendering:pixelated;width:64px;height:64px;}'
       + '.pc-name{font-family:var(--obs-font-body);font-size:16px;color:var(--obs-text);text-align:center;line-height:1.1;}'
+      // T-201 — the player's nickname, shown under the species name.
+      + '.pc-nick{font-family:var(--obs-font-body);font-size:13px;color:var(--obs-text-dim);text-align:center;line-height:1.1;}'
       // Fainted view: black-and-white sprite + dimmed name.
       + '.pc-cell.pc-fainted img{filter:grayscale(1);opacity:0.85;}'
-      + '.pc-cell.pc-fainted .pc-name{color:var(--obs-text-dim);}';
+      + '.pc-cell.pc-fainted .pc-name{color:var(--obs-text-dim);}'
+      + '.pc-cell.pc-fainted .pc-nick{color:var(--obs-text-dim);opacity:0.8;}';
     document.head.appendChild(css);
 
     var pcView = 'available';   // 'available' | 'fainted'
@@ -3706,9 +3858,12 @@
       if (empty){ empty.textContent = fainted ? 'No fainted Pokémon — none have fainted yet.' : 'No Pokémon in your box yet — capture some in the Encounters tab.'; empty.style.display = list.length ? 'none' : ''; }
       grid.innerHTML = list.map(function(e){
         var id = e.currentSpecies, nm = pcName(id);
+        // T-201 — the player's name for this Pokémon (via window.* — renderPC is in a separate script block).
+        var nick = (typeof window.docResolveNickname === 'function') ? window.docResolveNickname(e) : null;
+        var nickHTML = nick ? '<span class="pc-nick">'+nick+'</span>' : '';
         return '<div class="pc-cell'+(fainted?' pc-fainted':'')+'" data-species="'+id+'" title="'+nm+'">' +
           '<img src="'+getPokeImg(id)+'" alt="'+nm+'">' +
-          '<span class="pc-name">'+nm+'</span></div>';
+          '<span class="pc-name">'+nm+'</span>'+nickHTML+'</div>';
       }).join('');
     };
 

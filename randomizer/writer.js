@@ -14,6 +14,7 @@ const {
     TEMPLATE_ABILITIES_REPLACEMENT,
     TEMPLATE_ITEMS_REPLACEMENT,
     TEMPLATE_COLORS_REPLACEMENT,
+    TEMPLATE_NICKNAMES_REPLACEMENT,
     MEGA_TRAINERS,
     PALAFIN_HERO_ID,
     GRENINJA_ASH_ID,
@@ -296,7 +297,7 @@ function resolveMailMints(itemAssignments, items) {
 // deterministic across ROMs that share a trainer artifact but differ in wild data.
 // docs: when provided (bundle mode), trainer teams are taken verbatim from the pre-resolved
 // docs instead of re-resolved via RNG — guaranteeing the ROM matches the bundle's docs.
-async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null, docs = null, runNs = '', starterNaming = null, trades = null) {
+async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null, docs = null, runNs = '', starterNaming = null, trades = null, locationNaming = null, tradeNaming = null) {
     let { pokes: pokemonList, moves, abilities, items } = pokedexArtifact;
     // Deep-clone trainersData — mega trainer processing splices entries in-place,
     // which would corrupt the shared artifact when the same trainers object is used across ROMs.
@@ -824,6 +825,16 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     const itemsData = items || {};
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_ITEMS_REPLACEMENT, `<script>const itemsData = ${JSON.stringify(itemsData)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'items.js'), `const itemsData = ${JSON.stringify(itemsData, null, 4)};`, 'utf8');
+
+    // T-201 — auto-nickname assignments for the viewer (parity with frontend/js/app.js buildDocHtml).
+    const nicknamesData = {
+        starters: starterNaming || null,
+        locations: locationNaming || null,
+        trades: tradeNaming || null,
+        tradesInfo: trades || null,
+    };
+    htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_NICKNAMES_REPLACEMENT, `<script>const nicknamesData = ${JSON.stringify(nicknamesData)};</script>`);
+    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'nicknames.js'), `const nicknamesData = ${JSON.stringify(nicknamesData, null, 4)};`, 'utf8');
     const maps = wild.maps.map(({ id, ...keys }) => {
         const result = {
             id,
