@@ -67,7 +67,7 @@ const FULL_CONFIG = {
         showGoodRod: false, showOldRod: false, showGrass: false,
     },
     nicknames: {
-        enabled: true, includeStarter: true, autoLocation: true, lockGenderPerRoute: true,
+        enabled: true, includeStarter: true, autoLocation: true, autoTradesGifts: true, lockGenderPerRoute: true,
         sameNamesAcrossRuns: true, shareAcrossSoullink: false, differentPerGender: true,
         pools: { both: ['Alex', 'Sam'], female: ['Mei'], male: ['Ivan'], single: ['Robin', 'Kai'] },
     },

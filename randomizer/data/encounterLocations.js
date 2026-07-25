@@ -1,13 +1,17 @@
 'use strict';
 
 // T-070 - locations (MAP_* constants) that receive an auto-nickname when the location-nickname feature
-// is on. Derived from src/data/wild_encounters.json (all 120 wild-encounter maps) + the 16 gift/static
-// maps the randomizer writes (gym rewards + Regis / Sky Pillar / New Mauville / museum / weather institute).
+// is on. Derived from src/data/wild_encounters.json (all 120 wild-encounter maps) + the 14 gift/static
+// maps the randomizer writes (gym rewards + Regis / Sky Pillar / museum / weather institute).
 // Map keys are stable base-game data (the randomizer only swaps species, never map keys), so this is
 // committed source. Regenerate if the map set changes. Total: 134 locations.
+//
+// T-200 — categorised into buckets so the two nickname toggles can gate them independently:
+//   • WILD_ROUTE_LOCATIONS (120) + STATIC_LOCATIONS (4) → the "auto-nickname by location" toggle.
+//   • GIFT_LOCATIONS (10 = 8 gym rewards + weather institute + oceanic museum) → the "trades & gifts" toggle.
+// (Town trades are NOT map-keyed — they live in randomizer/trades.js, keyed by ingameTradeId.)
 
-module.exports = {
-  ENCOUNTER_LOCATIONS: [
+const ENCOUNTER_LOCATIONS = [
     'MAP_ABANDONED_SHIP_HIDDEN_FLOOR_CORRIDORS', 'MAP_ABANDONED_SHIP_ROOMS_B1F', 'MAP_ALTERING_CAVE', 'MAP_ANCIENT_TOMB',
     'MAP_ARTISAN_CAVE_1F', 'MAP_ARTISAN_CAVE_B1F', 'MAP_CAVE_OF_ORIGIN_1F', 'MAP_CAVE_OF_ORIGIN_ENTRANCE',
     'MAP_CAVE_OF_ORIGIN_UNUSED_RUBY_SAPPHIRE_MAP1', 'MAP_CAVE_OF_ORIGIN_UNUSED_RUBY_SAPPHIRE_MAP2', 'MAP_CAVE_OF_ORIGIN_UNUSED_RUBY_SAPPHIRE_MAP3', 'MAP_DESERT_RUINS',
@@ -42,5 +46,23 @@ module.exports = {
     'MAP_SLATEPORT_CITY', 'MAP_SLATEPORT_CITY_OCEANIC_MUSEUM_2F', 'MAP_SOOTOPOLIS_CITY', 'MAP_SOOTOPOLIS_CITY_GYM_1F',
     'MAP_UNDERWATER_ROUTE124', 'MAP_UNDERWATER_ROUTE126', 'MAP_UNDERWATER_ROUTE127', 'MAP_VICTORY_ROAD_1F',
     'MAP_VICTORY_ROAD_B1F', 'MAP_VICTORY_ROAD_B2F',
-  ],
-};
+];
+
+// The 4 pure-static legendary maps (no wild encounters): Regis + Rayquaza. Grouped with wild routes.
+const STATIC_LOCATIONS = [
+  'MAP_ANCIENT_TOMB', 'MAP_DESERT_RUINS', 'MAP_ISLAND_CAVE', 'MAP_SKY_PILLAR_TOP',
+];
+
+// Gift maps (8 gym rewards + Castform at the weather institute + the oceanic museum). Grouped with trades.
+const GIFT_LOCATIONS = [
+  'MAP_DEWFORD_TOWN_GYM', 'MAP_FORTREE_CITY_GYM', 'MAP_LAVARIDGE_TOWN_GYM_1F', 'MAP_MAUVILLE_CITY_GYM',
+  'MAP_MOSSDEEP_CITY_GYM', 'MAP_PETALBURG_CITY_GYM', 'MAP_RUSTBORO_CITY_GYM', 'MAP_SOOTOPOLIS_CITY_GYM_1F',
+  'MAP_ROUTE119_WEATHER_INSTITUTE_2F', 'MAP_SLATEPORT_CITY_OCEANIC_MUSEUM_2F',
+];
+
+// Everything else in ENCOUNTER_LOCATIONS is a real wild-encounter map (derived so the three buckets always
+// partition ENCOUNTER_LOCATIONS exactly).
+const NON_WILD = new Set([...STATIC_LOCATIONS, ...GIFT_LOCATIONS]);
+const WILD_ROUTE_LOCATIONS = ENCOUNTER_LOCATIONS.filter((m) => !NON_WILD.has(m));
+
+module.exports = { ENCOUNTER_LOCATIONS, WILD_ROUTE_LOCATIONS, STATIC_LOCATIONS, GIFT_LOCATIONS };

@@ -14,6 +14,8 @@ const NICKNAMES_DEFAULT = {
     // T-070 — location-based auto-nicknames share this same feature/pools. `autoLocation` turns them on;
     // `lockGenderPerRoute` (only usable when autoLocation + differentPerGender) forces a route's gender.
     autoLocation: false,
+    // T-200 — names gym-reward gifts + fossils + town trades, independently of autoLocation. Default ON.
+    autoTradesGifts: true,
     lockGenderPerRoute: false,
     sameNamesAcrossRuns: false,
     shareAcrossSoullink: true,
@@ -407,6 +409,96 @@ export function slowQueueMessage(total, fastMax) {
         + `It will go to the slow queue behind smaller builds, so it may take noticeably longer to finish.`;
 }
 
+// T-200 — how many Pokémon each nickname bucket can name. SSOT: randomizer/data/encounterLocations.js
+// bucket sizes (wild routes 120 + statics 4) and randomizer/trades.js (gifts 10 + 4 town trades).
+// Drift-guarded by frontend/__tests__/nickname-warning.test.js (imports the randomizer data).
+const NAMEABLE_LOCATION = 124;      // wild routes + statics — the autoLocation bucket
+const NAMEABLE_TRADES_GIFTS = 14;   // gift maps + town trades — the autoTradesGifts bucket
+// include/constants/global.h POKEMON_NAME_LENGTH — mirrors randomizer normalizePool (drift is user-visible,
+// not test-guarded here since it's a stable engine constant used identically on both sides).
+const MAX_NICKNAME_LENGTH = 12;
+
+// Lower-cased, trimmed, de-duplicated size of a pool list — counting only usable (≤12-char) names, matching
+// what the randomizer's normalizePool keeps (over-length names are dropped there and surfaced by the warning).
+function poolSize(list) {
+    const seen = new Set();
+    for (const raw of Array.isArray(list) ? list : []) {
+        if (typeof raw !== 'string') continue;
+        const t = raw.trim();
+        if (t && t.length <= MAX_NICKNAME_LENGTH) seen.add(t.toLowerCase());
+    }
+    return seen;
+}
+
+// Names in the ACTIVE pools that exceed the 12-char limit (the randomizer drops them). Pure/exported so the
+// config UI can warn and list them. Reads the gendered pools when different-per-gender is on, else the single.
+export function overlongPoolNames(nick) {
+    if (!nick || !nick.enabled) return [];
+    const pools = nick.pools || {};
+    const lists = nick.differentPerGender === false ? [pools.single] : [pools.both, pools.female, pools.male];
+    const seen = new Set();
+    const out = [];
+    for (const list of lists) {
+        for (const raw of Array.isArray(list) ? list : []) {
+            if (typeof raw !== 'string') continue;
+            const t = raw.trim();
+            if (t.length > MAX_NICKNAME_LENGTH) {
+                const key = t.toLowerCase();
+                if (!seen.has(key)) { seen.add(key); out.push(t); }
+            }
+        }
+    }
+    return out;
+}
+
+// User-facing copy for the over-length warning. Pure/exported.
+export function overlongMessage(names) {
+    return `${names.length} name${names.length === 1 ? '' : 's'} exceed ${MAX_NICKNAME_LENGTH} characters and `
+        + `will be removed unless you shorten them: ${names.join(', ')}.`;
+}
+
+// Whether the configured pools can't cover every Pokémon the enabled nickname buckets would name — the
+// approximate, owner-defined heuristic (T-200 Duda 3): names are drawn globally without replacement, so a
+// feeding pool smaller than the number of nameable entities means some Pokémon are left unnamed. Pure/exported.
+//   • different-per-gender OFF → the single merged pool must cover the total.
+//   • different-per-gender ON  → each gender pool (gender ∪ both) must cover its gendered demand (starters,
+//     plus locations when the per-route lock is on); with the lock OFF, the location/gift/trade buckets fall
+//     back to the unisex Both pool, which then must cover them on its own.
+export function nicknamePoolWarning(nick, extraStarters = 0) {
+    if (!nick || !nick.enabled) return { warn: false, needed: 0, available: 0 };
+    const auto = nick.autoLocation === true;
+    const tg = nick.autoTradesGifts !== false;
+    const locNeeded = (auto ? NAMEABLE_LOCATION : 0) + (tg ? NAMEABLE_TRADES_GIFTS : 0);
+    const starters = (Number(extraStarters) || 0) + (nick.includeStarter ? 1 : 0);
+    const needed = starters + locNeeded;
+    if (needed === 0) return { warn: false, needed: 0, available: 0 };
+
+    const pools = nick.pools || {};
+    if (nick.differentPerGender === false) {
+        let single = poolSize(pools.single);
+        if (single.size === 0) single = new Set([...poolSize(pools.both), ...poolSize(pools.female), ...poolSize(pools.male)]);
+        return { warn: single.size < needed, needed, available: single.size };
+    }
+
+    const both = poolSize(pools.both);
+    const femaleBoth = new Set([...poolSize(pools.female), ...both]);
+    const maleBoth = new Set([...poolSize(pools.male), ...both]);
+    const lockOn = nick.lockGenderPerRoute === true;
+    const genderedDemand = starters + (lockOn ? locNeeded : 0);
+
+    let warn = femaleBoth.size < genderedDemand || maleBoth.size < genderedDemand;
+    let available = Math.min(femaleBoth.size, maleBoth.size);
+    if (!lockOn && locNeeded > 0 && both.size < locNeeded) { warn = true; available = Math.min(available, both.size); }
+    return { warn, needed, available };
+}
+
+// User-facing copy for the low-pool warning. Pure/exported.
+export function nicknamePoolMessage(needed, available) {
+    return `Only about ${available} usable name${available === 1 ? '' : 's'} for roughly ${needed} `
+        + `Pokémon to auto-nickname. Names never repeat, so once they run out the rest stay unnamed — `
+        + `add more names to the pool(s) to cover them all.`;
+}
+
 export class ConfigForm {
     constructor(containerEl, { onConfigChange, onRegenerateBundle, onLoadPreset } = {}) {
         this.container = containerEl;
@@ -701,6 +793,7 @@ export class ConfigForm {
             enabled: this._q('#nickname-enabled').checked,
             includeStarter: this._q('#nickname-include-starter').checked,
             autoLocation: this._q('#nickname-auto-location').checked,
+            autoTradesGifts: this._q('#nickname-auto-trades-gifts').checked,
             lockGenderPerRoute: this._q('#nickname-lock-gender-route').checked,
             sameNamesAcrossRuns: this._q('#nickname-same-across-runs').checked,
             shareAcrossSoullink: this._q('#nickname-share-soullink').checked,
@@ -721,6 +814,7 @@ export class ConfigForm {
         this._q('#nickname-enabled').checked = n.enabled === true;
         this._q('#nickname-include-starter').checked = n.includeStarter === true;
         this._q('#nickname-auto-location').checked = n.autoLocation === true;
+        this._q('#nickname-auto-trades-gifts').checked = n.autoTradesGifts !== false; // default ON
         this._q('#nickname-lock-gender-route').checked = n.lockGenderPerRoute === true;
         this._q('#nickname-same-across-runs').checked = n.sameNamesAcrossRuns === true;
         this._q('#nickname-share-soullink').checked = n.shareAcrossSoullink !== false;   // default ON
@@ -1522,9 +1616,17 @@ export class ConfigForm {
         <div class="toggle-wrap">
           <div>
             <div class="toggle-label">Auto-nickname every Pokémon by location</div>
-            <div class="toggle-desc">Also name every wild, gift and static Pokémon after where it's found — one name per route/area (e.g. every Pokémon on Route 102 is "Percy"), drawn from the same pool below.</div>
+            <div class="toggle-desc">Also name every wild and static Pokémon after where it's found — one name per route/area (e.g. every Pokémon on Route 102 is "Percy"), drawn from the same pool below.</div>
           </div>
           <label class="toggle"><input type="checkbox" id="nickname-auto-location"><span class="toggle-track"></span></label>
+        </div>
+
+        <div class="toggle-wrap">
+          <div>
+            <div class="toggle-label">Random name for trades and gifts</div>
+            <div class="toggle-desc">Name the Pokémon you receive from town trades and gift NPCs (gym rewards, fossils) after where you get them — same pool and gender rules as above.</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="nickname-auto-trades-gifts" checked><span class="toggle-track"></span></label>
         </div>
 
         <div class="toggle-wrap" id="nickname-lock-gender-route-row">
@@ -1534,6 +1636,7 @@ export class ConfigForm {
           </div>
           <label class="toggle"><input type="checkbox" id="nickname-lock-gender-route"><span class="toggle-track"></span></label>
         </div>
+        <span class="field-hint" id="nickname-both-only-note" style="display:none">With different-names-per-gender on but <strong>lock gender per route</strong> off, gendered names can't be matched to a route's gender, so only the unisex <strong>Both</strong> pool is used — turn the lock on to also use the male/female pools.</span>
 
         <div class="toggle-wrap" id="nickname-same-runs-row">
           <div>
@@ -1564,6 +1667,12 @@ export class ConfigForm {
             <button type="button" class="nick-tab active" data-nick-tab="both">Both</button>
             <button type="button" class="nick-tab" data-nick-tab="female">Female</button>
             <button type="button" class="nick-tab" data-nick-tab="male">Male</button>
+          </div>
+          <!-- T-200 — both nickname warnings (low-pool + over-length) sit between the tabs and the textareas,
+               one below the other; moved into the single-pool wrap when different-per-gender is off. -->
+          <div id="nickname-warnings" style="display:flex;flex-direction:column;gap:8px">
+            <div id="nickname-pool-warning" class="warning-banner hidden"></div>
+            <div id="nickname-length-warning" class="warning-banner hidden"></div>
           </div>
           <div class="nick-tab-panel active" data-nick-panel="both">
             <span class="field-hint">Unisex names — usable for either gender. One name per line; letters/digits/spaces only, max 12 characters.</span>
@@ -1829,13 +1938,20 @@ export class ConfigForm {
         const singlePool = this._q('#nickname-pool-single-wrap');
         if (genderedPools) genderedPools.style.display = diffGender ? '' : 'none';
         if (singlePool) singlePool.style.display = diffGender ? 'none' : '';
-        // Lock-gender-per-route: enabled only while auto-location AND different-per-gender are both ON.
+        // Lock-gender-per-route: enabled while ANY location-like bucket (auto-location OR trades&gifts) is
+        // on AND different-per-gender is on. T-200: without the lock, gendered naming falls back to the
+        // unisex "Both" pool only, so surface the both-only note in that state.
         const autoLoc = this._q('#nickname-auto-location')?.checked;
+        const autoTG = this._q('#nickname-auto-trades-gifts')?.checked;
+        const anyLoc = !!(autoLoc || autoTG);
         const lockGenderEl = this._q('#nickname-lock-gender-route');
         const lockGenderRow = this._q('#nickname-lock-gender-route-row');
-        const lockAllowed = !!(autoLoc && diffGender);
+        const lockAllowed = !!(anyLoc && diffGender);
         if (lockGenderEl) lockGenderEl.disabled = !lockAllowed;
         if (lockGenderRow) lockGenderRow.classList.toggle('control-disabled', !lockAllowed);
+        const bothOnlyNote = this._q('#nickname-both-only-note');
+        if (bothOnlyNote) bothOnlyNote.style.display = (anyLoc && diffGender && !lockGenderEl?.checked) ? '' : 'none';
+        this._syncNicknameWarning();
 
         // T-163 — docs visibility: grey out a master's children when it is off, and reveal the
         // hide-count input only when "Hide some Pokémon" is on. The static toggles live OUTSIDE
@@ -1884,6 +2000,40 @@ export class ConfigForm {
         const { show, total, fastMax } = slowQueueWarning(cfg);
         if (show) el.textContent = slowQueueMessage(total, fastMax);
         el.classList.toggle('hidden', !show);
+    }
+
+    // T-200 — two independent, co-existing nickname warnings shown between the pool tabs and the textareas:
+    //  (1) low-pool: the pools can't cover every nameable Pokémon (names never repeat → the rest go unnamed);
+    //  (2) over-length: names beyond 12 chars, listed, which the randomizer removes unless shortened.
+    _syncNicknameWarning() {
+        const nick = this._readNicknames();
+        const extraCount = (this._starterSpecs || []).length;
+
+        const poolEl = this._q('#nickname-pool-warning');
+        if (poolEl) {
+            const { warn, needed, available } = nicknamePoolWarning(nick, extraCount);
+            if (warn) poolEl.textContent = nicknamePoolMessage(needed, available);
+            poolEl.classList.toggle('hidden', !warn);
+        }
+        const lenEl = this._q('#nickname-length-warning');
+        if (lenEl) {
+            const overlong = overlongPoolNames(nick);
+            if (overlong.length) lenEl.textContent = overlongMessage(overlong);
+            lenEl.classList.toggle('hidden', overlong.length === 0);
+        }
+
+        // Keep the warnings just below the tabs (gendered view) or above the textarea (single view), so they
+        // are visible in whichever pool editor is active.
+        const warns = this._q('#nickname-warnings');
+        if (warns) {
+            if (nick.differentPerGender === false) {
+                const singleWrap = this._q('#nickname-pool-single-wrap');
+                if (singleWrap && warns.parentElement !== singleWrap) singleWrap.insertBefore(warns, singleWrap.firstChild);
+            } else {
+                const tabs = this._q('#nickname-pools-gendered')?.querySelector('.nick-tabs');
+                if (tabs && warns.previousElementSibling !== tabs) tabs.after(warns);
+            }
+        }
     }
 
     _syncNuzlocke() {

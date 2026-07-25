@@ -19,12 +19,12 @@ const { runTrainersModule } = require('./modules/trainersModule');
 const { runStartersModule } = require('./modules/startersModule');
 const { runWildModule } = require('./modules/wildModule');
 const wildData = require('./wild');
-const { selectTrades } = require('./trades');
+const { selectTrades, TOWN_TRADES } = require('./trades');
 const { writerDocs } = require('./writerDocs');
 const { applyEvoLevels } = require('./evoLevelWriter');
 const { buildStarterNaming } = require('./modules/starterNames');
-const { buildLocationNaming } = require('./modules/locationNames');
-const { ENCOUNTER_LOCATIONS } = require('./data/encounterLocations');
+const { buildLocationNaming, buildTradeNaming } = require('./modules/locationNames');
+const { WILD_ROUTE_LOCATIONS, STATIC_LOCATIONS, GIFT_LOCATIONS } = require('./data/encounterLocations');
 const { noopDiagnostics, setActiveDiagnostics, clearActiveDiagnostics } = require('./diagnostics');
 const { noopTeamAudit } = require('./teamAudit');
 
@@ -47,8 +47,9 @@ async function makePokedex(mcfg, baseData) {
 // T-068 — when the starter-nickname feature is on, decide per-ROM nicknames + coin genders and
 // attach them as the per-ROM `starterNaming` artifact (always per-ROM, never shared). `romDescriptors`
 // carries the {player, run} used to compute sharing groups. No-op when the feature is off, so a
-// feature-off bundle is byte-identical to before.
-function attachStarterNaming(cfg, mcfg, roms, romDescriptors) {
+// feature-off bundle is byte-identical to before. `usedByGroup` (T-200) threads the shared without-
+// replacement pool so starter names never collide with location/gift/trade names.
+function attachStarterNaming(cfg, mcfg, roms, romDescriptors, usedByGroup) {
     const nicknames = mcfg.nicknames;
     if (!nicknames || !nicknames.enabled) return;
     const extraCount = roms.reduce((max, r) => {
@@ -56,19 +57,45 @@ function attachStarterNaming(cfg, mcfg, roms, romDescriptors) {
         return Math.max(max, Array.isArray(list) ? list.length : 0);
     }, 0);
     if (extraCount === 0 && !nicknames.includeStarter) return;
-    const naming = buildStarterNaming({ nicknames, roms: romDescriptors, extraCount, seed: cfg.seed });
+    const naming = buildStarterNaming({ nicknames, roms: romDescriptors, extraCount, seed: cfg.seed, usedByGroup });
     roms.forEach((rom, i) => { rom.artifacts.starterNaming = naming[i]; });
 }
 
-// T-070 — location-based nicknames are part of the shared `nicknames` feature (same pools/settings as
-// starters), gated by its master toggle + the `autoLocation` switch. Decides a per-location nickname
-// (+ optional locked gender) for every encounter map and attaches it as the per-ROM `locationNaming`
-// artifact (always per-ROM, never shared). No-op when off, so a feature-off bundle is byte-identical.
-function attachLocationNaming(cfg, mcfg, roms, romDescriptors) {
+// T-070/T-200 — map-keyed location nicknames (same pools/settings as starters). Two independent toggles
+// feed the single `locationNaming` artifact (a MAP_*-keyed C table): `autoLocation` covers wild routes +
+// statics; `autoTradesGifts` (default ON) covers the gift maps. No-op when both are off, so a feature-off
+// bundle is byte-identical. `usedByGroup` (T-200) shares the without-replacement pool for global uniqueness.
+function attachLocationNaming(cfg, mcfg, roms, romDescriptors, usedByGroup) {
     const nicknames = mcfg.nicknames;
-    if (!nicknames || !nicknames.enabled || !nicknames.autoLocation) return;
-    const naming = buildLocationNaming({ nicknames, locations: ENCOUNTER_LOCATIONS, roms: romDescriptors, seed: cfg.seed });
+    if (!nicknames || !nicknames.enabled) return;
+    const keys = [];
+    if (nicknames.autoLocation === true) keys.push(...WILD_ROUTE_LOCATIONS, ...STATIC_LOCATIONS);
+    if (nicknames.autoTradesGifts !== false) keys.push(...GIFT_LOCATIONS);
+    if (keys.length === 0) return;
+    const naming = buildLocationNaming({ nicknames, locations: keys, roms: romDescriptors, seed: cfg.seed, usedByGroup });
     roms.forEach((rom, i) => { rom.artifacts.locationNaming = naming[i]; });
+}
+
+// T-200 — town-trade nicknames (not map-keyed; keyed by ingameTradeId). Gated by `autoTradesGifts`
+// (default ON). Attached as the per-ROM `tradeNaming` artifact. `usedByGroup` shares the global pool.
+function attachTradeNaming(cfg, mcfg, roms, romDescriptors, usedByGroup) {
+    const nicknames = mcfg.nicknames;
+    if (!nicknames || !nicknames.enabled || nicknames.autoTradesGifts === false) return;
+    const tradeIds = TOWN_TRADES.map((t) => t.ingameTradeId);
+    const naming = buildTradeNaming({ nicknames, trades: tradeIds, roms: romDescriptors, seed: cfg.seed, usedByGroup });
+    roms.forEach((rom, i) => { rom.artifacts.tradeNaming = naming[i]; });
+}
+
+// T-200 — one orchestrator so starters, locations/gifts and trades all draw from a SINGLE shared
+// without-replacement pool per sharing group (no auto-nickname repeats anywhere in a ROM). Draw order is
+// fixed (starters → locations → trades) for determinism.
+function attachAutoNaming(cfg, mcfg, roms, romDescriptors) {
+    const nicknames = mcfg.nicknames;
+    if (!nicknames || !nicknames.enabled) return;
+    const usedByGroup = new Map();
+    attachStarterNaming(cfg, mcfg, roms, romDescriptors, usedByGroup);
+    attachLocationNaming(cfg, mcfg, roms, romDescriptors, usedByGroup);
+    attachTradeNaming(cfg, mcfg, roms, romDescriptors, usedByGroup);
 }
 
 function bundle(sessionId, cfg, sharedData, roms, generatedAt) {
@@ -160,8 +187,7 @@ async function generateDefault(cfg, mcfg, sessionId, ctx) {
         artifacts: { pokedex, trainers, starters, wild, trades },
         docs,
     }];
-    attachStarterNaming(cfg, mcfg, roms, [{ player: 0, run: 0 }]);
-    attachLocationNaming(cfg, mcfg, roms, [{ player: 0, run: 0 }]);
+    attachAutoNaming(cfg, mcfg, roms, [{ player: 0, run: 0 }]);
     return bundle(sessionId, cfg, {}, roms, ctx.generatedAt);
 }
 
@@ -258,8 +284,7 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
         tick(`Viewer ready${label}`); await flush();
     }
 
-    attachStarterNaming(cfg, mcfg, roms, romDescriptors);
-    attachLocationNaming(cfg, mcfg, roms, romDescriptors);
+    attachAutoNaming(cfg, mcfg, roms, romDescriptors);
     return bundle(sessionId, cfg, sharedData, roms, ctx.generatedAt);
 }
 
@@ -426,8 +451,7 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
         tick(`Viewer ready (${label})`); await flush();
     }
 
-    attachStarterNaming(cfg, mcfg, roms, romDescriptors);
-    attachLocationNaming(cfg, mcfg, roms, romDescriptors);
+    attachAutoNaming(cfg, mcfg, roms, romDescriptors);
     return bundle(sessionId, cfg, sharedData, roms, ctx.generatedAt);
 }
 
@@ -464,4 +488,4 @@ async function runGeneration(cfg, mcfg, sessionId, hooks = {}) {
     }
 }
 
-module.exports = { runGeneration, generateDefault, generateNuzlocke, generateSoullink, bundle, attachStarterNaming, attachLocationNaming };
+module.exports = { runGeneration, generateDefault, generateNuzlocke, generateSoullink, bundle, attachStarterNaming, attachLocationNaming, attachTradeNaming, attachAutoNaming };

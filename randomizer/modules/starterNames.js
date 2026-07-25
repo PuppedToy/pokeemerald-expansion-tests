@@ -15,8 +15,12 @@
 const rng = require('../rng');
 
 const GOLDEN = 0x9E3779B9;
+// include/constants/global.h POKEMON_NAME_LENGTH — a nickname can be at most 12 characters in-game.
+const MAX_NICKNAME_LENGTH = 12;
 
-// Dedupe case-insensitively, trim, drop blanks; preserve first-seen order.
+// Dedupe case-insensitively, trim, drop blanks; preserve first-seen order. T-200 — also DROP names longer
+// than 12 chars (they can't be stored in-game); the config UI warns and lists them so the user can shorten
+// them instead of silently losing them.
 function normalizePool(list) {
     const out = [];
     const seen = new Set();
@@ -24,6 +28,7 @@ function normalizePool(list) {
         if (typeof raw !== 'string') continue;
         const name = raw.trim();
         if (!name) continue;
+        if (name.length > MAX_NICKNAME_LENGTH) continue;
         const key = name.toLowerCase();
         if (seen.has(key)) continue;
         seen.add(key);
@@ -68,9 +73,9 @@ function rollSlot(pools, differentPerGender, used) {
     return { gender, nickname: pick };
 }
 
-// One (starter?, extras[]) sequence for a whole group.
-function rollGroup(pools, nicknames, extraCount) {
-    const used = new Set();
+// One (starter?, extras[]) sequence for a whole group. `used` may be shared across builders (T-200) so
+// starter names never collide with location/gift/trade names; default is a fresh per-group set.
+function rollGroup(pools, nicknames, extraCount, used = new Set()) {
     const starter = nicknames.includeStarter
         ? rollSlot(pools, nicknames.differentPerGender, used)
         : null;
@@ -92,7 +97,7 @@ const clone = (seq) => ({
  * @param {number}   args.seed       base RNG seed (cfg.seed)
  * @returns {Array<{starter:?{gender,nickname},extras:Array<{gender,nickname}>}>} parallel to roms
  */
-function buildStarterNaming({ nicknames, roms, extraCount, seed }) {
+function buildStarterNaming({ nicknames, roms, extraCount, seed, usedByGroup }) {
     const male = normalizePool(nicknames.pools?.male);
     const female = normalizePool(nicknames.pools?.female);
     const both = normalizePool(nicknames.pools?.both);
@@ -101,6 +106,8 @@ function buildStarterNaming({ nicknames, roms, extraCount, seed }) {
     const pools = { male, female, both, single };
 
     // Assign a stable ordinal to each group by first appearance (bundle order), roll its sequence once.
+    // T-200: when `usedByGroup` is supplied, each group's draw shares (and grows) a Set of used names so
+    // starters, locations, gifts and trades draw from one global without-replacement pool per group.
     const seqByKey = new Map();
     let ordinal = 0;
     for (const rom of roms) {
@@ -108,11 +115,13 @@ function buildStarterNaming({ nicknames, roms, extraCount, seed }) {
         if (seqByKey.has(key)) continue;
         const groupSeed = (seed ^ (ordinal * GOLDEN)) >>> 0;
         rng.seed(groupSeed);
-        seqByKey.set(key, rollGroup(pools, nicknames, extraCount));
+        const used = usedByGroup ? (usedByGroup.get(key) || new Set()) : new Set();
+        seqByKey.set(key, rollGroup(pools, nicknames, extraCount, used));
+        if (usedByGroup) usedByGroup.set(key, used);
         ordinal++;
     }
 
     return roms.map((rom) => clone(seqByKey.get(groupKeyFor(rom, nicknames))));
 }
 
-module.exports = { buildStarterNaming, groupKeyFor, normalizePool };
+module.exports = { buildStarterNaming, groupKeyFor, normalizePool, MAX_NICKNAME_LENGTH };

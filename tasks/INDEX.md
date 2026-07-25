@@ -202,3 +202,6 @@
 | [T-197](T-197-docs-rival-gender-toggle.md) | Docs viewer — let the player pick their rival (May / Brendan) | in-progress | 0.6.0 | 2026-07-24 |
 | [T-198](T-198-cancelable-build-steps.md) | Cancel button for the randomization and ROM-build steps | done | 0.6.0 | 2026-07-24 |
 | [T-199](T-199-rival-legendary-shuffle-hide-until-juan.md) | Rival legendary — shuffle assignment and hide it in the viewer until Juan is defeated | done | 0.6.0 | 2026-07-25 |
+| [T-200](T-200-auto-nickname-pools-uniqueness-warnings.md) | Auto-nickname pool selection, global uniqueness & low-pool warning + separate trades/gifts naming | done | 0.6.0 | 2026-07-25 |
+| [T-201](T-201-docs-nickname-display-and-capture-state.md) | Docs viewer — show auto-nicknames everywhere + tie the nickname to the capture state | proposed | 0.6.0 | 2026-07-25 |
+| [T-202](T-202-in-rom-town-trade-nickname-hook.md) | In-ROM town-trade nickname hook — apply tradeNaming to the received Pokémon in-game | proposed | 0.6.0 | 2026-07-25 |

@@ -60,11 +60,14 @@ describe('buildLocationNaming — pools & gender', () => {
         }
     });
 
-    test('differentPerGender WITHOUT lockGenderPerRoute → name from a gender pool but gender NOT forced (null)', () => {
+    // T-200 Duda 1 (deliberate spec change): with gendered pools but the per-route lock OFF, a route can no
+    // longer receive a gendered name (which could land on the wrong-gender mon in-game). Names come ONLY from
+    // the unisex `both` pool; gender stays null. (Previously it drew from `gender ∪ both` via a coin.)
+    test('differentPerGender WITHOUT lockGenderPerRoute → names ONLY from the unisex `both` pool, gender null', () => {
         const out = buildLocationNaming({ nicknames: cfg({ differentPerGender: true, lockGenderPerRoute: false }), locations: LOCATIONS, roms: roms1, seed: 3 });
         for (const loc of LOCATIONS) {
             expect(out[0][loc].gender).toBeNull();
-            expect(out[0][loc].nickname).toMatch(/^[MFB]/); // still from a gender/both pool
+            expect(out[0][loc].nickname.startsWith('B')).toBe(true); // only the `both` (B*) pool
         }
     });
 });
@@ -93,6 +96,16 @@ describe('buildLocationNaming — determinism & uniqueness', () => {
     test('pool exhaustion → surplus locations get null nickname, no throw', () => {
         const out = buildLocationNaming({ nicknames: cfg({ pools: { male: [], female: [], both: [], single: ['Only', 'Two'] } }), locations: LOCATIONS, roms: roms1, seed: 1 });
         expect(LOCATIONS.map((l) => out[0][l].nickname).filter(Boolean)).toHaveLength(2);
+    });
+
+    // T-200 Duda 2 — once names run out, later entities are left UNNAMED (never a reused name). Here the
+    // gender-lock is OFF so only the single-name `both` pool feeds three locations → exactly one is named.
+    test('gendered pools, lock OFF: `both` pool exhausted → surplus locations null, no repeats', () => {
+        const p = { male: ['M0', 'M1'], female: ['F0', 'F1'], both: ['Uni'], single: [] };
+        const out = buildLocationNaming({ nicknames: cfg({ differentPerGender: true, lockGenderPerRoute: false, pools: p }), locations: ['MAP_A', 'MAP_B', 'MAP_C'], roms: roms1, seed: 7 });
+        const nonNull = ['MAP_A', 'MAP_B', 'MAP_C'].map((l) => out[0][l].nickname).filter(Boolean);
+        expect(nonNull).toEqual(['Uni']);                        // only the unisex name is usable
+        expect(new Set(nonNull.map((n) => n.toLowerCase())).size).toBe(nonNull.length); // never repeats
     });
 });
 
