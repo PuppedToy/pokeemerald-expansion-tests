@@ -205,7 +205,7 @@
 | [T-200](T-200-auto-nickname-pools-uniqueness-warnings.md) | Auto-nickname pool selection, global uniqueness & low-pool warning + separate trades/gifts naming | done | 0.6.0 | 2026-07-25 |
 | [T-201](T-201-docs-nickname-display-and-capture-state.md) | Docs viewer — show auto-nicknames everywhere + tie the nickname to the capture state | done | 0.6.0 | 2026-07-25 |
 | [T-202](T-202-in-rom-town-trade-nickname-hook.md) | In-ROM town-trade nickname hook — apply tradeNaming to the received Pokémon in-game | in-progress | 0.6.0 | 2026-07-25 |
-| [T-203](T-203-super-rod-route-group-tier-bump.md) | Bump super-rod encounters on two route groups (UU → NFE/LC OU) | proposed | 0.6.0 | 2026-07-25 |
+| [T-203](T-203-super-rod-route-group-tier-bump.md) | Bump super-rod encounters on two route groups (UU → NFE/LC OU) | in-progress | 0.6.0 | 2026-07-25 |
 | [T-204](T-204-wattson-bottom-slots-nu-nerf.md) | Nerf Wattson's two bottom non-mega slots (RU → NU) | proposed | 0.6.0 | 2026-07-25 |
 | [T-205](T-205-norman-gives-new-mauville-key.md) | Norman hands over the New Mauville key on defeat (advance area state) | proposed | 0.6.0 | 2026-07-25 |
 | [T-206](T-206-boss-dialogue-extraction-txt.md) | Extract every boss's dialogue into an editable TXT (round-trip) | proposed | 0.6.0 | 2026-07-25 |
