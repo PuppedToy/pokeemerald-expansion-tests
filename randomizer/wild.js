@@ -80,8 +80,11 @@ const wildData = {
     replacements: {
         // Shared
         SPECIES_SHELGON: 'NFE_OR_LC_STRONG',
-        SPECIES_PUPITAR: 'NFE_OR_LC_STRONG',
-        SPECIES_GABITE: 'NFE_OR_LC_STRONG',
+        // T-203 — bump these two super-rod bands from UU to "NFE or LC OU".
+        // PUPITAR = Group A (Routes 106/109/110/117/118); GABITE = Group B
+        // (Routes 111/112/Jagged Pass/113/114/119/120). SHELGON stays UU.
+        SPECIES_PUPITAR: 'NFE_OR_LC_PREMIUM',
+        SPECIES_GABITE: 'NFE_OR_LC_PREMIUM',
         SPECIES_DOUBLADE: 'NFE_OR_LC_PREMIUM',
         SPECIES_JIRACHI: 'FINAL_PREMIUM',
 

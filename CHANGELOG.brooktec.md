@@ -9,6 +9,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Stronger super-rod fishing on two route bands.** The super-rod encounters on Routes 106/109/110/117/118 and
+  on Routes 111/112/Jagged Pass/113/114/119/120 are bumped a tier — from UU up to "NFE or LC OU" — so late-rod
+  fishing there yields more competitive Pokémon. (T-203)
+
 - **Your Pokémon's nicknames now show throughout the docs viewer.** Once you mark a Pokémon caught, its
   auto-nickname appears under its species everywhere it's listed — the Encounters tile, the PC box, and the
   Pokédex modal ("*John is in box*", the family line as "*John (Kubfu)*", and "*John is fainted*"). You can

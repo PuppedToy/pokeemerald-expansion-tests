@@ -1,7 +1,7 @@
 ---
 id: T-203
 title: Bump super-rod encounters on two route groups (UU → NFE/LC OU)
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-25
 updated: 2026-07-25
@@ -41,9 +41,10 @@ Repoint the two super-rod template placeholders to `NFE_OR_LC_PREMIUM`. Confirm 
 tier for each whole group is acceptable (vs per-route splitting). Pure/seeded logic → TDD.
 
 Acceptance criteria:
-- [ ] Group A & Group B super-rod slots draw from `NFE_OR_LC_PREMIUM` (OU, NFE/LC), not UU.
-- [ ] Unit test proves the two groups' super slots resolve to the new pool; other super bands unchanged.
+- [x] Group A & Group B super-rod slots draw from `NFE_OR_LC_PREMIUM` (OU, NFE/LC), not UU.
+- [x] Unit test proves the two groups' super slots resolve to the new pool; other super bands unchanged.
 - [ ] `cd randomizer && npm test` green; browser bundle rebuilt (`node build.js`) so the client worker carries it.
+      *(suite green — 1690 passed; bundle rebuild deferred to the end of this batch.)*
 
 ## Progress log
 
@@ -52,6 +53,14 @@ Acceptance criteria:
 - **2026-07-25** — Task created (proposed). Investigated the wild.js template model; confirmed both groups
   share a single super template (PUPITAR / GABITE) currently at UU, and the OU target `NFE_OR_LC_PREMIUM`
   already exists — a 2-line repoint. Noted the per-group-single-tier caveat to confirm with the owner.
+- **2026-07-25** — **Implemented (in-progress), TDD Red→Green.** Verified the route→template mapping matches the
+  spec exactly (Group A 106/109/110/117/118 → `SPECIES_PUPITAR`; Group B 111/112/Jagged Pass/113/114/119/120 →
+  `SPECIES_GABITE`; each used *only* as a super slot). New test
+  `randomizer/__tests__/unit/wildSuperRodTiers.test.js` resolves each route's super slot through
+  `super → replacements → replacementTypes` and asserts the OU/NFE-LC pool (Red: all 12 route cases resolved
+  to UU). Repointed `wild.js:83-84` PUPITAR + GABITE from `NFE_OR_LC_STRONG` (UU) → `NFE_OR_LC_PREMIUM` (OU) —
+  Green. `SPECIES_SHELGON`'s band left at UU (guard test). Full randomizer suite green (1690 passed). Bundle
+  rebuild deferred to the batch end.
 
 ## Outcome
 
