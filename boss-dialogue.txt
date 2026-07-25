@@ -41,7 +41,7 @@ HOW TO USE THIS FILE
   [POST-BATTLE]
     (none found)
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · Route103_Text_MayRoute103Pokemon @ data/maps/Route103/scripts.inc:316
         MAY: Let's see… The POKéMON found
         on ROUTE 103 include…
@@ -106,7 +106,7 @@ HOW TO USE THIS FILE
   [POST-BATTLE]
     (none found)
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · PetalburgWoods_Text_TeamAquaAfterSomethingInRustboro @ data/maps/PetalburgWoods/scripts.inc:394
         Didn't that TEAM AQUA thug say
         they were after something in
@@ -168,7 +168,7 @@ HOW TO USE THIS FILE
     · RustboroCity_Gym_Text_PlayerReceivedRewardPoke @ data/maps/RustboroCity_Gym/scripts.inc:41
         {PLAYER} received GYM_REWARD_NAME!
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · RustboroCity_Gym_Text_RoxanneRegisterCall @ data/maps/RustboroCity_Gym/scripts.inc:239
         … … … … … …
         … … … … … Beep!
@@ -253,7 +253,7 @@ HOW TO USE THIS FILE
 
         Come, PEEKO, we should make our way
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     (none)
 
 ########################################################################
@@ -285,7 +285,7 @@ HOW TO USE THIS FILE
   [POST-BATTLE]
     (none found)
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · Route104_Text_MayWeShouldRegister @ data/maps/Route104/scripts.inc:1184
         MAY: Oh, hi, {PLAYER}{KUN}!
 
@@ -406,7 +406,7 @@ HOW TO USE THIS FILE
     · DewfordTown_Gym_Text_PlayerReceivedRewardPoke @ data/maps/DewfordTown_Gym/scripts.inc:60
         {PLAYER} received GYM_REWARD_NAME!
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · DewfordTown_Gym_Text_BrawlyPreRematch @ data/maps/DewfordTown_Gym/scripts.inc:310
         BRAWLY: A wave may draw back, but it
         always returns to the shore.
@@ -474,7 +474,7 @@ HOW TO USE THIS FILE
     · GraniteCave_StevensRoom_Text_IveGotToHurryAlong @ data/maps/GraniteCave_StevensRoom/scripts.inc:113
         Now, I've got to hurry along.
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · GraniteCave_StevensRoom_Text_OhBagIsFull @ data/maps/GraniteCave_StevensRoom/scripts.inc:116
         Oh, your BAG is full…
         That's too bad, then.
@@ -616,7 +616,7 @@ HOW TO USE THIS FILE
         CAPT. STERN: Thank you!
         Here, have this reward.
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     (none)
 
 ########################################################################
@@ -648,7 +648,7 @@ HOW TO USE THIS FILE
   [POST-BATTLE]
     (none found)
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · Route110_Text_MayLetsBattle @ data/maps/Route110/scripts.inc:808
         MAY: Hi, {PLAYER}{KUN}, long time no see!
 
@@ -729,7 +729,7 @@ HOW TO USE THIS FILE
         UNCLE: Chin up, WALLY.
         Let's go home.
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · MauvilleCity_Text_WallyWantToChallengeGym @ data/maps/MauvilleCity/scripts.inc:461
         I want to challenge this GYM!
     · MauvilleCity_Text_WallyWillYouBattleMe @ data/maps/MauvilleCity/scripts.inc:468
@@ -807,7 +807,7 @@ HOW TO USE THIS FILE
     · MauvilleCity_Gym_Text_PlayerReceivedRewardPoke @ data/maps/MauvilleCity_Gym/scripts.inc:136
         {PLAYER} received GYM_REWARD_NAME!
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · MauvilleCity_Gym_Text_WattsonGoForthAndEndeavor @ data/maps/MauvilleCity_Gym/scripts.inc:403
         Wahahahah!
         Go forth and endeavor, youngster!
@@ -873,8 +873,19 @@ HOW TO USE THIS FILE
 
         Hehehe…
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
-    (none)
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
+    · MtChimney_Text_MaxieIntro @ data/maps/MtChimney/scripts.inc:534
+        I'll teach you the consequences of
+        meddling in our grand design!
+    · MtChimney_Text_MaxieDefeat @ data/maps/MtChimney/scripts.inc:538
+        What?!
+
+        I, MAXIE, was caught off guard?!
+    · MtChimney_Text_MaxieYouHaventSeenLastOfMagma @ data/maps/MtChimney/scripts.inc:542
+        I will back off this time.
+
+        But don't think that this is the last
+        you've seen of TEAM MAGMA.
 
 ########################################################################
 # BOSS 12 — Flannery – Badge 4  (level cap 36)
@@ -935,7 +946,7 @@ HOW TO USE THIS FILE
     · LavaridgeTown_Gym_1F_Text_PlayerReceivedRewardPoke @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:78
         {PLAYER} received GYM_REWARD_NAME!
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · LavaridgeTown_Gym_1F_Text_FlanneryPreRematch @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:325
         FLANNERY: Losing a battle isn't going
         to deflate me.
@@ -1025,7 +1036,7 @@ HOW TO USE THIS FILE
         out Island Cave in Route 105. They
         say you can catch a good one there.
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · PetalburgCity_Gym_Text_NormanGoToRustboro @ data/maps/PetalburgCity_Gym/scripts.inc:1248
         DAD: Hm? Aren't you going to the
         POKéMON GYM in RUSTBORO CITY?
@@ -1133,7 +1144,7 @@ HOW TO USE THIS FILE
     · Route119_WeatherInstitute_2F_Text_PlayerReceivedRewardPoke @ data/maps/Route119_WeatherInstitute_2F/scripts.inc:87
         {PLAYER} received GYM_REWARD_NAME!
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     (none)
 
 ########################################################################
@@ -1168,7 +1179,7 @@ HOW TO USE THIS FILE
   [POST-BATTLE]
     (none found)
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · Route119_Text_MayIntro @ data/maps/Route119/scripts.inc:440
         MAY: {PLAYER}{KUN}!
         Where were you? I was looking for you!
@@ -1266,7 +1277,7 @@ HOW TO USE THIS FILE
     · FortreeCity_Gym_Text_PlayerReceivedRewardPoke @ data/maps/FortreeCity_Gym/scripts.inc:69
         {PLAYER} received GYM_REWARD_NAME!
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · FortreeCity_Gym_Text_WinonaPreRematch @ data/maps/FortreeCity_Gym/scripts.inc:300
         WINONA: We humans can never escape
         gravity's pull on the ground.
@@ -1337,7 +1348,7 @@ HOW TO USE THIS FILE
     · LilycoveCity_LevelCap @ data/maps/LilycoveCity/scripts.inc:791
         Your Pokémon have leveled up to {STR_VAR_1}!
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · LilycoveCity_Text_WallySign @ data/maps/LilycoveCity/scripts.inc:742
         You must defeat Wally
         to progress.
@@ -1407,7 +1418,7 @@ HOW TO USE THIS FILE
     · MagmaHideout_LevelCap @ data/maps/MagmaHideout_4F/scripts.inc:232
         Your Pokémon have leveled up to {STR_VAR_1}!
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     (none)
 
 ########################################################################
@@ -1436,7 +1447,7 @@ HOW TO USE THIS FILE
     · AquaHideout_LevelCap @ data/maps/AquaHideout_B2F/scripts.inc:145
         Your Pokémon have leveled up to {STR_VAR_1}!
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     (none)
 
 ########################################################################
@@ -1484,7 +1495,7 @@ HOW TO USE THIS FILE
     · MossdeepCity_Gym_Text_PlayerReceivedRewardPoke @ data/maps/MossdeepCity_Gym/scripts.inc:662
         {PLAYER} received GYM_REWARD_NAME!
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · MossdeepCity_Gym_Text_TateAndLizaPostBattle @ data/maps/MossdeepCity_Gym/scripts.inc:604
         TATE: Looks like the bond between you
         and your POKéMON is far stronger than
@@ -1560,7 +1571,7 @@ HOW TO USE THIS FILE
   [POST-BATTLE]
     (none found)
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · MossdeepCity_SpaceCenter_2F_Text_MaxieDontInterfere @ data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:459
         MAXIE: Clear out of the way!
         Don't you dare interfere!
@@ -1701,7 +1712,7 @@ HOW TO USE THIS FILE
     · SeafloorCavern_LevelCap @ data/maps/SeafloorCavern_Room9/scripts.inc:326
         Your Pokémon have leveled up to {STR_VAR_1}!
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     (none)
 
 ########################################################################
@@ -1769,7 +1780,7 @@ HOW TO USE THIS FILE
     · SootopolisCity_Gym_1F_Text_PlayerReceivedRewardPoke @ data/maps/SootopolisCity_Gym_1F/scripts.inc:128
         {PLAYER} received GYM_REWARD_NAME!
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · SootopolisCity_Gym_1F_Text_JuanPostBattle @ data/maps/SootopolisCity_Gym_1F/scripts.inc:271
         The TRAINERS who have gathered all
         the GYM BADGES of HOENN should make
@@ -1862,7 +1873,7 @@ HOW TO USE THIS FILE
     · VictoryRoad_LevelCap @ data/maps/VictoryRoad_1F/scripts.inc:234
         Your Pokémon have leveled up to {STR_VAR_1}!
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · VictoryRoad_1F_Text_WallyIntro @ data/maps/VictoryRoad_1F/scripts.inc:156
         WALLY: Hi! {PLAYER}!
 
@@ -1896,7 +1907,7 @@ HOW TO USE THIS FILE
   [POST-BATTLE]
     (none found)
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · EverGrandeCity_Text_May_OneLastBattle @ data/maps/EverGrandeCity/scripts.inc:147
         MAY: And here we are.
         One more step to glory…
@@ -1949,7 +1960,7 @@ HOW TO USE THIS FILE
   [POST-BATTLE]
     (none found)
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · EverGrandeCity_SidneysRoom_Text_PostBattleSpeech @ data/maps/EverGrandeCity_SidneysRoom/scripts.inc:107
         Well, listen to what this loser has
         to say.
@@ -1988,7 +1999,7 @@ HOW TO USE THIS FILE
   [POST-BATTLE]
     (none found)
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · EverGrandeCity_PhoebesRoom_Text_PostBattleSpeech @ data/maps/EverGrandeCity_PhoebesRoom/scripts.inc:92
         There's a definite bond between you
         and your POKéMON, too.
@@ -2036,7 +2047,7 @@ HOW TO USE THIS FILE
   [POST-BATTLE]
     (none found)
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · EverGrandeCity_GlaciasRoom_Text_PostBattleSpeech @ data/maps/EverGrandeCity_GlaciasRoom/scripts.inc:95
         Advance to the next room.
 
@@ -2075,7 +2086,7 @@ HOW TO USE THIS FILE
   [POST-BATTLE]
     (none found)
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · EverGrandeCity_DrakesRoom_Text_PostBattleSpeech @ data/maps/EverGrandeCity_DrakesRoom/scripts.inc:96
         You deserve every credit for coming
         this far as a TRAINER of POKéMON.
@@ -2150,7 +2161,7 @@ HOW TO USE THIS FILE
   [POST-BATTLE]
     (none found)
 
-  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
     · EverGrandeCity_ChampionsRoom_Text_PostBattleSpeech @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:254
         WALLACE: The POKéMON you sent into
         battle…

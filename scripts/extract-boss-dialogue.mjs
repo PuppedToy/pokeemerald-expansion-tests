@@ -178,6 +178,14 @@ function findBattle(trainer) {
     return null;
 }
 
+// Some boss scenes co-star another villain whose lines live in a SEPARATE object-event script,
+// not reachable from the boss's own trainerbattle chain. Keyed by boss flag → extra character
+// tokens folded into the "OTHER TEXT" net so those lines still surface next to the boss.
+const COMPANION_TOKENS = {
+    // Maxie confronts you right after you beat Tabitha at Mt Chimney (cutscene, no battle — T-148).
+    FLAG_DEFEATED_TABITHA_MT_CHIMNEY: ['Maxie'],
+};
+
 // Character tokens for the completeness net (from the boss label + trainer ids).
 function charTokens(boss) {
     const tokens = new Set();
@@ -249,7 +257,7 @@ for (const boss of bosscaps) {
     out.push(`#   flag: ${boss.flag}`);
     out.push('#'.repeat(72));
 
-    const tokens = charTokens(boss);
+    const tokens = [...charTokens(boss), ...(COMPANION_TOKENS[boss.flag] || [])];
     const seenSignatures = new Set();
     const battleFiles = new Set();
     const shownInBuckets = new Set();
@@ -297,7 +305,7 @@ for (const boss of bosscaps) {
     // buckets already showed.
     const shownLabels = new Set(shownInBuckets);
     out.push('');
-    out.push('  [OTHER TEXT IN THIS MAP — same character, not already shown above]');
+    out.push('  [OTHER TEXT IN THIS MAP — same or related character, not already shown above]');
     let anyRelated = false;
     for (const file of battleFiles) {
         for (const r of relatedTextInFile(file, tokens)) {
