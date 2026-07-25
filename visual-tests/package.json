@@ -6,6 +6,7 @@
   "description": "Isolated dev-only visual-regression + agent-preview harness (T-040, ADR-010). Not part of the app runtime.",
   "scripts": {
     "fixture": "node fixtures/build-doc-sample.cjs 42 fixtures/docs-sample.html",
+    "fixture:nick": "NICK_JSON='{\"enabled\":true,\"autoLocation\":true,\"autoTradesGifts\":true,\"differentPerGender\":false,\"pools\":{\"single\":[\"Percy\",\"Zorro\",\"Kappa\",\"Milo\",\"Nova\",\"Juno\",\"Bandit\",\"Echo\",\"Fable\",\"Ziggy\",\"Comet\",\"Dash\",\"Ember\",\"Flint\",\"Ghost\",\"Halo\",\"Indigo\",\"Jinx\",\"Koda\",\"Lumen\",\"Mango\",\"Ninja\",\"Otis\",\"Pixel\",\"Quartz\",\"Rusty\",\"Shadow\",\"Tango\",\"Umbra\",\"Vector\",\"Wisp\",\"Xena\",\"Yeti\",\"Zephyr\",\"Aster\",\"Blitz\",\"Cinder\",\"Drake\",\"Fern\",\"Gizmo\"]}}' node fixtures/build-doc-sample.cjs 42 fixtures/docs-sample-nick.html",
     "shoot": "node shoot.mjs",
     "visual": "playwright test",
     "visual:update": "playwright test --update-snapshots"

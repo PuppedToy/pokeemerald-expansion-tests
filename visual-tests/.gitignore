@@ -2,5 +2,5 @@ node_modules/
 .shots/
 test-results/
 playwright-report/
-# Generated docs-viewer sample (rebuilt deterministically via `npm run fixture`).
-fixtures/docs-sample.html
+# Generated docs-viewer samples (rebuilt deterministically via `npm run fixture` / `fixture:nick`).
+fixtures/docs-sample*.html

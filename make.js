@@ -146,7 +146,7 @@ async function buildOneRom({ rom, bundle, seed, universeSeed = seed, outDir, isD
     try {
         const runNs = writer.docRunNamespace({ seed, playerIndex: rom.playerIndex, romIndex: rom.romIndex });
         // starterNaming is per-ROM (never shared) — read it straight off the rom, no resolveArtifact (T-068).
-        await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed, universeSeed), rom.docs, runNs, rom.artifacts.starterNaming || null, rom.artifacts.trades || null);
+        await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed, universeSeed), rom.docs, runNs, rom.artifacts.starterNaming || null, rom.artifacts.trades || null, rom.artifacts.locationNaming || null, rom.artifacts.tradeNaming || null);
         await writeTMsFromList(pokedex.tmList);
         writeItemFilesFromBundle(trainers.itemAssignments);
         // T-052 — patch configurable prize money into the C source (restored by restore() after build).

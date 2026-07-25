@@ -290,6 +290,7 @@ const constants = {
     TEMPLATE_TRAINERS_REPLACEMENT: '<script src="trainers.js"></script>',
     TEMPLATE_WILDPOKES_REPALCEMENT: '<script src="wildpokes.js"></script>',
     TEMPLATE_COLORS_REPLACEMENT: '<script src="colors.js"></script>',
+    TEMPLATE_NICKNAMES_REPLACEMENT: '<script src="nicknames.js"></script>',   // T-201
 
     LOG_TYPE_BUFF: 'BUFF',
     LOG_TYPE_NERF: 'NERF',
