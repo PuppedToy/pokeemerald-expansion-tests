@@ -1,0 +1,2255 @@
+BOSS DIALOGUE — extracted scene text, in level-cap order
+========================================================================
+
+HOW TO USE THIS FILE
+  • This is a GENERATED file (scripts/extract-boss-dialogue.mjs). Edit the dialogue text
+    freely; when you are done, tell me and I will fold your edits back into the game
+    scripts. Re-running the extractor OVERWRITES this file, so edit a copy if unsure.
+  • Each line of dialogue is tagged  [label @ file:line]  — do NOT change those tags;
+    they are how your edited text is mapped back to the exact .string in the ROM source.
+  • Buckets per boss: PRE-BATTLE / IN-BATTLE INTRO / ON-DEFEAT / POST-BATTLE, plus an
+    "OTHER TEXT IN THIS MAP" net (same character, may or may not belong to the scene).
+  • Rival bosses have 6 trainer variants (May/Brendan × 3 starters) that usually share
+    the same text — identical variants are collapsed.
+
+
+########################################################################
+# BOSS 00 — Rival – Route 103  (level cap 8)
+#   flag: FLAG_DEFEATED_RIVAL_ROUTE103
+########################################################################
+
+--- TRAINER_BRENDAN_ROUTE_103_TREECKO   (trainerbattle_no_intro @ data/maps/Route103/scripts.inc:77) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · Route103_Text_BrendanDefeated @ data/maps/Route103/scripts.inc:348
+        Huh, {PLAYER}, you're not too shabby.
+  [POST-BATTLE]
+    (none found)
+
+--- TRAINER_MAY_ROUTE_103_TREECKO   (trainerbattle_no_intro @ data/maps/Route103/scripts.inc:62) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · Route103_Text_MayDefeated @ data/maps/Route103/scripts.inc:329
+        Wow! That's great!
+        {PLAYER}{KUN}, you're pretty good!
+  [POST-BATTLE]
+    (none found)
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · Route103_Text_MayRoute103Pokemon @ data/maps/Route103/scripts.inc:316
+        MAY: Let's see… The POKéMON found
+        on ROUTE 103 include…
+    · Route103_Text_MayLetsBattle @ data/maps/Route103/scripts.inc:320
+        Oh, hi, {PLAYER}{KUN}!
+
+        …Oh, I see, my dad gave you
+        a POKéMON as a gift.
+
+        Since we're here, let's have a quick
+        battle!
+
+        I'll give you a taste of what being
+        a TRAINER is like.
+    · Route103_Text_MayTimeToHeadBack @ data/maps/Route103/scripts.inc:333
+        MAY: See you in RUSTBORO CITY!
+    · Route103_Text_BrendanRoute103Pokemon @ data/maps/Route103/scripts.inc:336
+        BRENDAN: Okay, so it's this one and
+        that one that live on ROUTE 103…
+    · Route103_Text_BrendanLetsBattle @ data/maps/Route103/scripts.inc:340
+        Hey, it's {PLAYER}!
+
+        …Oh, yeah, Dad gave you a POKéMON.
+
+        Since we're here, how about a little
+        battle?
+
+        I'll teach you what being a TRAINER's
+        about!
+    · Route103_Text_BrendanTimeToHeadBack @ data/maps/Route103/scripts.inc:351
+        BRENDAN: See you in RUSTBORO CITY!
+
+########################################################################
+# BOSS 01 — Aqua Grunt – Petalburg Woods  (level cap 11)
+#   flag: FLAG_DEFEATED_AQUA_WOODS
+########################################################################
+
+--- TRAINER_GRUNT_PETALBURG_WOODS   (trainerbattle_no_intro @ data/maps/PetalburgWoods/scripts.inc:27) ---
+  [PRE-BATTLE]
+    · PetalburgWoods_Text_HaveYouSeenShroomish @ data/maps/PetalburgWoods/scripts.inc:363
+        Hello, have you seen any POKéMON
+        called SHROOMISH around here?
+
+        I really love that POKéMON.
+    · PetalburgWoods_Text_HandOverThosePapers @ data/maps/PetalburgWoods/scripts.inc:368
+        You! DEVON RESEARCHER!
+
+        Hand over those papers!
+    · PetalburgWoods_Text_YouHaveToHelpMe @ data/maps/PetalburgWoods/scripts.inc:372
+        Aiyeeeh!
+
+        You're a POKéMON TRAINER, aren't you?
+        You've got to help me, please!
+    · PetalburgWoods_Text_NoOneCrossesTeamAqua @ data/maps/PetalburgWoods/scripts.inc:377
+        You want to wage war against TEAM AQUA?
+        Alright. Come on and battle me!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · PetalburgWoods_Text_YoureKiddingMe @ data/maps/PetalburgWoods/scripts.inc:381
+        Well played. You're strong.
+  [POST-BATTLE]
+    (none found)
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · PetalburgWoods_Text_TeamAquaAfterSomethingInRustboro @ data/maps/PetalburgWoods/scripts.inc:394
+        Didn't that TEAM AQUA thug say
+        they were after something in
+        RUSTBORO, too?
+
+########################################################################
+# BOSS 02 — Roxanne – Badge 1  (level cap 13)
+#   flag: FLAG_BADGE01_GET
+########################################################################
+
+--- TRAINER_ROXANNE_1   (trainerbattle_single @ data/maps/RustboroCity_Gym/scripts.inc:5) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO]
+    · RustboroCity_Gym_Text_RoxanneIntro @ data/maps/RustboroCity_Gym/scripts.inc:193
+        Hello, I am ROXANNE, the RUSTBORO
+        POKéMON GYM LEADER.
+
+        I became a GYM LEADER so that I might
+        apply what I learned at the POKéMON
+        TRAINER'S SCHOOL in battle.
+
+        Would you kindly demonstrate how you
+        battle, and with which POKéMON?
+  [ON-DEFEAT]
+    · RustboroCity_Gym_Text_RoxanneDefeat @ data/maps/RustboroCity_Gym/scripts.inc:202
+        So…
+        I lost…
+
+        It seems that I still have much more
+        to learn…
+
+        I understand.
+
+        The POKéMON LEAGUE's rules state
+        that TRAINERS are to be given this
+        if they defeat a GYM LEADER.
+
+        Please accept the official POKéMON
+        LEAGUE STONE BADGE.
+  [POST-BATTLE]
+    · RustboroCity_Gym_Text_RoxannePostBattle @ data/maps/RustboroCity_Gym/scripts.inc:225
+        Since you are so strong, you should
+        challenge other GYM LEADERS.
+
+        By battling many TRAINERS, you should
+        learn many things.
+    · RustboroCity_Gym_Text_ReceivedStoneBadge @ data/maps/RustboroCity_Gym/scripts.inc:214
+        {PLAYER} received the STONE BADGE
+        and your Pokémon have leveled up to {STR_VAR_1}!
+    · RustboroCity_Gym_Text_StoneBadgeInfoTakeThis @ data/maps/RustboroCity_Gym/scripts.inc:218
+        The STONE BADGE heightens the ATTACK
+        power of your POKéMON.
+
+        It also enables them to use the HM move
+        CUT outside of battle.
+
+        Please take this with you, too.
+    · RustboroCity_Gym_Text_PlayerReceivedRewardPoke @ data/maps/RustboroCity_Gym/scripts.inc:41
+        {PLAYER} received GYM_REWARD_NAME!
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · RustboroCity_Gym_Text_RoxanneRegisterCall @ data/maps/RustboroCity_Gym/scripts.inc:239
+        … … … … … …
+        … … … … … Beep!
+
+        ROXANNE: Oh, hello, {PLAYER}?
+        This is ROXANNE of RUSTBORO CITY.
+
+        I promise, I will shape up my GYM
+        so that you may challenge us again.
+
+        … … … … … …
+        … … … … … Click!
+    · RustboroCity_Gym_Text_RegisteredRoxanne @ data/maps/RustboroCity_Gym/scripts.inc:249
+        Registered GYM LEADER ROXANNE
+        in the POKéNAV.
+    · RustboroCity_Gym_Text_RoxannePreRematch @ data/maps/RustboroCity_Gym/scripts.inc:253
+        ROXANNE: I'm so glad to see you again.
+        I'm ROXANNE, the GYM LEADER here.
+
+        I'm sure we've both experienced many
+        battles since we last met.
+
+        I would like to see how much better
+        we've become. Let us battle!
+    · RustboroCity_Gym_Text_RoxanneRematchDefeat @ data/maps/RustboroCity_Gym/scripts.inc:261
+        Grr…
+        Again, I have lost…
+    · RustboroCity_Gym_Text_RoxannePostRematch @ data/maps/RustboroCity_Gym/scripts.inc:265
+        ROXANNE: I still have much to learn
+        when it comes to battling POKéMON.
+
+        That awareness makes me love battling
+        all that much more!
+    · RustboroCity_Gym_Text_RoxanneRematchNeedTwoMons @ data/maps/RustboroCity_Gym/scripts.inc:271
+        ROXANNE: I'm so glad to see you again.
+        I'm ROXANNE, the GYM LEADER here.
+
+        I'm sure we've both experienced many
+        battles since we last met.
+
+        I would like to see how much better
+        we've become…
+
+        Oh, no…
+        You only have one POKéMON with you?
+
+        Please return with at least one more
+        POKéMON.
+
+########################################################################
+# BOSS 03 — Grunt – Rusturf Tunnel  (level cap 16)
+#   flag: FLAG_RECOVERED_DEVON_GOODS
+########################################################################
+
+--- TRAINER_GRUNT_RUSTURF_TUNNEL   (trainerbattle_no_intro @ data/maps/RusturfTunnel/scripts.inc:303) ---
+  [PRE-BATTLE]
+    · RusturfTunnel_Text_GruntIntro @ data/maps/RusturfTunnel/scripts.inc:448
+        Grah! Cornered in this dead-end
+        tunnel…
+
+        You won't stop TEAM MAGMA!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · RusturfTunnel_Text_GruntDefeat @ data/maps/RusturfTunnel/scripts.inc:453
+        Gwah! Beaten!
+  [POST-BATTLE]
+    · RusturfTunnel_Text_GruntTakePackage @ data/maps/RusturfTunnel/scripts.inc:456
+        I can't handle you alone!
+        Here, take this and leave me be!
+    · RusturfTunnel_LevelCap @ data/maps/RusturfTunnel/scripts.inc:528
+        Your Pokémon have leveled up to {STR_VAR_1}!
+    · RusturfTunnel_Text_PeekoGladToSeeYouSafe @ data/maps/RusturfTunnel/scripts.inc:460
+        PEEKO!
+        Am I glad to see you're safe!
+    · RusturfTunnel_Text_ThankYouLetsGoHomePeeko @ data/maps/RusturfTunnel/scripts.inc:464
+        PEEKO owes her life to you!
+        They call me MR. BRINEY.
+
+        You can usually find me in my cottage
+        by the sea near PETALBURG WOODS.
+
+        Come, PEEKO, we should make our way
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    (none)
+
+########################################################################
+# BOSS 04 — Rival – Rustboro  (level cap 18)
+#   flag: FLAG_DEFEATED_RIVAL_RUSTBORO
+########################################################################
+
+--- TRAINER_BRENDAN_RUSTBORO_TREECKO   (trainerbattle_no_intro @ data/maps/Route104/scripts.inc:339) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · Route104_Text_BrendanDefeat @ data/maps/Route104/scripts.inc:1262
+        Hmm…
+        You're pretty good.
+  [POST-BATTLE]
+    (none found)
+
+--- TRAINER_MAY_RUSTBORO_TREECKO   (trainerbattle_no_intro @ data/maps/Route104/scripts.inc:271) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · Route104_Text_MayDefeat @ data/maps/Route104/scripts.inc:1218
+        Yikes!
+        You're better than I expected!
+  [POST-BATTLE]
+    (none found)
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · Route104_Text_MayWeShouldRegister @ data/maps/Route104/scripts.inc:1184
+        MAY: Oh, hi, {PLAYER}{KUN}!
+
+        DEVON upgraded your POKéNAV with
+        the MATCH CALL system, huh?
+
+        We should register each other so we
+        can get in contact anytime.
+    · Route104_Text_RegisteredMay @ data/maps/Route104/scripts.inc:1191
+        {PLAYER} registered MAY
+        in the POKéNAV.
+    · Route104_Text_MayHowsYourPokedex @ data/maps/Route104/scripts.inc:1195
+        MAY: Oh, by the way, {PLAYER}{KUN},
+        how's your POKéDEX coming along?
+    · Route104_Text_MayMinesDecentLetsBattle @ data/maps/Route104/scripts.inc:1199
+        Mine's looking pretty decent.
+        So…
+        How about a little battle?
+    · Route104_Text_MayHaventRaisedPokemon @ data/maps/Route104/scripts.inc:1204
+        MAY: Oh, what's the matter?
+
+        Haven't you caught or raised your
+        POKéMON very much?
+
+        That's not very good for a TRAINER!
+    · Route104_Text_MayLetsBattle @ data/maps/Route104/scripts.inc:1210
+        MAY: So, what do you think?
+        How about a little battle here?
+    · Route104_Text_MayIntro @ data/maps/Route104/scripts.inc:1214
+        MAY: You just became a TRAINER,
+        {PLAYER}{KUN}. I'm not going to lose!
+    · Route104_Text_MayPostBattle @ data/maps/Route104/scripts.inc:1222
+        MAY: I can tell you've gotten pretty
+        good with the way you handle POKéMON.
+
+        But instead of only making them
+        battle, you should be like MR. BRINEY.
+
+        It's important to become friends with
+        POKéMON, too.
+    · Route104_Text_BrendanWeShouldRegister @ data/maps/Route104/scripts.inc:1230
+        BRENDAN: Oh, hey, {PLAYER}!
+
+        Cool, you had DEVON install the MATCH
+        CALL system on your POKéNAV!
+
+        Let's register each other in our
+        POKéNAVS so we can keep in touch.
+    · Route104_Text_RegisteredBrendan @ data/maps/Route104/scripts.inc:1237
+        {PLAYER} registered BRENDAN
+        in the POKéNAV.
+    · Route104_Text_BrendanHowsYourPokedex @ data/maps/Route104/scripts.inc:1241
+        BRENDAN: {PLAYER}, how's your POKéDEX?
+        Have you filled in any pages yet?
+    · Route104_Text_BrendanDoingGreatLetsBattle @ data/maps/Route104/scripts.inc:1245
+        Me, I'm doing great!
+
+        Want to check out how good I am with
+        a battle?
+    · Route104_Text_BrendanNoConfidence @ data/maps/Route104/scripts.inc:1250
+        BRENDAN: What's the matter? Don't have
+        any confidence in your POKéMON?
+    · Route104_Text_BrendanLetsBattle @ data/maps/Route104/scripts.inc:1254
+        BRENDAN: What's up?
+        Want to have a battle with me?
+    · Route104_Text_BrendanIntro @ data/maps/Route104/scripts.inc:1258
+        BRENDAN: I know you just became
+        a TRAINER, but I won't go easy!
+    · Route104_Text_BrendanPostBattle @ data/maps/Route104/scripts.inc:1266
+        BRENDAN: You've gotten pretty decent
+        at handling POKéMON.
+
+        But, you know, you shouldn't just be
+        making POKéMON battle.
+
+        Like MR. BRINEY, it's important to
+        become friends with your POKéMON.
+
+########################################################################
+# BOSS 05 — Brawly – Badge 2  (level cap 20)
+#   flag: FLAG_BADGE02_GET
+########################################################################
+
+--- TRAINER_BRAWLY_1   (trainerbattle_single @ data/maps/DewfordTown_Gym/scripts.inc:14) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO]
+    · DewfordTown_Gym_Text_BrawlyIntro @ data/maps/DewfordTown_Gym/scripts.inc:267
+        I'm BRAWLY!
+        DEWFORD's GYM LEADER!
+
+        I've been churned in the rough waves
+        of these parts, and I've grown tough
+        in the pitch-black cave!
+
+        So you wanted to challenge me?
+        Let me see what you're made of!
+  [ON-DEFEAT]
+    · DewfordTown_Gym_Text_BrawlyDefeat @ data/maps/DewfordTown_Gym/scripts.inc:276
+        Whoah, wow! You made a much bigger
+        splash than I expected!
+
+        You swamped me!
+
+        Okay, you've got me.
+        Take this GYM BADGE!
+  [POST-BATTLE]
+    · DewfordTown_Gym_Text_BrawlyPostBattle @ data/maps/DewfordTown_Gym/scripts.inc:297
+        I can see your talent becoming a giant
+        wave to cause a storm of astonishment
+        among TRAINERS one day!
+    · DewfordTown_Gym_Text_ReceivedKnuckleBadge @ data/maps/DewfordTown_Gym/scripts.inc:283
+        {PLAYER} received the KNUCKLE BADGE
+        and your Pokémon have leveled up to {STR_VAR_1}!
+    · DewfordTown_Gym_Text_RegisteredBrawly @ data/maps/DewfordTown_Gym/scripts.inc:293
+        Registered GYM LEADER BRAWLY
+        in the POKéNAV.
+    · DewfordTown_Gym_Text_PlayerReceivedRewardPoke @ data/maps/DewfordTown_Gym/scripts.inc:60
+        {PLAYER} received GYM_REWARD_NAME!
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · DewfordTown_Gym_Text_BrawlyPreRematch @ data/maps/DewfordTown_Gym/scripts.inc:310
+        BRAWLY: A wave may draw back, but it
+        always returns to the shore.
+
+        A giant wave of a talent like you…
+        I knew you would return!
+
+        Show me how much higher
+        you've gone!
+    · DewfordTown_Gym_Text_BrawlyRematchDefeat @ data/maps/DewfordTown_Gym/scripts.inc:318
+        Wow!
+        Swamped again!
+    · DewfordTown_Gym_Text_BrawlyPostRematch @ data/maps/DewfordTown_Gym/scripts.inc:322
+        BRAWLY: Battling is vast and it's deep.
+        You can't see the bottom.
+        It's just like the sea of HOENN!
+    · DewfordTown_Gym_Text_BrawlyRematchNeedTwoMons @ data/maps/DewfordTown_Gym/scripts.inc:327
+        BRAWLY: A wave may draw back, but it
+        always returns to the shore.
+
+        A giant wave of a talent like you…
+        I knew you would return!
+
+        Oh? You only have one POKéMON
+        that can battle.
+
+        I'm sorry, but I'd like you to come back
+        with at least two POKéMON.
+
+########################################################################
+# BOSS 06 — Steven – Granite Cave  (level cap 23)
+#   flag: FLAG_DELIVERED_STEVEN_LETTER
+########################################################################
+
+--- TRAINER_STEVEN   (trainerbattle_no_intro @ data/maps/GraniteCave_StevensRoom/scripts.inc:8) ---
+  [PRE-BATTLE]
+    · GraniteCave_StevensRoom_Text_ImStevenLetterForMe @ data/maps/GraniteCave_StevensRoom/scripts.inc:89
+        My name is STEVEN.
+
+        I know you want to give me the letter
+        But first you must defeat me.
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · GraniteCave_StevenRoom_Text_Defeat @ data/maps/GraniteCave_StevensRoom/scripts.inc:94
+        Alright, give me that letter.
+  [POST-BATTLE]
+    · GraniteCave_LevelCap @ data/maps/GraniteCave_StevensRoom/scripts.inc:120
+        Your Pokémon have leveled up to {STR_VAR_1}!
+    · GraniteCave_StevensRoom_Text_ThankYouTakeThis @ data/maps/GraniteCave_StevensRoom/scripts.inc:97
+        STEVEN: Okay, thank you.
+
+        You went through all this trouble to
+        deliver that. I need to thank you.
+
+        Let me see…
+        I'll give you this TM.
+    · GraniteCave_StevensRoom_Text_CouldBecomeChampionLetsRegister @ data/maps/GraniteCave_StevensRoom/scripts.inc:104
+        If you keep training, you could even
+        become the CHAMPION of the POKéMON
+        LEAGUE one day. That's what I think.
+    · GraniteCave_StevensRoom_Text_RegisteredSteven @ data/maps/GraniteCave_StevensRoom/scripts.inc:109
+        Registered STEVEN
+        in the POKéNAV.
+    · GraniteCave_StevensRoom_Text_IveGotToHurryAlong @ data/maps/GraniteCave_StevensRoom/scripts.inc:113
+        Now, I've got to hurry along.
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · GraniteCave_StevensRoom_Text_OhBagIsFull @ data/maps/GraniteCave_StevensRoom/scripts.inc:116
+        Oh, your BAG is full…
+        That's too bad, then.
+
+########################################################################
+# BOSS 07 — Aqua Grunts – Oceanic Museum  (level cap 25)
+#   flag: FLAG_DELIVERED_DEVON_GOODS
+########################################################################
+
+--- TRAINER_GRUNT_MUSEUM_1   (trainerbattle_no_intro @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:30) ---
+  [PRE-BATTLE]
+    · SlateportCity_OceanicMuseum_2F_Text_ThankYouForTheParts @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:296
+        Yes? If you're looking for STERN,
+        that would be me.
+
+        Ah! Those must be the parts I ordered
+        from MR. STONE of DEVON.
+
+        Thank you! That's great!
+        We can prepare for our expedition now.
+    · SlateportCity_OceanicMuseum_2F_Text_WellTakeThoseParts @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:304
+        Hehehe, hold it!
+        We'll take those parts!
+    · SlateportCity_OceanicMuseum_2F_Text_SternWhoAreYou @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:308
+        CAPT. STERN: Wh-what?
+        Who are you people?
+    · SlateportCity_OceanicMuseum_2F_Text_WereTeamAqua @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:312
+        We're TEAM AQUA!
+
+        Our BOSS wants those parts!
+        Shut your yap and fork them over!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · SlateportCity_OceanicMuseum_2F_Text_Grunt1Defeat @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:317
+        Awaaaah!
+        A kid beat me!
+  [POST-BATTLE]
+    · SlateportCity_OceanicMuseum_2F_Text_BossGoingToBeFurious @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:321
+        Oh, man, what a disaster…
+        The BOSS is going to be furious…
+    · SlateportCity_OceanicMuseum_2F_Text_LetMeTakeCareOfThis @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:325
+        Humph, sniveling wimp!
+        Let me take care of this!
+    · SlateportCity_OceanicMuseum_2F_Text_MeddlingKid @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:333
+        Now what? If we don't get the parts,
+        we're in for it!
+
+        Arrgh, I didn't count on being meddled
+        with by some meddling kid!
+    · SlateportCity_OceanicMuseum_2F_Text_CameToSeeWhatsTakingSoLong @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:339
+        I came to see what was taking so
+        long to snatch some parts, and you
+        simps are held up by a mere child?
+    · SlateportCity_OceanicMuseum_2F_Text_ArchieWarning @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:344
+        And I am TEAM AQUA's leader,
+        ARCHIE!
+
+        I warn you, don't even consider
+        interfering with our plans again.
+    · SlateportCity_LevelCap @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:435
+        Your Pokémon have leveled up to {STR_VAR_1}!
+    · SlateportCity_OceanicMuseum_2F_Text_SternThankYouForSavingUs @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:350
+        CAPT. STERN: You're…
+        Ah, okay, you're {PLAYER}{KUN}…
+
+        Anyway, that was a tense situation!
+        Thank you for saving us!
+
+        Oh, yes, I almost forgot that you
+        even brought the parts from DEVON!
+    · SlateportCity_OceanicMuseum_2F_Text_SternIveGotToGo @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:358
+        CAPT. STERN: Thank you!
+        Here, have this reward.
+
+--- TRAINER_GRUNT_MUSEUM_2   (trainerbattle_no_intro @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:38) ---
+  [PRE-BATTLE]
+    · SlateportCity_OceanicMuseum_2F_Text_ThankYouForTheParts @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:296
+        Yes? If you're looking for STERN,
+        that would be me.
+
+        Ah! Those must be the parts I ordered
+        from MR. STONE of DEVON.
+
+        Thank you! That's great!
+        We can prepare for our expedition now.
+    · SlateportCity_OceanicMuseum_2F_Text_WellTakeThoseParts @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:304
+        Hehehe, hold it!
+        We'll take those parts!
+    · SlateportCity_OceanicMuseum_2F_Text_SternWhoAreYou @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:308
+        CAPT. STERN: Wh-what?
+        Who are you people?
+    · SlateportCity_OceanicMuseum_2F_Text_WereTeamAqua @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:312
+        We're TEAM AQUA!
+
+        Our BOSS wants those parts!
+        Shut your yap and fork them over!
+    · SlateportCity_OceanicMuseum_2F_Text_BossGoingToBeFurious @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:321
+        Oh, man, what a disaster…
+        The BOSS is going to be furious…
+    · SlateportCity_OceanicMuseum_2F_Text_LetMeTakeCareOfThis @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:325
+        Humph, sniveling wimp!
+        Let me take care of this!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · SlateportCity_OceanicMuseum_2F_Text_Grunt2Defeat @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:329
+        What?!
+        I lost, too!
+  [POST-BATTLE]
+    · SlateportCity_OceanicMuseum_2F_Text_MeddlingKid @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:333
+        Now what? If we don't get the parts,
+        we're in for it!
+
+        Arrgh, I didn't count on being meddled
+        with by some meddling kid!
+    · SlateportCity_OceanicMuseum_2F_Text_CameToSeeWhatsTakingSoLong @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:339
+        I came to see what was taking so
+        long to snatch some parts, and you
+        simps are held up by a mere child?
+    · SlateportCity_OceanicMuseum_2F_Text_ArchieWarning @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:344
+        And I am TEAM AQUA's leader,
+        ARCHIE!
+
+        I warn you, don't even consider
+        interfering with our plans again.
+    · SlateportCity_LevelCap @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:435
+        Your Pokémon have leveled up to {STR_VAR_1}!
+    · SlateportCity_OceanicMuseum_2F_Text_SternThankYouForSavingUs @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:350
+        CAPT. STERN: You're…
+        Ah, okay, you're {PLAYER}{KUN}…
+
+        Anyway, that was a tense situation!
+        Thank you for saving us!
+
+        Oh, yes, I almost forgot that you
+        even brought the parts from DEVON!
+    · SlateportCity_OceanicMuseum_2F_Text_SternIveGotToGo @ data/maps/SlateportCity_OceanicMuseum_2F/scripts.inc:358
+        CAPT. STERN: Thank you!
+        Here, have this reward.
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    (none)
+
+########################################################################
+# BOSS 08 — Rival – Route 110  (level cap 27)
+#   flag: FLAG_ROUTE110_RIVAL_DEFEATED
+########################################################################
+
+--- TRAINER_BRENDAN_ROUTE_110_TREECKO   (trainerbattle_no_intro @ data/maps/Route110/scripts.inc:490) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · Route110_Text_BrendanDefeated @ data/maps/Route110/scripts.inc:842
+        Hmm…
+        You're pretty good.
+  [POST-BATTLE]
+    (none found)
+
+--- TRAINER_MAY_ROUTE_110_TREECKO   (trainerbattle_no_intro @ data/maps/Route110/scripts.inc:461) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · Route110_Text_MayDefeated @ data/maps/Route110/scripts.inc:815
+        Yikes!
+        You're better than I expected!
+  [POST-BATTLE]
+    (none found)
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · Route110_Text_MayLetsBattle @ data/maps/Route110/scripts.inc:808
+        MAY: Hi, {PLAYER}{KUN}, long time no see!
+
+        While I was searching for other
+        POKéMON, my POKéMON grew stronger.
+
+        So…
+        How about a little battle?
+    · Route110_Text_MayTakeThis @ data/maps/Route110/scripts.inc:819
+        MAY: {PLAYER}{KUN}, you've been busy
+        training, too, haven't you?
+
+        I think you deserve a reward!
+        Here, take this
+        LUM BERRY!
+    · Route110_Text_MayExplainItemfinder @ data/maps/Route110/scripts.inc:826
+        MAY: That's an ITEMFINDER.
+
+        Try it out. If there is an item that's
+        not visible, it emits a sound.
+
+        Okay, {PLAYER}{KUN}, let's meet again!
+
+        I know it's a little silly coming from
+        me, but I think you should train a lot
+        harder for the next time.
+    · Route110_Text_BrendanLetsBattle @ data/maps/Route110/scripts.inc:835
+        BRENDAN: Hey, {PLAYER}.
+        So this is where you were.
+        How's it going?
+
+        Have you been raising your POKéMON?
+        I'll check for you.
+    · Route110_Text_BrendanTakeThis @ data/maps/Route110/scripts.inc:846
+        BRENDAN: {PLAYER}, you've trained
+        without me noticing…
+
+        Good enough!
+        Here, take this
+        LUM BERRY!
+    · Route110_Text_BrendanExplainItemfinder @ data/maps/Route110/scripts.inc:853
+        BRENDAN: That's an ITEMFINDER.
+
+        Use it to root around for items that
+        aren't visible.
+
+        If it senses something, it emits
+        a sound.
+
+        Anyway, I'm off to look for new
+        POKéMON.
+
+########################################################################
+# BOSS 09 — Wally – Mauville  (level cap 29)
+#   flag: FLAG_DEFEATED_WALLY_MAUVILLE
+########################################################################
+
+--- TRAINER_WALLY_MAUVILLE   (trainerbattle_no_intro @ data/maps/MauvilleCity/scripts.inc:191) ---
+  [PRE-BATTLE]
+    · MauvilleCity_Text_WallyHereICome @ data/maps/MauvilleCity/scripts.inc:483
+        WALLY: Thanks! Here I come!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · MauvilleCity_Text_WallyDefeat @ data/maps/MauvilleCity/scripts.inc:486
+        WALLY: … … …
+        I lost…
+  [POST-BATTLE]
+    · MauvilleCity_LevelCap @ data/maps/MauvilleCity/scripts.inc:621
+        Your Pokémon have leveled up to {STR_VAR_1}!
+    · MauvilleCity_Text_WallyIllGoBackToVerdanturf @ data/maps/MauvilleCity/scripts.inc:490
+        WALLY: UNCLE…
+        I'll go back to VERDANTURF…
+    · MauvilleCity_Text_ThankYouNotEnoughToBattle @ data/maps/MauvilleCity/scripts.inc:494
+        {PLAYER}, thank you.
+        Being a TRAINER is tough.
+    · MauvilleCity_Text_UncleNoNeedToBeDown @ data/maps/MauvilleCity/scripts.inc:498
+        UNCLE: Chin up, WALLY.
+        Let's go home.
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · MauvilleCity_Text_WallyWantToChallengeGym @ data/maps/MauvilleCity/scripts.inc:461
+        I want to challenge this GYM!
+    · MauvilleCity_Text_WallyWillYouBattleMe @ data/maps/MauvilleCity/scripts.inc:468
+        WALLY: Hi, {PLAYER}!
+        Battle me, please?
+    · MauvilleCity_Text_WallyMyUncleWontKnowImStrong @ data/maps/MauvilleCity/scripts.inc:472
+        WALLY: But then my UNCLE won't see
+        how strong I've become…
+    · MauvilleCity_Text_UncleCanYouBattleWally @ data/maps/MauvilleCity/scripts.inc:476
+        UNCLE: {PLAYER}, humor him with
+        one battle?
+    · MauvilleCity_Text_WallyPleaseBattleMe @ data/maps/MauvilleCity/scripts.inc:480
+        WALLY: Please, {PLAYER}!
+    · MauvilleCity_Text_WallyPokenavCall @ data/maps/MauvilleCity/scripts.inc:507
+        … … … … … …
+        … … … … … Beep!
+
+        WALLY: Oh, hello, {PLAYER}!
+
+        I just wanted to tell you that
+        my uncle bought me a POKéNAV!
+
+        Now I can get in touch with you
+        anytime, {PLAYER}!
+
+        … … … … … …
+        … … … … … Click!
+    · MauvilleCity_Text_RegisteredWally @ data/maps/MauvilleCity/scripts.inc:518
+        Registered WALLY
+        in the POKéNAV.
+
+########################################################################
+# BOSS 10 — Wattson – Badge 3  (level cap 30)
+#   flag: FLAG_BADGE03_GET
+########################################################################
+
+--- TRAINER_WATTSON_1   (trainerbattle_single @ data/maps/MauvilleCity_Gym/scripts.inc:77) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO]
+    · MauvilleCity_Gym_Text_WattsonIntro @ data/maps/MauvilleCity_Gym/scripts.inc:358
+        I've given up on my plans to convert
+        the city, I have.
+
+        And so, I put my time into making
+        door traps in my GYM.
+
+        Oh? Now, what are you doing here?
+
+        What's that? You say you've gotten
+        past all my rigged doors?
+
+        Wahahahah!
+        Now, that is amusing!
+
+        Then, I, WATTSON, the LEADER of
+        MAUVILLE GYM, shall electrify you!
+  [ON-DEFEAT]
+    · MauvilleCity_Gym_Text_WattsonDefeat @ data/maps/MauvilleCity_Gym/scripts.inc:371
+        Wahahahah!
+        Fine, I lost!
+
+        You ended up giving me a thrill!
+        Take this BADGE!
+  [POST-BATTLE]
+    · MauvilleCity_Gym_Text_WattsonPostBattle @ data/maps/MauvilleCity_Gym/scripts.inc:399
+        I swell with optimism, seeing a promising
+        young TRAINER like you!
+    · MauvilleCity_Gym_Text_ReceivedDynamoBadge @ data/maps/MauvilleCity_Gym/scripts.inc:377
+        {PLAYER} received the DYNAMO BADGE
+        and your Pokémon have leveled up to {STR_VAR_1}!
+    · MauvilleCity_Gym_Text_RegisteredWattson @ data/maps/MauvilleCity_Gym/scripts.inc:395
+        Registered GYM LEADER WATTSON
+        in the POKéNAV.
+    · MauvilleCity_Gym_Text_PlayerReceivedRewardPoke @ data/maps/MauvilleCity_Gym/scripts.inc:136
+        {PLAYER} received GYM_REWARD_NAME!
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · MauvilleCity_Gym_Text_WattsonGoForthAndEndeavor @ data/maps/MauvilleCity_Gym/scripts.inc:403
+        Wahahahah!
+        Go forth and endeavor, youngster!
+    · MauvilleCity_Gym_Text_WattsonPreRematch @ data/maps/MauvilleCity_Gym/scripts.inc:415
+        WATTSON: Ah-ha! Here at last!
+        I know what you want.
+        You want to battle my POKéMON!
+
+        Wahahahaha!
+
+        I'll make sparks fly from you!
+        Don't say I didn't warn you!
+    · MauvilleCity_Gym_Text_WattsonRematchDefeat @ data/maps/MauvilleCity_Gym/scripts.inc:423
+        Oof…
+        Our batteries ran dry…
+    · MauvilleCity_Gym_Text_WattsonPostRematch @ data/maps/MauvilleCity_Gym/scripts.inc:427
+        WATTSON: We'll have to recharge our
+        batteries again.
+
+        When we're fully charged up, we'll
+        gladly accept your challenge.
+
+        So, come back again sometime,
+        won't you?
+    · MauvilleCity_Gym_Text_WattsonRematchNeedTwoMons @ data/maps/MauvilleCity_Gym/scripts.inc:435
+        WATTSON: Ah-ha! Here at last!
+        I know what you want.
+        You want to battle my POKéMON!
+
+        Wahahahaha!
+
+        Oops! Wait!
+        You've only one POKéMON with you!
+
+        Come see me with two or more
+        POKéMON, all right?
+
+########################################################################
+# BOSS 11 — Tabitha – Mt Chimney  (level cap 33)
+#   flag: FLAG_DEFEATED_TABITHA_MT_CHIMNEY
+########################################################################
+
+--- TRAINER_TABITHA_MT_CHIMNEY   (trainerbattle_single @ data/maps/MtChimney/scripts.inc:413) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO]
+    · MtChimney_Text_TabithaIntro @ data/maps/MtChimney/scripts.inc:547
+        So you've come all the way here!
+
+        But you're too late!
+  [ON-DEFEAT]
+    · MtChimney_Text_TabithaDefeat @ data/maps/MtChimney/scripts.inc:551
+        Hehehe…
+
+        Even though I've lost, if our leader
+        awakens that thing…
+  [POST-BATTLE]
+    · MtChimney_LevelCap_Minor @ data/maps/MtChimney/scripts.inc:774
+        Your Pokémon have leveled up to {STR_VAR_1}!
+    · MtChimney_Text_TabithaPostBattle @ data/maps/MtChimney/scripts.inc:556
+        BOSS, hurry!
+        Give it the METEORITE's energy!
+
+        Hehehe…
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    (none)
+
+########################################################################
+# BOSS 12 — Flannery – Badge 4  (level cap 36)
+#   flag: FLAG_BADGE04_GET
+########################################################################
+
+--- TRAINER_FLANNERY_1   (trainerbattle_single @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:31) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO]
+    · LavaridgeTown_Gym_1F_Text_FlanneryIntro @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:259
+        Welcome… No, wait.
+
+        Puny TRAINER, how good to see you've
+        made it here!
+
+        I have been entrusted with the…
+        No, wait.
+
+        I am FLANNERY, and I'm the GYM
+        LEADER here!
+
+        Uh…
+        Dare not underestimate me, though
+        I have been LEADER only a short time!
+
+        With skills inherited from my grand-
+        father, I shall, uh…demonstrate the
+        hot moves we have honed on this land!
+  [ON-DEFEAT]
+    · LavaridgeTown_Gym_1F_Text_FlanneryDefeat @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:274
+        Oh…
+        I guess I was trying too hard…
+
+        I… I've only recently become
+        a GYM LEADER.
+
+        I tried too hard to be someone
+        I'm not.
+
+        I have to do things my natural way. If
+        I don't, my POKéMON will be confused.
+
+        Thanks for teaching me that.
+        For that, you deserve this.
+  [POST-BATTLE]
+    · LavaridgeTown_Gym_1F_Text_FlanneryPostBattle @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:312
+        Your power reminds me of someone…
+
+        Oh! I know! You battle like NORMAN,
+        the GYM LEADER of PETALBURG.
+    · LavaridgeTown_Gym_1F_Text_ReceivedHeatBadge @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:286
+        {PLAYER} received the HEAT BADGE
+        and your Pokémon have leveled up to {STR_VAR_1}!
+    · LavaridgeTown_Gym_1F_Text_RegisteredFlannery @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:308
+        Registered GYM LEADER FLANNERY
+        in the POKéNAV.
+    · LavaridgeTown_Gym_1F_Text_PlayerReceivedRewardPoke @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:78
+        {PLAYER} received GYM_REWARD_NAME!
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · LavaridgeTown_Gym_1F_Text_FlanneryPreRematch @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:325
+        FLANNERY: Losing a battle isn't going
+        to deflate me.
+
+        I love POKéMON.
+        I love to battle.
+        And… I love this GYM!
+
+        Let's exchange superhot moves
+        in another battle!
+    · LavaridgeTown_Gym_1F_Text_FlanneryRematchDefeat @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:334
+        Whew!
+        On the verge of eruption!
+    · LavaridgeTown_Gym_1F_Text_FlanneryPostRematch @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:338
+        FLANNERY: I lost the match,
+        but I'm completely satisfied.
+
+        It's not often I get to enjoy a battle
+        this heated.
+
+        Let's have another one like this
+        again sometime!
+    · LavaridgeTown_Gym_1F_Text_FlanneryRematchNeedTwoMons @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:346
+        FLANNERY: Losing a battle isn't going
+        to deflate me.
+
+        I love POKéMON.
+        I love to battle.
+        And… I love this GYM!
+
+        Let's exchange superhot moves
+        in another battle!
+
+        Oh, wait. Do you only have one POKéMON
+        that can battle?
+
+        I hate to say this, but when you come
+        see me, bring at least two POKéMON.
+
+########################################################################
+# BOSS 13 — Norman – Badge 5  (level cap 39)
+#   flag: FLAG_BADGE05_GET
+########################################################################
+
+--- TRAINER_NORMAN_1   (trainerbattle_no_intro @ data/maps/PetalburgCity_Gym/scripts.inc:372) ---
+  [PRE-BATTLE]
+    · PetalburgCity_Gym_Text_NormanIntro @ data/maps/PetalburgCity_Gym/scripts.inc:1273
+        DAD: Hm…
+        So, you did get four GYM BADGES.
+
+        Fine, as I promised, we will have
+        a POKéMON battle.
+
+        {PLAYER}…
+
+        I'm so happy that I can have
+        a real battle with my own child.
+
+        But, a battle is a battle!
+
+        I will do everything in my power as
+        a GYM LEADER to win.
+
+        {PLAYER}, you'd better give it your
+        best shot, too!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · PetalburgCity_Gym_Text_NormanDefeat @ data/maps/PetalburgCity_Gym/scripts.inc:1287
+        …
+
+        I… I can't…
+
+        I can't believe it. {PLAYER}…
+
+        I lost to {PLAYER}?
+
+        But, rules are rules!
+        Here, take this.
+  [POST-BATTLE]
+    · PetalburgCity_Gym_Text_ReceivedBalanceBadge @ data/maps/PetalburgCity_Gym/scripts.inc:1295
+        {PLAYER} received the BALANCE BADGE
+        and your Pokémon have leveled up to {STR_VAR_1}!
+    · PetalburgCity_Gym_Text_DadHappyAndSad @ data/maps/PetalburgCity_Gym/scripts.inc:1315
+        DAD: Well done. You are stronger
+        than me. I think you should check
+        out Island Cave in Route 105. They
+        say you can catch a good one there.
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · PetalburgCity_Gym_Text_NormanGoToRustboro @ data/maps/PetalburgCity_Gym/scripts.inc:1248
+        DAD: Hm? Aren't you going to the
+        POKéMON GYM in RUSTBORO CITY?
+
+        There's no challenge for me to
+        battle a greenhorn TRAINER.
+
+        {PLAYER}, I want you to challenge me
+        when you become a lot stronger.
+
+        I'll battle you, {PLAYER}, when you
+        can show me four GYM BADGES, okay?
+    · PetalburgCity_Gym_Text_NormanGoToDewford @ data/maps/PetalburgCity_Gym/scripts.inc:1258
+        DAD: I see… So, you've beaten
+        the GYM LEADER in RUSTBORO CITY.
+
+        But there are many more TRAINERS
+        who are stronger than you, {PLAYER}.
+
+        Across the sea in DEWFORD TOWN is a
+        GYM LEADER named BRAWLY.
+
+        You should go challenge him.
+    · PetalburgCity_Gym_Text_NormanPreRematch @ data/maps/PetalburgCity_Gym/scripts.inc:1573
+        DAD: {PLAYER}…
+        I had a feeling that you would come.
+
+        I would never refuse to accept
+        a challenge from you.
+
+        You do understand, don't you?
+
+        Inside a GYM, it doesn't matter that
+        we are a parent and child.
+
+        …No, because we are parent and child,
+        we owe it to each other to do the best
+        we can. Isn't that right, {PLAYER}?
+    · PetalburgCity_Gym_Text_NormanRematchDefeat @ data/maps/PetalburgCity_Gym/scripts.inc:1585
+        Uh… Haha…
+        Maybe that was going too hard…
+    · PetalburgCity_Gym_Text_NormanPostRematch @ data/maps/PetalburgCity_Gym/scripts.inc:1589
+        DAD: {PLAYER}…
+        What is your dream?
+
+        My dream…
+        Hahaha…
+        It has already come true, actually.
+    · PetalburgCity_Gym_Text_NormanRematchNeedTwoMons @ data/maps/PetalburgCity_Gym/scripts.inc:1596
+        DAD: {PLAYER}…
+        I had a feeling that you would come.
+
+        I would never refuse to accept
+        a challenge from you.
+
+        You do understand, don't you?
+
+        Inside a GYM, it doesn't matter that
+        we are a parent and child.
+
+        Hm? Wait a second, {PLAYER}.
+
+        Do you only have one POKéMON that is
+        capable of battle?
+
+        Sorry, but you'll have to come back
+        with at least two POKéMON.
+
+########################################################################
+# BOSS 14 — Shelly – Weather Institute  (level cap 42)
+#   flag: FLAG_DEFEATED_SHELLY_WEATHER_INST
+########################################################################
+
+--- TRAINER_SHELLY_WEATHER_INSTITUTE   (trainerbattle_single @ data/maps/Route119_WeatherInstitute_2F/scripts.inc:39) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO]
+    · Route119_WeatherInstitute_2F_Text_ShellyIntro @ data/maps/Route119_WeatherInstitute_2F/scripts.inc:245
+        Ahahahaha!
+
+        You're going to meddle in TEAM AQUA's
+        affairs?
+
+        You're either absolutely fearless,
+        simply ignorant, or both!
+
+        You're so cute, you're disgusting!
+        I'll put you down, kiddy!
+  [ON-DEFEAT]
+    · Route119_WeatherInstitute_2F_Text_ShellyDefeat @ data/maps/Route119_WeatherInstitute_2F/scripts.inc:254
+        Ahahahaha!
+        You're disgustingly strong!
+  [POST-BATTLE]
+    · Route119_WeatherInstitute_2F_Text_ShellyPostBattle @ data/maps/Route119_WeatherInstitute_2F/scripts.inc:258
+        It's bad enough to have TEAM MAGMA
+        blunder about, but now there's you!
+    · Route119_WeatherInstitute_LevelCap @ data/maps/Route119_WeatherInstitute_2F/scripts.inc:323
+        Your Pokémon have leveled up to {STR_VAR_1}!
+    · Route119_WeatherInstitute_2F_Text_ThanksPleaseTakePokemon @ data/maps/Route119_WeatherInstitute_2F/scripts.inc:276
+        Thanks!
+        Thanks to you, we're safe!
+
+        It might be an odd way of thanking you,
+        but take this POKéMON.
+    · Route119_WeatherInstitute_2F_Text_PlayerReceivedRewardPoke @ data/maps/Route119_WeatherInstitute_2F/scripts.inc:87
+        {PLAYER} received GYM_REWARD_NAME!
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    (none)
+
+########################################################################
+# BOSS 15 — Rival – Route 119  (level cap 44)
+#   flag: FLAG_ROUTE119_RIVAL_DEFEATED
+########################################################################
+
+--- TRAINER_BRENDAN_ROUTE_119_TREECKO   (trainerbattle_no_intro @ data/maps/Route119/scripts.inc:110) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · Route119_Text_BrendanDefeat @ data/maps/Route119/scripts.inc:480
+        Hmm…
+        You've gotten pretty darn decent.
+  [POST-BATTLE]
+    (none found)
+
+--- TRAINER_MAY_ROUTE_119_TREECKO   (trainerbattle_no_intro @ data/maps/Route119/scripts.inc:79) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · Route119_Text_MayDefeat @ data/maps/Route119/scripts.inc:448
+        Achah!
+        {PLAYER}{KUN}, you're strong!
+
+        I was worried that you might be
+        struggling with your training.
+  [POST-BATTLE]
+    (none found)
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · Route119_Text_MayIntro @ data/maps/Route119/scripts.inc:440
+        MAY: {PLAYER}{KUN}!
+        Where were you? I was looking for you!
+
+        How much stronger have you gotten?
+        Let me check for you!
+
+        Ready with your POKéMON?
+        Of course you are! Go!
+    · Route119_Text_MayPresentForYou @ data/maps/Route119/scripts.inc:454
+        MAY: But I had absolutely nothing to
+        worry about! Keep it up!
+
+        And, here! I have a present for you.
+    · Route119_Text_MayExplainFly @ data/maps/Route119/scripts.inc:459
+        MAY: Use FLY, and your POKéMON will
+        instantly carry you to any town you've
+        already visited.
+
+        But, to use FLY, you have to get
+        the GYM BADGE from FORTREE CITY.
+        That's important, so don't forget.
+
+        You should FLY home and visit
+        LITTLEROOT for a change.
+
+        I bet your mom's worried about you,
+        {PLAYER}{KUN}.
+
+        Well, let's meet again somewhere!
+    · Route119_Text_BrendanIntro @ data/maps/Route119/scripts.inc:472
+        BRENDAN: {PLAYER}! So this is where
+        you've been looking for POKéMON?
+
+        Let me see how good you got.
+        I'll test you!
+
+        Now!
+        It's a battle, so battle!
+    · Route119_Text_BrendanIllGiveYouThis @ data/maps/Route119/scripts.inc:484
+        BRENDAN: I'd say you're good enough
+        to search for POKéMON anywhere.
+
+        Here, I'll give you this.
+        Try it out.
+    · Route119_Text_BrendanExplainFly @ data/maps/Route119/scripts.inc:490
+        BRENDAN: Use FLY, and your POKéMON
+        instantly carries you to any town
+        you've already visited.
+
+        But you need the FORTREE GYM BADGE 
+        to do that.
+
+        Anyway, I have to move along.
+
+########################################################################
+# BOSS 16 — Winona – Badge 6  (level cap 46)
+#   flag: FLAG_BADGE06_GET
+########################################################################
+
+--- TRAINER_WINONA_1   (trainerbattle_single @ data/maps/FortreeCity_Gym/scripts.inc:21) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO]
+    · FortreeCity_Gym_Text_WinonaIntro @ data/maps/FortreeCity_Gym/scripts.inc:248
+        I am WINONA. I am the LEADER of
+        the FORTREE POKéMON GYM.
+
+        I have become one with BIRD POKéMON
+        and have soared the skies…
+
+        However grueling the battle, we have
+        triumphed with grace…
+
+        Witness the elegant choreography
+        of BIRD POKéMON and I!
+  [ON-DEFEAT]
+    · FortreeCity_Gym_Text_WinonaDefeat @ data/maps/FortreeCity_Gym/scripts.inc:258
+        Never before have I seen a TRAINER
+        command POKéMON with more grace
+        than I…
+
+        In recognition of your prowess,
+        I present to you this GYM BADGE.
+  [POST-BATTLE]
+    · FortreeCity_Gym_Text_WinonaPostBattle @ data/maps/FortreeCity_Gym/scripts.inc:288
+        Though I fell to you, I will remain
+        devoted to BIRD POKéMON.
+    · FortreeCity_Gym_Text_ReceivedFeatherBadge @ data/maps/FortreeCity_Gym/scripts.inc:265
+        {PLAYER} received the FEATHER BADGE
+        and your Pokémon have leveled up to {STR_VAR_1}!
+    · FortreeCity_Gym_Text_RegisteredWinona @ data/maps/FortreeCity_Gym/scripts.inc:284
+        Registered GYM LEADER WINONA
+        in the POKéNAV.
+    · FortreeCity_Gym_Text_PlayerReceivedRewardPoke @ data/maps/FortreeCity_Gym/scripts.inc:69
+        {PLAYER} received GYM_REWARD_NAME!
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · FortreeCity_Gym_Text_WinonaPreRematch @ data/maps/FortreeCity_Gym/scripts.inc:300
+        WINONA: We humans can never escape
+        gravity's pull on the ground.
+
+        But by striving for excellence,
+        we have the power to soar!
+
+        You have scaled the pinnacle as
+        the reigning CHAMPION.
+
+        Please, allow me to see your power
+        at full flight!
+    · FortreeCity_Gym_Text_WinonaRematchDefeat @ data/maps/FortreeCity_Gym/scripts.inc:310
+        I failed to reach your height again…
+    · FortreeCity_Gym_Text_WinonaPostRematch @ data/maps/FortreeCity_Gym/scripts.inc:313
+        WINONA: Even though I have lost,
+        the wings of my heart remain unbroken.
+
+        I can rise and soar again and
+        yet again.
+
+        I am convinced of it!
+    · FortreeCity_Gym_Text_WinonaRematchNeedTwoMons @ data/maps/FortreeCity_Gym/scripts.inc:320
+        WINONA: We humans can never escape
+        gravity's pull on the ground.
+
+        But by striving for excellence,
+        we have the power to soar!
+
+        You have scaled the pinnacle as
+        the reigning CHAMPION.
+
+        Please, allow me to see your power
+        at full flight!
+
+        Oh, no… Do you have but one
+        POKéMON with you?
+
+        Please return with two POKéMON
+        at the very least.
+
+########################################################################
+# BOSS 17 — Wally – Lilycove  (level cap 49)
+#   flag: FLAG_MET_RIVAL_LILYCOVE
+########################################################################
+
+--- TRAINER_WALLY_LILYCOVE   (trainerbattle_no_intro @ data/maps/LilycoveCity/scripts.inc:225) ---
+  [PRE-BATTLE]
+    · LilycoveCity_Text_WallyHereICome @ data/maps/LilycoveCity/scripts.inc:794
+        WALLY: {PLAYER}, I've grown
+        stronger. Let me show you!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · LilycoveCity_Text_WallyDefeat @ data/maps/LilycoveCity/scripts.inc:798
+        WALLY: … … … … … … …
+
+        … … … … … … … …
+
+        I lost again…
+  [POST-BATTLE]
+    · LilycoveCity_Text_WallyHaveSuperRod @ data/maps/LilycoveCity/scripts.inc:803
+        WALLY: You must go to
+        MAGMA HIDEOUT.
+
+        In the mean time, have this
+        SUPER ROD I no longer need.
+    · LilycoveCity_LevelCap @ data/maps/LilycoveCity/scripts.inc:791
+        Your Pokémon have leveled up to {STR_VAR_1}!
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · LilycoveCity_Text_WallySign @ data/maps/LilycoveCity/scripts.inc:742
+        You must defeat Wally
+        to progress.
+
+########################################################################
+# BOSS 18 — Maxie – Magma Hideout  (level cap 51)
+#   flag: FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT
+########################################################################
+
+--- TRAINER_MAXIE_MAGMA_HIDEOUT   (trainerbattle_no_intro @ data/maps/MagmaHideout_4F/scripts.inc:57) ---
+  [PRE-BATTLE]
+    · MagmaHideout_4F_Text_MaxieAwakenGroudon @ data/maps/MagmaHideout_4F/scripts.inc:189
+        MAXIE: GROUDON…
+
+        Nothing could awaken you from your
+        sleep bathed in magma…
+
+        This BLUE ORB is what you sought.
+        Wasn't it?
+
+        I have brought you the BLUE ORB.
+        Let its shine awaken you!
+
+        And show me…
+        Show me the full extent of your power!
+    · MagmaHideout_4F_Text_MaxieGroudonWhatsWrong @ data/maps/MagmaHideout_4F/scripts.inc:200
+        MAXIE: GROUDON!
+        What's wrong?
+
+        Wasn't the BLUE ORB the key?
+
+        GROUDON!
+        Where have you gone…
+    · MagmaHideout_4F_Text_MaxieOhItWasYou @ data/maps/MagmaHideout_4F/scripts.inc:207
+        MAXIE: Oh, so it was you?
+
+        I've seen you poking around uninvited
+        here and there…
+
+        I get it now!
+        You must have pulled a cheap stunt!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · MagmaHideout_4F_Text_MaxieDefeat @ data/maps/MagmaHideout_4F/scripts.inc:214
+        What makes you so adept at handling
+        POKéMON?
+  [POST-BATTLE]
+    · MagmaHideout_4F_Text_MaxieImGoingAfterGroudon @ data/maps/MagmaHideout_4F/scripts.inc:218
+        MAXIE: There has to be some reason
+        why GROUDON fled…
+
+        That's what you're trying to say,
+        aren't you?
+
+        … … … … … …
+        … … … … … …
+
+        Humph…
+        You think I didn't know that?
+
+        With GROUDON gone, there is no longer
+        any need for this blasted volcano.
+
+        I am going after GROUDON, so this
+        is where we part!
+    · MagmaHideout_LevelCap @ data/maps/MagmaHideout_4F/scripts.inc:232
+        Your Pokémon have leveled up to {STR_VAR_1}!
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    (none)
+
+########################################################################
+# BOSS 19 — Matt – Aqua Hideout  (level cap 54)
+#   flag: FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE
+########################################################################
+
+--- TRAINER_MATT   (trainerbattle_single @ data/maps/AquaHideout_B2F/scripts.inc:26) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO]
+    · AquaHideout_B2F_Text_MattIntro @ data/maps/AquaHideout_B2F/scripts.inc:93
+        Hehehe… You made it this far.
+        But I'll pulverize you!
+  [ON-DEFEAT]
+    · AquaHideout_B2F_Text_MattDefeat @ data/maps/AquaHideout_B2F/scripts.inc:97
+        Hehehe…
+        So, I lost, too…
+  [POST-BATTLE]
+    · AquaHideout_B2F_Text_MattPostBattle @ data/maps/AquaHideout_B2F/scripts.inc:105
+        The BOSS is off to a cave under
+        the sea, beyond LILYCOVE.
+    · AquaHideout_B2F_Text_OurBossGotThroughHisPreparations @ data/maps/AquaHideout_B2F/scripts.inc:101
+        Hehehe! While I stalled you, the
+        BOSS finished his preparations!
+    · AquaHideout_LevelCap @ data/maps/AquaHideout_B2F/scripts.inc:145
+        Your Pokémon have leveled up to {STR_VAR_1}!
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    (none)
+
+########################################################################
+# BOSS 20 — Tate & Liza – Badge 7  (level cap 56)
+#   flag: FLAG_BADGE07_GET
+########################################################################
+
+--- TRAINER_TATE_AND_LIZA_1   (trainerbattle_double @ data/maps/MossdeepCity_Gym/scripts.inc:57) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO]
+    · MossdeepCity_Gym_Text_TateAndLizaIntro @ data/maps/MossdeepCity_Gym/scripts.inc:560
+        TATE: Hehehe… Were you surprised?
+
+        LIZA: Fufufu… Were you surprised?
+
+        TATE: That there are two GYM LEADERS?
+        LIZA: That there are two GYM LEADERS?
+
+        TATE: We're twins!
+        LIZA: We're twins!
+
+        TATE: We don't need to talk because…
+        LIZA: We can each determine what…
+
+        TATE: The other is thinking…
+        LIZA: All in our minds!
+
+        TATE: This combination of ours…
+        LIZA: Can you beat it?
+  [ON-DEFEAT]
+    · MossdeepCity_Gym_Text_TateAndLizaDefeat @ data/maps/MossdeepCity_Gym/scripts.inc:574
+        TATE: What?! Our combination…
+        LIZA: Was shattered!
+
+        TATE: It can't be helped. You've won…
+        LIZA: So, in recognition, take this.
+  [POST-BATTLE]
+    · MossdeepCity_Gym_Text_ReceivedMindBadge @ data/maps/MossdeepCity_Gym/scripts.inc:580
+        {PLAYER} received the MIND BADGE
+        and your Pokémon have leveled up to {STR_VAR_1}!
+    · MossdeepCity_Gym_Text_RegisteredTateAndLiza @ data/maps/MossdeepCity_Gym/scripts.inc:600
+        Registered GYM LEADERS TATE & LIZA
+        in the POKéNAV.
+    · MossdeepCity_Gym_Text_PlayerReceivedRewardPoke @ data/maps/MossdeepCity_Gym/scripts.inc:662
+        {PLAYER} received GYM_REWARD_NAME!
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · MossdeepCity_Gym_Text_TateAndLizaPostBattle @ data/maps/MossdeepCity_Gym/scripts.inc:604
+        TATE: Looks like the bond between you
+        and your POKéMON is far stronger than
+        the bond that we share as twins.
+
+        LIZA: You will become even stronger!
+        We've battled you, so we know.
+    · MossdeepCity_Gym_Text_TateAndLizaNeedTwoMons @ data/maps/MossdeepCity_Gym/scripts.inc:611
+        TATE: Hehehe… Were you surprised?
+
+        LIZA: That there are two GYM LEADERS?
+
+        TATE: Oops, you have only one…
+        LIZA: POKéMON that can battle.
+
+        TATE: We can't battle that way!
+
+        LIZA: If you want to challenge us,
+        bring some more POKéMON.
+    · MossdeepCity_Gym_Text_TateAndLizaPreRematch @ data/maps/MossdeepCity_Gym/scripts.inc:628
+        TATE: POKéMON…
+        LIZA: POKéMON…
+
+        TATE: By changing the party's mix…
+        LIZA: The battle style changes.
+
+        TATE: But me…
+        LIZA: But me…
+
+        TATE: I'll always be with LIZA!
+        LIZA: I'll always be with TATE!
+
+        TATE: Our combination…
+        LIZA: We'll show you again and again!
+    · MossdeepCity_Gym_Text_TateAndLizaRematchDefeat @ data/maps/MossdeepCity_Gym/scripts.inc:640
+        TATE: You and your POKéMON…
+        LIZA: It's as if you were siblings!
+    · MossdeepCity_Gym_Text_TateAndLizaPostRematch @ data/maps/MossdeepCity_Gym/scripts.inc:644
+        TATE: You can knock us down,
+        but we'll never stay down!
+
+        LIZA: Because the two of us,
+        we always support each other!
+    · MossdeepCity_Gym_Text_TateAndLizaRematchNeedTwoMons @ data/maps/MossdeepCity_Gym/scripts.inc:650
+        TATE: You're back again…
+        LIZA: You're back again…
+
+        TATE: To give us a rematch.
+        LIZA: To give us a rematch.
+
+        TATE: But…
+        LIZA: For our match…
+
+        TATE: You brought just one POKéMON!
+        LIZA: You brought just one POKéMON!
+
+        TATE: We need you to bring at least…
+        LIZA: Two POKéMON when you come back.
+
+########################################################################
+# BOSS 21 — Maxie – Space Center  (level cap 59)
+#   flag: FLAG_DEFEATED_MAGMA_SPACE_CENTER
+########################################################################
+
+--- TRAINER_TABITHA_MOSSDEEP_NO_TAG   (trainerbattle_no_intro @ data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:257) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · MossdeepCity_SpaceCenter_Text_TabithaDefeat @ data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:493
+        I'm with our leader…
+  [POST-BATTLE]
+    (none found)
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · MossdeepCity_SpaceCenter_2F_Text_MaxieDontInterfere @ data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:459
+        MAXIE: Clear out of the way!
+        Don't you dare interfere!
+    · MossdeepCity_SpaceCenter_2F_Text_MaxieUseFuelToEruptVolcano @ data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:468
+        MAXIE: We're going to jettison
+        the entire load into MT. CHIMNEY!
+    · MossdeepCity_SpaceCenter_2F_Text_MaxieWeFailedIsAquaAlsoMisguided @ data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:496
+        MAXIE: We failed…
+    · MossdeepCity_SpaceCenter_2F_Text_MaxieWeWillGiveUp @ data/maps/MossdeepCity_SpaceCenter_2F/scripts.inc:499
+        MAXIE: All right…
+        We will give up on the fuel…
+
+        There appear to be more important
+        matters that I must examine…
+
+########################################################################
+# BOSS 22 — Archie – Seafloor Cavern  (level cap 61)
+#   flag: FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN
+########################################################################
+
+--- TRAINER_ARCHIE   (trainerbattle_no_intro @ data/maps/SeafloorCavern_Room9/scripts.inc:29) ---
+  [PRE-BATTLE]
+    · SeafloorCavern_Room9_Text_ArchieHoldItRightThere @ data/maps/SeafloorCavern_Room9/scripts.inc:226
+        ARCHIE: Hold it right there.
+    · SeafloorCavern_Room9_Text_ArchieSoItWasYou @ data/maps/SeafloorCavern_Room9/scripts.inc:229
+        ARCHIE: Fufufu…
+        So it was you, after all.
+    · SeafloorCavern_Room9_Text_ArchieBeholdKyogre @ data/maps/SeafloorCavern_Room9/scripts.inc:233
+        ARCHIE: Behold!
+
+        See how beautiful it is, the sleeping
+        form of the ancient POKéMON KYOGRE!
+
+        I have waited so long for this day to
+        come…
+    · SeafloorCavern_Room9_Text_ArchieYouMustDisappear @ data/maps/SeafloorCavern_Room9/scripts.inc:240
+        ARCHIE: It surprises me, how you've
+        managed to chase me here.
+
+        But that's all over now.
+
+        For the realization of my dream,
+        you must disappear now!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · SeafloorCavern_Room9_Text_ArchieDefeat @ data/maps/SeafloorCavern_Room9/scripts.inc:247
+        What?!
+        I lost to a mere child like you?!
+  [POST-BATTLE]
+    · SeafloorCavern_Room9_Text_ArchieWithThisRedOrb @ data/maps/SeafloorCavern_Room9/scripts.inc:251
+        ARCHIE: Fufufu…
+
+        I commend you. I must recognize that
+        you are truly gifted.
+
+        But!
+        I have this in my possession!
+
+        With this RED ORB, I can make KYOGRE…
+    · SeafloorCavern_Room9_Text_RedOrbShinesByItself @ data/maps/SeafloorCavern_Room9/scripts.inc:259
+        The RED ORB suddenly began shining
+        by itself!
+    · SeafloorCavern_Room9_Text_ArchieWhereDidKyogreGo @ data/maps/SeafloorCavern_Room9/scripts.inc:263
+        ARCHIE: What?!
+
+        I didn't do anything.
+        Why did the RED ORB…
+
+        Where did KYOGRE go?
+    · SeafloorCavern_Room9_Text_ArchieAMessageFromOutside @ data/maps/SeafloorCavern_Room9/scripts.inc:269
+        ARCHIE: Hm? It's a message from our
+        members outside…
+    · SeafloorCavern_Room9_Text_ArchieWhatRainingTooHard @ data/maps/SeafloorCavern_Room9/scripts.inc:273
+        ARCHIE: Yes, what is it?
+
+        Hm…
+        It's raining heavily?
+
+        Good… That should have happened.
+        That is why we awakened KYOGRE,
+        to realize TEAM AQUA's vision of
+        expanding the sea.
+
+        What?!
+
+        It's raining far harder than we
+        envisioned? You're in danger?
+
+        That can't be…
+        That's just not possible…
+
+        Hold your position and monitor
+        the situation!
+    · SeafloorCavern_Room9_Text_ArchieWhyDidKyogreDisappear @ data/maps/SeafloorCavern_Room9/scripts.inc:289
+        ARCHIE: There's something wrong…
+
+        The RED ORB is supposed to awaken
+        and control KYOGRE…
+
+        But… Why?
+        Why did KYOGRE disappear?
+
+        Why?!
+    · SeafloorCavern_Room9_Text_MaxieWhatHaveYouWrought @ data/maps/SeafloorCavern_Room9/scripts.inc:297
+        MAXIE: What have you wrought?
+
+        ARCHIE… You've finally awoken KYOGRE,
+        haven't you?
+
+        What will happen to the world if this
+        downpour continues for all eternity?
+
+        The world's landmass will drown in
+        the deepening sea…
+    · SeafloorCavern_Room9_Text_ArchieDontGetAllHighAndMighty @ data/maps/SeafloorCavern_Room9/scripts.inc:306
+        ARCHIE: W-what?!
+        Don't get all high and mighty with me!
+
+        Wasn't it you, TEAM MAGMA, that
+        infuriated GROUDON?
+
+        So long as I have this RED ORB,
+        I should be able to control KYOGRE…
+
+        I should be able to control it…
+    · SeafloorCavern_Room9_Text_MaxieWeDontHaveTimeToArgue @ data/maps/SeafloorCavern_Room9/scripts.inc:315
+        MAXIE: We don't have the time to
+        argue about it here!
+
+        Get outside and see for yourself!
+
+        See if what you've wrought is the
+        world that we desired!
+    · SeafloorCavern_Room9_Text_MaxieComeOnPlayer @ data/maps/SeafloorCavern_Room9/scripts.inc:322
+        MAXIE: {PLAYER}, come on, you have
+        to get out of here, too!
+    · SeafloorCavern_LevelCap @ data/maps/SeafloorCavern_Room9/scripts.inc:326
+        Your Pokémon have leveled up to {STR_VAR_1}!
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    (none)
+
+########################################################################
+# BOSS 23 — Juan – Badge 8  (level cap 64)
+#   flag: FLAG_BADGE08_GET
+########################################################################
+
+--- TRAINER_JUAN_1   (trainerbattle_single @ data/maps/SootopolisCity_Gym_1F/scripts.inc:83) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO]
+    · SootopolisCity_Gym_1F_Text_JuanIntro @ data/maps/SootopolisCity_Gym_1F/scripts.inc:208
+        Let me ask you.
+        Did you know?
+        Ah, I should not be so coy.
+
+        It was I who taught WALLACE everything
+        there is to know about POKéMON.
+
+        Once, I had given up my position as
+        the GYM LEADER.
+
+        In my place, I had entrusted WALLACE
+        with the GYM.
+
+        However, a compelling reason arose for
+        me to make a comeback.
+
+        Ah, but enough chatter.
+        Let us begin our match, shall we?
+
+        Please, you shall bear witness to
+        our artistry.
+
+        A grand illusion of water sculpted
+        by POKéMON and myself!
+  [ON-DEFEAT]
+    · SootopolisCity_Gym_1F_Text_JuanDefeat @ data/maps/SootopolisCity_Gym_1F/scripts.inc:231
+        Ahahaha, excellent!
+        Very well, you are the winner.
+
+        From you, I sense the brilliant shine
+        of skill that will overcome all.
+
+        However, compared with me or even
+        WALLACE, you are lacking in elegance.
+
+        Perhaps I should make you a loan
+        of my outfit?
+
+        … … … … … …
+        … … … … … …
+
+        Hahaha, I merely jest!
+
+        Rather than my clothes, I shall reward
+        you with this, the RAIN BADGE!
+  [POST-BATTLE]
+    · SootopolisCity_Gym_1F_Text_ReceivedRainBadge @ data/maps/SootopolisCity_Gym_1F/scripts.inc:246
+        {PLAYER} received the RAIN BADGE
+        and your Pokémon have leveled up to {STR_VAR_1}!
+    · SootopolisCity_Gym_1F_Text_RegisteredJuan @ data/maps/SootopolisCity_Gym_1F/scripts.inc:267
+        Registered GYM LEADER JUAN
+        in the POKéNAV.
+    · SootopolisCity_Gym_1F_Text_PlayerReceivedRewardPoke @ data/maps/SootopolisCity_Gym_1F/scripts.inc:128
+        {PLAYER} received GYM_REWARD_NAME!
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · SootopolisCity_Gym_1F_Text_JuanPostBattle @ data/maps/SootopolisCity_Gym_1F/scripts.inc:271
+        The TRAINERS who have gathered all
+        the GYM BADGES of HOENN should make
+        way to the ultimate destination.
+
+        The POKéMON LEAGUE.
+
+        Travel to the easternmost reaches
+        of HOENN, to the island EVER GRANDE.
+
+        There, you shall find the POKéMON
+        LEAGUE.
+    · SootopolisCity_Gym_1F_Text_JuanPreRematch @ data/maps/SootopolisCity_Gym_1F/scripts.inc:296
+        JUAN: Ah, this GYM had returned to its
+        usual state of serenity…
+
+        But our young typhoon has returned
+        to put us to the test again!
+
+        Well, my friend, most certainly!
+
+        I shall be delighted to dance with you
+        as often as you wish!
+    · SootopolisCity_Gym_1F_Text_JuanRematchDefeat @ data/maps/SootopolisCity_Gym_1F/scripts.inc:305
+        Ahahaha, you are the winner!
+        You have defeated me again!
+    · SootopolisCity_Gym_1F_Text_JuanPostRematch @ data/maps/SootopolisCity_Gym_1F/scripts.inc:309
+        JUAN: If I told you to become my
+        apprentice, you will refuse, I am sure.
+
+        I would like to make a gift of my coat
+        to you.
+
+        But again, you will refuse.
+        I imagine that to be so.
+
+        And that, my friend, is a certain sign
+        of nobility!
+    · SootopolisCity_Gym_1F_Text_JuanRematchNeedTwoMons @ data/maps/SootopolisCity_Gym_1F/scripts.inc:319
+        JUAN: Ah, this GYM had returned to its
+        usual state of serenity…
+
+        But our young typhoon has returned
+        to put us to the test again!
+
+        Well, my friend, most certainly!
+        I shall be delighted to dance with you…
+
+        Ah, no, no, no.
+        You have with you but one POKéMON.
+
+        I wish that you would return with
+        two, perhaps more, POKéMON, please.
+
+########################################################################
+# BOSS 24 — Wally – Victory Road  (level cap 67)
+#   flag: FLAG_DEFEATED_WALLY_VICTORY_ROAD
+########################################################################
+
+--- TRAINER_WALLY_VR_1   (trainerbattle_no_intro @ data/maps/VictoryRoad_1F/scripts.inc:42) ---
+  [PRE-BATTLE]
+    · VictoryRoad_1F_Text_WallyNotGoingToLoseAnymore @ data/maps/VictoryRoad_1F/scripts.inc:135
+        WALLY: Hi! {PLAYER}!
+
+        I bet you're surprised to see me here!
+
+        I made it all the way here, and it's
+        all thanks to you!
+
+        {PLAYER}, losing to you that time
+        made me stronger!
+
+        But I'm not going to lose anymore!
+
+        I'm going to win! For the POKéMON who
+        gave me courage and strength!
+
+        Okay… Here I come!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · VictoryRoad_1F_Text_WallyEntranceDefeat @ data/maps/VictoryRoad_1F/scripts.inc:147
+        Wow!
+        {PLAYER}, you are strong, after all!
+  [POST-BATTLE]
+    · VictoryRoad_1F_Text_WallyPostEntranceBattle @ data/maps/VictoryRoad_1F/scripts.inc:151
+        WALLY: I couldn't beat you today,
+        {PLAYER}, but one of these days, I'll
+        catch up to you!
+    · VictoryRoad_LevelCap @ data/maps/VictoryRoad_1F/scripts.inc:234
+        Your Pokémon have leveled up to {STR_VAR_1}!
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · VictoryRoad_1F_Text_WallyIntro @ data/maps/VictoryRoad_1F/scripts.inc:156
+        WALLY: Hi! {PLAYER}!
+
+        I've gotten stronger since that last
+        time! I wanted to show you, {PLAYER}!
+
+        Okay… Here I come!
+    · VictoryRoad_1F_Text_WallyDefeat @ data/maps/VictoryRoad_1F/scripts.inc:162
+        Wow!
+        {PLAYER}, you are strong, after all!
+    · VictoryRoad_1F_Text_WallyPostBattle @ data/maps/VictoryRoad_1F/scripts.inc:166
+        WALLY: I couldn't beat you this time,
+        too… But one of these days, {PLAYER},
+        I'm going to catch up to you…
+
+        And challenge the POKéMON LEAGUE!
+
+########################################################################
+# BOSS 25 — Rival – Ever Grande  (level cap 70)
+#   flag: FLAG_DEFEATED_EVERGRANDE_RIVAL
+########################################################################
+
+--- TRAINER_BRENDAN_EVERGRANDE_CITY_TREECKO   (trainerbattle_no_intro @ data/maps/EverGrandeCity/scripts.inc:64) ---
+  [PRE-BATTLE]
+    (none found)
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · EverGrandeCity_Text_RivalDefeated @ data/maps/EverGrandeCity/scripts.inc:159
+        I… Lost?
+  [POST-BATTLE]
+    (none found)
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · EverGrandeCity_Text_May_OneLastBattle @ data/maps/EverGrandeCity/scripts.inc:147
+        MAY: And here we are.
+        One more step to glory…
+
+        But only one of us can
+        really be the Champion.
+    · EverGrandeCity_Text_Brendan_OneLastBattle @ data/maps/EverGrandeCity/scripts.inc:153
+        BRENDAN: And here we are.
+        One more step to glory…
+
+        But only one of us can
+        really be the Champion.
+    · EverGrandeCity_Text_MayTimeToHeadBack @ data/maps/EverGrandeCity/scripts.inc:162
+        MAY: … … … … … … … …
+        {PLAYER}{KUN}…
+
+        Alright. Go ahead. You win.
+        Now claim your prize.I will… Go home. I guess.
+    · EverGrandeCity_Text_BrendanTimeToHeadBack @ data/maps/EverGrandeCity/scripts.inc:169
+        BRENDAN: … … … … … … … …
+        {PLAYER}{KUN}…
+
+        Alright. Go ahead. You win.
+        Now claim your prize.I will… Go home. I guess.
+
+########################################################################
+# BOSS 26 — Elite Four – Sidney  (level cap 73)
+#   flag: FLAG_FIRST_DEFEATED_ELITE_4_SIDNEY
+########################################################################
+
+--- TRAINER_SIDNEY   (trainerbattle_no_intro @ data/maps/EverGrandeCity_SidneysRoom/scripts.inc:54) ---
+  [PRE-BATTLE]
+    · EverGrandeCity_SidneysRoom_Text_IntroSpeech @ data/maps/EverGrandeCity_SidneysRoom/scripts.inc:93
+        Welcome, challenger!
+        I'm SIDNEY of the ELITE FOUR.
+
+        I like that look you're giving me.
+        I guess you'll give me a good match.
+        That's good! Looking real good!
+
+        All right! You and me, let's enjoy
+        a battle that can only be staged
+        here in the POKéMON LEAGUE!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · EverGrandeCity_SidneysRoom_Text_Defeat @ data/maps/EverGrandeCity_SidneysRoom/scripts.inc:103
+        Well, how do you like that? I lost!
+        Eh, it was fun, so it doesn't matter.
+  [POST-BATTLE]
+    (none found)
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · EverGrandeCity_SidneysRoom_Text_PostBattleSpeech @ data/maps/EverGrandeCity_SidneysRoom/scripts.inc:107
+        Well, listen to what this loser has
+        to say.
+
+        You've got what it takes to go far.
+        Now, go on to the next room and enjoy
+        your next battle!
+
+########################################################################
+# BOSS 27 — Elite Four – Phoebe  (level cap 74)
+#   flag: FLAG_FIRST_DEFEATED_ELITE_4_PHOEBE
+########################################################################
+
+--- TRAINER_PHOEBE   (trainerbattle_no_intro @ data/maps/EverGrandeCity_PhoebesRoom/scripts.inc:47) ---
+  [PRE-BATTLE]
+    · EverGrandeCity_PhoebesRoom_Text_IntroSpeech @ data/maps/EverGrandeCity_PhoebesRoom/scripts.inc:77
+        Ahahaha!
+
+        I'm PHOEBE of the ELITE FOUR.
+        I did my training on MT. PYRE.
+
+        While I trained, I gained the ability
+        to commune with GHOST-type POKéMON.
+
+        Yes, the bond I developed with POKéMON
+        is extremely tight.
+
+        So, come on, just try and see if you can
+        even inflict damage on my POKéMON!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · EverGrandeCity_PhoebesRoom_Text_Defeat @ data/maps/EverGrandeCity_PhoebesRoom/scripts.inc:88
+        Oh, darn.
+        I've gone and lost.
+  [POST-BATTLE]
+    (none found)
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · EverGrandeCity_PhoebesRoom_Text_PostBattleSpeech @ data/maps/EverGrandeCity_PhoebesRoom/scripts.inc:92
+        There's a definite bond between you
+        and your POKéMON, too.
+
+        I didn't recognize it, so it's only
+        natural that I lost.
+
+        Yup, I'd like to see how far your bond
+        will carry you.
+
+        Go ahead, move on to the next room.
+
+########################################################################
+# BOSS 28 — Elite Four – Glacia  (level cap 75)
+#   flag: FLAG_FIRST_DEFEATED_ELITE_4_GLACIA
+########################################################################
+
+--- TRAINER_GLACIA   (trainerbattle_no_intro @ data/maps/EverGrandeCity_GlaciasRoom/scripts.inc:47) ---
+  [PRE-BATTLE]
+    · EverGrandeCity_GlaciasRoom_Text_IntroSpeech @ data/maps/EverGrandeCity_GlaciasRoom/scripts.inc:77
+        Welcome, my name is GLACIA
+        of the ELITE FOUR.
+
+        I've traveled from afar to HOENN
+        so that I may hone my ice skills.
+
+        But all I have seen are challenges by
+        weak TRAINERS and their POKéMON.
+
+        What about you?
+
+        It would please me to no end if I could
+        go all out against you!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · EverGrandeCity_GlaciasRoom_Text_Defeat @ data/maps/EverGrandeCity_GlaciasRoom/scripts.inc:88
+        You and your POKéMON…
+        How hot your spirits burn!
+
+        The all-consuming heat overwhelms.
+
+        It's no surprise that my icy skills
+        failed to harm you.
+  [POST-BATTLE]
+    (none found)
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · EverGrandeCity_GlaciasRoom_Text_PostBattleSpeech @ data/maps/EverGrandeCity_GlaciasRoom/scripts.inc:95
+        Advance to the next room.
+
+        And there, confirm the truly fearsome
+        side of the POKéMON LEAGUE.
+
+########################################################################
+# BOSS 29 — Elite Four – Drake  (level cap 76)
+#   flag: FLAG_FIRST_DEFEATED_ELITE_4_DRAKE
+########################################################################
+
+--- TRAINER_DRAKE   (trainerbattle_no_intro @ data/maps/EverGrandeCity_DrakesRoom/scripts.inc:48) ---
+  [PRE-BATTLE]
+    · EverGrandeCity_DrakesRoom_Text_IntroSpeech @ data/maps/EverGrandeCity_DrakesRoom/scripts.inc:80
+        I am the last of the POKéMON LEAGUE
+        ELITE FOUR, DRAKE the DRAGON master!
+
+        In their natural state, POKéMON are
+        wild living things. They are free.
+
+        At times, they hinder us.
+        At times, they help us.
+
+        For us to battle with POKéMON as
+        partners, do you know what it takes?
+
+        Do you know what is needed?
+
+        If you don't, then you will never
+        prevail over me!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · EverGrandeCity_DrakesRoom_Text_Defeat @ data/maps/EverGrandeCity_DrakesRoom/scripts.inc:93
+        Superb, it should be said.
+  [POST-BATTLE]
+    (none found)
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · EverGrandeCity_DrakesRoom_Text_PostBattleSpeech @ data/maps/EverGrandeCity_DrakesRoom/scripts.inc:96
+        You deserve every credit for coming
+        this far as a TRAINER of POKéMON.
+
+        You do seem to know what is needed.
+
+        Yes, what a TRAINER needs is a
+        virtuous heart.
+
+        POKéMON touch the good hearts of
+        TRAINERS and learn good from wrong.
+
+        They touch the good hearts of
+        TRAINERS and grow strong.
+
+        Go! Go onwards!
+        The CHAMPION is waiting!
+
+########################################################################
+# BOSS 30 — Champion – Steven  (level cap 78)
+#   flag: FLAG_IS_CHAMPION
+########################################################################
+
+--- TRAINER_CHAMPION_STEVEN   (trainerbattle_no_intro @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:43) ---
+  [PRE-BATTLE]
+    · EverGrandeCity_ChampionsRoom_Text_IntroSpeech @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:222
+        WALLACE: Welcome, {PLAYER}{KUN}.
+
+        That incident in SOOTOPOLIS CITY…
+        That was superb work, putting an end
+        to that crisis all by yourself.
+
+        Oops!
+
+        It wouldn't be fair to say that you
+        alone ended the crisis.
+
+        You overcame that difficult situation
+        by working as one with your POKéMON.
+
+        We TRAINERS raise POKéMON by giving
+        them items and by teaching them new
+        techniques for battle.
+
+        But we ourselves also learn many
+        things from POKéMON.
+
+        And this is where your achievements
+        are put to the test against what
+        others like you have achieved.
+
+        Now!
+
+        Who can most elegantly dance with
+        their POKéMON in HOENN?
+
+        Show me right here and now!
+  [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
+    (none found)
+  [ON-DEFEAT]
+    · EverGrandeCity_ChampionsRoom_Text_Defeat @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:245
+        I, the CHAMPION, fall in defeat…
+
+        That was wonderful work.
+        You were elegant, infuriatingly so.
+        And yet it was utterly glorious!
+
+        Kudos to you, {PLAYER}{KUN}!
+
+        You are a truly noble POKéMON
+        TRAINER!
+  [POST-BATTLE]
+    (none found)
+
+  [OTHER TEXT IN THIS MAP — same character, not already shown above]
+    · EverGrandeCity_ChampionsRoom_Text_PostBattleSpeech @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:254
+        WALLACE: The POKéMON you sent into
+        battle…
+
+        At times they danced like a spring
+        breeze, and at times they struck
+        like lightning.
+
+        It was with light, yet surefooted,
+        elegance that you led your POKéMON.
+
+        Even I felt bedazzled by your
+        masterful performance!
+
+        You now stand at the glorious peak
+        of the POKéMON LEAGUE.
+
+        I now proclaim you to be the new
+        HOENN region…
+    · EverGrandeCity_ChampionsRoom_Text_MayAdvice @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:269
+        MAY: {PLAYER}{KUN}!
+
+        Here's some advice before you challenge
+        the CHAMPION…
+    · EverGrandeCity_ChampionsRoom_Text_MayItsAlreadyOver @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:274
+        MAY: Huh?
+        What, what, what?
+
+        {PLAYER}{KUN}…
+        Could it be that…
+        It's already over?
+    · EverGrandeCity_ChampionsRoom_Text_BrendanAdvice @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:281
+        BRENDAN: {PLAYER}!
+
+        How would you like some advice before
+        you challenge the CHAMPION?…
+    · EverGrandeCity_ChampionsRoom_Text_BrendanYouveWon @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:286
+        BRENDAN: {PLAYER}…
+
+        Are you trying to tell me…
+        You've beaten the CHAMPION?
+    · EverGrandeCity_ChampionsRoom_Text_BirchArriveRatePokedex @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:291
+        PROF. BIRCH: See?
+        What did I tell you, {RIVAL}?
+
+        Didn't I tell you that you don't need
+        to worry about {PLAYER}{KUN}?
+
+        … … … … … … … …
+        {PLAYER}{KUN}, you've finally done it.
+
+        When I heard that you defeated your
+        own father at the PETALBURG GYM,
+        I thought perhaps you had a chance…
+
+        But to think you've actually become
+        the CHAMPION!
+
+        Ah, yes!
+
+        What became of your POKéDEX?
+        Here, let me see.
+    · EverGrandeCity_ChampionsRoom_Text_BirchCongratulations @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:307
+        PROF. BIRCH: Anyways,
+        congratulations!
+
+        Now, go proudly into the final room!
+    · EverGrandeCity_ChampionsRoom_Text_WallaceComeWithMe @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:312
+        WALLACE: {PLAYER}{KUN}…
+
+        No, let me rephrase that properly.
+
+        The new CHAMPION!
+
+        Come with me.
+    · EverGrandeCity_ChampionsRoom_Text_WallaceWaitOutside @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:318
+        WALLACE: I'm sorry, but…
+
+        From here on, only those TRAINERS who
+        have become CHAMPIONS may enter.
+
+        You'll have to wait outside with
+        PROF. BIRCH.
+    · EverGrandeCity_ChampionsRoom_Text_MayCongratulations @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:325
+        MAY: Groan…
+
+        … … … … … … … …
+        … … … … … … … …
+
+        I'm just joking! That's okay!
+        That's the rule!
+
+        {PLAYER}{KUN}!
+        Honestly, congratulations!
+    · EverGrandeCity_ChampionsRoom_Text_BrendanCongratulations @ data/maps/EverGrandeCity_ChampionsRoom/scripts.inc:334
+        BRENDAN: Whaaaat?! … … … … …
+        … … … … … … … …
+
+        It can't be helped if that's the rule.
+
+        {PLAYER}, way to go!
+        Congratulations!

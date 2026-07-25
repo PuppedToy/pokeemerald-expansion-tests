@@ -1,7 +1,7 @@
 ---
 id: T-206
 title: Extract every boss's dialogue into an editable TXT (round-trip)
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: chore             # feature | fix | refactor | docs | chore
 created: 2026-07-25
 updated: 2026-07-25
@@ -51,11 +51,16 @@ bosses), resolves `.string` bodies, and emits one screenplay-style TXT grouped b
 happens **after** the owner edits the TXT — deferred until then (kept in this task or split out on owner request).
 
 Acceptance criteria:
-- [ ] A TXT is generated covering every boss in `caps.c` order, each with the four labelled fields, rendered as
-      an ordered who-says-what dialogue.
-- [ ] Complex/multi-stage boss scenes (e.g. Archie) include all related text, not just the trainerbattle params.
-- [ ] The extractor is reproducible (a committed script), so the TXT can be regenerated after script changes.
-- [ ] (Phase 2, later) a documented path to fold owner edits back into `data/maps/**/scripts.inc`.
+- [x] A TXT is generated covering every boss in `caps.c` order (all 31, via `bosscaps.json`), each with the four
+      labelled fields; the game text carries its own speaker prefixes ("ARCHIE:", "DAD:", "MAY:") and each line
+      is tagged with its text label, so it reads as an ordered scene.
+- [x] Complex/multi-stage boss scenes (e.g. Archie — cave confrontation → Red Orb → Kyogre vanishes → message
+      from outside) include all related text; a per-boss "OTHER TEXT IN THIS MAP" net catches same-character
+      lines the control-flow walk didn't reach.
+- [x] The extractor is reproducible — `scripts/extract-boss-dialogue.mjs` (committed); re-running regenerates
+      `boss-dialogue.txt`. Every boss resolved a battle; 0 unresolved labels.
+- [ ] (Phase 2, later) fold the owner's edits back into `data/maps/**/scripts.inc` via the `[label @ file:line]`
+      markers — starts once the owner returns the edited TXT.
 
 ## Progress log
 
@@ -64,6 +69,17 @@ Acceptance criteria:
 - **2026-07-25** — Task created (proposed). Identified the boss SSOT (`caps.c:12-48`), the boss→trainer bridge
   (`bosscaps.json` / `bossCaps.js`), and the `trainerbattle` param→bucket mapping. Scoped as phase 1 (generate
   the editable TXT) with phase 2 (edit write-back) deferred until the owner returns the edited file.
+- **2026-07-25** — **Phase 1 done (in-progress).** Built `scripts/extract-boss-dialogue.mjs`: indexes every
+  `.inc` under `data/` for label→`.string` resolution, walks the 31 bosses in cap order, and for each trainer
+  finds its main (non-rematch) `trainerbattle*`, deriving the four buckets — PRE-BATTLE (msgbox before),
+  IN-BATTLE INTRO (the `intro_text` param, or "none" for `_no_intro`), ON-DEFEAT (`lose_text`), POST-BATTLE
+  (msgbox after + the `event_script` continuation, followed 2 levels through goto/call). Handles
+  `_single`/`_no_intro`/`_double`/`_two_trainers`/raw `trainerbattle`; collapses identical rival variants
+  (May/Brendan × 3 starters); adds a same-character "OTHER TEXT IN THIS MAP" completeness net. Decoded text is
+  readable (\n/\p unfolded) and every line is tagged `[label @ file:line]` at the `.string` definition for
+  phase-2 round-tripping. Output `boss-dialogue.txt` (2255 lines, 31 bosses, 0 unresolved). Verified Wattson
+  (single+event_script), Norman (no_intro + reward text), Archie (multi-stage), Space Center (3-trainer tag).
+  **Awaiting the owner's review/edits of `boss-dialogue.txt` before phase 2 (write-back).**
 
 ## Outcome
 
