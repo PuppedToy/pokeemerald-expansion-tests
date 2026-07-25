@@ -7,6 +7,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Changed
+
+- **Wattson eased a little.** Because Wattson fields a Mega before you can get one, his two weakest
+  (non-Mega) team slots drop from RU to NU. The generic trainers in the post-Wattson (Mauville) area ease
+  by the same amount. (T-204)
+
 ### Added
 
 - **Stronger super-rod fishing on two route bands.** The super-rod encounters on Routes 106/109/110/117/118 and
