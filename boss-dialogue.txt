@@ -850,38 +850,28 @@ HOW TO USE THIS FILE
 #   flag: FLAG_DEFEATED_TABITHA_MT_CHIMNEY
 ########################################################################
 
---- TRAINER_TABITHA_MT_CHIMNEY   (trainerbattle_single @ data/maps/MtChimney/scripts.inc:413) ---
+--- TRAINER_TABITHA_MT_CHIMNEY   (trainerbattle_single @ data/maps/MtChimney/scripts.inc:412) ---
   [PRE-BATTLE]
     (none found)
   [IN-BATTLE INTRO]
-    · MtChimney_Text_TabithaIntro @ data/maps/MtChimney/scripts.inc:547
+    · MtChimney_Text_TabithaIntro @ data/maps/MtChimney/scripts.inc:539
         So you've come all the way here!
 
         But you're too late!
   [ON-DEFEAT]
-    · MtChimney_Text_TabithaDefeat @ data/maps/MtChimney/scripts.inc:551
-        Hehehe…
-
+    · MtChimney_Text_TabithaDefeat @ data/maps/MtChimney/scripts.inc:543
         Even though I've lost, if our leader
         awakens that thing…
   [POST-BATTLE]
-    · MtChimney_LevelCap_Minor @ data/maps/MtChimney/scripts.inc:774
+    · MtChimney_LevelCap_Minor @ data/maps/MtChimney/scripts.inc:764
         Your Pokémon have leveled up to {STR_VAR_1}!
-    · MtChimney_Text_TabithaPostBattle @ data/maps/MtChimney/scripts.inc:556
+    · MtChimney_Text_TabithaPostBattle @ data/maps/MtChimney/scripts.inc:547
         BOSS, hurry!
         Give it the METEORITE's energy!
 
-        Hehehe…
-
   [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
-    · MtChimney_Text_MaxieIntro @ data/maps/MtChimney/scripts.inc:534
-        I'll teach you the consequences of
-        meddling in our grand design!
-    · MtChimney_Text_MaxieDefeat @ data/maps/MtChimney/scripts.inc:538
-        What?!
-
-        I, MAXIE, was caught off guard?!
-    · MtChimney_Text_MaxieYouHaventSeenLastOfMagma @ data/maps/MtChimney/scripts.inc:542
+    · MtChimney_Text_MaxieYouHaventSeenLastOfMagma @ data/maps/MtChimney/scripts.inc:533
+        There's no time.
         I will back off this time.
 
         But don't think that this is the last

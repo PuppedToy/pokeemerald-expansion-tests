@@ -41,7 +41,6 @@ MtChimney_EventScript_Maxie::
 	waitmovement 0
 	applymovement LOCALID_MT_CHIMNEY_MAXIE, Common_Movement_Delay48
 	waitmovement 0
-	msgbox MtChimney_Text_MaxieIntro, MSGBOX_DEFAULT
 	@ T-148: no Maxie battle and no level-cap upgrade here. The flag is kept as a
 	@ story-only flag (it gates ~15 later events); it just no longer bumps the cap.
 	setflag FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY
@@ -531,15 +530,8 @@ MtChimney_EventScript_Grunt1::
 	msgbox MtChimney_Text_Grunt1Intro, MSGBOX_NPC
 	end
 
-MtChimney_Text_MaxieIntro:
-	.string "I'll teach you the consequences of\n"
-	.string "meddling in our grand design!$"
-
-MtChimney_Text_MaxieDefeat:
-	.string "What?!\p"
-	.string "I, MAXIE, was caught off guard?!$"
-
 MtChimney_Text_MaxieYouHaventSeenLastOfMagma:
+	.string "There's no time.\n"
 	.string "I will back off this time.\p"
 	.string "But don't think that this is the last\n"
 	.string "you've seen of TEAM MAGMA.$"
@@ -549,14 +541,12 @@ MtChimney_Text_TabithaIntro:
 	.string "But you're too late!$"
 
 MtChimney_Text_TabithaDefeat:
-	.string "Hehehe…\p"
 	.string "Even though I've lost, if our leader\n"
 	.string "awakens that thing…$"
 
 MtChimney_Text_TabithaPostBattle:
 	.string "BOSS, hurry!\n"
-	.string "Give it the METEORITE's energy!\p"
-	.string "Hehehe…$"
+	.string "Give it the METEORITE's energy!$"
 
 MtChimney_Text_Grunt2Intro:
 	.string "We of TEAM MAGMA are working hard for\n"

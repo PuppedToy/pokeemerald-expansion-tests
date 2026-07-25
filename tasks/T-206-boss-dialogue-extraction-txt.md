@@ -85,6 +85,15 @@ Acceptance criteria:
   were missing. Added a `COMPANION_TOKENS` hook (boss flag → extra character tokens) folded into the
   "OTHER TEXT" net; `FLAG_DEFEATED_TABITHA_MT_CHIMNEY → ['Maxie']`. Regenerated — Maxie's Mt Chimney cutscene
   text now shows under boss 11.
+- **2026-07-26** — **Phase 2 started — applied the owner's first batch of edits (Mt Chimney) back to
+  `data/maps/MtChimney/scripts.inc`.** Read the owner's `git diff` of `boss-dialogue.txt` and mapped each change
+  via the `[label]` markers: trimmed the "Hehehe…" openers/closers from `TabithaDefeat` + `TabithaPostBattle`;
+  removed Maxie's `msgbox MtChimney_Text_MaxieIntro` line and prepended "There's no time." to
+  `MaxieYouHaventSeenLastOfMagma`; deleted the now-orphaned `MaxieIntro` + (already-unused) `MaxieDefeat`
+  `.string` labels (grep-confirmed no other refs). Round-trip verified: regenerating the TXT from the edited
+  scripts is byte-identical to the owner's edited text (only marker line-numbers shifted). **Builder-only — the
+  text change compiles/renders only on the ROM builder; not verifiable locally.** More bosses may follow as the
+  owner edits further sections.
 
 ## Outcome
 
