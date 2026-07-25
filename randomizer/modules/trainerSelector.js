@@ -212,11 +212,13 @@ function createChooser(pokemonList, trainer, context, opts = {}) {
         } else if (trainerMonDefinition.special === TRAINER_POKE_STARTER_MUDKIP) {
             pokemonStrictList = [pokemonList.find(p => p.id === starters[0])];
         } else if (trainerMonDefinition.special === 'PLAYER_LEGEND_TREECKO') {
-            pokemonStrictList = [staticRewards.legend1];
+            // T-199 — the rival's ace is the SHUFFLED rival legendary (rivalLegend*); legend1/2/3 stay the
+            // Sky Pillar order. Fall back to the old positional legendN for pre-T-199 bundles.
+            pokemonStrictList = [staticRewards.rivalLegendTreecko || staticRewards.legend1];
         } else if (trainerMonDefinition.special === 'PLAYER_LEGEND_TORCHIC') {
-            pokemonStrictList = [staticRewards.legend2];
+            pokemonStrictList = [staticRewards.rivalLegendTorchic || staticRewards.legend2];
         } else if (trainerMonDefinition.special === 'PLAYER_LEGEND_MUDKIP') {
-            pokemonStrictList = [staticRewards.legend3];
+            pokemonStrictList = [staticRewards.rivalLegendMudkip || staticRewards.legend3];
         } else if (trainerMonDefinition.special === TRAINER_REPEAT_ID) {
             const repeatedId = storedIds[trainerMonDefinition.id];
             if (repeatedId) {

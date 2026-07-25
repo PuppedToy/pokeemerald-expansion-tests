@@ -462,6 +462,53 @@ describe('runWildModule — static rewards shape', () => {
     });
 });
 
+describe('runWildModule — rival legendary shuffle (T-199)', () => {
+    const { runWildModule } = require('../../modules/wildModule');
+
+    test('exposes rivalLegend{Treecko,Torchic,Mudkip} on staticRewards', () => {
+        rng.seed(1);
+        const { staticRewards } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        expect(staticRewards).toHaveProperty('rivalLegendTreecko');
+        expect(staticRewards).toHaveProperty('rivalLegendTorchic');
+        expect(staticRewards).toHaveProperty('rivalLegendMudkip');
+    });
+
+    test('the three rival legendaries are a permutation of legend1/2/3 (still catchable at Sky Pillar)', () => {
+        rng.seed(1);
+        const { staticRewards } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        const skyPillar = [staticRewards.legend1.id, staticRewards.legend2.id, staticRewards.legend3.id].sort();
+        const rivals = [
+            staticRewards.rivalLegendTreecko.id,
+            staticRewards.rivalLegendTorchic.id,
+            staticRewards.rivalLegendMudkip.id,
+        ].sort();
+        expect(rivals).toEqual(skyPillar);
+    });
+
+    test('the rival assignment is deterministic per seed', () => {
+        rng.seed(7);
+        const a = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig).staticRewards;
+        rng.seed(7);
+        const b = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig).staticRewards;
+        expect([a.rivalLegendTreecko.id, a.rivalLegendTorchic.id, a.rivalLegendMudkip.id])
+            .toEqual([b.rivalLegendTreecko.id, b.rivalLegendTorchic.id, b.rivalLegendMudkip.id]);
+    });
+
+    test('the assignment actually shuffles — not the fixed legend1→Treecko/legend2→Torchic/legend3→Mudkip identity', () => {
+        // Over a spread of seeds at least one must break the old positional identity mapping.
+        let sawNonIdentity = false;
+        for (let s = 1; s <= 25 && !sawNonIdentity; s++) {
+            rng.seed(s);
+            const { staticRewards: sr } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+            const identity = sr.rivalLegendTreecko.id === sr.legend1.id
+                && sr.rivalLegendTorchic.id === sr.legend2.id
+                && sr.rivalLegendMudkip.id === sr.legend3.id;
+            if (!identity) sawNonIdentity = true;
+        }
+        expect(sawNonIdentity).toBe(true);
+    });
+});
+
 describe('runWildModule — alreadyChosenFamilies returned', () => {
     test('returns alreadyChosenFamilies array', () => {
         const { runWildModule } = require('../../modules/wildModule');
@@ -493,9 +540,16 @@ describe('runWildModule — no duplicate families across all rewards', () => {
         const { runWildModule } = require('../../modules/wildModule');
         rng.seed(1);
         const { gymRewards, staticRewards } = runWildModule(extendedPokemonList, startersArtifact, emptyWildConfig);
+        // T-199 — rivalLegend{Treecko,Torchic,Mudkip} are DELIBERATE aliases of legend1/2/3 (the rival's
+        // ace is one of the Sky Pillar legendaries, reshuffled), so they share those families by design.
+        // Exclude them here: the invariant is that the DISTINCT rewards pick distinct families.
+        const rivalLegendKeys = ['rivalLegendTreecko', 'rivalLegendTorchic', 'rivalLegendMudkip'];
+        const distinctStatic = Object.entries(staticRewards)
+            .filter(([k]) => !rivalLegendKeys.includes(k))
+            .map(([, r]) => r);
         const allFamilies = [
             ...Object.values(gymRewards).map(r => r.family),
-            ...Object.values(staticRewards).map(r => r.family),
+            ...distinctStatic.map(r => r.family),
         ];
         expect(allFamilies.length).toBe(new Set(allFamilies).size);
     });

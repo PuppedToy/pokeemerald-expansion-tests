@@ -696,6 +696,16 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig, moduleConfi
         },
     });
 
+    // T-199 — shuffle the three Sky Pillar legendaries before handing one to each rival type, so the
+    // rival's ace is no longer POSITIONALLY tied to the Sky Pillar slot order (was legend1→Treecko,
+    // legend2→Torchic, legend3→Mudkip). Done AFTER the sweep so the wild-plan RNG stream stays
+    // byte-identical — only the two draws below are new. The three remain the Sky Pillar legendaries,
+    // so the rival's ace is still catchable there; only WHICH one each rival gets is now randomised.
+    const rivalLegendPool = [legend1Replacement, legend2Replacement, legend3Replacement];
+    staticRewards.rivalLegendTreecko = sampleAndRemove(rivalLegendPool);
+    staticRewards.rivalLegendTorchic = sampleAndRemove(rivalLegendPool);
+    staticRewards.rivalLegendMudkip = rivalLegendPool[0];
+
     return {
         extraStarters,
         gymRewards,

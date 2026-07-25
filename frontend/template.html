@@ -1819,8 +1819,17 @@
               </div>`
           : '';
 
+        // T-199 — the Ever Grande rival's legendary slot is hidden behind a placeholder until the player
+        // marks Juan (TRAINER_JUAN_1) as defeated. Emit BOTH a placeholder (shown by default) and the real
+        // row (hidden by default); applyLegendaryHiding() below flips them from nzState. The placeholder is
+        // a plain box — not a .trainer-poke — so it never opens the Pokémon modal and leaks the species.
+        const isLegend = !!member.playerLegend;
+        const legendPlaceholder = isLegend
+          ? `<div class="roster-hidden-box rival-legend-placeholder">${getIcon('pokeball','❔')} A legendary Pokémon</div>`
+          : '';
         return `
-          <div class="clicker trainer-poke poke-${pokeId} roster-row${hasMoves ? '' : ' roster-row--nomoves'}">
+          ${legendPlaceholder}
+          <div class="clicker trainer-poke poke-${pokeId} roster-row${hasMoves ? '' : ' roster-row--nomoves'}${isLegend ? ' rival-legend-real' : ''}"${isLegend ? ' style="display:none"' : ''}>
             <img class="roster-row-spr" src="${imgSrc}" alt="${pokeNamePlain}">
             <div class="roster-info">
               <div class="roster-pname">${pokeName}</div>
@@ -3018,6 +3027,21 @@
       });
     }
 
+    // T-199 — the Ever Grande rival's legendary is hidden ("A legendary Pokémon") until Juan is defeated.
+    // Gate purely on the per-trainer Defeated checkbox of TRAINER_JUAN_1 (nzState) so it works in both the
+    // browser docs and out.html (no dependency on the bossCaps engine). Each rival card carries a
+    // .rival-legend-placeholder (default shown) and a .rival-legend-real row (default hidden); flip them.
+    var JUAN_TRAINER_ID = 'TRAINER_JUAN_1';
+    function applyLegendaryHiding() {
+      var juanDefeated = !!(nzState.trainers && nzState.trainers[JUAN_TRAINER_ID]);
+      document.querySelectorAll('.rival-legend-placeholder').forEach(function (el) {
+        el.style.display = juanDefeated ? 'none' : '';
+      });
+      document.querySelectorAll('.rival-legend-real').forEach(function (el) {
+        el.style.display = juanDefeated ? '' : 'none';
+      });
+    }
+
     // ---------- Starter rival visibility ----------
     // Maps starter slot → rival team suffix class
     const starterToSuffix = { 'special1': 'treecko', 'special2': 'torchic', 'special3': 'mudkip' };
@@ -3027,13 +3051,14 @@
       const suffix = sel ? starterToSuffix[sel] : null;
       const rival  = getRivalGender();              // 'may' | 'brendan' — T-197
 
-      // Once a starter is picked, show only the chosen rival's variant that counters that starter and
-      // hide every other rival card (the other gender entirely, and this gender's other starters).
-      // With no starter selected, all rival cards are shown.
+      // The chosen rival's gender ALWAYS filters: the other gender's cards are hidden even before a
+      // starter is picked (B-053). Once a starter IS picked, we additionally narrow this gender to the
+      // single variant that counters that starter. So: no starter → the 3 chosen-gender variants; a
+      // starter → the 1 matching variant.
       ['may', 'brendan'].forEach(function (g) {
         ['treecko', 'torchic', 'mudkip'].forEach(function (s) {
           document.querySelectorAll('.trainer-card.rival-' + g + '-' + s).forEach(function (c) {
-            c.style.display = (sel && (g !== rival || suffix !== s)) ? 'none' : '';
+            c.style.display = (g !== rival || (sel && suffix !== s)) ? 'none' : '';
           });
         });
       });
@@ -3124,6 +3149,7 @@
 
       saveState();
       applyTrainerVisuals(trainerId);
+      applyLegendaryHiding();   // T-199 — Juan (directly or via the auto-defeat cascade) reveals the rival's legendary
       if (window.onBossDefeatChange) window.onBossDefeatChange(trainerId, checked);   // T-007 mail hook
     }
 
@@ -3171,6 +3197,7 @@
     applyAllGroupEffects(); // must run after all per-location visuals are set
     applyAllTrainerVisuals();
     applyStarterRivals();
+    applyLegendaryHiding();   // T-199 — reflect the persisted Juan-defeated state on the rival legendary
     setupEvents();
   })();
   </script>

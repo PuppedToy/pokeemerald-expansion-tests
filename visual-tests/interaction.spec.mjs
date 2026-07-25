@@ -91,11 +91,14 @@ test.describe('T-082: Next boss shortcut', () => {
     test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');
     await page.goto(DOCS_FIXTURE_URL, { waitUntil: 'domcontentloaded' });
 
-    // The next boss on a fresh doc is bossCaps[0]; its target is the first of its trainers with a card.
+    // The next boss on a fresh doc is bossCaps[0] (the rival). B-053: the rival cards are gender-filtered
+    // even before a starter is picked, so only the chosen gender's variants are visible — target the first
+    // VISIBLE variant, which is the one "Next boss" scrolls to (a hidden variant is never the target).
     const targetId = await page.evaluate(() => {
       const nb = bossCaps[0];
       for (const id of nb.trainers) {
-        if (document.querySelector('.trainer-card[data-trainer-id="' + id + '"]')) return id;
+        const c = document.querySelector('.trainer-card[data-trainer-id="' + id + '"]');
+        if (c && c.style.display !== 'none') return id;
       }
       return null;
     });
@@ -254,6 +257,114 @@ test.describe('T-078: item descriptions on hover', () => {
 // of ROMs would land the build in the SLOW queue (romsTotal > FAST_MAX_ROMS = 2), naming the fast-queue
 // limit; it hides again at or below the limit. The unit tests use a DOM stub that can't parse innerHTML,
 // so this is the only place the actual show/hide + text wiring runs in a real browser.
+// T-199 regression: the Ever Grande rival's legendary is hidden behind a placeholder
+// ("A legendary Pokémon") until the player marks Juan (TRAINER_JUAN_1) as defeated, at which point it
+// reveals the real species. Gated purely on Juan's per-trainer Defeated checkbox (nzState), so this is
+// the interaction that proves the whole chain: playerLegend tag → placeholder render → reveal on toggle.
+test.describe('T-199: rival legendary hidden until Juan is defeated', () => {
+  test('docs viewer: the rival legendary is a placeholder until Juan is defeated, then reveals', async ({ page }) => {
+    test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');
+    // Marking a late boss (Juan = Badge 8) triggers the mail engine's "mark earlier bosses too?" confirm;
+    // accept it (as a real user would) so Juan ends up genuinely defeated instead of being un-checked.
+    page.on('dialog', (d) => d.accept());
+    await page.goto(DOCS_FIXTURE_URL, { waitUntil: 'domcontentloaded' });
+
+    // Pick a starter (special1 → treecko) so exactly one Ever Grande rival variant is shown with its
+    // legendary slot (default rival gender is May). Driving the checkbox directly is section-independent.
+    const picked = await page.evaluate(() => {
+      const cb = document.querySelector('.location-card[data-route-id="STARTERS"] .wild-poke[data-slot="special1"] .nz-select-cb');
+      if (!cb) return false;
+      cb.checked = true; cb.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
+    });
+    expect(picked).toBe(true);
+
+    // Activate the Trainers section so the rival card is actually rendered/visible.
+    await page.dispatchEvent('.nav a[data-target="trainers"]', 'click');
+    await page.waitForSelector('section#trainers.active');
+
+    const rivalCard = page.locator('.trainer-card[data-trainer-id="TRAINER_MAY_EVERGRANDE_CITY_TREECKO"]');
+    await expect(rivalCard).toBeVisible();
+    const placeholder = rivalCard.locator('.rival-legend-placeholder');
+    const realRow = rivalCard.locator('.rival-legend-real');
+
+    // Before Juan: the placeholder is shown, the real species row is hidden.
+    await expect(placeholder).toBeVisible();
+    await expect(placeholder).toContainText('A legendary Pokémon');
+    await expect(realRow).toBeHidden();
+
+    // Mark Juan defeated via his per-trainer Defeated checkbox.
+    const juanFound = await page.evaluate(() => {
+      const cb = document.querySelector('.trainer-card[data-trainer-id="TRAINER_JUAN_1"] .nz-defeat-cb');
+      if (!cb) return false;
+      cb.checked = true; cb.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
+    });
+    expect(juanFound).toBe(true);
+
+    // After Juan: the placeholder is gone and the real legendary row (a clickable species) is shown.
+    await expect(placeholder).toBeHidden();
+    await expect(realRow).toBeVisible();
+    await expect(realRow).toHaveClass(/\btrainer-poke\b/);
+  });
+});
+
+// B-053 regression: the Rival May/Brendan toggle must filter the rival cards even with NO starter picked
+// (show the 3 variants of the chosen gender, default May), and narrow to 1 once a starter is picked. Pre-fix
+// applyStarterRivals only hid cards when a starter was selected, so with no starter all 6 variants showed.
+test.describe('B-053: rival gender toggle filters without a starter', () => {
+  test('docs viewer: no starter → 3 of the chosen gender; toggle swaps; starter → 1', async ({ page }) => {
+    test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');
+    await page.goto(DOCS_FIXTURE_URL, { waitUntil: 'domcontentloaded' });
+    await page.dispatchEvent('.nav a[data-target="trainers"]', 'click');
+    await page.waitForSelector('section#trainers.active');
+
+    // Count shown rival cards per gender via the `rival-<gender>-<starter>` classes (all appearances share
+    // them; style.display is section-independent). Brendan's id lacks "_CITY", so count by class not id.
+    const state = () => page.evaluate(() => {
+      const cardsFor = (g, s) => [...document.querySelectorAll('.trainer-card.rival-' + g + '-' + s)];
+      const gender = (g) => ['treecko', 'torchic', 'mudkip'].flatMap((s) => cardsFor(g, s));
+      const shown = (arr) => arr.filter((c) => c.style.display !== 'none').length;
+      return {
+        mayTotal: gender('may').length, mayShown: shown(gender('may')),
+        brendanTotal: gender('brendan').length, brendanShown: shown(gender('brendan')),
+        mayTreecko: shown(cardsFor('may', 'treecko')),
+        mayTorchic: shown(cardsFor('may', 'torchic')),
+        mayMudkip: shown(cardsFor('may', 'mudkip')),
+      };
+    });
+    const setGender = (value) => page.evaluate((v) => {
+      const radio = document.querySelector('.rival-gender-radio[value="' + v + '"]');
+      radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true }));
+    }, value);
+
+    // Fresh: no starter, default gender May → every May card shown, no Brendan card shown.
+    let s = await state();
+    expect(s.mayTotal).toBeGreaterThan(0);
+    expect(s.brendanTotal).toBeGreaterThan(0);
+    expect(s.mayShown).toBe(s.mayTotal);
+    expect(s.brendanShown).toBe(0);
+
+    // Toggle to Brendan (still no starter) → every Brendan card shown, no May card shown.
+    await setGender('brendan');
+    s = await state();
+    expect(s.brendanShown).toBe(s.brendanTotal);
+    expect(s.mayShown).toBe(0);
+
+    // Back to May, then pick a starter (special1 → treecko) → only the may-treecko variant shows.
+    await setGender('may');
+    await page.evaluate(() => {
+      const cb = document.querySelector('.location-card[data-route-id="STARTERS"] .wild-poke[data-slot="special1"] .nz-select-cb');
+      cb.checked = true; cb.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    s = await state();
+    expect(s.mayTreecko).toBeGreaterThan(0);
+    expect(s.mayTorchic).toBe(0);
+    expect(s.mayMudkip).toBe(0);
+    expect(s.brendanShown).toBe(0);
+  });
+});
+
 test.describe('T-172: slow-queue ROM-count warning', () => {
   test('app: ROM counts over the fast-queue limit warn inline (Nuzlocke + Soul-Link)', async ({ page }) => {
     test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');

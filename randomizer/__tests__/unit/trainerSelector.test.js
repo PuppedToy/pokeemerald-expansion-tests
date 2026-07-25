@@ -309,6 +309,28 @@ describe('createChooser — TRAINER_REPEAT_ID + devolveToLevel (T-106 reverse co
     });
 });
 
+describe('createChooser — PLAYER_LEGEND_* → shuffled rival legendary (T-199)', () => {
+    // The rival's ace comes from the SHUFFLED rival mapping (rivalLegend*), not the raw legend1/2/3
+    // Sky Pillar order. legend1/2/3 are set to DIFFERENT mons so a regression to the old positional
+    // mapping would surface immediately.
+    test('each starter resolves to its rivalLegend* static reward, not legend1/2/3', () => {
+        const rt = makePoke('SPECIES_RIVAL_LEG_T', { tier: 'LEGEND' });
+        const ro = makePoke('SPECIES_RIVAL_LEG_O', { tier: 'LEGEND' });
+        const rm = makePoke('SPECIES_RIVAL_LEG_M', { tier: 'LEGEND' });
+        const l1 = makePoke('SPECIES_SKY_1', { tier: 'LEGEND' });
+        const l2 = makePoke('SPECIES_SKY_2', { tier: 'LEGEND' });
+        const l3 = makePoke('SPECIES_SKY_3', { tier: 'LEGEND' });
+        const staticRewards = {
+            legend1: l1, legend2: l2, legend3: l3,
+            rivalLegendTreecko: rt, rivalLegendTorchic: ro, rivalLegendMudkip: rm,
+        };
+        const chooser = makeChooser([rt, ro, rm, l1, l2, l3], makeTrainer(), makeContext(), { staticRewards });
+        expect(chooser({ special: 'PLAYER_LEGEND_TREECKO' }).id).toBe('SPECIES_RIVAL_LEG_T');
+        expect(chooser({ special: 'PLAYER_LEGEND_TORCHIC' }).id).toBe('SPECIES_RIVAL_LEG_O');
+        expect(chooser({ special: 'PLAYER_LEGEND_MUDKIP' }).id).toBe('SPECIES_RIVAL_LEG_M');
+    });
+});
+
 describe('createChooser — ALLOW_ONLY_TYPES restriction (B-028)', () => {
     const ALLOW_ONLY_TYPES = 'TRAINER_RESTRICTION_ALLOW_ONLY_TYPES';
     test('keeps only candidates that have one of the trainer types', () => {

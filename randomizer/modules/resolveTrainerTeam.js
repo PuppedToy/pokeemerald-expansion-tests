@@ -37,7 +37,7 @@ const {
     greninjaEffectivePoke,
     topSupportMoves,
 } = require('../rating.js');
-const { sample, canLearnMove, usesStrategicNature } = require('./utils');
+const { sample, canLearnMove, usesStrategicNature, isPlayerLegendSpecial } = require('./utils');
 const { pickTrainerMonAbility } = require('./trainerAbility');
 const { selectWithAutoFallback } = require('./trainerFallback');
 const { createChooser } = require('./trainerSelector');
@@ -317,6 +317,9 @@ function createTeamResolver(deps) {
                     // T-135 — a FORCED pick (the favourite ace) shouldn't consume the "pick 2 good ranked
                     // abusers" budget; the picker excludes it from the abuser-slot count.
                     __favourite: !!(trainerMonDefinition && trainerMonDefinition.__favourite),
+                    // T-199 — tag the Ever Grande rival's legendary slot so the docs viewer can hide it
+                    // behind a placeholder until Juan is marked defeated (only PLAYER_LEGEND_* uses it).
+                    playerLegend: isPlayerLegendSpecial(trainerMonDefinition.special),
                 };
 
                 // T-141 r4 — is this mon (one of) the team's DEDICATED support? True when the up-front plan
