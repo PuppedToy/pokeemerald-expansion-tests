@@ -126,6 +126,7 @@ async function buildOneRom({ rom, bundle, seed, universeSeed = seed, outDir, isD
     const { writeRunAndBunVars }        = require('./randomizer/runAndBunWriter');
     const { writeStevenTagVar }         = require('./randomizer/stevenTagWriter');
     const { writeLocationNames }        = require('./randomizer/locationNameWriter');
+    const { writeTradeNames }           = require('./randomizer/tradeNameWriter');
     const { emitArtifact, resolveVanillaPath } = require('./randomizer/romArtifact');
 
     const label    = romFileName(rom);
@@ -163,6 +164,8 @@ async function buildOneRom({ rom, bundle, seed, universeSeed = seed, outDir, isD
         await writeStevenTagVar(bundle.config);
         // T-070 — per-ROM location→nickname table (per-ROM, never shared; restored by restore()).
         await writeLocationNames(rom.artifacts.locationNaming || null);
+        // T-202 — per-ROM town-trade→nickname table (per-ROM, never shared; restored by restore()).
+        await writeTradeNames(rom.artifacts.tradeNaming || null);
         run('make', ['-j', String(jobs)]);
 
         // Default delivery is a BPS delta (vanilla→built); --full-rom copies the .gba verbatim (ADR-013).
