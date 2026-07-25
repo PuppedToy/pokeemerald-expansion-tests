@@ -1,7 +1,7 @@
 ---
 id: T-204
 title: Nerf Wattson's two bottom non-mega slots (RU → NU)
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-25
 updated: 2026-07-25
@@ -38,10 +38,11 @@ Change Wattson's bottom two non-mega slots RU → NU; resolve the generic post-W
 scope to the boss). Pure/seeded → TDD.
 
 Acceptance criteria:
-- [ ] Wattson's boss team draws its two lowest non-mega slots from NU (mega slot still OU).
-- [ ] The generic-post-Wattson side-effect is explicitly decided and reflected in a test (either both shift, or
-      the change is scoped to the boss only).
+- [x] Wattson's boss team draws its two lowest non-mega slots from NU (mega slot still OU).
+- [x] The generic-post-Wattson side-effect is explicitly decided and reflected in a test — **owner chose: both
+      shift** (boss + generic post-Wattson trainers ease). The shared `fair` edit propagates to both.
 - [ ] Determinism per seed preserved; `cd randomizer && npm test` green; browser bundle rebuilt.
+      *(suite green — 1693 passed; bundle rebuild deferred to the end of this batch.)*
 
 ## Progress log
 
@@ -50,6 +51,13 @@ Acceptance criteria:
 - **2026-07-25** — Task created (proposed). Located Wattson's `SPLITS` entry (`presets.js:360-371`); the two
   bottom RU slots are `:367-368`. Flagged the shared-`fair` side-effect on generic post-Wattson trainers
   (`trainers.js:335`) to resolve with the owner before implementing.
+- **2026-07-25** — **Owner decision + implemented (in-progress), TDD Red→Green.** Confirmed both `getBossPreset`
+  and `getNonBossPreset` resolve from the same `SPLITS` `fair` array (`presets.js:629-651`), so the split is
+  shared by the boss and the ~9 generic post-Wattson trainers (`trainers.js:2052-2126`). **Owner chose to nerf
+  both** (whole-area breathing room). Changed the two bottom non-mega slots `presets.js:367-368` `TIER_RU` →
+  `TIER_NU` (team now 3× RU + 2× NU + mega OU). New test `randomizer/__tests__/unit/wattsonNerf.test.js`
+  (Red: 0 NU → Green: 2 NU); full randomizer suite green (1693 passed, nothing else depended on the old
+  5×RU shape). Bundle rebuild deferred to the batch end.
 
 ## Outcome
 

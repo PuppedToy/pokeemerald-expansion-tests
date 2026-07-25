@@ -360,12 +360,15 @@ const SPLITS = [
     {
         id: 'WATTSON',
         // Slot 5: Manectric mega (fixed)
+        // T-204 — Wattson fields a mega before the player can obtain one, so his two bottom
+        // non-mega slots are nerfed RU → NU for breathing room. This split is shared, so the
+        // generic post-Wattson trainers ease too (owner-approved side-effect).
         fair: [
             { contextualTier: [TIER_RU], checkValidEvo: true },
             { contextualTier: [TIER_RU], checkValidEvo: true },
             { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
-            { contextualTier: [TIER_RU], checkValidEvo: true },
+            { contextualTier: [TIER_NU], checkValidEvo: true },
+            { contextualTier: [TIER_NU], checkValidEvo: true },
             bossMega(TIER_OU),
         ],
     },
