@@ -9,6 +9,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Norman hands over the New Mauville key.** Beating Norman now gives you the Basement Key directly and opens
+  New Mauville — you no longer have to trek back to Mauville City and talk to Wattson to start the errand.
+  Wattson still thanks you (and gives the Ability Patch) once you've dealt with the generator. (T-205)
+
+
 - **Wattson eased a little.** Because Wattson fields a Mega before you can get one, his two weakest
   (non-Mega) team slots drop from RU to NU. The generic trainers in the post-Wattson (Mauville) area ease
   by the same amount. (T-204)
