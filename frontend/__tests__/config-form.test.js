@@ -92,14 +92,24 @@ test('T-070: location nicknames live INSIDE the Nicknames section, sharing its p
   assert.ok(!src.includes('data-cat="location-nicknames"'), 'the separate location-nicknames category must be gone');
   assert.ok(!src.includes('LOCATION_NICKNAMES_DEFAULT'), 'no separate location defaults object');
   assert.ok(!src.includes('locationNicknames'), 'no separate locationNicknames config key');
-  // The two switches live in the shared nicknames box.
+  // The switches live in the shared nicknames box.
   assert.match(src, /id="nickname-auto-location"/, 'auto-location switch inside nicknames');
   assert.match(src, /id="nickname-lock-gender-route"/, 'lock-gender-per-route switch inside nicknames');
   assert.match(src, /autoLocation:\s*false/, 'NICKNAMES_DEFAULT carries autoLocation');
   assert.match(src, /lockGenderPerRoute:\s*false/, 'NICKNAMES_DEFAULT carries lockGenderPerRoute');
-  // Lock-gender is enabled only when auto-location AND different-per-gender are both on.
-  assert.match(src, /const lockAllowed = !!\(autoLoc && diffGender\)/, 'lock-gender gated on autoLocation + differentPerGender');
+  // T-200: lock-gender is enabled when ANY location bucket (auto-location OR trades&gifts) + different-per-gender.
+  assert.match(src, /const lockAllowed = !!\(anyLoc && diffGender\)/, 'lock-gender gated on any-location + differentPerGender');
   assert.match(src, /lockGenderEl\.disabled = !lockAllowed/, 'lock-gender checkbox disabled when not allowed');
+});
+
+test('T-200: trades & gifts naming toggle (default ON) + both-only note', () => {
+  assert.match(src, /id="nickname-auto-trades-gifts"/, 'trades&gifts switch inside nicknames');
+  assert.match(src, /autoTradesGifts:\s*true/, 'NICKNAMES_DEFAULT carries autoTradesGifts default ON');
+  assert.match(src, /autoTradesGifts:\s*this\._q\('#nickname-auto-trades-gifts'\)\.checked/, 'read wired');
+  assert.match(src, /#nickname-auto-trades-gifts'\)\.checked = n\.autoTradesGifts !== false/, 'set wired, default ON');
+  // The Duda-1 note appears only when gendered pools collapse to Both (diff-per-gender on, lock off).
+  assert.match(src, /id="nickname-both-only-note"/, 'both-only note element present');
+  assert.match(src, /bothOnlyNote\.style\.display = \(anyLoc && diffGender && !lockGenderEl\?\.checked\)/, 'both-only note visibility wired');
 });
 
 test('T-068: Starter nicknames category with master toggle, switches and gendered pools', () => {

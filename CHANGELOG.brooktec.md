@@ -9,6 +9,18 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Auto-nicknames: a new trades & gifts option, and names that never repeat.** The Nicknames settings
+  gained a **Random name for trades and gifts** switch (on by default) that names the Pokémon you get
+  from gift NPCs (gym rewards, fossils) and town trades — separately from the "by location" switch, so
+  you can have one without the other. Every auto-nickname is now drawn from **one shared pool for the
+  whole game**, so the same name never lands on two Pokémon (a starter, a route, a gift, a static and a
+  trade can no longer share a name); when the names run out the rest are simply left unnamed. Turning
+  **Lock gender per route** off now draws route/gift names from the **unisex (Both) pool only** — a
+  gendered name can no longer end up on the wrong-gender Pokémon — and the panel says so. Two live warnings
+  (shown right under the Both/Female/Male tabs) appear when your name pools are too small to cover everything
+  you've asked to nickname, and when any name is longer than 12 characters — the latter lists the offending
+  names, which are removed unless you shorten them. (T-200)
+
 - **The Ever Grande rival's legendary is now a surprise until you beat Juan.** Two changes to the
   rival's endgame legendary: (1) which of the three Sky Pillar legendaries each rival gets is now
   **shuffled**, so it's no longer tied to the order they appear at Sky Pillar; and (2) in the docs

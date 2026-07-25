@@ -4,9 +4,10 @@
 // autoLocation switch, and attaches a per-ROM location→naming map covering ENCOUNTER_LOCATIONS.
 
 const { attachLocationNaming } = require('../../generate');
-const { ENCOUNTER_LOCATIONS } = require('../../data/encounterLocations');
+const { ENCOUNTER_LOCATIONS, GIFT_LOCATIONS } = require('../../data/encounterLocations');
 
 const mkRom = () => ({ romIndex: 0, artifacts: { pokedex: 'shared', trainers: 'shared', starters: 'shared', wild: {} } });
+// autoTradesGifts defaults ON (undefined !== false); tests set it explicitly where it matters.
 const nick = (over = {}) => ({
     enabled: true, autoLocation: true, differentPerGender: false, lockGenderPerRoute: false,
     sameNamesAcrossRuns: false, shareAcrossSoullink: true,
@@ -20,10 +21,19 @@ test('master OFF → no locationNaming', () => {
     expect(roms[0].artifacts.locationNaming).toBeUndefined();
 });
 
-test('autoLocation OFF → no locationNaming (even with master ON)', () => {
+// T-200: gifts moved to the autoTradesGifts bucket, so "no locationNaming" now needs BOTH toggles off.
+test('autoLocation + autoTradesGifts both OFF → no locationNaming (even with master ON)', () => {
     const roms = [mkRom()];
-    attachLocationNaming({ seed: 1 }, { nicknames: nick({ autoLocation: false }) }, roms, [{ player: 0, run: 0 }]);
+    attachLocationNaming({ seed: 1 }, { nicknames: nick({ autoLocation: false, autoTradesGifts: false }) }, roms, [{ player: 0, run: 0 }]);
     expect(roms[0].artifacts.locationNaming).toBeUndefined();
+});
+
+test('autoLocation OFF but autoTradesGifts ON → locationNaming covers ONLY the gift maps', () => {
+    const roms = [mkRom()];
+    attachLocationNaming({ seed: 1 }, { nicknames: nick({ autoLocation: false, autoTradesGifts: true }) }, roms, [{ player: 0, run: 0 }]);
+    const ln = roms[0].artifacts.locationNaming;
+    expect(ln).toBeDefined();
+    expect(Object.keys(ln).sort()).toEqual([...GIFT_LOCATIONS].sort());
 });
 
 test('no nicknames config → no-op', () => {
@@ -32,7 +42,7 @@ test('no nicknames config → no-op', () => {
     expect(roms[0].artifacts.locationNaming).toBeUndefined();
 });
 
-test('master + autoLocation ON → per-ROM map covering every location with a unique name', () => {
+test('master + autoLocation ON (+ autoTradesGifts default ON) → per-ROM map covering every location, unique', () => {
     const roms = [mkRom()];
     attachLocationNaming({ seed: 7 }, { nicknames: nick() }, roms, [{ player: 0, run: 0 }]);
     const ln = roms[0].artifacts.locationNaming;

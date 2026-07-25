@@ -58,19 +58,19 @@ function validateStarterNaming(sn, i, errors) {
   sn.extras.forEach((slot, j) => validateSlot(slot, `${where}.extras[${j}]`, errors));
 }
 
-// T-070 — optional per-ROM `artifacts.locationNaming` = { <MAP_* key>: slot } where slot is the same
-// { gender:'M'|'F'|null, nickname:string|null } shape. Map keys are C constant names; restrict to a safe
-// identifier charset (they become MAP_* tokens in generated C). Names are sanitized like starter nicknames.
+// T-070/T-200 — optional per-ROM keyed naming maps = { <key>: slot } where slot is the same
+// { gender:'M'|'F'|null, nickname:string|null } shape. `locationNaming` is MAP_*-keyed; `tradeNaming` is
+// INGAME_TRADE_*-keyed. Both use C constant names → restrict to a safe identifier charset (they become
+// tokens in generated C). Names are sanitized like starter nicknames.
 const SAFE_MAP_KEY = /^[A-Za-z0-9_]{1,64}$/;
 
-function validateLocationNaming(ln, i, errors) {
-  const where = `roms[${i}].artifacts.locationNaming`;
-  if (!isPlainObject(ln)) { errors.push(`${where} must be an object`); return; }
-  for (const key of Object.keys(ln)) {
-    if (!SAFE_MAP_KEY.test(key)) { errors.push(`${where} key "${key}" is not a safe MAP_* identifier`); continue; }
-    const slot = ln[key];
+function validateKeyedNaming(m, where, errors) {
+  if (!isPlainObject(m)) { errors.push(`${where} must be an object`); return; }
+  for (const key of Object.keys(m)) {
+    if (!SAFE_MAP_KEY.test(key)) { errors.push(`${where} key "${key}" is not a safe identifier`); continue; }
+    const slot = m[key];
     if (!isPlainObject(slot)) { errors.push(`${where}.${key} must be an object`); continue; }
-    // Unlike starter slots, a location's gender may be null (gender-lock off = names only).
+    // Unlike starter slots, gender may be null (gender-lock off = names only).
     if (slot.gender !== 'M' && slot.gender !== 'F' && slot.gender !== null && slot.gender !== undefined) {
       errors.push(`${where}.${key}.gender must be 'M', 'F' or null`);
     }
@@ -101,7 +101,10 @@ function validateRom(rom, i, errors) {
     validateStarterNaming(rom.artifacts.starterNaming, i, errors);
   }
   if (rom.artifacts.locationNaming !== undefined) {
-    validateLocationNaming(rom.artifacts.locationNaming, i, errors);
+    validateKeyedNaming(rom.artifacts.locationNaming, `roms[${i}].artifacts.locationNaming`, errors);
+  }
+  if (rom.artifacts.tradeNaming !== undefined) {
+    validateKeyedNaming(rom.artifacts.tradeNaming, `roms[${i}].artifacts.tradeNaming`, errors);
   }
 }
 

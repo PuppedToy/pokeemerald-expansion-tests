@@ -121,6 +121,22 @@ test('locationNaming: non-object is rejected', () => {
   assert.equal(okLoc('nope').ok, false);
 });
 
+// ── T-200: tradeNaming (optional per-ROM artifact, keyed by INGAME_TRADE_*) ───
+const withTradeNaming = (tn) => validRom({
+  artifacts: { pokedex: 'p', trainers: 't', starters: 's', wild: { file: 'data/wild_encounters.json' }, tradeNaming: tn },
+});
+const okTrade = (tn) => validateBundle(validBundle({ roms: [withTradeNaming(tn)] }));
+
+test('tradeNaming: a well-formed map validates', () => {
+  const r = okTrade({ INGAME_TRADE_SEEDOT: { gender: null, nickname: 'Percy' }, INGAME_TRADE_HORSEA: { gender: 'M', nickname: 'John' } });
+  assert.equal(r.ok, true, JSON.stringify(r.errors));
+});
+
+test('tradeNaming: unsafe key or nickname is rejected', () => {
+  assert.equal(okTrade({ 'INGAME; rm -rf': { gender: null, nickname: 'A' } }).ok, false);
+  assert.equal(okTrade({ INGAME_TRADE_SEEDOT: { gender: null, nickname: 'a"b' } }).ok, false);
+});
+
 // ── T-190: tighten the previously-unvalidated top-level contract fields ──────
 test('formatVersion, if present, must be a non-negative integer (T-190)', () => {
   assert.equal(validateBundle(validBundle({ formatVersion: 2 })).ok, true);

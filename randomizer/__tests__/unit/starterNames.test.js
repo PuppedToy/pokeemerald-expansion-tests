@@ -4,7 +4,18 @@
 // Pure + deterministic (seeded). No filesystem, no game data.
 
 const rng = require('../../rng');
-const { buildStarterNaming, groupKeyFor } = require('../../modules/starterNames');
+const { buildStarterNaming, groupKeyFor, normalizePool, MAX_NICKNAME_LENGTH } = require('../../modules/starterNames');
+
+describe('normalizePool', () => {
+    test('trims, dedupes case-insensitively, drops blanks, preserves order', () => {
+        expect(normalizePool([' Ann ', 'ann', '', 'Bob', 'ANN'])).toEqual(['Ann', 'Bob']);
+    });
+    test('T-200 — drops names longer than 12 chars (kept exactly at 12)', () => {
+        expect(MAX_NICKNAME_LENGTH).toBe(12);
+        expect(normalizePool(['Alexanderrrr', 'Alexanderrrrr', 'Bob'])).toEqual(['Alexanderrrr', 'Bob']); // 12 kept, 13 dropped
+        expect(normalizePool(['ThisNameIsWayTooLong'])).toEqual([]);
+    });
+});
 
 // A generous, disjoint set of pools so uniqueness has room.
 const bigPools = () => ({
