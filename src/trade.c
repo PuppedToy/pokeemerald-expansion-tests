@@ -41,6 +41,7 @@
 #include "text_window.h"
 #include "trainer_card.h"
 #include "trade.h"
+#include "trade_nicknames.h"  // T-202 — town-trade auto-nickname override
 #include "union_room.h"
 #include "util.h"
 #include "window.h"
@@ -4576,10 +4577,16 @@ static void CreateInGameTradePokemonInternal(u8 whichPlayerMon, u8 whichInGameTr
     SetMonData(pokemon, MON_DATA_SPEED_IV, &inGameTrade->ivs[3]);
     SetMonData(pokemon, MON_DATA_SPATK_IV, &inGameTrade->ivs[4]);
     SetMonData(pokemon, MON_DATA_SPDEF_IV, &inGameTrade->ivs[5]);
-    // T-194 — an empty preset nickname (randomized town trades) leaves the mon with its species name
-    // rather than a blank nickname; the vanilla trades keep their fixed nicknames.
-    if (inGameTrade->nickname[0] != EOS)
-        SetMonData(pokemon, MON_DATA_NICKNAME, inGameTrade->nickname);
+    // T-202 — when the auto-nickname feature is on, the town-trade auto-nickname overrides the trade's
+    // preset nickname. Off (or unnamed) falls back to T-194's behaviour: a nonempty preset name is kept,
+    // an empty one leaves the mon with its species name.
+    {
+        const u8 *autoNick = GetTradeNickname(whichInGameTrade);
+        if (autoNick != NULL && autoNick[0] != EOS)
+            SetMonData(pokemon, MON_DATA_NICKNAME, autoNick);
+        else if (inGameTrade->nickname[0] != EOS)
+            SetMonData(pokemon, MON_DATA_NICKNAME, inGameTrade->nickname);
+    }
     SetMonData(pokemon, MON_DATA_OT_NAME, inGameTrade->otName);
     SetMonData(pokemon, MON_DATA_OT_GENDER, &inGameTrade->otGender);
     SetMonData(pokemon, MON_DATA_ABILITY_NUM, &inGameTrade->abilityNum);
