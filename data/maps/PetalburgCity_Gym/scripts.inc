@@ -392,6 +392,15 @@ PetalburgCity_Gym_EventScript_NormanBattle::
 	call PetalburgCity_Gym_EventScript_GiveFacade
 	giveitem ITEM_HM03
 	setflag FLAG_RECEIVED_HM_SURF
+	@ T-205 — Norman hands over the New Mauville Basement Key directly, instead of the player
+	@ having to go talk to Wattson in Mauville City afterwards. FLAG_GOT_BASEMENT_KEY_FROM_WATTSON
+	@ routes the (post-Norman) overworld Wattson to his BegunNewMauville branch so he never
+	@ re-gives the key; VAR_NEW_MAUVILLE_STATE=1 advances the area to the "key delivered" state
+	@ (the state-0 door trigger at NewMauville_Entrance (4,2) is disabled and the door's default
+	@ metatiles are open, so the player walks straight in through the warp at (4,1)).
+	giveitem ITEM_BASEMENT_KEY
+	setflag FLAG_GOT_BASEMENT_KEY_FROM_WATTSON
+	setvar VAR_NEW_MAUVILLE_STATE, 1
 	setvar VAR_PETALBURG_CITY_STATE, 5
 	setvar VAR_ROUTE118_STATE, 1
 	delay 30
