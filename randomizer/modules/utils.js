@@ -173,6 +173,12 @@ function canLearnMove(pokemon, moveToLearn, trainerLevel) {
     );
 }
 
+// T-199 — a rival's legendary slot (PLAYER_LEGEND_TREECKO/TORCHIC/MUDKIP). The resolved team member is
+// tagged with this so the docs viewer can hide it behind a placeholder until Juan is marked defeated.
+function isPlayerLegendSpecial(special) {
+    return typeof special === 'string' && special.startsWith('PLAYER_LEGEND');
+}
+
 module.exports = {
     getFamilyGroup,
     isSubWeakTier,
@@ -185,4 +191,5 @@ module.exports = {
     canLearnMove,
     usesStrategicNature,
     usesStrategicAbility,
+    isPlayerLegendSpecial,
 };

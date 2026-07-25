@@ -9,6 +9,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **The Ever Grande rival's legendary is now a surprise until you beat Juan.** Two changes to the
+  rival's endgame legendary: (1) which of the three Sky Pillar legendaries each rival gets is now
+  **shuffled**, so it's no longer tied to the order they appear at Sky Pillar; and (2) in the docs
+  viewer the rival's legendary shows as **"A legendary Pokémon"** — hidden — until you tick Juan
+  (Badge 8) as *Defeated*, at which point it reveals the actual species. The rival still uses the
+  legendary in-game as before. (T-199)
+
 - **Cancel a run while it's still working.** The randomizer's *Generating your run…* screen now has a
   **Cancel** button — clicking it stops the in-browser randomization and takes you back to Review, so a
   long or mistaken run no longer has to run to completion. And while your ROM is building or queued, a
@@ -186,6 +193,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   it now pays ¥0, closing another repeatable money source. (T-177)
 
 ### Fixed
+
+- **The docs viewer Rival: May / Brendan toggle now works before you pick a starter.** It was ignored
+  until a starter was selected (all six rival variants showed and flipping the toggle did nothing). Now,
+  with no starter picked, only the chosen gender's three variants show (May by default) and the toggle
+  swaps them; once a starter is picked it narrows to the single matching variant as before. (B-053)
 
 - **Liking a Recommended preset now sticks.** Clicking Like on a Recommended preset (e.g. Balanced) filled
   the heart only for an instant and then reverted, and a reload showed it un-liked — even though the like
