@@ -205,3 +205,14 @@
 | [T-200](T-200-auto-nickname-pools-uniqueness-warnings.md) | Auto-nickname pool selection, global uniqueness & low-pool warning + separate trades/gifts naming | done | 0.6.0 | 2026-07-25 |
 | [T-201](T-201-docs-nickname-display-and-capture-state.md) | Docs viewer — show auto-nicknames everywhere + tie the nickname to the capture state | done | 0.6.0 | 2026-07-25 |
 | [T-202](T-202-in-rom-town-trade-nickname-hook.md) | In-ROM town-trade nickname hook — apply tradeNaming to the received Pokémon in-game | in-progress | 0.6.0 | 2026-07-25 |
+| [T-203](T-203-super-rod-route-group-tier-bump.md) | Bump super-rod encounters on two route groups (UU → NFE/LC OU) | proposed | 0.6.0 | 2026-07-25 |
+| [T-204](T-204-wattson-bottom-slots-nu-nerf.md) | Nerf Wattson's two bottom non-mega slots (RU → NU) | proposed | 0.6.0 | 2026-07-25 |
+| [T-205](T-205-norman-gives-new-mauville-key.md) | Norman hands over the New Mauville key on defeat (advance area state) | proposed | 0.6.0 | 2026-07-25 |
+| [T-206](T-206-boss-dialogue-extraction-txt.md) | Extract every boss's dialogue into an editable TXT (round-trip) | proposed | 0.6.0 | 2026-07-25 |
+| [T-207](T-207-hidden-power-teachable-list-inconsistency.md) | Hidden Power absent from teachable TM list but universally learnable | proposed | 0.6.0 | 2026-07-25 |
+| [T-208](T-208-hidden-power-type-display.md) | QoL — show Hidden Power's IV-derived type in summary & teach-move UI | proposed | 0.6.0 | 2026-07-25 |
+| [T-209](T-209-config-trainers-box-grouping.md) | Keep Steven-tag & evil-types inside the "Trainers & bosses" box | proposed | 0.6.0 | 2026-07-25 |
+| [T-210](T-210-decision-log-server-only-skill.md) | Make the decision log server-only + a download-decision-log skill | proposed | 0.6.0 | 2026-07-25 |
+| [T-211](T-211-download-zip-naming-structure.md) | Overhaul generated-file naming & download-zip structure | proposed | 0.6.0 | 2026-07-25 |
+| [T-212](T-212-space-center-1f-magma-grunts-no-battle.md) | Remove the Mossdeep Space Center magma grunt battles | proposed | 0.6.0 | 2026-07-25 |
+| [T-213](T-213-config-detail-view-completeness.md) | Unify & complete the config detail view (preset inspect + Review step) | proposed | 0.6.0 | 2026-07-25 |
