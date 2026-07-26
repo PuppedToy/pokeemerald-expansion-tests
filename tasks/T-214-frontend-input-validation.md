@@ -1,7 +1,7 @@
 ---
 id: T-214
 title: Validate every randomizer config input (sensible ranges + a clear bad-value policy)
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-26
 updated: 2026-07-26
@@ -202,4 +202,9 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped model **C (block-until-valid, no clamp)**: `validateNumber` + `_validateBounds`/`_setFieldError` flag
+every out-of-range / non-integer / blank field red with an inline reason and block `getConfig()` (Generate/Review
+gate on null). Removed the T-081 clamp (`_clampNumberInput`/`clampToRange` + read-clamp). Closed the gaps
+(sliders, evo tables + `min ≤ max`, uint32 seeds, money/price caps, 12-starter cap, invalid-nickname block;
+low-pool stays advisory). Frontend suite 174 green; no overflow. **Owner tested and confirmed OK (2026-07-26).**
+Known limitation (documented): fields in a collapsed category or dependency-off section are skipped.
