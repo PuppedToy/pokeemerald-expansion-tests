@@ -42,9 +42,13 @@ Three models (pick one as the default; a few fields may deviate):
 - **C. Block until valid.** Out-of-range disables Generate with an inline error until fixed (like seed does
   today). Safest data, but more friction; overkill for values that have an obvious safe clamp.
 
-**Recommendation: B as the default**, keeping **C only for the structural blockers** (non-integer seed /
-universe-seed, which can't be safely clamped). Live feedback should fire on `input` (per-keystroke) for the
-worst offenders, not just `change`.
+**Owner decision (2026-07-26): model C — block until valid, everywhere (or nearly).** No silent clamping and
+no auto-correction: an out-of-range / invalid value gets a **red border + an inline message that says exactly
+why** (e.g. "must be a whole number between 2 and 10"), and **Generate is disabled** until every input is
+valid. The existing T-081 clamp behaviour (blur-clamp `_clampNumberInput` + read-clamp `_intField`) is
+**removed/replaced** by this — "we're changing that". The only inputs exempt from blocking are those that
+*cannot* be invalid through the UI (selects/enums, radios, checkboxes) — still sanitised when a config/preset
+is imported. Feedback fires on `input` (per-keystroke), not just on blur.
 
 ## Known gaps to fix (from the input audit)
 
@@ -138,30 +142,38 @@ Legend for handling: **clamp** = snap to [min,max] (model B, with the inline hin
 | `#seed` | integer 0–4294967295 (uint32) | non-integer (blocks); **no upper bound today** | **keep block** on non-integer + **add uint32 upper bound** |
 | `#universe-seed` | same, nuzlocke/soul-link only | same | same |
 
-## Proposed implementation
+## Proposed implementation (model C — block, don't clamp)
 
-1. **Single source of bounds.** Add a small `FIELD_BOUNDS` map (id → {min,max,type}) so the HTML `min`/`max`,
-   the blur-clamp, and the read-clamp all derive from one place (today the HTML and `_intField` bounds can
-   diverge — e.g. prices' `999999`). Extend `_clampNumberInput` to also handle `type="range"` (read-clamp path)
-   and to close the slider/evo gaps.
-2. **Read-time clamp for the gaps:** difficulty, balance-chance, move-mutation-chance, all evo stage/tier
-   tables; enforce `max ≥ min` per evo tier; uint32 bound on seeds; HTML `max` on money/prices.
-3. **Feedback (model B):** on `input`, mark out-of-range with `aria-invalid` + a red border + a tiny "adjusted
-   to N" hint; snap on blur. Non-blocking. Keep the seed/universe-seed **block** (model C) as the only hard stop.
-4. **Cross-field:** ignore `singlesPercent` unless mixed; cap the starter-row count; keep the existing nuzlocke/
-   soul-link cascades + slow-queue warning.
-5. **Tests:** extend `frontend/__tests__/config-validation.test.js` — a table-driven test asserting every
-   bounded field clamps at read (esp. the previously-unclamped sliders/evo tables), `max ≥ min` for evo tiers,
-   uint32 seeds, and that generation is blocked only for the seed cases. Reuse the drift-guard idea from T-213
-   (every numeric config key has a declared bound).
+1. **Single source of validity.** Add a `FIELD_BOUNDS` map (id → {min, max, integer?, requiredWhen?}) as the
+   SSOT; the HTML `min`/`max` and the validator both derive from it (today HTML vs `_intField` bounds diverge —
+   e.g. prices' `999999` lives only at read).
+2. **Validate, don't clamp.** Replace `_clampNumberInput` (blur-clamp) and the read-time `_intField`/`_read*`
+   clamps with a `validateField(el)` on `input`: out-of-range / non-integer / blank-required → `aria-invalid`,
+   red border, and an inline message stating the rule ("must be a whole number between 2 and 10").
+   `getConfig()` returns `null` (blocks) whenever ANY field is invalid; **Generate is disabled** and points at
+   the offending field(s). This covers the previously-unvalidated sliders (difficulty, balance-chance,
+   move-mutation-chance) and the evo stage/tier tables, plus `max ≥ min` per evo tier and uint32 seeds.
+3. **Exempt (can't be invalid via the UI):** selects/enums, radios, checkboxes — still sanitised on
+   config/preset import (a bad imported enum → reset to default + a note; the user can't fix a hidden field by
+   typing).
+4. **Cross-field:** `singlesPercent` required only when `mixed`; evo `max ≥ min`; cap the starter-row count;
+   nuzlocke/soul-link count sanity; keep the slow-queue warning.
+5. **Nicknames (sub-decision, confirm):** promote the advisory banners (overlong / illegal chars / low pool) to
+   **blocking** with clear messages (consistent with "block until valid") — or keep advisory. The randomizer
+   drops offenders downstream, so this one is a genuine judgement call.
+6. **Tests:** rewrite `frontend/__tests__/config-validation.test.js` table-driven — every bounded field, given
+   an out-of-range value, is flagged invalid and blocks `getConfig()`; valid values pass; enum/import
+   sanitisation; evo `max ≥ min`; uint32 seeds. Drift-guard (T-213 style): every numeric config key has a
+   `FIELD_BOUNDS` entry.
 
-Acceptance criteria (**to finalise with the owner after the policy is chosen**):
-- [ ] Owner picks the bad-value model (A/B/C) and the money/price/starter caps + nickname enforce-vs-advisory.
-- [ ] Every numeric input is bounded at BOTH the blur-clamp and read layers from one `FIELD_BOUNDS` source; the
-      previously-unclamped sliders + evo tables are covered; evo tiers enforce `max ≥ min`; seeds are uint32.
-- [ ] Out-of-range values are handled per the chosen model (feedback and/or block) consistently; no field is
-      silently wrong.
-- [ ] `frontend/__tests__/config-validation.test.js` extended (table-driven) and green; no horizontal overflow.
+Acceptance criteria:
+- [x] Bad-value model chosen: **C — block until valid, no clamp**, red border + inline reason (owner 2026-07-26).
+      Open sub-decision: money/price/starter caps + nicknames block-vs-advisory.
+- [ ] The T-081 clamp (blur `_clampNumberInput` + read `_intField`) is removed; a `FIELD_BOUNDS`-driven validator
+      flags invalid inputs inline (red border + why) on `input` and **disables Generate** until all are valid.
+- [ ] Coverage includes the previously-unvalidated sliders + evo stage/tier tables; evo tiers enforce
+      `max ≥ min`; seeds are uint32; enum/import inputs are sanitised.
+- [ ] `frontend/__tests__/config-validation.test.js` rewritten (table-driven) and green; no horizontal overflow.
 
 ## Progress log
 

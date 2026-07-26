@@ -55,18 +55,23 @@ Given a requested `count` N and a **queue budget of ≤ 1h of added build time**
   next-batch size + Invite button**, and a **user search box** with per-result Accept. After an invite, show a
   summary (N invited, ~added queue). Poll/refresh the overview.
 
-## Additional / edge cases (owner: confirm)
+## Owner decisions + edge cases (2026-07-26)
+- **Acceptance emails (per T-215):** the accept/invite action sends the **immediate "You're in! Start building a
+  ROM"** email (randomizer link) **only** to invited users **without** a prepared ROM. Users **with** a prepared
+  `pending` ROM get **no** email here — their combined "you're in + ready" email fires on build completion
+  (T-216). So the invite endpoint branches on has-held-ROM.
+- **Audit (KEEP 100%):** persist each invite batch (who/when/count/added-ETA) in a new table; the panel also
+  shows a **list of accepted users (already in)** alongside the pending list.
 - **Definition of "eligible"**: only `verified && pending` (not-yet-verified users are excluded from the
   lottery — they show as `need_verify`).
-- **Held-ROM staleness**: a `pending` request can be old; confirm it's still buildable (bundle on disk) before
-  promoting; if the bundle is somehow gone, mark for rebuild-on-return instead of failing.
-- **Audit**: persist each invite batch (who/when/count/added-ETA) for transparency + to debug the lottery.
-- **Idempotency / races**: two admin clicks shouldn't double-invite; guard the promote in one transaction.
-- **"You're in!" email** on acceptance (T-215 suggestion) — send here if kept.
+- **Held-ROM staleness**: a `pending` request persists indefinitely (never swept); confirm the bundle is still
+  on disk before promoting; if somehow gone, mark for rebuild-on-return instead of failing.
+- **Idempotency / races**: two admin clicks shouldn't double-invite; guard accept + promote in one transaction.
 
 Acceptance criteria (finalise after D1–D5):
-- [ ] Admin-only panel lists pending (verified) users with sign-up time + has-ROM flag + counts, and shows the
-      queue status + global ETA. Non-admins get 403 / no menu.
+- [ ] Admin-only panel lists pending (verified) users with sign-up time + has-ROM flag + counts, a list of
+      **accepted users (already in)**, and the queue status + global ETA. Non-admins get 403 / no menu.
+      Invite batches are persisted (audit).
 - [ ] Batch invite admits N users balanced so added build time ≤ ~1h, via the 25/75 (earliest / random) lottery
       within the with-ROM / without-ROM pools; accepted users' held ROMs promote to `queued` in submission
       order and start building. Lottery internals are not exposed to users.
