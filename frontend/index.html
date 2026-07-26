@@ -18,7 +18,7 @@
 <!-- ── Top navigation ──────────────────────────────────────────────────── -->
 <nav class="topnav">
   <a class="topnav-brand" id="brand-home" href="#" aria-label="Pokémon Emerald Cut — go to home">
-    <span class="topnav-name">Pokémon <span class="title-accent">Emerald <img class="topnav-logo" src="/assets/emeraldCut.png" alt="C">ut</span></span>
+    <span class="topnav-name">Pokémon <span class="title-accent">Emerald <img class="topnav-logo" src="/assets/emeraldCut.png" alt="C">ut</span><sup class="beta-badge" id="beta-badge" hidden>BETA</sup></span>
   </a>
   <!-- Mobile-only hamburger (T-040): hidden on desktop; toggles the drawer below. -->
   <button class="topnav-burger" id="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="topnav-menu">
@@ -146,6 +146,13 @@
       <div class="randomizer-header">
         <h1>Configure your run</h1>
         <p>Set up your randomization options, then generate a session bundle to send to the server.</p>
+      </div>
+
+      <!-- Beta gate (T-216): shown only while BETA is on. Building is invite-only; preparing a run is not. -->
+      <div class="beta-notice" id="beta-notice" hidden>
+        <strong>Closed beta.</strong> You can set up and prepare your ROM right now — but building is invite-only for the moment.
+        Prepare your run and we'll build it and email you a download link the instant you're invited.
+        Your prepared run never expires, and you can keep tweaking it in the meantime.
       </div>
 
       <!-- Step indicator -->

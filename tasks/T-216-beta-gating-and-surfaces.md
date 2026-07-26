@@ -1,7 +1,7 @@
 ---
 id: T-216
 title: Beta gating + user surfaces (invite state, settings row, randomizer warning, docs message, BETA badge)
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-26
 updated: 2026-07-26
@@ -68,20 +68,48 @@ flag is off.
   action itself (T-217), not here.
 
 Acceptance criteria (finalise after D1–D5):
-- [ ] `BETA=true`: registering + verifying leaves a user `pending`; they can generate docs but a build creates a
+- [x] `BETA=true`: registering + verifying leaves a user `pending`; they can generate docs but a build creates a
       held `pending` request (NOT built, NEVER swept — persists indefinitely), with the "prepared, waiting for
       invite" messaging + auto email-on-ready.
-- [ ] Settings shows the 3-state invite row; the randomizer shows the not-yet-invited warning; the BETA badge
+- [x] Settings shows the 3-state invite row; the randomizer shows the not-yet-invited warning; the BETA badge
       shows in the top bar (and to anonymous visitors, via `/api/config`).
-- [ ] Accepted users (set by T-217) build normally; the pending held request flips to `queued` and builds.
-- [ ] `BETA=false` bypasses the gate everywhere and flushes held `pending` requests → `queued` in submission
+- [x] Accepted users (set by T-217) build normally; the pending held request flips to `queued` and builds.
+- [x] `BETA=false` bypasses the gate everywhere and flushes held `pending` requests → `queued` in submission
       order.
-- [ ] Backend + frontend suites green (repo/handler/gate tests + a `/api/config` test + `/api/me` inviteState).
+- [x] Backend + frontend suites green (repo/handler/gate tests + a `/api/config` test + `/api/me` inviteState).
+      *(All checked = code-complete + suites green; pending the owner's manual test before this task closes.)*
 
 ## Progress log
 - **2026-07-26** — Task created (proposed), blocked by T-215 (needs D1–D5). Scoped the user-facing gate + all
   surfaces (settings row, randomizer warning, build CTA, BETA badge, flush behaviour) against the architecture
   map. Do NOT start until the owner signs off the EPIC decisions.
+- **2026-07-26** — Implemented on `feature/T-216-beta-gating-and-surfaces` (owner signed off D1–D6).
+  - **Backend gate (A)**: `BETA=process.env.BETA==='true'` in `server.js`; public `GET /api/config → {beta}`
+    (new `backend/config/routes.js`, mounted before the auth-adjacent routers). `invite_state` column added
+    to `users` via a PRAGMA-guarded `ensureColumn` in `db/index.js`, grandfathering all pre-existing rows to
+    `accepted` (D2); `users` repo gains `setInviteState`; `/api/me` returns `inviteState`. New `pending`
+    state is in `ACTIVE_STATES` (counts as the one active slot, so it can't be swept and blocks a 2nd run)
+    but NOT in `selectNext` (never built) and NOT in the sweeper (never expires — persists indefinitely, D1).
+    `handleProduce` holds a not-yet-accepted user's run in `pending` with `email_on_ready` forced on and
+    returns `{held:true, eta:null}`; accepted users (and everyone when `BETA` off) build normally.
+  - **Promotion + flush (C)**: `requests.promotePending(id, {welcome})` moves `pending → queued_<class>`.
+    Startup flush in `server.js` promotes every held run when `BETA` is off (submission order via
+    `findByStates` `ORDER BY created_at`). The invite (T-217) will call it with `welcome:true`.
+  - **Combined email (D)**: new `requests.welcome_on_ready` column (guarded), set only by an invite-promotion
+    (not the flush). `lifecycle/complete.js` sends `welcomeReady` ("you're in + ready") for those runs, plain
+    `ready` otherwise. Added `welcome` + `welcomeReady` templates (`welcome` is used by T-217's no-ROM invite).
+  - **Frontend surfaces (B)**: `account.js` fetches `/api/config` at boot into `betaMode` (exported
+    `getBetaMode`); `applyBetaChrome()` reveals the BETA badge (`index.html` brand `<sup>`, hidden by default)
+    + the randomizer "invite-only" notice. Settings gains a 3-state **Beta access** row (Verify email first /
+    Pending invite / Accepted). New held ROM state (`categoryOf`→`held`, `renderRom` branch, `setHeadline`)
+    shows "Prepared — waiting for your beta invite / never expires" and does NOT poll `/api/status`
+    (nothing transitions until an invite). CSS for `.beta-badge`/`.beta-notice` in `components.css`.
+  - **Tests**: `backend/__tests__/beta-gating.test.js` (13 — grandfather, hold, promote/flush, welcomeReady,
+    `/api/config`), `/api/me inviteState` in `routing.test.js`, `frontend/__tests__/beta-surface.test.js`
+    (6 — badge/notice reveal, 3 settings states, held no-poll). Backend 196 green, frontend 180 green.
+    `BETA=true npm run shoot` → 75 screenshots, no horizontal overflow at any viewport.
+  - **Pending**: owner manual test (register→verify→generate→build shows held; toggle `BETA=false` flushes).
+    The combined-email trigger (`welcome:true`) is wired but only exercised once T-217's invite calls it.
 
 ## Outcome
 <!-- Filled when closing. -->

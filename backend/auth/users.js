@@ -25,6 +25,10 @@ export function createUsersRepo(db) {
     setVerified(id, now = Date.now()) {
       db.prepare('UPDATE users SET verified = 1, updated_at = ? WHERE id = ?').run(now, id);
     },
+    // T-216 — beta invite state: 'pending' (new registrations while BETA is on) | 'accepted'.
+    setInviteState(id, state, now = Date.now()) {
+      db.prepare('UPDATE users SET invite_state = ?, updated_at = ? WHERE id = ?').run(state, now, id);
+    },
     setPassword(id, passwordHash, now = Date.now()) {
       db.prepare('UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?').run(passwordHash, now, id);
     },

@@ -140,6 +140,32 @@ textarea.is-invalid,
   font-family: var(--obs-font-body);
 }
 
+/* T-216 — beta chrome. The BETA badge rides the brand wordmark; the notice sits atop the randomizer. */
+.beta-badge {
+  font-size: 0.5em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  vertical-align: super;
+  margin-left: 0.35em;
+  padding: 0.1em 0.42em;
+  border-radius: 4px;
+  background: var(--obs-orange);
+  color: var(--obs-on-orange);
+  font-family: var(--obs-font-body);
+}
+.beta-notice {
+  margin: 0 0 1.25rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--obs-orange);
+  border-left-width: 4px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--obs-orange) 10%, transparent);
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.beta-notice strong { color: var(--obs-orange); }
+
 .input::placeholder {
   color: var(--obs-text-mute);
 }

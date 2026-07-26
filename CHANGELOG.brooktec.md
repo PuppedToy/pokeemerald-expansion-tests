@@ -7,6 +7,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Added
+
+- **Closed beta gate.** While the beta is on you can sign up, generate documentation and fully prepare a ROM —
+  but building is invite-only. A prepared run is saved on our side (it never expires) and builds automatically
+  the moment you're invited, with a single email letting you know it's ready; you can keep tweaking it in the
+  meantime. A BETA badge in the top bar, an on-page notice on the randomizer, and a "Beta access" line in
+  Settings (Verify email / Pending invite / Accepted) make your status clear. (T-216)
+
 ### Fixed
 
 - **Hidden Power (and Return/Frustration/Secret Power) now show for every Pokémon.** These moves are learnable

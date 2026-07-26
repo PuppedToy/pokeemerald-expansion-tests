@@ -8,7 +8,7 @@ import { estimateEta, romsAhead, buildProgress } from './eta.js';
 
 const DEFER_THRESHOLD_SECS = 120; // offer email-on-ready when the initial ETA is >= 2 min
 
-export function handleProduce({ requests, classify, validateBundle, persistBundle, idGen, now = () => Date.now(), avgRomSecs, removeFile, killActiveBuild }) {
+export function handleProduce({ requests, users, beta = false, classify, validateBundle, persistBundle, idGen, now = () => Date.now(), avgRomSecs, removeFile, killActiveBuild }) {
   return (req, res) => {
     const bundle = req.body;
     const { ok, errors } = validateBundle(bundle);
@@ -25,15 +25,20 @@ export function handleProduce({ requests, classify, validateBundle, persistBundl
     const romsTotal = bundle.roms.length;
     const id = idGen();
     const bundlePath = persistBundle(id, bundle);
+    // T-216 — while BETA is on, a not-yet-accepted user's run is HELD in `pending`: the bundle is stored
+    // (never built, never swept) and email-on-ready is forced on; an invite promotes it to the queue.
+    // Accepted users (and everyone when BETA is off) build normally.
+    const held = beta && users?.get(req.userId)?.invite_state !== 'accepted';
     requests.create({
       id, userId: req.userId, queueClass: classify(romsTotal), romsTotal, bundlePath,
-      seed: String(bundle.config?.seed ?? '0'), params: bundle.config ?? {}, now: now(),
+      seed: String(bundle.config?.seed ?? '0'), params: bundle.config ?? {},
+      state: held ? 'pending' : null, emailOnReady: held, now: now(),
     });
 
-    const eta = estimateEta(requests, id, { avgRomSecs });
+    const eta = held ? null : estimateEta(requests, id, { avgRomSecs });
     res.status(201).json({
-      requestId: id, eta, romsAhead: romsAhead(requests, id),
-      canDeferEmail: eta >= DEFER_THRESHOLD_SECS,
+      requestId: id, held, eta, romsAhead: held ? null : romsAhead(requests, id),
+      canDeferEmail: !held && eta >= DEFER_THRESHOLD_SECS,
     });
   };
 }
