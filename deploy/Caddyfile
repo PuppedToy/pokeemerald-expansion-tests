@@ -7,14 +7,26 @@
 #     Certificate instead (see docs/deploy-oracle.md).
 
 {
-	email admin@pokemon-emerald-cut.com
+	email admin@emerald-cut-randomizer.com
 }
 
-pokemon-emerald-cut.com {
+# New canonical domain (T-223). Serves the app; Caddy issues its Let's Encrypt cert
+# automatically once the A record points here (DNS-only) and 80/443 are open.
+emerald-cut-randomizer.com {
 	encode gzip
 	reverse_proxy app:3000
 }
 
+www.emerald-cut-randomizer.com {
+	redir https://emerald-cut-randomizer.com{uri} permanent
+}
+
+# Old domain — kept during migration; redirects everything to the new domain.
+# Remove these two blocks once the switch is confirmed and you no longer need it.
+pokemon-emerald-cut.com {
+	redir https://emerald-cut-randomizer.com{uri} permanent
+}
+
 www.pokemon-emerald-cut.com {
-	redir https://pokemon-emerald-cut.com{uri} permanent
+	redir https://emerald-cut-randomizer.com{uri} permanent
 }
