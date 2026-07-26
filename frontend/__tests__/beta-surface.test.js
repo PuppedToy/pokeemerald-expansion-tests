@@ -122,7 +122,7 @@ test('a held (pending) run renders the "waiting for beta invite" state and never
 
     const row = env.getEl('rom-status').innerHTML;
     assert.match(row, /waiting for your beta invite/i, 'the held state is surfaced');
-    assert.match(row, /never expires/i, 'and states the prepared run does not expire');
+    assert.match(row, /saved on our side/i, 'and explains the run is kept server-side until an invite');
     assert.ok(!paths.includes('/api/status'), 'a held run does not poll — nothing transitions until an invite');
   } finally { env.restore(); }
 });

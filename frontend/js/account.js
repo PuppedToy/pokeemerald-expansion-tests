@@ -514,9 +514,8 @@ function renderRom(req, info = {}) {
     setTabTitle('Waiting for beta invite');
     setRomDownload({ enabled: false, count, reason: "Prepared — it builds once you're invited." });
     setRomRow('queued',
-      `<div class="status-title">Prepared — waiting for your beta invite</div>
-       <div class="status-sub">Your randomization is saved on our side. As soon as you're invited we'll generate it and email you a download link — no need to check back.</div>
-       <div class="status-sub muted">This never expires. Keep tweaking and re-generating if you like — the latest run is the one we'll generate.</div>
+      `<div class="status-title">Waiting for your beta invite</div>
+       <div class="status-sub">Your randomization is saved on our side. As soon as you're invited we'll generate it and email you a download link.</div>
        <button class="btn btn-ghost btn-sm rom-cancel-btn" id="rom-cancel">Discard this run</button>`, '🎟');
     $('rom-cancel')?.addEventListener('click', () => cancelActiveRun('cancel')); // T-198
     return;

@@ -197,7 +197,6 @@ function shopPricesBlock() {
     return `<div id="shop-prices" style="border-top:1px solid rgba(255,255,255,0.12);padding-top:16px;display:flex;flex-direction:column;gap:16px">
       <div style="display:flex;flex-direction:column;gap:4px">
         <strong style="font-size:0.95em">Shop prices</strong>
-        <span class="field-hint">Buy prices for the items sold in Marts. Applied at ROM-build time (patches src/data/items.h); defaults match the current game.</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px">${sub('Poké Balls')}${balls}</div>
       <div style="display:flex;flex-direction:column;gap:8px">${sub('Mints')}${mints}</div>
@@ -1048,7 +1047,6 @@ export class ConfigForm {
     _build() {
         this.container.innerHTML = `
 <div class="config-actions">
-  <span class="config-actions-label">Config:</span>
   <button type="button" class="btn btn-emerald" id="btn-load-preset">Load Preset</button>
   <label class="btn" style="cursor:pointer">
     Load from bundle
@@ -1056,7 +1054,6 @@ export class ConfigForm {
   </label>
   <span id="config-saved-note" style="font-size:12px;color:var(--muted);display:none">Saved ✓</span>
 </div>
-<div class="config-actions-hint field-hint"><strong>Load Preset</strong> opens your saved presets — and the community's — to apply in one click. <strong>Load from bundle</strong> reads only the settings from a saved config <strong>or</strong> a full <code>bundle.json</code> (the rest of the bundle is ignored).</div>
 <div class="config-actions-hint field-hint">Or skip randomization and regenerate ROMs by <a href="#" id="regen-from-bundle-link" class="regen-link">uploading your bundle here</a>.<input type="file" accept=".json" id="upload-bundle" style="display:none"></div>
 
 <div class="config-accordion">
@@ -1206,14 +1203,14 @@ export class ConfigForm {
       <input type="radio" name="battle-format" id="battle-format-singles" value="singles" checked>
       <div class="radio-card-body">
         <div class="radio-card-title">Singles</div>
-        <div class="radio-card-desc">Every trainer battle is a single battle, like the classic game.</div>
+        <div class="radio-card-desc">Almost every battle is played in singles.</div>
       </div>
     </label>
     <label class="radio-card">
       <input type="radio" name="battle-format" id="battle-format-doubles" value="doubles">
       <div class="radio-card-body">
         <div class="radio-card-title">Doubles</div>
-        <div class="radio-card-desc">Every eligible trainer (2+ Pokémon) is fought as a double battle.</div>
+        <div class="radio-card-desc">Almost every battle is played in doubles.</div>
       </div>
     </label>
     <label class="radio-card">
@@ -1259,14 +1256,14 @@ export class ConfigForm {
       <input type="radio" name="wild-encounter-type" id="wild-deterministic" value="deterministic" checked>
       <div class="radio-card-body">
         <div class="radio-card-title">Deterministic</div>
-        <div class="radio-card-desc">One Pokémon per zone and method. Each run you can predict exactly which encounter every route, cave and rod gives you.</div>
+        <div class="radio-card-desc">One Pokémon per zone and method, so you can play one-time nuzlocke runs planning your encounters.</div>
       </div>
     </label>
     <label class="radio-card">
       <input type="radio" name="wild-encounter-type" id="wild-classic" value="classic">
       <div class="radio-card-body">
         <div class="radio-card-title">Classic</div>
-        <div class="radio-card-desc">Several Pokémon per zone, like the original games — you never know which of them you'll meet.</div>
+        <div class="radio-card-desc">Several Pokémon per zone, like the original games.</div>
       </div>
     </label>
   </div>
@@ -1334,8 +1331,6 @@ export class ConfigForm {
           <label for="non-boss-team-size">Non-boss team size: <span id="non-boss-team-size-val">6</span></label>
           <input type="range" id="non-boss-team-size" class="slider" min="1" max="6" value="6" step="1" style="width:100%">
         </div>
-        <span class="field-hint">Teams with a smaller cap keep their strongest Pokémon and drop the weakest of their budget.</span>
-
         <div style="display:flex;gap:20px;flex-wrap:wrap">
           <div style="display:flex;flex-direction:column;gap:6px">
             <label for="boss-level-modifier">Boss level modifier</label>
@@ -1346,7 +1341,7 @@ export class ConfigForm {
             <input type="number" id="non-boss-level-modifier" class="input" min="-30" max="30" step="1" value="0" style="width:110px">
           </div>
         </div>
-        <span class="field-hint">Levels relative to the cap in force when the player reaches each trainer (may be negative). +3 puts a boss three levels above the cap.</span>
+        <span class="field-hint">Levels relative to the cap in force when the player reaches each trainer. May be negative.</span>
       </div>
     </div>
   </div>
@@ -1377,10 +1372,10 @@ export class ConfigForm {
       <div class="slider-row">
         <input type="range" id="balance-chance" class="slider" min="0" max="100" step="5" value="20">
       </div>
-      <span class="field-hint">Fraction of Pokémon whose stats get mutated. 0% = no mutations, 50% = aggressive.</span>
+      <span class="field-hint">Chance for each Pokémon to roll mutations.</span>
     </div>
 
-    <div id="mutation-categories" style="display:flex;flex-direction:column;gap:20px">
+    <div id="mutation-categories" style="display:flex;flex-direction:column;gap:32px">
       <div class="toggle-wrap">
         <div>
           <div class="toggle-label">Mutate stats</div>
@@ -1410,9 +1405,8 @@ export class ConfigForm {
         <label class="toggle"><input type="checkbox" id="mutate-learnsets" checked><span class="toggle-track"></span></label>
       </div>
     </div>
-  </div>
 
-  <div class="form-section" style="margin-top:16px">
+    <div class="form-section" id="mutations-advanced-section" style="margin-top:4px">
     <button type="button" class="collapsible-toggle" id="mutations-advanced-toggle" aria-expanded="false">
       <span class="arrow">▶</span>
       Advanced
@@ -1422,6 +1416,7 @@ export class ConfigForm {
         <span class="field-hint">Fine-tune the mutation algorithm. Every value falls back to its default, so leaving these unchanged reproduces the standard run.</span>
         ${mutationProbInputs()}
       </div>
+    </div>
     </div>
   </div>
 
@@ -1454,7 +1449,7 @@ export class ConfigForm {
       <span class="field-hint">Chance each move is eligible to mutate at all. The category toggles below (and their Advanced chances) then decide what changes.</span>
     </div>
 
-    <div id="move-mutation-categories" style="display:flex;flex-direction:column;gap:20px">
+    <div id="move-mutation-categories" style="display:flex;flex-direction:column;gap:32px">
       <div class="toggle-wrap">
         <div>
           <div class="toggle-label">Mutate power</div>
@@ -1484,9 +1479,8 @@ export class ConfigForm {
         <label class="toggle"><input type="checkbox" id="mutate-category" checked><span class="toggle-track"></span></label>
       </div>
     </div>
-  </div>
 
-  <div class="form-section" style="margin-top:16px">
+    <div class="form-section" id="move-mutation-advanced-section" style="margin-top:4px">
     <button type="button" class="collapsible-toggle" id="move-mutation-advanced-toggle" aria-expanded="false">
       <span class="arrow">▶</span>
       Advanced
@@ -1516,6 +1510,7 @@ export class ConfigForm {
         </div>
       </div>
     </div>
+    </div>
   </div>
 
   </div>
@@ -1530,7 +1525,7 @@ export class ConfigForm {
       <div class="toggle-wrap">
         <div>
           <div class="toggle-label">Adjust evolution levels</div>
-          <div class="toggle-desc">Recompute the level each Pokémon evolves at, scaled by tier. Off = keep base-game levels.</div>
+          <div class="toggle-desc">Pokémon always need to meet level criteria to evolve. You can use these settings to tweak how they do so.</div>
         </div>
         <label class="toggle"><input type="checkbox" id="evo-enabled" checked><span class="toggle-track"></span></label>
       </div>
@@ -1577,36 +1572,34 @@ export class ConfigForm {
       <div class="field">
         <label for="gyms-type-changed">Gyms with changed types</label>
         <input type="number" id="gyms-type-changed" class="input" min="0" max="8" value="2" style="width:88px">
-        <span class="field-hint">How many of the 8 gym leaders get a randomized type theme (0–8). The rest keep their canonical type. Gyms, Elite Four and the champion draw from one shared type pool, so a type freed by one boss can be picked up by another.</span>
+        <span class="field-hint">How many of the 8 gym leaders get a randomized type theme. The rest keep their canonical type.</span>
       </div>
       <div class="field">
         <label for="e4-type-changed">Elite Four with changed types</label>
         <input type="number" id="e4-type-changed" class="input" min="0" max="4" value="2" style="width:88px">
-        <span class="field-hint">How many of the 4 Elite Four members get a randomized type theme (0–4). The rest keep their canonical type.</span>
+        <span class="field-hint">How many of the 4 Elite Four members get a randomized type theme. The rest keep their canonical type.</span>
       </div>
       <div class="field">
         <label for="champion-type-change-pct">Champion type-change chance</label>
         <input type="number" id="champion-type-change-pct" class="input" min="0" max="100" value="5" style="width:88px">
-        <span class="field-hint">Percent chance the champion (Steven) also gets a randomized type instead of Steel (0–100, default 5%). When it changes, its freed Steel joins the shared pool; when it stays Steel, Steel is reserved from gyms/E4. All Steven battles use the resulting type.</span>
+        <span class="field-hint">Percent chance the champion (Steven) also gets a randomized type instead of Steel (0–100, default 5%).</span>
       </div>
       <!-- T-209 — Steven-tag toggle + evil-team type selectors stay in the SAME box as the
            gym/E4/champion type settings (one card for the whole Trainers & bosses category). -->
       <div class="toggle-wrap">
         <div>
           <div class="toggle-label">Disable Steven tag battle</div>
-          <div class="toggle-desc">Turns the Mossdeep Space Center tag battle (you + Steven vs Maxie + Tabitha) into a normal battle against Tabitha alone. Steven takes on Maxie while you face Tabitha as a regular boss (single or double, per your battle-format settings); the number of bosses and the story after the fight are unchanged.</div>
+          <div class="toggle-desc">Turns the Mossdeep Space Center tag battle (you + Steven vs Maxie + Tabitha) into a normal battle against Tabitha alone. Steven takes on Maxie while you face Tabitha as a regular boss (single or double, per your battle-format settings); the story after the fight is unchanged.</div>
         </div>
         <label class="toggle"><input type="checkbox" id="disable-steven-tag-battle"><span class="toggle-track"></span></label>
       </div>
       <div>
         <div class="section-title">Team Aqua types</div>
         <div class="type-slot-grid">${teamTypeSelectors('aqua', DEFAULTS.aquaTypes)}</div>
-        <span class="field-hint">Each slot is a fixed type or Random (rolled per run). Team Aqua trainers field Pokémon of these types; the main + secondary drive their card colour.</span>
       </div>
       <div>
         <div class="section-title">Team Magma types</div>
         <div class="type-slot-grid">${teamTypeSelectors('magma', DEFAULTS.magmaTypes)}</div>
-        <span class="field-hint">Each slot is a fixed type or Random (rolled per run). Team Magma trainers field Pokémon of these types; the main + secondary drive their card colour.</span>
       </div>
     </div>
   </div>
@@ -1621,22 +1614,20 @@ export class ConfigForm {
       <div class="field">
         <label for="reward-normal">Normal trainer money ($)</label>
         <input type="number" id="reward-normal" class="input" min="0" max="999999" step="50" value="250" style="width:120px">
-        <span class="field-hint">Prize money for a regular trainer. Game default: 250.</span>
+        <span class="field-hint">Prize money for a regular trainer.</span>
       </div>
       <div class="field">
         <label for="reward-boss">Boss money ($)</label>
         <input type="number" id="reward-boss" class="input" min="0" max="999999" step="100" value="3000" style="width:120px">
-        <span class="field-hint">Prize money for rivals, admins, Steven, Wally, etc. Game default: 3000. Museum &amp; Space-Center grunts derive from this (≈⅔ of it; the 2nd museum grunt adds $50), so at 3000 they stay $2000 / $2050.</span>
+        <span class="field-hint">Prize money for regular bosses.</span>
       </div>
       <div class="field">
         <label for="reward-gym">Gym leader money ($)</label>
         <input type="number" id="reward-gym" class="input" min="0" max="999999" step="100" value="5000" style="width:120px">
-        <span class="field-hint">Prize money for gym leaders. Game default: 5000. Elite Four ($10k) and the Champion ($50k) are fixed.</span>
       </div>
       <div class="field">
         <label for="reward-relearn">Move relearn price ($)</label>
         <input type="number" id="reward-relearn" class="input" min="0" max="999999" step="50" value="250" style="width:120px">
-        <span class="field-hint">Cost to relearn a move a Pokémon has had before (from its initial moveset or a level-up). Relearning a move it never actually had is always free. Game default: 250. Set to 0 to make every relearn free.</span>
       </div>
       ${shopPricesBlock()}
     </div>
@@ -1652,14 +1643,14 @@ export class ConfigForm {
       <div class="field">
         <label for="starter-quality">Starter quality</label>
         <select id="starter-quality" class="input" style="width:140px">${EXTRA_STARTER_TIER_OPTIONS.map(t => `<option value="${t}"${t === DEFAULTS.starterQuality ? ' selected' : ''}>${t}</option>`).join('')}</select>
-        <span class="field-hint">Competitive tier the <strong>3 normal starters</strong>' evolution lines peak at. They are always early 3-stage (Little Cup) lines with a weak base — this sets how strong their final evolution ends up. Game default: UU.</span>
+        <span class="field-hint">Competitive tier the <strong>3 normal starters</strong>' evolution lines peak at. They are always early 3-stage lines with a weak base. This setting sets how strong their final evolution ends up.</span>
       </div>
       <div style="border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;display:flex;flex-direction:column;gap:14px">
         <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap">
           <strong style="font-size:0.95em">Extra starters</strong>
           <span class="field-hint" id="starter-count" style="margin:0"></span>
         </div>
-        <span class="field-hint">Extra starter choices offered in-game, beyond the 3 normal starters. Each slot picks a Pokémon by category: an early Pokémon whose evolution line peaks at a given competitive tier (optionally a 3- or 2-stage line), or a standalone (non-evolving) Pokémon of that tier. Add or remove as many as you like.</span>
+        <span class="field-hint">Extra starter box given in-game, beyond the 3 normal starters. Each slot picks a Pokémon by category: an early Pokémon whose evolution line peaks at a given competitive tier (optionally a 3- or 2-stage line), or a standalone (non-evolving) Pokémon of that tier. Add or remove as many as you like.</span>
         <div id="starter-list"></div>
         <div><button type="button" class="btn btn-ghost btn-sm" id="add-starter">+ Add extra starter</button></div>
       </div>
@@ -1676,7 +1667,7 @@ export class ConfigForm {
       <div class="toggle-wrap">
         <div>
           <div class="toggle-label">Enable nicknames</div>
-          <div class="toggle-desc">Give the extra starters (and, optionally, your chosen starter) baked-in nicknames with matching genders. All nickname options below — including location-based names — share the same name pool.</div>
+          <div class="toggle-desc">Give automatic baked-in nicknames to your Pokémon.</div>
         </div>
         <label class="toggle"><input type="checkbox" id="nickname-enabled"><span class="toggle-track"></span></label>
       </div>
@@ -1685,7 +1676,6 @@ export class ConfigForm {
         <div class="toggle-wrap">
           <div>
             <div class="toggle-label">Include the main starter</div>
-            <div class="toggle-desc">Also nickname the starter you pick. Off = only the extra starters are named.</div>
           </div>
           <label class="toggle"><input type="checkbox" id="nickname-include-starter"><span class="toggle-track"></span></label>
         </div>
@@ -1693,7 +1683,7 @@ export class ConfigForm {
         <div class="toggle-wrap">
           <div>
             <div class="toggle-label">Auto-nickname every Pokémon by location</div>
-            <div class="toggle-desc">Also name every wild and static Pokémon after where it's found — one name per route/area (e.g. every Pokémon on Route 102 is "Percy"), drawn from the same pool below.</div>
+            <div class="toggle-desc">Also name every wild and static Pokémon after where it's found — one name per route/area (e.g. every Pokémon on Route 102 is "Percy"), drawn from the same pool below. Shared in soul-link.</div>
           </div>
           <label class="toggle"><input type="checkbox" id="nickname-auto-location"><span class="toggle-track"></span></label>
         </div>
@@ -1701,9 +1691,16 @@ export class ConfigForm {
         <div class="toggle-wrap">
           <div>
             <div class="toggle-label">Random name for trades and gifts</div>
-            <div class="toggle-desc">Name the Pokémon you receive from town trades and gift NPCs (gym rewards, fossils) after where you get them — same pool and gender rules as above.</div>
           </div>
           <label class="toggle"><input type="checkbox" id="nickname-auto-trades-gifts" checked><span class="toggle-track"></span></label>
+        </div>
+
+        <div class="toggle-wrap">
+          <div>
+            <div class="toggle-label">Different names per gender</div>
+            <div class="toggle-desc">Draw male / female names from separate pools plus a shared unisex pool. Off = one pool for everyone.</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="nickname-different-per-gender" checked><span class="toggle-track"></span></label>
         </div>
 
         <div class="toggle-wrap" id="nickname-lock-gender-route-row">
@@ -1713,7 +1710,7 @@ export class ConfigForm {
           </div>
           <label class="toggle"><input type="checkbox" id="nickname-lock-gender-route"><span class="toggle-track"></span></label>
         </div>
-        <span class="field-hint" id="nickname-both-only-note" style="display:none">With different-names-per-gender on but <strong>lock gender per route</strong> off, gendered names can't be matched to a route's gender, so only the unisex <strong>Both</strong> pool is used — turn the lock on to also use the male/female pools.</span>
+        <span class="field-hint" id="nickname-both-only-note" style="display:none">With different-names-per-gender on but <strong>lock gender per route</strong> off, gendered names can't be matched to a route's gender, so only the unisex <strong>Both</strong> pool is used.</span>
 
         <div class="toggle-wrap" id="nickname-same-runs-row">
           <div>
@@ -1729,14 +1726,6 @@ export class ConfigForm {
             <div class="toggle-desc">Each player's ROM at the same position shares slot / route names (e.g. every player's ROM 1 gets the same names).</div>
           </div>
           <label class="toggle"><input type="checkbox" id="nickname-share-soullink" checked><span class="toggle-track"></span></label>
-        </div>
-
-        <div class="toggle-wrap">
-          <div>
-            <div class="toggle-label">Different names per gender</div>
-            <div class="toggle-desc">Draw male / female names from separate pools plus a shared unisex pool. Off = one pool for everyone.</div>
-          </div>
-          <label class="toggle"><input type="checkbox" id="nickname-different-per-gender" checked><span class="toggle-track"></span></label>
         </div>
 
         <div id="nickname-pools-gendered">
@@ -1780,23 +1769,22 @@ export class ConfigForm {
   </button>
   <div class="config-cat-body hidden" id="cat-body-docs-visibility">
     <div class="card-glass" style="padding:20px">
-      <span class="field-hint" style="margin:0 0 4px">Controls only what the generated documentation reveals — never what the ROM actually contains. Hidden information is stripped from the docs, not just hidden on screen.</span>
+      <span class="field-hint" style="margin:0 0 4px">Controls only what the generated documentation reveals. It does not alter what the game actually contains. Hidden information is stripped from the docs so the players need to encounter it in-game.</span>
 
       <div class="section-title" style="margin-top:14px">Trainers</div>
       <div class="toggle-wrap">
         <div>
           <div class="toggle-label">Show trainers</div>
-          <div class="toggle-desc">Master switch for the Trainers tab. Off removes the tab entirely and hides trainer rewards from the Encounters tab.</div>
         </div>
         <label class="toggle"><input type="checkbox" id="show-trainers" checked><span class="toggle-track"></span></label>
       </div>
       <div id="dv-trainer-children" class="dv-children">
         <div class="toggle-wrap">
-          <div><div class="toggle-label">Show bosses</div><div class="toggle-desc">Off hides boss / rival / gym cards (and their encounter rewards).</div></div>
+          <div><div class="toggle-label">Show bosses</div></div>
           <label class="toggle"><input type="checkbox" id="show-bosses" checked><span class="toggle-track"></span></label>
         </div>
         <div class="toggle-wrap">
-          <div><div class="toggle-label">Show non-bosses</div><div class="toggle-desc">Off hides ordinary route / trainer cards.</div></div>
+          <div><div class="toggle-label">Show non-bosses</div></div>
           <label class="toggle"><input type="checkbox" id="show-non-bosses" checked><span class="toggle-track"></span></label>
         </div>
         <div class="toggle-wrap">
@@ -1816,19 +1804,19 @@ export class ConfigForm {
           <label class="toggle"><input type="checkbox" id="show-ability" checked><span class="toggle-track"></span></label>
         </div>
         <div class="toggle-wrap">
-          <div><div class="toggle-label">Show rewards</div><div class="toggle-desc">Off hides rewards everywhere — on trainer cards and in the Encounters tab.</div></div>
+          <div><div class="toggle-label">Show rewards</div></div>
           <label class="toggle"><input type="checkbox" id="show-rewards" checked><span class="toggle-track"></span></label>
         </div>
         <div class="toggle-wrap">
-          <div><div class="toggle-label">Show IVs</div><div class="toggle-desc">Off (default) omits IVs from the docs entirely.</div></div>
+          <div><div class="toggle-label">Show IVs</div></div>
           <label class="toggle"><input type="checkbox" id="show-ivs"><span class="toggle-track"></span></label>
         </div>
         <div class="toggle-wrap">
-          <div><div class="toggle-label">Show exact positions in teams</div><div class="toggle-desc" title="When enabled, the docs show each Pokémon in the exact slot it occupies in-game, including lead and Illusion placement. Disabled by default to preserve in-game surprise.">Show each Pokémon's exact in-game position in the documentation.</div></div>
+          <div><div class="toggle-label">Show exact positions in teams</div><div class="toggle-desc" title="When enabled, the docs show each Pokémon in the exact slot it occupies in-game, including lead and Illusion placement. Disabled by default to preserve in-game surprise.">Activate if you want to know the lead Pokémon and have more control over switch AI.</div></div>
           <label class="toggle"><input type="checkbox" id="show-exact-positions"><span class="toggle-track"></span></label>
         </div>
         <div class="toggle-wrap">
-          <div><div class="toggle-label">Hide some Pokémon of the team</div><div class="toggle-desc">Collapse the last few Pokémon of every team into an "(and X other Pokémon)" box.</div></div>
+          <div><div class="toggle-label">Hide some Pokémon of the team</div><div class="toggle-desc">Show only a specific amount of Pokémon in each team, so you need to plan for the unexpected.</div></div>
           <label class="toggle"><input type="checkbox" id="hide-pokemon"><span class="toggle-track"></span></label>
         </div>
         <div id="hide-pokemon-count-row" class="run-panel hidden">
@@ -1836,7 +1824,6 @@ export class ConfigForm {
             <label for="hide-pokemon-count">How many to hide</label>
             <input type="number" id="hide-pokemon-count" class="input" value="1" min="1" max="5" style="width:72px">
           </div>
-          <span class="field-hint" style="margin:6px 0 0">Hidden per team — never the whole team (at least one always shows). The box shows the real number hidden.</span>
         </div>
       </div>
 
@@ -1844,25 +1831,24 @@ export class ConfigForm {
       <div class="toggle-wrap">
         <div>
           <div class="toggle-label">Show wild encounters</div>
-          <div class="toggle-desc">Off keeps the Encounters tab but shows only starters, extra starters and (if enabled) trainer rewards.</div>
         </div>
         <label class="toggle"><input type="checkbox" id="show-wild-encounters" checked><span class="toggle-track"></span></label>
       </div>
       <div class="toggle-wrap">
-        <div><div class="toggle-label">Show legendary static encounters</div><div class="toggle-desc">Off hides legendary statics from the Encounters tab and the Mail inbox.</div></div>
+        <div><div class="toggle-label">Show legendary static encounters</div></div>
         <label class="toggle"><input type="checkbox" id="show-legendary-static" checked><span class="toggle-track"></span></label>
       </div>
       <div class="toggle-wrap">
-        <div><div class="toggle-label">Show non-legendary static encounters</div><div class="toggle-desc">Off hides non-legendary statics from the Encounters tab and the Mail inbox.</div></div>
+        <div><div class="toggle-label">Show non-legendary static encounters</div></div>
         <label class="toggle"><input type="checkbox" id="show-non-legendary-static" checked><span class="toggle-track"></span></label>
       </div>
       <div id="dv-wild-methods" class="dv-children">
         <div class="toggle-wrap">
-          <div><div class="toggle-label">Show super-rod encounters</div><div class="toggle-desc">Off labels them "Super-Rod encounter 1, 2, …" instead of the species.</div></div>
+          <div><div class="toggle-label">Show super-rod encounters</div></div>
           <label class="toggle"><input type="checkbox" id="show-super-rod" checked><span class="toggle-track"></span></label>
         </div>
         <div class="toggle-wrap">
-          <div><div class="toggle-label">Show dive encounters</div><div class="toggle-desc">Off shows only how many different encounters the zone has.</div></div>
+          <div><div class="toggle-label">Show dive encounters</div></div>
           <label class="toggle"><input type="checkbox" id="show-dive" checked><span class="toggle-track"></span></label>
         </div>
         <div class="toggle-wrap">
@@ -1882,7 +1868,7 @@ export class ConfigForm {
           <label class="toggle"><input type="checkbox" id="show-grass" checked><span class="toggle-track"></span></label>
         </div>
         <div class="toggle-wrap">
-          <div><div class="toggle-label">Show trades</div><div class="toggle-desc">Off hides the town-trade sub-card from the route cards and the Pokémon modal.</div></div>
+          <div><div class="toggle-label">Show trades</div></div>
           <label class="toggle"><input type="checkbox" id="show-trades" checked><span class="toggle-track"></span></label>
         </div>
       </div>
@@ -1972,6 +1958,8 @@ export class ConfigForm {
         const rebalanceOn = this._q('#rebalance').checked;
         this._q('#balance-chance-row').style.display = rebalanceOn ? '' : 'none';
         this._q('#mutation-categories').style.display = rebalanceOn ? '' : 'none';
+        // T-226 — the (now in-box) Advanced panel is conditional on the master toggle too.
+        { const s = this._q('#mutations-advanced-section'); if (s) s.style.display = rebalanceOn ? '' : 'none'; }
         this._q('#balance-chance-val').textContent = this._q('#balance-chance').value + '%';
 
         // T-187 — reveal the move-mutation gate + category toggles only when the master toggle is on
@@ -1981,6 +1969,7 @@ export class ConfigForm {
         const mmCategories = this._q('#move-mutation-categories');
         if (mmChanceRow) mmChanceRow.style.display = mutateMovesOn ? '' : 'none';
         if (mmCategories) mmCategories.style.display = mutateMovesOn ? '' : 'none';
+        { const s = this._q('#move-mutation-advanced-section'); if (s) s.style.display = mutateMovesOn ? '' : 'none'; } // T-226
         const mmVal = this._q('#move-mutation-chance-val');
         if (mmVal) mmVal.textContent = (this._q('#move-mutation-chance')?.value ?? '10') + '%';
 
