@@ -495,10 +495,11 @@ test('T-188/T-192: the config-action controls keep their ids so _bind() wiring i
   }
 });
 
-test('T-188: a hint near the actions explains a bundle.json can also be loaded (config only)', () => {
+test('T-188: the Load-from-bundle control accepts a .json (config load; explanatory hint removed in T-226)', () => {
   const actionsIdx = src.indexOf('class="config-actions"');
   const block = src.slice(actionsIdx, actionsIdx + 700);
-  assert.match(block, /bundle\.json/i, 'a hint near Load mentions a bundle.json is accepted for its config');
+  assert.match(block, /id="upload-config"/, 'the Load-from-bundle control is present');
+  assert.match(block, /accept="\.json"/, 'it accepts a .json (a saved config or a full bundle.json)');
 });
 
 test('T-188: .config-actions is styled as a header (not a bottom footer)', () => {
