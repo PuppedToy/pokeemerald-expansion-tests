@@ -113,7 +113,11 @@ function setTabTitle(prefix) { document.title = prefix ? `${prefix} · ${DEFAULT
 // on. Both live hidden in the markup; this just flips them. Idempotent, safe to call before login.
 function applyBetaChrome() {
   const badge = $('beta-badge'); if (badge) badge.hidden = !betaMode;
-  const notice = $('beta-notice'); if (notice) notice.hidden = !betaMode;
+  // T-224 — the "closed beta / invite-only" notice is only relevant to users without build access yet.
+  // Accepted users (and everyone when BETA is off) don't see it; anonymous/pending users do. Re-runs on
+  // every auth transition (called from updateNavAccount) so it flips the moment someone is accepted.
+  const accepted = state?.inviteState === 'accepted';
+  const notice = $('beta-notice'); if (notice) notice.hidden = !(betaMode && !accepted);
 }
 
 // ── auth modal (login / register only — T-034) ────────────────────────────────────
@@ -143,6 +147,7 @@ function updateNavAccount() {
     $('nav-logout')?.addEventListener('click', (e) => { e.preventDefault(); logout(); });
   }
   renderSettings();
+  applyBetaChrome(); // T-224 — re-evaluate the closed-beta notice against the new auth/invite state
   emitAuthChange(); // notify subscribers (feedback.js) of the current auth state (T-048)
 }
 

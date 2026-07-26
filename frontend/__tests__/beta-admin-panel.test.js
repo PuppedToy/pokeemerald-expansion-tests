@@ -37,7 +37,7 @@ test('fmtEta renders seconds as a short human string', () => {
 test('overviewHtml renders the counts, ETA, the waiting table with the has-ROM flag, and the accepted list', () => {
   const html = overviewHtml(SAMPLE);
   assert.match(html, /3<\/strong> waiting/);
-  assert.match(html, /2<\/strong> prepared ROMs/);
+  assert.match(html, /2<\/strong> prepared runs/);
   assert.match(html, /12<\/strong> accepted/);
   assert.match(html, /ETA ~1h 30m/);
   // waiting rows
@@ -62,7 +62,7 @@ test('overviewHtml escapes user-supplied emails', () => {
 test('inviteSummary describes the batch outcome incl. budget cap + shortfall', () => {
   assert.equal(
     inviteSummary({ invited: 4, withRom: 2, withoutRom: 2, cappedByBudget: false, shortfall: 0 }),
-    '4 invited · 2 with a prepared ROM · 2 emailed to start',
+    '4 invited · 2 with a prepared run · 2 emailed to start',
   );
   const capped = inviteSummary({ invited: 3, withRom: 2, withoutRom: 1, cappedByBudget: true, shortfall: 2 });
   assert.match(capped, /capped by the ~1h build budget/);
@@ -76,7 +76,7 @@ test('searchResultsHtml shows an Accept action only for not-yet-accepted users',
   ]);
   assert.match(html, /data-accept-user="1"/, 'pending user is acceptable');
   assert.doesNotMatch(html, /data-accept-user="2"/, 'already-accepted user has no Accept button');
-  assert.match(html, /ROM ✓ \(1\)/);
+  assert.match(html, /run ✓ \(1\)/);
   assert.equal(searchResultsHtml([]), '<p class="settings-note">No matches.</p>');
 });
 
