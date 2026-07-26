@@ -6,7 +6,7 @@ type: chore             # feature | fix | refactor | docs | chore
 created: 2026-07-26
 updated: 2026-07-26
 target-version: 0.7.0
-links: []
+links: [T-219, T-220]
 blocked-by: []
 ---
 
@@ -37,10 +37,14 @@ the owner extends it.
 
 ## Plan
 
-Remove `<!-- -->` comments and the ID/banner tells from `frontend/index.html` and `frontend/template.html`
-(and the `T-…`/`B-…`/banner tells inside `template.html`'s inline `<style>`/`<script>`). Prefer cleaning
-the source over adding a build-time stripper (no static build step exists for `index.html`; keeps it
-simple and diff-reviewable). Add a guard test so comments/IDs cannot re-leak.
+**Scope narrowed (owner, 2026-07-26): SOURCE hygiene only — conservative, "solo lo que no sea útil".** The
+*shipped-artifact* cleanliness (no comments in what users download / view-source) is now delivered by the
+minify build, split into [T-219](T-219-minified-docs-viewer.md) (docs `out.html`) and
+[T-220](T-220-frontend-build-minify.md) (frontend `dist`). This task just removes the genuinely
+non-useful tells from the **source** files so they aren't AI-cruft-ridden: decorative box-drawing banners,
+leaked `T-…`/`B-…` IDs in `frontend/index.html` + `frontend/template.html`, and redundant obvious labels
+(`<!-- loader -->`, `<!-- script to handle moves -->`). **Keep every comment that actually helps a
+maintainer.** Add a guard test that fails only on the *tells* (not on all comments).
 
 **Non-negotiable safety rails:**
 - **Do NOT touch the `__TOKEN__` placeholders** in `template.html` or any marker the doc generator relies
@@ -52,28 +56,29 @@ simple and diff-reviewable). Add a guard test so comments/IDs cannot re-leak.
   `randomizer/__tests__/unit/trainerColors.test.js` reads `template.html`). If a test matched on a removed
   comment, **update the assertion to target the real element — never re-add the comment to satisfy a test.**
 
-**TDD:** first add a failing guard test that greps the two shipped HTML files for (a) any `<!-- -->`
-comment and (b) any `T-\d{3}`/`B-\d{3}` token; watch it fail; then clean until green.
+**TDD:** first add a failing guard test that greps `frontend/index.html` + `frontend/template.html` for
+the *tells* only — `T-\d{3}`/`B-\d{3}` tokens and decorative box-drawing banners (`<!-- ── … ── -->`);
+watch it fail; then clean until green. The test must NOT forbid all `<!-- -->` comments (useful ones stay).
 
-Open decisions to confirm with the owner when starting:
-1. **Aggressiveness on inline `<style>`/`<script>` in `template.html`:** strip *all* comments there, or
-   only the tells (IDs, banners, redundant labels), keeping genuinely structural section markers?
-   (Default recommendation: strip IDs + banners + redundant labels; keep nothing purely decorative.)
-2. **Source-clean vs. strip-at-build/generate:** clean the source + guard test (recommended) vs. add a
-   comment-stripping pass at serve/doc-gen time (heavier machinery).
-3. **Extend to JS?** Sweeping `T-…` refs out of the `frontend/js/*.js` module comments is out of scope by
-   default (they don't ship as prominently and are a project convention) — include only if the owner asks.
+Resolved decisions (owner, 2026-07-26):
+1. **Aggressiveness:** conservative — remove only the non-useful tells (leaked IDs, decorative banners,
+   redundant obvious labels); keep genuinely helpful comments. Applies to `template.html`'s inline
+   `<style>`/`<script>` too.
+2. **Source-clean vs. strip-at-build:** BOTH, split — T-218 cleans the source conservatively; the
+   shipped-artifact strip/minify is T-219 (docs) + T-220 (frontend). No overlap.
+3. **Extend to JS module comments?** Out of scope — the `frontend/js/*.js` rich comments are a project
+   convention (and T-220's minify strips them from the shipped bundle anyway).
 
 Acceptance criteria:
-- [ ] `frontend/index.html` and `frontend/template.html` contain no `<!-- -->` comments and no `T-\d{3}`/
-      `B-\d{3}` references (per grep + the new guard test).
-- [ ] The generated docs still build correctly (the `__TOKEN__` substitutions untouched; the `docs-*` and
-      `trainerColors` tests green; a real `node analyze.js`/doc-gen smoke still produces a valid viewer).
+- [ ] `frontend/index.html` + `frontend/template.html` carry no leaked `T-…`/`B-…` IDs, no decorative
+      box-drawing banners, and no redundant obvious labels (per grep + the new guard test) — while genuinely
+      useful comments remain.
+- [ ] The generated docs still build correctly (the `__TOKEN__` substitutions untouched; `docs-*` +
+      `trainerColors` tests green; a doc-gen smoke still produces a valid viewer).
 - [ ] Full **frontend** suite + **randomizer** suite green; any assertion that referenced a removed comment
       updated to a real element.
-- [ ] A regression guard test fails if a comment or a `T-…`/`B-…` token re-enters the shipped HTML.
-- [ ] No behaviour/appearance change: `visual-tests` `npm run shoot` shows no horizontal overflow (and no
-      unexpected visual diff).
+- [ ] The guard test fails if a `T-…`/`B-…` token or a decorative banner re-enters those files.
+- [ ] No behaviour/appearance change: `visual-tests` `npm run shoot` shows no horizontal overflow.
 
 ## Progress log
 
@@ -83,6 +88,10 @@ Acceptance criteria:
   (reset/verify already clean); JS out of scope. Verified `template.html` substitutes by `__TOKEN__`, not
   by comment, so comments are safe to remove — but flagged the many HTML source-inspection tests as the main
   risk. Left three aggressiveness/approach decisions for owner sign-off before starting.
+- **2026-07-26** — Owner decisions: (1) **conservative** — remove only non-useful tells, keep helpful
+  comments; (2) also wants the shipped artifacts **minified** → carved that out into T-219 (docs `out.html`)
+  + T-220 (frontend `dist`), so T-218 is now SOURCE hygiene only; (3) JS module comments stay. Rescoped the
+  Plan + acceptance accordingly; the guard test now targets the *tells*, not all comments.
 
 ## Outcome
 
