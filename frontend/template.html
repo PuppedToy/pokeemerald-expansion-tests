@@ -915,7 +915,7 @@
   <div class="app">
     <header class="topbar" id="topbar">
       <div class="topbar-inner">
-        <!-- Mobile-only menu button (T-040): hidden on desktop; opens the nav drawer. -->
+        <!-- Mobile-only menu button: hidden on desktop; opens the nav drawer. -->
         <button class="nav-burger-docs" id="nav-burger-docs" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
           <span class="nav-burger-bars" aria-hidden="true"></span>
         </button>
@@ -929,7 +929,7 @@
         <button class="topbar-pin" id="topbar-pin" type="button" aria-pressed="true" title="Pin the bar to the top while scrolling">📌</button>
       </div>
     </header>
-    <!-- Nav drawer scrim (T-040): shown only on mobile when the drawer is open; tap to close. -->
+    <!-- Nav drawer scrim: shown only on mobile when the drawer is open; tap to close. -->
     <div class="nav-scrim-docs" id="nav-scrim-docs"></div>
 
     <main class="main">
@@ -1174,9 +1174,9 @@
     };
   </script>
   <!-- Type palette main colours (typeColors) — SSOT: randomizer/trainerColors.js.
-       Injected at build time by writer.js (out.html) / app.js (browser). Boss-card
-       colours are pre-resolved per trainer (trainer.colors); this map is only the
-       bright per-type colour the move chips paint with (T-044). -->
+ Injected at build time by writer.js (out.html) / app.js (browser). Boss-card
+ colours are pre-resolved per trainer (trainer.colors); this map is only the
+ bright per-type colour the move chips paint with. -->
   <script src="colors.js"></script>
   <!-- common constants -->
   <script>
@@ -1429,15 +1429,15 @@
   <script src="wildpokes.js"></script>
   <script src="abilities.js"></script>
   <script src="items.js"></script>
-  <!-- T-201 — auto-nickname assignments (starters / locations / trades) + trade info; injected per ROM. -->
+  <!-- auto-nickname assignments (starters / locations / trades) + trade info; injected per ROM. -->
   <script src="nicknames.js"></script>
   <script src="sprites.js"></script>
   <script src="bosscaps.js"></script>
-  <!-- T-005 — per-run localStorage namespace. The run-namespace token below is replaced
-       at doc-generation time (randomizer/writer.js, frontend/js/app.js) with a stable
-       per-run id (see docRunNamespace). nsKey() suffixes every storage key with it so
-       docs from different runs opened in the same browser/origin never share state.
-       Un-generated template (token left intact, contains '%') → fall back to shared keys. -->
+  <!-- per-run localStorage namespace. The run-namespace token below is replaced
+ at doc-generation time (randomizer/writer.js, frontend/js/app.js) with a stable
+ per-run id (see docRunNamespace). nsKey suffixes every storage key with it so
+ docs from different runs opened in the same browser/origin never share state.
+ Un-generated template (token left intact, contains '%') → fall back to shared keys. -->
   <script>
     window.__DOC_RUN_NS = "%%DOC_RUN_NS%%";
     window.nsKey = function (base) {
@@ -3227,8 +3227,8 @@
   })();
   </script>
 
-  <!-- T-007 — Mail notifications engine (self-contained: reads nuzlocke state from
-       localStorage + injected globals bossCaps/wildPokes/pokes/trainersData/movesData) -->
+  <!-- Mail notifications engine (self-contained: reads nuzlocke state from
+ localStorage + injected globals bossCaps/wildPokes/pokes/trainersData/movesData) -->
   <script>
   (function () {
     if (typeof bossCaps === 'undefined' || !Array.isArray(bossCaps) || !bossCaps.length) return;
@@ -3818,7 +3818,7 @@
   })();
   </script>
 
-  <!-- T-009: PC tab — scrollable grid of the (non-fainted) box, each cell opens the Pokémon modal. -->
+  <!-- PC tab — scrollable grid of the (non-fainted) box, each cell opens the Pokémon modal. -->
   <script>
   (function(){
     'use strict';
@@ -3913,16 +3913,16 @@
       });
     });
   </script>
-  <!-- T-006: swap static [data-icon] emoji placeholders for pixel-icon PNGs when present.
-       Until the user adds frontend/assets/icons/<name>.png, the emoji fallback stays. -->
+  <!-- swap static [data-icon] emoji placeholders for pixel-icon PNGs when present.
+ Until the user adds frontend/assets/icons/<name>.png, the emoji fallback stays. -->
   <script>
     document.querySelectorAll('[data-icon]').forEach(function(el){
       var u = (typeof iconAsset === 'function') && iconAsset(el.getAttribute('data-icon'));
       if (u) el.innerHTML = '<img class="ico" src="' + u + '" alt="">';
     });
   </script>
-  <!-- T-038: top-bar pin toggle + measure its height into --tbh (offsets the sticky sidebar).
-       Runs after the icon swap so the measured height includes the brand logo. -->
+  <!-- top-bar pin toggle + measure its height into --tbh (offsets the sticky sidebar).
+ Runs after the icon swap so the measured height includes the brand logo. -->
   <script>
     (function(){
       var app = document.querySelector('.app'), bar = document.getElementById('topbar'), pin = document.getElementById('topbar-pin');

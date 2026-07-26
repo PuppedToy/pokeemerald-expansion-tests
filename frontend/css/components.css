@@ -140,6 +140,48 @@ textarea.is-invalid,
   font-family: var(--obs-font-body);
 }
 
+/* T-216 — beta chrome. The BETA badge rides the brand wordmark; the notice sits atop the randomizer. */
+.beta-badge {
+  font-size: 0.5em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  vertical-align: super;
+  margin-left: 0.35em;
+  padding: 0.1em 0.42em;
+  border-radius: 4px;
+  background: var(--obs-orange);
+  color: var(--obs-on-orange);
+  font-family: var(--obs-font-body);
+}
+.beta-notice {
+  margin: 0 0 1.25rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--obs-orange);
+  border-left-width: 4px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--obs-orange) 10%, transparent);
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.beta-notice strong { color: var(--obs-orange); }
+
+/* T-217 — beta admin panel */
+.admin-stats { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; align-items: center; margin-bottom: 1rem; font-size: 0.9rem; }
+.admin-stat strong { color: var(--obs-orange); }
+.admin-invite { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-bottom: 1.25rem; }
+.admin-invite .admin-invite-count { width: 6rem; }
+.admin-h { margin: 1.25rem 0 0.5rem; font-size: 1rem; }
+.admin-table-wrap { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.admin-table th, .admin-table td { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--obs-border, #333); white-space: nowrap; }
+.admin-table th { color: var(--muted); font-weight: 600; }
+.admin-search { margin: 1.25rem 0; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.admin-search-results { flex-basis: 100%; }
+.admin-search-row { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; padding: 0.3rem 0; border-bottom: 1px solid var(--obs-border, #333); font-size: 0.88rem; }
+.admin-accepted { columns: 2; font-size: 0.85rem; color: var(--muted); }
+.admin-audit { margin-top: 1.25rem; font-size: 0.85rem; color: var(--muted); }
+
 .input::placeholder {
   color: var(--obs-text-mute);
 }

@@ -93,6 +93,7 @@ export function createAuthRouter({ service, users, requests, runs, tokens, feedb
       email: user.email,
       verified: !!user.verified,
       isAdmin: isAdminEmail(user.email, adminEmails), // T-192: gates admin affordances in the UI
+      inviteState: user.invite_state ?? 'pending', // T-216 — beta gate: 'pending' | 'accepted'
       // T-080: ROM ownership is a frontend-only fact (the ROM lives in the browser and is validated
       // client-side). The backend no longer tracks or gates on it, so `/api/me` omits it.
       activeRequest: active

@@ -13,7 +13,7 @@ import { validateBundle } from '../build/bundleSchema.js';
 import { handleProduce, handleStatus, handleDownload, handleNotifyOnReady, handleCancel } from './handlers.js';
 
 export function createProduceRouter({
-  requests, users, jwtSecret,
+  requests, users, jwtSecret, beta = false,
   persistBundle, readOutput, removeFile, killActiveBuild,
   idGen = () => randomUUID(), avgRomSecs,
 }) {
@@ -24,7 +24,7 @@ export function createProduceRouter({
     '/produce',
     auth, requireVerified(users),
     express.json({ limit: '50mb' }),
-    handleProduce({ requests, classify, validateBundle, persistBundle, idGen, avgRomSecs, removeFile, killActiveBuild }),
+    handleProduce({ requests, users, beta, classify, validateBundle, persistBundle, idGen, avgRomSecs, removeFile, killActiveBuild }),
   );
 
   router.post('/notify-on-ready', auth, handleNotifyOnReady({ requests }));

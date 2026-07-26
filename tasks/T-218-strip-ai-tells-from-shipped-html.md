@@ -1,7 +1,7 @@
 ---
 id: T-218
 title: Strip AI-tell comments and cruft from shipped HTML (frontend shell + generated docs)
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: chore             # feature | fix | refactor | docs | chore
 created: 2026-07-26
 updated: 2026-07-26
@@ -61,24 +61,28 @@ the *tells* only — `T-\d{3}`/`B-\d{3}` tokens and decorative box-drawing banne
 watch it fail; then clean until green. The test must NOT forbid all `<!-- -->` comments (useful ones stay).
 
 Resolved decisions (owner, 2026-07-26):
-1. **Aggressiveness:** conservative — remove only the non-useful tells (leaked IDs, decorative banners,
-   redundant obvious labels); keep genuinely helpful comments. Applies to `template.html`'s inline
-   `<style>`/`<script>` too.
-2. **Source-clean vs. strip-at-build:** BOTH, split — T-218 cleans the source conservatively; the
+1. **Aggressiveness:** conservative — remove only the non-useful tells (leaked IDs, decorative banners);
+   keep genuinely helpful comments and section labels.
+2. **Scope refined during implementation → the HTML comment layer only** (`<!-- … -->` in `index.html` +
+   `template.html`). The inline `<style>`/`<script>` block comments were found to be dense source CODE with
+   ~40 task-ID refs following the project's traceability convention (like every `.js`); stripping them would
+   be inconsistent with the whole codebase, and they are minified out of the shipped docs by T-219 anyway —
+   so they are LEFT AS-IS. (Supersedes the initial "applies to inline style/script too" wording.)
+3. **Source-clean vs. strip-at-build:** BOTH, split — T-218 cleans the HTML comment layer; the
    shipped-artifact strip/minify is T-219 (docs) + T-220 (frontend). No overlap.
-3. **Extend to JS module comments?** Out of scope — the `frontend/js/*.js` rich comments are a project
-   convention (and T-220's minify strips them from the shipped bundle anyway).
+4. **Extend to JS module comments?** Out of scope — convention (and T-220 minifies them out of the bundle).
 
 Acceptance criteria:
-- [ ] `frontend/index.html` + `frontend/template.html` carry no leaked `T-…`/`B-…` IDs, no decorative
-      box-drawing banners, and no redundant obvious labels (per grep + the new guard test) — while genuinely
-      useful comments remain.
-- [ ] The generated docs still build correctly (the `__TOKEN__` substitutions untouched; `docs-*` +
-      `trainerColors` tests green; a doc-gen smoke still produces a valid viewer).
-- [ ] Full **frontend** suite + **randomizer** suite green; any assertion that referenced a removed comment
-      updated to a real element.
-- [ ] The guard test fails if a `T-…`/`B-…` token or a decorative banner re-enters those files.
-- [ ] No behaviour/appearance change: `visual-tests` `npm run shoot` shows no horizontal overflow.
+- [x] The **HTML comments** of `frontend/index.html` + `frontend/template.html` carry no leaked `T-…`/`B-…`
+      IDs and no decorative box-drawing banners (per the new guard test); genuinely useful comments + section
+      labels remain.
+- [x] The generated docs still build correctly (`__TOKEN__` substitutions untouched — only comment interiors
+      changed; `docs-*` + `trainerColors` tests green).
+- [x] Full **frontend** suite (194) + **randomizer** suite (1697) green; no assertion referenced a removed
+      comment (none needed updating).
+- [x] The guard test (`frontend/__tests__/no-ai-tells-in-html.test.js`) fails if a `T-…`/`B-…` token or a
+      decorative banner re-enters those files' HTML comments.
+- [x] No behaviour/appearance change: `visual-tests` `npm run shoot` shows no horizontal overflow.
 
 ## Progress log
 
@@ -92,6 +96,14 @@ Acceptance criteria:
   comments; (2) also wants the shipped artifacts **minified** → carved that out into T-219 (docs `out.html`)
   + T-220 (frontend `dist`), so T-218 is now SOURCE hygiene only; (3) JS module comments stay. Rescoped the
   Plan + acceptance accordingly; the guard test now targets the *tells*, not all comments.
+- **2026-07-26** — Implemented on `feature/T-218…` (stacked on the beta branch so the cleanup also covers the
+  beta's newly-added `index.html` comments — those files aren't on master yet). Found `template.html`'s
+  inline `<style>`/`<script>` carry ~40 task-ID refs (project traceability convention) + a `//` banner →
+  **narrowed scope to the HTML `<!-- -->` comment layer only** (decision #2 above); inline code comments left
+  (minified out by T-219). TDD: added `frontend/__tests__/no-ai-tells-in-html.test.js` (red first), then a
+  comment-interior-only `perl` pass de-decorated banners + stripped IDs while keeping the text. Verified the
+  diff (no punctuation artifacts, multi-line comments + `__TOKEN__`s intact). Frontend 194 + randomizer 1697
+  green; `shoot` no overflow. **Pending owner manual confirm before closing.**
 
 ## Outcome
 

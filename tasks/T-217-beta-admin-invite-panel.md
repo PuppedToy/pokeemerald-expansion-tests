@@ -1,7 +1,7 @@
 ---
 id: T-217
 title: Beta admin invite panel — pending list, queue/ETA, balanced batch invite (25/75 lottery), user search
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-26
 updated: 2026-07-26
@@ -69,20 +69,45 @@ Given a requested `count` N and a **queue budget of ≤ 1h of added build time**
 - **Idempotency / races**: two admin clicks shouldn't double-invite; guard accept + promote in one transaction.
 
 Acceptance criteria (finalise after D1–D5):
-- [ ] Admin-only panel lists pending (verified) users with sign-up time + has-ROM flag + counts, a list of
+- [x] Admin-only panel lists pending (verified) users with sign-up time + has-ROM flag + counts, a list of
       **accepted users (already in)**, and the queue status + global ETA. Non-admins get 403 / no menu.
       Invite batches are persisted (audit).
-- [ ] Batch invite admits N users balanced so added build time ≤ ~1h, via the 25/75 (earliest / random) lottery
+- [x] Batch invite admits N users balanced so added build time ≤ ~1h, via the 25/75 (earliest / random) lottery
       within the with-ROM / without-ROM pools; accepted users' held ROMs promote to `queued` in submission
       order and start building. Lottery internals are not exposed to users.
-- [ ] User search + personal Accept works.
-- [ ] Backend tests cover the algorithm (budget cap, 25/75 split, promotion order — seeded RNG) + the admin-gate
+- [x] User search + personal Accept works.
+- [x] Backend tests cover the algorithm (budget cap, 25/75 split, promotion order — seeded RNG) + the admin-gate
       (403 for non-admins); frontend admin panel test; suites green.
+      *(All checked = code-complete + suites green; pending the owner's manual test before this task closes.)*
 
 ## Progress log
 - **2026-07-26** — Task created (proposed), blocked by T-215 + T-216. Designed the admin endpoints, the balanced
   25/75 batch lottery (Pool A = has-ROM vs Pool B = none, ≤1h budget), and the admin UI, grounded in the
   scheduler/ETA/admin-gate map. Do NOT start until the owner signs off the EPIC decisions + this algorithm.
+- **2026-07-26** — Implemented on `feature/T-217-beta-admin-invite-panel` (branched off T-216).
+  - **Audit (B):** new `beta_invites` table (kept 100% — never swept/purged) + `db/betaInvites.js`
+    (`record`/`list`). Each invite action (batch or single accept) writes who/when/count/with-ROM/added-ETA
+    + accepted user ids. `db.test.js` table snapshot updated (deliberate schema change).
+  - **Lottery (A, pure):** `backend/beta/lottery.js` — `mulberry32` seedable RNG, `lotteryPick(pool,k,rng)`
+    (25% earliest sign-ups + 75% random among the rest), `selectBatch({poolA,poolB,count,avgRomSecs,budgetSecs})`.
+    Pool A (has-ROM) intake is capped by a ≤1h build-time budget (via the pool's avg ROM count); Pool B fills
+    the remainder; returns `granted/addedBuildSecs/cappedByBudget/shortfall`. Fully deterministic under a seed.
+  - **Handlers + gate:** `backend/beta/handlers.js` (overview/invite/accept/search) + `routes.js` mounting them
+    under `/api/admin/beta/*` behind `requireAuth`+`requireAdmin` (isAdminEmail, ADMIN_EMAILS). Invite runs the
+    lottery, in ONE transaction sets `invite_state=accepted` + promotes held ROMs with `welcome:true` (combined
+    mail on build) + writes the audit row, then sends the immediate `welcome` mail ONLY to no-ROM invitees.
+    Accept does the same for one user (idempotent on already-accepted; 404 unknown). `users` repo gained
+    `listPendingVerified`/`listByInviteState`/`countByInviteState`/`search`. Wired in `server.js`.
+  - **Frontend (C):** `frontend/js/admin.js` — pure `overviewHtml`/`searchResultsHtml`/`inviteSummary`/`fmtEta`
+    + delegated wiring. New hidden **Admin** tab + `#tab-admin`/`#admin-content` (revealed only when
+    `state.isAdmin` via `onAuthChange`). Shows counts, queue+ETA, a batch-invite control, the waiting table
+    (email/waited-since/has-ROM/Accept), user search, the accepted list, and an invite-history disclosure.
+    `initAdmin()` wired in `app.js`; `.admin-*` CSS in `components.css` (table wrapped in `overflow-x:auto`).
+  - **Tests:** `backend/__tests__/beta-admin.test.js` (13 — lottery budget/25-75/shortfall/seed, overview,
+    invite promote+mail+audit, accept idempotent/404, search, 403 gate) + `frontend/__tests__/beta-admin-panel.test.js`
+    (6 — pure render + escaping + structural wiring). Backend 208 green, frontend 186 green.
+  - **Pending:** owner manual test (set `ADMIN_EMAILS`, run a batch, confirm held ROMs build in order + the
+    two email variants). Combined-mail path shared with T-216 is exercised by the invite tests here.
 
 ## Outcome
 <!-- Filled when closing. -->

@@ -1,7 +1,7 @@
 ---
 id: T-220
 title: Build + minify the app frontend (serve a dist in production)
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-26
 updated: 2026-07-26
@@ -42,19 +42,25 @@ and serve `dist` in production while keeping the raw edit-refresh loop in develo
 - **Deploy:** the build step must run in the deploy pipeline (`deploy/update.sh` / Docker image) before the
   app serves; document it alongside the existing worker-bundle build.
 
-Open decisions to confirm when starting:
-1. **Prod-only dist vs. always** (does dev also serve dist? default: dev = raw, prod = dist).
-2. **Minify depth:** full bundle+mangle vs. only comment/whitespace strip (mangling maximises size savings
-   but is the riskier change — decide after a first working bundle).
-3. **Asset hashing / cache-busting** for the built JS/CSS (nice-to-have; adds `index.html` templating).
+Resolved decisions (during implementation):
+1. **Prod-only dist:** dev = raw source (edit+refresh, no build); prod (or `SERVE_DIST=1`) = dist. One
+   `SERVE_DIST` switch in server.js.
+2. **Minify depth:** per-file `transformSync` minify (NOT bundling) — full mangle of module-private names,
+   imports/exports preserved. No bundling → the module graph + dynamic imports + the worker/bps bundle
+   paths are untouched, which is what kept the risk low.
+3. **Asset hashing:** skipped (not needed; the dev/prod split doesn't require cache-busting yet).
 
 Acceptance criteria:
-- [ ] In production the frontend is served minified — shipped `index.html`/JS/CSS carry no dev/AI comments
-      or `T-…`/`B-…` tells — while the dev loop still serves raw source (edit + refresh, no build needed).
-- [ ] Full **frontend** suite green, still run against **source** (build is not a test prerequisite).
-- [ ] The build step is wired into the deploy pipeline and documented.
-- [ ] No behaviour or visual change: `npm run shoot` shows no horizontal overflow and a manual smoke of the
-      built dist matches the raw app (auth, randomizer wizard, presets, settings, admin).
+- [x] In production (`NODE_ENV=production` or `SERVE_DIST=1`) the frontend is served minified — shipped
+      `index.html`/`js`/`css` carry no comments or `T-…`/`B-…` tells — while dev serves raw source (no build
+      needed). Two static mounts: `dist/` shadows `frontend/`, which still serves the generated
+      bundles/data/assets/`template.min.html`.
+- [x] Full **frontend** suite green (201), still run against **source** (build is not a test prerequisite;
+      tests import `frontend/js/*`).
+- [x] The build step is wired into the deploy pipeline: `deploy/update.sh` already runs `node build.js`
+      (now step 7 = the dist), and prod sets `NODE_ENV=production` (`deploy/.env.example`) → no extra wiring.
+- [x] No behaviour/visual change: `SERVE_DIST=1 npm run shoot` renders the minified dist across all 75
+      viewport/screen combos (incl. the JS-driven auth/presets modals) with no horizontal overflow.
 
 ## Progress log
 
@@ -63,6 +69,16 @@ Acceptance criteria:
 - **2026-07-26** — Task created (proposed) from the T-218 discussion (owner chose "docs + frontend" minify).
   Noted the real cost is the source→dist serving-model change (not the tool — esbuild is present), and that
   the ADR-009 source-inspection tests must keep targeting source so the build never gates `npm test`.
+- **2026-07-26** — Implemented on `feature/T-218…` (stacked). `buildFrontendDist.cjs` (`buildDist`, +
+  pure `minifyJs`/`minifyCss`/`minifyHtml`) minifies the hand-written app shell (index/reset/verify.html +
+  `js/*.js` except `*.bundle.js` + `css/*.css`) into `frontend/dist/` (gitignored, build.js step 7). Chose
+  **per-file transform minify, not bundling** — verified the minified output keeps public export names
+  (`initAccount`, `ConfigForm`, …), relative import paths, `import("./bps.bundle.js")` and
+  `new Worker("/js/randomizer.bundle.js")` — so the module graph is untouched. server.js gains a
+  `SERVE_DIST` switch: prod mounts `dist/` ahead of `frontend/` (fallback serves the generated
+  bundles/data/assets/`template.min.html`); a missing dist just falls through. dist −35% vs source.
+  Runtime-verified with `SERVE_DIST=1 npm run shoot` (75 screens, incl. JS modals, no overflow). Frontend
+  201 green. **Pending owner manual test: smoke the prod-served app (a real randomize→generate→download).**
 
 ## Outcome
 

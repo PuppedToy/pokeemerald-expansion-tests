@@ -27,6 +27,25 @@ const TEMPLATES = {
         + `<p>Download it from your account (it is kept for 48 hours):</p>`
         + `<p><a href="${link}">${link}</a></p>`,
   }),
+  // T-216 beta — immediate "you're in" mail for an invited user who had NOT prepared a ROM yet.
+  welcome: ({ link }) => ({
+    subject: `${SITE_NAME} — you're in! Start building your ROM`,
+    text: `You're in the ${SITE_NAME} beta!\n`
+        + `Head to the randomizer, set up your run and build your ROM:\n${link}\n`,
+    html: `<p>You're in the ${SITE_NAME} beta!</p>`
+        + `<p>Head to the randomizer, set up your run and build your ROM:</p>`
+        + `<p><a href="${link}">${link}</a></p>`,
+  }),
+  // T-216 beta — combined "you're in" + "your ROM is ready" mail, sent once at build completion for a
+  // user who had a ROM prepared (held `pending`) when their invite landed. One mail, not two.
+  welcomeReady: ({ link }) => ({
+    subject: `${SITE_NAME} — you're in, and your ROM is ready`,
+    text: `You're in the ${SITE_NAME} beta — and the ROM you prepared has finished building.\n`
+        + `Download it from your account (kept for 48 h):\n${link}\n`,
+    html: `<p>You're in the ${SITE_NAME} beta — and the ROM you prepared has finished building.</p>`
+        + `<p>Download it from your account (it is kept for 48 hours):</p>`
+        + `<p><a href="${link}">${link}</a></p>`,
+  }),
 };
 
 export function render(kind, vars = {}) {

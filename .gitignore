@@ -67,6 +67,10 @@ node_modules/
 frontend/data/base-data.json
 frontend/js/randomizer.bundle.js
 frontend/js/bps.bundle.js
+# Minified docs viewer template (node build.js step 6 — T-219)
+frontend/template.min.html
+# Minified frontend build served in production (node build.js step 7 — T-220)
+frontend/dist/
 # Base64 sprite map embedded into self-contained docs (node randomizer/generateSprites.js) — T-001
 frontend/data/sprites.json
 # Base64 static-asset map (fonts/logo/icons) embedded into self-contained docs (T-004)

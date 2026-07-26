@@ -24,16 +24,28 @@ export function createRequestsRepo(db) {
   );
 
   const repo = {
-    create({ id, userId, queueClass, romsTotal, bundlePath, seed, params, emailOnReady = false, now = Date.now() }) {
+    create({ id, userId, queueClass, romsTotal, bundlePath, seed, params, emailOnReady = false, state = null, now = Date.now() }) {
       if (this.getActiveForUser(userId)) {
         throw new Error('user already has an active request');
       }
-      const state = `queued_${queueClass}`;
+      const st = state || `queued_${queueClass}`; // T-216 — the beta gate creates in the held `pending` state
       insert.run(
-        id, userId, state, queueClass, romsTotal, 0, bundlePath, null,
+        id, userId, st, queueClass, romsTotal, 0, bundlePath, null,
         emailOnReady ? 1 : 0, String(seed), JSON.stringify(params ?? {}), now, null, null, now
       );
       return this.get(id);
+    },
+
+    /**
+     * T-216 — promote a held `pending` request to its queue class. `welcome:true` (an admin invite)
+     * marks it so its completion mail is the combined "you're in + ready"; the BETA-off flush omits it
+     * (plain `ready` mail). No-op on a non-pending row.
+     */
+    promotePending(id, { now = Date.now(), welcome = false } = {}) {
+      const row = this.get(id);
+      if (!row || row.state !== 'pending') return null;
+      if (welcome) db.prepare('UPDATE requests SET welcome_on_ready = 1 WHERE id = ?').run(id);
+      return this.setState(id, `queued_${row.queue_class}`, now);
     },
 
     get(id) {

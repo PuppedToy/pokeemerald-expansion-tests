@@ -34,7 +34,10 @@ export function finishBuild({ db, requests, runs, mailer, users, baseUrl }, id, 
   if (row.email_on_ready && mailer && users) {
     const user = users.get(row.user_id);
     if (user?.email) {
-      Promise.resolve(mailer.sendMail('ready', user.email, { link: `${baseUrl || ''}/` })).catch(() => {});
+      // T-216 — a run invited from the beta `pending` hold sends the combined "you're in + ready" mail
+      // (welcomeReady); every other ready run sends the plain `ready` mail.
+      const kind = row.welcome_on_ready ? 'welcomeReady' : 'ready';
+      Promise.resolve(mailer.sendMail(kind, user.email, { link: `${baseUrl || ''}/` })).catch(() => {});
     }
   }
 }

@@ -4,6 +4,7 @@ import http from 'node:http';
 import express from 'express';
 
 import { createAuthRouter } from '../auth/routes.js';
+import { signJwt } from '../auth/jwt.js';
 
 // B-006: the auth router is mounted at /api. A router-level body parser there would
 // also run for OTHER /api routes (e.g. /api/produce, ~32 MB) and reject them with its
@@ -24,6 +25,28 @@ test('auth router does not body-parse other /api routes (B-006)', async () => {
     });
     assert.notEqual(res.status, 413, 'auth router must not reject large bodies meant for other /api routes');
     assert.equal(res.status, 200);
+  } finally {
+    server.close();
+  }
+});
+
+// T-216 — /api/me exposes the beta invite_state so the frontend can render the gate (badge/settings/held).
+test('/api/me returns the beta invite_state (T-216)', async () => {
+  const app = express();
+  const user = { id: 1, email: 'u@x.test', verified: 1, invite_state: 'pending' };
+  app.use('/api', createAuthRouter({
+    service: {}, users: { get: (id) => (id === 1 ? user : null) }, requests: {}, adminEmails: [], jwtSecret: 'x',
+  }));
+  const server = http.createServer(app);
+  await new Promise((r) => server.listen(0, r));
+  const { port } = server.address();
+  try {
+    const token = signJwt({ sub: 1 }, 'x');
+    const res = await fetch(`http://localhost:${port}/api/me`, { headers: { authorization: `Bearer ${token}` } });
+    assert.equal(res.status, 200);
+    const body = await res.json();
+    assert.equal(body.inviteState, 'pending');
+    assert.equal(body.verified, true);
   } finally {
     server.close();
   }

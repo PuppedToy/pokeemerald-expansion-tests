@@ -7,6 +7,20 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Added
+
+- **Closed beta gate.** While the beta is on you can sign up, generate documentation and fully prepare a ROM —
+  but building is invite-only. A prepared run is saved on our side (it never expires) and builds automatically
+  the moment you're invited, with a single email letting you know it's ready; you can keep tweaking it in the
+  meantime. A BETA badge in the top bar, an on-page notice on the randomizer, and a "Beta access" line in
+  Settings (Verify email / Pending invite / Accepted) make your status clear. (T-216)
+
+- **Beta invites go out in balanced batches.** Behind the scenes, an admin-only panel admits waiting users in
+  batches sized so each round adds at most ~1 hour of build time, mixing people who already prepared a ROM with
+  those who haven't, and always reserving a share for whoever has waited longest. Invited users get an email
+  right away (or, if they'd already prepared a ROM, a single combined "you're in + it's ready" email when it
+  finishes building). (T-217)
+
 ### Fixed
 
 - **Hidden Power (and Return/Frustration/Secret Power) now show for every Pokémon.** These moves are learnable
@@ -20,6 +34,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   download. It's now kept on the server for 48h for maintainer review only. (T-210)
 
 ### Changed
+
+- **Lighter documentation download.** The generated docs viewer is now minified before it's bundled into
+  your download — same content and layout, ~35% smaller. (T-219)
+
+- **Lighter, faster site.** In production the app's own pages, scripts and styles are served minified
+  (~35% smaller), so the site loads quicker. No change to how anything looks or works. (T-220)
 
 - **Settings now reject bad values instead of silently fixing them.** Every number field in the randomizer
   settings is validated against its allowed range: an out-of-range, non-whole or blank value is highlighted in

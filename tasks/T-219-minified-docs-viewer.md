@@ -1,7 +1,7 @@
 ---
 id: T-219
 title: Generate a minified docs viewer (out.html) in the doc-gen pipeline
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-26
 updated: 2026-07-26
@@ -45,13 +45,15 @@ doc generation, keeping `frontend/template.html` fully readable/commented as the
   regenerate-from-bundle / version-stamping equivalence checks).
 
 Acceptance criteria:
-- [ ] The shipped docs viewer (`out.html`) has no HTML comments and no `T-…`/`B-…` tells, and is measurably
-      smaller than today's output.
-- [ ] All `__TOKEN__` placeholders survive minification (guarded by a build-time test); a generated viewer
-      hydrates + renders correctly (`docs-*` + `trainerColors` tests green + a manual open).
-- [ ] `frontend/template.html` source stays readable/commented (only the built artifact is minified).
-- [ ] Minified output is deterministic; **randomizer** + **frontend** suites green; `npm run shoot` shows no
-      horizontal overflow on the viewer screens.
+- [x] The shipped docs viewer has no HTML comments and no `T-…`/`B-…` tells, and is measurably smaller:
+      `template.min.html` is **−35%** (218 KB → 142 KB) with 0 comments / 0 leaked IDs.
+- [x] Both substitution anchors survive minification, guarded at build time (`assertAnchorsPreserved` fails
+      the build) + in the test: the two CSS font tokens and all 11 `<script src="X.js">` data placeholders
+      are byte-identical. *(Runtime hydrate/render = owner manual open — see below.)*
+- [x] `frontend/template.html` source stays readable/commented (only the built `template.min.html`, which is
+      gitignored, is minified); app.js prefers it and falls back to the raw template in dev.
+- [x] Deterministic (esbuild `transformSync`, no clock/RNG); **frontend** suite green (198); `node build.js`
+      runs the step end-to-end. *(shoot screenshots the app, not a generated doc.)*
 
 ## Progress log
 
@@ -60,6 +62,15 @@ Acceptance criteria:
 - **2026-07-26** — Task created (proposed) from the T-218 discussion (owner chose "docs + frontend" minify).
   esbuild already available. Key risk identified: `__TOKEN__` survival through JS/CSS minification →
   mandated a token-preservation build test + a low-risk-first dial (comments/whitespace + CSS before JS).
+- **2026-07-26** — Implemented on `feature/T-218…` (stacked). `buildDocsTemplate.cjs` segments the template
+  and: strips HTML comments between blocks, esbuild-minifies the inline `<style>` (CSS), and
+  **whitespace-minifies** the inline `<script>` blocks with `minifyIdentifiers:false` — so comments+size go
+  but cross-`<script>` globals (injected data arrays) keep resolving. `<script src="X.js">` placeholders and
+  external libs are left byte-identical; the deploy already runs `node build.js`, so `template.min.html`
+  (gitignored, build.js step 6) ships in prod and app.js prefers it with a raw fallback for dev. Result:
+  −35%, 0 comments, 0 leaked IDs, all anchors preserved (build-time `assertAnchorsPreserved` + test). Chose
+  whitespace-only JS minify (no mangle) over full minify to eliminate the rename/ASI risk entirely.
+  **Pending owner manual test: open a generated doc from a real run and confirm it renders + hydrates.**
 
 ## Outcome
 

@@ -85,6 +85,11 @@ export function getAuthState() { return state; }
 export function onAuthChange(fn) { if (typeof fn === 'function') authListeners.push(fn); }
 function emitAuthChange() { for (const fn of authListeners) { try { fn(state); } catch { /* isolate */ } } }
 
+// T-216 — beta gate. Fetched once from /api/config at boot; drives the BETA badge, the randomizer
+// notice, the Settings "Beta access" row and the held ("prepared, waiting for invite") ROM state.
+let betaMode = false;
+export function getBetaMode() { return betaMode; }
+
 // delivery / ROM-status state
 let emailOptedIn = false; // opted in to the "ready" email for the current request
 let delivered = false;    // ROM downloaded this session — don't auto-start another build
@@ -103,6 +108,13 @@ async function refreshMe() {
 const DEFAULT_TITLE = 'Pokémon Emerald Cut';
 // A long build / queue is easy to miss on a background tab, so surface progress in document.title.
 function setTabTitle(prefix) { document.title = prefix ? `${prefix} · ${DEFAULT_TITLE}` : DEFAULT_TITLE; }
+
+// T-216 — reveal the beta chrome (top-bar BETA badge + randomizer "invite-only" notice) when BETA is
+// on. Both live hidden in the markup; this just flips them. Idempotent, safe to call before login.
+function applyBetaChrome() {
+  const badge = $('beta-badge'); if (badge) badge.hidden = !betaMode;
+  const notice = $('beta-notice'); if (notice) notice.hidden = !betaMode;
+}
 
 // ── auth modal (login / register only — T-034) ────────────────────────────────────
 // The modal opens only when the app needs auth (the nav "Log in" link or a gated CTA), never from a
@@ -134,6 +146,18 @@ function updateNavAccount() {
   emitAuthChange(); // notify subscribers (feedback.js) of the current auth state (T-048)
 }
 
+// T-216 — the three beta-access states shown on Settings. Email must be verified before an invite can
+// land (the "you're in" mail targets a verified address), so an unverified account shows that first.
+function betaAccessText() {
+  if (!state?.verified) return 'Verify your email first';
+  return state.inviteState === 'accepted'
+    ? 'Accepted ✓ — you can build ROMs'
+    : "Pending invite — we'll email you when you're in";
+}
+function betaAccessClass() {
+  return state?.verified && state.inviteState === 'accepted' ? 'ok' : '';
+}
+
 function renderSettings() {
   const el = $('settings-content');
   if (!el) return;
@@ -148,6 +172,7 @@ function renderSettings() {
     <div class="settings-rows">
       <div class="settings-row"><span class="settings-key">Account</span><span class="settings-val">${state.email}</span></div>
       <div class="settings-row"><span class="settings-key">Email verified</span><span class="settings-val ${state.verified ? 'ok' : ''}">${state.verified ? 'Yes ✓' : 'No — open the link we emailed you'}</span></div>
+      ${betaMode ? `<div class="settings-row"><span class="settings-key">Beta access</span><span class="settings-val ${betaAccessClass()}">${betaAccessText()}</span></div>` : ''}
       <div class="settings-row"><span class="settings-key">Your Emerald ROM</span><span class="settings-val" id="settings-rom-state">Checking…</span></div>
     </div>
     <div id="settings-rom-actions"></div>
@@ -305,6 +330,7 @@ function setHeadline(cat) {
     failed: 'the build failed — see below',
     downloaded: n > 1 ? 'patches applied to your ROMs' : 'patch applied to your ROM',
     gating: 'sign in to also build a ROM',
+    held: "prepared — waiting for your beta invite", // T-216
   };
   const titleEl = $('gen-done-title');
   const metaEl = $('gen-done-meta');
@@ -333,7 +359,7 @@ function setStartOverBtn(cat) {
   btn.title = '';
   // T-198 — while building/queued the Cancel lives inside the status row (where the user is looking),
   // so hide the bottom control there to keep exactly one Cancel affordance on screen.
-  btn.hidden = (cat === 'building' || cat === 'queued');
+  btn.hidden = (cat === 'building' || cat === 'queued' || cat === 'held'); // held has its own in-row Discard (T-216)
   if (cat === 'ready' || cat === 'downloaded') {
     // A generated patch exists (re-downloadable server-side). Start over discards it — always allowed,
     // always confirmed. Downloading is no longer a precondition for starting over.
@@ -409,7 +435,13 @@ async function reevaluateDelivery() {
   // build and download the BPS patch without a ROM; the ROM only matters at download time, to apply the
   // patch locally (otherwise they get the raw .bps to patch elsewhere).
 
-  if (state.activeRequest) { renderRom(state.activeRequest); startPolling(); return; }
+  if (state.activeRequest) {
+    renderRom(state.activeRequest);
+    // A held (beta `pending`) run doesn't change until an invite promotes it server-side — polling would
+    // spin forever with no transition, so skip it. Every other active state polls for progress (T-216).
+    if (state.activeRequest.state !== 'pending') startPolling();
+    return;
+  }
 
   if (delivered) {
     const n = romCount();
@@ -432,7 +464,8 @@ async function reevaluateDelivery() {
       `<div class="status-title">Submitting your run…</div>
        <div class="status-sub muted">Uploading and queueing — this can take a moment for a multi-ROM run.</div>`, '🕒');
     const { ok, data } = await api('/api/produce', { method: 'POST', body: lastBundle, auth: true });
-    if (ok) { await refreshMe(); lastCategory = null; renderRom(state.activeRequest, data); startPolling(); }
+    // A beta-held run comes back with data.held → activeRequest is `pending`; render it but don't poll.
+    if (ok) { await refreshMe(); lastCategory = null; renderRom(state.activeRequest, data); if (state.activeRequest?.state !== 'pending') startPolling(); }
     else setRomRow('failed',
       `<div class="status-title">Could not start the build</div>
        <div class="status-sub">${data?.error || 'Please try again.'}</div>`, '✕');
@@ -442,6 +475,7 @@ async function reevaluateDelivery() {
 // Map the raw request state to a UI category. A request with any ROM done is "in progress" even
 // while briefly re-queued/paused between ROMs, so the building view stays stable (no flicker).
 function categoryOf(req) {
+  if (req.state === 'pending') return 'held'; // T-216 — beta: prepared but not built until invited
   if (req.state === 'ready') return 'ready';
   if (req.state === 'failed') return 'failed';
   if (req.state === 'building') return 'building';
@@ -460,6 +494,21 @@ function renderRom(req, info = {}) {
     lastCategory = 'ready';
     setTabTitle('✓ ROM ready');
     hydrateReadyRow(count); // async: ROM-aware (patch locally vs. add-ROM / raw .bps) — T-053, ADR-013
+    return;
+  }
+
+  if (cat === 'held') {
+    // T-216 — a beta run the user prepared but hasn't been invited to build yet. It is stored server-side
+    // (never expires) and builds automatically the moment an invite lands; the user is emailed then.
+    lastCategory = 'held';
+    setTabTitle('Waiting for beta invite');
+    setRomDownload({ enabled: false, count, reason: "Prepared — it builds once you're invited." });
+    setRomRow('queued',
+      `<div class="status-title">Prepared — waiting for your beta invite</div>
+       <div class="status-sub">Your randomization is saved on our side. As soon as you're invited we'll build it and email you a download link — no need to check back.</div>
+       <div class="status-sub muted">This never expires. Keep tweaking and re-generating if you like — the latest run is the one we'll build.</div>
+       <button class="btn btn-ghost btn-sm rom-cancel-btn" id="rom-cancel">Discard this run</button>`, '🎟');
+    $('rom-cancel')?.addEventListener('click', () => cancelActiveRun('cancel')); // T-198
     return;
   }
 
@@ -760,6 +809,11 @@ export async function initAccount(opts = {}) {
   onStartOverCb = opts.onStartOver || null;
   $('btn-start-over')?.addEventListener('click', () => cancelActiveRun($('btn-start-over').dataset.mode));
 
+  // T-216 — read the beta flag before the first render so every surface (badge, notice, settings row,
+  // held state) reflects it from the start. Defaults to off if the endpoint is unreachable.
+  try { const cfg = await api('/api/config'); if (cfg.ok) betaMode = !!cfg.data?.beta; } catch { /* off */ }
+  applyBetaChrome();
+
   await refreshMe();
   updateNavAccount();
   // reload recovery (B-011): restore a previously generated run whenever an in-flight build exists
@@ -770,7 +824,8 @@ export async function initAccount(opts = {}) {
   if (state?.activeRequest || storedBundle) {
     if (storedBundle) { lastBundle = storedBundle; delivered = isDelivered(storedBundle); }
     try { await opts.onRecover?.({ switchTab: !!state?.activeRequest }); } catch { /* ignore */ }
-    if (state?.activeRequest) { renderRom(state.activeRequest); startPolling(); }
+    // A held (beta `pending`) run never transitions on its own → don't poll (T-216); others poll.
+    if (state?.activeRequest) { renderRom(state.activeRequest); if (state.activeRequest.state !== 'pending') startPolling(); }
     else { reevaluateDelivery(); }
   }
 }

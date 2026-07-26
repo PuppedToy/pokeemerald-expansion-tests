@@ -12,11 +12,14 @@ import { createDecisionLogsRepo } from './db/decisionLogs.js';
 import { createPresetsRepo } from './db/presets.js';
 import { createPresetLikesRepo } from './db/presetLikes.js';
 import { createPresetViewsRepo } from './db/presetViews.js';
+import { createBetaInvitesRepo } from './db/betaInvites.js';
 import { createUsersRepo } from './auth/users.js';
 import { createTokensRepo } from './auth/tokens.js';
 import { createAuthService } from './auth/service.js';
 import { parseAdminEmails } from './auth/admin.js';
 import { createAuthRouter } from './auth/routes.js';
+import { createConfigRouter } from './config/routes.js';
+import { createBetaAdminRouter } from './beta/routes.js';
 import { createProduceRouter } from './produce/routes.js';
 import { createFeedbackRouter } from './feedback/routes.js';
 import { createDiagnosticsRouter } from './diagnostics/routes.js';
@@ -40,6 +43,9 @@ const ADMIN_EMAILS = parseAdminEmails(process.env.ADMIN_EMAILS);
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
 // Fake build by default off production, so the flow is runnable without devkitARM (T-019 wires the real build).
 const FAKE_BUILD = process.env.FAKE_BUILD === '1' || process.env.NODE_ENV !== 'production';
+// Beta gate (T-216): while on, a not-yet-accepted user can prepare a bundle but it is HELD (never built)
+// until an admin invite promotes it. Turning it off flushes every held run into the queue (below).
+const BETA = process.env.BETA === 'true';
 
 // ── persistence + repositories (ADR-003) ───────────────────────────────────────
 const db = openDatabase(process.env.DB_PATH || path.join(DATA_DIR, 'app.db'));
@@ -53,6 +59,7 @@ const decisionLogs = createDecisionLogsRepo(db);
 const presets = createPresetsRepo(db);
 const presetLikes = createPresetLikesRepo(db);
 const presetViews = createPresetViewsRepo(db);
+const betaInvites = createBetaInvitesRepo(db);
 
 // ── email (ADR-007): real provider if configured, else a dev console transport ──
 const transport = process.env.BREVO_API_KEY
@@ -77,6 +84,14 @@ const buildRom = createBuildRom({ requests, storage, fake: FAKE_BUILD });
 // restore (it would clobber a dev working tree); real builds use the default restore.
 runOnStartup({ requests, restoreTree: FAKE_BUILD ? () => {} : undefined });
 
+// T-216 — when BETA is OFF, nothing should stay held: promote every leftover `pending` request into its
+// queue so builds resume normally. Idempotent (a no-op once none remain), so it's safe on every boot.
+if (!BETA) {
+  const held = requests.findByStates(['pending']);
+  for (const r of held) requests.promotePending(r.id);
+  if (held.length) console.log(`  beta: off → flushed ${held.length} held request(s) into the queue`);
+}
+
 const worker = createWorker({ requests, runs, db, buildRom, mailer, users, baseUrl: BASE_URL });
 worker.start();
 startSweeper({ requests, diagnostics, decisionLogs, removeFile: storage.removeFile });
@@ -89,6 +104,12 @@ app.use('/api', createAuthRouter({
   presets, presetLikes, presetViews, adminEmails: ADMIN_EMAILS, jwtSecret: JWT_SECRET,
   removeFile: (p) => storage.removeFile(p), db, killActiveBuild,
 }));
+app.use('/api', createConfigRouter({ beta: BETA }));
+// Beta admin panel (T-217): admin-only invite/accept/overview/search. Gated by ADMIN_EMAILS.
+app.use('/api', createBetaAdminRouter({
+  users, requests, betaInvites, mailer, adminEmails: ADMIN_EMAILS,
+  jwtSecret: JWT_SECRET, baseUrl: BASE_URL, db,
+}));
 app.use('/api', createFeedbackRouter({ feedback, jwtSecret: JWT_SECRET }));
 app.use('/api', createDiagnosticsRouter({ diagnostics, jwtSecret: JWT_SECRET }));
 app.use('/api', createDecisionLogRouter({ decisionLogs, jwtSecret: JWT_SECRET }));
@@ -97,7 +118,7 @@ app.use('/api', createPresetsRouter({
   adminEmails: ADMIN_EMAILS, idGen: () => randomUUID(),
 }));
 app.use('/api', createProduceRouter({
-  requests, users, jwtSecret: JWT_SECRET,
+  requests, users, jwtSecret: JWT_SECRET, beta: BETA,
   persistBundle: (id, b) => storage.persistBundle(id, b),
   readOutput: (r) => storage.readOutput(r),
   removeFile: (p) => storage.removeFile(p),
@@ -105,8 +126,14 @@ app.use('/api', createProduceRouter({
   idGen: () => randomUUID(),
 }));
 
-// static frontend (the randomizer + docs run in the browser)
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
+// static frontend (the randomizer + docs run in the browser). In production (or SERVE_DIST=1) the minified
+// build (frontend/dist, produced by `node build.js` step 7 — T-220) is mounted FIRST so it shadows the
+// hand-written source; the generated bundles/data/assets/template.min.html that live outside dist fall
+// through to the frontend/ mount. Dev serves raw source. A missing dist/ simply falls through — safe.
+const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
+const SERVE_DIST = process.env.NODE_ENV === 'production' || process.env.SERVE_DIST === '1';
+if (SERVE_DIST) app.use(express.static(path.join(FRONTEND_DIR, 'dist')));
+app.use(express.static(FRONTEND_DIR));
 
 app.listen(PORT, () => {
   console.log(`Pokémon Emerald Cut backend → ${BASE_URL}`);

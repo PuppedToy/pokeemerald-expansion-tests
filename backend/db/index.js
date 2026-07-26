@@ -14,11 +14,15 @@ import path from 'node:path';
 // States that occupy a user's single active slot (block a new request).
 // Terminal states (downloaded, expired) are purged; `failed` is non-blocking
 // so the user can retry.
-export const ACTIVE_STATES = ['queued_fast', 'queued_slow', 'building', 'paused', 'ready'];
+// T-216 — `pending` is a beta-only holding state: the bundle is stored and counts as the user's one
+// active request, but the worker never selects it (see selectNext) and the sweeper never touches it
+// (it only ages `ready`/`failed`). An invite promotes it to `queued_<class>`.
+export const ACTIVE_STATES = ['pending', 'queued_fast', 'queued_slow', 'building', 'paused', 'ready'];
 
 // Allowed state transitions. `building -> queued_*` exists for crash recovery
 // (ADR-003): an interrupted build is re-queued, keeping roms_done.
 export const TRANSITIONS = {
+  pending:     ['queued_fast', 'queued_slow', 'failed'], // T-216 — invite/flush promotes; cancel fails it
   queued_fast: ['building', 'failed'],
   queued_slow: ['building', 'failed'],
   building:    ['paused', 'ready', 'failed', 'queued_fast', 'queued_slow'],
@@ -177,10 +181,41 @@ CREATE TABLE IF NOT EXISTS preset_views (
   PRIMARY KEY (preset_id, user_id)
 );
 CREATE INDEX IF NOT EXISTS preset_views_by_user ON preset_views(user_id);
+
+-- Beta invite audit (T-217): one row per admin invite action (a balanced batch or a single accept),
+-- kept 100% (never swept, never purged on account deletion) so who-was-let-in-when is fully auditable.
+-- user_ids_json holds the accepted user ids (kept even if an account is later deleted — audit history).
+CREATE TABLE IF NOT EXISTS beta_invites (
+  id               INTEGER PRIMARY KEY,
+  created_at       INTEGER NOT NULL,
+  admin_email      TEXT,                    -- who ran it (null → system/flush)
+  kind             TEXT NOT NULL,           -- 'batch' | 'accept'
+  requested        INTEGER,                 -- N asked for (batch); null for a single accept
+  granted          INTEGER NOT NULL,        -- how many users were accepted
+  with_rom         INTEGER NOT NULL,        -- of granted, how many had a held ROM (promoted to build)
+  added_build_secs INTEGER NOT NULL,        -- estimated build time this batch added to the queue
+  user_ids_json    TEXT NOT NULL            -- the accepted user ids
+);
+CREATE INDEX IF NOT EXISTS beta_invites_by_created ON beta_invites(created_at);
 `;
 
 export function migrate(db) {
   db.exec(MIGRATION);
+  // T-216 — additive column migration (no versioned-migration framework; SQLite has no
+  // ADD COLUMN IF NOT EXISTS, so guard via PRAGMA table_info). Grandfather existing (pre-beta)
+  // accounts to `accepted` so a BETA flip doesn't lock out current users (owner decision D2).
+  ensureColumn(db, 'users', 'invite_state', "TEXT NOT NULL DEFAULT 'pending'",
+    (d) => d.exec("UPDATE users SET invite_state = 'accepted'"));
+  // T-216 — set on a held `pending` request when an INVITE promotes it (not the BETA-off flush), so
+  // its completion mail is the combined "you're in + ready" (welcomeReady) instead of the plain `ready`.
+  ensureColumn(db, 'requests', 'welcome_on_ready', 'INTEGER NOT NULL DEFAULT 0');
+}
+
+function ensureColumn(db, table, column, ddl, onCreate) {
+  const cols = db.prepare(`PRAGMA table_info(${table})`).all();
+  if (cols.some((c) => c.name === column)) return;
+  db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${ddl}`);
+  if (onCreate) onCreate(db);
 }
 
 export function openDatabase(filename = process.env.DB_PATH || 'data/app.db') {
