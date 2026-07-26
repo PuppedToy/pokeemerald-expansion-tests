@@ -37,15 +37,18 @@ after `POST /api/produce`** creates a `requests` row + bundle file — which the
 reaches `ready`/`failed` (`sweeper.js:20-24`). Active states (`queued_*`/`building`/`paused`) are **never**
 swept (`db/index.js:17`).
 
-The spec (2.1/2.2) requires the server to **know which pending users already have a ROM ready to build** and to
-**auto-build them in submission order on invite**. That is only possible if the pending run is stored
-server-side. **Decision (recommended):** a pending user's Build **does** call `/api/produce`, but it creates the
-request in a new **`pending` state** — an *active-like, never-swept* state that stores the bundle and records
-submission order (`created_at`) but is **skipped by the worker's `selectNext`** (`scheduler.js:32-48`). Invite
-flips `pending → queued_<class>`; the worker then builds it. This: (a) survives 48h (active-like), (b) gives the
-admin panel the "has a ROM pending" signal, (c) preserves submission order, (d) needs no produce 403.
-Auto-set `email_on_ready = 1` on these pending requests (2.1). *Confirm this model with the owner — the
-alternative (hard-403 at produce, run stays client-only) can't satisfy "the system starts building on invite".*
+The spec (2.1/2.2) needs the server to **know which pending users already have a ROM prepared** and to
+**auto-build them in submission order on invite**, so the prepared bundle is stored server-side. **Owner
+decision + correction (2026-07-26):** a pending user's "Build" calls `/api/produce`, which creates the request
+in a new **`pending` state** that stores the bundle, records submission order (`created_at`), is **skipped by
+the worker's `selectNext`** (`scheduler.js:32-48`), and is **NEVER swept**. The prepared bundle persists **as
+long as the user wants** — it is *not* the built ROM.
+
+> ⚠️ **Get this right:** the 48h retention applies **ONLY to a BUILT ROM output, from its build time** — never
+> to a pending prepared bundle. **Review `sweeper.js` (`:19-35`) so a `pending` request's bundle is never
+> deleted**; only `ready`/`failed` build outputs age out at 48h (unchanged). Invite flips `pending →
+> queued_<class>`; the worker builds it; the resulting ROM then gets the normal 48h. Auto-set `email_on_ready`
+> on pending requests (2.1).
 
 ### D2 — New per-user state
 Add an `invite_state` to `users` (`need_verify` is derived from `verified`; store `pending` | `accepted`).
@@ -70,15 +73,20 @@ Every gate needs a backend point **and** a frontend mirror (like `requireVerifie
 403. Keep the invite check as **middleware / scheduler state**, not inside `handleProduce` (which purges the
 active request early, `handlers.js:19-23`).
 
-## Additional things we may need (owner: keep / drop)
-- **"You're in!" email** on acceptance (separate from the ready-email) so invited users know to come back.
-- **Waitlist position** shown to pending users ("you're #N in line") — from `created_at` rank among pending.
-- **Invite-batch audit** (who/when/how-many) for transparency + debugging the lottery.
-- **Registration abuse cap** while gated (the pending pool can grow unbounded; a soft cap or captcha — likely
-  out of scope, noted).
-- **Grandfathering**: are the owner's own / existing accounts auto-`accepted`? (D2.)
-- **BETA=false flush ordering** (2.3): flip every `pending` request → `queued_*` **in `created_at` order** so
-  the historical submission order is honoured globally (not by ETA).
+## Additional things — owner decisions (2026-07-26)
+- **Acceptance email (KEEP), two cases:**
+  - Invited user **without** a prepared ROM → **immediate "You're in! Start building a ROM"** email with a link
+    to the randomizer.
+  - Invited user **with** a prepared ROM → **no separate "you're in" email**; when their pending bundle finishes
+    building, send **ONE combined email** ("You're in + your ROM is ready", with the randomizer link) — sent
+    only on build completion.
+- **Waitlist position: DROP** (the lottery isn't deterministic → a position would mislead).
+- **Invite-batch audit: KEEP (100%)** — persist who/when/how-many per batch; the admin panel also shows a **list
+  of accepted users (already in)**.
+- **Registration cap: DROP** — anyone can join the waitlist.
+- **Grandfathering** (D2, still open): are the owner's own / existing accounts auto-`accepted`?
+- **BETA=false flush ordering** (2.3): flip every `pending` request → `queued_*` in `created_at` order (global
+  submission order, not ETA).
 
 ## Acceptance criteria (EPIC-level — the sub-tasks carry the detail)
 - [ ] D1–D5 decided with the owner and recorded here.

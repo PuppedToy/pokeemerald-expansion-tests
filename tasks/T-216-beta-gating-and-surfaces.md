@@ -58,9 +58,19 @@ EPIC) so held ROMs start building in submission order regardless of ETA. (A one-
 whenever the flag reads false.) Users still `pending` in `users.invite_state` are treated as accepted while the
 flag is off.
 
+### D. Acceptance emails (per T-215 owner decision)
+- Invited user **with** a prepared (`pending`) ROM: no separate "you're in" email — when their bundle finishes
+  building, `backend/lifecycle/complete.js` (`:34-39`, the ready-email path) sends **one combined** email
+  ("You're in + your ROM is ready", with the randomizer link) instead of the plain ready email. Detect this via
+  a flag on the request (e.g. `was_pending` / invited-from-pending) set when the invite flips `pending →
+  queued`. New template variant in `backend/email/templates.js`.
+- Invited user **without** a prepared ROM: the immediate "You're in! Start building" email is sent by the invite
+  action itself (T-217), not here.
+
 Acceptance criteria (finalise after D1–D5):
 - [ ] `BETA=true`: registering + verifying leaves a user `pending`; they can generate docs but a build creates a
-      held `pending` request (not built), with the "prepared, waiting for invite" messaging + auto email-on-ready.
+      held `pending` request (NOT built, NEVER swept — persists indefinitely), with the "prepared, waiting for
+      invite" messaging + auto email-on-ready.
 - [ ] Settings shows the 3-state invite row; the randomizer shows the not-yet-invited warning; the BETA badge
       shows in the top bar (and to anonymous visitors, via `/api/config`).
 - [ ] Accepted users (set by T-217) build normally; the pending held request flips to `queued` and builds.
