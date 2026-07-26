@@ -4,7 +4,7 @@ title: Extract every boss's dialogue into an editable TXT (round-trip)
 status: in-progress     # proposed | in-progress | done | abandoned
 type: chore             # feature | fix | refactor | docs | chore
 created: 2026-07-25
-updated: 2026-07-25
+updated: 2026-07-26
 target-version: 0.6.0
 links: [T-149]
 blocked-by: []
@@ -59,8 +59,9 @@ Acceptance criteria:
       lines the control-flow walk didn't reach.
 - [x] The extractor is reproducible — `scripts/extract-boss-dialogue.mjs` (committed); re-running regenerates
       `boss-dialogue.txt`. Every boss resolved a battle; 0 unresolved labels.
-- [ ] (Phase 2, later) fold the owner's edits back into `data/maps/**/scripts.inc` via the `[label @ file:line]`
-      markers — starts once the owner returns the edited TXT.
+- [x] (Phase 2) fold the owner's edits back into `data/maps/**/scripts.inc` via the `[label @ file:line]`
+      markers — done in two batches (Mt Chimney, then a full pass of boss-text cuts); each verified by
+      regenerating the TXT and diffing byte-for-byte against the owner's edits.
 
 ## Progress log
 
@@ -94,6 +95,14 @@ Acceptance criteria:
   scripts is byte-identical to the owner's edited text (only marker line-numbers shifted). **Builder-only — the
   text change compiles/renders only on the ROM builder; not verifiable locally.** More bosses may follow as the
   owner edits further sections.
+- **2026-07-26** — **Phase 2 complete — applied the owner's full boss-text-cut pass.** ~21 `.string` edits
+  across 10 maps: Roxanne, Brawly, Wattson, Flannery, Winona (intro/defeat trims), the Route 110 rival
+  itemfinder lines (May/Brendan), Maxie (Magma Hideout), Tate & Liza intro, the Archie/Maxie Seafloor Cavern
+  scene (7 blocks) and Juan (intro/defeat). Round-trip verified: regenerating the TXT from the edited scripts is
+  byte-identical to the owner's edited dialogue. Two self-caught fixes during verification: Juan's intro had an
+  extra opening paragraph I initially missed, and one Archie seam needed `\n` (same box) instead of `\p`
+  (the owner had removed that blank line). Regenerated `boss-dialogue.txt` so its markers stay accurate.
+  **Builder-only — needs an in-game render check on the ROM builder.** Owner considers the texts task finished.
 
 ## Outcome
 
