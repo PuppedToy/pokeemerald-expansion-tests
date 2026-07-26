@@ -13,6 +13,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   by all species in-game, but the docs only listed them on a random ~half of the roster each run. They now
   appear consistently on every Pokémon's teachable list (and the team rater accounts for them uniformly). (T-207, B-054)
 
+### Removed
+
+- **The decision-log download is gone.** The team-building decision log — an internal debugging trace, never
+  really meant for players — is no longer downloadable in the app and no longer bundled into the docs
+  download. It's now kept on the server for 48h for maintainer review only. (T-210)
+
 ### Changed
 
 - **No more Space Center grunt fights.** The Team Magma grunts on the Mossdeep Space Center ground floor no

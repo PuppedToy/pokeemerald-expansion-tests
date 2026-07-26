@@ -8,7 +8,7 @@ import { requireAuth, ipRateLimit } from './middleware.js';
 import { createRateLimiter } from '../email/rateLimiter.js';
 import { isAdminEmail } from './admin.js';
 
-export function createAuthRouter({ service, users, requests, runs, tokens, feedback, diagnostics, presets, presetLikes, presetViews, adminEmails = [], jwtSecret, removeFile, db, killActiveBuild }) {
+export function createAuthRouter({ service, users, requests, runs, tokens, feedback, diagnostics, decisionLogs, presets, presetLikes, presetViews, adminEmails = [], jwtSecret, removeFile, db, killActiveBuild }) {
   const router = express.Router();
 
   // Parse JSON per-route (NOT router.use): this router is mounted at /api, so a
@@ -68,6 +68,7 @@ export function createAuthRouter({ service, users, requests, runs, tokens, feedb
       tokens?.deleteForUser?.(uid);
       feedback?.deleteForUser?.(uid); // FK is not ON DELETE CASCADE — clear feedback before the user (T-048)
       diagnostics?.deleteForUser?.(uid); // same FK guard for diagnostics (T-075)
+      decisionLogs?.deleteForUser?.(uid); // same FK guard for decision logs (T-210)
       // Presets (T-192): drop this user's likes/views on OTHERS' presets first (decrementing their
       // counters), then this user's own presets and any join rows pointing at them.
       presetLikes?.deleteForUser?.(uid);
