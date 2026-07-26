@@ -253,7 +253,10 @@ async function doRegister(email, password) {
   // GDPR consent (T-222): the checkbox is `required` in the markup; guard here too in case it's bypassed.
   if (!$('reg-consent')?.checked) { setMsg('Please accept the Privacy Policy and Terms to register.', 'err'); return; }
   const { ok, data } = await api('/api/register', { method: 'POST', body: { email, password } });
-  setMsg(ok ? 'Registered — open the verification link we emailed, then log in.' : (data?.error || 'Registration failed'), ok ? 'ok' : 'err');
+  if (!ok) { setMsg(data?.error || 'Registration failed', 'err'); return; }
+  // T-225 — log the user straight in (no separate login step after registering). The account exists
+  // immediately; email verification is still required to build, so reevaluateDelivery prompts for it.
+  await doLogin(email, password);
 }
 async function doLogin(email, password) {
   const { ok, data } = await api('/api/login', { method: 'POST', body: { email, password } });
@@ -780,7 +783,8 @@ async function downloadBpsOnly() {
   try {
     const res = await fetch('/api/download', { headers: { authorization: `Bearer ${getToken()}` } });
     if (!res.ok) throw new Error(`download failed (${res.status})`);
-    triggerDownload(await res.blob(), 'emerald-cut-patch.zip');
+    const seed = lastBundle?.config?.seed ?? 'unknown'; // T-225 — name it like the other archives (T-211)
+    triggerDownload(await res.blob(), `run-${seed}-patch.zip`);
     delivered = true; markDelivered(lastBundle);
   } catch { alert('Download failed — please try again.'); }
 }

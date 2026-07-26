@@ -227,3 +227,4 @@
 | [T-222](T-222-legal-compliance-gdpr-disclaimers.md) | Legal hardening — GDPR minimum, patch-not-ROM wording, disclaimers | in-progress | 0.7.0 | 2026-07-26 |
 | [T-223](T-223-domain-migration.md) | Migrate to the emerald-cut-randomizer.com domain | in-progress | 0.7.0 | 2026-07-26 |
 | [T-224](T-224-beta-ux-validation-fixes.md) | Beta UX fixes from validation (notice gating, admin "run" vs ROM) | in-progress | 0.7.0 | 2026-07-26 |
+| [T-225](T-225-register-autologin-patch-naming.md) | Register auto-login + patch zip naming (validation feedback) | in-progress | 0.7.0 | 2026-07-26 |
