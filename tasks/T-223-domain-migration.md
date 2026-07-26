@@ -43,9 +43,11 @@ Caddyfile change is rsynced but not applied until Caddy is reloaded/recreated (s
 2. **Deploy the Caddyfile** — owner pushes master + greenlights → `deploy/update.sh` (rsyncs the new
    Caddyfile). Set `BASE_URL` on the box too: edit `${DEPLOY_PATH}/deploy/.env` →
    `BASE_URL=https://emerald-cut-randomizer.com` (own line; `chown` handled by update.sh).
-3. **Reload Caddy** (the step update.sh skips):
-   `docker compose -f deploy/docker-compose.yml exec -T caddy caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile`
-   (or `... up -d --force-recreate caddy`). Caddy then requests the new cert.
+3. **Recreate Caddy** (the step update.sh skips):
+   `docker compose -f deploy/docker-compose.yml up -d --force-recreate caddy`. Caddy then reads the new
+   Caddyfile from scratch and requests the new cert. **NOTE (2026-07-26): `caddy reload` did NOT apply the
+   change here** (old domain kept serving 200, no ACME for the new domain) — the force-recreate is what
+   worked. Use force-recreate for Caddyfile changes.
 4. **Verify** — `curl -sI https://emerald-cut-randomizer.com` → 200; the old domain 301-redirects to it;
    register a test account and confirm the email link uses the new domain.
 
@@ -54,9 +56,11 @@ Caddyfile change is rsynced but not applied until Caddy is reloaded/recreated (s
 - [x] DNS zone file for the new domain prepared for Cloudflare import (A DNS-only + SPF/DMARC; DKIM/brevo-code
       flagged as Brevo-generated, not copied).
 - [x] `deploy/Caddyfile` updated: new domain canonical + `www` redirect; old domain + `www` redirect to new.
-- [ ] New domain purchased + DNS imported + resolving to the box (owner).
-- [ ] Deployed + Caddy reloaded + `BASE_URL` switched; new domain serves over HTTPS, old redirects.
-- [ ] (Optional) `MAIL_FROM` moved to the new domain after Brevo authentication.
+- [x] New domain purchased + DNS imported + resolving to the box (owner); verified DNS-only, NS active.
+- [x] Deployed + Caddy recreated + `BASE_URL` switched; **new domain serves over HTTPS (LE cert issued),
+      old domain + both www 301-redirect to it, BETA + legal pages live** (verified 2026-07-26).
+- [ ] (Optional, owner) `MAIL_FROM` moved to the new domain after Brevo authentication; remove the old-domain
+      redirect blocks from the Caddyfile once you no longer need the old name.
 
 ## Progress log
 
@@ -67,6 +71,12 @@ Caddyfile change is rsynced but not applied until Caddy is reloaded/recreated (s
   (also has IPv6, but the old domain is IPv4-only in DNS — replicated as-is). Found update.sh does NOT reload
   Caddy → documented the manual reload. Prepared the Cloudflare zone file + the Caddyfile change (new
   canonical + old→new redirects). Nothing deployed — waiting on the new domain's DNS.
+- **2026-07-26** — DNS came up fast (NS active on Cloudflare, `@`+`www` DNS-only → box). Owner pushed +
+  greenlit → deployed: set `BASE_URL=https://emerald-cut-randomizer.com` on the box, ran `update.sh` (ships
+  T-222 legal too), then switched Caddy. **`caddy reload` silently did not apply** (old kept serving 200, no
+  ACME for the new name); **`up -d --force-recreate caddy` fixed it** → LE cert issued in seconds. Verified:
+  new domain 200 + `{"beta":true}` + privacy/terms 200; old + both www → 301 to new. Migration done;
+  `MAIL_FROM` left on the old (Brevo-verified) domain.
 
 ## Outcome
 
