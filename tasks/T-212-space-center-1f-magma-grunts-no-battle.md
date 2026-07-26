@@ -1,7 +1,7 @@
 ---
 id: T-212
 title: Remove the Mossdeep Space Center magma grunt battles
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-25
 updated: 2026-07-25
@@ -33,10 +33,13 @@ untouched. C map-script work (**builder-only compile — not verifiable locally*
   existing `..._Text_GruntNPostBattle`) so talking just shows dialogue; additionally flip Grunt2
   `map.json:135` to `TRAINER_TYPE_NONE` so it no longer challenges on sight.
 
-### Open questions (confirm with owner)
-- Keep the NPCs (dialogue only, no fight) vs remove the grunts entirely? Owner said "quitar sus combates"
-  (remove their battles) → default to keeping the NPCs with dialogue and no battle.
-- Whether to keep or drop the `FLAG_DEFEATED_GRUNT_SPACE_CENTER_1F` gate/story beat around Grunt2.
+### Resolved during implementation
+- **Keep the NPCs, remove only the fights** (owner: "quitar sus combates"). Talking to a grunt now just shows
+  its dialogue, no battle.
+- **Grunt2 is the stairs guard** — beating it moved it off the stairs (`copyobjectxytoperm` + `applymovement` +
+  `setvar VAR_MOSSDEEP_SPACE_CENTER_STAIR_GUARD_STATE, 2`) to open the way to 2F. That step-aside logic and the
+  `FLAG_DEFEATED_GRUNT_SPACE_CENTER_1F` gate are **kept** — only the `trainerbattle_no_intro` was removed — so
+  talking to Grunt2 makes it step aside without a fight and 2F stays reachable (no soft-lock).
 
 ## Plan
 
@@ -44,9 +47,11 @@ Neutralise the four 1F grunt battles (talk → dialogue only), flip Grunt2 to `T
 story and caps intact. Verify on a builder ROM build.
 
 Acceptance criteria:
-- [ ] Talking to the 1F grunts no longer starts a battle; Grunt2 no longer challenges on sight.
-- [ ] 2F Steven-tag/Tabitha flow and the Space Center level cap are unaffected.
-- [ ] Verified on a builder ROM build; logged in this task.
+- [x] Talking to the 1F grunts no longer starts a battle (all four `trainerbattle*` removed); Grunt2 no longer
+      challenges on sight (`map.json` `TRAINER_TYPE_NORMAL` → `TRAINER_TYPE_NONE`; 0 on-sight trainers left).
+- [x] 2F Steven-tag/Tabitha flow and the Space Center level cap are unaffected — Grunt2's stair-unblock logic is
+      preserved; the 2F cap flag `FLAG_DEFEATED_MAGMA_SPACE_CENTER` (`caps.c:38`) is untouched.
+- [ ] Verified on a builder ROM build; logged in this task. **Builder-only — cannot compile locally.**
 
 ## Progress log
 
@@ -56,6 +61,14 @@ Acceptance criteria:
   (`MossdeepCity_SpaceCenter_1F/scripts.inc:197/202/207/216`) and Grunt2's on-sight `TRAINER_TYPE_NORMAL`
   (`map.json:135`); confirmed no boss-cap impact (cap flag set on 2F, `caps.c:38`). Captured the keep-NPC vs
   remove-grunt and story-flag open questions.
+- **2026-07-26** — **Implemented (in-progress).** Removed all four grunt battles: the three simple grunts
+  (1/3/4) drop their `trainerbattle_single` (talking now shows their existing dialogue), and Grunt2 drops its
+  `trainerbattle_no_intro` while keeping the intro msgbox + the stair-guard step-aside logic that opens 2F.
+  Flipped Grunt2's `map.json` object to `TRAINER_TYPE_NONE` so it no longer challenges on sight. Verified: no
+  grunt `trainerbattle` remains, Grunt2's `setflag`/`copyobjectxytoperm`/`applymovement`/`STAIR_GUARD_STATE`
+  chain is intact, `map.json` parses and has 0 remaining `TRAINER_TYPE_NORMAL` objects. **Builder-only — decomp
+  map change, needs an in-game compile check** (talk to the grunts → no battle; talk to the stair guard → it
+  steps aside and 2F is reachable).
 
 ## Outcome
 
