@@ -1,7 +1,7 @@
 ---
 id: T-214
 title: Validate every randomizer config input (sensible ranges + a clear bad-value policy)
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-26
 updated: 2026-07-26
