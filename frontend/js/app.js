@@ -542,6 +542,30 @@ function fmtShared(shared) {
 
 // Single source for the run summary (T-035): used by the step-2 Review and the step-3 "Run details"
 // disclosure, so they never drift. Returns the rows HTML.
+// T-213 — compact summaries for object-valued config so the run summary stays complete but tidy.
+function fmtNicknames(n) {
+    if (!n || !n.enabled) return 'Off';
+    const parts = [];
+    if (n.autoLocation) parts.push('by location');
+    if (n.autoTradesGifts) parts.push('trades/gifts');
+    if (n.includeStarter) parts.push('main starter');
+    return parts.length ? `On — ${parts.join(', ')}` : 'On';
+}
+function fmtDocsVisibility(dv) {
+    if (!dv || typeof dv !== 'object') return 'All shown';
+    let hidden = 0;
+    for (const [k, v] of Object.entries(dv)) {
+        if (typeof v !== 'boolean') continue;
+        if (k.startsWith('hide') ? v === true : v === false) hidden++;
+    }
+    return hidden === 0 ? 'All shown' : `${hidden} element${hidden === 1 ? '' : 's'} hidden`;
+}
+function fmtShopPrices(p) {
+    if (!p) return 'Default';
+    const tm = (p.tms && p.tms.avgDmg) ?? 2500;
+    return `TMs from $${tm} · Ability Capsule $${p.abilityCapsule ?? 3000} / Patch $${p.abilityPatch ?? 5000}`;
+}
+
 function reviewRowsHtml(cfg) {
     const rows = [];
 
@@ -559,6 +583,15 @@ function reviewRowsHtml(cfg) {
         rows.push(['Total ROMs', totalRoms(cfg)]);
         rows.push(['Players share', fmtShared(cfg.playerShared)]);
         rows.push(['ROM sharing', fmtShared(cfg.romShared)]);
+    }
+
+    // Battle format (T-085/ADR-014)
+    let battleFmt = 'Singles';
+    if (cfg.battleFormat === 'doubles') battleFmt = 'Doubles';
+    else if (cfg.battleFormat === 'mixed') battleFmt = `Mixed — ${cfg.singlesPercent ?? 60}% singles${cfg.mixedSequentialSplit ? ' (sequential)' : ''}`;
+    rows.push(['Battle format', battleFmt]);
+    if ((cfg.battleFormat === 'doubles' || cfg.battleFormat === 'mixed') && cfg.leagueRunAndBun) {
+        rows.push(['Elite Four', 'Run & Bun (pick singles/doubles in-game)']);
     }
 
     rows.push(['Difficulty',      String(cfg.difficulty)]);
@@ -587,6 +620,17 @@ function reviewRowsHtml(cfg) {
         if (cfg.mutateLearnsets !== false) cats.push('learnsets');
         rows.push(['Mutate', cats.length ? cats.join(', ') : 'none']);
     }
+    // T-187 — move mutation (per-category chances are summarised by this headline row).
+    if (cfg.mutateMoves) {
+        const mm = [];
+        if (cfg.mutatePower) mm.push('power');
+        if (cfg.mutateAccuracy) mm.push('accuracy');
+        if (cfg.mutateType) mm.push('type');
+        if (cfg.mutateCategory) mm.push('category');
+        rows.push(['Move mutation', `${Math.round((cfg.moveMutationChance ?? 0.1) * 100)}% — ${mm.length ? mm.join(', ') : 'none'}`]);
+    } else {
+        rows.push(['Move mutation', 'Off']);
+    }
 
     // T-052 — new option summaries (shared by the Review step and the Run-details disclosure).
     const fmtTypes = arr => (arr || []).map(t => t === 'RANDOM' ? 'Random' : t[0] + t.slice(1).toLowerCase()).join(' / ');
@@ -602,6 +646,15 @@ function reviewRowsHtml(cfg) {
     const money = cfg.money || {};
     rows.push(['Reward money', `$${money.normal ?? 250} / $${money.boss ?? 3000} / $${money.gym ?? 5000}`]);
     rows.push(['Extra starters', String((cfg.extraStarters || []).length)]);
+    rows.push(['Main starter quality', String(cfg.starterQuality ?? 'UU')]);
+    // T-073 shop prices + T-167 relearn price.
+    rows.push(['Shop prices', fmtShopPrices(cfg.prices)]);
+    rows.push(['Move relearn price', `$${cfg.moveRelearnPrice ?? 250}`]);
+    // T-165 Steven tag, nicknames (T-068/T-070/T-200), docs visibility (T-163), universe seed (T-189).
+    rows.push(['Steven tag battle', cfg.disableStevenTagBattle ? 'Disabled (solo Tabitha)' : 'Enabled']);
+    rows.push(['Auto-nicknames', fmtNicknames(cfg.nicknames)]);
+    rows.push(['Docs visibility', fmtDocsVisibility(cfg.docsVisibility)]);
+    rows.push(['Universe seed', cfg.universeSeed != null ? String(cfg.universeSeed) : '(derived from seed)']);
 
     rows.push(['Seed', cfg.seed != null ? cfg.seed : '(random — assigned on Generate)']);
 
