@@ -285,10 +285,20 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
 // already applied to the user's ROM (gbaBytes); they're matched back to bundle roms by server name.
 // It lives here (not account.js) because it reuses the docs-generation path; account.js invokes it
 // through the buildFullZip callback passed to initAccount.
+// Prefer the built, minified viewer (template.min.html — gitignored, produced by build.js step 6); fall
+// back to the raw template.html in dev where the build may not have run. Same substitution anchors. (T-219)
+async function fetchDocsTemplate() {
+    const min = await fetch('/template.min.html');
+    if (min.ok) return min.text();
+    const raw = await fetch('/template.html');
+    if (!raw.ok) throw new Error('Template not found');
+    return raw.text();
+}
+
 async function buildFullZipBlob(bundle, artifacts) {
     const seed = bundle.config?.seed ?? 'unknown';
     const [template, spritesText, assetsText, bossCapsText] = await Promise.all([
-        fetch('/template.html').then(r => { if (!r.ok) throw new Error('Template not found'); return r.text(); }),
+        fetchDocsTemplate(),
         loadSpriteMapText(), loadAssetMapText(), loadBossCapsText(),
     ]);
     const zip = new JSZip();
@@ -316,10 +326,7 @@ document.getElementById('btn-download-docs').addEventListener('click', async () 
     btn.textContent = 'Building ZIP…';
 
     try {
-        const template = await fetch('/template.html').then(r => {
-            if (!r.ok) throw new Error('Template not found');
-            return r.text();
-        });
+        const template = await fetchDocsTemplate(); // minified viewer, raw fallback in dev (T-219)
         const spritesText = await loadSpriteMapText();
         const assetsText = await loadAssetMapText();
         const bossCapsText = await loadBossCapsText();

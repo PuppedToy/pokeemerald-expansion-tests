@@ -91,6 +91,20 @@ async function main() {
     fs.writeFileSync(path.join(FRONT_DATA, 'bosscaps.json'), JSON.stringify(bossCaps));
     console.log(`[build] Wrote bosscaps.json (${bossCaps.length} bosses) → ${path.join(FRONT_DATA, 'bosscaps.json')}`);
 
+    // ── Step 6: Minified docs viewer (T-219) ──────────────────────────────────
+    // Strip comments + minify the inline CSS/JS of template.html into template.min.html (gitignored),
+    // which app.js prefers when generating docs (falls back to the raw template in dev). The build FAILS
+    // if a substitution anchor (font token / data-placeholder <script src>) was lost to minification.
+    console.log('[build] Minifying docs viewer template...');
+    const { minifyDocsTemplate, assertAnchorsPreserved } = require('./buildDocsTemplate.cjs');
+    const tplSrc = fs.readFileSync(path.join(ROOT, 'frontend', 'template.html'), 'utf-8');
+    const tplMin = minifyDocsTemplate(tplSrc);
+    assertAnchorsPreserved(tplSrc, tplMin);
+    const tplMinPath = path.join(ROOT, 'frontend', 'template.min.html');
+    fs.writeFileSync(tplMinPath, tplMin, 'utf-8');
+    const savedPct = Math.round((1 - tplMin.length / tplSrc.length) * 100);
+    console.log(`[build] Wrote template.min.html (${Math.round(tplMin.length / 1024)} KB, -${savedPct}% vs source) → ${tplMinPath}`);
+
     console.log('[build] Done.');
 }
 

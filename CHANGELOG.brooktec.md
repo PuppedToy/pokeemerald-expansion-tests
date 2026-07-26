@@ -35,6 +35,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Lighter documentation download.** The generated docs viewer is now minified before it's bundled into
+  your download — same content and layout, ~35% smaller. (T-219)
+
 - **Settings now reject bad values instead of silently fixing them.** Every number field in the randomizer
   settings is validated against its allowed range: an out-of-range, non-whole or blank value is highlighted in
   red with a short reason, and you can't generate until it's fixed — nothing is silently clamped. This closes
