@@ -1,7 +1,7 @@
 ---
 id: T-215
 title: EPIC — Beta gated onboarding (admit users in controlled batches before public launch)
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-26
 updated: 2026-07-26
@@ -100,6 +100,10 @@ active request early, `handlers.js:19-23`).
 - **2026-07-26** — EPIC created (proposed). Mapped the auth/build/queue/admin architecture (see Context) and the
   retention crux (D1). Split into T-216 (gating + surfaces) and T-217 (admin panel + algorithm). Recorded the
   cross-cutting decisions D1–D5 + suggestions. **Awaiting owner sign-off on D1–D5 before the sub-tasks start.**
+- **2026-07-26** — Owner signed off D1–D6; both sub-tasks IMPLEMENTED + suites green (T-216 on its branch, T-217
+  branched off it). EPIC now in-progress. Also added `BETA` to `deploy/.env.example` so the gate can be switched
+  on in prod. Remaining before this EPIC closes: owner manual test of both sub-tasks, merges to master, and — to
+  actually run the beta in production — set `BETA=true` (+ `ADMIN_EMAILS`) in the deploy env and redeploy.
 
 ## Outcome
 <!-- Filled when closing. -->
