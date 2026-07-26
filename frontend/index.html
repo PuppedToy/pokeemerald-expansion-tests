@@ -47,9 +47,9 @@
   <div class="modal card">
     <button class="modal-close" id="auth-close" aria-label="Close">×</button>
     <div class="auth-explainer">
-      <p><strong>Why an account?</strong> Building a ROM needs one (generating the documentation is free and anonymous):</p>
+      <p><strong>Why an account?</strong> Generating a patch needs one (generating the documentation is free and anonymous):</p>
       <ol>
-        <li>Your build runs on our server and is tied to your account, so you can track it and come back to it.</li>
+        <li>Your patch generation runs on our server and is tied to your account, so you can track it and come back to it.</li>
         <li>You give an email so, if the queue is long, we can notify you when it's ready.</li>
       </ol>
       <p class="auth-explainer-foot">You add your own Pokémon Emerald ROM in your browser to build the playable game locally — it never leaves your device.</p>
@@ -67,6 +67,9 @@
     <form class="auth-form" id="auth-form-register" data-auth-panel="register" hidden>
       <input class="input" type="email" id="reg-email" placeholder="Email" required>
       <input class="input" type="password" id="reg-password" placeholder="Password (min 8 chars)" minlength="8" required>
+      <label class="auth-consent"><input type="checkbox" id="reg-consent" required>
+        I have read and agree to the <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>
+        and <a href="/terms.html" target="_blank" rel="noopener">Terms</a>.</label>
       <button class="btn btn-primary" type="submit">Create account</button>
     </form>
     <p class="auth-msg" id="auth-msg"></p>
@@ -152,10 +155,13 @@
 
       <!-- Beta gate: shown only while BETA is on. Building is invite-only; preparing a run is not. -->
       <div class="beta-notice" id="beta-notice" hidden>
-        <strong>Closed beta.</strong> You can set up and prepare your ROM right now — but building is invite-only for the moment.
-        Prepare your run and we'll build it and email you a download link the instant you're invited.
+        <strong>Closed beta.</strong> You can set up and prepare your run right now — but generating the patch is invite-only for the moment.
+        Prepare your run and we'll generate it and email you a download link the instant you're invited.
         Your prepared run never expires, and you can keep tweaking it in the meantime.
       </div>
+
+      <p class="legal-note">This tool generates <strong>patch files</strong> you apply to your own copy — it does not distribute the game.
+        You must own a legal copy of Pokémon Emerald; your ROM stays on your device and is never uploaded.</p>
 
       <!-- Step indicator -->
       <div class="steps">
@@ -418,6 +424,21 @@
   </section>
 
 </div>
+
+<!-- Global legal footer: disclaimers + privacy/terms links -->
+<footer class="site-footer">
+  <p class="site-footer-main">
+    A free, non-commercial fan project. <strong>Not affiliated with, endorsed by, or associated with
+    Nintendo, Game Freak or The Pokémon Company.</strong> It generates patch files for a game you must
+    legally own — it does not distribute the game, and your ROM never leaves your device.
+  </p>
+  <p class="site-footer-sub">
+    “Pokémon”, “Emerald” and all related names, characters and imagery are trademarks and copyrights of
+    their respective owners. All rights reserved to them.
+    &nbsp;·&nbsp; <a href="/privacy.html">Privacy Policy</a>
+    &nbsp;·&nbsp; <a href="/terms.html">Terms &amp; Legal</a>
+  </p>
+</footer>
 
 <script type="module" src="/js/app.js"></script>
 </body>

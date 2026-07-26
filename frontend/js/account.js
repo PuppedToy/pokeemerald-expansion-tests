@@ -151,7 +151,7 @@ function updateNavAccount() {
 function betaAccessText() {
   if (!state?.verified) return 'Verify your email first';
   return state.inviteState === 'accepted'
-    ? 'Accepted ✓ — you can build ROMs'
+    ? 'Accepted ✓ — you can generate patches'
     : "Pending invite — we'll email you when you're in";
 }
 function betaAccessClass() {
@@ -163,7 +163,7 @@ function renderSettings() {
   if (!el) return;
   if (!state) {
     el.innerHTML = `
-      <p class="settings-note">Log in to manage your account and build ROMs. Generating documentation never needs an account — it's free and anonymous.</p>
+      <p class="settings-note">Log in to manage your account and generate patches. Generating documentation never needs an account — it's free and anonymous.</p>
       <button class="btn btn-primary" id="settings-login">Log in / Register</button>`;
     $('settings-login')?.addEventListener('click', openModal);
     return;
@@ -211,7 +211,7 @@ async function hydrateSettingsRom() {
     actionsEl.innerHTML = `
       <label class="btn btn-primary settings-upload">Add your Emerald ROM
         <input type="file" id="rom-file" accept=".gba,application/octet-stream" hidden></label>
-      <p class="settings-note">Only needed to build a playable ROM. It stays in your browser — never uploaded.</p>`;
+      <p class="settings-note">Only needed to apply your patch and play. It stays in your browser — never uploaded. You must own a legal copy of Pokémon Emerald.</p>`;
   }
   $('rom-file')?.addEventListener('change', onRomUpload);
 }
@@ -245,6 +245,8 @@ async function onRomUpload(e) {
 }
 
 async function doRegister(email, password) {
+  // GDPR consent (T-222): the checkbox is `required` in the markup; guard here too in case it's bypassed.
+  if (!$('reg-consent')?.checked) { setMsg('Please accept the Privacy Policy and Terms to register.', 'err'); return; }
   const { ok, data } = await api('/api/register', { method: 'POST', body: { email, password } });
   setMsg(ok ? 'Registered — open the verification link we emailed, then log in.' : (data?.error || 'Registration failed'), ok ? 'ok' : 'err');
 }
@@ -325,11 +327,11 @@ function setHeadline(cat) {
   const seed = lastBundle?.config?.seed;
   const STATUS = {
     ready: 'everything is ready to download',
-    building: 'your run is building below',
+    building: 'your patch is generating below',
     queued: 'your run is queued below',
     failed: 'the build failed — see below',
     downloaded: n > 1 ? 'patches applied to your ROMs' : 'patch applied to your ROM',
-    gating: 'sign in to also build a ROM',
+    gating: 'sign in to also generate a patch',
     held: "prepared — waiting for your beta invite", // T-216
   };
   const titleEl = $('gen-done-title');
@@ -415,17 +417,17 @@ async function reevaluateDelivery() {
 
   if (!state) {
     setHeadline('gating');
-    setRomDownload({ enabled: false, reason: 'Log in to build a ROM.' });
+    setRomDownload({ enabled: false, reason: 'Log in to generate a patch.' });
     setRomRow('todo',
       `<div class="status-title">Randomized ROM</div>
-       <div class="status-sub">Log in to build one — your docs are ready regardless.</div>
+       <div class="status-sub">Log in to generate one — your docs are ready regardless.</div>
        <button class="btn btn-primary btn-sm" id="rom-cta">Log in / Register</button>`, LOCK_ICO);
     $('rom-cta')?.addEventListener('click', openModal);
     return;
   }
   if (!state.verified) {
     setHeadline('gating');
-    setRomDownload({ enabled: false, reason: 'Verify your email to build your ROM.' });
+    setRomDownload({ enabled: false, reason: 'Verify your email to generate your patch.' });
     setRomRow('todo',
       `<div class="status-title">Verify your email</div>
        <div class="status-sub">Open the link we emailed you — then your ROM build starts automatically.</div>`, '✉');
@@ -447,10 +449,10 @@ async function reevaluateDelivery() {
     const n = romCount();
     setHeadline('downloaded');
     setStartOverBtn('downloaded');
-    setRomDownload({ enabled: false, reason: 'Already delivered — removed from the server. Start a new run to build another.' });
+    setRomDownload({ enabled: false, reason: 'Already delivered — removed from the server. Start a new run to generate another.' });
     setRomRow('done',
       `<div class="status-title">${n > 1 ? 'Patches applied to your ROMs' : 'Patch applied to your ROM'}</div>
-       <div class="status-sub">Removed from the server. Start a new run to build another.</div>`, '✓');
+       <div class="status-sub">Removed from the server. Start a new run to generate another.</div>`, '✓');
     return;
   }
 
@@ -505,8 +507,8 @@ function renderRom(req, info = {}) {
     setRomDownload({ enabled: false, count, reason: "Prepared — it builds once you're invited." });
     setRomRow('queued',
       `<div class="status-title">Prepared — waiting for your beta invite</div>
-       <div class="status-sub">Your randomization is saved on our side. As soon as you're invited we'll build it and email you a download link — no need to check back.</div>
-       <div class="status-sub muted">This never expires. Keep tweaking and re-generating if you like — the latest run is the one we'll build.</div>
+       <div class="status-sub">Your randomization is saved on our side. As soon as you're invited we'll generate it and email you a download link — no need to check back.</div>
+       <div class="status-sub muted">This never expires. Keep tweaking and re-generating if you like — the latest run is the one we'll generate.</div>
        <button class="btn btn-ghost btn-sm rom-cancel-btn" id="rom-cancel">Discard this run</button>`, '🎟');
     $('rom-cancel')?.addEventListener('click', () => cancelActiveRun('cancel')); // T-198
     return;
@@ -518,7 +520,7 @@ function renderRom(req, info = {}) {
     setRomDownload({ enabled: false, count, reason: 'The build failed — start over to try again.' });
     setRomRow('failed',
       `<div class="status-title">Build failed</div>
-       <div class="status-sub">Something went wrong building your ROM. Please start over and try again.</div>`, '✕');
+       <div class="status-sub">Something went wrong generating your patch. Please start over and try again.</div>`, '✕');
     return;
   }
 
@@ -529,7 +531,7 @@ function renderRom(req, info = {}) {
     if (lastCategory !== 'building') {
       lastCategory = 'building';
       setRomRow('building',
-        `<div class="status-title">Building your ROM…</div>
+        `<div class="status-title">Generating your patch…</div>
          ${total > 1 ? `<div class="status-sub" id="rom-counter">ROM ${current} of ${total}</div>` : ''}
          <div class="gen-progress-wrap compact"><div class="gen-progress-bar"><div class="gen-progress-fill" id="rom-progress-fill"></div></div></div>
          <div class="status-sub" id="rom-eta">Estimating…</div>
@@ -542,7 +544,7 @@ function renderRom(req, info = {}) {
     // every poll. The CSS width transition eases the 3-second steps. No client clock.
     const pct = info.progress != null ? info.progress : 0;
     const fill = $('rom-progress-fill'); if (fill) fill.style.width = `${pct}%`;
-    setTabTitle(`Building ${pct}%`);
+    setTabTitle(`Generating ${pct}%`);
     const etaEl = $('rom-eta'); if (etaEl && info.eta != null) etaEl.textContent = etaText(info.eta);
     if (total > 1) { const c = $('rom-counter'); if (c) c.textContent = `ROM ${current} of ${total}`; }
     return;
@@ -723,19 +725,19 @@ async function hydrateReadyRow(count) {
   if (romPresent) {
     setRomRow('done',
       `<div class="status-title">Your randomized ${count > 1 ? 'ROMs are' : 'ROM is'} ready</div>
-       <div class="status-sub" id="rom-ready-msg">Your Emerald is saved in this browser — we download the ${patchNoun} and apply ${count > 1 ? 'them' : 'it'} here to build your ${gameNoun}.</div>
+       <div class="status-sub" id="rom-ready-msg">Your Emerald is saved in this browser — we download the ${patchNoun} and apply ${count > 1 ? 'them' : 'it'} here to create your ${gameNoun}.</div>
        <button class="btn btn-ghost btn-sm" id="rom-dl-bps">Download the raw ${patchNoun} (.bps) instead</button>`, '✓');
     setRomDownload({ enabled: true, count, note: true, label: dlLabel(count) });
   } else {
     setRomRow('done',
       `<div class="status-title">Your randomized ${runNoun} ready</div>
-       <div class="status-sub" id="rom-ready-msg">Add your Pokémon Emerald (USA, Europe) to build the playable ${gameNoun} — it stays in your browser, never uploaded.</div>
+       <div class="status-sub" id="rom-ready-msg">Add your Pokémon Emerald (USA, Europe) to create your playable ${gameNoun} — it stays in your browser, never uploaded.</div>
        <label class="btn btn-primary btn-sm">⬆ Add your Emerald ROM<input type="file" id="rom-file-ready" accept=".gba,application/octet-stream" hidden></label>
        <button class="btn btn-ghost btn-sm" id="rom-dl-bps">Download raw ${patchNoun} (.bps) only</button>`, '✓');
     // The green button applies the patch(es) to the playable ROM → gated until a ROM is added (clear,
     // not a 2nd .bps button). The raw .bps stays reachable via the ghost button for those who patch elsewhere.
     setRomDownload({ enabled: false, note: false, label: dlLabel(count),
-      reason: 'Add your Emerald ROM (USA, Europe) above to build the playable game.' });
+      reason: 'Add your Emerald ROM (USA, Europe) above to create your playable game.' });
     $('rom-file-ready')?.addEventListener('change', onReadyRomAdd);
   }
   $('rom-dl-bps')?.addEventListener('click', downloadBpsOnly);
@@ -762,7 +764,7 @@ async function onReadyRomAdd(e) {
     clearDlSteps();
     if (msg) msg.textContent = /source/i.test(err?.message)
       ? 'That ROM does not match Pokémon Emerald (USA, Europe).'
-      : 'Could not build the game — please try again.';
+      : 'Could not create the game — please try again.';
     return;
   }
   reevaluateDelivery(); // re-render the ready row → ROM-present view (green button enabled)

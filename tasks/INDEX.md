@@ -224,3 +224,4 @@
 | [T-219](T-219-minified-docs-viewer.md) | Generate a minified docs viewer (out.html) in the doc-gen pipeline | in-progress | 0.7.0 | 2026-07-26 |
 | [T-220](T-220-frontend-build-minify.md) | Build + minify the app frontend (serve a dist in production) | in-progress | 0.7.0 | 2026-07-26 |
 | [T-221](T-221-legal-risk-analysis.md) | Legal risk analysis for the public (non-commercial) site | in-progress | 0.7.0 | 2026-07-26 |
+| [T-222](T-222-legal-compliance-gdpr-disclaimers.md) | Legal hardening — GDPR minimum, patch-not-ROM wording, disclaimers | in-progress | 0.7.0 | 2026-07-26 |
