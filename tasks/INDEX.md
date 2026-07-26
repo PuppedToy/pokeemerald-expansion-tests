@@ -219,4 +219,4 @@
 | [T-214](T-214-frontend-input-validation.md) | Validate every randomizer config input (sensible ranges + a clear bad-value policy) | done | 0.6.0 | 2026-07-26 |
 | [T-215](T-215-beta-gated-onboarding-epic.md) | EPIC — Beta gated onboarding (admit users in controlled batches before public launch) | proposed | 0.7.0 | 2026-07-26 |
 | [T-216](T-216-beta-gating-and-surfaces.md) | Beta gating + user surfaces (invite state, settings row, randomizer warning, docs message, BETA badge) | in-progress | 0.7.0 | 2026-07-26 |
-| [T-217](T-217-beta-admin-invite-panel.md) | Beta admin invite panel — pending list, queue/ETA, balanced batch invite (25/75 lottery), user search | proposed | 0.7.0 | 2026-07-26 |
+| [T-217](T-217-beta-admin-invite-panel.md) | Beta admin invite panel — pending list, queue/ETA, balanced batch invite (25/75 lottery), user search | in-progress | 0.7.0 | 2026-07-26 |

@@ -32,6 +32,8 @@
       <button class="topnav-tab" data-tab="randomizer">Randomizer</button>
       <button class="topnav-tab" data-tab="feedback">Feedback</button>
       <button class="topnav-tab" data-tab="settings">Settings</button>
+      <!-- Admin (T-217): revealed by admin.js only when /api/me.isAdmin. -->
+      <button class="topnav-tab" data-tab="admin" id="admin-tab" hidden>Admin</button>
     </div>
     <!-- account area (T-034): identity + log out when signed in, otherwise a Log in link -->
     <div class="topnav-account" id="nav-account"></div>
@@ -404,6 +406,14 @@
     <div class="settings-wrap">
       <h1 class="settings-title">Settings</h1>
       <div id="settings-content"></div>
+    </div>
+  </section>
+
+  <!-- ── Admin (T-217): beta invite panel; admin.js fills #admin-content, admin-only ── -->
+  <section id="tab-admin" class="tab-section">
+    <div class="settings-wrap">
+      <h1 class="settings-title">Beta admin</h1>
+      <div id="admin-content"></div>
     </div>
   </section>
 

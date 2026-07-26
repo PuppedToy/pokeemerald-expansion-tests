@@ -4,6 +4,7 @@ import { romName, bundleFileName, romForServerName } from './romNaming.js';
 import { initAccount, onBundleReady, getStoredBundle, getAuthState, onAuthChange, api } from './account.js';
 import { initFeedback } from './feedback.js';
 import { initPresets } from './presets.js';
+import { initAdmin } from './admin.js';
 
 // ── Tab routing ───────────────────────────────────────────────────────────────
 
@@ -399,6 +400,10 @@ presetsCtl = initPresets({
     defaults: DEFAULTS,
     renderConfigDetail: (cfg) => reviewRowsHtml(cfg),
 });
+
+// T-217: beta admin invite panel. Self-wires off account.js's auth state (onAuthChange) — the Admin
+// tab + panel appear only when /api/me reports isAdmin; every endpoint is 403 for non-admins anyway.
+initAdmin();
 
 // "Save Preset" (next to Review) captures the current config and opens the modal in save mode.
 document.getElementById('btn-save-preset')?.addEventListener('click', () => {

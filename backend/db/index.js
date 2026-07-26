@@ -181,6 +181,22 @@ CREATE TABLE IF NOT EXISTS preset_views (
   PRIMARY KEY (preset_id, user_id)
 );
 CREATE INDEX IF NOT EXISTS preset_views_by_user ON preset_views(user_id);
+
+-- Beta invite audit (T-217): one row per admin invite action (a balanced batch or a single accept),
+-- kept 100% (never swept, never purged on account deletion) so who-was-let-in-when is fully auditable.
+-- user_ids_json holds the accepted user ids (kept even if an account is later deleted — audit history).
+CREATE TABLE IF NOT EXISTS beta_invites (
+  id               INTEGER PRIMARY KEY,
+  created_at       INTEGER NOT NULL,
+  admin_email      TEXT,                    -- who ran it (null → system/flush)
+  kind             TEXT NOT NULL,           -- 'batch' | 'accept'
+  requested        INTEGER,                 -- N asked for (batch); null for a single accept
+  granted          INTEGER NOT NULL,        -- how many users were accepted
+  with_rom         INTEGER NOT NULL,        -- of granted, how many had a held ROM (promoted to build)
+  added_build_secs INTEGER NOT NULL,        -- estimated build time this batch added to the queue
+  user_ids_json    TEXT NOT NULL            -- the accepted user ids
+);
+CREATE INDEX IF NOT EXISTS beta_invites_by_created ON beta_invites(created_at);
 `;
 
 export function migrate(db) {

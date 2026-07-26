@@ -12,12 +12,14 @@ import { createDecisionLogsRepo } from './db/decisionLogs.js';
 import { createPresetsRepo } from './db/presets.js';
 import { createPresetLikesRepo } from './db/presetLikes.js';
 import { createPresetViewsRepo } from './db/presetViews.js';
+import { createBetaInvitesRepo } from './db/betaInvites.js';
 import { createUsersRepo } from './auth/users.js';
 import { createTokensRepo } from './auth/tokens.js';
 import { createAuthService } from './auth/service.js';
 import { parseAdminEmails } from './auth/admin.js';
 import { createAuthRouter } from './auth/routes.js';
 import { createConfigRouter } from './config/routes.js';
+import { createBetaAdminRouter } from './beta/routes.js';
 import { createProduceRouter } from './produce/routes.js';
 import { createFeedbackRouter } from './feedback/routes.js';
 import { createDiagnosticsRouter } from './diagnostics/routes.js';
@@ -57,6 +59,7 @@ const decisionLogs = createDecisionLogsRepo(db);
 const presets = createPresetsRepo(db);
 const presetLikes = createPresetLikesRepo(db);
 const presetViews = createPresetViewsRepo(db);
+const betaInvites = createBetaInvitesRepo(db);
 
 // ── email (ADR-007): real provider if configured, else a dev console transport ──
 const transport = process.env.BREVO_API_KEY
@@ -102,6 +105,11 @@ app.use('/api', createAuthRouter({
   removeFile: (p) => storage.removeFile(p), db, killActiveBuild,
 }));
 app.use('/api', createConfigRouter({ beta: BETA }));
+// Beta admin panel (T-217): admin-only invite/accept/overview/search. Gated by ADMIN_EMAILS.
+app.use('/api', createBetaAdminRouter({
+  users, requests, betaInvites, mailer, adminEmails: ADMIN_EMAILS,
+  jwtSecret: JWT_SECRET, baseUrl: BASE_URL, db,
+}));
 app.use('/api', createFeedbackRouter({ feedback, jwtSecret: JWT_SECRET }));
 app.use('/api', createDiagnosticsRouter({ diagnostics, jwtSecret: JWT_SECRET }));
 app.use('/api', createDecisionLogRouter({ decisionLogs, jwtSecret: JWT_SECRET }));

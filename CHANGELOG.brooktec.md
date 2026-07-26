@@ -15,6 +15,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   meantime. A BETA badge in the top bar, an on-page notice on the randomizer, and a "Beta access" line in
   Settings (Verify email / Pending invite / Accepted) make your status clear. (T-216)
 
+- **Beta invites go out in balanced batches.** Behind the scenes, an admin-only panel admits waiting users in
+  batches sized so each round adds at most ~1 hour of build time, mixing people who already prepared a ROM with
+  those who haven't, and always reserving a share for whoever has waited longest. Invited users get an email
+  right away (or, if they'd already prepared a ROM, a single combined "you're in + it's ready" email when it
+  finishes building). (T-217)
+
 ### Fixed
 
 - **Hidden Power (and Return/Frustration/Secret Power) now show for every Pokémon.** These moves are learnable
