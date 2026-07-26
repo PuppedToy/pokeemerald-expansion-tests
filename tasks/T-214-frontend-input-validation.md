@@ -169,11 +169,16 @@ Legend for handling: **clamp** = snap to [min,max] (model B, with the inline hin
 Acceptance criteria:
 - [x] Bad-value model chosen: **C — block until valid, no clamp**, red border + inline reason (owner 2026-07-26).
       Open sub-decision: money/price/starter caps + nicknames block-vs-advisory.
-- [ ] The T-081 clamp (blur `_clampNumberInput` + read `_intField`) is removed; a `FIELD_BOUNDS`-driven validator
-      flags invalid inputs inline (red border + why) on `input` and **disables Generate** until all are valid.
-- [ ] Coverage includes the previously-unvalidated sliders + evo stage/tier tables; evo tiers enforce
-      `max ≥ min`; seeds are uint32; enum/import inputs are sanitised.
-- [ ] `frontend/__tests__/config-validation.test.js` rewritten (table-driven) and green; no horizontal overflow.
+- [x] The T-081 clamp (blur `_clampNumberInput` + read-clamp) is removed; validation is driven by each field's
+      HTML `min`/`max`/`step` (the bounds SSOT), flagging invalid inputs inline (red border + reason) on `input`
+      via `_validateBounds`/`_setFieldError`, and blocking `getConfig()` (→ the existing Generate/Review gate).
+- [x] Coverage: the previously-unvalidated sliders (difficulty/balance/move-mutation) + evo stage/tier tables;
+      evo `min ≤ max`; seeds uint32; money/prices capped at 999999; extra-starter count capped at 12; invalid
+      nickname names (>12 chars / non-alphanumeric) block, low-pool stays advisory. Enum/import stay sanitised
+      (existing whitelists; a bad imported number surfaces red + blocks).
+- [x] `frontend/__tests__/config-validation.test.js` rewritten (`validateNumber` unit + source-inspection) and
+      green (frontend suite 174); no horizontal overflow (shoot). *Known edge: a field in a collapsed category
+      or dependency-off (`.control-disabled`) section is skipped (its value isn't used).*
 
 ## Progress log
 
@@ -183,6 +188,17 @@ Acceptance criteria:
   the two existing validation layers (blur-clamp T-081 + read-clamp `_intField`/`_read*`). Identified the real
   gaps (unclamped sliders + evo tables, no money/price/seed upper bound, unbounded starter count, advisory-only
   nicknames) and drafted a per-input policy. **Awaiting the owner's choice of bad-value model before starting.**
+- **2026-07-26** — **Owner chose model C + implemented (in-progress).** Replaced the clamp with block-until-valid:
+  new pure `validateNumber(raw, {min,max,step,allowBlank})` (returns a reason or null); `_validateBounds()` walks
+  every active number/range input, validating against its HTML `min`/`max`/`step` (+ evo `min ≤ max` cross-field)
+  and marking invalid ones red with an inline `.field-error` (via `_setFieldError`); `getConfig()` returns null
+  while anything is invalid (Generate/Review already gate on null). Removed `_clampNumberInput`/`clampToRange`
+  and the read-clamp in `_intField`; the `change` blur-clamp listener became an `input` validate listener. Added
+  the missing bounds: money/prices `max="999999"`, seeds `max="4294967295"` + `data-allow-blank`. Capped extra
+  starters at 12 (disable Add). `_validateNicknames()` blocks >12-char / non-alphanumeric pool names (low-pool
+  stays advisory). CSS: red border + `.field-error`. Rewrote `config-validation.test.js`; frontend suite 174
+  green; shoot: no overflow. **Owner to manually verify the in-form UX (typing a bad value → red + reason + can't
+  Generate).**
 
 ## Outcome
 

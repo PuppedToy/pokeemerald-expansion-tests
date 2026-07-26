@@ -174,7 +174,7 @@ const _prettyMint = (n) => n[0] + n.slice(1).toLowerCase();
 function priceCell(id, label, value) {
     return `<label class="price-cell" for="${id}" style="display:flex;flex-direction:column;gap:3px;font-size:0.82em">
       <span>${label}</span>
-      <input type="number" id="${id}" class="input" min="0" step="10" value="${value}">
+      <input type="number" id="${id}" class="input" min="0" max="999999" step="10" value="${value}">
     </label>`;
 }
 function priceGrid(cells) {
@@ -360,14 +360,26 @@ function getNonBossQualityDesc(modifier) {
 // T-081 — clamp a raw numeric field value into [min,max]. Returns the clamped Number, or null when
 // the value is blank / non-numeric (those are left untouched — e.g. a blank seed means "random").
 // min/max may be '' | null | undefined to mean "unbounded on that side". Exported for unit testing.
-export function clampToRange(raw, min, max) {
-    if (raw === '' || raw === null || raw === undefined) return null;
-    const n = typeof raw === 'number' ? raw : parseFloat(raw);
-    if (Number.isNaN(n)) return null;
-    let out = n;
-    if (min !== '' && min !== null && min !== undefined && Number.isFinite(Number(min))) out = Math.max(Number(min), out);
-    if (max !== '' && max !== null && max !== undefined && Number.isFinite(Number(max))) out = Math.min(Number(max), out);
-    return out;
+// T-214 — cap on the number of extra starters (block adding beyond this).
+const MAX_EXTRA_STARTERS = 12;
+
+// T-214 — pure validity check for a numeric input against its bounds. Returns null when VALID, else a
+// short human message saying why. Policy is block-until-valid (never clamp), so this drives the inline
+// errors. `step` decides integer-ness: a whole-number step (or none) requires an integer; a fractional
+// step allows decimals. `allowBlank` is for optional fields (seeds → blank means "random").
+export function validateNumber(raw, { min, max, step, allowBlank = false } = {}) {
+    const s = raw === null || raw === undefined ? '' : String(raw).trim();
+    if (s === '') return allowBlank ? null : 'enter a value';
+    const n = Number(s);
+    if (!Number.isFinite(n)) return 'must be a number';
+    const wantInt = step === '' || step === null || step === undefined || Number(step) >= 1;
+    if (wantInt && !Number.isInteger(n)) return 'must be a whole number';
+    const lo = (min === '' || min === null || min === undefined) ? null : Number(min);
+    const hi = (max === '' || max === null || max === undefined) ? null : Number(max);
+    if (lo !== null && hi !== null && (n < lo || n > hi)) return `must be between ${lo} and ${hi}`;
+    if (lo !== null && n < lo) return `must be at least ${lo}`;
+    if (hi !== null && n > hi) return `must be at most ${hi}`;
+    return null;
 }
 
 // T-085/ADR-014 — Run & Bun ingame Elite Four split: round(%singles × 4) clamped to 1–3, so the
@@ -513,7 +525,35 @@ export class ConfigForm {
     }
 
     /** Returns the current validated config object, or null if invalid. */
+    /**
+     * T-214 — block on invalid nickname pool names (over the length limit, or characters other than
+     * letters/digits/spaces), marking the offending textarea. The "too few names for coverage" case stays
+     * an advisory warning (not an invalid value), so it does NOT block.
+     */
+    _validateNicknames() {
+        const errors = [];
+        const enabled = this._q('#nickname-enabled')?.checked;
+        for (const sel of ['#nickname-pool-both', '#nickname-pool-female', '#nickname-pool-male', '#nickname-pool-single']) {
+            const el = this._q(sel);
+            if (!el) continue;
+            if (!enabled || el.disabled || el.closest('.control-disabled') || el.offsetParent === null) {
+                this._setFieldError(el, null);
+                continue;
+            }
+            const names = (el.value || '').split('\n').map(s => s.trim()).filter(Boolean);
+            const bad = names.filter(n => n.length > MAX_NICKNAME_LENGTH || !/^[A-Za-z0-9 ]+$/.test(n));
+            const msg = bad.length
+                ? `fix ${bad.length} invalid name${bad.length === 1 ? '' : 's'} (max ${MAX_NICKNAME_LENGTH} chars; letters, digits, spaces only)`
+                : null;
+            this._setFieldError(el, msg);
+            if (msg) errors.push({ el, msg });
+        }
+        return errors;
+    }
+
     getConfig() {
+        // T-214 — block while any input is invalid (marks the offending fields red + inline reason).
+        if (this._validateBounds().length || this._validateNicknames().length) return null;
         const runType = this._q('input[name="run-type"]:checked')?.value ?? 'default';
         // T-085/ADR-014 — battle format + mixed-only proportion / Run & Bun.
         const battleFormat = this._q('input[name="battle-format"]:checked')?.value ?? 'singles';
@@ -747,25 +787,59 @@ export class ConfigForm {
     }
 
     /** Read an integer input, clamped to [min,max], falling back to `def` when blank/invalid. */
+    // T-214 — validity is enforced by _validateBounds (block-until-valid), so this is now a plain read of
+    // the already-valid value; blank/NaN falls back to the default. NO clamping (min/max kept only for
+    // call-site compatibility).
     _intField(sel, def, min, max) {
         const el = this._q(sel);
         if (!el) return def;
         const n = parseInt(el.value, 10);
-        if (isNaN(n)) return def;
-        return Math.max(min, Math.min(max, n));
+        return isNaN(n) ? def : n;
     }
 
     /**
-     * T-081 — clamp a number input to its own `min`/`max` attributes (visible validation on blur).
-     * Returns true when the displayed value was changed. Blank/non-numeric inputs are left alone.
+     * T-214 — validate every active number/range input against its own min/max/step; mark invalid ones
+     * (red border + inline message) and return the error list. We BLOCK, never clamp: getConfig() returns
+     * null while any field is invalid. Fields disabled or in a dependency-off (`.control-disabled`) section
+     * are skipped (their value isn't used); collapsed categories are still validated.
      */
-    _clampNumberInput(el) {
-        if (!el || el.type !== 'number') return false;
-        const clamped = clampToRange(el.value, el.min, el.max);
-        if (clamped === null) return false;
-        const next = String(clamped);
-        if (next !== String(el.value).trim()) { el.value = next; return true; }
-        return false;
+    _validateBounds() {
+        const errors = [];
+        for (const el of this.container.querySelectorAll('input[type="number"], input[type="range"]')) {
+            if (el.disabled || el.closest('.control-disabled')) { this._setFieldError(el, null); continue; }
+            const msg = validateNumber(el.value, {
+                min: el.min, max: el.max, step: el.step, allowBlank: el.dataset.allowBlank === 'true',
+            });
+            this._setFieldError(el, msg);
+            if (msg) errors.push({ el, msg });
+        }
+        // Cross-field: any "<x>-min" must be ≤ its "<x>-max" sibling (evolution level tables + scalars).
+        for (const minEl of this.container.querySelectorAll('input[id$="-min"]')) {
+            if (minEl.disabled || minEl.closest('.control-disabled')) continue;
+            const maxEl = this._q(`#${minEl.id.replace(/-min$/, '-max')}`);
+            if (!maxEl) continue;
+            const a = Number(minEl.value), b = Number(maxEl.value);
+            if (Number.isFinite(a) && Number.isFinite(b) && a > b) {
+                this._setFieldError(minEl, 'min must be ≤ max');
+                errors.push({ el: minEl, msg: 'min must be ≤ max' });
+            }
+        }
+        return errors;
+    }
+
+    /** Toggle a field's invalid state + its inline `.field-error` message. */
+    _setFieldError(el, msg) {
+        el.classList.toggle('is-invalid', !!msg);
+        el.setAttribute('aria-invalid', msg ? 'true' : 'false');
+        const host = el.closest('label') || el.parentElement;
+        if (!host) return;
+        let err = host.querySelector(':scope > .field-error');
+        if (msg) {
+            if (!err) { err = document.createElement('span'); err.className = 'field-error'; host.appendChild(err); }
+            err.textContent = msg;
+        } else if (err) {
+            err.remove();
+        }
     }
 
     /** Read the 5 evil-team type slots (`<prefix>-type-0..4`) as an array of type/RANDOM tokens. */
@@ -840,6 +914,9 @@ export class ConfigForm {
             const n = this._starterSpecs.length;
             count.textContent = `${n} extra starter${n === 1 ? '' : 's'}`;
         }
+        // T-214 — cap the extra-starter count: disable "Add" once at the max.
+        const addBtn = this._q('#add-starter');
+        if (addBtn) addBtn.disabled = this._starterSpecs.length >= MAX_EXTRA_STARTERS;
     }
 
     /** T-073 — read the Shop-prices block into a { balls, mints, abilityCapsule, abilityPatch, tms } object. */
@@ -1543,22 +1620,22 @@ export class ConfigForm {
     <div class="card-glass" style="display:flex;flex-direction:column;gap:20px;padding:20px">
       <div class="field">
         <label for="reward-normal">Normal trainer money ($)</label>
-        <input type="number" id="reward-normal" class="input" min="0" step="50" value="250" style="width:120px">
+        <input type="number" id="reward-normal" class="input" min="0" max="999999" step="50" value="250" style="width:120px">
         <span class="field-hint">Prize money for a regular trainer. Game default: 250.</span>
       </div>
       <div class="field">
         <label for="reward-boss">Boss money ($)</label>
-        <input type="number" id="reward-boss" class="input" min="0" step="100" value="3000" style="width:120px">
+        <input type="number" id="reward-boss" class="input" min="0" max="999999" step="100" value="3000" style="width:120px">
         <span class="field-hint">Prize money for rivals, admins, Steven, Wally, etc. Game default: 3000. Museum &amp; Space-Center grunts derive from this (≈⅔ of it; the 2nd museum grunt adds $50), so at 3000 they stay $2000 / $2050.</span>
       </div>
       <div class="field">
         <label for="reward-gym">Gym leader money ($)</label>
-        <input type="number" id="reward-gym" class="input" min="0" step="100" value="5000" style="width:120px">
+        <input type="number" id="reward-gym" class="input" min="0" max="999999" step="100" value="5000" style="width:120px">
         <span class="field-hint">Prize money for gym leaders. Game default: 5000. Elite Four ($10k) and the Champion ($50k) are fixed.</span>
       </div>
       <div class="field">
         <label for="reward-relearn">Move relearn price ($)</label>
-        <input type="number" id="reward-relearn" class="input" min="0" step="50" value="250" style="width:120px">
+        <input type="number" id="reward-relearn" class="input" min="0" max="999999" step="50" value="250" style="width:120px">
         <span class="field-hint">Cost to relearn a move a Pokémon has had before (from its initial moveset or a level-up). Relearning a move it never actually had is always free. Game default: 250. Set to 0 to make every relearn free.</span>
       </div>
       ${shopPricesBlock()}
@@ -1822,7 +1899,7 @@ export class ConfigForm {
       <div class="field">
         <label for="seed">Seed</label>
         <div style="display:flex;gap:10px">
-          <input type="number" id="seed" class="input" min="0" step="1" placeholder="Leave blank for random" style="flex:1">
+          <input type="number" id="seed" class="input" min="0" max="4294967295" step="1" data-allow-blank="true" placeholder="Leave blank for random" style="flex:1">
           <button type="button" class="btn btn-ghost" id="btn-randomize-seed">Roll</button>
         </div>
         <span class="field-hint">Same seed + same config = identical run every time.</span>
@@ -1830,7 +1907,7 @@ export class ConfigForm {
       <div class="field" id="universe-seed-field" style="display:none">
         <label for="universe-seed">Universe seed</label>
         <div style="display:flex;gap:10px">
-          <input type="number" id="universe-seed" class="input" min="0" step="1" placeholder="Blank = new world (from Seed)" style="flex:1">
+          <input type="number" id="universe-seed" class="input" min="0" max="4294967295" step="1" data-allow-blank="true" placeholder="Blank = new world (from Seed)" style="flex:1">
           <button type="button" class="btn btn-ghost" id="btn-randomize-universe-seed">Roll</button>
         </div>
         <span class="field-hint">Shared across this run's ROMs (Pokédex, trainers, starters). Reuse it another day to generate more ROMs in the same world; blank derives it from Seed.</span>
@@ -2104,13 +2181,13 @@ export class ConfigForm {
             el.addEventListener('input', () => this._paintSliders()));
         this._paintSliders();
 
-        // T-081 — validate every number field against its own min/max on blur/commit, so typed
-        // out-of-range values (negatives, absurd counts) are clamped in the UI, not silently later.
-        this.container.addEventListener('change', (e) => {
+        // T-214 — validate every number/range field against its own min/max/step, live. We block (never
+        // clamp): invalid values get a red border + inline reason, and getConfig() returns null until fixed.
+        this.container.addEventListener('input', (e) => {
             const el = e.target;
-            if (el && el.matches && el.matches('input[type="number"]') && this._clampNumberInput(el)) {
-                this._syncUI();
-                this._save();
+            if (el && el.matches && el.matches('input[type="number"], input[type="range"]')) {
+                this._validateBounds();
+                onChange();
             }
         });
 
@@ -2191,6 +2268,7 @@ export class ConfigForm {
         // Extra-starter list: add / remove / edit rows (event delegation, since rows re-render).
         this._q('#add-starter')?.addEventListener('click', () => {
             this._starterSpecs = this._starterSpecs || [];
+            if (this._starterSpecs.length >= MAX_EXTRA_STARTERS) return; // T-214 — cap the extra-starter count
             this._starterSpecs.push({ tier: 'RU', kind: 'line', lineLength: 'any' });
             this._renderStarterList();
             this._save();
