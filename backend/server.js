@@ -126,8 +126,14 @@ app.use('/api', createProduceRouter({
   idGen: () => randomUUID(),
 }));
 
-// static frontend (the randomizer + docs run in the browser)
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
+// static frontend (the randomizer + docs run in the browser). In production (or SERVE_DIST=1) the minified
+// build (frontend/dist, produced by `node build.js` step 7 — T-220) is mounted FIRST so it shadows the
+// hand-written source; the generated bundles/data/assets/template.min.html that live outside dist fall
+// through to the frontend/ mount. Dev serves raw source. A missing dist/ simply falls through — safe.
+const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
+const SERVE_DIST = process.env.NODE_ENV === 'production' || process.env.SERVE_DIST === '1';
+if (SERVE_DIST) app.use(express.static(path.join(FRONTEND_DIR, 'dist')));
+app.use(express.static(FRONTEND_DIR));
 
 app.listen(PORT, () => {
   console.log(`Pokémon Emerald Cut backend → ${BASE_URL}`);

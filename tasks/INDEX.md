@@ -222,4 +222,4 @@
 | [T-217](T-217-beta-admin-invite-panel.md) | Beta admin invite panel — pending list, queue/ETA, balanced batch invite (25/75 lottery), user search | in-progress | 0.7.0 | 2026-07-26 |
 | [T-218](T-218-strip-ai-tells-from-shipped-html.md) | Strip AI-tell comments and cruft from shipped HTML (frontend shell + generated docs) | in-progress | 0.7.0 | 2026-07-26 |
 | [T-219](T-219-minified-docs-viewer.md) | Generate a minified docs viewer (out.html) in the doc-gen pipeline | in-progress | 0.7.0 | 2026-07-26 |
-| [T-220](T-220-frontend-build-minify.md) | Build + minify the app frontend (serve a dist in production) | proposed | 0.7.0 | 2026-07-26 |
+| [T-220](T-220-frontend-build-minify.md) | Build + minify the app frontend (serve a dist in production) | in-progress | 0.7.0 | 2026-07-26 |

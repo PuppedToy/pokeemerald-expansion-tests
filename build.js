@@ -105,6 +105,13 @@ async function main() {
     const savedPct = Math.round((1 - tplMin.length / tplSrc.length) * 100);
     console.log(`[build] Wrote template.min.html (${Math.round(tplMin.length / 1024)} KB, -${savedPct}% vs source) → ${tplMinPath}`);
 
+    // ── Step 7: Minified frontend dist (T-220) ────────────────────────────────
+    // Minify the hand-written app shell (index/reset/verify.html + js/*.js + css/*.css) into
+    // frontend/dist/ (gitignored). In production server.js mounts dist/ ahead of frontend/.
+    console.log('[build] Building minified frontend dist...');
+    const { buildDist } = require('./buildFrontendDist.cjs');
+    buildDist({ root: ROOT, log: (m) => console.log(m) });
+
     console.log('[build] Done.');
 }
 

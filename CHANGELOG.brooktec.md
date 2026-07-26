@@ -38,6 +38,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 - **Lighter documentation download.** The generated docs viewer is now minified before it's bundled into
   your download — same content and layout, ~35% smaller. (T-219)
 
+- **Lighter, faster site.** In production the app's own pages, scripts and styles are served minified
+  (~35% smaller), so the site loads quicker. No change to how anything looks or works. (T-220)
+
 - **Settings now reject bad values instead of silently fixing them.** Every number field in the randomizer
   settings is validated against its allowed range: an out-of-range, non-whole or blank value is highlighted in
   red with a short reason, and you can't generate until it's fixed — nothing is silently clamped. This closes
