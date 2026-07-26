@@ -21,6 +21,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Settings now reject bad values instead of silently fixing them.** Every number field in the randomizer
+  settings is validated against its allowed range: an out-of-range, non-whole or blank value is highlighted in
+  red with a short reason, and you can't generate until it's fixed — nothing is silently clamped. This closes
+  gaps where sliders, evolution-level tables, prices and seeds could take nonsensical values. Extra starters are
+  capped, and nickname pools flag names that are too long or use unsupported characters. (T-214)
+
 - **Cleaner, consistent download archives.** The three downloads are renamed and reorganised:
   `run-<seed>-docs.zip` (the docs + `bundle-<seed>.json` at the root), `run-<seed>-patch-files.zip` (the raw
   patches), and `run-<seed>-full.zip` (apply-patch-&-download: `bundle-<seed>.json` + the ROMs + a `docs/`

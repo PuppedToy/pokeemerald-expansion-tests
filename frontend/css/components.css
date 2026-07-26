@@ -124,6 +124,22 @@
   border-color: var(--obs-orange);
 }
 
+/* T-214 — block-until-valid: an out-of-range/invalid input gets a red border + an inline reason
+   (we never clamp). The message is a `.field-error` span appended next to the field. */
+input.is-invalid,
+textarea.is-invalid,
+.input.is-invalid {
+  border-color: #e5484d;
+  box-shadow: 0 0 0 1px #e5484d inset;
+}
+.field-error {
+  display: block;
+  margin-top: 4px;
+  color: #e5484d;
+  font-size: 0.78em;
+  font-family: var(--obs-font-body);
+}
+
 .input::placeholder {
   color: var(--obs-text-mute);
 }
