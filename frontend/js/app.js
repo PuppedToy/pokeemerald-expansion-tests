@@ -1,5 +1,6 @@
 import { ConfigForm, totalRoms, DEFAULTS } from './config-form.js';
 import { resolveArtifact } from './session.js';
+import { romName, bundleFileName, romForServerName } from './romNaming.js';
 import { initAccount, onBundleReady, getStoredBundle, getAuthState, onAuthChange, api } from './account.js';
 import { initFeedback } from './feedback.js';
 import { initPresets } from './presets.js';
@@ -277,7 +278,35 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
 // T-210 — the decision log is no longer downloadable in the UI; it's submitted to the server (48h)
 // for owner-only review via the /decision-log skill. See reportDiagnostics().
 
-// Download docs (ZIP: per-ROM docs HTML + the run bundle.json)
+// T-211 — the full "apply patch & download" archive: bundle-<seed>.json + the applied ROMs, plus a
+// docs/ folder and a bps/ folder. Default/nuzlocke keep those folders at the root; soul-link nests
+// everything under one folder per player. `artifacts` are the server .bps entries (serverName)
+// already applied to the user's ROM (gbaBytes); they're matched back to bundle roms by server name.
+// It lives here (not account.js) because it reuses the docs-generation path; account.js invokes it
+// through the buildFullZip callback passed to initAccount.
+async function buildFullZipBlob(bundle, artifacts) {
+    const seed = bundle.config?.seed ?? 'unknown';
+    const [template, spritesText, assetsText, bossCapsText] = await Promise.all([
+        fetch('/template.html').then(r => { if (!r.ok) throw new Error('Template not found'); return r.text(); }),
+        loadSpriteMapText(), loadAssetMapText(), loadBossCapsText(),
+    ]);
+    const zip = new JSZip();
+    zip.file(bundleFileName(seed), JSON.stringify(bundle, null, 2));
+    for (const art of artifacts) {
+        const rom = romForServerName(art.serverName, bundle.roms);
+        if (!rom) continue;
+        const { folder, base } = romName(rom, bundle.roms);
+        const pokedex = resolveArtifact(rom.artifacts.pokedex, bundle.sharedData, 'pokedex');
+        const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText);
+        const dir = folder ? `${folder}/` : '';
+        zip.file(`${dir}${base}.gba`, art.gbaBytes);      // applied ROM at root / player folder
+        zip.file(`${dir}docs/${base}.html`, html);        // docs/ folder (only in the full archive)
+        zip.file(`${dir}bps/${base}.bps`, art.bpsBytes);  // bps/ folder
+    }
+    return zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+}
+
+// Download docs (ZIP: per-ROM docs HTML + the run bundle-<seed>.json)
 document.getElementById('btn-download-docs').addEventListener('click', async () => {
     if (!currentBundle) return;
 
@@ -294,25 +323,23 @@ document.getElementById('btn-download-docs').addEventListener('click', async () 
         const assetsText = await loadAssetMapText();
         const bossCapsText = await loadBossCapsText();
 
+        const seed = currentBundle.config?.seed ?? 'unknown';
         const zip = new JSZip();
-        zip.file('bundle.json', JSON.stringify(currentBundle, null, 2));
+        zip.file(bundleFileName(seed), JSON.stringify(currentBundle, null, 2));
 
         for (const rom of currentBundle.roms) {
             const pokedex = resolveArtifact(rom.artifacts.pokedex, currentBundle.sharedData, 'pokedex');
-
-            const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, currentBundle.config?.seed ?? 'unknown', bossCapsText);
-
-            const label = rom.playerIndex !== undefined
-                ? `docs/player-${rom.playerIndex}-rom-${rom.romIndex}.html`
-                : `docs/rom-${rom.romIndex}.html`;
-            zip.file(label, html);
+            const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText);
+            // T-211 — docs-only download: docs at the archive root (no `docs/` wrapper). Soul-link groups
+            // them under one folder per player (player-1/player-1-rom-1.html).
+            const { folder, base } = romName(rom, currentBundle.roms);
+            zip.file(folder ? `${folder}/${base}.html` : `${base}.html`, html);
         }
 
         const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
-        const seed = currentBundle.config?.seed ?? 'unknown';
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `run-${seed}.zip`;
+        a.download = `run-${seed}-docs.zip`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -332,6 +359,7 @@ showStep(1);
 // an in-flight build exists OR a stored bundle is present; it asks us to switch to the Randomizer tab
 // only for an in-flight build (otherwise the run just waits under Randomizer, shown when clicked).
 initAccount({
+    buildFullZip: buildFullZipBlob, // T-211 — full-archive builder (needs the docs path, which lives here)
     onRecover: async ({ switchTab = false } = {}) => {
         try {
             const b = await getStoredBundle();
