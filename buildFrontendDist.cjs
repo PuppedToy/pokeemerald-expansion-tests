@@ -14,7 +14,7 @@ const path = require('path');
 const { transformSync } = require('esbuild');
 
 const GEN_JS = /\.bundle\.js$/;                                   // generated bundles — not ours to minify
-const HTML_FILES = ['index.html', 'reset.html', 'verify.html'];  // app shell pages (NOT the docs template)
+const HTML_FILES = ['index.html', 'reset.html', 'verify.html', 'privacy.html', 'terms.html']; // app shell + legal pages (NOT the docs template)
 
 function minifyJs(code) {
   return transformSync(code, { loader: 'js', format: 'esm', minify: true }).code;

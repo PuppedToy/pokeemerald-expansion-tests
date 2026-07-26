@@ -27,7 +27,7 @@
         });
         const data = await res.json().catch(() => ({}));
         msg.textContent = (res.ok && data.ok)
-          ? 'Your email is verified ✓ — you can now log in and build ROMs.'
+          ? 'Your email is verified ✓ — you can now log in and generate patches.'
           : 'This verification link is invalid or has already been used.';
       } catch { msg.textContent = 'Could not reach the server.'; }
     })();

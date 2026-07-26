@@ -40,7 +40,7 @@ test('B-012: optimistic submit state is neutral, not a false "Building" flash', 
     const row = env.getEl('rom-status');
     assert.equal(row.className, 'status-item queued', 'optimistic row is the neutral "queued" style, not "building"');
     assert.match(row.innerHTML, /Submitting your run/);
-    assert.doesNotMatch(row.innerHTML, /Building your ROM/, 'must NOT claim it is building yet');
+    assert.doesNotMatch(row.innerHTML, /Generating your patch/, 'must NOT claim it is generating yet');
     assert.doesNotMatch(row.innerHTML, /generating\.png/, 'no spinning build gear in the optimistic state');
 
     releaseProduce?.();

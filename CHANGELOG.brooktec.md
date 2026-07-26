@@ -9,6 +9,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Privacy Policy, Terms and clear disclaimers.** New Privacy Policy and Terms pages (linked from a site
+  footer), a required consent checkbox at registration, and prominent notices that this is a free,
+  non-commercial fan project **not affiliated with Nintendo/Game Freak/The Pokémon Company**, that it
+  **generates patch files** (never distributes the game) for a copy you must legally own, and that your ROM
+  never leaves your device. The generated docs carry the same notice. All user-facing wording now speaks of
+  "patch files", not "ROMs". (T-221, T-222)
+
 - **Closed beta gate.** While the beta is on you can sign up, generate documentation and fully prepare a ROM —
   but building is invite-only. A prepared run is saved on our side (it never expires) and builds automatically
   the moment you're invited, with a single email letting you know it's ready; you can keep tweaking it in the

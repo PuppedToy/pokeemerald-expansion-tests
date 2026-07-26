@@ -8,6 +8,7 @@ Entry point to all project documentation. **A document not listed here does not 
 - [CHANGELOG.md](../CHANGELOG.md) — version history (Keep a Changelog)
 - [tasks/INDEX.md](../tasks/INDEX.md) — work log (generated)
 - [bugs/INDEX.md](../bugs/INDEX.md) — bug registry (generated)
+- [legal-risk-analysis.md](legal-risk-analysis.md) — informational (not legal advice) risk assessment: domain/trademark, GDPR, patch-only distribution, wording, embedded assets (T-221)
 
 ## Decisions (ADRs)
 

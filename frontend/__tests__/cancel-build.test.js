@@ -35,7 +35,7 @@ test('T-198: the building row exposes a Cancel button that cancels the run and h
     await flush(); await flush();
 
     const row = env.getEl('rom-status');
-    assert.match(row.innerHTML, /Building your ROM/, 'the building row is shown');
+    assert.match(row.innerHTML, /Generating your patch/, 'the generating row is shown');
     assert.match(row.innerHTML, /id="rom-cancel"/, 'the building row carries a Cancel button');
     assert.equal(env.getEl('btn-start-over').hidden, true, 'the bottom Start-over/Cancel is hidden while building');
 
