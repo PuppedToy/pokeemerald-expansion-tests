@@ -21,6 +21,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Moves show their real type.** Moves whose type changes (Hidden Power, Weather Ball, Judgment, …) now
+  display their actual current type in the summary and teach-move screens instead of always showing Normal —
+  so you can see, for example, what type a Pokémon's Hidden Power is from its IVs. (T-208)
+
 - **No more Space Center grunt fights.** The Team Magma grunts on the Mossdeep Space Center ground floor no
   longer battle you — talking to them just shows their dialogue. The grunt guarding the stairs still steps
   aside when you talk to it, so the way up is unchanged. (T-212)

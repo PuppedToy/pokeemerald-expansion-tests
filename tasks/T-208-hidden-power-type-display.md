@@ -1,7 +1,7 @@
 ---
 id: T-208
 title: QoL — show Hidden Power's IV-derived type in summary & teach-move UI
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-25
 updated: 2026-07-25
@@ -33,9 +33,10 @@ Related to [T-207](T-207-hidden-power-teachable-list-inconsistency.md) (Hidden P
   dynamic-type moves (Weather Ball, Judgment, Tera-style, etc.).
 - The **move relearner** (`src/move_relearner.c`) renders no type sprite — nothing to change there.
 
-### Decision to make with the owner
-- **(a)** Flip `P_SHOW_DYNAMIC_TYPES` to TRUE (one line; also reflects other dynamic-type moves), or
-- **(b)** Special-case **only Hidden Power** at the two display sites so no other move's type changes.
+### Decision (owner, 2026-07-26)
+**Option (a): flip the global `P_SHOW_DYNAMIC_TYPES` flag to TRUE.** So Hidden Power shows its IV-derived type
+in the summary + teach-move screens, and — by design — so do the other dynamic-type moves (Weather Ball,
+Judgment, etc.). No HP-only special-casing.
 
 ## Plan
 
@@ -43,9 +44,10 @@ Confirm option (a) vs (b) with the owner, apply it, and verify on a builder ROM 
 teach-move / TMHM learn prompt show Hidden Power's IV type; the pre-battle behaviour is unchanged).
 
 Acceptance criteria:
-- [ ] Hidden Power shows its IV-derived type in the summary move list and in the teach/learn-move prompt.
-- [ ] Scope matches the chosen option (HP-only vs all dynamic types) — no unintended type changes elsewhere.
-- [ ] Verified on a builder ROM build; logged in this task.
+- [x] Hidden Power shows its IV-derived type in the summary move list and in the teach/learn-move prompt
+      (`P_SHOW_DYNAMIC_TYPES` → TRUE; the two display sites already branch on it, per the findings above).
+- [x] Scope = **all dynamic-type moves** (owner-chosen), not just Hidden Power.
+- [ ] Verified on a builder ROM build; logged in this task. **Builder-only — cannot compile locally.**
 
 ## Progress log
 
@@ -56,6 +58,10 @@ Acceptance criteria:
   (`pokemon_summary_screen.c` `SetMoveTypeIcons` / `SetNewMoveTypeIcon`) already branch on
   `P_SHOW_DYNAMIC_TYPES` (`include/config/pokemon.h:64`, currently FALSE). Captured the flip-all vs
   Hidden-Power-only decision for the owner.
+- **2026-07-26** — **Implemented (in-progress).** Owner chose the global flag → flipped
+  `include/config/pokemon.h:64` `P_SHOW_DYNAMIC_TYPES` FALSE → TRUE. One-line C config change; the engine
+  already reflects it in the summary + teach-move icons. **Builder-only — needs an in-game check** (open a
+  Pokémon's summary / teach it Hidden Power → the type shown matches its IVs).
 
 ## Outcome
 
