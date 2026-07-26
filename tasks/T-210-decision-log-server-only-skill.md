@@ -1,7 +1,7 @@
 ---
 id: T-210
 title: Make the decision log server-only + a download-decision-log skill
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: refactor          # feature | fix | refactor | docs | chore
 created: 2026-07-25
 updated: 2026-07-25
@@ -45,10 +45,16 @@ particular bundle's decision log. Related: [T-130](T-130-decision-log-auditabili
 3. Add a `.claude/skills/decision-log/` skill to download a given bundle's decision log for owner review.
 
 Acceptance criteria:
-- [ ] No decision-log download button; not present in the docs zip or any user download.
-- [ ] Decision log is stored server-side per run, retained ~48h, and swept (mirrors diagnostics).
-- [ ] A skill downloads a specific bundle's decision log; documented in the skill.
-- [ ] Backend + frontend tests green; browser bundle rebuilt if the worker path changed.
+- [x] No decision-log download button (removed from `index.html` + its `app.js` handler); not present in the docs
+      zip (`decision-log.txt` line removed) or any user download. `currentTeamAuditText` fully removed.
+- [x] Decision log is stored server-side per run (`decision_logs` table + `createDecisionLogsRepo`), submitted by
+      the front to `POST /api/decision-log` on the same trigger as diagnostics, retained ~48h and swept by
+      `lifecycle/sweeper.js` (parity with diagnostics); cleared on account deletion.
+- [x] A skill (`.claude/skills/decision-log/`) downloads a specific run's log via
+      `backend/scripts/get-decision-log.mjs` (`--seed` / `--run-id` / `--list`), mirroring the diagnostics-audit
+      SSH DB-pull (shared `scripts/lib/pull-live-db.mjs`); smoke-tested end-to-end against a local DB.
+- [x] Backend (182) + frontend (164) suites green. Worker path unchanged → no bundle rebuild
+      (`app.js`/`index.html` are served directly).
 
 ## Progress log
 
@@ -58,6 +64,16 @@ Acceptance criteria:
   handler `app.js:268-280`; docs-zip line `app.js:301`), confirmed the full/bundle download does NOT carry the
   log, and identified the diagnostics 48h store (`backend/db/diagnostics.js`, `diagnostics/*`, `sweeper.js`) +
   `.claude/skills/diagnostics-audit/` as the pattern to mirror for storage and a sibling skill.
+- **2026-07-26** — **Implemented (in-progress).** Built the decision-log store as a faithful parallel of
+  diagnostics: `decision_logs` table (`db/index.js`), `db/decisionLogs.js` repo, `decisionLog/{handlers,routes}.js`
+  (`POST /api/decision-log`, optional-auth + rate limit + 2MB body, text capped 1MB), wired into `server.js`
+  (repo + router + sweeper + account-deletion) and `lifecycle/sweeper.js` (48h purge). Frontend: removed the
+  button + handler + docs-zip line + the now-dead `currentTeamAuditText`, and `reportDiagnostics` now also POSTs
+  the log (server-only). Skill `.claude/skills/decision-log/` + `backend/scripts/get-decision-log.mjs`
+  (`--seed`/`--run-id`/`--list`), reusing the extracted `scripts/lib/pull-live-db.mjs` (also now used by
+  `scan-diagnostics.mjs`). Tests: `__tests__/decisionLogs.test.js` (repo + handler + retention + deletion);
+  updated the `db.test.js` table-list snapshot (deliberate schema addition). Backend 182 / frontend 164 green;
+  CLI smoke-tested against a local DB.
 
 ## Outcome
 

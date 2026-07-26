@@ -112,6 +112,24 @@ CREATE TABLE IF NOT EXISTS diagnostics (
 CREATE INDEX IF NOT EXISTS diagnostics_by_created ON diagnostics(created_at);
 CREATE INDEX IF NOT EXISTS diagnostics_by_user ON diagnostics(user_id);
 
+-- Team-building decision log (T-117/T-210): one row per completed browser generation, holding the
+-- readable decision trace. Server-only — never shown to the end user; the owner pulls a run's log
+-- with the /decision-log skill. user_id nullable (anonymous run). Swept 48h after created_at.
+CREATE TABLE IF NOT EXISTS decision_logs (
+  id           TEXT PRIMARY KEY,               -- runId (bundle sessionId)
+  user_id      INTEGER REFERENCES users(id),   -- nullable → anonymous run
+  created_at   INTEGER NOT NULL,               -- epoch ms, server receive time (TTL base)
+  generated_at INTEGER,                        -- epoch ms, client generation time
+  seed         TEXT,
+  run_type     TEXT,
+  app_version  TEXT,
+  user_agent   TEXT,
+  text         TEXT NOT NULL                   -- the rendered decision log
+);
+CREATE INDEX IF NOT EXISTS decision_logs_by_created ON decision_logs(created_at);
+CREATE INDEX IF NOT EXISTS decision_logs_by_seed ON decision_logs(seed);
+CREATE INDEX IF NOT EXISTS decision_logs_by_user ON decision_logs(user_id);
+
 -- Config presets (T-192, ADR-021): a named, per-user snapshot of the randomizer config, with three
 -- scopes (My = own, Official = kind='official', Community = published). Tags are DERIVED from the
 -- config on every write (never user-set). likes/views are denormalized counters maintained in the

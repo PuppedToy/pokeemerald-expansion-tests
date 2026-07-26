@@ -8,6 +8,7 @@ import { createRequestsRepo } from './db/requests.js';
 import { createRunsRepo } from './db/runs.js';
 import { createFeedbackRepo } from './db/feedback.js';
 import { createDiagnosticsRepo } from './db/diagnostics.js';
+import { createDecisionLogsRepo } from './db/decisionLogs.js';
 import { createPresetsRepo } from './db/presets.js';
 import { createPresetLikesRepo } from './db/presetLikes.js';
 import { createPresetViewsRepo } from './db/presetViews.js';
@@ -19,6 +20,7 @@ import { createAuthRouter } from './auth/routes.js';
 import { createProduceRouter } from './produce/routes.js';
 import { createFeedbackRouter } from './feedback/routes.js';
 import { createDiagnosticsRouter } from './diagnostics/routes.js';
+import { createDecisionLogRouter } from './decisionLog/routes.js';
 import { createPresetsRouter } from './presets/routes.js';
 import { createMailer, brevoTransport } from './email/index.js';
 import { createStorage } from './build/storage.js';
@@ -47,6 +49,7 @@ const requests = createRequestsRepo(db);
 const runs = createRunsRepo(db);
 const feedback = createFeedbackRepo(db);
 const diagnostics = createDiagnosticsRepo(db);
+const decisionLogs = createDecisionLogsRepo(db);
 const presets = createPresetsRepo(db);
 const presetLikes = createPresetLikesRepo(db);
 const presetViews = createPresetViewsRepo(db);
@@ -76,18 +79,19 @@ runOnStartup({ requests, restoreTree: FAKE_BUILD ? () => {} : undefined });
 
 const worker = createWorker({ requests, runs, db, buildRom, mailer, users, baseUrl: BASE_URL });
 worker.start();
-startSweeper({ requests, diagnostics, removeFile: storage.removeFile });
+startSweeper({ requests, diagnostics, decisionLogs, removeFile: storage.removeFile });
 
 // ── HTTP ────────────────────────────────────────────────────────────────────────
 const app = express();
 
 app.use('/api', createAuthRouter({
-  service: authService, users, requests, runs, tokens, feedback, diagnostics,
+  service: authService, users, requests, runs, tokens, feedback, diagnostics, decisionLogs,
   presets, presetLikes, presetViews, adminEmails: ADMIN_EMAILS, jwtSecret: JWT_SECRET,
   removeFile: (p) => storage.removeFile(p), db, killActiveBuild,
 }));
 app.use('/api', createFeedbackRouter({ feedback, jwtSecret: JWT_SECRET }));
 app.use('/api', createDiagnosticsRouter({ diagnostics, jwtSecret: JWT_SECRET }));
+app.use('/api', createDecisionLogRouter({ decisionLogs, jwtSecret: JWT_SECRET }));
 app.use('/api', createPresetsRouter({
   presets, presetLikes, presetViews, users, jwtSecret: JWT_SECRET,
   adminEmails: ADMIN_EMAILS, idGen: () => randomUUID(),

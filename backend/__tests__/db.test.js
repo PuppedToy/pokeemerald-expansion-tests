@@ -25,7 +25,7 @@ test('migration is idempotent (safe to run on every boot)', () => {
     "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
   ).all().map((r) => r.name);
   assert.deepEqual(tables, [
-    'auth_tokens', 'diagnostics', 'feedback',
+    'auth_tokens', 'decision_logs', 'diagnostics', 'feedback',
     'preset_likes', 'preset_views', 'presets',
     'requests', 'runs', 'users',
   ]);

@@ -16,7 +16,7 @@ const defaultRemoveFile = (p) => {
   if (p) { try { fs.rmSync(p, { force: true }); } catch { /* best effort */ } }
 };
 
-export function sweepExpired({ requests, diagnostics, removeFile = defaultRemoveFile, now = Date.now(), ttlMs = 2 * DAY }) {
+export function sweepExpired({ requests, diagnostics, decisionLogs, removeFile = defaultRemoveFile, now = Date.now(), ttlMs = 2 * DAY }) {
   const candidates = requests.findByStates(['ready', 'failed']);
   let purged = 0;
   for (const row of candidates) {
@@ -29,12 +29,14 @@ export function sweepExpired({ requests, diagnostics, removeFile = defaultRemove
   // T-075 — diagnostics share the same 48h window (retention parity with bundles/outputs),
   // keyed off their own receive time. Optional so existing callers/tests still work.
   if (diagnostics?.purgeExpired) diagnostics.purgeExpired(now - ttlMs);
+  // T-210 — decision logs share the same 48h window (retention parity with diagnostics/bundles).
+  if (decisionLogs?.purgeExpired) decisionLogs.purgeExpired(now - ttlMs);
   return purged;
 }
 
-export function startSweeper({ requests, diagnostics, removeFile = defaultRemoveFile, ttlMs = 2 * DAY, intervalMs = 5 * 60 * 1000 }) {
+export function startSweeper({ requests, diagnostics, decisionLogs, removeFile = defaultRemoveFile, ttlMs = 2 * DAY, intervalMs = 5 * 60 * 1000 }) {
   const timer = setInterval(() => {
-    sweepExpired({ requests, diagnostics, removeFile, now: Date.now(), ttlMs });
+    sweepExpired({ requests, diagnostics, decisionLogs, removeFile, now: Date.now(), ttlMs });
   }, intervalMs);
   if (typeof timer.unref === 'function') timer.unref(); // don't keep the process alive
   return timer;

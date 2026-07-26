@@ -68,7 +68,6 @@ let currentStep = 1;
 let currentConfig = null;
 let currentBundle = null;
 let regenerateMode = false;   // T-190 — true while reviewing/building an uploaded bundle (no randomization)
-let currentTeamAuditText = ''; // T-117 — the readable team-building decision log for this run
 let currentWorker = null;
 
 let presetsCtl = null; // T-192 — set below once account.js's auth helpers are available
@@ -275,19 +274,8 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
             `<script>const typeColors = ${JSON.stringify(rom.docs.typeColors)};</script>`);
 }
 
-// T-117 — download the team-building decision log (readable text) for this run
-document.getElementById('btn-download-audit')?.addEventListener('click', () => {
-    const text = currentTeamAuditText || '(no decision log for this run)';
-    const seed = currentBundle?.config?.seed ?? 'unknown';
-    const blob = new Blob([text], { type: 'text/plain' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `decision-log-${seed}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(a.href);
-});
+// T-210 — the decision log is no longer downloadable in the UI; it's submitted to the server (48h)
+// for owner-only review via the /decision-log skill. See reportDiagnostics().
 
 // Download docs (ZIP: per-ROM docs HTML + the run bundle.json)
 document.getElementById('btn-download-docs').addEventListener('click', async () => {
@@ -308,7 +296,6 @@ document.getElementById('btn-download-docs').addEventListener('click', async () 
 
         const zip = new JSZip();
         zip.file('bundle.json', JSON.stringify(currentBundle, null, 2));
-        zip.file('decision-log.txt', currentTeamAuditText || '(no decision log for this run)'); // T-117
 
         for (const rom of currentBundle.roms) {
             const pokedex = resolveArtifact(rom.artifacts.pokedex, currentBundle.sharedData, 'pokedex');
@@ -409,7 +396,6 @@ function startWorker(config) {
         } else if (data.type === 'done') {
             stopCrawl();
             currentBundle = data.bundle;
-            currentTeamAuditText = data.teamAuditText || ''; // T-117
             worker.terminate();
             currentWorker = null;
             showGenDone();
@@ -459,6 +445,23 @@ function reportDiagnostics(data) {
                 diagnostics: data.diagnostics || [],
             },
         }).catch(() => {});
+        // T-210 — the team-building decision log is server-only (48h) for owner review via the
+        // /decision-log skill; never shown to the user. Fire-and-forget, same trigger as diagnostics.
+        if (data.teamAuditText) {
+            api('/api/decision-log', {
+                method: 'POST',
+                auth: true,
+                body: {
+                    runId: bundle.sessionId,
+                    generatedAt: Date.parse(bundle.generatedAt) || null,
+                    seed: cfg.seed != null ? String(cfg.seed) : null,
+                    runType: cfg.runType || null,
+                    formatVersion: bundle.formatVersion ?? null,
+                    appVersion: bundle.appVersion ?? null,
+                    text: data.teamAuditText,
+                },
+            }).catch(() => {});
+        }
     } catch { /* never let telemetry break generation */ }
 }
 
