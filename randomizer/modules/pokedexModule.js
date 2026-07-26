@@ -78,6 +78,8 @@ async function parseBaseData() {
     const teachablesFilePath = path.resolve(__dirname, '..', '..', 'src', 'data', 'pokemon', 'teachable_learnsets.h');
     const teachablesFileText = await fs.readFile(teachablesFilePath, 'utf-8');
     const TMTeachables = parser.parseTeachableFile(teachablesFileText);
+    // T-207 — moves every species learns in-game (sUniversalMoves), omitted from the per-species arrays.
+    const universalMoves = parser.parseUniversalMoves(teachablesFileText);
 
     // 6. Parse species (all gens) — deterministic enrichment with learnsets/teachables/evoTree
     const definitions = { VICTREEBEL_SP_DEF: '70', EXEGGUTOR_SP_DEF: '75' };
@@ -142,7 +144,7 @@ async function parseBaseData() {
     const capsCText = await fs.readFile(path.resolve(__dirname, '..', '..', 'src', 'caps.c'), 'utf-8');
     const capLevels = capLevelMap(capsCText);
 
-    return { abilities, items, megaEvoStones, moves, levelUpLearnsets, TMTeachables, evoTree, megaEvoTree, allPokes, tmLocations, capLevels };
+    return { abilities, items, megaEvoStones, moves, levelUpLearnsets, TMTeachables, universalMoves, evoTree, megaEvoTree, allPokes, tmLocations, capLevels };
 }
 
 // Run the full pokedex pipeline.
@@ -218,7 +220,7 @@ async function runPokedexModule(config, baseData = null) {
     Object.keys(moves).forEach(id => { if (moves[id].tm && tmLocations[moves[id].tm]) moves[id].tmLocation = tmLocations[moves[id].tm]; });
 
     // 7. Expand teachables with randomized pool
-    expandAllTeachables(allPokes, tmPool, moves);
+    expandAllTeachables(allPokes, tmPool, moves, baseData.universalMoves || []);
 
     // 8. Rate all pokemon (singles + T-097 doubles)
     for (const poke of allPokes) {

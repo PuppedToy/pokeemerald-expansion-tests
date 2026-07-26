@@ -31,10 +31,16 @@ function getMegaExtraTypes(poke, megaEvoTree, pokemonList) {
     return [...extraTypes];
 }
 
-function buildRunTeachables(poke, tmPool, moves, preEvoPoke, megaEvoTree, pokemonList) {
+function buildRunTeachables(poke, tmPool, moves, preEvoPoke, megaEvoTree, pokemonList, universalMoves = []) {
     if (!tmPool) return;
 
-    const originalTeachables = poke.teachables;
+    // T-207 — universal moves (sUniversalMoves) that exist in this run's TM pool are learnable by
+    // every mon; fold them into the mon's own (base) teachables so they show consistently and are
+    // never spuriously "starred" as newly-granted.
+    const universalInPool = universalMoves.filter(m => tmPool.has(m) && !poke.teachables.includes(m));
+    const originalTeachables = universalInPool.length
+        ? [...poke.teachables, ...universalInPool]
+        : poke.teachables;
     const hmMoves = originalTeachables.filter(m => HM_MOVES.has(m));
 
     let baseTeachables;
@@ -113,7 +119,7 @@ function buildRunTeachables(poke, tmPool, moves, preEvoPoke, megaEvoTree, pokemo
 
 }
 
-function expandAllTeachables(pokemonList, tmPool, moves) {
+function expandAllTeachables(pokemonList, tmPool, moves, universalMoves = []) {
     if (!tmPool) return;
 
     // Build megaEvoTree: family → [SPECIES_X_MEGA, ...]
@@ -147,7 +153,7 @@ function expandAllTeachables(pokemonList, tmPool, moves) {
         if (processed.has(poke.id)) return;
         const preEvo = preEvoMap[poke.id];
         if (preEvo && !processed.has(preEvo.id)) process(preEvo);
-        buildRunTeachables(poke, tmPool, moves, preEvo || null, megaEvoTree, pokemonList);
+        buildRunTeachables(poke, tmPool, moves, preEvo || null, megaEvoTree, pokemonList, universalMoves);
         processed.add(poke.id);
     }
 

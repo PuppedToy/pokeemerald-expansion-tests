@@ -36,6 +36,7 @@ jest.mock('../../parser', () => ({
     })),
     parseLearnsetsFile: jest.fn(() => ({})),
     parseTeachableFile: jest.fn(() => ({})),
+    parseUniversalMoves: jest.fn(() => []),
     parseSpeciesFile: jest.fn(() => []),
     parseStat: jest.fn((v) => parseInt(v, 10) || 0),
     parseMoveStat: jest.fn((v) => parseInt(v, 10) || 0),
