@@ -562,12 +562,6 @@ MossdeepCity_Gym_Text_TateAndLizaIntro:
 	.string "LIZA: Fufufu… Were you surprised?\p"
 	.string "TATE: That there are two GYM LEADERS?\n"
 	.string "LIZA: That there are two GYM LEADERS?\p"
-	.string "TATE: We're twins!\n"
-	.string "LIZA: We're twins!\p"
-	.string "TATE: We don't need to talk because…\n"
-	.string "LIZA: We can each determine what…\p"
-	.string "TATE: The other is thinking…\n"
-	.string "LIZA: All in our minds!\p"
 	.string "TATE: This combination of ours…\n"
 	.string "LIZA: Can you beat it?$"
 

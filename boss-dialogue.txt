@@ -125,22 +125,10 @@ HOW TO USE THIS FILE
         Hello, I am ROXANNE, the RUSTBORO
         POKéMON GYM LEADER.
 
-        I became a GYM LEADER so that I might
-        apply what I learned at the POKéMON
-        TRAINER'S SCHOOL in battle.
-
         Would you kindly demonstrate how you
         battle, and with which POKéMON?
   [ON-DEFEAT]
-    · RustboroCity_Gym_Text_RoxanneDefeat @ data/maps/RustboroCity_Gym/scripts.inc:202
-        So…
-        I lost…
-
-        It seems that I still have much more
-        to learn…
-
-        I understand.
-
+    · RustboroCity_Gym_Text_RoxanneDefeat @ data/maps/RustboroCity_Gym/scripts.inc:199
         The POKéMON LEAGUE's rules state
         that TRAINERS are to be given this
         if they defeat a GYM LEADER.
@@ -148,16 +136,16 @@ HOW TO USE THIS FILE
         Please accept the official POKéMON
         LEAGUE STONE BADGE.
   [POST-BATTLE]
-    · RustboroCity_Gym_Text_RoxannePostBattle @ data/maps/RustboroCity_Gym/scripts.inc:225
+    · RustboroCity_Gym_Text_RoxannePostBattle @ data/maps/RustboroCity_Gym/scripts.inc:217
         Since you are so strong, you should
         challenge other GYM LEADERS.
 
         By battling many TRAINERS, you should
         learn many things.
-    · RustboroCity_Gym_Text_ReceivedStoneBadge @ data/maps/RustboroCity_Gym/scripts.inc:214
+    · RustboroCity_Gym_Text_ReceivedStoneBadge @ data/maps/RustboroCity_Gym/scripts.inc:206
         {PLAYER} received the STONE BADGE
         and your Pokémon have leveled up to {STR_VAR_1}!
-    · RustboroCity_Gym_Text_StoneBadgeInfoTakeThis @ data/maps/RustboroCity_Gym/scripts.inc:218
+    · RustboroCity_Gym_Text_StoneBadgeInfoTakeThis @ data/maps/RustboroCity_Gym/scripts.inc:210
         The STONE BADGE heightens the ATTACK
         power of your POKéMON.
 
@@ -169,7 +157,7 @@ HOW TO USE THIS FILE
         {PLAYER} received GYM_REWARD_NAME!
 
   [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
-    · RustboroCity_Gym_Text_RoxanneRegisterCall @ data/maps/RustboroCity_Gym/scripts.inc:239
+    · RustboroCity_Gym_Text_RoxanneRegisterCall @ data/maps/RustboroCity_Gym/scripts.inc:231
         … … … … … …
         … … … … … Beep!
 
@@ -181,10 +169,10 @@ HOW TO USE THIS FILE
 
         … … … … … …
         … … … … … Click!
-    · RustboroCity_Gym_Text_RegisteredRoxanne @ data/maps/RustboroCity_Gym/scripts.inc:249
+    · RustboroCity_Gym_Text_RegisteredRoxanne @ data/maps/RustboroCity_Gym/scripts.inc:241
         Registered GYM LEADER ROXANNE
         in the POKéNAV.
-    · RustboroCity_Gym_Text_RoxannePreRematch @ data/maps/RustboroCity_Gym/scripts.inc:253
+    · RustboroCity_Gym_Text_RoxannePreRematch @ data/maps/RustboroCity_Gym/scripts.inc:245
         ROXANNE: I'm so glad to see you again.
         I'm ROXANNE, the GYM LEADER here.
 
@@ -193,16 +181,16 @@ HOW TO USE THIS FILE
 
         I would like to see how much better
         we've become. Let us battle!
-    · RustboroCity_Gym_Text_RoxanneRematchDefeat @ data/maps/RustboroCity_Gym/scripts.inc:261
+    · RustboroCity_Gym_Text_RoxanneRematchDefeat @ data/maps/RustboroCity_Gym/scripts.inc:253
         Grr…
         Again, I have lost…
-    · RustboroCity_Gym_Text_RoxannePostRematch @ data/maps/RustboroCity_Gym/scripts.inc:265
+    · RustboroCity_Gym_Text_RoxannePostRematch @ data/maps/RustboroCity_Gym/scripts.inc:257
         ROXANNE: I still have much to learn
         when it comes to battling POKéMON.
 
         That awareness makes me love battling
         all that much more!
-    · RustboroCity_Gym_Text_RoxanneRematchNeedTwoMons @ data/maps/RustboroCity_Gym/scripts.inc:271
+    · RustboroCity_Gym_Text_RoxanneRematchNeedTwoMons @ data/maps/RustboroCity_Gym/scripts.inc:263
         ROXANNE: I'm so glad to see you again.
         I'm ROXANNE, the GYM LEADER here.
 
@@ -377,37 +365,31 @@ HOW TO USE THIS FILE
         I'm BRAWLY!
         DEWFORD's GYM LEADER!
 
-        I've been churned in the rough waves
-        of these parts, and I've grown tough
-        in the pitch-black cave!
-
         So you wanted to challenge me?
         Let me see what you're made of!
   [ON-DEFEAT]
-    · DewfordTown_Gym_Text_BrawlyDefeat @ data/maps/DewfordTown_Gym/scripts.inc:276
+    · DewfordTown_Gym_Text_BrawlyDefeat @ data/maps/DewfordTown_Gym/scripts.inc:273
         Whoah, wow! You made a much bigger
         splash than I expected!
-
-        You swamped me!
 
         Okay, you've got me.
         Take this GYM BADGE!
   [POST-BATTLE]
-    · DewfordTown_Gym_Text_BrawlyPostBattle @ data/maps/DewfordTown_Gym/scripts.inc:297
+    · DewfordTown_Gym_Text_BrawlyPostBattle @ data/maps/DewfordTown_Gym/scripts.inc:293
         I can see your talent becoming a giant
         wave to cause a storm of astonishment
         among TRAINERS one day!
-    · DewfordTown_Gym_Text_ReceivedKnuckleBadge @ data/maps/DewfordTown_Gym/scripts.inc:283
+    · DewfordTown_Gym_Text_ReceivedKnuckleBadge @ data/maps/DewfordTown_Gym/scripts.inc:279
         {PLAYER} received the KNUCKLE BADGE
         and your Pokémon have leveled up to {STR_VAR_1}!
-    · DewfordTown_Gym_Text_RegisteredBrawly @ data/maps/DewfordTown_Gym/scripts.inc:293
+    · DewfordTown_Gym_Text_RegisteredBrawly @ data/maps/DewfordTown_Gym/scripts.inc:289
         Registered GYM LEADER BRAWLY
         in the POKéNAV.
     · DewfordTown_Gym_Text_PlayerReceivedRewardPoke @ data/maps/DewfordTown_Gym/scripts.inc:60
         {PLAYER} received GYM_REWARD_NAME!
 
   [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
-    · DewfordTown_Gym_Text_BrawlyPreRematch @ data/maps/DewfordTown_Gym/scripts.inc:310
+    · DewfordTown_Gym_Text_BrawlyPreRematch @ data/maps/DewfordTown_Gym/scripts.inc:306
         BRAWLY: A wave may draw back, but it
         always returns to the shore.
 
@@ -416,14 +398,14 @@ HOW TO USE THIS FILE
 
         Show me how much higher
         you've gone!
-    · DewfordTown_Gym_Text_BrawlyRematchDefeat @ data/maps/DewfordTown_Gym/scripts.inc:318
+    · DewfordTown_Gym_Text_BrawlyRematchDefeat @ data/maps/DewfordTown_Gym/scripts.inc:314
         Wow!
         Swamped again!
-    · DewfordTown_Gym_Text_BrawlyPostRematch @ data/maps/DewfordTown_Gym/scripts.inc:322
+    · DewfordTown_Gym_Text_BrawlyPostRematch @ data/maps/DewfordTown_Gym/scripts.inc:318
         BRAWLY: Battling is vast and it's deep.
         You can't see the bottom.
         It's just like the sea of HOENN!
-    · DewfordTown_Gym_Text_BrawlyRematchNeedTwoMons @ data/maps/DewfordTown_Gym/scripts.inc:327
+    · DewfordTown_Gym_Text_BrawlyRematchNeedTwoMons @ data/maps/DewfordTown_Gym/scripts.inc:323
         BRAWLY: A wave may draw back, but it
         always returns to the shore.
 
@@ -630,7 +612,7 @@ HOW TO USE THIS FILE
   [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
     (none found)
   [ON-DEFEAT]
-    · Route110_Text_BrendanDefeated @ data/maps/Route110/scripts.inc:842
+    · Route110_Text_BrendanDefeated @ data/maps/Route110/scripts.inc:839
         Hmm…
         You're pretty good.
   [POST-BATTLE]
@@ -665,41 +647,28 @@ HOW TO USE THIS FILE
         Here, take this
         LUM BERRY!
     · Route110_Text_MayExplainItemfinder @ data/maps/Route110/scripts.inc:826
-        MAY: That's an ITEMFINDER.
-
-        Try it out. If there is an item that's
-        not visible, it emits a sound.
-
-        Okay, {PLAYER}{KUN}, let's meet again!
+        MAY: Okay, {PLAYER}{KUN}, let's meet again!
 
         I know it's a little silly coming from
         me, but I think you should train a lot
         harder for the next time.
-    · Route110_Text_BrendanLetsBattle @ data/maps/Route110/scripts.inc:835
+    · Route110_Text_BrendanLetsBattle @ data/maps/Route110/scripts.inc:832
         BRENDAN: Hey, {PLAYER}.
         So this is where you were.
         How's it going?
 
         Have you been raising your POKéMON?
         I'll check for you.
-    · Route110_Text_BrendanTakeThis @ data/maps/Route110/scripts.inc:846
+    · Route110_Text_BrendanTakeThis @ data/maps/Route110/scripts.inc:843
         BRENDAN: {PLAYER}, you've trained
         without me noticing…
 
         Good enough!
         Here, take this
         LUM BERRY!
-    · Route110_Text_BrendanExplainItemfinder @ data/maps/Route110/scripts.inc:853
-        BRENDAN: That's an ITEMFINDER.
-
-        Use it to root around for items that
-        aren't visible.
-
-        If it senses something, it emits
-        a sound.
-
-        Anyway, I'm off to look for new
-        POKéMON.
+    · Route110_Text_BrendanExplainItemfinder @ data/maps/Route110/scripts.inc:850
+        BRENDAN: Anyway, I'm off
+        to look for new POKéMON.
 
 ########################################################################
 # BOSS 09 — Wally – Mauville  (level cap 29)
@@ -771,47 +740,33 @@ HOW TO USE THIS FILE
     (none found)
   [IN-BATTLE INTRO]
     · MauvilleCity_Gym_Text_WattsonIntro @ data/maps/MauvilleCity_Gym/scripts.inc:358
-        I've given up on my plans to convert
-        the city, I have.
-
-        And so, I put my time into making
-        door traps in my GYM.
-
-        Oh? Now, what are you doing here?
-
-        What's that? You say you've gotten
-        past all my rigged doors?
-
-        Wahahahah!
-        Now, that is amusing!
-
-        Then, I, WATTSON, the LEADER of
+        I, WATTSON, the LEADER of
         MAUVILLE GYM, shall electrify you!
   [ON-DEFEAT]
-    · MauvilleCity_Gym_Text_WattsonDefeat @ data/maps/MauvilleCity_Gym/scripts.inc:371
+    · MauvilleCity_Gym_Text_WattsonDefeat @ data/maps/MauvilleCity_Gym/scripts.inc:362
         Wahahahah!
         Fine, I lost!
 
         You ended up giving me a thrill!
         Take this BADGE!
   [POST-BATTLE]
-    · MauvilleCity_Gym_Text_WattsonPostBattle @ data/maps/MauvilleCity_Gym/scripts.inc:399
+    · MauvilleCity_Gym_Text_WattsonPostBattle @ data/maps/MauvilleCity_Gym/scripts.inc:390
         I swell with optimism, seeing a promising
         young TRAINER like you!
-    · MauvilleCity_Gym_Text_ReceivedDynamoBadge @ data/maps/MauvilleCity_Gym/scripts.inc:377
+    · MauvilleCity_Gym_Text_ReceivedDynamoBadge @ data/maps/MauvilleCity_Gym/scripts.inc:368
         {PLAYER} received the DYNAMO BADGE
         and your Pokémon have leveled up to {STR_VAR_1}!
-    · MauvilleCity_Gym_Text_RegisteredWattson @ data/maps/MauvilleCity_Gym/scripts.inc:395
+    · MauvilleCity_Gym_Text_RegisteredWattson @ data/maps/MauvilleCity_Gym/scripts.inc:386
         Registered GYM LEADER WATTSON
         in the POKéNAV.
     · MauvilleCity_Gym_Text_PlayerReceivedRewardPoke @ data/maps/MauvilleCity_Gym/scripts.inc:136
         {PLAYER} received GYM_REWARD_NAME!
 
   [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
-    · MauvilleCity_Gym_Text_WattsonGoForthAndEndeavor @ data/maps/MauvilleCity_Gym/scripts.inc:403
+    · MauvilleCity_Gym_Text_WattsonGoForthAndEndeavor @ data/maps/MauvilleCity_Gym/scripts.inc:394
         Wahahahah!
         Go forth and endeavor, youngster!
-    · MauvilleCity_Gym_Text_WattsonPreRematch @ data/maps/MauvilleCity_Gym/scripts.inc:415
+    · MauvilleCity_Gym_Text_WattsonPreRematch @ data/maps/MauvilleCity_Gym/scripts.inc:406
         WATTSON: Ah-ha! Here at last!
         I know what you want.
         You want to battle my POKéMON!
@@ -820,10 +775,10 @@ HOW TO USE THIS FILE
 
         I'll make sparks fly from you!
         Don't say I didn't warn you!
-    · MauvilleCity_Gym_Text_WattsonRematchDefeat @ data/maps/MauvilleCity_Gym/scripts.inc:423
+    · MauvilleCity_Gym_Text_WattsonRematchDefeat @ data/maps/MauvilleCity_Gym/scripts.inc:414
         Oof…
         Our batteries ran dry…
-    · MauvilleCity_Gym_Text_WattsonPostRematch @ data/maps/MauvilleCity_Gym/scripts.inc:427
+    · MauvilleCity_Gym_Text_WattsonPostRematch @ data/maps/MauvilleCity_Gym/scripts.inc:418
         WATTSON: We'll have to recharge our
         batteries again.
 
@@ -832,7 +787,7 @@ HOW TO USE THIS FILE
 
         So, come back again sometime,
         won't you?
-    · MauvilleCity_Gym_Text_WattsonRematchNeedTwoMons @ data/maps/MauvilleCity_Gym/scripts.inc:435
+    · MauvilleCity_Gym_Text_WattsonRematchNeedTwoMons @ data/maps/MauvilleCity_Gym/scripts.inc:426
         WATTSON: Ah-ha! Here at last!
         I know what you want.
         You want to battle my POKéMON!
@@ -887,57 +842,32 @@ HOW TO USE THIS FILE
     (none found)
   [IN-BATTLE INTRO]
     · LavaridgeTown_Gym_1F_Text_FlanneryIntro @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:259
-        Welcome… No, wait.
-
-        Puny TRAINER, how good to see you've
-        made it here!
-
-        I have been entrusted with the…
-        No, wait.
-
-        I am FLANNERY, and I'm the GYM
-        LEADER here!
-
-        Uh…
-        Dare not underestimate me, though
-        I have been LEADER only a short time!
+        FLANNERY: Welcome…
 
         With skills inherited from my grand-
         father, I shall, uh…demonstrate the
         hot moves we have honed on this land!
   [ON-DEFEAT]
-    · LavaridgeTown_Gym_1F_Text_FlanneryDefeat @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:274
-        Oh…
-        I guess I was trying too hard…
-
-        I… I've only recently become
-        a GYM LEADER.
-
-        I tried too hard to be someone
-        I'm not.
-
-        I have to do things my natural way. If
-        I don't, my POKéMON will be confused.
-
+    · LavaridgeTown_Gym_1F_Text_FlanneryDefeat @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:265
         Thanks for teaching me that.
         For that, you deserve this.
   [POST-BATTLE]
-    · LavaridgeTown_Gym_1F_Text_FlanneryPostBattle @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:312
+    · LavaridgeTown_Gym_1F_Text_FlanneryPostBattle @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:295
         Your power reminds me of someone…
 
         Oh! I know! You battle like NORMAN,
         the GYM LEADER of PETALBURG.
-    · LavaridgeTown_Gym_1F_Text_ReceivedHeatBadge @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:286
+    · LavaridgeTown_Gym_1F_Text_ReceivedHeatBadge @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:269
         {PLAYER} received the HEAT BADGE
         and your Pokémon have leveled up to {STR_VAR_1}!
-    · LavaridgeTown_Gym_1F_Text_RegisteredFlannery @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:308
+    · LavaridgeTown_Gym_1F_Text_RegisteredFlannery @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:291
         Registered GYM LEADER FLANNERY
         in the POKéNAV.
     · LavaridgeTown_Gym_1F_Text_PlayerReceivedRewardPoke @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:78
         {PLAYER} received GYM_REWARD_NAME!
 
   [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
-    · LavaridgeTown_Gym_1F_Text_FlanneryPreRematch @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:325
+    · LavaridgeTown_Gym_1F_Text_FlanneryPreRematch @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:308
         FLANNERY: Losing a battle isn't going
         to deflate me.
 
@@ -947,10 +877,10 @@ HOW TO USE THIS FILE
 
         Let's exchange superhot moves
         in another battle!
-    · LavaridgeTown_Gym_1F_Text_FlanneryRematchDefeat @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:334
+    · LavaridgeTown_Gym_1F_Text_FlanneryRematchDefeat @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:317
         Whew!
         On the verge of eruption!
-    · LavaridgeTown_Gym_1F_Text_FlanneryPostRematch @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:338
+    · LavaridgeTown_Gym_1F_Text_FlanneryPostRematch @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:321
         FLANNERY: I lost the match,
         but I'm completely satisfied.
 
@@ -959,7 +889,7 @@ HOW TO USE THIS FILE
 
         Let's have another one like this
         again sometime!
-    · LavaridgeTown_Gym_1F_Text_FlanneryRematchNeedTwoMons @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:346
+    · LavaridgeTown_Gym_1F_Text_FlanneryRematchNeedTwoMons @ data/maps/LavaridgeTown_Gym_1F/scripts.inc:329
         FLANNERY: Losing a battle isn't going
         to deflate me.
 
@@ -1238,16 +1168,10 @@ HOW TO USE THIS FILE
         I am WINONA. I am the LEADER of
         the FORTREE POKéMON GYM.
 
-        I have become one with BIRD POKéMON
-        and have soared the skies…
-
-        However grueling the battle, we have
-        triumphed with grace…
-
         Witness the elegant choreography
         of BIRD POKéMON and I!
   [ON-DEFEAT]
-    · FortreeCity_Gym_Text_WinonaDefeat @ data/maps/FortreeCity_Gym/scripts.inc:258
+    · FortreeCity_Gym_Text_WinonaDefeat @ data/maps/FortreeCity_Gym/scripts.inc:254
         Never before have I seen a TRAINER
         command POKéMON with more grace
         than I…
@@ -1255,20 +1179,20 @@ HOW TO USE THIS FILE
         In recognition of your prowess,
         I present to you this GYM BADGE.
   [POST-BATTLE]
-    · FortreeCity_Gym_Text_WinonaPostBattle @ data/maps/FortreeCity_Gym/scripts.inc:288
+    · FortreeCity_Gym_Text_WinonaPostBattle @ data/maps/FortreeCity_Gym/scripts.inc:284
         Though I fell to you, I will remain
         devoted to BIRD POKéMON.
-    · FortreeCity_Gym_Text_ReceivedFeatherBadge @ data/maps/FortreeCity_Gym/scripts.inc:265
+    · FortreeCity_Gym_Text_ReceivedFeatherBadge @ data/maps/FortreeCity_Gym/scripts.inc:261
         {PLAYER} received the FEATHER BADGE
         and your Pokémon have leveled up to {STR_VAR_1}!
-    · FortreeCity_Gym_Text_RegisteredWinona @ data/maps/FortreeCity_Gym/scripts.inc:284
+    · FortreeCity_Gym_Text_RegisteredWinona @ data/maps/FortreeCity_Gym/scripts.inc:280
         Registered GYM LEADER WINONA
         in the POKéNAV.
     · FortreeCity_Gym_Text_PlayerReceivedRewardPoke @ data/maps/FortreeCity_Gym/scripts.inc:69
         {PLAYER} received GYM_REWARD_NAME!
 
   [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
-    · FortreeCity_Gym_Text_WinonaPreRematch @ data/maps/FortreeCity_Gym/scripts.inc:300
+    · FortreeCity_Gym_Text_WinonaPreRematch @ data/maps/FortreeCity_Gym/scripts.inc:296
         WINONA: We humans can never escape
         gravity's pull on the ground.
 
@@ -1280,9 +1204,9 @@ HOW TO USE THIS FILE
 
         Please, allow me to see your power
         at full flight!
-    · FortreeCity_Gym_Text_WinonaRematchDefeat @ data/maps/FortreeCity_Gym/scripts.inc:310
+    · FortreeCity_Gym_Text_WinonaRematchDefeat @ data/maps/FortreeCity_Gym/scripts.inc:306
         I failed to reach your height again…
-    · FortreeCity_Gym_Text_WinonaPostRematch @ data/maps/FortreeCity_Gym/scripts.inc:313
+    · FortreeCity_Gym_Text_WinonaPostRematch @ data/maps/FortreeCity_Gym/scripts.inc:309
         WINONA: Even though I have lost,
         the wings of my heart remain unbroken.
 
@@ -1290,7 +1214,7 @@ HOW TO USE THIS FILE
         yet again.
 
         I am convinced of it!
-    · FortreeCity_Gym_Text_WinonaRematchNeedTwoMons @ data/maps/FortreeCity_Gym/scripts.inc:320
+    · FortreeCity_Gym_Text_WinonaRematchNeedTwoMons @ data/maps/FortreeCity_Gym/scripts.inc:316
         WINONA: We humans can never escape
         gravity's pull on the ground.
 
@@ -1353,18 +1277,12 @@ HOW TO USE THIS FILE
     · MagmaHideout_4F_Text_MaxieAwakenGroudon @ data/maps/MagmaHideout_4F/scripts.inc:189
         MAXIE: GROUDON…
 
-        Nothing could awaken you from your
-        sleep bathed in magma…
-
-        This BLUE ORB is what you sought.
-        Wasn't it?
-
         I have brought you the BLUE ORB.
         Let its shine awaken you!
 
         And show me…
         Show me the full extent of your power!
-    · MagmaHideout_4F_Text_MaxieGroudonWhatsWrong @ data/maps/MagmaHideout_4F/scripts.inc:200
+    · MagmaHideout_4F_Text_MaxieGroudonWhatsWrong @ data/maps/MagmaHideout_4F/scripts.inc:196
         MAXIE: GROUDON!
         What's wrong?
 
@@ -1372,7 +1290,7 @@ HOW TO USE THIS FILE
 
         GROUDON!
         Where have you gone…
-    · MagmaHideout_4F_Text_MaxieOhItWasYou @ data/maps/MagmaHideout_4F/scripts.inc:207
+    · MagmaHideout_4F_Text_MaxieOhItWasYou @ data/maps/MagmaHideout_4F/scripts.inc:203
         MAXIE: Oh, so it was you?
 
         I've seen you poking around uninvited
@@ -1383,11 +1301,11 @@ HOW TO USE THIS FILE
   [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
     (none found)
   [ON-DEFEAT]
-    · MagmaHideout_4F_Text_MaxieDefeat @ data/maps/MagmaHideout_4F/scripts.inc:214
+    · MagmaHideout_4F_Text_MaxieDefeat @ data/maps/MagmaHideout_4F/scripts.inc:210
         What makes you so adept at handling
         POKéMON?
   [POST-BATTLE]
-    · MagmaHideout_4F_Text_MaxieImGoingAfterGroudon @ data/maps/MagmaHideout_4F/scripts.inc:218
+    · MagmaHideout_4F_Text_MaxieImGoingAfterGroudon @ data/maps/MagmaHideout_4F/scripts.inc:214
         MAXIE: There has to be some reason
         why GROUDON fled…
 
@@ -1405,7 +1323,7 @@ HOW TO USE THIS FILE
 
         I am going after GROUDON, so this
         is where we part!
-    · MagmaHideout_LevelCap @ data/maps/MagmaHideout_4F/scripts.inc:232
+    · MagmaHideout_LevelCap @ data/maps/MagmaHideout_4F/scripts.inc:228
         Your Pokémon have leveled up to {STR_VAR_1}!
 
   [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
@@ -1457,43 +1375,34 @@ HOW TO USE THIS FILE
         TATE: That there are two GYM LEADERS?
         LIZA: That there are two GYM LEADERS?
 
-        TATE: We're twins!
-        LIZA: We're twins!
-
-        TATE: We don't need to talk because…
-        LIZA: We can each determine what…
-
-        TATE: The other is thinking…
-        LIZA: All in our minds!
-
         TATE: This combination of ours…
         LIZA: Can you beat it?
   [ON-DEFEAT]
-    · MossdeepCity_Gym_Text_TateAndLizaDefeat @ data/maps/MossdeepCity_Gym/scripts.inc:574
+    · MossdeepCity_Gym_Text_TateAndLizaDefeat @ data/maps/MossdeepCity_Gym/scripts.inc:568
         TATE: What?! Our combination…
         LIZA: Was shattered!
 
         TATE: It can't be helped. You've won…
         LIZA: So, in recognition, take this.
   [POST-BATTLE]
-    · MossdeepCity_Gym_Text_ReceivedMindBadge @ data/maps/MossdeepCity_Gym/scripts.inc:580
+    · MossdeepCity_Gym_Text_ReceivedMindBadge @ data/maps/MossdeepCity_Gym/scripts.inc:574
         {PLAYER} received the MIND BADGE
         and your Pokémon have leveled up to {STR_VAR_1}!
-    · MossdeepCity_Gym_Text_RegisteredTateAndLiza @ data/maps/MossdeepCity_Gym/scripts.inc:600
+    · MossdeepCity_Gym_Text_RegisteredTateAndLiza @ data/maps/MossdeepCity_Gym/scripts.inc:594
         Registered GYM LEADERS TATE & LIZA
         in the POKéNAV.
-    · MossdeepCity_Gym_Text_PlayerReceivedRewardPoke @ data/maps/MossdeepCity_Gym/scripts.inc:662
+    · MossdeepCity_Gym_Text_PlayerReceivedRewardPoke @ data/maps/MossdeepCity_Gym/scripts.inc:656
         {PLAYER} received GYM_REWARD_NAME!
 
   [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
-    · MossdeepCity_Gym_Text_TateAndLizaPostBattle @ data/maps/MossdeepCity_Gym/scripts.inc:604
+    · MossdeepCity_Gym_Text_TateAndLizaPostBattle @ data/maps/MossdeepCity_Gym/scripts.inc:598
         TATE: Looks like the bond between you
         and your POKéMON is far stronger than
         the bond that we share as twins.
 
         LIZA: You will become even stronger!
         We've battled you, so we know.
-    · MossdeepCity_Gym_Text_TateAndLizaNeedTwoMons @ data/maps/MossdeepCity_Gym/scripts.inc:611
+    · MossdeepCity_Gym_Text_TateAndLizaNeedTwoMons @ data/maps/MossdeepCity_Gym/scripts.inc:605
         TATE: Hehehe… Were you surprised?
 
         LIZA: That there are two GYM LEADERS?
@@ -1505,7 +1414,7 @@ HOW TO USE THIS FILE
 
         LIZA: If you want to challenge us,
         bring some more POKéMON.
-    · MossdeepCity_Gym_Text_TateAndLizaPreRematch @ data/maps/MossdeepCity_Gym/scripts.inc:628
+    · MossdeepCity_Gym_Text_TateAndLizaPreRematch @ data/maps/MossdeepCity_Gym/scripts.inc:622
         TATE: POKéMON…
         LIZA: POKéMON…
 
@@ -1520,16 +1429,16 @@ HOW TO USE THIS FILE
 
         TATE: Our combination…
         LIZA: We'll show you again and again!
-    · MossdeepCity_Gym_Text_TateAndLizaRematchDefeat @ data/maps/MossdeepCity_Gym/scripts.inc:640
+    · MossdeepCity_Gym_Text_TateAndLizaRematchDefeat @ data/maps/MossdeepCity_Gym/scripts.inc:634
         TATE: You and your POKéMON…
         LIZA: It's as if you were siblings!
-    · MossdeepCity_Gym_Text_TateAndLizaPostRematch @ data/maps/MossdeepCity_Gym/scripts.inc:644
+    · MossdeepCity_Gym_Text_TateAndLizaPostRematch @ data/maps/MossdeepCity_Gym/scripts.inc:638
         TATE: You can knock us down,
         but we'll never stay down!
 
         LIZA: Because the two of us,
         we always support each other!
-    · MossdeepCity_Gym_Text_TateAndLizaRematchNeedTwoMons @ data/maps/MossdeepCity_Gym/scripts.inc:650
+    · MossdeepCity_Gym_Text_TateAndLizaRematchNeedTwoMons @ data/maps/MossdeepCity_Gym/scripts.inc:644
         TATE: You're back again…
         LIZA: You're back again…
 
@@ -1592,12 +1501,9 @@ HOW TO USE THIS FILE
     · SeafloorCavern_Room9_Text_ArchieBeholdKyogre @ data/maps/SeafloorCavern_Room9/scripts.inc:233
         ARCHIE: Behold!
 
-        See how beautiful it is, the sleeping
-        form of the ancient POKéMON KYOGRE!
-
         I have waited so long for this day to
         come…
-    · SeafloorCavern_Room9_Text_ArchieYouMustDisappear @ data/maps/SeafloorCavern_Room9/scripts.inc:240
+    · SeafloorCavern_Room9_Text_ArchieYouMustDisappear @ data/maps/SeafloorCavern_Room9/scripts.inc:238
         ARCHIE: It surprises me, how you've
         managed to chase me here.
 
@@ -1608,11 +1514,11 @@ HOW TO USE THIS FILE
   [IN-BATTLE INTRO — none (no-intro battle; see PRE-BATTLE)]
     (none found)
   [ON-DEFEAT]
-    · SeafloorCavern_Room9_Text_ArchieDefeat @ data/maps/SeafloorCavern_Room9/scripts.inc:247
+    · SeafloorCavern_Room9_Text_ArchieDefeat @ data/maps/SeafloorCavern_Room9/scripts.inc:245
         What?!
         I lost to a mere child like you?!
   [POST-BATTLE]
-    · SeafloorCavern_Room9_Text_ArchieWithThisRedOrb @ data/maps/SeafloorCavern_Room9/scripts.inc:251
+    · SeafloorCavern_Room9_Text_ArchieWithThisRedOrb @ data/maps/SeafloorCavern_Room9/scripts.inc:249
         ARCHIE: Fufufu…
 
         I commend you. I must recognize that
@@ -1622,84 +1528,39 @@ HOW TO USE THIS FILE
         I have this in my possession!
 
         With this RED ORB, I can make KYOGRE…
-    · SeafloorCavern_Room9_Text_RedOrbShinesByItself @ data/maps/SeafloorCavern_Room9/scripts.inc:259
+    · SeafloorCavern_Room9_Text_RedOrbShinesByItself @ data/maps/SeafloorCavern_Room9/scripts.inc:257
         The RED ORB suddenly began shining
         by itself!
-    · SeafloorCavern_Room9_Text_ArchieWhereDidKyogreGo @ data/maps/SeafloorCavern_Room9/scripts.inc:263
+    · SeafloorCavern_Room9_Text_ArchieWhereDidKyogreGo @ data/maps/SeafloorCavern_Room9/scripts.inc:261
         ARCHIE: What?!
 
-        I didn't do anything.
-        Why did the RED ORB…
-
         Where did KYOGRE go?
-    · SeafloorCavern_Room9_Text_ArchieAMessageFromOutside @ data/maps/SeafloorCavern_Room9/scripts.inc:269
+    · SeafloorCavern_Room9_Text_ArchieAMessageFromOutside @ data/maps/SeafloorCavern_Room9/scripts.inc:265
         ARCHIE: Hm? It's a message from our
         members outside…
-    · SeafloorCavern_Room9_Text_ArchieWhatRainingTooHard @ data/maps/SeafloorCavern_Room9/scripts.inc:273
+    · SeafloorCavern_Room9_Text_ArchieWhatRainingTooHard @ data/maps/SeafloorCavern_Room9/scripts.inc:269
         ARCHIE: Yes, what is it?
-
-        Hm…
-        It's raining heavily?
-
-        Good… That should have happened.
-        That is why we awakened KYOGRE,
-        to realize TEAM AQUA's vision of
-        expanding the sea.
-
-        What?!
-
-        It's raining far harder than we
-        envisioned? You're in danger?
-
-        That can't be…
-        That's just not possible…
 
         Hold your position and monitor
         the situation!
-    · SeafloorCavern_Room9_Text_ArchieWhyDidKyogreDisappear @ data/maps/SeafloorCavern_Room9/scripts.inc:289
+    · SeafloorCavern_Room9_Text_ArchieWhyDidKyogreDisappear @ data/maps/SeafloorCavern_Room9/scripts.inc:274
         ARCHIE: There's something wrong…
-
-        The RED ORB is supposed to awaken
-        and control KYOGRE…
-
-        But… Why?
-        Why did KYOGRE disappear?
-
         Why?!
-    · SeafloorCavern_Room9_Text_MaxieWhatHaveYouWrought @ data/maps/SeafloorCavern_Room9/scripts.inc:297
+    · SeafloorCavern_Room9_Text_MaxieWhatHaveYouWrought @ data/maps/SeafloorCavern_Room9/scripts.inc:278
         MAXIE: What have you wrought?
 
         ARCHIE… You've finally awoken KYOGRE,
         haven't you?
-
-        What will happen to the world if this
-        downpour continues for all eternity?
-
-        The world's landmass will drown in
-        the deepening sea…
-    · SeafloorCavern_Room9_Text_ArchieDontGetAllHighAndMighty @ data/maps/SeafloorCavern_Room9/scripts.inc:306
-        ARCHIE: W-what?!
-        Don't get all high and mighty with me!
-
-        Wasn't it you, TEAM MAGMA, that
-        infuriated GROUDON?
-
-        So long as I have this RED ORB,
-        I should be able to control KYOGRE…
-
-        I should be able to control it…
-    · SeafloorCavern_Room9_Text_MaxieWeDontHaveTimeToArgue @ data/maps/SeafloorCavern_Room9/scripts.inc:315
+    · SeafloorCavern_Room9_Text_ArchieDontGetAllHighAndMighty @ data/maps/SeafloorCavern_Room9/scripts.inc:283
+        ARCHIE: Wasn't it you,
+        TEAM MAGMA, that infuriated GROUDON?
+    · SeafloorCavern_Room9_Text_MaxieWeDontHaveTimeToArgue @ data/maps/SeafloorCavern_Room9/scripts.inc:287
         MAXIE: We don't have the time to
         argue about it here!
-
-        Get outside and see for yourself!
-
-        See if what you've wrought is the
-        world that we desired!
-    · SeafloorCavern_Room9_Text_MaxieComeOnPlayer @ data/maps/SeafloorCavern_Room9/scripts.inc:322
+    · SeafloorCavern_Room9_Text_MaxieComeOnPlayer @ data/maps/SeafloorCavern_Room9/scripts.inc:291
         MAXIE: {PLAYER}, come on, you have
         to get out of here, too!
-    · SeafloorCavern_LevelCap @ data/maps/SeafloorCavern_Room9/scripts.inc:326
+    · SeafloorCavern_LevelCap @ data/maps/SeafloorCavern_Room9/scripts.inc:295
         Your Pokémon have leveled up to {STR_VAR_1}!
 
   [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
@@ -1715,63 +1576,29 @@ HOW TO USE THIS FILE
     (none found)
   [IN-BATTLE INTRO]
     · SootopolisCity_Gym_1F_Text_JuanIntro @ data/maps/SootopolisCity_Gym_1F/scripts.inc:208
-        Let me ask you.
-        Did you know?
-        Ah, I should not be so coy.
-
-        It was I who taught WALLACE everything
-        there is to know about POKéMON.
-
-        Once, I had given up my position as
-        the GYM LEADER.
-
-        In my place, I had entrusted WALLACE
-        with the GYM.
-
-        However, a compelling reason arose for
-        me to make a comeback.
-
-        Ah, but enough chatter.
         Let us begin our match, shall we?
-
-        Please, you shall bear witness to
-        our artistry.
 
         A grand illusion of water sculpted
         by POKéMON and myself!
   [ON-DEFEAT]
-    · SootopolisCity_Gym_1F_Text_JuanDefeat @ data/maps/SootopolisCity_Gym_1F/scripts.inc:231
+    · SootopolisCity_Gym_1F_Text_JuanDefeat @ data/maps/SootopolisCity_Gym_1F/scripts.inc:217
         Ahahaha, excellent!
         Very well, you are the winner.
 
-        From you, I sense the brilliant shine
-        of skill that will overcome all.
-
-        However, compared with me or even
-        WALLACE, you are lacking in elegance.
-
-        Perhaps I should make you a loan
-        of my outfit?
-
-        … … … … … …
-        … … … … … …
-
-        Hahaha, I merely jest!
-
-        Rather than my clothes, I shall reward
+        I shall reward
         you with this, the RAIN BADGE!
   [POST-BATTLE]
-    · SootopolisCity_Gym_1F_Text_ReceivedRainBadge @ data/maps/SootopolisCity_Gym_1F/scripts.inc:246
+    · SootopolisCity_Gym_1F_Text_ReceivedRainBadge @ data/maps/SootopolisCity_Gym_1F/scripts.inc:223
         {PLAYER} received the RAIN BADGE
         and your Pokémon have leveled up to {STR_VAR_1}!
-    · SootopolisCity_Gym_1F_Text_RegisteredJuan @ data/maps/SootopolisCity_Gym_1F/scripts.inc:267
+    · SootopolisCity_Gym_1F_Text_RegisteredJuan @ data/maps/SootopolisCity_Gym_1F/scripts.inc:244
         Registered GYM LEADER JUAN
         in the POKéNAV.
     · SootopolisCity_Gym_1F_Text_PlayerReceivedRewardPoke @ data/maps/SootopolisCity_Gym_1F/scripts.inc:128
         {PLAYER} received GYM_REWARD_NAME!
 
   [OTHER TEXT IN THIS MAP — same or related character, not already shown above]
-    · SootopolisCity_Gym_1F_Text_JuanPostBattle @ data/maps/SootopolisCity_Gym_1F/scripts.inc:271
+    · SootopolisCity_Gym_1F_Text_JuanPostBattle @ data/maps/SootopolisCity_Gym_1F/scripts.inc:248
         The TRAINERS who have gathered all
         the GYM BADGES of HOENN should make
         way to the ultimate destination.
@@ -1783,7 +1610,7 @@ HOW TO USE THIS FILE
 
         There, you shall find the POKéMON
         LEAGUE.
-    · SootopolisCity_Gym_1F_Text_JuanPreRematch @ data/maps/SootopolisCity_Gym_1F/scripts.inc:296
+    · SootopolisCity_Gym_1F_Text_JuanPreRematch @ data/maps/SootopolisCity_Gym_1F/scripts.inc:273
         JUAN: Ah, this GYM had returned to its
         usual state of serenity…
 
@@ -1794,10 +1621,10 @@ HOW TO USE THIS FILE
 
         I shall be delighted to dance with you
         as often as you wish!
-    · SootopolisCity_Gym_1F_Text_JuanRematchDefeat @ data/maps/SootopolisCity_Gym_1F/scripts.inc:305
+    · SootopolisCity_Gym_1F_Text_JuanRematchDefeat @ data/maps/SootopolisCity_Gym_1F/scripts.inc:282
         Ahahaha, you are the winner!
         You have defeated me again!
-    · SootopolisCity_Gym_1F_Text_JuanPostRematch @ data/maps/SootopolisCity_Gym_1F/scripts.inc:309
+    · SootopolisCity_Gym_1F_Text_JuanPostRematch @ data/maps/SootopolisCity_Gym_1F/scripts.inc:286
         JUAN: If I told you to become my
         apprentice, you will refuse, I am sure.
 
@@ -1809,7 +1636,7 @@ HOW TO USE THIS FILE
 
         And that, my friend, is a certain sign
         of nobility!
-    · SootopolisCity_Gym_1F_Text_JuanRematchNeedTwoMons @ data/maps/SootopolisCity_Gym_1F/scripts.inc:319
+    · SootopolisCity_Gym_1F_Text_JuanRematchNeedTwoMons @ data/maps/SootopolisCity_Gym_1F/scripts.inc:296
         JUAN: Ah, this GYM had returned to its
         usual state of serenity…
 
