@@ -229,3 +229,4 @@
 | [T-224](T-224-beta-ux-validation-fixes.md) | Beta UX fixes from validation (notice gating, admin "run" vs ROM) | in-progress | 0.7.0 | 2026-07-26 |
 | [T-225](T-225-register-autologin-patch-naming.md) | Register auto-login + patch zip naming (validation feedback) | in-progress | 0.7.0 | 2026-07-26 |
 | [T-226](T-226-frontend-text-appearance-batch.md) | Frontend text/appearance batch (config descriptions, beta/legal copy, layout fixes) | in-progress | 0.7.0 | 2026-07-26 |
+| [T-227](T-227-fix-flex-gap-display-toggle.md) | Fix config-form flex gap never applying (display toggle wiped inline flex) | in-progress | 0.7.0 | 2026-07-26 |

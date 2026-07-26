@@ -1957,7 +1957,7 @@ export class ConfigForm {
 
         const rebalanceOn = this._q('#rebalance').checked;
         this._q('#balance-chance-row').style.display = rebalanceOn ? '' : 'none';
-        this._q('#mutation-categories').style.display = rebalanceOn ? '' : 'none';
+        this._q('#mutation-categories').style.display = rebalanceOn ? 'flex' : 'none'; // T-227 — 'flex' (not '') so the inline flex + gap survive
         // T-226 — the (now in-box) Advanced panel is conditional on the master toggle too.
         { const s = this._q('#mutations-advanced-section'); if (s) s.style.display = rebalanceOn ? '' : 'none'; }
         this._q('#balance-chance-val').textContent = this._q('#balance-chance').value + '%';
@@ -1968,14 +1968,14 @@ export class ConfigForm {
         const mmChanceRow = this._q('#move-mutation-chance-row');
         const mmCategories = this._q('#move-mutation-categories');
         if (mmChanceRow) mmChanceRow.style.display = mutateMovesOn ? '' : 'none';
-        if (mmCategories) mmCategories.style.display = mutateMovesOn ? '' : 'none';
+        if (mmCategories) mmCategories.style.display = mutateMovesOn ? 'flex' : 'none'; // T-227 — keep flex + gap
         { const s = this._q('#move-mutation-advanced-section'); if (s) s.style.display = mutateMovesOn ? '' : 'none'; } // T-226
         const mmVal = this._q('#move-mutation-chance-val');
         if (mmVal) mmVal.textContent = (this._q('#move-mutation-chance')?.value ?? '10') + '%';
 
         const evoOn = this._q('#evo-enabled')?.checked;
         const evoTuning = this._q('#evo-tuning');
-        if (evoTuning) evoTuning.style.display = evoOn ? '' : 'none';
+        if (evoTuning) evoTuning.style.display = evoOn ? 'flex' : 'none'; // T-227 — keep flex + gap
 
         const diffLevel = parseInt(this._q('#difficultySlider')?.value ?? '7', 10);
         const descEl = this._q('#difficultyDesc');
