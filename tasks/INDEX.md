@@ -209,7 +209,7 @@
 | [T-204](T-204-wattson-bottom-slots-nu-nerf.md) | Nerf Wattson's two bottom non-mega slots (RU → NU) | in-progress | 0.6.0 | 2026-07-25 |
 | [T-205](T-205-norman-gives-new-mauville-key.md) | Norman hands over the New Mauville key on defeat (advance area state) | in-progress | 0.6.0 | 2026-07-25 |
 | [T-206](T-206-boss-dialogue-extraction-txt.md) | Extract every boss's dialogue into an editable TXT (round-trip) | in-progress | 0.6.0 | 2026-07-26 |
-| [T-207](T-207-hidden-power-teachable-list-inconsistency.md) | Hidden Power absent from teachable TM list but universally learnable | proposed | 0.6.0 | 2026-07-25 |
+| [T-207](T-207-hidden-power-teachable-list-inconsistency.md) | Hidden Power absent from teachable TM list but universally learnable | in-progress | 0.6.0 | 2026-07-26 |
 | [T-208](T-208-hidden-power-type-display.md) | QoL — show Hidden Power's IV-derived type in summary & teach-move UI | proposed | 0.6.0 | 2026-07-25 |
 | [T-209](T-209-config-trainers-box-grouping.md) | Keep Steven-tag & evil-types inside the "Trainers & bosses" box | proposed | 0.6.0 | 2026-07-25 |
 | [T-210](T-210-decision-log-server-only-skill.md) | Make the decision log server-only + a download-decision-log skill | proposed | 0.6.0 | 2026-07-25 |

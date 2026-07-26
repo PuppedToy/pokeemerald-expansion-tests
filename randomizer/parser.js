@@ -709,6 +709,24 @@ function parseTeachableFile(teachableFileText) {
     return teachables;
 }
 
+// T-207 — the near-universal moves (sUniversalMoves in the ROM: Hidden Power, Return, Frustration,
+// Secret Power, …) are learnable by every species in-game, so make_teachables.py lists them once in
+// the header comment block instead of in each per-species array. Parse that block so the pipeline
+// can treat them as base teachables for all mons.
+function parseUniversalMoves(teachableFileText) {
+    const lines = teachableFileText.split('\n');
+    const moves = [];
+    let inBlock = false;
+    for (const line of lines) {
+        if (line.includes('sUniversalMoves')) { inBlock = true; continue; }
+        if (!inBlock) continue;
+        if (line.includes('****')) break; // end-of-block delimiter row
+        const m = line.match(/-\s*(MOVE_\w+)/);
+        if (m) moves.push(m[1]);
+    }
+    return moves;
+}
+
 function parseAbilitiesFile(abilitiesFileText) {
     const lines = abilitiesFileText.split('\n');
     const abilities = {};
@@ -907,6 +925,7 @@ module.exports = {
     parseItemsFile,
     parseLearnsetsFile,
     parseTeachableFile,
+    parseUniversalMoves,
     parseAbilitiesFile,
     parseMegaEvoStonesFile,
     parseStat,

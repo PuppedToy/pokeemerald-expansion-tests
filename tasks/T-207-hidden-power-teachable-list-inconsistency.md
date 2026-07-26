@@ -1,12 +1,12 @@
 ---
 id: T-207
 title: Hidden Power absent from teachable TM list but universally learnable
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-07-25
-updated: 2026-07-25
+updated: 2026-07-26
 target-version: 0.6.0
-links: [T-152, T-011, T-187]
+links: [B-054, T-152, T-011, T-187]
 blocked-by: []
 ---
 
@@ -50,10 +50,13 @@ universals) is present in `poke.teachables` for **every** species, then seed the
 appears. Reconcile display class (old vs new). Rebuild the browser bundle.
 
 Acceptance criteria:
-- [ ] `B-NNN` registered; regression test fails before and passes after (annotated with the bug id).
-- [ ] Every species' `teachables` includes the `sUniversalMoves` set (Hidden Power incl.), consistently across
-      runs — not dependent on random rolls.
-- [ ] Docs list Hidden Power for all Pokémon; `cd randomizer && npm test` green; bundle rebuilt.
+- [x] `B-054` registered; regression test `randomizer/__tests__/unit/universalTeachables.test.js` fails before
+      and passes after (annotated with the bug id).
+- [x] Every species' `teachables` includes the `sUniversalMoves` set (that is in the run's TM pool — Hidden
+      Power, Return, Frustration, Secret Power), consistently across runs — not dependent on random rolls, and
+      never spuriously "starred" as newly-granted.
+- [x] `cd randomizer && npm test` green (1697 passed); bundle rebuilt. *(Docs render `poke.teachables`, which now
+      always carries Hidden Power → shows for all Pokémon.)*
 
 ## Progress log
 
@@ -63,6 +66,16 @@ Acceptance criteria:
   (`teachable_learnsets.h:98-108`), which `parseTeachableFile` (`parser.js:694-709`) never reads, so
   `teachable_learnsets.json` has 0 Hidden Power; it only appears when randomly rolled as a `newTeachable`
   (`teachableExpander.js:88-103`). Confirmed real inconsistency → needs a bug + regression test before closing.
+- **2026-07-26** — **Implemented (in-progress), TDD Red→Green + B-054 registered.** Found the rater also reads
+  `poke.teachables` (filtered by `tmPool`), so this isn't display-only — it also removes RNG noise from ratings
+  for mons that didn't roll these moves. Blast radius is small in practice: the rater already de-values non-STAB
+  Normal filler (Return/Frustration/Secret Power), so they rarely enter a rated moveset. New
+  `parseUniversalMoves` (`parser.js`), threaded through `pokedexModule` → `expandAllTeachables` →
+  `buildRunTeachables`, which folds universal moves **that are in the run's TM pool** into each mon's base
+  teachables (never starred, never greyed; non-pool universals like Bide skipped). Updated the two `parser`
+  mocks (`pokedexModule.test.js`, `moveMutationPipeline.test.js`) to expose the new fn. Full randomizer suite
+  green (1697 passed). Rebuilt the browser bundle. **Note for the owner:** the real per-mon rating shift is only
+  visible on a full `analyze.js`/build run — worth a spot-check, though expected to be minor.
 
 ## Outcome
 
