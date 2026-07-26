@@ -4,6 +4,7 @@
 // The bundle lives in IndexedDB (a ~32 MB bundle does not fit in localStorage).
 
 import { putRom, getRom, hasRom, clearRom, sha1Hex, isKnownEmeraldRom } from './rom-store.js';
+import { romName, romForServerName } from './romNaming.js'; // T-211 — download naming SSOT
 
 // applyBps comes from the generated ESM bundle (frontend/js/bps.bundle.js — the SAME codec the builder
 // uses to create patches). Loaded lazily and injectable so tests need not build the bundle.
@@ -73,6 +74,7 @@ function isDelivered(b) { try { return localStorage.getItem(deliveredKey(b)) ===
 // ── account state ────────────────────────────────────────────────────────────────
 let state = null;        // /api/me
 let lastBundle = null;
+let buildFullZip = null;  // T-211 — full-archive builder injected by app.js via initAccount (needs the docs path)
 let pollTimer = null;
 let onStartOverCb = null; // T-198 — set in initAccount; called after a cancel to reset the wizard
 
@@ -594,21 +596,43 @@ async function deliverPatch(onStep = () => {}) {
   const zipBlob = await res.blob();
   onStep('download', 'done');
 
+  const seed = lastBundle?.config?.seed ?? 'run';
+  const roms = lastBundle?.roms ?? [];
+  const srcZip = await JSZip.loadAsync(zipBlob);
+  const bpsEntries = Object.values(srcZip.files).filter((f) => !f.dir && /\.bps$/i.test(f.name));
+
   const rom = await getRom();
-  if (rom) {
+  if (rom && buildFullZip) {
+    // T-211 — full archive: apply every patch, then assemble bundle-<seed>.json + roms + docs/ + bps/.
     onStep('apply', 'active');
-    const roms = await patchZipToRoms(zipBlob, rom);
-    onStep('apply', 'done');
-    if (roms.length > 1) {
-      onStep('zip', 'active');
-      const outZip = await zipRoms(roms);
-      onStep('zip', 'done');
-      triggerDownload(outZip, `emerald-cut-${lastBundle?.config?.seed ?? 'run'}.zip`);
-    } else {
-      triggerDownload(new Blob([roms[0].bytes], { type: 'application/octet-stream' }), roms[0].name);
+    const { applyBps } = await loadCodec();
+    const artifacts = [];
+    for (const f of bpsEntries) {
+      const bpsBytes = new Uint8Array(await f.async('arraybuffer'));
+      artifacts.push({ serverName: f.name, bpsBytes, gbaBytes: applyBps(bpsBytes, rom) });
     }
+    onStep('apply', 'done');
+    onStep('zip', 'active');
+    const fullZip = await buildFullZip(lastBundle, artifacts);
+    onStep('zip', 'done');
+    triggerDownload(fullZip, `run-${seed}-full.zip`);
+  } else if (rom) {
+    // Defensive fallback (full-zip builder not wired): apply + flat zip of the finished games.
+    onStep('apply', 'active');
+    const applied = await patchZipToRoms(zipBlob, rom);
+    onStep('apply', 'done');
+    triggerDownload(await zipRoms(applied), `run-${seed}-full.zip`);
   } else {
-    triggerDownload(zipBlob, 'emerald-cut-patch.zip');
+    // No ROM: hand over the patches only, renamed to the 1-indexed convention (per-player for soul-link).
+    onStep('zip', 'active');
+    const out = new JSZip();
+    for (const f of bpsEntries) {
+      const r = romForServerName(f.name, roms);
+      const { folder, base } = r ? romName(r, roms) : { folder: null, base: f.name.replace(/\.[^.]+$/, '') };
+      out.file(folder ? `${folder}/${base}.bps` : `${base}.bps`, await f.async('uint8array'));
+    }
+    onStep('zip', 'done');
+    triggerDownload(await out.generateAsync({ type: 'blob' }), `run-${seed}-patch-files.zip`);
   }
   // The patch stays re-downloadable server-side (until the 48h sweep or the next run); remember delivery
   // so a reload doesn't auto-resubmit the bundle (B-011).
@@ -707,6 +731,7 @@ async function downloadBpsOnly() {
 
 export async function initAccount(opts = {}) {
   if (opts.loadCodec) loadCodec = opts.loadCodec; // test seam for the BPS bundle
+  if (opts.buildFullZip) buildFullZip = opts.buildFullZip; // T-211 — full-archive builder from app.js
   $('auth-close').addEventListener('click', closeModal);
   $('auth-modal').addEventListener('click', (e) => { if (e.target.id === 'auth-modal') closeModal(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('auth-modal').hidden) closeModal(); });

@@ -1,7 +1,7 @@
 ---
 id: T-211
 title: Overhaul generated-file naming & download-zip structure
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-25
 updated: 2026-07-25
@@ -49,11 +49,11 @@ Spans the client-side docs zip, the server-side patch/full zip, and per-ROM nami
   `emerald-cut-${seed}.zip` (`:606`, `zipRoms :579-584`); `patchZipToRoms` strips `.bps`→`.gba` (`:567-577`,
   `:574`).
 
-### Open questions (confirm with owner)
-- 9.5 says `bundle-<seed>.json` but 9.5.1 (soul-link full) says `bundle.json` — which for soul-link?
-- Docs download has **no** `docs/` folder (9.1.1) while the full zip **has** one (9.5) — confirm intended (per
-  spec, yes: different layout per download type).
-- The 1-index applies to `romIndex` everywhere (docs, roms, bps) — confirm and apply globally.
+### Resolved by owner (2026-07-26)
+- The bundle file is **always** `bundle-<seed>.json` (including soul-link).
+- The `docs/` folder is used **only in the full ("apply patch & download") archive** — to organise that zip.
+  The docs-only download keeps its docs at the root (per-player folders for soul-link, no `docs/` wrapper).
+- 1-indexing applies to `romIndex` everywhere (docs, roms, bps).
 
 ## Plan
 
@@ -63,13 +63,17 @@ their contents per the spec. Coordinate the `decision-log.txt` removal with T-21
 (`backend/__tests__/zip.test.js`) and a frontend docs-zip test; verify soul-link/nuzlocke/single paths.
 
 Acceptance criteria:
-- [ ] Docs zip is `run-<seed>-docs.zip` with docs + `bundle-<seed>.json` at root, 1-indexed `rom-N.html`
-      (nuzlocke) / per-player `player-K/player-K-rom-N.html` (soul-link).
-- [ ] BPS zip is `run-<seed>-patch-files.zip`; full zip is `run-<seed>-full.zip` with the specified root +
-      `docs/` + `bps/` layout and `.gba` ROMs named like the docs.
-- [ ] Soul-link full zip uses per-player folders each containing ROMs + `docs/` + `bps/`.
-- [ ] No 0-indexed filenames remain; naming defined in one shared helper (no divergence across the 3 paths).
-- [ ] `cd backend && npm test`, frontend tests green; bundle rebuilt if the worker path changed.
+- [x] Docs zip is `run-<seed>-docs.zip` with docs + `bundle-<seed>.json` at root, 1-indexed `rom-N.html`
+      (nuzlocke) / per-player `player-K/player-K-rom-N.html` (soul-link). *(app.js docs handler.)*
+- [x] BPS zip is `run-<seed>-patch-files.zip`; full zip is `run-<seed>-full.zip` with the specified root +
+      `docs/` + `bps/` layout and `.gba` ROMs named like the docs. *(account.js `deliverPatch` + app.js
+      `buildFullZipBlob`.)*
+- [x] Soul-link full zip uses per-player folders each containing ROMs + `docs/` + `bps/`.
+- [x] No 0-indexed filenames remain; naming defined in one shared helper (`frontend/js/romNaming.js`) used by
+      both the docs and full/patch paths (no divergence).
+- [x] Frontend suite green (170); backend untouched (make.js unchanged — the client owns final naming, so the
+      server ROM builder needs no change). `app.js`/`account.js`/`romNaming.js` are served directly → no bundle
+      rebuild. **Owner to manually verify the actual downloaded zips** (browser-only flow, not unit-testable).
 
 ## Progress log
 
@@ -79,6 +83,18 @@ Acceptance criteria:
   (`app.js:283-329`, name `:318`, per-ROM naming `:308-311`), server patch/full zip (`produce/handlers.js:92`,
   `storage.js:44-49`, `zip.js`), and per-ROM naming in `make.js:108-113` / `buildRom.js:47`. Captured the
   1-index + per-player-folder target and the open questions (soul-link bundle name; docs-folder asymmetry).
+- **2026-07-26** — **Implemented (in-progress).** Owner resolved the open questions (always `bundle-<seed>.json`;
+  `docs/` folder only in the full archive; 1-index everywhere). Built `frontend/js/romNaming.js` as the naming
+  SSOT (`romName` → 1-indexed base + per-player folder; `bundleFileName`; `parseServerName`/`romForServerName`
+  map the server's 0-indexed `.bps` back to a bundle rom) with a unit test (`__tests__/rom-naming.test.js`).
+  Docs download (`app.js`): `run-<seed>-docs.zip`, `bundle-<seed>.json`, docs at root (no `docs/`), per-player
+  folders for soul-link. Full download: new `buildFullZipBlob` in `app.js` (it owns the docs path) invoked by
+  `account.js` `deliverPatch` via a `buildFullZip` callback passed to `initAccount` (avoids an app↔account
+  circular import) — assembles `run-<seed>-full.zip` = `bundle-<seed>.json` + applied ROMs + `docs/` + `bps/`
+  (nested under per-player folders for soul-link). No-ROM path re-zips the patches as `run-<seed>-patch-files.zip`
+  with the 1-indexed convention. `make.js` left unchanged (client owns final naming → no builder risk). Updated
+  the `deliverPatch` source-inspection test to the new shape (deliberate spec change). Frontend 170 green; app
+  boots clean (shoot). **Owner to manually verify the downloaded zips** (browser-only, not unit-testable).
 
 ## Outcome
 

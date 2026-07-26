@@ -50,12 +50,14 @@ test('the live 3-step checklist exists and step 3 (zip) is multi-ROM only', () =
   assert.match(accountSrc, /if \(plural\) steps\.push\(\['zip', 'Generating zip'\]\)/, 'zip step only for multi-ROM');
 });
 
-test('deliverPatch drives the steps and zips a multi-ROM run (single ROM downloads one .gba)', () => {
+test('deliverPatch drives the steps and builds the run-<seed>-full.zip (T-211)', () => {
   assert.match(accountSrc, /async function deliverPatch\(onStep = \(\) => \{\}\)/, 'deliverPatch takes an onStep reporter');
   assert.match(accountSrc, /onStep\('download', 'active'\)[\s\S]*onStep\('download', 'done'\)/, 'reports the download step');
   assert.match(accountSrc, /onStep\('apply', 'active'\)[\s\S]*onStep\('apply', 'done'\)/, 'reports the apply step');
-  assert.match(accountSrc, /if \(roms\.length > 1\)[\s\S]*onStep\('zip', 'active'\)[\s\S]*zipRoms\(roms\)/, 'multi-ROM → generate + download a zip');
-  assert.match(accountSrc, /async function zipRoms\(roms\)/, 'zipRoms bundles the finished games');
+  // T-211 — with a ROM, always assemble the full archive (bundle + roms + docs/ + bps/) via the injected builder.
+  assert.match(accountSrc, /buildFullZip\(lastBundle, artifacts\)[\s\S]*run-\$\{seed\}-full\.zip/, 'full archive → run-<seed>-full.zip');
+  // no ROM → the patches only, named run-<seed>-patch-files.zip
+  assert.match(accountSrc, /run-\$\{seed\}-patch-files\.zip/, 'patches-only → run-<seed>-patch-files.zip');
 });
 
 test('delivery copy never claims a ROM was downloaded; it says the patch was applied', () => {

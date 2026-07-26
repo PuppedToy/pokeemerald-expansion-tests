@@ -21,6 +21,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Cleaner, consistent download archives.** The three downloads are renamed and reorganised:
+  `run-<seed>-docs.zip` (the docs + `bundle-<seed>.json` at the root), `run-<seed>-patch-files.zip` (the raw
+  patches), and `run-<seed>-full.zip` (apply-patch-&-download: `bundle-<seed>.json` + the ROMs + a `docs/`
+  folder + a `bps/` folder). ROM/doc files are now numbered from 1 (`rom-1`, `rom-2`, …), and soul-link runs
+  group everything under one folder per player (`player-1/`, `player-2/`, …), renumbered per player. (T-211)
+
 - **Moves show their real type.** Moves whose type changes (Hidden Power, Weather Ball, Judgment, …) now
   display their actual current type in the summary and teach-move screens instead of always showing Normal —
   so you can see, for example, what type a Pokémon's Hidden Power is from its IVs. (T-208)
