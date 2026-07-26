@@ -211,7 +211,7 @@
 | [T-206](T-206-boss-dialogue-extraction-txt.md) | Extract every boss's dialogue into an editable TXT (round-trip) | in-progress | 0.6.0 | 2026-07-26 |
 | [T-207](T-207-hidden-power-teachable-list-inconsistency.md) | Hidden Power absent from teachable TM list but universally learnable | in-progress | 0.6.0 | 2026-07-26 |
 | [T-208](T-208-hidden-power-type-display.md) | QoL — show Hidden Power's IV-derived type in summary & teach-move UI | proposed | 0.6.0 | 2026-07-25 |
-| [T-209](T-209-config-trainers-box-grouping.md) | Keep Steven-tag & evil-types inside the "Trainers & bosses" box | proposed | 0.6.0 | 2026-07-25 |
+| [T-209](T-209-config-trainers-box-grouping.md) | Keep Steven-tag & evil-types inside the "Trainers & bosses" box | in-progress | 0.6.0 | 2026-07-25 |
 | [T-210](T-210-decision-log-server-only-skill.md) | Make the decision log server-only + a download-decision-log skill | proposed | 0.6.0 | 2026-07-25 |
 | [T-211](T-211-download-zip-naming-structure.md) | Overhaul generated-file naming & download-zip structure | proposed | 0.6.0 | 2026-07-25 |
 | [T-212](T-212-space-center-1f-magma-grunts-no-battle.md) | Remove the Mossdeep Space Center magma grunt battles | proposed | 0.6.0 | 2026-07-25 |
