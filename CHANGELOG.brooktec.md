@@ -15,6 +15,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **The run summary now shows your whole configuration.** The Review step (and a preset's "Details" view, which
+  share one component) previously left out several settings — battle format, move mutation, main-starter
+  quality, shop and move-relearn prices, the Steven tag battle, auto-nicknames, docs visibility and the universe
+  seed. All of them are now listed. (T-213)
+
 - **Tidier "Trainers & bosses" settings.** "Disable Steven tag battle" and the Team Aqua / Team Magma type
   selectors now sit in the same card as the gym/Elite-Four/champion type options, instead of in separate
   boxes — consistent with the rest of the settings. (T-209)

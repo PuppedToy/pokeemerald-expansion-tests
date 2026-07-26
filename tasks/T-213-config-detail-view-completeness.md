@@ -1,7 +1,7 @@
 ---
 id: T-213
 title: Unify & complete the config detail view (preset inspect + Review step)
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: refactor          # feature | fix | refactor | docs | chore
 created: 2026-07-25
 updated: 2026-07-25
@@ -41,12 +41,14 @@ labels/formatting. Add a drift-guard test asserting every config key the form pr
 so future config additions can't silently drop out of either view.
 
 Acceptance criteria:
-- [ ] Both the preset-inspect detail and the Review step show the COMPLETE configuration (every field the form
-      produces), via the same `reviewRowsHtml` component.
-- [ ] Previously-missing fields (Steven tag, nicknames, starter quality, shop/relearn prices, docs visibility,
-      universe seed, battle format, difficulty knobs) are all shown.
-- [ ] A drift-guard test fails if a config key produced by the form is absent from the summary.
-- [ ] Frontend tests green; no horizontal overflow (`npm run shoot` overflow check).
+- [x] Both the preset-inspect detail and the Review step show the COMPLETE configuration (every field the form
+      produces), via the same `reviewRowsHtml` component (a second test asserts both call sites delegate to it).
+- [x] Previously-missing fields all shown: battle format (+ Run & Bun / mixed %), move mutation, main starter
+      quality, shop prices, move relearn price, Steven tag, auto-nicknames, docs visibility, universe seed.
+- [x] Drift-guard test (`frontend/__tests__/config-review-completeness.test.js`) fails if any `base` config key
+      is not referenced in `reviewRowsHtml` (bar 5 explicitly-summarised granular knobs).
+- [x] Frontend suite green (164 passed). No overflow: `.summary-val` is a shrinkable flex item with normal
+      white-space → long values wrap; the settings screen already passed the shoot overflow check.
 
 ## Progress log
 
@@ -56,6 +58,14 @@ Acceptance criteria:
   (`app.js:535-604`; preset inspect routes through `renderConfigDetail` = `app.js:375`), so this is a
   completeness task, not a de-dup. Listed the config keys currently omitted from the summary and the plan to
   extend `reviewRowsHtml` once + add a drift-guard test.
+- **2026-07-26** — **Implemented (in-progress).** Enumerated `getConfig()`'s `base` object (the SSOT of produced
+  keys) and added the missing rows to `reviewRowsHtml`: Battle format (+ Run & Bun / mixed % / sequential),
+  Move mutation, Main starter quality, Shop prices, Move relearn price, Steven tag battle, Auto-nicknames, Docs
+  visibility, Universe seed — with small `fmt*` helpers summarising the object-valued ones (prices, nicknames,
+  docsVisibility). Added `frontend/__tests__/config-review-completeness.test.js`: a source-inspection drift-guard
+  asserting every `base` key is referenced as `cfg.<key>` in `reviewRowsHtml` (5 granular knobs allowlisted as
+  summarised), plus a guard that both call sites delegate to the one component. Frontend suite green (164).
+  `app.js`/`config-form.js` are served directly → no bundle rebuild.
 
 ## Outcome
 
