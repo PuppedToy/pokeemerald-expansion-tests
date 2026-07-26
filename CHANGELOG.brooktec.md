@@ -15,6 +15,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **No more Space Center grunt fights.** The Team Magma grunts on the Mossdeep Space Center ground floor no
+  longer battle you — talking to them just shows their dialogue. The grunt guarding the stairs still steps
+  aside when you talk to it, so the way up is unchanged. (T-212)
+
 - **The run summary now shows your whole configuration.** The Review step (and a preset's "Details" view, which
   share one component) previously left out several settings — battle format, move mutation, main-starter
   quality, shop and move-relearn prices, the Steven tag battle, auto-nicknames, docs visibility and the universe
