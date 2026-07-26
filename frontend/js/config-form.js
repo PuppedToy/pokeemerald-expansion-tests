@@ -1512,8 +1512,8 @@ export class ConfigForm {
         <input type="number" id="champion-type-change-pct" class="input" min="0" max="100" value="5" style="width:88px">
         <span class="field-hint">Percent chance the champion (Steven) also gets a randomized type instead of Steel (0–100, default 5%). When it changes, its freed Steel joins the shared pool; when it stays Steel, Steel is reserved from gyms/E4. All Steven battles use the resulting type.</span>
       </div>
-    </div>
-    <div class="card-glass" style="padding:20px;margin-top:16px">
+      <!-- T-209 — Steven-tag toggle + evil-team type selectors stay in the SAME box as the
+           gym/E4/champion type settings (one card for the whole Trainers & bosses category). -->
       <div class="toggle-wrap">
         <div>
           <div class="toggle-label">Disable Steven tag battle</div>
@@ -1521,16 +1521,16 @@ export class ConfigForm {
         </div>
         <label class="toggle"><input type="checkbox" id="disable-steven-tag-battle"><span class="toggle-track"></span></label>
       </div>
-    </div>
-    <div class="card-glass" style="padding:20px;margin-top:16px">
-      <div class="section-title">Team Aqua types</div>
-      <div class="type-slot-grid">${teamTypeSelectors('aqua', DEFAULTS.aquaTypes)}</div>
-      <span class="field-hint">Each slot is a fixed type or Random (rolled per run). Team Aqua trainers field Pokémon of these types; the main + secondary drive their card colour.</span>
-    </div>
-    <div class="card-glass" style="padding:20px;margin-top:16px">
-      <div class="section-title">Team Magma types</div>
-      <div class="type-slot-grid">${teamTypeSelectors('magma', DEFAULTS.magmaTypes)}</div>
-      <span class="field-hint">Each slot is a fixed type or Random (rolled per run). Team Magma trainers field Pokémon of these types; the main + secondary drive their card colour.</span>
+      <div>
+        <div class="section-title">Team Aqua types</div>
+        <div class="type-slot-grid">${teamTypeSelectors('aqua', DEFAULTS.aquaTypes)}</div>
+        <span class="field-hint">Each slot is a fixed type or Random (rolled per run). Team Aqua trainers field Pokémon of these types; the main + secondary drive their card colour.</span>
+      </div>
+      <div>
+        <div class="section-title">Team Magma types</div>
+        <div class="type-slot-grid">${teamTypeSelectors('magma', DEFAULTS.magmaTypes)}</div>
+        <span class="field-hint">Each slot is a fixed type or Random (rolled per run). Team Magma trainers field Pokémon of these types; the main + secondary drive their card colour.</span>
+      </div>
     </div>
   </div>
 </section>

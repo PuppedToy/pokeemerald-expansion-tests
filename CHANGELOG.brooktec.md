@@ -15,6 +15,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Tidier "Trainers & bosses" settings.** "Disable Steven tag battle" and the Team Aqua / Team Magma type
+  selectors now sit in the same card as the gym/Elite-Four/champion type options, instead of in separate
+  boxes — consistent with the rest of the settings. (T-209)
+
 - **Norman hands over the New Mauville key.** Beating Norman now gives you the Basement Key directly and opens
   New Mauville — you no longer have to trek back to Mauville City and talk to Wattson to start the errand.
   Wattson still thanks you (and gives the Ability Patch) once you've dealt with the generator. (T-205)

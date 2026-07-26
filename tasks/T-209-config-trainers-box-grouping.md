@@ -1,7 +1,7 @@
 ---
 id: T-209
 title: Keep Steven-tag & evil-types inside the "Trainers & bosses" box
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-07-25
 updated: 2026-07-25
@@ -41,10 +41,12 @@ Merge the three trailing boxes into the first `.card-glass` so the whole Trainer
 preserve field order, labels, ids and read/set wiring. Visual/overflow check.
 
 Acceptance criteria:
-- [ ] "Disable Steven tag battle" and both evil-team type selectors render inside the same box as the gym/E4/
-      champion type options (one `.card-glass` for the category).
-- [ ] No field ids/values changed; save/load/reset still round-trips these options.
-- [ ] Frontend tests green; no horizontal overflow (`npm run shoot` overflow check).
+- [x] "Disable Steven tag battle" and both evil-team type selectors render inside the same box as the gym/E4/
+      champion type options (one `.card-glass` for the category) — the trailing three cards were merged in as
+      inner sub-sections (`config-form.js`).
+- [x] No field ids/values changed (`#disable-steven-tag-battle`, `teamTypeSelectors('aqua'/'magma')` untouched);
+      save/load/reset round-trips unchanged — frontend suite green (162 passed).
+- [x] No horizontal overflow at any viewport (`npm run shoot --only settings`: phone-sm/mobile/ipad×2/desktop).
 
 ## Progress log
 
@@ -53,6 +55,12 @@ Acceptance criteria:
 - **2026-07-25** — Task created (proposed). Located the box boundaries in `config-form.js`: first card closes at
   `:1484`, then separate cards open for Steven-tag (`:1485`), Aqua (`:1494`) and Magma (`:1499`). Fix is to keep
   them in the first card instead of reopening.
+- **2026-07-26** — **Implemented (in-progress).** Merged the four `.card-glass` boxes of the Trainers & bosses
+  category into one: dropped the box that closed after "Champion type-change chance" and the three that reopened
+  for the Steven-tag toggle / Team Aqua / Team Magma selectors, folding them in as flex sub-sections (the two
+  type selectors wrapped in a plain grouping `<div>` each). No field ids or wiring changed. Verified: div
+  structure balanced (read back), frontend suite green (162 passed), and `npm run shoot --only settings` reports
+  no horizontal overflow at any of the 5 viewports. `config-form.js` is served directly, so no bundle rebuild.
 
 ## Outcome
 
