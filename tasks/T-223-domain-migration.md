@@ -59,8 +59,10 @@ Caddyfile change is rsynced but not applied until Caddy is reloaded/recreated (s
 - [x] New domain purchased + DNS imported + resolving to the box (owner); verified DNS-only, NS active.
 - [x] Deployed + Caddy recreated + `BASE_URL` switched; **new domain serves over HTTPS (LE cert issued),
       old domain + both www 301-redirect to it, BETA + legal pages live** (verified 2026-07-26).
-- [ ] (Optional, owner) `MAIL_FROM` moved to the new domain after Brevo authentication; remove the old-domain
-      redirect blocks from the Caddyfile once you no longer need the old name.
+- [x] `MAIL_FROM` moved to `no-reply@emerald-cut-randomizer.com` after Brevo authentication (DKIM/brevo-code
+      added to the new domain, verified); test verification email confirmed delivered from the new domain.
+      Old domain stripped to A-records-only (redirect via Caddy) by the owner.
+- [ ] (Later, owner) Remove the old-domain redirect blocks from the Caddyfile + let the old domain expire.
 
 ## Progress log
 
@@ -77,6 +79,12 @@ Caddyfile change is rsynced but not applied until Caddy is reloaded/recreated (s
   ACME for the new name); **`up -d --force-recreate caddy` fixed it** → LE cert issued in seconds. Verified:
   new domain 200 + `{"beta":true}` + privacy/terms 200; old + both www → 301 to new. Migration done;
   `MAIL_FROM` left on the old (Brevo-verified) domain.
+- **2026-07-26** — Email migration: owner authenticated `emerald-cut-randomizer.com` in Brevo; DKIM
+  (`brevo1/brevo2._domainkey` → `bN.emerald-cut-randomizer-com.dkim.brevo.com`) + `brevo-code` TXT added to
+  the new domain (verified via dig). Switched `MAIL_FROM=no-reply@emerald-cut-randomizer.com` on the box +
+  recreated `app`; a test registration's verification email was confirmed delivered from the new domain (no
+  send error in logs). Owner then stripped the old domain to A-records-only (email records removed; the two
+  A records stay so Caddy keeps 301-redirecting). Domain + email migration complete.
 
 ## Outcome
 
