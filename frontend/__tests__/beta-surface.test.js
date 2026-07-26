@@ -71,6 +71,7 @@ test('BETA on + accepted user shows "Accepted" in Settings', async () => {
     await account.initAccount({});
     await flush(); await flush();
     assert.match(env.getEl('settings-content').innerHTML, /Accepted/, 'accepted users can build');
+    assert.equal(env.getEl('beta-notice').hidden, true, 'accepted users do NOT see the closed-beta notice (T-224)');
   } finally { env.restore(); }
 });
 

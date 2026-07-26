@@ -21,7 +21,7 @@ export function fmtEta(secs) {
 // One-line summary of an invite batch result. Pure.
 export function inviteSummary(r) {
   if (!r) return '';
-  const bits = [`${r.invited} invited`, `${r.withRom} with a prepared ROM`, `${r.withoutRom} emailed to start`];
+  const bits = [`${r.invited} invited`, `${r.withRom} with a prepared run`, `${r.withoutRom} emailed to start`];
   if (r.cappedByBudget) bits.push('capped by the ~1h build budget');
   if (r.shortfall) bits.push(`${r.shortfall} short (pool exhausted)`);
   return bits.join(' · ');
@@ -39,7 +39,7 @@ export function overviewHtml(data) {
   return `
     <div class="admin-stats">
       <span class="admin-stat"><strong>${c.pendingVerified || 0}</strong> waiting (verified)</span>
-      <span class="admin-stat"><strong>${c.heldRoms || 0}</strong> prepared ROMs</span>
+      <span class="admin-stat"><strong>${c.heldRoms || 0}</strong> prepared runs</span>
       <span class="admin-stat"><strong>${c.accepted || 0}</strong> accepted</span>
       <span class="admin-stat">queue: <strong>${q.building || 0}</strong> building · <strong>${q.queued || 0}</strong> queued · ETA ${fmtEta(q.etaSecs)}</span>
       <button class="btn btn-ghost btn-sm" id="admin-refresh" type="button">Refresh</button>
@@ -53,7 +53,7 @@ export function overviewHtml(data) {
     <h3 class="admin-h">Waiting (${pending.length})</h3>
     <div class="admin-table-wrap">
       <table class="admin-table">
-        <thead><tr><th>Email</th><th>Waiting since</th><th>Prepared ROM</th><th></th></tr></thead>
+        <thead><tr><th>Email</th><th>Waiting since</th><th>Prepared run</th><th></th></tr></thead>
         <tbody>
           ${pending.map((u) => `<tr>
             <td>${esc(u.email)}</td>
@@ -80,7 +80,7 @@ export function overviewHtml(data) {
 export function searchResultsHtml(results = []) {
   if (!results.length) return '<p class="settings-note">No matches.</p>';
   return results.map((u) => `<div class="admin-search-row">
-    <span>${esc(u.email)} — ${esc(u.inviteState)}${u.hasRom ? ` · ROM ✓ (${u.romsTotal})` : ''}${u.verified ? '' : ' · unverified'}</span>
+    <span>${esc(u.email)} — ${esc(u.inviteState)}${u.hasRom ? ` · run ✓ (${u.romsTotal})` : ''}${u.verified ? '' : ' · unverified'}</span>
     ${u.inviteState !== 'accepted' ? `<button class="btn btn-ghost btn-sm" type="button" data-accept-user="${u.userId}">Accept</button>` : ''}
   </div>`).join('');
 }
