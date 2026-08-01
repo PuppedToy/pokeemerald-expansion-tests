@@ -62,11 +62,11 @@ NewMauville_Entrance_Pokemon::
 	lock
 	faceplayer
 	waitse
-	playmoncry SPECIES_MEW, CRY_MODE_ENCOUNTER
+	setvar VAR_0x8004, 3 @ static encounter — T-235 (gStaticEncounters[])
+	special ForcePerfectIVsOnNextEncounter
+	special SetupStaticEncounter
 	delay 40
 	waitmoncry
-	special ForcePerfectIVsOnNextEncounter
-	setwildbattle SPECIES_MEW, 39
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special BattleSetup_StartLegendaryBattle
 	waitstate
@@ -86,7 +86,9 @@ NewMauville_Entrance_DefeatedPokemon::
 
 
 NewMauville_EventScript_RanFromPokemon::
-	setvar VAR_0x8004, SPECIES_MEW
+	setvar VAR_0x8004, 3 @ T-235
+	special GetStaticEncounterSpecies
+	copyvar VAR_0x8004, VAR_RESULT
 	goto Common_EventScript_LegendaryFlewAway
 	end
 

@@ -9,6 +9,7 @@
 #include "decoration.h"
 #include "decompress.h"
 #include "event_data.h"
+#include "randomizer_picks.h"
 #include "event_object_movement.h"
 #include "event_scripts.h"
 #include "faraway_island.h"
@@ -1494,7 +1495,8 @@ u8 Unref_TryInitLocalObjectEvent(u8 localId)
         for (i = 0; i < objectEventCount; i++)
         {
             template = &gSaveBlock1Ptr->objectEventTemplates[i];
-            if (template->localId == localId && !FlagGet(template->flagId))
+            if (template->localId == localId && !FlagGet(template->flagId)
+             && !RandomizerIsHiddenMegaObject(template)) // T-236 — removed mega trainers stay in the map data
                 return InitObjectEventStateFromTemplate(template, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup);
         }
     }
@@ -2760,7 +2762,8 @@ void TrySpawnObjectEvents(s16 cameraX, s16 cameraY)
             s16 npcX = template->x + MAP_OFFSET;
             s16 npcY = template->y + MAP_OFFSET;
 
-            if (top <= npcY && bottom >= npcY && left <= npcX && right >= npcX && !FlagGet(template->flagId))
+            if (top <= npcY && bottom >= npcY && left <= npcX && right >= npcX && !FlagGet(template->flagId)
+             && !RandomizerIsHiddenMegaObject(template)) // T-236 — removed mega trainers stay in the map data
             {
                 if (template->graphicsId == OBJ_EVENT_GFX_LIGHT_SPRITE)
                     SpawnLightSprite(npcX, npcY, cameraX, cameraY, template->trainerRange_berryTreeId); // light sprite instead

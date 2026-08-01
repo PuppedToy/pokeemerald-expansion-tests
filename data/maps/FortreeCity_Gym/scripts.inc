@@ -34,8 +34,11 @@ FortreeCity_Gym_EventScript_WinonaDefeated::
 	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_DEFEATED_FORTREE_GYM
 	setflag FLAG_HIDE_ROUTE_120_STEVEN
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
-	givemon GYM_REWARD_MON, 46
+	setvar VAR_0x8004, 5 @ GYM_REWARD idx — T-235 data-driven reward (gGymRewards[])
+	special GetGymReward
+	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
+	givemon VAR_RESULT, 46
+	bufferspeciesname STR_VAR_1, VAR_RESULT
 	call FortreeCity_Gym_EventScript_ReceivedRewardPokeFanfare
 	setvar VAR_0x8008, 6
 	call Common_EventScript_SetGymTrainers
@@ -67,7 +70,7 @@ FortreeCity_Gym_EventScript_ReceivedRewardPokeFanfare::
 	return
 
 FortreeCity_Gym_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received GYM_REWARD_NAME!$"
+	.string "{PLAYER} received {STR_VAR_1}!$"
 
 FortreeCity_Gym_EventScript_GiveAerialAce2::
 	giveitem ITEM_TM32

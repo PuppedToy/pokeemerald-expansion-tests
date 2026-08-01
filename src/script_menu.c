@@ -382,6 +382,11 @@ static void DrawMultichoiceMenuDynamic(u8 left, u8 top, u8 argc, struct ListMenu
     gMultiuseListMenuTemplate.maxShowed = maxBeforeScroll;
     gMultiuseListMenuTemplate.moveCursorFunc = MultichoiceDynamic_MoveCursor;
 
+    // B-055 — same guard the static multichoice paths arm (InitMultichoiceCheckWrap /
+    // InitMultichoiceNoWrap): scripts run before RunTasks() in the frame, so a menu opened from an
+    // object interaction would otherwise read the very A press that opened it and self-select row 0.
+    sProcessInputDelay = 2;
+
     taskId = CreateTask(Task_HandleScrollingMultichoiceInput, 80);
     gTasks[taskId].data[0] = ListMenuInit(&gMultiuseListMenuTemplate, 0, 0);
     gTasks[taskId].data[1] = ignoreBPress;
@@ -486,7 +491,16 @@ static void InitMultichoiceCheckWrap(bool8 ignoreBPress, u8 count, u8 windowId, 
 static void Task_HandleScrollingMultichoiceInput(u8 taskId)
 {
     bool32 done = FALSE;
-    s32 input = ListMenu_ProcessInput(gTasks[taskId].data[0]);
+    s32 input;
+
+    // B-055 — don't read the input that opened this menu (see DrawMultichoiceMenuDynamic).
+    if (sProcessInputDelay)
+    {
+        sProcessInputDelay--;
+        return;
+    }
+
+    input = ListMenu_ProcessInput(gTasks[taskId].data[0]);
 
     switch (input)
     {

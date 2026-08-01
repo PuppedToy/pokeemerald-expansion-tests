@@ -51,14 +51,16 @@ describe('writeTMsFromList', () => {
         expect(content).not.toContain('SNOWSCAPE');
     });
 
-    test('writeFile called exactly twice: tms_hms.h and script_menu.h', async () => {
+    // T-236 — TM pick menu labels are runtime now (gItemPicks[] + BufferItemPickName), so the TM
+    // randomizer no longer rewrites script_menu.h; tms_hms.h is its only output.
+    test('writeFile called exactly once: tms_hms.h only (script_menu.h is never touched)', async () => {
         const tmList = buildTMList();
         await writeTMsFromList(tmList);
 
         const paths = writeFile.mock.calls.map(([p]) => p);
-        expect(paths.length).toBe(2);
+        expect(paths.length).toBe(1);
         expect(paths.some(p => p.includes('tms_hms.h'))).toBe(true);
-        expect(paths.some(p => p.includes('script_menu.h'))).toBe(true);
+        expect(paths.some(p => p.includes('script_menu.h'))).toBe(false);
     });
 
     test('randomizeTMs still works and returns a 95-entry tmList (no regression)', async () => {

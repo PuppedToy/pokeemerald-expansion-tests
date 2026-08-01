@@ -118,70 +118,27 @@ Route104_EventScript_MayEncounter::
 	releaseall
 	end
 
-@ === RAND_ROUTE104_GEMS_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE104_GEMS]); static, no longer regenerated
 Route104_EventScript_PickGem::
-	multichoice 0, 0, MULTI_ROUTE104_PICK_GEM, FALSE
-	switch VAR_RESULT
-	case 0, Route104_EventScript_PickGem1
-	case 1, Route104_EventScript_PickGem2
-	case 2, Route104_EventScript_PickGem3
-	case 3, Route104_EventScript_PickGem4
-	end
-
-Route104_EventScript_PickGem1::
-	finditem ITEM_GROUND_GEM
+	setvar VAR_0x8004, PICK_ROUTE104_GEMS
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route104_EventScript_PickGemEnd
 	setflag FLAG_ITEM_ROUTE_104_GEM
+Route104_EventScript_PickGemEnd::
 	end
 
-Route104_EventScript_PickGem2::
-	finditem ITEM_FIGHTING_GEM
-	setflag FLAG_ITEM_ROUTE_104_GEM
-	end
-
-Route104_EventScript_PickGem3::
-	finditem ITEM_GRASS_GEM
-	setflag FLAG_ITEM_ROUTE_104_GEM
-	end
-
-Route104_EventScript_PickGem4::
-	finditem ITEM_DARK_GEM
-	setflag FLAG_ITEM_ROUTE_104_GEM
-	end
-@ === RAND_ROUTE104_GEMS_END ===
-
-@ === RAND_ROUTE104_BERRIES_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE104_BERRIES]); static, no longer regenerated
 Route104_EventScript_PickBerry::
-	multichoice 0, 0, MULTI_ROUTE104_PICK_BERRY, FALSE
-	switch VAR_RESULT
-	case 0, Route104_EventScript_PickBerry1
-	case 1, Route104_EventScript_PickBerry2
-	case 2, Route104_EventScript_PickBerry3
-	case 3, Route104_EventScript_PickBerry4
-	end
-
-Route104_EventScript_PickBerry1::
-	finditem ITEM_HABAN_BERRY
+	setvar VAR_0x8004, PICK_ROUTE104_BERRIES
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route104_EventScript_PickBerryEnd
 	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
+Route104_EventScript_PickBerryEnd::
 	end
-
-Route104_EventScript_PickBerry2::
-	finditem ITEM_PAYAPA_BERRY
-	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
-	end
-
-Route104_EventScript_PickBerry3::
-	finditem ITEM_CHARTI_BERRY
-	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
-	end
-
-Route104_EventScript_PickBerry4::
-	finditem ITEM_CHILAN_BERRY
-	setflag FLAG_ITEM_ROUTE_104_X_ACCURACY
-	end
-@ === RAND_ROUTE104_BERRIES_END ===
 
 Route104_EventScript_PickTM::
-	multichoice 0, 0, MULTI_ROUTE104_PICK_TM, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE104
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route104_EventScript_PickWaterPulseTM
 	case 1, Route104_EventScript_PickBulletSeedTM
@@ -204,7 +161,8 @@ Route104_EventScript_PickDigTM::
 	end
 
 Route104_EventScript_PickTM2::
-	multichoice 0, 0, MULTI_ROUTE104_PICK_TM2, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE104_2
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route104_EventScript_PickTM2_Option1
 	case 1, Route104_EventScript_PickTM2_Option2

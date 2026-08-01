@@ -99,8 +99,11 @@ SootopolisCity_Gym_1F_EventScript_JuanDefeated::
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_RESIDENTS
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_STEVEN
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_WALLACE
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
-	givemon GYM_REWARD_MON, 64
+	setvar VAR_0x8004, 7 @ GYM_REWARD idx — T-235 data-driven reward (gGymRewards[])
+	special GetGymReward
+	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
+	givemon VAR_RESULT, 64
+	bufferspeciesname STR_VAR_1, VAR_RESULT
 	call SootopolisCity_Gym_1F_EventScript_ReceivedRewardPokeFanfare
 	setvar VAR_SOOTOPOLIS_CITY_STATE, 6
 	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_MAN_1
@@ -126,7 +129,7 @@ SootopolisCity_Gym_1F_EventScript_ReceivedRewardPokeFanfare::
 	return
 
 SootopolisCity_Gym_1F_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received GYM_REWARD_NAME!$"
+	.string "{PLAYER} received {STR_VAR_1}!$"
 
 SootopolisCity_Gym_1F_EventScript_GiveWaterPulse::
 	giveitem ITEM_TM51

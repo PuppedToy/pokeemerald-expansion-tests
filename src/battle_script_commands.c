@@ -69,6 +69,7 @@
 #include "data/battle_move_effects.h"
 #include "follower_npc.h"
 #include "load_save.h"
+#include "randomizer_settings.h"
 
 // table to avoid ugly powing on gba (courtesy of doesnt)
 // this returns (i^2.5)/4
@@ -8215,17 +8216,14 @@ static void Cmd_hitanimation(void)
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
-// T-052 — configurable trainer prize money. The randomizer's money writer (randomizer/moneyWriter.js)
-// patches the three tunable literals below per run; the museum/space-center grunts derive from the
-// boss value (round(boss * 2/3), museum entry adds $50), so at the defaults they stay $2000 / $2050.
-// Elite Four and Champion are intentionally fixed.
-#define NORMAL_TRAINER_MONEY 250
-#define BOSS_TRAINER_MONEY 3000
-#define GYM_LEADER_MONEY 5000
+// T-052 / T-234 — configurable trainer prize money. The three tunable values (normal/boss/gym) now live in
+// the runtime settings block `gRandomizerSettings` (randomizer_settings.h) so a prebuilt ROM can be
+// repatched without recompiling (ADR-022); the randomizer's money writer (randomizer/moneyWriter.js)
+// patches those initializers per run. The museum/space-center grunts derive from the boss value at runtime
+// (round(boss * 2/3), museum entry adds $50), so at the defaults they stay $2000 / $2050. Elite Four and
+// Champion are intentionally fixed.
 #define ELITE_FOUR_MONEY 10000
 #define CHAMPION_MONEY 50000
-#define MUSEUM_SPACE_MONEY ((BOSS_TRAINER_MONEY * 2) / 3)  // ~65% of the boss reward
-#define MUSEUM_2_MONEY (MUSEUM_SPACE_MONEY + 50)           // + museum entry fee
 
 static u32 GetTrainerMoneyToGive(u16 trainerId)
 {
@@ -8274,6 +8272,7 @@ static u32 GetTrainerMoneyToGive(u16 trainerId)
 
     u8 trainerClass = GetTrainerClassFromId(trainerId);
     u32 baseReward;
+    const struct RandomizerSettings *settings = GetRandomizerSettings(); // T-234: injectable money values
 
     if (trainerClass == TRAINER_CLASS_CHAMPION)
     {
@@ -8285,21 +8284,22 @@ static u32 GetTrainerMoneyToGive(u16 trainerId)
     }
     else if (trainerClass == TRAINER_CLASS_LEADER)
     {
-        baseReward = GYM_LEADER_MONEY;
+        baseReward = settings->trainerMoneyGym;
     }
     else
     {
         u32 i;
-        baseReward = NORMAL_TRAINER_MONEY; // default: regular trainer
-        if (trainerId == TRAINER_GRUNT_MUSEUM_2) { baseReward = MUSEUM_2_MONEY; goto done; } // museum entry costs $50
-        if (trainerId == TRAINER_GRUNT_MUSEUM_1) { baseReward = MUSEUM_SPACE_MONEY; goto done; }
+        u32 spaceMoney = (settings->trainerMoneyBoss * 2) / 3; // ~65% of the boss reward
+        baseReward = settings->trainerMoneyNormal; // default: regular trainer
+        if (trainerId == TRAINER_GRUNT_MUSEUM_2) { baseReward = spaceMoney + 50; goto done; } // museum entry costs $50
+        if (trainerId == TRAINER_GRUNT_MUSEUM_1) { baseReward = spaceMoney; goto done; }
         for (i = 0; i < ARRAY_COUNT(sSpaceCenterGrunts); i++)
         {
-            if (trainerId == sSpaceCenterGrunts[i]) { baseReward = MUSEUM_SPACE_MONEY; goto done; }
+            if (trainerId == sSpaceCenterGrunts[i]) { baseReward = spaceMoney; goto done; }
         }
         for (i = 0; i < ARRAY_COUNT(sNonGymBosses); i++)
         {
-            if (trainerId == sNonGymBosses[i]) { baseReward = BOSS_TRAINER_MONEY; goto done; }
+            if (trainerId == sNonGymBosses[i]) { baseReward = settings->trainerMoneyBoss; goto done; }
         }
     }
 done:

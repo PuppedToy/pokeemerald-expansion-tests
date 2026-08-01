@@ -8,6 +8,9 @@ services:
       dockerfile: Dockerfile
     image: emerald-cut:latest
     working_dir: /app
+    init: true                 # tini as PID 1 reaps orphaned build subprocesses — without it, heavy
+                               # `make` activity leaks zombies until the container's pids cgroup caps out
+                               # and every fork fails with "vfork: Resource temporarily unavailable" (T-235)
     user: "1000:1000"          # matches the host owner of the bind-mounted repo (ADR-006 non-root)
     volumes:
       - ../:/app               # the repo (host): source, .git (needed for make.js restore),

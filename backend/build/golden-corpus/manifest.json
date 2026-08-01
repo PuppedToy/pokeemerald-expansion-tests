@@ -1,0 +1,64 @@
+{
+  "_comment": "Golden master (T-230): sha256 of the full ROM built from each FROZEN corpus bundle, on the PRO build box. build(frozen_bundle) is byte-deterministic (T-231/GATE-2), so a hash match proves the build output is unchanged. This is a POINT-IN-TIME snapshot: Phase-3 injection must reproduce these hashes byte-for-byte (INV-BYTES, base unchanged); a Phase-2 base refactor changes the bytes by design (INV-BEHAVIOR) and RE-SNAPSHOTS this file. Hashes are valid only for this base ROM + toolchain + core-count; an upstream sync or toolchain change requires regenerating. See docs/base-plus-injection-strategy.md.",
+  "baseline": "post-T236 + B-055 (T-234 runtime settings struct + T-235 data-driven gym & static rewards + T-236 data-driven item/TM picks & mega-trainer hide flags, plus the B-055 dynamic-multichoice input guard). Bytes changed BY DESIGN vs the post-T235 snapshot (INV-BEHAVIOR): the item-ball picker no longer generates per-item script handlers, TM/item menu labels are built at runtime from gItemPicks[], and removed mega trainers are hidden via gMegaTrainerHidden[] instead of deleting their map.json object_events. Owner play-test signed off 2026-08-01. Supersedes the post-T235 snapshot.",
+  "capturedAt": "2026-08-01",
+  "baseRomSha256": "9c8266b5e170c72ca66c054e4360251ece33d8dfc752c409d14b62df7f535fa5",
+  "injectableSymbols": {
+    "gRandomizerSettings": {
+      "romOffset": "0xbf0084",
+      "layout": "u32 trainerMoneyNormal, trainerMoneyBoss, trainerMoneyGym, moveRelearnerCost (T-234, via GetRandomizerSettings noipa accessor)"
+    },
+    "gGymRewards": {
+      "romOffset": "0xbf003c",
+      "layout": "11 x { u16 species, u16 item } (T-235, via GetGymReward special)"
+    },
+    "gStaticEncounters": {
+      "romOffset": "0xbf0068",
+      "layout": "7 x { u16 species, u16 level } \u2014 regirock/regice/registeel/mew/legend1-3 (T-235, via SetupStaticEncounter special)"
+    },
+    "gItemPicks": {
+      "romOffset": "0xbefe94",
+      "layout": "53 x { u16 items[4] } \u2014 indices 0..28 are the randomizer-filled item locations (19 menu picks + 10 single items), 29..52 are STATIC TM picks; ITEM_NONE pads unused slots and the menu skips them (T-236, via GetItemPickItem / BufferItemPickName specials)"
+    },
+    "gMegaTrainerHidden": {
+      "romOffset": "0xbefdd4",
+      "layout": "21 x u8 bool \u2014 index = MEGA_TRAINERS id - 1; TRUE hides that mega's trainer NPC + stone ball at spawn (T-236, via RandomizerIsHiddenMegaObject)"
+    },
+    "_note": "offsets are for THIS base build; randomization shifts them \u2014 read each build's own .map. Inject only into the fixed base."
+  },
+  "builder": "PRO (pokemon-emerald-cut.com), deploy-app-1 container (init:true), arm-none-eabi-gcc 12.2, 2 vCPU, -O2 -flto=auto",
+  "bundles": {
+    "baseline": {
+      "rom-0.gba": "e9c5a1eafb5844d633d1e8ee92a3febada156edb6686e7b56e2ac63e6b141a77"
+    },
+    "rebalance-off": {
+      "rom-0.gba": "ae6b7e44877fb05a9586f223eeefba598d52f01503a3dac3507fc10ba631b632"
+    },
+    "mutate-moves": {
+      "rom-0.gba": "4f4f31d51a5cbcb389b5baf0c50c4fceb9b99eff62a52f3eed8823ad73e0662a"
+    },
+    "doubles": {
+      "rom-0.gba": "8fcef3b5ed0b46e723bad1fa590236ff6a32e450419cdd77479d073121bec803"
+    },
+    "runbun-mixed": {
+      "rom-0.gba": "ed720749c9e1970a2c0381c4ade4f10275b424141a90a43c127175191fbb7a61"
+    },
+    "steven-off": {
+      "rom-0.gba": "46b21992b5fe06fd34583fd723f64aaa6d8add206ced4871957e8348a4fe438a"
+    },
+    "wild-classic": {
+      "rom-0.gba": "19fa27590dd79805534d0464ce698a404f9f4e9f3f1f8e17cff7279785ec8a6d"
+    },
+    "economy": {
+      "rom-0.gba": "2f14b7265bca53a1c8a61d0e65a2a807e1509592556f7633e6b3826b2e580c9d"
+    },
+    "nicknames-on": {
+      "rom-0.gba": "68cada3981734267be6d3f19cc0c569327c1dbdcd583ebd321fa6c59a573fcb2"
+    },
+    "nuzlocke-3": {
+      "rom-0.gba": "a77ea4cd25c1a45ec5427b9ba089e2272d7fa0175b96a864fbbc0776aa255793",
+      "rom-1.gba": "ce6157b3844b1fea05fbd4c084ac08b479b61f71fd0071c3cfae932f9794a3d1",
+      "rom-2.gba": "191197a9c3c281d471dc54708f84fb040121357222d1e68175332459a3c81625"
+    }
+  }
+}

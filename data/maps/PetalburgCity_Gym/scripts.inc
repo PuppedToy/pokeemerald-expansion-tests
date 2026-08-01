@@ -377,8 +377,11 @@ PetalburgCity_Gym_EventScript_NormanBattle::
 	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_DEFEATED_PETALBURG_GYM
 	setvar VAR_PETALBURG_GYM_STATE, 7
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
-	givemon GYM_REWARD_MON, 39
+	setvar VAR_0x8004, 4 @ GYM_REWARD idx — T-235 data-driven reward (gGymRewards[])
+	special GetGymReward
+	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
+	givemon VAR_RESULT, 39
+	bufferspeciesname STR_VAR_1, VAR_RESULT
 	call PetalburgCity_Gym_EventScript_ReceivedRewardPokeFanfare
 	special ResetHealLocationFromDewford
 	call EventScript_HideMrBriney
@@ -417,7 +420,7 @@ PetalburgCity_Gym_EventScript_ReceivedRewardPokeFanfare::
 	return
 
 PetalburgCity_Gym_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received GYM_REWARD_NAME!$"
+	.string "{PLAYER} received {STR_VAR_1}!$"
 
 PetalburgCity_Gym_EventScript_GiveFacade::
 	giveitem ITEM_TM31

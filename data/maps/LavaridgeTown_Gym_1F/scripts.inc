@@ -44,8 +44,11 @@ LavaridgeTown_Gym_1F_EventScript_FlanneryDefeated::
 	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_WHITEOUT_TO_LAVARIDGE
 	setflag FLAG_DEFEATED_LAVARIDGE_GYM
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
-	givemon GYM_REWARD_MON, 36
+	setvar VAR_0x8004, 3 @ GYM_REWARD idx — T-235 data-driven reward (gGymRewards[])
+	special GetGymReward
+	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
+	givemon VAR_RESULT, 36
+	bufferspeciesname STR_VAR_1, VAR_RESULT
 	call LavaridgeTown_Gym_1F_EventScript_ReceivedRewardPokeFanfare
 	addvar VAR_PETALBURG_GYM_STATE, 1
 	giveitem ITEM_HM04
@@ -76,7 +79,7 @@ LavaridgeTown_Gym_1F_EventScript_ReceivedRewardPokeFanfare::
 	return
 
 LavaridgeTown_Gym_1F_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received GYM_REWARD_NAME!$"
+	.string "{PLAYER} received {STR_VAR_1}!$"
 
 LavaridgeTown_Gym_1F_EventScript_GiveOverheat2::
 	giveitem ITEM_TM78

@@ -98,40 +98,19 @@ Route118_EventScript_Deandre::
 	msgbox Route118_Text_DeandrePostBattle, MSGBOX_AUTOCLOSE
 	end
 
-@ === RAND_ROUTE118_ITEMS_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE118_ITEMS]); static, no longer regenerated
 Route118_EventScript_PickBerry::
-	multichoice 0, 0, MULTI_ROUTE118_PICK_BERRY, FALSE
-	switch VAR_RESULT
-	case 0, Route118_EventScript_PickBerry1
-	case 1, Route118_EventScript_PickBerry2
-	case 2, Route118_EventScript_PickBerry3
-	case 3, Route118_EventScript_PickBerry4
-	end
-
-Route118_EventScript_PickBerry1::
-	finditem ITEM_QUICK_CLAW
+	setvar VAR_0x8004, PICK_ROUTE118_ITEMS
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route118_EventScript_PickBerryEnd
 	setflag FLAG_ITEM_ROUTE_118_BERRY
+Route118_EventScript_PickBerryEnd::
 	end
-
-Route118_EventScript_PickBerry2::
-	finditem ITEM_STICKY_BARB
-	setflag FLAG_ITEM_ROUTE_118_BERRY
-	end
-
-Route118_EventScript_PickBerry3::
-	finditem ITEM_ADRENALINE_ORB
-	setflag FLAG_ITEM_ROUTE_118_BERRY
-	end
-
-Route118_EventScript_PickBerry4::
-	finditem ITEM_METRONOME
-	setflag FLAG_ITEM_ROUTE_118_BERRY
-	end
-@ === RAND_ROUTE118_ITEMS_END ===
 
 
 Route118_EventScript_PickTM::
-	multichoice 0, 0, MULTI_ROUTE118_PICK_TM, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE118
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route118_EventScript_PickThunderbolt
 	case 1, Route118_EventScript_PickIceBeam
@@ -182,15 +161,18 @@ Route118_EventScript_Chris::
 	msgbox Route119_Text_ChrisPostBattle, MSGBOX_AUTOCLOSE
 	end
 
-@ === RAND_ROUTE118_BARNY_GOOD_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE118_BARNY_GOOD]); static, no longer regenerated
 Route118_EventScript_BarnyGoodItem::
-	finditem ITEM_SITRUS_BERRY
+	setvar VAR_0x8004, PICK_ROUTE118_BARNY_GOOD
+	setvar VAR_0x8005, 0
+	special GetItemPickItem
+	finditem VAR_RESULT
 	setflag FLAG_ITEM_ROUTE_118_COBA
 	end
-@ === RAND_ROUTE118_BARNY_GOOD_END ===
 
 Route118_EventScript_RosePickTM::
-	multichoice 0, 0, MULTI_ROUTE118_PICK_TM3, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE118_3
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route118_EventScript_RosePickTM_Option1
 	case 1, Route118_EventScript_RosePickTM_Option2
@@ -213,7 +195,8 @@ Route118_EventScript_RosePickTM_Option3::
 	end
 
 Route118_EventScript_DeandrePickTM::
-	multichoice 0, 0, MULTI_ROUTE118_PICK_TM2, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE118_2
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route118_EventScript_DeandrePickTM_Option1
 	case 1, Route118_EventScript_DeandrePickTM_Option2

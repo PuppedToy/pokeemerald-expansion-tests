@@ -70,8 +70,11 @@ Route119_WeatherInstitute_2F_EventScript_ShellyDefeated::
 
 Route119_WeatherInstitute_2F_EventScript_ReceiveCastform::
 	msgbox Route119_WeatherInstitute_2F_Text_ThanksPleaseTakePokemon, MSGBOX_DEFAULT
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
-	givemon GYM_REWARD_MON, 41, GYM_REWARD_ITEM
+	setvar VAR_0x8004, 9 @ GYM_REWARD idx — T-235 data-driven reward (gGymRewards[])
+	special GetGymReward
+	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
+	givemon VAR_RESULT, 41, VAR_0x8005
+	bufferspeciesname STR_VAR_1, VAR_RESULT
 	call Route119_WeatherInstitute_2F_EventScript_ReceivedRewardPokeFanfare
 	closemessage
 	release
@@ -85,7 +88,7 @@ Route119_WeatherInstitute_2F_EventScript_ReceivedRewardPokeFanfare::
 	return
 
 Route119_WeatherInstitute_2F_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received GYM_REWARD_NAME!$"
+	.string "{PLAYER} received {STR_VAR_1}!$"
 
 Route119_WeatherInstitute_2F_EventScript_ReceiveCastformParty::
 	call Route119_WeatherInstitute_2F_EventScript_ReceivedCastformFanfare

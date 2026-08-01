@@ -1,15 +1,16 @@
 'use strict';
 
-// T-167 — configurable move-relearn price. The move relearner charges money to relearn a move the
-// Pokémon has had before (free the first time). That price is a single #define in the C decomp
-// (src/move_relearner.c → MOVE_RELEARNER_MOVE_COST, read by GetMoveRelearnerMoveCost). This writer
-// patches that #define from the bundle config at ROM-build time (called from make.js buildOneRom),
-// then make.js's restore() (git checkout -- src/) reverts the file. Modeled on moneyWriter.js.
+// T-167 / T-234 — configurable move-relearn price. The move relearner charges money to relearn a move the
+// Pokémon has had before (free the first time). That price now lives in the runtime settings block
+// `gRandomizerSettings.moveRelearnerCost` (src/randomizer_settings.c), read by GetMoveRelearnerMoveCost,
+// so a prebuilt ROM can be repatched without recompiling (ADR-022). This writer patches that struct field
+// from the bundle config at ROM-build time (called from make.js buildOneRom), then make.js's restore()
+// (git checkout -- src/) reverts the file. Modeled on moneyWriter.js.
 
 const fs = require('fs').promises;
 const path = require('path');
 
-const MOVE_RELEARNER_FILE = path.resolve(__dirname, '..', 'src', 'move_relearner.c');
+const SETTINGS_FILE = path.resolve(__dirname, '..', 'src', 'randomizer_settings.c');
 
 const MOVE_RELEARN_PRICE_DEFAULT = 250;
 
@@ -19,21 +20,22 @@ function clampPrice(v, def = MOVE_RELEARN_PRICE_DEFAULT) {
 }
 
 /**
- * Patch the MOVE_RELEARNER_MOVE_COST #define in the given C source text. Pure — returns the new text.
- * @param {string} content - move_relearner.c source
+ * Patch the moveRelearnerCost field of gRandomizerSettings in the given C source text. Pure — returns
+ * the new text.
+ * @param {string} content - src/randomizer_settings.c source
  * @param {number|undefined} price
  * @returns {string}
  */
 function patchMoveRelearnPriceInContent(content, price) {
     const cost = clampPrice(price);
-    return content.replace(/#define MOVE_RELEARNER_MOVE_COST\s+\d+/, `#define MOVE_RELEARNER_MOVE_COST ${cost}`);
+    return content.replace(/(\.moveRelearnerCost\s*=\s*)\d+/, `$1${cost}`);
 }
 
 /**
- * Read the relearner C file, patch the price #define from config, and write it back.
+ * Read the settings C file, patch the price field from config, and write it back.
  * A no-op-equivalent when price is undefined (the default reproduces the committed value).
  */
-async function writeMoveRelearnerPrice(price, { file = MOVE_RELEARNER_FILE } = {}) {
+async function writeMoveRelearnerPrice(price, { file = SETTINGS_FILE } = {}) {
     const content = await fs.readFile(file, 'utf8');
     const patched = patchMoveRelearnPriceInContent(content, price);
     await fs.writeFile(file, patched, 'utf8');
@@ -44,5 +46,5 @@ module.exports = {
     patchMoveRelearnPriceInContent,
     clampPrice,
     MOVE_RELEARN_PRICE_DEFAULT,
-    file: MOVE_RELEARNER_FILE,
+    file: SETTINGS_FILE,
 };

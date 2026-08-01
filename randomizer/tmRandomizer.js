@@ -55,7 +55,6 @@ const FIXED_TMS = {
 };
 
 const TMS_HMS_H_PATH = path.resolve(__dirname, '..', 'include', 'constants', 'tms_hms.h');
-const SCRIPT_MENU_PATH = path.resolve(__dirname, '..', 'src', 'data', 'script_menu.h');
 
 function shuffle(array) {
     const arr = [...array];
@@ -68,11 +67,6 @@ function shuffle(array) {
 
 function stripMovePrefix(name) {
     return name.startsWith('MOVE_') ? name.slice(5) : name;
-}
-
-// "WATER_PULSE" → "Water Pulse"
-function toDisplayName(moveName) {
-    return moveName.split('_').map(w => w[0] + w.slice(1).toLowerCase()).join(' ');
 }
 
 // Returns 0-indexed array: tmList[0] = move for TM01, tmList[4] = move for TM05, etc.
@@ -98,67 +92,10 @@ function formatForeachTM(tmList) {
     return lines.join('\n');
 }
 
-// Menu pick lists: [structName, [tmNum for case0, tmNum for case1, ...]]
-// TM numbers are 1-based; order matches the multichoice case ordering in scripts.inc.
-const PICK_LISTS = [
-    ['MultichoiceList_Route104PickTM',   [5,  6,  7 ]],
-    ['MultichoiceList_Route104PickTM2',  [8,  9,  10]],
-    ['MultichoiceList_Route106Pick',     [4,  3,  2 ]],
-    ['MultichoiceList_Route110Pick',      [63, 64, 62]],
-    ['MultichoiceList_Route114PickCharlotte', [13, 15, 14]],
-    ['MultichoiceList_Route114PickNolan',    [88, 89, 90]],
-    ['MultichoiceList_Route114PickAngelina', [57, 58, 59, 60]],
-    ['MultichoiceList_Route111PickTM',   [80, 79, 81]],
-    ['MultichoiceList_Route117PickScreen',[77, 76]],
-    ['MultichoiceList_Route118PickTM',   [34, 33, 35]],
-    ['MultichoiceList_Route118PickTM2',  [20, 21, 22]],
-    ['MultichoiceList_Route118PickTM3',  [39, 40, 41]],
-    ['MultichoiceList_Route120PickTM',   [42, 43, 44]],
-    ['MultichoiceList_Route121PickTM2',  [45, 46, 47]],
-    ['MultichoiceList_Route125PickTM',   [48, 49, 50]],
-    ['MultichoiceList_Route112PickTMStatus', [85, 86, 87]],
-    ['MultichoiceList_Route112PickTMDmg',    [23, 24, 25]],
-    ['MultichoiceList_Route111PickFocus',    [12, 29, 30]],
-    ['MultichoiceList_Route111PickWilton',   [26, 27, 28]],
-    ['MultichoiceList_Route121PickTM',   [82, 83, 84]],
-    ['MultichoiceList_Route124PickTM',   [36, 37, 38]],
-    ['MultichoiceList_Route109RickyPickTM', [16, 17, 18]],
-    ['MultichoiceList_Route109HueyPickTM',  [68, 69, 70]],
-    ['MultichoiceList_Route116PickItem',    [65, 66, 67]],
-];
-
-// Game Corner TM66-TM70 with their coin prices.
-const GAME_CORNER_TMS = [
-    { tm: 66, price: '1,500 COINS' },
-    { tm: 67, price: '3,500 COINS' },
-    { tm: 68, price: '4,000 COINS' },
-    { tm: 69, price: '4,000 COINS' },
-    { tm: 70, price: '4,000 COINS' },
-];
-
-async function patchScriptMenu(tmList) {
-    const name = (n) => toDisplayName(tmList[n - 1]);
-
-    let src = await fs.readFile(SCRIPT_MENU_PATH, 'utf8');
-
-    // Replace all-TM pick lists wholesale.
-    for (const [listName, tmNums] of PICK_LISTS) {
-        const newEntries = tmNums
-            .map(n => `    {COMPOUND_STRING("TM ${name(n)}")},`)
-            .join('\n');
-        src = src.replace(
-            new RegExp(
-                `(static const struct MenuAction ${listName}\\[\\] =\\n\\{\\n)` +
-                `[\\s\\S]*?` +
-                `(\\n\\};)`
-            ),
-            `$1${newEntries}$2`
-        );
-    }
-
-    await fs.writeFile(SCRIPT_MENU_PATH, src, 'utf8');
-    console.log('[TM Randomizer] Updated TM names in script_menu.h');
-}
+// T-236 — the TM pick menus (24 locations) read gItemPicks[] (src/randomizer_picks.c, static
+// PICK_TM_* entries) and build their labels at runtime ("TM <move>" via BufferItemPickName →
+// gTMHMItemMoveIds), so nothing here rewrites script_menu.h anymore. The per-location TM slots
+// live in that C table; the map scripts keep their static finditem handlers.
 
 async function writeTMsFromList(tmList) {
     const foreachTMBody = formatForeachTM(tmList);
@@ -189,8 +126,6 @@ ${foreachTMBody}
 
     await fs.writeFile(TMS_HMS_H_PATH, content, 'utf8');
     console.log('[TM Randomizer] Wrote randomized FOREACH_TM to tms_hms.h');
-
-    await patchScriptMenu(tmList);
 }
 
 async function randomizeTMs(battleFormat = 'singles') {

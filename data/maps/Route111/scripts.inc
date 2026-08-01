@@ -497,61 +497,23 @@ Route111_EventScript_RegisterBrooke::
 	release
 	end
 
-@ === RAND_ROUTE111_BERRIES_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE111_BERRIES]); static, no longer regenerated
 Route111_EventScript_PickBerry::
-	multichoice 0, 0, MULTI_ROUTE111_PICK_BERRY, FALSE
-	switch VAR_RESULT
-	case 0, Route111_EventScript_PickBerry1
-	case 1, Route111_EventScript_PickBerry2
-	case 2, Route111_EventScript_PickBerry3
-	case 3, Route111_EventScript_PickBerry4
-	end
-
-Route111_EventScript_PickBerry1::
-	finditem ITEM_KASIB_BERRY
+	setvar VAR_0x8004, PICK_ROUTE111_BERRIES
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route111_EventScript_PickBerryEnd
 	setflag FLAG_ITEM_ROUTE_111_CHILAN
+Route111_EventScript_PickBerryEnd::
 	end
 
-Route111_EventScript_PickBerry2::
-	finditem ITEM_OCCA_BERRY
-	setflag FLAG_ITEM_ROUTE_111_CHILAN
-	end
-
-Route111_EventScript_PickBerry3::
-	finditem ITEM_KEBIA_BERRY
-	setflag FLAG_ITEM_ROUTE_111_CHILAN
-	end
-
-Route111_EventScript_PickBerry4::
-	finditem ITEM_YACHE_BERRY
-	setflag FLAG_ITEM_ROUTE_111_CHILAN
-	end
-@ === RAND_ROUTE111_BERRIES_END ===
-
-@ === RAND_ROUTE111_ITEMS_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE111_ITEMS]); static, no longer regenerated
 Route111_EventScript_PickItem::
-	multichoice 0, 0, MULTI_ROUTE111_PICK_ITEM, FALSE
-	switch VAR_RESULT
-	case 0, Route111_EventScript_PickItem1
-	case 1, Route111_EventScript_PickItem2
-	case 2, Route111_EventScript_PickItem3
-	end
-
-Route111_EventScript_PickItem1::
-	finditem ITEM_SHED_SHELL
+	setvar VAR_0x8004, PICK_ROUTE111_ITEMS
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route111_EventScript_PickItemEnd
 	setflag FLAG_ITEM_ROUTE_111_TM_SANDSTORM
+Route111_EventScript_PickItemEnd::
 	end
-
-Route111_EventScript_PickItem2::
-	finditem ITEM_SHELL_BELL
-	setflag FLAG_ITEM_ROUTE_111_TM_SANDSTORM
-	end
-
-Route111_EventScript_PickItem3::
-	finditem ITEM_CUSTAP_BERRY
-	setflag FLAG_ITEM_ROUTE_111_TM_SANDSTORM
-	end
-@ === RAND_ROUTE111_ITEMS_END ===
 
 Route111_EventScript_RematchBrooke::
 	trainerbattle_rematch TRAINER_BROOKE_1, Route111_Text_BrookeRematchIntro, Route111_Text_BrookeRematchDefeat
@@ -742,62 +704,32 @@ Route111_Text_TrainerHillSign:
 	.string "TRAINERS!”$"
 
 
-@ === RAND_ROUTE111_BALL_A_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE111_BALL_A]); static, no longer regenerated
 Route111_EventScript_PickBallA::
-	multichoice 0, 0, MULTI_ROUTE111_PICK_BALL_A, FALSE
-	switch VAR_RESULT
-	case 0, Route111_EventScript_PickBallA1
-	case 1, Route111_EventScript_PickBallA2
-	case 2, Route111_EventScript_PickBallA3
-	end
-
-Route111_EventScript_PickBallA1::
-	finditem ITEM_LANSAT_BERRY
+	setvar VAR_0x8004, PICK_ROUTE111_BALL_A
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route111_EventScript_PickBallAEnd
 	setflag FLAG_ITEM_ROUTE_111_ELIXIR
+Route111_EventScript_PickBallAEnd::
 	end
 
-Route111_EventScript_PickBallA2::
-	finditem ITEM_EJECT_PACK
-	setflag FLAG_ITEM_ROUTE_111_ELIXIR
-	end
-
-Route111_EventScript_PickBallA3::
-	finditem ITEM_MENTAL_HERB
-	setflag FLAG_ITEM_ROUTE_111_ELIXIR
-	end
-@ === RAND_ROUTE111_BALL_A_END ===
-
-@ === RAND_ROUTE111_BALL_C_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE111_BALL_C]); static, no longer regenerated
 Route111_EventScript_PickBallC::
-	multichoice 0, 0, MULTI_ROUTE111_PICK_BALL_C, FALSE
-	switch VAR_RESULT
-	case 0, Route111_EventScript_PickBallC1
-	case 1, Route111_EventScript_PickBallC2
-	case 2, Route111_EventScript_PickBallC3
-	end
-
-Route111_EventScript_PickBallC1::
-	finditem ITEM_BRIGHT_POWDER
+	setvar VAR_0x8004, PICK_ROUTE111_BALL_C
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route111_EventScript_PickBallCEnd
 	setflag FLAG_ITEM_ROUTE_111_ADRENALINE
+Route111_EventScript_PickBallCEnd::
 	end
 
-Route111_EventScript_PickBallC2::
-	finditem ITEM_SAFETY_GOGGLES
-	setflag FLAG_ITEM_ROUTE_111_ADRENALINE
-	end
-
-Route111_EventScript_PickBallC3::
-	finditem ITEM_GRIP_CLAW
-	setflag FLAG_ITEM_ROUTE_111_ADRENALINE
-	end
-@ === RAND_ROUTE111_BALL_C_END ===
-
-@ === RAND_ROUTE111_HP_UP_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE111_HP_UP]); static, no longer regenerated
 Route111_EventScript_HpUpGoodItem::
-	finditem ITEM_SITRUS_BERRY
+	setvar VAR_0x8004, PICK_ROUTE111_HP_UP
+	setvar VAR_0x8005, 0
+	special GetItemPickItem
+	finditem VAR_RESULT
 	setflag FLAG_ITEM_ROUTE_111_HP_UP
 	end
-@ === RAND_ROUTE111_HP_UP_END ===
 
 Route111_EventScript_Nob::
 	trainerbattle_single TRAINER_NOB_1, Route115_Text_NobIntro, Route115_Text_NobDefeat, Route111_EventScript_RegisterNob
@@ -821,7 +753,8 @@ Route111_EventScript_RematchNob::
 	end
 
 Route111_EventScript_PickTM::
-	multichoice 0, 0, MULTI_ROUTE111_PICK_TM, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE111
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route111_EventScript_PickTM1
 	case 1, Route111_EventScript_PickTM2
@@ -849,7 +782,8 @@ Route111_EventScript_GemGoodItem::
 	end
 
 Route111_EventScript_PickFocus::
-	multichoice 0, 0, MULTI_ROUTE111_PICK_FOCUS, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE111_FOCUS
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route111_EventScript_PickFocus1
 	case 1, Route111_EventScript_PickFocus2

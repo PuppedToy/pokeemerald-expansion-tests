@@ -123,7 +123,8 @@ Route124_EventScript_PickSpecs::
 	end
 
 Route124_EventScript_PickTM::
-	multichoice 0, 0, MULTI_ROUTE124_PICK_TM, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE124
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route124_EventScript_PickBlizzard
 	case 1, Route124_EventScript_PickThunder

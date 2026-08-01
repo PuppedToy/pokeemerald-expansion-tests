@@ -91,11 +91,11 @@ IslandCave_EventScript_Regice::
 	lock
 	faceplayer
 	waitse
-	playmoncry SPECIES_REGICE, CRY_MODE_ENCOUNTER
+	setvar VAR_0x8004, 1 @ static encounter — T-235 (gStaticEncounters[])
+	special ForcePerfectIVsOnNextEncounter
+	special SetupStaticEncounter
 	delay 40
 	waitmoncry
-	special ForcePerfectIVsOnNextEncounter
-	setwildbattle SPECIES_REGICE, 39
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special StartRegiBattle
 	waitstate
@@ -114,6 +114,8 @@ IslandCave_EventScript_DefeatedRegice::
 	end
 
 IslandCave_EventScript_RanFromRegice::
-	setvar VAR_0x8004, SPECIES_REGICE
+	setvar VAR_0x8004, 1 @ T-235
+	special GetStaticEncounterSpecies
+	copyvar VAR_0x8004, VAR_RESULT
 	goto Common_EventScript_LegendaryFlewAway
 	end

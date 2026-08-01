@@ -32,7 +32,8 @@ Route105_EventScript_Andres::
 	end
 
 Route106_EventScript_PickTM::
-	multichoice 0, 0, MULTI_ROUTE106_PICK, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE106
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route106_EventScript_PickBrickBreak
 	case 1, Route106_EventScript_PickShadowBall
@@ -77,37 +78,23 @@ Route106_EventScript_Ned::
 	msgbox Route106_Text_NedPostBattle, MSGBOX_AUTOCLOSE
 	end
 
-@ === RAND_ROUTE106_BALL_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE106_BALL]); static, no longer regenerated
 Route106_EventScript_PickBall::
-	multichoice 0, 0, MULTI_ROUTE106_PICK_BALL, FALSE
-	switch VAR_RESULT
-	case 0, Route106_EventScript_PickBall1
-	case 1, Route106_EventScript_PickBall2
-	case 2, Route106_EventScript_PickBall3
-	end
-
-Route106_EventScript_PickBall1::
-	finditem ITEM_ABILITY_CAPSULE
+	setvar VAR_0x8004, PICK_ROUTE106_BALL
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route106_EventScript_PickBallEnd
 	setflag FLAG_ITEM_ROUTE_106_CAPSULE
+Route106_EventScript_PickBallEnd::
 	end
 
-Route106_EventScript_PickBall2::
-	finditem ITEM_ABILITY_CAPSULE
-	setflag FLAG_ITEM_ROUTE_106_CAPSULE
-	end
-
-Route106_EventScript_PickBall3::
-	finditem ITEM_ABILITY_CAPSULE
-	setflag FLAG_ITEM_ROUTE_106_CAPSULE
-	end
-@ === RAND_ROUTE106_BALL_END ===
-
-@ === RAND_ROUTE106_GOOD_ITEM_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE106_GOOD_ITEM]); static, no longer regenerated
 Route106_EventScript_GoodItem::
-	finditem ITEM_LIFE_ORB
+	setvar VAR_0x8004, PICK_ROUTE106_GOOD_ITEM
+	setvar VAR_0x8005, 0
+	special GetItemPickItem
+	finditem VAR_RESULT
 	setflag FLAG_ITEM_ROUTE_106_PROTEIN
 	end
-@ === RAND_ROUTE106_GOOD_ITEM_END ===
 
 Route106_Text_TrainerTips:
 	.string "TRAINER TIPS\p"

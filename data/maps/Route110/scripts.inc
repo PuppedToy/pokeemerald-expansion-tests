@@ -136,7 +136,8 @@ Route110_EventScript_CyclingRoadResultsSign::
 	end
 
 Route110_EventScript_PickTM::
-	multichoice 0, 0, MULTI_ROUTE110_PICK, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE110
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route110_EventScript_PickDragonClaw
 	case 1, Route110_EventScript_PickEarthquake
@@ -1035,41 +1036,29 @@ Route110_Text_KeepAnEyeOutForRival:
 Route110_LevelCap:
 	.string "Your Pokémon have leveled up to {STR_VAR_1}!$"
 
-@ === RAND_ROUTE110_BALL_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE110_GOOD_ITEM]); static, no longer regenerated
 Route110_EventScript_GoodItem::
-	finditem ITEM_AIR_BALLOON
+	setvar VAR_0x8004, PICK_ROUTE110_GOOD_ITEM
+	setvar VAR_0x8005, 0
+	special GetItemPickItem
+	finditem VAR_RESULT
 	setflag FLAG_ITEM_ROUTE_110_SHEDSHELL
 	end
-@ === RAND_ROUTE110_BALL_END ===
 
-@ === RAND_ROUTE110_EXTENDER_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE110_EXTENDER]); static, no longer regenerated
 Route110_EventScript_PickExtender::
-	multichoice 0, 0, MULTI_ROUTE110_PICK_EXTENDER, FALSE
-	switch VAR_RESULT
-	case 0, Route110_EventScript_PickExtender1
-	case 1, Route110_EventScript_PickExtender2
-	case 2, Route110_EventScript_PickExtender3
-	end
-
-Route110_EventScript_PickExtender1::
-	finditem ITEM_HEAVY_DUTY_BOOTS
+	setvar VAR_0x8004, PICK_ROUTE110_EXTENDER
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route110_EventScript_PickExtenderEnd
 	setflag FLAG_ITEM_ROUTE_110_EXTENDER
+Route110_EventScript_PickExtenderEnd::
 	end
 
-Route110_EventScript_PickExtender2::
-	finditem ITEM_LUM_BERRY
-	setflag FLAG_ITEM_ROUTE_110_EXTENDER
-	end
-
-Route110_EventScript_PickExtender3::
-	finditem ITEM_BLUNDER_POLICY
-	setflag FLAG_ITEM_ROUTE_110_EXTENDER
-	end
-@ === RAND_ROUTE110_EXTENDER_END ===
-
-@ === RAND_ROUTE110_LUM_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE110_LUM]); static, no longer regenerated
 Route110_EventScript_LumGoodItem::
-	finditem ITEM_AIR_BALLOON
+	setvar VAR_0x8004, PICK_ROUTE110_LUM
+	setvar VAR_0x8005, 0
+	special GetItemPickItem
+	finditem VAR_RESULT
 	setflag FLAG_ITEM_ROUTE_110_LUM
 	end
-@ === RAND_ROUTE110_LUM_END ===

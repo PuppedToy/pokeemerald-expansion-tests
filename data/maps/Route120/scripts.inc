@@ -217,7 +217,8 @@ Route120_EventScript_Callie::
 	end
 
 Route120_EventScript_PickTM::
-	multichoice 0, 0, MULTI_ROUTE120_PICK_TM, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE120
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route120_EventScript_PickTM_Option1
 	case 1, Route120_EventScript_PickTM_Option2
@@ -239,12 +240,14 @@ Route120_EventScript_PickTM_Option3::
 	setflag FLAG_ITEM_ROUTE_120_NEST_BALL
 	end
 
-@ === RAND_ROUTE120_ANGELICA_GOOD_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE120_ANGELICA_GOOD]); static, no longer regenerated
 Route120_EventScript_AngelicaGoodItem::
-	finditem ITEM_SITRUS_BERRY
+	setvar VAR_0x8004, PICK_ROUTE120_ANGELICA_GOOD
+	setvar VAR_0x8005, 0
+	special GetItemPickItem
+	finditem VAR_RESULT
 	setflag FLAG_ITEM_ROUTE_119_ZINC
 	end
-@ === RAND_ROUTE120_ANGELICA_GOOD_END ===
 
 Route120_Text_RouteSignFortree:
 	.string "ROUTE 120\n"

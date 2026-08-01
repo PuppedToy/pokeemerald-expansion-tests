@@ -569,3 +569,8 @@ gSpecials::
 	def_special SetHiddenNature
 	def_special LevelUpAllPokemonToCap
 	def_special BufferLevelCap
+	def_special GetGymReward @ T-235: VAR_0x8004=gym index -> VAR_RESULT=species, VAR_0x8005=held item
+	def_special SetupStaticEncounter @ T-235: VAR_0x8004=static index -> cry + scripted wild mon (gStaticEncounters[])
+	def_special GetStaticEncounterSpecies @ T-235: VAR_0x8004=static index -> VAR_RESULT=species
+	def_special GetItemPickItem @ T-236: VAR_0x8004=pick index, VAR_0x8005=slot -> VAR_RESULT=item (gItemPicks[])
+	def_special BufferItemPickName @ T-236: VAR_0x8004=pick index, VAR_0x8005=slot -> STR_VAR_1=item/TM-move label

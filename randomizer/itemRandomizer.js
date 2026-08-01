@@ -7,7 +7,7 @@ const items = require('./items.js');
 const IS_NODE = typeof process !== 'undefined' && !!process.versions?.node;
 
 const ROOT = path.resolve(__dirname, '..');
-const SCRIPT_MENU_PATH = path.join(ROOT, 'src', 'data', 'script_menu.h');
+const PICKS_C_PATH = path.join(ROOT, 'src', 'randomizer_picks.c');
 
 // --- Utilities ---
 
@@ -33,72 +33,6 @@ function itemDisplayName(constant) {
         .split('_')
         .map(w => ABBREVS.has(w.toUpperCase()) ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1).toLowerCase())
         .join(' ');
-}
-
-// Replace everything between anchor comments in a file
-function replaceAnchored(relPath, tag, newContent) {
-    const absPath = path.join(ROOT, relPath);
-    let content = fs.readFileSync(absPath, 'utf8');
-    const startTag = `@ === RAND_${tag}_START ===`;
-    const endTag   = `@ === RAND_${tag}_END ===`;
-    const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(`(${esc(startTag)})[\\s\\S]*?(${esc(endTag)})`);
-    content = content.replace(regex, `$1\n${newContent}\n$2`);
-    fs.writeFileSync(absPath, content);
-}
-
-// Replace a MultichoiceList_* array wholesale in script_menu.h src
-function replaceMenuList(src, listName, displayNames) {
-    const newEntries = displayNames.map(n => `    {COMPOUND_STRING("${n}")},`).join('\n');
-    return src.replace(
-        new RegExp(
-            `(static const struct MenuAction ${listName}\\[\\] =\\n\\{\\n)[\\s\\S]*?(\\n\\};)`
-        ),
-        `$1${newEntries}$2`
-    );
-}
-
-// Replace only specific slots in a MenuAction list (for mixed fixed/random lists)
-function replaceMenuListSlots(src, listName, slotMap) {
-    // slotMap: { 0: "New Name", 2: "Another Name" }  (other slots untouched)
-    const regex = new RegExp(
-        `(static const struct MenuAction ${listName}\\[\\] =\\n\\{\\n)([\\s\\S]*?)(\\n\\};)`
-    );
-    return src.replace(regex, (match, start, body, end) => {
-        const lines = body.split('\n');
-        let slotIndex = 0;
-        const updated = lines.map(line => {
-            if (line.trim().startsWith('{COMPOUND_STRING(')) {
-                const result = slotIndex in slotMap
-                    ? `    {COMPOUND_STRING("${slotMap[slotIndex]}")},`
-                    : line;
-                slotIndex++;
-                return result;
-            }
-            return line;
-        });
-        return `${start}${updated.join('\n')}${end}`;
-    });
-}
-
-// Generate a single-item script (no multichoice — item is fixed per run from a pool)
-function genSingleItemScript(cfg) {
-    const { scriptLabel, item, flag } = cfg;
-    return `${scriptLabel}::\n\tfinditem ${item}\n\tsetflag ${flag}\n\tend`;
-}
-
-// Generate a full picker section (multichoice + switch + individual handlers)
-function genPickerSection(cfg) {
-    // cfg: { pickerLabel, multiConst, flag, pickedItems, handlerPrefix, extraFindItems? }
-    // extraFindItems: optional array of extra finditem calls per handler (for Route117 screen which gives TM+item)
-    const { pickerLabel, multiConst, flag, pickedItems, handlerPrefix, extraFindItems } = cfg;
-    const cases = pickedItems.map((_, i) => `\tcase ${i}, ${handlerPrefix}${i + 1}`).join('\n');
-    const handlers = pickedItems.map((item, i) => {
-        const extras = extraFindItems ? extraFindItems[i].map(e => `\tfinditem ${e}`).join('\n') + '\n' : '';
-        return `\n${handlerPrefix}${i + 1}::\n\tfinditem ${item}\n${extras}\tsetflag ${flag}\n\tend`;
-    }).join('\n');
-
-    return `${pickerLabel}::\n\tmultichoice 0, 0, ${multiConst}, FALSE\n\tswitch VAR_RESULT\n${cases}\n\tend\n${handlers}`;
 }
 
 // --- Item assignment ---
@@ -155,332 +89,73 @@ function buildAssignments() {
     };
 }
 
-// --- Script section updaters ---
+// --- gItemPicks[] table sink (T-236) ---
+// The scripts.inc pick scripts are STATIC stubs now (setvar PICK_* + Common_EventScript_DoPickN /
+// take-slot-0 — see data/scripts/randomizer_picks.inc); menu labels resolve at runtime
+// (BufferItemPickName). The only per-run output is the gItemPicks[] initializer block in
+// src/randomizer_picks.c, which the injector can also overwrite at its .map offset (ADR-022).
 
-function updateScripts(a) {
-    // PetalburgWoods plates (3→4)
-    replaceAnchored(
-        'data/maps/PetalburgWoods/scripts.inc',
-        'PETALBURG_PLATES',
-        genPickerSection({
-            pickerLabel:  'PetalburgWoods_EventScript_PickPlate',
-            multiConst:   'MULTI_PETALBURG_WOODS_PICK',
-            flag:         'FLAG_ITEM_PETALBURG_WOODS_PARALYZE_HEAL',
-            pickedItems:  a.petalburgPlates,
-            handlerPrefix:'PetalburgWoods_EventScript_PickPlate',
-        })
-    );
+const MAX_PICK_ITEMS = 4;
 
-    // Route104 gems (3→4)
-    replaceAnchored(
-        'data/maps/Route104/scripts.inc',
-        'ROUTE104_GEMS',
-        genPickerSection({
-            pickerLabel:  'Route104_EventScript_PickGem',
-            multiConst:   'MULTI_ROUTE104_PICK_GEM',
-            flag:         'FLAG_ITEM_ROUTE_104_GEM',
-            pickedItems:  a.route104Gems,
-            handlerPrefix:'Route104_EventScript_PickGem',
-        })
-    );
+// [PICK_* C constant, itemAssignments key] — order and indices MUST match
+// include/constants/randomizer_picks.h (the scripts pass the raw numbers).
+const PICK_TABLE = [
+    ['PICK_PETALBURG_PLATES',       'petalburgPlates'],
+    ['PICK_ROUTE104_GEMS',          'route104Gems'],
+    ['PICK_ROUTE104_BERRIES',       'route104Berries'],
+    ['PICK_ROUTE117_BERRIES',       'route117Berries'],
+    ['PICK_ROUTE117_GEMS',          'route117Gems'],
+    ['PICK_ROUTE111_BERRIES',       'route111Berries'],
+    ['PICK_ROUTE121_BERRIES',       'route121Berries'],
+    ['PICK_ROUTE111_ITEMS',         'route111Items'],
+    ['PICK_ROUTE116_GEM',           'route116Gems'],
+    ['PICK_ROUTE116_BERRY',         'route116Berries'],
+    ['PICK_ROUTE118_ITEMS',         'route118Items'],
+    ['PICK_ROUTE106_BALL',          'route106Ball'],
+    ['PICK_ROUTE102_BALL',          'route102Ball'],
+    ['PICK_ROUTE117_PLATE',         'route117Plates'],
+    ['PICK_ROUTE110_EXTENDER',      'route110ExtenderBall'],
+    ['PICK_ROUTE111_BALL_A',        'route111BallA'],
+    ['PICK_ROUTE111_BALL_C',        'route111BallC'],
+    ['PICK_ROUTE115_BALL',          'route115Ball'],
+    ['PICK_ROUTE116_BALL',          'route116Ball'],
+    ['PICK_ROUTE106_GOOD_ITEM',     'route106GoodItem'],
+    ['PICK_ROUTE116_X_SPECIAL',     'route116XSpecial'],
+    ['PICK_ROUTE118_BARNY_GOOD',    'route118BarnyGoodItem'],
+    ['PICK_ROUTE120_ANGELICA_GOOD', 'route120AngelicaGoodItem'],
+    ['PICK_ROUTE109_GOOD_ITEM',     'route109GoodItem'],
+    ['PICK_ROUTE110_GOOD_ITEM',     'route110GoodItem'],
+    ['PICK_ROUTE110_LUM',           'route110LumGoodItem'],
+    ['PICK_ROUTE117_EARTHQUAKE',    'route117GoodItem'],
+    ['PICK_ROUTE111_HP_UP',         'route111HpUpGoodItem'],
+    ['PICK_ROUTE114_WYATT_GOOD',    'route114WyattGoodItem'],
+];
 
-    // Route104 berries (3→4)
-    replaceAnchored(
-        'data/maps/Route104/scripts.inc',
-        'ROUTE104_BERRIES',
-        genPickerSection({
-            pickerLabel:  'Route104_EventScript_PickBerry',
-            multiConst:   'MULTI_ROUTE104_PICK_BERRY',
-            flag:         'FLAG_ITEM_ROUTE_104_X_ACCURACY',
-            pickedItems:  a.route104Berries,
-            handlerPrefix:'Route104_EventScript_PickBerry',
-        })
-    );
+// raw = assignments with ITEM_* constants → the C initializer lines between the anchors.
+function genItemPicksSection(raw) {
+    const missing = PICK_TABLE.filter(([, key]) => raw[key] == null).map(([, key]) => key);
+    if (missing.length)
+        throw new Error(`genItemPicksSection: missing itemAssignments key(s): ${missing.join(', ')}`);
 
-    // Route117 berries (3→4)
-    replaceAnchored(
-        'data/maps/Route117/scripts.inc',
-        'ROUTE117_BERRIES',
-        genPickerSection({
-            pickerLabel:  'Route117_EventScript_PickBerry',
-            multiConst:   'MULTI_ROUTE117_PICK_BERRY',
-            flag:         'FLAG_ITEM_ROUTE_117_WACAN',
-            pickedItems:  a.route117Berries,
-            handlerPrefix:'Route117_EventScript_PickBerry',
-        })
-    );
-
-    // Route117 gems (3→4)
-    replaceAnchored(
-        'data/maps/Route117/scripts.inc',
-        'ROUTE117_GEMS',
-        genPickerSection({
-            pickerLabel:  'Route117_EventScript_PickGem',
-            multiConst:   'MULTI_ROUTE117_PICK_GEM',
-            flag:         'FLAG_ITEM_ROUTE_117_GROUNDGEM',
-            pickedItems:  a.route117Gems,
-            handlerPrefix:'Route117_EventScript_PickGem',
-        })
-    );
-
-    // Route111 berries (3→4)
-    replaceAnchored(
-        'data/maps/Route111/scripts.inc',
-        'ROUTE111_BERRIES',
-        genPickerSection({
-            pickerLabel:  'Route111_EventScript_PickBerry',
-            multiConst:   'MULTI_ROUTE111_PICK_BERRY',
-            flag:         'FLAG_ITEM_ROUTE_111_CHILAN',
-            pickedItems:  a.route111Berries,
-            handlerPrefix:'Route111_EventScript_PickBerry',
-        })
-    );
-
-    // Route121 berries (3→4)
-    replaceAnchored(
-        'data/maps/Route121/scripts.inc',
-        'ROUTE121_BERRIES',
-        genPickerSection({
-            pickerLabel:  'Route121_EventScript_PickBerry',
-            multiConst:   'MULTI_ROUTE121_PICK_BERRY',
-            flag:         'FLAG_ITEM_ROUTE_121_PICK_BERRY',
-            pickedItems:  a.route121Berries,
-            handlerPrefix:'Route121_EventScript_PickBerry',
-        })
-    );
-
-
-    // Route111 items (3, items change — slot 2 = CUSTAP_BERRY fixed)
-    replaceAnchored(
-        'data/maps/Route111/scripts.inc',
-        'ROUTE111_ITEMS',
-        genPickerSection({
-            pickerLabel:  'Route111_EventScript_PickItem',
-            multiConst:   'MULTI_ROUTE111_PICK_ITEM',
-            flag:         'FLAG_ITEM_ROUTE_111_TM_SANDSTORM',
-            pickedItems:  a.route111Items,
-            handlerPrefix:'Route111_EventScript_PickItem',
-        })
-    );
-
-    // Route106 good item (single goodItemPool item)
-    replaceAnchored(
-        'data/maps/Route106/scripts.inc',
-        'ROUTE106_GOOD_ITEM',
-        genSingleItemScript({
-            scriptLabel: 'Route106_EventScript_GoodItem',
-            item: a.route106GoodItem,
-            flag: 'FLAG_ITEM_ROUTE_106_PROTEIN',
-        })
-    );
-
-    // Route116 X Special (single goodItemPool item)
-    replaceAnchored(
-        'data/maps/Route116/scripts.inc',
-        'ROUTE116_X_SPECIAL',
-        genSingleItemScript({
-            scriptLabel: 'Route116_EventScript_XSpecial',
-            item: a.route116XSpecial,
-            flag: 'FLAG_ITEM_ROUTE_116_X_SPECIAL',
-        })
-    );
-
-    // Route116 gem pick (4 gems — Sarah's item, FLAG_ITEM_ROUTE_116_ETHER)
-    replaceAnchored(
-        'data/maps/Route116/scripts.inc',
-        'ROUTE116_GEM',
-        genPickerSection({
-            pickerLabel:  'Route116_EventScript_PickGem',
-            multiConst:   'MULTI_ROUTE116_PICK_GEM',
-            flag:         'FLAG_ITEM_ROUTE_116_ETHER',
-            pickedItems:  a.route116Gems,
-            handlerPrefix:'Route116_EventScript_PickGem',
-        })
-    );
-
-    // Route116 berry pick (4 berries — Karen's item, FLAG_ITEM_ROUTE_116_POTION)
-    replaceAnchored(
-        'data/maps/Route116/scripts.inc',
-        'ROUTE116_BERRY',
-        genPickerSection({
-            pickerLabel:  'Route116_EventScript_PickBerry',
-            multiConst:   'MULTI_ROUTE116_PICK_BERRY',
-            flag:         'FLAG_ITEM_ROUTE_116_POTION',
-            pickedItems:  a.route116Berries,
-            handlerPrefix:'Route116_EventScript_PickBerry',
-        })
-    );
-
-    replaceAnchored('data/maps/Route118/scripts.inc', 'ROUTE118_BARNY_GOOD', genSingleItemScript({
-        scriptLabel: 'Route118_EventScript_BarnyGoodItem',
-        item:        a.route118BarnyGoodItem,
-        flag:        'FLAG_ITEM_ROUTE_118_COBA',
-    }));
-
-    // Route118 items (4 all from pool)
-    replaceAnchored(
-        'data/maps/Route118/scripts.inc',
-        'ROUTE118_ITEMS',
-        genPickerSection({
-            pickerLabel:  'Route118_EventScript_PickBerry',
-            multiConst:   'MULTI_ROUTE118_PICK_BERRY',
-            flag:         'FLAG_ITEM_ROUTE_118_BERRY',
-            pickedItems:  a.route118Items,
-            handlerPrefix:'Route118_EventScript_PickBerry',
-        })
-    );
-
-    replaceAnchored('data/maps/Route120/scripts.inc', 'ROUTE120_ANGELICA_GOOD', genSingleItemScript({
-        scriptLabel: 'Route120_EventScript_AngelicaGoodItem',
-        item:        a.route120AngelicaGoodItem,
-        flag:        'FLAG_ITEM_ROUTE_119_ZINC',
-    }));
-
-    // Item ball pick-3 locations
-    replaceAnchored('data/maps/Route106/scripts.inc', 'ROUTE106_BALL', genPickerSection({
-        pickerLabel:   'Route106_EventScript_PickBall',
-        multiConst:    'MULTI_ROUTE106_PICK_BALL',
-        flag:          'FLAG_ITEM_ROUTE_106_CAPSULE',
-        pickedItems:   a.route106Ball,
-        handlerPrefix: 'Route106_EventScript_PickBall',
-    }));
-    replaceAnchored('data/maps/Route102/scripts.inc', 'ROUTE102_BALL', genPickerSection({
-        pickerLabel:   'Route102_EventScript_PickBall',
-        multiConst:    'MULTI_ROUTE102_PICK_BALL',
-        flag:          'FLAG_ITEM_ROUTE_102_POTION',
-        pickedItems:   a.route102Ball,
-        handlerPrefix: 'Route102_EventScript_PickBall',
-    }));
-    replaceAnchored('data/maps/Route109/scripts.inc', 'ROUTE109_BALL', genSingleItemScript({
-        scriptLabel: 'Route109_EventScript_GoodItem',
-        item: a.route109GoodItem,
-        flag: 'FLAG_ITEM_ROUTE_109_POTION',
-    }));
-    replaceAnchored('data/maps/Route110/scripts.inc', 'ROUTE110_BALL', genSingleItemScript({
-        scriptLabel: 'Route110_EventScript_GoodItem',
-        item:        a.route110GoodItem,
-        flag:        'FLAG_ITEM_ROUTE_110_SHEDSHELL',
-    }));
-    replaceAnchored('data/maps/Route110/scripts.inc', 'ROUTE110_LUM', genSingleItemScript({
-        scriptLabel: 'Route110_EventScript_LumGoodItem',
-        item:        a.route110LumGoodItem,
-        flag:        'FLAG_ITEM_ROUTE_110_LUM',
-    }));
-    replaceAnchored('data/maps/Route117/scripts.inc', 'ROUTE117_EARTHQUAKE', genSingleItemScript({
-        scriptLabel: 'Route117_EventScript_EarthquakeGoodItem',
-        item:        a.route117GoodItem,
-        flag:        'FLAG_ITEM_ROUTE_117_EARTHQUAKE',
-    }));
-    // Route117 plate pick (4 plates — Lydia's item, FLAG_ITEM_ROUTE_117_GREAT_BALL)
-    // Route111 good item (single goodItemPool item — Travis)
-    replaceAnchored('data/maps/Route111/scripts.inc', 'ROUTE111_HP_UP', genSingleItemScript({
-        scriptLabel: 'Route111_EventScript_HpUpGoodItem',
-        item:        a.route111HpUpGoodItem,
-        flag:        'FLAG_ITEM_ROUTE_111_HP_UP',
-    }));
-    replaceAnchored('data/maps/Route117/scripts.inc', 'ROUTE117_PLATE', genPickerSection({
-        pickerLabel:  'Route117_EventScript_PickPlate',
-        multiConst:   'MULTI_ROUTE117_PICK_PLATE',
-        flag:         'FLAG_ITEM_ROUTE_117_GREAT_BALL',
-        pickedItems:  a.route117Plates,
-        handlerPrefix:'Route117_EventScript_PickPlate',
-    }));
-    replaceAnchored('data/maps/Route110/scripts.inc', 'ROUTE110_EXTENDER', genPickerSection({
-        pickerLabel:   'Route110_EventScript_PickExtender',
-        multiConst:    'MULTI_ROUTE110_PICK_EXTENDER',
-        flag:          'FLAG_ITEM_ROUTE_110_EXTENDER',
-        pickedItems:   a.route110ExtenderBall,
-        handlerPrefix: 'Route110_EventScript_PickExtender',
-    }));
-    replaceAnchored('data/maps/Route111/scripts.inc', 'ROUTE111_BALL_A', genPickerSection({
-        pickerLabel:   'Route111_EventScript_PickBallA',
-        multiConst:    'MULTI_ROUTE111_PICK_BALL_A',
-        flag:          'FLAG_ITEM_ROUTE_111_ELIXIR',
-        pickedItems:   a.route111BallA,
-        handlerPrefix: 'Route111_EventScript_PickBallA',
-    }));
-    replaceAnchored('data/maps/Route111/scripts.inc', 'ROUTE111_BALL_C', genPickerSection({
-        pickerLabel:   'Route111_EventScript_PickBallC',
-        multiConst:    'MULTI_ROUTE111_PICK_BALL_C',
-        flag:          'FLAG_ITEM_ROUTE_111_ADRENALINE',
-        pickedItems:   a.route111BallC,
-        handlerPrefix: 'Route111_EventScript_PickBallC',
-    }));
-    replaceAnchored('data/maps/Route114/scripts.inc', 'ROUTE114_WYATT_GOOD', genSingleItemScript({
-        scriptLabel:   'Route114_EventScript_PickWyatt',
-        item:          a.route114WyattGoodItem,
-        flag:          'FLAG_ITEM_ROUTE_114_ENERGY_POWDER',
-    }));
-    replaceAnchored('data/maps/Route115/scripts.inc', 'ROUTE115_BALL', genPickerSection({
-        pickerLabel:   'Route115_EventScript_PickBall',
-        multiConst:    'MULTI_ROUTE115_PICK_BALL',
-        flag:          'FLAG_ITEM_ROUTE_115_GREAT_BALL',
-        pickedItems:   a.route115Ball,
-        handlerPrefix: 'Route115_EventScript_PickBall',
-    }));
-    replaceAnchored('data/maps/Route116/scripts.inc', 'ROUTE116_BALL', genPickerSection({
-        pickerLabel:   'Route116_EventScript_PickBall',
-        multiConst:    'MULTI_ROUTE116_PICK_BALL',
-        flag:          'FLAG_ITEM_ROUTE_TM_BRICK_BREAK',
-        pickedItems:   a.route116Ball,
-        handlerPrefix: 'Route116_EventScript_PickBall',
-    }));
+    return PICK_TABLE.map(([pickConst, key]) => {
+        const value = raw[key];
+        const list = Array.isArray(value) ? [...value] : [value];
+        if (list.length > MAX_PICK_ITEMS)
+            throw new Error(`genItemPicksSection: ${key} has ${list.length} items (max ${MAX_PICK_ITEMS})`);
+        while (list.length < MAX_PICK_ITEMS) list.push('ITEM_NONE');
+        return `    ${`[${pickConst}]`.padEnd(31)}= {{ ${list.join(', ')} }},`;
+    }).join('\n');
 }
 
-// --- script_menu.h updater ---
-
-function updateScriptMenu(a) {
-    let src = fs.readFileSync(SCRIPT_MENU_PATH, 'utf8');
-
-    // 4-choice lists (plates, gems, berries)
-    src = replaceMenuList(src, 'MultichoiceList_PetalburgWoodsPick',
-        a.petalburgPlates.map(itemDisplayName));
-
-    src = replaceMenuList(src, 'MultichoiceList_Route117PickPlate',
-        a.route117Plates.map(itemDisplayName));
-
-    src = replaceMenuList(src, 'MultichoiceList_Route104PickGem',
-        a.route104Gems.map(itemDisplayName));
-
-    src = replaceMenuList(src, 'MultichoiceList_Route104PickBerry',
-        a.route104Berries.map(itemDisplayName));
-
-    src = replaceMenuList(src, 'MultichoiceList_Route116PickGem',
-        a.route116Gems.map(itemDisplayName));
-
-    src = replaceMenuList(src, 'MultichoiceList_Route116PickBerry',
-        a.route116Berries.map(itemDisplayName));
-
-    src = replaceMenuList(src, 'MultichoiceList_Route117PickBerry',
-        a.route117Berries.map(itemDisplayName));
-
-    src = replaceMenuList(src, 'MultichoiceList_Route117PickGem',
-        a.route117Gems.map(itemDisplayName));
-
-    src = replaceMenuList(src, 'MultichoiceList_Route111PickBerry',
-        a.route111Berries.map(itemDisplayName));
-
-    src = replaceMenuList(src, 'MultichoiceList_Route121PickBerry',
-        a.route121Berries.map(itemDisplayName));
-
-    // 3-choice lists where all items change
-    src = replaceMenuList(src, 'MultichoiceList_Route111PickItem',
-        a.route111Items.map(itemDisplayName));
-
-    src = replaceMenuList(src, 'MultichoiceList_Route118PickBerry',
-        a.route118Items.map(itemDisplayName));
-
-    // Item ball pick-3 lists
-    src = replaceMenuList(src, 'MultichoiceList_Route106PickBall',  a.route106Ball.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route102PickBall',  a.route102Ball.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route110PickExtender', a.route110ExtenderBall.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route111PickBallA', a.route111BallA.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route111PickBallC', a.route111BallC.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route115PickBall',  a.route115Ball.map(itemDisplayName));
-    src = replaceMenuList(src, 'MultichoiceList_Route116PickBall',  a.route116Ball.map(itemDisplayName));
-
-    fs.writeFileSync(SCRIPT_MENU_PATH, src);
-    console.log('[Item Randomizer] Updated item names in script_menu.h');
+function updateItemPicksTable(raw) {
+    const section = genItemPicksSection(raw);
+    let content = fs.readFileSync(PICKS_C_PATH, 'utf8');
+    const regex = /(\/\/ @ITEM_PICKS_START[^\n]*\n)[\s\S]*?(\n[ \t]*\/\/ @ITEM_PICKS_END)/;
+    if (!regex.test(content))
+        throw new Error(`updateItemPicksTable: @ITEM_PICKS_START/END anchors not found in ${PICKS_C_PATH}`);
+    content = content.replace(regex, `$1${section}$2`);
+    fs.writeFileSync(PICKS_C_PATH, content);
+    console.log('[Item Randomizer] Updated gItemPicks[] in src/randomizer_picks.c');
 }
 
 // --- Entry point ---
@@ -488,8 +163,7 @@ function updateScriptMenu(a) {
 function randomizeItems() {
     const a = buildAssignments();
     if (IS_NODE) {
-        updateScripts(a);
-        updateScriptMenu(a);
+        updateItemPicksTable(a);
         console.log('[Item Randomizer] Done.');
     }
 
@@ -535,15 +209,21 @@ function randomizeItems() {
     };
 }
 
-// Takes itemAssignments with display names (as stored in bundles) and writes all script files.
+// Takes itemAssignments with display names (as stored in bundles) and writes the gItemPicks[] table.
 function writeItemFilesFromBundle(itemAssignments) {
     const toConst = name => displayNameToItemConst(name);
     const raw = {};
     for (const [k, v] of Object.entries(itemAssignments)) {
         raw[k] = Array.isArray(v) ? v.map(toConst) : toConst(v);
     }
-    updateScripts(raw);
-    updateScriptMenu(raw);
+    updateItemPicksTable(raw);
 }
 
-module.exports = { randomizeItems, updateScripts, writeItemFilesFromBundle, displayNameToItemConst };
+module.exports = {
+    randomizeItems,
+    writeItemFilesFromBundle,
+    displayNameToItemConst,
+    genItemPicksSection,
+    updateItemPicksTable,
+    PICK_TABLE,
+};

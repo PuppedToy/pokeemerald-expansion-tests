@@ -216,7 +216,8 @@ Route117_EventScript_Aisha::
 	end
 
 Route117_EventScript_PickScreen::
-	multichoice 0, 0, MULTI_ROUTE117_PICK_SCREEN, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE117_SCREEN
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route117_EventScript_PickReflect
 	case 1, Route117_EventScript_PickLightScreen
@@ -234,67 +235,23 @@ Route117_EventScript_PickLightScreen::
 	setflag FLAG_ITEM_ROUTE_117_CLAY
 	end
 
-@ === RAND_ROUTE117_BERRIES_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE117_BERRIES]); static, no longer regenerated
 Route117_EventScript_PickBerry::
-	multichoice 0, 0, MULTI_ROUTE117_PICK_BERRY, FALSE
-	switch VAR_RESULT
-	case 0, Route117_EventScript_PickBerry1
-	case 1, Route117_EventScript_PickBerry2
-	case 2, Route117_EventScript_PickBerry3
-	case 3, Route117_EventScript_PickBerry4
-	end
-
-Route117_EventScript_PickBerry1::
-	finditem ITEM_TANGA_BERRY
+	setvar VAR_0x8004, PICK_ROUTE117_BERRIES
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route117_EventScript_PickBerryEnd
 	setflag FLAG_ITEM_ROUTE_117_WACAN
+Route117_EventScript_PickBerryEnd::
 	end
 
-Route117_EventScript_PickBerry2::
-	finditem ITEM_WACAN_BERRY
-	setflag FLAG_ITEM_ROUTE_117_WACAN
-	end
-
-Route117_EventScript_PickBerry3::
-	finditem ITEM_PASSHO_BERRY
-	setflag FLAG_ITEM_ROUTE_117_WACAN
-	end
-
-Route117_EventScript_PickBerry4::
-	finditem ITEM_COLBUR_BERRY
-	setflag FLAG_ITEM_ROUTE_117_WACAN
-	end
-@ === RAND_ROUTE117_BERRIES_END ===
-
-@ === RAND_ROUTE117_GEMS_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE117_GEMS]); static, no longer regenerated
 Route117_EventScript_PickGem::
-	multichoice 0, 0, MULTI_ROUTE117_PICK_GEM, FALSE
-	switch VAR_RESULT
-	case 0, Route117_EventScript_PickGem1
-	case 1, Route117_EventScript_PickGem2
-	case 2, Route117_EventScript_PickGem3
-	case 3, Route117_EventScript_PickGem4
-	end
-
-Route117_EventScript_PickGem1::
-	finditem ITEM_POISON_GEM
+	setvar VAR_0x8004, PICK_ROUTE117_GEMS
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route117_EventScript_PickGemEnd
 	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
+Route117_EventScript_PickGemEnd::
 	end
-
-Route117_EventScript_PickGem2::
-	finditem ITEM_PSYCHIC_GEM
-	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
-	end
-
-Route117_EventScript_PickGem3::
-	finditem ITEM_FLYING_GEM
-	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
-	end
-
-Route117_EventScript_PickGem4::
-	finditem ITEM_ICE_GEM
-	setflag FLAG_ITEM_ROUTE_117_GROUNDGEM
-	end
-@ === RAND_ROUTE117_GEMS_END ===
 
 Route117_Text_DayCarePokemonHadNewMove:
 	.string "I left my POKéMON at the DAY CARE.\p"
@@ -322,40 +279,20 @@ Route117_Text_DayCareSign:
 	.string "POKéMON DAY CARE\n"
 	.string "”Let us raise your POKéMON.”$"
 
-@ === RAND_ROUTE117_EARTHQUAKE_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE117_EARTHQUAKE]); static, no longer regenerated
 Route117_EventScript_EarthquakeGoodItem::
-	finditem ITEM_AIR_BALLOON
+	setvar VAR_0x8004, PICK_ROUTE117_EARTHQUAKE
+	setvar VAR_0x8005, 0
+	special GetItemPickItem
+	finditem VAR_RESULT
 	setflag FLAG_ITEM_ROUTE_117_EARTHQUAKE
 	end
-@ === RAND_ROUTE117_EARTHQUAKE_END ===
 
-@ === RAND_ROUTE117_PLATE_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE117_PLATE]); static, no longer regenerated
 Route117_EventScript_PickPlate::
-	multichoice 0, 0, MULTI_ROUTE117_PICK_PLATE, FALSE
-	switch VAR_RESULT
-	case 0, Route117_EventScript_PickPlate1
-	case 1, Route117_EventScript_PickPlate2
-	case 2, Route117_EventScript_PickPlate3
-	case 3, Route117_EventScript_PickPlate4
-	end
-
-Route117_EventScript_PickPlate1::
-	finditem ITEM_FLAME_PLATE
+	setvar VAR_0x8004, PICK_ROUTE117_PLATE
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route117_EventScript_PickPlateEnd
 	setflag FLAG_ITEM_ROUTE_117_GREAT_BALL
+Route117_EventScript_PickPlateEnd::
 	end
-
-Route117_EventScript_PickPlate2::
-	finditem ITEM_SPLASH_PLATE
-	setflag FLAG_ITEM_ROUTE_117_GREAT_BALL
-	end
-
-Route117_EventScript_PickPlate3::
-	finditem ITEM_MEADOW_PLATE
-	setflag FLAG_ITEM_ROUTE_117_GREAT_BALL
-	end
-
-Route117_EventScript_PickPlate4::
-	finditem ITEM_STONE_PLATE
-	setflag FLAG_ITEM_ROUTE_117_GREAT_BALL
-	end
-@ === RAND_ROUTE117_PLATE_END ===

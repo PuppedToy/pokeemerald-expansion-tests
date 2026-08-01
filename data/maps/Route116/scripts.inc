@@ -346,74 +346,32 @@ Route116_EventScript_Johnson::
 	msgbox Route116_Text_JohnsonPostBattle, MSGBOX_AUTOCLOSE
 	end
 
-@ === RAND_ROUTE116_GEM_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE116_GEM]); static, no longer regenerated
 Route116_EventScript_PickGem::
-	multichoice 0, 0, MULTI_ROUTE116_PICK_GEM, FALSE
-	switch VAR_RESULT
-	case 0, Route116_EventScript_PickGem1
-	case 1, Route116_EventScript_PickGem2
-	case 2, Route116_EventScript_PickGem3
-	case 3, Route116_EventScript_PickGem4
-	end
-
-Route116_EventScript_PickGem1::
-	finditem ITEM_GROUND_GEM
+	setvar VAR_0x8004, PICK_ROUTE116_GEM
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route116_EventScript_PickGemEnd
 	setflag FLAG_ITEM_ROUTE_116_ETHER
+Route116_EventScript_PickGemEnd::
 	end
 
-Route116_EventScript_PickGem2::
-	finditem ITEM_GROUND_GEM
-	setflag FLAG_ITEM_ROUTE_116_ETHER
-	end
-
-Route116_EventScript_PickGem3::
-	finditem ITEM_GROUND_GEM
-	setflag FLAG_ITEM_ROUTE_116_ETHER
-	end
-
-Route116_EventScript_PickGem4::
-	finditem ITEM_GROUND_GEM
-	setflag FLAG_ITEM_ROUTE_116_ETHER
-	end
-@ === RAND_ROUTE116_GEM_END ===
-
-@ === RAND_ROUTE116_BERRY_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE116_BERRY]); static, no longer regenerated
 Route116_EventScript_PickBerry::
-	multichoice 0, 0, MULTI_ROUTE116_PICK_BERRY, FALSE
-	switch VAR_RESULT
-	case 0, Route116_EventScript_PickBerry1
-	case 1, Route116_EventScript_PickBerry2
-	case 2, Route116_EventScript_PickBerry3
-	case 3, Route116_EventScript_PickBerry4
-	end
-
-Route116_EventScript_PickBerry1::
-	finditem ITEM_OCCA_BERRY
+	setvar VAR_0x8004, PICK_ROUTE116_BERRY
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route116_EventScript_PickBerryEnd
 	setflag FLAG_ITEM_ROUTE_116_POTION
+Route116_EventScript_PickBerryEnd::
 	end
 
-Route116_EventScript_PickBerry2::
-	finditem ITEM_OCCA_BERRY
-	setflag FLAG_ITEM_ROUTE_116_POTION
-	end
-
-Route116_EventScript_PickBerry3::
-	finditem ITEM_OCCA_BERRY
-	setflag FLAG_ITEM_ROUTE_116_POTION
-	end
-
-Route116_EventScript_PickBerry4::
-	finditem ITEM_OCCA_BERRY
-	setflag FLAG_ITEM_ROUTE_116_POTION
-	end
-@ === RAND_ROUTE116_BERRY_END ===
-
-@ === RAND_ROUTE116_X_SPECIAL_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE116_X_SPECIAL]); static, no longer regenerated
 Route116_EventScript_XSpecial::
-	finditem ITEM_BLACK_SLUDGE
+	setvar VAR_0x8004, PICK_ROUTE116_X_SPECIAL
+	setvar VAR_0x8005, 0
+	special GetItemPickItem
+	finditem VAR_RESULT
 	setflag FLAG_ITEM_ROUTE_116_X_SPECIAL
 	end
-@ === RAND_ROUTE116_X_SPECIAL_END ===
 
 Route116_EventScript_PickOrb::
 	multichoice 0, 0, MULTI_ROUTE116_PICK_ORB, FALSE
@@ -433,7 +391,8 @@ Route116_EventScript_PickOrb2::
 	end
 
 Route116_EventScript_PickItem::
-	multichoice 0, 0, MULTI_ROUTE116_PICK_ITEM, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE116_ITEM
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route116_EventScript_PickItem1
 	case 1, Route116_EventScript_PickItem2
@@ -576,27 +535,11 @@ Route116_Text_TrainerTipsBagHasPockets:
 	.string "a BAG of their own.$"
 
 
-@ === RAND_ROUTE116_BALL_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE116_BALL]); static, no longer regenerated
 Route116_EventScript_PickBall::
-	multichoice 0, 0, MULTI_ROUTE116_PICK_BALL, FALSE
-	switch VAR_RESULT
-	case 0, Route116_EventScript_PickBall1
-	case 1, Route116_EventScript_PickBall2
-	case 2, Route116_EventScript_PickBall3
-	end
-
-Route116_EventScript_PickBall1::
-	finditem ITEM_WISE_GLASSES
+	setvar VAR_0x8004, PICK_ROUTE116_BALL
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route116_EventScript_PickBallEnd
 	setflag FLAG_ITEM_ROUTE_TM_BRICK_BREAK
+Route116_EventScript_PickBallEnd::
 	end
-
-Route116_EventScript_PickBall2::
-	finditem ITEM_KEE_BERRY
-	setflag FLAG_ITEM_ROUTE_TM_BRICK_BREAK
-	end
-
-Route116_EventScript_PickBall3::
-	finditem ITEM_LEPPA_BERRY
-	setflag FLAG_ITEM_ROUTE_TM_BRICK_BREAK
-	end
-@ === RAND_ROUTE116_BALL_END ===

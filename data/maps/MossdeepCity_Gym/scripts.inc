@@ -69,8 +69,11 @@ MossdeepCity_Gym_EventScript_TateAndLizaDefeated::
 	call Common_EventScript_PlayLevelCapFanfare
 	setflag FLAG_DEFEATED_MOSSDEEP_GYM
 	setflag FLAG_HIDE_AQUA_HIDEOUT_GRUNTS
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
-	givemon GYM_REWARD_MON, 56
+	setvar VAR_0x8004, 6 @ GYM_REWARD idx — T-235 data-driven reward (gGymRewards[])
+	special GetGymReward
+	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
+	givemon VAR_RESULT, 56
+	bufferspeciesname STR_VAR_1, VAR_RESULT
 	call MossdeepCity_Gym_EventScript_ReceivedRewardPokeFanfare
 	clearflag FLAG_HIDE_SLATEPORT_CITY_STERNS_SHIPYARD_MR_BRINEY
 	clearflag FLAG_UNKNOWN_0x393
@@ -654,4 +657,4 @@ MossdeepCity_Gym_Text_TateAndLizaRematchNeedTwoMons:
 	.string "LIZA: Two POKéMON when you come back.$"
 
 MossdeepCity_Gym_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received GYM_REWARD_NAME!$"
+	.string "{PLAYER} received {STR_VAR_1}!$"

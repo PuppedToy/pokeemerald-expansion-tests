@@ -137,7 +137,8 @@ Route112_Text_RouteSignLavaridge:
 
 
 Route112_EventScript_PickTMStatus::
-	multichoice 0, 0, MULTI_ROUTE112_PICK_TM_STATUS, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE112_STATUS
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route112_EventScript_PickTMStatus1
 	case 1, Route112_EventScript_PickTMStatus2
@@ -160,7 +161,8 @@ Route112_EventScript_PickTMStatus3::
 	end
 
 Route112_EventScript_PickTMDmg::
-	multichoice 0, 0, MULTI_ROUTE112_PICK_TM_DMG, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE112_DMG
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route112_EventScript_PickTMDmg1
 	case 1, Route112_EventScript_PickTMDmg2

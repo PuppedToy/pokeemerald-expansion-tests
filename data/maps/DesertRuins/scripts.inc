@@ -58,11 +58,11 @@ DesertRuins_EventScript_Regirock::
 	lock
 	faceplayer
 	waitse
-	playmoncry SPECIES_REGIROCK, CRY_MODE_ENCOUNTER
+	setvar VAR_0x8004, 0 @ static encounter — T-235 (gStaticEncounters[])
+	special ForcePerfectIVsOnNextEncounter
+	special SetupStaticEncounter
 	delay 40
 	waitmoncry
-	special ForcePerfectIVsOnNextEncounter
-	setwildbattle SPECIES_REGIROCK, 36
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special StartRegiBattle
 	waitstate
@@ -81,7 +81,9 @@ DesertRuins_EventScript_DefeatedRegirock::
 	end
 
 DesertRuins_EventScript_RanFromRegirock::
-	setvar VAR_0x8004, SPECIES_REGIROCK
+	setvar VAR_0x8004, 0 @ T-235
+	special GetStaticEncounterSpecies
+	copyvar VAR_0x8004, VAR_RESULT
 	goto Common_EventScript_LegendaryFlewAway
 	end
 

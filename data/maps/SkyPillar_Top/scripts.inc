@@ -134,7 +134,19 @@ SkyPillar_Top_EventScript_AwakenRayquaza::
 
 SkyPillar_Top_EventScript_CustomLegendary::
 	msgbox SkyPillat_Top_Text_WhatDoYouSee, MSGBOX_DEFAULT
-	multichoice 0, 0, MULTI_SKYPILLAR_TOP_LEGEND, TRUE
+	setvar VAR_0x8004, 4
+	special GetStaticEncounterSpecies
+	bufferspeciesname STR_VAR_1, VAR_RESULT
+	dynmultipush SkyPillar_Top_Text_LegendName, 0
+	setvar VAR_0x8004, 5
+	special GetStaticEncounterSpecies
+	bufferspeciesname STR_VAR_1, VAR_RESULT
+	dynmultipush SkyPillar_Top_Text_LegendName, 1
+	setvar VAR_0x8004, 6
+	special GetStaticEncounterSpecies
+	bufferspeciesname STR_VAR_1, VAR_RESULT
+	dynmultipush SkyPillar_Top_Text_LegendName, 2
+	dynmultistack 0, 0, FALSE, 3, FALSE, 0, NULL
 	switch VAR_RESULT
 	case 0, SkyPillar_Top_EventScript_PickLegendary1
 	case 1, SkyPillar_Top_EventScript_PickLegendary2
@@ -143,11 +155,11 @@ SkyPillar_Top_EventScript_CustomLegendary::
 
 SkyPillar_Top_EventScript_PickLegendary1::
 	closemessage
-	playmoncry SPECIES_LEGEND1, CRY_MODE_ENCOUNTER
+	setvar VAR_0x8004, 4 @ STATIC_ENCOUNTER_LEGEND1 — T-235
+	special ForcePerfectIVsOnNextEncounter
+	special SetupStaticEncounter
 	delay 40
 	waitmoncry
-	special ForcePerfectIVsOnNextEncounter
-	setwildbattle SPECIES_LEGEND1, 61
 	special BattleSetup_StartLegendaryBattle
 	waitstate
 	setflag FLAG_DEFEATED_RAYQUAZA
@@ -155,11 +167,11 @@ SkyPillar_Top_EventScript_PickLegendary1::
 
 SkyPillar_Top_EventScript_PickLegendary2::
 	closemessage
-	playmoncry SPECIES_LEGEND2, CRY_MODE_ENCOUNTER
+	setvar VAR_0x8004, 5 @ STATIC_ENCOUNTER_LEGEND2 — T-235
+	special ForcePerfectIVsOnNextEncounter
+	special SetupStaticEncounter
 	delay 40
 	waitmoncry
-	special ForcePerfectIVsOnNextEncounter
-	setwildbattle SPECIES_LEGEND2, 61
 	special BattleSetup_StartLegendaryBattle
 	waitstate
 	setflag FLAG_DEFEATED_RAYQUAZA
@@ -167,15 +179,18 @@ SkyPillar_Top_EventScript_PickLegendary2::
 
 SkyPillar_Top_EventScript_PickLegendary3::
 	closemessage
-	playmoncry SPECIES_LEGEND3, CRY_MODE_ENCOUNTER
+	setvar VAR_0x8004, 6 @ STATIC_ENCOUNTER_LEGEND3 — T-235
+	special ForcePerfectIVsOnNextEncounter
+	special SetupStaticEncounter
 	delay 40
 	waitmoncry
-	special ForcePerfectIVsOnNextEncounter
-	setwildbattle SPECIES_LEGEND3, 61
 	special BattleSetup_StartLegendaryBattle
 	waitstate
 	setflag FLAG_DEFEATED_RAYQUAZA
 	return
+
+SkyPillar_Top_Text_LegendName:
+	.string "{STR_VAR_1}$"
 
 @ Rayquaza has unusual movement frames
 @ See comments, or sAnimTable_Rayquaza

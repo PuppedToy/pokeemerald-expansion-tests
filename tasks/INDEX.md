@@ -57,7 +57,7 @@
 | [T-051](T-051-sync-1.13.4-bugfixes.md) | Absorb expansion 1.13.4 bugfixes | proposed | 0.6.0 | 2026-07-03 |
 | [T-052](T-052-configurable-randomization-options.md) | Configurable randomization options — batch 1 (categorized settings) | done | 0.6.0 | 2026-07-03 |
 | [T-053](T-053-bps-patch-delivery.md) | BPS patch delivery + client-side patching (IndexedDB) | done | 0.6.0 | 2026-07-15 |
-| [T-054](T-054-binary-injection-randomizer-viability.md) | Viability analysis — randomize a prebuilt ROM by binary injection (vs. compiling from scratch) | proposed | 0.7.0 | 2026-07-03 |
+| [T-054](T-054-binary-injection-randomizer-viability.md) | Viability analysis — randomize a prebuilt ROM by binary injection (vs. compiling from scratch) | done | 0.7.0 | 2026-07-28 |
 | [T-055](T-055-frontend-ux-tweaks.md) | Frontend UX tweaks — docs "Defeated" placement + reset-options button | done | 0.6.0 | 2026-07-15 |
 | [T-056](T-056-rival-rewards-rebalance.md) | Rebalance — swap rival rewards (stones earlier) + move Lum Berry bag entry | done | 0.6.0 | 2026-07-15 |
 | [T-057](T-057-nature-strategy-min-level.md) | Lower the level at which trainers pick strategic natures and abilities to 12 (Roxanne) | done | 0.6.0 | 2026-07-15 |
@@ -230,3 +230,23 @@
 | [T-225](T-225-register-autologin-patch-naming.md) | Register auto-login + patch zip naming (validation feedback) | in-progress | 0.7.0 | 2026-07-26 |
 | [T-226](T-226-frontend-text-appearance-batch.md) | Frontend text/appearance batch (config descriptions, beta/legal copy, layout fixes) | in-progress | 0.7.0 | 2026-07-26 |
 | [T-227](T-227-fix-flex-gap-display-toggle.md) | Fix config-form flex gap never applying (display toggle wiped inline flex) | in-progress | 0.7.0 | 2026-07-26 |
+| [T-228](T-228-analysis-rom-build-time-optimization.md) | Analysis — ROM build-time optimization (cold-cache elimination, LTO, ccache, cores) | done | 0.6.0 | 2026-07-28 |
+| [T-229](T-229-base-injection-phase0-strategy-backlog.md) | "Base+injection Phase 0 — strategy doc, ADR and full task backlog" | done | 0.7.0 | 2026-07-27 |
+| [T-230](T-230-base-injection-golden-master-corpus.md) | "Base+injection Phase 1 — golden-master bundle corpus + reference ROMs" | done | 0.7.0 | 2026-07-28 |
+| [T-231](T-231-base-injection-build-determinism-audit.md) | "Base+injection Phase 1 — build determinism audit (GATE-2) + canonical comparison" | done | 0.7.0 | 2026-07-28 |
+| [T-232](T-232-base-injection-symbol-map-freespace-tool.md) | "Base+injection Phase 1 — symbol-map + free-space audit tool (GATE-1)" | done | 0.7.0 | 2026-07-28 |
+| [T-233](T-233-base-injection-pro-build-verification-skill.md) | "Base+injection Phase 1 — PRO-build verification skill (autonomous golden-master diffing)" | done | 0.7.0 | 2026-07-28 |
+| [T-234](T-234-base-injection-runtime-settings-struct.md) | "Base+injection Phase 2 — runtime settings struct (money + move-relearn price)" | done | 0.7.0 | 2026-08-01 |
+| [T-235](T-235-base-injection-data-driven-rewards.md) | "Base+injection Phase 2 — data-driven gym/static rewards (out of map scripts)" | done | 0.7.0 | 2026-08-01 |
+| [T-236](T-236-base-injection-data-driven-item-placement.md) | "Base+injection Phase 2 — data-driven item placement (item-ball picker) + mega-NPC flag" | done | 0.7.0 | 2026-08-01 |
+| [T-237](T-237-base-injection-fixed-capacity-layout.md) | "Base+injection Phase 2 — fixed-capacity / free-space layout for variable-length tables" | in-progress | 0.7.0 | 2026-08-01 |
+| [T-238](T-238-base-injection-injector-skeleton-switch.md) | "Base+injection Phase 3 — injector skeleton, .map offset loader, compile-vs-inject switch" | proposed | 0.7.0 | 2026-07-27 |
+| [T-239](T-239-base-injection-inject-group-a-fixed.md) | "Base+injection Phase 3 — inject Group A (fixed-size: stats/moves/evos/wild/starters/TM/prices/items)" | proposed | 0.7.0 | 2026-07-27 |
+| [T-240](T-240-base-injection-inject-learnsets-tm-compat.md) | "Base+injection Phase 3 — inject level-up learnsets + teachable/TM-HM compatibility (Group B)" | proposed | 0.7.0 | 2026-07-27 |
+| [T-241](T-241-base-injection-inject-trainer-parties.md) | "Base+injection Phase 3 — inject trainer parties + battle partners (Group B, biggest)" | proposed | 0.7.0 | 2026-07-27 |
+| [T-242](T-242-base-injection-inject-trades-starters-nicknames.md) | "Base+injection Phase 3 — inject trades + extra starters + nickname tables (Group B)" | proposed | 0.7.0 | 2026-07-27 |
+| [T-243](T-243-base-injection-inject-datadriven-and-toggles.md) | "Base+injection Phase 3 — inject data-driven rewards/items/settings + feature-toggle setvars" | proposed | 0.7.0 | 2026-07-27 |
+| [T-244](T-244-base-injection-decommission-old-maker.md) | "Base+injection Phase 4 — decommission the old compile-per-user maker, clean up" | proposed | 0.7.0 | 2026-07-27 |
+| [T-245](T-245-base-injection-etas-queue-simplification.md) | "Base+injection Phase 5 — recompute ETAs + simplify the build queue" | proposed | 0.7.0 | 2026-07-27 |
+| [T-246](T-246-base-injection-frontend-delivery-uat.md) | "Base+injection Phase 5 — frontend/delivery wiring + user acceptance" | proposed | 0.7.0 | 2026-07-27 |
+| [T-247](T-247-phase2-dead-multichoice-and-writer-cleanup.md) | "Phase-2 cleanup — delete the multichoice lists and writer loops the data-driven migration orphaned" | in-progress | 0.7.0 | 2026-08-01 |

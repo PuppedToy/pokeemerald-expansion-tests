@@ -28,6 +28,7 @@
 #include "task.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "randomizer_settings.h"
 
 /*
  * Move relearner state machine
@@ -161,8 +162,10 @@ enum {
 #define GFXTAG_UI       5525
 #define PALTAG_UI       5526
 
-// T-167: cost to relearn a move the mon has already had before (0 = free, first time).
-#define MOVE_RELEARNER_MOVE_COST 250
+// T-167 / T-234: cost to relearn a move the mon has already had before (0 = free, first time). The value
+// lives in the runtime settings block `gRandomizerSettings.moveRelearnerCost` (randomizer_settings.h) so a
+// prebuilt ROM can be repatched without recompiling (ADR-022); the randomizer patches it per run
+// (randomizer/moveRelearnerPriceWriter.js).
 
 static EWRAM_DATA struct
 {
@@ -934,7 +937,7 @@ u32 GetMoveRelearnerMoveCost(u16 move)
     if (sMoveRelearnerStruct == NULL || move == LIST_CANCEL || move == MOVE_NONE)
         return 0;
     if (WasMonMoveEverLearned(&gPlayerParty[sMoveRelearnerStruct->partyMon], move))
-        return MOVE_RELEARNER_MOVE_COST;
+        return GetRandomizerSettings()->moveRelearnerCost;
     return 0;
 }
 

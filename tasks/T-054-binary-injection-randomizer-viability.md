@@ -1,12 +1,12 @@
 ---
 id: T-054
 title: Viability analysis — randomize a prebuilt ROM by binary injection (vs. compiling from scratch)
-status: proposed
+status: done
 type: chore
 created: 2026-07-03
-updated: 2026-07-03
+updated: 2026-07-28
 target-version: 0.7.0
-links: [T-053, docs/adr/ADR-013-bps-patch-delivery-client-side.md, docs/adr/ADR-012-upstream-bugfix-cherry-pick-sync.md, docs/adr/ADR-005-two-tier-preemptive-build-queue.md]
+links: [T-053, T-228, docs/base-plus-injection-viability.md, docs/adr/ADR-013-bps-patch-delivery-client-side.md, docs/adr/ADR-012-upstream-bugfix-cherry-pick-sync.md, docs/adr/ADR-005-two-tier-preemptive-build-queue.md]
 blocked-by: []
 ---
 
@@ -56,11 +56,13 @@ at least:
   MSYS2/devkitARM installer.
 
 Acceptance criteria:
-- [ ] Writer layer audited: each output classified data vs. code, with the code-touching ones and their
-      redesign path listed.
-- [ ] Report documents the repointing problem, the patch-friendly-base mitigation, and the symbol-map
+- [x] Writer layer audited: each output classified data vs. code, with the code-touching ones and their
+      redesign path listed. → [base-plus-injection-viability.md](../docs/base-plus-injection-viability.md) "complete one-by-one list".
+- [x] Report documents the repointing problem, the patch-friendly-base mitigation, and the symbol-map
       approach, with a feasibility verdict and a rough effort estimate.
-- [ ] Clear go/no-go recommendation; if go, a scoped implementation task + superseding ADR are proposed.
+- [x] Go/no-go = **GO**, and the scoped work + superseding ADR are delivered: [ADR-022](../docs/adr/ADR-022-base-plus-injection-architecture.md)
+      (accepted — GATE-1 cleared) + the [strategy](../docs/base-plus-injection-strategy.md) + backlog
+      T-229..T-246. Phase 1 (the safety net) is done and green.
 
 ## Progress log
 
@@ -69,6 +71,27 @@ Acceptance criteria:
 - **2026-07-03** — Task created as the "future" half of the BPS/offline discussion. Full shared context
   lives in [T-053](T-053-bps-patch-delivery.md) + [ADR-013](../docs/adr/ADR-013-bps-patch-delivery-client-side.md).
 
-## Outcome
+- **2026-07-27** — Viability analysis done (owner reframed it as a warmup/inject two-phase model with a
+  base-ROM combinatorics question). Ran three parallel read-only audits of the whole writer layer + the
+  config surface. Findings written up in [base-plus-injection-viability.md](../docs/base-plus-injection-viability.md):
+  (1) **≈zero irreducible base axes** — the "mode" toggles (Run&Bun, Steven-tag) are already VAR-gated
+  with both branches compiled, so they flip via a `setvar`-operand byte patch (injectable, not a base
+  variant); only `money`/`moveRelearnPrice` `#define`s are build-baked and they're trivially reducible to
+  a settings struct ⇒ **one base ROM serves every config; the combinatorial warmup collapses to
+  "build one base once."** (2) ~80% of the payload is community-routine (a)/(b) injection; the hard,
+  bounded remainder is the map-script outputs (#15 gym rewards, #16 statics, #17 item-ball picker) which
+  must be redesigned as data tables in a patch-friendly base. (3) **Top risk = the 32 MB ceiling** (built
+  ROM is already 32 MB) → Phase-0 must audit the base `.map` for free/padding space before any repoint
+  strategy. Recommendation: **Phase-0 end-to-end spike** (base stats + a learnset repoint + one gym
+  reward, inject → boot, + free-space audit) before committing. Related build-time quick wins tracked in
+  [T-228](T-228-analysis-rom-build-time-optimization.md).
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+## Outcome
+**Viability confirmed → GO.** Full writer audit ([base-plus-injection-viability.md](../docs/base-plus-injection-viability.md))
+found ≈1 base ROM (no combinatorics), ~80% community-routine injection, the map-script outputs as the
+hard-but-bounded remainder, and the 32 MB ceiling as the top risk. Decision recorded in
+[ADR-022](../docs/adr/ADR-022-base-plus-injection-architecture.md) (accepted after GATE-1 cleared), with the
+[strategy](../docs/base-plus-injection-strategy.md) + backlog T-229..T-246. Phase 1 executed & green:
+GATE-1 ~8.33 MB free, GATE-2 byte-reproducible build, the golden-master corpus + the `verify-corpus` skill
+(ALL PASS 12/12). Phase 2 (patch-friendly base refactor) is next. Follow-ups: T-229..T-246. No changelog
+line (internal analysis).

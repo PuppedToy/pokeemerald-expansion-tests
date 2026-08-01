@@ -58,11 +58,11 @@ AncientTomb_EventScript_Registeel::
 	lock
 	faceplayer
 	waitse
-	playmoncry SPECIES_REGISTEEL, CRY_MODE_ENCOUNTER
+	setvar VAR_0x8004, 2 @ static encounter — T-235 (gStaticEncounters[])
+	special ForcePerfectIVsOnNextEncounter
+	special SetupStaticEncounter
 	delay 40
 	waitmoncry
-	special ForcePerfectIVsOnNextEncounter
-	setwildbattle SPECIES_REGISTEEL, 46
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special StartRegiBattle
 	waitstate
@@ -81,7 +81,9 @@ AncientTomb_EventScript_DefeatedRegisteel::
 	end
 
 AncientTomb_EventScript_RanFromRegisteel::
-	setvar VAR_0x8004, SPECIES_REGISTEEL
+	setvar VAR_0x8004, 2 @ T-235
+	special GetStaticEncounterSpecies
+	copyvar VAR_0x8004, VAR_RESULT
 	goto Common_EventScript_LegendaryFlewAway
 	end
 

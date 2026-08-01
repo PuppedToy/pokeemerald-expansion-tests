@@ -161,7 +161,8 @@ Route121_EventScript_RematchCristin::
 	end
 
 Route121_EventScript_WalterPickTM::
-	multichoice 0, 0, MULTI_ROUTE121_PICK_TM2, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE121_2
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route121_EventScript_WalterPickTM_Option1
 	case 1, Route121_EventScript_WalterPickTM_Option2
@@ -189,7 +190,8 @@ Route121_EventScript_GodlikeTM::
 	end
 
 Route121_EventScript_PickTM::
-	multichoice 0, 0, MULTI_ROUTE121_PICK_TM, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE121
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route121_EventScript_PickToxic
 	case 1, Route121_EventScript_PickProtect
@@ -211,36 +213,14 @@ Route121_EventScript_PickRest::
 	setflag FLAG_ITEM_ROUTE_121_PICK_TM
 	end
 
-@ === RAND_ROUTE121_BERRIES_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE121_BERRIES]); static, no longer regenerated
 Route121_EventScript_PickBerry::
-	multichoice 0, 0, MULTI_ROUTE121_PICK_BERRY, FALSE
-	switch VAR_RESULT
-	case 0, Route121_EventScript_PickBerry1
-	case 1, Route121_EventScript_PickBerry2
-	case 2, Route121_EventScript_PickBerry3
-	case 3, Route121_EventScript_PickBerry4
-	end
-
-Route121_EventScript_PickBerry1::
-	finditem ITEM_CHOPLE_BERRY
+	setvar VAR_0x8004, PICK_ROUTE121_BERRIES
+	call Common_EventScript_DoPick
+	goto_if_eq VAR_RESULT, 0, Route121_EventScript_PickBerryEnd
 	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
+Route121_EventScript_PickBerryEnd::
 	end
-
-Route121_EventScript_PickBerry2::
-	finditem ITEM_SHUCA_BERRY
-	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
-	end
-
-Route121_EventScript_PickBerry3::
-	finditem ITEM_ROSELI_BERRY
-	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
-	end
-
-Route121_EventScript_PickBerry4::
-	finditem ITEM_BABIRI_BERRY
-	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
-	end
-@ === RAND_ROUTE121_BERRIES_END ===
 
 Route121_Text_OkayMoveOutToMtPyre:
 	.string "Okay!\n"

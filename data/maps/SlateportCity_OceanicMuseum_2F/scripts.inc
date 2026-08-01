@@ -75,8 +75,11 @@ SlateportCity_OceanicMuseum_2F_EventScript_CaptStern::
 	call Common_EventScript_PlayerHandedOverTheItem
 	msgbox SlateportCity_OceanicMuseum_2F_Text_SternIveGotToGo, MSGBOX_DEFAULT
 	closemessage
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
-	givemon GYM_REWARD_MON, 23, GYM_REWARD_ITEM
+	setvar VAR_0x8004, 8 @ GYM_REWARD idx — T-235 data-driven reward (gGymRewards[])
+	special GetGymReward
+	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
+	givemon VAR_RESULT, 23, VAR_0x8005
+	bufferspeciesname STR_VAR_1, VAR_RESULT
 	call SlateportCity_OceanicMuseum_2F_EventScript_ReceivedRewardPokeFanfare
 	fadescreen FADE_TO_BLACK
 	playfanfare MUS_HEAL
@@ -109,7 +112,7 @@ SlateportCity_OceanicMuseum_2F_EventScript_ReceivedRewardPokeFanfare::
 	return
 
 SlateportCity_OceanicMuseum_2F_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received GYM_REWARD_NAME!$"
+	.string "{PLAYER} received {STR_VAR_1}!$"
 
 SlateportCity_OceanicMuseum_2F_EventScript_ReadyRegisterBirch::
 	setvar VAR_REGISTER_BIRCH_STATE, 1

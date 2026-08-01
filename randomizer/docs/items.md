@@ -2,6 +2,13 @@
 
 All items in the game fall into one of several categories. The pipeline randomizes items from pools each run, so what the player finds at a given location changes every time.
 
+**How a location gets its items (T-236):** every pick/ball location is a fixed index into the
+`gItemPicks[]` table (`src/randomizer_picks.c`, indices in `include/constants/randomizer_picks.h`).
+The map scripts are static — they name the index, and the shared scripts in
+`data/scripts/randomizer_picks.inc` build the menu and give the item from the table at runtime.
+Per run, `randomizer/itemRandomizer.js` only rewrites that table's initializer block. Mechanics and
+how to add a location: `pick-list-howto.md`.
+
 ---
 
 ## Item Categories
@@ -40,7 +47,10 @@ Shuffled once per run. Each "good item" location in the world gets one item draw
 | Route 118 item ball (near Barny) | `FLAG_ITEM_ROUTE_118_COBA` | Barny (`TRAINER_BARNY`) bag/reward |
 | Route 120 item ball (near Angelica) | `FLAG_ITEM_ROUTE_119_ZINC` | Angelica (`TRAINER_ANGELICA`) bag/reward |
 
-> **Adding a new goodItemPool location:** see `pick-list-howto.md` for the general pattern. For single items, use `genSingleItemScript` in `itemRandomizer.js` with a `RAND_*` anchor in the map's `scripts.inc`. Wire the returned display name into `trainers.js` via `itemAssignments.yourNewKey`.
+> **Adding a new goodItemPool location:** see `pick-list-howto.md` (section B) — add a `PICK_*`
+> index, a row in `gItemPicks[]`, a `PICK_TABLE` entry in `itemRandomizer.js`, and a static
+> take-slot-0 stub in the map's `scripts.inc`. Wire the returned display name into `trainers.js` via
+> `itemAssignments.yourNewKey`.
 
 ---
 
@@ -117,6 +127,10 @@ Chilan (Normal), Occa (Fire), Passho (Water), Wacan (Electric), Rindo (Grass), Y
 | Route 111 | `FLAG_ITEM_ROUTE_111_CHILAN` | `route111BerryItems` → Drew (`TRAINER_DREW`) bag/reward; `normanBag` and above |
 | Route 117 | `FLAG_ITEM_ROUTE_117_WACAN` | bags from Norman onward |
 | Route 121 | `FLAG_ITEM_ROUTE_121_PICK_BERRY` | `choiceCristinBerries` → bags from Tate & Liza onward |
+
+> **Route 121 is a pick-2, not a pick-4:** the 18-berry pool is drawn 4-at-a-time in the fixed order
+> above (104 → 116 → 111 → 117 → 121), so the last location only gets the 2 remaining berries. The
+> in-game menu shows exactly the real options (the shared pick script skips empty `gItemPicks[]` slots).
 
 ---
 

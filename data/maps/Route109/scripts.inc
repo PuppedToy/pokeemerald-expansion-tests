@@ -586,15 +586,18 @@ Route109_Text_TrainerTipsSign:
 	.string "POKéMON raised by TRAINERS are said\n"
 	.string "to grow stronger than wild POKéMON.$"
 
-@ === RAND_ROUTE109_BALL_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE109_GOOD_ITEM]); static, no longer regenerated
 Route109_EventScript_GoodItem::
-	finditem ITEM_LOADED_DICE
+	setvar VAR_0x8004, PICK_ROUTE109_GOOD_ITEM
+	setvar VAR_0x8005, 0
+	special GetItemPickItem
+	finditem VAR_RESULT
 	setflag FLAG_ITEM_ROUTE_109_POTION
 	end
-@ === RAND_ROUTE109_BALL_END ===
 
 Route109_EventScript_RickyPickTM::
-	multichoice 0, 0, MULTI_ROUTE109_PICK_TM, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE109_RICKY
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route109_EventScript_RickyPickTM1
 	case 1, Route109_EventScript_RickyPickTM2
@@ -616,9 +619,9 @@ Route109_EventScript_RickyPickTM3::
 	setflag FLAG_ITEM_ROUTE_109_REDCARD
 	end
 
-@ === RAND_ROUTE109_HUEY_TM_START ===
 Route109_EventScript_HueyPickTM::
-	multichoice 0, 0, MULTI_ROUTE109_PICK_TM2, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE109_HUEY
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route109_EventScript_HueyPickTM1
 	case 1, Route109_EventScript_HueyPickTM2
@@ -639,4 +642,3 @@ Route109_EventScript_HueyPickTM3::
 	finditem ITEM_TM70
 	setflag FLAG_ITEM_ROUTE_109_STRONGMINT
 	end
-@ === RAND_ROUTE109_HUEY_TM_END ===

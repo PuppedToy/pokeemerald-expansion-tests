@@ -1,0 +1,3 @@
+# Frozen corpus bundles are ~19 MB each and live on the build box, not in git (T-230).
+bundles/
+*.log

@@ -201,7 +201,8 @@ Route111_EventScript_Shayla::
 	end
 
 Route111_EventScript_PickWilton::
-	multichoice 0, 0, MULTI_ROUTE111_PICK_WILTON, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE111_WILTON
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route111_EventScript_PickWilton1
 	case 1, Route111_EventScript_PickWilton2
@@ -229,7 +230,8 @@ Route111_EventScript_PickShayla::
 	end
 
 Route114_EventScript_PickCharlotte::
-	multichoice 0, 0, MULTI_ROUTE114_PICK_CHARLOTTE, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE114_CHARLOTTE
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route114_EventScript_PickCharlotte1
 	case 1, Route114_EventScript_PickCharlotte2
@@ -315,7 +317,8 @@ Route114_Text_ReceiveGoodRod:
 	.string "encounters at ponds and seas.$"
 
 Route114_EventScript_PickNolan::
-	multichoice 0, 0, MULTI_ROUTE114_PICK_NOLAN, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE114_NOLAN
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route114_EventScript_PickNolan1
 	case 1, Route114_EventScript_PickNolan2
@@ -338,7 +341,8 @@ Route114_EventScript_PickNolan3::
 	end
 
 Route114_EventScript_PickAngelina::
-	multichoice 0, 0, MULTI_ROUTE114_PICK_ANGELINA, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE114_ANGELINA
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route114_EventScript_PickAngelina1
 	case 1, Route114_EventScript_PickAngelina2
@@ -366,9 +370,11 @@ Route114_EventScript_PickAngelina4::
 	setflag FLAG_ITEM_ROUTE_114_ZOOM
 	end
 
-@ === RAND_ROUTE114_WYATT_GOOD_START ===
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE114_WYATT_GOOD]); static, no longer regenerated
 Route114_EventScript_PickWyatt::
-	finditem ITEM_SITRUS_BERRY
+	setvar VAR_0x8004, PICK_ROUTE114_WYATT_GOOD
+	setvar VAR_0x8005, 0
+	special GetItemPickItem
+	finditem VAR_RESULT
 	setflag FLAG_ITEM_ROUTE_114_ENERGY_POWDER
 	end
-@ === RAND_ROUTE114_WYATT_GOOD_END ===

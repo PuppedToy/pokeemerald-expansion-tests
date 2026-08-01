@@ -20,8 +20,11 @@ RustboroCity_Gym_EventScript_RoxanneDefeated::
 	giveitem ITEM_HM01
 	setflag FLAG_RECEIVED_HM_CUT
 	setflag FLAG_DEFEATED_RUSTBORO_GYM
-	setvar VAR_TEMP_TRANSFERRED_SPECIES, GYM_REWARD_MON
-	givemon GYM_REWARD_MON, 13
+	setvar VAR_0x8004, 0 @ GYM_REWARD_RUSTBORO — T-235 data-driven reward (gGymRewards[])
+	special GetGymReward
+	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
+	givemon VAR_RESULT, 13
+	bufferspeciesname STR_VAR_1, VAR_RESULT
 	call RustboroCity_Gym_EventScript_ReceivedRewardPokeFanfare
 	setvar VAR_RUSTBORO_CITY_STATE, 1
 	addvar VAR_PETALBURG_GYM_STATE, 1
@@ -39,7 +42,7 @@ RustboroCity_Gym_EventScript_ReceivedRewardPokeFanfare::
 	return
 
 RustboroCity_Gym_Text_PlayerReceivedRewardPoke:
-	.string "{PLAYER} received GYM_REWARD_NAME!$"
+	.string "{PLAYER} received {STR_VAR_1}!$"
 
 RustboroCity_Gym_EventScript_GiveRockTomb::
 	giveitem ITEM_TM01

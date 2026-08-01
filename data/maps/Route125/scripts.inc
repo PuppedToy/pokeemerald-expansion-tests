@@ -82,7 +82,8 @@ Route125_EventScript_Auron::
 	end
 
 Route125_EventScript_PresleyPickTM::
-	multichoice 0, 0, MULTI_ROUTE125_PICK_TM, FALSE
+	setvar VAR_0x8004, PICK_TM_ROUTE125
+	call Common_EventScript_ShowPickMenu
 	switch VAR_RESULT
 	case 0, Route125_EventScript_PresleyPickTM_Option1
 	case 1, Route125_EventScript_PresleyPickTM_Option2

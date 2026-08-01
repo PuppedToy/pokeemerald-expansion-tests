@@ -42,6 +42,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Item-ball choice menus now use the game's own item names.** When you open an item ball that lets you
+  pick, the options are spelled exactly as the item is in your bag (e.g. "Heavy-Duty Boots"). Same items,
+  same choices — only the spelling of a few names changes. (T-236)
+
 - **Lighter documentation download.** The generated docs viewer is now minified before it's bundled into
   your download — same content and layout, ~35% smaller. (T-219)
 

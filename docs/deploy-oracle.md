@@ -5,6 +5,12 @@ capacity never frees up, fall back to a **~€4/mo Hetzner** box (§2c) — same
 Decisions: [ADR-001](adr/ADR-001-rom-build-server-provider.md) (provider) ·
 [ADR-002](adr/ADR-002-build-server-iac-docker.md) (Docker/Compose/Caddy). Task: [T-019](../tasks/T-019-infra-dockerized-build-server-deploy.md).
 
+> **⚠ Current production reality (verified 2026-07, T-228):** the Oracle-primary framing below is stale.
+> Prod runs on the **Hetzner fallback**: a small x86_64 box (`ubuntu-4gb-fsn1-16`, Falkenstein), **2 vCPU
+> AMD EPYC / 3.7 GB RAM** — smaller than ADR-001's CX43. `deploy/.env.local` still holds OCI/Oracle vars
+> (unused). Build performance, architecture and optimization: see
+> [rom-build-performance.md](rom-build-performance.md).
+
 **Golden rule:** no secret ever goes in the repo. The GitHub deploy key lives only on the box;
 `deploy/.env` and `deploy/.env.local` are gitignored.
 
