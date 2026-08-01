@@ -203,7 +203,7 @@ async function runPokedexModule(config, baseData = null) {
         });
     }
 
-    // 6. Randomize TMs — Node: writes tms_hms.h + script_menu.h; Browser: RNG only
+    // 6. Randomize TMs — Node: writes tms_hms.h (script_menu.h is static since T-236); Browser: RNG only
     let tmList, tmPool;
     if (nodeMode) {
         tmList = await randomizeTMs(config.battleFormat);   // T-152 — doubles/mixed folds in the doubles-only status TMs
