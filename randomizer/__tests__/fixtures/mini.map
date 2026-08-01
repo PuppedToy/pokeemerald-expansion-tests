@@ -1,0 +1,61 @@
+
+Archive member included to satisfy reference by file (symbol)
+
+libgcc.a(_udivsi3.o)          build/modern/src/main.o (__udivsi3)
+
+Discarded input sections
+
+ .text.UnusedFunc
+                0x0000000000000000       0x10 build/modern/src/unused.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+ROM              0x0000000008000000 0x0000000002000000  xr
+IWRAM            0x0000000003000000 0x0000000000008000  xrw
+EWRAM            0x0000000002000000 0x0000000000040000  xrw
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD build/modern/asm/crt0.o
+
+.text           0x0000000008000000   0x9e1e78
+ *(.text)
+ .text.AgbMain  0x0000000008000208       0x88 build/modern/src/main.o
+                0x0000000008000208                AgbMain
+ *fill*         0x0000000008000290        0x2
+
+.rodata         0x000000000860a998   0x725270
+ .rodata.gItemsInfo
+                0x000000000860a998    0x15000 build/modern/src/data/items.o
+                0x000000000860a998                gItemsInfo
+ .rodata.trades
+                0x0000000008d2fb14       0x90 build/modern/src/data/trade.o
+                0x0000000008d2fb14                gIngameTrades
+                0x0000000008d2fb54                gTradeNicknames
+ .rodata.count  0x0000000008d2fba4        0x4 build/modern/src/data/trade.o
+                0x0000000008d2fba4                gTradeNicknameCount
+                0x0000000008d2fba8                . = ALIGN (0x4)
+ .rodata.sBulbasaurLevelUpLearnset
+                0x0000000008d2fbb0       0xb0 build/modern/src/pokemon.o
+                0x0000000008d2fbb0                sBulbasaurLevelUpLearnset
+ .rodata.sIvysaurLevelUpLearnset
+                0x0000000008d2fc60       0xb0 build/modern/src/pokemon.o
+                0x0000000008d2fc60                sIvysaurLevelUpLearnset
+ .rodata.sBulbasaurTeachableLearnset
+                0x0000000008d2fd10       0xa0 build/modern/src/pokemon.o
+                0x0000000008d2fd10                sBulbasaurTeachableLearnset
+                0x0000000008d2fd10                PROVIDE (__rodata_end, .)
+
+.sbss           0x0000000003005000      0x100
+ .bss.gUnusedRam
+                0x0000000003005000      0x100 build/modern/src/main.o
+                0x0000000003005000                gUnusedRam
+
+.ewram_data     0x0000000002020000       0x20 load address 0x0000000008e00000
+ .data.gSaveBlock
+                0x0000000002020000       0x20 build/modern/src/save.o
+                0x0000000002020000                gRamMirroredTable
+
+OUTPUT(pokeemerald.elf elf32-littlearm)

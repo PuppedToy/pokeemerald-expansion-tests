@@ -41,6 +41,9 @@ prefabs.json
 *.diff
 *.sym
 /pokeemerald-*.png
+# T-238 — the injector's linker-map/symbol-table test fixtures are source, not build output.
+!randomizer/__tests__/fixtures/*.map
+!randomizer/__tests__/fixtures/*.sym
 src/data/map_group_count.h
 include/constants/heal_locations.h
 tools/trainerproc/trainerproc

@@ -15,6 +15,15 @@
  *   node make.js --full-rom     (emit the full .gba instead of a BPS patch; default is .bps — ADR-013)
  *   node make.js --debug
  *   node make.js --clean        (runs 'make clean' before the first make)
+ *
+ * How a ROM is produced — T-238, Phase 3 of the base+injection migration:
+ *   ROM_BUILD_MODE=compile   (DEFAULT)  write game files → `make` → artifact          [the proven path]
+ *   ROM_BUILD_MODE=inject               write the bundle's data into the prebuilt base [seconds, no make]
+ *   …or per invocation: `--compile` / `--inject` (the flag beats the env — rollback in one word).
+ * Injection reads its base from `base/pokeemerald.{gba,map,sym}` (override with INJECT_BASE_ROM /
+ * INJECT_BASE_MAP / INJECT_BASE_SYM). It refuses to emit a ROM while any Phase-3 module is still
+ * pending, since those outputs would silently keep their base values.
+ * See docs/base-plus-injection-strategy.md and randomizer/docs/injection.md.
  */
 
 const { spawnSync } = require('child_process');
@@ -113,9 +122,78 @@ function romFileName(rom) {
     return `rom-${rom.romIndex}.gba`;
 }
 
+// ── Injection path (T-238) ───────────────────────────────────────────────────
+
+/** Where the prebuilt base and its symbol files live. The `.map`/`.sym` MUST be from that exact build. */
+function resolveBasePaths({ env = process.env, root: repoRoot = root } = {}) {
+    return {
+        romPath: env.INJECT_BASE_ROM || path.join(repoRoot, 'base', 'pokeemerald.gba'),
+        mapPath: env.INJECT_BASE_MAP || path.join(repoRoot, 'base', 'pokeemerald.map'),
+        symPath: env.INJECT_BASE_SYM || path.join(repoRoot, 'base', 'pokeemerald.sym'),
+    };
+}
+
+/**
+ * Produce one ROM by writing the bundle's data into the prebuilt base — no source mutation, no `make`,
+ * so no `restore()` either. Same artifact contract as the compile path (BPS by default, ADR-013).
+ */
+async function injectOneRom({
+    rom, bundle, seed, universeSeed = seed, outDir, fullRom = false,
+    allowPending = false, basePaths = resolveBasePaths(),
+}) {
+    const rng = require('./randomizer/rng');
+    const { loadBase, injectRom, loadOffsetMap } = require('./randomizer/injector');
+    const { emitArtifact, resolveVanillaPath } = require('./randomizer/romArtifact');
+
+    const label    = romFileName(rom);
+    const pokedex  = resolveArtifact(rom.artifacts.pokedex,  bundle.sharedData, 'pokedex');
+    const trainers = resolveArtifact(rom.artifacts.trainers, bundle.sharedData, 'trainers');
+    const starters = resolveArtifact(rom.artifacts.starters, bundle.sharedData, 'starters');
+    const wild     = rom.artifacts.wild;
+
+    fs.mkdirSync(outDir, { recursive: true });
+
+    // Same seeding as the compile path: injection changes the OUTPUT SINK, never the values.
+    rng.seed(resolveRomSeed(rom, seed, universeSeed));
+
+    const { rom: baseRom, offsetMap: mapOnly } = loadBase({ romPath: basePaths.romPath, mapPath: basePaths.mapPath });
+    // Local script labels (the Group-D setvar sites) only exist in the .sym — merge it when present.
+    const offsetMap = basePaths.symPath && fs.existsSync(basePaths.symPath)
+        ? mapOnly.merge(loadOffsetMap(basePaths.symPath))
+        : mapOnly;
+
+    const data = {
+        pokedex, trainers, starters, wild,
+        config: bundle.config || {},
+        artifacts: rom.artifacts,
+        baseRngSeed: resolveTrainingBaseSeed(rom, seed, universeSeed),
+        docs: rom.docs,
+    };
+
+    const { applied, pending, journal } = injectRom({
+        rom: baseRom, offsetMap, data, allowPending, log: (msg) => console.log(`  · ${msg}`),
+    });
+
+    const vanillaPath = fullRom ? null : resolveVanillaPath(root);
+    const dest = emitArtifact({ builtRomBuffer: baseRom.toBuffer(), outDir, label, fullRom, vanillaPath });
+    console.log(`\n  ✓  Injected ${applied.length} module(s), ${baseRom.bytesWritten} bytes → ${dest}`);
+    if (pending.length) console.log(`  ⚠  ${pending.length} module(s) still pending: ${pending.map(m => m.task).join(', ')}`);
+    return { dest, applied, pending, journal, sha256: baseRom.sha256() };
+}
+
 // ── Single-ROM build — the unit the backend queue drives (T-030) ──────────────
 
 async function buildOneRom({ rom, bundle, seed, universeSeed = seed, outDir, isDebug = false, jobs = resolveJobs(), fullRom = false }) {
+    // T-238 — one switch decides how the ROM is produced; compile is the default until INV-BYTES holds.
+    const { isInjectMode } = require('./randomizer/injector/mode');
+    if (isInjectMode()) {
+        const result = await injectOneRom({ rom, bundle, seed, universeSeed, outDir, fullRom });
+        return result.dest;
+    }
+    return compileOneRom({ rom, bundle, seed, universeSeed, outDir, isDebug, jobs, fullRom });
+}
+
+async function compileOneRom({ rom, bundle, seed, universeSeed = seed, outDir, isDebug = false, jobs = resolveJobs(), fullRom = false }) {
     const rng                          = require('./randomizer/rng');
     const writer                       = require('./randomizer/writer');
     const { writeTMsFromList }          = require('./randomizer/tmRandomizer');
@@ -213,6 +291,7 @@ async function bundleMode(bundlePath, isDebug, doClean, opts = {}) {
     console.log(`Output:    ${outDir}`);
     console.log(`Jobs:      make -j${jobs}`);
     console.log(`Artifact:  ${fullRom ? 'full ROM (.gba)' : 'BPS patch (.bps, vanilla→built)'}`);
+    console.log(`Mode:      ${require('./randomizer/injector/mode').resolveBuildMode()} (T-238)`);
 
     if (doClean) run('make', ['clean']);
 
@@ -397,4 +476,7 @@ if (require.main === module) {
     });
 }
 
-module.exports = { buildOneRom, bundleMode, resolveJobs, romFileName, resolveArtifact, resolveRomSeed, resolveTrainingBaseSeed };
+module.exports = {
+    buildOneRom, compileOneRom, injectOneRom, resolveBasePaths,
+    bundleMode, resolveJobs, romFileName, resolveArtifact, resolveRomSeed, resolveTrainingBaseSeed,
+};

@@ -1,0 +1,5 @@
+08000208 g 00000088 AgbMain
+0860a998 g 00015000 gItemsInfo
+08d40000 l 00000000 MossdeepCity_SpaceCenter_2F_OnTransition
+08d40100 l 00000000 EverGrandeCity_SidneysRoom_EventScript_Init
+03005000 g 00000100 gUnusedRam

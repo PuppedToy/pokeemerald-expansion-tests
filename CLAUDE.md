@@ -123,6 +123,7 @@ These are regenerated from source on every run; committing them pollutes history
 | `teachables.md` | Per-run TM teachable expansion: algorithm, constants, data fields (`newTeachables`/`oldTeachables`), viewer surfacing. |
 | `trainer-determinism.md` | How shared-trainer teams stay consistent across a bundle's ROMs (per-slot reseeding) and the known, deliberately-unfixed family-dedup limitation. |
 | `wild-encounters.md` | Wild-encounter generation: the sweep ("batidas") algorithm, `deterministic` vs `classic` (variable species per zone), the template-keyed plan and structural JSON writer. |
+| `injection.md` | Base+injection (Phase 3): the compile-vs-inject switch, where the base ROM/`.map`/`.sym` come from, the injector modules, the write journal, and the per-module INV-BYTES migration checklist. |
 | `randomization-options.md` | Every frontend config option and how it threads to the pipeline (categories, defaults, RNG caveat). |
 
 ## Documentation

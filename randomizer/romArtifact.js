@@ -21,12 +21,20 @@ function resolveVanillaPath(root, env = process.env) {
 }
 
 /**
+ * The ROM comes either from a file the compiler just wrote (`builtRomPath`) or, since T-238, straight
+ * from the injector as bytes (`builtRomBuffer`) — injection never writes an intermediate .gba.
+ *
  * @returns {string} the written destination path.
  */
-function emitArtifact({ builtRomPath, outDir, label, fullRom = false, vanillaPath, fs = fsDefault }) {
+function emitArtifact({ builtRomPath, builtRomBuffer = null, outDir, label, fullRom = false, vanillaPath, fs = fsDefault }) {
+    if (!builtRomPath && !builtRomBuffer) {
+        throw new Error('emitArtifact needs either builtRomPath (compiled) or builtRomBuffer (injected)');
+    }
+
     if (fullRom) {
         const dest = path.join(outDir, label);
-        fs.copyFileSync(builtRomPath, dest);
+        if (builtRomBuffer) fs.writeFileSync(dest, builtRomBuffer);
+        else fs.copyFileSync(builtRomPath, dest);
         return dest;
     }
 
@@ -39,7 +47,7 @@ function emitArtifact({ builtRomPath, outDir, label, fullRom = false, vanillaPat
     }
 
     const vanilla = fs.readFileSync(vanillaPath);
-    const built = fs.readFileSync(builtRomPath);
+    const built = builtRomBuffer || fs.readFileSync(builtRomPath);
     const bps = createBps(vanilla, built);
     const dest = path.join(outDir, label.replace(/\.gba$/i, '.bps'));
     fs.writeFileSync(dest, Buffer.from(bps));

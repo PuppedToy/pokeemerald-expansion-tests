@@ -55,6 +55,34 @@ describe('emitArtifact — full ROM mode (--full-rom)', () => {
     });
 });
 
+// T-238 — an injected ROM never touches the filesystem before delivery: the injector holds the bytes
+// in memory, so the artifact emitter must accept a buffer as well as a path. Same BPS/full-ROM
+// contract, so a delivered artifact is indistinguishable from a compiled one.
+describe('emitArtifact — injected ROM (in-memory bytes, T-238)', () => {
+    test('BPS mode diffs the buffer against vanilla without reading a built file', () => {
+        const fs = mockFs({ '/v.gba': VANILLA });
+        const dest = emitArtifact({
+            builtRomBuffer: Buffer.from(BUILT), outDir: '/out', label: 'rom-0.gba',
+            fullRom: false, vanillaPath: '/v.gba', fs,
+        });
+        expect(dest).toBe(path.join('/out', 'rom-0.bps'));
+        expect(eq(applyBps(fs._writes[dest], VANILLA), BUILT)).toBe(true);
+    });
+
+    test('full-ROM mode writes the buffer verbatim', () => {
+        const fs = mockFs({});
+        const dest = emitArtifact({
+            builtRomBuffer: Buffer.from(BUILT), outDir: '/out', label: 'rom-0.gba', fullRom: true, fs,
+        });
+        expect(eq(fs._writes[dest], BUILT)).toBe(true);
+    });
+
+    test('neither a path nor a buffer is a programming error, not an empty ROM', () => {
+        expect(() => emitArtifact({ outDir: '/out', label: 'rom-0.gba', fullRom: true, fs: mockFs({}) }))
+            .toThrow(/builtRomPath|builtRomBuffer/);
+    });
+});
+
 describe('resolveVanillaPath', () => {
     test('honors VANILLA_ROM when set', () => {
         expect(resolveVanillaPath('/repo', { VANILLA_ROM: '/custom/base.gba' })).toBe('/custom/base.gba');
