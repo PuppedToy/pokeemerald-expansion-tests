@@ -130,20 +130,24 @@ function buildSyntheticBase({ species = {}, moves = {}, items = {}, evolutions =
         buffer.writeUInt32LE(0x08000000 + arrayAt, speciesAt(name) + EVOLUTIONS_FIELD);
     }
 
-    // Wild slot arrays, each its own symbol (the generated `<base_label>_<Type>Mons` tables).
+    // Wild slot arrays, each its own symbol (the generated `<base_label>_<Type>Mons` tables). A slot is
+    // either a species name or `{ species, min_level, max_level }` — the latter lets a test mirror the
+    // real wild_encounters.json, which the injector validates its slots against.
     let wildCursor = WILD_BASE;
     const wildSymbols = {};
     for (const [symbol, slots] of Object.entries(wild)) {
         const at = wildCursor;
         wildCursor += slots.length * WILD_POKEMON.stride;
-        slots.forEach((speciesName, i) => {
+        slots.forEach((slot, i) => {
+            const { species, min_level: min = 5, max_level: max = 7 } = typeof slot === 'string' ? { species: slot } : slot;
             const slotAt = at + i * WILD_POKEMON.stride;
-            buffer.writeUInt8(5, slotAt + WILD_POKEMON.minLevel);
-            buffer.writeUInt8(7, slotAt + WILD_POKEMON.maxLevel);
-            buffer.writeUInt16LE(constants.require(speciesName), slotAt + WILD_POKEMON.species);
+            buffer.writeUInt8(min, slotAt + WILD_POKEMON.minLevel);
+            buffer.writeUInt8(max, slotAt + WILD_POKEMON.maxLevel);
+            buffer.writeUInt16LE(constants.require(species), slotAt + WILD_POKEMON.species);
         });
         wildSymbols[symbol] = { romOffset: at, size: slots.length * WILD_POKEMON.stride };
     }
+    if (wildCursor > ROM_SIZE) throw new Error('syntheticBase: wild tables outgrew the fixture ROM');
 
     // gTMHMItemMoveIds — { u16 itemId, u16 moveId } per machine, index 0 the ITEM_NONE failsafe.
     let tmhmSize = 0;
@@ -164,14 +168,14 @@ function buildSyntheticBase({ species = {}, moves = {}, items = {}, evolutions =
         });
     }
 
-    const sym = (romOffset, size) => ({ addr: 0x08000000 + romOffset, romOffset, size, sizeExact: true });
+    const sym = (name, romOffset, size) => ({ name, addr: 0x08000000 + romOffset, romOffset, size, sizeExact: true });
     const symbols = {
-        gSpeciesInfo: sym(SPECIES_BASE, speciesCount * SPECIES_STRIDE),
-        gMovesInfo:   sym(MOVE_BASE, moveCount * MOVE_STRIDE),
-        gItemsInfo:   sym(ITEM_BASE, itemCount * ITEM_STRIDE),
+        gSpeciesInfo: sym('gSpeciesInfo', SPECIES_BASE, speciesCount * SPECIES_STRIDE),
+        gMovesInfo:   sym('gMovesInfo', MOVE_BASE, moveCount * MOVE_STRIDE),
+        gItemsInfo:   sym('gItemsInfo', ITEM_BASE, itemCount * ITEM_STRIDE),
     };
-    if (tmhmSize) symbols.gTMHMItemMoveIds = sym(TMHM_BASE, tmhmSize);
-    for (const [name, s] of Object.entries(wildSymbols)) symbols[name] = sym(s.romOffset, s.size);
+    if (tmhmSize) symbols.gTMHMItemMoveIds = sym('gTMHMItemMoveIds', TMHM_BASE, tmhmSize);
+    for (const [name, s] of Object.entries(wildSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
 
     return {
         rom: Rom.fromBuffer(buffer),
