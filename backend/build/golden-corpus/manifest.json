@@ -1,64 +1,120 @@
 {
   "_comment": "Golden master (T-230): sha256 of the full ROM built from each FROZEN corpus bundle, on the PRO build box. build(frozen_bundle) is byte-deterministic (T-231/GATE-2), so a hash match proves the build output is unchanged. This is a POINT-IN-TIME snapshot: Phase-3 injection must reproduce these hashes byte-for-byte (INV-BYTES, base unchanged); a Phase-2 base refactor changes the bytes by design (INV-BEHAVIOR) and RE-SNAPSHOTS this file. Hashes are valid only for this base ROM + toolchain + core-count; an upstream sync or toolchain change requires regenerating. See docs/base-plus-injection-strategy.md.",
-  "baseline": "post-T236 + B-055 (T-234 runtime settings struct + T-235 data-driven gym & static rewards + T-236 data-driven item/TM picks & mega-trainer hide flags, plus the B-055 dynamic-multichoice input guard). Bytes changed BY DESIGN vs the post-T235 snapshot (INV-BEHAVIOR): the item-ball picker no longer generates per-item script handlers, TM/item menu labels are built at runtime from gItemPicks[], and removed mega trainers are hidden via gMegaTrainerHidden[] instead of deleting their map.json object_events. Owner play-test signed off 2026-08-01. Supersedes the post-T235 snapshot.",
+  "baseline": "post-T237 + T-247 (fixed-capacity layout for every table the randomizer rewrites: learnsets, teachable learnsets, trainer/partner parties, in-game trades, extra starters and the location/trade nickname tables; plus the T-247 sweep of the multichoice tables the T-235/T-236 migration orphaned). Bytes changed BY DESIGN vs the post-T236 snapshot (INV-BEHAVIOR): every one of those tables is padded to a fixed capacity and exported so the injector can overwrite it in place, names are stored inline instead of in the COMPOUND_STRING pool, and each injectable value is read through an noipa accessor so LTO cannot fold it. Supersedes the post-T236 + B-055 snapshot.",
   "capturedAt": "2026-08-01",
-  "baseRomSha256": "9c8266b5e170c72ca66c054e4360251ece33d8dfc752c409d14b62df7f535fa5",
+  "baseRomSha256": "10f913694b2d232fbf625ecbe36edb2b2a1750434eb74736cd754bde567ab4db",
   "injectableSymbols": {
+    "_note": "offsets are for THIS base build; randomization shifts them — read each build's own .map. Inject only into the fixed base.",
     "gRandomizerSettings": {
-      "romOffset": "0xbf0084",
+      "romOffset": "0xc47ef0",
       "layout": "u32 trainerMoneyNormal, trainerMoneyBoss, trainerMoneyGym, moveRelearnerCost (T-234, via GetRandomizerSettings noipa accessor)"
     },
     "gGymRewards": {
-      "romOffset": "0xbf003c",
+      "romOffset": "0xc47ea8",
       "layout": "11 x { u16 species, u16 item } (T-235, via GetGymReward special)"
     },
     "gStaticEncounters": {
-      "romOffset": "0xbf0068",
-      "layout": "7 x { u16 species, u16 level } \u2014 regirock/regice/registeel/mew/legend1-3 (T-235, via SetupStaticEncounter special)"
+      "romOffset": "0xc47ed4",
+      "layout": "7 x { u16 species, u16 level } — regirock/regice/registeel/mew/legend1-3 (T-235, via SetupStaticEncounter special)"
     },
     "gItemPicks": {
-      "romOffset": "0xbefe94",
-      "layout": "53 x { u16 items[4] } \u2014 indices 0..28 are the randomizer-filled item locations (19 menu picks + 10 single items), 29..52 are STATIC TM picks; ITEM_NONE pads unused slots and the menu skips them (T-236, via GetItemPickItem / BufferItemPickName specials)"
+      "romOffset": "0xc47d00",
+      "layout": "53 x { u16 items[4] } — 0..28 randomizer-filled item locations, 29..52 STATIC TM picks (T-236, via GetItemPickItem / BufferItemPickName specials)"
     },
     "gMegaTrainerHidden": {
-      "romOffset": "0xbefdd4",
-      "layout": "21 x u8 bool \u2014 index = MEGA_TRAINERS id - 1; TRUE hides that mega's trainer NPC + stone ball at spawn (T-236, via RandomizerIsHiddenMegaObject)"
+      "romOffset": "0xc47c40",
+      "layout": "21 x u8 bool — index = MEGA_TRAINERS id - 1; TRUE hides that mega's trainer NPC + stone ball at spawn (T-236, via RandomizerIsHiddenMegaObject)"
     },
-    "_note": "offsets are for THIS base build; randomization shifts them \u2014 read each build's own .map. Inject only into the fixed base."
+    "gLocationNicknames": {
+      "romOffset": "0x63fc40",
+      "layout": "160 x { u8 mapGroup, mapNum, gender, nickname[13] } = 16 B rows (T-237); gLocationNicknameCount says how many are real, read via the GetLocationNicknameCount noipa accessor"
+    },
+    "gLocationNicknameCount": {
+      "romOffset": "0x640640",
+      "layout": "u8 — number of real gLocationNicknames rows; 0 = feature off (T-237, noipa accessor)"
+    },
+    "gTradeNicknames": {
+      "romOffset": "0xd2fb14",
+      "layout": "8 x { u8 tradeId, u8 nickname[13] } = 16 B rows (T-237); see gTradeNicknameCount"
+    },
+    "gTradeNicknameCount": {
+      "romOffset": "0xd2fb94",
+      "layout": "u8 — number of real gTradeNicknames rows; 0 = feature off (T-237, noipa accessor)"
+    },
+    "gStarterMon": {
+      "romOffset": "0xc54c7c",
+      "layout": "3 x u16 species (T-237, via the GetStarterPokemon noipa accessor)"
+    },
+    "gStarterExtraMon": {
+      "romOffset": "0xc54cc4",
+      "layout": "16 x u16 species — STARTER_EXTRA_CAPACITY slots; gStarterExtraCount says how many are real (T-237)"
+    },
+    "gStarterExtraNicknames": {
+      "romOffset": "0xc54e84",
+      "layout": "16 x u8[13] inline names (T-237)"
+    },
+    "gStarterExtraGenders": {
+      "romOffset": "0xc54cf4",
+      "layout": "16 x u8 MON_MALE/FEMALE/GENDERLESS (T-237)"
+    },
+    "gStarterNickname": {
+      "romOffset": "0xc54ce4",
+      "layout": "u8[13] inline name for the chosen starter (T-237)"
+    },
+    "gStarterGender": {
+      "romOffset": "0xc54f54",
+      "layout": "u8 forced gender for the chosen starter (T-237, noipa accessor)"
+    },
+    "gStarterExtraCount": {
+      "romOffset": "0xc54f55",
+      "layout": "u8 — how many of the 16 extra-starter slots are real (T-237, via GetExtraPokemonCount noipa accessor)"
+    },
+    "gIngameTrades": {
+      "romOffset": "0xd25518",
+      "layout": "4 x struct InGameTrade — fixed width; requestedSpeciesList / requestedBaseForms are inline u16[16] with their counts (T-237)"
+    },
+    "gTrainers": {
+      "romOffset": "0x3d5870",
+      "layout": "[DIFFICULTY_COUNT][860] struct Trainer (0x30 B each); .party points at a party padded to TRAINER_PARTY_CAPACITY (6 x 36 B = 216 B), so parties are overwritten in place through that pointer (T-237)"
+    },
+    "_learnsets": {
+      "romOffset": "per-species — look each array up by name in the base build's .map",
+      "layout": "1104 level-up learnsets at LEVEL_UP_LEARNSET_CAPACITY (44 x 4 B = 176 B stride) + 1101 teachable learnsets at TEACHABLE_LEARNSET_CAPACITY (80 x 2 B = 160 B stride); both exported non-static so the .map locates them by name (T-237)"
+    }
   },
   "builder": "PRO (pokemon-emerald-cut.com), deploy-app-1 container (init:true), arm-none-eabi-gcc 12.2, 2 vCPU, -O2 -flto=auto",
   "bundles": {
     "baseline": {
-      "rom-0.gba": "e9c5a1eafb5844d633d1e8ee92a3febada156edb6686e7b56e2ac63e6b141a77"
-    },
-    "rebalance-off": {
-      "rom-0.gba": "ae6b7e44877fb05a9586f223eeefba598d52f01503a3dac3507fc10ba631b632"
-    },
-    "mutate-moves": {
-      "rom-0.gba": "4f4f31d51a5cbcb389b5baf0c50c4fceb9b99eff62a52f3eed8823ad73e0662a"
+      "rom-0.gba": "8938a7c7bbe0cb1453a937ef491f6fb60a0427c8779af11b74a513dc46b08ccd"
     },
     "doubles": {
-      "rom-0.gba": "8fcef3b5ed0b46e723bad1fa590236ff6a32e450419cdd77479d073121bec803"
-    },
-    "runbun-mixed": {
-      "rom-0.gba": "ed720749c9e1970a2c0381c4ade4f10275b424141a90a43c127175191fbb7a61"
-    },
-    "steven-off": {
-      "rom-0.gba": "46b21992b5fe06fd34583fd723f64aaa6d8add206ced4871957e8348a4fe438a"
-    },
-    "wild-classic": {
-      "rom-0.gba": "19fa27590dd79805534d0464ce698a404f9f4e9f3f1f8e17cff7279785ec8a6d"
+      "rom-0.gba": "231b81cff76d0efb2d52097d7c2f332cb5672851089612941ad9dd6b61616fce"
     },
     "economy": {
-      "rom-0.gba": "2f14b7265bca53a1c8a61d0e65a2a807e1509592556f7633e6b3826b2e580c9d"
+      "rom-0.gba": "816d4a66f5830e076b3000aa0b6356db23b85e6c79418c57d2a3681415260b24"
+    },
+    "mutate-moves": {
+      "rom-0.gba": "3381ab813c644a9a2f9530dc95edbe0ff3c27db1459957246aabbadb8812f98d"
     },
     "nicknames-on": {
-      "rom-0.gba": "68cada3981734267be6d3f19cc0c569327c1dbdcd583ebd321fa6c59a573fcb2"
+      "rom-0.gba": "64d30ba106268bab93aad8bbf6c9d099c74fefddda21212fd2acbed1f669cf97"
     },
     "nuzlocke-3": {
-      "rom-0.gba": "a77ea4cd25c1a45ec5427b9ba089e2272d7fa0175b96a864fbbc0776aa255793",
-      "rom-1.gba": "ce6157b3844b1fea05fbd4c084ac08b479b61f71fd0071c3cfae932f9794a3d1",
-      "rom-2.gba": "191197a9c3c281d471dc54708f84fb040121357222d1e68175332459a3c81625"
+      "rom-0.gba": "4b487133dcc6d759815c3ffc354df84561b8cc918148d07b8ed632a931a65342",
+      "rom-1.gba": "11cc033ed922e21bd6ffe635557bf357186ce5be906901ffde7d1c5e8047c275",
+      "rom-2.gba": "d912771e502cb6a73b850ead9e7e0de3c4fbfc2886036e96d175b8524d121296"
+    },
+    "rebalance-off": {
+      "rom-0.gba": "5a5fb05245fe64a7190d8f998eb4377927bab2b8efb128a2185a0b52b700543b"
+    },
+    "runbun-mixed": {
+      "rom-0.gba": "a3249cd5794b3f54df4c17b34836e9883f84781bc7c6f57c6d12220de4f95151"
+    },
+    "steven-off": {
+      "rom-0.gba": "8eff3ef2b06668e8a7546ea92444ef4544a0171aae1bd2b3804e9e0d1617cb50"
+    },
+    "wild-classic": {
+      "rom-0.gba": "7d16bbf4a5a580a624a1cf99b332bb89a0de56ff6440afdca28cb386e62dc024"
     }
   }
 }

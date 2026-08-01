@@ -30,8 +30,14 @@ Acceptance criteria:
       +237, parties +118, the rest ~4), ~4 % of the 8.33 MB GATE-1 margin.
 - [x] Nickname/name entries use fixed-width slots (`u8 [POKEMON_NAME_LENGTH + 1]` inline, everywhere the
       randomizer writes a name: location, trade, starter and extra-starter nicknames).
-- [ ] Same gameplay/data; T-233 green; `make` compiles; new sizes fit under 32 MB. *(needs the PRO box)*
+- [x] `make` compiles on PRO (exit 0), the corpus re-snapshot is **12/12 ROMs, 0 BUILD_FAILED**, and the
+      new sizes fit: ROM **75.04 %** of 32 MB → **~7.99 MB free**. Every capacity verified in the built
+      `.map`/ROM (learnset stride 176 B, teachable 160 B, party 216 B, nickname rows 16 B).
 - [ ] Owner play-tests the downloaded ROM (learnsets + a trainer battle) and confirms identical behavior.
+      → ROM ready at `~/emerald-playtest/T-237-nicknames-on.gba` (sha `64d30ba1…`). What to check:
+      **(a)** a wild catch shows the route nickname (this bundle names 134 maps) and the starter is
+      nicknamed; **(b)** any trainer battle fields the right team size; **(c)** a Pokémon's level-up and
+      TM/tutor move lists are unchanged; **(d)** a town trade still accepts the family it asks for.
 
 ## Progress log
 - **2026-07-27** — Created (Phase 2). Depends on the GATE-1 free-space verdict.
@@ -255,5 +261,66 @@ Acceptance criteria:
   - The guard test now checks **all four** includers, plus a test asserting `trainer_rules.mk` still
     generates exactly four party headers — so a fifth one can't be added without noticing the includer.
     Suite 1739.
+
+- **2026-08-01 — PRO COMPILE GATE, round 2: `make` green, but the `.map` exposed the T-234 trap again.**
+  Build **exit 0** — and then the symbol check found **`gLocationNicknames` and `gTradeNicknames` missing
+  from the `.map` entirely**. Their committed count is `0`, so LTO propagated it into the lookup loop,
+  deleted the loop as dead code, and garbage-collected the table it was the only reader of. Fixed-capacity
+  storage is worthless if the compiler deletes it.
+  - Same latent bug, silent version, on the starter side: `gStarterExtraCount` (9) and `gStarterGender`
+    were plain `const` reads, so their values would have been folded into the callers — the symbols stay
+    in the ROM looking injectable while injection does nothing. That is the failure mode Phase 3 would
+    have spent a day chasing.
+  - **Fix**: every value the injector rewrites is now read through an `__attribute__((noinline, noipa))`
+    accessor — the exact shape [[T-234]] established for `gRandomizerSettings` (`GetLocationNicknameCount`,
+    `GetTradeNicknameCount`, and all seven starter accessors). `noipaAccessors.test.js` pins all ten plus
+    the rule that the nickname lookups must call the accessor instead of reading the count directly.
+  - **Verified on the rebuilt base** (`make` exit 0): every symbol present, and the sizes are exactly the
+    declared capacities —
+    | symbol | offset | span |
+    |---|---|---|
+    | `sBulbasaurLevelUpLearnset` (any learnset) | 0x08766be0 | stride **176 B** = 44 × 4 |
+    | `sBulbasaurTeachableLearnset` | 0x08737500 | stride **160 B** = 80 × 2 |
+    | trainer parties (anonymous, via `gTrainers[].party`) | — | stride **216 B** = 6 × 36 |
+    | `gLocationNicknames` | 0x0863fc40 | **0xA00** = 160 × 16 B rows |
+    | `gTradeNicknames` | 0x08d2fb14 | **0x80** = 8 × 16 B rows |
+    | `gStarterExtraNicknames` | 0x08c543c8 | **0xD0** = 16 × 13 B |
+    | `gIngameTrades`, `gStarterMon`, `gStarterExtraMon`, `gStarterGender`, `gStarterExtraCount` | present | — |
+    The party stride was read **out of the ROM**, not assumed: scanning `gTrainers` (0x083d5870,
+    `sizeof(struct Trainer)` = 0x30) for its `.party` pointers gives a constant 216 B spacing across
+    consecutive trainers.
+  - **Space**: ROM **25,179,128 B / 32 MB = 75.04 %** → **~7.99 MB free**. vs the 24,822,572 B measured at
+    GATE-1 (pre-Phase-2) that is **+356,556 B** for all of Phase 2 — within a rounding error of the
+    +355 KB predicted for T-237 alone, i.e. T-234/235/236 cost ~nothing and the padding is the whole bill.
+    GATE-1's budget is still comfortably intact.
+  - Method note: the whole gate ran in a **throwaway copy** (`/opt/emerald-t237` + a one-off container),
+    so production kept serving the old base while the new one was proved. Worth reusing — it turns a
+    risky "deploy and hope it compiles" into a plain check.
+
+- **2026-08-01 — FULL CORPUS RE-SNAPSHOT: 12/12, 0 BUILD_FAILED.** Ran the whole golden-master corpus in
+  the same throwaway copy (bundles bind-mounted read-only from production's
+  `backend/data/golden-corpus`), so the live site was never touched. All ten bundles built —
+  baseline, doubles, economy, mutate-moves, nicknames-on, nuzlocke-3 (×3), rebalance-off, runbun-mixed,
+  steven-off, wild-classic — i.e. the fixed-capacity writers hold across every config shape, including
+  the ones that exercise nicknames, trades, doubles teams and 3-ROM bundles.
+  - `manifest.json` re-captured: base **`10f913694b2d…`** (clean `make` after `git checkout`, exit 0),
+    the 12 bundle hashes, and **20 injectable symbols** with their offsets — the five from
+    T-234/235/236 (all moved, as expected) plus the T-237 ones: `gLocationNicknames` (0x63fc40) +
+    `gLocationNicknameCount`, `gTradeNicknames` + `gTradeNicknameCount`, `gStarterMon`,
+    `gStarterExtraMon`, `gStarterExtraNicknames`, `gStarterExtraGenders`, `gStarterNickname`,
+    `gStarterGender`, `gStarterExtraCount`, `gIngameTrades`, and `gTrainers` (0x3d5870 — the parties are
+    reached through its `.party` pointers). Learnsets are documented as "look the array up by name in the
+    `.map`" rather than listed, since there are 2205 of them.
+  - **End-to-end check of the writer→C path on real bundle data** (not fixtures): ran the four Phase-C
+    writers against `nicknames-on`'s artifacts inside the container — **134 location rows with a matching
+    count of 134**, the starter nickname (`_("Milos")`) and `gStarterExtraCount = 9` in lock-step, and the
+    trade species lists inlined with real families (`{ SPECIES_PIDOVE, SPECIES_TRANQUILL,
+    SPECIES_UNFEZANT }`). The trade-nickname table came out 0/0 for this bundle (feature off) — the
+    vanilla path, and exactly what the count is for.
+  - Play-test ROM at `~/emerald-playtest/T-237-nicknames-on.gba`, sha `64d30ba1…`, matching its manifest
+    entry.
+  - **⚠ The new base is NOT deployed.** It lives in `/opt/emerald-t237` on the box; production still
+    serves the pre-T237 base, so `verify-corpus` run against `/opt/emerald` will report 12 mismatches
+    until the owner deploys. That is expected, not a regression.
 
 ## Outcome
