@@ -30,11 +30,22 @@ const struct LocationNickname gLocationNicknames[LOCATION_NICKNAME_CAPACITY] =
     // @LOCATION_NICKNAMES_END
 };
 
+// T-237 — read the count through a `noipa` accessor, exactly as T-234 does for gRandomizerSettings.
+// Without it, LTO propagates the committed `0` into the loop below, deletes the loop as dead, and then
+// garbage-collects gLocationNicknames entirely: the table vanishes from the `.map` (verified on the build
+// box) and an injected one would never be read. noinline for good measure.
+__attribute__((noinline, noipa))
+u32 GetLocationNicknameCount(void)
+{
+    return gLocationNicknameCount;
+}
+
 const u8 *GetLocationNickname(u8 mapGroup, u8 mapNum, u8 *outGender)
 {
+    u32 count = GetLocationNicknameCount();
     u32 i;
 
-    for (i = 0; i < gLocationNicknameCount; i++)
+    for (i = 0; i < count; i++)
     {
         if (gLocationNicknames[i].mapGroup == mapGroup && gLocationNicknames[i].mapNum == mapNum)
         {

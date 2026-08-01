@@ -18,6 +18,10 @@ struct LocationNickname
 extern const struct LocationNickname gLocationNicknames[LOCATION_NICKNAME_CAPACITY];
 extern const u8 gLocationNicknameCount;   // how many rows are real; 0 = feature off
 
+// Read the count ONLY through this `noipa` accessor (see the note in src/location_nicknames.c): a direct
+// read lets LTO fold the committed 0 and garbage-collect the whole table.
+u32 GetLocationNicknameCount(void);
+
 // T-070 — location-based auto-nicknames. Returns the nickname for a map (or NULL if the map has no
 // entry / the feature is off) and writes the map's forced gender (MON_MALE/FEMALE, or MON_GENDERLESS =
 // don't force) to *outGender.

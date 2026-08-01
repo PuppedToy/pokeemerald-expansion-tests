@@ -26,11 +26,20 @@ const struct TradeNickname gTradeNicknames[TRADE_NICKNAME_CAPACITY] =
     // @TRADE_NICKNAMES_END
 };
 
+// T-237 — see the same guard in src/location_nicknames.c: without `noipa` the committed count (0) is
+// folded into the loop, the loop is deleted and gTradeNicknames is garbage-collected out of the ROM.
+__attribute__((noinline, noipa))
+u32 GetTradeNicknameCount(void)
+{
+    return gTradeNicknameCount;
+}
+
 const u8 *GetTradeNickname(u8 whichInGameTrade)
 {
+    u32 count = GetTradeNicknameCount();
     u32 i;
 
-    for (i = 0; i < gTradeNicknameCount; i++)
+    for (i = 0; i < count; i++)
     {
         if (gTradeNicknames[i].tradeId == whichInGameTrade)
             return gTradeNicknames[i].nickname;

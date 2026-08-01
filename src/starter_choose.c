@@ -403,6 +403,11 @@ static const struct SpriteTemplate sSpriteTemplate_StarterCircle =
 };
 
 // .text
+// T-237 — every accessor below is `noipa` so the injector's writes actually take effect: all six arrays
+// are const with committed initializers, and LTO happily propagates those into the callers (T-234 proved
+// it does so even for `const volatile`). A folded read would keep the base's starter/nickname/gender no
+// matter what was injected. These are script/menu paths, so the extra call costs nothing.
+__attribute__((noinline, noipa))
 u16 GetStarterPokemon(u16 chosenStarterId)
 {
     if (chosenStarterId > STARTER_MON_COUNT)
@@ -412,39 +417,48 @@ u16 GetStarterPokemon(u16 chosenStarterId)
 
 // T-237 — the arrays are STARTER_EXTRA_CAPACITY long; gStarterExtraCount is how many of them this ROM
 // actually filled, so every bound below is the count, not the capacity.
+// `noipa` (same reason as T-234's GetRandomizerSettings): the count and the forced gender are single
+// const values the injector rewrites, and LTO would otherwise propagate the committed ones into every
+// caller — the ROM would keep 9 extra starters and a genderless starter no matter what was injected.
+__attribute__((noinline, noipa))
 u16 GetExtraPokemonCount()
 {
     return gStarterExtraCount;
 }
 
+__attribute__((noinline, noipa))
 u16 GetExtraPokemon(u16 extraPokemonId)
 {
-    if (extraPokemonId >= gStarterExtraCount)
+    if (extraPokemonId >= GetExtraPokemonCount())
         extraPokemonId = 0;
     return gStarterExtraMon[extraPokemonId];
 }
 
 // T-068 — starter nickname / forced-gender accessors (see the arrays above).
+__attribute__((noinline, noipa))
 const u8 *GetStarterNickname(void)
 {
     return gStarterNickname;
 }
 
+__attribute__((noinline, noipa))
 u8 GetStarterGender(void)
 {
     return gStarterGender;
 }
 
+__attribute__((noinline, noipa))
 const u8 *GetExtraStarterNickname(u16 extraPokemonId)
 {
-    if (extraPokemonId >= gStarterExtraCount)
+    if (extraPokemonId >= GetExtraPokemonCount())
         extraPokemonId = 0;
     return gStarterExtraNicknames[extraPokemonId];
 }
 
+__attribute__((noinline, noipa))
 u8 GetExtraStarterGender(u16 extraPokemonId)
 {
-    if (extraPokemonId >= gStarterExtraCount)
+    if (extraPokemonId >= GetExtraPokemonCount())
         extraPokemonId = 0;
     return gStarterExtraGenders[extraPokemonId];
 }

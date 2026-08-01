@@ -14,6 +14,10 @@ struct TradeNickname
 extern const struct TradeNickname gTradeNicknames[TRADE_NICKNAME_CAPACITY];
 extern const u8 gTradeNicknameCount;   // how many rows are real; 0 = feature off
 
+// Read the count ONLY through this `noipa` accessor (see the note in src/trade_nicknames.c): a direct
+// read lets LTO fold the committed 0 and garbage-collect the whole table.
+u32 GetTradeNicknameCount(void);
+
 // T-202 — town-trade auto-nicknames. Returns the nickname for an in-game trade index (INGAME_TRADE_*),
 // or NULL when that trade has no entry / the feature is off.
 const u8 *GetTradeNickname(u8 whichInGameTrade);

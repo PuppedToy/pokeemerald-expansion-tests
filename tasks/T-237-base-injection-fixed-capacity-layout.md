@@ -238,6 +238,22 @@ Acceptance criteria:
     `git restore src/ include/ data/maps/` in a `finally`, so **any** pipeline run would wipe every base
     change of T-234/235/236/237 (all of Phase 2 is uncommitted in the working tree). CLAUDE.md already
     says to commit `src/`/`include/`/`data/maps/` before running — noting it here because the blast
-    radius is now three tasks' worth of C work, not one file.
+    radius is now three tasks' worth of C work, not one file. **Resolved 2026-08-01**: committed in three
+    commits (prior Phase 2 / T-247 sweep / T-237), nothing pushed.
+
+- **2026-08-01 — PRO COMPILE GATE, round 1: caught two missing includes.**
+  Built the base **out-of-band** rather than deploying: rsynced the tree to `/opt/emerald-t237` on the box
+  and ran `make` in a throwaway `emerald-cut:latest` container mounted at `/app`, so production kept
+  serving the old base while the new one was proved. (Needed `touch .histignore` — upstream's `make tools`
+  refuses to run without git history, and the rsync excludes `.git`.)
+  - **`make` failed**: `src/data/debug_trainers.party:2: error: 'TRAINER_PARTY_CAPACITY' undeclared`.
+    `trainer_rules.mk` generates **four** party headers, not two — `trainers.h`, `battle_partners.h`,
+    **`debug_trainers.h`** and **`test/battle/trainer_control.h`** — and I had only given the constant to
+    the first two includers. Fixed by including `constants/randomizer_layout.h` in `src/debug.c` and
+    `test/battle/trainer_control.c` (the latter is only built by `make check` in CI, so it would have
+    failed there later instead).
+  - The guard test now checks **all four** includers, plus a test asserting `trainer_rules.mk` still
+    generates exactly four party headers — so a fifth one can't be added without noticing the includer.
+    Suite 1739.
 
 ## Outcome
