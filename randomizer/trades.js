@@ -30,7 +30,7 @@ function nearestCap(level) {
     return best;
 }
 
-// The 4 town trades (owner spec, T-194). ingameTradeId keeps the sIngameTrades slot each town's map
+// The 4 town trades (owner spec, T-194). ingameTradeId keeps the gIngameTrades slot each town's map
 // script selects via `setvar VAR_0x8008, INGAME_TRADE_*`: Dewford→SEEDOT (was Rustboro), Lavaridge→
 // HORSEA (was Pacifidlog), Fortree→PLUSLE, Mossdeep→MEOWTH (was Battle Frontier). The offered mon's
 // level is that TOWN's own gym cap (Dewford→Brawly, Lavaridge→Flannery, Fortree→Winona, Mossdeep→

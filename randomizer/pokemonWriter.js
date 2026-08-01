@@ -2,6 +2,9 @@ const path = require("path");
 const fs = require("fs").promises;
 
 const { TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR, POKEMON_TYPES } = require("./constants");
+// T-237 — learnset arrays are declared at a fixed capacity so the injector can overwrite them in place
+// (ADR-022). Both counts include the terminator, so a payload may be at most capacity - 1 long.
+const { LEVEL_UP_LEARNSET_CAPACITY, TEACHABLE_LEARNSET_CAPACITY } = require("./layout");
 
 function editSpeciesFile(genSpeciesFileText, pokemonList) {
     const lines = genSpeciesFileText.split('\n');
@@ -121,8 +124,9 @@ async function editLearnsetsFile(learnsetsFileText, pokemonList) {
     let fullReplacement;
     let result = learnsetsFileText;
     for (let i = 0; i < learnsetLines.length; i++) {
-        if (learnsetLines[i].startsWith('static const struct LevelUpMove ')) {
-            const currentLearnsetId = learnsetLines[i].split('LevelUpMove ')[1].split('[]')[0];
+        const declaration = learnsetLines[i].match(/^(?:static )?const struct LevelUpMove (\w+)\[/);
+        if (declaration) {
+            const currentLearnsetId = declaration[1];
             currentPokemon = pokemonList.find(p => p.levelUpLearnset === currentLearnsetId);
             if (!currentPokemon) {
                 currentPokemon = null;
@@ -136,7 +140,14 @@ async function editLearnsetsFile(learnsetsFileText, pokemonList) {
         if (!currentPokemon) continue;
         fullReplacement += `\n${learnsetLines[i]}`;
         if (learnsetLines[i].startsWith('};')) {
-            result = result.replace(fullReplacement, `static const struct LevelUpMove ${currentPokemon.levelUpLearnset}[] = {\n${currentPokemon.learnset
+            // +1 for LEVEL_UP_END. Overflowing the slot would shift every table after it in the ROM,
+            // which is exactly what the fixed capacity exists to prevent — fail here, not in the build.
+            if (currentPokemon.learnset.length + 1 > LEVEL_UP_LEARNSET_CAPACITY) {
+                throw new Error(`pokemonWriter: ${currentPokemon.levelUpLearnset} has ${currentPokemon.learnset.length} `
+                    + `level-up moves; LEVEL_UP_LEARNSET_CAPACITY is ${LEVEL_UP_LEARNSET_CAPACITY} `
+                    + `(${LEVEL_UP_LEARNSET_CAPACITY - 1} moves + terminator). Raise it in include/constants/randomizer_layout.h.`);
+            }
+            result = result.replace(fullReplacement, `const struct LevelUpMove ${currentPokemon.levelUpLearnset}[LEVEL_UP_LEARNSET_CAPACITY] = {\n${currentPokemon.learnset
                 .map(({ level, move }) => `    LEVEL_UP_MOVE(${level}, ${move}),`).join('\n')}\n    LEVEL_UP_END\n};`);
             currentPokemon = null;
             fullReplacement = null;
@@ -158,8 +169,9 @@ function editTeachableLearnsets(fileText, pokemonList) {
 
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        if (line.startsWith('static const u16 ') && line.includes('TeachableLearnset')) {
-            currentLearnsetId = line.split('static const u16 ')[1].split('[]')[0];
+        const declaration = line.match(/^(?:static )?const u16 (\w*TeachableLearnset)\[/);
+        if (declaration) {
+            currentLearnsetId = declaration[1];
             currentPokemon = pokemonList.find(p => p.teachableLearnset === currentLearnsetId);
             blockStart = i;
             blocksFound++;
@@ -181,9 +193,15 @@ function editTeachableLearnsets(fileText, pokemonList) {
             if (!currentPokemon.id.toUpperCase().includes(expectedFragment)) {
                 console.warn(`[TEACHABLE-MISMATCH] Array "${currentLearnsetId}" (expected ~${expectedFragment}) matched to ${currentPokemon.id} — possible data swap!`);
             }
+            // +1 for MOVE_UNAVAILABLE — see the level-up guard above for why this must not overflow.
+            if (currentPokemon.teachables.length + 1 > TEACHABLE_LEARNSET_CAPACITY) {
+                throw new Error(`pokemonWriter: ${currentLearnsetId} has ${currentPokemon.teachables.length} `
+                    + `teachable moves; TEACHABLE_LEARNSET_CAPACITY is ${TEACHABLE_LEARNSET_CAPACITY} `
+                    + `(${TEACHABLE_LEARNSET_CAPACITY - 1} moves + terminator). Raise it in include/constants/randomizer_layout.h.`);
+            }
             const originalBlock = lines.slice(blockStart, i + 1).join('\n');
             const newMoves = currentPokemon.teachables.map(m => `    ${m},`).join('\n');
-            const newBlock = `static const u16 ${currentLearnsetId}[] = {\n${newMoves}\n    MOVE_UNAVAILABLE,\n};`;
+            const newBlock = `const u16 ${currentLearnsetId}[TEACHABLE_LEARNSET_CAPACITY] = {\n${newMoves}\n    MOVE_UNAVAILABLE,\n};`;
             const before = result;
             result = result.replace(originalBlock, newBlock);
             if (result === before) {
@@ -221,4 +239,8 @@ module.exports = {
     savePokemonData,
     editSpeciesFile,
     stripWildHeldItems,
+    editLearnsetsFile,
+    editTeachableLearnsets,
+    LEVEL_UP_LEARNSET_CAPACITY,
+    TEACHABLE_LEARNSET_CAPACITY,
 };

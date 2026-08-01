@@ -22,12 +22,14 @@ const {
 const { typeMainColors } = require('./trainerColors');
 const { BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone } = require('./modules/wildModule');
 const { displayNameToItemConst } = require('./itemRandomizer');
+const { updateMegaHiddenTable } = require('./megaHiddenWriter');
 const { createTeamResolver, normalizeTrainerBagTms } = require('./modules/resolveTrainerTeam');
 const { nameizyPokemonId } = require('./parser');
 const { createSophisticationScale } = require('./modules/sophistication');
 const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 
 const items = require('./items.js');
+const { TRAINER_PARTY_CAPACITY } = require('./layout.js');   // T-237 — fixed-capacity party slots
 const { savePokemonData } = require('./pokemonWriter.js');
 const { saveMoveData } = require('./moveWriter.js');   // T-187 — persists move mutation to moves_info.h
 const { writeEvoLevels } = require('./evoLevelWriter.js');
@@ -36,7 +38,7 @@ const { applyStarterChoose } = require('./starterNameWriter.js');
 
 const startersFile = path.resolve(__dirname, '..', 'src', 'starter_choose.c');
 
-const starterMonText = `static const u16 sStarterMon[STARTER_MON_COUNT] =
+const starterMonText = `const u16 gStarterMon[STARTER_MON_COUNT] =
 {
     SPECIES_TREECKO,
     SPECIES_TORCHIC,
@@ -45,41 +47,19 @@ const starterMonText = `static const u16 sStarterMon[STARTER_MON_COUNT] =
 
 
 // Static replacements
+//
+// T-235/T-236 moved gym rewards, static encounters and item picks to runtime tables, so the reward and
+// encounter scripts are static: this writer no longer substitutes tokens into any `scripts.inc` or into
+// `script_menu.h`. The only sink left is the data-driven table below (T-247 removed the dead loops).
 
-const regirockReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'DesertRuins', 'scripts.inc');
-const regirockReplacementText = 'SPECIES_REGIROCK';
-
-const regiceReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'IslandCave', 'scripts.inc');
-const regiceReplacementText = 'SPECIES_REGICE';
-
-const registeelReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'AncientTomb', 'scripts.inc');
-const registeelReplacementText = 'SPECIES_REGISTEEL';
-
-const mewReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'NewMauville_Entrance', 'scripts.inc');
-const mewReplacementText = 'SPECIES_MEW';
-
-const gymMonReplacement = 'GYM_REWARD_MON';
-const gymNameReplacement = 'GYM_REWARD_NAME';
-const gymItemReplacement = 'GYM_REWARD_ITEM';
-const pokemonRewardFiles = [
-    path.resolve(__dirname, '..', 'data', 'maps', 'RustboroCity_Gym', 'scripts.inc'),
-    path.resolve(__dirname, '..', 'data', 'maps', 'DewfordTown_Gym', 'scripts.inc'),
-    path.resolve(__dirname, '..', 'data', 'maps', 'MauvilleCity_Gym', 'scripts.inc'),
-    path.resolve(__dirname, '..', 'data', 'maps', 'LavaridgeTown_Gym_1F', 'scripts.inc'),
-    path.resolve(__dirname, '..', 'data', 'maps', 'PetalburgCity_Gym', 'scripts.inc'),
-    path.resolve(__dirname, '..', 'data', 'maps', 'FortreeCity_Gym', 'scripts.inc'),
-    path.resolve(__dirname, '..', 'data', 'maps', 'MossdeepCity_Gym', 'scripts.inc'),
-    path.resolve(__dirname, '..', 'data', 'maps', 'SootopolisCity_Gym_1F', 'scripts.inc'),
-    path.resolve(__dirname, '..', 'data', 'maps', 'SlateportCity_OceanicMuseum_2F', 'scripts.inc'),
-    path.resolve(__dirname, '..', 'data', 'maps', 'Route119_WeatherInstitute_2F', 'scripts.inc'),
-    path.resolve(__dirname, '..', 'data', 'maps', 'LilycoveCity', 'scripts.inc'),
+// The data-driven reward table (src/randomizer_rewards.c gGymRewards[]) and the enum index names, in the
+// same order as pokeRewardReplacements. The reward scripts read species/item from this table (injectable).
+const rewardsFile = path.resolve(__dirname, '..', 'src', 'randomizer_rewards.c');
+const GYM_REWARD_ENUM = [
+    'GYM_REWARD_RUSTBORO', 'GYM_REWARD_DEWFORD', 'GYM_REWARD_MAUVILLE', 'GYM_REWARD_LAVARIDGE',
+    'GYM_REWARD_PETALBURG', 'GYM_REWARD_FORTREE', 'GYM_REWARD_MOSSDEEP', 'GYM_REWARD_SOOTOPOLIS',
+    'GYM_REWARD_SLATEPORT_MUSEUM', 'GYM_REWARD_WEATHER_INSTITUTE', 'GYM_REWARD_LILYCOVE',
 ];
-
-const skyPillarTopReplacementFile = path.resolve(__dirname, '..', 'data', 'maps', 'SkyPillar_Top', 'scripts.inc');
-const scriptMenuReplacementFile = path.resolve(__dirname, '..', 'src', 'data', 'script_menu.h');
-const legend1ReplacementText = 'SPECIES_LEGEND1';
-const legend2ReplacementText = 'SPECIES_LEGEND2';
-const legend3ReplacementText = 'SPECIES_LEGEND3';
 
 const mapsBase = path.resolve(__dirname, '..', 'data', 'maps');
 const routeFiles = [
@@ -334,7 +314,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     // Edit starterMonText with starters
     newStartersFile = newStartersFile.replace(
         starterMonText,
-        `static const u16 sStarterMon[STARTER_MON_COUNT] =
+        `const u16 gStarterMon[STARTER_MON_COUNT] =
 {
     ${starters[0]},
     ${starters[1]},
@@ -342,11 +322,12 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
 };`
     );
 
-    // B-049 — apply the extra-mon array, the STARTER_EXTRA_COUNT #define AND the nickname/gender arrays
-    // together, always in lock-step. The nickname/gender arrays are resized to extraStarters.length even
-    // when starterNaming is null (default-filled), so they can never mismatch the #define and trip
-    // "excess elements in array initializer" (which broke the build when a ROM had ≠9 extra starters and
-    // no naming was attached). T-068 per-ROM naming still applies when present.
+    // B-049 — apply the extra-mon array, the extra-starter count AND the nickname/gender arrays together,
+    // always in lock-step. All three arrays are rebuilt with exactly extraStarters.length entries even
+    // when starterNaming is null (default-filled), so a ROM with ≠9 extra starters can never leave a
+    // stale row readable. T-237: the arrays are fixed at STARTER_EXTRA_CAPACITY and only
+    // `gStarterExtraCount` varies (the old resizing STARTER_EXTRA_COUNT #define moved the whole ROM).
+    // T-068 per-ROM naming still applies when present.
     newStartersFile = applyStarterChoose(newStartersFile, extraStarters, starterNaming);
 
     await fs.writeFile(startersFile, newStartersFile, 'utf8');
@@ -370,78 +351,76 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     ];
 
     const replacementLog = {};
-    for (let i = 0; i < pokemonRewardFiles.length; i++) {
-        const gymFile = pokemonRewardFiles[i];
-        let gymFileData = await fs.readFile(gymFile, 'utf8');
-        gymFileData = gymFileData.replace(new RegExp(gymMonReplacement, 'g'), pokeRewardReplacements[i].id);
-        gymFileData = gymFileData.replace(new RegExp(gymNameReplacement, 'g'), pokeRewardReplacements[i].name);
+    // The reward scripts are static since T-235 — they read species/item from gGymRewards[] at runtime,
+    // so nothing is substituted into them here. This loop only resolves each reward's mega stone and
+    // records the docs log; the values reach the ROM through the table regenerated just below.
+    const gymRewardItems = new Array(pokeRewardReplacements.length).fill('ITEM_NONE');
+    for (let i = 0; i < pokeRewardReplacements.length; i++) {
         if (i === 2 || i === 8 || i === 9) { // Mauville City Gym, Slateport Grunts, and Shelly give a mega stone
             // The stone was chosen at bundle-creation time and stored on the reward; read it
             // (no RNG). Fall back to a deterministic resolution for older bundles / randomize mode.
             const chosenItem = pokeRewardReplacements[i].megaStone
                 || resolveRewardMegaStone(pokeRewardReplacements[i], pokemonList);
             if (chosenItem) {
-                gymFileData = gymFileData.replace(new RegExp(gymItemReplacement, 'g'), chosenItem);
+                gymRewardItems[i] = chosenItem;
             }
             else {
                 console.log(`No mega evolution found for ${pokeRewardReplacements[i].id}, keeping original item.`);
             }
         }
-        await fs.writeFile(gymFile, gymFileData, 'utf8');
         replacementLog[`SPECIES_GYM${i + 1}_REWARD`] = pokeRewardReplacements[i].id;
     }
-
-    if (staticRewards.regirock) {
-        let regirockFileData = await fs.readFile(regirockReplacementFile, 'utf8');
-        regirockFileData = regirockFileData.replace(new RegExp(regirockReplacementText, 'g'), staticRewards.regirock.id);
-        await fs.writeFile(regirockReplacementFile, regirockFileData, 'utf8');
-        replacementLog['SPECIES_REGIROCK'] = staticRewards.regirock.id;
+    // T-235 — regenerate the data-driven reward table (src/randomizer_rewards.c gGymRewards[]) between its
+    // anchors so migrated scripts read the species/item from it (injectable) instead of a baked token.
+    {
+        const rewardLines = pokeRewardReplacements
+            .map((r, i) => `    [${GYM_REWARD_ENUM[i]}] = { ${r.id}, ${gymRewardItems[i]} },`)
+            .join('\n');
+        let rewardsData = await fs.readFile(rewardsFile, 'utf8');
+        rewardsData = rewardsData.replace(
+            /(\/\/ @GYM_REWARDS_START[^\n]*\n)[\s\S]*?(\n[ \t]*\/\/ @GYM_REWARDS_END)/,
+            `$1${rewardLines}$2`);
+        await fs.writeFile(rewardsFile, rewardsData, 'utf8');
     }
 
-    if (staticRewards.regice) {
-        let regiceFileData = await fs.readFile(regiceReplacementFile, 'utf8');
-        regiceFileData = regiceFileData.replace(new RegExp(regiceReplacementText, 'g'), staticRewards.regice.id);
-        await fs.writeFile(regiceReplacementFile, regiceFileData, 'utf8');
-        replacementLog['SPECIES_REGICE'] = staticRewards.regice.id;
+    // The static-encounter scripts (regis, Mew, the three Sky Pillar legends) are static since T-235 too:
+    // they read species + level from gStaticEncounters[], so only the docs log is recorded here.
+    if (staticRewards.regirock) replacementLog['SPECIES_REGIROCK'] = staticRewards.regirock.id;
+    if (staticRewards.regice) replacementLog['SPECIES_REGICE'] = staticRewards.regice.id;
+    if (staticRewards.mew) replacementLog['SPECIES_MEW'] = staticRewards.mew.id;
+    if (staticRewards.registeel) replacementLog['SPECIES_REGISTEEL'] = staticRewards.registeel.id;
+    if (staticRewards.legend1) replacementLog['SPECIES_LEGEND1'] = staticRewards.legend1.id;
+    if (staticRewards.legend2) replacementLog['SPECIES_LEGEND2'] = staticRewards.legend2.id;
+    if (staticRewards.legend3) replacementLog['SPECIES_LEGEND3'] = staticRewards.legend3.id;
+
+    // T-235 — regenerate the data-driven static-encounter table (src/randomizer_rewards.c
+    // gStaticEncounters[]) between its anchors. Every encounter (regis + Mew, idx 0-3, and the three
+    // Sky Pillar legends, idx 4-6) reads its species and level from here. Levels are fixed per encounter.
+    {
+        const STATIC_ENUM = [
+            'STATIC_ENCOUNTER_REGIROCK', 'STATIC_ENCOUNTER_REGICE', 'STATIC_ENCOUNTER_REGISTEEL',
+            'STATIC_ENCOUNTER_MEW', 'STATIC_ENCOUNTER_LEGEND1', 'STATIC_ENCOUNTER_LEGEND2',
+            'STATIC_ENCOUNTER_LEGEND3',
+        ];
+        const STATIC_LEVELS = [36, 39, 46, 39, 61, 61, 61];
+        const staticSpecies = [
+            (staticRewards.regirock && staticRewards.regirock.id) || 'SPECIES_REGIROCK',
+            (staticRewards.regice && staticRewards.regice.id) || 'SPECIES_REGICE',
+            (staticRewards.registeel && staticRewards.registeel.id) || 'SPECIES_REGISTEEL',
+            (staticRewards.mew && staticRewards.mew.id) || 'SPECIES_MEW',
+            (staticRewards.legend1 && staticRewards.legend1.id) || 'SPECIES_NONE',
+            (staticRewards.legend2 && staticRewards.legend2.id) || 'SPECIES_NONE',
+            (staticRewards.legend3 && staticRewards.legend3.id) || 'SPECIES_NONE',
+        ];
+        const staticLines = STATIC_ENUM
+            .map((name, i) => `    [${name}] = { ${staticSpecies[i]}, ${STATIC_LEVELS[i]} },`)
+            .join('\n');
+        let rewardsData = await fs.readFile(rewardsFile, 'utf8');
+        rewardsData = rewardsData.replace(
+            /(\/\/ @STATIC_ENCOUNTERS_START[^\n]*\n)[\s\S]*?(\n[ \t]*\/\/ @STATIC_ENCOUNTERS_END)/,
+            `$1${staticLines}$2`);
+        await fs.writeFile(rewardsFile, rewardsData, 'utf8');
     }
-
-    if (staticRewards.mew) {
-        let mewFileData = await fs.readFile(mewReplacementFile, 'utf8');
-        mewFileData = mewFileData.replace(new RegExp(mewReplacementText, 'g'), staticRewards.mew.id);
-        await fs.writeFile(mewReplacementFile, mewFileData, 'utf8');
-        replacementLog['SPECIES_MEW'] = staticRewards.mew.id;
-    }
-
-    if (staticRewards.registeel) {
-        let registeelFileData = await fs.readFile(registeelReplacementFile, 'utf8');
-        registeelFileData = registeelFileData.replace(new RegExp(registeelReplacementText, 'g'), staticRewards.registeel.id);
-        await fs.writeFile(registeelReplacementFile, registeelFileData, 'utf8');
-        replacementLog['SPECIES_REGISTEEL'] = staticRewards.registeel.id;
-    }
-
-    let skyPillarTopFileData = await fs.readFile(skyPillarTopReplacementFile, 'utf8');
-    let scriptMenuFileData = await fs.readFile(scriptMenuReplacementFile, 'utf8');
-
-    if (staticRewards.legend1) {
-        skyPillarTopFileData = skyPillarTopFileData.replace(new RegExp(legend1ReplacementText, 'g'), staticRewards.legend1.id);
-        scriptMenuFileData = scriptMenuFileData.replace(new RegExp(legend1ReplacementText, 'g'), staticRewards.legend1.name);
-        replacementLog['SPECIES_LEGEND1'] = staticRewards.legend1.id;
-    }
-
-    if (staticRewards.legend2) {
-        skyPillarTopFileData = skyPillarTopFileData.replace(new RegExp(legend2ReplacementText, 'g'), staticRewards.legend2.id);
-        scriptMenuFileData = scriptMenuFileData.replace(new RegExp(legend2ReplacementText, 'g'), staticRewards.legend2.name);
-        replacementLog['SPECIES_LEGEND2'] = staticRewards.legend2.id;
-    }
-
-    if (staticRewards.legend3) {
-        skyPillarTopFileData = skyPillarTopFileData.replace(new RegExp(legend3ReplacementText, 'g'), staticRewards.legend3.id);
-        scriptMenuFileData = scriptMenuFileData.replace(new RegExp(legend3ReplacementText, 'g'), staticRewards.legend3.name);
-        replacementLog['SPECIES_LEGEND3'] = staticRewards.legend3.id;
-    }
-
-    await fs.writeFile(skyPillarTopReplacementFile, skyPillarTopFileData, 'utf8');
-    await fs.writeFile(scriptMenuReplacementFile, scriptMenuFileData, 'utf8');
 
     // Routes replacements — selection was done in wildModule.
     // T-162: when the wild artifact carries a per-zone sweep plan, build the JSON structurally
@@ -494,24 +473,19 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     const megaRemoveLog = [];
     
     const megaTrainerFilesContent = {};
-    async function removeMegaTrainer(megaTrainer) {
-        // data/maps/_map_/map.json
-        let mapJson = megaTrainerFilesContent[megaTrainer.map];
-        if (!mapJson) {
-            const mapJsonPath = path.resolve(__dirname, '..', 'data', 'maps', megaTrainer.map, 'map.json');
-            const mapJsonContent = await fs.readFile(mapJsonPath, 'utf8');
-            mapJson = JSON.parse(mapJsonContent);
-        }
-        mapJson.object_events = mapJson.object_events.filter(
-            event => event.script !== megaTrainer.script
-            && event.trainer_sight_or_berry_tree_id !== `ITEM_MEGA_${megaTrainer.id}`
-        );
-        megaTrainerFilesContent[megaTrainer.map] = mapJson;
+    // T-236 — a mega trainer with no stone to give is HIDDEN, not deleted: its two object_events
+    // (trainer NPC + stone ball) stay in the compiled map and the engine skips spawning them when
+    // gMegaTrainerHidden[id-1] is set (src/randomizer_picks.c). Deleting object_events was a
+    // structural map-data edit (not injectable); a flag byte is a Group-A overwrite. The trainer is
+    // still spliced out of trainersData, exactly as before, so it gets no party.
+    const hiddenMegaIndices = [];
+    function removeMegaTrainer(megaTrainer) {
+        hiddenMegaIndices.push(Number(megaTrainer.id) - 1);
         const trainerIndex = trainersData.findIndex(trainer => trainer.id === megaTrainer.trainer);
         if (trainerIndex >= 0) {
             trainersData.splice(trainerIndex, 1);
         }
-        console.log(`Removed mega trainer ${megaTrainer.id} from map ${megaTrainer.map}.`);
+        console.log(`Hid mega trainer ${megaTrainer.id} on map ${megaTrainer.map}.`);
         megaRemoveLog.push(megaTrainer.id);
     }
 
@@ -550,7 +524,7 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
         const level = foundTrainer.level;
 
         if (!nextMegaEvo || nextMegaEvo.level > level) {
-            await removeMegaTrainer(megaTrainers[i]);
+            removeMegaTrainer(megaTrainers[i]);
             continue;
         }
 
@@ -574,6 +548,9 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
             'utf8'
         );
     }
+
+    // T-236 — write which megas are hidden (replaces the old object_event deletion).
+    updateMegaHiddenTable(hiddenMegaIndices);
 
     // Trainers
 
@@ -649,6 +626,14 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
         else if (!docs) {
             shuffledTeam = shuffledTeam.sort(() => rng.random() - 0.5);
             shuffledTeam = applyLeadLogic(shuffledTeam, () => rng.random());
+        }
+
+        // T-237 — trainerproc emits every party at TRAINER_PARTY_CAPACITY so the injector can overwrite
+        // it in place; a longer team would silently spill into the next party's storage. Fail here rather
+        // than four minutes later in the compile (which would also catch it, as excess elements).
+        if (shuffledTeam.length > TRAINER_PARTY_CAPACITY) {
+            throw new Error(`writer: ${trainerId} has ${shuffledTeam.length} mons; TRAINER_PARTY_CAPACITY is `
+                + `${TRAINER_PARTY_CAPACITY}. Raise it in include/constants/randomizer_layout.h.`);
         }
 
         const generatedTeamTextLines = shuffledTeam.map(teamEntry => {

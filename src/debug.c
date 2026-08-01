@@ -59,6 +59,7 @@
 #include "wild_encounter.h"
 #include "constants/abilities.h"
 #include "constants/battle_ai.h"
+#include "constants/randomizer_layout.h"  // T-237 — TRAINER_PARTY_CAPACITY (parties in data/debug_trainers.h)
 #include "constants/battle_frontier.h"
 #include "constants/coins.h"
 #include "constants/decorations.h"

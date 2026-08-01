@@ -1,9 +1,15 @@
 'use strict';
 
-// T-194 — tradeWriter renders the per-ROM sIngameTrades[] block (offered species + gym-cap level +
+// T-194 — tradeWriter renders the per-ROM gIngameTrades[] block (offered species + gym-cap level +
 // accepted set + base forms) and patches it into src/data/trade.h, leaving the rest of the file intact.
+//
+// T-237 (deliberate spec change): the table is exported and fixed-width. The accepted set and base forms
+// were per-run `static const u16 sTradeAccepted_*/sTradeBase_*[]` arrays referenced by pointer — neither
+// locatable in the base build's `.map` nor safe to resize; they are inline
+// `u16 [TRADE_SPECIES_LIST_CAPACITY]` fields now, so the block is one flat, in-place-overwritable table.
 
 const { renderTradeData, applyTradesToContent, renderEntry } = require('../../tradeWriter');
+const { TRADE_SPECIES_LIST_CAPACITY } = require('../../layout');
 
 const TRADES = [
     { town: 'RUSTBORO', ingameTradeId: 'INGAME_TRADE_SEEDOT', tier: 'RU', level: 13,
@@ -26,33 +32,40 @@ describe('renderEntry', () => {
         expect(entry).toContain('.nickname = _(""),');
         expect(entry).toContain('.heldItem = ITEM_NONE,');
     });
-    test('wires the accepted-set and base-form arrays with matching counts', () => {
-        expect(entry).toContain('.requestedSpeciesList = sTradeAccepted_INGAME_TRADE_SEEDOT,');
+    test('inlines the accepted set and base forms with matching counts', () => {
+        expect(entry).toContain('.requestedSpeciesList = { SPECIES_RATTATA, SPECIES_RATICATE },');
         expect(entry).toContain('.requestedSpeciesCount = 2,');
-        expect(entry).toContain('.requestedBaseForms = sTradeBase_INGAME_TRADE_SEEDOT,');
+        expect(entry).toContain('.requestedBaseForms = { SPECIES_RATTATA },');
         expect(entry).toContain('.requestedBaseFormCount = 1,');
         expect(entry).toContain('.requestedSpecies = SPECIES_RATTATA,'); // vanilla-fallback = first base form
+        expect(entry).not.toContain('sTradeAccepted_');                  // no side arrays any more
+        expect(entry).not.toContain('sTradeBase_');
+    });
+    test('throws rather than overflowing a species list', () => {
+        const tooMany = Array.from({ length: TRADE_SPECIES_LIST_CAPACITY + 1 }, (_, i) => `SPECIES_X${i}`);
+        expect(() => renderEntry({ ...TRADES[0], acceptedSpecies: tooMany }))
+            .toThrow(/TRADE_SPECIES_LIST_CAPACITY/);
     });
 });
 
 describe('renderTradeData', () => {
     const out = renderTradeData(TRADES);
-    test('declares the lookup arrays before the sIngameTrades[] block', () => {
-        expect(out).toContain('static const u16 sTradeAccepted_INGAME_TRADE_SEEDOT[] = { SPECIES_RATTATA, SPECIES_RATICATE };');
-        expect(out).toContain('static const u16 sTradeBase_INGAME_TRADE_HORSEA[] = { SPECIES_WURMPLE, SPECIES_WINGULL };');
-        expect(out.indexOf('sTradeAccepted_INGAME_TRADE_SEEDOT[]')).toBeLessThan(out.indexOf('static const struct InGameTrade sIngameTrades[]'));
-    });
-    test('emits one entry per trade', () => {
+    test('emits the exported, explicitly sized table with one entry per trade', () => {
+        expect(out).toContain('const struct InGameTrade gIngameTrades[INGAME_TRADES_COUNT] =');
+        expect(out).not.toContain('static const struct InGameTrade');
         expect(out).toContain('[INGAME_TRADE_SEEDOT] =');
         expect(out).toContain('[INGAME_TRADE_HORSEA] =');
+    });
+    test('declares no per-trade lookup arrays', () => {
+        expect(out).not.toContain('static const u16 sTrade');
     });
 });
 
 describe('applyTradesToContent', () => {
-    // A minimal trade.h skeleton: an sIngameTrades[] block (indented entry close) + a trailing array to
+    // A minimal trade.h skeleton: a gIngameTrades[] block (indented entry close) + a trailing array to
     // prove only the target block is replaced.
     const CONTENT = [
-        'static const struct InGameTrade sIngameTrades[] =',
+        'const struct InGameTrade gIngameTrades[INGAME_TRADES_COUNT] =',
         '{',
         '    [INGAME_TRADE_SEEDOT] =',
         '    {',
@@ -68,7 +81,7 @@ describe('applyTradesToContent', () => {
         '',
     ].join('\n');
 
-    test('replaces only the sIngameTrades[] block, preserving the rest', () => {
+    test('replaces only the gIngameTrades[] block, preserving the rest', () => {
         const out = applyTradesToContent(CONTENT, TRADES);
         expect(out).toContain('.species = SPECIES_PINCURCHIN,');       // new data in
         expect(out).not.toContain('.nickname = _("DOTS"),');          // vanilla entry gone
@@ -78,7 +91,7 @@ describe('applyTradesToContent', () => {
     });
 
     test('throws when the block is missing (guards against silent no-op)', () => {
-        expect(() => applyTradesToContent('no trades here', TRADES)).toThrow(/sIngameTrades/);
+        expect(() => applyTradesToContent('no trades here', TRADES)).toThrow(/gIngameTrades/);
     });
 
     test('no trades → content unchanged', () => {

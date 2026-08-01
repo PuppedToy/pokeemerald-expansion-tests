@@ -50,6 +50,7 @@
 #include "constants/moves.h"
 #include "constants/region_map_sections.h"
 #include "constants/rgb.h"
+#include "constants/randomizer_layout.h"  // T-237 — TRADE_SPECIES_LIST_CAPACITY
 #include "constants/songs.h"
 #include "constants/union_room.h"
 
@@ -163,12 +164,16 @@ struct InGameTrade {
     u8 otGender;
     u8 sheen;
     u16 requestedSpecies;
-    // T-194 — randomized town trades. Fields default to 0/NULL for the vanilla trades (omitted from
-    // their designated initializers), preserving vanilla behavior; the randomizer's tradeWriter fills them.
+    // T-194 — randomized town trades. Fields default to 0 for the vanilla trades (omitted from their
+    // designated initializers), preserving vanilla behavior; the randomizer's tradeWriter fills them.
     u8 level;                        // 0 → create the received mon at the player's traded-mon level (vanilla)
-    const u16 *requestedSpeciesList; // full accepted set (all evolutions); NULL → accept only requestedSpecies
+    // T-237 — these two were pointers to per-run `static const u16 []` arrays, which the injector could
+    // neither locate (static → absent from the .map) nor resize. They are inline and fixed-capacity now,
+    // so the whole gIngameTrades table is one flat block the injector overwrites in place (ADR-022).
+    // A count of 0 means "not set": accept only requestedSpecies / name requestedSpecies in the message.
+    u16 requestedSpeciesList[TRADE_SPECIES_LIST_CAPACITY]; // full accepted set (all evolutions)
     u8 requestedSpeciesCount;
-    const u16 *requestedBaseForms;   // base forms listed in the "want" message; NULL → name requestedSpecies
+    u16 requestedBaseForms[TRADE_SPECIES_LIST_CAPACITY];   // base forms listed in the "want" message
     u8 requestedBaseFormCount;
 };
 
@@ -3345,7 +3350,7 @@ static void BufferTradeSceneStrings(void)
     }
     else
     {
-        ingameTrade = &sIngameTrades[gSpecialVar_0x8004];
+        ingameTrade = &gIngameTrades[gSpecialVar_0x8004];
         StringCopy(gStringVar1, ingameTrade->otName);
         StringCopy_Nickname(gStringVar3, ingameTrade->nickname);
         GetMonData(&gPlayerParty[gSpecialVar_0x8005], MON_DATA_NICKNAME, name);
@@ -4542,7 +4547,7 @@ static void SpriteCB_BouncingPokeballArrive(struct Sprite *sprite)
 
 u16 GetInGameTradeSpeciesInfo(void)
 {
-    const struct InGameTrade *inGameTrade = &sIngameTrades[gSpecialVar_0x8004];
+    const struct InGameTrade *inGameTrade = &gIngameTrades[gSpecialVar_0x8004];
     StringCopy(gStringVar1, GetSpeciesName(inGameTrade->requestedSpecies));
     StringCopy(gStringVar2, GetSpeciesName(inGameTrade->species));
     return inGameTrade->requestedSpecies;
@@ -4551,7 +4556,7 @@ u16 GetInGameTradeSpeciesInfo(void)
 static void BufferInGameTradeMonName(void)
 {
     u8 nickname[max(32, POKEMON_NAME_BUFFER_SIZE)];
-    const struct InGameTrade *inGameTrade = &sIngameTrades[gSpecialVar_0x8004];
+    const struct InGameTrade *inGameTrade = &gIngameTrades[gSpecialVar_0x8004];
     GetMonData(&gPlayerParty[gSpecialVar_0x8005], MON_DATA_NICKNAME, nickname);
     StringCopy_Nickname(gStringVar1, nickname);
     StringCopy(gStringVar2, GetSpeciesName(inGameTrade->species));
@@ -4559,7 +4564,7 @@ static void BufferInGameTradeMonName(void)
 
 static void CreateInGameTradePokemonInternal(u8 whichPlayerMon, u8 whichInGameTrade)
 {
-    const struct InGameTrade *inGameTrade = &sIngameTrades[whichInGameTrade];
+    const struct InGameTrade *inGameTrade = &gIngameTrades[whichInGameTrade];
     // T-194 — a nonzero preset level (randomized town trades) overrides the vanilla "same level as the
     // mon you gave" behavior so the gift arrives at its town's gym level cap.
     u8 level = inGameTrade->level ? inGameTrade->level : GetMonData(&gPlayerParty[whichPlayerMon], MON_DATA_LEVEL);
@@ -4652,18 +4657,18 @@ static const u8 sText_TradeListComma[] = _(", ");
 
 // Buffer the trade message strings for the generic town-trader script:
 //   gStringVar2 = the offered species' name; gStringVar1 = the requested base forms joined
-//   ("Rattata", "Rattata or Wurmple", "A, B or C"). Reads sIngameTrades[gSpecialVar_0x8004].
+//   ("Rattata", "Rattata or Wurmple", "A, B or C"). Reads gIngameTrades[gSpecialVar_0x8004].
 //   Falls back to the single requestedSpecies for vanilla trades (no list set).
 void BufferInGameTradeOffer(void)
 {
-    const struct InGameTrade *inGameTrade = &sIngameTrades[gSpecialVar_0x8004];
+    const struct InGameTrade *inGameTrade = &gIngameTrades[gSpecialVar_0x8004];
     const u16 *list = inGameTrade->requestedBaseForms;
     u32 count = inGameTrade->requestedBaseFormCount;
     u32 i;
 
     StringCopy(gStringVar2, GetSpeciesName(inGameTrade->species));
 
-    if (list == NULL || count == 0)
+    if (count == 0)   // T-237: the list is an inline array now, so the count is the only "unset" signal
     {
         StringCopy(gStringVar1, GetSpeciesName(inGameTrade->requestedSpecies));
         return;
@@ -4682,7 +4687,7 @@ void BufferInGameTradeOffer(void)
 // Falls back to the single requestedSpecies for vanilla trades. Eggs are never accepted.
 bool8 IsRequestedTradeMon(void)
 {
-    const struct InGameTrade *inGameTrade = &sIngameTrades[gSpecialVar_0x8004];
+    const struct InGameTrade *inGameTrade = &gIngameTrades[gSpecialVar_0x8004];
     u16 species;
     u32 i;
 
@@ -4691,7 +4696,7 @@ bool8 IsRequestedTradeMon(void)
 
     species = GetMonData(&gPlayerParty[gSpecialVar_0x8005], MON_DATA_SPECIES);
 
-    if (inGameTrade->requestedSpeciesList == NULL)
+    if (inGameTrade->requestedSpeciesCount == 0)   // T-237: inline array — the count is the "unset" signal
         return species == inGameTrade->requestedSpecies;
 
     for (i = 0; i < inGameTrade->requestedSpeciesCount; i++)

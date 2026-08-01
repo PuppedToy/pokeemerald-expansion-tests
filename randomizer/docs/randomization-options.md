@@ -185,7 +185,10 @@ Each slot = `{ tier, kind, lineLength }`:
 - `lineLength` = `any` | `3` | `2` (prefer a 3- or 2-stage line; falls back to any).
 
 Default: `UBERS·line·3`, `OU·line·3`, `UU·line·any`, `NU·solo`, then `RU·line·any` ×5.
-Unsatisfiable slots are skipped; the written C count (`STARTER_EXTRA_COUNT`) auto-sizes.
+Unsatisfiable slots are skipped; the written C count (`gStarterExtraCount` in `src/starter_choose.c`)
+auto-sizes. **Capped at `STARTER_EXTRA_CAPACITY` = 16** (`include/constants/randomizer_layout.h`, T-237):
+the arrays are fixed-size so the injector can overwrite them at a fixed offset, and the writer throws if a
+preset asks for more. Raising the cap is a one-line change plus a corpus re-snapshot.
 
 ### Wild encounters (T-162)
 SoT: `randomizer/modules/wildModule.js` `buildWildPlan` + `randomizer/writer.js`

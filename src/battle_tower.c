@@ -31,6 +31,7 @@
 #include "constants/battle_frontier_mons.h"
 #include "constants/battle_move_effects.h"
 #include "constants/battle_tent.h"
+#include "constants/randomizer_layout.h"  // T-237 — TRAINER_PARTY_CAPACITY (parties in data/battle_partners.h)
 #include "constants/battle_tent_mons.h"
 #include "constants/battle_tent_trainers.h"
 #include "constants/battle_tower.h"

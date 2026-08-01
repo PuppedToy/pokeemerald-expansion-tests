@@ -60,6 +60,7 @@
 #include "constants/items.h"
 #include "constants/layouts.h"
 #include "constants/moves.h"
+#include "constants/randomizer_layout.h"  // T-237 — fixed capacities of the learnset tables below
 #include "constants/regions.h"
 #include "constants/songs.h"
 #include "constants/trainers.h"

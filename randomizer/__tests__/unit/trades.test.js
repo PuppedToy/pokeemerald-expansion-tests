@@ -98,7 +98,7 @@ describe('selectTrades — structure', () => {
         expect(trades.map(t => t.tier)).toEqual(['RU', 'UU', 'OU', 'UBERS']);
         expect(trades.map(t => t.level)).toEqual([20, 36, 46, 56]); // Dewford uses Brawly's cap (20)
         expect(trades.map(t => t.routeMapId)).toEqual(['MAP_ROUTE101', 'MAP_ROUTE102', 'MAP_ROUTE103', 'MAP_ROUTE104']);
-        // Each keeps the sIngameTrades slot its town map script selects.
+        // Each keeps the gIngameTrades slot its town map script selects.
         expect(trades.map(t => t.ingameTradeId)).toEqual([
             'INGAME_TRADE_SEEDOT', 'INGAME_TRADE_HORSEA', 'INGAME_TRADE_PLUSLE', 'INGAME_TRADE_MEOWTH',
         ]);

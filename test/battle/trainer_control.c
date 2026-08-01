@@ -11,6 +11,7 @@
 #include "constants/abilities.h"
 #include "constants/trainers.h"
 #include "constants/battle.h"
+#include "constants/randomizer_layout.h"  // T-237 — TRAINER_PARTY_CAPACITY (parties in trainer_control.h)
 
 #define NUM_TEST_TRAINERS 11
 

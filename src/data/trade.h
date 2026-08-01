@@ -982,7 +982,7 @@ static const union AffineAnimCmd *const sAffineAnims_CrossingMonPics[] =
     sAffineAnim_CrossingMonPic
 };
 
-static const struct InGameTrade sIngameTrades[] =
+const struct InGameTrade gIngameTrades[INGAME_TRADES_COUNT] =
 {
     [INGAME_TRADE_SEEDOT] =
     {

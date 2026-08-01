@@ -10,31 +10,44 @@ const path = require('path');
 // map = committed sentinel table stays = every lookup NULL = the traded mon keeps its vanilla nickname.
 
 const { sanitizeNickname } = require('./starterNameWriter');
+const { TRADE_NICKNAME_CAPACITY } = require('./layout');
 
 const START = '// @TRADE_NICKNAMES_START';
 const END = '// @TRADE_NICKNAMES_END';
-const SENTINEL = '    { 0xFF, COMPOUND_STRING("") },';
+const COUNT_START = '// @TRADE_NICKNAMES_COUNT_START';
+const COUNT_END = '// @TRADE_NICKNAMES_COUNT_END';
 const SAFE_TRADE_KEY = /^INGAME_TRADE_[A-Z0-9_]+$/;
 
-// Build the C rows (a string) for one ROM's trade->naming map. Skips entries whose sanitized name is empty
-// (they keep the vanilla nickname). Always non-empty (sentinel fallback) so the array is never a -Werror
-// zero-length array.
-function buildTradeRows(tradeNaming) {
-    const rows = Object.keys(tradeNaming || {})
+// The named trades, sorted, minus the ones whose sanitized name is empty (they keep the vanilla nickname).
+function namedTrades(tradeNaming) {
+    return Object.keys(tradeNaming || {})
         .filter((k) => SAFE_TRADE_KEY.test(k))
         .sort()
         .map((k) => ({ k, name: sanitizeNickname((tradeNaming[k] || {}).nickname) }))
-        .filter((e) => e.name.length > 0)
-        .map((e) => `    { ${e.k}, COMPOUND_STRING("${e.name}") },`);
-    if (rows.length === 0) rows.push(SENTINEL);
-    return rows.join('\n');
+        .filter((e) => e.name.length > 0);
 }
 
-// Replace the whole anchored region (markers + body) with rebuilt markers + rows. Idempotent.
+// Build the C rows (a string) for one ROM's trade->naming map. T-237: the table is fixed-capacity and the
+// name is an inline `u8 [POKEMON_NAME_LENGTH + 1]`, so rows use `_("…")` rather than COMPOUND_STRING, and
+// an empty table is legal (the array is sized by TRADE_NICKNAME_CAPACITY, not by its contents).
+function buildTradeRows(tradeNaming) {
+    return namedTrades(tradeNaming).map((e) => `    { ${e.k}, _("${e.name}") },`).join('\n');
+}
+
+// Replace the whole anchored region (markers + body) with rebuilt markers + rows, and the row count with
+// it — the two must always agree, so they are written together. Idempotent.
 function applyTradeNames(fileContent, tradeNaming) {
+    const entries = namedTrades(tradeNaming);
+    if (entries.length > TRADE_NICKNAME_CAPACITY) {
+        throw new Error(`tradeNameWriter: ${entries.length} named trades exceed TRADE_NICKNAME_CAPACITY `
+            + `(${TRADE_NICKNAME_CAPACITY}). Raise it in include/constants/randomizer_layout.h.`);
+    }
     const rows = buildTradeRows(tradeNaming);
     const region = new RegExp(`[ \\t]*${START}[\\s\\S]*?${END}`);
-    return fileContent.replace(region, `    ${START}\n${rows}\n    ${END}`);
+    const countRegion = new RegExp(`[ \\t]*${COUNT_START}[\\s\\S]*?${COUNT_END}`);
+    return fileContent
+        .replace(region, `    ${START}\n${rows}\n    ${END}`)
+        .replace(countRegion, `    ${COUNT_START}\n    ${entries.length}\n    ${COUNT_END}`);
 }
 
 const TRADE_FILE = path.resolve(__dirname, '..', 'src', 'trade_nicknames.c');
@@ -46,4 +59,4 @@ async function writeTradeNames(tradeNaming) {
     await fs.writeFile(TRADE_FILE, applyTradeNames(content, tradeNaming), 'utf8');
 }
 
-module.exports = { buildTradeRows, applyTradeNames, writeTradeNames, START, END };
+module.exports = { buildTradeRows, applyTradeNames, writeTradeNames, START, END, COUNT_START, COUNT_END };

@@ -1914,6 +1914,11 @@ static void fprint_trainers(const char *output_path, FILE *f, struct Parsed *par
             fprintf(f, "\n");
         }
 
+        // T-237 — the party is emitted at a FIXED capacity (TRAINER_PARTY_CAPACITY, see
+        // include/constants/randomizer_layout.h), not sized to its contents: the base+injection pipeline
+        // overwrites a trainer's party in place through the `.party` pointer in gTrainers, so a 2-mon
+        // trainer must still own room for a 6-mon team. Trailing entries are zero-filled and never read
+        // (`.partySize` bounds the reads). An over-long pool now fails the build instead of the ROM.
         if (trainer->party_size_line)
         {
             fprintf(f, "#line %d\n", trainer->party_size_line);
@@ -1921,14 +1926,14 @@ static void fprint_trainers(const char *output_path, FILE *f, struct Parsed *par
             if (is_empty_string(trainer->copy_pool))
             {
                 fprintf(f, "        .poolSize = %d,\n", trainer->pokemon_n);
-                fprintf(f, "        .party = (const struct TrainerMon[])\n");
+                fprintf(f, "        .party = (const struct TrainerMon[TRAINER_PARTY_CAPACITY])\n");
                 fprintf(f, "        {\n");
             }
         }
         else if (is_empty_string(trainer->copy_pool))
         {
             fprintf(f, "        .partySize = %d,\n", trainer->pokemon_n);
-            fprintf(f, "        .party = (const struct TrainerMon[])\n");
+            fprintf(f, "        .party = (const struct TrainerMon[TRAINER_PARTY_CAPACITY])\n");
             fprintf(f, "        {\n");
         }
 

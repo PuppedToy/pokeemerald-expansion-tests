@@ -11,6 +11,7 @@ enum InGameTradeID
     INGAME_TRADE_PLUSLE,
     INGAME_TRADE_HORSEA,
     INGAME_TRADE_MEOWTH,
+    INGAME_TRADES_COUNT,   // T-237 — sizes gIngameTrades[] explicitly so the table's length is fixed
 };
 
 // Return values for CanTradeSelectedMon and CanSpinTradeMon

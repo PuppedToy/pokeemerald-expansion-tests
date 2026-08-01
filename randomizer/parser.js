@@ -672,8 +672,11 @@ function parseLearnsetsFile(learnsetsFileText) {
     let currentLearnset;
 
     for (let i = 0; i < lines.length; i++) {
-        if (lines[i].startsWith('static const struct LevelUpMove ')) {
-            currentLearnset = lines[i].replace(/.*?static const struct LevelUpMove (.+?)\[.*/, '$1');
+        // T-237 — the arrays are exported and fixed-capacity (`const struct LevelUpMove sX[CAP]`);
+        // `static` and a bare `[]` stay accepted so an upstream-shaped file still parses.
+        const declaration = lines[i].match(/^(?:static )?const struct LevelUpMove (\w+)\[/);
+        if (declaration) {
+            currentLearnset = declaration[1];
             learnsets[currentLearnset] = [];
             continue;
         }
@@ -695,8 +698,10 @@ function parseTeachableFile(teachableFileText) {
     let currentTeachable;
 
     for (let i = 0; i < lines.length; i++) {
-        if (lines[i].startsWith('static const u16 ')) {
-            currentTeachable = lines[i].replace(/.*?static const u16 (.+?)\[.*/, '$1');
+        // T-237 — see parseLearnsetsFile: `const u16 sXTeachableLearnset[TEACHABLE_LEARNSET_CAPACITY]`.
+        const declaration = lines[i].match(/^(?:static )?const u16 (\w+)\[/);
+        if (declaration) {
+            currentTeachable = declaration[1];
             teachables[currentTeachable] = [];
             continue;
         }

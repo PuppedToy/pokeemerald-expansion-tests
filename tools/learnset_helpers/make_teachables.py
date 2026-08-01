@@ -37,7 +37,10 @@ INCFILE_HAS_TUTOR_PAT = re.compile(r"special ChooseMonForMoveTutor")
 INCFILE_MOVE_PAT = re.compile(r"setvar VAR_0x8005, (MOVE_.*)")
 TMHM_MACRO_PAT = re.compile(r"F\((\w+)\)")
 UNIVERSAL_MOVES_PAT = re.compile(r"static const u16 sUniversalMoves\[\]\s*=\s*{((.|\n)*?)\n};")
-TEACHABLE_ARRAY_DECL_PAT = re.compile(r"(?P<decl>static const u16 s(?P<name>\w+)TeachableLearnset\[\]) = {[\s\S]*?};")
+# T-237: the arrays are exported and fixed-capacity (see include/constants/randomizer_layout.h), so the
+# declaration is `const u16 sXTeachableLearnset[TEACHABLE_LEARNSET_CAPACITY]`. `static` and a bare `[]`
+# are still accepted so this helper can also regenerate an upstream-shaped file.
+TEACHABLE_ARRAY_DECL_PAT = re.compile(r"(?P<decl>(?:static )?const u16 s(?P<name>\w+)TeachableLearnset\[[^\]]*\]) = {[\s\S]*?};")
 SNAKIFY_PAT = re.compile(r"(?!^)([A-Z]+)")
 TUTOR_ARRAY_ENABLED_PAT = re.compile(r"#define\s+P_TUTOR_MOVES_ARRAY\s+(?P<cfg_val>[^ ]*)")
 
@@ -101,7 +104,7 @@ def prepare_output(all_learnables: dict[str, set[str]], repo_teachables: set[str
 
     cursor = 0
     new = header + dedent("""
-    static const u16 sNoneTeachableLearnset[] = {
+    const u16 sNoneTeachableLearnset[TEACHABLE_LEARNSET_CAPACITY] = {
         MOVE_UNAVAILABLE,
     };
     """)

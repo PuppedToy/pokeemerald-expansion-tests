@@ -23,9 +23,9 @@
 #include "window.h"
 #include "constants/songs.h"
 #include "constants/rgb.h"
+#include "constants/randomizer_layout.h"  // T-237 — STARTER_EXTRA_CAPACITY
 
 #define STARTER_MON_COUNT   3
-#define STARTER_EXTRA_COUNT 9
 
 // Position of the sprite of the selected starter Pokémon
 #define STARTER_PKMN_POS_X (DISPLAY_WIDTH / 2)
@@ -111,14 +111,21 @@ static const u8 sStarterLabelCoords[STARTER_MON_COUNT][2] =
     {8, 4},
 };
 
-static const u16 sStarterMon[STARTER_MON_COUNT] =
+const u16 gStarterMon[STARTER_MON_COUNT] =
 {
     SPECIES_TREECKO,
     SPECIES_TORCHIC,
     SPECIES_MUDKIP,
 };
 
-static const u16 sStarterExtraMon[STARTER_EXTRA_COUNT] =
+// T-237 — the extra-starter arrays are fixed at STARTER_EXTRA_CAPACITY and exported, so the injector can
+// overwrite them in place at their `.map` offsets (ADR-022). Before this they were sized by a
+// STARTER_EXTRA_COUNT #define that the ROM maker rewrote per ROM, which changed the size of three arrays
+// and moved everything after them. gStarterExtraCount now says how many slots are real; the rest are
+// zero-filled and never read.
+const u8 gStarterExtraCount = 9;
+
+const u16 gStarterExtraMon[STARTER_EXTRA_CAPACITY] =
 {
     SPECIES_BAGON,
     SPECIES_KABUTOPS,
@@ -135,23 +142,24 @@ static const u16 sStarterExtraMon[STARTER_EXTRA_COUNT] =
 // MON_GENDERLESS) leave behavior unchanged; the ROM maker (randomizer/starterNameWriter.js) rewrites
 // these per-ROM from the bundle when the nickname feature is enabled. An empty name means "keep the
 // species name"; MON_GENDERLESS means "don't force a gender" (also used for genderless species).
-static const u8 sStarterNickname[] = _("");
-static const u8 sStarterGender = MON_GENDERLESS;
+// T-237: the names are stored INLINE at a fixed width (they were pointers into the string pool).
+const u8 gStarterNickname[POKEMON_NAME_LENGTH + 1] = _("");
+const u8 gStarterGender = MON_GENDERLESS;
 
-static const u8 *const sStarterExtraNicknames[STARTER_EXTRA_COUNT] =
+const u8 gStarterExtraNicknames[STARTER_EXTRA_CAPACITY][POKEMON_NAME_LENGTH + 1] =
 {
-    COMPOUND_STRING(""),
-    COMPOUND_STRING(""),
-    COMPOUND_STRING(""),
-    COMPOUND_STRING(""),
-    COMPOUND_STRING(""),
-    COMPOUND_STRING(""),
-    COMPOUND_STRING(""),
-    COMPOUND_STRING(""),
-    COMPOUND_STRING(""),
+    _(""),
+    _(""),
+    _(""),
+    _(""),
+    _(""),
+    _(""),
+    _(""),
+    _(""),
+    _(""),
 };
 
-static const u8 sStarterExtraGenders[STARTER_EXTRA_COUNT] =
+const u8 gStarterExtraGenders[STARTER_EXTRA_CAPACITY] =
 {
     MON_GENDERLESS,
     MON_GENDERLESS,
@@ -399,44 +407,46 @@ u16 GetStarterPokemon(u16 chosenStarterId)
 {
     if (chosenStarterId > STARTER_MON_COUNT)
         chosenStarterId = 0;
-    return sStarterMon[chosenStarterId];
+    return gStarterMon[chosenStarterId];
 }
 
+// T-237 — the arrays are STARTER_EXTRA_CAPACITY long; gStarterExtraCount is how many of them this ROM
+// actually filled, so every bound below is the count, not the capacity.
 u16 GetExtraPokemonCount()
 {
-    return STARTER_EXTRA_COUNT;
+    return gStarterExtraCount;
 }
 
 u16 GetExtraPokemon(u16 extraPokemonId)
 {
-    if (extraPokemonId > STARTER_EXTRA_COUNT)
+    if (extraPokemonId >= gStarterExtraCount)
         extraPokemonId = 0;
-    return sStarterExtraMon[extraPokemonId];
+    return gStarterExtraMon[extraPokemonId];
 }
 
 // T-068 — starter nickname / forced-gender accessors (see the arrays above).
 const u8 *GetStarterNickname(void)
 {
-    return sStarterNickname;
+    return gStarterNickname;
 }
 
 u8 GetStarterGender(void)
 {
-    return sStarterGender;
+    return gStarterGender;
 }
 
 const u8 *GetExtraStarterNickname(u16 extraPokemonId)
 {
-    if (extraPokemonId >= STARTER_EXTRA_COUNT)
+    if (extraPokemonId >= gStarterExtraCount)
         extraPokemonId = 0;
-    return sStarterExtraNicknames[extraPokemonId];
+    return gStarterExtraNicknames[extraPokemonId];
 }
 
 u8 GetExtraStarterGender(u16 extraPokemonId)
 {
-    if (extraPokemonId >= STARTER_EXTRA_COUNT)
+    if (extraPokemonId >= gStarterExtraCount)
         extraPokemonId = 0;
-    return sStarterExtraGenders[extraPokemonId];
+    return gStarterExtraGenders[extraPokemonId];
 }
 
 static void VblankCB_StarterChoose(void)
