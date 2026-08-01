@@ -51,25 +51,32 @@ function diffRegions(a, b, { mergeGap = 4, maxRegions = 200 } = {}) {
     return regions;
 }
 
-/** Attach the owning symbol (from the base offset map) to each differing region. */
-function attributeDiff(offsetMap, regions) {
+/**
+ * Attach the owning symbol (from the base offset map) to each differing region.
+ *
+ * Script labels carry size 0 in the symbol table, so a Group-D setvar patch falls "inside" nothing;
+ * for those the nearest preceding symbol within `nearestWithin` bytes is reported as `approximate`.
+ * A region with nothing nearby stays unattributed — better than a guess that reads like a fact.
+ */
+function attributeDiff(offsetMap, regions, { nearestWithin = 0x1000 } = {}) {
     const symbols = Object.values(offsetMap.symbols)
         .filter(s => s.romOffset !== null)
         .sort((x, y) => x.romOffset - y.romOffset);
 
     return regions.map(region => {
-        // The last symbol starting at or before the region, if the region falls inside its span.
+        // The last symbol starting at or before the region.
         let lo = 0, hi = symbols.length - 1, found = null;
         while (lo <= hi) {
             const mid = (lo + hi) >> 1;
             if (symbols[mid].romOffset <= region.offset) { found = symbols[mid]; lo = mid + 1; } else { hi = mid - 1; }
         }
-        const inside = found && found.size !== null && region.offset < found.romOffset + found.size;
-        return {
-            ...region,
-            symbol: inside ? found.name : null,
-            delta: inside ? region.offset - found.romOffset : null,
-        };
+        if (!found) return { ...region, symbol: null, delta: null };
+
+        const delta = region.offset - found.romOffset;
+        const inside = found.size > 0 && delta < found.size;
+        if (inside) return { ...region, symbol: found.name, delta };
+        if (delta <= nearestWithin) return { ...region, symbol: found.name, delta, approximate: true };
+        return { ...region, symbol: null, delta: null };
     });
 }
 
@@ -77,7 +84,9 @@ function attributeDiff(offsetMap, regions) {
 function formatDiff(attributed) {
     if (!attributed.length) return 'byte-identical';
     return attributed.map(r => {
-        const where = r.symbol ? `${r.symbol}+0x${r.delta.toString(16)}` : 'unattributed (no symbol owns it)';
+        const where = r.symbol
+            ? `${r.approximate ? '~' : ''}${r.symbol}+0x${r.delta.toString(16)}`
+            : 'unattributed (no symbol owns it)';
         const flag = r.sizeMismatch ? '  [SIZE MISMATCH]' : '';
         return `0x${r.offset.toString(16)}  ${r.length} bytes  ${where}${flag}`;
     }).join('\n');

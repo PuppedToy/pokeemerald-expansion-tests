@@ -43,7 +43,10 @@ const INJECTION_MODULES = [
         description: 'Level-up learnsets + teachable/TM compat (fixed capacity since T-237; located by array name in the .map)',
         symbols: [],
         // 1104 + 1101 arrays, each keeping its own name — the map is queried by pattern, never listed.
-        symbolPatterns: [/LevelUpLearnset$/, /TeachableLearnset$/],
+        // Anchored on the `s` prefix: an unanchored pattern also matches the ACCESSOR FUNCTIONS
+        // GetSpeciesLevelUpLearnset / GetSpeciesTeachableLearnset (caught on the real base, T-238),
+        // and writing learnset data over executable code is not a mistake worth risking.
+        symbolPatterns: [/^s\w*LevelUpLearnset$/, /^s\w*TeachableLearnset$/],
     },
     {
         id: 'trainer-parties',

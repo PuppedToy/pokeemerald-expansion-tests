@@ -34,9 +34,14 @@ Shape (decided 2026-08-01, before code):
 | `randomizer/injector/mode.js` | `ROM_BUILD_MODE=compile\|inject` (+ `--inject`/`--compile`), default **compile**; one place to flip and to roll back |
 
 Acceptance criteria:
-- [ ] Injector loads base + offset map; write/repoint primitives unit-tested.
-- [ ] compile-vs-inject switch wired (default compile); rollback trivial.
-- [ ] No-op inject reproduces the base byte-for-byte (INV-BYTES baseline).
+- [x] Injector loads base + offset map; write/repoint primitives unit-tested. **95 tests** across 8
+      suites; the loader is validated against the **real** post-T237 `.map` (87,988 symbols) and every
+      offset it produces matches the T-237 manifest, which was captured independently.
+- [x] compile-vs-inject switch wired (default compile); rollback trivial. `ROM_BUILD_MODE` /
+      `--compile` / `--inject`; the refactored **compile** path still rebuilds the `baseline` corpus
+      bundle byte-identically (`ALL PASS — 1 pass / 0 fail`).
+- [x] No-op inject reproduces the base byte-for-byte (INV-BYTES baseline). On the real base:
+      `inject(base, {}) → 10f913694b2d…` = the golden base sha256.
 
 ## Progress log
 - **2026-07-27** — Created (Phase 3).
@@ -95,5 +100,45 @@ Acceptance criteria:
   - **Still open:** the parser is validated against a *synthetic* fixture map, and byte-parity against
     a *synthetic* base. Both need the real post-T237 base on the build box (`make` + `make syms`, then
     `buildOffsetMap.js`) before the acceptance criteria can be ticked.
+
+- **2026-08-01 — VALIDATED ON THE REAL BASE. All three acceptance criteria met; two real bugs found.**
+  No rebuild was needed: `/opt/emerald-t237` still holds the golden base (`pokeemerald.gba` sha
+  **`10f913694b2d…`**, matching `manifest.json`) and the `.map` from that same build. Only the `.sym`
+  was missing — generated with the Makefile's own rule (`arm-none-eabi-objdump -t | sort -u | grep -E
+  "^0[2389]" | perl …`) rather than `make`, so nothing was recompiled: **95,794 symbols**. Everything
+  ran in a throwaway container against that copy; production was never touched.
+  - **Parser vs reality:** 87,988 symbols out of the 3.9 MB map, and every offset it reports matches
+    the T-237 manifest, which was captured by a different method — `gTrainers` 0x3d5870,
+    `gRandomizerSettings` 0xc47ef0, `gGymRewards` 0xc47ea8, `gStaticEncounters` 0xc47ed4, `gItemPicks`
+    0xc47d00, `gMegaTrainerHidden` 0xc47c40, `gLocationNicknames` 0x63fc40, `gTradeNicknames` 0xd2fb14.
+    Budget: **25,205,617 B / 32 MB = 75.12 %**, ~7.96 MB free (T-237 measured 75.04 % by linker report).
+  - **Readiness: all five modules READY** — 5 + 2205 + 2 + 12 + 5 symbols found. The 2205 is exactly
+    T-237's 1104 level-up + 1101 teachable arrays.
+  - **BUG 1 (would have corrupted a ROM in T-240):** `/LevelUpLearnset$/` also matched the **accessor
+    functions** `GetSpeciesLevelUpLearnset` / `GetSpeciesTeachableLearnset` — 1105/1102 hits. Writing
+    learnset data over executable code. Patterns anchored to `/^s\w*…/`; a named test pins it.
+  - **BUG 2 (bad diagnostics):** a linker map only *bounds* a symbol by its section, so sizes were
+    wildly wrong — `gStarterExtraCount` (a `u8`) came out as **335 B**, `gIngameTrades` as **23,120 B**.
+    objdump states the true size, so symbols now carry `sizeExact` and `merge()` prefers an exact size.
+    Post-fix the sizes are exactly T-237's declared capacities: `gStarterMon` 6, `gStarterNickname` 13,
+    `gStarterExtraMon` 32, `gStarterExtraNicknames` 208 (16 × 13), `gIngameTrades` 512 (4 × 128),
+    `gLocationNicknames` 2560 (160 × 16), `gTradeNicknames` 128 (8 × 16), `gTrainers` 123,840.
+    Independent confirmation that the whole T-237 layout is in the base and injectable.
+  - **INV-BYTES baseline PASS:** `inject(base, {})` with all five modules pending → sha256
+    **`10f913694b2d…`**, byte-identical to the base.
+  - **The offsets are real, not just parseable:** read through the map, the ROM yields
+    `gStarterMon = [252, 255, 258]` (Treecko/Torchic/Mudkip), `gStarterExtraCount = 9`, and
+    `gLocationNicknameCount = gTradeNicknameCount = 0` — the committed defaults, exactly as expected.
+  - **Group-D end-to-end on real bytes:** `MossdeepCity_SpaceCenter_2F_OnTransition` (0x2a730c, a
+    **local** label — only in the `.sym`) → the `VAR_DISABLE_STEVEN_TAG_BATTLE` operand at 0x2a730f
+    holding the base's 0, patched to 1, and the whole-ROM diff shows **exactly one changed byte**.
+    That diff came back *unattributed* (script labels have size 0), so `attributeDiff` now falls back
+    to the nearest preceding label flagged approximate — it reads
+    `~MossdeepCity_SpaceCenter_2F_OnTransition+0x3`, which is what T-243 will need.
+  - **Compile-path regression check** (the risk unit tests can't cover — `buildOneRom` became a
+    dispatcher and the old body moved to `compileOneRom`): rebuilt the `baseline` corpus bundle through
+    it on the box → **`ALL PASS — 1 pass / 0 fail`**, hash unchanged vs the manifest.
+  - Suites after the fixes: randomizer **1849**, backend **213**. The `.sym` was left in
+    `/opt/emerald-t237` for T-239; the scratch validation script was removed.
 
 ## Outcome

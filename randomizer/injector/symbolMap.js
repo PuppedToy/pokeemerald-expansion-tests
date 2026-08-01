@@ -89,10 +89,20 @@ class OffsetMap {
      * A new map with `other`'s symbols folded in; THIS map wins on conflicts (the `.map` knows the
      * section and object, the `.sym` only the address). Used to add the local script labels a linker
      * map never contains — the Group-D setvar sites.
+     *
+     * One exception, learned from the real base: a linker map only **bounds** a symbol by its section
+     * (gStarterExtraCount, a u8, came out as 335 B), while an ELF symbol table states the true size.
+     * So a non-zero **exact** size always wins, whichever side it comes from.
      */
     merge(other) {
+        const symbols = { ...other.symbols };
+        for (const [name, mine] of Object.entries(this.symbols)) {
+            const theirs = symbols[name];
+            const preferTheirSize = theirs && theirs.sizeExact && !mine.sizeExact && theirs.size > 0;
+            symbols[name] = preferTheirSize ? { ...mine, size: theirs.size, sizeExact: true } : mine;
+        }
         return new OffsetMap({
-            symbols: { ...other.symbols, ...this.symbols },
+            symbols,
             romCapacity: this.romCapacity,
             romEndOffset: Math.max(this.romEndOffset, other.romEndOffset || 0),
             source: this.source,
@@ -251,6 +261,8 @@ function parseMapFile(text, { source = null } = {}) {
             addr: entry.addr,
             romOffset,
             size,
+            // A map size is an upper bound (section end / next symbol), never the declared size.
+            sizeExact: false,
             section: sec ? sec.name : null,
             object: sec ? sec.object : null,
         };
@@ -286,7 +298,11 @@ function parseSymFile(text, { source = null } = {}) {
         const addr = parseInt(m[1], 16);
         const size = parseInt(m[3], 16);
         const romOffset = inRom(addr) ? addr - ROM_BASE_ADDR : null;
-        symbols[m[4]] = { name: m[4], addr, romOffset, size, section: null, object: null, local: m[2] === m[2].toLowerCase() };
+        symbols[m[4]] = {
+            name: m[4], addr, romOffset, size,
+            sizeExact: size > 0,           // objdump states the declared size; 0 = label with no size
+            section: null, object: null, local: m[2] === m[2].toLowerCase(),
+        };
         if (romOffset !== null) romEndOffset = Math.max(romEndOffset, romOffset + size);
     }
     if (Object.keys(symbols).length === 0) {

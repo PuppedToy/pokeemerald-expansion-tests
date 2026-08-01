@@ -44,6 +44,18 @@ describe('what each module claims (T-238)', () => {
         }
     });
 
+    // Validated against the real base (T-238): /LevelUpLearnset$/ also matched the ACCESSOR FUNCTIONS
+    // GetSpeciesLevelUpLearnset / GetSpeciesTeachableLearnset — 1105/1102 hits instead of 1104/1101.
+    // T-240 would have written learnset data over executable code.
+    test('the learnset patterns match the arrays only, never the accessor functions', () => {
+        const patterns = INJECTION_MODULES.find(m => m.id === 'learnsets').symbolPatterns;
+        const matches = (name) => patterns.some(p => p.test(name));
+        expect(matches('sBulbasaurLevelUpLearnset')).toBe(true);
+        expect(matches('sChanseyTeachableLearnset')).toBe(true);
+        expect(matches('GetSpeciesLevelUpLearnset')).toBe(false);
+        expect(matches('GetSpeciesTeachableLearnset')).toBe(false);
+    });
+
     test('no two modules claim the same symbol — ownership is exclusive (INV-BYTES)', () => {
         const seen = new Map();
         for (const m of INJECTION_MODULES) {

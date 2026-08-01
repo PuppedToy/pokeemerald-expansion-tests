@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const { diffRegions, attributeDiff, formatDiff } = require('../../injector/parity');
 const { compareRoms } = require('../../injector/verifyParity');
-const { parseMapFile } = require('../../injector/symbolMap');
+const { parseMapFile, parseSymFile } = require('../../injector/symbolMap');
 
 const mapText = fs.readFileSync(path.join(__dirname, '..', 'fixtures', 'mini.map'), 'utf8');
 
@@ -56,6 +56,25 @@ describe('attributeDiff (T-238)', () => {
 
     test('a region in nobody\'s symbol is reported as unattributed rather than guessed', () => {
         const at = attributeDiff(map, [{ offset: 0x10, length: 1 }]);
+        expect(at[0].symbol).toBeNull();
+    });
+
+    // Script labels have size 0 in the .sym, so a Group-D setvar patch lands "inside" nothing and came
+    // back unattributed on the real base (T-238). Reporting the nearest preceding label — flagged
+    // approximate — is what makes a T-243 mismatch readable instead of looking like dead space.
+    test('a diff inside a zero-size label is attributed to it, marked approximate', () => {
+        const merged = map.merge(parseSymFile(fs.readFileSync(path.join(__dirname, '..', 'fixtures', 'mini.sym'), 'utf8')));
+        const at = attributeDiff(merged, [{ offset: 0xd40103, length: 1 }]);
+        expect(at[0]).toMatchObject({
+            symbol: 'EverGrandeCity_SidneysRoom_EventScript_Init',
+            delta: 3,
+            approximate: true,
+        });
+        expect(formatDiff(at)).toMatch(/~EverGrandeCity_SidneysRoom_EventScript_Init\+0x3/);
+    });
+
+    test('nothing within the search window stays unattributed (no wild guesses)', () => {
+        const at = attributeDiff(map, [{ offset: 0x1fffff0, length: 1 }], { nearestWithin: 0x100 });
         expect(at[0].symbol).toBeNull();
     });
 

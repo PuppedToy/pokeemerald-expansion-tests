@@ -106,7 +106,7 @@ describe('parseSymFile (T-238, Group-D locator input)', () => {
     const sym = parseSymFile(fs.readFileSync(SYM_FIXTURE, 'utf8'));
 
     test('reads "<addr> <flag> <size> <name>" rows into the same shape as the .map', () => {
-        expect(sym.require('gItemsInfo')).toMatchObject({ addr: 0x0860a998, romOffset: 0x60a998, size: 0x15000 });
+        expect(sym.require('gItemsInfo')).toMatchObject({ addr: 0x0860a998, romOffset: 0x60a998, size: 0x200 });
     });
 
     test('keeps local script labels — the whole reason the .sym exists here', () => {
@@ -123,6 +123,23 @@ describe('parseSymFile (T-238, Group-D locator input)', () => {
         expect(merged.require('gItemsInfo').object).toContain('items.o');           // came from the .map
         expect(merged.require('EverGrandeCity_SidneysRoom_EventScript_Init').romOffset).toBe(0xd40100);
         expect(merged.symbolCount).toBeGreaterThan(parseMapFile(mapText).symbolCount);
+    });
+
+    // Validated against the real base (T-238): a linker map only BOUNDS a symbol by its section, so
+    // gStarterExtraCount (a u8) came out as 335 B and gIngameTrades (0x200) as 23,120 B. objdump
+    // reports the true symbol size, so an exact size always wins over a section-derived one.
+    test('an exact ELF size beats the map\'s section-derived bound', () => {
+        expect(parseMapFile(mapText).require('gItemsInfo').sizeExact).toBe(false);
+        expect(sym.require('gItemsInfo').sizeExact).toBe(true);
+
+        const merged = parseMapFile(mapText).merge(sym);
+        expect(merged.require('gItemsInfo').size).toBe(0x200);      // the .sym's exact size, not 0x15000
+        expect(merged.require('gItemsInfo').object).toContain('items.o');
+    });
+
+    test('a zero-size .sym row (most script labels) never overwrites a real size', () => {
+        const merged = parseMapFile(mapText).merge(sym);
+        expect(merged.require('sBulbasaurLevelUpLearnset').size).toBe(0xb0);
     });
 
     test('loadOffsetMap accepts a .sym as well', () => {
