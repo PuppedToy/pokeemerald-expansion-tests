@@ -139,7 +139,7 @@ function resolveBasePaths({ env = process.env, root: repoRoot = root } = {}) {
  */
 async function injectOneRom({
     rom, bundle, seed, universeSeed = seed, outDir, fullRom = false,
-    allowPending = false, basePaths = resolveBasePaths(),
+    allowPending = false, basePaths = resolveBasePaths(), modules = undefined,
 }) {
     const rng = require('./randomizer/rng');
     const { loadBase, injectRom, loadOffsetMap } = require('./randomizer/injector');
@@ -172,6 +172,8 @@ async function injectOneRom({
 
     const { applied, pending, journal } = injectRom({
         rom: baseRom, offsetMap, data, allowPending, log: (msg) => console.log(`  · ${msg}`),
+        // Defaults to the real registry; a harness can drive the wiring with its own module set.
+        ...(modules ? { modules } : {}),
     });
 
     const vanillaPath = fullRom ? null : resolveVanillaPath(root);

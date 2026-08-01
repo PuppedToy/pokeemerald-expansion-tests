@@ -29,11 +29,17 @@ const INJECTION_MODULES = [
     {
         id: 'group-a-fixed',
         task: 'T-239',
-        status: 'pending',
-        apply: null,
+        status: 'migrated',
+        // Required lazily: the wild-encounter writer reuses writer.js (one home for the sweep plan), and
+        // dragging that whole import graph into every `require('injector')` — the mode switch, the
+        // offset-map CLI — would be pointless for the callers that never inject.
+        apply: (args) => require('./modules/groupAFixed').applyGroupAFixed(args),
         description: 'Group A — fixed-size overwrites: species info, move data, evolutions, wild slots, TM→move, item prices',
         symbols: ['gSpeciesInfo', 'gMovesInfo', 'gItemsInfo', 'gTMHMItemMoveIds', 'gWildMonHeaders'],
-        symbolPatterns: [],
+        // The wild slot arrays the encounter generator emits per map (`gRoute101_LandMons`, with an
+        // optional time-of-day infix) — they are what actually gets written, gWildMonHeaders only points
+        // at them. Evolution arrays are reached through gSpeciesInfo.evolutions and have no symbol.
+        symbolPatterns: [/_(Land|Water|RockSmash|Fishing)Mons$/],
     },
     {
         id: 'learnsets',

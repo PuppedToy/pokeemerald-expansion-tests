@@ -65,6 +65,43 @@ never a randomized build.
 | `injector/parity.js` + `verifyParity.js` | INV-BYTES diagnostics: which bytes differ, and whose symbol |
 | `injector/buildOffsetMap.js` | the extraction + readiness CLI above |
 | `injector/mode.js` | the compile-vs-inject switch |
+| `injector/gameConstants.js` | the base's `include/constants/*.h` as a name→number table (`#define` + `enum`) |
+| `injector/structLayout.js` | struct field offsets + the **base anchors** that prove them (below) |
+| `injector/context.js` | builds constants + layout once per ROM and runs the anchor check |
+| `injector/modules/*.js` | one file per output, plus a `group*.js` that a registry entry points at |
+
+### Ids and struct offsets
+
+A bundle speaks names (`SPECIES_BULBASAUR`, `MOVE_POUND`, `DAMAGE_CATEGORY_SPECIAL`); the ROM speaks
+numbers, and a field's place inside a struct is in neither the `.map` nor the `.sym` (the base is built
+without debug info — `DINFO=1` also changes `-O`, so it is not the golden base).
+
+- **Ids** come from the base's own `include/constants/*.h`, never from a copy in JS: an upstream sync
+  renumbers species, and a stale table here would write Ivysaur's stats onto Venusaur without failing.
+- **Offsets** are declared in `structLayout.js` from `include/pokemon.h` / `move.h` / `item.h` and then
+  **verified against the base's own data** before any module writes: Bulbasaur must read back
+  45/49/49/45/65/65 GRASS/POISON, a late species (Miraidon) too — that is what proves the *stride* —
+  Pound 40/100/NORMAL/PHYSICAL, a Poké Ball 200. A mismatch throws and nothing is written.
+- **Strides** are derived (`symbol size / entry count`), which needs the `.sym`.
+- `SpeciesInfo.evolutions` sits past the config `#if`s, so it is *found*: the only pointer in the anchor
+  species' struct whose target decodes as the base's own evolution.
+
+### Deriving writes from the compile path
+
+Where a writer's rule is narrower than it looks, the module runs **the writer's own function** over the
+base source and injects the diff, instead of re-deriving the rule:
+
+| module | runs | why |
+|---|---|---|
+| `itemPrices` | `itemPriceWriter.patchPricesInContent` over `src/data/items.h` | only blocks whose `.price` is a plain number are patched (Serious Mint's `(I_PRICE >= GEN_9) ? …` never is) |
+| `wildEncounters` | `writer.applyWildPlanToEncounters` / `substituteWildSpecies` over `src/data/wild_encounters.json` | the sweep plan's slot distribution has one home (T-162) |
+
+Reading base sources at inject time is safe — inject mode never mutates the tree — and they are the same
+sources the ids come from. A harness can pass them in instead (`sources` on the group module).
+
+Two writers are **log-driven** for the same reason: `pokemonWriter`/`moveWriter` only rewrite a field
+whose rebalance/mutation `log` names it, so injecting a "correct-looking" value the writer would have left
+alone breaks INV-BYTES.
 
 ### The write journal
 
@@ -79,6 +116,20 @@ a byte may only change because a module meant to change it.
 { id: 'learnsets', task: 'T-240', status: 'pending', apply: null,
   symbols: [], symbolPatterns: [/LevelUpLearnset$/, /TeachableLearnset$/] }
 ```
+
+Where the migration stands — the registry itself is the source of truth, this is the map of it:
+
+| entry | task | writes |
+|---|---|---|
+| `group-a-fixed` | T-239 | species stats/types/abilities + the T-077 held-item strip, move power/accuracy/type/category, evolution levels (+ stone `IF_MIN_LEVEL`), wild-encounter species, `gItemsInfo[].price`, `gTMHMItemMoveIds[].moveId` |
+| `learnsets` | T-240 | level-up + teachable learnsets |
+| `trainer-parties` | T-241 | trainer parties + battle partners |
+| `trades-starters-nicknames` | T-242 | in-game trades, the starter trio + extra starters, nickname tables |
+| `data-driven-and-toggles` | T-243 | the Phase-2 tables (settings, rewards, static encounters, item picks, hidden megas) + the Group-D setvars |
+
+Two Group-A rows of the strategy table are not in `group-a-fixed`: the **starter trio** belongs to
+T-242's entry, and **route/mail items** stopped being a map-data edit when T-236 moved item placement
+into `gItemPicks` (T-243) — writer.js's mail-mint loop matches nothing in `data/maps/**` any more.
 
 `injectRom()` refuses to emit a ROM while any module is `pending` — an injected ROM would ship **base**
 data for the un-migrated outputs, i.e. a "randomized" ROM that isn't randomized. Parity harnesses and

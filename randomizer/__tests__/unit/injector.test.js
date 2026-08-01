@@ -20,10 +20,11 @@ const offsetMap = parseMapFile(fs.readFileSync(MAP, 'utf8'));
 const baseBuffer = Buffer.alloc(0x1000, 0xff);
 
 describe('the module registry (T-238)', () => {
-    test('has one entry per Phase-3 migration task, all pending at T-238', () => {
+    // The board advances as each Phase-3 task lands: T-239 flipped `group-a-fixed` to migrated.
+    test('has one entry per Phase-3 migration task, and says how far the migration has got', () => {
         expect(INJECTION_MODULES.map(m => m.task)).toEqual(['T-239', 'T-240', 'T-241', 'T-242', 'T-243']);
-        expect(pendingModules()).toHaveLength(INJECTION_MODULES.length);
-        expect(migratedModules()).toHaveLength(0);
+        expect(migratedModules().map(m => m.task)).toEqual(['T-239']);
+        expect(pendingModules().map(m => m.task)).toEqual(['T-240', 'T-241', 'T-242', 'T-243']);
     });
 
     test('every module has a unique id and either an apply() or pending status', () => {
@@ -99,8 +100,10 @@ describe('checkReadiness (T-238)', () => {
 describe('injectRom (T-238)', () => {
     const base = () => Rom.fromBuffer(baseBuffer);
 
-    test('the no-op pass reproduces the base byte-for-byte (INV-BYTES baseline)', () => {
-        const result = injectRom({ rom: base(), offsetMap, data: {}, allowPending: true });
+    test('a pass with nothing migrated reproduces the base byte-for-byte (INV-BYTES baseline)', () => {
+        // The registry's own state moves on with each task; this asserts the orchestrator's contract.
+        const modules = INJECTION_MODULES.map(m => ({ ...m, status: 'pending', apply: null }));
+        const result = injectRom({ rom: base(), offsetMap, data: {}, modules, allowPending: true });
         expect(result.rom.sha256()).toBe(Rom.fromBuffer(baseBuffer).sha256());
         expect(result.rom.bytesWritten).toBe(0);
         expect(result.applied).toEqual([]);
@@ -109,7 +112,7 @@ describe('injectRom (T-238)', () => {
 
     test('refuses to emit a ROM while modules are pending, naming what is missing', () => {
         expect(() => injectRom({ rom: base(), offsetMap, data: {} }))
-            .toThrow(/pending[\s\S]*T-239|not migrated/i);
+            .toThrow(/pending[\s\S]*T-24\d|not migrated/i);
     });
 
     test('runs migrated modules in registry order and reports them', () => {

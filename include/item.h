@@ -128,8 +128,6 @@ extern const struct TmHmIndexKey gTMHMItemMoveIds[];
 
 #define UNPACK_ITEM_TO_TM_INDEX(_tm) case CAT(ITEM_TM_, _tm): return CAT(ENUM_TM_HM_, _tm) + 1;
 #define UNPACK_ITEM_TO_HM_INDEX(_hm) case CAT(ITEM_HM_, _hm): return CAT(ENUM_TM_HM_, _hm) + 1;
-#define UNPACK_ITEM_TO_TM_MOVE_ID(_tm) case CAT(ITEM_TM_, _tm): return CAT(MOVE_, _tm);
-#define UNPACK_ITEM_TO_HM_MOVE_ID(_hm) case CAT(ITEM_HM_, _hm): return CAT(MOVE_, _hm);
 
 static inline enum TMHMIndex GetItemTMHMIndex(u16 item)
 {
@@ -140,7 +138,11 @@ static inline enum TMHMIndex GetItemTMHMIndex(u16 item)
          *     return 1;
          * case ITEM_TM_DRAGON_CLAW:
          *      return 2;
-         * etc */
+         * etc
+         *
+         * ITEM_TM_<move> is defined as ITEM_TM<n> by the machine's POSITION in FOREACH_TM (see
+         * enum TMHMItemId above), so this switch compiles to `case ITEM_TM01: return 1; …` whatever
+         * moves the list holds — it does not depend on the TM list at all. */
         FOREACH_TM(UNPACK_ITEM_TO_TM_INDEX)
         FOREACH_HM(UNPACK_ITEM_TO_HM_INDEX)
         default:
@@ -148,27 +150,19 @@ static inline enum TMHMIndex GetItemTMHMIndex(u16 item)
     }
 }
 
+// T-239 / ADR-022 — read the move out of gTMHMItemMoveIds instead of a switch generated from
+// FOREACH_TM. The switch baked the randomizer's TM list into *code* (three callers: GetItemDescription,
+// item_icon.c, party_menu.c), which the base+injection pipeline cannot rewrite — only data. Behaviour is
+// unchanged: a non-machine item gives index 0, and entry 0 is the { ITEM_NONE, MOVE_NONE } failsafe, so
+// the result is MOVE_NONE exactly as the switch's `default` was. Every other consumer of the table
+// (GetTMHMMoveId, battle_dome, daycare, apprentice, pokedex_plus, item_menu) already read it this way.
 static inline u16 GetItemTMHMMoveId(u16 item)
 {
-    switch (item)
-    {
-        /* Expands to:
-         * case ITEM_TM_FOCUS_PUNCH:
-         *     return MOVE_FOCUS_PUNCH;
-         * case ITEM_TM_DRAGON_CLAW:
-         *      return MOVE_DRAGON_CLAW;
-         * etc */
-        FOREACH_TM(UNPACK_ITEM_TO_TM_MOVE_ID)
-        FOREACH_HM(UNPACK_ITEM_TO_HM_MOVE_ID)
-        default:
-            return MOVE_NONE;
-    }
+    return gTMHMItemMoveIds[GetItemTMHMIndex(item)].moveId;
 }
 
 #undef UNPACK_ITEM_TO_TM_INDEX
 #undef UNPACK_ITEM_TO_HM_INDEX
-#undef UNPACK_ITEM_TO_TM_MOVE_ID
-#undef UNPACK_ITEM_TO_HM_MOVE_ID
 
 static inline enum TMHMItemId GetTMHMItemId(enum TMHMIndex index)
 {

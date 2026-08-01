@@ -78,6 +78,11 @@ const EVOLUTION_PARAM = { stride: 8, condition: 0, arg1: 2, arg2: 4, arg3: 6 };
 // ── include/wild_encounter.h: struct WildPokemon ──────────────────────────────
 const WILD_POKEMON = { stride: 4, minLevel: 0, maxLevel: 1, species: 2 };
 
+// ── include/item.h: struct TmHmIndexKey ───────────────────────────────────────
+// { enum TMHMItemId itemId:16; u16 moveId; } — gTMHMItemMoveIds[NUM_ALL_MACHINES + 1], entry 0 the
+// { ITEM_NONE, MOVE_NONE } failsafe, then one entry per TM in FOREACH_TM order, then the HMs.
+const TMHM_INDEX_KEY = { stride: 4, itemId: 0, moveId: 2 };
+
 // ── The anchors ───────────────────────────────────────────────────────────────
 
 const SPECIES_ANCHORS = [
@@ -307,6 +312,7 @@ module.exports = {
     EVOLUTION,
     EVOLUTION_PARAM,
     WILD_POKEMON,
+    TMHM_INDEX_KEY,
     SPECIES_ANCHORS,
     MOVE_ANCHORS,
     ITEM_ANCHORS,

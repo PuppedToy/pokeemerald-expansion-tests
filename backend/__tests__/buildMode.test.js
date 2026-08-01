@@ -44,7 +44,7 @@ test('base ROM/map/sym paths default under base/ and are env-overridable', () =>
   assert.equal(custom.symPath, '/b/rom.sym');
 });
 
-test('injectOneRom refuses while Phase-3 modules are pending (T-238: all of them are)', async () => {
+test('injectOneRom refuses while Phase-3 modules are pending (T-240…T-243 still are)', async () => {
   clean();
   fs.mkdirSync(TMP, { recursive: true });
   const romPath = path.join(TMP, 'pokeemerald.gba');
@@ -64,6 +64,9 @@ test('injectOneRom refuses while Phase-3 modules are pending (T-238: all of them
 });
 
 test('a partial inject run is allowed explicitly and reproduces the base byte-for-byte (INV-BYTES)', async () => {
+  // The wiring contract, independent of how far the migration has got: with nothing migrated, the
+  // artifact make.js emits IS the base. (T-239 migrated group-a-fixed, whose tables this 4 KB fixture
+  // base does not have — see the test below for that case.)
   clean();
   fs.mkdirSync(TMP, { recursive: true });
   const romPath = path.join(TMP, 'pokeemerald.gba');
@@ -78,10 +81,33 @@ test('a partial inject run is allowed explicitly and reproduces the base byte-fo
   const result = await makejs.injectOneRom({
     rom, bundle, seed: 1, outDir: TMP, fullRom: true, allowPending: true,
     basePaths: { romPath, mapPath, symPath: null },
+    modules: INJECTION_MODULES.map(m => ({ ...m, status: 'pending', apply: null })),
   });
 
-  assert.equal(result.applied.length, 0, 'no module is migrated yet');
+  assert.equal(result.applied.length, 0, 'nothing migrated in this run');
   assert.equal(result.pending.length, INJECTION_MODULES.length);
   assert.deepEqual(fs.readFileSync(result.dest), baseBytes, 'a no-op inject IS the base');
+  clean();
+});
+
+test('an injected module whose tables the base does not export fails loudly, naming the symbol', async () => {
+  clean();
+  fs.mkdirSync(TMP, { recursive: true });
+  const romPath = path.join(TMP, 'pokeemerald.gba');
+  const mapPath = path.join(TMP, 'pokeemerald.map');
+  fs.writeFileSync(romPath, Buffer.alloc(0x1000, 0xff));
+  fs.copyFileSync(path.join(process.cwd(), '..', 'randomizer', '__tests__', 'fixtures', 'mini.map'), mapPath);
+
+  const bundle = { config: { seed: 1 }, sharedData: {}, roms: [] };
+  const rom = { romIndex: 0, artifacts: { pokedex: {}, trainers: {}, starters: {}, wild: {} } };
+
+  await assert.rejects(
+    () => makejs.injectOneRom({
+      rom, bundle, seed: 1, outDir: TMP, fullRom: true, allowPending: true,
+      basePaths: { romPath, mapPath, symPath: null },
+    }),
+    /group-a-fixed[\s\S]*gSpeciesInfo/,
+    'a base without the Group-A tables must stop the run, not silently ship base data',
+  );
   clean();
 });
