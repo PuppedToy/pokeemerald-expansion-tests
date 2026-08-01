@@ -94,4 +94,11 @@ Acceptance criteria:
   - **Still open:** `make` on PRO + the corpus re-snapshot + owner play-test — all deliberately folded
     into the single T-237 re-snapshot at the end of Phase 2.
 
+- **2026-08-01 (found while doing [[T-239]], not fixed here)** — one more dead `.replace` loop in
+  `writer.js`: the **mail-mint** substitution over the 26 `routeFiles` (`ITEM_WOOD_MAIL` /
+  `ITEM_WAVE_MAIL` / `ITEM_MECH_MAIL` → the chosen mints). Those tokens no longer exist anywhere under
+  `data/maps/**` (0 hits) — T-236 moved that placement into `gItemPicks` — so the loop reads and rewrites
+  26 `map.json`s unchanged. `resolveMailMints()` itself still feeds the docs, so only the loop is dead.
+  Left for this task's next pass rather than folded into T-239, which is deliberately injection-only.
+
 ## Outcome

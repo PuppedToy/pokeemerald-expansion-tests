@@ -74,4 +74,75 @@ Acceptance criteria:
   `include/` to find what the TM macro bakes into code. Two findings changed the plan — the TM base
   refactor (step 6) and starters belonging to T-242.
 
+- **2026-08-01 — ALL SIX WRITERS DONE (local): 9 new files, 77 new tests, suite 1960 + backend 214 green.**
+  Every file RED-first. What was built and the decisions inside it:
+  - **`gameConstants.js`** — the base's `include/constants/*.h` as name→number (`#define` *and* `enum`,
+    since move categories / evolution methods / conditions are enums). Alias chains and `(NAME + 1)`
+    arithmetic resolve; a value that depends on build config (`(I_PRICE >= GEN_9) ? …`) and a name defined
+    twice in two `#if` arms are **refused**, not guessed. Same rule as offsets from the `.map`: the ids
+    live in the base, never re-typed here (an upstream sync renumbers species — ADR-012).
+  - **`structLayout.js`** — the field offsets, declared from the headers and **verified against the base's
+    own data** before any write: Bulbasaur 45/49/49/45/65/65 GRASS/POISON OVERGROW/-/CHLOROPHYLL,
+    Miraidon (id 1401 — the anchor that proves the *stride*, not just the offsets), Pound/Ember/Growl/
+    Psychic, Poké Ball 200 / Master Ball 1000. Strides are derived (`size / entryCount`, needs the
+    `.sym`). `SpeciesInfo.evolutions` sits past the `#if P_GENDER_DIFFERENCES` / `P_FOOTPRINTS` /
+    `OW_POKEMON_OBJECT_EVENTS` block, so it is **found**, not declared: the only pointer in Bulbasaur's
+    struct whose target decodes as `{EVO_LEVEL, 16, SPECIES_IVYSAUR}` + sentinel. Two candidates → throw.
+  - **`context.js`** — constants + layout + the anchor check, once per ROM. A base the layout doesn't
+    match stops all six writers before the first byte.
+  - **The six writers.** Each mirrors its writer's *decision rule*, which is the part that decides
+    INV-BYTES:
+    - `species` — stats/types/abilities only when the rebalance **log** names that target (the writer
+      rewrites a line only then); `MON_TYPES(t)` fills both slots; a non-type config token (B-010) leaves
+      the base's byte alone, because the writer emits it verbatim; held items zeroed for **every** species
+      (T-077), not just the bundle's.
+    - `moves` — power/accuracy/type/category, log-driven; all four are bit-fields in one word shared with
+      `target`, so RMW with per-bit ownership (a test pins that the neighbours survive).
+    - `evolutions` — reuses `buildEvoLevelMapFromParams` over the same `BANNED_SPECIES_FOR_PICKING`-filtered
+      list writer.js builds; target-keyed and global like the regexes, plain tuples only (`params == NULL`),
+      stones only in the exact single-`IF_MIN_LEVEL` shape.
+    - `wildEncounters` — runs `writer.applyWildPlanToEncounters` (or `substituteWildSpecies` for a
+      pre-T-162 bundle) over the base JSON and writes only the `u16 species` that differ. Each generated
+      `<base_label>_<Type>Mons` array is **proved** by matching the ROM's bytes against the base JSON
+      (species *and* levels), so a time-of-day infix, a name collision or a map from another build fails
+      loudly. Exercised against the real 128-map JSON.
+    - `itemPrices` — runs `itemPriceWriter.patchPricesInContent` over the base's `items.h` and injects the
+      diff, which inherits the writer's narrower-than-obvious rule for free (numeric `.price` lines only,
+      so Serious Mint's ternary is untouched).
+    - `tmMoves` — the `moveId` column only, after checking the `itemId` column is `ITEM_TM01, TM02, …`
+      (the table is indexed, so a wrong index teaches the wrong machine).
+  - **`modules/groupAFixed.js`** + the registry entry flipped to `migrated`, required **lazily** so
+    `require('injector')` (mode switch, offset-map CLI) doesn't drag writer.js's import graph in.
+  - **`backend/build/golden-corpus/parity.mjs`** — the GATE-3 harness: inject every frozen bundle and diff
+    against `manifest.json` (which already holds the compile-path hashes), `--explain` rebuilding the
+    mismatching bundle through the compile path and printing the differing regions with their owning
+    symbol. Refuses to be read as a pass while modules are pending unless `--allow-pending`.
+  - **One base change was unavoidable** (audited before coding, see the Plan): `GetItemTMHMMoveId()` in
+    `include/item.h` was an inline switch generated from `FOREACH_TM` — the TM list compiled into *code*,
+    in 3 callers. It now reads `gTMHMItemMoveIds`, which every other consumer already did. Behaviour
+    identical (index 0 is the `{ITEM_NONE, MOVE_NONE}` failsafe = the old `default`). **This changes the
+    base ROM, so the golden base + corpus must be re-snapshotted before parity means anything.**
+  - **Two Group-A rows of the strategy table were wrong and are fixed there:** the starter trio belongs to
+    T-242's registry entry, and route/mail items stopped being map data when T-236 moved placement into
+    `gItemPicks` — `writer.js`'s mail-mint loop matches **0** tokens under `data/maps/**` today (logged as
+    dead code in [[T-247]], not fixed here).
+  - **Hazard found while writing `evolutions`:** if the base folded two identical
+    `CONDITIONS({IF_MIN_LEVEL, n})` literals into one object and their targets want different levels, the
+    output is not injectable byte-for-byte at all. The module refuses before writing anything instead of
+    mis-levelling one of them; whether the real base folds them is on the validation checklist below.
+  - T-238's registry-state tests were updated (the board advanced: T-239 migrated, four pending) and the
+    backend's no-op parity test now drives the wiring with an explicit all-pending module set — plus a new
+    one asserting that a base lacking the Group-A tables fails loudly. Both noted as deliberate
+    specification changes, not weakened tests.
+  - No changelog line: internal infrastructure, nothing user-visible yet (same call as T-232/T-238).
+  - **Still open — all of it box-side, none of it verifiable locally (no toolchain here):**
+    1. `make` on PRO with the `include/item.h` change, then **re-snapshot the corpus** (build-and-hash.sh)
+       → new golden base + `manifest.json`. Owner decision, since it invalidates the current hashes.
+    2. `buildOffsetMap.js` readiness on the new base (the wild slot arrays and `gTMHMItemMoveIds` are new
+       claims) + the ROM budget.
+    3. Confirm on the real base: the anchors pass, `resolveEvolutionsOffset` finds exactly one candidate,
+       and **no** two stone evolutions share a folded `CONDITIONS()` object.
+    4. `parity.mjs --allow-pending --explain` over the corpus: every differing region must belong to a
+       still-pending module (T-240…T-243) — that is GATE-3 for Group A.
+
 ## Outcome

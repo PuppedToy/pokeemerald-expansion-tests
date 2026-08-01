@@ -46,12 +46,12 @@ Write the new value at a known offset extracted from the `.map`. No repointing, 
 |---|---|---|
 | Base stats / types / abilities / wild held item (`gSpeciesInfo[]`) | overwrite scalar fields at `species*0xC4 + fieldOffset` | none |
 | Move power/accuracy/type/category (`gMovesInfo[]`) | bit-level read-modify-write of the packed word | none |
-| Evolution level / stone min-level (`Evolution.param`) | overwrite `u16` in the evolutions array | none |
+| Evolution level / stone min-level (`Evolution.param`) | overwrite `u16` in the evolutions array, reached through `gSpeciesInfo[].evolutions` | none — but the injector refuses if the base folded two identical `CONDITIONS({IF_MIN_LEVEL, n})` literals whose targets want different levels (T-239 guard; verify on the base) |
 | Wild encounter species (`WildPokemon[]`) | overwrite `u16` species in fixed slots (counts preserved) | none |
-| Starter trio (`sStarterMon[3]`) | overwrite 3×`u16` | none |
-| TM→move (`gTMHMItemMoveIds[]`) | overwrite the `moveId` fields (fixed-count table) | none (source is a macro, but the *baked table* is fixed) |
+| Starter trio (`sStarterMon[3]`) | overwrite 3×`u16` | none — **injected by [T-242]**, with the other starter/nickname tables |
+| TM→move (`gTMHMItemMoveIds[]`) | overwrite the `moveId` fields (fixed-count table) | **one, found in T-239:** `GetItemTMHMMoveId()` was an inline switch generated from `FOREACH_TM`, i.e. the TM list baked into *code*. Now reads the table (`include/item.h`) |
 | Shop item prices (`gItems[].price`) | overwrite the `.price` field per item | none |
-| Route field/mail items (`map.json` object_events) | overwrite the item `u16` in the compiled map event | none (locating the object_event is the work) |
+| ~~Route field/mail items (`map.json` object_events)~~ | — | **obsolete:** T-236 moved item placement into `gItemPicks` (injected by [T-243]); no mail token is left under `data/maps/**` |
 
 ### Group B — variable-length, inject via reserved capacity / free-space
 These are sentinel-terminated arrays reached through a pointer in a struct. Two strategies; prefer B1.
