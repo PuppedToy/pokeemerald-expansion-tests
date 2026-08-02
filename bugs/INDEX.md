@@ -60,3 +60,4 @@
 | [B-054](B-054-hidden-power-universal-teachables-inconsistent.md) | Hidden Power (and other universal moves) show inconsistently in teachable lists | fixing | minor | 0.6.0 |  | randomizer/__tests__/unit/universalTeachables.test.js |
 | [B-055](B-055-dynamic-multichoice-auto-selects-first-option.md) | "Dynamic multichoice menus auto-select option 1 when opened from an A-press (item-ball picks)" | fixed | major | 0.7.0 | 0.7.0 | randomizer/__tests__/unit/dynamicMultichoiceInputGuard.test.js |
 | [B-056](B-056-game-corner-tm-labels-not-randomized.md) | "Game Corner TM prize list shows vanilla move names, not the run's randomized TMs" | open | minor | 0.7.0 |  |  |
+| [B-057](B-057-compile-layout-drifts-with-injected-data.md) | "A compiled ROM's layout drifts with the DATA the randomizer writes, so inject(base) can never equal compile(bundle)" | open | major | 0.7.0 |  |  |
