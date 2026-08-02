@@ -185,6 +185,20 @@ describe('wild held items — T-077 strips them for every species, not just the 
     });
 });
 
+describe('mirroring writer.js exactly', () => {
+    test('a banned species is never written — writer.js filters the list before savePokemonData', () => {
+        // Found by GATE-3 on the real base: Castform's weather forms carry a rebalance log, and injecting
+        // them made gSpeciesInfo differ from every compiled ROM by 13 bytes.
+        const base = setup({
+            pokes: [poke('SPECIES_CASTFORM_SNOWY', { baseHP: 1, baseSpDefense: 2, log: [{ target: 'baseHP' }, { target: 'baseSpDefense' }] })],
+        });
+        const { writes } = injectSpeciesInfo(base.ctx);
+
+        expect(writes.stats).toBe(0);
+        expect(readStat(base, 'SPECIES_CASTFORM_SNOWY', 'baseHP')).not.toBe(1);
+    });
+});
+
 describe('failure modes', () => {
     test('a species the base sources do not contain is a no-op — compile cannot write it either', () => {
         const base = setup({ pokes: [poke('SPECIES_MISSINGNO', { log: [{ target: 'baseHP' }] })] });

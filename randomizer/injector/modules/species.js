@@ -31,6 +31,7 @@ const path = require('path');
 const { SPECIES_INFO } = require('../structLayout');
 const { POKEMON_TYPES, SPECIES_DIR, TOTAL_GENS } = require('../../constants');
 const { editSpeciesFile } = require('../../pokemonWriter');
+const { BANNED_SPECIES_FOR_PICKING } = require('../../modules/wildModule');
 
 const TAG = 'species';
 const TAG_ITEMS = 'species:heldItems';
@@ -165,7 +166,11 @@ function resolveType(constants, token) {
  */
 function injectSpeciesInfo(ctx, { speciesSources = null } = {}) {
     const { rom, constants, data, log } = ctx;
-    const pokes = (data.pokedex && data.pokedex.pokes) || [];
+    // writer.js filters the list before calling savePokemonData, so a banned species' rebalance never
+    // reaches the ROM (GATE-3 caught this: Castform's weather forms were being injected). Same list,
+    // same place in the flow — the filter is part of the writer's decision, not a detail.
+    const pokes = ((data.pokedex && data.pokedex.pokes) || [])
+        .filter(poke => !BANNED_SPECIES_FOR_PICKING.includes(poke.id));
     const writes = { stats: 0, types: 0, abilities: 0, heldItems: 0 };
 
     const sources = speciesSources || loadSpeciesSources();
