@@ -21,13 +21,22 @@
 const fs = require('fs');
 const path = require('path');
 
-/** The headers that hold every id the Group-A modules write. */
+/** The headers that hold every id the migrated modules write. */
 const DEFAULT_HEADERS = [
     'include/constants/species.h',
     'include/constants/moves.h',
     'include/constants/items.h',
     'include/constants/abilities.h',
     'include/constants/pokemon.h',
+    // T-241 — trainers: the TRAINER_*/PARTNER_* indices into gTrainers/gBattlePartners, the difficulty
+    // row, and the party-entry constants trainerproc bakes in (TRAINER_MON_RANDOM_GENDER). `data.h` is
+    // not a constants header, but it is where `enum TrainerBattleType` and MAX_TRAINER_ITEMS live, and
+    // re-typing either here is exactly what ADR-012 says not to do.
+    'include/constants/opponents.h',
+    'include/constants/battle_partner.h',
+    'include/constants/difficulty.h',
+    'include/constants/trainers.h',
+    'include/data.h',
 ];
 
 // A `#define` of a plain constant: no `(` directly after the name (that is a function-like macro).

@@ -59,8 +59,10 @@ const INJECTION_MODULES = [
     {
         id: 'trainer-parties',
         task: 'T-241',
-        status: 'pending',
-        apply: null,
+        status: 'migrated',
+        // Lazy, like the entries above: this one pulls in writer.js itself (the team-from-docs and
+        // battle-format rules have one home) and the whole import graph behind it.
+        apply: (args) => require('./modules/trainerParties').applyTrainerParties(args),
         description: 'Trainer parties + battle partners, through the .party pointers in gTrainers (216 B fixed stride since T-237)',
         symbols: ['gTrainers', 'gBattlePartners'],
         symbolPatterns: [],

@@ -109,15 +109,34 @@ function compareBySymbol({ injectedBytes, compiledBytes, compiledMapPath, journa
     // attributed to the nearest preceding symbol. Comparing at the same delta from that symbol is
     // still right as long as the blob sits at the same place relative to it in both builds.
     const touched = new Map();      // symbol name → [{ from, to }] relative to the symbol
-    const regions = attributeDiff(offsetMap, journal.map(e => ({ offset: e.offset, length: e.length })));
+    const indirect = [];            // payloads reached through a pointer — see `via` below
+    const direct = journal.filter(e => !e.via);
+    const regions = attributeDiff(offsetMap, direct.map(e => ({ offset: e.offset, length: e.length })));
     regions.forEach((region, i) => {
         if (!region.symbol) {
-            problems.push(`write at 0x${journal[i].offset.toString(16)} (${journal[i].tag}) is inside no known symbol`);
+            problems.push(`write at 0x${direct[i].offset.toString(16)} (${direct[i].tag}) is inside no known symbol`);
             return;
         }
         if (!touched.has(region.symbol)) touched.set(region.symbol, []);
-        touched.get(region.symbol).push({ from: region.delta, to: region.delta + journal[i].length });
+        touched.get(region.symbol).push({ from: region.delta, to: region.delta + direct[i].length });
     });
+
+    // `via` writes are anonymous data (a trainer party) that the ROM itself locates through a pointer.
+    // compile() puts that data at a different address than the base does (B-057), so the delta from the
+    // owning symbol is meaningless — the pointer is read out of EACH build and the payloads compared.
+    for (const entry of journal.filter(e => e.via)) {
+        const here = offsetMap.get(entry.via.symbol);
+        const there = compiledMap.get(entry.via.symbol);
+        if (!here || !there) { problems.push(`${entry.via.symbol}: not in both maps (via ${entry.tag})`); continue; }
+        const delta = entry.via.at - here.romOffset;
+        const readPointer = (bytes, at) => (bytes.readUInt32LE(at) & 0x01ffffff);   // GBA ROM → file offset
+        indirect.push({
+            tag: entry.tag,
+            from: readPointer(injectedBytes, entry.via.at),
+            to: readPointer(compiledBytes, there.romOffset + delta),
+            length: entry.length,
+        });
+    }
 
     for (const [symbol, ranges] of touched) {
         const here = offsetMap.get(symbol);
@@ -134,6 +153,22 @@ function compareBySymbol({ injectedBytes, compiledBytes, compiledMapPath, journa
             }
         }
         if (differing) problems.push(`${symbol}: ${differing} B differ (first at +0x${firstAt.toString(16)})`);
+    }
+
+    const byTag = new Map();
+    for (const payload of indirect) {
+        let differing = 0;
+        for (let i = 0; i < payload.length; i++) {
+            if (injectedBytes[payload.from + i] !== compiledBytes[payload.to + i]) differing += 1;
+        }
+        if (differing) {
+            const seen = byTag.get(payload.tag) || { payloads: 0, bytes: 0, first: payload };
+            byTag.set(payload.tag, { payloads: seen.payloads + 1, bytes: seen.bytes + differing, first: seen.first });
+        }
+    }
+    for (const [tag, seen] of byTag) {
+        problems.push(`${tag}: ${seen.bytes} B differ across ${seen.payloads} pointed-at payload(s) ` +
+            `(first at 0x${seen.first.from.toString(16)} vs compile's 0x${seen.first.to.toString(16)})`);
     }
     return problems;
 }

@@ -14,8 +14,12 @@ const { OffsetMap } = require('../../injector/symbolMap');
 const { loadGameConstants } = require('../../injector/gameConstants');
 const {
     SPECIES_INFO, MOVE_INFO, ITEM_INFO, EVOLUTION, EVOLUTION_PARAM, WILD_POKEMON, LEVEL_UP_MOVE, TEACHABLE_MOVE,
+    TRAINER, TRAINER_MON,
 } = require('../../injector/structLayout');
-const { LEVEL_UP_LEARNSET_CAPACITY, TEACHABLE_LEARNSET_CAPACITY } = require('../../layout');
+const { encodeParty } = require('../../injector/partyFile');
+const {
+    LEVEL_UP_LEARNSET_CAPACITY, TEACHABLE_LEARNSET_CAPACITY, TRAINER_PARTY_CAPACITY,
+} = require('../../layout');
 
 const ROOT = require('path').resolve(__dirname, '..', '..', '..');
 const constants = loadGameConstants({ root: ROOT });
@@ -36,7 +40,10 @@ const TMHM_BASE = 0x90000;
 const EVO_BASE = 0xa0000;           // evolution arrays, bump-allocated
 const WILD_BASE = 0xb0000;          // wild slot arrays, bump-allocated
 const LEARNSET_BASE = 0xc0000;      // level-up + teachable learnset slots, bump-allocated (T-240)
-const ROM_SIZE = 0xe0000;
+const TRAINER_BASE = 0xe0000;       // gTrainers[DIFFICULTY_COUNT][TRAINERS_COUNT] (T-241)
+const PARTNER_BASE = 0x120000;      // gBattlePartners[DIFFICULTY_COUNT][PARTNER_COUNT]
+const PARTY_BASE = 0x121000;        // the anonymous party blobs the .party pointers point at
+const ROM_SIZE = 0x140000;
 
 // The canonical base values `verifyLayout` insists on (see structLayout.js for why these ones).
 const ANCHOR_SPECIES = {
@@ -78,10 +85,12 @@ const ANCHOR_EVOLUTIONS = {
  * @param {string[]} [opts.tmMoves]   TM slot n → move name (index 0 = TM01)
  * @param {object} [opts.learnsets]   { '<symbol>': [{ level, move }] | { entries, size } } — level-up slots
  * @param {object} [opts.teachables]  { '<symbol>': ['MOVE_A', …] | { entries, size } } — teachable slots
+ * @param {object} [opts.trainers]    { 'TRAINER_X': { doubleBattle, mons } } — gTrainers + its party blobs
+ * @param {object} [opts.partners]    { 'PARTNER_X': { doubleBattle, mons } } — gBattlePartners
  */
 function buildSyntheticBase({
     species = {}, moves = {}, items = {}, evolutions = {}, wild = {}, tmMoves = null,
-    learnsets = {}, teachables = {},
+    learnsets = {}, teachables = {}, trainers = null, partners = null,
 } = {}) {
     const buffer = Buffer.alloc(ROM_SIZE, 0);
     const speciesCount = constants.require('NUM_SPECIES');
@@ -210,6 +219,37 @@ function buildSyntheticBase({
     }
     if (learnsetCursor > ROM_SIZE) throw new Error('syntheticBase: learnset slots outgrew the fixture ROM');
 
+    // gTrainers / gBattlePartners — the struct rows plus the anonymous 216 B party blob each `.party`
+    // pointer points at (T-237 gave every party the same fixed capacity, which is why they are a
+    // constant stride apart in the real base too).
+    let partyCursor = PARTY_BASE;
+    const trainerTables = [];
+    const buildTrainerTable = (tableBase, entries, count, symbol) => {
+        for (const [id, spec] of Object.entries(entries)) {
+            const index = constants.require(id);
+            const at = tableBase + (constants.require('DIFFICULTY_NORMAL') * count + index) * TRAINER.stride;
+            const mons = spec.mons || [];
+            const partyAt = partyCursor;
+            partyCursor += TRAINER_PARTY_CAPACITY * TRAINER_MON.stride;
+            encodeParty(constants, mons, id, TRAINER_PARTY_CAPACITY).copy(buffer, partyAt);
+            buffer.writeUInt32LE(0x08000000 + partyAt, at + TRAINER.party);
+            buffer.writeUInt8(mons.length, at + TRAINER.partySize);
+            // poolSize stays 0: trainerproc emits it only for a `Party Size:` block, and no trainer in
+            // this base has one (GATE-3 caught the injector writing the team size here — T-241).
+            buffer.writeUInt8(spec.doubleBattle ? constants.require('TRAINER_BATTLE_TYPE_DOUBLES') : 0,
+                at + TRAINER.battleType);
+        }
+        trainerTables.push([symbol, tableBase, constants.require('DIFFICULTY_COUNT') * count * TRAINER.stride]);
+    };
+    // Both tables come as a pair, as they do in a real base: a trainer test that names no partner
+    // still gets an (empty) gBattlePartners, so the module's "the base must export these" guard is
+    // exercised against a realistic base rather than a half-populated one.
+    if (trainers || partners) {
+        buildTrainerTable(TRAINER_BASE, trainers || {}, constants.require('TRAINERS_COUNT'), 'gTrainers');
+        buildTrainerTable(PARTNER_BASE, partners || {}, constants.require('PARTNER_COUNT'), 'gBattlePartners');
+    }
+    if (partyCursor > ROM_SIZE) throw new Error('syntheticBase: party blobs outgrew the fixture ROM');
+
     const sym = (name, romOffset, size) => ({ name, addr: 0x08000000 + romOffset, romOffset, size, sizeExact: true });
     const symbols = {
         gSpeciesInfo: sym('gSpeciesInfo', SPECIES_BASE, speciesCount * SPECIES_STRIDE),
@@ -219,6 +259,7 @@ function buildSyntheticBase({
     if (tmhmSize) symbols.gTMHMItemMoveIds = sym('gTMHMItemMoveIds', TMHM_BASE, tmhmSize);
     for (const [name, s] of Object.entries(wildSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
     for (const [name, s] of Object.entries(learnsetSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
+    for (const [name, at, size] of trainerTables) symbols[name] = sym(name, at, size);
 
     return {
         rom: Rom.fromBuffer(buffer),

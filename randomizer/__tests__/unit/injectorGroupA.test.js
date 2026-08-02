@@ -153,17 +153,18 @@ describe('applying all six writers over one base', () => {
         expect(base.rom.buffer.equals(before)).toBe(true);
     });
 
-    test('runs through the orchestrator, which still refuses a full ROM while T-241… are pending', () => {
+    test('runs through the orchestrator, which still refuses a full ROM while T-242… are pending', () => {
         const base = setup();
         // Driven exactly as make.js does it: no `sources`, so the writers read the base's own tree. The
         // bundle carries no wild plan, so this fixture needs no per-map tables of the real JSON.
         const data = { ...bundleData(), wild: {} };
         expect(() => injectRom({ rom: base.rom, offsetMap: base.offsetMap, data })).toThrow(/pending/i);
 
-        // T-240 joined the board; this fixture exports no learnset arrays and the bundle claims none,
-        // so that module runs and writes nothing — which is what an isolated Group-A test wants.
+        // T-240 and T-241 joined the board; this fixture exports no learnset arrays and no gTrainers,
+        // and the bundle claims neither, so both run and write nothing — which is what an isolated
+        // Group-A test wants.
         const result = injectRom({ rom: base.rom, offsetMap: base.offsetMap, data, allowPending: true });
-        expect(result.applied).toEqual(['group-a-fixed', 'learnsets']);
+        expect(result.applied).toEqual(['group-a-fixed', 'learnsets', 'trainer-parties']);
         expect(result.rom.bytesWritten).toBeGreaterThan(0);
     });
 

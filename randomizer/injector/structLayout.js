@@ -95,6 +95,46 @@ const LEVEL_UP_MOVE = { stride: 4, move: 0, level: 2 };
 // A teachable learnset is a bare `u16 []` of move ids, terminated by MOVE_UNAVAILABLE.
 const TEACHABLE_MOVE = { stride: 2 };
 
+// ── include/data.h: struct Trainer / struct TrainerMon ────────────────────────
+// The header's comments are STALE the way struct SpeciesInfo's were: it marks `.party` as /*0x04*/,
+// but `u64 aiFlags` is eight bytes, so the pointer is at +8 and everything after it moves with it.
+// These offsets are the compiler's real layout (4-byte pointer, u64 forcing 8-byte alignment of the
+// struct, so sizeof == 0x30) — and, as everywhere else in Phase 3, they are not trusted: T-241's module
+// re-encodes all 860 base parties and byte-matches them against the base ROM before writing anything.
+const TRAINER = {
+    stride: 0x30,
+    aiFlags: 0x00,          // u64
+    party: 0x08,            // const struct TrainerMon *
+    items: 0x0c,            // u16[MAX_TRAINER_ITEMS]
+    trainerClass: 0x14,
+    battleType: 0x22,       // battleType:2 | startingStatus:6
+    mugshotColor: 0x23,
+    partySize: 0x24,
+    poolSize: 0x25,         // trainerproc emits it from the same team count as partySize
+};
+
+// { const u8 *nickname; const u8 *ev; u32 iv; u16 moves[4]; u16 species; u16 heldItem; u16 ability;
+//   u8 lvl; u8 ball; u8 friendship; <nature:5 gender:2 isShiny:1>;
+//   <teraType:5 gigantamaxFactor:1 shouldUseDynamax:1 padding:1>; <dynamaxLevel:4 padding:4>; u32 tags; }
+const TRAINER_MON = {
+    stride: 0x24,
+    nickname: 0x00,
+    ev: 0x04,
+    iv: 0x08,
+    moves: 0x0c,
+    moveCount: 4,
+    species: 0x14,
+    heldItem: 0x16,
+    ability: 0x18,
+    lvl: 0x1a,
+    ball: 0x1b,
+    friendship: 0x1c,
+    natureGenderShiny: 0x1d,
+    teraDynamax: 0x1e,
+    dynamaxLevel: 0x1f,
+    tags: 0x20,
+};
+
 // ── include/item.h: struct TmHmIndexKey ───────────────────────────────────────
 // { enum TMHMItemId itemId:16; u16 moveId; } — gTMHMItemMoveIds[NUM_ALL_MACHINES + 1], entry 0 the
 // { ITEM_NONE, MOVE_NONE } failsafe, then one entry per TM in FOREACH_TM order, then the HMs.
@@ -381,6 +421,8 @@ module.exports = {
     WILD_POKEMON,
     LEVEL_UP_MOVE,
     TEACHABLE_MOVE,
+    TRAINER,
+    TRAINER_MON,
     TMHM_INDEX_KEY,
     SPECIES_ANCHORS,
     MOVE_ANCHORS,

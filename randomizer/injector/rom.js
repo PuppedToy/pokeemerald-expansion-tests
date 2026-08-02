@@ -156,7 +156,7 @@ class Rom {
      * Record ownership of `length` bytes from `offset` (or, when `byteMasks` is given, only of those
      * bits within each byte) and refuse a second claim on the same bits.
      */
-    _claim(offset, length, tag, { allowOverwrite = false } = {}, byteMasks = null) {
+    _claim(offset, length, tag, { allowOverwrite = false, via = null } = {}, byteMasks = null) {
         this._checkBounds(offset, length);
         if (this._trackWrites) {
             if (!this._claimed) this._claimed = new Uint8Array(this.buffer.length);
@@ -173,7 +173,11 @@ class Rom {
                 this._claimed[offset + i] = prev | mask;
             }
         }
-        this.journal.push({ offset, length, tag });
+        // `via` (optional) records that this payload was reached through a POINTER the ROM stores at
+        // `{ symbol, at }`, not at a fixed distance from a symbol. Anonymous data — a trainer party, an
+        // evolution array — sits wherever the compiler put it, and compile() may put it somewhere else
+        // (B-057), so a parity check has to follow each build's own pointer (T-241).
+        this.journal.push(via ? { offset, length, tag, via } : { offset, length, tag });
         this.bytesWritten += length;
     }
 

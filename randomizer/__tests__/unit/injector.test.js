@@ -21,11 +21,11 @@ const baseBuffer = Buffer.alloc(0x1000, 0xff);
 
 describe('the module registry (T-238)', () => {
     // The board advances as each Phase-3 task lands: T-239 flipped `group-a-fixed` to migrated,
-    // T-240 `learnsets`.
+    // T-240 `learnsets`, T-241 `trainer-parties`.
     test('has one entry per Phase-3 migration task, and says how far the migration has got', () => {
         expect(INJECTION_MODULES.map(m => m.task)).toEqual(['T-239', 'T-240', 'T-241', 'T-242', 'T-243']);
-        expect(migratedModules().map(m => m.task)).toEqual(['T-239', 'T-240']);
-        expect(pendingModules().map(m => m.task)).toEqual(['T-241', 'T-242', 'T-243']);
+        expect(migratedModules().map(m => m.task)).toEqual(['T-239', 'T-240', 'T-241']);
+        expect(pendingModules().map(m => m.task)).toEqual(['T-242', 'T-243']);
     });
 
     test('every module has a unique id and either an apply() or pending status', () => {

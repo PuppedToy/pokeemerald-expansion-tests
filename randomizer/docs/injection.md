@@ -18,7 +18,7 @@ This page is the design reference for `randomizer/injector/`. Task history lives
 
 The backend spawns `node make.js …` and inherits the env, so flipping the box's env flips the whole
 queue — and unsetting it rolls everything back. Default stays `compile` until **every** module has passed
-its gate (below) — T-239 and T-240 have migrated two of the five.
+its gate (below) — T-239, T-240 and T-241 have migrated three of the five.
 
 ## Where the base comes from
 
@@ -66,6 +66,7 @@ never a randomized build.
 | `injector/buildOffsetMap.js` | the extraction + readiness CLI above |
 | `injector/mode.js` | the compile-vs-inject switch |
 | `injector/gameConstants.js` | the base's `include/constants/*.h` as a name→number table (`#define` + `enum`) |
+| `injector/partyFile.js` | the parts of `tools/trainerproc` that decide bytes: `.party` parsing, the name→constant transform, `struct TrainerMon` encoding (T-241) |
 | `injector/structLayout.js` | struct field offsets + the **base anchors** that prove them (below) |
 | `injector/context.js` | builds constants + layout **once per ROM** and runs the anchor check (cached: the anchors are the base's own data, so only the first module can read them back — T-240) |
 | `injector/modules/*.js` | one file per output, plus a `group*.js` that a registry entry points at |
@@ -126,6 +127,12 @@ modules writing the same bits throws, naming both tags. Packed fields legitimate
 what `writeBits` is for), so ownership is per bit, not per byte. This is what keeps INV-BYTES honest —
 a byte may only change because a module meant to change it.
 
+A write into **anonymous data** — a trainer party, an evolution array: memory the ROM reaches through a
+pointer rather than a symbol — also records `via: { symbol, at }`, the pointer it was found through.
+`compile()` puts that data at a different address than the base does (B-057), so a parity check must
+follow *each build's own* pointer; without `via` it compares at a fixed delta and reads the neighbour's
+bytes (T-241, where every party looked 8 B wrong).
+
 ### The registry
 
 ```js
@@ -140,7 +147,7 @@ Where the migration stands — the registry itself is the source of truth, this 
 |---|---|---|
 | `group-a-fixed` | T-239 | species stats/types/abilities + the T-077 held-item strip, move power/accuracy/type/category, evolution levels (+ stone `IF_MIN_LEVEL`), wild-encounter species, `gItemsInfo[].price`, `gTMHMItemMoveIds[].moveId` |
 | `learnsets` | T-240 | level-up + teachable learnsets |
-| `trainer-parties` | T-241 | trainer parties + battle partners |
+| `trainer-parties` | T-241 | trainer parties + battle partners (through `gTrainers[].party`), `partySize` and the battle-format flag |
 | `trades-starters-nicknames` | T-242 | in-game trades, the starter trio + extra starters, nickname tables |
 | `data-driven-and-toggles` | T-243 | the Phase-2 tables (settings, rewards, static encounters, item picks, hidden megas) + the Group-D setvars |
 
