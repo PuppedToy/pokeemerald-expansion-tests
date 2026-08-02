@@ -37,6 +37,11 @@ const manifest = JSON.parse(fs.readFileSync(path.join(dir, 'manifest.json'), 'ut
 const argv = process.argv.slice(2);
 const only = argv.includes('--only') ? argv[argv.indexOf('--only') + 1] : null;
 const compileEach = argv.includes('--compile-each');
+// Compare per SYMBOL rather than per offset: each table's bytes are read from the compiled ROM at the
+// COMPILED build's own address and from the injected ROM at the base's address. That answers "did the
+// injector produce the data compile() produces?" even when the two ROMs are not laid out identically —
+// which is the only honest question while a base-side layout difference is outstanding.
+const bySymbol = argv.includes('--by-symbol');
 const allowPending = argv.includes('--allow-pending') || compileEach;
 
 const run = (cmd, a, env = {}) => execFileSync(cmd, a, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, ...env } });
@@ -80,6 +85,46 @@ function ownerOf(symbolName) {
     return null;
 }
 
+/**
+ * Compare, symbol by symbol, the tables the injector wrote — reading each ROM at ITS OWN address for
+ * that symbol. Layout-independent: it asks whether the DATA matches, not whether the images do.
+ */
+function compareBySymbol({ injectedBytes, compiledBytes, compiledMapPath, journal }) {
+    if (!compiledMapPath) return ['(no .map kept for the compiled build — cannot compare by symbol)'];
+    const compiledMap = loadOffsetMap(compiledMapPath);
+    const problems = [];
+
+    // Which symbols the injector touched, and which byte ranges within them.
+    const touched = new Map();      // symbol name → [{ from, to }] relative to the symbol
+    for (const entry of journal) {
+        const [region] = attributeDiff(offsetMap, [{ offset: entry.offset, length: entry.length }]);
+        if (!region.symbol || region.approximate) {
+            problems.push(`write at 0x${entry.offset.toString(16)} (${entry.tag}) is inside no known symbol`);
+            continue;
+        }
+        if (!touched.has(region.symbol)) touched.set(region.symbol, []);
+        touched.get(region.symbol).push({ from: region.delta, to: region.delta + entry.length });
+    }
+
+    for (const [symbol, ranges] of touched) {
+        const here = offsetMap.get(symbol);
+        const there = compiledMap.get(symbol);
+        if (!there) { problems.push(`${symbol}: not in the compiled build's map`); continue; }
+        let differing = 0;
+        let firstAt = null;
+        for (const range of ranges) {
+            for (let d = range.from; d < range.to; d++) {
+                if (injectedBytes[here.romOffset + d] !== compiledBytes[there.romOffset + d]) {
+                    differing += 1;
+                    if (firstAt === null) firstAt = d;
+                }
+            }
+        }
+        if (differing) problems.push(`${symbol}: ${differing} B differ (first at +0x${firstAt.toString(16)})`);
+    }
+    return problems;
+}
+
 let pass = 0;
 let fail = 0;
 const freshHashes = {};
@@ -104,12 +149,15 @@ for (const [name, roms] of Object.entries(manifest.bundles)) {
             fail++;
             continue;
         }
+        // make.js rewrites pokeemerald.map on every build, so keep this build's map with its ROM.
+        const keptMap = path.join('/tmp', `gate3-${name}.map`);
+        if (fs.existsSync(path.join(root, 'pokeemerald.map'))) fs.copyFileSync(path.join(root, 'pokeemerald.map'), keptMap);
         for (const rom of Object.keys(roms)) {
             const built = path.join(romsDir, rom);
             if (!fs.existsSync(built)) { console.log(`ERR   ${name}  ${rom}  no compiled output`); fail++; continue; }
             const kept = path.join('/tmp', `gate3-${name}-${rom}`);
             fs.copyFileSync(built, kept);
-            compiled[rom] = { path: kept, sha: sha(kept) };
+            compiled[rom] = { path: kept, sha: sha(kept), map: fs.existsSync(keptMap) ? keptMap : null };
             freshHashes[`${name}/${rom}`] = compiled[rom].sha;
             const known = roms[rom];
             console.log(`      ${name}  ${rom}  compiled ${compiled[rom].sha.slice(0, 12)}…  ${compiled[rom].sha === known ? '(= manifest)' : '(manifest was ' + known.slice(0, 12) + '…)'}`);
@@ -144,6 +192,19 @@ for (const [name, roms] of Object.entries(manifest.bundles)) {
         if (!reference) { fail++; continue; }
         const injectedBytes = fs.readFileSync(result.dest);
         const compiledBytes = fs.readFileSync(reference.path);
+
+        if (bySymbol) {
+            const problems = compareBySymbol({ injectedBytes, compiledBytes, compiledMapPath: reference.map, journal: result.journal });
+            if (problems.length === 0) {
+                console.log(`PASS  ${name}  ${romName}  every injected table matches compile() (by symbol)`);
+                pass++;
+            } else {
+                console.log(`FAIL  ${name}  ${romName}  ${problems.length} table(s) differ from compile()`);
+                for (const p of problems.slice(0, 10)) console.log(`        · ${p}`);
+                fail++;
+            }
+            continue;
+        }
 
         // 1. every byte the injector wrote must equal the compiled ROM
         const wrongWrites = new Map();       // tag → bytes wrong
