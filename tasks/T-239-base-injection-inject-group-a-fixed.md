@@ -175,6 +175,44 @@ Acceptance criteria:
     fallback), so the strict resolver's mechanism works; the value it asserts (level 16) is what marks a
     ROM as "not the base".
 
+- **2026-08-02 — GATE-3 ON A CLEAN BASE. Two layout bugs and one mirroring bug found and fixed; one
+  base-side defect found and registered as [[B-057]].**
+  Built the base from a clean extract of this branch in an isolated tree on the box
+  (`/opt/t239-gate3`, never production), captured `.gba`/`.map`/`.sym` into `base/` — the directory
+  corpus builds cannot overwrite, which is the lesson from yesterday's contaminated artefacts.
+  Base `c144386ff4f3…`, ROM 25,178,824 B = **75.04 %**.
+  - **BUG 1 — `struct SpeciesInfo` is 260 B, not 196.** `/*0xC4*/` in include/pokemon.h is upstream's
+    stale comment; this base's config tail adds 64 B. Proved three ways (species stat runs 260 B apart
+    in the ROM, symbol size 396,500 = 260 × 1525, and `gSpeciesInfo[0]` back-computing to the `.map`'s
+    address). The stride is now **derived**, and the declared constant is gone.
+  - **BUG 2 — `MoveInfo`'s packed word is at 0x0A, not 0x0C.** `enum BattleMoveEffects` is
+    `__attribute__((packed))` — one byte, not four. Pound's power read as 0. The window offset is now
+    **found** by decoding the four anchor moves.
+    Both were caught by the anchors before a single byte was written, which is exactly what they are for;
+    both are now derivations rather than declarations, because two surprises in one struct set is enough.
+  - **BUG 3 — banned species were being injected.** The by-symbol run showed `gSpeciesInfo` differing
+    from `compile()` by 13 B starting at species 1053 = `SPECIES_CASTFORM_SNOWY`. `writer.js` filters
+    `BANNED_SPECIES_FOR_PICKING` *before* `savePokemonData`, so those rebalances never reach a compiled
+    ROM; the injector was passing the unfiltered list to `editSpeciesFile`. Fixed, with a named test.
+  - **Everything else checks out on the real base:** all 40 anchors, `.evolutions` at +0xA0,
+    535 evolution arrays / 585 entries / 50 stone conditions and **no folded `CONDITIONS()` object**
+    (the hazard guarded against in the module does not exist here), **165/165** wild tables resolved and
+    byte-matched against `wild_encounters.json`, `gTMHMItemMoveIds` = 104 entries with an
+    ITEM_TM01…TM95 `itemId` column and all 95 `moveId`s matching `tms_hms.h`, all five modules READY,
+    budget 75.12 % / 7.96 MB free.
+  - **[[B-057]] — the base-side defect that redefines this gate.** `compile(bundle)` is not laid out
+    like the base: 41,382 of 48,406 symbols move, everything after `src/starter_choose.o` by 16 B. It is
+    NOT T-237's failure mode returning — every writer applied alone moves **0** symbols; the trigger is
+    a `const u16` value in `gStarterExtraMon` changing 4 bytes of *generated code* (slot 0 →
+    `SPECIES_FRIGIBAX` shifts, the same species in slot 1 does not), i.e. an LTO codegen decision
+    reacting to data. So `inject(base, bundle)` can never be byte-identical to `compile(bundle)`, and
+    hash-equality INV-BYTES is unachievable as specified — for every module, not just Group A. The bug
+    file holds the full bisection table and the three options; the choice is the owner's.
+  - **The harness grew the mode this needs:** `parity.mjs --compile-each --by-symbol` compares each
+    table's *data* using each build's own `.map` (layout-independent), `--reuse-compiled` caches the
+    corpus compiles so an injector fix costs seconds instead of a full rebuild, and the run prints fresh
+    compile hashes for a re-snapshot.
+
   - **Still open — all of it box-side, none of it verifiable locally (no toolchain here):**
     1. Build the base from a **clean** tree on PRO (with the `include/item.h` change), keep
        `.gba`/`.map`/`.sym` under `base/` where corpus builds cannot overwrite them, then **re-snapshot
