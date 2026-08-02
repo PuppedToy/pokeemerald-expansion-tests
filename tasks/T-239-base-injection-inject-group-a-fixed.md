@@ -4,7 +4,7 @@ title: "Base+injection Phase 3 — inject Group A (fixed-size: stats/moves/evos/
 status: in-progress
 type: feature
 created: 2026-07-27
-updated: 2026-08-01
+updated: 2026-08-02
 target-version: 0.7.0
 links: [T-229, T-238, T-233, docs/base-plus-injection-strategy.md]
 blocked-by: [T-238]
@@ -135,13 +135,56 @@ Acceptance criteria:
     one asserting that a base lacking the Group-A tables fails loudly. Both noted as deliberate
     specification changes, not weakened tests.
   - No changelog line: internal infrastructure, nothing user-visible yet (same call as T-232/T-238).
+- **2026-08-02 — READ-ONLY VALIDATION ON THE BOX (no rebuild, no re-snapshot; owner's call). One real
+  bug found and fixed; the structural assumptions hold; the rest is blocked on a clean base.**
+  Ran a throwaway container against `/opt/emerald-t237` (mounted read-only) with the injector overlaid
+  from `/tmp`; nothing was written and the scratch was removed afterwards.
+  - **First, an artefact problem:** that tree's `.map` and `.sym` were from **different builds** (every
+    symbol 8 B apart — the `.sym` was T-238's, the `.map` newer). Regenerated the `.sym` from the tree's
+    own `pokeemerald.elf` with the Makefile's rule → 95,794 symbols, addresses matching the `.map`.
+  - **BUG (would have corrupted every ROM): `struct SpeciesInfo` is 260 B (0x104), not 196 B.** The
+    `/*0xC4*/` in `include/pokemon.h` is upstream's stale comment; this base's config tail
+    (`P_GENDER_DIFFERENCES` / `P_FOOTPRINTS` / `OW_POKEMON_OBJECT_EVENTS`) adds 64 B. Proved three ways:
+    the stat runs of Bulbasaur/Ivysaur/Venusaur sit **260 B apart** at 0x66c4c4/0x66c5c8/0x66c6cc; the
+    symbol is 396,500 B = 260 × 1525 (`NUM_SPECIES + 1`, so the array does have a SPECIES_EGG entry); and
+    `gSpeciesInfo[0]` back-computes to 0x66c3c0 = exactly the `.map`'s address. Fixed by **deriving** the
+    stride (`size / entry count`, trying `NUM_SPECIES + 1` then `NUM_SPECIES`) and deleting the declared
+    constant — a stride is now as underivable-by-hand as an offset. The anchors caught this before a
+    single byte was written, which is the whole reason they exist. The fixture ROMs also had to be
+    re-spaced: at 260 B/entry gSpeciesInfo is ~390 KB and was overlapping the move table.
+  - **Confirmed on real bytes:** the stat and type field offsets (the anchor search matches
+    `stats + types` as one run); `gTMHMItemMoveIds` = 104 entries with the `{ITEM_NONE, MOVE_NONE}`
+    failsafe and an `itemId` column of exactly ITEM_TM01…TM95 in order (the assumption the whole TM
+    module indexes on); **all five modules READY**, with the Group-A entry matching **165** wild-table
+    symbols — exactly the 165 tables in `wild_encounters.json`, i.e. one symbol per table.
+  - **The generator does add a time-of-day infix** — the tables are `gRoute101_Morning_LandMons`, not
+    `gRoute101_LandMons`. The optional-infix pattern written before this run matched all 165 with exactly
+    one candidate each, so no code change was needed; good thing it was not anchored tighter.
+  - Budget unchanged: 25,205,625 B / 32 MB = **75.12 %**, 7.96 MB free.
+  - **What could NOT be validated, and why:** `/opt/emerald-t237/pokeemerald.gba` is **not the golden
+    base any more** — it is a leftover corpus ROM (its TM table matches five corpus bundles; Miraidon's
+    attack reads 75 vs the source's 85; Bulbasaur→Ivysaur is level 20 vs the base's 16). The repo-root
+    `pokeemerald.gba/.map/.elf` are simply the *last build's* output, and the tree's generated sources
+    (`tms_hms.h`, `wild_encounters.json`) had drifted with it. So the anchor pass, the wild/TM content
+    match, the `.evolutions` field and the folded-`CONDITIONS()` question all need a clean base build.
+    The injector refused to inject into it — which is the guard working, not a failure.
+  - Two things the next step must do: build the base from a **clean** tree, and keep its
+    `.gba` + `.map` + `.sym` (regenerated from the same ELF) in a directory corpus builds never
+    overwrite — `base/`, which is where `resolveBasePaths()` already looks.
+  - Diagnostic run only: the evolutions field is at **+0xA0** in this build (found by the level-agnostic
+    fallback), so the strict resolver's mechanism works; the value it asserts (level 16) is what marks a
+    ROM as "not the base".
+
   - **Still open — all of it box-side, none of it verifiable locally (no toolchain here):**
-    1. `make` on PRO with the `include/item.h` change, then **re-snapshot the corpus** (build-and-hash.sh)
-       → new golden base + `manifest.json`. Owner decision, since it invalidates the current hashes.
-    2. `buildOffsetMap.js` readiness on the new base (the wild slot arrays and `gTMHMItemMoveIds` are new
-       claims) + the ROM budget.
-    3. Confirm on the real base: the anchors pass, `resolveEvolutionsOffset` finds exactly one candidate,
-       and **no** two stone evolutions share a folded `CONDITIONS()` object.
+    1. Build the base from a **clean** tree on PRO (with the `include/item.h` change), keep
+       `.gba`/`.map`/`.sym` under `base/` where corpus builds cannot overwrite them, then **re-snapshot
+       the corpus** (build-and-hash.sh) → new golden base + `manifest.json`. Owner decision: it
+       invalidates the current hashes.
+    2. `buildOffsetMap.js` readiness on the new base + the ROM budget. *(Already answered against a
+       corpus ROM on 2026-08-02: all five modules READY, 165 wild tables matched, 75.12 % budget.)*
+    3. Confirm on the clean base: the anchors pass, `resolveEvolutionsOffset` finds exactly one
+       candidate, the wild tables byte-match `wild_encounters.json`, the TM `moveId` column matches
+       `tms_hms.h`, and **no** two stone evolutions share a folded `CONDITIONS()` object.
     4. `parity.mjs --allow-pending --explain` over the corpus: every differing region must belong to a
        still-pending module (T-240…T-243) — that is GATE-3 for Group A.
 

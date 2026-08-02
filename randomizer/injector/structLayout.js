@@ -23,11 +23,16 @@
 
 const { toGbaPointer, toRomOffset } = require('./symbolMap');
 
-// ── include/pokemon.h: struct SpeciesInfo /*0xC4*/ ────────────────────────────
+// ── include/pokemon.h: struct SpeciesInfo ─────────────────────────────────────
 // Everything up to `.safariZoneFleeRate` is unconditional, which is why these offsets can be declared
 // at all; the pointers at the end of the struct sit behind #if config blocks (see resolveEvolutionsOffset).
+//
+// There is deliberately NO stride here. The header still says `struct SpeciesInfo /*0xC4*/`, but that
+// comment is upstream's and stale: on this base the struct compiles to 260 B (0x104) — the
+// config-dependent tail (P_GENDER_DIFFERENCES / P_FOOTPRINTS / OW_POKEMON_OBJECT_EVENTS) adds 64 B.
+// Validating against the real base caught it (T-239); trusting the comment would have written each
+// species' stats 64 B into the previous one. `speciesLayout()` derives the stride from the symbol size.
 const SPECIES_INFO = {
-    stride: 0xc4,
     baseHP: 0x00,
     baseAttack: 0x01,
     baseDefense: 0x02,
@@ -150,25 +155,30 @@ function speciesOffset(base, stride, id) {
 }
 
 /**
- * gSpeciesInfo's placement: base offset, stride and entry count, cross-checked against NUM_SPECIES.
- * The array is declared unsized (`gSpeciesInfo[]`), so the count comes from the symbol size.
+ * gSpeciesInfo's placement: base offset, **derived** stride, and entry count.
+ *
+ * The array is declared unsized (`const struct SpeciesInfo gSpeciesInfo[]`), so neither the count nor the
+ * struct size is written down anywhere the injector can read — only their product, the symbol size. It
+ * is resolved by trying the two counts the source can produce (`NUM_SPECIES + 1` when the array has an
+ * entry for SPECIES_EGG, else `NUM_SPECIES`) and keeping the one that divides the size exactly. If both
+ * did, the anchors in `verifyLayout` are what settle it: a wrong stride cannot read Miraidon's stats back.
  */
 function speciesLayout({ offsetMap, constants }) {
     const sym = offsetMap.require('gSpeciesInfo');
-    const stride = SPECIES_INFO.stride;
-    if (sym.sizeExact && sym.size % stride !== 0) {
+    if (!sym.sizeExact) {
         throw new Error(
-            `structLayout: gSpeciesInfo is ${sym.size} B, not a whole number of 0x${stride.toString(16)}-byte ` +
-            `entries — struct SpeciesInfo changed size (check include/pokemon.h and its config #ifs)`);
+            `structLayout: gSpeciesInfo has no exact size — a linker map only bounds a symbol by its ` +
+            `section (T-238), and the stride cannot be derived without one. Merge the build's .sym (make syms).`);
     }
-    const count = sym.sizeExact ? sym.size / stride : null;
-    const numSpecies = constants.get('NUM_SPECIES');
-    if (count !== null && numSpecies && Math.abs(count - numSpecies) > 2) {
+    const numSpecies = constants.require('NUM_SPECIES');
+    const count = [numSpecies + 1, numSpecies].find(c => sym.size % c === 0);
+    if (!count) {
         throw new Error(
-            `structLayout: gSpeciesInfo holds ${count} entries but the base declares NUM_SPECIES=${numSpecies} ` +
-            `— the stride 0x${stride.toString(16)} cannot be right`);
+            `structLayout: gSpeciesInfo is ${sym.size} B, which is a whole number of neither ` +
+            `${numSpecies + 1} nor ${numSpecies} entries — no stride can be derived (struct SpeciesInfo or ` +
+            `NUM_SPECIES changed in the base)`);
     }
-    return { base: offsetMap.offsetOf('gSpeciesInfo'), stride, count };
+    return { base: offsetMap.offsetOf('gSpeciesInfo'), stride: sym.size / count, count };
 }
 
 function moveLayout({ offsetMap, constants }) {

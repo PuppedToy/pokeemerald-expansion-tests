@@ -15,6 +15,7 @@ const {
     EVOLUTION_PARAM,
     WILD_POKEMON,
     arrayStride,
+    speciesLayout,
     verifyLayout,
     resolveEvolutionsOffset,
 } = require('../../injector/structLayout');
@@ -22,14 +23,14 @@ const {
 const ROOT = path.resolve(__dirname, '..', '..', '..');
 const constants = loadGameConstants({ root: ROOT });
 
-const SPECIES_STRIDE = 0xc4;
+const SPECIES_STRIDE = 0x104;   // what this base actually compiles struct SpeciesInfo to (T-239)
 const MOVE_STRIDE = 60;
 const ITEM_STRIDE = 40;
 
 // Offsets are typed out literally here, straight off include/pokemon.h — NOT taken from the module
 // under test, so a silent change to its table fails this suite.
 const SPECIES_BASE = 0x1000;
-const MOVE_BASE = 0x60000;
+const MOVE_BASE = 0x70000;          // clear of gSpeciesInfo, which is ~390 KB at 260 B/entry
 const ITEM_BASE = 0x90000;
 const EVO_BASE = 0xf0000;
 
@@ -106,7 +107,6 @@ function buildMap({ speciesEntries = constants.require('NUM_SPECIES') } = {}) {
 
 describe('the declared struct layout', () => {
     test('SpeciesInfo field offsets match include/pokemon.h', () => {
-        expect(SPECIES_INFO.stride).toBe(0xc4);      // struct SpeciesInfo /*0xC4*/
         expect(SPECIES_INFO.baseHP).toBe(0x00);
         expect(SPECIES_INFO.baseAttack).toBe(0x01);
         expect(SPECIES_INFO.baseDefense).toBe(0x02);
@@ -134,6 +134,40 @@ describe('the declared struct layout', () => {
         expect(EVOLUTION).toMatchObject({ stride: 12, method: 0, param: 2, targetSpecies: 4, params: 8 });
         expect(EVOLUTION_PARAM).toMatchObject({ stride: 8, condition: 0, arg1: 2 });
         expect(WILD_POKEMON).toMatchObject({ stride: 4, minLevel: 0, maxLevel: 1, species: 2 });
+    });
+});
+
+describe('the SpeciesInfo stride is derived, never declared', () => {
+    // Found on the real base (T-239): `struct SpeciesInfo /*0xC4*/` in include/pokemon.h is a stale
+    // upstream comment — this base compiles it to 260 B (0x104), because the config-dependent tail
+    // (P_GENDER_DIFFERENCES / P_FOOTPRINTS / OW_POKEMON_OBJECT_EVENTS) adds 64 B. Declaring 0xC4 would
+    // have written Ivysaur's stats onto whatever sits 64 B into Bulbasaur's struct.
+    test('divides the symbol size by the entry count the base actually has', () => {
+        const layout = speciesLayout({
+            offsetMap: buildMap(), constants,
+        });
+        expect(layout.stride).toBe(SPECIES_STRIDE);
+        expect(layout.count).toBe(constants.require('NUM_SPECIES'));
+    });
+
+    test('accepts the gSpeciesInfo[NUM_SPECIES + 1] form (the array has an entry for SPECIES_EGG)', () => {
+        const offsetMap = buildMap({ speciesEntries: constants.require('NUM_SPECIES') + 1 });
+        const layout = speciesLayout({ offsetMap, constants });
+        expect(layout.stride).toBe(SPECIES_STRIDE);
+        expect(layout.count).toBe(constants.require('NUM_SPECIES') + 1);
+    });
+
+    test('refuses a size that fits neither entry count instead of guessing a stride', () => {
+        const offsetMap = buildMap();
+        offsetMap.symbols.gSpeciesInfo.size += 7;
+        expect(() => speciesLayout({ offsetMap, constants })).toThrow(/gSpeciesInfo/);
+        expect(() => speciesLayout({ offsetMap, constants })).toThrow(/stride|entries/i);
+    });
+
+    test('refuses a symbol with no exact size — the stride cannot be derived without one', () => {
+        const offsetMap = buildMap();
+        offsetMap.symbols.gSpeciesInfo.sizeExact = false;
+        expect(() => speciesLayout({ offsetMap, constants })).toThrow(/exact size|\.sym/i);
     });
 });
 
@@ -195,7 +229,7 @@ describe('verifyLayout — the anchors are what make the declared offsets safe',
         expect(() => verifyLayout({ rom, offsetMap: buildMap(), constants })).toThrow(/ITEM_MASTER_BALL/);
     });
 
-    test('a gSpeciesInfo size that is not a whole number of 0xC4 entries fails', () => {
+    test('a gSpeciesInfo size that is a whole number of no plausible entry count fails', () => {
         const offsetMap = buildMap();
         offsetMap.symbols.gSpeciesInfo.size += 3;
         expect(() => verifyLayout({ rom: buildBase(), offsetMap, constants })).toThrow(/gSpeciesInfo/);

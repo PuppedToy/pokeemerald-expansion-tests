@@ -19,17 +19,18 @@ const constants = loadGameConstants({ root: ROOT });
 
 // Strides the real base has no reason to share — deliberately different, so a module that assumes one
 // stride for another table fails here.
-const SPECIES_STRIDE = SPECIES_INFO.stride;
+const SPECIES_STRIDE = 0x104;       // the real base's sizeof(struct SpeciesInfo) — see structLayout
 const MOVE_STRIDE = 60;
 const ITEM_STRIDE = 40;
-const EVOLUTIONS_FIELD = 0x90;      // where this fixture puts SpeciesInfo.evolutions
+const EVOLUTIONS_FIELD = 0xd0;      // where this fixture puts SpeciesInfo.evolutions (past the anchors)
 
+// Table bases, spaced so no table can reach into the next one (gSpeciesInfo alone is ~390 KB).
 const SPECIES_BASE = 0x1000;
-const MOVE_BASE = 0x60000;
-const ITEM_BASE = 0x90000;
-const TMHM_BASE = 0xa0000;
-const EVO_BASE = 0xb0000;           // evolution arrays, bump-allocated
-const WILD_BASE = 0xc0000;          // wild slot arrays, bump-allocated
+const MOVE_BASE = 0x70000;
+const ITEM_BASE = 0x80000;
+const TMHM_BASE = 0x90000;
+const EVO_BASE = 0xa0000;           // evolution arrays, bump-allocated
+const WILD_BASE = 0xb0000;          // wild slot arrays, bump-allocated
 const ROM_SIZE = 0xd0000;
 
 // The canonical base values `verifyLayout` insists on (see structLayout.js for why these ones).

@@ -75,7 +75,7 @@ describe('base stats — only the logged ones, exactly like the writer', () => {
         expect(readStat(base, 'SPECIES_LINOONE', 'baseHP')).toBe(78);
         expect(readType(base, 'SPECIES_LINOONE', 0)).toBe(constants.require('TYPE_NORMAL'));
         const tags = base.rom.journal.filter(e => e.offset >= base.speciesAt('SPECIES_LINOONE')
-            && e.offset < base.speciesAt('SPECIES_LINOONE') + SPECIES_INFO.stride);
+            && e.offset < base.speciesAt('SPECIES_LINOONE') + base.strides.species);
         expect(tags.every(e => /item/i.test(e.tag))).toBe(true);
     });
 
