@@ -25,7 +25,7 @@ function setup(moves, { baseMoves = {} } = {}) {
     return { ...base, ctx };
 }
 
-const read = (base, move, field) => readMoveField(base.rom, base.moveAt(move), MOVE_INFO[field]);
+const read = (base, move, field) => readMoveField(base.rom, base.moveAt(move), MOVE_INFO[field], base.ctx.layout.moves.word);
 
 function move(id, over = {}) {
     return {
@@ -79,7 +79,7 @@ describe('read-modify-write must not disturb the rest of the word', () => {
         const base = setup({
             MOVE_TACKLE: move('MOVE_TACKLE', { power: 120, log: [{ target: 'power' }] }),
         });
-        const at = base.moveAt('MOVE_TACKLE') + MOVE_INFO.word;
+        const at = base.moveAt('MOVE_TACKLE') + base.ctx.layout.moves.word;
         const targetValue = 0x1a5;                       // 9 bits of MOVE_TARGET_*
         base.rom.buffer.writeUInt32LE(
             (base.rom.readU32(at) | (targetValue << MOVE_INFO.target.shift)) >>> 0, at);

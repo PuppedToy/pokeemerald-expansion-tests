@@ -59,7 +59,7 @@ function injectMoveData(ctx) {
             throw new Error(
                 `injector/moves: '${id}' is not a move the base defines — the bundle and the base disagree`);
         }
-        const word = ctx.moveOffset(moveId) + MOVE_INFO.word;
+        const word = ctx.moveOffset(moveId) + ctx.layout.moves.word;
 
         for (const field of new Set(targets)) {
             const value = valueFor(constants, field, { ...move, id });

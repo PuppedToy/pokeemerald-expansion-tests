@@ -114,7 +114,7 @@ describe('applying all six writers over one base', () => {
         // held items stripped everywhere
         expect(base.rom.readU16(base.speciesAt('SPECIES_ZIGZAGOON') + SPECIES_INFO.itemCommon)).toBe(0);
         // moves
-        expect(readMoveField(base.rom, base.moveAt('MOVE_TACKLE'), MOVE_INFO.power)).toBe(75);
+        expect(readMoveField(base.rom, base.moveAt('MOVE_TACKLE'), MOVE_INFO.power, 0x0c)).toBe(75);
         // evolutions
         const evoAt = base.rom.readPointer(base.speciesAt('SPECIES_ZIGZAGOON') + base.evolutionsField);
         expect(base.rom.readU16(evoAt + 2)).toBe(31);

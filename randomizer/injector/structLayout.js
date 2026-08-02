@@ -56,12 +56,15 @@ const SPECIES_INFO = {
 };
 
 // ── include/move.h: struct MoveInfo ───────────────────────────────────────────
-// `u16 type:5; enum DamageCategory category:2; u16 power:9;` fill one u16 and
-// `u16 accuracy:7; u16 target:9;` the next — one 32-bit word, packed LSB-first (ARM EABI, no
-// -fshort-enums in the Makefile). The preceding fields are `const u8 *name`, `const u8 *description`
-// and `enum BattleMoveEffects effect` (a full int), so the word starts at 0x0C.
+// `u16 type:5; enum DamageCategory category:2; u16 power:9;` fill one u16 and `u16 accuracy:7;
+// u16 target:9;` the next — together one 32-bit window, packed LSB-first as GCC does for ARM.
+//
+// WHERE that window starts is NOT declared: it depends on what precedes it (`const u8 *name`,
+// `const u8 *description`, `enum BattleMoveEffects effect`), and `effect` is
+// `__attribute__((packed))`, i.e. one byte — so on this base the window is at 0x0A, not the 0x0C a
+// reading of the header suggests. `moveLayout()` finds it by decoding the anchor moves instead
+// (T-239: declaring 0x0C read Pound's power as 0, caught by the anchors before any write).
 const MOVE_INFO = {
-    word: 0x0c,
     type:     { shift: 0,  width: 5 },
     category: { shift: 5,  width: 2 },
     power:    { shift: 7,  width: 9 },
@@ -181,9 +184,51 @@ function speciesLayout({ offsetMap, constants }) {
     return { base: offsetMap.offsetOf('gSpeciesInfo'), stride: sym.size / count, count };
 }
 
-function moveLayout({ offsetMap, constants }) {
+/**
+ * gMovesInfo's placement, including **where the packed bit-field window starts**.
+ *
+ * With `rom` given, the window offset is derived: the only 2-byte-aligned offset at which every anchor
+ * move decodes to its canonical power/accuracy/type/category. Without one (a caller that only needs the
+ * base and stride) the window is left null.
+ */
+function moveLayout({ offsetMap, constants, rom = null }) {
     const count = constants.require('MOVES_COUNT_ALL');
-    return { base: offsetMap.offsetOf('gMovesInfo'), stride: arrayStride(offsetMap, 'gMovesInfo', count), count };
+    const base = offsetMap.offsetOf('gMovesInfo');
+    const stride = arrayStride(offsetMap, 'gMovesInfo', count);
+    return { base, stride, count, word: rom ? resolveMoveWord({ rom, base, stride, constants }) : null };
+}
+
+/** The offset of the packed word inside struct MoveInfo, found by decoding the anchor moves. */
+function resolveMoveWord({ rom, base, stride, constants }) {
+    const anchors = MOVE_ANCHORS.map(a => ({
+        at: base + constants.require(a.move) * stride,
+        power: a.power,
+        accuracy: a.accuracy,
+        type: constants.require(a.type),
+        category: constants.require(a.category),
+    }));
+    const candidates = [];
+    for (let word = 0; word + 4 <= stride; word += 2) {
+        const all = anchors.every(anchor => {
+            const value = rom.readU32(anchor.at + word);
+            const read = (field) => (value >>> field.shift) & ((1 << field.width) - 1);
+            return read(MOVE_INFO.type) === anchor.type
+                && read(MOVE_INFO.category) === anchor.category
+                && read(MOVE_INFO.power) === anchor.power
+                && read(MOVE_INFO.accuracy) === anchor.accuracy;
+        });
+        if (all) candidates.push(word);
+    }
+    if (candidates.length === 1) return candidates[0];
+    if (candidates.length === 0) {
+        throw new Error(
+            `structLayout: could not find MoveInfo's packed word — no offset in gMovesInfo decodes ` +
+            `${MOVE_ANCHORS.map(a => a.move).join(', ')} to their canonical power/accuracy/type/category. ` +
+            `struct MoveInfo changed shape, or this is not a clean base.`);
+    }
+    throw new Error(
+        `structLayout: MoveInfo's packed word is ambiguous — ${candidates.length} offsets ` +
+        `(${candidates.map(o => `0x${o.toString(16)}`).join(', ')}) decode every anchor. Refusing to guess.`);
 }
 
 function itemLayout({ offsetMap, constants }) {
@@ -191,9 +236,9 @@ function itemLayout({ offsetMap, constants }) {
     return { base: offsetMap.offsetOf('gItemsInfo'), stride: arrayStride(offsetMap, 'gItemsInfo', count), count };
 }
 
-/** Read one packed MoveInfo field (see MOVE_INFO). */
-function readMoveField(rom, moveBase, field) {
-    return rom.readBits(moveBase + MOVE_INFO.word, field.shift, field.width);
+/** Read one packed MoveInfo field (see MOVE_INFO); `word` comes from moveLayout(). */
+function readMoveField(rom, moveBase, field, word) {
+    return rom.readBits(moveBase + word, field.shift, field.width);
 }
 
 // ── Verification ──────────────────────────────────────────────────────────────
@@ -213,7 +258,7 @@ function fail(what, expected, actual, extra = '') {
  */
 function verifyLayout({ rom, offsetMap, constants }) {
     const species = speciesLayout({ offsetMap, constants });
-    const moves = moveLayout({ offsetMap, constants });
+    const moves = moveLayout({ offsetMap, constants, rom });
     const items = itemLayout({ offsetMap, constants });
     let checked = 0;
 
@@ -248,7 +293,7 @@ function verifyLayout({ rom, offsetMap, constants }) {
             category: constants.require(anchor.category),
         };
         for (const [field, expected] of Object.entries(fields)) {
-            const actual = readMoveField(rom, at, MOVE_INFO[field]);
+            const actual = readMoveField(rom, at, MOVE_INFO[field], moves.word);
             if (actual !== expected) fail(`${anchor.move}.${field}`, expected, actual);
             checked += 1;
         }
@@ -261,7 +306,10 @@ function verifyLayout({ rom, offsetMap, constants }) {
         checked += 1;
     }
 
-    return { speciesStride: species.stride, moveStride: moves.stride, itemStride: items.stride, checked };
+    return {
+        speciesStride: species.stride, moveStride: moves.stride, itemStride: items.stride,
+        moveWord: moves.word, checked,
+    };
 }
 
 /**
@@ -331,6 +379,7 @@ module.exports = {
     speciesLayout,
     speciesOffset,
     moveLayout,
+    resolveMoveWord,
     itemLayout,
     readMoveField,
     verifyLayout,

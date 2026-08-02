@@ -52,7 +52,7 @@ function buildInjectionContext({ rom, offsetMap, data = {}, log = () => {}, root
         root,
         layout: {
             species: speciesLayout({ offsetMap, constants }),
-            moves: moveLayout({ offsetMap, constants }),
+            moves: moveLayout({ offsetMap, constants, rom }),
             items: itemLayout({ offsetMap, constants }),
         },
         /** Offset of SpeciesInfo.evolutions — derived from the base on first use (see structLayout). */

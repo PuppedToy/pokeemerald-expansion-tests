@@ -75,7 +75,7 @@ function buildBase() {
             | ((constants.require(m.category) & 0x3) << 5)
             | ((m.power & 0x1ff) << 7)
             | ((m.accuracy & 0x7f) << 16);
-        buffer.writeUInt32LE(packed >>> 0, at + 0x0c);
+        buffer.writeUInt32LE(packed >>> 0, at + 0x0c);   // this fixture's window offset
     }
 
     for (const [name, price] of Object.entries(ITEM_ANCHORS)) {
@@ -120,9 +120,10 @@ describe('the declared struct layout', () => {
         expect(SPECIES_INFO.abilityCount).toBe(3);
     });
 
-    test('MoveInfo bit fields share one 32-bit word, LSB-first as GCC packs them', () => {
-        // u16 type:5, category:2, power:9 | u16 accuracy:7, target:9 — one word at the same offset.
-        expect(MOVE_INFO.word).toBe(0x0c);
+    test('MoveInfo bit fields share one 32-bit window, LSB-first as GCC packs them', () => {
+        // u16 type:5, category:2, power:9 | u16 accuracy:7, target:9. WHERE the window starts is derived
+        // (moveLayout), because `enum PACKED BattleMoveEffects` before it is one byte, not four.
+        expect(MOVE_INFO.word).toBeUndefined();
         expect(MOVE_INFO.type).toEqual({ shift: 0, width: 5 });
         expect(MOVE_INFO.category).toEqual({ shift: 5, width: 2 });
         expect(MOVE_INFO.power).toEqual({ shift: 7, width: 9 });
@@ -195,6 +196,7 @@ describe('arrayStride — derived from the base, never assumed', () => {
 describe('verifyLayout — the anchors are what make the declared offsets safe', () => {
     test('passes on a base that holds the canonical values, and reports the derived strides', () => {
         const result = verifyLayout({ rom: buildBase(), offsetMap: buildMap(), constants });
+        expect(result.moveWord).toBe(0x0c);          // where this fixture put it — found, not assumed
         expect(result.speciesStride).toBe(SPECIES_STRIDE);
         expect(result.moveStride).toBe(MOVE_STRIDE);
         expect(result.itemStride).toBe(ITEM_STRIDE);
@@ -219,8 +221,9 @@ describe('verifyLayout — the anchors are what make the declared offsets safe',
     test('a packed move field read out of the wrong bits fails naming the move', () => {
         const rom = buildBase();
         const at = MOVE_BASE + constants.require('MOVE_PSYCHIC') * MOVE_STRIDE;
-        rom.buffer.writeUInt32LE(0, at + MOVE_INFO.word);
-        expect(() => verifyLayout({ rom, offsetMap: buildMap(), constants })).toThrow(/MOVE_PSYCHIC/);
+        rom.buffer.writeUInt32LE(0, at + 0x0c);
+        // With one anchor corrupted no offset decodes all four, so the window itself is refused.
+        expect(() => verifyLayout({ rom, offsetMap: buildMap(), constants })).toThrow(/MoveInfo|MOVE_PSYCHIC/);
     });
 
     test('an item price at the wrong offset fails naming the item', () => {

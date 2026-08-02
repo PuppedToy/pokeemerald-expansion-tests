@@ -22,6 +22,7 @@ const constants = loadGameConstants({ root: ROOT });
 const SPECIES_STRIDE = 0x104;       // the real base's sizeof(struct SpeciesInfo) — see structLayout
 const MOVE_STRIDE = 60;
 const ITEM_STRIDE = 40;
+const MOVE_WORD = 0x0c;             // where this fixture puts MoveInfo's packed window (the real base: 0x0A)
 const EVOLUTIONS_FIELD = 0xd0;      // where this fixture puts SpeciesInfo.evolutions (past the anchors)
 
 // Table bases, spaced so no table can reach into the next one (gSpeciesInfo alone is ~390 KB).
@@ -96,7 +97,7 @@ function buildSyntheticBase({ species = {}, moves = {}, items = {}, evolutions =
             | ((constants.require(m.category) & 0x3) << MOVE_INFO.category.shift)
             | ((m.power & 0x1ff) << MOVE_INFO.power.shift)
             | ((m.accuracy & 0x7f) << MOVE_INFO.accuracy.shift);
-        buffer.writeUInt32LE(packed >>> 0, moveAt(name) + MOVE_INFO.word);
+        buffer.writeUInt32LE(packed >>> 0, moveAt(name) + MOVE_WORD);
     }
 
     for (const [name, price] of Object.entries({ ...ANCHOR_ITEMS, ...items })) {
@@ -184,6 +185,7 @@ function buildSyntheticBase({ species = {}, moves = {}, items = {}, evolutions =
         constants,
         strides: { species: SPECIES_STRIDE, move: MOVE_STRIDE, item: ITEM_STRIDE },
         bases: { species: SPECIES_BASE, move: MOVE_BASE, item: ITEM_BASE, tmhm: TMHM_BASE },
+        moveWord: MOVE_WORD,
         evolutionsField: EVOLUTIONS_FIELD,
         speciesAt,
         moveAt,
