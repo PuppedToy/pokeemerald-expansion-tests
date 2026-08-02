@@ -241,7 +241,7 @@
 | [T-236](T-236-base-injection-data-driven-item-placement.md) | "Base+injection Phase 2 — data-driven item placement (item-ball picker) + mega-NPC flag" | done | 0.7.0 | 2026-08-01 |
 | [T-237](T-237-base-injection-fixed-capacity-layout.md) | "Base+injection Phase 2 — fixed-capacity / free-space layout for variable-length tables" | in-progress | 0.7.0 | 2026-08-01 |
 | [T-238](T-238-base-injection-injector-skeleton-switch.md) | "Base+injection Phase 3 — injector skeleton, .map offset loader, compile-vs-inject switch" | in-progress | 0.7.0 | 2026-08-01 |
-| [T-239](T-239-base-injection-inject-group-a-fixed.md) | "Base+injection Phase 3 — inject Group A (fixed-size: stats/moves/evos/wild/starters/TM/prices/items)" | in-progress | 0.7.0 | 2026-08-01 |
+| [T-239](T-239-base-injection-inject-group-a-fixed.md) | "Base+injection Phase 3 — inject Group A (fixed-size: stats/moves/evos/wild/starters/TM/prices/items)" | in-progress | 0.7.0 | 2026-08-02 |
 | [T-240](T-240-base-injection-inject-learnsets-tm-compat.md) | "Base+injection Phase 3 — inject level-up learnsets + teachable/TM-HM compatibility (Group B)" | proposed | 0.7.0 | 2026-07-27 |
 | [T-241](T-241-base-injection-inject-trainer-parties.md) | "Base+injection Phase 3 — inject trainer parties + battle partners (Group B, biggest)" | proposed | 0.7.0 | 2026-07-27 |
 | [T-242](T-242-base-injection-inject-trades-starters-nicknames.md) | "Base+injection Phase 3 — inject trades + extra starters + nickname tables (Group B)" | proposed | 0.7.0 | 2026-07-27 |
