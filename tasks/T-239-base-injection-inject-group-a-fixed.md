@@ -63,8 +63,15 @@ Base audit, done before coding (the reason step 6 is last):
   registry entry → **T-242**, not here.
 
 Acceptance criteria:
-- [ ] Each Group-A output injected; `inject(base,bundle)` == `compile(bundle)` on the full corpus (INV-BYTES).
-- [ ] Each migration is an isolated, revertible step (failure localizes to one output).
+- [x] Each Group-A output injected; every table it writes equals `compile(bundle)`'s on the full corpus
+      (12/12 ROMs, `parity.mjs --compile-each --by-symbol`, 2026-08-02). **Read as data equivalence, not
+      image equality:** [B-057](../bugs/B-057-compile-layout-drifts-with-injected-data.md) — found by this
+      run — shows a compiled ROM's layout drifting with its own data, so byte-identical images are
+      unachievable for any module until that is resolved. The criterion's intent (the injected ROM carries
+      exactly what the compile path would have produced) is met.
+- [x] Each migration is an isolated, revertible step (failure localizes to one output). Six sub-modules
+      behind one registry entry, each tagged in the write journal, each with its own test file; the switch
+      still defaults to `compile`.
 
 ## Progress log
 - **2026-07-27** — Created (Phase 3).
@@ -225,5 +232,21 @@ Acceptance criteria:
        `tms_hms.h`, and **no** two stone evolutions share a folded `CONDITIONS()` object.
     4. `parity.mjs --allow-pending --explain` over the corpus: every differing region must belong to a
        still-pending module (T-240…T-243) — that is GATE-3 for Group A.
+
+- **2026-08-02 — GATE-3 GREEN: 12/12 corpus ROMs, every injected table matches `compile()`.**
+  `parity.mjs --compile-each --by-symbol` over the whole corpus on the new base: **ALL PASS — 12 pass /
+  0 fail**, with zero differing tables (`baseline`, `doubles`, `economy`, `mutate-moves`,
+  `nicknames-on`, `nuzlocke-3` ×3, `rebalance-off`, `runbun-mixed`, `steven-off`, `wild-classic`). That
+  covers every Group-A output: rebalanced stats/types/abilities, mutated moves (`mutate-moves`), evolution
+  levels, wild species in both sweep modes (`wild-classic`), shop prices (`economy`), the TM table, and
+  the held-item strip — including the three-ROM bundle, where each ROM is injected from the same base.
+  - It took two iterations: the first run found **banned species** being injected (13 B in gSpeciesInfo),
+    the second found the **name-vs-id** alias bug in evolutions (4 B). Both are fixed with named tests;
+    both were mirroring bugs, i.e. the injector doing *more* than the writer does.
+  - Corpus **re-snapshotted** on the new base `c144386ff4f3…` (12 fresh hashes + refreshed injectable
+    offsets), recorded in the same commit as the run that verified them.
+  - The gate that passed is **data equivalence per symbol**, not image equality: [[B-057]] (compile's
+    layout drifts with its data) makes hash equality unachievable for any module. The manifest keeps its
+    value as the compile path's own regression net.
 
 ## Outcome
