@@ -97,8 +97,11 @@ function compareBySymbol({ injectedBytes, compiledBytes, compiledMapPath, journa
     // Which symbols the injector touched, and which byte ranges within them.
     const touched = new Map();      // symbol name → [{ from, to }] relative to the symbol
     for (const entry of journal) {
+        // `approximate` = the write is in anonymous data (an EVOLUTION() compound literal has no symbol),
+        // attributed to the nearest preceding symbol. Comparing at the same delta from that symbol is
+        // still right as long as the blob sits at the same place relative to it in both builds.
         const [region] = attributeDiff(offsetMap, [{ offset: entry.offset, length: entry.length }]);
-        if (!region.symbol || region.approximate) {
+        if (!region.symbol) {
             problems.push(`write at 0x${entry.offset.toString(16)} (${entry.tag}) is inside no known symbol`);
             continue;
         }
