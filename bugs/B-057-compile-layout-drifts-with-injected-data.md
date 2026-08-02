@@ -8,7 +8,7 @@ updated: 2026-08-02
 found-in: 0.7.0
 fixed-in:
 regression-test:        # an INV-LAYOUT check (compiled .map vs base .map) — see Fix options
-links: [T-237, T-239, docs/base-plus-injection-strategy.md, docs/adr/ADR-022-base-plus-injection-architecture.md]
+links: [T-248, T-237, T-239, docs/base-plus-injection-strategy.md, docs/adr/ADR-022-base-plus-injection-architecture.md]
 ---
 
 # B-057 — compile()'s ROM layout drifts with injected data (breaks hash-equality INV-BYTES)
@@ -82,6 +82,9 @@ Worth measuring before choosing a fix: whether the drift survives `LTO=0` (see
    injection reference; the shipped ROM is the injected one, so image equality was never *required*,
    only convenient.
 3. Both: (2) now so Phase 3 can proceed, (1) later if the layout is wanted stable for other reasons.
+
+The decision, the measurement behind it and the regression check live in
+[T-248](../tasks/T-248-base-layout-stability-under-injected-data.md), scheduled before T-244.
 
 Whichever is chosen, the regression test is the same and mechanical: **compile one corpus bundle and
 assert that every symbol in its `.map` sits where the base's `.map` puts it** (INV-LAYOUT). That check

@@ -111,6 +111,13 @@ injector patches the `setvar` immediate at a `.map`-derived offset.
   build the golden master and verify on the same PRO box.
 - **GATE-3 (per-module, throughout Phase 3):** each migrated module must satisfy INV-BYTES on the whole
   corpus before the next module starts. A failure halts and is localized to that module.
+  → **AMENDED 2026-08-02 (T-239):** INV-BYTES as *hash equality* is currently unachievable — a compiled
+  ROM's layout drifts with the data it carries ([B-057](../bugs/B-057-compile-layout-drifts-with-injected-data.md):
+  one `const u16` value moved 41,382 symbols), so `inject(base)` cannot equal `compile(bundle)` as an
+  image, whatever the injector does. Until [T-248] settles that, GATE-3 is **data equivalence per
+  symbol**: `parity.mjs --compile-each --by-symbol` checks every table a module writes against the same
+  table in the compiled ROM, using each build's own `.map`. It proves what was written is right; it does
+  not prove nothing was left unwritten, which is why T-248 must land before [T-244].
 
 ## Phased task map
 
@@ -136,7 +143,7 @@ Tasks are traceable; this section is the index, the task files hold the detail. 
   - [T-241] inject **trainer parties + battle partners** (Group B, biggest).
   - [T-242] inject **trades + extra starters + nicknames** (Group B).
   - [T-243] inject the **Phase-2 data-driven outputs + settings + toggles** (Groups C/D).
-- **Phase 4 — decommission old maker:**
+- **Phase 4 — decommission old maker (blocked-by [T-248] — the gate must be able to prove coverage):**
   - [T-244] remove source-edit writers / old compile path; clean `make.js`/`writer.js`; corpus still
     identical via injection only.
 - **Phase 5 — productionize:**

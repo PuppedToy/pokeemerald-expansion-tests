@@ -17,8 +17,8 @@ This page is the design reference for `randomizer/injector/`. Task history lives
 | `node make.js … --compile` / `--inject` | per-invocation override; the flag beats the env |
 
 The backend spawns `node make.js …` and inherits the env, so flipping the box's env flips the whole
-queue — and unsetting it rolls everything back. Default stays `compile` until INV-BYTES holds for every
-module.
+queue — and unsetting it rolls everything back. Default stays `compile` until **every** module has passed
+its gate (below) — T-239 migrated the first of five.
 
 ## Where the base comes from
 
@@ -142,10 +142,20 @@ Phase 2 and then forgotten in Phase 3.
 1. Write the module's `apply({ rom, offsetMap, data, log })`; take every offset from `offsetMap`, tag
    every write, and let the capacity guards from T-237 keep payloads inside their slots.
 2. Flip its registry entry to `status: 'migrated'`.
-3. Prove **INV-BYTES** on the whole corpus (GATE-3): for each bundle, `compile()` and `inject()` must
-   produce the same sha256. Localise a mismatch with
-   `node randomizer/injector/verifyParity.js --a=compiled.gba --b=injected.gba --map=pokeemerald.map`,
-   which prints `offset  length  symbol+delta` per differing region.
+3. Prove **GATE-3** on the whole corpus — every table the module wrote must equal the compiled ROM's:
+
+   ```sh
+   INJECT_BASE_ROM=base/pokeemerald.gba INJECT_BASE_MAP=base/pokeemerald.map \
+   INJECT_BASE_SYM=base/pokeemerald.sym \
+     node backend/build/golden-corpus/parity.mjs --compile-each --by-symbol --reuse-compiled
+   ```
+
+   Not a sha256 comparison: a compiled ROM's layout drifts with its own data
+   ([B-057](../../bugs/B-057-compile-layout-drifts-with-injected-data.md)), so the two images can differ
+   while every byte of data agrees. `--by-symbol` reads each table at each build's own address;
+   `--reuse-compiled` caches the corpus compiles in `.gate3-cache/`, so a second attempt costs seconds.
+   For a raw region-by-region view of two ROMs there is still
+   `node randomizer/injector/verifyParity.js --a=… --b=… --map=…`.
 4. Only then start the next module — a failure must stay localised to one module.
 
 ## The B2 caveat
