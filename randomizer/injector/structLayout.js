@@ -177,6 +177,16 @@ const INGAME_TRADE = {
     requestedBaseFormCount: 126,
 };
 
+// ── The Phase-2 data-driven tables (T-234/T-235/T-236, injected by T-243) ─────
+// These were designed for injection: plain structs of fixed-width fields, read through runtime indices
+// so LTO cannot fold them. Each module still derives the stride from its symbol.
+const RANDOMIZER_SETTINGS = {
+    stride: 16, trainerMoneyNormal: 0, trainerMoneyBoss: 4, trainerMoneyGym: 8, moveRelearnerCost: 12,
+};
+const GYM_REWARD = { stride: 4, species: 0, item: 2 };
+const STATIC_ENCOUNTER = { stride: 4, species: 0, level: 2 };
+const ITEM_PICK = { stride: 8, items: 0, itemCount: 4 };   // u16 items[MAX_PICK_ITEMS]
+
 // ── include/item.h: struct TmHmIndexKey ───────────────────────────────────────
 // { enum TMHMItemId itemId:16; u16 moveId; } — gTMHMItemMoveIds[NUM_ALL_MACHINES + 1], entry 0 the
 // { ITEM_NONE, MOVE_NONE } failsafe, then one entry per TM in FOREACH_TM order, then the HMs.
@@ -468,6 +478,10 @@ module.exports = {
     LOCATION_NICKNAME,
     TRADE_NICKNAME,
     INGAME_TRADE,
+    RANDOMIZER_SETTINGS,
+    GYM_REWARD,
+    STATIC_ENCOUNTER,
+    ITEM_PICK,
     TMHM_INDEX_KEY,
     SPECIES_ANCHORS,
     MOVE_ANCHORS,

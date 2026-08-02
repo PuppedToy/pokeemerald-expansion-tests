@@ -43,6 +43,11 @@ const DEFAULT_HEADERS = [
     'include/constants/trade.h',
     // POKEMON_NAME_LENGTH / TRAINER_NAME_LENGTH (the width of every inline name field) and MALE/FEMALE.
     'include/constants/global.h',
+    // T-243 — the Phase-2 tables' own indices and sizes: PICK_* / PICK_COUNT / MAX_PICK_ITEMS /
+    // MEGA_TRAINER_COUNT, GYM_REWARD_* and STATIC_ENCOUNTER_* (the last two are enums in a non-constants
+    // header, which is where T-234/235/236 put them).
+    'include/constants/randomizer_picks.h',
+    'include/randomizer_rewards.h',
 ];
 
 // A `#define` of a plain constant: no `(` directly after the name (that is a function-like macro).

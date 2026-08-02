@@ -44,7 +44,9 @@ test('base ROM/map/sym paths default under base/ and are env-overridable', () =>
   assert.equal(custom.symPath, '/b/rom.sym');
 });
 
-test('injectOneRom refuses while Phase-3 modules are pending (T-243 still is)', async () => {
+// The board is complete since T-243, so this guard is driven with an explicit pending module: the
+// mechanism (a half-migrated board must never ship a ROM) outlives the last `pending` entry.
+test('injectOneRom refuses while any Phase-3 module is pending', async () => {
   clean();
   fs.mkdirSync(TMP, { recursive: true });
   const romPath = path.join(TMP, 'pokeemerald.gba');
@@ -56,7 +58,10 @@ test('injectOneRom refuses while Phase-3 modules are pending (T-243 still is)', 
   const rom = { romIndex: 0, artifacts: { pokedex: {}, trainers: {}, starters: {}, wild: {} } };
 
   await assert.rejects(
-    () => makejs.injectOneRom({ rom, bundle, seed: 1, outDir: TMP, basePaths: { romPath, mapPath, symPath: null } }),
+    () => makejs.injectOneRom({
+      rom, bundle, seed: 1, outDir: TMP, basePaths: { romPath, mapPath, symPath: null },
+      modules: [{ id: 'todo', task: 'T-999', status: 'pending', apply: null }],
+    }),
     /pending|not migrated/i,
     'a ROM built by injection today would carry BASE data for every un-migrated output',
   );

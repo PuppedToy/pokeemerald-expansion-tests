@@ -21,11 +21,12 @@ const baseBuffer = Buffer.alloc(0x1000, 0xff);
 
 describe('the module registry (T-238)', () => {
     // The board advances as each Phase-3 task lands: T-239 flipped `group-a-fixed` to migrated,
-    // T-240 `learnsets`, T-241 `trainer-parties`, T-242 `trades-starters-nicknames`.
+    // T-240 `learnsets`, T-241 `trainer-parties`, T-242 `trades-starters-nicknames`, T-243 the rest —
+    // the board is complete, so nothing is pending any more.
     test('has one entry per Phase-3 migration task, and says how far the migration has got', () => {
         expect(INJECTION_MODULES.map(m => m.task)).toEqual(['T-239', 'T-240', 'T-241', 'T-242', 'T-243']);
-        expect(migratedModules().map(m => m.task)).toEqual(['T-239', 'T-240', 'T-241', 'T-242']);
-        expect(pendingModules().map(m => m.task)).toEqual(['T-243']);
+        expect(migratedModules().map(m => m.task)).toEqual(['T-239', 'T-240', 'T-241', 'T-242', 'T-243']);
+        expect(pendingModules()).toEqual([]);
     });
 
     test('every module has a unique id and either an apply() or pending status', () => {
@@ -111,9 +112,13 @@ describe('injectRom (T-238)', () => {
         expect(result.pending.map(m => m.task)).toEqual(['T-239', 'T-240', 'T-241', 'T-242', 'T-243']);
     });
 
+    // The board is complete since T-243, so this guard can no longer be triggered through the real
+    // registry — the MECHANISM is what matters (a half-migrated board must never ship a ROM), so it is
+    // driven with an explicit pending module here instead of being deleted with the last `pending`.
     test('refuses to emit a ROM while modules are pending, naming what is missing', () => {
-        expect(() => injectRom({ rom: base(), offsetMap, data: {} }))
-            .toThrow(/pending[\s\S]*T-24\d|not migrated/i);
+        const modules = [{ id: 'todo', task: 'T-999', status: 'pending', apply: null }];
+        expect(() => injectRom({ rom: base(), offsetMap, data: {}, modules }))
+            .toThrow(/pending[\s\S]*T-999|not migrated/i);
     });
 
     test('runs migrated modules in registry order and reports them', () => {

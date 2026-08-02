@@ -18,7 +18,10 @@ This page is the design reference for `randomizer/injector/`. Task history lives
 
 The backend spawns `node make.js …` and inherits the env, so flipping the box's env flips the whole
 queue — and unsetting it rolls everything back. Default stays `compile` until **every** module has passed
-its gate (below) — T-239 … T-242 have migrated four of the five; only T-243 is pending.
+its gate (below). **Since T-243 every module is migrated**, so `injectRom()` emits a complete ROM: a
+full randomized `nicknames-on` took **16 s** by injection against ~55 s warm / ~230 s cold by compile.
+The default is still `compile` until the owner has play-tested an injected ROM (INV-BEHAVIOR, which no
+byte comparison can judge).
 
 ## Where the base comes from
 
@@ -154,13 +157,14 @@ Where the migration stands — the registry itself is the source of truth, this 
 | `learnsets` | T-240 | level-up + teachable learnsets |
 | `trainer-parties` | T-241 | trainer parties + battle partners (through `gTrainers[].party`), `partySize` and the battle-format flag |
 | `trades-starters-nicknames` | T-242 | in-game trades, the starter trio + extra starters, the location/trade nickname tables and their counts — everything made of **text**, encoded through `charmap.js` |
-| `data-driven-and-toggles` | T-243 | the Phase-2 tables (settings, rewards, static encounters, item picks, hidden megas) + the Group-D setvars |
+| `data-driven-and-toggles` | T-243 | the Phase-2 tables (settings, rewards, static encounters, item picks, hidden megas) + the Group-D setvars. `gItemPicks` is written **per row**: 24 of its 53 entries are static TM picks the writer never regenerates |
 
 Two Group-A rows of the strategy table are not in `group-a-fixed`: the **starter trio** belongs to
 T-242's entry, and **route/mail items** stopped being a map-data edit when T-236 moved item placement
 into `gItemPicks` (T-243) — writer.js's mail-mint loop matches nothing in `data/maps/**` any more.
 
-`injectRom()` refuses to emit a ROM while any module is `pending` — an injected ROM would ship **base**
+`injectRom()` refuses to emit a ROM while any module is `pending` (nothing is, since T-243 — the guard
+is now exercised by tests that pass an explicit pending module) — an injected ROM would ship **base**
 data for the un-migrated outputs, i.e. a "randomized" ROM that isn't randomized. Parity harnesses and
 work-in-progress pass `allowPending: true` explicitly. A test asserts that every symbol the
 golden-master `manifest.json` tracks is claimed by exactly one module, so an export can't be added in

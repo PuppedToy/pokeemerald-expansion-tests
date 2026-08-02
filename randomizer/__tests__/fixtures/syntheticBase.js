@@ -24,6 +24,7 @@ const {
 
 const ROOT = require('path').resolve(__dirname, '..', '..', '..');
 const constants = loadGameConstants({ root: ROOT });
+const varConstants = require('../../injector/scriptPatch').loadVarConstants();
 
 // Strides the real base has no reason to share — deliberately different, so a module that assumes one
 // stride for another table fails here.
@@ -45,6 +46,7 @@ const TRAINER_BASE = 0xe0000;       // gTrainers[DIFFICULTY_COUNT][TRAINERS_COUN
 const PARTNER_BASE = 0x120000;      // gBattlePartners[DIFFICULTY_COUNT][PARTNER_COUNT]
 const PARTY_BASE = 0x121000;        // the anonymous party blobs the .party pointers point at
 const NAMING_BASE = 0x130000;       // the T-242 text tables: starters, nicknames, trades
+const DATA_DRIVEN_BASE = 0x135000;  // the T-234/235/236 tables + the two toggle scripts (T-243)
 const ROM_SIZE = 0x140000;
 
 // The canonical base values `verifyLayout` insists on (see structLayout.js for why these ones).
@@ -91,10 +93,12 @@ const ANCHOR_EVOLUTIONS = {
  * @param {object} [opts.partners]    { 'PARTNER_X': { doubleBattle, mons } } — gBattlePartners
  * @param {boolean|string} [opts.naming]  T-242's tables (starters, nickname tables, gIngameTrades). Pass
  *        a `gIngameTrades[]` block of C to lay the trade table out from it, or `true` for an empty one.
+ * @param {boolean} [opts.dataDriven]  T-243's Phase-2 tables at their committed defaults, plus the two
+ *        Group-D toggle scripts as real `setvar` bytecode behind their (local) labels.
  */
 function buildSyntheticBase({
     species = {}, moves = {}, items = {}, evolutions = {}, wild = {}, tmMoves = null,
-    learnsets = {}, teachables = {}, trainers = null, partners = null, naming = null,
+    learnsets = {}, teachables = {}, trainers = null, partners = null, naming = null, dataDriven = false,
 } = {}) {
     const buffer = Buffer.alloc(ROM_SIZE, 0);
     const speciesCount = constants.require('NUM_SPECIES');
@@ -290,6 +294,53 @@ function buildSyntheticBase({
         if (cursor > ROM_SIZE) throw new Error('syntheticBase: the naming tables outgrew the fixture ROM');
     }
 
+    // T-243 — the Phase-2 tables at their COMMITTED values (the module verifies the base against the
+    // committed C before writing) and the two toggle scripts as real setvar bytecode.
+    const dataDrivenSymbols = {};
+    if (dataDriven) {
+        let cursor = DATA_DRIVEN_BASE;
+        const add = (name, size) => { const at = cursor; cursor += size + (size % 2); dataDrivenSymbols[name] = { romOffset: at, size }; return at; };
+
+        const settings = add('gRandomizerSettings', 16);
+        [250, 3000, 5000, 250].forEach((v, i) => buffer.writeUInt32LE(v, settings + i * 4));
+        add('gGymRewards', 11 * 4);                       // all SPECIES_NONE / ITEM_NONE = zeros
+        const statics = add('gStaticEncounters', 7 * 4);
+        [['SPECIES_REGIROCK', 36], ['SPECIES_REGICE', 39], ['SPECIES_REGISTEEL', 46], ['SPECIES_MEW', 39],
+            ['SPECIES_NONE', 61], ['SPECIES_NONE', 61], ['SPECIES_NONE', 61]].forEach(([species, level], i) => {
+            buffer.writeUInt16LE(constants.require(species), statics + i * 4);
+            buffer.writeUInt16LE(level, statics + i * 4 + 2);
+        });
+        // The randomizer's 29 locations start at ITEM_NONE; the 24 STATIC TM picks that follow them
+        // carry real items in the base and must survive injection (T-243 / GATE-3).
+        const picksAt = add('gItemPicks', constants.require('PICK_COUNT') * 8);
+        {
+            const { parseArrayRows } = require('../../injector/modules/dataDrivenAndToggles');
+            const source = require('fs').readFileSync(require('path').resolve(ROOT, 'src', 'randomizer_picks.c'), 'utf8');
+            for (const row of parseArrayRows(source, 'gItemPicks', 'item pick')) {
+                const index = constants.require(row.name);
+                row.value.replace(/^\{+|\}+$/g, '').split(',').map(t => t.trim()).filter(Boolean)
+                    .forEach((item, slot) => buffer.writeUInt16LE(constants.require(item), picksAt + index * 8 + slot * 2));
+            }
+        }
+        add('gMegaTrainerHidden', 21);                             // FALSE everywhere
+
+        // `setvar <var>, <value>` = 0x16 <u16 var> <u16 value>, the shape scriptPatch.js scans for.
+        const script = (name, setvars) => {
+            const at = add(name, setvars.length * 5 + 1);
+            setvars.forEach(([varName, value], i) => {
+                buffer.writeUInt8(0x16, at + i * 5);
+                buffer.writeUInt16LE(varConstants[varName], at + i * 5 + 1);
+                buffer.writeUInt16LE(value, at + i * 5 + 3);
+            });
+            buffer.writeUInt8(0x02, at + setvars.length * 5);      // `end`
+        };
+        script('EverGrandeCity_SidneysRoom_EventScript_InitRunAndBun', [
+            ['VAR_RUNANDBUN_MODE', 0], ['VAR_RUNANDBUN_SINGLES_LEFT', 4], ['VAR_RUNANDBUN_DOUBLES_LEFT', 0],
+        ]);
+        script('MossdeepCity_SpaceCenter_2F_OnTransition', [['VAR_DISABLE_STEVEN_TAG_BATTLE', 0]]);
+        if (cursor > ROM_SIZE) throw new Error('syntheticBase: the data-driven tables outgrew the fixture ROM');
+    }
+
     const sym = (name, romOffset, size) => ({ name, addr: 0x08000000 + romOffset, romOffset, size, sizeExact: true });
     const symbols = {
         gSpeciesInfo: sym('gSpeciesInfo', SPECIES_BASE, speciesCount * SPECIES_STRIDE),
@@ -301,6 +352,7 @@ function buildSyntheticBase({
     for (const [name, s] of Object.entries(learnsetSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
     for (const [name, at, size] of trainerTables) symbols[name] = sym(name, at, size);
     for (const [name, s] of Object.entries(namingSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
+    for (const [name, s] of Object.entries(dataDrivenSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
 
     return {
         rom: Rom.fromBuffer(buffer),

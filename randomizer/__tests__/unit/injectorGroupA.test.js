@@ -54,6 +54,9 @@ function bundleData() {
 function setup() {
     const json = encountersJson();
     const base = buildSyntheticBase({
+        // T-243's tables too: with the board complete, injectRom() runs every module, and this fixture
+        // has to look like a real base for all of them.
+        dataDriven: true,
         species: {
             SPECIES_ZIGZAGOON: {
                 stats: [38, 30, 41, 60, 30, 41],
@@ -153,18 +156,18 @@ describe('applying all six writers over one base', () => {
         expect(base.rom.buffer.equals(before)).toBe(true);
     });
 
-    test('runs through the orchestrator, which still refuses a full ROM while T-243 is pending', () => {
+    test('runs through the orchestrator with the whole board migrated (T-243 closed it)', () => {
         const base = setup();
         // Driven exactly as make.js does it: no `sources`, so the writers read the base's own tree. The
         // bundle carries no wild plan, so this fixture needs no per-map tables of the real JSON.
         const data = { ...bundleData(), wild: {} };
-        expect(() => injectRom({ rom: base.rom, offsetMap: base.offsetMap, data })).toThrow(/pending/i);
 
-        // T-240 and T-241 joined the board; this fixture exports no learnset arrays and no gTrainers,
-        // and the bundle claims neither, so both run and write nothing — which is what an isolated
-        // Group-A test wants.
-        const result = injectRom({ rom: base.rom, offsetMap: base.offsetMap, data, allowPending: true });
-        expect(result.applied).toEqual(['group-a-fixed', 'learnsets', 'trainer-parties', 'trades-starters-nicknames']);
+        // Every module now runs. This fixture exports no learnset arrays and no gTrainers, and the
+        // bundle claims neither, so those two write nothing — which is what an isolated Group-A test
+        // wants — while T-243's tables are present and land on their committed values.
+        const result = injectRom({ rom: base.rom, offsetMap: base.offsetMap, data });
+        expect(result.applied).toEqual([
+            'group-a-fixed', 'learnsets', 'trainer-parties', 'trades-starters-nicknames', 'data-driven-and-toggles']);
         expect(result.rom.bytesWritten).toBeGreaterThan(0);
     });
 

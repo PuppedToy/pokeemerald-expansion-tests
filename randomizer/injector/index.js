@@ -86,8 +86,9 @@ const INJECTION_MODULES = [
     {
         id: 'data-driven-and-toggles',
         task: 'T-243',
-        status: 'pending',
-        apply: null,
+        status: 'migrated',
+        // The last entry to flip — with it, injectRom() can finally emit a ROM without `allowPending`.
+        apply: (args) => require('./modules/dataDrivenAndToggles').applyDataDrivenAndToggles(args),
         description: 'Phase-2 data-driven tables (settings, gym rewards, static encounters, item picks, hidden megas) + the Group-D setvar toggles',
         symbols: ['gRandomizerSettings', 'gGymRewards', 'gStaticEncounters', 'gItemPicks', 'gMegaTrainerHidden'],
         // The Group-D setvar sites are LOCAL script labels: they come from the .sym, and the operand
