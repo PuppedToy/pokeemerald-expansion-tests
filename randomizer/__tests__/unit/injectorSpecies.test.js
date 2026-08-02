@@ -186,9 +186,20 @@ describe('wild held items — T-077 strips them for every species, not just the 
 });
 
 describe('failure modes', () => {
-    test('a species id the base does not define throws naming it', () => {
+    test('a species the base sources do not contain is a no-op — compile cannot write it either', () => {
         const base = setup({ pokes: [poke('SPECIES_MISSINGNO', { log: [{ target: 'baseHP' }] })] });
-        expect(() => injectSpeciesInfo(base.ctx)).toThrow(/SPECIES_MISSINGNO/);
+        const { writes } = injectSpeciesInfo(base.ctx);
+        expect(writes.stats).toBe(0);
+    });
+
+    test('a species in the sources with no id in the base headers throws naming it', () => {
+        // Drift between src/data/pokemon/species_info/*.h and include/constants/species.h.
+        const base = setup({ pokes: [poke('SPECIES_NOT_A_SPECIES', { baseHP: 7, log: [{ target: 'baseHP' }] })] });
+        const speciesSources = [{
+            name: 'fake.h',
+            text: ['    [SPECIES_NOT_A_SPECIES] =', '    {', '        .baseHP        = 20,', '    },'].join('\n'),
+        }];
+        expect(() => injectSpeciesInfo(base.ctx, { speciesSources })).toThrow(/SPECIES_NOT_A_SPECIES/);
     });
 
     test('tags every write so an overlap names this module', () => {
@@ -199,5 +210,74 @@ describe('failure modes', () => {
         expect(base.rom.journal.length).toBeGreaterThan(0);
         expect(base.rom.journal.every(e => typeof e.tag === 'string' && e.tag.length > 0)).toBe(true);
         expect(base.rom.journal.some(e => /species/i.test(e.tag))).toBe(true);
+    });
+});
+
+describe('macro-backed species — what the writer cannot reach, the injector must not write', () => {
+    // 239 species are `[SPECIES_X] = SOME_MISC_INFO(…)`: their stats live in one shared #define body, so
+    // editSpeciesFile cannot rewrite them per species and compile() leaves them at their base values.
+    const macroSource = (name = 'macro.h') => ({
+        name,
+        text: [
+            '#define ZIG_MISC_INFO(x)                                  \\',
+            '    {                                                     \\',
+            '        .baseHP        = 38,                              \\',
+            '        .types = MON_TYPES(TYPE_NORMAL),                  \\',
+            '    }',
+            '',
+            '    [SPECIES_ZIGZAGOON] = ZIG_MISC_INFO(1),',
+            '    [SPECIES_ZIGZAGOON_GALAR] = ZIG_MISC_INFO(2),',
+            '    [SPECIES_LINOONE] =',
+            '    {',
+            '        .baseHP        = 78,',
+            '    },',
+        ].join('\n'),
+    });
+
+    test('a macro-backed species with a rebalance log is left alone', () => {
+        const base = setup({
+            pokes: [poke('SPECIES_ZIGZAGOON', { baseHP: 99, log: [{ target: 'baseHP' }] })],
+        });
+        const { writes } = injectSpeciesInfo(base.ctx, { speciesSources: [macroSource()] });
+
+        expect(writes.stats).toBe(0);
+        expect(readStat(base, 'SPECIES_ZIGZAGOON', 'baseHP')).toBe(38);
+    });
+
+    test('a species that owns its line is written from the same pass', () => {
+        const base = setup({
+            pokes: [poke('SPECIES_LINOONE', { baseHP: 90, log: [{ target: 'baseHP' }] })],
+        });
+        injectSpeciesInfo(base.ctx, { speciesSources: [macroSource()] });
+
+        expect(readStat(base, 'SPECIES_LINOONE', 'baseHP')).toBe(90);
+    });
+
+    test('when the writer does rewrite a macro body, every species using it moves — as the ROM would', () => {
+        // The writer attributes a line to the last [SPECIES_…] header it saw, so an unconsumed log entry
+        // can land inside a #define. Then the compiler applies it to every user, and so must the injector.
+        const source = {
+            name: 'bleed.h',
+            text: [
+                '    [SPECIES_LINOONE] =',
+                '    {',
+                '        .baseSpeed     = 100,',
+                '    },',
+                '#define ZIG_MISC_INFO(x)                              \\',
+                '    {                                                 \\',
+                '        .baseHP        = 38,                          \\',
+                '    }',
+                '    [SPECIES_ZIGZAGOON] = ZIG_MISC_INFO(1),',
+                '    [SPECIES_ZIGZAGOON_GALAR] = ZIG_MISC_INFO(2),',
+            ].join('\n'),
+        };
+        const base = setup({
+            pokes: [poke('SPECIES_LINOONE', { baseHP: 55, log: [{ target: 'baseHP' }] })],
+        });
+        injectSpeciesInfo(base.ctx, { speciesSources: [source] });
+
+        // Linoone's own block has no .baseHP line, so the writer's first match is the macro's.
+        expect(readStat(base, 'SPECIES_ZIGZAGOON', 'baseHP')).toBe(55);
+        expect(readStat(base, 'SPECIES_ZIGZAGOON_GALAR', 'baseHP')).toBe(55);
     });
 });
