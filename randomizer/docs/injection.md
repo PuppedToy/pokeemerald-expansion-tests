@@ -18,7 +18,7 @@ This page is the design reference for `randomizer/injector/`. Task history lives
 
 The backend spawns `node make.js …` and inherits the env, so flipping the box's env flips the whole
 queue — and unsetting it rolls everything back. Default stays `compile` until **every** module has passed
-its gate (below) — T-239, T-240 and T-241 have migrated three of the five.
+its gate (below) — T-239 … T-242 have migrated four of the five; only T-243 is pending.
 
 ## Where the base comes from
 
@@ -67,6 +67,7 @@ never a randomized build.
 | `injector/mode.js` | the compile-vs-inject switch |
 | `injector/gameConstants.js` | the base's `include/constants/*.h` as a name→number table (`#define` + `enum`) |
 | `injector/partyFile.js` | the parts of `tools/trainerproc` that decide bytes: `.party` parsing, the name→constant transform, `struct TrainerMon` encoding (T-241) |
+| `injector/charmap.js` | `charmap.txt` + EOS as a name→bytes encoder — the ROM stores text in the game's charset, not ASCII (T-242) |
 | `injector/structLayout.js` | struct field offsets + the **base anchors** that prove them (below) |
 | `injector/context.js` | builds constants + layout **once per ROM** and runs the anchor check (cached: the anchors are the base's own data, so only the first module can read them back — T-240) |
 | `injector/modules/*.js` | one file per output, plus a `group*.js` that a registry entry points at |
@@ -83,7 +84,11 @@ without debug info — `DINFO=1` also changes `-O`, so it is not the golden base
   **verified against the base's own data** before any module writes: Bulbasaur must read back
   45/49/49/45/65/65 GRASS/POISON, a late species (Miraidon) too — that is what proves the *stride* —
   Pound 40/100/NORMAL/PHYSICAL, a Poké Ball 200. A mismatch throws and nothing is written.
-- **Strides** are derived (`symbol size / entry count`), which needs the `.sym`.
+- **Strides** are derived (`symbol size / entry count`), which needs the `.sym`. Adding a struct's
+  fields up is not a substitute: ARM rounds a struct's size up to a multiple of 4, so
+  `struct TradeNickname`'s 1 + 13 bytes occupy **16** (T-242), while `struct LocationNickname`'s
+  3 + 13 needed no padding — the same reasoning gave the right answer for one table and the wrong one
+  for its neighbour.
 - `SpeciesInfo.evolutions` sits past the config `#if`s, so it is *found*: the only pointer in the anchor
   species' struct whose target decodes as the base's own evolution.
 
@@ -148,7 +153,7 @@ Where the migration stands — the registry itself is the source of truth, this 
 | `group-a-fixed` | T-239 | species stats/types/abilities + the T-077 held-item strip, move power/accuracy/type/category, evolution levels (+ stone `IF_MIN_LEVEL`), wild-encounter species, `gItemsInfo[].price`, `gTMHMItemMoveIds[].moveId` |
 | `learnsets` | T-240 | level-up + teachable learnsets |
 | `trainer-parties` | T-241 | trainer parties + battle partners (through `gTrainers[].party`), `partySize` and the battle-format flag |
-| `trades-starters-nicknames` | T-242 | in-game trades, the starter trio + extra starters, nickname tables |
+| `trades-starters-nicknames` | T-242 | in-game trades, the starter trio + extra starters, the location/trade nickname tables and their counts — everything made of **text**, encoded through `charmap.js` |
 | `data-driven-and-toggles` | T-243 | the Phase-2 tables (settings, rewards, static encounters, item picks, hidden megas) + the Group-D setvars |
 
 Two Group-A rows of the strategy table are not in `group-a-fixed`: the **starter trio** belongs to

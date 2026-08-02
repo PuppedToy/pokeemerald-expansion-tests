@@ -213,3 +213,22 @@ describe('loadGameConstants — against the real base headers', () => {
         for (const t of POKEMON_TYPES) expect(c.get(`TYPE_${t}`)).toBeGreaterThanOrEqual(0);
     });
 });
+
+describe('bit expressions (T-242 — the map ids)', () => {
+    test('`|` and `<<` resolve, with C precedence', () => {
+        const table = new ConstantTable(parseConstantHeader('#define MAP_ROUTE101 (16 | (0 << 8))\n#define MAP_GYM (1 | (8 << 8))'));
+        expect(table.require('MAP_ROUTE101')).toBe(16);
+        expect(table.require('MAP_GYM')).toBe(2049);      // 1 | (8 << 8)
+    });
+
+    test('the real header resolves, and MAP_GROUP/MAP_NUM fall out of it', () => {
+        const real = loadGameConstants({ root: ROOT });
+        const route101 = real.require('MAP_ROUTE101');
+        expect([route101 >> 8, route101 & 0xff]).toEqual([0, 16]);
+    });
+
+    test('a value that still depends on build configuration is refused, operators or not', () => {
+        const table = new ConstantTable(parseConstantHeader('#define PRICE ((I_PRICE >= GEN_9) ? 3000 : 4800)'));
+        expect(table.get('PRICE')).toBeUndefined();
+    });
+});

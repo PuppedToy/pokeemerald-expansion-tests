@@ -135,6 +135,48 @@ const TRAINER_MON = {
     tags: 0x20,
 };
 
+// ── The T-237 fixed-width naming tables and the trade table (T-242) ───────────
+// All three are plain, all-u8-or-aligned structs, so the offsets below are just the field order. Each
+// module derives the STRIDE from its symbol's exact size divided by the capacity in
+// include/constants/randomizer_layout.h, and refuses a base whose table is a different size.
+
+// include/location_nicknames.h — { u8 mapGroup; u8 mapNum; u8 gender; u8 nickname[POKEMON_NAME_LENGTH+1]; }
+const LOCATION_NICKNAME = { stride: 16, mapGroup: 0, mapNum: 1, gender: 2, nickname: 3, nicknameWidth: 13 };
+
+// include/trade_nicknames.h — { u8 tradeId; u8 nickname[POKEMON_NAME_LENGTH + 1]; }
+// The fields add up to 14 bytes but the base's rows are **16** apart: ARM rounds a struct's size up to
+// a multiple of 4. `stride` here is only the floor the fields need — the module derives the real one
+// from the symbol (T-242 found this on the real base, where LocationNickname's 3 + 13 = 16 needed no
+// padding and this one did).
+const TRADE_NICKNAME = { stride: 14, tradeId: 0, nickname: 1, nicknameWidth: 13 };
+
+// src/trade.c — struct InGameTrade. The u32s (otId, personality) force 4-byte alignment, which is what
+// puts otId at 24 rather than 23 and makes the struct 128 B rather than 127. Verified the T-241 way:
+// the committed gIngameTrades[] block is re-encoded and byte-matched against the base ROM, so a wrong
+// offset here fails before anything is written — and that same pass proves the charmap encoder, since
+// the base's own nicknames ("DOTS", "KOBE") are text.
+const INGAME_TRADE = {
+    stride: 128,
+    nickname: 0, nicknameWidth: 13,
+    species: 14,
+    ivs: 16, ivCount: 6,
+    abilityNum: 22,
+    otId: 24,
+    conditions: 28, conditionCount: 5,
+    personality: 36,
+    heldItem: 40,
+    mailNum: 42,
+    otName: 43, otNameWidth: 11,
+    otGender: 54,
+    sheen: 55,
+    requestedSpecies: 56,
+    level: 58,
+    requestedSpeciesList: 60,
+    requestedSpeciesCount: 92,
+    requestedBaseForms: 94,
+    requestedBaseFormCount: 126,
+};
+
 // ── include/item.h: struct TmHmIndexKey ───────────────────────────────────────
 // { enum TMHMItemId itemId:16; u16 moveId; } — gTMHMItemMoveIds[NUM_ALL_MACHINES + 1], entry 0 the
 // { ITEM_NONE, MOVE_NONE } failsafe, then one entry per TM in FOREACH_TM order, then the HMs.
@@ -423,6 +465,9 @@ module.exports = {
     TEACHABLE_MOVE,
     TRAINER,
     TRAINER_MON,
+    LOCATION_NICKNAME,
+    TRADE_NICKNAME,
+    INGAME_TRADE,
     TMHM_INDEX_KEY,
     SPECIES_ANCHORS,
     MOVE_ANCHORS,

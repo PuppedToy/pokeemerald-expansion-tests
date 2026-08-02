@@ -37,6 +37,12 @@ const DEFAULT_HEADERS = [
     'include/constants/difficulty.h',
     'include/constants/trainers.h',
     'include/data.h',
+    // T-242 — the nickname/trade tables: MAP_* (a `(num | (group << 8))` bit expression, which is why
+    // the evaluator below understands `|` and `<<`), INGAME_TRADE_*, and MON_MALE/FEMALE/GENDERLESS.
+    'include/constants/map_groups.h',
+    'include/constants/trade.h',
+    // POKEMON_NAME_LENGTH / TRAINER_NAME_LENGTH (the width of every inline name field) and MALE/FEMALE.
+    'include/constants/global.h',
 ];
 
 // A `#define` of a plain constant: no `(` directly after the name (that is a function-like macro).
@@ -132,8 +138,14 @@ function parseNumber(token) {
     return undefined;
 }
 
-/** Tokens an id expression may contain. Anything else (`?`, `>=`, `*`, …) is not resolvable here. */
-const TOKEN_RE = /\s*(0[xX][0-9a-fA-F]+[uUlL]*|\d+[uUlL]*|[A-Za-z_]\w*|[()+-])/g;
+/**
+ * Tokens an id expression may contain. Anything else (`?`, `>=`, `*`, …) is not resolvable here.
+ *
+ * `|` and `<<` are here for the map ids (`#define MAP_ROUTE101 (16 | (0 << 8))`, T-242). They are still
+ * pure integer arithmetic over literals and other constants — the thing this parser refuses is a value
+ * that depends on build configuration, and adding two more operators does not weaken that.
+ */
+const TOKEN_RE = /\s*(0[xX][0-9a-fA-F]+[uUlL]*|\d+[uUlL]*|[A-Za-z_]\w*|<<|>>|[()+|-])/g;
 
 function tokenize(expr) {
     const tokens = [];
@@ -218,7 +230,7 @@ class ConstantTable {
             if (token === undefined) throw new Error(`gameConstants: '${owner}' = "${expr}" is incomplete`);
             position += 1;
             if (token === '(') {
-                const inner = sum();
+                const inner = bitOr();
                 if (tokens[position] !== ')') throw new Error(`gameConstants: '${owner}' = "${expr}" has unbalanced parentheses`);
                 position += 1;
                 return inner;
@@ -244,7 +256,27 @@ class ConstantTable {
             return value;
         };
 
-        const result = sum();
+        // C precedence: `|` binds loosest, then the shifts, then `+`/`-`.
+        const shift = () => {
+            let value = sum();
+            while (tokens[position] === '<<' || tokens[position] === '>>') {
+                const op = tokens[position++];
+                const rhs = sum();
+                value = op === '<<' ? value << rhs : value >> rhs;
+            }
+            return value;
+        };
+
+        const bitOr = () => {
+            let value = shift();
+            while (tokens[position] === '|') {
+                position += 1;
+                value |= shift();
+            }
+            return value;
+        };
+
+        const result = bitOr();
         if (position !== tokens.length) {
             throw new Error(`gameConstants: '${owner}' = "${expr}" is not a plain integer expression`);
         }

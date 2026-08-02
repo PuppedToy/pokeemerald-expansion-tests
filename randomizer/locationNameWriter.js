@@ -58,4 +58,6 @@ async function writeLocationNames(locationNaming) {
     await fs.writeFile(LOCATION_FILE, applyLocationNames(content, locationNaming), 'utf8');
 }
 
-module.exports = { buildLocationRows, applyLocationNames, writeLocationNames, START, END, COUNT_START, COUNT_END };
+// `locationKeys` is exported because the injector needs the SAME filter-and-sort rule (T-242): which
+// keys become rows, and in which order, is part of this writer's contract, not a detail.
+module.exports = { buildLocationRows, applyLocationNames, writeLocationNames, locationKeys, START, END, COUNT_START, COUNT_END };

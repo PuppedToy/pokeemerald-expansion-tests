@@ -70,8 +70,9 @@ const INJECTION_MODULES = [
     {
         id: 'trades-starters-nicknames',
         task: 'T-242',
-        status: 'pending',
-        apply: null,
+        status: 'migrated',
+        // Lazy like the rest: this one pulls in the four writers whose rules it mirrors.
+        apply: (args) => require('./modules/tradesStartersNicknames').applyTradesStartersNicknames(args),
         description: 'In-game trades, the starter trio + extra starters, and the location/trade nickname tables with their counts',
         symbols: [
             'gIngameTrades',

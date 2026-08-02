@@ -59,4 +59,6 @@ async function writeTradeNames(tradeNaming) {
     await fs.writeFile(TRADE_FILE, applyTradeNames(content, tradeNaming), 'utf8');
 }
 
-module.exports = { buildTradeRows, applyTradeNames, writeTradeNames, START, END, COUNT_START, COUNT_END };
+// `namedTrades` is exported for the injector (T-242): dropping the empty-named trades and sorting the
+// rest is this writer's decision, and the two paths must make it in one place.
+module.exports = { buildTradeRows, applyTradeNames, writeTradeNames, namedTrades, START, END, COUNT_START, COUNT_END };

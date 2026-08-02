@@ -14,11 +14,12 @@ const { OffsetMap } = require('../../injector/symbolMap');
 const { loadGameConstants } = require('../../injector/gameConstants');
 const {
     SPECIES_INFO, MOVE_INFO, ITEM_INFO, EVOLUTION, EVOLUTION_PARAM, WILD_POKEMON, LEVEL_UP_MOVE, TEACHABLE_MOVE,
-    TRAINER, TRAINER_MON,
+    TRAINER, TRAINER_MON, LOCATION_NICKNAME, TRADE_NICKNAME, INGAME_TRADE,
 } = require('../../injector/structLayout');
 const { encodeParty } = require('../../injector/partyFile');
 const {
     LEVEL_UP_LEARNSET_CAPACITY, TEACHABLE_LEARNSET_CAPACITY, TRAINER_PARTY_CAPACITY,
+    LOCATION_NICKNAME_CAPACITY, TRADE_NICKNAME_CAPACITY, STARTER_EXTRA_CAPACITY,
 } = require('../../layout');
 
 const ROOT = require('path').resolve(__dirname, '..', '..', '..');
@@ -43,6 +44,7 @@ const LEARNSET_BASE = 0xc0000;      // level-up + teachable learnset slots, bump
 const TRAINER_BASE = 0xe0000;       // gTrainers[DIFFICULTY_COUNT][TRAINERS_COUNT] (T-241)
 const PARTNER_BASE = 0x120000;      // gBattlePartners[DIFFICULTY_COUNT][PARTNER_COUNT]
 const PARTY_BASE = 0x121000;        // the anonymous party blobs the .party pointers point at
+const NAMING_BASE = 0x130000;       // the T-242 text tables: starters, nicknames, trades
 const ROM_SIZE = 0x140000;
 
 // The canonical base values `verifyLayout` insists on (see structLayout.js for why these ones).
@@ -87,10 +89,12 @@ const ANCHOR_EVOLUTIONS = {
  * @param {object} [opts.teachables]  { '<symbol>': ['MOVE_A', …] | { entries, size } } — teachable slots
  * @param {object} [opts.trainers]    { 'TRAINER_X': { doubleBattle, mons } } — gTrainers + its party blobs
  * @param {object} [opts.partners]    { 'PARTNER_X': { doubleBattle, mons } } — gBattlePartners
+ * @param {boolean|string} [opts.naming]  T-242's tables (starters, nickname tables, gIngameTrades). Pass
+ *        a `gIngameTrades[]` block of C to lay the trade table out from it, or `true` for an empty one.
  */
 function buildSyntheticBase({
     species = {}, moves = {}, items = {}, evolutions = {}, wild = {}, tmMoves = null,
-    learnsets = {}, teachables = {}, trainers = null, partners = null,
+    learnsets = {}, teachables = {}, trainers = null, partners = null, naming = null,
 } = {}) {
     const buffer = Buffer.alloc(ROM_SIZE, 0);
     const speciesCount = constants.require('NUM_SPECIES');
@@ -250,6 +254,42 @@ function buildSyntheticBase({
     }
     if (partyCursor > ROM_SIZE) throw new Error('syntheticBase: party blobs outgrew the fixture ROM');
 
+    // T-242's text tables. The committed base has vanilla starters, empty nickname tables (count 0) and
+    // the four hand-written trades — a fixture reproduces that shape so the module's base check has
+    // something real to verify against.
+    const namingSymbols = {};
+    if (naming) {
+        let cursor = NAMING_BASE;
+        const alloc = (size) => { const at = cursor; cursor += size + (size % 2); return at; };
+        const add = (name, size) => { const at = alloc(size); namingSymbols[name] = { romOffset: at, size }; return at; };
+
+        const trio = add('gStarterMon', 3 * 2);
+        ['SPECIES_TREECKO', 'SPECIES_TORCHIC', 'SPECIES_MUDKIP']
+            .forEach((s, i) => buffer.writeUInt16LE(constants.require(s), trio + i * 2));
+        add('gStarterExtraMon', STARTER_EXTRA_CAPACITY * 2);
+        add('gStarterExtraCount', 1);
+        add('gStarterExtraNicknames', STARTER_EXTRA_CAPACITY * INGAME_TRADE.nicknameWidth);
+        add('gStarterExtraGenders', STARTER_EXTRA_CAPACITY);
+        add('gStarterNickname', INGAME_TRADE.nicknameWidth);
+        add('gStarterGender', 1);
+        add('gLocationNicknames', LOCATION_NICKNAME_CAPACITY * LOCATION_NICKNAME.stride);
+        add('gLocationNicknameCount', 1);
+        // 16 B per row, not the 14 its fields add up to — ARM rounds the struct up to a multiple of 4,
+        // which is what the real base does (T-242 / GATE-3).
+        add('gTradeNicknames', TRADE_NICKNAME_CAPACITY * (TRADE_NICKNAME.stride + 2));
+        add('gTradeNicknameCount', 1);
+
+        const tradesAt = add('gIngameTrades', constants.require('INGAME_TRADES_COUNT') * INGAME_TRADE.stride);
+        if (typeof naming === 'string') {
+            // Lay the table out from the same C the injector will verify against, using the module's own
+            // encoder — the fixture cannot prove the encoding, only the real base can (see the module).
+            const { encodeTradeTable } = require('../../injector/modules/tradesStartersNicknames');
+            const table = encodeTradeTable({ constants, root: ROOT, charmap: null }, naming);
+            table.copy(buffer, tradesAt);
+        }
+        if (cursor > ROM_SIZE) throw new Error('syntheticBase: the naming tables outgrew the fixture ROM');
+    }
+
     const sym = (name, romOffset, size) => ({ name, addr: 0x08000000 + romOffset, romOffset, size, sizeExact: true });
     const symbols = {
         gSpeciesInfo: sym('gSpeciesInfo', SPECIES_BASE, speciesCount * SPECIES_STRIDE),
@@ -260,6 +300,7 @@ function buildSyntheticBase({
     for (const [name, s] of Object.entries(wildSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
     for (const [name, s] of Object.entries(learnsetSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
     for (const [name, at, size] of trainerTables) symbols[name] = sym(name, at, size);
+    for (const [name, s] of Object.entries(namingSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
 
     return {
         rom: Rom.fromBuffer(buffer),
