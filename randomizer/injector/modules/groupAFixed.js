@@ -35,7 +35,7 @@ const { injectTmMoves } = require('./tmMoves');
 /**
  * @param {object} args  `{ rom, offsetMap, data, log }` as the registry calls it (injector/index.js)
  * @param {object} [args.sources]  base sources to use instead of reading the tree — `{ encountersJson,
- *        itemsSource, patchedItemsSource }`. Two writers derive their bytes by running the compile
+ *        itemsSource, patchedItemsSource, speciesSources }`. Two writers derive their bytes by running the compile
  *        path's own function over a base source file; production reads those files, a harness can hand
  *        them in.
  * @returns {object} per-sub-module write counts, for the caller's log
@@ -43,9 +43,9 @@ const { injectTmMoves } = require('./tmMoves');
 function applyGroupAFixed({ rom, offsetMap, data = {}, log = () => {}, sources = {} }) {
     const ctx = buildInjectionContext({ rom, offsetMap, data, log });
     return {
-        species: injectSpeciesInfo(ctx),
+        species: injectSpeciesInfo(ctx, { speciesSources: sources.speciesSources || null }),
         moves: injectMoveData(ctx),
-        evolutions: injectEvolutions(ctx),
+        evolutions: injectEvolutions(ctx, { speciesSources: sources.speciesSources || null }),
         wildEncounters: injectWildEncounters(ctx, { encountersJson: sources.encountersJson || null }),
         itemPrices: injectItemPrices(ctx, {
             itemsSource: sources.itemsSource || null,

@@ -15,6 +15,11 @@ const { buildInjectionContext } = require('../../injector/context');
 const { injectEvolutions } = require('../../injector/modules/evolutions');
 const { EVOLUTION, EVOLUTION_PARAM } = require('../../injector/structLayout');
 
+// The module checks that a target's literal name really appears in the base sources (the writer patches
+// by name, and cosmetic forms share one species id), so a test that invents an evolution must supply the
+// source line that goes with it.
+const sourceFor = (tuples) => [{ name: 'test.h', text: tuples.join('\n') }];
+
 function setup({ pokes = [], evolutions = {} } = {}) {
     const base = buildSyntheticBase({ evolutions });
     const ctx = buildInjectionContext({
@@ -110,7 +115,9 @@ describe('stone evolutions — the level lives in CONDITIONS({IF_MIN_LEVEL, n})'
                 evolutions: [{ method: 'ITEM', param: 'ITEM_SUN_STONE', pokemon: 'SPECIES_LINOONE', minLevel: '38' }],
             }],
         });
-        injectEvolutions(base.ctx);
+        injectEvolutions(base.ctx, {
+            speciesSources: sourceFor(['{EVO_ITEM, ITEM_SUN_STONE, SPECIES_LINOONE, CONDITIONS({IF_MIN_LEVEL, 25})}']),
+        });
 
         const evo = readEvolution(base, 'SPECIES_ZIGZAGOON');
         expect(evo.minLevel).toBe(38);
@@ -219,7 +226,12 @@ describe('shared literals — the hazard of writing through a pointer', () => {
 
         let error = null;
         try {
-            injectEvolutions(base.ctx);
+            injectEvolutions(base.ctx, {
+                speciesSources: sourceFor([
+                    '{EVO_ITEM, ITEM_SUN_STONE, SPECIES_LINOONE, CONDITIONS({IF_MIN_LEVEL, 25})}',
+                    '{EVO_ITEM, ITEM_SUN_STONE, SPECIES_VENUSAUR, CONDITIONS({IF_MIN_LEVEL, 25})}',
+                ]),
+            });
         } catch (err) {
             error = err;
         }
@@ -228,5 +240,39 @@ describe('shared literals — the hazard of writing through a pointer', () => {
         expect(error.message).toMatch(/shar|merge/i);
         // It refuses before touching the ROM, so a failed run leaves no half-injected image behind.
         expect(base.rom.journal).toHaveLength(0);
+    });
+});
+
+describe('name vs id — cosmetic forms share a species id', () => {
+    test('a target whose literal name is absent from the sources is not written', () => {
+        // GATE-3 on the real base: the bundle re-levels SPECIES_SPEWPA_ICY_SNOW, but the sources only
+        // ever write SPECIES_SPEWPA (the same id). compile() changes nothing, so neither may the injector.
+        const base = setup({
+            evolutions: { SPECIES_ZIGZAGOON: [levelEvo('SPECIES_LINOONE', 20)] },
+            pokes: [{ id: 'SPECIES_ZIGZAGOON', evolutions: [{ method: 'LEVEL', param: '44', pokemon: 'SPECIES_LINOONE' }] }],
+        });
+        const { writes } = injectEvolutions(base.ctx, {
+            speciesSources: sourceFor(['{EVO_LEVEL, 20, SPECIES_LINOONE_GALAR}']),   // a different literal
+        });
+
+        expect(writes).toBe(0);
+        expect(readEvolution(base, 'SPECIES_ZIGZAGOON').param).toBe(20);
+    });
+
+    test('two aliases of one id wanting different levels throws instead of picking one', () => {
+        const base = setup({
+            evolutions: { SPECIES_ZIGZAGOON: [levelEvo('SPECIES_LINOONE', 20)] },
+            pokes: [
+                { id: 'SPECIES_ZIGZAGOON', evolutions: [{ method: 'LEVEL', param: '31', pokemon: 'SPECIES_LINOONE' }] },
+                { id: 'SPECIES_ZIGZAGOON_GALAR', evolutions: [{ method: 'LEVEL', param: '44', pokemon: 'SPECIES_LINOONE_ALIAS' }] },
+            ],
+        });
+        // Both literals present in the sources, and both names resolve to the same id.
+        const constantsGet = base.ctx.constants.get.bind(base.ctx.constants);
+        base.ctx.constants.get = (name) => (name === 'SPECIES_LINOONE_ALIAS' ? constantsGet('SPECIES_LINOONE') : constantsGet(name));
+
+        expect(() => injectEvolutions(base.ctx, {
+            speciesSources: sourceFor(['{EVO_LEVEL, 20, SPECIES_LINOONE}', '{EVO_LEVEL, 20, SPECIES_LINOONE_ALIAS}']),
+        })).toThrow(/same species id/);
     });
 });
