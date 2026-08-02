@@ -42,6 +42,11 @@ const compileEach = argv.includes('--compile-each');
 // injector produce the data compile() produces?" even when the two ROMs are not laid out identically —
 // which is the only honest question while a base-side layout difference is outstanding.
 const bySymbol = argv.includes('--by-symbol');
+// Compiling the corpus is the slow half (~1-2 min per ROM); injecting is seconds. --reuse-compiled
+// keeps each bundle's compiled ROM and .map in .gate3-cache/ and skips the rebuild when they are there,
+// so iterating on the injector costs one corpus compile, not one per attempt.
+const reuseCompiled = argv.includes('--reuse-compiled');
+const cacheDir = path.join(root, '.gate3-cache');
 const allowPending = argv.includes('--allow-pending') || compileEach;
 
 const run = (cmd, a, env = {}) => execFileSync(cmd, a, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, ...env } });
@@ -144,6 +149,17 @@ for (const [name, roms] of Object.entries(manifest.bundles)) {
     // ── the compile path ──────────────────────────────────────────────────────
     const compiled = {};
     if (compileEach) {
+        fs.mkdirSync(cacheDir, { recursive: true });
+        const cachedMap = path.join(cacheDir, `${name}.map`);
+        const cachedRoms = Object.keys(roms).map(rom => path.join(cacheDir, `${name}-${rom}`));
+        if (reuseCompiled && fs.existsSync(cachedMap) && cachedRoms.every(f => fs.existsSync(f))) {
+            for (const rom of Object.keys(roms)) {
+                const kept = path.join(cacheDir, `${name}-${rom}`);
+                compiled[rom] = { path: kept, sha: sha(kept), map: cachedMap };
+                freshHashes[`${name}/${rom}`] = compiled[rom].sha;
+            }
+            console.log(`      ${name}  (reusing cached compile)`);
+        } else {
         clean();
         try {
             run('node', ['make.js', `--bundle=${bundlePath}`, '--full-rom', '--compile'], { ROM_BUILD_MODE: 'compile' });
@@ -153,17 +169,18 @@ for (const [name, roms] of Object.entries(manifest.bundles)) {
             continue;
         }
         // make.js rewrites pokeemerald.map on every build, so keep this build's map with its ROM.
-        const keptMap = path.join('/tmp', `gate3-${name}.map`);
+        const keptMap = path.join(cacheDir, `${name}.map`);
         if (fs.existsSync(path.join(root, 'pokeemerald.map'))) fs.copyFileSync(path.join(root, 'pokeemerald.map'), keptMap);
         for (const rom of Object.keys(roms)) {
             const built = path.join(romsDir, rom);
             if (!fs.existsSync(built)) { console.log(`ERR   ${name}  ${rom}  no compiled output`); fail++; continue; }
-            const kept = path.join('/tmp', `gate3-${name}-${rom}`);
+            const kept = path.join(cacheDir, `${name}-${rom}`);
             fs.copyFileSync(built, kept);
             compiled[rom] = { path: kept, sha: sha(kept), map: fs.existsSync(keptMap) ? keptMap : null };
             freshHashes[`${name}/${rom}`] = compiled[rom].sha;
             const known = roms[rom];
             console.log(`      ${name}  ${rom}  compiled ${compiled[rom].sha.slice(0, 12)}…  ${compiled[rom].sha === known ? '(= manifest)' : '(manifest was ' + known.slice(0, 12) + '…)'}`);
+        }
         }
     }
 

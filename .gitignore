@@ -102,3 +102,4 @@ deploy/.env.local
 
 # Task investigation assets (large bundle.json inputs, etc.) — kept locally, not versioned
 tasks/assets/
+.gate3-cache/
