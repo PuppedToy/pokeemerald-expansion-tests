@@ -8,6 +8,14 @@
  * write, the proof that the declared layout matches this base: `verifyLayout` reads the anchors back out
  * of the ROM and throws if a single one disagrees. That check is the difference between "the offsets are
  * probably right" and "this ROM is safe to write to".
+ *
+ * **One context per ROM, built before the first write.** The anchors are the BASE's own data
+ * (Bulbasaur's 49 attack, Pound's 40 power), so they can only be read back from a ROM no module has
+ * touched yet. Once `group-a-fixed` has rebalanced gSpeciesInfo, re-running them reports a "layout
+ * mismatch" that is really just the randomizer's own data — which is exactly how T-240's first GATE-3
+ * run failed on 11 of 12 corpus ROMs. So the context is cached per ROM instance: the first module pays
+ * for the check on the pristine base, every later module reuses the result, and a first context asked
+ * for on an already-written ROM is refused rather than silently unverified.
  */
 
 const path = require('path');
@@ -17,6 +25,9 @@ const {
 } = require('./structLayout');
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
+
+// One context per Rom instance — see the header. WeakMap so a finished ROM is still collectable.
+const contexts = new WeakMap();
 
 // The constant headers don't change between the ROMs of one bundle, so parse them once per process.
 let cachedConstants = null;
@@ -39,8 +50,19 @@ function gameConstantsFor(root) {
  * @param {boolean} [args.verify=true]      run the base anchors (only a test has reason to skip)
  */
 function buildInjectionContext({ rom, offsetMap, data = {}, log = () => {}, root = REPO_ROOT, verify = true }) {
+    const built = contexts.get(rom);
+    if (built) return built;                       // verified when this ROM was still the base
+
     const constants = gameConstantsFor(root);
-    if (verify) verifyLayout({ rom, offsetMap, constants });
+    if (verify) {
+        if (rom.journal && rom.journal.length > 0) {
+            throw new Error(
+                `injector: this ROM has already been written to (${rom.journal.length} writes, first tagged ` +
+                `'${rom.journal[0].tag}') and no context was built beforehand. The base anchors can only be ` +
+                `read back from a pristine base — build the context before the first module writes.`);
+        }
+        verifyLayout({ rom, offsetMap, constants });
+    }
 
     let evolutionsField = null;
     const ctx = {
@@ -81,6 +103,7 @@ function buildInjectionContext({ rom, offsetMap, data = {}, log = () => {}, root
             return base + id * stride;
         },
     };
+    contexts.set(rom, ctx);
     return ctx;
 }
 

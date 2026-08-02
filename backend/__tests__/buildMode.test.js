@@ -44,7 +44,7 @@ test('base ROM/map/sym paths default under base/ and are env-overridable', () =>
   assert.equal(custom.symPath, '/b/rom.sym');
 });
 
-test('injectOneRom refuses while Phase-3 modules are pending (T-240…T-243 still are)', async () => {
+test('injectOneRom refuses while Phase-3 modules are pending (T-241…T-243 still are)', async () => {
   clean();
   fs.mkdirSync(TMP, { recursive: true });
   const romPath = path.join(TMP, 'pokeemerald.gba');

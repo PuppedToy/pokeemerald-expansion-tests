@@ -86,6 +86,15 @@ const EVOLUTION_PARAM = { stride: 8, condition: 0, arg1: 2, arg2: 4, arg3: 6 };
 // ── include/wild_encounter.h: struct WildPokemon ──────────────────────────────
 const WILD_POKEMON = { stride: 4, minLevel: 0, maxLevel: 1, species: 2 };
 
+// ── include/pokemon.h: struct LevelUpMove ─────────────────────────────────────
+// { u16 move; u16 level; } — MOVE FIRST, which is the opposite order to the LEVEL_UP_MOVE(lvl, move)
+// macro the source reads in. Terminated by LEVEL_UP_END = { LEVEL_UP_MOVE_END, 0 }. T-240 verifies the
+// order against the base's own arrays rather than trusting this comment (see modules/learnsets.js).
+const LEVEL_UP_MOVE = { stride: 4, move: 0, level: 2 };
+
+// A teachable learnset is a bare `u16 []` of move ids, terminated by MOVE_UNAVAILABLE.
+const TEACHABLE_MOVE = { stride: 2 };
+
 // ── include/item.h: struct TmHmIndexKey ───────────────────────────────────────
 // { enum TMHMItemId itemId:16; u16 moveId; } — gTMHMItemMoveIds[NUM_ALL_MACHINES + 1], entry 0 the
 // { ITEM_NONE, MOVE_NONE } failsafe, then one entry per TM in FOREACH_TM order, then the HMs.
@@ -370,6 +379,8 @@ module.exports = {
     EVOLUTION,
     EVOLUTION_PARAM,
     WILD_POKEMON,
+    LEVEL_UP_MOVE,
+    TEACHABLE_MOVE,
     TMHM_INDEX_KEY,
     SPECIES_ANCHORS,
     MOVE_ANCHORS,

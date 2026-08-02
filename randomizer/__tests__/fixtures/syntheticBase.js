@@ -12,7 +12,10 @@
 const { Rom } = require('../../injector/rom');
 const { OffsetMap } = require('../../injector/symbolMap');
 const { loadGameConstants } = require('../../injector/gameConstants');
-const { SPECIES_INFO, MOVE_INFO, ITEM_INFO, EVOLUTION, EVOLUTION_PARAM, WILD_POKEMON } = require('../../injector/structLayout');
+const {
+    SPECIES_INFO, MOVE_INFO, ITEM_INFO, EVOLUTION, EVOLUTION_PARAM, WILD_POKEMON, LEVEL_UP_MOVE, TEACHABLE_MOVE,
+} = require('../../injector/structLayout');
+const { LEVEL_UP_LEARNSET_CAPACITY, TEACHABLE_LEARNSET_CAPACITY } = require('../../layout');
 
 const ROOT = require('path').resolve(__dirname, '..', '..', '..');
 const constants = loadGameConstants({ root: ROOT });
@@ -32,7 +35,8 @@ const ITEM_BASE = 0x80000;
 const TMHM_BASE = 0x90000;
 const EVO_BASE = 0xa0000;           // evolution arrays, bump-allocated
 const WILD_BASE = 0xb0000;          // wild slot arrays, bump-allocated
-const ROM_SIZE = 0xd0000;
+const LEARNSET_BASE = 0xc0000;      // level-up + teachable learnset slots, bump-allocated (T-240)
+const ROM_SIZE = 0xe0000;
 
 // The canonical base values `verifyLayout` insists on (see structLayout.js for why these ones).
 const ANCHOR_SPECIES = {
@@ -72,8 +76,13 @@ const ANCHOR_EVOLUTIONS = {
  * @param {object} [opts.evolutions]  { SPECIES_X: [{ method, param, target, conditions: [{ condition, arg1 }] }] }
  * @param {object} [opts.wild]        { '<symbol>': ['SPECIES_A', …] } — one WildPokemon array per symbol
  * @param {string[]} [opts.tmMoves]   TM slot n → move name (index 0 = TM01)
+ * @param {object} [opts.learnsets]   { '<symbol>': [{ level, move }] | { entries, size } } — level-up slots
+ * @param {object} [opts.teachables]  { '<symbol>': ['MOVE_A', …] | { entries, size } } — teachable slots
  */
-function buildSyntheticBase({ species = {}, moves = {}, items = {}, evolutions = {}, wild = {}, tmMoves = null } = {}) {
+function buildSyntheticBase({
+    species = {}, moves = {}, items = {}, evolutions = {}, wild = {}, tmMoves = null,
+    learnsets = {}, teachables = {},
+} = {}) {
     const buffer = Buffer.alloc(ROM_SIZE, 0);
     const speciesCount = constants.require('NUM_SPECIES');
     const moveCount = constants.require('MOVES_COUNT_ALL');
@@ -170,6 +179,37 @@ function buildSyntheticBase({ species = {}, moves = {}, items = {}, evolutions =
         });
     }
 
+    // Learnset slots — T-237 made each array a FIXED-capacity export, so the fixture allocates the
+    // whole capacity (176 B / 160 B), writes the payload + terminator and leaves the tail zeroed,
+    // exactly as C initializes a `[CAPACITY]` array with fewer initializers.
+    let learnsetCursor = LEARNSET_BASE;
+    const learnsetSymbols = {};
+    const allocSlot = (size) => { const at = learnsetCursor; learnsetCursor += size; return at; };
+    const slotSpec = (value, defaultSize) => (Array.isArray(value)
+        ? { entries: value, size: defaultSize }
+        : { entries: value.entries || [], size: value.size ?? defaultSize });
+
+    for (const [symbol, value] of Object.entries(learnsets)) {
+        const { entries, size } = slotSpec(value, LEVEL_UP_LEARNSET_CAPACITY * LEVEL_UP_MOVE.stride);
+        const at = allocSlot(size);
+        entries.forEach((entry, i) => {
+            const entryAt = at + i * LEVEL_UP_MOVE.stride;
+            buffer.writeUInt16LE(constants.require(entry.move), entryAt + LEVEL_UP_MOVE.move);
+            buffer.writeUInt16LE(Number(entry.level), entryAt + LEVEL_UP_MOVE.level);
+        });
+        buffer.writeUInt16LE(constants.require('LEVEL_UP_MOVE_END'), at + entries.length * LEVEL_UP_MOVE.stride);
+        learnsetSymbols[symbol] = { romOffset: at, size };
+    }
+
+    for (const [symbol, value] of Object.entries(teachables)) {
+        const { entries, size } = slotSpec(value, TEACHABLE_LEARNSET_CAPACITY * TEACHABLE_MOVE.stride);
+        const at = allocSlot(size);
+        entries.forEach((move, i) => buffer.writeUInt16LE(constants.require(move), at + i * TEACHABLE_MOVE.stride));
+        buffer.writeUInt16LE(constants.require('MOVE_UNAVAILABLE'), at + entries.length * TEACHABLE_MOVE.stride);
+        learnsetSymbols[symbol] = { romOffset: at, size };
+    }
+    if (learnsetCursor > ROM_SIZE) throw new Error('syntheticBase: learnset slots outgrew the fixture ROM');
+
     const sym = (name, romOffset, size) => ({ name, addr: 0x08000000 + romOffset, romOffset, size, sizeExact: true });
     const symbols = {
         gSpeciesInfo: sym('gSpeciesInfo', SPECIES_BASE, speciesCount * SPECIES_STRIDE),
@@ -178,6 +218,7 @@ function buildSyntheticBase({ species = {}, moves = {}, items = {}, evolutions =
     };
     if (tmhmSize) symbols.gTMHMItemMoveIds = sym('gTMHMItemMoveIds', TMHM_BASE, tmhmSize);
     for (const [name, s] of Object.entries(wildSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
+    for (const [name, s] of Object.entries(learnsetSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
 
     return {
         rom: Rom.fromBuffer(buffer),

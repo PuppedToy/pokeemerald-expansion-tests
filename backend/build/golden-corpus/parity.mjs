@@ -100,19 +100,24 @@ function compareBySymbol({ injectedBytes, compiledBytes, compiledMapPath, journa
     const problems = [];
 
     // Which symbols the injector touched, and which byte ranges within them.
+    //
+    // ONE attributeDiff call for the whole journal, not one per write: it re-sorts all ~48k symbols on
+    // every call, and T-240's learnsets alone push the journal past 2200 entries (T-239's Group A had
+    // ~40). Per-entry attribution turned a seconds-long comparison into a multi-minute one.
+    //
+    // `approximate` = the write is in anonymous data (an EVOLUTION() compound literal has no symbol),
+    // attributed to the nearest preceding symbol. Comparing at the same delta from that symbol is
+    // still right as long as the blob sits at the same place relative to it in both builds.
     const touched = new Map();      // symbol name → [{ from, to }] relative to the symbol
-    for (const entry of journal) {
-        // `approximate` = the write is in anonymous data (an EVOLUTION() compound literal has no symbol),
-        // attributed to the nearest preceding symbol. Comparing at the same delta from that symbol is
-        // still right as long as the blob sits at the same place relative to it in both builds.
-        const [region] = attributeDiff(offsetMap, [{ offset: entry.offset, length: entry.length }]);
+    const regions = attributeDiff(offsetMap, journal.map(e => ({ offset: e.offset, length: e.length })));
+    regions.forEach((region, i) => {
         if (!region.symbol) {
-            problems.push(`write at 0x${entry.offset.toString(16)} (${entry.tag}) is inside no known symbol`);
-            continue;
+            problems.push(`write at 0x${journal[i].offset.toString(16)} (${journal[i].tag}) is inside no known symbol`);
+            return;
         }
         if (!touched.has(region.symbol)) touched.set(region.symbol, []);
-        touched.get(region.symbol).push({ from: region.delta, to: region.delta + entry.length });
-    }
+        touched.get(region.symbol).push({ from: region.delta, to: region.delta + journal[i].length });
+    });
 
     for (const [symbol, ranges] of touched) {
         const here = offsetMap.get(symbol);

@@ -18,7 +18,7 @@ This page is the design reference for `randomizer/injector/`. Task history lives
 
 The backend spawns `node make.js …` and inherits the env, so flipping the box's env flips the whole
 queue — and unsetting it rolls everything back. Default stays `compile` until **every** module has passed
-its gate (below) — T-239 migrated the first of five.
+its gate (below) — T-239 and T-240 have migrated two of the five.
 
 ## Where the base comes from
 
@@ -67,7 +67,7 @@ never a randomized build.
 | `injector/mode.js` | the compile-vs-inject switch |
 | `injector/gameConstants.js` | the base's `include/constants/*.h` as a name→number table (`#define` + `enum`) |
 | `injector/structLayout.js` | struct field offsets + the **base anchors** that prove them (below) |
-| `injector/context.js` | builds constants + layout once per ROM and runs the anchor check |
+| `injector/context.js` | builds constants + layout **once per ROM** and runs the anchor check (cached: the anchors are the base's own data, so only the first module can read them back — T-240) |
 | `injector/modules/*.js` | one file per output, plus a `group*.js` that a registry entry points at |
 
 ### Ids and struct offsets
@@ -103,6 +103,22 @@ Two writers are **log-driven** for the same reason: `pokemonWriter`/`moveWriter`
 whose rebalance/mutation `log` names it, so injecting a "correct-looking" value the writer would have left
 alone breaks INV-BYTES.
 
+### Fixed-capacity families (the learnsets)
+
+The 1104 + 1101 learnset arrays are one symbol each (T-237 dropped their `static` and padded them to a
+fixed capacity), so the module walks the **base source** and writes name-keyed slots. Three rules that
+are not visible in the writer's output text but decide the bytes:
+
+- **Write the whole slot.** A compiled `[CAPACITY]` array is zero past its initializers, so a shorter
+  learnset must clear the tail — otherwise the base's surplus entries survive behind the terminator.
+- **Mirror each writer separately.** They disagree: an empty level-up list is written (a block holding
+  only `LEVEL_UP_END`), an empty teachable list is *skipped* and the base's list stays.
+- **Prove every slot first.** Each array the base exports is byte-matched against the source it was
+  compiled from before anything is written — that is what pins `struct LevelUpMove`'s field order, the
+  name→symbol mapping, and "these sources and this ROM are the same build". A run that claims arrays the
+  base exports **none** of is refused, since silent no-ops are how the T-234/T-237 trap ships base data
+  in a "randomized" ROM.
+
 ### The write journal
 
 Every write is recorded (`offset`, `length`, `tag`) and **bit-granular ownership** is tracked: two
@@ -113,8 +129,9 @@ a byte may only change because a module meant to change it.
 ### The registry
 
 ```js
-{ id: 'learnsets', task: 'T-240', status: 'pending', apply: null,
-  symbols: [], symbolPatterns: [/LevelUpLearnset$/, /TeachableLearnset$/] }
+{ id: 'learnsets', task: 'T-240', status: 'migrated',
+  apply: (args) => require('./modules/learnsets').applyLearnsets(args),
+  symbols: [], symbolPatterns: [/^s\w*LevelUpLearnset$/, /^s\w*TeachableLearnset$/] }
 ```
 
 Where the migration stands — the registry itself is the source of truth, this is the map of it:

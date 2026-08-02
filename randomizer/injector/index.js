@@ -44,8 +44,10 @@ const INJECTION_MODULES = [
     {
         id: 'learnsets',
         task: 'T-240',
-        status: 'pending',
-        apply: null,
+        status: 'migrated',
+        // Lazy for the same reason as group-a-fixed: the module pulls in the writers' constants and the
+        // banned-species list, which no caller of the mode switch or the offset-map CLI needs.
+        apply: (args) => require('./modules/learnsets').applyLearnsets(args),
         description: 'Level-up learnsets + teachable/TM compat (fixed capacity since T-237; located by array name in the .map)',
         symbols: [],
         // 1104 + 1101 arrays, each keeping its own name — the map is queried by pattern, never listed.
