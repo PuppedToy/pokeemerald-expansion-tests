@@ -42,6 +42,7 @@ const compileEach = argv.includes('--compile-each');
 // injector produce the data compile() produces?" even when the two ROMs are not laid out identically —
 // which is the only honest question while a base-side layout difference is outstanding.
 const bySymbol = argv.includes('--by-symbol');
+const layoutSeen = [];   // INV-LAYOUT results, summarised at the end
 // Compiling the corpus is the slow half (~1-2 min per ROM); injecting is seconds. --reuse-compiled
 // keeps each bundle's compiled ROM and .map in .gate3-cache/ and skips the rebuild when they are there,
 // so iterating on the injector costs one corpus compile, not one per attempt.
@@ -58,6 +59,7 @@ const load = (rel) => import(pathToFileURL(path.join(root, rel)).href).then(m =>
 const { INJECTION_MODULES, pendingModules, migratedModules } = await load('randomizer/injector/index.js');
 const { loadOffsetMap } = await load('randomizer/injector/symbolMap.js');
 const { attributeDiff } = await load('randomizer/injector/parity.js');
+const { compareLayout, formatLayoutDrift } = await load('randomizer/injector/layoutDrift.js');
 const makejs = await load('make.js');
 
 const pending = pendingModules(INJECTION_MODULES);
@@ -94,6 +96,23 @@ function ownerOf(symbolName) {
  * Compare, symbol by symbol, the tables the injector wrote — reading each ROM at ITS OWN address for
  * that symbol. Layout-independent: it asks whether the DATA matches, not whether the images do.
  */
+/**
+ * INV-LAYOUT (T-248 / B-057). A compiled ROM's layout drifts with its own data and that is ACCEPTED —
+ * injection writes into the base at the base's own offsets, so a compiled build moving is irrelevant to
+ * it. What is not accepted is an *injectable* table changing size or vanishing: that breaks T-237's
+ * fixed-capacity premise, and nothing else in this harness would notice. Hence the tripwire.
+ */
+function checkLayout({ baseMap, compiledMapPath }) {
+    if (!compiledMapPath) return null;
+    const compiledMap = loadOffsetMap(compiledMapPath);
+    const injectable = [];
+    for (const m of INJECTION_MODULES) {
+        injectable.push(...(m.symbols || []));
+        for (const pattern of m.symbolPatterns || []) injectable.push(...compiledMap.findAll(pattern).map(s => s.name));
+    }
+    return compareLayout({ baseMap, compiledMap, injectable });
+}
+
 function compareBySymbol({ injectedBytes, compiledBytes, compiledMapPath, journal }) {
     if (!compiledMapPath) return ['(no .map kept for the compiled build — cannot compare by symbol)'];
     const compiledMap = loadOffsetMap(compiledMapPath);
@@ -255,6 +274,15 @@ for (const [name, roms] of Object.entries(manifest.bundles)) {
 
         if (bySymbol) {
             const problems = compareBySymbol({ injectedBytes, compiledBytes, compiledMapPath: reference.map, journal: result.journal });
+            // INV-LAYOUT rides along: it needs the same two maps and answers a different question.
+            const drift = checkLayout({ baseMap: offsetMap, compiledMapPath: reference.map });
+            if (drift && !drift.ok) {
+                console.log(`FAIL  ${name}  ${romName}  INV-LAYOUT`);
+                for (const line of formatLayoutDrift(drift).split('\n')) console.log(`      ${line}`);
+                fail++;
+                continue;
+            }
+            if (drift) layoutSeen.push({ name, romName, drift });
             if (problems.length === 0) {
                 console.log(`PASS  ${name}  ${romName}  every injected table matches compile() (by symbol)`);
                 pass++;
@@ -322,6 +350,18 @@ for (const [name, roms] of Object.entries(manifest.bundles)) {
 
 clean();
 console.log(`\n${fail === 0 ? 'ALL PASS' : 'MISMATCH'} — ${pass} pass / ${fail} fail`);
+
+// INV-LAYOUT (T-248 / B-057) — a compiled build moving is expected; an injectable table changing shape
+// is not, and that case already failed the bundle above. This is the record of how much it drifted.
+if (layoutSeen.length) {
+    const worst = layoutSeen.reduce((a, b) => (b.drift.moved > a.drift.moved ? b : a));
+    const d = worst.drift;
+    console.log(`\nINV-LAYOUT: ${layoutSeen.length} build(s) checked, no injectable table resized or vanished.`);
+    console.log(`  most drift: ${worst.name}/${worst.romName} — ${d.moved.toLocaleString()} of `
+        + `${d.compared.toLocaleString()} symbols moved`
+        + `${d.firstMoved ? `, first ${d.firstMoved.name} ${d.firstMoved.delta >= 0 ? '+' : ''}${d.firstMoved.delta} B` : ''}`
+        + `  (expected — B-057, accepted in T-248)`);
+}
 if (compileEach && Object.keys(freshHashes).length) {
     console.log('\nFresh compile-path hashes (for a manifest re-snapshot):');
     for (const [key, value] of Object.entries(freshHashes)) console.log(`  ${key}\t${value}`);

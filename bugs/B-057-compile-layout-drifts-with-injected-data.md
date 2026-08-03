@@ -1,13 +1,13 @@
 ---
 id: B-057
 title: "A compiled ROM's layout drifts with the DATA the randomizer writes, so inject(base) can never equal compile(bundle)"
-status: open            # open | fixing | fixed | wont-fix
+status: wont-fix
 severity: major         # critical | major | minor
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 found-in: 0.7.0
 fixed-in:
-regression-test:        # an INV-LAYOUT check (compiled .map vs base .map) — see Fix options
+regression-test: randomizer/__tests__/unit/injectorLayoutDrift.test.js
 links: [T-248, T-237, T-239, docs/base-plus-injection-strategy.md, docs/adr/ADR-022-base-plus-injection-architecture.md]
 ---
 
@@ -56,9 +56,7 @@ fixed). Every array involved is fixed-capacity and unchanged in size; only `.tex
 
 ## Root cause
 
-<!-- Filled during the fix. -->
-
-Not yet proven. The build uses `-flto=auto -ffunction-sections -fdata-sections`; the working hypothesis
+Not proven, and deliberately left unproven — The build uses `-flto=auto -ffunction-sections -fdata-sections`; the working hypothesis
 is that an LTO codegen/partitioning decision in `starter_choose.o` reacts to the constant data (all six
 starter arrays are `const` and read only through `noipa` accessors, so *value propagation into callers*
 is already blocked — T-234/T-237 — but nothing stops the compiler from emitting different code inside
@@ -89,3 +87,33 @@ The decision, the measurement behind it and the regression check live in
 Whichever is chosen, the regression test is the same and mechanical: **compile one corpus bundle and
 assert that every symbol in its `.map` sits where the base's `.map` puts it** (INV-LAYOUT). That check
 belongs next to the parity harness and is what would have caught this in Phase 2.
+
+## Resolution (2026-08-03) — `wont-fix`: accepted by decision
+
+**Option 2 was chosen** (see [T-248](../tasks/T-248-base-layout-stability-under-injected-data.md) and
+[ADR-023](../docs/adr/ADR-023-injection-verified-by-data-equivalence.md)). The drift is real and stays;
+what changed is the invariant.
+
+Why accepting it is safe rather than resigned: the drift **cannot affect injection**. The base is built
+once and every offset comes from that build's own `.map` — a base cannot react to data that does not exist
+yet. The drift only appears when compiling a *different* ROM from scratch, which is the path being
+removed. Image equality was convenient, never required: the shipped artifact is the injected ROM.
+
+`wont-fix` rather than `fixed` on purpose. Nothing about the compiler's behaviour was changed, and a
+future reader must not conclude the layout is stable now — it is not.
+
+**What was built instead**, so accepting it costs no coverage:
+
+- **INV-LAYOUT** (`randomizer/injector/layoutDrift.js`, the `regression-test` above): the gate now
+  classifies drift on every bundle. A symbol that *moved* is expected and reported; an **injectable table
+  that resized or vanished** fails — that is T-237's fixed-capacity premise breaking or the T-234/T-237
+  garbage-collection trap, i.e. the drift that would genuinely break injection. Measured on the corpus:
+  41,566 of 48,406 symbols moved, **0** injectable tables changed shape.
+- **The coverage rule** in `randomizer/docs/injection.md`: the gate proves what a module *wrote*, so what
+  no module writes needs a different check. The compile path's write surface is measured (31 files) and
+  mapped to modules. [[B-060]] is what that omission cost before the rule existed.
+
+If a stable layout is ever wanted for other reasons, the ten-minute `LTO=0` experiment in the Fix section
+above is still the way to find out whether it is even available. It was **not** run: with option 2 chosen
+it would inform nothing.
+

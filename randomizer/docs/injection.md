@@ -183,9 +183,11 @@ Phase 2 and then forgotten in Phase 3.
      node backend/build/golden-corpus/parity.mjs --compile-each --by-symbol --reuse-compiled
    ```
 
-   Not a sha256 comparison: a compiled ROM's layout drifts with its own data
-   ([B-057](../../bugs/B-057-compile-layout-drifts-with-injected-data.md)), so the two images can differ
-   while every byte of data agrees. `--by-symbol` reads each table at each build's own address;
+   Not a sha256 comparison, **by decision**: a compiled ROM's layout drifts with its own data
+   ([B-057](../../bugs/B-057-compile-layout-drifts-with-injected-data.md), accepted in
+   [ADR-023](../../docs/adr/ADR-023-injection-verified-by-data-equivalence.md)), so the two images differ
+   while every byte of data agrees. Image equality was convenient, never required — the artifact players
+   receive is the injected one. `--by-symbol` reads each table at each build's own address;
    `--reuse-compiled` caches the corpus compiles in `.gate3-cache/`, so a second attempt costs seconds.
    For a raw region-by-region view of two ROMs there is still
    `node randomizer/injector/verifyParity.js --a=… --b=… --map=…`.
@@ -216,6 +218,21 @@ a copy of the tree ran everything `compileOneRom` does before `make`, hashing `s
 
 **Re-measure after adding a writer.** A new output that nothing claims will not fail a gate; it will fail
 a play-test, days later, as a corrupt item.
+
+### INV-LAYOUT — the tripwire
+
+Accepting the layout drift (ADR-023) costs a check, so `injector/layoutDrift.js` restores a narrower one,
+run by the gate on every bundle. It draws the only line that matters:
+
+| drift | verdict |
+|---|---|
+| a symbol **moved**, same size | expected — injection reads the base's own `.map`, and a base cannot react to data that does not exist yet. Reported, never failed. |
+| an **injectable table resized** | **FAIL** — its capacity depends on its data, so T-237's fixed-capacity premise is gone and a write would spill past its slot |
+| an **injectable table vanished** | **FAIL** — LTO folded a value and garbage-collected the table (the T-234/T-237 trap); injecting it becomes a silent no-op |
+| any other symbol resized | noise, counted and ignored — `.text` is allowed to grow |
+
+Measured on the corpus (base `af0dff6c92ef…`): 41,566 of 48,406 symbols moved, **0** injectable tables
+changed shape. That is now asserted on every run instead of remembered.
 
 ## The B2 caveat
 
